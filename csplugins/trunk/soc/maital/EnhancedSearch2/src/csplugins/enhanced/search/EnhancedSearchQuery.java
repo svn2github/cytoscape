@@ -94,6 +94,7 @@ public class EnhancedSearchQuery {
 		// Build a Query object.
 		// CustomMultiFieldQueryParser is used to support range queries on numerical attribute fields.
 		CustomMultiFieldQueryParser queryParser = new CustomMultiFieldQueryParser(Version.LUCENE_30, attFields, analyzer);
+		queryParser.setAllowLeadingWildcard(true);
 
 		try {
 			// Execute query

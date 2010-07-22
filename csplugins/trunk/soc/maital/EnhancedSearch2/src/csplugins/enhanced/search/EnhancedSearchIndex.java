@@ -37,6 +37,8 @@ package csplugins.enhanced.search;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNode;
@@ -45,7 +47,6 @@ import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 
 import csplugins.enhanced.search.util.EnhancedSearchUtils;
-import csplugins.quickfind.util.CyAttributesUtil;
 
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.NumericField;
@@ -160,23 +161,39 @@ public class EnhancedSearchIndex {
 					doc.add(new Field(attrIndexingName, attrValue,
 							Field.Store.NO, Field.Index.ANALYZED));
 
-				} else if (valueType == CyAttributes.TYPE_SIMPLE_LIST
-						|| valueType == CyAttributes.TYPE_SIMPLE_MAP) {
+				// Attributes of type TYPE_SIMPLE_LIST may have several values.
+				// Create a document for each value.
+				} else if (valueType == CyAttributes.TYPE_SIMPLE_LIST) {
+					List list = attributes.getListAttribute(identifier, attrName);
 
-					// Attributes of types TYPE_SIMPLE_LIST and TYPE_SIMPLE_MAP
-					// may have several values.
-					// Create a document for each value.
-					String[] valueList = CyAttributesUtil.getAttributeValues(
-							attributes, identifier, attrName);
-					if (valueList != null) {
-
-						for (int j = 0; j < valueList.length; j++) {
-							String attrValue = valueList[j];
+					//  Iterate through all elements in the list
+					if ((list != null) && (list.size() > 0)) {
+						for (int index = 0; index < list.size(); index++) {
+							Object o = list.get(index);
+							String attrValue = o.toString();
 
 							doc.add(new Field(attrIndexingName, attrValue,
 									Field.Store.NO, Field.Index.ANALYZED));
 						}
 					}
+
+				// Attributes of type TYPE_SIMPLE_MAP may have several values.
+				// Create a document for each value.
+				} else if (valueType == CyAttributes.TYPE_SIMPLE_MAP) {
+					Map map = attributes.getMapAttribute(identifier, attrName);
+
+					//  Iterate through all values in the map
+					if ((map != null) && (map.size() > 0)) {
+						Iterator mapIterator = map.values().iterator();
+						while (mapIterator.hasNext()) {
+							Object o = mapIterator.next();
+							String attrValue = o.toString();
+
+							doc.add(new Field(attrIndexingName, attrValue,
+									Field.Store.NO, Field.Index.ANALYZED));
+						}
+					}
+
 				} else if (valueType == CyAttributes.TYPE_COMPLEX) {
 					// Do not index this field
 				}
