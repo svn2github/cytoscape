@@ -30,10 +30,10 @@ public class CellRendererFactory {
 	CellRendererFactory() {
 		rendererMap = new HashMap<Class<?>, TableCellRenderer>();
 		
-		registerDefaultEditors();
+		registerDefaultRenderers();
 	}
 	
-	private void registerDefaultEditors() {
+	private void registerDefaultRenderers() {
 		rendererMap.put(Color.class, new CyColorCellRenderer());
 		rendererMap.put(NodeShape.class, new ShapeCellRenderer(VisualPropertyType.NODE_SHAPE));
 		rendererMap.put(LineStyle.class, new ShapeCellRenderer(VisualPropertyType.EDGE_LINE_STYLE));
@@ -43,8 +43,8 @@ public class CellRendererFactory {
 		rendererMap.put(CyCustomGraphics.class, new CustomGraphicsCellRenderer());
 		rendererMap.put(String.class, DEF_RENDERER);
 		rendererMap.put(Number.class, DEF_RENDERER);
-		
 	}
+	
 	
 	protected TableCellRenderer getCellRenderer(final Class<?> type) {
 		final TableCellRenderer rend = this.rendererMap.get(type);
@@ -53,6 +53,7 @@ public class CellRendererFactory {
 		else
 			return rend; 
 	}
+	
 	
 	protected void register(final Class<?> type, final TableCellRenderer renderer) {
 		this.rendererMap.put(type, renderer);

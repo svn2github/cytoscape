@@ -1133,9 +1133,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if ((e.getClickCount() == 2) && (category != null)
 			    && category.equalsIgnoreCase("Unused Properties")) {
-				((VizMapperProperty) curProp).setEditable(true);
-
-				VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp) .getHiddenObject();
+				
+				VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp).getHiddenObject();
 				visualPropertySheetPanel.removeProperty(curProp);
 
 				final VizMapperProperty newProp = new VizMapperProperty();
@@ -1155,8 +1154,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				mapProp.setDisplayName("Mapping Type");
 				mapProp.setValue("Please select a mapping type!");
-				editorReg.registerEditor(mapProp, mappingTypeEditor);
-
+				
 				newProp.addSubProperty(mapProp);
 				mapProp.setParentProperty(newProp);
 				visualPropertySheetPanel.addProperty(0, newProp);
@@ -1166,6 +1164,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				visualPropertySheetPanel.getTable().scrollRectToVisible(new Rectangle(0, 0, 10, 10));
 				visualPropertySheetPanel.repaint();
 
+				editorReg.registerEditor(mapProp, mappingTypeEditor);
 				return;
 			} else if ((e.getClickCount() == 1) && (category == null)) {
 				/*
@@ -1307,14 +1306,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			attrName = firstMap.getControllingAttributeName();
 
-			if (attrName == null) {
+			if (attrName == null)
 				calculatorTypeProp.setValue("Select Value");
-				rendReg.registerRenderer(calculatorTypeProp, CellRendererFactory.DEF_RENDERER);
-			} else {
+			else
 				calculatorTypeProp.setValue(attrName);
-				rendReg.registerRenderer(calculatorTypeProp, CellRendererFactory.DEF_RENDERER);
-			}
 
+			rendReg.registerRenderer(calculatorTypeProp, CellRendererFactory.DEF_RENDERER);
+			
 			mappingHeader.setDisplayName("Mapping Type");
 			mappingHeader.setHiddenObject(firstMap.getClass());
 
@@ -2133,6 +2131,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *
 	 */
 	private class NewStyleListener extends AbstractAction {
+		
+		private static final long serialVersionUID = -401235126133833279L;
+
 		public void actionPerformed(ActionEvent e) {
 			final String name = getStyleName(null);
 
