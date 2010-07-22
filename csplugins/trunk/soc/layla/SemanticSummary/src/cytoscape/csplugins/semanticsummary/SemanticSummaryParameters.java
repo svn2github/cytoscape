@@ -61,6 +61,7 @@ public class SemanticSummaryParameters
 	//String Delimeters
 	private static final String NODEDELIMITER = "SSParamNodeDelimiter";
 	
+	//Filter stuff
 	private WordFilter filter;
 	
 	//CONSTRUCTORS
@@ -376,4 +377,5 @@ public class SemanticSummaryParameters
 	{
 		filter = aFilter;
 	}
+	
 }

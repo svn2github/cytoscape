@@ -170,17 +170,22 @@ public class CloudParameters implements Comparable
 		this.selectedNodes = nodeNameList;
 		
 		//Rebuild CloudWords
-		String value2 = props.get("CloudWords");
-		String[] words = value2.split(WORDDELIMITER);
-		ArrayList<CloudWordInfo> cloudWordList = new ArrayList<CloudWordInfo>();
-		for (int i = 0; i < words.length; i++)
+		if (props.containsKey("CloudWords")) //handle the empty case
 		{
-			String wordInfo = words[i];
-			CloudWordInfo curInfo = new CloudWordInfo(wordInfo);
-			curInfo.setCloudParameters(this);
-			cloudWordList.add(curInfo);
+			String value2 = props.get("CloudWords");
+			String[] words = value2.split(WORDDELIMITER);
+			ArrayList<CloudWordInfo> cloudWordList = new ArrayList<CloudWordInfo>();
+			for (int i = 0; i < words.length; i++)
+			{
+				String wordInfo = words[i];
+				CloudWordInfo curInfo = new CloudWordInfo(wordInfo);
+				curInfo.setCloudParameters(this);
+				cloudWordList.add(curInfo);
+			}
+			this.cloudWords = cloudWordList;
 		}
-		this.cloudWords = cloudWordList;
+		else
+			this.cloudWords = new ArrayList<CloudWordInfo>();
 	}
 		
 	
@@ -777,36 +782,40 @@ public class CloudParameters implements Comparable
 		else
 			newMap = new HashMap();
 		
-		String [] lines = fileInput.split("\n");
-		
-		for (int i = 0; i < lines.length; i++)
+		//Check that we have input
+		if (!fileInput.equals(""))
 		{
-			String line = lines[i];
-			String [] tokens = line.split("\t");
-			
-			//the first token is the key and the rest is the object
-			//Different types have different data
-			
-			//Counts
-			if (type == 1)
-				newMap.put(tokens[0], Integer.parseInt(tokens[1]));
-			
-			//Mapping
-			if (type == 2)
+			String [] lines = fileInput.split("\n");
+		
+			for (int i = 0; i < lines.length; i++)
 			{
-				//Create List
-				String [] nodes = tokens[1].split(NODEDELIMITER);
-				ArrayList nodeNames = new ArrayList<String>();
-				for (int j =0; j < nodes.length; j++)
-					nodeNames.add(nodes[j]);
-				
-				newMap.put(tokens[0], nodeNames);
-			}
+				String line = lines[i];
+				String [] tokens = line.split("\t");
 			
-			//Ratios
-			if (type == 3)
-				newMap.put(tokens[0], Double.parseDouble(tokens[1]));
-		}//end line loop
+				//the first token is the key and the rest is the object
+				//Different types have different data
+			
+				//Counts
+				if (type == 1)
+					newMap.put(tokens[0], Integer.parseInt(tokens[1]));
+			
+				//Mapping
+				if (type == 2)
+				{
+					//Create List
+					String [] nodes = tokens[1].split(NODEDELIMITER);
+					ArrayList nodeNames = new ArrayList<String>();
+					for (int j =0; j < nodes.length; j++)
+						nodeNames.add(nodes[j]);
+				
+					newMap.put(tokens[0], nodeNames);
+				}
+			
+				//Ratios
+				if (type == 3)
+					newMap.put(tokens[0], Double.parseDouble(tokens[1]));
+			}//end line loop
+		}//end if data exists check
 		return newMap;
 	}
 	

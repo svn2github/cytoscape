@@ -57,7 +57,9 @@ public class WordFilter
 	
 	private HashSet<String> stopWords = new HashSet<String>(); //Stop words
 	private HashSet<String> flaggedWords = new HashSet<String>();//Flagged words
-	private HashSet<String> addedWords = new HashSet<String>();
+	private HashSet<String> addedWords = new HashSet<String>(); //User added words
+	private HashSet<String> numberWords = new HashSet<String>();
+	private Boolean filterNums = false;
 	final static public String stopWordFile = "StopWords.txt";
 	final static public String flaggedWordFile = "FlaggedWords.txt";
 	final static public String separator = "/";
@@ -82,6 +84,7 @@ public class WordFilter
 		
 		this.initialize(stopPath, stopWords);
 		this.initialize(flaggedPath, flaggedWords);
+		this.initializeNums();
 	}
 	
 	/**
@@ -141,6 +144,14 @@ public class WordFilter
 				addedWords.add(curWord);
 			}
 		}
+		
+		//Rebuild number list
+		this.initializeNums();
+		value = props.get("FilterNums");
+		if (value != null)
+		{
+			this.filterNums = Boolean.parseBoolean(value);
+		}
 	}
 	
 	
@@ -160,7 +171,14 @@ public class WordFilter
 			return true;
 		else if (addedWords.contains(aWord))
 			return true;
-		else 
+		else if (filterNums)
+		{
+			if (numberWords.contains(aWord))
+				return true;
+			else
+				return false;
+		}
+		else
 			return false;
 	}
 	
@@ -294,8 +312,27 @@ public class WordFilter
 			filterVariables.append("AddedWords\t" + output.toString() + "\n");
 		}
 		
+		filterVariables.append("FilterNums\t" + filterNums + "\n");
+		
 		return filterVariables.toString();
 	}
+	
+	/**
+	 * Builds the hashmap that contains the string values of the numbers 0
+	 * to 999 to check for exclusion if this option is set to true.
+	 */
+	private void initializeNums()
+	{
+		//Clears old values
+		numberWords = new HashSet<String>();
+		
+		for (int i = 0; i < 1000; i++)
+		{
+			String value = Integer.toString(i);
+			numberWords.add(value);
+		}
+	}
+	
 	
 	//Getters and Setters
 	public HashSet<String> getStopWords()
@@ -311,5 +348,20 @@ public class WordFilter
 	public HashSet<String> getAddedWords()
 	{
 		return addedWords;
+	}
+	
+	public HashSet<String> getNumWords()
+	{
+		return numberWords;
+	}
+	
+	public Boolean getFilterNums()
+	{
+		return filterNums;
+	}
+	
+	public void setFilterNums(Boolean val)
+	{
+		filterNums = val;
 	}
 }

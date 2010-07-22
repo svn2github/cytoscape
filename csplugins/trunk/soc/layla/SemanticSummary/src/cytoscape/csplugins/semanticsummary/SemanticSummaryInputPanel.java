@@ -47,6 +47,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -88,9 +89,9 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	private JTextField addWordTextField;
 	
 	//JComboBox
-	JComboBox cmbAttributes;
-	JComboBox cmbRemoval;
-	JComboBox cmbStyle;
+	private JComboBox cmbAttributes;
+	private JComboBox cmbRemoval;
+	private JComboBox cmbStyle;
 	
 	//JLabels
 	private JLabel networkLabel;
@@ -103,6 +104,9 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	//Buttons
 	private JButton removeWordButton;
 	private JButton addWordButton;
+	
+	//Checkbox
+	private JCheckBox numExclusion;
 	
 	//String Constants for Separators in remove word combo box
 	private static final String addedSeparator = "--Added Words--";
@@ -393,8 +397,8 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		addWordTextField = new JFormattedTextField();
 		addWordTextField.setColumns(15);
 		
-		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
-		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParameters()))
+		SemanticSummaryParameters networkParams = SemanticSummaryManager.getInstance().getCurNetwork();
+		if (networkParams.equals(SemanticSummaryManager.getInstance().getNullSemanticSummary()))
 			addWordTextField.setEditable(false);
 		else
 			addWordTextField.setEditable(true);
@@ -482,18 +486,23 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
 		wordPanel.add(removeWordButton, gridBagConstraints);
 
-		
-		//Export Text Button
-		//JButton exportTextButton = new JButton("txt export");
-		//gridBagConstraints = new GridBagConstraints();
-		//gridBagConstraints.gridy = 2;
-		//gridBagConstraints.gridx = 2;
-		//gridBagConstraints.anchor = GridBagConstraints.EAST;
-		//gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
-		//Comment out for the time being until we decide if this is needed
-		//wordPanel.add(exportTextButton, gridBagConstraints);
-		
 		refreshRemovalCMB();
+		
+		//Number Exclusion Stuff
+		
+		//Checkbox
+		numExclusion = new JCheckBox("Exclude Numbers");
+		numExclusion.setToolTipText("When selected, causes all words that are numbers in the range 0-999 to be excluded");
+		numExclusion.addActionListener(this);
+		numExclusion.setSelected(false);
+		numExclusion.setEnabled(false);
+		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 2;
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.insets = new Insets(5,0,0,0);
+		wordPanel.add(numExclusion, gridBagConstraints);
 		
 		//Add components to main panel
 		panel.add(wordPanel);
@@ -631,19 +640,25 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cmbStyle.setSelectedItem(params.getDisplayStyle());
 		addWordTextField.setText("");
 		
-		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParameters()))
+		//Get current network
+		SemanticSummaryParameters networkParams = SemanticSummaryManager.getInstance().getCurNetwork();
+		
+		if (networkParams.equals(SemanticSummaryManager.getInstance().getNullSemanticSummary()))
 			{
 			addWordTextField.setEditable(false);
 			addWordButton.setEnabled(false);
+			numExclusion.setEnabled(false);
 			}
 		else
 		{
 			addWordTextField.setEditable(true);
 			addWordButton.setEnabled(true);
+			numExclusion.setEnabled(true);
 		}
 		
 		SemanticSummaryManager.getInstance().setCurCloud(params);
-		this.refreshRemovalCMB();
+		//this.refreshRemovalCMB();
+		this.refreshNetworkSettings();
 	}
 	
 	
@@ -681,6 +696,8 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		maxWordsTextField.setValue(params.getDefaultMaxWords());
 		clusterCutoffTextField.setValue(params.getDefaultClusterCutoff());
 		cmbStyle.setSelectedItem(params.getDefaultDisplayStyle());
+		
+		this.refreshNetworkSettings();
 		this.updateUI();
 	}
 	
@@ -693,13 +710,12 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cmb = ((DefaultComboBoxModel)cmbRemoval.getModel());
 		cmb.removeAllElements();
 		
-		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
-		SemanticSummaryParameters networkParams = params.getNetworkParams();
+		SemanticSummaryParameters networkParams = SemanticSummaryManager.getInstance().getCurNetwork();
 		WordFilter curFilter = networkParams.getFilter();
 		
-		//Check if we are dealing with the Null CloudParameters
+		//Check if we are dealing with the Null SemanticSummaryParameters
 		Boolean isNull = false;
-		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParameters()))
+		if (networkParams.equals(SemanticSummaryManager.getInstance().getNullSemanticSummary()))
 				isNull = true;
 		
 		//Added words
@@ -773,6 +789,26 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cmbRemoval.repaint();
 	}
 	
+	/**
+	 * Sets the numExclusion checkbox based on the current network.
+	 */
+	private void updateNumExclusionBox()
+	{
+		SemanticSummaryParameters networkParams = SemanticSummaryManager.getInstance().getCurNetwork();
+		WordFilter curFilter = networkParams.getFilter();
+		Boolean val = curFilter.getFilterNums();
+		numExclusion.setSelected(val);
+	}
+	
+	/**
+	 * Refreshes everything in the input panel that is on the network level.
+	 */
+	public void refreshNetworkSettings()
+	{
+		this.refreshRemovalCMB();
+		this.updateNumExclusionBox();
+	}
+	
 	
 	/**
 	 * Update the attribute list in the attribute combobox.
@@ -820,15 +856,6 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	{
 		DefaultComboBoxModel cmb;
 		
-		/*
-		cmb = ((DefaultComboBoxModel)cmbStyle.getModel());
-		cmb.removeAllElements();
-		cmb.addElement(SemanticSummaryManager.getInstance().getNullCloudParameters().getDefaultDisplayStyle());
-		cmb.addElement("Gray Boxes");
-		cmb.addElement("No Clustering");
-		cmbStyle.setSelectedItem(SemanticSummaryManager.getInstance().getNullCloudParameters().getDefaultDisplayStyle());
-		cmbStyle.repaint();
-		*/
 		cmb = ((DefaultComboBoxModel)cmbStyle.getModel());
 		cmb.removeAllElements();
 		cmb.addElement(CloudDisplayStyles.CLUSTERED_STANDARD);
@@ -922,6 +949,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		}//end if combo box
 	}
 	
+	
 	/**
 	 * Handles button presses in the Input Panel.
 	 * @param ActionEvent - event that triggered this method.
@@ -946,17 +974,14 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 							!selectItem.equalsIgnoreCase(flaggedSeparator) ||
 							!selectItem.equalsIgnoreCase(stopSeparator))
 					{
-						CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
-						SemanticSummaryParameters networkParams = params.getNetworkParams();
+						SemanticSummaryParameters networkParams = SemanticSummaryManager.getInstance().getCurNetwork();
 						WordFilter curFilter = networkParams.getFilter();
 						
 						//Remove from filter
 						curFilter.remove(selectItem);
 						
-						//Reset Flags
-						params.setCountInitialized(false);
-						params.setSelInitialized(false);
-						params.setRatiosInitialized(false);
+						//Reset flags
+						networkParams.networkChanged();
 						
 						//Refresh word removal list
 						this.refreshRemovalCMB();
@@ -972,17 +997,14 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 				
 				else if (value.matches("[\\w]*"))
 				{ 
-					//add value to cloud parameters filter and update
-					CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
-					SemanticSummaryParameters networkParams = params.getNetworkParams();
+					//add value to filter and update
+					SemanticSummaryParameters networkParams = SemanticSummaryManager.getInstance().getCurNetwork();
 					WordFilter curFilter = networkParams.getFilter();
 					value.toLowerCase();
 					curFilter.add(value);
 					
 					//Reset flags
-					params.setCountInitialized(false);
-					params.setSelInitialized(false);
-					params.setRatiosInitialized(false);
+					networkParams.networkChanged();
 					
 					//Refresh view
 					this.refreshRemovalCMB();
@@ -998,8 +1020,24 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 				}
 			}
 		}//end button	
+		else if (_actionObject instanceof JCheckBox)
+		{
+			JCheckBox _box = (JCheckBox)_actionObject;
+			
+			if (_box == numExclusion)
+			{
+				Boolean selected = numExclusion.isSelected();
+				
+				//add value to filter and update
+				SemanticSummaryParameters networkParams = SemanticSummaryManager.getInstance().getCurNetwork();
+				WordFilter curFilter = networkParams.getFilter();
+				curFilter.setFilterNums(selected);
+				
+				//Reset flags
+				networkParams.networkChanged();
+			}
+		}
 	}
-	
 	
 	
 	//Getters and Setters
@@ -1062,6 +1100,16 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	public CloudListSelectionHandler getCloudListSelectionHandler()
 	{
 		return handler;
+	}
+	
+	public JCheckBox getNumExclusion()
+	{
+		return numExclusion;
+	}
+	
+	public void setNumExclusion(JCheckBox box)
+	{
+		numExclusion = box;
 	}
 	
 	

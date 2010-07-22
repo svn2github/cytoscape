@@ -151,8 +151,8 @@ public class CreateCloudAction extends CytoscapeAction
 		//inputPanel.setNetworkList(params);
 		inputPanel.addNewCloud(cloudParams);	
 		
-		//Update the list of filter words
-		inputPanel.refreshRemovalCMB();
+		//Update the list of filter words and checkbox
+		inputPanel.refreshNetworkSettings();
 		
 		//Enable adding of words to exclusion list
 		inputPanel.getAddWordTextField().setEditable(true);
