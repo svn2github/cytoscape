@@ -2,8 +2,8 @@ package gbeb.view.render
 {
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.EdgeSprite;
-	import flare.vis.data.render.EdgeRenderer;
 	
+	import flash.display.Sprite;
 	import flash.geom.Point;
 
 	public class BundleRenderer extends EdgeRenderer

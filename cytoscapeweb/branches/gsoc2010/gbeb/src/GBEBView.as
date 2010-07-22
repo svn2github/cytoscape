@@ -2,20 +2,20 @@ package
 {
     import com.adobe.serialization.json.JSON;
     
+    import flare.data.DataSet;
+    import flare.data.converters.GraphMLConverter;
     import flare.display.DirtySprite;
     import flare.query.methods.neq;
     import flare.util.Shapes;
     import flare.vis.Visualization;
     import flare.vis.controls.ClickControl;
-    import flare.vis.controls.HoverControl;
     import flare.vis.data.Data;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     import flare.vis.data.Tree;
     import flare.vis.events.SelectionEvent;
-    import flare.vis.operator.encoder.PropertyEncoder;
-    import flare.vis.operator.layout.BundledEdgeRouter;
     import flare.vis.operator.layout.CircleLayout;
+    import flare.vis.operator.layout.RadialTreeLayout;
     
     import flash.display.Sprite;
     import flash.display.StageAlign;
@@ -26,7 +26,7 @@ package
     import flash.net.URLRequest;
     import flash.text.TextFormat;
     import flash.utils.Dictionary;
-
+    
     import gbeb.view.components.ProgressBar;
     import gbeb.view.operator.router.GBEBRouter;
     import gbeb.view.render.BundleRenderer;
@@ -35,7 +35,8 @@ package
     [SWF(width="800",height="600", backgroundColor="#ffffff", frameRate="30")]
     public class GBEBView extends Sprite
     {  
-        private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
+        private var _url:String = "fixtures/sample1.xml";
+//        private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare_reduced.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/socialnet.xml";
@@ -65,18 +66,16 @@ package
             _bar.loadURL(
                 ldr,
                 function():void {
-                    var obj:Array = JSON.decode(ldr.data as String) as Array;
+                    var obj:String = ldr.data as String;
                     var data:Data = buildData(obj);
                     visualize(data);
                     _bar = null;
-										trace("GBEBView: Checking URL Loader!");
+					trace("GBEBView: Checking URL Loader!");
                 });
         }
         
-        private function visualize(data:Data):void {    
-            
-					
-					// prepare data with default settings
+        private function visualize(data:Data):void {    	
+			// prepare data with default settings
             data.nodes.setProperties({
                 shape: Shapes.CIRCLE,
                 alpha: 0.2,
@@ -87,7 +86,7 @@ package
                 lineWidth: 2,
                 lineColor: 0xff0055cc,
                 mouseEnabled: false,          // non-interactive edges
-                visible: neq("source.parentNode","target.parentNode"),
+//                visible: neq("source.parentNode","target.parentNode"),
                 renderer: BundleRenderer.instance
             });
  
@@ -98,14 +97,14 @@ package
             if (_bounds) resize(_bounds);
  
                 // place around circle by tree structure, radius mapped to depth
-                _vis.operators.add(new CircleLayout("depth", null, false));
-                CircleLayout(_vis.operators.last).startRadiusFraction = 3/5;
+//                _vis.operators.add(new RadialTreeLayout("depth", null, true));
+//                CircleLayout(_vis.operators.last).startRadiusFraction = 3/5;
 												
-//              _vis.operators.add(new RadialTreeLayout(80));
-//              RadialTreeLayout(_vis.operators.last).autoScale = true;							
+              _vis.operators.add(new RadialTreeLayout(80));
+              RadialTreeLayout(_vis.operators.last).autoScale = true;						
                 // set the edge alpha values
                 // longer edge, lighter alpha: 1/(2*numCtrlPoints)
-                _vis.operators.add(new PropertyEncoder({ alpha: edgeAlpha }, Data.EDGES));
+//                _vis.operators.add(new PropertyEncoder({ alpha: edgeAlpha }, Data.EDGES));
            
                 // TODO: replace by GBEB Router:
                 // ##############################################################            
@@ -130,7 +129,7 @@ package
                         _focus = evt.node;
                         highlight(evt);
                         showAllDeps(evt, linkType);
-                        _vis.controls.remove(hov);
+//                        _vis.controls.remove(hov);
                         linkType = (linkType==NodeSprite.OUT_LINKS ?
                             NodeSprite.IN_LINKS : NodeSprite.OUT_LINKS);
                     },
@@ -141,14 +140,14 @@ package
                         _vis.data.edges["visible"] = 
                             neq("source.parentNode","target.parentNode");
                         _vis.data.nodes["alpha"] = 1;
-                        _vis.controls.add(hov);
+//                        _vis.controls.add(hov);
                         linkType = NodeSprite.OUT_LINKS;
                     }
                 ));
                 
                 // add mouse-over highlight
-                var hov:HoverControl = new HoverControl(NodeSprite, HoverControl.DONT_MOVE, highlight, unhighlight);
-                _vis.controls.add(hov);
+//                var hov:HoverControl = new HoverControl(NodeSprite, HoverControl.DONT_MOVE, highlight, unhighlight);
+//                _vis.controls.add(hov);
 
         }
         
@@ -255,53 +254,69 @@ package
         /**
          * Creates the visualized data.
          */
-        public static function buildData(tuples:Array):Data
+        public static function buildData(network:String):Data
         {
-            var data:Data = new Data();
-            var tree:Tree = new Tree();
-            var map:Object = {};
+            var data:Data;
+            var tree:Tree;
+            var xml:XML = new XML(network as String);
             
-            tree.root = data.addNode({name:"flare", size:0});
-            map.flare = tree.root;
-            
-            var t:Object, u:NodeSprite, v:NodeSprite;
-            var path:Array, p:String, pp:String, i:uint;
-            
-            // build data set and tree edges
-            tuples.sortOn("name");
-            for each (t in tuples) {
-                path = String(t.name).split(".");
-                for (i=0, p=""; i<path.length-1; ++i) {
-                    pp = p;
-                    p += (i?".":"") + path[i];
-                    if (!map[p]) {
-                        u = data.addNode({name:p, size:0});
-                        tree.addChild(map[pp], u);
-                        map[p] = u;
+            if (xml != null && xml.name() != null) {
+                // convert from GraphML
+                var ds:DataSet = new GraphMLConverter().parse(xml);
+                data = Data.fromDataSet(ds);
+                tree = data.tree;
+            } else {
+                // build from tuples
+                var tuples:Array = JSON.decode(network) as Array;
+                data = new Data();
+                tree = new Tree();
+                tree.root = data.addNode({name:"flare", size:0});
+                var map:Object = {};
+                map.flare = tree.root;
+                
+                var t:Object, u:NodeSprite, v:NodeSprite;
+                var path:Array, p:String, pp:String, i:uint;
+                
+                // build data set and tree edges
+                tuples.sortOn("name");
+                for each (t in tuples) {
+                    path = String(t.name).split(".");
+                    for (i=0, p=""; i<path.length-1; ++i) {
+                        pp = p;
+                        p += (i?".":"") + path[i];
+                        if (!map[p]) {
+                            u = data.addNode({name:p, size:0});
+                            tree.addChild(map[pp], u);
+                            map[p] = u;
+                        }
+                    }
+                    t["package"] = p;
+                    u = data.addNode(t);
+                    tree.addChild(map[p], u);
+                    map[t.name] = u;
+                }
+                
+                // create graph links
+                for each (t in tuples) {
+                    u = map[t.name];
+                    
+                    var count:int = 0;
+                    for each (var name:String in t.imports) {
+                        v = map[name];
+                        if (v && count%4 === 0) data.addEdgeFor(u, v);
+                        else trace ("Missing node: "+name);
+                        count++;
                     }
                 }
-                t["package"] = p;
-                u = data.addNode(t);
-                tree.addChild(map[p], u);
-                map[t.name] = u;
-            }
-            
-            // create graph links
-            for each (t in tuples) {
-                u = map[t.name];
-                for each (var name:String in t.imports) {
-                    v = map[name];
-                    if (v) data.addEdgeFor(u, v);
-                    else trace ("Missing node: "+name);
+                
+                // sort the list of children alphabetically by name
+                for each (u in tree.nodes) {
+                    u.sortEdgesBy(NodeSprite.CHILD_LINKS, "target.data.name");
                 }
+                
+                data.tree = tree;
             }
             
-            // sort the list of children alphabetically by name
-            for each (u in tree.nodes) {
-                u.sortEdgesBy(NodeSprite.CHILD_LINKS, "target.data.name");
-            }
-            
-            data.tree = tree;
             return data;
         }
         

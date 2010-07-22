@@ -132,7 +132,7 @@ package gbeb.view.operator.router
 		public function addControlPoint():void {
 			var intersectionPointsArray:Array = new Array();
 			var intersectionPoint:Point;
-			var controlPoint:Point; 
+			var cp:Point; 
 			
 			var a:Point, b:Point; //a,b stores the end points of the meshEdge of each shape
 			var e:Point, f:Point; //e,f stores the end points of the each dataEdge					
@@ -154,7 +154,7 @@ package gbeb.view.operator.router
 			}
 			
 			if(intersectionPointsArray.length != 0) {
-				controlPoint = findControlPointFromIntersectionPoints(intersectionPointsArray)
+				cp = findControlPointFromIntersectionPoints(intersectionPointsArray)
 			} else {
 				trace("Shape: addControlPoints: " + (gridIndex[0] as Point).toString() + " has no controlPoint");
 			}
@@ -165,7 +165,8 @@ package gbeb.view.operator.router
 				if (ctrl == null) {
 				    edge.props.$controlPointsArray = ctrl = [];
 				}
-				ctrl.push(controlPoint);
+				
+				ctrl.push(cp);
 			}
 
 		}
