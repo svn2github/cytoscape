@@ -1,5 +1,6 @@
 package gbeb.view.operator.router
 {
+	import flare.util.Shapes;
 	import flare.vis.data.EdgeSprite;
 	
 	import flash.geom.Point;
@@ -139,11 +140,11 @@ package gbeb.view.operator.router
 			a = new Point(meshEdge.x1, meshEdge.y1);
 			b = new Point(meshEdge.x2, meshEdge.y2);
 			
-			var dataEdge:EdgeSprite;
+			var edge:EdgeSprite;
 			
-			for each (dataEdge in storedDataEdges) {
-				e = new Point(dataEdge.source.x, dataEdge.source.y);
-				f = new Point(dataEdge.target.x, dataEdge.target.y);
+			for each (edge in storedDataEdges) {
+				e = new Point(edge.source.x, edge.source.y);
+				f = new Point(edge.target.x, edge.target.y);
 				
 				intersectionPoint = GeometryUtil.lineIntersectLine(a, b, e, f);
 				
@@ -158,9 +159,12 @@ package gbeb.view.operator.router
 				trace("Shape: addControlPoints: " + (gridIndex[0] as Point).toString() + " has no controlPoint");
 			}
 			
-			for each (dataEdge in storedDataEdges) {
-				var ctrl:Array = dataEdge.props.$controlPointsArray;
-				if (ctrl == null) ctrl = [];
+			for each (edge in storedDataEdges) {
+			    edge.shape = Shapes.BSPLINE;
+				var ctrl:Array = edge.props.$controlPointsArray;
+				if (ctrl == null) {
+				    edge.props.$controlPointsArray = ctrl = [];
+				}
 				ctrl.push(controlPoint);
 			}
 

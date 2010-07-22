@@ -129,13 +129,6 @@ package gbeb.view.operator.router {
                 
                 var data:Data = visualization.data;
                 
-                // Step 0: Assign GBEB control points to each mesh Edge that is used for controling them
-                // TODO: remove this extra iteration and create ctrl points array on demand:
-                data.edges.visit(function (e:EdgeSprite):void {
-                    e.props.$controlPointsArray = [];
-                    e.shape = Shapes.BEZIER;
-                });
-                
                 mergeShapeUsingPrimaryDirections();
                 generateMeshEdges();
                 
