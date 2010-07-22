@@ -674,6 +674,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 */
 	private CyComboBoxPropertyEditor nodeAttrEditor = new CyComboBoxPropertyEditor();
 	private CyComboBoxPropertyEditor edgeAttrEditor = new CyComboBoxPropertyEditor();
+	
+	// 
 	private CyComboBoxPropertyEditor nodeNumericalAttrEditor = new CyComboBoxPropertyEditor();
 	private CyComboBoxPropertyEditor edgeNumericalAttrEditor = new CyComboBoxPropertyEditor();
 
@@ -954,7 +956,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		table.setSelectionForeground(Color.blue);
 
 
-		final Set mappingTypes = Cytoscape.getVisualMappingManager().getCalculatorCatalog()
+		final Set<String> mappingTypes = Cytoscape.getVisualMappingManager().getCalculatorCatalog()
 		                                  .getMappingNames();
 
 		mappingTypeEditor.setAvailableValues(mappingTypes.toArray());

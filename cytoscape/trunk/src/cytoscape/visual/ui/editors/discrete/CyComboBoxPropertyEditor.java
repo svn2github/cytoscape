@@ -47,6 +47,7 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 	private static final Color NOT_SELECTED = new Color(51, 51, 255, 150);
 	private static final Color SELECTED = Color.red;
 	private static final Font SELECTED_FONT = new Font("SansSerif", Font.BOLD, 12);
+	
 	private Object oldValue;
 	private Icon[] icons;
 
@@ -136,13 +137,15 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 	 *
 	 * @param values DOCUMENT ME!
 	 */
-	public void setAvailableValues(Object[] values) {
-		((JComboBox) editor).setModel(new DefaultComboBoxModel(values));
-		if(((JComboBox) editor).getItemCount() != 0){
-			((JComboBox) editor).setSelectedIndex(0);
-		}
+	public void setAvailableValues(final Object[] values) {
+		final JComboBox cbox = ((JComboBox) editor);
+		
+		cbox.setModel(new DefaultComboBoxModel(values));
+		if(cbox.getItemCount() != 0)
+			cbox.setSelectedIndex(0);
 	}
 
+	
 	/**
 	 * DOCUMENT ME!
 	 *
@@ -152,38 +155,37 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 		this.icons = icons;
 	}
 
-	public class Renderer extends DefaultListCellRenderer {
+	class Renderer extends DefaultListCellRenderer {
+		
+		private static final long serialVersionUID = 1142732116479667701L;
+
 		public Component getListCellRendererComponent(JList list, Object value, int index,
 		                                              boolean isSelected, boolean cellHasFocus) {
+			
 			Component component = super.getListCellRendererComponent(list,
 			                                                         (value instanceof Value)
 			                                                         ? ((Value) value).visualValue
 			                                                         : value, index, isSelected,
 			                                                         cellHasFocus);
-
+			
 			if ((icons != null) && (index >= 0) && component instanceof JLabel)
 				((JLabel) component).setIcon(icons[index]);
-
-			if ((index >= 0) && component instanceof JLabel) {
-			}
-
+			
+			component.setForeground(NOT_SELECTED);
+			component.setBackground(BACKGROUND);
+			
 			if (value == null) {
+				// Cell is empty.  Warn user by showing message.
 				component = new JLabel("Select Value!");
+				((JLabel) component).setFont(SELECTED_FONT);
 				component.setForeground(SELECTED);
-				((JLabel) component).setFont(new Font("SansSerif", Font.BOLD, 12));
-			} else if(((JComboBox) editor).getItemCount() != 0) {
-				component = new JLabel(((JComboBox) editor).getItemAt(0).toString());
-				component.setForeground(SELECTED);
-				((JLabel) component).setFont(new Font("SansSerif", Font.BOLD, 12));
-			}
+			} else if(((JComboBox) editor).getItemCount() != 0 && value != null)			
+				component = new JLabel(value.toString());
 
 			if (isSelected) {
 				component.setForeground(SELECTED);
 				((JLabel) component).setFont(SELECTED_FONT);
-			} else
-				component.setForeground(NOT_SELECTED);
-
-			component.setBackground(BACKGROUND);
+			}
 
 			return component;
 		}

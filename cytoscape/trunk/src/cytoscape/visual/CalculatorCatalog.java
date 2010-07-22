@@ -66,9 +66,9 @@ import javax.swing.event.ChangeListener;
 public class CalculatorCatalog {
 	private static final String label = "label";
 	private Map<VisualPropertyType, Map<String, Calculator>> calculators;
-	private Map<VisualPropertyType, List> listeners;
+	private Map<VisualPropertyType, List<?>> listeners;
 	private Map<String, VisualStyle> visualStyles;
-	private Map<String, Class> mappers;
+	private Map<String, Class<?>> mappers;
 
 	/**
 	 * Only one <code>ChangeEvent</code> is needed per catalog instance since
@@ -101,12 +101,12 @@ public class CalculatorCatalog {
 	 */
 	public void clear() {
 		calculators = new EnumMap<VisualPropertyType, Map<String, Calculator>>(VisualPropertyType.class);
-		listeners = new EnumMap<VisualPropertyType, List>(VisualPropertyType.class);
+		listeners = new EnumMap<VisualPropertyType, List<?>>(VisualPropertyType.class);
 
 		visualStyles = new HashMap<String, VisualStyle>();
 
 		// mapping database
-		mappers = new HashMap<String, Class>();
+		mappers = new HashMap<String, Class<?>>();
 	}
 
 
@@ -260,7 +260,7 @@ public class CalculatorCatalog {
 	/**
 	 * Returns the HashMap of mappers
 	 */
-	public Set getMappingNames() {
+	public Set<String> getMappingNames() {
 		return mappers.keySet();
 	}
 
