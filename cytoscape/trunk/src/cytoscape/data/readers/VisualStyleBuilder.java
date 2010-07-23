@@ -120,20 +120,29 @@ public class VisualStyleBuilder {
 	public void buildStyle() {
 		// First, get our current style information. 
 		VisualMappingManager vm = Cytoscape.getVisualMappingManager();
-		VisualStyle currentStyle = vm.getVisualStyle();
-		NodeAppearanceCalculator nac = new NodeAppearanceCalculator(currentStyle.getNodeAppearanceCalculator());
-		EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator(currentStyle.getEdgeAppearanceCalculator());
-		GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator(currentStyle.getGlobalAppearanceCalculator());
+				
+		String styleName = name + " style";
+		
+		// Create the new style
+		final VisualStyle graphStyle = new VisualStyle(styleName);
+		final List<Calculator> calcs = new ArrayList<Calculator>(vm.getCalculatorCatalog()
+		                                                            .getCalculators());
+		final Calculator dummy = calcs.get(0);
+		graphStyle.getNodeAppearanceCalculator().setCalculator(dummy);
+
+		NodeAppearanceCalculator nac = graphStyle.getNodeAppearanceCalculator();
+		EdgeAppearanceCalculator eac = graphStyle.getEdgeAppearanceCalculator();
+		GlobalAppearanceCalculator gac = graphStyle.getGlobalAppearanceCalculator();
 
 		if (backgroundColor != null)
 			gac.setDefaultBackgroundColor(backgroundColor);
 
-		currentStyle.getDependency().set(NODE_SIZE_LOCKED, nodeSizeLocked);
+		graphStyle.getDependency().set(NODE_SIZE_LOCKED, nodeSizeLocked);
 
 		processCounts();
 
 		for ( VisualPropertyType type : valueMaps.keySet() ) {
-		
+					
 			Map<Object,Object> valMap = valueMaps.get(type);
 
 			// If there is more than one value specified for a given
@@ -161,12 +170,18 @@ public class VisualStyleBuilder {
 			// and then remove the attribute that was created.
 			} else {
 				if ( type.isNodeProp() ) {
-					for ( Object key : valMap.keySet() ) 
+					for ( Object key : valMap.keySet() ) {
+					
+						System.out.println("Node key = "+key);
+						
 						nac.getDefaultAppearance().set( type, valMap.get(key) );
+					}
 					Cytoscape.getNodeAttributes().deleteAttribute(getAttrName(type));
 				} else {
-					for ( Object key : valMap.keySet() ) 
+					for ( Object key : valMap.keySet() ) {
+						System.out.println("Edge key = "+key);
 						eac.getDefaultAppearance().set( type, valMap.get(key) );
+					}
 					Cytoscape.getEdgeAttributes().deleteAttribute(getAttrName(type));
 				}
 			}
@@ -174,10 +189,6 @@ public class VisualStyleBuilder {
 
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
-
-		String styleName = name + " style";
-
-		VisualStyle graphStyle = new VisualStyle(styleName, nac, eac, gac);
 
 		// Remove this in case we've already loaded this network once
 		catalog.removeVisualStyle(styleName);
