@@ -98,12 +98,6 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 			setText(displayText);
 		}
 
-		// Set HTML style tooltip?
-		if (objectAndEditString != null)
-			setToolTipText(getFormattedToolTipText(colName, objectAndEditString.getValidatedObject()));
-		else
-			setToolTipText(null);
-
 		// If selected, return
 		if (isSelected) {
 			setFont(labelFont);
@@ -174,36 +168,6 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		}
 
 		return this;
-	}
-
-	/**
-	 * Returns organized & readable tooltip text.
-	 * @param value
-	 * @return
-	 */
-	private String getFormattedToolTipText(final String colName, final Object value) {
-		if (value == null)
-			return "";
-
-		final StringBuilder html = new StringBuilder();
-		html.append(HTML_BEG + "<strong text=\"#4169E1\" >" + colName + "</strong><br><hr>"
-		            + HTML_STYLE);
-
-		if ((value instanceof List == false) && (value instanceof Map == false))
-			html.append(value.toString());
-		else if (value instanceof List) {
-			html.append("<ul leftmargin=\"0\">");
-
-			for (Object item : (List<Object>) value) {
-				html.append("<li type=\"square\">" + item.toString() + "</li>");
-			}
-
-			html.append("</ul>");
-		}
-
-		html.append("</div></body></html>");
-
-		return html.toString();
 	}
 }
 
