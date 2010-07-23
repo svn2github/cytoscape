@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project name="semantic_summary" default="all">
 
     <!-- 
@@ -26,7 +26,7 @@
 	<property file="plugin.props" />
 	
 	<property environment="env" />
-	<condition property="CYTOSCAPE_HOME" value="${env.CYTOSCAPE_HOME}" else="C:/Program Files/Cytoscape-v2.6.3" >
+	<condition property="CYTOSCAPE_HOME" value="${env.CYTOSCAPE_HOME}" else="C:/Program Files/Cytoscape-v2.7.0" >
 		<available file="${env.CYTOSCAPE_HOME}/cytoscape.jar" />
 	</condition>
 	
@@ -203,7 +203,7 @@
 		<property name="build.host" value="${env.COMPUTERNAME}"/>
 
 		<!-- write to property file -->
-		<propertyfile file="${semantic_summary.output.dir}/org/baderlab/csplugins/enrichmentmap/buildID.props"  comment="EnrichmentMapPlugin build ID">
+		<propertyfile file="${semantic_summary.output.dir}/cytoscape/csplugins/semanticsummary/buildID.props"  comment="SemanticSummaryPlugin build ID">
 			<entry  key="build.number"	value="${build.number}" />
 			<entry  key="svn.revision"	value="${svn.revision}"/>
 			<entry  key="build.user"  	value="${build.user}"/>
@@ -213,7 +213,7 @@
 	</target>
 
 	<target name="release_source"                description="Make a source-code release">
-		<property name="semantic_summary.src_release.dir" value="${semantic_summary.src_release_root.dir}/EnrichmentMapPlugin_v${pluginVersion}"/>
+		<property name="semantic_summary.src_release.dir" value="${semantic_summary.src_release_root.dir}/SemanticSummaryPlugin_v${pluginVersion}"/>
 		<mkdir dir="${semantic_summary.src_release_root.dir}"/>
 		<mkdir dir="${semantic_summary.src_release.dir}"/>
 		<mkdir dir="${semantic_summary.src_release.dir}/src"/>
