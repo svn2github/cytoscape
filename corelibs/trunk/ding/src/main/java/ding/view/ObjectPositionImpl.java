@@ -210,8 +210,7 @@ public class ObjectPositionImpl implements ObjectPosition {
 	 * @see cytoscape.visual.ObjectPosition#shortString()
 	 */
 	public String shortString() {
-		DecimalFormat df = new DecimalFormat();
-		df.setMaximumFractionDigits(2);
+		DecimalFormat df = new DecimalFormat("#0.00;-#0.00");
 
 		final StringBuilder sb = new StringBuilder();
 		sb.append(targetAnchor.getShortName());
@@ -226,5 +225,4 @@ public class ObjectPositionImpl implements ObjectPosition {
 
 		return sb.toString();
 	}
-
 }
