@@ -63,6 +63,9 @@ import javax.swing.JDialog;
  *
  */
 public class SelectScriptDialog extends JDialog {
+	
+	private static final long serialVersionUID = 8588359223553568782L;
+	
 	private static SelectScriptDialog dialog = new SelectScriptDialog(null, true);
 	private static String currentEngineID;
 	private String scriptName = null;

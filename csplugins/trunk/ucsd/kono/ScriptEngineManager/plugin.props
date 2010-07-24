@@ -5,13 +5,13 @@ pluginName=ScriptEngineManager
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Manages scripting engines for Cytoscape.  Supporting Ruby, JavaScript, Groovy, and Python.
+pluginDescription=Manages scripting engines for Cytoscape.  Currently supports RubyScriptingEngine version 0.30 or later only.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.08
+pluginVersion=0.10
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.6, 2.7
+cytoscapeVersion=2.7, 2.8
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Communication/Scripting

@@ -34,64 +34,72 @@
  */
 package edu.ucsd.bioeng.idekerlab.scriptenginemanager;
 
-import cytoscape.Cytoscape;
-
-import edu.ucsd.bioeng.idekerlab.scriptenginemanager.engine.ScriptingEngine;
-import edu.ucsd.bioeng.idekerlab.scriptenginemanager.ui.SelectScriptDialog;
-
-import org.apache.bsf.BSFException;
-import org.apache.bsf.BSFManager;
-import org.apache.bsf.util.IOUtils;
-
 import java.awt.event.ActionEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.FileReader;
 import java.io.IOException;
-
 import java.lang.reflect.Method;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 import javax.swing.AbstractAction;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
+import edu.ucsd.bioeng.idekerlab.scriptenginemanager.engine.ScriptingEngine;
+import edu.ucsd.bioeng.idekerlab.scriptenginemanager.ui.SelectScriptDialog;
+
 /**
- *
+ * Wrapper class for BSF Scripting Engine Manager
+ * 
+ * @author kono
+ * 
  */
 public class ScriptEngineManager implements PropertyChangeListener {
-	private static final BSFManager manager;
-	private static final Map<String, ScriptingEngine> registeredNames = new ConcurrentHashMap<String, ScriptingEngine>();
-	private static JMenu menu;
-	private static JMenu consoleMenu;
+	
+	private static final javax.script.ScriptEngineManager manager;
+	
+	private static final Icon SCRIPT_ICON = new ImageIcon(ScriptEngineManager.class.getResource("/images/stock_run-macro.png"));
+	private static final Icon CONSOLE_ICON = new ImageIcon(ScriptEngineManager.class
+			.getResource("/images/gnome-terminal.png"));
+	
+	
+	private final Map<String, ScriptingEngine> registeredNames;
+	
+	private final JMenu menu;
+	private final JMenu consoleMenu;
 
 	static {
-		manager = new BSFManager();
+		manager = new javax.script.ScriptEngineManager();
 	}
 
 	/**
 	 * Creates a new ScriptEngineManager object.
 	 */
-	public ScriptEngineManager() {
+	ScriptEngineManager() {
+		
+		registeredNames = new ConcurrentHashMap<String, ScriptingEngine>();
+		
 		menu = new JMenu("Execute Scripts...");
-		menu.setIcon(new ImageIcon(ScriptEngineManager.class
-				.getResource("/images/stock_run-macro.png")));
+		menu.setIcon(SCRIPT_ICON);
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins")
 				.add(menu);
 
 		consoleMenu = new JMenu("Scripting Language Consoles");
-		consoleMenu.setIcon(new ImageIcon(ScriptEngineManager.class
-				.getResource("/images/gnome-terminal.png")));
+		consoleMenu.setIcon(CONSOLE_ICON);
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins")
 				.add(consoleMenu);
 	}
 
-	protected static BSFManager getManager() {
+	
+	javax.script.ScriptEngineManager getManager() {
 		return manager;
 	}
 
@@ -103,11 +111,12 @@ public class ScriptEngineManager implements PropertyChangeListener {
 	 * @param engine
 	 *            DOCUMENT ME!
 	 */
-	public static void registerEngine(final String id,
-			final ScriptingEngine engine) {
+	public void registerEngine(final String id, final ScriptingEngine engine) {
 		registeredNames.put(id, engine);
 
 		menu.add(new JMenuItem(new AbstractAction(engine.getDisplayName()) {
+			
+
 			public void actionPerformed(ActionEvent e) {
 				SelectScriptDialog.showDialog(id);
 			}
@@ -120,7 +129,7 @@ public class ScriptEngineManager implements PropertyChangeListener {
 	 * @param consoleMenuItem
 	 *            DOCUMENT ME!
 	 */
-	public static void addConsoleMenu(final JMenuItem consoleMenuItem) {
+	public void addConsoleMenu(final JMenuItem consoleMenuItem) {
 		consoleMenu.add(consoleMenuItem);
 	}
 
@@ -150,35 +159,33 @@ public class ScriptEngineManager implements PropertyChangeListener {
 	 *             DOCUMENT ME!
 	 * @throws IOException
 	 *             DOCUMENT ME!
+	 * @throws ScriptException 
 	 */
 	public static void execute(final String engineName,
 			final String scriptFileName, final Map<String, String> arguments)
-			throws BSFException, IOException {
-		if (BSFManager.isLanguageRegistered(engineName) == false) {
+			throws ScriptException {
+		
+		final ScriptEngine engine = manager.getEngineByName(engineName);
+		
+		if ( engine == null) {
 			// Register Engine
-			System.out.println("Error: Can't find " + engineName);
-
+			CyLogger.getLogger().error("Error: Can't find " + engineName);
 			return;
 		}
-
-		manager.terminate();
 
 		try {
 			// This is a hack... I need to decide which version of Scripting
 			// System is appropriate for Cytoscape 3.
 			if (engineName != "jython") {
-				final Object returnVal = manager.eval(engineName,
-						scriptFileName, 1, 1, IOUtils
-								.getStringFromReader(new FileReader(
-										scriptFileName)));
+				final Object returnVal = engine.eval(new FileReader(scriptFileName));
 
-				if (returnVal != null) {
+				if (returnVal != null)
 					System.out.println("Return Val = [" + returnVal + "]");
-				}
+				
 			} else {
 				// Jython uses special console to execute script.
 
-				final Class engineClass = Class
+				final Class<?> engineClass = Class
 						.forName("edu.ucsd.bioeng.idekerlab.pythonengine.PythonEnginePlugin");
 				Method method = engineClass.getMethod("executePythonScript",
 						new Class[] { String.class });
@@ -187,8 +194,7 @@ public class ScriptEngineManager implements PropertyChangeListener {
 
 			}
 		} catch (Exception e) {
-			throw new BSFException(BSFException.REASON_EXECUTION_ERROR,
-					"Error found in your script", e);
+			throw new ScriptException(e);
 		}
 	}
 

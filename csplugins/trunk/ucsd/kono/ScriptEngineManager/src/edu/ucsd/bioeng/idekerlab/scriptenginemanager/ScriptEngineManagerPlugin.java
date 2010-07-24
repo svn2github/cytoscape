@@ -31,28 +31,34 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package edu.ucsd.bioeng.idekerlab.scriptenginemanager;
 
 import cytoscape.plugin.CytoscapePlugin;
 
-
 /**
- *
+ * Cytoscape Scripting Engine Manager Plugin
+ * 
+ * @author kono
+ * @version 0.90
+ * 
  */
 public class ScriptEngineManagerPlugin extends CytoscapePlugin {
+
 	private static final ScriptEngineManager manager = new ScriptEngineManager();
 
 	/**
 	 * Creates a new ScriptEngineManagerPlugin object.
+	 * 
+	 * This is private because this object is a singleton.
+	 * 
 	 */
-	public ScriptEngineManagerPlugin() {
-	}
+	public ScriptEngineManagerPlugin() {}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * Get scripting engine manager object.
+	 * 
+	 * @return Scripting engine manager (singleton).
 	 */
 	public static ScriptEngineManager getManager() {
 		return manager;
