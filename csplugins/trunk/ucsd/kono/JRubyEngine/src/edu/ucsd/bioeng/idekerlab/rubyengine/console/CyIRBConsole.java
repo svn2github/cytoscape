@@ -44,11 +44,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.script.ScriptException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
@@ -62,6 +64,8 @@ import org.jruby.RubyInstanceConfig;
 import org.jruby.internal.runtime.ValueAccessor;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.cytopanels.CytoPanelState;
 import edu.ucsd.bioeng.idekerlab.rubyengine.RubyEnginePlugin;
 
@@ -71,15 +75,23 @@ import edu.ucsd.bioeng.idekerlab.rubyengine.RubyEnginePlugin;
  * @author Keiichiro Ono
  */
 public class CyIRBConsole extends JPanel {
+
+	public static final String STARTUP_SCRIPT_LOCATION = "scripting.jruby.consolestartup";
+
+	private static final long serialVersionUID = -3402131526354557834L;
+
 	private static CyIRBConsole console = null;
 	private static Ruby runtime = null;
 	private static final ExecutorService consoleService = Executors
-			.newCachedThreadPool();
+			.newSingleThreadExecutor();
+
 	private static final String BIORUBY_SCRIPT_LOCATION = "/utilscripts/biorubyshell.rb";
 	private static String startScript;
 
 	private static final ImageIcon tabIcon = new ImageIcon(
 			RubyEnginePlugin.class.getResource("/images/ruby22x22.png"));
+
+	private static final CyLogger logger = CyLogger.getLogger();
 
 	/**
 	 * Creates a new CyIRBConsole object.
@@ -88,14 +100,28 @@ public class CyIRBConsole extends JPanel {
 	 *            DOCUMENT ME!
 	 * @throws IOException
 	 */
-	public CyIRBConsole(String title) throws IOException {
-		// super(title);
+	public CyIRBConsole() throws IOException {
 
+		final String scriptLocation = CytoscapeInit.getProperties()
+				.getProperty(STARTUP_SCRIPT_LOCATION);
+		final URL scriptURL;
+		if (scriptLocation == null) {
+			scriptURL = RubyEnginePlugin.class
+					.getResource(BIORUBY_SCRIPT_LOCATION);
+			logger.info("Default initialization script will be used for JRuby Console.");
+		} else {
+			scriptURL = new URL(scriptLocation);
+			logger.info("Custom initialization script found for JRuby Console: " + scriptURL.toString());
+		}
+		extractScript(scriptURL);
+	}
+
+	
+	private void extractScript(final URL scriptURL) throws IOException {
 		InputStreamReader in = null;
 		StringBuilder builder = new StringBuilder();
 
-		in = new InputStreamReader(RubyEnginePlugin.class.getResource(
-				BIORUBY_SCRIPT_LOCATION).openStream());
+		in = new InputStreamReader(scriptURL.openStream());
 
 		BufferedReader br = new BufferedReader(in);
 
@@ -118,38 +144,71 @@ public class CyIRBConsole extends JPanel {
 	 * DOCUMENT ME!
 	 * 
 	 * @throws IOException
+	 * @throws ScriptException
 	 */
-	public static void showConsole() throws IOException {
+	public static void showConsole() throws IOException, ScriptException {
 		if (console == null) {
 			// Initialize console
-			if (runtime == null)
+
+			if (runtime == null) {
 				runtime = Ruby.newInstance();
-
-			console = new CyIRBConsole("Cytoscape-Ruby Interactive Console");
+				final String rubyHome = RubyEnginePlugin.getJRubyHome();
+				if (rubyHome == null)
+					throw new IllegalStateException(
+							"This system does not have enviroment variable \"JRUBY_HOME.\"  Please set it and restart Cytoscape.");
+				else
+					runtime.setJRubyHome(rubyHome);
+			}
+			console = new CyIRBConsole();
+			
 			buildConsole(null);
+			Cytoscape
+					.getDesktop()
+					.getCytoPanel(SwingConstants.EAST)
+					.add("BioRuby Console (Powered by JRuby "
+							+ RubyEnginePlugin.getEngineVersion() + ")",
+							tabIcon, console);
 
-			Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).add(
-					"Cytoscape-BioRuby Console", tabIcon, console);
-
-			Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).setState(
-					CytoPanelState.DOCK);
+			Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
+					.setState(CytoPanelState.DOCK);
 		}
 
-		consoleService.execute(new Runnable() {
-			public void run() {
-				runtime.evalScriptlet(startScript);
+		try {
+			consoleService.execute(new Runnable() {
 
-				Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
-						.remove(console);
-				if (Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
-						.getCytoPanelComponentCount() == 0)
+				private void terminate() {
 					Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST)
-							.setState(CytoPanelState.HIDE);
-				runtime.tearDown();
-				console = null;
-				System.out.println("Console terminated!");
-			}
-		});
+							.remove(console);
+					if (Cytoscape.getDesktop()
+							.getCytoPanel(SwingConstants.EAST)
+							.getCytoPanelComponentCount() == 0)
+						Cytoscape.getDesktop()
+								.getCytoPanel(SwingConstants.EAST)
+								.setState(CytoPanelState.HIDE);
+					runtime.tearDown();
+
+					console = null;
+					logger.info("JRuby Console terminated.");
+				}
+
+				public void run() {
+					try {
+						runtime.evalScriptlet(startScript);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						logger.error("Could not initialize BioRuby Console.",
+								new ScriptException(ex));
+						terminate();
+						return;
+					}
+
+					terminate();
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ScriptException(e);
+		}
 
 	}
 
@@ -161,16 +220,17 @@ public class CyIRBConsole extends JPanel {
 	 */
 	public static void buildConsole(final String[] args) {
 		console.setLayout(new BorderLayout());
-		console.setPreferredSize(new Dimension(500, 600));
+		console.setPreferredSize(new Dimension(600, 600));
 
 		final JEditorPane text = new JTextPane();
+		text.setPreferredSize(new Dimension(600, 600));
 		text.setMargin(new Insets(8, 8, 8, 8));
 		text.setCaretColor(new Color(0xa4, 0x00, 0x00));
 		text.setBackground(Color.white);
 		text.setForeground(Color.red);
 
-		final Font font = console.findFont("Monospaced", Font.PLAIN, 14,
-				new String[] { "Monaco", "Andale Mono" });
+		final Font font = console.findFont("SansSerif", Font.PLAIN, 14,
+				new String[] { "Menlo", "Monaco", "Andale Mono" });
 		text.setFont(font);
 
 		final JScrollPane pane = new JScrollPane();
@@ -190,8 +250,6 @@ public class CyIRBConsole extends JPanel {
 				setOutput(new PrintStream(tar.getOutputStream()));
 				setError(new PrintStream(tar.getOutputStream()));
 				setObjectSpaceEnabled(true); // useful for code completion
-				// inside the IRB
-				// setArgv(args);
 			}
 		};
 
@@ -209,8 +267,11 @@ public class CyIRBConsole extends JPanel {
 
 	private Font findFont(String otherwise, int style, int size,
 			String[] families) {
-		String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment()
-				.getAvailableFontFamilyNames();
+
+		// Get all available fonts
+		final String[] fonts = GraphicsEnvironment
+				.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+
 		Arrays.sort(fonts);
 
 		Font font = null;

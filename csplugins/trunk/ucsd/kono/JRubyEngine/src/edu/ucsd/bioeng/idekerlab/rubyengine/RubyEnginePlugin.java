@@ -36,15 +36,12 @@ package edu.ucsd.bioeng.idekerlab.rubyengine;
 
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
-import java.io.IOException;
-import java.lang.reflect.Method;
 
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 
-import org.apache.bsf.BSFManager;
 import org.jruby.embed.ScriptingContainer;
 
 import cytoscape.Cytoscape;
@@ -60,11 +57,19 @@ import edu.ucsd.bioeng.idekerlab.scriptenginemanager.engine.ScriptingEngine;
  */
 public class RubyEnginePlugin extends CytoscapePlugin implements ScriptingEngine {
 	private static final String ENGINE_NAME = "jruby";
-	private static final String ENGINE_DISPLAY_NAME = "Ruby Scripting Engine (based on JRuby v1.4.0)";
-	private static final Icon ICON = new ImageIcon(RubyEnginePlugin.class.getResource("/images/ruby.png"));
-	private static final RubyEnginePlugin engine = new RubyEnginePlugin();
 	
-
+	private static final String ENGINE_VERSION = "1.5.1";
+	
+	private static final String ENGINE_DISPLAY_NAME = "Ruby Scripting Engine (JRuby v1.5.1 and BioRuby 1.4.0)";
+	private static final Icon ICON = new ImageIcon(RubyEnginePlugin.class.getResource("/images/ruby.png"));
+	private static final Icon CONSOLE_ICON = new ImageIcon(RubyEnginePlugin.class.getResource("/images/ruby22x22.png"));
+	
+	private static RubyEnginePlugin engine = new RubyEnginePlugin();
+	
+	private static final CyLogger logger = CyLogger.getLogger();
+	
+	private static String jRubyHome;
+	
 	/**
 	 * Creates a new RubyEnginePlugin object.
 	 */
@@ -78,7 +83,6 @@ public class RubyEnginePlugin extends CytoscapePlugin implements ScriptingEngine
 	 * @return  DOCUMENT ME!
 	 */
 	public String getDisplayName() {
-		// TODO Auto-generated method stub
 		return ENGINE_DISPLAY_NAME;
 	}
 
@@ -88,7 +92,6 @@ public class RubyEnginePlugin extends CytoscapePlugin implements ScriptingEngine
 	 * @return  DOCUMENT ME!
 	 */
 	public Icon getIcon() {
-		// TODO Auto-generated method stub
 		return ICON;
 	}
 
@@ -98,45 +101,56 @@ public class RubyEnginePlugin extends CytoscapePlugin implements ScriptingEngine
 	 * @return  DOCUMENT ME!
 	 */
 	public String getIdentifier() {
-		// TODO Auto-generated method stub
 		return ENGINE_NAME;
+	}
+	
+	/**
+	 * Returns version number of Scripting Engine as string
+	 * 
+	 * @return
+	 */
+	public static String getEngineVersion() {
+		return ENGINE_VERSION;
+	}
+	
+	
+	public static String getJRubyHome() {
+		return jRubyHome;
 	}
 
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public static void register() {
-//		System.setProperty("jruby.home", "/Users/kono/Library/jruby-1.4.0");
-		ScriptingContainer container = new ScriptingContainer();
 		
-		BSFManager.registerScriptingEngine("jruby", "org.jruby.embed.bsf.JRubyEngine", new String[] {ENGINE_NAME});
+		//System.setProperty("jruby.home", "/Users/kono/Documents/jruby-1.5.1");
+		jRubyHome = System.getenv("JRUBY_HOME");
+		
+		if(jRubyHome == null)
+			throw new IllegalStateException("This system does not have enviroment variable \"JRUBY_HOME.\"  Please set it and restart Cytoscape.");
+		System.setProperty("org.jruby.embed.class.path", jRubyHome);
+		logger.info("JRuby Home Dir = " + jRubyHome);
+		
+		final ScriptingContainer container = new ScriptingContainer();
+		ScriptEngineManagerPlugin.getManager().registerEngine(ENGINE_NAME, engine);
 
-		System.out.println("*JRuby scripting engine loaded!");
-
-		try {
-			final Class<?> engineClass = Class.forName("edu.ucsd.bioeng.idekerlab.scriptenginemanager.ScriptEngineManager");
-			Method method = engineClass.getMethod("registerEngine",
-			                                      new Class[] { String.class, ScriptingEngine.class });
-			method.invoke(null, new Object[] { ENGINE_NAME, engine });
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		logger.info("JRuby scripting engine registered.");
 
 		final JMenuItem consoleMenuItem = new JMenuItem(new AbstractAction("Open Ruby Console") {
 				public void actionPerformed(ActionEvent e) {
 					try {
 						CyIRBConsole.showConsole();
-					} catch (IOException e1) {
-						CyLogger.getLogger().error("Ruby Colsone Error", e1);
+					} catch (Exception e1) {
+						logger.error("Could not start JRuby Colsone", e1);
 					}
 				}
 			});
 
-		consoleMenuItem.setIcon(new ImageIcon(RubyEnginePlugin.class.getResource("/images/ruby22x22.png")));
+		consoleMenuItem.setIcon(CONSOLE_ICON);
 
 		ScriptEngineManagerPlugin.getManager().addConsoleMenu(consoleMenuItem);
 
-		CyLogger.getLogger().info("Ruby scripting engine registered successfully.");
+		logger.info("JRuby colsole registered.");
 	}
 
 	/**
@@ -145,12 +159,17 @@ public class RubyEnginePlugin extends CytoscapePlugin implements ScriptingEngine
 	 * @param e DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
+		// If already registered, ignore.
 		if (ScriptEngineManagerPlugin.getManager().getEngine(ENGINE_NAME) != null)
 			return;
 
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			// Register this to ScriptEngineManager.
-			register();
+			try {
+				register();
+			} catch(Exception ex) {
+				logger.error("Could not register JRuby Engine to the Manager.", ex);
+			}
 		}
 	}
 }

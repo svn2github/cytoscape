@@ -9,7 +9,7 @@
 
 <project name="RubyScriptingEngine" default="all" basedir=".">
 
-	<property name="jruby.version" value="jruby-1.4.0" />
+	<property name="jruby.version" value="jruby-1.5.1" />
 
 	<!-- You need modify this to your Cytoscape -->
 	<property name="cytoscape.dir" value="../cytoscape" />
