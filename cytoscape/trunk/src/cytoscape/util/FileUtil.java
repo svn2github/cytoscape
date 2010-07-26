@@ -71,8 +71,11 @@ public abstract class FileUtil {
 	static class NoEditFileChooser extends JFileChooser {
 		public NoEditFileChooser(final File start) {
 			super(start);
-			
+
 			final JList list = findFileList(this);
+			if (list == null)
+				return;
+
 			for (MouseListener l : list.getMouseListeners()) {
 				if (l.getClass().getName().indexOf("FilePane") >= 0) {
 					list.removeMouseListener(l);
@@ -345,11 +348,14 @@ public abstract class FileUtil {
 		//logger.info( "Os name: "+osName );
 		if (osName.startsWith("Mac")) {
 			// this is a Macintosh, use the AWT style file dialog
-			FileDialog chooser = new FileDialog(Cytoscape.getDesktop(),title, load_save_custom);
+			FileDialog chooser = new FileDialog(Cytoscape.getDesktop(), title, load_save_custom);
 
-			if (!multiselect && selectedFiles != null){
-				chooser.setFile(selectedFiles[0].toString());					
-			}
+			final File mostRecentlyUsedDirectory = CytoscapeInit.getMRUD();
+			if (mostRecentlyUsedDirectory != null)
+				chooser.setDirectory(mostRecentlyUsedDirectory.toString());
+
+			if (!multiselect && selectedFiles != null)
+				chooser.setFile(selectedFiles[0].toString());
 		
 			// we can only set the one filter; therefore, create a special
 			// version of CyFileFilter that contains all extensions
@@ -357,10 +363,8 @@ public abstract class FileUtil {
 
 			for (int i = 0; i < filters.length; i++) {
 				Iterator iter;
-
-				for (iter = filters[i].getExtensionSet().iterator(); iter.hasNext();) {
+				for (iter = filters[i].getExtensionSet().iterator(); iter.hasNext(); /* Empty! */)
 					fileFilter.addExtension((String) iter.next());
-				}
 			}
 
 			fileFilter.setDescription("All network files");
@@ -372,9 +376,8 @@ public abstract class FileUtil {
 				File[] result = new File[1];
 				result[0] = new File(chooser.getDirectory() + "/" + chooser.getFile());
 
-				if (chooser.getDirectory() != null) {
+				if (chooser.getDirectory() != null)
 					CytoscapeInit.setMRUD(new File(chooser.getDirectory()));
-				}
 
 				return result;
 			}

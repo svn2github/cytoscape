@@ -34,6 +34,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -99,7 +100,7 @@ import org.cytoscape.equations.Parser;
  * @since Cytoscape 1.0
  * @author Cytoscape Core Team
  */
-public class CytoscapeInit {
+public class CytoscapeInit implements PropertyChangeListener {
 	private static final String SPLASH_SCREEN_LOCATION = "/cytoscape/images/CytoscapeSplashScreen.png";
 	private static Properties properties;
 	private static Properties visualProperties;
@@ -115,7 +116,7 @@ public class CytoscapeInit {
 	private static CyInitParams initParams;
 
 	// Most-Recently-Used directories and files
-	private static File mrud;
+	private static Properties mrud;
 	private static File mruf;
 
 	// Error message
@@ -127,6 +128,7 @@ public class CytoscapeInit {
 	 * Creates a new CytoscapeInit object.
 	 */
 	public CytoscapeInit() {
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.CYTOSCAPE_EXIT, this);
 	}
 
 	/**
@@ -265,10 +267,7 @@ public class CytoscapeInit {
 	 * @return the most recently used directory
 	 */
 	public static File getMRUD() {
-		if (mrud == null)
-			mrud = new File(properties.getProperty("mrud", System.getProperty("user.dir")));
-
-		return mrud;
+		return new File(mrud.getProperty("fileOpenLocation", System.getProperty("user.home")));
 	}
 
 	/**
@@ -281,8 +280,8 @@ public class CytoscapeInit {
 	/**
 	 * @param mrud_new  the most recently used directory
 	 */
-	public static void setMRUD(File mrud_new) {
-		mrud = mrud_new;
+	public static void setMRUD(final File mrud_new) {
+		mrud.setProperty("fileOpenLocation", mrud_new.toString());
 	}
 
 	/**
@@ -488,6 +487,19 @@ public class CytoscapeInit {
 			visualProperties = new Properties();
 			loadStaticProperties("vizmap.props", visualProperties);
 		}
+
+		if (mrud == null) {
+			mrud = new Properties();
+			final File propsFile = new File(CytoscapeInit.getConfigVersionDirectory(), "mostRecentlyUsedDirectory.props");
+			if (propsFile != null) {
+				try {
+					final FileInputStream inputStream = new FileInputStream(propsFile);
+					mrud.load(inputStream);
+				} catch (final IOException e) {
+					// Intentionally empty!
+				}
+			}
+		}
 	}
 
 	private void setUpAttributesChangedListener() {
@@ -638,6 +650,18 @@ public class CytoscapeInit {
 
 		} catch (Exception e) {
 			logger.error("Plugin system initialization error: "+e.toString(),e);
+		}
+	}
+
+	public void propertyChange(final PropertyChangeEvent e) {
+		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_EXIT)) {
+			final File propsFile = new File(CytoscapeInit.getConfigVersionDirectory(), "mostRecentlyUsedDirectory.props");
+			try {
+				mrud.store(new FileOutputStream(propsFile), "");
+			}
+			catch (final IOException ioe) {
+				System.err.println("Failed to save \"mostRecentlyUsedDirectory.props\"!");
+			}
 		}
 	}
 }
