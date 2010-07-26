@@ -504,6 +504,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
+		gridBagConstraints.gridwidth = 3;
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.insets = new Insets(5,0,0,0);
 		wordPanel.add(numExclusion, gridBagConstraints);
@@ -540,7 +541,13 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cmbStyle.setEditable(false);
 	    Dimension d = cmbStyle.getPreferredSize();
 	    cmbStyle.setPreferredSize(new Dimension(15, d.height));
-	    cmbStyle.setToolTipText("Visual style for the cloud layout");
+
+	    StringBuffer toolTip = new StringBuffer();
+	    toolTip.append("<html>" + "--Visual style for the cloud layout--" +"<br>");
+	    toolTip.append("<b>Clustered:</b> If a style with clustering is selected, then the cloud will be comprised of groups of words." + "<br>");
+	    toolTip.append("Each cluster is build by analyzing which words appear next to each other and what order they appear." + "<br>");
+	    toolTip.append("<b> No Clustering:</b> When a non-clustering option is selected, words appear in decreasing order of of size.");
+	    cmbStyle.setToolTipText(toolTip.toString());
 
 		
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
