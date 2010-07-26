@@ -203,15 +203,16 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler,Pr
 
         sb.append("<table width='100%' cellspacing='5'>");
 
-        int line = 1;
+        // show the message in reversed order, i.e. most recent message on top
+        int line = messageMap.get(level).size();
 
-        for (int i = 0; i < messageMap.get(level).size(); i++) {
-            sb.append("<tr><td width='5%'>" + line + "</td><td width='95%'>");
-            sb.append(messageMap.get(level).get(i));
-            sb.append("</td></tr>");
-            sb.append("<tr><td colspan='2'><hr></td></tr>");
-            line++;
-        }
+        for (int i = messageMap.get(level).size()-1; i >= 0; i--) {
+        	sb.append("<tr><td width='5%'>" + line + "</td><td width='95%'>");
+        	sb.append(messageMap.get(level).get(i));
+        	sb.append("</td></tr>");
+        	sb.append("<tr><td colspan='2'><hr></td></tr>");
+        	line--;
+        }        	
 
         sb.append("</table></body></html>");
 
