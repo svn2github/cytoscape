@@ -203,6 +203,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	{
 		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Cloud Parameters");
 		collapsiblePanel.setCollapsed(false);
+		collapsiblePanel.getTitleComponent().setToolTipText("Parameters that can be set differently for each individual cloud");
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -230,6 +231,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		//Network Level Panel
 		CollapsiblePanel collapsiblePanel2 = new CollapsiblePanel("Network Parameters");
 		collapsiblePanel2.setCollapsed(false);
+		collapsiblePanel2.getTitleComponent().setToolTipText("Parameters that will be applied to all clouds created from the current network");
 		
 		JPanel networkPanel = new JPanel();
 		networkPanel.setLayout(new BoxLayout(networkPanel, BoxLayout.Y_AXIS));

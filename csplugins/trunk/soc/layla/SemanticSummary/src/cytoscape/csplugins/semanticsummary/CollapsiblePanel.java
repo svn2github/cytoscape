@@ -227,6 +227,14 @@ public class CollapsiblePanel extends JPanel {
             setCollapsed(!isCollapsed());
         }
     }
+    
+    /**
+     * Layla July 26, 2010 - Add methods to be able to set tooltip on title.
+     */
+    public AbstractButton getTitleComponent()
+    {
+    	return titleComponent;
+    }
 
     /**
      * Special titled border that includes a component in the title area
