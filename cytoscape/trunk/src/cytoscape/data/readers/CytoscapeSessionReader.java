@@ -823,12 +823,6 @@ public class CytoscapeSessionReader {
 	}
 
 	private void restoreDesktopState() {
-		// Restore Desktop size
-		Cytoscape.getDesktop().setSize(
-				session.getSessionState().getDesktop().getDesktopSize()
-						.getWidth().intValue(),
-				session.getSessionState().getDesktop().getDesktopSize()
-						.getHeight().intValue());
 
 		final List<NetworkFrame> frames = session.getSessionState()
 				.getDesktop().getNetworkFrames().getNetworkFrame();
