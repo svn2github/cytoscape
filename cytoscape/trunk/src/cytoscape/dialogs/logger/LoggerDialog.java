@@ -46,6 +46,7 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler,Pr
         messageMap = new HashMap<LogLevel, List<String>>();
         logTabMap = new HashMap<LogLevel, JScrollPane>();
         initComponents();
+        this.setSize(this.getWidth()*2, this.getHeight()*2);
     }
 
     /**
