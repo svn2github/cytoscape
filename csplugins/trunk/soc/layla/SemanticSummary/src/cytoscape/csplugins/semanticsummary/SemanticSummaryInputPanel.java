@@ -269,7 +269,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		JPanel attributePanel = new JPanel();
 		attributePanel.setLayout(new GridBagLayout());
 
-		JLabel nodeAttributeLabel = new JLabel("Node ID/Attribute: ");
+		//JLabel nodeAttributeLabel = new JLabel("Node ID/Attribute: ");
 		
 		WidestStringComboBoxModel wscbm = new WidestStringComboBoxModel();
 		cmbAttributes = new JComboBox(wscbm);
@@ -281,19 +281,21 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 
 		
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.anchor = GridBagConstraints.WEST;
-		gridBagConstraints.insets = new Insets(5,0,0,0);
-		attributePanel.add(nodeAttributeLabel, gridBagConstraints);
+		//gridBagConstraints.gridx = 0;
+		//gridBagConstraints.gridy = 0;
+		//gridBagConstraints.anchor = GridBagConstraints.WEST;
+		//gridBagConstraints.insets = new Insets(5,0,0,0);
+		//attributePanel.add(nodeAttributeLabel, gridBagConstraints);
 		
 		gridBagConstraints = new GridBagConstraints();
-		gridBagConstraints.gridx = 1;
+		//gridBagConstraints.gridx = 1;
+		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.insets = new Insets(5, 10, 0, 0);
+		gridBagConstraints.insets = new Insets(5, 0, 0, 0);
 		attributePanel.add(cmbAttributes, gridBagConstraints);
+		
 	    
 	    refreshAttributeCMB();
 		
