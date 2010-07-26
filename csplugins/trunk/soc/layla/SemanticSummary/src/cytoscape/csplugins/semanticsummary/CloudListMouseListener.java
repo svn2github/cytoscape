@@ -51,6 +51,7 @@ public class CloudListMouseListener extends MouseAdapter
 	
 	public void mousePressed(MouseEvent e)
 	{
+		/*
 		if (SwingUtilities.isRightMouseButton(e))
 		{
 			rightClickList(e);
@@ -60,6 +61,20 @@ public class CloudListMouseListener extends MouseAdapter
 		{
 			leftClickList(e);
 		}
+		*/
+		
+		if (e.isPopupTrigger())
+			rightClickList(e);
+		else
+			leftClickList(e);
+	}
+	
+	public void mouseReleased(MouseEvent e)
+	{
+		if (e.isPopupTrigger())
+			rightClickList(e);
+		else
+			leftClickList(e);
 	}
 	
 	
