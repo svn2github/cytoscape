@@ -100,8 +100,8 @@ public class UpdateCloudAction extends CytoscapeAction
 			Object[] options = { "Continue", "Revert"};
 			
 			value = JOptionPane.showOptionDialog(parent,
-					"Network node selection has changed from when the cloud was created. " +
-					"Continue with the current selection or revert to the original selection?",
+					"Network node selection has changed. " +
+					"Continue with current selection or revert to the original?",
 					"Node Selection Changed",
 					JOptionPane.WARNING_MESSAGE,
 					JOptionPane.YES_NO_CANCEL_OPTION,

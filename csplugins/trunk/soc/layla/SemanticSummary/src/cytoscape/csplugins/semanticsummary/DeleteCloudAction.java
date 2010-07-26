@@ -22,9 +22,18 @@
 
 package cytoscape.csplugins.semanticsummary;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.JOptionPane;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
@@ -64,21 +73,40 @@ public class DeleteCloudAction extends CytoscapeAction
 		getInstance().getCurNetwork();
 		CloudParameters cloudParams = SemanticSummaryManager.getInstance().getCurCloud();
 		
-		//Delete if cloud is not null
-		if (cloudParams != null && 
-				cloudParams != SemanticSummaryManager.getInstance().getNullCloudParameters())
+		int selection = confirmDelete();
+		
+		if (selection == JOptionPane.YES_OPTION)
 		{
-			String cloudName = cloudParams.getCloudName();
+		
+			//Delete if cloud is not null
+			if (cloudParams != null && 
+					cloudParams != SemanticSummaryManager.getInstance().getNullCloudParameters())
+			{
+				String cloudName = cloudParams.getCloudName();
 			
-			//Remove cloud from list
-			networkParams.getClouds().remove(cloudName);
+				//Remove cloud from list
+				networkParams.getClouds().remove(cloudName);
 			
-			//Update Current network
-			SemanticSummaryManager.getInstance().setupCurrentNetwork();
+				//Update Current network
+				SemanticSummaryManager.getInstance().setupCurrentNetwork();
 			
-			SemanticSummaryPluginAction init = new SemanticSummaryPluginAction();
-			init.loadCloudPanel();
-			init.loadInputPanel();
+				SemanticSummaryPluginAction init = new SemanticSummaryPluginAction();
+				init.loadCloudPanel();
+				init.loadInputPanel();
+			}
 		}
+	}
+	
+	private int confirmDelete()
+	{
+		//Ask to continue or revert
+		Component parent = Cytoscape.getDesktop();
+		int value = JOptionPane.NO_OPTION;
+		
+		value = JOptionPane.showConfirmDialog(parent,"Are you sure you want to permanently delete the selected cloud?", 
+				"Delete Cloud",
+				JOptionPane.YES_NO_OPTION);
+		
+		return value;
 	}
 }
