@@ -106,6 +106,7 @@ import cytoscape.generated.SelectedNodes;
 import cytoscape.generated.Server;
 import cytoscape.generated.SessionState;
 import cytoscape.util.BookmarksUtil;
+import cytoscape.util.RecentlyOpenedTracker;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
@@ -231,6 +232,19 @@ public class CytoscapeSessionWriter {
 
 		try {
 			fos = new FileOutputStream(sessionFileName);
+
+			final RecentlyOpenedTracker sessionTracker =
+				Cytoscape.getRecentlyOpenedSessionTracker();
+			if (sessionTracker != null) {
+				final URL sessionFileNameAsURL;
+				try {
+					sessionFileNameAsURL = new URL("file://" + sessionFileName);
+					sessionTracker.add(sessionFileNameAsURL);
+				} catch (final Exception e) {
+					System.err.println("Could not convert \"file://" + sessionFileName + "\" to a URL!");
+				}
+			}
+
 			try {
 				zos = new ZipOutputStream(fos);
 
