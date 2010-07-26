@@ -111,7 +111,7 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 			SemanticSummaryManager.getInstance().setInputWindow(inputWindow);
 			
 			//Add panel to display
-			cytoPanel.add("Semantic Summary", inputWindow);
+			cytoPanel.add("WordCloud", inputWindow);
 			
 			//Move to front of display
 			index = cytoPanel.indexOfComponent(inputWindow);
@@ -125,7 +125,7 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 		else
 		{
 			//Add panel to display
-			cytoPanel.add("Semantic Summary",inputWindow);
+			cytoPanel.add("WordCloud",inputWindow);
 			
 			//Move to front of display
 			index = cytoPanel.indexOfComponent(inputWindow);
@@ -160,7 +160,7 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 			SemanticSummaryManager.getInstance().setCloudDisplayWindow(cloudWindow);
 			
 			//Add panel to display
-			cytoPanel.add("Semantic Summary Cloud", cloudWindow);
+			cytoPanel.add("WordCloud Display", cloudWindow);
 			
 			//Move to front of display
 			index = cytoPanel.indexOfComponent(cloudWindow);
@@ -170,7 +170,7 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 		else
 		{
 			//Add panel to display
-			cytoPanel.add("Semantic Summary Cloud",cloudWindow);
+			cytoPanel.add("WordCloud Display",cloudWindow);
 			
 			//Move to front of display
 			index = cytoPanel.indexOfComponent(cloudWindow);

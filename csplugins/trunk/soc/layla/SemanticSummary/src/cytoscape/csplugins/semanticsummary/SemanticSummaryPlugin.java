@@ -64,12 +64,12 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 		//New actions for response to menu selections
 		SemanticSummaryPluginAction settings = new SemanticSummaryPluginAction();
 		CreateCloudAction create = new CreateCloudAction();
-		settings.setPreferredMenu("Plugins.Semantic Network Summary");
-		create.setPreferredMenu("Plugins.Semantic Network Summary");
+		create.setPreferredMenu("Plugins.WordCloud");
+		settings.setPreferredMenu("Plugins.WordCloud");
 	
 		//Add to Plugin Menu
-		Cytoscape.getDesktop().getCyMenus().addAction(settings);
 		Cytoscape.getDesktop().getCyMenus().addAction(create);
+		Cytoscape.getDesktop().getCyMenus().addAction(settings);
 		
 		//Add to right click menus
 		
@@ -107,7 +107,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 	{
 		StringBuffer sb = new StringBuffer();
 		sb.append("For every node in the current network, this plugin ");
-		sb.append("displays a word cloud semantic summary of the selected ");
+		sb.append("displays a word cloud of the selected ");
 		sb.append("cyNode attribute.  The node ID is the defuault ");
 		sb.append("attribute.");
 		return sb.toString();
