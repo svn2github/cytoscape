@@ -1,14 +1,7 @@
 /*
  File: NetworkPanel.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -86,13 +79,15 @@ import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.view.cytopanels.BiModalJSplitPane;
 
+import giny.model.Node;
+
 
 /**
  * GUI component for managing network list in current session.
  */
 public class NetworkPanel extends JPanel implements PropertyChangeListener, TreeSelectionListener,
-                                                    SelectEventListener, ChangeListener {
-	
+                                                    SelectEventListener, ChangeListener
+{
 	private static final long serialVersionUID = -7102083850894612840L;
 	
 	private static final int DEF_DEVIDER_LOCATION = 280;
@@ -123,6 +118,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	
 	private final NetworkTreeTableModel treeTableModel;
 	private final CytoscapeDesktop cytoscapeDesktop;
+
+	private boolean doNotEnterValueChanged = false;
 
 	/**
 	 * Constructor for the Network Panel.
@@ -322,8 +319,41 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 *
 	 * @param event DOCUMENT ME!
 	 */
-	public void onSelectEvent(SelectEvent event) {
-		// TODO is this the right method to call?
+	public void onSelectEvent(final SelectEvent event) {
+		if (event.getTargetType() == SelectEvent.SINGLE_NODE || event.getTargetType() == SelectEvent.NODE_SET) {
+			final Set<Node> selectedNodes = (Set<Node>)Cytoscape.getCurrentNetwork().getSelectedNodes();
+			final Set<String> selectedNestedNetworkIDs = new TreeSet<String>();
+			for (final Node node : selectedNodes) {
+				final CyNetwork nestedNetwork = (CyNetwork)node.getNestedNetwork();
+				if (nestedNetwork != null)
+					selectedNestedNetworkIDs.add(nestedNetwork.getIdentifier());
+			}
+
+			if (!selectedNestedNetworkIDs.isEmpty()) {
+				doNotEnterValueChanged = true;
+				try {
+					final TreePath[] treePaths = new TreePath[selectedNestedNetworkIDs.size()];
+					int index = 0;
+					final String currentNetworkID = Cytoscape.getCurrentNetwork().getIdentifier();
+					TreePath currentPath = null;
+					final JTree tree = treeTable.getTree();
+					for (int row = 0; row < tree.getRowCount(); ++row) {
+						final TreePath path = tree.getPathForRow(row);
+						final String ID = ((NetworkTreeNode)path.getLastPathComponent()).getNetworkID();
+						if (ID.equals(currentNetworkID))
+							currentPath = path;
+						else if (selectedNestedNetworkIDs.contains(ID))
+							treePaths[index++] = path;
+					}
+
+					tree.getSelectionModel().setSelectionPaths(treePaths);
+					tree.scrollPathToVisible(currentPath);
+				} finally {
+					doNotEnterValueChanged = false;
+				}
+			}
+		}
+
 		treeTable.getTree().updateUI();
 	}
 
@@ -406,6 +436,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
 		// TODO: Every time user select a network name, this method will be called 3 times! 
+		if (doNotEnterValueChanged)
+			return;
 		
 		final JTree mtree = treeTable.getTree();
 
