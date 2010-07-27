@@ -453,11 +453,17 @@ public class CytoscapeInit implements PropertyChangeListener {
 				} else {
 					Cytoscape.setCurrentSessionFileName(sessionFile);
 
-					final File shortName = new File(sessionFile);
-					final String absolutePath = shortName.getAbsolutePath();
-					final URL sessionURL = new URL("file://" + absolutePath.replace("%", "%25"));
-					reader = new CytoscapeSessionReader(sessionURL);
-					sessionName = shortName.getName();
+					// The following code has problem to load session file from command line on Windows
+					// because prefix driver letter "C:\" or "D:\\" was removed from the absolute path
+					//final File shortName = new File(sessionFile);
+					//final String absolutePath = shortName.getAbsolutePath();
+					//final URL sessionURL = new URL("file://" + absolutePath.replace("%", "%25"));
+					//reader = new CytoscapeSessionReader(sessionURL);
+					//sessionName = shortName.getName();
+					
+					final File _sessionFile = new File(sessionFile);
+					reader = new CytoscapeSessionReader(_sessionFile.toURL());
+					sessionName = _sessionFile.getName();
 				}
 
 				if (reader != null) {
