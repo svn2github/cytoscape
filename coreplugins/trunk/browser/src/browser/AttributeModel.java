@@ -36,6 +36,7 @@ import cytoscape.data.attr.MultiHashMapDefinitionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +59,7 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 	private List<String> attributeNames;
 	private Object selection = null;
 	private Set<Byte> validAttrTypes;
+	private Set<String> newAttributeNames = new HashSet<String>();
 
 	/**
 	 * Creates a new AttributeModel object.
@@ -97,14 +99,25 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 	 *  Sets "attributeNames" to the sorted list of user-visible attribute names with supported data types.
 	 */
 	public void sortAttributes() {
+		final Set<String> oldAttributeNames = (attributeNames == null) ? new HashSet<String>() : new HashSet<String>(attributeNames);
+		newAttributeNames = new HashSet<String>();
+
 		attributeNames = new ArrayList<String>();
 		for (final String attrName : CyAttributesUtils.getVisibleAttributeNames(attributes)) {
-			if (validAttrTypes.contains(attributes.getType(attrName)))
+			if (validAttrTypes.contains(attributes.getType(attrName))) {
 				attributeNames.add(attrName);
+				if (!oldAttributeNames.contains(attrName))
+					newAttributeNames.add(attrName);
+			}
 		}
 		Collections.sort(attributeNames);
+
 		notifyListeners(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0,
 		                                  attributeNames.size()));
+	}
+
+	public Set<String> getNewAttributeNames() {
+		return newAttributeNames;
 	}
 
 	/**

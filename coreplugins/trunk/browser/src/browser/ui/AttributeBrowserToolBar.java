@@ -115,6 +115,8 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JList attrDeletionList = null;
 	private JButton createNewAttributeButton = null;
 	private JButton deleteAttributeButton = null;
+	private JButton selectAllAttributesButton = null;
+	private JButton unselectAllAttributesButton = null;
 	private JButton matrixButton = null;
 	private JButton importButton = null;
 	
@@ -406,9 +408,13 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                                      .addPreferredGap(LayoutStyle.RELATED)
 				                                                                      .add(getNewButton())
 				                                                                      .addPreferredGap(LayoutStyle.RELATED)
+				                                                                      .add(getSelectAllButton())
+				                                                                      .addPreferredGap(LayoutStyle.RELATED)
+				                                                                      .add(getUnselectAllButton())
+				                                                                      .addPreferredGap(LayoutStyle.RELATED)
 				                                                                      .add(getDeleteButton())
 				                                                                      .addPreferredGap(LayoutStyle.RELATED,
-				                                                                                       150,
+				                                                                                       28,
 				                                                                                       Short.MAX_VALUE)
 				                                                                      .add(getAttrModButton(),
 				                                                                           GroupLayout.PREFERRED_SIZE,
@@ -435,6 +441,14 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 				                                                .add(org.jdesktop.layout.GroupLayout.CENTER,
 				                                                     createNewAttributeButton,
+				                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+				                                                     27, Short.MAX_VALUE)
+				                                                .add(org.jdesktop.layout.GroupLayout.CENTER,
+				                                                	 selectAllAttributesButton,
+				                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+				                                                     27, Short.MAX_VALUE)
+				                                                .add(org.jdesktop.layout.GroupLayout.CENTER,
+				                                                	 unselectAllAttributesButton,
 				                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 				                                                     27, Short.MAX_VALUE)
 				                                                .add(org.jdesktop.layout.GroupLayout.CENTER,
@@ -468,6 +482,10 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                                      .addPreferredGap(LayoutStyle.RELATED)
 				                                                                      .add(getNewButton())
 				                                                                      .addPreferredGap(LayoutStyle.RELATED)
+				                                                                      .add(getSelectAllButton())
+				                                                                      .addPreferredGap(LayoutStyle.RELATED)
+				                                                                      .add(getUnselectAllButton())
+ 				                                                                      .addPreferredGap(LayoutStyle.RELATED)
 				                                                                      .add(getDeleteButton())
 				                                                                      .addPreferredGap(LayoutStyle.RELATED,
 				                                                                                       320,
@@ -495,6 +513,14 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 				                                                     27, Short.MAX_VALUE)
 				                                                .add(org.jdesktop.layout.GroupLayout.CENTER,
+				                                                	 selectAllAttributesButton,
+				                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+				                                                     27, Short.MAX_VALUE)
+				                                                .add(org.jdesktop.layout.GroupLayout.CENTER,
+				                                                	 unselectAllAttributesButton,
+				                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+				                                                     27, Short.MAX_VALUE)
+				                                                .add(org.jdesktop.layout.GroupLayout.CENTER,
 				                                                     deleteAttributeButton,
 				                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 				                                                     27, Short.MAX_VALUE)
@@ -517,6 +543,10 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                                           GroupLayout.PREFERRED_SIZE)
 				                                                                      .addPreferredGap(LayoutStyle.RELATED)
 				                                                                      .add(getNewButton())
+				                                                                      .addPreferredGap(LayoutStyle.RELATED)
+				                                                                      .add(getSelectAllButton())
+				                                                                      .addPreferredGap(LayoutStyle.RELATED)
+				                                                                      .add(getUnselectAllButton())
 				                                                                      .addPreferredGap(LayoutStyle.RELATED)
 				                                                                      .add(getDeleteButton())
 				                                                                      .addPreferredGap(LayoutStyle.RELATED,
@@ -545,6 +575,14 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 				                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 				                                                .add(org.jdesktop.layout.GroupLayout.CENTER,
 				                                                     createNewAttributeButton,
+				                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+				                                                     27, Short.MAX_VALUE)
+				                                                .add(org.jdesktop.layout.GroupLayout.CENTER,
+				                                                	 selectAllAttributesButton,
+				                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+				                                                     27, Short.MAX_VALUE)
+				                                                .add(org.jdesktop.layout.GroupLayout.CENTER,
+				                                                	 unselectAllAttributesButton,
 				                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 				                                                     27, Short.MAX_VALUE)
 				                                                .add(org.jdesktop.layout.GroupLayout.CENTER,
@@ -737,6 +775,56 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		}
 
 		return deleteAttributeButton;
+	}
+
+	private JButton getSelectAllButton() {
+		if (selectAllAttributesButton == null) {
+			selectAllAttributesButton = new JButton();
+			selectAllAttributesButton.setBorder(null);
+			selectAllAttributesButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+			selectAllAttributesButton.setIcon(new javax.swing.ImageIcon(AttributeBrowser.class.getResource("images/select_all.png")));
+			selectAllAttributesButton.setToolTipText("Select All Attributes");
+
+			selectAllAttributesButton.addMouseListener(new java.awt.event.MouseAdapter() {
+					public void mouseClicked(java.awt.event.MouseEvent e) {
+						List<String> existingAttrs = CyAttributesUtils.getVisibleAttributeNames(attributes);
+						updateList(existingAttrs);
+						try {
+							getUpdatedSelectedList();
+							tableModel.setTableData(null, orderedCol);
+						} catch (Exception ex) {
+							attributeList.clearSelection();
+						}
+					}
+				});
+		}
+
+		return selectAllAttributesButton;
+	}
+
+	private JButton getUnselectAllButton() {
+		if (unselectAllAttributesButton == null) {
+			unselectAllAttributesButton = new JButton();
+			unselectAllAttributesButton.setBorder(null);
+			unselectAllAttributesButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+			unselectAllAttributesButton.setIcon(new javax.swing.ImageIcon(AttributeBrowser.class.getResource("images/unselect_all.png")));
+			unselectAllAttributesButton.setToolTipText("Unselect All Attributes");
+
+			unselectAllAttributesButton.addMouseListener(new java.awt.event.MouseAdapter() {
+					public void mouseClicked(java.awt.event.MouseEvent e) {
+						final List<String> emptyList = new ArrayList<String>();
+						updateList(emptyList);
+						try {
+							getUpdatedSelectedList();
+							tableModel.setTableData(null, orderedCol);
+						} catch (Exception ex) {
+							attributeList.clearSelection();
+						}
+					}
+				});
+		}
+
+		return unselectAllAttributesButton;
 	}
 
 	private void removeAttribute(final MouseEvent e) {
