@@ -1141,8 +1141,6 @@ public class MapBioPaxToCytoscape {
 	 * @param nodeList Nodes
 	 */
 	public static void mapTheRest(Model model, Collection<CyNode> nodeList) {
-		log.setDebug(true);
-		
 		// get the node attributes
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		initAttributes(nodeAttributes);
@@ -1157,8 +1155,6 @@ public class MapBioPaxToCytoscape {
 			
             mapNodeAttribute(resource, model, nodeID);
         }
-		
-		log.setDebug(false);
 	}
 
     /**
@@ -1289,9 +1285,11 @@ public class MapBioPaxToCytoscape {
             }
 
             // pathway name
+            /*
             stringRef = BioPaxUtil.getParentPathwayName(element, model)
             	.toString().replaceAll("\\]|\\[", "").trim();
             nodeAttributes.setAttribute(nodeID, BIOPAX_PATHWAY_NAME, stringRef);
+            */
 
             //  add all xref ids for global lookup
             List<ExternalLink> xList = BioPaxUtil.getAllXRefs(element);

@@ -61,6 +61,7 @@ public class TestBioPaxUtil extends TestCase {
 		assertEquals(8, model.getObjects(physicalEntity.class).size());
 		assertEquals(4, model.getObjects(interaction.class).size());
 		assertEquals(1, model.getObjects(pathway.class).size());
+		/* TODO re-factor because BioPaxUtil.getParentPathwayName is removed
 		String pathways = BioPaxUtil.getParentPathwayName(
 				model.getByID("http://www.biopax.org/examples/simple-demo-pathway#catalysis43"), model)
 				.toString();
@@ -72,6 +73,7 @@ public class TestBioPaxUtil extends TestCase {
 				model.getByID("http://www.biopax.org/examples/simple-demo-pathway#protein45"), model)
 				.toString();
 		assertTrue(pathways.contains("glycolysis"));
+		*/
 	}
 
 	/**
@@ -79,6 +81,7 @@ public class TestBioPaxUtil extends TestCase {
 	 *
 	 * @throws Exception All Exceptions.
 	 */
+	/* TODO re-factor because BioPaxUtil.getParentPathwayName is removed
 	public void testUtil2() throws Exception {
 		Model model = BioPaxUtil.readFile("test-resources/biopax_complex.owl");
 		Set<String> pathways = BioPaxUtil.getParentPathwayName(
@@ -86,6 +89,7 @@ public class TestBioPaxUtil extends TestCase {
 		System.out.println("PARENT PROCESSes NAMES: " + pathways);
 		assertTrue(pathways.size()==0);
 	}
+	/
 
 	/**
 	 * Tests the BioPAX Utility Class on a third sample data file.
@@ -98,6 +102,7 @@ public class TestBioPaxUtil extends TestCase {
 	 *
 	 * @throws Exception All Exceptions.
 	 */
+	/* TODO re-factor because BioPaxUtil.getParentPathwayName is removed
 	public void testUtil3() throws Exception {
 		Model model = BioPaxUtil.readFile("test-resources/Apoptosis.owl");
 		String pathways = BioPaxUtil.getParentPathwayName(
@@ -106,5 +111,6 @@ public class TestBioPaxUtil extends TestCase {
 		System.out.println("PARENT PW NAMES: " + pathways);
 		assertTrue(pathways.contains("FasL/ CD95L signaling"));
 	}
+	*/
 
 }

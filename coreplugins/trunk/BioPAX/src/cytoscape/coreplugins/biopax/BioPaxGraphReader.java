@@ -140,15 +140,19 @@ public class BioPaxGraphReader implements GraphReader {
 		
 		if(candidateName == null || "".equalsIgnoreCase(candidateName)) {
 			candidateName = fileName;
+			if(log.isDebugging())
+				log.debug("Network name will be the file name: " + candidateName);
+		} else if(candidateName.length() > 100) {
+			if(log.isDebugging())
+				candidateName = fileName + " - " + candidateName.substring(0, 100);
+				log.debug("Based on multiple pathways network name is too long; " +
+					"it will be truncated: " + candidateName);
 		}
 		
 		// Take appropriate adjustments, if name already exists
 		String name = CyNetworkNaming.getSuggestedNetworkTitle(candidateName);
-		
-		if(log.isDebugging()) {
-			log.debug("Network name (adjusted) : " + candidateName
-					+ " (" + name + ")");
-		}
+		if(log.isDebugging())
+			log.debug("Network name is: " + name);
 		
 		return name;
 	}

@@ -485,7 +485,11 @@ public class BioPaxUtil {
 		try {
 			Object bs = getValue(bpe, "ORGANISM", "organism");
 			if (bs instanceof BioSource) {
-				taxonomyId = Integer.parseInt(((BioSource)bs).getTaxonXref().getId());
+				Set<Xref> xrefs = ((BioSource)bs).getXref();
+				if(!xrefs.isEmpty()) {
+					Xref tx = xrefs.iterator().next();
+					taxonomyId = Integer.parseInt(tx.getId());
+				}
 			} else if(bs instanceof bioSource){
 				taxonomyId = Integer.parseInt(((bioSource)bs).getTAXON_XREF().getID());
 			}
@@ -752,8 +756,8 @@ public class BioPaxUtil {
 		if(model.getLevel() == BioPAXLevel.L3) {
 			Collection<Pathway> pws = model.getObjects(Pathway.class);
 			for(Pathway pw: pws) {
-				if(pw.getPathwayComponentsOf().isEmpty()
-						&& pw.getParticipantsOf().isEmpty()
+				if(pw.getPathwayComponentOf().isEmpty()
+						&& pw.getParticipantOf().isEmpty()
 						&& pw.getControlledOf().isEmpty()) {
 					modelName.append(" ").append(getNodeName(pw)); 
 				}
@@ -761,9 +765,9 @@ public class BioPaxUtil {
 			if(modelName.length()==0) {
 				Collection<Interaction> itrs = model.getObjects(Interaction.class);
 				for(Interaction it: itrs) {
-					if(it.getPathwayComponentsOf().isEmpty()
+					if(it.getPathwayComponentOf().isEmpty()
 							&& it.getControlledOf().isEmpty()
-							&& it.getParticipantsOf().isEmpty()) {
+							&& it.getParticipantOf().isEmpty()) {
 						modelName.append(" ").append(getNodeName(it));
 					}
 				}	
@@ -818,6 +822,7 @@ public class BioPaxUtil {
 	 * @param model 
 	 * @return
 	 */
+	/* TODO re-factoring (pre-calculate pathway membership for all entities, save in the Map, get from the Map...)
 	public static Set<String> getParentPathwayName(BioPAXElement bpe, Model model) {
 		Set<String> pathwayNames = new HashSet<String>();
 		
@@ -832,8 +837,8 @@ public class BioPaxUtil {
 				&& ((pathway)p).isCONTROLLEDOf().isEmpty()) 
 				||
 				(p instanceof Pathway 
-				&& ((Pathway)p).getPathwayComponentsOf().isEmpty()
-				&& ((Pathway)p).getParticipantsOf().isEmpty()
+				&& ((Pathway)p).getPathwayComponentOf().isEmpty()
+				&& ((Pathway)p).getParticipantOf().isEmpty()
 				&& ((Pathway)p).getControlledOf().isEmpty()))
 			{
 				topPathways.add(p);
@@ -864,8 +869,8 @@ public class BioPaxUtil {
 				&& ((interaction)itr).isCONTROLLEDOf().isEmpty()) 
 				||
 				(itr instanceof Interaction 
-				&& ((Interaction)itr).getPathwayComponentsOf().isEmpty()
-				&& ((Interaction)itr).getParticipantsOf().isEmpty()
+				&& ((Interaction)itr).getPathwayComponentOf().isEmpty()
+				&& ((Interaction)itr).getParticipantOf().isEmpty()
 				&& ((Interaction)itr).getControlledOf().isEmpty()))
 			{
 				topPathways.add(itr);
@@ -882,6 +887,7 @@ public class BioPaxUtil {
 		
 		return pathwayNames;
 	}
+	*/
 	
 	/**
 	 * Finds element's parents (CyNode names) in the collection.
