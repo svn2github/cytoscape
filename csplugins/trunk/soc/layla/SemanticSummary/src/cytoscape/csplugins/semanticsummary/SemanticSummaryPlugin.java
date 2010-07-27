@@ -163,6 +163,12 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 				filterWriter.close();
 				pFileList.add(current_filter);
 				
+				File current_delimiter = new File(tmpDir, netNameSep + networkName + netNameSep + ".DELIMITER.txt");
+				BufferedWriter delimiterWriter = new BufferedWriter(new FileWriter(current_delimiter));
+				delimiterWriter.write(params.getDelimiter().toString());
+				delimiterWriter.close();
+				pFileList.add(current_delimiter);
+				
 				//Loop on Clouds
 				if (!params.getClouds().isEmpty())
 				{
@@ -345,6 +351,25 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 					WordFilter curFilter = new WordFilter(fullText);
 					networkParams.setFilter(curFilter);
 				}
+				
+				if (prop_file.getName().contains(".DELIMITER.txt"))
+				{
+					TextFileReader reader = new TextFileReader(prop_file.getAbsolutePath());
+					reader.read();
+					String fullText = reader.getText();
+					
+					//Get the networkID from the props file
+					String[] fullname = prop_file.getName().split(netNameSep);
+					String net_name = fullname[1];
+					
+					//Get the Network Parameters
+					SemanticSummaryParameters networkParams = 
+						SemanticSummaryManager.getInstance().getCyNetworkList().get(net_name);
+					
+					//Recreate the Delimiter and set pointer in cloud
+					WordDelimiters curDelimiter = new WordDelimiters(fullText);
+					networkParams.setDelimiter(curDelimiter);
+				}
 			}//end loop through all props files
 			
 			
@@ -355,7 +380,8 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 				
 				if (prop_file.getName().contains(".CLOUDS.txt") ||
 						prop_file.getName().contains(".props") || 
-						prop_file.getName().contains(".FILTER.txt"))
+						prop_file.getName().contains(".FILTER.txt") ||
+						prop_file.getName().contains(".DELIMITER.txt"))
 					continue;
 				
 				TextFileReader reader = new TextFileReader(prop_file.getAbsolutePath());

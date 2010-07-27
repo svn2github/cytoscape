@@ -88,6 +88,8 @@ public class CloudParameters implements Comparable
 	//String Delimeters
 	private static final String NODEDELIMITER = "CloudParamNodeDelimiter";
 	private static final String WORDDELIMITER = "CloudParamWordDelimiter";
+	private static final char controlChar = '\u001F';
+	
 	
 	//Default Values for User Input
 	private Double defaultNetWeight = 0.5;
@@ -894,12 +896,23 @@ public class CloudParameters implements Comparable
 		nodeValue = nodeValue.toLowerCase();
 		
 		//replace all punctuation with white spaces except ' and -
-		nodeValue = nodeValue.replaceAll("[[\\p{Punct}] && [^'-]]", " ");
+		//nodeValue = nodeValue.replaceAll("[[\\p{Punct}] && [^'-]]", " ");
+		String controlString = Character.toString(controlChar);
+		
+		//Remove all standard delimiters and replace with controlChar
+		WordDelimiters delims = this.getNetworkParams().getDelimiter();
+		nodeValue = nodeValue.replaceAll(delims.getRegex(),controlString);
         
+		//Remove all user stated delimiters and replace with controlChar
+		for (Iterator<String> iter = delims.getUserDelims().iterator(); iter.hasNext();)
+		{
+			String userDelim = iter.next();
+			nodeValue = nodeValue.replaceAll(userDelim, controlString);
+		}
+		
         //Separate into non repeating set of words
 		List<String> wordSet = new ArrayList<String>();
-		//Set<String> wordSet = new HashSet<String>();
-        StringTokenizer token = new StringTokenizer(nodeValue);
+		StringTokenizer token = new StringTokenizer(nodeValue, controlString);
         while (token.hasMoreTokens())
         {
         	String a = token.nextToken();

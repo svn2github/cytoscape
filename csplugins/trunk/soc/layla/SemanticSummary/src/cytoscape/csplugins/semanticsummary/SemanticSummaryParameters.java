@@ -63,6 +63,7 @@ public class SemanticSummaryParameters
 	
 	//Filter stuff
 	private WordFilter filter;
+	private WordDelimiters delimiters;
 	
 	//CONSTRUCTORS
 	
@@ -74,6 +75,7 @@ public class SemanticSummaryParameters
 		this.clouds = new HashMap<String,CloudParameters>();
 		this.nodeList = new ArrayList<String>();
 		this.filter = new WordFilter();
+		this.delimiters = new WordDelimiters();
 	}
 	
 	/**
@@ -376,6 +378,16 @@ public class SemanticSummaryParameters
 	public void setFilter(WordFilter aFilter)
 	{
 		filter = aFilter;
+	}
+	
+	public WordDelimiters getDelimiter()
+	{
+		return delimiters;
+	}
+	
+	public void setDelimiter(WordDelimiters aDelimiter)
+	{
+		delimiters = aDelimiter;
 	}
 	
 }
