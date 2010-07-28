@@ -50,7 +50,7 @@ import cytoscape.util.ColorUtil;
 /**
  * Parses a String into a Color object.
  */
-public class ColorParser implements ValueParser<Color> {
+public class ColorParser implements ValueParser {
 	/**
 	 * DOCUMENT ME!
 	 * 

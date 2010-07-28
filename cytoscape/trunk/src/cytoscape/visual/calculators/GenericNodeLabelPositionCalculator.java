@@ -57,7 +57,7 @@ class GenericNodeLabelPositionCalculator extends BasicCalculator {
      * @param name DOCUMENT ME!
      * @param m DOCUMENT ME!
      */
-    GenericNodeLabelPositionCalculator(String name, ObjectMapping<?> m) {
+    GenericNodeLabelPositionCalculator(String name, ObjectMapping m) {
         super(name, m, NODE_LABEL_POSITION);
     }
 

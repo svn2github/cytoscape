@@ -53,11 +53,11 @@ package cytoscape.visual.mappings;
  * 
  *  V - Calculated visual object (Color, etc.)
  */
-public class BoundaryRangeValues<V> {
+public class BoundaryRangeValues {
 	
-	public V lesserValue;
-	public V equalValue;
-	public V greaterValue;
+	public Object lesserValue;
+	public Object equalValue;
+	public Object greaterValue;
 
 	/**
 	 * Creates a new BoundaryRangeValues object.
@@ -69,7 +69,7 @@ public class BoundaryRangeValues<V> {
 	 * @param greater
 	 *            Object used for values greater than this point.
 	 */
-	public BoundaryRangeValues(V lesser, V equal, V greater) {
+	public BoundaryRangeValues(Object lesser, Object equal, Object greater) {
 		lesserValue = lesser;
 		equalValue = equal;
 		greaterValue = greater;
@@ -81,7 +81,7 @@ public class BoundaryRangeValues<V> {
 	 * @param original
 	 *            DOCUMENT ME!
 	 */
-	public BoundaryRangeValues(final BoundaryRangeValues<V> original) {
+	public BoundaryRangeValues(final BoundaryRangeValues original) {
 		this.equalValue = original.equalValue;
 		this.lesserValue = original.lesserValue;
 		this.greaterValue = original.greaterValue;

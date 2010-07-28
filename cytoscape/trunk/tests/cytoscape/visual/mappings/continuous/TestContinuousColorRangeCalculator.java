@@ -79,11 +79,11 @@ public class TestContinuousColorRangeCalculator extends TestCase {
             }
         }
 
-		ValueParser<Color> parser = new ColorParser();
-		ContinuousMappingReader<Double, Color> reader = new ContinuousMappingReader<Double, Color>(props,
+		ValueParser parser = new ColorParser();
+		ContinuousMappingReader reader = new ContinuousMappingReader(props,
 		                                                             "nodeColorCalculator.Sample.mapping",
 		                                                             parser);
-		List<ContinuousMappingPoint<Double, Color>> points = reader.getPoints();
+		List<ContinuousMappingPoint> points = reader.getPoints();
 
 		//  Create some sample values...
 		Map<String, Object> bundle = new HashMap<String, Object>();
@@ -94,7 +94,7 @@ public class TestContinuousColorRangeCalculator extends TestCase {
 			bundle.put(key, new Double(values[i]));
 		}
 
-		ContinuousRangeCalculator<Double, Color> calc = new ContinuousRangeCalculator<Double, Color>(points,
+		ContinuousRangeCalculator calc = new ContinuousRangeCalculator(points,
 		                                                               reader.getInterpolator(),
 		                                                               bundle);
 
@@ -130,7 +130,7 @@ public class TestContinuousColorRangeCalculator extends TestCase {
 		ContinuousMappingReader reader = new ContinuousMappingReader(props,
 		                                                             "nodeColorCalculator.Sample.mapping",
 		                                                             parser);
-		List<ContinuousMappingPoint<Double, Color>> points = reader.getPoints();
+		List<ContinuousMappingPoint> points = reader.getPoints();
 
 		//  Create some sample values...
 		HashMap bundle = new HashMap();

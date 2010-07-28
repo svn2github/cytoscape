@@ -63,16 +63,16 @@ import cytoscape.visual.parsers.ValueParser;
  * cytoscape.visual.mappings.continuous.README.txt.
  * 
  */
-public class ContinuousMapping<K extends Number, V> extends
-		AbstractMapping<V> {
+public class ContinuousMapping extends
+		AbstractMapping {
 
 	final Class<?>[] ACCEPTED_CLASS = { Number.class };
 
 	// used to interpolate between boundaries
-	private Interpolator<K, V> interpolator;
+	private Interpolator interpolator;
 
 	// Contains List of Data Points
-	private List<ContinuousMappingPoint<K, V>> points;
+	private List<ContinuousMappingPoint> points;
 
 	/**
 	 * Constructor.
@@ -86,14 +86,14 @@ public class ContinuousMapping<K extends Number, V> extends
 	@Deprecated
 	public ContinuousMapping(Object defaultObj, byte mapType)
 			throws IllegalArgumentException {
-		this((Class<V>) defaultObj.getClass(), null);
+		this((Class<?>) defaultObj.getClass(), null);
 	}
 
-	public ContinuousMapping(final Class<V> rangeClass,
+	public ContinuousMapping(final Class<?> rangeClass,
 			final String controllingAttrName) {
 		super(rangeClass, controllingAttrName);
 		this.acceptedClasses = ACCEPTED_CLASS;
-		points = new ArrayList<ContinuousMappingPoint<K, V>>();
+		points = new ArrayList<ContinuousMappingPoint>();
 
 		// Interpolater setting
 		if (Color.class.isAssignableFrom(this.rangeClass))
@@ -110,15 +110,15 @@ public class ContinuousMapping<K extends Number, V> extends
 	 * @return Cloned Mapping Object.
 	 */
 	public Object clone() {
-		final ContinuousMapping<K, V> clone = new ContinuousMapping<K, V>(
+		final ContinuousMapping clone = new ContinuousMapping(
 				rangeClass, controllingAttrName);
 
 		// Copy over all listeners...
 		for (ChangeListener listener : observers)
 			clone.addChangeListener(listener);
 
-		for (ContinuousMappingPoint<K, V> cmp : points) {
-			final ContinuousMappingPoint<K, V> cmpClone = (ContinuousMappingPoint<K, V>) cmp.clone();
+		for (ContinuousMappingPoint cmp : points) {
+			final ContinuousMappingPoint cmpClone = (ContinuousMappingPoint) cmp.clone();
 			clone.addPoint(cmpClone.getValue(), cmpClone.getRange());
 		}
 
@@ -130,15 +130,15 @@ public class ContinuousMapping<K extends Number, V> extends
 	 * 
 	 * @return ArrayList of ContinuousMappingPoint objects.
 	 */
-	public List<ContinuousMappingPoint<K, V>> getAllPoints() {
+	public List<ContinuousMappingPoint> getAllPoints() {
 		return points;
 	}
 
 	/**
 	 * Adds a New Data Point.
 	 */
-	public void addPoint(K value, BoundaryRangeValues<V> brv) {
-		ContinuousMappingPoint<K, V> cmp = new ContinuousMappingPoint<K, V>(value,
+	public void addPoint(double value, BoundaryRangeValues brv) {
+		ContinuousMappingPoint cmp = new ContinuousMappingPoint(value,
 				brv);
 		points.add(cmp);
 	}
@@ -164,7 +164,7 @@ public class ContinuousMapping<K extends Number, V> extends
 	 *            Index Value.
 	 * @return ContinuousMappingPoint.
 	 */
-	public ContinuousMappingPoint<K, V> getPoint(int index) {
+	public ContinuousMappingPoint getPoint(int index) {
 		return points.get(index);
 	}
 
@@ -180,8 +180,8 @@ public class ContinuousMapping<K extends Number, V> extends
 	 *            ValueParser Object.
 	 */
 	public void applyProperties(Properties props, String baseKey,
-			ValueParser<V> parser) {
-		final ContinuousMappingReader<K, V> reader = new ContinuousMappingReader<K, V>(props,baseKey, parser);
+			ValueParser parser) {
+		final ContinuousMappingReader reader = new ContinuousMappingReader(props,baseKey, parser);
 		this.points = reader.getPoints();
 		this.controllingAttrName = reader.getControllingAttributeName();
 		this.interpolator = reader.getInterpolator();
@@ -237,8 +237,8 @@ public class ContinuousMapping<K extends Number, V> extends
 	 * @return Mapping object.
 	 */
 	@Override
-	public V calculateRangeValue(final Map<String, Object> attrBundle) {
-		final ContinuousRangeCalculator<K, V> calc = new ContinuousRangeCalculator<K, V>(
+	public Object calculateRangeValue(final Map<String, Object> attrBundle) {
+		final ContinuousRangeCalculator calc = new ContinuousRangeCalculator(
 				points, interpolator, attrBundle);
 
 		return calc.calculateRangeValue(controllingAttrName);

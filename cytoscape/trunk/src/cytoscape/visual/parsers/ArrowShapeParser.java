@@ -2,7 +2,7 @@ package cytoscape.visual.parsers;
 
 import cytoscape.visual.ArrowShape;
 
-public class ArrowShapeParser implements ValueParser<ArrowShape> {
+public class ArrowShapeParser implements ValueParser {
 
 	/**
 	 * DOCUMENT ME!

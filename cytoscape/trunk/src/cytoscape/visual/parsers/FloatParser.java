@@ -6,7 +6,7 @@ package cytoscape.visual.parsers;
  * @author $author$
   */
 public class FloatParser
-    implements ValueParser<Float> {
+    implements ValueParser {
     /**
      *  DOCUMENT ME!
      *

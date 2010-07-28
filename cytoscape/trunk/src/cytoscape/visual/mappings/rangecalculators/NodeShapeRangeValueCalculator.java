@@ -8,7 +8,7 @@ import cytoscape.visual.parsers.ValueParser;
 public class NodeShapeRangeValueCalculator implements
 		RangeValueCalculator<NodeShape> {
 
-	private ValueParser<NodeShape> parser;
+	private ValueParser parser;
 
 	public NodeShapeRangeValueCalculator() {
 		parser = new NodeShapeParser();
@@ -17,7 +17,7 @@ public class NodeShapeRangeValueCalculator implements
 	
 	public NodeShape getRange(Object attrValue) {
 		if (attrValue instanceof String) {
-			NodeShape obj = parser.parseStringValue((String) attrValue);
+			NodeShape obj = (NodeShape) parser.parseStringValue((String) attrValue);
 			return obj;
 		}
 		return null;

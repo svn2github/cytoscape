@@ -63,7 +63,7 @@ public class BasicCalculator extends AbstractCalculator {
      * @param m DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public BasicCalculator(String name, ObjectMapping<?> m, VisualPropertyType type) {
+    public BasicCalculator(String name, ObjectMapping m, VisualPropertyType type) {
         super(name, m, type);
     }
 

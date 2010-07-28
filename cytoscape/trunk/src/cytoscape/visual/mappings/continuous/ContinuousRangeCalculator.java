@@ -53,9 +53,9 @@ import java.util.Map;
 /**
  * Calculates the Range for Continuous Mappers.
  */
-public class ContinuousRangeCalculator<K extends Number, V> {
-    private List<ContinuousMappingPoint<K, V>> points;
-    private Interpolator<K, V> interpolator;
+public class ContinuousRangeCalculator {
+    private List<ContinuousMappingPoint> points;
+    private Interpolator interpolator;
     private Map<String, Object> attrBundle;
 
     /**
@@ -64,8 +64,8 @@ public class ContinuousRangeCalculator<K extends Number, V> {
      * @param interpolator Interpolator Object.
      * @param attrBundle Attribute Bundle.
      */
-    public ContinuousRangeCalculator(List<ContinuousMappingPoint<K, V>> points,
-        Interpolator<K, V> interpolator, Map attrBundle) {
+    public ContinuousRangeCalculator(List<ContinuousMappingPoint> points,
+        Interpolator interpolator, Map attrBundle) {
         this.points = points;
         this.interpolator = interpolator;
         this.attrBundle = attrBundle;
@@ -76,7 +76,7 @@ public class ContinuousRangeCalculator<K extends Number, V> {
      * @param attrName Attribute Name.
      * @return Object.
      */
-    public V calculateRangeValue(String attrName) {
+    public Object calculateRangeValue(String attrName) {
         if ((attrBundle == null) || (attrName == null))
             return null;
 
@@ -91,8 +91,8 @@ public class ContinuousRangeCalculator<K extends Number, V> {
         return getRangeValue((Number) attrValue);
     }
 
-    private V getRangeValue(Number domainValue) {
-        ContinuousMappingPoint<K, V> firstPoint = points.get(0);
+    private Object getRangeValue(Number domainValue) {
+        ContinuousMappingPoint firstPoint = points.get(0);
         Number minDomain = firstPoint.getValue().doubleValue();
 
         //  if given domain value is smaller than any in our list,
@@ -100,7 +100,7 @@ public class ContinuousRangeCalculator<K extends Number, V> {
         int firstCmp = compareValues(domainValue, minDomain);
 
         if (firstCmp <= 0) {
-            BoundaryRangeValues<V> bv = firstPoint.getRange();
+            BoundaryRangeValues bv = firstPoint.getRange();
 
             if (firstCmp < 0)
                 return bv.lesserValue;
@@ -110,11 +110,11 @@ public class ContinuousRangeCalculator<K extends Number, V> {
 
         //  if given domain value is larger than any in our Vector,
         //  return the range value for the largest domain value we have.
-        ContinuousMappingPoint<K, V> lastPoint = points.get(points.size() - 1);
+        ContinuousMappingPoint lastPoint = points.get(points.size() - 1);
         Number maxDomain = lastPoint.getValue().doubleValue();
 
         if (compareValues(domainValue, maxDomain) > 0) {
-            BoundaryRangeValues<V> bv = lastPoint.getRange();
+            BoundaryRangeValues bv = lastPoint.getRange();
 
             return bv.greaterValue;
         }
@@ -128,7 +128,7 @@ public class ContinuousRangeCalculator<K extends Number, V> {
         // Note that the list of Points is sorted.
         // Also, the case of the inValue equalling the smallest key was
         // checked above.
-        ContinuousMappingPoint<K, V> currentPoint;
+        ContinuousMappingPoint currentPoint;
         int index = 0;
 
         for (index = 0; index < points.size(); index++) {
@@ -138,7 +138,7 @@ public class ContinuousRangeCalculator<K extends Number, V> {
             int cmpValue = compareValues(domainValue, currentValue);
 
             if (cmpValue == 0) {
-                BoundaryRangeValues<V> bv = currentPoint.getRange();
+                BoundaryRangeValues bv = currentPoint.getRange();
 
                 return bv.equalValue;
             } else if (cmpValue < 0)
@@ -155,18 +155,18 @@ public class ContinuousRangeCalculator<K extends Number, V> {
      *  desired domain value is greater) and the "lesser" field of
      *  the upper boundary value (semantic difficulties).
      */
-    private V getRangeValue(int index, Number domainValue) {
+    private Object getRangeValue(int index, Number domainValue) {
         //  Get Lower Domain and Range
-        ContinuousMappingPoint<K, V> lowerBound = points.get(index - 1);
+        ContinuousMappingPoint lowerBound = points.get(index - 1);
         Number lowerDomain = lowerBound.getValue().byteValue();
-        BoundaryRangeValues<V> lv = lowerBound.getRange();
-        V lowerRange = lv.greaterValue;
+        BoundaryRangeValues lv = lowerBound.getRange();
+        Object lowerRange = lv.greaterValue;
 
         //  Get Upper Domain and Range
-        ContinuousMappingPoint<K, V> upperBound = points.get(index);
+        ContinuousMappingPoint upperBound = points.get(index);
         Number upperDomain = upperBound.getValue().doubleValue();
-        BoundaryRangeValues<V> gv = upperBound.getRange();
-        V upperRange = gv.lesserValue;
+        BoundaryRangeValues gv = upperBound.getRange();
+        Object upperRange = gv.lesserValue;
 
         return interpolator.getRangeValue(lowerDomain, lowerRange, upperDomain,
             upperRange, domainValue);

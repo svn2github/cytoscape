@@ -16,7 +16,7 @@ import cytoscape.visual.mappings.ObjectMapping;
 public class MappingKeyFactory {
 
 	public static Set<Object> getKeySet(final String attrName,
-			final CyAttributes attrs, final ObjectMapping<?> mapping,
+			final CyAttributes attrs, final ObjectMapping mapping,
 			boolean isNode) {
 
 		if (attrName.equals("ID")) {

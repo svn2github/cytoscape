@@ -52,9 +52,9 @@ public class NewMappingBuilder {
 
 		final Object[] invokeArgs = { defaultObj.getClass(),
 				controllingAttrName };
-		ObjectMapping<?> mapper = null;
+		ObjectMapping mapper = null;
 		try {
-			mapper = (ObjectMapping<?>) mapperCon.newInstance(invokeArgs);
+			mapper = (ObjectMapping) mapperCon.newInstance(invokeArgs);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {

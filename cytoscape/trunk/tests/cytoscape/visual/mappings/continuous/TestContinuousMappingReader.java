@@ -92,10 +92,10 @@ public class TestContinuousMappingReader extends TestCase {
 		Interpolator interp = reader.getInterpolator();
 		assertTrue(interp instanceof LinearNumberToColorInterpolator);
 
-		List<ContinuousMappingPoint<Double, Color>> points = reader.getPoints();
+		List<ContinuousMappingPoint> points = reader.getPoints();
 		assertEquals(3, points.size());
 
-		ContinuousMappingPoint<Double, Color> point0 = (ContinuousMappingPoint) points.get(0);
+		ContinuousMappingPoint point0 = (ContinuousMappingPoint) points.get(0);
 		double value0 = point0.getValue();
 		assertEquals(-1.0, value0, 0.0001);
 
@@ -104,7 +104,7 @@ public class TestContinuousMappingReader extends TestCase {
 		assertEquals(Color.RED, range0.equalValue);
 		assertEquals(Color.RED, range0.greaterValue);
 
-		ContinuousMappingPoint<Double, Color> point1 = (ContinuousMappingPoint) points.get(1);
+		ContinuousMappingPoint point1 = (ContinuousMappingPoint) points.get(1);
 		double value1 = point1.getValue();
 		assertEquals(0.0, value1, 0.0001);
 

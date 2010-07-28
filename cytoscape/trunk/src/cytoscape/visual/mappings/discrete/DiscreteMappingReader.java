@@ -58,9 +58,9 @@ import java.util.TreeMap;
  * Unit Test for this class exists in:
  * cytoscape.visual.mappings.discrete.unitTests.TestDiscreteMappingReader.
  */
-public class DiscreteMappingReader<K, V> {
+public class DiscreteMappingReader {
     private String controllingAttribute;
-    private SortedMap<K, V> map = new TreeMap<K, V>();
+    private SortedMap map = new TreeMap();
 
     /**
      * Constructor.
@@ -69,7 +69,7 @@ public class DiscreteMappingReader<K, V> {
      * @param parser ValueParser Object.
      */
     public DiscreteMappingReader(Properties props, String baseKey,
-        ValueParser<V> parser) {
+        ValueParser parser) {
         readProperties(props, baseKey, parser);
     }
 
@@ -85,7 +85,7 @@ public class DiscreteMappingReader<K, V> {
      * Gets the Discrete Map.
      * @return TreeMap Object.
      */
-    public SortedMap<K, V> getMap() {
+    public SortedMap getMap() {
         return map;
     }
 
@@ -93,7 +93,7 @@ public class DiscreteMappingReader<K, V> {
      * Read in Settings from the Properties Object.
      */
     private void readProperties(Properties props, String baseKey,
-        ValueParser<V> parser) {
+        ValueParser parser) {
         String contKey = baseKey + ".controller";
         controllingAttribute = props.getProperty(contKey);
 
@@ -115,8 +115,8 @@ public class DiscreteMappingReader<K, V> {
                 Object domainVal = MappingUtil.parseObjectType(
                         key.substring(mapKey.length()),
                         attrType);
-                V parsedVal = parser.parseStringValue(value);
-                map.put((K) domainVal, parsedVal);
+                Object parsedVal = parser.parseStringValue(value);
+                map.put(domainVal, parsedVal);
             }
         }
     }

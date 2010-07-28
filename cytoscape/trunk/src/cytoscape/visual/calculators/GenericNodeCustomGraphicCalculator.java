@@ -5,7 +5,7 @@ import cytoscape.visual.mappings.ObjectMapping;
 
 public class GenericNodeCustomGraphicCalculator extends BasicCalculator {
 
-	public GenericNodeCustomGraphicCalculator(String name, ObjectMapping<?> m,
+	public GenericNodeCustomGraphicCalculator(String name, ObjectMapping m,
 			VisualPropertyType type) {
 		super(name, m, type);
 		// TODO Auto-generated constructor stub

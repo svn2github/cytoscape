@@ -13,7 +13,7 @@ import cytoscape.visual.customgraphic.URLImageCustomGraphicsParser;
 import cytoscape.visual.customgraphic.impl.CyCustomGraphicsParserFactoryImpl;
 import cytoscape.visual.customgraphic.impl.bitmap.URLImageCustomGraphics;
 
-public class GraphicsParser implements ValueParser<CyCustomGraphics> {
+public class GraphicsParser implements ValueParser {
 	
 	private static final String NULL_CG = "cytoscape.visual.customgraphic.NullCustomGraphics";
 	

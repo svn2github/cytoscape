@@ -50,7 +50,7 @@ import java.awt.Font;
  * Parses a String into a Font object.
  */
 public class FontParser
-    implements ValueParser<Font> {
+    implements ValueParser {
     /**
      *  DOCUMENT ME!
      *

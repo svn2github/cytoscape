@@ -352,7 +352,7 @@ public enum VisualPropertyType {
 	// Data type for the actual visual property.
 	private Class<?> dataType;
 	private VisualProperty vizProp;
-	private ValueParser<?> valueParser;
+	private ValueParser valueParser;
 
 	// indicates whether or not property is for a node or edge
 	private boolean isNodeProp;
@@ -666,7 +666,7 @@ public enum VisualPropertyType {
 		}
 	}
 
-	public ValueParser<?> getValueParser() {
+	public ValueParser getValueParser() {
 		return valueParser;
 	}
 	

@@ -50,16 +50,16 @@ import cytoscape.visual.mappings.BoundaryRangeValues;
  * and associated BoundaryRangeValues.
  *
  */
-public class ContinuousMappingPoint<K extends Number, V> implements Cloneable {
-	private K value;
-	private BoundaryRangeValues<V> range;
+public class ContinuousMappingPoint implements Cloneable {
+	private Double value;
+	private BoundaryRangeValues range;
 
 	/**
 	 * Constructor.
 	 * @param value double.
 	 * @param range BoundaryRangeValues object.
 	 */
-	public ContinuousMappingPoint(K value, BoundaryRangeValues<V> range) {
+	public ContinuousMappingPoint(double value, BoundaryRangeValues range) {
 		this.value = value;
 		this.range = range;
 	}
@@ -68,7 +68,7 @@ public class ContinuousMappingPoint<K extends Number, V> implements Cloneable {
 	 * Gets Point Value.
 	 * @return double value.
 	 */
-	public K getValue() {
+	public Double getValue() {
 		return value;
 	}
 
@@ -76,7 +76,7 @@ public class ContinuousMappingPoint<K extends Number, V> implements Cloneable {
 	 * Sets Point Value.
 	 * @param value double value.
 	 */
-	public void setValue(K value) {
+	public void setValue(Double value) {
 		this.value = value;
 	}
 
@@ -84,7 +84,7 @@ public class ContinuousMappingPoint<K extends Number, V> implements Cloneable {
 	 * Gets BoundaryRangeValues.
 	 * @return BoundaryRangeValues Object.
 	 */
-	public BoundaryRangeValues<V> getRange() {
+	public BoundaryRangeValues getRange() {
 		return range;
 	}
 
@@ -92,7 +92,7 @@ public class ContinuousMappingPoint<K extends Number, V> implements Cloneable {
 	 * Sets BoundaryRangeValues.
 	 * @param range BoundaryRangeValues Object.
 	 */
-	public void setRange(BoundaryRangeValues<V> range) {
+	public void setRange(BoundaryRangeValues range) {
 		this.range = range;
 	}
 
@@ -101,7 +101,7 @@ public class ContinuousMappingPoint<K extends Number, V> implements Cloneable {
 	 * @return Cloned Object.
 	 */
 	public Object clone() {
-		final BoundaryRangeValues<V> newRange = new BoundaryRangeValues<V>();
+		final BoundaryRangeValues newRange = new BoundaryRangeValues();
 		newRange.lesserValue = range.lesserValue;
 		newRange.equalValue = range.equalValue;
 		newRange.greaterValue = range.greaterValue;

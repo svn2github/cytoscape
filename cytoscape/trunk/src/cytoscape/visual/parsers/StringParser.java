@@ -49,7 +49,7 @@ package cytoscape.visual.parsers;
  * simply returning the supplied argument.
  */
 public class StringParser
-    implements ValueParser<String> {
+    implements ValueParser {
     /**
      *  DOCUMENT ME!
      *

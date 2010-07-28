@@ -44,7 +44,7 @@ import cytoscape.visual.NodeShape;
  * identifier. The return value here is a Byte object wrapping the primitive
  * byte identifier.
  */
-public class NodeShapeParser implements ValueParser<NodeShape> {
+public class NodeShapeParser implements ValueParser {
 	/**
 	 * DOCUMENT ME!
 	 * 

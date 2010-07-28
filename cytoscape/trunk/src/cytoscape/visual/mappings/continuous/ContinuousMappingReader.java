@@ -56,11 +56,11 @@ import java.util.Properties;
 /**
  * Reads in ContinuousMapping Properties.
  */
-public class ContinuousMappingReader<K extends Number, V> {
+public class ContinuousMappingReader {
 	private String controllingAttributeName;
 	private Interpolator interpolator;
-	private List<ContinuousMappingPoint<K, V>> points;
-	private ValueParser<V> parser;
+	private List<ContinuousMappingPoint> points;
+	private ValueParser parser;
 
 	/**
 	 * Constructor.
@@ -73,9 +73,9 @@ public class ContinuousMappingReader<K extends Number, V> {
 	 *            Value Parser.
 	 */
 	public ContinuousMappingReader(Properties props, String baseKey,
-			ValueParser<V> parser) {
+			ValueParser parser) {
 		this.parser = parser;
-		points = new ArrayList<ContinuousMappingPoint<K, V>>();
+		points = new ArrayList<ContinuousMappingPoint>();
 		parseProperties(props, baseKey);
 	}
 
@@ -102,7 +102,7 @@ public class ContinuousMappingReader<K extends Number, V> {
 	 * 
 	 * @return ArrayList of ContinuousMappingPoint objects.
 	 */
-	public List<ContinuousMappingPoint<K, V>> getPoints() {
+	public List<ContinuousMappingPoint> getPoints() {
 		return points;
 	}
 
@@ -154,7 +154,7 @@ public class ContinuousMappingReader<K extends Number, V> {
 			if (dvString != null) {
 				try {
 					Double dVal = Double.valueOf(dvString);
-					getLesserEqualGreater(bvBase, props, (K) dVal);
+					getLesserEqualGreater(bvBase, props, dVal);
 				} catch (Exception e) {
 					CyLogger.getLogger().warn(
 							"Error parsing attributeMap properties:\n\t"
@@ -168,24 +168,24 @@ public class ContinuousMappingReader<K extends Number, V> {
 	 * Gets Less/Equals/Greater than BoundaryValues.
 	 */
 	private void getLesserEqualGreater(String bvBase, Properties props,
-			K dVal) {
-		BoundaryRangeValues<V> bv = new BoundaryRangeValues<V>();
+			Double dVal) {
+		BoundaryRangeValues bv = new BoundaryRangeValues();
 		String lKey = bvBase + ".lesser";
 		String lString = props.getProperty(lKey);
-		V lValue = parser.parseStringValue(lString);
+		Object lValue = parser.parseStringValue(lString);
 		bv.lesserValue = lValue;
 
 		String eKey = bvBase + ".equal";
 		String eString = props.getProperty(eKey);
-		V eValue = parser.parseStringValue(eString);
+		Object eValue = parser.parseStringValue(eString);
 		bv.equalValue = eValue;
 
 		String gKey = bvBase + ".greater";
 		String gString = props.getProperty(gKey);
-		V gValue = parser.parseStringValue(gString);
+		Object gValue = parser.parseStringValue(gString);
 		bv.greaterValue = gValue;
 
-		ContinuousMappingPoint<K, V> cmp = new ContinuousMappingPoint<K, V>(
+		ContinuousMappingPoint cmp = new ContinuousMappingPoint(
 				dVal, bv);
 		points.add(cmp);
 	}

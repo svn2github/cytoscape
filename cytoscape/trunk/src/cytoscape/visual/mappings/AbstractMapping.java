@@ -12,13 +12,13 @@ import cytoscape.visual.SubjectBase;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.parsers.ValueParser;
 
-public abstract class AbstractMapping<V> extends SubjectBase implements
-		ObjectMapping<V> {
+public abstract class AbstractMapping extends SubjectBase implements
+		ObjectMapping {
 	
 	private JPanel dummyPanel;
 	
 	// Mapped value class.
-	protected final Class<V> rangeClass;
+	protected final Class<?> rangeClass;
 	
 	// Attribute name associated with this mapping.
 	protected String controllingAttrName;
@@ -26,7 +26,7 @@ public abstract class AbstractMapping<V> extends SubjectBase implements
 	// Attribute value types compatible withi this mapping.
 	protected Class<?>[] acceptedClasses;
 	
-	public AbstractMapping(final Class<V> rangeClass, final String controllingAttrName) {
+	public AbstractMapping(final Class<?> rangeClass, final String controllingAttrName) {
 		this.acceptedClasses = new Class<?>[]{ Object.class };
 		this.controllingAttrName = controllingAttrName;
 		this.rangeClass = rangeClass;
@@ -35,7 +35,7 @@ public abstract class AbstractMapping<V> extends SubjectBase implements
 	
 	
 	abstract public void applyProperties(Properties props, String baseKey,
-			ValueParser<V> parser);
+			ValueParser parser);
 	
 	
 	
@@ -43,7 +43,7 @@ public abstract class AbstractMapping<V> extends SubjectBase implements
 
 	
 	
-	public abstract V calculateRangeValue(Map<String, Object> attrBundle);
+	public abstract Object calculateRangeValue(Map<String, Object> attrBundle);
 
 	
 	
@@ -59,7 +59,7 @@ public abstract class AbstractMapping<V> extends SubjectBase implements
 	
 	
 	
-	public Class<V> getRangeClass() {
+	public Class<?> getRangeClass() {
 		return this.rangeClass;
 	}
 

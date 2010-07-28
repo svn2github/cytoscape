@@ -45,7 +45,7 @@ package cytoscape.visual.mappings;
  * The behavior of this function is undefined if the target domain value
  * is not equal to one of the boundaries or between them.
  */
-public interface Interpolator<K, V> {
+public interface Interpolator {
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -57,6 +57,6 @@ public interface Interpolator<K, V> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public V getRangeValue(Object lowerDomain, Object lowerRange, Object upperDomain,
+	public Object getRangeValue(Object lowerDomain, Object lowerRange, Object upperDomain,
 	                            Object upperRange, Object domainValue);
 }

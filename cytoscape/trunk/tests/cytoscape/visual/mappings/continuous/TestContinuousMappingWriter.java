@@ -78,7 +78,7 @@ public class TestContinuousMappingWriter extends TestCase {
         }
 
 		ContinuousMappingReader reader = new ContinuousMappingReader(properties, baseKey, parser);
-		List<ContinuousMappingPoint<Double, Color>> points = reader.getPoints();
+		List<ContinuousMappingPoint> points = reader.getPoints();
 
 		//  Now write out a set of Propeties.
 		ContinuousMappingWriter writer = new ContinuousMappingWriter(points, baseKey,

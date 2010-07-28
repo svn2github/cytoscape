@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import ding.view.ObjectPositionImpl;
 
-public class ObjectPositionParser implements ValueParser<ObjectPosition> {
+public class ObjectPositionParser implements ValueParser {
 
 	private static final Pattern P = Pattern
 			.compile("^([NSEWC]{1,2}+),([NSEWC]{1,2}+),([clr]{1}+),(-?\\d+(.\\d+)?),(-?\\d+(.\\d+)?)$");

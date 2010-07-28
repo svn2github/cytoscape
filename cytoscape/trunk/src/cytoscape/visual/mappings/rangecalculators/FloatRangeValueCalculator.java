@@ -6,7 +6,7 @@ import cytoscape.visual.parsers.ValueParser;
 
 public class FloatRangeValueCalculator implements RangeValueCalculator<Float> {
 
-	private ValueParser<Float> parser;
+	private ValueParser parser;
 
 	public FloatRangeValueCalculator() {
 		parser = new FloatParser();
@@ -18,7 +18,7 @@ public class FloatRangeValueCalculator implements RangeValueCalculator<Float> {
 			final Number num = (Number) attrValue;
 			return num.floatValue();
 		} else if (attrValue instanceof String)
-			return parser.parseStringValue((String) attrValue);
+			return (Float) parser.parseStringValue((String) attrValue);
 
 		return null;
 	}

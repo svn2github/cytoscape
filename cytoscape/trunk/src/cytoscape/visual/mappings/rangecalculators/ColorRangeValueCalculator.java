@@ -10,7 +10,7 @@ import cytoscape.visual.parsers.ValueParser;
 
 public class ColorRangeValueCalculator implements RangeValueCalculator<Paint> {
 	
-	private final ValueParser<Color> parser;
+	private final ValueParser parser;
 	
 	public ColorRangeValueCalculator() {
 		parser = new ColorParser();
@@ -21,9 +21,9 @@ public class ColorRangeValueCalculator implements RangeValueCalculator<Paint> {
 
 		// OK, try returning the attrValue itself
 		if (attrValue instanceof String) {
-			return parser.parseStringValue((String) attrValue);
+			return (Color) parser.parseStringValue((String) attrValue);
 		} else if(attrValue instanceof Number) {
-			return parser.parseStringValue(attrValue.toString());
+			return (Color) parser.parseStringValue(attrValue.toString());
 		} else
 			return null;
 	}

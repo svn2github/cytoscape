@@ -6,7 +6,7 @@ import cytoscape.visual.parsers.ValueParser;
 
 public class DoubleRangeValueCalculator implements RangeValueCalculator<Double> {
 
-	private ValueParser<Double> parser;
+	private ValueParser parser;
 
 	public DoubleRangeValueCalculator() {
 		parser = new DoubleParser();
@@ -18,7 +18,7 @@ public class DoubleRangeValueCalculator implements RangeValueCalculator<Double> 
 			final Number num = (Number) attrValue;
 			return num.doubleValue();
 		} else if (attrValue instanceof String)
-			return parser.parseStringValue((String) attrValue);
+			return (Double) parser.parseStringValue((String) attrValue);
 
 		return null;
 	}

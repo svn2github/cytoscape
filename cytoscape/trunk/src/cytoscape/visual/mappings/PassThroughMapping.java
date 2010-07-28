@@ -62,13 +62,13 @@ import cytoscape.visual.parsers.ValueParser;
  * expected range class; null is returned instead if the data value is of the
  * wrong type.
  */
-public class PassThroughMapping<K, V> extends AbstractMapping<V> {
+public class PassThroughMapping extends AbstractMapping {
 
 	// Legend UI theme
 	private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 14);
 	private static final Color TITLE_COLOR = new Color(10, 200, 255);
 
-	private RangeValueCalculator<V> rangeValueCalculator;
+	private RangeValueCalculator rangeValueCalculator;
 
 	private final Class<?>[] ACCEPTED_CLASS = { Object.class };
 
@@ -86,7 +86,7 @@ public class PassThroughMapping<K, V> extends AbstractMapping<V> {
 	 *            use.
 	 */
 	@Deprecated
-	public PassThroughMapping(final V defaultObj, final byte mapType) {
+	public PassThroughMapping(final Object defaultObj, final byte mapType) {
 		this(defaultObj, null);
 	}
 
@@ -97,14 +97,14 @@ public class PassThroughMapping<K, V> extends AbstractMapping<V> {
 	 *            DOCUMENT ME!
 	 */
 	@Deprecated
-	public PassThroughMapping(final V defaultObj) {
+	public PassThroughMapping(final Object defaultObj) {
 		this(defaultObj, null);	
 	}
 	
 	
 	@Deprecated
-	public PassThroughMapping(V defaultObj, String attrName) {
-		this((Class<V>)defaultObj.getClass(), attrName);
+	public PassThroughMapping(Object defaultObj, String attrName) {
+		this((Class<?>)defaultObj.getClass(), attrName);
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class PassThroughMapping<K, V> extends AbstractMapping<V> {
 	 * @param attrName
 	 *            DOCUMENT ME!
 	 */
-	public PassThroughMapping(final Class<V> rangeClass, final String attrName) {
+	public PassThroughMapping(final Class<?> rangeClass, final String attrName) {
 		super(rangeClass, attrName);
 		this.acceptedClasses = ACCEPTED_CLASS;
 	}
@@ -126,7 +126,7 @@ public class PassThroughMapping<K, V> extends AbstractMapping<V> {
 	 * @return DOCUMENT ME!
 	 */
 	public Object clone() {
-		final PassThroughMapping<K, V> copy = new PassThroughMapping<K, V>(this.rangeClass, this.controllingAttrName);
+		final PassThroughMapping copy = new PassThroughMapping(this.rangeClass, this.controllingAttrName);
 
 		// don't need to explicitly clone rangeClass since cloned calculator
 		// has same type as original.
@@ -155,7 +155,7 @@ public class PassThroughMapping<K, V> extends AbstractMapping<V> {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public V calculateRangeValue(final Map<String, Object> attrBundle) {
+	public Object calculateRangeValue(final Map<String, Object> attrBundle) {
 		if (attrBundle == null || controllingAttrName == null)
 			return null;
 
@@ -178,7 +178,7 @@ public class PassThroughMapping<K, V> extends AbstractMapping<V> {
 	 * supplied Properties argument.
 	 */
 	public void applyProperties(Properties props, String baseKey,
-			ValueParser<V> parser) {
+			ValueParser parser) {
 		String contKey = baseKey + ".controller";
 		String contValue = props.getProperty(contKey);
 

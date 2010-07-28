@@ -264,7 +264,7 @@ public class Appearance {
         if (value == null)
             return null;
 
-        ValueParser<?> p = type.getValueParser(); 
+        ValueParser p = type.getValueParser(); 
 
         Object ret = null;
         if (p != null)

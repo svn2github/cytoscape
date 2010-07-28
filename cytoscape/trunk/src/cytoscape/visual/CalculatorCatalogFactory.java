@@ -42,32 +42,27 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.logger.CyLogger;
-
-import cytoscape.util.FileUtil;
-import cytoscape.util.URLUtil;
-import cytoscape.util.ZipUtil;
-
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.net.URL;
-
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipFile;
+
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
+import cytoscape.util.FileUtil;
+import cytoscape.util.URLUtil;
+import cytoscape.util.ZipUtil;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
 
 
 /**

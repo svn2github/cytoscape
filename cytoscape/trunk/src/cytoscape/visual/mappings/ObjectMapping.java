@@ -66,7 +66,7 @@ import cytoscape.visual.parsers.ValueParser;
  * V - Mapped visual value, such as color, node shape, etc.
  * 
  */
-public interface ObjectMapping<V> extends Cloneable {
+public interface ObjectMapping extends Cloneable {
     
 	@Deprecated // Use attribute name to determine mapping type.
     public static final byte EDGE_MAPPING = 0;
@@ -80,7 +80,7 @@ public interface ObjectMapping<V> extends Cloneable {
 	 * 
 	 * @return
 	 */
-    public Class<V> getRangeClass();
+    public Class<?> getRangeClass();
 
     /**
      * Return the classes that the ObjectMapping can map from, eg. the contents
@@ -155,13 +155,13 @@ public interface ObjectMapping<V> extends Cloneable {
      * @param attrBundle
      * @return
      */
-    public V calculateRangeValue(final Map<String, Object> attrBundle);
+    public Object calculateRangeValue(final Map<String, Object> attrBundle);
 
     public JPanel getLegend(VisualPropertyType type);
 
     public Object clone();
 
-    public void applyProperties(Properties props, String baseKey, ValueParser<V> parser);
+    public void applyProperties(Properties props, String baseKey, ValueParser parser);
 
     public Properties getProperties(String baseKey);
     

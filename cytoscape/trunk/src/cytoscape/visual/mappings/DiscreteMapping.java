@@ -58,15 +58,15 @@ import cytoscape.visual.parsers.ValueParser;
  * data value is extracted from a bundle of attributes by using a specified data
  * attribute name.
  */
-public class DiscreteMapping<K, V> extends AbstractMapping<V> {
+public class DiscreteMapping extends AbstractMapping {
 
 	private static final Class<?>[] ACCEPTED_CLASSES = { String.class,
 			Number.class, Integer.class, Double.class, Float.class, Long.class,
 			Short.class, NodeShape.class, List.class, Boolean.class };
 
-	private SortedMap<K, V> treeMap; // contains the actual map
+	private SortedMap treeMap; // contains the actual map
 												// elements (sorted)
-	private K lastKey;
+	private Object lastKey;
 
 	/**
 	 * Constructor.
@@ -95,13 +95,13 @@ public class DiscreteMapping<K, V> extends AbstractMapping<V> {
 	 */
 	@Deprecated
 	public DiscreteMapping(Object defObj, String attrName, byte mapType) {
-		this((Class<V>)defObj.getClass(), attrName);
+		this((Class<?>)defObj.getClass(), attrName);
 	}
 
-	public DiscreteMapping(final Class<V> rangeClass,
+	public DiscreteMapping(final Class<?> rangeClass,
 			final String controllingAttrName) {
 		super(rangeClass, controllingAttrName);
-		this.treeMap = new TreeMap<K, V>();
+		this.treeMap = new TreeMap();
 		this.acceptedClasses = ACCEPTED_CLASSES;
 	}
 
@@ -111,7 +111,7 @@ public class DiscreteMapping<K, V> extends AbstractMapping<V> {
 	 * @return DiscreteMapping Object.
 	 */
 	public Object clone() {
-		final DiscreteMapping<K, V> clone = new DiscreteMapping<K, V>(rangeClass,
+		final DiscreteMapping clone = new DiscreteMapping(rangeClass,
 				controllingAttrName);
 
 		// Copy over all listeners...
@@ -119,7 +119,7 @@ public class DiscreteMapping<K, V> extends AbstractMapping<V> {
 			clone.addChangeListener(listener);
 
 		// Copy key-value pairs
-		for (K key : this.treeMap.keySet())
+		for (Object key : this.treeMap.keySet())
 			clone.treeMap.put(key, this.treeMap.get(key));
 
 		return clone;
@@ -132,7 +132,7 @@ public class DiscreteMapping<K, V> extends AbstractMapping<V> {
 	 *            String Key.
 	 * @return Object.
 	 */
-	public V getMapValue(K key) {
+	public Object getMapValue(Object key) {
 		return treeMap.get(key);
 	}
 
@@ -144,7 +144,7 @@ public class DiscreteMapping<K, V> extends AbstractMapping<V> {
 	 * @param value
 	 *            Value Object.
 	 */
-	public void putMapValue(K key, V value) {
+	public void putMapValue(Object key, Object value) {
 		lastKey = key;
 
 		treeMap.put(key, value);
@@ -156,7 +156,7 @@ public class DiscreteMapping<K, V> extends AbstractMapping<V> {
 	 * 
 	 * @return Key Object.
 	 */
-	public K getLastKeyModified() {
+	public Object getLastKeyModified() {
 		return lastKey;
 	}
 
@@ -166,7 +166,7 @@ public class DiscreteMapping<K, V> extends AbstractMapping<V> {
 	 * @param map
 	 *            Map.
 	 */
-	public void putAll(Map<K, V> map) {
+	public void putAll(Map map) {
 		treeMap.putAll(map);
 	}
 
@@ -174,7 +174,7 @@ public class DiscreteMapping<K, V> extends AbstractMapping<V> {
 	 * gets all map values
 	 * 
 	 */
-	public Map<K, V> getAll() {
+	public Map getAll() {
 		return treeMap;
 	}
 
@@ -190,7 +190,7 @@ public class DiscreteMapping<K, V> extends AbstractMapping<V> {
 	 *            ValueParser Object.
 	 */
 	public void applyProperties(Properties props, String baseKey,
-			ValueParser<V> parser) {
+			ValueParser parser) {
 		final DiscreteMappingReader reader = new DiscreteMappingReader(props,
 				baseKey, parser);
 		final String contValue = reader.getControllingAttributeName();
@@ -224,8 +224,8 @@ public class DiscreteMapping<K, V> extends AbstractMapping<V> {
 	 *            A Bundle of Attributes.
 	 * @return Mapping object.
 	 */
-	public V calculateRangeValue(Map<String, Object> attrBundle) {
-		final DiscreteRangeCalculator<K, V> calculator = new DiscreteRangeCalculator<K, V>(
+	public Object calculateRangeValue(Map<String, Object> attrBundle) {
+		final DiscreteRangeCalculator calculator = new DiscreteRangeCalculator(
 				treeMap, controllingAttrName);
 
 		return calculator.calculateRangeValue(attrBundle);

@@ -40,7 +40,6 @@ package cytoscape.visual.mappings;
 import java.util.Properties;
 
 import cytoscape.logger.CyLogger;
-import cytoscape.visual.calculators.AbstractCalculator;
 import cytoscape.visual.parsers.ValueParser;
 
 
@@ -61,7 +60,7 @@ public class MappingFactory {
      * constructs the Mapping object and then customizes it by calling its
      * applyProperties method.
      */
-    public static ObjectMapping<?> newMapping(Properties props, String baseKey,
+    public static ObjectMapping newMapping(Properties props, String baseKey,
         ValueParser parser, Object defObj, byte mapType) {
         String typeName = props.getProperty(baseKey + ".type");
 

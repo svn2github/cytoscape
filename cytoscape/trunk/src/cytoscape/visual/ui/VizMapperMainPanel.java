@@ -35,7 +35,9 @@
 package cytoscape.visual.ui;
 
 import static cytoscape.visual.VisualPropertyDependency.Definition.NODE_SIZE_LOCKED;
-import static cytoscape.visual.VisualPropertyType.*;
+import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
+import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
+import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 import giny.model.GraphObject;
 import giny.model.Node;
 
@@ -57,7 +59,6 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -121,10 +122,9 @@ import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyDependency;
+import cytoscape.visual.VisualPropertyDependency.Definition;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualStyle;
-import cytoscape.visual.VisualPropertyDependency.Definition;
-import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.DiscreteMapping;
@@ -1007,7 +1007,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final Object type = ((VizMapperProperty) parent).getHiddenObject();
 
 				if (type instanceof VisualPropertyType) {
-					ObjectMapping<?> mapping;
+					ObjectMapping mapping;
 
 					if (((VisualPropertyType) type).isNodeProp())
 						mapping = vmm.getVisualStyle().getNodeAppearanceCalculator()
@@ -1016,7 +1016,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						mapping = vmm.getVisualStyle().getEdgeAppearanceCalculator()
 						             .getCalculator(((VisualPropertyType) type)).getMapping(0);
 
-					if (mapping instanceof ContinuousMapping<?, ?>) {
+					if (mapping instanceof ContinuousMapping) {
 						table.setRowHeight(i, ROW_HEIGHT_GRAPHICS);
 
 						int wi = table.getCellRect(0, 1, true).width;
@@ -1298,7 +1298,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		/*
 		 * Mapping 0 is always currently used mapping.
 		 */
-		final ObjectMapping<?> firstMap = calc.getMapping(0);
+		final ObjectMapping firstMap = calc.getMapping(0);
 		String attrName;
 
 		if (firstMap != null) {
