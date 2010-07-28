@@ -72,6 +72,12 @@ public class SemanticSummaryPluginAction extends CytoscapeAction
 	 */
 	public void actionPerformed(ActionEvent ae)
 	{
+		
+		doRealAction();
+	}
+	
+	public void doRealAction()
+	{
 		//Create Null Cloud in Manager
 		CloudParameters nullCloud = SemanticSummaryManager.getInstance().getNullCloudParameters();
 		if (nullCloud == null)

@@ -34,6 +34,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
+import javax.swing.JSlider;
 
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -84,6 +85,7 @@ public class CloudParameters implements Comparable
 	private boolean countInitialized = false; //true when network counts are initialized
 	private boolean selInitialized = false; //true when selected counts initialized
 	private boolean ratiosInitialized = false; //true when ratios are computed
+	private boolean useNetNormal = false; //true when network counts are used
 	
 	//String Delimeters
 	private static final String NODEDELIMITER = "CloudParamNodeDelimiter";
@@ -92,7 +94,7 @@ public class CloudParameters implements Comparable
 	
 	
 	//Default Values for User Input
-	private Double defaultNetWeight = 0.5;
+	private Double defaultNetWeight = 0.0;
 	private String defaultAttName = "nodeID";
 	private Integer defaultMaxWords = 250;
 	private Double defaultClusterCutoff = 1.0;
@@ -159,6 +161,13 @@ public class CloudParameters implements Comparable
 		this.minRatio = new Double(props.get("MinRatio"));
 		this.maxWords = new Integer(props.get("MaxWords"));
 		this.cloudNum = new Integer(props.get("CloudNum"));
+		
+		//Backwards compatibale useNetNormal
+		String val = props.get("UseNetNormal");
+		if (val == null)
+		{this.useNetNormal = true;}
+		else
+		{this.useNetNormal = Boolean.parseBoolean(props.get("UseNetNormal"));}
 		
 		//Rebuild List of Nodes
 		String value = props.get("SelectedNodes");
@@ -598,6 +607,7 @@ public class CloudParameters implements Comparable
 			SemanticSummaryManager.getInstance().getInputWindow();
 		
 		//Network Weight Value
+		/*
 		JFormattedTextField netWeightTextField = inputPanel.getNetWeightTextField();
 		
 		Number value = (Number) netWeightTextField.getValue();
@@ -612,6 +622,16 @@ public class CloudParameters implements Comparable
 			String message = "The network weight factor must be greater than or equal to 0 and less than or equal to 1";
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
 		}
+		*/
+		
+		//Network Weight Stuff
+		SliderBarPanel panel = inputPanel.getSliderBarPanel();
+		JSlider slider = panel.getSlider();
+		Double netNorm = slider.getValue()/panel.getPrecision();
+		this.setNetWeightFactor(netNorm);
+		Boolean selected = inputPanel.getUseNetworkCounts().isSelected();
+		this.useNetNormal = selected;
+		
 		
 		//Attribute
 		Object attribute = inputPanel.getCMBAttributes().getSelectedItem();
@@ -628,7 +648,7 @@ public class CloudParameters implements Comparable
 		//Max Words
 		JFormattedTextField maxWordsTextField = inputPanel.getMaxWordsTextField();
 		
-		value = (Number) maxWordsTextField.getValue();
+		Number value = (Number) maxWordsTextField.getValue();
 		if ((value != null) && (value.intValue() >= 0))
 		{
 			setMaxWords(value.intValue()); 
@@ -703,6 +723,7 @@ public class CloudParameters implements Comparable
 		paramVariables.append("MaxRatio\t" + maxRatio + "\n");
 		paramVariables.append("MaxWords\t" + maxWords + "\n");
 		paramVariables.append("CloudNum\t" + cloudNum + "\n");
+		paramVariables.append("UseNetNormal\t" + useNetNormal + "\n");
 		
 		//List of Nodes as a comma delimited list
 		StringBuffer output2 = new StringBuffer();
@@ -1231,5 +1252,15 @@ public class CloudParameters implements Comparable
 	public void setDisplayStyle(String style)
 	{
 		displayStyle = style;
+	}
+	
+	public boolean getUseNetNormal()
+	{
+		return useNetNormal;
+	}
+	
+	public void setUseNetNormal(boolean val)
+	{
+		useNetNormal = val;
 	}
 }

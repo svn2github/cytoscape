@@ -55,10 +55,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.MaskFormatter;
 
 import cytoscape.Cytoscape;
@@ -85,7 +87,6 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	
 	//Text Fields
 	private JFormattedTextField maxWordsTextField;
-	private JFormattedTextField netWeightTextField;
 	private JFormattedTextField clusterCutoffTextField;
 	private JTextField addWordTextField;
 	
@@ -112,6 +113,10 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	
 	//Checkbox
 	private JCheckBox numExclusion;
+	private JCheckBox useNetworkCounts;
+	
+	//SliderBar
+	private SliderBarPanel sliderPanel;
 	
 	//String Constants for Separators in remove word combo box
 	private static final String addedSeparator = "--Added Words--";
@@ -333,7 +338,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
 		
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(0,1));
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		//Max words input
 		JLabel maxWordsLabel = new JLabel("Max Num of Words");
@@ -353,23 +358,11 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		maxWordsPanel.add(maxWordsLabel, BorderLayout.WEST);
 		maxWordsPanel.add(maxWordsTextField, BorderLayout.EAST);
 		
-		//Network Weight Factor
-		JLabel netWeightLabel = new JLabel("Network Normalization");
-		netWeightTextField = new JFormattedTextField(decFormat);
-		netWeightTextField.setColumns(3);
-		netWeightTextField.setValue(params.getDefaultNetWeight()); //Set to default initially
-		netWeightTextField.addPropertyChangeListener(new SemanticSummaryInputPanel.FormattedTextFieldAction());
 		
-		buf = new StringBuffer();
-		buf.append("<html>" + "Determines how much weight to give the whole network when normalizing the selected nodes" + "<br>");
-		buf.append("<b>Acceptable Values:</b> greater than or equal to 0 and less than or equal to 1" + "</html>");
-		netWeightTextField.setToolTipText(buf.toString());
+		//buf = new StringBuffer();
+		//buf.append("<html>" + "Determines how much weight to give the whole network when normalizing the selected nodes" + "<br>");
+		//buf.append("<b>Acceptable Values:</b> greater than or equal to 0 and less than or equal to 1" + "</html>");
 		
-		//Network Weight Factor Panel
-		JPanel netWeightPanel = new JPanel();
-		netWeightPanel.setLayout(new BorderLayout());
-		netWeightPanel.add(netWeightLabel,BorderLayout.WEST);
-		netWeightPanel.add(netWeightTextField,BorderLayout.EAST);
 		
 		//Clustering Cutoff
 		JLabel clusterCutoffLabel = new JLabel("Word Aggregation Cutoff");
@@ -390,10 +383,47 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		clusterCutoffPanel.add(clusterCutoffTextField, BorderLayout.EAST);
 		
 		
+		//New Network Normalization Panel
+		JPanel netNormalizationPanel = new JPanel();
+		netNormalizationPanel.setLayout(new GridBagLayout());
+		
+		//Checkbox
+		useNetworkCounts = new JCheckBox("Use word counts from entire network");
+		useNetworkCounts.setToolTipText("Enables word size to be calculated using using counts over the entire network, rather than just selected nodes");
+		useNetworkCounts.addActionListener(this);
+		useNetworkCounts.setSelected(false);
+		useNetworkCounts.setEnabled(false);
+		
+		sliderPanel = new SliderBarPanel(0,1,"Network Normalization", "Network Normalization", 10);
+		sliderPanel.setEnabled(false);
+		sliderPanel.setVisible(false);
+		
+		buf = new StringBuffer();
+		buf.append("<html>" + "Determines how much weight to give the whole network when normalizing the selected nodes" + "<br>");
+		buf.append("<b>Acceptable Values:</b> greater than or equal to 0 and less than or equal to 1" + "</html>");
+		sliderPanel.setToolTipText(buf.toString());
+		
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.insets = new Insets(5,0,0,0);
+		netNormalizationPanel.add(useNetworkCounts, gridBagConstraints);
+		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.insets = new Insets(0,0,0,0);
+		netNormalizationPanel.add(sliderPanel, gridBagConstraints);
+		
 		//Add components to main panel
 		panel.add(maxWordsPanel);
-		panel.add(netWeightPanel);
 		panel.add(clusterCutoffPanel);
+		panel.add(netNormalizationPanel);
+		
 		
 		//Add to collapsible panel
 		collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
@@ -775,12 +805,14 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	 */
 	public void loadCurrentCloud(CloudParameters params)
 	{
-		netWeightTextField.setValue(params.getNetWeightFactor());
+		//sliderPanel.setNetNormValue(params.getNetWeightFactor());
 		cmbAttributes.setSelectedItem(params.getAttributeName());
 		maxWordsTextField.setValue(params.getMaxWords());
 		clusterCutoffTextField.setValue(params.getClusterCutoff());
 		cmbStyle.setSelectedItem(params.getDisplayStyle());
 		addWordTextField.setText("");
+		this.setupNetworkNormalization(params);
+		
 		
 		//Get current network
 		SemanticSummaryParameters networkParams = SemanticSummaryManager.getInstance().getCurNetwork();
@@ -790,12 +822,14 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 			addWordTextField.setEditable(false);
 			addWordButton.setEnabled(false);
 			numExclusion.setEnabled(false);
+			useNetworkCounts.setEnabled(false);
 			}
 		else
 		{
 			addWordTextField.setEditable(true);
 			addWordButton.setEnabled(true);
 			numExclusion.setEnabled(true);
+			useNetworkCounts.setEnabled(true);
 		}
 		
 		SemanticSummaryManager.getInstance().setCurCloud(params);
@@ -832,11 +866,13 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	{
 		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
 		
-		netWeightTextField.setValue(params.getDefaultNetWeight());
 		cmbAttributes.setSelectedItem(params.getDefaultAttName());
 		maxWordsTextField.setValue(params.getDefaultMaxWords());
 		clusterCutoffTextField.setValue(params.getDefaultClusterCutoff());
 		cmbStyle.setSelectedItem(params.getDefaultDisplayStyle());
+		
+		this.setupNetworkNormalization(params);
+		sliderPanel.setNetNormValue(params.getDefaultNetWeight());
 		
 		this.refreshNetworkSettings();
 		this.updateUI();
@@ -1346,15 +1382,93 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 				//Reset flags
 				networkParams.networkChanged();
 			}
+			
+			if (_box == useNetworkCounts)
+			{
+				Boolean selected = useNetworkCounts.isSelected();
+				CloudParameters cloudParams = SemanticSummaryManager.getInstance().getCurCloud();
+				
+				if (!cloudParams.equals(SemanticSummaryManager.getInstance().getNullCloudParameters()))
+						cloudParams.setUseNetNormal(selected);
+				
+				//Enable or disable slider bar stuff and reset network weights
+				if (selected)
+				{
+					sliderPanel.setVisible(true);
+					sliderPanel.setEnabled(true);
+					
+					Double netNormalization = cloudParams.getNetWeightFactor();
+					sliderPanel.setNetNormValue(netNormalization);
+				}
+				else
+				{
+					//Confirm continuation
+					Component parent = Cytoscape.getDesktop();
+					int value = JOptionPane.NO_OPTION;
+					
+					value = JOptionPane.showConfirmDialog(parent,"Network normalization will now be set to 0.  Do you want to continue?", 
+							"Network Normalization",
+							JOptionPane.YES_NO_OPTION);
+					
+					if (value == JOptionPane.YES_OPTION)
+					{
+						sliderPanel.setVisible(false);
+						sliderPanel.setEnabled(false);
+					
+						//reset network param
+						cloudParams.setNetWeightFactor(0.0);
+						sliderPanel.setNetNormValue(0.0);
+						
+						//Update cloud display
+						UpdateCloudAction action = new UpdateCloudAction();
+						action.doRealAction();
+					}//end if yes option
+					else
+					{
+						//Reset Values
+						sliderPanel.setVisible(true);
+						sliderPanel.setEnabled(true);
+						
+						Double netNormalization = cloudParams.getNetWeightFactor();
+						sliderPanel.setNetNormValue(netNormalization);
+						
+						useNetworkCounts.setSelected(true);
+						cloudParams.setUseNetNormal(true);
+					}
+				}//end collapse Network Normalization panel
+			}//end of useNetworkCounts
+		}//end checkboxes
+	}
+	
+	/**
+	 * Sets up the network normalization panel for the given cloud.
+	 * @param CloudParameter to use
+	 */
+	private void setupNetworkNormalization(CloudParameters params)
+	{
+		//Turn off slider listener
+		ChangeListener[] listeners = sliderPanel.getSlider().getChangeListeners();
+		for (int i = 0; i < listeners.length; i++)
+		{
+			sliderPanel.getSlider().removeChangeListener(listeners[i]);
+		}
+		
+		Boolean useNetNorm = params.getUseNetNormal();
+		useNetworkCounts.setSelected(useNetNorm);
+		sliderPanel.setVisible(useNetNorm);
+		sliderPanel.setEnabled(useNetNorm);
+		sliderPanel.setNetNormValue(params.getNetWeightFactor());
+		sliderPanel.setLabel(sliderPanel.getSlider().getValue());
+		
+		//Turn back on slider listener
+		for (int i = 0; i < listeners.length; i++)
+		{
+			sliderPanel.getSlider().addChangeListener(listeners[i]);
 		}
 	}
 	
 	
 	//Getters and Setters
-	public JFormattedTextField getNetWeightTextField()
-	{
-		return netWeightTextField;
-	}
 	
 	public JFormattedTextField getMaxWordsTextField()
 	{
@@ -1442,6 +1556,16 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		return removeDelimiterButton;
 	}
 	
+	public JCheckBox getUseNetworkCounts()
+	{
+		return useNetworkCounts;
+	}
+	
+	public SliderBarPanel getSliderBarPanel()
+	{
+		return sliderPanel;
+	}
+	
 	
 	/**
 	 * Private Class to ensure that text fields are being set properly
@@ -1456,26 +1580,10 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 			
 			String message = "The value you have entered is invalid. \n";
 			boolean invalid = false;
-			
-			//Net Weight Text Field
-			if (source == netWeightTextField)
-			{
-				Number value = (Number) netWeightTextField.getValue();
-				if ((value != null) && (value.doubleValue() >= 0.0) && (value.doubleValue() <= 1))
-				{
-					//All is well - leave it be
-				}
-				else
-				{
-					Double defaultNetWeight = params.getDefaultNetWeight();
-					netWeightTextField.setValue(defaultNetWeight);
-					message += "The network weight factor must be greater than or equal to 0 and less than or equal to 1";
-					invalid = true;
-				}
-			}// end Net Weight Factor
+
 			
 			//Max Words
-			else if (source == maxWordsTextField)
+			if (source == maxWordsTextField)
 			{
 				Number value = (Number) maxWordsTextField.getValue();
 				if ((value != null) && (value.intValue() >= 0))

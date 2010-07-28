@@ -70,14 +70,23 @@ public class UpdateCloudAction extends CytoscapeAction
 	 */
 	public void actionPerformed(ActionEvent ae)
 	{
+		this.doRealAction();
+	}
+	
+	/**
+	 * Method that actually contains what actually needs to happen on this action.
+	 */
+	public void doRealAction()
+	{
 		//Initialize the Semantic Summary Panels/Bring to front
 		SemanticSummaryPluginAction init = new SemanticSummaryPluginAction();
-		init.actionPerformed(ae);
+		init.doRealAction();
 		
 		//Retrieve current cloud and Network from Manager
 		SemanticSummaryParameters networkParams = SemanticSummaryManager.
 		getInstance().getCurNetwork();
 		CloudParameters cloudParams = SemanticSummaryManager.getInstance().getCurCloud();
+		
 		
 		//Retrieve current network and view
 		CyNetwork network = Cytoscape.getCurrentNetwork();
@@ -92,7 +101,7 @@ public class UpdateCloudAction extends CytoscapeAction
 		Boolean isDifferent = checkSelectionChange(cloudParams, nodes);
 		
 		//If List is changed
-		if (isDifferent)
+		if (isDifferent && !cloudParams.equals(SemanticSummaryManager.getInstance().getNullCloudParameters()))
 		{
 			//Ask to continue or revert
 			Component parent = Cytoscape.getDesktop();
