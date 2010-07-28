@@ -541,8 +541,13 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		//Number Exclusion Stuff
 		
 		//Checkbox
-		numExclusion = new JCheckBox("Exclude Numbers");
-		numExclusion.setToolTipText("When selected, causes all words that are numbers in the range 0-999 to be excluded");
+		numExclusion = new JCheckBox("Add the numbers 0 - 999 to the word exclusion list");
+		
+		buf = new StringBuffer();
+		buf.append("<html>" + "Causes numbers in the range 0 - 999 that appear as <b>separate words</b> to be excluded" + "<br>");
+		buf.append("<b>Hint:</b> To exclude numbers that appear within a word, either add the entire word to the exclusion list" + "<br>");
+		buf.append("or add the specific number to the list of delimiters used for word tokenization" + "</html>");
+		numExclusion.setToolTipText(buf.toString());
 		numExclusion.addActionListener(this);
 		numExclusion.setSelected(false);
 		numExclusion.setEnabled(false);
