@@ -26,6 +26,8 @@ public final class SearchParameters {
 	private String annotationAttrName;
 	private double annotationThreshold;
 	
+	private String reportPath;
+	
 	public SearchParameters() {
 	}
 
@@ -165,5 +167,15 @@ public final class SearchParameters {
 	public double getAnnotationThreshold()
 	{
 		return annotationThreshold;
+	}
+	
+	public void setReportPath(String p)
+	{
+		this.reportPath = p;
+	}
+	
+	public String getReportPath()
+	{
+		return this.getReportPath();
 	}
 }

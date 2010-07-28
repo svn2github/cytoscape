@@ -260,6 +260,9 @@ public class SearchTask implements Task {
 			double overlapScore = (double)NumberOfSharedNodes/minNodeCount;
 			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "overlapScore", overlapScore);			
 		}
+		
+		//Generate report
+		if (!parameters.getReportPath().equals("")) generateReport(parameters.getReportPath());
 	}
 
 	private static int getNumberOfSharedNodes(CyNetwork networkA, CyNetwork networkB){
@@ -496,5 +499,10 @@ public class SearchTask implements Task {
 		}
 
 		return scaledEdgeAttribValues;
+	}
+	
+	private static void generateReport(String path)
+	{
+		
 	}
 }
