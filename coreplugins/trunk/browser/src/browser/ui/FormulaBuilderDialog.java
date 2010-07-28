@@ -152,6 +152,7 @@ public class FormulaBuilderDialog extends JDialog {
 		setSize(614, 342);
 
 		initLayout(groupLayout);
+		setResizable(false);
 	}
 
 	private void initFunctionComboBox(final Container contentPane) {
