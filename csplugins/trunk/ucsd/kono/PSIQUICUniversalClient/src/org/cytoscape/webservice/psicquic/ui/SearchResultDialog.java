@@ -22,6 +22,8 @@ public class SearchResultDialog extends javax.swing.JDialog {
 	private DefaultTableModel model;
 
 	private final ServiceState state;
+	
+	private boolean cancelFlag = false;
 
 	/**
 	 * Creates new form PSICQUICResultDialog
@@ -41,6 +43,9 @@ public class SearchResultDialog extends javax.swing.JDialog {
 	}
 	
 	public Set<String> getSelected() {
+		if(cancelFlag)
+			return null;
+		
 		final Set<String> selectedService = new HashSet<String>();
 		
 		for(int i=0; i<model.getRowCount(); i++) {
@@ -128,7 +133,7 @@ public class SearchResultDialog extends javax.swing.JDialog {
 	@SuppressWarnings("unchecked")
 	// <editor-fold defaultstate="collapsed" desc="Generated Code">
 	private void initComponents() {
-		setTitle("PSICQUIC Import Result");
+		setTitle("PSICQUIC Search Result");
 
 		titlePanel = new javax.swing.JPanel();
 		titleLabel = new javax.swing.JLabel();
@@ -183,6 +188,7 @@ public class SearchResultDialog extends javax.swing.JDialog {
 		mergeButton.setPreferredSize(new java.awt.Dimension(70, 26));
 		mergeButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				cancelFlag = true;
 				dispose();
 			}
 		});
