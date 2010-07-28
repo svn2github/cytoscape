@@ -34,5 +34,5 @@ projectURL=http://baderlab.org/GSoC2010_SoftwareDownload
 #releaseDate=July 20, 2010
 
 # -- The following properties are NOT OFFICIAL AND PROPRIETARY -- #
-pluginReleaseSuffix=RC5
+pluginReleaseSuffix=DEV
 

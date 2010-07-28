@@ -70,6 +70,5 @@
 	<classpathentry kind="var" path="CYTOSCAPE_HOME/lib/undo.support.jar"/>
 	<classpathentry kind="var" path="CYTOSCAPE_HOME/lib/violinstrings-1.0.2.jar"/>
 	<classpathentry kind="var" path="CYTOSCAPE_HOME/lib/woodstox.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/prefuse-beta/build/prefuse.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
