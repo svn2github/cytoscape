@@ -322,7 +322,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	public void onSelectEvent(final SelectEvent event) {
 		if (event.getTargetType() == SelectEvent.SINGLE_NODE || event.getTargetType() == SelectEvent.NODE_SET) {
 			final Set<Node> selectedNodes = (Set<Node>)Cytoscape.getCurrentNetwork().getSelectedNodes();
-			final Set<String> selectedNestedNetworkIDs = new TreeSet<String>();
+			final List<String> selectedNestedNetworkIDs = new ArrayList<String>();
 			for (final Node node : selectedNodes) {
 				final CyNetwork nestedNetwork = (CyNetwork)node.getNestedNetwork();
 				if (nestedNetwork != null)
@@ -332,7 +332,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			if (!selectedNestedNetworkIDs.isEmpty()) {
 				doNotEnterValueChanged = true;
 				try {
-					final TreePath[] treePaths = new TreePath[selectedNestedNetworkIDs.size()];
+					final TreePath[] treePaths = new TreePath[selectedNestedNetworkIDs.size() + 1];
 					int index = 0;
 					final String currentNetworkID = Cytoscape.getCurrentNetwork().getIdentifier();
 					TreePath currentPath = null;
@@ -346,6 +346,9 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 							treePaths[index++] = path;
 					}
 
+					Cytoscape.setSelectedNetworks(selectedNestedNetworkIDs);
+
+					treePaths[index] = currentPath;
 					tree.getSelectionModel().setSelectionPaths(treePaths);
 					tree.scrollPathToVisible(currentPath);
 				} finally {
