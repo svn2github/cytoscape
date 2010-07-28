@@ -509,7 +509,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * Perform a layout
 	 */
-	public void layoutPartion(LayoutPartition partition) {
+	public void layoutPartition(LayoutPartition partition) {
 		this.partition = partition;
 
 		Dimension initialLocation = null;

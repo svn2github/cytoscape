@@ -87,8 +87,7 @@ public class LayoutLabelPartition extends LayoutPartition {
     public LayoutLabelPartition(LayoutPartition part, 
 				double weightCoefficient, 
 				boolean moveNodes, 
-				boolean selectedOnly,
-				boolean isWeighted) {
+				boolean selectedOnly) {
 
 	super(part.size(), part.getEdgeList().size());
 
@@ -197,32 +196,28 @@ public class LayoutLabelPartition extends LayoutPartition {
 	Double weight = null;
 	
 	// -- First set labelEdges weights --
-	if (this.isWeighted) {
-	    // Calculate maximum preexisting weight
-	    Double maxWeight = new Double(Double.MIN_VALUE);
 
-	    ListIterator<LayoutEdge>iter = edgeList.listIterator();
+	// Calculate maximum preexisting weight
+	Double maxWeight = new Double(Double.MIN_VALUE);
 
-	    while (iter.hasNext()) {
-		LayoutEdge edge = iter.next();
+	ListIterator<LayoutEdge>iter = edgeList.listIterator();
+
+	while (iter.hasNext()) {
+	    LayoutEdge edge = iter.next();
 	    
-		// Only consider non label edges
-		if (labelToParentMap.keySet().contains(edge.getSource()) || 
-		    labelToParentMap.keySet().contains(edge.getTarget()) ) {
-		    continue;
-		}
-
-		if (  edge.getWeight() > maxWeight ) {
-		    maxWeight = edge.getWeight();
-		}
+	    // Only consider non label edges
+	    if (labelToParentMap.keySet().contains(edge.getSource()) || 
+		labelToParentMap.keySet().contains(edge.getTarget()) ) {
+		continue;
 	    }
 
-	    // Value which will be used as weight for all label edges
-	    weight = maxWeight *  weightCoefficient;
-	} 
-	else { // if (!this.isWeighted)
-	    weight = weightCoefficient;
+	    if (  edge.getWeight() > maxWeight ) {
+		maxWeight = edge.getWeight();
+	    }
 	}
+
+	// Value which will be used as weight for all label edges
+	weight = maxWeight *  weightCoefficient;
 	
 	// Set all labelEdge weights
 	ListIterator<LayoutEdge>iter2 = edgeList.listIterator();
@@ -234,11 +229,7 @@ public class LayoutLabelPartition extends LayoutPartition {
 		labelToParentMap.keySet().contains(edge.getTarget()) ) {		
 		// set label edges weights
 		edge.setWeight(weight);		
-	    } else{ // non label edge (normal one)
-		if (!this.isWeighted){
-		    edge.setWeight(1.0);
-		}
-	    }
+	    } 
 	}
 
 

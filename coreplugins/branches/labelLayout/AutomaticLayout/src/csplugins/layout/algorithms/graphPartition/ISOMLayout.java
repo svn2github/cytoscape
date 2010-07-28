@@ -218,7 +218,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 	 *
 	 * @param partition DOCUMENT ME!
 	 */
-	public void layoutPartion(LayoutPartition partition) {
+	public void layoutPartition(LayoutPartition partition) {
 		this.partition = partition;
 
 		int nodeCount = partition.nodeCount();

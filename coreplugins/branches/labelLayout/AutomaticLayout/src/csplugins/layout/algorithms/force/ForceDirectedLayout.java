@@ -121,12 +121,12 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	}
 
 
-	public void layoutPartion(LayoutPartition part) {
+	public void layoutPartition(LayoutPartition part) {
 		Dimension initialLocation = null;
-		// logger.debug("layoutPartion: "+part.getEdgeList().size()+" edges");
+		// logger.debug("layoutPartition: "+part.getEdgeList().size()+" edges");
 		// Calculate our edge weights
 		part.calculateEdgeWeights();
-		// logger.debug("layoutPartion: "+part.getEdgeList().size()+" edges after calculateEdgeWeights");
+		// logger.debug("layoutPartition: "+part.getEdgeList().size()+" edges after calculateEdgeWeights");
 
 		m_fsim.clear();
 

@@ -432,7 +432,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * Perform a layout
 	 */
-	public void layoutPartion(LayoutPartition partition) {
+	public void layoutPartition(LayoutPartition partition) {
 		Iterator iter = null;
 		Dimension initialLocation = null;
 		this.partition = partition;

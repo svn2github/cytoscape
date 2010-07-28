@@ -85,16 +85,37 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 	    lp = parser.parseStringValue(labelPosition);
 	    // logger.info("ObjectPosition succesfully parsed!");
 	}
-	
-// 	logger.info("Parent node: " + parentNodeView.getNode().getIdentifier());
-// 	logger.info("Offset = " + lp.getOffsetX() + ", " + lp.getOffsetY() );
 
-	this.setX(lp.getOffsetX() + parentNodeView.getXPosition());
-	this.setY(lp.getOffsetY() + parentNodeView.getYPosition());	    
-	this.neighbors = new ArrayList<LayoutNode>();
-	this.index = index;
+	try {	
+	    // 	logger.info("Parent node: " + parentNodeView.getNode().getIdentifier());
+	    // 	logger.info("Offset = " + lp.getOffsetX() + ", " + lp.getOffsetY() );
+	    
+	    this.setX(lp.getOffsetX() + parentNodeView.getXPosition());
+	    this.setY(lp.getOffsetY() + parentNodeView.getYPosition());	    
+	    this.neighbors = new ArrayList<LayoutNode>();
+	    this.index = index;
 
-	// logger.info("Created " + this.getIdentifier() + "placed in: " + this.getX() + ", " + this.getY() );
+	    // logger.info("Created " + this.getIdentifier() + "placed in: " + this.getX() + ", " + this.getY() );
+	}
+	catch(Exception e) {
+	    // Log error
+	    logger.warning("Error detected while creating LayoutLabelNodeImp: " + e.toString() );
+
+	    // Reset this attribute by eliminating it
+
+	    if (nodeAtts.hasAttribute(parentNodeView.getNode().getIdentifier(), "node.labelPosition")) {
+		nodeAtts.deleteAttribute(parentNodeView.getNode().getIdentifier(), "node.labelPosition");
+		logger.warning("Deleted 'node.labelPosition' attribute");
+	    }
+ 
+	    lp = new ObjectPositionImpl();
+	    logger.warning("Created new ObjectPosition!");	    
+
+	    this.setX( parentNodeView.getXPosition() );
+	    this.setY( parentNodeView.getYPosition() );	    
+	    this.neighbors = new ArrayList<LayoutNode>();
+	    this.index = index;
+	}
     }
 
     /**
@@ -123,7 +144,8 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 	    nodeAtts.setAttribute(parentNodeView.getNode().getIdentifier(),
 	    			  "node.labelPosition", lp.shortString());
 
-	    //	    logger.info("Label node was moved!");
+// 	    logger.info("Label node was moved!, short string: " + lp.shortString());
+// 	    logger.info("full label string: " + lp.toString() );
 	} 
     }
 

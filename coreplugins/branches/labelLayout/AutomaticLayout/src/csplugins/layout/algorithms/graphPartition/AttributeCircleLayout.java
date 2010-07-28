@@ -242,7 +242,7 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 	 *
 	 * @param partition DOCUMENT ME!
 	 */
-	public void layoutPartion(LayoutPartition partition) {
+	public void layoutPartition(LayoutPartition partition) {
 		data = Cytoscape.getNodeAttributes();
 
 		// just add the unlocked nodes

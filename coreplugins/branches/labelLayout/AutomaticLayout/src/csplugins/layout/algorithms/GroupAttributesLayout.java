@@ -286,7 +286,7 @@ public class GroupAttributesLayout extends AbstractGraphPartition {
 	/**
 	 *  DOCUMENT ME!
 	 */
-	public void layoutPartion(LayoutPartition partition) {
+	public void layoutPartition(LayoutPartition partition) {
 		if (canceled) return;
 
 		taskMonitor.setStatus("Initializing");

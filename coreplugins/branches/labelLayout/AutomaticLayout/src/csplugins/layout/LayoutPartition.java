@@ -313,7 +313,7 @@ public class LayoutPartition {
 		iter.remove();
 
 	    //logger.debug("Edge "+edge.getEdge().getIdentifier()+" now has weight "+edge.getWeight());
-	    logger.info( edge.toString() + " now has weight "+edge.getWeight());
+	    // logger.info( edge.toString() + " now has weight "+edge.getWeight());
 	}
     }
 

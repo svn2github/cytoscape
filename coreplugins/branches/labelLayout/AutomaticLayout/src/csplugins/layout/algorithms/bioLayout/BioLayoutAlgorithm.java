@@ -313,7 +313,7 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	/**
 	 * Main function that must be implemented by the child class.
 	 */
-	public abstract void layoutPartion(LayoutPartition partition);
+	public abstract void layoutPartition(LayoutPartition partition);
 
 	protected void initialize_local() {
 	}
