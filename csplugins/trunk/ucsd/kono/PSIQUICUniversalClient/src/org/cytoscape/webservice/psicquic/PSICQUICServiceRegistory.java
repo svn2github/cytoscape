@@ -33,8 +33,6 @@ import cytoscape.logger.CyLogger;
 
 public class PSICQUICServiceRegistory {
 
-	private static RegistryManager manager;
-
 	private enum OperationType {
 		GET_COUNT, IMPORT;
 	}
@@ -43,7 +41,7 @@ public class PSICQUICServiceRegistory {
 	private static Map<URI, String> serviceNames;
 	private static List<PsicquicService> ports;
 
-	private Set<URI> emptyResults = new CopyOnWriteArraySet<URI>();
+	Set<URI> skip = new CopyOnWriteArraySet<URI>();
 
 	/*
 	 * Initialize services. In 3.0, this will be done by Spring DM.
@@ -56,19 +54,17 @@ public class PSICQUICServiceRegistory {
 		try {
 			// Human-readable database name should be taken from PSI-MI 2.5
 			// ontology.
-
-			manager = new RegistryManager();
-
-			for (String serviceName : manager.getRegistry().keySet()) {
+			
+			for (String serviceName : RegistryManager.getManager().getActiveServices().keySet()) {
 				final ClientProxyFactoryBean factory = new JaxWsProxyFactoryBean();
 				factory.setServiceClass(PsicquicService.class);
-				factory.setAddress(manager.getRegistry().get(serviceName));
+				factory.setAddress(RegistryManager.getManager().getActiveServices().get(serviceName));
 				serviceNames.put(
-						new URI(manager.getRegistry().get(serviceName)),
+						new URI(RegistryManager.getManager().getActiveServices().get(serviceName)),
 						serviceName);
 				final PsicquicService port = (PsicquicService) factory.create();
 				ports.add(port);
-				services.put(new URI(manager.getRegistry().get(serviceName)),
+				services.put(new URI(RegistryManager.getManager().getActiveServices().get(serviceName)),
 						port);
 			}
 		} catch (Exception e) {
@@ -128,7 +124,7 @@ public class PSICQUICServiceRegistory {
 			System.out.println("Submit search query to " + key);
 		}
 
-		emptyResults.clear();
+		skip.clear();
 		try {
 			for (int i = 0; i < services.size(); i++) {
 				res = cs.take();
@@ -140,7 +136,7 @@ public class PSICQUICServiceRegistory {
 							+ ": Interactions Found =  "
 							+ qr.getResultInfo().getTotalResults());
 					if (qr.getResultInfo().getTotalResults() == 0) {
-						emptyResults.add(name);
+						skip.add(name);
 					}
 				}
 			}
@@ -192,7 +188,7 @@ public class PSICQUICServiceRegistory {
 		// Submit tasks
 		Object port;
 		for (URI key : services.keySet()) {
-			if (emptyResults.contains(key))
+			if (skip.contains(key))
 				continue;
 
 			port = services.get(key);
@@ -204,16 +200,16 @@ public class PSICQUICServiceRegistory {
 				cs.submit(new PSICQUICRemoteTask(interactors, reqInfo,
 						operator, port, key, OperationType.IMPORT));
 			}
-			System.out.println("Submit search query to " + key);
+			System.out.println("Submit import request to " + key);
 		}
 
 		try {
 
-			for (int i = 0; i < services.size() - emptyResults.size(); i++) {
+			for (int i = 0; i < services.size() - skip.size(); i++) {
 
 				res = cs.take();
 				URI name = (URI) res.get().get(0);
-				if (emptyResults.contains(name))
+				if (skip.contains(name))
 					continue;
 
 				final List<QueryResponse> qrList = new ArrayList<QueryResponse>();
@@ -251,13 +247,13 @@ public class PSICQUICServiceRegistory {
 	}
 
 	protected boolean isEmpty(final URI serviceURI) {
-		if (this.emptyResults.contains(serviceURI))
+		if (this.skip.contains(serviceURI))
 			return true;
 		else
 			return false;
 	}
 
-	class PSICQUICRemoteTask implements Callable<List<Object>>,
+	static final class PSICQUICRemoteTask implements Callable<List<Object>>,
 			CyWebServiceEventListener {
 
 		List<DbRef> interactorList;

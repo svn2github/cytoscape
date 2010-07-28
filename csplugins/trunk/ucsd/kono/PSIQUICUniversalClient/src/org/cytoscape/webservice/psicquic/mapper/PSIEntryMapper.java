@@ -40,12 +40,12 @@ public class PSIEntryMapper {
 	public void map(Entry entry) {
 		
 		// Extract All
-		AttributeList attrs = entry.getAttributeList();
-		AvailabilityList availability = entry.getAvailabilityList();
-		ExperimentDescriptionList expList = entry.getExperimentList();
+//		AttributeList attrs = entry.getAttributeList();
+//		AvailabilityList availability = entry.getAvailabilityList();
+//		ExperimentDescriptionList expList = entry.getExperimentList();
 		InteractionList interactions = entry.getInteractionList();
 		InteractorList interactors = entry.getInteractorList();
-		Source source = entry.getSource();
+//		Source source = entry.getSource();
 		
 		mapInteractors(interactors);
 		mapInteractions(interactions);

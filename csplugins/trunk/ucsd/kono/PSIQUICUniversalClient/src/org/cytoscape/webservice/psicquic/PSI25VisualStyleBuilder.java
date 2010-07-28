@@ -1,7 +1,9 @@
 package org.cytoscape.webservice.psicquic;
 
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
+import giny.view.Justification;
 import giny.view.Label;
+import giny.view.Position;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -22,6 +24,7 @@ import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.mappings.DiscreteMapping;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
+import ding.view.ObjectPositionImpl;
 
 public class PSI25VisualStyleBuilder {
 
@@ -29,7 +32,7 @@ public class PSI25VisualStyleBuilder {
 	private static final String DEF_VS_NAME = "PSI-MI 25 Style";
 
 	// Prefix for all PSI-MI 25 attributes
-	private static final String ATTR_PREFIX = "PSI-MI-25.";
+	public static final String ATTR_PREFIX = "PSI-MI-25.";
 
 	// Top level interaction types
 	private static final String[] ITR_TYPE_ROOT_TERMS = { "MI:0208", "MI:0403",
@@ -61,9 +64,12 @@ public class PSI25VisualStyleBuilder {
 		// Default values
 		final int edgeOp = 160;
 		final Color nodeColor = new Color(0, 128, 128);
-		final Color nodeLineColor = new Color(20, 20, 20);
+		final Color nodeLineColor = new Color(40, 40, 40);
 		final Color nodeLabelColor = new Color(30, 30, 30);
 
+		final Color nodeCompoundColor = new Color(100, 100, 100);
+		final Color nodeNestedColor = Color.white;
+		
 		// final Color edgeColor = new Color(112,128,144);
 		final Color edgeColor = Color.black;
 		final Font nodeLabelFont = new Font("SansSerif.BOLD", 16, Font.BOLD);
@@ -86,7 +92,7 @@ public class PSI25VisualStyleBuilder {
 				nodeColor);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE,
 				NodeShape.RECT);
-		nac.getDefaultAppearance().set(VisualPropertyType.NODE_OPACITY, 180);
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_OPACITY, 150);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_OPACITY,
 				220);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_LINE_WIDTH, 3);
@@ -98,13 +104,57 @@ public class PSI25VisualStyleBuilder {
 				nodeLabelColor);
 		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FONT_FACE,
 				nodeLabelFont);
+		
 		nac.getDefaultAppearance().set(
 				VisualPropertyType.NODE_LABEL_POSITION,
 				new LabelPosition(Label.SOUTH, Label.NORTHWEST,
 						Label.JUSTIFY_CENTER, -7, 1.0));
+		
+		// TODO: this is for 2.8.0
+//		nac.getDefaultAppearance().set(
+//				VisualPropertyType.NODE_LABEL_POSITION,
+//				new ObjectPositionImpl(Position.SOUTH, Position.NORTH_WEST,
+//						Justification.JUSTIFY_CENTER, -7, 1.0));
 
-		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FONT_SIZE, 14);
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FONT_SIZE, 10);
 		nac.setNodeSizeLocked(false);
+		
+		DiscreteMapping nodeColorMapping = new DiscreteMapping(nodeColor,
+				ATTR_PREFIX + "interactor type", ObjectMapping.NODE_MAPPING);
+		nodeColorMapping.putMapValue("compound", nodeCompoundColor);
+		nodeColorMapping.putMapValue("nested", nodeNestedColor);
+		final Calculator nodeColorCalc = new BasicCalculator(DEF_VS_NAME + "-"
+				+ "NodeColorMapping", nodeColorMapping,
+				VisualPropertyType.NODE_FILL_COLOR);
+		nac.setCalculator(nodeColorCalc);
+		
+		DiscreteMapping nodeShapeMapping = new DiscreteMapping(NodeShape.RECT,
+				ATTR_PREFIX + "interactor type", ObjectMapping.NODE_MAPPING);
+		nodeShapeMapping.putMapValue("compound", NodeShape.ELLIPSE);
+		nodeShapeMapping.putMapValue("nested", NodeShape.ROUND_RECT);
+		final Calculator nodeShapeCalc = new BasicCalculator(DEF_VS_NAME + "-"
+				+ "NodeShapeMapping", nodeShapeMapping,
+				VisualPropertyType.NODE_SHAPE);
+		nac.setCalculator(nodeShapeCalc);
+		
+		DiscreteMapping nodeWidthMapping = new DiscreteMapping(30,
+				ATTR_PREFIX + "interactor type", ObjectMapping.NODE_MAPPING);
+		nodeWidthMapping.putMapValue("compound", 15);
+		nodeWidthMapping.putMapValue("nested", 100);
+		final Calculator nodeWidthCalc = new BasicCalculator(DEF_VS_NAME + "-"
+				+ "NodeWidthMapping", nodeWidthMapping,
+				VisualPropertyType.NODE_WIDTH);
+		nac.setCalculator(nodeWidthCalc);
+		DiscreteMapping nodeHeightMapping = new DiscreteMapping(30,
+				ATTR_PREFIX + "interactor type", ObjectMapping.NODE_MAPPING);
+		nodeHeightMapping.putMapValue("compound", 15);
+		nodeHeightMapping.putMapValue("nested", 100);
+		final Calculator nodeHeightCalc = new BasicCalculator(DEF_VS_NAME + "-"
+				+ "NodeHeightMapping", nodeHeightMapping,
+				VisualPropertyType.NODE_HEIGHT);
+		nac.setCalculator(nodeHeightCalc);
+		
+		
 
 		// eac.setCalculator(calce);
 		eac.getDefaultAppearance()

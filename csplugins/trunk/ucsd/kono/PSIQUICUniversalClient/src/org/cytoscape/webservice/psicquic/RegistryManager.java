@@ -29,31 +29,65 @@ import org.xml.sax.SAXException;
  * 
  */
 public class RegistryManager {
-	
+
+	private static RegistryManager manager;
+
+	static {
+		try {
+			manager = new RegistryManager();
+		} catch (IOException e) {
+			manager = null;
+			e.printStackTrace();
+		}
+	}
+
+	public static RegistryManager getManager() {
+		return manager;
+	}
+
 	// Tag definitions
 	private static final String SOAP_URL = "soapUrl";
+	private static final String IS_ACTIVE = "active";
 	private static final String SERVICE_URL = "http://www.ebi.ac.uk/Tools/webservices/psicquic/registry/registry";
-	
-	//Defines action command
+
+	// Defines action command
 	public enum STATE {
 		ACTIVE, INACTIVE, STATUS;
 	}
 
-	private final Map<String, String> regMap;
+	private final Map<String, String> activeServiceMap;
+	private final Map<String, String> inactiveServiceMap;
+	
+	private final Map<String, Boolean> statusMap;
+	private final Map<String, String> urlMap;
 
-	public RegistryManager() throws IOException {
-		regMap = new HashMap<String, String>();
+	private RegistryManager() throws IOException {
+		activeServiceMap = new HashMap<String, String>();
+		inactiveServiceMap = new HashMap<String, String>();
+		statusMap = new HashMap<String, Boolean>();
+		urlMap = new HashMap<String, String>();
 		invoke();
 	}
 
-	public Map<String, String> getRegistry() {
-		return regMap;
+	public Map<String, String> getActiveServices() {
+		return activeServiceMap;
 	}
 
-	
-	private void invoke() throws IOException {
-		String command = "?action=" + STATE.ACTIVE.name() +"&format=xml";
+	public Map<String, String> getInactiveServices() {
+		return inactiveServiceMap;
+	}
 
+	private void invoke() throws IOException {
+		final String command = "?action=" + STATE.STATUS.name() + "&format=xml";
+
+		callRegistry(command);
+		
+		setMap();
+
+		System.out.println("PSICQUIC Registory Manager is ready.");
+	}
+
+	private void callRegistry(final String command) throws IOException {
 		URL url = new URL(SERVICE_URL + command);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
@@ -73,27 +107,27 @@ public class RegistryManager {
 			builder.append(next);
 		}
 
+		reader.close();
+		reader = null;
+
 		try {
 			parse(builder.toString());
 		} catch (ParserConfigurationException e) {
-			
+
 			e.printStackTrace();
 			throw new IOException("Could not parse message from registry.");
 		} catch (XPathException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new IOException("Could not parse message from registry.");
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new IOException("Could not parse message from registry.");
 		}
-		
-		System.out.println("PSICQUIC Registory Manager is ready.");
 
 	}
 
-	private void parse(String result) throws ParserConfigurationException, IOException, XPathException, SAXException {
+	private void parse(String result) throws ParserConfigurationException,
+			IOException, XPathException, SAXException {
 
 		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docbuilder = dbfactory.newDocumentBuilder();
@@ -111,7 +145,8 @@ public class RegistryManager {
 		for (int i = 0; i < list.getLength(); i++) {
 			regName = list.item(i).getFirstChild().getFirstChild()
 					.getNodeValue();
-			System.out.println("Service Provider " + i  + ": " + regName);
+			System.out.println("Service Provider " + i + ": " + regName);
+
 			walk(list.item(i), regName);
 		}
 
@@ -119,16 +154,31 @@ public class RegistryManager {
 
 	private void walk(Node item, String serviceName) {
 
-			String tag = null;
-			for(Node n = item.getFirstChild(); n!=null; n = n.getNextSibling()) {
-				tag = item.getNodeName();
-				if(tag.equals(SOAP_URL)) {
-					System.out.println("SOAP = "
-							+ item.getFirstChild().getNodeValue());
-					regMap.put(serviceName, item.getFirstChild().getNodeValue());
-					return;
-				}
-				walk(n, serviceName);
-			}	
+		String tag = null;
+		
+		for (Node n = item.getFirstChild(); n != null; n = n.getNextSibling()) {
+			tag = item.getNodeName();
+			if (tag.equals(SOAP_URL)) {
+				System.out.println("SOAP = "
+						+ item.getFirstChild().getNodeValue());
+				urlMap.put(serviceName, item.getFirstChild().getNodeValue());
+
+			} else if (tag.equals(IS_ACTIVE)) {
+				System.out.println("Active? = "
+						+ item.getFirstChild().getNodeValue());
+				statusMap.put(serviceName, Boolean.parseBoolean(item.getFirstChild().getNodeValue()));
+			}
+			walk(n, serviceName);
+		}
+	}
+	
+	private void setMap() {
+		for(String serviceName: statusMap.keySet()){
+			System.out.println("######## Complete for " + serviceName + " = " + statusMap.get(serviceName));
+			if (statusMap.get(serviceName) == true)
+				activeServiceMap.put(serviceName, urlMap.get(serviceName));
+			else
+				inactiveServiceMap.put(serviceName, urlMap.get(serviceName));
+		}
 	}
 }

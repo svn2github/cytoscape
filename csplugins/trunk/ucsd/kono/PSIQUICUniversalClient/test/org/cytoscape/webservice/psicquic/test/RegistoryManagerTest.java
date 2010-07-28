@@ -22,9 +22,8 @@ public class RegistoryManagerTest {
 	
 	@Test
 	public void accessRegistory() throws Exception {
-		RegistryManager rm = new RegistryManager();
 		
-		assertNotNull(rm.getRegistry());
+		assertNotNull(RegistryManager.getManager().getActiveServices());
 	}
 
 }

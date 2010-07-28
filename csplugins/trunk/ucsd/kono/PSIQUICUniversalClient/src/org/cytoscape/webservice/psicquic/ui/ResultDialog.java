@@ -16,12 +16,16 @@ import cytoscape.util.CyNetworkNaming;
 public class ResultDialog extends javax.swing.JDialog {
 
 	private static final long serialVersionUID = 6996385373168492882L;
+	
 	private Map<URI, String> dbNames;
 	private DefaultTableModel model;
 
 	private boolean mergeNetworks;
 
-	/** Creates new form PSICQUICResultDialog */
+	/** 
+	 * Creates new form PSICQUICResultDialog 
+	 * 
+	 */
 	public ResultDialog(Frame parent, boolean modal, Map<URI, String> dbNames) {
 		super(parent, modal);
 		this.dbNames = dbNames;
@@ -42,7 +46,7 @@ public class ResultDialog extends javax.swing.JDialog {
 		});
 
 		model = (DefaultTableModel) resultTable.getModel();
-		model.addColumn("Source", dbNames.keySet().toArray());
+		model.addColumn("Service URL", dbNames.keySet().toArray());
 		model.addColumn("Network Name (Please edit these if necessary)");
 		for (int i = 0; i < model.getRowCount(); i++) {
 			model.setValueAt(dbNames.get(model.getValueAt(i, 0)), i, 1);

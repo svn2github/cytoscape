@@ -10,12 +10,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import org.cytoscape.webservice.psicquic.mapper.Mitab25Mapper;
 import org.cytoscape.webservice.psicquic.ui.ResultDialog;
+import org.cytoscape.webservice.psicquic.ui.SearchResultDialog;
 import org.hupo.psi.mi.psicquic.DbRef;
 import org.hupo.psi.mi.psicquic.QueryResponse;
 import org.hupo.psi.mi.psicquic.RequestInfo;
@@ -70,16 +73,14 @@ public class PSICQUICUniversalClient extends
 
 		// General setting
 		props.add(new Tunable("block_size", "Block Size", Tunable.INTEGER,
-				new Integer(100)));
+				Integer.valueOf(100)));
 		props.add(new Tunable("timeout", "Timeout (sec.)", Tunable.INTEGER,
 				new Integer(6000)));
-		props.add(new Tunable("active_only", "Active Services Only",
-				Tunable.BOOLEAN, new Boolean(true)));
 
 		final String[] modeArray = { QueryMode.GET_BY_INTERACTOR.name(),
 				QueryMode.GET_BY_QUERY.toString() };
 		props.add(new Tunable("query_mode", "Query Mode", Tunable.LIST,
-				new Integer(0), (Object) modeArray, (Object) null, 0));
+				Integer.valueOf(0), (Object) modeArray, (Object) null, 0));
 
 	}
 
@@ -102,6 +103,8 @@ public class PSICQUICUniversalClient extends
 	private Map<URI, QueryResponse> sResult;
 	private List<DbRef> queryList;
 	private String query;
+	
+	private final ServiceState states;
 
 	static {
 		try {
@@ -119,6 +122,9 @@ public class PSICQUICUniversalClient extends
 		setDescription();
 		// Set properties for this client.
 		setProperty();
+		
+		this.states = new ServiceState(((PSICQUICServiceRegistory) clientStub));
+
 	}
 
 	public static WebServiceClient<PSICQUICServiceRegistory> getClient() {
@@ -135,9 +141,16 @@ public class PSICQUICUniversalClient extends
 
 		if (e.getSource().equals(CLIENT_ID)) {
 			if (e.getEventType().equals(WSEventType.IMPORT_NETWORK)) {
-				importNetwork(e.getParameter(), null);
+				SearchResultDialog searchResultDialog = new SearchResultDialog(Cytoscape.getDesktop(), states);
+				searchResultDialog.setVisible(true);
+				Set<String> selected = searchResultDialog.getSelected();
+				
+				importNetwork(selected, null);
 			} else if (e.getEventType().equals(WSEventType.EXPAND_NETWORK)) {
-				importNetwork(e.getParameter(), Cytoscape.getCurrentNetwork());
+				SearchResultDialog searchResultDialog = new SearchResultDialog(Cytoscape.getDesktop(), states);
+				searchResultDialog.setVisible(true);
+				Set<String> selected = searchResultDialog.getSelected();
+				importNetwork(selected, Cytoscape.getCurrentNetwork());
 			} else if (e.getEventType().equals(WSEventType.SEARCH_DATABASE)) {
 				search(e.getParameter().toString(), e);
 			}
@@ -188,19 +201,32 @@ public class PSICQUICUniversalClient extends
 			nextMove = WSEventType.IMPORT_NETWORK;
 
 		Integer total = 0;
-		for (URI key : sResult.keySet())
+		for (URI key : sResult.keySet()) {
+			final Integer count = sResult.get(key).getResultInfo().getTotalResults();
+			states.setRecentResultCount(states.getName(key.toString()), count);
 			total = total + sResult.get(key).getResultInfo().getTotalResults();
-
+		}
+			
 		Cytoscape.firePropertyChange(SEARCH_FINISHED.toString(), this.clientID,
 				new DatabaseSearchResult<Map<URI, QueryResponse>>(total,
 						sResult, nextMove));
 
 	}
 
-	private void importNetwork(Object result, CyNetwork e)
+	private void importNetwork(Set<String> selected, CyNetwork e)
 			throws CyWebServiceException {
+		
+		if(selected == null || selected.size() == 0)
+			return;
 
 		PSICQUICServiceRegistory importClient = ((PSICQUICServiceRegistory) clientStub);
+		for(URI uri:importClient.getServiceNames().keySet()) {
+			String name = importClient.getServiceNames().get(uri);
+			if(selected.contains(name) == false)
+				importClient.skip.add(uri);
+		}
+		
+		
 		Map<URI, List<QueryResponse>> importResult = null;
 		final RequestInfo info = new RequestInfo();
 
@@ -291,6 +317,9 @@ public class PSICQUICUniversalClient extends
 			targetView.redrawGraph(true, false);
 			CyNode nestedNode = Cytoscape.getCyNode(net.getTitle(), true);
 			nestedNode.setNestedNetwork(net);
+			
+			Cytoscape.getNodeAttributes().setAttribute(nestedNode.getIdentifier(), PSI25VisualStyleBuilder.ATTR_PREFIX + "interactor type", "nested");
+			
 			parentNetwork.addNode(nestedNode);
 			parentNetwork.addEdge(Cytoscape.getCyEdge(nestedNode, centerNode, "interaction", "query_result", true));
 		}
@@ -359,6 +388,10 @@ public class PSICQUICUniversalClient extends
 			interactorList.add(dbRef);
 		}
 		return interactorList;
+	}
+	
+	public void getLatestSearchResult() {
+		
 	}
 
 }
