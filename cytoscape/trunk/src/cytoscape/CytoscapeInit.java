@@ -456,8 +456,9 @@ public class CytoscapeInit implements PropertyChangeListener {
 					// The following code has problem to load session file from command line on Windows
 					// because prefix driver letter "C:\" or "D:\\" was removed from the absolute path
 					final File shortName = new File(sessionFile);
-					final String absolutePath = shortName.getAbsolutePath();
-					
+					String absolutePath = shortName.getAbsolutePath();
+					if (absolutePath.startsWith("/"))
+						absolutePath = "/" + absolutePath;
 					
 					System.out.println("absolutePath = "+absolutePath);
 					
