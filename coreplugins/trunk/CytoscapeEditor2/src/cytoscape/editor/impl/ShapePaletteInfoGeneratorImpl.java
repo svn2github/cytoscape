@@ -175,7 +175,7 @@ public class ShapePaletteInfoGeneratorImpl implements ShapePaletteInfoGenerator 
 		if (calc != null) {
 			// Vector edgeMappings = calc.getMappings();
 			// for (int i = 0; i < edgeMappings.size(); i++) {
-			for (ObjectMapping possibleMatch : (Vector<ObjectMapping<?>>) calc.getMappings()) {
+			for (ObjectMapping possibleMatch : (Vector<ObjectMapping>) calc.getMappings()) {
 				if ((possibleMatch instanceof DiscreteMapping)
 				    && controllingAttribute.equals(((DiscreteMapping) possibleMatch)
 				                                                                                                                                                                          .getControllingAttributeName())) {
