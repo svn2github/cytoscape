@@ -1,6 +1,8 @@
 package org.idekerlab.PanGIAPlugin;
 
 
+import org.idekerlab.PanGIAPlugin.utilities.html.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,12 +15,13 @@ import org.idekerlab.PanGIAPlugin.ModFinder.HCScoringFunction;
 import org.idekerlab.PanGIAPlugin.ModFinder.HCSearch2;
 import org.idekerlab.PanGIAPlugin.ModFinder.SouravScore;
 import org.idekerlab.PanGIAPlugin.ModFinder.BFEdge.InteractionType;
-import org.idekerlab.PanGIAPlugin.data.DoubleVector;
+import org.idekerlab.PanGIAPlugin.data.*;
 import org.idekerlab.PanGIAPlugin.networks.SFNetwork;
 import org.idekerlab.PanGIAPlugin.networks.SNodeModule;
 import org.idekerlab.PanGIAPlugin.networks.hashNetworks.FloatHashNetwork;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.*;
 import org.idekerlab.PanGIAPlugin.utilities.collections.HashMapUtil;
+import org.idekerlab.PanGIAPlugin.utilities.collections.ListOps;
 import org.idekerlab.PanGIAPlugin.utilities.collections.SetUtil;
 
 import cytoscape.CyEdge;
@@ -31,6 +34,8 @@ import cytoscape.task.TaskMonitor;
 //import cytoscape.util.ScalingMethod;
 import org.idekerlab.PanGIAPlugin.util.Scaler;
 import org.idekerlab.PanGIAPlugin.util.ScalerFactory;
+
+import java.io.*;
 
 import javax.swing.*;
 
@@ -81,33 +86,6 @@ public class SearchTask implements Task {
 		
 		if (needsToHalt) return;
 		
-		//Apply the degree filter
-		int degreeFilter = parameters.getPhysicalNetworkFilterDegree();
-		if (degreeFilter!=-1)
-		{
-			TypedLinkNetwork<String,Float> ptlnet = physicalNetwork.asTypedLinkNetwork();
-			Set<String> pnodes = physicalNetwork.getNodes();
-			physicalNetwork = new FloatHashNetwork(ptlnet.subNetwork(pnodes, degreeFilter));
-		}
-				
-		if (needsToHalt) return;
-		
-		//Check for problems
-		if (physicalNetwork.numEdges()==0)
-		{
-			JOptionPane.showMessageDialog(null, "No edges were found in the physical network. Please verify that the network has edges and that the edge attribute is appropriate.");
-			this.halt();
-			return;
-		}else if (geneticNetwork.numEdges()==0)
-		{
-			JOptionPane.showMessageDialog(null, "No edges were found in the genetic network. Please verify that the network has edges and that the edge attribute is appropriate.");
-			this.halt();
-			return;
-		}
-		
-		System.out.println("Number of edges: "+physicalNetwork.numEdges()+", "+geneticNetwork.numEdges());
-		
-		if (needsToHalt) return;
 		
 		//Load trainingComplexes
 		List<SNodeModule> trainingComplexes = null;
@@ -134,6 +112,42 @@ public class SearchTask implements Task {
 		
 		
 		if (needsToHalt) return;
+		
+		//Apply the degree filter
+		int pnetNodes1 = physicalNetwork.numNodes();
+		int pnetEdges1 = physicalNetwork.numEdges();
+		
+		
+		int degreeFilter = parameters.getPhysicalNetworkFilterDegree();
+		if (degreeFilter!=-1)
+		{
+			TypedLinkNetwork<String,Float> ptlnet = physicalNetwork.asTypedLinkNetwork();
+			Set<String> pnodes = physicalNetwork.getNodes();
+			physicalNetwork = new FloatHashNetwork(ptlnet.subNetwork(pnodes, degreeFilter));
+		}
+		
+		int pnetNodes2 = physicalNetwork.numNodes();
+		int pnetEdges2 = physicalNetwork.numEdges();
+				
+		if (needsToHalt) return;
+		
+		//Check for problems
+		if (physicalNetwork.numEdges()==0)
+		{
+			JOptionPane.showMessageDialog(null, "No edges were found in the physical network. Please verify that the network has edges and that the edge attribute is appropriate.");
+			this.halt();
+			return;
+		}else if (geneticNetwork.numEdges()==0)
+		{
+			JOptionPane.showMessageDialog(null, "No edges were found in the genetic network. Please verify that the network has edges and that the edge attribute is appropriate.");
+			this.halt();
+			return;
+		}
+		
+		System.out.println("Number of edges: "+physicalNetwork.numEdges()+", "+geneticNetwork.numEdges());
+		
+		if (needsToHalt) return;
+		
 		
 		//Initialize the scoring function
 		final HCScoringFunction hcScoringFunction =
@@ -234,10 +248,11 @@ public class SearchTask implements Task {
 		final TypedLinkNetwork<String, Float> pNet = physicalNetwork.asTypedLinkNetwork();
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
 
+		String networkName = "PanGIA Results: "+ new java.util.Date();
 		final NestedNetworkCreator nnCreator =
 			new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork,
 			                         pNet, gNet, pValueThreshold, taskMonitor,
-			                         100.0f - COMPUTE_SIG_PERCENTAGE, module_name);
+			                         100.0f - COMPUTE_SIG_PERCENTAGE, module_name, networkName);
 
 		setStatus("Search finished!\n\n" + "Number of modules = "
 		          + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n"
@@ -262,7 +277,7 @@ public class SearchTask implements Task {
 		}
 		
 		//Generate report
-		if (!parameters.getReportPath().equals("")) generateReport(parameters.getReportPath());
+		if (!parameters.getReportPath().equals("")) generateReport(parameters.getReportPath(), networkName, pnetNodes1, pnetNodes2, pnetEdges1, pnetEdges2, geneticNetwork.numNodes(), geneticNetwork.numEdges(), trainingComplexes);
 	}
 
 	private static int getNumberOfSharedNodes(CyNetwork networkA, CyNetwork networkB){
@@ -501,8 +516,64 @@ public class SearchTask implements Task {
 		return scaledEdgeAttribValues;
 	}
 	
-	private static void generateReport(String path)
+	private void generateReport(String path, String networkName, int pnetNodes1, int pnetNodes2, int pnetEdges1, int pnetEdges2, int gnetNodes, int gnetEdges, List<SNodeModule> trainingComplexes)
 	{
+		HTMLPage report = new HTMLPage();
+		report.setTitle("PanGIA report: "+networkName);
 		
+		HTMLParagraphBlock b = new HTMLParagraphBlock(10);
+		b.add("PanGIA v. "+PanGIAPlugin.VERSION);
+		b.add("Please cite! ...");
+		b.add(networkName);
+		b.add("");
+		b.add("Physical network:");
+		b.add(parameters.getPhysicalNetwork().getIdentifier());
+		boolean isBinary = parameters.getPhysicalEdgeAttrName() == null || parameters.getPhysicalEdgeAttrName().length() == 0;
+		if (isBinary) b.add(parameters.getPhysicalEdgeAttrName()+"  (binary)");
+		else b.add(parameters.getPhysicalEdgeAttrName()+"  (numeric, scaling="+parameters.getPhysicalScalingMethod()+")");
+		b.add("Nodes: "+pnetNodes1+", Edges: "+pnetEdges1+"");
+		int nfd = parameters.getPhysicalNetworkFilterDegree();
+		if (nfd==-1) b.add("Network filter degree: None");
+		else b.add("Network filter degree: "+nfd+"   (Nodes: "+pnetNodes2+", Edges: "+pnetEdges2+")");
+		b.add("");
+		
+		b.add("Genetic network:");
+		b.add(parameters.getGeneticNetwork().getIdentifier());
+		isBinary = parameters.getGeneticEdgeAttrName() == null || parameters.getGeneticEdgeAttrName().length() == 0;
+		if (isBinary) b.add(parameters.getGeneticEdgeAttrName()+"  (binary)");
+		else b.add(parameters.getGeneticEdgeAttrName()+"  (numeric, scaling="+parameters.getGeneticScalingMethod()+")");
+		b.add("Nodes: "+gnetNodes+", Edges: "+gnetEdges+"");
+		b.add("");
+		
+		if (parameters.getComplexTrainingPhysical() || parameters.getComplexTrainingGenetic() || parameters.getComplexAnnotation())
+		{
+			b.add("Annotation: "+parameters.getAnnotationAttrName()+"  ("+trainingComplexes.size()+" entries)");
+			b.add("");
+			
+			if (parameters.getComplexTrainingPhysical())
+			{
+				b.add("Physical interaction annotation enrichment");
+				float[] x = new FloatVector(DoubleVector.getScale(0,100,2).getData()).getData();
+				float[] y = new FloatVector(DoubleVector.times(DoubleVector.rUnif(51),100)).getData();
+				
+				b.add("<IMG src=\"http://chart.apis.google.com/chart?cht=lxy&chs=500x300&chd=t:"+ListOps.collectionToString(x,",")+"|"+ListOps.collectionToString(y,",")+"&chxr=0,-25,10,5&chxt=x,x,y,y&chxl=1:|Interaction_Score|2:|10^-2|10^-1|10^0|10^1|10^2|10^3|3:|Enrichment&chxp=1,60|3,50&chco=0000FF&chxs=0,000000,12,0,lt|1,000000,12,1,lt|2,000000,12,2,lt|3,000000,12,3,lt&chg=0,100,3,3,0,40\">");
+				b.add("");
+			}
+			
+			
+		}
+		
+		
+		b.add("Search parameters: alpha="+parameters.getAlpha()+",  alphaMultiplier="+parameters.getAlphaMultiplier());
+		b.add("Edge filtering: pval="+parameters.getPValueThreshold()+",  samples="+parameters.getNumberOfSamples());
+		
+		//What else to report?
+
+		
+		
+		
+		report.addToBody(b);
+		
+		report.write(path);
 	}
 }

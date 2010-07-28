@@ -93,7 +93,7 @@ public class NestedNetworkCreator {
 	
 	/////////////// Node Attribute Names /////////////
 	// This is common prefix for all finders.
-	private static final String MODULE_FINDER_PREFIX = "Module Finder.";
+	private static final String MODULE_FINDER_PREFIX = "PanGIA.";
 	
 	// Number of nodes in a module
 	private static final String GENE_COUNT = MODULE_FINDER_PREFIX + "member count";
@@ -140,20 +140,17 @@ public class NestedNetworkCreator {
 			final TypedLinkNetwork<String, Float> geneticNetwork,
 			final double cutoff, final TaskMonitor taskMonitor,
 			final float remainingPercentage,
-			Map<TypedLinkNodeModule<String, BFEdge>,String> module_name)
+			Map<TypedLinkNodeModule<String, BFEdge>,String> module_name,
+			String networkName
+			)
 	{
 		// Network attributes created here is required for managing Visual Styles.
 		final CyAttributes networkAttr = Cytoscape.getNetworkAttributes();
 		
 		moduleToCyNodeMap = new HashMap<TypedLinkNodeModule<String, BFEdge>, CyNode>();
 
-		final Set<CyEdge> selectedEdges = new HashSet<CyEdge>();
-		final Set<CyNode> selectedNodes = new HashSet<CyNode>();
-
 		overviewNetwork = Cytoscape.createNetwork(
-				findNextAvailableNetworkName("Module Search Results: "
-						+ new java.util.Date()),
-				/* create_view = */false);
+				findNextAvailableNetworkName(networkName),	/* create_view = */false);
 		networkAttr.setAttribute(overviewNetwork.getIdentifier(), 
 				VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.OVERVIEW.name());
 		networkAttr.setUserVisible(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
@@ -234,27 +231,22 @@ public class NestedNetworkCreator {
 			final double pValue = edge.value().linkMerge();
 			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_PVALUE, Double
 					.valueOf(pValue));
-			if (pValue < cutoff) {
-				selectedEdges.add(newEdge);
-				selectedNodes.add((CyNode) newEdge.getSource());
-				selectedNodes.add((CyNode) newEdge.getTarget());
-			}
-
+			
 			final int gConnectedness = geneticNetwork.getConnectedness(
 					sourceModule.asStringSet(), targetModule.asStringSet());
 			edgeAttribs.setAttribute(newEdge.getIdentifier(),
-					"genetic interaction count", Integer.valueOf(gConnectedness));
+					"PanGIA.genetic interaction count", Integer.valueOf(gConnectedness));
 			final int pConnectedness = physicalNetwork.getConnectedness(
 					sourceModule.asStringSet(), targetModule.asStringSet());
 			edgeAttribs.setAttribute(newEdge.getIdentifier(),
-					"physical interaction count", Integer.valueOf(pConnectedness));
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), "source size",
+					"PanGIA.physical interaction count", Integer.valueOf(pConnectedness));
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), "PanGIA.source size",
 					Integer.valueOf(sourceModule.size()));
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), "target size",
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), "PanGIA.target size",
 					Integer.valueOf(targetModule.size()));
 			final double density = edgeScore
 					/ (sourceModule.size() * targetModule.size());
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), "density", Double
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), "PanGIA.genetic interaction density", Double
 					.valueOf(density));
 		}
 
@@ -262,10 +254,6 @@ public class NestedNetworkCreator {
 
 		Cytoscape.createNetworkView(overviewNetwork);
 		applyNetworkLayout(overviewNetwork, cutoff, maxScore);
-
-		// Visually mark selected edges and nodes:
-		overviewNetwork.setSelectedEdgeState(selectedEdges, true);
-		overviewNetwork.setSelectedNodeState(selectedNodes, true);
 
 		taskMonitor.setStatus("5. Generating network views");
 		int networkViewCount = 0;
@@ -355,7 +343,7 @@ public class NestedNetworkCreator {
 		for (final CyEdge edge : edges)
 		{
 			nestedNetwork.addEdge(edge);
-			cyEdgeAttrs.setAttribute(edge.getIdentifier(), "Module Finder.Interaction Type", "Physical");
+			cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical");
 		}
 
 		// Add the edges induced by "origGenNetwork" to our new nested network.
@@ -364,7 +352,7 @@ public class NestedNetworkCreator {
 		for (final CyEdge edge : edges)
 		{
 			nestedNetwork.addEdge(edge);
-			cyEdgeAttrs.setAttribute(edge.getIdentifier(), "Module Finder.Interaction Type", "Genetic");
+			cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic");
 		}
 
 		if (createNetworkView) {

@@ -176,6 +176,6 @@ public final class SearchParameters {
 	
 	public String getReportPath()
 	{
-		return this.getReportPath();
+		return this.reportPath;
 	}
 }

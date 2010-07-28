@@ -734,10 +734,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private void reportPathButtionActionPerformed(java.awt.event.ActionEvent evt) {
 		
 		JFileChooser reportFileChooser = new JFileChooser(".");
-		reportFileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		reportFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		reportFileChooser.setMultiSelectionEnabled(false);
-		reportFileChooser.setDialogTitle("Choose a report folder path");
-		reportFileChooser.setSelectedFile(new File("PanGIA_Report"));
+		reportFileChooser.setDialogTitle("Choose a report path");
+		reportFileChooser.setSelectedFile(new File(new File("PanGIA_Report.html").getAbsoluteFile().getName()));
 		int returnVal = reportFileChooser.showSaveDialog(reportPathButton);
 		
 		if (returnVal==JFileChooser.APPROVE_OPTION)
@@ -755,6 +755,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			reportPathTextField.setToolTipText("");
 			reportPathTextField.setEnabled(false);
 		}		
+		
+		updateSearchButtonState();
 	}
 	
 	
@@ -829,7 +831,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private JLabel reportPathLabel;
     private JTextField reportPathTextField;
     private JButton reportPathButton;
-    private String reportPath;
+    private String reportPath="";
         
     private JLabel parameterErrorLabel;
     // End of variables declaration                     
@@ -1169,6 +1171,13 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 				parameterErrorLabel.setText("Error: Invalid value for Labeling threshold.");
 				return;
 			}
+		}
+		
+		if (!reportPath.equals("") && new File(reportPath).exists() && new File(reportPath).isDirectory())
+		{
+			searchButton.setEnabled(false);
+			parameterErrorLabel.setText("Error: Report path cannot be a directory.");
+			return;
 		}
 		
 		

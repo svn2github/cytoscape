@@ -38,6 +38,6 @@ public class HTMLTextBlock extends HTMLBlock
 		{
 			for (String line : text)
 				bw.write(tabs+line+"\n");
-		}catch (IOException e) {System.out.println("Error HTMLPage.write(String): "+e);System.exit(0);}
+		}catch (IOException e) {e.printStackTrace();}
 	}
 }

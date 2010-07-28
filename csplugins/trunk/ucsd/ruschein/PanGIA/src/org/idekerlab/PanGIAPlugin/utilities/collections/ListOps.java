@@ -201,6 +201,32 @@ public class ListOps {
 
 		return out;
 	}
+	
+	
+
+	public static String collectionToString(double[] st, String delim) {
+		if (st.length == 0)
+			return "";
+
+		String out = String.valueOf(st[0]);
+
+		for (int i = 1; i < st.length; i++)
+			out += delim + st[i];
+
+		return out;
+	}
+	
+	public static String collectionToString(float[] st, String delim) {
+		if (st.length == 0)
+			return "";
+
+		String out = String.valueOf(st[0]);
+
+		for (int i = 1; i < st.length; i++)
+			out += delim + st[i];
+
+		return out;
+	}
 
 	public static String collectionToString(Collection<String> st, String delim) {
 		String out = "";

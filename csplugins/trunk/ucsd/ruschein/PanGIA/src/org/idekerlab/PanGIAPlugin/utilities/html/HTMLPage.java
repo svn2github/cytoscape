@@ -30,6 +30,11 @@ public class HTMLPage extends HTMLHyperBlock
 		body.add(new HTMLTable(st,border,al,width));
 	}
 	
+	public void addToBody(HTMLBlock b)
+	{
+		body.add(b);
+	}
+	
 	public void write(String file)
 	{
 		BufferedWriter bw = FileUtil.getBufferedWriter(file, false);
