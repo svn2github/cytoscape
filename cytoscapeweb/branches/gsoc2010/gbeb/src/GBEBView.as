@@ -124,7 +124,7 @@ package
                 //var bounds:Rectangle = new Rectangle(0, 0, width, height);
 								
 								_vis.operators.add(new Labeler("data.name"));
-                _vis.operators.add(new GBEBRouter(_bounds, 80 , 0.95));
+                _vis.operators.add(new GBEBRouter(_bounds, 32 , 0.95));
                 trace("GBEBView: how many times GBEBView called the GBEBRouter? " + addEventCounter++);
                 // ############################################################## 
 				

@@ -175,8 +175,8 @@ package gbeb.view.render
 					if(p != null)
 					{
 						g.lineStyle(0, 0, 0);
-						g.beginFill(0xCDEF12);
-						g.drawCircle(p.x, p.y, 5);
+						g.beginFill(0x000000);
+						g.drawCircle(p.x, p.y, 4);
 						g.endFill();
 					}
 				} 
