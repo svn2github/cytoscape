@@ -25,6 +25,7 @@
 		<ant dir="AdvancedNetworkMerge" />
 		<ant dir="NCBIClient" />
 		<ant dir="BioMartClient" />
+		<ant dir="EquationFunctions" />
 
 		<mkdir dir="${build.dir}" />
 		<copy todir="${build.dir}" file="browser/browser.jar" />
@@ -44,6 +45,7 @@
 		<copy todir="${build.dir}" file="AdvancedNetworkMerge/AdvancedNetworkMerge.jar" />
 		<copy todir="${build.dir}" file="NCBIClient/ncbiClient.jar" />
 		<copy todir="${build.dir}" file="BioMartClient/biomartClient.jar" />
+		<copy todir="${build.dir}" file="EquationFunctions/EquationFunctions.jar" />
 	</target>
 
 	<!-- clean all coreplugin projects  -->
@@ -65,6 +67,7 @@
 		<ant dir="AdvancedNetworkMerge" target="clean" />
 		<ant dir="NCBIClient" target="clean" />
 		<ant dir="BioMartClient" target="clean" />
+		<ant dir="EquationFunctions" target="clean" />
 		<delete dir="${build.dir}" />
 	</target>
 
