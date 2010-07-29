@@ -56,7 +56,7 @@ public class SemanticSummaryParameters
 	
 	//Font Size Values
 	private static final Integer MINFONTSIZE = 12; 
-	private static final Integer MAXFONTSIZE = 56;
+	private static final Integer MAXFONTSIZE = 64;
 	
 	//String Delimeters
 	private static final String NODEDELIMITER = "SSParamNodeDelimiter";
