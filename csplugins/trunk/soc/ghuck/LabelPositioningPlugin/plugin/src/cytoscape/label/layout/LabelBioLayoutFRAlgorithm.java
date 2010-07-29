@@ -25,6 +25,8 @@
  * 
  * It was done as part of Google Summer of Code 2010.
  * Mentor: Mike Smoot
+ * Student: Gerardo Huck
+ * 
  * @author <a href="mailto:gerardohuck .at. gmail .dot. com">Gerardo Huck</a>
  * @version 0.1
  */
@@ -111,11 +113,14 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
      * @return the human-readable algorithm name
      */
     public String toString() {
-	if (supportWeights)
-	    return "Edge-Weighted Force-Directed Label Layout (FR Label BioLayout)";
-	else
+	return "Force-Directed Label Layout";
+    }
 
-	    return "Force-Directed Label Layout (FR Label BioLayout)";
+    /**
+     * We don't want to use the label layout capabilities offered by AbstractGraphPartition
+     */
+    public boolean supportsLabelLayout() {
+	return false;
     }
 
     /**
@@ -183,7 +188,7 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
     /**
      * Perform a layout
      */
-    public void layoutPartion(LayoutPartition partition) {
+    public void layoutPartition(LayoutPartition partition) {
 
 	Dimension initialLocation = null;
 
@@ -204,8 +209,7 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	LayoutLabelPartition newPartition = new LayoutLabelPartition(partition,
 								     weightCoefficient,
 								     moveNodes,
-								     selectedOnly,
-								     supportWeights);
+								     selectedOnly);
 
 	//	logger.info("New partition succesfully created!");
 
@@ -224,11 +228,17 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 	// Layout the new partition using the parent class layout algorithm
 	super.layoutPartition(newPartition);
 
+
+	if (canceled)
+	    return;
+
 	// Not quite done, yet. We may need to migrate labels back to their starting position
 	// This will be necessary if:
 	// 1- Laying out only selected nodes
 	// - and - 
 	// 2- (normal) Nodes are allowed to move
+
+	taskMonitor.setStatus("Making final arrangements...");
 
  	if (selectedOnly && moveNodes) {
 	    logger.info("moving back labels (and possibly nodes) to their location");
@@ -252,15 +262,25 @@ public class LabelBioLayoutFRAlgorithm extends ModifiedBioLayoutFRAlgorithm {
 
 	// make sure nodes are where they should be
 	for(LayoutNode node: newPartition.getLabelToParentMap().values() ) {
+
+	    if (canceled)
+		return;
+
 	    node.moveToLocation();
-	    // logger.info( node.getIdentifier() + node.printLocation() );
+	    logger.info( node.toString() );
 	}
 
 	// make sure that all labels are where they should be 
 	for(LayoutLabelNodeImpl node: newPartition.getLabelNodes() ) {	
+
+	    if (canceled)
+		return;
+
 	    node.moveToLocation();
-	    // logger.info( node.getIdentifier() + node.printLocation() );
+	    logger.info( node.toString() );
 	}
+
+	taskMonitor.setStatus("Updating Display...");
 
 	// redraw the network so that the new label positions are visible
 	networkView.updateView();

@@ -74,7 +74,7 @@ import java.lang.Thread;
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
-public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgorithm { // LABEL
+public class BioLayoutFRAlgorithm extends ModifiedBioLayoutAlgorithm { // LABEL
     /**
      * Sets the number of iterations for each update
      */
@@ -166,15 +166,15 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
     /**
      * This is the constructor for the bioLayout algorithm.
      */
-    public ModifiedBioLayoutFRAlgorithm(boolean supportEdgeWeights) {
+    public BioLayoutFRAlgorithm(boolean supportEdgeWeights) {
 	super();
-	logger = CyLogger.getLogger(ModifiedBioLayoutFRAlgorithm.class);
+	logger = CyLogger.getLogger(BioLayoutFRAlgorithm.class);
 
 	supportWeights = supportEdgeWeights;
 
 	displacementArray = new ArrayList<Double>(100);
 
-	//	this.initializeProperties(); // LABEL
+	this.initializeProperties(); 
     }
 
     /**
@@ -183,32 +183,38 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 
     // LABEL -->
 
-//     /**
-//      * Return the "name" of this algorithm.  This is meant
-//      * to be used by programs for deciding which algorithm to
-//      * use.  toString() should be used for the human-readable
-//      * name.
-//      *
-//      * @return the algorithm name
-//      */
-//     public String getName() {
-// 	return "LabelModified-Fruchterman-Rheingold";
-//     }
+    public boolean supportsLabelLayout() {
+	return true;
+    }
 
-//     /**
-//      * Return the "title" of this algorithm.  This is meant
-//      * to be used for titles and labels that represent this
-//      * algorithm.
-//      *
-//      * @return the human-readable algorithm name
-//      */
-//     public String toString() {
-// 	if (supportWeights)
-// 	    return "(Label Modified) Edge-Weighted Force-Directed (BioLayout)";
-// 	else
 
-// 	    return "(Label Modified) Force-Directed (BioLayout)";
-//     }
+
+    /**
+     * Return the "name" of this algorithm.  This is meant
+     * to be used by programs for deciding which algorithm to
+     * use.  toString() should be used for the human-readable
+     * name.
+     *
+     * @return the algorithm name
+     */
+    public String getName() {
+	return "LabelModified-Fruchterman-Rheingold";
+    }
+
+    /**
+     * Return the "title" of this algorithm.  This is meant
+     * to be used for titles and labels that represent this
+     * algorithm.
+     *
+     * @return the human-readable algorithm name
+     */
+    public String toString() {
+	if (supportWeights)
+	    return "(Label) Edge-Weighted Force-Directed (BioLayout)";
+	else
+
+	    return "(Label) Force-Directed (BioLayout)";
+    }
 
 // <-- LABEL
 
@@ -437,13 +443,16 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 	layoutProperties.add(new Tunable("max_distance_factor",
 					 "Percent of graph used for node repulsion calculations",
 					 Tunable.DOUBLE, new Double(20.0)));
+
+	getLabelTunables(layoutProperties); // LABEL
+
 	// We've now set all of our tunables, so we can read the property 
 	// file now and adjust as appropriate
-	// layoutProperties.initializeProperties(); // LABEL
+	layoutProperties.initializeProperties(); 
 
 	// Finally, update everything.  We need to do this to update
 	// any of our values based on what we read from the property file
-	// updateSettings(true); // LABEL
+	updateSettings(true); 
 
     }
 
@@ -524,6 +533,10 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 	    if (t.valueChanged())
 		layoutProperties.setProperty(t.getName(), t.getValue().toString());
 	}
+
+	// Update label tunables
+	updateSettings(layoutProperties, force);
+
     }
 
     /**
@@ -562,15 +575,10 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 	    temp = Math.sqrt(this.width*this.height) * this.temperature/100;
 	}
 
-
-// LABEL -->
-
 	// Figure out our starting point
-// 	if (selectedOnly) {
-// 	    initialLocation = partition.getAverageLocation();
-// 	}
-
-// <-- LABEL
+	if (selectedOnly) {
+	    initialLocation = partition.getAverageLocation();
+	}
 
 	// Randomize our points, if any points lie
 	// outside of our bounds
@@ -623,39 +631,32 @@ public abstract class ModifiedBioLayoutFRAlgorithm extends ModifiedBioLayoutAlgo
 	// logger.debug("Update portion of iterations took "+updateProfile.getTotalTime()+"ms");
 	taskMonitor.setStatus("Updating display");
 
-
-	// LABEL -->
-
-
 	// Actually move the pieces around
 	// Note that we reset our min/max values before we start this
 	// so we can get an accurate min/max for paritioning
-	//	partition.resetNodes();     
+	partition.resetNodes();     
 
-// 	for (LayoutNode v: partition.getNodeList()) {
-// 	    partition.moveNodeToLocation(v);
-// 	}
+	for (LayoutNode v: partition.getNodeList()) {
+	    partition.moveNodeToLocation(v);
+	}
 
 
 	// Not quite done, yet.  If we're only laying out selected nodes, we need
 	// to migrate the selected nodes back to their starting position
-// 	if (selectedOnly) {
-// 	    double xDelta = 0.0;
-// 	    double yDelta = 0.0;
-// 	    Dimension finalLocation = partition.getAverageLocation();
-// 	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
-// 	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
+	if (selectedOnly) {
+	    double xDelta = 0.0;
+	    double yDelta = 0.0;
+	    Dimension finalLocation = partition.getAverageLocation();
+	    xDelta = finalLocation.getWidth() - initialLocation.getWidth();
+	    yDelta = finalLocation.getHeight() - initialLocation.getHeight();
 
-// 	    for (LayoutNode v: partition.getNodeList()) {
-// 		if (!v.isLocked()) {
-// 		    v.decrement(xDelta, yDelta);
-// 		    partition.moveNodeToLocation(v);
-// 		}
-// 	    }
-// 	}
-
-// <-- LABEL
-
+	    for (LayoutNode v: partition.getNodeList()) {
+		if (!v.isLocked()) {
+		    v.decrement(xDelta, yDelta);
+		    partition.moveNodeToLocation(v);
+		}
+	    }
+	}
 
 	logger.info("Layout complete after " + iteration + " iterations");
     }

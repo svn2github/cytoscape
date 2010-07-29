@@ -47,21 +47,25 @@ public class LabelLayoutPlugin extends CytoscapePlugin {
      */
 	public LabelLayoutPlugin() {
 
-		// Adds LabelForce-DirectedLayout to the Layout menu under "Label Layouts".
-		CyLayouts.addLayout(new LabelForceDirectedLayout(), 
-				"Label Layouts");
-
 		// Adds LabelBioLayoutFRAlgorithm to the Layout menu under "Label Layouts".
 		CyLayouts.addLayout(new LabelBioLayoutFRAlgorithm(true), 
 				"Label Layouts");
 
-		// Adds LabelBioLayoutKKAlgorithm to the Layout menu under "Label Layouts".
-		CyLayouts.addLayout(new LabelBioLayoutKKAlgorithm(true), 
+		// Adds BioLayoutFRAlgorithm to the Layout menu under "Label Layouts".
+		CyLayouts.addLayout(new BioLayoutFRAlgorithm(true), 
 				"Label Layouts");
 
-		// Adds LabelNewForceDirectedLayout to the Layout menu under "Label Layouts".
-		CyLayouts.addLayout(new LabelNewForceDirectedLayout(true), 
-				"Label Layouts");
+// 		// Adds LabelBioLayoutKKAlgorithm to the Layout menu under "Label Layouts".
+// 		CyLayouts.addLayout(new LabelBioLayoutKKAlgorithm(true), 
+// 				"Label Layouts");
+
+// 		// Adds LabelNewForceDirectedLayout to the Layout menu under "Label Layouts".
+// 		CyLayouts.addLayout(new LabelNewForceDirectedLayout(true), 
+// 				"Label Layouts");
+
+// 		// Adds LabelForce-DirectedLayout to the Layout menu under "Label Layouts".
+// 		CyLayouts.addLayout(new LabelForceDirectedLayout(), 
+// 				"Label Layouts");
 
 	}
        	
