@@ -46,12 +46,13 @@
 		<property name="biomartClient.tests.dir" value="${biomartClient.root.dir}/tests" />
 		<property name="biomartClient.classes.dir" value="${biomartClient.root.dir}/classes" />
 		<property name="biomartClient.testclasses.dir" value="${biomartClient.root.dir}/testClasses" />
+		<property name="javadoc.dir" value="${biomartClient.root.dir}/API" />
 		<property name="biomartClient.javadoc.dir" value="${javadoc.dir}/biomartClient" />
 		<property name="biomartClient.resources.dir" value="${biomartClient.root.dir}/resources" />
 		<property name="biomartClient.manifest.dir" value="${biomartClient.root.dir}/manifest" />
-		<property name="biomartClient.packages" value="biomartClient.*" />
+		<property name="biomartClient.packages" value="*" />
 		<!-- Subdirectory for test reports -->
-		<property name="biomartClient.tests.reports.dir" value="${biomartClient.root.dir}/reports/tests" />
+		<property name="biomartClient.tests.reports.dir" value="${biomartClient.root.dir}/reports" />
 
 		<!-- Define the condition for compilation -->
 		<property name="cytoscape.jar" value="${cytoscape.dir}/cytoscape.jar" />
@@ -94,7 +95,10 @@
 		<delete dir="${biomartClient.classes.dir}" />
 		<delete dir="${biomartClient.testclasses.dir}" />
 		<delete dir="${biomartClient.tests.reports.dir}" />
+		<delete dir="${junit.report.dir}" />
+		<delete dir="${javadoc.dir}" />
 		<delete file="biomartClient.jar" />
+		<delete file="biomartClientTests.jar" />
 		<delete file="${biomartClient.lib.dir}/biomartClient.jar" />
 	</target>
 
@@ -165,7 +169,7 @@
 	<!-- =================================================================== -->
 	<!-- Build all jars                                                      -->
 	<!-- =================================================================== -->
-	<target name="all" depends="biomartClient" />
+	<target name="all" depends="biomartClient, runtests, docs" />
 
 	<!-- =================================================================== -->
 	<!-- Run the Plugin                                                      -->
