@@ -196,6 +196,8 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	}
 
 	total_nodes = network.getNodeCount();
+	logger.info("TOTAL NODES: " + total_nodes);	
+
 	current_start = 0;
 
 	// Set up offsets -- we start with the overall min and max
@@ -220,7 +222,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	    if (canceled) break;
 	    // get the partition
 	    current_size = (double)partition.size();
-	    // logger.debug("Partition #"+partition.getPartitionNumber()+" has "+current_size+" nodes");
+	    logger.info("Partition #"+partition.getPartitionNumber()+" has "+current_size+" nodes");
 	    setTaskStatus(1);
 
 	    // Partitions Requiring Layout
@@ -252,6 +254,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 		node.setLocation(next_x_start, next_y_start);
 		partition.moveNodeToLocation(node);
 	    } else {
+		logger.info("Done nothing with this partition");
 		continue;
 	    }
 
@@ -297,14 +300,16 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 
 	    //	logger.info("New partition succesfully created!");
 
+	    newPartition.recalculateStatistics();
+
 	    // Figure out our starting point - This will be used when:
 	    // 1- Laying out labels off all nodes
 	    // - and- 
 	    // 2- (normal) Nodes are not allowed to move
-	    if (selectedOnly && moveNodes) {
-		newPartition.recalculateStatistics();
-		initialLocation = newPartition.getAverageLocation();
-	    }
+//	     if (selectedOnly && moveNodes) {
+// 		newPartition.recalculateStatistics();
+// 		initialLocation = newPartition.getAverageLocation();
+// 	    }
 
 	    if (canceled)
 		return;
@@ -321,26 +326,26 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	    // - and - 
 	    // 2- (normal) Nodes are allowed to move
 
-	    taskMonitor.setStatus("Making final arrangements to partition...");
+	    // taskMonitor.setStatus("Making final arrangements to partition...");
 
-	    if (selectedOnly && moveNodes) {
-		// logger.info("moving back labels (and possibly nodes) to their location");
+// 	    if (selectedOnly && moveNodes) {
+// 		// logger.info("moving back labels (and possibly nodes) to their location");
 
-		newPartition.recalculateStatistics();
-		Dimension finalLocation = newPartition.getAverageLocation();
-		double xDelta = 0.0;
-		double yDelta = 0.0;
+// 		newPartition.recalculateStatistics();
+// 		Dimension finalLocation = newPartition.getAverageLocation();
+// 		double xDelta = 0.0;
+// 		double yDelta = 0.0;
 	 
-		xDelta = finalLocation.getWidth() - initialLocation.getWidth();
-		yDelta = finalLocation.getHeight() - initialLocation.getHeight();
+// 		xDelta = finalLocation.getWidth() - initialLocation.getWidth();
+// 		yDelta = finalLocation.getHeight() - initialLocation.getHeight();
 
-		for (LayoutNode v: newPartition.getNodeList()) {
-		    if (!v.isLocked()) {
-			v.decrement(xDelta, yDelta);
-			newPartition.moveNodeToLocation(v);
-		    }
-		}
-	    }
+// 		for (LayoutNode v: newPartition.getNodeList()) {
+// 		    if (!v.isLocked()) {
+// 			v.decrement(xDelta, yDelta);
+// 			newPartition.moveNodeToLocation(v);
+// 		    }
+// 		}
+// 	    }
 
 
 	    // make sure nodes are where they should be
@@ -350,7 +355,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 		    return;
 
 		node.moveToLocation();
-		logger.info( node.toString() );
+		// logger.info( node.toString() );
 	    }
 
 	    // make sure that all labels are where they should be 
@@ -360,7 +365,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 		    return;
 
 		node.moveToLocation();
-		logger.info( node.toString() );
+		// logger.info( node.toString() );
 	    }
 
 	    taskMonitor.setStatus("Updating Display...");

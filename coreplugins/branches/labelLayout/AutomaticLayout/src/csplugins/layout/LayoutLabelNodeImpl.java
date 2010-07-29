@@ -80,8 +80,8 @@ public class LayoutLabelNodeImpl extends LayoutNode {
 	    lp = new ObjectPositionImpl();
 	    // logger.info("Created new ObjectPosition!");
 	} else {
-	    ValueParser<ObjectPosition> parser = 
-		(ValueParser<ObjectPosition>) VisualPropertyType.NODE_LABEL_POSITION.getValueParser();
+	    ObjectPositionParser parser = 
+		(ObjectPositionParser) VisualPropertyType.NODE_LABEL_POSITION.getValueParser();
 	    lp = parser.parseStringValue(labelPosition);
 	    // logger.info("ObjectPosition succesfully parsed!");
 	}
