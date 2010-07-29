@@ -2,7 +2,7 @@
 <!-- EquationFunctions plugin (EquationFunctions.jar) build file     -->
 <!-- =============================================================== -->
 
-<project name="EquationFunctions" default="EquationFunctions" basedir=".">
+<project name="EquationFunctions" default="all" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
@@ -37,12 +37,13 @@
     <property name="EquationFunctions.root.dir" value="./"/>
     <property name="EquationFunctions.src.dir" value="${EquationFunctions.root.dir}/src"/>
     <property name="EquationFunctions.classes.dir" value="${EquationFunctions.root.dir}/classes"/>
+    <property name="javadoc.dir" value="${EquationFunctions.root.dir}/API"/>
     <property name="EquationFunctions.javadoc.dir" value="${javadoc.dir}/EquationFunctions"/>
     <property name="EquationFunctions.resources.dir" value="${EquationFunctions.root.dir}/resources"/>
     <property name="EquationFunctions.manifest.dir" value="${EquationFunctions.root.dir}/manifest"/>
-    <property name="EquationFunctions.packages" value="EquationFunctions.*"/>
+    <property name="EquationFunctions.packages" value="org.cytoscape.EquationFunctions.*"/>
     <!-- Subdirectory for test reports -->
-    <property name="EquationFunctions.tests.reports.dir" value="${EquationFunctions.root.dir}/reports/tests" />
+    <property name="EquationFunctions.tests.reports.dir" value="${EquationFunctions.root.dir}/reports" />
     <property name="cytoscape.lib" value="${cytoscape.dir}/lib" />
 
     <!-- Define the condition for compilation -->
@@ -138,7 +139,7 @@
   <!-- =================================================================== -->
   <!-- Build all jars                                                      -->
   <!-- =================================================================== -->
-  <target name="all" depends="EquationFunctions"/>
+  <target name="all" depends="EquationFunctions, runtests, docs"/>
 
   <!-- =================================================================== -->
   <!-- Run the Plugin                                                      -->
@@ -182,6 +183,7 @@
   <!-- Creates the API documentation                                       -->
   <!-- =================================================================== -->
   <target name="docs" depends="init-EquationFunctions" >
+    <mkdir dir="${javadoc.dir}"/>
     <mkdir dir="${EquationFunctions.javadoc.dir}"/>
     <javadoc packagenames="${EquationFunctions.packages}"
              excludepackagenames="${EquationFunctions.packages.excludes}"
@@ -203,6 +205,8 @@
   <!-- =================================================================== -->
   <target name="clean" depends="init-EquationFunctions">
     <delete dir="${EquationFunctions.classes.dir}"/>
+    <delete dir="${javadoc.dir}"/>
+    <delete dir="${EquationFunctions.tests.reports.dir}"/>
     <delete file="EquationFunctions.jar"/>
     <delete file="${EquationFunctions.lib.dir}/EquationFunctions.jar"/>
     <delete file="EquationFunctions-tests.jar"/>
