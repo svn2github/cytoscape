@@ -1,0 +1,46 @@
+#! /usr/bin/env python
+"""
+Program for generating large attribute files with randomly generated numbers.
+"""
+import sys, random, urllib
+
+
+def GenerateLine(line_number, start_range, end_range):
+    print "N" + str(line_number) + " = " + urllib.quote_plus(str(random.uniform(start_range, end_range)))
+
+
+def Usage():
+    print >> sys.stderr, "usage: " + sys.argv[0] + " attribute_name start_range end_range number_of_lines > output_file"
+    print >> sys.stderr, "\twhere attribute_name  is the name of the attribute that will be generated"
+    print >> sys.stderr, "\twhere start_range     is the lower limit of the generated random values"
+    print >> sys.stderr, "\twhere end_range       is the upper limit of the generated random values"
+    print >> sys.stderr, "\twhere number_of_lines is the number of entries sans the heading that will be generated"
+    sys.exit(1)
+
+
+def ProcessArgs(argv):
+    if len(argv) != 5:
+        Usage()
+    try:
+        attribute_name  = argv[1]
+        start_range     = float(argv[2])
+        end_range       = float(argv[3])
+        number_of_lines = int(argv[4])
+    except ValueError:
+        Usage()
+
+    if start_range >= end_range or number_of_lines < 1:
+        Usage()
+
+    return (attribute_name, start_range, end_range, number_of_lines)
+
+
+#
+# Start of main program!
+#
+
+(attribute_name, start_range, end_range, number_of_lines) = ProcessArgs(sys.argv)
+print attribute_name + " (class=java.lang.Double)"
+
+for i in range(number_of_lines):
+    GenerateLine(i + 1, start_range, end_range)

@@ -1,0 +1,6 @@
+n1 activates n2 n4 n2 n5 n5
+n2 activates n5 n5 n5 n5 n1
+n3 inhibits n5 n4 n4 n3
+n4 activates n4 n4 n1 n2 n4
+n5 activates n1 n4 n1 n1 n5
+
