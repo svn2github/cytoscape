@@ -1,0 +1,105 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>cytoscape.corelibs</groupId>
+  <artifactId>parent</artifactId>
+  <packaging>pom</packaging>
+  <version>2.8.0-SNAPSHOT</version>
+  <name>Cytoscape Core Libraries Parent POM</name>
+
+  <properties>
+    <corelibs.version>2.8.0-SNAPSHOT</corelibs.version>
+  </properties>
+ 
+  <modules>
+    <module>commons-cli-1.x-cytocape-custom</module>
+    <module>equations</module>
+    <module>util.intr</module>
+    <module>geom.spacial</module>
+    <module>geom.rtree</module>
+    <module>giny</module>
+    <module>graph.fixed</module>
+    <module>graph.dynamic</module>
+    <module>nerius.math.xform</module>
+    <module>obo</module>
+    <module>phoebe.dnd</module>
+    <module>render.immed</module>
+    <module>render.export</module>
+    <module>render.stateful</module>
+    <module>task</module>
+    <module>undo.support</module>
+    <module>fing</module>
+    <module>ding</module>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <argLine>-Xmx256m</argLine>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <encoding>UTF-8</encoding>
+            <locale>en</locale>
+            <javadocVersion>1.5</javadocVersion>
+            <links>
+              <link>http://download.oracle.com/docs/cd/E17476_01/javase/1.5.0/docs/api/</link>
+            </links>
+            <footer>Cytoscape ${corelibs.version} Core Libraries API</footer>
+            <header>Cytoscape ${corelibs.version Core Libraries API</header>
+            <bottom>Copyright 2010 Cytoscape Consortium.  All rights reserved.</bottom>
+          </configuration>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+   </pluginManagement> 
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
