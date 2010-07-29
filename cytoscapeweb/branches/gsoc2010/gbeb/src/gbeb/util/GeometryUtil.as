@@ -1,9 +1,12 @@
 package gbeb.util
 {
+	import flare.vis.data.Data;
 	import flare.vis.data.EdgeSprite;
 	
 	import flash.display.Graphics;
 	import flash.geom.Point;
+	
+	import gbeb.view.operator.router.MeshNode;
 
 	public class GeometryUtil
 	{
@@ -69,6 +72,35 @@ package gbeb.util
 			return ip;
 		}
 		
+		/**
+		 * This function uses Pythagoras' Theorem to calculate the distance between node1 and node2.
+		 */
+		//Step 4b.1 This function checks if 2 nodeSprites are too close together. The minimum distance is
+		//defined by the const _meshNodesMinDistance
+		public static function calculateDistanceBetweenNodes(node1:MeshNode, node2:MeshNode):Number
+		{
+			var distance:Number = 0;
+			
+			//this is Pythogoras' Theorem
+			distance = Math.sqrt( Math.pow((node1.x - node2.x), 2) + Math.pow((node1.y - node2.y), 2));
+			//if (distance < _meshNodesMinDistance) trace("Mesh: CalculateDistanceBetweenNodes: " + distance,  "|", 
+			//    node1.x, node1.y, "||", node2.x, node2.y);
+			
+			return distance;
+		}
+		
+		public static function calculateDistanceBetweenPoints(p1:Point, p2:Point):Number
+		{
+			var distance:Number = 0;
+			
+			//this is Pythogoras' Theorem
+			distance = Math.sqrt( Math.pow((p1.x - p2.x), 2) + Math.pow((p1.y - p2.y), 2));
+			//if (distance < _meshNodesMinDistance) trace("Mesh: CalculateDistanceBetweenNodes: " + distance,  "|", 
+			//    node1.x, node1.y, "||", node2.x, node2.y);
+			
+			return distance;
+		}
+		
 		
 		/**
 		 * Draw a quadratic Bezier curve through a set of control points anchorPoints[], with the first point being the start and last points 
@@ -117,7 +149,7 @@ package gbeb.util
 		 * 
 		 * Credit belongs to WillyCornbread and solution+code given by Sly_cardinal.
 		 */	
-		private static function derivePoint(p0:Point, b1:Point, p2:Point, t:Number = 0.5):Point
+		public static function derivePoint(p0:Point, b1:Point, p2:Point, t:Number = 0.5):Point
 		{
 			var p:Point = new Point(deriveTerm(p0.x, b1.x, p2.x, t), deriveTerm(p0.y, b1.y, p2.y, t));
 			return p;
@@ -138,7 +170,7 @@ package gbeb.util
 		
 		public static function changeToDerivedPoints(e:EdgeSprite):void
 		{
-			trace("Geometry Util: Targeting Edge: " + e.toString());
+			//trace("Geometry Util: Targeting Edge: " + e.toString());
 			var controlPoints:Array = e.props.$controlPointsArray;
 			
 			var tempPoint:Point;
@@ -159,7 +191,7 @@ package gbeb.util
 				if(p == null) controlPoints.splice(i, 1);
 			}
 			
-			trace("Geometry Util: CP.length: " + (controlPoints.length - 2).toString());
+			//trace("Geometry Util: CP.length: " + (controlPoints.length - 2).toString());
 			
 			for(var i:int = 1; i < controlPoints.length - 1; i++)
 			{
@@ -169,7 +201,7 @@ package gbeb.util
 			
 				var derivedPt:Point = derivePoint(p0, p1, p2);
 				newCPArray.push(derivedPt);				
-				trace("Geometry Util:" , p0, p1, p2);
+				//trace("Geometry Util:" , p0, p1, p2);
 				
 			}
 			
@@ -177,50 +209,6 @@ package gbeb.util
 			
 		}
 
-		
-		
-		
-		/*
-		public static function changeToDerivedPoints(e:EdgeSprite):void
-		{
-			trace("Geometry Util:Hi! " + e.toString());
-			var controlPoints:Array = e.props.$controlPointsArray;
-			
-			var tempPoint:Point;
-			var newCPArray:Array = []; //to store derived CP Array
-			
-			if(controlPoints == null ) return;
-			if(controlPoints.length <= 0 ) return;
-			
-			if(e.target == null || e.source == null) return;
-			
-			controlPoints.unshift(new Point(e.source.x, e.source.y));
-			controlPoints.push(new Point(e.target.x, e.target.y));
-			
-			var p0:Point = controlPoints[0];
-			var p2:Point;
-			
-			trace("GeomUtil: Checking null: " + controlPoints.length, controlPoints[0] == null, newCPArray == null);
-			
-			for(var i:int = 1; i < controlPoints.length - 1; i++)
-			{	
-					p2 = new Point(controlPoints[i+1].x, controlPoints[i+1].y);
-					trace("GeomUtil: Checking null: p2: " + p2 , "i= " + i);
-					// curve to next anchor through control
-					//trace("GeomUtil: Checking null: controlPoints: " + controlPoints[i].toString());
-					var b1:Point = new Point(controlPoints[i].x,controlPoints[i].y);
-					trace("GeomUtil: Checking null: b1: " + b1);
-					
-					var p1:Point = derivePoint(p0, b1, p2);
-					
-					trace("GeomUtil: Checking null: Derived point, b1: " + p1 + b1);
-					
-					newCPArray.push(p1);
-					p0 = b1;
-			}
-			
-			e.props.$controlPointsArray = newCPArray;
-		} */
 
 	}
 }

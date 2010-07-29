@@ -10,7 +10,7 @@ package gbeb.view.operator.router
 	public class Shape
 	{
 		public var gridSize:int;
-		public var storedGrids:Array;
+		public var storedGrids:Array; //stores Rec objects
 		public var gridIndex:Array; // stores Point objects
 		public var storedDataNodes:Array; // NodeSprite objects
 		public var storedDataEdges:Array; // EdgeSprite objects
@@ -18,7 +18,6 @@ package gbeb.view.operator.router
 		public var stronglyClustered:Boolean; //flag to indicate if the edges are strongly clustered within this Shape
 		public var centroid:Point; //Stores the "centre of area (mass) for a 2d shape
 		public var meshEdge:MeshEdge;
-		
 		
 		private const bandwidth:int = 3; //bandwidth of KDE
 		private const majorityPercentage:Number = 0.5; // refers to the total weight percentage a particular group has to have before it can be considered as the main direction
@@ -48,6 +47,8 @@ package gbeb.view.operator.router
 		public function computeDirection():Number
 		{	//initialising all the angles in the array to zero. 
 			var i:int = 0, j:int = 0;
+			
+			if(storedDataEdges.length < 2) return -1;
 			
 			for (i = 0; i < angleArray.length ; i++)
 			{
@@ -129,10 +130,12 @@ package gbeb.view.operator.router
 				}
 		
 		//adds controlPoint to meshEdge of a shape. This function is called x times if the dataEdge cuts across x number of shapes. 
-		public function addControlPoint():void {
+		public function addControlPoint(angleResolution:int = 15):void {
 			var intersectionPointsArray:Array = new Array();
 			var intersectionPoint:Point;
 			var cp:Point; 
+			var dataEdgeDirection:int;
+			var gradient:Number = -1 / Math.tan((this.direction / 180) * Math.PI);
 			
 			var a:Point, b:Point; //a,b stores the end points of the meshEdge of each shape
 			var e:Point, f:Point; //e,f stores the end points of the each dataEdge					
@@ -143,6 +146,18 @@ package gbeb.view.operator.router
 			var edge:EdgeSprite;
 			
 			for each (edge in storedDataEdges) {
+				
+				//To ensure that all CP stay on the meshEdge
+				dataEdgeDirection = getPolarCoor180(edge); 
+				if( this.direction < 16)
+				{
+				 if (dataEdgeDirection > 164 && this.direction + dataEdgeDirection < 180) { continue; }
+				} else if (this.direction > 164) 
+				{
+					if (dataEdgeDirection < 16 && this.direction + dataEdgeDirection < 180) { continue; }
+				}
+				else if(Math.abs(dataEdgeDirection - this.direction) > angleResolution) { continue; } 
+				
 				e = new Point(edge.source.x, edge.source.y);
 				f = new Point(edge.target.x, edge.target.y);
 				
@@ -160,15 +175,16 @@ package gbeb.view.operator.router
 			}
 			
 			for each (edge in storedDataEdges) {
-			    edge.shape = Shapes.BSPLINE;
+					edge.lineWidth = edge.lineWidth ; //lower width gives better visual quality
+			    edge.shape = Shapes.BEZIER; //Here to change curve type
 				var ctrl:Array = edge.props.$controlPointsArray;
-				if (ctrl == null) {
-				    edge.props.$controlPointsArray = ctrl = [];
-				}
-				
-				ctrl.push(cp);
-			}
+				var ctrlgradient:Array = edge.props.$CPGradientArray; //used to store the gradient of each control point
+				if (ctrl == null) edge.props.$controlPointsArray = ctrl = [];
+				if (ctrlgradient == null) edge.props.$CPGradientArray = ctrlgradient = [];
 
+				ctrl.push(cp);
+				ctrlgradient.push(gradient);  //trace(edge.source.data["name"], gradient);
+			}
 		}
 		
 		private function findControlPointFromIntersectionPoints(intersectionPointsArray:Array):Point
@@ -184,8 +200,7 @@ package gbeb.view.operator.router
 			}
 			
 			return new Point( (avgX / numPoints), (avgY / numPoints));
-		}
-		
+		}		
 		
 	}//end of class
 }

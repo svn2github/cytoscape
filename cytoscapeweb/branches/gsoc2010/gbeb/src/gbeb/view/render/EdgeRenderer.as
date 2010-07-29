@@ -11,6 +11,8 @@ package gbeb.view.render
 	import flash.display.Graphics;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	
+	import gbeb.util.GeometryUtil;
 
 	/**
 	 * Renderer that draws edges as lines. The EdgeRenderer supports straight
@@ -48,7 +50,7 @@ package gbeb.view.render
 		
 		/** @inheritDoc */
 		public function render(d:DataSprite):void
-		{
+		{	
 			var e:EdgeSprite = d as EdgeSprite;
 			if (e == null) { return; } // TODO: throw exception?
 			var s:NodeSprite = e.source;
@@ -90,7 +92,7 @@ package gbeb.view.render
 				dx = _p.x - xL; dy = _p.y - yL;
 				dd = Math.sqrt(dx*dx + dy*dy);
 				dx /= dd; dy /= dd;
-				
+	
 				// set final point positions
 				dd = e.lineWidth/2;
 				// if drawing as lines, offset arrow tip by half the line width
@@ -105,21 +107,79 @@ package gbeb.view.render
 				x2 = _p.x - dd*dx;
 				y2 = _p.y - dd*dy;
 			}
-
+	
 			// draw the edge
 			g.clear(); // clear it out
 			setLineStyle(e, g); // set the line style
+			
+			
+// DEBUG: draw control points:
+// ****************************************************************
+//For showing the AS3 curveTo control points	
+//
+//			for each (var p:Point in e.props.$controlPointsArray) {
+//				if(p != null)
+//				{
+//					g.lineStyle(0, 0, 0);
+//					g.beginFill(0x999999);
+//					g.drawCircle(p.x, p.y, 2);
+//					g.endFill();
+//				}
+//			} 
+//			
+//			for (var i:uint=0; i < _pts.length; i+=2) {
+//				if (i < _pts.length-2) {
+//					var cx:Number = _pts[i];
+//					var cy:Number = _pts[i+1];
+//					g.lineStyle(1, e.lineColor, 1);
+//					g.beginFill(e.lineColor, 1);
+//					//g.drawCircle(cx, cy, 5);
+//					g.endFill();
+//					
+//				}
+//			}	*
+//			
+//			// For showing the GBEB control points
+//			//GeometryUtil.changeToDerivedPoints(e);
+//			for each (var p:Point in e.props.$controlPointsArray) {
+//				if( p != null)
+//				{
+//					//g.lineStyle(0, 0, 0);
+//					g.beginFill(0x999999);
+//					g.drawCircle(p.x, p.y, 5);
+//					g.endFill();
+//				}
+//			} 
+			
+			//trace("EdgeRenderer: Drawing CPs for Edge ", e.name, e.props.$controlPointsArray);
+// ****************************************************************			
+			
 			if (e.shape == Shapes.BEZIER && ctrls != null && ctrls.length > 1) {
 				if (ctrls.length < 4)
 				{
 					g.moveTo(x1, y1);
-					g.curveTo(ctrls[0], ctrls[1], x2, y2);
+					//g.curveTo(ctrls[0], ctrls[1], x2, y2);		
+					
+					//Alternation to make the Curve pass through the control Points
+					var dPoint:Point = dPoint = GeometryUtil.derivePoint(new Point(x1, y1), new Point(ctrls[0], ctrls[1]), new Point(x2,y2));
+					g.curveTo(dPoint.x, dPoint.y, x2, y2);	
+					//end
 				}
 				else
 				{
-					Shapes.drawCubic(g, x1, y1, ctrls[0], ctrls[1],
-									 ctrls[2], ctrls[3], x2, y2);
+					drawCubic(g, x1, y1, ctrls[0], ctrls[1],
+									 ctrls[2], ctrls[3], x2, y2)
 				}
+				//trace("EdgeRenderer: Tesing render calls: " + e.name);//debug
+				for each (var p:Point in e.props.$controlPointsArray) { //debug
+					if(p != null)
+					{
+						g.lineStyle(0, 0, 0);
+						g.beginFill(0xCDEF12);
+						g.drawCircle(p.x, p.y, 5);
+						g.endFill();
+					}
+				} 
 			}
 			else if (e.shape == Shapes.CARDINAL)
 			{
@@ -130,26 +190,16 @@ package gbeb.view.render
 			{
 				Shapes.consolidate(x1, y1, ctrls, x2, y2, _pts);
 				Shapes.drawBSpline(g, _pts, 2+ctrls.length/2);
-				
-				// DEBUG: draw control points:
-                // ****************************************************************
-                for each (var p:Point in e.props.$controlPointsArray) {
-                    g.lineStyle(0, 0, 0);
-                    g.beginFill(0x009900);
-                    g.drawCircle(p.x, p.y, 2);
-                    g.endFill();
-                }
-                for (var i:uint=0; i < _pts.length; i+=2) {
-                    if (i < _pts.length-2) {
-                        var cx:Number = _pts[i];
-                        var cy:Number = _pts[i+1];
-                        g.lineStyle(0, 0, 0);
-                        g.beginFill(0xdddd00, 0.5);
-                        g.drawCircle(cx, cy, 5);
-                        g.endFill();
-                    }
-                }
-                // ****************************************************************
+				trace("EdgeRenderer: Tesing render calls: " + e.name);//debug
+				for each (var p:Point in e.props.$controlPointsArray) { //debug
+					if(p != null)
+					{
+						g.lineStyle(0, 0, 0);
+						g.beginFill(0x999999);
+						g.drawCircle(p.x, p.y, 5);
+						g.endFill();
+					}
+				} 
 			}
 			else
 			{
@@ -194,6 +244,39 @@ package gbeb.view.render
 			
 			g.lineStyle(e.lineWidth, e.lineColor, lineAlpha, 
 				pixelHinting, scaleMode, caps, joints, miterLimit);
+		}
+		
+		
+		//debug function. Moved here for conolidation
+		public static function drawCubic(g:Graphics, ax:Number, ay:Number,
+																		 bx:Number, by:Number, cx:Number, cy:Number, dx:Number, dy:Number,
+																		 move:Boolean=true) : void
+		{			
+			var subdiv:int, u:Number, xx:Number, yy:Number;			
+			
+			// determine number of line segments
+			subdiv = int((Math.sqrt((xx=(bx-ax))*xx + (yy=(by-ay))*yy) +
+				Math.sqrt((xx=(cx-bx))*xx + (yy=(cy-by))*yy) +
+				Math.sqrt((xx=(dx-cx))*xx + (yy=(dy-cy))*yy)) / 4);
+			
+			subdiv = int(subdiv * 20);
+			if (subdiv < 1) subdiv = 1;
+			
+			// compute Bezier co-efficients
+			var c3x:Number = 3 * (bx - ax);
+			var c2x:Number = 3 * (cx - bx) - c3x;
+			var c1x:Number = dx - ax - c3x - c2x;
+			var c3y:Number = 3 * (by - ay);
+			var c2y:Number = 3 * (cy - by) - c3y;
+			var c1y:Number = dy - ay - c3y - c2y;
+			
+			if (move) g.moveTo(ax, ay);
+			for (var i:uint=0; i<=subdiv; ++i) {
+				u = i/subdiv;
+				xx = u*(c3x + u*(c2x + u*c1x)) + ax;
+				yy = u*(c3y + u*(c2y + u*c1y)) + ay;
+				g.lineTo(xx, yy);
+			}
 		}
 
 	} // end of class EdgeRenderer

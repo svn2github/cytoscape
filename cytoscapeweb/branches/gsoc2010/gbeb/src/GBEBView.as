@@ -14,7 +14,11 @@ package
     import flare.vis.data.NodeSprite;
     import flare.vis.data.Tree;
     import flare.vis.events.SelectionEvent;
+    import flare.vis.operator.encoder.ColorEncoder;
+    import flare.vis.operator.label.Labeler;
+    import flare.vis.operator.layout.BundledEdgeRouter;
     import flare.vis.operator.layout.CircleLayout;
+    import flare.vis.operator.layout.NodeLinkTreeLayout;
     import flare.vis.operator.layout.RadialTreeLayout;
     
     import flash.display.Sprite;
@@ -35,9 +39,9 @@ package
     [SWF(width="800",height="600", backgroundColor="#ffffff", frameRate="30")]
     public class GBEBView extends Sprite
     {  
-        private var _url:String = "data/sample1.xml";
+//        private var _url:String = "data/sample1.xml";
 //        private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
-				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
+				private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare_reduced.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/socialnet.xml";
         private var _vis:Visualization;
@@ -100,8 +104,14 @@ package
 //                _vis.operators.add(new RadialTreeLayout("depth", null, true));
 //                CircleLayout(_vis.operators.last).startRadiusFraction = 3/5;
 												
-              _vis.operators.add(new RadialTreeLayout(80));
-              RadialTreeLayout(_vis.operators.last).autoScale = true;						
+           	 // _vis.operators.add(new RadialTreeLayout(80));
+             // RadialTreeLayout(_vis.operators.last).autoScale = true;				
+							
+							_vis.operators.add(new CircleLayout());
+							
+							//_vis.operators.add(new NodeLinkTreeLayout("topToBottom", 50, 50, 50));
+							
+							
                 // set the edge alpha values
                 // longer edge, lighter alpha: 1/(2*numCtrlPoints)
 //                _vis.operators.add(new PropertyEncoder({ alpha: edgeAlpha }, Data.EDGES));
@@ -112,12 +122,14 @@ package
                 //_vis.operators.add(new BundledEdgeRouter(0.95));
                 
                 //var bounds:Rectangle = new Rectangle(0, 0, width, height);
-                _vis.operators.add(new GBEBRouter(_bounds, 0.95));
-                trace("GBEBView: how many times is this called?" + addEventCounter++);
+								
+								_vis.operators.add(new Labeler("data.name"));
+                _vis.operators.add(new GBEBRouter(_bounds, 80 , 0.95));
+                trace("GBEBView: how many times GBEBView called the GBEBRouter? " + addEventCounter++);
                 // ############################################################## 
 				
 				_vis.update();
-                
+				 
                 // show all dependencies on single-click
                 var linkType:int = NodeSprite.OUT_LINKS;
                 _vis.controls.add(new ClickControl(NodeSprite, 1,

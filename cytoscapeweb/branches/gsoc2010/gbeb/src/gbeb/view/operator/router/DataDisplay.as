@@ -4,6 +4,7 @@ package gbeb.view.operator.router
 	import flare.vis.data.Data;
 	
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	
