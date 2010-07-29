@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<jxws:bindings xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	wsdlLocation="http://www.ncbi.nlm.nih.gov/entrez/eutils/soap/v2.0/efetch_gene.wsdl"
+	xmlns:jxws="http://java.sun.com/xml/ns/jaxws">
+	<jxws:package name="gov.nih.ncbi.soap.eutils.gene">
+	</jxws:package>
+</jxws:bindings>
