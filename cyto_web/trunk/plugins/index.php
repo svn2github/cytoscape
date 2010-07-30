@@ -1,10 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Cytoscape 2.x Plugins</title>
-	<link rel="stylesheet" type="text/css" media="screen" href="http://cytoscape.org/css/cytoscape.css">
-	<link rel="shortcut icon" href="http://cytoscape.org/images/cyto.ico">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="http://chianti.ucsd.edu/~kono/cytoscape/css/main.css" type="text/css" rel="stylesheet" media="screen">
+<title>Cytoscape 2.x Plugins</title>
+<meta name="description" content="Cytoscape includes a flexible Plugin architecture that enables developers to add extra functionality beyond that provided in the core. Plugins also provide a convenient place for testing out new Cytoscape features. As more Plugins become available, they will be listed on this page, and posted to our cytoscape-announce mailing list. " />
+
+<script type="text/javascript" 
+src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="http://chianti.ucsd.edu/~kono/cytoscape/js/menu_generator.js"></script>
+
 	<SCRIPT LANGUAGE="JavaScript" SRC="mktree.js"></SCRIPT>
     <style type="text/css">
 <!--
@@ -38,14 +44,15 @@
 
 -->
     </style>
-</head>
-<body bgcolor="#ffffff">
-<div id="container">
-<div id="topbar">
-	<div class="title">Cytoscape 2.x Plugins</div>
-</div>
 
-<?php include "http://cytoscape.org/nav.php"; ?>
+</head>
+
+<body>
+
+<div id="container"> 
+   <script src="http://chianti.ucsd.edu/~kono/cytoscape//js/header.js"></script>
+ 
+ 
 <div align="left">
   <p align="right">&nbsp;&nbsp;<a href="plugindownloadstatistics.php">View download activities</a>&nbsp;&nbsp;<a href="pluginsubmittype.php">Submit a plugin</span> to Cytoscape</a>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</p>
 </div>
@@ -80,6 +87,7 @@
    <input type="submit" name="Submit" value="Search">
   </label>
 </form>
+<br>
 <p>
   <?php
 
@@ -119,9 +127,10 @@
 			       while($pluginList_row = @ mysql_fetch_array($pluginList))
 			       {	    
 			       	  $pluginID = $pluginList_row["plugin_auto_id"];
+					  $unique_id = $pluginList_row["unique_id"];
+					  $plugin_name = $pluginList_row["name"];
 			          echo "\n\t\t\t<li>";
-			          echo "\n\t\t\t\t",$pluginList_row["name"];
-			          
+			          echo "\n\t\t\t\t<a href=\"displayplugininfo.php?name=".$plugin_name."\">",$pluginList_row["name"],"</a>";
 			          // add plugin info
 			          echo "\n\t\t\t<ul>";
 			          echo "\n\t\t\t\t<li>";
@@ -141,40 +150,40 @@
        echo "\n</ul>"; 
   }
 
-	echo 
-	"<p>" .
-		"\n<p><big><b>Old Plugins</b></big>" .
-	"\n<p>" . 
-	"\nWe also maintain a list of older <a href=\"http://cytoscape.org/plugins2.php\">Cytoscape 2.x plugins</a> and <a href=\"http://cytoscape.org/plugins1.php\">" .
-	"\nCytoscape 1.x Plugins</a>. " .
-	"\n</p>" .
-
-	"\n<p><big><b>Writing Your Own Plugins</b></big>" .
-	"\n<p>" . 
-	"\nIf you are interested in building your own Cytoscape Plugin, check out the <a href=\"http://cytoscape.wodaklab.org/wiki/cytoscape_developer_tutorial\">" .
-	"\nCytoscape Plugin Tutorial</a>" .
-	"\n</p>" . 
-	"\n<p><big><b>PlugIn License Policy:</b></big>" .
-	"\n<P>" .
-	"\nAlthough the Cytoscape core application is distributed under a Library GNU Public License (LGPL)," .
-    "\nplugins are separate works which use Cytoscape as a Java code library." .
-	"\nPlugins are therefore governed by independent software licenses " .
-	"\ndistributed with and specific to each plugin.  The Cytoscape project " .
-	"\nhas no intent to capture plugins under the license terms of the core Cytoscape LGPL." .
-	"\n</p>" 
-
  ?>
-  </p>
-<p><big><b>About Cytoscape Plugins:</b></big>
-</p>
-<p> Cytoscape includes a flexible Plugin architecture that enables developers to add extra 
+ 
+  
+  <big><b>Old Plugins</b></big>
+  <br>
+  <br><p>
+	We also maintain a list of older <a href="http://cytoscape.org/plugins2.php">Cytoscape 2.x plugins</a> and <a href="http://cytoscape.org/plugins1.php">
+	Cytoscape 1.x Plugins</a></p>
+  <br>
+ 
+ 	<big><b>Writing Your Own Plugins</b></big>
+	<br><br><p>
+	If you are interested in building your own Cytoscape Plugin, check out the <a href="http://cytoscape.wodaklab.org/wiki/cytoscape_developer_tutorial">
+	Cytoscape Plugin Tutorial</a></p>
+	<br>
+	<big><b>PlugIn License Policy:</b></big>
+<br><br>
+	<p>
+	Although the Cytoscape core application is distributed under a Library GNU Public License (LGPL),
+    plugins are separate works which use Cytoscape as a Java code library.
+	Plugins are therefore governed by independent software licenses 
+	distributed with and specific to each plugin.  The Cytoscape project 
+	has no intent to capture plugins under the license terms of the core Cytoscape LGPL.</p>
+ 
+<br><big><b>About Cytoscape Plugins:</b></big>
+<br><br><p>
+ Cytoscape includes a flexible Plugin architecture that enables developers to add extra 
   functionality beyond that provided in the core. Plugins also provide a convenient place 
   for testing out new Cytoscape features. As more Plugins become available, they will be 
-  listed on this page, and posted to our <a href="http://groups-beta.google.com/group/cytoscape-announce">cytoscape-announce</a> mailing list.</p>
-<p>
-  <?php include "http://cytoscape.org/footer.php"; ?>
-</p>
-</div>
+  listed on this page, and posted to our <a href="http://groups-beta.google.com/group/cytoscape-announce">cytoscape-announce</a> mailing list.
+  </p>
+ <br><br>
+
+  <script src="http://chianti.ucsd.edu/~kono/cytoscape/js/footer.js"></script> 
 </div>
 </body>
 </html>
