@@ -1,7 +1,6 @@
 package org.idekerlab.PanGIAPlugin;
 
 
-import java.net.URL;
 import java.util.*;
 
 import org.idekerlab.PanGIAPlugin.ModFinder.BFEdge;
@@ -163,8 +162,7 @@ public class NestedNetworkCreator {
 		int nodeIndex = 1;
 		double maxScore = Double.NEGATIVE_INFINITY;
 		maxSize = 0;
-		for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge : networkOfModules
-				.edges())
+		for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge : networkOfModules.edgeIterator())
 		{
 			final TypedLinkNodeModule<String, BFEdge> sourceModule = edge.source().value();
 			CyNode sourceNode = moduleToCyNodeMap.get(sourceModule);
@@ -244,8 +242,7 @@ public class NestedNetworkCreator {
 					Integer.valueOf(sourceModule.size()));
 			edgeAttribs.setAttribute(newEdge.getIdentifier(), "PanGIA.target size",
 					Integer.valueOf(targetModule.size()));
-			final double density = edgeScore
-					/ (sourceModule.size() * targetModule.size());
+			final double density = edgeScore / (sourceModule.size() * targetModule.size());
 			edgeAttribs.setAttribute(newEdge.getIdentifier(), "PanGIA.genetic interaction density", Double
 					.valueOf(density));
 		}

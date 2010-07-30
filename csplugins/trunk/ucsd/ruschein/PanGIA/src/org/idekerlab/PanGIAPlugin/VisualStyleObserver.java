@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cytoscape.Cytoscape;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualStyle;
@@ -79,10 +80,23 @@ public class VisualStyleObserver implements PropertyChangeListener {
 			if(style == null)
 				return;
 			
-			view.setVisualStyle(style.getName());
-			if(Cytoscape.getVisualMappingManager().getVisualStyle().equals(style) == false)
-				Cytoscape.getVisualMappingManager().setVisualStyle(style);
-			view.redrawGraph(false, true);
+			if (style.getName().equals(VS_MODULE_NAME))
+			{
+				view.setVisualStyle(style.getName());
+				if(Cytoscape.getVisualMappingManager().getVisualStyle().equals(style) == false)
+					Cytoscape.getVisualMappingManager().setVisualStyle(style);
+				
+				CyLayoutAlgorithm alg = cytoscape.layout.CyLayouts.getLayout("force-directed");
+				view.applyLayout(alg);	
+				
+				view.redrawGraph(true, true);
+			}else
+			{
+				view.setVisualStyle(style.getName());
+				if(Cytoscape.getVisualMappingManager().getVisualStyle().equals(style) == false)
+					Cytoscape.getVisualMappingManager().setVisualStyle(style);
+				view.redrawGraph(false, true);
+			}
 		}
 	}
 }

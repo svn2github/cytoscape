@@ -18,11 +18,11 @@ import org.idekerlab.PanGIAPlugin.utilities.math.linearmodels.lmterms.LMTerm;
 
 public class ComplexRegression
 {
-	public static SFNetwork complexRegress(SFNetwork net, List<SNodeModule> complexList, boolean abs)
+	public static ComplexRegressionResult complexRegress(SFNetwork net, List<SNodeModule> complexList, boolean abs)
 	{
 		int n = net.numEdges();
 		
-		double[][] x = new double[n][1];
+		double[][] x = new double[n][2];
 		double[] y = new double[n];
 		
 		List<SEdge> edgeList = new ArrayList<SEdge>(n);
@@ -31,11 +31,16 @@ public class ComplexRegression
 		for (SFEdge e : net.edgeIterator())
 		{
 			x[i][0] = (abs) ? Math.abs(e.value()) : e.value();
+			x[i][1] = e.value();
 			
+			y[i] = 0;
 			for (SNodeModule c : complexList)
-				if (c.contains(e.getI1()) && c.contains(e.getI2())) y[i] = 1;
-				else y[i] = 0;
-			
+				if (c.contains(e.getI1()) && c.contains(e.getI2()))
+				{
+					y[i] = 1;
+					break;
+				}
+							
 			edgeList.add(e);
 			
 			i++;
@@ -69,6 +74,6 @@ public class ComplexRegression
 			out.add(edgeList.get(j).getI1(),edgeList.get(j).getI2(),(float)prob);
 		}
 		
-		return out;
+		return new ComplexRegressionResult(out,DoubleMatrix.getCol(x, 1),y,lm.coefficients().get(0),lm.coefficients().get(1));
 	}
 }

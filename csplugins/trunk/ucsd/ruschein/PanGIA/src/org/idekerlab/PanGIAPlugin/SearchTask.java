@@ -16,9 +16,8 @@ import org.idekerlab.PanGIAPlugin.ModFinder.HCSearch2;
 import org.idekerlab.PanGIAPlugin.ModFinder.SouravScore;
 import org.idekerlab.PanGIAPlugin.ModFinder.BFEdge.InteractionType;
 import org.idekerlab.PanGIAPlugin.data.*;
-import org.idekerlab.PanGIAPlugin.networks.SFNetwork;
-import org.idekerlab.PanGIAPlugin.networks.SNodeModule;
-import org.idekerlab.PanGIAPlugin.networks.hashNetworks.FloatHashNetwork;
+import org.idekerlab.PanGIAPlugin.networks.*;
+import org.idekerlab.PanGIAPlugin.networks.hashNetworks.*;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.*;
 import org.idekerlab.PanGIAPlugin.utilities.collections.HashMapUtil;
 import org.idekerlab.PanGIAPlugin.utilities.collections.ListOps;
@@ -34,8 +33,6 @@ import cytoscape.task.TaskMonitor;
 //import cytoscape.util.ScalingMethod;
 import org.idekerlab.PanGIAPlugin.util.Scaler;
 import org.idekerlab.PanGIAPlugin.util.ScalerFactory;
-
-import java.io.*;
 
 import javax.swing.*;
 
@@ -65,12 +62,6 @@ public class SearchTask implements Task {
 		taskMonitor.setStatus("Searching for modules...");
 		
 		if (needsToHalt) return;
-		
-		/***
-		 * TODO: Annotation
-		 * Use absolute value for training?
-		 */
-		
 		
 		final CyNetwork physicalInputNetwork = parameters.getPhysicalNetwork();
 		
@@ -107,8 +98,21 @@ public class SearchTask implements Task {
 		if (needsToHalt) return;
 		
 		//Perform training
-		if (parameters.getComplexTrainingPhysical()) physicalNetwork = ComplexRegression.complexRegress(physicalNetwork, trainingComplexes, true);
-		if (parameters.getComplexTrainingGenetic()) geneticNetwork = ComplexRegression.complexRegress(geneticNetwork, trainingComplexes, true);
+		ComplexRegressionResult physicalRegress=null;
+		ComplexRegressionResult geneticRegress=null;
+		
+		if (parameters.getComplexTrainingPhysical())
+		{
+			physicalRegress = ComplexRegression.complexRegress(physicalNetwork, trainingComplexes, true);
+			physicalNetwork = physicalRegress.net;
+		}
+		
+		if (parameters.getComplexTrainingGenetic())
+		{
+			geneticRegress = ComplexRegression.complexRegress(geneticNetwork, trainingComplexes, true);
+			geneticNetwork = geneticRegress.net;
+		}
+		
 		
 		
 		if (needsToHalt) return;
@@ -121,9 +125,10 @@ public class SearchTask implements Task {
 		int degreeFilter = parameters.getPhysicalNetworkFilterDegree();
 		if (degreeFilter!=-1)
 		{
+			System.out.println("Applying degree filter = "+degreeFilter);
 			TypedLinkNetwork<String,Float> ptlnet = physicalNetwork.asTypedLinkNetwork();
-			Set<String> pnodes = physicalNetwork.getNodes();
-			physicalNetwork = new FloatHashNetwork(ptlnet.subNetwork(pnodes, degreeFilter));
+			Set<String> gnodes = geneticNetwork.getNodes();
+			physicalNetwork = new FloatHashNetwork(ptlnet.subNetwork(gnodes, degreeFilter));
 		}
 		
 		int pnetNodes2 = physicalNetwork.numNodes();
@@ -219,6 +224,8 @@ public class SearchTask implements Task {
 		Map<TypedLinkNodeModule<String, BFEdge>,String> module_name = null;
 		System.out.println("PARAM: "+parameters.getComplexTrainingPhysical()+", "+parameters.getComplexTrainingPhysical()+", "+parameters.getComplexAnnotation()+", "+parameters.getAnnotationThreshold());
 		
+		int annotMatches = -1;
+		
 		if (parameters.getComplexAnnotation())
 		{
 			module_name = new HashMap<TypedLinkNodeModule<String, BFEdge>,String>(results.numNodes(),1);
@@ -240,7 +247,8 @@ public class SearchTask implements Task {
 				
 				if (bestNode!=null && bestScore>=parameters.getAnnotationThreshold()) module_name.put(bestNode, complex.getID());
 			}
-			System.out.println("Number of module annotation matches: "+module_name.size());
+			annotMatches = module_name.size();
+			System.out.println("Number of module annotation matches: "+annotMatches);
 		}
 		
 		if (needsToHalt) return;
@@ -260,6 +268,7 @@ public class SearchTask implements Task {
 
 		setPercentCompleted(100);
 		
+		/*
 		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
 		CyAttributes cyEdgeAttrs = Cytoscape.getEdgeAttributes();
 		int[] edgeIndexArray = nnCreator.getOverviewNetwork().getEdgeIndicesArray();
@@ -274,12 +283,13 @@ public class SearchTask implements Task {
 			
 			double overlapScore = (double)NumberOfSharedNodes/minNodeCount;
 			cyEdgeAttrs.setAttribute(aEdge.getIdentifier(), "overlapScore", overlapScore);			
-		}
+		}*/
 		
 		//Generate report
-		if (!parameters.getReportPath().equals("")) generateReport(parameters.getReportPath(), networkName, pnetNodes1, pnetNodes2, pnetEdges1, pnetEdges2, geneticNetwork.numNodes(), geneticNetwork.numEdges(), trainingComplexes);
+		if (!parameters.getReportPath().equals("")) generateReport(parameters.getReportPath(), networkName, pnetNodes1, pnetNodes2, pnetEdges1, pnetEdges2, geneticNetwork.numNodes(), geneticNetwork.numEdges(), trainingComplexes, physicalRegress, geneticRegress, annotMatches, results);
 	}
 
+	/*
 	private static int getNumberOfSharedNodes(CyNetwork networkA, CyNetwork networkB){
 		
 		int[] nodeIndicesA = networkA.getNodeIndicesArray();
@@ -299,7 +309,7 @@ public class SearchTask implements Task {
 		}
 		
 		return sharedNodeCount;
-	}
+	}*/
 
 	
 	public void halt() {
@@ -516,7 +526,7 @@ public class SearchTask implements Task {
 		return scaledEdgeAttribValues;
 	}
 	
-	private void generateReport(String path, String networkName, int pnetNodes1, int pnetNodes2, int pnetEdges1, int pnetEdges2, int gnetNodes, int gnetEdges, List<SNodeModule> trainingComplexes)
+	private void generateReport(String path, String networkName, int pnetNodes1, int pnetNodes2, int pnetEdges1, int pnetEdges2, int gnetNodes, int gnetEdges, List<SNodeModule> trainingComplexes, ComplexRegressionResult physicalRegress, ComplexRegressionResult geneticRegress, int annotMatches, TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results)
 	{
 		HTMLPage report = new HTMLPage();
 		report.setTitle("PanGIA report: "+networkName);
@@ -550,30 +560,134 @@ public class SearchTask implements Task {
 			b.add("Annotation: "+parameters.getAnnotationAttrName()+"  ("+trainingComplexes.size()+" entries)");
 			b.add("");
 			
+			double background = (parameters.getComplexTrainingPhysical() || parameters.getComplexTrainingGenetic()) ? getBackground(trainingComplexes) : Double.NaN;
+			
 			if (parameters.getComplexTrainingPhysical())
 			{
 				b.add("Physical interaction annotation enrichment");
-				float[] x = new FloatVector(DoubleVector.getScale(0,100,2).getData()).getData();
-				float[] y = new FloatVector(DoubleVector.times(DoubleVector.rUnif(51),100)).getData();
+				double[][] curve = getCurve(physicalRegress.x,physicalRegress.y,40,background);
 				
-				b.add("<IMG src=\"http://chart.apis.google.com/chart?cht=lxy&chs=500x300&chd=t:"+ListOps.collectionToString(x,",")+"|"+ListOps.collectionToString(y,",")+"&chxr=0,-25,10,5&chxt=x,x,y,y&chxl=1:|Interaction_Score|2:|10^-2|10^-1|10^0|10^1|10^2|10^3|3:|Enrichment&chxp=1,60|3,50&chco=0000FF&chxs=0,000000,12,0,lt|1,000000,12,1,lt|2,000000,12,2,lt|3,000000,12,3,lt&chg=0,100,3,3,0,40\">");
+				double xmin = DoubleVector.min(curve[0]);
+				double xmax = DoubleVector.max(curve[0]);
+				
+				double ymin = -2;
+				double ymax = 3;
+				
+				float[] x = new FloatVector(DoubleVector.divideBy(DoubleVector.subtract(curve[0],xmin),(xmax-xmin)/100)).getData();
+				float[] y = new FloatVector(DoubleVector.divideBy(DoubleVector.subtract(curve[1],ymin),(ymax-ymin)/100)).getData();
+				
+				b.add("<IMG src=\"http://chart.apis.google.com/chart?cht=lxy&chs=500x300&chd=t:"+ListOps.collectionToString(x,",")+"|"+ListOps.collectionToString(y,",")+"&chxr=0,"+xmin+","+xmax+"&chxt=x,x,y,y&chxl=1:|Interaction_Score|2:|10^-2|10^-1|10^0|10^1|10^2|10^3|3:|Enrichment&chxp=1,60|3,50&chco=0000FF&chxs=0,000000,12,0,lt|1,000000,12,1,lt|2,000000,12,2,lt|3,000000,12,3,lt&chg=0,100,3,3,0,40\">");
+				b.add("");
+				b.add("Logistic regression: beta="+physicalRegress.coef+", intercept="+physicalRegress.intercept);
 				b.add("");
 			}
 			
+			if (parameters.getComplexTrainingGenetic())
+			{
+				b.add("Genetic interaction annotation enrichment");
+				double[][] curve = getCurve(geneticRegress.x,geneticRegress.y,40,background);
+				
+				double xmin = DoubleVector.min(curve[0]);
+				double xmax = DoubleVector.max(curve[0]);
+				
+				double ymin = -2;
+				double ymax = 3;
+				
+				float[] x = new FloatVector(DoubleVector.divideBy(DoubleVector.subtract(curve[0],xmin),(xmax-xmin)/100)).getData();
+				float[] y = new FloatVector(DoubleVector.divideBy(DoubleVector.subtract(curve[1],ymin),(ymax-ymin)/100)).getData();
+				
+				b.add("<IMG src=\"http://chart.apis.google.com/chart?cht=lxy&chs=500x300&chd=t:"+ListOps.collectionToString(x,",")+"|"+ListOps.collectionToString(y,",")+"&chxr=0,"+xmin+","+xmax+"&chxt=x,x,y,y&chxl=1:|Interaction_Score|2:|10^-2|10^-1|10^0|10^1|10^2|10^3|3:|Enrichment&chxp=1,60|3,50&chco=0000FF&chxs=0,000000,12,0,lt|1,000000,12,1,lt|2,000000,12,2,lt|3,000000,12,3,lt&chg=0,100,3,3,0,40\">");
+				b.add("");
+				b.add("Logistic regression: beta="+geneticRegress.coef+", intercept="+geneticRegress.intercept);
+				b.add("");
+			}
 			
+			if (annotMatches!=-1)
+			{
+				b.add("Annotation labeling:");
+				b.add("Threshold="+parameters.getAnnotationThreshold());
+				b.add("Modules annotated: "+annotMatches+" / "+results.numNodes());
+				b.add("");
+			}
 		}
 		
 		
 		b.add("Search parameters: alpha="+parameters.getAlpha()+",  alphaMultiplier="+parameters.getAlphaMultiplier());
 		b.add("Edge filtering: pval="+parameters.getPValueThreshold()+",  samples="+parameters.getNumberOfSamples());
+		b.add("");
+		b.add("PanGIA overview network: (Nodes: "+results.numNodes()+", Edges: "+results.numEdges()+")");
 		
-		//What else to report?
-
+		double sum = 0;
+		for (TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge : results.edgeIterator())
+			sum += edge.value().link();
+		sum /= results.numEdges();
 		
+		b.add("Average edge score: "+sum);
 		
 		
 		report.addToBody(b);
 		
 		report.write(path);
+	}
+	
+	private static double getBackground(List<SNodeModule> annots)
+	{
+		Set<String> nodes = new HashSet<String>(20000);
+		for (SNodeModule m : annots)
+			nodes.addAll(m.getMemberData());
+		
+		int possible = nodes.size()*(nodes.size()-1)/2;
+		
+		Set<UndirectedSEdge> net = new HashSet<UndirectedSEdge>(possible/100);
+		for (SNodeModule m : annots)
+			for (String g1 : m)
+				for (String g2 : m)
+					if (!g1.equals(g2)) net.add(new UndirectedSEdge(g1, g2));
+		
+		return net.size() / (double) possible;
+	}
+	
+	private static double[][] getCurve(double[] x, double[] y, int n, double background)
+	{
+		int[] order = DoubleVector.sort_I(x);
+		x = DoubleVector.get(x, order);
+		y = DoubleVector.get(y, order);
+		
+		int stepSize = x.length/(n-1);
+		
+		double[][] out = new double[2][n];
+		
+		for (int i=0;i<n-1;i++)
+		{
+			out[0][i] = getX(x,i*stepSize,(i+1)*stepSize);
+			out[1][i] = getY(x,y,i*stepSize,(i+1)*stepSize,background);
+		}
+		
+		out[0][n-1] = getX(x,x.length-stepSize,x.length);
+		out[1][n-1] = getY(x,y,x.length-stepSize,x.length,background);
+		
+		int[] ok = new BooleanVector(DoubleVector.isNaN(out[1])).not().asIndexes().getData();
+		out[0] = DoubleVector.get(out[0], ok);
+		out[1] = DoubleVector.get(out[1], ok);
+		
+		return out;
+	}
+	
+	private static double getX(double[] x, int i1, int i2)
+	{
+		double sum = 0;
+		for (int i=i1;i<i2;i++)
+			sum += x[i];
+		
+		return sum/(i2-i1);
+	}
+	
+	private static double getY(double[] x, double[] y, int i1, int i2, double background)
+	{
+		int hits = 0;
+		for (int i=i1;i<i2;i++)
+			hits += (int)Math.round(y[i]);
+		
+		return (hits==0) ? Double.NaN : Math.log10( (hits/(double)(i2-i1)) / background ); 
 	}
 }

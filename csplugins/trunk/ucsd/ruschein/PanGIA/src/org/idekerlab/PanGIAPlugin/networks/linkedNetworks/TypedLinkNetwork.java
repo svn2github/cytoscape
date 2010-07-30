@@ -267,7 +267,10 @@ public class TypedLinkNetwork<NT,ET>
 		{
 			Set<NT> toadd = new HashSet<NT>(100);
 			for (NT node : nodes)
-				toadd.addAll(this.getNode(node).neighbors(degree).getMemberValues());
+			{
+				TypedLinkNode<NT,ET> n = this.getNode(node);
+				if (n!=null) toadd.addAll(n.neighbors(degree).getMemberValues());
+			}
 			
 			allNodes.addAll(toadd);
 		}
