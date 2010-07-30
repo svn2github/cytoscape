@@ -67,9 +67,9 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 
 
     // Information for taskMonitor
-    double current_start = 0;	// Starting node number
-    double	current_size = 0;		// Partition size
-    double	total_nodes = 0;		// Total number of nodes
+    double current_start = 0; // Starting node number
+    double current_size  = 0; // Partition size
+    double total_nodes   = 0; // Total number of nodes
 
     /**
      * Creates a new AbstractGraphPartition object.
@@ -300,17 +300,6 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 
 	    //	logger.info("New partition succesfully created!");
 
-	    newPartition.recalculateStatistics();
-
-	    // Figure out our starting point - This will be used when:
-	    // 1- Laying out labels off all nodes
-	    // - and- 
-	    // 2- (normal) Nodes are not allowed to move
-//	     if (selectedOnly && moveNodes) {
-// 		newPartition.recalculateStatistics();
-// 		initialLocation = newPartition.getAverageLocation();
-// 	    }
-
 	    if (canceled)
 		return;
 
@@ -319,34 +308,6 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 
 	    if (canceled)
 		return;
-
-	    // Not quite done, yet. We may need to migrate labels back to their starting position
-	    // This will be necessary if:
-	    // 1- Laying out only selected nodes
-	    // - and - 
-	    // 2- (normal) Nodes are allowed to move
-
-	    // taskMonitor.setStatus("Making final arrangements to partition...");
-
-// 	    if (selectedOnly && moveNodes) {
-// 		// logger.info("moving back labels (and possibly nodes) to their location");
-
-// 		newPartition.recalculateStatistics();
-// 		Dimension finalLocation = newPartition.getAverageLocation();
-// 		double xDelta = 0.0;
-// 		double yDelta = 0.0;
-	 
-// 		xDelta = finalLocation.getWidth() - initialLocation.getWidth();
-// 		yDelta = finalLocation.getHeight() - initialLocation.getHeight();
-
-// 		for (LayoutNode v: newPartition.getNodeList()) {
-// 		    if (!v.isLocked()) {
-// 			v.decrement(xDelta, yDelta);
-// 			newPartition.moveNodeToLocation(v);
-// 		    }
-// 		}
-// 	    }
-
 
 	    // make sure nodes are where they should be
 	    for(LayoutNode node: newPartition.getLabelToParentMap().values() ) {
@@ -374,9 +335,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	    networkView.updateView();
 	    networkView.redrawGraph(true, true);
 
-
-
-	} else {
+	} else { // normal (non-label) layout
 	    layoutPartition(partition);
 	}
 
@@ -434,19 +393,20 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	logger.info("Reseting labels position");
 
 	CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
+	Collection<CyNode> selectedNodes = (Collection<CyNode>)network.getSelectedNodes();
 
 	// Go through all nodes deleting the label position attribute
 	for (CyNode node: (List<CyNode>)network.nodesList()) {
-	    if (!selectedOnly || !isLocked(networkView.getNodeView(node.getRootGraphIndex()))) {
+	    if (!selectedOnly || selectedNodes.contains(node) )
 		if (nodeAtts.hasAttribute(node.getIdentifier(), "node.labelPosition")) {
 		    nodeAtts.deleteAttribute(node.getIdentifier(), "node.labelPosition");
+		    // logger.info("Deleted label position attribute of node: " + node.toString() );
 		}
-	    }
 	}
 	
 	// redraw the network so that the new label positions are visible
 	networkView.updateView();
-    	networkView.redrawGraph(true, true);
+	networkView.redrawGraph(true, true);
     }
 
 

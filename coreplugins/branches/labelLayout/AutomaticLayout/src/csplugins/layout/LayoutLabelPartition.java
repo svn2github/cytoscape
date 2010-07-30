@@ -123,8 +123,8 @@ public class LayoutLabelPartition extends LayoutPartition {
 	// This method handles the creation of LayoutLabelNodes, the mappings, etc
 	this.initializeLabels();
 
-	// Calculate weights for this partition using an overriding method
-	//	this.calculateEdgeWeights();
+	// Reset statistics in order to reflect the new partition status.
+	this.recalculateStatistics();
     }
 
     /**
