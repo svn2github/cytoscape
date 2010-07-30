@@ -455,6 +455,7 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 				
 			}//end loop through all props files
 			
+			
 			//Set current network and Initialize the panel appropriately
 			SemanticSummaryManager.getInstance().setupCurrentNetwork();
 			

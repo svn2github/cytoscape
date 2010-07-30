@@ -23,6 +23,9 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.awt.Component;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -592,42 +595,14 @@ public class CloudParameters implements Comparable
 			
 			pairRatios.put(curWord, ratio);
 		}
-		
+			
 		ratiosInitialized = true;
 	}
 	
 	/**
-	 * Calculates the proper font size for words in the selected nodes.
-	 */
-	//Comment out for now, while I create a new method
-	/*
-	public void calculateFontSizes()
-	{
-		if (!ratiosInitialized)
-			this.updateRatios();
-		
-		//Clear old fonts
-		this.cloudWords = new ArrayList<CloudWordInfo>();
-		
-		Set<String> words = ratios.keySet();
-		Iterator<String> iter = words.iterator();
-		while(iter.hasNext())
-		{
-			String curWord = (String)iter.next();
-			Integer fontSize = calculateFontSize(curWord);
-			CloudWordInfo curInfo = new CloudWordInfo(curWord, fontSize);
-			curInfo.setCloudParameters(this);
-			cloudWords.add(curInfo);
-		}//end while loop
-		
-		//Sort cloudWords in reverse order by fontsize
-		Collections.sort(cloudWords);
-		Collections.reverse(cloudWords);
-	}
-	*/
-	/**
 	 * Creates a cloud clustering object and clusters based on the parameter
 	 * in this CloudParameters.
+	 * @throws  
 	 */
 	public void calculateFontSizes()
 	{
@@ -678,38 +653,7 @@ public class CloudParameters implements Comparable
 			return 0;
 		
 		Double ratio = ratios.get(aWord);
-		
-		
-		/* Weighted, minimum value
-		Double newRatio = ratio * meanWeight / meanRatio;
-		
-		//Weighted Average
-		Integer maxFont = networkParams.getMaxFont();
-		Integer minFont = networkParams.getMinFont();
-		
-		//Check if maxRatio and minRatio are the same
-		if (maxRatio.equals(minRatio))
-			return (minFont + (maxFont - minFont)/2);
-		
-		Double slope = (maxFont - minFont)/(maxWeight - minWeight);
-		Double yIntercept = maxFont - (slope*maxWeight); //maxRatio maps to maxFont
-		
-		//Round up to nearest Integer
-		//Double temp = Math.ceil((slope*newRatio) + yIntercept);
-		long temp = Math.round((slope*newRatio) + yIntercept);
-		
-		//Integer fontSize = temp.intValue();
-		Integer fontSize = Math.round(temp);
-		
-		if (fontSize < 12)
-		{
-			fontSize = 12;
-		}
-		*/
-		
-		
-		
-		
+				
 		//Zeroed mapping
 		//Get zeroed values for calculations
 		Double zeroedMinWeight = minWeight - minWeight;
@@ -742,8 +686,6 @@ public class CloudParameters implements Comparable
 		//Integer fontSize = temp.intValue();
 		Integer fontSize = Math.round(temp);
 		
-		
-		
 		/*
 		//Original
 		//Map the interval minRatio to maxRatio to the new interval 
@@ -764,214 +706,6 @@ public class CloudParameters implements Comparable
 		
 		//Integer fontSize = temp.intValue();
 		Integer fontSize = Math.round(temp);
-		*/
-		
-		/*
-		 //Average constant
-		//Map the interval minRatio to maxRatio to the new interval 
-		//minFont to maxFont using a linear transformation
-		Integer maxFont = networkParams.getMaxFont();
-		Integer minFont = networkParams.getMinFont();
-		Integer meanFont = minFont + (maxFont - minFont)/2;
-		
-		//Check if maxRatio and minRatio are the same
-		if (maxRatio.equals(minRatio))
-			return (minFont + (maxFont - minFont)/2);
-		
-		Double slope = (meanFont - minFont)/(meanRatio - minRatio);
-		Double yIntercept = meanFont - (slope*meanRatio); //maxRatio maps to maxFont
-		
-		//Round up to nearest Integer
-		//Double temp = Math.ceil((slope*ratio) + yIntercept);
-		long temp = Math.round((slope*ratio) + yIntercept);
-		
-		//Integer fontSize = temp.intValue();
-		Integer fontSize = Math.round(temp);
-		*/
-		
-		/*
-		 * Parabola
-		Integer maxFont = networkParams.getMaxFont();
-		Integer minFont = networkParams.getMinFont();
-		Integer meanFont = minFont + (maxFont - minFont)/2;
-		
-		//Check if maxRatio and minRatio are the same
-		if (maxRatio.equals(minRatio))
-			return (minFont + (maxFont - minFont)/2);
-		
-		Double temp = 0.0;
-		temp = minFont * (ratio - meanRatio) * (ratio - maxRatio)/((minRatio - meanRatio) * (minRatio - maxRatio));
-		temp += meanFont * (ratio - minRatio) * (ratio - maxRatio)/((meanRatio - minRatio) * (meanRatio - maxRatio));
-		temp += maxFont * (ratio - minRatio) * (ratio - meanRatio)/((maxRatio - minRatio) * (maxRatio - meanRatio));
-		
-		long roundedTemp = Math.round(temp);
-		Integer fontSize = Math.round(roundedTemp);
-		*/
-		
-		/*
-		 * Use mean - both directions
-		//Map the interval minRatio to meanRatio to the new interval 
-		//minFont to meanFont using a linear transformation
-		Integer maxFont = networkParams.getMaxFont();
-		Integer minFont = networkParams.getMinFont();
-		Integer meanFont = minFont + (maxFont - minFont)/2;
-		
-		//Check if maxRatio and minRatio are the same
-		if (maxRatio.equals(minRatio))
-			return meanFont;
-		
-		Double lowerSlope = (meanFont - minFont)/(meanRatio - minRatio);
-		Double lowerYIntercept = meanFont - (lowerSlope*meanRatio); //maxRatio maps to maxFont
-		
-		Double higherSlope = (maxFont - meanFont)/(maxRatio - meanRatio);
-		Double higherYIntercept = maxFont - (higherSlope*maxRatio);
-		
-		long temp = 0;
-		if (ratio < meanRatio)
-		{
-			temp = Math.round((lowerSlope*ratio) + lowerYIntercept);
-		}
-		else
-		{
-			temp = Math.round((higherSlope*ratio) + higherYIntercept);
-		}
-
-		//Integer fontSize = temp.intValue();
-		Integer fontSize = Math.round(temp);
-		*/
-		
-		/*
-		 * Logrithmic
-		Integer maxFont = networkParams.getMaxFont();
-		Integer minFont = networkParams.getMinFont();
-		Integer meanFont = minFont + (maxFont - minFont)/2;
-		
-		//Check if maxRatio and minRatio are the same
-		if (maxRatio.equals(minRatio))
-			return meanFont;
-		
-		Double weight = (Math.log(ratio) - Math.log(minRatio))/(Math.log(maxRatio) - Math.log(minRatio));
-		long temp = minFont + Math.round((maxFont - minFont)*weight);
-		Integer fontSize = Math.round(temp);
-		*/
-		
-		/*
-		 * Use Median rather than mean
-		//Map the interval minRatio to meanRatio to the new interval 
-		//minFont to meanFont using a linear transformation
-		Integer maxFont = networkParams.getMaxFont();
-		Integer minFont = networkParams.getMinFont();
-		Integer meanFont = minFont + (maxFont - minFont)/2;
-		
-		//Find median of the ratios
-		ArrayList<Double> listRatios = new ArrayList<Double>();
-		Set<String> wordsForRatio = ratios.keySet();
-		for(Iterator<String> iter = wordsForRatio.iterator(); iter.hasNext();)
-		{
-			String curWord = iter.next();
-			Double curRatio = ratios.get(curWord);
-			listRatios.add(curRatio);
-		}
-		
-		Collections.sort(listRatios);
-		int size = listRatios.size();
-		int median = size/2;
-		
-		Double medianRatio = listRatios.get(median);
-		
-		//Check if maxRatio and minRatio are the same
-		if (maxRatio.equals(minRatio))
-			return meanFont;
-		
-		Double lowerSlope = (meanFont - minFont)/(medianRatio - minRatio);
-		Double lowerYIntercept = meanFont - (lowerSlope*medianRatio); //maxRatio maps to maxFont
-		
-		Double higherSlope = (maxFont - meanFont)/(maxRatio - medianRatio);
-		Double higherYIntercept = maxFont - (higherSlope*maxRatio);
-		
-		long temp = 0;
-		if (ratio < medianRatio)
-		{
-			temp = Math.round((lowerSlope*ratio) + lowerYIntercept);
-		}
-		else
-		{
-			temp = Math.round((higherSlope*ratio) + higherYIntercept);
-		}
-
-		//Integer fontSize = temp.intValue();
-		Integer fontSize = Math.round(temp);
-		*/
-		
-		
-		/*// Mean Logrithmic
-		Integer maxFont = networkParams.getMaxFont();
-		Integer minFont = networkParams.getMinFont();
-		Integer meanFont = minFont + (maxFont - minFont)/2;
-		
-		//Check if maxRatio and minRatio are the same
-		if (maxRatio.equals(minRatio))
-			return meanFont;
-		
-		Double weight = (Math.log(ratio) - Math.log(minRatio))/(Math.log(meanRatio) - Math.log(minRatio));
-		long temp = minFont + Math.round((meanFont - minFont)*weight);
-		Integer fontSize = Math.round(temp);
-		*/
-		
-		/*
-		// Two directional Mean Logrithmic
-		Integer maxFont = networkParams.getMaxFont();
-		Integer minFont = networkParams.getMinFont();
-		Integer meanFont = minFont + (maxFont - minFont)/2;
-		
-		//Check if maxRatio and minRatio are the same
-		if (maxRatio.equals(minRatio))
-			return meanFont;
-		
-		long temp = 0;
-		if (ratio < meanRatio)
-		{
-			Double lowerWeight = (Math.log(ratio) - Math.log(minRatio))/(Math.log(meanRatio) - Math.log(minRatio));
-			temp = minFont + Math.round((meanFont - minFont)*lowerWeight);
-		}
-		else
-		{
-			Double upperWeight = (Math.log(ratio) - Math.log(meanRatio))/(Math.log(maxRatio) - Math.log(meanRatio));
-			temp = meanFont + Math.round((maxFont - meanFont)*upperWeight);
-		}
-		
-		Integer fontSize = Math.round(temp);
-		*/
-		
-		/*
-		//Double logistic function
-		// Two directional Mean Logrithmic
-		Integer maxFont = networkParams.getMaxFont();
-		Integer minFont = networkParams.getMinFont();
-		Integer meanFont = minFont + (maxFont - minFont)/2;
-		
-		//Check if maxRatio and minRatio are the same
-		if (maxRatio.equals(minRatio))
-			return meanFont;
-		
-		double sgnTemp = ratio - meanRatio;
-		int sgn = 0;
-		if (sgnTemp > 0)
-		{
-			sgn = 1;
-		}
-		else
-		{
-			sgn = -1;
-		}
-		
-		int steep = 1;
-		
-		Double inside = Math.pow((ratio - meanRatio)/steep, 2);
-		
-		Double doubleTemp = sgn * (1 - Math.exp(- inside));
-		long longTemp = Math.round(doubleTemp);
-		Integer fontSize = Math.round(longTemp);
 		*/
 		
 		return fontSize;
@@ -1670,4 +1404,5 @@ public class CloudParameters implements Comparable
 	{
 		useNetNormal = val;
 	}
+	
 }

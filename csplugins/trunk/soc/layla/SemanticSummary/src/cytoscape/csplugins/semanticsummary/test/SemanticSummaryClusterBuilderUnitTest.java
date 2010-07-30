@@ -17,6 +17,7 @@ import cytoscape.Cytoscape;
 import cytoscape.csplugins.semanticsummary.CloudParameters;
 import cytoscape.csplugins.semanticsummary.CloudWordInfo;
 import cytoscape.csplugins.semanticsummary.SemanticSummaryClusterBuilder;
+import cytoscape.csplugins.semanticsummary.SemanticSummaryManager;
 import cytoscape.csplugins.semanticsummary.SemanticSummaryParameters;
 import cytoscape.csplugins.semanticsummary.SingleWordCluster;
 import cytoscape.csplugins.semanticsummary.WordClusters;
@@ -137,7 +138,7 @@ public class SemanticSummaryClusterBuilderUnitTest extends TestCase
 		String firstWord = first.getWord();
 		int firstCluster = first.getCluster();
 		Color firstColor = first.getTextColor();
-		assertTrue(firstSize == 56);
+		assertTrue(firstSize == SemanticSummaryManager.getInstance().getNullSemanticSummary().getMaxFont());
 		assertTrue(firstWord.equals("regulation"));
 		assertTrue(firstCluster == 0);
 		assertTrue(firstColor.equals(Color.BLACK));
@@ -148,7 +149,7 @@ public class SemanticSummaryClusterBuilderUnitTest extends TestCase
 		String lastWord = last.getWord();
 		int lastCluster = last.getCluster();
 		Color lastColor = last.getTextColor();
-		assertTrue(lastFontSize == 12);
+		assertTrue(lastFontSize == SemanticSummaryManager.getInstance().getNullSemanticSummary().getMinFont());
 		assertTrue(lastWord.equals("death"));
 		assertTrue(lastCluster == 6);
 		assertTrue(lastColor.equals(Color.GRAY));

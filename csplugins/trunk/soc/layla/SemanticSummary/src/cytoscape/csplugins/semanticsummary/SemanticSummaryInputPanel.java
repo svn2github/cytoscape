@@ -388,7 +388,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		netNormalizationPanel.setLayout(new GridBagLayout());
 		
 		//Checkbox
-		useNetworkCounts = new JCheckBox("Use word counts from entire network");
+		useNetworkCounts = new JCheckBox("Normalize word size using selection/network ratios");
 		useNetworkCounts.setToolTipText("Enables word size to be calculated using using counts over the entire network, rather than just selected nodes");
 		useNetworkCounts.addActionListener(this);
 		useNetworkCounts.setSelected(false);

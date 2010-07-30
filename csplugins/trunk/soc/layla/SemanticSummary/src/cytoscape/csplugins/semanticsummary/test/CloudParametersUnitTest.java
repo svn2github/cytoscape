@@ -263,6 +263,9 @@ public class CloudParametersUnitTest extends TestCase {
 		assertFalse(cloudParams.getSelInitialized());
 		assertFalse(cloudParams.getRatiosInitialized());
 		
+		//Change ratio to 0
+		cloudParams.setNetWeightFactor(0.0);
+		
 		cloudParams.calculateFontSizes();
 		ArrayList<CloudWordInfo> cloudWords = cloudParams.getCloudWordInfoList();
 		
@@ -276,6 +279,22 @@ public class CloudParametersUnitTest extends TestCase {
 		assertTrue(cloudParams.getCountInitialized());
 		assertTrue(cloudParams.getSelInitialized());
 		assertTrue(cloudParams.getRatiosInitialized());
+		
+		//change ratio to 1
+		cloudParams.setNetWeightFactor(1.0);
+		
+		//Test flags
+		assertTrue(cloudParams.getCountInitialized());
+		assertTrue(cloudParams.getSelInitialized());
+		assertFalse(cloudParams.getRatiosInitialized());
+		
+		cloudParams.calculateFontSizes();
+		cloudWords = cloudParams.getCloudWordInfoList();
+		
+		//Check that the last entriy has min size
+		assertEquals(cloudWords.get(cloudWords.size() - 1).getFontSize(),
+				new Integer(parentParams.getMinFont()));
+		
 	}
 
 }

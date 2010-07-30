@@ -20,6 +20,24 @@
 	<!-- Contains all external documentation -->
 	<property name="doc.dir"       value="${basedir}/doc"/>
 	
+	<!--
+	**********************************
+	* TO DEFINE PATH TO CYTOSCAPE:   *
+	**********************************
+	-Ensure to set the value for property name ="cytoscape.dir" to the location
+	of cytoscape on the computer which is compiling this plugin.  The cytoscape jars
+	are required for the compilation of the WordCloud plugin.
+	
+	EXAMPLES:
+	
+	Apple:
+		<property name="cytoscape.dir" value="/Applications/Cytoscape_v2.7.0"/>
+	  Linux:
+		<property name="cytoscape.dir" value="/usr/local/Cytoscape_v2.7.0"/>
+	  Windows:
+		<property name="cytoscape.dir" value="C:/Program Files/Cytoscape-v2.7.0"/>
+	-->
+	
 	<!-- Define the Cytoscape directories -->
 	<property name="cytoscape.dir" value="C:/Program Files/Cytoscape_v2.7.0"/>
     <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
