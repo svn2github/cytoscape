@@ -191,18 +191,27 @@ package gbeb.view.render
 				Shapes.consolidate(x1, y1, ctrls, x2, y2, _pts);
 				Shapes.drawBSpline(g, _pts, 2+ctrls.length/2);
 				trace("EdgeRenderer: Tesing render calls: " + e.name);//debug
-				for each (var p:Point in e.props.$controlPointsArray) { //debug
-					if(p != null)
-					{
+				// DEBUG *******
+                if (e.props.$debug == true) {
+					var colors:Object = {
+						  0: 0xffffff00, //yellow
+						  2: 0xff00ff00, //green
+                          4: 0xff0000ff, //blue
+                          6: 0xffff00ff, //violet
+					      8: 0xffff0000, //red
+	                      10: 0xff000000 //black
+					};
+					trace(">> # points: " + ctrls.length/2);
+					for (var i:uint=0; i < ctrls.length-1; i+=2) { //debug
+					    trace("     ["+i+"] " + ctrls[i] + " - " + ctrls[i+1]);
 						g.lineStyle(0, 0, 0);
-						g.beginFill(0x999999);
-						g.drawCircle(p.x, p.y, 5);
+						g.beginFill(colors[i], 0.5);
+						g.drawCircle(ctrls[i], ctrls[i+1], 5);
 						g.endFill();
 					}
-				} 
-			}
-			else
-			{
+				}
+				// *************
+			} else {
 				g.moveTo(x1, y1);
 				if (ctrls != null) {
 					for (var i:uint=0; i<ctrls.length; i+=2)

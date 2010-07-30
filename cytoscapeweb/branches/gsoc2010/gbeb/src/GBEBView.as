@@ -14,17 +14,14 @@ package
     import flare.vis.data.NodeSprite;
     import flare.vis.data.Tree;
     import flare.vis.events.SelectionEvent;
-    import flare.vis.operator.encoder.ColorEncoder;
     import flare.vis.operator.label.Labeler;
-    import flare.vis.operator.layout.BundledEdgeRouter;
     import flare.vis.operator.layout.CircleLayout;
-    import flare.vis.operator.layout.NodeLinkTreeLayout;
-    import flare.vis.operator.layout.RadialTreeLayout;
     
     import flash.display.Sprite;
     import flash.display.StageAlign;
     import flash.display.StageScaleMode;
     import flash.events.Event;
+    import flash.events.MouseEvent;
     import flash.geom.Rectangle;
     import flash.net.URLLoader;
     import flash.net.URLRequest;
@@ -40,8 +37,8 @@ package
     public class GBEBView extends Sprite
     {  
 //        private var _url:String = "data/sample1.xml";
-//        private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
-				private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
+        private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
+//				private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare_reduced.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/socialnet.xml";
         private var _vis:Visualization;
@@ -89,7 +86,8 @@ package
             data.edges.setProperties({
                 lineWidth: 2,
                 lineColor: 0xff0055cc,
-                mouseEnabled: false,          // non-interactive edges
+                mouseEnabled: true,
+                buttonMode: true,
 //                visible: neq("source.parentNode","target.parentNode"),
                 renderer: BundleRenderer.instance
             });
@@ -123,7 +121,7 @@ package
                 
                 //var bounds:Rectangle = new Rectangle(0, 0, width, height);
 								
-								_vis.operators.add(new Labeler("data.name"));
+//				_vis.operators.add(new Labeler("data.name"));
                 _vis.operators.add(new GBEBRouter(_bounds, 32 , 0.95));
                 trace("GBEBView: how many times GBEBView called the GBEBRouter? " + addEventCounter++);
                 // ############################################################## 
@@ -131,31 +129,31 @@ package
 				_vis.update();
 				 
                 // show all dependencies on single-click
-                var linkType:int = NodeSprite.OUT_LINKS;
-                _vis.controls.add(new ClickControl(NodeSprite, 1,
-                    function(evt:SelectionEvent):void {
-                        if (_focus && _focus != evt.node) {
-                            unhighlight(_focus);
-                            linkType = NodeSprite.OUT_LINKS;
-                        }
-                        _focus = evt.node;
-                        highlight(evt);
-                        showAllDeps(evt, linkType);
-//                        _vis.controls.remove(hov);
-                        linkType = (linkType==NodeSprite.OUT_LINKS ?
-                            NodeSprite.IN_LINKS : NodeSprite.OUT_LINKS);
-                    },
-                    // show all edges and nodes as normal
-                    function(evt:SelectionEvent):void {
-                        if (_focus) unhighlight(_focus);
-                        _focus = null;
-                        _vis.data.edges["visible"] = 
-                            neq("source.parentNode","target.parentNode");
-                        _vis.data.nodes["alpha"] = 1;
-//                        _vis.controls.add(hov);
-                        linkType = NodeSprite.OUT_LINKS;
-                    }
-                ));
+//                var linkType:int = NodeSprite.OUT_LINKS;
+//                _vis.controls.add(new ClickControl(NodeSprite, 1,
+//                    function(evt:SelectionEvent):void {
+//                        if (_focus && _focus != evt.node) {
+//                            unhighlight(_focus);
+//                            linkType = NodeSprite.OUT_LINKS;
+//                        }
+//                        _focus = evt.node;
+//                        highlight(evt);
+//                        showAllDeps(evt, linkType);
+////                        _vis.controls.remove(hov);
+//                        linkType = (linkType==NodeSprite.OUT_LINKS ?
+//                            NodeSprite.IN_LINKS : NodeSprite.OUT_LINKS);
+//                    },
+//                    // show all edges and nodes as normal
+//                    function(evt:SelectionEvent):void {
+//                        if (_focus) unhighlight(_focus);
+//                        _focus = null;
+//                        _vis.data.edges["visible"] = 
+//                            neq("source.parentNode","target.parentNode");
+//                        _vis.data.nodes["alpha"] = 1;
+////                        _vis.controls.add(hov);
+//                        linkType = NodeSprite.OUT_LINKS;
+//                    }
+//                ));
                 
                 // add mouse-over highlight
 //                var hov:HoverControl = new HoverControl(NodeSprite, HoverControl.DONT_MOVE, highlight, unhighlight);
@@ -328,6 +326,20 @@ package
                 
                 data.tree = tree;
             }
+            
+            // DEBUG ******
+            for each (var e:EdgeSprite in data.edges) {
+            	e.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
+            		var clicked:EdgeSprite = evt.target as EdgeSprite;
+            		trace("CLICK >> " + clicked.source.data.name + " - " + clicked.target.data.name);
+//                    trace("CLICK >> " + clicked.source.data.id + " - " + clicked.target.data.id);
+                    data.edges.setProperty("lineColor", clicked.lineColor);
+                    data.edges.setProperty("props.$debug", false);
+                    clicked.lineColor = 0xffff0000;
+                    clicked.props.$debug = true;
+            	});
+            }
+            // ************
             
             return data;
         }

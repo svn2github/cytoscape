@@ -176,7 +176,7 @@ package gbeb.view.operator.router
 			
 			for each (edge in storedDataEdges) {
 					edge.lineWidth = edge.lineWidth /2 ; //lower width gives better visual quality
-			    edge.shape = Shapes.BEZIER; //Here to change curve type
+			    edge.shape = Shapes.BSPLINE; //Here to change curve type
 					edge.lineAlpha = 0.5;
 				var ctrl:Array = edge.props.$controlPointsArray;
 				var ctrlgradient:Array = edge.props.$CPGradientArray; //used to store the gradient of each control point

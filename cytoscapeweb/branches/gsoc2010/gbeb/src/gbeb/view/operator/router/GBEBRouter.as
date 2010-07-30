@@ -226,6 +226,11 @@ package gbeb.view.operator.router {
             // this is a quadraply nested loop of O(gridsXedges) runtime
             // It tests if there is an intersection between the grids on the edges. If so, the edges are added into the shape. 
             for each (var edge:EdgeSprite in data.edges) {
+            	// Reset control points
+            	edge.props.$controlPointsArray = [];
+//            	if (edge.points == null) edge.points = [];
+            	
+            	
                 //included just in case (x1,y1), (x2, y2) have not been assigned
                 // TODO: Should be done by the edge renderer only
                 edge.x1 = edge.source.x;
