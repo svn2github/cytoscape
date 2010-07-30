@@ -36,7 +36,7 @@
 */
 package cytoscape;
 
-import junit.framework.*;
+//import junit.framework.*;
 
 import java.lang.*;
 import java.lang.reflect.*;
@@ -53,7 +53,7 @@ import java.util.regex.*;
  * all of the unit tests also contained in the jar, and executes them.
  * This is useful for running unit tests independent of ant.
  */
-public class AllTests extends TestCase {
+public class AllTests /*extends TestCase*/ {
 	/**
 	 *
 	 */
@@ -69,7 +69,6 @@ public class AllTests extends TestCase {
 	 * any subsequent test cases (or arguments at all) will cause all
 	 * tests to be run.  If no arguments are found, or if the first
 	 * argument is not "-ui", then all tests will be run in text mode.
-	 */
 	public static void main(String[] args) {
 		if ((args.length > 0) && (args[0] != null) && args[0].equals("-ui")) {
 			if (args.length == 2) {
@@ -82,11 +81,11 @@ public class AllTests extends TestCase {
 		} else
 			junit.textui.TestRunner.run(suite());
 	}
+	 */
 
 	/**
 	 * Reflects to find the test classes in this jar and then
 	 * adds them to this test suite.
-	 */
 	public static Test suite() {
 		System.out.println("suite started");
 
@@ -151,6 +150,7 @@ public class AllTests extends TestCase {
 
 		return suite;
 	}
+	 */
 
 	/**
 	 * Conditionally output a message to System.out.

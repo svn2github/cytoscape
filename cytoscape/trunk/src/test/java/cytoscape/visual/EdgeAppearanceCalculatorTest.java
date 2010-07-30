@@ -85,32 +85,22 @@ public class EdgeAppearanceCalculatorTest extends TestCase {
 	 * DOCUMENT ME!
 	 */
 	public void setUp() {
-		cyNet = Cytoscape.createNetworkFromFile("testData/small.sif");
+		cyNet = Cytoscape.createNetworkFromFile("src/main/resources/testData/small.sif");
 		a = Cytoscape.getCyNode("a");
 		b = Cytoscape.getCyNode("b");
 		ab = Cytoscape.getCyEdge(a, b, Semantics.INTERACTION, "pp", false);
 		props = new Properties();
 
-		try {
-			CyAttributesReader.loadAttributes(Cytoscape.getEdgeAttributes(),
-					new FileReader("testData/small.edgeAttr"));
+        try {
+            CyAttributesReader.loadAttributes(Cytoscape.getEdgeAttributes(),
+                    new FileReader("src/main/resources/testData/small.edgeAttr"));
+            props.load(FileUtil.getInputStream("src/main/resources/testData/small.vizmap.props"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            InputStream is = null;
-            try {
-				is = FileUtil.getInputStream("testData/small.vizmap.props");
-                props.load(is);
-            }
-            finally {
-                if (is != null) {
-                    is.close();
-                }
-            }
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		catalog = new CalculatorCatalog();
-		CalculatorIO.loadCalculators(props, catalog, true);
+        catalog = new CalculatorCatalog();
+        CalculatorIO.loadCalculators(props, catalog, true);
 	}
 
 	/**

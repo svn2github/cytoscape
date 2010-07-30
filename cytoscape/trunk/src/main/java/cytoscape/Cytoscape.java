@@ -1644,8 +1644,9 @@ public abstract class Cytoscape {
 		} catch (Exception e) {
 			logger.warn("Could not build OntologyServer.", e);
 			// e.printStackTrace();
+			throw new RuntimeException(e);
 
-			return null;
+			//return null;
 		}
 
 		return ontologyServer;

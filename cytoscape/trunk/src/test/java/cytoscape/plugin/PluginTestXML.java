@@ -31,7 +31,7 @@ public class PluginTestXML {
 			UserDir = UserDir.replaceFirst("\\w:", "");
 			UserDir = UserDir.replaceAll("\\\\", FS);
 		}
-		return UserDir + FS + "testData" + FS + "plugins" + FS;
+		return UserDir + FS + "src" + FS + "main" + FS + "resources" + FS + "testData" + FS + "plugins" + FS;
 	}
 
 	// get the xsl file as a stream

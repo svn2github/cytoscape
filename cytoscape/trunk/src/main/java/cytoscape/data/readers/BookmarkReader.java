@@ -56,7 +56,7 @@ public class BookmarkReader {
 	private static final String BOOKMARK_PACKAGE = "cytoscape.bookmarks";
 
 	// Location of the default bookmark.
-	private static final String BOOKMARK_RESOURCE_FILE = "/cytoscape/resources/bookmarks.xml";
+	private static final String BOOKMARK_RESOURCE_FILE = "/bookmarks.xml";
 	private Bookmarks bookmarks;
 
 	/**

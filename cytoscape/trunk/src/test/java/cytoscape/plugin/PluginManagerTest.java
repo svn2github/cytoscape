@@ -30,7 +30,7 @@ public class PluginManagerTest extends TestCase {
 			UserDir = UserDir.replaceAll("\\\\", FS);
 		}
 		UserDir = UserDir.replaceFirst("/", "");
-		return "file:///" + UserDir + FS + "testData" + FS + "plugins" + FS;
+		return "file:///" + UserDir + FS + "src" + FS + "main" + FS + "resources" + FS + "testData" + FS + "plugins" + FS;
 	}
 
 	private String cleanFileUrl(String url) {
@@ -636,10 +636,12 @@ public class PluginManagerTest extends TestCase {
 	public void testMinorCorruptedTrackerFile() {
 		mgr.resetManager();
 		PluginManager.setPluginManageDirectory(System.getProperty("java.io.tmpdir"));
-		File file = new File("testData/plugins/track_plugins_c1.xml");
+		File file = new File("src/main/resources/testData/plugins/track_plugins_c1.xml");
 		file = copyFileToTempDir(file);
 
 		mgr = PluginManager.getPluginManager();
+		System.out.println("XXXX " + mgr.pluginTracker.getTrackerFile().getAbsolutePath());
+		System.out.println("YYYY " + file.getAbsolutePath());
 		assertEquals(mgr.pluginTracker.getTrackerFile().getAbsolutePath(), file.getAbsolutePath());
 		 // errors that aren't major failures don't show up until you've tried to read the file
 		assertTrue(mgr.getDownloadables(PluginStatus.CURRENT).size() > 0);
@@ -653,7 +655,7 @@ public class PluginManagerTest extends TestCase {
 	public void testMajorCorruptedTrackerFile() {
 		mgr.resetManager();
 		PluginManager.setPluginManageDirectory(System.getProperty("java.io.tmpdir"));
-		File file = new File("testData/plugins/track_plugins_c2.xml");
+		File file = new File("src/main/resources/testData/plugins/track_plugins_c2.xml");
 		file = copyFileToTempDir(file);
 		mgr = PluginManager.getPluginManager();
 		assertNotNull(mgr);
@@ -672,8 +674,9 @@ public class PluginManagerTest extends TestCase {
 	
 	/*--------------------------------------------------------------------*/
 	private File copyFileToTempDir(File fileToCopy) {
-		File tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + 
-				new CytoscapeVersion().getMajorVersion());
+
+		File tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "2.6");
+//				new CytoscapeVersion().getMajorVersion());
 		File tempFile = new File(tempDir, "track_plugins.xml");
 		
 		assertTrue(fileToCopy.exists());

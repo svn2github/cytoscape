@@ -260,6 +260,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 	 * and command line options.
 	 */
 	public static Properties getProperties() {
+		initProperties();
 		return properties;
 	}
 
@@ -267,6 +268,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 	 * @return the most recently used directory
 	 */
 	public static File getMRUD() {
+		initMRUD();
 		return new File(mrud.getProperty("fileOpenLocation", System.getProperty("user.home")));
 	}
 
@@ -281,6 +283,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 	 * @param mrud_new  the most recently used directory
 	 */
 	public static void setMRUD(final File mrud_new) {
+		initMRUD();
 		mrud.setProperty("fileOpenLocation", mrud_new.toString());
 	}
 
@@ -313,8 +316,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 	public static File getConfigDirectory() {
 
 		try {
-			String dirName = properties.getProperty("alternative.config.dir",
-			                                        System.getProperty("user.home"));
+			String dirName = System.getProperty("user.home");
 			File parent_dir = new File(dirName, ".cytoscape");
 
 			if (parent_dir.mkdir())
@@ -371,7 +373,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 	    // TODO: This should probably be removed, since if
 	    //       props==null, then the props set here will be lost:
 		if (props == null) {
-			logger.info("input props is null");
+			System.out.println("input props is null");
 			props = new Properties();
 		}
 
@@ -387,10 +389,10 @@ public class CytoscapeInit implements PropertyChangeListener {
 
 			URL vmu = null;
 
-			if (cl != null)
+			if (cl != null) 
 				vmu = cl.getResource(defaultName);
 			else
-				logger.warn("ClassLoader for reading cytoscape.jar is null");
+				System.err.println("ClassLoader for reading cytoscape.jar is null");
 
 			if (vmu != null)
 				// We'd like to use URLUtil.getBasicInputStream() to get
@@ -400,20 +402,20 @@ public class CytoscapeInit implements PropertyChangeListener {
 				// it directly:
 				props.load(vmu.openStream());
 			else
-				logger.warn("couldn't read " + defaultName + " from " + tryName);
+				System.err.println("couldn't read " + defaultName + " from " + tryName);
 
 			// load the props file from $HOME/.cytoscape
 			tryName = "$HOME/.cytoscape";
 
-			File vmp = CytoscapeInit.getConfigFile(defaultName);
+			File vmp = getConfigFile(defaultName);
 
 			if (vmp != null)
 				props.load(new FileInputStream(vmp));
 			else
-				logger.warn("couldn't read " + defaultName + " from " + tryName);
+				System.err.println("couldn't read " + defaultName + " from " + tryName);
 		} catch (IOException ioe) {
-			logger.warn("couldn't open '" + tryName + " " + defaultName
-			             + "' file: "+ioe.getMessage()+" - creating a hardcoded default", ioe);
+			System.err.println("couldn't open '" + tryName + " " + defaultName
+			             + "' file: "+ioe.getMessage()+" - creating a hardcoded default"/*, ioe*/);
 		}
 	}
 
@@ -490,7 +492,9 @@ public class CytoscapeInit implements PropertyChangeListener {
 			visualProperties = new Properties();
 			loadStaticProperties("vizmap.props", visualProperties);
 		}
+	}
 
+	private static void initMRUD() {
 		if (mrud == null) {
 			mrud = new Properties();
 			final File propsFile = new File(CytoscapeInit.getConfigVersionDirectory(), "mostRecentlyUsedDirectory.props");

@@ -75,7 +75,7 @@ public class DBCrossReferenceReader {
 	 *
 	 * This is in the jar file.
 	 */
-	private static final String DBXREF_RESOURCE_FILE = "/cytoscape/resources/GO.xrf_abbs";
+	private static final String DBXREF_RESOURCE_FILE = "/GO.xrf_abbs";
 
 	/**
 	 * Constructor.<br>
