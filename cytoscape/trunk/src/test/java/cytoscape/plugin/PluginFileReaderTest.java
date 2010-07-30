@@ -35,7 +35,7 @@ public class PluginFileReaderTest extends TestCase {
 		String FS = "/";
 		String UserDir = System.getProperty("user.dir");
 		UserDir = UserDir.replaceFirst(FS, "");
-		return "file:///" + UserDir + FS + "src" + FS + "main" + FS + "resources" + FS + "testData" + FS + "plugins" + FS;
+		return "file:///" + UserDir + FS + "src" + FS + "test" + FS + "resources" + FS + "testData" + FS + "plugins" + FS;
 	}
 
 	/*

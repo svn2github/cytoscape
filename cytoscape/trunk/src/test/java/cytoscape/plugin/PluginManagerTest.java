@@ -30,7 +30,7 @@ public class PluginManagerTest extends TestCase {
 			UserDir = UserDir.replaceAll("\\\\", FS);
 		}
 		UserDir = UserDir.replaceFirst("/", "");
-		return "file:///" + UserDir + FS + "src" + FS + "main" + FS + "resources" + FS + "testData" + FS + "plugins" + FS;
+		return "file:///" + UserDir + FS + "src" + FS + "test" + FS + "resources" + FS + "testData" + FS + "plugins" + FS;
 	}
 
 	private String cleanFileUrl(String url) {
@@ -636,7 +636,7 @@ public class PluginManagerTest extends TestCase {
 	public void testMinorCorruptedTrackerFile() {
 		mgr.resetManager();
 		PluginManager.setPluginManageDirectory(System.getProperty("java.io.tmpdir"));
-		File file = new File("src/main/resources/testData/plugins/track_plugins_c1.xml");
+		File file = new File("src/test/resources/testData/plugins/track_plugins_c1.xml");
 		file = copyFileToTempDir(file);
 
 		mgr = PluginManager.getPluginManager();
@@ -655,7 +655,7 @@ public class PluginManagerTest extends TestCase {
 	public void testMajorCorruptedTrackerFile() {
 		mgr.resetManager();
 		PluginManager.setPluginManageDirectory(System.getProperty("java.io.tmpdir"));
-		File file = new File("src/main/resources/testData/plugins/track_plugins_c2.xml");
+		File file = new File("src/test/resources/testData/plugins/track_plugins_c2.xml");
 		file = copyFileToTempDir(file);
 		mgr = PluginManager.getPluginManager();
 		assertNotNull(mgr);

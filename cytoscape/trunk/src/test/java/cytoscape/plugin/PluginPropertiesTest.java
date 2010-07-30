@@ -19,7 +19,7 @@ public class PluginPropertiesTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		String FS = java.io.File.separator;
-		String TestProps = System.getProperty("user.dir") + FS + "src" + FS + "main" + FS + "resources" + FS + "testData" + FS + "plugins" + FS + "test_plugin.props";
+		String TestProps = System.getProperty("user.dir") + FS + "src" + FS + "test" + FS + "resources" + FS + "testData" + FS + "plugins" + FS + "test_plugin.props";
 		pp = new PluginProperties(TestProps);
 	}
 

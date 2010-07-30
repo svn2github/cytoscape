@@ -91,7 +91,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 	 */
 	public void setUp() {
 		System.out.println("setup begin");
-		cyNet = Cytoscape.createNetworkFromFile("src/main/resources/testData/small.sif");
+		cyNet = Cytoscape.createNetworkFromFile("src/test/resources/testData/small.sif");
 		a = Cytoscape.getCyNode("a");
 		b = Cytoscape.getCyNode("b");
 		c = Cytoscape.getCyNode("c");
@@ -100,8 +100,8 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 
 		try {
 			CyAttributesReader.loadAttributes(Cytoscape.getNodeAttributes(),
-					new FileReader("src/main/resources/testData/small.nodeAttr"));
-			props.load(FileUtil.getInputStream("src/main/resources/testData/small.vizmap.props"));
+					new FileReader("src/test/resources/testData/small.nodeAttr"));
+			props.load(FileUtil.getInputStream("src/test/resources/testData/small.vizmap.props"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

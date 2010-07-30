@@ -326,7 +326,7 @@ public class PluginTrackerTest extends TestCase {
 	public void testPartiallyCorruptedXml() {
 		// partially corrupted file
 		try {
-			File file = new File("src/main/resources/testData/plugins/track_plugins_c1.xml");
+			File file = new File("src/test/resources/testData/plugins/track_plugins_c1.xml");
 			PluginTracker tk = new PluginTracker(file);
 			assertNotNull(tk);
 			// Note: do NOT call write or you change the test file
