@@ -187,7 +187,7 @@ public class BioLayoutFRAlgorithm extends ModifiedBioLayoutAlgorithm { // LABEL
 	return true;
     }
 
-
+    // <-- LABEL
 
     /**
      * Return the "name" of this algorithm.  This is meant
@@ -198,7 +198,7 @@ public class BioLayoutFRAlgorithm extends ModifiedBioLayoutAlgorithm { // LABEL
      * @return the algorithm name
      */
     public String getName() {
-	return "LabelModified-Fruchterman-Rheingold";
+	return "LabelModified-Fruchterman-Rheingold"; // LABEL
     }
 
     /**
@@ -210,13 +210,12 @@ public class BioLayoutFRAlgorithm extends ModifiedBioLayoutAlgorithm { // LABEL
      */
     public String toString() {
 	if (supportWeights)
-	    return "(Label) Edge-Weighted Force-Directed (BioLayout)";
+	    return "(Label) Edge-Weighted Force-Directed (BioLayout)"; // LABEL
 	else
 
-	    return "(Label) Force-Directed (BioLayout)";
+	    return "(Label) Force-Directed (BioLayout)"; // LABEL
     }
 
-// <-- LABEL
 
     /**
      * Sets the number of iterations
@@ -421,13 +420,13 @@ public class BioLayoutFRAlgorithm extends ModifiedBioLayoutAlgorithm { // LABEL
 					 Tunable.GROUP, new Integer(9)));
 	layoutProperties.add(new Tunable("repulsion_multiplier",
 					 "Multiplier to calculate the repulsion force",
-					 Tunable.DOUBLE, new Double(1.0)));
+					 Tunable.DOUBLE, new Double(1.0))); // LABEL
 	layoutProperties.add(new Tunable("attraction_multiplier",
 					 "Divisor to calculate the attraction force",
-					 Tunable.DOUBLE, new Double(0.001)));
+					 Tunable.DOUBLE, new Double(0.001))); // LABEL
 	layoutProperties.add(new Tunable("gravity_multiplier",
 					 "Multiplier to calculate the gravity force",
-					 Tunable.DOUBLE, new Double(0.0)));
+					 Tunable.DOUBLE, new Double(0.0))); // LABEL
 	layoutProperties.add(new Tunable("iterations", "Number of iterations", Tunable.INTEGER,
 					 new Integer(500)));
 	layoutProperties.add(new Tunable("temperature", "Initial temperature", Tunable.DOUBLE,
@@ -535,7 +534,7 @@ public class BioLayoutFRAlgorithm extends ModifiedBioLayoutAlgorithm { // LABEL
 	}
 
 	// Update label tunables
-	updateSettings(layoutProperties, force);
+	updateSettings(layoutProperties, force); // LABEL
 
     }
 
