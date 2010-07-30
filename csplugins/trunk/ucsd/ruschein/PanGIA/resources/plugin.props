@@ -1,7 +1,7 @@
 pluginName=DenovoPGNetworkAlignment
 pluginDescription=test
 pluginVersion=1.0
-cytoscapeVersion=2.6,2.7
+cytoscapeVersion=2.6,2.7,2.8
 pluginCategory=Analysis
-pluginAuthorsInstitutions=Johannes Ruscheinski,Kei Ono:UCSD
+pluginAuthorsInstitutions=Johannes Ruscheinski,Kei Ono:UCSD,Gregory Hannum:UCSD
 releaseDate=January 8, 2010
