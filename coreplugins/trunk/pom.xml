@@ -24,7 +24,6 @@
     <module>ManualLayout</module>
     <module>NCBIClient</module>
     <module>PSI-MI</module>
-    <module>QuickFind</module>
     <module>RFilters</module>
     <module>SBMLReader</module>
     <module>TableImport</module>
@@ -33,8 +32,9 @@
     <module>cPath2</module>
     <module>linkout</module>
 <!--
+    <module>QuickFind</module>
     <module>filters</module>
-	-->
+-->
   </modules>
 
   <build>

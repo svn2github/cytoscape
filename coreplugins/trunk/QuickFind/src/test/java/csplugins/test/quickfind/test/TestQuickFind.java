@@ -73,8 +73,7 @@ public class TestQuickFind extends TestCase {
 	/**
 	 * Runs basic tests to verify node indexing.
 	 */
-	public void testNodeIndexing() { assertTrue(true); }
-	public void dont_testNodeIndexing() {
+	public void testNodeIndexing() {
 		//  Create Sample Network
 		CyNetwork cyNetwork = Cytoscape.createNetwork("network1");
 		CyNode node0 = Cytoscape.getCyNode("rain", true);
