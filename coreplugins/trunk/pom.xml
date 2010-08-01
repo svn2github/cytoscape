@@ -12,6 +12,7 @@
 
   <properties>
     <coreplugins.version>2.8.0-SNAPSHOT</coreplugins.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
  
   <modules>
