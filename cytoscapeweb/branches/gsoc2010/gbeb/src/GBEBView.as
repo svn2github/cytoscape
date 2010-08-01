@@ -5,17 +5,15 @@ package
     import flare.data.DataSet;
     import flare.data.converters.GraphMLConverter;
     import flare.display.DirtySprite;
-    import flare.query.methods.neq;
     import flare.util.Shapes;
     import flare.vis.Visualization;
-    import flare.vis.controls.ClickControl;
     import flare.vis.data.Data;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     import flare.vis.data.Tree;
     import flare.vis.events.SelectionEvent;
-    import flare.vis.operator.label.Labeler;
     import flare.vis.operator.layout.CircleLayout;
+    import flare.vis.operator.layout.RadialTreeLayout;
     
     import flash.display.Sprite;
     import flash.display.StageAlign;
@@ -99,15 +97,15 @@ package
             if (_bounds) resize(_bounds);
  
                 // place around circle by tree structure, radius mapped to depth
-//                _vis.operators.add(new RadialTreeLayout("depth", null, true));
-//                CircleLayout(_vis.operators.last).startRadiusFraction = 3/5;
+//                _vis.operators.add(new CircleLayout(null, null, true));
+//                CircleLayout(_vis.operators.last).angleWidth = 2 * Math.PI;
 												
-           	 // _vis.operators.add(new RadialTreeLayout(80));
-             // RadialTreeLayout(_vis.operators.last).autoScale = true;				
+//           	    _vis.operators.add(new RadialTreeLayout(80));
+//                RadialTreeLayout(_vis.operators.last).autoScale = true;				
 							
-							_vis.operators.add(new CircleLayout());
-							
-							//_vis.operators.add(new NodeLinkTreeLayout("topToBottom", 50, 50, 50));
+				_vis.operators.add(new CircleLayout());
+				
+				//_vis.operators.add(new NodeLinkTreeLayout("topToBottom", 50, 50, 50));
 							
 							
                 // set the edge alpha values

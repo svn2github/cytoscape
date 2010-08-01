@@ -13,6 +13,9 @@ package gbeb.view.render
 	import flash.geom.Rectangle;
 	
 	import gbeb.util.GeometryUtil;
+	
+	import org.farmcode.bezier.BezierPoint;
+	import org.farmcode.bezier.Path;
 
 	/**
 	 * Renderer that draws edges as lines. The EdgeRenderer supports straight
@@ -188,8 +191,25 @@ package gbeb.view.render
 			}
 			else if (e.shape == Shapes.BSPLINE)
 			{
-				Shapes.consolidate(x1, y1, ctrls, x2, y2, _pts);
-				Shapes.drawBSpline(g, _pts, 2+ctrls.length/2);
+//				Shapes.consolidate(x1, y1, ctrls, x2, y2, _pts);
+//				Shapes.drawBSpline(g, _pts, 2+ctrls.length/2);
+
+                // See http://farmcode.org/post/2009/07/06/Fast-2D-Bezier-Library-for-ActionScript-3.aspx
+                // #################################################################################
+				var points:Array = [new BezierPoint(x1, y1)];
+				for each (p in e.props.$controlPointsArray) {
+					var b:BezierPoint = new BezierPoint(p.x, p.y);
+					points.push(b);
+				}
+				points.push(new BezierPoint(x2, y2));
+				
+				var path:Path = new Path();
+				path.points = points;
+				//path.autoFillTension = 0.5;
+				//path.tolerance = 0.5;
+				path.drawInto(g);
+				// #################################################################################
+				
 				trace("EdgeRenderer: Tesing render calls: " + e.name);//debug
 				// DEBUG *******
                 if (e.props.$debug == true) {
