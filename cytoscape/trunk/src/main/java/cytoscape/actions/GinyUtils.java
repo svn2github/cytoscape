@@ -68,7 +68,7 @@ public class GinyUtils {
 		}
 
 		for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext();) {
-			NodeView nview = (NodeView) i.next();
+			final NodeView nview = (NodeView) i.next();
 			view.hideGraphObject(nview);
 		}
 
@@ -85,24 +85,31 @@ public class GinyUtils {
 			return;
 		}
 
-		for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext();) {
-			NodeView nview = (NodeView) i.next();
-			view.showGraphObject(nview);
+		for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext(); /* Empty! */) {
+			final NodeView nodeView = (NodeView)i.next();
+			view.showGraphObject(nodeView);
 
-			int[] na = view.getGraphPerspective().neighborsArray(nview.getGraphPerspectiveIndex());
-
-			for (int i2 = 0; i2 < na.length; ++i2) {
-				int[] edges = view.getGraphPerspective()
-				                  .getEdgeIndicesArray(nview.getGraphPerspectiveIndex(), na[i2],
-				                                       true, true);
-
-				for (int j = 0; j < edges.length; ++j) {
-					view.showGraphObject(view.getEdgeView(edges[j]));
-				}
-			}
+			showEdges(view, nodeView);
 		}
 
 		view.updateView();
+	}
+
+	/**
+	 *  Shows all edges for "nodeView" found that are part of the network associated with "view".
+	 */
+	public static void showEdges(final GraphView view, final NodeView nodeView) {
+		final int[] neighbours =
+			view.getGraphPerspective().neighborsArray(nodeView.getGraphPerspectiveIndex());
+
+		for (int n = 0; n < neighbours.length; ++n) {
+			final int[] edges =
+				view.getGraphPerspective().getEdgeIndicesArray(nodeView.getGraphPerspectiveIndex(),
+				                                               neighbours[n], true, true);
+
+			for (int j = 0; j < edges.length; ++j)
+				view.showGraphObject(view.getEdgeView(edges[j]));
+		}
 	}
 
 	/**

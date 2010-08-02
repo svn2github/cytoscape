@@ -1,7 +1,7 @@
 /*
-  File: HideSelectedNodesAction.java
+  File: HideSelectedNodesEdit.java
 
-  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
+  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -30,53 +30,62 @@
 package cytoscape.actions;
 
 
-import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.undo.CyUndo;
-import cytoscape.view.CyNetworkView;
-
-import giny.view.NodeView;
-
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.event.MenuEvent;
+import giny.view.NodeView;
+
+import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
+import cytoscape.util.undo.CyAbstractEdit;
 
 
-public class HideSelectedNodesAction extends CytoscapeAction {
-	static public String MENU_LABEL = "Hide Node Selection";
+/**
+ * An undoable edit that will undo and redo hiding of selected nodes.
+ */ 
+class HideSelectedNodesEdit extends CyAbstractEdit {
+	private static final long serialVersionUID = -1146181528012954334L;
 
-	/**
-	 * Creates a new HideSelectedNodesAction object.
-	 */
-	public HideSelectedNodesAction() {
-		super(MENU_LABEL);
-		setPreferredMenu("Select.Nodes");
-		setAcceleratorCombo(java.awt.event.KeyEvent.VK_H, ActionEvent.CTRL_MASK);
+	private final CyNetworkView networkView;
+	private final List<NodeView> hiddenNodeViews;
+	private final HideSelectedNodesAction hideSelectedNodesAction;
+
+	HideSelectedNodesEdit(final CyNetworkView networkView, final List<NodeView> hiddenNodeViews,
+			      final HideSelectedNodesAction hideSelectedNodesAction)
+	{
+		super(HideSelectedNodesAction.MENU_LABEL);
+
+		this.networkView = networkView;
+		this.hiddenNodeViews = hiddenNodeViews;
+		this.hideSelectedNodesAction = hideSelectedNodesAction;
 	}
 
-	/**
-	 * Creates a new HideSelectedNodesAction object.
-	 */
-	public HideSelectedNodesAction(boolean label) {
-		super();
-	}
+	public void redo() {
+		super.redo();
 
-	public void actionPerformed(final ActionEvent e) {
 		final CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		
 		final List<NodeView> hiddenNodeViews = new ArrayList<NodeView>();
 		for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext(); /* Empty! */)
 			hiddenNodeViews.add((NodeView)i.next());
-		CyUndo.getUndoableEditSupport().postEdit(new HideSelectedNodesEdit(view, hiddenNodeViews, this));
-
 		GinyUtils.hideSelectedNodes(view);
+
+
+		hideSelectedNodesAction.setEnabled(false);
 	}
 
-	public void menuSelected(MenuEvent e) {
-		enableForNetworkAndView();
+	public void undo() {
+	 	super.undo();
+
+		for (final NodeView nodeView : hiddenNodeViews) {
+			networkView.showGraphObject(nodeView);
+			nodeView.setSelected(true);
+			GinyUtils.showEdges(networkView, nodeView);
+		}
+
+		networkView.updateView();
+
+		hideSelectedNodesAction.setEnabled(true);
 	}
 }
