@@ -329,31 +329,29 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 					selectedNestedNetworkIDs.add(nestedNetwork.getIdentifier());
 			}
 
-			if (!selectedNestedNetworkIDs.isEmpty()) {
-				doNotEnterValueChanged = true;
-				try {
-					final TreePath[] treePaths = new TreePath[selectedNestedNetworkIDs.size() + 1];
-					int index = 0;
-					final String currentNetworkID = Cytoscape.getCurrentNetwork().getIdentifier();
-					TreePath currentPath = null;
-					final JTree tree = treeTable.getTree();
-					for (int row = 0; row < tree.getRowCount(); ++row) {
-						final TreePath path = tree.getPathForRow(row);
-						final String ID = ((NetworkTreeNode)path.getLastPathComponent()).getNetworkID();
-						if (ID.equals(currentNetworkID))
-							currentPath = path;
-						else if (selectedNestedNetworkIDs.contains(ID))
-							treePaths[index++] = path;
-					}
-
-					Cytoscape.setSelectedNetworks(selectedNestedNetworkIDs);
-
-					treePaths[index] = currentPath;
-					tree.getSelectionModel().setSelectionPaths(treePaths);
-					tree.scrollPathToVisible(currentPath);
-				} finally {
-					doNotEnterValueChanged = false;
+			doNotEnterValueChanged = true;
+			try {
+				final TreePath[] treePaths = new TreePath[selectedNestedNetworkIDs.size() + 1];
+				int index = 0;
+				final String currentNetworkID = Cytoscape.getCurrentNetwork().getIdentifier();
+				TreePath currentPath = null;
+				final JTree tree = treeTable.getTree();
+				for (int row = 0; row < tree.getRowCount(); ++row) {
+					final TreePath path = tree.getPathForRow(row);
+					final String ID = ((NetworkTreeNode)path.getLastPathComponent()).getNetworkID();
+					if (ID.equals(currentNetworkID))
+						currentPath = path;
+					else if (selectedNestedNetworkIDs.contains(ID))
+						treePaths[index++] = path;
 				}
+
+				Cytoscape.setSelectedNetworks(selectedNestedNetworkIDs);
+
+				treePaths[index] = currentPath;
+				tree.getSelectionModel().setSelectionPaths(treePaths);
+				tree.scrollPathToVisible(currentPath);
+			} finally {
+				doNotEnterValueChanged = false;
 			}
 		}
 
