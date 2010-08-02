@@ -173,13 +173,16 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	// we use different initialization.  Note that if the user only wants
 	// to lay out selected nodes, partitioning becomes a very bad idea!
 	if (selectedOnly || singlePartition) {
+
 	    // We still use the partition abstraction, even if we're
 	    // not partitioning.  This makes the code further down
 	    // much cleaner
 	    LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly, edgeWeighter);
 	    partitionList = new ArrayList(1);
 	    partitionList.add(partition);
+
 	} else if (staticNodes != null && staticNodes.size() > 0) {
+
 	    // Someone has programmatically locked a set of nodes -- construct
 	    // the list of unlocked nodes
 	    List<CyNode> unlockedNodes = new ArrayList();
@@ -191,6 +194,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	    LayoutPartition partition = new LayoutPartition(network, networkView, unlockedNodes, edgeWeighter);
 	    partitionList = new ArrayList(1);
 	    partitionList.add(partition);
+
 	} else {
 	    partitionList = LayoutPartition.partition(network, networkView, false, edgeWeighter);
 	}
@@ -226,7 +230,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	    setTaskStatus(1);
 
 	    // Partitions Requiring Layout
-	    if (partition.nodeCount() > 1) { // TODO: add case when nodeCount = 1
+	    if (partition.nodeCount() >=  1) { // LABEL
 		try {
 		    layoutSinglePartition(partition);
 		} catch (OutOfMemoryError _e) {
@@ -245,7 +249,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 		}
 
 		// single nodes
-	    } else if ( partition.nodeCount() == 1 ) {
+	    } else if ( partition.nodeCount() == 1 ) { // TODO: do something with this
 		// Reset our bounds
 		partition.resetNodes();
 
@@ -281,7 +285,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 
 
     /**
-     * 
+     * DOCUMENT ME!
      */
     protected void layoutSinglePartition(LayoutPartition partition){
 

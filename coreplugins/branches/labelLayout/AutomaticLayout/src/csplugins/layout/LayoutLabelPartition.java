@@ -65,7 +65,6 @@ import java.util.Collection;
 /**
  * The LayoutLabelPartition class ....
  *
- * @author <a href="mailto:gerardohuck .at. gmail .dot. com">Gerardo Huck</a>
  * @version 0.1
  */
 public class LayoutLabelPartition extends LayoutPartition {
