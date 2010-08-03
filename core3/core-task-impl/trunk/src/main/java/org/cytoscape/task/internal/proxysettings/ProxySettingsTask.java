@@ -34,10 +34,10 @@ public class ProxySettingsTask implements Task, TunableValidator
 	@Tunable(description="Type")
 	public ListSingleSelection<String> type = new ListSingleSelection<String>("direct", "http", "socks");
 
-	@Tunable(description="Proxy Server",group={"param"},dependsOn="type!=direct",alignment={Param.horizontal},groupTitles={Param.hidden})
+	@Tunable(description="Proxy Server",groups={"param"},dependsOn="type!=direct",alignment={Param.horizontal},groupTitles={Param.hidden})
 	public String hostname="";
 
-	@Tunable(description="Port",group={"param"},dependsOn="type!=direct",alignment={Param.horizontal},groupTitles={Param.hidden})
+	@Tunable(description="Port",groups={"param"},dependsOn="type!=direct",alignment={Param.horizontal},groupTitles={Param.hidden})
 	public int port=0;
 
 	final TaskManager taskManager;

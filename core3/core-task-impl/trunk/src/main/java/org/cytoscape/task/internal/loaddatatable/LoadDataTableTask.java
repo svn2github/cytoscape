@@ -12,7 +12,7 @@ import org.cytoscape.work.Tunable.Param;
 
 public class LoadDataTableTask extends AbstractLoadDataTableTask {
 
-	@Tunable(description = "Data table file to load", flag = { Param.attributes })
+	@Tunable(description = "Data table file to load", flags = { Param.attributes })
 	public File file;
 
 	public LoadDataTableTask(CyReaderManager mgr,

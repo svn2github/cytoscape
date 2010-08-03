@@ -57,7 +57,7 @@ import org.cytoscape.session.CyNetworkNaming;
  */
 public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 
-	@Tunable(description = "Network file to load",flag = {Param.network})
+	@Tunable(description = "Network file to load",flags = {Param.network})
 	public File file;
 
 	public LoadNetworkFileTask(CyReaderManager mgr, CyNetworkViewFactory gvf,
