@@ -10,7 +10,7 @@ import java.util.List;
  * Abstract handler for tunables. It provides constructor for Fields and Methods that have been detected by <code>AbstractTunableInterceptor</code>, 
  * basic methods to access to the handler components, and to manage the listeners for handler events.
  * 
- * It is considered as a super class for <code>AbstractGuiHandler</code> and <code>AbstractPropHandler</code>.
+ * This is a super class for <code>AbstractGuiHandler</code> and <code>AbstractPropHandler</code>.
  * 
  * @author pasteur
  *
@@ -19,12 +19,15 @@ import java.util.List;
 public abstract class AbstractHandler implements Handler {
 
 	/**
-	 * Field that need to be intercepted
+	 * Field that needs to be intercepted
+	 * 
+	 * To access to the field use : <code>f.get(o)</code>
 	 */
 	protected Field f;
 	
 	/**
-	 * Method that need to be intercepted. This getter method(to get the value of another Object from the class) need to be coupled with the smethod or setter method(to set the value of this previous Object)
+	 * Method that need to be intercepted. This getter method(to get the value of another Object from the class)
+	 * need to be coupled with the smethod or setter method(to set the value of this previous Object)
 	 * This method will be annotated as a <code>Tunable</code>
 	 */
 	protected Method gmethod;
@@ -36,9 +39,7 @@ public abstract class AbstractHandler implements Handler {
 	protected Method smethod;
 	
 	/**
-	 * Object that is contained in the Field <code>f</code>
-	 * 
-	 * To access to the Object <code>o</code>, use : <code>f.get(o)</code>
+	 * Object that contains the field <code>f</code> or the setter <code>smethod</code> and getter <code>gmethod</code>
 	 */
 	protected Object o;
 	
@@ -58,10 +59,9 @@ public abstract class AbstractHandler implements Handler {
 	 * <code>Tunable</code> annotations of the Method <code>smethod</code>(setter method) annotated as <code>Tunable</code>
 	 */
 	protected Tunable ts;
-	
 
 	/**
-	 * Handler for Fields values
+	 * Handler for Field values
 	 * @param f field that has been annotated
 	 * @param o object contained in <code>f</code>
 	 * @param t tunable associated to <code>f</code> 
@@ -73,27 +73,27 @@ public abstract class AbstractHandler implements Handler {
 	}
 	
 	/**
-	 * Handler for 2 Methods : <code>gmethod</code> and <code>smethod</code>
+	 * Handler for getter/setter methods <code>gmethod</code> and <code>smethod</code>.
+	 *
 	 * @param getmethod method that has been annotated as a <i>getter</i>
 	 * @param setmethod method that has been annotated as a <i>setter</i>
 	 * @param o object contained in methods
 	 * @param tg tunable associated to <code>gmethod</code> 
 	 * @param ts tunable associated to <code>smethod</code> 
 	 */
-	public AbstractHandler(Method getmethod, Method setmethod, Object o, Tunable tg, Tunable ts){
+	public AbstractHandler(Method getmethod, Method setmethod, Object o, Tunable tg, Tunable ts) {
 		this.gmethod = getmethod;
 		this.smethod = setmethod;
 		this.o = o;
 		this.tg = tg;
 		this.ts = ts;
 	}
-
 	
 	/**
 	 * To get <code>Field f</code>
 	 * @return field component from the handler
 	 */
-	public Field getField() {
+	final public Field getField() {
 		return f;
 	}
 
@@ -101,7 +101,7 @@ public abstract class AbstractHandler implements Handler {
 	 * To get <code>Method gmethod</code>
 	 * @return method component from the handler
 	 */
-	public Method getGetMethod() {
+	final public Method getGetMethod() {
 		return gmethod;
 	}
 	
@@ -109,39 +109,35 @@ public abstract class AbstractHandler implements Handler {
 	 * To get <code>Method smethod</code>
 	 * @return method component from the handler
 	 */
-	public Method getSetMethod() {
+	final public Method getSetMethod() {
 		return smethod;
 	}
-
-	
 	
 	/**
 	 * To get <code>Object o</code> 
 	 * @return object component from the handler
 	 */
-	public Object getObject() {
+	final public Object getObject() {
 		return o;
 	}
 
 	
 	/**
-	 * To get <code>Tunable tg</code>
-	 * @return tunable component from the handler
+	 * @return tunable component for the getter method
 	 */
-	public Tunable getGetTunable() {
+	final public Tunable getGetTunable() {
 		return tg;
 	}
 	
 	/**
-	 * To get <code>Tunable ts</code>
-	 * @return tunable component from the handler
+	 * @return tunable component for the setter method
 	 */
-	public Tunable getSetTunable() {
+	final public Tunable getSetTunable() {
 		return ts;
 	}
+
 	/**
-	 * To get <code>Tunable t</code>
-	 * @return tunable component from the handler
+	 * @return tunable component for a field
 	 */
 	public Tunable getTunable() {
 		return t;
