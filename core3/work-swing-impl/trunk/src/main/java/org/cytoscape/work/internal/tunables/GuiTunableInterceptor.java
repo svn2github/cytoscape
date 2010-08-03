@@ -138,7 +138,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 				Map<String,Param> groupAlignment = new HashMap<String,Param>();
 				Map<String,Param> groupTitles = new HashMap<String,Param>();
 				
-				String[] group = gh.getTunable().group();
+				String[] group = gh.getTunable().groups();
 				Param[] alignments = gh.getTunable().alignment();
 				Param[] titles = gh.getTunable().groupTitles();
 				
@@ -229,7 +229,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		}
 		else {
 			// Figure out if the collapsable flag is set
-			for (Param s : gh.getTunable().flag()) {
+			for (Param s : gh.getTunable().flags()) {
 				if (s.equals(Param.collapsed))
 					return new CollapsablePanel(title, false);
 				else if (s.equals(Param.uncollapsed))
