@@ -44,11 +44,11 @@ public class ArrowShapeTwoDVisualProperty extends AbstractVisualProperty<ArrowSh
 		super(ot,def,id,name);
 	}
 	
-	public String toString(final ArrowShape value) {
+	public String toSerializableString(final ArrowShape value) {
 		return value.toString();
 	}
 
-	public ArrowShape parse(final String text) {
+	public ArrowShape parseSerializableString(final String text) {
 		return ArrowShape.valueOf(text);
 	}
 }

@@ -44,11 +44,11 @@ public class StrokeTwoDVisualProperty extends AbstractVisualProperty<Stroke> {
 		super(ot,def,id,name);
 	}
 	
-	public String toString(final Stroke value) {
+	public String toSerializableString(final Stroke value) {
 		return value.toString();
 	}
 
-	public Stroke parse(final String text) {
+	public Stroke parseSerializableString(final String text) {
 		// TODO
 		return null;
 	}

@@ -43,11 +43,11 @@ public class AnchorTwoDVisualProperty extends AbstractVisualProperty<Anchor> {
 		super(ot,def,id,name);
 	}
 	
-	public String toString(final Anchor value) {
+	public String toSerializableString(final Anchor value) {
 		return value.toString();
 	}
 
-	public Anchor parse(final String text) {
+	public Anchor parseSerializableString(final String text) {
 		return Anchor.valueOf(text);
 	}
 }
