@@ -72,7 +72,6 @@ public class XorPanel extends JPanel {
 
 		public Tunable getTunable() {return null;}
 		public Field getField() {return null;}
-		public Method getMethod() {return null;}
 		public Object getObject() {return null;}
 		public void actionPerformed(ActionEvent ae) { }
 		public void notifyDependents() { } 

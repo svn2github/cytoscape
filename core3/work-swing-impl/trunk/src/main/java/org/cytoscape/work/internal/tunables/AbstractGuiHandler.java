@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -36,23 +37,23 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	 * it represents the name of this dependency (i.e name of the other <code>Tunable</code>
 	 * </pre>
 	 */
-    private String dependencyName;
-    
-    /**
-     * <pre>
-     * Represents the state of the dependency :
-     * could be : "true, false, an item of a <code>ListSelection</code>, a value ..."
-     * </pre>
-     */
-    private String dependencyState;
+	private String dependencyName;
+	
+	/**
+	 * <pre>
+	 * Represents the state of the dependency :
+	 * could be : "true, false, an item of a <code>ListSelection</code>, a value ..."
+	 * </pre>
+	 */
+	private String dependencyState;
 
     
-    private String dependencyUnState;
+	private String dependencyUnState;
     
     
-    /**
-     * The list of dependencies between the <code>Guihandlers</code>
-     */
+	/**
+	 * The list of dependencies between the <code>Guihandlers</code>
+	 */
 	private List<Guihandler> dependencies;
 
 	/**
@@ -64,8 +65,8 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	 */
 	protected AbstractGuiHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-        String s = t.dependsOn();
-		 if ( !s.equals("") ) {
+		String s = t.dependsOn();
+		if ( !s.equals("") ) {
 	        	if(!s.contains("!=")){
 	        		dependencyName = s.substring(0,s.indexOf("="));
 	        		dependencyState = s.substring(s.indexOf("=") + 1);
@@ -101,12 +102,11 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	 * 
 	 * @param le change in the selection of an item in a list
 	 */
-    public void valueChanged(ListSelectionEvent le) {
-    	boolean ok = le.getValueIsAdjusting();
-    	if(!ok){
-    		notifyDependents();
-    	}
-    }
+	public void valueChanged(ListSelectionEvent le) {
+		boolean ok = le.getValueIsAdjusting();
+		if (!ok)
+			notifyDependents();
+	}
 
 	
 	/**
@@ -116,7 +116,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 		String state = getState();
 		String name = getName();
 		for ( Guihandler gh : dependencies )
-		gh.checkDependency( name, state );
+			gh.checkDependency( name, state );
 	}
 
 	/**
@@ -144,7 +144,8 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	 * Get the new "values" for the <code>Tunables</code> object that have been modified if their JPanel is enabled
 	 */
 	public void handleDependents(){
-		if(panel.isEnabled())handle();
+		if (panel.isEnabled())
+			handle();
 	}
 	
 	/**
@@ -161,38 +162,29 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	 */
 	public void checkDependency(String name, String state) {
 		// if we don't depend on anything, then we should be enabled
-		if ( dependencyName == null || dependencyState == null ) {
-			setEnabledContainer(true,panel);
-//			handle();
+		if (dependencyName == null || dependencyState == null) {
+			setEnabledContainer(true, panel);
 			return;
 		}
 
 		// if the dependency name matches ...
-        if ( dependencyName.equals(name) ) {
+		if (dependencyName.equals(name)) {
 			// ... and the state matches, then enable 
-        	if(dependencyState!=""){
-        		if ( dependencyState.equals(state) ){
-        			setEnabledContainer(true,panel);
-//        			handle();
-        		}
-			// ... and the state doesn't match, then disable 
-        		else{
-        			setEnabledContainer(false,panel);
-        		}
-        	}
-        	else {
-        		if ( !dependencyUnState.equals(state) ){
-        			setEnabledContainer(true,panel);
-//        			handle();
-        		}
-			// ... and the state doesn't match, then disable 
-        		else{
-        			setEnabledContainer(false,panel);
-        		}
-        	}
+			if (dependencyState!=""){
+				if (dependencyState.equals(state))
+					setEnabledContainer(true, panel);
+				else // ... and the state doesn't match, then disable 
+					setEnabledContainer(false, panel);
+			}
+			else {
+				if (!dependencyUnState.equals(state))
+					setEnabledContainer(true, panel);
+				else // ... and the state doesn't match, then disable 
+					setEnabledContainer(false, panel);
+			}
 		}
 
-        return;
+		return;
 	}
 
 	/**
@@ -216,12 +208,10 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	 * @return the name of the <code>Guihandler</code>
 	 */
 	public String getName() {
-        if ( f != null ) {
-            return f.getName();
-        } else if ( m != null ) {
-            return m.getName();
-        } else
-            return "";
+		if (f != null)
+			return f.getName();
+		else
+			return "";
 	}
 
 	/**
