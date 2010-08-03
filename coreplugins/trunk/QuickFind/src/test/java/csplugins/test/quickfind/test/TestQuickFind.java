@@ -96,6 +96,8 @@ public class TestQuickFind extends TestCase {
 		addNodeAttributes(node0, node1, node2, node3);
 		addEdgeAttributes(edge0, edge1, edge2);
 
+		Cytoscape.setCurrentNetwork(cyNetwork.getIdentifier());
+
 		//  Index this network by Node:UNIQUE_IDENTIFIER
 		TaskMonitorBase monitor = new TaskMonitorBase();
 		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
@@ -184,6 +186,12 @@ public class TestQuickFind extends TestCase {
 		nodeAttributes.setAttribute(node1.getIdentifier(), SCORE, 3.211);
 		nodeAttributes.setAttribute(node2.getIdentifier(), SCORE, 22.2);
 		nodeAttributes.setAttribute(node3.getIdentifier(), SCORE, 2.1);
+
+		//  make sure UNIQUE_IDENTIFIER attr is set 
+		nodeAttributes.setAttribute(node0.getIdentifier(), QuickFind.UNIQUE_IDENTIFIER, "a");
+		nodeAttributes.setAttribute(node1.getIdentifier(), QuickFind.UNIQUE_IDENTIFIER, "b");
+		nodeAttributes.setAttribute(node2.getIdentifier(), QuickFind.UNIQUE_IDENTIFIER, "c");
+		nodeAttributes.setAttribute(node3.getIdentifier(), QuickFind.UNIQUE_IDENTIFIER, "d");
 	}
 
 	private void addEdgeAttributes(CyEdge edge0, CyEdge edge1, CyEdge edge2) {
@@ -205,10 +213,12 @@ public class TestQuickFind extends TestCase {
 		//  do nothing silently, and should not throw any exceptions.
 		textIndex = (TextIndex) quickFind.reindexNetwork(cyNetwork, QuickFind.INDEX_NODES, "TYPE",
 		                                                 monitor);
+		assertNull(textIndex);
 
 		//  Try indexing all attributes
 		textIndex = (TextIndex) quickFind.reindexNetwork(cyNetwork, QuickFind.INDEX_NODES,
 		                                                 QuickFind.INDEX_ALL_ATTRIBUTES, monitor);
+		assertNotNull(textIndex);
 
 		//  First, try unique identifiers
 		hits = textIndex.getHits("ra", Integer.MAX_VALUE);

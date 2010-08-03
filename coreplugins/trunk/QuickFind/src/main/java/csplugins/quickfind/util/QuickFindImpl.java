@@ -204,7 +204,9 @@ class QuickFindImpl implements QuickFind {
 			_type = "edge";
 		}
 		
-		if (controllingAttribute.equalsIgnoreCase(QuickFind.UNIQUE_IDENTIFIER)||controllingAttribute.equalsIgnoreCase("biopax.node_label")){
+		if (controllingAttribute.equalsIgnoreCase(QuickFind.UNIQUE_IDENTIFIER)||
+		    controllingAttribute.equalsIgnoreCase(QuickFind.INDEX_ALL_ATTRIBUTES)||
+		    controllingAttribute.equalsIgnoreCase("biopax.node_label")){
 			// do nothing
 		}
 		else if (cytoscape.data.CyAttributesUtils.isNullAttribute(_type, controllingAttribute)){
@@ -415,7 +417,8 @@ class QuickFindImpl implements QuickFind {
 		if (indexType == QuickFind.INDEX_EDGES){
 			_type = "edge";
 		}
-		if (cytoscape.data.CyAttributesUtils.isNullAttribute(_type, controllingAttribute)){
+		if (!controllingAttribute.equalsIgnoreCase(QuickFind.INDEX_ALL_ATTRIBUTES) &&
+		    cytoscape.data.CyAttributesUtils.isNullAttribute(_type, controllingAttribute)){
 			return null;
 		}
 		
