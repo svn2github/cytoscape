@@ -73,7 +73,7 @@ public class GMLReaderTest extends TestCase {
 		super(name);
 
 		if (AllTests.runAllTests()) {
-			testDataDir = "testData";
+			testDataDir = "src/test/resources/testData";
 		}
 	}
 
@@ -104,7 +104,7 @@ public class GMLReaderTest extends TestCase {
 	public void testSmallGraphRead() throws Exception {
 		AllTests.standardOut("testSmallGraphRead");
 
-		GMLReader reader = new GMLReader("testData/gal.gml");
+		GMLReader reader = new GMLReader("src/test/resources/testData/gal.gml");
 		reader.read();
 
 		int[] nodeArray = reader.getNodeIndicesArray();
@@ -122,7 +122,7 @@ public class GMLReaderTest extends TestCase {
 	public void testMediumGraphRead() throws Exception {
 		AllTests.standardOut("testMediumGraphRead");
 
-		GMLReader reader = new GMLReader("testData/noLabels.gml");
+		GMLReader reader = new GMLReader("src/test/resources/testData/noLabels.gml");
 		reader.read();
 
 		int[] nodeArray = reader.getNodeIndicesArray();
@@ -143,7 +143,7 @@ public class GMLReaderTest extends TestCase {
 		// this file comes from http://darwin.uvigo.es/software/tcs.html
 		// their style of gml has caused problems in the past,
 		// particularly newlines within quoted words
-		GMLReader reader = new GMLReader("testData/broken_t.gml");
+		GMLReader reader = new GMLReader("src/test/resources/testData/broken_t.gml");
 		reader.read();
 
 		int[] nodeArray = reader.getNodeIndicesArray();
@@ -159,7 +159,7 @@ public class GMLReaderTest extends TestCase {
 	 * not a String.
 	 */
 	public void testBug1565() throws Exception {
-		GMLReader reader = new GMLReader("testData/bug1565.gml");
+		GMLReader reader = new GMLReader("src/test/resources/testData/bug1565.gml");
 		reader.read();
 
 		int[] nodeArray = reader.getNodeIndicesArray();

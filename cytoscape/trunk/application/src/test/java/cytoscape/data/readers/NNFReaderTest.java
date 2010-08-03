@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 public class NNFReaderTest extends TestCase {
 	
 	// All test data files are in this directory.
-	private static final String FILE_LOCATION = "testData/NNFData/";
+	private static final String FILE_LOCATION = "src/test/resources/testData/NNFData/";
 
 	
 	public void setUp() throws Exception {

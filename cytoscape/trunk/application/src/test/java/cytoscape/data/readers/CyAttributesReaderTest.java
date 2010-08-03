@@ -61,7 +61,7 @@ public class CyAttributesReaderTest extends TestCase {
 	public void testRead1() throws IOException {
 		String attributeName = "TestNodeAttribute1";
 		CyAttributes cyAttributes = new CyAttributesImpl();
-		File file = new File("testData/galFiltered.nodeAttrs1");
+		File file = new File("src/test/resources/testData/galFiltered.nodeAttrs1");
 		FileReader reader = null;
 
         try {
@@ -100,7 +100,7 @@ public class CyAttributesReaderTest extends TestCase {
 	 */
 	public void testRead2() throws IOException {
 		CyAttributes cyAttributes = new CyAttributesImpl();
-		File file = new File("testData/galFiltered.edgeAttrs2");
+		File file = new File("src/test/resources/testData/galFiltered.edgeAttrs2");
 		FileReader reader = null;
 
         try {
@@ -144,7 +144,7 @@ public class CyAttributesReaderTest extends TestCase {
 		//  This file contains an explicit class declaration, like so:
 		//  Score (class=Java.lang.Double)
 		//  All the integer values should therefore be stored as Doubles.
-		File file = new File("testData/explicitDouble.attribute");
+		File file = new File("src/test/resources/testData/explicitDouble.attribute");
 		FileReader reader = null;
 
         try {
@@ -213,7 +213,7 @@ public class CyAttributesReaderTest extends TestCase {
 	 */
 	public void testReadSimpleLists1() throws IOException {
         System.clearProperty(CyAttributesReader.DECODE_PROPERTY);
-        checkReadSimpleLists("testData/implicitStringArray.attribute", ' ');
+        checkReadSimpleLists("src/test/resources/testData/implicitStringArray.attribute", ' ');
 	}
 
 	/**
@@ -222,7 +222,7 @@ public class CyAttributesReaderTest extends TestCase {
 	 */
 	public void testReadSimpleLists2() throws IOException {
         System.clearProperty(CyAttributesReader.DECODE_PROPERTY);
-        checkReadSimpleLists("testData/implicitStringArrayEnc.attribute", ' ');
+        checkReadSimpleLists("src/test/resources/testData/implicitStringArrayEnc.attribute", ' ');
 	}
 
 	/**
@@ -231,7 +231,7 @@ public class CyAttributesReaderTest extends TestCase {
 	 */
 	public void testReadSimpleLists3() throws IOException {
         System.setProperty(CyAttributesReader.DECODE_PROPERTY, "false");
-        checkReadSimpleLists("testData/implicitStringArray.attribute", ' ');
+        checkReadSimpleLists("src/test/resources/testData/implicitStringArray.attribute", ' ');
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class CyAttributesReaderTest extends TestCase {
 	 */
 	public void testReadSimpleLists4() throws IOException {
         System.setProperty(CyAttributesReader.DECODE_PROPERTY, "false");
-        checkReadSimpleLists("testData/implicitStringArrayEnc.attribute", '+');
+        checkReadSimpleLists("src/test/resources/testData/implicitStringArrayEnc.attribute", '+');
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class CyAttributesReaderTest extends TestCase {
 	 */
 	public void testReadSimpleLists5() throws IOException {
         System.setProperty(CyAttributesReader.DECODE_PROPERTY, "true");
-        checkReadSimpleLists("testData/implicitStringArray.attribute", ' ');
+        checkReadSimpleLists("src/test/resources/testData/implicitStringArray.attribute", ' ');
 	}
 
 	/**
@@ -258,7 +258,7 @@ public class CyAttributesReaderTest extends TestCase {
 	 */
 	public void testReadSimpleLists6() throws IOException {
         System.setProperty(CyAttributesReader.DECODE_PROPERTY, "true");
-        checkReadSimpleLists("testData/implicitStringArrayEnc.attribute", ' ');
+        checkReadSimpleLists("src/test/resources/testData/implicitStringArrayEnc.attribute", ' ');
 	}
 
 	/**

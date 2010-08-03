@@ -87,7 +87,7 @@ public class FileImporterTest extends TestCase {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public void testGMLImport() throws Exception {
-		location = "testData/gal.gml";
+		location = "src/test/resources/testData/gal.gml";
 		network = Cytoscape.createNetworkFromFile(location);
 
 		title = network.getTitle();
@@ -106,7 +106,7 @@ public class FileImporterTest extends TestCase {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public void testXGMMLImport() throws Exception {
-		location = "testData/galFiltered2.xgmml";
+		location = "src/test/resources/testData/galFiltered2.xgmml";
 		network = Cytoscape.createNetworkFromFile(location, false);
 
 		title = network.getTitle();
@@ -125,7 +125,7 @@ public class FileImporterTest extends TestCase {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public void testSIFImport() throws Exception {
-		location = "testData/galFiltered.sif";
+		location = "src/test/resources/testData/galFiltered.sif";
 		network = Cytoscape.createNetworkFromFile(location, false);
 
 		title = network.getTitle();

@@ -73,7 +73,7 @@ public class CyAttributesWriterTest extends TestCase {
 
 		// Load test data.
 		CyAttributes cyAttributes = new CyAttributesImpl();
-		File file = new File("testData/galFiltered.nodeAttrs1");
+		File file = new File("src/test/resources/testData/galFiltered.nodeAttrs1");
 		FileReader reader = new FileReader(file);
 		CyAttributesReader.loadAttributes(cyAttributes, reader);
 
@@ -112,7 +112,7 @@ public class CyAttributesWriterTest extends TestCase {
 		System.out.println("################## CyAttributesWriter2 List Test start #######################");
 
 		CyAttributes cyAttributes = new CyAttributesImpl();
-		File file = new File("testData/implicitStringArray.attribute");
+		File file = new File("src/test/resources/testData/implicitStringArray.attribute");
 		FileReader reader = new FileReader(file);
 		CyAttributesReader.loadAttributes(cyAttributes, reader);
 

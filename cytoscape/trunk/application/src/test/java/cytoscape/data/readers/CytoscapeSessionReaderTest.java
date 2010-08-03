@@ -69,7 +69,7 @@ public class CytoscapeSessionReaderTest extends TestCase {
 	
 	
 	public void testNestedNetworkReconstruction1() throws Exception {
-		invokeReader("testData/NNFData/t3.cys");
+		invokeReader("src/test/resources/testData/NNFData/t3.cys");
 		
 		//Check all networks are available.
 		final Set<CyNetwork> networks = Cytoscape.getNetworkSet();
@@ -96,7 +96,7 @@ public class CytoscapeSessionReaderTest extends TestCase {
 	}
 	
 	public void testNestedNetworkReconstruction2() throws Exception {
-		invokeReader("testData/NNFData/t4.cys");
+		invokeReader("src/test/resources/testData/NNFData/t4.cys");
 		
 		//Check all networks are available.
 		final Set<CyNetwork> networks = Cytoscape.getNetworkSet();

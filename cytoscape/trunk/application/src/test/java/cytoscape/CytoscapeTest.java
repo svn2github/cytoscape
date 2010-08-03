@@ -138,7 +138,7 @@ public class CytoscapeTest extends TestCase {
 		nodes.add("n4");
 		nodes.add("n5");
 
-		cytoNetwork = Cytoscape.createNetworkFromFile("testData/bug_839.sif");
+		cytoNetwork = Cytoscape.createNetworkFromFile("src/test/resources/testData/bug_839.sif");
 
 		// check that all nodes exist
 		Iterator it = cytoNetwork.nodesIterator();
@@ -178,7 +178,7 @@ public class CytoscapeTest extends TestCase {
 	 * @throws IOException DOCUMENT ME!
 	 */
 	public void testgetCyEdgeWithStrings() throws IOException {
-		cytoNetwork = Cytoscape.createNetworkFromFile("testData/directedGraph.sif");
+		cytoNetwork = Cytoscape.createNetworkFromFile("src/test/resources/testData/directedGraph.sif");
 
 		assertEquals(2, cytoNetwork.getNodeCount());
 		assertEquals(4, cytoNetwork.getEdgeCount());
@@ -209,7 +209,7 @@ public class CytoscapeTest extends TestCase {
 	 * @throws IOException DOCUMENT ME!
 	 */
 	public void testgetCyEdgeWithNodes() throws IOException {
-		cytoNetwork = Cytoscape.createNetworkFromFile("testData/directedGraph.sif");
+		cytoNetwork = Cytoscape.createNetworkFromFile("src/test/resources/testData/directedGraph.sif");
 
 		Node a = Cytoscape.getCyNode("a");
 		Node b = Cytoscape.getCyNode("b");
@@ -241,7 +241,7 @@ public class CytoscapeTest extends TestCase {
 	}
 
 	public void testGetCyEdgeWithBadNodeStrings() throws Exception {
-		cytoNetwork = Cytoscape.createNetworkFromFile("testData/directedGraph.sif");
+		cytoNetwork = Cytoscape.createNetworkFromFile("src/test/resources/testData/directedGraph.sif");
 		final int numEdges = Cytoscape.getRootGraph().getEdgeCount();
 		final int numNodes = Cytoscape.getRootGraph().getNodeCount();
 
