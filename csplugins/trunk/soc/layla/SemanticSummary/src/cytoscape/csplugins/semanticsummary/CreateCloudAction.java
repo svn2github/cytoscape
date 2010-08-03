@@ -115,7 +115,8 @@ public class CreateCloudAction extends CytoscapeAction
 		cloudParams.setCloudNum(params.getCloudCount());
 		cloudParams.setCloudName(params.getNextCloudName()); 
 		cloudParams.setNetworkParams(params);
-		cloudParams.setNetworkNumNodes(network.getNodeCount());
+		//cloudParams.setNetworkNumNodes(network.getNodeCount());
+		cloudParams.setNetworkNumNodes(network.getNodeCount() * cloudParams.getAttributeNames().size());
 		
 		//Get list of node ID's
 		Set<CyNode> nodes = network.getSelectedNodes();

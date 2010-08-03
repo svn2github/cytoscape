@@ -57,7 +57,8 @@ public class CloudParameters implements Comparable
 
 	//VARIABLES
 	private String cloudName;
-	private String attributeName;
+	//private String attributeName;
+	private ArrayList<String> attributeNames;
 	private String displayStyle;
 	
 	private SemanticSummaryParameters networkParams; //parent network
@@ -126,10 +127,13 @@ public class CloudParameters implements Comparable
 		this.cloudWords = new ArrayList<CloudWordInfo>();
 		
 		this.netWeightFactor = this.getDefaultNetWeight();
-		this.attributeName = this.getDefaultAttName();
+		//this.attributeName = this.getDefaultAttName();
 		this.clusterCutoff = this.getDefaultClusterCutoff();
 		this.maxWords = this.getDefaultMaxWords();
 		this.displayStyle = this.getDefaultDisplayStyle();
+		
+		this.attributeNames = new ArrayList<String>();
+		this.attributeNames.add(this.getDefaultAttName());
 	}
 	
 	/**
@@ -156,7 +160,7 @@ public class CloudParameters implements Comparable
 		}
 		
 		this.cloudName = props.get("CloudName");
-		this.attributeName = props.get("AttributeName");
+		//this.attributeName = props.get("AttributeName");
 		this.displayStyle = props.get("DisplayStyle");
 		this.selectedNumNodes = new Integer(props.get("SelectedNumNodes"));
 		this.networkNumNodes = new Integer(props.get("NetworkNumNodes"));
@@ -197,12 +201,21 @@ public class CloudParameters implements Comparable
 		if (val != null)
 		{this.maxWeight = new Double(props.get("MaxWeight"));}
 		
-		
+		//Rebuild attribute List
+		String value = props.get("AttributeName");
+		String[] attributes = value.split(WORDDELIMITER);
+		ArrayList<String> attributeList = new ArrayList<String>();
+		for (int i = 0; i < attributes.length; i++)
+		{
+			String curAttribute = attributes[i];
+			attributeList.add(curAttribute);
+		}
+		this.attributeNames = attributeList;
 		
 			
 		
 		//Rebuild List of Nodes
-		String value = props.get("SelectedNodes");
+		value = props.get("SelectedNodes");
 		String[] nodes = value.split(NODEDELIMITER);
 		ArrayList<String> nodeNameList = new ArrayList<String>();
 		for (int i = 0; i < nodes.length; i++)
@@ -271,60 +284,68 @@ public class CloudParameters implements Comparable
 				continue;
 			}
 			
-			String nodeValue = this.getNodeAttributeVal(curNode);
-			if (nodeValue == null) // problem with nodes or attributes
-				continue;
+			for (int i = 0; i < attributeNames.size(); i++)
+			{
+				String curAttribute = attributeNames.get(i);
+				String nodeValue = this.getNodeAttributeVal(curNode, curAttribute);
 			
-			List<String> wordSet = this.processNodeString(nodeValue);
-			String lastWord = ""; //Used for calculating pair counts
+				//String nodeValue = this.getNodeAttributeVal(curNode);
+				if (nodeValue == null) // problem with nodes or attributes
+					continue;
+			
+				List<String> wordSet = this.processNodeString(nodeValue);
+				String lastWord = ""; //Used for calculating pair counts
 	        
-	        //Iterate through all words
-	        Iterator<String> wordIter = wordSet.iterator();
-	        while(wordIter.hasNext())
-	        {
-				String curWord = wordIter.next();
-				
-				//Check filters
-				WordFilter filter = networkParams.getFilter();
-				if (!filter.contains(curWord))
+				//Iterate through all words
+				Iterator<String> wordIter = wordSet.iterator();
+				while(wordIter.hasNext())
 				{
-					//If this word has not been encountered, or not encountered
-					//in this node, add it to our mappings and counts
-					HashMap<String, List<String>> curMapping = this.getStringNodeMapping();
+					String curWord = wordIter.next();
 				
-					//If we have not encountered this word, add it to the mapping
-					if (!curMapping.containsKey(curWord))
+					//Check filters
+					WordFilter filter = networkParams.getFilter();
+					if (!filter.contains(curWord))
 					{
-						curMapping.put(curWord, new ArrayList<String>());
-						networkCounts.put(curWord, 0);
-					}
+						//If this word has not been encountered, or not encountered
+						//in this node, add it to our mappings and counts
+						HashMap<String, List<String>> curMapping = this.getStringNodeMapping();
+				
+						//If we have not encountered this word, add it to the mapping
+						if (!curMapping.containsKey(curWord))
+						{
+							curMapping.put(curWord, new ArrayList<String>());
+							networkCounts.put(curWord, 0);
+						}
 					
-					//Add node to mapping, update counts
-					curMapping.get(curWord).add(curNode.toString());
-					Integer num = networkCounts.get(curWord);
-					num = num + 1;
-					networkCounts.put(curWord, num);
+						//Add node to mapping, update counts
+						curMapping.get(curWord).add(curNode.toString());
+						Integer num = networkCounts.get(curWord);
+						num = num + 1;
+						networkCounts.put(curWord, num);
 					
 					
-					//Add to pair counts
-					if (!lastWord.equals(""))
-					{
-						Integer curPairCount = 0;
-						String pairName = lastWord + " " + curWord;
+						//Add to pair counts
+						if (!lastWord.equals(""))
+						{
+							Integer curPairCount = 0;
+							String pairName = lastWord + " " + curWord;
 						
-						if (networkPairCounts.containsKey(pairName))
-							curPairCount = networkPairCounts.get(pairName);
+							if (networkPairCounts.containsKey(pairName))
+								curPairCount = networkPairCounts.get(pairName);
 						
-						curPairCount = curPairCount + 1;
-						networkPairCounts.put(pairName, curPairCount);
-					}
+							curPairCount = curPairCount + 1;
+							networkPairCounts.put(pairName, curPairCount);
+						}
 					
-					//Update curWord to be LastWord
-					lastWord = curWord;
+						//Update curWord to be LastWord
+						lastWord = curWord;
 					
-				}//end filter if
-			}// word iterator
+					}//end filter if
+				}// word iterator
+			}//end attribute iterator
 		}//end node iterator
+		
+		networkNumNodes = networkNodes.size() * attributeNames.size();
 		countInitialized = true;
 	}
 	
@@ -364,59 +385,68 @@ public class CloudParameters implements Comparable
 			{
 				Component desktop = Cytoscape.getDesktop();
 				JOptionPane.showMessageDialog(desktop, "Node no longer exists: " + curNodeID);
-				return;
+				continue;
 			}
 			
-			String nodeValue = this.getNodeAttributeVal(curNode);
-			if (nodeValue == null) // problem with nodes or attributes
-				return;
+			for (int i = 0; i < attributeNames.size(); i++)
+			{
+				String curAttribute = attributeNames.get(i);
+				String nodeValue = this.getNodeAttributeVal(curNode, curAttribute);
 			
-			List<String> wordSet = this.processNodeString(nodeValue);
-			String lastWord = ""; //Used for calculating pair counts
+				//String nodeValue = this.getNodeAttributeVal(curNode);
+			
+				if (nodeValue == null) // problem with nodes or attributes
+					continue;
+			
+				List<String> wordSet = this.processNodeString(nodeValue);
+				String lastWord = ""; //Used for calculating pair counts
 	        
-	        //Iterate through all words
-	        Iterator<String> wordIter = wordSet.iterator();
-	        while(wordIter.hasNext())
-	        {
-				String curWord = wordIter.next();
-				
-				//Check filters
-				WordFilter filter = networkParams.getFilter();
-				if (!filter.contains(curWord))
+				//Iterate through all words
+				Iterator<String> wordIter = wordSet.iterator();
+				while(wordIter.hasNext())
 				{
-					//Add to selected Counts
-					
-					Integer curCount = 0; 
-					
-					if (selectedCounts.containsKey(curWord))
-						curCount = selectedCounts.get(curWord);
-					
-					//Update Count
-					curCount = curCount + 1;
-					
-					//Add updated count to HashMap
-					selectedCounts.put(curWord, curCount);
-					
-					//Add to pair counts
-					if (!lastWord.equals(""))
+					String curWord = wordIter.next();
+				
+					//Check filters
+					WordFilter filter = networkParams.getFilter();
+					if (!filter.contains(curWord))
 					{
-						Integer curPairCount = 0;
-						String pairName = lastWord + " " + curWord;
-						
-						if (selectedPairCounts.containsKey(pairName))
-							curPairCount = selectedPairCounts.get(pairName);
-						
-						curPairCount = curPairCount + 1;
-						selectedPairCounts.put(pairName, curPairCount);
-					}
+						//Add to selected Counts
 					
-					//Update curWord to be LastWord
-					lastWord = curWord;
+						Integer curCount = 0; 
 					
-				}//end filter if
-			}// word iterator
+						if (selectedCounts.containsKey(curWord))
+							curCount = selectedCounts.get(curWord);
+					
+						//Update Count
+						curCount = curCount + 1;
+					
+						//Add updated count to HashMap
+						selectedCounts.put(curWord, curCount);
+					
+						//Add to pair counts
+						if (!lastWord.equals(""))
+						{
+							Integer curPairCount = 0;
+							String pairName = lastWord + " " + curWord;
+						
+							if (selectedPairCounts.containsKey(pairName))
+								curPairCount = selectedPairCounts.get(pairName);
+						
+							curPairCount = curPairCount + 1;
+							selectedPairCounts.put(pairName, curPairCount);
+						}
+					
+						//Update curWord to be LastWord
+						lastWord = curWord;
+					
+					}//end filter if
+				}// word iterator
+			}// end attribute list
 		}//end node iterator
-		selectedNumNodes = selectedNodes.size();
+		
+		//selectedNumNodes = selectedNodes.size();
+		selectedNumNodes = selectedNodes.size() * attributeNames.size();
 		
 		calculateWeights();
 		
@@ -595,6 +625,8 @@ public class CloudParameters implements Comparable
 			
 			pairRatios.put(curWord, ratio);
 		}
+		
+		this.createFiles();
 			
 		ratiosInitialized = true;
 	}
@@ -730,17 +762,37 @@ public class CloudParameters implements Comparable
 		
 		
 		//Attribute
-		Object attribute = inputPanel.getCMBAttributes().getSelectedItem();
-		if (attribute instanceof String)
-			setAttributeName((String) attribute);
-		else
-		{
-			setAttributeName(defaultAttName);
-			inputPanel.getCMBAttributes().setSelectedItem(attributeName);
-			String message = "You must select a valid String attribute or use the node ID.";
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
-		}
+		//Object attribute = inputPanel.getCMBAttributes().getSelectedItem();
+		Object[] attributes = inputPanel.getAttributeList().getSelectedValues();
+		ArrayList<String> attributeList = new ArrayList<String>();
 		
+		for (int i = 0; i < attributes.length; i++)
+		{
+			Object curAttribute = attributes[i];
+			
+			if (curAttribute instanceof String)
+			{
+				attributeList.add((String) curAttribute);
+					//setAttributeName((String) attribute);
+			}
+			/*
+			else
+			{
+				//setAttributeName(defaultAttName);
+				//inputPanel.getCMBAttributes().setSelectedItem(attributeName);
+				
+				ArrayList<String> attributeList = new ArrayList<String>();
+				attributeList.add(defaultAttName);
+				this.setAttributeNames(attributeList);
+				//inputPanel.getCMBAttributes().setSelectedItem(defaultAttName);
+				inputPanel.getAttributeList().setSelectedIndex(0);
+				String message = "You must select a valid String attribute or use the node ID.";
+				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
+			}
+			*/
+			this.setAttributeNames(attributeList);
+		}
+			
 		//Max Words
 		JFormattedTextField maxWordsTextField = inputPanel.getMaxWordsTextField();
 		
@@ -796,7 +848,7 @@ public class CloudParameters implements Comparable
 		StringBuffer paramVariables = new StringBuffer();
 		
 		paramVariables.append("CloudName\t" + cloudName + "\n");
-		paramVariables.append("AttributeName\t" + attributeName + "\n");
+		//paramVariables.append("AttributeName\t" + attributeName + "\n");
 		paramVariables.append("DisplayStyle\t" + displayStyle + "\n");
 		
 		//List of Nodes as a comma delimited list
@@ -805,8 +857,16 @@ public class CloudParameters implements Comparable
 		{
 			output.append((selectedNodes.get(i)).toString() + NODEDELIMITER);
 		}
-		
 		paramVariables.append("SelectedNodes\t" + output.toString() + "\n");
+		
+		
+		//List of attributes as a delimited list
+		output = new StringBuffer();
+		for (int i = 0; i < attributeNames.size(); i++)
+		{
+			output.append(attributeNames.get(i) + WORDDELIMITER);
+		}
+		paramVariables.append("AttributeName\t" + output.toString() + "\n");
 		
 		paramVariables.append("NetworkNumNodes\t" + networkNumNodes + "\n");
 		paramVariables.append("SelectedNumNodes\t" + selectedNumNodes + "\n");
@@ -946,8 +1006,74 @@ public class CloudParameters implements Comparable
 	 * This method takes in the ID of a node and returns the string that is associated
 	 * with that node and the current attribute of this CloudParameters.
 	 * @param CyNode - node we are interested in 
+	 * @param String - name of the attribute we are interested in
 	 * @return String - value stored in the current attribute for the given node.
 	 */
+	private String getNodeAttributeVal(CyNode curNode, String attributeName)
+	{
+		//Retrieve value based on attribute
+		String nodeValue = "";
+		
+		//if we should use the ID
+		if (attributeName.equals("nodeID"))
+		{
+			nodeValue = curNode.toString();
+		}
+		
+		//Use a different attribute
+		else
+		{
+			CyAttributes cyNodeAttrs = Cytoscape.getNodeAttributes();
+			
+			if (cyNodeAttrs.getType(attributeName)== CyAttributes.TYPE_STRING)
+			{
+				nodeValue = cyNodeAttrs.getStringAttribute(curNode.getIdentifier(), attributeName);
+			}
+			
+			else if (cyNodeAttrs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST)
+			{
+				List attribute = cyNodeAttrs.getListAttribute(curNode.getIdentifier(), attributeName);
+				
+				if (attribute == null)
+					return null;
+				
+				else
+				{
+					for (Iterator iter = attribute.iterator(); iter.hasNext();)
+					{
+						Object curObj = iter.next();
+						if (curObj instanceof String)
+						{
+							//Turn list into space separated string
+							String curObjString = (String)curObj;
+							nodeValue = nodeValue + curObjString + " ";
+						}//
+					}
+				}
+			}
+			else
+			{
+				//Don't currently handle non string attributes
+				//This code should currently never be accessed
+				Component desktop = Cytoscape.getDesktop();
+				
+				JOptionPane.showMessageDialog(desktop, 
+				"Current implementation does not handle non-String attributes.");
+				return null;
+			}//end else
+		}//end else
+		
+		return nodeValue;
+	}//end method
+	
+	
+	/**
+	 * This method takes in the ID of a node and returns the string that is associated
+	 * with that node and the current attribute of this CloudParameters.
+	 * @param CyNode - node we are interested in 
+	 * @return String - value stored in the current attribute for the given node.
+	 */
+	/*
 	private String getNodeAttributeVal(CyNode curNode)
 	{
 		//Retrieve value based on attribute
@@ -1004,6 +1130,7 @@ public class CloudParameters implements Comparable
 		
 		return nodeValue;
 	}//end method
+	*/
 	
 	/**
 	 * This method takes in a string from a node and processes it to lower case, removes
@@ -1076,7 +1203,7 @@ public class CloudParameters implements Comparable
 		cloudName = name;
 	}
 	
-	
+	/*
 	public String getAttributeName()
 	{
 		return attributeName;
@@ -1095,6 +1222,57 @@ public class CloudParameters implements Comparable
 		attributeName = name;
 
 	}
+	*/
+	
+	public ArrayList<String> getAttributeNames()
+	{
+		return attributeNames;
+	}
+	
+	public void setAttributeNames(ArrayList<String> names)
+	{
+		//Check if we need to reset flags
+		Boolean changed = false;
+		if (names.size() != attributeNames.size())
+			changed = true;
+		else
+		{
+			for (int i = 0; i < names.size(); i++)
+			{
+				String curAttribute = names.get(i);
+				
+				if (!attributeNames.contains(curAttribute))
+				{
+					changed = true;
+					continue;
+				}
+			}
+		}
+		
+		//Set flags
+		if (changed)
+		{
+			countInitialized = false;
+			selInitialized = false;
+			ratiosInitialized = false;
+		}
+		
+		//Set to new value
+		attributeNames = names;
+	}
+	
+	public void addAttributeName(String name)
+	{
+		if (!attributeNames.contains(name))
+		{
+			attributeNames.add(name);
+			countInitialized = false;
+			selInitialized = false;
+			ratiosInitialized = false;
+		}
+	}
+	
+
 	
 	public SemanticSummaryParameters getNetworkParams()
 	{
@@ -1403,6 +1581,90 @@ public class CloudParameters implements Comparable
 	public void setUseNetNormal(boolean val)
 	{
 		useNetNormal = val;
+	}
+	
+	//Testing code
+	public void createFiles()
+	{
+		try
+		{
+			PrintWriter out = new PrintWriter(new FileWriter("C:\\Users\\Layla\\Desktop\\nodes_ratios.txt"));
+		
+			Set<String> wordList = ratios.keySet();
+			for(Iterator<String> iter = wordList.iterator(); iter.hasNext();)
+			{
+				String curWord = iter.next();
+				Double curRatio = ratios.get(curWord);
+				out.println(curWord + " " + curRatio);
+			}
+			out.close();
+		}
+		catch (Exception e)
+		{
+			//DO Nothing
+		}
+		
+		try
+		{
+			PrintWriter out = new PrintWriter(new FileWriter("C:\\Users\\Layla\\Desktop\\nodes_counts.txt"));
+		
+			Set<String> wordList = selectedCounts.keySet();
+			for(Iterator<String> iter = wordList.iterator(); iter.hasNext();)
+			{
+				String curWord = iter.next();
+				Integer curCount = selectedCounts.get(curWord);
+				out.println(curWord + " " + curCount);
+			}
+			out.close();
+		}
+		catch (Exception e)
+		{
+			//DO Nothing
+		}
+		
+		try
+		{
+			PrintWriter out = new PrintWriter(new FileWriter("C:\\Users\\Layla\\Desktop\\edges_ratios.txt"));
+		
+			Set<String> wordList = pairRatios.keySet();
+			for(Iterator<String> iter = wordList.iterator(); iter.hasNext();)
+			{
+				String curWord = iter.next();
+				Double curRatio = pairRatios.get(curWord);
+
+				String[] words = curWord.split(" ");
+				Double firstRatio = ratios.get(words[0]);
+				Double secondRatio = ratios.get(words[1]);
+				
+				//Double condRatio = curRatio * firstRatio / secondRatio;
+				Double condRatio = curRatio /( firstRatio * secondRatio);
+				
+				out.println(curWord + " " + condRatio);
+			}
+			out.close();
+		}
+		catch (Exception e)
+		{
+			//DO Nothing
+		}
+		
+		try
+		{
+			PrintWriter out = new PrintWriter(new FileWriter("C:\\Users\\Layla\\Desktop\\edges_counts.txt"));
+		
+			Set<String> wordList = selectedPairCounts.keySet();
+			for(Iterator<String> iter = wordList.iterator(); iter.hasNext();)
+			{
+				String curWord = iter.next();
+				Integer curCount = selectedPairCounts.get(curWord);
+				out.println(curWord + " " + curCount);
+			}
+			out.close();
+		}
+		catch (Exception e)
+		{
+			//DO Nothing
+		}
 	}
 	
 }

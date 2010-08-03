@@ -34,6 +34,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
@@ -55,9 +57,11 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeListener;
@@ -65,6 +69,7 @@ import javax.swing.text.MaskFormatter;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.util.swing.CheckBoxJList;
 
 /**
  * The SemanticSummaryInputPanel class defines the panel that appears for 
@@ -91,7 +96,6 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	private JTextField addWordTextField;
 	
 	//JComboBox
-	private JComboBox cmbAttributes;
 	private JComboBox cmbRemoval;
 	private JComboBox cmbStyle;
 	private JComboBox cmbDelimiterRemoval;
@@ -117,6 +121,10 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	
 	//SliderBar
 	private SliderBarPanel sliderPanel;
+	
+	//Checkbox list
+	private CheckBoxJList attributeList;
+	private JPopupMenu attributeSelectionPopupMenu;
 	
 	//String Constants for Separators in remove word combo box
 	private static final String addedSeparator = "--Added Words--";
@@ -290,15 +298,30 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		JPanel attributePanel = new JPanel();
 		attributePanel.setLayout(new GridBagLayout());
 
-		//JLabel nodeAttributeLabel = new JLabel("Node ID/Attribute: ");
-		
-		WidestStringComboBoxModel wscbm = new WidestStringComboBoxModel();
-		cmbAttributes = new JComboBox(wscbm);
-		cmbAttributes.addPopupMenuListener(new WidestStringComboBoxPopupMenuListener());
-		cmbAttributes.setEditable(false);
-	    Dimension d = cmbAttributes.getPreferredSize();
-	    cmbAttributes.setPreferredSize(new Dimension(15, d.height));
-	    cmbAttributes.setToolTipText("Define which node value to use for semantic analysis");
+	    //Testing of stuff
+	    attributeList = new CheckBoxJList();
+	    DefaultListModel model = new DefaultListModel();
+	    attributeList.setModel(model);
+	    model.addElement("test1");
+	    model.addElement("test2");
+	    JScrollPane scrollPane = new JScrollPane();
+	    scrollPane.setPreferredSize(new Dimension(300, 200));
+	    scrollPane.setViewportView(attributeList);
+	    
+	    
+	    attributeSelectionPopupMenu = new JPopupMenu();
+	    attributeSelectionPopupMenu.add(scrollPane);
+	    
+	    JButton attributeButton = new JButton("Select Attributes");
+	    attributeButton.setToolTipText("Define which nodes values to use for semantic analysis");
+	    attributeButton.addMouseListener(new MouseAdapter()
+	    {
+	    	public void mouseClicked(MouseEvent e)
+	    	{
+	    		attributeSelectionPopupMenu.show(e.getComponent(), 0,e.getComponent().getPreferredSize().height);
+	    	}
+	    }
+	    );
 
 		
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -315,8 +338,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.insets = new Insets(5, 0, 0, 0);
-		attributePanel.add(cmbAttributes, gridBagConstraints);
-		
+		attributePanel.add(attributeButton, gridBagConstraints);	
 	    
 	    refreshAttributeCMB();
 		
@@ -810,8 +832,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	 */
 	public void loadCurrentCloud(CloudParameters params)
 	{
-		//sliderPanel.setNetNormValue(params.getNetWeightFactor());
-		cmbAttributes.setSelectedItem(params.getAttributeName());
+		attributeList.setSelectedItems(params.getAttributeNames());
 		maxWordsTextField.setValue(params.getMaxWords());
 		clusterCutoffTextField.setValue(params.getClusterCutoff());
 		cmbStyle.setSelectedItem(params.getDisplayStyle());
@@ -871,7 +892,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	{
 		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
 		
-		cmbAttributes.setSelectedItem(params.getDefaultAttName());
+		attributeList.setSelectedIndex(0);
 		maxWordsTextField.setValue(params.getDefaultMaxWords());
 		clusterCutoffTextField.setValue(params.getDefaultClusterCutoff());
 		cmbStyle.setSelectedItem(params.getDefaultDisplayStyle());
@@ -1072,19 +1093,18 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	 */
 	private void updateCMBAttributes()
 	{
-		DefaultComboBoxModel cmb;
-		
-		cmb = ((DefaultComboBoxModel)cmbAttributes.getModel());
-		cmb.removeAllElements();
-		cmb.addElement(SemanticSummaryManager.getInstance().
+		//Updated GUI
+		DefaultListModel listModel;
+		listModel = ((DefaultListModel)attributeList.getModel());
+		listModel.removeAllElements();
+		listModel.addElement(SemanticSummaryManager.getInstance().
 				getNullCloudParameters().getDefaultAttName());
 		
-		Vector<Object>av;
 		
-		av = getCyAttributesList("node");
+		Vector<Object> av = getCyAttributesList("node");
 		for (int i=0; i < av.size(); i++)
 		{
-			cmb.addElement(av.elementAt(i));
+			listModel.addElement(av.elementAt(i));
 		}
 	}
 	
@@ -1096,14 +1116,17 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	{
 		updateCMBAttributes();
 		CloudParameters curCloud = SemanticSummaryManager.getInstance().getCurCloud();
-		String curAttribute;
-		if (curCloud == SemanticSummaryManager.getInstance().getNullCloudParameters())
-			curAttribute = curCloud.getDefaultAttName();
-		else
-			curAttribute = curCloud.getAttributeName();
 		
-		cmbAttributes.setSelectedItem(curAttribute);
-		cmbAttributes.repaint();
+		//Updated GUI
+		ArrayList<String> curAttList;
+		if (curCloud == SemanticSummaryManager.getInstance().getNullCloudParameters())
+			curAttList = curCloud.getAttributeNames();
+		else
+			//curAttribute = curCloud.getAttributeName();
+			curAttList = curCloud.getAttributeNames();
+		
+		attributeList.setSelectedItems(curAttList);
+		attributeList.repaint();
 	}
 	
 	/**
@@ -1510,10 +1533,6 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		return cloudList;
 	}
 	
-	public JComboBox getCMBAttributes()
-	{
-		return cmbAttributes;
-	}
 	
 	public JComboBox getCMBRemoval()
 	{
@@ -1569,6 +1588,16 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	public SliderBarPanel getSliderBarPanel()
 	{
 		return sliderPanel;
+	}
+	
+	public CheckBoxJList getAttributeList()
+	{
+		return attributeList;
+	}
+	
+	public JPopupMenu getAttributePopupMenu()
+	{
+		return attributeSelectionPopupMenu;
 	}
 	
 	
