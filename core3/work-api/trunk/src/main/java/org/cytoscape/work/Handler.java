@@ -9,15 +9,15 @@ import java.lang.reflect.Method;
 	 * 
 	 * <p><pre>
 	 * The <code>Handler</code> can be used for the construction of the GUI (by using the <code>Guihandler</code>), 
-	 *  or can also be used to get the informations from the CommandLine. (by using the <code>CLHandler</code>), 
+	 *  or can also be used to get parameters from the command line (by using the <code>CLHandler</code>), 
 	 *  or even to get the properties for each <code>Tunable</code> object through its <code>Handlers</code>.
 	 * 
 	 * <code>Handler</code> will also be used to set the values that are in the <code>Handler</code> to the Properties object with <code>PropHandler</code>
 	 * 
-	 * Access to different parts of the<code>Handler</code> is allowed by using the <code>getField()</code>, <code>getMethod()</code>, <code>getObject()</code>, and <code>getTunable</code> methods.
+	 * Access to different parts of the <code>Handler</code> is allowed by using the <code>getField()</code>, <code>getMethod()</code>,
+	 * <code>getObject()</code>, and <code>getTunable</code> methods.
 	 * </pre></p>
 	 * @author pasteur
-	 *
 	 */
 
 // The <code>Handler</code> may also be modified. Thus, need to add some listeners to catch the modifications.
@@ -26,8 +26,8 @@ import java.lang.reflect.Method;
 public interface Handler {
 	
 	/**
-	 * To get the Handler's Field
-	 * @return Field
+	 * To get the Handler's field
+	 * @return the field or null if no field has been associated with this handler
 	 */
 	Field getField();
 	
@@ -72,27 +72,4 @@ public interface Handler {
 	 * @return Tunable
 	 */
 	Tunable getSetTunable();
-
-	
-	
-	/**
-	 * To add a <code>HandlerListener</code> to the <code>Handler</code>
-	 * @param listener	Listener added to the <code>Handler</code>
-	 */
-	void addHandlerListener(HandlerListener listener);
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param listener
-	 * @return
-	 */
-	boolean removeHandlerListener(HandlerListener listener); 
-	
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param otherHandler
-	 */
-	void handlerChanged(Handler otherHandler);
-	
 }

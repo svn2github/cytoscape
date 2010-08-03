@@ -60,11 +60,6 @@ public abstract class AbstractHandler implements Handler {
 	 */
 	protected Tunable ts;
 	
-	/**
-	 * List of listeners that are applied to <code>Handlers</code>
-	 */
-	protected List<HandlerListener> listeners;
-	
 
 	/**
 	 * Handler for Fields values
@@ -76,7 +71,6 @@ public abstract class AbstractHandler implements Handler {
 		this.f = f;
 		this.o = o;
 		this.t = t;
-		listeners = new ArrayList<HandlerListener>();
 	}
 
 	
@@ -176,33 +170,4 @@ public abstract class AbstractHandler implements Handler {
 	public Tunable getTunable() {
 		return t;
 	}
-	
-	
-	/**
-	 * To set a new Handler to an existing one
-	 * 
-	 * NEED TO BE IMPLEMENTED!
-	 */
-	public void handlerChanged(Handler h) {
-		System.out.println("currently a no-op");
-	}
-
-	/**
-	 * To add a <code>HandlerListener</code> to the Handler to detect modification events
-	 */
-	public void addHandlerListener(HandlerListener listener) {
-		if ( listener == null )
-			return;
-		listeners.add(listener);
-	}
-
-	/**
-	 * To remove a <code>HandlerListener</code>
-	 */
-	public boolean removeHandlerListener(HandlerListener listener) {
-		if ( listener == null )
-			return false;
-		return listeners.remove(listener);	
-	}
-	
 }
