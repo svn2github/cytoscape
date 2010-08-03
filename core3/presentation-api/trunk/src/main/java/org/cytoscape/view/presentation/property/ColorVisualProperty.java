@@ -45,7 +45,7 @@ public class ColorVisualProperty extends AbstractVisualProperty<Color> {
 		super(ot,def,id,name);
 	}
 	
-	public String getSerializableString(final Color color) {
+	public String toString(final Color color) {
 		Integer red = new Integer(color.getRed());
 		Integer green = new Integer(color.getGreen());
 		Integer blue = new Integer(color.getBlue());
@@ -53,7 +53,7 @@ public class ColorVisualProperty extends AbstractVisualProperty<Color> {
 		return new String(red.toString() + "," + green.toString() + "," + blue.toString());
 	}
 
-	public Color parseSerializableString(final String text) {
+	public Color parse(final String text) {
 		// Start by seeing if this is a hex representation
 		if (text.startsWith("#")) {
 			try {

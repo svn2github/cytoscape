@@ -56,7 +56,7 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>1.4.3</version>
+				<version>${maven-bundle-plugin.version}</version>
 				<!--
 					| the following instructions build a simple set of public/private
 					classes into an OSGi bundle

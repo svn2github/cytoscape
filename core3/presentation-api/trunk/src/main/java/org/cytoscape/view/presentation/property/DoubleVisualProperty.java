@@ -43,11 +43,11 @@ public class DoubleVisualProperty extends AbstractVisualProperty<Double> {
 		super(ot,def,id,name);
 	}
 	
-	public String getSerializableString(final Double value) {
+	public String toString(final Double value) {
 		return value.toString();
 	}
 
-	public Double parseSerializableString(final String text) {
+	public Double parse(final String text) {
 		return Double.valueOf(text);
 	}
 }
