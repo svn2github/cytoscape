@@ -52,11 +52,11 @@ enum WeightTypes {
  * about how to interpret weights in an weighted layout.
  */
 public class EdgeWeighter {
-	@Tunable(description="How to interpret weight values", group={"Edge Weight Settings"})
+	@Tunable(description="How to interpret weight values", groups={"Edge Weight Settings"})
 	public WeightTypes type = WeightTypes.GUESS;
-	@Tunable(description="The minimum edge weight to consider", group={"Edge Weight Settings"})
+	@Tunable(description="The minimum edge weight to consider", groups={"Edge Weight Settings"})
 	public double minWeightCutoff = 0;
-	@Tunable(description="The maximum edge weight to consider", group={"Edge Weight Settings"})
+	@Tunable(description="The maximum edge weight to consider", groups={"Edge Weight Settings"})
 	public double maxWeightCutoff = Double.MAX_VALUE;
 	final static double EPSILON = .001;
 
@@ -78,7 +78,7 @@ public class EdgeWeighter {
 	// These are just here for efficiency reasons
 	double normalFactor = Double.MAX_VALUE;
 
-	@Tunable(description="The edge attribute that contains the weights", group={"Edge Weight Settings"})
+	@Tunable(description="The edge attribute that contains the weights", groups={"Edge Weight Settings"})
 	public String weightAttribute = null;
 
 	static WeightTypes[] weightChoices = {WeightTypes.GUESS,

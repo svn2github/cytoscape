@@ -17,7 +17,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	double incr = 100;
 	protected List <LayoutPartition> partitionList = null;
 	protected EdgeWeighter edgeWeighter = null;
-	@Tunable(description="Don't partition graph before layout", group="Standard settings")
+	@Tunable(description="Don't partition graph before layout", groups="Standard settings")
 	public boolean singlePartition = false;
 
 	// Information for taskMonitor
