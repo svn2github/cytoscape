@@ -43,11 +43,11 @@ public class StringVisualProperty extends AbstractVisualProperty<String> {
 		super(ot,def,id,name);
 	}
 	
-	public String toString(final String value) {
+	public String toSerializableString(final String value) {
 		return value; 
 	}
 
-	public String parse(final String text) {
+	public String parseSerializableString(final String text) {
 		return text; 
 	}
 }

@@ -43,11 +43,11 @@ public class BooleanVisualProperty extends AbstractVisualProperty<Boolean> {
 		super(ot,def,id,name);
 	}
 	
-	public String toString(final Boolean value) {
+	public String toSerializableString(final Boolean value) {
 		return value.toString();
 	}
 
-	public Boolean parse(final String text) {
+	public Boolean parseSerializableString(final String text) {
 		return Boolean.valueOf(text);
 	}
 }
