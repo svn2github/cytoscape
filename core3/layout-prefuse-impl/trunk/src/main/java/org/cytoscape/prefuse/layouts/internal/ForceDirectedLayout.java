@@ -94,16 +94,16 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 {
 	private ForceSimulator m_fsim;
 
-	@Tunable(description="Number of Iterations", group="Algorithm settings")
+	@Tunable(description="Number of Iterations", groups="Algorithm settings")
 	public int numIterations = 100;
-	@Tunable(description="Default Spring Coefficient", group="Algorithm settings")
+	@Tunable(description="Default Spring Coefficient", groups="Algorithm settings")
 	public double defaultSpringCoefficient = 1e-4f;
-	@Tunable(description="Default Spring Length", group="Algorithm settings")
+	@Tunable(description="Default Spring Length", groups="Algorithm settings")
 	public double defaultSpringLength = 50.0;
-	@Tunable(description="Default Node Mass", group="Algorithm settings")
+	@Tunable(description="Default Node Mass", groups="Algorithm settings")
 	public double defaultNodeMass = 3.0;
 
-	@Tunable(description="Integration algorithm to use", group="Algorithm settings")
+	@Tunable(description="Integration algorithm to use", groups="Algorithm settings")
 	public Integrators integrator = Integrators.RUNGEKUTTA;
 
 	/**
