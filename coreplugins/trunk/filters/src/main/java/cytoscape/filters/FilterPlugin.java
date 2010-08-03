@@ -126,7 +126,7 @@ public class FilterPlugin extends CytoscapePlugin {
 		logger.debug("FilterPlugin: load " + loadCount[1] + " of " + loadCount[0] + " filters from filters.prop");
 
 		if (loadCount[1] == 0) {
-			final String DEFAULT_FILTERS_FILENAME = "default_filters.props";
+			final String DEFAULT_FILTERS_FILENAME = "/default_filters.props";
 			final InputStream inputStream = FilterPlugin.class.getResourceAsStream(DEFAULT_FILTERS_FILENAME);
 			if (inputStream == null) {
 				System.err.println("FilterPlugin: Failed to read default filters from \""
