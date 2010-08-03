@@ -60,11 +60,16 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.text.MaskFormatter;
 
 import cytoscape.Cytoscape;
@@ -125,6 +130,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	//Checkbox list
 	private CheckBoxJList attributeList;
 	private JPopupMenu attributeSelectionPopupMenu;
+	private JTextArea attNames;
 	
 	//String Constants for Separators in remove word combo box
 	private static final String addedSeparator = "--Added Words--";
@@ -302,18 +308,22 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	    attributeList = new CheckBoxJList();
 	    DefaultListModel model = new DefaultListModel();
 	    attributeList.setModel(model);
-	    model.addElement("test1");
-	    model.addElement("test2");
+	    attributeList.addListSelectionListener(new ListSelectionListener()
+	    {
+			public void valueChanged(ListSelectionEvent e) {
+				updateAttNames();
+			}
+	    });
+	    
 	    JScrollPane scrollPane = new JScrollPane();
 	    scrollPane.setPreferredSize(new Dimension(300, 200));
 	    scrollPane.setViewportView(attributeList);
 	    
-	    
 	    attributeSelectionPopupMenu = new JPopupMenu();
 	    attributeSelectionPopupMenu.add(scrollPane);
 	    
-	    JButton attributeButton = new JButton("Select Attributes");
-	    attributeButton.setToolTipText("Define which nodes values to use for semantic analysis");
+	    JButton attributeButton = new JButton("Edit");
+	    attributeButton.setToolTipText("Edit nodes values to use for semantic analysis");
 	    attributeButton.addMouseListener(new MouseAdapter()
 	    {
 	    	public void mouseClicked(MouseEvent e)
@@ -323,23 +333,36 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	    }
 	    );
 
+	    attNames = new JTextArea();
+	    attNames.setColumns(15);
+	    attNames.setEditable(false);
+	    JScrollPane attListPane = new JScrollPane();
+	    attListPane.setPreferredSize(attNames.getPreferredSize());
+	    attListPane.setViewportView(attNames);
+	    attListPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	    attListPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+	    JLabel attributeLabel = new JLabel("Current Values:");
 		
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
-		//gridBagConstraints.gridx = 0;
-		//gridBagConstraints.gridy = 0;
-		//gridBagConstraints.anchor = GridBagConstraints.WEST;
-		//gridBagConstraints.insets = new Insets(5,0,0,0);
-		//attributePanel.add(nodeAttributeLabel, gridBagConstraints);
-		
-		gridBagConstraints = new GridBagConstraints();
-		//gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.insets = new Insets(5, 0, 0, 0);
+		attributePanel.add(attributeLabel, gridBagConstraints);
+		
+		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.insets = new Insets(5, 0, 0, 0);
-		attributePanel.add(attributeButton, gridBagConstraints);	
-	    
+		gridBagConstraints.insets = new Insets(5, 10, 0, 0);
+		attributePanel.add(attListPane, gridBagConstraints);	
+		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 2;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.insets = new Insets(5, 10, 0, 0);
+		attributePanel.add(attributeButton, gridBagConstraints);
+		    
 	    refreshAttributeCMB();
 		
 		panel.add(attributePanel);
@@ -833,6 +856,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	public void loadCurrentCloud(CloudParameters params)
 	{
 		attributeList.setSelectedItems(params.getAttributeNames());
+		updateAttNames();
 		maxWordsTextField.setValue(params.getMaxWords());
 		clusterCutoffTextField.setValue(params.getClusterCutoff());
 		cmbStyle.setSelectedItem(params.getDisplayStyle());
@@ -893,6 +917,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		CloudParameters params = SemanticSummaryManager.getInstance().getCurCloud();
 		
 		attributeList.setSelectedIndex(0);
+		updateAttNames();
 		maxWordsTextField.setValue(params.getDefaultMaxWords());
 		clusterCutoffTextField.setValue(params.getDefaultClusterCutoff());
 		cmbStyle.setSelectedItem(params.getDefaultDisplayStyle());
@@ -1093,6 +1118,14 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	 */
 	private void updateCMBAttributes()
 	{
+		//Turn off listeners
+		ListSelectionListener[] listeners = attributeList.getListSelectionListeners();
+		for (int i = 0; i < listeners.length; i++)
+		{
+			ListSelectionListener curListener = listeners[i];
+			attributeList.removeListSelectionListener(curListener);
+		}
+		
 		//Updated GUI
 		DefaultListModel listModel;
 		listModel = ((DefaultListModel)attributeList.getModel());
@@ -1105,6 +1138,13 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		for (int i=0; i < av.size(); i++)
 		{
 			listModel.addElement(av.elementAt(i));
+		}
+		
+		//Turn listeners back on
+		for (int i = 0; i < listeners.length; i++)
+		{
+			ListSelectionListener curListener = listeners[i];
+			attributeList.addListSelectionListener(curListener);
 		}
 	}
 	
@@ -1127,6 +1167,8 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		
 		attributeList.setSelectedItems(curAttList);
 		attributeList.repaint();
+		//updateAttNames();
+		
 	}
 	
 	/**
@@ -1495,6 +1537,28 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		}
 	}
 	
+	private void updateAttNames()
+	{
+		String nameList = "";
+		if (!attributeList.isSelectionEmpty())
+		{
+			Object[] names = attributeList.getSelectedValues();
+			for (int i = 0; i < names.length; i++)
+			{
+				if (names[i] instanceof String)
+				{
+					String curName = (String)names[i];
+				
+					if (i != names.length - 1 )
+						nameList = nameList + curName + "\n";
+					else
+						nameList = nameList + curName;
+				}
+			}
+		}
+		attNames.setText(nameList);
+	}
+	
 	
 	//Getters and Setters
 	
@@ -1598,6 +1662,11 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	public JPopupMenu getAttributePopupMenu()
 	{
 		return attributeSelectionPopupMenu;
+	}
+	
+	public JTextArea getAttNames()
+	{
+		return attNames;
 	}
 	
 	
