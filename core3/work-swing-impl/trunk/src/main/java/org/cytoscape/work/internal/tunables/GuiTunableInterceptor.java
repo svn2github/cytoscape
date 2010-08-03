@@ -1,7 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +38,7 @@ import org.cytoscape.work.spring.SpringTunableInterceptor;
  */
 public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> {
 
-	private Component parent = null;
+	private JPanel parentPanel = null;
 	private Map<java.util.List<Guihandler>,JPanel> panelMap;
 	private java.util.List<Guihandler> lh;
 	private boolean newValuesSet;
@@ -62,9 +61,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	 * 
 	 * @param parent component for the <code>Guihandlers</code>'s panels
 	 */
-	public void setParent(Object o) {
-		if (o instanceof JPanel)
-			this.parent = (Component)o;
+	public void setParent(Object parent) {
+		if (parent instanceof JPanel)
+			this.parentPanel = (JPanel)parent;
 		else
 			throw new IllegalArgumentException("Not a JPanel");
 	}
@@ -91,7 +90,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	}
 	
 	
-	//Create the GUI
 	/**
 	 * Creates a GUI for the detected <code>Tunables</code>, following the graphic rules specified in <code>Tunable</code>' annotations
 	 * 
@@ -111,10 +109,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		}
 
 		if (lh.size() <= 0) {
-			if (parent != null) {
-				((JPanel)parent).removeAll();
-				((JPanel)parent).repaint();
-				//parent = null;
+			if (parentPanel != null) {
+				parentPanel.removeAll();
+				parentPanel.repaint();
 			}
 			return true;			
 		}
@@ -193,16 +190,16 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 		for (Guihandler h : lh) 
 			h.notifyDependents();
 
-		//if no parent is defined, then create a new JDialog to display the Tunables' panels
-		if (parent == null) {
+		//if no parentPanel is defined, then create a new JDialog to display the Tunables' panels
+		if (parentPanel == null) {
 			displayOptionPanel();
 			return newValuesSet;
 		}
-		else { //else add them to the "parent" JPanel
-			((JPanel)parent).removeAll();
-			((JPanel)parent).add(panelMap.get(lh));
-			parent.repaint();
-			parent = null;
+		else { //else add them to the "parentPanel" JPanel
+			parentPanel.removeAll();
+			parentPanel.add(panelMap.get(lh));
+			parentPanel.repaint();
+			parentPanel = null;
 			return true;
 		}
 	}
@@ -276,7 +273,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	 */
 	private void displayOptionPanel() {
 		Object[] buttons = {"OK", "Cancel"};
-		int n = JOptionPane.showOptionDialog(parent, panelMap.get(lh),
+		int n = JOptionPane.showOptionDialog(parentPanel, panelMap.get(lh),
 		    "Set Parameters",
 		    JOptionPane.YES_NO_CANCEL_OPTION,
 		    JOptionPane.PLAIN_MESSAGE,
@@ -300,30 +297,23 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	 * 
 	 * @return success(true) or failure(false) for the validation
 	 */
-	private boolean validateTunableInput(){
-		for(Object o : objs){
-				Object[] interfaces = o.getClass().getInterfaces();
-				for(Object inter : interfaces){
-					if(inter.equals(TunableValidator.class)){
-						try {
-							((TunableValidator)o).validate();
-
-/*							if(parent!=null){
-								((JPanel)parent).removeAll();
-								((JPanel)parent).add(panelMap.get(lh));
-								parent.repaint();
-							}
-*/
-						} catch (Exception e) {
-							JOptionPane.showMessageDialog(new JFrame(),e.toString(),"TunableValidator problem",JOptionPane.ERROR_MESSAGE);
-							e.printStackTrace();
-							if(parent==null)displayOptionPanel();
-							return false;
-						}
+	private boolean validateTunableInput() {
+		for (Object o : objs) {
+			Object[] interfaces = o.getClass().getInterfaces();
+			for (Object inter : interfaces) {
+				if(inter.equals(TunableValidator.class)) {
+					try {
+						((TunableValidator)o).validate();
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(new JFrame(), e.toString(), "TunableValidator problem", JOptionPane.ERROR_MESSAGE);
+						e.printStackTrace();
+						if(parentPanel==null)displayOptionPanel();
+						return false;
 					}
 				}
 			}
-		parent = null;		
+		}
+		parentPanel = null;		
 		newValuesSet = true;
 		return true;
 	}
