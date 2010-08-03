@@ -37,6 +37,16 @@ import javax.swing.JOptionPane;
 
 import java.awt.Dimension;
 
+enum LayoutTypes {
+    NODE("Nodes Only"),
+    LABEL("Labels Only"),
+    BOTH("Both Nodes and Labels");
+    
+    private String name;
+    private LayoutTypes(String str) { name=str; }
+    public String toString() { return name; }
+}
+
 
 /**
  * An abstract class that handles the partitioning of graphs so that
@@ -50,20 +60,24 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
     protected CyLogger logger = null;
 
     /**
+     * Which kinf of layout are we going to perform
+     */
+    protected LayoutTypes layoutType = LayoutTypes.NODE;
+
+    /**
      * Whether Labels should be repositioned in their default positions 
      */
     protected boolean resetPosition = false;
     
     /**
-     * Whether network nodes will be moved or not 
-     */
-    protected boolean moveNodes = false;
-
-    /**
      * Coefficient to determine label edge weights
      */
     protected double weightCoefficient = 10.0;
 
+
+    static LayoutTypes[] layoutChoices = {LayoutTypes.NODE,
+					  LayoutTypes.LABEL,
+					  LayoutTypes.BOTH};
 
 
     // Information for taskMonitor
@@ -289,13 +303,20 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
      */
     protected void layoutSinglePartition(LayoutPartition partition){
 
-	if(supportsLabelLayout()) {
+    if(supportsLabelLayout() && layoutType != LayoutTypes.NODE ) {
 
 	    Dimension initialLocation = null;
 
 	    if (canceled)
 		return;
-	
+
+	    Boolean moveNodes;
+
+	    if (layoutType == LayoutTypes.BOTH) 
+		moveNodes = true;
+	    else
+		moveNodes = false;
+
 	    // Create new Label partition
 	    LayoutLabelPartition newPartition = new LayoutLabelPartition(partition,
 									 weightCoefficient,
@@ -351,16 +372,17 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
     public void getLabelTunables(LayoutProperties layoutProperties) {
 
 	layoutProperties.add(new Tunable("labels_settings", 
-					 "Label specific settings",
+					 "General Layout Settings",
 					 Tunable.GROUP, new Integer(3))); 
+
+	layoutProperties.add(new Tunable("layout_type", 
+					 "Which elements to layout",
+					 Tunable.LIST, new Integer(0),
+					 (Object) layoutChoices, (Object) null, 0));
 
 	layoutProperties.add(new Tunable("resetPosition", 
 					 "Reset label positions",
 					 Tunable.BOOLEAN, new Boolean(resetPosition)));
-
-	layoutProperties.add(new Tunable("moveNodes", 
-					 "Allow nodes to move",
-					 Tunable.BOOLEAN, new Boolean(moveNodes)));
 
 	layoutProperties.add(new Tunable("weightCoefficient", 
 					 "weightCoefficient",
@@ -375,13 +397,16 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
      */
     public void updateSettings(LayoutProperties layoutProperties, boolean force) {
 
-	Tunable t = layoutProperties.get("resetPosition");
+	Tunable t = layoutProperties.get("layout_type");
+	if ((t != null) && (t.valueChanged() || force)) {
+	    layoutType = layoutChoices[((Integer) t.getValue()).intValue()];
+// 	    if (t.valueChanged())
+// 		layoutProperties.setProperty(t.getName(), t.getValue().toString());
+	}
+
+	t = layoutProperties.get("resetPosition");
 	if ((t != null) && (t.valueChanged() || force))
 	    resetPosition = ((Boolean) t.getValue()).booleanValue();
-
-	t = layoutProperties.get("moveNodes");
-	if ((t != null) && (t.valueChanged() || force))
-	    moveNodes = ((Boolean) t.getValue()).booleanValue();
 
 	t = layoutProperties.get("weightCoefficient");
 	if ((t != null) && (t.valueChanged() || force))
