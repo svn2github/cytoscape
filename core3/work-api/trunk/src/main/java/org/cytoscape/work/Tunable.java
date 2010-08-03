@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * An annotation type that can be applied to a <i>field</i> or a <i>method</i> in order to allow <code>TunableInterceptor</code> to catch it,
  * and so to use its members to create a corresponding interface for a user.
  * 
- * This interface describes the different members that can be used in the <code>@Tunable(...)</code> to control the instatiation of user interface to
+ * This interface describes the different members that can be used in the <code>@Tunable(...)</code> to control the instantiation of user interface to
  * present to a user.
  * 
  * Here is an example of how to use a <code>Tunable</code> annotation:
@@ -39,37 +39,51 @@ public @interface Tunable {
 	/**
 	 * Parameters to interact directly with the way the <code>Tunable</code> will be represented in its container, e.g. a JPanel in a GUI.
 	 * 
-	 * Here are the informations for each parameter :
+	 * Here are the possible parameters:
 	 * <p><pre>
 	 * <ul>
-	 * 	<li><b>slider</b> : if this parameter is specified in <code>flag{}</code> of the <code>Bounded</code> objects, the value will be choosen on the <code>JSlider</code>(set with the proper bounds of the <i>BoundedObject</i>)</li>
-	 * 	<li><b>horizontal / vertical</b> : this parameter is used in <code>alignment{}</code> to display horizontally or vertically, the graphic representations of <code>Tunables</code> of a same group (if nothing is specified for the group, <i>Param.vertical</i> will be set by default)</li>
-	 * 	<li><b>uncollapsed / collapsed</b> : if one of these parameters is specified, it allows the <code>JPanel</code> that countains the <code>Tunable</code> Object to be <i>collapsable</i>, and the parameter defines the initial state of the <code>JPanel</code></li>
-	 * 	<li><b>network / session / attributes</b> : used to add some filters to the <code>Tunable</code> <i>File</i> in order to be able to select the right type of file(<code>*.sif,*.attr,*.cys</code>) in the <code>JFileChooser</code></li>
-	 * 	<li><b>hidden / displayed</b> : to display or not the name of the subgroups a <code>Tunable</code> is belonging to, in the border of the <code>JPanel</code> representing it in the GUI</li>
+	 *   <li>
+	 *     <b>slider</b>: if this parameter is specified in <code>flag{}</code> of the <code>Bounded</code> objects, the value will be choosen on the
+	 *     <code>JSlider</code>(set with the proper bounds of the <i>BoundedObject</i>)
+	 *   </li>
+	 *   <li>
+	 *     <b>horizontal / vertical</b>: this parameter is used in <code>alignment{}</code> to display horizontally or vertically, the graphic
+	 *     representations of <code>Tunables</code> of a same group (if nothing is specified for the group, <i>Param.vertical</i> will be set by default)
+	 *   </li>
+	 *   <li>
+	 *     <b>uncollapsed / collapsed</b>: if one of these parameters is specified, it allows the <code>JPanel</code> that countains the
+	 *     <code>Tunable</code> Object to be <i>collapsable</i>, and the parameter defines the initial state of the <code>JPanel</code>
+	 *   </li>
+	 *   <li>
+	 *     <b>network / session / attributes</b>: used to add some filters to the <code>Tunable</code> <i>File</i> in order to be able to select
+	 *     the right type of file(<code>*.sif,*.attr,*.cys</code>) in the <code>JFileChooser</code>
+	 *   </li>
+	 *   <li>
+	 *     <b>hidden / displayed</b>: to display or not the name of the subgroups a <code>Tunable</code> is belonging to, in the border of the
+	 *     <code>JPanel</code> representing it in the GUI
+	 *   </li>
 	 * </ul>
 	 * </pre></p>
 	 * 
 	 */
-	Param[] flag() default {};
+	Param[] flags() default {};
 
 	
 	/**
 	 * Used to define all the groups in which the Tunable takes part (by default, its doesn't belong to any group).
 	 * 
 	 * <p><pre><code>
-	 * <b>example</b> :
+	 * <b>example</b>:
 	 * 	<code>@Tunable(description="write your last name", group={"Company","Department","office","identity"})</code>
 	 * 	public String lastName = "Smith";
 	 * </code></pre></p>
 	 * 
 	 * This String <code>Tunable</code> will take part of these 4 groups.
-	 * <b>warning</b> : Note that they are set in an order of subgroups of a main one.
+	 * <b>warning</b>: Note that they are set in an order of subgroups of a main one.
 	 * 
 	 * <p><pre>
-	 * <b>example</b> :
+	 * <b>example</b>:
 	 * 
-	 * <code>
 	 * 	<code>@Tunable(description="write your first name", group={"Company","Department","office","identity"})</code>
 	 * 	public String firstName = "John";
 	 * 
@@ -81,7 +95,7 @@ public @interface Tunable {
 	 * But, the <code>Tunable</code> String officeName will only take part of the upperGroup <i>office</i>, and so won't be set with these other 2 fields.
 	 * </pre></p>
 	 */
-	String[] group() default {};
+	String[] groups() default {};
 
 	
 	/**
