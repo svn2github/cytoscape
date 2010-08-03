@@ -122,10 +122,9 @@
           <artifactId>maven-assembly-plugin</artifactId>
           <version>2.2-beta-5</version>
           <configuration>
-            <descriptors>
-              <descriptor>src/main/assembly/application.xml</descriptor>
-              <descriptor>src/main/assembly/distribution.xml</descriptor>
-            </descriptors>
+            <descriptorRefs>
+              <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
             <archive>
               <manifest>
                 <mainClass>cytoscape.CyMain</mainClass>
@@ -472,112 +471,6 @@
             <artifactId>jaxb-impl</artifactId>
             <version>1.0</version>
         </dependency>
-
-
-  	<!-- coreplugins -->
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>advanced-network-merge</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>automatic-layout</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>biomart-client</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>biopax</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>editor</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>equation-functions</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>manual-layout</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>ncbi-client</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>psi-mi</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>psi-mi</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>rfilters</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>sbml-reader</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>table-import</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>attribute-browser</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>cpath</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>cpath2</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>linkout</artifactId>
-      <version>2.8.0-SNAPSHOT</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-
   </dependencies>
 
 </project>
