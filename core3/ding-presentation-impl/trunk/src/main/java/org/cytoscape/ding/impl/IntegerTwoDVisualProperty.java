@@ -43,11 +43,11 @@ public class IntegerTwoDVisualProperty extends AbstractVisualProperty<Integer> {
 		super(ot,def,id,name);
 	}
 	
-	public String getSerializableString(final Integer value) {
+	public String toString(final Integer value) {
 		return value.toString();
 	}
 
-	public Integer parseSerializableString(final String text) {
+	public Integer parse(final String text) {
 		return Integer.valueOf(text);
 	}
 }

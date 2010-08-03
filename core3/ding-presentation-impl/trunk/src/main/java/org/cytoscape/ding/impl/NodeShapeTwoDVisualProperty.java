@@ -44,11 +44,11 @@ public class NodeShapeTwoDVisualProperty extends AbstractVisualProperty<NodeShap
 		super(ot,def,id,name);
 	}
 	
-	public String getSerializableString(final NodeShape value) {
+	public String toString(final NodeShape value) {
 		return value.toString();
 	}
 
-	public NodeShape parseSerializableString(final String text) {
+	public NodeShape parse(final String text) {
 		return NodeShape.valueOf(text);
 	}
 }

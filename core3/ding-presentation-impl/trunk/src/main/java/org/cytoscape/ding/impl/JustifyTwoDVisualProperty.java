@@ -45,11 +45,11 @@ public class JustifyTwoDVisualProperty extends AbstractVisualProperty<Justify> {
 		super(ot,def,id,name);
 	}
 	
-	public String getSerializableString(final Justify value) {
+	public String toString(final Justify value) {
 		return value.toString();
 	}
 
-	public Justify parseSerializableString(final String text) {
+	public Justify parse(final String text) {
 		return Justify.valueOf(text);
 	}
 }

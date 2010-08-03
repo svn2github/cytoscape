@@ -44,11 +44,11 @@ public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
 		super(ot,def,id,name);
 	}
 	
-	public String getSerializableString(final Font value) {
+	public String toString(final Font value) {
 		return value.toString();
 	}
 
-	public Font parseSerializableString(final String text) {
+	public Font parse(final String text) {
 		// TODO
 		return null;
 	}
