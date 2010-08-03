@@ -34,7 +34,6 @@ public abstract class AbstractHandler implements Handler {
 	 * This method will be annotated as a <code>Tunable</code>
 	 */
 	protected Method smethod;
-	protected Method m;
 	
 	/**
 	 * Object that is contained in the Field <code>f</code>
@@ -72,20 +71,6 @@ public abstract class AbstractHandler implements Handler {
 		this.o = o;
 		this.t = t;
 	}
-
-	
-	/**
-	 * Handler for Methods values
-	 * @param m method that has been annotated
-	 * @param o object contained in <code>m</code>
-	 * @param t tunable associated to <code>m</code> 
-	 */
-	public AbstractHandler(Method m, Object o, Tunable t) {
-		this.m = m;
-		this.o = o;
-		this.t = t;
-	}
-
 	
 	/**
 	 * Handler for 2 Methods : <code>gmethod</code> and <code>smethod</code>
@@ -110,15 +95,6 @@ public abstract class AbstractHandler implements Handler {
 	 */
 	public Field getField() {
 		return f;
-	}
-
-	
-	/**
-	 * To get <code>Method m</code>
-	 * @return method component from the handler
-	 */
-	public Method getMethod() {
-		return m;
 	}
 
 	/**

@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 	 * 
 	 * <code>Handler</code> will also be used to set the values that are in the <code>Handler</code> to the Properties object with <code>PropHandler</code>
 	 * 
-	 * Access to different parts of the <code>Handler</code> is allowed by using the <code>getField()</code>, <code>getMethod()</code>,
+	 * Access to different parts of the <code>Handler</code> is allowed by using the <code>getField()</code>,
 	 * <code>getObject()</code>, and <code>getTunable</code> methods.
 	 * </pre></p>
 	 * @author pasteur
@@ -30,12 +30,6 @@ public interface Handler {
 	 * @return the field or null if no field has been associated with this handler
 	 */
 	Field getField();
-	
-	/**
-	 * To get the handler's Method
-	 * @return Method
-	 */
-	Method getMethod();
 	
 	/**
 	 * To get the Handler's Object
