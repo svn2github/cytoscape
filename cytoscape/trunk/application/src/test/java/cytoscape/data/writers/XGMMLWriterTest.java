@@ -61,52 +61,52 @@ import java.net.URISyntaxException;
 public class XGMMLWriterTest extends TestCase {
     public void testXGMMLWriterRoundTrip1() throws IOException, URISyntaxException {
         // No characters that are affecting by full encoding, so only one test.
-        compareRoundTrip("testData/XGMMLWriterTestFile01a.xgmml", "testData/XGMMLWriterTestFile01b.xgmml");
+        compareRoundTrip("src/test/resources/testData/XGMMLWriterTestFile01a.xgmml", "src/test/resources/testData/XGMMLWriterTestFile01b.xgmml");
     }
 
     public void testXGMMLWriterRoundTrip2aFullEncodingDefault() throws IOException, URISyntaxException {
         System.clearProperty(XGMMLWriter.ENCODE_PROPERTY);
-        compareRoundTrip("testData/XGMMLWriterTestFile02a.xgmml", "testData/XGMMLWriterTestFile02a.xgmml");
+        compareRoundTrip("src/test/resources/testData/XGMMLWriterTestFile02a.xgmml", "src/test/resources/testData/XGMMLWriterTestFile02a.xgmml");
     }
 
     public void testXGMMLWriterRoundTrip2aFullEncodingOn() throws IOException, URISyntaxException {
         System.setProperty(XGMMLWriter.ENCODE_PROPERTY, "true");
-        compareRoundTrip("testData/XGMMLWriterTestFile02a.xgmml", "testData/XGMMLWriterTestFile02a.xgmml");
+        compareRoundTrip("src/test/resources/testData/XGMMLWriterTestFile02a.xgmml", "src/test/resources/testData/XGMMLWriterTestFile02a.xgmml");
     }
 
     public void testXGMMLWriterRoundTrip2aFullEncodingOff() throws IOException, URISyntaxException {
         System.setProperty(XGMMLWriter.ENCODE_PROPERTY, "false");
-        compareRoundTrip("testData/XGMMLWriterTestFile02a.xgmml", "testData/XGMMLWriterTestFile02a.xgmml");
+        compareRoundTrip("src/test/resources/testData/XGMMLWriterTestFile02a.xgmml", "src/test/resources/testData/XGMMLWriterTestFile02a.xgmml");
     }
 
     public void testXGMMLWriterRoundTrip2bFullEncodingDefault() throws IOException, URISyntaxException {
         System.clearProperty(XGMMLWriter.ENCODE_PROPERTY);
-        compareRoundTrip("testData/XGMMLWriterTestFile02b.xgmml", "testData/XGMMLWriterTestFile02a.xgmml");
+        compareRoundTrip("src/test/resources/testData/XGMMLWriterTestFile02b.xgmml", "src/test/resources/testData/XGMMLWriterTestFile02a.xgmml");
     }
 
     public void testXGMMLWriterRoundTrip2bFullEncodingOn() throws IOException, URISyntaxException {
         System.setProperty(XGMMLWriter.ENCODE_PROPERTY, "true");
-        compareRoundTrip("testData/XGMMLWriterTestFile02b.xgmml", "testData/XGMMLWriterTestFile02a.xgmml");
+        compareRoundTrip("src/test/resources/testData/XGMMLWriterTestFile02b.xgmml", "src/test/resources/testData/XGMMLWriterTestFile02a.xgmml");
     }
 
     public void testXGMMLWriterRoundTrip2bFullEncodingOff() throws IOException, URISyntaxException {
         System.setProperty(XGMMLWriter.ENCODE_PROPERTY, "false");
-        compareRoundTrip("testData/XGMMLWriterTestFile02b.xgmml", "testData/XGMMLWriterTestFile02a.xgmml");
+        compareRoundTrip("src/test/resources/testData/XGMMLWriterTestFile02b.xgmml", "src/test/resources/testData/XGMMLWriterTestFile02a.xgmml");
     }
 
     public void testXGMMLWriterRoundTrip2cFullEncodingDefault() throws IOException, URISyntaxException {
         System.clearProperty(XGMMLWriter.ENCODE_PROPERTY);
-        compareRoundTrip("testData/XGMMLWriterTestFile02c.xgmml", "testData/XGMMLWriterTestFile02d.xgmml");
+        compareRoundTrip("src/test/resources/testData/XGMMLWriterTestFile02c.xgmml", "src/test/resources/testData/XGMMLWriterTestFile02d.xgmml");
     }
 
     public void testXGMMLWriterRoundTrip2cFullEncodingOn() throws IOException, URISyntaxException {
         System.setProperty(XGMMLWriter.ENCODE_PROPERTY, "true");
-        compareRoundTrip("testData/XGMMLWriterTestFile02c.xgmml", "testData/XGMMLWriterTestFile02d.xgmml");
+        compareRoundTrip("src/test/resources/testData/XGMMLWriterTestFile02c.xgmml", "src/test/resources/testData/XGMMLWriterTestFile02d.xgmml");
     }
 
     public void testXGMMLWriterRoundTrip2cFullEncodingOff() throws IOException, URISyntaxException {
         System.setProperty(XGMMLWriter.ENCODE_PROPERTY, "false");
-        compareRoundTrip("testData/XGMMLWriterTestFile02c.xgmml", "testData/XGMMLWriterTestFile02c.xgmml");
+        compareRoundTrip("src/test/resources/testData/XGMMLWriterTestFile02c.xgmml", "src/test/resources/testData/XGMMLWriterTestFile02c.xgmml");
     }
 
     public void testXGMMLWriterBug0001938() throws IOException, URISyntaxException {

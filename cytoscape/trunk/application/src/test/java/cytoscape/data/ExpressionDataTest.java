@@ -66,7 +66,7 @@ public class ExpressionDataTest extends TestCase {
 	/**
 	 * Test Data Directory.
 	 */
-	private static String testDataDir = "testData";
+	private static String testDataDir = "src/test/resources/testData";
 
 	/**
 	 * Test File Names.

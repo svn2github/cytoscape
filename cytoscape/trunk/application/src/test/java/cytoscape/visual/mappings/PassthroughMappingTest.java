@@ -19,7 +19,7 @@ public class PassthroughMappingTest extends TestCase {
 		
 		nodeAttr = Cytoscape.getNodeAttributes();
 		edgeAttr = Cytoscape.getEdgeAttributes();
-		InteractionsReader reader = new InteractionsReader("testData/galFiltered.sif");
+		InteractionsReader reader = new InteractionsReader("src/test/resources/testData/galFiltered.sif");
 		reader.read();
 	}
 

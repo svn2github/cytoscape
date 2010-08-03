@@ -60,7 +60,7 @@ import java.util.Set;
  */
 public class OBOFlatFileReaderTest extends TestCase {
 	private static final String REMOTE_OBO = "http://www.geneontology.org/ontology/gene_ontology.obo";
-	private static final String LOCAL_OBO = "testData/annotation/goslim_generic.obo";
+	private static final String LOCAL_OBO = "src/test/resources/testData/annotation/goslim_generic.obo";
 	private static final int DAG_SIZE = 10738;
 	private InputStream is;
 

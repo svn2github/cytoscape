@@ -86,7 +86,7 @@ public class TextFileReaderTest extends TestCase {
 	public void testSimple() throws Exception {
 		AllTests.standardOut("testCtor");
 
-		TextFileReader reader = new TextFileReader("testData/randomTextFile.txt");
+		TextFileReader reader = new TextFileReader("src/test/resources/testData/randomTextFile.txt");
 
 		/* if (AllTests.runAllTests()) {
 		     reader = new TextFileReader

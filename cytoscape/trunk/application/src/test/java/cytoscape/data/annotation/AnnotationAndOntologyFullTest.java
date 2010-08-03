@@ -106,7 +106,7 @@ public class AnnotationAndOntologyFullTest extends TestCase {
 	public void testHaloKegg() throws Exception {
 		AllTests.standardOut("testHaloKegg");
 
-		String filename = "testData/haloMetabolicPathway.xml";
+		String filename = "src/test/resources/testData/haloMetabolicPathway.xml";
 
 		//if (AllTests.runAllTests()) {
 		//    filename = "src/cytoscape/data/kegg/haloMetabolicPathway.xml";

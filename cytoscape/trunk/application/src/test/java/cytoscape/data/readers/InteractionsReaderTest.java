@@ -63,7 +63,6 @@ import java.util.Vector;
  *
  */
 public class InteractionsReaderTest extends TestCase {
-	private boolean runAllTests = false;
 	private BioDataServer nullServer = null;
 	private String species = "unknown";
 
@@ -74,7 +73,6 @@ public class InteractionsReaderTest extends TestCase {
 	 */
 	public InteractionsReaderTest(String name) {
 		super(name);
-		runAllTests = AllTests.runAllTests();
 	}
 
 	/**
@@ -103,7 +101,7 @@ public class InteractionsReaderTest extends TestCase {
 	 {
 		AllTests.standardOut("testFromTypicalFile");
 
-		InteractionsReader reader = this.getReader("testData/sample.sif");
+		InteractionsReader reader = this.getReader("sample.sif");
 		reader.read();
 		assertTrue(reader.getCount() == 25);
 
@@ -128,7 +126,7 @@ public class InteractionsReaderTest extends TestCase {
 	 {
 		AllTests.standardOut("testReadFileWithNoInteractions");
 
-		InteractionsReader reader = this.getReader("testData/degenerate.sif");
+		InteractionsReader reader = this.getReader("degenerate.sif");
 		reader.read();
 		assertTrue(reader.getCount() == 9);
 
@@ -149,7 +147,7 @@ public class InteractionsReaderTest extends TestCase {
 	public void testGetGraph() throws Exception {
 		AllTests.standardOut("testGetGraph");
 
-		InteractionsReader reader = this.getReader("testData/sample.sif");
+		InteractionsReader reader = this.getReader("sample.sif");
 		reader.read();
 		assertTrue(reader.getCount() == 25);
 
@@ -174,7 +172,7 @@ public class InteractionsReaderTest extends TestCase {
 	 {
 		AllTests.standardOut("testGetGraphAndEdgeAttributes");
 
-		InteractionsReader reader = this.getReader("testData/sample.sif");
+		InteractionsReader reader = this.getReader("sample.sif");
 		reader.read();
 		assertTrue(reader.getCount() == 25);
 
@@ -207,7 +205,7 @@ public class InteractionsReaderTest extends TestCase {
 	public void testReadMultiWordProteinsFile() throws Exception {
 		AllTests.standardOut("testReadMultiWordProteinsFile");
 
-		String filename = "testData/multiWordProteins.sif";
+		String filename = "multiWordProteins.sif";
 		InteractionsReader reader = this.getReader(filename);
 		reader.read();
 		assertTrue(reader.getCount() == 29);
@@ -239,7 +237,7 @@ public class InteractionsReaderTest extends TestCase {
 	public void testReadMultiWordProteinsFileWithErrantSpaces() throws Exception {
 		AllTests.standardOut("testReadMultiWordProteinsFileWithErrantSpaces");
 
-		String filename = "testData/multiWordProteinsFileTrailingSpaces.sif";
+		String filename = "multiWordProteinsFileTrailingSpaces.sif";
 		InteractionsReader reader = this.getReader(filename);
 		reader.read();
 		assertTrue(reader.getCount() == 29);
@@ -264,11 +262,8 @@ public class InteractionsReaderTest extends TestCase {
 	} // testReadMultiWordProteinsFileWithErrantSpaces
 
 	private InteractionsReader getReader(String file) {
-		if (runAllTests) {
-			file = new String("testData/" + file);
-		}
 
-		InteractionsReader reader = new InteractionsReader(file);
+		InteractionsReader reader = new InteractionsReader( "src/test/resources/testData/" + file);
 
 		return reader;
 	}

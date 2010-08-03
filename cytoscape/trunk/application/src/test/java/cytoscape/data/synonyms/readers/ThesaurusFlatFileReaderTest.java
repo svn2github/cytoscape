@@ -91,7 +91,7 @@ public class ThesaurusFlatFileReaderTest extends TestCase {
 	public void testReadSmallYeastThesaurus() throws Exception {
 		AllTests.standardOut("testReadSmallYeastThesaurus");
 
-		String filename = "testData/yeastSmall.txt";
+		String filename = "src/test/resources/testData/yeastSmall.txt";
 
 		//  if (AllTests.runAllTests()) {
 		//     filename =
