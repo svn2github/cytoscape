@@ -82,7 +82,7 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	/**
 	 * Whether or not to initialize by randomizing all points
 	 */
-	@Tunable(description="Randomize graph before layout", group="Standard settings")
+	@Tunable(description="Randomize graph before layout", groups="Standard settings")
 	public boolean randomize = true;
 
 	/**

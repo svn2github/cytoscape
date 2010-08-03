@@ -60,20 +60,20 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * Sets the number of iterations for each update
 	 */
-	@Tunable(description="Number of iterations before updating display (0: update only at end)", group="Algorithm settings")
+	@Tunable(description="Number of iterations before updating display (0: update only at end)", groups="Algorithm settings")
 	public static int update_iterations = 0; // 0 means we only update at the end
 
 	/**
 	 * The multipliers and computed result for the
 	 * attraction and repulsion values.
 	 */
-	@Tunable(description="Divisor to calculate the attraction force", group="Algorithm settings")
+	@Tunable(description="Divisor to calculate the attraction force", groups="Algorithm settings")
 	public double attraction_multiplier = .03;
 	private double attraction_constant;
-	@Tunable(description="Multiplier to calculate the repulsion force", group="Algorithm settings")
+	@Tunable(description="Multiplier to calculate the repulsion force", groups="Algorithm settings")
 	public double repulsion_multiplier = 0.04;
 	private double repulsion_constant;
-	@Tunable(description="Multiplier to calculate the gravity force", group="Algorithm settings")
+	@Tunable(description="Multiplier to calculate the gravity force", groups="Algorithm settings")
 	public double gravity_multiplier = 1;
 	private double gravity_constant;
 
@@ -82,14 +82,14 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * gets applied when two vertices are very close
 	 * to each other.
 	 */
-	@Tunable(description="Constant force applied to avoid conflicts", group="Algorithm settings")
+	@Tunable(description="Constant force applied to avoid conflicts", groups="Algorithm settings")
 	public double conflict_avoidance = 20;
 
 	/**
 	 * max_distance_factor is the portion of the graph
 	 * beyond which repulsive forces will not operate.
 	 */
-	@Tunable(description="Percent of graph used for node repulsion calculations", group="Algorithm settings")
+	@Tunable(description="Percent of graph used for node repulsion calculations", groups="Algorithm settings")
 	public double max_distance_factor = 20;
 
 	/**
@@ -111,20 +111,20 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * The spread factor -- used to give extra space to expand
 	 */
-	@Tunable(description="Amount of extra room for layout", group="Algorithm settings")
+	@Tunable(description="Amount of extra room for layout", groups="Algorithm settings")
 	public double spread_factor = 2;
 
 	/**
 	 * The initial temperature factor.  This will get damped
 	 * out through the iterations
 	 */
-	@Tunable(description="Initial temperature", group="Algorithm settings")
+	@Tunable(description="Initial temperature", groups="Algorithm settings")
 	public double temperature = 80;
 
 	/**
 	 * The number of iterations to run.
 	 */
-	@Tunable(description="Number of iterations", group="Algorithm settings")
+	@Tunable(description="Number of iterations", groups="Algorithm settings")
 	public int nIterations = 500;
 
 	/**

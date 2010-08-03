@@ -75,24 +75,24 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * The total number of layout passes
 	 */
-	@Tunable(description="Number of layout passes", group="Algorithm settings")
+	@Tunable(description="Number of layout passes", groups="Algorithm settings")
 	public int m_numLayoutPasses = 10;
 
 	/**
 	 * The average number of iterations per Node
 	 */
-	@Tunable(description="Average number of iteratations for each node", group="Algorithm settings")
+	@Tunable(description="Average number of iteratations for each node", groups="Algorithm settings")
 	public double m_averageIterationsPerNode = 40;
-	@Tunable(description="Spring strength", group="Algorithm settings")
+	@Tunable(description="Spring strength", groups="Algorithm settings")
 	public double m_nodeDistanceStrengthConstant=15.0;
-	@Tunable(description="Spring rest length", group="Algorithm settings")
+	@Tunable(description="Spring rest length", groups="Algorithm settings")
 	public double m_nodeDistanceRestLengthConstant=45.0;
 	private double[] m_nodeDistanceSpringScalars;
-	@Tunable(description="Strength of a 'disconnected' spring", group="Algorithm settings")
+	@Tunable(description="Strength of a 'disconnected' spring", groups="Algorithm settings")
 	public double m_disconnectedNodeDistanceSpringStrength=0.05;
-	@Tunable(description="Rest length of a 'disconnected' spring", group="Algorithm settings")
+	@Tunable(description="Rest length of a 'disconnected' spring", groups="Algorithm settings")
 	public double m_disconnectedNodeDistanceSpringRestLength=2000.0;
-	@Tunable(description="Strength to apply to avoid collisions", group="Algorithm settings")
+	@Tunable(description="Strength to apply to avoid collisions", groups="Algorithm settings")
 	public double m_anticollisionSpringStrength;
 	private double[] m_anticollisionSpringScalars;
 
@@ -105,7 +105,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * Current layout pass
 	 */
-	@Tunable(description="Number of layout passes", group="Algorithm settings")
+	@Tunable(description="Number of layout passes", groups="Algorithm settings")
 	public int m_layoutPass = 2;
 
 	/**
