@@ -9,14 +9,17 @@
     <fileSet>
 	  <directory>${basedir}/src/main/bin</directory>
 	  <outputDirectory>/</outputDirectory>
+	  <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
 	  <directory>${basedir}/src/main/licenses</directory>
 	  <outputDirectory>licenses</outputDirectory>
+	  <fileMode>0644</fileMode>
     </fileSet>
     <fileSet>
 	  <directory>${basedir}/src/main/sampleData</directory>
 	  <outputDirectory>sampleData</outputDirectory>
+	  <fileMode>0644</fileMode>
     </fileSet>
   </fileSets>
   <dependencySets>
