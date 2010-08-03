@@ -200,7 +200,7 @@ public class QuickFindPanel extends JPanel {
 	 * @return JButton Object.
 	 */
 	private JButton createConfigButton() {
-		URL configIconUrl = QuickFindPlugIn.class.getResource("resources/config.png");
+		URL configIconUrl = QuickFindPlugIn.class.getResource("/resources/config.png");
 		ImageIcon configIcon = new ImageIcon(configIconUrl, "Configure search options");
 		JButton button = new JButton(configIcon);
 		button.setToolTipText("Configure search options");
