@@ -26,20 +26,20 @@ import java.lang.reflect.Method;
 public interface Handler {
 	
 	/**
-	 * To get the Handler's field
+	 * 
 	 * @return the field or null if no field has been associated with this handler
 	 */
 	Field getField();
 	
 	/**
-	 * To get the Handler's Object
+	 * To get the Handler's object.  In order to actually set a field, both an instance of Field as well as an object instance are required.
 	 * @return object
 	 */
 	Object getObject();
 	
 	/**
 	 * To get the Handler's Tunable
-	 * @return Tunable
+	 * @return the tunable managed by this handler
 	 */
 	Tunable getTunable();
 	
