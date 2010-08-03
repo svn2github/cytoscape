@@ -41,29 +41,37 @@ import java.util.Set;
  * Should be implemented as a service. 'Renderer' is simply anything that
  * provides VisualProperties. With a 'VisualProperties as annotations' this
  * won't be needed.
+ * 
+ * @since Cytoscape 3.0
+ * 
  */
 public interface VisualLexicon {
+	
 	/**
 	 * Returns the Set of VisualPropertys supported by this Renderer.
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return Set of all visual properties
+	 * 
 	 */
 	public Set<VisualProperty<?>> getAllVisualProperties();
 	
+	
 	/**
-	 * DOCUMENT ME!
+	 * Get collection of visual properties for a given object type (node/edge/network).
 	 * 
 	 * @param objectType
 	 *            GraphObject type. i.e., NODE/EDGE/NETWORK.
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return Collection of visual properties for the type
 	 */
-	public Collection<VisualProperty<?>> getVisualProperties(String objectType);
+	public Collection<VisualProperty<?>> getVisualProperties(final String objectType);
+	
 	
 	/**
-	 * Used to add new Visual Property.
+	 * Register new visual property to the lexicon.
 	 * 
 	 * @param prop
 	 */
-	public void addVisualProperty(VisualProperty<?> prop);
+	public void addVisualProperty(final VisualProperty<?> prop);
+	
 }

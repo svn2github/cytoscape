@@ -39,7 +39,8 @@ import java.util.Set;
 
 
 /**
- *
+ * TODO: remove this
+ * 
  */
 public abstract class DependentVisualPropertyCallback {
 	/** Called when mapping results change.

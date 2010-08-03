@@ -38,12 +38,15 @@ import org.cytoscape.model.CyNetwork;
 
 
 /**
- *
+ * 
  */
 public interface CyNetworkViewFactory {
-	/** Create a NetworkView.
+	
+	/** 
+	 * Create a NetworkView.
+	 * 
 	 * @param network for which the CyNetworkView is to be created
 	 * @return the CyNetworkView
 	 */
-	CyNetworkView getNetworkViewFor(CyNetwork network);
+	public CyNetworkView getNetworkViewFor(CyNetwork network);
 }

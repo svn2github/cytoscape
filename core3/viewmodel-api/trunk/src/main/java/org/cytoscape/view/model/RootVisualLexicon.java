@@ -45,7 +45,7 @@ public interface RootVisualLexicon extends VisualLexicon {
 	 * @return VisualProperties, filtered with the DependentVisualProperty
 	 *         callbacks
 	 */
-	Set<VisualProperty<?>> getVisualProperties(
+	public Set<VisualProperty<?>> getVisualProperties(
 			Collection<? extends View<?>> views, String objectType);
 
 	/**
@@ -58,7 +58,7 @@ public interface RootVisualLexicon extends VisualLexicon {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	Set<VisualProperty<?>> getVisualProperties(CyNetworkView networkview,
+	public Set<VisualProperty<?>> getVisualProperties(CyNetworkView networkview,
 			String objectType);
 
 
@@ -71,4 +71,5 @@ public interface RootVisualLexicon extends VisualLexicon {
 	 * @return DOCUMENT ME!
 	 */
 	public VisualProperty<?> getVisualProperty(String idString);
+	
 }

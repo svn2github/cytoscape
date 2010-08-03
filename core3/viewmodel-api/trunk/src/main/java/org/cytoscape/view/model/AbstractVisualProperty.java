@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,41 +31,77 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.model;
 
 /**
- * An abstract implementation of VisualProperty that omits the methods
- * dealing with serializing data.  
+ * An abstract implementation of VisualProperty that omits the methods dealing
+ * with serializing data.
+ * 
+ * @since Cytoscape 3.0
+ * 
  */
 public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 
-	final protected String ot;
-	final protected T def;
+	// Object type (node/edge/network)
+	protected final String objectType;
+
+	// Default value for this VP.
+	protected final T defaultValue;
+
+	// Identifier.
 	final protected String id;
+
+	// Human-readable name of VP.
 	final protected String name;
 
-	public AbstractVisualProperty(final String ot, final T def, final String id, final String name) {
-		this.ot = ot;
-		this.def = def;
+	
+	/**
+	 * Constructor with all required immutable field values.
+	 * 
+	 * @param objectType
+	 * @param defaultValue
+	 * @param id
+	 * @param name
+	 */
+	public AbstractVisualProperty(final String objectType,
+			final T defaultValue, final String id, final String name) {
+		this.objectType = objectType;
+		this.defaultValue = defaultValue;
 		this.id = id;
 		this.name = name;
 	}
 
-	public String getObjectType() { return  ot; }
-
-	@SuppressWarnings("unchecked")
-	public Class<T> getType() { 
-		if(def != null)
-			return (Class<T>) def.getClass();
-		else return null;
+	public String getObjectType() {
+		return objectType;
 	}
 
-	public T getDefault() { return def; }
+	
+	@SuppressWarnings("unchecked")
+	public Class<T> getType() {
+		if (defaultValue != null)
+			return (Class<T>) defaultValue.getClass();
+		else
+			return null;
+	}
 
-	public String getIdString() { return id; }
+	
+	public T getDefault() {
+		return defaultValue;
+	}
 
-	public String getDisplayName() { return name; }
+	
+	public String getIdString() {
+		return id;
+	}
 
-	public DependentVisualPropertyCallback dependentVisualPropertyCallback() { return null; }
+	
+	public String getDisplayName() {
+		return name;
+	}
+
+	// TODO: REMOVE THIS!
+	public DependentVisualPropertyCallback dependentVisualPropertyCallback() {
+		return null;
+	}
 }

@@ -43,59 +43,76 @@ import org.cytoscape.model.Identifiable;
  *
  * Think of it as a row in the viewmodel table.
  *
- * @param <S> the base (model-level) object for which this is a View. For example, CyNode or CyEdge
+ * @param <S> the base (model-level) object for which this is a View. For example, CyNode or CyEdge.
+ * In the future versions, Attributes can be this parameter.
+ * 
  */
 public interface View<S> extends Identifiable {
 	
 	/**
+	 * Assign a value to the given Visual Property of this view.
+	 * 
 	 * @param <T> Data type of the visual property.  This can be subclasses of type T.
 	 * @param <V> Value of the visual property.  This can be subclasses of T. 
-	 * @param vp the VisualProperty
+	 * 
+	 * @param vp the VisualProperty (Node Color, Edge Width, etc.)
 	 * @param value actual value stored in this visual property.
 	 */
-	<T, V extends T> void setVisualProperty(VisualProperty<? extends T> vp, V value);
+	public <T, V extends T> void setVisualProperty(VisualProperty<? extends T> vp, V value);
+	
 
 	/**
-	 * @param <T> DOCUMENT ME!
+	 * Get the actual value for the given visual property.
+	 * 
+	 * @param <T> Object type of the Visual Property (Color, Double, ...)
+	 * 
 	 * @param vp the VisualProperty
-	 * @return DOCUMENT ME!
+	 * @return Value associated with this View and Visual Property pair.
 	 */
-	<T> T getVisualProperty(VisualProperty<T> vp);
+	public <T> T getVisualProperty(VisualProperty<T> vp);
+	
 
 	/**
-	 * @param <T> DOCUMENT ME!
+	 * Set locked value.  This value will be used to bypass the style.
+	 * 
+	 * @param <T> 
 	 * @param vp the VisualProperty
 	 * @param value DOCUMENT ME!
 	 */
-	<T, V extends T> void setLockedValue(VisualProperty<? extends T> vp, V value);
+	public <T, V extends T> void setLockedValue(VisualProperty<? extends T> vp, V value);
 
+	
 	/**
 	 * @param vp the VisualProperty
 	 * @return true if current VisualProperty value is locked
 	 */
-	boolean isValueLocked(VisualProperty<?> vp);
+	public boolean isValueLocked(VisualProperty<?> vp);
 
+	
 	/**
 	 * Clear value lock for given VisualProperty.
 	 *
 	 * @param vp the VisualProperty
 	 */
-	void clearValueLock(VisualProperty<?> vp);
+	public void clearValueLock(VisualProperty<?> vp);
 
+	
 	/**
-	 *  DOCUMENT ME!
+	 *  Get source data structure, such as CyNode, CyEdge, etc.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return Data object of this view.
 	 */
-	S getSource();
+	public S getSource();
+	
 
 	/**
 	 * Adds the specified listener to this View.
 	 */
-	void addViewChangeListener(ViewChangeListener vcl);
+	void addViewChangeListener(final ViewChangeListener vcl);
 
+	
 	/**
 	 * Removes the specified listener from this View.
 	 */
-	void removeViewChangeListener(ViewChangeListener vcl);
+	void removeViewChangeListener(final ViewChangeListener vcl);
 }

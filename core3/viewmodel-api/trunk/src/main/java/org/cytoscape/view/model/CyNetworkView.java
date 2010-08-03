@@ -34,35 +34,36 @@
 */
 package org.cytoscape.view.model;
 
+import java.util.List;
+
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.GraphObject;
 
-import java.util.List;
-import java.util.Set;
-
 
 /**
  * Contains the visual representation of a Network.
  */
-public interface CyNetworkView extends View<CyNetwork>{
+public interface CyNetworkView extends View<CyNetwork> {
 
 	/**
 	 * Returns a View for a specified Node.
 	 *
-	 * @param n  DOCUMENT ME!
+	 * @param node Node object
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return View for the given node object.
 	 */
-	View<CyNode> getNodeView(CyNode n);
+	public View<CyNode> getNodeView(final CyNode node);
 
+	
 	/**
 	 * Returns a list of Views for all CyNodes in the network.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  List of all node views.
 	 */
-	List<View<CyNode>> getNodeViews();
+	public List<View<CyNode>> getNodeViews();
+	
 
 	/**
 	 * Returns a View for a specified Edge.
@@ -71,7 +72,7 @@ public interface CyNetworkView extends View<CyNetwork>{
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	View<CyEdge> getEdgeView(CyEdge n);
+	public View<CyEdge> getEdgeView(CyEdge n);
 
 	/**
 	 * Returns a list of Views for all CyEdges in the network.

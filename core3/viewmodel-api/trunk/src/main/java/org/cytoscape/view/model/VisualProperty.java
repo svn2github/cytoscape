@@ -52,53 +52,63 @@ public interface VisualProperty<T> {
 	 *
 	 * @return the string describing the object type
 	 */
-	String getObjectType();
+	public String getObjectType();
 
+	
 	/**
 	 * The type of object represented by this property.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  Type of object stored in this VP.
 	 */
-	Class<T> getType();
+	public Class<T> getType();
+	
 
 	/**
 	 * The default value of this property.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	T getDefault();
+	public T getDefault();
 
+	
 	/**
 	 * A short string used to identify this visual property and suitable for
 	 * serializing to XML and other text formats.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	String getIdString();
+	public String getIdString();
 
+	
 	/**
 	 * A short string suitable for presentation to humans.  Should not be used
 	 * for serialization.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	String getDisplayName();
+	public String getDisplayName();
 
-	/**
-	 *
-	 * @return callback, or null if there isn't one
-	 */
-	DependentVisualPropertyCallback dependentVisualPropertyCallback();
+	
 
 	/**
 	 * Returns a string of the specified value suitable for serializing to XML
 	 * other text output.
 	 */
-	String getSerializableString(T value);
+	public String toString(final T value);
 
+	
 	/**
 	 * Returns an object of type T given a string serialized from the getSerializableString(T value)
 	 * method.
 	 */
-	T parseSerializableString(String value);
+	public T parse(final String value);
+	
+	
+	/**
+	 * TODO: remove this!
+	 * 
+	 * 
+	 * @return callback, or null if there isn't one
+	 */
+	DependentVisualPropertyCallback dependentVisualPropertyCallback();
 }

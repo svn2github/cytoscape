@@ -41,12 +41,15 @@ class IntegerVisualProperty extends AbstractVisualProperty<Integer> {
 	public IntegerVisualProperty(final String ot, final Integer def, final String id, final String name) {
 		super(ot,def,id,name);
 	}
-	
-	public String getSerializableString(final Integer value) {
-		return value.toString();
+
+
+	public Integer parse(final String text) {
+		return Integer.valueOf(text);
 	}
 
-	public Integer parseSerializableString(final String text) {
-		return Integer.valueOf(text);
+	
+	@Override
+	public String toString(Integer value) {
+		return value.toString();
 	}
 }
