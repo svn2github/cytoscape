@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import org.cytoscape.work.Handler;
-import org.cytoscape.work.HandlerListener;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.internal.tunables.Guihandler;
 
@@ -69,17 +68,6 @@ public class XorPanel extends JPanel {
 		}
 	}
 
-	
-/*	class GuiHandlerSwitchListener implements  HandlerListener {
-
-		public void handlerChanged(Handler gh) {
-			if ( gh instanceof Guihandler ) {
-				CardLayout cl = (CardLayout) contentPanel.getLayout();
-				cl.show(contentPanel, ((Guihandler)gh).getState());
-			}
-		}
-	}*/
-
 	class GuiHandlerSwitchListener implements  Guihandler {
 
 		public Tunable getTunable() {return null;}
@@ -103,18 +91,7 @@ public class XorPanel extends JPanel {
 		public void handle() {}
 		public String getState() {return null;}
 		public void returnPanel() {}
-		public void addHandlerListener(HandlerListener listener) {
-			// TODO Auto-generated method stub
-			
-		}
-		public void handlerChanged(Handler otherHandler) {
-			// TODO Auto-generated method stub
-			
-		}
-		public boolean removeHandlerListener(HandlerListener listener) {
-			// TODO Auto-generated method stub
-			return false;
-		}
+
 		public Method getGetMethod() {
 			// TODO Auto-generated method stub
 			return null;
