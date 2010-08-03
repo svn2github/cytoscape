@@ -55,7 +55,7 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>1.4.3</version>
+				<version>${maven-bundle-plugin.version}</version>
 				<!--
 					| the following instructions build a simple set of public/private
 					classes into an OSGi bundle
@@ -132,15 +132,16 @@
         <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.4</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>com.springsource.org.easymock</artifactId>
-			<version>2.3.0</version>
+			<version>${easymock.version}</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-impl</artifactId>
