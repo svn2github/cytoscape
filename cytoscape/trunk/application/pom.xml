@@ -16,6 +16,7 @@
   </properties>
 
   <build>
+
     <!-- This block allows fields to be substituted into resource files, 
          such as the version number in cytoscape.props.  -->
     <resources>
@@ -140,12 +141,23 @@
             </execution>
           </executions>
         </plugin>
+
+        <!-- Used to create the splash and credit screens. 
+             The rasterizing needs to happen after the svg files
+             have been copied and filtered so that the version
+             number is correct.  -->
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>batik-maven-plugin</artifactId>
           <version>1.0-beta-1</version>
+          <configuration>
+            <srcDir>${project.build.directory}/classes/cytoscape/images</srcDir>
+            <destDir>${project.build.directory}/classes/cytoscape/images</destDir>
+          </configuration>
           <executions>
             <execution>
+              <!-- just needs to happen after resources are copied -->
+              <phase>compile</phase> 
               <goals>
                 <goal>rasterize</goal>
               </goals>
@@ -174,7 +186,7 @@
   <!-- 
        Don't add additional repositories!  
        We want everything coming from either Maven Central or our repository. 
-	   Remember, it's easy to add third party jars to our repository.
+       Remember, it's easy to add third party jars to our repository.
   -->
   <repositories>
       <repository>
