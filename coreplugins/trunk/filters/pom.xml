@@ -14,16 +14,26 @@
 
   <name>Filters</name>
 
+  <build>
+    <plugins>
+	  <plugin>
+        <artifactId>maven-assembly-plugin</artifactId> 
+	  </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>cytoscape</groupId>
       <artifactId>application</artifactId>
       <version>${coreplugins.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>cytoscape.coreplugins</groupId>
       <artifactId>quickfind</artifactId>
       <version>${coreplugins.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

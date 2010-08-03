@@ -14,16 +14,26 @@
 
   <name>Equation Functions</name>
 
+  <build>
+    <plugins>
+	  <plugin>
+        <artifactId>maven-assembly-plugin</artifactId> 
+	  </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>cytoscape</groupId>
       <artifactId>application</artifactId>
       <version>${coreplugins.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>equations</artifactId>
       <version>${coreplugins.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

@@ -14,17 +14,22 @@
 
   <name>PSI-MI</name>
 
+
   <dependencies>
     <dependency>
       <groupId>cytoscape</groupId>
       <artifactId>application</artifactId>
       <version>${coreplugins.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
 
   <build>
     <plugins>
+	  <plugin>
+        <artifactId>maven-assembly-plugin</artifactId> 
+	  </plugin>
       <plugin>
         <groupId>org.jvnet.jaxb2.maven2</groupId>
         <artifactId>maven-jaxb2-plugin</artifactId>

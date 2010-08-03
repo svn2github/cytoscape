@@ -57,8 +57,26 @@
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
           </configuration>
         </plugin>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-5</version>
+          <configuration>
+            <descriptorRefs>
+              <descriptorRef>project</descriptorRef>
+            </descriptorRefs>
+          </configuration>
+          <executions>
+            <execution>
+              <id>make-assembly</id>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
-   </pluginManagement> 
+    </pluginManagement>
   </build>
 
   <dependencies>
