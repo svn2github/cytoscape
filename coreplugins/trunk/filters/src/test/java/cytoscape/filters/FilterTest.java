@@ -53,6 +53,8 @@ public class FilterTest extends TestCase {
 		edgeAttributes.setAttribute(edge0.getIdentifier(), PMID, "12345");
 		edgeAttributes.setAttribute(edge1.getIdentifier(), PMID, "12345");
 		edgeAttributes.setAttribute(edge2.getIdentifier(), PMID, "12666");
+
+		Cytoscape.setCurrentNetwork(cyNetwork.getIdentifier());
 	}
 	
 	protected static final String LOCATION = "location";
