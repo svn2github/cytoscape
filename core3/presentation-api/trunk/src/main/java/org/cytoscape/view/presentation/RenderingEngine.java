@@ -11,14 +11,14 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 
 
-public interface RenderingEngine {
+public interface RenderingEngine<T> {
 	
 	/**
 	 * Returns backend View Models for this presentation.
 	 * 
 	 * @return view models.
 	 */
-	public View<?> getViewModel();
+	public View<T> getViewModel();
 	
 	/**
 	 * Provide all compatible Visual Properties as a Visual Lexicon.
@@ -39,14 +39,16 @@ public interface RenderingEngine {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public Printable getPrintable();
+	public Printable createPrintable();
+	
 
 	/**
 	 * Render image from the current view model state.
 	 * 
 	 * @return Image object created from current window.
 	 */
-	public Image getImage(int width, int height);
+	public Image createImage(int width, int height);
+	
 
 	/**
 	 * For a given Visual Property, render an Icon based on the default value of
@@ -60,5 +62,6 @@ public interface RenderingEngine {
 	 * @exception IllegalArgumentException
 	 *                if vp is not in the lexicon.
 	 */
-	public Icon getDefaultIcon(VisualProperty<?> vp);
+	public Icon createIcon(VisualProperty<?> vp);
+	
 }
