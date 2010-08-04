@@ -43,13 +43,13 @@ class IntegerVisualProperty extends AbstractVisualProperty<Integer> {
 	}
 
 
-	public Integer parse(final String text) {
+	public Integer parseSerializableString(final String text) {
 		return Integer.valueOf(text);
 	}
 
 	
 	@Override
-	public String toString(Integer value) {
+	public String toSerializableString(Integer value) {
 		return value.toString();
 	}
 }

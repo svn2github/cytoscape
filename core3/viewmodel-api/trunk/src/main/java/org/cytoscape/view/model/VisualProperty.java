@@ -94,14 +94,14 @@ public interface VisualProperty<T> {
 	 * Returns a string of the specified value suitable for serializing to XML
 	 * other text output.
 	 */
-	public String toString(final T value);
+	public String toSerializableString(final T value);
 
 	
 	/**
 	 * Returns an object of type T given a string serialized from the getSerializableString(T value)
 	 * method.
 	 */
-	public T parse(final String value);
+	public T parseSerializableString(final String value);
 	
 	
 	/**
