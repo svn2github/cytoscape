@@ -28,10 +28,8 @@
 			<resource>
 				<directory>src/main/resources</directory>
 			</resource>
-			<!--
-				| example additional resource entries, useful when building Eclipse
-				RCP applications
-			-->
+			<!-- | example additional resource entries, useful when building Eclipse 
+				RCP applications -->
 			<resource>
 				<directory>.</directory>
 				<includes>
@@ -46,34 +44,26 @@
 				<groupId>org.ops4j</groupId>
 				<artifactId>maven-pax-plugin</artifactId>
 				<version>1.4</version>
-				<!--
-					| enable improved OSGi compilation support for the bundle
-					life-cycle. | to switch back to the standard bundle life-cycle,
-					move this setting | down to the maven-bundle-plugin section
-				-->
+				<!-- | enable improved OSGi compilation support for the bundle life-cycle. 
+					| to switch back to the standard bundle life-cycle, move this setting | down 
+					to the maven-bundle-plugin section -->
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>1.4.3</version>
-				<!--
-					| the following instructions build a simple set of public/private
-					classes into an OSGi bundle
-				-->
+				<version>${maven-bundle-plugin.version}</version>
+				<!-- | the following instructions build a simple set of public/private 
+					classes into an OSGi bundle -->
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
 						<Bundle-Version>${pom.version}</Bundle-Version>
-						<!--
-							| assume public classes are in the top package, and private
-							classes are under ".internal"
-						-->
+						<!-- | assume public classes are in the top package, and private classes 
+							are under ".internal" -->
 						<Export-Package>!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${pom.version}"</Export-Package>
 						<Private-Package>${bundle.namespace}.internal.*</Private-Package>
-						<!--
-							| each module can override these defaults in their osgi.bnd file
-						-->
+						<!-- | each module can override these defaults in their osgi.bnd file -->
 						<_include>-osgi.bnd</_include>
 					</instructions>
 				</configuration>
@@ -86,20 +76,9 @@
 		<!-- Cytoscape Dependency -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>viewmodel-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>session-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
-
 
 </project>
