@@ -91,7 +91,7 @@ public class PrintAction extends CytoscapeAction {
 
 		engine.setProperties(props);
 
-		printJob.setPrintable(engine.getPrintable());
+		printJob.setPrintable(engine.createPrintable());
 
 		if (printJob.printDialog()) {
 			try {

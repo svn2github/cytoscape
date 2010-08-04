@@ -46,7 +46,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
 import org.cytoscape.view.presentation.NavigationPresentation;
-import org.cytoscape.view.presentation.PresentationFactory;
+import org.cytoscape.view.presentation.RenderingEngineFactory;
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.events.NetworkViewDestroyedEvent;
@@ -69,14 +69,14 @@ class BirdsEyeViewHandler implements
 	FrameListener frameListener = new FrameListener();
 	final NetworkViewManager viewmgr;
 	final CyNetworkManager netmgr;
-	final PresentationFactory prefact;
+	final RenderingEngineFactory prefact;
 	final Component bevHolder; 
 
 	/**
 	 * Creates a new BirdsEyeViewHandler object.
 	 * @param desktopPane The JDesktopPane of the NetworkViewManager. Can be null.
 	 */
-	BirdsEyeViewHandler(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, PresentationFactory defaultFactory) {
+	BirdsEyeViewHandler(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, RenderingEngineFactory defaultFactory) {
 		this.viewmgr = viewmgr;
 		this.netmgr = netmgr;
 		

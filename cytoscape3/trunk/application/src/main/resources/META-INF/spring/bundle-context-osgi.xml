@@ -18,7 +18,7 @@
 		interface="org.cytoscape.view.presentation.PresentationManager" />
 	-->
 	<osgi:reference id="dingPresentationFactoryServiceRef"
-		interface="org.cytoscape.view.presentation.PresentationFactory"
+		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
 		filter="(id=ding)" />
 		
 	<osgi:reference id="tunableInterceptorServiceRef"
@@ -163,7 +163,7 @@
 
 	<!-- presentation factory -->
 	<osgi:set id="presentationFactorySet"
-		interface="org.cytoscape.view.presentation.PresentationFactory"
+		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addPresentationFactory"
 			unbind-method="removePresentationFactory" ref="networkViewManager" />

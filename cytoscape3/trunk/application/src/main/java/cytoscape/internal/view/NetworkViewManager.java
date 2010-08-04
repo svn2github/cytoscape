@@ -62,7 +62,7 @@ import org.cytoscape.session.events.SetCurrentNetworkListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.PresentationFactory;
+import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.presentation.RenderingEngine;
 
 import cytoscape.view.CyHelpBroker;
@@ -93,9 +93,9 @@ public class NetworkViewManager implements InternalFrameListener,
 	private CyHelpBroker help;
 	
 	// Supports multiple presentations
-	private Map<String, PresentationFactory> factories;
+	private Map<String, RenderingEngineFactory> factories;
 	
-	private PresentationFactory currentPresentationFactory;
+	private RenderingEngineFactory currentPresentationFactory;
 	
 	//TODO: discuss the name and key of props.
 	private static final String ID = "id";
@@ -113,7 +113,7 @@ public class NetworkViewManager implements InternalFrameListener,
 	 */
 	public NetworkViewManager(CyNetworkManager netmgr, Properties props,
 			CyHelpBroker help) {
-		this.factories = new HashMap<String, PresentationFactory>();
+		this.factories = new HashMap<String, RenderingEngineFactory>();
 		
 		this.netmgr = netmgr;
 		this.props = props;
@@ -139,7 +139,7 @@ public class NetworkViewManager implements InternalFrameListener,
 	 * @param factory
 	 * @param props
 	 */
-	public void addPresentationFactory(PresentationFactory factory, Map props) {
+	public void addPresentationFactory(RenderingEngineFactory factory, Map props) {
 		System.out.print("\n\n\n Adding New Rendering Engine >>>>>>>>>>");
 		
 		Object rendererID = props.get(ID);
@@ -155,7 +155,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		System.out.println(">>>> New Rendering Engine is Available: " + rendererID +"\n\n\n");
 	}
 	
-	public void removePresentationFactory(PresentationFactory factory, Map props) {
+	public void removePresentationFactory(RenderingEngineFactory factory, Map props) {
 		factories.remove(props.get(ID));
 	}
 	
@@ -373,7 +373,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		desktopPane.add(iframe);
 
 		// iframe.setContentPane( view.getContainer(iframe.getLayeredPane()) );
-		this.presentationMap.put(view.getSource().getSUID(), this.currentPresentationFactory.addPresentation(iframe, view));
+		this.presentationMap.put(view.getSource().getSUID(), this.currentPresentationFactory.render(iframe, view));
 
 		iframe.pack();
 
