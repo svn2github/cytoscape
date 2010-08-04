@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -15,8 +16,7 @@ import org.cytoscape.work.Tunable.Param;
  * 
  * @author pasteur
  */
-public class DoubleHandler extends AbstractGuiHandler {
-
+public class DoubleHandler extends AbstractGUIHandler {
 	private JTextField textField;
 	private Double myDouble;
 	private String newline = System.getProperty("line.separator");
@@ -25,7 +25,7 @@ public class DoubleHandler extends AbstractGuiHandler {
 
 	
 	/**
-	 * Constructs the <code>Guihandler</code> for the <code>Double</code> type
+	 * Constructs the <code>GUIHandler</code> for the <code>Double</code> type
 	 * 
 	 * It creates the Swing component for this Object (JTextField) that contains the initial value of the Double Object annotated as <code>Tunable</code>, its description, and displays it in a proper way
 	 * 
@@ -36,9 +36,12 @@ public class DoubleHandler extends AbstractGuiHandler {
 	 */
 	protected DoubleHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
-		try{
+
+		try {
 			this.myDouble = (Double) f.get(o);
-		}catch(Exception e){e.printStackTrace();}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 
 		//set Gui
 		initValue = myDouble.doubleValue();
@@ -59,7 +62,6 @@ public class DoubleHandler extends AbstractGuiHandler {
 			panel.add(textField,BorderLayout.EAST);
 		}
 	}
-	
 	
 	/**
 	 * Catches the value inserted in the JTextField, parses it to a <code>Double</code> value, and tries to set it to the initial object. If it can't, throws an exception that displays the source error to the user

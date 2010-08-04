@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Insets;
@@ -41,9 +42,9 @@ import org.cytoscape.property.bookmark.Category;
 import org.cytoscape.property.bookmark.DataSource;
 import org.cytoscape.work.Tunable;
 
-public class InputStreamHandler extends AbstractGuiHandler {
 
-	InputStream InStream;
+public class InputStreamHandler extends AbstractGUIHandler {
+	private InputStream InStream;
 
 	private Bookmarks theBookmarks;
 	private BookmarkComboBoxEditor bookmarkEditor;

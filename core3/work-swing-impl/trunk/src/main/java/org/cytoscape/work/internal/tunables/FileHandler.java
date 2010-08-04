@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,8 +32,7 @@ import cytoscape.Cytoscape;
  *
  * @author pasteur
  */
-public class FileHandler extends AbstractGuiHandler {
-
+public class FileHandler extends AbstractGUIHandler {
 	private File file;
 	private JFileChooser fileChooser;
 	private JButton chooseButton;
@@ -44,11 +44,9 @@ public class FileHandler extends AbstractGuiHandler {
 	private GroupLayout layout;
 	private enum Type {NETWORK,SESSION,ATTRIBUTES,DEFAULT};
 	private Type type;
-	//private FileUtil flUtil;
-
 
 	/**
-	 * Constructs the <code>Guihandler</code> for the <code>File</code> type
+	 * Constructs the <code>GUIHandler</code> for the <code>File</code> type
 	 *
 	 * It creates the GUI which displays the path of the current file in a field, and provides access to a FileChooser with filtering parameters on
 	 * <i>network</i>,<i>attributes</i>, or <i>session</i> (parameters are set in the <code>Tunable</code>'s annotations of the <code>File</code>)

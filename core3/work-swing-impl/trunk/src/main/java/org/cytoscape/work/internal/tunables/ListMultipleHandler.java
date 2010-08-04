@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.lang.reflect.Field;
@@ -23,19 +24,14 @@ import org.cytoscape.work.util.ListMultipleSelection;
  *
  * @param <T> type of items the List contains
  */
-public class ListMultipleHandler<T> extends AbstractGuiHandler{
-
+public class ListMultipleHandler<T> extends AbstractGUIHandler {
 	private ListMultipleSelection<T> listMultipleSelection;
 	private ListMultipleSelection<T> initList;
 	private JList itemsContainerList;
 	private List<T> selectedItems;
-	//private CheckListManager<T> checkListManager;
-	//private Map<Integer,T> map;
-
-	
 	
 	/**
-	 * Constructs the <code>Guihandler</code> for the <code>ListMultipleSelection</code> type
+	 * Constructs the <code>GUIHandler</code> for the <code>ListMultipleSelection</code> type
 	 * 
 	 * creates a list to collect all the <code>T</code> items and displays it in the GUI through a JScrollPane
 	 * Informations about the list and its contents are also displayed

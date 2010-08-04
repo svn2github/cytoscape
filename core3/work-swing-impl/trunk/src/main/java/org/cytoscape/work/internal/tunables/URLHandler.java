@@ -28,14 +28,12 @@ import org.cytoscape.property.bookmark.DataSource;
 import org.cytoscape.work.Tunable;
 
 
-
-
 /**
  * Handler for the type <i>URL</i> of <code>Tunable</code>
  * 
  * @author pasteur
  */
-public class URLHandler extends AbstractGuiHandler {
+public class URLHandler extends AbstractGUIHandler {
 	private URL url;
 	private BookmarksUtil bkUtil;
 	private Bookmarks theBookmarks;
@@ -51,7 +49,7 @@ public class URLHandler extends AbstractGuiHandler {
 	
 	
 	/**
-	 * Constructs the <code>Guihandler</code> for the <code>URL</code> type
+	 * Constructs the <code>GUIHandler</code> for the <code>URL</code> type
 	 * 
 	 * It creates the GUI which displays a field to enter a URL, and a combobox which contains different registered URL with their description
 	 * 

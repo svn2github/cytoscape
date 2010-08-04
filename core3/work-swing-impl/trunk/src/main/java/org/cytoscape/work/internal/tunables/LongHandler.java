@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -15,8 +16,7 @@ import org.cytoscape.work.Tunable.Param;
  * 
  * @author pasteur
  */
-public class LongHandler extends AbstractGuiHandler {
-
+public class LongHandler extends AbstractGUIHandler {
 	private JTextField textField;
 	private Double value = null;
 	private Long myLong;
@@ -25,7 +25,7 @@ public class LongHandler extends AbstractGuiHandler {
 	
 	
 	/**
-	 * Constructs the <code>Guihandler</code> for the <code>Long</code> type
+	 * Constructs the <code>GUIHandler</code> for the <code>Long</code> type
 	 * 
 	 * It creates the Swing component for this Object (JTextField) that contains the initial value of the Long Object annotated as <code>Tunable</code>, its description, and displays it in a proper way
 	 * 

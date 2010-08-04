@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.lang.reflect.*;
 import javax.swing.*;
 
@@ -16,15 +17,14 @@ import java.awt.*;
  *
  * @param <T> type of items the List contains
  */
-public class ListSingleHandler<T> extends AbstractGuiHandler {
-
+public class ListSingleHandler<T> extends AbstractGUIHandler {
 	private ListSingleSelection<T> listSingleSelection;
 	private ListSingleSelection<T> initList;
 	private JComboBox combobox;
 	private T selectedItem;
 
 	/**
-	 * Constructs the <code>Guihandler</code> for the <code>ListSingleSelection</code> type
+	 * Constructs the <code>GUIHandler</code> for the <code>ListSingleSelection</code> type
 	 * 
 	 * creates a ComboBox to collect all the <code>T</code> items and displays it in the GUI
 	 * Informations about the list and its contents are also displayed

@@ -13,8 +13,7 @@ import org.cytoscape.work.Handler;
  * @author pasteur
  *
  */
-public interface Guihandler extends Handler{
-	
+public interface GUIHandler extends Handler {
 	
 	/**
 	 * to get the panel that contains the GUI representation (<code>JTextField, JFileChooser, JLabel, JList ...</code>)
@@ -23,10 +22,10 @@ public interface Guihandler extends Handler{
 	 */
 	JPanel getJPanel();
 	
-	
 	/**
-	 * To get the current value of a <code>Handler</code> (or path for a <code>FileHandler</code>, or selected item(s) for <code>ListMultipleSelection ListSingleSelection</code>, ...)
-
+	 * To get the current value of a <code>Handler</code> (or path for a <code>FileHandler</code>, or selected item(s)
+	 * for <code>ListMultipleSelection ListSingleSelection</code>, ...)
+	 *
 	 * @return string representing the state
 	 */
 	String getState();
@@ -47,50 +46,44 @@ public interface Guihandler extends Handler{
 	
 	
 	/**
-	 *  Notify dependencies that this object is changing : an event is occuring
+	 *  Notify dependents that this object is changing, i.e. an event occured.
 	 */
 	void notifyDependents();
 	
 	/**
-	 * add a dependency to this <code>Guihandler</code> on another one
+	 * add a dependency to this <code>GUIHandler</code> on another one
 	 * 
-	 * @param gh the <code>Guihandler</code> it will depend on
+	 * @param gh the <code>GUIHandler</code> it will depend on
 	 */
-	void addDependent(Guihandler gh);
-
+	void addDependent(GUIHandler gh);
 	
 	/**
-	 * Check if the dependency matches with the rule provided on the other <code>Guihandler</code> 
+	 * Check if the dependency matches with the rule provided on the other <code>GUIHandler</code> 
 	 * <p>
 	 * <pre>
 	 * the checking is dynamically done.
 	 * 
-	 * If it matches : the GUI for this <code>Guihandler</code> is available, or not if it doesn't match
+	 * If it matches : the GUI for this <code>GUIHandler</code> is available, or not if it doesn't match
 	 * 
 	 * the dependency can me made on String, a boolean value, a specific value for an Integer,Double..., a selected item of a list ...
 	 * </pre>
 	 * </p>
 	 * 
-	 * @param name of the <code>Guihandler</code> on which it depends
-	 * @param state of the <code>Guihandler</code> that is needed to make the GUI available 
+	 * @param name of the <code>GUIHandler</code> on which it depends
+	 * @param state of the <code>GUIHandler</code> that is needed to make the GUI available 
 	 */
 	void checkDependency(String name, String state);
-	
 	
 	/**
 	 * Get the new "values" for the <code>Tunables</code> object that have been modified if their JPanel is enabled : if the dependencies are matching
 	 */
 	void handleDependents();
 	
-	
-	
 	/**
-	 * To get the name of the dependency of this <code>Guihandler</code>
+	 * To get the name of the dependency of this <code>GUIHandler</code>
 	 * @return the name of the dependency
 	 */
 	String getDependency();
-	
-	
 	
 	//added method to reset the value after handling to check the TunableValidator method
 	/**

@@ -17,17 +17,14 @@ import java.awt.event.*;
  * @param <T> type of <code>AbstractFlexiblyBounded</code>
  */
 @SuppressWarnings("unchecked")
-public class FlexiblyBoundedHandler<T extends AbstractFlexiblyBounded> extends AbstractGuiHandler {
-
+public class FlexiblyBoundedHandler<T extends AbstractFlexiblyBounded> extends AbstractGUIHandler {
 	private JTextField textField;
 	private T flexiblyBounded;
 	private final JLabel label;
 	private  T flexiblyBoundedInit;
 	
-	
-	
 	/**
-	 * Construction of the <code>Guihandler</code> for the <code>FlexiblyBounded</code> type
+	 * Construction of the <code>GUIHandler</code> for the <code>FlexiblyBounded</code> type
 	 * 
 	 * Creates a JTextField to display the value contained in the object and its information, and adds 2 buttons to modify the upper and lower bounds
 	 * 

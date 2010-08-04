@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -14,14 +15,12 @@ import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
 
 
-
 /**
  * Handler for the type <i>Integer</i> of <code>Tunable</code>
  * 
  * @author pasteur
  */
-public class IntegerHandler extends AbstractGuiHandler {
-
+public class IntegerHandler extends AbstractGUIHandler {
 	private JTextField textField;
 	private Double value = null;
 	private Integer myInteger;
@@ -30,7 +29,7 @@ public class IntegerHandler extends AbstractGuiHandler {
 
 	
 	/**
-	 * Constructs the <code>Guihandler</code> for the <code>Integer</code> type
+	 * Constructs the <code>GUIHandler</code> for the <code>Integer</code> type
 	 * 
 	 * It creates the Swing component for this Object (JTextField) that contains the initial value of the Integer Object annotated as <code>Tunable</code>, its description, and displays it in a proper way
 	 * 

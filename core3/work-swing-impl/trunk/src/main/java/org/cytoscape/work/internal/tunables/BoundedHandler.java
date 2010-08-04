@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.lang.reflect.Field;
@@ -22,16 +23,14 @@ import org.cytoscape.work.util.AbstractBounded;
  * @param <T> type of <code>AbstractBounded</code>
  */
 @SuppressWarnings("unchecked")
-public class BoundedHandler<T extends AbstractBounded> extends AbstractGuiHandler {
-
-
+public class BoundedHandler<T extends AbstractBounded> extends AbstractGUIHandler {
 	/**
-	 * <code>Bounded</code> object that need to be put in this type of <code>Guihandler</code>
+	 * <code>Bounded</code> object that need to be put in this type of <code>GUIHandler</code>
 	 */
 	private T bounded;
 
 	/**
-	 * description of the <code>Bounded</code> object that will be displayed in the JPanel of this <code>Guihandler</code>
+	 * description of the <code>Bounded</code> object that will be displayed in the JPanel of this <code>GUIHandler</code>
 	 */
 	private String title;
 
@@ -41,7 +40,7 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGuiHandle
 	private boolean useslider = false;
 
 	/**
-	 * 1st representation of this <code>Bounded</code> object in its <code>Guihandler</code>'s JPanel : a <code>JSlider</code>
+	 * 1st representation of this <code>Bounded</code> object in its <code>GUIHandler</code>'s JPanel : a <code>JSlider</code>
 	 */
 	private mySlider slider;
 
@@ -52,7 +51,7 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGuiHandle
 
 
 	/**
-	 * Construction of the <code>Guihandler</code> for the <code>Bounded</code> type
+	 * Construction of the <code>GUIHandler</code> for the <code>Bounded</code> type
 	 *
 	 * If <code>useslider</code> is set to <code>true</code> : displays the bounded object in a <code>JSlider</code> by using its bounds
 	 * else diplays it in a <code>JTextField</code> with informations about the bounds

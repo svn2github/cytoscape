@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -9,8 +10,8 @@ import javax.swing.*;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
 
-public class FloatHandler extends AbstractGuiHandler {
 
+public class FloatHandler extends AbstractGUIHandler {
 	private JTextField textField;
 	private Double value = null;
 	private Float myFloat;
@@ -19,7 +20,7 @@ public class FloatHandler extends AbstractGuiHandler {
 
 	
 	/**
-	 * Constructs the <code>Guihandler</code> for the <code>Float</code> type
+	 * Constructs the <code>GUIHandler</code> for the <code>Float</code> type
 	 * 
 	 * It creates the Swing component for this Object (JTextField) that contains the initial value of the Float Object annotated as <code>Tunable</code>, its description, and displays it in a proper way
 	 * 
@@ -48,7 +49,7 @@ public class FloatHandler extends AbstractGuiHandler {
 			panel.add(textField,BorderLayout.SOUTH);
 		}
 		else{
-			panel.add(label,BorderLayout.WEST);
+			panel.add(label, BorderLayout.WEST);
 			panel.add(textField,BorderLayout.EAST);
 		}
 	}

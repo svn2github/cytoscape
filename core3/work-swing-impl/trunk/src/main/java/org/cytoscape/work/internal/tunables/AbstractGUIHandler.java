@@ -24,8 +24,7 @@ import org.cytoscape.work.Tunable;
  * <br>
  * It provides the functions that are common to all types of Handlers
  */
-public abstract class AbstractGuiHandler extends AbstractHandler implements Guihandler, ActionListener,ChangeListener,ListSelectionListener {
-
+public abstract class AbstractGUIHandler extends AbstractHandler implements GUIHandler, ActionListener, ChangeListener, ListSelectionListener {
 	/**
 	 * <code>JPanel</code> that will contain the GUI object that represents in the best way the <code>Tunable</code> to the user 
 	 */
@@ -52,18 +51,18 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
     
     
 	/**
-	 * The list of dependencies between the <code>Guihandlers</code>
+	 * The list of dependencies between the <code>GUIHandlers</code>
 	 */
-	private List<Guihandler> dependencies;
+	private List<GUIHandler> dependencies;
 
 	/**
-	 * Constructs an Abstract GuiHandler with dependencies informations
+	 * Constructs an Abstract GUIHandler with dependencies informations
 	 * 
 	 * @param f Field that is intercepted
 	 * @param o Object that is contained in the Field <code>f</code>
 	 * @param t <code>Tunable</code> annotations of the Field <code>f</code> annotated as <code>Tunable</code>
 	 */
-	protected AbstractGuiHandler(Field f, Object o, Tunable t) {
+	protected AbstractGUIHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 		String s = t.dependsOn();
 		if ( !s.equals("") ) {
@@ -79,7 +78,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	        	}
 	        }
 	
-		dependencies = new LinkedList<Guihandler>();
+		dependencies = new LinkedList<GUIHandler>();
 		panel = new JPanel();
 	}
 
@@ -89,7 +88,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	}
 
 	/**
-	 * Notify a change of state of a <code>Guihandler</code>
+	 * Notify a change of state of a <code>GUIHandler</code>
 	 * 
 	 * @param e a modification that happened to this <code>handler</code>
 	 */
@@ -115,17 +114,17 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	public void notifyDependents() {
 		String state = getState();
 		String name = getName();
-		for ( Guihandler gh : dependencies )
+		for ( GUIHandler gh : dependencies )
 			gh.checkDependency( name, state );
 	}
 
 	/**
-	 *  Add a dependency on this <code>Guihandler</code> to another <code>Tunable</code>
-	 *  While the dependency rule to this other <code>Guihandler</code> doesn't match, this one won't be available
+	 *  Add a dependency on this <code>GUIHandler</code> to another <code>Tunable</code>
+	 *  While the dependency rule to this other <code>GUIHandler</code> doesn't match, this one won't be available
 	 *  
 	 *  @param gh <code>Handler</code> on which this one depends on. 
 	 */
-	public void addDependent(Guihandler gh) {
+	public void addDependent(GUIHandler gh) {
 		//System.out.println("adding " + gh.getName() + " dependent to " + this.getName() );
 		if ( !dependencies.contains(gh) )
 			dependencies.add(gh);
@@ -133,7 +132,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	
 
 	/**
-	 * To get the name of the dependency of this <code>Guihandler</code>
+	 * To get the name of the dependency of this <code>GUIHandler</code>
 	 * @return the name of the dependency
 	 */
 	public String getDependency() {
@@ -149,7 +148,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	}
 	
 	/**
-	 * To check the dependencies of this <code>Guihandler</code> with the others.
+	 * To check the dependencies of this <code>GUIHandler</code> with the others.
 	 * 
 	 * 
 	 * <p><pre>
@@ -157,7 +156,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	 * 
 	 *  - if there isn't any dependency, the JPanel container is enabled
 	 *  - if there is, enable or not the JPanel, depending on the name (<code>depName</code>) and the state(<code>depState</code>)
-	 *  of the dependencies of this <code>Guihandler</code>
+	 *  of the dependencies of this <code>GUIHandler</code>
 	 *  </pre></p>
 	 */
 	public void checkDependency(String name, String state) {
@@ -204,8 +203,8 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 	}
 
 	/**
-	 * To get the name of the <code>Guihandler</code>
-	 * @return the name of the <code>Guihandler</code>
+	 * To get the name of the <code>GUIHandler</code>
+	 * @return the name of the <code>GUIHandler</code>
 	 */
 	public String getName() {
 		if (f != null)
@@ -216,7 +215,7 @@ public abstract class AbstractGuiHandler extends AbstractHandler implements Guih
 
 	/**
 	 * To get the <code>JPanel</code> container
-	 * @return the <code>JPanel</code> container of the <code>Guihandler</code>
+	 * @return the <code>JPanel</code> container of the <code>GUIHandler</code>
 	 */
 	public JPanel getJPanel() {
 		return panel;

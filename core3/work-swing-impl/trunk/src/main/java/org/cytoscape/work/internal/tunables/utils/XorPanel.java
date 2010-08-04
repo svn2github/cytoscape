@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables.utils;
 
+
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -14,24 +15,23 @@ import javax.swing.border.TitledBorder;
 
 import org.cytoscape.work.Handler;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.internal.tunables.Guihandler;
+import org.cytoscape.work.internal.tunables.GUIHandler;
 
 
 @SuppressWarnings("serial")
 public class XorPanel extends JPanel {
-	
-	
-	JPanel switchPanel;
-	JPanel contentPanel;
-	JPanel currentPanel = null;	
+	private JPanel switchPanel;
+	private JPanel contentPanel;
+	private JPanel currentPanel = null;	
 
-	Guihandler gh;
-	boolean first = true;
+	private GUIHandler gh;
+	private boolean first = true;
 
-	public XorPanel(String title, Guihandler g) {
+	public XorPanel(final String title, final GUIHandler g) {
 		super();
+
 		gh = g;
-		gh.addDependent( new GuiHandlerSwitchListener() ); 
+		gh.addDependent(new GUIHandlerSwitchListener()); 
 
 		switchPanel = new JPanel(); 
 		contentPanel = new JPanel(new CardLayout());
@@ -45,12 +45,12 @@ public class XorPanel extends JPanel {
 	}
 
 	public Component add(Component c) {
-		if ( first ) {
+		if (first) {
 			switchPanel.add(c); 
 			first = false;
 			return c;
 		} else {
-			if ( currentPanel == null )
+			if (currentPanel == null)
 				throw new RuntimeException("current panel is null!");
 
 			currentPanel.add(c);
@@ -59,7 +59,7 @@ public class XorPanel extends JPanel {
 	}
 
 	public void add(Component c, Object constraint) {
-		if ( first ) {
+		if (first) {
 			switchPanel.add(c); 
 			first = false;
 		} else {
@@ -68,14 +68,13 @@ public class XorPanel extends JPanel {
 		}
 	}
 
-	class GuiHandlerSwitchListener implements  Guihandler {
-
+	class GUIHandlerSwitchListener implements  GUIHandler {
 		public Tunable getTunable() {return null;}
 		public Field getField() {return null;}
 		public Object getObject() {return null;}
 		public void actionPerformed(ActionEvent ae) { }
 		public void notifyDependents() { } 
-		public void addDependent(Guihandler gh) { } 
+		public void addDependent(GUIHandler gh) { } 
 		public String getDependency() { return null; }
 		public void handleDependents(){}
 		public void resetValue(){}
@@ -109,4 +108,3 @@ public class XorPanel extends JPanel {
 		}
 	}
 }
-	

@@ -14,15 +14,14 @@ import org.cytoscape.work.Tunable.Param;
  * 
  * @author pasteur
  */
-public class StringHandler extends AbstractGuiHandler {
-
+public class StringHandler extends AbstractGUIHandler {
 	private JTextField textField;
 	private boolean horizontal = false;
 	private String myString;
 	
 	
 	/**
-	 * Constructs the <code>Guihandler</code> for the <code>String</code> type
+	 * Constructs the <code>GUIHandler</code> for the <code>String</code> type
 	 * 
 	 * It creates the Swing component for this Object (JTextField) that contains the initial string, adds its description, and displays it in a proper way
 	 * 
@@ -50,7 +49,7 @@ public class StringHandler extends AbstractGuiHandler {
 			panel.add(label,BorderLayout.NORTH);
 			panel.add(textField,BorderLayout.SOUTH);	
 		}
-		else{
+		else {
 			panel.add(label,BorderLayout.WEST );
 			panel.add(textField,BorderLayout.EAST);
 		}

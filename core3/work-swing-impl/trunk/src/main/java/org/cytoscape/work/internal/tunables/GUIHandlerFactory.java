@@ -25,29 +25,23 @@ import org.cytoscape.work.util.ListSingleSelection;
 
 
 /**
- * Provides a factory to create <code>Guihandler</code> depending on their type
- * A <code>Guihandler</code> is simply a <code>Handler</code> with the GUI aspect to display the handled object to the user in a proper way.
+ * Provides a factory to create <code>GUIHandler</code> depending on their type
+ * A <code>GUIHandler</code> is simply a <code>Handler</code> with the GUI aspect to display the handled object to the user in a proper way.
  * 
  * @author pasteur
  */
-public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
-
+public class GUIHandlerFactory implements HandlerFactory<GUIHandler> {
 	private Bookmarks bookmarks;
 	private BookmarksUtil bkUtil;
-//	public FileUtil flUtil;
-//	public StreamUtil stUtil;
-	
 	
 	/**
-	 * creates a new GuiHandlerFactory object
+	 * creates a new GUIHandlerFactory object
 	 * @param book	informations and properties of the <code>Bookmarks</code> registered
 	 * @param bkUtil object that provides tools to manage the <code>Bookmarks</code>
 	 */
-	public GuiHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil) {
+	public GUIHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil) {
 		this.bookmarks = book.getProperties();
 		this.bkUtil = bkUtil;
-//		this.flUtil = flUtil;
-//		this.stUtil = stUtil;
 	}
 	
 	
@@ -59,9 +53,9 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 	 * @param	o	object of the <code>Handler</code>
 	 * @param	tg	tunable of the get method of the <code>Handler</code>
 	 * @param	ts	tunable of the set method of the<code>Handler</code>
-	 * @return a <code>Guihandler</code> object depending on the Method's type
+	 * @return a <code>GUIHandler</code> object depending on the Method's type
 	 */	
-	public Guihandler getHandler(Method gmethod,Method smethod, Object o, Tunable tg, Tunable ts) {
+	public GUIHandler getHandler(Method gmethod,Method smethod, Object o, Tunable tg, Tunable ts) {
 		return null;
 	}
 	
@@ -72,9 +66,9 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 	 * @param	m	the annotated method
 	 * @param	o	object of the <code>Handler</code>
 	 * @param	t	tunable of the <code>Handler</code>
-	 * @return a <code>Guihandler</code> object depending on the Method's type
+	 * @return a <code>GUIHandler</code> object depending on the Method's type
 	 */	
-	public Guihandler getHandler(Method m, Object o, Tunable t) {
+	public GUIHandler getHandler(Method m, Object o, Tunable t) {
 		return null;
 	}
 
@@ -85,9 +79,9 @@ public class GuiHandlerFactory implements HandlerFactory<Guihandler> {
 	 * @param	m	the annotated field
 	 * @param	o	object of the <code>Handler</code>
 	 * @param	t	tunable of the <code>Handler</code>
-	 * @return a <code>Guihandler</code> object depending on the Field's type
+	 * @return a <code>GUIHandler</code> object depending on the Field's type
 	 */
-	public Guihandler getHandler(Field f, Object o, Tunable t){
+	public GUIHandler getHandler(Field f, Object o, Tunable t){
 		Class<?> type = f.getType();
 
 		if(type == Boolean.class || type == boolean.class)
