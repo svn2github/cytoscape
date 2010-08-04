@@ -45,7 +45,7 @@
 	</osgi:reference>
 
 	<osgi:reference id="presentationFactoryRef" 
-		interface="org.cytoscape.view.presentation.PresentationFactory">
+		interface="org.cytoscape.view.presentation.RenderingEngineFactory">
 	</osgi:reference>
 
 	<osgi:reference id="taskManagerRef" 

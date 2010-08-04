@@ -6,7 +6,7 @@ import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.layout.CyLayouts;
-import org.cytoscape.view.presentation.PresentationFactory;
+import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CySessionManager;
@@ -94,10 +94,10 @@ public interface CyPluginAdapter {
 	//
 
 	/**
-	 * Returns an instance of {@link PresentationFactory}.
-	 * @return an instance of {@link PresentationFactory}.
+	 * Returns an instance of {@link RenderingEngineFactory}.
+	 * @return an instance of {@link RenderingEngineFactory}.
 	 */
-	PresentationFactory getPresentationFactory();
+	RenderingEngineFactory getPresentationFactory();
 
 	//
 	// vizmap api
