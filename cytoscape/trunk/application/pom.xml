@@ -41,7 +41,6 @@
           <configuration>
             <argLine>-Xmx256m</argLine>
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
-            <useSystemClassLoader>true</useSystemClassLoader>
           </configuration>
         </plugin>
         <plugin>
