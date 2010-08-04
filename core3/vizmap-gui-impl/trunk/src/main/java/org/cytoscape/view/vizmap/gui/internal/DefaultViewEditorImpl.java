@@ -607,7 +607,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 				RenderingEngine presentation = cyNetworkManager
 						.getCurrentPresentation();
-				icon = presentation.getDefaultIcon(vp);
+				icon = presentation.createIcon(vp);
 			}
 			setText(vp.getDisplayName() + "  =  "
 					+ selectedStyle.getDefaultValue(vp));

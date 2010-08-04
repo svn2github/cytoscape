@@ -49,7 +49,7 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.presentation.PresentationFactory;
+import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
@@ -94,7 +94,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel, Se
 	private CyNetworkViewFactory cyNetworkViewFactory;
 
 	// For setting presentation (rendered canvas) to this panel
-	private PresentationFactory presentationFactory;
+	private RenderingEngineFactory presentationFactory;
 
 	/**
 	 * Creates a new DefaultViewPanel object.
@@ -105,7 +105,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel, Se
 	 *            DOCUMENT ME!
 	 */
 	public DefaultViewPanelImpl(CyNetworkFactory cyNetworkFactory,
-			CyNetworkViewFactory cyNetworkViewFactory, PresentationFactory presentationFactory) {
+			CyNetworkViewFactory cyNetworkViewFactory, RenderingEngineFactory presentationFactory) {
 		this.cyNetworkViewFactory = cyNetworkViewFactory;
 		this.cyNetworkFactory = cyNetworkFactory;
 		this.presentationFactory = presentationFactory;
@@ -173,7 +173,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel, Se
 		// TODO: is this correct???
 		this.removeAll();
 
-		presentationFactory.addPresentation(this, dummyview);
+		presentationFactory.render(this, dummyview);
 		
 		//canvas.setLocation(PADDING / 2, PADDING / 2);
 		//vs.apply(dummyview);

@@ -38,7 +38,7 @@
 
 	<!-- Presentation Factory -->
 	<osgi:reference id="presentationFactoryServiceRef"
-		interface="org.cytoscape.view.presentation.PresentationFactory" />
+		interface="org.cytoscape.view.presentation.RenderingEngineFactory" />
 
 	<!-- Reference to the network factory service -->
 	<osgi:reference id="cyNetworkFactoryServiceRef"
