@@ -151,6 +151,7 @@ public class CreateCloudAction extends CytoscapeAction
 		
 		//inputPanel.setNetworkList(params);
 		inputPanel.addNewCloud(cloudParams);	
+		inputPanel.getCreateNetworkButton().setEnabled(true);
 		
 		//Update the list of filter words and checkbox
 		inputPanel.refreshNetworkSettings();

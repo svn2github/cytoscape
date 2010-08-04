@@ -119,6 +119,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	private JButton addWordButton;
 	private JButton addDelimiterButton;
 	private JButton removeDelimiterButton;
+	private JButton createNetworkButton;
 	
 	//Checkbox
 	private JCheckBox numExclusion;
@@ -129,7 +130,11 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	
 	//Checkbox list
 	private CheckBoxJList attributeList;
+	
+	//Popup menu
 	private JPopupMenu attributeSelectionPopupMenu;
+	
+	//Text Area
 	private JTextArea attNames;
 	
 	//String Constants for Separators in remove word combo box
@@ -154,7 +159,6 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		intFormat = NumberFormat.getIntegerInstance();
 		intFormat.setParseIntegerOnly(true);
 		
-		//TODO	
 		setLayout(new BorderLayout());
 		
 		//INITIALIZE PARAMETERS
@@ -735,7 +739,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	 */
 	private CollapsiblePanel createCloudLayoutPanel()
 	{
-		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Cloud Layout");
+		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Layout");
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0,1));
@@ -744,7 +748,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		JPanel cloudLayoutPanel = new JPanel();
 		cloudLayoutPanel.setLayout(new GridBagLayout());
 
-		JLabel cloudStyleLabel = new JLabel("Style: ");
+		JLabel cloudStyleLabel = new JLabel("Cloud Style: ");
 		
 		WidestStringComboBoxModel wscbm = new WidestStringComboBoxModel();
 		cmbStyle = new JComboBox(wscbm);
@@ -779,6 +783,31 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	    buildStyleCMB();
 		
 		panel.add(cloudLayoutPanel);
+		
+		//Create network button stuff
+		JLabel createNetworkLabel = new JLabel("Network View:");
+		
+		createNetworkButton = new JButton("Export Cloud to Network");
+		createNetworkButton.setEnabled(false);
+		createNetworkButton.setToolTipText("Creates a new network based on the current cloud");
+		createNetworkButton.addActionListener(new CreateCloudNetworkAction());
+		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.insets = new Insets(5, 0, 0, 0);
+		cloudLayoutPanel.add(createNetworkLabel, gridBagConstraints);
+		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 1;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.gridwidth = 2;
+		gridBagConstraints.anchor = GridBagConstraints.EAST;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.insets = new Insets(5, 10, 0, 0);
+		cloudLayoutPanel.add(createNetworkButton, gridBagConstraints);
+		
 		
 		collapsiblePanel.getContentPane().add(panel,BorderLayout.NORTH);
 		return collapsiblePanel;
@@ -880,6 +909,16 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 			addWordButton.setEnabled(true);
 			numExclusion.setEnabled(true);
 			useNetworkCounts.setEnabled(true);
+		}
+		
+		//Enable button based on cloud
+		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParameters()))
+		{
+			createNetworkButton.setEnabled(false);
+		}
+		else
+		{
+			createNetworkButton.setEnabled(true);
 		}
 		
 		SemanticSummaryManager.getInstance().setCurCloud(params);
@@ -1667,6 +1706,11 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	public JTextArea getAttNames()
 	{
 		return attNames;
+	}
+	
+	public JButton getCreateNetworkButton()
+	{
+		return createNetworkButton;
 	}
 	
 	

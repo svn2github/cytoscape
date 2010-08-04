@@ -101,6 +101,10 @@ public class CloudParameters implements Comparable
 	private static final String WORDDELIMITER = "CloudParamWordDelimiter";
 	private static final char controlChar = '\u001F';
 	
+	//Network Name creation variables
+	private Integer networkCount = 1;
+	private static final String NETWORKNAME = "Net";
+	private static final String SEPARATER = "_";
 	
 	//Default Values for User Input
 	private Double defaultNetWeight = 0.0;
@@ -200,6 +204,10 @@ public class CloudParameters implements Comparable
 		val = props.get("MaxWeight");
 		if (val != null)
 		{this.maxWeight = new Double(props.get("MaxWeight"));}
+		
+		val = props.get("NetworkCount");
+		if (val != null)
+		{this.networkCount = new Integer(props.get("NetworkCount"));}
 		
 		//Rebuild attribute List
 		String value = props.get("AttributeName");
@@ -881,6 +889,7 @@ public class CloudParameters implements Comparable
 		paramVariables.append("MinWeight\t" + minWeight + "\n");
 		paramVariables.append("CloudNum\t" + cloudNum + "\n");
 		paramVariables.append("UseNetNormal\t" + useNetNormal + "\n");
+		paramVariables.append("NetworkCount\t" + networkCount + "\n");
 		
 		//List of Nodes as a comma delimited list
 		StringBuffer output2 = new StringBuffer();
@@ -1186,6 +1195,18 @@ public class CloudParameters implements Comparable
 		}
 		else
 			return 0;
+	}
+	
+	/**
+	 * Returns the name for the next network for this cloud.
+	 * @return String - name of the next cloud
+	 */
+	public String getNextNetworkName()
+	{
+		String name = networkParams.getNetworkName() + "-" + cloudName + "-" + NETWORKNAME + SEPARATER + networkCount;
+		networkCount++;
+		
+		return name;
 	}
 	
 	
