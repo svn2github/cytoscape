@@ -37,7 +37,6 @@
 package cytoscape.internal.view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -46,22 +45,17 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
 
 import cytoscape.CytoscapeShutdown;
-import org.cytoscape.session.CyNetworkManager;
-
+import cytoscape.view.CyMenus;
+import cytoscape.view.CySwingApplication;
 import cytoscape.view.CytoPanel;
 import cytoscape.view.CytoPanelState;
-import cytoscape.view.CySwingApplication;
-import cytoscape.view.CyMenus;
 
 
 
@@ -107,7 +101,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	protected CytoPanelImp cytoPanelSouth;
 	protected CytoPanelImp cytoPanelSouthWest; 
 
-	// Status Bar
+	// Status Bar TODO: Move this to log-swing to avoid cyclic dependency.
 	protected CytoStatusBarImpl statusBar;
 	protected JPanel main_panel;
 	private final CytoscapeShutdown shutdown; 

@@ -8,6 +8,8 @@ import javax.swing.border.*;
 import org.cytoscape.log.statusbar.CytoStatusBar;
 
 /**
+ * FIXME: Move this class to log-swing module.  This is a cause of  dependency. 
+ * 
  * @author Pasteur
  */
 class CytoStatusBarImpl implements CytoStatusBar
