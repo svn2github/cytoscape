@@ -44,7 +44,8 @@ our $DEFAULT_ENRICHMENT_LIMIT = 3;
 our $cgi_version  = "v1.0";
 our $cgi_url      = "/cgi-bin/cellcircuits";
 
-our $search_url   = "http://chianti.ucsd.edu/cellcircuits/search/"; # home of index page
+#our $search_url   = "http://chianti.ucsd.edu/cellcircuits/search/"; # home of index page
+our $search_url   = "http://cellcircuits.org/search"; # home of index page
 
 our $data_url     = "/data";
 
