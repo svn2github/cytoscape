@@ -41,6 +41,7 @@
           <configuration>
             <argLine>-Xmx256m</argLine>
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
+            <useSystemClassLoader>true</useSystemClassLoader>
           </configuration>
         </plugin>
         <plugin>
@@ -329,7 +330,7 @@
       <version>${corelibs.version}</version>
     </dependency>
 
-        <!-- swingx -->	
+        <!-- swingx -->
         <dependency>
             <groupId>org.cytoscape.wrappers</groupId>
             <artifactId>com.l2fprod.common.sheet</artifactId>
