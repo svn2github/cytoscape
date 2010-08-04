@@ -10,6 +10,9 @@
   <packaging>pom</packaging>
   <name>Cytoscape Webstart</name>
 
+  <!-- This is the url is used to define the codebase of the jnlp file. -->
+  <url>${webstart.url}</url>
+
   <build>
     <plugins>
       <plugin>
@@ -24,18 +27,15 @@
           </execution>
         </executions>
         <configuration>
-
           <excludeTransitive>true</excludeTransitive>
-
           <resourcesDirectory>${project.basedir}/src/main/resources</resourcesDirectory>
-
+		  <libPath>lib</libPath>
           <jnlp>
             <inputTemplateResourcePath>${project.basedir}/src/main/jnlp</inputTemplateResourcePath>
             <inputTemplate>template.vm</inputTemplate>
             <outputFile>cytoscape.jnlp</outputFile>
             <mainClass>cytoscape.CyMain</mainClass>
           </jnlp>
-
           <!-- 
             If this is your first time using Webstart you must create a keystore:
             keytool -genkey -alias cytoscape -keypass secret
@@ -48,7 +48,6 @@
             <alias>cytoscape</alias>
             <verify>true</verify>
           </sign>
-
           <verbose>true</verbose>
         </configuration>
       </plugin>
