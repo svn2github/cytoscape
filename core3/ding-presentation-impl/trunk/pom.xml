@@ -143,6 +143,11 @@
 			<artifactId>com.l2fprod.common.sheet</artifactId>
 			<version>7.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.cytoscape.wrappers</groupId>
+			<artifactId>com.l2fprod.common.fontchooser</artifactId>
+			<version>7.3</version>
+		</dependency>
 	</dependencies>
 
 </project>
