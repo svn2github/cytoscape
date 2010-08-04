@@ -145,6 +145,16 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape.wrappers</groupId>
+			<artifactId>org.swinglabs.swingx</artifactId>
+			<version>0.9.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape.wrappers</groupId>
+			<artifactId>com.l2fprod.common.shared</artifactId>
+			<version>7.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape.wrappers</groupId>
 			<artifactId>com.l2fprod.common.fontchooser</artifactId>
 			<version>7.3</version>
 		</dependency>
