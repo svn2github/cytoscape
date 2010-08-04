@@ -1,5 +1,6 @@
 package org.cytoscape.work;
 
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -10,14 +11,12 @@ import java.util.List;
  * Abstract handler for tunables. It provides constructor for Fields and Methods that have been detected by <code>AbstractTunableInterceptor</code>, 
  * basic methods to access to the handler components, and to manage the listeners for handler events.
  * 
- * This is a super class for <code>AbstractGuiHandler</code> and <code>AbstractPropHandler</code>.
+ * This is a super class for <code>AbstractGUIHandler</code> and <code>AbstractPropHandler</code>.
  * 
  * @author pasteur
  *
  */
-
 public abstract class AbstractHandler implements Handler {
-
 	/**
 	 * Field that needs to be intercepted
 	 * 

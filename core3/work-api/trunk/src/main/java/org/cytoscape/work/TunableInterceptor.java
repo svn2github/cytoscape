@@ -36,7 +36,7 @@ public interface TunableInterceptor<T extends Handler> {
 	/**
 	 * Display the identified tunables to a user in order to allow her/him to modify their values.
 	 * <p><pre>
-	 * Create the UI with JPanels for each <code>Guihandler</code>, and display it to the user :
+	 * Create the UI with JPanels for each <code>GUIHandler</code>, and display it to the user :
 	 * 	1) In a <i>parent</i> JPanel if <code>setParent()</code> method has been called before
 	 * 		The new values will be applied to the original Objects depending on the action that has been associated to the Buttons provided by this panel.
 	 * 
@@ -60,9 +60,9 @@ public interface TunableInterceptor<T extends Handler> {
 	
 	/**
 	 * Used to update tunable's values w/ the values as provided by a user.
-	 * This method will set the value for the Object of each <code>Guihandler</code> taken from the <code>Map</code> that is containing the
+	 * This method will set the value for the Object of each <code>GUIHandler</code> taken from the <code>Map</code> that is containing the
 	 * <code>Handlers</code>.<br>
-	 * Important : the value of the <code>Guihandler</code> will be set only if its JPanel is valid.
+	 * Important : the value of the <code>GUIHandler</code> will be set only if its JPanel is valid.
 	 * @return boolean The success or failure of the validation of <code>Tunables</code>' values depending on <code>validate</code> method from <code>TunableValidator</code> interface.
 	 * <p><pre>
 	 * True if the validation of <code>Tunables</code> values is a success : the following tasks can then be executed

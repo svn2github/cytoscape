@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -91,7 +84,7 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 	/**
 	 * Creates a new AbstractTunableInterceptor object.
 	 *
-	 * @param tunableHandlerFactory  Factory of <code>Handlers</code> = can be <code>GuiHandlerFactory</code> to make the GUI with the <code>Handlers</code>,
+	 * @param tunableHandlerFactory  Factory of <code>Handlers</code> = can be <code>GUIHandlerFactory</code> to make the GUI with the <code>Handlers</code>,
 	 * 	<code>CLHandlerFactory</code> to get the <code>Handlers</code> that will create the <i>Options</i> for the <code>Tasks</code> runnable through the CommandLine Interface,
 	 *  or <code>PropHandlerFactory</code> to get the <code>Handlers</code> for Properties.
 	 */

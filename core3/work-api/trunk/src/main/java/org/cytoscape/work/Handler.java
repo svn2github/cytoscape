@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  * This interface specifies all the methods that will be applied to a <code>Handler</code>.
  * 
  * <p><pre>
- * The <code>Handler</code> can be used for the construction of the GUI (by using the <code>Guihandler</code>), 
+ * The <code>Handler</code> can be used for the construction of the GUI (by using the <code>GUIHandler</code>), 
  * or can also be used to get parameters from the command line (by using the <code>CLHandler</code>), 
  * and also to get the properties for each <code>Tunable</code> object through its <code>Handlers</code>.
  * 
