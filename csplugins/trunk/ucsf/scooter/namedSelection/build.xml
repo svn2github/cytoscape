@@ -5,7 +5,7 @@
    <property name = "build" location = "build"/>
    <property name = "build.compiler" value = "modern"/>
    <!-- path to Cytoscape under development (CVS) -->
-   <property name = "lib" location = "../../../../cytoscape"/>
+   <property name = "lib" location = "../../../../cytoscape/build/"/>
    <property name = "jar"  location = "jar"/>
    <property name = "doc" location = "doc"/>
 
@@ -58,7 +58,7 @@
 
    <!-- Target to Run JavaDoc -->
     <target name="doc" description="Runs JavaDoc.">
-        <javadoc packagenames="metaNodePlugin2.*" sourcepath="src" source="1.5" destdir="doc"
+        <javadoc packagenames="namedSelection.*" sourcepath="src" source="1.5" destdir="doc"
 			 classpathref="classpath_release" >
         <link href = "http://java.sun.com/j2se/1.4.2/docs/api/"/>
         <link href = "http://csbi.sourceforge.net/API/"/>

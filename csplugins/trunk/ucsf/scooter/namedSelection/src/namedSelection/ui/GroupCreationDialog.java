@@ -39,6 +39,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -50,10 +51,13 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
+
+import namedSelection.NamedSelection;
 
 // System imports
 import javax.swing.JDialog;
@@ -65,6 +69,7 @@ import javax.swing.JDialog;
 public class GroupCreationDialog extends JDialog implements ActionListener {
 	JTextField groupNameField = null;
 	JComboBox viewerChoices = null;
+	JCheckBox globalGroup = null;
 	List<CyGroupViewer>viewerList = null;
 	List<CyNode>currentNodes = null;
 	CyGroup group = null;
@@ -90,6 +95,11 @@ public class GroupCreationDialog extends JDialog implements ActionListener {
 		textPane.add(groupLabel);
 		textPane.add(groupNameField);
 		contentPane.add(textPane);
+
+		// Add a checkbox for global vs. local group
+		globalGroup = new JCheckBox("Global group: ");
+		contentPane.add(globalGroup);
+
 
 		// See if we need to handle the viewer issue....
 		if (viewerList.size() > 1) {
@@ -143,8 +153,15 @@ public class GroupCreationDialog extends JDialog implements ActionListener {
 				String viewerName = (String)viewerChoices.getSelectedItem();
 				viewer = CyGroupManager.getGroupViewer(viewerName);
 			} 
+
+			// Now, see if this is a global group
+			CyNetwork network;
+			if (globalGroup.isSelected())
+				network = null;
+			else
+				network = Cytoscape.getCurrentNetwork();
 			// Create the group
-			group = CyGroupManager.createGroup(groupName, currentNodes, null);
+			group = CyGroupManager.createGroup(groupName, currentNodes, null, network);
 			// Already there?
 			if (group == null) {
 				// Warn the user and return
@@ -152,6 +169,8 @@ public class GroupCreationDialog extends JDialog implements ActionListener {
 				return;
 			}
 			CyGroupManager.setGroupViewer(group, viewer.getViewerName(), Cytoscape.getCurrentNetworkView(), true);
+			if (viewer.getViewerName().equals(NamedSelection.viewerName))
+				group.setState(NamedSelection.SELECTED);
 			setVisible(false);
 		}
 	}
