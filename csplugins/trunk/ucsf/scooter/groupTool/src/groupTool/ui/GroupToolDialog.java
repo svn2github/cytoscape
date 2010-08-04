@@ -35,8 +35,6 @@ package groupTool.ui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.HashMap;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -53,7 +51,10 @@ import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.*;
 
-import cytoscape.groups.*;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupChangeListener;
+import cytoscape.groups.CyGroupManager;
+import cytoscape.groups.CyGroupViewer;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -115,7 +116,8 @@ public class GroupToolDialog extends JDialog
 		this.groupTable = new JTable(sorter);
 		sorter.setTableHeader(groupTable.getTableHeader());
 
-		setUpViewerRenderer(groupTable, groupTable.getColumnModel().getColumn(4));
+		setUpViewerRenderer(groupTable);
+		setUpNetworkRenderer(groupTable);
 		groupTable.setCellSelectionEnabled(true);
 		ListSelectionModel lsm = groupTable.getSelectionModel();
 		lsm.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -189,13 +191,14 @@ public class GroupToolDialog extends JDialog
 			List<CyGroup> groupList = CyGroupManager.getGroupList();
 			String groupName = JOptionPane.showInputDialog("Please enter a name for this group");
 			if (groupName == null) return;
-			CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, null);
+			CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, null, network);
 		} else if ("delete".equals(e.getActionCommand())) {
 			// Don't listen until we're done
 			CyGroupManager.removeGroupChangeListener(this);
 			int rows[] = groupTable.getSelectedRows();
 			for (int row = 0; row < rows.length; row++) {
-				String groupName = (String) groupTable.getValueAt(rows[row], 0);
+				String groupName = (String) groupTable.getValueAt(rows[row], 
+				                                                  Columns.getColumnNumber(Columns.NAME));
 				CyGroup group = CyGroupManager.findGroup(groupName);
 				if (group == null) continue;
 				CyGroupManager.removeGroup(group);
@@ -214,7 +217,8 @@ public class GroupToolDialog extends JDialog
 			if (rows == null) return;
 			int cols[] = groupTable.getSelectedColumns();
 			for (int row = 0; row < rows.length; row++) {
-				String groupName = (String) groupTable.getValueAt(rows[row], 0);
+				String groupName = (String) groupTable.getValueAt(rows[row], 
+				                                                  Columns.getColumnNumber(Columns.NAME));
 				CyGroup group = CyGroupManager.findGroup(groupName);
 				if (group == null) continue;
 
@@ -224,14 +228,30 @@ public class GroupToolDialog extends JDialog
 					if ("clear".equals(e.getActionCommand())) 
 						state = false;
 
-					if (cols[col] == 1 || cols[col] == 0) {
+					Columns column = Columns.getColumn(cols[col]);
+
+					switch (column) {
+					case NAME:
 						Cytoscape.getCurrentNetwork().setSelectedNodeState(group.getGroupNode(), state);
 						Cytoscape.getCurrentNetwork().setSelectedNodeState(group.getNodes(), state);
-					}
-					if (cols[col] == 2 || cols[col] == 0)
 						Cytoscape.getCurrentNetwork().setSelectedEdgeState(group.getInnerEdges(), state);
-					if (cols[col] == 3 || cols[col] == 0)
 						Cytoscape.getCurrentNetwork().setSelectedEdgeState(group.getOuterEdges(), state);
+						break;
+
+					case NODES:
+						Cytoscape.getCurrentNetwork().setSelectedNodeState(group.getGroupNode(), state);
+						Cytoscape.getCurrentNetwork().setSelectedNodeState(group.getNodes(), state);
+						break;
+
+					case INTERNAL:
+						Cytoscape.getCurrentNetwork().setSelectedEdgeState(group.getInnerEdges(), state);
+						break;
+
+					case EXTERNAL:
+						Cytoscape.getCurrentNetwork().setSelectedEdgeState(group.getOuterEdges(), state);
+						break;
+					}
+
 				}
 			}
 			Cytoscape.getCurrentNetworkView().updateView();
@@ -242,12 +262,12 @@ public class GroupToolDialog extends JDialog
 		}
 	}
 
-	private void setUpViewerRenderer(JTable table, TableColumn viewerColumn) {
+	private void setUpViewerRenderer(JTable table) {
+		int viewerCol = Columns.getColumnNumber(Columns.VIEWER);
+		TableColumn viewerColumn = groupTable.getColumnModel().getColumn(viewerCol);
 		JComboBox vBox = new JComboBox();
 		Collection<CyGroupViewer> viewers = CyGroupManager.getGroupViewers();
-		Iterator <CyGroupViewer> vIter = viewers.iterator();
-		while (vIter.hasNext()) {
-			CyGroupViewer gv = vIter.next();
+		for (CyGroupViewer gv: viewers) {
 			vBox.addItem(gv.getViewerName());
 		}
 		DefaultCellEditor editor = new DefaultCellEditor(vBox);
@@ -255,21 +275,65 @@ public class GroupToolDialog extends JDialog
 		viewerColumn.setCellEditor(editor);
 	}
 
+	private void setUpNetworkRenderer(JTable table) {
+		int netCol = Columns.getColumnNumber(Columns.NETWORK);
+		TableColumn networkColumn = groupTable.getColumnModel().getColumn(netCol);
+		JComboBox vBox = new JComboBox();
+		// Get the list of networks
+		Collection<CyNetwork> networks = Cytoscape.getNetworkSet();
+		for (CyNetwork net: networks) {
+			vBox.addItem(net.getTitle());
+		}
+		vBox.addItem("Global");
+		DefaultCellEditor editor = new DefaultCellEditor(vBox);
+		editor.addCellEditorListener(this);
+		networkColumn.setCellEditor(editor);
+	}
+
 	public void editingCanceled(ChangeEvent e) { }
 
 	public void editingStopped(ChangeEvent e) {
 		int row = groupTable.getSelectedRow();
 		int col = groupTable.getSelectedColumn();
-		if (row == -1 || col != 4) return;
+		if (row == -1) return;
 
-		DefaultCellEditor editor = (DefaultCellEditor)e.getSource();
-		String viewerName = (String) editor.getCellEditorValue();
-		String oldViewerName = (String)groupTable.getValueAt(row,col);
-		if (viewerName.equals(oldViewerName)) return;
+		Columns column = Columns.getColumn(col);
 		CyGroup group = tableModel.getGroupAtRow(row);
+		DefaultCellEditor editor = (DefaultCellEditor)e.getSource();
 
-		// Set the new viewer
-		CyGroupManager.setGroupViewer(group, viewerName, Cytoscape.getCurrentNetworkView(), true);
+		switch (column) {
+			case VIEWER:
+				String viewerName = (String) editor.getCellEditorValue();
+				String oldViewerName = (String)groupTable.getValueAt(row,col);
+				if (viewerName.equals(oldViewerName)) return;
+
+				// Set the new viewer
+				CyGroupManager.setGroupViewer(group, viewerName, Cytoscape.getCurrentNetworkView(), true);
+				break;
+
+			case NETWORK:
+				String networkName = (String) editor.getCellEditorValue();
+				String oldNetworkName = (String)groupTable.getValueAt(row,col);
+				if (networkName.equals(oldNetworkName)) return;
+
+				// OK, update the network
+
+				if (networkName.equals("Global")) {
+					group.setNetwork(null, true);
+					return;
+				}
+
+				Collection<CyNetwork> networks = Cytoscape.getNetworkSet();
+				for (CyNetwork network: networks) {
+					if (network.getTitle().equals(networkName)) {
+						group.setNetwork(network, true);
+						return;
+					}
+				}
+				break;
+				
+		}
+		return;
 	}
 
 	public void valueChanged (ListSelectionEvent e) {

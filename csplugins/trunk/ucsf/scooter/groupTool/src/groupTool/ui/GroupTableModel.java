@@ -32,28 +32,17 @@
  */
 package groupTool.ui;
 
+import javax.swing.table.AbstractTableModel;
+
 // System imports
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.HashMap;
-
-import javax.swing.*;
-import javax.swing.table.*;
-import javax.swing.event.*;
-import javax.swing.text.Position;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.*;
 
 // Cytoscape imports
 import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.view.CyNetworkView;
-import cytoscape.groups.*;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
+
 
 /**
  * The GroupTableModel class provides the table model used by the GroupToolDialog
@@ -63,8 +52,6 @@ import cytoscape.groups.*;
  */
 public class GroupTableModel 
              extends AbstractTableModel {
-
-	private static final String[] columnNames = {"Group Name", "Nodes", "Internal Edges", "External Edges", "Viewer"};
 
 	private GroupToolDialog groupDialog = null;
 	private List<CyGroup> groupList = null;
@@ -93,7 +80,7 @@ public class GroupTableModel
 	 *
 	 * @return 5
 	 */
-	public int getColumnCount() { return columnNames.length; }
+	public int getColumnCount() { return Columns.columnCount(); }
 
 	/**
 	 * Return the value at the requested row and column.  In our case
@@ -107,17 +94,28 @@ public class GroupTableModel
 	 */
 	public Object getValueAt(int row, int col) {
 		CyGroup group = groupList.get(row);
-		if (col == 0) {
+
+		Columns column = Columns.getColumn(col);
+		switch (column) {
+
+		case NAME:
 			return group.getGroupName();
-		} else if (col == 1) {
-			return new Integer(group.getNodes().size());
-		} else if (col == 2) {
+		case NETWORK:
+			CyNetwork net = group.getNetwork();
+			if (net != null)
+				return net.getTitle();
+			return "Global";
+		case INTERNAL:
 			return new Integer(group.getInnerEdges().size());
-		} else if (col == 3) {
+		case EXTERNAL:
 			return new Integer(group.getOuterEdges().size());
-		} else if (col == 4) {
+		case NODES:
+			return new Integer(group.getNodes().size());
+		case VIEWER:
 			return group.getViewer();
+
 		}
+
 		return null;
 	}
 
@@ -129,7 +127,8 @@ public class GroupTableModel
 	 * @return false
 	 */
 	public boolean isCellEditable(int row, int col) {
-		if (col == 4) 
+		Columns column = Columns.getColumn(col);
+		if (column == Columns.VIEWER || column == Columns.NETWORK) 
 			return true;
 
 		return false;
@@ -142,7 +141,7 @@ public class GroupTableModel
 	 * @return column name as a String
 	 */
 	public String getColumnName(int col) {
-		return columnNames[col];
+		return Columns.getColumnName(col);
 	}
 
 	/**
@@ -153,9 +152,7 @@ public class GroupTableModel
 	 * @return object Class of this column
 	 */
 	public Class getColumnClass(int c) {
-		if (c == 0 || c == 4) return String.class;
-
-		return Integer.class;
+		return Columns.getColumn(c).getColumnClass();
 	}
 
 	public CyGroup getGroupAtRow(int row) {

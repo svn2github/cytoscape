@@ -226,7 +226,7 @@ public class CreateByAttributeDialog extends JDialog
 					CyGroupManager.removeGroup(group);
 				}
 
-				group = CyGroupManager.createGroup(groupName, nodeList, viewer);
+				group = CyGroupManager.createGroup(groupName, nodeList, viewer, network);
 				// nodeAttributes.setAttribute(groupName, attribute, groupName);
 				CyGroupViewer groupViewer = CyGroupManager.getGroupViewer(viewer);
 				groupViewer.groupCreated(group);
