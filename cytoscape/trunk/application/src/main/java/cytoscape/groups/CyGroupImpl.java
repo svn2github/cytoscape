@@ -86,6 +86,12 @@ public class CyGroupImpl implements CyGroup {
 	private HashMap<CyNode,List<CyEdge>> nodeToEdgeMap;
 
 	/**
+	 * This is the network that this group is part of.  If this
+	 * is null, it's a global group.
+	 */
+	private CyNetwork network = null;
+
+	/**
 	 * The node that represents this group
 	 */
 	private CyNode groupNode = null;
@@ -122,6 +128,7 @@ public class CyGroupImpl implements CyGroup {
 		this.nodeToEdgeMap = new HashMap();
 		this.innerEdgeMap = new HashMap();
 		this.outerEdgeMap = new HashMap();
+		this.network = null;
 	}
 
 	/**
@@ -153,13 +160,11 @@ public class CyGroupImpl implements CyGroup {
 	 * @param groupNode the group node to use for this group
 	 * @param nodeList the initial set of nodes for this group
 	 */
-	protected CyGroupImpl(CyNode groupNode, List nodeList) {
+	protected CyGroupImpl(CyNode groupNode, List<CyNode> nodeList) {
 		this(groupNode); // Create all of the necessary structures
 
-		Iterator iter = nodeList.iterator();
-
-		while (iter.hasNext()) {
-			this.addNodeToGroup ( (CyNode)iter.next() );
+		for (CyNode node: nodeList) {
+			this.addNodeToGroup ( node );
 		}
 	}
 
@@ -261,6 +266,41 @@ public class CyGroupImpl implements CyGroup {
 	 */
 	public void addInnerEdge(CyEdge edge) {
 		innerEdgeMap.put(edge, edge);
+	}
+
+	/**
+	 * Get the network this group is a member of
+	 *
+	 * @return the network, or null if this is a global group
+	 */
+	public CyNetwork getNetwork() {
+		return network;
+	}
+
+	/**
+	 * Set (or change) the network fro this group
+	 *
+	 * @param network the network to change this group to
+	 * @param notify whether to notify any viewers
+	 */
+	public void setNetwork(CyNetwork network, boolean notify) {
+
+		// Change our attribute
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		if (network != null)
+			nodeAttributes.setAttribute(groupNode.getIdentifier(), CyGroup.GROUP_LOCAL_ATTR, Boolean.TRUE);
+		else
+			nodeAttributes.setAttribute(groupNode.getIdentifier(), CyGroup.GROUP_LOCAL_ATTR, Boolean.FALSE);
+			
+		if (notify && this.network != network) {
+			// Get our viewer
+			CyGroupViewer v = CyGroupManager.getGroupViewer(this.viewer);
+			if (v != null) {
+				// Tell the viewer that something has changed
+				v.groupChanged(this, null, CyGroupViewer.ChangeType.NETWORK_CHANGED);
+			}
+		}
+		this.network = network;
 	}
 
 	/**
@@ -370,22 +410,22 @@ public class CyGroupImpl implements CyGroup {
 	 * @param node the node to add
 	 */
 	public void addNode ( CyNode node ) {
+		// First see if this node is already in this group
+		if (nodeToEdgeMap.containsKey(node))
+			return;
+
 		// We need to go throught our outerEdgeMap first to see if this
 		// node has outer edges and proactively move them to inner edges.
 		// this needs to be done here because some viewers might have
 		// hidden edges on us, so the the call to getAdjacentEdgeIndices in
 		// addNodeToGroup won't return all of the edges.
 		List <CyEdge> eMove = new ArrayList<CyEdge>();
-		Iterator <CyEdge>edgeIter = outerEdgeMap.keySet().iterator();
-		while (edgeIter.hasNext()) {
-			CyEdge edge = edgeIter.next();
+		for (CyEdge edge: outerEdgeMap.keySet()) {
 			if (edge.getTarget() == node || edge.getSource() == node) {
 				eMove.add(edge);
 			}
 		}
-		edgeIter = eMove.iterator();
-		while (edgeIter.hasNext()) {
-			CyEdge edge = edgeIter.next();
+		for (CyEdge edge: eMove) {
 			outerEdgeMap.remove(edge);
 			innerEdgeMap.put(edge,edge);
 		}
@@ -428,7 +468,11 @@ public class CyGroupImpl implements CyGroup {
 	private void addNodeToGroup ( CyNode node ) {
 		// Put this node in our map
 		nodeMap.put(node, node);
-		CyNetwork network = Cytoscape.getCurrentNetwork();
+		CyNetwork groupNetwork = this.network;
+
+		if (groupNetwork == null)
+			groupNetwork = Cytoscape.getCurrentNetwork();
+
 		List <CyEdge>edgeList = null;
 
 		if (nodeToEdgeMap.containsKey(node)) {
@@ -438,11 +482,11 @@ public class CyGroupImpl implements CyGroup {
 		}
 
 		// Add all of the edges
-		int [] edgeArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(),true,true,true);
+		int [] edgeArray = groupNetwork.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(),true,true,true);
 		if (edgeArray == null)
 			edgeArray = new int[]{};
 		for (int edgeIndex = 0; edgeIndex < edgeArray.length; edgeIndex++) {
-			CyEdge edge = (CyEdge)network.getEdge(edgeArray[edgeIndex]);
+			CyEdge edge = (CyEdge)groupNetwork.getEdge(edgeArray[edgeIndex]);
 			// Not sure if this is faster or slower than going through the entire loop
 			if (edgeList.contains(edge))
 				continue;
@@ -486,8 +530,7 @@ public class CyGroupImpl implements CyGroup {
 
 		// Get the list of edges
 		List <CyEdge>edgeArray = nodeToEdgeMap.get(node);
-		for (Iterator <CyEdge>iter = edgeArray.iterator(); iter.hasNext(); ) {
-			CyEdge edge = iter.next();
+		for (CyEdge edge: edgeArray) {
 			if (innerEdgeMap.containsKey(edge)) {
 				innerEdgeMap.remove(edge);
 				outerEdgeMap.put(edge,edge);

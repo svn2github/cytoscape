@@ -257,7 +257,7 @@ public class XGMMLWriter {
 		for (int i = 0; i < 20; i++) 
 			indentString += "                        ";
 
-        doFullEncoding = Boolean.valueOf(System.getProperty(ENCODE_PROPERTY, "true"));
+		doFullEncoding = Boolean.valueOf(System.getProperty(ENCODE_PROPERTY, "true"));
 	}
 
 	/**
@@ -304,7 +304,13 @@ public class XGMMLWriter {
 
 		// Output our nodes
 		writeNodes();
-		writeGroups();
+
+		// Output any global groups
+		writeGroups(null);
+
+		// Now, output our groups
+		// Output any global groups
+		writeGroups(network);
 
 		// Create edge objects
 		writeEdges();
@@ -430,7 +436,7 @@ public class XGMMLWriter {
 	 * @param node the node to output
 	 * @throws IOException
 	 */
-	private void writeNode(CyNode node, List<CyNode> groupList) throws IOException {
+	private void writeNode(CyNode node, CyGroup group) throws IOException {
 		// Make sure this node is in this network
 		// if (!node.isaGroup() && !network.containsNode(node))
 		// 	return;
@@ -449,32 +455,14 @@ public class XGMMLWriter {
 				writeAttribute(node.getIdentifier(), nodeAttributes, nodeAttNames[att]);
 		}
 
-		if (groupList != null && groupList.size() > 0) {
-			// If we're a group, output the graph attribute now
-			writeElement("<att>\n");
-			depth++;
-			writeElement("<graph>\n");
-			depth++;
-			for (CyNode childNode: groupList) {
-				if (childNode.isaGroup()) {
-					// We have an embedded group -- recurse
-					CyGroup childGroup = CyGroupManager.getCyGroup(childNode);
-					writeNode(childGroup.getGroupNode(), childGroup.getNodes());
-				} else {
-					if (nodeMap.containsKey(childNode))
-						writeElement("<node xlink:href=\"#"+childNode.getRootGraphIndex()+"\"/>\n");
-					else
-						writeNode(childNode, null);
-				}
-			}
-			depth--; writeElement("</graph>\n");
-			depth--; writeElement("</att>\n");
+		if (group != null) {
+			writeGroup(group);
 		}
 
-        if (networkView != null) {
-            // Output the node graphics if we have a view
-            writeNodeGraphics(node, (NodeView)networkView.getNodeView(node));
-        }
+		if (networkView != null) {
+			// Output the node graphics if we have a view
+			writeNodeGraphics(node, (NodeView)networkView.getNodeView(node));
+		}
 
 		depth--;
 		writeElement("</node>\n");
@@ -565,17 +553,19 @@ public class XGMMLWriter {
 			networkView.hideGraphObject(nodeView);
 	}
 
-	private void writeGroups() throws IOException {
+	private void writeGroups(CyNetwork groupNetwork) throws IOException {
 		// Two pass approach. First, walk through the list
 		// and see if any of the children of a group are
 		// themselves a group. If so, remove them from
 		// the list & will pick them up on recursion, but only
 		// if all of the non-group node members are in
 		// this graph perspective
-		List <CyGroup> groupList = (ArrayList) CyGroupManager.getGroupList();
 
-		if ((groupList == null) || groupList.isEmpty())
+		List <CyGroup> groupList = (ArrayList) CyGroupManager.getGroupList(groupNetwork);
+
+		if ((groupList == null) || groupList.isEmpty()) {
 			return;
+		}
 
 		HashMap<CyGroup,CyGroup> embeddedGroupList = new HashMap();
 		List<CyGroup> groupsToWrite = new ArrayList();
@@ -606,23 +596,39 @@ public class XGMMLWriter {
 			if (embeddedGroupList.containsKey(group))
 				continue; // Yes, skip it
 
-			writeNode(group.getGroupNode(), group.getNodes());
+			writeNode(group.getGroupNode(), group);
 		}
 	}
 
 	/**
-	 * Output Cytoscape edges as XGMML
+	 * Write out a group
 	 *
+	 * @param group the group to output
 	 * @throws IOException
 	 */
-	private void writeEdges() throws IOException {
-		for (CyEdge curEdge: (List<CyEdge>)network.edgesList()) {
-			edgeMap.put(curEdge,curEdge);
-			writeEdge(curEdge);
-		}
+	private void writeGroup(CyGroup group) throws IOException {
 
-		// Now add all of the group edges in case they're hidden
-		for (CyGroup group: CyGroupManager.getGroupList()) {
+		List<CyNode> groupList = group.getNodes();
+		if (groupList != null && groupList.size() > 0) {
+			// If we're a group, output the graph attribute now
+			writeElement("<att>\n");
+			depth++;
+			writeElement("<graph>\n");
+			depth++;
+			for (CyNode childNode: groupList) {
+				if (childNode.isaGroup()) {
+					// We have an embedded group -- recurse
+					CyGroup childGroup = CyGroupManager.getCyGroup(childNode);
+					writeNode(childGroup.getGroupNode(), childGroup);
+				} else {
+					if (nodeMap.containsKey(childNode))
+						writeElement("<node xlink:href=\"#"+childNode.getRootGraphIndex()+"\"/>\n");
+					else
+						writeNode(childNode, null);
+				}
+			}
+
+			// Now, output the edges for this group
 			for (CyEdge edge: group.getInnerEdges()) {
 				if (!edgeMap.containsKey(edge)) {
 					edgeMap.put(edge,edge);
@@ -635,6 +641,21 @@ public class XGMMLWriter {
 					writeEdge(edge);
 				}
 			}
+
+			depth--; writeElement("</graph>\n");
+			depth--; writeElement("</att>\n");
+		}
+	}
+
+	/**
+	 * Output Cytoscape edges as XGMML
+	 *
+	 * @throws IOException
+	 */
+	private void writeEdges() throws IOException {
+		for (CyEdge curEdge: (List<CyEdge>)network.edgesList()) {
+			edgeMap.put(curEdge,curEdge);
+			writeEdge(curEdge);
 		}
 	}
 
@@ -663,10 +684,10 @@ public class XGMMLWriter {
 				writeAttribute(curEdge.getIdentifier(), edgeAttributes, edgeAttNames[att]);
 		}
 
-        if (networkView != null) {
-            // Write the edge graphics
-            writeEdgeGraphics(curEdge, (EdgeView)networkView.getEdgeView(curEdge));
-        }
+		if (networkView != null) {
+			// Write the edge graphics
+			writeEdgeGraphics(curEdge, (EdgeView)networkView.getEdgeView(curEdge));
+		}
 
 		depth--;
 		writeElement("</edge>\n");

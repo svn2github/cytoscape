@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 
 
@@ -69,6 +70,11 @@ public interface CyGroup {
 	 * The attribute key to use for group state
 	 */
 	public static final String GROUP_STATE_ATTR = "__groupState";
+
+	/**
+	 * The attribute that indicates that this is a local group
+	 */
+	public static final String GROUP_LOCAL_ATTR = "__groupIsLocal";
 
 	// Public methods
 
@@ -111,6 +117,21 @@ public interface CyGroup {
 	 * @return list of edges in the group
 	 */
 	public List<CyEdge> getOuterEdges();
+
+	/**
+	 * Get the network for this group
+	 *
+	 * @return network for this group or "null" if this is a global group
+	 */
+	public CyNetwork getNetwork();
+
+	/**
+	 * Set the network for this group
+	 *
+	 * @param network the network for this group or "null" if this is a global group
+	 * @param notify notify listeners of the change
+	 */
+	public void setNetwork(CyNetwork network, boolean notify);
 
 	/**
 	 * Add an outer edge to the map.  Some viewers may need to do this

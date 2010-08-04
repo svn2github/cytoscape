@@ -40,7 +40,6 @@ package cytoscape.groups;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -78,9 +77,24 @@ public class CyGroupManager {
 	private static Map<CyGroupViewer, List<CyGroup>> groupViewerMap = new HashMap<CyGroupViewer, List<CyGroup>>();
 
 	/**
+	 * The list of groups, indexed by the network
+	 */
+	private static Map<CyNetwork, List<CyGroup>> networkGroupMap = new HashMap<CyNetwork, List<CyGroup>>();
+
+	/**
 	 * The list of group change listeners
 	 */
 	private static List<CyGroupChangeListener> changeListeners = new ArrayList<CyGroupChangeListener>();
+
+	/**
+	 * The internal group map for global groups
+	 */
+	private static CyNetwork GLOBAL_GROUPS = Cytoscape.getNullNetwork();
+
+	/**
+	 * Initialize our property change listener
+	 */
+	private static GroupPropertyChangeListener gpcl = new GroupPropertyChangeListener();
 
 	// Static methods
 	/**
@@ -106,11 +120,8 @@ public class CyGroupManager {
 	 */
 	public static List<CyGroup> getGroup(CyNode memberNode) {
 		List<CyGroup> groupList = new ArrayList<CyGroup>();
-		final Iterator<CyGroup> groupIter = groupMap.values().iterator();
 
-		while (groupIter.hasNext()) {
-			CyGroup group = groupIter.next();
-
+		for (CyGroup group: groupMap.values()) {
 			if (group.contains(memberNode))
 				groupList.add(group);
 		}
@@ -130,6 +141,24 @@ public class CyGroupManager {
 		Collection<CyGroup> c = groupMap.values();
 
 		return new ArrayList<CyGroup>(c);
+	}
+
+	/**
+	 * Return the list of all groups for this network
+	 *
+	 * @param network the network we're interested in.  If network is null, return
+	 * the list of global groups
+	 * @return the list of groups
+	 */
+	public static List<CyGroup> getGroupList(CyNetwork network) {
+		if (network == null) {
+			network = GLOBAL_GROUPS;
+		}
+
+		if (networkGroupMap.containsKey(network))
+			return networkGroupMap.get(network);
+
+		return new ArrayList();
 	}
 
 	/**
@@ -175,14 +204,16 @@ public class CyGroupManager {
 	 *
 	 * @param groupName the identifier to use for this group -- should be unique!
 	 * @param viewer the name of the viewer to manage this group
+	 * @param network the network that this group is in
 	 * @return the newly created group
 	 */
-	public static CyGroup createGroup(String groupName, String viewer) {
+	public static CyGroup createGroup(String groupName, String viewer, CyNetwork network) {
 		// Do we already have a group by this name?
 		if (findGroup(groupName) != null) return null;
 		// Create the group
 		CyGroup group = new CyGroupImpl(groupName);
 		groupMap.put(group.getGroupNode(), group);
+		setGroupNetwork(group, network);
 		notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_CREATED);
 		setGroupViewer(group, viewer, null, true);
 		return group;
@@ -197,13 +228,15 @@ public class CyGroupManager {
 	 * @param groupName the identifier to use for this group -- should be unique!
 	 * @param nodeList the initial set of nodes for this group
 	 * @param viewer the name of the viewer to manage this group
+	 * @param network the network that this group is in
 	 */
-	public static CyGroup createGroup(String groupName, List<CyNode> nodeList, String viewer) {
+	public static CyGroup createGroup(String groupName, List<CyNode> nodeList, String viewer, CyNetwork network) {
 		// Do we already have a group by this name?
 		if (findGroup(groupName) != null) return null;
 		// Create the group
 		CyGroup group = new CyGroupImpl(groupName, nodeList);
 		groupMap.put(group.getGroupNode(), group);
+		setGroupNetwork(group, network);
 		notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_CREATED);
 		setGroupViewer(group, viewer, null, false);
 		return group;
@@ -219,8 +252,9 @@ public class CyGroupManager {
 	 * @param groupNode the groupNode to use for this group
 	 * @param nodeList the initial set of nodes for this group
 	 * @param viewer the name of the viewer to manage this group
+	 * @param network the network that this group is in
 	 */
-	public static CyGroup createGroup(CyNode groupNode, List<CyNode> nodeList, String viewer) {
+	public static CyGroup createGroup(CyNode groupNode, List<CyNode> nodeList, String viewer, CyNetwork network) {
 		// Do we already have a group by this name?
 		if (findGroup(groupNode.getIdentifier()) != null) return null;
 		// Create the group
@@ -239,11 +273,59 @@ public class CyGroupManager {
 			group.setState(state);
 		} catch (Exception e) {}
 
+		setGroupNetwork(group, network);
+
 		notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_CREATED);
 
 		if (viewer != null)
 			setGroupViewer(group, viewer, null, true);
 		return group;
+	}
+
+	/**
+	 * Create a new, empty group.  Use this to get a new group.  In particular,
+	 * this form should be used by internal routines (as opposed to view
+	 * implementations) as this form will cause the viewer to be notified of
+	 * the group creation.  Viewers should use createGroup(String, List, String)
+	 * as defined below.
+	 *
+	 * @param groupName the identifier to use for this group -- should be unique!
+	 * @param viewer the name of the viewer to manage this group
+	 * @return the newly created group
+	 */
+	public static CyGroup createGroup(String groupName, String viewer) {
+		return createGroup(groupName, viewer, null);
+	}
+
+	/**
+	 * Create a new, empty group.  Use this to get a new group.  In particular,
+	 * this form should be used by internal routines (as opposed to view
+	 * implementations) as this form will cause the viewer to be notified of
+	 * the group creation.  Viewers should use createGroup(String, List, String)
+	 * as defined below.
+	 *
+	 * @param groupName the identifier to use for this group -- should be unique!
+	 * @param nodeList the initial set of nodes for this group
+	 * @param viewer the name of the viewer to manage this group
+	 * @return the newly created group
+	 */
+	public static CyGroup createGroup(String groupName, List<CyNode>nodeList, String viewer) {
+		return createGroup(groupName, nodeList, viewer, null);
+	}
+
+	/**
+	 * Create a new group with a list of nodes as initial members, and a precreated
+	 * group node.  This is usually used by the XGMML reader since the group node
+	 * may need to alread be created with its associated "extra" edges.  Note that
+	 * the node will be created, but *not* added to the network.  That is the
+	 * responsibility of the appropriate viewer.
+	 *
+	 * @param groupNode the groupNode to use for this group
+	 * @param nodeList the initial set of nodes for this group
+	 * @param viewer the name of the viewer to manage this group
+	 */
+	public static CyGroup createGroup(CyNode groupNode, List<CyNode> nodeList, String viewer) {
+		return createGroup(groupNode, nodeList, viewer, null);
 	}
 
 	/**
@@ -267,6 +349,7 @@ public class CyGroupManager {
 			// Remove this from the viewer's list
 			CyGroup group = groupMap.get(groupNode);
 			String viewer = group.getViewer();
+			CyNetwork network = group.getNetwork();
 
 			if ((viewer != null) && viewerMap.containsKey(viewer)) {
 				CyGroupViewer groupViewer = viewerMap.get(viewer);
@@ -274,18 +357,25 @@ public class CyGroupManager {
 				gList.remove(group);
 			}
 
+			if ((network != null) && networkGroupMap.containsKey(network)) {
+				List<CyGroup> gList = networkGroupMap.get(network);
+				gList.remove(group);
+
+				if (gList.size() == 0) 
+					networkGroupMap.remove(network);
+			}
+
 			// Remove it from the groupMap
 			groupMap.remove(groupNode);
 
 			// Remove this group from all the nodes
 			List<CyNode> nodeList = group.getNodes();
-			Iterator <CyNode> nIter = nodeList.iterator();
-			while (nIter.hasNext()) {
-				CyNode node = nIter.next();
+			for (CyNode node: nodeList) {
 				node.removeFromGroup(group);
 			}
 
-			CyNetwork network = Cytoscape.getCurrentNetwork();
+			if (network == null) 
+				network = Cytoscape.getCurrentNetwork();
 			network.removeNode(groupNode.getRootGraphIndex(), false);
 			// Remove the group node form the network
 			// RootGraph rg = groupNode.getRootGraph();
@@ -334,6 +424,8 @@ public class CyGroupManager {
 	 * @param notify if 'true' the viewer will be notified of the creation
 	 */
 	public static void setGroupViewer(CyGroup group, String viewer, CyNetworkView myView, boolean notify) {
+		if (group == null) return;
+
 		// See if we need to remove the current viewer first
 		if (group.getViewer() != null) {
 			// get the viewer
@@ -437,9 +529,32 @@ public class CyGroupManager {
 	 * @param whatChanged the thing that has changed about the group
 	 */
 	private static void notifyListeners(CyGroup group, CyGroupChangeListener.ChangeType whatChanged) {
-		Iterator <CyGroupChangeListener> listeners = changeListeners.iterator();
-		while (listeners.hasNext()) {
-			(listeners.next()).groupChanged(group, whatChanged);
+		for (CyGroupChangeListener listener: changeListeners) {
+			listener.groupChanged(group, whatChanged);
 		}
 	}
+
+
+	/**
+	 * Maintain the network group map
+	 *
+	 * @param group the group we're adding to the map
+	 * @param network the network -- if it's null, we're adding it to the global map
+	 */
+	private static void setGroupNetwork(CyGroup group, CyNetwork network) {
+		group.setNetwork(network, false);
+		if (network == null)
+			network = GLOBAL_GROUPS;
+
+		List<CyGroup> groupList = null;
+
+		if (!networkGroupMap.containsKey(network)) {
+			groupList = new ArrayList<CyGroup>();
+		} else {
+			groupList = networkGroupMap.get(network);
+		}
+		groupList.add(group);
+		networkGroupMap.put(network, groupList);
+	}
+
 }

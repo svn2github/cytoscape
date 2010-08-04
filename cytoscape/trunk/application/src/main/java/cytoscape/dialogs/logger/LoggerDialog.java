@@ -110,8 +110,8 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler,Pr
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {
         for (LogLevel key : this.messageMap.keySet()) {
             this.messageMap.get(key).clear();
-            ((JEditorPane) this.logTabMap.get(key).getViewport().getView()).setText(
-                "");
+						if (this.logTabMap.containsKey(key)) 
+            	((JEditorPane) this.logTabMap.get(key).getViewport().getView()).setText("");
         }
     }
 

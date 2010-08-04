@@ -671,9 +671,9 @@ public class XGMMLReader extends AbstractGraphReader {
 
 
 	/**
-	 *  DOCUMENT ME!
+	 *  This method does all of our postprocessing after reading and parsing the file
 	 *
-	 * @param network DOCUMENT ME!
+	 * @param network the network we've read in
 	 */
 	public void doPostProcessing(final CyNetwork network) {
 		parser.setMetaData(network);
@@ -696,6 +696,12 @@ public class XGMMLReader extends AbstractGraphReader {
 			for (CyNode groupNode : groupMap.keySet()) {
 				List<CyNode> childList = groupMap.get(groupNode);
 				viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(), CyGroup.GROUP_VIEWER_ATTR);
+				boolean isLocal = nodeAttributes.getBooleanAttribute(groupNode.getIdentifier(), CyGroup.GROUP_LOCAL_ATTR);
+
+				CyNetwork groupNetwork = null;
+
+				if (isLocal)
+					groupNetwork = network;
 
 				// Note that we need to leave the group node in the network so that the saved
 				// location information (if there is any) can be utilized by the group viewer.
@@ -705,13 +711,13 @@ public class XGMMLReader extends AbstractGraphReader {
 				// Do we already have a view?
 				if (view == null || view == Cytoscape.getNullNetworkView()) {
 					// No, just create the group, but don't assign a viewer
-					newGroup = CyGroupManager.createGroup(groupNode, childList, null);
+					newGroup = CyGroupManager.createGroup(groupNode, childList, null, groupNetwork);
 				} else {
 					// Yes, see if the group already exists
 					newGroup = CyGroupManager.getCyGroup(groupNode);
 					if (newGroup == null) {
 						// No, OK so create it and pass down the viewer
-						CyGroupManager.createGroup(groupNode, childList, viewer);
+						newGroup = CyGroupManager.createGroup(groupNode, childList, viewer, groupNetwork);
 					} else {
 						// Either the group doesn't have a viewer or it has a different viewer -- change it
 						CyGroupManager.setGroupViewer(newGroup, viewer, view, false);
