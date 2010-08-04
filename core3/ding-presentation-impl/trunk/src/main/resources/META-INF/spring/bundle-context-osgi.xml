@@ -38,7 +38,7 @@
 	<!-- Individual Service -->
 	<osgi:service id="dingPresentationFactoryService" ref="dingPresentationFactory">
 		<osgi:interfaces>
-			<value>org.cytoscape.view.presentation.PresentationFactory</value>
+			<value>org.cytoscape.view.presentation.RenderingEngineFactory</value>
 			<value>org.cytoscape.view.model.events.NetworkViewChangedListener</value>
 		</osgi:interfaces>
 		<osgi:service-properties>

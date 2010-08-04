@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import org.cytoscape.ding.BirdsEyeView;
 import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.spacial.SpacialIndex2DFactory;
 import org.cytoscape.task.EdgeViewTaskFactory;
@@ -25,14 +26,14 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.events.NetworkViewChangedEvent;
 import org.cytoscape.view.model.events.NetworkViewChangedListener;
 import org.cytoscape.view.presentation.NavigationPresentation;
-import org.cytoscape.view.presentation.PresentationFactory;
+import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.UndoSupport;
 import org.cytoscape.service.util.CyServiceRegistrar;
 
-public class PresentationFactoryImpl implements PresentationFactory, NetworkViewChangedListener {
+public class PresentationFactoryImpl implements RenderingEngineFactory<CyNetwork>, NetworkViewChangedListener {
 
 	private CyDataTableFactory dataTableFactory;
 	private CyRootNetworkFactory rootNetworkFactory;
@@ -76,7 +77,7 @@ public class PresentationFactoryImpl implements PresentationFactory, NetworkView
 	/**
 	 * 
 	 */
-	public RenderingEngine addPresentation(Object presentationContainer, View<?> view) {
+	public RenderingEngine<CyNetwork> render(Object presentationContainer, View<CyNetwork> view) {
 				
 		if ( view == null )
 			throw new IllegalArgumentException("Cannot create presentation for null view model.");

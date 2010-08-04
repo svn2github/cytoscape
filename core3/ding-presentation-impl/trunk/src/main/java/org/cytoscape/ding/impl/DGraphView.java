@@ -119,7 +119,7 @@ import phoebe.PhoebeCanvasDroppable;
  * 
  * @author Nerius Landys
  */
-public class DGraphView implements RenderingEngine, GraphView, Printable,
+public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printable,
 		PhoebeCanvasDroppable, ViewChangeListener {
 
 	private static enum ZOrder {
@@ -2688,7 +2688,7 @@ public class DGraphView implements RenderingEngine, GraphView, Printable,
 
 	// ////// The following implements Presentation API ////////////
 
-	public Printable getPrintable() {
+	public Printable createPrintable() {
 		return this;
 	}
 
@@ -2706,12 +2706,8 @@ public class DGraphView implements RenderingEngine, GraphView, Printable,
 
 	}
 
-	public Icon getDefaultIcon(VisualProperty<?> vp) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	public Image getImage(int width, int height) {
+	public Image createImage(int width, int height) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2722,5 +2718,11 @@ public class DGraphView implements RenderingEngine, GraphView, Printable,
 
 	public CyNetworkView getViewModel() {
 		return cyNetworkView;
+	}
+
+	@Override
+	public Icon createIcon(VisualProperty<?> vp) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

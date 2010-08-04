@@ -530,7 +530,7 @@ public static int NODE_X_POSITION = 0;
 	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex);
 	public void print(Graphics g) ;
 	public void printNoImposter(Graphics g) ;
-	public Printable getPrintable();
+	public Printable createPrintable();
 
 	// ??
 	public Point2D getCenter(); 
