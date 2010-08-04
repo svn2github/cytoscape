@@ -625,9 +625,6 @@ public class CloudParameters implements Comparable
 			
 			pairRatios.put(curWord, ratio);
 		}
-		
-		this.createFiles();
-			
 		ratiosInitialized = true;
 	}
 	
@@ -1581,90 +1578,6 @@ public class CloudParameters implements Comparable
 	public void setUseNetNormal(boolean val)
 	{
 		useNetNormal = val;
-	}
-	
-	//Testing code
-	public void createFiles()
-	{
-		try
-		{
-			PrintWriter out = new PrintWriter(new FileWriter("C:\\Users\\Layla\\Desktop\\nodes_ratios.txt"));
-		
-			Set<String> wordList = ratios.keySet();
-			for(Iterator<String> iter = wordList.iterator(); iter.hasNext();)
-			{
-				String curWord = iter.next();
-				Double curRatio = ratios.get(curWord);
-				out.println(curWord + " " + curRatio);
-			}
-			out.close();
-		}
-		catch (Exception e)
-		{
-			//DO Nothing
-		}
-		
-		try
-		{
-			PrintWriter out = new PrintWriter(new FileWriter("C:\\Users\\Layla\\Desktop\\nodes_counts.txt"));
-		
-			Set<String> wordList = selectedCounts.keySet();
-			for(Iterator<String> iter = wordList.iterator(); iter.hasNext();)
-			{
-				String curWord = iter.next();
-				Integer curCount = selectedCounts.get(curWord);
-				out.println(curWord + " " + curCount);
-			}
-			out.close();
-		}
-		catch (Exception e)
-		{
-			//DO Nothing
-		}
-		
-		try
-		{
-			PrintWriter out = new PrintWriter(new FileWriter("C:\\Users\\Layla\\Desktop\\edges_ratios.txt"));
-		
-			Set<String> wordList = pairRatios.keySet();
-			for(Iterator<String> iter = wordList.iterator(); iter.hasNext();)
-			{
-				String curWord = iter.next();
-				Double curRatio = pairRatios.get(curWord);
-
-				String[] words = curWord.split(" ");
-				Double firstRatio = ratios.get(words[0]);
-				Double secondRatio = ratios.get(words[1]);
-				
-				//Double condRatio = curRatio * firstRatio / secondRatio;
-				Double condRatio = curRatio /( firstRatio * secondRatio);
-				
-				out.println(curWord + " " + condRatio);
-			}
-			out.close();
-		}
-		catch (Exception e)
-		{
-			//DO Nothing
-		}
-		
-		try
-		{
-			PrintWriter out = new PrintWriter(new FileWriter("C:\\Users\\Layla\\Desktop\\edges_counts.txt"));
-		
-			Set<String> wordList = selectedPairCounts.keySet();
-			for(Iterator<String> iter = wordList.iterator(); iter.hasNext();)
-			{
-				String curWord = iter.next();
-				Integer curCount = selectedPairCounts.get(curWord);
-				out.println(curWord + " " + curCount);
-			}
-			out.close();
-		}
-		catch (Exception e)
-		{
-			//DO Nothing
-		}
 	}
 	
 }
