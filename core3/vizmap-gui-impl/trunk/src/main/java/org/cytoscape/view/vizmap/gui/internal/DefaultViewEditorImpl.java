@@ -81,6 +81,7 @@ import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.jdesktop.swingx.JXList;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 /**
@@ -226,7 +227,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
-		jXPanel1 = new org.jdesktop.swingx.JXPanel();
+		jXPanel1 = new JXPanel();
 		jXTitledPanel1 = new org.jdesktop.swingx.JXTitledPanel();
 		defaultObjectTabbedPane = new javax.swing.JTabbedPane();
 		nodeScrollPane = new javax.swing.JScrollPane();
