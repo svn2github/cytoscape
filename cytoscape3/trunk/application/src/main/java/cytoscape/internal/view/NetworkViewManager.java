@@ -77,7 +77,7 @@ public class NetworkViewManager implements InternalFrameListener,
 	private final JDesktopPane desktopPane;
 
 	private final Map<Long, JInternalFrame> networkViewMap;
-	private final Map<Long, RenderingEngine> presentationMap;
+	private final Map<Long, RenderingEngine<CyNetwork>> presentationMap;
 
 	private final Map<JInternalFrame, Long> componentMap;
 
@@ -93,9 +93,9 @@ public class NetworkViewManager implements InternalFrameListener,
 	private CyHelpBroker help;
 	
 	// Supports multiple presentations
-	private Map<String, RenderingEngineFactory> factories;
+	private Map<String, RenderingEngineFactory<CyNetwork>> factories;
 	
-	private RenderingEngineFactory currentPresentationFactory;
+	private RenderingEngineFactory<CyNetwork> currentRenderingEngineFactory;
 	
 	//TODO: discuss the name and key of props.
 	private static final String ID = "id";
@@ -113,7 +113,7 @@ public class NetworkViewManager implements InternalFrameListener,
 	 */
 	public NetworkViewManager(CyNetworkManager netmgr, Properties props,
 			CyHelpBroker help) {
-		this.factories = new HashMap<String, RenderingEngineFactory>();
+		this.factories = new HashMap<String, RenderingEngineFactory<CyNetwork>>();
 		
 		this.netmgr = netmgr;
 		this.props = props;
@@ -124,7 +124,7 @@ public class NetworkViewManager implements InternalFrameListener,
 				null);
 
 		networkViewMap = new HashMap<Long, JInternalFrame>();
-		presentationMap = new HashMap<Long, RenderingEngine>();
+		presentationMap = new HashMap<Long, RenderingEngine<CyNetwork>>();
 		componentMap = new HashMap<JInternalFrame, Long>();
 		currentViewId = null;
 
@@ -148,8 +148,8 @@ public class NetworkViewManager implements InternalFrameListener,
 		}
 		
 		factories.put(rendererID.toString(), factory);
-		if(currentPresentationFactory == null && rendererID.equals(DEFAULT_PRESENTATION)) {
-			currentPresentationFactory = factory;
+		if(currentRenderingEngineFactory == null && rendererID.equals(DEFAULT_PRESENTATION)) {
+			currentRenderingEngineFactory = factory;
 		}
 		
 		System.out.println(">>>> New Rendering Engine is Available: " + rendererID +"\n\n\n");
@@ -373,7 +373,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		desktopPane.add(iframe);
 
 		// iframe.setContentPane( view.getContainer(iframe.getLayeredPane()) );
-		this.presentationMap.put(view.getSource().getSUID(), this.currentPresentationFactory.render(iframe, view));
+		this.presentationMap.put(view.getSource().getSUID(), this.currentRenderingEngineFactory.render(iframe, view));
 
 		iframe.pack();
 

@@ -7,20 +7,24 @@
 
 	<!-- Import OSGi services -->
 
-	<osgi:reference id="cyNetworkManagerServiceRef" interface="org.cytoscape.session.CyNetworkManager" />
-	<osgi:reference id="cyNetworkNamingServiceRef" interface="org.cytoscape.session.CyNetworkNaming" />
+	<osgi:reference id="cyNetworkManagerServiceRef"
+		interface="org.cytoscape.session.CyNetworkManager" />
+	<osgi:reference id="cyNetworkNamingServiceRef"
+		interface="org.cytoscape.session.CyNetworkNaming" />
 	<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil" />
 
 	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager" />
 
-	<!--
-		<osgi:reference id="presentationManagerServiceRef"
-		interface="org.cytoscape.view.presentation.PresentationManager" />
-	-->
+	<!-- <osgi:reference id="presentationManagerServiceRef" interface="org.cytoscape.view.presentation.PresentationManager" 
+		/> -->
 	<osgi:reference id="dingPresentationFactoryServiceRef"
 		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
 		filter="(id=ding)" />
-		
+
+	<osgi:reference id="dingNavigationPresentationFactoryServiceRef"
+		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
+		filter="(id=dingNavigation)" />
+
 	<osgi:reference id="tunableInterceptorServiceRef"
 		interface="org.cytoscape.work.TunableInterceptor" />
 
@@ -69,13 +73,13 @@
 	<osgi:service id="cyMenusService" ref="cytoscapeMenus"
 		interface="cytoscape.view.CyMenus" />
 
-<!--	<osgi:service id="proxyHandlerService" ref="proxyHandler">-->
-<!--		<osgi:interfaces>-->
-<!--			<value>cytoscape.util.ProxyHandler</value>-->
-<!--			<value>cytoscape.events.PreferencesUpdatedListener-->
-<!--			</value>-->
-<!--		</osgi:interfaces>-->
-<!--	</osgi:service>-->
+	<!-- <osgi:service id="proxyHandlerService" ref="proxyHandler"> -->
+	<!-- <osgi:interfaces> -->
+	<!-- <value>cytoscape.util.ProxyHandler</value> -->
+	<!-- <value>cytoscape.events.PreferencesUpdatedListener -->
+	<!-- </value> -->
+	<!-- </osgi:interfaces> -->
+	<!-- </osgi:service> -->
 
 	<osgi:service id="cytoStatusBarService" ref="cytoStatusBarImpl"
 		interface="org.cytoscape.log.statusbar.CytoStatusBar" />
@@ -83,10 +87,8 @@
 	<osgi:service id="openBrowserService" ref="openBrowser"
 		interface="cytoscape.util.OpenBrowser" />
 
-	<!--
-		<osgi:service id="printActionService" ref="printAction"
-		interface="cytoscape.view.CyAction" />
-	-->
+	<!-- <osgi:service id="printActionService" ref="printAction" interface="cytoscape.view.CyAction" 
+		/> -->
 	<osgi:service id="exitActionService" ref="exitAction"
 		interface="cytoscape.view.CyAction" />
 	<osgi:service id="undoActionService" ref="undoAction"
@@ -99,17 +101,12 @@
 		interface="cytoscape.view.CyAction" />
 	<osgi:service id="bookmarkActionService" ref="bookmarkAction"
 		interface="cytoscape.view.CyAction" />
-	<!--
-		<osgi:service id="alphabeticalSelectionActionService"
-		ref="alphabeticalSelectionAction" interface="cytoscape.view.CyAction"
-		/> <osgi:service id="bendSelectedEdgesActionService"
-		ref="bendSelectedEdgesAction" interface="cytoscape.view.CyAction" />
-		<osgi:service id="straightenSelectedEdgesActionService"
-		ref="straightenSelectedEdgesAction"
-		interface="cytoscape.view.CyAction" /> <osgi:service
-		id="showGraphicsDetailsActionService" ref="showGraphicsDetailsAction"
-		interface="cytoscape.view.CyAction" />
-	-->
+	<!-- <osgi:service id="alphabeticalSelectionActionService" ref="alphabeticalSelectionAction" 
+		interface="cytoscape.view.CyAction" /> <osgi:service id="bendSelectedEdgesActionService" 
+		ref="bendSelectedEdgesAction" interface="cytoscape.view.CyAction" /> <osgi:service 
+		id="straightenSelectedEdgesActionService" ref="straightenSelectedEdgesAction" 
+		interface="cytoscape.view.CyAction" /> <osgi:service id="showGraphicsDetailsActionService" 
+		ref="showGraphicsDetailsAction" interface="cytoscape.view.CyAction" /> -->
 	<osgi:service id="settingsActionService" ref="settingsAction"
 		interface="cytoscape.view.CyAction" />
 
@@ -140,22 +137,20 @@
 			unbind-method="removeNetworkTaskFactory" ref="cytoscapeMenus" />
 	</osgi:set>
 
-	<osgi:set id="networkViewTaskFactorySet" 
-	          interface="org.cytoscape.task.NetworkViewTaskFactory"
+	<osgi:set id="networkViewTaskFactorySet" interface="org.cytoscape.task.NetworkViewTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addNetworkViewTaskFactory"
 			unbind-method="removeNetworkViewTaskFactory" ref="cytoscapeMenus" />
 	</osgi:set>
 
-	<osgi:set id="networkCollectionTaskFactorySet" 
-	          interface="org.cytoscape.task.NetworkCollectionTaskFactory"
+	<osgi:set id="networkCollectionTaskFactorySet" interface="org.cytoscape.task.NetworkCollectionTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addNetworkCollectionTaskFactory"
 			unbind-method="removeNetworkCollectionTaskFactory" ref="cytoscapeMenus" />
 	</osgi:set>
 
-	<osgi:set id="networkViewCollectionTaskFactorySet" 
-	          interface="org.cytoscape.task.NetworkViewCollectionTaskFactory"
+	<osgi:set id="networkViewCollectionTaskFactorySet"
+		interface="org.cytoscape.task.NetworkViewCollectionTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addNetworkViewCollectionTaskFactory"
 			unbind-method="removeNetworkViewCollectionTaskFactory" ref="cytoscapeMenus" />
@@ -171,14 +166,13 @@
 
 	<!-- task factories for NetworkPanel -->
 	<osgi:set id="networkPanelNetworkViewTaskFactorySet"
-		interface="org.cytoscape.task.NetworkViewTaskFactory"
-		cardinality="0..N" filter="(scope=limited)">
+		interface="org.cytoscape.task.NetworkViewTaskFactory" cardinality="0..N"
+		filter="(scope=limited)">
 		<osgi:listener bind-method="addNetworkViewTaskFactory"
 			unbind-method="removeNetworkViewTaskFactory" ref="networkPanel" />
 	</osgi:set>
 
-	<osgi:set id="networkPanelNetworkTaskFactorySet"
-		interface="org.cytoscape.task.NetworkTaskFactory"
+	<osgi:set id="networkPanelNetworkTaskFactorySet" interface="org.cytoscape.task.NetworkTaskFactory"
 		cardinality="0..N" filter="(scope=limited)">
 		<osgi:listener bind-method="addNetworkTaskFactory"
 			unbind-method="removeNetworkTaskFactory" ref="networkPanel" />
@@ -209,7 +203,7 @@
 			<entry key="title" value="Contents..." />
 			<entry key="inToolBar" value="true" />
 			<entry key="iconName" value="/images/ximian/stock_help.png" />
-			<!-- acceleratorCombo   KeyEvent.VK_F1, 0 -->
+			<!-- acceleratorCombo KeyEvent.VK_F1, 0 -->
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -262,10 +256,8 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<!--
-		Finally, Export Cytoscape Desktop itself as a service. Other desktop
-		components (like VizMapper GUI) can use it through DI
-	-->
+	<!-- Finally, Export Cytoscape Desktop itself as a service. Other desktop 
+		components (like VizMapper GUI) can use it through DI -->
 	<osgi:service id="cytoscapeDesktopService" ref="cytoscapeDesktop"
 		interface="cytoscape.view.CySwingApplication" />
 

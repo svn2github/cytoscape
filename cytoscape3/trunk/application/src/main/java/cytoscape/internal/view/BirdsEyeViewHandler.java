@@ -45,9 +45,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-import org.cytoscape.view.presentation.NavigationPresentation;
-import org.cytoscape.view.presentation.RenderingEngineFactory;
-
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.events.NetworkViewDestroyedEvent;
 import org.cytoscape.session.events.NetworkViewDestroyedListener;
@@ -55,40 +53,39 @@ import org.cytoscape.session.events.SetCurrentNetworkEvent;
 import org.cytoscape.session.events.SetCurrentNetworkListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
+import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.view.presentation.RenderingEngineFactory;
 
 /**
  * This class handles the creation of the BirdsEyeView navigation object 
  * and handles the events which change view seen. 
  */
-class BirdsEyeViewHandler implements 
+public class BirdsEyeViewHandler implements 
 	SetCurrentNetworkListener,
 	SetCurrentNetworkViewListener,
-	NetworkViewDestroyedListener
-	{
-	final NavigationPresentation bev;
+	NetworkViewDestroyedListener {
+	
+	// BEV is just a special implementation of RenderingEngine.
+	private final RenderingEngine<CyNetwork> bev;
+	
 	FrameListener frameListener = new FrameListener();
 	final NetworkViewManager viewmgr;
 	final CyNetworkManager netmgr;
-	final RenderingEngineFactory prefact;
 	final Component bevHolder; 
 
 	/**
 	 * Creates a new BirdsEyeViewHandler object.
 	 * @param desktopPane The JDesktopPane of the NetworkViewManager. Can be null.
 	 */
-	BirdsEyeViewHandler(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, RenderingEngineFactory defaultFactory) {
+	public BirdsEyeViewHandler(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, 
+			RenderingEngineFactory<CyNetwork> defaultFactory) {
 		this.viewmgr = viewmgr;
 		this.netmgr = netmgr;
 		
-		//TODO: remove this.  Sync. timing and get this from view manager.
-		this.prefact = defaultFactory;
-		JDesktopPane desktopPane = viewmgr.getDesktopPane();
-
+		final JDesktopPane desktopPane = viewmgr.getDesktopPane();
 		bevHolder = new JPanel();
 
-		bev = prefact.addNavigationPresentation(bevHolder, desktopPane);
-		bev.changeView(netmgr.getCurrentNetworkView());
- 
+		bev = defaultFactory.render(bevHolder, netmgr.getCurrentNetworkView()); 
  		desktopPane.addComponentListener(new DesktopListener());
 	}
 
@@ -99,17 +96,20 @@ class BirdsEyeViewHandler implements
 	 * @param e The event triggering this method. 
 	 */
 	public void handleEvent(SetCurrentNetworkEvent e) {
-		bev.changeView(netmgr.getCurrentNetworkView());
+		if(bev != null)
+			bev.setViewModel(netmgr.getCurrentNetworkView());
 		setFocus();
 	}
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
-		bev.changeView(netmgr.getCurrentNetworkView());
+		if(bev != null)
+		bev.setViewModel(netmgr.getCurrentNetworkView());
 		setFocus();
 	}
 
 	public void handleEvent(NetworkViewDestroyedEvent e) {
-		bev.changeView(netmgr.getCurrentNetworkView());
+		if(bev != null)
+		bev.setViewModel(netmgr.getCurrentNetworkView());
 	}
 
 	private void setFocus() {

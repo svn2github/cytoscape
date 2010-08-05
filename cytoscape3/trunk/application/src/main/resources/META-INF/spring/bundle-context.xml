@@ -84,7 +84,7 @@
 	<bean name="birdsEyeViewHandler" class="cytoscape.internal.view.BirdsEyeViewHandler">
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="dingPresentationFactoryServiceRef" />
+		<constructor-arg ref="dingNavigationPresentationFactoryServiceRef" />
 	</bean>
 
 	<bean name="networkPanel" class="cytoscape.internal.view.NetworkPanel">
