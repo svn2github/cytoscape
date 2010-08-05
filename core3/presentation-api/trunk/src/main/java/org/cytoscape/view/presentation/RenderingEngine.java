@@ -20,6 +20,10 @@ public interface RenderingEngine<T> {
 	 */
 	public View<T> getViewModel();
 	
+	
+	// TODO: should view model immutable?
+	public void setViewModel(final View<T> viewModel);
+	
 	/**
 	 * Provide all compatible Visual Properties as a Visual Lexicon.
 	 * 

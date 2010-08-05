@@ -11,16 +11,4 @@ public interface RenderingEngineFactory<T> {
 	 */
 	public RenderingEngine<T> render(final Object visualizationContainer, final View<T> viewModel);
 
-	/**
-	 * 
-	 * TODO: remove this
-	 * 
-	 * This method should be removed.
-	 * 
-	 * @param targetComponent
-	 * @param navBounds
-	 * @return
-	 */
-	public NavigationPresentation addNavigationPresentation(
-			Object targetComponent, Object navBounds);
 }
