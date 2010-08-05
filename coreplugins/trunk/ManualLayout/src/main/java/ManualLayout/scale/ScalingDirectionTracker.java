@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -25,14 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package ManualLayout.common;
+package ManualLayout.scale;
 
-
-import ManualLayout.rotate.RotatePanel;
-import ManualLayout.rotate.RotationLayouter;
-
-import ManualLayout.scale.ScaleLayouter;
-import ManualLayout.scale.ScalePanel;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -70,11 +64,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 
-public class CheckBoxTracker implements SelectEventListener, PropertyChangeListener {
+public class ScalingDirectionTracker implements SelectEventListener, PropertyChangeListener {
 	private JCheckBox jCheckBox;
 	private Set<String> listeningNetworks;
 
-	public CheckBoxTracker(JCheckBox j) {
+	public ScalingDirectionTracker(JCheckBox j) {
 		jCheckBox = j;
 		listeningNetworks = new HashSet<String>();
 		Cytoscape.getDesktop().getNetworkViewManager().getSwingPropertyChangeSupport()

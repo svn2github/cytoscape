@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,7 +25,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package ManualLayout.rotate;
 
 import cytoscape.Cytoscape;
@@ -58,25 +49,20 @@ import javax.swing.event.ChangeListener;
 
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 
+
 /**
- *
  * GUI for rotation of manualLayout
  *
  *      Rewrite based on the class RotateAction       9/13/2006        Peng-Liang Wang
- *
  */
 public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSlider {
+	private JCheckBox jCheckBox;
+	private JSlider jSlider;
+	private int prevValue; 
 
-	JCheckBox jCheckBox;
-	JSlider jSlider;
-	int prevValue; 
+	private boolean startAdjusting = true;
+	private ViewChangeEdit currentEdit = null;
 
-	boolean startAdjusting = true;
-	ViewChangeEdit currentEdit = null;
-
-	/**
-	 * Creates a new RotatePanel object.
-	 */
 	public RotatePanel() {
 		// set up the user interface
 		JLabel jLabel = new JLabel();
@@ -95,8 +81,7 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 
 		prevValue = jSlider.getValue();
 
-		jCheckBox = new JCheckBox();
-		jCheckBox.setText("Rotate Selected Nodes Only");
+		jCheckBox = new JCheckBox("Rotate Selected Nodes Only", /* selected = */true);
 
 		new CheckBoxTracker( jCheckBox );
 
@@ -121,9 +106,9 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 
 		new SliderStateTracker(this);
 
-		setMinimumSize(new Dimension(100,1000));
-		setPreferredSize(new Dimension(100,1000));
-		setMaximumSize(new Dimension(100,1000));
+		setMinimumSize(new Dimension(100,1200));
+		setPreferredSize(new Dimension(100,1200));
+		setMaximumSize(new Dimension(100,1200));
 	} 
 
 	public void updateSlider(int x) {

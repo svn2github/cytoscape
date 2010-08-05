@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,15 +25,12 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package ManualLayout.scale;
+
 
 import ManualLayout.common.*;
 
 import cytoscape.Cytoscape;
-
-//import cytoscape.util.CytoscapeAction;
-//import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 
 import ding.view.DGraphView;
@@ -57,16 +46,12 @@ import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 import javax.swing.AbstractAction;
-
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
-
-//import javax.swing.JMenu;
-import javax.swing.JDialog;
-
-//import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
@@ -81,19 +66,18 @@ import javax.swing.event.ChangeListener;
  *
  */
 public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSlider {
+	private JCheckBox jCheckBox;
+	private JSlider jSlider;
+	private JRadioButton alongXAxisOnlyRadioButton;
+	private JRadioButton alongYAxisOnlyRadioButton;
+	private JRadioButton alongBothAxesRadioButton;
+	private ButtonGroup radioButtonGroup;
+	private int prevValue; 
 
-	JCheckBox jCheckBox;
-	JSlider jSlider;
-	int prevValue; 
+	private boolean startAdjusting = true;
+	private ViewChangeEdit currentEdit = null;
 
-	boolean startAdjusting = true;
-	ViewChangeEdit currentEdit = null;
-
-	/**
-	 * Creates a new ScalePanel object.
-	 */
 	public ScalePanel() {
-		// setup interface
 		JLabel jLabel = new JLabel();
 		jLabel.setText("Scale:");
 
@@ -109,7 +93,6 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 
 		jSlider.addChangeListener(this);
 
-
 		prevValue = jSlider.getValue();
 
 		Hashtable<Integer,JLabel> labels = new Hashtable<Integer,JLabel>();
@@ -123,11 +106,16 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 
 		jSlider.setLabelTable(labels);
 
-		jCheckBox = new JCheckBox();
-		jCheckBox.setText("Scale Selected Nodes Only");
-
+		jCheckBox = new JCheckBox("Scale Selected Nodes Only", /* selected = */true);
 		new CheckBoxTracker( jCheckBox );
 
+		alongXAxisOnlyRadioButton = new JRadioButton("along x-axis only");
+		alongYAxisOnlyRadioButton = new JRadioButton("along y-axis only");
+		alongBothAxesRadioButton = new JRadioButton("along both axes", /* selected = */true);
+		radioButtonGroup = new ButtonGroup();
+		radioButtonGroup.add(alongXAxisOnlyRadioButton);
+		radioButtonGroup.add(alongYAxisOnlyRadioButton);
+		radioButtonGroup.add(alongBothAxesRadioButton);
 
 		setLayout(new GridBagLayout());
 
@@ -164,9 +152,28 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 
 		new SliderStateTracker(this);
 
-		setMinimumSize(new java.awt.Dimension(100,1000));
-		setPreferredSize(new java.awt.Dimension(100,1000));
-		setMaximumSize(new java.awt.Dimension(100,1000));
+		gbc.gridy = 4;
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.insets = new Insets(20, 15, 0, 15);
+		add(alongXAxisOnlyRadioButton, gbc);
+
+		gbc.gridy = 5;
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.insets = new Insets(0, 15, 0, 15);
+		add(alongYAxisOnlyRadioButton, gbc);
+
+		gbc.gridy = 6;
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.insets = new Insets(0, 15, 0, 15);
+		add(alongBothAxesRadioButton, gbc);
+		/*
+		setMinimumSize(new java.awt.Dimension(100,2200));
+		setPreferredSize(new java.awt.Dimension(100,2200));
+		setMaximumSize(new java.awt.Dimension(100,2200));
+		*/
 	} 
 
 	public void updateSlider(int x) {
@@ -179,7 +186,7 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 	}
 
 	public void stateChanged(ChangeEvent e) {
-		if ( e.getSource() != jSlider )
+		if (e.getSource() != jSlider)
 			return;
 
 		// only create the edit when we're beginning to adjust
@@ -199,12 +206,20 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 
 		double neededIncrementalScaleFactor = currentAbsoluteScaleFactor / prevAbsoluteScaleFactor;
 
-		scale.scaleGraph(neededIncrementalScaleFactor);
+		final ScaleLayouter.Direction direction;
+		if (alongXAxisOnlyRadioButton.isSelected())
+			direction = ScaleLayouter.Direction.X_AXIS_ONLY;
+		else if (alongYAxisOnlyRadioButton.isSelected())
+			direction = ScaleLayouter.Direction.Y_AXIS_ONLY;
+		else
+			direction = ScaleLayouter.Direction.BOTH_AXES;
+		
+		scale.scaleGraph(neededIncrementalScaleFactor, direction);
 		Cytoscape.getCurrentNetworkView().updateView();
 		prevValue = jSlider.getValue();
 
 		// only post the edit when we're finished adjusting 
-		if ( !jSlider.getValueIsAdjusting() ) { 
+		if (!jSlider.getValueIsAdjusting()) { 
 			currentEdit.post();
 			startAdjusting = true;
 		} 

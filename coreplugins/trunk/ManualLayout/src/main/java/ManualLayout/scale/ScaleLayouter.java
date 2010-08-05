@@ -1,5 +1,32 @@
-//package cytoscape.graph.layout.impl;
+/*
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
 package ManualLayout.scale;
+
 
 import com.nerius.math.xform.AffineTransform3D;
 import com.nerius.math.xform.Scale3D;
@@ -10,10 +37,13 @@ import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 import cytoscape.util.intr.IntEnumerator;
 
 
-/**
- *
- */
 public final class ScaleLayouter {
+	public enum Direction {
+		X_AXIS_ONLY,
+		Y_AXIS_ONLY,
+		BOTH_AXES
+	};
+
 	private final MutablePolyEdgeGraphLayout m_graph;
 	private final Translation3D m_translationToOrig;
 	private final Translation3D m_translationFromOrig;
@@ -66,8 +96,7 @@ public final class ScaleLayouter {
 			yMax = Math.max(yMax, nodeYPosition);
 		}
 
-		if (xMax < 0) // Nothing is movable.
-		 {
+		if (xMax < 0) { // Nothing is movable.
 			m_translationToOrig = null;
 			m_translationFromOrig = null;
 		} else {
@@ -86,17 +115,28 @@ public final class ScaleLayouter {
 	 * @exception IllegalArgumentException if
 	 *   scaleFactor < 0.001 or if scaleFactor > 1000.0.
 	 **/
-	public void scaleGraph(double scaleFactor) {
+	public void scaleGraph(double scaleFactor, final Direction direction) {
 		if ((scaleFactor < 0.001d) || (scaleFactor > 1000.0d))
 			throw new IllegalArgumentException("scaleFactor is outside allowable range [0.001, 1000.0]");
 
 		if (m_translationToOrig == null)
 			return;
 
-		final AffineTransform3D xform = m_translationToOrig.concatenatePost((new Scale3D(scaleFactor,
-		                                                                                 scaleFactor,
-		                                                                                 1.0d))
-		                                                                                           .concatenatePost(m_translationFromOrig));
+		double xFactor = scaleFactor, yFactor = scaleFactor;
+		switch (direction) {
+		case X_AXIS_ONLY:
+			yFactor = 1.0;
+			break;
+		case Y_AXIS_ONLY:
+			xFactor = 1.0;
+			break;
+		case BOTH_AXES:
+			/* Intentionally empty! */
+			break;
+		}
+
+		final AffineTransform3D xform = m_translationToOrig.concatenatePost(
+			(new Scale3D(xFactor, yFactor, 1.0d)).concatenatePost(m_translationFromOrig));
 		IntEnumerator nodes = m_graph.nodes();
 
 		while (nodes.numRemaining() > 0) {
