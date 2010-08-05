@@ -39,7 +39,7 @@ package org.cytoscape.ding;
 import org.cytoscape.ding.impl.ContentChangeListener;
 import org.cytoscape.ding.impl.DGraphView;
 import org.cytoscape.ding.impl.ViewportChangeListener;
-import org.cytoscape.ding.impl.PresentationFactoryImpl;
+import org.cytoscape.ding.impl.DingRenderingEngineFactory;
 
 import org.cytoscape.view.presentation.NavigationPresentation;
 import org.cytoscape.view.model.CyNetworkView;
@@ -74,7 +74,7 @@ public class BirdsEyeView extends Component implements NavigationPresentation {
 	private double m_viewYCenter;
 	private double m_viewScaleFactor;
 	private Component m_desktopView;
-	private PresentationFactoryImpl presFactory;
+	private DingRenderingEngineFactory presFactory;
 
 	/**
 	 * Creates a new BirdsEyeView object.
@@ -82,7 +82,7 @@ public class BirdsEyeView extends Component implements NavigationPresentation {
 	 * @param view The view to monitor
 	 * @param desktopView The desktop area holding the view. This should be NetworkViewManager.getDesktopPane().
 	 */
-	public BirdsEyeView(Component desktopView, PresentationFactoryImpl presFactory) {
+	public BirdsEyeView(Component desktopView, DingRenderingEngineFactory presFactory) {
 		super();
 		this.presFactory = presFactory;
 		m_cLis = new InnerContentChangeListener();

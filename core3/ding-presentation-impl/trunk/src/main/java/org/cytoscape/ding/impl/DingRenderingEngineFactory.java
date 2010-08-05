@@ -33,7 +33,7 @@ import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.UndoSupport;
 import org.cytoscape.service.util.CyServiceRegistrar;
 
-public class PresentationFactoryImpl implements RenderingEngineFactory<CyNetwork>, NetworkViewChangedListener {
+public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetwork>, NetworkViewChangedListener {
 
 	private CyDataTableFactory dataTableFactory;
 	private CyRootNetworkFactory rootNetworkFactory;
@@ -52,7 +52,7 @@ public class PresentationFactoryImpl implements RenderingEngineFactory<CyNetwork
 	private TunableInterceptor ti;
 	private TaskManager tm;
 
-	public PresentationFactoryImpl(CyDataTableFactory dataTableFactory, 
+	public DingRenderingEngineFactory(CyDataTableFactory dataTableFactory, 
 	                            CyRootNetworkFactory rootNetworkFactory,
 								UndoSupport undo, SpacialIndex2DFactory spacialFactory,
 								RootVisualLexicon vpc, VisualLexicon dingLexicon, 
