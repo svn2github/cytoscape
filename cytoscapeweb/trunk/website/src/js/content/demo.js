@@ -1490,8 +1490,8 @@ $(function(){
     }
     
     function update_vizmapper(){
-        var parent = $("#vizmapper");
-        parent.empty();
+        var parent = $("<div></div>");
+        $("#vizmapper").empty();
 
         $("#vizmapper_header").empty();
         $("#vizmapper_header").append('<div id="vizmapper_tabs"><ul></ul></div>');
@@ -2445,6 +2445,8 @@ $(function(){
                 });
             });
         });
+    
+    	$("#vizmapper").html(parent);
     
         $("#vizmapper_tabs").tabs();
         
