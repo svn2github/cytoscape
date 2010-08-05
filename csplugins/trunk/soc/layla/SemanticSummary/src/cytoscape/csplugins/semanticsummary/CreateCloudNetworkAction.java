@@ -50,6 +50,8 @@ import cytoscape.visual.VisualStyle;
 public class CreateCloudNetworkAction extends CytoscapeAction
 {
 
+	private static final long serialVersionUID = 2683655996962050569L;
+	
 	//VARIABLES
 	public static String WORD_VAL = "Word_Prob";
 	public static String CO_VAL = "CO_Prob";
@@ -154,10 +156,6 @@ public class CreateCloudNetworkAction extends CytoscapeAction
 		
 		//Create view
 		view.applyLayout(CyLayouts.getLayout("force-directed"));
-		
-		//make sure that network is registered so that Quickfind works
-		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, network, view);
-		
 	}
 
 }

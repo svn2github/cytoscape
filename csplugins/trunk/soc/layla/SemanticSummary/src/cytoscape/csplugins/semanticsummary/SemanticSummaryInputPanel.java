@@ -58,19 +58,15 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-import javax.swing.text.MaskFormatter;
+
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -90,9 +86,10 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 {
 	
 	//VARIABLES
+	private static final long serialVersionUID = 2453517387682663100L;
 	
-	DecimalFormat decFormat; //used in formatted text fields with decimals
-	NumberFormat intFormat; //used in formatted text fields with integers
+	private DecimalFormat decFormat; //used in formatted text fields with decimals
+	private NumberFormat intFormat; //used in formatted text fields with integers
 	
 	
 	//Text Fields

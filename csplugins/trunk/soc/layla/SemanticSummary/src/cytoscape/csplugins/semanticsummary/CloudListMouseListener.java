@@ -32,8 +32,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
@@ -78,7 +76,6 @@ public class CloudListMouseListener extends MouseAdapter
 	}
 	
 	
-	//TODO
 	private void rightClickList(MouseEvent e)
 	{
 		//RightClickMenu menu = new RightClickPopUpMenu();
@@ -109,6 +106,9 @@ public class CloudListMouseListener extends MouseAdapter
 	
 	public class ChangeCloudNameAction extends CytoscapeAction
 	{
+
+		private static final long serialVersionUID = 3741354852598317680L;
+
 		//CONSTRUCTOR
 		public ChangeCloudNameAction()
 		{

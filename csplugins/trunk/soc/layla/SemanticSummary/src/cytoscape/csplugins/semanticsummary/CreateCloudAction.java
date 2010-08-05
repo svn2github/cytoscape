@@ -47,9 +47,11 @@ import cytoscape.view.CyNetworkView;
 public class CreateCloudAction extends CytoscapeAction
 {
 	//VARIABLES
+	private static final long serialVersionUID = 1103296239269358444L;
 	
 	//CONSTRUCTORS
 	
+
 	/**
 	 * CreateCloudAction constructor.
 	 */
@@ -77,7 +79,6 @@ public class CreateCloudAction extends CytoscapeAction
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		
 		//Unable to proceed if either of these is null
-		//TODO - This never happens since network and view will be special
 		//empty CyNetwork(View)
 		if (network == null || view == null)
 		{return;}

@@ -45,6 +45,8 @@ import javax.swing.JTextField;
 
 public class EditCloudNameDialog extends JDialog implements ActionListener
 {
+	private static final long serialVersionUID = 6753430486708487015L;
+
 	//VARIABLES
 	private String newName = "";
 

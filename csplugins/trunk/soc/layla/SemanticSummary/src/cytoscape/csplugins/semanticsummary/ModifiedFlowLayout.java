@@ -31,8 +31,11 @@ import java.awt.*;
    
  * @author Babu Kalakrishnan
  */
-public class ModifiedFlowLayout extends FlowLayout {
-	  public ModifiedFlowLayout() {
+public class ModifiedFlowLayout extends FlowLayout 
+{
+	private static final long serialVersionUID = 3306786779359311470L;
+
+	public ModifiedFlowLayout() {
 	     super();
 	  }
 

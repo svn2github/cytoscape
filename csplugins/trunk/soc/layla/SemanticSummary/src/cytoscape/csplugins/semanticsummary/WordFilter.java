@@ -21,23 +21,20 @@
  */
 
 package cytoscape.csplugins.semanticsummary;
-import cytoscape.Cytoscape;
+
 import cytoscape.data.readers.TextFileReader;
 import cytoscape.data.readers.TextJarReader;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-import javax.swing.JOptionPane;
 
 
 /**

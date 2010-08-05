@@ -49,10 +49,12 @@ import cytoscape.view.CyNetworkView;
 public class UpdateCloudAction extends CytoscapeAction
 {
 
-//VARIABLES
+	//VARIABLES
+	private static final long serialVersionUID = -814444939886393362L;
 	
 	//CONSTRUCTORS
 	
+
 	/**
 	 * DeleteCloudAction constructor.
 	 */

@@ -24,11 +24,6 @@ package cytoscape.csplugins.semanticsummary;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 /**
  * The SemanticSummaryClusterBuilder class contains the methods and
@@ -45,7 +40,6 @@ public class SemanticSummaryClusterBuilder
 	private CloudParameters params;
 	private ClusterPriorityQueue queue;
 	private WordClusters clusters;
-	private Double cutoff;
 	private ArrayList<CloudWordInfo> cloudWords;
 	boolean initialized;
 	private final static Integer NUMCOLORS = 7;
@@ -60,7 +54,6 @@ public class SemanticSummaryClusterBuilder
 		params = new CloudParameters();
 		queue = new ClusterPriorityQueue();
 		clusters = new WordClusters();
-		cutoff = 0.0;
 		cloudWords = new ArrayList<CloudWordInfo>();
 		initialized = false;
 		
@@ -89,8 +82,6 @@ public class SemanticSummaryClusterBuilder
 	{
 		if (!initialized)
 			return;
-		
-		cutoff = cutoffVal;
 		
 		boolean isDone = false; //flag for when we pass the cutoff value
 		

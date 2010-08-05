@@ -24,10 +24,8 @@ package cytoscape.csplugins.semanticsummary;
 
 import java.awt.event.ActionEvent;
 
-import javax.swing.JList;
 import javax.swing.SwingConstants;
 
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
@@ -48,7 +46,7 @@ import cytoscape.view.cytopanels.CytoPanelState;
 public class SemanticSummaryPluginAction extends CytoscapeAction
 {
 	//VARIABLES
-	
+	private static final long serialVersionUID = -5407980202304156167L;
 	
 	//CONSTRUCTORS
 	

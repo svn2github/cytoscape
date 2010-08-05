@@ -22,18 +22,11 @@
 
 package cytoscape.csplugins.semanticsummary;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-
 import javax.swing.*;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import java.util.Iterator;
+
 import java.util.Hashtable;
 import java.awt.*;
 
-import giny.model.Node;
 
 import prefuse.data.query.NumberRangeModel;
 

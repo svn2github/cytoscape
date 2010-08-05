@@ -24,22 +24,14 @@ package cytoscape.csplugins.semanticsummary;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -57,6 +49,8 @@ import javax.swing.border.EmptyBorder;
 
 public class CloudDisplayPanel extends JPanel
 {
+
+	private static final long serialVersionUID = 5996569544692738989L;
 	
 	//VARIABLES
 	JPanel tagCloudFlowPanel;//add JLabels here for words
@@ -77,7 +71,6 @@ public class CloudDisplayPanel extends JPanel
 	}
 	
 	//METHODS
-	//TODO
 	
 	/**
 	 * Initialized a blank tag cloud JPanel object.

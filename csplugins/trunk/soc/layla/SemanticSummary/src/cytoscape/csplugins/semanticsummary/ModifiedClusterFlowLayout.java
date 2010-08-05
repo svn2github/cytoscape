@@ -35,8 +35,12 @@ import java.awt.*;
  * @author Babu Kalakrishnan
  * @author Layla Oesper
  */
-public class ModifiedClusterFlowLayout extends FlowLayout {
-	  public ModifiedClusterFlowLayout() {
+public class ModifiedClusterFlowLayout extends FlowLayout 
+{
+	private static final long serialVersionUID = 6950793266604882517L;
+
+
+	public ModifiedClusterFlowLayout() {
 	     super();
 	  }
 

@@ -29,7 +29,7 @@ package cytoscape.csplugins.semanticsummary;
  * @version 1.0
  */
 
-public class WordPair implements Comparable
+public class WordPair implements Comparable<WordPair>
 {
 	//VARIABLES
 	private String firstWord;
@@ -79,14 +79,8 @@ public class WordPair implements Comparable
 		probability = doubleNumerator/doubleDenom;
 	}
 	
-	public int compareTo(Object o) 
+	public int compareTo(WordPair second) 
 	{
-		WordPair second;
-		if (o instanceof WordPair)
-			second = (WordPair)o;
-		else
-			return 0;
-		
 		Double firstProb = this.probability;
 		Double secondProb = second.probability;
 		

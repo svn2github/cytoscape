@@ -45,6 +45,9 @@ import javax.swing.JTextField;
 
 public class AddDelimiterDialog extends JDialog implements ActionListener
 {
+
+	private static final long serialVersionUID = -2295450101951048637L;
+
 	//VARIABLES
 	private String newName = "";
 

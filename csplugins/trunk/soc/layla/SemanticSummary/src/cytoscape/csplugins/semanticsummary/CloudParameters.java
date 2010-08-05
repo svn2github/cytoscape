@@ -23,13 +23,10 @@
 package cytoscape.csplugins.semanticsummary;
 
 import java.awt.Component;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -52,12 +49,11 @@ import cytoscape.data.CyAttributes;
  *
  */
 
-public class CloudParameters implements Comparable
+public class CloudParameters implements Comparable<CloudParameters>
 {
 
 	//VARIABLES
 	private String cloudName;
-	//private String attributeName;
 	private ArrayList<String> attributeNames;
 	private String displayStyle;
 	
@@ -131,7 +127,6 @@ public class CloudParameters implements Comparable
 		this.cloudWords = new ArrayList<CloudWordInfo>();
 		
 		this.netWeightFactor = this.getDefaultNetWeight();
-		//this.attributeName = this.getDefaultAttName();
 		this.clusterCutoff = this.getDefaultClusterCutoff();
 		this.maxWords = this.getDefaultMaxWords();
 		this.displayStyle = this.getDefaultDisplayStyle();
@@ -164,7 +159,6 @@ public class CloudParameters implements Comparable
 		}
 		
 		this.cloudName = props.get("CloudName");
-		//this.attributeName = props.get("AttributeName");
 		this.displayStyle = props.get("DisplayStyle");
 		this.selectedNumNodes = new Integer(props.get("SelectedNumNodes"));
 		this.networkNumNodes = new Integer(props.get("NetworkNumNodes"));
@@ -364,7 +358,6 @@ public class CloudParameters implements Comparable
 	 */
 	public void updateSelectedCounts()
 	{
-		
 		//do nothing if selected hasn't changed initialized
 		if (selInitialized)
 			return;
@@ -609,7 +602,6 @@ public class CloudParameters implements Comparable
 		
 		//Iterate through to calculate ratios
 		Iterator<String> pairIter = words.iterator();
-		boolean pairInitialized = false;
 		while (pairIter.hasNext())
 		{
 			String curWord = (String)pairIter.next();
@@ -717,33 +709,8 @@ public class CloudParameters implements Comparable
 		Double yIntercept = maxFont - (slope*zeroedMaxWeight); //maxRatio maps to maxFont
 		
 		//Round up to nearest Integer
-		//Double temp = Math.ceil((slope*newRatio) + yIntercept);
 		long temp = Math.round((slope*newRatio) + yIntercept);
-		
-		//Integer fontSize = temp.intValue();
 		Integer fontSize = Math.round(temp);
-		
-		/*
-		//Original
-		//Map the interval minRatio to maxRatio to the new interval 
-		//minFont to maxFont using a linear transformation
-		Integer maxFont = networkParams.getMaxFont();
-		Integer minFont = networkParams.getMinFont();
-		
-		//Check if maxRatio and minRatio are the same
-		if (maxRatio.equals(minRatio))
-			return (minFont + (maxFont - minFont)/2);
-		
-		Double slope = (maxFont - minFont)/(maxRatio - minRatio);
-		Double yIntercept = maxFont - (slope*maxRatio); //maxRatio maps to maxFont
-		
-		//Round up to nearest Integer
-		//Double temp = Math.ceil((slope*ratio) + yIntercept);
-		long temp = Math.round((slope*ratio) + yIntercept);
-		
-		//Integer fontSize = temp.intValue();
-		Integer fontSize = Math.round(temp);
-		*/
 		
 		return fontSize;
 	}
@@ -767,7 +734,6 @@ public class CloudParameters implements Comparable
 		
 		
 		//Attribute
-		//Object attribute = inputPanel.getCMBAttributes().getSelectedItem();
 		Object[] attributes = inputPanel.getAttributeList().getSelectedValues();
 		ArrayList<String> attributeList = new ArrayList<String>();
 		
@@ -778,23 +744,8 @@ public class CloudParameters implements Comparable
 			if (curAttribute instanceof String)
 			{
 				attributeList.add((String) curAttribute);
-					//setAttributeName((String) attribute);
 			}
-			/*
-			else
-			{
-				//setAttributeName(defaultAttName);
-				//inputPanel.getCMBAttributes().setSelectedItem(attributeName);
-				
-				ArrayList<String> attributeList = new ArrayList<String>();
-				attributeList.add(defaultAttName);
-				this.setAttributeNames(attributeList);
-				//inputPanel.getCMBAttributes().setSelectedItem(defaultAttName);
-				inputPanel.getAttributeList().setSelectedIndex(0);
-				String message = "You must select a valid String attribute or use the node ID.";
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "Parameter out of bounds", JOptionPane.WARNING_MESSAGE);
-			}
-			*/
+
 			this.setAttributeNames(attributeList);
 		}
 			
@@ -853,7 +804,6 @@ public class CloudParameters implements Comparable
 		StringBuffer paramVariables = new StringBuffer();
 		
 		paramVariables.append("CloudName\t" + cloudName + "\n");
-		//paramVariables.append("AttributeName\t" + attributeName + "\n");
 		paramVariables.append("DisplayStyle\t" + displayStyle + "\n");
 		
 		//List of Nodes as a comma delimited list
@@ -1074,71 +1024,6 @@ public class CloudParameters implements Comparable
 	
 	
 	/**
-	 * This method takes in the ID of a node and returns the string that is associated
-	 * with that node and the current attribute of this CloudParameters.
-	 * @param CyNode - node we are interested in 
-	 * @return String - value stored in the current attribute for the given node.
-	 */
-	/*
-	private String getNodeAttributeVal(CyNode curNode)
-	{
-		//Retrieve value based on attribute
-		String nodeValue = "";
-		
-		//if we should use the ID
-		if (this.attributeName.equals("nodeID"))
-		{
-			nodeValue = curNode.toString();
-		}
-		
-		//Use a different attribute
-		else
-		{
-			CyAttributes cyNodeAttrs = Cytoscape.getNodeAttributes();
-			
-			if (cyNodeAttrs.getType(attributeName)== CyAttributes.TYPE_STRING)
-			{
-				nodeValue = cyNodeAttrs.getStringAttribute(curNode.getIdentifier(), attributeName);
-			}
-			
-			else if (cyNodeAttrs.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST)
-			{
-				List attribute = cyNodeAttrs.getListAttribute(curNode.getIdentifier(), attributeName);
-				
-				if (attribute == null)
-					return null;
-				
-				else
-				{
-					for (Iterator iter = attribute.iterator(); iter.hasNext();)
-					{
-						Object curObj = iter.next();
-						if (curObj instanceof String)
-						{
-							//Turn list into space separated string
-							String curObjString = (String)curObj;
-							nodeValue = nodeValue + curObjString + " ";
-						}//
-					}
-				}
-			}
-			else
-			{
-				//Don't currently handle non string attributes
-				//This code should currently never be accessed
-				Component desktop = Cytoscape.getDesktop();
-				
-				JOptionPane.showMessageDialog(desktop, 
-				"Current implementation does not handle non-String attributes.");
-				return null;
-			}//end else
-		}//end else
-		
-		return nodeValue;
-	}//end method
-	*/
-	
-	/**
 	 * This method takes in a string from a node and processes it to lower case, removes
 	 * punctuation and separates the words into a non repeated list.
 	 * @param String from a node that we are processing.
@@ -1183,18 +1068,11 @@ public class CloudParameters implements Comparable
 	 * @param CloudParameters object to compare this object to
 	 * @return
 	 */
-	public int compareTo(Object o) 
-	{
-		if (o instanceof CloudParameters)
-		{
-			CloudParameters compare = (CloudParameters)o;
-			
-			Integer thisCount = this.getCloudNum();
-			Integer compareCount = compare.getCloudNum();
-			return thisCount.compareTo(compareCount);
-		}
-		else
-			return 0;
+	public int compareTo(CloudParameters compare) 
+	{	
+		Integer thisCount = this.getCloudNum();
+		Integer compareCount = compare.getCloudNum();
+		return thisCount.compareTo(compareCount);
 	}
 	
 	/**
@@ -1220,27 +1098,6 @@ public class CloudParameters implements Comparable
 	{
 		cloudName = name;
 	}
-	
-	/*
-	public String getAttributeName()
-	{
-		return attributeName;
-	}
-	
-	public void setAttributeName(String name)
-	{
-		//Set flags if it is changing
-		if (!attributeName.equals(name))
-		{
-			countInitialized = false;
-			selInitialized = false;
-			ratiosInitialized = false;
-		}
-		
-		attributeName = name;
-
-	}
-	*/
 	
 	public ArrayList<String> getAttributeNames()
 	{
@@ -1528,12 +1385,7 @@ public class CloudParameters implements Comparable
 	
 	public void setClusterCutoff(Double val)
 	{
-		//Rest flags if it changes
-		if (!clusterCutoff.equals(val))
-			//TODO - SOMETHING HERE
-			;
 		clusterCutoff = val;
-		
 	}
 	
 	public Integer getMaxWords()

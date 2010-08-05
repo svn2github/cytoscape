@@ -24,19 +24,11 @@ package cytoscape.csplugins.semanticsummary;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CyNetworkView;
 
 /**
  * This is the action associated with deleting a Semantic Summary Tag Cloud
@@ -49,8 +41,10 @@ public class DeleteCloudAction extends CytoscapeAction
 {
 	//VARIABLES
 	
-	//CONSTRUCTORS
+	private static final long serialVersionUID = -321557784440369508L;
 	
+	//CONSTRUCTORS
+
 	/**
 	 * DeleteCloudAction constructor.
 	 */

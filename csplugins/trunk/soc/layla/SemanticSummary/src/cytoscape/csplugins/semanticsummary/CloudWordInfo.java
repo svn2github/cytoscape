@@ -24,7 +24,6 @@ package cytoscape.csplugins.semanticsummary;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
 import cytoscape.CyNetwork;
@@ -194,15 +192,12 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 				CyNetwork network = Cytoscape.getCurrentNetwork();
 				CyNetworkView view = Cytoscape.getCurrentNetworkView();
 				if (view.getNetwork().equals(network))
-				//if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
 				{
-					//CyNetwork network = Cytoscape.getCurrentNetwork();
 					network.unselectAllNodes();
 					network.unselectAllEdges();
 					network.setSelectedNodeState(nodes, true);
 				
 					//Redraw the graph with selected nodes
-					//CyNetworkView view = Cytoscape.getCurrentNetworkView();
 					view.redrawGraph(false, true);
 					
 					//Bring panels to the front
@@ -215,12 +210,10 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 			public void mouseEntered(MouseEvent me)
 			{
 				JLabel clickedLabel = (JLabel)me.getComponent();
-				String word = clickedLabel.getText();
 				
 				CyNetwork network = Cytoscape.getCurrentNetwork();
 				CyNetworkView view = Cytoscape.getCurrentNetworkView();
 				if (view.getNetwork().equals(network))
-				//if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
 				{
 					clickedLabel.setForeground(new Color(0,200,255));
 					clickedLabel.repaint();
@@ -231,7 +224,6 @@ public class CloudWordInfo implements Comparable<CloudWordInfo>
 			public void mouseExited(MouseEvent me)
 			{
 				JLabel clickedLabel = (JLabel)me.getComponent();
-				String word = clickedLabel.getText();
 				
 				if (!Cytoscape.getCurrentNetworkView().equals(Cytoscape.getNullNetworkView()))
 				{
