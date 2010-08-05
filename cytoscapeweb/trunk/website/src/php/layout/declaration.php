@@ -21,6 +21,7 @@
     $navigation_link = ($_GET["id"] == "") ? ("home") : ($_GET["id"]);
 	$navigation_links = array(
         "download" => "Download",
+        "tutorial" => "Tutorial",
         "documentation" => "Documentation",
         "demo" => "Demo",
         "news" => "News",

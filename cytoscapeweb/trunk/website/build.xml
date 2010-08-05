@@ -95,10 +95,10 @@
             <fileset dir="${temp.dir}/symbols" includes="**.Layout.php"/>
         </copy>
         
-        <mkdir dir="${api.dir}/cytoscape_web"/>
-        <copy todir="${api.dir}/cytoscape_web" file="${jsdoc.dir}/metadata/empty.txt" />
-        <move file="${api.dir}/cytoscape_web/empty.txt" toFile="${api.dir}/cytoscape_web/.real_class"/>
-        <copy todir="${api.dir}/cytoscape_web" overwrite="true">
+        <mkdir dir="${api.dir}/visualization"/>
+        <copy todir="${api.dir}/visualization" file="${jsdoc.dir}/metadata/empty.txt" />
+        <move file="${api.dir}/visualization/empty.txt" toFile="${api.dir}/visualization/.real_class"/>
+        <copy todir="${api.dir}/visualization" overwrite="true">
             <fileset dir="${temp.dir}/symbols" includes="**.Visualization.php"/>
         </copy>
         

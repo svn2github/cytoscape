@@ -8,8 +8,13 @@
     }
     
     $page_links = array(
-        "tutorial" => "Tutorial"
+        //"tutorial" => "Tutorial" // uncomment and move tutorial.php files to put back in documentation section
     );
+    
+    // make visualization the default page but with unaltered order in $page_links
+    if( $page_link == "" ){
+    	$page_link = "visualization";
+    }
     
     if($page_link != "tutorial" && $page_link != "") { 
         $include = "php/content/documentation/list_functions.php";
