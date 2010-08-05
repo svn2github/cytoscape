@@ -23,7 +23,7 @@
 		<constructor-arg ref="guiHandlerFactory" />
 	</bean>
 
-	<bean id="guiHandlerFactory" class="org.cytoscape.work.internal.tunables.GuiHandlerFactory">
+	<bean id="guiHandlerFactory" class="org.cytoscape.work.internal.tunables.GUIHandlerFactory">
 		<constructor-arg ref="bookmarkServiceRef" />
 		<constructor-arg ref="bookmarksUtilServiceRef" />
 <!--		<constructor-arg ref="fileUtil"/>-->
