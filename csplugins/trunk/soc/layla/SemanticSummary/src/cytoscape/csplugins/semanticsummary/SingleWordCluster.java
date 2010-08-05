@@ -142,7 +142,9 @@ public class SingleWordCluster implements Comparable<SingleWordCluster>
 	}
 	
 	/**
-	 * Calculates a weighted sum for all words.
+	 * Calculates a weighted sum for all words.  The sum is the square root
+	 * of the sum of squares of the font size of all words in the cluster.
+	 * @return the weighted sum of all words in the cluster
 	 */
 	public Double calculateWeightedSum()
 	{
@@ -161,77 +163,11 @@ public class SingleWordCluster implements Comparable<SingleWordCluster>
 		return sum;
 	}
 	
-	
-	/**
-	 * Compares two SingleWordClusters based on the totalSum of the font sizes,
-	 * and then breaks ties based upon alphabetical sorting of the words
-	 * in the list.
-	 */
-	/*
-	public int compareTo(SingleWordCluster o) 
-	{
-		//Integer thisCount = this.getTotalSum();
-		//Integer compareCount = o.getTotalSum();
-		
-		Double thisCount = this.computeRootMean();
-		Double compareCount = o.computeRootMean();
-		
-		if (thisCount < compareCount)
-			{return -1;}
-		else if (thisCount > compareCount)
-			{return 1;}
-		else
-		{
-			//In case of ties, break alphabetically by first word
-			String thisWord = this.getWordList().get(0);
-			String compareWord = this.getWordList().get(0);
-			
-			return thisWord.compareTo(compareWord);
-		}
-	}
-	*/
-	/**
-	 * Largest word first, then total, then alphabetical
-	 */
-	/*
-	public int compareTo(SingleWordCluster o) 
-	{
-		Integer thisLargest = this.getLargestFont();
-		Integer compareLargest = o.getLargestFont();
-		
-		if (thisLargest < compareLargest)
-			{return -1;}
-		else if (thisLargest > compareLargest)
-			{return 1;}
-		else
-		{
-			//In case of ties, break by total
-			Integer thisCount = this.getTotalSum();
-			Integer compareCount = o.getTotalSum();
-			
-			if (thisCount < compareCount)
-				{return -1;}
-			else if (thisCount > compareCount)
-				{return 1;}
-			else
-			{
-			
-				//In case of ties, break alphabetically by first word
-				String thisWord = this.getWordList().get(0);
-				String compareWord = this.getWordList().get(0);
-			
-				return thisWord.compareTo(compareWord);
-			}
-		}
-	}
-	*/
-	
+
 	//Weighted sum
 	public int compareTo(SingleWordCluster o) 
 	{
-		//Integer thisCount = this.getTotalSum();
-		//Integer compareCount = o.getTotalSum();
-		
+		//Sort first based on weighted sum
 		Double thisCount = this.calculateWeightedSum();
 		Double compareCount = o.calculateWeightedSum();
 		

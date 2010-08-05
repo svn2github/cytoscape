@@ -56,6 +56,7 @@ public class CreateCloudNetworkAction extends CytoscapeAction
 	public static String WORD_VAL = "Word_Prob";
 	public static String CO_VAL = "CO_Prob";
 	public static String INTERACTION_TYPE = "CO";
+	private static final char controlChar = '\u001F';
 	
 	//CONSTRUCTORS
 	
@@ -106,7 +107,7 @@ public class CreateCloudNetworkAction extends CytoscapeAction
 		{
 			String curEdge = iter.next();
 			Double edgeRatio = pairRatios.get(curEdge);
-			String[] nodeNames = curEdge.split(" ");
+			String[] nodeNames = curEdge.split(Character.toString(controlChar));
 			String nodeName1 = nodeNames[0];
 			String nodeName2 = nodeNames[1];
 			Node node1 = Cytoscape.getCyNode(nodeName1, false);

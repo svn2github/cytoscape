@@ -102,7 +102,7 @@ public class WordDelimiters
 		regexTranslation.put("carriage return", "\\r");
 		regexTranslation.put("form feed", "\\f");
 		regexTranslation.put("!","!");
-		regexTranslation.put("\"", "\" ");
+		regexTranslation.put("\"", "\"");
 		regexTranslation.put("#", "#");
 		regexTranslation.put("$", "$");
 		regexTranslation.put("%", "%");

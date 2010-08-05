@@ -36,6 +36,7 @@ public class WordPair implements Comparable<WordPair>
 	private String secondWord;
 	private Double probability;
 	private CloudParameters params;
+	private static final char controlChar = '\u001F';
 	
 	//CONSTRUCTOR
 	/**
@@ -68,7 +69,7 @@ public class WordPair implements Comparable<WordPair>
 		Integer total = params.getSelectedNumNodes();
 		Integer firstCount = params.getSelectedCounts().get(firstWord);
 		Integer secondCount = params.getSelectedCounts().get(secondWord);
-		String pairName = firstWord + " " + secondWord;
+		String pairName = firstWord + controlChar + secondWord;
 		Integer pairCount = params.getSelectedPairCounts().get(pairName);
 		
 		Integer numerator = pairCount * total;
@@ -147,7 +148,7 @@ public class WordPair implements Comparable<WordPair>
 	
 	public String getWordPairing()
 	{
-		return firstWord + " " + secondWord;
+		return firstWord + controlChar + secondWord;
 	}
 
 }

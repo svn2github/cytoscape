@@ -46,6 +46,8 @@ public class ClusterPriorityQueue
 	private CloudParameters params;
 	private boolean initialized;
 	
+	private static final char controlChar = '\u001F';
+	
 	//CONSTRUCTORS
 	/**
 	 * Creates a fresh instance of the priority queue.
@@ -75,8 +77,8 @@ public class ClusterPriorityQueue
 		for (Iterator<String> iter = pairNames.iterator(); iter.hasNext();)
 		{
 			String curName = iter.next();
-			String first = curName.split(" ")[0];
-			String second = curName.split(" ")[1];
+			String first = curName.split(Character.toString(controlChar))[0];
+			String second = curName.split(Character.toString(controlChar))[1];
 			
 			WordPair curPair = new WordPair(first, second, params);
 			curPair.calculateProbability();

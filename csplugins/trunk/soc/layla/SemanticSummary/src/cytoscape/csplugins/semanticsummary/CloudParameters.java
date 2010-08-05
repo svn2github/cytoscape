@@ -330,7 +330,7 @@ public class CloudParameters implements Comparable<CloudParameters>
 						if (!lastWord.equals(""))
 						{
 							Integer curPairCount = 0;
-							String pairName = lastWord + " " + curWord;
+							String pairName = lastWord + controlChar + curWord;
 						
 							if (networkPairCounts.containsKey(pairName))
 								curPairCount = networkPairCounts.get(pairName);
@@ -429,7 +429,7 @@ public class CloudParameters implements Comparable<CloudParameters>
 						if (!lastWord.equals(""))
 						{
 							Integer curPairCount = 0;
-							String pairName = lastWord + " " + curWord;
+							String pairName = lastWord + controlChar + curWord;
 						
 							if (selectedPairCounts.containsKey(pairName))
 								curPairCount = selectedPairCounts.get(pairName);
