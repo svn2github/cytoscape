@@ -127,7 +127,7 @@
 	           <include name="*.jar"/>
 	         </fileset>
 	       </unzip>
-	        <copy file="${basedir}/plugin.props" todir="${build.dir}/classes/cytoscape/csplugins/semanticsummary" />
+	        <copy file="${basedir}/plugin.props" todir="${build.dir}/classes/cytoscape/csplugins/wordcloud" />
 	        <jar destfile="${jars.dir}/WordCloud.jar"
 	             basedir="${build.dir}/classes">
 		    	<manifest>
