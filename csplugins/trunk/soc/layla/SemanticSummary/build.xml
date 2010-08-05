@@ -132,7 +132,7 @@
 	             basedir="${build.dir}/classes">
 		    	<manifest>
 		     		<attribute name="Cytoscape-Plugin" 
-			           value="cytoscape.csplugins.semanticsummary.SemanticSummaryPlugin"/>
+			           value="cytoscape.csplugins.wordcloud.SemanticSummaryPlugin"/>
 		     	</manifest>
 			</jar>
 	    </target>
