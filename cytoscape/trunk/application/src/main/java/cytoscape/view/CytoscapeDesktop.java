@@ -3,13 +3,6 @@
 
  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
-
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
  by the Free Software Foundation; either version 2.1 of the License, or
@@ -33,7 +26,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package cytoscape.view;
 
 import java.awt.BorderLayout;
@@ -354,10 +347,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		final Dimension windowSize = this.getSize();
 		
 		this.defaultControlPanelWidth = (int)(windowSize.width * 0.4);
-		if(defaultControlPanelWidth>DEF_CONTROL_PANEL_WIDTH)
+		if (defaultControlPanelWidth>DEF_CONTROL_PANEL_WIDTH)
 			defaultControlPanelWidth = DEF_CONTROL_PANEL_WIDTH;
 		
-		this.defaultDataPanelHeight = (int)(windowSize.getHeight()*0.3);
+		this.defaultDataPanelHeight = (int)(windowSize.getHeight() * 0.3);
 		if(defaultDataPanelHeight > DEF_DATAPANEL_HEIGHT)
 			defaultControlPanelWidth = DEF_DATAPANEL_HEIGHT;
 	}
@@ -481,22 +474,17 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		return vizmapperUI;
 	}
 
-
 	/**
-	 * @param style
-	 *            the NEW VisualStyle
+	 * @param style the NEW VisualStyle
 	 * @return the OLD VisualStyle
 	 * 
 	 * @deprecated use VisualMappingManager.setVisualStyle(VisualStyle style) instead.
 	 */
 	@Deprecated
 	public VisualStyle setVisualStyle(VisualStyle style) {
-		
 		vmm.setVisualStyle(style);
-
 		return null;
 	}
-
 	
 	protected void updateFocus(String network_id) {
 		final VisualStyle old_style = vmm.getVisualStyle();
@@ -578,38 +566,26 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if (NETWORK_VIEW_CREATED.equals(e.getPropertyName())) {
-			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_VIEW_CREATED  " +
-			 //                   e.getSource().getClass().getName());
 			// add the new view to the GraphViewController
 			getGraphViewController().addGraphView((CyNetworkView) e.getNewValue());
 			// pass on the event
 			pcs.firePropertyChange(e);
 		} else if (NETWORK_VIEW_FOCUSED.equals(e.getPropertyName())) {
-			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_VIEW_FOCUSED " +
-			 //                   e.getSource().getClass().getName());
 			// get focus event from NetworkViewManager
 			updateFocus(e.getNewValue().toString());
 			pcs.firePropertyChange(e);
 		} else if (NETWORK_VIEW_FOCUS.equals(e.getPropertyName())) {
-			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_VIEW_FOCUS " +
-			 //                   e.getSource().getClass().getName());
 			// get Focus from NetworkPanel
 			updateFocus(e.getNewValue().toString());
 			pcs.firePropertyChange(e);
 		} else if (NETWORK_VIEWS_SELECTED.equals(e.getPropertyName())) {
-			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_VIEWS_SELECTED " +
-			 //                   e.getSource().getClass().getName());
 			Cytoscape.setSelectedNetworkViews( (List<String>)(e.getNewValue()) );
 			Cytoscape.setSelectedNetworks( (List<String>)(e.getNewValue()) );
 			pcs.firePropertyChange(e);
 		} else if (Cytoscape.NETWORK_CREATED.equals(e.getPropertyName())) {
-			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_CREATED " +
-			 //                   e.getSource().getClass().getName());
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
 		} else if (Cytoscape.NETWORK_DESTROYED.equals(e.getPropertyName())) {
-			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_DESTROYED " +
-			 //                   e.getSource().getClass().getName());
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
 
@@ -626,8 +602,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 					Cytoscape.createNewSession();
 			}
 		} else if (NETWORK_VIEW_DESTROYED.equals(e.getPropertyName())) {
-			//CyLogger.getLogger().info("CytoscapeDesktop got: NETWORK_VIEW_DESTROYED " +
-			 //                  e.getSource().getClass().getName());
 			// remove the view from the GraphViewController
 			getGraphViewController().removeGraphView((CyNetworkView) e.getNewValue());
 			// pass on the event
@@ -669,20 +643,17 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	public CytoPanel getCytoPanel(int compassDirection) {
 		// return appropriate cytoPanel based on compass direction
 		switch (compassDirection) {
-			case SwingConstants.SOUTH:
-				return (CytoPanel) cytoPanelSouth;
-
-			case SwingConstants.EAST:
-				return (CytoPanel) cytoPanelEast;
-
-			case SwingConstants.WEST:
-				return (CytoPanel) cytoPanelWest;
-
-			case SwingConstants.SOUTH_WEST:
-				return (CytoPanel) cytoPanelSouthWest;
+		case SwingConstants.SOUTH:
+			return (CytoPanel) cytoPanelSouth;
+		case SwingConstants.EAST:
+			return (CytoPanel) cytoPanelEast;
+		case SwingConstants.WEST:
+			return (CytoPanel) cytoPanelWest;
+		case SwingConstants.SOUTH_WEST:
+			return (CytoPanel) cytoPanelSouthWest;
 		}
 
-		// houston we have a problem
+		// Houston we have a problem!
 		throw new IllegalArgumentException("Illegal Argument:  " + compassDirection
 		                                   + ".  Must be one of:  SwingConstants.{SOUTH,EAST,WEST,SOUTH_WEST}.");
 	}
@@ -716,9 +687,9 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		                              cytoPanelSouthWest);
 		split.setResizeWeight(0);
 		cytoPanelSouthWest.setCytoPanelContainer(split);
-		cytoPanelSouthWest.setMinimumSize(new Dimension(180, 230));
-		cytoPanelSouthWest.setMaximumSize(new Dimension(180, 230));
-		cytoPanelSouthWest.setPreferredSize(new Dimension(180, 230));
+		cytoPanelSouthWest.setMinimumSize(new Dimension(180, 330));
+		cytoPanelSouthWest.setMaximumSize(new Dimension(180, 330));
+		cytoPanelSouthWest.setPreferredSize(new Dimension(180, 330));
 		
 		split.setDividerSize(DEVIDER_SIZE);
 
@@ -830,9 +801,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @return  DOCUMENT ME!
 	 */
 	public BirdsEyeViewHandler getBirdsEyeViewHandler() {
-		if(bevh == null) {
+		if (bevh == null)
 			bevh = new BirdsEyeViewHandler(networkViewManager.getDesktopPane());
-		}
 		
 		return bevh;
 	}

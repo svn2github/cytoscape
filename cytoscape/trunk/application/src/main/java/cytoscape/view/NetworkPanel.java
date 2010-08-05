@@ -164,6 +164,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	private void initialize() {
 		setLayout(new BorderLayout());
 		setPreferredSize(new Dimension(PANEL_PREFFERED_WIDTH, 700));
+		setMinimumSize(new Dimension(PANEL_PREFFERED_WIDTH, PANEL_PREFFERED_WIDTH));
 		
 		networkTreePanel = new JPanel();
 		networkTreePanel.setLayout(new BoxLayout(networkTreePanel, BoxLayout.Y_AXIS));
@@ -573,7 +574,6 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	public void stateChanged(ChangeEvent e) {		
 		updateVSMenu();
 	}
-	
 	
 	private void updateVSMenu() {
 		applyVisualStyleMenu.removeAll();
