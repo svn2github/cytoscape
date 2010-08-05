@@ -36,15 +36,14 @@
 
 package org.cytoscape.ding;
 
-import org.cytoscape.ding.impl.ContentChangeListener;
-import org.cytoscape.ding.impl.DGraphView;
-import org.cytoscape.ding.impl.ViewportChangeListener;
-import org.cytoscape.ding.impl.DingRenderingEngineFactory;
-
-import org.cytoscape.view.presentation.NavigationPresentation;
-import org.cytoscape.view.model.CyNetworkView;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -52,13 +51,23 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import org.cytoscape.ding.impl.ContentChangeListener;
+import org.cytoscape.ding.impl.DGraphView;
+import org.cytoscape.ding.impl.DingRenderingEngineFactory;
+import org.cytoscape.ding.impl.ViewportChangeListener;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.presentation.RenderingEngine;
+
 /**
- * DOCUMENT ME!
+ * Component to display overview of the network.
  *
  * @author $author$
  */
-public class BirdsEyeView extends Component implements NavigationPresentation {
+public class BirdsEyeView extends Component {
+	
 	private final static long serialVersionUID = 1202416511863994L;
+	
 	private final double[] m_extents = new double[4];
 	private DGraphView m_view;
 	private final ContentChangeListener m_cLis;
@@ -75,6 +84,8 @@ public class BirdsEyeView extends Component implements NavigationPresentation {
 	private double m_viewScaleFactor;
 	private Component m_desktopView;
 	private DingRenderingEngineFactory presFactory;
+	
+	private RenderingEngine<CyNetwork> renderer;
 
 	/**
 	 * Creates a new BirdsEyeView object.

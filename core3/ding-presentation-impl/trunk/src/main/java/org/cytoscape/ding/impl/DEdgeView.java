@@ -36,25 +36,28 @@
 
 package org.cytoscape.ding.impl;
 
-import org.cytoscape.graph.render.immed.EdgeAnchors;
-import org.cytoscape.graph.render.immed.GraphGraphics;
-import org.cytoscape.model.CyEdge;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
+import java.awt.Stroke;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.cytoscape.ding.ArrowShape;
 import org.cytoscape.ding.Bend;
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.Label;
-import org.cytoscape.ding.ArrowShape;
-
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.graph.render.immed.EdgeAnchors;
+import org.cytoscape.graph.render.immed.GraphGraphics;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.ViewChangeListener;
-
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 
 class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListener {

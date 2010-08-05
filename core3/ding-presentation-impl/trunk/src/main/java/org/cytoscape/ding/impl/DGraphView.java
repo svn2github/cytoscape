@@ -59,8 +59,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -85,6 +85,9 @@ import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.spacial.SpacialEntry2DEnumerator;
 import org.cytoscape.spacial.SpacialIndex2D;
 import org.cytoscape.spacial.SpacialIndex2DFactory;
+import org.cytoscape.task.EdgeViewTaskFactory;
+import org.cytoscape.task.NetworkViewTaskFactory;
+import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.util.intr.IntBTree;
 import org.cytoscape.util.intr.IntEnumerator;
 import org.cytoscape.util.intr.IntHash;
@@ -95,14 +98,11 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewChangeListener;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.task.EdgeViewTaskFactory;
-import org.cytoscape.task.NodeViewTaskFactory;
-import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-import org.cytoscape.work.UndoSupport;
-import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.work.UndoSupport;
 
 import phoebe.PhoebeCanvasDropListener;
 import phoebe.PhoebeCanvasDroppable;
@@ -2724,5 +2724,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	public Icon createIcon(VisualProperty<?> vp) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setViewModel(View<CyNetwork> viewModel) {
+		// TODO Auto-generated method stub
+		
 	}
 }

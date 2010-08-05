@@ -1,7 +1,6 @@
 
 package org.cytoscape.ding.impl;
 
-import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -9,12 +8,11 @@ import java.util.Properties;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
 
-import org.cytoscape.ding.BirdsEyeView;
 import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.spacial.SpacialIndex2DFactory;
 import org.cytoscape.task.EdgeViewTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
@@ -25,13 +23,11 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.events.NetworkViewChangedEvent;
 import org.cytoscape.view.model.events.NetworkViewChangedListener;
-import org.cytoscape.view.presentation.NavigationPresentation;
-import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.UndoSupport;
-import org.cytoscape.service.util.CyServiceRegistrar;
 
 public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetwork>, NetworkViewChangedListener {
 
@@ -116,20 +112,21 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 		return dgv;
 	}
 
-	public NavigationPresentation addNavigationPresentation(Object targetComponent, Object navBounds) {
-		if ( !(targetComponent instanceof JPanel) )
-			throw new IllegalArgumentException("targetComponent object is not of type JPanel, which is invalid for this implementation of PresentationFactory");
-
-		if ( !(navBounds instanceof Component) ) 
-			throw new IllegalArgumentException("navBounds object is not of type Component, which is invalid for this implementation of PresentationFactory");
-		
-		JPanel target = (JPanel)targetComponent;
-
-		BirdsEyeView bev = new BirdsEyeView((Component)navBounds,this);	
-		target.add( bev );
-
-		return bev;
-	}
+	
+//	public NavigationPresentation addNavigationPresentation(Object targetComponent, Object navBounds) {
+//		if ( !(targetComponent instanceof JPanel) )
+//			throw new IllegalArgumentException("targetComponent object is not of type JPanel, which is invalid for this implementation of PresentationFactory");
+//
+//		if ( !(navBounds instanceof Component) ) 
+//			throw new IllegalArgumentException("navBounds object is not of type Component, which is invalid for this implementation of PresentationFactory");
+//		
+//		JPanel target = (JPanel)targetComponent;
+//
+//		BirdsEyeView bev = new BirdsEyeView((Component)navBounds,this);	
+//		target.add( bev );
+//
+//		return bev;
+//	}
 
 	
 	public void handleEvent(NetworkViewChangedEvent nvce) {

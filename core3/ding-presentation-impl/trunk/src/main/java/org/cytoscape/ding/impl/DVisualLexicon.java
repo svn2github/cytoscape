@@ -53,6 +53,7 @@ import org.cytoscape.view.presentation.property.DoubleVisualProperty;
 import org.cytoscape.view.presentation.property.StringVisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
+
 public class DVisualLexicon extends TwoDVisualLexicon {
 	
 	private static final int DEF_FONT_SIZE = 10;

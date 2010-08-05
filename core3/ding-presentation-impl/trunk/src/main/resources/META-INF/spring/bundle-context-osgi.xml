@@ -39,13 +39,27 @@
 	<osgi:service id="dingPresentationFactoryService" ref="dingPresentationFactory">
 		<osgi:interfaces>
 			<value>org.cytoscape.view.presentation.RenderingEngineFactory</value>
-			<value>org.cytoscape.view.model.events.NetworkViewChangedListener</value>
+			<value>org.cytoscape.view.model.events.NetworkViewChangedListener
+			</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="serviceType" value="presentationFactory" />
 			<entry key="id" value="ding" />
 		</osgi:service-properties>
 	</osgi:service>
+
+	<osgi:service id="dingNavigationPresentationFactoryService" ref="dingNavigationPresentationFactory">
+		<osgi:interfaces>
+			<value>org.cytoscape.view.presentation.RenderingEngineFactory</value>
+			<value>org.cytoscape.view.model.events.NetworkViewChangedListener
+			</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="serviceType" value="presentationFactory" />
+			<entry key="id" value="dingNavigation" />
+		</osgi:service-properties>
+	</osgi:service>
+
 
 	<osgi:service id="dVisualLexiconService" ref="dVisualLexicon"
 		interface="org.cytoscape.view.model.VisualLexicon">
@@ -63,10 +77,10 @@
 			unbind-method="removeEdgeViewTaskFactory" ref="dingPresentationFactory" />
 	</osgi:set>
 
-    <osgi:set id="emptySpaceTaskFactorySet" interface="org.cytoscape.task.NetworkViewTaskFactory"
-	        cardinality="0..N">
-        <osgi:listener bind-method="addNetworkViewTaskFactory"
-            unbind-method="removeNetworkViewTaskFactory" ref="dingPresentationFactory" />
-    </osgi:set>
+	<osgi:set id="emptySpaceTaskFactorySet" interface="org.cytoscape.task.NetworkViewTaskFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addNetworkViewTaskFactory"
+			unbind-method="removeNetworkViewTaskFactory" ref="dingPresentationFactory" />
+	</osgi:set>
 
 </beans>
