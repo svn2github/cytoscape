@@ -184,6 +184,20 @@ public class SearchTask implements Task {
 			pValueThreshold = 1;
 		}
 		
+		//Filter edges with negative PanGIA edge scores
+		final Set<TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge>> deleteSet = new HashSet<TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge>>(1000);
+		for (TypedLinkEdge<TypedLinkNodeModule<String,BFEdge>,BFEdge> edge : results.edgeIterator())
+		{
+			if (!edge.value().isType(InteractionType.Genetic))
+			{
+				deleteSet.add(edge);
+				continue;
+			}
+			
+			if (edge.value().link() <= 0) deleteSet.add(edge);
+		}
+		results.removeAllEdges(deleteSet);
+		
 		if (needsToHalt) return;
 		
 		//Check for problems
@@ -440,7 +454,8 @@ public class SearchTask implements Task {
 			for (final CyEdge edge : edges)
 				outputNetwork.add(edge.getSource().getIdentifier(),
 				                  edge.getTarget().getIdentifier(), 1.0f);
-		} else {
+		} else
+		{
 			// Validate that "numericAttrName" is a known numeric edge attribute.
 			final CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 			final byte edgeAttribType = edgeAttributes.getType(numericAttrName);
@@ -499,7 +514,7 @@ public class SearchTask implements Task {
 		float from, to;
 		if (scalingMethod == ScalingMethodX.LINEAR_LOWER || scalingMethod == ScalingMethodX.LINEAR_UPPER) {
 			final float EPS = 0.25f / edgeAttribValues.length;
-			from = 0.5f - EPS;
+			from = 0.5f + EPS;
 			to   = 1.0f - EPS;
 			scalingType = "linear";
 		} else if (scalingMethod == ScalingMethodX.RANK_LOWER || scalingMethod == ScalingMethodX.RANK_UPPER) {

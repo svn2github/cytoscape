@@ -40,7 +40,7 @@ public class ComplexRegression
 					y[i] = 1;
 					break;
 				}
-							
+			
 			edgeList.add(e);
 			
 			i++;
@@ -63,15 +63,20 @@ public class ComplexRegression
 			double prob = lm.yhat(j);
 			
 			if (prob==1) prob = 1-1/(double)n;
+			if (prob==0) prob = 1/(double)n;
+			
+			prob = Math.log(prob)-Math.log(1-prob);
+			
+			/*
 			prob = prob / (1-prob);
 			
 			if (Float.isInfinite((float)prob))
 			{
 				prob = 1-1/(double)n;
 				prob = prob / (1-prob);
-			}
+			}*/
 			
-			out.add(edgeList.get(j).getI1(),edgeList.get(j).getI2(),(float)prob);
+			if (prob>0) out.add(edgeList.get(j).getI1(),edgeList.get(j).getI2(),(float)prob);
 		}
 		
 		return new ComplexRegressionResult(out,DoubleMatrix.getCol(x, 1),y,lm.coefficients().get(0),lm.coefficients().get(1));

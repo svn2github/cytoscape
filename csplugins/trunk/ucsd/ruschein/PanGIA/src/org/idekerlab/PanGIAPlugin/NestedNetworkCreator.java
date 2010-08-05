@@ -187,17 +187,17 @@ public class NestedNetworkCreator {
 			if (sourceModule.size()<=2) 
 			{
 				Iterator<String> genes = sourceModule.getMemberValues().iterator();
-				String newName = genes.next();
+				String newName = "("+genes.next();
 				while (genes.hasNext()) newName+=", "+genes.next();
-				sourceNode.setIdentifier(newName);
+				sourceNode.setIdentifier(newName+")");
 			}
 
 			if (targetModule.size()<=2) 
 			{
 				Iterator<String> genes = targetModule.getMemberValues().iterator();
-				String newName = genes.next();
+				String newName = "("+genes.next();
 				while (genes.hasNext()) newName+=", "+genes.next();
-				targetNode.setIdentifier(newName);
+				targetNode.setIdentifier(newName+")");
 			}
 			
 			//Annotate large complexes
@@ -349,7 +349,9 @@ public class NestedNetworkCreator {
 		for (final CyEdge edge : edges)
 		{
 			nestedNetwork.addEdge(edge);
-			cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic");
+			Object existingAttribute = cyEdgeAttrs.getAttribute(edge.getIdentifier(), "PanGIA.Interaction Type");
+			if (existingAttribute==null || !existingAttribute.equals("Physical"))  cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic");
+			else cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
 		}
 
 		if (createNetworkView) {

@@ -80,7 +80,7 @@ public class HCSearch2 {
 			}
 			
 			if (parentTask.needsToHalt()) return null;
-
+			
 			// Identify the best physical edge to merge
 			Iterator<TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge>> edgei = results
 					.edgeIterator().iterator();
@@ -119,6 +119,9 @@ public class HCSearch2 {
 					results, best.source(), best.target(), sfunc);
 			mergedNode.value().setScore(best.value().complexMerge());
 
+			//if (mergedNode.value().contains("AT2G25930"))
+			//		System.out.println(mergedNode.value());
+			
 			// Check to see if the search should continue
 			if (max > 0) {
 				// Recalculate linkMerge scores

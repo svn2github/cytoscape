@@ -40,11 +40,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private static final long serialVersionUID = -3352470909434196700L;
 
 	private static final double DEF_ALPHA = 1.6;
-	private static final double DEF_ALPHA_MUL = 1.0;
-	private static final String DEF_DEGREE = "";
+	private static final double DEF_ALPHA_MUL = 0.0;
+	private static final String DEF_DEGREE = "2";
 	private static final double DEF_CUTOFF = 20.0;
-	private static final double DEF_PVALUE_THRESHOLD = 95;
-	private static final int DEF_NUMBER_OF_SAMPLES = 10000;
+	private static final double DEF_PVALUE_THRESHOLD = 80;
+	private static final int DEF_NUMBER_OF_SAMPLES = 1000;
 	private static final String DEFAULT_ATTRIBUTE = "none";
 	
 	private Container container;

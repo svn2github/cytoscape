@@ -10,7 +10,14 @@ import cytoscape.Cytoscape;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.BasicCalculator;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.properties.EdgeOpacityProp;
 
 /**
  * Listening to the network creation event and override the visual style.
@@ -80,23 +87,32 @@ public class VisualStyleObserver implements PropertyChangeListener {
 			if(style == null)
 				return;
 			
+			/*
+			if (style.getName().equals(VS_OVERVIEW_NAME))
+			{
+				EdgeAppearanceCalculator eac = style.getEdgeAppearanceCalculator();
+				
+				ContinuousMapping cm = new ContinuousMapping(new EdgeOpacityProp(), ObjectMapping.EDGE_MAPPING);
+				cm.setControllingAttributeName("PanGIA.edge score", view.getNetwork(), true);
+				cm.calculateRangeValue(view.getNetwork().getEdgeIndicesArray())
+				
+				Calculator edgeOpacityCalc = new BasicCalculator(VS_OVERVIEW_NAME+"-EdgeOpacityMapping", cm, VisualPropertyType.EDGE_OPACITY);
+
+				eac.setCalculator(edgeOpacityCalc);
+
+			}*/
+			
+			view.setVisualStyle(style.getName());
+			if(Cytoscape.getVisualMappingManager().getVisualStyle().equals(style) == false)
+				Cytoscape.getVisualMappingManager().setVisualStyle(style);
+			
 			if (style.getName().equals(VS_MODULE_NAME))
 			{
-				view.setVisualStyle(style.getName());
-				if(Cytoscape.getVisualMappingManager().getVisualStyle().equals(style) == false)
-					Cytoscape.getVisualMappingManager().setVisualStyle(style);
-				
 				CyLayoutAlgorithm alg = cytoscape.layout.CyLayouts.getLayout("force-directed");
 				view.applyLayout(alg);	
 				
 				view.redrawGraph(true, true);
-			}else
-			{
-				view.setVisualStyle(style.getName());
-				if(Cytoscape.getVisualMappingManager().getVisualStyle().equals(style) == false)
-					Cytoscape.getVisualMappingManager().setVisualStyle(style);
-				view.redrawGraph(false, true);
-			}
+			}else view.redrawGraph(false, true);
 		}
 	}
 }
