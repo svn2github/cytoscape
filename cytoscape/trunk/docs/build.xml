@@ -2,8 +2,6 @@
 <project name="Cytoscape" default="all">
 
 	<property name="basedir" value="."/>
-	<property name="docbook-xsl" value="docbook-xsl-1.70.1"/>
-	<property name="xsl" value="${basedir}/xsl/${docbook-xsl}"/>
 	<property name="xep.home" value="/cellar/users/mes/XEP"/>
 	<property name="version" value="2.7"/>
 	<property name="images.dir" value="${basedir}/src/docbkx/images"/>
@@ -54,21 +52,10 @@
 
 
 	<!--==============================================================-->
-	<!-- A separate target to see if the raw manual exists. This can't
-	     be run as part of init, because the manual may exist for clean
-		 which would break things here. -->
-	<target name="raw-exists">
-		<available file="manual_raw.xml" property="raw-manual-exists"/>
-		<available file="${images.dir}/cyto-logo-smaller.gif" type="file" property="images-exist"/>
-	</target>
-
-
-	<!--==============================================================-->
 	<!-- Fetch the DocBook XML from the wiki page. --> 
 	<target name="fetch-manual" 
 	        description="fetches the raw manual file"
-	        depends="init,raw-exists"
-	        unless="raw-manual-exists">
+	        depends="init" >
 		<get src="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual?action=show&amp;mimetype=text/docbook" 
 		     dest="manual_raw.xml"/>
 
@@ -93,8 +80,7 @@
 	<!-- Fetch the images from the wiki page. --> 
 	<target name="fetch-images" 
 	        description="Fetches the images from the manual"
-	        depends="fetch-manual"
-	        unless="images-exist">
+	        depends="fetch-manual" >
 
 		<!-- Correct the urls in the raw manual.  -->
 		<copy file="manual_raw.xml" 
@@ -132,14 +118,11 @@
 		      </filterchain>
 		</copy>
 
-		<!-- Make the directory to hold the images. 
-		<mkdir dir="${images.dir}"/>
-		-->
-
 		<!-- Run the new build file fetching all of the image files.  -->
 		<ant antfile="fetch_image_files.xml" target="strip"/>
 
 		<delete file="fetch_images_tmp.xml"/>
+		<delete file="fetch_image_files.xml"/>
 		<delete file="manual_tmp_fetch_images.xml"/>
 	</target>
 
@@ -148,12 +131,12 @@
 	<!-- Substitute file locations and other XML problems -->
 	<target name="prep-manual" 
 	        description="Prep Manual XML"
-		depends="fetch-images">
+	        depends="fetch-images">
 
 		<copy file="manual_raw.xml" 
 		      tofile="manual_tmp_prep.xml" 
 		      overwrite="yes"
-			  encoding="utf-8">
+		      encoding="utf-8">
 		      <filterchain>
 				<tokenfilter>
 					<!-- this gets the images -->
@@ -187,6 +170,7 @@
 
 		<delete file="manual_tmp_prep.xml"/>
 		<delete file="manual_tmp_prep2.xml"/>
+		<delete file="manual_raw.xml"/>
 	</target> 
 
 
@@ -219,7 +203,7 @@
 
 		<!-- convert to pdf -->
 		<xep in="manual.fo" 
-		     out="pdf/manual.pdf" 
+		     out="src/main/pdf/manual.pdf" 
 		     format="PDF">
 			<classpath refid="classpath"/>
 			<sysproperty key="com.renderx.xep.CONFIG" 
@@ -230,115 +214,5 @@
 		<delete file="manual.fo"/>
 		<delete file="manual_pdf.xml"/>
 	</target>
-
-	<!--==============================================================-->
-	<!-- Create the java help.  -->
-	<target name="create-help"
-	        description="Create Cytoscape Java Help"
-		depends="prep-manual">
-
-		<!-- transform the manual -->
-		<xslt scanincludeddirectories="no"
-		      classpathref="classpath"
-		      includes="${manual.dir}/manual.xml"
-		      destdir="."
-		      style="${xsl}/javahelp/javahelp.xsl">
-		      <param name="base.dir" expression="help/"/>
-		</xslt>
-
-		<!-- Repair the jhelpset so that it doesn't include the index. 
-		     We do this because we don't generate index information in 
-		     our docbook. 
-		  -->
-		<xslt in="help/jhelpset.hs"
-		      out="help/jhelpset.hs.new"
-		      classpathref="classpath"
-		      style="xsl/filter_index.xsl"/>
-		<move file="help/jhelpset.hs" tofile="help/jhelpset.hs.orig"/>
-		<move file="help/jhelpset.hs.new" tofile="help/jhelpset.hs"/>
-
-		<!-- now clean up after ourselves and move everything into the help dir -->
-		<delete file="manual.html"/>
-		<copy todir="help/images">
-			<fileset dir="images"/>
-		</copy>
-	</target>
-
-	<!--==============================================================-->
-	<!-- Create an html version of the manual.  -->
-	<target name="create-html"
-	        description="Create Cytoscape Manual HTML"
-		depends="prep-manual">
-
-		<!-- transform the manual -->
-		<xslt scanincludeddirectories="no"
-		      classpathref="classpath"
-		      includes="${manual.dir}/manual.xml"
-		      destdir="."
-		      style="${xsl}/xhtml/docbook.xsl"/>
-
-		<!-- now clean up after ourselves and move everything into the html dir -->
-		<copy todir="html/images">
-			<fileset dir="images"/>
-		</copy>
-		<move file="manual.html" todir="html"/>
-	</target>
-
-	<!--==============================================================-->
-	<!-- Creates everything.  -->
-	<target name="all"
-	        description="Creates PDF, html, javahelp from the Manual."
-		depends="create-pdf,create-help,create-html"/>
-
-	<!--==============================================================-->
-	<!-- Creates everything from scratch.  -->
-	<target name="regenerate"
-	        description="Re-downloads everything and then Creates PDF, html, javahelp from the Manual."
-		depends="clean-all,all"/>
-
-	<!--==============================================================-->
-	<!-- Deletes all generated files - including downloaded files.  -->
-	<target name="clean"
-	        description="Deletes all temp files so that we can commit.">
-		<delete file="fetch_image_files.xml"/>
-		<delete dir="xsl/${docbook-xsl}"/>
-		<delete dir="help/images"/>
-		<delete dir="html/images"/>
-		<echo message="See also:"/>
-		<echo message="   ant clean-gen (removes all generated files)"/>
-		<echo message="   ant clean-all (removes all generated AND downloaded files)"/>
-	</target>
-
-	<!--==============================================================-->
-	<!-- Deletes all generated files - but not downloaded files.  -->
-	<target name="clean-gen"
-	        description="Deletes all generated files - but not downloaded files."
-			depends="clean">
-		<delete>
-			<fileset dir="html">
-				<exclude name=".svn"/>
-			</fileset>
-			<fileset dir="help">
-				<exclude name=".svn"/>
-			</fileset>
-			<fileset dir="pdf">
-				<exclude name=".svn"/>
-			</fileset>
-		</delete>
-	</target>
-
-	<!--==============================================================-->
-	<!-- Deletes all generated files - including downloaded files.  -->
-	<target name="clean-all"
-	        depends="clean-gen"
-	        description="Deletes all generated files - including downloaded files.">
-		<delete>
-			<fileset dir="images">
-				<exclude name=".svn"/>
-			</fileset>
-		</delete>
-		<delete file="manual_raw.xml"/>
-	</target>
-
 
 </project>
