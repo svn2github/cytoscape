@@ -2725,10 +2725,4 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public void setViewModel(View<CyNetwork> viewModel) {
-		// TODO Auto-generated method stub
-		
-	}
 }
