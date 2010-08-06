@@ -48,6 +48,7 @@ public class CloudParametersUnitTest extends TestCase {
 	String cloudName = "CloudName";
 	SemanticSummaryParameters parentParams;
 	CloudParameters cloudParams;
+	String charString = Character.toString('\u001F');
 	
 
 	@Before
@@ -151,8 +152,8 @@ public class CloudParametersUnitTest extends TestCase {
 		
 		//Test network pair counts
 		HashMap<String, Integer> pairCounts = cloudParams.getNetworkPairCounts();
-		assertEquals((Integer)pairCounts.get("node onenode"), new Integer(2));
-		assertEquals((Integer)pairCounts.get("strip lots"), new Integer(1));
+		assertEquals((Integer)pairCounts.get("node" + charString + "onenode"), new Integer(2));
+		assertEquals((Integer)pairCounts.get("strip" + charString + "lots"), new Integer(1));
 		
 		//Test mappings
 		HashMap<String, List<String>> mapping = cloudParams.getStringNodeMapping();
@@ -210,8 +211,8 @@ public class CloudParametersUnitTest extends TestCase {
 		
 		//Test selected pair counts
 		HashMap<String, Integer> pairCounts = cloudParams.getSelectedPairCounts();
-		assertEquals((Integer)pairCounts.get("node onenode"), new Integer(1));
-		assertEquals((Integer)pairCounts.get("strip lots"), new Integer(1));
+		assertEquals((Integer)pairCounts.get("node" + charString + "onenode"), new Integer(1));
+		assertEquals((Integer)pairCounts.get("strip" + charString + "lots"), new Integer(1));
 		
 		//Test flags
 		assertTrue(cloudParams.getCountInitialized());
@@ -243,7 +244,7 @@ public class CloudParametersUnitTest extends TestCase {
 		
 		//Test Pair Ratios (with default k = 1)
 		HashMap<String, Double> pairRatios = cloudParams.getPairRatios();
-		assertEquals((Double)pairRatios.get("node onenode"), new Double((1.0*13)/(7*2)));
+		assertEquals((Double)pairRatios.get("node" + charString + "onenode"), new Double((1.0*13)/(7*2)));
 		
 		
 		assertEquals(cloudParams.getMaxRatio(),new Double((1.0*13)/(7*1)));
