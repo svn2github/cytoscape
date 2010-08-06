@@ -50,6 +50,11 @@ public class LogisticModelD extends AbstractSingleLinearModelD
 		this.coefficients = LogisticRegression.logisticRegression(this.evaluateX(), y,maxit,epsilon,false);
 	}
 	
+	public void regress(int maxit, double epsilon, double[] weights)
+	{
+		this.coefficients = LogisticRegression.logisticRegression(this.evaluateX(), y,weights,maxit,epsilon,false);
+	}
+	
 	
 	public double yhat(int i)
 	{

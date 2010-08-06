@@ -94,7 +94,8 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				
 				ContinuousMapping cm = new ContinuousMapping(new EdgeOpacityProp(), ObjectMapping.EDGE_MAPPING);
 				cm.setControllingAttributeName("PanGIA.edge score", view.getNetwork(), true);
-				cm.calculateRangeValue(view.getNetwork().getEdgeIndicesArray())
+				cm.getPoint(0).setValue(77);
+				cm.getPoint(1).setValue(177);
 				
 				Calculator edgeOpacityCalc = new BasicCalculator(VS_OVERVIEW_NAME+"-EdgeOpacityMapping", cm, VisualPropertyType.EDGE_OPACITY);
 

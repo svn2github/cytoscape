@@ -103,13 +103,13 @@ public class SearchTask implements Task {
 		
 		if (parameters.getComplexTrainingPhysical())
 		{
-			physicalRegress = ComplexRegression.complexRegress(physicalNetwork, trainingComplexes, true);
+			physicalRegress = ComplexRegression.complexRegress(physicalNetwork, trainingComplexes, true, 0);
 			physicalNetwork = physicalRegress.net;
 		}
 		
 		if (parameters.getComplexTrainingGenetic())
 		{
-			geneticRegress = ComplexRegression.complexRegress(geneticNetwork, trainingComplexes, true);
+			geneticRegress = ComplexRegression.complexRegress(geneticNetwork, trainingComplexes, true, 0);
 			geneticNetwork = geneticRegress.net;
 		}
 		
@@ -593,6 +593,10 @@ public class SearchTask implements Task {
 				
 				b.add("<IMG src=\"http://chart.apis.google.com/chart?cht=lxy&chs=500x300&chd=t:"+ListOps.collectionToString(x,",")+"|"+ListOps.collectionToString(y,",")+"&chxr=0,"+xmin+","+xmax+"&chxt=x,x,y,y&chxl=1:|Interaction_Score|2:|10^-2|10^-1|10^0|10^1|10^2|10^3|3:|Enrichment&chxp=1,60|3,50&chco=0000FF&chxs=0,000000,12,0,lt|1,000000,12,1,lt|2,000000,12,2,lt|3,000000,12,3,lt&chg=0,100,3,3,0,40\">");
 				b.add("");
+				b.add("Assumed null score = 0, trained on absolute value");
+				b.add("Background = "+geneticRegress.background);
+				b.add("Absent hits = "+geneticRegress.absentHits+",   Absent misses = "+geneticRegress.absentMisses);
+				b.add("");
 				b.add("Logistic regression: beta="+physicalRegress.coef+", intercept="+physicalRegress.intercept);
 				b.add("");
 			}
@@ -612,6 +616,10 @@ public class SearchTask implements Task {
 				float[] y = new FloatVector(DoubleVector.divideBy(DoubleVector.subtract(curve[1],ymin),(ymax-ymin)/100)).getData();
 				
 				b.add("<IMG src=\"http://chart.apis.google.com/chart?cht=lxy&chs=500x300&chd=t:"+ListOps.collectionToString(x,",")+"|"+ListOps.collectionToString(y,",")+"&chxr=0,"+xmin+","+xmax+"&chxt=x,x,y,y&chxl=1:|Interaction_Score|2:|10^-2|10^-1|10^0|10^1|10^2|10^3|3:|Enrichment&chxp=1,60|3,50&chco=0000FF&chxs=0,000000,12,0,lt|1,000000,12,1,lt|2,000000,12,2,lt|3,000000,12,3,lt&chg=0,100,3,3,0,40\">");
+				b.add("");
+				b.add("Assumed null score = 0, trained on absolute value");
+				b.add("Background = "+geneticRegress.background);
+				b.add("Absent hits = "+geneticRegress.absentHits+",   Absent misses = "+geneticRegress.absentMisses);
 				b.add("");
 				b.add("Logistic regression: beta="+geneticRegress.coef+", intercept="+geneticRegress.intercept);
 				b.add("");
