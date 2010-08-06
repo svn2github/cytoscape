@@ -42,9 +42,11 @@
 	        unless="xep-exists">
 		<echo message="XEP does not exist - No PDF for you!"/>
 		<path id="classpath">
+		<!--
 			<fileset dir="lib">
 				<include name="saxon.jar"/>
 			</fileset>
+			-->
 		</path>
 	</target>
 
@@ -58,9 +60,11 @@
 			 classpath="${xep.lib}/XEPTask.jar"/>
 
 		<path id="classpath">
+		<!--
 			<fileset dir="lib">
 				<include name="saxon.jar"/>
 			</fileset>
+			-->
 			<fileset dir="${xep.lib}">
 				<include name="xep*.jar"/>
 				<include name="xt.jar"/>
@@ -187,6 +191,11 @@
 	        depends="prep-manual"
 	        if="xep-exists">
 
+		<property name="docbook-xsl" value="docbook-xsl-1.75.2"/>
+		<property name="xsl" value="${basedir}/xsl/${docbook-xsl}"/>
+		<unzip src="${basedir}/xsl/${docbook-xsl}.zip" 
+		       dest="${basedir}/xsl" />
+
 		<!-- so that images scale correctly -->
 		<copy file="${manual.dir}/manual.xml" 
 		      tofile="manual_pdf.xml" 
@@ -196,6 +205,8 @@
 				<tokenfilter>
 					<replacestring from="imagedata fileref" 
 					               to="imagedata scaletofit='1' width='100%' fileref"/>
+					<replacestring from='fileref="images/' 
+					               to='fileref="src/docbkx/images/'/>
 				</tokenfilter>
 		      </filterchain>
 		</copy>
@@ -204,7 +215,9 @@
 		<xslt classpathref="classpath"
 		      in="manual_pdf.xml"
 		      out="manual.fo"
-		      style="${xsl}/fo/docbook.xsl"/>
+		      style="${xsl}/fo/docbook.xsl">
+			<param name="ulink.show" expression="0"/>
+		</xslt>
 
 
 		<!-- convert to pdf -->
@@ -216,9 +229,9 @@
 		                     value="${xep.home}/xep.xml"/>
 		</xep>
 
-		<!-- clean up -->
 		<delete file="manual.fo"/>
 		<delete file="manual_pdf.xml"/>
+		<delete dir="xsl/${docbook-xsl}"/>
 	</target>
 
 	<!--==============================================================-->
