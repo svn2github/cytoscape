@@ -6,15 +6,16 @@
 	<property name="xsl" value="${basedir}/xsl/${docbook-xsl}"/>
 	<property name="xep.home" value="/cellar/users/mes/XEP"/>
 	<property name="version" value="2.7"/>
+	<property name="images.dir" value="${basedir}/src/docbkx/images"/>
+	<property name="manual.dir" value="${basedir}/src/docbkx"/>
 
 	<available file="${xep.home}" property="xep-exists"/>
-	<available file="${basedir}/xsl/${docbook-xsl}" property="no-unzip"/>
 
 
 	<!--==============================================================-->
 	<!-- Init conditionally -->
 	<target name="init"
-	        depends="xep-init,non-xep-init,unzip-xsl"/>
+	        depends="xep-init,non-xep-init"/>
 
 
 
@@ -53,20 +54,12 @@
 
 
 	<!--==============================================================-->
-	<!-- unzip the xsl only if it hasn't been already -->
-	<target name="unzip-xsl"
-	        unless="no-unzip">
-		<unzip src="${basedir}/xsl/${docbook-xsl}.zip" 
-		       dest="${basedir}/xsl" />
-	</target>
-
-	<!--==============================================================-->
 	<!-- A separate target to see if the raw manual exists. This can't
 	     be run as part of init, because the manual may exist for clean
 		 which would break things here. -->
 	<target name="raw-exists">
 		<available file="manual_raw.xml" property="raw-manual-exists"/>
-		<available file="images/cyto-logo-smaller.gif" type="file" property="images-exist"/>
+		<available file="${images.dir}/cyto-logo-smaller.gif" type="file" property="images-exist"/>
 	</target>
 
 
@@ -132,15 +125,16 @@
 		      <filterchain>
 				<tokenfilter>
 					<replaceregex pattern='dest=\S+target=' 
-					              replace='dest="images/' 
+					              replace='dest="${images.dir}/' 
 						      flags="g"/>
 					<replacestring from='&amp;' to='&amp;amp;'/>
 				</tokenfilter>
 		      </filterchain>
 		</copy>
 
-		<!-- Make the directory to hold the images. -->
-		<mkdir dir="images"/>
+		<!-- Make the directory to hold the images. 
+		<mkdir dir="${images.dir}"/>
+		-->
 
 		<!-- Run the new build file fetching all of the image files.  -->
 		<ant antfile="fetch_image_files.xml" target="strip"/>
@@ -156,9 +150,6 @@
 	        description="Prep Manual XML"
 		depends="fetch-images">
 
-		<mkdir dir="html/images"/>
-		<mkdir dir="help/images"/>
-	
 		<copy file="manual_raw.xml" 
 		      tofile="manual_tmp_prep.xml" 
 		      overwrite="yes"
@@ -191,7 +182,7 @@
 		<!-- Remove revision history -->
 		<xslt classpathref="classpath"
 		      in="manual_tmp_prep2.xml"
-		      out="manual.xml"
+		      out="${manual.dir}/manual.xml"
 		      style="xsl/remove_revision_history.xsl"/>
 
 		<delete file="manual_tmp_prep.xml"/>
@@ -207,7 +198,7 @@
 		if="xep-exists">
 
 		<!-- so that images scale correctly -->
-		<copy file="manual.xml" 
+		<copy file="${manual.dir}/manual.xml" 
 		      tofile="manual_pdf.xml" 
 		      overwrite="yes"
 			  encoding="utf-8">
@@ -249,7 +240,7 @@
 		<!-- transform the manual -->
 		<xslt scanincludeddirectories="no"
 		      classpathref="classpath"
-		      includes="manual.xml"
+		      includes="${manual.dir}/manual.xml"
 		      destdir="."
 		      style="${xsl}/javahelp/javahelp.xsl">
 		      <param name="base.dir" expression="help/"/>
@@ -282,7 +273,7 @@
 		<!-- transform the manual -->
 		<xslt scanincludeddirectories="no"
 		      classpathref="classpath"
-		      includes="manual.xml"
+		      includes="${manual.dir}/manual.xml"
 		      destdir="."
 		      style="${xsl}/xhtml/docbook.xsl"/>
 
@@ -309,7 +300,6 @@
 	<!-- Deletes all generated files - including downloaded files.  -->
 	<target name="clean"
 	        description="Deletes all temp files so that we can commit.">
-		<delete file="manual.xml"/>
 		<delete file="fetch_image_files.xml"/>
 		<delete dir="xsl/${docbook-xsl}"/>
 		<delete dir="help/images"/>
