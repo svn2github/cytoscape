@@ -158,10 +158,23 @@
 				<fileset dir="${basedir}/src">
 				</fileset>
 			</copy>
+			<mkdir dir="${src_release.dir}/doc"/>
+			<copy todir="${src_release.dir}/doc">
+				<fileset dir="${basedir}/doc">
+				</fileset>
+			</copy>
+			<mkdir dir="${src_release.dir}/lib"/>
+			<copy todir="${src_release.dir}/lib">
+				<fileset dir="${basedir}/lib">
+				</fileset>
+			</copy>
+			<mkdir dir="${src_release.dir}/jars"/>
+			<copy todir="${src_release.dir}/jars">
+				<fileset dir="${basedir}/jars">
+				</fileset>
+			</copy>
 			<copy file="build.xml" todir="${src_release.dir}"/>
 			<copy file="plugin.props" todir="${src_release.dir}"/>
-			<copy file="doc/LICENSE.TXT" todir="${src_release.dir}"/>
-			<copy file="doc/README.TXT" todir="${src_release.dir}"/>
 			<tar destfile="WordCloudPlugin_v${pluginVersion}${pluginReleaseSuffix}_src.tar.gz" basedir="${src_release_root.dir}" compression="gzip" longfile="gnu"/>
 			<zip destfile="WordCloudPlugin_v${pluginVersion}${pluginReleaseSuffix}_src.zip" basedir="${src_release_root.dir}"/>
 		</target>
