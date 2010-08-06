@@ -26,6 +26,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+import javax.swing.JOptionPane;
+
+import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
+
 /**
  * This class defines the WordDelimiters class.  This class is used to determine
  * if a delimiter in question should be used to tokenize text.
@@ -301,15 +306,26 @@ public class WordDelimiters
 	 */
 	public void removeDelimiter(String delim)
 	{
-		//First check user delims
-		if (userDelims.contains(delim))
+		//Disable removal of newline and tab for now
+		if (delim.equals("newline") || delim.equals("tab"))
 		{
-			userDelims.remove(delim);
+			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			JOptionPane.showMessageDialog(view.getComponent(), 
+			delim + " is not currently enabled for removal from the list of delimters.");
 		}
-		else  if (delimsInUse.contains(delim))
+		else
 		{
-			delimsInUse.remove(delim);
-			delimsToAdd.add(delim);
+		
+			//First check user delims
+			if (userDelims.contains(delim))
+			{
+				userDelims.remove(delim);
+			}
+			else  if (delimsInUse.contains(delim))
+			{
+				delimsInUse.remove(delim);
+				delimsToAdd.add(delim);
+			}
 		}
 	}
 	
