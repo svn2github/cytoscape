@@ -2,9 +2,7 @@ package org.idekerlab.PanGIAPlugin.utilities.math.linearmodels;
 
 import org.idekerlab.PanGIAPlugin.data.*;
 import java.util.*;
-
 import org.idekerlab.PanGIAPlugin.utilities.math.linearmodels.lmterms.*;
-
 import org.idekerlab.PanGIAPlugin.utilities.*;
 
 /**
@@ -101,7 +99,7 @@ public class LogisticRegression
 	 * Typical maxit = 25
 	 * Typical epsilon = 1e-8
 	 **/
-	public static DoubleVector logisticRegression(double[][] x, double[] y, int maxit, double controlepsilon, boolean silent)
+	public static DoubleVector logisticRegression(double[][] x, double[] y, double[] weights, int maxit, double controlepsilon, boolean silent)
 	{
 		if (x.length != y.length) throw new java.lang.IllegalArgumentException("Dimension mismatch: Xrows!=ylength, "+x.length+"!="+y.length);
 				
@@ -115,7 +113,6 @@ public class LogisticRegression
 		
 		int nobs = y.length;
 		
-		double[] weights = DoubleVector.repeat(1,nobs);
 		double[] offset = DoubleVector.repeat(0,nobs);
 		
 		
@@ -394,6 +391,15 @@ public class LogisticRegression
 		}*/
 		
 		return coef;
+	}
+	
+	/**
+	 * Typical maxit = 25
+	 * Typical epsilon = 1e-8
+	 **/
+	public static DoubleVector logisticRegression(double[][] x, double[] y, int maxit, double controlepsilon, boolean silent)
+	{
+		return logisticRegression(x, y, DoubleVector.repeat(1,y.length), maxit, controlepsilon, silent);
 	}
 }
 
