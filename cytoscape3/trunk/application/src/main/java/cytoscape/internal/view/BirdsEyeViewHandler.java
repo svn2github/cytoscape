@@ -57,59 +57,65 @@ import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 
 /**
- * This class handles the creation of the BirdsEyeView navigation object 
- * and handles the events which change view seen. 
+ * This class handles the creation of the BirdsEyeView navigation object and
+ * handles the events which change view seen.
  */
-public class BirdsEyeViewHandler implements 
-	SetCurrentNetworkListener,
-	SetCurrentNetworkViewListener,
-	NetworkViewDestroyedListener {
-	
+public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
+		SetCurrentNetworkViewListener, NetworkViewDestroyedListener {
+
 	// BEV is just a special implementation of RenderingEngine.
 	private final RenderingEngine<CyNetwork> bev;
-	
+
 	FrameListener frameListener = new FrameListener();
 	final NetworkViewManager viewmgr;
 	final CyNetworkManager netmgr;
-	final Component bevHolder; 
+	final Component bevHolder;
 
 	/**
 	 * Creates a new BirdsEyeViewHandler object.
-	 * @param desktopPane The JDesktopPane of the NetworkViewManager. Can be null.
+	 * 
+	 * @param desktopPane
+	 *            The JDesktopPane of the NetworkViewManager. Can be null.
 	 */
-	public BirdsEyeViewHandler(final NetworkViewManager viewmgr, final CyNetworkManager netmgr, 
+	public BirdsEyeViewHandler(final NetworkViewManager viewmgr,
+			final CyNetworkManager netmgr,
 			RenderingEngineFactory<CyNetwork> defaultFactory) {
 		this.viewmgr = viewmgr;
 		this.netmgr = netmgr;
-		
+
 		final JDesktopPane desktopPane = viewmgr.getDesktopPane();
 		bevHolder = new JPanel();
 
-		bev = defaultFactory.render(bevHolder, netmgr.getCurrentNetworkView()); 
- 		desktopPane.addComponentListener(new DesktopListener());
+		bev = defaultFactory.render(bevHolder, netmgr.getCurrentNetworkView());
+		desktopPane.addComponentListener(new DesktopListener());
 	}
 
 	/**
-	 * Listens for NETWORK_VIEW_FOCUSED, NETWORK_VIEW_FOCUS, NETWORK_VIEW_DESTROYED,
-	 * and CYTOSCAPE_INITIALIZED events and changes the network view accordingly.
-	 *
-	 * @param e The event triggering this method. 
+	 * Listens for NETWORK_VIEW_FOCUSED, NETWORK_VIEW_FOCUS,
+	 * NETWORK_VIEW_DESTROYED, and CYTOSCAPE_INITIALIZED events and changes the
+	 * network view accordingly.
+	 * 
+	 * @param e
+	 *            The event triggering this method.
 	 */
 	public void handleEvent(SetCurrentNetworkEvent e) {
-		if(bev != null)
-			bev.setViewModel(netmgr.getCurrentNetworkView());
-		setFocus();
+		if (bev != null)
+			// FIXME
+			// bev.setViewModel(netmgr.getCurrentNetworkView());
+			setFocus();
 	}
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
-		if(bev != null)
-		bev.setViewModel(netmgr.getCurrentNetworkView());
-		setFocus();
+		if (bev != null)
+			// FIXME
+			// bev.setViewModel(netmgr.getCurrentNetworkView());
+			setFocus();
 	}
 
 	public void handleEvent(NetworkViewDestroyedEvent e) {
-		if(bev != null)
-		bev.setViewModel(netmgr.getCurrentNetworkView());
+		//if(bev != null)
+			// FIXME
+			//bev.setViewModel(netmgr.getCurrentNetworkView());
 	}
 
 	private void setFocus() {
@@ -123,7 +129,7 @@ public class BirdsEyeViewHandler implements
 
 		boolean hasListener = false;
 		ComponentListener[] listeners = frame.getComponentListeners();
-		for(int i = 0; i < listeners.length; i++)
+		for (int i = 0; i < listeners.length; i++)
 			if (listeners[i] == frameListener)
 				hasListener = true;
 
@@ -133,6 +139,7 @@ public class BirdsEyeViewHandler implements
 
 	/**
 	 * Returns a birds eye view component.
+	 * 
 	 * @return The component that contains the birds eye view.
 	 */
 	Component getBirdsEyeView() {
@@ -143,13 +150,17 @@ public class BirdsEyeViewHandler implements
 	 * Repaint a JInternalFrame whenever it is moved.
 	 */
 	class FrameListener extends ComponentAdapter {
-		public void componentMoved(ComponentEvent e) { bevHolder.repaint(); }
+		public void componentMoved(ComponentEvent e) {
+			bevHolder.repaint();
+		}
 	}
 
 	/**
 	 * Repaint the JDesktopPane whenever its size has changed.
 	 */
 	class DesktopListener extends ComponentAdapter {
-		public void componentResized(ComponentEvent e) { bevHolder.repaint(); }
+		public void componentResized(ComponentEvent e) {
+			bevHolder.repaint();
+		}
 	}
 }
