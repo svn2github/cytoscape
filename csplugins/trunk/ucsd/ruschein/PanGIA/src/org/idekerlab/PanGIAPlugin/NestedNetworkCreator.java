@@ -167,7 +167,7 @@ public class NestedNetworkCreator {
 			final TypedLinkNodeModule<String, BFEdge> sourceModule = edge.source().value();
 			CyNode sourceNode = moduleToCyNodeMap.get(sourceModule);
 			if (sourceNode == null) {
-				final String nodeName = findNextAvailableNodeName("Module" + nodeIndex);
+				final String nodeName = getNodeName(sourceModule,nodeIndex,module_name);
 				sourceNode = makeOverviewNode(nodeName, sourceModule,nodeAttribs);
 				//moduleToCyNodeMap.put(sourceModule, sourceNode);
 				++nodeIndex;
@@ -176,41 +176,13 @@ public class NestedNetworkCreator {
 			final TypedLinkNodeModule<String, BFEdge> targetModule = edge.target().value();
 			CyNode targetNode = moduleToCyNodeMap.get(targetModule);
 			if (targetNode == null) {
-				final String nodeName = findNextAvailableNodeName("Module"	+ nodeIndex);
+				final String nodeName = getNodeName(targetModule,nodeIndex,module_name);
 				targetNode = makeOverviewNode(nodeName, targetModule,nodeAttribs);
 				//moduleToCyNodeMap.put(targetModule, targetNode);
 				++nodeIndex;
 			}
 			
 			
-			//Auto label small complexes with the gene names
-			if (sourceModule.size()<=2) 
-			{
-				Iterator<String> genes = sourceModule.getMemberValues().iterator();
-				String newName = "("+genes.next();
-				while (genes.hasNext()) newName+=", "+genes.next();
-				sourceNode.setIdentifier(newName+")");
-			}
-
-			if (targetModule.size()<=2) 
-			{
-				Iterator<String> genes = targetModule.getMemberValues().iterator();
-				String newName = "("+genes.next();
-				while (genes.hasNext()) newName+=", "+genes.next();
-				targetNode.setIdentifier(newName+")");
-			}
-			
-			//Annotate large complexes
-			if (module_name!=null)
-			{
-				String name1 = module_name.get(sourceModule);
-				if (name1!=null) sourceNode.setIdentifier(name1);
-								
-				String name2 = module_name.get(sourceModule);
-				if (name2!=null) sourceNode.setIdentifier(name1);
-			}
-			
-
 			final CyEdge newEdge = Cytoscape.getCyEdge(sourceNode, targetNode,
 					Semantics.INTERACTION, COMPLEX_INTERACTION_TYPE,
 					/* create = */true);
@@ -271,6 +243,29 @@ public class NestedNetworkCreator {
 		}
 	}
 
+	private String getNodeName(TypedLinkNodeModule<String, BFEdge> module, int nodeIndex, Map<TypedLinkNodeModule<String, BFEdge>,String> module_name)
+	{
+		
+		
+		//Auto label small complexes with the gene names
+		if (module.size()<=2) 
+		{
+			Iterator<String> genes = module.getMemberValues().iterator();
+			String newName = "("+genes.next();
+			while (genes.hasNext()) newName+=", "+genes.next();
+			return newName+")";
+		}
+		
+		//Annotate large complexes
+		if (module_name!=null)
+		{
+			String name = module_name.get(module);
+			if (name!=null) return name;
+		}
+		
+		return findNextAvailableNodeName("Module" + nodeIndex);
+	}
+	
 	CyNetwork getOverviewNetwork() {
 		return overviewNetwork;
 	}
