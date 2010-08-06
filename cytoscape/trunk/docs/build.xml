@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Cytoscape" default="all">
+<project name="Cytoscape" default="usage">
 
 	<property name="basedir" value="."/>
 	<property name="xep.home" value="/cellar/users/mes/XEP"/>
@@ -8,6 +8,25 @@
 	<property name="manual.dir" value="${basedir}/src/docbkx"/>
 
 	<available file="${xep.home}" property="xep-exists"/>
+
+	<target name="usage">
+		<echo message="----------------------------------------------------------"/>
+		<echo message="      Cytoscape Manual Fetching System "/>
+		<echo message="----------------------------------------------------------"/>
+		<echo message=" "/>
+		<echo message="  Primary target:"/>
+		<echo message="     ant update        # Will re-download manual and regenerate PDF."/>
+		<echo message=" "/>
+		<echo message="  Other targets:"/>
+		<echo message="     ant fetch-manual  # Just downloads manual. "/>
+		<echo message="     ant fetch-images  # Downloads manual and images."/>
+		<echo message="     ant prep-manual   # Downloads everything and processes raw xml."/>
+		<echo message="     ant create-pdf    # Runs prep-manual and then creates the PDF (same as update)."/>
+		<echo message=" "/>
+
+<echo message="----------------------------------------------------------"/>
+	</target>
+
 
 
 	<!--==============================================================-->
@@ -56,23 +75,10 @@
 	<target name="fetch-manual" 
 	        description="fetches the raw manual file"
 	        depends="init" >
+
 		<get src="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual?action=show&amp;mimetype=text/docbook" 
 		     dest="manual_raw.xml"/>
 
-		<!-- If that doesn't work then...
-		<echo message="=============================================================="/>
-		<echo message=""/>
-		<echo message="You must FIRST manually download user manual:"/>
-		<echo message="  - Point your browser here:"/> 
-		<echo message="       http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual"/>
-		<echo message="  - Click 'More Actions'"/>
-		<echo message="  - Click 'Render as Docbook'"/>
-		<echo message="  - Save the downloaded file to 'manual_raw.xml' in this directory"/>
-		<echo message="  - Re-run the command you just tried"/>
-		<echo message=""/>
-		<echo message="=============================================================="/>
-		 -->
-		
 	</target>
 
 
@@ -178,8 +184,8 @@
 	<!-- Create the manual PDF file.  -->
 	<target name="create-pdf" 
 	        description="Create Cytoscape Manual PDF"
-		depends="prep-manual"
-		if="xep-exists">
+	        depends="prep-manual"
+	        if="xep-exists">
 
 		<!-- so that images scale correctly -->
 		<copy file="${manual.dir}/manual.xml" 
@@ -215,4 +221,11 @@
 		<delete file="manual_pdf.xml"/>
 	</target>
 
+	<!--==============================================================-->
+	<!-- Create the manual PDF file.  -->
+	<target name="update" 
+	        description="Download manual and regenerated PDF"
+	        depends="create-pdf">
+	</target>
+	
 </project>
