@@ -14,15 +14,11 @@ import org.cytoscape.view.model.VisualProperty;
 public interface RenderingEngine<T> {
 	
 	/**
-	 * Returns backend View Models for this presentation.
+	 * Returns View Model being rendered. 
 	 * 
-	 * @return view models.
+	 * @return view model.
 	 */
 	public View<T> getViewModel();
-	
-	
-	// TODO: should view model immutable?
-	public void setViewModel(final View<T> viewModel);
 	
 	/**
 	 * Provide all compatible Visual Properties as a Visual Lexicon.
@@ -36,12 +32,17 @@ public interface RenderingEngine<T> {
 	 * Rendering engine dependent properties, like LOD
 	 */
 	public void setProperties(Properties props);
+
+
+	/**
+	 * Rendering engine dependent properties, like LOD
+	 */
 	public Properties getProperties();
 
 	/**
 	 * For export image function.
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return A Printable object suitable for submission to a printer. 
 	 */
 	public Printable createPrintable();
 	

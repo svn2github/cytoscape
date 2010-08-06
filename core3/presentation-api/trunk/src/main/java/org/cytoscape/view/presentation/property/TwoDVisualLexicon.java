@@ -56,7 +56,6 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 			NODE, Color.YELLOW, "NODE_SELECTED_COLOR", "Node Selected Color");
 	public static final VisualProperty<String> NODE_LABEL = new StringVisualProperty(
 			NODE, "", "NODE_LABEL", "Node Label");
-
 	public static final VisualProperty<? extends Paint> NODE_LABEL_COLOR = new ColorVisualProperty(
 			NODE, Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color");
 	public static final VisualProperty<Double> NODE_X_LOCATION = new DoubleVisualProperty(
@@ -95,7 +94,6 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 			NETWORK, 100.0, "NETWORK_WIDTH", "Network Width");
 	public static final VisualProperty<Double> NETWORK_HEIGHT = new DoubleVisualProperty(
 			NETWORK, 100.0, "NETWORK_HEIGHT", "Network Height");
-
 	public static final VisualProperty<? extends Paint> NETWORK_BACKGROUND_COLOR = new ColorVisualProperty(
 			NETWORK, Color.WHITE, "NETWORK_BACKGROUND_COLOR",
 			"Network Background Color");
