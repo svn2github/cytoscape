@@ -10,15 +10,27 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 
-
+/**
+ * RenderingEngine is an interface for all visualizers. For a given view-model
+ * it renders actual view on display, documents, etc.
+ * 
+ * @author kono
+ * @since Cytoscape 3.0
+ * 
+ * @param <T>
+ *            source data object to be visualized. For now we have only one
+ *            implementation for CyNetwork, but it can be anything, including
+ *            CyDataTable.
+ */
 public interface RenderingEngine<T> {
-	
+
 	/**
-	 * Returns View Model being rendered. 
+	 * Returns View Model being rendered.
 	 * 
-	 * @return view model.
+	 * @return view model.  This is an immutable object.
 	 */
 	public View<T> getViewModel();
+
 	
 	/**
 	 * Provide all compatible Visual Properties as a Visual Lexicon.
@@ -29,20 +41,21 @@ public interface RenderingEngine<T> {
 	
 
 	/**
-	 * Rendering engine dependent properties, like LOD
+	 * Set prop values to rendering engine, like LOD
 	 */
-	public void setProperties(Properties props);
-
+	public void setProperties(final Properties props);
+	
 
 	/**
-	 * Rendering engine dependent properties, like LOD
+	 * Get current rendering engine dependent properties, like LOD
 	 */
 	public Properties getProperties();
+	
 
 	/**
 	 * For export image function.
 	 * 
-	 * @return A Printable object suitable for submission to a printer. 
+	 * @return A Printable object suitable for submission to a printer.
 	 */
 	public Printable createPrintable();
 	
@@ -52,7 +65,7 @@ public interface RenderingEngine<T> {
 	 * 
 	 * @return Image object created from current window.
 	 */
-	public Image createImage(int width, int height);
+	public Image createImage(final int width, final int height);
 	
 
 	/**
@@ -62,11 +75,11 @@ public interface RenderingEngine<T> {
 	 * @param vp
 	 *            Visual Property.
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return Rendered icon for the Visual Property.
 	 * 
 	 * @exception IllegalArgumentException
 	 *                if vp is not in the lexicon.
 	 */
-	public Icon createIcon(VisualProperty<?> vp);
-	
+	public Icon createIcon(final VisualProperty<?> vp);
+
 }
