@@ -41,13 +41,6 @@
 	<target name="non-xep-init"
 	        unless="xep-exists">
 		<echo message="XEP does not exist - No PDF for you!"/>
-		<path id="classpath">
-		<!--
-			<fileset dir="lib">
-				<include name="saxon.jar"/>
-			</fileset>
-			-->
-		</path>
 	</target>
 
 	<!--==============================================================-->
@@ -60,11 +53,6 @@
 			 classpath="${xep.lib}/XEPTask.jar"/>
 
 		<path id="classpath">
-		<!--
-			<fileset dir="lib">
-				<include name="saxon.jar"/>
-			</fileset>
-			-->
 			<fileset dir="${xep.lib}">
 				<include name="xep*.jar"/>
 				<include name="xt.jar"/>
