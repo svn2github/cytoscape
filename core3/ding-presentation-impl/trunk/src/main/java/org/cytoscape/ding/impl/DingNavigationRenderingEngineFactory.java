@@ -1,25 +1,57 @@
 package org.cytoscape.ding.impl;
 
 import java.awt.Component;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.cytoscape.ding.BirdsEyeView;
 import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.spacial.SpacialIndex2DFactory;
+import org.cytoscape.task.EdgeViewTaskFactory;
+import org.cytoscape.task.NetworkViewTaskFactory;
+import org.cytoscape.task.NodeViewTaskFactory;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.events.NetworkViewChangedEvent;
+import org.cytoscape.view.model.events.NetworkViewChangedListener;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.UndoSupport;
 
-public class DingNavigationRenderingEngineFactory extends
-		DingRenderingEngineFactory {
+/**
+ * RenderingEngineFactory for Navigation.
+ * 
+ * @author kono
+ * 
+ */
+public class DingNavigationRenderingEngineFactory implements
+		RenderingEngineFactory<CyNetwork>, NetworkViewChangedListener {
+
+	private CyDataTableFactory dataTableFactory;
+	private CyRootNetworkFactory rootNetworkFactory;
+	private SpacialIndex2DFactory spacialFactory;
+	private UndoSupport undo;
+	private RootVisualLexicon rootLexicon;
+	private VisualLexicon dingLexicon;
+	private CyServiceRegistrar registrar;
+
+	private Map<CyNetworkView, DGraphView> viewMap;
+
+	private Map<NodeViewTaskFactory, Map> nodeViewTFs;
+	private Map<EdgeViewTaskFactory, Map> edgeViewTFs;
+	private Map<NetworkViewTaskFactory, Map> emptySpaceTFs;
+
+	private TunableInterceptor ti;
+	private TaskManager tm;
 
 	public DingNavigationRenderingEngineFactory(
 			CyDataTableFactory dataTableFactory,
@@ -27,28 +59,58 @@ public class DingNavigationRenderingEngineFactory extends
 			SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc,
 			VisualLexicon dingLexicon, TunableInterceptor ti, TaskManager tm,
 			CyServiceRegistrar registrar) {
-		super(dataTableFactory, rootNetworkFactory, undo, spacialFactory, vpc,
-				dingLexicon, ti, tm, registrar);
+		this.dataTableFactory = dataTableFactory;
+		this.rootNetworkFactory = rootNetworkFactory;
+		this.spacialFactory = spacialFactory;
+		this.undo = undo;
+		this.rootLexicon = vpc;
+		this.dingLexicon = dingLexicon;
+		this.ti = ti;
+		this.tm = tm;
+		this.registrar = registrar;
+
+		viewMap = new HashMap<CyNetworkView, DGraphView>();
+		nodeViewTFs = new HashMap<NodeViewTaskFactory, Map>();
+		edgeViewTFs = new HashMap<EdgeViewTaskFactory, Map>();
+		emptySpaceTFs = new HashMap<NetworkViewTaskFactory, Map>();
 	}
-	
-	
-	@Override
-	public RenderingEngine<CyNetwork> render(Object visualizationContainer, View<CyNetwork> view) {
-		
-		if(visualizationContainer == null || view == null) {
+
+	public RenderingEngine<CyNetwork> render(Object visualizationContainer,
+			View<CyNetwork> view) {
+
+		if (!(visualizationContainer instanceof Component))
+			throw new IllegalArgumentException(
+					"navBounds object is not of type Component, which is invalid for this implementation of PresentationFactory");
+
+		if (visualizationContainer == null || view == null) {
 			return null;
 		}
-		// TODO: FIX this!!
-		final RenderingEngine<CyNetwork> renderer = super.render(visualizationContainer, view);
-		
-		if ( !(visualizationContainer instanceof Component) ) 
-			throw new IllegalArgumentException("navBounds object is not of type Component, which is invalid for this implementation of PresentationFactory");
-		
-		JPanel target = new JPanel();
-		BirdsEyeView bev = new BirdsEyeView((Component) visualizationContainer, this);	
-		target.add( bev );
 
-		return renderer;
+		if (visualizationContainer instanceof JComponent
+				&& view instanceof CyNetworkView) {
+
+			final DGraphView dgv = new DGraphView((CyNetworkView) view,
+					dataTableFactory, rootNetworkFactory, undo, spacialFactory,
+					rootLexicon, dingLexicon, nodeViewTFs, edgeViewTFs,
+					emptySpaceTFs, ti, tm);
+
+			JPanel target = new JPanel();
+			BirdsEyeView bev = new BirdsEyeView(
+					(Component) visualizationContainer, dgv);
+			target.add(bev);
+
+			return dgv;
+
+		}
+
+		// TODO: should I return null or simply throw exception?
+		return null;
+	}
+
+	public void handleEvent(NetworkViewChangedEvent nvce) {
+		DGraphView gv = viewMap.get(nvce.getSource());
+		if (gv != null)
+			gv.updateView();
 	}
 
 }

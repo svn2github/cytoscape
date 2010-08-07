@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,9 +31,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
-package org.cytoscape.ding;
+package org.cytoscape.ding.impl;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -51,23 +50,20 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-import org.cytoscape.ding.impl.ContentChangeListener;
-import org.cytoscape.ding.impl.DGraphView;
-import org.cytoscape.ding.impl.DingRenderingEngineFactory;
-import org.cytoscape.ding.impl.ViewportChangeListener;
+import org.cytoscape.ding.GraphView;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngine;
 
 /**
  * Component to display overview of the network.
- *
+ * 
  * @author $author$
  */
 public class BirdsEyeView extends Component {
-	
+
 	private final static long serialVersionUID = 1202416511863994L;
-	
+
 	private final double[] m_extents = new double[4];
 	private DGraphView m_view;
 	private final ContentChangeListener m_cLis;
@@ -83,19 +79,19 @@ public class BirdsEyeView extends Component {
 	private double m_viewYCenter;
 	private double m_viewScaleFactor;
 	private Component m_desktopView;
-	private DingRenderingEngineFactory presFactory;
-	
-	private RenderingEngine<CyNetwork> renderer;
 
 	/**
 	 * Creates a new BirdsEyeView object.
-	 *
-	 * @param view The view to monitor
-	 * @param desktopView The desktop area holding the view. This should be NetworkViewManager.getDesktopPane().
+	 * 
+	 * @param view
+	 *            The view to monitor
+	 * @param desktopView
+	 *            The desktop area holding the view. This should be
+	 *            NetworkViewManager.getDesktopPane().
 	 */
-	public BirdsEyeView(Component desktopView, DingRenderingEngineFactory presFactory) {
+	public BirdsEyeView(Component desktopView, GraphView view) {
 		super();
-		this.presFactory = presFactory;
+
 		m_cLis = new InnerContentChangeListener();
 		m_vLis = new InnerViewportChangeListener();
 		m_desktopView = desktopView;
@@ -103,19 +99,22 @@ public class BirdsEyeView extends Component {
 		addMouseMotionListener(new InnerMouseMotionListener());
 		setPreferredSize(new Dimension(180, 180));
 		setMinimumSize(new Dimension(180, 180));
+
+		setView(view);
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param view DOCUMENT ME!
+	 * 
+	 * @param view
+	 *            DOCUMENT ME!
 	 */
-	public void changeView(CyNetworkView cnv) {
-		GraphView view = presFactory.getGraphView(cnv);
-		if ( view == null )
+	private void setView(GraphView view) {
+		// GraphView view = presFactory.getGraphView(cnv);
+		if (view == null)
 			return;
 		destroy();
-		m_view = (DGraphView)view;
+		m_view = (DGraphView) view;
 
 		m_view.addContentChangeListener(m_cLis);
 		m_view.addViewportChangeListener(m_vLis);
@@ -129,19 +128,19 @@ public class BirdsEyeView extends Component {
 		repaint();
 	}
 
-	private void updateBounds()
-	{
+	private void updateBounds() {
 		final Rectangle2D viewable = getViewableRect();
 		m_viewWidth = (int) viewable.getWidth();
 		m_viewHeight = (int) viewable.getHeight();
 		final Rectangle2D viewableInView = getViewableRectInView(viewable);
 		m_viewXCenter = viewableInView.getX() + viewableInView.getWidth() / 2.0;
-		m_viewYCenter = viewableInView.getY() + viewableInView.getHeight() / 2.0;
+		m_viewYCenter = viewableInView.getY() + viewableInView.getHeight()
+				/ 2.0;
 	}
 
-	private Rectangle2D getViewableRectInView(final Rectangle2D viewable)
-	{
-		if (m_view == null || m_view.getCanvas() == null || m_view.getCanvas().m_grafx == null)
+	private Rectangle2D getViewableRectInView(final Rectangle2D viewable) {
+		if (m_view == null || m_view.getCanvas() == null
+				|| m_view.getCanvas().m_grafx == null)
 			return new Rectangle2D.Double(0.0, 0.0, 0.0, 0.0);
 
 		final double[] origin = new double[2];
@@ -149,38 +148,34 @@ public class BirdsEyeView extends Component {
 		origin[1] = viewable.getY();
 		m_view.xformComponentToNodeCoords(origin);
 
-
 		final double[] destination = new double[2];
 		destination[0] = viewable.getX() + viewable.getWidth();
 		destination[1] = viewable.getY() + viewable.getHeight();
 		m_view.xformComponentToNodeCoords(destination);
 
-		Rectangle2D result = new Rectangle2D.Double(origin[0], origin[1], destination[0] - origin[0], destination[1] - origin[1]);
+		Rectangle2D result = new Rectangle2D.Double(origin[0], origin[1],
+				destination[0] - origin[0], destination[1] - origin[1]);
 		return result;
 	}
 
-	private Rectangle2D getViewableRect()
-	{
-		if (m_view == null) 
+	private Rectangle2D getViewableRect() {
+		if (m_view == null)
 			return new Rectangle2D.Double(0.0, 0.0, 0.0, 0.0);
 
-		if (m_desktopView == null)
-		{
+		if (m_desktopView == null) {
 			final Rectangle r = m_view.getComponent().getBounds();
 			return new Rectangle2D.Double(r.x, r.y, r.width, r.height);
 		}
 
 		final Rectangle desktopRect = m_desktopView.getBounds();
-		if (m_desktopView.isShowing())
-		{
+		if (m_desktopView.isShowing()) {
 			Point s = m_desktopView.getLocationOnScreen();
 			desktopRect.x = s.x;
 			desktopRect.y = s.y;
 		}
 
 		final Rectangle viewRect = m_view.getComponent().getBounds();
-		if (m_view.getComponent().isShowing())
-		{
+		if (m_view.getComponent().isShowing()) {
 			Point s = m_view.getComponent().getLocationOnScreen();
 			viewRect.x = s.x;
 			viewRect.y = s.y;
@@ -207,9 +202,9 @@ public class BirdsEyeView extends Component {
 	}
 
 	/**
-	 * This used to be called reshape, which is deprecated, so I've changed
-	 * it to setBounds.  Not sure if this will break anything!
-	 *
+	 * This used to be called reshape, which is deprecated, so I've changed it
+	 * to setBounds. Not sure if this will break anything!
+	 * 
 	 * @param x
 	 * @param y
 	 * @param width
@@ -219,15 +214,17 @@ public class BirdsEyeView extends Component {
 		super.setBounds(x, y, width, height);
 
 		if ((width > 0) && (height > 0))
-			m_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+			m_img = new BufferedImage(width, height,
+					BufferedImage.TYPE_INT_ARGB);
 
 		m_contentChanged = true;
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param g DOCUMENT ME!
+	 * 
+	 * @param g
+	 *            DOCUMENT ME!
 	 */
 	public void update(Graphics g) {
 		if (m_img == null)
@@ -246,10 +243,9 @@ public class BirdsEyeView extends Component {
 			if (m_view.getExtents(m_extents)) {
 				m_myXCenter = (m_extents[0] + m_extents[2]) / 2.0d;
 				m_myYCenter = (m_extents[1] + m_extents[3]) / 2.0d;
-				m_myScaleFactor = 0.8d * Math.min(((double) getWidth()) / (m_extents[2]
-				                                                          - m_extents[0]),
-				                                  ((double) getHeight()) / (m_extents[3]
-				                                                           - m_extents[1]));
+				m_myScaleFactor = 0.8d * Math.min(((double) getWidth())
+						/ (m_extents[2] - m_extents[0]), ((double) getHeight())
+						/ (m_extents[3] - m_extents[1]));
 			} else {
 				m_myXCenter = 0.0d;
 				m_myYCenter = 0.0d;
@@ -257,22 +253,24 @@ public class BirdsEyeView extends Component {
 			}
 
 			m_view.drawSnapshot(m_img, m_view.getGraphLOD(),
-			                    m_view.getBackgroundPaint(), m_myXCenter,
-			                    m_myYCenter, m_myScaleFactor);
+					m_view.getBackgroundPaint(), m_myXCenter, m_myYCenter,
+					m_myScaleFactor);
 			m_contentChanged = false;
 		}
 
 		g.drawImage(m_img, 0, 0, null);
 
-		final double rectWidth = m_myScaleFactor * (((double) m_viewWidth) / m_viewScaleFactor);
-		final double rectHeight = m_myScaleFactor * (((double) m_viewHeight) / m_viewScaleFactor);
+		final double rectWidth = m_myScaleFactor
+				* (((double) m_viewWidth) / m_viewScaleFactor);
+		final double rectHeight = m_myScaleFactor
+				* (((double) m_viewHeight) / m_viewScaleFactor);
 		final double rectXCenter = (((double) getWidth()) / 2.0d)
-		                           + (m_myScaleFactor * (m_viewXCenter - m_myXCenter));
+				+ (m_myScaleFactor * (m_viewXCenter - m_myXCenter));
 		final double rectYCenter = (((double) getHeight()) / 2.0d)
-		                           + (m_myScaleFactor * (m_viewYCenter - m_myYCenter));
-		final Rectangle2D rect = new Rectangle2D.Double(rectXCenter - (rectWidth / 2),
-		                                                rectYCenter - (rectHeight / 2), rectWidth,
-		                                                rectHeight);
+				+ (m_myScaleFactor * (m_viewYCenter - m_myYCenter));
+		final Rectangle2D rect = new Rectangle2D.Double(rectXCenter
+				- (rectWidth / 2), rectYCenter - (rectHeight / 2), rectWidth,
+				rectHeight);
 		final Graphics2D g2 = (Graphics2D) g;
 		g2.setColor(new Color(63, 63, 255, 63));
 		g2.fill(rect);
@@ -282,23 +280,26 @@ public class BirdsEyeView extends Component {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param g DOCUMENT ME!
+	 * 
+	 * @param g
+	 *            DOCUMENT ME!
 	 */
 	public void paint(Graphics g) {
 		update(g);
 	}
 
-	private final class InnerContentChangeListener implements ContentChangeListener {
+	private final class InnerContentChangeListener implements
+			ContentChangeListener {
 		public void contentChanged() {
 			m_contentChanged = true;
 			repaint();
 		}
 	}
 
-	private final class InnerViewportChangeListener implements ViewportChangeListener {
-		public void viewportChanged(int w, int h, double newXCenter, double newYCenter,
-		                            double newScaleFactor) {
+	private final class InnerViewportChangeListener implements
+			ViewportChangeListener {
+		public void viewportChanged(int w, int h, double newXCenter,
+				double newYCenter, double newScaleFactor) {
 			m_viewWidth = w;
 			m_viewHeight = h;
 			m_viewXCenter = newXCenter;
@@ -343,8 +344,10 @@ public class BirdsEyeView extends Component {
 			if (m_currMouseButton == 1) {
 				final int currX = e.getX();
 				final int currY = e.getY();
-				final double deltaX = (currX - m_lastXMousePos) / m_myScaleFactor;
-				final double deltaY = (currY - m_lastYMousePos) / m_myScaleFactor;
+				final double deltaX = (currX - m_lastXMousePos)
+						/ m_myScaleFactor;
+				final double deltaY = (currY - m_lastYMousePos)
+						/ m_myScaleFactor;
 				m_lastXMousePos = currX;
 				m_lastYMousePos = currY;
 
