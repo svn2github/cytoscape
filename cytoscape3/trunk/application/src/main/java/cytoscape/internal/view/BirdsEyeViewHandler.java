@@ -37,9 +37,12 @@
 package cytoscape.internal.view;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
@@ -53,6 +56,7 @@ import org.cytoscape.session.events.SetCurrentNetworkEvent;
 import org.cytoscape.session.events.SetCurrentNetworkListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 
@@ -64,11 +68,14 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 		SetCurrentNetworkViewListener, NetworkViewDestroyedListener {
 
 	// BEV is just a special implementation of RenderingEngine.
-	private final RenderingEngine<CyNetwork> bev;
+	private final RenderingEngineFactory<CyNetwork> bevFactory;
+
+	private final Map<CyNetworkView, RenderingEngine<CyNetworkView>> engineMap;
 
 	FrameListener frameListener = new FrameListener();
 	final NetworkViewManager viewmgr;
 	final CyNetworkManager netmgr;
+
 	final Component bevHolder;
 
 	/**
@@ -85,8 +92,11 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 
 		final JDesktopPane desktopPane = viewmgr.getDesktopPane();
 		bevHolder = new JPanel();
+		bevHolder.setPreferredSize(new Dimension(200, 200));
 
-		bev = defaultFactory.render(bevHolder, netmgr.getCurrentNetworkView());
+		engineMap = new HashMap<CyNetworkView, RenderingEngine<CyNetworkView>>();
+
+		bevFactory = defaultFactory;
 		desktopPane.addComponentListener(new DesktopListener());
 	}
 
@@ -99,23 +109,21 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 	 *            The event triggering this method.
 	 */
 	public void handleEvent(SetCurrentNetworkEvent e) {
-		if (bev != null)
-			// FIXME
-			// bev.setViewModel(netmgr.getCurrentNetworkView());
-			setFocus();
+		RenderingEngine<CyNetwork> engine = bevFactory.render(bevHolder,
+				netmgr.getCurrentNetworkView());
+		setFocus();
 	}
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
-		if (bev != null)
-			// FIXME
-			// bev.setViewModel(netmgr.getCurrentNetworkView());
-			setFocus();
+		RenderingEngine<CyNetwork> engine = bevFactory.render(bevHolder,
+				netmgr.getCurrentNetworkView());
+		setFocus();
 	}
 
 	public void handleEvent(NetworkViewDestroyedEvent e) {
-		//if(bev != null)
-			// FIXME
-			//bev.setViewModel(netmgr.getCurrentNetworkView());
+		// if(bev != null)
+		// FIXME
+		// bev.setViewModel(netmgr.getCurrentNetworkView());
 	}
 
 	private void setFocus() {
