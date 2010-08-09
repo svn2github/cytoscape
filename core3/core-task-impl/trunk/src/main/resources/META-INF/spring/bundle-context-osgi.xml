@@ -381,7 +381,6 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-
 	<osgi:service id="editNetworkTitleTaskFactoryService" ref="editNetworkTitleTaskFactory"
 		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
@@ -433,4 +432,12 @@
 		<entry key="title" value="Save As" /> <entry key="preferredMenu"
 		value="File" /> </osgi:service-properties> </osgi:service>
 	-->
+
+	<osgi:service id="tunablesTestTaskFactoryService" ref="tunablesTestTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Tunable Test..." />
+			<entry key="preferredMenu" value="Help" />
+		</osgi:service-properties>
+	</osgi:service>
 </beans>

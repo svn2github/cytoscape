@@ -257,4 +257,8 @@
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
+
+	<bean id="tunablesTestTaskFactory" 
+	      class="org.cytoscape.task.internal.tests.tunables.TunablesTestTaskFactory">
+	</bean>
 </beans>
