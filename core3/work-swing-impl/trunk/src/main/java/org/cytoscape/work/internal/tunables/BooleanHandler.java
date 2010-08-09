@@ -4,6 +4,7 @@ package org.cytoscape.work.internal.tunables;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -15,50 +16,61 @@ import org.cytoscape.work.Tunable.Param;
 
 /**
  * Handler for the type <i>Boolean</i> of <code>Tunable</code>
- * 
+ *
  * @author pasteur
  */
 public class BooleanHandler extends AbstractGUIHandler {
 	private JCheckBox checkBox;
-	private Boolean myBoolean;
 	private boolean horizontal = false;
-	
+
 	/**
 	 * Constructs the <code>GUIHandler</code> for the <code>Boolean</code> type
-	 * 
+	 *
 	 * It creates the Swing component for this Object (JCheckBox) with its description/initial state,  and displays it
-	 * 
+	 *
 	 * @param f field that has been annotated
 	 * @param o object contained in <code>f</code>
 	 * @param t tunable associated to <code>f</code>
 	 */
 	protected BooleanHandler(Field f, Object o, Tunable t) {
-		super(f,o,t);
+		super(f, o, t);
+		init();
+	}
 
-		try{
-			this.myBoolean = (Boolean) f.get(o);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		//set Gui
+	protected BooleanHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+		super(getter, setter, instance, tunable);
+		init();
+	}
+
+	private void init() {
+		//setup GUI
 		panel = new JPanel(new BorderLayout());
 		checkBox = new JCheckBox();
-		checkBox.setSelected(myBoolean.booleanValue());
-		JLabel label = new JLabel(t.description());
-		label.setFont(new Font(null,Font.PLAIN,12));
+		checkBox.setSelected(getBoolean());
+		JLabel label = new JLabel(getDescription());
+		label.setFont(new Font(null, Font.PLAIN, 12));
 		checkBox.addActionListener(this);
 
-		
 		//choose the way the textField and its label will be displayed to user
-		for(Param s : t.alignment())if(s.equals(Param.horizontal)) horizontal = true;
-		if(horizontal){
+		for (Param param : getAlignments()) {
+			if (param.equals(Param.horizontal))
+				horizontal = true;
+		}
+		if (horizontal) {
 			panel.add(label,BorderLayout.NORTH);
 			panel.add(checkBox,BorderLayout.SOUTH);
-		}
-		else {
+		} else {
 			panel.add(label,BorderLayout.WEST);
 			panel.add(checkBox,BorderLayout.EAST);
+		}
+	}
+
+	private boolean getBoolean() {
+		try {
+			return (Boolean)getValue();
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -67,20 +79,13 @@ public class BooleanHandler extends AbstractGUIHandler {
 	 */
 	public void handle() {
 		try {
-			f.set(o,checkBox.isSelected());
-		} catch (Exception e) {e.printStackTrace();}
-	}
-	
-	/**
-	 * To reset the current value of this <code>BooleanHandler</code>, and set it to the initial one
-	 */
-	public void resetValue() {
-		try {
-			f.set(o,myBoolean);
-		}catch(Exception e){e.printStackTrace();}
+			final Boolean setting = checkBox.isSelected();
+			setValue(setting);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	
 	/**
 	 * To get the state of the value of the <code>BooleanHandler</code> : <code>true</code> or <code>false</code>
 	 */

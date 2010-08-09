@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -33,7 +34,6 @@ import cytoscape.Cytoscape;
  * @author pasteur
  */
 public class FileHandler extends AbstractGUIHandler {
-	private File file;
 	private JFileChooser fileChooser;
 	private JButton chooseButton;
 	private JTextField fileTextField;
@@ -57,21 +57,22 @@ public class FileHandler extends AbstractGUIHandler {
 	 * @param t tunable associated to <code>f</code>
 	 */
 	protected FileHandler(Field f, Object o, Tunable t) {
-		super(f,o,t);
-		//		this.flUtil = flUtil;
+		super(f, o, t);
+		init();
+	}
 
+	protected FileHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+		super(getter, setter, instance, tunable);
+		init();
+	}
+
+	private void init() {
 		//Construction of GUI
 		fileChooser = new JFileChooser();
-		setFileType(t);
+		setFileType();
 		setGui(type);
 		setLayout();
 		panel.setLayout(layout);
-
-		try{
-			this.file = (File)f.get(o);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -82,48 +83,16 @@ public class FileHandler extends AbstractGUIHandler {
 	 */
 	public void handle() {
 		try {
-			f.set(o, new File(fileTextField.getText()));
+			setValue(new File(fileTextField.getText()));
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-
-	/**
-	 * To reset the current file, and set it to the initial one with no path
-	 */
-	public void resetValue() {
-		try{
-			f.set(o, new File(""));
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * To get the string representing the <code>File</code> contained in <code>FileHandler</code> :
-	 *
-	 * @return the representation of the object <code>o</code> contained in <code>f</code>
-	 */
-	public String getState() {
-		String state;
-		try {
-			Object obj = f.get(o);
-			if ( obj == null )
-				state = "";
-			else
-				state = obj.toString();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			state = "";
-		}
-		return state;
-	}
-
 
 	//set the type of file that will be imported depending on the "Param" Tunable annotation of the file
-	private void setFileType(Tunable tunable) {
-		for (Param s : tunable.flags()) {
-			if(s.equals(Param.network)) {
+	private void setFileType() {
+		for (Param s : getFlags()) {
+			if (s.equals(Param.network)) {
 				type = Type.NETWORK;
 				return;
 			} else if(s.equals(Param.session)) {

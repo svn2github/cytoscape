@@ -141,9 +141,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 				Map<String,Param> groupAlignment = new HashMap<String,Param>();
 				Map<String,Param> groupTitles = new HashMap<String,Param>();
 
-				String[] group = gh.getTunable().groups();
-				Param[] alignments = gh.getTunable().alignment();
-				Param[] titles = gh.getTunable().groupTitles();
+				final String[] group = gh.getGroups();
+				final Param[] alignments = gh.getAlignments();
+				final Param[] titleFlags = gh.getGroupTitleFlags();
 
 				if (group.length <= alignments.length) {
 					for (int i = 0; i < group.length; i++)
@@ -158,16 +158,16 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 						groupAlignment.put(group[i], Param.vertical);
 				}
 
-				if (group.length <= titles.length) {
+				if (group.length <= titleFlags.length) {
 					for (int i = 0; i < group.length; i++)
-						groupTitles.put(group[i], titles[i]);
+						groupTitles.put(group[i], titleFlags[i]);
 				}
 				else {
-					for (int i = 0; i < titles.length; i++)
-						groupTitles.put(group[i], titles[i]);
+					for (int i = 0; i < titleFlags.length; i++)
+						groupTitles.put(group[i], titleFlags[i]);
 
-					// Default group titles setting is "displayed."
-					for (int i = titles.length; i < group.length; i++)
+					// Default group titleFlags setting is "displayed."
+					for (int i = titleFlags.length; i < group.length; i++)
 						groupTitles.put(group[i], Param.displayed);
 				}
 
@@ -180,7 +180,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 					groupNames = groupNames + g;
 					if (!panels.containsKey(groupNames)) {
 						panels.put(groupNames, createJPanel(g, gh, groupAlignment.get(g), groupTitles.get(g)));
-						panels.get(lastGroup).add(panels.get(groupNames), gh.getTunable().xorKey());
+						panels.get(lastGroup).add(panels.get(groupNames), gh.getChildKey());
 					}
 					lastGroup = groupNames;
 				}
@@ -226,13 +226,13 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 			return getSimplePanel(title,alignment, groupTitle);
 
 		// See if we need to create an XOR panel
-		if (gh.getTunable().xorChildren()) {
+		if (gh.controlsMutuallyExclusiveNestedChildren()) {
 			JPanel p = new XorPanel(title, gh);
 			return p;
 		}
 		else {
 			// Figure out if the collapsable flag is set
-			for (Param s : gh.getTunable().flags()) {
+			for (Param s : gh.getFlags()) {
 				if (s.equals(Param.collapsed))
 					return new CollapsablePanel(title, false);
 				else if (s.equals(Param.uncollapsed))

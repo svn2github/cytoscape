@@ -4,6 +4,7 @@ package org.cytoscape.work.internal.tunables;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,19 +26,9 @@ import org.cytoscape.work.util.AbstractBounded;
 @SuppressWarnings("unchecked")
 public class BoundedHandler<T extends AbstractBounded> extends AbstractGUIHandler {
 	/**
-	 * <code>Bounded</code> object that need to be put in this type of <code>GUIHandler</code>
-	 */
-	private T bounded;
-
-	/**
-	 * description of the <code>Bounded</code> object that will be displayed in the JPanel of this <code>GUIHandler</code>
-	 */
-	private String title;
-
-	/**
 	 * Representation of the <code>Bounded</code> in a <code>JSlider</code>
 	 */
-	private boolean useslider = false;
+	private boolean useSlider = false;
 
 	/**
 	 * 1st representation of this <code>Bounded</code> object in its <code>GUIHandler</code>'s JPanel : a <code>JSlider</code>
@@ -53,49 +44,65 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGUIHandle
 	/**
 	 * Construction of the <code>GUIHandler</code> for the <code>Bounded</code> type
 	 *
-	 * If <code>useslider</code> is set to <code>true</code> : displays the bounded object in a <code>JSlider</code> by using its bounds
+	 * If <code>useSlider</code> is set to <code>true</code> : displays the bounded object in a <code>JSlider</code> by using its bounds
 	 * else diplays it in a <code>JTextField</code> with informations about the bounds
 	 *
 	 * The Swing representation is then added to the <code>JPanel</code> for GUI representation
 	 *
 	 * @param f field that has been annotated
-	 * @param o object contained in <code>f</code>
-	 * @param t tunable associated to <code>f</code>
+	 * @param o object containing <code>f</code>
+	 * @param t tunable associated with <code>f</code>
 	 */
 	public BoundedHandler(Field f, Object o, Tunable t) {
-		super(f,o,t);
-		try {
-			this.bounded = (T)f.get(o);
-		} catch (IllegalAccessException iae) {
-			iae.printStackTrace();
-		}
+		super(f, o, t);
+		init();
+	}
 
-		this.title = t.description();
-		for (Param s : t.flags()) {
-			if (s.equals(Param.slider))
-				useslider = true;
+	protected BoundedHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+		super(getter, setter, instance, tunable);
+		init();
+	}
+
+	private void init() {
+		final String title = getDescription();
+		for (Param param : getFlags()) {
+			if (param.equals(Param.slider))
+				useSlider = true;
 		}
 		panel = new JPanel(new BorderLayout());
 
 		try {
-			if(useslider){
+			final T bounded = getBounded();
+			if (useSlider) {
 				JLabel label = new JLabel(title);
 				label.setFont(new Font(null, Font.PLAIN,12));
 				panel.add(label,BorderLayout.WEST);
-				slider = new mySlider(title,(Number) bounded.getLowerBound(),(Number)bounded.getUpperBound(),(Number)bounded.getValue(),bounded.isLowerBoundStrict(),bounded.isUpperBoundStrict());
+				slider = new mySlider(title, (Number)bounded.getLowerBound(), (Number)bounded.getUpperBound(),
+				                      (Number)bounded.getValue(), bounded.isLowerBoundStrict(), bounded.isUpperBoundStrict());
 				slider.addChangeListener(this);
 				panel.add(slider,BorderLayout.EAST);
-			}
-
-			else{
-				JLabel label = new JLabel( title + " (max: " + bounded.getLowerBound().toString() + "  min: " + bounded.getUpperBound().toString() + ")" );
+			} else {
+				final JLabel label =
+					new JLabel(title + " (max: " + bounded.getLowerBound().toString()
+					          + " min: " + bounded.getUpperBound().toString() + ")" );
 				label.setFont(new Font(null, Font.PLAIN,12));
-				boundedField = new myBoundedSwing((Number)bounded.getValue(),(Number)bounded.getLowerBound(),(Number)bounded.getUpperBound(),bounded.isLowerBoundStrict(),bounded.isUpperBoundStrict());
-				panel.add(label,BorderLayout.WEST);
-				panel.add(boundedField,BorderLayout.EAST);
+				boundedField = new myBoundedSwing((Number)bounded.getValue(), (Number)bounded.getLowerBound(),
+				                                  (Number)bounded.getUpperBound(), bounded.isLowerBoundStrict(),
+				                                  bounded.isUpperBoundStrict());
+				panel.add(label, BorderLayout.WEST);
+				panel.add(boundedField, BorderLayout.EAST);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private T getBounded() throws Exception {
+		try {
+			return (T)getValue();
+		} catch (final Exception e) {
+			e.printStackTrace();
+			throw e;
 		}
 	}
 
@@ -105,14 +112,15 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGUIHandle
 	 * The constraints of the bound values have to be respected : <code>lowerBound &lt; value &lt; upperBound</code> or <code>lowerBound &lti; value &lti; upperBound</code> ....
 	 */
 	public void handle() {
-		try{
-			if(useslider==true){
+		try {
+			final T bounded = getBounded();
+			if (useSlider)
 				bounded.setValue(slider.getValue().doubleValue());
-			}
-			else{
+			else
 				bounded.setValue(boundedField.getFieldValue().doubleValue());
-			}
-		}catch (Exception e){e.printStackTrace();}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -120,16 +128,10 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGUIHandle
 	 * @return the value of the <code>Bounded</code> object
 	 */
 	public String getState() {
-		return bounded.getValue().toString();
-	}
-
-
-	/**
-	 * To reset the current value of this <code>BoundedHandler</code>, and set it to the initial one
-	 */
-	@Override
-		public void resetValue() {
-		// TODO Auto-generated method stub
-
+		try {
+			return getBounded().getValue().toString();
+		} catch (final Exception e) {
+			return "";
+		}
 	}
 }

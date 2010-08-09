@@ -3,7 +3,8 @@ package org.cytoscape.work.internal.tunables;
 
 import javax.swing.JPanel;
 
-import org.cytoscape.work.Handler;
+import org.cytoscape.work.TunableHandler;
+
 
 /**
  *	Specific <code>Handler</code> for construction of GUI
@@ -13,8 +14,7 @@ import org.cytoscape.work.Handler;
  * @author pasteur
  *
  */
-public interface GUIHandler extends Handler {
-	
+public interface GUIHandler extends TunableHandler {
 	/**
 	 * to get the panel that contains the GUI representation (<code>JTextField, JFileChooser, JLabel, JList ...</code>)
 	 * 
@@ -29,14 +29,6 @@ public interface GUIHandler extends Handler {
 	 * @return string representing the state
 	 */
 	String getState();
-	
-	
-	/**
-	 * to get the name of the <code>Field</code> of <code>Method</code> that contains a <code>Tunable</code> annotation
-	 * 
-	 * @return name of <code>Handler</code>
-	 */
-	String getName();
 
 	
 	/**
@@ -84,10 +76,4 @@ public interface GUIHandler extends Handler {
 	 * @return the name of the dependency
 	 */
 	String getDependency();
-	
-	//added method to reset the value after handling to check the TunableValidator method
-	/**
-	 * To reset the current value, and set it to the initial one, if <code>TunableValidator</code>'s validate method failed
-	 */
-	void resetValue();
 }

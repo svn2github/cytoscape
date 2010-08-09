@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.List;
 
@@ -44,13 +45,11 @@ import org.cytoscape.work.Tunable;
 
 
 public class InputStreamHandler extends AbstractGUIHandler {
-	private InputStream InStream;
-
 	private Bookmarks theBookmarks;
 	private BookmarkComboBoxEditor bookmarkEditor;
 	private BookmarksUtil bkUtil;
 	private String bookmarkCategory = "network";
-	private String urlstr;
+	private String urlStr;
 	private JComboBox networkFileComboBox;
 	private JFileChooser fileChooser;
 	private JSeparator titleSeparator;
@@ -68,26 +67,27 @@ public class InputStreamHandler extends AbstractGUIHandler {
 	private static final String URL_TOOLTIP = "<html>Enter URL or <strong><font color=\"red\">Drag and Drop local/remote files.</font></strong></html>";
 	private static final String LOCAL_TOOLTIP = "<html>Specify path to local files.</html>";
 
-	protected InputStreamHandler(Field f, Object o, Tunable t,
-			Bookmarks bookmarks, BookmarksUtil bkUtil) {
+	protected InputStreamHandler(Field f, Object o, Tunable t, final Bookmarks bookmarks, final BookmarksUtil bkUtil) {
 		super(f, o, t);
-		this.bkUtil = bkUtil;
-		// this.flUtil=flUtil;
+		init(bookmarks, bkUtil);
+	}
 
-		// this.stUtil=stUtil; System.out.println("StUtil = " + stUtil);
+	protected InputStreamHandler(final Method getter, final Method setter, final Object instance,
+	                             final Tunable tunable, final Bookmarks bookmarks, final BookmarksUtil bkUtil)
+	{
+		super(getter, setter, instance, tunable);
+		init(bookmarks, bkUtil);
+	}
+
+	private void init(final Bookmarks bookmarks, final BookmarksUtil bkUtil) {
+		this.bkUtil = bkUtil;
 
 		titleLabel = new JLabel("Import Network File");
 		this.theBookmarks = bookmarks;
 		fileChooser = new JFileChooser();
 		bookmarkEditor = new BookmarkComboBoxEditor();
-		try {
-			this.InStream = (InputStream) f.get(o);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
-		Category theCategory = bkUtil.getCategory(bookmarkCategory, bookmarks
-				.getCategory());
+		Category theCategory = bkUtil.getCategory(bookmarkCategory, bookmarks.getCategory());
 		if (theCategory == null) {
 			theCategory = new Category();
 			theCategory.setName(bookmarkCategory);
@@ -102,50 +102,21 @@ public class InputStreamHandler extends AbstractGUIHandler {
 	public void handle() {
 		if (localRadioButton.isSelected()) {
 			try {
-				InStream = new BufferedInputStream(new FileInputStream(
-						networkFileTextField.getText()));
-				f.set(o, InStream);
+				setValue(new BufferedInputStream(new FileInputStream(networkFileTextField.getText())));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else if (remoteRadioButton.isSelected()) {
-			urlstr = bookmarkEditor.getURLstr();
+			urlStr = bookmarkEditor.getUrlStr();
 			try {
-				if (urlstr != null) {
-					URL url = new URL(urlstr);
-					f.set(o, url.openStream());
+				if (urlStr != null) {
+					URL url = new URL(urlStr);
+					setValue(url.openStream());
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
-	}
-
-	public void resetValue() {
-		try {
-			if (localRadioButton.isSelected()) {
-				f.set(o, new FileInputStream(""));
-				// System.out.println("#########Value will be reset to initial value = "+
-				// ((FileInputStream) f.get(o)).toString()+ "#########");
-			} else if (remoteRadioButton.isSelected()) {
-				f.set(o, new URL(""));
-				// System.out.println("#########Value will be reset to initial value = "+
-				// ((URL) f.get(o)).getPath()+ "#########");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public String getState() {
-		String s = null;
-		try {
-			if (f.get(o) != null)
-				s = f.get(o).toString();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			s = "";
-		}
-		return s;
 	}
 
 	private void initComponents() {
@@ -359,7 +330,7 @@ public class InputStreamHandler extends AbstractGUIHandler {
 		DataSource theDataSource = new DataSource();
 		JTextField tfInput = new JTextField(pleaseMessage);
 
-		public String getURLstr() {
+		public String getUrlStr() {
 			return tfInput.getText();
 		}
 
