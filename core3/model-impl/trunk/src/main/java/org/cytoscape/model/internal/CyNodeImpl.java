@@ -53,11 +53,14 @@ class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
 
 	private CySubNetwork subNet;
 
+	private CyNetwork nestedNet;
+
 	CyNodeImpl(CyNetwork n, int ind, Map<String, CyDataTable> attrMgr, CySubNetwork sub) {
 		super(attrMgr);
 		net = n;
 		index = ind;
 		subNet = sub;
+		nestedNet = null;
 	}
 
 	/**
@@ -119,5 +122,13 @@ class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
 
 	synchronized void setSubNetwork(CySubNetwork s) {
 		subNet = s;
+	}
+
+	public synchronized CyNetwork getNestedNetwork() {
+		return nestedNet;
+	}
+
+	public synchronized void setNestedNetwork(CyNetwork n) {
+		nestedNet = n;
 	}
 }
