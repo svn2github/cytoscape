@@ -37,6 +37,7 @@
 package cytoscape.internal.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -171,7 +172,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 
 	protected void initialize() {
 		setLayout(new BorderLayout());
-		setPreferredSize(new Dimension(180, 700));
+		setPreferredSize(new Dimension(300, 700));
 
 		treeTable.getTree().addTreeSelectionListener(this);
 		treeTable.getTree().setRootVisible(false);
@@ -185,15 +186,17 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		treeTable.getColumn("Edges").setPreferredWidth(45);
 
 		navigatorPanel = new JPanel();
-		navigatorPanel.setMinimumSize(new Dimension(180, 180));
-		navigatorPanel.setMaximumSize(new Dimension(180, 180));
-		navigatorPanel.setPreferredSize(new Dimension(180, 180));
+		navigatorPanel.setLayout(new BorderLayout());
+		navigatorPanel.setPreferredSize(new Dimension(280, 280));
+		navigatorPanel.setSize(new Dimension(280, 280));
+		navigatorPanel.setBackground(Color.white);
 
 		JScrollPane scroll = new JScrollPane(treeTable);
 
 		split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scroll,
 				navigatorPanel);
 		split.setResizeWeight(1);
+		split.setDividerLocation(300);
 
 		add(split);
 
@@ -272,8 +275,8 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	 *            DOCUMENT ME!
 	 */
 	public void setNavigator(final Component comp) {
-		split.setRightComponent(comp);
-		split.validate();
+		this.navigatorPanel.removeAll();
+		this.navigatorPanel.add(comp, BorderLayout.CENTER);
 	}
 
 	/**

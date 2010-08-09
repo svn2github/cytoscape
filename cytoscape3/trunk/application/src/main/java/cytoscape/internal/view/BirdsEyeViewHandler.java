@@ -36,7 +36,9 @@
  */
 package cytoscape.internal.view;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -46,6 +48,7 @@ import java.util.Map;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.cytoscape.model.CyNetwork;
@@ -76,7 +79,7 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 	final NetworkViewManager viewmgr;
 	final CyNetworkManager netmgr;
 
-	final Component bevHolder;
+	final Container bevHolder;
 
 	/**
 	 * Creates a new BirdsEyeViewHandler object.
@@ -92,7 +95,10 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 
 		final JDesktopPane desktopPane = viewmgr.getDesktopPane();
 		bevHolder = new JPanel();
-		bevHolder.setPreferredSize(new Dimension(200, 200));
+		Dimension panelSize = new Dimension(280, 280);
+		bevHolder.setPreferredSize(panelSize);
+		bevHolder.setSize(panelSize);
+		bevHolder.setBackground(Color.white);
 
 		engineMap = new HashMap<CyNetworkView, RenderingEngine<CyNetworkView>>();
 
