@@ -1,10 +1,12 @@
 package org.cytoscape.work.spring;
 
-import org.cytoscape.work.AbstractTunableInterceptor;
-import org.cytoscape.work.Handler;
-import org.cytoscape.work.HandlerFactory;
 
-import org.springframework.core.InfrastructureProxy; 
+import org.cytoscape.work.AbstractTunableInterceptor;
+import org.cytoscape.work.HandlerFactory;
+import org.cytoscape.work.TunableHandler;
+
+import org.springframework.core.InfrastructureProxy;
+
 
 /**
  * This hack exists to handle Spring's proxy framework.  Since Spring returns
@@ -13,27 +15,27 @@ import org.springframework.core.InfrastructureProxy;
  * are actually defined.  This code can be safely omitted if this class isn't
  * being used with Spring.
  */
-public abstract class SpringTunableInterceptor<T extends Handler> extends AbstractTunableInterceptor<T> {
-
+public abstract class SpringTunableInterceptor<T extends TunableHandler> extends AbstractTunableInterceptor<T> {
 	public SpringTunableInterceptor(HandlerFactory<T> hf) {
 		super(hf);
 	}
 
-	public void loadTunables(Object obj) {
-		if ( obj instanceof InfrastructureProxy )
-			super.loadTunables( ((InfrastructureProxy)obj).getWrappedObject() );
+	public void loadTunables(final Object obj) {
+		if (obj instanceof InfrastructureProxy)
+			super.loadTunables(((InfrastructureProxy)obj).getWrappedObject());
 		else
 			super.loadTunables( obj );
 	}
 
-	protected Object[] convertSpringProxyObjs(Object... proxyObjs) {
-		Object[] objs = new Object[proxyObjs.length];
+	protected Object[] convertSpringProxyObjs(final Object... proxyObjs) {
+		final Object[] objs = new Object[proxyObjs.length];
 		int i = 0;
-		for ( Object o : proxyObjs )
-		if ( o instanceof InfrastructureProxy )
-			objs[i++] = ((InfrastructureProxy)o).getWrappedObject();
-		else
-			objs[i++] = o;
+		for (final Object o : proxyObjs) {
+			if (o instanceof InfrastructureProxy)
+				objs[i++] = ((InfrastructureProxy)o).getWrappedObject();
+			else
+				objs[i++] = o;
+		}
 
 		return objs;
 	}
