@@ -78,33 +78,28 @@ public class DingNavigationRenderingEngineFactory implements
 	public RenderingEngine<CyNetwork> render(Object visualizationContainer,
 			View<CyNetwork> view) {
 
-		if (!(visualizationContainer instanceof Component))
+		if (visualizationContainer == null || view == null)
 			throw new IllegalArgumentException(
-					"navBounds object is not of type Component, which is invalid for this implementation of PresentationFactory");
+					"Both paramerts for render method should not be null.");
 
-		if (visualizationContainer == null || view == null) {
-			return null;
-		}
+		if (!(visualizationContainer instanceof JComponent)
+				|| !(view instanceof CyNetworkView))
+			throw new IllegalArgumentException(
+					"Visualization Container object is not of type Component, "
+							+ "which is invalid for this implementation of PresentationFactory");
 
-		if (visualizationContainer instanceof JComponent
-				&& view instanceof CyNetworkView) {
+		final DGraphView dgv = new DGraphView((CyNetworkView) view,
+				dataTableFactory, rootNetworkFactory, undo, spacialFactory,
+				rootLexicon, dingLexicon, nodeViewTFs, edgeViewTFs,
+				emptySpaceTFs, ti, tm);
 
-			final DGraphView dgv = new DGraphView((CyNetworkView) view,
-					dataTableFactory, rootNetworkFactory, undo, spacialFactory,
-					rootLexicon, dingLexicon, nodeViewTFs, edgeViewTFs,
-					emptySpaceTFs, ti, tm);
+		JPanel target = new JPanel();
+		BirdsEyeView bev = new BirdsEyeView((Component) visualizationContainer,
+				dgv);
+		target.add(bev);
 
-			JPanel target = new JPanel();
-			BirdsEyeView bev = new BirdsEyeView(
-					(Component) visualizationContainer, dgv);
-			target.add(bev);
+		return new DingNavigationRenderingEngine(dgv);
 
-			return dgv;
-
-		}
-
-		// TODO: should I return null or simply throw exception?
-		return null;
 	}
 
 	public void handleEvent(NetworkViewChangedEvent nvce) {

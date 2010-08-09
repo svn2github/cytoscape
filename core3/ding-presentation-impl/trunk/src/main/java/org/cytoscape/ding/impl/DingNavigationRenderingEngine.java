@@ -13,36 +13,34 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngine;
 
 /**
+ * Wrapper for Navigation View
  * 
  * @author kono
  *
  */
-public class NavigationRenderingEngine implements RenderingEngine<CyNetwork> {
+public class DingNavigationRenderingEngine implements RenderingEngine<CyNetwork> {
 	
-	private final View<CyNetwork> viewModel;
+	private final DGraphView dgv;
 	
-	public NavigationRenderingEngine(final View<CyNetwork> viewModel) {
-		this.viewModel = viewModel;
+	public DingNavigationRenderingEngine(final DGraphView dgv) {
+		this.dgv = dgv;
 	}
 	
 
 	@Override
 	public View<CyNetwork> getViewModel() {
-		// TODO Auto-generated method stub
-		return null;
+		return dgv.getViewModel();
 	}
 	
 
 	@Override
 	public VisualLexicon getVisualLexicon() {
-		// TODO Auto-generated method stub
-		return null;
+		return dgv.getVisualLexicon();
 	}
 
 	@Override
 	public void setProperties(Properties props) {
-		// TODO Auto-generated method stub
-		
+		dgv.setProperties(props);
 	}
 
 	@Override
