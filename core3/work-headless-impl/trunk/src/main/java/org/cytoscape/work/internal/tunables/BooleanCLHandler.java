@@ -25,21 +25,19 @@ public class BooleanCLHandler extends AbstractCLHandler {
 	 * @param t tunable associated to <code>f</code>
 	 */
 	public BooleanCLHandler(Field f, Object o, Tunable t) {
-		super(f,o,t);
+		super(f, o, t);
 	}
 
 	/**
 	 * Constructs the <code>CLHandler</code> for the <code>Boolean</code> type of an Object managed by <i>get</i> and <i>set</i> methods
-	 * @param gmethod method that returns the value of the Object <code>o</code> annotated as a <code>Tunable</code>
-	 * @param smethod method that sets a value to the Object <code>o</code> annotated as a <code>Tunable</code>
+	 * @param getter method that returns the value of the Object <code>o</code> annotated as a <code>Tunable</code>
+	 * @param setter method that sets a value to the Object <code>o</code> annotated as a <code>Tunable</code>
 	 * @param o Object whose value will be set and get by the methods
-	 * @param tg <code>Tunable</code> annotations of the Method <code>gmethod</code> annotated as <code>Tunable</code>
-	 * @param ts <code>Tunable</code> annotations of the Method <code>smethod</code> annotated as <code>Tunable</code>
+	 * @param t <code>Tunable</code> annotations of the Method <code>getter</code> annotated as <code>Tunable</code>
 	 */
-	public BooleanCLHandler(Method gmethod,Method smethod,Object o, Tunable tg, Tunable ts){
-		super(gmethod,smethod,o,tg,ts);
+	public BooleanCLHandler(Method getter,Method setter, Object o, Tunable t) {
+		super(getter, setter, o, t);
 	}
-
 
 	/**
 	 * If options/arguments are detected for this handler, it applies the argument : 
@@ -59,18 +57,18 @@ public class BooleanCLHandler extends AbstractCLHandler {
 		String fc = n.substring(ind);
 		
 		try {
-			if ( line.hasOption( fc ) ) {
-				if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
-				if ( f != null )
-					f.set(o,Boolean.parseBoolean(line.getOptionValue(fc)));
-				else if ( smethod != null )
-					smethod.invoke(o,Boolean.parseBoolean(line.getOptionValue(fc)));
-				else 
-					throw new Exception("no Field or Method to set!");
+			if (line.hasOption(fc)) {
+				if (line.getOptionValue(fc).equals("--cmd")) {
+					displayCmds(fc);
+					System.exit(1);
+				}
+				setValue(Boolean.parseBoolean(line.getOptionValue(fc)));
 			}
-		} catch(Exception e) {e.printStackTrace();}
+		} catch(final Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
-
 	
 	/**
 	 * Create an Option for the Object <code>o</code> contained in <code>f</code> or got from the <code>get</code> Method.
@@ -88,19 +86,13 @@ public class BooleanCLHandler extends AbstractCLHandler {
 		int ind = n.lastIndexOf(".")+1;
 		String fc = n.substring(ind);
 		Boolean currentValue = null;		
-		if (f!=null){
-			try{
-				currentValue = (Boolean)f.get(o);
-			}catch(Exception e){e.printStackTrace();}
-			return new Option(fc, true,"-- " + t.description() + " --\n  current value : "+ currentValue);
+		try {
+			currentValue = (Boolean)getValue();
+		} catch(final Exception e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
-		else if (gmethod!=null){
-			try{
-				currentValue = (Boolean)gmethod.invoke(o);
-			}catch(Exception e){e.printStackTrace();}
-			return new Option(fc, true,"-- " + tg.description() + " --\n  current value : "+ currentValue);			
-		}
-		else return null;		
+		return new Option(fc, true,"-- " + getDescription() + " --\n  current value: "+ currentValue);
 	}
 	
 	/**
@@ -113,6 +105,6 @@ public class BooleanCLHandler extends AbstractCLHandler {
 		options.addOption(this.getOption());
 		formatter.setWidth(100);
 		System.out.println("\n");
-		formatter.printHelp("Detailed informations/commands for " + fc + " :", options);
+		formatter.printHelp("Detailed informations/commands for " + fc + ": ", options);
 	}
 }	

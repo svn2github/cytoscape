@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -9,13 +10,13 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.cytoscape.work.Tunable;
 
+
 /**
  * Commandline handler for the type <i>String</i> of <code>Tunable</code>
  * 
  * @author pasteur
  */
 public class StringCLHandler extends AbstractCLHandler {
-
 	/**
 	 * Constructs the <code>CLHandler</code> for the <code>String</code> type of a Field <code>f</code>
 	 * 
@@ -26,20 +27,17 @@ public class StringCLHandler extends AbstractCLHandler {
 	public StringCLHandler(Field f, Object o, Tunable t) {
 		super(f,o,t);
 	}
-
 	
 	/**
 	 * Constructs the <code>CLHandler</code> for the <code>String</code> type of an Object managed by <i>get</i> and <i>set</i> methods
 	 * @param gmethod method that returns the value of the Object <code>o</code> annotated as a <code>Tunable</code>
 	 * @param smethod method that sets a value to the Object <code>o</code> annotated as a <code>Tunable</code>
 	 * @param o Object whose value will be set and get by the methods
-	 * @param tg <code>Tunable</code> annotations of the Method <code>gmethod</code> annotated as <code>Tunable</code>
-	 * @param ts <code>Tunable</code> annotations of the Method <code>smethod</code> annotated as <code>Tunable</code>
+	 * @param t <code>Tunable</code> annotations of the Method <code>gmethod</code> annotated as <code>Tunable</code>
 	 */
-	public StringCLHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts){
-		super(gmethod,smethod,o,tg,ts);
+	public StringCLHandler(Method gmethod, Method smethod, Object o, Tunable t) {
+		super(gmethod,smethod,o,t);
 	}
-
 	
 	/**
 	 *  If option/argument are detected for this handler, it applies the argument : 
@@ -52,24 +50,21 @@ public class StringCLHandler extends AbstractCLHandler {
 	 * </pre></p>
 	 * @param commandline with arguments
 	 */
-	public void handleLine( CommandLine line ) {
-		String n = getName();
-		int ind = n.lastIndexOf(".")+1;
-		String fc = n.substring(ind);
-		
+	public void handleLine(CommandLine line) {
+		final String fc = getName();
 		try {
-			if ( line.hasOption( fc ) ) {
-				if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
-				if ( f != null )
-					f.set(o,line.getOptionValue(fc) );
-				else if ( smethod != null )
-					smethod.invoke(o,line.getOptionValue(fc).toString());
-				else 
-					throw new Exception("no Field or Method to set!");
+			if (line.hasOption(fc)) {
+				if(line.getOptionValue(fc).equals("--cmd")) {
+					displayCmds(fc);
+					System.exit(1);
+				}
+				setValue(line.getOptionValue(fc));
 			}
-		} catch(Exception e) {e.printStackTrace();}
+		} catch(final Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
-	
 	
 	/**
 	 * Create an Option for the Object <code>o</code> contained in <code>f</code> or got from the <code>get</code> Method.
@@ -83,27 +78,17 @@ public class StringCLHandler extends AbstractCLHandler {
 	 * @return option of the handler
 	 */
 	public Option getOption() {
-		String n = getName();
-		int ind = n.lastIndexOf(".")+1;
-
-		String fc = n.substring(ind);
+		final String fc = getName();
 		String currentValue = null;
 		
-		if( f!=null){
-			try{
-				currentValue = (String)f.get(o);
-			}catch(Exception e){e.printStackTrace();}
-			return new Option(fc, true,"-- " + t.description()+" --\n current value : "+ currentValue);
+		try {
+			currentValue = (String)getValue();
+		} catch(final Exception e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
-		else if(gmethod!=null){
-			try{
-				currentValue=(String)gmethod.invoke(o);
-			}catch(Exception e){e.printStackTrace();}
-			return new Option(fc,true,"-- "+tg.description()+" --\n current value : "+currentValue);
-		}
-		else return null;
+		return new Option(fc, true,"-- " + getDescription() + " --\n current value : " + currentValue);
 	}
-	
 	
 	/**
 	 * Display some detailed informations to the user for this particular handler

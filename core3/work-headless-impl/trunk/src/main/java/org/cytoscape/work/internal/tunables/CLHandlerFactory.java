@@ -12,10 +12,6 @@ import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.BoundedFloat;
 import org.cytoscape.work.util.BoundedInteger;
 import org.cytoscape.work.util.BoundedLong;
-import org.cytoscape.work.util.FlexiblyBoundedDouble;
-import org.cytoscape.work.util.FlexiblyBoundedFloat;
-import org.cytoscape.work.util.FlexiblyBoundedInteger;
-import org.cytoscape.work.util.FlexiblyBoundedLong;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 
@@ -27,7 +23,7 @@ import org.cytoscape.work.util.ListSingleSelection;
  */
 public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 
-	public CLHandler getHandler(Method m, Object o, Tunable t) {
+	public CLHandler getHandler(final Method m, final Object o, final Tunable t) {
 		return null;
 	}
 
@@ -35,71 +31,56 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 	/**
 	 * To get a <code>CLHandler</code> for Methods
 	 * 
-	 * @param gmethod Method that returns the value from the Object <code>o</code>
-	 * @param smethod Method that sets a value to the Object <code>o</code>
+	 * @param getter Method that returns the value from the Object <code>o</code>
+	 * @param setter Method that sets a value to the Object <code>o</code>
 	 * @param o Object whose value will be set and get by the methods
-	 * @param tg <code>Tunable</code> annotations of the Method <code>gmethod</code> annotated as <code>Tunable</code>
-	 * @param ts <code>Tunable</code> annotations of the Method <code>smethod</code> annotated as <code>Tunable</code>
+	 * @param tg <code>Tunable</code> annotations of the Method <code>getter</code> annotated as <code>Tunable</code>
+	 * @param ts <code>Tunable</code> annotations of the Method <code>setter</code> annotated as <code>Tunable</code>
 	 * 
 	 * @return a specific <code>CLHandler</code> of a type
 	 */
-	public CLHandler getHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts){
-		Class<?>[] paramsTypes = smethod.getParameterTypes();
-		Class<?> returnType = gmethod.getReturnType();
-		if ( paramsTypes.length != 1 ) {
-			System.err.println("found bad method");
-			return null;
-		}
+	public CLHandler getHandler(final Method getter, final Method setter, final Object o, final Tunable tunable) {
+		Class<?>[] paramsTypes = setter.getParameterTypes();
+		Class<?> returnType = getter.getReturnType();
 		Class<?> type = paramsTypes[0];
-		if(!type.equals(returnType)) {
-			System.err.println("return type and parameter type are differents for the methods " + gmethod.getName() + " and " + smethod.getName());
+		if (type != returnType) {
+			System.err.println("return type and parameter type are differents for the methods " + getter.getName() + " and " + setter.getName());
 			return null;
 		}
 		
-		if( type == Boolean.class || type == boolean.class)
-			return new BooleanCLHandler(gmethod,smethod,o,tg,ts);
-		else if( type == String.class)
-			return new StringCLHandler(gmethod,smethod,o,tg,ts);
-		
-		
-		else if( type == int.class || type == Integer.class)
-			return new IntCLHandler(gmethod,smethod,o,tg,ts);
-		else if( type == float.class || type == Float.class)
-			return new FloatCLHandler(gmethod,smethod,o,tg,ts);
-		else if( type == long.class || type == Long.class)
-			return new LongCLHandler(gmethod,smethod,o,tg,ts);
-		else if( type == double.class || type == Double.class)
-			return new DoubleCLHandler(gmethod,smethod,o,tg,ts);
-		
-		else if( type == BoundedInteger.class)
-			return new BoundedCLHandler<BoundedInteger>(gmethod,smethod,o,tg,ts);
-		else if( type == BoundedDouble.class)
-			return new BoundedCLHandler<BoundedDouble>(gmethod,smethod,o,tg,ts);
-		else if( type == BoundedLong.class)
-			return new BoundedCLHandler<BoundedLong>(gmethod,smethod,o,tg,ts);
-		else if( type == BoundedFloat.class)
-			return new BoundedCLHandler<BoundedFloat>(gmethod,smethod,o,tg,ts);
-		
-		else if( type == FlexiblyBoundedInteger.class)
-			return new FlexiblyBoundedCLHandler<FlexiblyBoundedInteger>(gmethod,smethod,o,tg,ts);
-		else if( type == FlexiblyBoundedDouble.class)
-			return new FlexiblyBoundedCLHandler<FlexiblyBoundedDouble>(gmethod,smethod,o,tg,ts);
-		else if( type == ListSingleSelection.class)
-			return new ListSingleSelectionCLHandler<Object>(gmethod,smethod,o,tg,ts);
-		else if( type == ListMultipleSelection.class)
-			return new ListMultipleSelectionCLHandler<Object>(gmethod,smethod,o,tg,ts);
-		
-		else if( type == File.class)
-			return new FileCLHandler(gmethod,smethod,o,tg,ts);
-		else if( type == URL.class)
-			return new URLCLHandler(gmethod,smethod,o,tg,ts);
-		else if( type == InputStream.class)
-			return new InputStreamCLHandler(gmethod,smethod,o,tg,ts);
+		if (type == Boolean.class || type == boolean.class)
+			return new BooleanCLHandler(getter, setter, o, tunable);
+		else if (type == String.class)
+			return new StringCLHandler(getter, setter, o, tunable);
+		else if (type == int.class || type == Integer.class)
+			return new IntCLHandler(getter, setter, o, tunable);
+		else if (type == float.class || type == Float.class)
+			return new FloatCLHandler(getter, setter, o, tunable);
+		else if (type == long.class || type == Long.class)
+			return new LongCLHandler(getter, setter, o, tunable);
+		else if (type == double.class || type == Double.class)
+			return new DoubleCLHandler(getter, setter, o, tunable);
+		else if (type == BoundedInteger.class)
+			return new BoundedCLHandler<BoundedInteger>(getter, setter, o, tunable);
+		else if (type == BoundedDouble.class)
+			return new BoundedCLHandler<BoundedDouble>(getter, setter, o, tunable);
+		else if (type == BoundedLong.class)
+			return new BoundedCLHandler<BoundedLong>(getter, setter, o, tunable);
+		else if (type == BoundedFloat.class)
+			return new BoundedCLHandler<BoundedFloat>(getter, setter, o, tunable);
+		else if (type == ListSingleSelection.class)
+			return new ListSingleSelectionCLHandler<Object>(getter, setter, o, tunable);
+		else if (type == ListMultipleSelection.class)
+			return new ListMultipleSelectionCLHandler<Object>(getter, setter, o, tunable);
+		else if (type == File.class)
+			return new FileCLHandler(getter, setter, o, tunable);
+		else if (type == URL.class)
+			return new URLCLHandler(getter, setter, o, tunable);
+		else if (type == InputStream.class)
+			return new InputStreamCLHandler(getter, setter, o, tunable);
 		else
 			return null;
 	}
-
-	
 	
 	/**
 	 * To get a <code>CLHandler</code> for a Field
@@ -110,51 +91,38 @@ public class CLHandlerFactory implements HandlerFactory<CLHandler> {
 	 * 
 	 * @return a specific <code>CLHandler</code> of a type
 	 */
-	public CLHandler getHandler(Field f, Object o, Tunable t) {
-		Class<?> type = f.getType();
+	public CLHandler getHandler(final Field f, final Object o, final Tunable t) {
+		final Class<?> type = f.getType();
 
-		if ( type == String.class )
+		if (type == String.class)
 			return new StringCLHandler(f,o,t);
-		else if ( type == boolean.class || type == Boolean.class )
+		else if (type == boolean.class || type == Boolean.class)
 			return new BooleanCLHandler(f,o,t);
-		
-		else if ( type == int.class || type == Integer.class )
-				return new IntCLHandler(f,o,t);
-		else if ( type == float.class || type == Float.class )
+		else if (type == int.class || type == Integer.class)
 			return new IntCLHandler(f,o,t);
-		else if ( type == long.class || type == Long.class )
+		else if (type == float.class || type == Float.class)
 			return new IntCLHandler(f,o,t);
-		else if ( type == double.class || type == Double.class )
+		else if (type == long.class || type == Long.class)
 			return new IntCLHandler(f,o,t);
-		
-		else if ( type == BoundedDouble.class )
+		else if (type == double.class || type == Double.class)
+			return new IntCLHandler(f,o,t);
+		else if (type == BoundedDouble.class)
 			return new BoundedCLHandler<BoundedDouble>(f,o,t);
-		else if ( type == BoundedInteger.class )
+		else if (type == BoundedInteger.class)
 			return new BoundedCLHandler<BoundedInteger>(f,o,t);
-		else if ( type == BoundedFloat.class )
+		else if (type == BoundedFloat.class)
 			return new BoundedCLHandler<BoundedFloat>(f,o,t);
-		else if ( type == BoundedLong.class )
+		else if (type == BoundedLong.class)
 			return new BoundedCLHandler<BoundedLong>(f,o,t);
-		
-		else if( type == FlexiblyBoundedDouble.class )
-			return new FlexiblyBoundedCLHandler<FlexiblyBoundedDouble>(f,o,t);
-		else if( type == FlexiblyBoundedInteger.class )
-			return new FlexiblyBoundedCLHandler<FlexiblyBoundedInteger>(f,o,t);
-		else if( type == FlexiblyBoundedFloat.class )
-			return new FlexiblyBoundedCLHandler<FlexiblyBoundedFloat>(f,o,t);
-		else if( type == FlexiblyBoundedLong.class )
-				return new FlexiblyBoundedCLHandler<FlexiblyBoundedLong>(f,o,t);
-		
-		else if ( type == ListSingleSelection.class)
+		else if (type == ListSingleSelection.class)
 			return new ListSingleSelectionCLHandler<Object>(f,o,t);
-		else if ( type == ListMultipleSelection.class)
+		else if (type == ListMultipleSelection.class)
 			return new ListMultipleSelectionCLHandler<Object>(f,o,t);
-		
-		else if ( type == File.class)
+		else if (type == File.class)
 			return new FileCLHandler(f,o,t);
-		else if ( type == URL.class)
+		else if (type == URL.class)
 			return new URLCLHandler(f,o,t);
-		else if( type == InputStream.class)
+		else if (type == InputStream.class)
 			return new InputStreamCLHandler(f,o,t);
 		else
 			return null;

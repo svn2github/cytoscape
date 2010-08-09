@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -12,39 +13,34 @@ import org.cytoscape.work.Tunable;
 
 /**
  * Commandline handler for the type <i>Long</i> of <code>Tunable</code>
- * 
+ *
  * @author pasteur
  */
 public class LongCLHandler extends AbstractCLHandler {
-
-	
 	/**
 	 * Constructs the <code>CLHandler</code> for the <code>Long</code> type of a Field <code>f</code>
-	 * 
+	 *
 	 * @param f field that has been annotated
 	 * @param o object contained in <code>f</code>
 	 * @param t tunable associated to <code>f</code>
 	 */
 	public LongCLHandler(Field f, Object o, Tunable t) {
-		super(f,o,t);
+		super(f, o, t);
 	}
-	
-	
+
 	/**
 	 * Constructs the <code>CLHandler</code> for the <code>Long</code> type of an Object managed by <i>get</i> and <i>set</i> methods
 	 * @param gmethod method that returns the value of the Object <code>o</code> annotated as a <code>Tunable</code>
 	 * @param smethod method that sets a value to the Object <code>o</code> annotated as a <code>Tunable</code>
 	 * @param o Object whose value will be set and get by the methods
-	 * @param tg <code>Tunable</code> annotations of the Method <code>gmethod</code> annotated as <code>Tunable</code>
-	 * @param ts <code>Tunable</code> annotations of the Method <code>smethod</code> annotated as <code>Tunable</code>
+	 * @param t <code>Tunable</code> annotations of the Method <code>gmethod</code> annotated as <code>Tunable</code>
 	 */
-	public LongCLHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts){
-		super(gmethod,smethod,o,tg,ts);
+	public LongCLHandler(Method gmethod, Method smethod, Object o, Tunable t) {
+		super(gmethod, smethod, o, t);
 	}
 
-	
 	/**
-	 *  If options/arguments are detected for this handler, it applies the argument : 
+	 *  If options/arguments are detected for this handler, it applies the argument :
 	 * <p><pre>
 	 * <ul>
 	 * <li> display some specific informations if the argument is <code>--cmd</code> ,or</li>
@@ -54,29 +50,26 @@ public class LongCLHandler extends AbstractCLHandler {
 	 * </pre></p>
 	 * @param commandline with arguments
 	 */
-	public void handleLine( CommandLine line ) {
-		String n = getName();
-		int ind = n.lastIndexOf(".")+1;		
-		String fc = n.substring(ind);
+	public void handleLine(CommandLine line) {
+		final String fc = getName();
 
 		try {
-		if ( line.hasOption( fc ) ) {
-			if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
-			if ( f != null )
-				f.set(o,Long.parseLong(line.getOptionValue(fc)) );
-			else if ( smethod != null )
-				smethod.invoke(o,Long.parseLong(line.getOptionValue(fc)) );
-			else 
-				throw new Exception("no Field or Method to set!");
+			if (line.hasOption(fc)) {
+				if (line.getOptionValue(fc).equals("--cmd")) {
+					displayCmds(fc);
+					System.exit(1);
+				}
+				setValue(Long.parseLong(line.getOptionValue(fc)));
+			}
+		} catch(final Exception e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
-		} catch(Exception e) {e.printStackTrace();}
 	}
-	
-	
-	
+
 	/**
 	 * Create an Option for the Object <code>o</code> contained in <code>f</code> or got from the <code>get</code> Method.
-	 * The option has : 
+	 * The option has :
 	 * <p><pre>
 	 * <ul>
 	 * <li> the name of the handler</li>
@@ -85,34 +78,24 @@ public class LongCLHandler extends AbstractCLHandler {
 	 * </pre></p>
 	 * @return option of the handler
 	 */
-	public Option getOption(){
-		String n = getName();
-		int ind = n.lastIndexOf(".")+1;
-		String fc = n.substring(ind);
+	public Option getOption() {
+		final String fc = getName();
 		Long currentValue = null;
-		
-		if (f!=null){
-			try{
-				currentValue = (Long)f.get(o);
-			}catch(Exception e){e.printStackTrace();}
-			return new Option(fc, true,"-- " + t.description() + " --\n  current value : "+ currentValue);
+
+		try {
+			currentValue = (Long)getValue();
+		} catch(final Exception e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
-		else if (gmethod!=null){
-			try{
-				currentValue = (Long)gmethod.invoke(o);
-			}catch(Exception e){e.printStackTrace();}
-			return new Option(fc, true,"-- " + tg.description() + " --\n  current value : "+ currentValue);
-		}
-		else return null;
+		return new Option(fc, true, "-- " + getDescription() + " --\n  current value: " + currentValue);
 	}
-	
-	
-	
+
 	/**
 	 * Display some detailled informations to the user for this particular handler
 	 * @param name of the handler
 	 */
-	private void displayCmds(String fc){
+	private void displayCmds(String fc) {
 		HelpFormatter formatter = new HelpFormatter();
 		Options options = new Options();
 		options.addOption(this.getOption());

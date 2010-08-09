@@ -46,14 +46,11 @@ public class URLCLHandler extends AbstractCLHandler implements CLHandler{
 	 * @param gmethod method that returns the value of the Object <code>o</code> annotated as a <code>Tunable</code>
 	 * @param smethod method that sets a value to the Object <code>o</code> annotated as a <code>Tunable</code>
 	 * @param o Object whose value will be set and get by the methods
-	 * @param tg <code>Tunable</code> annotations of the Method <code>gmethod</code> annotated as <code>Tunable</code>
-	 * @param ts <code>Tunable</code> annotations of the Method <code>smethod</code> annotated as <code>Tunable</code>
+	 * @param t <code>Tunable</code> annotations of the Method <code>gmethod</code> annotated as <code>Tunable</code>
 	 */
-	public URLCLHandler(Method gmethod,Method smethod,Object o,Tunable tg, Tunable ts){
-		super(gmethod,smethod,o,tg,ts);
+	public URLCLHandler(Method gmethod, Method smethod, Object o, Tunable t) {
+		super(gmethod, smethod, o, t);
 	}
-	
-	
 	
 	/**
 	 * If options/arguments are detected for this handler, it applies the argument : 
@@ -68,31 +65,21 @@ public class URLCLHandler extends AbstractCLHandler implements CLHandler{
 	 * @param commandline with arguments
 	 */
 	public void handleLine(CommandLine line) {
-		String n = getName();
-		int ind = n.lastIndexOf(".")+1;		
-		String fc = n.substring(ind);
-
-		//for(String st : line.getArgs())System.out.println(st);
-		
+		final String fc = getName();
 		try {
-		if ( line.hasOption( fc ) ) {
-			if(line.getOptionValue(fc).equals("--cmd")){displayCmds(fc);System.exit(1);}
-			if ( f != null ){
+			if (line.hasOption(fc)) {
+				if (line.getOptionValue(fc).equals("--cmd")) {
+					displayCmds(fc);
+					System.exit(1);
+				}
 				url = new URL(line.getOptionValue(fc));
-				f.set(o,url);
+				setValue(url);
 			}
-			else if ( smethod != null ){
-				url = new URL(line.getOptionValue(fc));
-				smethod.invoke(o,url);
-			}
-			else 
-				throw new Exception("no Field or Method to set!");
+		} catch(final Exception e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
-		} catch(Exception e) {e.printStackTrace();}
-		
 	}
-
-	
 	
 	/**
 	 * Create an Option for the Object <code>o</code> contained in <code>f</code> or got from the <code>get</code> Method.
@@ -106,29 +93,16 @@ public class URLCLHandler extends AbstractCLHandler implements CLHandler{
 	 * @return option of the handler
 	 */
 	public Option getOption() {
-		String n = getName();
-		int ind = n.lastIndexOf(".")+1;
-		String fc = n.substring(ind);
-		
+		final String fc = getName();
 		URL currentValue = null;
-		
-		if(f!=null){
-			if(url!=null)
-				return new Option(fc, true,"-- " + t.description() + " --\n  current url : " + url.getPath());
-			else
-				return new Option(fc, true,"-- " + t.description() + " --\n  current url : " + "");				
+		try {
+			currentValue = (URL)getValue();
+		} catch(final Exception e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
-		else if(gmethod!=null){
-			try{
-				currentValue = (URL)gmethod.invoke(o);
-			}catch(Exception e){e.printStackTrace();}
-			return new Option(fc, true,"-- "+tg.description() +" --\n  current selected values : "+currentValue.toString());
-		}
-		else
-			return null;
+		return new Option(fc, true, "-- " + getDescription() + " --\n  current selected values : " + currentValue.toString());
 	}
-	
-	
 	
 	/**
 	 * Display some detailed informations to the user for this particular handler

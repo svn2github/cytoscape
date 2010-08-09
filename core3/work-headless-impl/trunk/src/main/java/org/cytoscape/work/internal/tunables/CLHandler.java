@@ -1,8 +1,9 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
-import org.cytoscape.work.Handler;
+import org.cytoscape.work.TunableHandler;
 
 
 /**
@@ -12,8 +13,7 @@ import org.cytoscape.work.Handler;
  * @author pasteur
  *
  */
-public interface CLHandler extends Handler {
-	
+public interface CLHandler extends TunableHandler {
 	/**
 	 * Provides an <code>Option</code> that enable access to arguments of this <code>CLHandler</code> when parsing
 	 * 
@@ -27,5 +27,5 @@ public interface CLHandler extends Handler {
 	 * 
 	 * @param line parsed arguments that can be used to retrieve options and arguments of <code>CLHandler</code>
 	 */
-	public void handleLine( CommandLine line );
+	public void handleLine(final CommandLine line);
 }
