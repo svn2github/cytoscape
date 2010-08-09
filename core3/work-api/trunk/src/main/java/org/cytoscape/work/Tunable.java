@@ -120,7 +120,8 @@ public @interface Tunable {
 	 * </code>
 	 * </pre></p>
 	 *
-	 *	Here, the 2 <code>ListMultipleSelection</code> won't be displayed in the GUI at the same time : each of them depends on the xorKey(<i>FirstNames</i> or <i>Names</i>)
+	 *	Here, the 2 <code>ListMultipleSelection</code> won't be displayed in the GUI at the same time : each of them
+	 *      depends on the xorKey(<i>FirstNames</i> or <i>Names</i>)
 	 * 	that will match the "value" (i.e item that has been selected) in the <code>ListSingleSelection</code>
 	 */
 	String xorKey() default "";

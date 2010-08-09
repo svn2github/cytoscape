@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.work.util;
+
 
 /**
  * A bounded number object whose bounds values cannot be modified
@@ -42,21 +34,20 @@ package org.cytoscape.work.util;
  * @author Pasteur
  */
 public abstract class AbstractBounded<N extends Comparable<N>> {
-
 	/**
 	 * Initial Value of the Bounded Object that will be modified
 	 */
-	protected N value;
+	private N value;
 	
 	/**
 	 * Value of the lower bound of the Bounded Object
 	 */
-	protected N lower;
+	private final N lower;
 	
 	/**
 	 * Value of the upper bound of the Bounded Object
 	 */
-	protected N upper;
+	private final N upper;
 	
 	/**
 	 * Whether or not the <code>value</code> could be set to the <code>upper</code> value
@@ -65,7 +56,7 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	 *  <code> if(upperstrict==true)</code> , then the <code>value</code> cannot be set to <code>upper</code>  
 	 *  </pre></p>
 	 */
-	protected boolean upperStrict;
+	private final boolean upperStrict;
 	
 	/**
 	 * Whether or not the <code>value</code> could be set to the <code>lower</code> value
@@ -74,7 +65,7 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	 *  <code> if(lowerstrict==true)</code> , then the <code>value</code> cannot be set to <code>lower</code>
 	 *  </pre></p>
 	 */
-	protected boolean lowerStrict;
+	private final boolean lowerStrict;
 
 	/**
 	 * Creates a new Bounded object.
@@ -106,7 +97,7 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	 *
 	 * @return  upper
 	 */
-	public synchronized N getUpperBound() {
+	public N getUpperBound() {
 		return upper;
 	}
 
@@ -115,7 +106,7 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	 *
 	 * @return  lower
 	 */
-	public synchronized N getLowerBound() {
+	public N getLowerBound() {
 		return lower;
 	}
 
@@ -124,7 +115,7 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	 *
 	 * @return  upperStrict
 	 */
-	public synchronized boolean isUpperBoundStrict() {
+	public boolean isUpperBoundStrict() {
 		return upperStrict;
 	}
 
@@ -133,7 +124,7 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	 *
 	 * @return  lowerStrict
 	 */
-	public synchronized boolean isLowerBoundStrict() {
+	public boolean isLowerBoundStrict() {
 		return lowerStrict;
 	}
 

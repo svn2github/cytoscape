@@ -25,20 +25,21 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.work;
+
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 
-
 /**
  * Interceptor for Tunables : detect them, create an appropriate <code>Handler</code> from the <code>HandlerFactory</code> for each of them, and store them in a HashMap for further use.
- * 
+ *
  * <p><pre>
  * <b>example :</b>
  * <code>
@@ -51,7 +52,7 @@ import java.util.Map;
  * 	public boolean adjustForSize = true;
  * }
  * </code></pre></p>
- * 
+ *
  * <p><pre>
  * Here are the steps to get a list of handlers for each object annotated as a<code> @Tunable </code>, in order to provide :
  * <ul>
@@ -59,7 +60,7 @@ import java.util.Map;
  * 	<li>a CommandLine Interface in a terminal to execute the Tasks by just typing the name of the class implementing the <code>TaskFactory</code> interface (use of <code>CLTunableInterceptor</code>)</li>
  * 	<li>access to the properties of the <code>Tunables</code>(use of <code>LoadPropsInterceptor</code> or <code>StorePropsInterceptor</code> NEED TO BE DEVELOPPED !!!!!!!</li>
  * </ul>
- * 
+ *
  * <ol>
  * 	<li> First, detection of the Field annonated as <code> @Tunable </code> in the class the <code>TunableInterceptor</code> is applied to</li>
  * 	<li>	Then, the <code>Handlers</code> are created for each kind of <code>Tunable</code> Object (In this example : creation of a <code>AbstractBounded<Integer></code>, <code>AbstractBounded<Double></code> and <code>Boolean</code>  <code>Handlers<code>)</li>
@@ -70,16 +71,16 @@ import java.util.Map;
  *
  * @param <H>  <code>Handlers</code> created in the factory
  */
-public abstract class AbstractTunableInterceptor<H extends Handler> implements TunableInterceptor<H> {
+public abstract class AbstractTunableInterceptor<TH extends TunableHandler> implements TunableInterceptor<TH> {
 	/**
 	 * Factory for Handlers
 	 */
-	protected HandlerFactory<H> factory;
+	protected HandlerFactory<TH> factory;
 
 	/**
 	 * Store the Handlers
 	 */
-	protected Map<Object, LinkedHashMap<String, H>> handlerMap;
+	protected Map<Object, LinkedHashMap<String, TH>> handlerMap;
 
 	/**
 	 * Creates a new AbstractTunableInterceptor object.
@@ -88,22 +89,21 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 	 * 	<code>CLHandlerFactory</code> to get the <code>Handlers</code> that will create the <i>Options</i> for the <code>Tasks</code> runnable through the CommandLine Interface,
 	 *  or <code>PropHandlerFactory</code> to get the <code>Handlers</code> for Properties.
 	 */
-	public AbstractTunableInterceptor(HandlerFactory<H> tunableHandlerFactory) {
+	public AbstractTunableInterceptor(HandlerFactory<TH> tunableHandlerFactory) {
 		this.factory = tunableHandlerFactory;
-		handlerMap = new HashMap<Object, LinkedHashMap<String, H>>();
+		handlerMap = new HashMap<Object, LinkedHashMap<String, TH>>();
 	}
 
 	/**
 	 *	To detect the Field and Methods annotated as <code>Tunable</code>, create a <code>Handler</code> for each from the factory, and store it.
 	 * @param obj A class that contains <code>Tunable</code> that need to be caught to interact with the users
 	 */
-	public void loadTunables(Object obj) {
-		//System.out.println("looking at obj: " + obj.getClass().toString());		
+	public void loadTunables(final Object obj) {
 		if (!handlerMap.containsKey(obj)) {
-			LinkedHashMap<String, H> handlerList = new LinkedHashMap<String, H>();
+			LinkedHashMap<String, TH> handlerList = new LinkedHashMap<String, TH>();
 
 			// Find each public field in the class.
-			for (Field field : obj.getClass().getFields()) {
+			for (final Field field : obj.getClass().getFields()) {
 				// See if the field is annotated as a Tunable.
 				if (field.isAnnotationPresent(Tunable.class)) {
 					try {
@@ -111,14 +111,14 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 						final Tunable tunable = field.getAnnotation(Tunable.class);
 
 						// Get a Handler for this type of Tunable and...
-						H handler = factory.getHandler(field, obj, tunable);
+						TH handler = factory.getHandler(field, obj, tunable);
 
 						// ...add it to the list of Handlers
 						if (handler != null)
 							handlerList.put(field.getName(), handler);
 						else
 							System.out.println("No handler for type: " + field.getType().getName());
-					} catch (Throwable ex) {
+					} catch (final Throwable ex) {
 						System.out.println("tunable field intercept failed: " + field.toString());
 						ex.printStackTrace();
 					}
@@ -127,48 +127,62 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 
 			Map<String, Method> setMethodsMap = new HashMap<String,Method>();
 			Map<String, Method> getMethodsMap = new HashMap<String,Method>();
-			
-			Map<String, Tunable> getTunableMap = new HashMap<String,Tunable>();
-			Map<String, Tunable> setTunableMap = new HashMap<String,Tunable>();
+			Map<String, Tunable> tunableMap = new HashMap<String,Tunable>();
 
 			// Find each public method in the class.
-			for (Method method : obj.getClass().getMethods()) {	
+			for (final Method method : obj.getClass().getMethods()) {
 				// See if the method is annotated as a Tunable.
    				if (method.isAnnotationPresent(Tunable.class)) {
 					try {
-						Tunable tunable = method.getAnnotation(Tunable.class);
+						final Tunable tunable = method.getAnnotation(Tunable.class);
 						if (method.getName().startsWith("get")) {
-							getMethodsMap.put(method.getName().substring(3),method);
-							getTunableMap.put(method.getName().substring(3),tunable);
-							if (setMethodsMap.containsKey(method.getName().substring(3))){
+							if (!isValidGetter(method))
+								throw new Exception("Invalid getter method specified \"" + method.getName()
+										    + "\", maybe this method takes arguments or returns void?");
+							
+							final String rootName = method.getName().substring(3);
+							getMethodsMap.put(rootName, method);
+							tunableMap.put(rootName, tunable);
+							if (setMethodsMap.containsKey(rootName)){
+								final Method setter = setMethodsMap.get(rootName);
+								if (!setterAndGetterTypesAreCompatible(setter, method))
+									throw new Exception("Return type of " + method.getName() + "() and the argument type of "
+											    + setter.getName() + "() are not the same!");
+
 								//get a handler with the getMethod and setMethod
-								H handler = factory.getHandler(getMethodsMap.get(method.getName().substring(3)),
-											       setMethodsMap.get(method.getName().substring(3)), obj,
-											       getTunableMap.get(method.getName().substring(3)),
-											       setTunableMap.get(method.getName().substring(3)));
+								final TH handler = factory.getHandler(method, setter, obj,
+											              tunableMap.get(rootName));
 								if (handler != null)
-								 	handlerList.put("getset" + method.getName().substring(3), handler); 
+								 	handlerList.put("getset" + rootName, handler);
 							}
 						}
 						else if (method.getName().startsWith("set")) {
-							setMethodsMap.put(method.getName().substring(3), method);
-							setTunableMap.put(method.getName().substring(3), tunable);
-							if (getMethodsMap.containsKey(method.getName().substring(3))) {
+							if (!isValidSetter(method))
+								throw new Exception("Invalid setter method specified \"" + method.getName()
+										    + "\", maybe this method does not take a single "
+										    + "argument or does not return void?");
+
+							final String rootName = method.getName().substring(3);
+							setMethodsMap.put(rootName, method);
+							if (getMethodsMap.containsKey(rootName)) {
+								final Method getter = getMethodsMap.get(rootName);
+								if (!setterAndGetterTypesAreCompatible(method, getter))
+									throw new Exception("Return type of " + getter.getName() + "() and the argument type of "
+											    + method.getName() + "() are not the same!");
+
 								//get a handler with the getMethod and setMethod
-								H handler = factory.getHandler(getMethodsMap.get(method.getName().substring(3)),
-											       setMethodsMap.get(method.getName().substring(3)), obj,
-											       getTunableMap.get(method.getName().substring(3)),
-											       setTunableMap.get(method.getName().substring(3)));
+								final TH handler = factory.getHandler(getter, method, obj,
+								                                      tunableMap.get(rootName));
 								//add it to the list
 								if (handler != null)
-								 	handlerList.put("getset" + method.getName().substring(3), handler); 
+								 	handlerList.put("getset" + rootName, handler);
 							}
 						}
 						else
 							throw new Exception("the name of the method has to start with \"set\" or \"get\"");
 
 					} catch (Throwable ex) {
-						System.out.println("tunable method intercept failed: " + method.toString());
+						System.out.println("tunable method intercept failed: " + method);
 						ex.printStackTrace();
 					}
 				}
@@ -178,6 +192,41 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 		}
 	}
 
+	private boolean isValidGetter(final Method getterCandidate) {
+		// Make sure we're not returning "void":
+		try {
+			final Type returnType = getterCandidate.getGenericReturnType();
+			if (returnType == Void.class)
+				return false;
+		} catch(final Exception e) {
+			return false;
+		}
+
+		// Make sure we're not taking any arguments:
+		return getterCandidate.getParameterTypes().length == 0;
+	}
+
+	private boolean isValidSetter(final Method setterCandidate) {
+		// Make sure we are not returning "void":
+		try {
+			final Type returnType = setterCandidate.getGenericReturnType();
+			if (returnType != Void.class)
+				return false;
+		} catch(final Exception e) {
+			return false;
+		}
+
+		// Make sure we're taking a single arguments:
+		return setterCandidate.getParameterTypes().length == 1;
+	}
+
+	/**
+	 *  @return returns true if the return type of the getter method is the same as the single argument type of the setter method, otherwise returns false
+	 */
+	private boolean setterAndGetterTypesAreCompatible(final Method getter, final Method setter) {
+		return getter.getGenericReturnType() == setter.getParameterTypes()[0];
+	}
+
 	/**
 	 *  To get the Map of the <code>Handlers</code> that are contained in this <code>TunableInterceptor</code> Object applied to an external Object(class).
 	 *
@@ -185,7 +234,7 @@ public abstract class AbstractTunableInterceptor<H extends Handler> implements T
 	 *
 	 * @return  The map that contains all the <code>Handlers</code> that have been created for the Object o
 	 */
-	public Map<String, H> getHandlers(Object o) {
+	public Map<String, TH> getHandlers(final Object o) {
 		if (o == null)
 			return null;
 

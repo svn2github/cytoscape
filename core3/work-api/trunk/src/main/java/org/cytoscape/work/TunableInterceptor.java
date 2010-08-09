@@ -1,7 +1,7 @@
 package org.cytoscape.work;
 
-import java.util.Map;
 
+import java.util.Map;
 
 
 /**
@@ -10,7 +10,7 @@ import java.util.Map;
  * @param <T> <code>Handlers</code> that will be detected. They will contain the informations provided by the <code>@Tunable</code> annotations and the Object itself.
  * @author Pasteur
  */
-public interface TunableInterceptor<T extends Handler> {
+public interface TunableInterceptor<TH extends TunableHandler> {
 
 	/**
 	 * Identify Tunables of an Object o and assign a <code>Handler</code> to each <code>Tunable</code>.
@@ -30,7 +30,7 @@ public interface TunableInterceptor<T extends Handler> {
 	 * @param o An Object on which the loadTunable() method has previously been executed.
 	 * @return The Map with all the <code>Handlers</code> that have been previously assigned to <code>o</code>.
 	 */
-	Map<String, T> getHandlers(Object o);
+	Map<String, TH> getHandlers(Object o);
 	
 	
 	/**

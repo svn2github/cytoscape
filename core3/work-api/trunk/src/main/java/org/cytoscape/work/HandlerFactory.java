@@ -8,42 +8,30 @@ import java.lang.reflect.Method;
  * Provides a factory to create <code>Handlers</code> depending on their type.
  * <code>Handlers</code> will be generated for Fields and Methods in the class that contains the <code>Tunables</code>.
  *
- * @param <H> <code>Handlers</code> that will be created by this factory. They will contain the informations provided by the <code>Tunable</code> annotations and the Object itself.
+ * @param <H> <code>TunableHandler</code> that will be created by this factory. They will contain the informations
+ * provided by the <code>Tunable</code> annotations and the Object itself.
  * @author Pasteur
  */
 
-public interface HandlerFactory<H extends Handler>{
-	
+public interface HandlerFactory<TH extends TunableHandler> {
 	/**
-	 * This method returns a <code>Handler</code> for a Field annotated as a <code>Tunable</code>
+	 * This method returns a <code>TunableHandler</code> for a Field annotated as a <code>Tunable</code>
 	 * 
-	 * @param f Field that need to have a <code>Handler</code>
-	 * @param o Object that takes part of the Field <code>f</code>
-	 * @param t	Tunable that contains all the information concerning the Object
-	 * @return H The created <code>Handler</code>
+	 * @param field     Field that need to have a <code>Handler</code>
+	 * @param instance  the object on  which we want to read/write the Field <code>field</code>
+	 * @param tunable   Tunable that contains all the information concerning the user interface
+	 * @return TH       the newly constructed <code>TunableHandler</code>
 	 */
-	 H getHandler(Field f, Object o, Tunable t);
+	 TH getHandler(final Field field, final Object instance, Tunable t);
 
 	/**
 	 * This method returns a <code>Handler</code> for a Method annotated as a <code>Tunable</code>
 	 * 
-	 * @param m	Method that need to have a <code>Handler</code>
-	 * @param o	Object that takes part of the Field <code>f</code>
-	 * @param t	Tunable that contains all the information concerning the Object
-	 * @return H The created <code>Handler</code>
+	 * @param setter    a Method that need to be annotated with  <code>@Tunable</code>
+	 * @param getter    a Method that need to be annotated with  <code>@Tunable</code>
+	 * @param instance  the object on which we want to invoke the <code>setter</code> and <code>getter</code> methods
+	 * @param tunable   Tunable that contains all the information concerning the user interface
+	 * @return TH       the newly constructed <code>TunableHandler</code>
 	 */
-	 H getHandler(Method m, Object o, Tunable t);
-	 
-	 
-	/**
-	 * This method returns a <code>Handler</code> for the Methods GetMethod and SetMethod annotated as <code>Tunable</code>
-	 * 
-	 * @param gmethod Method that need to have a <code>Handler</code>, coupled with the <code>smethod</code>
-	 * @param smethod Method that need to have a <code>Handler</code>, coupled with the <code>gmethod</code>
-	 * @param o Object that is being used inside the Methods
-	 * @param tg Tunable that contains all the information concerning the getMethod
-	 * @param ts Tunable that contains all the information concerning the setMethod
-	 * @return H The created <code>Handler</code>
-	 */
-	H getHandler(Method gmethod, Method smethod, Object o, Tunable tg, Tunable ts);	 
+	 TH getHandler(final Method setter, final Method getter, final Object instance, final Tunable tunable);
 }
