@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.Mockito.*;
 
 /**
  * DOCUMENT ME!
@@ -418,5 +419,42 @@ public abstract class AbstractCyNodeTest extends TestCase {
 		CyNode n1 = net.addNode();
 		assertEquals( String.class, n1.attrs().contains("name"));
 		assertEquals( Boolean.class, n1.attrs().contains("selected"));
+	}
+
+	// by default a node should have a null nested network
+	public void testInitGetNestedNetwork() {
+		CyNode n1 = net.addNode();
+		assertNull(n1.getNestedNetwork());
+	}
+
+	public void testSetNestedNetwork() {
+		CyNode n1 = net.addNode();
+		CyNetwork net2 = mock(CyNetwork.class);
+		n1.setNestedNetwork( net2 );
+		assertNotNull(n1.getNestedNetwork());
+		assertEquals(net2, n1.getNestedNetwork());
+	}
+
+	// self nested networks are allowed
+	public void testSetSelfNestedNetwork() {
+		CyNode n1 = net.addNode();
+		n1.setNestedNetwork( net );
+		assertNotNull(n1.getNestedNetwork());
+		assertEquals(net, n1.getNestedNetwork());
+	}
+
+	// null nested networks are allowed
+	public void testSetNullNestedNetwork() {
+		CyNode n1 = net.addNode();
+
+		// put a real network here first 
+		CyNetwork net2 = mock(CyNetwork.class);
+		n1.setNestedNetwork( net2 );
+		assertNotNull(n1.getNestedNetwork());
+		assertEquals(net2, n1.getNestedNetwork());
+	
+		// now put a null network to verify that we've "unset" things
+		n1.setNestedNetwork( null );
+		assertNull(n1.getNestedNetwork());
 	}
 }

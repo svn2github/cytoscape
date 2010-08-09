@@ -55,6 +55,7 @@ import java.lang.RuntimeException;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 
@@ -1007,10 +1008,12 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 
 	private class DummyCyNode extends SUID implements CyNode {
 		int ind;
+		CyNetwork nested;
 
 		DummyCyNode(int x) {
 			super();
 			ind = x;
+			nested = null;
 		}
 
 		public int getIndex() {
@@ -1018,15 +1021,23 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 		}
 
 		public List<CyNode> getNeighborList(CyEdge.Type edgeType) {
-			return null;
+			return new ArrayList<CyNode>();
 		}
 
 		public List<CyEdge> getAdjacentEdgeList(CyEdge.Type edgeType) {
-			return null;
+			return new ArrayList<CyEdge>();
 		}
 
 		public List<CyEdge> getConnectingEdgeList(CyNode target, CyEdge.Type edgeType) {
-			return null;
+			return new ArrayList<CyEdge>();
+		}
+
+		public CyNetwork getNestedNetwork() {
+			return nested;
+		}
+
+		public void setNestedNetwork(CyNetwork n) {
+			nested = n;
 		}
 	}
 
