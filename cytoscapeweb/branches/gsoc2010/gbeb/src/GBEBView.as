@@ -34,9 +34,9 @@ package
     [SWF(width="800",height="600", backgroundColor="#ffffff", frameRate="30")]
     public class GBEBView extends Sprite
     {  
-//        private var _url:String = "data/sample1.xml";
+        //private var _url:String = "data/sample1.xml";
         private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
-//				private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
+				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare_reduced.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/socialnet.xml";
         private var _vis:Visualization;
@@ -118,9 +118,10 @@ package
                 //_vis.operators.add(new BundledEdgeRouter(0.95));
                 
                 //var bounds:Rectangle = new Rectangle(0, 0, width, height);
+								//_vis.operators.add(new ColorEncoder("index", "edges", "lineColour"))
 								
 //				_vis.operators.add(new Labeler("data.name"));
-                _vis.operators.add(new GBEBRouter(_bounds, 32 , 0.95));
+                _vis.operators.add(new GBEBRouter(_bounds, 80 , 0.95));
                 trace("GBEBView: how many times GBEBView called the GBEBRouter? " + addEventCounter++);
                 // ############################################################## 
 				

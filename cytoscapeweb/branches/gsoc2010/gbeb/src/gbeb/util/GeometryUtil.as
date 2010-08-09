@@ -208,7 +208,163 @@ package gbeb.util
 			e.props.$controlPointsArray = newCPArray;
 			
 		}
+		
+		public static function findCentroidFromPoints(points:Array):Point
+		{
+			var avgX:Number = 0;
+			var avgY:Number = 0;
+			var numPoints:int = points.length;
+			
+			for each (var p:Point in points)
+			{
+				avgX += p.x;
+				avgY += p.y;
+			}
+			
+			return new Point( (avgX / numPoints), (avgY / numPoints));
+		}		
 
+		// 2 dimensional k- means clutering algorithm
+		// This is a heuristic algorithm which takes in a array of 2D points [p1..pn], and creates k (k = Ceil(n/2) ^ 0.5),
+		// clusters and return the array of cluters of points
+		// This work is done with reference to: 
+		// http://people.revoledu.com/kardi/tutorial/kMean/NumericalExample.htm
+		// http://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set
+		// http://en.wikipedia.org/wiki/K-means_clustering
+		public static function kmeans(points:Array):Array
+		{ //check 1
+			const bundlingDist:int = 50;
+			
+			if(points == null) throw new Error("Kmeans: The points array cannot be null")
+			if(points.length == 0) throw new Error("Kmeans: There are 0 points in the array");
+			for each(var p:* in points)  //necessary?
+			{
+				if(! (p is Point)) throw new Error("Kmeans: " + p + " is not a point");
+			}
+			
+			var clusters:Array = [];
+			var prevCentroids:Array = [];
+			var centroids:Array = []; //stores the centroid of each cluster
+			var numClusters:int = Math.ceil( Math.pow( (points.length / 2), 0.5 ));
+			var iterations:int = 0; //debug
+			
+			if(points.length == 1) //?clustering does not perform well with points <= 2
+			{
+				clusters.push(points);
+				return clusters;
+			} else if (points.length == 2)
+			{
+				if ( calculateDistanceBetweenPoints(points[0], points[1]) < bundlingDist)
+				{
+					clusters.push(points);
+					return clusters;
+				} else {
+					clusters.push(new Array(points[0]));
+					clusters.push(new Array(points[1]));
+					return clusters;
+				}
+			}
+			
+			//trace("GeoUtil: Kmeans: There will be " + numClusters + " clusters created");
+			
+			for(var i:int = 0; i < numClusters; i++) //clusters are indexed at 0
+			{
+				clusters.push(new Array());
+				centroids.push(new Point( points[i].x, points[i].y));
+				//prevCentroids.push(new Point(-1, -1)); //not necessary, since copyCentroids is called before clustering check
+			}
+				
+			do {	
+				//trace("GeoUtil: kmeans: Iterations: " + ++iterations);
+				prevCentroids = copyCentroids(centroids);
+				assignPointsToClusters(points, centroids, clusters);
+				recalcuateCentroids(centroids, clusters);		
+				
+			} while(!clusteringComplete(centroids, prevCentroids))
+		
+			return clusters;
+		}
+					
+					//this function use a weaker condition, if Centroids.before = Centroid.after to check for clustering status. It is originally recommended to use
+					// check if Clusters.before and the Clusters.after after each iteration of the while loop is the same.
+					// This method saves more computational time and space, while it works very reliable for reasonably ( > 20 points) large set of data
+					private static function clusteringComplete(centroids:Array, prevCentroids:Array):Boolean
+					{
+						for(var i:int = 0; i < centroids.length; i++)
+						{
+							if(Math.abs(centroids[i].x - prevCentroids[i].x) > 1) return false;
+							if(Math.abs(centroids[i].y - prevCentroids[i].y) > 1) return false;
+						}
+						return true;
+					}
+					
+					//
+					private static function assignPointsToClusters(points:Array, centroids:Array, clusters:Array):void
+					{
+						var distanceToCentroid:Array = []; //stores the distance between each point to the centroid at each round of iteration
+						for each( var p:Point in points)
+						{
+							distanceToCentroid = [];
+							for each( var c:Point in centroids)
+							{
+								distanceToCentroid.push(calculateDistanceBetweenPoints(c, p));
+							}
+							clusters[getMinDisIndex(distanceToCentroid)].push(p);
+						}
+						
+						for each (var set:Array in clusters) //debug
+						{
+							var traceString:String = "";
+							for each (var p:Point in set)
+							{
+								traceString += p.toString() + " , ";
+							}
+							//trace("GeoUtil: kmeans: Points in this clusters: " + traceString);
+						}
+					}
+		
+					//this function recalcuates the (x,y) value based on the new clusters
+					private static function recalcuateCentroids(centroids:Array, clusters:Array):void
+					{
+						for(var i:int = 0; i < clusters.length; i++)
+						{
+							centroids[i] = findCentroidFromPoints(clusters[i]);
+							//trace("GeoUtil: Kmeans: Centroid" + i + " is placed at " + centroids[i].toString());
+						}
+					}
+					
+					//
+					private static function copyCentroids(centroids:Array):Array
+					{
+						var prevCentroids:Array = new Array();
+						
+						for(var i:int = 0; i < centroids.length; i++)
+						{
+							prevCentroids.push(new Point(centroids[i].x, centroids[i].y));
+						}
+						
+						return prevCentroids;
+					}
 
-	}
+		
+					private static function getMinDisIndex(distances:Array):int
+					{
+						//if(distances.length <= 0) return -1;
+						var minDis:Number = Number.MAX_VALUE;
+						var minDisIndex = -1;
+						
+						for(var i:int=0; i < distances.length;i++)
+						{
+							if(distances[i] < minDis)
+							{
+								minDis = distances[i];
+								minDisIndex = i;
+							}
+						}
+						
+						return minDisIndex;
+					}
+		
+
+	} //end of class
 }

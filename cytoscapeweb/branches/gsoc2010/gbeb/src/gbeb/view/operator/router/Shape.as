@@ -147,6 +147,7 @@ package gbeb.view.operator.router
 			
 			for each (edge in storedDataEdges) {
 				
+				/*// Not necessary anymore with the new bundling technique
 				//To ensure that all CP stay on the meshEdge
 				dataEdgeDirection = getPolarCoor180(edge); 
 				if( this.direction < 16)
@@ -156,7 +157,7 @@ package gbeb.view.operator.router
 				{
 					if (dataEdgeDirection < 16 && this.direction + dataEdgeDirection < 180) { continue; }
 				}
-				else if(Math.abs(dataEdgeDirection - this.direction) > angleResolution) { continue; } 
+				else if(Math.abs(dataEdgeDirection - this.direction) > angleResolution) { continue; }  */
 				
 				e = new Point(edge.source.x, edge.source.y);
 				f = new Point(edge.target.x, edge.target.y);
@@ -169,7 +170,7 @@ package gbeb.view.operator.router
 			}
 			
 			if(intersectionPointsArray.length != 0) {
-				cp = findControlPointFromIntersectionPoints(intersectionPointsArray)
+				cp = GeometryUtil.findCentroidFromPoints(intersectionPointsArray);
 			} else {
 				trace("Shape: addControlPoints: " + (gridIndex[0] as Point).toString() + " has no controlPoint");
 			}
@@ -187,21 +188,6 @@ package gbeb.view.operator.router
 				ctrlgradient.push(gradient);  //trace(edge.source.data["name"], gradient);
 			}
 		}
-		
-		private function findControlPointFromIntersectionPoints(intersectionPointsArray:Array):Point
-		{
-			var avgX:Number = 0;
-			var avgY:Number = 0;
-			var numPoints:int = intersectionPointsArray.length;
-			
-			for each (var p:Point in intersectionPointsArray)
-			{
-				avgX += p.x;
-				avgY += p.y;
-			}
-			
-			return new Point( (avgX / numPoints), (avgY / numPoints));
-		}		
 		
 	}//end of class
 }

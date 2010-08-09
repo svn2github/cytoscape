@@ -15,6 +15,9 @@ package gbeb.view.operator.router {
     import flash.text.TextField;
     
     import gbeb.util.GeometryUtil;
+    import gbeb.util.delaunay.Delaunay;
+    import gbeb.util.delaunay.ITriangle;
+    import gbeb.util.delaunay.XYZ;
 
     /**
      * Inspired by Paper "Geometry-Based Edge Clustering for Graph Visualization",
@@ -32,7 +35,6 @@ package gbeb.view.operator.router {
 // *****
         private var _meshEdgeArray:Array; //Stores the array of meshEdges for processing
         private var _meshResolution:int = 100; //Stores the resolution of the Mesh. defined as number of meshnodes.
-        private var _meshNodesMinDistance:Number = 2; //Defines the minimum distnance between any 2 nodes in the mesh
         private var nonRedundantShapeIndexArray:Array = new Array(); // Stores Shape that actually contain meshEdges and have a general direction
         private var _grid:Array;
         public var _mesh:Object = { nodes: [], edges: [] };
@@ -47,6 +49,7 @@ package gbeb.view.operator.router {
 				private var mouseMoveCounter:int = 0;
 				private var runCounter:int = 0;
 				private var operateCounter:int = 0;
+				private var ipCounter:int = 0; //counts the number of intersectionPoints
 				private var mergeNodes_PairwiseCounter:int = 0;
 				private var _textFieldMouseTracker:TextField = new TextField();
 				private var _displayContainer:Sprite = new Sprite();
@@ -60,6 +63,8 @@ package gbeb.view.operator.router {
         public var numGridsY:int = -1;
         public var angleResolution:int = 15; //stores the angle resolution needed to resolve grid joining.
 				public var _gridResolution:int = 40; //default resolution is 256
+				private var _meshNodesMinDistance:Number = 30; //Defines the minimum distnance between any 2 nodes in the mesh
+				private var _meshNodesMaxDisplacementDistance:int = 15; //Define the maximum distance nodes can be displaced when shifted by mergeNodes_Pairwise
         
         public function get bounds():Rectangle {
             if (_bounds == null && visualization != null) {
@@ -149,11 +154,18 @@ package gbeb.view.operator.router {
                 generateMeshEdges();
 								
 								//drawUnmergedMesh();//debug
-								//mergeNodes_All(); //huge sub-routine to merge all neigbouring nodes.
+								mergeNodes_All(); //huge sub-routine to merge all neigbouring nodes.
+								
+								triangulateMesh();
+								
+								data.edges.visit(addControlPoints); //for kmeans
+								//addCPDebugTrace();
+								
+								KmeansClustering();
                 
-                addControlPointsToAll();
+								//addControlPointsToAll(); //normal use either this method or the one few lines above to add CPs
                 
-                displayGrids();
+                //displayGrids();
 											
 								trace("GBEB Router: Let's see if the bundling mechnanism is working...");
 								/*data.edges.visit(function (e:EdgeSprite):void {
@@ -166,7 +178,7 @@ package gbeb.view.operator.router {
 								}); */
 								//data.edges.visit(GeometryUtil.changeToDerivedPoints);
 								data.edges.visit(sortCPByDistance);
-								trace("GBEBRouter has finished running.");
+								trace("GBEBRouter has finished running. numNodes: " + _mesh.nodes.length + " | numEdges: " + _mesh.edges.length);
             }
         }
 
@@ -180,6 +192,7 @@ package gbeb.view.operator.router {
             var _newGrid:Array = new Array();
      
 						gridSize = Math.ceil(_bounds.width / _gridResolution);
+						//_meshNodesMaxDisplacementDistance = Math.floor(gridSize / 2);
 						trace("GBEBRouter: GridSize: " + gridSize);
 						numGridsX = Math.floor(b.width /gridSize);
 						numGridsY = Math.floor(b.height /gridSize);
@@ -383,6 +396,7 @@ package gbeb.view.operator.router {
                                 neigboursIndexArray.push(new Point(p.x, p.y+1));
 												
 												//new:: adding neightbous from 4 diagonal positions, in the order of topLeft, topRight, bottomLeft, bottomRight
+												//will cause shapes to have out of bounce edges 
 												if( (p.x - 1) >= 0 && (p.y - 1) >= 0 && returnShapeFromIndex(new Point (p.x-1, p.y-1)) !== shape )		
 													neigboursIndexArray.push(new Point(p.x-1, p.y-1));
 												
@@ -393,7 +407,7 @@ package gbeb.view.operator.router {
 													neigboursIndexArray.push(new Point(p.x-1, p.y+1));
 												
 												if( (p.x + 1) <= numGridsX && (p.y + 1) <= numGridsY && returnShapeFromIndex(new Point (p.x+1, p.y+1)) !== shape )		
-													neigboursIndexArray.push(new Point(p.x+1, p.y+1)); 
+													neigboursIndexArray.push(new Point(p.x+1, p.y+1));   
                     }
                     
                     /*for each (var p:Point in neigboursIndexArray)
@@ -491,7 +505,7 @@ package gbeb.view.operator.router {
 							 {
 								 meshEdge.x1 += offset; meshEdge.x2 += offset; s1.centroid.x += offset;
 							 }
-							 trace("GBEBRouter: BugFix: Super long mesh Edge: Hi!");
+							 trace("GBEBRouter: BugFix: Super long mesh Edge removed!");
 						 }
 						 // #########################################################################################################
             
@@ -667,6 +681,7 @@ package gbeb.view.operator.router {
                         var xCoor:Number = 0;
                         var yCoor:Number = 0;
                         var xyCoor:Point = new Point(0,0);
+												var centroid:Point;
                         
                         for each (var p:Point in s.gridIndex)
                         {
@@ -680,12 +695,25 @@ package gbeb.view.operator.router {
                         
                         if(numPoints == 0) return null; 
                         
-                        return new Point( (xCoor / numPoints), ( yCoor / numPoints) );
+												centroid = new Point( (xCoor / numPoints), ( yCoor / numPoints) );
+												
+												//to display centroid slightly if it happens to line of the intersection of the grid lines.
+												if((centroid.x % gridSize) < 0.005)
+												{
+													if((centroid.y % gridSize) < 0.005) 
+													{
+														centroid.x += gridSize / 2;
+														//trace("GBEBRouter: " + centroid.toString() + " is laying in the intersection");
+													}
+												}
+												
+                        return centroid;
                         
                         //check if centroid lies within the Area of the shape?
                         //yes, I have have to. Should I assign the closest grid?
                         
                         //return returnXYFromIndex( new Point( (xIndex / numPoints), (yIndex / numPoints) ));
+												
                     }
                     
                     //Step 4a.4 This function takes in the point in which the line passes through, and the gradient of the lines
@@ -785,16 +813,28 @@ package gbeb.view.operator.router {
                                     }                       
                                     return null;
                                 }
-                                
+                 
+							
+																
                                 
                 //Step 4b. Merge nodes that are too close together. ( < x pix )
                 //Since the nodes itself doesnt not contain any reference to the edges, edges are input instead,
                 //so he edge's parameteres can be altered. It does a pairwise comparison with all nodes on the mesh
+								//the new position of the nodes are not allowed to travel more than x px from the original direction. max(x) = floor(gridSize / 2)
                 public function mergeNodes_All():void {
                     var currEdge:MeshEdge;
                     var currNode:MeshNode;
 										var nodeMoved:Boolean;
-                    trace("Mesh: MergeNodes is running.");  
+										var countEdges:int = 0; //debug
+										
+										for each (var e:MeshEdge in _meshEdgeArray)
+										{
+											e.sourceOriPos = new Point(e.source.x, e.source.y);
+											e.targetOriPos = new Point(e.target.x, e.target.y);
+											countEdges++;
+										}
+							
+										trace("GBEBRouter: Merge Nodes starting up: " + countEdges + " edges are detected in the GBEBmesh");
                 
                     while(_meshEdgeArray.length != 0) {
                         nodeMoved = false;
@@ -814,7 +854,7 @@ package gbeb.view.operator.router {
                                 continue;
                             }
                             
-														if(nodeMoved) break;
+														//if(nodeMoved) break;
                             currNode = currEdge.target;
                                             
                             if (GeometryUtil.calculateDistanceBetweenNodes(currNode, edge2.source) < _meshNodesMinDistance) {   
@@ -828,7 +868,7 @@ package gbeb.view.operator.router {
                             }
                         }
                     }								
-										trace("GBEBRouter: mergeNodes_Pairwise has ran " + mergeNodes_PairwiseCounter + " times");
+											trace("GBEBRouter: mergeNodes_Pairwise has ran " + mergeNodes_PairwiseCounter + " times");
                                     
                 } 
                         
@@ -844,6 +884,18 @@ package gbeb.view.operator.router {
                                     var ip:Point = GeometryUtil.lineIntersectLine(a, b, e, f);
                             
                                     if (ip == null) return;
+																		
+																		//trace("GBEBRouter: mergeNodes_Pairwise: " + (edge2[s1 + "OriPos"] as Point).toString(), "|", (edge2[s2] as MeshNode).x);
+																		
+																		//if the edge nodes has to be moved more than x = floor(gridSize/2) from its original position, it will not be moved
+																		if( GeometryUtil.calculateDistanceBetweenPoints(ip, edge1[s1 + "OriPos"]) > _meshNodesMaxDisplacementDistance ||
+																			GeometryUtil.calculateDistanceBetweenPoints(ip, edge2[s2 + "OriPos"]) > _meshNodesMaxDisplacementDistance) 
+																		{
+																			//trace(edge1[s1 + "OriPos"].toString(), edge2[s2 + "OriPos"].toString());
+																			//trace(GeometryUtil.calculateDistanceBetweenPoints(ip, edge1[s1 + "OriPos"]), GeometryUtil.calculateDistanceBetweenPoints(ip, edge2[s2 + "OriPos"]), _meshNodesMaxDisplacementDistance); 
+																			//trace("GBEBRouter: " + edge1.name + " and " + edge2.name + " is not moved. ");
+																			return;
+																		} 
                                     
                                     /*trace("Mesh: Clustering Neigbouring Nodes: A new intersectionPoint has been created at " + ip.toString() 
                                         + "\nfrom points (" + edge1[s1].x + "," + edge1[s1].y + ") " + s1 + " of Edge: " + edge1.name + " and (" 
@@ -851,7 +903,8 @@ package gbeb.view.operator.router {
                             
                                     //below checks for the particular source/target node of edge2, which will be moved to the intersection Point
                                     //then it assigns the particular source/target node of edge1 to the previously moved node. This results in the removal of
-                                    //nodes in the graph and reduces its node density, by "clustering" nodes																	
+                                    //nodes in the graph and reduces its node density, by "clustering" nodes		
+																		
                                     (edge2[s2] as MeshNode).x = ip.x; (edge2[s2] as MeshNode).y = ip.y;
                                     edge1[s1] = edge2[s2];
 																		
@@ -861,8 +914,136 @@ package gbeb.view.operator.router {
 																		mergeNodes_PairwiseCounter++; //debug
 
                                 }
-                    
-                                
+				
+				// Step 4c. Delanay's triangulation;
+				private function triangulateMesh():void
+				{
+					var nodeCounter:int = 0; //debug
+					renderOriginalMeshEdges();//debug;
+					trace("GBEBRouter: Triangulation: _mesh.nodes.length: " + _mesh.nodes.length + " | _mesh.edges.length " + _mesh.edges.length);
+					
+					if(_mesh.nodes.length < 3) return; //there must be at least 3 nodes to triangulate
+					
+					var pointsArray:Array = [];
+					
+					for each (var edge:MeshEdge in _mesh.edges)
+					{
+						//there are redundant nodes in the array: Does it matter?
+						pointsArray.push(new XYZ(edge.source.x, edge.source.y));
+						pointsArray.push(new XYZ(edge.target.x, edge.target.y));
+					}
+					
+					var triangles:Array = Delaunay.triangulate(pointsArray);
+					
+					Delaunay.drawDelaunay(triangles, pointsArray, visualization);
+					// Uncomment to draw Delaunay mesh
+					
+					_mesh.edges = Delaunay.convertToMeshEdges(triangles, pointsArray, _mesh.nodes);
+				}
+
+				
+				// Step 5. For each edge in _data and each edge in _mesh we are going to calculate their intersection and
+				// assign control points
+				public function addControlPoints(dataEdge:EdgeSprite):void
+				{
+					var intersectionPointsArray:Array = new Array();
+					var intersectionPoint:Point;
+					var cp:Point; 
+					var dataEdgeDirection:int;
+					var deiPair:*; //stands for dataEdge-Intersection Pair 
+					var a:Point, b:Point; //a,b stores the end points of the meshEdge of each shape
+					var e:Point, f:Point; //e,f stores the end points of the each dataEdge					
+					
+					for each (var meshEdge:MeshEdge in _mesh.edges) {
+						
+						a = new Point(meshEdge.x1, meshEdge.y1);
+						b = new Point(meshEdge.x2, meshEdge.y2);
+						
+						e = new Point(dataEdge.source.x, dataEdge.source.y);
+						f = new Point(dataEdge.target.x, dataEdge.target.y);
+						
+						intersectionPoint = GeometryUtil.lineIntersectLine(a, b, e, f);
+						
+						if (intersectionPoint != null) {
+							deiPair = new Object();
+							deiPair.dataEdge = dataEdge;
+							deiPair.ip = intersectionPoint;
+							meshEdge.dataEdgeIntersectionPairs.push(deiPair);
+							ipCounter++; //debug
+						}
+					}					
+					
+				}
+				
+				
+				
+				//function to apply kmeans clustering to all the intersection points on each meshEdge
+				private function KmeansClustering():void
+				{
+					trace("GEBEBRouter: Kmeans clustering is running...");
+					
+					for each (var e:MeshEdge in _mesh.edges)
+					{
+						var ipArray:Array = [];
+						var clusters:Array; //stores the results of kmeans clustering
+						for each (var pair:* in e.dataEdgeIntersectionPairs)
+						{
+							ipArray.push(pair.ip);
+						}
+						
+						if(ipArray.length == 0) continue;
+						
+						clusters = GeometryUtil.kmeans(ipArray);
+						for each(var cluster:Array in clusters)
+						{
+							var centroid:Point = GeometryUtil.findCentroidFromPoints(cluster);
+							for each(var p:Point in cluster)
+							{
+								var pair:* = e.dataEdgeIntersectionPairs[ipArray.indexOf(p)]; //assumes that the index of ipArray and dataEdgeIntersectionPair is the same
+								var dataEdge:EdgeSprite = pair.dataEdge as EdgeSprite; 
+								
+								var ctrl:Array = dataEdge.props.$controlPointsArray;
+								if (ctrl == null) dataEdge.props.$controlPointsArray = ctrl = [];
+								ctrl.push(centroid);
+								
+								dataEdge.lineWidth = dataEdge.lineWidth /2 ; //lower width gives better visual quality
+								dataEdge.shape = Shapes.BSPLINE; //Here to change curve type
+								dataEdge.lineAlpha = 0.5;
+							}
+							
+						}
+					}
+				}
+				
+							//Debug:: used to check if the control points have been added correctly to the dataEdges
+							private function addCPDebugTrace():void
+							{
+								trace("GBEBRouter: addControlPoints: " + ipCounter + " intersectionPoints have been added.");
+								
+								for each (var e:MeshEdge in _mesh.edges)
+								{
+									if (e.dataEdgeIntersectionPairs == null || e.dataEdgeIntersectionPairs.length == 0) continue;
+									for each (var deiPair:* in e.dataEdgeIntersectionPairs)
+									{
+										var pair:* = deiPair; 
+										var dataEdge:EdgeSprite;
+										var ip:Point; //intersectionPoint
+										
+										if (pair == null) continue;
+										
+										dataEdge = pair.dataEdge as EdgeSprite; 
+										ip = pair.ip as Point;
+										
+										if (dataEdge == null || ip == null) continue;
+										 
+									//	trace("GBEBRouter: addCPDebugTrace: " + dataEdge.source.data["name"] + " --> " + dataEdge.target.data["name"] + " intersects " + e.name 
+									//		+ " at " + ip.toString());
+									}
+								}
+							}
+				
+				
+        // Old		
         // Step 5. For each edge in _data, check for their intersection with _mesh.edge and record these 
         // intersection points as CPand their CP - this is actually quite a challenge
         public function addControlPointsToAll():void
@@ -880,34 +1061,82 @@ package gbeb.view.operator.router {
 				{
 					var ctrl:Array = e.props.$controlPointsArray;
 					if(ctrl == null) return;	
-					var currDist:Number; var nextDist:Number; var temp:*;
+					
 					var sourceNode:Point = new Point(e.source.x, e.source.y); //casting source node as mesh modes
+					var targetNode:Point = new Point(e.target.x, e.target.y);
+					var swapArray:Array = [];
+					var disSourceTarget:Number = GeometryUtil.calculateDistanceBetweenPoints(sourceNode, targetNode);
+					var distance:String = ""; //debug
 					
 					//trace("GBEBRouter: Bubble sorting CP by Distance...", e.name);
-					
 					for each (var p:Point in ctrl)
 					{
 						if( p == null){
-							ctrl.splice(ctrl.indexOf(p), 1); trace("A null node has been spliced");
+							ctrl.splice(ctrl.indexOf(p), 1); //trace("A null node has been spliced");
 						} 
 					}
+					ctrl = bubbleSortPointsArray(ctrl, sourceNode);
 					
-					for (var i:int = 0; i < ctrl.length; i++)
+					
+					/*for each (var p:Point in ctrl) //debug
 					{
-						for (var j:int = 0; j < ctrl.length - i - 1; j++)
+						distance += " " + GeometryUtil.calculateDistanceBetweenPoints(sourceNode, p);
+					} */
+					
+					//trace("GBEBRouter: BubbleSort - Array trace: " + distance );//+ distance, e.source.data["name"], e.target.data["name"]);
+					
+					for(var i:int = 0; i < ctrl.length; i++)
+					{
+						
+						var disTargetP:Number = GeometryUtil.calculateDistanceBetweenPoints(targetNode, ctrl[i]);
+						if(disTargetP > disSourceTarget)
 						{
-							currDist = GeometryUtil.calculateDistanceBetweenPoints(sourceNode,ctrl[j]);
-							nextDist = GeometryUtil.calculateDistanceBetweenPoints(sourceNode,ctrl[j + 1]);
-							if(currDist > nextDist)
-							{
-								temp = ctrl[j+1]
-								ctrl[j+1] = ctrl[j];
-								ctrl[j] = temp;
-							}
+							swapArray.push(ctrl[i]);
+							ctrl.splice(ctrl.indexOf(i), 1);
 						}
 					}
-					trace("GBEBRouter: BubbleSort - Array trace:", ctrl);
+					
+					swapArray = bubbleSortPointsArray(swapArray, targetNode, false);
+		
+					for each (var p:Point in swapArray) 
+					{
+						ctrl.unshift(swapArray.shift()); 
+						distance += " " + GeometryUtil.calculateDistanceBetweenPoints(sourceNode, p); //debug
+					}
+					//trace("GBEBRouter: BubbleSort - Swap Array trace: " + distance, e.source.data["name"], e.target.data["name"]);
+
 				}
+				
+						// takes in an array and result a sorted arraying in increasing distance away from target point.
+						private function bubbleSortPointsArray(a:Array, targetPoint:Point, increasing:Boolean = true):Array
+						{
+							var currDist:Number; var nextDist:Number; var temp:*;
+							for (var i:int = 0; i < a.length; i++)
+							{
+								for (var j:int = 0; j < a.length - i - 1; j++)
+								{
+									currDist = GeometryUtil.calculateDistanceBetweenPoints(targetPoint,a[j]);
+									nextDist = GeometryUtil.calculateDistanceBetweenPoints(targetPoint,a[j + 1]);
+									if(increasing)
+									{
+										if(currDist > nextDist)
+										{
+											temp = a[j+1]
+											a[j+1] = a[j];
+											a[j] = temp;
+										}
+									} else {
+										if(currDist < nextDist)
+										{
+											temp = a[j+1]
+											a[j+1] = a[j];
+											a[j] = temp;
+										}
+									}
+								}
+							}
+							return a;
+						}
 
 // TODO: Some of these functions might be provided by Flare or Cytoscape Web!
 // ##############################################################################
@@ -1001,12 +1230,14 @@ package gbeb.view.operator.router {
             
             for each (edge in edges) {
                 // display meshEdges
-								vis.graphics.lineStyle(2, 0x42C0FB);
+								//vis.graphics.lineStyle(2, 0x42C0FB);
+								vis.graphics.lineStyle(3, 0x000000);
                 vis.graphics.moveTo(edge.source.x, edge.source.y);
                 vis.graphics.lineTo(edge.target.x, edge.target.y);
                 
-                vis.graphics.beginFill(0x42426F,0);
-                vis.graphics.lineStyle(2, 0x42C0FB);
+                //vis.graphics.beginFill(0x42426F,0);
+                vis.graphics.beginFill(0x222222, 0);
+								vis.graphics.lineStyle(2, 0x42C0FB);
                 vis.graphics.drawCircle(edge.source.x, edge.source.y, 2);
                 vis.graphics.drawCircle(edge.target.x, edge.target.y, 2);
                 vis.graphics.endFill();
@@ -1036,6 +1267,31 @@ package gbeb.view.operator.router {
 // ##############################################################################
         // DEBUG ONLY:
         
+				// to display meshEdges before Delaunay trigulation/for checking);
+				private function renderOriginalMeshEdges():void
+				{
+					var vis:Visualization = visualization;
+					var visEdgeContainer:Sprite = new Sprite(); 
+					var visEdges:Graphics = visEdgeContainer.graphics;
+					var edges:Array = _mesh.edges;
+					var edge:MeshEdge;
+					
+					for each (edge in edges) {
+						visEdges.lineStyle(1, 0xFF0000);
+						visEdges.moveTo(edge.source.x, edge.source.y);
+						visEdges.lineTo(edge.target.x, edge.target.y);
+						
+						visEdges.beginFill(0x222222, 0);
+						visEdges.lineStyle(2, 0x42C0FB);
+						visEdges.drawCircle(edge.source.x, edge.source.y, 2);
+						visEdges.drawCircle(edge.target.x, edge.target.y, 2);
+						visEdges.endFill();
+					}
+					visualization.addChild(visEdgeContainer);
+				}
+				
+				
+				
         private function displayGrids():void {
            
 						var displayCentroid:Boolean = true;
@@ -1050,7 +1306,7 @@ package gbeb.view.operator.router {
             	for each (var shape:Shape in _grid) {                   
               	  for each (var r:Rectangle in shape.storedGrids) {
                 	    graphics.beginFill(0x000000, 0);
-                  	  graphics.lineStyle(0.2,0xFF0000,0.5);
+                  	  graphics.lineStyle(0.1,0xFF0000,0.5);
                     	graphics.drawRect(r.x, r.y, r.width, r.height);
                     	graphics.endFill();
 			

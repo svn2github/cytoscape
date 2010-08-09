@@ -63,12 +63,17 @@ that when merging the edges extends but do not move away from control points.
 						- fixed curve makeing loops
 						- adjusted the quadratic curve for eqn for EdgeRenderer such that it passes through the CP
 
+Version 0.8:
+GBEBRouter: - Curve drawing mechanism has been changed to farmcodes's Bezier Point implementation
+						- Fixed mergeNodes_All() using a distance constrain to the adjustnment so the meshEdge would not travel all about the place
+						- Fixed Othering for control points via bubble sort bug that forms loops
+						- fixed issue of extremely long mesh edge when centroid due to joining of ladder edges by shifting them a tad
+						- Delaunay's triangulation 
+						- removed direction check in shape, as it is no longer necessary an asthetic adjustment in the bundling process
+						- written Kmeans clustering method from scratch, tested against randomly generated variable:works 
+						
 
 
-Next:
-Version 0.7 - allow dynamic adjusting of resolution by merging Shapes by the factor of 2
-- include edge quality calculation
-- implement another renderer for meshEdges to obtain better graphical control that default Bezier does not offer. 
 
 
 

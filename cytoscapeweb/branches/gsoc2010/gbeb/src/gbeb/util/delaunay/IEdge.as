@@ -1,0 +1,19 @@
+package gbeb.util.delaunay
+{
+	public class IEdge {
+		
+		public var p1, p2; // the two points that form the edge (references key positions in a points array)
+		public var tris:Array; // an array of the one or two triangles that share the edge (key)
+		public var numTris = 0; // how many tris the edge is a part of (either one or two)
+		public var interPoints:Array; // an array of all the interpolated points on this edge
+		
+		public function IEdge(p1=null,p2=null) {
+			if (p1 == null) {
+				this.p1 = this.p2 = -1;
+			} else {
+				this.p1 = p1;
+				this.p2 = p2;
+			}
+		}
+	}
+}

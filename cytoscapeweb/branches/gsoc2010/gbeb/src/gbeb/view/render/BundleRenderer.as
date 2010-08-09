@@ -1,13 +1,16 @@
 package gbeb.view.render
 {
+	import flare.util.Shapes;
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	
 	import flash.display.Graphics;
+	import flash.display.Sprite;
 	import flash.geom.Point;
 	
 	import gbeb.util.GeometryUtil;
+	import gbeb.view.render.EdgeRenderer;
 
 	public class BundleRenderer extends EdgeRenderer
 	{
@@ -25,18 +28,19 @@ package gbeb.view.render
 			//curveSegRenderer(e);
 			
 			//strightLineSegRenderer(e);
-			//trace("BundleRenderer: LineColour: " + e.lineColor);
 			
-			if (ctrl != null && ctrl.length > 0)
-			     addControlPoints(e);
-			     
-			super.render(e);
+			addControlPoints(e);
+			//super.render(e);
 			
 			
-			/*if(ctrl != null && ctrl.length > 3) //debug
+			//Test for Defagra BezierSpline
+			//var BS
+			
+			
+			if(ctrl != null && ctrl.length > 0) //debug
 			{
 				super.render(e);
-			} */
+			} 
 			
 			//addControlPoints(eCopy, true);
 			//super.render(eCopy); //debug
@@ -48,26 +52,14 @@ package gbeb.view.render
 			var props:Object = e.props;
 			if (props == null) return;
 
-            var points:Array = e.points;
-
-            if (points == null) { 
-                points = [];
-            } else if (points.length > 0) {
-            	// Remove previous points, or it will keep adding the same ones again,
-            	// every time the edge is rendered/updated
-            	var length:int = points.length;
-            	for (var i:uint=0; i < length; i++) {
-            	   points.pop();
-            	}
-            }
+            if (e.points == null) e.points = [];
 			
-			for each (var p:Point in props.$controlPointsArray) {
+			for each (var p:Point in props.$controlPointsArray)
+			{
 				if (p == null) continue;
-				points.push(p.x);
-				points.push(p.y);
+				e.points.push(p.x);
+				e.points.push(p.y);
 			}
-			
-			if (e.points == null) e.points = points;
 			
 			if (isClone) trace("BundleRouter: Adding CP to clone!");
 		}

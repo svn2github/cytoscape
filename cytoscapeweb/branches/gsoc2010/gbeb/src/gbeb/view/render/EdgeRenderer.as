@@ -16,7 +16,9 @@ package gbeb.view.render
 	
 	import org.farmcode.bezier.BezierPoint;
 	import org.farmcode.bezier.Path;
-
+	
+//	import com.degrafa.geometry.splines.BezierSpline;
+//	import com.degrafa.geometry.Path;
 	/**
 	 * Renderer that draws edges as lines. The EdgeRenderer supports straight
 	 * lines, poly lines, and curves as Bezier or cardinal splines. The type
@@ -173,13 +175,13 @@ package gbeb.view.render
 					drawCubic(g, x1, y1, ctrls[0], ctrls[1],
 									 ctrls[2], ctrls[3], x2, y2)
 				}
-				//trace("EdgeRenderer: Tesing render calls: " + e.name);//debug
+				trace("EdgeRenderer: Tesing render calls: " + e.name);//debug
 				for each (var p:Point in e.props.$controlPointsArray) { //debug
 					if(p != null)
 					{
 						g.lineStyle(0, 0, 0);
 						g.beginFill(0x000000);
-						g.drawCircle(p.x, p.y, 4);
+						g.drawCircle(p.x, p.y, 3);
 						g.endFill();
 					}
 				} 
@@ -196,42 +198,54 @@ package gbeb.view.render
 
                 // See http://farmcode.org/post/2009/07/06/Fast-2D-Bezier-Library-for-ActionScript-3.aspx
                 // #################################################################################
-				var points:Array = [new BezierPoint(x1, y1)];
-				for each (p in e.props.$controlPointsArray) {
-					var b:BezierPoint = new BezierPoint(p.x, p.y);
-					points.push(b);
-				}
-				points.push(new BezierPoint(x2, y2));
-				
-				var path:Path = new Path();
-				path.points = points;
-				//path.autoFillTension = 0.5;
-				//path.tolerance = 0.5;
-				path.drawInto(g);
+					var points:Array = [new BezierPoint(x1, y1)];
+					for each (p in e.props.$controlPointsArray) {
+						var b:BezierPoint = new BezierPoint(p.x, p.y);
+						points.push(b);
+					}
+					points.push(new BezierPoint(x2, y2));
+								
+					var path:Path = new Path();
+					path.points = points;
+					path.autoFillTension = 0.5;
+					//path.tolerance = 0.5;
+					path.drawInto(g);
+					for each (var p:Point in e.props.$controlPointsArray) { //debug
+						if(p != null)
+						{
+							g.lineStyle(0, 0, 0);
+							g.beginFill(0x000000);
+							g.drawCircle(p.x, p.y, 3);
+							g.endFill();
+						}
+					} 
+			}
 				// #################################################################################
 				
-				trace("EdgeRenderer: Tesing render calls: " + e.name);//debug
+				//trace("EdgeRenderer: Tesing render calls: " + e.name);//debug
 				// DEBUG *******
-                if (e.props.$debug == true) {
-					var colors:Object = {
-						  0: 0xffffff00, //yellow
-						  2: 0xff00ff00, //green
-                          4: 0xff0000ff, //blue
-                          6: 0xffff00ff, //violet
-					      8: 0xffff0000, //red
-	                      10: 0xff000000 //black
-					};
-					trace(">> # points: " + ctrls.length/2);
-					for (var i:uint=0; i < ctrls.length-1; i+=2) { //debug
-					    trace("     ["+i+"] " + ctrls[i] + " - " + ctrls[i+1]);
-						g.lineStyle(0, 0, 0);
-						g.beginFill(colors[i], 0.5);
-						g.drawCircle(ctrls[i], ctrls[i+1], 5);
-						g.endFill();
-					}
-				}
+			          if (e.props.$debug == true) {
+								var colors:Object = {
+									  0: 0xffffff00, //yellow
+									  2: 0xff00ff00, //green
+			                          4: 0xff0000ff, //blue
+			                          6: 0xffff00ff, //violet
+								      8: 0xffff0000, //red
+				                      10: 0xff000000 //black
+								};
+								
+								/*trace(">> # points: " + ctrls.length/2);
+								trace("EdgeRenderer: Points.length: " + points.length);
+								for (var i:uint=0; i < ctrls.length-1; i+=2) { //debug
+								    trace("     ["+i+"] " + ctrls[i] + " - " + ctrls[i+1]);
+									g.lineStyle(0, 0, 0);
+									g.beginFill(colors[i], 0.5);
+									g.drawCircle(ctrls[i], ctrls[i+1], 5);
+									g.endFill();
+								} */
+							}
 				// *************
-			} else {
+			 else {
 				g.moveTo(x1, y1);
 				if (ctrls != null) {
 					for (var i:uint=0; i<ctrls.length; i+=2)
