@@ -86,6 +86,8 @@ enum Integrators{
 		}
 	}
 }
+
+
 /**
  * This class wraps the Prefuse force-directed layout algorithm.
  * See {@link http://prefuse.org} for more detail.
@@ -97,7 +99,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	@Tunable(description="Number of Iterations", groups="Algorithm settings")
 	public int numIterations = 100;
 	@Tunable(description="Default Spring Coefficient", groups="Algorithm settings")
-	public double defaultSpringCoefficient = 1e-4f;
+	public double defaultSpringCoefficient = 1e-4;
 	@Tunable(description="Default Spring Length", groups="Algorithm settings")
 	public double defaultSpringLength = 50.0;
 	@Tunable(description="Default Node Mass", groups="Algorithm settings")
