@@ -70,7 +70,7 @@ public class Layout {
 	 * @param load_current_values  DOCUMENT ME!
 	 */
 	public Layout(CyNetworkView view, boolean load_current_values) {
-		this(view.getSource());
+		this(view.getModel());
 
 		// initialize current values
 		if (load_current_values) {
@@ -149,7 +149,7 @@ public class Layout {
 	 * @return  DOCUMENT ME!
 	 */
 	public boolean setX(View<CyNode> node, double x) {
-		return nodeXMap.put(node.getSource().getIndex(), x);
+		return nodeXMap.put(node.getModel().getIndex(), x);
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class Layout {
 	 * @return  DOCUMENT ME!
 	 */
 	public boolean setY(View<CyNode> node, double y) {
-		return nodeYMap.put(node.getSource().getIndex(), y);
+		return nodeYMap.put(node.getModel().getIndex(), y);
 	}
 
 	// get
@@ -217,7 +217,7 @@ public class Layout {
 	 * @return  DOCUMENT ME!
 	 */
 	public double getX(View<CyNode> node) {
-		return nodeXMap.get(node.getSource().getIndex());
+		return nodeXMap.get(node.getModel().getIndex());
 	}
 
 	/**
@@ -228,6 +228,6 @@ public class Layout {
 	 * @return  DOCUMENT ME!
 	 */
 	public double getY(View<CyNode> node) {
-		return nodeYMap.get(node.getSource().getIndex());
+		return nodeYMap.get(node.getModel().getIndex());
 	}
 }

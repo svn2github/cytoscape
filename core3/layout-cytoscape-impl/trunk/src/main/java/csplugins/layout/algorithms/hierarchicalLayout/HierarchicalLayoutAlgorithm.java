@@ -324,7 +324,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			for (View<CyNode> nv: networkView.getNodeViews()){
 			    if (canceled)
 				return;
-			    index2NodeView.put(nv.getSource().getIndex(), nv);
+			    index2NodeView.put(nv.getModel().getIndex(), nv);
 			}
 
 		}
@@ -338,8 +338,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		for (View<CyEdge> ev: networkView.getEdgeViews()){
 		    // FIXME: much better would be to query adjacent edges of selected nodes...
 		    
-			Integer edgeFrom = ev.getSource().getSource().getIndex();
-			Integer edgeTo = ev.getSource().getTarget().getIndex();
+			Integer edgeFrom = ev.getModel().getSource().getIndex();
+			Integer edgeTo = ev.getModel().getTarget().getIndex();
 
 			if ((edgeFrom == null) || (edgeTo == null)) {
 				// Must be from an unselected node
@@ -723,8 +723,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 		/* Map edges to edge views in order to map dummy nodes to edge bends properly */
 		for (View<CyEdge>ev: networkView.getEdgeViews()){
-			Integer edgeFrom = ev.getSource().getSource().getIndex();
-			Integer edgeTo = ev.getSource().getTarget().getIndex();
+			Integer edgeFrom = ev.getModel().getSource().getIndex();
+			Integer edgeTo = ev.getModel().getTarget().getIndex();
 
 			if ((edgeFrom == null) || (edgeTo == null)) {
 				// Must be from an unselected node
@@ -772,8 +772,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 				View<CyEdge> ev = myEdges2EdgeViews[cI[node.graphIndex]].get(theEdge);
 
 				if (ev != null) {
-					int source = ev.getSource().getSource().getIndex();
-					int target = ev.getSource().getTarget().getIndex();
+					int source = ev.getModel().getSource().getIndex();
+					int target = ev.getModel().getTarget().getIndex();
 					double k = (getYPositionOf(index2NodeView, target) - getYPositionOf(index2NodeView, source)) / (
 							getXPositionOf(index2NodeView, target) - getXPositionOf(index2NodeView, source));
 
