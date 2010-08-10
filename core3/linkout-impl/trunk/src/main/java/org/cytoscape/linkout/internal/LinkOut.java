@@ -310,7 +310,7 @@ public class LinkOut {
 			// TODO: get OpenBrowser working
 
 			// TODO: for now, just substitute node ID into %ID% parameter
-			CyNode node = nodeView.getSource();
+			CyNode node = nodeView.getModel();
 			String identifier = node.attrs().get("name", String.class);
 
 			link = link.replace("%" + "ID" + "%", identifier);
