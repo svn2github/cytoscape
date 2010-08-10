@@ -563,7 +563,7 @@ public class GMLReader extends AbstractNetworkReader {
 	 * @param myView the view of the network we want to layout
 	 */
 	public void layout(CyNetworkView myView) {
-		if ((myView == null) || (myView.getSource().getNodeCount() == 0)) {
+		if ((myView == null) || (myView.getModel().getNodeCount() == 0)) {
 			return;
 		}
 

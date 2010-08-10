@@ -187,7 +187,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 	 *            the view of the network we want to layout
 	 */
 	private void layout() {
-		if ((view == null) || (view.getSource().getNodeCount() == 0))
+		if ((view == null) || (view.getModel().getNodeCount() == 0))
 			return;
 
 		// TODO: Inject correct property
@@ -276,7 +276,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 			final boolean buildStyle) {
 
 		// The identifier of this node
-		CyRow nodeAttrs = nodeView.getSource().attrs();
+		CyRow nodeAttrs = nodeView.getModel().attrs();
 		/*
 
 		// Location and size of the node
@@ -435,7 +435,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 	private void layoutEdgeGraphics(final Attributes graphics,
 			final View<CyEdge> edgeView, final VisualStyleBuilder graphStyle,
 			final boolean buildStyle) {
-		CyRow edgeAttrs = edgeView.getSource().attrs();
+		CyRow edgeAttrs = edgeView.getModel().attrs();
 		// TODO fix for new style view
 /*
 		if (buildStyle
