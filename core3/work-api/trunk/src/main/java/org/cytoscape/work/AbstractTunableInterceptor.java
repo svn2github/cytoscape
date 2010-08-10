@@ -152,7 +152,9 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 								//get a handler with the getMethod and setMethod
 								final TH handler = factory.getHandler(method, setter, obj,
 											              tunableMap.get(rootName));
-								if (handler != null)
+								if (handler == null)
+									System.err.println("*** Warning: Failed to create a handler for " + setter + "!");
+								else
 								 	handlerList.put("getset" + rootName, handler);
 							}
 						}
@@ -174,7 +176,9 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 								final TH handler = factory.getHandler(getter, method, obj,
 								                                      tunableMap.get(rootName));
 								//add it to the list
-								if (handler != null)
+								if (handler == null)
+									System.err.println("*** Warning: Failed to create a handler for " + getter + "!");
+								else
 								 	handlerList.put("getset" + rootName, handler);
 							}
 						}
