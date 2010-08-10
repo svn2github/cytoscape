@@ -15,9 +15,9 @@ public class SelectRegisterListener implements NetworkViewAddedListener {
 		CyNetworkView view = e.getNetworkView();
 
 		for ( View<CyNode> nv : view.getNodeViews() )
-			nv.getSource().attrs().addRowListener( new SelectNodeViewUpdater(nv) );
+			nv.getModel().attrs().addRowListener( new SelectNodeViewUpdater(nv) );
 
 		for ( View<CyEdge> ev : view.getEdgeViews() ) 
-			ev.getSource().attrs().addRowListener( new SelectEdgeViewUpdater(ev) );
+			ev.getModel().attrs().addRowListener( new SelectEdgeViewUpdater(ev) );
 	}
 }

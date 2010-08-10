@@ -359,8 +359,8 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
 		System.out.println("NetworkPanel: set current network view "
-				+ e.getNetworkView().getSource().getSUID());
-		long curr = e.getNetworkView().getSource().getSUID();
+				+ e.getNetworkView().getModel().getSUID());
+		long curr = e.getNetworkView().getModel().getSUID();
 		// System.out.println("NetworkPanel setting current network view: " +
 		// curr);
 		if (currentNetId == null || curr != currentNetId.longValue())
@@ -379,13 +379,13 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 
 	public void handleEvent(NetworkViewAboutToBeDestroyedEvent nde) {
 		System.out.println("NetworkPanel: network view about to be destroyed "
-				+ nde.getNetworkView().getSource().getSUID());
+				+ nde.getNetworkView().getModel().getSUID());
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(NetworkViewAddedEvent nde) {
 		System.out.println("NetworkPanel: network view added "
-				+ nde.getNetworkView().getSource().getSUID());
+				+ nde.getNetworkView().getModel().getSUID());
 		treeTable.getTree().updateUI();
 	}
 

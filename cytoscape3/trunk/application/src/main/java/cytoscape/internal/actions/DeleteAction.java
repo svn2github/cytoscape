@@ -106,7 +106,7 @@ public class DeleteAction extends CytoscapeAction {
 		CyNetworkView myView = netmgr.getCurrentNetworkView();
 
 		// delete from the base CySubNetwork so that our changes can be undone 
-		CySubNetwork cyNet = cyRootNetworkFactory.convert( myView.getSource() ).getBaseNetwork();
+		CySubNetwork cyNet = cyRootNetworkFactory.convert( myView.getModel() ).getBaseNetwork();
 		List<CyEdge> selEdges = CyDataTableUtil.getEdgesInState(cyNet,"selected",true); 
 		List<CyNode> selNodes = CyDataTableUtil.getNodesInState(cyNet,"selected",true); 
 		CyNode cyNode;

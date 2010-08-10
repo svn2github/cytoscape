@@ -216,7 +216,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 					if (selectedOnly && (selectedNodes.size() > 0)) {
 						// Lock all unselected nodes
 						for ( View<CyNode> nv : netView.getNodeViews() ) {
-							CyNode node = nv.getSource();
+							CyNode node = nv.getModel();
 	
 							if (!selectedNodes.contains(node))
 								layout.lockNode(nv);

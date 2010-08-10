@@ -9,18 +9,21 @@
 
 	<osgi:reference id="cyNetworkManagerServiceRef"
 		interface="org.cytoscape.session.CyNetworkManager" />
+
 	<osgi:reference id="cyNetworkNamingServiceRef"
 		interface="org.cytoscape.session.CyNetworkNaming" />
+
 	<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil" />
 
 	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager" />
 
-	<!-- <osgi:reference id="presentationManagerServiceRef" interface="org.cytoscape.view.presentation.PresentationManager" 
-		/> -->
+
+	<!-- Rendering Engine factory for main network views -->
 	<osgi:reference id="dingPresentationFactoryServiceRef"
 		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
 		filter="(id=ding)" />
 
+	<!-- Rendering Engine factory for navigation views -->
 	<osgi:reference id="dingNavigationPresentationFactoryServiceRef"
 		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
 		filter="(id=dingNavigation)" />

@@ -45,7 +45,6 @@ import java.util.Properties;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
-import javax.swing.Renderer;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -62,8 +61,8 @@ import org.cytoscape.session.events.SetCurrentNetworkListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.view.presentation.RenderingEngineFactory;
 
 import cytoscape.view.CyHelpBroker;
 
@@ -105,6 +104,7 @@ public class NetworkViewManager implements InternalFrameListener,
 
 	private Map<CyNetwork,CyRowListener> nameListeners;
 	
+	
 	/**
 	 * Creates a new NetworkViewManager object.
 	 * 
@@ -131,31 +131,31 @@ public class NetworkViewManager implements InternalFrameListener,
 		nameListeners = new HashMap<CyNetwork,CyRowListener>();
 	}
 	
+	
 	/**
-	 * Dynamically adding presentation factory.
-	 * This is necessary to support multiple presentations.
-	 * 
+	 * Dynamically adding rendering engine factory. 
 	 * 
 	 * @param factory
 	 * @param props
 	 */
-	public void addPresentationFactory(RenderingEngineFactory factory, Map props) {
+	public void addPresentationFactory(RenderingEngineFactory<CyNetwork> factory, Map props) {
 		System.out.print("\n\n\n Adding New Rendering Engine >>>>>>>>>>");
 		
 		Object rendererID = props.get(ID);
-		if(rendererID == null) {
+		if(rendererID == null)
 			throw new IllegalArgumentException("Renderer ID is null.");
-		}
 		
 		factories.put(rendererID.toString(), factory);
 		if(currentRenderingEngineFactory == null && rendererID.equals(DEFAULT_PRESENTATION)) {
 			currentRenderingEngineFactory = factory;
+			System.out.print(rendererID + " is registered as default rendering engine.");
 		}
 		
 		System.out.println(">>>> New Rendering Engine is Available: " + rendererID +"\n\n\n");
 	}
 	
-	public void removePresentationFactory(RenderingEngineFactory factory, Map props) {
+	
+	public void removePresentationFactory(RenderingEngineFactory<CyNetwork> factory, Map props) {
 		factories.remove(props.get(ID));
 	}
 	
@@ -186,9 +186,10 @@ public class NetworkViewManager implements InternalFrameListener,
 		}
 
 		// outta here
-		return networkViewMap.get(view.getSource().getSUID());
+		return networkViewMap.get(view.getModel().getSUID());
 	}
 
+	
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -271,15 +272,16 @@ public class NetworkViewManager implements InternalFrameListener,
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
 		System.out
-				.println("NetworkViewManager - attempting to set current network view ");
+				.println("\n\n\n############ NetworkViewManager - attempting to set current network view ");
 
-		Long sourceNetwork = e.getNetworkView().getSource().getSUID();
+		Long sourceNetwork = e.getNetworkView().getModel().getSUID();
 		setFocus(sourceNetwork);
 	}
+	
 
 	public void handleEvent(SetCurrentNetworkEvent e) {
 		System.out
-				.println("NetworkViewManager - attempting to set current network");
+				.println("\n\n\n############ NetworkViewManager - attempting to set current network");
 
 		Long sourceNetwork = e.getNetwork().getSUID();
 		setFocus(sourceNetwork);
@@ -329,34 +331,34 @@ public class NetworkViewManager implements InternalFrameListener,
 		}
 	}
 
+	
 	public void handleEvent(NetworkViewAboutToBeDestroyedEvent nvde) {
 		System.out.println("NetworkViewManager - network view destroyed ");
 		removeView(nvde.getNetworkView());
 	}
 
 	public void handleEvent(NetworkViewAddedEvent nvae) {
-		System.out.println("NetworkViewManager - network view added: "
-				+ nvae.getNetworkView().getSource().getSUID());
+		System.out.println("\n\n############### Creating view: NetworkViewManager - network view added: "
+				+ nvae.getNetworkView().getModel().getSUID());
 		createContainer(nvae.getNetworkView());
-
 	}
 
 	protected void removeView(CyNetworkView view) {
 		try {
-			networkViewMap.get(view.getSource().getSUID()).dispose();
+			networkViewMap.get(view.getModel().getSUID()).dispose();
 		} catch (Exception e) {
 			System.err.println("Network View unable to be killed");
 		}
 
-		networkViewMap.remove(view.getSource().getSUID());
-		nameListeners.remove(view.getSource());
+		networkViewMap.remove(view.getModel().getSUID());
+		nameListeners.remove(view.getModel());
 	}
 
 	/**
 	 * Contains a CyNetworkView.
 	 */
 	protected void createContainer(final CyNetworkView view) {
-		if (networkViewMap.containsKey(view.getSource().getSUID())) {
+		if (networkViewMap.containsKey(view.getModel().getSUID())) {
 			// already contains
 			return;
 		}
@@ -373,7 +375,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		desktopPane.add(iframe);
 
 		// iframe.setContentPane( view.getContainer(iframe.getLayeredPane()) );
-		this.presentationMap.put(view.getSource().getSUID(), this.currentRenderingEngineFactory.render(iframe, view));
+		this.presentationMap.put(view.getModel().getSUID(), this.currentRenderingEngineFactory.render(iframe, view));
 
 		iframe.pack();
 
@@ -420,16 +422,16 @@ public class NetworkViewManager implements InternalFrameListener,
 		iframe.setVisible(true);
 		iframe.addInternalFrameListener(this);
 
-		networkViewMap.put(view.getSource().getSUID(), iframe);
-		componentMap.put(iframe, view.getSource().getSUID());
+		networkViewMap.put(view.getModel().getSUID(), iframe);
+		componentMap.put(iframe, view.getModel().getSUID());
 
-		Long sourceNetwork = view.getSource().getSUID();
+		Long sourceNetwork = view.getModel().getSUID();
 		netmgr.setCurrentNetworkView(sourceNetwork);
 		netmgr.setCurrentPresentation(presentationMap.get(sourceNetwork));
 
-		updateNetworkTitle( view.getSource() );	
+		updateNetworkTitle( view.getModel() );	
 
-		nameListeners.put(view.getSource(), new NetworkNameListener(view.getSource()) );
+		nameListeners.put(view.getModel(), new NetworkNameListener(view.getModel()) );
 	}
 
     private class NetworkNameListener implements CyRowListener {
