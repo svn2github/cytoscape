@@ -13,7 +13,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-import org.cytoscape.work.Handler;
+import org.cytoscape.work.TunableHandler;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.internal.tunables.GUIHandler;
 
@@ -22,7 +22,7 @@ import org.cytoscape.work.internal.tunables.GUIHandler;
 public class XorPanel extends JPanel {
 	private JPanel switchPanel;
 	private JPanel contentPanel;
-	private JPanel currentPanel = null;	
+	private JPanel currentPanel = null;
 
 	private GUIHandler gh;
 	private boolean first = true;
@@ -31,9 +31,9 @@ public class XorPanel extends JPanel {
 		super();
 
 		gh = g;
-		gh.addDependent(new GUIHandlerSwitchListener()); 
+		gh.addDependent(new GUIHandlerSwitchListener());
 
-		switchPanel = new JPanel(); 
+		switchPanel = new JPanel();
 		contentPanel = new JPanel(new CardLayout());
 		TitledBorder titleborder = BorderFactory.createTitledBorder(title);
 		titleborder.setTitleColor(Color.GREEN);
@@ -46,7 +46,7 @@ public class XorPanel extends JPanel {
 
 	public Component add(Component c) {
 		if (first) {
-			switchPanel.add(c); 
+			switchPanel.add(c);
 			first = false;
 			return c;
 		} else {
@@ -60,7 +60,7 @@ public class XorPanel extends JPanel {
 
 	public void add(Component c, Object constraint) {
 		if (first) {
-			switchPanel.add(c); 
+			switchPanel.add(c);
 			first = false;
 		} else {
 			currentPanel = (JPanel)c;
@@ -73,8 +73,8 @@ public class XorPanel extends JPanel {
 		public Field getField() {return null;}
 		public Object getObject() {return null;}
 		public void actionPerformed(ActionEvent ae) { }
-		public void notifyDependents() { } 
-		public void addDependent(GUIHandler gh) { } 
+		public void notifyDependents() { }
+		public void addDependent(GUIHandler gh) { }
 		public String getDependency() { return null; }
 		public void handleDependents(){}
 		public void resetValue(){}
@@ -83,28 +83,21 @@ public class XorPanel extends JPanel {
 			CardLayout cl = (CardLayout) contentPanel.getLayout();
 			cl.show(contentPanel, state);
 		}
-	
+
+		@Override public String dependsOn() { return null; }
+		@Override public String getChildKey() { return null; }
+		@Override public boolean controlsMutuallyExclusiveNestedChildren() { return false; }
+		@Override public Tunable.Param[] getGroupTitleFlags() { return null; }
+		@Override public String[] getGroups() { return null; }
+		@Override public Tunable.Param[] getAlignments() { return null; }
+		@Override public Tunable.Param[] getFlags() { return null; }
+		@Override public String getDescription() { return null; }
+		@Override public Object getValue() { return null; }
+		@Override public void setValue(final Object newValue) { }
 		public String getName() { return null; }
 		public JPanel getJPanel() { return null; }
 		public void handle() {}
 		public String getState() {return null;}
 		public void returnPanel() {}
-
-		public Method getGetMethod() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		public Tunable getGetTunable() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		public Method getSetMethod() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		public Tunable getSetTunable() {
-			// TODO Auto-generated method stub
-			return null;
-		}
 	}
 }
