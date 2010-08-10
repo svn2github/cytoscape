@@ -113,11 +113,12 @@ public class TunablesTestTask extends AbstractTask {
 		System.err.println("BoundedDouble="+bd.getValue());
 		System.err.println("boolean="+b);
 		System.err.println("Boolean="+b2);
+		System.err.println("getterSetterInt="+getterSetterInt);
 	}
 
 	@Tunable(description="Getter/setter int")
-	public Object getInt() { return new Integer(getterSetterInt); }
+	public Integer getInt() { return new Integer(getterSetterInt); }
 
 	@Tunable(description="Getter/setter int")
-	public void setInt(final Object newValue) { getterSetterInt = (Integer)newValue; }
+	public void setInt(final Integer newValue) { getterSetterInt = newValue; }
 }
