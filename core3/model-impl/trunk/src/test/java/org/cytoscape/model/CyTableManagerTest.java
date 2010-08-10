@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,31 +31,29 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package org.cytoscape.model;
 
-
-//import org.cytoscape.model.internal.CyNetworkImpl;
-//import org.cytoscape.model.internal.MGraph;
-import org.cytoscape.model.internal.ArrayGraph;
 import org.cytoscape.model.internal.TableManager;
-import org.cytoscape.event.DummyCyEventHelper;
 
-import org.cytoscape.model.subnetwork.CyRootNetwork;
+/**
+ * DOCUMENT ME!
+ */
+public class CyTableManagerTest extends AbstractCyTableManagerTest {
 
-public class TestCyNetworkFactory {
-
-	private TestCyNetworkFactory() {};
-
-	public static CyNetwork getInstance() {
-		//return new CyNetworkImpl(new DummyCyEventHelper());
-		//return new MGraph(new DummyCyEventHelper());
-		return new ArrayGraph(new DummyCyEventHelper(), new TableManager());
+	/**
+	 * DOCUMENT ME!
+	 */
+	public void setUp() {
+		super.setUp();
+		mgr = new TableManager();
 	}
 
-	public static CyRootNetwork getRootInstance() {
-		return new ArrayGraph(new DummyCyEventHelper(), new TableManager());
+	/**
+	 * DOCUMENT ME!
+	 */
+	public void tearDown() {
+		mgr = null;
 	}
 }
-

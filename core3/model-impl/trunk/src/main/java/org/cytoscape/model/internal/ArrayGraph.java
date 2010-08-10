@@ -44,6 +44,7 @@ import java.util.Map;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -99,14 +100,16 @@ public class ArrayGraph implements CyRootNetwork {
 	private final List<CySubNetwork> subNets;
 	private final List<CyMetaNode> metaNodes;
 	private CySubNetwork base;
+
+	private CyTableManager tableMgr;
 	
-	private final Map<String, Map<String, CyDataTable>> dataTableMap;
 
 	/**
 	 * Creates a new ArrayGraph object.
 	 * @param eh The CyEventHelper used for firing events.
 	 */
-	public ArrayGraph(final CyEventHelper eh) {
+	public ArrayGraph(final CyEventHelper eh, final CyTableManager tableMgr) {
+		this.tableMgr = tableMgr;
 		suid = SUIDFactory.getNextSUID();
 		numSubNetworks = 0;
 		nodeCount = 0;
@@ -121,6 +124,8 @@ public class ArrayGraph implements CyRootNetwork {
 
 		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
 		attrs().set("name","");
+		// potential leak since "this" isn't yet fully constructed
+		tableMgr.setTableMap("NETWORK", this, netAttrMgr);
 
 		nodeAttrMgr = new HashMap<String, CyDataTable>();
 		nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " node", true,eh));
@@ -128,6 +133,7 @@ public class ArrayGraph implements CyRootNetwork {
 
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
+		tableMgr.setTableMap("NODE", this, nodeAttrMgr);
 
 		edgeAttrMgr = new HashMap<String, CyDataTable>();
 		edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " edge", true,eh));
@@ -136,11 +142,7 @@ public class ArrayGraph implements CyRootNetwork {
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("interaction",String.class,false);
-		
-		dataTableMap = new HashMap<String, Map<String, CyDataTable>>();
-		dataTableMap.put(NODE, nodeAttrMgr);
-		dataTableMap.put(EDGE, edgeAttrMgr);
-		dataTableMap.put(NETWORK, netAttrMgr);
+		tableMgr.setTableMap("EDGE", this, edgeAttrMgr);
 		
 		eventHelper = eh;
 
@@ -580,31 +582,6 @@ public class ArrayGraph implements CyRootNetwork {
 	 */
 	public CyRow attrs() {
 		return getCyRow(CyNetwork.DEFAULT_ATTRS);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Map<String, CyDataTable> getNetworkCyDataTables() {
-		return netAttrMgr;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Map<String, CyDataTable> getNodeCyDataTables() {
-		return nodeAttrMgr;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Map<String, CyDataTable> getEdgeCyDataTables() {
-		return edgeAttrMgr;
-	}
-	
-	public Map<String, CyDataTable> getCyDataTables(String graphObjectType) {
-		return dataTableMap.get(graphObjectType);
 	}
 
 	private Iterator<EdgePointer> edgesAdjacent(final NodePointer n, final CyEdge.Type edgeType, final int inId) {

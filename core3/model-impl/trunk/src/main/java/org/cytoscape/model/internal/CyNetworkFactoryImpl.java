@@ -38,6 +38,7 @@ import org.cytoscape.event.CyEventHelper;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyTableManager;
 
 
 /**
@@ -46,17 +47,22 @@ import org.cytoscape.model.CyNetworkFactory;
 public class CyNetworkFactoryImpl implements CyNetworkFactory {
 	
 	private final CyEventHelper help;
+	private final CyTableManager mgr;
 
 	/**
 	 * Creates a new CyNetworkFactoryImpl object.
 	 *
 	 * @param help An instance of CyEventHelper. 
 	 */
-	public CyNetworkFactoryImpl(final CyEventHelper help) {
+	public CyNetworkFactoryImpl(final CyEventHelper help, final CyTableManager mgr) {
 		if (help == null)
 			throw new NullPointerException("CyEventHelper is null");
 
+		if (mgr == null)
+			throw new NullPointerException("CyTableManager is null");
+
 		this.help = help;
+		this.mgr = mgr;
 	}
 
 	/**
@@ -64,7 +70,7 @@ public class CyNetworkFactoryImpl implements CyNetworkFactory {
 	 */
 	public CyNetwork getInstance() {
 		//return new MGraph(help);
-		ArrayGraph net = new ArrayGraph(help);
+		ArrayGraph net = new ArrayGraph(help,mgr);
 		return net.getBaseNetwork(); 
 	}
 }

@@ -232,31 +232,6 @@ class ArraySubGraph implements CySubNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<String,CyDataTable> getNetworkCyDataTables() {
-		return parent.getNetworkCyDataTables();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Map<String,CyDataTable> getNodeCyDataTables() {
-		return parent.getNodeCyDataTables();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Map<String,CyDataTable> getEdgeCyDataTables() {
-		return parent.getEdgeCyDataTables();
-	}
-	
-	public Map<String, CyDataTable> getCyDataTables(String graphObjectType) {
-		return parent.getCyDataTables(graphObjectType);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public CyRow getCyRow(final String namespace) {
 		return parent.getCyRow(namespace);
 	}

@@ -15,8 +15,12 @@
 
 	<context:annotation-config/>
 	
+	<bean id="cyTableManager" class="org.cytoscape.model.internal.TableManager">
+	</bean>
+
 	<bean id="cyNetworkFactory" class="org.cytoscape.model.internal.CyNetworkFactoryImpl">
 		<constructor-arg ref="cyEventHelper" />
+		<constructor-arg ref="cyTableManager" />
 	</bean>
 
 	<bean id="cyDataTableFactory" class="org.cytoscape.model.internal.CyDataTableFactoryImpl">
