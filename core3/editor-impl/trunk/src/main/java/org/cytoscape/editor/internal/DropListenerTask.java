@@ -21,7 +21,7 @@ public class DropListenerTask extends AbstractNetworkViewTask {
 	public DropListenerTask(CyNetworkView view) {
 		super(view);
 		this.view = view;
-		network = view.getSource();
+		network = view.getModel();
 	}
 
 	public DropListenerTask(CyNetworkView view, Transferable t, Point pt) {

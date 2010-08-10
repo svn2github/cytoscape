@@ -22,7 +22,7 @@ public class SIFInterpreterTask extends AbstractNetworkViewTask {
 
 	public SIFInterpreterTask(CyNetworkView v) {
 		super(v);
-		network = view.getSource();
+		network = view.getModel();
 	}
 
 	public void run(TaskMonitor tm) {
