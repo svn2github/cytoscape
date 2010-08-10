@@ -80,6 +80,7 @@ import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.spacial.SpacialEntry2DEnumerator;
@@ -340,6 +341,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 	TunableInterceptor interceptor;
 	TaskManager manager;
+	CyTableManager tableMgr;
 
 	// Will be injected.
 	private VisualLexicon dingLexicon;
@@ -357,7 +359,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			Map<NodeViewTaskFactory, Map> nodeViewTFs,
 			Map<EdgeViewTaskFactory, Map> edgeViewTFs,
 			Map<NetworkViewTaskFactory, Map> emptySpaceTFs,
-			TunableInterceptor interceptor, TaskManager manager) {
+			TunableInterceptor interceptor, TaskManager manager, CyTableManager tableMgr) {
 		m_perspective = view.getModel();
 		cyNetworkView = view;
 		rootLexicon = vpc;
@@ -369,14 +371,17 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 		this.interceptor = interceptor;
 		this.manager = manager;
+		this.tableMgr = tableMgr;
 
 		CyDataTable nodeCAM = dataFactory.createTable("node view", false);
 		nodeCAM.createColumn("hidden", Boolean.class, false);
-		m_perspective.getNodeCyDataTables().put("VIEW", nodeCAM);
+		tableMgr.getTableMap("NODE", m_perspective).put("VIEW", nodeCAM);
+		//m_perspective.getNodeCyDataTables().put("VIEW", nodeCAM);
 
 		CyDataTable edgeCAM = dataFactory.createTable("edge view", false);
 		edgeCAM.createColumn("hidden", Boolean.class, false);
-		m_perspective.getEdgeCyDataTables().put("VIEW", edgeCAM);
+		tableMgr.getTableMap("EDGE", m_perspective).put("VIEW", edgeCAM);
+		//m_perspective.getEdgeCyDataTables().put("VIEW", edgeCAM);
 
 		// creating empty subnetworks
 		m_drawPersp = cyRoot.convert(m_perspective).addMetaNode().getSubNetwork();

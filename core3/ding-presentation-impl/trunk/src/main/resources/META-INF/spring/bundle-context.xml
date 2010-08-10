@@ -28,6 +28,7 @@
 		<constructor-arg ref="tunableInterceptorServiceRef" />
 		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="cyServiceRegistrarRef" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 
 	<bean id="dingNavigationPresentationFactory"
@@ -41,5 +42,6 @@
 		<constructor-arg ref="tunableInterceptorServiceRef" />
 		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="cyServiceRegistrarRef" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 </beans>

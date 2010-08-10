@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.spacial.SpacialIndex2DFactory;
@@ -52,13 +53,14 @@ public class DingNavigationRenderingEngineFactory implements
 
 	private TunableInterceptor ti;
 	private TaskManager tm;
+	private CyTableManager tableMgr;
 
 	public DingNavigationRenderingEngineFactory(
 			CyDataTableFactory dataTableFactory,
 			CyRootNetworkFactory rootNetworkFactory, UndoSupport undo,
 			SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc,
 			VisualLexicon dingLexicon, TunableInterceptor ti, TaskManager tm,
-			CyServiceRegistrar registrar) {
+			CyServiceRegistrar registrar, CyTableManager tableMgr) {
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
 		this.spacialFactory = spacialFactory;
@@ -68,6 +70,7 @@ public class DingNavigationRenderingEngineFactory implements
 		this.ti = ti;
 		this.tm = tm;
 		this.registrar = registrar;
+		this.tableMgr = tableMgr;
 
 		viewMap = new HashMap<CyNetworkView, DGraphView>();
 		nodeViewTFs = new HashMap<NodeViewTaskFactory, Map>();
@@ -91,7 +94,7 @@ public class DingNavigationRenderingEngineFactory implements
 		final DGraphView dgv = new DGraphView((CyNetworkView) view,
 				dataTableFactory, rootNetworkFactory, undo, spacialFactory,
 				rootLexicon, dingLexicon, nodeViewTFs, edgeViewTFs,
-				emptySpaceTFs, ti, tm);
+				emptySpaceTFs, ti, tm, tableMgr);
 
 		JPanel target = new JPanel();
 		BirdsEyeView bev = new BirdsEyeView((Component) visualizationContainer,
