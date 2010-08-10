@@ -30,11 +30,19 @@
 package org.cytoscape.task.internal.tests.tunables;
 
 
+import java.io.File;
+
 import org.cytoscape.task.AbstractTask;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.util.BoundedDouble;
+import org.cytoscape.work.util.BoundedFloat;
+import org.cytoscape.work.util.BoundedInteger;
+import org.cytoscape.work.util.BoundedLong;
+import org.cytoscape.work.util.ListMultipleSelection;
+import org.cytoscape.work.util.ListSingleSelection;
 
 
 public class TunablesTestTask extends AbstractTask {
@@ -59,12 +67,25 @@ public class TunablesTestTask extends AbstractTask {
 	@Tunable(description="Double")
 	public Double d2;
 
-
 	@Tunable(description="float")
 	public float f;
 
 	@Tunable(description="Float")
 	public Float f2;
+
+	@Tunable(description="File")
+	public File file;
+
+	@Tunable(description="BoundedDouble")
+	public BoundedDouble bd;
+
+	@Tunable(description="boolean")
+	public boolean b;
+
+	@Tunable(description="Boolean")
+	public Boolean b2;
+
+	private int getterSetterInt;
 
 	public TunablesTestTask() {
 		s = "";
@@ -72,6 +93,10 @@ public class TunablesTestTask extends AbstractTask {
 		l2 = Long.valueOf(2L);
 		d2 = Double.valueOf(3.0);
 		f2 = Float.valueOf(4.0f);
+		file = new File("/");
+		bd = new BoundedDouble(-10.0, 5.0, +10.0, /* lowerStrict = */ true, /* upperStrict = */ true);
+		b2 = Boolean.valueOf(true);
+		getterSetterInt = 22;
 	}
 
 	public void run(TaskMonitor e) {
@@ -84,5 +109,15 @@ public class TunablesTestTask extends AbstractTask {
 		System.err.println("Double="+d2);
 		System.err.println("float="+f);
 		System.err.println("Float="+f2);
-	} 
+		System.err.println("File="+file);
+		System.err.println("BoundedDouble="+bd.getValue());
+		System.err.println("boolean="+b);
+		System.err.println("Boolean="+b2);
+	}
+
+	@Tunable(description="Getter/setter int")
+	public Object getInt() { return new Integer(getterSetterInt); }
+
+	@Tunable(description="Getter/setter int")
+	public void setInt(final Object newValue) { getterSetterInt = (Integer)newValue; }
 }
