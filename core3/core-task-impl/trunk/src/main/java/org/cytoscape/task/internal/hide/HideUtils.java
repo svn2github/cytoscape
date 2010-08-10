@@ -57,7 +57,7 @@ abstract class HideUtils {
 				view.getNodeView(n).setVisualProperty(NODE_VISIBLE,visible);
 
 				for ( CyNode n2 : n.getNeighborList(CyEdge.Type.ANY) ) 
-					for ( CyEdge e : view.getSource().getConnectingEdgeList(n,n2,CyEdge.Type.ANY) ) 
+					for ( CyEdge e : view.getModel().getConnectingEdgeList(n,n2,CyEdge.Type.ANY) ) 
 						view.getEdgeView( e ).setVisualProperty(EDGE_VISIBLE,visible);
 			}
 		}

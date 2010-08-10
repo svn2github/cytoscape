@@ -55,7 +55,7 @@ public class HideSelectedNodesTask extends AbstractNetworkViewTask {
 	}
 
 	public void run(TaskMonitor e) {
-		final CyNetwork curr = view.getSource();
+		final CyNetwork curr = view.getModel();
 		final List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(curr,"selected",true);
 
 		HideUtils.setVisibleNodes( selectedNodes, false, view );

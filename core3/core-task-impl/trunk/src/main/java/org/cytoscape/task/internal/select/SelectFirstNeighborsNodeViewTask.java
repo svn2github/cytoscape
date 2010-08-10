@@ -65,7 +65,7 @@ public class SelectFirstNeighborsNodeViewTask extends AbstractTask {
 			throw new Exception("network view is null");
 
 		final Set<CyNode> selNodes = new HashSet<CyNode>();
-		final CyNode node = nodeView.getSource();
+		final CyNode node = nodeView.getModel();
 		selNodes.add( node );
 		selNodes.addAll( node.getNeighborList( CyEdge.Type.ANY ) );		
 

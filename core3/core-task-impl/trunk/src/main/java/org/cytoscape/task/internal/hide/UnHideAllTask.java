@@ -52,7 +52,7 @@ public class UnHideAllTask extends AbstractNetworkViewTask {
 	}
 
 	public void run(TaskMonitor e) {
-		final CyNetwork curr = view.getSource();
+		final CyNetwork curr = view.getModel();
 
 		HideUtils.setVisibleNodes( curr.getNodeList(), true, view );
 		HideUtils.setVisibleEdges( curr.getEdgeList(), true, view );
