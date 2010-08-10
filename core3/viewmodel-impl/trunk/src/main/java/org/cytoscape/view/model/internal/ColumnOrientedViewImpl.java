@@ -102,7 +102,7 @@ public class ColumnOrientedViewImpl<S> implements View<S> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public S getSource() {
+	public S getModel() {
 		return source;
 	}
 

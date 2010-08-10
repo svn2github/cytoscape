@@ -274,8 +274,8 @@ public class ColumnOrientedNetworkViewImpl implements CyNetworkView,
 
 	/** {@inheritDoc}
 	 */
-	public CyNetwork getSource(){
-		return viewCyNetwork.getSource();
+	public CyNetwork getModel(){
+		return viewCyNetwork.getModel();
 	}
 
 	/** {@inheritDoc}
