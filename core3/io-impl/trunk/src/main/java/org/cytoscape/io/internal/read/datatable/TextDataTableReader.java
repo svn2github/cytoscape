@@ -13,6 +13,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyNetworkManager;
 
 import static org.cytoscape.model.GraphObject.*;
@@ -31,12 +32,14 @@ public class TextDataTableReader extends AbstractDataTableReader {
 	private String primaryKey = "name";
 	
 	private CyNetworkManager manager;
+	private CyTableManager tableMgr;
 
-	public TextDataTableReader(CyNetworkManager manager, String objType) {
+	public TextDataTableReader(CyNetworkManager manager, String objType, CyTableManager tableMgr) {
 		super();
 		this.objectType = objType;
 		this.manager = manager;
 		delimiter = DEF_DELIMITER;
+		this.tableMgr = tableMgr;
 	}
 	
 	public Map<Class<?>, Object> read() throws IOException {
@@ -45,7 +48,8 @@ public class TextDataTableReader extends AbstractDataTableReader {
 		if( network == null)
 			throw new IllegalStateException("Could not find current network.");
 		
-		final Map<String, CyDataTable> tables = network.getCyDataTables(objectType);
+		//final Map<String, CyDataTable> tables = network.getCyDataTables(objectType);
+		final Map<String, CyDataTable> tables = tableMgr.getTableMap(objectType, network);
 		final CyDataTable table = tables.get(CyNetwork.DEFAULT_ATTRS);
 		
 		if( table == null)

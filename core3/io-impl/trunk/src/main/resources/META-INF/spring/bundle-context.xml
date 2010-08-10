@@ -145,14 +145,17 @@
 	<bean id="nodeTextDataTableReader" class="org.cytoscape.io.internal.read.datatable.TextDataTableReader">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg value="NODE" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 	<bean id="edgeTextDataTableReader" class="org.cytoscape.io.internal.read.datatable.TextDataTableReader">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg value="EDGE" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 	<bean id="networkTextDataTableReader" class="org.cytoscape.io.internal.read.datatable.TextDataTableReader">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg value="NETWORK" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 
 	<!-- Property Readers -->

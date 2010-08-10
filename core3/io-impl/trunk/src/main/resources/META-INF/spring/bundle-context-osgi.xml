@@ -7,16 +7,21 @@
 
 
 	<!-- Import services -->
-	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayouts" />
+	<osgi:reference id="cyLayoutsServiceRef" 
+	      interface="org.cytoscape.view.layout.CyLayouts" />
 
 	<osgi:reference id="cyNetworkFactoryServiceRef"
-		interface="org.cytoscape.model.CyNetworkFactory" />
+	      interface="org.cytoscape.model.CyNetworkFactory" />
 
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
-		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
+	      interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 	
-	<osgi:reference id="cyNetworkManagerServiceRef" interface="org.cytoscape.session.CyNetworkManager" />
+	<osgi:reference id="cyNetworkManagerServiceRef" 
+	      interface="org.cytoscape.session.CyNetworkManager" />
 	
+	<osgi:reference id="cyTableManagerServiceRef" 
+	      interface="org.cytoscape.model.CyTableManager" />
+
 	<!-- Export services -->
 	<osgi:service id="cyReaderManagerService" ref="cyReaderManager"
 		interface="org.cytoscape.io.read.CyReaderManager">

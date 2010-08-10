@@ -41,6 +41,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTableManager;
 //import org.cytoscape.groups.CyGroup;
 //import cytoscape.groups.CyGroupManager;
 //TODO
@@ -203,6 +204,7 @@ public class XGMMLWriter {
 	private Writer writer = null;
 
     private boolean doFullEncoding;
+	private CyTableManager tableMgr;
 
 	/**
 	 * Constructor.<br>
@@ -215,10 +217,11 @@ public class XGMMLWriter {
 	 * @throws URISyntaxException
 	 * @throws JAXBException
 	 */
-	public XGMMLWriter(final CyNetwork network, final CyNetworkView view)
+	public XGMMLWriter(final CyNetwork network, final CyNetworkView view, final CyTableManager tableMgr)
 	    throws IOException, URISyntaxException {
 		this.network = network;
 		this.networkView = view;
+		this.tableMgr = tableMgr;
 
 //		groupList = new ArrayList<CyGroup>();
 		nodeMap = new HashMap<CyNode,CyNode>();
@@ -246,8 +249,8 @@ public class XGMMLWriter {
 	 * @throws JAXBException
 	 */
 	public XGMMLWriter(final CyNetwork network, final CyNetworkView view,
-	                   boolean noCytoscapeGraphics) throws IOException, URISyntaxException {
-		this(network, view);
+	                   boolean noCytoscapeGraphics, final CyTableManager tm) throws IOException, URISyntaxException {
+		this(network, view, tm);
 		this.noCytoscapeGraphics = noCytoscapeGraphics;
 	}
 
@@ -410,7 +413,7 @@ public class XGMMLWriter {
 
 		// Now handle all of the other network attributes
 		// TODO this isn't *serializing* namespaces - I would expect name clashes with this approach
-		for ( CyDataTable table : network.getNetworkCyDataTables().values() ) {
+		for ( CyDataTable table : tableMgr.getTableMap("NETWORK",network).values() ) {
 			CyRow row = table.getRow(network.getSUID());
 			for ( String attName : table.getColumnTypeMap().keySet() ) 
 				writeAttribute(row, attName);

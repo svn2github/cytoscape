@@ -11,6 +11,7 @@ import java.util.Map;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.io.internal.read.ssf.SSFReader;
 import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.internal.CyNetworkFactoryImpl;
 import org.cytoscape.model.internal.CyRootNetworkFactoryImpl;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
@@ -28,6 +29,7 @@ public class SSFReaderTest {
 	private CyEventHelper helperMock;
 	private CyNetworkFactory factory;
 	private CyRootNetworkFactory rnFactory;
+	private CyTableManager tableMgr;
 	
 	final File testFile1 = new File(FILE_LOCATION + "ssf_test1.ssf");
 	final File testFile2 = new File(FILE_LOCATION + "ssf_test2.ssf");
@@ -39,7 +41,8 @@ public class SSFReaderTest {
 		rnFactory = new CyRootNetworkFactoryImpl();
 		reader = new SSFReader(rnFactory);
 		helperMock = createMock(CyEventHelper.class);
-		factory = new CyNetworkFactoryImpl(helperMock);
+		tableMgr = createMock(CyTableManager.class);
+		factory = new CyNetworkFactoryImpl(helperMock,tableMgr);
 	}
 
 	@After
