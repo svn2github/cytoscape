@@ -178,7 +178,7 @@ public class LayoutPartition {
 	 * @param locked a boolean value to determine if this node is locked or not
 	 */
 	protected void addNode(View<CyNode> nv, boolean locked) {
-		CyNode node = nv.getSource();
+		CyNode node = nv.getModel();
 		LayoutNode v = new LayoutNode(nv, nodeIndex++);
 		nodeList.add(v);
 		nodeToLayoutNode.put(node, v);
@@ -513,7 +513,7 @@ public class LayoutPartition {
 		this.nodeList = new ArrayList<LayoutNode>(network.getNodeCount());
 
 		for (View<CyNode>nv: networkView.getNodeViews()){
-			CyNode node = (CyNode) nv.getSource();
+			CyNode node = (CyNode) nv.getModel();
 
 			if (!nodeSet.contains(node)) {
 				addNode(nv, true);
@@ -525,7 +525,7 @@ public class LayoutPartition {
 
 	private void edgeListInitialize(CyNetwork network, CyNetworkView networkView) {
 		for (View<CyEdge>ev: networkView.getEdgeViews()){
-			CyEdge edge = ev.getSource();
+			CyEdge edge = ev.getModel();
 			// Make sure we clean up after any previous layouts
 			//ev.clearBends(); // FIXME: this will mean some cleanup in VisualProperty, right?
 
@@ -620,7 +620,7 @@ public class LayoutPartition {
 
 		// Initialize the maps
 		for (View<CyNode> nv: networkView.getNodeViews()){
-			int node = nv.getSource().getIndex();
+			int node = nv.getModel().getIndex();
 			nodesSeenMap.put(node, m_NODE_HAS_NOT_BEEN_SEEN);
 			nodesToViews.put(node, nv);
 		}

@@ -169,7 +169,7 @@ public class GridNodeLayout extends AbstractLayout implements TunableValidator{
 		// Selected only?
 		if (selectedOnly) {
 			// Yes, our size and starting points need to be different
-			int nodeCount = networkView.getSource().getNodeCount() - staticNodes.size();
+			int nodeCount = networkView.getModel().getNodeCount() - staticNodes.size();
 			columns = (int) Math.sqrt(nodeCount);
 			// Calculate our starting point as the geographical center of the
 			// selected nodes.
@@ -189,14 +189,14 @@ public class GridNodeLayout extends AbstractLayout implements TunableValidator{
 			currX = initialX;
 			currY = initialY;
 		} else {
-			columns = (int) Math.sqrt(networkView.getSource().getNodeCount());
+			columns = (int) Math.sqrt(networkView.getModel().getNodeCount());
 		}
 
 		int count = 0;
 
 		List<CyEdge> edgeList;
 		for ( View<CyNode> nView : networkView.getNodeViews() ) {
-			edgeList = network.getAdjacentEdgeList(nView.getSource(),CyEdge.Type.ANY);
+			edgeList = network.getAdjacentEdgeList(nView.getModel(),CyEdge.Type.ANY);
 // TODO
 //			for (CyEdge edge: edgeList) {
 //				networkView.getCyEdgeView(edge).clearBends(); 

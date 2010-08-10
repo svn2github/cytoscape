@@ -79,7 +79,7 @@ public class LayoutNode {
 	 */
 	public LayoutNode(View<CyNode> nodeView, int index) {
 		this.nodeView = nodeView;
-		this.node = nodeView.getSource();
+		this.node = nodeView.getModel();
 		this.index = index;
 		this.x = nodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
 		this.y = nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
