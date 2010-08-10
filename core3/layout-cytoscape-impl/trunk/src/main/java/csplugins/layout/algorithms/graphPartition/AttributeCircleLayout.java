@@ -177,10 +177,9 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 		int r = (int) Math.sqrt(count);
 		r *= spacing;
 
-		if (this.attribute != null){
-			CyDataTable dataTable = network.getCyDataTables("NODE").get(namespace);
-			Class<?> klass = dataTable.getColumnTypeMap().get(attribute);
-			if (Comparable.class.isAssignableFrom(klass)){
+		if (this.attribute != null && count > 0) {
+			Class<?> klass = nodes.get(0).getNode().getCyRow(namespace).contains(attribute); 
+			if (klass != null && Comparable.class.isAssignableFrom(klass)){
 				// FIXME: I assume this would be better, but get type errors if I try:
 				//Class<Comparable<?>> kasted = (Class<Comparable<?>>) klass;
 				//Collections.sort(nodes, new AttributeComparator<Comparable<?>>(kasted));

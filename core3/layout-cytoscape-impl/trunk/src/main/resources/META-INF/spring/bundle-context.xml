@@ -33,6 +33,7 @@
 
 	<bean id="degreeSortedCircleLayout" class="csplugins.layout.algorithms.graphPartition.DegreeSortedCircleLayout">
 		<constructor-arg ref="undoSupportServiceRef"/>
+		<constructor-arg ref="cyTableManagerServiceRef"/>
 	</bean>
 
 	<bean id="ISOMLayout" class="csplugins.layout.algorithms.graphPartition.ISOMLayout">

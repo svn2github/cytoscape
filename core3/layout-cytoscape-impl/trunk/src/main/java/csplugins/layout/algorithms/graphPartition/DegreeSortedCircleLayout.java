@@ -10,6 +10,7 @@ import org.cytoscape.view.layout.LayoutPartition;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.work.UndoSupport;
 
 import java.util.ArrayList;
@@ -24,11 +25,15 @@ import java.util.List;
 public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 	
 	private static final String DEGREE_ATTR_NAME = "degree";
+
+	private CyTableManager tableMgr;
+
 	/**
 	 * Creates a new DegreeSortedCircleLayout object.
 	 */
-	public DegreeSortedCircleLayout(UndoSupport undoSupport) {
+	public DegreeSortedCircleLayout(UndoSupport undoSupport, CyTableManager tableMgr) {
 		super(undoSupport);
+		this.tableMgr = tableMgr;
 	}
 
 	/**
@@ -56,8 +61,8 @@ public class DegreeSortedCircleLayout extends AbstractGraphPartition {
 	 */
 	public void layoutPartion(LayoutPartition partition) {
 		// Create attribute
-		if(network.getCyDataTables(NODE).get(CyNetwork.DEFAULT_ATTRS).getUniqueColumns().contains(DEGREE_ATTR_NAME) == false) {
-			network.getCyDataTables(NODE).get(CyNetwork.DEFAULT_ATTRS).createColumn(DEGREE_ATTR_NAME,
+		if(tableMgr.getTableMap(NODE, network).get(CyNetwork.DEFAULT_ATTRS).getUniqueColumns().contains(DEGREE_ATTR_NAME) == false) {
+			tableMgr.getTableMap(NODE, network).get(CyNetwork.DEFAULT_ATTRS).createColumn(DEGREE_ATTR_NAME,
 				Double.class, false);
 		}
 
