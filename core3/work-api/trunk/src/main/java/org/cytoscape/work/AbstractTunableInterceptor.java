@@ -139,13 +139,13 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 							if (!isValidGetter(method))
 								throw new Exception("Invalid getter method specified \"" + method.getName()
 										    + "\", maybe this method takes arguments or returns void?");
-							
+
 							final String rootName = method.getName().substring(3);
 							getMethodsMap.put(rootName, method);
 							tunableMap.put(rootName, tunable);
 							if (setMethodsMap.containsKey(rootName)){
 								final Method setter = setMethodsMap.get(rootName);
-								if (!setterAndGetterTypesAreCompatible(setter, method))
+								if (!setterAndGetterTypesAreCompatible(method, setter))
 									throw new Exception("Return type of " + method.getName() + "() and the argument type of "
 											    + setter.getName() + "() are not the same!");
 
@@ -166,7 +166,7 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 							setMethodsMap.put(rootName, method);
 							if (getMethodsMap.containsKey(rootName)) {
 								final Method getter = getMethodsMap.get(rootName);
-								if (!setterAndGetterTypesAreCompatible(method, getter))
+								if (!setterAndGetterTypesAreCompatible(getter, method))
 									throw new Exception("Return type of " + getter.getName() + "() and the argument type of "
 											    + method.getName() + "() are not the same!");
 
@@ -207,10 +207,10 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 	}
 
 	private boolean isValidSetter(final Method setterCandidate) {
-		// Make sure we are not returning "void":
+		// Make sure we are returning "void":
 		try {
 			final Type returnType = setterCandidate.getGenericReturnType();
-			if (returnType != Void.class)
+			if (returnType != void.class)
 				return false;
 		} catch(final Exception e) {
 			return false;
