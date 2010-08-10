@@ -92,7 +92,7 @@ public class AddDeleteHandler
 			return;
 
 		final View<CyEdge> ev = e.getEdgeView();
-		view.addEdgeView(ev.getSource());
+		view.addEdgeView(ev.getModel());
 		view.updateView();
 	}
 
@@ -101,7 +101,7 @@ public class AddDeleteHandler
 			return;
 
 		final View<CyNode> nv = e.getNodeView();
-		view.addNodeView(nv.getSource());
+		view.addNodeView(nv.getModel());
 		view.updateView();
 	}
 /*

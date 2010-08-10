@@ -358,7 +358,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			Map<EdgeViewTaskFactory, Map> edgeViewTFs,
 			Map<NetworkViewTaskFactory, Map> emptySpaceTFs,
 			TunableInterceptor interceptor, TaskManager manager) {
-		m_perspective = view.getSource();
+		m_perspective = view.getModel();
 		cyNetworkView = view;
 		rootLexicon = vpc;
 		this.dingLexicon = dingLexicon;
