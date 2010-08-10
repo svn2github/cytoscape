@@ -238,7 +238,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 
 		// update the __layoutAlgorithm attribute
 		CyRow networkAttributes = network.getCyRow(CyNetwork.HIDDEN_ATTRS);
-		network.getNetworkCyDataTables().get(CyNetwork.HIDDEN_ATTRS).createColumn("layoutAlgorithm",String.class,false);
+		networkAttributes.getDataTable().createColumn("layoutAlgorithm",String.class,false);
 		networkAttributes.set("layoutAlgorithm", getName());
 
 		this.network = null;
