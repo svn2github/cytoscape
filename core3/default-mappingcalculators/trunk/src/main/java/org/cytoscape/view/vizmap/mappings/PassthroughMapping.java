@@ -88,7 +88,7 @@ public class PassthroughMapping<K, V> extends
 			
 			for (View<G> v : views) {
 				
-				row = v.getSource().attrs();
+				row = v.getModel().attrs();
 				if (row.contains(attrName, attrType)) {
 					// skip Views where source attribute is not defined;
 					// ViewColumn will automatically substitute the per-VS or

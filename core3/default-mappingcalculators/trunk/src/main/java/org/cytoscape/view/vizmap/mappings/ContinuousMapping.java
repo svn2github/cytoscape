@@ -194,7 +194,7 @@ public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 
 		CyRow row;
 		for (View<G> v : views) {
-			row = v.getSource().attrs();
+			row = v.getModel().attrs();
 
 			if (row.contains(attrName, attrType)) {
 				// skip Views where source attribute is not defined;
@@ -202,7 +202,7 @@ public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 				// default, as appropriate
 				
 				// In all cases, attribute value should be a number for continuous mapping.
-				final Number attrValue = v.getSource().attrs().get(attrName,attrType);
+				final Number attrValue = v.getModel().attrs().get(attrName,attrType);
 				final V value = getRangeValue(attrValue); // FIXME: make
 															// getRangeValue
 															// type-parametric,

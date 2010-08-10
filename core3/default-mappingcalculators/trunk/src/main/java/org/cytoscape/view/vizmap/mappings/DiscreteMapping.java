@@ -136,13 +136,13 @@ public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
 
 		CyRow row;
 		for (View<G> v : views) {
-			row = v.getSource().attrs();
+			row = v.getModel().attrs();
 			if (row.contains(attrName, attrType)) {
 				// skip Views where source attribute is not defined;
 				// ViewColumn will automatically substitute the per-VS or global
 				// default, as appropriate
 
-				final K key = v.getSource().attrs().get(attrName, attrType);
+				final K key = v.getModel().attrs().get(attrName, attrType);
 				if (treeMap.containsKey(key)) {
 					final V value = treeMap.get(key);
 					valuesToSet.put(v, value);
