@@ -290,7 +290,7 @@ public class JGraphLayoutWrapper extends AbstractLayout {
 
 		double currentProgress = 0;
 		double percentProgressPerIter = 0;
-		CyNetwork network = networkView.getSource();
+		CyNetwork network = networkView.getModel();
 		Map j_giny_node_map = new HashMap(); //PrimeFinder.nextPrime(network.getNodeCount()));
 		Map giny_j_node_map = new HashMap(); //PrimeFinder.nextPrime(network.getNodeCount()));
 		Map j_giny_edge_map = new HashMap(); //PrimeFinder.nextPrime(network.getEdgeCount()));
