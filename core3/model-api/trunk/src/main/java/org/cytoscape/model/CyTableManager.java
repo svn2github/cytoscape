@@ -1,6 +1,6 @@
 
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -36,45 +36,18 @@
 
 package org.cytoscape.model;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
 
 
 /** 
  * 
  */
-public class CyDataTableUtil {
-	private CyDataTableUtil() {}
+public interface CyTableManager {
 
 	/**
-	 * A utility method that returns a list of nodes that have a boolean attribute
-	 * in the CyNetwork.DEFAULT_ATTRS namespace specified by columnName and are in 
-	 * the specified state.  If the attribute doesn't exist or is not of type 
-	 * Boolean an IllegalArgumentException will be thrown.
+	 * @return The table containing network attributes for the specified network.
 	 */
-	public static List<CyNode> getNodesInState(final CyNetwork net, final String columnName, final boolean state) {
-		if ( net == null )
-			throw new NullPointerException("network is null");
-		List<CyNode> ret = new ArrayList<CyNode>();
-		for ( CyNode node : net.getNodeList() )
-			if ( node.attrs().get(columnName,Boolean.class) == state )
-				ret.add( node );
-		return ret;
-	}
-	
-	/**
-	 * A utility method that returns a list of edges that have a boolean attribute
-	 * in the CyNetwork.DEFAULT_ATTRS namespace specified by columnName and are in 
-	 * the specified state.  If the attribute doesn't exist or is not of type 
-	 * Boolean an IllegalArgumentException will be thrown.
-	 */
-	public static List<CyEdge> getEdgesInState(final CyNetwork net, final String columnName, final boolean state) {
-		if ( net == null )
-			throw new NullPointerException("network is null");
-		List<CyEdge> ret = new ArrayList<CyEdge>();
-		for ( CyEdge edge : net.getEdgeList() )
-			if ( edge.attrs().get(columnName,Boolean.class) == state )
-				ret.add( edge );
-		return ret;
-	}
+	Map<String,CyDataTable> getTableMap(String type, CyNetwork network);
+
+	void setTableMap(String type, CyNetwork network, Map<String,CyDataTable> map);	
 }

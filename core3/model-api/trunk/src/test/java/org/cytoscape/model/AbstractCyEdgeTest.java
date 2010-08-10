@@ -148,15 +148,6 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 
     public void testDefaultAttributes() {
 		defaultSetUp();
-        CyDataTable def = net.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-        assertNotNull(def);
-        assertNotNull(net.getEdgeCyDataTables().get(CyNetwork.HIDDEN_ATTRS));
-        assertTrue(def.getColumnTypeMap().containsKey("name"));
-        assertTrue(def.getColumnTypeMap().get("name") == String.class );
-        assertTrue(def.getColumnTypeMap().containsKey("selected"));
-        assertTrue(def.getColumnTypeMap().get("selected") == Boolean.class );
-        assertTrue(def.getColumnTypeMap().containsKey("interaction"));
-        assertTrue(def.getColumnTypeMap().get("interaction") == String.class );
 
         CyNode n1 = net.addNode();
         CyNode n2 = net.addNode();
@@ -166,5 +157,4 @@ public abstract class AbstractCyEdgeTest extends TestCase {
         assertEquals( Boolean.class, e1.attrs().contains("selected"));
         assertEquals( String.class, e1.attrs().contains("interaction"));
     }
-
 }
