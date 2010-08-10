@@ -281,7 +281,7 @@ public class NetworkManager implements CyNetworkManager {
 		if (view == null)
 			throw new NullPointerException("view is null");
 
-		final Long viewID = view.getSource().getSUID();
+		final Long viewID = view.getModel().getSUID();
 
 		synchronized (this) {
 			if (!networkViewMap.containsKey(viewID))
@@ -332,7 +332,7 @@ public class NetworkManager implements CyNetworkManager {
 		if (view == null)
 			throw new NullPointerException("view is null");
 
-		CyNetwork network = view.getSource();
+		CyNetwork network = view.getModel();
 		long networkId = network.getSUID();
 
 		synchronized (this) {
