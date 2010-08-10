@@ -38,7 +38,7 @@ public abstract class AbstractViewTest<S> {
 
 	@Test
     public void testGetSource() {
-		assertNotNull( view.getSource() );
+		assertNotNull( view.getModel() );
 
 		// how to test type of source?
 	}

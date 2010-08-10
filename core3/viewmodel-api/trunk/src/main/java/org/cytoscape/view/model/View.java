@@ -102,7 +102,7 @@ public interface View<S> extends Identifiable {
 	 *
 	 * @return Data object of this view.
 	 */
-	public S getSource();
+	public S getModel();
 	
 
 	/**
