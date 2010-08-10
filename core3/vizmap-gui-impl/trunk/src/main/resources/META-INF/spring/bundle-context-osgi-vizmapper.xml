@@ -52,6 +52,8 @@
 	<!-- Event helper -->
 	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
 
+	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
+
 	<!-- Pull-down menu items -->
 	<osgi:service id="createNewStyleActionService" ref="createNewStyleAction"
 		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />

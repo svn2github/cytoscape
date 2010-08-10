@@ -53,6 +53,7 @@ import javax.swing.table.TableCellRenderer;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
@@ -78,11 +79,13 @@ public class VizMapPropertyBuilder {
 
 	private EditorManager editorFactory;
 	private CyNetworkManager cyNetworkManager;
+	private CyTableManager tableMgr;
 
 	public VizMapPropertyBuilder(CyNetworkManager cyNetworkManager,
-			EditorManager editorFactory) {
+			EditorManager editorFactory, CyTableManager tableMgr) {
 		this.cyNetworkManager = cyNetworkManager;
 		this.editorFactory = editorFactory;
+		this.tableMgr = tableMgr;
 	}
 
 	/**
@@ -149,7 +152,7 @@ public class VizMapPropertyBuilder {
 		if (targetNetwork == null)
 			return null;
 
-		attr = targetNetwork.getCyDataTables(vp.getObjectType()).get(
+		attr = tableMgr.getTableMap(vp.getObjectType(),targetNetwork).get(
 				CyNetwork.DEFAULT_ATTRS);
 		if (vp.getObjectType().equals(NODE)) {
 			it = targetNetwork.getNodeList().iterator();

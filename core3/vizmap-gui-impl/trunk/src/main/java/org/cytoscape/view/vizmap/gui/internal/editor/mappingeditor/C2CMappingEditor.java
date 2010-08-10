@@ -40,6 +40,7 @@ import java.beans.PropertyChangeEvent;
 
 import javax.swing.ImageIcon;
 
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
@@ -75,8 +76,8 @@ public class C2CMappingEditor<V extends Number> extends
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public C2CMappingEditor(VisualProperty<V> type, VizMapGUI vizMapGUI) {
-		super(type, vizMapGUI);
+	public C2CMappingEditor(VisualProperty<V> type, VizMapGUI vizMapGUI, CyTableManager tableMgr) {
+		super(type, vizMapGUI, tableMgr);
 		abovePanel.setVisible(false);
 		belowPanel.setVisible(false);
 

@@ -46,6 +46,7 @@ import javax.swing.JOptionPane;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
@@ -62,11 +63,14 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
  *            Type of attribute values.
  */
 public class GenerateValueAction<K, V> extends AbstractVizMapperAction {
+
+	private CyTableManager tableMgr;
 	/**
 	 * Creates a new GenerateValueAction object.
 	 */
-	public GenerateValueAction() {
+	public GenerateValueAction(CyTableManager tableMgr) {
 		super();
+		this.tableMgr = tableMgr;
 	}
 
 	private final static long serialVersionUID = 1213748836986412L;
@@ -101,8 +105,7 @@ public class GenerateValueAction<K, V> extends AbstractVizMapperAction {
 
 			final CyDataTable attr;
 
-			attr = cyNetworkManager.getCurrentNetwork().getCyDataTables(
-					type.getObjectType()).get(CyNetwork.DEFAULT_ATTRS);
+			attr = tableMgr.getTableMap(type.getObjectType(), cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
 
 			final VisualMappingFunction oMap = vmm.getVisualStyle(
 					targetNetworkView).getVisualMappingFunction(type);

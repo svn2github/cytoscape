@@ -46,6 +46,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
@@ -78,8 +79,8 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel<Color>
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public GradientEditorPanel(VisualProperty<Color> type, VizMapGUI vizMapGUI) {
-		super(type, vizMapGUI);
+	public GradientEditorPanel(VisualProperty<Color> type, VizMapGUI vizMapGUI, CyTableManager tm) {
+		super(type, vizMapGUI, tm);
 		iconPanel.setVisible(false);
 		initSlider();
 

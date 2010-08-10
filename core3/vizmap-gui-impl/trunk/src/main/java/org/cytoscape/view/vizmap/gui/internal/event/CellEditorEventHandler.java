@@ -148,9 +148,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 //			if (parentValue != null) {
 //				ctrAttrName = parentValue.toString();
 //
-//				CyDataTable attr = cyNetworkManager.getCurrentNetwork()
-//						.getCyDataTables(type.getObjectType()).get(
-//								CyNetwork.DEFAULT_ATTRS);
+//				CyDataTable attr = tableMgr.getTableMap().(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get( CyNetwork.DEFAULT_ATTRS);
 //
 //				final Class<?> dataClass = attr.getColumnTypeMap().get(
 //						ctrAttrName);
@@ -198,8 +196,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 //			/*
 //			 * Ignore if not compatible.
 //			 */
-//			final CyDataTable attrForTest = cyNetworkManager.getCurrentNetwork()
-//			.getCyDataTables(type.getObjectType()).get(CyNetwork.DEFAULT_ATTRS);
+//			final CyDataTable attrForTest = tableMgr.getTableMap(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
 //
 //			final Class<?> dataType = attrForTest.getColumnTypeMap().get(
 //					ctrAttrName);
@@ -301,8 +298,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 //		/*
 //		 * Need to convert this string to proper data types.
 //		 */
-//		final CyDataTable attr = cyNetworkManager.getCurrentNetwork().getCyDataTables(type.getObjectType())
-//			.get(CyNetwork.DEFAULT_ATTRS);
+//		final CyDataTable attr = tableMgr.getTableMap(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
 //		ctrAttrName = mapping.getMappingAttributeName();
 //
 //		// Byte attrType = attr.getType(ctrAttrName);

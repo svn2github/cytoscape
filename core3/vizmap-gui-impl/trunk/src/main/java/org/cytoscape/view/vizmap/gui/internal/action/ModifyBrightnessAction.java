@@ -46,6 +46,7 @@ import java.util.TreeSet;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
@@ -61,6 +62,7 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 	protected static final int DARKER = 1;
 	protected static final int BRIGHTER = 2;
 	private final int functionType;
+	private CyTableManager tableMgr;
 
 	/**
 	 * Creates a new BrightnessListener object.
@@ -68,8 +70,9 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public ModifyBrightnessAction(final int type) {
+	public ModifyBrightnessAction(final int type, CyTableManager tableMgr) {
 		this.functionType = type;
+		this.tableMgr = tableMgr;
 	}
 
 	/**
@@ -104,17 +107,10 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 
 			final Map<Object, Color> valueMap = new HashMap<Object, Color>();
 
-			final CyDataTable attr;
 			final VisualStyle vs = this.vizMapperMainPanel
 					.getSelectedVisualStyle();
 
-			if (type.getObjectType().equals(NODE))
-				attr = targetNetwork.getNodeCyDataTables().get(
-						CyNetwork.DEFAULT_ATTRS);
-			else
-				attr = targetNetwork.getEdgeCyDataTables().get(
-						CyNetwork.DEFAULT_ATTRS);
-
+			final CyDataTable attr = tableMgr.getTableMap(type.getObjectType(), targetNetwork).get(CyNetwork.DEFAULT_ATTRS);
 			// If not discrete, return.
 			if ((vs.getVisualMappingFunction(type) instanceof DiscreteMapping) == false)
 				return;

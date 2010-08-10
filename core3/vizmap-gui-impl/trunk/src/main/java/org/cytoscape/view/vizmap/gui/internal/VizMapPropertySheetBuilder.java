@@ -16,6 +16,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
@@ -80,7 +81,7 @@ public class VizMapPropertySheetBuilder implements
 	public VizMapPropertySheetBuilder(CyNetworkManager cyNetworkManager,
 			PropertySheetPanel propertySheetPanel,
 			EditorManager editorManager,
-			DefaultViewPanel defViewPanel) {
+			DefaultViewPanel defViewPanel, CyTableManager tableMgr) {
 		
 		this.cyNetworkManager = cyNetworkManager;
 		this.propertySheetPanel = propertySheetPanel;
@@ -89,7 +90,7 @@ public class VizMapPropertySheetBuilder implements
 		
 		propertyMap = new HashMap<VisualStyle, List<Property>>();
 
-		vizMapPropertyBuilder = new VizMapPropertyBuilder(cyNetworkManager, editorManager);
+		vizMapPropertyBuilder = new VizMapPropertyBuilder(cyNetworkManager, editorManager, tableMgr);
 	}
 
 	public Map<VisualStyle, List<Property>> getPropertyMap() {

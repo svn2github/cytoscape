@@ -37,6 +37,7 @@ package org.cytoscape.view.vizmap.gui.internal.editor;
 import javax.swing.Icon;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.C2CMappingEditor;
@@ -50,11 +51,11 @@ public class NumberVisualPropertyEditor extends AbstractVisualPropertyEditor<Num
 	/**
 	 * Creates a new DiscreteNumber object.
 	 */
-	public NumberVisualPropertyEditor(VisualProperty<Number> vp, VizMapGUI vizMapGUI) {
+	public NumberVisualPropertyEditor(VisualProperty<Number> vp, VizMapGUI vizMapGUI, CyTableManager tm) {
 		super(vp);
 		propertyEditor = new CyDoublePropertyEditor(null);
 		tableCellRenderer = new DefaultTableCellRenderer();
-		continuousEditor = new C2CMappingEditor<Number>(this.vp, vizMapGUI);
+		continuousEditor = new C2CMappingEditor<Number>(this.vp, vizMapGUI, tm);
 	}
 
 	/**

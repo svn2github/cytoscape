@@ -40,6 +40,7 @@ import java.awt.event.ActionEvent;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
@@ -59,10 +60,12 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 public class EditSelectedCellAction extends AbstractVizMapperAction {
 
 	private VizMapGUI vizMapGUI;
+	private CyTableManager tableMgr;
 	
-	public EditSelectedCellAction(VizMapGUI vizMapGUI) {
+	public EditSelectedCellAction(VizMapGUI vizMapGUI, CyTableManager tableMgr) {
 		super();
 		this.vizMapGUI = vizMapGUI;
+		this.tableMgr = tableMgr;
 	}
 
 	private static final long serialVersionUID = -6102797200439573667L;
@@ -107,7 +110,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
 		mapping = vizMapGUI.getSelectedVisualStyle().getVisualMappingFunction(vp);
-		attr = targetNetwork.getCyDataTables(vp.getObjectType()).get(CyNetwork.DEFAULT_ATTRS);
+		attr = tableMgr.getTableMap(vp.getObjectType(),targetNetwork).get(CyNetwork.DEFAULT_ATTRS);
 		
 
 		if (mapping instanceof ContinuousMapping || mapping instanceof PassthroughMapping)

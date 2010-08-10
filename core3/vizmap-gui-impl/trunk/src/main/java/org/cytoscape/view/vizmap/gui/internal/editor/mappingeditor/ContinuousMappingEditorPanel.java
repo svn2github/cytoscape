@@ -54,6 +54,7 @@ import javax.swing.event.ChangeListener;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -108,6 +109,7 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 	protected EditorValueRangeTracer tracer;
 
 	protected VizMapGUI vizMapGUI;
+	private CyTableManager tableMgr;
 
 	/**
 	 * 
@@ -116,9 +118,10 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 	 * 
 	 * */
 	public ContinuousMappingEditorPanel(final VisualProperty<V> type,
-			VizMapGUI vizMapGUI) {
+			VizMapGUI vizMapGUI, CyTableManager tableMgr) {
 		this.type = type;
 		this.vizMapGUI = vizMapGUI;
+		this.tableMgr = tableMgr;
 
 		initComponents();
 		setVisualPropLabel();
@@ -381,8 +384,7 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 		// Attribute to be mapped.
 		final CyDataTable attrs;
 
-		attrs = cyNetworkManager.getCurrentNetwork().getCyDataTables(
-				type.getObjectType()).get(CyNetwork.DEFAULT_ATTRS);
+		attrs = tableMgr.getTableMap(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
 
 		VisualMappingFunction<?, V> map = vizMapGUI.getSelectedVisualStyle()
 				.getVisualMappingFunction(type);
