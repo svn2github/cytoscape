@@ -263,7 +263,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 		}
 
 		// single nodes
-	    } else if ( partition.nodeCount() == 1 ) { // TODO: do something with this
+	    } else if ( partition.nodeCount() == 1 ) { // TODO: do something with this!!!
 		// Reset our bounds
 		partition.resetNodes();
 
@@ -400,8 +400,6 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	Tunable t = layoutProperties.get("layout_type");
 	if ((t != null) && (t.valueChanged() || force)) {
 	    layoutType = layoutChoices[((Integer) t.getValue()).intValue()];
-// 	    if (t.valueChanged())
-// 		layoutProperties.setProperty(t.getName(), t.getValue().toString());
 	}
 
 	t = layoutProperties.get("resetPosition");
