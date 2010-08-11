@@ -57,4 +57,11 @@ public interface TunableHandler {
 	 * @return a name representing a tunable property
 	 */
 	String getName();
+
+	/**
+	 *  @return the name of the underlying class of the tunable followed by a dot and the name of the tunable field or getter/setter root name.
+	 *
+	 *  Please note that the returned String will always contain a single embedded dot.
+	 */
+	String getQualifiedName();
 }

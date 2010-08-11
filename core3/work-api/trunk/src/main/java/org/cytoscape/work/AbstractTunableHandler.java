@@ -109,4 +109,16 @@ public class AbstractTunableHandler implements TunableHandler {
 		else
 			return setter.getName().substring(3);
 	}
+
+	/**
+	 *  @return the name of the underlying class of the tunable followed by a dot and the name of the tunable field or getter/setter root name.
+	 *
+	 *  Please note that the returned String will always contain a single embedded dot.
+	 */
+	final public String getQualifiedName() {
+		final String unqualifiedClassName =
+			field == null ? method.getDeclaringClass().toString() : field.getDeclaringClass().toString();
+		
+                return unqualifiedClassName.substring( n.lastIndexOf(".") + 1) + "." + getName();
+	}
 }
