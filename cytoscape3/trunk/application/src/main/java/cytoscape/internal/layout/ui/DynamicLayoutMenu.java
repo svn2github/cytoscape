@@ -142,14 +142,17 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 
 	private void addNodeAttributeMenus(JMenu parent, CyNetwork net, boolean selectedOnly) {
 		// Get the node attributes
-		CyDataTable nodeAttributes = net.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS); 
-		addAttributeMenus(parent, nodeAttributes, layout.supportsNodeAttributes(), selectedOnly);
+		//FIXME
+		//tableMgr.getTableMap("NODE", m_perspective)
+		//CyDataTable nodeAttributes = net.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS); 
+		//addAttributeMenus(parent, nodeAttributes, layout.supportsNodeAttributes(), selectedOnly);
 	}
 
 	private void addEdgeAttributeMenus(JMenu parent, CyNetwork net, boolean selectedOnly) {
 		// Get the edge attributes
-		CyDataTable edgeAttributes = net.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS); 
-		addAttributeMenus(parent, edgeAttributes, layout.supportsEdgeAttributes(), selectedOnly);
+		//FIXME
+//		CyDataTable edgeAttributes = net.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS); 
+//		addAttributeMenus(parent, edgeAttributes, layout.supportsEdgeAttributes(), selectedOnly);
 	}
 
 	private void addAttributeMenus(JMenu parent, CyDataTable attributes, Set<Class<?>> typeSet,

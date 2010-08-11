@@ -68,9 +68,11 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngine;
@@ -485,7 +487,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 					public void ActionPerformed(ActionEvent e) {
 						boolean lock = false;
 						if (vp.getObjectType().equals(GraphObject.NETWORK)) {
-							lock = networkView.isValueLocked(vp);
+							lock = ((View<CyNetwork>)networkView).isValueLocked(vp);
 						} else if (vp.getObjectType().equals(GraphObject.NODE)) {
 
 						}

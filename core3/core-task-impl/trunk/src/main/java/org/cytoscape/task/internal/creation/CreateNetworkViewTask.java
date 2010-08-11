@@ -61,7 +61,7 @@ public class CreateNetworkViewTask extends AbstractNetworkTask {
 		taskMonitor.setProgress(-1.0);
 
 		try {
-			CyNetworkView view = gvf.getNetworkViewFor(net);
+			CyNetworkView view = gvf.getNetworkView(net);
 			netmgr.addNetworkView(view);
 		} catch (Exception e) {
 			throw new Exception("Could not create network view for network: "

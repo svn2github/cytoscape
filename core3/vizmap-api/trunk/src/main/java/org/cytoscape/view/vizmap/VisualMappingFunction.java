@@ -34,11 +34,10 @@
 */
 package org.cytoscape.view.vizmap;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.ViewColumn;
 import org.cytoscape.view.model.VisualProperty;
 
 
@@ -73,12 +72,14 @@ public interface VisualMappingFunction<K, V> {
 	 */
 	public String getMappingAttributeName();
 	
+	
 	/**
 	 * 
 	 * @return
 	 */
 	public Class<K> getMappingAttributeType();
 
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -86,6 +87,7 @@ public interface VisualMappingFunction<K, V> {
 	 */
 	public VisualProperty<V> getVisualProperty();
 
+	
 	/**
 	 *  Since current MappingCalculators map from Attributes to
 	 *  VisualProperties, have to restrict View<?> to those
@@ -97,5 +99,5 @@ public interface VisualMappingFunction<K, V> {
 	 * @param column DOCUMENT ME!
 	 * @param views DOCUMENT ME!
 	 */
-	<G extends GraphObject> void apply(ViewColumn<V> column, List<? extends View<G>> views);
+	<G extends GraphObject> void apply(final Collection<? extends View<G>> views);
 }

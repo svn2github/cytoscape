@@ -545,7 +545,7 @@ public class XGMMLReader extends AbstractNetworkReader {
 
 		// Get the view. Note that for large networks this might be the null
 		// view
-		view = cyNetworkViewFactory.getNetworkViewFor(network);
+		view = cyNetworkViewFactory.getNetworkView(network);
 
 		layout();
 

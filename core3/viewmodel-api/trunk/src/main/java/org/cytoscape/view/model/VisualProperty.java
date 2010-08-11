@@ -103,12 +103,4 @@ public interface VisualProperty<T> {
 	 */
 	public T parseSerializableString(final String value);
 	
-	
-	/**
-	 * TODO: remove this!
-	 * 
-	 * 
-	 * @return callback, or null if there isn't one
-	 */
-	DependentVisualPropertyCallback dependentVisualPropertyCallback();
 }

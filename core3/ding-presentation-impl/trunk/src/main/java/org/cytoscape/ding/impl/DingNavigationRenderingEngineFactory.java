@@ -94,7 +94,7 @@ public class DingNavigationRenderingEngineFactory implements
 		final DGraphView dgv = new DGraphView((CyNetworkView) view,
 				dataTableFactory, rootNetworkFactory, undo, spacialFactory,
 				rootLexicon, dingLexicon, nodeViewTFs, edgeViewTFs,
-				emptySpaceTFs, ti, tm, tableMgr);
+				emptySpaceTFs, ti, tm, registrar, tableMgr);
 
 		JPanel target = new JPanel();
 		BirdsEyeView bev = new BirdsEyeView((Component) visualizationContainer,

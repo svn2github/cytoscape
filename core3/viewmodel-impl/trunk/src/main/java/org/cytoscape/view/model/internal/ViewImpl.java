@@ -3,6 +3,7 @@ package org.cytoscape.view.model.internal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewChangeListener;
@@ -18,20 +19,23 @@ import org.cytoscape.view.model.VisualProperty;
  */
 public class ViewImpl<M> implements View<M> {
 
-	private final M model;
-	private final long suid;
+	protected final M model;
+	protected final long suid;
+	
+	protected final CyEventHelper cyEventHelper;
 	
 	//TODO: Thread safety?
-	private final Map<VisualProperty<?>, Object> visualPorperties;
-	private final Map<VisualProperty<?>, Object> visualPorpertyLocks;
+	private final Map<VisualProperty<?>, Object> visualProperties;
+	private final Map<VisualProperty<?>, Object> visualPropertyLocks;
 	
 	
-	public ViewImpl(final M model) {
+	public ViewImpl(final M model, final CyEventHelper cyEventHelper) {
 		this.suid = SUIDFactory.getNextSUID();
 		this.model = model;
+		this.cyEventHelper = cyEventHelper;
 		
-		this.visualPorperties = new HashMap<VisualProperty<?>, Object>();
-		this.visualPorpertyLocks = new HashMap<VisualProperty<?>, Object>();
+		this.visualProperties = new HashMap<VisualProperty<?>, Object>();
+		this.visualPropertyLocks = new HashMap<VisualProperty<?>, Object>();
 	}
 
 	@Override
@@ -49,46 +53,40 @@ public class ViewImpl<M> implements View<M> {
 	@Override
 	public <T, V extends T> void setVisualProperty(
 			VisualProperty<? extends T> vp, V value) {
-		this.visualPorperties.put(vp, value);
+		if(value == null)
+			this.visualProperties.remove(vp);
+		else
+			this.visualProperties.put(vp, value);
+		
+		cyEventHelper.getMicroListener(ViewChangeListener.class, this).visualPropertySet(vp, value);
 	}
 
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getVisualProperty(VisualProperty<T> vp) {
-		return (T) this.visualPorperties.get(vp);
+		return (T) this.visualProperties.get(vp);
 	}
 
-	
+	// TODO: should I fire event?
 	@Override
 	public <T, V extends T> void setLockedValue(VisualProperty<? extends T> vp,
 			V value) {
-		// TODO Auto-generated method stub
-
+		this.visualPropertyLocks.put(vp, value);
 	}
 
 	@Override
 	public boolean isValueLocked(VisualProperty<?> vp) {
-		// TODO Auto-generated method stub
-		return false;
+		final Object lockedValue = this.visualPropertyLocks.get(vp);
+		if(lockedValue != null)
+			return true;
+		else
+			return false;
 	}
 
 	@Override
 	public void clearValueLock(VisualProperty<?> vp) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void addViewChangeListener(ViewChangeListener vcl) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeViewChangeListener(ViewChangeListener vcl) {
-		// TODO Auto-generated method stub
-
+		this.visualPropertyLocks.remove(vp);
 	}
 
 }

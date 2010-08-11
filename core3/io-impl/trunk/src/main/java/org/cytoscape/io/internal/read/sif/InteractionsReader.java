@@ -150,7 +150,7 @@ public class InteractionsReader extends AbstractNetworkReader {
 
 		readObjects.put(CyNetwork.class, network);
 
-		final CyNetworkView view = cyNetworkViewFactory.getNetworkViewFor(network);
+		final CyNetworkView view = cyNetworkViewFactory.getNetworkView(network);
 		layouts.getDefaultLayout().doLayout(view);
 		readObjects.put(CyNetworkView.class, view);
 

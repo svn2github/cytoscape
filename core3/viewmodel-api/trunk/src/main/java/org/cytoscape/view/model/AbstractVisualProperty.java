@@ -100,8 +100,4 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 		return name;
 	}
 
-	// TODO: REMOVE THIS!
-	public DependentVisualPropertyCallback dependentVisualPropertyCallback() {
-		return null;
-	}
 }

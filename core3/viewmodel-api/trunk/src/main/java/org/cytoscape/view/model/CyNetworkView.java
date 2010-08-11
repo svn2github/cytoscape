@@ -31,68 +31,72 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.model;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.GraphObject;
 
-
 /**
- * Contains the visual representation of a Network.
+ * 
+ * Additional methods for CyNetworkView. Network view should implement BOTH View
+ * and CyNetworkView.
+ * 
+ * Consolidated data structure for graph object views.
+ * 
+ * @author kono
+ * 
  */
 public interface CyNetworkView extends View<CyNetwork> {
 
 	/**
 	 * Returns a View for a specified Node.
-	 *
-	 * @param node Node object
-	 *
+	 * 
+	 * @param node
+	 *            Node object
+	 * 
 	 * @return View for the given node object.
 	 */
-	public View<CyNode> getNodeView(final CyNode node);
+	View<CyNode> getNodeView(final CyNode node);
 
-	
 	/**
 	 * Returns a list of Views for all CyNodes in the network.
-	 *
-	 * @return  List of all node views.
+	 * 
+	 * @return List of all node views.
 	 */
-	public List<View<CyNode>> getNodeViews();
-	
+	Collection<View<CyNode>> getNodeViews();
 
 	/**
 	 * Returns a View for a specified Edge.
-	 *
-	 * @param n  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @param n
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	public View<CyEdge> getEdgeView(CyEdge n);
+	View<CyEdge> getEdgeView(final CyEdge edge);
 
 	/**
 	 * Returns a list of Views for all CyEdges in the network.
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	List<View<CyEdge>> getEdgeViews();
+	Collection<View<CyEdge>> getEdgeViews();
 
 	/**
 	 * Returns a list of all View including those for Nodes, Edges, and Network.
-	 *
-	 * @return  DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	List<View<? extends GraphObject>> getAllViews();
+	Collection<View<? extends GraphObject>> getAllViews();
 
-	<T> ViewColumn<T> getColumn(final VisualProperty<? extends T> vp);
+	// TODO FIXME remove all of these!
+	public void fitContent();
+	public void fitSelected();
+	public void updateView();
 
-
-	// temp methods
-	void fitContent();
-	void fitSelected();
-	void updateView();
 }

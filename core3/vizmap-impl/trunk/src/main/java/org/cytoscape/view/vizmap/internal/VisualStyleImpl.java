@@ -51,7 +51,6 @@ import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.ViewColumn;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
@@ -171,8 +170,8 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param view DOCUMENT ME!
 	 */
 	public void apply(final CyNetworkView view) {
-		final List<View<CyNode>> nodeviews = view.getNodeViews();
-		final List<View<CyEdge>> edgeviews = view.getEdgeViews();
+		final Collection<View<CyNode>> nodeviews = view.getNodeViews();
+		final Collection<View<CyEdge>> edgeviews = view.getEdgeViews();
 
 		applyImpl(view, nodeviews,
 		          rootLexicon.getVisualProperties(nodeviews, NODE));
@@ -191,7 +190,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param visualProperties DOCUMENT ME!
 	 */
 	public <G extends GraphObject> void applyImpl(final CyNetworkView view,
-	                                              final List<View<G>> views,
+	                                              final Collection<View<G>> views,
 	                                              final Collection<?extends VisualProperty<?>> visualProperties) {
 		
 		for (VisualProperty<?> vp : visualProperties)
@@ -206,26 +205,20 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param visualProperties DOCUMENT ME!
 	 */
 	public <V, G extends GraphObject> void applyImpl(final CyNetworkView view,
-	                                                 final List<View<G>> views,
+	                                                 final Collection<View<G>> views,
 	                                                 final VisualProperty<V> vp) {
-		ViewColumn<V> column = view.getColumn(vp);
+		
 		final VisualMappingFunction<?, V> mapping = getVisualMappingFunction(vp);
 		final V defaultValue = getDefaultValue(vp);
 
-		// If default valur is available, use it.
-		if (defaultValue != null)
-			column.setDefaultValue(defaultValue);
 
 		// If mapping is available for this VP, apply the mapping.
 		if (mapping != null) {
-			mapping.apply(column, views);
+			mapping.apply(views);
 		} else {
 			// reset all rows to allow usage of default value:
-			for(View<G> v: views) {
-				// Set default
-				v.setVisualProperty(vp, this.getDefaultValue(vp));
-			}
-			column.setValues(new HashMap<View<G>, V>(), views);
+			for(View<G> v: views)
+				v.setVisualProperty(vp, defaultValue);
 		}
 	}
 

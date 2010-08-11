@@ -118,7 +118,7 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 		netmgr.addNetwork(new_network);
 		
 		
-		CyNetworkView new_view = cnvf.getNetworkViewFor(new_network);
+		CyNetworkView new_view = cnvf.getNetworkView(new_network);
 
 		if (new_view == null)
 			return;

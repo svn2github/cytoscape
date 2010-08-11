@@ -35,77 +35,74 @@
 
 package org.cytoscape.view.vizmap.mappings;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.ViewColumn;
 import org.cytoscape.view.model.VisualProperty;
 
 /**
  */
-public class PassthroughMapping<K, V> extends
-		AbstractMappingFunction<K, V> {
+public class PassthroughMapping<K, V> extends AbstractMappingFunction<K, V> {
 
 	/**
 	 * dataType is the type of the _attribute_ !! currently we force that to be
 	 * the same as the VisualProperty; FIXME: allow different once? but how to
 	 * coerce?
 	 */
-	public PassthroughMapping(final String attrName,final Class<K> attrType,
+	public PassthroughMapping(final String attrName, final Class<K> attrType,
 			final VisualProperty<V> vp) {
 		super(attrName, attrType, vp);
 	}
+
 	
-	@Override public String toString() {
+	@Override
+	public String toString() {
 		return PASSTHROUGH;
 	}
 
+	
 	/**
 	 * DOCUMENT ME!
 	 * 
 	 * @param v
 	 *            DOCUMENT ME!
 	 */
-	public <G extends GraphObject> void apply(ViewColumn<V> column,
-			List<? extends View<G>> views) {
-		if(views == null || views.size() < 1)
-			return; // empty list, nothing to do		
-		
+	public <G extends GraphObject> void apply(
+			final Collection<? extends View<G>> views) {
+		if (views == null || views.size() < 1)
+			return; // empty list, nothing to do
+
 		CyRow row;
 		K value;
-		
-		// FIXME: also check that column's vp is internally-stored vp!
-		if (vp.getType().isAssignableFrom(attrType)) { // can simply copy object
-													// without any conversion
-			// aggregate changes to be made in these:
-			final Map<View<G>, K> valuesToSet = new HashMap<View<G>, K>();
-			final List<View<G>> valuesToClear = new ArrayList<View<G>>();
-			
-			for (View<G> v : views) {
+
+		for (View<G> view : views) {
+
+			row = view.getModel().attrs();
+			if (row.contains(attrName, attrType)) {
+				// skip Views where source attribute is not defined;
+				// ViewColumn will automatically substitute the per-VS or
+				// global default, as appropriate
+				value = row.get(attrName, attrType);
+				final V converted = convertToValue(value);
 				
-				row = v.getModel().attrs();
-				if (row.contains(attrName, attrType)) {
-					// skip Views where source attribute is not defined;
-					// ViewColumn will automatically substitute the per-VS or
-					// global default, as appropriate
-					value = row.get(attrName, attrType);
-					valuesToSet.put(v, value);
-					v.setVisualProperty((VisualProperty<? extends K>)vp, value);
-				} else { // remove value so that default value will be used:
-					valuesToClear.add(v);
-				}
+				view.setVisualProperty(vp, converted);
+			} else { // remove value so that default value will be used:
+				view.setVisualProperty(vp, null);
 			}
-			column.setValues((Map<? extends View<?>, V>) valuesToSet, valuesToClear);
-		} else {
-			throw new IllegalArgumentException("Mapping " + toString()
-					+ " can't map from attribute type " + attrType
-					+ " to VisualProperty " + vp + " of type " + vp.getType());
 		}
-		// FIXME: handle List & Map
+
+	}
+
+	
+	// TODO: make this converter pluggable
+	private V convertToValue(final K key) {
+		try {
+			return (V) key;
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 }

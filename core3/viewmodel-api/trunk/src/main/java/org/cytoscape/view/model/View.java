@@ -104,15 +104,4 @@ public interface View<S> extends Identifiable {
 	 */
 	public S getModel();
 	
-
-	/**
-	 * Adds the specified listener to this View.
-	 */
-	void addViewChangeListener(final ViewChangeListener vcl);
-
-	
-	/**
-	 * Removes the specified listener from this View.
-	 */
-	void removeViewChangeListener(final ViewChangeListener vcl);
 }

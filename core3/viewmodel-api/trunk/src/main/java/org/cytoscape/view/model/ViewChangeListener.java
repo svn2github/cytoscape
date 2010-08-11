@@ -35,17 +35,21 @@
 */
 package org.cytoscape.view.model;
 
+import org.cytoscape.event.CyMicroListener;
+
 
 /**
  * An interface to indicate that a View has changed.  The intent is for
  * a Presentation to implement this interface so that the presentation
  * can be updated based on what has changed in the View.
  */
-public interface ViewChangeListener {
+//TODO to  ViewChangeMicroListener
+public interface ViewChangeListener extends CyMicroListener {
 
 	/**
 	 * The method called when the specified VisualProperty is set to the
 	 * specified value in the View being listened to. 
 	 */
-	void visualPropertySet(VisualProperty<?> vp, Object value);
+	// handleMicroEvent
+	void  visualPropertySet(final VisualProperty<?> vp, final Object value);
 }

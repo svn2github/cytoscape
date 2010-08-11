@@ -76,6 +76,7 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
  * @author $author$
  */
 public class DNodeView implements NodeView, Label, ViewChangeListener {
+	
 	static final float DEFAULT_WIDTH = 20.0f;
 	static final float DEFAULT_HEIGHT = 20.0f;
 	static final int DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
@@ -1265,81 +1266,90 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		}
 	}
 
-	public void visualPropertySet(VisualProperty<?> vp, Object o) {
-		if ( o == null )
+
+	@Override
+	public Object getEventSource() {
+		return m_nodeView;
+	}
+	
+
+	@Override
+	public void visualPropertySet(final VisualProperty<?> vp, final Object value) {
+		if ( value == null )
 			return;
 
 		if ( vp == DVisualLexicon.NODE_SHAPE ) {
-			setShape(((NodeShape)o).getGinyShape());
+			setShape(((NodeShape)value).getGinyShape());
 		}
 		else if ( vp == DVisualLexicon.NODE_SELECTED_PAINT ) {
-			setSelectedPaint((Paint)o); 
+			setSelectedPaint((Paint)value); 
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_SELECTED ) {
-			setSelected(((Boolean)o).booleanValue()); 
+			setSelected(((Boolean)value).booleanValue()); 
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_VISIBLE ) {
-			if ( ((Boolean)o).booleanValue() )
+			if ( ((Boolean)value).booleanValue() )
 				m_view.showGraphObject(this);
 			else
 				m_view.hideGraphObject(this);
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_COLOR ) { // unselected paint
-			setUnselectedPaint((Paint)o); 
+			setUnselectedPaint((Paint)value); 
 		}
 		else if ( vp == DVisualLexicon.NODE_BORDER_PAINT ) {
-			setBorderPaint((Paint)o);
+			setBorderPaint((Paint)value);
 		}
 		else if ( vp == DVisualLexicon.NODE_BORDER_WIDTH ) {
-			setBorderWidth(((Double)o).floatValue());
+			setBorderWidth(((Double)value).floatValue());
 		}
 		else if ( vp == DVisualLexicon.NODE_BORDER_STROKE ) {
-			setBorder((Stroke)o);
+			setBorder((Stroke)value);
 		}
 		else if ( vp == DVisualLexicon.NODE_TRANSPARENCY ) {
-			setTransparency(((Integer)o).floatValue());
+			setTransparency(((Integer)value).floatValue());
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_X_SIZE ) {
-			setWidth(((Double)o).doubleValue());
+			setWidth(((Double)value).doubleValue());
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_Y_SIZE ) {
-			setHeight(((Double)o).doubleValue());
+			setHeight(((Double)value).doubleValue());
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_LABEL ) {
-			setText((String)o);
+			setText((String)value);
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_X_LOCATION ) {
-			setXPosition(((Double)o).doubleValue());
+			setXPosition(((Double)value).doubleValue());
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_Y_LOCATION ) {
-			setYPosition(((Double)o).doubleValue());
+			setYPosition(((Double)value).doubleValue());
 		}
 		else if ( vp == DVisualLexicon.NODE_TOOLTIP ) {
-			setToolTip((String)o);
+			setToolTip((String)value);
 		}
 		else if ( vp == TwoDVisualLexicon.NODE_LABEL_COLOR ) {
-			setTextPaint((Paint)o);
+			setTextPaint((Paint)value);
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_FONT_FACE ) {
-			setFont((Font)o);
+			setFont((Font)value);
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_FONT_SIZE ) {
-			setFont( getFont().deriveFont(((Integer)o).floatValue()) );
+			setFont( getFont().deriveFont(((Integer)value).floatValue()) );
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_TEXT_ANCHOR ) {
-			setTextAnchor(((Anchor)o).getGinyAnchor());	
+			setTextAnchor(((Anchor)value).getGinyAnchor());	
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_NODE_ANCHOR ) {
-			setNodeLabelAnchor(((Anchor)o).getGinyAnchor());	
+			setNodeLabelAnchor(((Anchor)value).getGinyAnchor());	
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_ANCHOR_X_OFFSET ) {
-			setLabelOffsetX(((Double)o).doubleValue());
+			setLabelOffsetX(((Double)value).doubleValue());
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_ANCHOR_Y_OFFSET ) {
-			setLabelOffsetY(((Double)o).doubleValue());
+			setLabelOffsetY(((Double)value).doubleValue());
 		}
 		else if ( vp == DVisualLexicon.NODE_LABEL_JUSTIFY ) {
-			setJustify(((Justify)o).getGinyJustify());	
+			setJustify(((Justify)value).getGinyJustify());	
 		}
+		
 	}
 }

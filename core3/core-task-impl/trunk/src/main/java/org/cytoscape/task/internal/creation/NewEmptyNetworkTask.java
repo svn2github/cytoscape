@@ -61,7 +61,7 @@ public class NewEmptyNetworkTask extends AbstractCreationTask {
 	public void run(TaskMonitor tm) {
 		CyNetwork newNet = cnf.getInstance();
 		newNet.attrs().set("name","Network");
-		CyNetworkView view = cnvf.getNetworkViewFor(newNet);
+		CyNetworkView view = cnvf.getNetworkView(newNet);
 
 		netmgr.addNetwork(newNet);
 		netmgr.addNetworkView(view);

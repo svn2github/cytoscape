@@ -11,7 +11,7 @@
 
 	<!-- Factory bean for views and this will be exported as service. -->
 	<bean id="cyNetworkViewFactory"
-		class="org.cytoscape.view.model.internal.ColumnOrientedNetworkViewFactoryImpl">
+		class="org.cytoscape.view.model.internal.NetworkViewFactoryImpl">
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="cyServiceRegistrarRef" />
 	</bean>

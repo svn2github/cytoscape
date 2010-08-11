@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.DependentVisualPropertyCallback;
 import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
@@ -113,15 +112,6 @@ public class RootVisualLexiconImpl implements RootVisualLexicon {
 		// System.out.println("making list of VisualProperties in use:");
 		final Set<VisualProperty<?>> toRemove = new HashSet<VisualProperty<?>>();
 
-		/* apply DependentVisualPropertyCallbacks */
-		for (VisualProperty<?> vp : vpMap.values()) {
-			final DependentVisualPropertyCallback callback = vp
-					.dependentVisualPropertyCallback();
-
-			if (callback != null) {
-				toRemove.addAll(callback.changed(views, vpMap.values()));
-			}
-		}
 
 		// System.out.println("removing:"+toRemove.size());
 		final Set<VisualProperty<?>> result = new HashSet<VisualProperty<?>>(

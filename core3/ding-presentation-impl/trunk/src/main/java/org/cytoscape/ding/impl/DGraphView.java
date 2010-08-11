@@ -83,6 +83,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
+import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.spacial.SpacialEntry2DEnumerator;
 import org.cytoscape.spacial.SpacialIndex2D;
 import org.cytoscape.spacial.SpacialIndex2DFactory;
@@ -341,10 +342,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 	TunableInterceptor interceptor;
 	TaskManager manager;
-	CyTableManager tableMgr;
 
 	// Will be injected.
 	private VisualLexicon dingLexicon;
+	
+	private final CyServiceRegistrar cyServiceRegistrar;
+	private final CyTableManager tableMgr;
 
 	/**
 	 * Creates a new DGraphView object.
@@ -359,9 +362,13 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			Map<NodeViewTaskFactory, Map> nodeViewTFs,
 			Map<EdgeViewTaskFactory, Map> edgeViewTFs,
 			Map<NetworkViewTaskFactory, Map> emptySpaceTFs,
-			TunableInterceptor interceptor, TaskManager manager, CyTableManager tableMgr) {
+			TunableInterceptor interceptor, TaskManager manager, 
+			CyServiceRegistrar cyServiceRegistrar, CyTableManager tableMgr) {
+		
 		m_perspective = view.getModel();
 		cyNetworkView = view;
+		cyServiceRegistrar.registerService(this, ViewChangeListener.class, new Properties());
+		
 		rootLexicon = vpc;
 		this.dingLexicon = dingLexicon;
 
@@ -371,6 +378,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 		this.interceptor = interceptor;
 		this.manager = manager;
+		this.cyServiceRegistrar = cyServiceRegistrar;
 		this.tableMgr = tableMgr;
 
 		CyDataTable nodeCAM = dataFactory.createTable("node view", false);
@@ -736,8 +744,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 		final View<CyNode> nv = cyNetworkView.getNodeView(node);
 		final NodeView newView = new DNodeView(this, nodeInx, nv);
-		nv.addViewChangeListener(newView);
-
+		cyServiceRegistrar.registerService(newView, ViewChangeListener.class, new Properties());
+		
 		m_nodeViewMap.put(nodeInx, newView);
 		m_spacial.insert(nodeInx, m_defaultNodeXMin, m_defaultNodeYMin,
 				m_defaultNodeXMax, m_defaultNodeYMax);
@@ -745,9 +753,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		// read in visual properties from view obj
 		Collection<VisualProperty<?>> nodeVPs = rootLexicon
 				.getVisualProperties(NODE);
-		for (VisualProperty<?> vp : nodeVPs) {
+		
+		for (VisualProperty<?> vp : nodeVPs)
 			newView.visualPropertySet(vp, nv.getVisualProperty(vp));
-		}
+		
 		return newView;
 	}
 
@@ -782,7 +791,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			// m_structPersp.restoreEdge(edgeInx);
 			View<CyEdge> ev = cyNetworkView.getEdgeView(edge);
 			edgeView = new DEdgeView(this, edgeInx, ev);
-			cyNetworkView.getEdgeView(edge).addViewChangeListener(edgeView);
+			cyServiceRegistrar.registerService(edgeView,ViewChangeListener.class, new Properties());
 
 			m_edgeViewMap.put(Integer.valueOf(edgeInx), edgeView);
 			m_contentChanged = true;
@@ -790,6 +799,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			// read in visual properties from view obj
 			Collection<VisualProperty<?>> edgeVPs = rootLexicon
 					.getVisualProperties(EDGE);
+			
 			for (VisualProperty<?> vp : edgeVPs)
 				edgeView.visualPropertySet(vp, ev.getVisualProperty(vp));
 
@@ -2664,6 +2674,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		return l;
 	}
 
+	@Override
 	public void visualPropertySet(VisualProperty<?> vp, Object o) {
 		if (o == null)
 			return;
@@ -2729,5 +2740,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	public Icon createIcon(VisualProperty<?> vp) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Object getEventSource() {
+		return cyNetworkView;
 	}
 }

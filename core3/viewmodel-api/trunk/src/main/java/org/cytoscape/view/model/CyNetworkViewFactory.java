@@ -48,5 +48,5 @@ public interface CyNetworkViewFactory {
 	 * @param network for which the CyNetworkView is to be created
 	 * @return the CyNetworkView
 	 */
-	public CyNetworkView getNetworkViewFor(CyNetwork network);
+	public CyNetworkView getNetworkView(final CyNetwork network);
 }

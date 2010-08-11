@@ -110,7 +110,7 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 			CyNetworkView view = (CyNetworkView) readData.get(CyNetworkView.class);
 
 			if (view == null)
-				view = gvf.getNetworkViewFor(cyNetwork);
+				view = gvf.getNetworkView(cyNetwork);
 
 			view.fitContent();
 

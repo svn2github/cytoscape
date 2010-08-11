@@ -129,7 +129,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel, Se
 		edge.attrs().set("name", "Source (interaction) Target");
 
 		dummyNet.attrs().set("name", "Default Appearance");
-		dummyview = cyNetworkViewFactory.getNetworkViewFor(dummyNet);
+		dummyview = cyNetworkViewFactory.getNetworkView(dummyNet);
 
 		dummyview.getNodeView(source).setVisualProperty(NODE_X_LOCATION, 0d);
 		dummyview.getNodeView(source).setVisualProperty(NODE_Y_LOCATION, 0d);

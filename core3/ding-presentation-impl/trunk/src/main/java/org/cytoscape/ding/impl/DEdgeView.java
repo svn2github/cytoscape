@@ -61,6 +61,7 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 
 class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListener {
+	
 	static final float DEFAULT_ARROW_SIZE = 5.0f;
 	static final Paint DEFAULT_ARROW_PAINT = Color.black;
 	static final float DEFAULT_EDGE_THICKNESS = 1.0f;
@@ -1444,78 +1445,87 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 		return 0;
 	}
 
-	public void visualPropertySet(VisualProperty<?> vp, Object o) {
-		if ( o == null )
+
+	@Override
+	public Object getEventSource() {
+		return m_edgeView;
+	}
+
+	
+	@Override
+	public void visualPropertySet(final VisualProperty<?> vp, final Object value) {
+		if ( value == null )
 			return;
 
 		if (vp == DVisualLexicon.EDGE_SELECTED_PAINT) {
-			setSelectedPaint((Paint)o);
+			setSelectedPaint((Paint)value);
 		}
 		else if (vp == TwoDVisualLexicon.EDGE_COLOR) { 
-			setUnselectedPaint((Paint)o);
+			setUnselectedPaint((Paint)value);
 		}
 		else if (vp == DVisualLexicon.EDGE_WIDTH) {
-			setStrokeWidth(((Double)o).floatValue());
+			setStrokeWidth(((Double)value).floatValue());
 		}
 		else if (vp == DVisualLexicon.EDGE_STROKE) {
-			setStroke((Stroke)o);
+			setStroke((Stroke)value);
 		}
 		else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SELECTED_PAINT) {
-			setSourceEdgeEndSelectedPaint((Paint)o); 
+			setSourceEdgeEndSelectedPaint((Paint)value); 
 		}
 		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SELECTED_PAINT) {
-			setTargetEdgeEndSelectedPaint((Paint)o); 
+			setTargetEdgeEndSelectedPaint((Paint)value); 
 		}
 		else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_UNSELECTED_PAINT) {
-			setSourceEdgeEndPaint((Paint)o); 
+			setSourceEdgeEndPaint((Paint)value); 
 		}
 		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_UNSELECTED_PAINT) {
-			setTargetEdgeEndPaint((Paint)o); 
+			setTargetEdgeEndPaint((Paint)value); 
 		}
 		else if (vp == TwoDVisualLexicon.EDGE_SELECTED) {
-			setSelected((Boolean)o);
+			setSelected((Boolean)value);
 		}
 		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SHAPE) {
-			setTargetEdgeEnd(((ArrowShape)o).getGinyArrow());
+			setTargetEdgeEnd(((ArrowShape)value).getGinyArrow());
 		}
 		else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SHAPE) {
-			setSourceEdgeEnd(((ArrowShape)o).getGinyArrow());
+			setSourceEdgeEnd(((ArrowShape)value).getGinyArrow());
 		}
 		else if (vp == TwoDVisualLexicon.EDGE_LABEL) {
-			setText((String)o);
+			setText((String)value);
 		}
 		else if (vp == DVisualLexicon.EDGE_TOOLTIP) {
-			setToolTip((String)o);
+			setToolTip((String)value);
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_EDGE_ANCHOR) {
-			setEdgeLabelAnchor( ((Anchor)o).getGinyAnchor());	
+			setEdgeLabelAnchor( ((Anchor)value).getGinyAnchor());	
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_TEXT_ANCHOR) {
-			setTextAnchor( ((Anchor)o).getGinyAnchor());	
+			setTextAnchor( ((Anchor)value).getGinyAnchor());	
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_X_OFFSET) {
-			setLabelOffsetX( ((Double)o).doubleValue() );	
+			setLabelOffsetX( ((Double)value).doubleValue() );	
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_Y_OFFSET) {
-			setLabelOffsetY( ((Double)o).doubleValue() );	
+			setLabelOffsetY( ((Double)value).doubleValue() );	
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_JUSTIFY) {
-			setJustify( ((Justify)o).getGinyJustify());
+			setJustify( ((Justify)value).getGinyJustify());
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_FONT_FACE) {
-			setFont((Font)o);
+			setFont((Font)value);
 		}
 		else if (vp == DVisualLexicon.EDGE_LABEL_FONT_SIZE) {
-			setFont( getFont().deriveFont(((Integer)o).floatValue()) );
+			setFont( getFont().deriveFont(((Integer)value).floatValue()) );
 		}
 		else if (vp == TwoDVisualLexicon.EDGE_LABEL_COLOR) {
-			setTextPaint((Paint)o);
+			setTextPaint((Paint)value);
 		}
         else if ( vp == TwoDVisualLexicon.NODE_VISIBLE ) {
-            if ( ((Boolean)o).booleanValue() )
+            if ( ((Boolean)value).booleanValue() )
                 m_view.showGraphObject(this);
             else
                 m_view.hideGraphObject(this);
         }
+		
 	}
 }

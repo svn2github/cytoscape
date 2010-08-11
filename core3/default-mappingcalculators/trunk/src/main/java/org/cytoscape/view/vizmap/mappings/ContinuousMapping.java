@@ -44,14 +44,12 @@ package org.cytoscape.view.vizmap.mappings;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.ViewColumn;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.mappings.interpolators.FlatInterpolator;
 import org.cytoscape.view.vizmap.mappings.interpolators.Interpolator;
@@ -78,9 +76,11 @@ public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 	// Contains List of Data Points
 	private List<ContinuousMappingPoint<V>> points;
 
-	public ContinuousMapping(String attrName, VisualProperty<V> vp) {
+	public ContinuousMapping(final String attrName, final VisualProperty<V> vp) {
 		super(attrName, Number.class, vp);
 		this.points = new ArrayList<ContinuousMappingPoint<V>>();
+		
+		//TODO FIXME use factory here.
 		// Create Interpolator
 		if (Color.class.isAssignableFrom(vp.getType()))
 			interpolator = (Interpolator<Number, V>) new LinearNumberToColorInterpolator();
@@ -159,15 +159,11 @@ public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 	 * @param views
 	 *            DOCUMENT ME!
 	 */
-	public <G extends GraphObject> void apply(ViewColumn<V> column,
-			List<? extends View<G>> views) {
+	public <G extends GraphObject> void apply(Collection<? extends View<G>> views) {
 		if (views == null || views.size() < 1)
 			return; // empty list, nothing to do
 				
-			doMap(views, column); // due to check in
-															// previous line,
-															// this is a safe
-															// cast
+			doMap(views); 
 	}
 
 	/**
@@ -187,14 +183,11 @@ public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 	 *            the type-parameter of the View
 	 */
 	private <G extends GraphObject> void doMap(
-			final List<? extends View<G>> views, ViewColumn<V> column) {
-		// aggregate changes to be made in these:
-		Map<View<G>, V> valuesToSet = new HashMap<View<G>, V>();
-		List<View<G>> valuesToClear = new ArrayList<View<G>>();
-
+			final Collection<? extends View<G>> views) {
+		
 		CyRow row;
-		for (View<G> v : views) {
-			row = v.getModel().attrs();
+		for (final View<G> view : views) {
+			row = view.getModel().attrs();
 
 			if (row.contains(attrName, attrType)) {
 				// skip Views where source attribute is not defined;
@@ -202,19 +195,13 @@ public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 				// default, as appropriate
 				
 				// In all cases, attribute value should be a number for continuous mapping.
-				final Number attrValue = v.getModel().attrs().get(attrName,attrType);
-				final V value = getRangeValue(attrValue); // FIXME: make
-															// getRangeValue
-															// type-parametric,
-															// so this shouldn't
-															// be needed (??)
-				valuesToSet.put(v, value);
+				final Number attrValue = view.getModel().attrs().get(attrName,attrType);
+				final V value = getRangeValue(attrValue);
+				view.setVisualProperty(vp, value);
 			} else { // remove value so that default value will be used:
-				valuesToClear.add(v);
+				view.setVisualProperty(vp, null);
 			}
 		}
-
-		column.setValues(valuesToSet, valuesToClear);
 	}
 
 	private V getRangeValue(Number domainValue) {

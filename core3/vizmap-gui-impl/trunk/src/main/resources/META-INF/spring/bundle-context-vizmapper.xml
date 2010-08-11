@@ -177,6 +177,7 @@
 		<property name="iconId"
 			value="${vizMapperMainPanel.menu.removeStyleAction.icon}" />
 	</bean>
+	
 	<bean name="renameStyleAction"
 		class="org.cytoscape.view.vizmap.gui.internal.action.RenameStyleAction"
 		autowire="autodetect" depends-on="vizMapperMainPanel">
@@ -192,6 +193,7 @@
 		<property name="iconId"
 			value="${vizMapperMainPanel.menu.copyStyleAction.icon}" />
 	</bean>
+	
 	<bean name="createLegendAction"
 		class="org.cytoscape.view.vizmap.gui.internal.action.CreateLegendAction"
 		autowire="autodetect" depends-on="vizMapperMainPanel">
@@ -216,6 +218,7 @@
 	<bean name="generateValueAction"
 		class="org.cytoscape.view.vizmap.gui.internal.action.GenerateValueAction"
 		scope="singleton" depends-on="vizMapperMainPanel">
+		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 
 	<!--  For property sheet table -->
@@ -238,6 +241,7 @@
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="editorManager" />
 		<constructor-arg ref="defaultViewPanel" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 
 	<bean id="vizMapEventHandlerManager"

@@ -42,9 +42,7 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.view.vizmap.mappings;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -52,7 +50,6 @@ import java.util.TreeMap;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.ViewColumn;
 import org.cytoscape.view.model.VisualProperty;
 
 /**
@@ -63,53 +60,31 @@ import org.cytoscape.view.model.VisualProperty;
 public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
 	
 	// contains the actual map elements (sorted)
-	private SortedMap<K, V> treeMap; 
-	
-	private K lastKey;
+	private final SortedMap<K, V> attribute2visualMap; 
 
+	
 	/**
 	 * Constructor.
 	 * 
 	 * @param defObj
 	 *            Default Object.
 	 */
-	public DiscreteMapping(String attrName, Class<K> attrType, VisualProperty<V> vp) {
+	public DiscreteMapping(final String attrName, final Class<K> attrType, final VisualProperty<V> vp) {
 		super(attrName, attrType, vp);
-		treeMap = new TreeMap<K, V>();
+		attribute2visualMap = new TreeMap<K, V>();
 	}
+	
 	
 	@Override public String toString() {
 		return DISCRETE;
 	}
 
-	public <G extends GraphObject> void apply(ViewColumn<V> column,
-			List<? extends View<G>> views) {
+	
+	public <G extends GraphObject> void apply(Collection<? extends View<G>> views) {
 		if (views == null || views.size() < 1)
 			return; // empty list, nothing to do
 
-		//final CyRow row;// = views.get(0).getSource().attrs(); // to check types,
-		// have to peek at
-		// first view
-		// instance
-		// check types:
-		
-//		try {
-//			attrType = (Class<K>) row.getDataTable().getColumnTypeMap().get(
-//					attrName);
-//		} catch (ClassCastException ce) {
-//			throw new IllegalArgumentException("Mapping " + toString()
-//					+ " can't map from attribute type " + attrType
-//					+ " to VisualProperty " + vp + " of type " + vp.getType());
-//		}
-		// Class<V> vpType = vp.getType();
-		// if (vpType.isAssignableFrom(rangeClass)){
-		// // FIXME: should check here? or does that not matter?
-		// // if (keyClass.isAssignableFrom(attrType))
-		doMap(views, column);
-		// } else {
-		// throw new
-		// IllegalArgumentException("Mapping "+toString()+" can't map from attribute type "+attrType+" to VisualProperty "+vp+" of type "+vp.getType());
-		// }
+		applyDiscreteMapping(views);
 	}
 
 	/**
@@ -128,32 +103,29 @@ public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
 	 * @param <V>
 	 *            the type-parameter of the View
 	 */
-	private <G extends GraphObject> void doMap(
-			final List<? extends View<G>> views, ViewColumn<V> column) {
-		// aggregate changes to be made in these:
-		final Map<View<G>, V> valuesToSet = new HashMap<View<G>, V>();
-		final List<View<G>> valuesToClear = new ArrayList<View<G>>();
+	private <G extends GraphObject> void applyDiscreteMapping(final Collection<? extends View<G>> views) {
 
 		CyRow row;
-		for (View<G> v : views) {
-			row = v.getModel().attrs();
+		for (final View<G> view : views) {
+			row = view.getModel().attrs();
 			if (row.contains(attrName, attrType)) {
 				// skip Views where source attribute is not defined;
 				// ViewColumn will automatically substitute the per-VS or global
 				// default, as appropriate
 
-				final K key = v.getModel().attrs().get(attrName, attrType);
-				if (treeMap.containsKey(key)) {
-					final V value = treeMap.get(key);
-					valuesToSet.put(v, value);
+				final K key = view.getModel().attrs().get(attrName, attrType);
+				if (attribute2visualMap.containsKey(key)) {
+					final V value = attribute2visualMap.get(key);
+					// Assign value to view
+					view.setVisualProperty(vp, value);
 				} else { // remove value so that default value will be used:
-					valuesToClear.add(v);
+					// Set default value
+					view.setVisualProperty(vp, null);
 				}
 			} else { // remove value so that default value will be used:
-				valuesToClear.add(v);
+				view.setVisualProperty(vp, null);
 			}
 		}
-		column.setValues(valuesToSet, valuesToClear);
 	}
 
 	/**
@@ -164,7 +136,7 @@ public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
 	 * @return Object.
 	 */
 	public V getMapValue(K key) {
-		return treeMap.get(key);
+		return attribute2visualMap.get(key);
 	}
 
 	/**
@@ -176,19 +148,10 @@ public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
 	 *            Value Object.
 	 */
 	public void putMapValue(K key, V value) {
-		lastKey = key;
-		treeMap.put(key, value);
+		attribute2visualMap.put(key, value);
 		// fireStateChanged();
 	}
 
-	/**
-	 * Gets the Last Modified Key.
-	 * 
-	 * @return Key Object.
-	 */
-	public K getLastKeyModified() {
-		return lastKey;
-	}
 
 	/**
 	 * Adds All Members of Specified Map.
@@ -197,7 +160,7 @@ public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
 	 *            Map.
 	 */
 	public void putAll(Map<K, V> map) {
-		treeMap.putAll(map);
+		attribute2visualMap.putAll(map);
 	}
 
 	/**
@@ -205,6 +168,6 @@ public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
 	 * 
 	 */
 	public Map<K, V> getAll() {
-		return treeMap;
+		return attribute2visualMap;
 	}
 }
