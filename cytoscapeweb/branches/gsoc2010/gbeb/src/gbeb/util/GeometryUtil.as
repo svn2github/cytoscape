@@ -64,7 +64,6 @@ package gbeb.util
 		 * point if the lines intersect and null otherwise. Checks for intersection of Segment if as_seg is true.
 		 * 
 		 * Source: http://keith-hair.net/blog/2008/08/04/find-intersection-point-of-two-lines-in-as3
-		 * 
 		 */
 
 		public static function lineIntersectLine(A:Point,B:Point,E:Point,F:Point,as_seg:Boolean=true):Point {
@@ -91,11 +90,8 @@ package gbeb.util
 			ip.x=(b1*c2 - b2*c1)/denom;
 			ip.y=(a2*c1 - a1*c2)/denom;
 			
-			//---------------------------------------------------
-			//Do checks to see if intersection to endpoints
-			//distance is longer than actual Segments.
-			//Return null if it is with any.
-			//---------------------------------------------------
+			// Do checks to see if intersection to endpoints distance is longer than actual Segments. 
+			// Return null if it is with any.
 			if(as_seg){
 				if(Math.pow(ip.x - B.x, 2) + Math.pow(ip.y - B.y, 2) > Math.pow(A.x - B.x, 2) + Math.pow(A.y - B.y, 2))
 				{
@@ -131,7 +127,6 @@ package gbeb.util
 		}
 	
 		
-		
 		/**
 		 * This function derives the position of the anchor point based of the location of the control point
 		 * for a normal qradratic Bezier curve. 
@@ -147,7 +142,6 @@ package gbeb.util
 		}
 
 	
-		
 		/**
 		 * This function uses accepts and array of 2D points and return the geometric center of all the points
 		 */
@@ -190,12 +184,12 @@ package gbeb.util
 			}
 			
 			var clusters:Array = [];
-			var centroids:Array = []; //stores the centroid of each cluster
-			var prevCentroids:Array = []; //stores the array of previous Centroids for comparison
+			var centroids:Array = []; // Stores the centroid of each cluster
+			var prevCentroids:Array = []; // Stores the array of previous Centroids for comparison
 			var numClusters:int = Math.ceil( Math.pow( (points.length / 2), 0.5 ));
 			const bundlingDist:int = 50; 
 			
-			//clustering does not perform well with points <= 2, so a mannual fix is necessary
+			// Clustering does not perform well with points <= 2, so a mannual fix is necessary
 			if(points.length == 1) 
 			{
 				clusters.push(points);
@@ -219,9 +213,12 @@ package gbeb.util
 				centroids.push(new Point( points[i].x, points[i].y));
 			}
 			
-			//The algorithm will loop between assigning the points to the clusters that the points are nearest to 
-			//and recalculating the centroids for each clusters after all the points are assigned until the centroids 
-			//does not shift any more. 
+			
+			// ========[ PRIVATE METHODS ]==============================================================
+			
+			// The algorithm will loop between assigning the points to the clusters that the points are nearest to 
+			// and recalculating the centroids for each clusters after all the points are assigned until the centroids 
+			// does not shift any more. 
 			do {	
 				prevCentroids = copyCentroids(centroids);
 				assignPointsToClusters(points, centroids, clusters);
@@ -269,8 +266,8 @@ package gbeb.util
 			}
 		}
 		
-		//This function creates a copy of the centroids for evaluating if there are any more changes to the 
-		//positions of centroids
+		// This function creates a copy of the centroids for evaluating if there are any more changes to the 
+		// positions of centroids
 		private static function copyCentroids(centroids:Array):Array
 		{
 			var prevCentroids:Array = new Array();		
@@ -281,7 +278,7 @@ package gbeb.util
 			return prevCentroids;
 		}
 
-		//This fucntion returns the index of the cluster that the point is closest to.
+		// This fucntion returns the index of the cluster that the point is closest to.
 		private static function getMinDisIndex(distances:Array):int
 		{
 			var minDis:Number = Number.MAX_VALUE;
@@ -298,8 +295,8 @@ package gbeb.util
 			return minDisIndex;
 		}
 		
-		//This function calculates the x and y pos of each anchor point of quadratic bezier curve in order for the curve
-		//to pass through the input (x,y)
+		// This function calculates the x and y pos of each anchor point of quadratic bezier curve in order for the curve
+		// to pass through the input (x,y)
 		private static function deriveTerm(p0:Number, bt:Number, p2:Number, t:Number):Number
 		{
 			var negT:Number = 1 - t;
