@@ -136,6 +136,12 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		item = new JMenuItem(viz3.getName());
 		item.addActionListener(new ClusterMakerCommandListener((ClusterAlgorithm)viz3));
 		menu.add(item);
+
+		// Because this overlaps with the new network visualization, it doesn't show
+		// up in our vizMap automatically -- add it here so it will show up in our
+		// command list.
+		vizMap.put(viz3.getShortName(), viz3);
+		
 		
 		// Catch new network loaded and change events so we can update our visualization menus
 		Cytoscape.getPropertyChangeSupport()

@@ -146,7 +146,7 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 
 		String cluster_type = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
 		if (cluster_type != "MCL" && cluster_type != "GLay" && cluster_type != "AP" && cluster_type != "FORCE" &&
-		    cluster_type != "MCODE")
+		    cluster_type != "MCODE" && cluster_type != "TransClust")
 			return false;
 
 		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE)) {
@@ -334,10 +334,10 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 			// Get the list of edges
 			List<CyEdge> edgeList = currentNetwork.getConnectingEdges(nodeList);
 			String title = currentNetwork.getTitle()+"--cluster "+cluster;
-			CyNetwork net = Cytoscape.createNetwork(nodeList, edgeList, title, parentNet);
+			CyNetwork net = Cytoscape.createNetwork(nodeList, edgeList, title, parentNet, false);
 
 			// Create our view and lay it out
-			// CyNetworkView v = Cytoscape.createNetworkView(net, title, alg);
+			CyNetworkView v = Cytoscape.createNetworkView(net, title, alg);
 
 			// Get the clustered node
 			CyNode node = Cytoscape.getCyNode(title, true);

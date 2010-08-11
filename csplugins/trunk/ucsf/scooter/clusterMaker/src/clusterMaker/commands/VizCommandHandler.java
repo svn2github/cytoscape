@@ -64,8 +64,8 @@ public class VizCommandHandler extends ClusterMakerCommandHandler {
 		for (String vizName: vizMap.keySet()) {
 			ClusterViz viz = vizMap.get(vizName);
 			ClusterProperties props = viz.getSettings();
-			addDescription(vizName, vizName+" cluster visualizer");
-			addArguments(vizName, props);
+			addDescription(vizName.toLowerCase(), vizName+" cluster visualizer");
+			addArguments(vizName.toLowerCase(), props);
 		}
 
 	}
