@@ -144,29 +144,43 @@ public class GroupTreeModel extends DefaultTreeModel {
 	public void setTreeDepth(int depth, TreePath path) {
 		DefaultMutableTreeNode treeNode = 
 			     (DefaultMutableTreeNode) path.getLastPathComponent();
+
 		navTree.expandPath(path);
 		for (int child = 0; child < treeNode.getChildCount(); child++) {
 			DefaultMutableTreeNode childNode = (DefaultMutableTreeNode)treeNode.getChildAt(child);
-			CyNode node = (CyNode)childNode.getUserObject();
-			if (!nodeMap.containsKey(node)) {
-				continue;
+			Object userObject = childNode.getUserObject();
+			TreePath pathToNode = null;
+			CyNode node = null;
+
+			if (userObject instanceof CyNetwork || userObject instanceof String) {
+				// Get a treepath
+				pathToNode = path.pathByAddingChild(childNode);
+			} else if (userObject instanceof CyGroup) {
+				CyGroup group = (CyGroup)userObject;
+				node = group.getGroupNode();
+			} else if (userObject instanceof CyNode) {
+				node = (CyNode)userObject;
 			}
 
-			// A node could be in mulitple paths, but we only want
-			// the immediate descendant of "path"
-			List<TreePath> pathsToNode = nodeMap.get(node);
-			TreePath pathToNode = pathsToNode.get(0);
-			for (int p = 1; p < pathsToNode.size(); p++) {
-				if (pathsToNode.get(p).getParentPath().equals(path)) {
-					pathToNode = pathsToNode.get(p);
-					break;
+			if (node != null && nodeMap.containsKey(node)) {
+				// A node could be in mulitple paths, but we only want
+				// the immediate descendant of "path"
+				List<TreePath> pathsToNode = nodeMap.get(node);
+				pathToNode = pathsToNode.get(0);
+				for (int p = 1; p < pathsToNode.size(); p++) {
+					if (pathsToNode.get(p).getParentPath().equals(path)) {
+						pathToNode = pathsToNode.get(p);
+						break;
+					}
 				}
 			}
 
-			if (depth == 1) {
+			if (pathToNode != null) {
+				if (depth == 1) {
 					navTree.collapsePath(pathToNode);
-			} else {
-				setTreeDepth(depth-1, pathToNode);
+				} else {
+					setTreeDepth(depth-1, pathToNode);
+				}
 			}
 		}
 	}

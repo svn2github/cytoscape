@@ -84,12 +84,19 @@ public class GroupTreeUtils {
 		if (checkForPromotion(navTree, groupTreeNode, selected)) {
 			// System.out.println("Promoting");
 			navTree.addSelectionPath(path.getParentPath());
+			// System.out.println("Setting group "+group+"s state to selected");
 			group.setState(NamedSelection.SELECTED);
 		} else {
-			// System.out.println("Demoting");
+			// We don't want to promote, but we only want to demote if we're
+			// deselecting and the group is selected
+			if (selected || group.getState() != NamedSelection.SELECTED)
+				return; // We were selecting, just ignore this...
+
+			// OK, we were deselecting and our group was selected
 			navTree.removeSelectionPath(path.getParentPath());
 			
 			// Unselect the group -- this will deselect all nodes
+			// System.out.println("Setting group "+group+"s state to unselected");
 			group.setState(NamedSelection.UNSELECTED);
 
 			// Reselect the individual nodes based on our selected paths
@@ -154,10 +161,13 @@ public class GroupTreeUtils {
 	public static void selectTreeNode(GroupTree navTree, TreePath path, boolean select) {
 		DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)path.getLastPathComponent();
 		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)treeNode.getParent();
-		if (select)
+		if (select) {
+			// System.out.println("Selecting "+path);
 			navTree.addSelectionPath(path);
-		else
+		} else {
+			// System.out.println("Deselecting "+path);
 			navTree.removeSelectionPath(path);
+		}
 
 		handlePromotion(navTree, parentNode, path, select);
 	}
@@ -172,8 +182,10 @@ public class GroupTreeUtils {
 	 */
 	public static void selectNetworkNode(GroupTree navTree, DefaultMutableTreeNode groupNode, 
 	                                     TreePath treePath, CyNode node, boolean selected) {
+		// System.out.println("selectNetworkNode: "+node+"@"+treePath+": "+selected);
 		CyGroup group = (CyGroup)groupNode.getUserObject();
 		CyNetwork net = group.getNetwork();
+		handlePromotion(navTree, groupNode, treePath, selected);
 		if (net == null) {
 			for (CyNetwork network: Cytoscape.getNetworkSet()) {
 				// System.out.println("Setting node "+node+"s state to "+selected);
@@ -185,15 +197,15 @@ public class GroupTreeUtils {
 			net.setSelectedNodeState(node, selected);
 			Cytoscape.getNetworkView(net.getIdentifier()).updateView();
 		}
-		handlePromotion(navTree, groupNode, treePath, selected);
 	}
 
 	public static void syncNodesToPath(GroupTree navTree, TreePath path, CyGroup group) {
+		// System.out.println("Synching nodes to path: "+path);
 		DefaultMutableTreeNode groupTreeNode = (DefaultMutableTreeNode)path.getLastPathComponent();
 		for (Enumeration<DefaultMutableTreeNode> e = groupTreeNode.children(); e.hasMoreElements();) {
 			DefaultMutableTreeNode treeNode = e.nextElement();
 			TreePath childPath = new TreePath(treeNode.getPath());
-			if (navTree.isPathSelected(path)) {
+			if (navTree.isPathSelected(childPath)) {
 				if (treeNode.getUserObject() instanceof CyNode) {
 					selectNetworkNode(navTree, groupTreeNode, childPath, (CyNode)treeNode.getUserObject(), true);
 				} else if (treeNode.getUserObject() instanceof CyGroup) {

@@ -104,6 +104,7 @@ public class GroupTree extends JTree implements TreeSelectionListener,
 		setShowsRootHandles(false);
 		// setRootVisible(false);
 		setToggleClickCount(0);	// Disable multi-click
+		setExpandsSelectedPaths(false);
 
 		setBackground(Cytoscape.getDesktop().getBackground());
 	}
@@ -173,6 +174,8 @@ public class GroupTree extends JTree implements TreeSelectionListener,
 			Object userObject = treeNode.getUserObject();
 			boolean selected = e.isAddedPath(path);
 
+			// System.out.println("valueChanged: "+path+": "+selected);
+
 			// Get the type of object
 			if (userObject instanceof CyNetwork) {
 				// This is either the root, the global network or a network name
@@ -184,14 +187,16 @@ public class GroupTree extends JTree implements TreeSelectionListener,
 					Cytoscape.setCurrentNetworkView(network.getIdentifier());
 				}
 			} else if (userObject instanceof CyGroup) {
-				// Group
-				// System.out.println("Group");
 				// select the group
 				CyGroup group = (CyGroup) userObject;
-				if (selected)
+				if (selected) {
+					// System.out.println("valuchanged: Selecting group: "+group);
 					group.setState(NamedSelection.SELECTED);
-				else if (group.getState() == NamedSelection.SELECTED)
+					GroupTreeUtils.selectAllChildren(this, path);
+				} else if (group.getState() == NamedSelection.SELECTED) {
+					// System.out.println("valuchanged: Deselecting group: "+group);
 					group.setState(NamedSelection.UNSELECTED);
+				}
 			} else if (userObject instanceof CyNode) {
 				// Node
 				CyNode node = (CyNode)userObject;
@@ -205,6 +210,17 @@ public class GroupTree extends JTree implements TreeSelectionListener,
 				GroupTreeUtils.selectNetworkNode(this, parentNode, path, node, selected);
 			}
 		}
+
+		// OK, now, before we turn on updates again, sync the network up if we've changed the
+		// state of a group
+		for (TreePath path: e.getPaths()) {
+			DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)path.getLastPathComponent();
+			Object userObject = treeNode.getUserObject();
+			if (userObject instanceof CyGroup) {
+				GroupTreeUtils.syncNodesToPath(this, path, (CyGroup)userObject);
+			}
+		}
+
 		setUpdates(true);
 	}
 
@@ -224,7 +240,7 @@ public class GroupTree extends JTree implements TreeSelectionListener,
 			// If we are selected, select all of our children
 			if (isPathSelected(treePath)) {
 				GroupTreeUtils.selectAllChildren(this, treePath);
-				removeSelectionPath(treePath);
+				// removeSelectionPath(treePath);
 			}
 		}
 		setUpdates(true);
