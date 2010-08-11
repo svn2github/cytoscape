@@ -19,26 +19,14 @@
 	</bean>
 
 	<bean id="cyNetworkFactory" class="org.cytoscape.model.internal.CyNetworkFactoryImpl">
-		<constructor-arg ref="cyEventHelper" />
+		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="cyTableManager" />
 	</bean>
 
 	<bean id="cyDataTableFactory" class="org.cytoscape.model.internal.CyDataTableFactoryImpl">
-		<constructor-arg ref="cyEventHelper" />
+		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 
 	<bean id="cyRootNetworkFactory" class="org.cytoscape.model.internal.CyRootNetworkFactoryImpl"/>
 	
-	<bean id="cyListenerAdapter" class="org.cytoscape.event.internal.CyListenerAdapter">
-		<constructor-arg ref="bundleContext" />
-	</bean>
-
-	<bean id="cyMicroListenerAdapter" class="org.cytoscape.event.internal.CyMicroListenerAdapter">
-		<constructor-arg ref="bundleContext" />
-	</bean>
-
-	<bean id="cyEventHelper" class="org.cytoscape.event.internal.CyEventHelperImpl">
-		<constructor-arg ref="cyListenerAdapter" />
-		<constructor-arg ref="cyMicroListenerAdapter" />
-	</bean>
 </beans>

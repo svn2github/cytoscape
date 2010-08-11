@@ -6,6 +6,10 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
+	
+	<osgi:reference id="cyEventHelperServiceRef"
+		interface="org.cytoscape.event.CyEventHelper" />
+
 	<!-- Individual Service -->
 	<osgi:service id="cyNetworkFactoryService"
 		ref="cyNetworkFactory" interface="org.cytoscape.model.CyNetworkFactory">
@@ -19,10 +23,6 @@
 		ref="cyRootNetworkFactory" interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory">
 	</osgi:service>
 	
-	<osgi:service id="cyEventHelperService"
-		ref="cyEventHelper" interface="org.cytoscape.event.CyEventHelper">
-	</osgi:service>
-
 	<osgi:service id="cyTableManagerService"
 		ref="cyTableManager" interface="org.cytoscape.model.CyTableManager">
 	</osgi:service>
