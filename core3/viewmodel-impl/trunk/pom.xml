@@ -97,6 +97,11 @@
 		<!-- Cytoscape modules -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
+			<artifactId>event-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
