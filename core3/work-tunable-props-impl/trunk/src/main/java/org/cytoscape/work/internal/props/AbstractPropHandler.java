@@ -1,19 +1,25 @@
 package org.cytoscape.work.internal.props;
 
+
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Properties;
 
-import org.cytoscape.work.AbstractHandler;
+import org.cytoscape.work.AbstractTunableHandler;
 import org.cytoscape.work.Tunable;
 
-public abstract class AbstractPropHandler extends AbstractHandler implements PropHandler {
 
+public abstract class AbstractPropHandler extends AbstractTunableHandler implements PropHandler {
 	protected String propKey;
 
-	public AbstractPropHandler(Field f, Object o, Tunable t) {
-		super(f,o,t);
-		String n = f.getDeclaringClass().toString();
-		propKey = n.substring( n.lastIndexOf(".") + 1) + "." + f.getName();	
+	public AbstractPropHandler(final Field field, final Object instance, final Tunable tunable) {
+		super(field, instance, tunable);
+		propKey = getQualifiedName();
+	}
+
+	public AbstractPropHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+		super(getter, setter, instance, tunable);
+		propKey = getQualifiedName();
 	}
 	
 	public abstract Properties getProps();
