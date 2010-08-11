@@ -117,8 +117,8 @@ public class AbstractTunableHandler implements TunableHandler {
 	 */
 	final public String getQualifiedName() {
 		final String unqualifiedClassName =
-			field == null ? method.getDeclaringClass().toString() : field.getDeclaringClass().toString();
+			field == null ? getter.getDeclaringClass().toString() : field.getDeclaringClass().toString();
 		
-                return unqualifiedClassName.substring( n.lastIndexOf(".") + 1) + "." + getName();
+                return unqualifiedClassName.substring(unqualifiedClassName.lastIndexOf(".") + 1) + "." + getName();
 	}
 }
