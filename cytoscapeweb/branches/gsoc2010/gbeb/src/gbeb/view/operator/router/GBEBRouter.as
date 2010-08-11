@@ -14,6 +14,7 @@ package gbeb.view.operator.router {
     import flash.geom.Rectangle;
     import flash.text.TextField;
     
+    import gbeb.util.GBEBInterfaceUtil;
     import gbeb.util.GeometryUtil;
     import gbeb.util.delaunay.Delaunay;
     import gbeb.util.delaunay.ITriangle;
@@ -521,10 +522,8 @@ package gbeb.view.operator.router {
             meshEdge.name = (cycles++).toString(); //debug
             
             getNodesForMeshEdge(returnIndexFromXY(s1.centroid.x, s1.centroid.y), meshEdge, meshEdge.source, "None");
-						
-						
             
-						if(GeometryUtil.calculateDistanceBetweenNodes(meshEdge.source, meshEdge.target) > 300) trace("GBEBRouter: meshEdge " + meshEdge.name + 
+						if(GBEBInterfaceUtil.calculateDistanceBetweenNodes(meshEdge.source, meshEdge.target) > 300) trace("GBEBRouter: meshEdge " + meshEdge.name + 
 							" is too long " + gradient);
             
             //trace("Mesh: GenerateMeshEdges: Assigning names: " + meshEdge.x1);
@@ -844,11 +843,11 @@ package gbeb.view.operator.router {
 												//trace("GBEBRouter: mergeNodes_All: Tracing Source Node: " + (currNode != null) + " | Target Node: " + (currEdge.target != null));
                                         
                         for each (var edge2:MeshEdge in _meshEdgeArray) {
-                            if (GeometryUtil.calculateDistanceBetweenNodes(currNode, edge2.source) < _meshNodesMinDistance) {
+                            if (GBEBInterfaceUtil.calculateDistanceBetweenNodes(currNode, edge2.source) < _meshNodesMinDistance) {
                                 mergeNodes_Pairwise(currEdge, "source", edge2, "source");
 																nodeMoved = true;
                                 continue;
-                            } else if  (GeometryUtil.calculateDistanceBetweenNodes(currNode, edge2.target) < _meshNodesMinDistance) {
+                            } else if  (GBEBInterfaceUtil.calculateDistanceBetweenNodes(currNode, edge2.target) < _meshNodesMinDistance) {
                                 mergeNodes_Pairwise(currEdge, "source", edge2, "target");
 																nodeMoved = true;
                                 continue;
@@ -857,11 +856,11 @@ package gbeb.view.operator.router {
 														//if(nodeMoved) break;
                             currNode = currEdge.target;
                                             
-                            if (GeometryUtil.calculateDistanceBetweenNodes(currNode, edge2.source) < _meshNodesMinDistance) {   
+                            if (GBEBInterfaceUtil.calculateDistanceBetweenNodes(currNode, edge2.source) < _meshNodesMinDistance) {   
                                 mergeNodes_Pairwise(currEdge, "target", edge2, "source");
 																nodeMoved = true;
                                 continue;
-                            } else if (GeometryUtil.calculateDistanceBetweenNodes(currNode, edge2.target) < _meshNodesMinDistance) {
+                            } else if (GBEBInterfaceUtil.calculateDistanceBetweenNodes(currNode, edge2.target) < _meshNodesMinDistance) {
                                 mergeNodes_Pairwise(currEdge, "target", edge2, "target");
 																nodeMoved = true;
                                 continue;
@@ -935,10 +934,9 @@ package gbeb.view.operator.router {
 					
 					var triangles:Array = Delaunay.triangulate(pointsArray);
 					
-					Delaunay.drawDelaunay(triangles, pointsArray, visualization);
-					// Uncomment to draw Delaunay mesh
+					GBEBInterfaceUtil.drawDelaunay(triangles, pointsArray, visualization);
 					
-					_mesh.edges = Delaunay.convertToMeshEdges(triangles, pointsArray, _mesh.nodes);
+					_mesh.edges = GBEBInterfaceUtil.convertToMeshEdges(triangles, pointsArray, _mesh.nodes);
 				}
 
 				
