@@ -1,10 +1,9 @@
 
 package org.cytoscape.test.support;
 
-import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.internal.ColumnOrientedNetworkViewFactoryImpl;
+import org.cytoscape.view.model.internal.NetworkViewFactoryImpl;
 
 public class NetworkViewTestSupport extends NetworkTestSupport {
 
@@ -12,11 +11,11 @@ public class NetworkViewTestSupport extends NetworkTestSupport {
 
 	public NetworkViewTestSupport() {
 		super();
-		viewFactory = new ColumnOrientedNetworkViewFactoryImpl( eventHelper, new StubServiceRegistrar() );
+		viewFactory = new NetworkViewFactoryImpl( eventHelper, new StubServiceRegistrar() );
 	}
 
 	public CyNetworkView getNetworkView() {
-		return viewFactory.getNetworkViewFor( getNetwork() );
+		return viewFactory.getNetworkView( getNetwork() );
 	}
 }
 
