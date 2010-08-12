@@ -28,4 +28,23 @@ public interface TaskMonitor
 	 * This method can be called throughout the course of the <code>run</code> method.
 	 */
 	public void setStatusMessage(String statusMessage);
+
+
+	/**
+	 * This method returns a TaskMonitor for use by embedded Tasks.  The parent ("this")
+	 * TaskMonitor will allocate the specified fraction of itself to the sub TaskMonitor.
+	 * The sub TaskMonitor returned from this method will itself have a full range of
+	 * of 0 to 1.  This range will be mapped by the parent TaskMonitor to match the specified
+	 * fraction.  The effect of specifying a fraction is to increase the progress of the
+	 * parent ("this") Task by the amount of the fraction.  For example, if the current
+	 * progress of the parent TaskMonitor is 0.1 and this method is called with a fraction of
+	 * 0.5, then once the sub Task has been executed and the sub TaskMonitor successfully 
+	 * updated then the progress of the parent TaskMonitor will be set to 0.6. If the fractions
+	 * add up to more than 1, then the progress will be simply be set to 1. 
+	 * 
+	 * @param fraction A value between 0 and 1 exclusive. This represents the fraction
+	 * of the parent TaskMonitor that will be allotted to the sub TaskMonitor.
+	 * @return A TaskMonitor object suitable for monitoring the progress of embedded Tasks.
+	public TaskMonitor getSubTaskMonitor(double fraction);
+	 */
 }
