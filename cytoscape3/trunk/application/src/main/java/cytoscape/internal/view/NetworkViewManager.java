@@ -427,7 +427,7 @@ public class NetworkViewManager implements InternalFrameListener,
 
 		Long sourceNetwork = view.getModel().getSUID();
 		netmgr.setCurrentNetworkView(sourceNetwork);
-		netmgr.setCurrentPresentation(presentationMap.get(sourceNetwork));
+		netmgr.setCurrentRenderingEngine(presentationMap.get(sourceNetwork));
 
 		updateNetworkTitle( view.getModel() );	
 

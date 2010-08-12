@@ -608,7 +608,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 				vp = (VisualProperty<?>) value;
 
 				RenderingEngine presentation = cyNetworkManager
-						.getCurrentPresentation();
+						.getCurrentRenderingEngine();
 				icon = presentation.createIcon(vp);
 			}
 			setText(vp.getDisplayName() + "  =  "

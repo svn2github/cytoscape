@@ -85,7 +85,7 @@ public class PrintAction extends CytoscapeAction {
 	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		RenderingEngine engine = cyNetworkMgr.getCurrentPresentation();
+		RenderingEngine engine = cyNetworkMgr.getCurrentRenderingEngine();
 
 		PrinterJob printJob = PrinterJob.getPrinterJob();
 

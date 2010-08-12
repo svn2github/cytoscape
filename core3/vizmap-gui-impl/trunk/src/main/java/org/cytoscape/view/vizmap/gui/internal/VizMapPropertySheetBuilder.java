@@ -100,7 +100,7 @@ public class VizMapPropertySheetBuilder implements
 	public void setPropertyTable() {
 		
 		System.out.println("!!!!!!!!!!!! Current Style = " + selectedStyle);
-		if(selectedStyle == null || cyNetworkManager.getCurrentPresentation() == null)
+		if(selectedStyle == null || cyNetworkManager.getCurrentRenderingEngine() == null)
 			return;
 		
 		setPropertySheetAppearence();
@@ -307,7 +307,7 @@ public class VizMapPropertySheetBuilder implements
 
 		VisualMappingFunction<?, ?> mapping = null;
 
-		VisualLexicon lex = this.cyNetworkManager.getCurrentPresentation().getVisualLexicon();
+		VisualLexicon lex = this.cyNetworkManager.getCurrentRenderingEngine().getVisualLexicon();
 
 		for (VisualProperty<?> type : lex.getAllVisualProperties()) {
 			mapping = selectedStyle.getVisualMappingFunction(type);

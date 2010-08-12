@@ -38,19 +38,22 @@
 
 package org.cytoscape.task.internal.creation;
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.Task;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
 
 
+/**
+ * Create an empty network with view.
+ *
+ */
 public class NewEmptyNetworkTask extends AbstractCreationTask {
 
-	private CyNetworkFactory cnf;
-	private CyNetworkViewFactory cnvf;
+	private final CyNetworkFactory cnf;
+	private final CyNetworkViewFactory cnvf;
 
 	public NewEmptyNetworkTask(CyNetworkFactory cnf, CyNetworkViewFactory cnvf, CyNetworkManager netmgr) {
 		super(netmgr);
@@ -58,13 +61,20 @@ public class NewEmptyNetworkTask extends AbstractCreationTask {
 		this.cnvf = cnvf;
 	}
 
+	
 	public void run(TaskMonitor tm) {
-		CyNetwork newNet = cnf.getInstance();
+		System.out.println("========= Creating empty network/view: stage 1 =========");
+		final CyNetwork newNet = cnf.getInstance();
 		newNet.attrs().set("name","Network");
-		CyNetworkView view = cnvf.getNetworkView(newNet);
+		
+		System.out.println("========= Creating empty network/view: stage 2 =========");
+		final CyNetworkView view = cnvf.getNetworkView(newNet);
 
+		System.out.println("========= Creating empty network/view: stage 3 =========");
+		
 		netmgr.addNetwork(newNet);
+		System.out.println("========= Creating empty network/view: stage 4 =========");
 		netmgr.addNetworkView(view);
-		System.out.println("New empty network has been created");
+		System.out.println("========= New empty network/view has been created =========");
 	}
 }

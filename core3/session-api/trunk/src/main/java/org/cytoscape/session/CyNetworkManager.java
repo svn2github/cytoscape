@@ -43,21 +43,21 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngine;
 
-
 /**
  * Basic access to networks and view in an instance of Cytoscape.
  */
 public interface CyNetworkManager {
+	
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public CyNetwork getCurrentNetwork();
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param network_id
 	 *            DOCUMENT ME!
 	 */
@@ -65,14 +65,14 @@ public interface CyNetworkManager {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public CyNetworkView getCurrentNetworkView();
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param view_id
 	 *            DOCUMENT ME!
 	 */
@@ -80,75 +80,75 @@ public interface CyNetworkManager {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Set<CyNetwork> getNetworkSet();
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Set<CyNetworkView> getNetworkViewSet();
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param id
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public CyNetwork getNetwork(long id);
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param network_id
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public CyNetworkView getNetworkView(long network_id);
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param network_id
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean networkExists(long network_id);
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param network_id
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean viewExists(long network_id);
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public List<CyNetwork> getSelectedNetworks();
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public List<CyNetworkView> getSelectedNetworkViews();
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param viewIDs
 	 *            DOCUMENT ME!
 	 */
@@ -156,7 +156,7 @@ public interface CyNetworkManager {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param ids
 	 *            DOCUMENT ME!
 	 */
@@ -164,7 +164,7 @@ public interface CyNetworkManager {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param network
 	 *            DOCUMENT ME!
 	 */
@@ -172,7 +172,7 @@ public interface CyNetworkManager {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param view
 	 *            DOCUMENT ME!
 	 */
@@ -180,20 +180,22 @@ public interface CyNetworkManager {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param network
 	 *            DOCUMENT ME!
 	 */
-	public void addNetwork(CyNetwork network);
+	public void addNetwork(final CyNetwork network);
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param view
 	 *            DOCUMENT ME!
 	 */
 	public void addNetworkView(CyNetworkView view);
 
-	public RenderingEngine getCurrentPresentation();
-	public void setCurrentPresentation(RenderingEngine engine);
+	
+	public RenderingEngine<CyNetwork> getCurrentRenderingEngine();
+
+	public void setCurrentRenderingEngine(final RenderingEngine<CyNetwork> engine);
 }
