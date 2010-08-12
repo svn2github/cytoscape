@@ -36,7 +36,6 @@ package org.cytoscape.event.internal;
 
 import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.event.CyListener;
 import org.cytoscape.event.CyMicroListener;
 
 

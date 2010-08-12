@@ -34,18 +34,15 @@
 */
 package org.cytoscape.event.internal;
 
-import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.event.CyMicroListener;
-
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.InvocationHandler;
-
-import java.util.Set;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.Set;
 
+import org.cytoscape.event.CyMicroListener;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
