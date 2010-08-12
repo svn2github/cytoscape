@@ -68,7 +68,7 @@ public class XorPanel extends JPanel {
 		}
 	}
 
-	class GUIHandlerSwitchListener implements  GUIHandler {
+	class GUIHandlerSwitchListener implements GUIHandler {
 		public Tunable getTunable() {return null;}
 		public Field getField() {return null;}
 		public Object getObject() {return null;}
@@ -94,6 +94,7 @@ public class XorPanel extends JPanel {
 		@Override public String getDescription() { return null; }
 		@Override public Object getValue() { return null; }
 		@Override public void setValue(final Object newValue) { }
+		@Override public String getQualifiedName() { return null; }
 		public String getName() { return null; }
 		public JPanel getJPanel() { return null; }
 		public void handle() {}

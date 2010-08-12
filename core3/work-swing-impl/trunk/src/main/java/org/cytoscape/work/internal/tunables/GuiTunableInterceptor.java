@@ -48,7 +48,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	private Map<List<GUIHandler>,JPanel> panelMap;
 	private List<GUIHandler> handlers;
 	private boolean newValuesSet;
-	private Object[] objs;
+	private Object[] objectsWithTunables;
 
 	/**
 	 * Creates an Interceptor that will use the <code>GUIHandlers</code> created in a <code>HandlerFactory</code> from intercepted <code>Tunables</code>.
@@ -103,12 +103,12 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	 * @return if new values has been successfully set
 	 */
 	public boolean createUI(Object... proxyObjs) {
-		this.objs = convertSpringProxyObjs(proxyObjs);
+		this.objectsWithTunables = convertSpringProxyObjs(proxyObjs);
 		handlers = new ArrayList<GUIHandler>();
-		for (Object o : objs) {
-			if (!handlerMap.containsKey(o))
+		for (final Object objectWithTunables : objectsWithTunables) {
+			if (!handlerMap.containsKey(objectWithTunables))
 				throw new IllegalArgumentException("No Tunables exist for Object yet!");
-			handlers.addAll(handlerMap.get(o).values());
+			handlers.addAll(handlerMap.get(objectWithTunables).values());
 		}
 
 		if (handlers.isEmpty()) {
@@ -272,7 +272,8 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	/**
 	 * Displays the JPanels of each <code>GUIHandler</code> in a <code>JOptionPane</code>
 	 *
-	 * Set the new <i>"value"</i> to <code>Tunable</code> object if the user clicked on <i>OK</i>, and if the validate method from <code>TunableValidator</code> interface succeeded
+	 * Set the new <i>"value"</i> to <code>Tunable</code> object if the user clicked on
+	 * <i>OK</i>, and if the validate method from <code>TunableValidator</code> interface succeeded.
 	 */
 	private void displayOptionPanel() {
 		Object[] buttons = {"OK", "Cancel"};
@@ -292,7 +293,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 			newValuesSet = false;
 	}
 
-
 	/**
 	 * Check if the conditions set in validate method from <code>TunableValidator</code> are met
 	 *
@@ -301,21 +301,25 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	 * @return success(true) or failure(false) for the validation
 	 */
 	private boolean validateTunableInput() {
-		for (Object o : objs) {
-			Object[] interfaces = o.getClass().getInterfaces();
-			for (Object inter : interfaces) {
-				if(inter.equals(TunableValidator.class)) {
-					try {
-						((TunableValidator)o).validate();
-					} catch (Exception e) {
-						JOptionPane.showMessageDialog(new JFrame(), e.toString(), "TunableValidator problem", JOptionPane.ERROR_MESSAGE);
-						e.printStackTrace();
-						if(parentPanel==null)displayOptionPanel();
-						return false;
-					}
+		for (final Object objectWithTunables : objectsWithTunables) {
+			if (!(objectWithTunables instanceof TunableValidator))
+				continue;
+
+			final Appendable errMsg = new StringBuilder();
+			try {
+				if (!((TunableValidator)objectWithTunables).tunablesAreValid(errMsg)) {
+					JOptionPane.showMessageDialog(new JFrame(), errMsg.toString(),
+					                              "Input Validation Problem",
+					                              JOptionPane.ERROR_MESSAGE);
+					if (parentPanel == null)
+						displayOptionPanel();
+					return false;
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
+
 		parentPanel = null;
 		newValuesSet = true;
 		return true;

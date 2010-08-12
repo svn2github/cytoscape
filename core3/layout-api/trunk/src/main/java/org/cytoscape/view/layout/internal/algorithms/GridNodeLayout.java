@@ -1,14 +1,7 @@
 /*
   File: GridNodeLayout.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,6 +29,7 @@
 */
 package org.cytoscape.view.layout.internal.algorithms;
 
+
 import java.util.List;
 
 import org.cytoscape.model.CyEdge;
@@ -54,66 +48,31 @@ import org.cytoscape.work.UndoSupport;
  * The GridNodeLayout provides a very simple layout, suitable as
  * the default layout for Cytoscape data readers.
  */
-public class GridNodeLayout extends AbstractLayout implements TunableValidator{
-
-//	private ModuleProperties layoutProperties;
-
+public class GridNodeLayout extends AbstractLayout implements TunableValidator {
 	@Tunable(description="Vertical spacing between nodes")
-	public double nodeVerticalSpacing = 40.0; 
+	public double nodeVerticalSpacing = 40.0;
 
 	@Tunable(description="Horizontal spacing between nodes")
-	public double nodeHorizontalSpacing = 80.0; 
+	public double nodeHorizontalSpacing = 80.0;
 
-	
+
 	/**
 	 * Creates a new GridNodeLayout object.
 	 */
 	public GridNodeLayout(UndoSupport un) {
 		super(un);
-//		initProps();
-	}
-	
-	public void validate() throws java.io.IOException{
-		if(nodeVerticalSpacing == 30.0 )throw new java.io.IOException("This is a test : I don't want 30.0 for nodeVerticalSpacing value\nProvide something else!!!!");
 	}
 
-/*
+	public boolean tunablesAreValid(final Appendable errMsg) {
+		if (nodeVerticalSpacing != 30.0 )
+			return true;
 
-	private void initProps() {
-		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
-        layoutProperties.add(TunableFactory.getTunable("nodeHorizontalSpacing", "Horizontal spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
-        layoutProperties.add(TunableFactory.getTunable("nodeVerticalSpacing", "Vertical spacing between nodes", Tunable.DOUBLE, new Double(80.0)));
+		try {
+			errMsg.append("This is a test : I don't want 30.0 for nodeVerticalSpacing value\nProvide something else!!!!");
+		} finally {
+			return false;
+		}
 	}
-
-    public void updateSettings() {
-        updateSettings(false);
-    }
-
-    public void updateSettings(boolean force) {
-        layoutProperties.updateValues();
-
-        Tunable t = layoutProperties.get("nodeHorizontalSpacing");
-
-        if ((t != null) && (t.valueChanged() || force))
-            nodeHorizontalSpacing = ((Double) t.getValue()).doubleValue();
-
-        t = layoutProperties.get("nodeVerticalSpacing");
-
-        if ((t != null) && (t.valueChanged() || force))
-            nodeVerticalSpacing = ((Double) t.getValue()).doubleValue();
-	}
-
-    public void revertSettings() {
-        layoutProperties.revertProperties();
-    }
-
-    public JPanel getSettingsPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 1));
-        panel.add(layoutProperties.getTunablePanel());
-
-       return panel;
-	}
-*/
 
 	/**
 	 *  DOCUMENT ME!
@@ -136,12 +95,11 @@ public class GridNodeLayout extends AbstractLayout implements TunableValidator{
 	/**
 	 * We do support selected only
 	 *
-	 * @return true 
+	 * @return true
 	 */
 	public boolean supportsSelectedOnly() {
 		return true;
 	}
-
 
 	/**
 	 *  DOCUMENT ME!
@@ -199,7 +157,7 @@ public class GridNodeLayout extends AbstractLayout implements TunableValidator{
 			edgeList = network.getAdjacentEdgeList(nView.getModel(),CyEdge.Type.ANY);
 // TODO
 //			for (CyEdge edge: edgeList) {
-//				networkView.getCyEdgeView(edge).clearBends(); 
+//				networkView.getCyEdgeView(edge).clearBends();
 //			}
 
 			if (isLocked(nView)) {
@@ -235,5 +193,5 @@ public class GridNodeLayout extends AbstractLayout implements TunableValidator{
 		//xColumn.setValues(xMap,null);
 		//yColumn.setValues(yMap,null);
 	}
-	
+
 }

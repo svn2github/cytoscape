@@ -37,6 +37,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.BoundedFloat;
 import org.cytoscape.work.util.BoundedInteger;
@@ -45,7 +46,7 @@ import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 
 
-public class TunablesTestTask extends AbstractTask {
+public class TunablesTestTask extends AbstractTask implements TunableValidator {
 	@Tunable(description="String")
 	public String s;
 
@@ -85,6 +86,9 @@ public class TunablesTestTask extends AbstractTask {
 	@Tunable(description="Boolean")
 	public Boolean b2;
 
+	@Tunable(description="Must be \"valid\"")
+	public String vt;
+
 	private int getterSetterInt;
 
 	public TunablesTestTask() {
@@ -114,6 +118,7 @@ public class TunablesTestTask extends AbstractTask {
 		System.err.println("boolean="+b);
 		System.err.println("Boolean="+b2);
 		System.err.println("getterSetterInt="+getterSetterInt);
+		System.err.println("Validated tunable="+vt);
 	}
 
 	@Tunable(description="Getter/setter int")
@@ -121,4 +126,15 @@ public class TunablesTestTask extends AbstractTask {
 
 	@Tunable(description="Getter/setter int")
 	public void setInt(final Integer newValue) { getterSetterInt = newValue; }
+
+	public boolean tunablesAreValid(final Appendable errMsg) {
+		if (vt.equals("valid"))
+			return true;
+
+		try {
+			errMsg.append("Bad input: \"valid\" expected!");
+		} finally {
+			return false;
+		}
+	}
 }

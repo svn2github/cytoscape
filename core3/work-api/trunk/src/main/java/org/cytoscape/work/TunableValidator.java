@@ -2,10 +2,10 @@ package org.cytoscape.work;
 
 
 /**
- * If implemented, this interface is used to apply a test to the modified values of the class.
+ * If implemented, this interface is used to apply a test to the modified values of a Tunable.
  * 
  * <p><pre>
- * 	<b>example</b> :
+ * 	<b>Example</b>:
  * 
  * 	If using this Test class :
  * 	<code>
@@ -32,12 +32,12 @@ package org.cytoscape.work;
  * @author Pasteur
  *
  */
-public interface TunableValidator{
-	
+public interface TunableValidator {
 	/**
-	 * Executes the validation test on the annotated <code>Tunables</code> present in the class whose Objects have been modified.
+	 * Executes the validation test on the annotated <code>Tunables</code>.
 	 * 
-	 * @return The message that will be displayed if the test failed, or <i>null</i> if the test succeeded.
+	 * @param  errMsg  if the validation failed an explanatory message can be found here and accessed via <code>errMsg.toString()</code>
+	 * @return true if the test succeeded and false otherwise
 	 */
-	void validate() throws Exception;
+	boolean tunablesAreValid(final Appendable errMsg) throws Exception;
 }
