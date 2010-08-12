@@ -125,7 +125,6 @@ public class ArrayGraph implements CyRootNetwork {
 		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
 		attrs().set("name","");
 		// potential leak since "this" isn't yet fully constructed
-		tableMgr.setTableMap("NETWORK", this, netAttrMgr);
 
 		nodeAttrMgr = new HashMap<String, CyDataTable>();
 		nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " node", true,eh));
@@ -133,7 +132,6 @@ public class ArrayGraph implements CyRootNetwork {
 
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
-		tableMgr.setTableMap("NODE", this, nodeAttrMgr);
 
 		edgeAttrMgr = new HashMap<String, CyDataTable>();
 		edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " edge", true,eh));
@@ -142,7 +140,6 @@ public class ArrayGraph implements CyRootNetwork {
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("interaction",String.class,false);
-		tableMgr.setTableMap("EDGE", this, edgeAttrMgr);
 		
 		eventHelper = eh;
 
@@ -150,6 +147,10 @@ public class ArrayGraph implements CyRootNetwork {
 		metaNodes = new ArrayList<CyMetaNode>();
 
 		base = addSubNetwork(); 
+
+		tableMgr.setTableMap("NETWORK", base, netAttrMgr);
+		tableMgr.setTableMap("NODE", base, nodeAttrMgr);
+		tableMgr.setTableMap("EDGE", base, edgeAttrMgr);
 	}
 
 	/**
