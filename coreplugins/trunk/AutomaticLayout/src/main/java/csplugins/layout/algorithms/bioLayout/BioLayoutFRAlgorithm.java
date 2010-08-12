@@ -30,6 +30,11 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
+/**
+ * Copyright (c) 2010 Gerardo Huck
+ */
+
 package csplugins.layout.algorithms.bioLayout;
 
 import csplugins.layout.LayoutEdge;
@@ -71,11 +76,11 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * The multipliers and computed result for the
 	 * attraction and repulsion values.
 	 */
-	private double attraction_multiplier = .3;
+	private double attraction_multiplier = 1.0;
 	private double attraction_constant;
-	private double repulsion_multiplier = 0.04;
+	private double repulsion_multiplier = 0.001;
 	private double repulsion_constant;
-	private double gravity_multiplier = 1;
+	private double gravity_multiplier = 0.0;
 	private double gravity_constant;
 
 	/**
@@ -166,6 +171,14 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * Required methods (and overrides) for AbstractLayout
 	 */
+
+
+    /**
+     * This layout ssuports laying out labels
+     */
+    public boolean supportsLabelLayout() {
+	return true;
+    }
 
 	/**
 	 * Return the "name" of this algorithm.  This is meant
@@ -396,13 +409,13 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		                                 Tunable.GROUP, new Integer(9)));
 		layoutProperties.add(new Tunable("repulsion_multiplier",
 		                                 "Multiplier to calculate the repulsion force",
-		                                 Tunable.DOUBLE, new Double(0.04)));
+		                                 Tunable.DOUBLE, new Double(1.0)));
 		layoutProperties.add(new Tunable("attraction_multiplier",
 		                                 "Divisor to calculate the attraction force",
-		                                 Tunable.DOUBLE, new Double(0.03)));
+		                                 Tunable.DOUBLE, new Double(0.001)));
 		layoutProperties.add(new Tunable("gravity_multiplier",
 		                                 "Multiplier to calculate the gravity force",
-		                                 Tunable.DOUBLE, new Double(1)));
+		                                 Tunable.DOUBLE, new Double(0.0)));
 		layoutProperties.add(new Tunable("iterations", "Number of iterations", Tunable.INTEGER,
 		                                 new Integer(500)));
 		layoutProperties.add(new Tunable("temperature", "Initial temperature", Tunable.DOUBLE,
@@ -418,6 +431,9 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		layoutProperties.add(new Tunable("max_distance_factor",
 		                                 "Percent of graph used for node repulsion calculations",
 		                                 Tunable.DOUBLE, new Double(20.0)));
+
+		getLabelTunables(layoutProperties);
+
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
 		layoutProperties.initializeProperties();
@@ -504,12 +520,16 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			if (t.valueChanged())
 				layoutProperties.setProperty(t.getName(), t.getValue().toString());
 		}
+
+	// Update label tunables
+	updateSettings(layoutProperties, force);
+
 	}
 
 	/**
 	 * Perform a layout
 	 */
-	public void layoutPartion(LayoutPartition partition) {
+	public void layoutPartition(LayoutPartition partition) {
 		this.partition = partition;
 
 		Dimension initialLocation = null;
@@ -691,13 +711,17 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		}
 /// end
 
+
+             // This was commented out by Gerardo H. It was spoiling the label layout 
+
 		// Translate back to the middle (or to the starting point,
 		// if we're dealing with a selected group
-		if (!selectedOnly) {
-			for (LayoutNode v: partition.getNodeList()) {
-				v.decrement(xAverage - (width / 2), yAverage - (height / 2));
-			}
-		}
+// 		if (!selectedOnly) {
+// 			for (LayoutNode v: partition.getNodeList()) {
+// 				v.decrement(xAverage - (width / 2), yAverage - (height / 2));
+// 			}
+// 		}
+
 
 		// updateProfile.checkpoint();
 

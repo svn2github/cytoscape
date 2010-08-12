@@ -132,7 +132,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 	 *
 	 * @param partition DOCUMENT ME!
 	 */
-	public void layoutPartion(LayoutPartition partition) {
+	public void layoutPartition(LayoutPartition partition) {
 		if (canceled)
 			return;
 
