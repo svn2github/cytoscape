@@ -122,11 +122,13 @@
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-api</artifactId>
 			<version>1.5.2</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-service</artifactId>
 			<version>1.5.2</version>
+			<scope>compile</scope>
 		</dependency>
 		
 		<!-- Modules for Testing -->
