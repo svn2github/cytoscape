@@ -364,6 +364,14 @@ public class DGraphView implements GraphView, Printable {
 		return m_perspective;
 	}
 
+        public Object getLock(){
+            return m_lock;
+        }
+
+        public void setViewportChanged(boolean val){
+            m_viewportChanged=val;
+        }
+
 	/**
 	 * Whether node selection is enabled.
 	 *
@@ -1044,7 +1052,7 @@ public class DGraphView implements GraphView, Printable {
 		//System.out.println("**************** DGraph Redraw Called ***************** " + this.getGraphPerspective());
 		//Thread.dumpStack();
 		//System.out.println("**************** DGraph Redraw Finished *****************\n\n" );
-		
+
 		m_networkCanvas.repaint();
 	}
 

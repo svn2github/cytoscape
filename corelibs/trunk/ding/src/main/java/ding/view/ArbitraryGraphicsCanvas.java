@@ -63,7 +63,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 	/**
 	 * Testing boolean to quickly turn on/off anchor nodes.
 	 */
-	private static final boolean USE_REPOSITION_CODE = false;
+	private static final boolean USE_REPOSITION_CODE = true;
 
 	/**
 	 * Our reference to the GraphPerspective our view belongs to
@@ -82,7 +82,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 
 	/*
 	 * Map of component(s) to hidden node(s)
-	 */
+	 */        
 	private final Map<Component, Node> m_componentToNodeMap;
 
 	/**
@@ -111,6 +111,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 	/**
 	 * Our implementation of add
 	 */
+        @Override
 	public Component add(Component component) {
 		if (USE_REPOSITION_CODE) {
 			// create an "anchor node"
@@ -123,7 +124,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 			final NodeView nodeView = m_dGraphView.getNodeView(node);
 			final double[] nodeCanvasCoordinates = new double[2];
 			nodeCanvasCoordinates[0] = component.getX();
-			nodeCanvasCoordinates[1] = component.getY();
+			nodeCanvasCoordinates[1] = component.getY();                        
 			m_dGraphView.xformComponentToNodeCoords(nodeCanvasCoordinates);
 			nodeView.setXPosition(nodeCanvasCoordinates[0]);
 			nodeView.setYPosition(nodeCanvasCoordinates[1]);
@@ -141,7 +142,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 		// do our stuff
 		return super.add(component);
 	}
-
+        
 	/**
 	 * Our implementation of ViewportChangeListener.
 	 */
@@ -153,12 +154,27 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 		}
 	}
 
+	public void modifyComponentLocation(int x,int y, int componentNum){
+		if(USE_REPOSITION_CODE){
+			final NodeView nodeView = m_dGraphView.getNodeView(m_componentToNodeMap.get(this.getComponent(componentNum)));
+			final double[] nodeCanvasCoordinates = new double[2];
+
+			nodeCanvasCoordinates[0] = x;
+			nodeCanvasCoordinates[1] = y;
+
+			m_dGraphView.xformComponentToNodeCoords(nodeCanvasCoordinates);
+
+			nodeView.setXPosition(nodeCanvasCoordinates[0]);
+			nodeView.setYPosition(nodeCanvasCoordinates[1]);
+		}
+	}
+
 	/**
 	 * Our implementation of JComponent setBounds.
 	 */
 	public void setBounds(int x, int y, int width, int height) {
 		super.setBounds(x, y, width, height);
-
+                
 		// our bounds have changed, create a new image with new size
 		if ((width > 1) && (height > 1)) {
 			// create the buffered image
@@ -187,13 +203,34 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 			clearImage(image2D);
 
 			// now paint children
-			if (m_isVisible)
-				paintChildren(image2D);
-
+			if (m_isVisible){
+				int num=this.getComponentCount();
+				for(int i=0;i<num;i++){
+					this.getComponent(i).paint(image2D);
+				}
+			}
+			image2D.dispose();
 			// render image
 			graphics.drawImage(m_img, 0, 0, null);
 		}
+                
 	}
+
+
+	@Override
+	public Component getComponentAt(int x, int y) {
+
+		int n=getComponentCount();
+
+		for(int i=0;i<n;i++){
+				Component c=this.getComponent(i).getComponentAt(x, y);
+
+				if(c!=null)
+						return c;
+		}
+		return null;
+	}
+
 
 	/**
 	 * Invoke this method to print the component.

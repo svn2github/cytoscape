@@ -98,9 +98,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	final IntStack m_stack = new IntStack();
 	final IntStack m_stack2 = new IntStack();
 	final Object m_lock;
-	
 	DGraphView m_view;
-	
 	final GraphLOD[] m_lod = new GraphLOD[1];
 	final IntHash m_hash;
 	GraphGraphics m_grafx;
@@ -115,6 +113,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	
 	private boolean NodeMovement = true;
 
+
 	/**
 	 * String used to compare against os.name System property -
 	 * to determine if we are running on Windows platform.
@@ -126,22 +125,19 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	//  for turning selection rectangle on and off
 	private boolean selecting = true;
 
-	
 	public Vector listeners = new Vector();
 	private Vector transferComponents = new Vector();
 
-	
 	/**
 	 * Listeners for node right-click menu
 	 */
 	public Vector nodeContextMenuListeners = new Vector();
-	
+
 	/**
 	 * Listeners for edge right-click menu.
 	 */
 	public Vector edgeContextMenuListeners = new Vector();
 
-	
 	InnerCanvas(Object lock, DGraphView view) {
 		super();
 		m_lock = lock;
@@ -164,7 +160,14 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		                            DnDConstants.ACTION_COPY, // actions
 		                            this); // DropTargetListener
 	}
+        
+        public double getScaleFactor(){
+            return m_scaleFactor;
+        }
 
+        public void setScaleFactor(double val){
+            m_scaleFactor=val;
+        }
 	/**
 	 * DOCUMENT ME!
 	 *
@@ -256,15 +259,15 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 
 	/**
-	 * This print method will be used by Image Export functions.
+	 * DOCUMENT ME!
 	 *
 	 * @param g Usually Graphics2D object for drawing network view as image.
-	 * 
 	 */
-	public void print(Graphics g) {		
+	public void print(Graphics g) {
 		renderGraph(new GraphGraphics(
 				new ImageImposter(g, getWidth(), getHeight()), false), 
 				/* setLastRenderDetail = */ false, m_view.m_printLOD);
+		// g.drawImage(img, 0, 0, null);
 	}
 
 	/**
@@ -1180,6 +1183,19 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	protected synchronized void processPhoebeCanvasDropEvent(PhoebeCanvasDropEvent event) {
 		Enumeration e = listeners.elements();
 
+		//        // AJK: 12/08/06 oy, what a hack.  try to send transferable to transferhandler
+		//        //               of cytoscapeDesktopPane
+		//        Transferable t = event.getTransferable();
+		//        TransferHandler th = Cytoscape.getDesktop().getNetworkViewManager().
+		//        getDesktopPane().getTransferHandler();
+		//        if (th != null)
+		//        {
+		//        	th.importData(Cytoscape.getDesktop().getNetworkViewManager().
+		//        getDesktopPane(), t);
+		//        }
+		//        // AJK: 12/08/06 END       
+
+		//      // AJK: 01/14/07 oy, what a hack.  try to send transferable to transferhandler
 		Transferable t = event.getTransferable();
 		TransferHandler th;
 		JComponent jComp;
@@ -1363,7 +1379,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	public boolean isSelecting() {
 		return selecting;
 	}
-	
 
 	/**
 	 * Called to get the tranform matrix used by the inner canvas
@@ -1417,7 +1432,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	private void renderGraph(GraphGraphics graphics, final boolean setLastRenderDetail, final GraphLOD lod) {
 		// Set color alpha based on opacity setting
 		final int alpha = (m_isOpaque) ? 255 : 0;
-		
+
 		final Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
 							m_backgroundColor.getBlue(), alpha);
 
