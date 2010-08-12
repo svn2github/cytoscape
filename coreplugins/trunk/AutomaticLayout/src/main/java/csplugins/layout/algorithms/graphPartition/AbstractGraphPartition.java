@@ -57,7 +57,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
     protected List <LayoutPartition> partitionList = null;
     protected EdgeWeighter edgeWeighter = null;
     protected boolean singlePartition = false;
-    protected CyLogger logger = null;
+    protected CyLogger logger = CyLogger.getLogger(AbstractGraphPartition.class);
 
     /**
      * Which kinf of layout are we going to perform
