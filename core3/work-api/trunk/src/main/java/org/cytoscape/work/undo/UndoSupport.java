@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,18 +25,17 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.work;
+
 
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
+
 
 /** 
  * A simple interface that provides access to a Swing Undo Service. 
  */
 public interface UndoSupport {
-
 	UndoManager getUndoManager(); 
-
 	UndoableEditSupport getUndoableEditSupport();
 }
