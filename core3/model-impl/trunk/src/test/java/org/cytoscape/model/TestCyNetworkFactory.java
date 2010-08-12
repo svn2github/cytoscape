@@ -40,23 +40,29 @@ package org.cytoscape.model;
 //import org.cytoscape.model.internal.CyNetworkImpl;
 //import org.cytoscape.model.internal.MGraph;
 import org.cytoscape.model.internal.ArrayGraph;
-import org.cytoscape.model.internal.TableManager;
+import org.cytoscape.model.internal.CyTableManagerImpl;
 import org.cytoscape.event.DummyCyEventHelper;
 
 import org.cytoscape.model.subnetwork.CyRootNetwork;
+import org.junit.Test;
 
 public class TestCyNetworkFactory {
 
-	private TestCyNetworkFactory() {};
+	public TestCyNetworkFactory() {};
 
 	public static CyNetwork getInstance() {
 		//return new CyNetworkImpl(new DummyCyEventHelper());
 		//return new MGraph(new DummyCyEventHelper());
-		return new ArrayGraph(new DummyCyEventHelper(), new TableManager());
+		return new ArrayGraph(new DummyCyEventHelper(), new CyTableManagerImpl());
 	}
 
 	public static CyRootNetwork getRootInstance() {
-		return new ArrayGraph(new DummyCyEventHelper(), new TableManager());
+		return new ArrayGraph(new DummyCyEventHelper(), new CyTableManagerImpl());
+	}
+	
+	@Test
+	public void testFactory() throws Exception {
+		
 	}
 }
 

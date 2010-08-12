@@ -35,7 +35,7 @@
 
 package org.cytoscape.model;
 
-import org.cytoscape.model.internal.TableManager;
+import org.cytoscape.model.internal.CyTableManagerImpl;
 
 /**
  * DOCUMENT ME!
@@ -47,7 +47,7 @@ public class CyTableManagerTest extends AbstractCyTableManagerTest {
 	 */
 	public void setUp() {
 		super.setUp();
-		mgr = new TableManager();
+		mgr = new CyTableManagerImpl();
 	}
 
 	/**
