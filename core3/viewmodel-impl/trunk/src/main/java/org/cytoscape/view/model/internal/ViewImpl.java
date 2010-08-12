@@ -30,6 +30,11 @@ public class ViewImpl<M> implements View<M> {
 	
 	
 	public ViewImpl(final M model, final CyEventHelper cyEventHelper) {
+		if(model == null)
+			throw new IllegalArgumentException("Data model cannot be null.");
+		if(cyEventHelper == null)
+			throw new IllegalArgumentException("CyEventHelper is null.");
+		
 		this.suid = SUIDFactory.getNextSUID();
 		this.model = model;
 		this.cyEventHelper = cyEventHelper;
@@ -38,6 +43,7 @@ public class ViewImpl<M> implements View<M> {
 		this.visualPropertyLocks = new HashMap<VisualProperty<?>, Object>();
 	}
 
+	
 	@Override
 	public M getModel() {
 		return model;
