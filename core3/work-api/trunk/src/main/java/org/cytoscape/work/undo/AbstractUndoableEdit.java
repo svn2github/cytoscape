@@ -1,15 +1,7 @@
-
 /*
   File: CyAbstractEdit.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -35,41 +27,43 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+package cytoscape.org.work.undo;
 
-package cytoscape.util.undo;
 
-import javax.swing.undo.AbstractUndoableEdit;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.CannotRedoException;
+
 
 /** 
- * A small convenience class that can be used to create new edits.  All
+ * A small convenience class that can be used to create new undo/redo edits.  All
  * you should have to do is implement the undo() and redo() methods. The
  * benefit is that you don't need to worry about setting up names.
  */
-public abstract class CyAbstractEdit extends AbstractUndoableEdit {
+public abstract class AbstractUndoableEdit extends javax.swing.undo.AbstractUndoableEdit {
+	private final String presentationName;
 
-		protected String desc;
+	public AbstractUndoableEdit(final String presentationName) {
+		this.presentationName = presentationName;
+	}
 
-		public CyAbstractEdit(String desc) {
-			this.desc = desc;
-		}
+	@Override
+	public final String getPresentationName() {
+		return presentationName;
+	}
 
-		public String getPresentationName() {
-			return desc;
-		}
+	@Override
+	public final String getRedoPresentationName() {
+		return super.getRedoPresentationName();
+	}
 
-		public String getRedoPresentationName() {
-			return "Redo: " + desc;
-		}
+	@Override
+	public final String getUndoPresentationName() {
+		return super.getUndoPresentationName();
+	}
 
-		public String getUndoPresentationName() {
-			return "Undo: " + desc;
-		}
+	@Override
+	public abstract void undo() throws CannotUndoException;
 
-		public void undo() {
-			super.undo();
-		}
-
-		public void redo() {
-			super.redo();
-		}
+	@Override
+	public abstract void redo() throws CannotRedoException;
 }
