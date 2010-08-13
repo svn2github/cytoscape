@@ -36,16 +36,17 @@
 */
 package cytoscape.internal.actions;
 
-import cytoscape.view.CytoscapeAction;
-
-import org.cytoscape.work.UndoSupport;
-import org.cytoscape.session.CyNetworkManager;
-
-import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.undo.CannotUndoException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+
+import javax.swing.Action;
+import javax.swing.event.MenuEvent;
+import javax.swing.undo.CannotUndoException;
+
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.work.undo.UndoSupport;
+
+import cytoscape.view.CytoscapeAction;
 
 /**
  * An action that calls redo for the most recent edit in the

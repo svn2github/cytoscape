@@ -36,10 +36,10 @@
 
 package org.cytoscape.ding;
 
-import org.cytoscape.ding.impl.ViewState;
-import org.cytoscape.work.UndoSupport;
-
 import javax.swing.undo.AbstractUndoableEdit;
+
+import org.cytoscape.ding.impl.ViewState;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 /**

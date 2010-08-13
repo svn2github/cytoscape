@@ -32,14 +32,14 @@
  */
 package csplugins.layout.algorithms.bioLayout;
 
+import java.awt.Dimension;
+import java.util.ArrayList;
+
 import org.cytoscape.view.layout.LayoutEdge;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.view.layout.LayoutPartition;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.UndoSupport;
-
-import java.awt.*;
-import java.util.ArrayList;
+import org.cytoscape.work.undo.UndoSupport;
 
 /**
  * Lays out the nodes in a graph using a modification of the Fruchterman-Rheingold

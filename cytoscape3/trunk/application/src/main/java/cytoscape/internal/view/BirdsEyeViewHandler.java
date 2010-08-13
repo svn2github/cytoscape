@@ -115,15 +115,17 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 	 *            The event triggering this method.
 	 */
 	public void handleEvent(SetCurrentNetworkEvent e) {
-		RenderingEngine<CyNetwork> engine = bevFactory.render(bevHolder,
-				netmgr.getCurrentNetworkView());
-		setFocus();
+		//FIXME
+//		RenderingEngine<CyNetwork> engine = bevFactory.render(bevHolder,
+//				netmgr.getCurrentNetworkView());
+//		setFocus();
 	}
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
-		RenderingEngine<CyNetwork> engine = bevFactory.render(bevHolder,
-				netmgr.getCurrentNetworkView());
-		setFocus();
+		//FIXME
+//		RenderingEngine<CyNetwork> engine = bevFactory.render(bevHolder,
+//				netmgr.getCurrentNetworkView());
+//		setFocus();
 	}
 
 	public void handleEvent(NetworkViewDestroyedEvent e) {

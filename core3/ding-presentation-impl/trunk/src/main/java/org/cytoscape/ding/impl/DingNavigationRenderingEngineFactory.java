@@ -26,7 +26,7 @@ import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
-import org.cytoscape.work.UndoSupport;
+import org.cytoscape.work.undo.UndoSupport;
 
 /**
  * RenderingEngineFactory for Navigation.
@@ -77,13 +77,18 @@ public class DingNavigationRenderingEngineFactory implements
 		edgeViewTFs = new HashMap<EdgeViewTaskFactory, Map>();
 		emptySpaceTFs = new HashMap<NetworkViewTaskFactory, Map>();
 	}
+	
+	
 
 	public RenderingEngine<CyNetwork> render(Object visualizationContainer,
 			View<CyNetwork> view) {
 
-		if (visualizationContainer == null || view == null)
+		if (visualizationContainer == null)
 			throw new IllegalArgumentException(
-					"Both paramerts for render method should not be null.");
+					"Visualization container is null.  This should be an JComponent for this rendering engine.");
+		if (view == null)
+			throw new IllegalArgumentException(
+					"View Model is null.");
 
 		if (!(visualizationContainer instanceof JComponent)
 				|| !(view instanceof CyNetworkView))

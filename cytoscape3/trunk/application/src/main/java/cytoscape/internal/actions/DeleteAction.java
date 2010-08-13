@@ -28,7 +28,6 @@
  */
 package cytoscape.internal.actions;
 
-import org.cytoscape.session.CyNetworkManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
@@ -44,10 +43,10 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.UndoSupport;
+import org.cytoscape.work.undo.UndoSupport;
 
-import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeAction;
 
 

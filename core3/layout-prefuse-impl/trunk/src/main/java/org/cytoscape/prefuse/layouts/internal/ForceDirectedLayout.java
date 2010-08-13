@@ -36,14 +36,21 @@
 
 package org.cytoscape.prefuse.layouts.internal; 
 
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.cytoscape.view.layout.AbstractGraphPartition;
 import org.cytoscape.view.layout.EdgeWeighter;
 import org.cytoscape.view.layout.LayoutEdge;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.view.layout.LayoutPartition;
-import org.cytoscape.view.layout.AbstractGraphPartition;
-import org.cytoscape.model.CyRow;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.UndoSupport;
+import org.cytoscape.work.undo.UndoSupport;
 
 import prefuse.util.force.DragForce;
 import prefuse.util.force.EulerIntegrator;
@@ -53,15 +60,6 @@ import prefuse.util.force.Integrator;
 import prefuse.util.force.NBodyForce;
 import prefuse.util.force.RungeKuttaIntegrator;
 import prefuse.util.force.SpringForce;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 
 enum Integrators{
 	RUNGEKUTTA("RUNGEKUTTA"),

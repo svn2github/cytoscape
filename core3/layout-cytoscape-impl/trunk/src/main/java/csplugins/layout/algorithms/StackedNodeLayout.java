@@ -36,14 +36,14 @@
 
 package csplugins.layout.algorithms;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.layout.AbstractLayout;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-import org.cytoscape.work.UndoSupport;
-
-import java.util.Collection;
-import java.util.Iterator;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 /**

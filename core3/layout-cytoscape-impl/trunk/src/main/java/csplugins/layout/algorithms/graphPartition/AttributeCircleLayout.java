@@ -32,20 +32,19 @@
  */
 package csplugins.layout.algorithms.graphPartition;
 
-import org.cytoscape.view.layout.AbstractGraphPartition;
-import org.cytoscape.view.layout.LayoutNode;
-import org.cytoscape.view.layout.LayoutPartition;
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.UndoSupport;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
+
+import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.view.layout.LayoutNode;
+import org.cytoscape.view.layout.LayoutPartition;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 /**

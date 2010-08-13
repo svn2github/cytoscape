@@ -104,7 +104,7 @@ import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
-import org.cytoscape.work.UndoSupport;
+import org.cytoscape.work.undo.UndoSupport;
 
 import phoebe.PhoebeCanvasDropListener;
 import phoebe.PhoebeCanvasDroppable;
@@ -174,7 +174,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	/**
 	 * The graph model that will be viewed.
 	 */
-	CyNetwork m_perspective;
+	CyNetwork networkModel;
 
 	/**
 	 * Holds the NodeView data for the nodes that are visible. This will change
@@ -332,9 +332,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	 */
 	Paint m_lastTexturePaint = null;
 
-	CyNetworkView cyNetworkView;
-
-	RootVisualLexicon rootLexicon;
 
 	Map<NodeViewTaskFactory, Map> nodeViewTFs;
 	Map<EdgeViewTaskFactory, Map> edgeViewTFs;
@@ -348,6 +345,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	
 	private final CyServiceRegistrar cyServiceRegistrar;
 	private final CyTableManager tableMgr;
+	
+	// This is the view model.  This should be immutable.
+	final CyNetworkView cyNetworkView;
+	
+	private final RootVisualLexicon rootLexicon;
 
 	/**
 	 * Creates a new DGraphView object.
@@ -355,7 +357,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	 * @param perspective
 	 *            The graph model that we'll be creating a view for.
 	 */
-	public DGraphView(CyNetworkView view, CyDataTableFactory dataFactory,
+	public DGraphView(final CyNetworkView view, CyDataTableFactory dataFactory,
 			CyRootNetworkFactory cyRoot, UndoSupport undo,
 			SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc,
 			VisualLexicon dingLexicon,
@@ -365,7 +367,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			TunableInterceptor interceptor, TaskManager manager, 
 			CyServiceRegistrar cyServiceRegistrar, CyTableManager tableMgr) {
 		
-		m_perspective = view.getModel();
+		if(view == null)
+			throw new IllegalArgumentException("Network View Model cannot be null.");
+		
+		networkModel = view.getModel();
 		cyNetworkView = view;
 		cyServiceRegistrar.registerService(this, ViewChangeListener.class, new Properties());
 		
@@ -383,16 +388,16 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 		CyDataTable nodeCAM = dataFactory.createTable("node view", false);
 		nodeCAM.createColumn("hidden", Boolean.class, false);
-		tableMgr.getTableMap("NODE", m_perspective).put("VIEW", nodeCAM);
+		tableMgr.getTableMap("NODE", networkModel).put("VIEW", nodeCAM);
 		//m_perspective.getNodeCyDataTables().put("VIEW", nodeCAM);
 
 		CyDataTable edgeCAM = dataFactory.createTable("edge view", false);
 		edgeCAM.createColumn("hidden", Boolean.class, false);
-		tableMgr.getTableMap("EDGE", m_perspective).put("VIEW", edgeCAM);
+		tableMgr.getTableMap("EDGE", networkModel).put("VIEW", edgeCAM);
 		//m_perspective.getEdgeCyDataTables().put("VIEW", edgeCAM);
 
 		// creating empty subnetworks
-		m_drawPersp = cyRoot.convert(m_perspective).addMetaNode().getSubNetwork();
+		m_drawPersp = cyRoot.convert(networkModel).addMetaNode().getSubNetwork();
 
 		m_spacial = spacialFactory.createSpacialIndex2D();
 		m_spacialA = spacialFactory.createSpacialIndex2D();
@@ -406,10 +411,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		m_defaultNodeXMax = m_defaultNodeXMin + DNodeView.DEFAULT_WIDTH;
 		m_defaultNodeYMax = m_defaultNodeYMin + DNodeView.DEFAULT_HEIGHT;
 		m_networkCanvas = new InnerCanvas(m_lock, this, undo);
-		m_backgroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this,
+		m_backgroundCanvas = new ArbitraryGraphicsCanvas(networkModel, this,
 				m_networkCanvas, Color.white, true, true);
 		addViewportChangeListener(m_backgroundCanvas);
-		m_foregroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this,
+		m_foregroundCanvas = new ArbitraryGraphicsCanvas(networkModel, this,
 				m_networkCanvas, Color.white, true, false);
 		addViewportChangeListener(m_foregroundCanvas);
 		m_selectedNodes = new IntBTree();
@@ -417,12 +422,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		m_selectedAnchors = new IntBTree();
 
 		// from DingNetworkView
-		this.title = m_perspective.attrs().get("name", String.class);
+		this.title = networkModel.attrs().get("name", String.class);
 
-		for (CyNode nn : m_perspective.getNodeList())
+		for (CyNode nn : networkModel.getNodeList())
 			addNodeView(nn);
 
-		for (CyEdge ee : m_perspective.getEdgeList())
+		for (CyEdge ee : networkModel.getEdgeList())
 			addEdgeView(ee);
 
 		// read in visual properties from view obj
@@ -441,11 +446,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	 * @return The GraphPerspective that the view was created for.
 	 */
 	public CyNetwork getGraphPerspective() {
-		return m_perspective;
+		return networkModel;
 	}
 
 	public CyNetwork getNetwork() {
-		return m_perspective;
+		return networkModel;
 	}
 
 	/**
@@ -873,11 +878,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		final CyNode nnode;
 
 		synchronized (m_lock) {
-			nnode = m_perspective.getNode(nodeInx);
+			nnode = networkModel.getNode(nodeInx);
 
 			// We have to query edges in the m_structPersp, not m_drawPersp
 			// because what if the node is hidden?
-			hiddenEdgeInx = m_perspective.getAdjacentEdgeList(nnode,
+			hiddenEdgeInx = networkModel.getAdjacentEdgeList(nnode,
 					CyEdge.Type.ANY);
 
 			// This isn't an error. Only if the nodeInx is invalid will
@@ -984,7 +989,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		final DEdgeView returnThis = (DEdgeView) m_edgeViewMap.remove(Integer
 				.valueOf(edgeInx));
 
-		CyEdge eedge = m_perspective.getEdge(edgeInx);
+		CyEdge eedge = networkModel.getEdge(edgeInx);
 
 		if (returnThis == null) {
 			return returnThis;
@@ -1176,7 +1181,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	 */
 	public List<EdgeView> getEdgeViewsList(CyNode oneNode, CyNode otherNode) {
 		synchronized (m_lock) {
-			List<CyEdge> edges = m_perspective.getConnectingEdgeList(oneNode,
+			List<CyEdge> edges = networkModel.getConnectingEdgeList(oneNode,
 					otherNode, CyEdge.Type.ANY);
 
 			if (edges == null) {
@@ -1215,8 +1220,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		CyNode n1;
 		CyNode n2;
 		synchronized (m_lock) {
-			n1 = m_perspective.getNode(oneNodeInx);
-			n2 = m_perspective.getNode(otherNodeInx);
+			n1 = networkModel.getNode(oneNodeInx);
+			n2 = networkModel.getNode(otherNodeInx);
 		}
 		return getEdgeViewsList(n1, n2);
 	}
@@ -1324,7 +1329,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			synchronized (m_lock) {
 				final DNodeView nView = (DNodeView) obj;
 				nodeInx = nView.getRootGraphIndex();
-				nnode = m_perspective.getNode(nodeInx);
+				nnode = networkModel.getNode(nodeInx);
 				edges = m_drawPersp.getAdjacentEdgeList(nnode, CyEdge.Type.ANY);
 
 				if (edges == null || edges.size() <= 0) {
@@ -1386,7 +1391,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 			synchronized (m_lock) {
 				nodeInx = nView.getRootGraphIndex();
-				CyNode nnode = m_perspective.getNode(nodeInx);
+				CyNode nnode = networkModel.getNode(nodeInx);
 
 				if (nnode == null) {
 					return false;
@@ -1418,7 +1423,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			CyEdge newEdge;
 
 			synchronized (m_lock) {
-				final CyEdge edge = m_perspective.getEdge(((DEdgeView) obj)
+				final CyEdge edge = networkModel.getEdge(((DEdgeView) obj)
 						.getRootGraphIndex());
 
 				if (edge == null) {

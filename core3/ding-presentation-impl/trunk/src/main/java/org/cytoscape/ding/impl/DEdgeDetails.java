@@ -240,7 +240,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 		if (returnThis.numAnchors() > 0)
 			return returnThis;
 
-		final CyNetwork graph = m_view.m_perspective;
+		final CyNetwork graph = m_view.networkModel;
 		final CyEdge edgeObj = graph.getEdge(edge);
 
 		if (edgeObj.getSource() == edgeObj.getTarget()) { // Self-edge.

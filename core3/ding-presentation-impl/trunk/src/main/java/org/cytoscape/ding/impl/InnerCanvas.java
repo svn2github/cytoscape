@@ -36,42 +36,16 @@
 
 package org.cytoscape.ding.impl;
 
-import org.cytoscape.graph.render.export.ImageImposter;
-import org.cytoscape.graph.render.immed.EdgeAnchors;
-import org.cytoscape.graph.render.immed.GraphGraphics;
-import org.cytoscape.graph.render.stateful.GraphLOD;
-import org.cytoscape.graph.render.stateful.GraphRenderer;
-import org.cytoscape.util.intr.IntEnumerator;
-import org.cytoscape.util.intr.IntHash;
-import org.cytoscape.util.intr.IntStack;
-import org.cytoscape.util.swing.JMenuTracker;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.ding.EdgeView;
-import org.cytoscape.ding.GraphViewChangeListener;
-import org.cytoscape.ding.NodeView;
-import org.cytoscape.ding.ViewChangeEdit;
-import org.cytoscape.work.UndoSupport;
-import org.cytoscape.view.model.View;
-import org.cytoscape.task.NodeViewTaskFactory;
-import org.cytoscape.task.EdgeViewTaskFactory;
-import org.cytoscape.task.NetworkViewTaskFactory;
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TunableInterceptor;
-import phoebe.PhoebeCanvasDropEvent;
-import phoebe.PhoebeCanvasDropListener;
-import phoebe.PhoebeCanvasDroppable;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -87,9 +61,30 @@ import java.awt.image.BufferedImage;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+
+import javax.swing.JComponent;
+import javax.swing.TransferHandler;
+
+import org.cytoscape.ding.EdgeView;
+import org.cytoscape.ding.GraphViewChangeListener;
+import org.cytoscape.ding.NodeView;
+import org.cytoscape.ding.ViewChangeEdit;
+import org.cytoscape.graph.render.export.ImageImposter;
+import org.cytoscape.graph.render.immed.EdgeAnchors;
+import org.cytoscape.graph.render.immed.GraphGraphics;
+import org.cytoscape.graph.render.stateful.GraphLOD;
+import org.cytoscape.graph.render.stateful.GraphRenderer;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.util.intr.IntEnumerator;
+import org.cytoscape.util.intr.IntHash;
+import org.cytoscape.util.intr.IntStack;
+import org.cytoscape.work.undo.UndoSupport;
+
+import phoebe.PhoebeCanvasDropEvent;
+import phoebe.PhoebeCanvasDropListener;
+import phoebe.PhoebeCanvasDroppable;
 
 // AJK: 04/26/06 END
 /**
@@ -236,7 +231,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 		synchronized (m_lock) {
 			if (m_view.m_contentChanged || m_view.m_viewportChanged) {
-				m_lastRenderDetail = GraphRenderer.renderGraph(m_view.m_perspective,
+				m_lastRenderDetail = GraphRenderer.renderGraph(m_view.networkModel,
 				                                               m_view.m_spacial, m_lod[0],
 				                                               m_view.m_nodeDetails,
 				                                               m_view.m_edgeDetails, m_hash,
@@ -303,7 +298,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 										  m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph(m_view.m_perspective, m_view.m_spacial,
+			GraphRenderer.renderGraph(m_view.networkModel, m_view.m_spacial,
 			                          m_view.m_printLOD, m_view.m_nodeDetails,
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
@@ -324,7 +319,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 										  m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph(m_view.m_perspective, m_view.m_spacial,
+			GraphRenderer.renderGraph(m_view.networkModel, m_view.m_spacial,
 			                          m_view.m_printLOD, m_view.m_nodeDetails,
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
@@ -1163,7 +1158,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		stack.empty();
 
 		//final FixedGraph graph = (FixedGraph) m_view.m_perspective;
-		final CyNetwork graph = m_view.m_perspective;
+		final CyNetwork graph = m_view.networkModel;
 
 		if ((m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) == 0) {
 			// We won't need to look up arrows and their sizes.

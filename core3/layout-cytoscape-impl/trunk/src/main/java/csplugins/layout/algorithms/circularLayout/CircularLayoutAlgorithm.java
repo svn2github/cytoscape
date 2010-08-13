@@ -36,24 +36,23 @@
 
 package csplugins.layout.algorithms.circularLayout;
 
-import org.cytoscape.view.layout.LayoutEdge;
-import org.cytoscape.view.layout.LayoutNode;
-import org.cytoscape.view.layout.LayoutPartition;
-import org.cytoscape.view.layout.AbstractGraphPartition;
-import csplugins.layout.algorithms.hierarchicalLayout.Edge;
-import csplugins.layout.algorithms.hierarchicalLayout.Graph;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.UndoSupport;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-
-import javax.swing.*;
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.view.layout.LayoutEdge;
+import org.cytoscape.view.layout.LayoutNode;
+import org.cytoscape.view.layout.LayoutPartition;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.undo.UndoSupport;
+
+import csplugins.layout.algorithms.hierarchicalLayout.Edge;
+import csplugins.layout.algorithms.hierarchicalLayout.Graph;
 
 
 /**

@@ -156,7 +156,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	 */
 	public CyNode getNode() {
 		synchronized (m_view.m_lock) {
-			return m_view.m_perspective.getNode(m_inx);
+			return m_view.networkModel.getNode(m_inx);
 		}
 	}
 

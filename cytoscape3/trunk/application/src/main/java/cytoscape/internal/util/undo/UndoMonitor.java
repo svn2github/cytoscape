@@ -36,12 +36,11 @@
 */
 package cytoscape.internal.util.undo;
 
-import org.cytoscape.work.UndoSupport;
+import java.util.Properties;
 
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
-
-import java.util.Properties;
+import org.cytoscape.work.undo.UndoSupport;
 
 /**
  * This class monitors the undoable edit stack and implements whatever

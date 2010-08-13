@@ -36,14 +36,22 @@
 
 package csplugins.layout;
 
+import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.JPanel;
+
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.layout.AbstractLayout;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-import org.cytoscape.work.UndoSupport;
-
+import org.cytoscape.work.undo.UndoSupport;
 import org.jgraph.JGraph;
 import org.jgraph.graph.CellView;
 import org.jgraph.graph.ConnectionSet;
@@ -65,15 +73,6 @@ import org.jgraph.plugins.layouts.RadialTreeLayoutAlgorithm;
 import org.jgraph.plugins.layouts.SpringEmbeddedLayoutAlgorithm;
 import org.jgraph.plugins.layouts.SugiyamaLayoutAlgorithm;
 import org.jgraph.plugins.layouts.TreeLayoutAlgorithm;
-
-import javax.swing.*;
-import java.awt.geom.Rectangle2D;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 
 /**

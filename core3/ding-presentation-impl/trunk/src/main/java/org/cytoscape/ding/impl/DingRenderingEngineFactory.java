@@ -9,7 +9,6 @@ import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 
-import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
@@ -29,7 +28,7 @@ import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
-import org.cytoscape.work.UndoSupport;
+import org.cytoscape.work.undo.UndoSupport;
 
 public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetwork>, NetworkViewChangedListener {
 

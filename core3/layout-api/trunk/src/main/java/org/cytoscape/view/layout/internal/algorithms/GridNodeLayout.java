@@ -41,7 +41,7 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
-import org.cytoscape.work.UndoSupport;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 /**

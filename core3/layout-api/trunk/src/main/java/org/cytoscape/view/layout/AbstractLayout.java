@@ -36,24 +36,20 @@
 */
 package org.cytoscape.view.layout;
 
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.View;
-// TODO find a replacement
-//import org.cytoscape.view.ViewChangeEdit;
-import org.cytoscape.work.UndoSupport;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.undo.UndoSupport;
 
 /**
  * The AbstractLayout provides nice starting point for Layouts

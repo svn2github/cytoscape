@@ -1,12 +1,12 @@
 /* vim: set ts=2: */
 package org.cytoscape.view.layout;
 
-import org.cytoscape.model.CyNode;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.UndoSupport;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.cytoscape.model.CyNode;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.undo.UndoSupport;
 
 
 /**

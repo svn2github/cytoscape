@@ -4,24 +4,24 @@
  */
 package csplugins.layout.algorithms.graphPartition;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.view.layout.LayoutNode;
+import org.cytoscape.view.layout.LayoutPartition;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.undo.UndoSupport;
+
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
 import cern.colt.map.OpenIntObjectHashMap;
 import cern.colt.map.PrimeFinder;
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
-import org.cytoscape.view.layout.AbstractGraphPartition;
-import org.cytoscape.view.layout.LayoutNode;
-import org.cytoscape.view.layout.LayoutPartition;
-
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.work.UndoSupport;
-
-import java.util.Iterator;
-import java.util.List;
 
 
 /**
