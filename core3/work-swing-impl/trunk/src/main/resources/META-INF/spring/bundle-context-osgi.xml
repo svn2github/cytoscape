@@ -8,7 +8,7 @@
 
 	<!-- Services provided by this bundle -->
 	<osgi:service id="undoSupportService"
-		ref="undoSupport" interface="org.cytoscape.work.UndoSupport">
+		ref="undoSupport" interface="org.cytoscape.work.undo.UndoSupport">
 	</osgi:service>
 	
 	<osgi:service id="guiTunableInterceptorService"

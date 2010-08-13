@@ -38,7 +38,8 @@ package org.cytoscape.work.internal;
 
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
-import org.cytoscape.work.UndoSupport;
+
+import org.cytoscape.work.undo.UndoSupport;
 
 
 /**
