@@ -43,6 +43,9 @@ public abstract class AbstractUndoableEdit extends javax.swing.undo.AbstractUndo
 	private final String presentationName;
 
 	public AbstractUndoableEdit(final String presentationName) {
+		if (presentationName == null)
+			throw new IllegalArgumentException("in call to AbstractUndoableEdit(), presentationName must not be null!");
+
 		this.presentationName = presentationName;
 	}
 
