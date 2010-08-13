@@ -211,8 +211,12 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 						logger.error(method.getName() + " annotated with @ProvidesGUI must return void!");
 					else if (method.getParameterTypes().length != 0)
 						logger.error(method.getName() + " annotated with @ProvidesGUI must take 0 arguments!");
-					else
+					else {
+						if (!guiProviderMap.isEmpty())
+							logger.error("Classes must have at most a single @ProvidesGUI annotated method but + "
+							             + method.getDeclaringClass().getName() + " has more than one!");
 						guiProviderMap.put(obj, method);
+					}
 				}
 			}
 
