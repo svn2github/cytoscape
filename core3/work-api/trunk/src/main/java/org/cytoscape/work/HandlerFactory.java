@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  * Provides a factory to create <code>Handlers</code> depending on their type.
  * <code>Handlers</code> will be generated for Fields and Methods in the class that contains the <code>Tunables</code>.
  *
- * @param <H> <code>TunableHandler</code> that will be created by this factory. They will contain the informations
+ * @param <TH> <code>TunableHandler</code> that will be created by this factory. They will contain the informations
  * provided by the <code>Tunable</code> annotations and the Object itself.
  * @author Pasteur
  */
@@ -22,10 +22,10 @@ public interface HandlerFactory<TH extends TunableHandler> {
 	 * @param tunable   Tunable that contains all the information concerning the user interface
 	 * @return TH       the newly constructed <code>TunableHandler</code>
 	 */
-	 TH getHandler(final Field field, final Object instance, Tunable t);
+	 TH getHandler(final Field field, final Object instance, final Tunable tunable);
 
 	/**
-	 * This method returns a <code>Handler</code> for a Method annotated as a <code>Tunable</code>
+	 * This method returns a <code>TunableHandler</code> for a Method annotated as a <code>Tunable</code>
 	 * 
 	 * @param setter    a Method that need to be annotated with  <code>@Tunable</code>
 	 * @param getter    a Method that need to be annotated with  <code>@Tunable</code>

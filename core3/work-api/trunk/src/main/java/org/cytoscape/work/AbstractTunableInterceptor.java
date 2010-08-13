@@ -69,7 +69,7 @@ import java.util.Map;
  * </ol>
  * </pre></p>
  *
- * @param <H>  <code>Handlers</code> created in the factory
+ * @param <TH>  <code>TunableHandler</code>s created in the factory
  */
 public abstract class AbstractTunableInterceptor<TH extends TunableHandler> implements TunableInterceptor<TH> {
 	/**
