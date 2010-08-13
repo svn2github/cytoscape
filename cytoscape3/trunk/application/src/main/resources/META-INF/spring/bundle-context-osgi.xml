@@ -49,7 +49,7 @@
 	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayouts">
 	</osgi:reference>
 
-	<osgi:reference id="undoSupportServiceRef" interface="org.cytoscape.work.UndoSupport">
+	<osgi:reference id="undoSupportServiceRef" interface="org.cytoscape.work.undo.UndoSupport">
 	</osgi:reference>
 
 	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper">

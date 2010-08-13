@@ -37,5 +37,6 @@ import javax.swing.undo.UndoableEditSupport;
  */
 public interface UndoSupport {
 	UndoManager getUndoManager(); 
+
 	UndoableEditSupport getUndoableEditSupport();
 }

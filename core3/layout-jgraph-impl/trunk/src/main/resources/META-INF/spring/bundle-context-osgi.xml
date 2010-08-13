@@ -62,7 +62,7 @@
 	</osgi:service>
 
     <osgi:reference id="undoSupportServiceRef"
-                    interface="org.cytoscape.work.UndoSupport">
+                    interface="org.cytoscape.work.undo.UndoSupport">
     </osgi:reference>
 
 </beans>
