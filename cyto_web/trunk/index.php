@@ -34,9 +34,15 @@
 
 <div id="main">
 
+<div class="item">
+<h2>Did you miss the 2010 Cytoscape Retreat?</h2>
+<div id="paragraph">
+We have videos of all presentations available <i><b><a href="http://portal.ncibi.org/gateway/cytoscape2010.html">here!</a></b></i>
+</div>
+</div>
 
 <div class="item">
-<h2><b><i>NEW!</i></b> Cytoscape 2.7.0</h2>
+<h2>Cytoscape 2.7.0</h2>
 <!--
 -->
 <div id="paragraph">
