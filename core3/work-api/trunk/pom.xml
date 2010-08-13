@@ -112,5 +112,10 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-api</artifactId>
+      <version>1.5.2</version>
+</dependency>
   </dependencies>
 </project>

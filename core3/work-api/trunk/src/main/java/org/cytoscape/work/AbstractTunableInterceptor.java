@@ -36,6 +36,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 
 /**
  * Interceptor for Tunables : detect them, create an appropriate <code>Handler</code> from the <code>HandlerFactory</code> for each of them, and store them in a HashMap for further use.
@@ -87,6 +90,8 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 	 */
 	protected Map<Object, Method> guiProviderMap;
 
+	protected Logger logger;
+
 	/**
 	 * Creates a new AbstractTunableInterceptor object.
 	 *
@@ -98,11 +103,16 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 		this.factory = tunableHandlerFactory;
 		handlerMap = new HashMap<Object, LinkedHashMap<String, TH>>();
 		guiProviderMap = new HashMap<Object, Method>();
+		logger = LoggerFactory.getLogger(getClass());
 	}
 
 	/**
-	 *	To detect the Field and Methods annotated as <code>Tunable</code>, create a <code>Handler</code> for each from the factory, and store it.
-	 * @param obj A class that contains <code>Tunable</code> that need to be caught to interact with the users
+	 *  To detect fields and methods annotated with <code>Tunable</code>, create a <code>Handler</code> for
+	 *  each from the factory, and store it in <code>handlerMap</code>.
+	 *  In addition we also detect methods annotated with <code>ProvidesGUI</code> and store those in
+	 *  <code>guiProviderMap</code>.
+	 *
+	 *  @param obj A class that contains <code>Tunable</code> that need to be caught to interact with the users
 	 */
 	public void loadTunables(final Object obj) {
 		if (!handlerMap.containsKey(obj)) {
@@ -198,9 +208,9 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 					}
 				} else if (method.isAnnotationPresent(ProvidesGUI.class)) {
 					if (method.getReturnType() != void.class)
-						System.err.println(method.getName() + " annotated with @ProvidesGUI must return void!");
+						logger.error(method.getName() + " annotated with @ProvidesGUI must return void!");
 					else if (method.getParameterTypes().length != 0)
-						System.err.println(method.getName() + " annotated with @ProvidesGUI must take 0 arguments!");
+						logger.error(method.getName() + " annotated with @ProvidesGUI must take 0 arguments!");
 					else
 						guiProviderMap.put(obj, method);
 				}
