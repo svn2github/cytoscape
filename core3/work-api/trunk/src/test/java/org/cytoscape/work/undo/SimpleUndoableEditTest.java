@@ -49,7 +49,7 @@ public class SimpleUndoableEditTest extends AbstractUndoableEditTest {
 	}
 
 	@Before
-	public void setUp() {
+	public void init() {
 		undoableEdit = new SimpleUndoableEdit();
 	}
 
