@@ -73,14 +73,19 @@ import java.util.Map;
  */
 public abstract class AbstractTunableInterceptor<TH extends TunableHandler> implements TunableInterceptor<TH> {
 	/**
-	 * Factory for Handlers
+	 *  Factory for Handlers
 	 */
 	protected HandlerFactory<TH> factory;
 
 	/**
-	 * Store the Handlers
+	 *  Store the Handlers
 	 */
 	protected Map<Object, LinkedHashMap<String, TH>> handlerMap;
+
+	/**
+	 *  Store the JPanel-returning methods
+	 */
+	protected Map<Object, Method> guiProviderMap;
 
 	/**
 	 * Creates a new AbstractTunableInterceptor object.
@@ -92,6 +97,7 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 	public AbstractTunableInterceptor(HandlerFactory<TH> tunableHandlerFactory) {
 		this.factory = tunableHandlerFactory;
 		handlerMap = new HashMap<Object, LinkedHashMap<String, TH>>();
+		guiProviderMap = new HashMap<Object, Method>();
 	}
 
 	/**
@@ -166,6 +172,7 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 
 							final String rootName = method.getName().substring(3);
 							setMethodsMap.put(rootName, method);
+							tunableMap.put(rootName, tunable);
 							if (getMethodsMap.containsKey(rootName)) {
 								final Method getter = getMethodsMap.get(rootName);
 								if (!setterAndGetterTypesAreCompatible(getter, method))
@@ -189,6 +196,13 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 						System.out.println("tunable method intercept failed: " + method);
 						ex.printStackTrace();
 					}
+				} else if (method.isAnnotationPresent(ProvidesGUI.class)) {
+					if (method.getReturnType() != void.class)
+						System.err.println(method.getName() + " annotated with @ProvidesGUI must return void!");
+					else if (method.getParameterTypes().length != 0)
+						System.err.println(method.getName() + " annotated with @ProvidesGUI must take 0 arguments!");
+					else
+						guiProviderMap.put(obj, method);
 				}
 			}
 
