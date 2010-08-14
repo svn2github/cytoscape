@@ -1,3 +1,30 @@
+/**
+* Copyright (C) Gerardo Huck, 2010
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published 
+* by the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*  
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*  
+* You should have received a copy of the GNU Lesser General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+*/
+
+
+/** 
+ * It was modified as part of Google Summer of Code 2010.
+ * Mentor: Mike Smoot
+ * @author <a href="mailto:gerardohuck .at. gmail .dot. com">Gerardo Huck</a>
+ * @version 0.1
+ */
+
+
 /* vim: set ts=2: */
 package csplugins.layout.algorithms.graphPartition;
 
@@ -39,8 +66,8 @@ import java.awt.Dimension;
 
 enum LayoutTypes {
     NODE("Nodes Only"),
-    LABEL("Labels Only"),
-    BOTH("Both Nodes and Labels");
+	LABEL("Labels Only"),
+	BOTH("Both Nodes and Labels");
     
     private String name;
     private LayoutTypes(String str) { name=str; }
@@ -303,7 +330,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
      */
     protected void layoutSinglePartition(LayoutPartition partition){
 
-    if(supportsLabelLayout() && layoutType != LayoutTypes.NODE ) {
+	if(supportsLabelLayout() && layoutType != LayoutTypes.NODE ) {
 
 	    Dimension initialLocation = null;
 
@@ -361,6 +388,8 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	    networkView.redrawGraph(true, true);
 
 	} else { // normal (non-label) layout
+
+	    resetLabelPositions();
 	    layoutPartition(partition);
 	}
 
