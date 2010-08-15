@@ -121,7 +121,7 @@ package
 								//_vis.operators.add(new ColorEncoder("index", "edges", "lineColour"))
 								
 //				_vis.operators.add(new Labeler("data.name"));
-                _vis.operators.add(new GBEBRouter(_bounds, 80 , 0.95));
+                _vis.operators.add(new GBEBRouter(_bounds, 30 , 0.95));
                 trace("GBEBView: how many times GBEBView called the GBEBRouter? " + addEventCounter++);
                 // ############################################################## 
 				

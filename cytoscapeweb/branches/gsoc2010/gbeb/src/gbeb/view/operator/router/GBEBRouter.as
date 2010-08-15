@@ -16,6 +16,7 @@ package gbeb.view.operator.router {
     
     import gbeb.util.GBEBInterfaceUtil;
     import gbeb.util.GeometryUtil;
+    import gbeb.util.Pathfinder;
     import gbeb.util.delaunay.Delaunay;
     import gbeb.util.delaunay.ITriangle;
     import gbeb.util.delaunay.XYZ;
@@ -38,7 +39,8 @@ package gbeb.view.operator.router {
         private var _meshResolution:int = 100; //Stores the resolution of the Mesh. defined as number of meshnodes.
         private var nonRedundantShapeIndexArray:Array = new Array(); // Stores Shape that actually contain meshEdges and have a general direction
         private var _grid:Array;
-        public var _mesh:Object = { nodes: [], edges: [] };
+				private var _pathfinder:Pathfinder = new Pathfinder();
+        public var _mesh:Object = { nodes: [], edges: [], CP: [] }; //each mesh objects will store all the meshNodes, meshEdges, and ControlPoints
         
         private var _dataDisplay:DataDisplay;
         private var _bounds:Rectangle;
@@ -163,6 +165,8 @@ package gbeb.view.operator.router {
 								//addCPDebugTrace();
 								
 								KmeansClustering();
+								
+								_pathfinder.pathfind(visualization.data, _mesh, visualization.bounds)
                 
 								//addControlPointsToAll(); //normal use either this method or the one few lines above to add CPs
                 
@@ -178,7 +182,7 @@ package gbeb.view.operator.router {
 									
 								}); */
 								//data.edges.visit(GeometryUtil.changeToDerivedPoints);
-								data.edges.visit(sortCPByDistance);
+								//data.edges.visit(sortCPByDistance);
 								trace("GBEBRouter has finished running. numNodes: " + _mesh.nodes.length + " | numEdges: " + _mesh.edges.length);
             }
         }
@@ -918,7 +922,7 @@ package gbeb.view.operator.router {
 				private function triangulateMesh():void
 				{
 					var nodeCounter:int = 0; //debug
-					renderOriginalMeshEdges();//debug;
+					//renderOriginalMeshEdges();//debug;
 					trace("GBEBRouter: Triangulation: _mesh.nodes.length: " + _mesh.nodes.length + " | _mesh.edges.length " + _mesh.edges.length);
 					
 					if(_mesh.nodes.length < 3) return; //there must be at least 3 nodes to triangulate
@@ -934,7 +938,7 @@ package gbeb.view.operator.router {
 					
 					var triangles:Array = Delaunay.triangulate(pointsArray);
 					
-					GBEBInterfaceUtil.drawDelaunay(triangles, pointsArray, visualization);
+					//GBEBInterfaceUtil.drawDelaunay(triangles, pointsArray, visualization);
 					
 					_mesh.edges = GBEBInterfaceUtil.convertToMeshEdges(triangles, pointsArray, _mesh.nodes);
 				}
@@ -964,9 +968,9 @@ package gbeb.view.operator.router {
 						
 						if (intersectionPoint != null) {
 							deiPair = new Object();
-							deiPair.dataEdge = dataEdge;
+							deiPair.dataEdge = dataEdge;		
 							deiPair.ip = intersectionPoint;
-							meshEdge.dataEdgeIntersectionPairs.push(deiPair);
+							meshEdge.dataEdgeIntersectionPairs.push(deiPair);					
 							ipCounter++; //debug
 						}
 					}					
@@ -999,7 +1003,7 @@ package gbeb.view.operator.router {
 							{
 								var pair:* = e.dataEdgeIntersectionPairs[ipArray.indexOf(p)]; //assumes that the index of ipArray and dataEdgeIntersectionPair is the same
 								var dataEdge:EdgeSprite = pair.dataEdge as EdgeSprite; 
-								
+				
 								var ctrl:Array = dataEdge.props.$controlPointsArray;
 								if (ctrl == null) dataEdge.props.$controlPointsArray = ctrl = [];
 								ctrl.push(centroid);
@@ -1008,7 +1012,7 @@ package gbeb.view.operator.router {
 								dataEdge.shape = Shapes.BSPLINE; //Here to change curve type
 								dataEdge.lineAlpha = 0.5;
 							}
-							
+								_mesh.CP.push(centroid);							
 						}
 					}
 				}
@@ -1040,6 +1044,13 @@ package gbeb.view.operator.router {
 								}
 							}
 				
+							
+				//Step 6: Pathfinding 
+							private function updateMeshStructure():void
+							{
+								
+							}
+							
 				
         // Old		
         // Step 5. For each edge in _data, check for their intersection with _mesh.edge and record these 
