@@ -22,29 +22,17 @@ package gbeb.view.render
 		{
 			var e:EdgeSprite = d as EdgeSprite;
 			var ctrl:Array = e.props.$controlPointsArray;
-			//var eCopy:EdgeSprite = cloneEdgeSprite(e);
+
 			
 			if (e == null) return;
-			//curveSegRenderer(e);
-			
-			//strightLineSegRenderer(e);
-			
-			addControlPoints(e);
-			//super.render(e);
-			
-			
-			//Test for Defagra BezierSpline
-			//var BS
-			
+
 			
 			if(ctrl != null && ctrl.length > 0) //debug
 			{
 				super.render(e);
 			} 
 			
-			//addControlPoints(eCopy, true);
-			//super.render(eCopy); //debug
-			//trace("Bundler: " + d.name + " has been rendered! " + e.shape );
+
 		}
 		
 		private function addControlPoints(e:EdgeSprite, isClone:Boolean = false):void
@@ -71,7 +59,7 @@ package gbeb.view.render
 			var t:Point = new Point(e.target.x, e.target.y);
 			var tempPoint:Point;
 			var dPoint:Point; //derived point
-			var stDist:Number = GeometryUtil.calculateDistanceBetweenPoints(s,t); //Distance between the source and target nodes
+			var stDist:Number = Point.distance(s,t); //Distance between the source and target nodes
 			
 			var ctrl:Array = e.props.$controlPointsArray;
 			var ctrlgradient:Array = e.props.$CPGradientArray; //used to store the gradient of each control point
@@ -93,8 +81,8 @@ package gbeb.view.render
 				{
 					tempPoint = new Point(ctrl[i].x, ctrl[i].y);
 					//if CP is too close to the source or target nodes)
-					if( GeometryUtil.calculateDistanceBetweenPoints(tempPoint , s) < 3
-					|| GeometryUtil.calculateDistanceBetweenPoints(tempPoint, t) < 3 )
+					if( Point.distance(tempPoint , s) < 3
+					|| Point.distance(tempPoint, t) < 3 )
 					{
 						g.lineTo(tempPoint.x, tempPoint.y);
 						g.lineTo(t.x, t.y);
@@ -109,7 +97,7 @@ package gbeb.view.render
 						}
 					} 
 					
-					var ratio:Number = GeometryUtil.calculateDistanceBetweenPoints(s, ctrl[i]) / GeometryUtil.calculateDistanceBetweenPoints(s, ctrl[i+1]);
+					var ratio:Number = Point.distance(s, ctrl[i]) / Point.distance(s, ctrl[i+1]);
 					ratio = ( ratio < 0.3 ? 0.3 : ratio); ratio = ( ratio > 0.7 ? 0.7 : ratio);
 					
 					dPoint = GeometryUtil.derivePoint(s, ctrl[i], t, ratio);

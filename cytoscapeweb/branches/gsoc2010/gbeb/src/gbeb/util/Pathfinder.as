@@ -47,9 +47,10 @@ package gbeb.util
 		//This public function is exposed to allow call only after all the required steps are done. 
 		public function pathfind(data:Data, mesh:*, bounds:Rectangle)
 		{
+				trace("Pathfinder: Starting...");
 				_data = data;
 				_mesh = mesh;
-				_maxDis = GeometryUtil.calculateDistanceBetweenPoints(bounds.topLeft, bounds.bottomRight);
+				_maxDis = Point.distance(bounds.topLeft, bounds.bottomRight);
 				
 				Kmeans_Pathfinding2_Preprocessing(_mesh.CP);
 				_data.edges.visit(_pathfind);
@@ -62,7 +63,7 @@ package gbeb.util
 		//to generate a path that fits the quality citeria for the curve.
 		private function _pathfind(edge:EdgeSprite):void
 		{
-			var searchSpace:Array = generateSearchSpace(_mesh.CP, edge);
+			//var searchSpace:Array = generateSearchSpace(_mesh.CP, edge);
 			var searchSpaceTrace:String = ""; //debug
 			
 			
@@ -80,123 +81,19 @@ package gbeb.util
 			}
 			trace(searchSpaceTrace); */
 		}
-		
-		//Get the set of nodes in which the edge can transverse across, WayPoints.
-		//				WayPoints = {nodes that are control points of the edge} + {nodes that are within the 'search zone'}
-		private function generateSearchSpace(CPset:Array, edge:EdgeSprite):Array
-		{
-			var searchSpace:Array = [];
-			var CPArrayFromEdge:Array = edge.props.$controlPointsArray;
-			var s:Point = new Point(edge.source.x, edge.source.y);
-			var t:Point = new Point(edge.target.x, edge.target.y);
-			var angle:Number = Math.PI / 6;
-			var maxSearchDist:int = getMaxSearchDist(s, t, angle); //stores the maximum search distance for nodes that are not already on the edgeSprite
-	
-			//should i return here if there are no contol points?
-			
-			//adds CP by inclusive addition
-			for each (var p:Point in CPset)
-			{
-					if(checkSearchSpace(p, t, s, maxSearchDist)) searchSpace.push(p);	
-					//trace("Pathfinder: Hi " + CPset.length, maxSearchDist);			
-			}
-	
-			trace("Pathfinder: GSP: searchSpace.length: " + searchSpace.length, "maxSearchDist: " + maxSearchDist, edge.name);
-			if(CPArrayFromEdge == null) return searchSpace;
 
-			
-			for each(var p:Point in CPArrayFromEdge)
-			{
-				if(searchSpace.indexOf(p) == -1) searchSpace.push(p);
-			}
-			
-			trace("Pathfinder: GSP (After): searchSpace.length: " + searchSpace.length, edge.name);
-			
-			return searchSpace;
-		} 
-		
-		// Checks if a particular CP from the CPset should be included in the search space base on its distance to the 
-		// source and target node of the EdgeSprite: The search space is a semi-circle in shape.
-		private function checkSearchSpace(currNode:Point, s:Point, t:Point, maxDis:int):Boolean
-		{
-			var c:Point = new Point(currNode.x, currNode.y); //current point
-			var dis:int = Math.floor(GeometryUtil.calculateDistanceBetweenPoints(c, s) + Math.floor(GeometryUtil.calculateDistanceBetweenPoints(c, t)));
-			//trace("Pathfinder: dis: " + dis + " | Max Dis: " + maxDis);
-			return ( dis < maxDis ? true : false);
-		}		
-		
-		// Returns the boundary distance of the search space. The further the source and target nodes are apart, 
-		// the larger the boundary.
-		private function getMaxSearchDist(t:Point, s:Point, angle:Number):int
-		{
-			return Math.floor(GeometryUtil.calculateDistanceBetweenPoints(s, t) * Math.tan(angle) * 2 );
-		}
-		
-		// Astar is a pathfinding algorithm...
-		private function AStar_pathfindingAlgrithm(edge:EdgeSprite, searchSpace:Array):void
-		{
-			var debugString:String = ""; //debug
-			var ctrl:Array = edge.props.$controlPointsArray;
-			var curr:Point = new Point(edge.source.x, edge.source.y); 
-			var end:Point = new Point(edge.target.x, edge.target.y); 
-			var selectedPoint:int = -1;
-			var wayPoints:Array = []; //stores in order the final path of the edgeSprite
-
-					
-			if(ctrl == null) return;	
-			edge.props.$controlPointsArray = searchSpace;
-			sortCPByDistance(edge);
-			
-			trace("Pathfinding: Test: " + (searchSpace.length == edge.props.$controlPointsArray.length) + " | ctrl.length: " + ctrl.length );
-			trace(edge.props.$controlPointsArray.length);
-			
-			while(Math.abs(curr.x - end.x) > 0.1 || Math.abs(curr.y - end.y) > 0.1) //Just in case there is some floating points mismatch
-			{
-				for(var i:int = 0; i < searchSpace.length; i++)
-				{
-					
-				}
-				
-			}
-			
-		}
-		
-		
-		//private test2
-		//should i include start and end in kmeans?
-		private function kmeans_Pathfinding(edge:EdgeSprite, searchSpace:Array):void
-		{
-			var ctrl:Array = edge.props.$controlPointsArray;
-			var curr:Point = new Point(edge.source.x, edge.source.y); 
-			var end:Point = new Point(edge.target.x, edge.target.y);
-			var wayPointsSet:Array; // Stores the sets of way point path after kmeans. 
-			var wayPoints:Array = []; //stores in order the final path of the edgeSprite
-			
-			if(searchSpace.length == 0) return;	
-			
-			wayPointsSet = GeometryUtil.kmeans(searchSpace);
-			
-			for each (var cluster:Array in wayPointsSet)
-			{
-				if(cluster[0] != null) wayPoints.push(cluster[0]);
-				//trace("Pathfinder: tracing clusters: " + cluster[0]);
-			}
-			
-			trace("Pathfinder: KmeansPF: WayPoints.length: " + wayPoints.length);
-			
-			edge.props.$controlPointsArray = wayPoints;
-			sortCPByDistance(edge);
-			
-		}
 		
 		//some pre-processing such that the CP forms clusters
 		private function Kmeans_Pathfinding2_Preprocessing(CPSet:Array):void
 		{
+			
 			_CPClusters = GeometryUtil.kmeans(CPSet);
+			trace("Pathfinder: KmeansPF: Pre starting");
 			
 			for (var i:int = 0; i < _CPClusters.length; i++)
 			{
 				_centroidArray.push(GeometryUtil.findCentroidFromPoints(_CPClusters[i]));
+				
 			}		
 			trace("Pathfinding: _centroidArray.length: " + _centroidArray.length);
 		}
@@ -217,7 +114,7 @@ package gbeb.util
 				//check which cluster is it nearest to
 				for each(var centroid:Point in _centroidArray)
 				{
-					distToCentroid = GeometryUtil.calculateDistanceBetweenPoints(p, centroid);
+					distToCentroid = Point.distance(p, centroid);
 					if(distToCentroid == closetDist)
 					{
 						//search the array and find out which cluster does the point belong to
@@ -232,22 +129,26 @@ package gbeb.util
 				if(tempCentroid != null && newCtrl.indexOf(tempCentroid) == -1) newCtrl.push(tempCentroid);
 			}
 			
+			
+			//trace("Pathfinder: " + edge.source.data["name"], edge.target.data["name"], newCtrl);
 			edge.props.$controlPointsArray = newCtrl;
 			sortCPByDistance(edge);
+			//removeSharpEdges(edge);
+			//trace("Pathfinder: " + edge.source.data["name"], edge.target.data["name"], edge.props.$controlPointsArray);
 		}
 		
 		
-		public function sortCPByDistance(e:EdgeSprite):void
+		private function sortCPByDistance(edge:EdgeSprite):void
 		{
-			var ctrl:Array = e.props.$controlPointsArray;
+			var ctrl:Array = edge.props.$controlPointsArray;
 			if(ctrl == null) return;	
 			
-			var sourceNode:Point = new Point(e.source.x, e.source.y); //casting source node as mesh modes
-			var targetNode:Point = new Point(e.target.x, e.target.y);
+			var sourceNode:Point = new Point(edge.source.x, edge.source.y); //casting source node as mesh modes
+			var targetNode:Point = new Point(edge.target.x, edge.target.y);
 			var swapArray:Array = [];
-			var disSourceTarget:Number = GeometryUtil.calculateDistanceBetweenPoints(sourceNode, targetNode);
+			var disSourceTarget:Number = Point.distance(sourceNode, targetNode);
 			var distance:String = ""; //debug
-			
+
 			//trace("GBEBRouter: Bubble sorting CP by Distance...", e.name);
 			for each (var p:Point in ctrl)
 			{
@@ -256,7 +157,6 @@ package gbeb.util
 				} 
 			}
 			ctrl = bubbleSortPointsArray(ctrl, sourceNode);
-			
 			
 			/*for each (var p:Point in ctrl) //debug
 			{
@@ -268,11 +168,11 @@ package gbeb.util
 			for(var i:int = 0; i < ctrl.length; i++)
 			{
 				
-				var disTargetP:Number = GeometryUtil.calculateDistanceBetweenPoints(targetNode, ctrl[i]);
+				var disTargetP:Number = Point.distance(targetNode, ctrl[i]);
 				if(disTargetP > disSourceTarget)
 				{
-					swapArray.push(ctrl[i]);
-					ctrl.splice(ctrl.indexOf(i), 1);
+					swapArray.push(ctrl[i]); 
+					ctrl.splice(ctrl.indexOf(ctrl[i]), 1);
 				}
 			}
 			
@@ -281,7 +181,7 @@ package gbeb.util
 			for each (var p:Point in swapArray) 
 			{
 				ctrl.unshift(swapArray.shift()); 
-				distance += " " + GeometryUtil.calculateDistanceBetweenPoints(sourceNode, p); //debug
+				distance += " " + Point.distance(sourceNode, p); //debug
 			}
 			//trace("GBEBRouter: BubbleSort - Swap Array trace: " + distance, e.source.data["name"], e.target.data["name"]);
 			
@@ -295,8 +195,8 @@ package gbeb.util
 			{
 				for (var j:int = 0; j < a.length - i - 1; j++)
 				{
-					currDist = GeometryUtil.calculateDistanceBetweenPoints(targetPoint,a[j]);
-					nextDist = GeometryUtil.calculateDistanceBetweenPoints(targetPoint,a[j + 1]);
+					currDist = Point.distance(targetPoint,a[j]);
+					nextDist = Point.distance(targetPoint,a[j + 1]);
 					if(increasing)
 					{
 						if(currDist > nextDist)
@@ -316,6 +216,62 @@ package gbeb.util
 				}
 			}
 			return a;
+		}
+		
+		private function removeSharpEdges(edge:EdgeSprite):void
+		{	
+			var ctrl:Array = edge.props.$controlPointsArray;
+			var source:Point = new Point(edge.source.x, edge.source.y);
+			var target:Point = new Point(edge.target.x, edge.target.y);		 
+			const minAngle:Number = Math.PI / 2;
+			
+			if(ctrl.length < 1 ) return;
+				
+			do
+			{
+				var angles:Array = []; //stores the angle between 2 lines.
+				var prev:Point = source, next:Point = ( ctrl.length == 1 ? target : ctrl[1]);
+				var p:Point;
+				var minAngleInArray:Number = Number.MAX_VALUE; var minAngleIndex:int = -1;
+				
+				for (var i:int = 0; i < ctrl.length; i++)
+				{
+					p = ctrl[i];
+					angles[i] = GeometryUtil.getAnglesFromLines(prev, p, p, next);
+					prev = p; 
+					if( i == ctrl.length - 1)
+					{
+						next = target;
+					} else {
+						next = ctrl[i+1];
+					}				
+				}
+				
+				for (var i:int = 0; i < angles.length; i++)
+				{
+					if(Math.abs(angles[i]) < minAngleInArray)
+					{
+						minAngleInArray = angles[i];
+						minAngleIndex = i;
+					}
+				}
+				
+				if( minAngleIndex != -1 && Math.abs(angles[minAngleIndex]) < minAngle){
+					trace("Pathfinder: removeSharpEdges: " + angles[minAngleIndex] + " spliced");
+					ctrl.splice(minAngleIndex, 1); 
+				} 
+			} while(checkAngles(angles, minAngle))
+		}
+		
+		private function checkAngles(angles:Array, minAngle:Number):Boolean
+		{		
+			//if(angles.length == 0) return false;
+			for each (var angle:Number in angles) 
+			{
+				if(angle < minAngle) return true;
+			}
+			
+			return false;
 		}
 
 	} //end of class

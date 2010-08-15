@@ -47,6 +47,120 @@ public static function changeToDerivedPoints(e:EdgeSprite):void
 }
 
 
+/****
+ * From Pathfinding
+ * 
+ * 		
+		//Get the set of nodes in which the edge can transverse across, WayPoints.
+		//				WayPoints = {nodes that are control points of the edge} + {nodes that are within the 'search zone'}
+		private function generateSearchSpace(CPset:Array, edge:EdgeSprite):Array
+		{
+			var searchSpace:Array = [];
+			var CPArrayFromEdge:Array = edge.props.$controlPointsArray;
+			var s:Point = new Point(edge.source.x, edge.source.y);
+			var t:Point = new Point(edge.target.x, edge.target.y);
+			var angle:Number = Math.PI / 6;
+			var maxSearchDist:int = getMaxSearchDist(s, t, angle); //stores the maximum search distance for nodes that are not already on the edgeSprite
+	
+			//should i return here if there are no contol points?
+			
+			//adds CP by inclusive addition
+			for each (var p:Point in CPset)
+			{
+					if(checkSearchSpace(p, t, s, maxSearchDist)) searchSpace.push(p);	
+					//trace("Pathfinder: Hi " + CPset.length, maxSearchDist);			
+			}
+	
+			trace("Pathfinder: GSP: searchSpace.length: " + searchSpace.length, "maxSearchDist: " + maxSearchDist, edge.name);
+			if(CPArrayFromEdge == null) return searchSpace;
+
+			
+			for each(var p:Point in CPArrayFromEdge)
+			{
+				if(searchSpace.indexOf(p) == -1) searchSpace.push(p);
+			}
+			
+			trace("Pathfinder: GSP (After): searchSpace.length: " + searchSpace.length, edge.name);
+			
+			return searchSpace;
+		} 
+		
+		// Checks if a particular CP from the CPset should be included in the search space base on its distance to the 
+		// source and target node of the EdgeSprite: The search space is a semi-circle in shape.
+		private function checkSearchSpace(currNode:Point, s:Point, t:Point, maxDis:int):Boolean
+		{
+			var c:Point = new Point(currNode.x, currNode.y); //current point
+			var dis:int = Math.floor(GeometryUtil.calculateDistanceBetweenPoints(c, s) + Math.floor(GeometryUtil.calculateDistanceBetweenPoints(c, t)));
+			//trace("Pathfinder: dis: " + dis + " | Max Dis: " + maxDis);
+			return ( dis < maxDis ? true : false);
+		}		
+		
+		// Returns the boundary distance of the search space. The further the source and target nodes are apart, 
+		// the larger the boundary.
+		private function getMaxSearchDist(t:Point, s:Point, angle:Number):int
+		{
+			return Math.floor(GeometryUtil.calculateDistanceBetweenPoints(s, t) * Math.tan(angle) * 2 );
+		}
+		
+		// Astar is a pathfinding algorithm...
+		private function AStar_pathfindingAlgrithm(edge:EdgeSprite, searchSpace:Array):void
+		{
+			var debugString:String = ""; //debug
+			var ctrl:Array = edge.props.$controlPointsArray;
+			var curr:Point = new Point(edge.source.x, edge.source.y); 
+			var end:Point = new Point(edge.target.x, edge.target.y); 
+			var selectedPoint:int = -1;
+			var wayPoints:Array = []; //stores in order the final path of the edgeSprite
+
+					
+			if(ctrl == null) return;	
+			edge.props.$controlPointsArray = searchSpace;
+			sortCPByDistance(edge);
+			
+			trace("Pathfinding: Test: " + (searchSpace.length == edge.props.$controlPointsArray.length) + " | ctrl.length: " + ctrl.length );
+			trace(edge.props.$controlPointsArray.length);
+			
+			while(Math.abs(curr.x - end.x) > 0.1 || Math.abs(curr.y - end.y) > 0.1) //Just in case there is some floating points mismatch
+			{
+				for(var i:int = 0; i < searchSpace.length; i++)
+				{
+					
+				}
+				
+			}
+			
+		}
+		
+		
+		//private test2
+		//should i include start and end in kmeans?
+		private function kmeans_Pathfinding(edge:EdgeSprite, searchSpace:Array):void
+		{
+			var ctrl:Array = edge.props.$controlPointsArray;
+			var curr:Point = new Point(edge.source.x, edge.source.y); 
+			var end:Point = new Point(edge.target.x, edge.target.y);
+			var wayPointsSet:Array; // Stores the sets of way point path after kmeans. 
+			var wayPoints:Array = []; //stores in order the final path of the edgeSprite
+			
+			if(searchSpace.length == 0) return;	
+			
+			wayPointsSet = GeometryUtil.kmeans(searchSpace);
+			
+			for each (var cluster:Array in wayPointsSet)
+			{
+				if(cluster[0] != null) wayPoints.push(cluster[0]);
+				//trace("Pathfinder: tracing clusters: " + cluster[0]);
+			}
+			
+			trace("Pathfinder: KmeansPF: WayPoints.length: " + wayPoints.length);
+			
+			edge.props.$controlPointsArray = wayPoints;
+			sortCPByDistance(edge);
+			
+		}
+		 */
+
+
 
 /*
 * Draw a quadratic Bezier curve through a set of control points anchorPoints[], with the first point being the start and last points 

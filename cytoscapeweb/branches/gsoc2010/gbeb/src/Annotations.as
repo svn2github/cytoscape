@@ -72,6 +72,16 @@ GBEBRouter: - Curve drawing mechanism has been changed to farmcodes's Bezier Poi
 						- removed direction check in shape, as it is no longer necessary an asthetic adjustment in the bundling process
 						- written Kmeans clustering method from scratch, tested against randomly generated variable:works 
 						
+Version 0.9:
+Cleaned up GeomUtil and created new GeomUtilInterface class to abstract methods
+
+Version 0.95:
+Bundling Success~! - A Pathfinder class is written to bundle the edges. Utilises kmeans to cluster and finds the centroids
+						of the clusters of CP and thread the edges which have CP in the clusters through the CP.
+						- Fixed minor bug in pathfinder which is causing loops
+GeomUtil: - Fixed NaN bug for Kmeans
+					- removed calculateDistanceBetween points function as flash has already provided this method
+BundledRenderer: Redundant Class: Fixed Problem of running renderer twice
 
 
 

@@ -203,6 +203,11 @@ package gbeb.view.render
 						var b:BezierPoint = new BezierPoint(p.x, p.y);
 						points.push(b);
 					}
+					/*trace("EdgeRenderer: bezierPointArray.length: " + e.source.data["name"], e.target.data["name"], points.length - 1)
+					for each (var ps:* in points)
+					{
+						trace(ps);
+					} */
 					points.push(new BezierPoint(x2, y2));
 								
 					var path:Path = new Path();

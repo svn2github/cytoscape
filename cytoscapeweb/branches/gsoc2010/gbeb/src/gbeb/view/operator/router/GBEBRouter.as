@@ -891,8 +891,8 @@ package gbeb.view.operator.router {
 																		//trace("GBEBRouter: mergeNodes_Pairwise: " + (edge2[s1 + "OriPos"] as Point).toString(), "|", (edge2[s2] as MeshNode).x);
 																		
 																		//if the edge nodes has to be moved more than x = floor(gridSize/2) from its original position, it will not be moved
-																		if( GeometryUtil.calculateDistanceBetweenPoints(ip, edge1[s1 + "OriPos"]) > _meshNodesMaxDisplacementDistance ||
-																			GeometryUtil.calculateDistanceBetweenPoints(ip, edge2[s2 + "OriPos"]) > _meshNodesMaxDisplacementDistance) 
+																		if( Point.distance(ip, edge1[s1 + "OriPos"]) > _meshNodesMaxDisplacementDistance ||
+																			Point.distance(ip, edge2[s2 + "OriPos"]) > _meshNodesMaxDisplacementDistance) 
 																		{
 																			//trace(edge1[s1 + "OriPos"].toString(), edge2[s2 + "OriPos"].toString());
 																			//trace(GeometryUtil.calculateDistanceBetweenPoints(ip, edge1[s1 + "OriPos"]), GeometryUtil.calculateDistanceBetweenPoints(ip, edge2[s2 + "OriPos"]), _meshNodesMaxDisplacementDistance); 
@@ -1074,7 +1074,7 @@ package gbeb.view.operator.router {
 					var sourceNode:Point = new Point(e.source.x, e.source.y); //casting source node as mesh modes
 					var targetNode:Point = new Point(e.target.x, e.target.y);
 					var swapArray:Array = [];
-					var disSourceTarget:Number = GeometryUtil.calculateDistanceBetweenPoints(sourceNode, targetNode);
+					var disSourceTarget:Number = Point.distance(sourceNode, targetNode);
 					var distance:String = ""; //debug
 					
 					//trace("GBEBRouter: Bubble sorting CP by Distance...", e.name);
@@ -1089,7 +1089,7 @@ package gbeb.view.operator.router {
 					
 					/*for each (var p:Point in ctrl) //debug
 					{
-						distance += " " + GeometryUtil.calculateDistanceBetweenPoints(sourceNode, p);
+						distance += " " + Point.distance(sourceNode, p);
 					} */
 					
 					//trace("GBEBRouter: BubbleSort - Array trace: " + distance );//+ distance, e.source.data["name"], e.target.data["name"]);
@@ -1097,7 +1097,7 @@ package gbeb.view.operator.router {
 					for(var i:int = 0; i < ctrl.length; i++)
 					{
 						
-						var disTargetP:Number = GeometryUtil.calculateDistanceBetweenPoints(targetNode, ctrl[i]);
+						var disTargetP:Number = Point.distance(targetNode, ctrl[i]);
 						if(disTargetP > disSourceTarget)
 						{
 							swapArray.push(ctrl[i]);
@@ -1110,7 +1110,7 @@ package gbeb.view.operator.router {
 					for each (var p:Point in swapArray) 
 					{
 						ctrl.unshift(swapArray.shift()); 
-						distance += " " + GeometryUtil.calculateDistanceBetweenPoints(sourceNode, p); //debug
+						distance += " " + Point.distance(sourceNode, p); //debug
 					}
 					//trace("GBEBRouter: BubbleSort - Swap Array trace: " + distance, e.source.data["name"], e.target.data["name"]);
 
@@ -1124,8 +1124,8 @@ package gbeb.view.operator.router {
 							{
 								for (var j:int = 0; j < a.length - i - 1; j++)
 								{
-									currDist = GeometryUtil.calculateDistanceBetweenPoints(targetPoint,a[j]);
-									nextDist = GeometryUtil.calculateDistanceBetweenPoints(targetPoint,a[j + 1]);
+									currDist = Point.distance(targetPoint,a[j]);
+									nextDist = Point.distance(targetPoint,a[j + 1]);
 									if(increasing)
 									{
 										if(currDist > nextDist)

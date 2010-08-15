@@ -116,18 +116,6 @@ package gbeb.util
 		
 		
 		/**
-		 * This function uses Pythagoras' Theorm to calculate the distance between p1 and p2; 
-		 */
-
-		public static function calculateDistanceBetweenPoints(p1:Point, p2:Point):Number
-		{
-			var distance:Number = 0;		
-			distance = Math.sqrt( Math.pow((p1.x - p2.x), 2) + Math.pow((p1.y - p2.y), 2));
-			return distance;
-		}
-	
-		
-		/**
 		 * This function derives the position of the anchor point based of the location of the control point
 		 * for a normal qradratic Bezier curve. 
 		 *  
@@ -161,6 +149,21 @@ package gbeb.util
 			return new Point( (avgX / numPoints), (avgY / numPoints));
 		}		
 
+		/**
+		 * This function takes in 2 lines segment as 4 points, Line1 - AB | Line 2 ~ EF and returns the angle between them.
+		 * Uses the idea of a dot product of vectors. Note the lines are directed, meaning it starts from A and end at B
+		 * 
+		 * Coded with reference to http://www.kynd.info/library/mathandphysics/dotProduct_01/
+		 */
+		
+		public static function getAnglesFromLines(A:Point, B:Point, E:Point, F:Point):Number
+		{
+			var dotProduct:Number = (B.x - A.x) * (F.x - E.x) + (B.y - A.y) * (F.y - E.y); 
+			var demoninator:Number = Point.distance(A, B) * Point.distance(E, F); //This is a multiplication of magnitude
+			var angle:Number = Math.acos(dotProduct /demoninator);
+			
+			return angle;
+		}
 		
 		/**
 		 * This function is a 2 dimensional k- means clutering algorithm. It is a heuristic algorithm which 
@@ -196,7 +199,7 @@ package gbeb.util
 				return clusters;
 			} else if (points.length == 2)
 			{
-				if ( calculateDistanceBetweenPoints(points[0], points[1]) < bundlingDist)
+				if ( Point.distance(points[0], points[1]) < bundlingDist)
 				{
 					clusters.push(points);
 					return clusters;
@@ -212,19 +215,14 @@ package gbeb.util
 				clusters.push(new Array());
 				centroids.push(new Point( points[i].x, points[i].y));
 			}
-			
-			
-			// ========[ PRIVATE METHODS ]==============================================================
-			
 			// The algorithm will loop between assigning the points to the clusters that the points are nearest to 
 			// and recalculating the centroids for each clusters after all the points are assigned until the centroids 
 			// does not shift any more. 
 			do {	
-				prevCentroids = copyCentroids(centroids);
-				assignPointsToClusters(points, centroids, clusters);
-				recalcuateCentroids(centroids, clusters);					
+				prevCentroids = copyCentroids(centroids); 
+				assignPointsToClusters(points, centroids, clusters); 
+				recalcuateCentroids(centroids, clusters);			
 			} while(!clusteringComplete(centroids, prevCentroids))
-		
 			return clusters;
 		}
 					
@@ -244,17 +242,22 @@ package gbeb.util
 		
 		//This function assign the points to the cluster which has the closest centroid to the point. 
 		private static function assignPointsToClusters(points:Array, centroids:Array, clusters:Array):void
-		{
+		{ 
 			var distanceToCentroid:Array = []; //stores the distance between each point to the centroid at each round of iteration
 			for each( var p:Point in points)
 			{
-				distanceToCentroid = [];
-				for each( var c:Point in centroids)
+				distanceToCentroid = []; 
+				if(isNaN(p.x) || isNaN(p.y)) 
 				{
-					distanceToCentroid.push(calculateDistanceBetweenPoints(c, p));
+					points.splice(p,1); 
+					continue;
 				}
-				clusters[getMinDisIndex(distanceToCentroid)].push(p);
-			}
+				for each( var c:Point in centroids)
+				{ 
+					distanceToCentroid.push(Point.distance(c, p)); 
+				} 
+				clusters[getMinDisIndex(distanceToCentroid)].push(p); 
+			} 
 		}
 
 		//This function recalcuates the position of the centroid of each clusters based on the clustering in each iteration
@@ -283,7 +286,7 @@ package gbeb.util
 		{
 			var minDis:Number = Number.MAX_VALUE;
 			var minDisIndex = -1;
-			
+
 			for(var i:int=0; i < distances.length;i++)
 			{
 				if(distances[i] < minDis)

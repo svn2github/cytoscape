@@ -35,8 +35,8 @@ package
     public class GBEBView extends Sprite
     {  
         //private var _url:String = "data/sample1.xml";
-        private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
-				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
+        //private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
+				private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare_reduced.json.txt";
 				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/socialnet.xml";
         private var _vis:Visualization;
