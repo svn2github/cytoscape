@@ -9,12 +9,14 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import org.cytoscape.work.HandlerFactory;
+import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.Tunable.Param;
 import org.cytoscape.work.internal.tunables.utils.CollapsablePanel;
@@ -111,7 +113,14 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 		this.objectsWithTunables = convertSpringProxyObjs(proxyObjs);
 		handlers = new ArrayList<GUIHandler>();
 		JPanel providedGUI = null;
+		int factoryCount = 0; // # of descendents of TaskFactory...
+		int otherCount = 0;   // ...everything else.  (Presumeably descendents of Task.)
 		for (final Object objectWithTunables : objectsWithTunables) {
+			if (objectWithTunables instanceof TaskFactory)
+				++factoryCount;
+			else
+				++otherCount;
+
 			if (guiProviderMap.containsKey(objectWithTunables)) {
 				if (providedGUI != null)
 					throw new IllegalStateException("Found more than one provided GUI!");
@@ -125,6 +134,17 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 				handlers.addAll(handlerMap.get(objectWithTunables).values());
 			else
 				throw new IllegalArgumentException("No Tunables and no provided GUI exists for Object yet!");
+		}
+
+		// Sanity check:
+		if (factoryCount > 0) {
+			if (factoryCount != 1) {
+				logger.error("More than one annotated TaskFactory found!");
+				return false;
+			} else if (otherCount != 0) {
+				logger.error("Found annotated Task objects in addition to an annotated TaskFactory!");
+				return false;
+			}
 		}
 
 		if (providedGUI != null) {
@@ -152,7 +172,8 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 		if (!panelMap.containsKey(handlers)) {
 			final String MAIN = " ";
 			Map<String, JPanel> panels = new HashMap<String, JPanel>();
-			panels.put(MAIN, createJPanel(MAIN, null, null, Param.hidden));
+			final JPanel topLevel = createSimplePanel(MAIN, null, Param.hidden);
+			panels.put(MAIN, topLevel);
 
 			// construct the GUI
 			for (GUIHandler gh : handlers) {
@@ -178,8 +199,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 				if (group.length <= alignments.length) {
 					for (int i = 0; i < group.length; i++)
 						groupAlignment.put(group[i], alignments[i]);
-				}
-				else {
+				} else {
 					for (int i = 0; i < alignments.length; i++)
 						groupAlignment.put(group[i], alignments[i]);
 
@@ -191,8 +211,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 				if (group.length <= titleFlags.length) {
 					for (int i = 0; i < group.length; i++)
 						groupTitles.put(group[i], titleFlags[i]);
-				}
-				else {
+				} else {
 					for (int i = 0; i < titleFlags.length; i++)
 						groupTitles.put(group[i], titleFlags[i]);
 
@@ -251,7 +270,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	 */
 	private JPanel createJPanel(final String title, final GUIHandler gh, final Param alignment, final Param groupTitle) {
 		if (gh == null)
-			return getSimplePanel(title,alignment, groupTitle);
+			return createSimplePanel(title, alignment, groupTitle);
 
 		// See if we need to create an XOR panel
 		if (gh.controlsMutuallyExclusiveNestedChildren()) {
@@ -267,10 +286,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 					return new CollapsablePanel(title, true);
 			}
 			// We're not collapsable, so return a normal jpanel
-			return getSimplePanel(title,alignment, groupTitle);
+			return createSimplePanel(title,alignment, groupTitle);
 		}
 	}
-
 
 	/**
 	 * Creation of a JPanel that will contain panels of <code>GUIHandler</code>
@@ -282,7 +300,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	 *
 	 * @return a container for <code>GUIHandler</code>' panels
 	 */
-	private JPanel getSimplePanel(final String title, final Param alignment, final Param groupTitle) {
+	private JPanel createSimplePanel(final String title, final Param alignment, final Param groupTitle) {
 		JPanel outPanel = new JPanel();
 		TitledBorder titleborder = BorderFactory.createTitledBorder(title);
 		titleborder.setTitleColor(Color.BLUE);
@@ -296,6 +314,27 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 		return outPanel;
 	}
 
+	/**
+	 * Creation of a JDialog that will contain panels of <code>GUIHandler</code>
+	 * A layout will be set for this <i>"container"</i> of panels (horizontally or vertically), and a title (displayed or not)
+	 *
+	 * @param title of the panel
+	 * @param alignment the way the panels will be set in this <i>"container</i> panel
+	 * @param groupTitle parameter to choose whether or not the title of the panel has to be displayed
+	 *
+	 * @return a container for <code>GUIHandler</code>' panels
+	 */
+	private JDialog createSimpleDialog(final String title, final Param alignment, final Param groupTitle) {
+		final JDialog dialog = new JDialog((JDialog)null, title);
+
+		if (groupTitle == Param.displayed || groupTitle == null)
+			/* Do nothing. */;
+		if (alignment == Param.vertical || alignment == null)
+			dialog.setLayout(new BoxLayout(dialog, BoxLayout.PAGE_AXIS));
+		else if (alignment == Param.horizontal)
+			dialog.setLayout(new BoxLayout(dialog, BoxLayout.LINE_AXIS));
+		return dialog;
+	}
 
 	/**
 	 * Displays the JPanels of each <code>GUIHandler</code> in a <code>JOptionPane</code>
