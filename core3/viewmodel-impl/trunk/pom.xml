@@ -36,9 +36,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<excludes>
-						<exclude>**/ViewModelImplIntegrationTest.java</exclude>
-					</excludes>
+
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 				</configuration>
 			</plugin>
@@ -141,42 +139,43 @@
 		</dependency>
 
 
-
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>event-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
-
-
-
+		<!-- Bundles required for testing -->
 		<dependency>
 			<groupId>org.springframework.osgi</groupId>
 			<artifactId>spring-osgi-test</artifactId>
-			<version>1.2.1</version>
+			<version>${spring.osgi.version}</version>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-annotation</artifactId>
+			<version>${spring.osgi.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-extender</artifactId>
+			<version>${spring.osgi.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.osgi</groupId>
 			<artifactId>log4j.osgi</artifactId>
 			<version>1.2.15-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>com.springsource.slf4j.api</artifactId>
 			<version>1.5.0</version>
+			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>com.springsource.slf4j.log4j</artifactId>
 			<version>1.5.0</version>
+			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
@@ -189,30 +188,5 @@
 			<version>3.6.0.v20100517</version>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>spring-osgi-annotation</artifactId>
-			<version>1.2.1</version>
-			<scope>test</scope>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>spring-osgi-extender</artifactId>
-			<version>1.2.1</version>
-			<type>bundle</type>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>test-support</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
-
-
-
 </project>
