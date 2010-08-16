@@ -32,11 +32,15 @@ package org.cytoscape.task.internal.tests.tunables;
 
 import java.io.File;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import org.cytoscape.task.AbstractTask;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.ProvidesGUI;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.BoundedFloat;
@@ -136,5 +140,12 @@ public class TunablesTestTask extends AbstractTask implements TunableValidator {
 		} finally {
 			return false;
 		}
+	}
+
+	@ProvidesGUI
+	public JPanel getGUI() {
+		final JPanel panel = new JPanel();
+		panel.add(new JLabel("Panel from an @ProvidesGUI-annotated class!"));
+		return panel;
 	}
 }
