@@ -1,121 +1,173 @@
-<!-- saved from url=(0014)about:internet -->
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    
+    <head>
+        <title>GSoC 2010 - Edge Bundle</title>
+        
+        <script type="text/javascript" src="AC_OETags.js"></script>
+        <script type="text/javascript" src="jquery-1.3.2.min.js"></script>
+        <script type="text/javascript"><!--
+            var requiredMajorVersion = 10;
+            var requiredMinorVersion = 0;
+            var requiredRevision = 0;
+            var hasProductInstall = DetectFlashVer(6, 0, 65);
+            var hasRequestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
+            var containerId = "graphBox";
+            
+			// Let's redefine the default AC_OETags function, because we don't necessarily want
+            // to replace the whole HTML page with the swf object:
+            AC_Generateobj = function (objAttrs, params, embedAttrs) {
+                var str = '';
+                var i;
+                if (isIE && isWin && !isOpera) {
+                    str += '<object ';
+                    for (i in objAttrs) {
+                        if (Object.hasOwnProperty.call(objAttrs, i)) {
+                            str += i + '="' + objAttrs[i] + '" ';
+                        }
+                    }
+                    str += '>';
+                    for (i in params) {
+                        if (Object.hasOwnProperty.call(params, i)) {
+                            str += '<param name="' + i + '" value="' + params[i] + '" /> ';
+                        }
+                    }
+                    str += '</object>';
+                } else {
+                    str += '<embed ';
+                    for (i in embedAttrs) {
+                        if (Object.hasOwnProperty.call(embedAttrs, i)) {
+                            str += i + '="' + embedAttrs[i] + '" ';
+                        }
+                    }
+                    str += '> </embed>';
+                }
+                // Replace only the indicated DOM element:
+                document.getElementById(containerId).innerHTML = str;
+            };
 
-<!-- 
-Smart developers always View Source. 
+            function draw(url) {
+                if ( hasProductInstall && !hasRequestedVersion ) {
+                    // DO NOT MODIFY THE FOLLOWING FOUR LINES
+                    // Location visited after installation is complete if installation is required
+                    var MMPlayerType = (isIE == true) ? "ActiveX" : "PlugIn";
+                    var MMredirectURL = window.location;
+                    document.title = document.title.slice(0, 47) + " - Flash Player Installation";
+                    var MMdoctitle = document.title;
 
-This application was built using Adobe Flex, an open source framework
-for building rich Internet applications that get delivered via the
-Flash Player or to desktops via Adobe AIR. 
+                    AC_FL_RunContent(
+                        "src", "playerProductInstall",
+                        "FlashVars", "MMredirectURL="+MMredirectURL+'&MMplayerType='+MMPlayerType+'&MMdoctitle='+MMdoctitle+"",
+                        "width", "100%",
+                        "height", "100%",
+                        "align", "middle",
+                        "id", "GBEBView",
+                        "quality", "high",
+                        "bgcolor", "#ffffff",
+                        "name", "GBEBView",
+                        "allowScriptAccess","sameDomain",
+                        "type", "application/x-shockwave-flash",
+                        "pluginspage", "http://www.adobe.com/go/getflashplayer"
+                    );
+                } else if (hasRequestedVersion) {
+                    var flashVars = "url=" + url;
+                    
+                    // if we've detected an acceptable version
+                    // embed the Flash Content SWF when all tests are passed
+                    AC_FL_RunContent(
+                            "src", "GBEBView",
+                            "width", "100%",
+                            "height", "100%",
+                            "align", "middle",
+                            "id", "GBEBView",
+                            "quality", "high",
+                            "bgcolor", "#ffffff",
+                            "name", "GBEBView",
+                            "allowScriptAccess","sameDomain",
+                            "type", "application/x-shockwave-flash",
+                            "pluginspage", "http://www.adobe.com/go/getflashplayer",
+                            "wmode", "opaque",
+                            "flashVars", flashVars
+                    );
+                  } else {  // flash is too old or we can't detect the plugin
+                    var alternateContent = 'Alternate HTML content should be placed here. '
+                    + 'This content requires the Adobe Flash Player. '
+                    + '<a href=http://www.adobe.com/go/getflash/>Get Flash</a>';
+                    document.write(containerId);  // insert non-flash content
+                  }
+            }
 
-Learn more about Flex at http://flex.org 
-// -->
+            function swf() {
+                if (navigator.appName.indexOf("Microsoft") !== -1) {
+                    return window[containerId];
+                } else {
+                    return document[containerId];
+                }
+            }
+            
+            $(document).ready(function() {
+                // Register control liteners:
+                $("#graphs").change(function(evt) {
+                    draw($("#graphs").val());
+                });
+//                $("#bundleEdges").click(function(evt) {
+//                    swf().bundleEdges();
+//                });
+                
+                draw($("#graphs").val());
+            });
+        --></script>
+        
+        <style>
+            /* The Cytoscape Web container must have its dimensions set. */
+            html, body { padding: 0; margin: 0; text-align: center; font-family: sans-serif; }
+            h1, h2 { margin-top: 8px; }
+            label { color: #0b94b1; font-size: 14px; }
+            hr { border: #0b94b1 1px solid; }
+            .center { text-align: center; }
+            #header { width: 100%; height: 40px; padding: 4px 0; background-color: #0b94b1; color: #ffffff; }
+            #graphBox { height: 640px; border-right: 2px solid #0b94b1; border-bottom: 2px solid #0b94b1; margin: 0 auto 0 auto; }
+            #sidePanel { width: 120px; padding: 8px 20px 0 10px; vertical-align: top; text-align: left; }
+            #controls > div { margin: 8px 0; }
+            #graphs, #createGraph { width: 164px; }
+        </style>
+    </head>
+    
+    <body>
+        <div id="header">
+            <h2>GSoC 2010 - Edge Bundle for Cytoscape Web</h2>
+        </div>
+        <table width="100%" cellspacing="0">
+            <tr>
+                <td id="graphBox" width="*"></td>
+                <td id="sidePanel">
+                    <div id="controls">
+                        <div>
+                            <label>Networks:</label>
+                            <select id="graphs" size="1">
+                                <option value="data/proof1.xgmml" selected="selected">Proof 1</option>
+                                <option value="data/proof2.xgmml">Proof 2</option>
+                                <option value="data/flare.json.txt">Flare</option>
+                                <option value="data/sample1.xml">Sample 1</option>
+                                <option value="data/sample2.xml">Sample 2</option>
+                                <option value="data/sample3.xml">Sample 3</option>
+                                <option value="data/sample4.xml">Sample 4</option>
+                            </select>
+                        </div>
+                        <hr/>
+                        <div>
+                            <!--input type="button" id="bundleEdges" value="Bundle edges"/-->
+                        </div>
+                    </div>
+                </td>
+            <tr>
+        </table>
 
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-<!--  BEGIN Browser History required section -->
-<link rel="stylesheet" type="text/css" href="history/history.css" />
-<!--  END Browser History required section -->
-
-<title>${title}</title>
-<script src="AC_OETags.js" language="javascript"></script>
-
-<!--  BEGIN Browser History required section -->
-<script src="history/history.js" language="javascript"></script>
-<!--  END Browser History required section -->
-
-<style>
-body { margin: 0px; overflow:hidden }
-</style>
-<script language="JavaScript" type="text/javascript">
-<!--
-// -----------------------------------------------------------------------------
-// Globals
-// Major version of Flash required
-var requiredMajorVersion = ${version_major};
-// Minor version of Flash required
-var requiredMinorVersion = ${version_minor};
-// Minor version of Flash required
-var requiredRevision = ${version_revision};
-// -----------------------------------------------------------------------------
-// -->
-</script>
-</head>
-
-<body scroll="no">
-<script language="JavaScript" type="text/javascript">
-<!--
-// Version check for the Flash Player that has the ability to start Player Product Install (6.0r65)
-var hasProductInstall = DetectFlashVer(6, 0, 65);
-
-// Version check based upon the values defined in globals
-var hasRequestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
-
-if ( hasProductInstall && !hasRequestedVersion ) {
-	// DO NOT MODIFY THE FOLLOWING FOUR LINES
-	// Location visited after installation is complete if installation is required
-	var MMPlayerType = (isIE == true) ? "ActiveX" : "PlugIn";
-	var MMredirectURL = window.location;
-    document.title = document.title.slice(0, 47) + " - Flash Player Installation";
-    var MMdoctitle = document.title;
-
-	AC_FL_RunContent(
-		"src", "playerProductInstall",
-		"FlashVars", "MMredirectURL="+MMredirectURL+'&MMplayerType='+MMPlayerType+'&MMdoctitle='+MMdoctitle+"",
-		"width", "${width}",
-		"height", "${height}",
-		"align", "middle",
-		"id", "${application}",
-		"quality", "high",
-		"bgcolor", "${bgcolor}",
-		"name", "${application}",
-		"allowScriptAccess","sameDomain",
-		"type", "application/x-shockwave-flash",
-		"pluginspage", "http://www.adobe.com/go/getflashplayer"
-	);
-} else if (hasRequestedVersion) {
-	// if we've detected an acceptable version
-	// embed the Flash Content SWF when all tests are passed
-	AC_FL_RunContent(
-			"src", "${swf}",
-			"width", "${width}",
-			"height", "${height}",
-			"align", "middle",
-			"id", "${application}",
-			"quality", "high",
-			"bgcolor", "${bgcolor}",
-			"name", "${application}",
-			"allowScriptAccess","sameDomain",
-			"type", "application/x-shockwave-flash",
-			"pluginspage", "http://www.adobe.com/go/getflashplayer"
-	);
-  } else {  // flash is too old or we can't detect the plugin
-    var alternateContent = 'Alternate HTML content should be placed here. '
-  	+ 'This content requires the Adobe Flash Player. '
-   	+ '<a href=http://www.adobe.com/go/getflash/>Get Flash</a>';
-    document.write(alternateContent);  // insert non-flash content
-  }
-// -->
-</script>
-<noscript>
-  	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-			id="${application}" width="${width}" height="${height}"
-			codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-			<param name="movie" value="${swf}.swf" />
-			<param name="quality" value="high" />
-			<param name="bgcolor" value="${bgcolor}" />
-			<param name="allowScriptAccess" value="sameDomain" />
-			<embed src="${swf}.swf" quality="high" bgcolor="${bgcolor}"
-				width="${width}" height="${height}" name="${application}" align="middle"
-				play="true"
-				loop="false"
-				quality="high"
-				allowScriptAccess="sameDomain"
-				type="application/x-shockwave-flash"
-				pluginspage="http://www.adobe.com/go/getflashplayer">
-			</embed>
-	</object>
-</noscript>
-</body>
+        <ol id="data"></ol>
+        <p>
+            <a href="http://cytoscapeweb.cytoscape.org/">Cytoscape Web</a>
+            , &copy; 2010
+        </p>
+    </body>
+    
 </html>

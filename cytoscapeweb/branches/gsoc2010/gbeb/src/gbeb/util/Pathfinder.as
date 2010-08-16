@@ -66,9 +66,6 @@ package gbeb.util
 			//var searchSpace:Array = generateSearchSpace(_mesh.CP, edge);
 			var searchSpaceTrace:String = ""; //debug
 			
-			
-			edge.lineWidth *= 0.5; edge.lineAlpha = 0.5;
-			
 			//kmeans_Pathfinding(edge, searchSpace);
 			Kmeans_Pathfinding2(edge);
 			

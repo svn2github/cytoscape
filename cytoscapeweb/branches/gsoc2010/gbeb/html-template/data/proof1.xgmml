@@ -1,0 +1,130 @@
+<graph label="Cytoscape Web" directed="0" Graphic="1" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cy="http://www.cytoscape.org" xmlns="http://www.cs.rpi.edu/XGMML">
+  <att name="documentVersion" value="0.1"/>
+  <att type="string" name="backgroundColor" value="#fefefe"/>
+  <att type="real" name="GRAPH_VIEW_ZOOM" value="1"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_X" value="243.57500000000002"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_Y" value="76.975"/>
+  <node id="n1" label="">
+    <att type="string" name="shape" value="DIAMOND"/>
+    <att type="integer" name="type" value="1"/>
+    <att type="real" name="weight" value="0.08778807776980102"/>
+    <graphics x="269" y="196" cy:nodeLabelFont="Arial-0-10" w="20" outline="#707070" type="ELLIPSE" cy:nodeTransparency="0.9" h="20" width="2" fill="#ffffff" labelanchor="c"/>
+  </node>
+  <node id="n2" label="">
+    <att type="string" name="shape" value="DIAMOND"/>
+    <att type="integer" name="type" value="1"/>
+    <att type="real" name="weight" value="0.5871784440241754"/>
+    <graphics x="717" y="202" cy:nodeLabelFont="Arial-0-21.136160580891143" w="35.90880082984449" outline="#707070" type="ELLIPSE" cy:nodeTransparency="0.9" h="35.90880082984449" width="2" fill="#3ca9c0" labelanchor="c"/>
+  </node>
+  <node id="n3" label="">
+    <att type="string" name="shape" value="DIAMOND"/>
+    <att type="integer" name="type" value="1"/>
+    <att type="real" name="weight" value="0.2214073548093438"/>
+    <graphics x="267" y="230" cy:nodeLabelFont="Arial-0-12.979644435225214" w="24.256634907464594" outline="#707070" type="ELLIPSE" cy:nodeTransparency="0.9" h="24.256634907464594" width="2" fill="#cbe8ee" labelanchor="c"/>
+  </node>
+  <node id="n4" label="">
+    <att type="string" name="shape" value="DIAMOND"/>
+    <att type="integer" name="type" value="1"/>
+    <att type="real" name="weight" value="0.2687063452322036"/>
+    <graphics x="718" y="237" cy:nodeLabelFont="Arial-0-14.034388756013133" w="25.76341250859019" outline="#707070" type="ELLIPSE" cy:nodeTransparency="0.9" h="25.76341250859019" width="2" fill="#b8e0e8" labelanchor="c"/>
+  </node>
+  <node id="n5" label="">
+    <att type="string" name="shape" value="DIAMOND"/>
+    <att type="integer" name="type" value="1"/>
+    <att type="real" name="weight" value="0.3240497645456344"/>
+    <graphics x="269" y="268" cy:nodeLabelFont="Arial-0-15.268519901138237" w="27.526457001626056" outline="#707070" type="ELLIPSE" cy:nodeTransparency="0.9" h="27.526457001626056" width="2" fill="#a3d6e1" labelanchor="c"/>
+  </node>
+  <node id="n6" label="">
+    <att type="string" name="shape" value="DIAMOND"/>
+    <att type="integer" name="type" value="1"/>
+    <att type="real" name="weight" value="0.6344284985680133"/>
+    <graphics x="720" y="273" cy:nodeLabelFont="Arial-0-22.18981365554421" w="37.4140195079203" outline="#707070" type="ELLIPSE" cy:nodeTransparency="0.9" h="37.4140195079203" width="2" fill="#2aa1bb" labelanchor="c"/>
+  </node>
+  <node id="n7" label="">
+    <att type="string" name="shape" value="DIAMOND"/>
+    <att type="integer" name="type" value="1"/>
+    <att type="real" name="weight" value="0.2495746237691492"/>
+    <graphics x="270" y="308" cy:nodeLabelFont="Arial-0-13.607760737536434" w="25.153943910766337" outline="#707070" type="ELLIPSE" cy:nodeTransparency="0.9" h="25.153943910766337" width="2" fill="#c0e3ea" labelanchor="c"/>
+  </node>
+  <node id="n8" label="">
+    <att type="string" name="shape" value="DIAMOND"/>
+    <att type="integer" name="type" value="1"/>
+    <att type="real" name="weight" value="0.7156045569572598"/>
+    <graphics x="720" y="316" cy:nodeLabelFont="Arial-0-24" w="40" outline="#707070" type="ELLIPSE" cy:nodeTransparency="0.9" h="40" width="2" fill="#0b94b1" labelanchor="c"/>
+  </node>
+  <edge target="n2" id="e1" directed="false" source="n1" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.16891764081083238"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="2" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n4" id="e2" directed="false" source="n1" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.6640903677325696"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="5.717967973025737" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n6" id="e3" directed="false" source="n1" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.9680198340211064"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="8" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n7" id="e4" directed="false" source="n6" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.25754699134267867"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="2.665466954926937" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n5" id="e5" directed="false" source="n6" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.9668653681874276"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="7.991331778261996" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n3" id="e6" directed="false" source="n8" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.8228864572010934"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="6.910276722653247" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n2" id="e7" directed="false" source="n3" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.8438603170216084"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="7.067757405339818" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n4" id="e8" directed="false" source="n3" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.23059815145097673"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="2.4631235741627897" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n3" id="e9" directed="false" source="n6" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.7119041082914919"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="6.076973924693854" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n7" id="e10" directed="false" source="n8" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.2910030607599765"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="2.9166693896210005" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n5" id="e11" directed="false" source="n8" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.41094867372885346"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="3.817272196030629" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n5" id="e12" directed="false" source="n4" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.5775907058268785"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="5.068491628393082" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n7" id="e13" directed="false" source="n4" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.20739953056909144"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="2.2889384367999077" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n5" id="e14" directed="false" source="n2" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.5659317183308303"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="4.980950978935896" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+  <edge target="n7" id="e15" directed="false" source="n2" label="">
+    <att type="string" name="network" value="2"/>
+    <att type="real" name="weight" value="0.8973260605707765"/>
+    <graphics cy:sourceArrow="0" cy:targetArrow="0" cy:targetArrowColor="#000000" width="7.469201005445913" fill="#0b94b1" cy:sourceArrowColor="#000000"/>
+  </edge>
+</graph>

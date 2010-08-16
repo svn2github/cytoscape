@@ -1,0 +1,99 @@
+<graph label="Cytoscape Web" directed="0" Graphic="1" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cy="http://www.cytoscape.org" xmlns="http://www.cs.rpi.edu/XGMML">
+  <att name="documentVersion" value="0.1"/>
+  <att type="string" name="backgroundColor" value="#fefefe"/>
+  <att type="real" name="GRAPH_VIEW_ZOOM" value="1"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_X" value="293.675"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_Y" value="200.65"/>
+  <node id="1" label="Node 1">
+    <att type="real" name="weight" value="0.7877192064188421"/>
+    <graphics x="192.9" y="190.45" cy:nodeLabelFont="Arial-0-22.580223170409866" width="2" w="37.97174738629981" type="ELLIPSE" labelanchor="c" h="37.97174738629981" cy:nodeTransparency="0.9" outline="#707070" fill="#239eb8"/>
+  </node>
+  <node id="2" label="Node 2">
+    <att type="real" name="weight" value="0.7733065956272185"/>
+    <graphics x="293.4" y="469.25" cy:nodeLabelFont="Arial-0-22.34953429546818" width="2" w="37.64219185066884" type="ELLIPSE" labelanchor="c" h="37.64219185066884" cy:nodeTransparency="0.9" outline="#707070" fill="#27a0ba"/>
+  </node>
+  <node id="3" label="Node 3">
+    <att type="real" name="weight" value="0.0017521316185593605"/>
+    <graphics x="261.9" y="445.45" cy:nodeLabelFont="Arial-0-10" width="2" w="20" type="ELLIPSE" labelanchor="c" h="20" cy:nodeTransparency="0.9" outline="#707070" fill="#ffffff"/>
+  </node>
+  <node id="4" label="Node 4">
+    <att type="real" name="weight" value="0.41013921867124736"/>
+    <graphics x="181.8" y="223.1" cy:nodeLabelFont="Arial-0-16.536661470637178" width="2" w="29.33808781519597" type="ELLIPSE" labelanchor="c" h="29.33808781519597" cy:nodeTransparency="0.9" outline="#707070" fill="#8dcdda"/>
+  </node>
+  <node id="5" label="Node 5">
+    <att type="real" name="weight" value="0.876421753782779"/>
+    <graphics x="732.5" y="514.55" cy:nodeLabelFont="Arial-0-24" width="2" w="40" type="ELLIPSE" labelanchor="c" h="40" cy:nodeTransparency="0.9" outline="#707070" fill="#0b94b1"/>
+  </node>
+  <node id="6" label="Node 6">
+    <att type="real" name="weight" value="0.045071691973134875"/>
+    <graphics x="703.95" y="145.75" cy:nodeLabelFont="Arial-0-10.693374766421455" width="2" w="20.990535380602076" type="ELLIPSE" labelanchor="c" h="20.990535380602076" cy:nodeTransparency="0.9" outline="#707070" fill="#f2f9fb"/>
+  </node>
+  <node id="7" label="Node 7">
+    <att type="real" name="weight" value="0.7324799415655434"/>
+    <graphics x="725.4" y="177.75" cy:nodeLabelFont="Arial-0-21.696061095553922" width="2" w="36.70865870793418" type="ELLIPSE" labelanchor="c" h="36.70865870793418" cy:nodeTransparency="0.9" outline="#707070" fill="#33a5bd"/>
+  </node>
+  <edge target="6" directed="false" id="1" source="3" label="Edge 1">
+    <att type="real" name="weight" value="0.884286027867347"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="7.490080354522714" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="1" directed="false" id="2" source="5" label="Edge 2">
+    <att type="real" name="weight" value="0.4126891838386655"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="4.353135276969191" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="6" source="7" directed="false" id="e1" label="">
+    <att type="real" name="weight" value="0.5256995635572821"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="5.10485225484873" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="3" source="7" directed="false" id="e2" label="">
+    <att type="real" name="weight" value="0.2996460909489542"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="3.6012006992003895" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="2" source="7" directed="false" id="e3" label="">
+    <att type="real" name="weight" value="0.9589078731369228"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="7.986446335678687" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="1" source="2" directed="false" id="e4" label="">
+    <att type="real" name="weight" value="0.2979832764249295"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="3.5901400699742396" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="4" source="2" directed="false" id="e5" label="">
+    <att type="real" name="weight" value="0.24158635083585975"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="3.215001728070863" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="6" source="2" directed="false" id="e6" label="">
+    <att type="real" name="weight" value="0.4542564358562231"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="4.629630313471118" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="5" source="4" directed="false" id="e7" label="">
+    <att type="real" name="weight" value="0.45520801143720746"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="4.635959957896192" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="3" source="5" directed="false" id="e8" label="">
+    <att type="real" name="weight" value="0.2728733127005398"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="3.4231148277570096" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="6" source="5" directed="false" id="e9" label="">
+    <att type="real" name="weight" value="0.058927437057718635"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="2" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="7" source="5" directed="false" id="e10" label="">
+    <att type="real" name="weight" value="0.9609454814344645"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="8" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="4" source="6" directed="false" id="e11" label="">
+    <att type="real" name="weight" value="0.576461001066491"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="5.442504729712131" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="1" source="6" directed="false" id="e12" label="">
+    <att type="real" name="weight" value="0.5780107397586107"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="5.452813206588714" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="7" source="4" directed="false" id="e13" label="">
+    <att type="real" name="weight" value="0.7196964300237596"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="6.3952712282331525" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+  <edge target="4" source="3" directed="false" id="e14" label="">
+    <att type="real" name="weight" value="0.9527922389097512"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" width="7.945766655719088" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#0b94b1"/>
+  </edge>
+</graph>

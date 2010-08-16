@@ -1008,7 +1008,7 @@ package gbeb.view.operator.router {
 								if (ctrl == null) dataEdge.props.$controlPointsArray = ctrl = [];
 								ctrl.push(centroid);
 								
-								dataEdge.lineWidth = dataEdge.lineWidth /2 ; //lower width gives better visual quality
+//								dataEdge.lineWidth = dataEdge.lineWidth /2 ; //lower width gives better visual quality
 								dataEdge.shape = Shapes.BSPLINE; //Here to change curve type
 								dataEdge.lineAlpha = 0.5;
 							}

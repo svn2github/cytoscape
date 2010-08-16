@@ -220,7 +220,7 @@ package gbeb.view.render
 						{
 							g.lineStyle(0, 0, 0);
 							g.beginFill(0x000000);
-							g.drawCircle(p.x, p.y, 3);
+							//g.drawCircle(p.x, p.y, 3);
 							g.endFill();
 						}
 					} 
