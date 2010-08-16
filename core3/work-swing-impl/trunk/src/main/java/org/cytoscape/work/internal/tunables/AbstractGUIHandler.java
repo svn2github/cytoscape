@@ -219,7 +219,8 @@ public abstract class AbstractGUIHandler extends AbstractTunableHandler implemen
 
 	public String getState() {
 		try {
-			return getValue().toString();
+			final Object value = getValue();
+			return value == null ? "" : value.toString();
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return "";
