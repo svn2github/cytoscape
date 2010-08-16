@@ -21,6 +21,9 @@ import org.cytoscape.work.internal.tunables.utils.CollapsablePanel;
 import org.cytoscape.work.internal.tunables.utils.XorPanel;
 import org.cytoscape.work.spring.SpringTunableInterceptor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Interceptor of <code>Tunable</code> that will be applied on <code>GUIHandlers</code>.
@@ -45,18 +48,20 @@ import org.cytoscape.work.spring.SpringTunableInterceptor;
  */
 public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> {
 	private JPanel parentPanel = null;
-	private Map<List<GUIHandler>,JPanel> panelMap;
+	private Map<List<GUIHandler>, JPanel> panelMap;
 	private List<GUIHandler> handlers;
 	private boolean newValuesSet;
 	private Object[] objectsWithTunables;
+	private Logger logger;
 
 	/**
 	 * Creates an Interceptor that will use the <code>GUIHandlers</code> created in a <code>HandlerFactory</code> from intercepted <code>Tunables</code>.
 	 * @param factory
 	 */
-	public GuiTunableInterceptor(HandlerFactory<GUIHandler> factory) {
-		super( factory );
-		panelMap = new HashMap<java.util.List<GUIHandler>,JPanel>();
+	public GuiTunableInterceptor(final HandlerFactory<GUIHandler> factory) {
+		super(factory);
+		panelMap = new HashMap<java.util.List<GUIHandler>, JPanel>();
+		logger = LoggerFactory.getLogger(getClass());
 	}
 
 	/**
@@ -92,9 +97,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 		return validateTunableInput();
 	}
 
-
 	/**
 	 * Creates a GUI for the detected <code>Tunables</code>, following the graphic rules specified in <code>Tunable</code>s annotations
+	 * or uses the JPanel provided by the method annotated with <code>@ProvidesGUI</code>
 	 *
 	 * The new values that have been entered for the Object contained in <code>GUIHandlers</code> are also set if the user clicks on <i>"OK"</i>
 	 *
@@ -105,10 +110,35 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	public boolean createUI(Object... proxyObjs) {
 		this.objectsWithTunables = convertSpringProxyObjs(proxyObjs);
 		handlers = new ArrayList<GUIHandler>();
+		JPanel providedGUI = null;
 		for (final Object objectWithTunables : objectsWithTunables) {
-			if (!handlerMap.containsKey(objectWithTunables))
-				throw new IllegalArgumentException("No Tunables exist for Object yet!");
-			handlers.addAll(handlerMap.get(objectWithTunables).values());
+			if (guiProviderMap.containsKey(objectWithTunables)) {
+				if (providedGUI != null)
+					throw new IllegalStateException("Found more than one provided GUI!");
+				try {
+					providedGUI = (JPanel)guiProviderMap.get(objectWithTunables).invoke(objectWithTunables);
+				} catch (final Exception e) {
+					logger.error("Can't retrieve @ProvidesGUI JPanel: " + e);
+					return false;
+				}
+			} else if (handlerMap.containsKey(objectWithTunables))
+				handlers.addAll(handlerMap.get(objectWithTunables).values());
+			else
+				throw new IllegalArgumentException("No Tunables and no provided GUI exists for Object yet!");
+		}
+
+		if (providedGUI != null) {
+			//if no parentPanel is defined, then create a new JDialog to display the Tunables' panels
+			if (parentPanel == null) {
+				displayOptionPanel(providedGUI);
+				return newValuesSet;
+			} else { //else add them to the "parentPanel" JPanel
+				parentPanel.removeAll();
+				parentPanel.add(providedGUI);
+				parentPanel.repaint();
+				parentPanel = null;
+				return true;
+			}
 		}
 
 		if (handlers.isEmpty()) {
@@ -122,7 +152,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 		if (!panelMap.containsKey(handlers)) {
 			final String MAIN = " ";
 			Map<String, JPanel> panels = new HashMap<String, JPanel>();
-			panels.put(MAIN, createJPanel(MAIN,null,null,Param.hidden));
+			panels.put(MAIN, createJPanel(MAIN, null, null, Param.hidden));
 
 			// construct the GUI
 			for (GUIHandler gh : handlers) {
@@ -195,10 +225,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 
 		//if no parentPanel is defined, then create a new JDialog to display the Tunables' panels
 		if (parentPanel == null) {
-			displayOptionPanel();
+			displayOptionPanel(panelMap.get(handlers));
 			return newValuesSet;
-		}
-		else { //else add them to the "parentPanel" JPanel
+		} else { //else add them to the "parentPanel" JPanel
 			parentPanel.removeAll();
 			parentPanel.add(panelMap.get(handlers));
 			parentPanel.repaint();
@@ -206,7 +235,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 			return true;
 		}
 	}
-
 
 	/**
 	 * Creation of a JPanel that will contain panels of <code>GUIHandler</code>
@@ -275,9 +303,9 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	 * Set the new <i>"value"</i> to <code>Tunable</code> object if the user clicked on
 	 * <i>OK</i>, and if the validate method from <code>TunableValidator</code> interface succeeded.
 	 */
-	private void displayOptionPanel() {
+	private void displayOptionPanel(final JPanel optionPanel) {
 		Object[] buttons = {"OK", "Cancel"};
-		int n = JOptionPane.showOptionDialog(parentPanel, panelMap.get(handlers),
+		int n = JOptionPane.showOptionDialog(parentPanel, optionPanel,
 		    "Set Parameters",
 		    JOptionPane.YES_NO_CANCEL_OPTION,
 		    JOptionPane.PLAIN_MESSAGE,
@@ -312,7 +340,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 					                              "Input Validation Problem",
 					                              JOptionPane.ERROR_MESSAGE);
 					if (parentPanel == null)
-						displayOptionPanel();
+						displayOptionPanel(panelMap.get(handlers));
 					return false;
 				}
 			} catch (Exception e) {
