@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.swing.JPanel;
+
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -207,8 +209,8 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 						ex.printStackTrace();
 					}
 				} else if (method.isAnnotationPresent(ProvidesGUI.class)) {
-					if (method.getReturnType() != void.class)
-						logger.error(method.getName() + " annotated with @ProvidesGUI must return void!");
+					if (!isJPanelOrJPanelDescendent(method.getReturnType()))
+						logger.error(method.getName() + " annotated with @ProvidesGUI must return JPanel!");
 					else if (method.getParameterTypes().length != 0)
 						logger.error(method.getName() + " annotated with @ProvidesGUI must take 0 arguments!");
 					else {
@@ -222,6 +224,17 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 
 			handlerMap.put(obj, handlerList);
 		}
+	}
+
+	private boolean isJPanelOrJPanelDescendent(final Class c) {
+		Class c0 = c;
+		do {
+			if (c0 == JPanel.class)
+				return true;
+			c0 = c0.getSuperclass();
+		} while (c0 != Object.class);
+
+		return false;
 	}
 
 	private boolean isValidGetter(final Method getterCandidate) {
