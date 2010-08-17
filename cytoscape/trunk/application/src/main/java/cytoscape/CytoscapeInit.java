@@ -663,6 +663,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 	public void propertyChange(final PropertyChangeEvent e) {
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_EXIT)) {
 			final File propsFile = new File(CytoscapeInit.getConfigVersionDirectory(), "mostRecentlyUsedDirectory.props");
+			initMRUD();
 			try {
 				mrud.store(new FileOutputStream(propsFile), "");
 			}
