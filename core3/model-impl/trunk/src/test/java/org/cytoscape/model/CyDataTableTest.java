@@ -39,6 +39,7 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.internal.CyDataTableImpl;
 
+
 /**
  * DOCUMENT ME!
  */
@@ -48,9 +49,9 @@ public class CyDataTableTest extends AbstractCyDataTableTest {
 	 * DOCUMENT ME!
 	 */
 	public void setUp() {
-		
-		CyEventHelper helper = new DummyCyEventHelper(); 
-		mgr = new CyDataTableImpl(null, "homer", true, helper);
+
+		eventHelper = new DummyCyEventHelper();
+		mgr = new CyDataTableImpl(null, "homer", true, eventHelper);
 		attrs = mgr.getRow(1);
 	}
 

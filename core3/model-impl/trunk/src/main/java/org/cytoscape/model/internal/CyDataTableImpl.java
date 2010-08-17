@@ -43,10 +43,10 @@ import java.util.Map;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyRowListener;
 import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
+import org.cytoscape.model.events.RowSetMicroListener;
 
 /**
  * 
@@ -55,7 +55,6 @@ public class CyDataTableImpl implements CyDataTable {
 
 	private final Map<String, Map<Long, Object>> attributes;
 	private final Map<Long, CyRow> rows;
-	private final Map<Long, List<CyRowListener>> rowListeners;
 
 	private final Map<String, Class<?>> types;
 	private final Map<String, Boolean> unique;
@@ -91,7 +90,6 @@ public class CyDataTableImpl implements CyDataTable {
 		this.eventHelper = eventHelper;
 		attributes = new HashMap<String, Map<Long, Object>>();
 		rows = new HashMap<Long, CyRow>();
-		rowListeners = new HashMap<Long, List<CyRowListener>>();
 
 		if (typeMap == null) {
 			types = new HashMap<String, Class<?>>();
@@ -316,10 +314,7 @@ public class CyDataTableImpl implements CyDataTable {
 			// TODO this is an implicit addRow - not sure if we want to refactor
 			// this or not
 			vls.put(suid, value);
-			final List<CyRowListener> lrl = rowListeners.get(suid);
-			if (lrl != null)
-				for (CyRowListener rl : lrl)
-					rl.rowSet(attrName, value);
+			eventHelper.getMicroListener(RowSetMicroListener.class, this).handleRowSet(getRow(suid), attrName,value);
 		} else
 			throw new IllegalArgumentException("value is not of type: "
 					+ types.get(attrName));
@@ -491,21 +486,6 @@ public class CyDataTableImpl implements CyDataTable {
 			return table;
 		}
 
-		public void addRowListener(CyRowListener rl) {
-			List<CyRowListener> list = rowListeners.get(suid);
-			if (list == null) {
-				list = new ArrayList<CyRowListener>();
-				rowListeners.put(suid, list);
-			}
-			list.add(rl);
-		}
-
-		public void removeRowListener(CyRowListener rl) {
-			List<CyRowListener> list = rowListeners.get(suid);
-			if (list != null)
-				list.remove(rl);
-		}
-		
 		@Override
 		public String toString() {
 			final StringBuilder builder = new StringBuilder();
