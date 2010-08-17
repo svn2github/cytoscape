@@ -10,17 +10,14 @@
 
 
 	<properties>
-		<!--
-			Eventually, we need to move all important system bundle version
-			numbers here because the version should be consistent for all
-			modules.
-		-->
+		<!-- Eventually, we need to move all important system bundle version numbers 
+			here because the version should be consistent for all modules. -->
 		<!-- System Bundle Versions -->
 		<spring.version>2.5.6</spring.version>
 		<spring.osgi.version>1.2.1</spring.osgi.version>
 		<junit.version>4.8.1</junit.version>
-		<easymock.version>2.5.2</easymock.version>
-		
+		<easymock.version>3.0</easymock.version>
+
 		<maven-bundle-plugin.version>2.1.0</maven-bundle-plugin.version>
 	</properties>
 
@@ -32,11 +29,8 @@
 			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases</url>
 		</repository>
 
-		<!--
-			NOTE that for snapshots to work (at least with Nexus) requires the
-			artifact to be labelled using SNAPSHOT in uppercase, e.g.
-			model-1.0-SNAPSHOT.jar
-		-->
+		<!-- NOTE that for snapshots to work (at least with Nexus) requires the 
+			artifact to be labelled using SNAPSHOT in uppercase, e.g. model-1.0-SNAPSHOT.jar -->
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>Internal Snapshots</name>
@@ -70,7 +64,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
-					<encoding>UTF-8</encoding>	
+					<encoding>UTF-8</encoding>
 					<locale>en</locale>
 					<javadocVersion>1.6</javadocVersion>
 					<links>
@@ -79,7 +73,7 @@
 					</links>
 					<footer>Cytoscape 3 Core API</footer>
 					<header>Cytoscape 3 Core API</header>
-					<bottom>Copyright 2010 Cytoscape Consortium.  All rights reserved.</bottom>
+					<bottom>Copyright 2010 Cytoscape Consortium. All rights reserved.</bottom>
 				</configuration>
 				<executions>
 					<execution>
@@ -115,10 +109,8 @@
 
 	</build>
 
-	<!--
-		these items don't exist in the typical public maven repos; we could
-		add these directly to Nexus if desired
-	-->
+	<!-- these items don't exist in the typical public maven repos; we could 
+		add these directly to Nexus if desired -->
 	<repositories>
 
 		<!-- SpringSource OSGi Bundle Repository -->
@@ -137,6 +129,15 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
+		</repository>
+
+		<repository>
+			<id>spring-osgified-artifacts</id>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<name>Springframework Maven OSGified Artifacts Repository</name>
+			<url>http://maven.springframework.org/osgi</url>
 		</repository>
 
 		<!-- Repo. of PAX project -->
