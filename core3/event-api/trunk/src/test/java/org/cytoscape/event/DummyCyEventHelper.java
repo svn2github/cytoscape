@@ -48,6 +48,10 @@ import java.lang.reflect.InvocationHandler;
  * DOCUMENT ME!
   */
 public class DummyCyEventHelper implements CyEventHelper {
+
+	private Object lastSynchronousEvent;
+	private Object lastAsynchronousEvent;
+	private Object lastMicroListener;
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -56,6 +60,7 @@ public class DummyCyEventHelper implements CyEventHelper {
 	 * @param listener DOCUMENT ME!
 	 */
 	public <E extends CyEvent> void fireSynchronousEvent(final E event) {
+		lastSynchronousEvent = event;
 	}
 
 	/**
@@ -66,16 +71,30 @@ public class DummyCyEventHelper implements CyEventHelper {
 	 * @param listener DOCUMENT ME!
 	 */
 	public <E extends CyEvent> void fireAsynchronousEvent(final E event) {
+		lastAsynchronousEvent = event;
 	}
 
 	public <M extends CyMicroListener> M getMicroListener(Class<M> c, Object o) {
-		return c.cast( Proxy.newProxyInstance(this.getClass().getClassLoader(), 
-		       new Class[] { c }, new DummyListenerHandler()));
+		lastMicroListener = Proxy.newProxyInstance(this.getClass().getClassLoader(), 
+		                    new Class[] { c }, new DummyListenerHandler());
+		return c.cast( lastMicroListener ); 
 	}
 
 	private class DummyListenerHandler implements InvocationHandler {
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			return null;
 		}
+	}
+
+	public Object getLastMicroListener() {
+		return lastMicroListener;
+	}
+
+	public Object getLastSynchronousEvent() {
+		return lastSynchronousEvent;
+	}
+
+	public Object getLastAsynchronousEvent() {
+		return lastAsynchronousEvent;
 	}
 }
