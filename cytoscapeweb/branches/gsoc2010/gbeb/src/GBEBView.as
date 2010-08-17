@@ -14,6 +14,7 @@ package
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     import flare.vis.data.Tree;
+    import flare.vis.data.render.EdgeRenderer;
     import flare.vis.events.SelectionEvent;
     import flare.vis.operator.layout.CircleLayout;
     import flare.vis.operator.layout.Layout;
@@ -23,6 +24,7 @@ package
     import flash.display.StageScaleMode;
     import flash.events.Event;
     import flash.events.MouseEvent;
+    import flash.external.ExternalInterface;
     import flash.geom.Rectangle;
     import flash.net.URLLoader;
     import flash.net.URLRequest;
@@ -38,13 +40,8 @@ package
 
     [SWF(width="800",height="600", backgroundColor="#ffffff", frameRate="30")]
     public class GBEBView extends Sprite
-    {  
-        //private var _url:String = "data/sample1.xml";
-//        private var _url:String = "data/proof1.xgmml";
+    {
         private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
-//				private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
-				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare_reduced.json.txt";
-				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/socialnet.xml";
         private var _vis:Visualization;
         private var _bar:ProgressBar;
         private var _bounds:Rectangle;
@@ -53,6 +50,7 @@ package
         private var _focus:NodeSprite;
         private var _appBounds:Rectangle;
         private var _layout:Layout;
+        private var _bundler:GBEBRouter;
 				
 		//testing Variables
 		private var addEventCounter:int = 0;
@@ -86,20 +84,16 @@ package
             data.nodes.setProperties({
                 shape: Shapes.CIRCLE,
                 alpha: 0.2,
-                //visible: eq("childDegree",0), // only show leaf nodes
-                buttonMode: true              // show hand cursor
+                buttonMode: true
             });
             data.edges.setProperties({
                 lineWidth: 2,
-                lineColor: 0xff0055cc,
+                lineColor: 0xff0b94b1,
                 mouseEnabled: true,
-                buttonMode: true,
-//                visible: neq("source.parentNode","target.parentNode"),
-                renderer: BundleRenderer.instance
+                buttonMode: true
             });
  
             _vis = new Visualization(data);
-            //_vis.continuousUpdates = false;
             addChild(_vis);
  
             if (_bounds) resize(_bounds);
@@ -113,25 +107,15 @@ package
 //                RadialTreeLayout(_vis.operators.last).autoScale = true;				
 							
 				    _vis.operators.add(new CircleLayout());
-				
-				    //_vis.operators.add(new NodeLinkTreeLayout("topToBottom", 50, 50, 50));
+//				    _vis.operators.add(new NodeLinkTreeLayout("topToBottom", 50, 50, 50));
             } else {
                 _vis.operators.add(_layout);
             }
-							
-                // set the edge alpha values
-                // longer edge, lighter alpha: 1/(2*numCtrlPoints)
-//                _vis.operators.add(new PropertyEncoder({ alpha: edgeAlpha }, Data.EDGES));
            
-                // TODO: replace by GBEB Router:
                 // ##############################################################            
-
-                
-                //var bounds:Rectangle = new Rectangle(0, 0, width, height);
-				//_vis.operators.add(new ColorEncoder("index", "edges", "lineColour"))
-								
+//                var bounds:Rectangle = new Rectangle(0, 0, width, height);
+//				_vis.operators.add(new ColorEncoder("index", "edges", "lineColour"))
 //				_vis.operators.add(new Labeler("data.name"));
-                _vis.operators.add(new GBEBRouter(_bounds, 30 , 0.95));
                 trace("GBEBView: how many times GBEBView called the GBEBRouter? " + addEventCounter++);
                 // ############################################################## 
 				
@@ -199,12 +183,11 @@ package
         /** Remove highlight from a node and connected edges/nodes */
         private function unhighlight(n:*):void
         {
-            var node:NodeSprite = n is NodeSprite ?
-                NodeSprite(n) : SelectionEvent(n).node;
+            var node:NodeSprite = n is NodeSprite ? NodeSprite(n) : SelectionEvent(n).node;
             // set everything back to normal
             node.setEdgeProperties({
-                alpha: edgeAlpha,
-                lineColor: 0xff0055cc
+                alpha: 0.8,
+                lineColor: 0xff0b94b1
             }, NodeSprite.GRAPH_LINKS);
         }
         
@@ -254,6 +237,13 @@ package
         
         private function onStageAdd(evt:Event):void {
             removeEventListener(Event.ADDED_TO_STAGE, onStageAdd);
+            
+            try {
+                ExternalInterface.addCallback("bundleEdges", bundleEdges);
+            } catch(err:Error) {
+                trace("Error [addFunction]: " + err);
+            }
+            
             initStage();
             init();
             onResize();
@@ -367,8 +357,7 @@ package
                 	e.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
                 		var clicked:EdgeSprite = evt.target as EdgeSprite;
                 		trace("CLICK >> " + clicked.source.data.name + " - " + clicked.target.data.name);
-    //                    trace("CLICK >> " + clicked.source.data.id + " - " + clicked.target.data.id);
-                        data.edges.setProperty("lineColor", clicked.lineColor);
+                        data.edges.setProperty("lineColor", 0xff0b94b1);
                         data.edges.setProperty("props.$debug", false);
                         clicked.lineColor = 0xffff0000;
                         clicked.props.$debug = true;
@@ -381,6 +370,20 @@ package
             }
             
             return data;
+        }
+        
+        private function bundleEdges(value:Boolean):void {
+            if (value === true) {
+                _bundler = new GBEBRouter(getRealBounds(_vis.data), 30 , 0.95);
+                _vis.operators.add(_bundler);
+                _vis.data.edges.setProperty("renderer", BundleRenderer.instance);
+                _bundler.operate();
+            } else if (_bundler != null) {
+                _bundler.enabled = false;
+                _vis.operators.remove(_bundler);
+                _vis.data.edges.setProperty("shape", Shapes.LINE);
+                _vis.data.edges.setProperty("renderer", EdgeRenderer.instance);
+            }
         }
         
         private function centerGraph(vis:Visualization):void {

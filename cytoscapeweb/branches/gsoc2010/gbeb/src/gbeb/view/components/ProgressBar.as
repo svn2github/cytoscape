@@ -39,7 +39,7 @@ package gbeb.view.components
 		public function get message():TextSprite { return _msg; }
 		
 		public function ProgressBar(message:String="LOADING", w:Number=200,
-			h:Number=6, fillColor:uint=0xff3333, backColor:uint=0xcccccc)
+			h:Number=6, fillColor:uint=0x0b94b1, backColor:uint=0xcccccc)
 		{
 			_fillColor = fillColor;
 			_backColor = backColor;

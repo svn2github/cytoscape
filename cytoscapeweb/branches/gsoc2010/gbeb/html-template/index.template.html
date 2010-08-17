@@ -99,9 +99,9 @@
 
             function swf() {
                 if (navigator.appName.indexOf("Microsoft") !== -1) {
-                    return window[containerId];
+                    return window["GBEBView"];
                 } else {
-                    return document[containerId];
+                    return document["GBEBView"];
                 }
             }
             
@@ -109,10 +109,11 @@
                 // Register control liteners:
                 $("#graphs").change(function(evt) {
                     draw($("#graphs").val());
+					$("#bundleEdges").attr("checked", false);
                 });
-//                $("#bundleEdges").click(function(evt) {
-//                    swf().bundleEdges();
-//                });
+                $("#bundleEdges").change(function(evt) {
+                    swf().bundleEdges($("#bundleEdges").is(":checked"));
+                });
                 
                 draw($("#graphs").val());
             });
@@ -156,7 +157,7 @@
                         </div>
                         <hr/>
                         <div>
-                            <!--input type="button" id="bundleEdges" value="Bundle edges"/-->
+							<input type="checkbox" id="bundleEdges"/> <label for="bundleEdges">Bundle edges</label>
                         </div>
                     </div>
                 </td>
