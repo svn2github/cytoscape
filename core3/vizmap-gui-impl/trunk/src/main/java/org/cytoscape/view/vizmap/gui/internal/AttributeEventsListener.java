@@ -9,11 +9,11 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
-import org.cytoscape.model.events.RowSetEvent;
+import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 
-public class AttributeEventsListener {
+public class AttributeEventsListener  implements RowSetMicroListener {
 
 	private CyComboBoxPropertyEditor propEditor;
 	private Class<?> filter;
@@ -54,15 +54,13 @@ public class AttributeEventsListener {
 	 * @param newAttributeValue
 	 *            Object
 	 */
-	public void handleEvent(RowSetEvent e) {
-//		CyRow row = e.getSource();
-//		String attributeName = e.getColumnName();
-//
-//		// we do not process network attributes
-//		if (attr == cyNetworkManager.getCurrentNetwork()
-//				.getNetworkCyDataTables().get(CyNetwork.DEFAULT_ATTRS))
-//			return;
-//
+
+	public Object getEventSource() {
+		return attr; 
+	}
+
+	public void handleRowSet(CyRow row, String attributeName, Object value) {
+
 //		// conditional repaint container
 //		boolean repaint = false;
 //
