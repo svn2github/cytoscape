@@ -1,4 +1,4 @@
-package cytoscape.internal.view;
+package org.cytoscape.log.internal;
 
 import java.awt.*;
 import java.awt.event.*;

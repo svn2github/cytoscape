@@ -102,20 +102,18 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	protected CytoPanelImp cytoPanelSouthWest; 
 
 	// Status Bar TODO: Move this to log-swing to avoid cyclic dependency.
-	protected CytoStatusBarImpl statusBar;
 	protected JPanel main_panel;
 	private final CytoscapeShutdown shutdown; 
 
 	/**
 	 * Creates a new CytoscapeDesktop object.
 	 */
-	public CytoscapeDesktop(CyMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel , CytoStatusBarImpl statusBar, CytoscapeShutdown shut) {
+	public CytoscapeDesktop(CyMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel, CytoscapeShutdown shut) {
 		super("Cytoscape Desktop (New Session)");
 
 		this.cyMenus = cyMenus;
 		this.networkViewManager = networkViewManager;
 		this.networkPanel = networkPanel;
-		this.statusBar = statusBar;
 		this.shutdown = shut;
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource(SMALL_ICON)));
@@ -133,7 +131,6 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		main_panel.add(cyMenus.getToolBar().getJToolBar(), BorderLayout.NORTH);
 
 		// Remove status bar.
-		initStatusBar(main_panel);
 		setJMenuBar(cyMenus.getMenuBar().getJMenuBar());
 
 		//don't automatically close window. Let shutdown.exit(returnVal)
@@ -154,9 +151,6 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		toFront();
 	}
 
-	private void initStatusBar(JPanel panel) {
-		panel.add(statusBar.getPanel(), BorderLayout.SOUTH);
-	}
 
 	/**
 	 *  DOCUMENT ME!

@@ -94,17 +94,12 @@
 		<constructor-arg ref="tunableInterceptorServiceRef" />
 	</bean>
 
-	<bean name="cytoStatusBarImpl" class="cytoscape.internal.view.CytoStatusBarImpl">
-		<constructor-arg value="5500" />
-		<constructor-arg value="/images/user-trash.png" />
-	</bean>
 
 	<!-- Cytoscape Desktop -->
 	<bean name="cytoscapeDesktop" class="cytoscape.internal.view.CytoscapeDesktop">
 		<constructor-arg ref="cytoscapeMenus" />
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkPanel" />
-		<constructor-arg ref="cytoStatusBarImpl" />
 		<constructor-arg ref="cytoscapeShutdown" />
 	</bean>
 

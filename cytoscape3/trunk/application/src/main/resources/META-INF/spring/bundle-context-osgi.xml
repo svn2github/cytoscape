@@ -84,8 +84,6 @@
 	<!-- </osgi:interfaces> -->
 	<!-- </osgi:service> -->
 
-	<osgi:service id="cytoStatusBarService" ref="cytoStatusBarImpl"
-		interface="org.cytoscape.log.statusbar.CytoStatusBar" />
 
 	<osgi:service id="openBrowserService" ref="openBrowser"
 		interface="cytoscape.util.OpenBrowser" />
