@@ -13,7 +13,7 @@ public class LoadPropsInterceptor extends SpringTunableInterceptor<PropHandler> 
 		this.inputProps = inputProps;
 	}
 
-	public boolean createUI(Object... pobjs) {
+	public boolean execUI(Object... pobjs) {
 		Object[] objs = convertSpringProxyObjs(pobjs);
 		//java.util.List<PropHandler> lh = new ArrayList<PropHandler>();
 		for ( Object o : objs ) {
@@ -25,14 +25,10 @@ public class LoadPropsInterceptor extends SpringTunableInterceptor<PropHandler> 
 			for ( PropHandler p : lh ) {
 				p.setProps( inputProps );
 			}
-//			lh.addAll( handlerMap.get(o).values() );
 		}
-//		for (PropHandler p : lh) {
-//			p.add(inputProps);
-//		} 
 		return true;
 	}
 	
-	public boolean handle(){return false;}
-	public void setParent(Object o) {};
+	public boolean handle(){ return false; }
+	public void setParent(Object o) { }
 }

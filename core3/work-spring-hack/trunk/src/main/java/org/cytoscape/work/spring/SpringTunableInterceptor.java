@@ -40,5 +40,5 @@ public abstract class SpringTunableInterceptor<T extends TunableHandler> extends
 		return objs;
 	}
 
-	public abstract boolean createUI(Object... obj);
+	public abstract boolean execUI(Object... obj);
 }

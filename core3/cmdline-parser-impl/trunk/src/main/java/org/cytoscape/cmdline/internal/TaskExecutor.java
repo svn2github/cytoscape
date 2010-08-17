@@ -1,5 +1,6 @@
 package org.cytoscape.cmdline.internal;
 
+
 import org.cytoscape.work.SuperTask;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
@@ -51,7 +52,7 @@ public class TaskExecutor{
 		this.tm = tm;
 		Task task = tf.getTask();
 		ti.loadTunables(task);
-   		if ( !ti.createUI(task) )
+   		if (!ti.execUI(task))
    			return;
    		tasks[numberTasks]=task;
    		numberTasks++;

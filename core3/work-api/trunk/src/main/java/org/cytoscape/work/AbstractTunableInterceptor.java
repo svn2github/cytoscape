@@ -291,7 +291,7 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public abstract boolean createUI(Object... objs);
+	public abstract boolean execUI(Object... objs);
 	public abstract void setParent(Object o);
 	public abstract boolean handle();
 }

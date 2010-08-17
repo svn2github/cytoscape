@@ -14,7 +14,7 @@ public class StorePropsInterceptor extends SpringTunableInterceptor<PropHandler>
 		this.inputProps = inputProps;
 	}
 
-	public boolean createUI(Object... pobjs) {
+	public boolean execUI(Object... pobjs) {
 		Object[] objs = convertSpringProxyObjs(pobjs);
 		for ( Object o : objs ) {
 			if ( !handlerMap.containsKey( o ) )
@@ -22,17 +22,12 @@ public class StorePropsInterceptor extends SpringTunableInterceptor<PropHandler>
 
 			Collection<PropHandler> lh = handlerMap.get(o).values();
 			
-			for ( PropHandler p : lh ) {
-				inputProps.putAll( p.getProps() );
-			}
-//			lh.addAll( handlerMap.get(o).values() );
+			for (final PropHandler p : lh)
+				inputProps.putAll(p.getProps());
 		}
-//		for (PropHandler p : lh) {
-//			inputProps.putAll(p.getProps());
-//		}
 		return true;
 	}
 	
-	public boolean handle(){return false;};
-	public void setParent(Object o){};
+	public boolean handle() { return false; }
+	public void setParent(Object o) { }
 }

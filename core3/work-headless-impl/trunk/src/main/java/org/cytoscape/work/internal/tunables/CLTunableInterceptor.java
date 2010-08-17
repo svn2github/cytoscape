@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.cytoscape.work.AbstractTunableInterceptor;
 import org.cytoscape.cmdline.launcher.CommandLineProvider;
+
 
 /**
  * Interceptor of <code>Tunable</code> that will be applied on <code>CLHandlers</code>.
@@ -70,7 +72,7 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 	 * 
 	 * @param an Object Array that contains <code>Tasks</code>
 	 */
-	public boolean createUI(Object ... objs) {
+	public boolean execUI(Object ... objs) {
 
 		List<CLHandler> lh = new ArrayList<CLHandler>();
 		

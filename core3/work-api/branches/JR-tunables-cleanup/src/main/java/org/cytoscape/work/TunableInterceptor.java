@@ -3,7 +3,6 @@ package org.cytoscape.work;
 import java.util.Map;
 
 
-
 /**
  * Provides methods to intercept the Objects annotated as <code>@Tunable</code>, use, and display them.
  * Intended to be used as an OSGi server.
@@ -47,7 +46,7 @@ public interface TunableInterceptor<T extends Handler> {
 	 * @param obs Object[] which contains classes with <code>Tunables</code> that need to be displayed to a user.
 	 * @return newValuesSet True if at least one value has been modified, false if not.
 	 */
-	boolean createUI(Object... obs);//TODO: should this be called something like execUI() instead?
+	boolean execUI(Object... obs);//TODO: should this be called something like execUI() instead?
 	
 	
 	/**

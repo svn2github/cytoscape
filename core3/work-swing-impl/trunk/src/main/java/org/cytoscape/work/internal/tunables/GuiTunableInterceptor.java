@@ -2,6 +2,7 @@ package org.cytoscape.work.internal.tunables;
 
 
 import java.awt.Color;
+import java.awt.Container;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> {
 	private JPanel parentPanel = null;
-	private Map<List<GUIHandler>, JPanel> panelMap;
+	private Map<List<GUIHandler>, Container> panelMap;
 	private List<GUIHandler> handlers;
 	private boolean newValuesSet;
 	private Object[] objectsWithTunables;
@@ -62,7 +63,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	 */
 	public GuiTunableInterceptor(final HandlerFactory<GUIHandler> factory) {
 		super(factory);
-		panelMap = new HashMap<java.util.List<GUIHandler>, JPanel>();
+		panelMap = new HashMap<List<GUIHandler>, Container>();
 		logger = LoggerFactory.getLogger(getClass());
 	}
 
@@ -109,7 +110,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	 *
 	 * @return if new values has been successfully set
 	 */
-	public boolean createUI(Object... proxyObjs) {
+	public boolean execUI(Object... proxyObjs) {
 		this.objectsWithTunables = convertSpringProxyObjs(proxyObjs);
 		handlers = new ArrayList<GUIHandler>();
 		JPanel providedGUI = null;
@@ -150,7 +151,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 		if (providedGUI != null) {
 			//if no parentPanel is defined, then create a new JDialog to display the Tunables' panels
 			if (parentPanel == null) {
-				displayOptionPanel(providedGUI);
+				displayGUI(providedGUI);
 				return newValuesSet;
 			} else { //else add them to the "parentPanel" JPanel
 				parentPanel.removeAll();
@@ -171,7 +172,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 
 		if (!panelMap.containsKey(handlers)) {
 			final String MAIN = " ";
-			Map<String, JPanel> panels = new HashMap<String, JPanel>();
+			Map<String, Container> panels = new HashMap<String, Container>();
 			final JPanel topLevel = createSimplePanel(MAIN, null, Param.hidden);
 			panels.put(MAIN, topLevel);
 
@@ -244,7 +245,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 
 		//if no parentPanel is defined, then create a new JDialog to display the Tunables' panels
 		if (parentPanel == null) {
-			displayOptionPanel(panelMap.get(handlers));
+			displayGUI(panelMap.get(handlers));
 			return newValuesSet;
 		} else { //else add them to the "parentPanel" JPanel
 			parentPanel.removeAll();
@@ -342,22 +343,40 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	 * Set the new <i>"value"</i> to <code>Tunable</code> object if the user clicked on
 	 * <i>OK</i>, and if the validate method from <code>TunableValidator</code> interface succeeded.
 	 */
-	private void displayOptionPanel(final JPanel optionPanel) {
+	private void displayGUI(final Container container) {
+		if (container instanceof JPanel) {
+			try {
+				displayGUI((JPanel)container);
+			} catch (final Exception e) {
+				logger.error("This should never happen!\n" + e);
+			}
+		} else { // Assume we're dealing with a JDialog.
+			try {
+				displayGUI((JDialog)container);
+			} catch (final Exception e) {
+				logger.error("This should never happen!\n" + e);
+			}
+		}
+	}
+
+	private void displayGUI(final JPanel optionPanel) {
 		Object[] buttons = {"OK", "Cancel"};
-		int n = JOptionPane.showOptionDialog(parentPanel, optionPanel,
-		    "Set Parameters",
-		    JOptionPane.YES_NO_CANCEL_OPTION,
-		    JOptionPane.PLAIN_MESSAGE,
-		    null,
-		    buttons,
-		    buttons[0]);
-		if (n == JOptionPane.OK_OPTION) {
+		int result = JOptionPane.showOptionDialog(parentPanel, optionPanel,
+							  "Set Parameters",
+							  JOptionPane.YES_NO_CANCEL_OPTION,
+							  JOptionPane.PLAIN_MESSAGE,
+							  null,
+							  buttons,
+							  buttons[0]);
+		if (result == JOptionPane.OK_OPTION) {
 			for (final GUIHandler h : handlers)
 				h.handleDependents();
 			validateTunableInput();
-		}
-		else
+		} else
 			newValuesSet = false;
+	}
+
+	private void displayGUI(final JDialog optionDialog) {
 	}
 
 	/**
@@ -379,7 +398,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 					                              "Input Validation Problem",
 					                              JOptionPane.ERROR_MESSAGE);
 					if (parentPanel == null)
-						displayOptionPanel(panelMap.get(handlers));
+						displayGUI(panelMap.get(handlers));
 					return false;
 				}
 			} catch (Exception e) {

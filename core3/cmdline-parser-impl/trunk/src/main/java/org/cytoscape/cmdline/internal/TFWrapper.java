@@ -1,5 +1,6 @@
 package org.cytoscape.cmdline.internal;
 
+
 import org.apache.commons.cli.Option;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
@@ -92,12 +93,4 @@ public class TFWrapper {
    	public TaskFactory getT(){
    		return factory;
    	}
-   	
-//	public void executeTask() {
-//   		Task task = factory.getTask();
-//   		ti.loadTunables(task);
-//   		if ( !ti.createUI(task) )
-//   			return;
-//   		taskManager.execute(task);
-//	}
 }

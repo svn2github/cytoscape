@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables;
 
+
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -102,7 +103,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<Guihandler> 
 	 * 
 	 * @return if new values has been successfully set
 	 */
-	public boolean createUI(Object... proxyObjs){
+	public boolean execUI(Object... proxyObjs){
 		this.objs = convertSpringProxyObjs( proxyObjs );
 		lh = new ArrayList<Guihandler>();
 		for ( Object o : objs ) {

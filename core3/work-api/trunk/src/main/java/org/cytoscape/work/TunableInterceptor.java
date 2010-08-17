@@ -2,6 +2,7 @@ package org.cytoscape.work;
 
 
 import java.util.Map;
+import javax.swing.JPanel;
 
 
 /**
@@ -32,7 +33,11 @@ public interface TunableInterceptor<TH extends TunableHandler> {
 	 */
 	Map<String, TH> getHandlers(Object o);
 	
-	
+
+	/**
+	 */
+	JPanel getUI();
+
 	/**
 	 * Display the identified tunables to a user in order to allow her/him to modify their values.
 	 * <p><pre>
@@ -47,7 +52,7 @@ public interface TunableInterceptor<TH extends TunableHandler> {
 	 * @param obs Object[] which contains classes with <code>Tunables</code> that need to be displayed to a user.
 	 * @return newValuesSet True if at least one value has been modified, false if not.
 	 */
-	boolean createUI(Object... obs);//TODO: should this be called something like execUI() instead?
+	boolean execUI(Object... obs);
 	
 	
 	/**
