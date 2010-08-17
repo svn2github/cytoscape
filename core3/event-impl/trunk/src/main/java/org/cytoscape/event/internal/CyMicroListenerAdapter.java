@@ -85,8 +85,7 @@ public class CyMicroListenerAdapter {
 	}
 
 	private Object noOpProxy( Class c ) {
-		return Proxy.newProxyInstance(this.getClass().getClassLoader(), 
-		                              new Class[] { c }, new ListenerHandler());
+		return Proxy.newProxyInstance(c.getClassLoader(), new Class[] { c }, new ListenerHandler());
 	}
 
 	// This customizer takes newly registered services of the specified class
@@ -124,7 +123,7 @@ public class CyMicroListenerAdapter {
 				Map<Class<?>,Object> sourceProxys = proxys.get(source);
 				if ( !sourceProxys.containsKey( clazz ) )
 					sourceProxys.put( clazz,  
-					                  Proxy.newProxyInstance(this.getClass().getClassLoader(), 
+					                  Proxy.newProxyInstance(clazz.getClassLoader(), 
 									                         new Class[] { clazz }, 
 															 new ListenerHandler(listenerServices)));
 			}
