@@ -43,7 +43,11 @@ import cytoscape.CyNode;
 import cytoscape.CyEdge;
 
 import cytoscape.data.CyAttributes;
+import cytoscape.giny.CytoscapeRootGraph;
 
+import giny.model.Edge;
+import giny.model.GraphPerspective;
+import giny.model.Node;
 import giny.model.RootGraph;
 
 import java.util.ArrayList;
@@ -65,25 +69,15 @@ public class CyGroupImpl implements CyGroup {
 	// Instance data
 
 	/**
-	 * The members of this group, indexed by the Node.
+	 * A map storing the list of edges for a node at the time it was
+	 * added to the group
 	 */
-	private HashMap<CyNode, CyNode> nodeMap;
-
-	/**
-	 * The edges in this group that only involve members of this group
-	 */
-	private HashMap<CyEdge, CyEdge> innerEdgeMap;
+	private HashMap<CyNode,List<CyEdge>> nodeToEdgeMap;
 
 	/**
 	 * The edges in this group that involve members outside of this group
 	 */
 	private HashMap<CyEdge, CyEdge> outerEdgeMap;
-
-	/**
-	 * A map storing the list of edges for a node at the time it was
-	 * added to the group
-	 */
-	private HashMap<CyNode,List<CyEdge>> nodeToEdgeMap;
 
 	/**
 	 * This is the network that this group is part of.  If this
@@ -118,28 +112,92 @@ public class CyGroupImpl implements CyGroup {
 	 */
 	private String viewer = null;
 
+	/**
+ 	 * the internal graph that represents this network
+ 	 */
+	private CyNetwork myGraph = null;
+
 	// Public methods
 
 	/**
 	 * Empty constructor
 	 */
 	protected CyGroupImpl() {
-		this.nodeMap = new HashMap();
-		this.nodeToEdgeMap = new HashMap();
-		this.innerEdgeMap = new HashMap();
-		this.outerEdgeMap = new HashMap();
+		this.nodeToEdgeMap = new HashMap<CyNode, List<CyEdge>>();
+		this.outerEdgeMap = new HashMap<CyEdge,CyEdge>();
 		this.network = null;
 	}
 
 	/**
 	 * Constructor to create an empty group.
 	 *
+	 * @param groupNode the CyNode to use for this group
+	 * @param nodeList the initial set of nodes for this group
+	 * @param internalEdges the initial set of internal edges for this group
+	 * @param externalEdges the initial set of external edges for this group
+	 * @param network the network this group is part of
+	 *
+	 */
+	protected CyGroupImpl(CyNode groupNode, List<CyNode> nodeList, List<CyEdge> internalEdges,
+                        List<CyEdge> externalEdges, CyNetwork network) {
+
+		// System.out.println("Creating group "+groupNode);
+
+		this.nodeToEdgeMap = new HashMap<CyNode, List<CyEdge>>();
+		this.outerEdgeMap = new HashMap<CyEdge,CyEdge>();
+		this.network = network;
+
+		this.groupNode = groupNode;
+		this.groupName = this.groupNode.getIdentifier();
+
+		if (nodeList == null && internalEdges == null && externalEdges == null)
+			return;
+
+		// System.out.println("   Group "+groupNode+" has "+nodeList.size()+" nodes");
+
+		CyNetwork thisNetwork = network;
+		if (network == null)
+			thisNetwork = Cytoscape.getCurrentNetwork();
+
+		// If we aren't provided with any inner or outer edges, we need to get them
+		if (internalEdges == null) {
+			// Get our list of internal edges
+			internalEdges = (List<CyEdge>) thisNetwork.getConnectingEdges(nodeList);
+		}
+
+		// At this point, we've got a list of nodes and a list of edges.  We
+		// could now create a CyNetwork that contains the internal components
+		// of this group.
+		CytoscapeRootGraph rootGraph = Cytoscape.getRootGraph();
+		myGraph = rootGraph.createNetwork(nodeList.toArray(new Node[0]), internalEdges.toArray(new Edge[0]));
+
+		// Create our node and edge map
+		for (CyNode node: nodeList) {
+			List<CyEdge> adjacentEdges = (List<CyEdge>)thisNetwork.getAdjacentEdgesList(node, true, true, true);
+			nodeToEdgeMap.put(node, adjacentEdges);
+			// If we don't have external edges, add them now
+			if (externalEdges == null) {
+				for (CyEdge edge: adjacentEdges) {
+					if (!myGraph.containsEdge(edge))
+						outerEdgeMap.put(edge, edge);
+				}
+			}
+		}
+
+		// If we were provided with an external edge list, create our map now.
+		if (externalEdges != null) {
+			for (CyEdge edge: externalEdges)
+				outerEdgeMap.put(edge, edge);
+		}
+	}
+
+	/**
+	 * Constructor to create an empty group
+	 *
 	 * @param groupName the identifier to use for this group -- should be unique!
 	 */
 	protected CyGroupImpl(String groupName) {
-		this();
-		this.groupNode = Cytoscape.getCyNode(groupName, true);
-		this.groupName = groupName;
+		this(Cytoscape.getCyNode(groupName, true), null, null, null, null);
 	}
 
 	/**
@@ -148,9 +206,7 @@ public class CyGroupImpl implements CyGroup {
 	 * @param groupNode the CyNode to use for this group
 	 */
 	protected CyGroupImpl(CyNode groupNode) {
-		this();
-		this.groupNode = groupNode;
-		this.groupName = this.groupNode.getIdentifier();
+		this(groupNode, null, null, null, null);
 	}
 
 	/**
@@ -161,11 +217,7 @@ public class CyGroupImpl implements CyGroup {
 	 * @param nodeList the initial set of nodes for this group
 	 */
 	protected CyGroupImpl(CyNode groupNode, List<CyNode> nodeList) {
-		this(groupNode); // Create all of the necessary structures
-
-		for (CyNode node: nodeList) {
-			this.addNodeToGroup ( node );
-		}
+		this(groupNode, nodeList, null, null, null);
 	}
 
 	/**
@@ -175,10 +227,7 @@ public class CyGroupImpl implements CyGroup {
 	 * @param nodeList the initial set of nodes for this group
 	 */
 	protected CyGroupImpl(String groupName, List<CyNode> nodeList) {
-		this(groupName); // Create all of the necessary structures
-
-		for(CyNode node: nodeList)
-			this.addNodeToGroup (node);
+		this(Cytoscape.getCyNode(groupName, true), nodeList, null, null, null);
 	}
 
 	/**
@@ -201,9 +250,7 @@ public class CyGroupImpl implements CyGroup {
 	 * @return list of nodes in the group
 	 */
 	public List<CyNode> getNodes() {
-		Collection<CyNode> v = nodeMap.values();
-
-		return new ArrayList<CyNode>(v);
+		return (List<CyNode>)myGraph.nodesList();
 	}
 
 	/**
@@ -221,9 +268,7 @@ public class CyGroupImpl implements CyGroup {
 	 * @return node iterator
 	 */
 	public Iterator<CyNode> getNodeIterator() {
-		Collection<CyNode> v = nodeMap.values();
-
-		return v.iterator();
+		return (Iterator<CyNode>)myGraph.nodesIterator();
 	}
 
 	/**
@@ -232,9 +277,7 @@ public class CyGroupImpl implements CyGroup {
 	 * @return list of edges in the group
 	 */
 	public List<CyEdge> getInnerEdges() {
-		Collection<CyEdge> v = innerEdgeMap.values();
-
-		return new ArrayList<CyEdge>(v);
+		return (List<CyEdge>)myGraph.edgesList();
 	}
 
 	/**
@@ -265,7 +308,7 @@ public class CyGroupImpl implements CyGroup {
 	 * @param edge the CyEdge to add to the innter edge map
 	 */
 	public void addInnerEdge(CyEdge edge) {
-		innerEdgeMap.put(edge, edge);
+		myGraph.addEdge(edge);
 	}
 
 	/**
@@ -310,10 +353,20 @@ public class CyGroupImpl implements CyGroup {
 	 * @return true if node is a member of the group
 	 */
 	public boolean contains(CyNode node) {
-		if (nodeMap.containsKey(node))
+		if (myGraph.containsNode(node))
 			return true;
 
 		return false;
+	}
+
+	/**
+ 	 * Return a CyNetwork that represents
+ 	 * the internal components of this group
+ 	 *
+ 	 * @return the CyNetwork 
+ 	 */
+	public CyNetwork getGraphPerspective() {
+		return myGraph;
 	}
 
 	/**
@@ -410,8 +463,22 @@ public class CyGroupImpl implements CyGroup {
 	 * @param node the node to add
 	 */
 	public void addNode ( CyNode node ) {
+		addNode(node, true);
+	}
+
+	/**
+	 * Add a new node to this group
+	 *
+	 * @param node the node to add
+	 */
+	public void addNode ( CyNode node, boolean addEdges ) {
 		// First see if this node is already in this group
-		if (nodeToEdgeMap.containsKey(node))
+		if (myGraph.containsNode(node))
+			return;
+
+		myGraph.addNode(node);
+
+		if (!addEdges)
 			return;
 
 		// We need to go throught our outerEdgeMap first to see if this
@@ -427,7 +494,7 @@ public class CyGroupImpl implements CyGroup {
 		}
 		for (CyEdge edge: eMove) {
 			outerEdgeMap.remove(edge);
-			innerEdgeMap.put(edge,edge);
+			myGraph.addEdge(edge);
 		}
 
 		// Note the cute little trick we play -- making sure these
@@ -466,8 +533,6 @@ public class CyGroupImpl implements CyGroup {
 	 * @param node the node to add
 	 */
 	private void addNodeToGroup ( CyNode node ) {
-		// Put this node in our map
-		nodeMap.put(node, node);
 		CyNetwork groupNetwork = this.network;
 
 		if (groupNetwork == null)
@@ -482,13 +547,10 @@ public class CyGroupImpl implements CyGroup {
 		}
 
 		// Add all of the edges
-		int [] edgeArray = groupNetwork.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(),true,true,true);
-		if (edgeArray == null)
-			edgeArray = new int[]{};
-		for (int edgeIndex = 0; edgeIndex < edgeArray.length; edgeIndex++) {
-			CyEdge edge = (CyEdge)groupNetwork.getEdge(edgeArray[edgeIndex]);
+		List<CyEdge> adjacentEdges = (List<CyEdge>)groupNetwork.getAdjacentEdgesList(node, true, true, true);
+		for (CyEdge edge: adjacentEdges) {
 			// Not sure if this is faster or slower than going through the entire loop
-			if (edgeList.contains(edge))
+			if (myGraph.containsEdge(edge))
 				continue;
 
 			edgeList.add(edge);
@@ -503,10 +565,10 @@ public class CyGroupImpl implements CyGroup {
 
 			if (outerEdgeMap.containsKey(edge)) {
 				outerEdgeMap.remove(edge);
-				innerEdgeMap.put(edge,edge);
-			} else if (nodeMap.containsKey(target) && nodeMap.containsKey(source)) {
-				innerEdgeMap.put(edge,edge);
-			} else if (nodeMap.containsKey(target) || nodeMap.containsKey(source)) {
+				myGraph.addEdge(edge);
+			} else if (myGraph.containsNode(target) && myGraph.containsNode(source)) {
+				myGraph.addEdge(edge);
+			} else if (myGraph.containsNode(target) || myGraph.containsNode(source)) {
 				outerEdgeMap.put(edge,edge);
 			}
 		}
@@ -523,22 +585,19 @@ public class CyGroupImpl implements CyGroup {
 	 * @param node the node to remove
 	 */
 	private void removeNodeFromGroup ( CyNode node ) {
-		// Remove the node from our map
-		nodeMap.remove(node);
-
-		RootGraph rg = node.getRootGraph();
-
 		// Get the list of edges
 		List <CyEdge>edgeArray = nodeToEdgeMap.get(node);
 		for (CyEdge edge: edgeArray) {
-			if (innerEdgeMap.containsKey(edge)) {
-				innerEdgeMap.remove(edge);
+			if (myGraph.containsEdge(edge)) {
 				outerEdgeMap.put(edge,edge);
 			} else if (outerEdgeMap.containsKey(edge)) {
 				outerEdgeMap.remove(edge);
 			}
 		}
 		nodeToEdgeMap.remove(node);
+
+		// Remove the node from our map
+		myGraph.hideNode(node);
 
 		// Tell the node about it (if necessary)
 		if (node.inGroup(this))

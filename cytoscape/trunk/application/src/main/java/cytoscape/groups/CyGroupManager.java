@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -196,6 +197,38 @@ public class CyGroupManager {
 	}
 
 	/**
+	 * Create a new group by specifying all components.  Use this to get a new group.  
+	 * This constructor allows the caller to provide all of the components required
+	 * to create a group.  This is the most efficient of all of the constructors in
+	 * that no additional processing is done to find internal and external edges,
+	 * etc.  If innerEdgeList and outerEdgeList are both null, the underlying implementation
+	 * will find all internal and external edges.
+	 *
+	 * @param groupName the identifier to use for this group -- should be unique!
+	 * @param nodeList the initial set of nodes for this group
+	 * @param innerEdgeList the initial set of internal edges for this group
+	 * @param outerEdgeList the initial set of external edges for this group
+	 * @param viewer the name of the viewer to manage this group
+	 * @param network the network that this group is in
+	 * @return the newly created group
+	 */
+	public static CyGroup createGroup(String groupName, List<CyNode> nodeList,
+	                                  List<CyEdge> innerEdgeList, List<CyEdge> outerEdgeList,
+	                                  String viewer, CyNetwork network) {
+		// Do we already have a group by this name?
+		if (findGroup(groupName) != null) return null;
+		// Create a node for the group
+		CyNode groupNode = Cytoscape.getCyNode(groupName, true);
+		// Create the group itself
+		CyGroup group = new CyGroupImpl(groupNode, nodeList, innerEdgeList, outerEdgeList, network);
+		groupMap.put(group.getGroupNode(), group);
+		notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_CREATED);
+		if (viewer != null)
+			setGroupViewer(group, viewer, null, true);
+		return group;
+	}
+
+	/**
 	 * Create a new, empty group.  Use this to get a new group.  In particular,
 	 * this form should be used by internal routines (as opposed to view
 	 * implementations) as this form will cause the viewer to be notified of
@@ -230,7 +263,8 @@ public class CyGroupManager {
 	 * @param viewer the name of the viewer to manage this group
 	 * @param network the network that this group is in
 	 */
-	public static CyGroup createGroup(String groupName, List<CyNode> nodeList, String viewer, CyNetwork network) {
+	public static CyGroup createGroup(String groupName, List<CyNode> nodeList, String viewer, 
+	                                  CyNetwork network) {
 		// Do we already have a group by this name?
 		if (findGroup(groupName) != null) return null;
 		// Create the group
@@ -254,7 +288,8 @@ public class CyGroupManager {
 	 * @param viewer the name of the viewer to manage this group
 	 * @param network the network that this group is in
 	 */
-	public static CyGroup createGroup(CyNode groupNode, List<CyNode> nodeList, String viewer, CyNetwork network) {
+	public static CyGroup createGroup(CyNode groupNode, List<CyNode> nodeList, String viewer, 
+	                                  CyNetwork network) {
 		// Do we already have a group by this name?
 		if (findGroup(groupNode.getIdentifier()) != null) return null;
 		// Create the group

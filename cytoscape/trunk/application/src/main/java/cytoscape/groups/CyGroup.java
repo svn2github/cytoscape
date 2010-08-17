@@ -126,6 +126,13 @@ public interface CyGroup {
 	public CyNetwork getNetwork();
 
 	/**
+	 * Get the graph (network) that represents this network
+	 *
+	 * @return graph perspective (in the form of a CyNetwork) for this network
+	 */
+	public CyNetwork getGraphPerspective();
+
+	/**
 	 * Set the network for this group
 	 *
 	 * @param network the network for this group or "null" if this is a global group
