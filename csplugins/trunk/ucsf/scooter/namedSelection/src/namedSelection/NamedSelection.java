@@ -44,8 +44,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 
 // giny imports
+import ding.view.DGraphView;
 import giny.view.NodeView;
-
 import ding.view.NodeContextMenuListener;
 
 // Cytoscape imports
@@ -101,6 +101,11 @@ public class NamedSelection extends CytoscapePlugin
 			// Listen for network and session load events
 			Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_LOADED, this);
 			Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.SESSION_LOADED, this);
+			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+				.addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this );
+
+			// Add ourselves to the current network context menu
+			((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
 		} catch (ClassCastException e) {
 			myLogger.error(e.getMessage());
 		}
@@ -143,18 +148,24 @@ public class NamedSelection extends CytoscapePlugin
 			Object[] ret_val = (Object []) e.getNewValue();
 			CyNetwork network = (CyNetwork)ret_val[0];
 			CyNetworkView netView = Cytoscape.getNetworkView(network.getIdentifier());
-			if (!netView.equals(Cytoscape.getNullNetworkView()))
+			if (!netView.equals(Cytoscape.getNullNetworkView())) {
 				netView.addGraphViewChangeListener(groupPanel.getTree());
-
+				netView.addNodeContextMenuListener(this);
+			}
 		} else if (e.getPropertyName() == Cytoscape.SESSION_LOADED &&
 		           e.getNewValue() != null) {
 			List<String> netList = (List<String>) e.getNewValue();
 			for (String network: netList) {
 				CyNetwork net = Cytoscape.getNetwork(network);
 				CyNetworkView netView = Cytoscape.getNetworkView(net.getIdentifier());
-				if (!netView.equals(Cytoscape.getNullNetworkView()))
+				if (!netView.equals(Cytoscape.getNullNetworkView())) {
 					netView.addGraphViewChangeListener(groupPanel.getTree());
+					netView.addNodeContextMenuListener(this);
+				}
 			}
+		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+			// Add menu to the context dialog
+			((CyNetworkView)e.getNewValue()).addNodeContextMenuListener(this);
 		}
 
 		// Update the tree

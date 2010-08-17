@@ -32,6 +32,7 @@
  */
 package namedSelection.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.awt.event.ActionListener;
@@ -50,6 +51,7 @@ import javax.swing.JRootPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
+import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -161,7 +163,7 @@ public class GroupCreationDialog extends JDialog implements ActionListener {
 			else
 				network = Cytoscape.getCurrentNetwork();
 			// Create the group
-			group = CyGroupManager.createGroup(groupName, currentNodes, null, network);
+			group = CyGroupManager.createGroup(groupName, currentNodes, new ArrayList<CyEdge>(), new ArrayList<CyEdge>(), null, network);
 			// Already there?
 			if (group == null) {
 				// Warn the user and return

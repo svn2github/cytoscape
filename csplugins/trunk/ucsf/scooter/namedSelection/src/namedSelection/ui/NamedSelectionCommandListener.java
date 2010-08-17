@@ -43,6 +43,7 @@ import javax.swing.JOptionPane;
 import giny.view.NodeView;
 
 // Cytoscape imports
+import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -105,7 +106,11 @@ class NamedSelectionCommandListener implements ActionListener {
 		String groupName = JOptionPane.showInputDialog("Please enter a name for this selection");
 		if (groupName == null) return;
 
-		CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, NamedSelection.viewerName, network);
+		// By using the empty lists, we inhibit all of the overhead associated with figuring
+		// out internal and external edges (which we don't care about)
+		CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, new ArrayList<CyEdge>(), 
+		                                           new ArrayList<CyEdge>(), 
+		                                           NamedSelection.viewerName, network);
 		group.setState(NamedSelection.SELECTED);
 	}
 
