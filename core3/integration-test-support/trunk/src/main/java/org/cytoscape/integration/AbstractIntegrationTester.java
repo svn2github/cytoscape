@@ -15,7 +15,7 @@ import org.springframework.osgi.util.OsgiStringUtils;
  * information for your bundle.
  * <br>
  * Here is a simple example
- * <code>
+ * <pre>
 package org.cytoscape.viewmodel;
 
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -45,7 +45,7 @@ public class ITViewModelImpl extends AbstractIntegrationTester {
                );
     }
 }
- * </code>
+ * </pre>
  */
 public class AbstractIntegrationTester extends AbstractConfigurableBundleCreatorTests {
 
