@@ -1,15 +1,7 @@
-/* vim: set ts=2:
-
+/*
   File: LayoutSettingsDialog.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,6 +28,7 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 package cytoscape.internal.layout.ui;
+
 
 import org.cytoscape.session.CyNetworkManager;
 import cytoscape.view.CySwingApplication;
@@ -177,10 +170,8 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		Set<String> menus = menuMgr.getLayoutMenuNames();
 	
 		for (String menu : menus) {
-
-			if (menus.size() > 1) {
+			if (menus.size() > 1)
 				algorithmSelector.addItem(menu);
-			}
 
 			for (CyLayoutAlgorithm algo : menuMgr.getLayoutsInMenu(menu)) {
 				// TODO might want a check here to see if algorithm has any tunables
@@ -188,7 +179,6 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			}
 		}
 	}
-
 
 	private class AlgorithmActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
@@ -199,8 +189,10 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 				ti.loadTunables(newLayout);
 				ti.setParent(algorithmPanel);
 				try {
-					ti.createUI(newLayout);
-				} catch (Exception e1) {e1.printStackTrace();}
+					ti.execUI(newLayout);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 				pack();
 				currentLayout = newLayout; 
 			}
