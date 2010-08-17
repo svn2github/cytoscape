@@ -36,12 +36,14 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyListener;
+import org.cytoscape.event.CyMicroListener;
+import org.cytoscape.model.CyRow;
 
 
 /**
- * Listener for RowSetEvents.
+ * Listener for row set events. The event source for this listener
+ * will the be the CyDataTable that contains the CyRow in question.
  */
-public interface RowSetListener extends CyListener {
-	void handleEvent(RowSetEvent e);
+public interface RowSetMicroListener extends CyMicroListener {
+	void handleRowSet(CyRow row, String columnName, Object value);
 }

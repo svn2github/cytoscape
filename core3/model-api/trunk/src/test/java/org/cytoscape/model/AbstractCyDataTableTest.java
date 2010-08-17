@@ -42,6 +42,12 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.events.RowSetMicroListener;
+import org.cytoscape.model.events.ColumnCreatedEvent;
+import org.cytoscape.model.events.ColumnDeletedEvent;
+
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.event.DummyCyEventHelper;
 
 import java.awt.Color;
 
@@ -57,6 +63,7 @@ public abstract class AbstractCyDataTableTest extends TestCase {
 
 	protected CyDataTable mgr;
 	protected CyRow attrs;
+	protected DummyCyEventHelper eventHelper; 
 
 
 	/**
@@ -218,6 +225,60 @@ public abstract class AbstractCyDataTableTest extends TestCase {
 			return;
 		}
 		fail();
+	}
+
+	public void testRowSetMicroListener() {
+		mgr.createColumn("someString", String.class, false);
+		attrs.set("someString", "apple");
+
+		Object last = eventHelper.getLastMicroListener();
+		assertNotNull( last );
+		assertTrue( last instanceof RowSetMicroListener );
+	}
+
+	public void testColumnCreatedEvent() {
+		mgr.createColumn("someInt", Integer.class, false);
+
+		Object last = eventHelper.getLastAsynchronousEvent();
+		assertNotNull( last );
+		assertTrue( last instanceof ColumnCreatedEvent );
+	}
+
+	public void testColumnDeletedEvent() {
+		mgr.createColumn("someInt", Integer.class, false);
+		mgr.deleteColumn("someInt");
+
+		Object last = eventHelper.getLastSynchronousEvent();
+		assertNotNull( last );
+		assertTrue( last instanceof ColumnDeletedEvent );
+	}
+
+	public void testColumnCreate() {
+		mgr.createColumn("someInt", Integer.class, false);
+		assertTrue( mgr.getColumnTypeMap().containsKey("someInt") );
+		assertEquals( mgr.getColumnTypeMap().get("someInt"), Integer.class );
+	}
+
+	public void testCreateUniqueColumn() {
+		mgr.createColumn("someInt", Integer.class, true);
+		assertTrue( mgr.getColumnTypeMap().containsKey("someInt") );
+		assertEquals( mgr.getColumnTypeMap().get("someInt"), Integer.class );
+		assertTrue( mgr.getUniqueColumns().contains("someInt"));
+	}
+
+	public void testCreateNonUniqueColumn() {
+		mgr.createColumn("someInt", Integer.class, false);
+		assertTrue( mgr.getColumnTypeMap().containsKey("someInt") );
+		assertEquals( mgr.getColumnTypeMap().get("someInt"), Integer.class );
+		assertFalse( mgr.getUniqueColumns().contains("someInt"));
+	}
+
+	public void testColumnDelete() {
+		mgr.createColumn("someInt", Integer.class, false);
+		assertTrue( mgr.getColumnTypeMap().containsKey("someInt") );
+		
+		mgr.deleteColumn("someInt");
+		assertFalse( mgr.getColumnTypeMap().containsKey("someInt") );
 	}
 
 	// lots more needed
