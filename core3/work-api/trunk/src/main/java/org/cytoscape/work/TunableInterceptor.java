@@ -36,7 +36,7 @@ public interface TunableInterceptor<TH extends TunableHandler> {
 
 	/**
 	 */
-	JPanel getUI();
+//	JPanel getUI();
 
 	/**
 	 * Display the identified tunables to a user in order to allow her/him to modify their values.
