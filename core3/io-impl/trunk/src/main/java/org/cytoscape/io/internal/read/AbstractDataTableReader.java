@@ -2,23 +2,24 @@ package org.cytoscape.io.internal.read;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.cytoscape.io.read.CyReader;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.io.read.CyDataTableProducer;
 
-public abstract class AbstractDataTableReader implements CyReader {
+public abstract class AbstractDataTableReader implements CyDataTableProducer {
 
 	protected boolean cancel = false;
 	protected InputStream inputStream;
-	protected Map<Class<?>, Object> readObjects;
+	//protected Map<Class<?>, Object> readObjects;
 	
 	protected CyNetwork network;
 	protected String objectType;
 	
+	protected CyDataTable[] cyDataTables;
+	                      
 	public AbstractDataTableReader() {
-		this.readObjects = new HashMap<Class<?>, Object>();
+		this.cyDataTables = null;
 	}
 	
 	public void setTableOwner(CyNetwork network) {
@@ -48,4 +49,7 @@ public abstract class AbstractDataTableReader implements CyReader {
 		cancel = false;
 	}
 
+	public CyDataTable[] getCyDataTables(){
+		return cyDataTables;
+	}
 }
