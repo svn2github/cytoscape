@@ -50,7 +50,7 @@ public abstract class AbstractNetworkNameListener implements RowSetMicroListener
 	}
 
 	public Object getEventSource() {
-		row.getDataTable();
+		return row.getDataTable();
 	}
 
 	public void handleRowSet(CyRow row, String col, Object value) {
