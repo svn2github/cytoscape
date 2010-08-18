@@ -94,7 +94,6 @@ public class SIFNetwotkViewProducer extends AbstractNetworkViewProducer {
 		}
 
 		createNetwork(tm);
-		
 	}
 
 
@@ -120,9 +119,7 @@ public class SIFNetwotkViewProducer extends AbstractNetworkViewProducer {
 		}
 
 		tm.setProgress(0.05);
-		
-		int nodeCount = nodeMap.size();
-		
+				
 		CyNode node;
 		for (String nodeName : nodeMap.keySet()) {
 			if (this.cancel){
@@ -145,8 +142,6 @@ public class SIFNetwotkViewProducer extends AbstractNetworkViewProducer {
 		String srcName;
 		String interactionType;
 		CyEdge edge;
-
-		int edgeCount = interactions.size();
 		
 		for (Interaction interaction : interactions) {
 
@@ -173,6 +168,8 @@ public class SIFNetwotkViewProducer extends AbstractNetworkViewProducer {
 		final CyNetworkView view = cyNetworkViewFactory.getNetworkView(network);
 		layouts.getDefaultLayout().doLayout(view);
 		
+		// SIF always creates only one network.
+		this.cyNetworkViews = new CyNetworkView[1];		
 		this.cyNetworkViews[0] = view;
 
 		tm.setProgress(0.99);

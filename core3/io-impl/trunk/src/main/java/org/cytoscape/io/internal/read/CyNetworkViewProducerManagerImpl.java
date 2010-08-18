@@ -133,9 +133,9 @@ public class CyNetworkViewProducerManagerImpl implements CyNetworkViewProducerMa
 		if (networkViewProducer == null) {
 			throw new IllegalArgumentException("File type is not supported.");
 		}
-
+		
+		System.out.println("### Producer found: " + networkViewProducer);
 		return networkViewProducer;
-
 	}
 
 	

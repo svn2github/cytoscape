@@ -37,20 +37,17 @@
 
 package org.cytoscape.task.internal.loadnetwork;
 
-import static org.cytoscape.io.DataCategory.NETWORK;
-
 import java.io.File;
 import java.util.Properties;
 
 import org.cytoscape.io.read.CyNetworkViewProducerManager;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
-
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.session.CyNetworkNaming;
 
 /**
  * Specific instance of AbstractLoadNetworkTask that loads a File.

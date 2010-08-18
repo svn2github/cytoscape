@@ -23,7 +23,7 @@ public abstract class AbstractNetworkViewProducer implements CyNetworkViewProduc
 
 	protected CyLayouts layouts;
 
-	public CyNetworkView[] getNetworkViews(){
+	public CyNetworkView[] getNetworkViews() {
 		return cyNetworkViews;
 	}
 

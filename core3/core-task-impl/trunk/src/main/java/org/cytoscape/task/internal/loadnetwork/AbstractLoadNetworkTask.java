@@ -37,26 +37,22 @@
 
 package org.cytoscape.task.internal.loadnetwork;
 
+import java.io.IOException;
 import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Map;
 import java.util.Properties;
-import java.awt.Event;
-import java.io.IOException;
 
 import org.cytoscape.io.read.CyNetworkViewProducer;
 import org.cytoscape.io.read.CyNetworkViewProducerManager;
-import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.task.AbstractTask;
-
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.task.AbstractTask;
+import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.work.TaskMonitor;
 
 /**
  * Task to load a new network.
@@ -77,9 +73,9 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 
 	protected CyNetworkNaming namingUtil;
 
-	public AbstractLoadNetworkTask(CyNetworkViewProducerManager mgr, CyNetworkViewFactory gvf,
-			CyLayouts cyl, CyNetworkManager netmgr, Properties props,
-			CyNetworkNaming namingUtil) {
+	public AbstractLoadNetworkTask(CyNetworkViewProducerManager mgr,
+			CyNetworkViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
+			Properties props, CyNetworkNaming namingUtil) {
 		this.mgr = mgr;
 		this.gvf = gvf;
 		this.cyl = cyl;
@@ -88,53 +84,40 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 		this.namingUtil = namingUtil;
 	}
 
-	protected void loadNetwork(CyNetworkViewProducer reader) throws Exception {
-		if (reader == null)
-			throw new Exception("Could not read file: file reader was null");
+	protected void loadNetwork(final CyNetworkViewProducer viewProducer) throws Exception {
+		
+		if (viewProducer == null)
+			throw new IllegalArgumentException("Could not read file: Network View Producer is null.");
 
-		try {
-			myThread = Thread.currentThread();
+		myThread = Thread.currentThread();
 
-			taskMonitor.setStatusMessage("Reading in Network Data...");
+		taskMonitor.setStatusMessage("Reading in Network Data...");
+		taskMonitor.setProgress(-1.0);
+		taskMonitor.setStatusMessage("Creating Cytoscape Network...");
+		
+		viewProducer.run(taskMonitor);
+		
+		final CyNetworkView[] cyNetworkViews = viewProducer.getNetworkViews();
 
-			taskMonitor.setProgress(-1.0);
+		if (cyNetworkViews == null || cyNetworkViews.length < 0)
+			throw new IOException("Could not create view model for the producer.");
 
-			taskMonitor.setStatusMessage("Creating Cytoscape Network...");
+		// Model should not be null.  It will be tested in ViewImpl.
+		final CyNetwork cyNetwork = cyNetworkViews[0].getModel();
+		cyNetwork.attrs()
+				.set("name", namingUtil.getSuggestedNetworkTitle(name));
+		CyNetworkView view = cyNetworkViews[0];
 
-			
-			//final Map<Class<?>, Object> readData = reader.read();
+		if (view == null)
+			view = gvf.getNetworkView(cyNetwork);
 
-			CyNetworkView[] cyNetworkViews = reader.getNetworkViews();
-			
-			CyNetwork cyNetwork = cyNetworkViews[0].getModel();
-			cyNetwork.attrs().set("name",
-					namingUtil.getSuggestedNetworkTitle(name));
-			CyNetworkView view = cyNetworkViews[0];
+		view.fitContent();
 
-			if (view == null)
-				view = gvf.getNetworkView(cyNetwork);
+		netmgr.addNetwork(cyNetwork);
+		netmgr.addNetworkView(view);
 
-			view.fitContent();
-
-			netmgr.addNetwork(cyNetwork);
-			netmgr.addNetworkView(view);
-
-			
-			if (cyNetwork != null) {
-				informUserOfGraphStats(cyNetwork);
-			} else {
-				StringBuffer sb = new StringBuffer();
-				sb.append("Could not read network from: ");
-				sb.append(name);
-				sb.append("\nThis file may not be a valid file format.");
-				throw new IOException(sb.toString());
-			}
-
-			taskMonitor.setProgress(1.0);
-
-		} finally {
-			reader = null;
-		}
+		informUserOfGraphStats(cyNetwork);
+		taskMonitor.setProgress(1.0);
 	}
 
 	abstract public void run(TaskMonitor taskMonitor) throws Exception;
@@ -171,8 +154,7 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 
 	public void cancel() {
 		super.cancel();
-		if (reader != null)
-		{
+		if (reader != null) {
 			reader.cancel();
 		}
 	}

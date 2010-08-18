@@ -75,7 +75,6 @@ public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 		
 		name = inputstream.toString();
 		
-		
 		if (reader == null) {
 			uri = null;
 			System.out.println("The reader is null");
