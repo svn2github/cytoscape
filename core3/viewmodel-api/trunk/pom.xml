@@ -126,7 +126,7 @@
 		<!-- unit tests -->
 		<dependency>
 			<groupId>org.easymock</groupId>
-			<artifactId>com.springsource.org.easymock</artifactId>
+			<artifactId>easymock</artifactId>
 			<version>${easymock.version}</version>
 			<scope>test</scope>
 		</dependency>

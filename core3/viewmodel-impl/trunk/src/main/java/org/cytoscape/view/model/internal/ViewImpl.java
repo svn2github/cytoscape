@@ -64,30 +64,36 @@ public class ViewImpl<M> implements View<M> {
 		else
 			this.visualProperties.put(vp, value);
 		
-		cyEventHelper.getMicroListener(ViewChangeListener.class, this).visualPropertySet(vp, value);
+		final ViewChangeListener vcl = cyEventHelper.getMicroListener(ViewChangeListener.class, this);
+		if(vcl != null)
+			vcl.visualPropertySet(vp, value);
 	}
 
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getVisualProperty(VisualProperty<T> vp) {
-		return (T) this.visualProperties.get(vp);
+		if(visualPropertyLocks.get(vp) == null)
+			return (T) this.visualProperties.get(vp);
+		else
+			return (T) this.visualPropertyLocks.get(vp);
 	}
 
+	
 	// TODO: should I fire event?
 	@Override
 	public <T, V extends T> void setLockedValue(VisualProperty<? extends T> vp,
 			V value) {
 		this.visualPropertyLocks.put(vp, value);
 	}
+	
 
 	@Override
 	public boolean isValueLocked(VisualProperty<?> vp) {
-		final Object lockedValue = this.visualPropertyLocks.get(vp);
-		if(lockedValue != null)
-			return true;
-		else
+		if(visualPropertyLocks.get(vp) == null)
 			return false;
+		else 
+			return true;
 	}
 
 	@Override
