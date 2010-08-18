@@ -111,6 +111,7 @@ public class MetaNode {
 	private CyAttributes nodeAttributes = null;
 	private CyNetworkView networkView = null;
 	private CyNetwork network = null;
+	private CyNetwork myGraph = null;
 	private int nChildren = 0;
 	private int nDescendents = 0;
 	private Dimension metanodeSize = null;
