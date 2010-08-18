@@ -5,8 +5,8 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Properties;
 
-import org.cytoscape.io.read.CyReader;
-import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.io.read.CyDataTableProducer;
+import org.cytoscape.io.read.CyDataTableProducerManager;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.work.Task;
@@ -15,28 +15,29 @@ import org.cytoscape.task.AbstractTask;
 
 public abstract class AbstractLoadDataTableTask extends AbstractTask {
 
-	protected CyReader reader;
+	protected CyDataTableProducer reader;
 	protected URI uri;
 	protected TaskMonitor taskMonitor;
 	protected String name;
 	protected Thread myThread = null;
 	protected boolean interrupted = false;
-	protected CyReaderManager mgr;
+	protected CyDataTableProducerManager mgr;
 	protected Properties props;
 
 	protected CyNetworkNaming namingUtil;
 
-	public AbstractLoadDataTableTask(CyReaderManager mgr,
+	public AbstractLoadDataTableTask(CyDataTableProducerManager mgr,
 			Properties props) {
 		this.mgr = mgr;
 		this.props = props;
 	}
 
-	protected void loadTable(CyReader reader) throws Exception {
+	protected void loadTable(CyDataTableProducer reader) throws Exception {
 		if (reader == null)
 			throw new Exception("Could not read file: file reader was null");
 
 		try {
+			/*
 			myThread = Thread.currentThread();
 			taskMonitor.setStatusMessage("Reading in Data Table...");
 
@@ -57,7 +58,7 @@ public abstract class AbstractLoadDataTableTask extends AbstractTask {
 				sb.append("\nThis file may not be a valid file format.");
 				throw new IOException(sb.toString());
 			}
-
+*/
 			taskMonitor.setProgress(1.0);
 
 		} finally {
