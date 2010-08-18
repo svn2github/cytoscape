@@ -46,7 +46,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.cytoscape.io.internal.read.AbstractNetworkReader;
+import org.cytoscape.io.internal.read.AbstractNetworkViewProducer;
 import org.cytoscape.io.internal.read.VisualStyleBuilder;
 import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
@@ -56,6 +56,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.work.TaskMonitor;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -72,7 +73,7 @@ import org.xml.sax.helpers.ParserAdapter;
  * @author kono
  * 
  */
-public class XGMMLReader extends AbstractNetworkReader {
+public class XGMMLNetworkViewProducer extends AbstractNetworkViewProducer {
 
 	protected static final String CY_NAMESPACE = "http://www.cytoscape.org";
 
@@ -88,10 +89,14 @@ public class XGMMLReader extends AbstractNetworkReader {
 	/**
 	 * Constructor.
 	 */
-	public XGMMLReader() {
+	public XGMMLNetworkViewProducer() {
 		super();
 	}
 
+	public void run(TaskMonitor tm) throws IOException {
+		//?????????????
+	}
+	
 	public void setReadDataManager(ReadDataManager readDataManager) {
 		this.readDataManager = readDataManager;
 	}
@@ -126,18 +131,18 @@ public class XGMMLReader extends AbstractNetworkReader {
 	 * @throws IOException
 	 *             DOCUMENT ME!
 	 */
-	public Map<Class<?>, Object> read() throws IOException {
+	public void read() throws IOException {
 		try {
 
 			this.readXGMML();
-			this.readObjects.put(CyNetwork.class, readDataManager.getNetwork());
+			//this.readObjects.put(CyNetwork.class, readDataManager.getNetwork());
 			createView(readDataManager.getNetwork());
-			readObjects.put(CyNetworkView.class, view);
+			//readObjects.put(CyNetworkView.class, view);
 		} catch (SAXException e) {
 			throw new IOException("Could not parse XGMML file: ");
 		}
-		
-		return readObjects;
+
+		this.cyNetworkViews[0] = view;
 	}
 
 	/**
