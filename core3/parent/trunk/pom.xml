@@ -17,8 +17,8 @@
 		<spring.osgi.version>1.2.1</spring.osgi.version>
 		<junit.version>4.8.1</junit.version>
 		<easymock.version>3.0</easymock.version>
-
 		<maven-bundle-plugin.version>2.1.0</maven-bundle-plugin.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<distributionManagement>
