@@ -45,8 +45,8 @@ import java.util.Properties;
 import java.awt.Event;
 import java.io.IOException;
 
-import org.cytoscape.io.read.CyReader;
-import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.io.read.CyNetworkViewProducer;
+import org.cytoscape.io.read.CyNetworkViewProducerManager;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
@@ -63,13 +63,13 @@ import org.cytoscape.session.CyNetworkNaming;
  */
 abstract class AbstractLoadNetworkTask extends AbstractTask {
 
-	protected CyReader reader;
+	protected CyNetworkViewProducer reader;
 	protected URI uri;
 	protected TaskMonitor taskMonitor;
 	protected String name;
 	protected Thread myThread = null;
 	protected boolean interrupted = false;
-	protected CyReaderManager mgr;
+	protected CyNetworkViewProducerManager mgr;
 	protected CyNetworkViewFactory gvf;
 	protected CyLayouts cyl;
 	protected CyNetworkManager netmgr;
@@ -77,7 +77,7 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 
 	protected CyNetworkNaming namingUtil;
 
-	public AbstractLoadNetworkTask(CyReaderManager mgr, CyNetworkViewFactory gvf,
+	public AbstractLoadNetworkTask(CyNetworkViewProducerManager mgr, CyNetworkViewFactory gvf,
 			CyLayouts cyl, CyNetworkManager netmgr, Properties props,
 			CyNetworkNaming namingUtil) {
 		this.mgr = mgr;
@@ -88,7 +88,7 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 		this.namingUtil = namingUtil;
 	}
 
-	protected void loadNetwork(CyReader reader) throws Exception {
+	protected void loadNetwork(CyNetworkViewProducer reader) throws Exception {
 		if (reader == null)
 			throw new Exception("Could not read file: file reader was null");
 
@@ -102,12 +102,14 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 			taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 
 			
-			final Map<Class<?>, Object> readData = reader.read();
+			//final Map<Class<?>, Object> readData = reader.read();
 
-			CyNetwork cyNetwork = (CyNetwork) readData.get(CyNetwork.class);
+			CyNetworkView[] cyNetworkViews = reader.getNetworkViews();
+			
+			CyNetwork cyNetwork = cyNetworkViews[0].getModel();
 			cyNetwork.attrs().set("name",
 					namingUtil.getSuggestedNetworkTitle(name));
-			CyNetworkView view = (CyNetworkView) readData.get(CyNetworkView.class);
+			CyNetworkView view = cyNetworkViews[0];
 
 			if (view == null)
 				view = gvf.getNetworkView(cyNetwork);
