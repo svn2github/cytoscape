@@ -1,4 +1,4 @@
-package org.cytoscape.viewmodel;
+package org.cytoscape.view.model;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;

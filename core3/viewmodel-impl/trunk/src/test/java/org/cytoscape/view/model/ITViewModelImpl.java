@@ -1,4 +1,4 @@
-package org.cytoscape.viewmodel;
+package org.cytoscape.view.model;
 
 import org.cytoscape.integration.AbstractIntegrationTester;
 import org.cytoscape.view.model.CyNetworkViewFactory;
