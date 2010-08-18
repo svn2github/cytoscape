@@ -18,9 +18,14 @@
 	<osgi:reference id="cyRootNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory" />
 
-	<osgi:reference id="cyReaderManagerServiceRef"
-		interface="org.cytoscape.io.read.CyReaderManager" />
+	<osgi:reference id="cyNetworkViewProducerManagerServiceRef"
+		interface="org.cytoscape.io.read.CyNetworkViewProducerManager" />
 
+<!--  
+	<osgi:reference id="cyDataTableProducerManagerServiceRef"
+		interface="org.cytoscape.io.read.CyDataTableProducerManager" />
+ -->
+ 
 	<osgi:reference id="visualMappingManagerServiceRef"
 		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
 
@@ -68,7 +73,7 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	
+<!-- 	
 	<osgi:service id="loadDataTableTaskFactoryService" ref="loadDataTableTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
@@ -76,7 +81,7 @@
 			<entry key="preferredMenu" value="File.Import" />
 		</osgi:service-properties>
 	</osgi:service>
-	
+ -->	
 	<osgi:service id="proxySettingsTaskFactoryService" ref="proxySettingsTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>

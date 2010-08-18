@@ -25,15 +25,16 @@
 	<context:annotation-config/>
 
 	<!-- this creates a LoadPropsInterceptor object --> 
-	
+<!-- 	
 	<bean id="loadDataTableTaskFactory" 
 	      class="org.cytoscape.task.internal.loaddatatable.LoadDataTableTaskFactoryImpl">
-		<constructor-arg ref="cyReaderManagerServiceRef" />
+		<constructor-arg ref="cyDataTableProducerManagerServiceRef" />
 		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
+ -->	
 	<bean id="loadNetworkFileTaskFactory" 
 	      class="org.cytoscape.task.internal.loadnetwork.LoadNetworkFileTaskFactoryImpl">
-		<constructor-arg ref="cyReaderManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewProducerManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
@@ -44,7 +45,7 @@
 	<!-- this creates a LoadPropsInterceptor object --> 
 	<bean id="loadNetworkURLTaskFactory" 
 	      class="org.cytoscape.task.internal.loadnetwork.LoadNetworkURLTaskFactoryImpl">
-		<constructor-arg ref="cyReaderManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewProducerManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
@@ -55,7 +56,7 @@
 	
 	<bean id="loadInputStreamTaskFactory" 
 	      class="org.cytoscape.task.internal.loadnetwork.LoadInputStreamTaskFactoryImpl">
-		<constructor-arg ref="cyReaderManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewProducerManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
