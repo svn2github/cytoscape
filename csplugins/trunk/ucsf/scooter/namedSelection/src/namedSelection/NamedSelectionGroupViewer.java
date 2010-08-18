@@ -50,7 +50,10 @@ import cytoscape.view.CyNetworkView;
 
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
+import cytoscape.groups.CyGroupChangeEvent;
+import cytoscape.groups.CyGroupChangeListener;
 import cytoscape.groups.CyGroupViewer;
+import cytoscape.groups.CyGroupViewer.ChangeType;
 
 // our imports
 import namedSelection.ui.GroupPanel;
@@ -59,7 +62,8 @@ import namedSelection.ui.GroupPanel;
  * The NamedSelection class provides the primary interface to the
  * Cytoscape plugin mechanism
  */
-public class NamedSelectionGroupViewer implements CyGroupViewer { 
+public class NamedSelectionGroupViewer implements CyGroupViewer,
+                                                  CyGroupChangeListener { 
 
 	public static final String viewerName = "namedSelection";
 	public static final double VERSION = 1.0;
@@ -75,6 +79,7 @@ public class NamedSelectionGroupViewer implements CyGroupViewer {
 	public NamedSelectionGroupViewer(GroupPanel groupPanel, CyLogger logger) {
 		this.logger = logger;
 		this.groupPanel = groupPanel;
+		CyGroupManager.addGroupChangeListener(this);
 	}
 
 	// These are required by the CyGroupViewer interface
@@ -136,11 +141,11 @@ public class NamedSelectionGroupViewer implements CyGroupViewer {
 	public void groupChanged(CyGroup group, CyNode node, ChangeType change) { 
 		// At some point, this should be a little more granular.  Do we really
 		// need to rebuild the tree when we have a simple node addition/removal?
-		if (change == CyGroupViewer.ChangeType.NODE_ADDED ||
-		    change == CyGroupViewer.ChangeType.NODE_REMOVED ||
-		    change == CyGroupViewer.ChangeType.NETWORK_CHANGED ) {
+		if (change == ChangeType.NODE_ADDED ||
+		    change == ChangeType.NODE_REMOVED ||
+		    change == ChangeType.NETWORK_CHANGED ) {
 			groupPanel.groupChanged(group);
-		} else if (change == CyGroupViewer.ChangeType.STATE_CHANGED) {
+		} else if (change == ChangeType.STATE_CHANGED) {
 			boolean selected = true;
 			if (group.getState() == UNSELECTED)
 				selected = false;
@@ -157,6 +162,15 @@ public class NamedSelectionGroupViewer implements CyGroupViewer {
 			groupPanel.groupChanged(group);
 		}
 	}
+
+	/**                                   
+   */                                   
+	public void groupChanged(CyGroup group, CyGroupChangeEvent change) {
+		// Special-case for deleted groups
+		if (change == CyGroupChangeEvent.GROUP_DELETED) {
+			groupPanel.groupChanged(null);
+		}
+	} 
 
 	private void selectAll(CyGroup group, boolean selected) {
 		for (CyNetwork network: Cytoscape.getNetworkSet()) {
