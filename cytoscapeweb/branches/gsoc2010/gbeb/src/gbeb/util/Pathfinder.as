@@ -67,6 +67,7 @@ package gbeb.util
 			var searchSpaceTrace:String = ""; //debug
 			
 			//kmeans_Pathfinding(edge, searchSpace);
+			removeSharpEdges2(edge);
 			Kmeans_Pathfinding2(edge);
 			
 			//AStar_pathfindingAlgrithm(edge, searchSpace);
@@ -269,6 +270,22 @@ package gbeb.util
 			}
 			
 			return false;
+		}
+		
+		private function removeSharpEdges2(edge:EdgeSprite):void
+		{
+			var ctrl:Array = edge.props.$controlPointsArray;
+			var source:Point = new Point(edge.source.x, edge.source.y);
+			var target:Point = new Point(edge.target.x, edge.target.y);
+			
+			var turnsArray:Array = []; //stores in consecutive lists the number of points per turn.
+			
+			for each (var p:Point in ctrl)
+			{
+				trace("Pathfinder: removeSharpEdges2: " + edge, ctrl.length);
+			}
+			
+			
 		}
 
 	} //end of class
