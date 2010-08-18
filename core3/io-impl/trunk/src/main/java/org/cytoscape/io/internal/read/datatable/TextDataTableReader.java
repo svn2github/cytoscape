@@ -15,6 +15,7 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.work.TaskMonitor;
 
 import static org.cytoscape.model.GraphObject.*;
 
@@ -42,7 +43,12 @@ public class TextDataTableReader extends AbstractDataTableReader {
 		this.tableMgr = tableMgr;
 	}
 	
-	public Map<Class<?>, Object> read() throws IOException {
+	
+	public void run(TaskMonitor tm) throws IOException {
+	
+	}
+	/*
+	public void read() throws IOException {
 		network = manager.getCurrentNetwork();
 		
 		if( network == null)
@@ -71,15 +77,13 @@ public class TextDataTableReader extends AbstractDataTableReader {
 			System.out.println("Attr for " + node.getSUID() + " =========> " + node.attrs().toString());
 		}
 
-		readObjects.put(CyDataTable.class, table);
+		//readObjects.put(CyDataTable.class, table);
+		//this.cyDataTables = ??;
 		
-
 		if (inputStream != null) {
 			inputStream.close();
 			inputStream = null;
 		}
-		
-		return readObjects;
 	}
 	
 	private void createColumns(CyDataTable table, String line) {
@@ -130,5 +134,5 @@ public class TextDataTableReader extends AbstractDataTableReader {
 			}
 		}
 	}
-
+*/
 }
