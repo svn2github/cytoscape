@@ -44,34 +44,32 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.io.internal.util.ReadUtils;
-import org.cytoscape.io.internal.read.AbstractNetworkReader;
+import org.cytoscape.io.internal.read.AbstractNetworkViewProducer;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.work.TaskMonitor;
 
 /**
  * Reader for graphs in the interactions file format. Given the filename,
  * provides the graph and attributes objects constructed from the file.
  */
-public class InteractionsReader extends AbstractNetworkReader {
+public class SIFNetwotkViewProducer extends AbstractNetworkViewProducer {
 
 	private static final String DEF_DELIMITER = " ";
 	private static final String LINE_SEP = System.getProperty("line.separator");
-
 	private static final String INTERACTION = "interaction";
-
 	private ReadUtils readUtil;
-
 	private Set<Interaction> interactions;
 
-	public InteractionsReader(ReadUtils readUtil) {
+	public SIFNetwotkViewProducer(ReadUtils readUtil) {
 		super();
 		this.interactions = new HashSet<Interaction>();
 		this.readUtil = readUtil;
 	}
 
-	public Map<Class<?>, Object> read() throws IOException {
+	public void run(TaskMonitor tm) throws IOException {
 		refresh();
 
 		String delimiter = DEF_DELIMITER;
@@ -95,22 +93,23 @@ public class InteractionsReader extends AbstractNetworkReader {
 			inputStream = null;
 		}
 
-		createNetwork();
+		createNetwork(tm);
 		
-		return readObjects;
 	}
+
 
 	private void refresh() {
-		readObjects.clear();
 		interactions.clear();
 		interactions = new HashSet<Interaction>();
-		readObjects = new HashMap<Class<?>, Object>();
+		this.cyNetworkViews = null;
 	}
+	
+	private void createNetwork(TaskMonitor tm) {
 
-	private void createNetwork() {
-
+		double progress = 0.01;
+		
 		final CyNetwork network = cyNetworkFactory.getInstance();
-
+		
 		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
 
 		// put all node names in the Set
@@ -120,13 +119,26 @@ public class InteractionsReader extends AbstractNetworkReader {
 				nodeMap.put(target, null);
 		}
 
+		tm.setProgress(0.05);
+		
+		int nodeCount = nodeMap.size();
+		
 		CyNode node;
 		for (String nodeName : nodeMap.keySet()) {
+			if (this.cancel){
+				return;
+			}
+
+			//progress = (??)/nodeCount;
+			tm.setProgress(progress);
+			
 			node = network.addNode();
 			node.attrs().set(NODE_NAME_ATTR_LABEL, nodeName);
 			nodeMap.put(nodeName, node);
 		}
 
+		tm.setProgress(0.20);
+		
 		// Now loop over the interactions again, this time creating edges
 		// between
 		// all sources and each of their respective targets.
@@ -134,7 +146,15 @@ public class InteractionsReader extends AbstractNetworkReader {
 		String interactionType;
 		CyEdge edge;
 
+		int edgeCount = interactions.size();
+		
 		for (Interaction interaction : interactions) {
+
+			if (this.cancel){
+				return;
+			}
+			//progress = (??)/edgeCount;
+			tm.setProgress(progress);
 
 			srcName = interaction.getSource();
 			interactionType = interaction.getType();
@@ -148,13 +168,18 @@ public class InteractionsReader extends AbstractNetworkReader {
 			}
 		}
 
-		readObjects.put(CyNetwork.class, network);
-
+		tm.setProgress(0.90);
+		
 		final CyNetworkView view = cyNetworkViewFactory.getNetworkView(network);
 		layouts.getDefaultLayout().doLayout(view);
-		readObjects.put(CyNetworkView.class, view);
+		
+		this.cyNetworkViews[0] = view;
 
+		tm.setProgress(0.99);
+		
 		nodeMap.clear();
 		nodeMap = null;
+
 	}
+	
 }
