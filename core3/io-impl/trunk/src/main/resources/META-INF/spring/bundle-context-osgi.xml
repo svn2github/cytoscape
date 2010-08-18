@@ -7,24 +7,19 @@
 
 
 	<!-- Import services -->
-	<osgi:reference id="cyLayoutsServiceRef" 
-	      interface="org.cytoscape.view.layout.CyLayouts" />
+	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayouts" />
 
 	<osgi:reference id="cyNetworkFactoryServiceRef"
-	      interface="org.cytoscape.model.CyNetworkFactory" />
+		interface="org.cytoscape.model.CyNetworkFactory" />
 
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
-	      interface="org.cytoscape.view.model.CyNetworkViewFactory" />
+		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 	
-	<osgi:reference id="cyNetworkManagerServiceRef" 
-	      interface="org.cytoscape.session.CyNetworkManager" />
+	<osgi:reference id="cyNetworkManagerServiceRef" interface="org.cytoscape.session.CyNetworkManager" />
 	
-	<osgi:reference id="cyTableManagerServiceRef" 
-	      interface="org.cytoscape.model.CyTableManager" />
-
 	<!-- Export services -->
-	<osgi:service id="cyReaderManagerService" ref="cyReaderManager"
-		interface="org.cytoscape.io.read.CyReaderManager">
+	<osgi:service id="cyNetworkViewProducerManagerService" ref="cyNetworkViewProducerManager"
+		interface="org.cytoscape.io.read.CyNetworkViewProducerManager">
 		<osgi:service-properties>
 			<entry key="serviceType" value="manager" />
 		</osgi:service-properties>
@@ -32,7 +27,7 @@
 
 
 	<!-- Exporting Reader Factory as OSGi Service -->
-	
+<!-- 
 	<osgi:service id="nodeTextDataTableReaderFactoryService" ref="nodeTextDataTableReaderFactory"
 		interface="org.cytoscape.io.read.CyReaderFactory">
 		<osgi:service-properties>
@@ -41,30 +36,32 @@
 			<entry key="readerDescription" value="Text data table file reader for nodes" />
 		</osgi:service-properties>
 	</osgi:service>
-	
-	<osgi:service id="sifReaderFactoryService" ref="sifReaderFactory"
-		interface="org.cytoscape.io.read.CyReaderFactory">
+-->
+	<osgi:service id="sifReaderFactoryService" ref="sifNetworkViewProducerFactory"
+		interface="org.cytoscape.io.read.CyNetworkViewProducerFactory">
 		<osgi:service-properties>
-			<entry key="serviceType" value="readerFactory" />
-			<entry key="readerId" value="sifReader" />
+			<entry key="serviceType" value="sifNetworkViewProducerFactory" />
+			<entry key="readerId" value="sifNetworkViewProducer" />
 			<entry key="readerDescription" value="Simple Interaction Format (SIF) file reader" />
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="xgmmlReaderFactoryService" ref="xgmmlReaderFactory"
-		interface="org.cytoscape.io.read.CyReaderFactory">
+<!-- 
+	<osgi:service id="xgmmlReaderFactoryService" ref="xgmmlNetworkViewProducerFactory"
+		interface="org.cytoscape.io.read.CyNetworkViewProducerFactory">
 		<osgi:service-properties>
-			<entry key="serviceType" value="readerFactory" />
-			<entry key="readerId" value="xgmmlReader" />
+			<entry key="serviceType" value="xgmmlNetworkViewProducerFactory" />
+			<entry key="readerId" value="xgmmlNetworkViewProducer" />
 			<entry key="readerDescription"
 				value="eXtensible Graph Markup and Modeling Language (XGMML) file reader" />
 		</osgi:service-properties>
 	</osgi:service>
+ -->
 
-	<osgi:set id="cyReaderFactories" interface="org.cytoscape.io.read.CyReaderFactory"
+	<osgi:set id="cyNetworkViewProducerFactories" interface="org.cytoscape.io.read.CyNetworkViewProducerFactory"
 		cardinality="0..N">
-		<osgi:listener bind-method="addReaderFactory"
-			unbind-method="removeReaderFactory" ref="cyReaderManager" />
+		<osgi:listener bind-method="addNetworkViewProducerFactory"
+			unbind-method="removeNetworkViewProducerFactory" ref="cyNetworkViewProducerManager" />
 	</osgi:set>
 
 	<osgi:service id="streamUtilService" ref="streamUtil"

@@ -15,31 +15,32 @@
 	default-lazy-init="true">
 
 	<context:annotation-config />
-	
-	<bean id="nodeTextDataTableReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
+<!--	
+	<bean id="nodeTextDataTableReaderFactory" class="org.cytoscape.io.internal.read.CyDataTableProducerFactoryImpl">
 		<constructor-arg ref="textDatatableFilter" />
 		<constructor-arg ref="nodeTextDataTableReader" />
 		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
 			<ref bean="streamUtil"/>
 		</constructor-arg>
 	</bean>
+-->
 
-	<bean id="sifReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
+	<bean id="sifNetworkViewProducerFactory" class="org.cytoscape.io.internal.read.CyNetworkViewProducerFactoryImpl">
 		<constructor-arg ref="sifFilter" />
-		<constructor-arg ref="sifReader" />
+		<constructor-arg ref="sifNetworkViewProducer" />
 		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
 			<ref bean="streamUtil"/>
 		</constructor-arg>
 	</bean>
 
-	<bean id="xgmmlReaderFactory" class="org.cytoscape.io.internal.read.CyReaderFactoryImpl">
+	<bean id="xgmmlNetworkViewProducerFactory" class="org.cytoscape.io.internal.read.CyNetworkViewProducerFactoryImpl">
 		<constructor-arg ref="xgmmlFilter" />
 		<constructor-arg ref="xgmmlReader" />
 		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
 			<ref bean="streamUtil"/>
 		</constructor-arg>
 	</bean>
-	
+<!--
 	<bean id="textDatatableFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
 		<constructor-arg index="0">
 			<set>
@@ -58,6 +59,8 @@
 			<ref bean="streamUtil"/>
 		</constructor-arg>
 	</bean>
+-->
+
 
 	<bean id="sifFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
 		<constructor-arg index="0">
@@ -100,9 +103,8 @@
 		</constructor-arg>
 	</bean>
 
-
 	<!-- Network Readers -->
-	<bean id="sifReader" class="org.cytoscape.io.internal.read.sif.InteractionsReader">
+	<bean id="sifNetworkViewProducer" class="org.cytoscape.io.internal.read.sif.SIFNetwotkViewProducer">
 		<constructor-arg ref="readUtil" />
 		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
 		<property name="cyNetworkViewFactory" ref="cyNetworkViewFactoryServiceRef" />
@@ -111,6 +113,7 @@
 
 
 	<!-- Utilities for XGMML Reader -->
+	
 	<bean id="objectTypeMap" class="org.cytoscape.io.internal.read.xgmml.ObjectTypeMap" />
 	<bean id="attributeValueUtil"
 		class="org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil">
@@ -130,7 +133,7 @@
 		<property name="readDataManager" ref="readDataManager" />
 	</bean>
 
-	<bean id="xgmmlReader" class="org.cytoscape.io.internal.read.xgmml.XGMMLReader">
+	<bean id="xgmmlNetworkViewProducer" class="org.cytoscape.io.internal.read.xgmml.XGMMLNetworkViewProducer">
 		<property name="parser" ref="xgmmlParser" />
 		<property name="readDataManager" ref="readDataManager" />
 		<property name="attributeValueUtil" ref="attributeValueUtil" />
@@ -141,28 +144,30 @@
 
 	</bean>
 
+
 	<!-- Attribute Readers -->
+	
+<!--	
 	<bean id="nodeTextDataTableReader" class="org.cytoscape.io.internal.read.datatable.TextDataTableReader">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg value="NODE" />
-		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 	<bean id="edgeTextDataTableReader" class="org.cytoscape.io.internal.read.datatable.TextDataTableReader">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg value="EDGE" />
-		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 	<bean id="networkTextDataTableReader" class="org.cytoscape.io.internal.read.datatable.TextDataTableReader">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg value="NETWORK" />
-		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
+-->
+
 
 	<!-- Property Readers -->
 
 
 	<!-- Manager for all readers -->
-	<bean id="cyReaderManager" class="org.cytoscape.io.internal.read.CyReaderManagerImpl" />
+	<bean id="cyNetworkViewProducerManager" class="org.cytoscape.io.internal.read.CyNetworkViewProducerManagerImpl" />
 
 
 	<!-- Utility for Stream/Proxy management -->
