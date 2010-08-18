@@ -42,8 +42,8 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.task.AbstractTask;
 import org.cytoscape.session.CySessionManager;
-import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.io.read.CyReader;
+import org.cytoscape.io.read.CyNetworkViewProducerManager;
+import org.cytoscape.io.read.CyDataTableProducer;
 import org.cytoscape.io.DataCategory;
 
 import java.io.File;
@@ -57,7 +57,7 @@ public class OpenSessionTask extends AbstractTask {
 
 
 	private CySessionManager mgr;
-	private CyReaderManager factory;
+	private CyNetworkViewProducerManager factory;
 
 	@Tunable(description="Session file to load")
 	public File file;
@@ -66,7 +66,7 @@ public class OpenSessionTask extends AbstractTask {
 	 * Constructor.<br>
 	 * Add a menu item under "File" and set shortcut.
 	 */
-	public OpenSessionTask(CySessionManager mgr, CyReaderManager factory) {
+	public OpenSessionTask(CySessionManager mgr, CyNetworkViewProducerManager factory) {
 		this.mgr = mgr;
 		this.factory = factory;
 	}
@@ -86,11 +86,11 @@ public class OpenSessionTask extends AbstractTask {
 		taskMonitor.setStatusMessage("Opening Session File.\n\nIt may take a while.\nPlease wait...");
 		taskMonitor.setProgress(0.0);
 
-		CyReader sr;
+		CyDataTableProducer sr;
 
 		try {
-			sr = factory.getReader(file.toURI(), DataCategory.SESSION);
-			sr.read();
+			//sr = factory.getReader(file.toURI(), DataCategory.SESSION);
+			//sr.read();
 		} catch (Exception e) {
 			throw new Exception("Cannot open the session file: " + name, e);
 		} finally {

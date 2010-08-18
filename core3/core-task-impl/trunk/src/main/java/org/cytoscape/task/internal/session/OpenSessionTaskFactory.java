@@ -37,7 +37,7 @@
 package org.cytoscape.task.internal.session; 
 
 import org.cytoscape.session.CySessionManager; 
-import org.cytoscape.io.read.CyReaderManager; 
+import org.cytoscape.io.read.CyNetworkViewProducerManager; 
 
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
@@ -48,9 +48,9 @@ import org.cytoscape.work.TaskFactory;
 public class OpenSessionTaskFactory implements TaskFactory {
 
 	private CySessionManager mgr;
-	private CyReaderManager rmgr;
+	private CyNetworkViewProducerManager rmgr;
 
-	public OpenSessionTaskFactory(CySessionManager mgr, CyReaderManager rmgr) {
+	public OpenSessionTaskFactory(CySessionManager mgr, CyNetworkViewProducerManager rmgr) {
 		this.mgr = mgr;
 		this.rmgr = rmgr;
 	}
