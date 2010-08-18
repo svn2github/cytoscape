@@ -50,7 +50,7 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRowListener;
+import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.events.NetworkViewAboutToBeDestroyedEvent;
 import org.cytoscape.session.events.NetworkViewAboutToBeDestroyedListener;
@@ -63,6 +63,8 @@ import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
+
+import org.cytoscape.service.util.CyServiceRegistrar;
 
 import cytoscape.view.CyHelpBroker;
 
@@ -102,7 +104,8 @@ public class NetworkViewManager implements InternalFrameListener,
 	//TODO: for now, use this as default.  But in the future, we should provide UI to select presentation.
 	private static final String DEFAULT_PRESENTATION = "ding";
 
-	private Map<CyNetwork,CyRowListener> nameListeners;
+	private Map<CyNetwork,RowSetMicroListener> nameListeners;
+	private CyServiceRegistrar registrar;
 	
 	
 	/**
@@ -112,11 +115,12 @@ public class NetworkViewManager implements InternalFrameListener,
 	 *            DOCUMENT ME!
 	 */
 	public NetworkViewManager(CyNetworkManager netmgr, Properties props,
-			CyHelpBroker help) {
+			CyHelpBroker help, CyServiceRegistrar registrar) {
 		this.factories = new HashMap<String, RenderingEngineFactory<CyNetwork>>();
 		
 		this.netmgr = netmgr;
 		this.props = props;
+		this.registrar = registrar;
 		desktopPane = new JDesktopPane();
 
 		// add Help hooks
@@ -128,7 +132,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		componentMap = new HashMap<JInternalFrame, Long>();
 		currentViewId = null;
 
-		nameListeners = new HashMap<CyNetwork,CyRowListener>();
+		nameListeners = new HashMap<CyNetwork,RowSetMicroListener>();
 	}
 	
 	
@@ -351,7 +355,9 @@ public class NetworkViewManager implements InternalFrameListener,
 		}
 
 		networkViewMap.remove(view.getModel().getSUID());
-		nameListeners.remove(view.getModel());
+		RowSetMicroListener rsml = nameListeners.remove(view.getModel());
+		if ( rsml != null )
+			registrar.unregisterService(rsml, RowSetMicroListener.class);
 	}
 
 	/**
@@ -431,19 +437,13 @@ public class NetworkViewManager implements InternalFrameListener,
 
 		updateNetworkTitle( view.getModel() );	
 
-		nameListeners.put(view.getModel(), new NetworkNameListener(view.getModel()) );
-	}
-
-    private class NetworkNameListener implements CyRowListener {
-        private CyNetwork net;
-        public NetworkNameListener(CyNetwork net) {
-            this.net = net;
-            net.attrs().addRowListener(this);
-        }
-        public void rowSet(String col, Object value) {
-            if ( "name".equals(col) ) {
+		RowSetMicroListener rsml = new AbstractNetworkNameListener( view.getModel() ) {
+			public void updateNetworkName(CyNetwork net, String name) {
                 updateNetworkTitle(net);
-            }
-        }
-    }
+			}
+		};
+		
+		registrar.registerService( rsml, RowSetMicroListener.class, new Properties() );
+		nameListeners.put(view.getModel(), rsml );
+	}
 }

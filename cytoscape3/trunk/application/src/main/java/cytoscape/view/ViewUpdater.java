@@ -37,27 +37,32 @@ package cytoscape.view;
 
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.View;
-import org.cytoscape.model.CyRowListener;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.events.RowSetMicroListener;
 
-public class ViewUpdater<T,S> implements CyRowListener {
+public class ViewUpdater<T,S> implements RowSetMicroListener {
 
-	protected View<T> view;
-	protected VisualProperty<S> vp;
-	protected String colName;
+	protected final CyRow row; 
+	protected final View<T> view;
+	protected final VisualProperty<S> vp;
+	protected final String columnName;
 
-	public ViewUpdater(View<T> view,VisualProperty<S> vp, String colName) {
+	public ViewUpdater(View<T> view, VisualProperty<S> vp, CyRow row, String columnName) {
 		this.view = view;
 		this.vp = vp;
-		this.colName = colName;
+		this.row = row;
+		this.columnName = columnName;
 	}
 
-//	@SuppressWarning("unchecked")
-	public void rowSet(String columnName, Object o) {
-		if ( columnName == null || !columnName.equals(colName) )
+	public Object getEventSource() {
+		return row.getDataTable();
+	}
+
+	public void handleRowSet(CyRow row, String columnName, Object value) {
+		if ( row == null || row != this.row || 
+		     columnName == null || !columnName.equals(this.columnName) )
 			return;
 
-//		if ( o instanceof vp.getType() ) {
-			view.setVisualProperty(vp, (S)o);
-//		}
+		view.setVisualProperty(vp, (S)value);
 	}
 }

@@ -48,6 +48,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Properties;
 
 import javax.swing.Action;
 import javax.swing.InputMap;
@@ -69,7 +70,7 @@ import javax.swing.tree.TreePath;
 
 import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRowListener;
+import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.model.events.SelectedEdgesEvent;
 import org.cytoscape.model.events.SelectedEdgesListener;
 import org.cytoscape.model.events.SelectedNodesEvent;
@@ -103,6 +104,7 @@ import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.util.swing.AbstractTreeTableModel;
 import org.cytoscape.util.swing.JTreeTable;
 import org.cytoscape.util.swing.TreeTableModel;
+import org.cytoscape.service.util.CyServiceRegistrar;
 import cytoscape.view.CyAction;
 
 import cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
@@ -133,7 +135,8 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	private Map<TaskFactory,JMenuItem> popupMap;
 	private Map<TaskFactory,CyAction> popupActions;
 	private final TunableInterceptor tunableInterceptor;
-	private Map<CyNetwork,CyRowListener> nameListeners;
+	private CyServiceRegistrar registrar;
+	private Map<CyNetwork, RowSetMicroListener> nameListeners;
 
 
 	/**
@@ -143,11 +146,13 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	 */
 	public NetworkPanel( final CyNetworkManager netmgr, final BirdsEyeViewHandler bird,
 			final TaskManager taskManager,
-			final TunableInterceptor tunableInterceptor) {
+			final TunableInterceptor tunableInterceptor,
+			final CyServiceRegistrar registrar) {
 		super();
 		this.netmgr = netmgr;
 		this.taskManager = taskManager;
 		this.tunableInterceptor = tunableInterceptor;
+		this.registrar = registrar;
 
 		root = new NetworkTreeNode("Network Root", 0L);
 		treeTableModel = new NetworkTreeTableModel(root);
@@ -155,7 +160,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		initialize();
 		setNavigator(bird.getBirdsEyeView());
 		currentNetId = null;
-		nameListeners = new HashMap<CyNetwork,CyRowListener>();
+		nameListeners = new HashMap<CyNetwork,RowSetMicroListener>();
 
 		/*
 		 * Remove CTR-A for enabling select all function in the main window.
@@ -347,14 +352,22 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		System.out.println("NetworkPanel: network about to be destroyed "
 				+ nde.getNetwork().getSUID());
 		removeNetwork(nde.getNetwork().getSUID());
-		nameListeners.remove(nde.getNetwork());
+		RowSetMicroListener rsml = nameListeners.remove(nde.getNetwork());
+		if ( rsml != null )
+			registrar.unregisterService( rsml, RowSetMicroListener.class ); 
 	}
 
 	public void handleEvent(NetworkAddedEvent e) {
 		System.out.println("NetworkPanel: network added "
 				+ e.getNetwork().getSUID());
 		addNetwork(e.getNetwork().getSUID(), -1l);
-		nameListeners.put(e.getNetwork(),new NetworkNameListener(e.getNetwork()));
+		RowSetMicroListener rsml = new AbstractNetworkNameListener(e.getNetwork()) {
+			public void updateNetworkName(CyNetwork net, String name) {
+				updateTitle(net,name);
+			}
+		};
+		registrar.registerService( rsml, RowSetMicroListener.class, new Properties() );
+		nameListeners.put(e.getNetwork(),rsml);
 	}
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
@@ -723,19 +736,6 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 						popup.show(e.getComponent(), e.getX(), e.getY());
 					}
 				}
-			}
-		}
-	}
-
-	private class NetworkNameListener implements CyRowListener {
-		private CyNetwork net;
-		public NetworkNameListener(CyNetwork net) {
-			this.net = net;
-			net.attrs().addRowListener(this);
-		}
-		public void rowSet(String col, Object value) {
-			if ( "name".equals(col) ) {
-				updateTitle(net,(String)value);
 			}
 		}
 	}

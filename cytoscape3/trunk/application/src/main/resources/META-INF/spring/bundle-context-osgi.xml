@@ -17,6 +17,9 @@
 
 	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager" />
 
+	<osgi:reference id="cyServiceRegistrarServiceRef" 
+	      interface="org.cytoscape.service.util.CyServiceRegistrar" />
+
 
 	<!-- Rendering Engine factory for main network views -->
 	<osgi:reference id="dingPresentationFactoryServiceRef"

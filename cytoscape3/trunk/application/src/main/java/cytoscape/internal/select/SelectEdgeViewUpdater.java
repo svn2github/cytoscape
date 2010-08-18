@@ -46,6 +46,6 @@ import cytoscape.view.ViewUpdater;
 public class SelectEdgeViewUpdater extends ViewUpdater<CyEdge,Boolean> {
 
 	public SelectEdgeViewUpdater(View<CyEdge> ev) {
-		super(ev, EDGE_SELECTED, "selected");
+		super(ev, EDGE_SELECTED, ev.getModel().attrs(), "selected");
 	}
 }
