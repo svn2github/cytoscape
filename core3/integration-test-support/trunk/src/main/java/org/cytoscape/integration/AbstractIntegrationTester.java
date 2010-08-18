@@ -106,16 +106,7 @@ public class AbstractIntegrationTester extends AbstractConfigurableBundleCreator
 	}
 
 	/**
-	 * Specify Spring DM config file to import registered services by
-	 * viewmodel-impl bundle.
-	 */
-	@Override
-	protected String[] getConfigLocations() {
-		return new String[] { "file:./target/test-classes/META-INF/spring/bundle-context-test.xml" };
-	}
-
-	/**
-	 * Import bundles required to run viewmodel-impl bundle.
+	 * Import bundles required to run bundle.
 	 */
 	@Override
 	protected String[] getTestBundlesNames() {
