@@ -38,13 +38,7 @@
 package cytoscape.groups;
 
 /**
- * The CyGroupChangeListener interface provides a mechanism for plugins that track
- * group-related events to get notified of global group changes (new groups, etc.).
+ * The types of notifications we pass to our listeners
  */
-public interface CyGroupChangeListener {
-	/**
- 	 * This method will be called by the CyGroupManager when a group is created, deleted, 
- 	 * or modified.
- 	 */
-	public void groupChanged(CyGroup group, CyGroupChangeEvent change);
-}
+public enum CyGroupChangeEvent { GROUP_CREATED, GROUP_DELETED, GROUP_MODIFIED }
+
