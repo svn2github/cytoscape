@@ -59,6 +59,7 @@ public class ViewImpl<M> implements View<M> {
 	@Override
 	public <T, V extends T> void setVisualProperty(
 			VisualProperty<? extends T> vp, V value) {
+		
 		if(value == null)
 			this.visualProperties.remove(vp);
 		else
@@ -73,9 +74,14 @@ public class ViewImpl<M> implements View<M> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getVisualProperty(VisualProperty<T> vp) {
-		if(visualPropertyLocks.get(vp) == null)
-			return (T) this.visualProperties.get(vp);
-		else
+		
+		if(visualPropertyLocks.get(vp) == null) {
+			if(visualProperties.get(vp) == null)
+				return vp.getDefault();
+			else
+				return (T) visualProperties.get(vp);
+			
+		} else
 			return (T) this.visualPropertyLocks.get(vp);
 	}
 

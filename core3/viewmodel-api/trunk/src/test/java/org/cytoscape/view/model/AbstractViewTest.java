@@ -1,5 +1,6 @@
 package org.cytoscape.view.model;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -27,8 +28,9 @@ public abstract class AbstractViewTest<S> {
 		view.setVisualProperty(integerVP, 1);
 		assertEquals(Integer.valueOf(1), view.getVisualProperty(integerVP));
 		
+		// For Null, return default value. 
 		view.setVisualProperty(integerVP, null);
-		assertNull(view.getVisualProperty(integerVP));
+		assertNotNull(view.getVisualProperty(integerVP));
 		
 		view.setVisualProperty(integerVP,-12345);
 		assertEquals(Integer.valueOf(-12345), view.getVisualProperty(integerVP));
@@ -39,8 +41,9 @@ public abstract class AbstractViewTest<S> {
 		view.setVisualProperty(stringVP, "");
 		assertEquals("", view.getVisualProperty(stringVP));
 		
+		// For Null, return default value.
 		view.setVisualProperty(stringVP, null);
-		assertNull(view.getVisualProperty(stringVP));
+		assertNotNull(view.getVisualProperty(stringVP));
 		
 	}
 
