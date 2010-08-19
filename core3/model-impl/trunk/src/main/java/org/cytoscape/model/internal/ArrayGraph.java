@@ -340,25 +340,24 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public CyNode addNode() {
-		// TODO why null, why not base? 
-		return nodeAdd(null);
+		// This is the root network.
+		// Adding a node to the base subnetwork is handled in ArraySubGraph.
+		// Likewise we don't fire a added node event here.
+		return nodeAdd();
 	}
 
-	CyNode nodeAdd(final CySubNetwork sub) {
+	CyNode nodeAdd() {
 		final NodePointer n;
 
-		//System.out.println("nodeAdd");
 		synchronized (this) {
 			final int index = nodePointers.size();
 			n = new NodePointer(index, new CyNodeImpl(this, index, nodeAttrMgr));
 			nodePointers.add(n);
 			nodeCount++;
+			// In ArrayGraph we only ever add the node to the root.
 			firstNode = n.insert(firstNode,ROOT);
 		}
 
-		// TODO does this make sense?
-		if ( sub != null )
-			eventHelper.fireSynchronousEvent(new AddedNodeEvent(sub, n.cyNode));
 		return n.cyNode;
 	}
 
@@ -366,9 +365,6 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public boolean removeNode(final CyNode n) {
-
-		// TODO which network should be firing this event? base? 
-		eventHelper.fireSynchronousEvent(new AboutToRemoveNodeEvent(base, n));
 
 		synchronized (this) {
 			//System.out.println("removeNode root");
@@ -395,9 +391,6 @@ public class ArrayGraph implements CyRootNetwork {
 			nodeCount--;
 		}
 
-		// TODO which network should be firing this event? base? 
-		eventHelper.fireSynchronousEvent(new RemovedNodeEvent(base));
-
 		return true;
 	}
 
@@ -405,12 +398,13 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public CyEdge addEdge(final CyNode s, final CyNode t, final boolean directed) {
-		// by calling base.addEdge() we'll update both the base network AND
-		// the root network.  base.addEdge() calls edgeAdd().
+		// This is the root network.
+		// Adding an edge to the base subnetwork is handled in ArraySubGraph.
+		// Likewise we don't fire a added edge event here.
 		return edgeAdd(s,t,directed,this);
 	}
 
-	// will be called from base.addEdge()!
+	// Will be called from ArraySubGraph.
 	CyEdge edgeAdd(final CyNode s, final CyNode t, final boolean directed, final CyNetwork net) {
 
 		final EdgePointer e;
@@ -429,15 +423,13 @@ public class ArrayGraph implements CyRootNetwork {
 			e = new EdgePointer(source, target, directed, index, 
 			                    new CyEdgeImpl(s, t, directed, index, edgeAttrMgr));
 
-			// adds to the root network, adding to the subnetwork is handled by that code
+			// adds to the root network, adding to the subnetwork is handled in ArraySubGraph 
 			e.insert(ROOT); 
 
 			edgePointers.add(e);
 
 			edgeCount++;
 		}
-
-        eventHelper.fireSynchronousEvent(new AddedEdgeEvent(net, e.cyEdge));
 
 		return e.cyEdge;
 	}
@@ -446,8 +438,6 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public boolean removeEdge(final CyEdge edge) {
-		// TODO which network should be firing this event? base? 
-        eventHelper.fireSynchronousEvent(new AboutToRemoveEdgeEvent(base, edge));
 
 		synchronized (this) {
 			if (!containsEdge(edge))
@@ -466,9 +456,6 @@ public class ArrayGraph implements CyRootNetwork {
 
 			edgeCount--;
 		}
-
-		// TODO which network should be firing this event? base? 
-		eventHelper.fireSynchronousEvent( new RemovedEdgeEvent(base));
 
 		return true;
 	}
@@ -840,7 +827,7 @@ public class ArrayGraph implements CyRootNetwork {
  	 */
 	public synchronized CySubNetwork addSubNetwork() {
 		final int newId = ++numSubNetworks;
-		final ArraySubGraph sub = new ArraySubGraph(this,newId);
+		final ArraySubGraph sub = new ArraySubGraph(this,newId,eventHelper);
 		subNetworks.add(sub);
 		return sub;
 	}
