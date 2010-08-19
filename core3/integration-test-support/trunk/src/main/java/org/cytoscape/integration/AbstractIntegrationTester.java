@@ -1,7 +1,7 @@
 package org.cytoscape.integration;
 
+import java.util.jar.Manifest;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.springframework.osgi.test.AbstractConfigurableBundleCreatorTests;
 import org.springframework.osgi.util.OsgiStringUtils;
@@ -16,7 +16,7 @@ import org.springframework.osgi.util.OsgiStringUtils;
  * <br>
  * Here is a simple example
  * <pre>
-package org.cytoscape.viewmodel;
+package integration;
 
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.RootVisualLexicon;
@@ -41,7 +41,10 @@ public class ITViewModelImpl extends AbstractIntegrationTester {
                new String[] { "rootVisualLexicon", "cyNetworkViewFactory" },
 
                // the classes of the beans
-               new Class[] { RootVisualLexicon.class, CyNetworkViewFactory.class }
+               new Class[] { RootVisualLexicon.class, CyNetworkViewFactory.class },
+
+               // the package names that contain all beans being tested 
+               new String[] { "org.cytoscape.view.model" }
                );
     }
 }
@@ -53,6 +56,7 @@ public class AbstractIntegrationTester extends AbstractConfigurableBundleCreator
 	private String[] dependencyBundleNames;
 	private String[] expectedBeanNames;
 	private Class[] expectedClasses;
+	private String[] importPackages;
 
 	/**
 	 * The constructor that must be used to properly configure this class so that
@@ -67,21 +71,30 @@ public class AbstractIntegrationTester extends AbstractConfigurableBundleCreator
 	 * should include all services exported by this bundle.
 	 * @param expectedClasses The Class object associated with each bean being tested. This
 	 * array should be the same length as teh expectedBeanNames array.
+	 * @param importPackages This is a list of package names that must be imported by the
+	 * built-on-the-fly integration test bundle so that all beans are seen. This means
+	 * the package containing each bean should be listed. 
 	 */
 	public AbstractIntegrationTester(String expectedBundleName,
 	                               String[] dependencyBundleNames,
 	                               String[] expectedBeanNames,
-	                               Class[] expectedClasses) {
+	                               Class[] expectedClasses,
+                                   String[] importPackages) {
 		this.expectedBundleName = expectedBundleName;
 		this.dependencyBundleNames = dependencyBundleNames;
 		this.expectedBeanNames = expectedBeanNames;
 		this.expectedClasses = expectedClasses;
+		this.importPackages = importPackages;
 	}
 
 	public void testOsgiPlatformStarts() throws Exception {
+		logger.info("INTEGRATION TEST:  testOsgiPlatformStarts");
 
 		// check bundleContext
 		assertNotNull(bundleContext);
+
+		for (Bundle bundle : bundleContext.getBundles()) 
+			logger.info("found bundle: " + OsgiStringUtils.nullSafeName(bundle));
 
 		// check that the expected bundle exists
 		for (Bundle bundle : bundleContext.getBundles()) {
@@ -94,6 +107,7 @@ public class AbstractIntegrationTester extends AbstractConfigurableBundleCreator
 	}
 
 	public void testServiceReferencesExist() {
+		logger.info("INTEGRATION TEST:  testServiceReferencesExist");
 		for ( int i = 0; i < expectedBeanNames.length; i++ )
 			checkServiceReference(expectedBeanNames[i], expectedClasses[i]);
 	}
@@ -112,5 +126,28 @@ public class AbstractIntegrationTester extends AbstractConfigurableBundleCreator
 	@Override
 	protected String[] getTestBundlesNames() {
 		return dependencyBundleNames;
+	}
+
+	/**
+	 * Provide correct import package metadata for on-the-fly bundle.
+	 */
+	@Override
+	protected Manifest getManifest() {
+		// let the testing framework create/load the manifest
+		Manifest mf = super.getManifest();
+	
+		// get original import statement
+		String original = mf.getMainAttributes().getValue("Import-Package");
+	
+		// update with new packages
+		for ( String pkg : importPackages )
+			original = original + "," + pkg;
+
+		logger.info("all import packages: " + original);
+
+		// put it back
+		mf.getMainAttributes().putValue("Import-Package", original);
+
+		return mf;
 	}
 }
