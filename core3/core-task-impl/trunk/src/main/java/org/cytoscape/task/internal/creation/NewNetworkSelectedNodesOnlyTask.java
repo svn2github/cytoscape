@@ -105,8 +105,7 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 			}
 		}
 
-		final CySubNetwork new_network = cyroot.convert(current_network)
-				.addMetaNode().getSubNetwork();
+		final CySubNetwork new_network = cyroot.convert(current_network).addSubNetwork();
 		for ( CyNode n1 : nodes )
 			new_network.addNode(n1);
 		for ( CyEdge e1 : edges )
