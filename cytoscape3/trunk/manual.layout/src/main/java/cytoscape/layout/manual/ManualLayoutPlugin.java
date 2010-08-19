@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.layout.manual;
+
 
 import cytoscape.Cytoscape;
 import cytoscape.layout.manual.control.ControlPanel;
@@ -43,15 +35,12 @@ import cytoscape.layout.manual.rotate.RotatePanel;
 import cytoscape.layout.manual.rotate.RotatePanelAction;
 import cytoscape.layout.manual.scale.ScalePanel;
 import cytoscape.layout.manual.scale.ScalePanelAction;
+import cytoscape.view.CytoPanelName;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import javax.swing.*;
 
-
-/**
- *
- */
 public class ManualLayoutPlugin implements BundleActivator {
 
 	/**
@@ -65,9 +54,9 @@ public class ManualLayoutPlugin implements BundleActivator {
 		ControlPanel controlPanel = new ControlPanel();
 
 		// add them to the cytopanel
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST).add("Rotate", rotatePanel);
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST).add("Scale", scalePanel);
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST)
+		Cytoscape.getDesktop().getCytoPanel(CytoPanelName.SOUTH_WEST).add("Rotate", rotatePanel);
+		Cytoscape.getDesktop().getCytoPanel(CytoPanelName.SOUTH_WEST).add("Scale", scalePanel);
+		Cytoscape.getDesktop().getCytoPanel(CytoPanelName.SOUTH_WEST)
 		         .add("Align and Distribute", controlPanel);
 
 		// create the actions

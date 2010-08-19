@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -31,13 +24,15 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package cytoscape.filters;
+
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.filters.view.FilterMainPanel;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoPanelName;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -47,9 +42,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Vector;
 
-/**
- * 
- */
+
 public class FilterPlugin implements BundleActivator {
 
 	private static Vector<CompositeFilter> allFilterVect = null;
@@ -102,14 +95,13 @@ public class FilterPlugin implements BundleActivator {
 
 		// initialize the filterMainPanel and add it to the control panel
 		CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop()
-		.getCytoPanel(SwingConstants.WEST);
+			.getCytoPanel(CytoPanelName.WEST);
 
 		cytoPanelWest.add("Filters", new FilterMainPanel(allFilterVect));
 	}
 
 	public void stop(BundleContext bc) {
 	}
-
 
 	/**
 	 * DOCUMENT ME!

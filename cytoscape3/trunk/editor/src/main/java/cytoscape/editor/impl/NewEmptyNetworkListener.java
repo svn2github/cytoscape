@@ -1,14 +1,7 @@
 /*
  File: NewEmptyNetworkListener.java 
 
- Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,9 +26,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package cytoscape.editor.impl;
+
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
@@ -46,6 +39,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import cytoscape.view.CytoPanelName;
+
 
 /**
  * Used to switch to the Editor cytopanel when a new empty network is created.
@@ -76,9 +71,9 @@ class NewEmptyNetworkListener implements PropertyChangeListener {
 			{
 				networksSeen.add(net);
 				if (( net.getNodeCount() <= 0 ) && (net != Cytoscape.getNullNetwork())) {									
-					int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
+					int idx = Cytoscape.getDesktop().getCytoPanel(CytoPanelName.WEST).indexOfComponent("Editor");
 					if (idx >= 0) 
-						Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(idx);
+						Cytoscape.getDesktop().getCytoPanel(CytoPanelName.WEST).setSelectedIndex(idx);
 				}			
 			}
 		}

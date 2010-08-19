@@ -1,14 +1,7 @@
 /*
   File: CytoPanelImp.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -34,13 +27,8 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-//     
-// $Id: CytoPanelImp.java 12968 2008-02-06 23:34:25Z mes $
-//------------------------------------------------------------------------------
-
-// our package
 package cytoscape.internal.view;
+
 
 import cytoscape.Cytoscape;
 
@@ -85,7 +73,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	/**
 	 * Our compass direction.
 	 */
-	private int compassDirection;
+	private CytoPanelName compassDirection;
 
 	/**
 	 * An array of CytoPanelListeners
@@ -191,22 +179,13 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * @param tabPlacement      Tab placement of this CytoPanel.
 	 * @param cytoPanelState    The starting CytoPanel state.
 	 */
-	public CytoPanelImp(int compassDirection, int tabPlacement, CytoPanelState cytoPanelState) {
+	public CytoPanelImp(final CytoPanelName compassDirection, final int tabPlacement, final CytoPanelState cytoPanelState) {
 		// setup our tabbed pane
 		tabbedPane = new JTabbedPane(tabPlacement);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedPane.addChangeListener(this);
 
-		// set our compass direction - limit to n,s,e,w
-		if ((compassDirection == SwingConstants.NORTH) || (compassDirection == SwingConstants.EAST)
-		    || (compassDirection == SwingConstants.WEST)
-		    || (compassDirection == SwingConstants.SOUTH_WEST)
-		    || (compassDirection == SwingConstants.SOUTH)) {
-			this.compassDirection = compassDirection;
-		} else {
-			throw new IllegalArgumentException("Illegal Argument:  " + compassDirection
-			                                   + ".  Must be one of:  SwingConstants.{NORTH,SOUTH,EAST,WEST,SOUTH_WEST}.");
-		}
+		this.compassDirection = compassDirection;
 
 		// init listener list
 		cytoPanelListenerList = new ArrayList<CytoPanelListener>();
@@ -237,7 +216,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * @return A title string
 	 */
 	public String getTitle() {
-		return CytoPanelName.getTitle(compassDirection);
+		return compassDirection.getTitle();
 	}
 
 	/**
@@ -717,8 +696,8 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			// re-layout
 			this.validate();
 
-			// SOUTH_WEST is used for manualLayout, it is nested in cytoPanel_1
-			if (compassDirection == SwingConstants.SOUTH_WEST) {
+			// SOUTH_WEST is used for manualLayout, it is nested in WEST
+			if (compassDirection == CytoPanelName.SOUTH_WEST) {
 				try {
 					this.getParent().getParent().validate();
 				} catch (Exception e) {
@@ -767,8 +746,8 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 			// re-layout
 			this.validate();
 
-			// SOUTH_WEST is used for manualLayout, it is nested in cytoPanel_1
-			if (compassDirection == SwingConstants.SOUTH_WEST) {
+			// SOUTH_WEST is used for manualLayout, it is nested in WEST
+			if (compassDirection == CytoPanelName.SOUTH_WEST) {
 				try {
 					this.getParent().getParent().validate();
 				} catch (Exception e) {
@@ -869,9 +848,9 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	/**
 	 * Returns the int indicating the location within the layout.
 	 *
-	 * @return The int indicating the location within the layout.
+	 * @return The CytpPanelName enum value indicating the location within the layout.
 	 */
-	public int getCompassDirection() {
+	public CytoPanelName getCompassDirection() {
 		return compassDirection;
 	}
 

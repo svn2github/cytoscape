@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -46,9 +38,7 @@ import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 import org.cytoscape.session.CyNetworkManager;
 
-/**
- *
- */
+
 public class CytoPanelAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339869395571L;
 
@@ -56,13 +46,13 @@ public class CytoPanelAction extends CytoscapeAction {
 	protected static String HIDE = "Hide";
 
 	protected String title;
-	protected int position;
+	protected CytoPanelName position;
 	private CySwingApplication desktop;
 
-	public CytoPanelAction(CytoPanelName cp, boolean show, CySwingApplication desktop, CyNetworkManager netmgr) {
-		super(show ? HIDE + " " + cp.getTitle() : SHOW + " " + cp.getTitle(),netmgr);
-		this.title = cp.getTitle();
-		this.position = cp.getCompassDirection();
+	public CytoPanelAction(final CytoPanelName position, final boolean show, final CySwingApplication desktop, final CyNetworkManager netmgr) {
+		super(show ? HIDE + " " + position.getTitle() : SHOW + " " + position.getTitle(), netmgr);
+		this.title = position.getTitle();
+		this.position = position;
 		setPreferredMenu("View");
 		this.desktop = desktop;
 	}
@@ -73,17 +63,12 @@ public class CytoPanelAction extends CytoscapeAction {
 	 * @param ev Triggering event - not used. 
 	 */
 	public void actionPerformed(ActionEvent ev) {
-	
 		CytoPanelState curState = desktop.getCytoPanel(position).getState();
 
-		if (curState == CytoPanelState.HIDE) {
+		if (curState == CytoPanelState.HIDE)
 			desktop.getCytoPanel(position).setState(CytoPanelState.DOCK);
-			//putValue(Action.NAME, HIDE + " " + title);
-
-		} else {
+		else
 			desktop.getCytoPanel(position).setState(CytoPanelState.HIDE);
-			//putValue(Action.NAME, SHOW + " " + title);
-		}
 	} 
 
 	/**

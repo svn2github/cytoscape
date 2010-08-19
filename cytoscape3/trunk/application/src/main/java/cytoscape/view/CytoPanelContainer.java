@@ -1,14 +1,7 @@
 /*
   File: CytoPanelContainer.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -34,17 +27,10 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-//     
-// $Id: CytoPanelContainer.java 9565 2007-02-13 19:36:50Z mes $
-//------------------------------------------------------------------------------
-
-// our package
 package cytoscape.view;
 
 
-// imports
-
+import cytoscape.view.CytoPanelName;
 import java.awt.*;
 
 
@@ -58,9 +44,9 @@ public interface CytoPanelContainer {
 	 * Inserts CytoPanel at Specified Compass Direction.
 	 *
 	 * @param cytoPanel        CytoPanel Object.
-	 * @param compassDirection SwingConstants integer value.
+	 * @param compassDirection CytoPanelName enum value.
 	 */
-	void insertCytoPanel(CytoPanel cytoPanel, int compassDirection);
+	void insertCytoPanel(CytoPanel cytoPanel, final CytoPanelName compassDirection);
 
 	/**
 	 * Gets Location of Container, in screen coordinates.

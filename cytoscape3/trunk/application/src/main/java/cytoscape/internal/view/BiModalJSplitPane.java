@@ -1,14 +1,7 @@
 /*
   File: BiModalJSplitPane.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -34,13 +27,8 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-//     
-// $Id: BiModalJSplitPane.java 12968 2008-02-06 23:34:25Z mes $
-//------------------------------------------------------------------------------
-
-// our package
 package cytoscape.internal.view;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,6 +36,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import cytoscape.view.CytoPanelContainer;
+import cytoscape.view.CytoPanelName;
 import cytoscape.view.CytoPanelState;
 import cytoscape.view.CytoPanel;
 
@@ -143,48 +132,35 @@ public class BiModalJSplitPane extends JSplitPane implements CytoPanelContainer 
 	 * Inserts CytoPanel at desired compass direction.
 	 *
 	 * @param cytoPanel        CytoPanel reference.
-	 * @param compassDirection SwingConstants integer value.
+	 * @param compassDirection CytoPanelName enum value
 	 */
-	public void insertCytoPanel(CytoPanel cytoPanel, int compassDirection) {
+	public void insertCytoPanel(final CytoPanel cytoPanel, final CytoPanelName compassDirection) {
 		boolean success = false;
 
 		switch (compassDirection) {
-			case SwingConstants.NORTH:
-				this.setTopComponent(cytoPanel.getThisComponent());
-				success = true;
-
-				break;
-
-			case SwingConstants.SOUTH:
-				this.setBottomComponent(cytoPanel.getThisComponent());
-				success = true;
-
-				break;
-
-			case SwingConstants.EAST:
-				this.setRightComponent(cytoPanel.getThisComponent());
-				success = true;
-
-				break;
-
-			case SwingConstants.WEST:
-				this.setLeftComponent(cytoPanel.getThisComponent());
-				success = true;
-
-				break;
-
-			case SwingConstants.SOUTH_WEST:
-				this.setBottomComponent(cytoPanel.getThisComponent());
-				success = true;
-
-				break;
+		case SOUTH:
+			this.setBottomComponent(cytoPanel.getThisComponent());
+			success = true;
+			break;
+		case EAST:
+			this.setRightComponent(cytoPanel.getThisComponent());
+			success = true;
+			break;
+		case WEST:
+			this.setLeftComponent(cytoPanel.getThisComponent());
+			success = true;
+			break;
+		case SOUTH_WEST:
+			this.setBottomComponent(cytoPanel.getThisComponent());
+			success = true;
+			break;
 		}
 
 		// houston we have a problem
 		if (!success) {
 			// made it here, houston, we have a problem
 			throw new IllegalArgumentException("Illegal Argument:  " + compassDirection
-			                                   + ".  Must be one of:  SwingConstants.{NORTH,SOUTH,EAST,WEST.");
+			                                   + ".  Must be one of:  CytoPanelName.{SOUTH,EAST,WEST,SOUTH_WEST}.");
 		}
 
 		// hack to set divider size back to what it should be

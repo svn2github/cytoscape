@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,7 +25,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.layout.manual.common;
 
 
@@ -43,6 +34,7 @@ import cytoscape.view.cytopanels.BiModalJSplitPane;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.view.CytoPanelName;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -51,25 +43,25 @@ import java.awt.event.ActionEvent;
 
 
 /**
- * Base class for displaying cytopanel menu items. 
+ * Base class for displaying CytoPanel menu items. 
  */
 public abstract class AbstractManualLayoutAction extends CytoscapeAction implements CytoPanelListener {
 
 	// set up the cytopanel
-    static protected CytoPanelImp cytoPanel1;
-    static protected CytoPanelImp manualLayoutPanel;
-    static protected BiModalJSplitPane split;
+	static protected CytoPanelImp cytoPanel1;
+	static protected CytoPanelImp manualLayoutPanel;
+	static protected BiModalJSplitPane split;
 	static {
-        cytoPanel1 = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
-        manualLayoutPanel = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH_WEST);
-        split = new BiModalJSplitPane(Cytoscape.getDesktop(), JSplitPane.VERTICAL_SPLIT,
-                                                      BiModalJSplitPane.MODE_HIDE_SPLIT, new JPanel(),
-                                                    manualLayoutPanel);
-        split.setResizeWeight(0);
-        manualLayoutPanel.setCytoPanelContainer(split);
-        manualLayoutPanel.setMinimumSize(new Dimension(180, 230));
-        manualLayoutPanel.setMaximumSize(new Dimension(180, 230));
-        manualLayoutPanel.setPreferredSize(new Dimension(180, 230));
+		cytoPanel1 = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(CytoPanelName.WEST);
+		manualLayoutPanel = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(CytoPanelName.SOUTH_WEST);
+		split = new BiModalJSplitPane(Cytoscape.getDesktop(), JSplitPane.VERTICAL_SPLIT,
+					      BiModalJSplitPane.MODE_HIDE_SPLIT, new JPanel(),
+					      manualLayoutPanel);
+		split.setResizeWeight(0);
+		manualLayoutPanel.setCytoPanelContainer(split);
+		manualLayoutPanel.setMinimumSize(new Dimension(180, 230));
+		manualLayoutPanel.setMaximumSize(new Dimension(180, 230));
+		manualLayoutPanel.setPreferredSize(new Dimension(180, 230));
 	}
 	private static int selectedIndex = -1;
 
@@ -107,12 +99,12 @@ public abstract class AbstractManualLayoutAction extends CytoscapeAction impleme
 
 			cytoPanel1.addComponentToSouth(split);
 
-		// Case 2: Panel is in the DOCK/FLOAT and a different panel is selected
+			// Case 2: Panel is in the DOCK/FLOAT and a different panel is selected
 		} else if ( manualLayoutPanel.getSelectedIndex() != menuIndex ) {
 			manualLayoutPanel.setSelectedIndex(menuIndex);
 			selectedIndex = menuIndex;
 
-		// Case 3: The currently selected item is selected 
+			// Case 3: The currently selected item is selected 
 		} else { 
 			manualLayoutPanel.setState(CytoPanelState.HIDE);
 			selectedIndex = -1;
@@ -148,7 +140,7 @@ public abstract class AbstractManualLayoutAction extends CytoscapeAction impleme
 		selectedIndex = componentIndex;
 	}
 
-    public void onStateChange(CytoPanelState newState) {}
+	public void onStateChange(CytoPanelState newState) {}
 	public void onComponentAdded(int count) {}
 	public void onComponentRemoved(int count) {}
 }

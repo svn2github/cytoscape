@@ -37,12 +37,10 @@
 package cytoscape.view;
 
 
+import cytoscape.view.CytoPanelName;
 import javax.swing.JFrame;
 
 
-/**
- *
-  */
 public interface CySwingApplication {
 	/**
 	 *
@@ -79,11 +77,11 @@ public interface CySwingApplication {
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param compassDirection DOCUMENT ME!
+	 * @param compassDirection  one of the enum values of CytoPanelName
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return the CytoPanel corresponding to "compassDirection"
 	 */
-	CytoPanel getCytoPanel(int compassDirection);
+	CytoPanel getCytoPanel(CytoPanelName compassDirection);
 
 	/**
 	 *  DOCUMENT ME!
@@ -91,5 +89,4 @@ public interface CySwingApplication {
 	 * @return  DOCUMENT ME!
 	 */
 	JFrame getJFrame();
-
 }

@@ -1,4 +1,4 @@
-/* -*-Java-*-
+/*
 ********************************************************************************
 *
 * File:         CytoscapeEditorManagerSupport.java
@@ -6,40 +6,13 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Sat Jul 30 17:00:27 2005
-* Modified:     Mon Aug 18 15:00:02 2008 (Michael L. Creech) creech@w235krbza760
+* Modified:     Aug. 19th, 2010 Johannes Ruscheinski
 * Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
 *
 * (c) Copyright 2006, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
-*
-* Revisions:
-*
-* Wed Jul 09 08:34:53 2008 (Michael L. Creech) creech@w235krbza760
-*  Migrated isEditorInOperation() to CytoscapeEditorManager and changed
-*  references.
-* Tue Oct 30 10:58:16 2007 (Michael L. Creech) creech@w235krbza760
-*  Fixed bug in propertyChange() for NETWORK_VIEW_FOCUSED where
-*  palette was being redrawn when the Editor tab wasn't
-*  selected. Added isEditorInOperation().  Changed
-*  updateEditorPalette() to be private.
-* Thu Oct 25 05:42:55 2007 (Michael L. Creech) creech@w235krbza760
-*  Changed onComponentSelected() to not generate a bogus GraphView
-*  but the desired GraphView.
-* Wed May 09 13:59:45 2007 (Michael L. Creech) creech@w235krbza760
-*  Removed several unneeded imports.
-* Wed Dec 27 09:04:18 2006 (Michael L. Creech) creech@w235krbza760
-*  Added getDeleteAction() and parameter to constructor.
-* Sun Aug 06 11:14:28 2006 (Michael L. Creech) creech@w235krbza760
-*  Fixed updateEditorPalette() to not assume visualStyleName is the
-*  same as Editor name.
-* Sat Aug 05 17:01:38 2006 (Michael L. Creech) creech@w235krbza760
-*  Added some comments.
-********************************************************************************
 */
 package cytoscape.editor.impl;
+
 
 import cytoscape.Cytoscape;
 import cytoscape.editor.CytoscapeEditor;
@@ -53,6 +26,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.GraphPerspectiveChangeEvent;
 import org.cytoscape.model.GraphPerspectiveChangeListener;
 import org.cytoscape.view.GraphView;
+import cytoscape.view.CytoPanelName;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 
@@ -94,7 +68,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
 		Cytoscape.getVisualMappingManager().addChangeListener(this);
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).addCytoPanelListener(this);
+		Cytoscape.getDesktop().getCytoPanel(CytoPanelName.WEST).addCytoPanelListener(this);
 
 		new NewEmptyNetworkListener();
 	}
@@ -125,8 +99,8 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 		if (!CytoscapeEditorManager.isEditorInOperation ()) {
 		    return;
 		}
-		//		int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
-		//		if (idx != Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedIndex()) {
+		//		int idx = Cytoscape.getDesktop().getCytoPanel(CytoPanelName.WEST).indexOfComponent("Editor");
+		//		if (idx != Cytoscape.getDesktop().getCytoPanel(CytoPanelName.WEST).getSelectedIndex()) {
 		//			return;
 		// }
 		VisualMappingManager VMM = (VisualMappingManager) e.getSource();
@@ -136,13 +110,13 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 		}
 	}
 
-    private boolean isEditorInOperation (int tabIdx) {
-	int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
-	return (idx == tabIdx);
-    }
-    private boolean isEditorInOperation () {
-	return isEditorInOperation (Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedIndex());
-    }
+	private boolean isEditorInOperation (int tabIdx) {
+		int idx = Cytoscape.getDesktop().getCytoPanel(CytoPanelName.WEST).indexOfComponent("Editor");
+		return (idx == tabIdx);
+	}
+	private boolean isEditorInOperation () {
+		return isEditorInOperation (Cytoscape.getDesktop().getCytoPanel(CytoPanelName.WEST).getSelectedIndex());
+	}
 
 	/**
 	 * respond to selection of a CytoPanels component, in particular respond to

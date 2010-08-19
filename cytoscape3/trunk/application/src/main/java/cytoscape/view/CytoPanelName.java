@@ -1,15 +1,7 @@
-
 /*
   File: CytoPanelName.java
 
-  Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -35,43 +27,26 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-
 package cytoscape.view;
 
-import javax.swing.*;
 
 /** 
  * An enum that maps names to compass directions.
  */
 public enum CytoPanelName {
-	NORTH("Top Panel",SwingConstants.NORTH),
-	SOUTH("Data Panel",SwingConstants.SOUTH),
-	EAST("Results Panel",SwingConstants.EAST),
-	WEST("Control Panel",SwingConstants.WEST),
-	SOUTH_WEST("Tool Panel",SwingConstants.SOUTH_WEST),
+	SOUTH("Data Panel"),
+	EAST("Results Panel"),
+	WEST("Control Panel"),
+	SOUTH_WEST("Tool Panel"),
 	;
 
-	private String title;
-	private int compassDirection;
+	private final String title;
 
-	private CytoPanelName(String title, int compassDirection) {
+	private CytoPanelName(final String title) {
 		this.title = title;
-		this.compassDirection = compassDirection;
 	}
 
 	public String getTitle() {
 		return title;
-	}
-
-	public int getCompassDirection() {
-		return compassDirection;
-	}
-
-	public static String getTitle(int dir) {
-		for (CytoPanelName cpn : values()) 
-			if ( dir == cpn.getCompassDirection() )
-				return cpn.getTitle();
-		return null;
 	}
 }

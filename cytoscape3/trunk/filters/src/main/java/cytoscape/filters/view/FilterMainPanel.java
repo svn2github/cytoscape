@@ -1,5 +1,6 @@
 package cytoscape.filters.view;
 
+
 import cytoscape.Cytoscape;
 import cytoscape.filters.AdvancedSetting;
 import cytoscape.filters.CompositeFilter;
@@ -10,6 +11,7 @@ import cytoscape.filters.NodeInteractionFilter;
 import cytoscape.filters.TopologyFilter;
 import cytoscape.filters.util.FilterUtil;
 import org.cytoscape.util.swing.DropDownMenuButton;
+import cytoscape.view.CytoPanelName;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelListener;
@@ -73,7 +75,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private static final ImageIcon duplicateIcon = new ImageIcon(
 			FilterMainPanel.class.getResource("/images/ximian/stock_slide-duplicate.png"));
 
-	private CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+	private CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(CytoPanelName.WEST);
 
 	public FilterMainPanel(Vector<CompositeFilter> pAllFilterVect) {
 		allFilterVect = pAllFilterVect;

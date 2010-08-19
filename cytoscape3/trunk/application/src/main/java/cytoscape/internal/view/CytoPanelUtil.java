@@ -1,14 +1,7 @@
 /*
   File: CytoPanelUtil.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -34,13 +27,10 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-//     
-// $Id: CytoPanelUtil.java 9565 2007-02-13 19:36:50Z mes $
-//------------------------------------------------------------------------------
-
-// our package
 package cytoscape.internal.view;
+
+
+import cytoscape.view.CytoPanelName;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,11 +65,11 @@ public class CytoPanelUtil {
 	 */
 	public static Point getLocationOfExternalFrame(Dimension screenDimension,
 	                                               Rectangle containerBounds,
-	                                               Dimension frameDimension, int compassDirection,
-	                                               boolean outputDiagnostics) {
-		if (outputDiagnostics) {
+	                                               Dimension frameDimension, final CytoPanelName compassDirection,
+	                                               boolean outputDiagnostics)
+	{
+		if (outputDiagnostics)
 			outputDiagnostics(screenDimension, containerBounds, frameDimension, compassDirection);
-		}
 
 		//  Get Location and Dimension of Container
 		Point containerLocation = containerBounds.getLocation();
@@ -94,11 +84,11 @@ public class CytoPanelUtil {
 		Point p = new Point(containerLocation.x, containerLocation.y);
 
 		//  Set Point Based on Compass Direction
-		if (compassDirection == SwingConstants.WEST) {
+		if (compassDirection == CytoPanelName.WEST) {
 			p.x = containerLocation.x - INSET - (int) frameDimension.getWidth();
-		} else if (compassDirection == SwingConstants.EAST) {
+		} else if (compassDirection == CytoPanelName.EAST) {
 			p.x = containerLocation.x + INSET + (int) containerWidth;
-		} else if (compassDirection == SwingConstants.SOUTH) {
+		} else if (compassDirection == CytoPanelName.SOUTH) {
 			p.y = containerLocation.y + INSET + (int) containerHeight;
 		}
 
@@ -132,7 +122,8 @@ public class CytoPanelUtil {
 	 * Outputs Diagnostics Related to Screen/Frame Dimensions.
 	 */
 	private static void outputDiagnostics(Dimension screenDimension, Rectangle containerBounds,
-	                                      Dimension preferredSizeOfPanel, int compassDirection) {
+	                                      Dimension preferredSizeOfPanel, final CytoPanelName compassDirection)
+	{
 		System.err.println("Compass Direction:  " + compassDirection);
 		System.err.println("Screen Dimension:  " + screenDimension);
 		System.err.println("Container Bounds:  " + containerBounds.toString());
