@@ -397,7 +397,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		//m_perspective.getEdgeCyDataTables().put("VIEW", edgeCAM);
 
 		// creating empty subnetworks
-		m_drawPersp = cyRoot.convert(networkModel).addMetaNode().getSubNetwork();
+		m_drawPersp = cyRoot.convert(networkModel).addSubNetwork();
 
 		m_spacial = spacialFactory.createSpacialIndex2D();
 		m_spacialA = spacialFactory.createSpacialIndex2D();
