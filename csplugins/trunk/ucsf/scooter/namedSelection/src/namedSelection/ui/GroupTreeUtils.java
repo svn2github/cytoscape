@@ -79,6 +79,9 @@ public class GroupTreeUtils {
 	 */
 	public static void handlePromotion(GroupTree navTree, DefaultMutableTreeNode groupTreeNode, 
 	                            TreePath path, boolean selected) {
+		if (!(groupTreeNode.getUserObject() instanceof CyGroup))
+			return;
+
 		CyGroup group = (CyGroup) groupTreeNode.getUserObject();
 		// Now, see if we need to promote (or demote) the selection
 		if (checkForPromotion(navTree, groupTreeNode, selected)) {

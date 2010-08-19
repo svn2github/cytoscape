@@ -135,6 +135,7 @@ public class GroupTreeModel extends DefaultTreeModel {
 			if (nodeMap.containsKey((CyNode)node)) {
 				List<TreePath> pathList = nodeMap.get((CyNode)node);
 				for (TreePath path: pathList) {
+					// System.out.println("Selecting path: "+path);
 					GroupTreeUtils.selectTreeNode(navTree, path, select);
 				}
 			}
@@ -201,6 +202,17 @@ public class GroupTreeModel extends DefaultTreeModel {
 		maxDepth = 1;
 
 		for (CyGroupViewer viewer: viewerList) {
+			DefaultMutableTreeNode viewerNode = rootNode;
+			TreePath viewerPath = rootPath;
+			int depth = 2;
+
+			if (viewerList.size() > 1) {
+				// Add our viewer as a node in the tree
+				viewerNode = new DefaultMutableTreeNode(viewer.getViewerName()+"s");
+				rootNode.add(viewerNode);
+				viewerPath = rootPath.pathByAddingChild(viewerNode);
+				depth = 3;
+			}
 
 			List<CyGroup> groupList = CyGroupManager.getGroupList(viewer);
 			if (groupList == null || groupList.size() == 0) {
@@ -213,7 +225,7 @@ public class GroupTreeModel extends DefaultTreeModel {
 			for (CyNetwork network: (List<CyNetwork>)GroupTreeUtils.sortNetworkList(netList)) {
 				// System.out.println("Adding network: "+network.getTitle());
 				List<CyGroup> netGroupList = groupMap.get(network);
-				rootNode.add(addNetworkToTree(network, netGroupList, viewer, rootNode, rootPath, 2));
+				viewerNode.add(addNetworkToTree(network, netGroupList, viewer, viewerNode, viewerPath, depth));
 			}
 		}
 		return rootNode;

@@ -63,6 +63,7 @@ import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
 
 // our imports
+import namedSelection.commands.NamedSelectionCommandHandler;
 import namedSelection.ui.GroupPanel;
 import namedSelection.ui.NamedSelectionMenuListener;
 
@@ -130,6 +131,9 @@ public class NamedSelection extends CytoscapePlugin
 		groupViewer = new NamedSelectionGroupViewer(groupPanel, myLogger);
 		CyGroupManager.registerGroupViewer(groupViewer);
 		groupPanel.addViewer(groupViewer);
+
+		// Finally, register our commands (which are pretty sparse...)
+		new NamedSelectionCommandHandler("namedselection", myLogger, groupPanel);
 
 		myLogger.info("namedSelectionPlugin "+VERSION+" initialized");
 	}
