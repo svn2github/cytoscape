@@ -101,6 +101,7 @@ public class AbstractIntegrationTester extends AbstractConfigurableBundleCreator
 	private void checkServiceReference(String expectedBeanName, Class<?> serviceClass) {
 		final ServiceReference ref = bundleContext.getServiceReference(serviceClass.getName());
 		assertNotNull(ref);
+		System.out.println("############ Got OSGi Service: " + ref.toString());
 		Object beanName = ref.getProperty("org.springframework.osgi.bean.name");
 		assertEquals(expectedBeanName, beanName);
 	}
