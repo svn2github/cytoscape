@@ -52,6 +52,8 @@ class AbstractEdgeListEvent extends AbstractCyEvent<CyNetwork> {
 
 	AbstractEdgeListEvent(final CyNetwork source, final Class listenerClass, final List<CyEdge> edges) {
 		super(source, listenerClass);
+		if ( edges == null )
+			throw new NullPointerException("edge list can't be null");
 		this.edges = edges;
 	}
 

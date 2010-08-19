@@ -52,6 +52,8 @@ class AbstractNodeListEvent extends AbstractCyEvent<CyNetwork> {
 
 	AbstractNodeListEvent(final CyNetwork source, final Class listenerClass, final List<CyNode> nodes) {
 		super(source, listenerClass);
+		if ( nodes == null )
+			throw new NullPointerException("node list can't be null");
 		this.nodes = nodes;
 	}
 

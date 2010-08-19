@@ -51,6 +51,8 @@ class AbstractEdgeEvent extends AbstractCyEvent<CyNetwork> {
 
 	AbstractEdgeEvent(final CyNetwork source, final Class listenerClass, final CyEdge edge) {
 		super(source, listenerClass);
+		if ( edge == null )
+			throw new NullPointerException("edge cannot be null");
 		this.edge = edge;
 	}
 

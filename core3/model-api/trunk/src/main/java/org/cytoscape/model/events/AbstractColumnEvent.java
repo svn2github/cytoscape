@@ -53,6 +53,8 @@ class AbstractColumnEvent extends AbstractCyEvent<CyDataTable> {
 
 	AbstractColumnEvent(final CyDataTable source, final Class listenerClass, final String columnName) {
 		super(source, listenerClass);
+		if ( columnName == null )
+			throw new NullPointerException("columnName can't be null");
 		this.columnName = columnName;
 	}
 	/**
