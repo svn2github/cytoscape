@@ -40,26 +40,21 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.subnetwork.CyMetaNode;
-import org.cytoscape.model.subnetwork.CySubNetwork;
 
 import java.util.List;
 import java.util.Map;
 
 
-class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
+class CyNodeImpl extends GraphObjImpl implements CyNode {
 	final private int index;
 	final private CyNetwork net;
 
-	private CySubNetwork subNet;
-
 	private CyNetwork nestedNet;
 
-	CyNodeImpl(CyNetwork n, int ind, Map<String, CyDataTable> attrMgr, CySubNetwork sub) {
+	CyNodeImpl(CyNetwork n, int ind, Map<String, CyDataTable> attrMgr) {
 		super(attrMgr);
 		net = n;
 		index = ind;
-		subNet = sub;
 		nestedNet = null;
 	}
 
@@ -116,19 +111,15 @@ class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
 		return net.getConnectingEdgeList(this, target, edgeType);
 	}
 
-	public synchronized CySubNetwork getSubNetwork() {
-		return subNet;
-	}
-
-	synchronized void setSubNetwork(CySubNetwork s) {
-		subNet = s;
-	}
-
 	public synchronized CyNetwork getNestedNetwork() {
 		return nestedNet;
 	}
 
 	public synchronized void setNestedNetwork(CyNetwork n) {
 		nestedNet = n;
+	}
+
+	public CyNetwork getNetwork() {
+		return net;
 	}
 }

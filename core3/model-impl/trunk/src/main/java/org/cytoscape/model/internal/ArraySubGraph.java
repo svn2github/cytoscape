@@ -338,4 +338,30 @@ class ArraySubGraph implements CySubNetwork {
 
 		return true;
 	}
+
+    /**
+     * Tests object for equality with this object.
+     * @param o The object to test for equality.
+     * @return True if the object is an ArrayGraph and the SUID matches, false otherwise.
+     */
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof ArraySubGraph))
+            return false;
+
+        final ArraySubGraph ag = (ArraySubGraph) o;
+
+        return ag.internalSUID == this.internalSUID;
+    }
+
+    /**
+     * Returns a hashcode for this object. 
+     * @return A mangled version of the SUID. 
+     */
+    @Override
+    public int hashCode() {
+        return (int) (internalSUID ^ (internalSUID >>> 32));
+    }
+
+
 }

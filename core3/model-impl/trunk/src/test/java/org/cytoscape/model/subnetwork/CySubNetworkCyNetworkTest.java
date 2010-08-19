@@ -57,7 +57,7 @@ public class CySubNetworkCyNetworkTest extends AbstractCyNetworkTest {
 		CyNode n1 = root.addNode();
 //		List<CyNode> list = new ArrayList<CyNode>(1);
 //		list.add(n1);
-		CySubNetwork s1 = root.addMetaNode().getSubNetwork();
+		CySubNetwork s1 = root.addSubNetwork();
 		s1.addNode(n1);
 		
 		net = s1;

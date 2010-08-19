@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyDataTable;
@@ -56,7 +57,6 @@ import org.cytoscape.model.events.AddedEdgeEvent;
 import org.cytoscape.model.events.AddedNodeEvent;
 import org.cytoscape.model.events.RemovedEdgeEvent;
 import org.cytoscape.model.events.RemovedNodeEvent;
-import org.cytoscape.model.subnetwork.CyMetaNode;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 
@@ -97,9 +97,8 @@ public class ArrayGraph implements CyRootNetwork {
 	private final Map<String, CyDataTable> nodeAttrMgr;
 	private final Map<String, CyDataTable> edgeAttrMgr;
 	private final CyEventHelper eventHelper;
-	private final List<CySubNetwork> subNets;
-	private final List<CyMetaNode> metaNodes;
-	private CySubNetwork base;
+	private final List<CySubNetwork> subNetworks;
+	private final CySubNetwork base;
 
 	private CyTableManager tableMgr;
 	
@@ -143,8 +142,7 @@ public class ArrayGraph implements CyRootNetwork {
 		
 		eventHelper = eh;
 
-		subNets = new ArrayList<CySubNetwork>();
-		metaNodes = new ArrayList<CyMetaNode>();
+		subNetworks = new ArrayList<CySubNetwork>();
 
 		base = addSubNetwork(); 
 
@@ -346,13 +344,13 @@ public class ArrayGraph implements CyRootNetwork {
 		return nodeAdd(null);
 	}
 
-	CyMetaNode nodeAdd(final CySubNetwork sub) {
+	CyNode nodeAdd(final CySubNetwork sub) {
 		final NodePointer n;
 
 		//System.out.println("nodeAdd");
 		synchronized (this) {
 			final int index = nodePointers.size();
-			n = new NodePointer(index, new CyNodeImpl(this, index, nodeAttrMgr, sub));
+			n = new NodePointer(index, new CyNodeImpl(this, index, nodeAttrMgr));
 			nodePointers.add(n);
 			nodeCount++;
 			firstNode = n.insert(firstNode,ROOT);
@@ -380,7 +378,7 @@ public class ArrayGraph implements CyRootNetwork {
 
 			// clean up subnetwork pointers
 			// this will remove the node from base	
-			for ( CySubNetwork sub : subNets )
+			for ( CySubNetwork sub : subNetworks )
 				sub.removeNode(n);
 
 			// remove adjacent edges from ROOT network
@@ -457,7 +455,7 @@ public class ArrayGraph implements CyRootNetwork {
 
 			// clean up subnetwork pointers
 			// this will remove the edge from base	
-			for ( CySubNetwork sub : subNets )
+			for ( CySubNetwork sub : subNetworks )
 				sub.removeEdge(edge);
 
 			final EdgePointer e = getEdgePointer(edge);
@@ -837,65 +835,44 @@ public class ArrayGraph implements CyRootNetwork {
 		return (int) (suid ^ (suid >>> 32));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	private CySubNetwork addSubNetwork() {
+ 	/**
+ 	 * {@inheritDoc}
+ 	 */
+	public synchronized CySubNetwork addSubNetwork() {
 		final int newId = ++numSubNetworks;
 		final ArraySubGraph sub = new ArraySubGraph(this,newId);
-		subNets.add(sub);
+		subNetworks.add(sub);
 		return sub;
 	}
+
 
 	/**
 	 * {@inheritDoc}
 	 */
-	private void removeSubNetwork(final CySubNetwork sub) {
-		assert(sub!=null);
-		assert(!sub.equals(base));
-		assert(subNets.contains(sub));
+	public synchronized void removeSubNetwork(final CySubNetwork sub) {
+		if ( sub == null )
+			return;
+
+		if ( sub.equals(base) )
+			throw new IllegalArgumentException("Can't remove base network from RootNetwork");
+
+		if ( !subNetworks.contains(sub) )
+			throw new IllegalArgumentException("Subnetwork not a member of this RootNetwork " + sub);
 
 		// clean up pointers for nodes in subnetwork
 		final List<CyNode> subNodes = sub.getNodeList();
 		for ( CyNode node : subNodes )
 			sub.removeNode(node);
 
-		subNets.remove( sub );
+		subNetworks.remove( sub );
 	}
+
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public CyMetaNode addMetaNode() {
-
-		//System.out.println("meta nodeAdd sub");
-		final CyMetaNode newNode = nodeAdd( addSubNetwork() );
-
-		metaNodes.add(newNode);
-
-		return newNode; 
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void removeMetaNode(final CyMetaNode n) {
-		if (!containsNode(n))
-			// TODO is this really the best behavior?  Should we throw an exception instead?
-			return;
-
-		removeSubNetwork( n.getSubNetwork() );
-
-		metaNodes.remove(n);
-
-		removeNode(n);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<CyMetaNode> getMetaNodeList() {
-		return new ArrayList<CyMetaNode>(metaNodes);
+	public List<CySubNetwork> getSubNetworkList() {
+		return Collections.synchronizedList(subNetworks);
 	}
 
 	/**
@@ -904,24 +881,4 @@ public class ArrayGraph implements CyRootNetwork {
 	public CySubNetwork getBaseNetwork() {
 		return base;
 	}
-
-	public CyMetaNode convert(CyNode n) {
-		if ( n == null )
-			throw new NullPointerException("node to convert is null");
-
-		if ( !containsNode(n) )
-			throw new IllegalArgumentException("network does not contains this node");
-
-		if ( !(n instanceof CyNodeImpl) ) 
-			throw new IllegalArgumentException("unrecognized node");
-		
-		CyNodeImpl ni = (CyNodeImpl)n;
-		if ( ni.getSubNetwork() == null ) {
-			ni.setSubNetwork( addSubNetwork() );
-			metaNodes.add(ni);
-		}
-
-		return ni;
-	}
-
 }

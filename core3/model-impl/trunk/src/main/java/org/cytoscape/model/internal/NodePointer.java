@@ -36,14 +36,14 @@
 package org.cytoscape.model.internal;
 
 
-import org.cytoscape.model.subnetwork.CyMetaNode;
+import org.cytoscape.model.CyNode;
 
 /**
  * Element of the edge linked list used in {@link ArrayGraph}.
  * You should only touch this if you know what you're doing.
  */
 class NodePointer {
-	final CyMetaNode cyNode;
+	final CyNode cyNode;
 	final int index;
 	NodePointer[] nextNode = new NodePointer[1];
 	NodePointer[] prevNode = new NodePointer[1];
@@ -62,7 +62,7 @@ class NodePointer {
 	// The number of directed self-edges on this node.
 	int[] selfEdges = new int[1];
 
-	NodePointer(final int nodeIndex, final CyMetaNode cyn) {
+	NodePointer(final int nodeIndex, final CyNode cyn) {
 		index = nodeIndex;
 		cyNode = cyn; 
 
