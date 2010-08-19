@@ -46,23 +46,36 @@ import org.cytoscape.model.CyNode;
 
 import static org.mockito.Mockito.*;
 
+import java.util.List;
+import java.util.ArrayList;
+
+
 /**
  * DOCUMENT ME!
  */
-public class AddedNodeEventTest extends TestCase {
+public class UnselectedNodesEventTest extends TestCase {
 
-	AddedNodeEvent event;
-	CyNode node;
+	UnselectedNodesEvent event;
+	CyNode node1;
+	CyNode node2;
+	CyNode node3;
+	List<CyNode> nodes;
 	CyNetwork net;
 
 	public void setUp() {
-		node = mock(CyNode.class); 
+		node1 = mock(CyNode.class); 
+		node2 = mock(CyNode.class); 
+		node3 = mock(CyNode.class); 
+		nodes = new ArrayList<CyNode>();
+		nodes.add(node1);
+		nodes.add(node2);
+		nodes.add(node3);
 		net = mock(CyNetwork.class); 
-		event = new AddedNodeEvent(net,node);
+		event = new UnselectedNodesEvent(net,nodes);
 	}
 
-	public void testGetNode() {
-		assertEquals( event.getNode(), node );
+	public void testGetNodeList() {
+		assertEquals( event.getNodeList(), nodes );
 	}
 
 	public void testGetSource() {
@@ -70,12 +83,12 @@ public class AddedNodeEventTest extends TestCase {
 	}
 
 	public void testGetListenerClass() {
-		assertEquals( event.getListenerClass(), AddedNodeListener.class );
+		assertEquals( event.getListenerClass(), UnselectedNodesListener.class );
 	}
 
-	public void testNullNode() {
+	public void testNullNodeList() {
 		try {
-			AddedNodeEvent ev = new AddedNodeEvent(net, null);
+			UnselectedNodesEvent ev = new UnselectedNodesEvent(net, null);
 		} catch (NullPointerException npe) {
 			return;
 		}
@@ -84,10 +97,18 @@ public class AddedNodeEventTest extends TestCase {
 
 	public void testNullNetwork() {
 		try {
-			AddedNodeEvent ev = new AddedNodeEvent(null, node);
+			UnselectedNodesEvent ev = new UnselectedNodesEvent(null, nodes);
 		} catch (NullPointerException npe) {
 			return;
 		}
 		fail("didn't catch expected npe for network");
+	}
+
+	public void testAllowEmptyList() {
+		try {
+			UnselectedNodesEvent ev = new UnselectedNodesEvent(net, new ArrayList<CyNode>());
+		} catch (NullPointerException npe) {
+			fail("empty list should be allowed");
+		}
 	}
 }

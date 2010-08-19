@@ -41,53 +41,51 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyDataTable;
 
 import static org.mockito.Mockito.*;
 
 /**
  * DOCUMENT ME!
  */
-public class AddedNodeEventTest extends TestCase {
+public class ColumnDeletedEventTest extends TestCase {
 
-	AddedNodeEvent event;
-	CyNode node;
-	CyNetwork net;
+	ColumnDeletedEvent event;
+	CyDataTable table;
+	final String columnName = "asdf";
 
 	public void setUp() {
-		node = mock(CyNode.class); 
-		net = mock(CyNetwork.class); 
-		event = new AddedNodeEvent(net,node);
+		table = mock(CyDataTable.class); 
+		event = new ColumnDeletedEvent(table,columnName);
 	}
 
-	public void testGetNode() {
-		assertEquals( event.getNode(), node );
+	public void testGetColumnName() {
+		assertEquals( event.getColumnName(), columnName );
 	}
 
 	public void testGetSource() {
-		assertEquals( event.getSource(), net );
+		assertEquals( event.getSource(), table );
 	}
 
 	public void testGetListenerClass() {
-		assertEquals( event.getListenerClass(), AddedNodeListener.class );
+		assertEquals( event.getListenerClass(), ColumnDeletedListener.class );
 	}
 
-	public void testNullNode() {
+	public void testNullColumn() {
 		try {
-			AddedNodeEvent ev = new AddedNodeEvent(net, null);
+			ColumnDeletedEvent ev = new ColumnDeletedEvent(table, null);
 		} catch (NullPointerException npe) {
 			return;
 		}
-		fail("didn't catch expected npe for node");
+		fail("didn't catch expected npe for column");
 	}
 
-	public void testNullNetwork() {
+	public void testNullTable() {
 		try {
-			AddedNodeEvent ev = new AddedNodeEvent(null, node);
+			ColumnDeletedEvent ev = new ColumnDeletedEvent(null, columnName);
 		} catch (NullPointerException npe) {
 			return;
 		}
-		fail("didn't catch expected npe for network");
+		fail("didn't catch expected npe for table");
 	}
 }

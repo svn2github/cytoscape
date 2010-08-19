@@ -42,27 +42,27 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
 
 import static org.mockito.Mockito.*;
 
 /**
  * DOCUMENT ME!
  */
-public class AddedNodeEventTest extends TestCase {
+public class AddedEdgeEventTest extends TestCase {
 
-	AddedNodeEvent event;
-	CyNode node;
+	AddedEdgeEvent event;
+	CyEdge edge;
 	CyNetwork net;
 
 	public void setUp() {
-		node = mock(CyNode.class); 
+		edge = mock(CyEdge.class); 
 		net = mock(CyNetwork.class); 
-		event = new AddedNodeEvent(net,node);
+		event = new AddedEdgeEvent(net,edge);
 	}
 
-	public void testGetNode() {
-		assertEquals( event.getNode(), node );
+	public void testGetEdge() {
+		assertEquals( event.getEdge(), edge );
 	}
 
 	public void testGetSource() {
@@ -70,21 +70,21 @@ public class AddedNodeEventTest extends TestCase {
 	}
 
 	public void testGetListenerClass() {
-		assertEquals( event.getListenerClass(), AddedNodeListener.class );
+		assertEquals( event.getListenerClass(), AddedEdgeListener.class );
 	}
 
-	public void testNullNode() {
+	public void testNullEdge() {
 		try {
-			AddedNodeEvent ev = new AddedNodeEvent(net, null);
+			AddedEdgeEvent ev = new AddedEdgeEvent(net, null);
 		} catch (NullPointerException npe) {
 			return;
 		}
-		fail("didn't catch expected npe for node");
+		fail("didn't catch expected npe for edge");
 	}
 
 	public void testNullNetwork() {
 		try {
-			AddedNodeEvent ev = new AddedNodeEvent(null, node);
+			AddedEdgeEvent ev = new AddedEdgeEvent(null, edge);
 		} catch (NullPointerException npe) {
 			return;
 		}

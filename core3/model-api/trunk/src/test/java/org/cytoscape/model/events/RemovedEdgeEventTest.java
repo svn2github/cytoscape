@@ -42,27 +42,21 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
 
 import static org.mockito.Mockito.*;
 
 /**
  * DOCUMENT ME!
  */
-public class AddedNodeEventTest extends TestCase {
+public class RemovedEdgeEventTest extends TestCase {
 
-	AddedNodeEvent event;
-	CyNode node;
+	RemovedEdgeEvent event;
 	CyNetwork net;
 
 	public void setUp() {
-		node = mock(CyNode.class); 
 		net = mock(CyNetwork.class); 
-		event = new AddedNodeEvent(net,node);
-	}
-
-	public void testGetNode() {
-		assertEquals( event.getNode(), node );
+		event = new RemovedEdgeEvent(net);
 	}
 
 	public void testGetSource() {
@@ -70,21 +64,12 @@ public class AddedNodeEventTest extends TestCase {
 	}
 
 	public void testGetListenerClass() {
-		assertEquals( event.getListenerClass(), AddedNodeListener.class );
-	}
-
-	public void testNullNode() {
-		try {
-			AddedNodeEvent ev = new AddedNodeEvent(net, null);
-		} catch (NullPointerException npe) {
-			return;
-		}
-		fail("didn't catch expected npe for node");
+		assertEquals( event.getListenerClass(), RemovedEdgeListener.class );
 	}
 
 	public void testNullNetwork() {
 		try {
-			AddedNodeEvent ev = new AddedNodeEvent(null, node);
+			RemovedEdgeEvent ev = new RemovedEdgeEvent(null);
 		} catch (NullPointerException npe) {
 			return;
 		}

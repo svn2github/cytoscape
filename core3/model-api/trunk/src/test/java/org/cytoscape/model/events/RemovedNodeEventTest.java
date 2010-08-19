@@ -49,20 +49,14 @@ import static org.mockito.Mockito.*;
 /**
  * DOCUMENT ME!
  */
-public class AddedNodeEventTest extends TestCase {
+public class RemovedNodeEventTest extends TestCase {
 
-	AddedNodeEvent event;
-	CyNode node;
+	RemovedNodeEvent event;
 	CyNetwork net;
 
 	public void setUp() {
-		node = mock(CyNode.class); 
 		net = mock(CyNetwork.class); 
-		event = new AddedNodeEvent(net,node);
-	}
-
-	public void testGetNode() {
-		assertEquals( event.getNode(), node );
+		event = new RemovedNodeEvent(net);
 	}
 
 	public void testGetSource() {
@@ -70,21 +64,12 @@ public class AddedNodeEventTest extends TestCase {
 	}
 
 	public void testGetListenerClass() {
-		assertEquals( event.getListenerClass(), AddedNodeListener.class );
-	}
-
-	public void testNullNode() {
-		try {
-			AddedNodeEvent ev = new AddedNodeEvent(net, null);
-		} catch (NullPointerException npe) {
-			return;
-		}
-		fail("didn't catch expected npe for node");
+		assertEquals( event.getListenerClass(), RemovedNodeListener.class );
 	}
 
 	public void testNullNetwork() {
 		try {
-			AddedNodeEvent ev = new AddedNodeEvent(null, node);
+			RemovedNodeEvent ev = new RemovedNodeEvent(null);
 		} catch (NullPointerException npe) {
 			return;
 		}

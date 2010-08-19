@@ -42,27 +42,39 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
 
 import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * DOCUMENT ME!
  */
-public class AddedNodeEventTest extends TestCase {
+public class SelectedEdgesEventTest extends TestCase {
 
-	AddedNodeEvent event;
-	CyNode node;
+	SelectedEdgesEvent event;
+	CyEdge edge1;
+	CyEdge edge2;
+	CyEdge edge3;
+	List<CyEdge> edges;
 	CyNetwork net;
 
 	public void setUp() {
-		node = mock(CyNode.class); 
+		edge1 = mock(CyEdge.class); 
+		edge2 = mock(CyEdge.class); 
+		edge3 = mock(CyEdge.class); 
+		edges = new ArrayList<CyEdge>();
+		edges.add(edge1);
+		edges.add(edge2);
+		edges.add(edge3);
 		net = mock(CyNetwork.class); 
-		event = new AddedNodeEvent(net,node);
+		event = new SelectedEdgesEvent(net,edges);
 	}
 
-	public void testGetNode() {
-		assertEquals( event.getNode(), node );
+	public void testGetEdgeList() {
+		assertEquals( event.getEdgeList(), edges );
 	}
 
 	public void testGetSource() {
@@ -70,24 +82,32 @@ public class AddedNodeEventTest extends TestCase {
 	}
 
 	public void testGetListenerClass() {
-		assertEquals( event.getListenerClass(), AddedNodeListener.class );
+		assertEquals( event.getListenerClass(), SelectedEdgesListener.class );
 	}
 
-	public void testNullNode() {
+	public void testNullEdgeList() {
 		try {
-			AddedNodeEvent ev = new AddedNodeEvent(net, null);
+			SelectedEdgesEvent ev = new SelectedEdgesEvent(net, null);
 		} catch (NullPointerException npe) {
 			return;
 		}
-		fail("didn't catch expected npe for node");
+		fail("didn't catch expected npe for edge");
 	}
 
 	public void testNullNetwork() {
 		try {
-			AddedNodeEvent ev = new AddedNodeEvent(null, node);
+			SelectedEdgesEvent ev = new SelectedEdgesEvent(null, edges);
 		} catch (NullPointerException npe) {
 			return;
 		}
 		fail("didn't catch expected npe for network");
+	}
+
+	public void testAllowEmptyList() {
+		try {
+			SelectedEdgesEvent ev = new SelectedEdgesEvent(net, new ArrayList<CyEdge>());
+		} catch (NullPointerException npe) {
+			fail("empty list should be allowed");
+		}
 	}
 }
