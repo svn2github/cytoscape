@@ -82,6 +82,8 @@ import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CySwingApplication;
+import cytoscape.view.CytoPanelName;
+
 
 /**
  * New VizMapper UI main panel. Refactored for Cytoscape 3.
@@ -157,8 +159,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		refreshUI();
 
-		cytoscapeDesktop.getCytoPanel(SwingConstants.WEST).add(
-				TAB_TITLE, this);
+		cytoscapeDesktop.getCytoPanel(CytoPanelName.WEST).add(TAB_TITLE, this);
 		// cytoscapeDesktop.getSwingPropertyChangeSupport()
 		// .addPropertyChangeListener(this);
 
