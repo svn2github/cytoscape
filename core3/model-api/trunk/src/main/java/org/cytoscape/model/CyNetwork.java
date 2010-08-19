@@ -41,7 +41,8 @@ import java.util.Map;
 
 
 /**
- * CyNetwork is the primary class for algorithm writing.  All algorithms should take a 
+ * CyNetwork is the primary interface for representing a network (graph) data structure.
+ * All algorithms should take a 
  * CyNetwork as input, and do their best to only use the API of CyNetwork.  CyNetwork
  * provides a straightforward interface to a simple graph.  For an interface to a
  * more complicated subgraph, see {@link org.cytoscape.model.subnetwork.CyRootNetwork} 
