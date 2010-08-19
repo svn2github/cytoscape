@@ -64,43 +64,48 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 	protected CyRootNetwork root;
 	protected CyRootNetwork root2;
 
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void testAddMetaNode() {
-		System.out.println("---> testAddMetaNode");
-		CyNode n1 = root.getBaseNetwork().addNode();
-		CyNode n2 = root.getBaseNetwork().addNode();
-		CyNode n3 = root.getBaseNetwork().addNode();
-		CyNode n4 = root.getBaseNetwork().addNode();
-
-		CyEdge e1 = root.getBaseNetwork().addEdge(n1,n2,true);
-		CyEdge e2 = root.getBaseNetwork().addEdge(n2,n3,false);
-		CyEdge e3 = root.getBaseNetwork().addEdge(n2,n4,false);
-
-		assertEquals("num nodes", 4, root.getNodeList().size());
-		assertEquals("base nodes", 4, root.getBaseNetwork().getNodeList().size());
-
-		assertEquals("num edges", 3, root.getEdgeList().size());
-		assertEquals("base edges", 3, root.getBaseNetwork().getEdgeList().size());
-
-		CyMetaNode m1 = root.addMetaNode();
-		CySubNetwork s1 = m1.getSubNetwork();
-		s1.addNode(n1);
-		s1.addNode(n2);
-		s1.addEdge(e1);
-
-		assertNotNull("metanode is not null",m1);
-		assertEquals("num nodes", 5, root.getNodeList().size());
-		assertEquals("base nodes", 4, root.getBaseNetwork().getNodeList().size());
-
-		assertEquals("num edges", 3, root.getEdgeList().size());
-		assertEquals("base edges", 3, root.getBaseNetwork().getEdgeList().size());
+	public void testInitialRootNetworkState() {
+		System.out.println("---> testInitialRootNetworkState");
+		List<CySubNetwork> subnets = root.getSubNetworkList();
+		CySubNetwork base = root.getBaseNetwork();
+		assertNotNull(subnets);
+		assertEquals("num subnetworks",1,subnets.size());
+		assertNotNull(base);
+		assertEquals("base and root num nodes", root.getNodeCount(), base.getNodeCount());
+		assertEquals("base and root num edges", root.getEdgeCount(), base.getNodeCount());
+		assertTrue("subnetwork list contains base",root.getSubNetworkList().contains(base));
 	}
 
-	public void testRemoveMetaNode() {
-		System.out.println("---> testRemoveMetaNode");
+	public void testAddSubNetwork() {
+		System.out.println("---> testAddSubNetwork");
+		CyNode n1 = root.addNode();
+		CyNode n2 = root.addNode();
+		CyNode n3 = root.addNode();
+		CyNode n4 = root.addNode();
+
+		CyEdge e1 = root.addEdge(n1,n2,true);
+		CyEdge e2 = root.addEdge(n2,n3,false);
+		CyEdge e3 = root.addEdge(n2,n4,false);
+
+		assertEquals("num nodes", 4, root.getNodeList().size());
+		assertEquals("num edges", 3, root.getEdgeList().size());
+
+		CySubNetwork s1 = root.addSubNetwork();
+		s1.addNode(n1);
+		s1.addNode(n2);
+		s1.addEdge(e1);
+
+		assertNotNull("subnetwork is not null",s1);
+		assertEquals("num nodes", 4, root.getNodeList().size());
+		assertEquals("base nodes", 2, s1.getNodeList().size());
+
+		assertEquals("num edges", 3, root.getEdgeList().size());
+		assertEquals("base edges", 1, s1.getEdgeList().size());
+	}
+
+	public void testRemoveSubNetwork() {
+		System.out.println("---> testRemoveSubNetwork");
+
 		CyNode n1 = root.getBaseNetwork().addNode();
 		CyNode n2 = root.getBaseNetwork().addNode();
 		CyNode n3 = root.getBaseNetwork().addNode();
@@ -108,72 +113,48 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		CyEdge e1 = root.getBaseNetwork().addEdge(n1,n2,true);
 		CyEdge e2 = root.getBaseNetwork().addEdge(n2,n3,false);
 
-		CyMetaNode m1 = root.addMetaNode();
-		CySubNetwork s1 = m1.getSubNetwork();
+		CySubNetwork s1 = root.addSubNetwork();
 		s1.addNode(n1);
 		s1.addNode(n2);
 		s1.addEdge(e1);
 
-		assertNotNull("metanode is not null",m1);
-		assertEquals("node list size",4,root.getNodeList().size());
-		assertEquals("base node list size",3,root.getBaseNetwork().getNodeList().size());
-		assertTrue("node list does contain meta node",root.getNodeList().contains(m1));
-		assertFalse("base node list does not contain meta node",root.getBaseNetwork().getNodeList().contains(m1));
+		assertNotNull("subnetwork is not null",s1);
+		assertEquals("node list size",3,root.getNodeList().size());
+		assertEquals("subnetwork node list size",2,s1.getNodeList().size());
 		assertEquals("edge list size",2,root.getEdgeList().size());
-		assertEquals("base edge list size",2,root.getBaseNetwork().getEdgeList().size());
+		assertEquals("subnetwork edge list size",1,s1.getEdgeList().size());
+		assertTrue("subnetwork list contains s1",root.getSubNetworkList().contains(s1));
 
-		CyMetaNode m2 = root.addMetaNode();
-		CySubNetwork s2 = m2.getSubNetwork();
+		CySubNetwork s2 = root.addSubNetwork();
 		s2.addNode(n3);
 		s2.addNode(n2);
 		s2.addEdge(e2);
 
-		assertNotNull("metanode is not null",m2);
-		assertEquals("node list size",5,root.getNodeList().size());
-		assertEquals("base node list size",3,root.getBaseNetwork().getNodeList().size());
-		assertTrue("node list contains meta node",root.getNodeList().contains(m2));
-		assertFalse("base node list doesn't contain meta node",root.getBaseNetwork().getNodeList().contains(m2));
-		assertEquals("edge list size",2,root.getEdgeList().size());
-		assertEquals("base edge list size",2,root.getBaseNetwork().getEdgeList().size());
-
-		assertEquals("node count",5,root.getNodeCount());
-		assertEquals("base node count",3,root.getBaseNetwork().getNodeCount());
-		assertEquals("edge count",2,root.getEdgeCount());
-		assertEquals("base edge count",2,root.getBaseNetwork().getEdgeCount());
-
-		root.removeMetaNode(m1);
-
-		assertEquals("node list size",4,root.getNodeList().size());
-		assertEquals("base node list size",3,root.getBaseNetwork().getNodeList().size());
-		// m1 now gone
-		assertFalse("node list doesn't contain meta node",root.getNodeList().contains(m1));
-		assertFalse("base node list doesn't contain meta node",root.getBaseNetwork().getNodeList().contains(m1));
-		// m2 still present
-		assertTrue("node list contains meta node",root.getNodeList().contains(m2));
-		assertFalse("base node list doesn't contain meta node",root.getBaseNetwork().getNodeList().contains(m2));
-		assertEquals("edge list size",2,root.getEdgeList().size());
-		assertEquals("base edge list size",2,root.getBaseNetwork().getEdgeList().size());
-
-		assertEquals("node count",4,root.getNodeCount());
-		assertEquals("base node count",3,root.getBaseNetwork().getNodeCount());
-		assertEquals("edge count",2,root.getEdgeCount());
-		assertEquals("base edge count",2,root.getBaseNetwork().getEdgeCount());
-
-		root.removeMetaNode(m2);
-
+		assertNotNull("subnetwork is not null",s2);
 		assertEquals("node list size",3,root.getNodeList().size());
-		assertEquals("base node list size",3,root.getBaseNetwork().getNodeList().size());
-		// m2 now gone
-		assertFalse("node list contains meta node",root.getNodeList().contains(m2));
-		assertFalse("base node list doesn't contain meta node",root.getBaseNetwork().getNodeList().contains(m2));
+		assertEquals("subnetwork node list size",2,s2.getNodeList().size());
 		assertEquals("edge list size",2,root.getEdgeList().size());
-		assertEquals("base edge list size",2,root.getBaseNetwork().getEdgeList().size());
-
+		assertEquals("subnetwork edge list size",1,s2.getEdgeList().size());
 		assertEquals("node count",3,root.getNodeCount());
-		assertEquals("base node count",3,root.getBaseNetwork().getNodeCount());
 		assertEquals("edge count",2,root.getEdgeCount());
-		assertEquals("base edge count",2,root.getBaseNetwork().getEdgeCount());
 
+		assertEquals("num subnetworks",3,root.getSubNetworkList().size());
+
+		root.removeSubNetwork(s1);
+
+		assertEquals("node list size",3,root.getNodeCount());
+		assertEquals("base node list size",2,root.getEdgeCount());
+
+		assertTrue("subnetwork list contains s2",root.getSubNetworkList().contains(s2));
+		assertEquals("num subnetworks",2,root.getSubNetworkList().size());
+
+		root.removeSubNetwork(s2);
+
+		assertEquals("node list size",3,root.getNodeCount());
+		assertEquals("base node list size",2,root.getEdgeCount());
+
+		assertFalse("subnetwork list contains s2",root.getSubNetworkList().contains(s2));
+		assertEquals("num subnetworks",1,root.getSubNetworkList().size());
 	}
 
 	public void testGetAllNodes() {
@@ -182,41 +163,26 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		CyNode n2 = root.getBaseNetwork().addNode();
 		CyNode n3 = root.getBaseNetwork().addNode();
 
-		CyEdge e1 = root.getBaseNetwork().addEdge(n1,n2,true);
-		CyEdge e2 = root.getBaseNetwork().addEdge(n2,n3,false);
-
-		assertEquals("node list size",3,root.getNodeList().size());
-		assertEquals("base node list size",3,root.getBaseNetwork().getNodeList().size());
 		assertEquals("node count",3,root.getNodeCount());
 		assertEquals("base node count",3,root.getBaseNetwork().getNodeCount());
 
-		CyMetaNode m1 = root.addMetaNode();
-		CySubNetwork s1 = m1.getSubNetwork();
-		s1.addNode(n1);
-		s1.addNode(n2);
-		s1.addEdge(e1);
+		CySubNetwork s1 = root.addSubNetwork();
+		CyNode n4 = s1.addNode();
+		CyNode n5 = s1.addNode();
 
-		assertNotNull("metanode is not null",m1);
-		assertEquals("node list size",4,root.getNodeList().size());
-		assertEquals("base node list size",3,root.getBaseNetwork().getNodeList().size());
-		assertTrue("node list contains meta node",root.getNodeList().contains(m1));
-		assertFalse("base node list doesn't contain meta node",root.getBaseNetwork().getNodeList().contains(m1));
-		assertEquals("node count",4,root.getNodeCount());
-		assertEquals("base node count",3,root.getBaseNetwork().getNodeCount());
-
-		CyMetaNode m2 = root.addMetaNode();
-		CySubNetwork s2 = m2.getSubNetwork();
-		s2.addNode(n3);
-		s2.addNode(n2);
-		s2.addEdge(e2);
-
-		assertNotNull("metanode is not null",m2);
-		assertEquals("node list size",5,root.getNodeList().size());
-		assertEquals("base node list size",3,root.getBaseNetwork().getNodeList().size());
-		assertTrue("node list contains meta node",root.getNodeList().contains(m2));
-		assertFalse("base node list doesn't contain meta node",root.getBaseNetwork().getNodeList().contains(m2));
 		assertEquals("node count",5,root.getNodeCount());
 		assertEquals("base node count",3,root.getBaseNetwork().getNodeCount());
+		assertEquals("s1 node count",2,s1.getNodeCount());
+
+		CySubNetwork s2 = root.addSubNetwork();
+		CyNode n6 = s2.addNode();
+		CyNode n7 = s2.addNode();
+		CyNode n8 = s2.addNode();
+
+		assertEquals("node count",8,root.getNodeCount());
+		assertEquals("base node count",3,root.getBaseNetwork().getNodeCount());
+		assertEquals("s1 node count",2,s1.getNodeCount());
+		assertEquals("s2 node count",3,s2.getNodeCount());
 	}
 
 	public void testGetAllEdges() {
@@ -230,22 +196,78 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		CyEdge e2 = root.getBaseNetwork().addEdge(n2,n3,false);
 		CyEdge e3 = root.getBaseNetwork().addEdge(n2,n4,false);
 
-		assertEquals("edge list size",3,root.getEdgeList().size());
-		assertEquals("base edge list size",3,root.getBaseNetwork().getEdgeList().size());
 		assertEquals("edge count",3,root.getEdgeCount());
 		assertEquals("base edge count",3,root.getBaseNetwork().getEdgeCount());
 
-		CyMetaNode m1 = root.addMetaNode();
-		CySubNetwork s1 = m1.getSubNetwork();
+		CySubNetwork s1 = root.addSubNetwork();
 		s1.addNode(n1);
-		s1.addNode(n2);
-		s1.addEdge(e1);
+		s1.addNode(n4);
+		CyEdge e4 = s1.addEdge(n1,n4,true);
 
-		assertNotNull("metanode is not null",m1);
-		assertEquals("edge list size",3,root.getEdgeList().size());
-		assertEquals("base edge list size",3,root.getBaseNetwork().getEdgeList().size());
-		assertEquals("edge count",3,root.getEdgeCount());
+		assertEquals("edge count",4,root.getEdgeCount());
 		assertEquals("base edge count",3,root.getBaseNetwork().getEdgeCount());
+		assertEquals("s1 edge count",1,s1.getEdgeCount());
+	}
+
+	public void testJustRootAddNode() {
+		CyNode n1 = root.addNode();
+
+		assertEquals("root node count", 1, root.getNodeCount());
+
+		CyNode n2 = root.getBaseNetwork().addNode();
+
+		assertEquals("root node count", 2, root.getNodeCount());
+		assertEquals("base node count", 1, root.getBaseNetwork().getNodeCount());
+	}
+
+	public void testJustRootAddEdge() {
+		CyNode n1 = root.addNode();
+		CyNode n2 = root.addNode();
+
+		CyNode n3 = root.getBaseNetwork().addNode();
+		CyNode n4 = root.getBaseNetwork().addNode();
+
+		CyEdge e1 = root.addEdge(n1,n2,true);
+
+		assertEquals("root edge count", 1, root.getEdgeCount());
+
+		CyEdge e2 = root.getBaseNetwork().addEdge(n3,n4,false);
+
+		assertEquals("root edge count", 2, root.getEdgeCount());
+		assertEquals("base edge count", 1, root.getBaseNetwork().getEdgeCount());
+	}
+
+	public void testEdgesCantCrossRootAndSubNetwork() {
+		CyNode n1 = root.addNode();
+		CyNode n2 = root.addNode();
+
+		CyNode n3 = root.getBaseNetwork().addNode();
+
+		CyEdge e1 = root.addEdge(n1,n3,true);
+
+		try {
+			CyEdge e2 = root.getBaseNetwork().addEdge(n2,n3,false);
+		} catch (IllegalArgumentException e) {
+			return;
+		}
+
+		fail("edges can't cross subnetworks");
+	}
+
+	public void testEdgesCantCrossSubNetworks() {
+		CySubNetwork s1 = root.addSubNetwork();
+		CyNode n1 = s1.addNode();
+
+		CySubNetwork s2 = root.addSubNetwork();
+		CyNode n2 = s2.addNode();
+
+		try {
+			CyEdge e1 = root.getBaseNetwork().addEdge(n2,n1,false);
+		} catch (IllegalArgumentException e) {
+			return;
+		}
+
+		fail("edges can't cross subnetworks");
 	}
 
 
@@ -262,55 +284,56 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 
 		assertEquals("node list size",4,root.getNodeList().size());
 
-		//System.out.println("###### 4 nodes");
 
-		CyMetaNode m1 = root.addMetaNode();
-		CySubNetwork s1 = m1.getSubNetwork();
+		CySubNetwork s1 = root.addSubNetwork();
 		s1.addNode(n1);
 		s1.addNode(n2);
 		s1.addEdge(e1);
 
-		//System.out.println("###### 4 nodes, 1 metanode");
 
 		assertEquals("base node list size",4,root.getBaseNetwork().getNodeList().size());
-		assertEquals("node list size",5,root.getNodeList().size());
+		assertEquals("node list size",4,root.getNodeList().size());
 
 		CyNode n5 = root.getBaseNetwork().addNode();
 
-		//System.out.println("###### 5 nodes, 1 metanode");
 
-		assertEquals("node list size",6,root.getNodeList().size());
+		assertEquals("node list size",5,root.getNodeList().size());
 		assertEquals("base node list size",5,root.getBaseNetwork().getNodeList().size());
 
 		CyNode n6 = root.getBaseNetwork().addNode();
 
-		//System.out.println("###### 6 nodes, 1 metanode");
 
-		assertEquals("node list size",7,root.getNodeList().size());
+		assertEquals("node list size",6,root.getNodeList().size());
 		assertEquals("base node list size",6,root.getBaseNetwork().getNodeList().size());
 		assertTrue("root does contain node5",root.containsNode(n5));
 
 		boolean ret = root.removeNode(n5);
 
-		//System.out.println("###### 5 nodes, 1 metanode");
 		assertTrue("removed node5", ret);
 		assertFalse("root doesn't contain node5",root.containsNode(n5));
 
-		//for ( CyNode nn : root.getNodeList() )
-			//System.out.println("~~~ " + nn.getIndex());
-		assertEquals("node list size",6,root.getNodeList().size());
+		assertEquals("node list size",5,root.getNodeList().size());
 		assertEquals("base node list size",5,root.getBaseNetwork().getNodeList().size());
 
 		ret = root.removeNode(n6);
 		assertTrue("removed node6", ret);
 
-		//System.out.println("###### 4 nodes, 1 metanode");
-		assertEquals("node list size",5,root.getNodeList().size());
+		assertEquals("node list size",4,root.getNodeList().size());
 		assertEquals("base node list size",4,root.getBaseNetwork().getNodeList().size());
 	}
 
-	public void testGetMetaNodeList() {
-		System.out.println("---> testGetMetaNodeList");
+	public void testRemoveBaseNetwork() {
+		CySubNetwork base = root.getBaseNetwork();
+		try {
+			root.removeSubNetwork(base);
+		} catch (IllegalArgumentException e) {
+			return;
+		}
+		fail("can't remove the base network from a root network");
+	}
+
+	public void testGetSubNetworkList() {
+		System.out.println("---> testGetSubNetworkList");
 		CyNode n1 = root.addNode();
 		CyNode n2 = root.addNode();
 		CyNode n3 = root.addNode();
@@ -320,39 +343,37 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		CyEdge e2 = root.addEdge(n2,n3,false);
 		CyEdge e3 = root.addEdge(n2,n4,false);
 
-		// list of size 0
-		List<CyMetaNode> mnodes = root.getMetaNodeList();
+		// list of size 1
+		List<CySubNetwork> mnodes = root.getSubNetworkList();
 		assertNotNull(mnodes);
-		assertEquals("meta node list size",0,mnodes.size());
+		assertEquals("subnet node list size",1,mnodes.size());
 
-		CyMetaNode m1 = root.addMetaNode();
-		CySubNetwork s1 = m1.getSubNetwork();
+		CySubNetwork s1 = root.addSubNetwork();
 
-		// after creating a metanode/subnetwork
+		// after creating a subnetwork
 
-		List<CyMetaNode> mnodesX = root.getMetaNodeList();
+		List<CySubNetwork> mnodesX = root.getSubNetworkList();
 		assertNotNull(mnodesX);
-		assertEquals("meta node list size",1,mnodesX.size());
-		assertTrue("contains m1",mnodesX.contains(m1));
+		assertEquals("subnet node list size",2,mnodesX.size());
+		assertTrue("contains s1",mnodesX.contains(s1));
 
-		CyMetaNode m2 = root.addMetaNode();
-		CySubNetwork s2 = m2.getSubNetwork();
+		CySubNetwork s2 = root.addSubNetwork();
 
-		// list of size 2 
-		List<CyMetaNode> mnodes2 = root.getMetaNodeList();
+		// list of size 3 
+		List<CySubNetwork> mnodes2 = root.getSubNetworkList();
 		assertNotNull(mnodes2);
-		assertEquals("meta node list size",2,mnodes2.size());
-		assertTrue("contains m1",mnodes2.contains(m1));
-		assertTrue("contains m2",mnodes2.contains(m2));
+		assertEquals("subnet node list size",3,mnodes2.size());
+		assertTrue("contains s1",mnodes2.contains(s1));
+		assertTrue("contains s2",mnodes2.contains(s2));
 
-		root.removeMetaNode(m1);
+		root.removeSubNetwork(s1);
 
-		// list of size 1 after removing a metanode
-		List<CyMetaNode> mnodes3 = root.getMetaNodeList();
+		// list of size 2 after removing a subnetwork
+		List<CySubNetwork> mnodes3 = root.getSubNetworkList();
 		assertNotNull(mnodes3);
-		assertEquals("meta node list size",1,mnodes3.size());
-		assertTrue("contains m2",mnodes3.contains(m2));
-		assertFalse("not contains m1",mnodes3.contains(m1));
+		assertEquals("subnet node list size",2,mnodes3.size());
+		assertTrue("contains s2",mnodes3.contains(s2));
+		assertFalse("not contains s1",mnodes3.contains(s1));
 	}
 
 	public void testGetBaseNetwork() {
@@ -379,15 +400,15 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertEquals("num nodes",4,base2.getNodeCount());
 		assertEquals("num edges",3,base2.getEdgeCount());
 
-		// now add a subnetwork and metanode
-		CyMetaNode m1 = root.addMetaNode();
-		CySubNetwork s1 = m1.getSubNetwork();
+		// now add a subnetwork 
+		CySubNetwork s1 = root.addSubNetwork();
 
 		CySubNetwork base3 = root.getBaseNetwork();
 		assertNotNull(base3);
 		assertEquals("num nodes",4,base3.getNodeCount());
 		assertEquals("num edges",3,base3.getEdgeCount());
 	}
+	
 
 	public void testAddSubNetworkNodes() {
 		System.out.println("---> testAddSubNetworkNodes");
@@ -403,8 +424,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		CyEdge e4 = root.addEdge(n3,n4,false);
 		CyEdge e5 = root.addEdge(n1,n4,false);
 
-		CyMetaNode m1 = root.addMetaNode();
-		CySubNetwork s1 = m1.getSubNetwork();
+		CySubNetwork s1 = root.addSubNetwork();
 		s1.addNode(n1);
 		s1.addNode(n2);
 		s1.addEdge(e1);
@@ -426,8 +446,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		assertFalse("s1 contains e4",s1.containsEdge(e4));
 		assertFalse("s1 contains e5",s1.containsEdge(e5));
 
-		CyMetaNode m2 = root.addMetaNode();
-		CySubNetwork s2 = m2.getSubNetwork();
+		CySubNetwork s2 = root.addSubNetwork();
 		s2.addNode(n2);
 		s2.addNode(n3);
 		s2.addNode(n4);
@@ -454,7 +473,7 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 	}
 
 
-	public void testRemoveSubNetwork() {
+	public void testRemoveSubNetwork2() {
 		System.out.println("---> testRemoveSubNetwork");
 		CyNode n1 = root.addNode();
 		CyNode n2 = root.addNode();
@@ -470,119 +489,45 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 
 		CySubNetwork base = root.getBaseNetwork();
 
-		CyMetaNode m1 = root.addMetaNode();
-		CySubNetwork s1 = m1.getSubNetwork();
+		CySubNetwork s1 = root.addSubNetwork();
 		s1.addNode(n2);
 		s1.addNode(n3);
 		s1.addNode(n4);
 
-		List<CyMetaNode> metas = root.getMetaNodeList();
-		assertNotNull(metas);
-		assertEquals("metanode list size",1,metas.size());
-		assertTrue("metanode contains s1",metas.contains(m1));
+		List<CySubNetwork> subs = root.getSubNetworkList();
+		assertNotNull(subs);
+		assertEquals("subnetwork list size",2,subs.size());
+		assertTrue("subnetwork contains s1",subs.contains(s1));
 
-		root.removeMetaNode(m1);
+		root.removeSubNetwork(s1);
 
-		metas = root.getMetaNodeList();
-		assertNotNull(metas);
-		assertEquals("metanode list size",0,metas.size());
-		assertFalse("metanode contains m1",metas.contains(m1));
+		subs = root.getSubNetworkList();
+		assertNotNull(subs);
+		assertEquals("subnetwork list size",1,subs.size());
+		assertFalse("subnetwork contains s1",subs.contains(s1));
 	}
 
-	/**
-	 * Read the enhanced sif file: 
-	 * A B C
-	 * B C A
-	 * C A B
-	 */
-	public void testABCMetaNode() {
+	public void testRemoveBadSubNetwork() {
+		CySubNetwork s1 = root.addSubNetwork();
+		CySubNetwork s2 = root2.addSubNetwork();
+	
+		assertNotNull(s1);
+		assertNotNull(s2);
 
-		CyMetaNode a = root.addMetaNode();
-		CySubNetwork as = a.getSubNetwork();
-
-		CyMetaNode b = root.addMetaNode();
-		CySubNetwork bs = b.getSubNetwork();
-
-		CyMetaNode c = root.addMetaNode();
-		CySubNetwork cs = c.getSubNetwork();
-
-		as.addNode( b );
-		as.addNode( c );
-		as.addEdge(b, c, false);
-
-		bs.addNode( c );
-		bs.addNode( a );
-		bs.addEdge(c, a, false);
-
-		cs.addNode( a );
-		cs.addNode( b );
-		cs.addEdge(a, b, false);
-
-		assertEquals("num edges in root",3,root.getEdgeCount());
-		assertEquals("num nodes in root",3,root.getNodeCount());
-	}
-
-	public void testRemoveBadMetaNode() {
-		// metanode in root2
-		CyMetaNode m2 = root2.addMetaNode();
-
-		assertEquals("root edges",0,root.getEdgeCount());
-		assertEquals("root nodes",0,root.getNodeCount());
-
-		// trying to remove metanode from different network 
-		root.removeMetaNode(m2);
-
-		assertEquals("root edges",0,root.getEdgeCount());
-		assertEquals("root nodes",0,root.getNodeCount());
-	}
-
-	public void testConverCyNode() {
-		CyNode n = root.addNode();
-		CyMetaNode m = root.convert(n);
-
-		assertNotNull("converted node to metanode subnetwork",m.getSubNetwork());
-
-		CyNode nn = m.getSubNetwork().addNode();
-
-		assertNotNull("node from subnetwork",nn);
-		assertEquals("num nodes in root",2,root.getNodeCount());
-	}
-
-	public void testConvertBadCyNode() {
-		CyNode n2 = root2.addNode();
 		try {
-			CyMetaNode m2 = root.convert(n2);
-		} catch (Exception e) {
+			root.removeSubNetwork(s2);
+		} catch (IllegalArgumentException e) {
 			return;
 		}
-		fail();
+
+		fail("shouldn't be able to remove subnetwork that isn't yours!");
 	}
 
-	public void testConvertNullCyNode() {
+	public void testRemoveNullSubNetwork() {
 		try {
-			CyMetaNode m2 = root.convert(null);
-		} catch (Exception e) {
-			return;
+			root.removeSubNetwork(null);
+		} catch (IllegalArgumentException e) {
+			fail("shouldn't throw exception for trying to remove null network");
 		}
-		fail();
-	}
-
-	public void testConvertMetaNodeReturnsMetaNode() {
-		CyMetaNode m = root.addMetaNode();
-		CyMetaNode m2 = root.convert(m);
-
-		assertTrue("should be the same object", m==m2);
-	}
-
-	public void testNumConvertedMetaNodes() {
-		CyNode n = root.addNode();
-
-		assertEquals("num nodes",1,root.getNodeCount());
-		assertEquals("num meta nodes",0,root.getMetaNodeList().size());
-
-		CyMetaNode m = root.convert(n);
-
-		assertEquals("num nodes",1,root.getNodeCount());
-		assertEquals("num meta nodes",1,root.getMetaNodeList().size());
 	}
 }

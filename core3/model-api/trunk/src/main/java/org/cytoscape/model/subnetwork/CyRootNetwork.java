@@ -77,35 +77,29 @@ import java.util.List;
 public interface CyRootNetwork extends CyNetwork {
 
 	/**
-	 * Create a {@link CyMetaNode} which will contain an empty {@link CySubNetwork}.
+	 * Create an empty {@link CySubNetwork}. 
 	 *
-	 * @return  The created {@link CyMetaNode}.
+	 * @return  The created {@link CySubNetwork}.
 	 */
-	CyMetaNode addMetaNode();
+	CySubNetwork addSubNetwork();
 
 	/**
-	 * Removes the metanode and and its {@link CySubNetwork}, but not the nodes 
-	 * and edges contained in the subnetwork.
+	 * Removes the subnetwork from the root network, but not the nodes and edges contained 
+	 * in the subnetwork.
 	 *
-	 * @param node  the {@link CyMetaNode} to remove.
+	 * @param sub  the {@link CySubNetwork} to remove.
 	 */
-	void removeMetaNode(CyMetaNode node);
+	void removeSubNetwork(CySubNetwork sub);
 
 	/**
-	 * Will return A list of all {@link CyMetaNode}s contained in this root network.
-	 * @return A list of all {@link CyMetaNode}s contained in this root network.
+	 * Will return A list of all {@link CySubNetwork}s contained in this root network.
+	 * @return A list of all {@link CySubNetwork}s contained in this root network.
 	 */
-	List<CyMetaNode> getMetaNodeList();
+	List<CySubNetwork> getSubNetworkList();
 
 	/**
-	 * The initial network of {@link CyNode}s and {@link CyEdge}s, that excludes any
-	 * {@link CyMetaNode}s.
+	 * The initial network of {@link CyNode}s and {@link CyEdge}s. Every root network
+	 * began with something, and this network is that something.
 	 */
 	CySubNetwork getBaseNetwork();
-
-	/**
-	 * Will convert any {@link CyNode} object into a {@link CyMetaNode}. If the
-	 * node is already metanode, this method will return the same object. 
-	 */
-	CyMetaNode convert(CyNode node);
 }
