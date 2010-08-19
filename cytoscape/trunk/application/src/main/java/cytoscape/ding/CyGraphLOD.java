@@ -305,4 +305,14 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	public boolean textAsShape(final int renderNodeCount, final int renderEdgeCount) {
 		return false;
 	}
+
+	public double getNestedNetworkImageScaleFactor() {
+		final String scaleFactor = CytoscapeInit.getProperties().getProperty("nestedNetwork.imageScaleFactor", "1.0");
+		try {
+			final double d = Double.valueOf(scaleFactor);
+			return d <= 0.0 ? 1.0 : d;
+		} catch (final Exception e) {
+			return 1.0;
+		}
+	}
 }

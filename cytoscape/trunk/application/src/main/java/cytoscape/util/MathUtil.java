@@ -60,4 +60,13 @@ public class MathUtil {
 		else
 			return Math.abs(x1 - x2) / Math.abs(x2) < 1.0e-12;
 	}
+
+	static public boolean isValidDouble(final String s) {
+		try {
+			double d = Double.valueOf(s);
+			return true;
+		} catch (final Exception e) {
+			return false;
+		}
+	}
 }

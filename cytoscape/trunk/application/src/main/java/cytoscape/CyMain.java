@@ -53,8 +53,9 @@ import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 
 import cytoscape.init.CyInitParams;
-import cytoscape.util.FileUtil;
 import cytoscape.logger.CyLogger;
+import cytoscape.util.FileUtil;
+import cytoscape.util.MathUtil;
 
 
 /**
@@ -391,7 +392,15 @@ public class CyMain implements CyInitParams {
 		// overrides anything specified in a file.
 		props.putAll(argProps);
 
+		addDefaultProps(props);
+
 		return props;
+	}
+
+	private void addDefaultProps(final Properties props) {
+		final String nestedNetworkImageScaleFactor = props.getProperty("nestedNetwork.imageScaleFactor");
+		if (nestedNetworkImageScaleFactor == null || !MathUtil.isValidDouble(nestedNetworkImageScaleFactor))
+			props.setProperty("nestedNetwork.imageScaleFactor", "1.0");
 	}
 
 	/**
