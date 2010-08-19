@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -68,6 +61,7 @@ import javax.imageio.ImageIO;
 
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.CustomGraphic;
+
 
 /**
  * Ding implementation of GINY NodeView.
@@ -1355,9 +1349,9 @@ public class DNodeView implements NodeView, Label {
 					return null;
 
 				final double IMAGE_WIDTH = getWidth()
-						* NESTED_IMAGE_SCALE_FACTOR;
+					* NESTED_IMAGE_SCALE_FACTOR;
 				final double IMAGE_HEIGHT = getHeight()
-						* NESTED_IMAGE_SCALE_FACTOR;
+					* NESTED_IMAGE_SCALE_FACTOR;
 
 				// Do we have a node w/ a self-reference?
 				if (graphView == nestedNetworkView) {
@@ -1370,10 +1364,11 @@ public class DNodeView implements NodeView, Label {
 					return new TexturePaint(RECURSIVE_NESTED_NETWORK_IMAGE,
 							rect);
 				}
-				if (nestedNetworkView != null)
-					return nestedNetworkView.getSnapshot(IMAGE_WIDTH,
-							IMAGE_HEIGHT);
-				else {
+				if (nestedNetworkView != null) {
+					final double scaleFactor = graphView.getGraphLOD().getNestedNetworkImageScaleFactor();
+					return nestedNetworkView.getSnapshot(IMAGE_WIDTH * scaleFactor,
+									     IMAGE_HEIGHT * scaleFactor);
+				} else {
 					if (DEFAULT_NESTED_NETWORK_IMAGE == null)
 						return null;
 
