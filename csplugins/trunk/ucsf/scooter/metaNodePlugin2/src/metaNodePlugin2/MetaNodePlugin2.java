@@ -76,6 +76,7 @@ import cytoscape.groups.CyGroupViewer;
 
 // our imports
 import metaNodePlugin2.model.MetaNode;
+import metaNodePlugin2.model.MetaNodeManager;
 import metaNodePlugin2.ui.MetanodeSettingsDialog;
 import metaNodePlugin2.ui.MetanodeMenuListener;
 
@@ -173,13 +174,13 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	public void propertyChange (PropertyChangeEvent e) {
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
 			((CyNetworkView)e.getNewValue()).addNodeContextMenuListener(this);
-			MetaNode.newView((CyNetworkView)e.getNewValue());
+			// MetaNodeManager.newView((CyNetworkView)e.getNewValue());
 			((CyNetworkView)e.getNewValue()).addGraphViewChangeListener(this);
 			groupViewer.getSettingsDialog().updateAttributes();
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
 			// Load the default aggregation values for this network
 			groupViewer.getSettingsDialog().updateOverrides(Cytoscape.getCurrentNetwork());
-			MetaNode.newView(Cytoscape.getCurrentNetworkView());
+			// MetaNodeManager.newView(Cytoscape.getCurrentNetworkView());
 		}
 	}
 
@@ -207,7 +208,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			Node[] nodes = event.getSelectedNodes();
 			// We only care about expanded metanodes
 			for (int i=0; i < nodes.length; i++) {
-				MetaNode n = MetaNode.getMetaNode((CyNode)nodes[i]);
+				MetaNode n = MetaNodeManager.getMetaNode((CyNode)nodes[i]);
 				if (n == null || n.getCyGroup().getState() == COLLAPSED) continue;
 				// OK, so we have selected an expanded metanode.  This means that we are
 				// not hiding the metanode, so we want to implicitly select all of the children
@@ -218,7 +219,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			Node[] nodes = event.getUnselectedNodes();
 			// We only care about expanded metanodes
 			for (int i=0; i < nodes.length; i++) {
-				MetaNode n = MetaNode.getMetaNode((CyNode)nodes[i]);
+				MetaNode n = MetaNodeManager.getMetaNode((CyNode)nodes[i]);
 				if (n == null || n.getCyGroup().getState() == COLLAPSED) continue;
 				// OK, so we have selected an expanded metanode.  This means that we are
 				// not hiding the metanode, so we want to implicitly select all of the children

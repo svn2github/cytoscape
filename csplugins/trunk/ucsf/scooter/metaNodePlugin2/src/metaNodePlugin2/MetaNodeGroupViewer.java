@@ -32,12 +32,16 @@
  */
 package metaNodePlugin2;
 
-import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
+
+import cytoscape.command.CyCommandManager;
+import cytoscape.command.CyCommandResult;
 
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupChangeEvent;
@@ -48,6 +52,7 @@ import cytoscape.groups.CyGroupViewer.ChangeType;
 import cytoscape.logger.CyLogger;
 
 import metaNodePlugin2.model.MetaNode;
+import metaNodePlugin2.model.MetaNodeManager;
 import metaNodePlugin2.model.MetanodeProperties;
 import metaNodePlugin2.ui.MetanodeMenuListener;
 import metaNodePlugin2.ui.MetanodeSettingsDialog;
@@ -61,9 +66,10 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	CyLogger logger = null;
 	String viewerName = null;
 	CyGroupViewer namedSelectionViewer = null;
-	Method updateMethod = null;
 	MetanodeSettingsDialog settingsDialog = null;
 	boolean registeredWithGroupPanel = false;
+
+	private static String NAMEDSELECTION = "namedselection";
 
 	public MetaNodeGroupViewer (String viewerName, CyLogger logger) {
 		this.viewerName = viewerName;
@@ -116,8 +122,8 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	 */
 	public void groupCreated(CyGroup group) { 
 		// logger.debug("groupCreated("+group+")");
-		if (MetaNode.getMetaNode(group) == null) {
-			MetaNode newNode = new MetaNode(group);
+		if (MetaNodeManager.getMetaNode(group) == null) {
+			MetaNode newNode = MetaNodeManager.createMetaNode(group);
 		}
 		// Update the attributes of the group node
 		logger.info("updating group panel for new group: "+group);
@@ -136,8 +142,8 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	 */
 	public void groupCreated(CyGroup group, CyNetworkView myview) { 
 		// logger.debug("groupCreated("+group+", view)");
-		if (MetaNode.getMetaNode(group) == null) {
-			MetaNode newNode = new MetaNode(group);
+		if (MetaNodeManager.getMetaNode(group) == null) {
+			MetaNode newNode = MetaNodeManager.createMetaNode(group);
 
 			// We need to be a little tricky if we are restoring a collapsed
 			// metaNode from XGMML.  We essentially need to "recollapse" it,
@@ -169,14 +175,14 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	 * @param group the CyGroup that will be deleted
 	 */
 	public void groupWillBeRemoved(CyGroup group) { 
-		MetaNode mn = MetaNode.getMetaNode(group);
+		MetaNode mn = MetaNodeManager.getMetaNode(group);
 		if (mn == null) return;
 		// Expand the group in any views that it's collapsed
 		mn.expand(true, null, true);
 
 		// Get rid of the MetaNode
 		logger.info("updating group panel for removed group: "+group);
-		MetaNode.removeMetaNode(mn);
+		MetaNodeManager.removeMetaNode(mn);
 	}
 
 	/**
@@ -189,7 +195,7 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	 */
 	public void groupChanged(CyGroup group, CyNode node, ChangeType change) { 
 
-		MetaNode mn = MetaNode.getMetaNode(group);
+		MetaNode mn = MetaNodeManager.getMetaNode(group);
 		if (mn == null) return;
 
 		if (change == ChangeType.NODE_ADDED) {
@@ -210,32 +216,33 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 			registerWithGroupPanel();
 		} else {
 			try {
-				updateMethod.invoke(namedSelectionViewer);
+				Map<String,Object> args = new HashMap<String,Object>();
+				CyCommandResult result = CyCommandManager.execute(NAMEDSELECTION, "update", args);
 			} catch (Exception e) {
-				logger.warning(e.getMessage());
+				logger.info(e.getMessage());
+				return;
 			}
 		}
 		return;
 	}
 
 	public void registerWithGroupPanel() {
-		namedSelectionViewer = CyGroupManager.getGroupViewer("namedSelection");
-		if (namedSelectionViewer == null)
-			return;
-
-		if (namedSelectionViewer.getClass().getName().equals("namedSelection.NamedSelection")) {
-			// Get the addViewerToGroupPanel method
-
-			try {
-				updateMethod = namedSelectionViewer.getClass().getMethod("updateGroupPanel");
-				Method regMethod = namedSelectionViewer.getClass().getMethod("addViewerToGroupPanel", CyGroupViewer.class);
-				regMethod.invoke(namedSelectionViewer, (CyGroupViewer)this);
-				registeredWithGroupPanel = true;
-			} catch (Exception e) {
-				logger.warning(e.getMessage());
+		try {
+			Map<String,Object> args = new HashMap<String,Object>();
+			args.put("viewer",viewerName);
+			CyCommandResult result = CyCommandManager.execute(NAMEDSELECTION, "add viewer", args);
+			if (result.getErrors() != null && result.getErrors().size() > 0) {
+				for (String error: result.getErrors())
+					logger.warning(error);
 				return;
+			} else if (result.getMessages() != null && result.getMessages().size() > 0) {
+				for (String message: result.getMessages())
+					logger.info(message);
 			}
-			// Invoke it
+		} catch (Exception e) {
+			logger.warning(e.getMessage());
+			return;
 		}
+		registeredWithGroupPanel = true;
 	}
 }

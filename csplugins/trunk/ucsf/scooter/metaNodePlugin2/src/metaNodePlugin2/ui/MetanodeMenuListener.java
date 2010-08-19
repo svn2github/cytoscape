@@ -46,6 +46,7 @@ import javax.swing.event.MenuListener;
 
 import metaNodePlugin2.actions.MetanodeCommandListener;
 import metaNodePlugin2.model.MetaNode;
+import metaNodePlugin2.model.MetaNodeManager;
 import metaNodePlugin2.MetaNodeGroupViewer;
 import metaNodePlugin2.MetaNodePlugin2;
 import metaNodePlugin2.MetaNodePlugin2.Command;
@@ -187,15 +188,15 @@ public class MetanodeMenuListener implements MenuListener {
 			// Get the groups this group is a member of
 			CyGroup group = CyGroupManager.findGroup(contextNode.getIdentifier());
 			// Get the MetaNode
-			MetaNode metaNode = MetaNode.getMetaNode(group.getGroupNode());
-			if (metaNode.isCollapsed(view)) {
+			MetaNode metaNode = MetaNodeManager.getMetaNode(group.getGroupNode());
+			if (metaNode.isCollapsed()) {
 				addSubMenu(menu, label+" "+group.getGroupName(), 
 				           command, group, contextNode);
 			}
 		} else if (CyGroupManager.isaGroup(contextNode) && command == Command.EXPANDNEW) {
 			CyGroup group = CyGroupManager.findGroup(contextNode.getIdentifier());
-			MetaNode metaNode = MetaNode.getMetaNode(group.getGroupNode());
-			if (metaNode.isCollapsed(view)) {
+			MetaNode metaNode = MetaNodeManager.getMetaNode(group.getGroupNode());
+			if (metaNode.isCollapsed()) {
 				addSubMenu(menu, "Expand metanode "+group.getGroupName()+" into new network", 
 				           command, group, contextNode);
 			}
@@ -279,16 +280,16 @@ public class MetanodeMenuListener implements MenuListener {
 			CyNode groupNode = group.getGroupNode();
 			List<CyGroup> parents = groupNode.getGroups();
 			if (group.getViewer() != null && group.getViewer().equals(MetaNodePlugin2.viewerName)) {
-				MetaNode metaNode = MetaNode.getMetaNode(group.getGroupNode());
+				MetaNode metaNode = MetaNodeManager.getMetaNode(group.getGroupNode());
 
-				// Make sure we have a metnode object for this group
+				// Make sure we have a metanode object for this group
 				if (metaNode == null) {
-					metaNode = new MetaNode(group);
+					metaNode = MetaNodeManager.createMetaNode(group);
 				}
 
 				// Only present reasonable choices to the user
-				if ((command == Command.COLLAPSE && metaNode.isCollapsed(view)) ||
-				    (command == Command.EXPAND && !metaNode.isCollapsed(view))) 
+				if ((command == Command.COLLAPSE && metaNode.isCollapsed()) ||
+				    (command == Command.EXPAND && !metaNode.isCollapsed())) 
 					continue;
 
 				// If command is expand and we're a child of a group that isn't
@@ -296,8 +297,8 @@ public class MetanodeMenuListener implements MenuListener {
 				if ((command == Command.EXPAND) && (parents != null) && (parents.size() > 0)) {
 					boolean parentCollapsed = false;
 					for (CyGroup parent: parents) {
-						MetaNode metaParent = MetaNode.getMetaNode(parent.getGroupNode());
-						if (groupList.contains(parent) && (metaParent.isCollapsed(view))) {
+						MetaNode metaParent = MetaNodeManager.getMetaNode(parent.getGroupNode());
+						if (groupList.contains(parent) && (metaParent.isCollapsed())) {
 							parentCollapsed = true;
 							break;
 						}
@@ -311,7 +312,7 @@ public class MetanodeMenuListener implements MenuListener {
 					if ((nodeGroups != null) && (nodeGroups.contains(group)))
 						continue;
 					// Are we this group?
-					if (((metaNode = MetaNode.getMetaNode(node)) != null) && 
+					if (((metaNode = MetaNodeManager.getMetaNode(node)) != null) && 
 					    (metaNode.getCyGroup() == group)) {
 						continue;
 					}

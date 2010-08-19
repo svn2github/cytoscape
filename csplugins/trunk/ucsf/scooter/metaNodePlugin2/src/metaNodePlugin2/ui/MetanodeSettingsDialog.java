@@ -39,6 +39,7 @@
 package metaNodePlugin2.ui;
 
 import metaNodePlugin2.model.MetaNode;
+import metaNodePlugin2.model.MetaNodeManager;
 import metaNodePlugin2.model.MetanodeProperties;
 import metaNodePlugin2.model.AttributeHandler;
 import metaNodePlugin2.model.AttributeHandler.AttributeHandlingType;
@@ -309,21 +310,21 @@ public class MetanodeSettingsDialog extends JDialog
 		t = metanodeProperties.get("hideMetanodes");
 		if ((t != null) && (t.valueChanged() || force)) {
       hideMetaNode = ((Boolean) t.getValue()).booleanValue();
-			MetaNode.setHideMetaNodeDefault(hideMetaNode);
+			MetaNodeManager.setHideMetaNodeDefault(hideMetaNode);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
 		t = metanodeProperties.get("sizeToBoundingBox");
 		if ((t != null) && (t.valueChanged() || force)) {
       sizeToBoundingBox = ((Boolean) t.getValue()).booleanValue();
-			MetaNode.setSizeToBoundingBoxDefault(sizeToBoundingBox);
+			MetaNodeManager.setSizeToBoundingBoxDefault(sizeToBoundingBox);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
 		t = metanodeProperties.get("metanodeOpacity");
 		if ((t != null) && (t.valueChanged() || force)) {
       metanodeOpacity = ((Double) t.getValue()).doubleValue();
-			MetaNode.setExpandedOpacityDefault(metanodeOpacity);
+			MetaNodeManager.setExpandedOpacityDefault(metanodeOpacity);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
@@ -431,7 +432,7 @@ public class MetanodeSettingsDialog extends JDialog
 			// Get all selected nodes
 			Set<CyNode> nodeList = Cytoscape.getCurrentNetwork().getSelectedNodes();
 			for (CyNode node: nodeList) {
-				MetaNode mn = MetaNode.getMetaNode(node);
+				MetaNode mn = MetaNodeManager.getMetaNode(node);
 				if (mn != null) {
 					mn.setHideMetaNode(hideMetaNode);
 					mn.setSizeToBoundingBox(sizeToBoundingBox);
@@ -446,7 +447,7 @@ public class MetanodeSettingsDialog extends JDialog
 			List<CyGroup> groupList = CyGroupManager.getGroupList(groupViewer);
 			// Update them
 			for (CyGroup group: groupList) {
-				MetaNode mn = MetaNode.getMetaNode(group);
+				MetaNode mn = MetaNodeManager.getMetaNode(group);
 				if (mn != null) {
 					mn.setHideMetaNode(hideMetaNode);
 					mn.setSizeToBoundingBox(sizeToBoundingBox);
@@ -465,7 +466,7 @@ public class MetanodeSettingsDialog extends JDialog
 				sizeToBoundingBoxTunable.setImmutable(true);
 			else
 				sizeToBoundingBoxTunable.setImmutable(false);
-			MetaNode.setHideMetaNodeDefault(hideMetanode);
+			MetaNodeManager.setHideMetaNodeDefault(hideMetanode);
 		} else if (t.getName().equals("sizeToBoundingBox")) {
       boolean sizeToBoundingBox = ((Boolean) t.getValue()).booleanValue();
 			if (sizeToBoundingBox) {
@@ -473,10 +474,10 @@ public class MetanodeSettingsDialog extends JDialog
 				modifyVizMap();
 			} else
 				opacityTunable.setImmutable(true);
-			MetaNode.setSizeToBoundingBoxDefault(sizeToBoundingBox);
+			MetaNodeManager.setSizeToBoundingBoxDefault(sizeToBoundingBox);
 		} else if (t.getName().equals("metanodeOpacity")) {
       double opacity = ((Double) t.getValue()).doubleValue();
-			MetaNode.setExpandedOpacityDefault(opacity);
+			MetaNodeManager.setExpandedOpacityDefault(opacity);
 		} else if (t.getName().equals("enableHandling")) {
       enableHandling = ((Boolean) t.getValue()).booleanValue();
 			AttributeHandler.setEnable(enableHandling);

@@ -48,6 +48,7 @@ import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 
 import metaNodePlugin2.model.MetaNode;
+import metaNodePlugin2.model.MetaNodeManager;
 import metaNodePlugin2.MetaNodeGroupViewer;
 import metaNodePlugin2.MetaNodePlugin2;
 import metaNodePlugin2.MetaNodePlugin2.Command;
@@ -127,7 +128,7 @@ public class MetanodeCommandListener implements ActionListener {
 		// Careful!  If one of the nodes is an expanded (but not hidden) metanode,
 		// we need to collapse it first or this gets messy fast
 		for (CyNode node: (List<CyNode>)new ArrayList(network.getSelectedNodes())) {
-			MetaNode mn = MetaNode.getMetaNode(node);
+			MetaNode mn = MetaNodeManager.getMetaNode(node);
 			if (mn == null) continue;
 			// Is this an expanded metanode?
 			if (mn.getCyGroup().getState() == MetaNodePlugin2.EXPANDED) {
@@ -147,7 +148,7 @@ public class MetanodeCommandListener implements ActionListener {
 				JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		MetaNode newNode = new MetaNode(group);
+		MetaNode newNode = MetaNodeManager.createMetaNode(group);
 		groupViewer.groupCreated(group);
 		newNode.collapse(false, false, true, Cytoscape.getCurrentNetworkView());
 	}
@@ -205,9 +206,9 @@ public class MetanodeCommandListener implements ActionListener {
 	 * Perform the action associated with a select menu selection
 	 */
 	private void collapse() {
-		MetaNode mNode = MetaNode.getMetaNode(group);
+		MetaNode mNode = MetaNodeManager.getMetaNode(group);
 		if (mNode == null) {
-			mNode = new MetaNode(group);
+			mNode = MetaNodeManager.createMetaNode(group);
 			if (mNode == null) return;
 			groupViewer.groupCreated(group);
 		}
@@ -218,9 +219,9 @@ public class MetanodeCommandListener implements ActionListener {
 	 * Perform the action associated with an unselect menu selection
 	 */
 	private void expand() {
-		MetaNode mNode = MetaNode.getMetaNode(group);
+		MetaNode mNode = MetaNodeManager.getMetaNode(group);
 		if (mNode == null) {
-			mNode = new MetaNode(group);
+			mNode = MetaNodeManager.createMetaNode(group);
 			groupViewer.groupCreated(group);
 		}
 		mNode.expand(false, Cytoscape.getCurrentNetworkView(), true);
@@ -230,9 +231,9 @@ public class MetanodeCommandListener implements ActionListener {
  	 * Create a new network from the currently collapsed group
  	 */
 	private void createNetworkFromGroup() {
-		MetaNode mNode = MetaNode.getMetaNode(group);
+		MetaNode mNode = MetaNodeManager.getMetaNode(group);
 		if (mNode == null) {
-			mNode = new MetaNode(group);
+			mNode = MetaNodeManager.createMetaNode(group);
 			groupViewer.groupCreated(group);
 		}
 		mNode.createNetworkFromGroup();
@@ -242,13 +243,13 @@ public class MetanodeCommandListener implements ActionListener {
  	 * Expand all metanodes
  	 */
 	private void expandAll() {
-		MetaNode.expandAll();
+		MetaNodeManager.expandAll();
 	}
 
 	/**
  	 * Collapse all metanodes
  	 */
 	private void collapseAll() {
-		MetaNode.collapseAll();
+		MetaNodeManager.collapseAll();
 	}
 }
