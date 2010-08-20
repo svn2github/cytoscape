@@ -43,7 +43,7 @@ import java.util.StringTokenizer;
 /**
  * Utility class for representing one line of SIF file.
  */
-public class Interaction {
+class Interaction {
 
 	private String source;
 	private List<String> targets = new ArrayList<String>();
@@ -57,7 +57,7 @@ public class Interaction {
 	 * @param delimiter
 	 *            DOCUMENT ME!
 	 */
-	public Interaction(final String rawText, final String delimiter) {
+	Interaction(final String rawText, final String delimiter) {
 		final StringTokenizer strtok = new StringTokenizer(rawText, delimiter);
 		int counter = 0;
 

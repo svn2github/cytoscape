@@ -25,14 +25,6 @@
 	</bean>
 -->
 
-	<bean id="sifNetworkViewProducerFactory" class="org.cytoscape.io.internal.read.CyNetworkViewProducerFactoryImpl">
-		<constructor-arg ref="sifFilter" />
-		<constructor-arg ref="sifNetworkViewProducer" />
-		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
-			<ref bean="streamUtil"/>
-		</constructor-arg>
-	</bean>
-
 	<bean id="xgmmlNetworkViewProducerFactory" class="org.cytoscape.io.internal.read.CyNetworkViewProducerFactoryImpl">
 		<constructor-arg ref="xgmmlFilter" />
 		<constructor-arg ref="xgmmlReader" />
@@ -104,11 +96,12 @@
 	</bean>
 
 	<!-- Network Readers -->
-	<bean id="sifNetworkViewProducer" class="org.cytoscape.io.internal.read.sif.SIFNetwotkViewProducer">
+	<bean id="sifNetworkViewProducerFactory" class="org.cytoscape.io.internal.read.sif.SIFNetwotkViewProducerFactory">
 		<constructor-arg ref="readUtil" />
-		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
-		<property name="cyNetworkViewFactory" ref="cyNetworkViewFactoryServiceRef" />
-		<property name="layouts" ref="cyLayoutsServiceRef" />
+		<constructor-arg ref="sifFilter" />
+		<constructor-arg ref="cyLayoutsServiceRef" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 	</bean>
 
 

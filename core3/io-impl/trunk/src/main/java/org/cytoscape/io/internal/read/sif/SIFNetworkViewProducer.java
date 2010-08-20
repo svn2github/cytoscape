@@ -1,6 +1,4 @@
 /*
- File: InteractionsReader.java
-
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -38,6 +36,7 @@
 package org.cytoscape.io.internal.read.sif;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -48,64 +47,67 @@ import org.cytoscape.io.internal.read.AbstractNetworkViewProducer;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.view.layout.CyLayouts;
 
 /**
  * Reader for graphs in the interactions file format. Given the filename,
  * provides the graph and attributes objects constructed from the file.
  */
-public class SIFNetwotkViewProducer extends AbstractNetworkViewProducer {
+public class SIFNetworkViewProducer extends AbstractNetworkViewProducer {
 
 	private static final String DEF_DELIMITER = " ";
 	private static final String LINE_SEP = System.getProperty("line.separator");
 	private static final String INTERACTION = "interaction";
-	private ReadUtils readUtil;
-	private Set<Interaction> interactions;
 
-	public SIFNetwotkViewProducer(ReadUtils readUtil) {
-		super();
-		this.interactions = new HashSet<Interaction>();
+	private final Set<Interaction> interactions = new HashSet<Interaction>();
+	private final ReadUtils readUtil;
+	private final CyLayouts layouts;
+
+	public SIFNetworkViewProducer(InputStream is, ReadUtils readUtil, CyLayouts layouts, CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory) {
+		super(is,cyNetworkViewFactory, cyNetworkFactory);
 		this.readUtil = readUtil;
+		this.layouts = layouts;
 	}
 
 	public void run(TaskMonitor tm) throws IOException {
-		refresh();
+		try {
+			readInput(tm);
+			createNetwork(tm);
+		} finally { 
+			if (inputStream != null) {
+				inputStream.close();
+				inputStream = null;
+			}
+		}
+	}
 
+	private void readInput(TaskMonitor tm) throws IOException {
+		tm.setProgress(0.00);
 		String delimiter = DEF_DELIMITER;
 
 		final String rawText = readUtil.getInputString(inputStream);
 
+		tm.setProgress(0.10);
 		if (rawText.indexOf("\t") >= 0)
 			delimiter = "\t";
 
 		final String[] lines = rawText.split(LINE_SEP);
 
+		tm.setProgress(0.15);
 		final int size = lines.length;
 		for (int i = 0; i < size; i++) {
 			if (lines[i].length() <= 0)
 				continue;
 			interactions.add(new Interaction(lines[i], delimiter));
 		}
-
-		if (inputStream != null) {
-			inputStream.close();
-			inputStream = null;
-		}
-
-		createNetwork(tm);
+		tm.setProgress(0.20);
 	}
 
-
-	private void refresh() {
-		interactions.clear();
-		interactions = new HashSet<Interaction>();
-		this.cyNetworkViews = null;
-	}
-	
 	private void createNetwork(TaskMonitor tm) {
-
-		double progress = 0.01;
 		
 		final CyNetwork network = cyNetworkFactory.getInstance();
 		
@@ -118,23 +120,21 @@ public class SIFNetwotkViewProducer extends AbstractNetworkViewProducer {
 				nodeMap.put(target, null);
 		}
 
-		tm.setProgress(0.05);
+		tm.setProgress(0.25);
 				
-		CyNode node;
 		for (String nodeName : nodeMap.keySet()) {
-			if (this.cancel){
+			if (cancelTask){
 				return;
 			}
 
-			//progress = (??)/nodeCount;
-			tm.setProgress(progress);
+			//tm.setProgress(progress);
 			
-			node = network.addNode();
+			CyNode node = network.addNode();
 			node.attrs().set(NODE_NAME_ATTR_LABEL, nodeName);
 			nodeMap.put(nodeName, node);
 		}
 
-		tm.setProgress(0.20);
+		tm.setProgress(0.65);
 		
 		// Now loop over the interactions again, this time creating edges
 		// between
@@ -145,11 +145,11 @@ public class SIFNetwotkViewProducer extends AbstractNetworkViewProducer {
 		
 		for (Interaction interaction : interactions) {
 
-			if (this.cancel){
+			if (cancelTask){
 				return;
 			}
-			//progress = (??)/edgeCount;
-			tm.setProgress(progress);
+
+			//tm.setProgress(progress);
 
 			srcName = interaction.getSource();
 			interactionType = interaction.getType();
@@ -169,14 +169,11 @@ public class SIFNetwotkViewProducer extends AbstractNetworkViewProducer {
 		layouts.getDefaultLayout().doLayout(view);
 		
 		// SIF always creates only one network.
-		this.cyNetworkViews = new CyNetworkView[1];		
-		this.cyNetworkViews[0] = view;
-
-		tm.setProgress(0.99);
+		this.cyNetworkViews = new CyNetworkView[] { view };
 		
 		nodeMap.clear();
 		nodeMap = null;
 
+		tm.setProgress(1.0);
 	}
-	
 }

@@ -90,7 +90,7 @@ public class XGMMLNetworkViewProducer extends AbstractNetworkViewProducer {
 	 * Constructor.
 	 */
 	public XGMMLNetworkViewProducer() {
-		super();
+		super(null,null,null);
 	}
 
 	public void run(TaskMonitor tm) throws IOException {
