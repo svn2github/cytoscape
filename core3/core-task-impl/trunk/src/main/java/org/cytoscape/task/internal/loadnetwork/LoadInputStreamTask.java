@@ -56,9 +56,9 @@ public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 	@Tunable(description = "InputStream to load")
 	public InputStream inputstream;
 
-	public LoadInputStreamTask(CyNetworkViewProducerManager mgr, CyNetworkViewFactory gvf,
-			CyLayouts cyl, CyNetworkManager netmgr, Properties props, CyNetworkNaming namingUtil) {
-		super(mgr, gvf, cyl, netmgr, props, namingUtil);
+	public LoadInputStreamTask(CyNetworkViewProducerManager mgr, CyNetworkManager netmgr, 
+	                           Properties props, CyNetworkNaming namingUtil) {
+		super(mgr, netmgr, props, namingUtil);
 	}
 
 	/**

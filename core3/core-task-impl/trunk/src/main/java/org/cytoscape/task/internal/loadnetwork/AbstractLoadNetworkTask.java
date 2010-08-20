@@ -49,9 +49,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.AbstractTask;
-import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
 
 /**
@@ -63,22 +61,15 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 	protected URI uri;
 	protected TaskMonitor taskMonitor;
 	protected String name;
-	protected Thread myThread = null;
 	protected boolean interrupted = false;
 	protected CyNetworkViewProducerManager mgr;
-	protected CyNetworkViewFactory gvf;
-	protected CyLayouts cyl;
 	protected CyNetworkManager netmgr;
 	protected Properties props;
-
 	protected CyNetworkNaming namingUtil;
 
-	public AbstractLoadNetworkTask(CyNetworkViewProducerManager mgr,
-			CyNetworkViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
+	public AbstractLoadNetworkTask(CyNetworkViewProducerManager mgr, CyNetworkManager netmgr,
 			Properties props, CyNetworkNaming namingUtil) {
 		this.mgr = mgr;
-		this.gvf = gvf;
-		this.cyl = cyl;
 		this.netmgr = netmgr;
 		this.props = props;
 		this.namingUtil = namingUtil;
@@ -89,8 +80,6 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 		if (viewProducer == null)
 			throw new IllegalArgumentException("Could not read file: Network View Producer is null.");
 
-		myThread = Thread.currentThread();
-
 		taskMonitor.setStatusMessage("Reading in Network Data...");
 		taskMonitor.setProgress(-1.0);
 		taskMonitor.setStatusMessage("Creating Cytoscape Network...");
@@ -100,23 +89,22 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 		final CyNetworkView[] cyNetworkViews = viewProducer.getNetworkViews();
 
 		if (cyNetworkViews == null || cyNetworkViews.length < 0)
-			throw new IOException("Could not create view model for the producer.");
+			throw new IOException("Could not create network for the producer.");
 
-		// Model should not be null.  It will be tested in ViewImpl.
-		final CyNetwork cyNetwork = cyNetworkViews[0].getModel();
-		cyNetwork.attrs()
-				.set("name", namingUtil.getSuggestedNetworkTitle(name));
-		CyNetworkView view = cyNetworkViews[0];
+		for ( CyNetworkView view : cyNetworkViews ) {
 
-		if (view == null)
-			view = gvf.getNetworkView(cyNetwork);
+			// Model should not be null.  It will be tested in ViewImpl.
+			final CyNetwork cyNetwork = view.getModel();
+			cyNetwork.attrs().set("name", namingUtil.getSuggestedNetworkTitle(name));
+		
+			view.fitContent();
 
-		view.fitContent();
+			netmgr.addNetwork(cyNetwork);
+			netmgr.addNetworkView(view);
 
-		netmgr.addNetwork(cyNetwork);
-		netmgr.addNetworkView(view);
+			informUserOfGraphStats(cyNetwork);
+		}
 
-		informUserOfGraphStats(cyNetwork);
 		taskMonitor.setProgress(1.0);
 	}
 

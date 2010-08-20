@@ -57,9 +57,9 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 	@Tunable(description = "Network file to load",flags = {Param.network})
 	public File file;
 
-	public LoadNetworkFileTask(CyNetworkViewProducerManager mgr, CyNetworkViewFactory gvf,
-			CyLayouts cyl, CyNetworkManager netmgr, Properties props, CyNetworkNaming namingUtil) {
-		super(mgr, gvf, cyl, netmgr, props, namingUtil);
+	public LoadNetworkFileTask(CyNetworkViewProducerManager mgr, CyNetworkManager netmgr, 
+	                           Properties props, CyNetworkNaming namingUtil) {
+		super(mgr, netmgr, props, namingUtil);
 	}
 
 	/**

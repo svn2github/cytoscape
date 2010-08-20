@@ -39,10 +39,8 @@ package org.cytoscape.task.internal.loadnetwork;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 
-import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.io.read.CyNetworkViewProducerManager;
 import org.cytoscape.io.util.StreamUtil;
-import org.cytoscape.view.model.CyNetworkViewFactory;
 
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
@@ -57,8 +55,6 @@ import java.util.Properties;
 public class LoadNetworkURLTaskFactoryImpl implements TaskFactory {
 
 	private CyNetworkViewProducerManager mgr;
-	private CyNetworkViewFactory gvf;
-	private CyLayouts cyl;
 	private CyNetworkManager netmgr;
 	private Properties props;
 	private StreamUtil streamUtil;
@@ -66,12 +62,10 @@ public class LoadNetworkURLTaskFactoryImpl implements TaskFactory {
 	private CyNetworkNaming cyNetworkNaming;
 
 	public LoadNetworkURLTaskFactoryImpl(CyNetworkViewProducerManager mgr,
-			CyNetworkViewFactory gvf, CyLayouts cyl, CyNetworkManager netmgr,
+			CyNetworkManager netmgr,
 			CyProperty<Properties> cyProps, CyNetworkNaming cyNetworkNaming,
 			StreamUtil streamUtil) {
 		this.mgr = mgr;
-		this.gvf = gvf;
-		this.cyl = cyl;
 		this.netmgr = netmgr;
 		this.props = cyProps.getProperties();
 		this.cyNetworkNaming = cyNetworkNaming;
@@ -83,8 +77,6 @@ public class LoadNetworkURLTaskFactoryImpl implements TaskFactory {
 	}
 
 	public Task getTask() {
-		//return new LoadNetworkURLTask(mgr, gvf, cyl, netmgr, props, cyNetworkNaming, streamUtil);
-	
-		return null;
+		return new LoadNetworkURLTask(mgr, netmgr, props, cyNetworkNaming, streamUtil);
 	}
 }

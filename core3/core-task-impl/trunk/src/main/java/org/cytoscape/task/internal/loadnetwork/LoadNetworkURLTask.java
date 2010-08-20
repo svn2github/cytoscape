@@ -67,10 +67,10 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 
 	static String BAD_INTERNET_SETTINGS_MSG = "<html><p>Cytoscape has failed to connect to the URL. Please ensure that:</p><p><ol><li>the URL is correct,</li><li>your computer is able to connect to the Internet, and</li><li>your proxy settings are correct.</li></ol></p><p>The reason for the failure is: %s</html>";
 
-	public LoadNetworkURLTask(CyNetworkViewProducerManager mgr, CyNetworkViewFactory gvf,
-			CyLayouts cyl, CyNetworkManager netmgr, Properties props,
+	public LoadNetworkURLTask(CyNetworkViewProducerManager mgr, 
+			CyNetworkManager netmgr, Properties props,
 			CyNetworkNaming namingUtil, StreamUtil streamUtil) {
-		super(mgr, gvf, cyl, netmgr, props, namingUtil);
+		super(mgr, netmgr, props, namingUtil);
 		this.streamUtil = streamUtil;
 	}
 
@@ -81,7 +81,6 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 		if (url == null)
 			throw new NullPointerException("url is null");
 
-		myThread = Thread.currentThread();
 		this.taskMonitor = taskMonitor;
 		name = url.toString();
 
