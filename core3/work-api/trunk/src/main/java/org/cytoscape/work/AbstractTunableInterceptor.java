@@ -290,7 +290,7 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 	 *
 	 *  @return true if "o" has tunable annotations and else false.
 	 */
-	public final boolean hasTunables(final Object o) {
+	public boolean hasTunables(final Object o) {
 		for (final Field field : o.getClass().getFields()) {
 			if (field.isAnnotationPresent(Tunable.class))
 				return true;
