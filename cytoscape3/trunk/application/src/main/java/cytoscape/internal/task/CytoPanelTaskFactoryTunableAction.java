@@ -58,6 +58,11 @@ import org.slf4j.LoggerFactory;
 
 
 public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
+
+	/**
+	 *  A listener that upon receiving the button-click event validates the tunables and then
+	 *  creates and executes a task.
+	 */
 	private static class ExecuteButtonListener implements ActionListener {
 		final private TaskFactory factory;
 		final private TaskManager manager;
@@ -132,6 +137,11 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 		cytoPanel.add(createNewUI(innerPanel));
 	}
 
+	/**
+	 *  Adds Close/Execute buttons below "innerPanel" in a new enclosing panel.
+	 *
+	 *  @return the new enclosing panel
+	 */
 	private JPanel createNewUI(final JPanel innerPanel) {
 		final JPanel outerPanel = new JPanel();
 		outerPanel.add(innerPanel);
