@@ -2,7 +2,6 @@ package org.cytoscape.work.internal.tunables;
 
 
 import java.awt.Color;
-import java.awt.Container;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> {
 	private JPanel parentPanel = null;
-	private Map<List<GUIHandler>, Container> panelMap;
+	private Map<List<GUIHandler>, JPanel> panelMap;
 	private List<GUIHandler> handlers;
 	private boolean newValuesSet;
 	private Object[] objectsWithTunables;
@@ -63,7 +62,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	 */
 	public GuiTunableInterceptor(final HandlerFactory<GUIHandler> factory) {
 		super(factory);
-		panelMap = new HashMap<List<GUIHandler>, Container>();
+		panelMap = new HashMap<List<GUIHandler>, JPanel>();
 		logger = LoggerFactory.getLogger(getClass());
 	}
 
@@ -100,17 +99,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 		return validateTunableInput();
 	}
 
-	/**
-	 * Creates a GUI for the detected <code>Tunables</code>, following the graphic rules specified in <code>Tunable</code>s annotations
-	 * or uses the JPanel provided by the method annotated with <code>@ProvidesGUI</code>
-	 *
-	 * The new values that have been entered for the Object contained in <code>GUIHandlers</code> are also set if the user clicks on <i>"OK"</i>
-	 *
-	 * @param an Object Array that contains <code>Tunables</code>
-	 *
-	 * @return if new values has been successfully set
-	 */
-	public boolean execUI(Object... proxyObjs) {
+	public JPanel getUI(final Object... proxyObjs) {
 		this.objectsWithTunables = convertSpringProxyObjs(proxyObjs);
 		handlers = new ArrayList<GUIHandler>();
 		JPanel providedGUI = null;
@@ -129,7 +118,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 					providedGUI = (JPanel)guiProviderMap.get(objectWithTunables).invoke(objectWithTunables);
 				} catch (final Exception e) {
 					logger.error("Can't retrieve @ProvidesGUI JPanel: " + e);
-					return false;
+					return null;
 				}
 			} else if (handlerMap.containsKey(objectWithTunables))
 				handlers.addAll(handlerMap.get(objectWithTunables).values());
@@ -141,38 +130,37 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 		if (factoryCount > 0) {
 			if (factoryCount != 1) {
 				logger.error("More than one annotated TaskFactory found!");
-				return false;
+				return null;
 			} else if (otherCount != 0) {
 				logger.error("Found annotated Task objects in addition to an annotated TaskFactory!");
-				return false;
+				return null;
 			}
 		}
 
 		if (providedGUI != null) {
 			//if no parentPanel is defined, then create a new JDialog to display the Tunables' panels
-			if (parentPanel == null) {
-				displayGUI(providedGUI);
-				return newValuesSet;
-			} else { //else add them to the "parentPanel" JPanel
+			if (parentPanel == null)
+				return providedGUI;
+			else { // add them to the "parentPanel" JPanel
 				parentPanel.removeAll();
 				parentPanel.add(providedGUI);
-				parentPanel.repaint();
+				final JPanel retVal = parentPanel;
 				parentPanel = null;
-				return true;
+				return retVal;
 			}
 		}
 
 		if (handlers.isEmpty()) {
 			if (parentPanel != null) {
 				parentPanel.removeAll();
-				parentPanel.repaint();
+				return parentPanel;
 			}
-			return true;
+			return null;
 		}
 
 		if (!panelMap.containsKey(handlers)) {
 			final String MAIN = " ";
-			Map<String, Container> panels = new HashMap<String, Container>();
+			Map<String, JPanel> panels = new HashMap<String, JPanel>();
 			final JPanel topLevel = createSimplePanel(MAIN, null, Param.hidden);
 			panels.put(MAIN, topLevel);
 
@@ -244,16 +232,34 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 			h.notifyDependents();
 
 		//if no parentPanel is defined, then create a new JDialog to display the Tunables' panels
-		if (parentPanel == null) {
-			displayGUI(panelMap.get(handlers));
-			return newValuesSet;
-		} else { //else add them to the "parentPanel" JPanel
+		if (parentPanel == null)
+			return panelMap.get(handlers);
+		else { // add them to the "parentPanel" JPanel
 			parentPanel.removeAll();
 			parentPanel.add(panelMap.get(handlers));
-			parentPanel.repaint();
+			final JPanel retVal = parentPanel;
 			parentPanel = null;
-			return true;
+			return retVal;
 		}
+	}
+
+	/**
+	 * Creates a GUI for the detected <code>Tunables</code>, following the graphic rules specified in <code>Tunable</code>s annotations
+	 * or uses the JPanel provided by the method annotated with <code>@ProvidesGUI</code>
+	 *
+	 * The new values that have been entered for the Object contained in <code>GUIHandlers</code> are also set if the user clicks on <i>"OK"</i>
+	 *
+	 * @param an Object Array that contains <code>Tunables</code>
+	 *
+	 * @return if new values has been successfully set
+	 */
+	public boolean execUI(Object... proxyObjs) {
+		final JPanel panel = getUI(proxyObjs);
+		if (panel == null)
+			return false;
+
+		displayGUI(panel);
+		return newValuesSet;
 	}
 
 	/**
@@ -335,28 +341,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 		else if (alignment == Param.horizontal)
 			dialog.setLayout(new BoxLayout(dialog, BoxLayout.LINE_AXIS));
 		return dialog;
-	}
-
-	/**
-	 * Displays the JPanels of each <code>GUIHandler</code> in a <code>JOptionPane</code>
-	 *
-	 * Set the new <i>"value"</i> to <code>Tunable</code> object if the user clicked on
-	 * <i>OK</i>, and if the validate method from <code>TunableValidator</code> interface succeeded.
-	 */
-	private void displayGUI(final Container container) {
-		if (container instanceof JPanel) {
-			try {
-				displayGUI((JPanel)container);
-			} catch (final Exception e) {
-				logger.error("This should never happen!\n" + e);
-			}
-		} else { // Assume we're dealing with a JDialog.
-			try {
-				displayGUI((JDialog)container);
-			} catch (final Exception e) {
-				logger.error("This should never happen!\n" + e);
-			}
-		}
 	}
 
 	private void displayGUI(final JPanel optionPanel) {

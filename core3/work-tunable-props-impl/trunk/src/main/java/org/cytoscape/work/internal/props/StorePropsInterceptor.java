@@ -2,8 +2,9 @@ package org.cytoscape.work.internal.props;
 
 import java.util.*;
 
-import org.cytoscape.work.spring.SpringTunableInterceptor;
+import javax.swing.JPanel;
 
+import org.cytoscape.work.spring.SpringTunableInterceptor;
 
 
 public class StorePropsInterceptor extends SpringTunableInterceptor<PropHandler> {
@@ -12,6 +13,10 @@ public class StorePropsInterceptor extends SpringTunableInterceptor<PropHandler>
 	public StorePropsInterceptor(Properties inputProps) {
 		super(new PropHandlerFactory());
 		this.inputProps = inputProps;
+	}
+
+	public JPanel getUI(Object... objs) {
+		return null;
 	}
 
 	public boolean execUI(Object... pobjs) {

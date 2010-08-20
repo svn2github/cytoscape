@@ -286,12 +286,28 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 		return handlerMap.get(o);
 	}
 
+	/** Tests an object for having tunable annotations.
+	 *
+	 *  @return true if "o" has tunable annotations and else false.
+	 */
+	public final boolean hasTunables(final Object o) {
+		for (final Field field : o.getClass().getFields()) {
+			if (field.isAnnotationPresent(Tunable.class))
+				return true;
+		}
+		for (final Method method : o.getClass().getMethods()) {
+			if (method.isAnnotationPresent(Tunable.class) || method.isAnnotationPresent(ProvidesGUI.class))
+				return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public abstract boolean execUI(Object... objs);
 	public abstract void setParent(Object o);
 	public abstract boolean handle();
 }

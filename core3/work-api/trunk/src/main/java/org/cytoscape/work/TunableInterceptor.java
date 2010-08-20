@@ -35,8 +35,10 @@ public interface TunableInterceptor<TH extends TunableHandler> {
 	
 
 	/**
+	 *  @param obs  objects which are instances classes with <code>Tunables</code> that need to be displayed to a user.
+	 *  @return a panel that contains a visual representation of the tunables and is appropriate for embedding in a dialog or another panel
 	 */
-//	JPanel getUI();
+	JPanel getUI(Object... obs);
 
 	/**
 	 * Display the identified tunables to a user in order to allow her/him to modify their values.
@@ -75,4 +77,10 @@ public interface TunableInterceptor<TH extends TunableHandler> {
 	 * False if an exception is thrown (from <code>TunableValidator</code>) and so the tasks won't be performed
 	 */
 	boolean handle(); //TODO: should we call this validateAndWriteBackTunables() instead?
+
+	/** Tests an object for having tunable annotations.
+	 *
+	 *  @return true if "o" has tunable annotations and else false.
+	 */
+	boolean hasTunables(final Object o);
 }

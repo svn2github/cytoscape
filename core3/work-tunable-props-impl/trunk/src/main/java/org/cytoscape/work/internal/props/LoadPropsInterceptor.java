@@ -2,6 +2,8 @@ package org.cytoscape.work.internal.props;
 
 import java.util.*;
 
+import javax.swing.JPanel;
+
 import org.cytoscape.work.spring.SpringTunableInterceptor;
 
 
@@ -13,18 +15,20 @@ public class LoadPropsInterceptor extends SpringTunableInterceptor<PropHandler> 
 		this.inputProps = inputProps;
 	}
 
+	public JPanel getUI(Object... objs) {
+		return null;
+	}
+
 	public boolean execUI(Object... pobjs) {
 		Object[] objs = convertSpringProxyObjs(pobjs);
-		//java.util.List<PropHandler> lh = new ArrayList<PropHandler>();
-		for ( Object o : objs ) {
+		for (final Object o : objs) {
 			if ( !handlerMap.containsKey( o ) )
 				throw new IllegalArgumentException("No Tunables exist for Object yet!");
 			
-			Collection<PropHandler> lh = handlerMap.get(o).values();
+			final Collection<PropHandler> handlers = handlerMap.get(o).values();
 			
-			for ( PropHandler p : lh ) {
-				p.setProps( inputProps );
-			}
+			for (final PropHandler p : handlers)
+				p.setProps(inputProps);
 		}
 		return true;
 	}

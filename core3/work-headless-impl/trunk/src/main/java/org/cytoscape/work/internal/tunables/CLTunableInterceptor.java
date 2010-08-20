@@ -4,6 +4,8 @@ package org.cytoscape.work.internal.tunables;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JPanel;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -55,7 +57,13 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 		this.args = clp.getCommandLineCompleteArgs();
 	}
 
-	
+	/**
+	 *  @return always null because we're not providing a GUI
+	 */
+	public JPanel getUI(final Object ...objs) {
+		return null;
+	}
+
 	/**
 	 * Parses and apply the right commandline arguments to the <code>Tunables</code>'s value that need to be modified.
 	 * <p><pre>

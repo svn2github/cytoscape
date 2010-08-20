@@ -132,7 +132,7 @@ public class TunablesTestTask extends AbstractTask implements TunableValidator {
 	public void setInt(final Integer newValue) { getterSetterInt = newValue; }
 
 	public boolean tunablesAreValid(final Appendable errMsg) {
-		if (vt.equals("valid"))
+		if (vt != null && vt.equals("valid"))
 			return true;
 
 		try {
