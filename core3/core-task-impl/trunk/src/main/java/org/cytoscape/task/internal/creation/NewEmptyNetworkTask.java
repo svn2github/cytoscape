@@ -63,18 +63,10 @@ public class NewEmptyNetworkTask extends AbstractCreationTask {
 
 	
 	public void run(TaskMonitor tm) {
-		System.out.println("========= Creating empty network/view: stage 1 =========");
 		final CyNetwork newNet = cnf.getInstance();
 		newNet.attrs().set("name","Network");
-		
-		System.out.println("========= Creating empty network/view: stage 2 =========");
-		final CyNetworkView view = cnvf.getNetworkView(newNet);
-
-		System.out.println("========= Creating empty network/view: stage 3 =========");
-		
+		final CyNetworkView view = cnvf.getNetworkView(newNet);		
 		netmgr.addNetwork(newNet);
-		System.out.println("========= Creating empty network/view: stage 4 =========");
 		netmgr.addNetworkView(view);
-		System.out.println("========= New empty network/view has been created =========");
 	}
 }
