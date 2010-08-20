@@ -143,17 +143,13 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel, Se
 		
 		dummyview.setVisualProperty(NETWORK_TITLE, "Dummy Network View");
 		
-		System.out.println("#### " + dummyview.getVisualProperty(NETWORK_TITLE));
 
 		// Set background color
 //		background = vs.getDefaultValue(NETWORK_BACKGROUND_COLOR);
 //		view.setVisualProperty(NETWORK_BACKGROUND_COLOR, background);
 
 		// put it in this panel
-		//presentationFactory.addPresentation(this, dummyview);
-		
-		System.out.println("######## Dummy Network Had Been Created! ##########");
-		
+		//presentationFactory.addPresentation(this, dummyview);		
 		
 	}
 

@@ -186,18 +186,7 @@ public class ContinuousTrackRenderer<V extends Number>
 	 * @param index
 	 */
 	protected void removeSquare(Integer index) {
-		System.out.println("\n\nTrying to remove " + index);
-
-		for (Object key : verticesList.keySet()) {
-			System.out.println("Key = " + key + ", " + verticesList.get(key));
-		}
-
 		verticesList.remove(index);
-
-		for (Object key : verticesList.keySet()) {
-			System.out.println("Key After = " + key + ", "
-					+ verticesList.get(key));
-		}
 	}
 
 	@Override

@@ -13,7 +13,6 @@ public class IconManager {
 	private Map<String, Icon> iconMap;
 	
 	public IconManager() {
-		System.out.println("--------------> IconManager created!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		// for setter injection
 		iconMap = new HashMap<String, Icon>();
 		loadIcon();

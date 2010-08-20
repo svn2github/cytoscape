@@ -99,7 +99,6 @@ public class VizMapPropertySheetBuilder implements
 
 	public void setPropertyTable() {
 		
-		System.out.println("!!!!!!!!!!!! Current Style = " + selectedStyle);
 		if(selectedStyle == null || cyNetworkManager.getCurrentRenderingEngine() == null)
 			return;
 		
@@ -276,7 +275,6 @@ public class VizMapPropertySheetBuilder implements
 						
 					}
 				}
-				System.out.println("\t\tAdding!! " + calculatorTypeProp.getDisplayName());
 				props.add(calculatorTypeProp);
 			}
 		}
@@ -415,7 +413,6 @@ public class VizMapPropertySheetBuilder implements
 		}
 
 		for (Property p : targets) {
-			System.out.println("Removed: " + p.getDisplayName());
 			props.remove(p);
 		}
 	}

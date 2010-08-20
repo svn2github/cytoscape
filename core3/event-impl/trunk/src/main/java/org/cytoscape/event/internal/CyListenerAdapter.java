@@ -44,12 +44,17 @@ import java.util.concurrent.Executors;
 import org.cytoscape.event.CyEvent;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * Some static utility methods that help you fire events.
  */
 public class CyListenerAdapter {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CyListenerAdapter.class);
+	
 	private static final Executor EXEC = Executors.newCachedThreadPool();
 	private final Map<Class<?>,ServiceTracker> serviceTrackers; 
 	
@@ -75,11 +80,13 @@ public class CyListenerAdapter {
 	 * @param listenerClass  DOCUMENT ME!
 	 */
 	public <E extends CyEvent> void fireSynchronousEvent(final E event) {
-		final Class listenerClass = event.getListenerClass(); 
-		System.out.println("ATTEMPTING TO FIRE SYNC: " + event.toString() + " for " + listenerClass.getName());
+		final Class<?> listenerClass = event.getListenerClass();
+		
+		logger.debug("ATTEMPTING TO FIRE SYNC: " + event.toString() + " for " + listenerClass.getName());
+		
 		final Object[] listeners = getListeners(listenerClass);
 		if ( listeners == null ) {
-			System.out.println("Sync listeners is null");
+			logger.debug("Sync listeners is null");
 			return;
 		} 
 
@@ -87,21 +94,21 @@ public class CyListenerAdapter {
 			final Method method = listenerClass.getMethod("handleEvent", event.getClass());
 
 			for (final Object listener : listeners) {
-				System.out.println("SYNC firing event: " + event.getClass().toString() + "  for listener: " + listener.toString());
+				logger.debug("SYNC firing event: " + event.getClass().toString() + "  for listener: " + listener.toString());
 				method.invoke(listenerClass.cast(listener), event);
 			}
 		} catch (NoSuchMethodException e) {
-			System.err.println("Listener doesn't implement \"handleEvent\" method: "
+			logger.error("Listener doesn't implement \"handleEvent\" method: "
 			                   + listenerClass.getName());
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			System.err.println("Listener threw exception as part of \"handleEvent\" invocation: "
+			logger.error("Listener threw exception as part of \"handleEvent\" invocation: "
 			                   + listenerClass.getName());
 			e.printStackTrace();
-			System.err.println("caused by:");
+			logger.error("caused by:");
 			e.getCause().printStackTrace();
 		} catch (IllegalAccessException e) {
-			System.err.println("Listener can't execute \"handleEvent\" method: "
+			logger.error("Listener can't execute \"handleEvent\" method: "
 			                   + listenerClass.getName());
 			e.printStackTrace();
 		}
@@ -120,10 +127,10 @@ public class CyListenerAdapter {
 	 */
 	public <E extends CyEvent> void fireAsynchronousEvent(final E event) {
 		final Class listenerClass = event.getListenerClass(); 
-		System.out.println("ATTEMPTING TO FIRE async: " + event.toString() + " for " + listenerClass.getName());
+		logger.debug("ATTEMPTING TO FIRE async: " + event.toString() + " for " + listenerClass.getName());
 		final Object[] listeners = getListeners(listenerClass);
 		if ( listeners == null ) {
-			System.out.println("async listeners is null");
+			logger.debug("async listeners is null");
 			return;
 		} 
 
@@ -131,12 +138,12 @@ public class CyListenerAdapter {
 			final Method method = listenerClass.getMethod("handleEvent", event.getClass());
 
 			for (final Object listener : listeners) {
-				System.out.println("async firing event: " + event.getClass().toString() + "  for listener: " + listener.getClass().getName());
+				logger.debug("async firing event: " + event.getClass().toString() + "  for listener: " + listener.getClass().getName());
 				EXEC.execute(new Runner(method, listener, event, listenerClass));
 			}
 		} catch (NoSuchMethodException e) {
 			// TODO should probably rethrow
-			System.err.println("Listener doesn't implement \"handleEvent\" method: "
+			logger.error("Listener doesn't implement \"handleEvent\" method: "
 			                   + listenerClass.getName());
 			e.printStackTrace();
 		}
@@ -160,22 +167,22 @@ public class CyListenerAdapter {
 				method.invoke(clazz.cast(listener), event);
 			} catch (IllegalAccessException e) {
 				// TODO should rethrow as something
-				System.err.println("Listener can't execute \"handleEvent\" method: " + clazz.getName());
+				logger.error("Listener can't execute \"handleEvent\" method: " + clazz.getName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				// TODO should rethrow as something
-				System.err.println("Listener threw exception as part of \"handleEvent\" invocation: " + listener.toString());
+				logger.error("Listener threw exception as part of \"handleEvent\" invocation: " + listener.toString());
 				e.printStackTrace();
-				System.err.println("caused by:");
+				logger.error("caused by:");
 				e.getCause().printStackTrace();
 			}
 		}
 	}
 
 
-	private Object[] getListeners(Class listenerClass) {
+	private Object[] getListeners(Class<?> listenerClass) {
 		if ( !serviceTrackers.containsKey( listenerClass ) ) {
-			System.out.println("added new service tracker for " + listenerClass);
+			logger.debug("added new service tracker for " + listenerClass);
 			final ServiceTracker st = new ServiceTracker(bc, listenerClass.getName(), null);
 			st.open();
 			serviceTrackers.put( listenerClass, st );

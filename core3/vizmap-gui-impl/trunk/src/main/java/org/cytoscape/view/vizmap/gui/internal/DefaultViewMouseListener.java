@@ -68,7 +68,6 @@ public class DefaultViewMouseListener extends MouseAdapter {
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			
 			defViewEditor.showEditor(null);
-			System.out.println("######### Display Default Editor.");
 			
 			// TODO Should be handled by listener.
 			// vizMapperMainPanel.updateDefaultImage(targetStyle,

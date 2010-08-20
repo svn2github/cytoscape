@@ -70,24 +70,17 @@ public class VizMapperMenuManager {
 	 * @see cytoscape.view.ServiceListener#onBind(java.lang.Object, java.util.Map)
 	 */
 	public void onBind(VizMapUIAction action, Map properties) {
-		System.out.println("@@@@@@@@@@@@@@@@@@@@ binding service:");
 		if(generateValues == null && iconManager != null) {
 			// for value generators.
 			generateValues = new JMenu(generateMenuLabel);
 			generateValues.setIcon(iconManager.getIcon(generateIconId));
 			rightClickMenu.add(generateValues);
 		}
-		
-		for(Object key: properties.keySet()){
-			System.out.println(key + " ==============> " + properties.get(key)); 
-		}
+
 		
 		final Object serviceType = properties.get("service.type");
 		if( serviceType != null && serviceType.toString().equals("vizmapUI.contextMenu")) {
-			rightClickMenu.add(action.getMenu());
-			
-			System.out.println("@@@@@@@@@@@@@@@@@@@@ Contyext menu service: " + action.getMenu().getText());
-			
+			rightClickMenu.add(action.getMenu());			
 		} else {
 			mainMenu.add(action.getMenu());
 		}

@@ -38,9 +38,7 @@ public class AttributeComboBoxPropertyEditor extends CyComboBoxPropertyEditor
 	}
 
 	public void handleEvent(ColumnCreatedEvent e) {
-		
-		System.out.println("\n\n\n\n%%%%%%%%%%%%%%%%%%% Got new Attr: " + e.getColumnName() + " %%%%%%%%%%, source = " + e.getSource().getTitle() + "%%%%%%%%%\n\n\n\n");
-		
+				
 		final String newAttributeName = e.getColumnName();
 		JComboBox box = (JComboBox) editor;
 		box.addItem(newAttributeName);

@@ -65,6 +65,8 @@ import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cytoscape.view.CyHelpBroker;
 
@@ -74,6 +76,8 @@ import cytoscape.view.CyHelpBroker;
 public class NetworkViewManager implements InternalFrameListener,
 		NetworkViewAddedListener, NetworkViewAboutToBeDestroyedListener,
 		SetCurrentNetworkViewListener, SetCurrentNetworkListener {
+	
+	private static final Logger logger = LoggerFactory.getLogger(NetworkViewManager.class);
 	
 	private final JDesktopPane desktopPane;
 
@@ -143,7 +147,7 @@ public class NetworkViewManager implements InternalFrameListener,
 	 * @param props
 	 */
 	public void addPresentationFactory(RenderingEngineFactory<CyNetwork> factory, Map props) {
-		System.out.print("\n\n\n Adding New Rendering Engine >>>>>>>>>>");
+		logger.info("Adding New Rendering Engine Factory...");
 		
 		Object rendererID = props.get(ID);
 		if(rendererID == null)
@@ -155,7 +159,7 @@ public class NetworkViewManager implements InternalFrameListener,
 			System.out.print(rendererID + " is registered as default rendering engine.");
 		}
 		
-		System.out.println(">>>> New Rendering Engine is Available: " + rendererID +"\n\n\n");
+		logger.info("New Rendering Engine is Available: " + rendererID);
 	}
 	
 	

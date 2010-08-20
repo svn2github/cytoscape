@@ -128,7 +128,6 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	}
 
 	public void addNodeViewTaskFactory(NodeViewTaskFactory nvtf, Map props) {
-		System.out.println("addNodeViewTaskFactory");
 		if ( nvtf == null )
 			return;
 
@@ -136,7 +135,6 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	}
 
 	public void removeNodeViewTaskFactory(NodeViewTaskFactory nvtf, Map props) {
-		System.out.println("removeNodeViewTaskFactory");
 		if ( nvtf == null )
 			return;
 
@@ -144,7 +142,6 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	}
 
 	public void addEdgeViewTaskFactory(EdgeViewTaskFactory evtf, Map props) {
-		System.out.println("addEdgeViewTaskFactory");
 		if ( evtf == null )
 			return;
 
@@ -152,7 +149,6 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	}
 
 	public void removeEdgeViewTaskFactory(EdgeViewTaskFactory evtf, Map props) {
-		System.out.println("removeEdgeViewTaskFactory");
 		if ( evtf == null )
 			return;
 
@@ -160,7 +156,6 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	}
 
 	public void addNetworkViewTaskFactory(NetworkViewTaskFactory evtf, Map props) {
-		System.out.println("addNetworkViewTaskFactory");
 		if ( evtf == null )
 			return;
 
@@ -168,7 +163,6 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	}
 
 	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory evtf, Map props) {
-		System.out.println("removeNetworkViewTaskFactory");
 		if ( evtf == null )
 			return;
 

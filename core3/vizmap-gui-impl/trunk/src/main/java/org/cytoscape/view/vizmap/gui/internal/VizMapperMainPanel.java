@@ -74,6 +74,8 @@ import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.view.vizmap.gui.internal.theme.ColorManager;
 import org.cytoscape.view.vizmap.gui.internal.theme.IconManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
@@ -104,6 +106,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		VisualStyleCreatedListener, PropertyChangeListener, PopupMenuListener, NetworkViewAddedListener {
 
 	private final static long serialVersionUID = 1202339867854959L;
+	
+	private static final Logger logger = LoggerFactory.getLogger(VizMapperMainPanel.class);
 	
 	private static final String TAB_TITLE = "VizMapper\u2122";
 
@@ -197,14 +201,12 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		if (style == null || style.equals(lastVS))
 			return;
 
-		System.out.println("================== Switching Visual Style to " + style.getTitle() +" =====================");
 		
 		editorWindowManager.closeAllEditorWindows();
 		
 		vizMapPropertySheetBuilder.setSelectedStyle(style);
 
 		if (vizMapPropertySheetBuilder.getPropertyMap().containsKey(style)) {
-			System.out.println("######### Recalling visual mapping prop sheet");
 			final List<Property> props = vizMapPropertySheetBuilder
 					.getPropertyMap().get(style);
 
@@ -223,7 +225,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				if (prop.getCategory().startsWith(CATEGORY_UNUSED) == false) {
 					propertySheetPanel.addProperty(prop);
 				} else {
-					System.out.println("@@@@ Adding unused: " + prop.getDisplayName());
 					unused.put(prop.getDisplayName(), prop);
 				}
 			}
@@ -235,7 +236,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				propertySheetPanel.addProperty(unused.get(key));
 			}
 		} else {
-			System.out.println("######### Building visual mapping prop sheet");
 			vizMapPropertySheetBuilder.setPropertyTable();
 			updateAttributeList();
 		}
@@ -254,7 +254,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		 * Draw default view
 		 */
 		Image defImg = defaultImageManager.get(style);
-		System.out.println("######### Generating image: " + defImg);
 
 		if (defImg == null) {
 			// Default image is not available in the buffer. Create a new one.
@@ -305,7 +304,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		// Collections.sort(visualStyles);
 
 		for (VisualStyle vs : visualStyles) {
-			System.out.println("######### Adding VS: " + vs.getTitle());
+			logger.info("Adding VS: " + vs.getTitle());
 			vsComboBoxModel.addElement(vs);
 			defPanel = defViewEditor.getDefaultView(vs);
 			view = ((DefaultViewPanel) defPanel).getView();
@@ -414,7 +413,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				.setText(vsComboBoxModel.getSelectedItem().toString());
 		defaultViewImagePanel.add(defaultImageButton, BorderLayout.CENTER);
 		defaultImageButton.addMouseListener(defaultViewMouseListener);
-		System.out.println("######### Default Editor Listener set!.");
 		this.repaint();
 	}
 
@@ -698,10 +696,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	public void handleEvent(VisualStyleCreatedEvent e) {
 
 		this.vsComboBoxModel.addElement(e.getCreatedVisualStyle());
-
-		System.out.println("<<<<<<<<<<<<<<<<<<< Got event: " + e.getSource()
-				+ ", item = " + vsComboBox.getItemCount());
-
 	}
 	
 	@Override

@@ -131,15 +131,6 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener,
 	public <V> V showVisualPropertyValueEditor(Component parentComponent,
 			VisualProperty<V> type, V initial) throws Exception {
 
-		logger.debug("Calling Value Editor =============  Target = " + type.getType() +"\n\n\n\n");
-
-		for (Class<?> key : valueEditors.keySet()) {
-			System.out.println("Key ====> " + key + ", val = "
-					+ valueEditors.get(key));
-		}
-
-		System.out.println("\n\n\n\n");
-
 		ValueEditor<V> editor = (ValueEditor<V>) valueEditors.get(type
 				.getType());
 
@@ -262,17 +253,6 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener,
 	}
 
 	public <V> ValueEditor<V> getValueEditor(Class<V> dataType) {
-
-		System.out
-				.println("\n\n\n\n============= Calling Value Editor =======================\n\n\n\n");
-
-		for (Class<?> key : valueEditors.keySet()) {
-			System.out.println("Key ====> " + key + ", val = "
-					+ valueEditors.get(key));
-		}
-
-		System.out.println("\n\n\n\n");
-
 		return (ValueEditor<V>) this.valueEditors.get(dataType);
 	}
 
@@ -287,8 +267,7 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener,
 	}
 
 	public void handleEvent(ColumnCreatedEvent e) {
-		System.out.println("---------------> got column event: "
-				+ e.getColumnName());
+		
 	}
 
 	public void handleEvent(ColumnDeletedEvent e) {

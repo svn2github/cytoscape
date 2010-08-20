@@ -41,7 +41,6 @@ import static org.cytoscape.model.GraphObject.NODE;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.cytoscape.model.CyEdge;
@@ -55,11 +54,16 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  */
 public class VisualStyleImpl implements VisualStyle {
+	
+	private static final Logger logger = LoggerFactory.getLogger(VisualStyleImpl.class);
+	
 	private Map<VisualProperty<?>, VisualMappingFunction<?, ?>> mappings;
 	private Map<VisualProperty<?>, Object> perVSDefaults;
 	private RootVisualLexicon rootLexicon;
@@ -97,7 +101,7 @@ public class VisualStyleImpl implements VisualStyle {
 		for(VisualProperty<?> vp: this.rootLexicon.getAllVisualProperties())
 			perVSDefaults.put(vp, vp.getDefault());
 		
-		System.out.println("@@@@@@ VS Constructed: " + this.title);
+		logger.info("New Visual Style Constructed: " + this.title);
 		
 	}
 
@@ -159,8 +163,6 @@ public class VisualStyleImpl implements VisualStyle {
 	 */
 	public <T> void setDefaultValue(final VisualProperty<? extends T> vp, final T value) {
 		perVSDefaults.put(vp, value);
-		System.out.print("!!!!! Setting Default: " + vp.getDisplayName() + " = " + value);
-		System.out.println("-----> Setting New Default: " + perVSDefaults.get(vp));
 	}
 
 	// ??

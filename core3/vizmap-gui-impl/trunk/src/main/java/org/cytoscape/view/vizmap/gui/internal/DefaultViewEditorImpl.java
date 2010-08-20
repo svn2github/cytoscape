@@ -458,14 +458,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 			}
 
 			if (newValue != null) {
-				System.out.println("New value =======> "
-						+ newValue
-						+ ", cur view = "
-						+ cyNetworkManager.getCurrentNetworkView()
-								.getNodeViews().size());
-				System.out.println("Nodes = "
-						+ cyNetworkManager.getCurrentNetwork().getNodeCount());
-
 				selectedStyle.setDefaultValue(vp, newValue);
 				selectedStyle.apply(cyNetworkManager.getCurrentNetworkView());
 			}
@@ -481,9 +473,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 				contextMenu.removeAll();
 				final CyNetworkView networkView = cyNetworkManager
 						.getCurrentNetworkView();
-
-				System.out.println("##### target value =======> "
-						+ vp.getDisplayName());
 
 				final JMenuItem lockItemMenu = new JCheckBoxMenuItem(
 						"Lock this Visual Property") {
@@ -518,7 +507,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 			vmm.setVisualStyle(selectedStyle, view);
 		}
 
-		System.out.println("Cur VS = " + curVS);
 		selectedStyle.apply(cyNetworkManager.getCurrentNetworkView());
 	}
 
@@ -554,7 +542,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 			Set<VisualProperty<?>> vps = vpSets.get(key);
 			for (VisualProperty<?> vp : vps) {
 				model.addElement(vp);
-				logger.debug("##### New VP Def ---> "
+				logger.debug("New Visual Property set to GUI: "
 						+ vp.getDisplayName() + " = " + vp.getDefault());
 			}
 			list.setCellRenderer(renderer);

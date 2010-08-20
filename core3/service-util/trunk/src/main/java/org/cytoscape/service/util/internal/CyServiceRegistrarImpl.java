@@ -7,12 +7,17 @@ import java.util.HashMap;
 import java.util.Dictionary;
 import org.osgi.framework.BundleContext; 
 import org.osgi.framework.ServiceRegistration; 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.osgi.context.BundleContextAware;
 
 public class CyServiceRegistrarImpl implements CyServiceRegistrar, BundleContextAware {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CyServiceRegistrarImpl.class);
+	
 	private BundleContext bc;
 	private Map<Class,Map<Object,ServiceRegistration>> refs;
-
+	
 	public CyServiceRegistrarImpl() {
 		refs = new HashMap<Class,Map<Object,ServiceRegistration>>();
 	}
@@ -36,7 +41,7 @@ public class CyServiceRegistrarImpl implements CyServiceRegistrar, BundleContext
 		if ( bc == null )
 			throw new IllegalStateException( "BundleContext is null" );
 
-		System.out.println("attempting to register service: " + o.toString() + " of type " + c.getName());
+		logger.debug("attempting to register service: " + o.toString() + " of type " + c.getName());
 		ServiceRegistration s = bc.registerService( c.getName(), o, props );
 
 		if ( !refs.containsKey(c) )
@@ -47,7 +52,7 @@ public class CyServiceRegistrarImpl implements CyServiceRegistrar, BundleContext
 
 
 	public void unregisterAllServices(Object o) {
-		for ( Class c : o.getClass().getInterfaces() ) 
+		for ( Class<?> c : o.getClass().getInterfaces() ) 
 			unregisterService(o,c);
 	}
 
@@ -58,7 +63,7 @@ public class CyServiceRegistrarImpl implements CyServiceRegistrar, BundleContext
 		if ( c == null )
 			throw new NullPointerException( "class is null" );
 
-		System.out.println("attempting to UNregister service: " + o.toString() + " of type " + c.getName());
+		logger.debug("attempting to UNregister service: " + o.toString() + " of type " + c.getName());
 
 		if ( !refs.containsKey(c) )
 			return;
