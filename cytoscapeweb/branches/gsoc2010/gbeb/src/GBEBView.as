@@ -10,6 +10,7 @@ package
     import flare.util.Displays;
     import flare.util.Shapes;
     import flare.vis.Visualization;
+    import flare.vis.controls.DragControl;
     import flare.vis.data.Data;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
@@ -98,11 +99,7 @@ package
  
             if (_bounds) resize(_bounds);
  
-            if (_layout == null) {
-                    // place around circle by tree structure, radius mapped to depth
-//                _vis.operators.add(new CircleLayout(null, null, true));
-//                CircleLayout(_vis.operators.last).angleWidth = 2 * Math.PI;
-												
+            if (_layout == null) {						
 //           	    _vis.operators.add(new RadialTreeLayout(80));
 //                RadialTreeLayout(_vis.operators.last).autoScale = true;				
 							
@@ -111,6 +108,8 @@ package
             } else {
                 _vis.operators.add(_layout);
             }
+           
+            _vis.controls.add( new DragControl(function(o:*):Boolean { return o is NodeSprite; }) );
            
                 // ##############################################################            
 //                var bounds:Rectangle = new Rectangle(0, 0, width, height);

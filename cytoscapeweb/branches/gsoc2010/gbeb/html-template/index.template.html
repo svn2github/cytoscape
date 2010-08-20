@@ -114,7 +114,8 @@
                 $("#bundleEdges").change(function(evt) {
                     swf().bundleEdges($("#bundleEdges").is(":checked"));
                 });
-                
+
+                $("#bundleEdges").attr("checked", false);
                 draw($("#graphs").val());
             });
         --></script>

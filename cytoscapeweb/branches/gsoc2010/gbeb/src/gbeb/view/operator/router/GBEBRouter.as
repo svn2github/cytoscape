@@ -496,26 +496,27 @@ package gbeb.view.operator.router {
             
             //angleOfLine = Math.atan(gradient) * 180 / Math.PI;
             //trace("Mesh: Testing Gradient: Edge " + cycles + " | direction " + s1.direction + " | Gradient:" + gradient + " |Angle: " + angleOfLine);
-				     s1.centroid = findCentroid(s1);
-						 
-						 // BUG FIX: 
-						 // ########################################################################################################
-						 // It is noted that at for vertical lines and for lines of gradient = 1, there will be a bug that cause the
-						 // meshEdge to span the length of the visualisation. As such, and offset is used to move the line away from the corners
-						 // of the grid and prevent this bug from happening. 
-						 if( Math.abs(gradient) > 500 || Math.abs(gradient) == Number.POSITIVE_INFINITY || ( Math.abs(gradient) > 0.99 && Math.abs(gradient) < 1.01))
-						 {
-							 var offset:Number = 0.2;
-							 if(s1.centroid != null)
-							 {
-								 meshEdge.x1 += offset; meshEdge.x2 += offset; s1.centroid.x += offset;
-							 }
-							 trace("GBEBRouter: BugFix: Super long mesh Edge removed!");
-						 }
-						 // #########################################################################################################
+		     s1.centroid = findCentroid(s1);
+		     var meshEdge:MeshEdge = generateLineFromPointAndGradient(s1.centroid, gradient);
+				 
+			 // BUG FIX: 
+			 // ########################################################################################################
+			 // It is noted that at for vertical lines and for lines of gradient = 1, there will be a bug that cause the
+			 // meshEdge to span the length of the visualisation. As such, and offset is used to move the line away from the corners
+			 // of the grid and prevent this bug from happening. 
+			 if( Math.abs(gradient) > 500 || Math.abs(gradient) == Number.POSITIVE_INFINITY || ( Math.abs(gradient) > 0.99 && Math.abs(gradient) < 1.01))
+			 {
+				 var offset:Number = 0.2;
+				 if(s1.centroid != null)
+				 {
+					 meshEdge.x1 += offset; meshEdge.x2 += offset; s1.centroid.x += offset;
+				 }
+				 trace("GBEBRouter: BugFix: Super long mesh Edge removed!");
+			 }
+			 // #########################################################################################################
             
             //trace("Mesh: Generate meshEdges: " + returnIndexFromXY(s1.centroid.x, s1.centroid.y).toString() + " | " + s1.centroid.toString());
-            var meshEdge:MeshEdge = generateLineFromPointAndGradient(s1.centroid, gradient);
+            
             currentGrid = returnIndexFromXY(s1.centroid.x, s1.centroid.y);
             
             if (currentGrid.x < 0 || currentGrid.y < 0 || currentGrid.x > numGridsX || currentGrid.y > numGridsY) continue; 
