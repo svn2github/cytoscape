@@ -360,9 +360,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 			newValuesSet = false;
 	}
 
-	private void displayGUI(final JDialog optionDialog) {
-	}
-
 	/**
 	 * Check if the conditions set in validate method from <code>TunableValidator</code> are met
 	 *
