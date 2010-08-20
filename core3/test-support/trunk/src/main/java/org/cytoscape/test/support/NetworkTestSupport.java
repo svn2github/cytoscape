@@ -24,6 +24,10 @@ public class NetworkTestSupport {
 	public CyNetwork getNetwork() {
 		return networkFactory.getInstance();
 	}
+
+	public CyNetworkFactory getNetworkFactory() {
+		return networkFactory;	
+	}
 }
 
 
