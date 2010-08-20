@@ -95,7 +95,7 @@ public class CytoscapeMenuPopulator {
 
 	public void addTaskFactory(TaskFactory factory, Map props) {
 		if (interceptor.hasTunables(factory))
-			addFactory(new CytoPanelTaskFactoryTunableAction(factory, interceptor, app, props, netManager), factory, props);
+			addFactory(new CytoPanelTaskFactoryTunableAction(factory, taskManager, interceptor, app, props, netManager), factory, props);
 		else
 			addFactory(new TaskFactoryTunableAction<TaskFactory>(taskManager, interceptor, factory, props, netManager), factory, props);
 	}

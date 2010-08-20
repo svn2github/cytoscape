@@ -37,33 +37,75 @@ import cytoscape.view.CytoPanel;
 import cytoscape.view.CytoPanelName;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import java.util.Map;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
-import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.work.TunableValidator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
+	private static class ExecuteButtonListener implements ActionListener {
+		final private TaskFactory factory;
+		final private TaskManager manager;
+
+		ExecuteButtonListener(final TaskFactory factory, final TaskManager manager) {
+			this.factory = factory;
+			this.manager = manager;
+		}
+
+		public void actionPerformed(final ActionEvent event) {
+			// Perform input validation?
+			if (factory instanceof TunableValidator) {
+				final Appendable errMsg = new StringBuilder();
+				try {
+					if (!((TunableValidator)factory).tunablesAreValid(errMsg)) {
+						JOptionPane.showMessageDialog(new JFrame(), errMsg.toString(),
+									      "Input Validation Problem",
+									      JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				} catch (final Exception e) {
+					e.printStackTrace();
+					return;
+				}
+			}
+
+			final Task task = factory.getTask();
+			if (task != null)
+				manager.execute(task);
+		}
+	}
+
+
 	final private static CytoPanelName DEFAULT_CYTOPANEL = CytoPanelName.WEST;
 	final private TaskFactory factory;
+	final private TaskManager manager;
 	final private TunableInterceptor interceptor;
 	private CytoPanel cytoPanel;
 	final private static Logger logger = LoggerFactory.getLogger(CytoPanelTaskFactoryTunableAction.class);
 
-	public CytoPanelTaskFactoryTunableAction(final TaskFactory factory, final TunableInterceptor interceptor,
-	                                         final CySwingApplication app, final Map serviceProps,
-	                                         final CyNetworkManager netmgr)
+	public CytoPanelTaskFactoryTunableAction(final TaskFactory factory, final TaskManager manager,
+	                                         final TunableInterceptor interceptor, final CySwingApplication app,
+	                                         final Map serviceProps, final CyNetworkManager netmgr)
 	{
 		super(serviceProps, netmgr);
 
 		this.factory = factory;
+		this.manager = manager;
 		this.interceptor = interceptor;
 
 		if (serviceProps.containsKey("preferredCytoPanel")) {
@@ -82,11 +124,30 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 		// load the tunables from the object 
 		interceptor.loadTunables(factory);
 
-		final JPanel ui = interceptor.getUI(factory);
+		final JPanel innerPanel = interceptor.getUI(factory);
 
-		if (ui == null)
+		if (innerPanel == null)
 			return;
 
-		// *** Pass the JPanel to the CytoPanel
+		cytoPanel.add(createNewUI(innerPanel));
+	}
+
+	private JPanel createNewUI(final JPanel innerPanel) {
+		final JPanel outerPanel = new JPanel();
+		outerPanel.add(innerPanel);
+
+		final JButton executeButton = new JButton("Execute");
+		executeButton.addActionListener(new ExecuteButtonListener(factory, manager));
+		outerPanel.add(executeButton);
+
+		final JButton closeButton = new JButton("Close");
+		closeButton.addActionListener(new ActionListener() {
+				public void actionPerformed(final ActionEvent event) {
+					cytoPanel.remove(outerPanel);
+				}
+			});
+		outerPanel.add(closeButton);
+		
+		return outerPanel;
 	}
 }
