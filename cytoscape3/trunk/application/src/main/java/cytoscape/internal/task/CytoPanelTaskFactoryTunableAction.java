@@ -100,6 +100,7 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 	final private TaskFactory factory;
 	final private TaskManager manager;
 	final private TunableInterceptor interceptor;
+	final private Map serviceProps;
 	private CytoPanel cytoPanel;
 	final private static Logger logger = LoggerFactory.getLogger(CytoPanelTaskFactoryTunableAction.class);
 
@@ -112,6 +113,7 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 		this.factory = factory;
 		this.manager = manager;
 		this.interceptor = interceptor;
+		this.serviceProps = serviceProps;
 
 		if (serviceProps.containsKey("preferredCytoPanel")) {
 			try {
@@ -134,7 +136,29 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 		if (innerPanel == null)
 			return;
 
-		cytoPanel.add(createNewUI(innerPanel));
+		cytoPanel.add(getCytoPanelComponentTitle(), createCytoPanelComponent(innerPanel));
+	}
+
+	private String getCytoPanelComponentTitle() {
+		try {
+			final String cytoPanelComponentTitle = (String)serviceProps.get("cytoPanelComponentTitle");
+			if (cytoPanelComponentTitle != null)
+				return cytoPanelComponentTitle;
+
+			// Try to create a panel component title from the menu item:
+			final String menuTitle = (String)serviceProps.get("title");
+			if (menuTitle != null) {
+				if (menuTitle.endsWith("..."))
+					return menuTitle.substring(0, menuTitle.length() - 3);
+				else
+					return menuTitle;
+			}
+
+			return "*No Title*";
+		} catch (final ClassCastException e) {
+			logger.warn(e.toString());
+			return "*Missing Title*";
+		}
 	}
 
 	/**
@@ -142,7 +166,7 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 	 *
 	 *  @return the new enclosing panel
 	 */
-	private JPanel createNewUI(final JPanel innerPanel) {
+	private JPanel createCytoPanelComponent(final JPanel innerPanel) {
 		final JPanel outerPanel = new JPanel();
 		outerPanel.add(innerPanel);
 
