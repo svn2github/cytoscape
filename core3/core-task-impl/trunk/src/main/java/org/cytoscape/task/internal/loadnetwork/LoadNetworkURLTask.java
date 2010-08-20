@@ -47,7 +47,6 @@ import java.util.Properties;
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.read.CyNetworkViewProducerManager;
 import org.cytoscape.io.util.StreamUtil;
-import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
