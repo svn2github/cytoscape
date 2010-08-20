@@ -43,7 +43,7 @@ import java.util.Map;
  */
 public interface CyDataTableProducerManager {
 
-	/*
+	/**
 	 * Not generic because Spring does not support it now.
 	 */
 	@SuppressWarnings("unchecked")
@@ -61,5 +61,6 @@ public interface CyDataTableProducerManager {
 	 */
 	
 	CyDataTableProducer getProducer(URI uri) throws IllegalArgumentException;
+
 	CyDataTableProducer getProducer(InputStream stream) throws IllegalArgumentException;
 }

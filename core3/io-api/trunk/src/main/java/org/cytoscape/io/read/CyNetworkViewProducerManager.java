@@ -47,10 +47,10 @@ public interface CyNetworkViewProducerManager {
 	 * Not generic because Spring does not support it now.
 	 */
 	@SuppressWarnings("unchecked")
-	void addInputStreamFactory(CyNetworkViewProducerFactory factory, Map props);
+	void addNetworkViewProducerFactory(CyNetworkViewProducerFactory factory, Map props);
 
 	@SuppressWarnings("unchecked")
-	void removeInputStreamFactory(CyNetworkViewProducerFactory factory, Map props);
+	void removeNetworkViewProducerFactory(CyNetworkViewProducerFactory factory, Map props);
 
 	/**
 	 * Get a file reader if the file type is supported in Cytoscape.
@@ -61,5 +61,6 @@ public interface CyNetworkViewProducerManager {
 	 */
 	
 	CyNetworkViewProducer getProducer(URI uri) throws IllegalArgumentException;
+
 	CyNetworkViewProducer getProducer(InputStream stream) throws IllegalArgumentException;
 }
