@@ -27,15 +27,18 @@ public abstract class SpringTunableInterceptor<T extends TunableHandler> extends
 			super.loadTunables( obj );
 	}
 
+	protected Object convertSpringProxyObj(final Object o) {
+		if (o instanceof InfrastructureProxy)
+			return ((InfrastructureProxy)o).getWrappedObject();
+		else
+			return o;
+	}
+
 	protected Object[] convertSpringProxyObjs(final Object... proxyObjs) {
 		final Object[] objs = new Object[proxyObjs.length];
 		int i = 0;
-		for (final Object o : proxyObjs) {
-			if (o instanceof InfrastructureProxy)
-				objs[i++] = ((InfrastructureProxy)o).getWrappedObject();
-			else
-				objs[i++] = o;
-		}
+		for (final Object o : proxyObjs)
+			objs[i++] = convertSpringProxyObj(o);
 
 		return objs;
 	}
