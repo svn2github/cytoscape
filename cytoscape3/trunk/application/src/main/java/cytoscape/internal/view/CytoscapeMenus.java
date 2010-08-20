@@ -1,14 +1,7 @@
 /*
  File: CytoscapeMenus.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,39 +27,21 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package cytoscape.internal.view;
+
 
 import cytoscape.view.CyAction;
 import cytoscape.view.CyMenuBar;
 import cytoscape.view.CyToolBar;
-
-import org.cytoscape.session.CyNetworkManager;
-
-import cytoscape.internal.task.TaskFactoryTunableAction;
-import cytoscape.internal.task.NetworkTaskFactoryTunableAction;
-import cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
-import cytoscape.internal.task.NetworkCollectionTaskFactoryTunableAction;
-import cytoscape.internal.task.NetworkViewCollectionTaskFactoryTunableAction;
 
 import cytoscape.view.CyMenus;
 
 import cytoscape.internal.util.CytoscapeMenuBar;
 import cytoscape.internal.util.CytoscapeToolBar;
 
-import javax.swing.JMenu;
-
 import java.util.Map;
-import java.util.HashMap;
 
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TunableInterceptor;
-
-import org.cytoscape.task.NetworkTaskFactory;
-import org.cytoscape.task.NetworkViewTaskFactory;
-import org.cytoscape.task.NetworkCollectionTaskFactory;
-import org.cytoscape.task.NetworkViewCollectionTaskFactory;
+import javax.swing.JMenu;
 
 
 /**
@@ -78,39 +53,29 @@ import org.cytoscape.task.NetworkViewCollectionTaskFactory;
  * </p>
  */
 public class CytoscapeMenus implements CyMenus {
+	final private CytoscapeMenuBar menuBar;
+	final private CytoscapeToolBar toolBar;
 
-	CytoscapeMenuBar menuBar;
-	CytoscapeToolBar toolBar;
+	final private JMenu fileMenu;
+	final private JMenu loadSubMenu;
+	final private JMenu saveSubMenu;
+	final private JMenu newSubMenu;
+	final private JMenu newSubMenu2;
+	final private JMenu editMenu;
+	final private JMenu viewMenu;
+	private JMenu viewSubMenu;
+	final private JMenu selectMenu;
+	final private JMenu layoutMenu;
+	private JMenu vizMenu;
+	final private JMenu helpMenu;
+	final private JMenu opsMenu;
 
-	JMenu fileMenu;
-	JMenu loadSubMenu;
-	JMenu saveSubMenu;
-	JMenu newSubMenu;
-	JMenu newSubMenu2;
-	JMenu editMenu;
-	JMenu viewMenu;
-	JMenu viewSubMenu;
-	JMenu selectMenu;
-	JMenu layoutMenu;
-	JMenu vizMenu;
-	JMenu helpMenu;
-	JMenu opsMenu;
-
-	Map<TaskFactory,CyAction> taskMap;
-
-	TaskManager taskManager;
-	TunableInterceptor interceptor;
-	CyNetworkManager netManager;
 
 	/**
 	 * Creates a new CytoscapeMenus object. This will construct the basic bar objects, 
 	 * but won't fill them with menu items and associated action listeners.
 	 */
-	public CytoscapeMenus(TaskManager taskManager, TunableInterceptor interceptor, CyNetworkManager netManager) {
-		this.taskManager = taskManager;
-		this.interceptor = interceptor;
-		this.netManager = netManager;
-
+	public CytoscapeMenus() {
 		toolBar = new CytoscapeToolBar();
 
 		menuBar = new CytoscapeMenuBar();
@@ -126,8 +91,6 @@ public class CytoscapeMenus implements CyMenus {
 		layoutMenu = menuBar.getMenu("Layout");
 		opsMenu = menuBar.getMenu("Plugins");
 		helpMenu = menuBar.getMenu("Help");
-
-		taskMap = new HashMap<TaskFactory,CyAction>();
 	}
 
 	/**
@@ -230,7 +193,7 @@ public class CytoscapeMenus implements CyMenus {
 	 * @param props A map of properties that will be ignored
 	 */
 	public void addAction(CyAction action, Map props) {
-		addAction( action );
+		addAction(action);
 	}
 
 	/**
@@ -249,80 +212,16 @@ public class CytoscapeMenus implements CyMenus {
 		}
 	}
 
-	public void addTaskFactory(TaskFactory factory, Map props) {
-		addFactory( new TaskFactoryTunableAction<TaskFactory>(taskManager, interceptor, factory, props, netManager), factory, props );
-	}
-
-	public void removeTaskFactory(TaskFactory factory, Map props) {
-		removeFactory(factory,props);
-	}
-
-	public void addNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
-		addFactory( new NetworkTaskFactoryTunableAction(taskManager, interceptor, factory, props, netManager), factory, props );
-	}
-
-	public void removeNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
-		removeFactory(factory,props);
-	}
-
-	public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
-		addFactory( new NetworkViewTaskFactoryTunableAction(taskManager, interceptor, factory, props, netManager), factory, props );
-	}
-
-	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
-		removeFactory(factory,props);
-	}
-
-	public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
-		System.out.println("menu network VIEW collection tf");
-		addFactory( new NetworkViewCollectionTaskFactoryTunableAction(taskManager, interceptor, factory, props, netManager), factory, props );
-	}
-
-	public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
-		removeFactory(factory,props);
-	}
-	
-	public void addNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-		System.out.println("menu network collection tf");
-		addFactory( new NetworkCollectionTaskFactoryTunableAction(taskManager, interceptor, factory, props, netManager), factory, props );
-	}
-
-	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-		removeFactory(factory,props);
-	}
-	
-	private <F extends TaskFactory> void addFactory(CyAction action, F factory, Map props) {
-		taskMap.put(factory,action);
-		addAction( action );
-	}
-
-	private void removeFactory(TaskFactory factory, Map props) {
-		//System.out.println("removeTaskFactory called");
-		CyAction action = taskMap.remove(factory);
-		if ( action != null ) {
-			if (action.isInMenuBar()) {
-				getMenuBar().removeAction(action);
-			}
-
-			if (action.isInToolBar()) {
-				getToolBar().removeAction(action);
-			}
-		}
-	}
-
-
 	/**
 	 * Takes a CyAction and will add it to the MenuBar or the Toolbar as
 	 * is appropriate.
 	 */
 	public void addAction(CyAction action) {
-		if (action.isInMenuBar()) {
+		if (action.isInMenuBar())
 			getMenuBar().addAction(action);
-		} 
 
-		if (action.isInToolBar()) {
+		if (action.isInToolBar())
 			getToolBar().addAction(action);
-		} 
 	}
 
 	/**
@@ -332,12 +231,10 @@ public class CytoscapeMenus implements CyMenus {
 	 * @param index
 	 */
 	public void addAction(CyAction action, int index) {
-		if (action.isInMenuBar()) {
+		if (action.isInMenuBar())
 			getMenuBar().addAction(action, index);
-		}
 
-		if (action.isInToolBar()) {
+		if (action.isInToolBar())
 			getToolBar().addAction(action);
-		}
 	}
 }

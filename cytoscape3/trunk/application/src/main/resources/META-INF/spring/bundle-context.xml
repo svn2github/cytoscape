@@ -40,10 +40,6 @@
 
 
 	<!-- Various Utilities -->
-<!--	<bean name="proxyHandler" class="cytoscape.internal.util.ProxyHandlerImpl">-->
-<!--		<constructor-arg ref="cytoscapeProperties" />-->
-<!--		<constructor-arg ref="cyEventHelperServiceRef" />-->
-<!--	</bean>-->
 	<bean name="openBrowser" class="cytoscape.internal.util.OpenBrowserImpl">
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>
@@ -70,9 +66,6 @@
 
 	<!-- Menu bar -->
 	<bean name="cytoscapeMenus" class="cytoscape.internal.view.CytoscapeMenus">
-		<constructor-arg ref="taskManagerServiceRef" />
-		<constructor-arg ref="tunableInterceptorServiceRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
 	<bean name="networkViewManager" class="cytoscape.internal.view.NetworkViewManager">
@@ -168,6 +161,14 @@
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="taskManagerServiceRef" />
 	</bean>
+
+	<bean name="cytoscapeMenuPopulator" class="cytoscape.internal.view.CytoscapeMenuPopulator">
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="taskManagerServiceRef" />
+		<constructor-arg ref="tunableInterceptorServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
 	<bean id="settingsAction" class="cytoscape.internal.layout.ui.SettingsAction">
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cytoscapeDesktop" />

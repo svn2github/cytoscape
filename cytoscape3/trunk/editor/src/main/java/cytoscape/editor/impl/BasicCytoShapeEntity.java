@@ -1,40 +1,23 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         BasicCytoShapeEntity.java
-* RCS:          $Header: $
-* Description:
-* Author:       Allan Kuchinsky
-* Created:      Sun May 29 11:22:33 2005
-* Modified:     Sun Dec 17 05:29:24 2006 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2006, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
-*
-* Revisions:
-*
-* Sat Dec 16 14:50:40 2006 (Michael L. Creech) creech@w235krbza760
-*  Completely rewrote TestDragSourceListener (now is EntityDragSourceListener) to
-*  allow for intelligent setting of the drag cursor. Changed constructor to
-*  take a DragSourceContextCursorSetter.
-*  Changed all instance variables to be private.
-* Tue Dec 05 04:39:09 2006 (Michael L. Creech) creech@w235krbza760
-*  Changed computation of BasicCytoShapeEntity size to allow for
-*  larger CytoShapeIcons.
-* Sun Aug 06 11:22:50 2006 (Michael L. Creech) creech@w235krbza760
-*  Added generated serial version UUID for serializable classes.
-********************************************************************************
-*/
+/**
+ *
+ * File:         BasicCytoShapeEntity.java
+ * RCS:          $Header: $
+ * Description:
+ * Author:       Allan Kuchinsky
+ * Created:      Sun May 29 11:22:33 2005
+ * Modified:     Aug. 19th, 2010 Johannes Ruscheinski
+ * Language:     Java
+ *
+ * (c) Copyright 2006, Agilent Technologies, all rights reserved.
+ */
 package cytoscape.editor.impl;
+
 
 import cytoscape.Cytoscape;
 import cytoscape.editor.DragSourceContextCursorSetter;
 import cytoscape.editor.GraphicalEntity;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
+import cytoscape.view.CytoPanelName;
 import org.cytoscape.view.GraphView;
 
 import javax.swing.*;
@@ -228,7 +211,7 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 		// force height to be at least
 		// CytoscapeShapeIcon.DEFAULT_HEIGHT but larger if needed:
 		Dimension mySize = new Dimension(((JPanel) Cytoscape.getDesktop()
-		                                                    .getCytoPanel(SwingConstants.WEST))
+		                                                    .getCytoPanel(CytoPanelName.WEST))
 		                                                                                                                                                                                                                                         .getSize().width
 		                                 - 5,
 		                                 Math.max(_image.getIconHeight(),

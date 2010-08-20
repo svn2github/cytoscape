@@ -132,32 +132,32 @@
 	<osgi:set id="taskFactorySet" interface="org.cytoscape.work.TaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addTaskFactory"
-			unbind-method="removeTaskFactory" ref="cytoscapeMenus" />
+			unbind-method="removeTaskFactory" ref="cytoscapeMenuPopulator" />
 	</osgi:set>
 
 	<osgi:set id="networkTaskFactorySet" interface="org.cytoscape.task.NetworkTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addNetworkTaskFactory"
-			unbind-method="removeNetworkTaskFactory" ref="cytoscapeMenus" />
+			unbind-method="removeNetworkTaskFactory" ref="cytoscapeMenuPopulator" />
 	</osgi:set>
 
 	<osgi:set id="networkViewTaskFactorySet" interface="org.cytoscape.task.NetworkViewTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addNetworkViewTaskFactory"
-			unbind-method="removeNetworkViewTaskFactory" ref="cytoscapeMenus" />
+			unbind-method="removeNetworkViewTaskFactory" ref="cytoscapeMenuPopulator" />
 	</osgi:set>
 
 	<osgi:set id="networkCollectionTaskFactorySet" interface="org.cytoscape.task.NetworkCollectionTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addNetworkCollectionTaskFactory"
-			unbind-method="removeNetworkCollectionTaskFactory" ref="cytoscapeMenus" />
+			unbind-method="removeNetworkCollectionTaskFactory" ref="cytoscapeMenuPopulator" />
 	</osgi:set>
 
 	<osgi:set id="networkViewCollectionTaskFactorySet"
 		interface="org.cytoscape.task.NetworkViewCollectionTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addNetworkViewCollectionTaskFactory"
-			unbind-method="removeNetworkViewCollectionTaskFactory" ref="cytoscapeMenus" />
+			unbind-method="removeNetworkViewCollectionTaskFactory" ref="cytoscapeMenuPopulator" />
 	</osgi:set>
 
 	<!-- presentation factory -->
