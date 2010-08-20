@@ -18,15 +18,18 @@
 	
 	<osgi:reference id="cyNetworkManagerServiceRef" 
 	                interface="org.cytoscape.session.CyNetworkManager" />
-	
+
+	<osgi:reference id="cyPropertyServiceRef" 
+	                interface="org.cytoscape.property.CyProperty"
+	                filter="(cyPropertyName=coreSettings)" />
+
+
 	<!-- Export services -->
 	<osgi:service id="cyNetworkViewProducerManagerService" ref="cyNetworkViewProducerManager"
 		interface="org.cytoscape.io.read.CyNetworkViewProducerManager">
 	</osgi:service>
 
-
-	<!-- Exporting Reader Factory as OSGi Service -->
-	<osgi:service id="sifReaderFactoryService" ref="sifNetworkViewProducerFactory"
+	<osgi:service id="sifNetworkViewProducerFactoryService" ref="sifNetworkViewProducerFactory"
 		interface="org.cytoscape.io.read.CyNetworkViewProducerFactory">
 		<osgi:service-properties>
 			<entry key="serviceType" value="sifNetworkViewProducerFactory" />
@@ -35,8 +38,7 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-<!-- 
-	<osgi:service id="xgmmlReaderFactoryService" ref="xgmmlNetworkViewProducerFactory"
+	<osgi:service id="xgmmlNetworkViewProducerFactoryService" ref="xgmmlNetworkViewProducerFactory"
 		interface="org.cytoscape.io.read.CyNetworkViewProducerFactory">
 		<osgi:service-properties>
 			<entry key="serviceType" value="xgmmlNetworkViewProducerFactory" />
@@ -45,8 +47,12 @@
 				value="eXtensible Graph Markup and Modeling Language (XGMML) file reader" />
 		</osgi:service-properties>
 	</osgi:service>
- -->
 
+	<osgi:service id="streamUtilService" ref="streamUtil"
+		interface="org.cytoscape.io.util.StreamUtil">
+	</osgi:service>
+	
+	<!-- Define service listeners -->
 	<osgi:set id="cyNetworkViewProducerFactories" 
 	          interface="org.cytoscape.io.read.CyNetworkViewProducerFactory"
 	          cardinality="0..N">
@@ -55,8 +61,4 @@
 		               ref="cyNetworkViewProducerManager" />
 	</osgi:set>
 
-	<osgi:service id="streamUtilService" ref="streamUtil"
-		interface="org.cytoscape.io.util.StreamUtil">
-	</osgi:service>
-		
 </beans>

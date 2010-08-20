@@ -54,26 +54,21 @@ public class XGMMLParser extends DefaultHandler {
 	private ParseState parseState = ParseState.NONE;
 	private Stack<ParseState> stateStack = null;
 
-	private HandlerFactory handlerFactory;
+	private final HandlerFactory handlerFactory;
 
-	private ReadDataManager readDataManager;
+	private final ReadDataManager readDataManager;
 
 	/**
 	 * Main constructor for our parser. Initialize any local arrays. Note that
 	 * this parser is designed to be as memory efficient as possible. As a
 	 * result, a minimum number of local data structures are created.
 	 */
-	public XGMMLParser() {
+	public XGMMLParser(HandlerFactory handlerFactory, ReadDataManager readDataManager) {
+		this.handlerFactory = handlerFactory;
+		this.readDataManager = readDataManager;
 		stateStack = new Stack<ParseState>();
 	}
 
-	public void setHandlerFactory(HandlerFactory handlerFactory) {
-		this.handlerFactory = handlerFactory;
-	}
-
-	public void setReadDataManager(ReadDataManager readDataManager) {
-		this.readDataManager = readDataManager;
-	}
 
 	/********************************************************************
 	 * Handler routines. The following routines are called directly from the SAX

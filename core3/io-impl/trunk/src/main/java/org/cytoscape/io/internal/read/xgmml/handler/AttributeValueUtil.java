@@ -26,21 +26,16 @@ public class AttributeValueUtil {
 	private static final String ATTR_LABEL = "label";
 	private static final String ATTR_VALUE = "value";
 
-	
 	private Locator locator;
 
-	// Should be injected
-	private ReadDataManager manager;
-	private ObjectTypeMap typeMap;
-	
-	public void setTypeMap(ObjectTypeMap typeMap) {
+	private final ReadDataManager manager;
+	private final ObjectTypeMap typeMap;
+
+	public AttributeValueUtil(ObjectTypeMap typeMap, ReadDataManager manager) {
 		this.typeMap = typeMap;
-	}
-	
-	public void setManager(ReadDataManager manager) {
 		this.manager = manager;
 	}
-
+	
 	public void setLocator(Locator locator) {
 		this.locator = locator;
 	}
@@ -386,11 +381,12 @@ public class AttributeValueUtil {
 		return node;
 	}
 
-	public CyEdge createEdge(CyNode source, CyNode target, String label,
+	public CyEdge createEdge(CyNode source, CyNode target, String label, String interaction,
 			boolean directed) throws SAXException {
 		// OK create it
 		CyEdge edge = manager.network.addEdge(source, target, directed);
 		edge.attrs().set("name", label);
+		edge.attrs().set("interaction", interaction);
 
 		manager.edgeList.add(edge);
 		return edge;

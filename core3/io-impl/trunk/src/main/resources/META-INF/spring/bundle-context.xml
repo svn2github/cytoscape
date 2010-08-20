@@ -71,10 +71,14 @@
 	
 	<bean id="objectTypeMap" class="org.cytoscape.io.internal.read.xgmml.ObjectTypeMap" />
 
+	<bean id="readDataManager"
+		class="org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager" />
+
+
 	<bean id="attributeValueUtil"
 		class="org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil">
-		<property name="typeMap" ref="objectTypeMap" />
-		<property name="manager" ref="readDataManager" />
+		<constructor-arg ref="objectTypeMap" />
+		<constructor-arg ref="readDataManager" />
 	</bean>
 
 	<bean id="handlerFactory" class="org.cytoscape.io.internal.read.xgmml.HandlerFactory">
@@ -82,22 +86,20 @@
 		<constructor-arg ref="attributeValueUtil" />
 	</bean>
 
-	<bean id="readDataManager"
-		class="org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager" />
-
 	<bean id="xgmmlParser" class="org.cytoscape.io.internal.read.xgmml.XGMMLParser">
-		<property name="handlerFactory" ref="handlerFactory" />
-		<property name="readDataManager" ref="readDataManager" />
+		<constructor-arg ref="handlerFactory" />
+		<constructor-arg ref="readDataManager" />
 	</bean>
 
-	<bean id="xgmmlNetworkViewProducer" 
-	      class="org.cytoscape.io.internal.read.xgmml.XGMMLNetworkViewProducer">
-		<property name="parser" ref="xgmmlParser" />
-		<property name="readDataManager" ref="readDataManager" />
-		<property name="attributeValueUtil" ref="attributeValueUtil" />
-		<property name="cyNetworkViewFactory" ref="cyNetworkViewFactoryServiceRef" />
-		<property name="layouts" ref="cyLayoutsServiceRef" />
-		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef" />
+	<bean id="xgmmlNetworkViewProducerFactory" 
+	      class="org.cytoscape.io.internal.read.xgmml.XGMMLNetworkViewProducerFactory">
+		<constructor-arg ref="xgmmlFilter" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkFactoryServiceRef" />
+		<constructor-arg ref="readDataManager" />
+		<constructor-arg ref="attributeValueUtil" />
+		<constructor-arg ref="xgmmlParser" />
+		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
 
 	<!-- Manager for all readers -->

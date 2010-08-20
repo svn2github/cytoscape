@@ -52,10 +52,12 @@ import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -77,61 +79,35 @@ public class XGMMLNetworkViewProducer extends AbstractNetworkViewProducer {
 
 	protected static final String CY_NAMESPACE = "http://www.cytoscape.org";
 
-	private XGMMLParser parser;
-	private ReadDataManager readDataManager;
-
-	private AttributeValueUtil attributeValueUtil;
-
-	private Properties prop;
+	private final XGMMLParser parser;
+	private final ReadDataManager readDataManager;
+	private final AttributeValueUtil attributeValueUtil;
+	private final Properties prop;
 
 	private CyNetworkView view;
 
 	/**
 	 * Constructor.
 	 */
-	public XGMMLNetworkViewProducer() {
-		super(null,null,null);
+ 	public XGMMLNetworkViewProducer(InputStream inputStream, 
+	                                CyNetworkViewFactory cyNetworkViewFactory, 
+	                                CyNetworkFactory cyNetworkFactory, 
+	                                ReadDataManager readDataManager, 
+	                                AttributeValueUtil attributeValueUtil, 
+	                                XGMMLParser parser, 
+	                                Properties prop) {
+		super(inputStream,cyNetworkViewFactory,cyNetworkFactory); 
+        this.readDataManager = readDataManager;
+        this.attributeValueUtil = attributeValueUtil;
+        this.parser = parser;
+        this.prop = prop;
 	}
 
 	public void run(TaskMonitor tm) throws IOException {
-		//?????????????
-	}
-	
-	public void setReadDataManager(ReadDataManager readDataManager) {
-		this.readDataManager = readDataManager;
-	}
+		tm.setProgress(-1.0);
 
-	public void setAttributeValueUtil(AttributeValueUtil attributeValueUtil) {
-		this.attributeValueUtil = attributeValueUtil;
-	}
-
-	/*
-	 * Setters for DI
-	 */
-	public void setParser(XGMMLParser parser) {
-		this.parser = parser;
-	}
-
-	public void setProperties(Properties prop) {
-		this.prop = prop;
-	}
-
-	public void setInputStream(InputStream is) {
 		readDataManager.initAllData();
-		if (is == null)
-			throw new NullPointerException("Input stream is null");
-		inputStream = is;
-
 		this.readDataManager.setNetwork(cyNetworkFactory.getInstance());
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @throws IOException
-	 *             DOCUMENT ME!
-	 */
-	public void read() throws IOException {
 		try {
 
 			this.readXGMML();
@@ -142,7 +118,8 @@ public class XGMMLNetworkViewProducer extends AbstractNetworkViewProducer {
 			throw new IOException("Could not parse XGMML file: ");
 		}
 
-		this.cyNetworkViews[0] = view;
+		cyNetworkViews = new CyNetworkView[] { view };
+		tm.setProgress(1.0);
 	}
 
 	/**
@@ -541,50 +518,15 @@ public class XGMMLNetworkViewProducer extends AbstractNetworkViewProducer {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Create and layout the view. 
 	 * 
-	 * @param network
-	 *            DOCUMENT ME!
+	 * @param network The network we just parsed.
 	 */
 	private void createView(CyNetwork network) {
 
-		// Get the view. Note that for large networks this might be the null
-		// view
 		view = cyNetworkViewFactory.getNetworkView(network);
 
 		layout();
-
-		// Now that we have a network, handle the groups
-		// This is done here rather than in layout because layout is
-		// only called when we create a view. For large networks,
-		// we don't create views by default, but groups should still
-		// exist even when we don't create the view
-		/*
-		 * // TODO Map<CyNode,List<CyNode>>groupMap = parser.getGroupMap(); if
-		 * (groupMap != null) {
-		 * 
-		 * for (CyNode groupNode: groupMap.keySet()) { CyGroup newGroup = null;
-		 * List<CyNode> childList = groupMap.get(groupNode); // TODO USER
-		 * namespace here? String viewer =
-		 * groupNode.attrs().get(CyGroup.GROUP_VIEWER_ATTR, String.class);
-		 * 
-		 * // Note that we need to leave the group node in the network so that
-		 * the saved // location information (if there is any) can be utilized
-		 * by the group viewer. // This means that it will be the responsibility
-		 * of the group viewer to remove // the node if they don't want it to be
-		 * visible
-		 * 
-		 * // Do we already have a view? if (view == null ) { // No, just create
-		 * the group, but don't assign a viewer newGroup =
-		 * CyGroupManager.createGroup(groupNode, childList, null); } else { //
-		 * Yes, see if the group already exists newGroup =
-		 * CyGroupManager.getCyGroup(groupNode); if (newGroup == null) { // No,
-		 * OK so create it and pass down the viewer
-		 * CyGroupManager.createGroup(groupNode, childList, viewer); } else { //
-		 * Either the group doesn't have a viewer or it has a different viewer
-		 * -- change it CyGroupManager.setGroupViewer(newGroup, viewer, view,
-		 * true); } } } }
-		 */
 
 	}
 

@@ -54,12 +54,12 @@ public class HandleEdge extends AbstractHandler {
 			CyNode sourceNode = manager.idMap.get(source);
 			CyNode targetNode = manager.idMap.get(target);
 			manager.currentEdge = attributeValueUtil.createEdge(sourceNode,
-					targetNode, label, directed);
+					targetNode, label, interaction, directed);
 		} else if (sourceAlias != null && targetAlias != null) {
 			CyNode sourceNode = manager.idMap.get(sourceAlias);
 			CyNode targetNode = manager.idMap.get(targetAlias);
 			manager.currentEdge = attributeValueUtil.createEdge(sourceNode,
-					targetNode, label, directed);
+					targetNode, label, interaction, directed);
 		}
 
 		return current;

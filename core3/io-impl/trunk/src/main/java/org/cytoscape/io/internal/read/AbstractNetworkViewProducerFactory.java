@@ -33,44 +33,43 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package org.cytoscape.io.internal.read.sif;
+package org.cytoscape.io.internal.read;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.cytoscape.io.internal.util.ReadUtils;
 import org.cytoscape.io.read.CyNetworkViewProducer;
 import org.cytoscape.io.read.CyNetworkViewProducerFactory;
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.layout.CyLayouts;
-
-import org.cytoscape.io.internal.read.AbstractNetworkViewProducerFactory;
 
 /**
  */
-public class SIFNetworkViewProducerFactory extends AbstractNetworkViewProducerFactory {
+public abstract class AbstractNetworkViewProducerFactory implements CyNetworkViewProducerFactory {
 
-	private final ReadUtils readUtil;
-	private final CyLayouts layouts;
+	private final CyFileFilter filter;
 
-	public SIFNetworkViewProducerFactory(ReadUtils readUtil, 
-	                                     CyFileFilter filter, 
-	                                     CyLayouts layouts, 
-	                                     CyNetworkViewFactory cyNetworkViewFactory, 
-	                                     CyNetworkFactory cyNetworkFactory) {
-		super(filter,cyNetworkViewFactory,cyNetworkFactory);
-		this.readUtil = readUtil;
-		this.layouts = layouts;
+	protected final CyNetworkViewFactory cyNetworkViewFactory;
+	protected final CyNetworkFactory cyNetworkFactory;
+
+	protected InputStream inputStream;
+
+	public AbstractNetworkViewProducerFactory(CyFileFilter filter, 
+	                                         CyNetworkViewFactory cyNetworkViewFactory, 
+	                                         CyNetworkFactory cyNetworkFactory) {
+		this.filter = filter;
+		this.cyNetworkViewFactory = cyNetworkViewFactory;
+		this.cyNetworkFactory = cyNetworkFactory;
 	}
 
-	public CyNetworkViewProducer getTask() {
-		return new SIFNetworkViewProducer(inputStream, readUtil, layouts, 
-		                                  cyNetworkViewFactory, cyNetworkFactory);
+	public void setInputStream(InputStream is) {
+		if ( is == null )
+			throw new NullPointerException("Input stream is null");
+		inputStream = is;
+	}
+
+	public CyFileFilter getCyFileFilter() {
+		return filter;
 	}
 }
