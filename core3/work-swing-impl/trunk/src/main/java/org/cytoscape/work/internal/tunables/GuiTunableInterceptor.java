@@ -262,6 +262,10 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 		return newValuesSet;
 	}
 
+	public boolean hasTunables(final Object o) {
+		return super.hasTunables(convertSpringProxyObj(o));
+	}
+
 	/**
 	 * Creation of a JPanel that will contain panels of <code>GUIHandler</code>
 	 * This panel will have special features like, ability to collapse, ability to be displayed depending on another panel
