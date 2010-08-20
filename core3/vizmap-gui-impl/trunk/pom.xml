@@ -28,10 +28,8 @@
 			<resource>
 				<directory>src/main/resources</directory>
 			</resource>
-			<!--
-				| example additional resource entries, useful when building Eclipse
-				RCP applications
-			-->
+			<!-- | example additional resource entries, useful when building Eclipse 
+				RCP applications -->
 		</resources>
 		<plugins>
 			<plugin>
@@ -45,21 +43,17 @@
 				<groupId>org.ops4j</groupId>
 				<artifactId>maven-pax-plugin</artifactId>
 				<version>1.4</version>
-				<!--
-					| enable improved OSGi compilation support for the bundle
-					life-cycle. | to switch back to the standard bundle life-cycle,
-					move this setting | down to the maven-bundle-plugin section
-				-->
+				<!-- | enable improved OSGi compilation support for the bundle life-cycle. 
+					| to switch back to the standard bundle life-cycle, move this setting | down 
+					to the maven-bundle-plugin section -->
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>${maven-bundle-plugin.version}</version>
-				<!--
-					| the following instructions build a simple set of public/private
-					classes into an OSGi bundle
-				-->
+				<!-- | the following instructions build a simple set of public/private 
+					classes into an OSGi bundle -->
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
@@ -84,7 +78,7 @@
 			<artifactId>default-mappings</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>cytoscape</groupId>
 			<artifactId>application</artifactId>
@@ -107,12 +101,19 @@
 			<artifactId>com.l2fprod.common.fontchooser</artifactId>
 			<version>7.3</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.cytoscape.wrappers</groupId>
 			<artifactId>org.swinglabs.swingx</artifactId>
 			<version>0.9.7</version>
 			<type>bundle</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-api</artifactId>
+			<version>1.5.2</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

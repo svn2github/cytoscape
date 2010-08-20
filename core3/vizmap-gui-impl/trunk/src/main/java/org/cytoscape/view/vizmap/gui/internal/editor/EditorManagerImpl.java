@@ -50,12 +50,16 @@ import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class EditorManagerImpl implements EditorManager, ColumnCreatedListener,
 		ColumnDeletedListener {
+	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final Map<VisualProperty<?>, VisualPropertyEditor<?>> editors;
 
@@ -87,9 +91,8 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener,
 	 */
 	@SuppressWarnings("unchecked")
 	public void addValueEditor(ValueEditor<?> ve, Map properties) {
-		System.out.println("\n\n\n************* Got Value Editor "
+		logger.debug("Got Value Editor "
 				+ ve.toString() + ", this is for " + ve.getType() + "\n\n\n");
-
 		this.valueEditors.put(ve.getType(), ve);
 	}
 
@@ -102,7 +105,7 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener,
 	 */
 	@SuppressWarnings("unchecked")
 	public void removeValueEditor(ValueEditor<?> lexicon, Map properties) {
-		System.out.println("************* Remove Lexicon ****************");
+		logger.debug("************* Removing Lexicon ****************");
 		valueEditors.remove(lexicon.getType());
 	}
 
@@ -128,8 +131,7 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener,
 	public <V> V showVisualPropertyValueEditor(Component parentComponent,
 			VisualProperty<V> type, V initial) throws Exception {
 
-		System.out
-				.println("\n\n\n\n============= Calling Value Editor =============  Target = " + type.getType() +"\n\n\n\n");
+		logger.debug("Calling Value Editor =============  Target = " + type.getType() +"\n\n\n\n");
 
 		for (Class<?> key : valueEditors.keySet()) {
 			System.out.println("Key ====> " + key + ", val = "

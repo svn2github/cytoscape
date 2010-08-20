@@ -85,6 +85,8 @@ import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Dialog for editing default visual property values.<br>
@@ -107,6 +109,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 		DefaultViewEditor, SelectedVisualStyleSwitchedListener {
 
 	private final static long serialVersionUID = 1202339876675416L;
+	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private Map<String, Set<VisualProperty<?>>> vpSets;
 	private Map<String, JList> listMap;
@@ -550,7 +554,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 			Set<VisualProperty<?>> vps = vpSets.get(key);
 			for (VisualProperty<?> vp : vps) {
 				model.addElement(vp);
-				System.out.println("##### New VP Def ---> "
+				logger.debug("##### New VP Def ---> "
 						+ vp.getDisplayName() + " = " + vp.getDefault());
 			}
 			list.setCellRenderer(renderer);
