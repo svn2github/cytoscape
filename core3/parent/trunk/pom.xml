@@ -234,7 +234,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jxr-maven-plugin</artifactId>
 			</plugin>
-				<plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -258,5 +258,15 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
+	<!-- Shared dependency for all projects. -->
+	<dependencies>
+		<dependency>
+			<groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-api</artifactId>
+			<version>1.5.2</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 
 </project>
