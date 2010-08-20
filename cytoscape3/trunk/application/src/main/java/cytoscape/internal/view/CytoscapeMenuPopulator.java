@@ -133,7 +133,7 @@ public class CytoscapeMenuPopulator {
 	}
 
 	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-		removeFactory(factory, propscc);
+		removeFactory(factory, props);
 	}
 	
 	private <F extends TaskFactory> void addFactory(CyAction action, F factory, Map props) {
