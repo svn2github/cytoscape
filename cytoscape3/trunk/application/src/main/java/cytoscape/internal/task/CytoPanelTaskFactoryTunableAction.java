@@ -57,6 +57,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ *  This class is used to provide actions for task factories that have been annotated with tunables and therefore
+ *  should end up wrapped in CytoPanel components.
+ */
 public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 
 	/**
@@ -127,6 +131,9 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 			this.cytoPanel = app.getCytoPanel(DEFAULT_CYTOPANEL);
 	}
 
+	/**
+	 *  Creates a new CytoPanel component and adds it to a CytoPanel.
+	 */
 	public void actionPerformed(final ActionEvent a) {
 		// load the tunables from the object 
 		interceptor.loadTunables(factory);
@@ -139,6 +146,12 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 		cytoPanel.add(getCytoPanelComponentTitle(), createCytoPanelComponent(innerPanel));
 	}
 
+	/**
+	 *  Attempts to provide a title for our new CytoPanel component.  First we try to get the value of the
+	 *  "cytoPanelComponentTitle" from the service properties, if that fails we attempt to generate a title
+	 *  from the menu title which can be found in the "title" service property entry.  If all this fails we
+	 *  provide a goofy title that is only really useful for debugging.
+	 */
 	private String getCytoPanelComponentTitle() {
 		try {
 			final String cytoPanelComponentTitle = (String)serviceProps.get("cytoPanelComponentTitle");
@@ -156,7 +169,7 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 
 			return "*No Title*";
 		} catch (final ClassCastException e) {
-			logger.warn(e.toString());
+			logger.warn("This should *never* happen!\n" + e.toString());
 			return "*Missing Title*";
 		}
 	}
