@@ -62,6 +62,8 @@ import org.cytoscape.session.events.SetSelectedNetworkViewsEvent;
 import org.cytoscape.session.events.SetSelectedNetworksEvent;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An implementation of CyNetworkManager.
@@ -69,6 +71,8 @@ import org.cytoscape.view.presentation.RenderingEngine;
  *
  */
 public class CyNetworkManagerImpl implements CyNetworkManager {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CyNetworkManagerImpl.class);
 
 	private final Map<Long, CyNetworkView> networkViewMap;
 	private final Map<Long, CyNetwork> networkMap;
@@ -108,7 +112,7 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 				throw new IllegalArgumentException(
 						"network is not recognized by this NetworkManager");
 
-			System.out.println("setting current network: " + networkId);
+			logger.info("Setting current network.  Network ID = " + networkId);
 			currentNetwork = networkMap.get(networkId);
 
 			// reset selected networks
@@ -154,7 +158,7 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 				throw new IllegalArgumentException(
 						"network view is not recognized by this NetworkManager");
 
-			System.out.println("setting current network view: "
+			logger.info("Setting current network view: "
 					+ networkViewMap.get(viewId));
 
 			setCurrentNetwork(viewId);
