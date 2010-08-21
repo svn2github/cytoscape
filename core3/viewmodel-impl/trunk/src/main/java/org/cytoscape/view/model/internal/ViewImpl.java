@@ -8,6 +8,8 @@ import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.ViewChangeListener;
 import org.cytoscape.view.model.VisualProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -19,6 +21,8 @@ import org.cytoscape.view.model.VisualProperty;
  */
 public class ViewImpl<M> implements View<M> {
 
+	private static final Logger logger = LoggerFactory.getLogger(ViewImpl.class);
+	
 	protected final M model;
 	protected final long suid;
 	
@@ -41,6 +45,8 @@ public class ViewImpl<M> implements View<M> {
 		
 		this.visualProperties = new HashMap<VisualProperty<?>, Object>();
 		this.visualPropertyLocks = new HashMap<VisualProperty<?>, Object>();
+		
+		logger.info("Graph Object View Created.  SUID = " + suid);
 	}
 
 	

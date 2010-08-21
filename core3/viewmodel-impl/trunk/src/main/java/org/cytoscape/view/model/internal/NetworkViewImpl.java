@@ -24,6 +24,8 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.events.AddedEdgeViewEvent;
 import org.cytoscape.view.model.events.AddedNodeViewEvent;
 import org.cytoscape.view.model.events.NetworkViewChangedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Row-oriented implementation of CyNetworkView model. This is a consolidated
@@ -34,6 +36,8 @@ import org.cytoscape.view.model.events.NetworkViewChangedEvent;
  */
 public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkView, AddedEdgeListener,
 		AddedNodeListener, AboutToRemoveEdgeListener, AboutToRemoveNodeListener {
+	
+	private static final Logger logger = LoggerFactory.getLogger(NetworkViewImpl.class);
 
 	private Map<CyNode, View<CyNode>> nodeViews;
 	private Map<CyEdge, View<CyEdge>> edgeViews;
@@ -50,6 +54,8 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 
 		for (CyEdge edge : network.getEdgeList())
 			edgeViews.put(edge, new ViewImpl<CyEdge>(edge, cyEventHelper));
+		
+		logger.info("* Network View Created.  SUID = " + suid);
 	}
 
 
@@ -108,7 +114,7 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 	@Override
 	public void handleEvent(final AddedNodeEvent e) {
 		if (model != e.getSource()) {
-			System.out.println("Error: wrong network! " + model.toString()
+			logger.error("Error adding node: wrong network! " + model.toString()
 					+ " ~~ " + e.getSource().toString());
 			return;
 		}
@@ -124,7 +130,7 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 	@Override
 	public void handleEvent(final AddedEdgeEvent e) {
 		if (model != e.getSource()) {
-			System.out.println("Error: wrong network! " + model.toString()
+			logger.error("Error adding edge: wrong network! " + model.toString()
 					+ " ~~ " + e.getSource().toString());
 			return;
 		}

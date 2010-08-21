@@ -51,12 +51,9 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import org.cytoscape.ding.GraphView;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.presentation.RenderingEngine;
 
 /**
- * Component to display overview of the network.
+ * Swing component to display overview of the network.
  * 
  * @author $author$
  */
@@ -78,6 +75,7 @@ public class BirdsEyeView extends Component {
 	private double m_viewXCenter;
 	private double m_viewYCenter;
 	private double m_viewScaleFactor;
+	
 	private Component m_desktopView;
 
 	/**

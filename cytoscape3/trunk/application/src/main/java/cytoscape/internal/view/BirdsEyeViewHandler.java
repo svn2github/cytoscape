@@ -48,7 +48,6 @@ import java.util.Map;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.cytoscape.model.CyNetwork;
@@ -62,6 +61,8 @@ import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class handles the creation of the BirdsEyeView navigation object and
@@ -69,6 +70,9 @@ import org.cytoscape.view.presentation.RenderingEngineFactory;
  */
 public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 		SetCurrentNetworkViewListener, NetworkViewDestroyedListener {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(BirdsEyeViewHandler.class);
 
 	// BEV is just a special implementation of RenderingEngine.
 	private final RenderingEngineFactory<CyNetwork> bevFactory;
@@ -79,7 +83,7 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 	final NetworkViewManager viewmgr;
 	final CyNetworkManager netmgr;
 
-	final Container bevHolder;
+	final Container bevPanel;
 
 	/**
 	 * Creates a new BirdsEyeViewHandler object.
@@ -94,11 +98,11 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 		this.netmgr = netmgr;
 
 		final JDesktopPane desktopPane = viewmgr.getDesktopPane();
-		bevHolder = new JPanel();
+		bevPanel = new JPanel();
 		Dimension panelSize = new Dimension(280, 280);
-		bevHolder.setPreferredSize(panelSize);
-		bevHolder.setSize(panelSize);
-		bevHolder.setBackground(Color.white);
+		bevPanel.setPreferredSize(panelSize);
+		bevPanel.setSize(panelSize);
+		bevPanel.setBackground(Color.red);
 
 		engineMap = new HashMap<CyNetworkView, RenderingEngine<CyNetworkView>>();
 
@@ -115,24 +119,46 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 	 *            The event triggering this method.
 	 */
 	public void handleEvent(SetCurrentNetworkEvent e) {
-		//FIXME
-//		RenderingEngine<CyNetwork> engine = bevFactory.render(bevHolder,
-//				netmgr.getCurrentNetworkView());
-//		setFocus();
+		// This is guaranteed not to be null.
+		final CyNetwork network = e.getNetwork();
+		
+		logger.debug("++++++++++++ setCurrentNetworkEvent.  New Network = "
+				+ network);
+		bevPanel.removeAll();
+
+//		final CyNetworkView view = netmgr.getNetworkView(network.getSUID());
+//		if(view != null) {
+//			RenderingEngine<CyNetwork> engine = bevFactory.render(bevPanel,
+//					netmgr.getNetworkView(network.getSUID()));
+//			setFocus();
+//		} else {
+//			logger.warn("######### NO View exists for network = "
+//					+ network);
+//		}
 	}
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
-		//FIXME
-//		RenderingEngine<CyNetwork> engine = bevFactory.render(bevHolder,
-//				netmgr.getCurrentNetworkView());
-//		setFocus();
+		final CyNetworkView view = e.getNetworkView();
+		
+//		if(view != null) {
+//			RenderingEngine<CyNetwork> engine = bevFactory.render(bevPanel,
+//					view);
+//			setFocus();
+//		} else {
+//			logger.warn("######### NO View exists in the source");
+//		}
+//		
 	}
 
 	public void handleEvent(NetworkViewDestroyedEvent e) {
-		// if(bev != null)
-		// FIXME
-		// bev.setViewModel(netmgr.getCurrentNetworkView());
+//		logger.debug("!!!!!!!!!! NetworkViewDestroyedEvent +++++++++++");
+//		// Cleanup the visualization container
+//		bevPanel.removeAll();
+//		RenderingEngine<CyNetwork> engine = bevFactory.render(bevPanel,
+//				netmgr.getCurrentNetworkView());
 	}
+
+
 
 	private void setFocus() {
 		JDesktopPane desktopPane = viewmgr.getDesktopPane();
@@ -159,7 +185,7 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 	 * @return The component that contains the birds eye view.
 	 */
 	Component getBirdsEyeView() {
-		return bevHolder;
+		return bevPanel;
 	}
 
 	/**
@@ -167,7 +193,7 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 	 */
 	class FrameListener extends ComponentAdapter {
 		public void componentMoved(ComponentEvent e) {
-			bevHolder.repaint();
+			bevPanel.repaint();
 		}
 	}
 
@@ -176,7 +202,7 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 	 */
 	class DesktopListener extends ComponentAdapter {
 		public void componentResized(ComponentEvent e) {
-			bevHolder.repaint();
+			bevPanel.repaint();
 		}
 	}
 }

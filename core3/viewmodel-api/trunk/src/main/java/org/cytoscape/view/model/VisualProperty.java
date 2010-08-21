@@ -103,4 +103,5 @@ public interface VisualProperty<T> {
 	 */
 	public T parseSerializableString(final String value);
 	
+		
 }
