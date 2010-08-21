@@ -26,23 +26,27 @@ class DeleteEdit extends CyAbstractEdit {
 	Set<CyEdge> edges;
 	double[] xPos;
 	double[] yPos;
-	CySubNetwork net;
-	DeleteAction deleteAction;
-	CyNetworkManager netmgr;
+	final CySubNetwork net;
+	final DeleteAction deleteAction;
+	final CyNetworkManager netmgr;
 	
 	DeleteEdit(CySubNetwork net, Set<CyNode> nodes, Set<CyEdge> edges,	DeleteAction deleteAction, CyNetworkManager netmgr) {
 		super("Delete");
 		this.deleteAction = deleteAction;
 		if ( net == null )
-			throw new IllegalArgumentException("network is null");
+			throw new NullPointerException("network is null");
 		this.net = net;
 
+		if ( netmgr == null )
+			throw new NullPointerException("network manager is null");
+		this.netmgr = netmgr;
+
 		if ( nodes == null )
-			throw new IllegalArgumentException("nodes is null");
+			throw new NullPointerException("nodes is null");
 		this.nodes = nodes; 
 
 		if ( edges == null )
-			throw new IllegalArgumentException("edges is null");
+			throw new NullPointerException("edges is null");
 		this.edges = edges; 
 
 		// save the positions of the nodes
@@ -87,8 +91,9 @@ class DeleteEdit extends CyAbstractEdit {
 			int i = 0;
 			for ( CyNode n : nodes ) {
 				View<CyNode> nv = netView.getNodeView(n);
-				nv.setVisualProperty(NODE_X_LOCATION, xPos[++i]);
+				nv.setVisualProperty(NODE_X_LOCATION, xPos[i]);
 				nv.setVisualProperty(NODE_Y_LOCATION, yPos[i] );
+				i++;
 			}
 		}
 
