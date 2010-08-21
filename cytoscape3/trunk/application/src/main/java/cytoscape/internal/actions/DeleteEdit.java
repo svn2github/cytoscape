@@ -53,8 +53,9 @@ class DeleteEdit extends CyAbstractEdit {
 			int i = 0;
 			for ( CyNode n : nodes ) {
 				View<CyNode> nv = netView.getNodeView(n);
-				xPos[++i] = nv.getVisualProperty(NODE_X_LOCATION);
+				xPos[i] = nv.getVisualProperty(NODE_X_LOCATION);
 				yPos[i] = nv.getVisualProperty(NODE_Y_LOCATION);
+				i++;
 			}
 		}
 	}
