@@ -35,16 +35,19 @@
 package org.cytoscape.model.internal;
 
 import org.cytoscape.event.CyEventHelper;
-
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyTableManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  *
  */
 public class CyNetworkFactoryImpl implements CyNetworkFactory {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CyNetworkFactoryImpl.class);
 	
 	private final CyEventHelper help;
 	private final CyTableManager mgr;
@@ -71,6 +74,8 @@ public class CyNetworkFactoryImpl implements CyNetworkFactory {
 	public CyNetwork getInstance() {
 		//return new MGraph(help);
 		ArrayGraph net = new ArrayGraph(help,mgr);
+		logger.info("ArrayGraph created: ID = " +  net.getSUID());
+		logger.info("ArrayGraph created: Base Graph ID = " +  net.getBaseNetwork().getSUID());
 		return net.getBaseNetwork(); 
 	}
 }
