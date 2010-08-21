@@ -57,6 +57,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.property.CyProperty;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -83,7 +84,7 @@ public class XGMMLNetworkViewProducerFactory extends AbstractNetworkViewProducer
 	private XGMMLParser parser;
 	private ReadDataManager readDataManager;
 	private AttributeValueUtil attributeValueUtil;
-	private Properties prop;
+	private CyProperty<Properties> prop;
 
 	public XGMMLNetworkViewProducerFactory(CyFileFilter filter, 
 	                                       CyNetworkViewFactory cyNetworkViewFactory, 
@@ -91,7 +92,7 @@ public class XGMMLNetworkViewProducerFactory extends AbstractNetworkViewProducer
                                            ReadDataManager readDataManager, 
                                            AttributeValueUtil attributeValueUtil, 
                                            XGMMLParser parser, 
-                                           Properties prop) {
+                                           CyProperty<Properties> prop) {
 		super(filter,cyNetworkViewFactory,cyNetworkFactory);
 		this.readDataManager = readDataManager;
 		this.attributeValueUtil = attributeValueUtil;
@@ -102,6 +103,6 @@ public class XGMMLNetworkViewProducerFactory extends AbstractNetworkViewProducer
 	public CyNetworkViewProducer getTask() {
 		return new XGMMLNetworkViewProducer( inputStream, cyNetworkViewFactory, cyNetworkFactory,
 		                                     readDataManager, 
-		                                     attributeValueUtil, parser, prop );
+		                                     attributeValueUtil, parser, prop.getProperties() );
 	}
 }
