@@ -44,13 +44,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Properties;
 
-import javax.swing.Action;
 import javax.swing.InputMap;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -79,15 +78,7 @@ import org.cytoscape.model.events.UnselectedEdgesEvent;
 import org.cytoscape.model.events.UnselectedEdgesListener;
 import org.cytoscape.model.events.UnselectedNodesEvent;
 import org.cytoscape.model.events.UnselectedNodesListener;
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TunableInterceptor;
-
-import org.cytoscape.task.NetworkViewTaskFactory;
-import org.cytoscape.task.NetworkTaskFactory;
-import org.cytoscape.task.NetworkViewCollectionTaskFactory;
-import org.cytoscape.task.NetworkCollectionTaskFactory;
-
+import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.session.events.NetworkAboutToBeDestroyedListener;
@@ -101,17 +92,25 @@ import org.cytoscape.session.events.SetCurrentNetworkEvent;
 import org.cytoscape.session.events.SetCurrentNetworkListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
+import org.cytoscape.task.NetworkCollectionTaskFactory;
+import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.task.NetworkViewCollectionTaskFactory;
+import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.util.swing.AbstractTreeTableModel;
 import org.cytoscape.util.swing.JTreeTable;
 import org.cytoscape.util.swing.TreeTableModel;
-import org.cytoscape.service.util.CyServiceRegistrar;
-import cytoscape.view.CyAction;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TunableInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
+import cytoscape.internal.task.NetworkCollectionTaskFactoryTunableAction;
 import cytoscape.internal.task.NetworkTaskFactoryTunableAction;
 import cytoscape.internal.task.NetworkViewCollectionTaskFactoryTunableAction;
-import cytoscape.internal.task.NetworkCollectionTaskFactoryTunableAction;
+import cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
 import cytoscape.internal.task.TaskFactoryTunableAction;
+import cytoscape.view.CyAction;
 
 /**
  *
@@ -122,7 +121,11 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		SetCurrentNetworkListener, NetworkAddedListener,
 		NetworkViewAddedListener, NetworkAboutToBeDestroyedListener,
 		NetworkViewAboutToBeDestroyedListener {
+	
 	private final static long serialVersionUID = 1213748836763243L;
+
+	private static final Logger logger = LoggerFactory.getLogger(NetworkPanel.class);
+	
 	private final JTreeTable treeTable;
 	private final NetworkTreeNode root;
 	private JPanel navigatorPanel;
@@ -349,7 +352,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void handleEvent(NetworkAboutToBeDestroyedEvent nde) {
-		System.out.println("NetworkPanel: network about to be destroyed "
+		logger.debug("Network about to be destroyed "
 				+ nde.getNetwork().getSUID());
 		removeNetwork(nde.getNetwork().getSUID());
 		RowSetMicroListener rsml = nameListeners.remove(nde.getNetwork());
@@ -358,7 +361,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void handleEvent(NetworkAddedEvent e) {
-		System.out.println("NetworkPanel: network added "
+		logger.debug("Network added "
 				+ e.getNetwork().getSUID());
 		addNetwork(e.getNetwork().getSUID(), -1l);
 		RowSetMicroListener rsml = new AbstractNetworkNameListener(e.getNetwork()) {
@@ -371,54 +374,52 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
-		System.out.println("NetworkPanel: set current network view "
+		logger.debug("Set current network view "
 				+ e.getNetworkView().getModel().getSUID());
 		long curr = e.getNetworkView().getModel().getSUID();
-		// System.out.println("NetworkPanel setting current network view: " +
-		// curr);
+		
 		if (currentNetId == null || curr != currentNetId.longValue())
 			focusNetworkNode(curr);
 	}
 
 	public void handleEvent(SetCurrentNetworkEvent e) {
-		System.out.println("NetworkPanel: set current network "
+		logger.debug("Set current network "
 				+ e.getNetwork().getSUID());
 		long curr = e.getNetwork().getSUID();
-		// System.out.println("NetworkPanel setting current network view: " +
-		// curr);
+		
 		if (currentNetId == null || curr != currentNetId.longValue())
 			focusNetworkNode(curr);
 	}
 
 	public void handleEvent(NetworkViewAboutToBeDestroyedEvent nde) {
-		System.out.println("NetworkPanel: network view about to be destroyed "
+		logger.debug("Network view about to be destroyed "
 				+ nde.getNetworkView().getModel().getSUID());
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(NetworkViewAddedEvent nde) {
-		System.out.println("NetworkPanel: network view added "
+		logger.debug("Network view added "
 				+ nde.getNetworkView().getModel().getSUID());
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(SelectedNodesEvent event) {
-		System.out.println("NetworkPanel: selected nodes ");
+		logger.debug("Selected nodes ");
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(SelectedEdgesEvent event) {
-		System.out.println("NetworkPanel: selected edges ");
+		logger.debug("Selected edges ");
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(UnselectedNodesEvent event) {
-		System.out.println("NetworkPanel: unselected nodes ");
+		logger.debug("Unselected nodes ");
 		treeTable.getTree().updateUI();
 	}
 
 	public void handleEvent(UnselectedEdgesEvent event) {
-		System.out.println("NetworkPanel: unselected edges ");
+		logger.debug("Unselected edges ");
 		treeTable.getTree().updateUI();
 	}
 
@@ -433,7 +434,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	private void addNetwork(Long network_id, Long parent_id) {
 		// first see if it exists
 		if (getNetworkNode(network_id) == null) {
-			// System.out.println("NetworkPanel: addNetwork " + network_id);
+			// logger.debug("NetworkPanel: addNetwork " + network_id);
 			NetworkTreeNode dmtn = new NetworkTreeNode(netmgr.getNetwork(
 					network_id).attrs().get("name", String.class), network_id);
 
@@ -456,7 +457,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 			// this is necessary because valueChanged is not fired above
 			focusNetworkNode(network_id);
 		} else {
-			// System.out.println("addNetwork getNetworkTreeNode returned: " +
+			// logger.debug("addNetwork getNetworkTreeNode returned: " +
 			// getNetworkNode(network_id).getNetworkID());
 		}
 	}
@@ -468,11 +469,11 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	 *            DOCUMENT ME!
 	 */
 	public void focusNetworkNode(Long network_id) {
-		// System.out.println("NetworkPanel: focus network node");
+		// logger.debug("NetworkPanel: focus network node");
 		DefaultMutableTreeNode node = getNetworkNode(network_id);
 
 		if (node != null) {
-			// System.out.println("NetworkPanel - setting currentNetId");
+			// logger.debug("NetworkPanel - setting currentNetId");
 			// do this first so that events triggered by subequent lines don't
 			// recurse unecessarily
 			currentNetId = network_id;
@@ -515,7 +516,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	 *            DOCUMENT ME!
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
-		// System.out.println("NetworkPanel: valueChanged - " +
+		// logger.debug("NetworkPanel: valueChanged - " +
 		// e.getSource().getClass().getName());
 		JTree mtree = treeTable.getTree();
 
@@ -523,7 +524,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		NetworkTreeNode node = (NetworkTreeNode) mtree
 				.getLastSelectedPathComponent();
 		if (node == null || node.getUserObject() == null) {
-			// System.out.println("NetworkPanel: null node - returning");
+			// logger.debug("NetworkPanel: null node - returning");
 			return;
 		}
 
