@@ -18,11 +18,11 @@
 	<bean id="swingTaskManager" class="org.cytoscape.work.internal.task.SwingTaskManager" />
 
 	<bean id="guiTunableInterceptor"
-		class="org.cytoscape.work.internal.tunables.GuiTunableInterceptor">
+		class="org.cytoscape.work.internal.tunables.GUITunableInterceptorImpl">
 		<constructor-arg ref="guiHandlerFactory" />
 	</bean>
 
-	<bean id="guiHandlerFactory" class="org.cytoscape.work.internal.tunables.GUIHandlerFactory">
+	<bean id="guiHandlerFactory" class="org.cytoscape.work.internal.tunables.GUITunableHandlerFactory">
 		<constructor-arg ref="bookmarkServiceRef" />
 		<constructor-arg ref="bookmarksUtilServiceRef" />
 	</bean>

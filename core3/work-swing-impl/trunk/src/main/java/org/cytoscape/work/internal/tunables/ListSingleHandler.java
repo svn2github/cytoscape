@@ -5,6 +5,7 @@ import java.lang.reflect.*;
 import javax.swing.*;
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
 import org.cytoscape.work.util.ListSingleSelection;
 
 import java.awt.*;
@@ -17,7 +18,7 @@ import java.awt.*;
  *
  * @param <T> type of items the List contains
  */
-public class ListSingleHandler<T> extends AbstractGUIHandler {
+public class ListSingleHandler<T> extends AbstractGUITunableHandler {
 	private JComboBox combobox;
 
 	/**

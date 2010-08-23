@@ -1,4 +1,4 @@
-package org.cytoscape.work.internal.tunables;
+package org.cytoscape.work.swing;
 
 
 import javax.swing.JPanel;
@@ -14,7 +14,7 @@ import org.cytoscape.work.TunableHandler;
  * @author pasteur
  *
  */
-public interface GUIHandler extends TunableHandler {
+public interface GUITunableHandler extends TunableHandler {
 	/**
 	 * to get the panel that contains the GUI representation (<code>JTextField, JFileChooser, JLabel, JList ...</code>)
 	 * 
@@ -43,26 +43,26 @@ public interface GUIHandler extends TunableHandler {
 	void notifyDependents();
 	
 	/**
-	 * add a dependency to this <code>GUIHandler</code> on another one
+	 * add a dependency to this <code>GUITunableHandler</code> on another one
 	 * 
-	 * @param gh the <code>GUIHandler</code> it will depend on
+	 * @param gh the <code>GUITunableHandler</code> it will depend on
 	 */
-	void addDependent(GUIHandler gh);
+	void addDependent(GUITunableHandler gh);
 	
 	/**
-	 * Check if the dependency matches with the rule provided on the other <code>GUIHandler</code> 
+	 * Check if the dependency matches with the rule provided on the other <code>GUITunableHandler</code> 
 	 * <p>
 	 * <pre>
 	 * the checking is dynamically done.
 	 * 
-	 * If it matches : the GUI for this <code>GUIHandler</code> is available, or not if it doesn't match
+	 * If it matches : the GUI for this <code>GUITunableHandler</code> is available, or not if it doesn't match
 	 * 
 	 * the dependency can me made on String, a boolean value, a specific value for an Integer,Double..., a selected item of a list ...
 	 * </pre>
 	 * </p>
 	 * 
-	 * @param name of the <code>GUIHandler</code> on which it depends
-	 * @param state of the <code>GUIHandler</code> that is needed to make the GUI available 
+	 * @param name of the <code>GUITunableHandler</code> on which it depends
+	 * @param state of the <code>GUITunableHandler</code> that is needed to make the GUI available 
 	 */
 	void checkDependency(String name, String state);
 	
@@ -72,7 +72,7 @@ public interface GUIHandler extends TunableHandler {
 	void handleDependents();
 	
 	/**
-	 * To get the name of the dependency of this <code>GUIHandler</code>
+	 * To get the name of the dependency of this <code>GUITunableHandler</code>
 	 * @return the name of the dependency
 	 */
 	String getDependency();

@@ -20,21 +20,21 @@ public abstract class SpringTunableInterceptor<T extends TunableHandler> extends
 		super(hf);
 	}
 
-	public void loadTunables(final Object obj) {
+	final public void loadTunables(final Object obj) {
 		if (obj instanceof InfrastructureProxy)
 			super.loadTunables(((InfrastructureProxy)obj).getWrappedObject());
 		else
 			super.loadTunables( obj );
 	}
 
-	protected Object convertSpringProxyObj(final Object o) {
+	final protected Object convertSpringProxyObj(final Object o) {
 		if (o instanceof InfrastructureProxy)
 			return ((InfrastructureProxy)o).getWrappedObject();
 		else
 			return o;
 	}
 
-	protected Object[] convertSpringProxyObjs(final Object... proxyObjs) {
+	final protected Object[] convertSpringProxyObjs(final Object... proxyObjs) {
 		final Object[] objs = new Object[proxyObjs.length];
 		int i = 0;
 		for (final Object o : proxyObjs)

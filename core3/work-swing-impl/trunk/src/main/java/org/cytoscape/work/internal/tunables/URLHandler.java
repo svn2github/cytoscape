@@ -27,6 +27,7 @@ import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.bookmark.Category;
 import org.cytoscape.property.bookmark.DataSource;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
 
 
 /**
@@ -34,7 +35,7 @@ import org.cytoscape.work.Tunable;
  *
  * @author pasteur
  */
-public class URLHandler extends AbstractGUIHandler {
+public class URLHandler extends AbstractGUITunableHandler {
 	private BookmarksUtil bkUtil;
 	private Bookmarks theBookmarks;
 	private String bookmarkCategory = "network";

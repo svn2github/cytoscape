@@ -42,9 +42,10 @@ import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.bookmark.Category;
 import org.cytoscape.property.bookmark.DataSource;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
 
 
-public class InputStreamHandler extends AbstractGUIHandler {
+public class InputStreamHandler extends AbstractGUITunableHandler {
 	private Bookmarks theBookmarks;
 	private BookmarkComboBoxEditor bookmarkEditor;
 	private BookmarksUtil bkUtil;

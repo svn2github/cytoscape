@@ -15,6 +15,7 @@ import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
 import org.cytoscape.work.util.ListMultipleSelection;
 
 
@@ -25,7 +26,7 @@ import org.cytoscape.work.util.ListMultipleSelection;
  *
  * @param <T> type of items the List contains
  */
-public class ListMultipleHandler<T> extends AbstractGUIHandler {
+public class ListMultipleHandler<T> extends AbstractGUITunableHandler {
 	private JList itemsContainerList;
 	private List<T> selectedItems;
 

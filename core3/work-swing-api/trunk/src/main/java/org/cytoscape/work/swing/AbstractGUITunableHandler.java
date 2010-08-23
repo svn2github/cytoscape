@@ -1,4 +1,4 @@
-package org.cytoscape.work.internal.tunables;
+package org.cytoscape.work.swing;
 
 
 import java.awt.Component;
@@ -25,7 +25,7 @@ import org.cytoscape.work.Tunable;
  * <br>
  * It provides the functions that are common to all types of Handlers
  */
-public abstract class AbstractGUIHandler extends AbstractTunableHandler implements GUIHandler, ActionListener, ChangeListener, ListSelectionListener {
+public abstract class AbstractGUITunableHandler extends AbstractTunableHandler implements GUITunableHandler, ActionListener, ChangeListener, ListSelectionListener {
 	/**
 	 * <code>JPanel</code> that will contain the GUI object that represents in the best way the <code>Tunable</code> to the user
 	 */
@@ -49,23 +49,23 @@ public abstract class AbstractGUIHandler extends AbstractTunableHandler implemen
 	private String dependencyUnState;
 
 	/**
-	 * The list of dependencies between the <code>GUIHandlers</code>
+	 * The list of dependencies between the <code>GUITunableHandlers</code>
 	 */
-	private List<GUIHandler> dependencies;
+	private List<GUITunableHandler> dependencies;
 
 	/**
-	 * Constructs an Abstract GUIHandler with dependencies informations
+	 * Constructs an Abstract GUITunableHandler with dependencies informations
 	 *
 	 * @param f Field that is intercepted
 	 * @param o Object that is contained in the Field <code>f</code>
 	 * @param t <code>Tunable</code> annotations of the Field <code>f</code> annotated as <code>Tunable</code>
 	 */
-	protected AbstractGUIHandler(Field f, Object o, Tunable t) {
+	protected AbstractGUITunableHandler(Field f, Object o, Tunable t) {
 		super(f, o, t);
 		init();
 	}
 
-	protected AbstractGUIHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+	protected AbstractGUITunableHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		super(getter, setter, instance, tunable);
 		init();
 	}
@@ -84,7 +84,7 @@ public abstract class AbstractGUIHandler extends AbstractTunableHandler implemen
 	        	}
 	        }
 
-		dependencies = new LinkedList<GUIHandler>();
+		dependencies = new LinkedList<GUITunableHandler>();
 		panel = new JPanel();
 	}
 
@@ -93,7 +93,7 @@ public abstract class AbstractGUIHandler extends AbstractTunableHandler implemen
 	}
 
 	/**
-	 * Notify a change of state of a <code>GUIHandler</code>
+	 * Notify a change of state of a <code>GUITunableHandler</code>
 	 *
 	 * @param e a modification that happened to this <code>handler</code>
 	 */
@@ -119,17 +119,17 @@ public abstract class AbstractGUIHandler extends AbstractTunableHandler implemen
 	public void notifyDependents() {
 		String state = getState();
 		String name = getName();
-		for ( GUIHandler gh : dependencies )
+		for ( GUITunableHandler gh : dependencies )
 			gh.checkDependency( name, state );
 	}
 
 	/**
-	 *  Add a dependency on this <code>GUIHandler</code> to another <code>Tunable</code>
-	 *  While the dependency rule to this other <code>GUIHandler</code> doesn't match, this one won't be available
+	 *  Add a dependency on this <code>GUITunableHandler</code> to another <code>Tunable</code>
+	 *  While the dependency rule to this other <code>GUITunableHandler</code> doesn't match, this one won't be available
 	 *
 	 *  @param gh <code>Handler</code> on which this one depends on.
 	 */
-	public void addDependent(GUIHandler gh) {
+	public void addDependent(GUITunableHandler gh) {
 		//System.out.println("adding " + gh.getName() + " dependent to " + this.getName() );
 		if ( !dependencies.contains(gh) )
 			dependencies.add(gh);
@@ -137,7 +137,7 @@ public abstract class AbstractGUIHandler extends AbstractTunableHandler implemen
 
 
 	/**
-	 * To get the name of the dependency of this <code>GUIHandler</code>
+	 * To get the name of the dependency of this <code>GUITunableHandler</code>
 	 * @return the name of the dependency
 	 */
 	public String getDependency() {
@@ -153,7 +153,7 @@ public abstract class AbstractGUIHandler extends AbstractTunableHandler implemen
 	}
 
 	/**
-	 * To check the dependencies of this <code>GUIHandler</code> with the others.
+	 * To check the dependencies of this <code>GUITunableHandler</code> with the others.
 	 *
 	 *
 	 * <p><pre>
@@ -161,7 +161,7 @@ public abstract class AbstractGUIHandler extends AbstractTunableHandler implemen
 	 *
 	 *  - if there isn't any dependency, the JPanel container is enabled
 	 *  - if there is, enable or not the JPanel, depending on the name (<code>depName</code>) and the state(<code>depState</code>)
-	 *  of the dependencies of this <code>GUIHandler</code>
+	 *  of the dependencies of this <code>GUITunableHandler</code>
 	 *  </pre></p>
 	 */
 	public void checkDependency(String name, String state) {
@@ -209,7 +209,7 @@ public abstract class AbstractGUIHandler extends AbstractTunableHandler implemen
 
 	/**
 	 * To get the <code>JPanel</code> container
-	 * @return the <code>JPanel</code> container of the <code>GUIHandler</code>
+	 * @return the <code>JPanel</code> container of the <code>GUITunableHandler</code>
 	 */
 	public JPanel getJPanel() {
 		return panel;

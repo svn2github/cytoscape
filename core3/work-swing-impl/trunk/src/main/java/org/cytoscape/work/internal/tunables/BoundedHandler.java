@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
 import org.cytoscape.work.Tunable.Param;
 import org.cytoscape.work.internal.tunables.utils.myBoundedSwing;
 import org.cytoscape.work.internal.tunables.utils.mySlider;
@@ -24,7 +25,7 @@ import org.cytoscape.work.util.AbstractBounded;
  * @param <T> type of <code>AbstractBounded</code>
  */
 @SuppressWarnings("unchecked")
-public class BoundedHandler<T extends AbstractBounded> extends AbstractGUIHandler {
+public class BoundedHandler<T extends AbstractBounded> extends AbstractGUITunableHandler {
 	/**
 	 * Representation of the <code>Bounded</code> in a <code>JSlider</code>
 	 */

@@ -13,6 +13,7 @@ import org.cytoscape.property.bookmark.Bookmarks;
 
 import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.swing.GUITunableHandler;
 import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.BoundedFloat;
 import org.cytoscape.work.util.BoundedInteger;
@@ -22,21 +23,21 @@ import org.cytoscape.work.util.ListSingleSelection;
 
 
 /**
- * Provides a factory to create <code>GUIHandler</code> depending on their type
- * A <code>GUIHandler</code> is simply a <code>Handler</code> with the GUI aspect to display the handled object to the user in a proper way.
+ * Provides a factory to create <code>GUITunableHandler</code> depending on their type
+ * A <code>GUITunableHandler</code> is simply a <code>Handler</code> with the GUI aspect to display the handled object to the user in a proper way.
  *
  * @author pasteur
  */
-public class GUIHandlerFactory implements HandlerFactory<GUIHandler> {
+public class GUITunableHandlerFactory implements HandlerFactory<GUITunableHandler> {
 	private Bookmarks bookmarks;
 	private BookmarksUtil bkUtil;
 
 	/**
-	 * creates a new GUIHandlerFactory object
+	 * creates a new GUITunableHandlerFactory object
 	 * @param book	informations and properties of the <code>Bookmarks</code> registered
 	 * @param bkUtil object that provides tools to manage the <code>Bookmarks</code>
 	 */
-	public GUIHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil) {
+	public GUITunableHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil) {
 		this.bookmarks = book.getProperties();
 		this.bkUtil = bkUtil;
 	}
@@ -48,9 +49,9 @@ public class GUIHandlerFactory implements HandlerFactory<GUIHandler> {
 	 * @param	setter   the annotated set method
 	 * @param	instance object on which the getter and setter methods will invoked
 	 * @param	tunable  Tunable annotation of the getter method
-	 * @return a <code>GUIHandler</code> object depending on the Method's type
+	 * @return a <code>GUITunableHandler</code> object depending on the Method's type
 	 */
-	public GUIHandler getHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+	public GUITunableHandler getHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		final Class<?> type = getter.getReturnType();
 
 		if (type == Boolean.class || type == boolean.class)
@@ -93,9 +94,9 @@ public class GUIHandlerFactory implements HandlerFactory<GUIHandler> {
 	 * @param	m	the annotated method
 	 * @param	o	object of the <code>Handler</code>
 	 * @param	t	tunable of the <code>Handler</code>
-	 * @return a <code>GUIHandler</code> object depending on the Method's type
+	 * @return a <code>GUITunableHandler</code> object depending on the Method's type
 	 */
-	public GUIHandler getHandler(Method m, Object o, Tunable t) {
+	public GUITunableHandler getHandler(Method m, Object o, Tunable t) {
 		return null;
 	}
 
@@ -105,9 +106,9 @@ public class GUIHandlerFactory implements HandlerFactory<GUIHandler> {
 	 * @param	field    the annotated field
 	 * @param	instance object on which we will get/set the field
 	 * @param	tunable  a representation of the @Tunable on the field
-	 * @return a <code>GUIHandler</code> object depending on the field's type
+	 * @return a <code>GUITunableHandler</code> object depending on the field's type
 	 */
-	public GUIHandler getHandler(final Field field, final Object instance, final Tunable tunable) {
+	public GUITunableHandler getHandler(final Field field, final Object instance, final Tunable tunable) {
 		final Class<?> type = field.getType();
 
 		if (type == Boolean.class || type == boolean.class)

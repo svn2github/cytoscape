@@ -8,10 +8,11 @@ import java.lang.reflect.*;
 import javax.swing.*;
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
 import org.cytoscape.work.Tunable.Param;
 
 
-public class FloatHandler extends AbstractGUIHandler {
+public class FloatHandler extends AbstractGUITunableHandler {
 	private JTextField textField;
 	private boolean horizontal = false;
 

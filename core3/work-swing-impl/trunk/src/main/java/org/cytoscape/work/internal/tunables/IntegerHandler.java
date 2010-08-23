@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
 import org.cytoscape.work.Tunable.Param;
 
 
@@ -21,7 +22,7 @@ import org.cytoscape.work.Tunable.Param;
  *
  * @author pasteur
  */
-public class IntegerHandler extends AbstractGUIHandler {
+public class IntegerHandler extends AbstractGUITunableHandler {
 	private JTextField textField;
 	private boolean horizontal = false;
 

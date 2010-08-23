@@ -18,20 +18,21 @@ import javax.swing.border.TitledBorder;
 import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.swing.AbstractGUITunableInterceptor;
+import org.cytoscape.work.swing.GUITunableHandler;
 import org.cytoscape.work.Tunable.Param;
 import org.cytoscape.work.internal.tunables.utils.CollapsablePanel;
 import org.cytoscape.work.internal.tunables.utils.XorPanel;
-import org.cytoscape.work.spring.SpringTunableInterceptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * Interceptor of <code>Tunable</code> that will be applied on <code>GUIHandlers</code>.
+ * Interceptor of <code>Tunable</code> that will be applied on <code>GUITunableHandlers</code>.
  *
  * <p><pre>
- * To set the new value to the original objects contained in the <code>GUIHandlers</code>:
+ * To set the new value to the original objects contained in the <code>GUITunableHandlers</code>:
  * <ul>
  *   <li>Creates the parent container for the GUI, or use the one that is specified </li>
  *   <li>Creates a GUI with swing components for each intercepted <code>Tunable</code> </li>
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  *     annotations, and the dependencies to enable or not the graphic components
  *   </li>
  *   <li>
- *     Applies the new <i>value,item,string,state...</i> to the object contained in the <code>GUIHandler</code>,
+ *     Applies the new <i>value,item,string,state...</i> to the object contained in the <code>GUITunableHandler</code>,
  *     if the modifications have been validated by the user.
  *   </li>
  * </ul>
@@ -48,63 +49,27 @@ import org.slf4j.LoggerFactory;
  *
  * @author pasteur
  */
-public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> {
-	private JPanel parentPanel = null;
-	private Map<List<GUIHandler>, JPanel> panelMap;
-	private List<GUIHandler> handlers;
+public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
+	private Map<List<GUITunableHandler>, JPanel> panelMap;
+	private List<GUITunableHandler> handlers;
 	private boolean newValuesSet;
-	private Object[] objectsWithTunables;
-	private Logger logger;
 
 	/**
-	 * Creates an Interceptor that will use the <code>GUIHandlers</code> created in a <code>HandlerFactory</code> from intercepted <code>Tunables</code>.
+	 * Creates an Interceptor that will use the <code>GUITunableHandlers</code> created in a <code>HandlerFactory</code> from intercepted <code>Tunables</code>.
 	 * @param factory
 	 */
-	public GuiTunableInterceptor(final HandlerFactory<GUIHandler> factory) {
+	public GUITunableInterceptorImpl(final HandlerFactory<GUITunableHandler> factory) {
 		super(factory);
-		panelMap = new HashMap<List<GUIHandler>, JPanel>();
-		logger = LoggerFactory.getLogger(getClass());
+		panelMap = new HashMap<List<GUITunableHandler>, JPanel>();
 	}
 
-	/**
-	 * set the parent JPanel that will contain the GUI
-	 * If no parent JPanel is specified, the GUI will be made using a JOptionPane
-	 *
-	 * @param parent component for the <code>GUIHandlers</code>'s panels
-	 */
-	public void setParent(Object parent) {
-		if (parent instanceof JPanel)
-			this.parentPanel = (JPanel)parent;
-		else
-			throw new IllegalArgumentException("Not a JPanel");
-	}
-
-	//get the value(Handle) of the Tunable if its JPanel is enabled(Dependency) and check if we have to validate the values of tunables
-	/**
-	 * get the <i>value,item,string,state...</i> from the GUI component, and check with the dependencies, if it can be set as the new one
-	 *
-	 * <p><pre>
-	 * If the <code>TunableValidator</code> interface is implemented by the class that contains the <code>Tunables</code> :
-	 * <ul>
-	 * <li>a validate method has to be applied</li>
-	 * <li>it checks the conditions that have been declared about the chosen <code>Tunable(s)</code> </li>
-	 * <li>if validation fails, it displays an error to the user, and new values are not set</li>
-	 * </ul>
-	 * </pre></p>
-	 * @return success or not of the <code>TunableValidator</code> validate method
-	 */
-	public boolean handle() {
-		for (final GUIHandler h : handlers)
-			h.handleDependents();
-		return validateTunableInput();
-	}
-
-	public JPanel getUI(final Object... proxyObjs) {
-		this.objectsWithTunables = convertSpringProxyObjs(proxyObjs);
-		handlers = new ArrayList<GUIHandler>();
+	@Override
+	protected JPanel constructUI() {
 		JPanel providedGUI = null;
 		int factoryCount = 0; // # of descendents of TaskFactory...
 		int otherCount = 0;   // ...everything else.  (Presumeably descendents of Task.)
+		if (handlers == null)
+			handlers = new ArrayList<GUITunableHandler>();
 		for (final Object objectWithTunables : objectsWithTunables) {
 			if (objectWithTunables instanceof TaskFactory)
 				++factoryCount;
@@ -165,11 +130,11 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 			panels.put(MAIN, topLevel);
 
 			// construct the GUI
-			for (GUIHandler gh : handlers) {
+			for (GUITunableHandler gh : handlers) {
 				// hook up dependency listeners
 				String dep = gh.getDependency();
 				if (dep != null && !dep.equals("")) {
-					for (GUIHandler gh2 : handlers) {
+					for (GUITunableHandler gh2 : handlers) {
 						if (gh2.getName().equals(dep)) {
 							gh2.addDependent(gh);
 							break;
@@ -228,7 +193,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 		}
 
 		// Get the GUI into the proper state
-		for (GUIHandler h : handlers)
+		for (GUITunableHandler h : handlers)
 			h.notifyDependents();
 
 		//if no parentPanel is defined, then create a new JDialog to display the Tunables' panels
@@ -244,42 +209,19 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	}
 
 	/**
-	 * Creates a GUI for the detected <code>Tunables</code>, following the graphic rules specified in <code>Tunable</code>s annotations
-	 * or uses the JPanel provided by the method annotated with <code>@ProvidesGUI</code>
-	 *
-	 * The new values that have been entered for the Object contained in <code>GUIHandlers</code> are also set if the user clicks on <i>"OK"</i>
-	 *
-	 * @param an Object Array that contains <code>Tunables</code>
-	 *
-	 * @return if new values has been successfully set
-	 */
-	public boolean execUI(Object... proxyObjs) {
-		final JPanel panel = getUI(proxyObjs);
-		if (panel == null)
-			return false;
-
-		displayGUI(panel);
-		return newValuesSet;
-	}
-
-	public boolean hasTunables(final Object o) {
-		return super.hasTunables(convertSpringProxyObj(o));
-	}
-
-	/**
-	 * Creation of a JPanel that will contain panels of <code>GUIHandler</code>
+	 * Creation of a JPanel that will contain panels of <code>GUITunableHandler</code>
 	 * This panel will have special features like, ability to collapse, ability to be displayed depending on another panel
 	 * A layout will be set for this <i>"container"</i> of panels (horizontally or vertically), and a title (displayed or not)
 	 *
 	 *
 	 * @param title of the panel
-	 * @param gh provides access to <code>Tunable</code> annotations : see if this panel can be collapsable, and if its content will switch between different <code>GUIHandler</code> panels(depending on <code>xorKey</code>)
+	 * @param gh provides access to <code>Tunable</code> annotations : see if this panel can be collapsable, and if its content will switch between different <code>GUITunableHandler</code> panels(depending on <code>xorKey</code>)
 	 * @param alignment the way the panels will be set in this <i>"container</i> panel
 	 * @param groupTitle parameter to choose whether or not the title of the panel has to be displayed
 	 *
-	 * @return a container for <code>GUIHandler</code>' panels with special features if it is requested, or a simple one if not
+	 * @return a container for <code>GUITunableHandler</code>' panels with special features if it is requested, or a simple one if not
 	 */
-	private JPanel createJPanel(final String title, final GUIHandler gh, final Param alignment, final Param groupTitle) {
+	private JPanel createJPanel(final String title, final GUITunableHandler gh, final Param alignment, final Param groupTitle) {
 		if (gh == null)
 			return createSimplePanel(title, alignment, groupTitle);
 
@@ -302,14 +244,14 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	}
 
 	/**
-	 * Creation of a JPanel that will contain panels of <code>GUIHandler</code>
+	 * Creation of a JPanel that will contain panels of <code>GUITunableHandler</code>
 	 * A layout will be set for this <i>"container"</i> of panels (horizontally or vertically), and a title (displayed or not)
 	 *
 	 * @param title of the panel
 	 * @param alignment the way the panels will be set in this <i>"container</i> panel
 	 * @param groupTitle parameter to choose whether or not the title of the panel has to be displayed
 	 *
-	 * @return a container for <code>GUIHandler</code>' panels
+	 * @return a container for <code>GUITunableHandler</code>' panels
 	 */
 	private JPanel createSimplePanel(final String title, final Param alignment, final Param groupTitle) {
 		JPanel outPanel = new JPanel();
@@ -326,14 +268,14 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	}
 
 	/**
-	 * Creation of a JDialog that will contain panels of <code>GUIHandler</code>
+	 * Creation of a JDialog that will contain panels of <code>GUITunableHandler</code>
 	 * A layout will be set for this <i>"container"</i> of panels (horizontally or vertically), and a title (displayed or not)
 	 *
 	 * @param title of the panel
 	 * @param alignment the way the panels will be set in this <i>"container</i> panel
 	 * @param groupTitle parameter to choose whether or not the title of the panel has to be displayed
 	 *
-	 * @return a container for <code>GUIHandler</code>' panels
+	 * @return a container for <code>GUITunableHandler</code>' panels
 	 */
 	private JDialog createSimpleDialog(final String title, final Param alignment, final Param groupTitle) {
 		final JDialog dialog = new JDialog((JDialog)null, title);
@@ -347,23 +289,6 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 		return dialog;
 	}
 
-	private void displayGUI(final JPanel optionPanel) {
-		Object[] buttons = {"OK", "Cancel"};
-		int result = JOptionPane.showOptionDialog(parentPanel, optionPanel,
-							  "Set Parameters",
-							  JOptionPane.YES_NO_CANCEL_OPTION,
-							  JOptionPane.PLAIN_MESSAGE,
-							  null,
-							  buttons,
-							  buttons[0]);
-		if (result == JOptionPane.OK_OPTION) {
-			for (final GUIHandler h : handlers)
-				h.handleDependents();
-			validateTunableInput();
-		} else
-			newValuesSet = false;
-	}
-
 	/**
 	 * Check if the conditions set in validate method from <code>TunableValidator</code> are met
 	 *
@@ -371,7 +296,7 @@ public class GuiTunableInterceptor extends SpringTunableInterceptor<GUIHandler> 
 	 *
 	 * @return success(true) or failure(false) for the validation
 	 */
-	private boolean validateTunableInput() {
+	protected boolean validateTunableInput() {
 		for (final Object objectWithTunables : objectsWithTunables) {
 			if (!(objectWithTunables instanceof TunableValidator))
 				continue;

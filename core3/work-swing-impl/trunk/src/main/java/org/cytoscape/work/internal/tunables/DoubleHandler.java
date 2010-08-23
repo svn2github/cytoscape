@@ -8,6 +8,7 @@ import java.lang.reflect.*;
 import javax.swing.*;
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
 import org.cytoscape.work.Tunable.Param;
 
 
@@ -16,7 +17,7 @@ import org.cytoscape.work.Tunable.Param;
  *
  * @author pasteur
  */
-public class DoubleHandler extends AbstractGUIHandler {
+public class DoubleHandler extends AbstractGUITunableHandler {
 	private JTextField textField;
 	private String newline = System.getProperty("line.separator");
 	private boolean horizontal = false;

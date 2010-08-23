@@ -15,7 +15,7 @@ import javax.swing.border.TitledBorder;
 
 import org.cytoscape.work.TunableHandler;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.internal.tunables.GUIHandler;
+import org.cytoscape.work.swing.GUITunableHandler;
 
 
 @SuppressWarnings("serial")
@@ -24,14 +24,14 @@ public class XorPanel extends JPanel {
 	private JPanel contentPanel;
 	private JPanel currentPanel = null;
 
-	private GUIHandler gh;
+	private GUITunableHandler gh;
 	private boolean first = true;
 
-	public XorPanel(final String title, final GUIHandler g) {
+	public XorPanel(final String title, final GUITunableHandler g) {
 		super();
 
 		gh = g;
-		gh.addDependent(new GUIHandlerSwitchListener());
+		gh.addDependent(new GUITunableHandlerSwitchListener());
 
 		switchPanel = new JPanel();
 		contentPanel = new JPanel(new CardLayout());
@@ -68,13 +68,13 @@ public class XorPanel extends JPanel {
 		}
 	}
 
-	class GUIHandlerSwitchListener implements GUIHandler {
+	class GUITunableHandlerSwitchListener implements GUITunableHandler {
 		public Tunable getTunable() {return null;}
 		public Field getField() {return null;}
 		public Object getObject() {return null;}
 		public void actionPerformed(ActionEvent ae) { }
 		public void notifyDependents() { }
-		public void addDependent(GUIHandler gh) { }
+		public void addDependent(GUITunableHandler gh) { }
 		public String getDependency() { return null; }
 		public void handleDependents(){}
 		public void resetValue(){}

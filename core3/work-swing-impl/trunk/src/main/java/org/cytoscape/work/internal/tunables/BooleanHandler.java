@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
 import org.cytoscape.work.Tunable.Param;
 
 
@@ -19,7 +20,7 @@ import org.cytoscape.work.Tunable.Param;
  *
  * @author pasteur
  */
-public class BooleanHandler extends AbstractGUIHandler {
+public class BooleanHandler extends AbstractGUITunableHandler {
 	private JCheckBox checkBox;
 	private boolean horizontal = false;
 

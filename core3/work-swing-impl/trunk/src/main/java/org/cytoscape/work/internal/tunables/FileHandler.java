@@ -22,6 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.swing.AbstractGUITunableHandler;
 import org.cytoscape.work.Tunable.Param;
 import org.cytoscape.work.internal.tunables.utils.FileChooserFilter;
 
@@ -33,7 +34,7 @@ import cytoscape.Cytoscape;
  *
  * @author pasteur
  */
-public class FileHandler extends AbstractGUIHandler {
+public class FileHandler extends AbstractGUITunableHandler {
 	private JFileChooser fileChooser;
 	private JButton chooseButton;
 	private JTextField fileTextField;
