@@ -50,7 +50,7 @@ import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.work.swing.GUITunableInterceptor;
 import org.cytoscape.work.TunableValidator;
 
 import org.slf4j.Logger;
@@ -103,13 +103,13 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 	final private static CytoPanelName DEFAULT_CYTOPANEL = CytoPanelName.WEST;
 	final private TaskFactory factory;
 	final private TaskManager manager;
-	final private TunableInterceptor interceptor;
+	final private GUITunableInterceptor interceptor;
 	final private Map serviceProps;
 	private CytoPanel cytoPanel;
 	final private static Logger logger = LoggerFactory.getLogger(CytoPanelTaskFactoryTunableAction.class);
 
 	public CytoPanelTaskFactoryTunableAction(final TaskFactory factory, final TaskManager manager,
-	                                         final TunableInterceptor interceptor, final CySwingApplication app,
+	                                         final GUITunableInterceptor interceptor, final CySwingApplication app,
 	                                         final Map serviceProps, final CyNetworkManager netmgr)
 	{
 		super(serviceProps, netmgr);

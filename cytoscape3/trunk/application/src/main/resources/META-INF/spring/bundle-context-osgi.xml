@@ -31,8 +31,8 @@
 		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
 		filter="(id=dingNavigation)" />
 
-	<osgi:reference id="tunableInterceptorServiceRef"
-		interface="org.cytoscape.work.TunableInterceptor" />
+	<osgi:reference id="tunableGUIInterceptorServiceRef"
+		interface="org.cytoscape.work.swing.GUITunableInterceptor" />
 
 	<osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=bookmarks)" />

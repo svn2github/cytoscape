@@ -51,7 +51,7 @@ import java.util.HashMap;
 
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.work.swing.GUITunableInterceptor;
 
 import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
@@ -71,7 +71,7 @@ public class CytoscapeMenuPopulator {
 	final private CySwingApplication app;
 	final private CyMenus cyMenus;
 	final private TaskManager taskManager;
-	final private TunableInterceptor interceptor;
+	final private GUITunableInterceptor interceptor;
 	final private CyNetworkManager netManager;
 
 	final private Map<TaskFactory, CyAction> taskMap;
@@ -82,7 +82,7 @@ public class CytoscapeMenuPopulator {
 	 * but won't fill them with menu items and associated action listeners.
 	 */
 	public CytoscapeMenuPopulator(final CySwingApplication app, final TaskManager taskManager,
-				      final TunableInterceptor interceptor, final CyNetworkManager netManager)
+				      final GUITunableInterceptor interceptor, final CyNetworkManager netManager)
 	{
 		this.app = app;
 		this.cyMenus = app.getCyMenus();
