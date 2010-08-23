@@ -442,6 +442,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Tunable Test..." />
 			<entry key="preferredMenu" value="Help" />
+			<entry key="cytoPanelComponentTitle" value="Tunable Test" />
 		</osgi:service-properties>
 	</osgi:service>
 </beans>
