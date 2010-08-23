@@ -133,6 +133,10 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 */
 	public MetaNodePlugin2() {
 		logger = CyLogger.getLogger(MetaNodePlugin2.class);
+		// Register with CyGroup
+		groupViewer = new MetaNodeGroupViewer(viewerName, logger);
+		CyGroupManager.registerGroupViewer(groupViewer);
+
 		// Listen for network changes (so we can add our context menu)
 		try {
 			// Add ourselves to the network view created change list
@@ -148,10 +152,6 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		} catch (ClassCastException e) {
 			logger.error(e.getMessage());
 		}
-
-		// Register with CyGroup
-		groupViewer = new MetaNodeGroupViewer(viewerName, logger);
-		CyGroupManager.registerGroupViewer(groupViewer);
 
 		// Create our main plugin menu
 		JMenu menu = new JMenu("MetaNode Operations");

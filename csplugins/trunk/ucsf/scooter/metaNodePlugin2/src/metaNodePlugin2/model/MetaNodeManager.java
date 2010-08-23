@@ -43,6 +43,8 @@ import cytoscape.Cytoscape;
 import cytoscape.groups.CyGroup;
 import cytoscape.view.CyNetworkView;
 
+import metaNodePlugin2.MetaNodePlugin2;
+
 
 /**
  * The MetaNode class provides a wrapper for a CyGroup that
@@ -55,7 +57,7 @@ public class MetaNodeManager {
 	private static Map<CyNode,MetaNode> metaMap = new HashMap<CyNode, MetaNode>();
 	protected static boolean hideMetanodeDefault = true;
 	protected static double metanodeOpacityDefault = 0.;
-	protected static boolean sizeToBoundingBoxDefault = true;
+	protected static boolean useNestedNetworksDefault = false;
 
 	public static final String X_HINT_ATTR = "__metanodeHintX";
 	public static final String Y_HINT_ATTR = "__metanodeHintY";
@@ -83,6 +85,9 @@ public class MetaNodeManager {
 	static public MetaNode createMetaNode(CyGroup metaGroup) {
 		MetaNode mn = new MetaNode(metaGroup);
 		metaMap.put(metaGroup.getGroupNode(), mn);
+		mn.setUseNestedNetworks(useNestedNetworksDefault);
+		mn.setHideMetaNode(hideMetanodeDefault);
+		mn.setMetaNodeOpacity(metanodeOpacityDefault);
 		return mn;
 	}
 
@@ -127,8 +132,10 @@ public class MetaNodeManager {
 		CyNetworkView nView = Cytoscape.getCurrentNetworkView();
 		Collection<MetaNode> metaNodes = metaMap.values();
 		for (MetaNode mNode: metaNodes) {
+			if (mNode.isHidden())
+				continue;
 			if (mNode.isCollapsed())
-				mNode.expand(true, nView, false);
+				mNode.getCyGroup().setState(MetaNodePlugin2.EXPANDED);
 		}
 		// VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		// vizmapper.applyAppearances();
@@ -143,7 +150,7 @@ public class MetaNodeManager {
 		Collection<MetaNode> metaNodes = metaMap.values();
 		for (MetaNode mNode: metaNodes) {
 			if (!mNode.isCollapsed())
-				mNode.collapse(true, true, false, nView);
+				mNode.getCyGroup().setState(MetaNodePlugin2.COLLAPSED);
 		}
 		// VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		// vizmapper.applyAppearances();
@@ -184,10 +191,10 @@ public class MetaNodeManager {
 	 * of all of the children when we expand the network.  NOTE:
 	 * this only makes sense if hideMetanode is false.
 	 *
-	 * @param hide if 'true' we resize on expansion
+	 * @param useNestedNetworks if 'true' we use nexted networks when we collapse
 	 */
-	static public void setSizeToBoundingBoxDefault(boolean resize) {
-		MetaNodeManager.sizeToBoundingBoxDefault = resize;
+	static public void setUseNestedNetworksDefault(boolean useNestedNetworks) {
+		MetaNodeManager.useNestedNetworksDefault = useNestedNetworks;
 	}
 
 	/**
@@ -196,7 +203,7 @@ public class MetaNodeManager {
 	 *
 	 * @return 'true' if we hide the metanode upon expansion
 	 */
-	static public boolean getSizeToBoundingBoxDefault() {
-		return MetaNodeManager.sizeToBoundingBoxDefault;
+	static public boolean getUseNestedNetworksDefault() {
+		return MetaNodeManager.useNestedNetworksDefault;
 	}
 }

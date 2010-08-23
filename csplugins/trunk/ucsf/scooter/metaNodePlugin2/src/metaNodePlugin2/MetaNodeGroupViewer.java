@@ -51,6 +51,7 @@ import cytoscape.groups.CyGroupViewer;
 import cytoscape.groups.CyGroupViewer.ChangeType;
 import cytoscape.logger.CyLogger;
 
+import metaNodePlugin2.data.AttributeManager;
 import metaNodePlugin2.model.MetaNode;
 import metaNodePlugin2.model.MetaNodeManager;
 import metaNodePlugin2.model.MetanodeProperties;
@@ -103,6 +104,10 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 		return settingsDialog;
 	}
 
+	public CyLogger getLogger() {
+		return this.logger;
+	}
+
 	// These are required by the CyGroupViewer interface
 
 	/**
@@ -150,14 +155,10 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 			// but we need to save the old hints
 			if (group.getState() == MetaNodePlugin2.COLLAPSED) {
 				// We are, we need to "fix up" the network
-				newNode.recollapse(false, false, myview);
+				newNode.recollapse(myview);
 			} else {
-				if (settingsDialog.getSizeToBoundingBox()) {
-					newNode.expand(true, null, true);
-				} else {
-					CyNetwork network = myview.getNetwork();
-					network.hideNode(group.getGroupNode());
-				}
+				CyNetwork network = myview.getNetwork();
+				network.hideNode(group.getGroupNode());
 			}
 		}
 		// logger.debug("registering");
@@ -177,8 +178,10 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	public void groupWillBeRemoved(CyGroup group) { 
 		MetaNode mn = MetaNodeManager.getMetaNode(group);
 		if (mn == null) return;
-		// Expand the group in any views that it's collapsed
-		mn.expand(true, null, true);
+		// Figure out our view
+		CyNetwork network = group.getNetwork();
+		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
+		mn.expand(view);
 
 		// Get rid of the MetaNode
 		logger.info("updating group panel for removed group: "+group);
@@ -200,13 +203,19 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 
 		if (change == ChangeType.NODE_ADDED) {
 			mn.nodeAdded(node);
+			updateGroupPanel();
 		} else if (change == ChangeType.NODE_REMOVED) {
 			mn.nodeRemoved(node);
+			updateGroupPanel();
 		} else if (change == ChangeType.STATE_CHANGED) {
-			if (group.getState() == MetaNodePlugin2.COLLAPSED) {
-				mn.collapse(false, false, true, Cytoscape.getCurrentNetworkView());
-			} else {
-				mn.expand(false, Cytoscape.getCurrentNetworkView(), true);
+			// Handle different representations here....
+			if (group.getState() == MetaNodePlugin2.COLLAPSED && !mn.isCollapsed()) {
+				// Actually collapse the group
+				mn.collapse(Cytoscape.getCurrentNetworkView());
+				// Handle our attributes
+				AttributeManager.updateAttributes(mn);
+			} else if (group.getState() == MetaNodePlugin2.EXPANDED && mn.isCollapsed()) {
+				mn.expand(Cytoscape.getCurrentNetworkView());
 			}
 		}
 	}

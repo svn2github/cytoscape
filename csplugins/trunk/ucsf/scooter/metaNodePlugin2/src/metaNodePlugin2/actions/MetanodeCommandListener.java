@@ -112,45 +112,26 @@ public class MetanodeCommandListener implements ActionListener {
 	 */
 	private void newGroup() {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
-		List<CyGroup> groupList = CyGroupManager.getGroupList();
 		String groupName = JOptionPane.showInputDialog("Please enter a name for this metanode");
 		if (groupName == null) return;
-		for (CyGroup group: groupList) {
-			if (groupName.equals(group.getGroupName())) {
-				// Oops -- already have a group named groupName!
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-					"There is already a group named "+groupName,"GroupError",
-					JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		}
-
-		// Careful!  If one of the nodes is an expanded (but not hidden) metanode,
-		// we need to collapse it first or this gets messy fast
-		for (CyNode node: (List<CyNode>)new ArrayList(network.getSelectedNodes())) {
-			MetaNode mn = MetaNodeManager.getMetaNode(node);
-			if (mn == null) continue;
-			// Is this an expanded metanode?
-			if (mn.getCyGroup().getState() == MetaNodePlugin2.EXPANDED) {
-				// Yes, collapse it
-				mn.collapse(false, false, true, Cytoscape.getCurrentNetworkView());
-			}
-		}
 
 		// OK, now get the selected nodes again
 		List<CyNode> currentNodes = new ArrayList(network.getSelectedNodes());
 
+		// Create the group
 		CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, MetaNodePlugin2.viewerName, network);
 		if (group == null) {
 			// Oops -- something didn't happen right!
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-				"Unable to create group "+groupName,"GroupError",
+				"Unable to create group "+groupName+": group of that name already exists?","GroupError",
 				JOptionPane.ERROR_MESSAGE);
+			groupViewer.getLogger().warning("Unable to create group "+groupName);
 			return;
 		}
 		MetaNode newNode = MetaNodeManager.createMetaNode(group);
 		groupViewer.groupCreated(group);
-		newNode.collapse(false, false, true, Cytoscape.getCurrentNetworkView());
+		// Use setState to collapse it
+		group.setState(MetaNodePlugin2.COLLAPSED);
 	}
 
 	/**
@@ -208,11 +189,11 @@ public class MetanodeCommandListener implements ActionListener {
 	private void collapse() {
 		MetaNode mNode = MetaNodeManager.getMetaNode(group);
 		if (mNode == null) {
-			mNode = MetaNodeManager.createMetaNode(group);
-			if (mNode == null) return;
-			groupViewer.groupCreated(group);
+			groupViewer.getLogger().warning("Tried to collapse a non-metanode group: "+group);
+			return; // Shouldn't happend
 		}
-		mNode.collapse(false, false, true, Cytoscape.getCurrentNetworkView());
+		if (!mNode.isCollapsed())
+			group.setState(MetaNodePlugin2.COLLAPSED);
 	}
 
 	/**
@@ -221,22 +202,18 @@ public class MetanodeCommandListener implements ActionListener {
 	private void expand() {
 		MetaNode mNode = MetaNodeManager.getMetaNode(group);
 		if (mNode == null) {
-			mNode = MetaNodeManager.createMetaNode(group);
-			groupViewer.groupCreated(group);
+			groupViewer.getLogger().warning("Tried to expand a non-metanode group: "+group);
+			return; // shouldn't happend
 		}
-		mNode.expand(false, Cytoscape.getCurrentNetworkView(), true);
+		if (mNode.isCollapsed())
+			group.setState(MetaNodePlugin2.EXPANDED);
 	}
 
 	/**
  	 * Create a new network from the currently collapsed group
  	 */
 	private void createNetworkFromGroup() {
-		MetaNode mNode = MetaNodeManager.getMetaNode(group);
-		if (mNode == null) {
-			mNode = MetaNodeManager.createMetaNode(group);
-			groupViewer.groupCreated(group);
-		}
-		mNode.createNetworkFromGroup();
+		// mNode.createNetworkFromGroup();
 	}
 
 	/**

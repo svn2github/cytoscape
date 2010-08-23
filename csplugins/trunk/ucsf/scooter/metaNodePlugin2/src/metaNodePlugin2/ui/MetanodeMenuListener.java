@@ -284,6 +284,13 @@ public class MetanodeMenuListener implements MenuListener {
 
 				// Make sure we have a metanode object for this group
 				if (metaNode == null) {
+					// Make sure this group has a network assigned
+					if (group.getNetwork() == null) {
+						// Nope, make it the current network and issue a warning
+						group.setNetwork(Cytoscape.getCurrentNetwork(), false);
+						logger.warning("Metanodes can't handle global groups -- assinging group: "+
+						                group+" to network "+Cytoscape.getCurrentNetwork().getIdentifier());
+					}
 					metaNode = MetaNodeManager.createMetaNode(group);
 				}
 
@@ -295,15 +302,8 @@ public class MetanodeMenuListener implements MenuListener {
 				// If command is expand and we're a child of a group that isn't
 				// yet expanded, don't give this as an option
 				if ((command == Command.EXPAND) && (parents != null) && (parents.size() > 0)) {
-					boolean parentCollapsed = false;
-					for (CyGroup parent: parents) {
-						MetaNode metaParent = MetaNodeManager.getMetaNode(parent.getGroupNode());
-						if (groupList.contains(parent) && (metaParent.isCollapsed())) {
-							parentCollapsed = true;
-							break;
-						}
-					}
-					if (parentCollapsed) continue;
+					if (metaNode.isHidden())
+						continue;
 				}
 
 				if (command == Command.ADD) {

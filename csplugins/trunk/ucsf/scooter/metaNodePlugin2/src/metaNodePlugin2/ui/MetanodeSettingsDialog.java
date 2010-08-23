@@ -41,8 +41,9 @@ package metaNodePlugin2.ui;
 import metaNodePlugin2.model.MetaNode;
 import metaNodePlugin2.model.MetaNodeManager;
 import metaNodePlugin2.model.MetanodeProperties;
-import metaNodePlugin2.model.AttributeHandler;
-import metaNodePlugin2.model.AttributeHandler.AttributeHandlingType;
+import metaNodePlugin2.data.AttributeHandler;
+import metaNodePlugin2.data.AttributeHandlingType;
+import metaNodePlugin2.data.AttributeManager;
 
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -91,13 +92,11 @@ public class MetanodeSettingsDialog extends JDialog
 	private Tunable typeString = null;
 	private Tunable typeList = null;
 	private Tunable attrList = null;
-	private Tunable opacityTunable = null;
-	private Tunable sizeToBoundingBoxTunable = null;
 	private String[] attributeArray = null;
 	private List<Tunable>tunableEnablers = null;
 	private boolean hideMetaNode = false;
   private boolean enableHandling = false;
-  private boolean sizeToBoundingBox = false;
+  private boolean useNestedNetworks = false;
 	private double metanodeOpacity = 0.0f;
 	private CyGroupViewer groupViewer = null;
 
@@ -111,7 +110,7 @@ public class MetanodeSettingsDialog extends JDialog
 
 		initializeProperties();
 
-		AttributeHandler.saveSettings();
+		AttributeManager.saveSettings();
 
 		initialize();
 		pack();
@@ -186,23 +185,14 @@ public class MetanodeSettingsDialog extends JDialog
 
 		
 		metanodeProperties.add(new Tunable("appearanceGroup", "Metanode Appearance",
-		                                   Tunable.GROUP, new Integer(3),
+		                                   Tunable.GROUP, new Integer(2),
 		                                   new Boolean(true), null, Tunable.COLLAPSABLE));
 		{
-			Tunable t = new Tunable("hideMetanodes",
-			                        "Hide metanodes on expansion",
-			                        Tunable.BOOLEAN, new Boolean(true), 0);
+			Tunable t = new Tunable("useNestedNetworks",
+			                        "Create a nested network for collapsed metanodes",
+			                        Tunable.BOOLEAN, new Boolean(false), 0);
 			t.addTunableValueListener(this);
 			metanodeProperties.add(t);
-		}
-
-		{
-			sizeToBoundingBoxTunable = new Tunable("sizeToBoundingBox",
-			                                       "Size metanode to the bounding box of all children",
-			                                       Tunable.BOOLEAN, new Boolean(false), 0);
-			sizeToBoundingBoxTunable.setImmutable(true);
-			sizeToBoundingBoxTunable.addTunableValueListener(this);
-			metanodeProperties.add(sizeToBoundingBoxTunable);
 		}
 
 		// Sliders always look better when grouped
@@ -211,12 +201,11 @@ public class MetanodeSettingsDialog extends JDialog
 		                                   null, null, 0));
 
 		{
-			opacityTunable = new Tunable("metanodeOpacity",
-			                        "Percent opacity of metanodes when expanded",
+			Tunable t = new Tunable("metanodeOpacity",
+			                        "Percent opacity of collapsed metanodes",
 			                        Tunable.DOUBLE, new Double(0), new Double(0), new Double(100), Tunable.USESLIDER);
-			opacityTunable.setImmutable(true);
-			opacityTunable.addTunableValueListener(this);
-			metanodeProperties.add(opacityTunable);
+			t.addTunableValueListener(this);
+			metanodeProperties.add(t);
 		}
 
 		{
@@ -233,31 +222,31 @@ public class MetanodeSettingsDialog extends JDialog
 		{
 			Tunable t = new Tunable("stringDefaults", "String Attributes",
 		 	                        Tunable.LIST, new Integer(0),
-		 	                        AttributeHandler.getStringOptions(), null, 0);
+		 	                        AttributeManager.getStringOptions(), null, 0);
 			metanodeProperties.add(t);
 			tunableEnablers.add(t);
 
 			t = new Tunable("intDefaults", "Integer Attributes",
 		 	                                  Tunable.LIST, new Integer(0),
-		 	                                  AttributeHandler.getIntOptions(), null, 0);
+		 	                                  AttributeManager.getIntOptions(), null, 0);
 			metanodeProperties.add(t);
 			tunableEnablers.add(t);
 
 			t = new Tunable("doubleDefaults", "Double Attributes",
 		 	                                  Tunable.LIST, new Integer(0),
-		 	                                  AttributeHandler.getDoubleOptions(), null, 0);
+		 	                                  AttributeManager.getDoubleOptions(), null, 0);
 			metanodeProperties.add(t);
 			tunableEnablers.add(t);
 
 			t = new Tunable("listDefaults", "List Attributes",
 		 	                                  Tunable.LIST, new Integer(0),
-		 	                                  AttributeHandler.getListOptions(), null, 0);
+		 	                                  AttributeManager.getListOptions(), null, 0);
 			metanodeProperties.add(t);
 			tunableEnablers.add(t);
 
 			t = new Tunable("booleanDefaults", "Boolean Attributes",
 		 	                                  Tunable.LIST, new Integer(0),
-		 	                                  AttributeHandler.getBooleanOptions(), null, 0);
+		 	                                  AttributeManager.getBooleanOptions(), null, 0);
 			metanodeProperties.add(t);
 			tunableEnablers.add(t);
 		}
@@ -302,7 +291,7 @@ public class MetanodeSettingsDialog extends JDialog
 		Tunable t = metanodeProperties.get("enableHandling");
 		if ((t != null) && (t.valueChanged() || force)) {
       enableHandling = ((Boolean) t.getValue()).booleanValue();
-			AttributeHandler.setEnable(enableHandling);
+			AttributeManager.setEnable(enableHandling);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 			enableTunables(enableHandling);
 		}
@@ -314,10 +303,9 @@ public class MetanodeSettingsDialog extends JDialog
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
-		t = metanodeProperties.get("sizeToBoundingBox");
+		t = metanodeProperties.get("useNestedNetworks");
 		if ((t != null) && (t.valueChanged() || force)) {
-      sizeToBoundingBox = ((Boolean) t.getValue()).booleanValue();
-			MetaNodeManager.setSizeToBoundingBoxDefault(sizeToBoundingBox);
+      useNestedNetworks = ((Boolean) t.getValue()).booleanValue();
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
@@ -332,34 +320,34 @@ public class MetanodeSettingsDialog extends JDialog
 		// For each default value, get the default and set it
 		t = metanodeProperties.get("stringDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
-			AttributeHandler.setDefault(CyAttributes.TYPE_STRING, (AttributeHandlingType)getListValue(t));
+			AttributeManager.setDefault(CyAttributes.TYPE_STRING, (AttributeHandlingType)getListValue(t));
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("intDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
-			AttributeHandler.setDefault(CyAttributes.TYPE_INTEGER, (AttributeHandlingType)getListValue(t));
+			AttributeManager.setDefault(CyAttributes.TYPE_INTEGER, (AttributeHandlingType)getListValue(t));
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("doubleDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
-			AttributeHandler.setDefault(CyAttributes.TYPE_FLOATING, (AttributeHandlingType)getListValue(t));
+			AttributeManager.setDefault(CyAttributes.TYPE_FLOATING, (AttributeHandlingType)getListValue(t));
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("listDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
-			AttributeHandler.setDefault(CyAttributes.TYPE_SIMPLE_LIST, (AttributeHandlingType)getListValue(t));
+			AttributeManager.setDefault(CyAttributes.TYPE_SIMPLE_LIST, (AttributeHandlingType)getListValue(t));
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("booleanDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
-			AttributeHandler.setDefault(CyAttributes.TYPE_BOOLEAN, (AttributeHandlingType)getListValue(t));
+			AttributeManager.setDefault(CyAttributes.TYPE_BOOLEAN, (AttributeHandlingType)getListValue(t));
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 	}
 
 	public void revertSettings() {
 		metanodeProperties.revertProperties();
-		AttributeHandler.revertSettings();
+		AttributeManager.revertSettings();
 	}
 
 	public MetanodeProperties getSettings() {
@@ -367,18 +355,18 @@ public class MetanodeSettingsDialog extends JDialog
 	}
 
 	public void updateOverrides(CyNetwork network) {
-		AttributeHandler.loadHandlerMappings(network);
+		AttributeManager.loadHandlerMappings(network);
 	}
 
 	public void updateAttributes() {
 		attrList.setLowerBound(getAttributes());
 	}
 
-	public boolean getSizeToBoundingBox() {
+	public boolean getUseNestedNetworks() {
 		updateSettings(false);
-		String bv = (String)metanodeProperties.getProperties().get("sizeToBoundingBox");
-		sizeToBoundingBox = Boolean.parseBoolean(bv);
-		return sizeToBoundingBox;
+		String bv = (String)metanodeProperties.getProperties().get("useNestedNetworks");
+		useNestedNetworks = Boolean.parseBoolean(bv);
+		return useNestedNetworks;
 	}
 
 	private String[] getAttributes() {
@@ -425,7 +413,7 @@ public class MetanodeSettingsDialog extends JDialog
 			revertSettings();
 			setVisible(false);
 		} else if (command.equals("clear")) {
-			AttributeHandler.clearSettings();
+			AttributeManager.clearSettings();
 			tunableChanged(attrList);
 		} else if (command.equals("applySelected")) {
 			updateSettings(true);
@@ -434,8 +422,8 @@ public class MetanodeSettingsDialog extends JDialog
 			for (CyNode node: nodeList) {
 				MetaNode mn = MetaNodeManager.getMetaNode(node);
 				if (mn != null) {
-					mn.setHideMetaNode(hideMetaNode);
-					mn.setSizeToBoundingBox(sizeToBoundingBox);
+					mn.setUseNestedNetworks(useNestedNetworks);
+					// mn.setSizeToBoundingBox(sizeToBoundingBox);
 					mn.setHideMetaNode(hideMetaNode);
 					mn.setAggregateAttributes(enableHandling);
 				}
@@ -445,14 +433,16 @@ public class MetanodeSettingsDialog extends JDialog
 			updateSettings(true);
 			// Get the list of groups
 			List<CyGroup> groupList = CyGroupManager.getGroupList(groupViewer);
-			// Update them
-			for (CyGroup group: groupList) {
-				MetaNode mn = MetaNodeManager.getMetaNode(group);
-				if (mn != null) {
-					mn.setHideMetaNode(hideMetaNode);
-					mn.setSizeToBoundingBox(sizeToBoundingBox);
-					mn.setHideMetaNode(hideMetaNode);
-					mn.setAggregateAttributes(enableHandling);
+			if (groupList != null && groupList.size() > 0) {
+				// Update them
+				for (CyGroup group: groupList) 	{
+					MetaNode mn = MetaNodeManager.getMetaNode(group);
+					if (mn != null) {
+						mn.setUseNestedNetworks(useNestedNetworks);
+						// mn.setSizeToBoundingBox(sizeToBoundingBox);
+						mn.setHideMetaNode(hideMetaNode);
+						mn.setAggregateAttributes(enableHandling);
+					}
 				}
 			}
 			setVisible(false);
@@ -461,27 +451,18 @@ public class MetanodeSettingsDialog extends JDialog
 
 	public void tunableChanged(Tunable t) {
 		if (t.getName().equals("hideMetanodes")) {
-      boolean hideMetanode = ((Boolean) t.getValue()).booleanValue();
-			if (hideMetanode)
-				sizeToBoundingBoxTunable.setImmutable(true);
-			else
-				sizeToBoundingBoxTunable.setImmutable(false);
-			MetaNodeManager.setHideMetaNodeDefault(hideMetanode);
-		} else if (t.getName().equals("sizeToBoundingBox")) {
-      boolean sizeToBoundingBox = ((Boolean) t.getValue()).booleanValue();
-			if (sizeToBoundingBox) {
-				opacityTunable.setImmutable(false);
-				modifyVizMap();
-			} else
-				opacityTunable.setImmutable(true);
-			MetaNodeManager.setSizeToBoundingBoxDefault(sizeToBoundingBox);
+      hideMetaNode = ((Boolean) t.getValue()).booleanValue();
+			MetaNodeManager.setHideMetaNodeDefault(hideMetaNode);
+		} else if (t.getName().equals("useNestedNetworks")) {
+      useNestedNetworks = ((Boolean) t.getValue()).booleanValue();
+			MetaNodeManager.setUseNestedNetworksDefault(useNestedNetworks);
 		} else if (t.getName().equals("metanodeOpacity")) {
-      double opacity = ((Double) t.getValue()).doubleValue();
-			MetaNodeManager.setExpandedOpacityDefault(opacity);
+      metanodeOpacity = ((Double) t.getValue()).doubleValue();
+			MetaNodeManager.setExpandedOpacityDefault(metanodeOpacity);
 		} else if (t.getName().equals("enableHandling")) {
       enableHandling = ((Boolean) t.getValue()).booleanValue();
-			AttributeHandler.setEnable(enableHandling);
-			enableTunables(enableHandling);
+			AttributeManager.setEnable(enableHandling);
+			// enableTunables(enableHandling);
 		} else if (t.getName().equals("attributeList")) {
 			CyAttributes attrs = null;
 
@@ -502,7 +483,7 @@ public class MetanodeSettingsDialog extends JDialog
 			byte type = attrs.getType(attribute);
 
 			// Get the list
-			AttributeHandlingType[] hTypes = AttributeHandler.getHandlingOptions(type);
+			AttributeHandlingType[] hTypes = AttributeManager.getHandlingOptions(type);
 			AttributeHandlingType[] handlingTypes = new AttributeHandlingType[hTypes.length+1];
 
 			handlingTypes[0] = AttributeHandlingType.DEFAULT;
@@ -518,7 +499,7 @@ public class MetanodeSettingsDialog extends JDialog
 			typeList.setLowerBound(handlingTypes);
 
 			// Do we already have a handler?
-			AttributeHandler handler = AttributeHandler.getHandler(attributeWP);
+			AttributeHandler handler = AttributeManager.getHandler(attributeWP);
 			if (handler != null) {
 				// Yes, show the right one to the user
 				for (int i = 0; i < handlingTypes.length; i++) {
@@ -537,7 +518,7 @@ public class MetanodeSettingsDialog extends JDialog
 			AttributeHandlingType handlerType = (AttributeHandlingType)getListValue(t);
 
 			// Create the handler
-			AttributeHandler.addHandler(attributeWP, handlerType);
+			AttributeManager.addHandler(attributeWP, handlerType);
 		}
 		repaint();
 	}
