@@ -2,6 +2,7 @@
 package org.cytoscape.test.support;
 
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.StubTableManager;
@@ -16,7 +17,7 @@ public class NetworkTestSupport {
 	protected CyTableManager tableMgr;
 
 	public NetworkTestSupport() {
-		eventHelper = new StubEventHelper();
+		eventHelper = new DummyCyEventHelper();
 		tableMgr = new StubTableManager();
 		networkFactory = new CyNetworkFactoryImpl( eventHelper, tableMgr );
 	}
