@@ -45,7 +45,10 @@ import cytoscape.CyEdge;
 import cytoscape.data.CyAttributes;
 import cytoscape.giny.CytoscapeRootGraph;
 
+import cytoscape.groups.CyGroupViewer.ChangeType;
+
 import giny.model.Edge;
+import giny.model.GraphObject;
 import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.model.RootGraph;
@@ -182,6 +185,7 @@ public class CyGroupImpl implements CyGroup {
 						outerEdgeMap.put(edge, edge);
 				}
 			}
+			node.addToGroup(this);
 		}
 
 		// If we were provided with an external edge list, create our map now.
@@ -298,7 +302,23 @@ public class CyGroupImpl implements CyGroup {
 	 * @param edge the CyEdge to add to the outer edge map
 	 */
 	public void addOuterEdge(CyEdge edge) {
+		if (edge == null) return;
 		outerEdgeMap.put(edge, edge);
+
+		notifyViewer(edge, ChangeType.OUTER_EDGE_ADDED);
+	}
+
+	/**
+	 * Remove an outer edge from the map.  Some viewers may need to do this
+	 * if they add and remove edges, for example.
+	 *
+	 * @param edge the CyEdge to add to the outer edge map
+	 */
+	public void removeOuterEdge(CyEdge edge) {
+		if (edge == null) return;
+		outerEdgeMap.remove(edge);
+
+		notifyViewer(edge, ChangeType.OUTER_EDGE_REMOVED);
 	}
 
 	/**
@@ -308,7 +328,24 @@ public class CyGroupImpl implements CyGroup {
 	 * @param edge the CyEdge to add to the innter edge map
 	 */
 	public void addInnerEdge(CyEdge edge) {
+		if (edge == null) return;
 		myGraph.addEdge(edge);
+
+		notifyViewer(edge, ChangeType.INNER_EDGE_ADDED);
+
+	}
+
+	/**
+	 * Remove an inner edge from the map.  Some viewers may need to do this
+	 * if they add and remove edges, for example.
+	 *
+	 * @param edge the CyEdge to add to the innter edge map
+	 */
+	public void removeInnerEdge(CyEdge edge) {
+		if (edge == null) return;
+		myGraph.removeEdge(edge.getRootGraphIndex(), false);
+
+		notifyViewer(edge, ChangeType.INNER_EDGE_REMOVED);
 	}
 
 	/**
@@ -336,12 +373,7 @@ public class CyGroupImpl implements CyGroup {
 			nodeAttributes.setAttribute(groupNode.getIdentifier(), CyGroup.GROUP_LOCAL_ATTR, Boolean.FALSE);
 			
 		if (notify && this.network != network) {
-			// Get our viewer
-			CyGroupViewer v = CyGroupManager.getGroupViewer(this.viewer);
-			if (v != null) {
-				// Tell the viewer that something has changed
-				v.groupChanged(this, null, CyGroupViewer.ChangeType.NETWORK_CHANGED);
-			}
+			notifyViewer(null, ChangeType.NETWORK_CHANGED);
 		}
 		this.network = network;
 	}
@@ -386,12 +418,7 @@ public class CyGroupImpl implements CyGroup {
 		attributes.setUserVisible(GROUP_STATE_ATTR, false);
 		attributes.setAttribute(this.groupName, GROUP_STATE_ATTR, this.groupState);
 
-		// Get our viewer
-		CyGroupViewer v = CyGroupManager.getGroupViewer(this.viewer);
-		if (v != null) {
-			// Tell the viewer that something has changed
-			v.groupChanged(this, null, CyGroupViewer.ChangeType.STATE_CHANGED);
-		}
+		notifyViewer(null, ChangeType.STATE_CHANGED);
 	}
 
 	/**
@@ -503,12 +530,7 @@ public class CyGroupImpl implements CyGroup {
 
 		addNodeToGroup(node);
 
-		// Get our viewer
-		CyGroupViewer v = CyGroupManager.getGroupViewer(this.viewer);
-		if (v != null) {
-			// Tell the viewer that something has changed
-			v.groupChanged(this, node, CyGroupViewer.ChangeType.NODE_ADDED);
-		}
+		notifyViewer(node, ChangeType.NODE_ADDED);
 	}
 
 
@@ -519,12 +541,9 @@ public class CyGroupImpl implements CyGroup {
 	 */
 	public void removeNode ( CyNode node ) {
 		removeNodeFromGroup(node);
-		// Get our viewer
-		CyGroupViewer v = CyGroupManager.getGroupViewer(this.viewer);
-		if (v != null) {
-			// Tell the viewer that something has changed
-			v.groupChanged(this, node, CyGroupViewer.ChangeType.NODE_REMOVED);
-		}
+
+		notifyViewer(node, ChangeType.NODE_REMOVED);
+
 	}
 
 	/**
@@ -597,10 +616,23 @@ public class CyGroupImpl implements CyGroup {
 		nodeToEdgeMap.remove(node);
 
 		// Remove the node from our map
-		myGraph.hideNode(node);
+		myGraph.removeNode(node, false);
 
 		// Tell the node about it (if necessary)
 		if (node.inGroup(this))
 			node.removeFromGroup(this);
+	}
+
+	/**
+ 	 * Notify our viewer that something has changed
+ 	 *
+ 	 */
+	private void notifyViewer(GraphObject object, CyGroupViewer.ChangeType change) {
+		// Get our viewer
+		CyGroupViewer v = CyGroupManager.getGroupViewer(this.viewer);
+		if (v != null) {
+			// Tell the viewer that something has changed
+			v.groupChanged(this, object, change);
+		}
 	}
 }

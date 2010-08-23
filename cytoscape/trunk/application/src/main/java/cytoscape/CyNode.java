@@ -187,8 +187,10 @@ public class CyNode implements giny.model.Node {
 	 * @param group CyGroup to remove this group from
 	 */
 	public void removeFromGroup(final CyGroup group) {
-		groupList.remove(group);
-		groupList.trimToSize();
+		if (groupList != null && groupList.size() > 0) {
+			groupList.remove(group);
+			groupList.trimToSize();
+		}
 
 		if (group.contains(this))
 			group.removeNode(this);

@@ -381,6 +381,15 @@ public class CyGroupManager {
 		if (groupMap.containsKey(groupNode)) {
 			notifyRemoveGroup(groupMap.get(groupNode));
 
+			// Now, remove this group's node from any groups
+			// it might be a member of
+			List<CyGroup> groupList = groupNode.getGroups();
+			if (groupList != null && groupList.size() > 0) {
+				for (CyGroup group: groupList) {
+					group.removeNode(groupNode);
+				}
+			}
+
 			// Remove this from the viewer's list
 			CyGroup group = groupMap.get(groupNode);
 			String viewer = group.getViewer();
@@ -409,13 +418,14 @@ public class CyGroupManager {
 				node.removeFromGroup(group);
 			}
 
+			// Remove the group node from the network
 			if (network == null) 
 				network = Cytoscape.getCurrentNetwork();
 			network.removeNode(groupNode.getRootGraphIndex(), false);
-			// Remove the group node form the network
-			// RootGraph rg = groupNode.getRootGraph();
+
 			// Remove it from the root graph
-			// rg.removeNode(groupNode);
+			RootGraph rg = groupNode.getRootGraph();
+			rg.removeNode(groupNode);
 
 			notifyListeners(group, CyGroupChangeEvent.GROUP_DELETED);
 		}

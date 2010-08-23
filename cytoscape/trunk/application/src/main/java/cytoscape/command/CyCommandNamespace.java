@@ -49,4 +49,15 @@ public interface CyCommandNamespace {
 	 * @return the name reserved by this namespace.
 	 */
 	String getNamespaceName();
+
+	/**
+ 	 * Check to see if this namespace supports a particular version of the command handlers.
+ 	 * The version is a floating-point value of the form major.minor where minor is assumed to
+ 	 * be two digits.  So, a version of 1.1 should be thought of as 1.10, while version 1.01 is
+ 	 * the first minor version of major version 1.
+ 	 *
+ 	 * @param version the version to check for support
+ 	 * @return true if this namespace supports the requested version
+ 	 */
+	boolean supportsVersion(float version);
 }

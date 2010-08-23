@@ -63,18 +63,41 @@ public class CyCommandManager {
 		nsMap = new HashMap<String, CyCommandNamespace>();
 	}
 
-	public static CyCommandNamespace reserveNamespace(String namespace) throws RuntimeException {
+
+	/**
+	 * Reserve a namespace.  In general, a namespace will map to a plugin and serve to reserve a command prefix
+	 * to avoid conflict between plugins.  A very rudimentary versioning system (minimum/maximum version numbers)
+	 * provide for some version management.
+	 *
+	 * @param namespace the name of the namespace
+	 * @param minVersion the minimum version this set of commands supports
+	 * @param maxVersion the maximum version this set of commands supports
+	 * @throws RuntimeException if a namespace by the requested name already exists
+	 */
+	public static CyCommandNamespace reserveNamespace(String namespace, float minVersion, float maxVersion) throws RuntimeException {
 		if (namespace == null || namespace.length() == 0) return null;
 
 		namespace = namespace.toLowerCase();
 		if (nsMap.containsKey(namespace))
 			throw new RuntimeException("Command namespace: "+namespace+" is already reserved");
 
-		CyCommandNamespace ns = new CyCommandNamespaceImpl(namespace);
+		CyCommandNamespace ns = new CyCommandNamespaceImpl(namespace, minVersion, maxVersion);
 		nsMap.put(namespace, ns);
 		comMap.put(ns, new HashMap());
 
 		return ns;
+	}
+
+	/**
+	 * Reserve a namespace.  In general, a namespace will map to a plugin and serve to reserve a command prefix
+	 * to avoid conflict between plugins.  This version of the call assumes a version of 0.0 for the min
+	 * verison and 1.0 for the max version.
+	 *
+	 * @param namespace the name of the namespace
+	 * @throws RuntimeException if a namespace by the requested name already exists
+	 */
+	public static CyCommandNamespace reserveNamespace(String namespace) throws RuntimeException {
+		return reserveNamespace(namespace, 0.0, 1.0);
 	}
 
 	/**
@@ -236,9 +259,20 @@ public class CyCommandManager {
 	 */
 	private static class CyCommandNamespaceImpl implements CyCommandNamespace {
 		private String ns;
+		private int minVersion;
+		private int maxVersion;
 
-		protected CyCommandNamespaceImpl(String namespace) {
+		protected CyCommandNamespaceImpl(String namespace, float minVersion, float maxVersion) {
 			this.ns = namespace;
+			this.minVersion = (int)(minVersion*100);
+			this.maxVersion = (int)(maxVersion*100);
+		}
+
+		public boolean supportsVersion(float version) {
+			int checkVersion = (int)(version*100);
+			if (minVersion <= checkVersion && maxVersion >= checkVersion)
+				return true;
+			return false;
 		}
 
 		public String getNamespaceName() { return ns; }

@@ -40,6 +40,8 @@ package cytoscape.groups;
 import cytoscape.CyNode;
 import cytoscape.view.CyNetworkView;
 
+import giny.model.GraphObject;
+
 /**
  * The CyGroupViewer interface provides a mechanism for group view implementations
  * to register themselves and get notified of group creation and deletion.  The
@@ -51,7 +53,9 @@ public interface CyGroupViewer {
 	/**
 	 * The change values
 	 */
-	public static enum ChangeType { NODE_ADDED, NODE_REMOVED, STATE_CHANGED, NETWORK_CHANGED }
+	public static enum ChangeType { NODE_ADDED, NODE_REMOVED, STATE_CHANGED, NETWORK_CHANGED, 
+	                                INNER_EDGE_ADDED, INNER_EDGE_REMOVED,
+	                                OUTER_EDGE_ADDED, OUTER_EDGE_REMOVED }
 
 	/**
 	 * Provide the string name of this viewer.  This will be used to reassociate
@@ -91,8 +95,8 @@ public interface CyGroupViewer {
 	 * notify viewers of changes in group edges, state, or viewObject information.
 	 *
 	 * @param group the CyGroup that will be deleted.
-	 * @param changedNode the node that triggered the change
+	 * @param changedObject the node or edge that triggered the change
 	 * @param change the change that was made (see CyGroup defines)
 	 */
-	public void groupChanged(CyGroup group, CyNode changedNode, ChangeType change);
+	public void groupChanged(CyGroup group, GraphObject changedObject, ChangeType change);
 }

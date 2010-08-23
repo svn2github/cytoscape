@@ -149,12 +149,28 @@ public interface CyGroup {
 	public void addOuterEdge(CyEdge edge);
 
 	/**
+	 * Remove an outer edge from the map.  Some viewers may need to do this
+	 * if they add and remove edges, for example.
+	 *
+	 * @param edge the CyEdge to add to the outer edge map
+	 */
+	public void removeOuterEdge(CyEdge edge);
+
+	/**
 	 * Add an inner edge to the map.  Some viewers may need to do this
 	 * if they add and remove edges, for example.
 	 *
 	 * @param edge the CyEdge to add to the innter edge map
 	 */
 	public void addInnerEdge(CyEdge edge);
+
+	/**
+	 * Remove an inner edge from the map.  Some viewers may need to do this
+	 * if they add and remove edges, for example.
+	 *
+	 * @param edge the CyEdge to add to the innter edge map
+	 */
+	public void removeInnerEdge(CyEdge edge);
 
 	/**
 	 * Determine if a node is a member of this group
