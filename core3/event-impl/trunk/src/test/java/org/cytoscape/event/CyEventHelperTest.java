@@ -64,15 +64,6 @@ public class CyEventHelperTest extends AbstractCyEventHelperTest {
 
 	/**
 	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Test suite() {
-		return new TestSuite(CyEventHelperTest.class);
-	}
-
-	/**
-	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
 		service = new StubCyListenerImpl();
