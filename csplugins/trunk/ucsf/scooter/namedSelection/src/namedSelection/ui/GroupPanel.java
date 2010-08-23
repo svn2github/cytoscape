@@ -166,7 +166,7 @@ public class GroupPanel extends JPanel implements ActionListener {
 		viewerList.add(viewer);
 		navTree.setViewerList(viewerList);
 
-		System.out.println("Added new viewer: "+viewer.getViewerName());
+		// System.out.println("Added new viewer: "+viewer.getViewerName());
 
 		// Do a reload so we can get the new groups
 		reload();

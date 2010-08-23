@@ -83,6 +83,10 @@ public class GroupTreeUtils {
 			return;
 
 		CyGroup group = (CyGroup) groupTreeNode.getUserObject();
+		// Don't promote selection for other viewers!
+		if (!group.getViewer().equals(NamedSelection.viewerName))
+			return;
+
 		// Now, see if we need to promote (or demote) the selection
 		if (checkForPromotion(navTree, groupTreeNode, selected)) {
 			// System.out.println("Promoting");

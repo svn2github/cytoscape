@@ -168,7 +168,10 @@ public class NamedSelectionGroupViewer implements CyGroupViewer,
 	public void groupChanged(CyGroup group, CyGroupChangeEvent change) {
 		// Special-case for deleted groups
 		if (change == CyGroupChangeEvent.GROUP_DELETED) {
+			// System.out.println("Group deleted: "+group);
 			groupPanel.groupChanged(null);
+		} else if (change == CyGroupChangeEvent.GROUP_CREATED) {
+			// System.out.println("Group added: "+group);
 		}
 	} 
 
