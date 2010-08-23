@@ -85,4 +85,41 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 		assertEquals("number of calls", 1,microListener.getNumCalls());
 		assertEquals("value of event", 5,microListener.getEventValue());
 	}
+
+	// This is a performance test that counts the number of events fired in 1 second. 
+	// We verify that the microlistener approach is at faster than the
+	// event/listener combo. 
+	public void testLD1second() {
+		final long duration = 1000000000;
+
+		long end = System.nanoTime() + duration;
+		int syncCount = 0;
+		while ( end > System.nanoTime() ) {
+			helper.fireSynchronousEvent((StubCyEvent) new StubCyEvent("homer"));
+			syncCount++;
+		}
+
+		end = System.nanoTime() + duration;
+		int asyncCount = 0;
+		while ( end > System.nanoTime() ) {
+			helper.fireAsynchronousEvent((StubCyEvent) new StubCyEvent("homer"));
+			asyncCount++;
+		}
+	
+		end = System.nanoTime() + duration;
+		int microCount = 0;
+		while ( end > System.nanoTime() ) {
+			microEventSource.testFire( helper, 5 );
+			microCount++;
+		}
+
+		System.out.println("syncCount  : " + syncCount);
+		System.out.println("asyncCount : " + asyncCount);
+		System.out.println("microCount : " + microCount);
+		System.out.println("speedup micro/sync : " + ((double)microCount/(double)syncCount));
+		System.out.println("speedup micro/async: " + ((double)microCount/(double)asyncCount));
+		System.out.println("speedup async/sync : " + ((double)asyncCount/(double)syncCount));
+
+		assertTrue( microCount > syncCount );
+	}
 }

@@ -46,19 +46,19 @@ public interface StubCyMicroListener extends CyMicroListener {
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void handleEvent(int x);
+	public void handleMicroEvent(int x);
 
 	/**
 	 * A special method for testing which returns the number of times
-	 * that the handleEvent() method had been called.  In general,
-	 * extensions of the CyListener interface should NOT define other 
+	 * that the handleMicroEvent() method had been called.  In general,
+	 * extensions of the CyMicroListener interface should NOT define other 
 	 * methods.
 	 */
 	public int getNumCalls();
 
 	/**
 	 * A special method for testing which returns the value set in
-	 * the handleEvent() method.  In general, extensions of the CyListener 
+	 * the handleMicroEvent() method.  In general, extensions of the CyMicroListener 
 	 * interface should NOT define other methods.
 	 */
 	public int getEventValue();

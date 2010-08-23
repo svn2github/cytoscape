@@ -57,7 +57,7 @@ public class StubCyMicroListenerImpl implements StubCyMicroListener {
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void handleEvent(int x) {
+	public void handleMicroEvent(int x) {
 		called++;
 		eventValue = x;
 	}

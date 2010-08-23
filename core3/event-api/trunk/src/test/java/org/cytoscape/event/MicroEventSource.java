@@ -39,6 +39,6 @@ package org.cytoscape.event;
 public class MicroEventSource {
 
 	public void testFire(CyEventHelper eh, int value) {
-		eh.getMicroListener(StubCyMicroListener.class, this).handleEvent(value);
+		eh.getMicroListener(StubCyMicroListener.class, this).handleMicroEvent(value);
 	}
 }
