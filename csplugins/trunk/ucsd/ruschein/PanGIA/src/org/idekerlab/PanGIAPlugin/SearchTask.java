@@ -555,7 +555,7 @@ public class SearchTask implements Task {
 		b.add(parameters.getPhysicalNetwork().getIdentifier());
 		boolean isBinary = parameters.getPhysicalEdgeAttrName() == null || parameters.getPhysicalEdgeAttrName().length() == 0;
 		if (isBinary) b.add(parameters.getPhysicalEdgeAttrName()+"  (binary)");
-		else b.add(parameters.getPhysicalEdgeAttrName()+"  (numeric, scaling="+parameters.getPhysicalScalingMethod()+")");
+		else b.add("Edge score: "+parameters.getPhysicalEdgeAttrName()+"  (numeric, scaling="+parameters.getPhysicalScalingMethod()+")");
 		b.add("Nodes: "+pnetNodes1+", Edges: "+pnetEdges1+"");
 		int nfd = parameters.getPhysicalNetworkFilterDegree();
 		if (nfd==-1) b.add("Network filter degree: None");
@@ -566,7 +566,7 @@ public class SearchTask implements Task {
 		b.add(parameters.getGeneticNetwork().getIdentifier());
 		isBinary = parameters.getGeneticEdgeAttrName() == null || parameters.getGeneticEdgeAttrName().length() == 0;
 		if (isBinary) b.add(parameters.getGeneticEdgeAttrName()+"  (binary)");
-		else b.add(parameters.getGeneticEdgeAttrName()+"  (numeric, scaling="+parameters.getGeneticScalingMethod()+")");
+		else b.add("Edge score: "+parameters.getGeneticEdgeAttrName()+"  (numeric, scaling="+parameters.getGeneticScalingMethod()+")");
 		b.add("Nodes: "+gnetNodes+", Edges: "+gnetEdges+"");
 		b.add("");
 		
@@ -575,21 +575,27 @@ public class SearchTask implements Task {
 			b.add("Annotation: "+parameters.getAnnotationAttrName()+"  ("+trainingComplexes.size()+" entries)");
 			b.add("");
 			
-			double background = (parameters.getComplexTrainingPhysical() || parameters.getComplexTrainingGenetic()) ? getBackground(trainingComplexes) : Double.NaN;
+			double background = (parameters.getComplexTrainingPhysical() || parameters.getComplexTrainingGenetic()) ? getBackground(trainingComplexes,parameters.getGeneticNetwork(),parameters.getPhysicalNetwork()) : Double.NaN;
 			
 			if (parameters.getComplexTrainingPhysical())
 			{
 				b.add("Physical interaction annotation enrichment");
-				double[][] curve = getCurve(physicalRegress.x,physicalRegress.y,40,background);
+				double[][] curve = getCurve(physicalRegress.x,physicalRegress.y,30,background);
 				
 				double xmin = DoubleVector.min(curve[0]);
 				double xmax = DoubleVector.max(curve[0]);
+				
+				
 				
 				double ymin = -2;
 				double ymax = 3;
 				
 				float[] x = new FloatVector(DoubleVector.divideBy(DoubleVector.subtract(curve[0],xmin),(xmax-xmin)/100)).getData();
 				float[] y = new FloatVector(DoubleVector.divideBy(DoubleVector.subtract(curve[1],ymin),(ymax-ymin)/100)).getData();
+				
+				double deltax = xmax-xmin;
+				xmin -= .02*deltax;
+				xmax += .02*deltax;
 				
 				b.add("<IMG src=\"http://chart.apis.google.com/chart?cht=lxy&chs=500x300&chd=t:"+ListOps.collectionToString(x,",")+"|"+ListOps.collectionToString(y,",")+"&chxr=0,"+xmin+","+xmax+"&chxt=x,x,y,y&chxl=1:|Interaction_Score|2:|10^-2|10^-1|10^0|10^1|10^2|10^3|3:|Enrichment&chxp=1,60|3,50&chco=0000FF&chxs=0,000000,12,0,lt|1,000000,12,1,lt|2,000000,12,2,lt|3,000000,12,3,lt&chg=0,100,3,3,0,40\">");
 				b.add("");
@@ -604,7 +610,7 @@ public class SearchTask implements Task {
 			if (parameters.getComplexTrainingGenetic())
 			{
 				b.add("Genetic interaction annotation enrichment");
-				double[][] curve = getCurve(geneticRegress.x,geneticRegress.y,40,background);
+				double[][] curve = getCurve(geneticRegress.x,geneticRegress.y,30,background);
 				
 				double xmin = DoubleVector.min(curve[0]);
 				double xmax = DoubleVector.max(curve[0]);
@@ -614,6 +620,10 @@ public class SearchTask implements Task {
 				
 				float[] x = new FloatVector(DoubleVector.divideBy(DoubleVector.subtract(curve[0],xmin),(xmax-xmin)/100)).getData();
 				float[] y = new FloatVector(DoubleVector.divideBy(DoubleVector.subtract(curve[1],ymin),(ymax-ymin)/100)).getData();
+				
+				double deltax = xmax-xmin;
+				xmin -= .02*deltax;
+				xmax += .02*deltax;
 				
 				b.add("<IMG src=\"http://chart.apis.google.com/chart?cht=lxy&chs=500x300&chd=t:"+ListOps.collectionToString(x,",")+"|"+ListOps.collectionToString(y,",")+"&chxr=0,"+xmin+","+xmax+"&chxt=x,x,y,y&chxl=1:|Interaction_Score|2:|10^-2|10^-1|10^0|10^1|10^2|10^3|3:|Enrichment&chxp=1,60|3,50&chco=0000FF&chxs=0,000000,12,0,lt|1,000000,12,1,lt|2,000000,12,2,lt|3,000000,12,3,lt&chg=0,100,3,3,0,40\">");
 				b.add("");
@@ -653,11 +663,17 @@ public class SearchTask implements Task {
 		report.write(path);
 	}
 	
-	private static double getBackground(List<SNodeModule> annots)
+	private static double getBackground(List<SNodeModule> annots, CyNetwork geneticNetwork, CyNetwork physicalNetwork)
 	{
 		Set<String> nodes = new HashSet<String>(20000);
 		for (SNodeModule m : annots)
 			nodes.addAll(m.getMemberData());
+		
+		for (int i : geneticNetwork.getNodeIndicesArray())
+			nodes.add(geneticNetwork.getNode(i).getIdentifier());
+		
+		for (int i : physicalNetwork.getNodeIndicesArray())
+			nodes.add(physicalNetwork.getNode(i).getIdentifier());
 		
 		int possible = nodes.size()*(nodes.size()-1)/2;
 		
@@ -683,11 +699,11 @@ public class SearchTask implements Task {
 		for (int i=0;i<n-1;i++)
 		{
 			out[0][i] = getX(x,i*stepSize,(i+1)*stepSize);
-			out[1][i] = getY(x,y,i*stepSize,(i+1)*stepSize,background);
+			out[1][i] = getY(y,i*stepSize,(i+1)*stepSize,background);
 		}
 		
 		out[0][n-1] = getX(x,x.length-stepSize,x.length);
-		out[1][n-1] = getY(x,y,x.length-stepSize,x.length,background);
+		out[1][n-1] = getY(y,x.length-stepSize,x.length,background);
 		
 		int[] ok = new BooleanVector(DoubleVector.isNaN(out[1])).not().asIndexes().getData();
 		out[0] = DoubleVector.get(out[0], ok);
@@ -705,7 +721,7 @@ public class SearchTask implements Task {
 		return sum/(i2-i1);
 	}
 	
-	private static double getY(double[] x, double[] y, int i1, int i2, double background)
+	private static double getY(double[] y, int i1, int i2, double background)
 	{
 		int hits = 0;
 		for (int i=i1;i<i2;i++)

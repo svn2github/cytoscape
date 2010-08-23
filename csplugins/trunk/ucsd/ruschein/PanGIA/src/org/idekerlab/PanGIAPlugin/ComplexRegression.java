@@ -29,7 +29,8 @@ public class ComplexRegression
 				
 		List<String> nodes = new ArrayList<String>(net.getNodes());
 		
-		double[] raw = new double[n];
+		double[] rawx = new double[n];
+		double[] rawy = new double[n];
 		double[][] x = new double[n+2][1];
 		double[] y = new double[n+2];
 		
@@ -59,9 +60,10 @@ public class ComplexRegression
 					else absentMisses++;
 				}else
 				{
-					raw[index-2] = val;
 					x[index][0] = (abs) ? Math.abs(val) : val;
 					y[index] = (within) ? 1 : 0;
+					rawx[index-2] = val;
+					rawy[index-2] = y[index];
 					edgeList.add(new UndirectedSEdge(n1,nodes.get(j)));
 					index++;
 				}
@@ -117,6 +119,6 @@ public class ComplexRegression
 			if (prob>0) out.add(edgeList.get(j-2).getI1(),edgeList.get(j-2).getI2(),(float)prob);
 		}
 		
-		return new ComplexRegressionResult(out,raw,y,lm.coefficients().get(0),lm.coefficients().get(1),absentHits,absentMisses,background);
+		return new ComplexRegressionResult(out,rawx,rawy,lm.coefficients().get(0),lm.coefficients().get(1),absentHits,absentMisses,background);
 	}
 }
