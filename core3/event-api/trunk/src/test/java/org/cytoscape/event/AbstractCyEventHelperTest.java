@@ -120,6 +120,6 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 		System.out.println("speedup micro/async: " + ((double)microCount/(double)asyncCount));
 		System.out.println("speedup async/sync : " + ((double)asyncCount/(double)syncCount));
 
-		assertTrue( microCount > syncCount );
+		assertTrue( microCount > (syncCount*3) );
 	}
 }
