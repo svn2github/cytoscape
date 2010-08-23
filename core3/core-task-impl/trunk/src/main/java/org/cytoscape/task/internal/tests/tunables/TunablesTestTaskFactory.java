@@ -32,9 +32,12 @@ package org.cytoscape.task.internal.tests.tunables;
 
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.Tunable;
 
 
 public class TunablesTestTaskFactory implements TaskFactory {
+	@Tunable(description="# of loops")
+	public int loopCount = 1;
 
 	public Task getTask() {
 		return new TunablesTestTask();
