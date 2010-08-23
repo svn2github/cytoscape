@@ -50,12 +50,12 @@ import org.cytoscape.event.CyEventHelper;
  * {@link CyDataTable} objects.  This factory will be
  * provided as a service through Spring/OSGi.
  */
-class CyDataTableFactoryImpl implements CyDataTableFactory {
+public class CyDataTableFactoryImpl implements CyDataTableFactory {
 
 	private final Map<Long,CyDataTable> tables;
 	private final CyEventHelper help;
 
-	CyDataTableFactoryImpl(CyEventHelper help) {
+	public CyDataTableFactoryImpl(CyEventHelper help) {
 		this.help = help;
 		tables = new HashMap<Long,CyDataTable>();
 	}
