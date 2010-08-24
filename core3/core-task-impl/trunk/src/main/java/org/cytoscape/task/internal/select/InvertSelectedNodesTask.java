@@ -60,6 +60,6 @@ public class InvertSelectedNodesTask extends AbstractSelectTask {
 			}
 		}
 
-		final CyNetworkView v = netmgr.getNetworkView( cyNetwork.getSUID() );
+		netmgr.getNetworkView( cyNetwork.getSUID() ).updateView();
 	}
 }

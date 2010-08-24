@@ -454,8 +454,8 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 						v.moveToLocation();
 
 					}
-					// TODO: replace 
-					//networkView.updateView();
+					// This fires events to presentation layer.
+					networkView.updateView();
 				}
 
 				if (debug) {

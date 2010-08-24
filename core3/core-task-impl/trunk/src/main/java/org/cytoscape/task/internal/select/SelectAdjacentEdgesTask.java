@@ -66,5 +66,7 @@ public class SelectAdjacentEdgesTask extends AbstractSelectTask {
 		}
 
 		SelectUtils.setSelectedEdges(edgeSet,true);
+
+		v.updateView();
 	} 
 }

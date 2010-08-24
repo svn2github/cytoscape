@@ -52,5 +52,7 @@ public class DeselectAllEdgesTask extends AbstractSelectTask {
 		final CyNetwork n = netmgr.getCurrentNetwork();
 		final CyNetworkView v = netmgr.getNetworkView( n.getSUID() );
 		SelectUtils.setSelectedEdges( n.getEdgeList(), false);
+
+		v.updateView();
 	} 
 }

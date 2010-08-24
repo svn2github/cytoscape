@@ -93,5 +93,11 @@ public interface CyNetworkView extends View<CyNetwork> {
 	 * @return DOCUMENT ME!
 	 */
 	Collection<View<? extends GraphObject>> getAllViews();
+	
+	
+	// These are utility methods to fire events to presentation layer.
+	public void fitContent();
+	public void fitSelected();
+	public void updateView();
 
 }

@@ -165,8 +165,8 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel, Se
 		// view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
 		// (int) panelSize.getHeight() - PADDING));
 		
-		//TODO use fit content event
-		//dummyview.fitContent();
+		// This is necessary to adjust the size of default image. 
+		dummyview.fitContent();
 
 		// TODO: is this correct???
 		this.removeAll();

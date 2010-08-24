@@ -230,8 +230,8 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		// post the edit 
 //		undoableEdit.post();
 
-		//TODO: fire correct event
-//		networkView.updateView();
+		// Fire events to presentation layer.
+		networkView.updateView();
 
 		// update the __layoutAlgorithm attribute
 		CyRow networkAttributes = network.getCyRow(CyNetwork.HIDDEN_ATTRS);

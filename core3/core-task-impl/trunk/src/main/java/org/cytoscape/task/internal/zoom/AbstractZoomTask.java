@@ -56,5 +56,7 @@ abstract class AbstractZoomTask extends AbstractNetworkViewTask {
 	public void run(TaskMonitor tm) {
 		view.setVisualProperty(NETWORK_SCALE_FACTOR, 
 		view.getVisualProperty(NETWORK_SCALE_FACTOR).doubleValue() * factor);
+		
+		view.updateView();
 	}
 }

@@ -37,12 +37,9 @@
 
 package org.cytoscape.task.internal.select;
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
 
@@ -57,5 +54,7 @@ public class DeselectAllTask extends AbstractSelectTask {
         final CyNetworkView v = netmgr.getNetworkView( n.getSUID() );
         SelectUtils.setSelectedEdges( n.getEdgeList(), false);
         SelectUtils.setSelectedNodes( n.getNodeList(), false);
+
+        v.updateView();
 	}
 }

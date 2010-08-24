@@ -107,7 +107,6 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 			throw new Exception("Error reading file: " + file.getAbsolutePath(), e);
 		}
 
-		CyNetworkView view = netmgr.getNetworkView(network.getSUID());
-		
+		netmgr.getNetworkView(network.getSUID()).updateView();
 	}
 }

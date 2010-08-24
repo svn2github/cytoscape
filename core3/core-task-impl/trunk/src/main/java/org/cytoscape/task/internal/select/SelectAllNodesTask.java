@@ -42,7 +42,6 @@ import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
 
-
 public class SelectAllNodesTask extends AbstractSelectTask {
 
 	public SelectAllNodesTask(CyNetworkManager netmgr) {
@@ -50,11 +49,14 @@ public class SelectAllNodesTask extends AbstractSelectTask {
 	}
 
 	public void run(TaskMonitor tm) {
-        final CyNetwork n = netmgr.getCurrentNetwork();
-        final CyNetworkView v = netmgr.getNetworkView( n.getSUID() );
-        SelectUtils.setSelectedNodes( n.getNodeList(), true);
-        
-        System.out.println("All nodes of network \""+ n.getSUID() + "\" have been selected");
+		final CyNetwork n = netmgr.getCurrentNetwork();
+		final CyNetworkView v = netmgr.getNetworkView(n.getSUID());
+		SelectUtils.setSelectedNodes(n.getNodeList(), true);
+
+		v.updateView();
+
+		System.out.println("All nodes of network \"" + n.getSUID()
+				+ "\" have been selected");
 	}
 
 }

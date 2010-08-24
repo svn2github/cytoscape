@@ -463,12 +463,9 @@ public class DefaultViewEditorImpl extends JDialog implements
 			}
 			updateVisualPropertyLists();
 			buildList();
-			// TODO: update view by event
-			//cyNetworkManager.getCurrentNetworkView().updateView();
 			
-			// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
-			// mainView.updateView();
-			// mainView.repaint();
+			cyNetworkManager.getCurrentNetworkView().updateView();
+			
 		} else if (SwingUtilities.isRightMouseButton(e)) {
 			if (vp != null) {
 

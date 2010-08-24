@@ -68,8 +68,8 @@ public class SelectFirstNeighborsNodeViewTask extends AbstractTask {
 		final CyNode node = nodeView.getModel();
 		selNodes.add( node );
 		selNodes.addAll( node.getNeighborList( CyEdge.Type.ANY ) );		
-
 		SelectUtils.setSelectedNodes( selNodes, true);		
 
+		netView.updateView();
 	} 
 }

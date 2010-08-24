@@ -99,6 +99,8 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 
 			netmgr.addNetwork(cyNetwork);
 			netmgr.addNetworkView(view);
+			
+			view.fitContent();
 
 			informUserOfGraphStats(cyNetwork);
 		}

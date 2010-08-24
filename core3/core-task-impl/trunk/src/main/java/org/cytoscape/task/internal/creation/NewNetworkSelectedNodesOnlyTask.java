@@ -136,9 +136,8 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 						.getNodeView(node).getVisualProperty(NODE_Y_LOCATION));
 			}
 
-			// TODO NEED RENDERER
-			
-			//Call fit content here.
+			// Always move the view port to the selected nodes.
+			new_view.fitContent();
 
 			// Set visual style
 			VisualStyle newVS = vmm.getVisualStyle(current_network_view);

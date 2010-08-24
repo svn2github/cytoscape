@@ -54,5 +54,6 @@ public class SelectAllTask extends AbstractSelectTask {
 		SelectUtils.setSelectedNodes( n.getNodeList(), true);
 		SelectUtils.setSelectedEdges( n.getEdgeList(), true);
 
+		v.updateView();
 	} 
 }

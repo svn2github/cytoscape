@@ -59,6 +59,7 @@ public class HideSelectedEdgesTask extends AbstractNetworkViewTask {
 		final List<CyEdge> selectedEdges = CyDataTableUtil.getEdgesInState(curr,"selected",true); 
 
 		HideUtils.setVisibleEdges( selectedEdges, false, view );
-		
+
+        view.updateView();
 	} 
 }

@@ -57,16 +57,19 @@ public class SelectConnectedNodesTask extends AbstractSelectTask {
 
 	public void run(TaskMonitor tm) {
 		final CyNetwork currentNetwork = netmgr.getCurrentNetwork();
-		final CyNetworkView v = netmgr.getNetworkView( currentNetwork.getSUID() );
-		final List<CyEdge> selectedEdges = CyDataTableUtil.getEdgesInState(currentNetwork,"selected",true);
+		final CyNetworkView v = netmgr.getNetworkView(currentNetwork.getSUID());
+		final List<CyEdge> selectedEdges = CyDataTableUtil.getEdgesInState(
+				currentNetwork, "selected", true);
 		final Set<CyNode> nodes = new HashSet<CyNode>();
 
-		for (CyEdge edge: selectedEdges) {
-			nodes.add( edge.getSource() );
-			nodes.add( edge.getTarget() );
+		for (CyEdge edge : selectedEdges) {
+			nodes.add(edge.getSource());
+			nodes.add(edge.getTarget());
 		}
 
-		SelectUtils.setSelectedNodes( nodes, true);
-	} 
+		SelectUtils.setSelectedNodes(nodes, true);
+
+		v.updateView();
+	}
 
 }

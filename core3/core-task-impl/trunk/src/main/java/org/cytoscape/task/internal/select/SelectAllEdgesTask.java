@@ -35,7 +35,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package org.cytoscape.task.internal.select; 
+package org.cytoscape.task.internal.select;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyNetworkManager;
@@ -49,8 +49,10 @@ public class SelectAllEdgesTask extends AbstractSelectTask {
 	}
 
 	public void run(TaskMonitor tm) {
-        final CyNetwork n = netmgr.getCurrentNetwork();
-        final CyNetworkView v = netmgr.getNetworkView( n.getSUID() );
-        SelectUtils.setSelectedEdges( n.getEdgeList(), true);
-	} 
+		final CyNetwork n = netmgr.getCurrentNetwork();
+		final CyNetworkView v = netmgr.getNetworkView(n.getSUID());
+		SelectUtils.setSelectedEdges(n.getEdgeList(), true);
+
+		v.updateView();
+	}
 }

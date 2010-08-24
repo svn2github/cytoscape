@@ -23,6 +23,8 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.events.AddedEdgeViewEvent;
 import org.cytoscape.view.model.events.AddedNodeViewEvent;
+import org.cytoscape.view.model.events.FitContentEvent;
+import org.cytoscape.view.model.events.FitSelectedEvent;
 import org.cytoscape.view.model.events.NetworkViewChangedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,4 +141,22 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 
 		cyEventHelper.fireSynchronousEvent(new AddedEdgeViewEvent(this, ev));
 	}
+	
+	// The following methods are utilities for calling methods in upper layer (presentation)
+	
+	public void fitContent() {
+		logger.debug("Firing fitContent event from: View ID = " + this.suid);
+		cyEventHelper.fireAsynchronousEvent( new FitContentEvent(NetworkViewImpl.this));
+	}
+	
+	public void fitSelected() {
+		logger.debug("Firing fitSelected event from: View ID = " + this.suid);
+		cyEventHelper.fireAsynchronousEvent( new FitSelectedEvent(NetworkViewImpl.this));
+	}
+	
+	public void updateView() {
+		logger.debug("Firing update view event from: View ID = " + this.suid);
+		cyEventHelper.fireAsynchronousEvent( new NetworkViewChangedEvent(NetworkViewImpl.this));
+	}
+	
 }
