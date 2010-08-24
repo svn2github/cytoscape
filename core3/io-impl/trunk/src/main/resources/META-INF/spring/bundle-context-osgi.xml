@@ -16,8 +16,8 @@
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
 	                interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 	
-	<osgi:reference id="cyNetworkManagerServiceRef" 
-	                interface="org.cytoscape.session.CyNetworkManager" />
+	<osgi:reference id="cyDataTableFactoryServiceRef" 
+	                interface="org.cytoscape.model.CyDataTableFactory" />
 
 	<osgi:reference id="cyPropertyServiceRef" 
 	                interface="org.cytoscape.property.CyProperty"
@@ -27,6 +27,10 @@
 	<!-- Export services -->
 	<osgi:service id="cyNetworkViewProducerManagerService" ref="cyNetworkViewProducerManager"
 		interface="org.cytoscape.io.read.CyNetworkViewProducerManager">
+	</osgi:service>
+
+	<osgi:service id="cyDataTableProducerManagerService" ref="cyDataTableProducerManager"
+		interface="org.cytoscape.io.read.CyDataTableProducerManager">
 	</osgi:service>
 
 	<osgi:service id="sifNetworkViewProducerFactoryService" ref="sifNetworkViewProducerFactory"
@@ -45,6 +49,15 @@
 			<entry key="readerId" value="xgmmlNetworkViewProducer" />
 			<entry key="readerDescription"
 				value="eXtensible Graph Markup and Modeling Language (XGMML) file reader" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="textDataTableProducerFactoryService" ref="textDataTableProducerFactory"
+		interface="org.cytoscape.io.read.CyDataTableProducerFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="textDataTableProducerFactory" />
+			<entry key="readerId" value="textDataTableProducer" />
+			<entry key="readerDescription" value="text data table producer" />
 		</osgi:service-properties>
 	</osgi:service>
 

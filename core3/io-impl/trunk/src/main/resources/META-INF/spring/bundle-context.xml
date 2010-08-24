@@ -16,6 +16,23 @@
 
 	<context:annotation-config />
 
+	<bean id="textTableFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+		<constructor-arg index="0">
+			<set>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>text/plain</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Any text file" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="TABLE" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
+	</bean>
+
 	<bean id="sifFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
 		<constructor-arg index="0">
 			<set>
@@ -55,6 +72,12 @@
 		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
 			<ref bean="streamUtil"/>
 		</constructor-arg>
+	</bean>
+
+	<!-- DataTable Readers -->
+	<bean id="textDataTableProducerFactory" class="org.cytoscape.io.internal.read.datatable.TextDataTableReaderFactory">
+		<constructor-arg ref="textTableFilter" />
+		<constructor-arg ref="cyDataTableFactoryServiceRef" />
 	</bean>
 
 	<!-- Network Readers -->
@@ -102,9 +125,13 @@
 		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
 
-	<!-- Manager for all readers -->
+	<!-- Manager for all network readers -->
 	<bean id="cyNetworkViewProducerManager" 
 	      class="org.cytoscape.io.internal.read.CyNetworkViewProducerManagerImpl" />
+
+	<!-- Manager for all datatable readers -->
+	<bean id="cyDataTableProducerManager" 
+	      class="org.cytoscape.io.internal.read.CyDataTableProducerManagerImpl" />
 
 	<!-- Utility for Stream/Proxy management -->
 	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">

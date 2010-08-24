@@ -3,136 +3,107 @@ package org.cytoscape.io.internal.read.datatable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.cytoscape.io.internal.read.AbstractDataTableReader;
 import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.GraphObject;
-import org.cytoscape.model.CyTableManager;
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.Tunable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.cytoscape.model.GraphObject.*;
 
 public class TextDataTableReader extends AbstractDataTableReader {
-	
-	private static final String DEF_DELIMITER = "\t";
-	
-	private String delimiter;
-	
-	private String[] buffer;
-	private CyRow rowBuffer;
-	
-	private String[] columnNames;
-	
-	private String primaryKey = "name";
-	
-	private CyNetworkManager manager;
-	private CyTableManager tableMgr;
 
-	public TextDataTableReader(CyNetworkManager manager, String objType, CyTableManager tableMgr) {
-		super();
-		this.objectType = objType;
-		this.manager = manager;
-		delimiter = DEF_DELIMITER;
-		this.tableMgr = tableMgr;
+	@Tunable(description="Column delimiter character")
+	public String delimiter = "\t";
+
+	@Tunable(description="Table name")
+	public String tableName = "";
+
+	private String[] columnNames;
+	private static final Logger logger = LoggerFactory.getLogger(TextDataTableReader.class);
+
+	public TextDataTableReader(InputStream inputStream, CyDataTableFactory tableFactory) {
+		super(inputStream, tableFactory);
 	}
-	
 	
 	public void run(TaskMonitor tm) throws IOException {
+		try {
 	
-	}
-	/*
-	public void read() throws IOException {
-		network = manager.getCurrentNetwork();
+			final CyDataTable table = tableFactory.createTable(tableName, true);
 		
-		if( network == null)
-			throw new IllegalStateException("Could not find current network.");
+			String line;
+			final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		
-		//final Map<String, CyDataTable> tables = network.getCyDataTables(objectType);
-		final Map<String, CyDataTable> tables = tableMgr.getTableMap(objectType, network);
-		final CyDataTable table = tables.get(CyNetwork.DEFAULT_ATTRS);
+			line = br.readLine();
+			createColumns(table, line);
 		
-		if( table == null)
-			throw new IllegalStateException("Could not find target CyDataTable for " + objectType);
-		
-		String line;
-		final BufferedReader br = new BufferedReader(new InputStreamReader(
-				inputStream));
-		
-		
-		// Extract attribute names
-		line = br.readLine();
-		createColumns(table, line);
-		
-		while ((line = br.readLine()) != null)
-			processLine(network, line);
-		
-		for(CyNode node: network.getNodeList()) {
-			System.out.println("Attr for " + node.getSUID() + " =========> " + node.attrs().toString());
+			while ((line = br.readLine()) != null) 
+				processLine(table, line);
+	
+			cyDataTables = new CyDataTable[] { table };
+
+		} finally {
+			if (inputStream != null) {
+				inputStream.close();
+				inputStream = null;
+			}
 		}
 
-		//readObjects.put(CyDataTable.class, table);
-		//this.cyDataTables = ??;
-		
-		if (inputStream != null) {
-			inputStream.close();
-			inputStream = null;
-		}
+		tm.setProgress(1.0);
 	}
 	
-	private void createColumns(CyDataTable table, String line) {
-		if(line == null)
+	private void createColumns(CyDataTable table, String line) throws IOException {
+		if (line == null)
 			throw new IllegalStateException("Column names cannot be null");
 		
-		buffer = line.split(delimiter);
+		columnNames = line.split(delimiter);
+
+		checkForDuplicates( columnNames );
 		
-		if(buffer.length < 2)
-			throw new IllegalStateException("At least two columns should be in the table");
+		for ( String col : columnNames ) 
+			table.createColumn(col, String.class, false);
+	}
+
+	private void checkForDuplicates(String[] names) throws IOException {
+		Map<String,Integer> map = new HashMap<String,Integer>();
+
+		for ( String n : names ) {
+			if ( !map.containsKey(n) )
+				map.put(n,0);
+			map.put(n, map.get(n) + 1 );
+		}
+	
+		if (map.keySet().size() != names.length) {
+			String dupes = " ";
+			for ( Map.Entry<String,Integer> entry : map.entrySet() )
+				if ( entry.getValue() > 1 )
+					dupes += entry.getKey() + " ";
 		
-		final int columnLen = buffer.length;
-		List<String> existingColumns = table.getUniqueColumns();
-		columnNames = new String[columnLen - 1];
-		
-		for(int i=1; i<columnLen; i++) {
-			columnNames[i-1] = buffer[i];
-			if(existingColumns.contains(buffer[i]) == false)
-				table.createColumn(buffer[i], String.class, false);
+			throw new IOException("Illegal duplicate column headers found: " + dupes);
 		}
 	}
 
-	private void processLine(CyNetwork network, String line) {
-		buffer = line.split(delimiter);
-		
-		// find target Graph Object
-		List<? extends GraphObject> graphObjects = null;
-		
-		if(objectType.equals(NODE)) {
-			graphObjects = network.getNodeList();
-		} else if(objectType.equals(EDGE)) {
-			graphObjects = network.getEdgeList();
-		} else {
-			processRow(network);
+	private void processLine(CyDataTable table, String line) {
+		String[] buffer = line.split(delimiter);
+
+		if ( buffer.length != columnNames.length ) {
+			logger.warn("Skipping line: '" + line + "' due to incorrect length");
 			return;
 		}
 		
-		for(GraphObject obj: graphObjects)
-			processRow(obj);
+		CyRow row = table.addRow();
+
+		for(int i = 0; i<buffer.length; i++) 
+			row.set(columnNames[i], buffer[i]);
 	}
-	
-	private void processRow(GraphObject obj) {
-		rowBuffer = obj.attrs();
-		if(rowBuffer.get(primaryKey, String.class).equals(buffer[0])) {
-			for(int i = 1; i<buffer.length; i++) {
-				rowBuffer.set(columnNames[i-1], buffer[i]);
-				
-			}
-		}
-	}
-*/
 }
