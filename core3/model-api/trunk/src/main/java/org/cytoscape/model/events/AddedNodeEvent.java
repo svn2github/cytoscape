@@ -36,15 +36,15 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyEvent;
-
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 
 
 /**
- * DOCUMENT ME!
-  */
+ * Event for upper layers.  In general, network view models listen to this event
+ * and creates view model for the node.  This will be fired to ALL network view models.
+ *
+ */
 public final class AddedNodeEvent extends AbstractNodeEvent {
 	public AddedNodeEvent(final CyNetwork source, final CyNode node) {
 		super(source, AddedNodeListener.class, node);
