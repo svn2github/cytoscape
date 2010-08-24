@@ -13,13 +13,13 @@
 		<bundle.symbolicName>org.swinglabs.swingx</bundle.symbolicName>
 		<wrapped.groupId>org.swinglabs</wrapped.groupId>
 		<wrapped.artifactId>swingx</wrapped.artifactId>
-		<wrapped.version>0.9.7</wrapped.version>
+		<wrapped.version>1.6.1</wrapped.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape.wrappers</groupId>
 	<artifactId>org.swinglabs.swingx</artifactId>
-	<version>0.9.7</version>
+	<version>1.6.1</version>
 
 	<name>${bundle.symbolicName} ${wrapped.version} [osgi]</name>
 
@@ -50,7 +50,7 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>1.4.3</version>
+				<version>${maven-bundle-plugin.version}</version>
 				<!--
 					| the following instructions are optimized for wrapping third-party
 					libraries as OSGi bundles
