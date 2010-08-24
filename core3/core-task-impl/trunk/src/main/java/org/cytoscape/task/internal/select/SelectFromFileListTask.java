@@ -108,7 +108,6 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 		}
 
 		CyNetworkView view = netmgr.getNetworkView(network.getSUID());
-		if ( view != null )
-			view.updateView();
+		
 	}
 }

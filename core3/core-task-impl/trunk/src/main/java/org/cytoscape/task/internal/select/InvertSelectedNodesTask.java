@@ -37,15 +37,11 @@
 
 package org.cytoscape.task.internal.select;
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class InvertSelectedNodesTask extends AbstractSelectTask {
@@ -65,7 +61,5 @@ public class InvertSelectedNodesTask extends AbstractSelectTask {
 		}
 
 		final CyNetworkView v = netmgr.getNetworkView( cyNetwork.getSUID() );
-		if ( v != null )
-			v.updateView();
 	}
 }

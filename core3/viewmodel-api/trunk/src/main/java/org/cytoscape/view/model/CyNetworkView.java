@@ -94,9 +94,4 @@ public interface CyNetworkView extends View<CyNetwork> {
 	 */
 	Collection<View<? extends GraphObject>> getAllViews();
 
-	// TODO FIXME remove all of these!
-	public void fitContent();
-	public void fitSelected();
-	public void updateView();
-
 }

@@ -53,9 +53,6 @@ public class SelectAllNodesTask extends AbstractSelectTask {
         final CyNetwork n = netmgr.getCurrentNetwork();
         final CyNetworkView v = netmgr.getNetworkView( n.getSUID() );
         SelectUtils.setSelectedNodes( n.getNodeList(), true);
-
-        if ( v != null )
-            v.updateView();
         
         System.out.println("All nodes of network \""+ n.getSUID() + "\" have been selected");
 	}

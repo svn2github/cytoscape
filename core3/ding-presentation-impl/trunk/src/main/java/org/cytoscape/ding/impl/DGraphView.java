@@ -105,6 +105,8 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.undo.UndoSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import phoebe.PhoebeCanvasDropListener;
 import phoebe.PhoebeCanvasDroppable;
@@ -123,6 +125,8 @@ import phoebe.PhoebeCanvasDroppable;
  */
 public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printable,
 		PhoebeCanvasDroppable, ViewChangeListener {
+	
+	private static final Logger logger = LoggerFactory.getLogger(DGraphView.class);
 
 	private static enum ZOrder {
 		BACKGROUND_PANE, NETWORK_PANE, FOREGROUND_PANE;
@@ -2681,6 +2685,9 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 	@Override
 	public void visualPropertySet(VisualProperty<?> vp, Object o) {
+		
+		logger.debug("Visual Prop set Called");
+		
 		if (o == null)
 			return;
 

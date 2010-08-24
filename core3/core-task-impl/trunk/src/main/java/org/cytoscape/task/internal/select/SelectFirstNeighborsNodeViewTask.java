@@ -71,6 +71,5 @@ public class SelectFirstNeighborsNodeViewTask extends AbstractTask {
 
 		SelectUtils.setSelectedNodes( selNodes, true);		
 
-		netView.updateView();
 	} 
 }

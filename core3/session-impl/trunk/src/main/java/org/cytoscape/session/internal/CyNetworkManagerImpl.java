@@ -334,7 +334,7 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 	
 	public void addNetworkView(final CyNetworkView view) {
 		if (view == null)
-			throw new NullPointerException("view is null");
+			throw new NullPointerException("CyNetworkView is null");
 
 		CyNetwork network = view.getModel();
 		long networkId = network.getSUID();
@@ -349,11 +349,13 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 		cyEventHelper.fireSynchronousEvent(new NetworkViewAddedEvent( CyNetworkManagerImpl.this, view));
 	}
 
-	public RenderingEngine getCurrentRenderingEngine() {
+	
+	public RenderingEngine<CyNetwork> getCurrentRenderingEngine() {
 		return currentRenderer;
 	}
 
-	public void setCurrentRenderingEngine(RenderingEngine engine) {
+	
+	public void setCurrentRenderingEngine(RenderingEngine<CyNetwork> engine) {
 		this.currentRenderer = engine;		
 	}
 }

@@ -195,7 +195,7 @@ public class XGMMLNetworkViewProducer extends AbstractNetworkViewProducer {
 
 		// Layout edges
 		layoutEdges(null, buildStyle);
-		view.updateView();
+		
 
 		// if (buildStyle)
 		// graphStyle.buildStyle();

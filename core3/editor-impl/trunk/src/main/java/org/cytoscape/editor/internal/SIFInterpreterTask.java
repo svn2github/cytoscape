@@ -101,7 +101,6 @@ public class SIFInterpreterTask extends AbstractNetworkViewTask {
 					}
 				}
 			}
-			view.updateView();	
 		}
 		}
 	}

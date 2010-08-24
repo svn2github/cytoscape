@@ -96,8 +96,6 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 			// Model should not be null.  It will be tested in ViewImpl.
 			final CyNetwork cyNetwork = view.getModel();
 			cyNetwork.attrs().set("name", namingUtil.getSuggestedNetworkTitle(name));
-		
-			view.fitContent();
 
 			netmgr.addNetwork(cyNetwork);
 			netmgr.addNetworkView(view);

@@ -16,6 +16,7 @@
         http://www.springframework.org/schema/osgi
             http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
+	<import resource="bundle-context-osgi.xml" />
 
 	<!-- regular spring configuration file defining the beans for this
 		bundle. We've kept the osgi definitions in a separate 

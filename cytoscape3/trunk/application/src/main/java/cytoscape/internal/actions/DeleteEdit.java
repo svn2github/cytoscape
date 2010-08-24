@@ -73,7 +73,6 @@ class DeleteEdit extends CyAbstractEdit {
 			net.removeEdge(e);
 
 		CyNetworkView netView = netmgr.getNetworkView(net.getSUID());	
-		netView.updateView();
         //Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null , net);
         deleteAction.setEnabled(false);
 	}
@@ -97,7 +96,6 @@ class DeleteEdit extends CyAbstractEdit {
 			}
 		}
 
-		netView.updateView();
         //Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
         deleteAction.setEnabled(true);
 	}

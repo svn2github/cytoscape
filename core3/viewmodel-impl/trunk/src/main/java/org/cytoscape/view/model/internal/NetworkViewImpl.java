@@ -55,7 +55,7 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 		for (CyEdge edge : network.getEdgeList())
 			edgeViews.put(edge, new ViewImpl<CyEdge>(edge, cyEventHelper));
 		
-		logger.info("* Network View Created.  SUID = " + suid);
+		logger.info("*Network View Model Created.  SUID = " + suid);
 	}
 
 
@@ -113,27 +113,23 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 	
 	@Override
 	public void handleEvent(final AddedNodeEvent e) {
-		if (model != e.getSource()) {
-			logger.error("Error adding node: wrong network! " + model.toString()
-					+ " ~~ " + e.getSource().toString());
+		// Respond to the event only if the source is equal to the network model associated with this view.
+		if (model != e.getSource())
 			return;
-		}
 
 		final CyNode node = e.getNode();
 		System.out.println(" Adding node to view: " + node.toString());
 		final View<CyNode> nv = new ViewImpl<CyNode>(node, cyEventHelper);
 		nodeViews.put(node, nv);
+		// Cascading event.
 		cyEventHelper.fireSynchronousEvent(new AddedNodeViewEvent(this, nv));
 	}
 
 	
 	@Override
 	public void handleEvent(final AddedEdgeEvent e) {
-		if (model != e.getSource()) {
-			logger.error("Error adding edge: wrong network! " + model.toString()
-					+ " ~~ " + e.getSource().toString());
+		if (model != e.getSource())
 			return;
-		}
 
 		final CyEdge edge = e.getEdge();
 		System.out.println(" Adding edge to view! " + edge.toString());
@@ -143,17 +139,4 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 
 		cyEventHelper.fireSynchronousEvent(new AddedEdgeViewEvent(this, ev));
 	}
-	
-	
-	//// TODO: FIXME: The following methods will be removed!
-	public void fitContent() {
-		System.out.println("running dummy fitContent");
-	}
-	public void fitSelected() {
-		System.out.println("running dummy fitSelected");
-	}
-	public void updateView() {
-		cyEventHelper.fireAsynchronousEvent( new NetworkViewChangedEvent(NetworkViewImpl.this));
-	}
-
 }

@@ -57,6 +57,5 @@ public class UnHideAllTask extends AbstractNetworkViewTask {
 		HideUtils.setVisibleNodes( curr.getNodeList(), true, view );
 		HideUtils.setVisibleEdges( curr.getEdgeList(), true, view );
 
-		view.updateView();
 	} 
 }

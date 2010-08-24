@@ -27,6 +27,8 @@ import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.undo.UndoSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RenderingEngineFactory for Navigation.
@@ -36,6 +38,8 @@ import org.cytoscape.work.undo.UndoSupport;
  */
 public class DingNavigationRenderingEngineFactory implements
 		RenderingEngineFactory<CyNetwork>, NetworkViewChangedListener {
+	
+	private static final Logger logger = LoggerFactory.getLogger(DingNavigationRenderingEngineFactory.class);
 
 	private CyDataTableFactory dataTableFactory;
 	private CyRootNetworkFactory rootNetworkFactory;
@@ -98,6 +102,8 @@ public class DingNavigationRenderingEngineFactory implements
 				dataTableFactory, rootNetworkFactory, undo, spacialFactory,
 				rootLexicon, dingLexicon, nodeViewTFs, edgeViewTFs,
 				emptySpaceTFs, ti, tm, registrar, tableMgr);
+		
+		logger.info("DGV created for navigation: View ID = " + view.getSUID());
 
 		JPanel target = new JPanel();
 		BirdsEyeView bev = new BirdsEyeView((Component) visualizationContainer,

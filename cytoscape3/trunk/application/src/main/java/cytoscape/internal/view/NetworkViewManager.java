@@ -156,7 +156,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		factories.put(rendererID.toString(), factory);
 		if(currentRenderingEngineFactory == null && rendererID.equals(DEFAULT_PRESENTATION)) {
 			currentRenderingEngineFactory = factory;
-			System.out.print(rendererID + " is registered as default rendering engine.");
+			logger.info(rendererID + " is registered as default rendering engine.");
 		}
 		
 		logger.info("New Rendering Engine is Available: " + rendererID);
@@ -278,22 +278,16 @@ public class NetworkViewManager implements InternalFrameListener,
 	public void internalFrameIconified(InternalFrameEvent e) {
 	}
 
+	
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
-		System.out
-				.println("\n\n\n############ NetworkViewManager - attempting to set current network view ");
-
-		Long sourceNetwork = e.getNetworkView().getModel().getSUID();
-		setFocus(sourceNetwork);
+		logger.info("Attempting to set current network view model: View Model ID = " + e.getNetworkView().getSUID());
+		setFocus(e.getNetworkView().getModel().getSUID());
 	}
 	
 
 	public void handleEvent(SetCurrentNetworkEvent e) {
-		System.out
-				.println("\n\n\n############ NetworkViewManager - attempting to set current network");
-
-		Long sourceNetwork = e.getNetwork().getSUID();
-		setFocus(sourceNetwork);
-		
+		logger.info("Attempting to set current network model: Model ID = " + e.getNetwork().getSUID());
+		setFocus(e.getNetwork().getSUID());		
 	}
 
 	private void setFocus(Long network_id) {
@@ -310,8 +304,7 @@ public class NetworkViewManager implements InternalFrameListener,
 			try {
 				f.setSelected(false);
 			} catch (PropertyVetoException pve) {
-				System.out
-						.println("NetworkViewManager: Couldn't unset focus for internal frame.");
+				logger.error("NetworkViewManager: Couldn't unset focus for internal frame.", pve);
 			}
 		}
 
@@ -341,16 +334,22 @@ public class NetworkViewManager implements InternalFrameListener,
 
 	
 	public void handleEvent(NetworkViewAboutToBeDestroyedEvent nvde) {
-		System.out.println("NetworkViewManager - network view destroyed ");
+		logger.info("Network view destroyed: View ID = " + nvde.getNetworkView());
 		removeView(nvde.getNetworkView());
 	}
 
-	public void handleEvent(NetworkViewAddedEvent nvae) {
-		System.out.println("\n\n############### Creating view: NetworkViewManager - network view added: "
-				+ nvae.getNetworkView().getModel().getSUID());
+	
+	/**
+	 * Adding new network view model to this manager.
+	 * Then, create default presentation.
+	 */
+	public void handleEvent(final NetworkViewAddedEvent nvae) {
+		logger.info("Adding view to manager: NetworkViewManager: View ID = "
+				+ nvae.getNetworkView().getSUID());
 		createContainer(nvae.getNetworkView());
 	}
 
+	
 	protected void removeView(CyNetworkView view) {
 		try {
 			networkViewMap.get(view.getModel().getSUID()).dispose();
@@ -365,7 +364,8 @@ public class NetworkViewManager implements InternalFrameListener,
 	}
 
 	/**
-	 * Contains a CyNetworkView.
+	 * Create a visualization container and add presentation to it.
+	 * 
 	 */
 	protected void createContainer(final CyNetworkView view) {
 		if (networkViewMap.containsKey(view.getModel().getSUID())) {
@@ -375,7 +375,7 @@ public class NetworkViewManager implements InternalFrameListener,
 
 		// create a new InternalFrame and put the CyNetworkView Component into
 		// it
-		JInternalFrame iframe = new JInternalFrame(view
+		final JInternalFrame iframe = new JInternalFrame(view
 				.getVisualProperty(NETWORK_TITLE), true, true, true, true);
 		iframe.addInternalFrameListener(new InternalFrameAdapter() {
 			public void internalFrameClosing(InternalFrameEvent e) {
@@ -384,7 +384,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		});
 		desktopPane.add(iframe);
 
-		// iframe.setContentPane( view.getContainer(iframe.getLayeredPane()) );
+		logger.info("Rendering view model: " + view.getSUID());
 		this.presentationMap.put(view.getModel().getSUID(), this.currentRenderingEngineFactory.render(iframe, view));
 
 		iframe.pack();
@@ -436,7 +436,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		componentMap.put(iframe, view.getModel().getSUID());
 
 		Long sourceNetwork = view.getModel().getSUID();
-		netmgr.setCurrentNetworkView(sourceNetwork);
+		//netmgr.setCurrentNetworkView(sourceNetwork);
 		netmgr.setCurrentRenderingEngine(presentationMap.get(sourceNetwork));
 
 		updateNetworkTitle( view.getModel() );	

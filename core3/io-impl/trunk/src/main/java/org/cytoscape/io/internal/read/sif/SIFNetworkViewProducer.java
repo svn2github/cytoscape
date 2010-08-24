@@ -109,6 +109,7 @@ public class SIFNetworkViewProducer extends AbstractNetworkViewProducer {
 
 	private void createNetwork(TaskMonitor tm) {
 		
+		// Create network model.  At this point, there are no nodes/edges.
 		final CyNetwork network = cyNetworkFactory.getInstance();
 		
 		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
@@ -129,7 +130,7 @@ public class SIFNetworkViewProducer extends AbstractNetworkViewProducer {
 
 			//tm.setProgress(progress);
 			
-			CyNode node = network.addNode();
+			final CyNode node = network.addNode();
 			node.attrs().set(NODE_NAME_ATTR_LABEL, nodeName);
 			nodeMap.put(nodeName, node);
 		}

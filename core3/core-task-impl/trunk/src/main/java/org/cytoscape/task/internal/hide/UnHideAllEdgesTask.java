@@ -54,8 +54,6 @@ public class UnHideAllEdgesTask extends AbstractNetworkViewTask {
 		final CyNetwork curr = view.getModel();
 
 		HideUtils.setVisibleEdges( curr.getEdgeList(), true, view );
-
-		view.updateView();
 	} 
 
 }

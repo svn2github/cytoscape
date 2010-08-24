@@ -29,8 +29,12 @@ import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.undo.UndoSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetwork>, NetworkViewChangedListener {
+	
+	private static final Logger logger = LoggerFactory.getLogger(DingRenderingEngineFactory.class);
 
 	private CyDataTableFactory dataTableFactory;
 	private CyRootNetworkFactory rootNetworkFactory;
@@ -75,6 +79,7 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	}
 
 	/**
+	 * Render given view model by Ding rendering engine.
 	 * 
 	 */
 	public RenderingEngine<CyNetwork> render(Object presentationContainer, View<CyNetwork> view) {
@@ -85,14 +90,15 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 		if ( view instanceof CyNetworkView == false )
 			throw new IllegalArgumentException("Ding accepts CyNetworkView only.");
 		
-		CyNetworkView targetView = (CyNetworkView) view;
+		final CyNetworkView targetView = (CyNetworkView) view;
 		DGraphView dgv = null;
 		if ( presentationContainer instanceof JComponent ) {
 			
+			logger.debug("Start rendering presentation by Ding: " + targetView.getSUID());
 			dgv = new DGraphView(targetView, dataTableFactory,rootNetworkFactory,undo,spacialFactory,
 					rootLexicon, dingLexicon,nodeViewTFs,edgeViewTFs,emptySpaceTFs,ti,tm, registrar,tableMgr);
+			logger.info("DGraphView created as a presentation for view model: " + targetView.getSUID());
 			viewMap.put(targetView, dgv);
-			//targetView.addViewChangeListener(dgv);
 			
 			if(presentationContainer instanceof JInternalFrame) {	
 				JInternalFrame inFrame = (JInternalFrame)presentationContainer;

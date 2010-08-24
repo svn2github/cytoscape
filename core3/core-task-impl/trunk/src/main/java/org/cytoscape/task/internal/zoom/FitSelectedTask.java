@@ -48,7 +48,6 @@ public class FitSelectedTask extends AbstractNetworkViewTask {
 	}
 
 	public void run(TaskMonitor tm) {
-		view.fitSelected();
-		view.updateView();
+		//TODO: fire event here.
 	}
 }

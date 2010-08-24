@@ -48,7 +48,6 @@ public class FitContentTask extends AbstractNetworkViewTask {
 	}
 
 	public void run(TaskMonitor tm) {
-		view.fitContent();
-		view.updateView();
+		//TODO: fire event here.
 	}
 }

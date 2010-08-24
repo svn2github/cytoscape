@@ -137,7 +137,8 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 			}
 
 			// TODO NEED RENDERER
-			new_view.fitContent();
+			
+			//Call fit content here.
 
 			// Set visual style
 			VisualStyle newVS = vmm.getVisualStyle(current_network_view);

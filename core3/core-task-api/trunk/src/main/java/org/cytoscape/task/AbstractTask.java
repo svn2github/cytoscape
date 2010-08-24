@@ -46,7 +46,7 @@ import org.cytoscape.work.TaskMonitor;
  * cancel running tasks.
  */
 public abstract class AbstractTask implements Task {
-
+	
 	/**
 	 * Can be checked to determine whether or not to cancel
 	 * the task during execution.  Is initialized to false

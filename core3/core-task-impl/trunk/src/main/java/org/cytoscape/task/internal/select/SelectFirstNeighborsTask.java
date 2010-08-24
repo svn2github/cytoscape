@@ -37,20 +37,17 @@
 
 package org.cytoscape.task.internal.select;
 
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyDataTableUtil;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
-
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
+
+import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.work.TaskMonitor;
 
 public class SelectFirstNeighborsTask extends AbstractSelectTask {
 
@@ -68,8 +65,5 @@ public class SelectFirstNeighborsTask extends AbstractSelectTask {
 			nodes.addAll( currentNetwork.getNeighborList(currentNode,CyEdge.Type.ANY) );
 
 		SelectUtils.setSelectedNodes( nodes, true);		
-	
-		if ( view != null )
-			view.updateView();
 	} 
 }
