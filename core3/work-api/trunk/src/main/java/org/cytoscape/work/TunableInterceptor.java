@@ -48,13 +48,6 @@ public interface TunableInterceptor<TH extends TunableHandler> {
 	boolean execUI(Object... obs);
 	
 	/**
-	 * Use to add the Tunables' JPanels to an external JPanel that has been defined in another class.
-	 * @param o An Object that has to be an instance of a <code>JPanel</code>.
-	 * @throws IllegalArgumentException If the Object o is not a JPanel, it can not be set as the parent for the others : they will be displayed to the user in a <code>JOptionPanel</code>.
-	 */
-	void setParent(Object o);
-	
-	/**
 	 * Used to update tunable's values w/ the values as provided by a user.
 	 * This method will set the value for the Object of each <code>GUIHandler</code> taken from the <code>Map</code> that is containing the
 	 * <code>Handlers</code>.<br>
@@ -65,7 +58,7 @@ public interface TunableInterceptor<TH extends TunableHandler> {
 	 * 
 	 * False if an exception is thrown (from <code>TunableValidator</code>) and so the tasks won't be performed
 	 */
-	boolean handle(); //TODO: should we call this validateAndWriteBackTunables() instead?
+	boolean validateAndWriteBackTunables();
 
 	/** Tests an object for having tunable annotations.
 	 *

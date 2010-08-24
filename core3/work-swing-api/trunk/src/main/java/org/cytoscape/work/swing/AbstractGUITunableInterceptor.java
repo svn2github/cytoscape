@@ -61,11 +61,8 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 	 *
 	 * @param parent component for the <code>GUITunableHandlers</code>'s panels
 	 */
-	final public void setParent(final Object parent) {
-		if (!(parent instanceof JPanel))
-			logger.error("\"parent\" tunable interceptor must be a JPanel!");
-		else
-			this.parentPanel = (JPanel)parent;
+	final public void setParent(final JPanel parent) {
+		this.parentPanel = (JPanel)parent;
 	}
 
 	//get the value(Handle) of the Tunable if its JPanel is enabled(Dependency) and check if we have to validate the values of tunables
@@ -82,7 +79,7 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 	 * </pre></p>
 	 * @return success or not of the <code>TunableValidator</code> validate method
 	 */
-	final public boolean handle() {
+	final public boolean validateAndWriteBackTunables() {
 		for (final GUITunableHandler h : handlers)
 			h.handleDependents();
 		return validateTunableInput();

@@ -62,7 +62,7 @@ public interface GUITunableInterceptor<TH extends TunableHandler> extends Tunabl
 	 * @param o An Object that has to be an instance of a <code>JPanel</code>.
 	 * @throws IllegalArgumentException If the Object o is not a JPanel, it can not be set as the parent for the others : they will be displayed to the user in a <code>JOptionPanel</code>.
 	 */
-	void setParent(final Object parent);
+	void setParent(final JPanel parent);
 	
 	/**
 	 * Used to update tunable's values w/ the values as provided by a user.

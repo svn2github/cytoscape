@@ -303,11 +303,5 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 		return false;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public abstract void setParent(Object o);
-	public abstract boolean handle();
+	public abstract boolean validateAndWriteBackTunables();
 }

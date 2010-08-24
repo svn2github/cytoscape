@@ -160,6 +160,7 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 		System.exit(1);
 	}
 
-	public boolean handle(){return false;}
-	public void setParent(Object o) {}
+	public boolean validateAndWriteBackTunables() {
+		return false;
+	}
 }
