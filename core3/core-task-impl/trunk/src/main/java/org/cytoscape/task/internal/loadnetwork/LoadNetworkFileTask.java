@@ -68,14 +68,15 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 		
 		reader = mgr.getProducer((file.toURI()));
 
+		if ( cancelTask )
+			return;
+
+		if ( reader == null )
+			throw new NullPointerException("Failed to find appropriate reader for file: " + file);
+
 		uri = file.toURI();
 		name = file.getName();
 		
-		if (reader == null) {
-			uri = null;
-		}
-		
 		loadNetwork(reader);
-		System.out.println("\n\nNetwork " + file.getAbsolutePath() + " is LOADED !!!\n\n");
 	}
 }

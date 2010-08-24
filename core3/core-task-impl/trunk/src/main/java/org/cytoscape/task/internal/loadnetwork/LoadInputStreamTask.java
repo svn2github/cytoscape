@@ -69,17 +69,17 @@ public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 			return;
 		}
 		this.taskMonitor = taskMonitor;
-		
+	
 		reader = mgr.getProducer(inputstream);
+
+		if ( cancelTask )
+			return;
+
+		if ( reader == null )
+			throw new NullPointerException("Failed to find appropriate reader for stream.");
 		
 		name = inputstream.toString();
 		
-		if (reader == null) {
-			uri = null;
-			System.out.println("The reader is null");
-		}
-		else loadNetwork(reader);
-		System.out.println("\n\nNetwork " + inputstream.toString() + " is LOADED !!!\n\n");
-
+		loadNetwork(reader);
 	}
 }

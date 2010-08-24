@@ -85,6 +85,9 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 		taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 		
 		viewProducer.run(taskMonitor);
+
+		if ( cancelTask )
+			return;
 		
 		final CyNetworkView[] cyNetworkViews = viewProducer.getNetworkViews();
 
@@ -92,6 +95,9 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 			throw new IOException("Could not create network for the producer.");
 
 		for ( CyNetworkView view : cyNetworkViews ) {
+
+			if ( cancelTask )
+				return;
 
 			// Model should not be null.  It will be tested in ViewImpl.
 			final CyNetwork cyNetwork = view.getModel();

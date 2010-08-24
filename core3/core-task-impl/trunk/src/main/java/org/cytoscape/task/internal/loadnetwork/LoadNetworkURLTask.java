@@ -86,21 +86,25 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 		taskMonitor.setTitle(String.format("Loading Network from \'%s\'", name));
 
 		taskMonitor.setStatusMessage("Checking URL...");
-		try
-		{
+		try {
 			streamUtil.getURLConnection(url).connect();
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			throw new Exception(String.format(BAD_INTERNET_SETTINGS_MSG, e.getMessage()), e);
 		}
 
-		taskMonitor.setStatusMessage("Reading network...");
+		if ( cancelTask )
+			return;
+
+		taskMonitor.setStatusMessage("Finding network reader...");
 		reader = mgr.getProducer(url.toURI());
+
+		if ( cancelTask )
+			return;
+
+		if ( reader == null )
+			throw new NullPointerException("Failed to find reader for specified URL: " + name);
 
 		taskMonitor.setStatusMessage("Loading network...");
 		loadNetwork(reader);
-		System.out.println("\n\nNetwork " + url.getPath() + " is LOADED !!!\n\n");
-
 	}
 }
