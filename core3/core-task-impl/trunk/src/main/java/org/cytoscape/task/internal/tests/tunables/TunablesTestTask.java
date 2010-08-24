@@ -96,15 +96,15 @@ public class TunablesTestTask extends AbstractTask implements TunableValidator {
 	private int getterSetterInt;
 
 	public TunablesTestTask() {
-		s = "";
 		i2 = Integer.valueOf(1);
 		l2 = Long.valueOf(2L);
 		d2 = Double.valueOf(3.0);
 		f2 = Float.valueOf(4.0f);
-		file = new File("/");
+//		file = new File("/");
 		bd = new BoundedDouble(-10.0, 5.0, +10.0, /* lowerStrict = */ true, /* upperStrict = */ true);
 		b2 = Boolean.valueOf(true);
 		getterSetterInt = 22;
+		vt = "";
 	}
 
 	public void run(TaskMonitor e) {
@@ -142,7 +142,7 @@ public class TunablesTestTask extends AbstractTask implements TunableValidator {
 		}
 	}
 
-	@ProvidesGUI
+//	@ProvidesGUI
 	public JPanel getGUI() {
 		final JPanel panel = new JPanel();
 		panel.add(new JLabel("Panel from an @ProvidesGUI-annotated class!"));

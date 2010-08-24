@@ -440,9 +440,17 @@
 	<osgi:service id="tunablesTestTaskFactoryService" ref="tunablesTestTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Tunable Test..." />
+			<entry key="title" value="Tunable Task Test..." />
 			<entry key="preferredMenu" value="Help" />
-			<entry key="cytoPanelComponentTitle" value="Tunable Test" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="tunablesTestTaskFactoryService2" ref="tunablesTestTaskFactory2"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Tunable Factoy Test..." />
+			<entry key="preferredMenu" value="Help" />
+			<entry key="cytoPanelComponentTitle" value="Tunable Factory Test" />
 		</osgi:service-properties>
 	</osgi:service>
 </beans>

@@ -1,5 +1,5 @@
 /*
-  File: TunablesTestTaskFactory.java
+  File: TunablesTestTask2.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,12 +30,23 @@
 package org.cytoscape.task.internal.tests.tunables;
 
 
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.Task;
+import java.io.File;
+
+import org.cytoscape.task.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
 
 
-public class TunablesTestTaskFactory implements TaskFactory {
-	public Task getTask() {
-		return new TunablesTestTask();
-	} 
+public class TunablesTestTask2 extends AbstractTask {
+	private int loopCount;
+	public File inputFile;
+
+	public TunablesTestTask2(final File inputFile, final int loopCount) {
+		this.inputFile = inputFile;
+		this.loopCount = loopCount;
+	}
+
+	public void run(TaskMonitor e) {
+		System.err.println("loopCount="+loopCount);
+		System.err.println("inputFile="+inputFile);
+	}
 }

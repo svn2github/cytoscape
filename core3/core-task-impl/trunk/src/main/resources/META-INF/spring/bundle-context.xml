@@ -257,4 +257,8 @@
 	<bean id="tunablesTestTaskFactory" 
 	      class="org.cytoscape.task.internal.tests.tunables.TunablesTestTaskFactory">
 	</bean>
+
+	<bean id="tunablesTestTaskFactory2" 
+	      class="org.cytoscape.task.internal.tests.tunables.TunablesTestTaskFactory2">
+	</bean>
 </beans>
