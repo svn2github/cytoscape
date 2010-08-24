@@ -40,7 +40,7 @@ package org.cytoscape.task.internal.loadnetwork;
 import java.io.File;
 import java.util.Properties;
 
-import org.cytoscape.io.read.CyNetworkViewProducerManager;
+import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.work.TaskMonitor;
@@ -55,7 +55,7 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 	@Tunable(description = "Network file to load",flags = {Param.network})
 	public File file;
 
-	public LoadNetworkFileTask(CyNetworkViewProducerManager mgr, CyNetworkManager netmgr, 
+	public LoadNetworkFileTask(CyNetworkViewReaderManager mgr, CyNetworkManager netmgr, 
 	                           Properties props, CyNetworkNaming namingUtil) {
 		super(mgr, netmgr, props, namingUtil);
 	}
@@ -66,7 +66,7 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 	public void run(TaskMonitor taskMonitor) throws Exception {
 		this.taskMonitor = taskMonitor;
 		
-		reader = mgr.getProducer((file.toURI()));
+		reader = mgr.getReader((file.toURI()));
 
 		if ( cancelTask )
 			return;

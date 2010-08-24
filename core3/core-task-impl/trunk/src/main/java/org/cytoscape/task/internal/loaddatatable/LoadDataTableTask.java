@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.Properties;
 
 //import org.cytoscape.io.read.CyReaderManager;
-import org.cytoscape.io.read.CyDataTableProducerManager;
+import org.cytoscape.io.read.CyDataTableReaderManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
@@ -16,7 +16,7 @@ public class LoadDataTableTask extends AbstractLoadDataTableTask {
 	@Tunable(description = "Data table file to load", flags = { Param.attributes })
 	public File file;
 
-	public LoadDataTableTask(CyDataTableProducerManager mgr,
+	public LoadDataTableTask(CyDataTableReaderManager mgr,
 			Properties props) {
 		super(mgr, props);
 	}

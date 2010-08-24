@@ -45,7 +45,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.cytoscape.io.DataCategory;
-import org.cytoscape.io.read.CyNetworkViewProducerManager;
+import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
@@ -66,7 +66,7 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 
 	static String BAD_INTERNET_SETTINGS_MSG = "<html><p>Cytoscape has failed to connect to the URL. Please ensure that:</p><p><ol><li>the URL is correct,</li><li>your computer is able to connect to the Internet, and</li><li>your proxy settings are correct.</li></ol></p><p>The reason for the failure is: %s</html>";
 
-	public LoadNetworkURLTask(CyNetworkViewProducerManager mgr, 
+	public LoadNetworkURLTask(CyNetworkViewReaderManager mgr, 
 			CyNetworkManager netmgr, Properties props,
 			CyNetworkNaming namingUtil, StreamUtil streamUtil) {
 		super(mgr, netmgr, props, namingUtil);
@@ -96,7 +96,7 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 			return;
 
 		taskMonitor.setStatusMessage("Finding network reader...");
-		reader = mgr.getProducer(url.toURI());
+		reader = mgr.getReader(url.toURI());
 
 		if ( cancelTask )
 			return;

@@ -5,8 +5,8 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Properties;
 
-import org.cytoscape.io.read.CyDataTableProducer;
-import org.cytoscape.io.read.CyDataTableProducerManager;
+import org.cytoscape.io.read.CyDataTableReader;
+import org.cytoscape.io.read.CyDataTableReaderManager;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.work.Task;
@@ -15,24 +15,24 @@ import org.cytoscape.task.AbstractTask;
 
 public abstract class AbstractLoadDataTableTask extends AbstractTask {
 
-	protected CyDataTableProducer reader;
+	protected CyDataTableReader reader;
 	protected URI uri;
 	protected TaskMonitor taskMonitor;
 	protected String name;
 	protected Thread myThread = null;
 	protected boolean interrupted = false;
-	protected CyDataTableProducerManager mgr;
+	protected CyDataTableReaderManager mgr;
 	protected Properties props;
 
 	protected CyNetworkNaming namingUtil;
 
-	public AbstractLoadDataTableTask(CyDataTableProducerManager mgr,
+	public AbstractLoadDataTableTask(CyDataTableReaderManager mgr,
 			Properties props) {
 		this.mgr = mgr;
 		this.props = props;
 	}
 
-	protected void loadTable(CyDataTableProducer reader) throws Exception {
+	protected void loadTable(CyDataTableReader reader) throws Exception {
 		if (reader == null)
 			throw new Exception("Could not read file: file reader was null");
 

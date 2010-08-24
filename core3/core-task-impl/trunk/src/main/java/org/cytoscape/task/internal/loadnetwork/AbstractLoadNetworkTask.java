@@ -43,8 +43,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Properties;
 
-import org.cytoscape.io.read.CyNetworkViewProducer;
-import org.cytoscape.io.read.CyNetworkViewProducerManager;
+import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
@@ -57,17 +57,17 @@ import org.cytoscape.work.TaskMonitor;
  */
 abstract class AbstractLoadNetworkTask extends AbstractTask {
 
-	protected CyNetworkViewProducer reader;
+	protected CyNetworkViewReader reader;
 	protected URI uri;
 	protected TaskMonitor taskMonitor;
 	protected String name;
 	protected boolean interrupted = false;
-	protected CyNetworkViewProducerManager mgr;
+	protected CyNetworkViewReaderManager mgr;
 	protected CyNetworkManager netmgr;
 	protected Properties props;
 	protected CyNetworkNaming namingUtil;
 
-	public AbstractLoadNetworkTask(CyNetworkViewProducerManager mgr, CyNetworkManager netmgr,
+	public AbstractLoadNetworkTask(CyNetworkViewReaderManager mgr, CyNetworkManager netmgr,
 			Properties props, CyNetworkNaming namingUtil) {
 		this.mgr = mgr;
 		this.netmgr = netmgr;
@@ -75,21 +75,21 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 		this.namingUtil = namingUtil;
 	}
 
-	protected void loadNetwork(final CyNetworkViewProducer viewProducer) throws Exception {
+	protected void loadNetwork(final CyNetworkViewReader viewReader) throws Exception {
 		
-		if (viewProducer == null)
-			throw new IllegalArgumentException("Could not read file: Network View Producer is null.");
+		if (viewReader == null)
+			throw new IllegalArgumentException("Could not read file: Network View Reader is null.");
 
 		taskMonitor.setStatusMessage("Reading in Network Data...");
 		taskMonitor.setProgress(-1.0);
 		taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 		
-		viewProducer.run(taskMonitor);
+		viewReader.run(taskMonitor);
 
 		if ( cancelTask )
 			return;
 		
-		final CyNetworkView[] cyNetworkViews = viewProducer.getNetworkViews();
+		final CyNetworkView[] cyNetworkViews = viewReader.getNetworkViews();
 
 		if (cyNetworkViews == null || cyNetworkViews.length < 0)
 			throw new IOException("Could not create network for the producer.");

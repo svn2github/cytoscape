@@ -18,12 +18,12 @@
 	<osgi:reference id="cyRootNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory" />
 
-	<osgi:reference id="cyNetworkViewProducerManagerServiceRef"
-		interface="org.cytoscape.io.read.CyNetworkViewProducerManager" />
+	<osgi:reference id="cyNetworkViewReaderManagerServiceRef"
+		interface="org.cytoscape.io.read.CyNetworkViewReaderManager" />
 
 <!--  
-	<osgi:reference id="cyDataTableProducerManagerServiceRef"
-		interface="org.cytoscape.io.read.CyDataTableProducerManager" />
+	<osgi:reference id="cyDataTableReaderManagerServiceRef"
+		interface="org.cytoscape.io.read.CyDataTableReaderManager" />
  -->
  
 	<osgi:reference id="visualMappingManagerServiceRef"

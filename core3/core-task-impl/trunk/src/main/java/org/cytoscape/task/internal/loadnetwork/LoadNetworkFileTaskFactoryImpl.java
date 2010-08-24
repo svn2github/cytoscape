@@ -39,7 +39,7 @@ package org.cytoscape.task.internal.loadnetwork;
 
 import java.util.Properties;
 
-import org.cytoscape.io.read.CyNetworkViewProducerManager;
+import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
@@ -52,13 +52,13 @@ import org.cytoscape.session.CyNetworkNaming;
  */
 public class LoadNetworkFileTaskFactoryImpl implements TaskFactory {
 
-	private CyNetworkViewProducerManager mgr;
+	private CyNetworkViewReaderManager mgr;
 	private CyNetworkManager netmgr;
 	private Properties props;
 	
 	private CyNetworkNaming cyNetworkNaming;
 
-	public LoadNetworkFileTaskFactoryImpl(CyNetworkViewProducerManager mgr,
+	public LoadNetworkFileTaskFactoryImpl(CyNetworkViewReaderManager mgr,
 			CyNetworkManager netmgr,
 			CyProperty<Properties> cyProp, CyNetworkNaming cyNetworkNaming) {
 		this.mgr = mgr;

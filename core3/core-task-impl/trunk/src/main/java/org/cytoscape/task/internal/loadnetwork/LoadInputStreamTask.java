@@ -40,7 +40,7 @@ import static org.cytoscape.io.DataCategory.NETWORK;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.cytoscape.io.read.CyNetworkViewProducerManager;
+import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
@@ -55,7 +55,7 @@ public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 	@Tunable(description = "InputStream to load")
 	public InputStream inputstream;
 
-	public LoadInputStreamTask(CyNetworkViewProducerManager mgr, CyNetworkManager netmgr, 
+	public LoadInputStreamTask(CyNetworkViewReaderManager mgr, CyNetworkManager netmgr, 
 	                           Properties props, CyNetworkNaming namingUtil) {
 		super(mgr, netmgr, props, namingUtil);
 	}
@@ -70,7 +70,7 @@ public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 		}
 		this.taskMonitor = taskMonitor;
 	
-		reader = mgr.getProducer(inputstream);
+		reader = mgr.getReader(inputstream);
 
 		if ( cancelTask )
 			return;
