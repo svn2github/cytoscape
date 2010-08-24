@@ -38,7 +38,6 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
-//import org.cytoscape.work.HandlerController;
 
 import cytoscape.view.CytoscapeAction;
 import org.cytoscape.session.CyNetworkManager;
@@ -64,17 +63,11 @@ public class TaskFactoryTunableAction<T extends TaskFactory> extends CytoscapeAc
 
 		// load the tunables from the object 
 		interceptor.loadTunables(task);
-
-		// if the object implements the interface,
-		// give the object access to the handlers 
-		// created for the tunables
-	//	if ( task instanceof HandlerController )
-	//		((HandlerController)task).controlHandlers(interceptor.getHandlers(task));
 		
 		// create the UI based on the object
-			if ( !interceptor.execUI(task) )
+		if (!interceptor.execUI(task))
 				return;
-		
+
 		// execute the task in a separate thread
 		manager.execute(task);
 	}
