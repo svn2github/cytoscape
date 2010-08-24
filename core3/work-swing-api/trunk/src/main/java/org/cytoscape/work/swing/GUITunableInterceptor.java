@@ -75,7 +75,7 @@ public interface GUITunableInterceptor<TH extends TunableHandler> extends Tunabl
 	 * 
 	 * False if an exception is thrown (from <code>TunableValidator</code>) and so the tasks won't be performed
 	 */
-	boolean handle(); //TODO: should we call this validateAndWriteBackTunables() instead?
+	boolean validateAndWriteBackTunables();
 
 	/** Tests an object for having tunable annotations.
 	 *
