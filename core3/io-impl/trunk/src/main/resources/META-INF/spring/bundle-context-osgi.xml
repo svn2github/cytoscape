@@ -69,9 +69,17 @@
 	<osgi:set id="cyNetworkViewProducerFactories" 
 	          interface="org.cytoscape.io.read.CyNetworkViewProducerFactory"
 	          cardinality="0..N">
-		<osgi:listener bind-method="addNetworkViewProducerFactory"
-		               unbind-method="removeNetworkViewProducerFactory" 
+		<osgi:listener bind-method="addInputStreamTaskFactory"
+		               unbind-method="removeInputStreamTaskFactory" 
 		               ref="cyNetworkViewProducerManager" />
+	</osgi:set>
+
+	<osgi:set id="cyDataTableProducerFactories" 
+	          interface="org.cytoscape.io.read.CyDataTableProducerFactory"
+	          cardinality="0..N">
+		<osgi:listener bind-method="addInputStreamTaskFactory"
+		               unbind-method="removeInputStreamTaskFactory" 
+		               ref="cyDataTableProducerManager" />
 	</osgi:set>
 
 </beans>

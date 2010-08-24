@@ -18,14 +18,13 @@ public class XGMMLFileFilter extends CyFileFilterImpl {
 		super(extensions, contentTypes, description, category, streamUtil);
 	}
 
-	public boolean accept(InputStream stream, DataCategory category)
-			throws IOException {
+	public boolean accept(InputStream stream, DataCategory category) {
 
 		// Check data category
 		if (category != this.category)
 			return false;
 		
-		final String header = this.getHeader(stream);
+		final String header = this.getHeader(stream,20);
 		if(header.contains(XGMML_NAMESPACE_STRING))
 			return true;
 		

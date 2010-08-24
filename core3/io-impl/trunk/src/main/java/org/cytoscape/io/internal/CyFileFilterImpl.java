@@ -49,27 +49,24 @@ import javax.swing.filechooser.FileFilter;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
-import org.cytoscape.io.util.StreamUtil;                                                                              
+import org.cytoscape.io.util.StreamUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CyFileFilterImpl implements CyFileFilter {
 
-	/*
-	 * Basic information for compatible file type. Everything will be injected
-	 * through DI container.
-	 */
-	private Set<String> extensions;
-	private Set<String> contentTypes;
-	private String description;
-	protected DataCategory category;
-	private StreamUtil streamUtil;
+	private final Set<String> extensions;
+	private final Set<String> contentTypes;
+	private final String description;
+	private final StreamUtil streamUtil;
+
+	protected final DataCategory category;
+	private static final Logger logger = LoggerFactory.getLogger(CyFileFilterImpl.class);
 
 	/**
-	 * Creates a file filter from the given string array and description.
-	 * Example: new ExampleFileFilter(String {"gif", "jpg"},
-	 * "Gif and JPG Images");
-	 * <p/>
+	 * Creates a file filter from the specified arguments. 
 	 * Note that the "." before the extension is not needed and will be ignored.
-	 * 
 	 */
 	public CyFileFilterImpl(final Set<String> extensions,
 			final Set<String> contentTypes, final String description,
@@ -88,6 +85,7 @@ public class CyFileFilterImpl implements CyFileFilter {
 
 		this.description = d;
 		this.streamUtil = streamUtil;
+
 	}
 
 	/**
@@ -101,35 +99,46 @@ public class CyFileFilterImpl implements CyFileFilter {
 	 * @throws MalformedURLException
 	 * 
 	 */
-	public boolean accept(URI uri, DataCategory category) throws IOException {
+	public boolean accept(URI uri, DataCategory category) {
 
 		// Check data category
-		if (category != this.category)
+		if (category != this.category) {
+			logger.info("category doesn't match: " + category);
 			return false;
+		}
 
-		final URLConnection connection = streamUtil.getURLConnection(uri.toURL());
-		final String contentType = connection.getContentType();
+		try {
 
-		// Check for matching content type
-		if ((contentType != null) && contentTypes.contains(contentType))
-			return true;
+			final URLConnection connection = streamUtil.getURLConnection(uri.toURL());
+			final String contentType = connection.getContentType();
 
-		// No content-type match -- try for an extnsion match
+			// Check for matching content type
+			if ((contentType != null) && contentTypes.contains(contentType)) {
+				logger.info("content type matches: " + contentType);
+				return true;
+			}
+
+
+		} catch (IOException ioe) {
+			logger.warn("Caught an exception trying to check content type",ioe);
+			return false;
+		}
+
+		// No content-type match -- try for an extension match
 		String extension = getExtension(uri.toString());
 		if ((extension != null) && extensions.contains(extension))
 			return true;
 
+
+		logger.info("extension doesn't match: " + extension);
 		return false;
 	}
 
 	/**
 	 * Must be overridden by subclasses.
 	 */
-	public boolean accept(InputStream stream, DataCategory category)
-			throws IOException {
-
+	public boolean accept(InputStream stream, DataCategory category) {
 		return false;
-
 	}
 
 	public Set<String> getExtensions() {
@@ -169,35 +178,39 @@ public class CyFileFilterImpl implements CyFileFilter {
 		return category;
 	}
 
-	protected String getHeader(InputStream stream) throws IOException {
+	protected String getHeader(InputStream stream, int numLines) {
 		
-		String header = null;
+		String header; 
 		BufferedReader br = new BufferedReader(new InputStreamReader(stream));
-		
+
 		try {
-			header = parseHeader(br);
+			header = parseHeader(br, numLines);
+		} catch (IOException ioe) {
+			logger.warn("failed to read header from stream", ioe);
+			header = "";
 		} finally {
 			if (br != null)
-				br.close();
+				try { br.close(); } catch (IOException e) {}
+
 			br = null;
 		}
 		
 		return header;
 	}
 
-	private String parseHeader(BufferedReader bufferedReader)
+	private String parseHeader(BufferedReader bufferedReader, int numLines)
 			throws IOException {
 		StringBuilder header = new StringBuilder();
 
 		try {
 			String line = bufferedReader.readLine();
 
-			int numLines = 0;
+			int lineCount = 0;
 
-			while ((line != null) && (numLines < 20)) {
+			while ((line != null) && (lineCount < numLines)) {
 				header.append(line + "\n");
 				line = bufferedReader.readLine();
-				numLines++;
+				lineCount++;
 			}
 		} finally {
 			if (bufferedReader != null)
