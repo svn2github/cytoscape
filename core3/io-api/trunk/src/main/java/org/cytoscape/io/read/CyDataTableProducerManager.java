@@ -47,10 +47,10 @@ public interface CyDataTableProducerManager {
 	 * Not generic because Spring does not support it now.
 	 */
 	@SuppressWarnings("unchecked")
-	void addInputStreamFactory(CyDataTableProducerFactory factory, Map props);
+	void addDataTableProducerFactory(CyDataTableProducerFactory factory, Map props);
 
 	@SuppressWarnings("unchecked")
-	void removeInputStreamFactory(CyDataTableProducerFactory factory, Map props);
+	void removeDataTableProducerFactory(CyDataTableProducerFactory factory, Map props);
 
 	/**
 	 * Get a file reader if the file type is supported in Cytoscape.
