@@ -5,41 +5,38 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-	<osgi:service id="advancedAppenderService" ref="advancedAppender" interface="org.ops4j.pax.logging.spi.PaxAppender">
+	<osgi:service id="advancedAppenderService" ref="advancedAppender" 
+		interface="org.ops4j.pax.logging.spi.PaxAppender">
 		<osgi:service-properties>
-			<entry key="org.ops4j.pax.logging.appender.name" value="OrgCytoscapeLogSwingAdvancedAppender"/>
+			<entry key="org.ops4j.pax.logging.appender.name" 
+			       value="OrgCytoscapeLogSwingAdvancedAppender"/>
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="simpleAppenderService" ref="simpleAppender" interface="org.ops4j.pax.logging.spi.PaxAppender">
+	<osgi:service id="simpleAppenderService" ref="simpleAppender" 
+		interface="org.ops4j.pax.logging.spi.PaxAppender">
 		<osgi:service-properties>
-			<entry key="org.ops4j.pax.logging.appender.name" value="OrgCytoscapeLogSwingSimpleAppender"/>
+			<entry key="org.ops4j.pax.logging.appender.name" 
+			       value="OrgCytoscapeLogSwingSimpleAppender"/>
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="statusBarAppenderService" ref="statusBarAppender" interface="org.ops4j.pax.logging.spi.PaxAppender">
+	<osgi:service id="statusBarAppenderService" ref="statusBarAppender" 
+		interface="org.ops4j.pax.logging.spi.PaxAppender">
 		<osgi:service-properties>
-			<entry key="org.ops4j.pax.logging.appender.name" value="OrgCytoscapeLogSwingStatusBarAppender"/>
+			<entry key="org.ops4j.pax.logging.appender.name" 
+			       value="OrgCytoscapeLogSwingStatusBarAppender"/>
 		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="consoleTaskFactoryService" ref="consoleTaskFactory"
  		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Console"/>
+			<entry key="title" value="Log Console"/>
 			<entry key="preferredMenu" value="Help"/>
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="testTaskFactoryService" ref="testTaskFactory"
- 		interface="org.cytoscape.work.TaskFactory">
-		<osgi:service-properties>
-			<entry key="title" value="Test"/>
-			<entry key="preferredMenu" value="Help"/>
-		</osgi:service-properties>
-	</osgi:service>
-
-	<osgi:reference id="cytoStatusBarRef" interface="org.cytoscape.log.statusbar.CytoStatusBar"/>
 	<osgi:reference id="taskManagerRef" interface="org.cytoscape.work.TaskManager"/>
 	<osgi:reference id="cySwingApplicationRef" interface="cytoscape.view.CySwingApplication"/>
 </beans>

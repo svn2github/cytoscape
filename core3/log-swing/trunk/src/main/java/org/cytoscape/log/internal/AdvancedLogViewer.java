@@ -11,7 +11,6 @@ import javax.swing.event.*;
 import javax.swing.tree.*;
 import javax.swing.table.*;
 
-import cytoscape.view.CySwingApplication;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;

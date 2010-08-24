@@ -85,9 +85,15 @@
 		<constructor-arg ref="statusBarQueue" />
 	</bean>
 
+	<bean id="cytoStatusBar" class="org.cytoscape.log.internal.CytoStatusBarImpl">
+		<constructor-arg type="int" value="500"/>
+		<constructor-arg type="java.lang.String" value="/user-trash.png" />
+	</bean>
+
+
 	<bean id="statusBarUpdater" class="org.cytoscape.log.internal.StatusBarUpdater" factory-method="executeStatusBarUpdater">
 		<constructor-arg ref="executorService" />
-		<constructor-arg ref="cytoStatusBarRef" />
+		<constructor-arg ref="cytoStatusBar" />
 		<constructor-arg ref="statusBarQueue" />
 		<constructor-arg ref="statusBarConfiguration" />
 	</bean>
@@ -96,14 +102,11 @@
 		<constructor-arg ref="simpleQueue" />
 		<constructor-arg ref="advancedQueue" />
 		<constructor-arg ref="executorService" />
-		<constructor-arg ref="cytoStatusBarRef" />
+		<constructor-arg ref="cytoStatusBar" />
 		<constructor-arg ref="cySwingApplicationRef" />
 		<constructor-arg ref="taskManagerRef" />
 		<constructor-arg ref="logViewerConfiguration" />
 		<constructor-arg ref="logViewerConfiguration" />
-	</bean>
-
-	<bean id="testTaskFactory" class="org.cytoscape.log.internal.TestTaskFactory">
 	</bean>
 
 </beans>
