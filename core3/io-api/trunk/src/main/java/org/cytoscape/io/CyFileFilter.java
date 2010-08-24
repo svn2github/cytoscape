@@ -14,7 +14,7 @@ public interface CyFileFilter {
 
 	/**
 	 * A method that attempts to determine whether the specified URI can be read
-	 * by the Producer using this filter.
+	 * by the Reader using this filter.
 	 * @param uri The URI to be checked.
 	 * @param category The data category of URI.
 	 * @return True if we believe the URI can be read, false otherwise.
@@ -23,7 +23,7 @@ public interface CyFileFilter {
 
 	/**
 	 * A method that attempts to determine whether the specified InputStream can be read
-	 * by the Producer using this filter.
+	 * by the Reader using this filter.
 	 * @param uri The input steam to be checked.
 	 * @param category The data category of the input steam.
 	 * @return True if we believe the stream can be read, false otherwise.
