@@ -51,7 +51,6 @@ import org.slf4j.LoggerFactory;
  */
 public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 	private Map<List<GUITunableHandler>, JPanel> panelMap;
-	private List<GUITunableHandler> handlers;
 	private boolean newValuesSet;
 
 	/**
