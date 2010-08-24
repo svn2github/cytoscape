@@ -102,10 +102,8 @@ public class CyFileFilterImpl implements CyFileFilter {
 	public boolean accept(URI uri, DataCategory category) {
 
 		// Check data category
-		if (category != this.category) {
-			logger.info("category doesn't match: " + category);
+		if (category != this.category) 
 			return false;
-		}
 
 		try {
 
@@ -125,12 +123,11 @@ public class CyFileFilterImpl implements CyFileFilter {
 		}
 
 		// No content-type match -- try for an extension match
+		// if no extensions are listed, then match by default
 		String extension = getExtension(uri.toString());
-		if ((extension != null) && extensions.contains(extension))
+		if ((extension != null) && (extensions.contains(extension) || extensions.size() == 0 ))
 			return true;
 
-
-		logger.info("extension doesn't match: " + extension);
 		return false;
 	}
 
