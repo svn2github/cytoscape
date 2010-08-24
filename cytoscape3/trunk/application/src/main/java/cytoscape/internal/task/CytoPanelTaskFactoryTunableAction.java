@@ -70,10 +70,12 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 	private static class ExecuteButtonListener implements ActionListener {
 		final private TaskFactory factory;
 		final private TaskManager manager;
+		final private GUITunableInterceptor interceptor;
 
-		ExecuteButtonListener(final TaskFactory factory, final TaskManager manager) {
+		ExecuteButtonListener(final GUITunableInterceptor interceptor, final TaskFactory factory, final TaskManager manager) {
 			this.factory = factory;
 			this.manager = manager;
+			this.interceptor = interceptor;
 		}
 
 		public void actionPerformed(final ActionEvent event) {
@@ -92,6 +94,9 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 					return;
 				}
 			}
+
+			if (!interceptor.handle())
+				return;
 
 			final Task task = factory.getTask();
 			if (task != null)
@@ -184,7 +189,7 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 		outerPanel.add(innerPanel);
 
 		final JButton executeButton = new JButton("Execute");
-		executeButton.addActionListener(new ExecuteButtonListener(factory, manager));
+		executeButton.addActionListener(new ExecuteButtonListener(interceptor, factory, manager));
 		outerPanel.add(executeButton);
 
 		final JButton closeButton = new JButton("Close");
