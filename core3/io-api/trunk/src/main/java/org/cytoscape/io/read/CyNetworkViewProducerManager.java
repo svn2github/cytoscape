@@ -43,24 +43,23 @@ import java.util.Map;
  */
 public interface CyNetworkViewProducerManager {
 
-	/*
-	 * Not generic because Spring does not support it now.
-	 */
-	@SuppressWarnings("unchecked")
-	void addNetworkViewProducerFactory(CyNetworkViewProducerFactory factory, Map props);
+    /**
+     * Given a URI this method will attempt to find a CyNetworkViewProducerFactory
+     * that can read the URI, will set the InputStream for the factory and
+     * will return the producer task.
+     * @param uri The URI we're attempting to read. 
+     * @return A producer than can read the specified URI. Will return null if
+	 * no producer can be found.
+     */
+	CyNetworkViewProducer getProducer(URI uri); 
 
-	@SuppressWarnings("unchecked")
-	void removeNetworkViewProducerFactory(CyNetworkViewProducerFactory factory, Map props);
-
-	/**
-	 * Get a file reader if the file type is supported in Cytoscape.
-	 * 
-	 * @param fileName
-	 * @return
-	 * @throws IllegalArgumentException File type is not supported.
-	 */
-	
-	CyNetworkViewProducer getProducer(URI uri) throws IllegalArgumentException;
-
-	CyNetworkViewProducer getProducer(InputStream stream) throws IllegalArgumentException;
+    /**
+     * Given an InputStream this method will attempt to find a CyNetworkViewProducerFactory
+     * that can read the stream, will set the InputStream for the factory and
+     * will return the producer task.
+     * @param stream The input stream we're attempting to read. 
+     * @return A producer than can read the specified stream. Will return null if
+	 * no producer can be found.
+     */
+	CyNetworkViewProducer getProducer(InputStream stream); 
 }

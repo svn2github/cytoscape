@@ -1,11 +1,6 @@
 
 package org.cytoscape.io.read;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-
-
 /**
  * The basic input interface that specifies what is to be read and when it is to
  * be read. This interface should be extended by other interfaces to provide

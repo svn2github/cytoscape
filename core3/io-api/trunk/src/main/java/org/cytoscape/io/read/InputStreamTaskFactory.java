@@ -5,8 +5,16 @@ import java.io.InputStream;
 import org.cytoscape.io.FileIOFactory;
 import org.cytoscape.work.TaskFactory;
 
+/**
+ * A super interface that allows the input stream to be set for producer
+ * task factories.
+ */
 public interface InputStreamTaskFactory extends TaskFactory, FileIOFactory {
 
+	/**
+	 * Sets the input stream that will be read by the Producer created from
+	 * this factory.
+	 * @param is The InputStream to be read.
+	 */
 	void setInputStream(InputStream is);
-
 }
