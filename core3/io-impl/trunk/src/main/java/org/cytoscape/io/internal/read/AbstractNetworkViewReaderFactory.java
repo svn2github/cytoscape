@@ -35,29 +35,32 @@
 
 package org.cytoscape.io.internal.read;
 
+import java.io.IOException;
 import java.io.InputStream;
 
-import org.cytoscape.io.read.CyDataTableProducerFactory;
+import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkViewReaderFactory;
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 
 /**
  */
-public abstract class AbstractDataTableProducerFactory implements CyDataTableProducerFactory {
+public abstract class AbstractNetworkViewReaderFactory implements CyNetworkViewReaderFactory {
 
 	private final CyFileFilter filter;
 
+	protected final CyNetworkViewFactory cyNetworkViewFactory;
+	protected final CyNetworkFactory cyNetworkFactory;
+
 	protected InputStream inputStream;
-	protected final CyDataTableFactory tableFactory;
 
-	public AbstractDataTableProducerFactory(CyFileFilter filter, CyDataTableFactory tableFactory) {
-		if ( filter == null )
-			throw new NullPointerException("filter is null");
+	public AbstractNetworkViewReaderFactory(CyFileFilter filter, 
+	                                         CyNetworkViewFactory cyNetworkViewFactory, 
+	                                         CyNetworkFactory cyNetworkFactory) {
 		this.filter = filter;
-
-		if ( tableFactory == null )
-			throw new NullPointerException("tableFactory is null");
-		this.tableFactory = tableFactory;
+		this.cyNetworkViewFactory = cyNetworkViewFactory;
+		this.cyNetworkFactory = cyNetworkFactory;
 	}
 
 	public void setInputStream(InputStream is) {

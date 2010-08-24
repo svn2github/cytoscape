@@ -44,7 +44,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.cytoscape.io.internal.read.AbstractNetworkViewProducer;
+import org.cytoscape.io.internal.read.AbstractNetworkViewReader;
 import org.cytoscape.io.internal.read.VisualStyleBuilder;
 import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
@@ -64,10 +64,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.ParserAdapter;
 
-import org.cytoscape.io.internal.read.AbstractNetworkViewProducerFactory;
+import org.cytoscape.io.internal.read.AbstractNetworkViewReaderFactory;
 
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.read.CyNetworkViewProducer;
+import org.cytoscape.io.read.CyNetworkViewReader;
 
 /**
  * XGMML file reader.<br>
@@ -79,14 +79,14 @@ import org.cytoscape.io.read.CyNetworkViewProducer;
  * @author kono
  * 
  */
-public class XGMMLNetworkViewProducerFactory extends AbstractNetworkViewProducerFactory {
+public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFactory {
 
 	private XGMMLParser parser;
 	private ReadDataManager readDataManager;
 	private AttributeValueUtil attributeValueUtil;
 	private CyProperty<Properties> prop;
 
-	public XGMMLNetworkViewProducerFactory(CyFileFilter filter, 
+	public XGMMLNetworkViewReaderFactory(CyFileFilter filter, 
 	                                       CyNetworkViewFactory cyNetworkViewFactory, 
                                            CyNetworkFactory cyNetworkFactory, 
                                            ReadDataManager readDataManager, 
@@ -100,8 +100,8 @@ public class XGMMLNetworkViewProducerFactory extends AbstractNetworkViewProducer
 		this.prop = prop;
 	}
 
-	public CyNetworkViewProducer getTask() {
-		return new XGMMLNetworkViewProducer( inputStream, cyNetworkViewFactory, cyNetworkFactory,
+	public CyNetworkViewReader getTask() {
+		return new XGMMLNetworkViewReader( inputStream, cyNetworkViewFactory, cyNetworkFactory,
 		                                     readDataManager, 
 		                                     attributeValueUtil, parser, prop.getProperties() );
 	}

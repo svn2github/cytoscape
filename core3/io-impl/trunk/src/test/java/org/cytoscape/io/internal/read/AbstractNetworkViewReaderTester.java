@@ -29,7 +29,7 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 
-public class AbstractNetworkViewProducerTester {
+public class AbstractNetworkViewReaderTester {
 
 	protected TaskMonitor taskMonitor;
 	protected CyNetworkFactory netFactory; 

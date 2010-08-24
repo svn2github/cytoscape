@@ -19,7 +19,7 @@ import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyDataTableFactory;
 
-import org.cytoscape.io.internal.read.AbstractNetworkViewProducerTester;
+import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
 
 import static org.mockito.Mockito.*;
 

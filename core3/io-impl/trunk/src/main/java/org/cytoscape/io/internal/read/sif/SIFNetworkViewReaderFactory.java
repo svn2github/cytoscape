@@ -39,8 +39,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.cytoscape.io.internal.util.ReadUtils;
-import org.cytoscape.io.read.CyNetworkViewProducer;
-import org.cytoscape.io.read.CyNetworkViewProducerFactory;
+import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkViewReaderFactory;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -50,16 +50,16 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.layout.CyLayouts;
 
-import org.cytoscape.io.internal.read.AbstractNetworkViewProducerFactory;
+import org.cytoscape.io.internal.read.AbstractNetworkViewReaderFactory;
 
 /**
  */
-public class SIFNetworkViewProducerFactory extends AbstractNetworkViewProducerFactory {
+public class SIFNetworkViewReaderFactory extends AbstractNetworkViewReaderFactory {
 
 	private final ReadUtils readUtil;
 	private final CyLayouts layouts;
 
-	public SIFNetworkViewProducerFactory(ReadUtils readUtil, 
+	public SIFNetworkViewReaderFactory(ReadUtils readUtil, 
 	                                     CyFileFilter filter, 
 	                                     CyLayouts layouts, 
 	                                     CyNetworkViewFactory cyNetworkViewFactory, 
@@ -69,8 +69,8 @@ public class SIFNetworkViewProducerFactory extends AbstractNetworkViewProducerFa
 		this.layouts = layouts;
 	}
 
-	public CyNetworkViewProducer getTask() {
-		return new SIFNetworkViewProducer(inputStream, readUtil, layouts, 
+	public CyNetworkViewReader getTask() {
+		return new SIFNetworkViewReader(inputStream, readUtil, layouts, 
 		                                  cyNetworkViewFactory, cyNetworkFactory);
 	}
 }

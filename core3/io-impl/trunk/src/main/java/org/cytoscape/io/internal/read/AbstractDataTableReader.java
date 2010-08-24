@@ -5,11 +5,11 @@ import java.io.InputStream;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyDataTableFactory;
-import org.cytoscape.io.read.CyDataTableProducer;
+import org.cytoscape.io.read.CyDataTableReader;
 import org.cytoscape.task.AbstractTask;
 
 public abstract class AbstractDataTableReader extends AbstractTask 
-	implements CyDataTableProducer {
+	implements CyDataTableReader {
 
 	protected CyDataTable[] cyDataTables;
 	protected InputStream inputStream;

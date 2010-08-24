@@ -46,7 +46,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.cytoscape.io.internal.read.AbstractNetworkViewProducer;
+import org.cytoscape.io.internal.read.AbstractNetworkViewReader;
 import org.cytoscape.io.internal.read.VisualStyleBuilder;
 import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
@@ -75,7 +75,7 @@ import org.xml.sax.helpers.ParserAdapter;
  * @author kono
  * 
  */
-public class XGMMLNetworkViewProducer extends AbstractNetworkViewProducer {
+public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
 	protected static final String CY_NAMESPACE = "http://www.cytoscape.org";
 
@@ -89,7 +89,7 @@ public class XGMMLNetworkViewProducer extends AbstractNetworkViewProducer {
 	/**
 	 * Constructor.
 	 */
- 	public XGMMLNetworkViewProducer(InputStream inputStream, 
+ 	public XGMMLNetworkViewReader(InputStream inputStream, 
 	                                CyNetworkViewFactory cyNetworkViewFactory, 
 	                                CyNetworkFactory cyNetworkFactory, 
 	                                ReadDataManager readDataManager, 

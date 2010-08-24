@@ -30,9 +30,9 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 
-import org.cytoscape.io.internal.read.AbstractNetworkViewProducerTester;
+import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
 
-public class SIFNetworkViewProducerTest extends AbstractNetworkViewProducerTester {
+public class SIFNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 
 
 	/**
@@ -93,7 +93,7 @@ public class SIFNetworkViewProducerTest extends AbstractNetworkViewProducerTeste
 
 	private CyNetworkView[] getViews(String file) throws Exception {
 		File f = new File("./src/test/resources/testData/sif/" + file);
-		SIFNetworkViewProducer snvp = new SIFNetworkViewProducer(new FileInputStream(f), 
+		SIFNetworkViewReader snvp = new SIFNetworkViewReader(new FileInputStream(f), 
 		                                              readUtil, layouts, viewFactory, netFactory);
 		snvp.run(taskMonitor);
 

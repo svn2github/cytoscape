@@ -15,13 +15,13 @@ import org.cytoscape.work.Task;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-public class GenericProducerManager<T extends InputStreamTaskFactory, S extends Task>  {
+public class GenericReaderManager<T extends InputStreamTaskFactory, S extends Task>  {
 
 	protected final DataCategory category; 
 	protected final Set<T> factories;
-	private static final Logger logger = LoggerFactory.getLogger( GenericProducerManager.class ); 
+	private static final Logger logger = LoggerFactory.getLogger( GenericReaderManager.class ); 
 
-	public GenericProducerManager(DataCategory category) {
+	public GenericReaderManager(DataCategory category) {
 		this.category = category;
 		factories = new HashSet<T>();
 	}
@@ -60,7 +60,7 @@ public class GenericProducerManager<T extends InputStreamTaskFactory, S extends 
 	 *            File name or null if no reader is capable of reading the file.
 	 * @return GraphReader capable of reading the specified file.
 	 */
-	public S getProducer(URI uri) {
+	public S getReader(URI uri) {
 
 		for (T factory : factories) {
 			logger.info("trying factory: " + factory);
@@ -80,7 +80,7 @@ public class GenericProducerManager<T extends InputStreamTaskFactory, S extends 
 	 	return null;	
 	}
 
-	public S getProducer(InputStream stream) {
+	public S getReader(InputStream stream) {
 
 		for (T factory : factories) {
 			

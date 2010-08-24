@@ -43,7 +43,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.io.internal.util.ReadUtils;
-import org.cytoscape.io.internal.read.AbstractNetworkViewProducer;
+import org.cytoscape.io.internal.read.AbstractNetworkViewReader;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -57,7 +57,7 @@ import org.cytoscape.view.layout.CyLayouts;
  * Reader for graphs in the interactions file format. Given the filename,
  * provides the graph and attributes objects constructed from the file.
  */
-public class SIFNetworkViewProducer extends AbstractNetworkViewProducer {
+public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 
 	private static final String DEF_DELIMITER = " ";
 	private static final String LINE_SEP = System.getProperty("line.separator");
@@ -67,7 +67,7 @@ public class SIFNetworkViewProducer extends AbstractNetworkViewProducer {
 	private final ReadUtils readUtil;
 	private final CyLayouts layouts;
 
-	public SIFNetworkViewProducer(InputStream is, ReadUtils readUtil, CyLayouts layouts, CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory) {
+	public SIFNetworkViewReader(InputStream is, ReadUtils readUtil, CyLayouts layouts, CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory) {
 		super(is,cyNetworkViewFactory, cyNetworkFactory);
 		this.readUtil = readUtil;
 		this.layouts = layouts;

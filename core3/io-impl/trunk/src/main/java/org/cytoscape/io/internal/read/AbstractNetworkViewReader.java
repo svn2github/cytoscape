@@ -3,7 +3,7 @@ package org.cytoscape.io.internal.read;
 import java.io.InputStream;
 import java.io.IOException;
 
-import org.cytoscape.io.read.CyNetworkViewProducer;
+import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.model.CyNetworkFactory;
@@ -11,8 +11,8 @@ import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.task.AbstractTask;
 
 
-public abstract class AbstractNetworkViewProducer extends AbstractTask
-	implements CyNetworkViewProducer {
+public abstract class AbstractNetworkViewReader extends AbstractTask
+	implements CyNetworkViewReader {
 
 	protected CyNetworkView[] cyNetworkViews;
 	protected VisualStyle[] visualstyles;
@@ -24,7 +24,7 @@ public abstract class AbstractNetworkViewProducer extends AbstractTask
 	// TODO this should come from model-api
 	public static final String NODE_NAME_ATTR_LABEL = "name";
 
-	public AbstractNetworkViewProducer(InputStream inputStream, 
+	public AbstractNetworkViewReader(InputStream inputStream, 
 	                                   CyNetworkViewFactory cyNetworkViewFactory, 
                                        CyNetworkFactory cyNetworkFactory) {
 		if (inputStream == null)

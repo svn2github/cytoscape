@@ -82,13 +82,13 @@
 	</bean>
 
 	<!-- DataTable Readers -->
-	<bean id="textDataTableProducerFactory" class="org.cytoscape.io.internal.read.datatable.TextDataTableReaderFactory">
+	<bean id="textDataTableReaderFactory" class="org.cytoscape.io.internal.read.datatable.TextDataTableReaderFactory">
 		<constructor-arg ref="textTableFilter" />
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
 	</bean>
 
 	<!-- Network Readers -->
-	<bean id="sifNetworkViewProducerFactory" class="org.cytoscape.io.internal.read.sif.SIFNetworkViewProducerFactory">
+	<bean id="sifNetworkViewReaderFactory" class="org.cytoscape.io.internal.read.sif.SIFNetworkViewReaderFactory">
 		<constructor-arg ref="readUtil" />
 		<constructor-arg ref="sifFilter" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
@@ -121,8 +121,8 @@
 		<constructor-arg ref="readDataManager" />
 	</bean>
 
-	<bean id="xgmmlNetworkViewProducerFactory" 
-	      class="org.cytoscape.io.internal.read.xgmml.XGMMLNetworkViewProducerFactory">
+	<bean id="xgmmlNetworkViewReaderFactory" 
+	      class="org.cytoscape.io.internal.read.xgmml.XGMMLNetworkViewReaderFactory">
 		<constructor-arg ref="xgmmlFilter" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
@@ -133,12 +133,12 @@
 	</bean>
 
 	<!-- Manager for all network readers -->
-	<bean id="cyNetworkViewProducerManager" 
-	      class="org.cytoscape.io.internal.read.CyNetworkViewProducerManagerImpl" />
+	<bean id="cyNetworkViewReaderManager" 
+	      class="org.cytoscape.io.internal.read.CyNetworkViewReaderManagerImpl" />
 
 	<!-- Manager for all datatable readers -->
-	<bean id="cyDataTableProducerManager" 
-	      class="org.cytoscape.io.internal.read.CyDataTableProducerManagerImpl" />
+	<bean id="cyDataTableReaderManager" 
+	      class="org.cytoscape.io.internal.read.CyDataTableReaderManagerImpl" />
 
 	<!-- Utility for Stream/Proxy management -->
 	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">

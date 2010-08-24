@@ -27,9 +27,9 @@ import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
 import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
 
-import org.cytoscape.io.internal.read.AbstractNetworkViewProducerTester;
+import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
 
-public class XGMMLNetworkViewProducerTest extends AbstractNetworkViewProducerTester {
+public class XGMMLNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 
 	ReadDataManager readDataManager;
 	AttributeValueUtil attributeValueUtil; 
@@ -72,7 +72,7 @@ public class XGMMLNetworkViewProducerTest extends AbstractNetworkViewProducerTes
 
 	private CyNetworkView[] getViews(String file) throws Exception {
 		File f = new File("./src/test/resources/testData/xgmml/" + file);
-		XGMMLNetworkViewProducer snvp = new XGMMLNetworkViewProducer(new FileInputStream(f), 
+		XGMMLNetworkViewReader snvp = new XGMMLNetworkViewReader(new FileInputStream(f), 
 		                                              viewFactory, netFactory,
 		                                              readDataManager, attributeValueUtil, 
 													  parser, prop);
