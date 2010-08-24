@@ -83,6 +83,7 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 	 * @return success or not of the <code>TunableValidator</code> validate method
 	 */
 	final public boolean handle() {
+//System.err.println("============================================================================= in AbstractGUITunableInterceptor.handle(), handlers.size() = "+handlers.size());
 		for (final GUITunableHandler h : handlers)
 			h.handleDependents();
 		return validateTunableInput();
@@ -109,7 +110,7 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 	final public boolean execUI(Object... proxyObjs) {
 		final JPanel panel = getUI(proxyObjs);
 		if (panel == null)
-			return false;
+			return true;
 
 		return displayGUI(panel);
 	}
