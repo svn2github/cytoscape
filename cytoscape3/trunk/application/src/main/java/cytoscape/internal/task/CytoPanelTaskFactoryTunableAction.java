@@ -95,7 +95,7 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 				}
 			}
 
-			if (!interceptor.handle())
+			if (!interceptor.validateAndWriteBackTunables())
 				return;
 
 			final Task task = factory.getTask();

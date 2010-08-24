@@ -1,14 +1,7 @@
 /*
   File: SettingsAction.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,28 +29,30 @@
 */
 package cytoscape.internal.layout.ui;
 
+
 import org.cytoscape.session.CyNetworkManager;
 import cytoscape.view.CytoscapeAction;
 import cytoscape.view.CySwingApplication;
 import org.cytoscape.view.layout.CyLayouts;
-import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.swing.GUITunableInterceptor;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 
-/**
- */
+
 public class SettingsAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339874289357L;
 
 	private CyLayouts cyl;
 	private CySwingApplication desk;
 	private LayoutMenuManager menuMgr;
-	private TunableInterceptor ti;
+	private GUITunableInterceptor ti;
 	private TaskManager tm;
 
-	public SettingsAction(CyLayouts cyl, CySwingApplication desk, LayoutMenuManager menuMgr, CyNetworkManager netmgr, TunableInterceptor ti, TaskManager tm) {
+	public SettingsAction(final CyLayouts cyl, final CySwingApplication desk, final LayoutMenuManager menuMgr,
+	                      final CyNetworkManager netmgr, final GUITunableInterceptor ti, final TaskManager tm)
+	{
 		super("Settings...",netmgr);
 		setPreferredMenu("Layout");
 		this.cyl = cyl;
@@ -68,7 +63,7 @@ public class SettingsAction extends CytoscapeAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog(cyl,desk,menuMgr,netmgr,ti,tm);
+		LayoutSettingsDialog settingsDialog = new LayoutSettingsDialog(cyl, desk, menuMgr, netmgr, ti, tm);
 		settingsDialog.actionPerformed(e);
 	}
 

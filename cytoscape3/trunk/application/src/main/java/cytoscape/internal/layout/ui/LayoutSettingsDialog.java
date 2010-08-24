@@ -36,8 +36,8 @@ import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayouts;
 
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.swing.GUITunableInterceptor;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -73,13 +73,16 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private CySwingApplication desktop;
 	private LayoutMenuManager menuMgr;
 	private CyNetworkManager netmgr;
-	private TunableInterceptor ti;
+	private GUITunableInterceptor ti;
 	private TaskManager tm;
 
 	/**
 	 * Creates a new LayoutSettingsDialog object.
 	 */
-	public LayoutSettingsDialog(CyLayouts cyLayouts, CySwingApplication desktop, LayoutMenuManager menuMgr, CyNetworkManager netmgr, TunableInterceptor ti,TaskManager tm) {
+	public LayoutSettingsDialog(final CyLayouts cyLayouts, final CySwingApplication desktop,
+	                            final LayoutMenuManager menuMgr, final CyNetworkManager netmgr,
+	                            final GUITunableInterceptor ti, final TaskManager tm)
+	{
 		super(desktop.getJFrame(), "Layout Settings", false);
 		initializeOnce(); // Initialize the components we only do once
 		this.cyLayouts = cyLayouts;
