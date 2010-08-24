@@ -5,41 +5,52 @@ import static org.cytoscape.io.DataCategory.TABLE;
 import java.io.File;
 import java.util.Properties;
 
-//import org.cytoscape.io.read.CyReaderManager;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.io.read.CyDataTableReaderManager;
+import org.cytoscape.io.read.CyDataTableReader;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
+import org.cytoscape.task.AbstractTask;
 
-public class LoadDataTableTask extends AbstractLoadDataTableTask {
+public class LoadDataTableTask extends AbstractTask {
 
 	@Tunable(description = "Data table file to load", flags = { Param.attributes })
 	public File file;
 
-	public LoadDataTableTask(CyDataTableReaderManager mgr,
-			Properties props) {
-		super(mgr, props);
+	private CyDataTableReader reader;
+	private CyDataTableReaderManager mgr;
+
+	public LoadDataTableTask(CyDataTableReaderManager mgr) {
+		this.mgr = mgr;
 	}
 
 	/**
 	 * Executes Task.
 	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		this.taskMonitor = taskMonitor;
 
-		//reader = mgr.getReader(file.toURI(), TABLE);
+        taskMonitor.setStatusMessage("Finding Data Table Reader...");
+        taskMonitor.setProgress(-1.0);
+		reader = mgr.getReader(file.toURI());
+
+		if ( reader == null )
+			throw new NullPointerException("Failed to find reader for specified file!");
 		
-		uri = file.toURI();
-		name = file.getName();
+        taskMonitor.setStatusMessage("Importing Data Table...");
 
-		if (reader == null) {
-			uri = null;
-		}
+        reader.run(taskMonitor);
 
-		System.out.println("\n\nData table " + file.getAbsolutePath()
-				+ " will be loaded !!!\n\n");
-		loadTable(reader);
-		System.out.println("\n\nData table " + file.getAbsolutePath()
-				+ " is LOADED !!!\n\n");
+        for ( CyDataTable table : reader.getCyDataTables() ) 
+            taskMonitor.setStatusMessage("Successfully loaded data table: " + table.getTitle());
+
+        taskMonitor.setProgress(1.0);
 	}
+
+    public void cancel() {
+        super.cancel();
+        if (reader != null) {
+            reader.cancel();
+        }
+    }
 }
