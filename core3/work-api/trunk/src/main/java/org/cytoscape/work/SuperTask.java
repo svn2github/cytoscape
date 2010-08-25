@@ -39,13 +39,11 @@ package org.cytoscape.work;
  *
  * @author Pasteur
  */
-public class SuperTask implements Task
-{
+public class SuperTask implements Task {
 	final Task[] subtasks;
 	final double[] weights;
 	double weightSum = 0.0;
 
-	String title;
 	boolean cancel = false;
 	int currentTaskIndex = -1;
 	double partialSum = 0.0;
@@ -76,13 +74,10 @@ public class SuperTask implements Task
 	 * <code>SuperTask</code>. The order of <code>subtasks</code> is the
 	 * order of execution. Each subtask has an equal amount of the progress bar.
 	 */
-	public SuperTask(String title, Task ... subtasks)
-	{
-		this.title = title;
+	public SuperTask(final Task ... subtasks) {
 		this.subtasks = subtasks;
 		this.weights = new double[subtasks.length];
-		for (int i = 0; i < weights.length; i++)
-		{
+		for (int i = 0; i < weights.length; i++) {
 			weights[i] = 1.0;
 			weightSum += weights[i];
 		}
@@ -116,8 +111,6 @@ public class SuperTask implements Task
 	 * SuperTask superTask = new SuperTask("Example", tasks, weights);
 	 * </code></pre></p>
 	 *
-	 * @param title The title of the <code>SuperTask</code> that describes
-	 * succinctly what the <code>SuperTask</code> does.
 	 * @param subtasks The subtasks to be grouped together by
 	 * <code>SuperTask</code>. The order of <code>subtasks</code> is the
 	 * order of execution.
@@ -126,29 +119,23 @@ public class SuperTask implements Task
 	 * @throws IllegalArgumentException if the length of <code>weights</code>
 	 * and <code>subtasks</code> are not equal or if any of the weights are less than 0.0.
 	 */
-	public SuperTask(String title, Task[] subtasks, double[] weights)
-	{
-		this.title = title;
+	public SuperTask(final Task[] subtasks, final double[] weights) {
 		this.subtasks = subtasks;
 		this.weights = weights;
 
 		if (weights.length != subtasks.length)
 			throw new IllegalArgumentException("weights and subtasks must have the same length");
-		for (int i = 0; i < weights.length; i++)
-		{
+		for (int i = 0; i < weights.length; i++) {
 			if (weights[i] < 0.0)
 				throw new IllegalArgumentException(String.format("weight[%d] cannot be less than 0.0", i));
 			weightSum += weights[i];
 		}
 	}
 
-	public void run(TaskMonitor superTaskMonitor) throws Exception
-	{
-		superTaskMonitor.setTitle(title);
+	public void run(TaskMonitor superTaskMonitor) throws Exception {
 		superTaskMonitor.setProgress(0.0);
 		final TaskMonitor subTaskMonitor = new SubTaskMonitor(superTaskMonitor);
-		for (currentTaskIndex = 0; (currentTaskIndex < subtasks.length) && (!cancel); currentTaskIndex++)
-		{
+		for (currentTaskIndex = 0; (currentTaskIndex < subtasks.length) && (!cancel); currentTaskIndex++) {
 			subtasks[currentTaskIndex].run(subTaskMonitor);
 			partialSum += weights[currentTaskIndex];
 		}
@@ -158,8 +145,7 @@ public class SuperTask implements Task
 		partialSum = 0.0;
 	}
 
-	public void cancel()
-	{
+	public void cancel() {
 		// currentTaskIndex is copied into another variable
 		// in order to prevent the situation where currentTaskIndex is
 		// being incremented while another thread is executing cancel().

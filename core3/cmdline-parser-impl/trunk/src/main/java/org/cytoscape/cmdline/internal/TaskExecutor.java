@@ -14,7 +14,7 @@ import org.cytoscape.work.TunableInterceptor;
  * @author pasteur
  *
  */
-public class TaskExecutor{
+public class TaskExecutor {
 	
 	public	TaskExecutor(){};
 	
@@ -62,7 +62,7 @@ public class TaskExecutor{
 	 * Create a <code>SuperTask</code> of the selected <code>Tasks</code>, and execute them asynchronously
 	 */
 	public void execute(){
-		SuperTask superTask = new SuperTask("SuperTask",tasks);
+		SuperTask superTask = new SuperTask(tasks);
 		tm.execute(superTask);
 	}
 	
