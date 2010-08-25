@@ -1,5 +1,5 @@
 /*
-  File: AbstractNetworkTaskFactory.java
+  File: AbstractCyDataTableMapperTaskFactory.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -30,17 +30,32 @@
 package org.cytoscape.task;
 
 
-import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.work.Task;
 
 
-public abstract class AbstractNetworkTaskFactory implements NetworkTaskFactory {
-	protected CyNetwork net;
+public abstract class AbstractCyDataTableMapperTaskFactory  implements CyDataTableMapperTaskFactory {
+	protected CyDataTable source;
+	protected String sourceColumn;
+	protected CyDataTable target;
+	protected String targetColumn;
 
-	public void setNetwork(final CyNetwork net) {
-		if (net == null)
-			throw new IllegalArgumentException("\"net\" is null!");
-		this.net = net;
+	public void setSourceAndTarget(CyDataTable source, String sourceColumn, CyDataTable target, String targetColumn) {
+		if (source == null)
+			throw new IllegalArgumentException("\"source\" is null!");
+		this.source = source;
+
+		if (sourceColumn == null)
+			throw new IllegalArgumentException("\"sourceColumn\" is null!");
+		this.sourceColumn = sourceColumn;
+
+		if (target == null)
+			throw new IllegalArgumentException("\"target\" is null!");
+		this.target = target;
+
+		if (targetColumn == null)
+			throw new IllegalArgumentException("\"targetColumn\" is null!");
+		this.targetColumn = targetColumn;
 	}
 
 	public abstract Task getTask();
