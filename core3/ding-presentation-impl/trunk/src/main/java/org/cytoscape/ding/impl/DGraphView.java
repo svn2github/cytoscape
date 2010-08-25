@@ -374,9 +374,13 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		if(view == null)
 			throw new IllegalArgumentException("Network View Model cannot be null.");
 		
+		long start = System.currentTimeMillis();
+		logger.debug("Phase 1: rendering start.");
 		networkModel = view.getModel();
 		cyNetworkView = view;
 		cyServiceRegistrar.registerService(this, ViewChangeListener.class, new Properties());
+		
+		logger.debug("Phase 2: service registered: time = " + (System.currentTimeMillis()- start));
 		
 		rootLexicon = vpc;
 		this.dingLexicon = dingLexicon;
@@ -393,12 +397,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		CyDataTable nodeCAM = dataFactory.createTable("node view", false);
 		nodeCAM.createColumn("hidden", Boolean.class, false);
 		tableMgr.getTableMap("NODE", networkModel).put("VIEW", nodeCAM);
-		//m_perspective.getNodeCyDataTables().put("VIEW", nodeCAM);
 
 		CyDataTable edgeCAM = dataFactory.createTable("edge view", false);
 		edgeCAM.createColumn("hidden", Boolean.class, false);
 		tableMgr.getTableMap("EDGE", networkModel).put("VIEW", edgeCAM);
-		//m_perspective.getEdgeCyDataTables().put("VIEW", edgeCAM);
 
 		// creating empty subnetworks
 		m_drawPersp = cyRoot.convert(networkModel).addSubNetwork();
@@ -424,24 +426,34 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		m_selectedNodes = new IntBTree();
 		m_selectedEdges = new IntBTree();
 		m_selectedAnchors = new IntBTree();
+		
+		logger.debug("Phase 3: Canvas created: time = " + (System.currentTimeMillis()- start));
 
 		// from DingNetworkView
 		this.title = networkModel.attrs().get("name", String.class);
 
-		for (CyNode nn : networkModel.getNodeList())
+		for (CyNode nn : networkModel.getNodeList()) {
+			//long s2 = System.currentTimeMillis();
+			
 			addNodeView(nn);
+			
+			//logger.debug("\tAdding node view: time = " + (System.currentTimeMillis()- s2));
+		}
 
-		for (CyEdge ee : networkModel.getEdgeList())
+		for (CyEdge ee : networkModel.getEdgeList()) {
+			//long s2 = System.currentTimeMillis();
 			addEdgeView(ee);
+			//logger.debug("\tAdding edge view: time = " + (System.currentTimeMillis()- s2));
+		}
 
 		// read in visual properties from view obj
-		Collection<VisualProperty<?>> netVPs = rootLexicon
-				.getVisualProperties(NETWORK);
+		final Collection<VisualProperty<?>> netVPs = rootLexicon.getVisualProperties(NETWORK);
 		for (VisualProperty<?> vp : netVPs)
 			visualPropertySet(vp, cyNetworkView.getVisualProperty(vp));
 
 		new FlagAndSelectionHandler(this);
-		//new AddDeleteHandler(this);
+		
+		logger.debug("Phase 4: Everything created: time = " + (System.currentTimeMillis()- start));
 	}
 
 	/**
@@ -719,9 +731,9 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		synchronized (m_lock) {
 			newView = addNodeViewInternal(node);
 
-			if (newView == null) {
+			// View already exists.
+			if (newView == null)
 				return m_nodeViewMap.get(node.getIndex());
-			}
 
 			m_contentChanged = true;
 		}
@@ -749,10 +761,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 		m_drawPersp.addNode(node);
 
-		// m_structPersp.restoreNode(nodeInx);
-
 		final View<CyNode> nv = cyNetworkView.getNodeView(node);
+		// This is the node presentation.
 		final NodeView newView = new DNodeView(this, nodeInx, nv);
+		
+		// FIXME this is an extremely slow operation.
 		cyServiceRegistrar.registerService(newView, ViewChangeListener.class, new Properties());
 		
 		m_nodeViewMap.put(nodeInx, newView);
@@ -760,7 +773,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 				m_defaultNodeXMax, m_defaultNodeYMax);
 
 		// read in visual properties from view obj
-		Collection<VisualProperty<?>> nodeVPs = rootLexicon
+		final Collection<VisualProperty<?>> nodeVPs = rootLexicon
 				.getVisualProperties(NODE);
 		
 		for (VisualProperty<?> vp : nodeVPs)
@@ -797,9 +810,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 			m_drawPersp.addEdge(edge);
 
-			// m_structPersp.restoreEdge(edgeInx);
 			View<CyEdge> ev = cyNetworkView.getEdgeView(edge);
 			edgeView = new DEdgeView(this, edgeInx, ev);
+			
+			// FIXME this is an extremely slow operation.
 			cyServiceRegistrar.registerService(edgeView,ViewChangeListener.class, new Properties());
 
 			m_edgeViewMap.put(Integer.valueOf(edgeInx), edgeView);
