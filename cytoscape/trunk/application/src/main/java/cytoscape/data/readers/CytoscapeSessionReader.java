@@ -366,16 +366,29 @@ public class CytoscapeSessionReader {
 		}
 	}
 
-	
 	private void loadBitmapImageFiles(final String entryName,
-			final URL imageFileURL) throws IOException {
-		final String[] ent = entryName.split("\\" + System.getProperty("file.separator"));
-		final String displayName = ent[ent.length - 1];
-		String name = displayName.split("\\.")[0];
+	                                  final URL imageFileURL) throws IOException
+	{
+		final String rootName = extractFileName(entryName);
 
-		imageMap.put(name, imageFileURL);
+		String displayName = rootName;
+		int i = 1;
+		while (imageMap.containsKey(displayName))
+			displayName = rootName + "-" + ++i;
+		imageMap.put(displayName, imageFileURL);
 	}
-	
+
+	/**
+	 *  @return localFileName stripped of path prefix and extension
+	 */
+	private String extractFileName(final String localFileName) {
+		// N.B., on Windows the file separator is a backslash and a nacked backslash is not a valid regex
+		// so we need to escape it with a leading slash.  On UNIX on the other hand, having a slash
+		// escaped with a leading slash is innocuous.
+		final String[] components = localFileName.split("\\" + System.getProperty("file.separator"));
+		final String baseName = components[components.length - 1];
+		return baseName.split("\\.")[0];
+	}
 
 	private void restoreCustomGraphics() throws IOException {
 		
