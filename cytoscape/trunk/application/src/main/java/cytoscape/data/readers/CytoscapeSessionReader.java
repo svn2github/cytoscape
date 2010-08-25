@@ -369,8 +369,7 @@ public class CytoscapeSessionReader {
 	
 	private void loadBitmapImageFiles(final String entryName,
 			final URL imageFileURL) throws IOException {
-		final String[] ent = entryName.split(System
-				.getProperty("file.separator"));
+		final String[] ent = entryName.split("\\" + System.getProperty("file.separator"));
 		final String displayName = ent[ent.length - 1];
 		String name = displayName.split("\\.")[0];
 
