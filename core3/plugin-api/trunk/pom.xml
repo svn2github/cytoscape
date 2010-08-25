@@ -49,22 +49,7 @@
   </repositories>
 
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>.</directory>
-        <includes>
-          <include>plugin.xml</include>
-          <include>plugin.properties</include>
-          <include>icons/**</include>
-        </includes>
-      </resource>
-    </resources>
-	
     <plugins>
-
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.2-beta-5</version>
@@ -72,8 +57,12 @@
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
+		  <!-- 
+		  this confuses the installation and doesn't install 
+		  separate plugin-api and cytoscape-api jars
           <finalName>cytoscape-api-${version}</finalName>
           <appendAssemblyId>false</appendAssemblyId>
+		  -->
         </configuration>
         <executions>
           <execution>
@@ -85,14 +74,12 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>org.ops4j</groupId>
         <artifactId>maven-pax-plugin</artifactId>
         <version>1.4</version>
         <extensions>true</extensions>
       </plugin>
-
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -105,7 +92,6 @@
           </instructions>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 
