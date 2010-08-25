@@ -107,8 +107,8 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		} else if (command.equals("execute")) {
 			ti.setParent(algorithmPanel);
 			//handle the tunables, and check if the validation is true(true means execution of the task)
-			if(ti.handle())
-			tm.execute( new LayoutTask(currentLayout,netmgr.getCurrentNetworkView()) );
+			if (ti.validateAndWriteBackTunables())
+				tm.execute( new LayoutTask(currentLayout,netmgr.getCurrentNetworkView()) );
 			
 		} else {
 			// OK, initialize and display
