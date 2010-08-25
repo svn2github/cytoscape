@@ -74,7 +74,8 @@ public class CyCommandManager {
 	 * @param maxVersion the maximum version this set of commands supports
 	 * @throws RuntimeException if a namespace by the requested name already exists
 	 */
-	public static CyCommandNamespace reserveNamespace(String namespace, float minVersion, float maxVersion) throws RuntimeException {
+	public static CyCommandNamespace reserveNamespace(String namespace, 
+	                                                  double minVersion, double maxVersion) throws RuntimeException {
 		if (namespace == null || namespace.length() == 0) return null;
 
 		namespace = namespace.toLowerCase();
@@ -262,7 +263,7 @@ public class CyCommandManager {
 		private int minVersion;
 		private int maxVersion;
 
-		protected CyCommandNamespaceImpl(String namespace, float minVersion, float maxVersion) {
+		protected CyCommandNamespaceImpl(String namespace, double minVersion, double maxVersion) {
 			this.ns = namespace;
 			this.minVersion = (int)(minVersion*100);
 			this.maxVersion = (int)(maxVersion*100);

@@ -43,6 +43,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import giny.model.RootGraph;
+
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -194,6 +196,46 @@ public class CyGroupManager {
 			}
 		}
 		return null;
+	}
+
+	/**
+ 	 * Create a copy of a group, potentially in a new network, and name the
+ 	 * copy automatically.  The copy name is simply formed by placing an integer
+ 	 * in brackets after the name of the current group.
+ 	 *
+ 	 * @param group the group to make a copy of
+ 	 * @param network the network the copy is to be part of
+ 	 * @return the new group, or null if we can't find a suitable name
+ 	 */
+	public static CyGroup copyGroup(CyGroup group, CyNetwork network) {
+		// First, create a new (unique) name for the group
+		String currentName = group.getGroupNode().getIdentifier();
+		for (int i = 0; i < 1000; i++) {
+			String newName = currentName+"["+i+"]";
+			if (Cytoscape.getCyNode(newName, false) == null) {
+				return copyGroup(newName, group, network);
+			}
+		}
+		return null;
+	}
+
+	/**
+ 	 * Create a copy of a group, potentially in a new network, and name the
+ 	 * copy with the provided new name.
+ 	 *
+ 	 * @param newName the name of the copied group
+ 	 * @param group the group to make a copy of
+ 	 * @param network the network the copy is to be part of
+ 	 * @return the new group, or null if a node of 'newName' already exists
+ 	 */
+	public static CyGroup copyGroup(String newName, CyGroup group, CyNetwork network) {
+		// If the new name already exists, return null
+		if (Cytoscape.getCyNode(newName, false) != null) { return null; }
+
+		// Great, now create the new group
+		CyGroup newGroup = createGroup(newName, group.getNodes(), group.getInnerEdges(),
+		                               group.getOuterEdges(), group.getViewer(), network);
+		return newGroup;
 	}
 
 	/**

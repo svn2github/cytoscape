@@ -616,7 +616,7 @@ public class CyGroupImpl implements CyGroup {
 		nodeToEdgeMap.remove(node);
 
 		// Remove the node from our map
-		myGraph.removeNode(node, false);
+		myGraph.removeNode(node.getRootGraphIndex(), false);
 
 		// Tell the node about it (if necessary)
 		if (node.inGroup(this))
