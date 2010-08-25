@@ -52,6 +52,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.*;
 
 import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupChangeEvent;
 import cytoscape.groups.CyGroupChangeListener;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
@@ -349,7 +350,7 @@ public class GroupToolDialog extends JDialog
 		}
 	}
 
-	public void groupChanged (CyGroup group, CyGroupChangeListener.ChangeType change) {
+	public void groupChanged (CyGroup group, CyGroupChangeEvent change) {
 		// Whatever changed, we just update our table
 		tableModel.updateTable();
 	}
