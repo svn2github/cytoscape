@@ -71,6 +71,7 @@ import org.slf4j.LoggerFactory;
 import cytoscape.view.CyHelpBroker;
 
 /**
+ * Actually, this is a presentation manager.
  * 
  */
 public class NetworkViewManager implements InternalFrameListener,
@@ -81,7 +82,8 @@ public class NetworkViewManager implements InternalFrameListener,
 	
 	private final JDesktopPane desktopPane;
 
-	private final Map<Long, JInternalFrame> networkViewMap;
+	// Key is MODEL ID
+	private final Map<Long, JInternalFrame> presentationContainerMap;
 	private final Map<Long, RenderingEngine<CyNetwork>> presentationMap;
 
 	private final Map<JInternalFrame, Long> componentMap;
@@ -89,17 +91,12 @@ public class NetworkViewManager implements InternalFrameListener,
 	protected final int MINIMUM_WIN_WIDTH = 200;
 	protected final int MINIMUM_WIN_HEIGHT = 200;
 
-	private final CyNetworkManager netmgr;
-
-	private Long currentViewId;
+	private Long currentPresentationContainerID;
 
 	private Properties props;
-
-	private CyHelpBroker help;
 	
 	// Supports multiple presentations
-	private Map<String, RenderingEngineFactory<CyNetwork>> factories;
-	
+	private final Map<String, RenderingEngineFactory<CyNetwork>> factories;
 	private RenderingEngineFactory<CyNetwork> currentRenderingEngineFactory;
 	
 	//TODO: discuss the name and key of props.
@@ -108,8 +105,10 @@ public class NetworkViewManager implements InternalFrameListener,
 	//TODO: for now, use this as default.  But in the future, we should provide UI to select presentation.
 	private static final String DEFAULT_PRESENTATION = "ding";
 
-	private Map<CyNetwork,RowSetMicroListener> nameListeners;
-	private CyServiceRegistrar registrar;
+	private final Map<CyNetwork,RowSetMicroListener> nameListeners;
+	
+	private final CyServiceRegistrar registrar;
+	private final CyNetworkManager networkManager;
 	
 	
 	/**
@@ -122,7 +121,7 @@ public class NetworkViewManager implements InternalFrameListener,
 			CyHelpBroker help, CyServiceRegistrar registrar) {
 		this.factories = new HashMap<String, RenderingEngineFactory<CyNetwork>>();
 		
-		this.netmgr = netmgr;
+		this.networkManager = netmgr;
 		this.props = props;
 		this.registrar = registrar;
 		desktopPane = new JDesktopPane();
@@ -131,17 +130,17 @@ public class NetworkViewManager implements InternalFrameListener,
 		help.getHelpBroker().enableHelp(desktopPane, "network-view-manager",
 				null);
 
-		networkViewMap = new HashMap<Long, JInternalFrame>();
+		presentationContainerMap = new HashMap<Long, JInternalFrame>();
 		presentationMap = new HashMap<Long, RenderingEngine<CyNetwork>>();
 		componentMap = new HashMap<JInternalFrame, Long>();
-		currentViewId = null;
+		currentPresentationContainerID = null;
 
 		nameListeners = new HashMap<CyNetwork,RowSetMicroListener>();
 	}
 	
 	
 	/**
-	 * Dynamically adding rendering engine factory. 
+	 * Dynamically add rendering engine factories. 
 	 * 
 	 * @param factory
 	 * @param props
@@ -156,7 +155,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		factories.put(rendererID.toString(), factory);
 		if(currentRenderingEngineFactory == null && rendererID.equals(DEFAULT_PRESENTATION)) {
 			currentRenderingEngineFactory = factory;
-			logger.info(rendererID + " is registered as default rendering engine.");
+			logger.info(rendererID + " is registered as the default rendering engine.");
 		}
 		
 		logger.info("New Rendering Engine is Available: " + rendererID);
@@ -169,7 +168,7 @@ public class NetworkViewManager implements InternalFrameListener,
 	
 	
 	/**
-	 * DOCUMENT ME!
+	 * Desktop for JInternalFrames which contains actual network presentations.
 	 * 
 	 * @return DOCUMENT ME!
 	 */
@@ -194,7 +193,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		}
 
 		// outta here
-		return networkViewMap.get(view.getModel().getSUID());
+		return presentationContainerMap.get(view.getModel().getSUID());
 	}
 
 	
@@ -205,7 +204,7 @@ public class NetworkViewManager implements InternalFrameListener,
 	 *            DOCUMENT ME!
 	 */
 	private void updateNetworkTitle(CyNetwork network) {
-		JInternalFrame frame = networkViewMap.get(network.getSUID());
+		JInternalFrame frame = presentationContainerMap.get(network.getSUID());
 
 		if ( frame != null ) {
 			frame.setTitle(network.attrs().get("name", String.class));
@@ -217,13 +216,12 @@ public class NetworkViewManager implements InternalFrameListener,
 	 * Fire Events when a Managed Network View gets the Focus.
 	 */
 	public void internalFrameActivated(InternalFrameEvent e) {
-		// System.out.println("NetworkViewManager: internalFrameActivated ");
 		Long network_id = componentMap.get(e.getInternalFrame());
 
 		if (network_id == null)
 			return;
 
-		netmgr.setCurrentNetworkView(network_id);
+		networkManager.setCurrentNetworkView(network_id);
 	}
 
 	/**
@@ -279,6 +277,9 @@ public class NetworkViewManager implements InternalFrameListener,
 	}
 
 	
+	
+	//// Event Handlers ////
+	
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
 		logger.info("Attempting to set current network view model: View Model ID = " + e.getNetworkView().getSUID());
 		setFocus(e.getNetworkView().getModel().getSUID());
@@ -290,45 +291,51 @@ public class NetworkViewManager implements InternalFrameListener,
 		setFocus(e.getNetwork().getSUID());		
 	}
 
-	private void setFocus(Long network_id) {
+	private void setFocus(Long networkModelID) {
+		if(networkModelID == null) {
+			logger.warn("Set Focus method got a null as target ID.");
+			return;
+		}
+		
+		final CyNetworkView targetViewModel = networkManager.getNetworkView(networkModelID);
+		if(targetViewModel == null) {
+			logger.debug("View model does not exist for model ID: " + networkModelID);
+			return;
+		}
+		
 		// make sure we're not redundant
-		if (currentViewId != null && currentViewId.equals(network_id)) {
-			System.out.println("setfocus return - redund");
+		if (currentPresentationContainerID != null && currentPresentationContainerID.equals(networkModelID)) {
+			logger.debug("Same as current focus.  No need to update focus: model ID = " + networkModelID);
 			return;
 		}
 
-		currentViewId = network_id;
+		currentPresentationContainerID = networkModelID;
 
-		// unset focus on frames
-		for (JInternalFrame f : networkViewMap.values()) {
+		// Reset focus on frames
+		for (JInternalFrame f : presentationContainerMap.values()) {
 			try {
 				f.setSelected(false);
 			} catch (PropertyVetoException pve) {
-				logger.error("NetworkViewManager: Couldn't unset focus for internal frame.", pve);
+				logger.error("Couldn't reset focus for internal frames.", pve);
 			}
 		}
 
-		// set focus
-		if (networkViewMap.containsKey(network_id)) {
+		// Set focus
+		if (presentationContainerMap.containsKey(networkModelID)) {
 			try {
-				System.out.println("should updated selection");
-				JInternalFrame curr = networkViewMap.get(network_id);
+				logger.debug("Updating JInternalFrame selection");
+				final JInternalFrame curr = presentationContainerMap.get(networkModelID);
 
 				curr.setIcon(false);
 				curr.show();
 				// fires internalFrameActivated
 				curr.setSelected(true);
 
-				CyNetworkView view = netmgr.getNetworkView(network_id);
-				// TODO ensure that this gets done when the presentationFactory
-				// adds a presentation to the internal frame
-				// if ( view != null )
-				// view.addTransferComponent(desktopPane);
 			} catch (Exception ex) {
-				System.err.println("Network View unable to be focused");
+				logger.error("Could not update focus: ", ex);
 			}
 		} else {
-			// System.out.println("asdf");
+			logger.debug("Frame was not found. Need to create new frame for presentation.");
 		}
 	}
 
@@ -346,18 +353,18 @@ public class NetworkViewManager implements InternalFrameListener,
 	public void handleEvent(final NetworkViewAddedEvent nvae) {
 		logger.info("Adding view to manager: NetworkViewManager: View ID = "
 				+ nvae.getNetworkView().getSUID());
-		createContainer(nvae.getNetworkView());
+		render(nvae.getNetworkView());
 	}
 
 	
 	protected void removeView(CyNetworkView view) {
 		try {
-			networkViewMap.get(view.getModel().getSUID()).dispose();
+			presentationContainerMap.get(view.getModel().getSUID()).dispose();
 		} catch (Exception e) {
 			System.err.println("Network View unable to be killed");
 		}
 
-		networkViewMap.remove(view.getModel().getSUID());
+		presentationContainerMap.remove(view.getModel().getSUID());
 		RowSetMicroListener rsml = nameListeners.remove(view.getModel());
 		if ( rsml != null )
 			registrar.unregisterService(rsml, RowSetMicroListener.class);
@@ -367,26 +374,30 @@ public class NetworkViewManager implements InternalFrameListener,
 	 * Create a visualization container and add presentation to it.
 	 * 
 	 */
-	protected void createContainer(final CyNetworkView view) {
-		if (networkViewMap.containsKey(view.getModel().getSUID())) {
-			// already contains
+	protected void render(final CyNetworkView view) {
+		
+		// If already registered in this manager, do not render.
+		if (presentationContainerMap.containsKey(view.getModel().getSUID()))
 			return;
-		}
 
-		// create a new InternalFrame and put the CyNetworkView Component into
-		// it
+		// Create a new InternalFrame and put the CyNetworkView Component into it
 		final JInternalFrame iframe = new JInternalFrame(view
 				.getVisualProperty(NETWORK_TITLE), true, true, true, true);
 		iframe.addInternalFrameListener(new InternalFrameAdapter() {
 			public void internalFrameClosing(InternalFrameEvent e) {
-				netmgr.destroyNetworkView(view);
+				networkManager.destroyNetworkView(view);
 			}
 		});
 		desktopPane.add(iframe);
 
-		logger.info("Rendering view model: " + view.getSUID());
-		this.presentationMap.put(view.getModel().getSUID(), this.currentRenderingEngineFactory.render(iframe, view));
-
+		long start = System.currentTimeMillis();
+		logger.debug("Rendering view model: " + view.getSUID());
+		final RenderingEngine<CyNetwork> renderingEngine = currentRenderingEngineFactory.render(iframe, view);
+		logger.debug("Rendering finished in " + (System.currentTimeMillis() - start) + " m sec.");
+		
+		this.presentationMap.put(view.getModel().getSUID(), renderingEngine);
+		
+		
 		iframe.pack();
 
 		// create cascade iframe
@@ -432,12 +443,11 @@ public class NetworkViewManager implements InternalFrameListener,
 		iframe.setVisible(true);
 		iframe.addInternalFrameListener(this);
 
-		networkViewMap.put(view.getModel().getSUID(), iframe);
+		presentationContainerMap.put(view.getModel().getSUID(), iframe);
 		componentMap.put(iframe, view.getModel().getSUID());
 
 		Long sourceNetwork = view.getModel().getSUID();
-		//netmgr.setCurrentNetworkView(sourceNetwork);
-		netmgr.setCurrentRenderingEngine(presentationMap.get(sourceNetwork));
+		networkManager.setCurrentRenderingEngine(presentationMap.get(sourceNetwork));
 
 		updateNetworkTitle( view.getModel() );	
 

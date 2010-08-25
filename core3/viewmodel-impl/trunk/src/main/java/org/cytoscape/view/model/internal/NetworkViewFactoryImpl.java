@@ -27,6 +27,7 @@ public class NetworkViewFactoryImpl implements CyNetworkViewFactory {
 
 		if (registrar == null)
 			throw new NullPointerException("CyServiceRegistrar is null");
+		
 		this.registrar = registrar;
 	}
 

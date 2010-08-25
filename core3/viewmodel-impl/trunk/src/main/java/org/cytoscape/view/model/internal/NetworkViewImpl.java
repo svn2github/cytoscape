@@ -45,6 +45,13 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 	private Map<CyEdge, View<CyEdge>> edgeViews;
 
 	
+	/**
+	 * Create a new instance of a network view model.
+	 * This constructor do NOT fire event for presentation layer.
+	 * 
+	 * @param network
+	 * @param cyEventHelper
+	 */
 	public NetworkViewImpl(final CyNetwork network, final CyEventHelper cyEventHelper) {
 		super(network, cyEventHelper);
 
@@ -57,7 +64,7 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 		for (CyEdge edge : network.getEdgeList())
 			edgeViews.put(edge, new ViewImpl<CyEdge>(edge, cyEventHelper));
 		
-		logger.info("*Network View Model Created.  SUID = " + suid);
+		logger.info("Network View Model Created.  Model ID = " + this.getModel().getSUID() + ", View Model ID = " + suid + " First phase of network creation process (model creation) is done. \n\n");
 	}
 
 
@@ -109,7 +116,6 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 			return;
 
 		edgeViews.remove(e.getEdge());
-
 	}
 
 	
@@ -120,9 +126,10 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 			return;
 
 		final CyNode node = e.getNode();
-		System.out.println(" Adding node to view: " + node.toString());
+		logger.debug("Creating new node view model: " + node.toString());
 		final View<CyNode> nv = new ViewImpl<CyNode>(node, cyEventHelper);
 		nodeViews.put(node, nv);
+		
 		// Cascading event.
 		cyEventHelper.fireSynchronousEvent(new AddedNodeViewEvent(this, nv));
 	}
@@ -155,8 +162,8 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 	}
 	
 	public void updateView() {
-		logger.debug("Firing update view event from: View ID = " + this.suid);
-		cyEventHelper.fireAsynchronousEvent( new NetworkViewChangedEvent(NetworkViewImpl.this));
+		//logger.debug("Firing update view event from: View ID = " + this.suid);
+		//cyEventHelper.fireAsynchronousEvent( new NetworkViewChangedEvent(NetworkViewImpl.this));
 	}
 	
 }

@@ -102,7 +102,7 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 		Dimension panelSize = new Dimension(280, 280);
 		bevPanel.setPreferredSize(panelSize);
 		bevPanel.setSize(panelSize);
-		bevPanel.setBackground(Color.red);
+		bevPanel.setBackground(Color.white);
 
 		engineMap = new HashMap<CyNetworkView, RenderingEngine<CyNetworkView>>();
 
@@ -122,8 +122,8 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 		// This is guaranteed not to be null.
 		final CyNetwork network = e.getNetwork();
 		
-		logger.debug("++++++++++++ setCurrentNetworkEvent.  New Network = "
-				+ network);
+		logger.debug("Got SetCurrentNetworkEvent.  BEV New Network = "
+				+ network.getSUID());
 		bevPanel.removeAll();
 
 //		final CyNetworkView view = netmgr.getNetworkView(network.getSUID());
@@ -139,6 +139,9 @@ public class BirdsEyeViewHandler implements SetCurrentNetworkListener,
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
 		final CyNetworkView view = e.getNetworkView();
+		
+		logger.debug("Got SetCurrentNetworkViewEvent.  BEV New Network = "
+				+ view.getModel().getSUID());
 		
 //		if(view != null) {
 //			RenderingEngine<CyNetwork> engine = bevFactory.render(bevPanel,

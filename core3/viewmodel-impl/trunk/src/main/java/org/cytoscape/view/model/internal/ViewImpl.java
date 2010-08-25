@@ -29,6 +29,12 @@ public class ViewImpl<M> implements View<M> {
 	private final Map<VisualProperty<?>, Object> visualPropertyLocks;
 	
 	
+	/**
+	 * Create an instance of view model, but not firing event to upper layer.
+	 * 
+	 * @param model
+	 * @param cyEventHelper
+	 */
 	public ViewImpl(final M model, final CyEventHelper cyEventHelper) {
 		if(model == null)
 			throw new IllegalArgumentException("Data model cannot be null.");

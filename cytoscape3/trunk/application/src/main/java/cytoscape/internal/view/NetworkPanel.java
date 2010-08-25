@@ -350,7 +350,10 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		treeTable.getTree().updateUI();
 		treeTable.doLayout();
 	}
+	
 
+	//// Event handlers /////
+	
 	public void handleEvent(NetworkAboutToBeDestroyedEvent nde) {
 		logger.debug("Network about to be destroyed "
 				+ nde.getNetwork().getSUID());
@@ -361,8 +364,9 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void handleEvent(NetworkAddedEvent e) {
-		logger.debug("Network added "
+		logger.debug("Got NetworkAddedEvent.  Model ID = "
 				+ e.getNetwork().getSUID());
+		
 		addNetwork(e.getNetwork().getSUID(), -1l);
 		RowSetMicroListener rsml = new AbstractNetworkNameListener(e.getNetwork()) {
 			public void updateNetworkName(CyNetwork net, String name) {
@@ -374,9 +378,10 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
-		logger.debug("Set current network view "
-				+ e.getNetworkView().getModel().getSUID());
-		long curr = e.getNetworkView().getModel().getSUID();
+		logger.debug("Got SetCurrentNetworkViewEvent.  View ID = "
+				+ e.getNetworkView().getSUID());
+		
+		final long curr = e.getNetworkView().getModel().getSUID();
 		
 		if (currentNetId == null || curr != currentNetId.longValue())
 			focusNetworkNode(curr);

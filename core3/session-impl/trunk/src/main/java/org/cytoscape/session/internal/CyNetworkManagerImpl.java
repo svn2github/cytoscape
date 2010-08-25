@@ -82,6 +82,7 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 
 	private final CyEventHelper cyEventHelper;
 
+	// Trackers for current network object
 	private CyNetwork currentNetwork;
 	private CyNetworkView currentNetworkView;
 	private RenderingEngine<CyNetwork> currentRenderer;
@@ -96,9 +97,11 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 		networkViewMap = new HashMap<Long, CyNetworkView>();
 		selectedNetworkViews = new LinkedList<CyNetworkView>();
 		selectedNetworks = new LinkedList<CyNetwork>();
+		
 		currentNetwork = null;
 		currentNetworkView = null;
 		this.currentRenderer = null;
+		
 		this.cyEventHelper = cyEventHelper;
 	}
 
@@ -110,9 +113,9 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 		synchronized (this) {
 			if (!networkMap.containsKey(networkId))
 				throw new IllegalArgumentException(
-						"network is not recognized by this NetworkManager");
+						"Network is not registered in this NetworkManager: ID = " + networkId);
 
-			logger.info("Setting current network.  Network ID = " + networkId);
+			logger.info("Set current network called.  Current network ID = " + networkId);
 			currentNetwork = networkMap.get(networkId);
 
 			// reset selected networks
@@ -120,6 +123,8 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 			selectedNetworks.add(currentNetwork);
 		}
 
+		logger.debug("Current network is set.  Firing SetCurrentNetworkEvent: Network ID = "
+				+ networkId);
 		cyEventHelper.fireSynchronousEvent(new SetCurrentNetworkEvent(CyNetworkManagerImpl.this,currentNetwork)); 
 	}
 
@@ -158,8 +163,8 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 				throw new IllegalArgumentException(
 						"network view is not recognized by this NetworkManager");
 
-			logger.info("Setting current network view: "
-					+ networkViewMap.get(viewId));
+			logger.info("Set current network view called: View ID = "
+					+ networkViewMap.get(viewId).getSUID());
 
 			setCurrentNetwork(viewId);
 
@@ -170,6 +175,8 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 			selectedNetworkViews.add(currentNetworkView);
 		}
 
+		logger.debug("Current network view i set.  Firing SetCurrentNetworkViewEvent: View ID = "
+				+ networkViewMap.get(viewId).getSUID());
 		cyEventHelper.fireSynchronousEvent(new SetCurrentNetworkViewEvent(CyNetworkManagerImpl.this,currentNetworkView));
 	}
 
@@ -325,6 +332,7 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 			throw new NullPointerException("Network is null");
 
 		synchronized (this) {
+			logger.debug("Adding new Network Model: Model ID = " + network.getSUID());
 			networkMap.put(network.getSUID(), network);
 		}
 
@@ -342,11 +350,13 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 		synchronized (this) {
 			if (!networkExists(networkId))
 				addNetwork(network);
-
+			logger.debug("Adding new Network View Model: Model ID = " + networkId);
 			networkViewMap.put(networkId, view);
 		}
 
+		logger.debug("Firing event: NetworkViewAddedEvent");
 		cyEventHelper.fireSynchronousEvent(new NetworkViewAddedEvent( CyNetworkManagerImpl.this, view));
+		logger.debug("Done event: NetworkViewAddedEvent");
 	}
 
 	
