@@ -26,8 +26,6 @@ import org.cytoscape.work.swing.AbstractGUITunableHandler;
 import org.cytoscape.work.Tunable.Param;
 import org.cytoscape.work.internal.tunables.utils.FileChooserFilter;
 
-import cytoscape.Cytoscape;
-
 
 /**
  * Handler for the type <i>File</i> of <code>Tunable</code>
@@ -115,7 +113,7 @@ public class FileHandler extends AbstractGUITunableHandler {
 	private void setGui(Type type) {
 		titleSeparator = new JSeparator();
 		titleLabel = new JLabel();
-		image = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_open.png"));
+		image = new ImageIcon(getClass().getResource("/images/ximian/stock_open.png"));
 		fileTextField = new JTextField();
 		fileTextField.setName("fileTextField");
 		fileTextField.setEditable(true);
