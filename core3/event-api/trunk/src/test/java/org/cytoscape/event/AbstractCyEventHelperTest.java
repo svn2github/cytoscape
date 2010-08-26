@@ -52,7 +52,6 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 
 	protected CyEventHelper helper;
 	protected StubCyListener service;
-	protected StubCyMicroListener microListener;
 
 	final protected MicroEventSource microEventSource = new MicroEventSource(); 
 
@@ -80,12 +79,6 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 		}
 	}
 
-	public void testGetMicroListener() {
-		microEventSource.testFire( helper, 5 );
-		assertEquals("number of calls", 1,microListener.getNumCalls());
-		assertEquals("value of event", 5,microListener.getEventValue());
-	}
-
 	// This is a performance test that counts the number of events fired in 1 second. 
 	// We verify that the microlistener approach is at faster than the
 	// event/listener combo. 
@@ -106,6 +99,9 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 			asyncCount++;
 		}
 	
+		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
+		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
+
 		end = System.nanoTime() + duration;
 		int microCount = 0;
 		while ( end > System.nanoTime() ) {
@@ -121,5 +117,66 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 		System.out.println("speedup async/sync : " + ((double)asyncCount/(double)syncCount));
 
 		assertTrue( microCount > (syncCount*3) );
+	}
+
+	public void testAddMicroListener() {
+		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
+		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
+
+		microEventSource.testFire( helper, 5 );
+		assertEquals("number of calls", 1,stub1.getNumCalls());
+		assertEquals("value of event", 5,stub1.getEventValue());
+
+		microEventSource.testFire( helper, 10 );
+		assertEquals("number of calls", 2,stub1.getNumCalls());
+		assertEquals("value of event", 10,stub1.getEventValue());
+	}
+
+	// any exception thrown here is a problem
+	// firing with no registered listeners should be OK
+	public void testAddNullMicroListener() {
+		StubCyMicroListener stub1 = null; 
+		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
+		microEventSource.testFire( helper, 5 );
+	}
+
+	// any exception thrown here is a problem
+	// at most a message should be logged
+	public void testAddNullEventSource() {
+		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
+		helper.addMicroListener(stub1, StubCyMicroListener.class, null);
+	}
+
+	public void testRemoveMicroListener() {
+		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
+		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
+
+		microEventSource.testFire( helper, 5 );
+		assertEquals("number of calls", 1,stub1.getNumCalls());
+		assertEquals("value of event", 5,stub1.getEventValue());
+
+		helper.removeMicroListener(stub1, StubCyMicroListener.class, microEventSource);
+
+		microEventSource.testFire( helper, 10 );
+		// these values should reflect the previous values
+		assertEquals("number of calls", 1,stub1.getNumCalls());
+		assertEquals("value of event", 5,stub1.getEventValue());
+	}
+
+	public void testRemoveMicroListenerFromWrongSource() {
+		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
+		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
+
+		microEventSource.testFire( helper, 5 );
+		assertEquals("number of calls", 1,stub1.getNumCalls());
+		assertEquals("value of event", 5,stub1.getEventValue());
+
+		helper.removeMicroListener(stub1, StubCyMicroListener.class, new Object());
+
+		microEventSource.testFire( helper, 10 );
+		// these values should reflect be updated because we removed the listener from
+		// the wrong source obj
+		assertEquals("number of calls", 2,stub1.getNumCalls());
+		assertEquals("value of event", 10,stub1.getEventValue());
 	}
 }

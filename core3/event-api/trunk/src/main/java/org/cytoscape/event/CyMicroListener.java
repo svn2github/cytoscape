@@ -62,7 +62,8 @@ package org.cytoscape.event;
  * which mean that you should <b>only use this approach if absolutely
  * necessary!!!</b>  The first problem is that this approach is inflexible,
  * since every class that implements the CyMicroListener interface would
- * need to change, something very time consuming for implementers.  The
+ * need to change, if the data communicated by the event were to change,
+ * something very time consuming for implementers.  The
  * second problem is that CyMicroListeners are tightly coupled with the
  * event souce object.  
  * <p>
@@ -72,14 +73,6 @@ package org.cytoscape.event;
  * CyMicroListener when speed and efficiency are key concerns.
  */
 public interface CyMicroListener {
-	/**
-	 * The specific object that will call the "event" in question,
-	 * which is to say, the object that you are listening to.
-	 * This should only be used to register/unregister CyMicroListener 
-	 * services.  
-	 */
-	Object getEventSource();
-
 	// implement 
-	// public void handleEvent(CyEvent e);
+	// public void handleMicroEvent(CyEvent e);
 }

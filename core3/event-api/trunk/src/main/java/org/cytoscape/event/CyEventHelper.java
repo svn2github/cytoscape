@@ -69,7 +69,7 @@ public interface CyEventHelper {
 	 * <br/>
 	 * eventHelper.getMicroListener(SomeListener.class, this).someEvent(...);
 	 * <br/>
-	 * will execute the "someEvent(...)" method on every registered SomeListener service
+	 * will execute the "someEvent(...)" method on every registered SomeListener 
 	 * that is listening for events from "this" event source.
 	 * <br/>
 	 * In general, CyMicroListener should avoided in favor the CyEvent/CyListener combination
@@ -83,4 +83,27 @@ public interface CyEventHelper {
 	 * called methods on all registered CyMicroListeners.
 	 */
 	public <M extends CyMicroListener> M getMicroListener(Class<M> m, Object source);
+
+
+	/**
+	 * Registers an object as a CyMicroListener to the event source object.
+	 *
+	 * @param <M> The type of micro listener being registered.
+	 * @param listener The object implementing the specified micro listener interface. 
+	 * @param clazz The specific CyMicroListener class that the listener is being registered for.
+	 * This is necessary because the listener object may implement several CyMicroListener 
+	 * interfaces.
+	 * @param source The event source that the listener object should listen to.
+	 */
+	public <M extends CyMicroListener> void addMicroListener(M listener, Class<M> clazz, Object source);
+
+	/**
+	 * Unregisters an object as a CyMicroListener for all event sources. 
+	 *
+	 * @param <M> The type of micro listener being unregistered.
+	 * @param listener The object implementing the specified micro listener interface. 
+	 * @param clazz The specific CyMicroListener class that the listener is being unregistered for.
+	 * @param source The event source that the listener object should be removed from. 
+	 */
+	public <M extends CyMicroListener> void removeMicroListener(M listener, Class<M> clazz, Object source);
 }
