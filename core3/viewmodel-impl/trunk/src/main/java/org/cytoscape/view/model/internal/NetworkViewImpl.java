@@ -21,7 +21,6 @@ import org.cytoscape.model.events.AddedNodeEvent;
 import org.cytoscape.model.events.AddedNodeListener;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.NetworkViewChangeMicroListener;
-import org.cytoscape.view.model.NodeViewChangeMicroListener;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.events.AddedEdgeViewEvent;
@@ -156,17 +155,17 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 	
 	public void fitContent() {
 		logger.debug("Firing fitContent event from: View ID = " + this.suid);
-		cyEventHelper.fireAsynchronousEvent( new FitContentEvent(NetworkViewImpl.this));
+		cyEventHelper.fireAsynchronousEvent( new FitContentEvent(this));
 	}
 	
 	public void fitSelected() {
 		logger.debug("Firing fitSelected event from: View ID = " + this.suid);
-		cyEventHelper.fireAsynchronousEvent( new FitSelectedEvent(NetworkViewImpl.this));
+		cyEventHelper.fireAsynchronousEvent( new FitSelectedEvent(this));
 	}
 	
 	public void updateView() {
 		logger.debug("Firing update view event from: View ID = " + this.suid);
-		cyEventHelper.fireAsynchronousEvent( new NetworkViewChangedEvent(NetworkViewImpl.this));
+		cyEventHelper.fireSynchronousEvent( new NetworkViewChangedEvent(this));
 	}
 
 
