@@ -50,7 +50,5 @@ public class FitContentTask extends AbstractNetworkViewTask {
 	public void run(TaskMonitor tm) {
 		// Call utility methods to fire events to redraw presentation.
 		view.fitContent();
-		// TODO: Is this a duplicate method call?  fitContent will update the presentation.
-		view.updateView();
 	}
 }
