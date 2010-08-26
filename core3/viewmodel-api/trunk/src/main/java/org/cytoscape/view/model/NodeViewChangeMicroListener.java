@@ -36,6 +36,7 @@
 package org.cytoscape.view.model;
 
 import org.cytoscape.event.CyMicroListener;
+import org.cytoscape.model.CyNode;
 
 
 /**
@@ -43,11 +44,11 @@ import org.cytoscape.event.CyMicroListener;
  * a Presentation to implement this interface so that the presentation
  * can be updated based on what has changed in the View.
  */
-public interface ViewChangeListener extends CyMicroListener {
+public interface NodeViewChangeMicroListener extends CyMicroListener {
 
 	/**
 	 * The method called when the specified VisualProperty is set to the
 	 * specified value in the View being listened to. 
 	 */
-	void  visualPropertySet(final VisualProperty<?> vp, final Object value);
+	void  nodeVisualPropertySet(final View<CyNode> target, final VisualProperty<?> vp, final Object value);
 }

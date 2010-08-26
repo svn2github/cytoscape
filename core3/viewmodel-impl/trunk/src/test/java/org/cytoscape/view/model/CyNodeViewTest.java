@@ -9,6 +9,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.TestCyNetworkFactory;
 import org.cytoscape.view.model.AbstractViewTest;
+import org.cytoscape.view.model.internal.NodeViewImpl;
 import org.cytoscape.view.model.internal.ViewImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -25,7 +26,7 @@ public class CyNodeViewTest extends AbstractViewTest<CyNode> {
 		
 		final CyEventHelper mockHelper = new DummyCyEventHelper();
 		
-		view = new ViewImpl<CyNode>(node, mockHelper);
+		view = new NodeViewImpl(node, mockHelper);
 		
 	}
 	

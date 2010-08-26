@@ -507,6 +507,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 		}
 
 		selectedStyle.apply(cyNetworkManager.getCurrentNetworkView());
+		view.updateView();
 	}
 
 	// Variables declaration - do not modify

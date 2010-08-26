@@ -20,7 +20,10 @@ import org.cytoscape.model.events.AddedEdgeListener;
 import org.cytoscape.model.events.AddedNodeEvent;
 import org.cytoscape.model.events.AddedNodeListener;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.NetworkViewChangeMicroListener;
+import org.cytoscape.view.model.NodeViewChangeMicroListener;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.events.AddedEdgeViewEvent;
 import org.cytoscape.view.model.events.AddedNodeViewEvent;
 import org.cytoscape.view.model.events.FitContentEvent;
@@ -59,10 +62,10 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 		edgeViews = new HashMap<CyEdge, View<CyEdge>>();
 
 		for (final CyNode node : network.getNodeList())
-			nodeViews.put(node, new ViewImpl<CyNode>(node, cyEventHelper));
+			nodeViews.put(node, new NodeViewImpl(node, cyEventHelper));
 
 		for (CyEdge edge : network.getEdgeList())
-			edgeViews.put(edge, new ViewImpl<CyEdge>(edge, cyEventHelper));
+			edgeViews.put(edge, new EdgeViewImpl(edge, cyEventHelper));
 		
 		logger.info("Network View Model Created.  Model ID = " + this.getModel().getSUID() + ", View Model ID = " + suid + " First phase of network creation process (model creation) is done. \n\n");
 	}
@@ -127,7 +130,7 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 
 		final CyNode node = e.getNode();
 		logger.debug("Creating new node view model: " + node.toString());
-		final View<CyNode> nv = new ViewImpl<CyNode>(node, cyEventHelper);
+		final View<CyNode> nv = new NodeViewImpl(node, cyEventHelper);
 		nodeViews.put(node, nv);
 		
 		// Cascading event.
@@ -142,7 +145,7 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 
 		final CyEdge edge = e.getEdge();
 		System.out.println(" Adding edge to view! " + edge.toString());
-		final View<CyEdge> ev = new ViewImpl<CyEdge>(edge, cyEventHelper);
+		final View<CyEdge> ev = new EdgeViewImpl(edge, cyEventHelper);
 		edgeViews.put(edge, ev); // FIXME: View creation here and in
 									// initializer: should be in one place
 
@@ -164,6 +167,18 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 	public void updateView() {
 		//logger.debug("Firing update view event from: View ID = " + this.suid);
 		//cyEventHelper.fireAsynchronousEvent( new NetworkViewChangedEvent(NetworkViewImpl.this));
+	}
+
+
+	@Override
+	public <T, V extends T> void setVisualProperty(
+			VisualProperty<? extends T> vp, V value) {
+		if(value == null)
+			this.visualProperties.remove(vp);
+		else
+			this.visualProperties.put(vp, value);
+		
+		cyEventHelper.getMicroListener(NetworkViewChangeMicroListener.class, this).networkVisualPropertySet(this, vp, value);	
 	}
 	
 }

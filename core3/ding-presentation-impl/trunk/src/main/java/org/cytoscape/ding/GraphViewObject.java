@@ -1,10 +1,11 @@
-
 package org.cytoscape.ding;
 
-import org.cytoscape.view.model.ViewChangeListener;
+import org.cytoscape.view.model.VisualProperty;
 
-public interface GraphViewObject extends ViewChangeListener {
+public interface GraphViewObject {
 
-	GraphView getGraphView(); 
+	GraphView getGraphView();
+	
+	void setVisualPropertyValue(final VisualProperty<?> vp, final Object value);
+
 }
-

@@ -167,6 +167,7 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 		tm.setProgress(0.90);
 		
 		final CyNetworkView view = cyNetworkViewFactory.getNetworkView(network);
+		
 		layouts.getDefaultLayout().doLayout(view);
 		
 		// SIF always creates only one network.

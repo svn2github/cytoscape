@@ -156,19 +156,21 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 		return currentNetworkView;
 	}
 
-	public void setCurrentNetworkView(final long viewId) {
+	
+	// FIXME: THIS IS WRONG!  we can have multiple view model, so this parameter should be model SUID.
+	public void setCurrentNetworkView(final long modelID) {
 		synchronized (this) {
-			if (!networkMap.containsKey(viewId)
-					|| !networkViewMap.containsKey(viewId))
+			if (!networkMap.containsKey(modelID)
+					|| !networkViewMap.containsKey(modelID))
 				throw new IllegalArgumentException(
 						"network view is not recognized by this NetworkManager");
 
 			logger.info("Set current network view called: View ID = "
-					+ networkViewMap.get(viewId).getSUID());
+					+ networkViewMap.get(modelID).getSUID());
 
-			setCurrentNetwork(viewId);
+			setCurrentNetwork(modelID);
 
-			currentNetworkView = networkViewMap.get(viewId);
+			currentNetworkView = networkViewMap.get(modelID);
 
 			// reset selected network views
 			selectedNetworkViews.clear();
@@ -176,7 +178,7 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 		}
 
 		logger.debug("Current network view i set.  Firing SetCurrentNetworkViewEvent: View ID = "
-				+ networkViewMap.get(viewId).getSUID());
+				+ networkViewMap.get(modelID).getSUID());
 		cyEventHelper.fireSynchronousEvent(new SetCurrentNetworkViewEvent(CyNetworkManagerImpl.this,currentNetworkView));
 	}
 

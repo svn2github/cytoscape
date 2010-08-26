@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package org.cytoscape.ding.impl;
 
@@ -55,13 +54,11 @@ import org.cytoscape.graph.render.immed.EdgeAnchors;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.ViewChangeListener;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
+class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 
-class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListener {
-	
 	static final float DEFAULT_ARROW_SIZE = 5.0f;
 	static final Paint DEFAULT_ARROW_PAINT = Color.black;
 	static final float DEFAULT_EDGE_THICKNESS = 1.0f;
@@ -108,7 +105,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int getGraphPerspectiveIndex() {
@@ -117,7 +114,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int getRootGraphIndex() {
@@ -126,7 +123,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public CyEdge getEdge() {
@@ -134,13 +131,12 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 	}
 
 	public View<CyEdge> getEdgeView() {
-		return m_edgeView; 
+		return m_edgeView;
 	}
-
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public GraphView getGraphView() {
@@ -149,8 +145,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param width DOCUMENT ME!
+	 * 
+	 * @param width
+	 *            DOCUMENT ME!
 	 */
 	public void setStrokeWidth(float width) {
 		synchronized (m_view.m_lock) {
@@ -161,7 +158,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public float getStrokeWidth() {
@@ -172,21 +169,25 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param stroke DOCUMENT ME!
+	 * 
+	 * @param stroke
+	 *            DOCUMENT ME!
 	 */
 	public void setStroke(Stroke stroke) {
 		if (stroke instanceof BasicStroke) {
 			synchronized (m_view.m_lock) {
 				final BasicStroke bStroke = (BasicStroke) stroke;
-				m_view.m_edgeDetails.overrideSegmentThickness(m_inx, bStroke.getLineWidth());
+				m_view.m_edgeDetails.overrideSegmentThickness(m_inx,
+						bStroke.getLineWidth());
 
 				final float[] dashArr = bStroke.getDashArray();
 
 				if ((dashArr != null) && (dashArr.length > 0))
-					m_view.m_edgeDetails.overrideSegmentDashLength(m_inx, dashArr[0]);
+					m_view.m_edgeDetails.overrideSegmentDashLength(m_inx,
+							dashArr[0]);
 				else
-					m_view.m_edgeDetails.overrideSegmentDashLength(m_inx, -1.0f);
+					m_view.m_edgeDetails
+							.overrideSegmentDashLength(m_inx, -1.0f);
 
 				m_view.m_contentChanged = true;
 			}
@@ -195,19 +196,23 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Stroke getStroke() {
 		synchronized (m_view.m_lock) {
-			final float segmentThickness = m_view.m_edgeDetails.segmentThickness(m_inx);
-			final float segmentDashLength = m_view.m_edgeDetails.segmentDashLength(m_inx);
+			final float segmentThickness = m_view.m_edgeDetails
+					.segmentThickness(m_inx);
+			final float segmentDashLength = m_view.m_edgeDetails
+					.segmentDashLength(m_inx);
 
 			if (segmentDashLength > 0.0f) {
-				final float[] dashes = new float[] { segmentDashLength, segmentDashLength };
+				final float[] dashes = new float[] { segmentDashLength,
+						segmentDashLength };
 
-				return new BasicStroke(segmentThickness, BasicStroke.CAP_SQUARE,
-				                       BasicStroke.JOIN_MITER, 10.0f, dashes, 0.0f);
+				return new BasicStroke(segmentThickness,
+						BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f,
+						dashes, 0.0f);
 			} else
 
 				return new BasicStroke(segmentThickness);
@@ -216,11 +221,13 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param lineType DOCUMENT ME!
+	 * 
+	 * @param lineType
+	 *            DOCUMENT ME!
 	 */
 	public void setLineType(int lineType) {
-		if ((lineType == EdgeView.CURVED_LINES) || (lineType == EdgeView.STRAIGHT_LINES)) {
+		if ((lineType == EdgeView.CURVED_LINES)
+				|| (lineType == EdgeView.STRAIGHT_LINES)) {
 			synchronized (m_view.m_lock) {
 				m_lineType = lineType;
 				m_view.m_contentChanged = true;
@@ -231,7 +238,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int getLineType() {
@@ -240,8 +247,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param paint DOCUMENT ME!
+	 * 
+	 * @param paint
+	 *            DOCUMENT ME!
 	 */
 	public void setUnselectedPaint(Paint paint) {
 		synchronized (m_view.m_lock) {
@@ -251,10 +259,12 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 			m_unselectedPaint = paint;
 
 			if (!isSelected()) {
-				m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_unselectedPaint);
+				m_view.m_edgeDetails.overrideSegmentPaint(m_inx,
+						m_unselectedPaint);
 
 				if (m_unselectedPaint instanceof Color)
-					m_view.m_edgeDetails.overrideColorLowDetail(m_inx, (Color) m_unselectedPaint);
+					m_view.m_edgeDetails.overrideColorLowDetail(m_inx,
+							(Color) m_unselectedPaint);
 
 				m_view.m_contentChanged = true;
 			}
@@ -266,7 +276,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getUnselectedPaint() {
@@ -275,8 +285,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param paint DOCUMENT ME!
+	 * 
+	 * @param paint
+	 *            DOCUMENT ME!
 	 */
 	public void setSelectedPaint(Paint paint) {
 		synchronized (m_view.m_lock) {
@@ -286,10 +297,12 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 			m_selectedPaint = paint;
 
 			if (isSelected()) {
-				m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_selectedPaint);
+				m_view.m_edgeDetails.overrideSegmentPaint(m_inx,
+						m_selectedPaint);
 
 				if (m_selectedPaint instanceof Color)
-					m_view.m_edgeDetails.overrideColorLowDetail(m_inx, (Color) m_selectedPaint);
+					m_view.m_edgeDetails.overrideColorLowDetail(m_inx,
+							(Color) m_selectedPaint);
 
 				m_view.m_contentChanged = true;
 			}
@@ -298,7 +311,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getSelectedPaint() {
@@ -307,7 +320,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getSourceEdgeEndPaint() {
@@ -316,7 +329,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getSourceEdgeEndSelectedPaint() {
@@ -325,7 +338,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getTargetEdgeEndPaint() {
@@ -334,7 +347,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getTargetEdgeEndSelectedPaint() {
@@ -343,8 +356,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param paint DOCUMENT ME!
+	 * 
+	 * @param paint
+	 *            DOCUMENT ME!
 	 */
 	public void setSourceEdgeEndSelectedPaint(Paint paint) {
 		synchronized (m_view.m_lock) {
@@ -354,7 +368,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 			m_sourceSelectedPaint = paint;
 
 			if (isSelected()) {
-				m_view.m_edgeDetails.overrideSourceArrowPaint(m_inx, m_sourceSelectedPaint);
+				m_view.m_edgeDetails.overrideSourceArrowPaint(m_inx,
+						m_sourceSelectedPaint);
 				m_view.m_contentChanged = true;
 			}
 		}
@@ -362,8 +377,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param paint DOCUMENT ME!
+	 * 
+	 * @param paint
+	 *            DOCUMENT ME!
 	 */
 	public void setTargetEdgeEndSelectedPaint(Paint paint) {
 		synchronized (m_view.m_lock) {
@@ -373,7 +389,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 			m_targetSelectedPaint = paint;
 
 			if (isSelected()) {
-				m_view.m_edgeDetails.overrideTargetArrowPaint(m_inx, m_targetSelectedPaint);
+				m_view.m_edgeDetails.overrideTargetArrowPaint(m_inx,
+						m_targetSelectedPaint);
 				m_view.m_contentChanged = true;
 			}
 		}
@@ -381,8 +398,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param paint DOCUMENT ME!
+	 * 
+	 * @param paint
+	 *            DOCUMENT ME!
 	 */
 	public void setSourceEdgeEndStrokePaint(Paint paint) {
 		// No-op.
@@ -390,8 +408,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param paint DOCUMENT ME!
+	 * 
+	 * @param paint
+	 *            DOCUMENT ME!
 	 */
 	public void setTargetEdgeEndStrokePaint(Paint paint) {
 		// No-op.
@@ -399,8 +418,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param paint DOCUMENT ME!
+	 * 
+	 * @param paint
+	 *            DOCUMENT ME!
 	 */
 	public void setSourceEdgeEndPaint(Paint paint) {
 		synchronized (m_view.m_lock) {
@@ -410,7 +430,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 			m_sourceUnselectedPaint = paint;
 
 			if (!isSelected()) {
-				m_view.m_edgeDetails.overrideSourceArrowPaint(m_inx, m_sourceUnselectedPaint);
+				m_view.m_edgeDetails.overrideSourceArrowPaint(m_inx,
+						m_sourceUnselectedPaint);
 				m_view.m_contentChanged = true;
 			}
 		}
@@ -418,8 +439,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param paint DOCUMENT ME!
+	 * 
+	 * @param paint
+	 *            DOCUMENT ME!
 	 */
 	public void setTargetEdgeEndPaint(Paint paint) {
 		synchronized (m_view.m_lock) {
@@ -429,7 +451,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 			m_targetUnselectedPaint = paint;
 
 			if (!isSelected()) {
-				m_view.m_edgeDetails.overrideTargetArrowPaint(m_inx, m_targetUnselectedPaint);
+				m_view.m_edgeDetails.overrideTargetArrowPaint(m_inx,
+						m_targetUnselectedPaint);
 				m_view.m_contentChanged = true;
 			}
 		}
@@ -452,7 +475,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 			final GraphViewChangeListener listener = m_view.m_lis[0];
 
 			if (listener != null)
-				listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view, DGraphView.makeList( getEdge())));
+				listener.graphViewChanged(new GraphViewEdgesSelectedEvent(
+						m_view, DGraphView.makeList(getEdge())));
 		}
 	}
 
@@ -463,25 +487,29 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 		m_selected = true;
 		m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_selectedPaint);
-		m_view.m_edgeDetails.overrideSourceArrowPaint(m_inx, m_sourceSelectedPaint);
-		m_view.m_edgeDetails.overrideTargetArrowPaint(m_inx, m_targetSelectedPaint);
+		m_view.m_edgeDetails.overrideSourceArrowPaint(m_inx,
+				m_sourceSelectedPaint);
+		m_view.m_edgeDetails.overrideTargetArrowPaint(m_inx,
+				m_targetSelectedPaint);
 
 		if (m_selectedPaint instanceof Color)
-			m_view.m_edgeDetails.overrideColorLowDetail(m_inx, (Color) m_selectedPaint);
+			m_view.m_edgeDetails.overrideColorLowDetail(m_inx,
+					(Color) m_selectedPaint);
 
 		m_view.m_selectedEdges.insert(m_inx);
 
 		for (int j = 0; j < numHandles(); j++) {
 			getHandleInternal(j, m_view.m_anchorsBuff);
-			m_view.m_spacialA.insert((m_inx << 6) | j,
-			                         (float) (m_view.m_anchorsBuff[0]
-			                         - (m_view.getAnchorSize() / 2.0d)),
-			                         (float) (m_view.m_anchorsBuff[1]
-			                         - (m_view.getAnchorSize() / 2.0d)),
-			                         (float) (m_view.m_anchorsBuff[0]
-			                         + (m_view.getAnchorSize() / 2.0d)),
-			                         (float) (m_view.m_anchorsBuff[1]
-			                         + (m_view.getAnchorSize() / 2.0d)));
+			m_view.m_spacialA
+					.insert((m_inx << 6) | j,
+							(float) (m_view.m_anchorsBuff[0] - (m_view
+									.getAnchorSize() / 2.0d)),
+							(float) (m_view.m_anchorsBuff[1] - (m_view
+									.getAnchorSize() / 2.0d)),
+							(float) (m_view.m_anchorsBuff[0] + (m_view
+									.getAnchorSize() / 2.0d)),
+							(float) (m_view.m_anchorsBuff[1] + (m_view
+									.getAnchorSize() / 2.0d)));
 
 			if (selectAnchors)
 				m_view.m_selectedAnchors.insert((m_inx << 6) | j);
@@ -507,7 +535,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 			final GraphViewChangeListener listener = m_view.m_lis[0];
 
 			if (listener != null)
-				listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view, DGraphView.makeList( getEdge())));
+				listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(
+						m_view, DGraphView.makeList(getEdge())));
 		}
 	}
 
@@ -518,11 +547,14 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 		m_selected = false;
 		m_view.m_edgeDetails.overrideSegmentPaint(m_inx, m_unselectedPaint);
-		m_view.m_edgeDetails.overrideSourceArrowPaint(m_inx, m_sourceUnselectedPaint);
-		m_view.m_edgeDetails.overrideTargetArrowPaint(m_inx, m_targetUnselectedPaint);
+		m_view.m_edgeDetails.overrideSourceArrowPaint(m_inx,
+				m_sourceUnselectedPaint);
+		m_view.m_edgeDetails.overrideTargetArrowPaint(m_inx,
+				m_targetUnselectedPaint);
 
 		if (m_unselectedPaint instanceof Color)
-			m_view.m_edgeDetails.overrideColorLowDetail(m_inx, (Color) m_unselectedPaint);
+			m_view.m_edgeDetails.overrideColorLowDetail(m_inx,
+					(Color) m_unselectedPaint);
 
 		m_view.m_selectedEdges.delete(m_inx);
 
@@ -536,9 +568,10 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param state DOCUMENT ME!
-	 *
+	 * 
+	 * @param state
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setSelected(boolean state) {
@@ -552,7 +585,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean isSelected() {
@@ -561,7 +594,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean getSelected() {
@@ -588,97 +621,112 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param type DOCUMENT ME!
+	 * 
+	 * @param type
+	 *            DOCUMENT ME!
 	 */
 	public void setSourceEdgeEnd(final int type) {
 		synchronized (m_view.m_lock) {
-			//       if (type == m_sourceEdgeEnd) { return; }
+			// if (type == m_sourceEdgeEnd) { return; }
 			switch (type) {
-				case NO_END:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_NONE);
+			case NO_END:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_NONE);
 
-					break;
+				break;
 
-				case WHITE_DELTA:
-				case WHITE_ARROW:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					//setSourceEdgeEndPaint(Color.white);
+			case WHITE_DELTA:
+			case WHITE_ARROW:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_DELTA);
+				// setSourceEdgeEndPaint(Color.white);
 
-					break;
+				break;
 
-				case BLACK_DELTA:
-				case BLACK_ARROW:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					//setSourceEdgeEndPaint(Color.black);
+			case BLACK_DELTA:
+			case BLACK_ARROW:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_DELTA);
+				// setSourceEdgeEndPaint(Color.black);
 
-					break;
+				break;
 
-				case EDGE_COLOR_DELTA:
-				case EDGE_COLOR_ARROW:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					//setSourceEdgeEndPaint(getUnselectedPaint());
+			case EDGE_COLOR_DELTA:
+			case EDGE_COLOR_ARROW:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_DELTA);
+				// setSourceEdgeEndPaint(getUnselectedPaint());
 
-					break;
+				break;
 
-				case WHITE_DIAMOND:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					//setSourceEdgeEndPaint(Color.white);
+			case WHITE_DIAMOND:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_DIAMOND);
+				// setSourceEdgeEndPaint(Color.white);
 
-					break;
+				break;
 
-				case BLACK_DIAMOND:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					//setSourceEdgeEndPaint(Color.black);
+			case BLACK_DIAMOND:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_DIAMOND);
+				// setSourceEdgeEndPaint(Color.black);
 
-					break;
+				break;
 
-				case EDGE_COLOR_DIAMOND:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					//setSourceEdgeEndPaint(getUnselectedPaint());
+			case EDGE_COLOR_DIAMOND:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_DIAMOND);
+				// setSourceEdgeEndPaint(getUnselectedPaint());
 
-					break;
+				break;
 
-				case WHITE_CIRCLE:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DISC);
-					//setSourceEdgeEndPaint(Color.white);
+			case WHITE_CIRCLE:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_DISC);
+				// setSourceEdgeEndPaint(Color.white);
 
-					break;
+				break;
 
-				case BLACK_CIRCLE:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DISC);
-					//setSourceEdgeEndPaint(Color.black);
+			case BLACK_CIRCLE:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_DISC);
+				// setSourceEdgeEndPaint(Color.black);
 
-					break;
+				break;
 
-				case EDGE_COLOR_CIRCLE:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DISC);
-					//setSourceEdgeEndPaint(getUnselectedPaint());
+			case EDGE_COLOR_CIRCLE:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_DISC);
+				// setSourceEdgeEndPaint(getUnselectedPaint());
 
-					break;
+				break;
 
-				case WHITE_T:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_TEE);
-					//setSourceEdgeEndPaint(Color.white);
+			case WHITE_T:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_TEE);
+				// setSourceEdgeEndPaint(Color.white);
 
-					break;
+				break;
 
-				case BLACK_T:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_TEE);
-					//setSourceEdgeEndPaint(Color.black);
+			case BLACK_T:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_TEE);
+				// setSourceEdgeEndPaint(Color.black);
 
-					break;
+				break;
 
-				case EDGE_COLOR_T:
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_TEE);
-					//setSourceEdgeEndPaint(getUnselectedPaint());
+			case EDGE_COLOR_T:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
+						GraphGraphics.ARROW_TEE);
+				// setSourceEdgeEndPaint(getUnselectedPaint());
 
-					break;
+				break;
 
-				default:
-					// assume type is OK 
-					m_view.m_edgeDetails.overrideSourceArrow(m_inx, type);
-					//throw new IllegalArgumentException("unrecognized edge end type");
+			default:
+				// assume type is OK
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx, type);
+				// throw new
+				// IllegalArgumentException("unrecognized edge end type");
 			}
 
 			m_sourceEdgeEnd = type;
@@ -688,97 +736,112 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param type DOCUMENT ME!
+	 * 
+	 * @param type
+	 *            DOCUMENT ME!
 	 */
 	public void setTargetEdgeEnd(int type) {
 		synchronized (m_view.m_lock) {
-			//       if (type == m_targetEdgeEnd) { return; }
+			// if (type == m_targetEdgeEnd) { return; }
 			switch (type) {
-				case NO_END:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_NONE);
+			case NO_END:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_NONE);
 
-					break;
+				break;
 
-				case WHITE_DELTA:
-				case WHITE_ARROW:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					//setTargetEdgeEndPaint(Color.white);
+			case WHITE_DELTA:
+			case WHITE_ARROW:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_DELTA);
+				// setTargetEdgeEndPaint(Color.white);
 
-					break;
+				break;
 
-				case BLACK_DELTA:
-				case BLACK_ARROW:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					//setTargetEdgeEndPaint(Color.black);
+			case BLACK_DELTA:
+			case BLACK_ARROW:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_DELTA);
+				// setTargetEdgeEndPaint(Color.black);
 
-					break;
+				break;
 
-				case EDGE_COLOR_DELTA:
-				case EDGE_COLOR_ARROW:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
-					//setTargetEdgeEndPaint(getUnselectedPaint());
+			case EDGE_COLOR_DELTA:
+			case EDGE_COLOR_ARROW:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_DELTA);
+				// setTargetEdgeEndPaint(getUnselectedPaint());
 
-					break;
+				break;
 
-				case WHITE_DIAMOND:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					//setTargetEdgeEndPaint(Color.white);
+			case WHITE_DIAMOND:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_DIAMOND);
+				// setTargetEdgeEndPaint(Color.white);
 
-					break;
+				break;
 
-				case BLACK_DIAMOND:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					//setTargetEdgeEndPaint(Color.black);
+			case BLACK_DIAMOND:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_DIAMOND);
+				// setTargetEdgeEndPaint(Color.black);
 
-					break;
+				break;
 
-				case EDGE_COLOR_DIAMOND:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-					//setTargetEdgeEndPaint(getUnselectedPaint());
+			case EDGE_COLOR_DIAMOND:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_DIAMOND);
+				// setTargetEdgeEndPaint(getUnselectedPaint());
 
-					break;
+				break;
 
-				case WHITE_CIRCLE:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
-					//setTargetEdgeEndPaint(Color.white);
+			case WHITE_CIRCLE:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_DISC);
+				// setTargetEdgeEndPaint(Color.white);
 
-					break;
+				break;
 
-				case BLACK_CIRCLE:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
-					//setTargetEdgeEndPaint(Color.black);
+			case BLACK_CIRCLE:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_DISC);
+				// setTargetEdgeEndPaint(Color.black);
 
-					break;
+				break;
 
-				case EDGE_COLOR_CIRCLE:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
-					//setTargetEdgeEndPaint(getUnselectedPaint());
+			case EDGE_COLOR_CIRCLE:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_DISC);
+				// setTargetEdgeEndPaint(getUnselectedPaint());
 
-					break;
+				break;
 
-				case WHITE_T:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
-					//setTargetEdgeEndPaint(Color.white);
+			case WHITE_T:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_TEE);
+				// setTargetEdgeEndPaint(Color.white);
 
-					break;
+				break;
 
-				case BLACK_T:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
-					//setTargetEdgeEndPaint(Color.black);
+			case BLACK_T:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_TEE);
+				// setTargetEdgeEndPaint(Color.black);
 
-					break;
+				break;
 
-				case EDGE_COLOR_T:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
-					//setTargetEdgeEndPaint(getUnselectedPaint());
+			case EDGE_COLOR_T:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx,
+						GraphGraphics.ARROW_TEE);
+				// setTargetEdgeEndPaint(getUnselectedPaint());
 
-					break;
+				break;
 
-				default:
-					// assume type is OK
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, type);
-					//throw new IllegalArgumentException("unrecognized edge end type");
+			default:
+				// assume type is OK
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx, type);
+				// throw new
+				// IllegalArgumentException("unrecognized edge end type");
 			}
 
 			m_targetEdgeEnd = type;
@@ -788,7 +851,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int getSourceEdgeEnd() {
@@ -797,7 +860,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int getTargetEdgeEnd() {
@@ -812,7 +875,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	// This is also a method on org.cytoscape.ding.Bend.
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 */
 	public void drawSelected() {
 		select();
@@ -820,7 +883,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	// This is also a method on org.cytoscape.ding.Bend.
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 */
 	public void drawUnselected() {
 		unselect();
@@ -828,7 +891,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Bend getBend() {
@@ -844,7 +907,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Label getLabel() {
@@ -853,8 +916,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param tip DOCUMENT ME!
+	 * 
+	 * @param tip
+	 *            DOCUMENT ME!
 	 */
 	public void setToolTip(String tip) {
 		m_toolTipText = tip;
@@ -862,7 +926,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public String getToolTip() {
@@ -871,16 +935,17 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	// Interface org.cytoscape.ding.Label:
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param position DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param position
+	 *            DOCUMENT ME!
 	 */
 	public void setPositionHint(int position) {
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getTextPaint() {
@@ -891,8 +956,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param textPaint DOCUMENT ME!
+	 * 
+	 * @param textPaint
+	 *            DOCUMENT ME!
 	 */
 	public void setTextPaint(Paint textPaint) {
 		synchronized (m_view.m_lock) {
@@ -903,7 +969,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public double getGreekThreshold() {
@@ -912,15 +978,16 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param threshold DOCUMENT ME!
+	 * 
+	 * @param threshold
+	 *            DOCUMENT ME!
 	 */
 	public void setGreekThreshold(double threshold) {
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public String getText() {
@@ -931,14 +998,16 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param text DOCUMENT ME!
+	 * 
+	 * @param text
+	 *            DOCUMENT ME!
 	 */
 	public void setText(String text) {
 		synchronized (m_view.m_lock) {
 			m_view.m_edgeDetails.overrideLabelText(m_inx, 0, text);
 
-			if (DEFAULT_LABEL_TEXT.equals(m_view.m_edgeDetails.labelText(m_inx, 0)))
+			if (DEFAULT_LABEL_TEXT.equals(m_view.m_edgeDetails.labelText(m_inx,
+					0)))
 				m_view.m_edgeDetails.overrideLabelCount(m_inx, 0);
 			else
 				m_view.m_edgeDetails.overrideLabelCount(m_inx, 1);
@@ -949,7 +1018,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Font getFont() {
@@ -960,8 +1029,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param font DOCUMENT ME!
+	 * 
+	 * @param font
+	 *            DOCUMENT ME!
 	 */
 	public void setFont(Font font) {
 		synchronized (m_view.m_lock) {
@@ -972,9 +1042,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	// Interface org.cytoscape.ding.Bend:
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int numHandles() {
 		synchronized (m_view.m_lock) {
@@ -987,8 +1057,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param bendPoints DOCUMENT ME!
+	 * 
+	 * @param bendPoints
+	 *            DOCUMENT ME!
 	 */
 	public void setHandles(List bendPoints) {
 		synchronized (m_view.m_lock) {
@@ -1005,7 +1076,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public List<Point2D> getHandles() {
@@ -1027,9 +1098,11 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param inx DOCUMENT ME!
-	 * @param pt DOCUMENT ME!
+	 * 
+	 * @param inx
+	 *            DOCUMENT ME!
+	 * @param pt
+	 *            DOCUMENT ME!
 	 */
 	public void moveHandle(int inx, Point2D pt) {
 		synchronized (m_view.m_lock) {
@@ -1044,10 +1117,10 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 		if (m_view.m_spacialA.delete((m_inx << 6) | inx))
 			m_view.m_spacialA.insert((m_inx << 6) | inx,
-			                         (float) (x - (m_view.getAnchorSize() / 2.0d)),
-			                         (float) (y - (m_view.getAnchorSize() / 2.0d)),
-			                         (float) (x + (m_view.getAnchorSize() / 2.0d)),
-			                         (float) (y + (m_view.getAnchorSize() / 2.0d)));
+					(float) (x - (m_view.getAnchorSize() / 2.0d)),
+					(float) (y - (m_view.getAnchorSize() / 2.0d)),
+					(float) (x + (m_view.getAnchorSize() / 2.0d)),
+					(float) (y + (m_view.getAnchorSize() / 2.0d)));
 	}
 
 	final void getHandleInternal(int inx, float[] buff) {
@@ -1058,7 +1131,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Point2D getSourceHandlePoint() {
@@ -1075,7 +1148,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Point2D getTargetHandlePoint() {
@@ -1084,7 +1157,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 				return null;
 
 			final Point2D returnThis = new Point2D.Float();
-			returnThis.setLocation((Point2D) m_anchors.get(m_anchors.size() - 1));
+			returnThis
+					.setLocation((Point2D) m_anchors.get(m_anchors.size() - 1));
 
 			return returnThis;
 		}
@@ -1092,8 +1166,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param pt DOCUMENT ME!
+	 * 
+	 * @param pt
+	 *            DOCUMENT ME!
 	 */
 	public void addHandle(Point2D pt) {
 		addHandleFoo(pt);
@@ -1101,9 +1176,10 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param pt DOCUMENT ME!
-	 *
+	 * 
+	 * @param pt
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int addHandleFoo(Point2D pt) {
@@ -1114,17 +1190,20 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 				return 0;
 			}
 
-			final Point2D sourcePt = m_view.getNodeView(getEdge().getSource()).getOffset();
-			final Point2D targetPt = m_view.getNodeView(getEdge().getTarget()).getOffset();
-			double bestDist = (pt.distance(sourcePt) + pt.distance((Point2D) m_anchors.get(0)))
-			                  - sourcePt.distance((Point2D) m_anchors.get(0));
+			final Point2D sourcePt = m_view.getNodeView(getEdge().getSource())
+					.getOffset();
+			final Point2D targetPt = m_view.getNodeView(getEdge().getTarget())
+					.getOffset();
+			double bestDist = (pt.distance(sourcePt) + pt
+					.distance((Point2D) m_anchors.get(0)))
+					- sourcePt.distance((Point2D) m_anchors.get(0));
 			int bestInx = 0;
 
 			for (int i = 1; i < m_anchors.size(); i++) {
-				final double distCand = (pt.distance((Point2D) m_anchors.get(i - 1))
-				                        + pt.distance((Point2D) m_anchors.get(i)))
-				                        - ((Point2D) m_anchors.get(i)).distance((Point2D) m_anchors
-				                                                                .get(i - 1));
+				final double distCand = (pt.distance((Point2D) m_anchors
+						.get(i - 1)) + pt.distance((Point2D) m_anchors.get(i)))
+						- ((Point2D) m_anchors.get(i))
+								.distance((Point2D) m_anchors.get(i - 1));
 
 				if (distCand < bestDist) {
 					bestDist = distCand;
@@ -1132,10 +1211,10 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 				}
 			}
 
-			final double lastCand = (pt.distance(targetPt)
-			                        + pt.distance((Point2D) m_anchors.get(m_anchors.size() - 1)))
-			                        - targetPt.distance((Point2D) m_anchors.get(m_anchors.size()
-			                                                                    - 1));
+			final double lastCand = (pt.distance(targetPt) + pt
+					.distance((Point2D) m_anchors.get(m_anchors.size() - 1)))
+					- targetPt.distance((Point2D) m_anchors.get(m_anchors
+							.size() - 1));
 
 			if (lastCand < bestDist) {
 				bestDist = lastCand;
@@ -1150,9 +1229,11 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param insertInx DOCUMENT ME!
-	 * @param pt DOCUMENT ME!
+	 * 
+	 * @param insertInx
+	 *            DOCUMENT ME!
+	 * @param pt
+	 *            DOCUMENT ME!
 	 */
 	public void addHandle(int insertInx, Point2D pt) {
 		synchronized (m_view.m_lock) {
@@ -1166,21 +1247,22 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 			if (m_selected) {
 				for (int j = m_anchors.size() - 1; j > insertInx; j--) {
-					m_view.m_spacialA.exists((m_inx << 6) | (j - 1), m_view.m_extentsBuff, 0);
+					m_view.m_spacialA.exists((m_inx << 6) | (j - 1),
+							m_view.m_extentsBuff, 0);
 					m_view.m_spacialA.delete((m_inx << 6) | (j - 1));
-					m_view.m_spacialA.insert((m_inx << 6) | j, m_view.m_extentsBuff[0],
-					                         m_view.m_extentsBuff[1], m_view.m_extentsBuff[2],
-					                         m_view.m_extentsBuff[3]);
+					m_view.m_spacialA.insert((m_inx << 6) | j,
+							m_view.m_extentsBuff[0], m_view.m_extentsBuff[1],
+							m_view.m_extentsBuff[2], m_view.m_extentsBuff[3]);
 
 					if (m_view.m_selectedAnchors.delete((m_inx << 6) | (j - 1)))
 						m_view.m_selectedAnchors.insert((m_inx << 6) | j);
 				}
 
 				m_view.m_spacialA.insert((m_inx << 6) | insertInx,
-				                         (float) (addThis.x - (m_view.getAnchorSize() / 2.0d)),
-				                         (float) (addThis.y - (m_view.getAnchorSize() / 2.0d)),
-				                         (float) (addThis.x + (m_view.getAnchorSize() / 2.0d)),
-				                         (float) (addThis.y + (m_view.getAnchorSize() / 2.0d)));
+						(float) (addThis.x - (m_view.getAnchorSize() / 2.0d)),
+						(float) (addThis.y - (m_view.getAnchorSize() / 2.0d)),
+						(float) (addThis.x + (m_view.getAnchorSize() / 2.0d)),
+						(float) (addThis.y + (m_view.getAnchorSize() / 2.0d)));
 			}
 
 			m_view.m_contentChanged = true;
@@ -1189,8 +1271,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param pt DOCUMENT ME!
+	 * 
+	 * @param pt
+	 *            DOCUMENT ME!
 	 */
 	public void removeHandle(Point2D pt) {
 		synchronized (m_view.m_lock) {
@@ -1214,8 +1297,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param inx DOCUMENT ME!
+	 * 
+	 * @param inx
+	 *            DOCUMENT ME!
 	 */
 	public void removeHandle(int inx) {
 		synchronized (m_view.m_lock) {
@@ -1226,11 +1310,12 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 				m_view.m_selectedAnchors.delete((m_inx << 6) | inx);
 
 				for (int j = inx; j < m_anchors.size(); j++) {
-					m_view.m_spacialA.exists((m_inx << 6) | (j + 1), m_view.m_extentsBuff, 0);
+					m_view.m_spacialA.exists((m_inx << 6) | (j + 1),
+							m_view.m_extentsBuff, 0);
 					m_view.m_spacialA.delete((m_inx << 6) | (j + 1));
-					m_view.m_spacialA.insert((m_inx << 6) | j, m_view.m_extentsBuff[0],
-					                         m_view.m_extentsBuff[1], m_view.m_extentsBuff[2],
-					                         m_view.m_extentsBuff[3]);
+					m_view.m_spacialA.insert((m_inx << 6) | j,
+							m_view.m_extentsBuff[0], m_view.m_extentsBuff[1],
+							m_view.m_extentsBuff[2], m_view.m_extentsBuff[3]);
 
 					if (m_view.m_selectedAnchors.delete((m_inx << 6) | (j + 1)))
 						m_view.m_selectedAnchors.insert((m_inx << 6) | j);
@@ -1266,9 +1351,10 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param pt DOCUMENT ME!
-	 *
+	 * 
+	 * @param pt
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean handleAlreadyExists(Point2D pt) {
@@ -1292,12 +1378,13 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Point2D[] getDrawPoints() {
 		synchronized (m_view.m_lock) {
-			final Point2D[] returnThis = new Point2D[(m_anchors == null) ? 0 : m_anchors.size()];
+			final Point2D[] returnThis = new Point2D[(m_anchors == null) ? 0
+					: m_anchors.size()];
 
 			for (int i = 0; i < returnThis.length; i++) {
 				returnThis[i] = new Point2D.Float();
@@ -1310,9 +1397,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	// Interface org.cytoscape.graph.render.immed.EdgeAnchors:
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int numAnchors() {
 		if (m_anchors == null)
@@ -1327,10 +1414,13 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param anchorIndex DOCUMENT ME!
-	 * @param anchorArr DOCUMENT ME!
-	 * @param offset DOCUMENT ME!
+	 * 
+	 * @param anchorIndex
+	 *            DOCUMENT ME!
+	 * @param anchorArr
+	 *            DOCUMENT ME!
+	 * @param offset
+	 *            DOCUMENT ME!
 	 */
 	public void getAnchor(int anchorIndex, float[] anchorArr, int offset) {
 		final Point2D.Float anchor;
@@ -1346,186 +1436,162 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors, ViewChangeListene
 
 	// Auxillary methods for edge anchors.
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param position DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param position
+	 *            DOCUMENT ME!
 	 */
 	public void setTextAnchor(int position) {
-		//System.out.println("setTextAnchor");
+		// System.out.println("setTextAnchor");
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param justify DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param justify
+	 *            DOCUMENT ME!
 	 */
 	public void setJustify(int justify) {
-		//System.out.println("setJustify");
+		// System.out.println("setJustify");
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getTextAnchor() {
-		//System.out.println("getTextAnchor");
+		// System.out.println("getTextAnchor");
 
 		return 0;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getJustify() {
-		//System.out.println("getJustify");
+		// System.out.println("getJustify");
 
 		return 0;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param x DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param x
+	 *            DOCUMENT ME!
 	 */
 	public void setLabelOffsetX(double x) {
-		//System.out.println("setLabelOffsetX");
+		// System.out.println("setLabelOffsetX");
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param y DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param y
+	 *            DOCUMENT ME!
 	 */
 	public void setLabelOffsetY(double y) {
-		//System.out.println("setLabelOffsetY");
+		// System.out.println("setLabelOffsetY");
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param position DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param position
+	 *            DOCUMENT ME!
 	 */
 	public void setEdgeLabelAnchor(int position) {
-		//System.out.println("setEdgeLabelAnchor");
+		// System.out.println("setEdgeLabelAnchor");
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public double getLabelOffsetX() {
-		//System.out.println("getLabelOffsetX");
+		// System.out.println("getLabelOffsetX");
 
 		return 0.0;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public double getLabelOffsetY() {
-		//System.out.println("getLabelOffsetY");
+		// System.out.println("getLabelOffsetY");
 
 		return 0.0;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getEdgeLabelAnchor() {
-		//System.out.println("getEdgeLabelAnchor");
+		// System.out.println("getEdgeLabelAnchor");
 
 		return 0;
 	}
 
-
 	@Override
-	public Object getEventSource() {
-		return m_edgeView;
-	}
-
-	
-	@Override
-	public void visualPropertySet(final VisualProperty<?> vp, final Object value) {
-		if ( value == null )
-			return;
-
-		if (vp == DVisualLexicon.EDGE_SELECTED_PAINT) {
-			setSelectedPaint((Paint)value);
-		}
-		else if (vp == TwoDVisualLexicon.EDGE_COLOR) { 
-			setUnselectedPaint((Paint)value);
-		}
-		else if (vp == DVisualLexicon.EDGE_WIDTH) {
-			setStrokeWidth(((Double)value).floatValue());
-		}
-		else if (vp == DVisualLexicon.EDGE_STROKE) {
-			setStroke((Stroke)value);
-		}
-		else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SELECTED_PAINT) {
-			setSourceEdgeEndSelectedPaint((Paint)value); 
-		}
-		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SELECTED_PAINT) {
-			setTargetEdgeEndSelectedPaint((Paint)value); 
-		}
-		else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_UNSELECTED_PAINT) {
-			setSourceEdgeEndPaint((Paint)value); 
-		}
-		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_UNSELECTED_PAINT) {
-			setTargetEdgeEndPaint((Paint)value); 
-		}
-		else if (vp == TwoDVisualLexicon.EDGE_SELECTED) {
-			setSelected((Boolean)value);
-		}
-		else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SHAPE) {
-			setTargetEdgeEnd(((ArrowShape)value).getGinyArrow());
-		}
-		else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SHAPE) {
-			setSourceEdgeEnd(((ArrowShape)value).getGinyArrow());
-		}
-		else if (vp == TwoDVisualLexicon.EDGE_LABEL) {
-			setText((String)value);
-		}
-		else if (vp == DVisualLexicon.EDGE_TOOLTIP) {
-			setToolTip((String)value);
-		}
-		else if (vp == DVisualLexicon.EDGE_LABEL_EDGE_ANCHOR) {
-			setEdgeLabelAnchor( ((Anchor)value).getGinyAnchor());	
-		}
-		else if (vp == DVisualLexicon.EDGE_LABEL_TEXT_ANCHOR) {
-			setTextAnchor( ((Anchor)value).getGinyAnchor());	
-		}
-		else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_X_OFFSET) {
-			setLabelOffsetX( ((Double)value).doubleValue() );	
-		}
-		else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_Y_OFFSET) {
-			setLabelOffsetY( ((Double)value).doubleValue() );	
-		}
-		else if (vp == DVisualLexicon.EDGE_LABEL_JUSTIFY) {
-			setJustify( ((Justify)value).getGinyJustify());
-		}
-		else if (vp == DVisualLexicon.EDGE_LABEL_FONT_FACE) {
-			setFont((Font)value);
-		}
-		else if (vp == DVisualLexicon.EDGE_LABEL_FONT_SIZE) {
-			setFont( getFont().deriveFont(((Integer)value).floatValue()) );
-		}
-		else if (vp == TwoDVisualLexicon.EDGE_LABEL_COLOR) {
-			setTextPaint((Paint)value);
-		}
-        else if ( vp == TwoDVisualLexicon.NODE_VISIBLE ) {
-            if ( ((Boolean)value).booleanValue() )
-                m_view.showGraphObject(this);
-            else
-                m_view.hideGraphObject(this);
-        }
+	public void setVisualPropertyValue(final VisualProperty<?> vp, final Object value) {	
 		
+		if (vp == DVisualLexicon.EDGE_SELECTED_PAINT) {
+			setSelectedPaint((Paint) value);
+		} else if (vp == TwoDVisualLexicon.EDGE_COLOR) {
+			setUnselectedPaint((Paint) value);
+		} else if (vp == DVisualLexicon.EDGE_WIDTH) {
+			setStrokeWidth(((Double) value).floatValue());
+		} else if (vp == DVisualLexicon.EDGE_STROKE) {
+			setStroke((Stroke) value);
+		} else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SELECTED_PAINT) {
+			setSourceEdgeEndSelectedPaint((Paint) value);
+		} else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SELECTED_PAINT) {
+			setTargetEdgeEndSelectedPaint((Paint) value);
+		} else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_UNSELECTED_PAINT) {
+			setSourceEdgeEndPaint((Paint) value);
+		} else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_UNSELECTED_PAINT) {
+			setTargetEdgeEndPaint((Paint) value);
+		} else if (vp == TwoDVisualLexicon.EDGE_SELECTED) {
+			setSelected((Boolean) value);
+		} else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SHAPE) {
+			setTargetEdgeEnd(((ArrowShape) value).getGinyArrow());
+		} else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SHAPE) {
+			setSourceEdgeEnd(((ArrowShape) value).getGinyArrow());
+		} else if (vp == TwoDVisualLexicon.EDGE_LABEL) {
+			setText((String) value);
+		} else if (vp == DVisualLexicon.EDGE_TOOLTIP) {
+			setToolTip((String) value);
+		} else if (vp == DVisualLexicon.EDGE_LABEL_EDGE_ANCHOR) {
+			setEdgeLabelAnchor(((Anchor) value).getGinyAnchor());
+		} else if (vp == DVisualLexicon.EDGE_LABEL_TEXT_ANCHOR) {
+			setTextAnchor(((Anchor) value).getGinyAnchor());
+		} else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_X_OFFSET) {
+			setLabelOffsetX(((Double) value).doubleValue());
+		} else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_Y_OFFSET) {
+			setLabelOffsetY(((Double) value).doubleValue());
+		} else if (vp == DVisualLexicon.EDGE_LABEL_JUSTIFY) {
+			setJustify(((Justify) value).getGinyJustify());
+		} else if (vp == DVisualLexicon.EDGE_LABEL_FONT_FACE) {
+			setFont((Font) value);
+		} else if (vp == DVisualLexicon.EDGE_LABEL_FONT_SIZE) {
+			setFont(getFont().deriveFont(((Integer) value).floatValue()));
+		} else if (vp == TwoDVisualLexicon.EDGE_LABEL_COLOR) {
+			setTextPaint((Paint) value);
+		} else if (vp == TwoDVisualLexicon.NODE_VISIBLE) {
+			if (((Boolean) value).booleanValue())
+				m_view.showGraphObject(this);
+			else
+				m_view.hideGraphObject(this);
+		}
+
 	}
+
 }

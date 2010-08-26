@@ -123,6 +123,7 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	}
 
 	
+	@Override
 	public void handleEvent(NetworkViewChangedEvent nvce) {
 		DGraphView gv = viewMap.get(nvce.getSource());
 		if ( gv != null )

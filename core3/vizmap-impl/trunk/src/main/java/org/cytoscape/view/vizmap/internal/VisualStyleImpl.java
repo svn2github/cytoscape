@@ -172,6 +172,9 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param view DOCUMENT ME!
 	 */
 	public void apply(final CyNetworkView view) {
+		
+		logger.debug("Visual Style Apply method called: " + this.title);
+		
 		final Collection<View<CyNode>> nodeviews = view.getNodeViews();
 		final Collection<View<CyEdge>> edgeviews = view.getEdgeViews();
 
@@ -213,12 +216,13 @@ public class VisualStyleImpl implements VisualStyle {
 		final VisualMappingFunction<?, V> mapping = getVisualMappingFunction(vp);
 		final V defaultValue = getDefaultValue(vp);
 
-
+		
 		// If mapping is available for this VP, apply the mapping.
 		if (mapping != null) {
 			mapping.apply(views);
 		} else {
 			// reset all rows to allow usage of default value:
+			logger.debug("Visual Style Apply default: " + defaultValue);
 			for(View<G> v: views)
 				v.setVisualProperty(vp, defaultValue);
 		}

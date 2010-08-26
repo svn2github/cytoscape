@@ -6,7 +6,7 @@ import java.util.Map;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.ViewChangeListener;
+import org.cytoscape.view.model.NodeViewChangeMicroListener;
 import org.cytoscape.view.model.VisualProperty;
 
 
@@ -17,7 +17,7 @@ import org.cytoscape.view.model.VisualProperty;
  *
  * @param <M>
  */
-public class ViewImpl<M> implements View<M> {
+public abstract class ViewImpl<M> implements View<M> {
 	
 	protected final M model;
 	protected final long suid;
@@ -25,8 +25,8 @@ public class ViewImpl<M> implements View<M> {
 	protected final CyEventHelper cyEventHelper;
 	
 	//TODO: Thread safety?
-	private final Map<VisualProperty<?>, Object> visualProperties;
-	private final Map<VisualProperty<?>, Object> visualPropertyLocks;
+	protected final Map<VisualProperty<?>, Object> visualProperties;
+	protected final Map<VisualProperty<?>, Object> visualPropertyLocks;
 	
 	
 	/**
@@ -62,17 +62,8 @@ public class ViewImpl<M> implements View<M> {
 	}
 	
 
-	@Override
-	public <T, V extends T> void setVisualProperty(
-			VisualProperty<? extends T> vp, V value) {
-		
-		if(value == null)
-			this.visualProperties.remove(vp);
-		else
-			this.visualProperties.put(vp, value);
-		
-		cyEventHelper.getMicroListener(ViewChangeListener.class, this).visualPropertySet(vp, value);
-	}
+	abstract public <T, V extends T> void setVisualProperty(
+			VisualProperty<? extends T> vp, V value);
 
 	
 	@SuppressWarnings("unchecked")

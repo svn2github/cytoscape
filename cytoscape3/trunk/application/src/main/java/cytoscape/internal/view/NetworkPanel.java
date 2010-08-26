@@ -405,6 +405,10 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	public void handleEvent(NetworkViewAddedEvent nde) {
 		logger.debug("Network view added "
 				+ nde.getNetworkView().getModel().getSUID());
+		
+		// Set current network view to the new one.
+		this.netmgr.setCurrentNetworkView(nde.getNetworkView().getModel().getSUID());
+		
 		treeTable.getTree().updateUI();
 	}
 

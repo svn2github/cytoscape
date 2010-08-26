@@ -2,17 +2,16 @@
 package cytoscape.internal.select;
 
 
-import org.cytoscape.session.events.NetworkViewAddedListener;
-import org.cytoscape.session.events.NetworkViewAddedEvent;
-import org.cytoscape.model.events.RowSetMicroListener;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.CyNetworkView;
-
-import org.cytoscape.service.util.CyServiceRegistrar;
-
 import java.util.Properties;
+
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.events.RowSetMicroListener;
+import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.session.events.NetworkViewAddedEvent;
+import org.cytoscape.session.events.NetworkViewAddedListener;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 
 public class SelectRegisterListener implements NetworkViewAddedListener {
 
@@ -23,8 +22,10 @@ public class SelectRegisterListener implements NetworkViewAddedListener {
 	}
 
 	public void handleEvent(NetworkViewAddedEvent e) {
-		CyNetworkView view = e.getNetworkView();
-
+		final CyNetworkView view = e.getNetworkView();
+		
+		// FIXME: do not register all nodes.  Instead, register 
+		
 		for ( View<CyNode> nv : view.getNodeViews() )
 			registrar.registerService( new SelectNodeViewUpdater(nv), RowSetMicroListener.class, new Properties() );
 

@@ -95,11 +95,17 @@ import org.cytoscape.util.intr.IntEnumerator;
 import org.cytoscape.util.intr.IntHash;
 import org.cytoscape.util.intr.IntStack;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.EdgeViewChangeMicroListener;
+import org.cytoscape.view.model.NetworkViewChangeMicroListener;
+import org.cytoscape.view.model.NodeViewChangeMicroListener;
 import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.ViewChangeListener;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.events.FitContentEvent;
+import org.cytoscape.view.model.events.FitContentEventListener;
+import org.cytoscape.view.model.events.FitSelectedEvent;
+import org.cytoscape.view.model.events.FitSelectedEventListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.TaskManager;
@@ -124,7 +130,7 @@ import phoebe.PhoebeCanvasDroppable;
  * @author Nerius Landys
  */
 public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printable,
-		PhoebeCanvasDroppable, ViewChangeListener {
+		PhoebeCanvasDroppable, NetworkViewChangeMicroListener, NodeViewChangeMicroListener, EdgeViewChangeMicroListener, FitContentEventListener, FitSelectedEventListener {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DGraphView.class);
 
@@ -346,10 +352,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 	// Will be injected.
 	private VisualLexicon dingLexicon;
-	
-	private final CyServiceRegistrar cyServiceRegistrar;
-	private final CyTableManager tableMgr;
-	
+		
 	// This is the view model.  This should be immutable.
 	final CyNetworkView cyNetworkView;
 	
@@ -378,7 +381,9 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		logger.debug("Phase 1: rendering start.");
 		networkModel = view.getModel();
 		cyNetworkView = view;
-		cyServiceRegistrar.registerService(this, ViewChangeListener.class, new Properties());
+		
+		// Register this presentation as a service.  And this should maintain all children.
+		cyServiceRegistrar.registerService(this, NodeViewChangeMicroListener.class, new Properties());
 		
 		logger.debug("Phase 2: service registered: time = " + (System.currentTimeMillis()- start));
 		
@@ -391,8 +396,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 		this.interceptor = interceptor;
 		this.manager = manager;
-		this.cyServiceRegistrar = cyServiceRegistrar;
-		this.tableMgr = tableMgr;
 
 		CyDataTable nodeCAM = dataFactory.createTable("node view", false);
 		nodeCAM.createColumn("hidden", Boolean.class, false);
@@ -449,7 +452,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		// read in visual properties from view obj
 		final Collection<VisualProperty<?>> netVPs = rootLexicon.getVisualProperties(NETWORK);
 		for (VisualProperty<?> vp : netVPs)
-			visualPropertySet(vp, cyNetworkView.getVisualProperty(vp));
+			networkVisualPropertySet(cyNetworkView, vp, cyNetworkView.getVisualProperty(vp));
 
 		new FlagAndSelectionHandler(this);
 		
@@ -766,7 +769,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		final NodeView newView = new DNodeView(this, nodeInx, nv);
 		
 		// FIXME this is an extremely slow operation.
-		cyServiceRegistrar.registerService(newView, ViewChangeListener.class, new Properties());
+		//cyServiceRegistrar.registerService(newView, ViewChangeListener.class, new Properties());
 		
 		m_nodeViewMap.put(nodeInx, newView);
 		m_spacial.insert(nodeInx, m_defaultNodeXMin, m_defaultNodeYMin,
@@ -777,7 +780,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 				.getVisualProperties(NODE);
 		
 		for (VisualProperty<?> vp : nodeVPs)
-			newView.visualPropertySet(vp, nv.getVisualProperty(vp));
+			nodeVisualPropertySet(nv, vp, nv.getVisualProperty(vp));
 		
 		return newView;
 	}
@@ -814,7 +817,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			edgeView = new DEdgeView(this, edgeInx, ev);
 			
 			// FIXME this is an extremely slow operation.
-			cyServiceRegistrar.registerService(edgeView,ViewChangeListener.class, new Properties());
+			//cyServiceRegistrar.registerService(edgeView,ViewChangeListener.class, new Properties());
 
 			m_edgeViewMap.put(Integer.valueOf(edgeInx), edgeView);
 			m_contentChanged = true;
@@ -824,7 +827,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 					.getVisualProperties(EDGE);
 			
 			for (VisualProperty<?> vp : edgeVPs)
-				edgeView.visualPropertySet(vp, ev.getVisualProperty(vp));
+				edgeVisualPropertySet(ev, vp, ev.getVisualProperty(vp));
 
 		}
 
@@ -2696,11 +2699,40 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 		return l;
 	}
-
+	
+	//// Micro event handlers ////
 	@Override
-	public void visualPropertySet(VisualProperty<?> vp, Object o) {
+	public void nodeVisualPropertySet(final View<CyNode> nodeView, final VisualProperty<?> vp, final Object value) {
+		// Both objects should exist.
+		if ( value == null || nodeView == null)
+			return;
 		
-		logger.debug("Visual Prop set Called");
+		// Convert to Ding's view object.
+		m_nodeViewMap.get(nodeView.getModel().getIndex()).setVisualPropertyValue(vp, value);
+		//logger.debug("Visual Prop appled to node: " + vp.getDisplayName() + " = " + value);
+	}
+	
+	
+	/**
+	 * This should be called from DGraphView.
+	 * 
+	 */
+	@Override
+	public void edgeVisualPropertySet(final View<CyEdge> edgeView, final VisualProperty<?> vp, final Object value) {
+		if ( value == null || edgeView == null)
+			return;
+	
+		// Convert to Ding's view object.
+		m_edgeViewMap.get(edgeView.getModel().getIndex()).setVisualPropertyValue(vp, value);
+		//logger.debug("Visual Prop appled to edge: " + vp.getDisplayName() + " = " + value);
+	}
+
+	/**
+	 * Listener for all view change events.
+	 * 
+	 */
+	@Override
+	public void networkVisualPropertySet(View<CyNetwork> target, VisualProperty<?> vp, Object o) {
 		
 		if (o == null)
 			return;
@@ -2726,7 +2758,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		} else if (vp == TwoDVisualLexicon.NETWORK_SCALE_FACTOR) {
 			setZoom(((Double) o).doubleValue());
 		}
+		
+		logger.debug("Visual Prop appled to network: " + vp.getDisplayName() + " = " + o);
 	}
+	
 
 	// ////// The following implements Presentation API ////////////
 
@@ -2771,5 +2806,17 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	@Override
 	public Object getEventSource() {
 		return cyNetworkView;
+	}
+
+	@Override
+	public void handleEvent(FitSelectedEvent e) {
+		logger.info("Fit Selected Called by event.");
+		fitSelected();
+	}
+
+	@Override
+	public void handleEvent(FitContentEvent e) {
+		logger.info("Fit Content called by event.");
+		fitContent();
 	}
 }

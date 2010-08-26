@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package org.cytoscape.ding.impl;
 
@@ -65,18 +64,16 @@ import org.cytoscape.graph.render.stateful.CustomGraphic;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.ViewChangeListener;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author $author$
  */
-public class DNodeView implements NodeView, Label, ViewChangeListener {
-	
+public class DNodeView implements NodeView, Label {
+
 	static final float DEFAULT_WIDTH = 20.0f;
 	static final float DEFAULT_HEIGHT = 20.0f;
 	static final int DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
@@ -91,11 +88,11 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	Paint m_unselectedPaint;
 	Paint m_selectedPaint;
 	Paint m_borderPaint;
-	
+
 	float transparency;
 
 	/**
-	 * Stores the position of a nodeView when it's hidden so that when the 
+	 * Stores the position of a nodeView when it's hidden so that when the
 	 * nodeView is retored we can restore the view into the same position.
 	 */
 	float m_hiddenXMin;
@@ -108,21 +105,23 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	// AJK: 04/26/06 for tooltip
 	String m_toolTipText = null;
-	
-    // A LinkedHashSet of the custom graphics associated with this
-    // DNodeView.  We need the HashSet linked since the ordering of
-    // custom graphics is important.  For space considerations, we
-    // keep _customGraphics null when there are no custom
-    // graphics--event though this is a bit more complicated:
-    private LinkedHashSet<CustomGraphic> _customGraphics;
-    // CG_LOCK is used for synchronizing custom graphics operations on this DNodeView.
-    // Arrays are objects like any other and can be used for synchronization. We use an array
-    // object assuming it takes up the least amount of memory:
-    private final Object[] CG_LOCK = new Object[0];
-    private final static HashSet<CustomGraphic> EMPTY_CUSTOM_GRAPHICS = new LinkedHashSet<CustomGraphic>(0);
 
-	private final View<CyNode> m_nodeView; 
+	// A LinkedHashSet of the custom graphics associated with this
+	// DNodeView. We need the HashSet linked since the ordering of
+	// custom graphics is important. For space considerations, we
+	// keep _customGraphics null when there are no custom
+	// graphics--event though this is a bit more complicated:
+	private LinkedHashSet<CustomGraphic> _customGraphics;
+	// CG_LOCK is used for synchronizing custom graphics operations on this
+	// DNodeView.
+	// Arrays are objects like any other and can be used for synchronization. We
+	// use an array
+	// object assuming it takes up the least amount of memory:
+	private final Object[] CG_LOCK = new Object[0];
+	private final static HashSet<CustomGraphic> EMPTY_CUSTOM_GRAPHICS = new LinkedHashSet<CustomGraphic>(
+			0);
 
+	private final View<CyNode> m_nodeView;
 
 	/*
 	 * @param inx the RootGraph index of node (a negative number).
@@ -142,7 +141,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public GraphView getGraphView() {
@@ -151,7 +150,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public CyNode getNode() {
@@ -161,12 +160,12 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	}
 
 	public View<CyNode> getNodeView() {
-		return m_nodeView;	
+		return m_nodeView;
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int getGraphPerspectiveIndex() {
@@ -175,7 +174,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int getRootGraphIndex() {
@@ -184,9 +183,10 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param otherNodeView DOCUMENT ME!
-	 *
+	 * 
+	 * @param otherNodeView
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public List<EdgeView> getEdgeViewsList(NodeView otherNodeView) {
@@ -197,7 +197,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int getShape() {
@@ -210,8 +210,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param paint DOCUMENT ME!
+	 * 
+	 * @param paint
+	 *            DOCUMENT ME!
 	 */
 	public void setSelectedPaint(Paint paint) {
 		synchronized (m_view.m_lock) {
@@ -224,7 +225,8 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 				m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
 
 				if (m_selectedPaint instanceof Color)
-					m_view.m_nodeDetails.overrideColorLowDetail(m_inx, (Color) m_selectedPaint);
+					m_view.m_nodeDetails.overrideColorLowDetail(m_inx,
+							(Color) m_selectedPaint);
 
 				m_view.m_contentChanged = true;
 			}
@@ -233,7 +235,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getSelectedPaint() {
@@ -242,8 +244,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param paint DOCUMENT ME!
+	 * 
+	 * @param paint
+	 *            DOCUMENT ME!
 	 */
 	public void setUnselectedPaint(Paint paint) {
 		synchronized (m_view.m_lock) {
@@ -253,10 +256,12 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			m_unselectedPaint = paint;
 
 			if (!isSelected()) {
-				m_view.m_nodeDetails.overrideFillPaint(m_inx, m_unselectedPaint);
+				m_view.m_nodeDetails
+						.overrideFillPaint(m_inx, m_unselectedPaint);
 
 				if (m_unselectedPaint instanceof Color)
-					m_view.m_nodeDetails.overrideColorLowDetail(m_inx, (Color) m_unselectedPaint);
+					m_view.m_nodeDetails.overrideColorLowDetail(m_inx,
+							(Color) m_unselectedPaint);
 
 				m_view.m_contentChanged = true;
 			}
@@ -265,7 +270,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getUnselectedPaint() {
@@ -274,8 +279,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param paint DOCUMENT ME!
+	 * 
+	 * @param paint
+	 *            DOCUMENT ME!
 	 */
 	public void setBorderPaint(Paint paint) {
 		synchronized (m_view.m_lock) {
@@ -287,7 +293,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getBorderPaint() {
@@ -296,8 +302,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param width DOCUMENT ME!
+	 * 
+	 * @param width
+	 *            DOCUMENT ME!
 	 */
 	public void setBorderWidth(float width) {
 		synchronized (m_view.m_lock) {
@@ -308,7 +315,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public float getBorderWidth() {
@@ -319,8 +326,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param stroke DOCUMENT ME!
+	 * 
+	 * @param stroke
+	 *            DOCUMENT ME!
 	 */
 	public void setBorder(Stroke stroke) {
 		if (stroke instanceof BasicStroke) {
@@ -351,11 +359,14 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		if ((m_borderDash == 0.0f) && (m_borderDash2 == 0.0f))
 			m_view.m_nodeDetails.overrideBorderPaint(m_inx, m_borderPaint);
 		else {
-			final int size = (int) Math.max(1.0f, (int) (m_borderDash + m_borderDash2)); // Average times two.
+			final int size = (int) Math.max(1.0f,
+					(int) (m_borderDash + m_borderDash2)); // Average times two.
 
-			if ((size == m_view.m_lastSize) && (m_borderPaint == m_view.m_lastPaint)) {
-				/* Use the cached texture paint. */ } else {
-				final BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+			if ((size == m_view.m_lastSize)
+					&& (m_borderPaint == m_view.m_lastPaint)) {
+				/* Use the cached texture paint. */} else {
+				final BufferedImage img = new BufferedImage(size, size,
+						BufferedImage.TYPE_INT_ARGB);
 				final Graphics2D g2 = (Graphics2D) img.getGraphics();
 				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 				g2.setPaint(s_transparent);
@@ -364,18 +375,19 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 				g2.fillRect(0, 0, size / 2, size / 2);
 				g2.fillRect(size / 2, size / 2, size / 2, size / 2);
 				m_view.m_lastTexturePaint = new TexturePaint(img,
-				                                             new Rectangle2D.Double(0, 0, size, size));
+						new Rectangle2D.Double(0, 0, size, size));
 				m_view.m_lastSize = size;
 				m_view.m_lastPaint = m_borderPaint;
 			}
 
-			m_view.m_nodeDetails.overrideBorderPaint(m_inx, m_view.m_lastTexturePaint);
+			m_view.m_nodeDetails.overrideBorderPaint(m_inx,
+					m_view.m_lastTexturePaint);
 		}
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Stroke getBorder() {
@@ -384,24 +396,25 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 				return new BasicStroke(getBorderWidth());
 			else
 
-				return new BasicStroke(getBorderWidth(), BasicStroke.CAP_SQUARE,
-				                       BasicStroke.JOIN_MITER, 10.0f,
-				                       new float[] { m_borderDash, m_borderDash2 }, 0.0f);
+				return new BasicStroke(getBorderWidth(),
+						BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f,
+						new float[] { m_borderDash, m_borderDash2 }, 0.0f);
 		}
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param trans DOCUMENT ME!
+	 * 
+	 * @param trans
+	 *            DOCUMENT ME!
 	 */
 	public void setTransparency(float trans) {
-		//TODO: implement this
+		// TODO: implement this
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public float getTransparency() {
@@ -410,9 +423,10 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param width DOCUMENT ME!
-	 *
+	 * 
+	 * @param width
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setWidth(double width) {
@@ -430,13 +444,14 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 			m_view.m_spacial.delete(m_inx);
 			m_view.m_spacial.insert(m_inx, xMin, m_view.m_extentsBuff[1], xMax,
-			                        m_view.m_extentsBuff[3]);
+					m_view.m_extentsBuff[3]);
 
 			final double w = ((double) xMax) - xMin;
-			final double h = ((double) m_view.m_extentsBuff[3]) - m_view.m_extentsBuff[1];
+			final double h = ((double) m_view.m_extentsBuff[3])
+					- m_view.m_extentsBuff[1];
 
 			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
-			    && (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
+					&& (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
 				setShape(GraphGraphics.SHAPE_RECTANGLE);
 
 			m_view.m_contentChanged = true;
@@ -447,7 +462,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public double getWidth() {
@@ -461,9 +476,10 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param height DOCUMENT ME!
-	 *
+	 * 
+	 * @param height
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setHeight(double height) {
@@ -477,19 +493,20 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			final float yMax = (float) (yCenter + hDiv2);
 
 			if (!(yMax > yMin))
-				throw new IllegalArgumentException("height is too small max:" + yMax + " min:"
-				                                   + yMin + " center:" + yCenter + " height:"
-				                                   + height);
+				throw new IllegalArgumentException("height is too small max:"
+						+ yMax + " min:" + yMin + " center:" + yCenter
+						+ " height:" + height);
 
 			m_view.m_spacial.delete(m_inx);
-			m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin, m_view.m_extentsBuff[2],
-			                        yMax);
+			m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin,
+					m_view.m_extentsBuff[2], yMax);
 
-			final double w = ((double) m_view.m_extentsBuff[2]) - m_view.m_extentsBuff[0];
+			final double w = ((double) m_view.m_extentsBuff[2])
+					- m_view.m_extentsBuff[0];
 			final double h = ((double) yMax) - yMin;
 
 			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
-			    && (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
+					&& (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
 				setShape(GraphGraphics.SHAPE_RECTANGLE);
 
 			m_view.m_contentChanged = true;
@@ -500,7 +517,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public double getHeight() {
@@ -514,7 +531,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Label getLabel() {
@@ -523,19 +540,22 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public int getDegree() {
 		// This method is totally ridiculous.
-		return m_view.getNetwork().getAdjacentEdgeList(getNode(),CyEdge.Type.ANY).size();
+		return m_view.getNetwork()
+				.getAdjacentEdgeList(getNode(), CyEdge.Type.ANY).size();
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param x DOCUMENT ME!
-	 * @param y DOCUMENT ME!
+	 * 
+	 * @param x
+	 *            DOCUMENT ME!
+	 * @param y
+	 *            DOCUMENT ME!
 	 */
 	public void setOffset(double x, double y) {
 		synchronized (m_view.m_lock) {
@@ -550,12 +570,14 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			final float yMax = (float) (y + hDiv2);
 
 			if (!(xMax > xMin))
-				throw new IllegalStateException("width of node has degenerated to zero after "
-				                                + "rounding");
+				throw new IllegalStateException(
+						"width of node has degenerated to zero after "
+								+ "rounding");
 
 			if (!(yMax > yMin))
-				throw new IllegalStateException("height of node has degenerated to zero after "
-				                                + "rounding");
+				throw new IllegalStateException(
+						"height of node has degenerated to zero after "
+								+ "rounding");
 
 			m_view.m_spacial.delete(m_inx);
 			m_view.m_spacial.insert(m_inx, xMin, yMin, xMax, yMax);
@@ -565,7 +587,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Point2D getOffset() {
@@ -582,12 +604,14 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param xPos DOCUMENT ME!
+	 * 
+	 * @param xPos
+	 *            DOCUMENT ME!
 	 */
 	public void setXPosition(double xPos) {
 		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0) || Double.isNaN(xPos))
+			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)
+					|| Double.isNaN(xPos))
 				return;
 
 			final double wDiv2 = (((double) m_view.m_extentsBuff[2]) - m_view.m_extentsBuff[0]) / 2.0d;
@@ -595,21 +619,24 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			final float xMax = (float) (xPos + wDiv2);
 
 			if (!(xMax > xMin))
-				throw new IllegalStateException("width of node has degenerated to zero after "
-				                                + "rounding");
+				throw new IllegalStateException(
+						"width of node has degenerated to zero after "
+								+ "rounding");
 
 			m_view.m_spacial.delete(m_inx);
 			m_view.m_spacial.insert(m_inx, xMin, m_view.m_extentsBuff[1], xMax,
-			                        m_view.m_extentsBuff[3]);
+					m_view.m_extentsBuff[3]);
 			m_view.m_contentChanged = true;
 		}
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param xPos DOCUMENT ME!
-	 * @param update DOCUMENT ME!
+	 * 
+	 * @param xPos
+	 *            DOCUMENT ME!
+	 * @param update
+	 *            DOCUMENT ME!
 	 */
 	public void setXPosition(double xPos, boolean update) {
 		setXPosition(xPos);
@@ -617,7 +644,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public double getXPosition() {
@@ -631,12 +658,14 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param yPos DOCUMENT ME!
+	 * 
+	 * @param yPos
+	 *            DOCUMENT ME!
 	 */
 	public void setYPosition(double yPos) {
 		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0) || Double.isNaN(yPos))
+			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)
+					|| Double.isNaN(yPos))
 				return;
 
 			final double hDiv2 = (((double) m_view.m_extentsBuff[3]) - m_view.m_extentsBuff[1]) / 2.0d;
@@ -644,21 +673,24 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			final float yMax = (float) (yPos + hDiv2);
 
 			if (!(yMax > yMin))
-				throw new IllegalStateException("height of node has degenerated to zero after "
-				                                + "rounding");
+				throw new IllegalStateException(
+						"height of node has degenerated to zero after "
+								+ "rounding");
 
 			m_view.m_spacial.delete(m_inx);
-			m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin, m_view.m_extentsBuff[2],
-			                        yMax);
+			m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin,
+					m_view.m_extentsBuff[2], yMax);
 			m_view.m_contentChanged = true;
 		}
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param yPos DOCUMENT ME!
-	 * @param update DOCUMENT ME!
+	 * 
+	 * @param yPos
+	 *            DOCUMENT ME!
+	 * @param update
+	 *            DOCUMENT ME!
 	 */
 	public void setYPosition(double yPos, boolean update) {
 		setYPosition(yPos);
@@ -666,7 +698,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public double getYPosition() {
@@ -680,8 +712,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param animate DOCUMENT ME!
+	 * 
+	 * @param animate
+	 *            DOCUMENT ME!
 	 */
 	public void setNodePosition(boolean animate) {
 	}
@@ -703,7 +736,8 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			final GraphViewChangeListener listener = m_view.m_lis[0];
 
 			if (listener != null)
-				listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view, DGraphView.makeList(getNode())));
+				listener.graphViewChanged(new GraphViewNodesSelectedEvent(
+						m_view, DGraphView.makeList(getNode())));
 		}
 	}
 
@@ -716,7 +750,8 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
 
 		if (m_selectedPaint instanceof Color)
-			m_view.m_nodeDetails.overrideColorLowDetail(m_inx, (Color) m_selectedPaint);
+			m_view.m_nodeDetails.overrideColorLowDetail(m_inx,
+					(Color) m_selectedPaint);
 
 		m_view.m_selectedNodes.insert(m_inx);
 
@@ -740,7 +775,8 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			final GraphViewChangeListener listener = m_view.m_lis[0];
 
 			if (listener != null)
-				listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view, DGraphView.makeList( getNode())));
+				listener.graphViewChanged(new GraphViewNodesUnselectedEvent(
+						m_view, DGraphView.makeList(getNode())));
 		}
 	}
 
@@ -753,7 +789,8 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		m_view.m_nodeDetails.overrideFillPaint(m_inx, m_unselectedPaint);
 
 		if (m_unselectedPaint instanceof Color)
-			m_view.m_nodeDetails.overrideColorLowDetail(m_inx, (Color) m_unselectedPaint);
+			m_view.m_nodeDetails.overrideColorLowDetail(m_inx,
+					(Color) m_unselectedPaint);
 
 		m_view.m_selectedNodes.delete(m_inx);
 
@@ -762,7 +799,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean isSelected() {
@@ -771,9 +808,10 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param selected DOCUMENT ME!
-	 *
+	 * 
+	 * @param selected
+	 *            DOCUMENT ME!
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setSelected(boolean selected) {
@@ -787,8 +825,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param shape DOCUMENT ME!
+	 * 
+	 * @param shape
+	 *            DOCUMENT ME!
 	 */
 	public void setShape(final int inshape) {
 		synchronized (m_view.m_lock) {
@@ -796,14 +835,15 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 			int shape = inshape;
 
 			// special case
-			if ( shape == GraphGraphics.SHAPE_ROUNDED_RECTANGLE ) {
-					final double width = getWidth();
-					final double height = getHeight();
+			if (shape == GraphGraphics.SHAPE_ROUNDED_RECTANGLE) {
+				final double width = getWidth();
+				final double height = getHeight();
 
-					if (!(Math.max(width, height) < (1.99d * Math.min(width, height))))
-						shape = GraphGraphics.SHAPE_RECTANGLE;
-					else
-						shape = GraphGraphics.SHAPE_ROUNDED_RECTANGLE;
+				if (!(Math.max(width, height) < (1.99d * Math
+						.min(width, height))))
+					shape = GraphGraphics.SHAPE_RECTANGLE;
+				else
+					shape = GraphGraphics.SHAPE_ROUNDED_RECTANGLE;
 			}
 
 			m_view.m_nodeDetails.overrideShape(m_inx, shape);
@@ -813,9 +853,10 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	// AJK: 04/26/06 BEGIN
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param tip DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param tip
+	 *            DOCUMENT ME!
 	 */
 	public void setToolTip(String tip) {
 		m_toolTipText = tip;
@@ -823,7 +864,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public String getToolTip() {
@@ -832,16 +873,17 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	// AJK: 04/26/06 END
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param position DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param position
+	 *            DOCUMENT ME!
 	 */
 	public void setPositionHint(int position) {
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getTextPaint() {
@@ -852,8 +894,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param textPaint DOCUMENT ME!
+	 * 
+	 * @param textPaint
+	 *            DOCUMENT ME!
 	 */
 	public void setTextPaint(Paint textPaint) {
 		synchronized (m_view.m_lock) {
@@ -864,7 +907,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public double getGreekThreshold() {
@@ -873,15 +916,16 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param threshold DOCUMENT ME!
+	 * 
+	 * @param threshold
+	 *            DOCUMENT ME!
 	 */
 	public void setGreekThreshold(double threshold) {
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public String getText() {
@@ -892,14 +936,16 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param text DOCUMENT ME!
+	 * 
+	 * @param text
+	 *            DOCUMENT ME!
 	 */
 	public void setText(String text) {
 		synchronized (m_view.m_lock) {
 			m_view.m_nodeDetails.overrideLabelText(m_inx, 0, text);
 
-			if (DEFAULT_LABEL_TEXT.equals(m_view.m_nodeDetails.labelText(m_inx, 0)))
+			if (DEFAULT_LABEL_TEXT.equals(m_view.m_nodeDetails.labelText(m_inx,
+					0)))
 				m_view.m_nodeDetails.overrideLabelCount(m_inx, 0);
 			else
 				m_view.m_nodeDetails.overrideLabelCount(m_inx, 1);
@@ -910,7 +956,7 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
 	public Font getFont() {
@@ -921,8 +967,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @param font DOCUMENT ME!
+	 * 
+	 * @param font
+	 *            DOCUMENT ME!
 	 */
 	public void setFont(Font font) {
 		synchronized (m_view.m_lock) {
@@ -931,230 +978,250 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 		}
 	}
 
-
-
-    /**
-     * Adds a custom graphic, <EM>in draw order</EM>, to this
-     * DNodeView in a thread-safe way.  This is a convenience method
-     * that is equivalent to calling:
-     * <CODE>
-     *   addCustomGraphic (new CustomGraphic (shape,paint,anchor))
-     * </CODE>
-     * except the the new CustomGraphic created is returned.
-     * @param shape
-     * @param paint
-     * @param anchor The int value from NodeDetails, that defines where the graphic anchor point lies on this DNodeView's extents rectangle. A common anchor is NodeDetails.ANCHOR_CENTER.
-     * @since Cytoscape 2.6
-     * @throws IllegalArgumentException if shape or paint are null or anchor is not in the range 0 <= anchor <= NodeDetails.MAX_ANCHOR_VAL.
-     * @return The CustomGraphic added to this DNodeView.
-     * @see #addCustomGraphic(CustomGraphic)
-     * @see org.cytoscape.graph.render.stateful.CustomGraphic
-     */
-      public CustomGraphic addCustomGraphic(Shape shape, Paint paint, int anchor) {
-	  CustomGraphic cg = new CustomGraphic (shape, paint, anchor);
-	  addCustomGraphic (cg);
-	  return cg;
-      }
-
-    /**
-     * Adds a given CustomGraphic, <EM>in draw order</EM>, to this
-     * DNodeView in a thread-safe way.  Each CustomGraphic will be
-     * drawn in the order is was added. So, if you care about draw
-     * order (as for overlapping graphics), make sure you add them in
-     * the order you desire.  Note that since CustomGraphics may be
-     * added by multiple plugins, your additions may be interleaved
-     * with others.
-     *
-     * <P>A CustomGraphic can only be associated with a DNodeView
-     * once.  If you wish to have a custom graphic, with the same
-     * paint and shape information, occur in multiple places in the
-     * draw order, simply create a new CustomGraphic and add it.
-     *
-     * @since Cytoscape 2.6
-     * @throws IllegalArgumentException if shape or paint are null.
-     * @return true if the CustomGraphic was added to this DNodeView.
-     *         false if this DNodeView already contained this CustomGraphic.
-     * @see org.cytoscape.graph.render.stateful.CustomGraphic
-     */
-    public boolean addCustomGraphic(CustomGraphic cg) {
-	boolean retVal = false;
-	//	CG_RW_LOCK.writeLock().lock();
-	//	if (_customGraphics == null) {
-	//	    _customGraphics = new LinkedHashSet<CustomGraphic>();
-	//	}
-	//	retVal = _customGraphics.add (cg);
-	//	CG_RW_LOCK.writeLock().unlock();
-	synchronized (CG_LOCK) {
-	    if (_customGraphics == null) {
-		_customGraphics = new LinkedHashSet<CustomGraphic>();
-	    }
-	    retVal = _customGraphics.add (cg);
+	/**
+	 * Adds a custom graphic, <EM>in draw order</EM>, to this DNodeView in a
+	 * thread-safe way. This is a convenience method that is equivalent to
+	 * calling: <CODE>
+	 *   addCustomGraphic (new CustomGraphic (shape,paint,anchor))
+	 * </CODE> except the the new CustomGraphic created is returned.
+	 * 
+	 * @param shape
+	 * @param paint
+	 * @param anchor
+	 *            The int value from NodeDetails, that defines where the graphic
+	 *            anchor point lies on this DNodeView's extents rectangle. A
+	 *            common anchor is NodeDetails.ANCHOR_CENTER.
+	 * @since Cytoscape 2.6
+	 * @throws IllegalArgumentException
+	 *             if shape or paint are null or anchor is not in the range 0 <=
+	 *             anchor <= NodeDetails.MAX_ANCHOR_VAL.
+	 * @return The CustomGraphic added to this DNodeView.
+	 * @see #addCustomGraphic(CustomGraphic)
+	 * @see org.cytoscape.graph.render.stateful.CustomGraphic
+	 */
+	public CustomGraphic addCustomGraphic(Shape shape, Paint paint, int anchor) {
+		CustomGraphic cg = new CustomGraphic(shape, paint, anchor);
+		addCustomGraphic(cg);
+		return cg;
 	}
-	ensureContentChanged ();
-	return retVal;
-    }
-
-    /**
-     * A thread-safe way to determine if this DNodeView contains a given custom graphic.
-     * @param cg the CustomGraphic for which we are checking containment.
-     * @since Cytoscape 2.6
-     */
-    public boolean containsCustomGraphic (CustomGraphic cg) {
-	//	CG_RW_LOCK.readLock().lock();
-	//	boolean retVal = false;
-	//	if (_customGraphics != null) {
-	//	    retVal = _customGraphics.contains (cg);
-	//	}
-	//	CG_RW_LOCK.readLock().unlock();
-	//	return retVal;
-	synchronized (CG_LOCK) {
-	    if (_customGraphics == null) {
-		return false;
-	    }
-	    return _customGraphics.contains (cg);
-	}
-    }
-
-    /**
-     * Return a non-null, read-only Iterator over all CustomGraphics contained in this DNodeView.
-     * The Iterator will return each CustomGraphic in draw order.
-     * The Iterator cannot be used to modify the underlying set of CustomGraphics.
-     * @return The CustomGraphics Iterator. If no CustomGraphics are
-     * associated with this DNOdeView, an empty Iterator is returned.
-     * @throws UnsupportedOperationException if an attempt is made to use the Iterator's remove() method.
-     * @since Cytoscape 2.6
-     */
-    public Iterator<CustomGraphic> customGraphicIterator() {
-	Iterator<CustomGraphic> retVal = null;
-	final Iterable<CustomGraphic> toIterate;
-	//	CG_RW_LOCK.readLock().lock();	
-	//	if (_customGraphics == null) {
-	//	    toIterate = EMPTY_CUSTOM_GRAPHICS;
-	//	} else {
-	//	    toIterate = _customGraphics;
-	//	}	    
-	//	retVal = new LockingIterator<CustomGraphic>(toIterate);
-	//	retVal = new Iterator<CustomGraphic>() {
-	//	    Iterator<? extends CustomGraphic> i = toIterate.iterator();
-	//	    public boolean hasNext() {return i.hasNext();}
-	//	    public CustomGraphic next() 	 {return i.next();}
-	//	    public void remove() {
-	//		throw new UnsupportedOperationException();
-	//	    }
-	//	};
-	//	CG_RW_LOCK.readLock().unlock();		   
-	//	return retVal;
-	synchronized (CG_LOCK) {
-	    if (_customGraphics == null) {
-		toIterate = EMPTY_CUSTOM_GRAPHICS;
-	    } else {
-		toIterate = _customGraphics;
-	    }
-	    return new ReadOnlyIterator<CustomGraphic>(toIterate);
-	}
-    }
-
-    /**
-     * A thread-safe method for removing a given custom graphic from this DNodeView.
-     * @return true if the custom graphic was found an removed. Returns false if 
-     *         cg is null or is not a custom graphic associated with this DNodeView.
-     * @since Cytoscape 2.6
-     */
-    public boolean removeCustomGraphic(CustomGraphic cg) {
-	boolean retVal = false;
-	//	CG_RW_LOCK.writeLock().lock();
-	//	if (_customGraphics != null) {
-	//	    retVal = _customGraphics.remove (cg);
-	//	}	
-	//	CG_RW_LOCK.writeLock().unlock();
-	synchronized (CG_LOCK) {	
-	    if (_customGraphics != null) {
-		retVal = _customGraphics.remove (cg);
-	    }
-	}
-	ensureContentChanged ();
-	return retVal;
-    }
-
-    /**
-     * A thread-safe method returning the number of custom graphics
-     * associated with this DNodeView. If none are associated, zero is
-     * returned.
-     * @since Cytoscape 2.6
-     */
-    public int getNumCustomGraphics () {
-	//	CG_RW_LOCK.readLock().lock();
-	//	int retVal = 0;
-	//	if (_customGraphics != null) {
-	//	    retVal = _customGraphics.size();
-	//	}
-	//	CG_RW_LOCK.readLock().unlock();
-	//	return retVal;
-	synchronized (CG_LOCK) {
-	    if (_customGraphics == null) {
-		return 0;
-	    }
-	    return _customGraphics.size();
-	}
-    }
-
-    
-    private void ensureContentChanged () {
-	synchronized (m_view.m_lock) {
-	    m_view.m_contentChanged = true;
-	}
-    }
-    /**
-     * Obtain the lock used for reading information about custom
-     * graphics.  This is <EM>not</EM> needed for thread-safe custom graphic
-     * operations, but only needed for use with
-     * thread-compatible methods, such as customGraphicIterator().
-     * For example, to iterate over all custom graphics without fear of
-     * the underlying custom graphics being mutated, you could perform:
-     * <PRE>
-     *    DNodeView dnv = ...;
-     *    CustomGraphic cg = null;
-     *    synchronized (dnv.customGraphicLock()) {
-     *       Iterator<CustomGraphic> cgIt = dnv.customGraphicIterator();
-     *       while (cgIt.hasNext()) {
-     *          cg = cgIt.next();
-     *          // PERFORM your operations here.
-     *       }
-     *   }
-     * </PRE>
-     * NOTE: A better concurrency approach would be to return the read
-     *       lock from a
-     *       java.util.concurrent.locks.ReentrantReadWriteLock.
-     *       However, this requires users to manually lock and unlock
-     *       blocks of code where many times try{} finally{} blocks
-     *       are needed and if any mistake are made, a DNodeView may be
-     *       permanently locked. Since concurrency will most
-     *       likely be very low, we opt for the simpler approach of
-     *       having users use synchronized {} blocks on a standard
-     *       lock object.
-     * @return the lock object used for custom graphics of this DNodeView.
-     */
-    public Object customGraphicLock () {
-	return CG_LOCK;
-    }
-
-    private class ReadOnlyIterator<T> implements Iterator<T> {
-	private Iterator<? extends T> _iterator;
-	public ReadOnlyIterator (Iterable<T> toIterate) {
-	    _iterator = toIterate.iterator();
-	}
-	public boolean hasNext() {return _iterator.hasNext();}
-	public T next() 	 {return _iterator.next();}
-	public void remove() {
-	    throw new UnsupportedOperationException();
-	}
-    };
-
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param position DOCUMENT ME!
+	 * Adds a given CustomGraphic, <EM>in draw order</EM>, to this DNodeView in
+	 * a thread-safe way. Each CustomGraphic will be drawn in the order is was
+	 * added. So, if you care about draw order (as for overlapping graphics),
+	 * make sure you add them in the order you desire. Note that since
+	 * CustomGraphics may be added by multiple plugins, your additions may be
+	 * interleaved with others.
+	 * 
+	 * <P>
+	 * A CustomGraphic can only be associated with a DNodeView once. If you wish
+	 * to have a custom graphic, with the same paint and shape information,
+	 * occur in multiple places in the draw order, simply create a new
+	 * CustomGraphic and add it.
+	 * 
+	 * @since Cytoscape 2.6
+	 * @throws IllegalArgumentException
+	 *             if shape or paint are null.
+	 * @return true if the CustomGraphic was added to this DNodeView. false if
+	 *         this DNodeView already contained this CustomGraphic.
+	 * @see org.cytoscape.graph.render.stateful.CustomGraphic
+	 */
+	public boolean addCustomGraphic(CustomGraphic cg) {
+		boolean retVal = false;
+		// CG_RW_LOCK.writeLock().lock();
+		// if (_customGraphics == null) {
+		// _customGraphics = new LinkedHashSet<CustomGraphic>();
+		// }
+		// retVal = _customGraphics.add (cg);
+		// CG_RW_LOCK.writeLock().unlock();
+		synchronized (CG_LOCK) {
+			if (_customGraphics == null) {
+				_customGraphics = new LinkedHashSet<CustomGraphic>();
+			}
+			retVal = _customGraphics.add(cg);
+		}
+		ensureContentChanged();
+		return retVal;
+	}
+
+	/**
+	 * A thread-safe way to determine if this DNodeView contains a given custom
+	 * graphic.
+	 * 
+	 * @param cg
+	 *            the CustomGraphic for which we are checking containment.
+	 * @since Cytoscape 2.6
+	 */
+	public boolean containsCustomGraphic(CustomGraphic cg) {
+		// CG_RW_LOCK.readLock().lock();
+		// boolean retVal = false;
+		// if (_customGraphics != null) {
+		// retVal = _customGraphics.contains (cg);
+		// }
+		// CG_RW_LOCK.readLock().unlock();
+		// return retVal;
+		synchronized (CG_LOCK) {
+			if (_customGraphics == null) {
+				return false;
+			}
+			return _customGraphics.contains(cg);
+		}
+	}
+
+	/**
+	 * Return a non-null, read-only Iterator over all CustomGraphics contained
+	 * in this DNodeView. The Iterator will return each CustomGraphic in draw
+	 * order. The Iterator cannot be used to modify the underlying set of
+	 * CustomGraphics.
+	 * 
+	 * @return The CustomGraphics Iterator. If no CustomGraphics are associated
+	 *         with this DNOdeView, an empty Iterator is returned.
+	 * @throws UnsupportedOperationException
+	 *             if an attempt is made to use the Iterator's remove() method.
+	 * @since Cytoscape 2.6
+	 */
+	public Iterator<CustomGraphic> customGraphicIterator() {
+		Iterator<CustomGraphic> retVal = null;
+		final Iterable<CustomGraphic> toIterate;
+		// CG_RW_LOCK.readLock().lock();
+		// if (_customGraphics == null) {
+		// toIterate = EMPTY_CUSTOM_GRAPHICS;
+		// } else {
+		// toIterate = _customGraphics;
+		// }
+		// retVal = new LockingIterator<CustomGraphic>(toIterate);
+		// retVal = new Iterator<CustomGraphic>() {
+		// Iterator<? extends CustomGraphic> i = toIterate.iterator();
+		// public boolean hasNext() {return i.hasNext();}
+		// public CustomGraphic next() {return i.next();}
+		// public void remove() {
+		// throw new UnsupportedOperationException();
+		// }
+		// };
+		// CG_RW_LOCK.readLock().unlock();
+		// return retVal;
+		synchronized (CG_LOCK) {
+			if (_customGraphics == null) {
+				toIterate = EMPTY_CUSTOM_GRAPHICS;
+			} else {
+				toIterate = _customGraphics;
+			}
+			return new ReadOnlyIterator<CustomGraphic>(toIterate);
+		}
+	}
+
+	/**
+	 * A thread-safe method for removing a given custom graphic from this
+	 * DNodeView.
+	 * 
+	 * @return true if the custom graphic was found an removed. Returns false if
+	 *         cg is null or is not a custom graphic associated with this
+	 *         DNodeView.
+	 * @since Cytoscape 2.6
+	 */
+	public boolean removeCustomGraphic(CustomGraphic cg) {
+		boolean retVal = false;
+		// CG_RW_LOCK.writeLock().lock();
+		// if (_customGraphics != null) {
+		// retVal = _customGraphics.remove (cg);
+		// }
+		// CG_RW_LOCK.writeLock().unlock();
+		synchronized (CG_LOCK) {
+			if (_customGraphics != null) {
+				retVal = _customGraphics.remove(cg);
+			}
+		}
+		ensureContentChanged();
+		return retVal;
+	}
+
+	/**
+	 * A thread-safe method returning the number of custom graphics associated
+	 * with this DNodeView. If none are associated, zero is returned.
+	 * 
+	 * @since Cytoscape 2.6
+	 */
+	public int getNumCustomGraphics() {
+		// CG_RW_LOCK.readLock().lock();
+		// int retVal = 0;
+		// if (_customGraphics != null) {
+		// retVal = _customGraphics.size();
+		// }
+		// CG_RW_LOCK.readLock().unlock();
+		// return retVal;
+		synchronized (CG_LOCK) {
+			if (_customGraphics == null) {
+				return 0;
+			}
+			return _customGraphics.size();
+		}
+	}
+
+	private void ensureContentChanged() {
+		synchronized (m_view.m_lock) {
+			m_view.m_contentChanged = true;
+		}
+	}
+
+	/**
+	 * Obtain the lock used for reading information about custom graphics. This
+	 * is <EM>not</EM> needed for thread-safe custom graphic operations, but
+	 * only needed for use with thread-compatible methods, such as
+	 * customGraphicIterator(). For example, to iterate over all custom graphics
+	 * without fear of the underlying custom graphics being mutated, you could
+	 * perform:
+	 * 
+	 * <PRE>
+	 *    DNodeView dnv = ...;
+	 *    CustomGraphic cg = null;
+	 *    synchronized (dnv.customGraphicLock()) {
+	 *       Iterator<CustomGraphic> cgIt = dnv.customGraphicIterator();
+	 *       while (cgIt.hasNext()) {
+	 *          cg = cgIt.next();
+	 *          // PERFORM your operations here.
+	 *       }
+	 *   }
+	 * </PRE>
+	 * 
+	 * NOTE: A better concurrency approach would be to return the read lock from
+	 * a java.util.concurrent.locks.ReentrantReadWriteLock. However, this
+	 * requires users to manually lock and unlock blocks of code where many
+	 * times try{} finally{} blocks are needed and if any mistake are made, a
+	 * DNodeView may be permanently locked. Since concurrency will most likely
+	 * be very low, we opt for the simpler approach of having users use
+	 * synchronized {} blocks on a standard lock object.
+	 * 
+	 * @return the lock object used for custom graphics of this DNodeView.
+	 */
+	public Object customGraphicLock() {
+		return CG_LOCK;
+	}
+
+	private class ReadOnlyIterator<T> implements Iterator<T> {
+		private Iterator<? extends T> _iterator;
+
+		public ReadOnlyIterator(Iterable<T> toIterate) {
+			_iterator = toIterate.iterator();
+		}
+
+		public boolean hasNext() {
+			return _iterator.hasNext();
+		}
+
+		public T next() {
+			return _iterator.next();
+		}
+
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	};
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param position
+	 *            DOCUMENT ME!
 	 */
 	public void setTextAnchor(int position) {
 		synchronized (m_view.m_lock) {
@@ -1164,20 +1231,22 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getTextAnchor() {
 		synchronized (m_view.m_lock) {
-			return DNodeDetails.convertND2G(m_view.m_nodeDetails.labelTextAnchor(m_inx, 0));
+			return DNodeDetails.convertND2G(m_view.m_nodeDetails
+					.labelTextAnchor(m_inx, 0));
 		}
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param justify DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param justify
+	 *            DOCUMENT ME!
 	 */
 	public void setJustify(int justify) {
 		synchronized (m_view.m_lock) {
@@ -1187,20 +1256,22 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getJustify() {
 		synchronized (m_view.m_lock) {
-			return DNodeDetails.convertND2G(m_view.m_nodeDetails.labelJustify(m_inx, 0));
+			return DNodeDetails.convertND2G(m_view.m_nodeDetails.labelJustify(
+					m_inx, 0));
 		}
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param x DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param x
+	 *            DOCUMENT ME!
 	 */
 	public void setLabelOffsetX(double x) {
 		synchronized (m_view.m_lock) {
@@ -1210,9 +1281,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public double getLabelOffsetX() {
 		synchronized (m_view.m_lock) {
@@ -1221,9 +1292,10 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param y DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param y
+	 *            DOCUMENT ME!
 	 */
 	public void setLabelOffsetY(double y) {
 		synchronized (m_view.m_lock) {
@@ -1233,9 +1305,9 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public double getLabelOffsetY() {
 		synchronized (m_view.m_lock) {
@@ -1244,9 +1316,10 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param position DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param position
+	 *            DOCUMENT ME!
 	 */
 	public void setNodeLabelAnchor(int position) {
 		synchronized (m_view.m_lock) {
@@ -1256,100 +1329,70 @@ public class DNodeView implements NodeView, Label, ViewChangeListener {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getNodeLabelAnchor() {
 		synchronized (m_view.m_lock) {
-			return DNodeDetails.convertND2G(m_view.m_nodeDetails.labelNodeAnchor(m_inx, 0));
+			return DNodeDetails.convertND2G(m_view.m_nodeDetails
+					.labelNodeAnchor(m_inx, 0));
 		}
 	}
 
-
 	@Override
-	public Object getEventSource() {
-		return m_nodeView;
-	}
-	
-
-	@Override
-	public void visualPropertySet(final VisualProperty<?> vp, final Object value) {
-		if ( value == null )
-			return;
-
-		if ( vp == DVisualLexicon.NODE_SHAPE ) {
-			setShape(((NodeShape)value).getGinyShape());
-		}
-		else if ( vp == DVisualLexicon.NODE_SELECTED_PAINT ) {
-			setSelectedPaint((Paint)value); 
-		}
-		else if ( vp == TwoDVisualLexicon.NODE_SELECTED ) {
-			setSelected(((Boolean)value).booleanValue()); 
-		}
-		else if ( vp == TwoDVisualLexicon.NODE_VISIBLE ) {
-			if ( ((Boolean)value).booleanValue() )
+	public void setVisualPropertyValue(VisualProperty<?> vp, Object value) {
+		
+		if (vp == DVisualLexicon.NODE_SHAPE) {
+			setShape(((NodeShape) value).getGinyShape());
+		} else if (vp == DVisualLexicon.NODE_SELECTED_PAINT) {
+			setSelectedPaint((Paint) value);
+		} else if (vp == TwoDVisualLexicon.NODE_SELECTED) {
+			setSelected(((Boolean) value).booleanValue());
+		} else if (vp == TwoDVisualLexicon.NODE_VISIBLE) {
+			if (((Boolean) value).booleanValue())
 				m_view.showGraphObject(this);
 			else
 				m_view.hideGraphObject(this);
+		} else if (vp == TwoDVisualLexicon.NODE_COLOR) { // unselected paint
+			setUnselectedPaint((Paint) value);
+		} else if (vp == DVisualLexicon.NODE_BORDER_PAINT) {
+			setBorderPaint((Paint) value);
+		} else if (vp == DVisualLexicon.NODE_BORDER_WIDTH) {
+			setBorderWidth(((Double) value).floatValue());
+		} else if (vp == DVisualLexicon.NODE_BORDER_STROKE) {
+			setBorder((Stroke) value);
+		} else if (vp == DVisualLexicon.NODE_TRANSPARENCY) {
+			setTransparency(((Integer) value).floatValue());
+		} else if (vp == TwoDVisualLexicon.NODE_X_SIZE) {
+			setWidth(((Double) value).doubleValue());
+		} else if (vp == TwoDVisualLexicon.NODE_Y_SIZE) {
+			setHeight(((Double) value).doubleValue());
+		} else if (vp == TwoDVisualLexicon.NODE_LABEL) {
+			setText((String) value);
+		} else if (vp == TwoDVisualLexicon.NODE_X_LOCATION) {
+			setXPosition(((Double) value).doubleValue());
+		} else if (vp == TwoDVisualLexicon.NODE_Y_LOCATION) {
+			setYPosition(((Double) value).doubleValue());
+		} else if (vp == DVisualLexicon.NODE_TOOLTIP) {
+			setToolTip((String) value);
+		} else if (vp == TwoDVisualLexicon.NODE_LABEL_COLOR) {
+			setTextPaint((Paint) value);
+		} else if (vp == DVisualLexicon.NODE_LABEL_FONT_FACE) {
+			setFont((Font) value);
+		} else if (vp == DVisualLexicon.NODE_LABEL_FONT_SIZE) {
+			setFont(getFont().deriveFont(((Integer) value).floatValue()));
+		} else if (vp == DVisualLexicon.NODE_LABEL_TEXT_ANCHOR) {
+			setTextAnchor(((Anchor) value).getGinyAnchor());
+		} else if (vp == DVisualLexicon.NODE_LABEL_NODE_ANCHOR) {
+			setNodeLabelAnchor(((Anchor) value).getGinyAnchor());
+		} else if (vp == DVisualLexicon.NODE_LABEL_ANCHOR_X_OFFSET) {
+			setLabelOffsetX(((Double) value).doubleValue());
+		} else if (vp == DVisualLexicon.NODE_LABEL_ANCHOR_Y_OFFSET) {
+			setLabelOffsetY(((Double) value).doubleValue());
+		} else if (vp == DVisualLexicon.NODE_LABEL_JUSTIFY) {
+			setJustify(((Justify) value).getGinyJustify());
 		}
-		else if ( vp == TwoDVisualLexicon.NODE_COLOR ) { // unselected paint
-			setUnselectedPaint((Paint)value); 
-		}
-		else if ( vp == DVisualLexicon.NODE_BORDER_PAINT ) {
-			setBorderPaint((Paint)value);
-		}
-		else if ( vp == DVisualLexicon.NODE_BORDER_WIDTH ) {
-			setBorderWidth(((Double)value).floatValue());
-		}
-		else if ( vp == DVisualLexicon.NODE_BORDER_STROKE ) {
-			setBorder((Stroke)value);
-		}
-		else if ( vp == DVisualLexicon.NODE_TRANSPARENCY ) {
-			setTransparency(((Integer)value).floatValue());
-		}
-		else if ( vp == TwoDVisualLexicon.NODE_X_SIZE ) {
-			setWidth(((Double)value).doubleValue());
-		}
-		else if ( vp == TwoDVisualLexicon.NODE_Y_SIZE ) {
-			setHeight(((Double)value).doubleValue());
-		}
-		else if ( vp == TwoDVisualLexicon.NODE_LABEL ) {
-			setText((String)value);
-		}
-		else if ( vp == TwoDVisualLexicon.NODE_X_LOCATION ) {
-			setXPosition(((Double)value).doubleValue());
-		}
-		else if ( vp == TwoDVisualLexicon.NODE_Y_LOCATION ) {
-			setYPosition(((Double)value).doubleValue());
-		}
-		else if ( vp == DVisualLexicon.NODE_TOOLTIP ) {
-			setToolTip((String)value);
-		}
-		else if ( vp == TwoDVisualLexicon.NODE_LABEL_COLOR ) {
-			setTextPaint((Paint)value);
-		}
-		else if ( vp == DVisualLexicon.NODE_LABEL_FONT_FACE ) {
-			setFont((Font)value);
-		}
-		else if ( vp == DVisualLexicon.NODE_LABEL_FONT_SIZE ) {
-			setFont( getFont().deriveFont(((Integer)value).floatValue()) );
-		}
-		else if ( vp == DVisualLexicon.NODE_LABEL_TEXT_ANCHOR ) {
-			setTextAnchor(((Anchor)value).getGinyAnchor());	
-		}
-		else if ( vp == DVisualLexicon.NODE_LABEL_NODE_ANCHOR ) {
-			setNodeLabelAnchor(((Anchor)value).getGinyAnchor());	
-		}
-		else if ( vp == DVisualLexicon.NODE_LABEL_ANCHOR_X_OFFSET ) {
-			setLabelOffsetX(((Double)value).doubleValue());
-		}
-		else if ( vp == DVisualLexicon.NODE_LABEL_ANCHOR_Y_OFFSET ) {
-			setLabelOffsetY(((Double)value).doubleValue());
-		}
-		else if ( vp == DVisualLexicon.NODE_LABEL_JUSTIFY ) {
-			setJustify(((Justify)value).getGinyJustify());	
-		}
-		
 	}
+
 }

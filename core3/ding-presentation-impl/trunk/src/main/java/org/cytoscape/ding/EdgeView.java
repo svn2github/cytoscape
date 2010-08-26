@@ -283,4 +283,5 @@ public interface EdgeView  extends GraphViewObject {
   public double getLabelOffsetX();
   public double getLabelOffsetY();
   public int getEdgeLabelAnchor();
+  
 }
