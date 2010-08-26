@@ -50,12 +50,17 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.undo.UndoSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The AbstractLayout provides nice starting point for Layouts
  * written for Cytoscape.
  */
 abstract public class AbstractLayout implements CyLayoutAlgorithm {
+	
+	private static final Logger logger = LoggerFactory.getLogger(AbstractLayout.class);
+	
 	// Graph Objects and Views
 	protected Set<View<CyNode>> staticNodes;
 	protected CyNetworkView networkView;
@@ -194,6 +199,9 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * doLayout on specified network view with specified monitor.
 	 */
 	public void doLayout(CyNetworkView nview, TaskMonitor monitor) {
+		final long start = System.currentTimeMillis();
+		logger.debug("Layout Start: " + this.getName());
+		
 		canceled = false;
 
 		networkView = nview;
@@ -241,6 +249,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		this.network = null;
 		this.networkView = null;
 
+		logger.debug("Layout Done: " + (System.currentTimeMillis()-start) + " msec.");
 	}
 
 	/**
