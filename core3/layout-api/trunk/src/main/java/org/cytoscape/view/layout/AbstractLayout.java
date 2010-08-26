@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  */
 abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AbstractLayout.class);
+	protected static final Logger logger = LoggerFactory.getLogger(AbstractLayout.class);
 	
 	// Graph Objects and Views
 	protected Set<View<CyNode>> staticNodes;
