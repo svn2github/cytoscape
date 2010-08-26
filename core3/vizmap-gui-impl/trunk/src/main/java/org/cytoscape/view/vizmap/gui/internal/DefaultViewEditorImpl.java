@@ -542,8 +542,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 			Set<VisualProperty<?>> vps = vpSets.get(key);
 			for (VisualProperty<?> vp : vps) {
 				model.addElement(vp);
-				logger.debug("New Visual Property set to GUI: "
-						+ vp.getDisplayName() + " = " + vp.getDefault());
+//				logger.debug("New Visual Property set to GUI: "
+//						+ vp.getDisplayName() + " = " + vp.getDefault());
 			}
 			list.setCellRenderer(renderer);
 		}
