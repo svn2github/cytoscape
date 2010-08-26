@@ -54,6 +54,8 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 
 	// Human-readable name of VP.
 	final protected String name;
+	
+	protected boolean isIgnoreDefault = false;
 
 	
 	/**
@@ -98,6 +100,10 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	
 	public String getDisplayName() {
 		return name;
+	}
+	
+	public boolean isIgnoreDefault() {
+		return this.isIgnoreDefault;
 	}
 
 }

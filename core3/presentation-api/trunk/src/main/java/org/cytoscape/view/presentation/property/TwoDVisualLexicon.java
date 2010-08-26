@@ -59,9 +59,9 @@ public class TwoDVisualLexicon extends BasicVisualLexicon {
 	public static final VisualProperty<? extends Paint> NODE_LABEL_COLOR = new ColorVisualProperty(
 			NODE, Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color");
 	public static final VisualProperty<Double> NODE_X_LOCATION = new DoubleVisualProperty(
-			NODE, Double.NaN, "NODE_X_LOCATION", "Node X Location");
+			NODE, Double.NaN, "NODE_X_LOCATION", "Node X Location", true);
 	public static final VisualProperty<Double> NODE_Y_LOCATION = new DoubleVisualProperty(
-			NODE, Double.NaN, "NODE_Y_LOCATION", "Node Y Location");
+			NODE, Double.NaN, "NODE_Y_LOCATION", "Node Y Location", true);
 	public static final VisualProperty<Double> NODE_X_SIZE = new DoubleVisualProperty(
 			NODE, 50.0, "NODE_X_SIZE", "Node X size (width)");
 	public static final VisualProperty<Double> NODE_Y_SIZE = new DoubleVisualProperty(

@@ -8,7 +8,7 @@ import org.cytoscape.view.model.VisualProperty;
 public class ThreeDVisualLexicon extends TwoDVisualLexicon {
 
 	public static final VisualProperty<Double> NODE_Z_LOCATION = new DoubleVisualProperty(
-			NODE, 0.0, "NODE_Z_LOCATION", "Node Z Location");
+			NODE, 0.0, "NODE_Z_LOCATION", "Node Z Location", true);
 	
 	public static final VisualProperty<Double> NODE_Z_SIZE = new DoubleVisualProperty(
 			NODE, 0.0, "NODE_Z_SIZE", "Node z size (depth)");

@@ -103,5 +103,13 @@ public interface VisualProperty<T> {
 	 */
 	public T parseSerializableString(final String value);
 	
+	
+	/**
+	 * In some cases, 
+	 * 
+	 * @return
+	 */
+	public boolean isIgnoreDefault();
+	
 		
 }

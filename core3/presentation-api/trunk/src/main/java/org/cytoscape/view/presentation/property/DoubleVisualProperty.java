@@ -40,7 +40,12 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 public class DoubleVisualProperty extends AbstractVisualProperty<Double> { 
 
 	public DoubleVisualProperty(final String ot, final Double def, final String id, final String name) {
+		this(ot,def,id,name, false);
+	}
+	
+	public DoubleVisualProperty(final String ot, final Double def, final String id, final String name, final boolean ignoreDefault) {
 		super(ot,def,id,name);
+		this.isIgnoreDefault = ignoreDefault;
 	}
 	
 	public String toSerializableString(final Double value) {
