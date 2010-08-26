@@ -39,6 +39,10 @@
 		interface="org.cytoscape.model.CyTableManager">
 	</osgi:reference>
 
+	<osgi:reference id="cyEventHelperServiceRef"
+		interface="org.cytoscape.event.CyEventHelper">
+	</osgi:reference>
+
 	<!-- Individual Service -->
 	<osgi:service id="dingPresentationFactoryService" ref="dingPresentationFactory">
 		<osgi:interfaces>

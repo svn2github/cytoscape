@@ -83,7 +83,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.spacial.SpacialEntry2DEnumerator;
 import org.cytoscape.spacial.SpacialIndex2D;
 import org.cytoscape.spacial.SpacialIndex2DFactory;
@@ -372,7 +372,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			Map<EdgeViewTaskFactory, Map> edgeViewTFs,
 			Map<NetworkViewTaskFactory, Map> emptySpaceTFs,
 			TunableInterceptor interceptor, TaskManager manager, 
-			CyServiceRegistrar cyServiceRegistrar, CyTableManager tableMgr) {
+			CyEventHelper eventHelper, CyTableManager tableMgr) {
 		
 		if(view == null)
 			throw new IllegalArgumentException("Network View Model cannot be null.");
@@ -383,9 +383,9 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		cyNetworkView = view;
 		
 		// Register this presentation as a service.  And this should maintain all children.
-		cyServiceRegistrar.registerService(this, NetworkViewChangeMicroListener.class, new Properties());
-		cyServiceRegistrar.registerService(this, NodeViewChangeMicroListener.class, new Properties());
-		cyServiceRegistrar.registerService(this, EdgeViewChangeMicroListener.class, new Properties());
+		eventHelper.addMicroListener(this, NetworkViewChangeMicroListener.class, cyNetworkView);
+		eventHelper.addMicroListener(this, NodeViewChangeMicroListener.class, cyNetworkView);
+		eventHelper.addMicroListener(this, EdgeViewChangeMicroListener.class, cyNetworkView);
 		
 		logger.debug("Phase 2: service registered: time = " + (System.currentTimeMillis()- start));
 		
@@ -2793,11 +2793,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	public Icon createIcon(VisualProperty<?> vp) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public Object getEventSource() {
-		return cyNetworkView;
 	}
 
 	@Override

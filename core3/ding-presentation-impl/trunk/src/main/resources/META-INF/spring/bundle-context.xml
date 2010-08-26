@@ -30,6 +30,7 @@
 		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="cyServiceRegistrarRef" />
 		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 
 	<bean id="dingNavigationPresentationFactory"

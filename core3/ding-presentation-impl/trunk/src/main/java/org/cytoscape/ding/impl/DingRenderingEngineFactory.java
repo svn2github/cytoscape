@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
@@ -53,6 +54,7 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	private TunableInterceptor ti;
 	private TaskManager tm;
 	private final CyTableManager tableMgr;
+	private final CyEventHelper eventHelper;
 
 	
 	public DingRenderingEngineFactory(CyDataTableFactory dataTableFactory, 
@@ -60,7 +62,8 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 								UndoSupport undo, SpacialIndex2DFactory spacialFactory,
 								RootVisualLexicon vpc, VisualLexicon dingLexicon, 
 								TunableInterceptor ti, TaskManager tm,
-								CyServiceRegistrar registrar, CyTableManager tableMgr) {
+								CyServiceRegistrar registrar, CyTableManager tableMgr,
+								CyEventHelper eventHelper) {
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
 		this.spacialFactory = spacialFactory;
@@ -71,6 +74,7 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 		this.tm = tm;
 		this.registrar = registrar;
 		this.tableMgr = tableMgr;
+		this.eventHelper = eventHelper;
 
 		viewMap = new HashMap<CyNetworkView, DGraphView>();
 		nodeViewTFs = new HashMap<NodeViewTaskFactory,Map>();
@@ -96,7 +100,7 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 			
 			logger.debug("Start rendering presentation by Ding: " + targetView.getSUID());
 			dgv = new DGraphView(targetView, dataTableFactory,rootNetworkFactory,undo,spacialFactory,
-					rootLexicon, dingLexicon,nodeViewTFs,edgeViewTFs,emptySpaceTFs,ti,tm, registrar,tableMgr);
+					rootLexicon, dingLexicon,nodeViewTFs,edgeViewTFs,emptySpaceTFs,ti,tm, eventHelper,tableMgr);
 			logger.info("DGraphView created as a presentation for view model: " + targetView.getSUID());
 			viewMap.put(targetView, dgv);
 			
