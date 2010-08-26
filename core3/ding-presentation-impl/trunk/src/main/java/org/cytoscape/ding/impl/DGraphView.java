@@ -2701,7 +2701,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		
 		// Convert to Ding's view object.
 		m_nodeViewMap.get(nodeView.getModel().getIndex()).setVisualPropertyValue(vp, value);
-		logger.debug("Visual Prop appled to node: " + vp.getDisplayName() + " = " + value);
+		//logger.debug("Visual Prop appled to node: " + vp.getDisplayName() + " = " + value);
 	}
 	
 	
@@ -2716,7 +2716,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	
 		// Convert to Ding's view object.
 		m_edgeViewMap.get(edgeView.getModel().getIndex()).setVisualPropertyValue(vp, value);
-		logger.debug("Visual Prop appled to edge: " + vp.getDisplayName() + " = " + value);
+		//logger.debug("Visual Prop appled to edge: " + vp.getDisplayName() + " = " + value);
 	}
 
 	/**
@@ -2751,7 +2751,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			setZoom(((Double) o).doubleValue());
 		}
 		
-		logger.debug("Visual Prop appled to network: " + vp.getDisplayName() + " = " + o);
+		//logger.debug("Visual Prop appled to network: " + vp.getDisplayName() + " = " + o);
 	}
 	
 
