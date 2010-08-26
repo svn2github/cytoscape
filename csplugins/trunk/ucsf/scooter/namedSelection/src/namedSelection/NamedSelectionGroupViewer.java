@@ -36,6 +36,7 @@ package namedSelection;
 import java.util.List;
 
 // giny imports
+import giny.model.GraphObject;
 import giny.view.NodeView;
 
 // Cytoscape imports
@@ -138,7 +139,7 @@ public class NamedSelectionGroupViewer implements CyGroupViewer,
 	 * @param node the CyNode that caused the change
 	 * @param change the change that occured
 	 */
-	public void groupChanged(CyGroup group, CyNode node, ChangeType change) { 
+	public void groupChanged(CyGroup group, GraphObject nodeOrEdge, ChangeType change) { 
 		// At some point, this should be a little more granular.  Do we really
 		// need to rebuild the tree when we have a simple node addition/removal?
 		if (change == ChangeType.NODE_ADDED ||
