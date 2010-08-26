@@ -384,6 +384,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		
 		// Register this presentation as a service.  And this should maintain all children.
 		cyServiceRegistrar.registerService(this, NetworkViewChangeMicroListener.class, new Properties());
+		cyServiceRegistrar.registerService(this, NodeViewChangeMicroListener.class, new Properties());
+		cyServiceRegistrar.registerService(this, EdgeViewChangeMicroListener.class, new Properties());
 		
 		logger.debug("Phase 2: service registered: time = " + (System.currentTimeMillis()- start));
 		
@@ -2699,7 +2701,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		
 		// Convert to Ding's view object.
 		m_nodeViewMap.get(nodeView.getModel().getIndex()).setVisualPropertyValue(vp, value);
-		//logger.debug("Visual Prop appled to node: " + vp.getDisplayName() + " = " + value);
+		logger.debug("Visual Prop appled to node: " + vp.getDisplayName() + " = " + value);
 	}
 	
 	
@@ -2714,7 +2716,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	
 		// Convert to Ding's view object.
 		m_edgeViewMap.get(edgeView.getModel().getIndex()).setVisualPropertyValue(vp, value);
-		//logger.debug("Visual Prop appled to edge: " + vp.getDisplayName() + " = " + value);
+		logger.debug("Visual Prop appled to edge: " + vp.getDisplayName() + " = " + value);
 	}
 
 	/**
