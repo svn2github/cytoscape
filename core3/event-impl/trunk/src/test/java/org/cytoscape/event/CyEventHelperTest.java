@@ -58,9 +58,7 @@ import java.util.List;
 public class CyEventHelperTest extends AbstractCyEventHelperTest {
 
 	private ServiceReference serviceRef;
-	private ServiceReference microRef;
 	private BundleContext bc;
-	private BundleContext bc2;
 
 	/**
 	 *  DOCUMENT ME!
@@ -68,9 +66,6 @@ public class CyEventHelperTest extends AbstractCyEventHelperTest {
 	public void setUp() {
 		service = new StubCyListenerImpl();
 		serviceRef = new MockServiceReference();
-
-		microListener = new StubCyMicroListenerImpl(microEventSource);
-		microRef = new MockServiceReference();
 
 		bc = new MockBundleContext() {
 				public ServiceReference getServiceReference(String clazz) {
@@ -87,23 +82,8 @@ public class CyEventHelperTest extends AbstractCyEventHelperTest {
 				}
 			};
 
-		bc2 = new MockBundleContext() {
-				public ServiceReference getServiceReference(String clazz) {
-						return microRef;
-				}
-
-				public ServiceReference[] getServiceReferences(String clazz, String filter)
-				    throws InvalidSyntaxException {
-						return new ServiceReference[] { microRef };
-				}
-
-				public Object getService(ServiceReference ref) {
-						return microListener;
-				}
-			};
-
 		CyListenerAdapter la = new CyListenerAdapter(bc);
-		CyMicroListenerAdapter ma = new CyMicroListenerAdapter(bc2);
+		CyMicroListenerAdapter ma = new CyMicroListenerAdapter();
 
 		helper = new CyEventHelperImpl(la,ma);
 	}

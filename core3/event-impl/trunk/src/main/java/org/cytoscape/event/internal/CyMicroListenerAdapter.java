@@ -43,35 +43,25 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.event.CyMicroListener;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class CyMicroListenerAdapter {
 
 	private final Map<Object,Map<Class<?>,Object>> proxys;
 	private final Map<Object,Map<Class<?>,Set<Object>>> listeners;
-	private final Map<Class<?>,ServiceTracker> trackers;
-	private final BundleContext bc; 
+	private final Map<Class<?>,Object> noOpProxies;
+	private final static Logger logger = LoggerFactory.getLogger(CyMicroListenerAdapter.class);
 
-	public CyMicroListenerAdapter(final BundleContext bc) {
-		this.bc = bc;
+	public CyMicroListenerAdapter() {
 		proxys = new HashMap<Object,Map<Class<?>,Object>>();
 		listeners = new HashMap<Object,Map<Class<?>,Set<Object>>>();
-		trackers = new HashMap<Class<?>,ServiceTracker>();
+		noOpProxies = new HashMap<Class<?>,Object>();
 	}
 
 	public <L extends CyMicroListener> L getMicroListener(Class<L> listenerClass, Object eventSource) {
-		// make sure we're tracking this listener class
-		if ( !trackers.containsKey( listenerClass ) ) {
-			final ServiceTracker st = new ServiceTracker(bc,listenerClass.getName(),
-			                                             new Customizer(listenerClass));
-			st.open();
-			trackers.put(listenerClass, st);
-		}
-
 		Map<Class<?>,Object> classMap = proxys.get(eventSource);
 		if ( classMap == null )
 			return listenerClass.cast( noOpProxy(listenerClass) );
@@ -85,84 +75,76 @@ public class CyMicroListenerAdapter {
 	}
 
 	private Object noOpProxy( Class c ) {
-		return Proxy.newProxyInstance(c.getClassLoader(), new Class[] { c }, new ListenerHandler());
+		Object noOp = noOpProxies.get( c );
+		if ( noOp == null ) {
+			noOp = Proxy.newProxyInstance(c.getClassLoader(), new Class[] { c }, 
+			                              new ListenerHandler());
+			noOpProxies.put(c,noOp);
+		}
+		return noOp;
 	}
 
-	// This customizer takes newly registered services of the specified class
-	// and binds the services to the set of listeners appropriate for the event 
-	// source specified by the service. 
-	private class Customizer implements ServiceTrackerCustomizer {
-
-		private final Class clazz;
-
-		Customizer(final Class clazz) {
-			this.clazz = clazz;
+	public <L extends CyMicroListener> void addMicroListener(L service, Class<L> clazz, Object source) {
+		if ( service == null ) {
+			logger.warn("attempting to add null listener for microlistener class: " + clazz);
+			return;
 		}
 
-		public Object addingService(ServiceReference reference) {
-			final Object service = bc.getService(reference);
-			if ( service instanceof CyMicroListener ) {
-				final Object source = ((CyMicroListener)service).getEventSource();
+		if ( source == null ) {
+			logger.warn("attempting to add microlistener of type: " + clazz + " to null source");
+			return;
+		}
 
-				// First add the listener service to the set of services
-				// for this object and class.
-				if ( !listeners.containsKey(source) )
-					listeners.put(source, new HashMap<Class<?>,Set<Object>>());
+		// First add the listener service to the set of services
+		// for this object and class.
+		if ( !listeners.containsKey(source) )
+			listeners.put(source, new HashMap<Class<?>,Set<Object>>());
 
-				Map<Class<?>,Set<Object>> listenerMap = listeners.get(source);
-				if ( !listenerMap.containsKey(clazz) )
-					listenerMap.put(clazz,new HashSet<Object>());
+		Map<Class<?>,Set<Object>> listenerMap = listeners.get(source);
+		if ( !listenerMap.containsKey(clazz) )
+			listenerMap.put(clazz,new HashSet<Object>());
 
-				Set<Object> listenerServices = listenerMap.get(clazz);
-				listenerServices.add(service);
+		Set<Object> listenerServices = listenerMap.get(clazz);
+		listenerServices.add(service);
 			
-				// Now create a Proxy object for this object and class.
-				if ( !proxys.containsKey(source) )
-					proxys.put( source, new HashMap<Class<?>,Object>() );
+		// Now create a Proxy object for this object and class.
+		if ( !proxys.containsKey(source) )
+			proxys.put( source, new HashMap<Class<?>,Object>() );
 
-				Map<Class<?>,Object> sourceProxys = proxys.get(source);
-				if ( !sourceProxys.containsKey( clazz ) )
-					sourceProxys.put( clazz,  
-					                  Proxy.newProxyInstance(clazz.getClassLoader(), 
-									                         new Class[] { clazz }, 
-															 new ListenerHandler(listenerServices)));
+		Map<Class<?>,Object> sourceProxys = proxys.get(source);
+		if ( !sourceProxys.containsKey( clazz ) )
+			sourceProxys.put( clazz,  
+			                  Proxy.newProxyInstance(clazz.getClassLoader(), 
+			                                         new Class[] { clazz }, 
+			                                         new ListenerHandler(listenerServices)));
+	}
+
+	public <L extends CyMicroListener> void removeMicroListener(L service, Class<L> clazz, Object source) {
+		// clean up the listeners
+		Map<Class<?>,Set<Object>> sourceListeners = listeners.get(source);
+		if ( sourceListeners != null ) {
+			Set<Object> classListeners = sourceListeners.get(clazz);
+			if ( classListeners != null ) {
+				classListeners.remove(service);
+				if ( classListeners.size() == 0 )
+					sourceListeners.remove( clazz );
 			}
-			return service;
+					
+			// this gets rid of the reference to the source object, which should
+			// help with garbage collection
+			if ( sourceListeners.size() == 0 )
+				listeners.remove(source);
 		}
 
-		public void modifiedService(ServiceReference reference, Object service) { }
+		// clean up the proxys
+		Map<Class<?>,Object> sourceProxys = proxys.get(source);
+		if ( sourceProxys != null ) {
+			sourceProxys.remove(clazz);
 
-		public void removedService(ServiceReference reference, Object service) {
-			if ( service instanceof CyMicroListener ) {
-				final Object source = ((CyMicroListener)service).getEventSource();
-
-				// clean up the listeners
-				Map<Class<?>,Set<Object>> sourceListeners = listeners.get(source);
-				if ( sourceListeners != null ) {
-					Set<Object> classListeners = sourceListeners.get(clazz);
-					if ( classListeners != null ) {
-						classListeners.remove(service);
-						if ( classListeners.size() == 0 )
-							sourceListeners.remove( clazz );
-					}
-					
-					// this gets rid of the reference to the source object, which should
-					// help with garbage collection
-					if ( sourceListeners.size() == 0 )
-						listeners.remove(source);
-				}
-
-				// clean up the proxys
-				Map<Class<?>,Object> sourceProxys = proxys.get(source);
-				if ( sourceProxys != null ) {
-					sourceProxys.remove(clazz);
-
-					// this gets rid of the reference to the source object, which should
-					// help with garbage collection
-					if ( sourceProxys.size() == 0 )
-						proxys.remove(source);
-				}
-			}
+			// this gets rid of the reference to the source object, which should
+			// help with garbage collection
+			if ( sourceProxys.size() == 0 )
+				proxys.remove(source);
 		}
 	}
 

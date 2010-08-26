@@ -61,4 +61,12 @@ public class CyEventHelperImpl implements CyEventHelper {
 	public <M extends CyMicroListener> M getMicroListener(Class<M> c, Object source) {
 		return micro.getMicroListener(c,source);
 	}
+
+	public <M extends CyMicroListener> void addMicroListener(M m, Class<M> c, Object source) {
+		micro.addMicroListener(m,c,source);
+	}
+
+	public <M extends CyMicroListener> void removeMicroListener(M m, Class<M> c, Object source) {
+		micro.removeMicroListener(m,c,source);
+	}
 }
