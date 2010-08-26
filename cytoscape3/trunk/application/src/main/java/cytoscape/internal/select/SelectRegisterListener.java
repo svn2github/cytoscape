@@ -26,10 +26,10 @@ public class SelectRegisterListener implements NetworkViewAddedListener {
 		
 		// FIXME: do not register all nodes.  Instead, register 
 		
-		for ( View<CyNode> nv : view.getNodeViews() )
-			registrar.registerService( new SelectNodeViewUpdater(nv), RowSetMicroListener.class, new Properties() );
-
-		for ( View<CyEdge> ev : view.getEdgeViews() ) 
-			registrar.registerService( new SelectEdgeViewUpdater(ev), RowSetMicroListener.class, new Properties() );
+//		for ( View<CyNode> nv : view.getNodeViews() )
+//			registrar.registerService( new SelectNodeViewUpdater(nv), RowSetMicroListener.class, new Properties() );
+//
+//		for ( View<CyEdge> ev : view.getEdgeViews() ) 
+//			registrar.registerService( new SelectEdgeViewUpdater(ev), RowSetMicroListener.class, new Properties() );
 	}
 }

@@ -61,10 +61,10 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 		edgeViews = new HashMap<CyEdge, View<CyEdge>>();
 
 		for (final CyNode node : network.getNodeList())
-			nodeViews.put(node, new NodeViewImpl(node, cyEventHelper));
+			nodeViews.put(node, new NodeViewImpl(node, cyEventHelper, this));
 
 		for (CyEdge edge : network.getEdgeList())
-			edgeViews.put(edge, new EdgeViewImpl(edge, cyEventHelper));
+			edgeViews.put(edge, new EdgeViewImpl(edge, cyEventHelper, this));
 		
 		logger.info("Network View Model Created.  Model ID = " + this.getModel().getSUID() + ", View Model ID = " + suid + " First phase of network creation process (model creation) is done. \n\n");
 	}
@@ -129,7 +129,7 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 
 		final CyNode node = e.getNode();
 		logger.debug("Creating new node view model: " + node.toString());
-		final View<CyNode> nv = new NodeViewImpl(node, cyEventHelper);
+		final View<CyNode> nv = new NodeViewImpl(node, cyEventHelper, this);
 		nodeViews.put(node, nv);
 		
 		// Cascading event.
@@ -144,7 +144,7 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 
 		final CyEdge edge = e.getEdge();
 		System.out.println(" Adding edge to view! " + edge.toString());
-		final View<CyEdge> ev = new EdgeViewImpl(edge, cyEventHelper);
+		final View<CyEdge> ev = new EdgeViewImpl(edge, cyEventHelper, this);
 		edgeViews.put(edge, ev); // FIXME: View creation here and in
 									// initializer: should be in one place
 

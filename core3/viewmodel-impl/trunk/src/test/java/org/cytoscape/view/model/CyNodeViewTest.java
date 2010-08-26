@@ -26,7 +26,7 @@ public class CyNodeViewTest extends AbstractViewTest<CyNode> {
 		
 		final CyEventHelper mockHelper = new DummyCyEventHelper();
 		
-		view = new NodeViewImpl(node, mockHelper);
+		view = new NodeViewImpl(node, mockHelper, null);
 		
 	}
 	
