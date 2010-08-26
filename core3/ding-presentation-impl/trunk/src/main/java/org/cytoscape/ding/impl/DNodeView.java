@@ -68,7 +68,7 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 /**
- * DOCUMENT ME!
+ * Ding implementation of node presentation.
  * 
  * @author $author$
  */
@@ -82,7 +82,7 @@ public class DNodeView implements NodeView, Label {
 	static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
 	static final Paint DEFAULT_LABEL_PAINT = Color.black;
 	static final float DEFAULT_TRANSPARENCY = 255;
-	DGraphView m_view;
+	
 	final int m_inx; // The FixedGraph index (non-negative).
 	boolean m_selected;
 	Paint m_unselectedPaint;
@@ -121,19 +121,23 @@ public class DNodeView implements NodeView, Label {
 	private final static HashSet<CustomGraphic> EMPTY_CUSTOM_GRAPHICS = new LinkedHashSet<CustomGraphic>(
 			0);
 
-	private final View<CyNode> m_nodeView;
+	// Parent network.
+	DGraphView dGraphView;
+	
+	// View Model for this presentation.
+	private final View<CyNode> nodeViewModel;
 
 	/*
 	 * @param inx the RootGraph index of node (a negative number).
 	 */
 	DNodeView(DGraphView view, int inx, View<CyNode> nv) {
-		m_view = view;
+		dGraphView = view;
 		m_inx = inx;
-		m_nodeView = nv;
+		nodeViewModel = nv;
 		m_selected = false;
-		m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
+		m_unselectedPaint = dGraphView.m_nodeDetails.fillPaint(m_inx);
 		m_selectedPaint = Color.yellow;
-		m_borderPaint = m_view.m_nodeDetails.borderPaint(m_inx);
+		m_borderPaint = dGraphView.m_nodeDetails.borderPaint(m_inx);
 		m_graphicShapes = null;
 		m_graphicPaints = null;
 		transparency = DEFAULT_TRANSPARENCY;
@@ -145,7 +149,7 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public GraphView getGraphView() {
-		return m_view;
+		return dGraphView;
 	}
 
 	/**
@@ -154,13 +158,13 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public CyNode getNode() {
-		synchronized (m_view.m_lock) {
-			return m_view.networkModel.getNode(m_inx);
+		synchronized (dGraphView.m_lock) {
+			return dGraphView.networkModel.getNode(m_inx);
 		}
 	}
 
-	public View<CyNode> getNodeView() {
-		return m_nodeView;
+	public View<CyNode> getNodeViewModel() {
+		return nodeViewModel;
 	}
 
 	/**
@@ -190,8 +194,8 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public List<EdgeView> getEdgeViewsList(NodeView otherNodeView) {
-		synchronized (m_view.m_lock) {
-			return m_view.getEdgeViewsList(getNode(), otherNodeView.getNode());
+		synchronized (dGraphView.m_lock) {
+			return dGraphView.getEdgeViewsList(getNode(), otherNodeView.getNode());
 		}
 	}
 
@@ -201,8 +205,8 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public int getShape() {
-		synchronized (m_view.m_lock) {
-			final int nativeShape = m_view.m_nodeDetails.shape(m_inx);
+		synchronized (dGraphView.m_lock) {
+			final int nativeShape = dGraphView.m_nodeDetails.shape(m_inx);
 
 			return nativeShape;
 		}
@@ -215,20 +219,20 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setSelectedPaint(Paint paint) {
-		synchronized (m_view.m_lock) {
+		synchronized (dGraphView.m_lock) {
 			if (paint == null)
 				throw new NullPointerException("paint is null");
 
 			m_selectedPaint = paint;
 
 			if (isSelected()) {
-				m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
+				dGraphView.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
 
 				if (m_selectedPaint instanceof Color)
-					m_view.m_nodeDetails.overrideColorLowDetail(m_inx,
+					dGraphView.m_nodeDetails.overrideColorLowDetail(m_inx,
 							(Color) m_selectedPaint);
 
-				m_view.m_contentChanged = true;
+				dGraphView.m_contentChanged = true;
 			}
 		}
 	}
@@ -249,21 +253,21 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setUnselectedPaint(Paint paint) {
-		synchronized (m_view.m_lock) {
+		synchronized (dGraphView.m_lock) {
 			if (paint == null)
 				throw new NullPointerException("paint is null");
 
 			m_unselectedPaint = paint;
 
 			if (!isSelected()) {
-				m_view.m_nodeDetails
+				dGraphView.m_nodeDetails
 						.overrideFillPaint(m_inx, m_unselectedPaint);
 
 				if (m_unselectedPaint instanceof Color)
-					m_view.m_nodeDetails.overrideColorLowDetail(m_inx,
+					dGraphView.m_nodeDetails.overrideColorLowDetail(m_inx,
 							(Color) m_unselectedPaint);
 
-				m_view.m_contentChanged = true;
+				dGraphView.m_contentChanged = true;
 			}
 		}
 	}
@@ -284,10 +288,10 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setBorderPaint(Paint paint) {
-		synchronized (m_view.m_lock) {
+		synchronized (dGraphView.m_lock) {
 			m_borderPaint = paint;
 			fixBorder();
-			m_view.m_contentChanged = true;
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -307,9 +311,9 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setBorderWidth(float width) {
-		synchronized (m_view.m_lock) {
-			m_view.m_nodeDetails.overrideBorderWidth(m_inx, width);
-			m_view.m_contentChanged = true;
+		synchronized (dGraphView.m_lock) {
+			dGraphView.m_nodeDetails.overrideBorderWidth(m_inx, width);
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -319,8 +323,8 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public float getBorderWidth() {
-		synchronized (m_view.m_lock) {
-			return m_view.m_nodeDetails.borderWidth(m_inx);
+		synchronized (dGraphView.m_lock) {
+			return dGraphView.m_nodeDetails.borderWidth(m_inx);
 		}
 	}
 
@@ -332,7 +336,7 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public void setBorder(Stroke stroke) {
 		if (stroke instanceof BasicStroke) {
-			synchronized (m_view.m_lock) {
+			synchronized (dGraphView.m_lock) {
 				setBorderWidth(((BasicStroke) stroke).getLineWidth());
 
 				final float[] dashArray = ((BasicStroke) stroke).getDashArray();
@@ -357,13 +361,13 @@ public class DNodeView implements NodeView, Label {
 	// Callers of this method must be holding m_view.m_lock.
 	private void fixBorder() {
 		if ((m_borderDash == 0.0f) && (m_borderDash2 == 0.0f))
-			m_view.m_nodeDetails.overrideBorderPaint(m_inx, m_borderPaint);
+			dGraphView.m_nodeDetails.overrideBorderPaint(m_inx, m_borderPaint);
 		else {
 			final int size = (int) Math.max(1.0f,
 					(int) (m_borderDash + m_borderDash2)); // Average times two.
 
-			if ((size == m_view.m_lastSize)
-					&& (m_borderPaint == m_view.m_lastPaint)) {
+			if ((size == dGraphView.m_lastSize)
+					&& (m_borderPaint == dGraphView.m_lastPaint)) {
 				/* Use the cached texture paint. */} else {
 				final BufferedImage img = new BufferedImage(size, size,
 						BufferedImage.TYPE_INT_ARGB);
@@ -374,14 +378,14 @@ public class DNodeView implements NodeView, Label {
 				g2.setPaint(m_borderPaint);
 				g2.fillRect(0, 0, size / 2, size / 2);
 				g2.fillRect(size / 2, size / 2, size / 2, size / 2);
-				m_view.m_lastTexturePaint = new TexturePaint(img,
+				dGraphView.m_lastTexturePaint = new TexturePaint(img,
 						new Rectangle2D.Double(0, 0, size, size));
-				m_view.m_lastSize = size;
-				m_view.m_lastPaint = m_borderPaint;
+				dGraphView.m_lastSize = size;
+				dGraphView.m_lastPaint = m_borderPaint;
 			}
 
-			m_view.m_nodeDetails.overrideBorderPaint(m_inx,
-					m_view.m_lastTexturePaint);
+			dGraphView.m_nodeDetails.overrideBorderPaint(m_inx,
+					dGraphView.m_lastTexturePaint);
 		}
 	}
 
@@ -391,7 +395,7 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public Stroke getBorder() {
-		synchronized (m_view.m_lock) {
+		synchronized (dGraphView.m_lock) {
 			if ((m_borderDash == 0.0f) && (m_borderDash2 == 0.0f))
 				return new BasicStroke(getBorderWidth());
 			else
@@ -430,11 +434,11 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setWidth(double width) {
-		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
+		synchronized (dGraphView.m_lock) {
+			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0))
 				return false;
 
-			final double xCenter = (((double) m_view.m_extentsBuff[0]) + m_view.m_extentsBuff[2]) / 2.0d;
+			final double xCenter = (((double) dGraphView.m_extentsBuff[0]) + dGraphView.m_extentsBuff[2]) / 2.0d;
 			final double wDiv2 = width / 2.0d;
 			final float xMin = (float) (xCenter - wDiv2);
 			final float xMax = (float) (xCenter + wDiv2);
@@ -442,19 +446,19 @@ public class DNodeView implements NodeView, Label {
 			if (!(xMax > xMin))
 				throw new IllegalArgumentException("width is too small");
 
-			m_view.m_spacial.delete(m_inx);
-			m_view.m_spacial.insert(m_inx, xMin, m_view.m_extentsBuff[1], xMax,
-					m_view.m_extentsBuff[3]);
+			dGraphView.m_spacial.delete(m_inx);
+			dGraphView.m_spacial.insert(m_inx, xMin, dGraphView.m_extentsBuff[1], xMax,
+					dGraphView.m_extentsBuff[3]);
 
 			final double w = ((double) xMax) - xMin;
-			final double h = ((double) m_view.m_extentsBuff[3])
-					- m_view.m_extentsBuff[1];
+			final double h = ((double) dGraphView.m_extentsBuff[3])
+					- dGraphView.m_extentsBuff[1];
 
 			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
 					&& (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
 				setShape(GraphGraphics.SHAPE_RECTANGLE);
 
-			m_view.m_contentChanged = true;
+			dGraphView.m_contentChanged = true;
 
 			return true;
 		}
@@ -466,11 +470,11 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public double getWidth() {
-		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
+		synchronized (dGraphView.m_lock) {
+			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0))
 				return -1.0d;
 
-			return ((double) m_view.m_extentsBuff[2]) - m_view.m_extentsBuff[0];
+			return ((double) dGraphView.m_extentsBuff[2]) - dGraphView.m_extentsBuff[0];
 		}
 	}
 
@@ -483,11 +487,11 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setHeight(double height) {
-		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
+		synchronized (dGraphView.m_lock) {
+			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0))
 				return false;
 
-			final double yCenter = (((double) m_view.m_extentsBuff[1]) + m_view.m_extentsBuff[3]) / 2.0d;
+			final double yCenter = (((double) dGraphView.m_extentsBuff[1]) + dGraphView.m_extentsBuff[3]) / 2.0d;
 			final double hDiv2 = height / 2.0d;
 			final float yMin = (float) (yCenter - hDiv2);
 			final float yMax = (float) (yCenter + hDiv2);
@@ -497,19 +501,19 @@ public class DNodeView implements NodeView, Label {
 						+ yMax + " min:" + yMin + " center:" + yCenter
 						+ " height:" + height);
 
-			m_view.m_spacial.delete(m_inx);
-			m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin,
-					m_view.m_extentsBuff[2], yMax);
+			dGraphView.m_spacial.delete(m_inx);
+			dGraphView.m_spacial.insert(m_inx, dGraphView.m_extentsBuff[0], yMin,
+					dGraphView.m_extentsBuff[2], yMax);
 
-			final double w = ((double) m_view.m_extentsBuff[2])
-					- m_view.m_extentsBuff[0];
+			final double w = ((double) dGraphView.m_extentsBuff[2])
+					- dGraphView.m_extentsBuff[0];
 			final double h = ((double) yMax) - yMin;
 
 			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
 					&& (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
 				setShape(GraphGraphics.SHAPE_RECTANGLE);
 
-			m_view.m_contentChanged = true;
+			dGraphView.m_contentChanged = true;
 
 			return true;
 		}
@@ -521,11 +525,11 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public double getHeight() {
-		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
+		synchronized (dGraphView.m_lock) {
+			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0))
 				return -1.0d;
 
-			return ((double) m_view.m_extentsBuff[3]) - m_view.m_extentsBuff[1];
+			return ((double) dGraphView.m_extentsBuff[3]) - dGraphView.m_extentsBuff[1];
 		}
 	}
 
@@ -545,7 +549,7 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public int getDegree() {
 		// This method is totally ridiculous.
-		return m_view.getNetwork()
+		return dGraphView.getNetwork()
 				.getAdjacentEdgeList(getNode(), CyEdge.Type.ANY).size();
 	}
 
@@ -558,12 +562,12 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setOffset(double x, double y) {
-		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
+		synchronized (dGraphView.m_lock) {
+			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0))
 				return;
 
-			final double wDiv2 = (((double) m_view.m_extentsBuff[2]) - m_view.m_extentsBuff[0]) / 2.0d;
-			final double hDiv2 = (((double) m_view.m_extentsBuff[3]) - m_view.m_extentsBuff[1]) / 2.0d;
+			final double wDiv2 = (((double) dGraphView.m_extentsBuff[2]) - dGraphView.m_extentsBuff[0]) / 2.0d;
+			final double hDiv2 = (((double) dGraphView.m_extentsBuff[3]) - dGraphView.m_extentsBuff[1]) / 2.0d;
 			final float xMin = (float) (x - wDiv2);
 			final float xMax = (float) (x + wDiv2);
 			final float yMin = (float) (y - hDiv2);
@@ -579,9 +583,9 @@ public class DNodeView implements NodeView, Label {
 						"height of node has degenerated to zero after "
 								+ "rounding");
 
-			m_view.m_spacial.delete(m_inx);
-			m_view.m_spacial.insert(m_inx, xMin, yMin, xMax, yMax);
-			m_view.m_contentChanged = true;
+			dGraphView.m_spacial.delete(m_inx);
+			dGraphView.m_spacial.insert(m_inx, xMin, yMin, xMax, yMax);
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -591,12 +595,12 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public Point2D getOffset() {
-		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
+		synchronized (dGraphView.m_lock) {
+			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0))
 				return null;
 
-			final double xCenter = (((double) m_view.m_extentsBuff[0]) + m_view.m_extentsBuff[2]) / 2.0d;
-			final double yCenter = (((double) m_view.m_extentsBuff[1]) + m_view.m_extentsBuff[3]) / 2.0d;
+			final double xCenter = (((double) dGraphView.m_extentsBuff[0]) + dGraphView.m_extentsBuff[2]) / 2.0d;
+			final double yCenter = (((double) dGraphView.m_extentsBuff[1]) + dGraphView.m_extentsBuff[3]) / 2.0d;
 
 			return new Point2D.Double(xCenter, yCenter);
 		}
@@ -609,12 +613,12 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setXPosition(double xPos) {
-		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)
+		synchronized (dGraphView.m_lock) {
+			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0)
 					|| Double.isNaN(xPos))
 				return;
 
-			final double wDiv2 = (((double) m_view.m_extentsBuff[2]) - m_view.m_extentsBuff[0]) / 2.0d;
+			final double wDiv2 = (((double) dGraphView.m_extentsBuff[2]) - dGraphView.m_extentsBuff[0]) / 2.0d;
 			final float xMin = (float) (xPos - wDiv2);
 			final float xMax = (float) (xPos + wDiv2);
 
@@ -623,10 +627,10 @@ public class DNodeView implements NodeView, Label {
 						"width of node has degenerated to zero after "
 								+ "rounding");
 
-			m_view.m_spacial.delete(m_inx);
-			m_view.m_spacial.insert(m_inx, xMin, m_view.m_extentsBuff[1], xMax,
-					m_view.m_extentsBuff[3]);
-			m_view.m_contentChanged = true;
+			dGraphView.m_spacial.delete(m_inx);
+			dGraphView.m_spacial.insert(m_inx, xMin, dGraphView.m_extentsBuff[1], xMax,
+					dGraphView.m_extentsBuff[3]);
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -648,11 +652,11 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public double getXPosition() {
-		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
+		synchronized (dGraphView.m_lock) {
+			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0))
 				return Double.NaN;
 
-			return (((double) m_view.m_extentsBuff[0]) + m_view.m_extentsBuff[2]) / 2.0d;
+			return (((double) dGraphView.m_extentsBuff[0]) + dGraphView.m_extentsBuff[2]) / 2.0d;
 		}
 	}
 
@@ -663,12 +667,12 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setYPosition(double yPos) {
-		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0)
+		synchronized (dGraphView.m_lock) {
+			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0)
 					|| Double.isNaN(yPos))
 				return;
 
-			final double hDiv2 = (((double) m_view.m_extentsBuff[3]) - m_view.m_extentsBuff[1]) / 2.0d;
+			final double hDiv2 = (((double) dGraphView.m_extentsBuff[3]) - dGraphView.m_extentsBuff[1]) / 2.0d;
 			final float yMin = (float) (yPos - hDiv2);
 			final float yMax = (float) (yPos + hDiv2);
 
@@ -677,10 +681,10 @@ public class DNodeView implements NodeView, Label {
 						"height of node has degenerated to zero after "
 								+ "rounding");
 
-			m_view.m_spacial.delete(m_inx);
-			m_view.m_spacial.insert(m_inx, m_view.m_extentsBuff[0], yMin,
-					m_view.m_extentsBuff[2], yMax);
-			m_view.m_contentChanged = true;
+			dGraphView.m_spacial.delete(m_inx);
+			dGraphView.m_spacial.insert(m_inx, dGraphView.m_extentsBuff[0], yMin,
+					dGraphView.m_extentsBuff[2], yMax);
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -702,11 +706,11 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public double getYPosition() {
-		synchronized (m_view.m_lock) {
-			if (!m_view.m_spacial.exists(m_inx, m_view.m_extentsBuff, 0))
+		synchronized (dGraphView.m_lock) {
+			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0))
 				return Double.NaN;
 
-			return (((double) m_view.m_extentsBuff[1]) + m_view.m_extentsBuff[3]) / 2.0d;
+			return (((double) dGraphView.m_extentsBuff[1]) + dGraphView.m_extentsBuff[3]) / 2.0d;
 		}
 	}
 
@@ -725,19 +729,19 @@ public class DNodeView implements NodeView, Label {
 	public void select() {
 		final boolean somethingChanged;
 
-		synchronized (m_view.m_lock) {
+		synchronized (dGraphView.m_lock) {
 			somethingChanged = selectInternal();
 
 			if (somethingChanged)
-				m_view.m_contentChanged = true;
+				dGraphView.m_contentChanged = true;
 		}
 
 		if (somethingChanged) {
-			final GraphViewChangeListener listener = m_view.m_lis[0];
+			final GraphViewChangeListener listener = dGraphView.m_lis[0];
 
 			if (listener != null)
 				listener.graphViewChanged(new GraphViewNodesSelectedEvent(
-						m_view, DGraphView.makeList(getNode())));
+						dGraphView, DGraphView.makeList(getNode())));
 		}
 	}
 
@@ -747,13 +751,13 @@ public class DNodeView implements NodeView, Label {
 			return false;
 
 		m_selected = true;
-		m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
+		dGraphView.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
 
 		if (m_selectedPaint instanceof Color)
-			m_view.m_nodeDetails.overrideColorLowDetail(m_inx,
+			dGraphView.m_nodeDetails.overrideColorLowDetail(m_inx,
 					(Color) m_selectedPaint);
 
-		m_view.m_selectedNodes.insert(m_inx);
+		dGraphView.m_selectedNodes.insert(m_inx);
 
 		return true;
 	}
@@ -764,19 +768,19 @@ public class DNodeView implements NodeView, Label {
 	public void unselect() {
 		final boolean somethingChanged;
 
-		synchronized (m_view.m_lock) {
+		synchronized (dGraphView.m_lock) {
 			somethingChanged = unselectInternal();
 
 			if (somethingChanged)
-				m_view.m_contentChanged = true;
+				dGraphView.m_contentChanged = true;
 		}
 
 		if (somethingChanged) {
-			final GraphViewChangeListener listener = m_view.m_lis[0];
+			final GraphViewChangeListener listener = dGraphView.m_lis[0];
 
 			if (listener != null)
 				listener.graphViewChanged(new GraphViewNodesUnselectedEvent(
-						m_view, DGraphView.makeList(getNode())));
+						dGraphView, DGraphView.makeList(getNode())));
 		}
 	}
 
@@ -786,13 +790,13 @@ public class DNodeView implements NodeView, Label {
 			return false;
 
 		m_selected = false;
-		m_view.m_nodeDetails.overrideFillPaint(m_inx, m_unselectedPaint);
+		dGraphView.m_nodeDetails.overrideFillPaint(m_inx, m_unselectedPaint);
 
 		if (m_unselectedPaint instanceof Color)
-			m_view.m_nodeDetails.overrideColorLowDetail(m_inx,
+			dGraphView.m_nodeDetails.overrideColorLowDetail(m_inx,
 					(Color) m_unselectedPaint);
 
-		m_view.m_selectedNodes.delete(m_inx);
+		dGraphView.m_selectedNodes.delete(m_inx);
 
 		return true;
 	}
@@ -830,7 +834,7 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setShape(final int inshape) {
-		synchronized (m_view.m_lock) {
+		synchronized (dGraphView.m_lock) {
 
 			int shape = inshape;
 
@@ -846,8 +850,8 @@ public class DNodeView implements NodeView, Label {
 					shape = GraphGraphics.SHAPE_ROUNDED_RECTANGLE;
 			}
 
-			m_view.m_nodeDetails.overrideShape(m_inx, shape);
-			m_view.m_contentChanged = true;
+			dGraphView.m_nodeDetails.overrideShape(m_inx, shape);
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -887,8 +891,8 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getTextPaint() {
-		synchronized (m_view.m_lock) {
-			return m_view.m_nodeDetails.labelPaint(m_inx, 0);
+		synchronized (dGraphView.m_lock) {
+			return dGraphView.m_nodeDetails.labelPaint(m_inx, 0);
 		}
 	}
 
@@ -899,9 +903,9 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setTextPaint(Paint textPaint) {
-		synchronized (m_view.m_lock) {
-			m_view.m_nodeDetails.overrideLabelPaint(m_inx, 0, textPaint);
-			m_view.m_contentChanged = true;
+		synchronized (dGraphView.m_lock) {
+			dGraphView.m_nodeDetails.overrideLabelPaint(m_inx, 0, textPaint);
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -929,8 +933,8 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public String getText() {
-		synchronized (m_view.m_lock) {
-			return m_view.m_nodeDetails.labelText(m_inx, 0);
+		synchronized (dGraphView.m_lock) {
+			return dGraphView.m_nodeDetails.labelText(m_inx, 0);
 		}
 	}
 
@@ -941,16 +945,16 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setText(String text) {
-		synchronized (m_view.m_lock) {
-			m_view.m_nodeDetails.overrideLabelText(m_inx, 0, text);
+		synchronized (dGraphView.m_lock) {
+			dGraphView.m_nodeDetails.overrideLabelText(m_inx, 0, text);
 
-			if (DEFAULT_LABEL_TEXT.equals(m_view.m_nodeDetails.labelText(m_inx,
+			if (DEFAULT_LABEL_TEXT.equals(dGraphView.m_nodeDetails.labelText(m_inx,
 					0)))
-				m_view.m_nodeDetails.overrideLabelCount(m_inx, 0);
+				dGraphView.m_nodeDetails.overrideLabelCount(m_inx, 0);
 			else
-				m_view.m_nodeDetails.overrideLabelCount(m_inx, 1);
+				dGraphView.m_nodeDetails.overrideLabelCount(m_inx, 1);
 
-			m_view.m_contentChanged = true;
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -960,8 +964,8 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public Font getFont() {
-		synchronized (m_view.m_lock) {
-			return m_view.m_nodeDetails.labelFont(m_inx, 0);
+		synchronized (dGraphView.m_lock) {
+			return dGraphView.m_nodeDetails.labelFont(m_inx, 0);
 		}
 	}
 
@@ -972,9 +976,9 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setFont(Font font) {
-		synchronized (m_view.m_lock) {
-			m_view.m_nodeDetails.overrideLabelFont(m_inx, 0, font);
-			m_view.m_contentChanged = true;
+		synchronized (dGraphView.m_lock) {
+			dGraphView.m_nodeDetails.overrideLabelFont(m_inx, 0, font);
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -1158,8 +1162,8 @@ public class DNodeView implements NodeView, Label {
 	}
 
 	private void ensureContentChanged() {
-		synchronized (m_view.m_lock) {
-			m_view.m_contentChanged = true;
+		synchronized (dGraphView.m_lock) {
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -1224,9 +1228,9 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setTextAnchor(int position) {
-		synchronized (m_view.m_lock) {
-			m_view.m_nodeDetails.overrideLabelTextAnchor(m_inx, 0, position);
-			m_view.m_contentChanged = true;
+		synchronized (dGraphView.m_lock) {
+			dGraphView.m_nodeDetails.overrideLabelTextAnchor(m_inx, 0, position);
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -1236,8 +1240,8 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public int getTextAnchor() {
-		synchronized (m_view.m_lock) {
-			return DNodeDetails.convertND2G(m_view.m_nodeDetails
+		synchronized (dGraphView.m_lock) {
+			return DNodeDetails.convertND2G(dGraphView.m_nodeDetails
 					.labelTextAnchor(m_inx, 0));
 		}
 	}
@@ -1249,9 +1253,9 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setJustify(int justify) {
-		synchronized (m_view.m_lock) {
-			m_view.m_nodeDetails.overrideLabelJustify(m_inx, 0, justify);
-			m_view.m_contentChanged = true;
+		synchronized (dGraphView.m_lock) {
+			dGraphView.m_nodeDetails.overrideLabelJustify(m_inx, 0, justify);
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -1261,8 +1265,8 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public int getJustify() {
-		synchronized (m_view.m_lock) {
-			return DNodeDetails.convertND2G(m_view.m_nodeDetails.labelJustify(
+		synchronized (dGraphView.m_lock) {
+			return DNodeDetails.convertND2G(dGraphView.m_nodeDetails.labelJustify(
 					m_inx, 0));
 		}
 	}
@@ -1274,9 +1278,9 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setLabelOffsetX(double x) {
-		synchronized (m_view.m_lock) {
-			m_view.m_nodeDetails.overrideLabelOffsetVectorX(m_inx, 0, x);
-			m_view.m_contentChanged = true;
+		synchronized (dGraphView.m_lock) {
+			dGraphView.m_nodeDetails.overrideLabelOffsetVectorX(m_inx, 0, x);
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -1286,8 +1290,8 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public double getLabelOffsetX() {
-		synchronized (m_view.m_lock) {
-			return m_view.m_nodeDetails.labelOffsetVectorX(m_inx, 0);
+		synchronized (dGraphView.m_lock) {
+			return dGraphView.m_nodeDetails.labelOffsetVectorX(m_inx, 0);
 		}
 	}
 
@@ -1298,9 +1302,9 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setLabelOffsetY(double y) {
-		synchronized (m_view.m_lock) {
-			m_view.m_nodeDetails.overrideLabelOffsetVectorY(m_inx, 0, y);
-			m_view.m_contentChanged = true;
+		synchronized (dGraphView.m_lock) {
+			dGraphView.m_nodeDetails.overrideLabelOffsetVectorY(m_inx, 0, y);
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -1310,8 +1314,8 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public double getLabelOffsetY() {
-		synchronized (m_view.m_lock) {
-			return m_view.m_nodeDetails.labelOffsetVectorY(m_inx, 0);
+		synchronized (dGraphView.m_lock) {
+			return dGraphView.m_nodeDetails.labelOffsetVectorY(m_inx, 0);
 		}
 	}
 
@@ -1322,9 +1326,9 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setNodeLabelAnchor(int position) {
-		synchronized (m_view.m_lock) {
-			m_view.m_nodeDetails.overrideLabelNodeAnchor(m_inx, 0, position);
-			m_view.m_contentChanged = true;
+		synchronized (dGraphView.m_lock) {
+			dGraphView.m_nodeDetails.overrideLabelNodeAnchor(m_inx, 0, position);
+			dGraphView.m_contentChanged = true;
 		}
 	}
 
@@ -1334,8 +1338,8 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public int getNodeLabelAnchor() {
-		synchronized (m_view.m_lock) {
-			return DNodeDetails.convertND2G(m_view.m_nodeDetails
+		synchronized (dGraphView.m_lock) {
+			return DNodeDetails.convertND2G(dGraphView.m_nodeDetails
 					.labelNodeAnchor(m_inx, 0));
 		}
 	}
@@ -1351,9 +1355,9 @@ public class DNodeView implements NodeView, Label {
 			setSelected(((Boolean) value).booleanValue());
 		} else if (vp == TwoDVisualLexicon.NODE_VISIBLE) {
 			if (((Boolean) value).booleanValue())
-				m_view.showGraphObject(this);
+				dGraphView.showGraphObject(this);
 			else
-				m_view.hideGraphObject(this);
+				dGraphView.hideGraphObject(this);
 		} else if (vp == TwoDVisualLexicon.NODE_COLOR) { // unselected paint
 			setUnselectedPaint((Paint) value);
 		} else if (vp == DVisualLexicon.NODE_BORDER_PAINT) {

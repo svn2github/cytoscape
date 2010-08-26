@@ -111,7 +111,7 @@ class PopupMenuHelper {
 	void createNodeViewMenu(NodeView nview, int x, int y , String action) {
 		if (nview != null ) {
 			Collection<NodeViewTaskFactory> usableTFs = getPreferredActions(m_view.nodeViewTFs,action);
-			View<CyNode> nv = nview.getNodeView();
+			View<CyNode> nv = nview.getNodeViewModel();
 
 			// build a menu of actions if more than factory exists
 			if ( usableTFs.size() > 1) {

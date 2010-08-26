@@ -915,7 +915,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			m_spacial.delete(nodeInx);
 
 			// m_selectedNodes.delete(nodeInx);
-			returnThis.m_view = null;
+			returnThis.dGraphView = null;
 			m_contentChanged = true;
 		}
 
@@ -1056,7 +1056,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			m_viewportChanged = true;
 		}
 
-		updateView();
+		//updateView();
 	}
 
 	/**
@@ -1887,7 +1887,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			m_viewportChanged = true;
 		}
 
-		updateView();
+		//updateView();
 	}
 
 	/**

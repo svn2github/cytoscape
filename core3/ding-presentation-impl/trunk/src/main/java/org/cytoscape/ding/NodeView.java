@@ -16,8 +16,8 @@ public interface NodeView  extends GraphViewObject {
   /**
    * @return The Node we are a view on
    */
-  public CyNode getNode () ;
-  public View<CyNode> getNodeView () ;
+  public CyNode getNode() ;
+  public View<CyNode> getNodeViewModel() ;
 
   /**
    * @return the index of this node in the perspective to which we are in a view on.
