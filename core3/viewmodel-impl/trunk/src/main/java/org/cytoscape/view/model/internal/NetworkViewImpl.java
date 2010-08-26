@@ -165,8 +165,8 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 	}
 	
 	public void updateView() {
-		//logger.debug("Firing update view event from: View ID = " + this.suid);
-		//cyEventHelper.fireAsynchronousEvent( new NetworkViewChangedEvent(NetworkViewImpl.this));
+		logger.debug("Firing update view event from: View ID = " + this.suid);
+		cyEventHelper.fireAsynchronousEvent( new NetworkViewChangedEvent(NetworkViewImpl.this));
 	}
 
 
