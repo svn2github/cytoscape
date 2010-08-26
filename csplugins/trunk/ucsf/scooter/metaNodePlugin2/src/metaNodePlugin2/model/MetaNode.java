@@ -122,6 +122,14 @@ public class MetaNode {
 		// on a more granular basis isn't warranted.
 		updateMetaEdges();
 
+		// Now, if this node is a child of a different metaNode, we need to create
+		// metaEdges for that metaNode and this node.
+		// for each group node is in:
+		// 	if !ourGroup:
+		// 		add "membership" metaNode between node and group
+		// XXX
+		updateMembershipEdges(node);
+
 		// If we're collapsed, we need to recollapse to update
 		// our attributes
 		if (isCollapsed())
@@ -172,7 +180,7 @@ public class MetaNode {
 		// Get our node attributes
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
-		List<CyNode> hiddenNodes = new ArrayList<CyNode>();
+		hiddenNodes = new ArrayList<CyNode>();
 
 		// Hide all of our member nodes.
 		Dimension position = ViewUtils.hideNodes(metaGroup, view, nodeAttributes, hiddenNodes);
@@ -231,15 +239,15 @@ public class MetaNode {
 	 * 2) Our partner node is hidden: Create a meta-edge to the parent
 	 *	  of the partner and store it in both our list and our partners
 	 *
-	 * @param edge the edge to use as a start
+	 * @param edgeName the name of the edge to use as a start
 	 * @param source the source node (pretty much always our group node)
 	 * @param target the target node
 	 * @return the created metaEdge
 	 */
-	public CyEdge createMetaEdge(CyEdge edge, CyNode source, CyNode target) {
+	public CyEdge createMetaEdge(String edgeName, CyNode source, CyNode target) {
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-		String identifier = "meta-"+edge.getIdentifier();
-		String interaction = edgeAttributes.getStringAttribute(edge.getIdentifier(), Semantics.INTERACTION);
+		String identifier = "meta-"+edgeName;
+		String interaction = edgeAttributes.getStringAttribute(edgeName, Semantics.INTERACTION);
 		CyEdge newEdge = Cytoscape.getCyEdge(source.getIdentifier(),identifier,
 		                                     target.getIdentifier(),"meta-"+interaction);
 		metaEdges.put(newEdge,newEdge);
@@ -387,7 +395,7 @@ public class MetaNode {
 			CyNode node = getPartner(edge);
 
 			// Create the meta-edge to the external node
-			CyEdge metaEdge = createMetaEdge(edge, metaGroup.getGroupNode(), node);
+			CyEdge metaEdge = createMetaEdge(edge.getIdentifier(), metaGroup.getGroupNode(), node);
 
 			// Special case for the situation where our partner is a group.  In this
 			// case, some of our outer edges might be missing because they were hidden
@@ -441,7 +449,8 @@ public class MetaNode {
 			  MetaNode partner = MetaNodeManager.getMetaNode(partnerGroup.getGroupNode());
 				if (partner != null) {
 					// Create a meta-meta edge
-					CyEdge metaMetaEdge = createMetaEdge(connectingEdge, metaGroup.getGroupNode(), partnerGroup.getGroupNode());
+					CyEdge metaMetaEdge = createMetaEdge(connectingEdge.getIdentifier(), metaGroup.getGroupNode(), 
+					                                     partnerGroup.getGroupNode());
 					partner.addMetaEdge(metaMetaEdge);
 					// Add our meta-edge to the partner group
 					partner.addMetaEdge(metaEdge);
@@ -469,6 +478,27 @@ public class MetaNode {
 					iterator.previous();
 				}
 			}
+		}
+	}
+
+	private void updateMembershipEdges(CyNode node) {
+		// for each group node is in:
+		// 	if !ourGroup:
+		// 		add "membership" metaNode between node and group
+		List<CyGroup> groupList = node.getGroups();
+		if (groupList == null || groupList.size() == 0)
+			return;
+
+		for (CyGroup group: groupList) {
+			if (group.equals(metaGroup)) continue;
+
+			MetaNode nodeParent = MetaNodeManager.getMetaNode(group);	
+			if (nodeParent == null) continue;
+
+			CyGroup parentGroup = nodeParent.getCyGroup();
+
+			CyEdge metaMetaEdge = createMetaEdge("membership", parentGroup.getGroupNode(), node);
+
 		}
 	}
 

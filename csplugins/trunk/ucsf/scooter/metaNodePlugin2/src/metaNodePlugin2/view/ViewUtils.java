@@ -109,7 +109,7 @@ public class ViewUtils {
 
 		// Create the nested network view, if desired
 		if (nestedNetworks) {
-			System.out.println("Creating nested network");
+			// System.out.println("Creating nested network");
 			NestedNetworkView.create(group, view, opacity);
 		} else {
 			// Set the opacity, if desired
@@ -135,7 +135,8 @@ public class ViewUtils {
 		// This is a two-pass algorithm, unfortunately.  First, we need to find
 		// the center point for the group of nodes, then we can hide them and
 		// update their offsets
-		Dimension center = new Dimension();
+		double xSum = 0;
+		double ySum = 0;
 		for (CyNode node: nodeList) {
 			// If one of these nodes is a MetaNode, and it's not collapsed, collapse it first
 			MetaNode mn = MetaNodeManager.getMetaNode(node);
@@ -144,12 +145,18 @@ public class ViewUtils {
 			}
 			Dimension pos = getPosition(node, view);
 			if (pos == null) {
+				// System.out.println("Adding node "+node+" to hidden nodes");
+				nNodes--;
 				hiddenNodes.add(node);
 				continue; // Hidden (possibly by another metanode)
 			}
 
-			updateCenter(center, pos, nNodes);
+			xSum += pos.getWidth();
+			ySum += pos.getHeight();
 		}
+
+		Dimension center = new Dimension();
+		center.setSize(xSum/nNodes,ySum/nNodes);
 
 		for (CyNode node: nodeList) {
 			// Get the position
@@ -191,8 +198,10 @@ public class ViewUtils {
 		double minY = Double.MAX_VALUE;
 		double maxY = Double.MIN_VALUE;
 		for (CyNode node: metaGroup.getNodes()) {
-			if (hiddenNodes != null && hiddenNodes.contains(node))
+			if (hiddenNodes != null && hiddenNodes.contains(node)) {
+				// System.out.println("Skipping node: "+node);
 				continue;
+			}
 			Dimension offset = getAttributes(node, nodeAttributes);
 			minX = Math.min(minX, offset.getWidth());
 			maxX = Math.max(maxX, offset.getWidth());
@@ -288,19 +297,6 @@ public class ViewUtils {
 		nView.setXPosition(position.getWidth());
 		nView.setYPosition(position.getHeight());
 		Cytoscape.getVisualMappingManager().vizmapNode(nView, view);
-	}
-
-	/**
- 	 * Update the geometric center of a group of nodes
- 	 *
- 	 * @param center the current center
- 	 * @param value the value of a node
- 	 * @param nNodes the number of nodes
- 	 */
-	private static void updateCenter(Dimension center, Dimension value, int nNodes) {
-		double x = center.getWidth() + value.getWidth()/(double)nNodes;
-		double y = center.getHeight() + value.getHeight()/(double)nNodes;
-		center.setSize(x,y);
 	}
 
 	/**
