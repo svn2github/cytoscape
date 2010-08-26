@@ -182,6 +182,7 @@ public class VisualStyleImpl implements VisualStyle {
 		          rootLexicon.getVisualProperties(nodeviews, NODE));
 		applyImpl(view, edgeviews,
 		          rootLexicon.getVisualProperties(edgeviews, EDGE));
+		
 		applyImpl(view, Arrays.asList((View<CyNetwork>) view),
 		          rootLexicon.getVisualProperties(NETWORK));
 	}
@@ -222,9 +223,8 @@ public class VisualStyleImpl implements VisualStyle {
 			mapping.apply(views);
 		} else {
 			// reset all rows to allow usage of default value:
-			logger.debug("Visual Style Apply default: " + defaultValue);
-			for(View<G> v: views)
-				v.setVisualProperty(vp, defaultValue);
+			for(View<G> viewModel: views)
+				viewModel.setVisualProperty(vp, defaultValue);
 		}
 	}
 
