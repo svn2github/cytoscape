@@ -30,9 +30,8 @@
 package org.cytoscape.view.layout.internal.algorithms;
 
 
-import java.util.List;
+import java.io.IOException;
 
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.layout.AbstractLayout;
 import org.cytoscape.view.layout.CyLayouts;
@@ -49,6 +48,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * the default layout for Cytoscape data readers.
  */
 public class GridNodeLayout extends AbstractLayout implements TunableValidator {
+	
 	@Tunable(description="Vertical spacing between nodes")
 	public double nodeVerticalSpacing = 40.0;
 
@@ -66,10 +66,13 @@ public class GridNodeLayout extends AbstractLayout implements TunableValidator {
 	public boolean tunablesAreValid(final Appendable errMsg) {
 		if (nodeVerticalSpacing != 30.0 )
 			return true;
-
-		try {
-			errMsg.append("This is a test : I don't want 30.0 for nodeVerticalSpacing value\nProvide something else!!!!");
-		} finally {
+		else {
+			try {
+				errMsg.append("This is a test : I don't want 30.0 for nodeVerticalSpacing value\nProvide something else!!!!");
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
 			return false;
 		}
 	}
@@ -102,27 +105,20 @@ public class GridNodeLayout extends AbstractLayout implements TunableValidator {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Perform actual layout task.
+	 *  This creates the default square layout.
+	 *  
 	 */
 	public void construct() {
-		// This creates the default square layout.
+
 		double currX = 0.0d;
 		double currY = 0.0d;
 		double initialX = 0.0d;
 		double initialY = 0.0d;
 		int columns;
 
-		// TODO figure out where these come from!
-		VisualProperty<Double> xLoc = TwoDVisualLexicon.NODE_X_LOCATION;
-		VisualProperty<Double> yLoc = TwoDVisualLexicon.NODE_Y_LOCATION;
-
-		// needed for approach 2 and 3
-		//ViewColumn<Double> xColumn = networkView.getColumn(xLoc);
-		//ViewColumn<Double> yColumn = networkView.getColumn(yLoc);
-
-		// needed for approach 3
-		//Map<View<CyNode>,Double> xMap = new HashMap<View<CyNode>,Double>();
-		//Map<View<CyNode>,Double> yMap = new HashMap<View<CyNode>,Double>();
+		final VisualProperty<Double> xLoc = TwoDVisualLexicon.NODE_X_LOCATION;
+		final VisualProperty<Double> yLoc = TwoDVisualLexicon.NODE_Y_LOCATION;
 
 		// Selected only?
 		if (selectedOnly) {
@@ -151,33 +147,22 @@ public class GridNodeLayout extends AbstractLayout implements TunableValidator {
 		}
 
 		int count = 0;
-
-		List<CyEdge> edgeList;
-		for ( View<CyNode> nView : networkView.getNodeViews() ) {
-			edgeList = network.getAdjacentEdgeList(nView.getModel(),CyEdge.Type.ANY);
-// TODO
+		
+		// Set visual property.
+		for (final View<CyNode> nView : networkView.getNodeViews() ) {
+			// FIXME
+//			edgeList = network.getAdjacentEdgeList(nView.getModel(),CyEdge.Type.ANY);
 //			for (CyEdge edge: edgeList) {
 //				networkView.getCyEdgeView(edge).clearBends();
 //			}
 
-			if (isLocked(nView)) {
+			if (isLocked(nView))
 				continue;
-			}
 
-			//nView.setOffset(currX, currY);
-
-			// approach 1
+			// approach 1			
 			nView.setVisualProperty(xLoc,currX);
 			nView.setVisualProperty(yLoc,currY);
-
-			// approach 2
-			//xColumn.setValue(nView,currX);
-			//yColumn.setValue(nView,currY);
-
-			// approach 3
-			//xMap.put(nView,currX);
-			//yMap.put(nView,currY);
-
+						
 			count++;
 
 			if (count == columns) {
@@ -188,10 +173,6 @@ public class GridNodeLayout extends AbstractLayout implements TunableValidator {
 				currX += nodeHorizontalSpacing;
 			}
 		}
-
-		// approach 3 cont.
-		//xColumn.setValues(xMap,null);
-		//yColumn.setValues(yMap,null);
 	}
 
 }
