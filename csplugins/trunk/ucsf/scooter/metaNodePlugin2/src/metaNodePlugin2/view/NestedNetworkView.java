@@ -55,7 +55,7 @@ public class NestedNetworkView {
 		position.setSize(0.0,0.0);
 
 		// Move the nodes around
-		Dimension boundingBox = ViewUtils.restoreNodes(group, nn, nnView, position, Cytoscape.getNodeAttributes());
+		Dimension boundingBox = ViewUtils.restoreNodes(group, nn, nnView, position, Cytoscape.getNodeAttributes(), null);
 
 		// Add it to the network map as a child of the group's network
 		CyNetwork network = group.getNetwork();

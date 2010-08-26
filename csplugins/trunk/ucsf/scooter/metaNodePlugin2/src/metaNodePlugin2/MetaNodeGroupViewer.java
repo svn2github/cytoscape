@@ -51,6 +51,8 @@ import cytoscape.groups.CyGroupViewer;
 import cytoscape.groups.CyGroupViewer.ChangeType;
 import cytoscape.logger.CyLogger;
 
+import giny.model.GraphObject;
+
 import metaNodePlugin2.data.AttributeManager;
 import metaNodePlugin2.model.MetaNode;
 import metaNodePlugin2.model.MetaNodeManager;
@@ -196,17 +198,23 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	 * @param node the CyNode that caused the change
 	 * @param change the change that occured
 	 */
-	public void groupChanged(CyGroup group, CyNode node, ChangeType change) { 
+	public void groupChanged(CyGroup group, GraphObject nodeOrEdge, ChangeType change) { 
 
 		MetaNode mn = MetaNodeManager.getMetaNode(group);
 		if (mn == null) return;
 
 		if (change == ChangeType.NODE_ADDED) {
-			mn.nodeAdded(node);
+			mn.nodeAdded((CyNode)nodeOrEdge);
 			updateGroupPanel();
 		} else if (change == ChangeType.NODE_REMOVED) {
-			mn.nodeRemoved(node);
+			mn.nodeRemoved((CyNode)nodeOrEdge);
 			updateGroupPanel();
+		} else if (change == ChangeType.OUTER_EDGE_ADDED) {
+			// We need to add a meta-edge for this
+		} else if (change == ChangeType.OUTER_EDGE_REMOVED) {
+		} else if (change == ChangeType.INNER_EDGE_ADDED || 
+		           change == ChangeType.INNER_EDGE_REMOVED) {
+			// Nothing to do here
 		} else if (change == ChangeType.STATE_CHANGED) {
 			// Handle different representations here....
 			if (group.getState() == MetaNodePlugin2.COLLAPSED && !mn.isCollapsed()) {

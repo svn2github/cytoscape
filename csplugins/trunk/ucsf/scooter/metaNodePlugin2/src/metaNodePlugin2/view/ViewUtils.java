@@ -123,8 +123,12 @@ public class ViewUtils {
  	 *
  	 * @param nodeList the node to hide
  	 * @param view the view to use to get the location information
+ 	 * @param nodeAttributes our node attributes
+ 	 * @param hiddenNodes an empty array that will contain the list of nodes that are
+ 	 *                    already hidden
  	 */
-	public static Dimension hideNodes(CyGroup metaGroup, CyNetworkView view, CyAttributes nodeAttributes) {
+	public static Dimension hideNodes(CyGroup metaGroup, CyNetworkView view, 
+	                                  CyAttributes nodeAttributes, List<CyNode> hiddenNodes) {
 		List<CyNode> nodeList = metaGroup.getNodes();
 		int nNodes = nodeList.size();
 
@@ -139,12 +143,19 @@ public class ViewUtils {
 				mn.getCyGroup().setState(MetaNodePlugin2.COLLAPSED);
 			}
 			Dimension pos = getPosition(node, view);
+			if (pos == null) {
+				hiddenNodes.add(node);
+				continue; // Hidden (possibly by another metanode)
+			}
+
 			updateCenter(center, pos, nNodes);
 		}
 
 		for (CyNode node: nodeList) {
 			// Get the position
 			Dimension pos = getPosition(node, view);
+			if (pos == null)
+				continue; // Hidden (possibly by another metanode)
 
 			// Calculate the offset
 			Dimension offset = getOffset(center, pos);
@@ -167,10 +178,12 @@ public class ViewUtils {
  	 * @param view the CyNetworkView
  	 * @param position the new center position of the group of nodes
  	 * @param nodeAttributes our node attributes
+ 	 * @param hiddenNodes the nodes that were already hidden
  	 * @return the bounding box of all of the nodes
  	 */
 	public static Dimension restoreNodes(CyGroup metaGroup, CyNetwork net, CyNetworkView view, 
-	                                     Dimension position, CyAttributes nodeAttributes) {
+	                                     Dimension position, CyAttributes nodeAttributes,
+	                                     List<CyNode> hiddenNodes) {
 		double centerX = position.getWidth();
 		double centerY = position.getHeight();
 		double minX = Double.MAX_VALUE;
@@ -178,6 +191,8 @@ public class ViewUtils {
 		double minY = Double.MAX_VALUE;
 		double maxY = Double.MIN_VALUE;
 		for (CyNode node: metaGroup.getNodes()) {
+			if (hiddenNodes != null && hiddenNodes.contains(node))
+				continue;
 			Dimension offset = getAttributes(node, nodeAttributes);
 			minX = Math.min(minX, offset.getWidth());
 			maxX = Math.max(maxX, offset.getWidth());
@@ -237,6 +252,8 @@ public class ViewUtils {
 		double width = size.getWidth();
 		double height = size.getHeight();
 		NodeView nView = view.getNodeView(node);
+		if (nView == null) 
+			return;
 		nView.setWidth(width/2);
 		nView.setHeight(height/2);
 	}

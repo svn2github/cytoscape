@@ -87,6 +87,7 @@ public class MetaNode {
 	private boolean useNestedNetworks = false;
 
 	private Map<CyEdge,CyEdge> metaEdges = new HashMap<CyEdge,CyEdge>();
+	private List<CyNode> hiddenNodes = null;
 
 	private boolean collapsed = false;
 
@@ -171,8 +172,10 @@ public class MetaNode {
 		// Get our node attributes
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
+		List<CyNode> hiddenNodes = new ArrayList<CyNode>();
+
 		// Hide all of our member nodes.
-		Dimension position = ViewUtils.hideNodes(metaGroup, view, nodeAttributes);
+		Dimension position = ViewUtils.hideNodes(metaGroup, view, nodeAttributes, hiddenNodes);
 
 		// Restore the meta-node.
 		ViewUtils.restoreMetaNode(metaGroup, view, position, useNestedNetworks, metanodeOpacity);
@@ -203,7 +206,8 @@ public class MetaNode {
 		Dimension position = ViewUtils.hideMetaNode(metaGroup, view, hideMetanode);
 
 		// Restore our nodes
-		ViewUtils.restoreNodes(metaGroup, metaGroup.getNetwork(), view, position, Cytoscape.getNodeAttributes());
+		ViewUtils.restoreNodes(metaGroup, metaGroup.getNetwork(), view, position, Cytoscape.getNodeAttributes(),
+                           hiddenNodes);
 
 		// Restore our edges
 		ViewUtils.restoreEdges(metaGroup, metaGroup.getInnerEdges(), view);
