@@ -383,7 +383,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		cyNetworkView = view;
 		
 		// Register this presentation as a service.  And this should maintain all children.
-		cyServiceRegistrar.registerService(this, NodeViewChangeMicroListener.class, new Properties());
+		cyServiceRegistrar.registerService(this, NetworkViewChangeMicroListener.class, new Properties());
 		
 		logger.debug("Phase 2: service registered: time = " + (System.currentTimeMillis()- start));
 		
@@ -435,19 +435,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		// from DingNetworkView
 		this.title = networkModel.attrs().get("name", String.class);
 
-		for (CyNode nn : networkModel.getNodeList()) {
-			//long s2 = System.currentTimeMillis();
-			
+		for (CyNode nn : networkModel.getNodeList())		
 			addNodeView(nn);
-			
-			//logger.debug("\tAdding node view: time = " + (System.currentTimeMillis()- s2));
-		}
 
-		for (CyEdge ee : networkModel.getEdgeList()) {
-			//long s2 = System.currentTimeMillis();
+		for (CyEdge ee : networkModel.getEdgeList())
 			addEdgeView(ee);
-			//logger.debug("\tAdding edge view: time = " + (System.currentTimeMillis()- s2));
-		}
 
 		// read in visual properties from view obj
 		final Collection<VisualProperty<?>> netVPs = rootLexicon.getVisualProperties(NETWORK);
@@ -768,9 +760,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		// This is the node presentation.
 		final NodeView newView = new DNodeView(this, nodeInx, nv);
 		
-		// FIXME this is an extremely slow operation.
-		//cyServiceRegistrar.registerService(newView, ViewChangeListener.class, new Properties());
-		
 		m_nodeViewMap.put(nodeInx, newView);
 		m_spacial.insert(nodeInx, m_defaultNodeXMin, m_defaultNodeYMin,
 				m_defaultNodeXMax, m_defaultNodeYMax);
@@ -796,7 +785,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	public EdgeView addEdgeView(final CyEdge edge) {
 		NodeView sourceNode = null;
 		NodeView targetNode = null;
-		EdgeView edgeView = null;
+		EdgeView dEdgeView = null;
 		if (edge == null)
 			throw new NullPointerException("edge is null");
 
@@ -813,21 +802,18 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 			m_drawPersp.addEdge(edge);
 
-			View<CyEdge> ev = cyNetworkView.getEdgeView(edge);
-			edgeView = new DEdgeView(this, edgeInx, ev);
-			
-			// FIXME this is an extremely slow operation.
-			//cyServiceRegistrar.registerService(edgeView,ViewChangeListener.class, new Properties());
+			final View<CyEdge> edgeViewModel = cyNetworkView.getEdgeView(edge);
+			dEdgeView = new DEdgeView(this, edgeInx, edgeViewModel);
 
-			m_edgeViewMap.put(Integer.valueOf(edgeInx), edgeView);
+			m_edgeViewMap.put(Integer.valueOf(edgeInx), dEdgeView);
 			m_contentChanged = true;
 
 			// read in visual properties from view obj
-			Collection<VisualProperty<?>> edgeVPs = rootLexicon
+			final Collection<VisualProperty<?>> edgeVPs = rootLexicon
 					.getVisualProperties(EDGE);
 			
 			for (VisualProperty<?> vp : edgeVPs)
-				edgeVisualPropertySet(ev, vp, ev.getVisualProperty(vp));
+				edgeVisualPropertySet(edgeViewModel, vp, edgeViewModel.getVisualProperty(vp));
 
 		}
 
@@ -855,10 +841,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			}
 
 			listener.graphViewChanged(new GraphViewEdgesRestoredEvent(this,
-					makeList(edgeView.getEdge())));
+					makeList(dEdgeView.getEdge())));
 		}
 
-		return edgeView;
+		return dEdgeView;
 	}
 
 	/**
@@ -1097,7 +1083,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 					m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
-
+		
+		// Redraw camvas.
 		updateView();
 	}
 
@@ -1105,6 +1092,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	 * DOCUMENT ME!
 	 */
 	public void updateView() {
+		Thread.dumpStack();
+		logger.debug("Update view called.  repainting canvas...\n\n");
 		m_networkCanvas.repaint();
 	}
 
@@ -1966,6 +1955,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 					m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
+		updateView();
 	}
 
 	/**

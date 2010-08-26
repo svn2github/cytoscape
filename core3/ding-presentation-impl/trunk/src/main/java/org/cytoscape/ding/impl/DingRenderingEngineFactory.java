@@ -123,9 +123,15 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	}
 
 	
+	/**
+	 * This method simply redraw the canvas, NOT updating the view model.
+	 * To apply and draw the new view model, you need to call this after apply.
+	 * 
+	 */
 	@Override
 	public void handleEvent(NetworkViewChangedEvent nvce) {
 		DGraphView gv = viewMap.get(nvce.getSource());
+		logger.debug("NetworkViewChangedEvent listener got view: " + nvce.getSource().getSUID());
 		if ( gv != null )
 			gv.updateView();
 	}

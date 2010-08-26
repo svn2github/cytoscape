@@ -85,35 +85,41 @@ public class DingNavigationRenderingEngineFactory implements
 	
 	public RenderingEngine<CyNetwork> render(final Object visualizationContainer, final View<CyNetwork> view) {
 
-		if (visualizationContainer == null)
-			throw new IllegalArgumentException(
-					"Visualization container is null.  This should be an JComponent for this rendering engine.");
-		if (view == null)
-			throw new IllegalArgumentException(
-					"View Model is null.");
+//		if (visualizationContainer == null)
+//			throw new IllegalArgumentException(
+//					"Visualization container is null.  This should be an JComponent for this rendering engine.");
+//		if (view == null)
+//			throw new IllegalArgumentException(
+//					"View Model is null.");
+//
+//		if (!(visualizationContainer instanceof JComponent)
+//				|| !(view instanceof CyNetworkView))
+//			throw new IllegalArgumentException(
+//					"Visualization Container object is not of type Component, "
+//							+ "which is invalid for this implementation of PresentationFactory");
+//
+//		final DGraphView dgv = new DGraphView((CyNetworkView) view,
+//				dataTableFactory, rootNetworkFactory, undo, spacialFactory,
+//				rootLexicon, dingLexicon, nodeViewTFs, edgeViewTFs,
+//				emptySpaceTFs, ti, tm, registrar, tableMgr);
+//		
+//		logger.info("DGV created for navigation: View ID = " + view.getSUID());
+//
+//		JPanel target = new JPanel();
+//		BirdsEyeView bev = new BirdsEyeView((Component) visualizationContainer,
+//				dgv);
+//		target.add(bev);
 
-		if (!(visualizationContainer instanceof JComponent)
-				|| !(view instanceof CyNetworkView))
-			throw new IllegalArgumentException(
-					"Visualization Container object is not of type Component, "
-							+ "which is invalid for this implementation of PresentationFactory");
-
-		final DGraphView dgv = new DGraphView((CyNetworkView) view,
-				dataTableFactory, rootNetworkFactory, undo, spacialFactory,
-				rootLexicon, dingLexicon, nodeViewTFs, edgeViewTFs,
-				emptySpaceTFs, ti, tm, registrar, tableMgr);
-		
-		logger.info("DGV created for navigation: View ID = " + view.getSUID());
-
-		JPanel target = new JPanel();
-		BirdsEyeView bev = new BirdsEyeView((Component) visualizationContainer,
-				dgv);
-		target.add(bev);
-
-		return new DingNavigationRenderingEngine(dgv);
+		return new DingNavigationRenderingEngine(null);
 
 	}
 
+	
+	/**
+	 * Catch the events from view model layer.
+	 * 
+	 */
+	@Override
 	public void handleEvent(NetworkViewChangedEvent nvce) {
 		DGraphView gv = viewMap.get(nvce.getSource());
 		if (gv != null)
