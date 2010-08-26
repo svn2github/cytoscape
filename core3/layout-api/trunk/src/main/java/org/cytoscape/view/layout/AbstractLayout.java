@@ -212,9 +212,6 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 
 		this.network = networkView.getModel();
 
-		if (network == null) 
-			return;
-
 		if (network.getNodeCount() <= 0)
 			return;
 
