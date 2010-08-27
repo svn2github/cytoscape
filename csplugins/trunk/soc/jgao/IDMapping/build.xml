@@ -13,7 +13,6 @@
     <property name="resources" location="resources"/>
     <property name="lib" location="lib"/>
     <property name="cyrelease" location="../cytoscape"/>
-    <property name="cylib" location="${cyrelease}/lib"/>
     <property name="build" location="build"/>
     <property name="bridgedb.dir" location="./lib"/>
     <property name="build.classes" location="${build}/classes"/>
@@ -21,10 +20,6 @@
 	
     <!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
     <path id="classpath">
-        <fileset dir="${cylib}">
-            <include name="*.jar"/>
-        </fileset>
-
         <!-- include cytoscape.jar, which is it release directory top level -->
         <fileset dir="${cyrelease}">
             <include name="*.jar"/>
