@@ -4,8 +4,12 @@ package cytoscape.internal.select;
 
 import java.util.Properties;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.events.NetworkViewAddedEvent;
@@ -15,21 +19,24 @@ import org.cytoscape.view.model.View;
 
 public class SelectRegisterListener implements NetworkViewAddedListener {
 
-	private CyServiceRegistrar registrar;
+	private CyEventHelper eventHelper;
+	private CyTableManager tableMgr;
 
-	public SelectRegisterListener(CyServiceRegistrar registrar) {
-		this.registrar = registrar;
+	public SelectRegisterListener(CyEventHelper eventHelper, CyTableManager tableMgr) {
+		this.eventHelper = eventHelper;
+		this.tableMgr = tableMgr;
 	}
 
 	public void handleEvent(NetworkViewAddedEvent e) {
 		final CyNetworkView view = e.getNetworkView();
+
+		CyDataTable nodeTable = tableMgr.getTableMap("NODE",view.getModel()).get(CyNetwork.DEFAULT_ATTRS);
+		CyDataTable edgeTable = tableMgr.getTableMap("EDGE",view.getModel()).get(CyNetwork.DEFAULT_ATTRS);
 		
-		// FIXME: do not register all nodes.  Instead, register 
-		
-//		for ( View<CyNode> nv : view.getNodeViews() )
-//			registrar.registerService( new SelectNodeViewUpdater(nv), RowSetMicroListener.class, new Properties() );
-//
-//		for ( View<CyEdge> ev : view.getEdgeViews() ) 
-//			registrar.registerService( new SelectEdgeViewUpdater(ev), RowSetMicroListener.class, new Properties() );
+		for ( View<CyNode> nv : view.getNodeViews() )
+			eventHelper.addMicroListener( new SelectNodeViewUpdater(nv), RowSetMicroListener.class, nodeTable );
+
+		for ( View<CyEdge> ev : view.getEdgeViews() ) 
+			eventHelper.addMicroListener( new SelectEdgeViewUpdater(ev), RowSetMicroListener.class, edgeTable );
 	}
 }

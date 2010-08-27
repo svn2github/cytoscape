@@ -61,6 +61,9 @@
 	<osgi:reference id="creditScreenServiceRef" interface="org.cytoscape.splash.CreditScreen">
 	</osgi:reference>
 
+	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager">
+	</osgi:reference>
+
 
 	<!-- define services that application provides -->
 
