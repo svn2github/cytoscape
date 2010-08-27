@@ -71,7 +71,7 @@ public class AllTest extends TestCase {
 	 */
 	public static void main(String[] args) throws Exception {
 		if ((args.length > 0) && (args[0] != null) && args[0].equals("-ui")) {
-			String[] newargs = { "csplugins.test.AllTest", "-noloading" };
+			String[] newargs = { "cytoscape.coreplugins.AllTest", "-noloading" };
 			junit.swingui.TestRunner.main(newargs);
 		} else {
 			junit.textui.TestRunner.run(suite());
