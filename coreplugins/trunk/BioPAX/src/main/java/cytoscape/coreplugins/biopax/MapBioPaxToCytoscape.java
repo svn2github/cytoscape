@@ -387,7 +387,7 @@ public class MapBioPaxToCytoscape {
 
 		int i=0; // progress counter
 		for (BioPAXElement itr : interactionList) {
-			String id = BioPaxUtil.getLocalPartRdfId(itr);
+			String id = BioPaxUtil.generateId(itr);
 			
 			if(log.isDebugging()) {
 				log.debug("Mapping " + BioPaxUtil.getType(itr) + " node : " + id);
@@ -433,7 +433,7 @@ public class MapBioPaxToCytoscape {
 
 		int i = 0;
 		for (BioPAXElement itr : interactionList) {
-			String id = BioPaxUtil.getLocalPartRdfId(itr);
+			String id = BioPaxUtil.generateId(itr);
 		
 			if(log.isDebugging()) {
 				log.debug("Mapping " + BioPaxUtil.getType(itr) + " edges : " + id);
@@ -476,7 +476,7 @@ public class MapBioPaxToCytoscape {
 			new HashSet<BioPAXElement>(BioPaxUtil.getObjects(model, complex.class, Complex.class));
 		Map<String, String> localCreatedCyNodes = (Map<String,String>)(((HashMap)createdCyNodes).clone());
 		for (BioPAXElement complexElement : BioPaxUtil.getObjects(model, complex.class, Complex.class)) {
-			String complexCPathId = BioPaxUtil.getLocalPartRdfId(complexElement);
+			String complexCPathId = BioPaxUtil.generateId(complexElement);
 			if (localCreatedCyNodes.containsValue(complexCPathId)) {
 				// a cynode for this complex has already been created, remove from complex element list
 				complexElementList.remove(complexElement);
@@ -513,7 +513,7 @@ public class MapBioPaxToCytoscape {
 		for (BioPAXElement complexElement : complexElementListClone) {
 
 			// get source id
-			String complexCPathId = BioPaxUtil.getLocalPartRdfId(complexElement);
+			String complexCPathId = BioPaxUtil.generateId(complexElement);
 
 			// iterate through all created nodes
 			// note: a complex can occur multiple times in createdNodes map
@@ -625,7 +625,7 @@ public class MapBioPaxToCytoscape {
 	 */
 	private void addControlInteraction(BioPAXElement interactionElement) {
 		//  Get the Interaction Node represented by this Interaction Element
-		String interactionId = BioPaxUtil.getLocalPartRdfId(interactionElement);
+		String interactionId = BioPaxUtil.generateId(interactionElement);
 		CyNode interactionNode = Cytoscape.getCyNode(interactionId);
 
 		// Get the Controlled Element
@@ -643,7 +643,7 @@ public class MapBioPaxToCytoscape {
 			BioPAXElement controlledElement = 
 				(BioPAXElement) controlledList.iterator().next();
 			String controlledId = 
-				BioPaxUtil.getLocalPartRdfId(controlledElement);
+				BioPaxUtil.generateId(controlledElement);
 			CyNode controlledNode = Cytoscape.getCyNode(controlledId);
 			if (controlledNode != null) 
 			{
@@ -697,7 +697,7 @@ public class MapBioPaxToCytoscape {
 		if (coFactorList.size() == 1) {
 			BioPAXElement coFactor = (BioPAXElement) coFactorList.iterator().next();
 			if (coFactor!= null) {
-				String coFactorId = BioPaxUtil.getLocalPartRdfId(coFactor);
+				String coFactorId = BioPaxUtil.generateId(coFactor);
 				CyNode coFactorNode = Cytoscape.getCyNode(coFactorId);
 
 				if (coFactorNode == null) {
@@ -712,7 +712,7 @@ public class MapBioPaxToCytoscape {
 				}
 			} 
 		} else if (coFactorList.size() > 1) {
-			log.warn("Warning!  Control Interaction:  " + BioPaxUtil.getLocalPartRdfId(interactionElement)
+			log.warn("Warning!  Control Interaction:  " + BioPaxUtil.generateId(interactionElement)
 			                + " has more than one COFACTOR Element.  " + "I am not yet equipped "
 			                + "to handle this.");
 		}
@@ -733,7 +733,7 @@ public class MapBioPaxToCytoscape {
 				interaction.class, Interaction.class);
 
 		// extract id
-		String id = BioPaxUtil.getLocalPartRdfId(bpe);
+		String id = BioPaxUtil.generateId(bpe);
 		if ((id == null) || (id.length() == 0)) return null; // this never happens
 
 		if (createdCyNodes.containsKey(id)) {
@@ -841,7 +841,7 @@ public class MapBioPaxToCytoscape {
 	private CyNode getComplexCyNode(BioPAXElement complexElement, String complexCyNodeId, BioPAXElement complexMemberElement) {
 
 		// extract id
-		String complexMemberId = BioPaxUtil.getLocalPartRdfId(complexMemberElement);
+		String complexMemberId = BioPaxUtil.generateId(complexMemberElement);
 		if ((complexMemberId == null) || (complexMemberId.length() == 0)) return null;
 		
 		boolean isMemberComplex = 
@@ -1527,7 +1527,7 @@ public class MapBioPaxToCytoscape {
 		// first check if attribute exists
 		if (mhmdef.getAttributeValueType(BIOPAX_CHEMICAL_MODIFICATIONS_MAP) != -1) {
 			MultiHashMap mhmap = nodeAttributes.getMultiHashMap();
-			CountedIterator modsIt = mhmap.getAttributeKeyspan(BioPaxUtil.getLocalPartRdfId(bpe),
+			CountedIterator modsIt = mhmap.getAttributeKeyspan(BioPaxUtil.generateId(bpe),
 			                                                   BIOPAX_CHEMICAL_MODIFICATIONS_MAP,
 			                                                   null);
 			while (modsIt.hasNext()) {

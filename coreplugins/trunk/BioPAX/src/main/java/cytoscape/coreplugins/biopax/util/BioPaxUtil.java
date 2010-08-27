@@ -251,18 +251,28 @@ public class BioPaxUtil {
 	}
 	
 	
+	public static String generateId(BioPAXElement bpe) {
+		String id = (bpe instanceof physicalEntityParticipant 
+				&& ((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY()!=null)
+					? ((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY().getRDFId() 
+					: bpe.getRDFId();
+		return Cytoscape.getCurrentNetwork().getIdentifier().hashCode() + 
+				"" + id.hashCode() + "-" + getLocalPartRdfId(bpe);
+	}
+
+	
 	public static String getLocalPartRdfId(BioPAXElement bpe) {
-		if(bpe == null) {
-			return "";
-		} 
+		if(bpe == null) return "";
+		
 		// also fix pEPs
 		String id = (bpe instanceof physicalEntityParticipant 
 				&& ((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY()!=null)
 					? ((physicalEntityParticipant)bpe).getPHYSICAL_ENTITY().getRDFId() 
-						: bpe.getRDFId();
+					: bpe.getRDFId();
+					
 		return id.replaceFirst("^.+#", "");
 	}
-
+	
 	// get the shortest string
 	public static String getTheShortestString(Collection<String> nameList) {
 		String shortest = null;
@@ -301,7 +311,7 @@ public class BioPaxUtil {
 				if(log.isDebugging()) {
 					// this is often OK, as we guess L2 or L3 properties...
 					log.debug("Ignore property " + property + " for " 
-						+ BioPaxUtil.getLocalPartRdfId(bpe) + ": " + e);
+						+ BioPaxUtil.generateId(bpe) + ": " + e);
 				}
 			}
 		}
@@ -338,7 +348,7 @@ public class BioPaxUtil {
 			} catch (Exception e) {
 				if(log.isDebugging()) {
 					log.debug("Cannot get value of '" + property + "' for "
-						+ BioPaxUtil.getLocalPartRdfId(bpe) + ": " + e);
+						+ BioPaxUtil.generateId(bpe) + ": " + e);
 				}
 			}
 		}

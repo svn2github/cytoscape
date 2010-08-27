@@ -22,40 +22,65 @@
     </plugins>
   </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>application</artifactId>
-      <version>${coreplugins.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.4</version>
-    </dependency>
-    <dependency>
-      <groupId>net.sourceforge.collections</groupId>
-      <artifactId>collections-generic</artifactId>
-      <version>4.01</version>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape-temp</groupId>
-      <artifactId>paxtools-core</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape-temp</groupId>
-      <artifactId>paxtools-simple-io</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.1.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>cytoscape</groupId>
+			<artifactId>application</artifactId>
+			<version>${coreplugins.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.collections</groupId>
+			<artifactId>collections-generic</artifactId>
+			<version>4.01</version>
+		</dependency>
+		<dependency>
+			<groupId>org.biopax.paxtools</groupId>
+			<artifactId>paxtools-core</artifactId>
+			<version>2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.biopax.paxtools</groupId>
+			<artifactId>paxtools-simple-io</artifactId>
+			<version>2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+<!-- temporary: enable when used outside the cytoscape project internals
+	<repositories>
+		<repository>
+			<id>cytoscape.snapshots</id>
+			<name>Cytoscape Snapshots Repository</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>biopax.snapshots</id>
+			<name>BioPAX Snapshots Repository at Sourceforge</name>
+			<url>http://biopax.sourceforge.net/m2repo/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+			</snapshots>
+		</repository>
+	</repositories>
+-->
 
 </project>
 

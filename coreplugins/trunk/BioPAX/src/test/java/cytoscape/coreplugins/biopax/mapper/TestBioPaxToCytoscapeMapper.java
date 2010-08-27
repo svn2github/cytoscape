@@ -82,7 +82,8 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testMapper1() throws Exception {
-		Model model = BioPaxUtil.readFile("src/test/resources/biopax_sample1.owl");
+		Model model = BioPaxUtil.readFile(
+				getClass().getResource("/biopax_sample1.owl").getFile());
 		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
 		mapper.doMapping(model);
 
@@ -101,7 +102,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	 * @throws Exception All Exceptions.
 	 */
 	public void testComplexMapping() throws Exception {
-		Model model =BioPaxUtil.readFile("src/test/resources/biopax_complex.owl");
+		Model model = BioPaxUtil.readFile(getClass().getResource("/biopax_complex.owl").getFile());
 		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
 		mapper.doMapping(model);
 
@@ -117,7 +118,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		while (nodeIterator.hasNext()) {
 			CyNode node = (CyNode) nodeIterator.next();
 
-			if (node.getIdentifier().equals("CPATH-126")) {
+			if (node.getIdentifier().endsWith("CPATH-126")) {
 				targetNodeIndex = node.getRootGraphIndex();
 			}
 		}
@@ -165,7 +166,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 	 * TODO re-factor this test as IT DEPENDS ON ORDER OF THE ELEMENTS, which is different when run from Ant or Eclipse...
 	 */
 	public void testPhysicalInteractions() throws Exception {
-		Model model = BioPaxUtil.readFile("src/test/resources/DIP_ppi.owl");
+		Model model = BioPaxUtil.readFile(getClass().getResource("/DIP_ppi.owl").getFile());
 		MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape();
 		mapper.doMapping(model);
 
@@ -181,7 +182,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		while (nodeIterator.hasNext()) {
 			CyNode node = (CyNode) nodeIterator.next();
 
-			if (node.getIdentifier().equals("physicalInteraction1")) {
+			if (node.getIdentifier().endsWith("physicalInteraction1")) {
 				targetNodeIndex = node.getRootGraphIndex();
 			}
 		}
@@ -215,7 +216,8 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		assertEquals(12, nodeCount);
 
 		//  This HashMap contains a list of expected node identifiers.
-		HashMap nodeMap = new HashMap();
+		// correction: these are identifier's part (real id now begins with hash code)
+		Map<String, Integer> nodeMap = new HashMap<String, Integer>();
 		nodeMap.put("protein45", new Integer(0));
 		nodeMap.put("protein32", new Integer(0));
 		nodeMap.put("smallMolecule10", new Integer(0));
@@ -239,27 +241,32 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 			String id = node.getIdentifier();
 
 			//  Test a specific node label
-			if (id.equals("smallMolecule99")) {
+			if (id.endsWith("smallMolecule99")) {
 				String label = Cytoscape.getNodeAttributes()
-				                        .getStringAttribute(id,
-				                                            BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
+				                  .getStringAttribute(id, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
 				assertEquals("Mg2+", label);
 			}
 
-			if (nodeMap.containsKey(id)) {
-				nodeMap.put(id, new Integer(1));
+			String found = null;
+			for(String key : nodeMap.keySet()) {
+				if(id.endsWith(key)) {
+					found = key;
+					break;
+				}
+			}
+			if (found != null) {
+				nodeMap.put(found, new Integer(1));
 			} else {
-				fail("Network contains a Node that we were not expecting:  " + "\"" + id + "\"");
+				fail("Network contains a Node that we were not expecting:  "
+						+ "\"" + id + "\"");
 			}
 		}
 
 		//  Verify that we found all expected node identifiers.
-		Set keySet = nodeMap.keySet();
-
-		for (Iterator iterator = keySet.iterator(); iterator.hasNext();) {
+		Set<String> keySet = nodeMap.keySet();
+		for (Iterator<String> iterator = keySet.iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			Integer counter = (Integer) nodeMap.get(key);
-
 			if (counter.intValue() != 1) {
 				fail("Network does not contain expected node:  " + "\"" + key + "\"");
 			}
@@ -281,7 +288,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 		while (nodeIterator.hasNext()) {
 			CyNode node = (CyNode) nodeIterator.next();
 
-			if (node.getIdentifier().equals("biochemicalReaction37")) {
+			if (node.getIdentifier().endsWith("biochemicalReaction37")) {
 				targetNodeIndex = node.getRootGraphIndex();
 			}
 		}
