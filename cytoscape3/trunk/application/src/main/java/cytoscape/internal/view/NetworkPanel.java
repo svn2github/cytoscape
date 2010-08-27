@@ -78,7 +78,7 @@ import org.cytoscape.model.events.UnselectedEdgesEvent;
 import org.cytoscape.model.events.UnselectedEdgesListener;
 import org.cytoscape.model.events.UnselectedNodesEvent;
 import org.cytoscape.model.events.UnselectedNodesListener;
-import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.session.events.NetworkAboutToBeDestroyedListener;
@@ -138,7 +138,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	private Map<TaskFactory,JMenuItem> popupMap;
 	private Map<TaskFactory,CyAction> popupActions;
 	private final TunableInterceptor tunableInterceptor;
-	private CyServiceRegistrar registrar;
+	private CyEventHelper eventHelper;
 	private Map<CyNetwork, RowSetMicroListener> nameListeners;
 
 
@@ -150,12 +150,12 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	public NetworkPanel( final CyNetworkManager netmgr, final BirdsEyeViewHandler bird,
 			final TaskManager taskManager,
 			final TunableInterceptor tunableInterceptor,
-			final CyServiceRegistrar registrar) {
+			final CyEventHelper eventHelper) {
 		super();
 		this.netmgr = netmgr;
 		this.taskManager = taskManager;
 		this.tunableInterceptor = tunableInterceptor;
-		this.registrar = registrar;
+		this.eventHelper = eventHelper;
 
 		root = new NetworkTreeNode("Network Root", 0L);
 		treeTableModel = new NetworkTreeTableModel(root);
@@ -355,25 +355,25 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	//// Event handlers /////
 	
 	public void handleEvent(NetworkAboutToBeDestroyedEvent nde) {
-		logger.debug("Network about to be destroyed "
-				+ nde.getNetwork().getSUID());
-		removeNetwork(nde.getNetwork().getSUID());
-		RowSetMicroListener rsml = nameListeners.remove(nde.getNetwork());
+		CyNetwork net = nde.getNetwork();
+		logger.debug("Network about to be destroyed " + net.getSUID());
+		removeNetwork(net.getSUID());
+		RowSetMicroListener rsml = nameListeners.remove(net);
 		if ( rsml != null )
-			registrar.unregisterService( rsml, RowSetMicroListener.class ); 
+			eventHelper.removeMicroListener( rsml, RowSetMicroListener.class, net.attrs().getDataTable() ); 
 	}
 
 	public void handleEvent(NetworkAddedEvent e) {
-		logger.debug("Got NetworkAddedEvent.  Model ID = "
-				+ e.getNetwork().getSUID());
+		CyNetwork net = e.getNetwork();
+		logger.debug("Got NetworkAddedEvent.  Model ID = " + net.getSUID());
 		
-		addNetwork(e.getNetwork().getSUID(), -1l);
-		RowSetMicroListener rsml = new AbstractNetworkNameListener(e.getNetwork()) {
-			public void updateNetworkName(CyNetwork net, String name) {
-				updateTitle(net,name);
+		addNetwork(net.getSUID(), -1l);
+		RowSetMicroListener rsml = new AbstractNetworkNameListener(net) {
+			public void updateNetworkName(CyNetwork n, String name) {
+				updateTitle(n,name);
 			}
 		};
-		registrar.registerService( rsml, RowSetMicroListener.class, new Properties() );
+		eventHelper.addMicroListener(rsml, RowSetMicroListener.class, net.attrs().getDataTable());
 		nameListeners.put(e.getNetwork(),rsml);
 	}
 

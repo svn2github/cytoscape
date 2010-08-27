@@ -49,10 +49,6 @@ public abstract class AbstractNetworkNameListener implements RowSetMicroListener
 		this.row = net.attrs();
 	}
 
-	public Object getEventSource() {
-		return row.getDataTable();
-	}
-
 	public void handleRowSet(CyRow row, String col, Object value) {
 		if ( row != null && row == this.row && "name".equals(col) )
 			updateNetworkName(net,(String)value);

@@ -72,7 +72,7 @@
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cytoscapeProperties" />
 		<constructor-arg ref="cyHelpBroker" />
-		<constructor-arg ref="cyServiceRegistrarServiceRef" />
+		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 
 	<bean name="birdsEyeViewHandler" class="cytoscape.internal.view.BirdsEyeViewHandler">
@@ -86,7 +86,7 @@
 		<constructor-arg ref="birdsEyeViewHandler" />
 		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="tunableGUIInterceptorServiceRef" />
-		<constructor-arg ref="cyServiceRegistrarServiceRef" />
+		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 
 

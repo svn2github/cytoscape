@@ -64,7 +64,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 
-import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.event.CyEventHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +107,7 @@ public class NetworkViewManager implements InternalFrameListener,
 
 	private final Map<CyNetwork,RowSetMicroListener> nameListeners;
 	
-	private final CyServiceRegistrar registrar;
+	private final CyEventHelper eventHelper;
 	private final CyNetworkManager networkManager;
 	
 	
@@ -118,12 +118,12 @@ public class NetworkViewManager implements InternalFrameListener,
 	 *            DOCUMENT ME!
 	 */
 	public NetworkViewManager(CyNetworkManager netmgr, Properties props,
-			CyHelpBroker help, CyServiceRegistrar registrar) {
+			CyHelpBroker help, CyEventHelper eventHelper) {
 		this.factories = new HashMap<String, RenderingEngineFactory<CyNetwork>>();
 		
 		this.networkManager = netmgr;
 		this.props = props;
-		this.registrar = registrar;
+		this.eventHelper = eventHelper;
 		desktopPane = new JDesktopPane();
 
 		// add Help hooks
@@ -367,7 +367,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		presentationContainerMap.remove(view.getModel().getSUID());
 		RowSetMicroListener rsml = nameListeners.remove(view.getModel());
 		if ( rsml != null )
-			registrar.unregisterService(rsml, RowSetMicroListener.class);
+			eventHelper.removeMicroListener(rsml, RowSetMicroListener.class, view.getModel().attrs().getDataTable());
 	}
 
 	/**
@@ -457,7 +457,7 @@ public class NetworkViewManager implements InternalFrameListener,
 			}
 		};
 		
-		registrar.registerService( rsml, RowSetMicroListener.class, new Properties() );
+		eventHelper.addMicroListener( rsml, RowSetMicroListener.class, view.getModel().attrs().getDataTable() );
 		nameListeners.put(view.getModel(), rsml );
 	}
 }
