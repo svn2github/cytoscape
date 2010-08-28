@@ -238,9 +238,9 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 	 * @param graphics Graphics
 	 */
 	public void print(Graphics graphics) {
-		//if we have an image to print, lets print it.
-		if (m_img != null) {
-			graphics.drawImage(m_img, 0, 0, null);
+		int num=this.getComponentCount();
+		for(int i=0;i<num;i++){
+			this.getComponent(i).print(graphics);
 		}
 	}
 
