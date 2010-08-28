@@ -73,6 +73,7 @@ public class NestedNetworkView {
 		nnMap.put(group, nnView);
 
 		// Bring our original view back into focus!
+		Cytoscape.getDesktop().setFocus(network.getIdentifier());
 	}
 
 	public static void destroy(CyGroup group, CyNetworkView view) {
