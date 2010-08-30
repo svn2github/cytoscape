@@ -43,6 +43,7 @@
         <version>2.0</version>
         <configuration>
           <tagBase>svn+ssh://grenache.ucsd.edu/cellar/common/svn/corelibs/tags</tagBase>
+		  <autoVersionSubmodules>true</autoVersionSubmodules>
         </configuration>
       </plugin>
     </plugins>
