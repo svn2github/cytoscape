@@ -34,6 +34,7 @@
     <module>cPath2</module>
     <module>filters</module>
     <module>linkout</module>
+    <module>CoreCommands</module>
   </modules>
 
   <build>
