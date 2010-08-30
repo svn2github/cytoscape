@@ -18,62 +18,62 @@
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>util-intr</artifactId>
-      <version>${corelibs.version}</version>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>graph-dynamic</artifactId>
-      <version>${corelibs.version}</version>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>graph-fixed</artifactId>
-      <version>${corelibs.version}</version>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>giny</artifactId>
-      <version>${corelibs.version}</version>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>render-immed</artifactId>
-      <version>${corelibs.version}</version>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>render-stateful</artifactId>
-      <version>${corelibs.version}</version>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>render-export</artifactId>
-      <version>${corelibs.version}</version>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>fing</artifactId>
-      <version>${corelibs.version}</version>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>phoebe-dnd</artifactId>
-      <version>${corelibs.version}</version>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>geom-spacial</artifactId>
-      <version>${corelibs.version}</version>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>geom-rtree</artifactId>
-      <version>${corelibs.version}</version>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>undo-support</artifactId>
-      <version>${corelibs.version}</version>
+      <version>${version}</version>
     </dependency>
   </dependencies>
 

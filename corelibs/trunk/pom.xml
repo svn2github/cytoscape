@@ -11,7 +11,6 @@
   <name>Cytoscape Core Libraries Parent POM</name>
 
   <properties>
-    <corelibs.version>2.8.0-SNAPSHOT</corelibs.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
  
@@ -76,8 +75,8 @@
             <links>
               <link>http://download.oracle.com/docs/cd/E17476_01/javase/1.5.0/docs/api/</link>
             </links>
-            <footer>Cytoscape ${corelibs.version} Core Libraries API</footer>
-            <header>Cytoscape ${corelibs.version Core Libraries API</header>
+            <footer>Cytoscape ${version} Core Libraries API</footer>
+            <header>Cytoscape ${version} Core Libraries API</header>
             <bottom>Copyright 2010 Cytoscape Consortium.  All rights reserved.</bottom>
           </configuration>
           <executions>
