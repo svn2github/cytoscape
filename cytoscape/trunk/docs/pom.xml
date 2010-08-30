@@ -13,6 +13,25 @@
   <build>
     <plugins>
       <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/html.xml</descriptor>
+            <descriptor>src/main/assembly/pdf.xml</descriptor>
+            <descriptor>src/main/assembly/javahelp.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
           <version>2.3</version>
@@ -32,20 +51,35 @@
               </resources>
             </configuration>
           </execution>
-            <execution>
-              <id>copy-javahelp-images</id>
-              <phase>process-resources</phase>
-              <goals>
-                <goal>copy-resources</goal>
-              </goals>
-              <configuration>
-                <outputDirectory>target/docbkx/javahelp/images</outputDirectory>
-                <resources>
-                  <resource>
-                    <directory>src/docbkx/images</directory>
-                 </resource>
-              </resources>
-            </configuration>
+          <execution>
+            <id>copy-javahelp-images</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/docbkx/javahelp/images</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/docbkx/images</directory>
+               </resource>
+            </resources>
+           </configuration>
+          </execution>
+          <execution>
+            <id>copy-pdf</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/docbkx/pdf</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/pdf</directory>
+               </resource>
+            </resources>
+           </configuration>
           </execution>
         </executions>
       </plugin>
