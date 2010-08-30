@@ -27,6 +27,53 @@
     </resources>
 
       <plugins>
+
+       <!-- this copies the javahelp files into place -->
+       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-dependency-plugin</artifactId>
+         <executions>
+           <execution>
+             <id>copy-javahelp</id>
+             <phase>generate-sources</phase>
+             <goals>
+               <goal>unpack</goal>
+             </goals>
+             <configuration>
+               <artifactItems>
+                 <artifactItem>
+                   <groupId>cytoscape</groupId>
+                   <artifactId>docs</artifactId>
+                   <version>${version}</version>
+                   <type>zip</type>
+                   <classifier>javahelp</classifier>
+                   <overWrite>true</overWrite>
+                   <outputDirectory>${project.build.outputDirectory}/cytoscape/help</outputDirectory>
+                 </artifactItem>
+               </artifactItems>
+             </configuration>
+           </execution>
+         </executions>
+       </plugin>
+	   <!-- we might consider uncommenting this if we can get indexing to work!
+        <plugin>
+          <groupId>org.codehaus.mojo.javahelp</groupId>
+          <artifactId>maven-javahelp-plugin</artifactId>
+          <configuration>
+            <sourcePath>${project.build.outputDirectory}/cytoscape/help</sourcePath>
+            <dataBase>${project.build.outputDirectory}/cytoscape/help</dataBase>
+          </configuration>
+         <executions>
+           <execution>
+             <id>index-javahelp</id>
+             <phase>process-sources</phase>
+             <goals>
+               <goal>jhindex</goal>
+             </goals>
+           </execution>
+         </executions>
+        </plugin>
+		-->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
@@ -43,6 +90,7 @@
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
           </configuration>
         </plugin>
+		<!-- generates a javadoc jar suitable for use in an IDE -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
@@ -66,6 +114,7 @@
             </execution>
           </executions>
         </plugin>
+		<!-- generates a sources jar suitable for use in an IDE -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
@@ -78,6 +127,7 @@
             </execution>
           </executions>
         </plugin>
+		<!-- generates classes for XML handling (bookmarks and sessions) -->
         <plugin>
           <groupId>org.jvnet.jaxb2.maven2</groupId>
           <artifactId>maven-jaxb2-plugin</artifactId>
@@ -116,6 +166,7 @@
               </execution>
             </executions>
          </plugin>
+		<!-- creates the jar file -->
         <plugin>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>2.2-beta-5</version>
@@ -352,9 +403,9 @@
         </dependency>
 
         <dependency>
-            <groupId>cytoscape-sun</groupId>
-            <artifactId>jhall</artifactId>
-            <version>1.0</version>
+            <groupId>javax.help</groupId>
+            <artifactId>javahelp</artifactId>
+            <version>2.0.02</version>
         </dependency>
 
         <dependency>
@@ -482,6 +533,15 @@
             <groupId>cytoscape-sun</groupId>
             <artifactId>jaxb-impl</artifactId>
             <version>1.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>cytoscape</groupId>
+            <artifactId>docs</artifactId>
+            <version>${version}</version>
+            <classifier>javahelp</classifier>
+            <type>zip</type>
         </dependency>
   </dependencies>
 
