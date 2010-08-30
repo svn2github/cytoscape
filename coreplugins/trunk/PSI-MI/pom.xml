@@ -15,16 +15,6 @@
   <name>PSI-MI</name>
 
 
-  <dependencies>
-    <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>application</artifactId>
-      <version>${version}</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
-
   <build>
     <plugins>
 	  <plugin>
