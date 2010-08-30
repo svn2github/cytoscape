@@ -26,13 +26,13 @@
     <dependency>
       <groupId>cytoscape</groupId>
       <artifactId>application</artifactId>
-      <version>${coreplugins.version}</version>
+      <version>${version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>nerius-math-xform</artifactId>
-      <version>${coreplugins.version}</version>
+      <version>${version}</version>
     </dependency>
   </dependencies>
 

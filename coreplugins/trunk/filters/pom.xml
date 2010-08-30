@@ -26,13 +26,13 @@
     <dependency>
       <groupId>cytoscape</groupId>
       <artifactId>application</artifactId>
-      <version>${coreplugins.version}</version>
+      <version>${version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>cytoscape.coreplugins</groupId>
       <artifactId>quickfind</artifactId>
-      <version>${coreplugins.version}</version>
+      <version>${version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

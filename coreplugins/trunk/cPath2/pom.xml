@@ -18,7 +18,7 @@
     <dependency>
       <groupId>cytoscape</groupId>
       <artifactId>application</artifactId>
-      <version>${coreplugins.version}</version>
+      <version>${version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
