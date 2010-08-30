@@ -37,5 +37,13 @@
 	  <outputFileNameMapping>cytoscape.jar</outputFileNameMapping>
       <unpack>false</unpack>
     </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>cytoscape:docs:zip:html</include>
+        <include>cytoscape:docs:zip:pdf</include>
+      </includes>
+      <unpack>true</unpack>
+      <outputDirectory>docs</outputDirectory>
+    </dependencySet>
   </dependencySets>
 </assembly>
