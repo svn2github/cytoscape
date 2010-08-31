@@ -58,10 +58,12 @@ public class ViewUpdater<T,S> implements RowSetMicroListener {
 		return row;
 	}
 
-	public void handleRowSet(String columnName, Object value) {
+	@SuppressWarnings("unchecked")
+	public void handleRowSet(final String columnName, final Object value) {
 		if ( columnName == null || !columnName.equals(this.columnName) )
 			return;
 
+		// Assume caller checks validity of value parameter.
 		view.setVisualProperty(vp, (S)value);
 	}
 }
