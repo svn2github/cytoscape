@@ -53,6 +53,7 @@ public class CyMicroListenerAdapter {
 	private final Map<Object,Map<Class<?>,Object>> proxys;
 	private final Map<Object,Map<Class<?>,Set<Object>>> listeners;
 	private final Map<Class<?>,Object> noOpProxies;
+	
 	private final static Logger logger = LoggerFactory.getLogger(CyMicroListenerAdapter.class);
 
 	public CyMicroListenerAdapter() {
@@ -74,7 +75,7 @@ public class CyMicroListenerAdapter {
 		return listenerClass.cast( proxy );
 	}
 
-	private Object noOpProxy( Class c ) {
+	private Object noOpProxy(final Class<?> c ) {
 		Object noOp = noOpProxies.get( c );
 		if ( noOp == null ) {
 			noOp = Proxy.newProxyInstance(c.getClassLoader(), new Class[] { c }, 
@@ -166,9 +167,10 @@ public class CyMicroListenerAdapter {
 			if ( ol == null )
 				return null;
 
-			for ( Object o : ol )
+			for (final Object o : ol )
 				method.invoke(o,args);
-			return null; // TODO ??
+			
+			return null;
 		}
 	}
 }
