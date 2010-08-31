@@ -33,6 +33,15 @@ import org.junit.Test;
 
 
 public class AbstractTaskTest {
+	static class SimpleTask extends AbstractTask {
+		SimpleTask() {
+		}
+
+		public void run(TaskMonitor taskMonitor) throws Exception {
+			// Intentionally do nothing!
+		}
+	}
+
 	@Test
 	public final void testAbstractTask() throws Exception {
 		final Task task = new SimpleTask();
@@ -40,15 +49,5 @@ public class AbstractTaskTest {
 		assertFalse("Invalid initial cancellation state!", task.cancelled());
 		task.cancel();
 		assertTrue("Invalid initial cancellation state!", task.cancelled());
-	}
-}
-
-
-class SimpleTask extends AbstractTask {
-	SimpleTask() {
-	}
-
-	public void run(TaskMonitor taskMonitor) throws Exception {
-		// Intentionally do nothing!
 	}
 }
