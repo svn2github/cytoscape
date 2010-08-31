@@ -1,14 +1,7 @@
 /* 
   File: LayoutTask.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,12 +29,14 @@
 */
 package cytoscape.internal.layout.ui;
 
+
 import cytoscape.Cytoscape;
-import org.cytoscape.work.Task;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
 import java.awt.Container; 
+
 
 /**
  * A wrapper for applying a layout in a task. Use it something like
@@ -49,11 +44,10 @@ import java.awt.Container;
  * <p>taskManager.execute( new LayoutTask(layout, view) );
 
  */
-public class LayoutTask implements Task {
-
-	CyLayoutAlgorithm layout;
-	CyNetworkView view;
-	TaskMonitor monitor;
+public class LayoutTask extends AbstractTask {
+	private CyLayoutAlgorithm layout;
+	private CyNetworkView view;
+	private TaskMonitor monitor;
 
 	/**
 	 * Creates the task.
@@ -61,7 +55,7 @@ public class LayoutTask implements Task {
 	 * @param layout The CyLayoutAlgorithm to apply.
 	 * @param view The view the algorithm should be applied to.
 	 */
-	public LayoutTask(CyLayoutAlgorithm layout,CyNetworkView view) {
+	public LayoutTask(final CyLayoutAlgorithm layout, final CyNetworkView view) {
 		this.layout = layout; 
 		this.view = view; 
 	}
@@ -70,13 +64,6 @@ public class LayoutTask implements Task {
 	 * Run the algorithm.  
 	 */
 	public void run(TaskMonitor monitor) {
-		layout.doLayout(view,monitor);
-	}
-
-	/**
-	 * Halt the algorithm if the CyLayoutAlgorithm supports it.
-	 */
-	public void cancel() {
-		layout.halt();
+		layout.doLayout(view, monitor);
 	}
 }

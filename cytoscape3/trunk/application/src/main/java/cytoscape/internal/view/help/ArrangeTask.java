@@ -1,14 +1,7 @@
 /*
   File: ArrangeTask.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -34,17 +27,17 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.internal.view.help;
+
 
 import cytoscape.internal.view.CyDesktopManager;
 import cytoscape.internal.view.CytoscapeDesktop;
 import cytoscape.view.CyMenus;
-import org.cytoscape.work.Task;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
-public class ArrangeTask implements Task {
 
+public class ArrangeTask extends AbstractTask {
 	private String arrange;
 	private CytoscapeDesktop desktop;
 
@@ -56,7 +49,5 @@ public class ArrangeTask implements Task {
 	public void run(TaskMonitor tm) {
 		CyDesktopManager.arrangeFrames(desktop, CyDesktopManager.Arrange.valueOf(arrange));
 	}
-
-	public void cancel() {}
 }
 

@@ -36,6 +36,7 @@ import java.util.Map;
 
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
 
@@ -49,9 +50,9 @@ public class TaskFactoryTunableAction<T extends TaskFactory> extends CytoscapeAc
 	protected TunableInterceptor interceptor;
 	protected TaskManager manager;
 
-	public TaskFactoryTunableAction(TaskManager manager, TunableInterceptor interceptor, 
-	                  T factory, Map serviceProps,
-					  CyNetworkManager netmgr) {
+	public TaskFactoryTunableAction(final TaskManager manager, final TunableInterceptor interceptor, 
+	                                final T factory, final Map serviceProps, final CyNetworkManager netmgr)
+	{
 		super(serviceProps,netmgr);
 		this.manager = manager;
 		this.factory = factory;
@@ -59,16 +60,8 @@ public class TaskFactoryTunableAction<T extends TaskFactory> extends CytoscapeAc
 	}
 
 	public void actionPerformed(ActionEvent a) {
-		Task task = factory.getTask();
-
-		// load the tunables from the object 
-		interceptor.loadTunables(task);
-		
-		// create the UI based on the object
-		if (!interceptor.execUI(task))
-				return;
-
-		// execute the task in a separate thread
-		manager.execute(task);
+		final TaskIterator taskIterator = factory.getTaskIterator();
+		// execute the task(s) in a separate thread
+		manager.execute(taskIterator, interceptor);
 	}
 }

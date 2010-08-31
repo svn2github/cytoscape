@@ -35,6 +35,8 @@ import cytoscape.view.CySwingApplication;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayouts;
 
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.swing.GUITunableInterceptor;
@@ -106,10 +108,8 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			setVisible(false);
 		} else if (command.equals("execute")) {
 			ti.setParent(algorithmPanel);
-			//handle the tunables, and check if the validation is true(true means execution of the task)
-			if (ti.validateAndWriteBackTunables())
-				tm.execute( new LayoutTask(currentLayout,netmgr.getCurrentNetworkView()) );
-			
+			final Task layoutTask = new LayoutTask(currentLayout, netmgr.getCurrentNetworkView());
+			tm.execute(new TaskIterator(layoutTask), ti);
 		} else {
 			// OK, initialize and display
 			initialize();

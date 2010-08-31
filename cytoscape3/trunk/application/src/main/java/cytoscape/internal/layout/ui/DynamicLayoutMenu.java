@@ -1,14 +1,7 @@
 /*
   File: DynamicLayoutMenu.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,7 +29,10 @@
 */
 package cytoscape.internal.layout.ui;
 
+
 import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -129,13 +125,13 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 			// Add edge attributes menus
 			addEdgeAttributeMenus(this, network, false);
 		} else {
-
 			// No special menus, so make sure we layout all selected
 			List<CyNetworkView> views = netmgr.getSelectedNetworkViews();
 			for ( CyNetworkView view: views ) {
 				layout.setSelectedOnly(false);
 				layout.setLayoutAttribute(null);
-				tm.execute( new LayoutTask(layout, view) );
+				final Task layoutTask =  new LayoutTask(layout, view);
+				tm.execute(new TaskIterator(layoutTask), null);
 			}
 		}
 	}
@@ -227,12 +223,11 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 					}
 				}
 
-				if ((layout.supportsNodeAttributes().size() > 0)
-				    || (layout.supportsEdgeAttributes().size() > 0)) {
+				if (layout.supportsNodeAttributes().size() > 0 || layout.supportsEdgeAttributes().size() > 0)
 					layout.setLayoutAttribute(e.getActionCommand());
-				}
 
-				tm.execute( new LayoutTask(layout, netView) ); 
+				final Task layoutTask = new LayoutTask(layout, netView);
+				tm.execute(new TaskIterator(layoutTask), null); 
 			}
 		}
 	}
