@@ -150,6 +150,7 @@ public class SwingTaskManager implements TaskManager {
 			}
 		};
 
+		final Future<?> executorFuture = taskExecutorService.submit(executor);
 	}
 }
 
