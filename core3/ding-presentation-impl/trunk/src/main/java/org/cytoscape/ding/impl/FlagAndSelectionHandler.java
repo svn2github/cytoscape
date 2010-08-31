@@ -42,47 +42,45 @@
 //---------------------------------------------------------------------------
 package org.cytoscape.ding.impl;
 
-
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNode;
-
-//import org.cytoscape.data.SelectEvent;
-//import org.cytoscape.data.SelectEventListener;
-//import org.cytoscape.data.SelectFilter;
-
-import org.cytoscape.model.events.SelectedNodesEvent;
-import org.cytoscape.model.events.SelectedEdgesEvent;
-import org.cytoscape.model.events.UnselectedNodesEvent;
-import org.cytoscape.model.events.UnselectedEdgesEvent;
-import org.cytoscape.model.events.SelectedNodesListener;
-import org.cytoscape.model.events.SelectedEdgesListener;
-import org.cytoscape.model.events.UnselectedNodesListener;
-import org.cytoscape.model.events.UnselectedEdgesListener;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeEvent;
 import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.NodeView;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.events.SelectedEdgesEvent;
+import org.cytoscape.model.events.SelectedEdgesListener;
+import org.cytoscape.model.events.SelectedNodesEvent;
+import org.cytoscape.model.events.SelectedNodesListener;
+import org.cytoscape.model.events.UnselectedEdgesEvent;
+import org.cytoscape.model.events.UnselectedEdgesListener;
+import org.cytoscape.model.events.UnselectedNodesEvent;
+import org.cytoscape.model.events.UnselectedNodesListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class synchronizes the flagged status of nodes and edges as held by a
- * SelectFilter object of a network with the selection status of the corresponding
- * node and edge views in a GraphView. An object will be selected in the view
- * iff the matching object is flagged in the SelectFilter. This class is only used
- * by PhoebeNetworkView, which no longer used anywhere.
+ * SelectFilter object of a network with the selection status of the
+ * corresponding node and edge views in a GraphView. An object will be selected
+ * in the view iff the matching object is flagged in the SelectFilter. This
+ * class is only used by PhoebeNetworkView, which no longer used anywhere.
+ * 
  */
-public class FlagAndSelectionHandler 
-	implements SelectedNodesListener, UnselectedNodesListener, SelectedEdgesListener, 
-	           UnselectedEdgesListener, GraphViewChangeListener {
-	private GraphView view;
+public class FlagAndSelectionHandler implements SelectedNodesListener,
+		UnselectedNodesListener, SelectedEdgesListener,
+		UnselectedEdgesListener, GraphViewChangeListener {
+
+	private static final Logger logger = LoggerFactory.getLogger(FlagAndSelectionHandler.class);
+
+	private static final String SELECT_ATTR = "selected";
+
+	private final GraphView view;
 
 	/**
 	 * Standard constructor takes the flag filter and the view that should be
@@ -90,28 +88,30 @@ public class FlagAndSelectionHandler
 	 * and view by turning on flags or selections that are currently on in one
 	 * of the two objects.
 	 */
-	public FlagAndSelectionHandler(GraphView view) {
+	public FlagAndSelectionHandler(final GraphView view) {
 		this.view = view;
 		syncFilterAndView();
 		view.addGraphViewChangeListener(this);
 	}
 
 	private Set<CyNode> getSelectedNodes() {
-		Set<CyNode> sel = new HashSet<CyNode>();
-		for ( CyNode n : view.getNetwork().getNodeList() )
-			if ( n.attrs().get("selected", Boolean.class).booleanValue() )
-				sel.add(n);
+		final Set<CyNode> selectedNodes = new HashSet<CyNode>();
 
-		return sel;
+		for (final CyNode n : view.getNetwork().getNodeList())
+			if (n.attrs().get(SELECT_ATTR, Boolean.class))
+				selectedNodes.add(n);
+
+		return selectedNodes;
 	}
 
 	private Set<CyEdge> getSelectedEdges() {
-		Set<CyEdge> sel = new HashSet<CyEdge>();
-		for ( CyEdge n : view.getNetwork().getEdgeList() )
-			if ( n.attrs().get("selected", Boolean.class).booleanValue() )
-				sel.add(n);
+		final Set<CyEdge> selectedEdges = new HashSet<CyEdge>();
 
-		return sel;
+		for (final CyEdge n : view.getNetwork().getEdgeList())
+			if (n.attrs().get(SELECT_ATTR, Boolean.class))
+				selectedEdges.add(n);
+
+		return selectedEdges;
 	}
 
 	/**
@@ -126,86 +126,84 @@ public class FlagAndSelectionHandler
 		final List<CyEdge> selectedEdges = view.getSelectedEdges();
 
 		// select all nodes that are flagged but not currently selected
-		for (Iterator iter = flaggedNodes.iterator(); iter.hasNext();) {
-			CyNode node = (CyNode) iter.next();
-			NodeView nv = view.getNodeView(node);
+		for (final CyNode node : flaggedNodes) {
+			final NodeView nv = view.getNodeView(node);
 
-			if ((nv == null) || nv.isSelected()) {
+			if ((nv == null) || nv.isSelected())
 				continue;
-			}
 
 			nv.setSelected(true);
 		}
 
 		// select all edges that are flagged but not currently selected
-		for (Iterator iter = flaggedEdges.iterator(); iter.hasNext();) {
-			CyEdge edge = (CyEdge) iter.next();
-			EdgeView ev = view.getEdgeView(edge);
+		for (final CyEdge edge : flaggedEdges) {
+			final EdgeView ev = view.getEdgeView(edge);
 
-			if ((ev == null) || ev.isSelected()) {
+			if ((ev == null) || ev.isSelected())
 				continue;
-			}
 
 			ev.setSelected(true);
 		}
 
 		// flag all nodes that are selected but not currently flagged
-		for (CyNode node : selectedNodes) {
-			node.attrs().set("selected",true);
-		}
+		for (final CyNode node : selectedNodes)
+			node.attrs().set(SELECT_ATTR, true);
 
 		// flag all edges that are selected but not currently flagged
-		for (CyEdge edge : selectedEdges) {
-			edge.attrs().set("selected",true);
-		}
+		for (final CyEdge edge : selectedEdges)
+			edge.attrs().set(SELECT_ATTR, true);
 	}
 
 	/**
 	 * Responds to selection events from the view by setting the matching
 	 * flagged state in the SelectFilter object.
 	 */
-	public void graphViewChanged(GraphViewChangeEvent event) {
+	public void graphViewChanged(final GraphViewChangeEvent event) {
+
 		// GINY bug: the event we get frequently has the correct indices
 		// but incorrect Node and Edge objects. For now we get around this
 		// by converting indices to graph objects ourselves
 		final GraphView source = (GraphView) event.getSource();
 
+		logger.debug("DING got GraphViewChangeEvent: Source = " + source);
+
+		final long start = System.currentTimeMillis();
 
 		if (event.isNodesSelectedType()) {
-			CyNode[] objIndecies = event.getSelectedNodes();
+			// Nodes are selected.
+			final CyNode[] selectedNodes = event.getSelectedNodes();
 
-			for ( CyNode n : objIndecies )
-				n.attrs().set("selected",true);
+			for (final CyNode node : selectedNodes)
+				node.attrs().set(SELECT_ATTR, true);
 
 		} else if (event.isNodesUnselectedType() || event.isNodesHiddenType()) {
-			CyNode[] objIndecies;
-			if (event.isNodesUnselectedType()) {
+			final CyNode[] objIndecies;
+			if (event.isNodesUnselectedType())
 				objIndecies = event.getUnselectedNodes();
-			} else {
+			else
 				objIndecies = event.getHiddenNodes();
-			}
 
-			for ( CyNode n : objIndecies ) { 
-				n.attrs().set("selected",false);
-			}
+			for (final CyNode n : objIndecies)
+				n.attrs().set(SELECT_ATTR, false);
 		} else if (event.isEdgesSelectedType()) {
-			CyEdge[] objIndecies = event.getSelectedEdges();
+			final CyEdge[] objIndecies = event.getSelectedEdges();
 
-			for ( CyEdge n : objIndecies ) { 
-				n.attrs().set("selected",true);
-			}
+			for (final CyEdge n : objIndecies)
+				n.attrs().set(SELECT_ATTR, true);
 		} else if (event.isEdgesUnselectedType() || event.isEdgesHiddenType()) {
-			CyEdge[] objIndecies; 
-			if (event.isEdgesUnselectedType()) {
+			final CyEdge[] objIndecies;
+			if (event.isEdgesUnselectedType())
 				objIndecies = event.getUnselectedEdges();
-			} else {
+			else
 				objIndecies = event.getHiddenEdges();
-			}
 
-			for ( CyEdge n : objIndecies ) { 
-				n.attrs().set("selected",false);
+			for (final CyEdge n : objIndecies) {
+				n.attrs().set(SELECT_ATTR, false);
 			}
 		}
+
+		logger.debug("Finished select operation: Time = "
+				+ (System.currentTimeMillis() - start) + " msec.");
 	}
 
 	/**
@@ -214,73 +212,68 @@ public class FlagAndSelectionHandler
 	 * those objects in the graph view.
 	 */
 
-	public void handleEvent(SelectedNodesEvent event) {
-		if ( event.getSource() != view.getNetwork() )
+	public void handleEvent(final SelectedNodesEvent event) {
+		if (event.getSource() != view.getNetwork())
 			return;
 
-		for ( CyNode n : event.getNodeList() ) {
-			setNodeSelected( n, true );
-		}
+		for (final CyNode n : event.getNodeList())
+			setNodeSelected(n, true);
 	}
 
-	public void handleEvent(SelectedEdgesEvent event) {
-		if ( event.getSource() != view.getNetwork() )
+	public void handleEvent(final SelectedEdgesEvent event) {
+		if (event.getSource() != view.getNetwork())
 			return;
 
-		for ( CyEdge n : event.getEdgeList() ) {
-			setEdgeSelected( n, true );
-		}
+		for (final CyEdge n : event.getEdgeList())
+			setEdgeSelected(n, true);
 	}
 
-	public void handleEvent(UnselectedNodesEvent event) {
-		if ( event.getSource() != view.getNetwork() )
+	public void handleEvent(final UnselectedNodesEvent event) {
+		if (event.getSource() != view.getNetwork())
 			return;
 
-		for ( CyNode n : event.getNodeList() ) {
-			setNodeSelected( n, false );
-		}
+		for (final CyNode n : event.getNodeList())
+			setNodeSelected(n, false);
 	}
 
-	public void handleEvent(UnselectedEdgesEvent event) {
-		if ( event.getSource() != view.getNetwork() )
+	public void handleEvent(final UnselectedEdgesEvent event) {
+		if (event.getSource() != view.getNetwork())
 			return;
 
-		for ( CyEdge n : event.getEdgeList() ) {
-			setEdgeSelected( n, false );
-		}
+		for (final CyEdge n : event.getEdgeList())
+			setEdgeSelected(n, false);
 	}
 
 	/**
 	 * Helper method to set selection for a node view.
 	 */
-	private void setNodeSelected(CyNode node, boolean selectOn) {
-		NodeView nodeView = view.getNodeView(node);
+	private void setNodeSelected(final CyNode node, boolean selectOn) {
+		final NodeView nodeView = view.getNodeView(node);
 
-		if (nodeView == null) {
+		if (nodeView == null)
 			return;
-		} // sanity check
-		  // Giny fires a selection event even if there's no change in state
-		  // we trap this by only requesting a selection if there's a change
 
-		if (nodeView.isSelected() != selectOn) {
+		// sanity check
+		// Giny fires a selection event even if there's no change in state
+		// we trap this by only requesting a selection if there's a change
+
+		if (nodeView.isSelected() != selectOn)
 			nodeView.setSelected(selectOn);
-		}
 	}
 
 	/**
 	 * Helper method to set selection for an edge view.
 	 */
-	private void setEdgeSelected(CyEdge edge, boolean selectOn) {
+	private void setEdgeSelected(final CyEdge edge, boolean selectOn) {
 		EdgeView edgeView = view.getEdgeView(edge);
 
-		if (edgeView == null) {
+		if (edgeView == null)
 			return;
-		} // sanity check
-		  // Giny fires a selection event even if there's no change in state
-		  // we trap this by only requesting a selection if there's a change
+		// sanity check
+		// Giny fires a selection event even if there's no change in state
+		// we trap this by only requesting a selection if there's a change
 
-		if (edgeView.isSelected() != selectOn) {
+		if (edgeView.isSelected() != selectOn)
 			edgeView.setSelected(selectOn);
-		}
 	}
 }
