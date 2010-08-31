@@ -16,43 +16,46 @@ import org.cytoscape.work.Tunable.Param;
 
 
 public class LoadDataTableTask extends AbstractTask {
-
 	@Tunable(description = "Data table file to load", flags = { Param.attributes })
 	public File file;
 
 	private CyDataTableReader reader;
-	private CyDataTableReaderManager mgr;
+	private final CyDataTableReaderManager mgr;
 
-	public LoadDataTableTask(CyDataTableReaderManager mgr) {
+	public LoadDataTableTask(final CyDataTableReaderManager mgr) {
 		this.mgr = mgr;
 	}
 
 	/**
 	 * Executes Task.
 	 */
-	public void run(TaskMonitor taskMonitor) throws Exception {
-
-        taskMonitor.setStatusMessage("Finding Data Table Reader...");
-        taskMonitor.setProgress(-1.0);
+	public void run(final TaskMonitor taskMonitor) throws Exception {
+		taskMonitor.setStatusMessage("Finding Data Table Reader...");
+		taskMonitor.setProgress(-1.0);
 		reader = mgr.getReader(file.toURI());
 
-		if ( reader == null )
+		if (reader == null)
 			throw new NullPointerException("Failed to find reader for specified file!");
-		
-        taskMonitor.setStatusMessage("Importing Data Table...");
 
-        reader.run(taskMonitor);
+		taskMonitor.setStatusMessage("Importing Data Table...");
 
-        for ( CyDataTable table : reader.getCyDataTables() ) 
-            taskMonitor.setStatusMessage("Successfully loaded data table: " + table.getTitle());
+		insertTaskAfterCurrentTask(new FinalStatusMessageUpdateTask(reader));
+		insertTaskAfterCurrentTask(reader);
+	}
+}
 
-        taskMonitor.setProgress(1.0);
+
+class FinalStatusMessageUpdateTask extends AbstractTask {
+	private final CyDataTableReader reader;
+
+	FinalStatusMessageUpdateTask(final CyDataTableReader reader) {
+		this.reader = reader;
 	}
 
-    public void cancel() {
-        super.cancel();
-        if (reader != null) {
-            reader.cancel();
-        }
-    }
+	public void run(final TaskMonitor taskMonitor) throws Exception {
+		for (CyDataTable table : reader.getCyDataTables())
+			taskMonitor.setStatusMessage("Successfully loaded data table: " + table.getTitle());
+
+		taskMonitor.setProgress(1.0);
+	}
 }

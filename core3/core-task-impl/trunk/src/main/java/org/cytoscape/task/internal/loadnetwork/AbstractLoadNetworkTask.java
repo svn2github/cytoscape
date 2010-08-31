@@ -56,15 +56,15 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 	protected String name;
 	protected boolean interrupted = false;
 	protected CyNetworkViewReaderManager mgr;
-	protected CyNetworkManager netmgr;
+	protected CyNetworkManager netMgr;
 	protected Properties props;
 	protected CyNetworkNaming namingUtil;
 
-	public AbstractLoadNetworkTask(final CyNetworkViewReaderManager mgr, final CyNetworkManager netmgr,
+	public AbstractLoadNetworkTask(final CyNetworkViewReaderManager mgr, final CyNetworkManager netMgr,
 	                               final Properties props, final CyNetworkNaming namingUtil)
 	{
 		this.mgr = mgr;
-		this.netmgr = netmgr;
+		this.netMgr = netMgr;
 		this.props = props;
 		this.namingUtil = namingUtil;
 	}
@@ -76,19 +76,40 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 		taskMonitor.setStatusMessage("Reading in Network Data...");
 		taskMonitor.setProgress(-1.0);
 		taskMonitor.setStatusMessage("Creating Cytoscape Network...");
-		
-		viewReader.run(taskMonitor);
 
-		if (cancelled())
-			return;
-		
+		insertTaskAfterCurrentTask(
+			new GenerateNetworkViewsTask(name, viewReader, netMgr, namingUtil, props)); // Beware of ordering!
+		insertTaskAfterCurrentTask(viewReader);                                             // This goes 2nd!
+	}
+
+	abstract public void run(TaskMonitor taskMonitor) throws Exception;
+}
+
+
+class GenerateNetworkViewsTask extends AbstractTask {
+	private final String name;
+	private final CyNetworkViewReader viewReader;
+	private final CyNetworkManager netMgr;
+	private final CyNetworkNaming namingUtil;
+	private final Properties props;
+
+	GenerateNetworkViewsTask(final String name, final CyNetworkViewReader viewReader, final CyNetworkManager netMgr,
+				 final CyNetworkNaming namingUtil, final Properties props)
+	{
+		this.name = name;
+		this.viewReader = viewReader;
+		this.netMgr = netMgr;
+		this.namingUtil = namingUtil;
+		this.props = props;
+	}
+
+	public void run(final TaskMonitor taskMonitor) throws Exception {
 		final CyNetworkView[] cyNetworkViews = viewReader.getNetworkViews();
 
 		if (cyNetworkViews == null || cyNetworkViews.length < 0)
 			throw new IOException("Could not create network for the producer.");
 
 		for (CyNetworkView view : cyNetworkViews) {
-
 			if (cancelled())
 				return;
 
@@ -96,23 +117,21 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 			final CyNetwork cyNetwork = view.getModel();
 			cyNetwork.attrs().set("name", namingUtil.getSuggestedNetworkTitle(name));
 
-			netmgr.addNetwork(cyNetwork);
-			netmgr.addNetworkView(view);
+			netMgr.addNetwork(cyNetwork);
+			netMgr.addNetworkView(view);
 			
 			view.fitContent();
 
-			informUserOfGraphStats(cyNetwork);
+			informUserOfGraphStats(cyNetwork, taskMonitor);
 		}
 
 		taskMonitor.setProgress(1.0);
 	}
 
-	abstract public void run(TaskMonitor taskMonitor) throws Exception;
-
 	/**
 	 * Inform User of Network Stats.
 	 */
-	private void informUserOfGraphStats(CyNetwork newNetwork) {
+	private void informUserOfGraphStats(final CyNetwork newNetwork, final TaskMonitor taskMonitor) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 		StringBuffer sb = new StringBuffer();
 
@@ -137,12 +156,5 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 		}
 
 		taskMonitor.setStatusMessage(sb.toString());
-	}
-
-	public void cancel() {
-		super.cancel();
-		if (reader != null) {
-			reader.cancel();
-		}
 	}
 }
