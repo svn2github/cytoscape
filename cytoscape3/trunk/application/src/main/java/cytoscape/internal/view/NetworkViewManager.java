@@ -457,7 +457,7 @@ public class NetworkViewManager implements InternalFrameListener,
 			}
 		};
 		
-		eventHelper.addMicroListener( rsml, RowSetMicroListener.class, view.getModel().attrs().getDataTable() );
+		eventHelper.addMicroListener( rsml, RowSetMicroListener.class, view.getModel().attrs() );
 		nameListeners.put(view.getModel(), rsml );
 	}
 }

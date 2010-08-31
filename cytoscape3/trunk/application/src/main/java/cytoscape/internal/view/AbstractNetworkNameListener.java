@@ -37,20 +37,17 @@
 package cytoscape.internal.view;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRow;
 import org.cytoscape.model.events.RowSetMicroListener;
 
 
 public abstract class AbstractNetworkNameListener implements RowSetMicroListener {
 	protected final CyNetwork net;
-	protected final CyRow row;
 	public AbstractNetworkNameListener(final CyNetwork net) {
 		this.net = net;
-		this.row = net.attrs();
 	}
 
-	public void handleRowSet(CyRow row, String col, Object value) {
-		if ( row != null && row == this.row && "name".equals(col) )
+	public void handleRowSet(String col, Object value) {
+		if ( "name".equals(col) )
 			updateNetworkName(net,(String)value);
 	}
 

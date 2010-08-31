@@ -373,7 +373,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 				updateTitle(n,name);
 			}
 		};
-		eventHelper.addMicroListener(rsml, RowSetMicroListener.class, net.attrs().getDataTable());
+		eventHelper.addMicroListener(rsml, RowSetMicroListener.class, net.attrs());
 		nameListeners.put(e.getNetwork(),rsml);
 	}
 

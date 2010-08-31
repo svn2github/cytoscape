@@ -242,7 +242,6 @@
 
 	<bean id="selectRegisterListener" class="cytoscape.internal.select.SelectRegisterListener">
 		<constructor-arg ref="cyEventHelperServiceRef" />
-		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 
 

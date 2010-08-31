@@ -55,12 +55,11 @@ public class ViewUpdater<T,S> implements RowSetMicroListener {
 	}
 
 	public Object getEventSource() {
-		return row.getDataTable();
+		return row;
 	}
 
-	public void handleRowSet(CyRow row, String columnName, Object value) {
-		if ( row == null || row != this.row || 
-		     columnName == null || !columnName.equals(this.columnName) )
+	public void handleRowSet(String columnName, Object value) {
+		if ( columnName == null || !columnName.equals(this.columnName) )
 			return;
 
 		view.setVisualProperty(vp, (S)value);

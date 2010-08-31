@@ -20,23 +20,18 @@ import org.cytoscape.view.model.View;
 public class SelectRegisterListener implements NetworkViewAddedListener {
 
 	private CyEventHelper eventHelper;
-	private CyTableManager tableMgr;
 
-	public SelectRegisterListener(CyEventHelper eventHelper, CyTableManager tableMgr) {
+	public SelectRegisterListener(CyEventHelper eventHelper) {
 		this.eventHelper = eventHelper;
-		this.tableMgr = tableMgr;
 	}
 
 	public void handleEvent(NetworkViewAddedEvent e) {
 		final CyNetworkView view = e.getNetworkView();
 
-		CyDataTable nodeTable = tableMgr.getTableMap("NODE",view.getModel()).get(CyNetwork.DEFAULT_ATTRS);
-		CyDataTable edgeTable = tableMgr.getTableMap("EDGE",view.getModel()).get(CyNetwork.DEFAULT_ATTRS);
-		
 		for ( View<CyNode> nv : view.getNodeViews() )
-			eventHelper.addMicroListener( new SelectNodeViewUpdater(nv), RowSetMicroListener.class, nodeTable );
+			eventHelper.addMicroListener( new SelectNodeViewUpdater(nv), RowSetMicroListener.class, nv.getModel().attrs() );
 
 		for ( View<CyEdge> ev : view.getEdgeViews() ) 
-			eventHelper.addMicroListener( new SelectEdgeViewUpdater(ev), RowSetMicroListener.class, edgeTable );
+			eventHelper.addMicroListener( new SelectEdgeViewUpdater(ev), RowSetMicroListener.class, ev.getModel().attrs() );
 	}
 }
