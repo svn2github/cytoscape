@@ -42,8 +42,8 @@ import org.cytoscape.model.CyRow;
 
 /**
  * Listener for row set events. The event source for this listener
- * will the be the CyDataTable that contains the CyRow in question.
+ * will the be CyRow that is being modified. 
  */
 public interface RowSetMicroListener extends CyMicroListener {
-	void handleRowSet(CyRow row, String columnName, Object value);
+	void handleRowSet(String columnName, Object value);
 }
