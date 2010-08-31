@@ -14,9 +14,10 @@ public final class TaskIterator {
 		this.tasks = new ArrayList<Task>(initialTasks.length);
 		this.currentIndex = 0;
 
-		for (final Task initialTask : initialTasks)
+		for (final Task initialTask : initialTasks) {
+			tryToAddSelfReferenceToTask(initialTask);
 			tasks.add(initialTask);
-		
+		}
 	}
 
 	/** Pushes "newTask" to the current end of the iterator.
