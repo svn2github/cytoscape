@@ -1,0 +1,198 @@
+/* vim: set ts=2: */
+/**
+ * Copyright (c) 2010 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *   1. Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions, and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above
+ *      copyright notice, this list of conditions, and the following
+ *      disclaimer in the documentation and/or other materials provided
+ *      with the distribution.
+ *   3. Redistributions must acknowledge that this software was
+ *      originally developed by the UCSF Computer Graphics Laboratory
+ *      under support by the NIH National Center for Research Resources,
+ *      grant P41-RR01081.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+package nodeCharts.view;
+
+// System imports
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import java.awt.Color;
+import java.awt.Paint;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Rectangle2D;
+
+// Cytoscape imports
+import cytoscape.CyNode;
+import cytoscape.command.CyCommandException;
+import cytoscape.layout.Tunable;
+import cytoscape.render.stateful.CustomGraphic;
+import cytoscape.render.stateful.PaintFactory;
+import cytoscape.view.CyNetworkView;
+
+/**
+ * The PieChart creates a list of custom graphics where each custom graphic represents
+ * a slice of the pie.  The data for this is of the format: label1:value1:color1, etc.,
+ * where value is numeric and the color is optional, but if specified, it must be one of
+ * the named Java colors, hex RGB values, or hex RGBA values.
+ */
+public class PieChart implements NodeChartViewer {
+	private static final String LABELS = "labellist";
+	private static final String VALUES = "valuelist";
+	private static final String COLORS = "colorlist";
+
+	public String getName() {
+		return "pie";
+	}
+
+	public String getDescription() {
+		return "Display the values passed as arguments as a pie chart on the node";
+	}
+
+	public Map<String,String> getOptions() {
+		Map<String,String> options = new HashMap<String,String>();
+		options.put(LABELS,"");
+		options.put(VALUES,"");
+		options.put(COLORS,"");
+		return options;
+	}
+
+	public List<CustomGraphic> getCustomGraphics(Map<String, Object>args, CyNode node, CyNetworkView view) 
+	                                                                               throws CyCommandException {
+		// First, get our data values
+		if (!args.containsKey(VALUES))
+			throw new CyCommandException("pie values list is mandatory");
+
+		// Get our values.  convertData returns an array of values in degrees of arc
+		List<Double> values = convertData((String)args.get(VALUES));
+
+		if (!args.containsKey(LABELS))
+			throw new CyCommandException("pie labels list is mandatory");
+
+		// Get our labels.  These may or may not be printed depending on options
+		List<String> labels = getLabels((String)args.get(LABELS));
+
+		// Get our colors
+		List<Color> colors;
+		if (args.containsKey(COLORS))
+			colors = convertColor((String)args.get(COLORS));
+		else
+			colors = generateColors(values.size());
+
+		// Sanity check
+		if (labels.size() != values.size() ||
+		    labels.size() != colors.size())
+			throw new CyCommandException("number of labels ("+labels.size()+"), values ("+values.size()+"), and colors ("+colors.size()+") don't match");
+
+		int nSlices = labels.size();
+		double arcStart = 0.0;
+		List<CustomGraphic> cgList = new ArrayList<CustomGraphic>();
+
+		// We need to get our bounding box in order to scale our graphic properly
+		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view);
+
+		for (int slice = 0; slice < nSlices; slice++) {
+			CustomGraphic cg = createSlice(bbox, arcStart, labels.get(slice), values.get(slice), colors.get(slice));
+			cgList.add(cg);
+			arcStart += values.get(slice).doubleValue();
+		}
+		return cgList;
+	}
+
+	private List<Double> convertData(Object input) throws CyCommandException {
+		if (input == null)
+			throw new CyCommandException("no input data?");
+
+		List<Double> values = ValueUtils.convertInputToDouble(input);
+		
+		double totalSize = 0.0;
+		int nValues = values.size();
+		for (Double d: values) {
+			totalSize += d.doubleValue();
+		}
+
+		// Now we have an array of doubles, but we need to convert them to degree offsets
+		for (int index = 0; index < nValues; index++) {
+			double v = values.get(index).doubleValue();
+			values.set(index, v*360.0/totalSize);
+		}
+		return values;
+	}
+
+	private List<Color> convertColor(String input) {
+		String[] inputArray = input.split(",");
+		return null;
+	}
+
+	private List<Color> generateColors(int nColors) {
+		Calendar cal = Calendar.getInstance();
+		int seed = cal.get(Calendar.SECOND);
+		Random rand = new Random(seed);
+
+		List<Color> result = new ArrayList<Color>(nColors);
+		for (int index = 0; index < nColors; index++) {
+			int r = rand.nextInt(255);
+			int g = rand.nextInt(255);
+			int b = rand.nextInt(255);
+			result.add(index, new Color(r,g,b,200));
+		}
+		return result;
+	}
+
+	private List<String> getLabels(String input) {
+		String[] inputArray = input.split(",");
+		return Arrays.asList(inputArray);
+	}
+
+	private CustomGraphic createSlice(Rectangle2D bbox, double arcStart, String label, Double arc, Color color) {
+		// System.out.println("Creating arc from "+arcStart+" to "+arc+" with color: "+color);
+		double x = bbox.getX();
+		double y = bbox.getY();
+		double width = bbox.getWidth();
+		double height = bbox.getHeight();
+		// Create the slice
+		Arc2D slice = new Arc2D.Double(x, y, width, height, arcStart, arc, Arc2D.PIE);
+		// TODO: Create the label as a shape on the slice
+
+		// Create the paint factory
+		PaintFactory pf = new MyPaintFactory(color);
+		return new CustomGraphic(slice, pf);
+	}
+
+	private class MyPaintFactory implements PaintFactory {
+		private final Color color;
+
+		public MyPaintFactory(final Color c) {
+			color = c;
+		}
+
+		public Paint getPaint(final Rectangle2D bound) {
+			// System.out.println("MyPaintFactory returning: "+color);
+			return color;
+		}
+	}
+}
