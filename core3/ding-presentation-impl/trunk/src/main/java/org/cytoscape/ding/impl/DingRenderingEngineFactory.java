@@ -135,7 +135,7 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	@Override
 	public void handleEvent(NetworkViewChangedEvent nvce) {
 		DGraphView gv = viewMap.get(nvce.getSource());
-		logger.debug("NetworkViewChangedEvent listener got view: " + nvce.getSource().getSUID());
+		logger.debug("NetworkViewChangedEvent listener got view update request: " + nvce.getSource().getSUID());
 		if ( gv != null )
 			gv.updateView();
 	}

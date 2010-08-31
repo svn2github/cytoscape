@@ -175,7 +175,7 @@ public class FlagAndSelectionHandler implements SelectedNodesListener,
 
 			for (final CyNode node : selectedNodes)
 				node.attrs().set(SELECT_ATTR, true);
-
+			
 		} else if (event.isNodesUnselectedType() || event.isNodesHiddenType()) {
 			final CyNode[] objIndecies;
 			if (event.isNodesUnselectedType())

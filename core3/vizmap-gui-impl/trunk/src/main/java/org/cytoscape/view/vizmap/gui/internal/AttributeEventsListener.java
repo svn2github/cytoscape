@@ -179,4 +179,10 @@ public class AttributeEventsListener  implements RowSetMicroListener {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void handleRowSet(String columnName, Object value) {
+		// TODO Auto-generated method stub
+		
+	}
 }

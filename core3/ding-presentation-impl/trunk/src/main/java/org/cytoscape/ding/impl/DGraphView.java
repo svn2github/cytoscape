@@ -34,8 +34,6 @@
  */
 package org.cytoscape.ding.impl;
 
-import static org.cytoscape.model.GraphObject.EDGE;
-import static org.cytoscape.model.GraphObject.NETWORK;
 import static org.cytoscape.model.GraphObject.NODE;
 
 import java.awt.Color;
@@ -72,6 +70,7 @@ import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.GraphViewObject;
 import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.PrintLOD;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.graph.render.stateful.GraphLOD;
 import org.cytoscape.graph.render.stateful.GraphRenderer;
@@ -83,7 +82,6 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.spacial.SpacialEntry2DEnumerator;
 import org.cytoscape.spacial.SpacialIndex2D;
 import org.cytoscape.spacial.SpacialIndex2DFactory;
@@ -129,10 +127,13 @@ import phoebe.PhoebeCanvasDroppable;
  * 
  * @author Nerius Landys
  */
-public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printable,
-		PhoebeCanvasDroppable, NetworkViewChangeMicroListener, NodeViewChangeMicroListener, EdgeViewChangeMicroListener, FitContentEventListener, FitSelectedEventListener {
-	
-	private static final Logger logger = LoggerFactory.getLogger(DGraphView.class);
+public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
+		Printable, PhoebeCanvasDroppable, NetworkViewChangeMicroListener,
+		NodeViewChangeMicroListener, EdgeViewChangeMicroListener,
+		FitContentEventListener, FitSelectedEventListener {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(DGraphView.class);
 
 	private static enum ZOrder {
 		BACKGROUND_PANE, NETWORK_PANE, FOREGROUND_PANE;
@@ -342,7 +343,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	 */
 	Paint m_lastTexturePaint = null;
 
-
 	Map<NodeViewTaskFactory, Map> nodeViewTFs;
 	Map<EdgeViewTaskFactory, Map> edgeViewTFs;
 	Map<NetworkViewTaskFactory, Map> emptySpaceTFs;
@@ -352,10 +352,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 	// Will be injected.
 	private VisualLexicon dingLexicon;
-		
-	// This is the view model.  This should be immutable.
+
+	// This is the view model. This should be immutable.
 	final CyNetworkView cyNetworkView;
-	
+
 	private final RootVisualLexicon rootLexicon;
 
 	/**
@@ -371,24 +371,26 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			Map<NodeViewTaskFactory, Map> nodeViewTFs,
 			Map<EdgeViewTaskFactory, Map> edgeViewTFs,
 			Map<NetworkViewTaskFactory, Map> emptySpaceTFs,
-			TunableInterceptor interceptor, TaskManager manager, 
+			TunableInterceptor interceptor, TaskManager manager,
 			CyEventHelper eventHelper, CyTableManager tableMgr) {
-		
-		if(view == null)
-			throw new IllegalArgumentException("Network View Model cannot be null.");
-		
+
+		if (view == null)
+			throw new IllegalArgumentException(
+					"Network View Model cannot be null.");
+
 		long start = System.currentTimeMillis();
 		logger.debug("Phase 1: rendering start.");
 		networkModel = view.getModel();
 		cyNetworkView = view;
-		
-		// Register this presentation as a service.  And this should maintain all children.
+
+		// Register this presentation as a service. And this should maintain all children.
 		eventHelper.addMicroListener(this, NetworkViewChangeMicroListener.class, cyNetworkView);
 		eventHelper.addMicroListener(this, NodeViewChangeMicroListener.class, cyNetworkView);
 		eventHelper.addMicroListener(this, EdgeViewChangeMicroListener.class, cyNetworkView);
-		
-		logger.debug("Phase 2: service registered: time = " + (System.currentTimeMillis()- start));
-		
+
+		logger.debug("Phase 2: service registered: time = "
+				+ (System.currentTimeMillis() - start));
+
 		rootLexicon = vpc;
 		this.dingLexicon = dingLexicon;
 
@@ -399,11 +401,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		this.interceptor = interceptor;
 		this.manager = manager;
 
-		CyDataTable nodeCAM = dataFactory.createTable("node view", false);
+		final CyDataTable nodeCAM = dataFactory.createTable("node view", false);
 		nodeCAM.createColumn("hidden", Boolean.class, false);
 		tableMgr.getTableMap("NODE", networkModel).put("VIEW", nodeCAM);
 
-		CyDataTable edgeCAM = dataFactory.createTable("edge view", false);
+		final CyDataTable edgeCAM = dataFactory.createTable("edge view", false);
 		edgeCAM.createColumn("hidden", Boolean.class, false);
 		tableMgr.getTableMap("EDGE", networkModel).put("VIEW", edgeCAM);
 
@@ -431,26 +433,31 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		m_selectedNodes = new IntBTree();
 		m_selectedEdges = new IntBTree();
 		m_selectedAnchors = new IntBTree();
-		
-		logger.debug("Phase 3: Canvas created: time = " + (System.currentTimeMillis()- start));
+
+		logger.debug("Phase 3: Canvas created: time = "
+				+ (System.currentTimeMillis() - start));
 
 		// from DingNetworkView
 		this.title = networkModel.attrs().get("name", String.class);
 
-		for (CyNode nn : networkModel.getNodeList())		
+		// Create presentations for the graph objects
+		for (CyNode nn : networkModel.getNodeList())
 			addNodeView(nn);
 
 		for (CyEdge ee : networkModel.getEdgeList())
 			addEdgeView(ee);
 
 		// read in visual properties from view obj
-		final Collection<VisualProperty<?>> netVPs = rootLexicon.getVisualProperties(NETWORK);
-		for (VisualProperty<?> vp : netVPs)
-			networkVisualPropertySet(cyNetworkView, vp, cyNetworkView.getVisualProperty(vp));
+		// FIXME TODO: this process is not necessary
+		// final Collection<VisualProperty<?>> netVPs =
+		// rootLexicon.getVisualProperties(NETWORK);
+		// for (VisualProperty<?> vp : netVPs)
+		// networkVisualPropertySet(cyNetworkView, vp,
+		// cyNetworkView.getVisualProperty(vp));
 
 		new FlagAndSelectionHandler(this);
-		
-		logger.debug("Phase 4: Everything created: time = " + (System.currentTimeMillis()- start));
+
+		logger.debug("Phase 4: Everything created: time = " + (System.currentTimeMillis() - start));
 	}
 
 	/**
@@ -752,28 +759,28 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		final int nodeInx = node.getIndex();
 		final NodeView oldView = m_nodeViewMap.get(nodeInx);
 
-		if (oldView != null) {
+		if (oldView != null)
 			return null;
-		}
 
 		m_drawPersp.addNode(node);
 
-		final View<CyNode> nv = cyNetworkView.getNodeView(node);
-		// This is the node presentation.
-		final NodeView newView = new DNodeView(this, nodeInx, nv);
-		
-		m_nodeViewMap.put(nodeInx, newView);
+		final View<CyNode> nodeViewModel = cyNetworkView.getNodeView(node);
+		final NodeView dNodeView = new DNodeView(this, nodeInx, nodeViewModel);
+
+		m_nodeViewMap.put(nodeInx, dNodeView);
 		m_spacial.insert(nodeInx, m_defaultNodeXMin, m_defaultNodeYMin,
 				m_defaultNodeXMax, m_defaultNodeYMax);
 
 		// read in visual properties from view obj
+		// FIXME TODO: this process is not necessary
 		final Collection<VisualProperty<?>> nodeVPs = rootLexicon
 				.getVisualProperties(NODE);
-		
+
 		for (VisualProperty<?> vp : nodeVPs)
-			nodeVisualPropertySet(nv, vp, nv.getVisualProperty(vp));
-		
-		return newView;
+			nodeVisualPropertySet(nodeViewModel, vp,
+					nodeViewModel.getVisualProperty(vp));
+
+		return dNodeView;
 	}
 
 	/**
@@ -811,11 +818,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			m_contentChanged = true;
 
 			// read in visual properties from view obj
-			final Collection<VisualProperty<?>> edgeVPs = rootLexicon
-					.getVisualProperties(EDGE);
-			
-			for (VisualProperty<?> vp : edgeVPs)
-				edgeVisualPropertySet(edgeViewModel, vp, edgeViewModel.getVisualProperty(vp));
+			// FIXME TODO: this process is not necessary in construction
+			// process.
+			// final Collection<VisualProperty<?>> edgeVPs = rootLexicon
+			// .getVisualProperties(EDGE);
+			//
+			// for (VisualProperty<?> vp : edgeVPs)
+			// edgeVisualPropertySet(edgeViewModel, vp,
+			// edgeViewModel.getVisualProperty(vp));
 
 		}
 
@@ -1058,7 +1068,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			m_viewportChanged = true;
 		}
 
-		//updateView();
+		// updateView();
 	}
 
 	/**
@@ -1076,16 +1086,15 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			m_networkCanvas.m_xCenter = (((double) m_extentsBuff[0]) + ((double) m_extentsBuff[2])) / 2.0d;
 			m_networkCanvas.m_yCenter = (((double) m_extentsBuff[1]) + ((double) m_extentsBuff[3])) / 2.0d;
 			final double zoom = Math
-					.min(
-							((double) m_networkCanvas.getWidth())
-									/ (((double) m_extentsBuff[2]) - ((double) m_extentsBuff[0])),
+					.min(((double) m_networkCanvas.getWidth())
+							/ (((double) m_extentsBuff[2]) - ((double) m_extentsBuff[0])),
 							((double) m_networkCanvas.getHeight())
 									/ (((double) m_extentsBuff[3]) - ((double) m_extentsBuff[1])));
 			m_networkCanvas.m_scaleFactor = checkZoom(zoom,
 					m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
-		
+
 		// Redraw camvas.
 		updateView();
 	}
@@ -1094,9 +1103,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	 * DOCUMENT ME!
 	 */
 	public void updateView() {
-		Thread.dumpStack();
-		logger.debug("Update view called.  repainting canvas...\n\n");
+		final long start = System.currentTimeMillis();
+		logger.debug("Update view called.  repainting canvas...");
 		m_networkCanvas.repaint();
+		logger.debug("Repaint finised.  Time = "
+				+ (System.currentTimeMillis() - start));
 	}
 
 	/**
@@ -1369,9 +1380,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 				if (listener != null) {
 					if (edges.size() > 0) {
-						listener
-								.graphViewChanged(new GraphViewEdgesHiddenEvent(
-										this, edges));
+						listener.graphViewChanged(new GraphViewEdgesHiddenEvent(
+								this, edges));
 					}
 
 					listener.graphViewChanged(new GraphViewNodesHiddenEvent(
@@ -1471,15 +1481,13 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 				if (listener != null) {
 					if (sourceNode != null) {
-						listener
-								.graphViewChanged(new GraphViewNodesRestoredEvent(
-										this, makeList(sourceNode)));
+						listener.graphViewChanged(new GraphViewNodesRestoredEvent(
+								this, makeList(sourceNode)));
 					}
 
 					if (targetNode != null) {
-						listener
-								.graphViewChanged(new GraphViewNodesRestoredEvent(
-										this, makeList(targetNode)));
+						listener.graphViewChanged(new GraphViewNodesRestoredEvent(
+								this, makeList(targetNode)));
 					}
 
 					listener.graphViewChanged(new GraphViewEdgesRestoredEvent(
@@ -1889,7 +1897,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			m_viewportChanged = true;
 		}
 
-		//updateView();
+		// updateView();
 	}
 
 	/**
@@ -2105,8 +2113,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 							|| ((m_extentsBuff[0] < xMin) && (m_extentsBuff[3] > yMax))
 							|| ((m_extentsBuff[2] > xMax) && (m_extentsBuff[3] > yMax))
 							|| ((m_extentsBuff[2] > xMax) && (m_extentsBuff[1] < yMin))) {
-						m_networkCanvas.m_grafx.getNodeShape(m_nodeDetails
-								.shape(node), m_extentsBuff[0],
+						m_networkCanvas.m_grafx.getNodeShape(
+								m_nodeDetails.shape(node), m_extentsBuff[0],
 								m_extentsBuff[1], m_extentsBuff[2],
 								m_extentsBuff[3], m_path);
 
@@ -2263,15 +2271,16 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	 */
 	public int print(Graphics g, PageFormat pageFormat, int page) {
 		if (page == 0) {
-			((Graphics2D) g).translate(pageFormat.getImageableX(), pageFormat
-					.getImageableY());
+			((Graphics2D) g).translate(pageFormat.getImageableX(),
+					pageFormat.getImageableY());
 
 			// make sure the whole image on the screen will fit to the printable
 			// area of the paper
-			double image_scale = Math.min(pageFormat.getImageableWidth()
-					/ m_networkCanvas.getWidth(), pageFormat
-					.getImageableHeight()
-					/ m_networkCanvas.getHeight());
+			double image_scale = Math
+					.min(pageFormat.getImageableWidth()
+							/ m_networkCanvas.getWidth(),
+							pageFormat.getImageableHeight()
+									/ m_networkCanvas.getHeight());
 
 			if (image_scale < 1.0d) {
 				((Graphics2D) g).scale(image_scale, image_scale);
@@ -2283,8 +2292,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 			// getComponent().print(g);
 
 			// from InternalFrameComponent
-			g.clipRect(0, 0, m_backgroundCanvas.getWidth(), m_backgroundCanvas
-					.getHeight());
+			g.clipRect(0, 0, m_backgroundCanvas.getWidth(),
+					m_backgroundCanvas.getHeight());
 			m_backgroundCanvas.print(g);
 			m_networkCanvas.print(g);
 			m_foregroundCanvas.print(g);
@@ -2691,32 +2700,32 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 		return l;
 	}
-	
-	//// Micro event handlers ////
+
+	// // Micro event handlers ////
 	@Override
-	public void nodeVisualPropertySet(final View<CyNode> nodeView, final VisualProperty<?> vp, final Object value) {
+	public void nodeVisualPropertySet(final View<CyNode> nodeView,
+			final VisualProperty<?> vp, final Object value) {
 		// Both objects should exist.
-		if ( value == null || nodeView == null)
+		if (value == null || nodeView == null)
 			return;
-		
-		// Convert to Ding's view object.
-		m_nodeViewMap.get(nodeView.getModel().getIndex()).setVisualPropertyValue(vp, value);
-		//logger.debug("Visual Prop appled to node: " + vp.getDisplayName() + " = " + value);
-	}
-	
-	
+
+		m_nodeViewMap.get(nodeView.getModel()
+				.getIndex()).setVisualPropertyValue(vp, value);
+	} 
+
 	/**
 	 * This should be called from DGraphView.
 	 * 
 	 */
 	@Override
-	public void edgeVisualPropertySet(final View<CyEdge> edgeView, final VisualProperty<?> vp, final Object value) {
-		if ( value == null || edgeView == null)
+	public void edgeVisualPropertySet(final View<CyEdge> edgeView,
+			final VisualProperty<?> vp, final Object value) {
+		if (value == null || edgeView == null)
 			return;
-	
+
 		// Convert to Ding's view object.
-		m_edgeViewMap.get(edgeView.getModel().getIndex()).setVisualPropertyValue(vp, value);
-		//logger.debug("Visual Prop appled to edge: " + vp.getDisplayName() + " = " + value);
+		m_edgeViewMap.get(edgeView.getModel().getIndex())
+				.setVisualPropertyValue(vp, value);
 	}
 
 	/**
@@ -2724,8 +2733,9 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 	 * 
 	 */
 	@Override
-	public void networkVisualPropertySet(View<CyNetwork> target, VisualProperty<?> vp, Object o) {
-		
+	public void networkVisualPropertySet(View<CyNetwork> target,
+			VisualProperty<?> vp, Object o) {
+
 		if (o == null)
 			return;
 
@@ -2750,10 +2760,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		} else if (vp == TwoDVisualLexicon.NETWORK_SCALE_FACTOR) {
 			setZoom(((Double) o).doubleValue());
 		}
-		
-		//logger.debug("Visual Prop appled to network: " + vp.getDisplayName() + " = " + o);
 	}
-	
 
 	// ////// The following implements Presentation API ////////////
 
@@ -2774,7 +2781,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 		// TODO Auto-generated method stub
 
 	}
-
 
 	public Image createImage(int width, int height) {
 		// TODO Auto-generated method stub
@@ -2797,13 +2803,17 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView, Printa
 
 	@Override
 	public void handleEvent(FitSelectedEvent e) {
-		logger.info("Fit Selected Called by event.");
-		fitSelected();
+		if (e.getSource().equals(cyNetworkView)) {
+			logger.info("Fit Selected Called by event.");
+			fitSelected();
+		}
 	}
 
 	@Override
 	public void handleEvent(FitContentEvent e) {
-		logger.info("Fit Content called by event.");
-		fitContent();
+		if (e.getSource().equals(cyNetworkView)) {
+			logger.info("Fit Content called by event.");
+			fitContent();
+		}
 	}
 }

@@ -66,6 +66,8 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Ding implementation of node presentation.
@@ -73,7 +75,7 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
  * @author $author$
  */
 public class DNodeView implements NodeView, Label {
-
+	
 	static final float DEFAULT_WIDTH = 20.0f;
 	static final float DEFAULT_HEIGHT = 20.0f;
 	static final int DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
@@ -613,6 +615,7 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setXPosition(double xPos) {
+		
 		synchronized (dGraphView.m_lock) {
 			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0)
 					|| Double.isNaN(xPos))

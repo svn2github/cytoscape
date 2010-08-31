@@ -143,7 +143,6 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 			return;
 
 		final CyEdge edge = e.getEdge();
-		System.out.println(" Adding edge to view! " + edge.toString());
 		final View<CyEdge> ev = new EdgeViewImpl(edge, cyEventHelper, this);
 		edgeViews.put(edge, ev); // FIXME: View creation here and in
 									// initializer: should be in one place

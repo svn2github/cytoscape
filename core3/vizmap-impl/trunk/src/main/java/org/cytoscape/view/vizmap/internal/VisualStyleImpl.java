@@ -38,9 +38,9 @@ import static org.cytoscape.model.GraphObject.EDGE;
 import static org.cytoscape.model.GraphObject.NETWORK;
 import static org.cytoscape.model.GraphObject.NODE;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.cytoscape.model.CyEdge;
@@ -64,10 +64,12 @@ public class VisualStyleImpl implements VisualStyle {
 	
 	private static final Logger logger = LoggerFactory.getLogger(VisualStyleImpl.class);
 	
-	private Map<VisualProperty<?>, VisualMappingFunction<?, ?>> mappings;
-	private Map<VisualProperty<?>, Object> perVSDefaults;
-	private RootVisualLexicon rootLexicon;
 	private static final String DEFAULT_TITLE = "?";
+	
+	private final Map<VisualProperty<?>, VisualMappingFunction<?, ?>> mappings;
+	private final Map<VisualProperty<?>, Object> perVSDefaults;
+	private final RootVisualLexicon rootLexicon;
+	
 	private String title;
 
 	/**
@@ -97,12 +99,12 @@ public class VisualStyleImpl implements VisualStyle {
 		this.rootLexicon = rootLexicon;
 		mappings = new HashMap<VisualProperty<?>, VisualMappingFunction<?, ?>>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
+		
 		// Copy immutable defaults from each VP
 		for(VisualProperty<?> vp: this.rootLexicon.getAllVisualProperties())
 			perVSDefaults.put(vp, vp.getDefault());
 		
-		logger.info("New Visual Style Constructed: " + this.title);
-		
+		logger.info("New Visual Style Created: Style Name = " + this.title);
 	}
 
 	/**
@@ -165,29 +167,30 @@ public class VisualStyleImpl implements VisualStyle {
 		perVSDefaults.put(vp, value);
 	}
 
-	// ??
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param view DOCUMENT ME!
+	 * @param networkView DOCUMENT ME!
 	 */
-	public void apply(final CyNetworkView view) {
+	public void apply(final CyNetworkView networkView) {
 		
 		logger.debug("Visual Style Apply method called: " + this.title);
 		
-		final Collection<View<CyNode>> nodeviews = view.getNodeViews();
-		final Collection<View<CyEdge>> edgeviews = view.getEdgeViews();
+		final Collection<View<CyNode>> nodeviews = networkView.getNodeViews();
+		final Collection<View<CyEdge>> edgeviews = networkView.getEdgeViews();
+		final Collection<View<CyNetwork>> networkviews = new HashSet<View<CyNetwork>>();
+		networkviews.add(networkView);
 
-		applyImpl(view, nodeviews,
+		applyImpl(networkView, nodeviews,
 		          rootLexicon.getVisualProperties(nodeviews, NODE));
-		applyImpl(view, edgeviews,
+		applyImpl(networkView, edgeviews,
 		          rootLexicon.getVisualProperties(edgeviews, EDGE));
-		
-		applyImpl(view, Arrays.asList((View<CyNetwork>) view),
+		applyImpl(networkView, networkviews,
 		          rootLexicon.getVisualProperties(NETWORK));
+		
+		logger.debug("Visual Style applied: " + this.title + "\n");
 	}
 
-	// note: can't use applyImpl(List<View<?>>views ... ) because that does not compile
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -216,16 +219,21 @@ public class VisualStyleImpl implements VisualStyle {
 		
 		final VisualMappingFunction<?, V> mapping = getVisualMappingFunction(vp);
 		final V defaultValue = getDefaultValue(vp);
-
 		
 		// If mapping is available for this VP, apply the mapping.
 		if (mapping != null) {
 			mapping.apply(views);
-		} else {
+		} else if(!vp.isIgnoreDefault()) { // Check ignore flag first.
 			// reset all rows to allow usage of default value:
-			for(View<G> viewModel: views)
+			for(final View<G> viewModel: views) {
+				if(viewModel.getVisualProperty(vp).equals(defaultValue))
+					continue;
+				
 				viewModel.setVisualProperty(vp, defaultValue);
-		}
+				//logger.debug(vp.getDisplayName() + " updated: " + defaultValue);
+			}
+		} else
+			logger.debug(vp.getDisplayName() + " is set to ignore defaults.  Skipping...");
 	}
 
 	/**

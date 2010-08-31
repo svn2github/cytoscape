@@ -311,10 +311,9 @@ public class CyDataTableImpl implements CyDataTable {
 		Map<Long, Object> vls = attributes.get(attrName);
 
 		if (types.get(attrName).isAssignableFrom(value.getClass())) {
-			// TODO this is an implicit addRow - not sure if we want to refactor
-			// this or not
+			// TODO this is an implicit addRow - not sure if we want to refactor this or not
 			vls.put(suid, value);
-			eventHelper.getMicroListener(RowSetMicroListener.class, getRow(suid)).handleRowSet(attrName,value);
+			eventHelper.getMicroListener(RowSetMicroListener.class, getRow(suid)).handleRowSet(attrName, value);
 		} else
 			throw new IllegalArgumentException("value is not of type: "
 					+ types.get(attrName));

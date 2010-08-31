@@ -37,7 +37,6 @@
 package org.cytoscape.model.events;
 
 import org.cytoscape.event.CyMicroListener;
-import org.cytoscape.model.CyRow;
 
 
 /**
@@ -45,5 +44,7 @@ import org.cytoscape.model.CyRow;
  * will the be CyRow that is being modified. 
  */
 public interface RowSetMicroListener extends CyMicroListener {
-	void handleRowSet(String columnName, Object value);
+	
+	void handleRowSet(final String columnName, final Object value);
+
 }
