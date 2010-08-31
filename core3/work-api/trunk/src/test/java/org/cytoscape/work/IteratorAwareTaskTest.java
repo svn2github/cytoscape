@@ -33,7 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public abstract class IteratorAwareTaskTest {
+public class IteratorAwareTaskTest {
 	private TaskIterator iter;
 	private SimpleIteratorAwareTask initialTask;
 
