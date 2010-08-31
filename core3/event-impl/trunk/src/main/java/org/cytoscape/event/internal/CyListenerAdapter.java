@@ -54,10 +54,9 @@ import org.slf4j.LoggerFactory;
 public class CyListenerAdapter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CyListenerAdapter.class);
-	
 	private static final Executor EXEC = Executors.newCachedThreadPool();
+
 	private final Map<Class<?>,ServiceTracker> serviceTrackers; 
-	
 	private final BundleContext bc;
 
 	/**
@@ -74,19 +73,14 @@ public class CyListenerAdapter {
 	 * Calls each listener found in the Service Registry identified by the listenerClass
 	 * and filter with the supplied event.
 	 *
-	 * @param <E>  DOCUMENT ME!
-	 * @param <L>  DOCUMENT ME!
-	 * @param event  DOCUMENT ME!
-	 * @param listenerClass  DOCUMENT ME!
+	 * @param <E> The type of event. 
+	 * @param event  The event object. 
 	 */
 	public <E extends CyEvent> void fireSynchronousEvent(final E event) {
 		final Class<?> listenerClass = event.getListenerClass();
 		
-//		logger.debug("ATTEMPTING TO FIRE SYNC: " + event.toString() + " for " + listenerClass.getName());
-		
 		final Object[] listeners = getListeners(listenerClass);
 		if ( listeners == null ) {
-//			logger.debug("Sync listeners is null");
 			return;
 		} 
 
@@ -94,7 +88,6 @@ public class CyListenerAdapter {
 			final Method method = listenerClass.getMethod("handleEvent", event.getClass());
 
 			for (final Object listener : listeners) {
-//				logger.debug("SYNC firing event: " + event.getClass().toString() + "  for listener: " + listener.toString());
 				method.invoke(listenerClass.cast(listener), event);
 			}
 		} catch (NoSuchMethodException e) {
@@ -115,17 +108,14 @@ public class CyListenerAdapter {
 	 * and filter with the supplied event in a new thread.<p>This method should <b>ONLY</b>
 	 * ever be called with a thread safe event object!</p>
 	 *
-	 * @param <E>  DOCUMENT ME!
-	 * @param <L>  DOCUMENT ME!
-	 * @param event  DOCUMENT ME!
-	 * @param listenerClass  DOCUMENT ME!
+	 * @param <E> The type of event. 
+	 * @param event  The event object. 
 	 */
 	public <E extends CyEvent> void fireAsynchronousEvent(final E event) {
 		final Class listenerClass = event.getListenerClass(); 
-	//	logger.debug("ATTEMPTING TO FIRE async: " + event.toString() + " for " + listenerClass.getName());
+
 		final Object[] listeners = getListeners(listenerClass);
 		if ( listeners == null ) {
-	//		logger.debug("async listeners is null");
 			return;
 		} 
 
@@ -133,7 +123,6 @@ public class CyListenerAdapter {
 			final Method method = listenerClass.getMethod("handleEvent", event.getClass());
 
 			for (final Object listener : listeners) {
-	//			logger.debug("async firing event: " + event.getClass().toString() + "  for listener: " + listener.getClass().getName());
 				EXEC.execute(new Runner(method, listener, event, listenerClass));
 			}
 		} catch (NoSuchMethodException e) {
@@ -141,6 +130,17 @@ public class CyListenerAdapter {
 			logger.error("Listener doesn't implement \"handleEvent\" method: "
 			                   + listenerClass.getName(), e);
 		}
+	}
+
+	private Object[] getListeners(Class<?> listenerClass) {
+		if ( !serviceTrackers.containsKey( listenerClass ) ) {
+			//logger.debug("added new service tracker for " + listenerClass);
+			final ServiceTracker st = new ServiceTracker(bc, listenerClass.getName(), null);
+			st.open();
+			serviceTrackers.put( listenerClass, st );
+		}
+
+		return serviceTrackers.get(listenerClass).getServices();
 	}
 
 	private static class Runner implements Runnable {
@@ -167,17 +167,5 @@ public class CyListenerAdapter {
 				logger.error("Listener threw exception as part of \"handleEvent\" invocation: " + listener.toString(), e);
 			}
 		}
-	}
-
-
-	private Object[] getListeners(Class<?> listenerClass) {
-		if ( !serviceTrackers.containsKey( listenerClass ) ) {
-			//logger.debug("added new service tracker for " + listenerClass);
-			final ServiceTracker st = new ServiceTracker(bc, listenerClass.getName(), null);
-			st.open();
-			serviceTrackers.put( listenerClass, st );
-		}
-
-		return serviceTrackers.get(listenerClass).getServices();
 	}
 }

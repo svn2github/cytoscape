@@ -57,7 +57,8 @@ import java.util.List;
   */
 public class CyEventHelperTest extends AbstractCyEventHelperTest {
 
-	private ServiceReference serviceRef;
+	private ServiceReference stubServiceRef;
+	private ServiceReference fakeServiceRef;
 	private BundleContext bc;
 
 	/**
@@ -65,20 +66,35 @@ public class CyEventHelperTest extends AbstractCyEventHelperTest {
 	 */
 	public void setUp() {
 		service = new StubCyListenerImpl();
-		serviceRef = new MockServiceReference();
+
+		stubServiceRef = new MockServiceReference();
+		fakeServiceRef = new MockServiceReference();
 
 		bc = new MockBundleContext() {
 				public ServiceReference getServiceReference(String clazz) {
-						return serviceRef;
+					if ( clazz.equals( FakeCyListener.class.getName() ) )
+						return fakeServiceRef;
+					else if ( clazz.equals( StubCyListener.class.getName() ) )
+						return stubServiceRef;
+					else
+						return null;
 				}
 
 				public ServiceReference[] getServiceReferences(String clazz, String filter)
 				    throws InvalidSyntaxException {
-						return new ServiceReference[] { serviceRef };
+					if ( clazz.equals( FakeCyListener.class.getName() ) )
+						return new ServiceReference[] { fakeServiceRef };
+					else if ( clazz.equals( StubCyListener.class.getName() ) )
+						return new ServiceReference[] { stubServiceRef };
+					else
+						return null;
 				}
 
 				public Object getService(ServiceReference ref) {
+					if ( ref == stubServiceRef )
 						return service;
+					else 
+						return null;
 				}
 			};
 

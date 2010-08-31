@@ -151,7 +151,7 @@ public class CyMicroListenerAdapter {
 
 	// Simply iterates over the provided list of Listeners and
 	// executes the specified method on each Listener.
-	private class ListenerHandler implements InvocationHandler {
+	private static class ListenerHandler implements InvocationHandler {
 		private	final Set<Object> ol; 
 
 		public ListenerHandler() {
