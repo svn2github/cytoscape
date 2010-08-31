@@ -314,7 +314,7 @@ public class CyDataTableImpl implements CyDataTable {
 			// TODO this is an implicit addRow - not sure if we want to refactor
 			// this or not
 			vls.put(suid, value);
-			eventHelper.getMicroListener(RowSetMicroListener.class, this).handleRowSet(getRow(suid), attrName,value);
+			eventHelper.getMicroListener(RowSetMicroListener.class, getRow(suid)).handleRowSet(attrName,value);
 		} else
 			throw new IllegalArgumentException("value is not of type: "
 					+ types.get(attrName));
