@@ -1,14 +1,7 @@
 /*
  File: AbstractLoadNetworkTask.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,8 +27,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package org.cytoscape.task.internal.loadnetwork;
+
 
 import java.io.IOException;
 import java.net.URI;
@@ -48,15 +41,15 @@ import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
-import org.cytoscape.task.AbstractTask;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
+
 
 /**
  * Task to load a new network.
  */
 abstract class AbstractLoadNetworkTask extends AbstractTask {
-
 	protected CyNetworkViewReader reader;
 	protected URI uri;
 	protected TaskMonitor taskMonitor;
@@ -67,8 +60,9 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 	protected Properties props;
 	protected CyNetworkNaming namingUtil;
 
-	public AbstractLoadNetworkTask(CyNetworkViewReaderManager mgr, CyNetworkManager netmgr,
-			Properties props, CyNetworkNaming namingUtil) {
+	public AbstractLoadNetworkTask(final CyNetworkViewReaderManager mgr, final CyNetworkManager netmgr,
+	                               final Properties props, final CyNetworkNaming namingUtil)
+	{
 		this.mgr = mgr;
 		this.netmgr = netmgr;
 		this.props = props;
@@ -76,7 +70,6 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 	}
 
 	protected void loadNetwork(final CyNetworkViewReader viewReader) throws Exception {
-		
 		if (viewReader == null)
 			throw new IllegalArgumentException("Could not read file: Network View Reader is null.");
 
@@ -86,7 +79,7 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 		
 		viewReader.run(taskMonitor);
 
-		if ( cancelTask )
+		if (cancelled())
 			return;
 		
 		final CyNetworkView[] cyNetworkViews = viewReader.getNetworkViews();
@@ -94,9 +87,9 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 		if (cyNetworkViews == null || cyNetworkViews.length < 0)
 			throw new IOException("Could not create network for the producer.");
 
-		for ( CyNetworkView view : cyNetworkViews ) {
+		for (CyNetworkView view : cyNetworkViews) {
 
-			if ( cancelTask )
+			if (cancelled())
 				return;
 
 			// Model should not be null.  It will be tested in ViewImpl.

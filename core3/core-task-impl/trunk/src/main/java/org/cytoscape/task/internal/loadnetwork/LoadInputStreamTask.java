@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package org.cytoscape.task.internal.loadnetwork;
+
 
 import static org.cytoscape.io.DataCategory.NETWORK;
 
@@ -47,7 +40,6 @@ import org.cytoscape.work.Tunable;
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
-
 
 
 public class LoadInputStreamTask extends AbstractLoadNetworkTask {
@@ -72,10 +64,10 @@ public class LoadInputStreamTask extends AbstractLoadNetworkTask {
 	
 		reader = mgr.getReader(inputstream);
 
-		if ( cancelTask )
+		if (cancelled())
 			return;
 
-		if ( reader == null )
+		if (reader == null)
 			throw new NullPointerException("Failed to find appropriate reader for stream.");
 		
 		name = inputstream.toString();

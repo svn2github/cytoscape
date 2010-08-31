@@ -1,10 +1,10 @@
 package org.cytoscape.work;
 
+
 /**
- * Returns an instance of a Task.  Intended to be 
+ * Returns an instance of a TaskIterator.  Intended to be 
  * used as an OSGi server.
  */
 public interface TaskFactory {
-
-	Task getTask();
+	TaskIterator getTaskIterator();
 }

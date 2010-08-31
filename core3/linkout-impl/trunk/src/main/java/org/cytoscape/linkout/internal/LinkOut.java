@@ -1,5 +1,5 @@
-/*$Id: LinkOut.java 13063 2008-02-14 23:26:07Z scooter $*/
 package org.cytoscape.linkout.internal;
+
 
 import java.awt.Font;
 import java.util.Dictionary;
@@ -13,10 +13,12 @@ import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.task.AbstractNodeViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.view.model.View;
-import org.cytoscape.work.Task;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 
 import cytoscape.util.OpenBrowser;
+
 
 /**
  * Generates links to external web pages specified in the cytoscape.props file.
@@ -288,12 +290,12 @@ public class LinkOut {
 			super();
 			this.link = link;
 		}
-		public Task getTask() {
-			return new LinkoutTask(link, nodeView);
+		public TaskIterator getTaskIterator() {
+			return new TaskIterator(new LinkoutTask(link, nodeView));
 		}
 	}
 
-	private class LinkoutTask implements Task {
+	private class LinkoutTask extends AbstractTask {
 		private String link;
 		private View<CyNode> nodeView;
 
@@ -314,9 +316,6 @@ public class LinkOut {
 
 			link = link.replace("%" + "ID" + "%", identifier);
 			browser.openURL(link);
-		}
-
-		public void cancel() {
 		}
 	}
 

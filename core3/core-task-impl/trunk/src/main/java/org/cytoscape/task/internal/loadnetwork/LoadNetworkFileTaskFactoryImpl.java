@@ -1,14 +1,7 @@
 /*
  File: LoadNetworkTaskFactory.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,18 +27,19 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package org.cytoscape.task.internal.loadnetwork;
+
 
 import java.util.Properties;
 
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.property.CyProperty;
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
+
 
 /**
  * Task to load a new network.
@@ -71,7 +65,7 @@ public class LoadNetworkFileTaskFactoryImpl implements TaskFactory {
 		this.cyNetworkNaming = namingUtil;
 	}
 
-	public Task getTask() {
-		return new LoadNetworkFileTask(mgr, netmgr, props, cyNetworkNaming);
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(new LoadNetworkFileTask(mgr, netmgr, props, cyNetworkNaming));
 	}
 }

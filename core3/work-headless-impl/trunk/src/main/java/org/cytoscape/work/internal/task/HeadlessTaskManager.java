@@ -1,12 +1,16 @@
 package org.cytoscape.work.internal.task;
 
+
 import java.io.PrintStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.TunableInterceptor;
+
 
 /**
  * Executes <code>Task</code>s and displays interfaces by
@@ -21,12 +25,10 @@ import org.cytoscape.work.TaskMonitor;
  * This cannot cancel <code>Task</code>s because it has no means for receiving
  * input from the user.
  */
-public class HeadlessTaskManager implements TaskManager
-{
+public class HeadlessTaskManager implements TaskManager {
 	final PrintStream output;
 
-	public HeadlessTaskManager(PrintStream output)
-	{
+	public HeadlessTaskManager(PrintStream output) {
 		this.output = output;
 	}
 
@@ -38,21 +40,30 @@ public class HeadlessTaskManager implements TaskManager
 		this(System.out);
 	}
 
-	public void execute(final Task task)
-	{
+	public void execute(final TaskIterator taskIterator, final TunableInterceptor tunableInterceptor) {
 		final Timer timer = new Timer();
 		final ConsoleTaskMonitor taskMonitor = new ConsoleTaskMonitor(timer);
 
-		Runnable runnable = new Runnable()
-		{
-			public void run()
-			{
-				try
-				{
-					task.run(taskMonitor);
-				}
-				catch (Exception exception)
-				{
+		Runnable runnable = new Runnable() {
+			public void run() {
+				try {
+					while (taskIterator.hasNext()) {
+						final Task task = taskIterator.next();
+
+						if (tunableInterceptor != null) {
+							// load the tunables from the object
+							tunableInterceptor.loadTunables(task);
+
+							// create the UI based on the object
+							if (!tunableInterceptor.execUI(task))
+								return;
+						}
+
+						task.run(taskMonitor);
+						if (task.cancelled())
+							break;
+					}
+				} catch (Exception exception) {
 					taskMonitor.showException(exception);
 				}
 				timer.cancel();

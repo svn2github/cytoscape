@@ -1,5 +1,6 @@
 package org.cytoscape.io.internal.read;
 
+
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -8,18 +9,17 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.task.AbstractTask;
+import org.cytoscape.work.AbstractTask;
 
 
-public abstract class AbstractNetworkViewReader extends AbstractTask
-	implements CyNetworkViewReader {
+public abstract class AbstractNetworkViewReader extends AbstractTask implements CyNetworkViewReader {
 
 	protected CyNetworkView[] cyNetworkViews;
 	protected VisualStyle[] visualstyles;
 	protected InputStream inputStream;
 
-    protected final CyNetworkViewFactory cyNetworkViewFactory;
-    protected final CyNetworkFactory cyNetworkFactory;
+	protected final CyNetworkViewFactory cyNetworkViewFactory;
+	protected final CyNetworkFactory cyNetworkFactory;
 
 	// TODO this should come from model-api
 	public static final String NODE_NAME_ATTR_LABEL = "name";

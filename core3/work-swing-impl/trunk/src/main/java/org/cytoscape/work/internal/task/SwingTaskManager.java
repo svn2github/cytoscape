@@ -1,8 +1,11 @@
 package org.cytoscape.work.internal.task;
 
+
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.TunableInterceptor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -13,13 +16,15 @@ import java.util.concurrent.ThreadFactory;
 
 import java.awt.Frame;
 
+
 /**
  * Uses Swing components to create a user interface for the <code>Task</code>.
  *
  * This will not work if the application is running in headless mode.
  */
-public class SwingTaskManager implements TaskManager
-{
+public class SwingTaskManager implements TaskManager {
+	private SwingTaskMonitor taskMonitor;
+
 	/**
 	 * The delay between the execution of the <code>Task</code> and
 	 * showing its task dialog.
@@ -68,8 +73,7 @@ public class SwingTaskManager implements TaskManager
 	 * <li><code>cancelExecutorService</code> is the same as <code>taskExecutorService</code>.</li>
 	 * </ul>
 	 */
-	public SwingTaskManager()
-	{
+	public SwingTaskManager() {
 		owner = null;
 		taskExecutorService = Executors.newCachedThreadPool();
 		addShutdownHook(taskExecutorService);
@@ -81,18 +85,15 @@ public class SwingTaskManager implements TaskManager
 	/**
 	 * Adds a shutdown hook to the JVM that shuts down an
 	 * <code>ExecutorService</code>. <code>ExecutorService</code>s
-	 * need to be told to shut down, otherwise the JVM won't 
+	 * need to be told to shut down, otherwise the JVM won't
 	 * cleanly terminate.
 	 */
-	void addShutdownHook(final ExecutorService serviceToShutdown)
-	{
+	void addShutdownHook(final ExecutorService serviceToShutdown) {
 		// Used to create a thread that is executed by the shutdown hook
 		ThreadFactory threadFactory = Executors.defaultThreadFactory();
 
-		Runnable shutdownHook = new Runnable()
-		{
-			public void run()
-			{
+		Runnable shutdownHook = new Runnable() {
+			public void run() {
 				serviceToShutdown.shutdownNow();
 			}
 		};
@@ -103,24 +104,35 @@ public class SwingTaskManager implements TaskManager
 	 * @param owner JDialogs created by this <code>TaskManager</code>
 	 * will have its owner set to this parameter.
 	 */
-	public void setOwner(Frame owner)
-	{
+	public void setOwner(Frame owner) {
 		this.owner = owner;
 	}
 
-	public void execute(final Task task)
-	{
-		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(task, cancelExecutorService, owner);
-		final Runnable executor = new Runnable()
-		{
-			public void run()
-			{
-				try
-				{
-					task.run(taskMonitor);
-				}
-				catch (Exception exception)
-				{
+	public void execute(final TaskIterator taskIterator, final TunableInterceptor tunableInterceptor) {
+		taskMonitor = null;
+		final Runnable executor = new Runnable() {
+			public void run() {
+				try {
+					while (taskIterator.hasNext()) {
+						final Task task = taskIterator.next();
+
+						if (tunableInterceptor != null) {
+							// load the tunables from the object
+							tunableInterceptor.loadTunables(task);
+
+							// create the UI based on the object
+							if (!tunableInterceptor.execUI(task))
+								return;
+						}
+
+						if (taskMonitor == null)
+							taskMonitor = new SwingTaskMonitor(cancelExecutorService, owner);
+
+						task.run(taskMonitor);
+						if (task.cancelled())
+							break;
+					}
+				} catch (Exception exception) {
 					taskMonitor.showException(exception);
 				}
 				if (taskMonitor.isOpened() && !taskMonitor.isShowingException())
@@ -129,10 +141,8 @@ public class SwingTaskManager implements TaskManager
 		};
 		final Future<?> executorFuture = taskExecutorService.submit(executor);
 
-		final Runnable timedOpen = new Runnable()
-		{
-			public void run()
-			{
+		final Runnable timedOpen = new Runnable() {
+			public void run() {
 				if (!(executorFuture.isDone() || executorFuture.isCancelled()))
 					taskMonitor.open();
 			}
@@ -141,26 +151,27 @@ public class SwingTaskManager implements TaskManager
 	}
 }
 
-class SwingTaskMonitor implements TaskMonitor
-{
-	final Task		task;
-	final ExecutorService	cancelExecutorService;
-	final Frame		owner;
 
-	TaskDialog	dialog			= null;
-	String		title			= null;
-	String		statusMessage		= null;
-	int		progress		= 0;
+class SwingTaskMonitor implements TaskMonitor {
+	private Task task;
+	final private ExecutorService cancelExecutorService;
+	final private Frame owner;
 
-	public SwingTaskMonitor(Task task, ExecutorService cancelExecutorService, Frame owner)
-	{
-		this.task = task;
+	private TaskDialog dialog = null;
+	private String title = null;
+	private String statusMessage = null;
+	private int progress = 0;
+
+	public SwingTaskMonitor(final ExecutorService cancelExecutorService, final Frame owner) {
 		this.cancelExecutorService = cancelExecutorService;
 		this.owner = owner;
 	}
 
-	public synchronized void open()
-	{
+	public void setTask(final Task newTask) {
+		this.task = newTask;
+	}
+
+	public synchronized void open() {
 		if (dialog != null)
 			return;
 
@@ -173,53 +184,44 @@ class SwingTaskMonitor implements TaskMonitor
 			dialog.setPercentCompleted(progress);
 	}
 
-	public void close()
-	{
-		if (dialog != null)
-		{
+	public void close() {
+		if (dialog != null) {
 			dialog.dispose();
 			dialog = null;
 		}
 	}
 
-	public void cancel()
-	{
+	public void cancel() {
 		// we issue the Task's cancel method in its own thread
 		// to prevent Swing from freezing if the Tasks's cancel
 		// method takes too long to finish
-		Runnable cancel = new Runnable()
-		{
-			public void run()
-			{
+		Runnable cancel = new Runnable() {
+			public void run() {
 				task.cancel();
 			}
 		};
 		cancelExecutorService.submit(cancel);
 	}
 
-	public void setTitle(String title)
-	{
+	public void setTitle(final String title) {
 		this.title = title;
 		if (dialog != null)
 			dialog.setTaskTitle(title);
 	}
 
-	public void setStatusMessage(String statusMessage)
-	{
+	public void setStatusMessage(String statusMessage) {
 		this.statusMessage = statusMessage;
 		if (dialog != null)
 			dialog.setStatus(statusMessage);
 	}
 
-	public void setProgress(double progress)
-	{
+	public void setProgress(double progress) {
 		this.progress = (int) Math.floor(progress * 100);
 		if (dialog != null)
 			dialog.setPercentCompleted(this.progress);
 	}
 
-	public synchronized void showException(Exception exception)
-	{
+	public synchronized void showException(Exception exception) {
 		// force the dialog box to be created if
 		// the Task throws an exception
 		if (dialog == null)
@@ -227,13 +229,11 @@ class SwingTaskMonitor implements TaskMonitor
 		dialog.setException(exception, "The task could not be completed because an error has occurred.");
 	}
 
-	public boolean isShowingException()
-	{
+	public boolean isShowingException() {
 		return dialog.errorOccurred();
 	}
 
-	public boolean isOpened()
-	{
+	public boolean isOpened() {
 		return dialog != null;
 	}
 }

@@ -3,8 +3,8 @@ package org.cytoscape.task.internal.proxysettings;
 
 import org.cytoscape.io.util.StreamUtil;
 
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  * Dialog for assigning proxy settings.
  * @author Pasteur
  */
-public class ProxySettingsTask implements Task, TunableValidator {
+public class ProxySettingsTask extends AbstractTask implements TunableValidator {
 	static final List<String> KEYS = Arrays.asList("http.proxyHost", "http.proxyPort", "socks.proxyHost", "socks.proxyPort");
 
 	@Tunable(description="Type")
@@ -79,9 +79,6 @@ public class ProxySettingsTask implements Task, TunableValidator {
 	public void run(TaskMonitor taskMonitor) {
 		storeProxySettings();
 		oldSettings.clear();
-	}
-
-	public void cancel() {
 	}
 
 	void storeProxySettings() {

@@ -116,7 +116,7 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 	}
 
 	protected boolean displayGUI(final JPanel optionPanel) {
-		Object[] buttons = {"OK", "Cancel"};
+		Object[] buttons = { "OK", "Cancel" };
 		int result = JOptionPane.showOptionDialog(parentPanel, optionPanel,
 							  "Set Parameters",
 							  JOptionPane.YES_NO_CANCEL_OPTION,
@@ -124,20 +124,11 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 							  null,
 							  buttons,
 							  buttons[0]);
-		if (result == JOptionPane.OK_OPTION) {
-			for (final GUITunableHandler h : handlers)
-				h.handleDependents();
-			return validateTunableInput();
-		} else
+		if (result == JOptionPane.OK_OPTION)
+			return validateAndWriteBackTunables();
+		else
 			return false;
 	}
 
-	/**
-	 * Check if the conditions set in validate method from <code>TunableValidator</code> are met
-	 *
-	 * If an exception is thrown, or something's wrong, it will be displayed to the user
-	 *
-	 * @return success(true) or failure(false) for the validation
-	 */
 	abstract protected boolean validateTunableInput();
 }

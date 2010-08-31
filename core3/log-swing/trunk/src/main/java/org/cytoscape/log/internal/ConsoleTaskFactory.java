@@ -1,6 +1,8 @@
 package org.cytoscape.log.internal;
 
-import org.cytoscape.work.Task;
+
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
@@ -20,11 +22,11 @@ import java.awt.event.ActionEvent;
 
 import cytoscape.view.CySwingApplication;
 
+
 /**
  * @author Pasteur
  */
-public class ConsoleTaskFactory implements TaskFactory
-{
+public class ConsoleTaskFactory implements TaskFactory {
 	final BlockingQueue<PaxLoggingEvent> simpleQueue;
 	final BlockingQueue<PaxLoggingEvent> advancedQueue;
 	final ExecutorService service;
@@ -38,14 +40,14 @@ public class ConsoleTaskFactory implements TaskFactory
 	SimpleLogViewer simpleLogViewer = null;
 	AdvancedLogViewer advancedLogViewer = null;
 
-	public ConsoleTaskFactory(	BlockingQueue<PaxLoggingEvent> simpleQueue,
-					BlockingQueue<PaxLoggingEvent> advancedQueue,
-					ExecutorService service,
-					CytoStatusBar statusBar,
-					CySwingApplication app,
-					TaskManager manager,
-					Map simpleLogConfig,
-					Map advancedLogConfig)
+	public ConsoleTaskFactory(BlockingQueue<PaxLoggingEvent> simpleQueue,
+				  BlockingQueue<PaxLoggingEvent> advancedQueue,
+				  ExecutorService service,
+				  CytoStatusBar statusBar,
+				  CySwingApplication app,
+				  TaskManager manager,
+				  Map simpleLogConfig,
+				  Map advancedLogConfig)
 	{
 		this.simpleQueue = simpleQueue;
 		this.advancedQueue = advancedQueue;
@@ -59,15 +61,12 @@ public class ConsoleTaskFactory implements TaskFactory
 		statusBar.addActionListener(new ConsoleAction());
 	}
 
-	public Task getTask()
-	{
-		return new ConsoleTask();
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(new ConsoleTask());
 	}
 
-	synchronized ConsoleDialog getDialog()
-	{
-		if (dialog == null)
-		{
+	synchronized ConsoleDialog getDialog() {
+		if (dialog == null) {
 			simpleLogViewer = new SimpleLogViewer(statusBar, new LogViewer(simpleLogConfig));
 			advancedLogViewer = new AdvancedLogViewer(manager, new LogViewer(advancedLogConfig));
 			dialog = new ConsoleDialog(app, simpleLogViewer, advancedLogViewer);
@@ -79,15 +78,9 @@ public class ConsoleTaskFactory implements TaskFactory
 		return dialog;
 	}
 
-	class ConsoleTask implements Task
-	{
-		public void run(TaskMonitor taskMonitor)
-		{
+	class ConsoleTask extends AbstractTask {
+		public void run(TaskMonitor taskMonitor) {
 			getDialog().setVisible(true);
-		}
-
-		public void cancel()
-		{
 		}
 	}
 

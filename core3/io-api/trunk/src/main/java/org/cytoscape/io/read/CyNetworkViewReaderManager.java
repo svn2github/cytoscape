@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,32 +27,35 @@
  */
 package org.cytoscape.io.read;
 
+
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
+
+import org.cytoscape.work.TaskIterator;
+
 
 /**
  * Central registry for all Cytoscape import classes.
  */
 public interface CyNetworkViewReaderManager {
-
-    /**
-     * Given a URI this method will attempt to find a CyNetworkViewReaderFactory
-     * that can read the URI, will set the InputStream for the factory and
-     * will return the reader task.
-     * @param uri The URI we're attempting to read. 
-     * @return A reader than can read the specified URI. Will return null if
+	/**
+	 * Given a URI this method will attempt to find a CyNetworkViewReaderFactory
+	 * that can read the URI, will set the InputStream for the factory and
+	 * will return the reader task.
+	 * @param uri The URI we're attempting to read. 
+	 * @return A reader than can read the specified URI. Will return null if
 	 * no reader can be found.
-     */
+	 */
 	CyNetworkViewReader getReader(URI uri); 
 
-    /**
-     * Given an InputStream this method will attempt to find a CyNetworkViewReaderFactory
-     * that can read the stream, will set the InputStream for the factory and
-     * will return the reader task.
-     * @param stream The input stream we're attempting to read. 
-     * @return A reader than can read the specified stream. Will return null if
+	/**
+	 * Given an InputStream this method will attempt to find a CyNetworkViewReaderFactory
+	 * that can read the stream, will set the InputStream for the factory and
+	 * will return the reader task.
+	 * @param stream The input stream we're attempting to read. 
+	 * @return A reader than can read the specified stream. Will return null if
 	 * no reader can be found.
-     */
+	 */
 	CyNetworkViewReader getReader(InputStream stream); 
 }

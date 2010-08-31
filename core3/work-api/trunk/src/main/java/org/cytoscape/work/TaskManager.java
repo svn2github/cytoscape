@@ -1,12 +1,12 @@
 package org.cytoscape.work;
 
+
 /**
  * Executes a <code>Task</code>.
  *
  * @author Pasteur
  */
-public interface TaskManager
-{
+public interface TaskManager {
 	/**
 	 * This method is called to execute a <code>Task</code>.
 	 *
@@ -14,5 +14,5 @@ public interface TaskManager
 	 * started execution. It does not wait for the
 	 * <code>Task</code> to finish.
 	 */
-	void execute(Task task);
+	void execute(TaskIterator taskIterator, TunableInterceptor tunableInterceptor);
 }

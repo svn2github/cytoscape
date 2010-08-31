@@ -1,5 +1,6 @@
 package org.cytoscape.log.internal;
 
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -11,16 +12,18 @@ import javax.swing.event.*;
 import javax.swing.tree.*;
 import javax.swing.table.*;
 
-import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
+
 
 /**
  * @author Pasteur
  */
-class AdvancedLogViewer
-{
-	static final String[]	COLUMNS =		{ "Time",	"Log",	"Level",	"Thread",	"Message" };
+class AdvancedLogViewer {
+	static final String[] COLUMNS = { "Time", "Log", "Level", "Thread", "Message" };
 
 	/**
 	 * Contains all log events (except those deleted with the Clear button) that were added with the
@@ -62,8 +65,7 @@ class AdvancedLogViewer
 	final JComboBox		filterTargetComboBox;
 	final JPanel		contents;
 
-	public AdvancedLogViewer(TaskManager taskManager, LogViewer logViewer)
-	{
+	public AdvancedLogViewer(TaskManager taskManager, LogViewer logViewer) {
 		this.taskManager = taskManager;
 		this.logViewer = logViewer;
 		logViewer.clear();
@@ -282,8 +284,7 @@ class AdvancedLogViewer
 	 * Changes the appearance of <code>filterTextField</code> when the user
 	 * has entered an invalid regular expression.
 	 */
-	void makeFilterTextFieldInvalid(String exceptionMessage)
-	{
+	void makeFilterTextFieldInvalid(String exceptionMessage) {
 		filterTextField.setForeground(Color.RED);
 		exceptionMessage = exceptionMessage.replaceAll("\\n", "<br>");
 		filterTextField.setToolTipText(String.format(INVALID_FILTER_TEXT_FIELD_TOOLTIP, exceptionMessage));
@@ -293,8 +294,7 @@ class AdvancedLogViewer
 	 * Changes the appearance of <code>filterTextField</code> when the user
 	 * has entered a valid regular expression.
 	 */
-	void makeFilterTextFieldValid()
-	{
+	void makeFilterTextFieldValid() {
 		filterTextField.setForeground(Color.BLACK);
 		filterTextField.setToolTipText(VALID_FILTER_TEXT_FIELD_TOOLTIP);
 	}
@@ -303,20 +303,16 @@ class AdvancedLogViewer
 	 * Triggers the internal <code>update</code> method whenever the
 	 * user modifies <code>filterTextField</code>.
 	 */
-	class FilterUpdater implements DocumentListener
-	{
-		public void changedUpdate(DocumentEvent e)
-		{
+	class FilterUpdater implements DocumentListener {
+		public void changedUpdate(DocumentEvent e) {
 			update();
 		}
 
-		public void insertUpdate(DocumentEvent e)
-		{
+		public void insertUpdate(DocumentEvent e) {
 			update();
 		}
 
-		public void removeUpdate(DocumentEvent e)
-		{
+		public void removeUpdate(DocumentEvent e) {
 			update();
 		}
 
@@ -325,52 +321,38 @@ class AdvancedLogViewer
 		 * and stores it in <code>currentPattern</code> if the regular expression
 		 * is syntactically correct.
 		 */
-		void update()
-		{
+		void update() {
 			currentPattern = null;
 
 			String regex = filterTextField.getText();
 
-			if (regex.length() != 0)
-			{
-				try
-				{
+			if (regex.length() != 0) {
+				try {
 					currentPattern = Pattern.compile(regex);
 					makeFilterTextFieldValid();
 					refreshSolicitedLogEvents();
-				}
-				catch (PatternSyntaxException e)
-				{
+				} catch (PatternSyntaxException e) {
 					makeFilterTextFieldInvalid(e.getMessage());
 				}
-			}
-			else
-			{
+			} else
 				refreshSolicitedLogEvents();
-			}
 		}
 	}
 
-	class FilterTargetUpdater implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
+	class FilterTargetUpdater implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
 			refreshSolicitedLogEvents();
 		}
 	}
 
-	class LogsTreeSelectionListener implements TreeSelectionListener
-	{
-		public void valueChanged(TreeSelectionEvent e)
-		{
+	class LogsTreeSelectionListener implements TreeSelectionListener {
+		public void valueChanged(TreeSelectionEvent e) {
 			refreshSolicitedLogEvents();
 		}
 	}
 
-	class ClearAction implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
+	class ClearAction implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
 			if (currentUpdater != null)
 				currentUpdater.cancel();
 
@@ -380,37 +362,30 @@ class AdvancedLogViewer
 		}
 	}
 
-	class ExportAction implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
+	class ExportAction implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
 			JFileChooser fileChooser = new JFileChooser();
 			if (fileChooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION)
 				return;
 
 			File file = fileChooser.getSelectedFile();
-			Task task = new ExportTask(file);
-			taskManager.execute(task);
+			final Task task = new ExportTask(file);
+			taskManager.execute(new TaskIterator(task), null);
 		}
 	}
 
-	class ExportTask implements Task
-	{
-		boolean cancel = false;
+	class ExportTask extends AbstractTask {
 		final File file;
 
-		public ExportTask(File file)
-		{
+		public ExportTask(final File file) {
 			this.file = file;
 		}
 
-		public void run(TaskMonitor monitor) throws Exception
-		{
+		public void run(TaskMonitor monitor) throws Exception {
 			monitor.setTitle("Developer Log Export");
 			monitor.setStatusMessage("Saving to " + file.getName());
 			PrintWriter output = new PrintWriter(file);
-			for (int i = 0; (i < solicitedLogEvents.size()) && !cancel; i++)
-			{
+			for (int i = 0; (i < solicitedLogEvents.size()) && !cancelled(); i++) {
 				monitor.setProgress(i / ((double) solicitedLogEvents.size()));
 				String[] entry = solicitedLogEvents.get(i);
 				for (int j = 0; j < entry.length; j++)
@@ -422,11 +397,6 @@ class AdvancedLogViewer
 				output.println();
 			}
 			output.close();
-		}
-
-		public void cancel()
-		{
-			cancel = true;
 		}
 	}
 }

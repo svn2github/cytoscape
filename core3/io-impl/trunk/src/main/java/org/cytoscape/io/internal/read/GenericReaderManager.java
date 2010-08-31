@@ -1,5 +1,6 @@
 package org.cytoscape.io.internal.read;
 
+
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
@@ -15,8 +16,8 @@ import org.cytoscape.work.Task;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-public class GenericReaderManager<T extends InputStreamTaskFactory, S extends Task>  {
 
+public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Task>  {
 	protected final DataCategory category; 
 	protected final Set<T> factories;
 	private static final Logger logger = LoggerFactory.getLogger( GenericReaderManager.class ); 
@@ -26,7 +27,6 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, S extends Ta
 		factories = new HashSet<T>();
 	}
 	
-
 	/**
 	 * Listener for OSGi service
 	 * 
@@ -60,8 +60,7 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, S extends Ta
 	 *            File name or null if no reader is capable of reading the file.
 	 * @return GraphReader capable of reading the specified file.
 	 */
-	public S getReader(URI uri) {
-
+	public R getReader(URI uri) {
 		for (T factory : factories) {
 			logger.info("trying factory: " + factory);
 			
@@ -70,7 +69,7 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, S extends Ta
 			if (cff.accept(uri, category) && uri != null ) {
 				try {
 					factory.setInputStream( uri.toURL().openStream() );
-					return (S)(factory.getTask());
+					return (R)factory.getTaskIterator().next();
 				} catch (IOException e) {
 					logger.warn("Error opening stream to URI: " + uri.toString(), e);
 				}
@@ -80,15 +79,13 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, S extends Ta
 	 	return null;	
 	}
 
-	public S getReader(InputStream stream) {
-
+	public R getReader(InputStream stream) {
 		for (T factory : factories) {
-			
 			CyFileFilter cff = factory.getCyFileFilter();
 
 			if (cff.accept(stream, category)) {
 				factory.setInputStream(stream);
-				return (S)(factory.getTask());	
+				return (R)factory.getTaskIterator().next();	
 			}
 		}
 

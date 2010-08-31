@@ -1,5 +1,6 @@
 package org.cytoscape.work;
 
+
 /**
  * Provides a means for nested subtasks to be
  * grouped together under one <code>SuperTask</code>.
@@ -40,13 +41,13 @@ package org.cytoscape.work;
  * @author Pasteur
  */
 public class SuperTask implements Task {
-	final Task[] subtasks;
-	final double[] weights;
-	double weightSum = 0.0;
+	private final Task[] subtasks;
+	private final double[] weights;
+	private double weightSum = 0.0;
 
-	boolean cancel = false;
-	int currentTaskIndex = -1;
-	double partialSum = 0.0;
+	private boolean cancelled = false;
+	private int currentTaskIndex = -1;
+	private double partialSum = 0.0;
 
 	/**
 	 * Constructs a <code>SuperTask</code> with a given list of
@@ -135,28 +136,34 @@ public class SuperTask implements Task {
 	public void run(TaskMonitor superTaskMonitor) throws Exception {
 		superTaskMonitor.setProgress(0.0);
 		final TaskMonitor subTaskMonitor = new SubTaskMonitor(superTaskMonitor);
-		for (currentTaskIndex = 0; (currentTaskIndex < subtasks.length) && (!cancel); currentTaskIndex++) {
+		for (currentTaskIndex = 0; (currentTaskIndex < subtasks.length) && (!cancelled); currentTaskIndex++) {
 			subtasks[currentTaskIndex].run(subTaskMonitor);
 			partialSum += weights[currentTaskIndex];
 		}
 
-		cancel = false;
+		cancelled = false;
 		currentTaskIndex = -1;
 		partialSum = 0.0;
 	}
 
-	public void cancel() {
+	public synchronized void cancel() {
+		if (cancelled)
+			return;
+
 		// currentTaskIndex is copied into another variable
 		// in order to prevent the situation where currentTaskIndex is
 		// being incremented while another thread is executing cancel().
 		final int index = currentTaskIndex;
-		cancel = true;
+		cancelled = true;
 		if (index >= 0 && index < subtasks.length)
 			subtasks[index].cancel();
 	}
 
-	class SubTaskMonitor implements TaskMonitor
-	{
+	public synchronized boolean cancelled() {
+		return this.cancelled;
+	}
+
+	class SubTaskMonitor implements TaskMonitor {
 		final TaskMonitor superTaskMonitor;
 		String subtitle = null;
 

@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,8 +27,11 @@
  */
 package org.cytoscape.io.read;
 
+
 import java.io.InputStream;
 import java.net.URI;
+import org.cytoscape.work.TaskIterator;
+
 
 /**
  * Central registry for all Cytoscape import classes.
@@ -50,7 +46,7 @@ public interface CyDataTableReaderManager {
 	 * @return A reader than can read the specified URI. Will return null
 	 * if no reader can be found.
 	 */
-	CyDataTableReader getReader(URI uri); 
+	 CyDataTableReader getReader(URI uri); 
 
 	/**
 	 * Given an InputStream this method will attempt to find a CyDataTableReaderFactory

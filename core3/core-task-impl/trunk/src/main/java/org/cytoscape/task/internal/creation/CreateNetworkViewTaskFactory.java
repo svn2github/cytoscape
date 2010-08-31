@@ -1,14 +1,7 @@
 /*
  File: CreateNetworkViewTaskFactory.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -36,13 +29,14 @@
  */
 package org.cytoscape.task.internal.creation;
 
+
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
 
 import org.cytoscape.session.CyNetworkManager;
+
 
 public class CreateNetworkViewTaskFactory extends AbstractNetworkTaskFactory {
 
@@ -55,7 +49,7 @@ public class CreateNetworkViewTaskFactory extends AbstractNetworkTaskFactory {
 		this.netmgr = netmgr;
 	}
 
-	public Task getTask() {
-		return new CreateNetworkViewTask(net,gvf, netmgr);
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(new CreateNetworkViewTask(net, gvf, netmgr));
 	}
 }

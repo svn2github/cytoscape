@@ -25,7 +25,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.ding.impl;
 
 import javax.swing.AbstractAction;
@@ -45,6 +44,7 @@ import org.cytoscape.ding.EdgeView;
 import org.cytoscape.util.swing.JMenuTracker;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
@@ -239,10 +239,7 @@ class PopupMenuHelper {
 	 * A place to capture the common task execution behavior.
 	 */
 	private void executeTask(TaskFactory tf) {
-		Task task = tf.getTask();
-		m_view.interceptor.loadTunables(task);
-		if (!m_view.interceptor.execUI(task))
-			return;
-		m_view.manager.execute(task);
+		final TaskIterator taskIterator = tf.getTaskIterator();
+		m_view.manager.execute(taskIterator, m_view.interceptor);
 	}
 }

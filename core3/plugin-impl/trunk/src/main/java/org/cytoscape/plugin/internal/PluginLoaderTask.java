@@ -1,10 +1,9 @@
-
 package org.cytoscape.plugin.internal;
 
 
 import org.cytoscape.plugin.CyPlugin;
 import org.cytoscape.plugin.CyPluginAdapter;
-import org.cytoscape.task.AbstractTask;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TaskMonitor;
 

@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,36 +25,34 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package org.cytoscape.io.internal.read;
+
 
 import java.io.InputStream;
 
-import org.cytoscape.io.read.CyDataTableReaderFactory;
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.model.CyDataTableFactory;
 
-/**
- */
-public abstract class AbstractDataTableReaderFactory implements CyDataTableReaderFactory {
 
+public abstract class AbstractDataTableReaderFactory implements InputStreamTaskFactory {
 	private final CyFileFilter filter;
 
 	protected InputStream inputStream;
 	protected final CyDataTableFactory tableFactory;
 
 	public AbstractDataTableReaderFactory(CyFileFilter filter, CyDataTableFactory tableFactory) {
-		if ( filter == null )
+		if (filter == null)
 			throw new NullPointerException("filter is null");
 		this.filter = filter;
 
-		if ( tableFactory == null )
+		if (tableFactory == null)
 			throw new NullPointerException("tableFactory is null");
 		this.tableFactory = tableFactory;
 	}
 
 	public void setInputStream(InputStream is) {
-		if ( is == null )
+		if (is == null)
 			throw new NullPointerException("Input stream is null");
 		inputStream = is;
 	}

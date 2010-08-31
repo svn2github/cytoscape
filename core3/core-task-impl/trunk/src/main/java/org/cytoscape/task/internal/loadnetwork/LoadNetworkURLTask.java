@@ -1,14 +1,7 @@
 /*
  File: LoadNetworkURLTask.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,11 +27,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
-// $Revision: 8703 $
-// $Date: 2006-11-06 23:17:02 -0800 (Mon, 06 Nov 2006) $
-// $Author: pwang $
 package org.cytoscape.task.internal.loadnetwork;
+
 
 import java.net.URL;
 import java.io.IOException;
@@ -54,11 +44,11 @@ import org.cytoscape.work.Tunable;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 
+
 /**
  * Specific instance of AbstractLoadNetworkTask that loads a URL.
  */
 public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
-
 	@Tunable(description="The URL to load")
 	public URL url;
 	
@@ -92,16 +82,16 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 			throw new Exception(String.format(BAD_INTERNET_SETTINGS_MSG, e.getMessage()), e);
 		}
 
-		if ( cancelTask )
+		if (cancelled())
 			return;
 
 		taskMonitor.setStatusMessage("Finding network reader...");
 		reader = mgr.getReader(url.toURI());
 
-		if ( cancelTask )
+		if (cancelled())
 			return;
 
-		if ( reader == null )
+		if (reader == null)
 			throw new NullPointerException("Failed to find reader for specified URL: " + name);
 
 		taskMonitor.setStatusMessage("Loading network...");

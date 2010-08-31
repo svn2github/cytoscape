@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute of Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,6 +26,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 package org.cytoscape.io.internal.read.xgmml;
+
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
@@ -64,35 +58,36 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.ParserAdapter;
 
-import org.cytoscape.io.internal.read.AbstractNetworkViewReaderFactory;
 
 import org.cytoscape.io.CyFileFilter;
+import org.cytoscape.io.internal.read.AbstractNetworkViewReaderFactory;
 import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.work.TaskIterator;
+
 
 /**
  * XGMML file reader.<br>
  * This version is Metanode-compatible.
  * 
- * @version 1.0
  * @since Cytoscape 2.3
  * @see cytoscape.data.writers.XGMMLWriter
  * @author kono
  * 
  */
 public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFactory {
-
 	private XGMMLParser parser;
 	private ReadDataManager readDataManager;
 	private AttributeValueUtil attributeValueUtil;
 	private CyProperty<Properties> prop;
 
 	public XGMMLNetworkViewReaderFactory(CyFileFilter filter, 
-	                                       CyNetworkViewFactory cyNetworkViewFactory, 
-                                           CyNetworkFactory cyNetworkFactory, 
-                                           ReadDataManager readDataManager, 
-                                           AttributeValueUtil attributeValueUtil, 
-                                           XGMMLParser parser, 
-                                           CyProperty<Properties> prop) {
+					     CyNetworkViewFactory cyNetworkViewFactory, 
+					     CyNetworkFactory cyNetworkFactory, 
+					     ReadDataManager readDataManager, 
+					     AttributeValueUtil attributeValueUtil, 
+					     XGMMLParser parser, 
+					     CyProperty<Properties> prop)
+	{
 		super(filter,cyNetworkViewFactory,cyNetworkFactory);
 		this.readDataManager = readDataManager;
 		this.attributeValueUtil = attributeValueUtil;
@@ -100,9 +95,10 @@ public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFact
 		this.prop = prop;
 	}
 
-	public CyNetworkViewReader getTask() {
-		return new XGMMLNetworkViewReader( inputStream, cyNetworkViewFactory, cyNetworkFactory,
-		                                     readDataManager, 
-		                                     attributeValueUtil, parser, prop.getProperties() );
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(
+			new XGMMLNetworkViewReader(inputStream, cyNetworkViewFactory,
+						   cyNetworkFactory, readDataManager, 
+						   attributeValueUtil, parser, prop.getProperties()));
 	}
 }

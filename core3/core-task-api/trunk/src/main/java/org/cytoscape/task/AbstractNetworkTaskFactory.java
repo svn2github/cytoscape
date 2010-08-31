@@ -42,6 +42,4 @@ public abstract class AbstractNetworkTaskFactory implements NetworkTaskFactory {
 			throw new IllegalArgumentException("\"net\" is null!");
 		this.net = net;
 	}
-
-	public abstract Task getTask();
 }

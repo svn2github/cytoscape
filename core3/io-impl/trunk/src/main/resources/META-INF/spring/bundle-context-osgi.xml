@@ -34,7 +34,7 @@
 	</osgi:service>
 
 	<osgi:service id="sifNetworkViewReaderFactoryService" ref="sifNetworkViewReaderFactory"
-		interface="org.cytoscape.io.read.CyNetworkViewReaderFactory">
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
 			<entry key="serviceType" value="sifNetworkViewReaderFactory" />
 			<entry key="readerId" value="sifNetworkViewReader" />
@@ -43,7 +43,7 @@
 	</osgi:service>
 
 	<osgi:service id="xgmmlNetworkViewReaderFactoryService" ref="xgmmlNetworkViewReaderFactory"
-		interface="org.cytoscape.io.read.CyNetworkViewReaderFactory">
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
 			<entry key="serviceType" value="xgmmlNetworkViewReaderFactory" />
 			<entry key="readerId" value="xgmmlNetworkViewReader" />
@@ -53,7 +53,7 @@
 	</osgi:service>
 
 	<osgi:service id="textDataTableReaderFactoryService" ref="textDataTableReaderFactory"
-		interface="org.cytoscape.io.read.CyDataTableReaderFactory">
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
 			<entry key="serviceType" value="textDataTableReaderFactory" />
 			<entry key="readerId" value="textDataTableReader" />
@@ -67,7 +67,7 @@
 	
 	<!-- Define service listeners -->
 	<osgi:set id="cyNetworkViewReaderFactories" 
-	          interface="org.cytoscape.io.read.CyNetworkViewReaderFactory"
+	          interface="org.cytoscape.io.read.InputStreamTaskFactory"
 	          cardinality="0..N">
 		<osgi:listener bind-method="addInputStreamTaskFactory"
 		               unbind-method="removeInputStreamTaskFactory" 
@@ -75,7 +75,7 @@
 	</osgi:set>
 
 	<osgi:set id="cyDataTableReaderFactories" 
-	          interface="org.cytoscape.io.read.CyDataTableReaderFactory"
+	          interface="org.cytoscape.io.read.InputStreamTaskFactory"
 	          cardinality="0..N">
 		<osgi:listener bind-method="addInputStreamTaskFactory"
 		               unbind-method="removeInputStreamTaskFactory" 

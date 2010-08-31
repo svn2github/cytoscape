@@ -148,8 +148,7 @@ package org.cytoscape.work;
  *
  * @author Pasteur
  */
-public interface Task
-{
+public interface Task {
 	/**
 	 * This method is called when the <code>Task</code> begins execution.
 	 *
@@ -187,5 +186,9 @@ public interface Task
 	 * concurrency issues.</p>
 	 */
 	void cancel();
-}
 
+	/**
+	 *  @return true if cancel() has been invoked on a task, else false
+	 */
+	boolean cancelled();
+}

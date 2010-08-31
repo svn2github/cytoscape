@@ -302,6 +302,4 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 
 		return false;
 	}
-
-	public abstract boolean validateAndWriteBackTunables();
 }

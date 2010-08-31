@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,15 +25,14 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package org.cytoscape.io.internal.read.sif;
+
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.cytoscape.io.internal.util.ReadUtils;
 import org.cytoscape.io.read.CyNetworkViewReader;
-import org.cytoscape.io.read.CyNetworkViewReaderFactory;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -49,28 +41,29 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.work.TaskIterator;
 
 import org.cytoscape.io.internal.read.AbstractNetworkViewReaderFactory;
 
-/**
- */
+
 public class SIFNetworkViewReaderFactory extends AbstractNetworkViewReaderFactory {
 
 	private final ReadUtils readUtil;
 	private final CyLayouts layouts;
 
 	public SIFNetworkViewReaderFactory(ReadUtils readUtil, 
-	                                     CyFileFilter filter, 
-	                                     CyLayouts layouts, 
-	                                     CyNetworkViewFactory cyNetworkViewFactory, 
-	                                     CyNetworkFactory cyNetworkFactory) {
+					   CyFileFilter filter, 
+					   CyLayouts layouts, 
+					   CyNetworkViewFactory cyNetworkViewFactory, 
+					   CyNetworkFactory cyNetworkFactory) {
 		super(filter,cyNetworkViewFactory,cyNetworkFactory);
 		this.readUtil = readUtil;
 		this.layouts = layouts;
 	}
 
-	public CyNetworkViewReader getTask() {
-		return new SIFNetworkViewReader(inputStream, readUtil, layouts, 
-		                                  cyNetworkViewFactory, cyNetworkFactory);
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(
+			new SIFNetworkViewReader(inputStream, readUtil, layouts, 
+			                         cyNetworkViewFactory, cyNetworkFactory));
 	}
 }

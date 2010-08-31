@@ -1,14 +1,7 @@
 /*
  File: NewSessionTask.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -36,15 +29,13 @@
  */
 package org.cytoscape.task.internal.session; 
 
+
 import org.cytoscape.session.CySessionManager; 
 
-import org.cytoscape.work.Task;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.task.AbstractTask;
 
-/**
- *
- */
+
 public class NewSessionTask extends AbstractTask {
 
 	private CySessionManager mgr;

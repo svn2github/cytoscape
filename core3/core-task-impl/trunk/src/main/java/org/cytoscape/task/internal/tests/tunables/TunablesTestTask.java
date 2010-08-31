@@ -35,8 +35,8 @@ import java.io.File;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.cytoscape.task.AbstractTask;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;

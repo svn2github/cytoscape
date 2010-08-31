@@ -32,7 +32,7 @@ package org.cytoscape.task.internal.tests.tunables;
 
 import java.io.File;
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 
 
@@ -43,7 +43,7 @@ public class TunablesTestTaskFactory2 implements TaskFactory {
 	@Tunable(description="# of loops")
 	public int loopCount = 1;
 
-	public Task getTask() {
-		return new TunablesTestTask2(inputFile, loopCount);
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(new TunablesTestTask2(inputFile, loopCount));
 	} 
 }

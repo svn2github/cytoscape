@@ -1,5 +1,6 @@
 package org.cytoscape.task.internal.loaddatatable;
 
+
 import static org.cytoscape.io.DataCategory.TABLE;
 
 import java.io.File;
@@ -8,10 +9,11 @@ import java.util.Properties;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.io.read.CyDataTableReaderManager;
 import org.cytoscape.io.read.CyDataTableReader;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.Tunable.Param;
-import org.cytoscape.task.AbstractTask;
+
 
 public class LoadDataTableTask extends AbstractTask {
 

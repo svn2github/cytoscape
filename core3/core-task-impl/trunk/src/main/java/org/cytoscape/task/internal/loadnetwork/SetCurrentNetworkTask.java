@@ -1,10 +1,10 @@
 package org.cytoscape.task.internal.loadnetwork;
 
+
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.work.Task;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.task.AbstractTask;
 
 
 public class SetCurrentNetworkTask extends AbstractTask {

@@ -1,14 +1,7 @@
 /*
  File: NewNetworkSelectedNodesOnlyTaskFactory.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,16 +27,17 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package org.cytoscape.task.internal.creation;
+
 
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
+
 
 public class NewNetworkSelectedNodesOnlyTaskFactory implements TaskFactory {
 
@@ -54,8 +48,9 @@ public class NewNetworkSelectedNodesOnlyTaskFactory implements TaskFactory {
 	private VisualMappingManager vmm;
 
 	public NewNetworkSelectedNodesOnlyTaskFactory(CyRootNetworkFactory crnf,
-			CyNetworkViewFactory cnvf, CyNetworkManager netmgr,
-			CyNetworkNaming naming, VisualMappingManager vmm) {
+						      CyNetworkViewFactory cnvf, CyNetworkManager netmgr,
+						      CyNetworkNaming naming, VisualMappingManager vmm)
+	{
 		this.netmgr = netmgr;
 		this.crnf = crnf;
 		this.cnvf = cnvf;
@@ -63,8 +58,7 @@ public class NewNetworkSelectedNodesOnlyTaskFactory implements TaskFactory {
 		this.vmm = vmm;
 	}
 
-	public Task getTask() {
-		return new NewNetworkSelectedNodesOnlyTask(crnf, cnvf, netmgr, naming,
-				vmm);
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(new NewNetworkSelectedNodesOnlyTask(crnf, cnvf, netmgr, naming, vmm));
 	}
 }

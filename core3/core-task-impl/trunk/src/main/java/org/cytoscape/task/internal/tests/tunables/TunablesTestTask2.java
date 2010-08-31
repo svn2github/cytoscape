@@ -32,7 +32,7 @@ package org.cytoscape.task.internal.tests.tunables;
 
 import java.io.File;
 
-import org.cytoscape.task.AbstractTask;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
 
