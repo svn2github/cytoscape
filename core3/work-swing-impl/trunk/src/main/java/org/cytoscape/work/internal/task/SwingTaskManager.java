@@ -125,8 +125,18 @@ public class SwingTaskManager implements TaskManager {
 								return;
 						}
 
-						if (taskMonitor == null)
+						if (taskMonitor == null) {
 							taskMonitor = new SwingTaskMonitor(cancelExecutorService, owner);
+
+							final Future<?> executorFuture = taskExecutorService.submit(this);
+							final Runnable timedOpen = new Runnable() {
+									public void run() {
+										if (!(executorFuture.isDone() || executorFuture.isCancelled()))
+											taskMonitor.open();
+									}
+								};
+							timedDialogExecutorService.schedule(timedOpen, DELAY_BEFORE_SHOWING_DIALOG, DELAY_TIMEUNIT);
+						}
 
 						task.run(taskMonitor);
 						if (task.cancelled())
@@ -139,15 +149,7 @@ public class SwingTaskManager implements TaskManager {
 					taskMonitor.close();
 			}
 		};
-		final Future<?> executorFuture = taskExecutorService.submit(executor);
 
-		final Runnable timedOpen = new Runnable() {
-			public void run() {
-				if (!(executorFuture.isDone() || executorFuture.isCancelled()))
-					taskMonitor.open();
-			}
-		};
-		timedDialogExecutorService.schedule(timedOpen, DELAY_BEFORE_SHOWING_DIALOG, DELAY_TIMEUNIT);
 	}
 }
 
