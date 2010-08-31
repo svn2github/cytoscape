@@ -28,6 +28,8 @@
 package org.cytoscape.work;
 
 
+import java.util.NoSuchElementException;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -74,6 +76,16 @@ public class TaskIteratorTest {
 	public final void testRemove() throws Exception {
 		final TaskIterator iter = new TaskIterator();
 		iter.remove();
+	}
+
+	@Test(expected=NoSuchElementException.class)
+	public final void testNext() throws Exception {
+		final Task initialTask = new SimpleTask(1);
+		final TaskIterator iter = new TaskIterator(initialTask);
+		assertNotNull("We should have gotten a task here!", iter.next());
+
+		// This should blow up!
+		iter.next();
 	}
 }
 
