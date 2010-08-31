@@ -102,7 +102,7 @@ public class IDMappingServiceSuppport {
     private static final String MAPPING_RESULT = "MAPPING_RESULT";
     
     private static final String pluginName = FinalStaticValues.PLUGIN_NAME;
-    private static double version = 1.01;
+//    private static double version = 1.01;
 
     public static void addService() {
         MessageListener ml = new MessageListener() {
@@ -197,7 +197,7 @@ public class IDMappingServiceSuppport {
 
     private static ResponseMessage getServiceVersion(Message msg) {
         Map content = new HashMap();
-        content.put(VERSION, version);
+        content.put(VERSION, CyThesaurusPlugin.VERSION);
         content.put(SUCCESS, true);
 
         return createResponse(msg, content);

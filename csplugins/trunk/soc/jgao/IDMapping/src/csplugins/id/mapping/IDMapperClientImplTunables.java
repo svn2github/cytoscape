@@ -211,7 +211,25 @@ public class IDMapperClientImplTunables implements IDMapperClient {
         if (mapper==null) {
             try {
                 Class.forName(getClassString());
-                mapper = BridgeDb.connect(getConnectionString());
+
+                Thread thread = new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            mapper = BridgeDb.connect(getConnectionString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                thread.start();
+                thread.join(10000);
+
+                if (mapper == null) {
+                    System.err.println("Failed to connect to " + this.toString());
+                    return null;
+                }
+
                 preprocess(mapper);
 
                 // in case the current type is wrong, update it.

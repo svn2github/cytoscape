@@ -35,6 +35,7 @@
 
 package csplugins.id.mapping;
 
+import csplugins.id.mapping.service.CyThesaurusNamespace;
 import csplugins.id.mapping.service.IDMappingServiceSuppport;
 import csplugins.id.mapping.ui.CyThesaurusDialog;
 
@@ -59,6 +60,7 @@ import java.util.Map;
  */
 public final class CyThesaurusPlugin extends CytoscapePlugin {
     public static Map mapSrcAttrIDTypes = null;
+    public static double VERSION = 1.20;
 
     public CyThesaurusPlugin() {
         try {
@@ -67,7 +69,7 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
             listenToSessionEvent();
 
             IDMappingServiceSuppport.addService();
-//            csplugins.id.mapping.command.CyThesaurusNamespace.register("idmapping");
+            CyThesaurusNamespace.register(CyThesaurusNamespace.NAME);
         } catch (Exception e) {
             e.printStackTrace();
         }
