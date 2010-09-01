@@ -69,8 +69,6 @@ public class SuperTask implements Task {
 	 * <p><code>new SuperTask("Example", new MyTask1(), new MyTask2(),
 	 * new MyTask3());</code></p>
 	 *
-	 * @param title The title of the <code>SuperTask</code> that describes
-	 * succinctly what the <code>SuperTask</code> does.
 	 * @param subtasks The subtasks to be grouped together by
 	 * <code>SuperTask</code>. The order of <code>subtasks</code> is the
 	 * order of execution. Each subtask has an equal amount of the progress bar.

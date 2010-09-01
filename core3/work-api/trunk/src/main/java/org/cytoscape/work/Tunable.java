@@ -84,10 +84,10 @@ public @interface Tunable {
 	 * <p><pre>
 	 * <b>example</b>:
 	 * 
-	 * 	<code>@Tunable(description="write your first name", group={"Company","Department","office","identity"})</code>
+	 * 	<code>@Tunable(description="write your first name", groups={"Company","Department","office","identity"})</code>
 	 * 	public String firstName = "John";
 	 * 
-	 * 	<code>@Tunable(description="write the name of your office", group={"Company","Department","office"})</code>
+	 * 	<code>@Tunable(description="write the name of your office", groups={"Company","Department","office"})</code>
 	 * 	public String officeName = "CytoscapeDevelopment's Office";
 	 * 	</code>
 	 * 
