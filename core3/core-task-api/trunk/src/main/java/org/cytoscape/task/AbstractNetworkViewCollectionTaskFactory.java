@@ -28,7 +28,6 @@
 package org.cytoscape.task;
 
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.TaskFactory;
 import java.util.Collection;
 
 

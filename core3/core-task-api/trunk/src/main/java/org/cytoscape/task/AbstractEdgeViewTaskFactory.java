@@ -38,8 +38,6 @@ package org.cytoscape.task;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
 
 public abstract class AbstractEdgeViewTaskFactory implements EdgeViewTaskFactory {
 

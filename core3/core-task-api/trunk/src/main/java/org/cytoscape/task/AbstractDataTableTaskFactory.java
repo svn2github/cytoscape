@@ -36,8 +36,6 @@
 package org.cytoscape.task;
 
 import org.cytoscape.model.CyDataTable;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
 
 public abstract class AbstractDataTableTaskFactory implements DataTableTaskFactory {
 

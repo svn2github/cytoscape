@@ -34,7 +34,6 @@
 */
 package org.cytoscape.task;
 
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;

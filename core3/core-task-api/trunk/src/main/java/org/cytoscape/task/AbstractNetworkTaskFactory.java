@@ -31,7 +31,6 @@ package org.cytoscape.task;
 
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.Task;
 
 
 public abstract class AbstractNetworkTaskFactory implements NetworkTaskFactory {

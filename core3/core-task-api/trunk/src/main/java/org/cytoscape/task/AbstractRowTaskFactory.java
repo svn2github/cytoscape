@@ -36,8 +36,6 @@
 package org.cytoscape.task;
 
 import org.cytoscape.model.CyRow;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
 
 public abstract class AbstractRowTaskFactory implements RowTaskFactory {
 
