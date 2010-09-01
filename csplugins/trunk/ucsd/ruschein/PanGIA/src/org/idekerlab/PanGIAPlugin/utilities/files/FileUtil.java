@@ -146,12 +146,11 @@ public class FileUtil
 				
 			}catch (IOException e)
 			{
-				System.out.println(e.getMessage());
-				System.exit(0);
+				e.printStackTrace();
 			}
 		}
 		
-		try {br.close();fr.close();} catch (IOException ioe){System.out.println(ioe.getMessage());System.exit(0);}
+		try {br.close();fr.close();} catch (IOException ioe){ioe.printStackTrace();}
 		
 		sv = sv.sort();
 		

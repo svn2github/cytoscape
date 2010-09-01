@@ -282,6 +282,8 @@ public class SearchTask implements Task {
 
 		setPercentCompleted(100);
 		
+		PanGIAPlugin.output.initialize(physicalInputNetwork, geneticInputNetwork);
+		
 		/*
 		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
 		CyAttributes cyEdgeAttrs = Cytoscape.getEdgeAttributes();

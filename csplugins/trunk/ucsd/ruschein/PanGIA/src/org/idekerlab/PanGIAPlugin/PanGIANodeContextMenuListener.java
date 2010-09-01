@@ -12,6 +12,7 @@ import org.idekerlab.PanGIAPlugin.utilities.files.FileUtil;
 
 import giny.view.NodeView;
 import cytoscape.Cytoscape;
+import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
 import ding.view.NodeContextMenuListener;
@@ -38,6 +39,31 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
 
          final JMenu pangiaMenu = new JMenu("PanGIA");
 
+         boolean selectedHasNested = false;
+         
+         for (Object n : nv.getGraphView().getSelectedNodes())
+        	 if (((ding.view.DNodeView)n).getNode().getNestedNetwork()!=null)
+        	 {
+        		 selectedHasNested = true;
+        		 break;
+        	 }
+         
+         //ITEM1
+         if (selectedHasNested && PanGIAPlugin.output.isAvailable())
+         {
+	         JMenuItem item = new JMenuItem();
+	         item.addActionListener(new ActionListener()
+	         {
+	             public void actionPerformed(ActionEvent e) {
+	            	 DetailedNetworkCreator.createDetailedView(view);
+	             }
+	         });
+		     item.setText("Create detailed view");
+		
+		     pangiaMenu.add(item);
+         }
+         
+         //ITEM2
          JMenu item1 = new JMenu();
          item1.setText("Save selected nodes to matrix file");
          
@@ -60,9 +86,10 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
 	         });
         	 item1.add(eaItem);
          }
-
-
          pangiaMenu.add(item1);
+
+	     
+         //MENU
          menu.add(pangiaMenu);
      }
      
@@ -145,4 +172,6 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
     	 }catch (Exception e){e.printStackTrace();}
      }
 
+     
+     
 }

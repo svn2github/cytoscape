@@ -81,7 +81,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		// Set the button size the same
 		closeButton.setPreferredSize(new java.awt.Dimension(75, 23));
 		aboutButton.setPreferredSize(new java.awt.Dimension(75, 23));
-		helpButton.setPreferredSize(new java.awt.Dimension(75, 23));
+		//helpButton.setPreferredSize(new java.awt.Dimension(75, 23));
 		searchButton.setPreferredSize(new java.awt.Dimension(75, 23));
 		 
 		// about button is a place holder for now, hide it
@@ -131,12 +131,12 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         genScalingMethodComboBox = new javax.swing.JComboBox();
         parameterPanel = new javax.swing.JPanel();
         buttonPanel = new javax.swing.JPanel();
-        helpButton = new javax.swing.JButton();
+        //helpButton = new javax.swing.JButton();
         aboutButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
         searchButton = new javax.swing.JButton();
 
-        parameterErrorLabel= new JLabel();
+        parameterErrorTextArea= new JTextArea();
         
         setLayout(new java.awt.GridBagLayout());
 
@@ -276,24 +276,27 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         add(parameterPanel, gridBagConstraints);
 
         //ParamaterErrorLabel
-        parameterErrorLabel.setText("");
-        parameterErrorLabel.setForeground(Color.red);
-        parameterErrorLabel.setFont(parameterErrorLabel.getFont().deriveFont(Font.BOLD));
-        parameterErrorLabel.setToolTipText("This issue must be addressed before a search can be performed.");
+        parameterErrorTextArea.setText("");
+        parameterErrorTextArea.setWrapStyleWord(true);
+        parameterErrorTextArea.setEditable(false);
+        parameterErrorTextArea.setForeground(Color.blue);
+        parameterErrorTextArea.setFont(parameterErrorTextArea.getFont().deriveFont(Font.BOLD));
+        parameterErrorTextArea.setToolTipText("This issue must be addressed before a search can be performed.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 5;
-        gridBagConstraints.insets = new java.awt.Insets(3, 5, 3, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(parameterErrorLabel, gridBagConstraints);
+        add(parameterErrorTextArea, gridBagConstraints);
         
         //Button panel
         buttonPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        /*
         helpButton.setText("Help");
         helpButton.setToolTipText("Get help for PanGIA.");
         CyHelpBroker.getHelpBroker().enableHelpOnButton(helpButton, "Topic", null);
 
         buttonPanel.add(helpButton);
-
+        */
         aboutButton.setText("About");
         aboutButton.setToolTipText("Learn more about PanGIA.");
         aboutButton.addActionListener(new java.awt.event.ActionListener() {
@@ -387,14 +390,14 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         scorePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Search Parameters"));
         scorePanel.setToolTipText("Specify parameters relating to the search procedure.");
         
-        alphaLabel.setText("Alpha Exponent:");
+        alphaLabel.setText("Alpha (Exponent):");
         alphaLabel.setToolTipText("The exponent for rewarding module size. (reward = multiplier * moduleSize^exponent)");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 5,3, 0);
         scorePanel.add(alphaLabel, gridBagConstraints);
 
-        alphaMultiplierLabel.setText("Alpha Multiplier:");
+        alphaMultiplierLabel.setText("Beta (Multiplier):");
         alphaMultiplierLabel.setToolTipText("The multiplier for rewarding module size. (reward = multiplier * moduleSize^exponent)");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
@@ -792,7 +795,6 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JPanel edgeFilteringPanel;
     private javax.swing.JComboBox geneticEdgeAttribComboBox;
     private javax.swing.JLabel geneticEdgeLabel;
-    private javax.swing.JButton helpButton;
     private javax.swing.JLabel lbNumberOfSamples;
     private javax.swing.JLabel lbPlaceHolder1;
     private javax.swing.JLabel lbPlaceHolder2;
@@ -833,7 +835,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private JButton reportPathButton;
     private String reportPath="";
         
-    private JLabel parameterErrorLabel;
+    private JTextArea parameterErrorTextArea;
     // End of variables declaration                     
                
   
@@ -1014,38 +1016,38 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		if (geneticAttrName == null || physicalAttrName == null)
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("Error: Must choose physical and genetic attributes.");
+			parameterErrorTextArea.setText("Please choose physical and genetic attributes.");
 			return;
 		}
 
-		if (geneticAttrName.equals(physicalAttrName) && !geneticAttrName.equals(DEFAULT_ATTRIBUTE))
-		{
-			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("<HTML>Error: Physical and genetic attributes<BR>cannot be the same.</HTML>");
-			return;
-		}
-		
 		final CyNetwork physicalNetwork = physicalNetworkPanel.getSelectedNetwork();
 		final CyNetwork geneticNetwork = geneticNetworkPanel.getSelectedNetwork();
+		
+		if (physicalNetwork == null && geneticNetwork==null)
+		{
+			searchButton.setEnabled(false);
+			parameterErrorTextArea.setText("Please choose physical and genetic networks.");
+			return;
+		}
 		
 		if (physicalNetwork == null)
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("Error: Must choose a physical network.");
+			parameterErrorTextArea.setText("Please choose a physical network.");
 			return;
 		}
 		
 		if (geneticNetwork == null)
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("Error: Must choose a genetic network.");
+			parameterErrorTextArea.setText("Please choose a genetic network.");
 			return;
 		}
 		
 		if (physicalNetwork==geneticNetwork && geneticAttrName.equals(physicalAttrName))
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("<HTML>Error: Cannot choose the same<BR>networks and attributes.</HTML>");
+			parameterErrorTextArea.setText("Please choose different networks or attributes.");
 			return;
 		}
 		
@@ -1055,7 +1057,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			     Cytoscape.getEdgeAttributes().getType(physicalSelected) != CyAttributes.TYPE_FLOATING))
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("<HTML>Error: Physical edge score must<BR>be of type integer or float.</HTML>");
+			parameterErrorTextArea.setText("Please choose physical edge scores of type integer or float.");
 			return;
 		}
 		
@@ -1064,14 +1066,14 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			     Cytoscape.getEdgeAttributes().getType(geneticSelected) != CyAttributes.TYPE_FLOATING))
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("<HTML>Error: Genetic edge score must<BR>be of type integer or float.</HTML>");
+			parameterErrorTextArea.setText("Please choose genetic edge scores of type integer or float.");
 			return;
 		}
 		
 		if ((annotationCheckBox.isSelected() || trainingCheckBoxPhysical.isSelected() || trainingCheckBoxGenetic.isSelected()) && annotationAttribComboBox.getSelectedIndex()<0)
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("<HTML>Error: Annotation requires an<BR>annotation node attribute.</HTML>");
+			parameterErrorTextArea.setText("To use annotation, please choose an annotation node attribute.");
 			return;
 		}
 		
@@ -1081,7 +1083,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		catch (NumberFormatException e)
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("Error: Invalid value for Alpha.");
+			parameterErrorTextArea.setText("Please choose a valid value for Alpha.");
 			return;
 		}
 		
@@ -1089,7 +1091,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		catch (NumberFormatException e)
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("Error: Invalid value for Alpha Multiplier.");
+			parameterErrorTextArea.setText("Please choose a valid value for Beta.");
 			return;
 		}
 		
@@ -1101,7 +1103,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 				if (d<0)
 				{
 					searchButton.setEnabled(false);
-					parameterErrorLabel.setText("Error: degree filter must be positive.");
+					parameterErrorTextArea.setText("Please choose a positive value for degree filter.");
 					return;
 				}
 			
@@ -1109,7 +1111,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			catch (NumberFormatException e)
 			{
 				searchButton.setEnabled(false);
-				parameterErrorLabel.setText("Error: Invalid value for degree filter.");
+				parameterErrorTextArea.setText("Please choose a valid value for degree filter.");
 				return;
 			}
 		}
@@ -1120,7 +1122,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			if (p<0 || p>100)
 			{
 				searchButton.setEnabled(false);
-				parameterErrorLabel.setText("<HTML>Error: Percentile threshold must<BR>fall in the range [0,100].</HTML>");
+				parameterErrorTextArea.setText("Please set percentile threshold in the range [0,100].");
 				return;
 			}
 		
@@ -1128,7 +1130,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		catch (NumberFormatException e)
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("Error: Invalid value for Percentile Threshold.");
+			parameterErrorTextArea.setText("Please choose a valid value for percentile threshold.");
 			return;
 		}
 		
@@ -1138,7 +1140,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			if (n<=0)
 			{
 				searchButton.setEnabled(false);
-				parameterErrorLabel.setText("Error: Number of samples must be positive.");
+				parameterErrorTextArea.setText("Please choose a positive value for number of samples.");
 				return;
 			}
 		
@@ -1146,7 +1148,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		catch (NumberFormatException e)
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("Error: Invalid value for Number of samples.");
+			parameterErrorTextArea.setText("Please choose a valid value for number of samples.");
 			return;
 		}
 		
@@ -1159,7 +1161,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 				if (p<0 || p>1)
 				{
 					searchButton.setEnabled(false);
-					parameterErrorLabel.setText("<HTML>Error: Labeling threshold must<BR>fall in the range [0,1].</HTML>");
+					parameterErrorTextArea.setText("Please set labeling threshold in the range [0,1].");
 					
 					return;
 				}
@@ -1168,7 +1170,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			catch (NumberFormatException e)
 			{
 				searchButton.setEnabled(false);
-				parameterErrorLabel.setText("Error: Invalid value for Labeling threshold.");
+				parameterErrorTextArea.setText("Please choose a valid value for labeling threshold.");
 				return;
 			}
 		}
@@ -1176,12 +1178,12 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		if (!reportPath.equals("") && new File(reportPath).exists() && new File(reportPath).isDirectory())
 		{
 			searchButton.setEnabled(false);
-			parameterErrorLabel.setText("Error: Report path cannot be a directory.");
+			parameterErrorTextArea.setText("Please choose a valid report path.");
 			return;
 		}
 		
 		
-		parameterErrorLabel.setText("");
+		parameterErrorTextArea.setText("");
 		searchButton.setEnabled(true);
 	}
 }

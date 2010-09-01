@@ -1,5 +1,7 @@
 package org.idekerlab.PanGIAPlugin;
 
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,7 +18,9 @@ import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CyHelpBroker;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.view.cytopanels.BiModalJSplitPane;
 
 /**
  * PanGIA Plugin main class.
@@ -36,15 +40,14 @@ public class PanGIAPlugin extends CytoscapePlugin {
 	
 	private static final String PLUGIN_NAME = "PanGIA";
 	public static final String VERSION = "1.0";
-
+	public static final PanGIAOutput output = new PanGIAOutput();
 
 	public PanGIAPlugin() {
 		this.vsObserver = new VisualStyleObserver();
 		addHelp();
 		final JMenuItem menuItem = new JMenuItem(PLUGIN_NAME);
 		menuItem.addActionListener(new PluginAction());
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu(
-				"Plugins.Module Finders...").add(menuItem);
+		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins.Module Finders...").add(menuItem);
 		
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_CREATED,new PanGIANetworkListener());
 	}
@@ -67,7 +70,7 @@ public class PanGIAPlugin extends CytoscapePlugin {
 
 	class PluginAction implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
+			final CytoPanelImp cytoPanel = (CytoPanelImp)Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
 			int index = cytoPanel.indexOfComponent(scrollPane);
 			if (index < 0) {
 				final SearchPropertyPanel searchPanel = new SearchPropertyPanel();
@@ -75,11 +78,16 @@ public class PanGIAPlugin extends CytoscapePlugin {
 				searchPanel.setContainer(scrollPane);
 				searchPanel.updateAttributeLists();
 				searchPanel.setVisible(true);
+				scrollPane.setMinimumSize(new Dimension(400,400));
 				cytoPanel.add(PLUGIN_NAME, scrollPane);
 				index = cytoPanel.indexOfComponent(scrollPane);
+				
+				BiModalJSplitPane bmj = (BiModalJSplitPane)cytoPanel.getParent();
+				bmj.setDividerLocation(400);				
 			}
 			cytoPanel.setSelectedIndex(index);
 			cytoPanel.setState(CytoPanelState.DOCK);
 		}
 	}
 }
+

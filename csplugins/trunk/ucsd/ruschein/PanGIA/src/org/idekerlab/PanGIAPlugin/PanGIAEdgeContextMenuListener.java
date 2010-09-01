@@ -1,11 +1,15 @@
 package org.idekerlab.PanGIAPlugin;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import giny.view.EdgeView;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
@@ -27,13 +31,31 @@ public class PanGIAEdgeContextMenuListener implements EdgeContextMenuListener
          if (menu == null)
                  return;
 
-         final JMenu pangiaMenu = new JMenu("PanGIA");
-
-         JMenuItem item = new JMenuItem();
-         item.setText("Yeah! You got an edge!");
-
-         pangiaMenu.add(item);
-
-         menu.add(pangiaMenu);
+         boolean selectedHasNested = false;
+         
+         for (Object n : ev.getGraphView().getSelectedNodes())
+        	 if (((ding.view.DNodeView)n).getNode().getNestedNetwork()!=null)
+        	 {
+        		 selectedHasNested = true;
+        		 break;
+        	 }
+        
+         if (selectedHasNested && PanGIAPlugin.output.isAvailable())
+         {
+	         final JMenu pangiaMenu = new JMenu("PanGIA");
+	
+	         JMenuItem item = new JMenuItem();
+	         item.setText("Create detailed view");
+	         item.addActionListener(new ActionListener()
+	         {
+	             public void actionPerformed(ActionEvent e) {
+	            	 DetailedNetworkCreator.createDetailedView(view);
+	             }
+	         });
+	
+	         pangiaMenu.add(item);
+	
+	         menu.add(pangiaMenu);
+         }
 	}
 }
