@@ -50,5 +50,4 @@ public abstract class AbstractDataTableTaskFactory implements DataTableTaskFacto
 		this.table = table;
 	}
 
-	public abstract Task getTask();
 }

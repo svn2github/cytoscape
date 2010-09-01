@@ -1,7 +1,12 @@
 /*
-  File: AbstractNetworkTaskFactory.java
-
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -27,19 +32,51 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
+
 package org.cytoscape.task;
 
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.Before;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.Task;
 
+import org.cytoscape.work.TaskIterator;
 
-public abstract class AbstractNetworkTaskFactory implements NetworkTaskFactory {
-	protected CyNetwork net;
+public class AbstractNetworkTaskFactoryTest {
+	
+	private class NetworkTaskFactory extends AbstractNetworkTaskFactory {
+		public TaskIterator getTaskIterator() {
+			return null;
+		}
+	}
 
-	public void setNetwork(final CyNetwork net) {
-		if (net == null)
-			throw new NullPointerException("\"net\" is null!");
-		this.net = net;
+	NetworkTaskFactory factory; 
+
+	@Before
+	public void setUp() {
+		factory = new NetworkTaskFactory();
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void testNullSetNetwork() throws Exception {
+		factory.setNetwork(null);
+	}
+
+	@Test
+	public void testGoodSetNetwork() throws Exception {
+		factory.setNetwork(mock(CyNetwork.class));
+		assertNotNull( factory.net );
+	}
+
+	@Test
+	public void testNotFinal() throws Exception {
+		factory.setNetwork(mock(CyNetwork.class));
+		CyNetwork t1 = factory.net;
+		factory.setNetwork(mock(CyNetwork.class));
+		CyNetwork t2 = factory.net;
+		assertFalse( (t1 == t2) );
 	}
 }

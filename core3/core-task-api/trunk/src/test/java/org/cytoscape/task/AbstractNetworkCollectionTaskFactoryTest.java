@@ -1,7 +1,12 @@
 /*
-  File: AbstractCyDataTableMapperTaskFactory.java
-
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -27,36 +32,53 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
+
 package org.cytoscape.task;
 
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.Before;
 
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.work.Task;
+import org.cytoscape.model.CyNetwork;
 
+import org.cytoscape.work.TaskIterator;
 
-public abstract class AbstractCyDataTableMapperTaskFactory  implements CyDataTableMapperTaskFactory {
-	protected CyDataTable source;
-	protected String sourceColumn;
-	protected CyDataTable target;
-	protected String targetColumn;
+import java.util.Collection;
 
-	public void setSourceAndTarget(CyDataTable source, String sourceColumn, CyDataTable target, String targetColumn) {
-		if (source == null)
-			throw new IllegalArgumentException("\"source\" is null!");
-		this.source = source;
-
-		if (sourceColumn == null)
-			throw new IllegalArgumentException("\"sourceColumn\" is null!");
-		this.sourceColumn = sourceColumn;
-
-		if (target == null)
-			throw new IllegalArgumentException("\"target\" is null!");
-		this.target = target;
-
-		if (targetColumn == null)
-			throw new IllegalArgumentException("\"targetColumn\" is null!");
-		this.targetColumn = targetColumn;
+public class AbstractNetworkCollectionTaskFactoryTest {
+	
+	private class NetworkCollectionTaskFactory extends AbstractNetworkCollectionTaskFactory {
+		public TaskIterator getTaskIterator() {
+			return null;
+		}
 	}
 
-	public abstract Task getTask();
+	NetworkCollectionTaskFactory factory; 
+
+	@Before
+	public void setUp() {
+		factory = new NetworkCollectionTaskFactory();
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void testNullSetNetworkCollection() throws Exception {
+		factory.setNetworkCollection(null);
+	}
+
+	@Test
+	public void testGoodSetNetworkCollection() throws Exception {
+		factory.setNetworkCollection((Collection<CyNetwork>)mock(Collection.class));
+		assertNotNull( factory.networks );
+	}
+
+	@Test
+	public void testNotFinal() throws Exception {
+		factory.setNetworkCollection((Collection<CyNetwork>)mock(Collection.class));
+		Collection<CyNetwork> t1 = factory.networks;
+		factory.setNetworkCollection((Collection<CyNetwork>)mock(Collection.class));
+		Collection<CyNetwork> t2 = factory.networks;
+		assertFalse( (t1 == t2) );
+	}
 }

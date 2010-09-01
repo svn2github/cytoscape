@@ -50,5 +50,4 @@ public abstract class AbstractRowTaskFactory implements RowTaskFactory {
 		this.row = row;
 	}
 
-	public abstract Task getTask();
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   The Cytoscape Consortium is:
   - Institute for Systems Biology
@@ -33,27 +33,52 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
+
 package org.cytoscape.task;
 
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.Before;
+
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.View;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
 
-public abstract class AbstractEdgeViewTaskFactory implements EdgeViewTaskFactory {
+import org.cytoscape.work.TaskIterator;
 
-	protected CyNetworkView netView;
-	protected View<CyEdge> edgeView;
+import java.util.Collection;
 
-	public void setEdgeView(final View<CyEdge> edgeView, final CyNetworkView netView) {
-		if ( edgeView == null )
-			throw new NullPointerException("EdgeView is null");
-		if ( netView == null )
-			throw new NullPointerException("CyNetworkView is null");
-
-		this.edgeView = edgeView;
-		this.netView = netView;
+public class AbstractNetworkViewCollectionTaskFactoryTest {
+	
+	private class NetworkViewCollectionTaskFactory extends AbstractNetworkViewCollectionTaskFactory {
+		public TaskIterator getTaskIterator() {
+			return null;
+		}
 	}
 
+	NetworkViewCollectionTaskFactory factory; 
+
+	@Before
+	public void setUp() {
+		factory = new NetworkViewCollectionTaskFactory();
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void testNullSetNetworkViewCollection() throws Exception {
+		factory.setNetworkViewCollection(null);
+	}
+
+	@Test
+	public void testGoodSetNetworkViewCollection() throws Exception {
+		factory.setNetworkViewCollection((Collection<CyNetworkView>)mock(Collection.class));
+		assertNotNull( factory.networkViews );
+	}
+
+	@Test
+	public void testNotFinal() throws Exception {
+		factory.setNetworkViewCollection((Collection<CyNetworkView>)mock(Collection.class));
+		Collection<CyNetworkView> t1 = factory.networkViews;
+		factory.setNetworkViewCollection((Collection<CyNetworkView>)mock(Collection.class));
+		Collection<CyNetworkView> t2 = factory.networkViews;
+		assertFalse( (t1 == t2) );
+	}
 }

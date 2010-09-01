@@ -1,7 +1,12 @@
 /*
-  File: AbstractNetworkTaskFactory.java
-
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -27,19 +32,51 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
+
 package org.cytoscape.task;
 
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.Before;
 
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.Task;
+import org.cytoscape.view.model.CyNetworkView;
 
+import org.cytoscape.work.TaskIterator;
 
-public abstract class AbstractNetworkTaskFactory implements NetworkTaskFactory {
-	protected CyNetwork net;
+public class AbstractNetworkViewTaskFactoryTest {
+	
+	private class NetworkViewTaskFactory extends AbstractNetworkViewTaskFactory {
+		public TaskIterator getTaskIterator() {
+			return null;
+		}
+	}
 
-	public void setNetwork(final CyNetwork net) {
-		if (net == null)
-			throw new NullPointerException("\"net\" is null!");
-		this.net = net;
+	NetworkViewTaskFactory factory; 
+
+	@Before
+	public void setUp() {
+		factory = new NetworkViewTaskFactory();
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void testNullSetNetworkView() throws Exception {
+		factory.setNetworkView(null);
+	}
+
+	@Test
+	public void testGoodSetNetworkView() throws Exception {
+		factory.setNetworkView(mock(CyNetworkView.class));
+		assertNotNull( factory.view );
+	}
+
+	@Test
+	public void testNotFinal() throws Exception {
+		factory.setNetworkView(mock(CyNetworkView.class));
+		CyNetworkView t1 = factory.view;
+		factory.setNetworkView(mock(CyNetworkView.class));
+		CyNetworkView t2 = factory.view;
+		assertFalse( (t1 == t2) );
 	}
 }
