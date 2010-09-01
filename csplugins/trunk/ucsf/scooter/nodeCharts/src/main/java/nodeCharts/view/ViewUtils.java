@@ -63,16 +63,10 @@ public class ViewUtils {
 		DNodeView nView = (DNodeView)view.getNodeView(node);
 
 		// Get the affine transform 
-		double height = nView.getHeight();
-		double width = nView.getWidth();
-		double zoom = ((DGraphView)view).getZoom();
-
-		// Transform the hieght and width to the viewport coordinates
-		System.out.println("Node: "+node+" has size ("+width+","+height+") and the zoom is "+zoom);
-		height = height*zoom*.8;
-		width = width*zoom*.8;
+		double height = (nView.getHeight()-nView.getBorderWidth())*0.90;
+		double width = (nView.getWidth()-nView.getBorderWidth())*0.90;
 
 		// Create the bounding box.
-		return new Rectangle2D.Double(-width, -height, width*2, height*2);
+		return new Rectangle2D.Double(-width/2, -height/2, width, height);
 	}
 }
