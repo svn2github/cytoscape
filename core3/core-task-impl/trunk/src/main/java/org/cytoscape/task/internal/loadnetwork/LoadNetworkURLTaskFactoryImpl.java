@@ -66,10 +66,6 @@ public class LoadNetworkURLTaskFactoryImpl implements TaskFactory {
 		this.streamUtil = streamUtil;
 	}
 
-	public void setNamingUtil(CyNetworkNaming namingUtil) {
-		this.cyNetworkNaming = namingUtil;
-	}
-
 	public TaskIterator getTaskIterator() {
 		return new TaskIterator(new LoadNetworkURLTask(mgr, netmgr, props, cyNetworkNaming, streamUtil));
 	}
