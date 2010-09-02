@@ -35,11 +35,9 @@ package nodeCharts.view;
 // System imports
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import java.awt.Color;
 import java.awt.Paint;
@@ -81,7 +79,7 @@ public class PieChart implements NodeChartViewer {
 		return options;
 	}
 
-	public List<CustomGraphic> getCustomGraphics(Map<String, Object>args, CyNode node, CyNetworkView view) 
+	public List<CustomGraphic> getCustomGraphics(Map<String, Object>args, CyNode node, CyNetworkView view, Object position) 
 	                                                                               throws CyCommandException {
 		// First, get our data values
 		if (!args.containsKey(VALUES))
@@ -97,11 +95,7 @@ public class PieChart implements NodeChartViewer {
 		List<String> labels = getLabels((String)args.get(LABELS));
 
 		// Get our colors
-		List<Color> colors;
-		if (args.containsKey(COLORS))
-			colors = convertColor((String)args.get(COLORS));
-		else
-			colors = generateColors(values.size());
+		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), labels.size());
 
 		// Sanity check
 		if (labels.size() != values.size() ||
@@ -113,7 +107,7 @@ public class PieChart implements NodeChartViewer {
 		List<CustomGraphic> cgList = new ArrayList<CustomGraphic>();
 
 		// We need to get our bounding box in order to scale our graphic properly
-		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view);
+		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view, position);
 
 		for (int slice = 0; slice < nSlices; slice++) {
 			CustomGraphic cg = createSlice(bbox, arcStart, labels.get(slice), values.get(slice), colors.get(slice));
@@ -141,26 +135,6 @@ public class PieChart implements NodeChartViewer {
 			values.set(index, v*360.0/totalSize);
 		}
 		return values;
-	}
-
-	private List<Color> convertColor(String input) {
-		String[] inputArray = input.split(",");
-		return null;
-	}
-
-	private List<Color> generateColors(int nColors) {
-		Calendar cal = Calendar.getInstance();
-		int seed = cal.get(Calendar.SECOND);
-		Random rand = new Random(seed);
-
-		List<Color> result = new ArrayList<Color>(nColors);
-		for (int index = 0; index < nColors; index++) {
-			int r = rand.nextInt(255);
-			int g = rand.nextInt(255);
-			int b = rand.nextInt(255);
-			result.add(index, new Color(r,g,b,200));
-		}
-		return result;
 	}
 
 	private List<String> getLabels(String input) {

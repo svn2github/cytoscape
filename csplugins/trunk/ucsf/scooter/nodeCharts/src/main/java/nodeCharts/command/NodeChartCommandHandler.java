@@ -60,8 +60,12 @@ import nodeCharts.view.ViewUtils;
  */
 public class NodeChartCommandHandler extends AbstractCommandHandler {
 	CyLogger logger;
-	private static String NODE = "node";
 	Map<String, NodeChartViewer> viewerMap;
+
+	// Global commands
+	private static String NODE = "node";
+	private static String POSITION = "position";
+
 
 	public NodeChartCommandHandler(String namespace, CyLogger logger) {
 		super(CyCommandManager.reserveNamespace(namespace));
@@ -92,11 +96,19 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 		if (node == null)
 			throw new CyCommandException("can't find node: '"+nodeName+"'");
 
+		Object pos = null;
+		if (args.containsKey(POSITION)) {
+			String position = (String) args.get(POSITION);
+			pos = ViewUtils.getPosition(position);
+			if (pos == null)
+				throw new CyCommandException("unknown position keyword or illegal position expression: "+position);
+		}
+
 		NodeChartViewer viewer = viewerMap.get(command);
 
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 
-		ViewUtils.addCustomGraphics(viewer.getCustomGraphics(args, node, view), node, view);
+		ViewUtils.addCustomGraphics(viewer.getCustomGraphics(args, node, view, pos), node, view);
 
 		return result;
 	}

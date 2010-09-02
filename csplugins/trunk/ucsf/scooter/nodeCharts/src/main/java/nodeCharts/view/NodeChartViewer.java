@@ -54,7 +54,7 @@ public interface NodeChartViewer {
 
 	public Map<String,String> getOptions();
 
-	public List<CustomGraphic> getCustomGraphics(Map<String,Object>args, CyNode node, CyNetworkView view) 
+	public List<CustomGraphic> getCustomGraphics(Map<String,Object>args, CyNode node, CyNetworkView view, Object position) 
 	                                                                             throws CyCommandException;
 
 }

@@ -32,9 +32,11 @@
  */
 package nodeCharts.view;
 
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 // System imports
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,10 +49,52 @@ import ding.view.DGraphView;
 import ding.view.DNodeView;
 import giny.view.NodeView;
 
+
 /**
  * The NodeChartViewer creates the actual custom graphics
  */
 public class ViewUtils {
+
+	public enum Position {
+		CENTER ("center"),
+		EAST ("east"),
+		NORTH ("north"),
+		NORTHEAST ("northeast"),
+		NORTHWEST ("northwest"),
+		SOUTH ("south"),
+		SOUTHEAST ("southeast"),
+		SOUTHWEST ("southwest"),
+		WEST ("west");
+	
+		private String label;
+		private static Map<String, Position>pMap;
+	
+		Position(String label) { 
+			this.label = label; 
+			addPosition(this);
+		}
+	
+		public String getLabel() {
+			return label;
+		}
+
+		public String toString() {
+			return label;
+		}
+	
+		private void addPosition(Position pos) {
+			if (pMap == null) pMap = new HashMap<String,Position>();
+			pMap.put(pos.getLabel(), pos);
+		}
+	
+		static Position getPosition(String label) {
+			if (pMap.containsKey(label))
+				return pMap.get(label);
+			return null;
+		}
+	}
+
+
 	public static void addCustomGraphics(List<CustomGraphic> cgList, CyNode node, CyNetworkView view) {
 		// Get the DNodeView
 		NodeView nView = view.getNodeView(node);
@@ -59,7 +103,7 @@ public class ViewUtils {
 		}
 	}
 
-	public static Rectangle2D getNodeBoundingBox(CyNode node, CyNetworkView view) {
+	public static Rectangle2D getNodeBoundingBox(CyNode node, CyNetworkView view, Object position) {
 		DNodeView nView = (DNodeView)view.getNodeView(node);
 
 		// Get the affine transform 
@@ -67,6 +111,88 @@ public class ViewUtils {
 		double width = (nView.getWidth()-nView.getBorderWidth())*0.90;
 
 		// Create the bounding box.
-		return new Rectangle2D.Double(-width/2, -height/2, width, height);
+		Rectangle2D.Double bbox = new Rectangle2D.Double(-width/2, -height/2, width, height);
+		return positionAdjust(bbox, position);
 	}
+
+	/**
+ 	 * getPosition will return either a Point2D or a Position, depending on whether
+ 	 * the user provided us with a position keyword or a specific value.
+ 	 *
+ 	 * @param position the position argument
+ 	 * @return a Point2D representing the X,Y offset specified by the user or a Position
+ 	 * enum that corresponds to the provided keyword.  <b>null</b> is returned if the input
+ 	 * is illegal.
+ 	 */
+	public static Object getPosition(String position) {
+		Position pos = Position.getPosition(position);
+		if (pos != null) 
+			return pos;
+
+		String [] xy = position.split(",");
+		if (xy.length != 2) {
+			return null;
+		}
+
+		try {
+			Double x = Double.valueOf(xy[0]);
+			Double y = Double.valueOf(xy[1]);
+			return new Point2D.Double(x.doubleValue(), y.doubleValue());
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
+	private static Rectangle2D positionAdjust(Rectangle2D.Double bbox, Object pos) {
+		if (pos == null)
+			return bbox;
+
+		double height = bbox.getHeight();
+		double width = bbox.getWidth();
+		double x = bbox.getX();
+		double y = bbox.getY();
+
+		if (pos instanceof Position) {
+			Position p = (Position) pos;
+
+			switch (p) {
+			case EAST:
+				x = width/2;
+				break;
+			case WEST:
+				x = -width*1.5;
+				break;
+			case NORTH:
+				y = -height*1.5;
+				break;
+			case SOUTH:
+				y = height/2;
+				break;
+			case NORTHEAST:
+				x = width/2;
+				y = -height*1.5;
+				break;
+			case NORTHWEST:
+				x = -width*1.5;
+				y = -height*1.5;
+				break;
+			case SOUTHEAST:
+				x = width/2;
+				y = height/2;
+				break;
+			case SOUTHWEST:
+				x = -width*1.5;
+				y = height/2;
+				break;
+			case CENTER:
+			default:
+			}
+		} else if (pos instanceof Point2D.Double) {
+			x += ((Point2D.Double)pos).getX();
+			y += ((Point2D.Double)pos).getY();
+		}
+
+		return new Rectangle2D.Double(x,y,width,height);
+	}
+
 }
