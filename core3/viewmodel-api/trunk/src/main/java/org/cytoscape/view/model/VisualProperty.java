@@ -34,10 +34,10 @@
 */
 package org.cytoscape.view.model;
 
+import java.util.Collection;
+
 
 /**
- * FIXME
- * Think of it as a column in the view.model table.
  *
  * Uses String constants as ObjectTypes, ie. to seperate NodeVisualProperties from EdgeVisualProperties, etc.
  * Ideally, we could use Class<? extends View<?>> or something like that, but unfortunately that is impossible due to type erasure.
@@ -52,7 +52,7 @@ public interface VisualProperty<T> {
 	 *
 	 * @return the string describing the object type
 	 */
-	public String getObjectType();
+	String getObjectType();
 
 	
 	/**
@@ -60,7 +60,7 @@ public interface VisualProperty<T> {
 	 *
 	 * @return  Type of object stored in this VP.
 	 */
-	public Class<T> getType();
+	Class<T> getType();
 	
 
 	/**
@@ -68,7 +68,7 @@ public interface VisualProperty<T> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public T getDefault();
+	T getDefault();
 
 	
 	/**
@@ -77,7 +77,7 @@ public interface VisualProperty<T> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getIdString();
+	String getIdString();
 
 	
 	/**
@@ -86,7 +86,7 @@ public interface VisualProperty<T> {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getDisplayName();
+	String getDisplayName();
 
 	
 
@@ -94,22 +94,33 @@ public interface VisualProperty<T> {
 	 * Returns a string of the specified value suitable for serializing to XML
 	 * other text output.
 	 */
-	public String toSerializableString(final T value);
+	String toSerializableString(final T value);
 
 	
 	/**
 	 * Returns an object of type T given a string serialized from the getSerializableString(T value)
 	 * method.
 	 */
-	public T parseSerializableString(final String value);
+	T parseSerializableString(final String value);
 	
 	
 	/**
-	 * In some cases, 
+	 * In some cases, default value from visual style is not suitable, such as x, y, z location of nodes.
+	 * If this flag is on, it will be ignored and it will be controlled by mapping only.
 	 * 
 	 * @return
 	 */
-	public boolean isIgnoreDefault();
+	boolean isIgnoreDefault();
 	
-		
+	
+	
+	// New feature: Tree-like structure for visual properties.
+	
+	VisualProperty<? super T> getParent();
+	Collection<VisualProperty<? extends T>> getChildren();
+	
+	void setParent(final VisualProperty<? super T> parent);
+	void addChild(final VisualProperty<? extends T> child);
+	
+	void setDependencyCalculator(final VisualProperty<? extends T> child, VisualPropertyDependecyCalculator<T> calc);
 }

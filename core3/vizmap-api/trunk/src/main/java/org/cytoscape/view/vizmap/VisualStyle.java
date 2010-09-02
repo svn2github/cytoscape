@@ -47,6 +47,7 @@ import org.cytoscape.view.model.VisualProperty;
  *
  */
 public interface VisualStyle {
+	
 	/**
 	 * Returns name of this visual style. This should NOT be used as ID of this
 	 * Visual Style. Just for GUI components.
@@ -128,5 +129,5 @@ public interface VisualStyle {
 	 */
 	void apply(CyNetworkView v);
 	
-	public VisualLexicon getVisualLexicon();
+	VisualLexicon getVisualLexicon();
 }
