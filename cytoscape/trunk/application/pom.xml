@@ -41,7 +41,7 @@
              <configuration>
                <artifactItems>
                  <artifactItem>
-                   <groupId>cytoscape</groupId>
+                   <groupId>cytoscape.corelibs</groupId>
                    <artifactId>docs</artifactId>
                    <version>${version}</version>
                    <type>zip</type>
