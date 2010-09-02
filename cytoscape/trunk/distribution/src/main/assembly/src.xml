@@ -34,6 +34,13 @@
     </dependencySet>
     <dependencySet>
       <includes>
+        <include>cytoscape-temp:y-layouts:jar</include>
+      </includes>
+      <outputDirectory>plugins</outputDirectory>
+      <unpack>false</unpack>
+    </dependencySet>
+    <dependencySet>
+      <includes>
         <include>cytoscape:application:jar:jar-with-dependencies</include>
       </includes>
 	  <outputFileNameMapping>cytoscape.jar</outputFileNameMapping>
