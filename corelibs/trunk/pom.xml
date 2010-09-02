@@ -33,6 +33,7 @@
     <module>undo.support</module>
     <module>fing</module>
     <module>ding</module>
+    <module>docs</module>
   </modules>
 
   <build>
