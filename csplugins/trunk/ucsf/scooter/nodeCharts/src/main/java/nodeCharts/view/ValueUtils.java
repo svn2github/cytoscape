@@ -97,40 +97,11 @@ public class ValueUtils {
 		String[] inputArray = input.split(",");
 		return convertStringList(Arrays.asList(inputArray));
 	}
-
-	public enum ColorKeyword {
-		RANDOM ("random"),
-		CONTRASTING ("contrasting"),
-		RAINBOW ("rainbow"),
-		MODULATED ("modulated");
-	
-		private String label;
-		private static Map<String, ColorKeyword>cMap;
-	
-		ColorKeyword(String label) { 
-			this.label = label; 
-			addKeyword(this);
-		}
-	
-		public String getLabel() {
-			return label;
-		}
-
-		public String toString() {
-			return label;
-		}
-	
-		private void addKeyword(ColorKeyword col) {
-			if (cMap == null) cMap = new HashMap<String,ColorKeyword>();
-			cMap.put(col.getLabel(), col);
-		}
-	
-		static ColorKeyword getColorKeyword(String label) {
-			if (cMap.containsKey(label))
-				return cMap.get(label);
-			return null;
-		}
-	}
+		
+	private static final String RANDOM = "random";
+	private static final String	CONTRASTING = "contrasting";
+	private static final String	RAINBOW = "rainbow";
+	private static final String	MODULATED = "modulated";
 
 	public static List<Color> convertInputToColor(Object input, int nColors) throws CyCommandException {
 		if (input == null) {
@@ -158,20 +129,16 @@ public class ValueUtils {
 	}
 
 	private static List<Color> parseColorKeyword(String input, int nColors) throws CyCommandException {
-		ColorKeyword ckey = ColorKeyword.getColorKeyword(input);
-		if (ckey == null) 
-			throw new CyCommandException("unknown color keyword");
-		switch (ckey) {
-		case RANDOM:
+		if (input.equals(RANDOM))
 			return generateRandomColors(nColors);
-		case RAINBOW:
+		else if (input.equals(RAINBOW))
 			return generateRainbowColors(nColors);
-		case MODULATED:
+		else if (input.equals(MODULATED))
 			return generateModulatedRainbowColors(nColors);
-		case CONTRASTING:
-		default:
+		else if (input.equals(CONTRASTING))
 			return generateContrastingColors(nColors);
-		}
+		else
+			throw new CyCommandException("unknown color keyword: '"+input+"'");
 	}
 
 	private static List<Color> parseColorList(String[] inputArray) throws CyCommandException {
@@ -192,6 +159,10 @@ public class ValueUtils {
 				}
 			} else {
 				// Check for color string
+				Color c = ColorKeyword.getColor(colorString);
+				if (c == null)
+					throw new CyCommandException("unknown color: '"+colorString+"'");
+				colors.add(c);
 			}
 		}
 		return colors;

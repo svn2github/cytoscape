@@ -63,9 +63,11 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 	Map<String, NodeChartViewer> viewerMap;
 
 	// Global commands
+	private static String ATTRIBUTELIST = "attributelist";
+	private static String CLEAR = "clear";
 	private static String NODE = "node";
+	private static String NODELIST = "nodelist";
 	private static String POSITION = "position";
-
 
 	public NodeChartCommandHandler(String namespace, CyLogger logger) {
 		super(CyCommandManager.reserveNamespace(namespace));

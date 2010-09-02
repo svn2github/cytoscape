@@ -100,7 +100,8 @@ public class PieChart implements NodeChartViewer {
 		// Sanity check
 		if (labels.size() != values.size() ||
 		    labels.size() != colors.size())
-			throw new CyCommandException("number of labels ("+labels.size()+"), values ("+values.size()+"), and colors ("+colors.size()+") don't match");
+			throw new CyCommandException("number of labels ("+labels.size()+"), values ("+
+			                             values.size()+"), and colors ("+colors.size()+") don't match");
 
 		int nSlices = labels.size();
 		double arcStart = 0.0;
