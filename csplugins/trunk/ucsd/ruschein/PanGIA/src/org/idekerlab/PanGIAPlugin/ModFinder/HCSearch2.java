@@ -19,6 +19,7 @@ import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNetwork;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNode;
 import org.idekerlab.PanGIAPlugin.networks.linkedNetworks.TypedLinkNodeModule;
 import org.idekerlab.PanGIAPlugin.utilities.MemoryReporter;
+import org.idekerlab.PanGIAPlugin.utilities.NumberFormatter;
 import org.idekerlab.PanGIAPlugin.utilities.ThreadPriorityFactory;
 
 import cytoscape.task.Task;
@@ -396,9 +397,9 @@ public class HCSearch2 {
 			csizes.add(m.value().size());
 		}
 
-		builder.append("Best cluster score: " + cscores.max(false) + "\n");
-		builder.append("Worst cluster score: " + cscores.min(false) + "\n");
-		builder.append("Largest cluster size: " + csizes.max(false) + "\n");
+		builder.append("Best cluster score: " + NumberFormatter.formatNumber(cscores.max(false),3) + "\n");
+		builder.append("Worst cluster score: " + NumberFormatter.formatNumber(cscores.min(false),3) + "\n");
+		builder.append("Largest cluster size: " + (int)csizes.max(false) + "\n");
 
 		DoubleVector escores = new DoubleVector(results.numEdges());
 		for (TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> ed : results
@@ -408,7 +409,7 @@ public class HCSearch2 {
 				escores.add(score);
 		}
 
-		builder.append("Best edge score: " + escores.max(false) + "\n");
+		builder.append("Best edge score: " + NumberFormatter.formatNumber(escores.max(false),3) + "\n");
 
 		// csizes.plothist(30);
 

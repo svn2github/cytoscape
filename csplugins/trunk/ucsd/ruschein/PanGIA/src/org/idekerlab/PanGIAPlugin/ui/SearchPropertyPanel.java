@@ -41,9 +41,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 	private static final double DEF_ALPHA = 1.6;
 	private static final double DEF_ALPHA_MUL = 0.0;
+	private static final double DEF_COMPLEX_REWARD = 0;
 	private static final String DEF_DEGREE = "2";
 	private static final double DEF_CUTOFF = 20.0;
-	private static final double DEF_PVALUE_THRESHOLD = 80;
+	private static final double DEF_PVALUE_THRESHOLD = 90;
 	private static final int DEF_NUMBER_OF_SAMPLES = 1000;
 	private static final String DEFAULT_ATTRIBUTE = "none";
 	
@@ -95,11 +96,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		updateFilteringOptions(null);
 
 		// Set defaults
-		this.alphaTextField.setText(Double.toString(DEF_ALPHA));
-		this.alphaMultiplierTextField.setText(Double.toString(DEF_ALPHA_MUL));
+		//this.alphaTextField.setText(Double.toString(DEF_ALPHA));
+		//this.alphaMultiplierTextField.setText(Double.toString(DEF_ALPHA_MUL));
+		this.complexRewardTextField.setText(Double.toString(DEF_COMPLEX_REWARD));
 		this.degreeTextField.setText(DEF_DEGREE);
-		this.pValueThresholdTextField.setText(Double.toString(DEF_PVALUE_THRESHOLD));
-		this.numberOfSamplesTextField.setText(Integer.toString(DEF_NUMBER_OF_SAMPLES));
+		this.edgeFilterTextField.setText(Double.toString(DEF_PVALUE_THRESHOLD));
 	
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
 	}
@@ -344,19 +345,30 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         pnlParameter = new javax.swing.JPanel();
         scorePanel = new javax.swing.JPanel();
+        
+        /*
         alphaLabel = new javax.swing.JLabel();
         alphaMultiplierLabel = new javax.swing.JLabel();
-        degreeLabel = new javax.swing.JLabel();
         alphaTextField = new javax.swing.JTextField();
         alphaMultiplierTextField = new javax.swing.JTextField();
+        */
+        
+        degreeLabel = new javax.swing.JLabel();
         degreeTextField = new javax.swing.JTextField();
+        
+        complexRewardLabel = new JLabel();
+        complexRewardSlider = new JSlider();
+        complexRewardSliderLabels = new JLabel();
+        complexRewardTextField = new JTextField();
+        
         lbPlaceHolder1 = new javax.swing.JLabel();
+        
         edgeFilteringPanel = new javax.swing.JPanel();
         pValueThresholdLabel = new javax.swing.JLabel();
-        pValueThresholdTextField = new javax.swing.JTextField();
+        edgeFilterTextField = new javax.swing.JTextField();
+        edgeFilterSlider = new JSlider();
+        edgeFilterSliderLabels = new JLabel();
         lbPlaceHolder2 = new javax.swing.JLabel();
-        lbNumberOfSamples = new javax.swing.JLabel();
-        numberOfSamplesTextField = new javax.swing.JTextField();
         lbPlaceHolder3 = new javax.swing.JLabel();
         trainingCheckBoxPhysical = new JCheckBox();
         trainingCheckBoxGenetic = new JCheckBox();
@@ -390,33 +402,94 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         scorePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Search Parameters"));
         scorePanel.setToolTipText("Specify parameters relating to the search procedure.");
         
+        complexRewardLabel.setText("Module size:");
+        complexRewardLabel.setToolTipText("Module size parameters AB. (Module reward = AB * size ^ |AB|)");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5,3, 20);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        scorePanel.add(complexRewardLabel, gridBagConstraints);
+        
+        complexRewardSliderLabels.setText("Smaller          Larger");
+        complexRewardSliderLabels.setToolTipText(complexRewardLabel.getToolTipText());
+        complexRewardSliderLabels.setFont(edgeFilterSliderLabels.getFont().deriveFont(10.0f));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5,3, 10);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        scorePanel.add(complexRewardSliderLabels, gridBagConstraints);
+        
+        complexRewardSlider.setToolTipText(complexRewardLabel.getToolTipText());
+        complexRewardSlider.setPreferredSize(new java.awt.Dimension(100, 25));
+        complexRewardSlider.setExtent(0);
+        complexRewardSlider.setMinimum(0);
+        complexRewardSlider.setMaximum(600);
+        complexRewardSlider.setValue(300);
+        complexRewardSlider.setMajorTickSpacing(100);
+        complexRewardSlider.setMinorTickSpacing(100);
+        complexRewardSlider.setPaintLabels(false);
+        complexRewardSlider.setPaintTicks(false);
+        complexRewardSlider.setPaintTrack(true);
+        complexRewardSlider.setEnabled(true);
+        complexRewardSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            	complexRewardSliderMoved(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(10, 20, 10, 10);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        scorePanel.add(complexRewardSlider, gridBagConstraints);
+        
+        complexRewardTextField.setPreferredSize(new java.awt.Dimension(50, 25));
+        complexRewardTextField.addKeyListener(textFieldKeyListener);
+        complexRewardTextField.setToolTipText(complexRewardSlider.getToolTipText());
+        complexRewardTextField.addKeyListener(new java.awt.event.KeyListener(){
+        	public void keyPressed(java.awt.event.KeyEvent evt){
+        	}
+        	public void keyTyped(java.awt.event.KeyEvent evt){
+        		
+        	}
+        	public void keyReleased(java.awt.event.KeyEvent evt){
+        		complexRewardTextChanged(evt);
+        	}
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
+        scorePanel.add(complexRewardTextField, gridBagConstraints);
+        
+        /*
         alphaLabel.setText("Alpha (Exponent):");
         alphaLabel.setToolTipText("The exponent for rewarding module size. (reward = multiplier * moduleSize^exponent)");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 5,3, 0);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
         scorePanel.add(alphaLabel, gridBagConstraints);
 
         alphaMultiplierLabel.setText("Beta (Multiplier):");
         alphaMultiplierLabel.setToolTipText("The multiplier for rewarding module size. (reward = multiplier * moduleSize^exponent)");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
         scorePanel.add(alphaMultiplierLabel, gridBagConstraints);
-
-        degreeLabel.setText("Network filter degree (optional):");
-        degreeLabel.setToolTipText("Remove nodes in the physical network which are distant from any node in the genetic network. The maximum distance allowed is the filter degree. (ex. 1 means the physical node, or any of its neighbors, must be present in the genetic network)");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
-        scorePanel.add(degreeLabel, gridBagConstraints);
 
         alphaTextField.setPreferredSize(new java.awt.Dimension(50, 25));
         alphaTextField.addKeyListener(textFieldKeyListener);
         alphaTextField.setToolTipText(alphaLabel.getToolTipText());
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
         scorePanel.add(alphaTextField, gridBagConstraints);
@@ -425,15 +498,27 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         alphaMultiplierTextField.addKeyListener(textFieldKeyListener);
         alphaMultiplierTextField.setToolTipText(alphaMultiplierLabel.getToolTipText());
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
         scorePanel.add(alphaMultiplierTextField, gridBagConstraints);
-
+         */
+        
+        degreeLabel.setText("Network filter degree (optional):");
+        degreeLabel.setToolTipText("Remove nodes in the physical network which are distant from any node in the genetic network. The maximum distance allowed is the filter degree. (ex. 1 means the physical node, or any of its neighbors, must be present in the genetic network)");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
+        scorePanel.add(degreeLabel, gridBagConstraints);
+        
         degreeTextField.setPreferredSize(new java.awt.Dimension(50, 25));
         degreeTextField.addKeyListener(textFieldKeyListener);
         degreeTextField.setToolTipText(degreeLabel.getToolTipText());
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
@@ -441,6 +526,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.gridx=2;
         gridBagConstraints.weightx = 1.0;
         scorePanel.add(lbPlaceHolder1, gridBagConstraints);
 
@@ -453,44 +539,77 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         //EdgeFilteringPanel
         edgeFilteringPanel.setLayout(new java.awt.GridBagLayout());
         edgeFilteringPanel.setToolTipText("Specify options for filtering PanGIA results.");
-        edgeFilteringPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Edge Filtering"));
+        edgeFilteringPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Edge Reporting"));
         
+        /*
         pValueThresholdLabel.setText("Percentile Threshold:");
         pValueThresholdLabel.setToolTipText("The percentile above which edges should be included in the results.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
         edgeFilteringPanel.add(pValueThresholdLabel, gridBagConstraints);
-
-        pValueThresholdTextField.setToolTipText("The percentile above which edges should be included in the results.");
-        pValueThresholdTextField.addKeyListener(textFieldKeyListener);
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
-        pValueThresholdTextField.setPreferredSize(new java.awt.Dimension(50, 25));
+         */
+        
+        edgeFilterSliderLabels.setText("More                    Less");
+        edgeFilterSliderLabels.setToolTipText("Strength of the edge filter. (0 returns all edges)");
+        edgeFilterSliderLabels.setFont(edgeFilterSliderLabels.getFont().deriveFont(12.0f));
+        edgeFilterSliderLabels.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
+        edgeFilteringPanel.add(edgeFilterSliderLabels, gridBagConstraints);
+        
+        edgeFilterSlider.setToolTipText("Strength of the edge filter. (0 returns all edges)");
+        edgeFilterSlider.setPreferredSize(new java.awt.Dimension(200, 25));
+        edgeFilterSlider.setExtent(0);
+        edgeFilterSlider.setMinimum(0);
+        edgeFilterSlider.setMaximum(100);
+        edgeFilterSlider.setValue(90);
+        edgeFilterSlider.setMajorTickSpacing(10);
+        edgeFilterSlider.setMinorTickSpacing(5);
+        edgeFilterSlider.setPaintLabels(false);
+        edgeFilterSlider.setPaintTicks(true);
+        edgeFilterSlider.setPaintTrack(true);
+        edgeFilterSlider.setEnabled(false);
+        edgeFilterSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+            	edgeFilterSliderMoved(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(20, 5, 5, 10);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        edgeFilteringPanel.add(pValueThresholdTextField, gridBagConstraints);
-
+        edgeFilteringPanel.add(edgeFilterSlider, gridBagConstraints);
+        
+        edgeFilterTextField.setToolTipText("Strength of the edge filter. (0 returns all edges)");
+        edgeFilterTextField.addKeyListener(new java.awt.event.KeyListener(){
+        	public void keyPressed(java.awt.event.KeyEvent evt){
+        	}
+        	public void keyTyped(java.awt.event.KeyEvent evt){
+        		
+        	}
+        	public void keyReleased(java.awt.event.KeyEvent evt){
+        		edgeFilterTextChanged(evt);
+        	}
+        });
+        edgeFilterTextField.setPreferredSize(new java.awt.Dimension(50, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        edgeFilteringPanel.add(edgeFilterTextField, gridBagConstraints);
+        
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
         edgeFilteringPanel.add(lbPlaceHolder2, gridBagConstraints);
-
-        lbNumberOfSamples.setText("Number of samples:");
-        lbNumberOfSamples.setToolTipText("The number of random samples to be used in estimating edge score percentiles.");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
-        edgeFilteringPanel.add(lbNumberOfSamples, gridBagConstraints);
-
-        numberOfSamplesTextField.setText("10000");
-        numberOfSamplesTextField.setToolTipText("The number of random samples to be used in estimating edge score percentiles.");
-        numberOfSamplesTextField.addKeyListener(textFieldKeyListener);
-        numberOfSamplesTextField.setPreferredSize(new java.awt.Dimension(70, 25));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
-        edgeFilteringPanel.add(numberOfSamplesTextField, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 3;
@@ -504,111 +623,106 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         trainingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Annotation"));
         trainingPanel.setToolTipText("Specify options for module training and annotation.");
         
-        trainingLabel.setText("Annotation training:");
-        trainingLabel.setToolTipText("Train the edge attribute scores against a reference annotation.");
+        lbComplexFile.setText("Annotation attribute:");
+        lbComplexFile.setToolTipText("Select the node attribute which provides annotation information.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
+        trainingPanel.add(lbComplexFile, gridBagConstraints);
+        
+        annotationAttribComboBox.setToolTipText(lbComplexFile.getToolTipText());
+        annotationAttribComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	trainingComboBoxActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 5);
+        trainingPanel.add(annotationAttribComboBox, gridBagConstraints);
+        
+        trainingLabel.setText("Train PanGIA:");
+        trainingLabel.setToolTipText("Train the edge attribute scores against a reference annotation.");
+        trainingLabel.setEnabled(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
         trainingPanel.add(trainingLabel, gridBagConstraints);
         
         trainingCheckBoxPhysical.setSelected(false);
         trainingCheckBoxPhysical.setToolTipText(trainingLabel.getToolTipText());
+        trainingCheckBoxPhysical.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
-        trainingCheckBoxPhysical.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-            	trainingCheckBoxActionPerformed(evt);
-            }
-        });
         trainingPanel.add(trainingCheckBoxPhysical, gridBagConstraints);
         
         trainingLabelPhysical.setText("Physical");
         trainingLabelPhysical.setToolTipText("Train the edge attribute scores against a reference annotation.");
+        trainingLabelPhysical.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 20, 3, 0);
         trainingPanel.add(trainingLabelPhysical, gridBagConstraints);
         
         trainingCheckBoxGenetic.setSelected(false);
         trainingCheckBoxGenetic.setToolTipText(trainingLabel.getToolTipText());
+        trainingCheckBoxGenetic.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 90, 3, 0);
-        trainingCheckBoxGenetic.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-            	trainingCheckBoxActionPerformed(evt);
-            }
-        });
         trainingPanel.add(trainingCheckBoxGenetic, gridBagConstraints);
         
         trainingLabelGenetic.setText("Genetic");
         trainingLabelGenetic.setToolTipText("Train the edge attribute scores against a reference annotation.");
+        trainingLabelGenetic.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 110, 3, 0);
         trainingPanel.add(trainingLabelGenetic, gridBagConstraints);
         
-        annotationLabel.setText("Annotation labeling:");
+        annotationLabel.setText("Label modules:");
         annotationLabel.setToolTipText("Label the modules using a reference annotation.");
+        annotationLabel.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
         trainingPanel.add(annotationLabel, gridBagConstraints);
         
         annotationCheckBox.setSelected(false);
         annotationCheckBox.setToolTipText(annotationLabel.getToolTipText());
+        annotationCheckBox.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
-        
         annotationCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	annotationCheckBoxActionPerformed(evt);
             }
         });
-        
         trainingPanel.add(annotationCheckBox, gridBagConstraints);
-        
-        
-        
-        lbComplexFile.setText("Annotation attribute:");
-        lbComplexFile.setToolTipText("Select the node attribute which provides annotation information.");
-        lbComplexFile.setEnabled(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
-        trainingPanel.add(lbComplexFile, gridBagConstraints);
-        
-        annotationAttribComboBox.setEnabled(false);
-        annotationAttribComboBox.setToolTipText(lbComplexFile.getToolTipText());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 5);
-        trainingPanel.add(annotationAttribComboBox, gridBagConstraints);
-        
         
         annotationThresholdLabel.setText("Labeling Threshold:");
         annotationThresholdLabel.setToolTipText("Choose a threshold based on the Jaccard overlap score for annotating modules.");
@@ -734,6 +848,52 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		updateSearchButtonState();
 	}
 	
+	private void edgeFilterSliderMoved(javax.swing.event.ChangeEvent evt)
+	{
+		if (!edgeFilterSliderEventLock)
+		{
+			edgeFilterTextField.setText(String.valueOf(edgeFilterSlider.getValue()));
+			updateSearchButtonState();
+		}
+	}
+	
+	private void complexRewardSliderMoved(javax.swing.event.ChangeEvent evt)
+	{
+		if (!complexRewardSliderEventLock)
+		{
+			complexRewardTextField.setText(String.valueOf(complexRewardSlider.getValue()/601.0*6.0-3.0).substring(0, 4));
+			updateSearchButtonState();
+		}
+	}
+	
+	private void edgeFilterTextChanged(java.awt.event.KeyEvent evt)
+	{
+		try
+		{
+			double val = Double.valueOf(edgeFilterTextField.getText());
+			edgeFilterSliderEventLock = true;
+			edgeFilterSlider.setValue((int)Math.round(val));
+			edgeFilterSliderEventLock = false;
+			//edgeFilterTextField.setText(String.valueOf((int)Math.round(val)));
+		} catch (Exception e){}
+		
+		updateSearchButtonState();
+	}
+	
+	private void complexRewardTextChanged(java.awt.event.KeyEvent evt)
+	{
+		try
+		{
+			double val = Double.valueOf(complexRewardTextField.getText());
+			complexRewardSliderEventLock = true;
+			complexRewardSlider.setValue((int)Math.round((val+3.0)*(601/6)));
+			complexRewardSliderEventLock = false;
+			//complexRewardTextField.setText(String.valueOf(val));
+		} catch (Exception e){}
+		
+		updateSearchButtonState();
+	}
+	
 	private void reportPathButtionActionPerformed(java.awt.event.ActionEvent evt) {
 		
 		JFileChooser reportFileChooser = new JFileChooser(".");
@@ -763,30 +923,62 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	}
 	
 	
-	private void trainingCheckBoxActionPerformed(java.awt.event.ActionEvent evt)
+	private void trainingComboBoxActionPerformed(java.awt.event.ActionEvent evt)
 	{
 		annotationCheckBoxActionPerformed(evt);
 	}
 	
 	private void annotationCheckBoxActionPerformed(java.awt.event.ActionEvent evt)
 	{
-		boolean needAttrib = trainingCheckBoxPhysical.isSelected() || trainingCheckBoxGenetic.isSelected() || annotationCheckBox.isSelected();
+		boolean attribChosen = annotationAttribComboBox.getSelectedIndex()>=0;
 		
-		annotationAttribComboBox.setEnabled(needAttrib);
-		lbComplexFile.setEnabled(needAttrib);
-		
-		annotationThresholdTextField.setEnabled(annotationCheckBox.isSelected());
-		annotationThresholdLabel.setEnabled(annotationCheckBox.isSelected());
+		if (attribChosen)
+		{
+			trainingLabel.setEnabled(true);
+			trainingCheckBoxPhysical.setEnabled(true);
+			trainingLabelPhysical.setEnabled(true);
+			trainingCheckBoxGenetic.setEnabled(true);
+			trainingLabelGenetic.setEnabled(true);
+			annotationLabel.setEnabled(true);
+			annotationCheckBox.setEnabled(true);
+			
+			if (annotationCheckBox.isEnabled())
+			{
+				annotationThresholdTextField.setEnabled(annotationCheckBox.isSelected());
+				annotationThresholdLabel.setEnabled(annotationCheckBox.isSelected());
+			}
+		}else
+		{
+			trainingLabel.setEnabled(false);
+			trainingCheckBoxPhysical.setEnabled(false);
+			trainingLabelPhysical.setEnabled(false);
+			trainingCheckBoxGenetic.setEnabled(false);
+			trainingLabelGenetic.setEnabled(false);
+			annotationThresholdTextField.setEnabled(false);
+			annotationThresholdLabel.setEnabled(false);
+			annotationLabel.setEnabled(false);
+			annotationCheckBox.setEnabled(false);
+		}
 		
 		updateSearchButtonState();
 	}
 
     // Variables declaration - do not modify                     
     private javax.swing.JButton aboutButton;
+    
+    /*
     private javax.swing.JLabel alphaLabel;
     private javax.swing.JLabel alphaMultiplierLabel;
     private javax.swing.JTextField alphaMultiplierTextField;
     private javax.swing.JTextField alphaTextField;
+    */
+    
+    private JLabel complexRewardLabel;
+    private boolean complexRewardSliderEventLock = false;
+    private JSlider complexRewardSlider;
+    private JLabel complexRewardSliderLabels;
+    private JTextField complexRewardTextField;
+    
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton closeButton;
     private javax.swing.JLabel degreeLabel;
@@ -795,13 +987,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JPanel edgeFilteringPanel;
     private javax.swing.JComboBox geneticEdgeAttribComboBox;
     private javax.swing.JLabel geneticEdgeLabel;
-    private javax.swing.JLabel lbNumberOfSamples;
     private javax.swing.JLabel lbPlaceHolder1;
     private javax.swing.JLabel lbPlaceHolder2;
     private javax.swing.JLabel lbPlaceHolder3;
-    private javax.swing.JTextField numberOfSamplesTextField;
     private javax.swing.JLabel pValueThresholdLabel;
-    private javax.swing.JTextField pValueThresholdTextField;
+    private javax.swing.JTextField edgeFilterTextField;
     private javax.swing.JComboBox physicalEdgeAttribComboBox;
     private javax.swing.JLabel physicalEdgeLabel;
     private javax.swing.JPanel scorePanel;
@@ -836,6 +1026,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private String reportPath="";
         
     private JTextArea parameterErrorTextArea;
+    
+    private JLabel edgeFilterSliderLabels;
+    private boolean edgeFilterSliderEventLock = false;
+    private JSlider edgeFilterSlider;
     // End of variables declaration                     
                
   
@@ -942,22 +1136,24 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		parameters.setPhysicalScalingMethod((String)phyScalingMethodComboBox.getSelectedItem());
 		parameters.setGeneticScalingMethod((String)genScalingMethodComboBox.getSelectedItem());
 		
-		parameters.setAlpha(Double.parseDouble(alphaTextField.getText()));
-
-		parameters.setAlphaMultiplier(Double.parseDouble(alphaMultiplierTextField.getText()));
+		//parameters.setAlpha(Double.parseDouble(alphaTextField.getText()));
+		//parameters.setAlphaMultiplier(Double.parseDouble(alphaMultiplierTextField.getText()));
+		parameters.setAlpha(Math.abs(Double.parseDouble(complexRewardTextField.getText())));
+		parameters.setAlphaMultiplier(Double.parseDouble(complexRewardTextField.getText()));
 
 		final String degree = degreeTextField.getText();
 		if (degree.length() > 0) parameters.setPhysicalNetworkFilterDegree(Integer.parseInt(degree));
 		else parameters.setPhysicalNetworkFilterDegree(-1);
 
-		if (pValueThresholdTextField.isEnabled())
+		if (edgeFilterTextField.isEnabled())
 		{
-			final double pValueThreshold = Double.parseDouble(pValueThresholdTextField.getText());
+			final double pValueThreshold = Double.parseDouble(edgeFilterTextField.getText());
 			parameters.setPValueThreshold(pValueThreshold);
 		}else parameters.setPValueThreshold(Double.NaN);
 
-		final int numberOfSamples = Integer.parseInt(numberOfSamplesTextField.getText());
-		parameters.setNumberOfSamples(numberOfSamples);
+		//final int numberOfSamples = Integer.parseInt(numberOfSamplesTextField.getText());
+		//parameters.setNumberOfSamples(numberOfSamples);
+		parameters.setNumberOfSamples(1000);
 		
 		parameters.setAnnotationThreshold(Double.valueOf(annotationThresholdTextField.getText()));
 		parameters.setComplexAnnotation(annotationCheckBox.isSelected());
@@ -997,16 +1193,20 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		
 		if (geneticAttrName==null || geneticAttrName.equals(DEFAULT_ATTRIBUTE))
 		{
-			lbNumberOfSamples.setEnabled(false);
-		    numberOfSamplesTextField.setEnabled(false);
+			//lbNumberOfSamples.setEnabled(false);
+		    //numberOfSamplesTextField.setEnabled(false);
+			edgeFilterSliderLabels.setEnabled(false);
+			edgeFilterSlider.setEnabled(false);
 		    pValueThresholdLabel.setEnabled(false);
-		    pValueThresholdTextField.setEnabled(false);
+		    edgeFilterTextField.setEnabled(false);
 		}else
 		{
-			lbNumberOfSamples.setEnabled(true);
-		    numberOfSamplesTextField.setEnabled(true);
+			edgeFilterSliderLabels.setEnabled(true);
+			edgeFilterSlider.setEnabled(true);
+			//lbNumberOfSamples.setEnabled(true);
+		    //numberOfSamplesTextField.setEnabled(true);
 		    pValueThresholdLabel.setEnabled(true);
-		    pValueThresholdTextField.setEnabled(true);
+		    edgeFilterTextField.setEnabled(true);
 		}
 	}
 
@@ -1079,6 +1279,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		
 		
 		//TextField validity
+		/*
 		try{Double.parseDouble(alphaTextField.getText());}
 		catch (NumberFormatException e)
 		{
@@ -1093,7 +1294,24 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			searchButton.setEnabled(false);
 			parameterErrorTextArea.setText("Please choose a valid value for Beta.");
 			return;
+		}*/
+		
+		
+		try{Double.parseDouble(complexRewardTextField.getText());}
+		catch (NumberFormatException e)
+		{
+			searchButton.setEnabled(false);
+			parameterErrorTextArea.setText("Please choose a valid value for module size.");
+			return;
 		}
+		
+		if (Double.parseDouble(complexRewardTextField.getText())<-3 || Double.parseDouble(complexRewardTextField.getText())>3)
+		{
+			searchButton.setEnabled(false);
+			parameterErrorTextArea.setText("Please set module size in the range [-3,3].");
+			return;
+		}
+		
 		
 		if (degreeTextField.getText().length()>0)
 		{
@@ -1118,7 +1336,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			
 		try
 		{
-			double p = Double.parseDouble(pValueThresholdTextField.getText());
+			double p = Double.parseDouble(edgeFilterTextField.getText());
 			if (p<0 || p>100)
 			{
 				searchButton.setEnabled(false);
@@ -1134,6 +1352,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			return;
 		}
 		
+		/*
 		try
 		{
 			int n = Integer.parseInt(numberOfSamplesTextField.getText());
@@ -1150,7 +1369,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			searchButton.setEnabled(false);
 			parameterErrorTextArea.setText("Please choose a valid value for number of samples.");
 			return;
-		}
+		}*/
 		
 		
 		if (annotationCheckBox.isSelected())
