@@ -74,8 +74,20 @@ public class BoundedFloatTest {
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-		public final void testSettingInvalidValue() throws Exception {
+	public final void testSettingInvalidValueAtLowerBound() throws Exception {
 		bf.setValue(-1.0f);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public final void testSettingInvalidValueBelowLowerBound() throws Exception {
+		final BoundedFloat bf3 = new BoundedFloat(-1.0f, 0.0f, 1.0f, /* lowerStrict = */ false, /* upperStrict = */ true);
+		bf3.setValue(-1.5f);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public final void testSettingInvalidValueAtUpperBound() throws Exception {
+		final BoundedFloat bf2 = new BoundedFloat(-1.0f, 0.0f, 1.0f, /* lowerStrict = */ false, /* upperStrict = */ true);
+		bf2.setValue(1.0f);
 	}
 
 	@Test
