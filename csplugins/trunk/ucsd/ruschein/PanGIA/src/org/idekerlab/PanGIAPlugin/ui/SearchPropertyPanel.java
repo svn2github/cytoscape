@@ -2,6 +2,7 @@ package org.idekerlab.PanGIAPlugin.ui;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
@@ -12,7 +13,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 
+import org.idekerlab.PanGIAPlugin.PanGIAPlugin;
 import org.idekerlab.PanGIAPlugin.SearchParameters;
 import org.idekerlab.PanGIAPlugin.SearchTask;
 
@@ -838,8 +843,21 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 	private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
 		
-		JOptionPane pane = new JOptionPane("PanGIA is f@$%ing sweet!", JOptionPane.PLAIN_MESSAGE);
-		pane.createDialog(null,"About PanGIA v1.0").setVisible(true);
+		JOptionPane pane = new JOptionPane("",JOptionPane.PLAIN_MESSAGE);
+		pane.setPreferredSize(new Dimension(400,200));
+				
+		JTextArea text = new JTextArea();
+		text.setEditable(false);
+		text.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+		text.setBackground(Color.white);
+		text.setWrapStyleWord(true);
+		text.setLineWrap(true);
+		text.setColumns(20);
+		text.setPreferredSize(new Dimension(350,100));
+		text.setText("PanGIA is a tool for aligning physical and genetic interaction networks.\n\nPlease cite:\n...\n...");
+		pane.add(text,0);
+		
+		pane.createDialog(null,"About PanGIA v"+PanGIAPlugin.VERSION).setVisible(true);
 		
 	}                                           
 
