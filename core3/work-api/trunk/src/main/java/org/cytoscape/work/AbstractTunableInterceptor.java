@@ -143,7 +143,6 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 				}
 			}
 
-			Map<String, Method> setMethodsMap = new HashMap<String,Method>();
 			Map<String, Method> getMethodsMap = new HashMap<String,Method>();
 			Map<String, Tunable> tunableMap = new HashMap<String,Tunable>();
 
@@ -151,72 +150,48 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 			for (final Method method : obj.getClass().getMethods()) {
 				// See if the method is annotated as a Tunable.
    				if (method.isAnnotationPresent(Tunable.class)) {
-					try {
-						final Tunable tunable = method.getAnnotation(Tunable.class);
-						if (method.getName().startsWith("get")) {
-							if (!isValidGetter(method))
-								throw new Exception("Invalid getter method specified \"" + method.getName()
-										    + "\", maybe this method takes arguments or returns void?");
+					final Tunable tunable = method.getAnnotation(Tunable.class);
+					if (method.getName().startsWith("get")) {
+						if (!isValidGetter(method))
+							throw new IllegalArgumentException(
+								"Invalid getter method specified \"" + method.getName()
+								+ "\", maybe this method takes arguments or returns void?");
 
-							final String rootName = method.getName().substring(3);
-							getMethodsMap.put(rootName, method);
-							tunableMap.put(rootName, tunable);
-							if (setMethodsMap.containsKey(rootName)){
-								final Method setter = setMethodsMap.get(rootName);
-								if (!setterAndGetterTypesAreCompatible(method, setter))
-									throw new Exception("Return type of " + method.getName() + "() and the argument type of "
-											    + setter.getName() + "() are not the same!");
+						final String rootName = method.getName().substring(3);
+						getMethodsMap.put(rootName, method);
+						tunableMap.put(rootName, tunable);
 
-								//get a handler with the getMethod and setMethod
-								final TH handler = factory.getHandler(method, setter, obj,
-											              tunableMap.get(rootName));
-								if (handler == null)
-									System.err.println("*** Warning: Failed to create a handler for " + setter + "!");
-								else
-								 	handlerList.put("getset" + rootName, handler);
-							}
-						}
-						else if (method.getName().startsWith("set")) {
-							if (!isValidSetter(method))
-								throw new Exception("Invalid setter method specified \"" + method.getName()
-										    + "\", maybe this method does not take a single "
-										    + "argument or does not return void?");
+						final Class getterReturnType = method.getReturnType();
+						final Method setter = findCompatibleSetter(obj, rootName, getterReturnType);
+						if (setter == null)
+							throw new IllegalArgumentException(
+								"Can't find a setter compatible with the "
+								+ method.getName() + "() getter!");
 
-							final String rootName = method.getName().substring(3);
-							setMethodsMap.put(rootName, method);
-							tunableMap.put(rootName, tunable);
-							if (getMethodsMap.containsKey(rootName)) {
-								final Method getter = getMethodsMap.get(rootName);
-								if (!setterAndGetterTypesAreCompatible(getter, method))
-									throw new Exception("Return type of " + getter.getName() + "() and the argument type of "
-											    + method.getName() + "() are not the same!");
-
-								//get a handler with the getMethod and setMethod
-								final TH handler = factory.getHandler(getter, method, obj,
-								                                      tunableMap.get(rootName));
-								//add it to the list
-								if (handler == null)
-									System.err.println("*** Warning: Failed to create a handler for " + getter + "!");
-								else
-								 	handlerList.put("getset" + rootName, handler);
-							}
-						}
+						// Get a handler with for get and set methods:
+						final TH handler = factory.getHandler(method, setter, obj, tunableMap.get(rootName));
+						if (handler == null)
+							throw new IllegalArgumentException(
+								"Failed to create a handler for " + setter.getName() + "()!");
 						else
-							throw new Exception("the name of the method has to start with \"set\" or \"get\"");
+							handlerList.put("getset" + rootName, handler);
+					} else
+						throw new IllegalArgumentException(
+							"the name of the method has to start with \"get\" but was "
+							+ method.getName() + "()!");
 
-					} catch (Throwable ex) {
-						System.out.println("tunable method intercept failed: " + method);
-						ex.printStackTrace();
-					}
 				} else if (method.isAnnotationPresent(ProvidesGUI.class)) {
 					if (!isJPanelOrJPanelDescendent(method.getReturnType()))
-						logger.error(method.getName() + " annotated with @ProvidesGUI must return JPanel!");
+						throw new IllegalArgumentException(
+							method.getName() + " annotated with @ProvidesGUI must return JPanel!");
 					else if (method.getParameterTypes().length != 0)
-						logger.error(method.getName() + " annotated with @ProvidesGUI must take 0 arguments!");
+						throw new IllegalArgumentException(
+							method.getName() + " annotated with @ProvidesGUI must take 0 arguments!");
 					else {
 						if (!guiProviderMap.isEmpty())
-							logger.error("Classes must have at most a single @ProvidesGUI annotated method but + "
-							             + method.getDeclaringClass().getName() + " has more than one!");
+							throw new IllegalArgumentException(
+								"Classes must have at most a single @ProvidesGUI annotated method but + "
+							        + method.getDeclaringClass().getName() + " has more than one!");
 						guiProviderMap.put(obj, method);
 					}
 				}
@@ -228,11 +203,11 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 
 	private boolean isJPanelOrJPanelDescendent(final Class c) {
 		Class c0 = c;
-		do {
+		while (c0 != null && c0 != Object.class) {
 			if (c0 == JPanel.class)
 				return true;
 			c0 = c0.getSuperclass();
-		} while (c0 != Object.class);
+		}
 
 		return false;
 	}
@@ -251,25 +226,12 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 		return getterCandidate.getParameterTypes().length == 0;
 	}
 
-	private boolean isValidSetter(final Method setterCandidate) {
-		// Make sure we are returning "void":
+	private Method findCompatibleSetter(final Object obj, final String rootName, final Class getterReturnType) {
 		try {
-			final Type returnType = setterCandidate.getGenericReturnType();
-			if (returnType != void.class)
-				return false;
-		} catch(final Exception e) {
-			return false;
+			return obj.getClass().getDeclaredMethod("set" + rootName, getterReturnType);
+		} catch (final Exception e) {
+			return null;
 		}
-
-		// Make sure we're taking a single arguments:
-		return setterCandidate.getParameterTypes().length == 1;
-	}
-
-	/**
-	 *  @return returns true if the return type of the getter method is the same as the single argument type of the setter method, otherwise returns false
-	 */
-	private boolean setterAndGetterTypesAreCompatible(final Method getter, final Method setter) {
-		return getter.getGenericReturnType() == setter.getParameterTypes()[0];
 	}
 
 	/**
