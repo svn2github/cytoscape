@@ -1,5 +1,5 @@
 
-<project name="GoogleChartFunctions" default="all" basedir=".">
+<project name="GoogleChartFunctions" default="all" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
@@ -19,8 +19,6 @@
 
     <!-- Define the directories -->
     <property name="root.dir" value="."/>
-    <property name="cytoscape.dir" value="${root.dir}/../../../../cytoscape"/>
-    <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="resources.dir" value="${root.dir}/resources"/>
     <property name="src.dir" value="${root.dir}/src"/>
     <property name="tests.dir" value="${root.dir}/tests"/>
@@ -34,17 +32,24 @@
     <property name="project.jar" value="${name}.jar"/>
     <property name="test.jar" value="${name}-tests.jar"/>
 
+    <artifact:remoteRepository 
+       id="cytoscape_releases" 
+       url="http://cytoscape.wodaklab.org/nexus/content/repositories/releases/" />
+    <artifact:remoteRepository 
+       id="cytoscape_snapshots" 
+       url="http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/" />
+    <artifact:dependencies pathId="dependency.classpath">
+      <dependency groupId="cytoscape" 
+                  artifactId="application" 
+                  version="2.8.0-SNAPSHOT"/>
+    </artifact:dependencies>
+
     <!-- Define the class path -->
     <path id="project.class.path">
-      <fileset dir="${cytoscape.dir}">
-        <include name="*.jar"/>
-      </fileset>
-      <fileset dir="${cytoscape.lib.dir}">
-        <include name="*.jar"/>
-      </fileset>
       <fileset dir="${lib.dir}">
         <include name="*.jar"/>
       </fileset>
+	  <path refid="dependency.classpath"/>
     </path>
    
     <!-- Define the junit class path - It needs to find what we just built --> 
@@ -52,15 +57,10 @@
       <fileset dir="${root.dir}">
         <include name="*.jar"/>
       </fileset>
-      <fileset dir="${cytoscape.dir}">
-        <include name="*.jar"/>
-      </fileset>
-      <fileset dir="${cytoscape.lib.dir}">
-        <include name="*.jar"/>
-      </fileset>
       <fileset dir="${lib.dir}">
         <include name="*.jar"/>
       </fileset>
+	  <path refid="dependency.classpath"/>
     </path>
 
     <!-- Make sure tests is in the right place -->
