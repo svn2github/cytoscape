@@ -1,0 +1,194 @@
+package org.idekerlab.PanGIAPlugin;
+
+import giny.model.Node;
+import giny.view.NodeView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+
+import org.idekerlab.PanGIAPlugin.data.DoubleVector;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
+import cytoscape.view.CyNetworkView;
+
+public class DetailedViewLayout
+{
+	private static double BUFFER_RATIO = 1.2;
+	
+	public static void layout(CyNetworkView view, CyNetworkView overview)
+	{
+		/*
+		CyLayoutAlgorithm alg = CyLayouts.getLayout("attributes-layout");
+		
+		alg.setLayoutAttribute(VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME);
+		alg.getSettings().updateValues();
+		alg.updateSettings();
+		view.applyLayout(alg);
+		
+		view.redrawGraph(true, true);
+		*/
+		//Get values of Parent Module attribute
+		CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+		Map<String,Set<Node>> module_nodes = new HashMap<String,Set<Node>>();
+		for (int ni : view.getNetwork().getNodeIndicesArray())
+		{
+			String nodeID = view.getNetwork().getNode(ni).getIdentifier();
+			String parent = nodeAttr.getAttribute(nodeID, VisualStyleObserver.PARENT_MODULE_ATTRIBUTE_NAME).toString();
+			
+			Set<Node> sset = module_nodes.get(parent);
+			if (sset==null)
+			{
+				sset = new HashSet<Node>();
+				sset.add(view.getNetwork().getNode(ni));
+				module_nodes.put(parent, sset);
+			}else sset.add(view.getNetwork().getNode(ni));
+		}
+		
+		//For each parent module
+		for (Entry<String,Set<Node>> e : module_nodes.entrySet())
+		{
+			//Select all nodes with this attribute value
+			view.getNetwork().unselectAllNodes();
+			view.getNetwork().setSelectedNodeState(e.getValue(), true);
+			
+			//Perform force-directed layout of just the selected
+			CyLayoutAlgorithm fd = CyLayouts.getLayout("force-directed");
+			
+			fd.setSelectedOnly(true);
+			fd.getSettings().updateValues();
+			fd.updateSettings();
+			view.applyLayout(fd);
+			
+			view.redrawGraph(true, true);
+		}
+		view.getNetwork().unselectAllNodes();
+		
+		//Get the meanPosition and radius of each group
+		List<String> moduleList = new ArrayList<String>(module_nodes.keySet());
+		double[] centerX = new double[moduleList.size()];
+		double[] centerY = new double[moduleList.size()];
+		double[] radius = new double[moduleList.size()];
+		
+		for (int i=0;i<moduleList.size();i++)
+		{
+			Set<Node> nodes = module_nodes.get(moduleList.get(i));
+			double minX = Double.MAX_VALUE;
+			double maxX = Double.MIN_VALUE;
+			double minY = Double.MAX_VALUE;
+			double maxY = Double.MIN_VALUE;
+			
+			for (Node n : nodes)
+			{
+				NodeView nv = view.getNodeView(n); 
+				double x = nv.getXPosition();
+				double y = nv.getYPosition();
+				
+				if (x<minX) minX = x;
+				else if (x>maxX) maxX = x;
+				
+				if (y<minY) minY = y;
+				else if (y>maxY) maxY = y;
+			}
+			
+			centerX[i] = (maxX+minX)/2.0;
+			centerY[i] = (maxY+minY)/2.0;
+			
+			double diffX = maxX-centerX[i]; 
+			double diffY = maxY-centerY[i];
+			radius[i] = Math.sqrt(diffX*diffX+diffY*diffY);
+		}
+		
+		
+		//Get the map from module to overview node
+		Map<String,NodeView> module_overviewNode = new HashMap<String,NodeView>(module_nodes.size(),1);
+		
+		@SuppressWarnings("rawtypes")
+		List overviewNodes = overview.getSelectedNodes();
+		for (String mod : module_nodes.keySet())
+			for (Object n : overviewNodes)
+				if (((NodeView)n).getNode().getIdentifier().equals(mod))
+				{
+					module_overviewNode.put(mod, (NodeView)n);
+					break;
+				}
+		
+		
+		//Get the reference positions. Normalize to current scale
+		double minRadius = DoubleVector.min(radius);
+		double maxRadius = DoubleVector.max(radius);
+		
+		double scale = BUFFER_RATIO*(minRadius+maxRadius);
+		minRadius = Math.max(minRadius, scale/100);
+		scale = BUFFER_RATIO*(minRadius+maxRadius);
+		
+		for (int i=0;i<radius.length;i++)
+			if (radius[i]<minRadius) radius[i] = minRadius;
+		
+		double[] newCenterX = new double[moduleList.size()];
+		double[] newCenterY = new double[moduleList.size()];
+				
+		double minX = Double.MAX_VALUE;
+		double maxX = Double.MIN_VALUE;
+		double minY = Double.MAX_VALUE;
+		double maxY = Double.MIN_VALUE;
+		
+		for (int i=0;i<radius.length;i++)
+		{
+			NodeView on = module_overviewNode.get(moduleList.get(i));
+			double x = on.getXPosition();
+			double y = on.getYPosition();
+			
+			newCenterX[i] = x;
+			newCenterY[i] = y;
+			
+			if (x<minX) minX = x;
+			else if (x>maxX) maxX = x;
+			
+			if (y<minY) minY = y;
+			else if (y>maxY) maxY = y;
+		}
+		
+		newCenterX = DoubleVector.times(newCenterX, scale / (maxX-minX));
+		newCenterY = DoubleVector.times(newCenterY, scale / (maxY-minY));
+		
+		double maxOverlapRatio = Double.MIN_VALUE;
+		for (int i=0;i<radius.length;i++)
+			for (int j=i+1;j<radius.length;j++)
+			{
+				double diffX = newCenterX[i]-newCenterX[j];
+				double diffY = newCenterY[i]-newCenterY[j];
+				
+				double overlapRatio = BUFFER_RATIO*(radius[i]+radius[j])/Math.sqrt(diffX*diffX+diffY*diffY);
+				
+				if (overlapRatio>maxOverlapRatio) maxOverlapRatio = overlapRatio;
+			}
+		
+		newCenterX = DoubleVector.times(newCenterX, maxOverlapRatio);
+		newCenterY = DoubleVector.times(newCenterY, maxOverlapRatio);
+		
+		//Shift nodes to the new centers
+		double[] shiftX = DoubleVector.subtract(newCenterX,centerX);
+		double[] shiftY = DoubleVector.subtract(newCenterY,centerY);
+		
+		for (int i=0;i<radius.length;i++)
+		{
+			for (Node n : module_nodes.get(moduleList.get(i)))
+			{
+				NodeView on = view.getNodeView(n);
+				on.setXPosition(on.getXPosition()+shiftX[i]);
+				on.setYPosition(on.getYPosition()+shiftY[i]);
+			}
+		}
+		
+		view.fitContent();
+		view.updateView();
+	}
+}

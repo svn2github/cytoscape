@@ -550,7 +550,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeFilteringPanel.add(pValueThresholdLabel, gridBagConstraints);
          */
         
-        edgeFilterSliderLabels.setText("More                    Less");
+        edgeFilterSliderLabels.setText("More                               Less");
         edgeFilterSliderLabels.setToolTipText("Strength of the edge filter. (0 returns all edges)");
         edgeFilterSliderLabels.setFont(edgeFilterSliderLabels.getFont().deriveFont(12.0f));
         edgeFilterSliderLabels.setEnabled(false);
@@ -570,7 +570,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeFilterSlider.setMajorTickSpacing(10);
         edgeFilterSlider.setMinorTickSpacing(5);
         edgeFilterSlider.setPaintLabels(false);
-        edgeFilterSlider.setPaintTicks(true);
+        edgeFilterSlider.setPaintTicks(false);
         edgeFilterSlider.setPaintTrack(true);
         edgeFilterSlider.setEnabled(false);
         edgeFilterSlider.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -832,8 +832,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 	private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// Close parent tab
-		final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(
-										SwingConstants.WEST);
+		final CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
 		cytoPanel.remove(this.getParent().getParent());
 	}
 

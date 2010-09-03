@@ -1,14 +1,17 @@
 package org.idekerlab.PanGIAPlugin;
 
 import giny.model.Node;
+import giny.view.NodeView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -54,6 +57,8 @@ public class VisualStyleObserver implements PropertyChangeListener {
 	
 	private Map<String, VisualStyle> styleMap;
 
+	private CyNetworkView overviewView;
+	
 	VisualStyleObserver() {
 		styleMap = new HashMap<String, VisualStyle>();
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -107,6 +112,8 @@ public class VisualStyleObserver implements PropertyChangeListener {
 			
 			if (style.getName().equals(VS_OVERVIEW_NAME))
 			{
+				overviewView = view;
+				
 				double min = Float.MAX_VALUE;
 				double max = Float.MIN_VALUE;
 				
@@ -174,50 +181,7 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				view.redrawGraph(true, true);
 			}else if (type.toString().equals(NetworkType.DETAILED.name()))
 			{
-				CyLayoutAlgorithm alg = CyLayouts.getLayout("attributes-layout");
-				
-				alg.setLayoutAttribute(PARENT_MODULE_ATTRIBUTE_NAME);
-				alg.getSettings().updateValues();
-				alg.updateSettings();
-				view.applyLayout(alg);
-				
-				view.redrawGraph(true, true);
-				
-				//Get values of Parent Module attribute
-				CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
-				Map<String,Set<Node>> parentModules = new HashMap<String,Set<Node>>();
-				for (int ni : view.getNetwork().getNodeIndicesArray())
-				{
-					String nodeID = view.getNetwork().getNode(ni).getIdentifier();
-					String parent = nodeAttr.getAttribute(nodeID, PARENT_MODULE_ATTRIBUTE_NAME).toString();
-					
-					Set<Node> sset = parentModules.get(parent);
-					if (sset==null)
-					{
-						sset = new HashSet<Node>();
-						sset.add(view.getNetwork().getNode(ni));
-						parentModules.put(parent, sset);
-					}else sset.add(view.getNetwork().getNode(ni));
-				}
-				
-				//For each parent module
-				for (Entry<String,Set<Node>> e : parentModules.entrySet())
-				{
-					//Select all nodes with this attribute value
-					view.getNetwork().unselectAllNodes();
-					view.getNetwork().setSelectedNodeState(e.getValue(), true);
-					
-					//Perform force-directed layout of just the selected
-					CyLayoutAlgorithm fd = CyLayouts.getLayout("force-directed");
-					
-					fd.setSelectedOnly(true);
-					fd.getSettings().updateValues();
-					fd.updateSettings();
-					view.applyLayout(fd);
-					
-					view.redrawGraph(true, true);
-				}
-				view.getNetwork().unselectAllNodes();
+				DetailedViewLayout.layout(view, overviewView);
 				
 			}else view.redrawGraph(false, true);
 		}
