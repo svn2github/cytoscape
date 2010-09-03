@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package nodeCharts.view;
+package nodeCharts.command;
 
 // System imports
 import java.util.ArrayList;
@@ -44,7 +44,10 @@ import java.util.Random;
 import java.awt.Color;
 
 // Cytoscape imports
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
 import cytoscape.command.CyCommandException;
+import cytoscape.data.CyAttributes;
 
 public class ValueUtils {
 
@@ -66,6 +69,73 @@ public class ValueUtils {
 			}
 		}
 		return values;
+	}
+
+	/**
+ 	 * Get values from a list of attributes.  The attributesList can either be a single list attribute with
+ 	 * numeric values or a list of integer or floating point attributes.  At some point, it might be interesting
+ 	 * to think about other combinations, but this is a good starting point.
+ 	 *
+ 	 * @param node the node we're getting the custom graphics from
+ 	 * @param attributelist the list of attribute names
+ 	 * @param labels the list of labels if the user wants to override the attribute names
+ 	 * @return the list of values
+ 	 * @throws CyCommandException if the attributes aren't numeric
+ 	 */
+	public static List<Double> getDataFromAttributes (CyNode node, String attributesList, List<String> labels) 
+	                                                                                     throws CyCommandException {
+		if (attributesList == null)
+			throw new CyCommandException("no attributes with data?");
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		String nodeName = node.getIdentifier();
+
+		String[] attributeArray = attributesList.split(",");
+		if (attributeArray.length == 1) {
+			// Handle the case where we were given a single, list attribute
+			if (labels.size() == 0) {
+				throw new CyCommandException("Labels must be specified if attribute is a list");
+			}
+			String attr = attributeArray[0].trim();
+			if (nodeAttributes.hasAttribute(nodeName, attr) &&
+			    nodeAttributes.getType(attr) == CyAttributes.TYPE_SIMPLE_LIST) {
+				List vList = nodeAttributes.getListAttribute(nodeName, attr);
+				return convertInputToDouble(vList);
+			} else {
+				throw new CyCommandException("Node "+nodeName+" doesn't have a list attribute named "+attr);
+			}
+		} else {
+			// Handle the case of a list of attributes that contain the data
+			List<Double> result = new ArrayList<Double>();
+			for (String attr: attributeArray) {
+				if (!nodeAttributes.hasAttribute(nodeName, attr) ||
+				    ((nodeAttributes.getType(attr) != CyAttributes.TYPE_FLOATING) &&
+				     (nodeAttributes.getType(attr) != CyAttributes.TYPE_INTEGER) &&
+				     (nodeAttributes.getType(attr) != CyAttributes.TYPE_STRING))) {
+					result.add(0.0);
+					continue;
+				}
+
+				switch (nodeAttributes.getType(attr)) {
+				case CyAttributes.TYPE_FLOATING:
+					result.add(nodeAttributes.getDoubleAttribute(nodeName, attr));
+					break;
+				case CyAttributes.TYPE_INTEGER:
+					result.add(nodeAttributes.getIntegerAttribute(nodeName, attr).doubleValue());
+					break;
+				case CyAttributes.TYPE_STRING:
+					String s = null;
+					try {
+						s = nodeAttributes.getStringAttribute(nodeName, attr);
+						result.add(Double.valueOf(s));
+					} catch (NumberFormatException e) {
+						throw new CyCommandException("Non-numeric value: '"+s+"' in attribute: "+attr);
+					}
+				}
+			}
+			if (labels.size() == 0)
+				labels.addAll(Arrays.asList(attributeArray));
+			return result;
+		}
 	}
 
 	public static List<Double> convertStringList(List<String> input) throws CyCommandException {
@@ -96,6 +166,11 @@ public class ValueUtils {
 
 		String[] inputArray = input.split(",");
 		return convertStringList(Arrays.asList(inputArray));
+	}
+
+	public static List<String> getStringList(String input) {
+		String[] inputArray = input.split(",");
+		return Arrays.asList(inputArray);
 	}
 		
 	private static final String RANDOM = "random";
@@ -216,9 +291,11 @@ public class ValueUtils {
 		// System.out.println("Generating contrasting colors");
 		List<Color> values = new ArrayList<Color>();
 		float divs = ((float)nColors)/2.0f;
-		for (float i = 0.0f; i < divs; i += 1.0f) {
+		for (float i = 0.0f; i < (float)nColors; i += 1.0f) {
 			// System.out.println("Color("+(i/divs)+","+1.0f+","+1.0f+")");
 			values.add(new Color(Color.HSBtoRGB(i/divs, 1.0f, 1.0f)));
+			i += 1.0f;
+			if (i >= (float)nColors) break;
 			// System.out.println("Color("+((i/divs)+0.5f)+","+1.0f+","+1.0f+")");
 			values.add(new Color(Color.HSBtoRGB((i/divs)+0.5f, 1.0f, 1.0f)));
 		}

@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package nodeCharts.view;
+package nodeCharts.command;
 
 // System imports
 import java.util.HashMap;

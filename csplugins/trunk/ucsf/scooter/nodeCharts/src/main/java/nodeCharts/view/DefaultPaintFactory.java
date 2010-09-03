@@ -32,30 +32,21 @@
  */
 package nodeCharts.view;
 
-// System imports
-import java.util.List;
-import java.util.Map;
+import java.awt.Color;
+import java.awt.Paint;
+import java.awt.geom.Rectangle2D;
 
-// Cytoscape imports
-import cytoscape.CyNode;
-import cytoscape.command.CyCommandException;
-import cytoscape.layout.Tunable;
-import cytoscape.render.stateful.CustomGraphic;
-import cytoscape.view.CyNetworkView;
+import cytoscape.render.stateful.PaintFactory;
 
-/**
- * The NodeChartViewer creates the actual custom graphics
- */
-public interface NodeChartViewer {
+class DefaultPaintFactory implements PaintFactory {
+	private final Color color;
 
-	public String getName();
+	public DefaultPaintFactory(final Color c) {
+		color = c;
+	}
 
-	public String getDescription();
-
-	public Map<String,String> getOptions();
-
-	public List<CustomGraphic> getCustomGraphics(Map<String,Object>args, List<Double> values, List<String> labels,
-	                                             CyNode node, CyNetworkView view, Object position) 
-	                                                                             throws CyCommandException;
-
+	public Paint getPaint(final Rectangle2D bound) {
+		// System.out.println("MyPaintFactory returning: "+color);
+		return color;
+	}
 }

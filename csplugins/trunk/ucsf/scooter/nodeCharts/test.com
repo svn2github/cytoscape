@@ -10,4 +10,6 @@ nodecharts pie node="YNL145W" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1
 nodecharts pie node="YIL015W" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1,1.5" position="southeast"
 nodecharts pie node="YBL069W" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1,1.5" position="10,10"
 
+nodecharts clear node="YCR084C"
+
 network view update

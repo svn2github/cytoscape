@@ -32,21 +32,33 @@
  */
 package nodeCharts.view;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 // System imports
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 // Cytoscape imports
 import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.command.CyCommandResult;
 import cytoscape.view.CyNetworkView;
 import cytoscape.render.stateful.CustomGraphic;
 
 import ding.view.DGraphView;
 import ding.view.DNodeView;
+import ding.view.InnerCanvas;
 import giny.view.NodeView;
 
 
@@ -103,6 +115,24 @@ public class ViewUtils {
 		}
 	}
 
+	public static void clearCustomGraphics(CyNode node, CyNetworkView view) {
+		// Get the DNodeView
+		NodeView nView = view.getNodeView(node);
+		DNodeView dView = (DNodeView)nView;
+		List<CustomGraphic> list = new ArrayList<CustomGraphic>();
+
+		// First iterate over all of the custom graphics and collect them
+		Iterator<CustomGraphic> cgIterator = dView.customGraphicIterator();
+		while (cgIterator.hasNext()) {
+			list.add(cgIterator.next());
+		}
+
+		// Now iterate over all of the custom graphics and remove them
+		for (CustomGraphic cg: list) {
+			dView.removeCustomGraphic(cg);
+		}
+	}
+
 	public static Rectangle2D getNodeBoundingBox(CyNode node, CyNetworkView view, Object position) {
 		DNodeView nView = (DNodeView)view.getNodeView(node);
 
@@ -141,6 +171,62 @@ public class ViewUtils {
 		} catch (NumberFormatException e) {
 			return null;
 		}
+	}
+
+
+	private static final String DEFAULT_FONT=Font.SANS_SERIF;
+	private static final int DEFAULT_STYLE=Font.PLAIN;
+	private static final int DEFAULT_SIZE=8;
+
+	public static CustomGraphic getLabelCustomGraphic(String label, String fontName, int fontStyle, int fontSize,
+	                                                  Rectangle2D bbox, CyNetworkView view) {
+
+
+		if (fontName == null) fontName = DEFAULT_FONT;
+		if (fontStyle == 0) fontStyle = DEFAULT_STYLE;
+		if (fontSize == 0) fontSize = DEFAULT_SIZE;
+
+		Font font = new Font(fontName, fontStyle, fontSize);
+		// Get the canvas so that we can find the graphics context
+		InnerCanvas canvas = ((DGraphView)view).getCanvas();
+		Graphics2D g2d = (Graphics2D)canvas.getGraphics();
+		FontRenderContext frc = g2d.getFontRenderContext();
+		TextLayout tl = new TextLayout(label, font, frc);
+		Shape lShape = tl.getOutline(null);
+
+		// Figure out how to move the text to center it on the bbox
+		double textWidth = lShape.getBounds2D().getMaxX(); // This assumes that our text starts at 0
+		double xStart = bbox.getBounds2D().getMinX();
+		double width = bbox.getBounds2D().getMaxX() - xStart;
+		double textStartX = xStart+(width-textWidth)/2;
+
+		double textHeight = lShape.getBounds2D().getMaxY();
+		double yStart = bbox.getBounds2D().getMinY();
+		double height = bbox.getBounds2D().getMaxY() - yStart;
+		double textStartY = yStart+(height-textHeight)/2;
+
+		// System.out.println("  Label = "+label);
+		// System.out.println("  Text bounds = "+lShape.getBounds2D());
+		// System.out.println("  Bounding box = "+bbox);
+
+		// System.out.println("  Offset = ("+textStartX+","+textStartY+")");
+
+		double scale = 1.0;
+		// If our bounds are much larger than the bounding box, scale ourselves.
+		if (textWidth < width/3) 
+			scale = 2;
+		else if (width < textWidth/3) 
+			scale = .5;
+
+		// Use the bounding box to create an Affine transform.  We may need to scale the font
+		// shape if things are too cramped, but not beneath some arbitrary minimum
+		AffineTransform trans = new AffineTransform();
+		trans.setToScale(scale, scale);
+		trans.translate(textStartX, textStartY);
+
+		// System.out.println("  Transform: "+trans);
+		
+		return new CustomGraphic(trans.createTransformedShape(lShape), new DefaultPaintFactory(Color.BLACK));
 	}
 
 	private static Rectangle2D positionAdjust(Rectangle2D.Double bbox, Object pos) {
