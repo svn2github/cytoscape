@@ -903,16 +903,16 @@ class XGMMLParser extends DefaultHandler {
 			// parts[0] = source alias
 			// parts[1] = interaction
 			// parts[2] = target alias
-			int interactionStart = label.indexOf('(');
-			int interactionEnd = label.lastIndexOf(')');
+			int interactionStart = label.indexOf(" (");
+			int interactionEnd = label.lastIndexOf(") ");
 			if (interactionStart != -1 && interactionEnd != -1) {
 				sourceAlias = label.substring(0, interactionStart-1);
 				if (sourceAlias.length() > 0) sourceAlias = sourceAlias.trim();
 
-				interaction = label.substring(interactionStart+1, interactionEnd);
+				interaction = label.substring(interactionStart+2, interactionEnd);
 				if (interaction.length() > 0) interaction = interaction.trim();
 
-				targetAlias = label.substring(interactionEnd+1);
+				targetAlias = label.substring(interactionEnd+2);
 				if (targetAlias.length() > 0) targetAlias = targetAlias.trim();
 				// logger.debug("Edge label parse: interaction = "+interaction);
 			}
