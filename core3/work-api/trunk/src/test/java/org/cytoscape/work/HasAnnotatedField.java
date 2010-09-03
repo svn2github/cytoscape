@@ -25,52 +25,12 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.work.undo;
+package org.cytoscape.work;
 
 
-import javax.swing.undo.UndoableEdit;
+class HasAnnotatedField {
+	@Tunable(description="An annotated field", groups={"group1"}, dependsOn="Fred", flags={Tunable.Param.slider,Tunable.Param.horizontal,Tunable.Param.vertical,Tunable.Param.uncollapsed,Tunable.Param.collapsed,Tunable.Param.network,Tunable.Param.session,Tunable.Param.attributes,Tunable.Param.hidden,Tunable.Param.displayed})
+	public int annotatedInt;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import org.cytoscape.work.undo.AbstractUndoableEdit;
-
-
-public class SimpleUndoableEditTest extends AbstractUndoableEditTest {
-	private int state = 0;
-	private int savedState;
-
-	class SimpleUndoableEdit extends AbstractUndoableEdit {
-		SimpleUndoableEdit(final String presentationName) {
-			super(presentationName);
-		}
-
-		public void undo() { --state; }
-		public void redo() { ++state; }
-	}
-
-	@Before
-	public void init() {
-		undoableEdit = new SimpleUndoableEdit("simple");
-	}
-
-	@Override
-	public void saveState() {
-		savedState = state;
-	}
-
-	@Override
-	public void changeState() {
-		++state;
-	}
-
-	@Override
-	public boolean currentStateIsIdenticalToSavedState() {
-		return state == savedState;
-	}
-
-	@Test(expected=IllegalArgumentException.class)
-	public final void testNullConstructorArgument() {
-		new SimpleUndoableEdit(null);
-	}
+	public int getAnnotatedInt() { return annotatedInt; }
 }

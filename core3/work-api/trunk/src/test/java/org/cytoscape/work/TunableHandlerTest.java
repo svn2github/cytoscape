@@ -30,6 +30,7 @@ package org.cytoscape.work;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -75,8 +76,8 @@ public class TunableHandlerTest {
 
 	@Test
 	public final void testGetFlags() {
-		assertArrayEquals("The flags property of the tunable of an annotated field is not as expected!",
-		                  new Tunable.Param[] { }, fieldHandler.getFlags());
+		assertTrue("The flags property of the tunable of an annotated field is not as expected!",
+			   Arrays.asList(fieldHandler.getFlags()).contains(Tunable.Param.collapsed));
 		assertArrayEquals("The flags property of the tunable of an annotated getter/setter pair is not as expected!",
 		                  new Tunable.Param[] { }, getterAndSetterHandler.getFlags());
 	}
@@ -141,28 +142,6 @@ public class TunableHandlerTest {
 		             "HasAnnotatedField.annotatedInt", fieldHandler.getQualifiedName());
 		assertEquals("Qualified name of an annotated getter/setter pair is not as expected!",
 		             "HasAnnotatedSetterAndGetterMethods.PrivateInt", getterAndSetterHandler.getQualifiedName());
-	}
-}
-
-
-class HasAnnotatedField {
-	@Tunable(description="An annotated field", groups={"group1"}, dependsOn="Fred")
-	public int annotatedInt;
-
-	public int getAnnotatedInt() { return annotatedInt; }
-}
-
-
-class HasAnnotatedSetterAndGetterMethods {
-	private int privateInt;
-
-	public void setPrivateInt(final int newValue) {
-		privateInt = newValue;
-	}
-
-	@Tunable(description="Annotated setters and getters", groups={"group2"}, dependsOn="Bob")
-	public int getPrivateInt() {
-		return privateInt;
 	}
 }
 
