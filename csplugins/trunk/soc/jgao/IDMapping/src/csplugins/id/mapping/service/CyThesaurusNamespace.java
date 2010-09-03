@@ -163,7 +163,7 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         addDescription(CHECK_ID_EXIST, "Check if ID exists.");
 
         addArgument(GUESS_TYPE, SOURCE_ID);
-        addDescription(CHECK_ID_EXIST, "Guess ID types from a set of IDs.");
+        addDescription(GUESS_TYPE, "Guess ID types from a set of IDs.");
 
     }
 
@@ -725,23 +725,21 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
 
         String id = getArg(command, SOURCE_ID, args);
         String type = getArg(command, SOURCE_TYPE, args);
-        
-       if (id==null || type==null)
 
        if (id==null || type==null) {
             throw new CyCommandException("Null argument of "+SOURCE_ID+" or "+SOURCE_TYPE);
-        } else {
-            if (!DataSource.getFullNames().contains(type)) {
-                throw new CyCommandException("Type \""+type+"\" does not exist.");
-            } else {
-                DataSource ds = DataSource.getByFullName(type);
-                IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
-                try {
-                    result.addResult(stack.xrefExists(new Xref(id, ds)));
-                } catch (Exception e) {
-                    throw new CyCommandException(e);
-                }
-            }
+        }
+
+        if (!DataSource.getFullNames().contains(type)) {
+            throw new CyCommandException("Type \""+type+"\" does not exist.");
+        }
+
+        DataSource ds = DataSource.getByFullName(type);
+        IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
+        try {
+            result.addResult(stack.xrefExists(new Xref(id, ds)));
+        } catch (Exception e) {
+            throw new CyCommandException(e);
         }
 
         return result;
