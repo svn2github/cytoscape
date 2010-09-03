@@ -51,6 +51,7 @@ public class Parser {
 			eqnParser.registerFunction(new Average());
 			eqnParser.registerFunction(new BList());
 			eqnParser.registerFunction(new Combin());
+			eqnParser.registerFunction(new Concatenate());
 			eqnParser.registerFunction(new Cos());
 			eqnParser.registerFunction(new Cosh());
 			eqnParser.registerFunction(new Count());
