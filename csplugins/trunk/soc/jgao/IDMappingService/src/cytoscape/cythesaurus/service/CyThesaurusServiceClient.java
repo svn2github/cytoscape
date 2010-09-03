@@ -180,4 +180,11 @@ public interface CyThesaurusServiceClient {
      * @return true if the ID exists in the ID type; false, otherwise.
      */
     public boolean idExists(String id, String type);
+
+    /**
+     * Guess the types of sample source ids
+     * @param ids sample ids
+     * @return a set of types that match the ids
+     */
+    public Set<String> guessType(Set<String> ids);
 }

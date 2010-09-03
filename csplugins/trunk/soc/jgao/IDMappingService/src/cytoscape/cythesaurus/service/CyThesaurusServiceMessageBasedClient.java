@@ -66,6 +66,7 @@ public class CyThesaurusServiceMessageBasedClient
     private final String MSG_TYPE_REQUEST_UNREGISTER_MAPPER = "UNREGISTER_ID_MAPPER";
     private final String MSG_TYPE_REQUEST_SELECT_MAPPER = "SELECT_ID_MAPPER";;
     private final String MSG_TYPE_REQUEST_ID_EXIST = "ID_EXIST";
+    private final String MSG_TYPE_REQUEST_GUESS_TYPE = "GUESSING_TYPE";
 
     private final String VERSION = "VERSION";
     private final String NETWORK_ID = "NETWORK_ID";
@@ -163,7 +164,20 @@ public class CyThesaurusServiceMessageBasedClient
 
         for (ResponseMessage response : responses) {
             if (response.getSender().compareTo(receiver)==0) {
-                return true;
+                Object obj = response.getContent();
+                if (obj instanceof Map) {
+                    Map content = (Map) obj;
+                    obj = content.get(SUCCESS);
+                    if (obj instanceof Boolean) {
+                        boolean succ = (Boolean) obj;
+                        if (succ) {
+                            obj = content.get(IS_CANCELLED);
+                            if (obj instanceof Boolean) {
+                                return !((Boolean) obj);
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -629,5 +643,43 @@ public class CyThesaurusServiceMessageBasedClient
         }
 
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set<String> guessType(Set<String> ids) {
+        if (ids==null) {
+            throw new IllegalArgumentException();
+        }
+
+        String receiver = CYTHESAURUS;
+        String msgType = MSG_TYPE_REQUEST_GUESS_TYPE;
+        String msgId = requester+receiver+msgType+ System.currentTimeMillis();
+        Map map = new HashMap();
+        map.put(SOURCE_ID, ids);
+        Message msg = new Message(msgId , requester, receiver, msgType , map);
+        List<ResponseMessage> responses = PluginsCommunicationSupport.sendMessageAndGetResponses(msg);
+
+        for (ResponseMessage response : responses) {
+            if (response.getSender().compareTo(receiver)==0) {
+                Object obj = response.getContent();
+                if (obj instanceof Map) {
+                    Map content = (Map) obj;
+                    obj = content.get(SUCCESS);
+                    if (obj instanceof Boolean) {
+                        boolean succ = (Boolean) obj;
+                        if (succ) {
+                            obj = content.get(SOURCE_ID_TYPE);
+                            if (obj instanceof Set) {
+                                return (Set) obj;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }
