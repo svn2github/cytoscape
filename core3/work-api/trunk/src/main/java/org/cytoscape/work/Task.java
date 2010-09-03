@@ -186,9 +186,4 @@ public interface Task {
 	 * concurrency issues.</p>
 	 */
 	void cancel();
-
-	/**
-	 *  @return true if cancel() has been invoked on a task, else false
-	 */
-	boolean cancelled();
 }

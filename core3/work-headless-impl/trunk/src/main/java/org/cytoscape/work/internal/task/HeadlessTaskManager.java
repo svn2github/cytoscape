@@ -60,8 +60,6 @@ public class HeadlessTaskManager implements TaskManager {
 						}
 
 						task.run(taskMonitor);
-						if (task.cancelled())
-							break;
 					}
 				} catch (Exception exception) {
 					taskMonitor.showException(exception);

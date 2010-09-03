@@ -139,7 +139,7 @@ public class SwingTaskManager implements TaskManager {
 						}
 
 						task.run(taskMonitor);
-						if (task.cancelled())
+						if (taskMonitor.cancelled())
 							break;
 					}
 				} catch (Exception exception) {
@@ -160,6 +160,7 @@ class SwingTaskMonitor implements TaskMonitor {
 	final private ExecutorService cancelExecutorService;
 	final private Frame owner;
 
+	private boolean cancelled = false;
 	private TaskDialog dialog = null;
 	private String title = null;
 	private String statusMessage = null;
@@ -204,6 +205,11 @@ class SwingTaskMonitor implements TaskMonitor {
 			}
 		};
 		cancelExecutorService.submit(cancel);
+		cancelled = true;
+	}
+
+	public boolean cancelled() {
+		return cancelled;
 	}
 
 	public void setTitle(final String title) {
