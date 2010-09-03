@@ -50,10 +50,8 @@
     <argument>sbmlreader.SBMLReaderPlugin</argument>
     <argument>-p</argument>
     <argument>edu.ucsd.bioeng.coreplugin.tableImport.TableImportPlugin</argument>
-<!--
     <argument>-p</argument>
     <argument>yfiles.YFilesLayoutPlugin</argument>
--->
   </application-desc>
 </jnlp>
 
