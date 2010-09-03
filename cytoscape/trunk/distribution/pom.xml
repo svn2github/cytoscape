@@ -104,14 +104,14 @@
 
   	<!-- documentation -->
     <dependency>
-      <groupId>cytoscape</groupId>
+      <groupId>cytoscape.corelibs</groupId>
       <artifactId>docs</artifactId>
       <version>${version}</version>
       <classifier>html</classifier>
       <type>zip</type>
     </dependency>
     <dependency>
-      <groupId>cytoscape</groupId>
+      <groupId>cytoscape.corelibs</groupId>
       <artifactId>docs</artifactId>
       <version>${version}</version>
       <classifier>pdf</classifier>
