@@ -47,6 +47,7 @@ import csplugins.id.mapping.ui.CyThesaurusDialog;
 import csplugins.id.mapping.ui.IDMappingSourceConfigDialog;
 
 import org.bridgedb.DataSource;
+import org.bridgedb.DataSourcePatterns;
 import org.bridgedb.IDMapperStack;
 import org.bridgedb.IDMapperCapabilities;
 import org.bridgedb.Xref;
@@ -82,6 +83,7 @@ public class IDMappingServiceSuppport {
     private static final String MSG_TYPE_REQUEST_UNREGISTER_MAPPER = "UNREGISTER_ID_MAPPER";
     private static final String MSG_TYPE_REQUEST_SELECT_MAPPER = "SELECT_ID_MAPPER";;
     private static final String MSG_TYPE_REQUEST_ID_EXIST = "ID_EXIST";
+    private static final String MSG_TYPE_REQUEST_GUESS_TYPE = "GUESSING_TYPE";
 
     private static final String VERSION = "VERSION";
     private static final String NETWORK_ID = "NETWORK_ID";
@@ -135,6 +137,8 @@ public class IDMappingServiceSuppport {
                     response = selectIDMapperService(msg);
                 } else if (msgType.compareTo(MSG_TYPE_REQUEST_ID_EXIST)==0) {
                     response = idExistsService(msg);
+                } else if (msgType.compareTo(MSG_TYPE_REQUEST_GUESS_TYPE)==0) {
+                    response = guessTypeService(msg);
                 } else if (msgType.compareTo(MSG_TYPE_REQUEST_MAPPING_SERVICE)==0) {
                     response = mappingService(msg);
                 } else if (msgType.compareTo(MSG_TYPE_REQUEST_UNREGISTER_MAPPER)==0) {
@@ -190,6 +194,7 @@ public class IDMappingServiceSuppport {
         supportedTypes.add(MSG_TYPE_REQUEST_MAPPING_SERVICE);
         supportedTypes.add(MSG_TYPE_REQUEST_UNREGISTER_MAPPER);
         supportedTypes.add(MSG_TYPE_REQUEST_CHECK_MAPPING_SUPPORTED);
+        supportedTypes.add(MSG_TYPE_REQUEST_GUESS_TYPE);
         content.put(Message.MSG_TYPE_GET_MSG_TYPES, supportedTypes);
 
         return createResponse(msg, content);
@@ -454,10 +459,40 @@ public class IDMappingServiceSuppport {
         return createResponse(msg, content);
     }
 
+    private static ResponseMessage guessTypeService(Message msg) {
+        Set<String> srcIDs = null;
+
+        Object obj = msg.getContent();
+        if (obj!=null && obj instanceof Map) {
+            Object obj1 = ((Map)obj).get(SOURCE_ID);
+            if (obj1 instanceof String) {
+                srcIDs = new HashSet(1);
+                srcIDs.add((String)obj1);
+            } else if (obj1 instanceof Set) {
+                srcIDs = (Set<String>)obj1;
+            }
+        }
+
+        Set<String> types = new HashSet<String>();
+        for (String id : srcIDs) {
+            Set<DataSource> dss = DataSourcePatterns.getDataSourceMatches(id);
+            for (DataSource ds : dss)
+                types.add(ds.getFullName());
+        }
+
+        Map content = new HashMap();
+        content.put(SUCCESS, true);
+        content.put(SOURCE_ID_TYPE, types);
+
+        return createResponse(msg, content);
+    }
+
     private static ResponseMessage mappingSrcConfigDialogService(Message msg) {
         IDMappingSourceConfigDialog srcConfDialog
                 = new IDMappingSourceConfigDialog(Cytoscape.getDesktop(), true);
         srcConfDialog.setVisible(true);
+        boolean succ = true;
+        StringBuilder error = new StringBuilder();
 
         Map content = new HashMap();
         content.put(SUCCESS, true);

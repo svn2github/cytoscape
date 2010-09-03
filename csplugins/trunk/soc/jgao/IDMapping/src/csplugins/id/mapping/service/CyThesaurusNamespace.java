@@ -78,8 +78,8 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
     private static final String RESOURCE_DIALOG = "resource config dialog";
     private static final String LIST_RESOURCE = "list resources";
     private static final String LIST_SELECTED_RESOURCE = "list selected resources";
-    private static final String ADD_RESOURCE = "add resource";
-    private static final String REMOVE_RESOURCE = "remove resource";
+    private static final String ADD_RESOURCE = "register resource";
+    private static final String REMOVE_RESOURCE = "unregister resource";
     private static final String SELECT_RESOURCE = "select resource";
     private static final String DESELECT_RESOURCE = "deselect resource";
     private static final String GET_SRC_ID_TYPES = "get source id types";
@@ -100,6 +100,7 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
     private static final String SOURCE_ATTR = "sourceattr";
     private static final String TARGET_ATTR = "targetattr";
     private static final String SOURCE_ID = "sourceid";
+    private static final String REPORT = "report";
 
     protected CyThesaurusNamespace(CyCommandNamespace ns) {
         super(ns);
@@ -123,6 +124,9 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         addArgument(ADD_RESOURCE, CONN_STRING);
         addArgument(ADD_RESOURCE, DISPLAY_NAME);
         addDescription(ADD_RESOURCE, "Add/register an ID mapping resource");
+
+        addArgument(REMOVE_RESOURCE, CONN_STRING);
+        addDescription(REMOVE_RESOURCE, "Remove/unregister an ID mapping resource");
 
         addArgument(SELECT_RESOURCE, CONN_STRING);
         addDescription(SELECT_RESOURCE, "Select an ID mapping resource for use");
@@ -190,7 +194,7 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         if (command.equals(ADD_RESOURCE))
             return addResource(command, args);
         if (command.equals(REMOVE_RESOURCE))
-            remvoeResource(command, args);
+            removeResource(command, args);
         if (command.equals(SELECT_RESOURCE))
             return selectResource(command, args);
         if (command.equals(DESELECT_RESOURCE))
@@ -215,6 +219,7 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
     private CyCommandResult version(String command, Map<String, Object>args) throws CyCommandException {
         CyCommandResult result = new CyCommandResult();
         result.addResult(CyThesaurusPlugin.VERSION);
+        result.addMessage("Current version: "+CyThesaurusPlugin.VERSION);
         return result;
     }
 
@@ -224,6 +229,7 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         dialog.setLocationRelativeTo(Cytoscape.getDesktop());
         dialog.setMapSrcAttrIDTypes(CyThesaurusPlugin.mapSrcAttrIDTypes);
         dialog.setVisible(true);
+        result.addResult(!dialog.isCancelled());
         return result;
     }
 
@@ -232,6 +238,7 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         IDMappingSourceConfigDialog srcConfDialog
                 = new IDMappingSourceConfigDialog(Cytoscape.getDesktop(), true);
         srcConfDialog.setVisible(true);
+        result.addResult(srcConfDialog.isModified());
         return result;
     }
 
@@ -289,12 +296,12 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
             result.addMessage("Successfully registered");
         } catch (Exception e) {
             // throw new CyCommandException(e);
-            result.addError("Failed to add the resource\n"+e.getMessage());
+            result.addError("Failed to register the resource\n"+e.getMessage());
         }
         return result;
     }
 
-    private CyCommandResult remvoeResource(String command, Map<String, Object>args) throws CyCommandException {
+    private CyCommandResult removeResource(String command, Map<String, Object>args) throws CyCommandException {
         CyCommandResult result = new CyCommandResult();
         String connString = getArg(command, CONN_STRING, args);
         if (connString == null)
@@ -591,10 +598,20 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         }
 
         String tgtAttr = getArg(command, TARGET_ATTR, args);
-        Set<String> usedName = new HashSet();
-        usedName.add("ID"); //TODO remove in Cy3
-        usedName.addAll(java.util.Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
-
+        if (tgtAttr==null) {
+            Set<String> usedName = new HashSet();
+            usedName.add("ID"); //TODO remove in Cy3
+            usedName.addAll(java.util.Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
+            if (usedName.contains(tgtType)) {
+                int num = 1;
+                while (usedName.contains(tgtType+"."+num)) {
+                    num ++;
+                }
+                tgtAttr = tgtType+"."+num;
+            } else {
+                tgtAttr = tgtType;
+            }
+        }
         // mapping ids
         AttributeBasedIDMapping service
                     = new AttributeBasedIDMappingImpl();
@@ -619,6 +636,8 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         }
 
         result.addMessage(service.getReport());
+        result.addResult(TARGET_ATTR, tgtAttr);
+        result.addResult(REPORT, service.getReport());
 
         return result;
     }
@@ -703,7 +722,34 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
 
     private CyCommandResult idExists(String command, Map<String, Object>args) throws CyCommandException {
         CyCommandResult result = new CyCommandResult();
+
+        String id = getArg(command, SOURCE_ID, args);
+        String type = getArg(command, SOURCE_TYPE, args);
         
+       if (id==null || type==null)
+
+       if (id==null || type==null) {
+            throw new CyCommandException("Null argument of "+SOURCE_ID+" or "+SOURCE_TYPE);
+        } else {
+            if (!DataSource.getFullNames().contains(type)) {
+                throw new CyCommandException("Type \""+type+"\" does not exist.");
+            } else {
+                DataSource ds = DataSource.getByFullName(type);
+                IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
+                try {
+                    result.addResult(stack.xrefExists(new Xref(id, ds)));
+                } catch (Exception e) {
+                    throw new CyCommandException(e);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private CyCommandResult guessIDTypes(String command, Map<String, Object>args) throws CyCommandException {
+        CyCommandResult result = new CyCommandResult();
+
         Set<String> srcIDs = null;
         Object obj = args.get(SOURCE_ID);
         if (obj instanceof String) {
@@ -734,16 +780,6 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
             sb.append("\n");
         }
         result.addMessage(sb.toString());
-
-        return result;
-    }
-
-    private CyCommandResult guessIDTypes(String command, Map<String, Object>args) throws CyCommandException {
-        CyCommandResult result = new CyCommandResult();
-
-        String id = getArg(command, SOURCE_ID, args);
-        String type = getArg(command, SOURCE_TYPE, args);
-
         
         return result;
     }
