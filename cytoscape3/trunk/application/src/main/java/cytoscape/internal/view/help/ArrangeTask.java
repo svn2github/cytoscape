@@ -49,5 +49,9 @@ public class ArrangeTask extends AbstractTask {
 	public void run(TaskMonitor tm) {
 		CyDesktopManager.arrangeFrames(desktop, CyDesktopManager.Arrange.valueOf(arrange));
 	}
+
+	@Override
+	public void cancel() {
+	}
 }
 

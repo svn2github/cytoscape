@@ -47,4 +47,8 @@ public class HelpContactHelpDeskTask extends AbstractTask {
 	public void run(TaskMonitor tm) {
 		openBrowser.openURL(helpDeskURL);
 	}
+
+	@Override
+	public void cancel() {
+	}
 }

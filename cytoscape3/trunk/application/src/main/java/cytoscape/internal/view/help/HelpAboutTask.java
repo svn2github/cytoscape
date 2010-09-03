@@ -47,4 +47,8 @@ public class HelpAboutTask extends AbstractTask {
 	public void run(TaskMonitor tm) {
 		credits.showCredits();
 	}
+
+	@Override
+	public void cancel() {
+	}
 }

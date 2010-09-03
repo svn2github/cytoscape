@@ -55,4 +55,8 @@ public class HelpContentsTask extends AbstractTask {
 	public void run(TaskMonitor tm) {
 		csh.actionPerformed(new ActionEvent(app.getJFrame(),0,"help"));
 	}
+
+	@Override
+	public void cancel() {
+	}
 }
