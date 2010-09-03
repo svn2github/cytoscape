@@ -218,11 +218,11 @@ public class SearchTask implements Task {
         
         if (goodNodes.size()==0)
         {
-                JOptionPane.showMessageDialog(null, "PanGIA was not able to identify any modules. Either all of the nodes were grouped into a single module, or no edge passed the filter. Please verify that:\n1. Edge scores are appropriate.\n2. Edge filtering is not set too high, and that there are sufficient samples.\n3. Search parameters do not over-reward large modules.");
+                JOptionPane.showMessageDialog(null, "PanGIA was not able to identify any modules. Either all of the nodes were grouped into a single module, or no edge passed the filter. Please verify that:\n1. Edge scores are appropriate.\n2. Edge reporting is not set too low.\n3. Module size is not too high.");
                 this.halt();
         }else if (!groupedOnce)
         {
-                JOptionPane.showMessageDialog(null, "PanGIA was not able to merge nodes into modules. Please verify that:\n1. Edge scores are appropriate.\n2. Search parameters do not under-reward large modules.");
+                JOptionPane.showMessageDialog(null, "PanGIA was not able to merge nodes into modules. Please verify that:\n1. Edge scores are appropriate.\n2. Module size is not too low.");
                 this.halt();
         }
         else if (goodNodes.size()>=500)
