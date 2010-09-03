@@ -440,10 +440,9 @@ public class IDMappingServiceSuppport {
             } else {
                 DataSource ds = DataSource.getByFullName(type);
                 IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
-                boolean exist = false;
                 try {
-                    exist = stack.xrefExists(new Xref(id, ds));
-                    content.put(SUCCESS, true);
+                    if (stack.xrefExists(new Xref(id, ds)))
+                        content.put(SUCCESS, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                     content.put(SUCCESS, false);
