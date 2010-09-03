@@ -249,9 +249,9 @@ public class NestedNetworkCreator {
 		if (module.size()<=2) 
 		{
 			Iterator<String> genes = module.getMemberValues().iterator();
-			String newName = "("+genes.next();
+			String newName = "["+genes.next();
 			while (genes.hasNext()) newName+=", "+genes.next();
-			return newName+")";
+			return newName+"]";
 		}
 		
 		//Annotate large complexes
