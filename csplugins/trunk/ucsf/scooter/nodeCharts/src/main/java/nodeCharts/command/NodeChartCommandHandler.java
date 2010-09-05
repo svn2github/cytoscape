@@ -58,6 +58,7 @@ import cytoscape.view.CyNetworkView;
 // nodeChart imports
 import nodeCharts.view.NodeChartViewer;
 import nodeCharts.view.PieChart;
+import nodeCharts.view.StripeChart;
 import nodeCharts.view.ViewUtils;
 
 /**
@@ -88,6 +89,7 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 
 		// Register each command
 		register(new PieChart());
+		register(new StripeChart());
 
 		// Register our built-in commands
 		addDescription(CLEAR, "Remove all charts from a node");
