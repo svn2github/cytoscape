@@ -38,6 +38,7 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyDataTableFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,31 +52,35 @@ public class CyNetworkFactoryImpl implements CyNetworkFactory {
 	
 	private final CyEventHelper help;
 	private final CyTableManager mgr;
+	private final CyDataTableFactory tableFactory;
 
 	/**
 	 * Creates a new CyNetworkFactoryImpl object.
 	 *
 	 * @param help An instance of CyEventHelper. 
 	 */
-	public CyNetworkFactoryImpl(final CyEventHelper help, final CyTableManager mgr) {
+	public CyNetworkFactoryImpl(final CyEventHelper help, final CyTableManager mgr, final CyDataTableFactory tableFactory) {
 		if (help == null)
 			throw new NullPointerException("CyEventHelper is null");
 
 		if (mgr == null)
 			throw new NullPointerException("CyTableManager is null");
 
+		if (tableFactory == null)
+			throw new NullPointerException("CyDataTableFactory is null");
+
 		this.help = help;
 		this.mgr = mgr;
+		this.tableFactory = tableFactory;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public CyNetwork getInstance() {
-		//return new MGraph(help);
-		ArrayGraph net = new ArrayGraph(help,mgr);
-		logger.info("ArrayGraph created: ID = " +  net.getSUID());
-		logger.info("ArrayGraph created: Base Graph ID = " +  net.getBaseNetwork().getSUID());
+		ArrayGraph net = new ArrayGraph(help,mgr,tableFactory);
+		logger.info("CyNetwork created: ID = " +  net.getSUID());
+		logger.info("CyNetwork created: Base Graph ID = " +  net.getBaseNetwork().getSUID());
 		return net.getBaseNetwork(); 
 	}
 }

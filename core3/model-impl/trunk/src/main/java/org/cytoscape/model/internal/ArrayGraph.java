@@ -46,6 +46,7 @@ import java.util.Collections;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -107,7 +108,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 * Creates a new ArrayGraph object.
 	 * @param eh The CyEventHelper used for firing events.
 	 */
-	public ArrayGraph(final CyEventHelper eh, final CyTableManager tableMgr) {
+	public ArrayGraph(final CyEventHelper eh, final CyTableManager tableMgr, final CyDataTableFactory tableFactory) {
 		this.tableMgr = tableMgr;
 		suid = SUIDFactory.getNextSUID();
 		numSubNetworks = 0;
@@ -118,23 +119,23 @@ public class ArrayGraph implements CyRootNetwork {
 		edgePointers = new ArrayList<EdgePointer>();
 
 		netAttrMgr = new HashMap<String, CyDataTable>();
-		netAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " network", true,eh));
-		netAttrMgr.put(CyNetwork.HIDDEN_ATTRS, new CyDataTableImpl(null, suid + " network", false,eh));
+		netAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " network", "SUID", Long.class, true));
+		netAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " network", "SUID", Long.class, false));
 
 		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
 		attrs().set("name","");
 		// potential leak since "this" isn't yet fully constructed
 
 		nodeAttrMgr = new HashMap<String, CyDataTable>();
-		nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " node", true,eh));
-		nodeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, new CyDataTableImpl(null, suid + " node", false,eh));
+		nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " node", "SUID", Long.class, true));
+		nodeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " node", "SUID", Long.class, false));
 
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
 
 		edgeAttrMgr = new HashMap<String, CyDataTable>();
-		edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " edge", true,eh));
-		edgeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, new CyDataTableImpl(null, suid + " edge", false,eh));
+		edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " edge", "SUID", Long.class, true));
+		edgeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " edge", "SUID", Long.class, false));
 
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);

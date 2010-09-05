@@ -60,15 +60,8 @@ public class CyDataTableFactoryImpl implements CyDataTableFactory {
 		tables = new HashMap<Long,CyDataTable>();
 	}
 
-	/**
-	 * @param name The name of the CyDataTable.
-	 * @param pub Whether or not the CyDataTable should be public.
-	 *
-	 * @return A new {@link CyDataTable} with the specified name that is either public or not (see
-	 *         {@link CyDataTable#isPublic}.
-	 */
-	public CyDataTable createTable(String name, boolean pub) {
-		CyDataTable cdt = new CyDataTableImpl(null,name,pub,help);
+	public CyDataTable createTable(String name, String primaryKey, Class<?> primaryKeyType, boolean pub) {
+		CyDataTable cdt = new CyDataTableImpl(name,primaryKey,primaryKeyType,pub,help);
 		tables.put( cdt.getSUID(), cdt );
 		return cdt;
 	}

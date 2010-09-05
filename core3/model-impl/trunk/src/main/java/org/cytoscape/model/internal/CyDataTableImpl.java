@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyDataTable;
@@ -53,8 +54,8 @@ import org.cytoscape.model.events.RowSetMicroListener;
  */
 public class CyDataTableImpl implements CyDataTable {
 
-	private final Map<String, Map<Long, Object>> attributes;
-	private final Map<Long, CyRow> rows;
+	private final Map<String, Map<Object, Object>> attributes;
+	private final Map<Object, CyRow> rows;
 
 	private final Map<String, Class<?>> types;
 	private final Map<String, Boolean> unique;
@@ -68,9 +69,10 @@ public class CyDataTableImpl implements CyDataTable {
 	// Unique ID.
 	private final long suid;
 
-	private CyEventHelper eventHelper;
+	private final String primaryKey;
+	private final Class<?> primaryKeyType;
 
-	private long rowSUID = -1;
+	private final CyEventHelper eventHelper;
 
 	/**
 	 * Creates a new CyDataTableImpl object.
@@ -82,24 +84,19 @@ public class CyDataTableImpl implements CyDataTable {
 	 * @param pub
 	 *            DOCUMENT ME!
 	 */
-	public CyDataTableImpl(Map<String, Class<?>> typeMap, String name,
+	public CyDataTableImpl(String title, String primaryKey, Class<?> primaryKeyType, 
 			boolean pub, final CyEventHelper eventHelper) {
-		this.title = name;
+		this.title = title;
+		this.primaryKey = primaryKey;
+		this.primaryKeyType = primaryKeyType;
 		this.pub = pub;
 		this.suid = SUIDFactory.getNextSUID();
 		this.eventHelper = eventHelper;
-		attributes = new HashMap<String, Map<Long, Object>>();
-		rows = new HashMap<Long, CyRow>();
-
-		if (typeMap == null) {
-			types = new HashMap<String, Class<?>>();
-			unique = new HashMap<String, Boolean>();
-		} else {
-			types = new HashMap<String, Class<?>>(typeMap);
-			// TODO!
-			unique = new HashMap<String, Boolean>();
-		}
-		
+		attributes = new HashMap<String, Map<Object, Object>>();
+		rows = new HashMap<Object, CyRow>();
+		types = new HashMap<String, Class<?>>();
+		types.put(primaryKey,primaryKeyType);
+		unique = new HashMap<String, Boolean>();
 	}
 
 	/**
@@ -145,7 +142,15 @@ public class CyDataTableImpl implements CyDataTable {
 	 * @return DOCUMENT ME!
 	 */
 	public Map<String, Class<?>> getColumnTypeMap() {
-		return new HashMap<String, Class<?>>(types);
+		return Collections.unmodifiableMap(types);
+	}
+
+	public String getPrimaryKey() {
+		return primaryKey;
+	}
+
+	public Class<?> getPrimaryKeyType() {
+		return primaryKeyType;
 	}
 
 	/**
@@ -189,7 +194,7 @@ public class CyDataTableImpl implements CyDataTable {
 
 		if (curr == null) {
 			types.put(attributeName, cls);
-			attributes.put(attributeName, new HashMap<Long, Object>());
+			attributes.put(attributeName, new HashMap<Object, Object>());
 			unique.put(attributeName, u);
 			
 			// Fire event
@@ -235,7 +240,7 @@ public class CyDataTableImpl implements CyDataTable {
 		if (columnName == null)
 			throw new NullPointerException("column name is null");
 
-		Map<Long, Object> vals = attributes.get(columnName);
+		Map<Object, Object> vals = attributes.get(columnName);
 
 		if (vals == null)
 			throw new NullPointerException("attribute does not exist");
@@ -256,7 +261,8 @@ public class CyDataTableImpl implements CyDataTable {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public CyRow getRow(final long suid) {
+	public CyRow getRow(final Object suid) {
+		checkKey(suid);
 		CyRow row = rows.get(suid);
 		if (row != null)
 			return row;
@@ -266,39 +272,31 @@ public class CyDataTableImpl implements CyDataTable {
 		return row;
 	}
 
-	public List<CyRow> getAllRows()
-	{
+    private void checkKey(final Object suid) {
+        if ( suid == null )
+            throw new NullPointerException("key is null");
+
+        if ( !primaryKeyType.isAssignableFrom( suid.getClass() ) )
+            throw new IllegalArgumentException("key of type " + suid.getClass() + " and not the expected: " + primaryKeyType);
+
+    }
+
+	public List<CyRow> getAllRows() {
 		return new ArrayList<CyRow>(rows.values());
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public CyRow addRow() {
-		long r;
-		synchronized (this) {
-			r = rowSUID--;
-		}
-
-		CyRow row = new InternalRow(r, this);
-		rows.put(r, row);
-
-		return row;
-	}
 
 	// internal methods
-	private void removeX(long suid, String attributeName) {
+	private void removeX(Object suid, String attributeName) {
 		if (attributes.containsKey(attributeName)) {
-			Map<Long, Object> map = attributes.get(attributeName);
+			Map<Object, Object> map = attributes.get(attributeName);
 
 			if (map.containsKey(suid))
 				map.remove(suid);
 		}
 	}
 
-	private void setX(long suid, String attrName, Object value) {
+	private void setX(Object suid, String attrName, Object value) {
 		if (value == null)
 			throw new NullPointerException("value is null");
 
@@ -308,19 +306,19 @@ public class CyDataTableImpl implements CyDataTable {
 
 		checkType(value);
 
-		Map<Long, Object> vls = attributes.get(attrName);
+		Map<Object, Object> vls = attributes.get(attrName);
 
 		if (types.get(attrName).isAssignableFrom(value.getClass())) {
 			// TODO this is an implicit addRow - not sure if we want to refactor this or not
 			vls.put(suid, value);
-			eventHelper.getMicroListener(RowSetMicroListener.class, getRow(suid)).handleRowSet(attrName, value);
+			eventHelper.getMicroListener(RowSetMicroListener.class, getRow(suid)).handleRowSet(attrName,value);
 		} else
 			throw new IllegalArgumentException("value is not of type: "
 					+ types.get(attrName));
 	}
 
-	private Object getRawX(long suid, String attrName) {
-		Map<Long, Object> vls = attributes.get(attrName);
+	private Object getRawX(Object suid, String attrName) {
+		Map<Object, Object> vls = attributes.get(attrName);
 
 		if (vls == null)
 			return null;
@@ -328,7 +326,7 @@ public class CyDataTableImpl implements CyDataTable {
 		return vls.get(suid);
 	}
 
-	private <T> T getX(long suid, String attrName, Class<? extends T> type) {
+	private <T> T getX(Object suid, String attrName, Class<? extends T> type) {
 		Object vl = getRawX(suid, attrName);
 
 		if (vl == null)
@@ -337,9 +335,9 @@ public class CyDataTableImpl implements CyDataTable {
 		return type.cast(vl);
 	}
 
-	private <T> boolean containsX(long suid, String attrName,
+	private <T> boolean containsX(Object suid, String attrName,
 			Class<? extends T> type) {
-		Map<Long, Object> vls = attributes.get(attrName);
+		Map<Object, Object> vls = attributes.get(attrName);
 
 		if (vls == null)
 			return false;
@@ -356,8 +354,8 @@ public class CyDataTableImpl implements CyDataTable {
 			return false;
 	}
 
-	private Class<?> containsX(long suid, String attrName) {
-		Map<Long, Object> vls = attributes.get(attrName);
+	private Class<?> containsX(Object suid, String attrName) {
+		Map<Object, Object> vls = attributes.get(attrName);
 
 		if (vls == null)
 			return null;
@@ -420,10 +418,10 @@ public class CyDataTableImpl implements CyDataTable {
 	}
 
 	private class InternalRow implements CyRow {
-		private final long suid;
+		private final Object suid;
 		private final CyDataTable table;
 
-		InternalRow(long suid, CyDataTable table) {
+		InternalRow(Object suid, CyDataTable table) {
 			this.suid = suid;
 			this.table = table;
 		}
@@ -469,16 +467,17 @@ public class CyDataTableImpl implements CyDataTable {
 
 			InternalRow ir = (InternalRow) o;
 
+			// TODO is this sufficent since we're not using long any more?
 			if (ir.suid == this.suid)
 				return true;
 			else
-
 				return false;
 		}
 
 		public @Override
 		int hashCode() {
-			return (int) (suid ^ (suid >>> 32));
+			// TODO is this right?
+			return suid.hashCode();
 		}
 
 		public CyDataTable getDataTable() {

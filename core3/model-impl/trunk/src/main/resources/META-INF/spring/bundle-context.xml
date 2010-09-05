@@ -18,13 +18,14 @@
 	<bean id="cyTableManager" class="org.cytoscape.model.internal.CyTableManagerImpl">
 	</bean>
 
+	<bean id="cyDataTableFactory" class="org.cytoscape.model.internal.CyDataTableFactoryImpl">
+		<constructor-arg ref="cyEventHelperServiceRef" />
+	</bean>
+
 	<bean id="cyNetworkFactory" class="org.cytoscape.model.internal.CyNetworkFactoryImpl">
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="cyTableManager" />
-	</bean>
-
-	<bean id="cyDataTableFactory" class="org.cytoscape.model.internal.CyDataTableFactoryImpl">
-		<constructor-arg ref="cyEventHelperServiceRef" />
+		<constructor-arg ref="cyDataTableFactory" />
 	</bean>
 
 	<bean id="cyRootNetworkFactory" class="org.cytoscape.model.internal.CyRootNetworkFactoryImpl"/>

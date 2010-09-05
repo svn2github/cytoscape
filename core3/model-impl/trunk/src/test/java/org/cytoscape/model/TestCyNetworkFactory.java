@@ -37,32 +37,34 @@
 package org.cytoscape.model;
 
 
-//import org.cytoscape.model.internal.CyNetworkImpl;
-//import org.cytoscape.model.internal.MGraph;
 import org.cytoscape.model.internal.ArrayGraph;
 import org.cytoscape.model.internal.CyTableManagerImpl;
+import org.cytoscape.model.internal.CyDataTableFactoryImpl;
 import org.cytoscape.event.DummyCyEventHelper;
 
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class TestCyNetworkFactory {
 
 	public TestCyNetworkFactory() {};
 
 	public static CyNetwork getInstance() {
-		//return new CyNetworkImpl(new DummyCyEventHelper());
-		//return new MGraph(new DummyCyEventHelper());
-		return new ArrayGraph(new DummyCyEventHelper(), new CyTableManagerImpl());
+		DummyCyEventHelper deh = new DummyCyEventHelper();
+		return new ArrayGraph(deh, new CyTableManagerImpl(),new CyDataTableFactoryImpl(deh));
 	}
 
-	public static CyRootNetwork getRootInstance() {
-		return new ArrayGraph(new DummyCyEventHelper(), new CyTableManagerImpl());
+	public static CyRootNetwork getRootInstance() {	
+		// This only works because we know that ArrayGraph (returned from 
+		// getInstance) is also a root network!
+		return (CyRootNetwork)getInstance();
 	}
 	
 	@Test
 	public void testFactory() throws Exception {
-		
+		CyNetwork n = getInstance();
+		assertNotNull(n);
 	}
 }
 

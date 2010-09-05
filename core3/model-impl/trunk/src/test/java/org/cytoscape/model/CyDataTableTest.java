@@ -51,8 +51,8 @@ public class CyDataTableTest extends AbstractCyDataTableTest {
 	public void setUp() {
 
 		eventHelper = new DummyCyEventHelper();
-		mgr = new CyDataTableImpl(null, "homer", true, eventHelper);
-		attrs = mgr.getRow(1);
+		mgr = new CyDataTableImpl("homer", "SUID", Long.class, true, eventHelper);
+		attrs = mgr.getRow(1l);
 	}
 
 	/**
