@@ -46,13 +46,15 @@ import java.util.List;
  */
 public interface CyDataTableFactory {
 	/**
-	 * @param name The name of the CyDataTable.
+	 * @param title The name of the CyDataTable.
+	 * @param primaryKey The name primaryKey column for this table. 
+	 * @param primaryKeyType The type of the primaryKey column for this table. 
 	 * @param pub Whether or not the CyDataTable should be public.
 	 *
 	 * @return A new {@link CyDataTable} with the specified name that is either public or not (see
 	 *         {@link CyDataTable#isPublic}.
 	 */
-	CyDataTable createTable(String name, boolean pub);
+	CyDataTable createTable(String title, String primaryKey, Class<?> primaryKeyType, boolean pub);
 
 	/**
      * @param includePrivate Whether to include private CyDataTables

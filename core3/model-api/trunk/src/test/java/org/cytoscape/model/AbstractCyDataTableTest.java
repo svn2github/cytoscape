@@ -67,15 +67,6 @@ public abstract class AbstractCyDataTableTest extends TestCase {
 
 
 	/**
-	 * addRow was implemented to return null (rather than a row). 
-	 * This is just to insure it continues to work.
-	 */
-	public void testAddRow() {
-		CyRow row = mgr.addRow();
-		assertNotNull(row);
-	}
-
-	/**
 	 *  DOCUMENT ME!
 	 */
 	public void testAddStringAttr() {
@@ -279,6 +270,11 @@ public abstract class AbstractCyDataTableTest extends TestCase {
 		
 		mgr.deleteColumn("someInt");
 		assertFalse( mgr.getColumnTypeMap().containsKey("someInt") );
+	}
+
+	public void testPrimaryKey() {
+		String pk = mgr.getPrimaryKey();
+		assertEquals( mgr.getPrimaryKeyType(), mgr.getColumnTypeMap().get(pk) );
 	}
 
 	// lots more needed

@@ -72,6 +72,16 @@ public interface CyDataTable {
 	String getTitle();
 
 	/**
+	 * @return The name of the primary key column for this table.
+	 */
+	String getPrimaryKey();
+
+	/**
+	 * @return The class type of the primary key column for this table.
+	 */
+	Class<?> getPrimaryKeyType();
+
+	/**
 	 * 
 	 * @param title The human readable title for the CyDataTable suitable for use in a user
 	 *        interface.
@@ -115,16 +125,16 @@ public interface CyDataTable {
 	<T> List<T> getColumnValues(String columnName, Class<?extends T> type);
 
 	/**
+	 * Returns the row specified by the primary key object and if a row
+	 * for the specified key does not yet exist in the table, a new row
+	 * will be created and the new row will be returned.
+	 *
 	 * @param primaryKey The primary key index of the row to return.
 	 *
-	 * @return The {@link CyRow} identified by the specified index.
+	 * @return The {@link CyRow} identified by the specified key or a new
+	 * row identified by the key if one did not already exist.
 	 */
-	CyRow getRow(long primaryKey);
-
-	/**
-	 * @return A new {@link CyRow} object for this CyDataTable.
-	 */
-	CyRow addRow();
+	CyRow getRow(Object primaryKey);
 
 	/**
 	 * Return a list of all the rows stored in this data table
