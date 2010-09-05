@@ -24,8 +24,8 @@ public class DataTableTestSupportTest extends AbstractCyDataTableTest {
 
 	public void setUp() {
 		eventHelper = support.getDummyCyEventHelper(); 
-		mgr = factory.createTable(Integer.toString( rand.nextInt(10000) ), false);
-		attrs = mgr.getRow(1);
+		mgr = factory.createTable(Integer.toString( rand.nextInt(10000) ), "SUID", Long.class, false);
+		attrs = mgr.getRow(1l);
 	}
 
 	public void tearDown() {
