@@ -39,13 +39,12 @@ public class TextDataTableReader extends AbstractDataTableReader {
 	public void run(TaskMonitor tm) throws IOException {
 		try {
 	
-			final CyDataTable table = tableFactory.createTable(tableName, true);
 		
 			String line;
 			final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		
 			line = br.readLine();
-			createColumns(table, line);
+			final CyDataTable table = createTable(line);
 		
 			while ((line = br.readLine()) != null) 
 				processLine(table, line);
@@ -62,16 +61,20 @@ public class TextDataTableReader extends AbstractDataTableReader {
 		tm.setProgress(1.0);
 	}
 	
-	private void createColumns(CyDataTable table, String line) throws IOException {
+	private CyDataTable createTable(String line) throws IOException {
 		if (line == null)
 			throw new IllegalStateException("Column names cannot be null");
 		
 		columnNames = line.split(delimiter);
 
 		checkForDuplicates( columnNames );
+		final CyDataTable table = tableFactory.createTable(tableName, columnNames[0], 
+		                                                   String.class, true);
 		
 		for ( String col : columnNames ) 
 			table.createColumn(col, String.class, false);
+
+		return table;
 	}
 
 	private void checkForDuplicates(String[] names) throws IOException {
@@ -101,7 +104,7 @@ public class TextDataTableReader extends AbstractDataTableReader {
 			return;
 		}
 		
-		CyRow row = table.addRow();
+		CyRow row = table.getRow(buffer[0]);
 
 		for(int i = 0; i<buffer.length; i++) 
 			row.set(columnNames[i], buffer[i]);

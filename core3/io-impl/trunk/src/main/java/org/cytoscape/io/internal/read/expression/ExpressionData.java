@@ -1067,8 +1067,8 @@ public class ExpressionData implements Serializable {
 
 		// now create the rows and populate
 		for (int i = 0; i < geneNames.size(); i++) {
-			CyRow row = table.addRow();
 			String canName = geneNames.get(i);
+			CyRow row = table.getRow(canName);
 
 			for (int condNum = 0; condNum < condNames.length; condNum++) {
 				String condName = condNames[condNum];
