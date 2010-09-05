@@ -32,6 +32,7 @@
  */
 package nodeCharts.view;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -39,6 +40,7 @@ import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -178,8 +180,10 @@ public class ViewUtils {
 	private static final int DEFAULT_STYLE=Font.PLAIN;
 	private static final int DEFAULT_SIZE=8;
 
-	public static CustomGraphic getLabelCustomGraphic(String label, String fontName, int fontStyle, int fontSize,
-	                                                  Rectangle2D bbox, CyNetworkView view) {
+	public static enum TextAlignment {ALIGN_LEFT, ALIGN_CENTER_TOP, ALIGN_RIGHT, ALIGN_CENTER_BOTTOM};
+
+	public static Shape getLabelShape(String label, String fontName, int fontStyle, int fontSize,
+	                                  Point2D position, TextAlignment tAlign, CyNetworkView view) {
 
 
 		if (fontName == null) fontName = DEFAULT_FONT;
@@ -194,39 +198,87 @@ public class ViewUtils {
 		TextLayout tl = new TextLayout(label, font, frc);
 		Shape lShape = tl.getOutline(null);
 
-		// Figure out how to move the text to center it on the bbox
-		double textWidth = lShape.getBounds2D().getMaxX(); // This assumes that our text starts at 0
-		double xStart = bbox.getBounds2D().getMinX();
-		double width = bbox.getBounds2D().getMaxX() - xStart;
-		double textStartX = xStart+(width-textWidth)/2;
-
-		double textHeight = lShape.getBounds2D().getMaxY();
-		double yStart = bbox.getBounds2D().getMinY();
-		double height = bbox.getBounds2D().getMaxY() - yStart;
-		double textStartY = yStart+(height-textHeight)/2;
-
 		// System.out.println("  Label = "+label);
+
+		// Figure out how to move the text to center it on the bbox
+		double textWidth = lShape.getBounds2D().getMaxX() - lShape.getBounds2D().getMinX(); 
+		double textHeight = lShape.getBounds2D().getMaxY() - lShape.getBounds2D().getMinY();
+
+		// System.out.println("  Text size = ("+textWidth+","+textHeight+")");
+
+		double pointX = position.getX();
+		double pointY = position.getY();
+
+		double textStartX = pointX;
+		double textStartY = pointY;
+
+		switch (tAlign) {
+		case ALIGN_CENTER_TOP:
+			// System.out.println("  Align = CENTER_TOP");
+			textStartX = pointX + textWidth/2;
+			textStartY = pointY + textHeight;
+			break;
+		case ALIGN_CENTER_BOTTOM:
+			// System.out.println("  Align = CENTER_BOTTOM");
+			textStartX = pointX + textWidth/2;
+			textStartY = pointY - textHeight;
+			break;
+		case ALIGN_RIGHT:
+			// System.out.println("  Align = RIGHT");
+			textStartX = pointX - textWidth;
+			textStartY = pointY + textHeight/2;
+			break;
+		case ALIGN_LEFT:
+			// System.out.println("  Align = LEFT");
+			textStartX = pointX;
+			textStartY = pointY + textHeight/2;
+			break;
+		default:
+			// System.out.println("  Align = "+tAlign);
+		}
+
 		// System.out.println("  Text bounds = "+lShape.getBounds2D());
-		// System.out.println("  Bounding box = "+bbox);
+		// System.out.println("  Position = "+position);
 
 		// System.out.println("  Offset = ("+textStartX+","+textStartY+")");
-
-		double scale = 1.0;
-		// If our bounds are much larger than the bounding box, scale ourselves.
-		if (textWidth < width/3) 
-			scale = 2;
-		else if (width < textWidth/3) 
-			scale = .5;
 
 		// Use the bounding box to create an Affine transform.  We may need to scale the font
 		// shape if things are too cramped, but not beneath some arbitrary minimum
 		AffineTransform trans = new AffineTransform();
-		trans.setToScale(scale, scale);
 		trans.translate(textStartX, textStartY);
 
 		// System.out.println("  Transform: "+trans);
-		
-		return new CustomGraphic(trans.createTransformedShape(lShape), new DefaultPaintFactory(Color.BLACK));
+		return trans.createTransformedShape(lShape);
+	}
+
+	/**
+ 	 * This is used to draw a line from a text box to an object -- for example from a pie label to
+ 	 * the pie slice itself.
+ 	 */
+	public static Shape getLabelLine(Rectangle2D textBounds, Point2D labelPosition, TextAlignment tAlign) {
+		double lineStartX = 0;
+		double lineStartY = 0;
+		switch (tAlign) {
+			case ALIGN_CENTER_TOP:
+				lineStartY = textBounds.getMaxY();
+				lineStartX = textBounds.getCenterX();
+			break;
+			case ALIGN_CENTER_BOTTOM:
+				lineStartY = textBounds.getMinY();
+				lineStartX = textBounds.getCenterX();
+			break;
+			case ALIGN_RIGHT:
+				lineStartY = textBounds.getCenterY();
+				lineStartX = textBounds.getMaxX();
+			break;
+			case ALIGN_LEFT:
+				lineStartY = textBounds.getCenterY();
+				lineStartX = textBounds.getMinX();
+			break;
+		}
+
+		BasicStroke stroke = new BasicStroke(0.5f);
+		return stroke.createStrokedShape(new Line2D.Double(lineStartX, lineStartY, labelPosition.getX(), labelPosition.getY()));
 	}
 
 	private static Rectangle2D positionAdjust(Rectangle2D.Double bbox, Object pos) {

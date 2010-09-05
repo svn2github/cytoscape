@@ -172,7 +172,41 @@ public class ValueUtils {
 		String[] inputArray = input.split(",");
 		return Arrays.asList(inputArray);
 	}
-		
+
+	/**
+ 	 * Takes a map of objects indexed by a string keyword and returns
+ 	 * a map of strings indexed by that keyword.  This involves figuring
+ 	 * out if the object is a list, and if so converting it to a comma
+ 	 * separated string
+ 	 *
+ 	 * @param argMap the map of objects indexed by strings
+ 	 * @return the serialized map
+ 	 */
+	public static Map<String,String> serializeArgMap(Map<String, Object> argMap) {
+		Map<String,String> sMap = new HashMap<String,String>();
+		for (String key: argMap.keySet()) {
+			sMap.put(key, serializeObject(argMap.get(key)));
+		}
+		return sMap;
+	}
+
+	/**
+ 	 * Serialize an object that might be a list to a string
+ 	 */
+	private static String serializeObject(Object obj) {
+		String result;
+		if (obj instanceof List) {
+			result = "";
+			for (Object o: (List)obj) {
+				result += o.toString()+",";
+			}
+			result = result.substring(0, result.length()-1);
+		} else
+			result = obj.toString();
+
+		return result;
+	}
+
 	private static final String RANDOM = "random";
 	private static final String	CONTRASTING = "contrasting";
 	private static final String	RAINBOW = "rainbow";

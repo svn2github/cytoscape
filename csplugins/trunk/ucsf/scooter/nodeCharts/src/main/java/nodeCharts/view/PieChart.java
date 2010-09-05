@@ -41,7 +41,10 @@ import java.util.Map;
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.geom.Arc2D;
+import java.awt.geom.Area;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 // Cytoscape imports
@@ -53,6 +56,7 @@ import cytoscape.render.stateful.PaintFactory;
 import cytoscape.view.CyNetworkView;
 
 import nodeCharts.command.ValueUtils;
+import nodeCharts.view.ViewUtils.TextAlignment;
 
 /**
  * The PieChart creates a list of custom graphics where each custom graphic represents
@@ -137,7 +141,7 @@ public class PieChart implements NodeChartViewer {
 	private CustomGraphic[] createSlice(Rectangle2D bbox, double arcStart, Double arc, String label, Color color,
 	                                    CyNetworkView view) {
 		CustomGraphic[] vals = new CustomGraphic[2];
-		// System.out.println("Creating arc from "+arcStart+" to "+arc+" with color: "+color);
+		// System.out.println("Creating arc from "+arcStart+" to "+(arc.doubleValue()+arcStart)+" with color: "+color);
 		double x = bbox.getX();
 		double y = bbox.getY();
 		double width = bbox.getWidth();
@@ -149,9 +153,54 @@ public class PieChart implements NodeChartViewer {
 		PaintFactory pf = new DefaultPaintFactory(color);
 		vals[0] = new CustomGraphic(slice, pf);
 
-		// Now, create the label.  We want to do this here so we can adjust the label for the slice
-		vals[1] = ViewUtils.getLabelCustomGraphic(label, null, 0, 0, slice.getBounds2D(), view);
+		double midpointAngle = arcStart + arc.doubleValue()/2;
+
+		TextAlignment tAlign = getLabelAlignment(midpointAngle);
+		
+		// Now, create the label.  Put the label on the outer edge of the circle.
+		Point2D labelPosition = getLabelPosition(bbox, midpointAngle, 1.4);
+		// vals[1] = ViewUtils.getLabelCustomGraphic(label, null, 0, 0, labelPosition, tAlign, view);
+		Shape textShape = ViewUtils.getLabelShape(label, null, 0, 0, labelPosition, tAlign, view);
+
+		// Draw a line between our label and the slice
+		labelPosition = getLabelPosition(bbox, midpointAngle, 1.0);
+		Shape labelLine = ViewUtils.getLabelLine(textShape.getBounds2D(), labelPosition, tAlign);
+
+		// Combine the shapes
+		Area textArea = new Area(textShape);
+		textArea.add(new Area(labelLine));
+
+
+		vals[1] = new CustomGraphic(textArea, new DefaultPaintFactory(Color.BLACK));
 
 		return vals;
+	}
+
+	// Return a point on the midpoint of the arc
+	private Point2D getLabelPosition(Rectangle2D bbox, double angle, double scale) {
+		double midpoint = Math.toRadians(360.0-angle);
+		double length = bbox.getWidth()/2; // Assumes width = height!
+		double x = Math.cos(midpoint)*length*scale;
+		double y = Math.sin(midpoint)*length*scale;
+
+		// System.out.println("getLabelPosition: bbox = "+bbox+", midpoint = "+angle+" arcpoint = ("+x+","+y+")");
+
+		return new Point2D.Double(x, y);
+	}
+
+	private TextAlignment getLabelAlignment(double midPointAngle) {
+		if (midPointAngle >= 280.0 && midPointAngle < 80.0)
+			return TextAlignment.ALIGN_LEFT;
+
+		if (midPointAngle >= 80.0 && midPointAngle < 100.0)
+			return TextAlignment.ALIGN_CENTER_TOP;
+
+		if (midPointAngle >= 100.0 && midPointAngle < 260.0)
+			return TextAlignment.ALIGN_RIGHT;
+
+		if (midPointAngle >= 260.0 && midPointAngle < 280.0)
+			return TextAlignment.ALIGN_CENTER_BOTTOM;
+
+		return TextAlignment.ALIGN_LEFT;
 	}
 }

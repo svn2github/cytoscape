@@ -36,11 +36,16 @@ package nodeCharts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import java.util.List;
+
 // Cytoscape imports
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandHandler;
 import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
 import nodeCharts.command.NodeChartCommandHandler;
@@ -51,7 +56,8 @@ import nodeCharts.command.NodeChartCommandHandler;
  */
 public class NodeCharts extends CytoscapePlugin implements PropertyChangeListener {
 	CyLogger logger;
-	CyCommandHandler handler;
+	NodeChartCommandHandler handler;
+	boolean sessionLoading = false;
 
 	/**
 	 * The main constructor
@@ -63,6 +69,11 @@ public class NodeCharts extends CytoscapePlugin implements PropertyChangeListene
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 		                      .addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this );
 
+		Cytoscape.getPropertyChangeSupport()
+		         .addPropertyChangeListener( Integer.toString(Cytoscape.SESSION_OPENED), this );
+		Cytoscape.getPropertyChangeSupport()
+		         .addPropertyChangeListener( Cytoscape.SESSION_LOADED, this );
+
 		// Register our command handler
 		handler = new NodeChartCommandHandler("nodecharts", logger);
 	}
@@ -73,9 +84,29 @@ public class NodeCharts extends CytoscapePlugin implements PropertyChangeListene
 	 * @param evt the event that triggered us
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
-			// look for our attributes
-			// call the command handler
+		if (evt.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
+			sessionLoading = true;
+		} else if (evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED && !sessionLoading) {
+			CyNetworkView newView = (CyNetworkView)evt.getNewValue();
+			try {
+				handler.reloadCharts(newView);
+			} catch (CyCommandException e) {
+				logger.error(e.getMessage());
+			}
+		} else if (evt.getPropertyName() == Cytoscape.SESSION_LOADED) {
+			sessionLoading = false;
+			// For each loaded network that we have a view for, call reload charts
+			List<String> loadedNetworks = (List<String>)evt.getNewValue();
+			for (String netName: loadedNetworks) {
+				CyNetworkView view = Cytoscape.getNetworkView(netName);
+				if (view == null || view == Cytoscape.getNullNetworkView())
+					continue;
+				try {
+					handler.reloadCharts(view);
+				} catch (CyCommandException e) {
+					logger.error(e.getMessage());
+				}
+			}
 		}
 	}
 }

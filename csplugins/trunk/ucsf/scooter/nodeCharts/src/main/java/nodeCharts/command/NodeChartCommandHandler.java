@@ -44,6 +44,7 @@ import java.util.Set;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 
 import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
@@ -101,8 +102,16 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 
 	public CyCommandResult execute(String command, Map<String, Object>args)
                                                       throws CyCommandException, RuntimeException {
-		CyCommandResult result = new CyCommandResult();
+
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		return executeNodeChart(command, args, true, view);
+	}
+
+
+	private CyCommandResult executeNodeChart(String command, Map<String, Object>args, 
+	                                         boolean saveCommand, CyNetworkView view)
+                                                      throws CyCommandException, RuntimeException {
+		CyCommandResult result = new CyCommandResult();
 
 		if (!args.containsKey(NODE) && !args.containsKey(NODELIST)) {
 			throw new CyCommandException("node or nodelist to map chart to must be specified");
@@ -118,6 +127,7 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 			for (CyNode node: nodeList) {
 				ViewUtils.clearCustomGraphics(node, view);
 				result.addMessage("Cleared  charts for node "+node.getIdentifier());
+				clearCharts(node);
 			}
 			return result;
 		}
@@ -177,8 +187,10 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 			List<CustomGraphic> cgList = viewer.getCustomGraphics(args, values, labels, node, view, pos);
 			ViewUtils.addCustomGraphics(cgList, node, view);
 			result.addMessage("Created "+viewer.getName()+" chart for node "+node.getIdentifier());
+			// If we succeeded, serialize the command and save it in the appropriate nodeAttribute
+			if (saveCommand)
+				saveChart(node, command, args);
 		}
-
 		return result;
 	}
 
@@ -202,7 +214,76 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 		viewerMap.put(viewer.getName(), viewer);
 	}
 
+	/**************************************************************************************
+ 	 *                  Methods to save and restore chart information                     *
+	 *************************************************************************************/
+	private static final String CHARTLISTATTR = "__nodeChartList";
+	private static final String CHARTATTR = "__nodeChart_%s_%d";
 
+	public List<CyCommandResult> reloadCharts(CyNetworkView view) throws CyCommandException {
+		List<CyCommandResult> resultList = new ArrayList<CyCommandResult>();
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		// For each node:
+		for (CyNode node: (List<CyNode>)view.getNetwork().nodesList()) {
+			String nodeName = node.getIdentifier();
+			// looking for our attribute
+			if (nodeAttributes.hasAttribute(nodeName, CHARTLISTATTR)) {
+				List<String> chartList = nodeAttributes.getListAttribute(nodeName, CHARTLISTATTR);
+				// for each command in the command list
+				for (String chart: chartList) {
+					String command = chart.substring(12,chart.lastIndexOf('_'));
+					// Get the command args
+					Map<String,Object> args = nodeAttributes.getMapAttribute(nodeName, chart);
+					// Execute it
+					CyCommandResult comResult = executeNodeChart(command, args, false, view);
+					resultList.add(comResult);
+				}
+			}
+		}
+		return resultList;
+	}
+
+	private void saveChart(CyNode node, String command, Map<String,Object>args) {
+		// Get the list of charts we have so far
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		String nodeName = node.getIdentifier();
+		List<String> chartList = null;
+		if (!nodeAttributes.hasAttribute(nodeName, CHARTLISTATTR)) {
+			chartList = new ArrayList<String>();
+		} else {
+			chartList = nodeAttributes.getListAttribute(nodeName, CHARTLISTATTR);
+		}
+		int nCharts = chartList.size();
+
+		// Create the new chart attribute
+		String newChartAttribute = String.format(CHARTATTR, command, nCharts);
+		Map<String,String> argMap = ValueUtils.serializeArgMap(args);
+		nodeAttributes.setMapAttribute(nodeName, newChartAttribute, argMap);
+
+		// Add it to the list
+		chartList.add(newChartAttribute);
+
+		// Save the updated list
+		nodeAttributes.setListAttribute(nodeName, CHARTLISTATTR, chartList);
+		nodeAttributes.setUserVisible(CHARTATTR, false);
+		nodeAttributes.setUserVisible(newChartAttribute, false);
+	}
+
+	private void clearCharts(CyNode node) {
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		String nodeName = node.getIdentifier();
+		if (nodeAttributes.hasAttribute(nodeName, CHARTLISTATTR)) {
+			List<String>chartList = nodeAttributes.getListAttribute(nodeName, CHARTLISTATTR);
+			for (String chartAttr: chartList) {
+				nodeAttributes.deleteAttribute(nodeName, chartAttr);
+			}
+			nodeAttributes.deleteAttribute(nodeName, CHARTLISTATTR);
+		}
+	}
+
+	/**************************************************************************************
+ 	 *                  Methods for special command handling                              *
+	 *************************************************************************************/
 	private CyNetwork getNetwork(String command, Map<String, Object> args) throws CyCommandException {
 		String netName = getArg(command, NodeChartCommandHandler.NETWORK, args);
 		if (netName == null || netName.equals(NodeChartCommandHandler.CURRENT))
