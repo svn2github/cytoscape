@@ -1,3 +1,34 @@
+/*
+This file is part of Cytoscape Web.
+Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+The Cytoscape Consortium is:
+- Agilent Technologies
+- Institut Pasteur
+- Institute for Systems Biology
+- Memorial Sloan-Kettering Cancer Center
+- National Center for Integrative Biomedical Informatics
+- Unilever
+- University of California San Diego
+- University of California San Francisco
+- University of Toronto
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+*/
+
 package gbeb.view.operator.router
 {
 	import flare.util.Shapes;
@@ -29,7 +60,14 @@ package gbeb.view.operator.router
 		private var majorityWeight:Number;
 		private var angleArrayDirectionIdx:int = -1;
 		
-		//add getters and setters
+		// ========[ CONSTRUCTOR ]==================================================================
+		/**
+		 * This shape class is created to act as storage and abstraction for the GBEB router. It should never be 
+		 * implemented for other purposes.
+		 * 
+		 * Shape keeps a list of the data edges that passes through it.
+		 * Shapes can be combined with other Shapes to give a new Shape.
+		 * Shape calculate the majority angle using Kernel Density Estimator  */
 		
 		public function Shape():void
 		{
@@ -39,11 +77,12 @@ package gbeb.view.operator.router
 			storedGrids = new Array();		
 		}
 		
+		// ========[ PUBLIC METHODS ]===============================================================
 		
-		// Returns the general direction of the edges in this particular shape. x-axis = 0 degrees. Increases Counterclockwise.  
-		// I am using a modified version of kernel density estimator with bandwidth = 3 degrees
-		// This function ought to be called whenever the shape is merged 
-		// TODO: separate KDE as another function
+		/** Returns the general direction of the edges in this particular shape by calculation using Kernel Density Estimator 
+		 * of bandwidth of 3 degrees. This function ought to be called whenever Shapes are merged. 
+		 * Positve x-axis = 0 degrees. Angle increases Counterclockwise.*/
+		
 		public function computeDirection():Number
 		{	//initialising all the angles in the array to zero. 
 			var i:int = 0, j:int = 0;
@@ -76,12 +115,13 @@ package gbeb.view.operator.router
 				angleArray[((boxNo + 2 > angleArray.length - 1) ? 1 : boxNo +2)] += 15;	
 			}
 			
-			for (i = 0; i < angleArray.length; i++)
+			/*for (i = 0; i < angleArray.length; i++)
 			{
-				//trace("Shape " + gridIndex[0] + " : angleArray: " + i, angleArray[i]);
-			}
+				trace("Shape " + gridIndex[0] + " : angleArray: " + i, angleArray[i]);
+			} */ //debug
 			
-			 majorityWeight = storedDataEdges.length * 100 * majorityPercentage; //for a directon to be the majority direction. It's group culmulative must be larger than this.  
+			//for a directon to be the majority direction. It's group culmulative must be larger than this. 
+			 majorityWeight = storedDataEdges.length * 100 * majorityPercentage;  
 			 
 			//adds up the density for each angle, across a range of 15 degrees.  
 			for (i = 2; i < angleGroupWeightArray.length + 2; i++)
@@ -104,60 +144,27 @@ package gbeb.view.operator.router
 				direction = angleArrayDirectionIdx * bandwidth; 
 				//trace("Shape " + gridIndex[0] + " :Direction " + direction); // should shift by 1.5 to get middle of bandwidth, but I dont think this level of accuracy is necessary
 				return direction; 
-			} 
-				
+			} 		
 			return -1;
 		}
 		
-				//return the polarCoor of an Edge Sprite with a max diff of 180 degrees
-				private function getPolarCoor180(e:EdgeSprite):Number
-				{ 
-					var angle:Number = Math.atan2 ((e.y2 - e.y1), (e.x2 - e.x1) );
-					angle = Math.round(angle / Math.PI * 180); //working in degrees	
-					angle = (angle < 0 ? 0 - angle : 180 - angle);
-					//trace("Shape: getPolar: " + e.source.data["name"] + " to " + e.target.data["name"] + " | angle = " + angle);
-					return angle; 
-				}
+		/**adds controlPoint to meshEdge of a shape. 
+		 * This function is called x times if the dataEdge cuts across x number of shapes. */
 		
-				//return the polarCoor of an Edge Sprite with a max diff of 90 degrees
-				private function getPolarCoor90(e:EdgeSprite):Number
-				{ 
-					var angle:Number = Math.atan2 ((e.y2 - e.y1), (e.x2 - e.x1) );
-					angle = Math.round(angle / Math.PI * 180); //working in degrees
-					angle = ( angle < 0 ? angle + 180 : angle); // inverts the direction for -ve regions
-					//angle = ( angle > 90 ? 180 - angle : angle); // gets the acute angle
-					return angle;
-				}
-		
-		//adds controlPoint to meshEdge of a shape. This function is called x times if the dataEdge cuts across x number of shapes. 
 		public function addControlPoint(angleResolution:int = 15):void {
 			var intersectionPointsArray:Array = new Array();
 			var intersectionPoint:Point;
 			var cp:Point; 
 			var dataEdgeDirection:int;
 			var gradient:Number = -1 / Math.tan((this.direction / 180) * Math.PI);
-			
 			var a:Point, b:Point; //a,b stores the end points of the meshEdge of each shape
-			var e:Point, f:Point; //e,f stores the end points of the each dataEdge					
-			
-			a = new Point(meshEdge.x1, meshEdge.y1);
-			b = new Point(meshEdge.x2, meshEdge.y2);
-			
+			var e:Point, f:Point; //e,f stores the end points of the each dataEdge		
 			var edge:EdgeSprite;
 			
+			a = new Point(meshEdge.x1, meshEdge.y1);
+			b = new Point(meshEdge.x2, meshEdge.y2);	
+			
 			for each (edge in storedDataEdges) {
-				
-				/*// Not necessary anymore with the new bundling technique
-				//To ensure that all CP stay on the meshEdge
-				dataEdgeDirection = getPolarCoor180(edge); 
-				if( this.direction < 16)
-				{
-				 if (dataEdgeDirection > 164 && this.direction + dataEdgeDirection < 180) { continue; }
-				} else if (this.direction > 164) 
-				{
-					if (dataEdgeDirection < 16 && this.direction + dataEdgeDirection < 180) { continue; }
-				}
-				else if(Math.abs(dataEdgeDirection - this.direction) > angleResolution) { continue; }  */
 				
 				e = new Point(edge.source.x, edge.source.y);
 				f = new Point(edge.target.x, edge.target.y);
@@ -176,18 +183,42 @@ package gbeb.view.operator.router
 			}
 			
 			for each (edge in storedDataEdges) {
-//				edge.lineWidth = edge.lineWidth /2 ; //lower width gives better visual quality
-//		        edge.shape = Shapes.BSPLINE; //Here to change curve type
-//				edge.lineAlpha = 0.5;
+				//				edge.lineWidth = edge.lineWidth /2 ; //lower width gives better visual quality
+				//		    edge.shape = Shapes.BSPLINE; //Here to change curve type
+				//				edge.lineAlpha = 0.5;
 				var ctrl:Array = edge.props.$controlPointsArray;
 				var ctrlgradient:Array = edge.props.$CPGradientArray; //used to store the gradient of each control point
 				if (ctrl == null) edge.props.$controlPointsArray = ctrl = [];
 				if (ctrlgradient == null) edge.props.$CPGradientArray = ctrlgradient = [];
-
+				
 				ctrl.push(cp);
 				ctrlgradient.push(gradient);  //trace(edge.source.data["name"], gradient);
 			}
 		}
+		
+		// ========[ PRIVATE METHODS ]==============================================================
+		
+		//return the polarCoor of an Edge Sprite with a max diff of 180 degrees
+		private function getPolarCoor180(e:EdgeSprite):Number
+		{ 
+			var angle:Number = Math.atan2 ((e.y2 - e.y1), (e.x2 - e.x1) );
+			angle = Math.round(angle / Math.PI * 180); //working in degrees	
+			angle = (angle < 0 ? 0 - angle : 180 - angle);
+			//trace("Shape: getPolar: " + e.source.data["name"] + " to " + e.target.data["name"] + " | angle = " + angle);
+			return angle; 
+		}
+
+		//return the polarCoor of an Edge Sprite with a max diff of 90 degrees
+		private function getPolarCoor90(e:EdgeSprite):Number
+		{ 
+			var angle:Number = Math.atan2 ((e.y2 - e.y1), (e.x2 - e.x1) );
+			angle = Math.round(angle / Math.PI * 180); //working in degrees
+			angle = ( angle < 0 ? angle + 180 : angle); // inverts the direction for -ve regions
+			//angle = ( angle > 90 ? 180 - angle : angle); // gets the acute angle
+			return angle;
+		}
+		
+		
 		
 	}//end of class
 }

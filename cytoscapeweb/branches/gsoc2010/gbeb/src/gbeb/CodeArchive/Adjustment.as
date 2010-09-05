@@ -1,4 +1,4 @@
-package gbeb.view
+package gbeb.CodeArchive
 {
 	import flash.display.MovieClip;
 	import flash.display.Sprite;

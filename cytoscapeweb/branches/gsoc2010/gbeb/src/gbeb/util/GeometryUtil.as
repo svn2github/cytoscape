@@ -48,8 +48,7 @@ package gbeb.util
 		// ========[ CONSTRUCTOR ]==================================================================
 		
 		/**
-		 * This constructor will throw an error, as this is an abstract class. 
-		 */
+		 * This constructor will throw an error, as this is an abstract class. */
 		
 		public function GeometryUtil()
 		{
@@ -63,8 +62,7 @@ package gbeb.util
 		 * This function takes in 4 points, AB of line 1 and EF of line 2 and check if the lines intersect. It returns the intersection
 		 * point if the lines intersect and null otherwise. Checks for intersection of Segment if as_seg is true.
 		 * 
-		 * Source: http://keith-hair.net/blog/2008/08/04/find-intersection-point-of-two-lines-in-as3
-		 */
+		 * Source: http://keith-hair.net/blog/2008/08/04/find-intersection-point-of-two-lines-in-as3*/
 
 		public static function lineIntersectLine(A:Point,B:Point,E:Point,F:Point,as_seg:Boolean=true):Point {
 			var ip:Point;
@@ -131,8 +129,7 @@ package gbeb.util
 
 	
 		/**
-		 * This function uses accepts and array of 2D points and return the geometric center of all the points
-		 */
+		 * This function uses accepts and array of 2D points and return the geometric center of all the points*/
 
 		public static function findCentroidFromPoints(points:Array):Point
 		{
@@ -153,8 +150,7 @@ package gbeb.util
 		 * This function takes in 2 lines segment as 4 points, Line1 - AB | Line 2 ~ EF and returns the angle between them.
 		 * Uses the idea of a dot product of vectors. Note the lines are directed, meaning it starts from A and end at B
 		 * 
-		 * Coded with reference to http://www.kynd.info/library/mathandphysics/dotProduct_01/
-		 */
+		 * Coded with reference to http://www.kynd.info/library/mathandphysics/dotProduct_01/*/
 		
 		public static function getAnglesFromLines(A:Point, B:Point, E:Point, F:Point):Number
 		{
@@ -173,8 +169,7 @@ package gbeb.util
 		 * This work is done with reference to:
 		 * http://people.revoledu.com/kardi/tutorial/kMean/NumericalExample.htm 
 		 * http://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set
-		 * http://en.wikipedia.org/wiki/K-means_clustering
-		 */
+		 * http://en.wikipedia.org/wiki/K-means_clustering */
 		
 		public static function kmeans(points:Array):Array
 		{ 
@@ -225,6 +220,8 @@ package gbeb.util
 			} while(!clusteringComplete(centroids, prevCentroids))
 			return clusters;
 		}
+		
+		// ========[ PRIVATE METHODS ]==============================================================
 					
 		//This function uses a weaker condition, if Centroids.before = Centroid.after to check for clustering status. It is 
 		//originally recommended to use check if Clusters.before and the Clusters.after after each iteration of the while 

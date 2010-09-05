@@ -1,4 +1,4 @@
-package
+package gbeb.CodeArchive
 {
 	import com.degrafa.geometry.splines.BezierSpline;
 	

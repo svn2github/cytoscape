@@ -203,3 +203,83 @@ public static function changeToDerivedPoints(e:EdgeSprite):void
 			// Close the loop - not necessarys
 			//g.curveTo(controlPoints[0].x,controlPoints[0].y,startX,startY);
 }
+
+
+
+//Edge Bunderer
+
+
+private function addControlPoints(e:EdgeSprite, isClone:Boolean = false):void
+{	
+	var props:Object = e.props;
+	if (props == null) return;
+	
+	if (e.points == null) e.points = [];
+	
+	for each (var p:Point in props.$controlPointsArray)
+	{
+		if (p == null) continue;
+		e.points.push(p.x);
+		e.points.push(p.y);
+	}
+	
+	if (isClone) trace("BundleRouter: Adding CP to clone!");
+}	
+
+private function strightLineSegRenderer(e:EdgeSprite):void
+{			
+	var g:Graphics = e.graphics;
+	var s:Point = new Point(e.source.x, e.source.y); 
+	var t:Point = new Point(e.target.x, e.target.y);
+	var tempPoint:Point;
+	var dPoint:Point; //derived point
+	var stDist:Number = Point.distance(s,t); //Distance between the source and target nodes
+	
+	var ctrl:Array = e.props.$controlPointsArray;
+	var ctrlgradient:Array = e.props.$CPGradientArray; //used to store the gradient of each control point
+	
+	if(ctrl == null || ctrlgradient == null) return;
+	//if(ctrl.length != ctrlgradient.length) trace("BundleRenderer: Warning! Length of ctrl and ctrlGradient is not the same!");
+	g.clear();
+	//g.beginFill(e.lineColor, e.lineAlpha);
+	g.lineStyle(e.lineWidth, e.lineColor, e.lineAlpha);
+	g.moveTo(s.x, s.y)
+	
+	//testing special case
+	if (ctrl.length > 0 )
+	{				
+		ctrl.push(t);
+		t = ctrl[1]; 
+		//g.curveTo(ctrl[0].x, ctrl[0].y, e.target.x, e.target.y);
+		for(var i:int = 0; i < ctrl.length - 1; i++)
+		{
+			tempPoint = new Point(ctrl[i].x, ctrl[i].y);
+			//if CP is too close to the source or target nodes)
+			if( Point.distance(tempPoint , s) < 3
+				|| Point.distance(tempPoint, t) < 3 )
+			{
+				g.lineTo(tempPoint.x, tempPoint.y);
+				g.lineTo(t.x, t.y);
+				trace("BundleRouter: Distance Between CP and Nodes is too short!");
+				if(Math.abs(t.x - e.target.x) < 0.5 && Math.abs(t.y - e.target.y) < 0.5)
+				{
+					
+					break;
+				} else {
+					s = ctrl[i+1]; t = ctrl[i+2];
+					continue;
+				}
+			} 
+			
+			var ratio:Number = Point.distance(s, ctrl[i]) / Point.distance(s, ctrl[i+1]);
+			ratio = ( ratio < 0.3 ? 0.3 : ratio); ratio = ( ratio > 0.7 ? 0.7 : ratio);
+			
+			dPoint = GeometryUtil.derivePoint(s, ctrl[i], t, ratio);
+			g.curveTo(dPoint.x, dPoint.y, t.x, t.y);
+			s = ctrl[i]; t = ctrl[i+1];
+		}
+		
+	} else {
+		//g.lineTo(e.target.x, e.target.y);
+	}
+}

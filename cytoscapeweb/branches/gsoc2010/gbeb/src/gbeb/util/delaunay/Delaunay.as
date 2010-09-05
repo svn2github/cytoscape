@@ -253,6 +253,8 @@ package gbeb.util.delaunay
 			return v;
 		}
 		
+		// ========[ PRIVATE METHODS ]==============================================================
+		
 		//Return TRUE if a point (xp,yp) is inside the circumcircle made up of the points (x1,y1), (x2,y2), (x3,y3)
 		//The circumcircle centre is returned in (xc,yc) and the radius r. NOTE: A point on the edge is inside the circumcircle
 		private static function CircumCircle(xp:Number, yp:Number, x1:Number, y1:Number, x2:Number, y2:Number, 

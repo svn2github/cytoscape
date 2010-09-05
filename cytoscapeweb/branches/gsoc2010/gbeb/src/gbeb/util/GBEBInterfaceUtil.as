@@ -14,11 +14,21 @@ package gbeb.util
 	 * This class is created as a static class to interface between GBEBRouter and the generic geometrical methods, which
 	 * allows the GBEBRouter code to be kept cleaner and generic methods available for re-using.
 	 */
+	
 	public class GBEBInterfaceUtil
 	{
+		// ========[ CONSTRUCTOR ]==================================================================
+		
+		/**
+		 * This constructor will throw an error, as this is an abstract class. 
+		 */
+		
 		public function GBEBInterfaceUtil()
 		{
+			throw new Error("This is an abstract class.");
 		}
+		
+		// ========[ PUBLIC METHODS ]===============================================================
 		
 		/**
 		 * This function uses Pythagoras' Theorem to calculate the distance between meshNode1 and meshNode2.
@@ -36,8 +46,8 @@ package gbeb.util
 		*/
 		
 		public static function drawDelaunay(tris:Array, points:Array, clip:DisplayObjectContainer, toLabel:Boolean = false) {
-			var p = new Sprite(); // for the points
-			var t = new Sprite(); // for the triangles
+			var p:Sprite = new Sprite(); // for the points
+			var t:Sprite = new Sprite(); // for the triangles
 			var TriCounter:int = 0;
 			
 			clip.addChild(t);
