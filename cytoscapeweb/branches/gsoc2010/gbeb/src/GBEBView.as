@@ -7,42 +7,43 @@ package
     import flare.data.DataSet;
     import flare.data.converters.GraphMLConverter;
     import flare.display.DirtySprite;
-    import flare.util.Displays;
+    import flare.scale.ScaleType;
     import flare.util.Shapes;
+    import flare.util.palette.ColorPalette;
     import flare.vis.Visualization;
-    import flare.vis.controls.DragControl;
     import flare.vis.data.Data;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     import flare.vis.data.Tree;
-    import flare.vis.data.render.EdgeRenderer;
     import flare.vis.events.SelectionEvent;
+    import flare.vis.operator.encoder.ColorEncoder;
     import flare.vis.operator.layout.CircleLayout;
-    import flare.vis.operator.layout.Layout;
+    import flare.vis.operator.layout.RadialTreeLayout;
     
     import flash.display.Sprite;
     import flash.display.StageAlign;
     import flash.display.StageScaleMode;
     import flash.events.Event;
     import flash.events.MouseEvent;
-    import flash.external.ExternalInterface;
     import flash.geom.Rectangle;
     import flash.net.URLLoader;
     import flash.net.URLRequest;
     import flash.text.TextFormat;
     import flash.utils.Dictionary;
     
-    import gbeb.util.converters.XGMMLConverter;
     import gbeb.view.components.ProgressBar;
-    import gbeb.view.layout.PresetLayout;
     import gbeb.view.operator.router.GBEBRouter;
     import gbeb.view.render.BundleRenderer;
     
 
     [SWF(width="800",height="600", backgroundColor="#ffffff", frameRate="30")]
     public class GBEBView extends Sprite
-    {
+    {  
+        //private var _url:String = "data/sample1.xml";
         private var _url:String = "http://flare.prefuse.org/data/flare.json.txt";
+				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare.json.txt";
+				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/flare_reduced.json.txt";
+				//private var _url:String ="/Users/Tomithy/Desktop/GSOC/Datasets/socialnet.xml";
         private var _vis:Visualization;
         private var _bar:ProgressBar;
         private var _bounds:Rectangle;
@@ -50,8 +51,6 @@ package
         private var _fmt:TextFormat = new TextFormat("_sans", 7);
         private var _focus:NodeSprite;
         private var _appBounds:Rectangle;
-        private var _layout:Layout;
-        private var _bundler:GBEBRouter;
 				
 		//testing Variables
 		private var addEventCounter:int = 0;
@@ -64,19 +63,18 @@ package
         protected function init():void {
             // create progress bar
             addChild(_bar = new ProgressBar());
-            var url:String = stage.loaderInfo.parameters["url"];
-            if (url == null) url = _url;
-            
+						  
             // load data file
-            var ldr:URLLoader = new URLLoader(new URLRequest(url));
+            // TODO: load Graphml:
+						
+            var ldr:URLLoader = new URLLoader(new URLRequest(_url));
             _bar.loadURL(
                 ldr,
                 function():void {
                     var obj:String = ldr.data as String;
-                    var data:Data = buildData(obj);
+                    var data:Data = buildData(obj); 
                     visualize(data);
                     _bar = null;
-					trace("GBEBView: Checking URL Loader!");
                 });
         }
         
@@ -85,49 +83,57 @@ package
             data.nodes.setProperties({
                 shape: Shapes.CIRCLE,
                 alpha: 0.2,
-                buttonMode: true
+                //visible: eq("childDegree",0), // only show leaf nodes
+                buttonMode: true              // show hand cursor
             });
             data.edges.setProperties({
                 lineWidth: 2,
-                lineColor: 0xff0b94b1,
+                lineColor: 0xff0055cc,
                 mouseEnabled: true,
-                buttonMode: true
+                buttonMode: true,
+//                visible: neq("source.parentNode","target.parentNode"),
+                renderer: BundleRenderer.instance
             });
  
             _vis = new Visualization(data);
+            //_vis.continuousUpdates = false;
             addChild(_vis);
- 
+ 						
             if (_bounds) resize(_bounds);
+						
+						
+						
+						
+						
  
-            if (_layout == null) {						
+                // place around circle by tree structure, radius mapped to depth
+//                _vis.operators.add(new CircleLayout(null, null, true));
+//                CircleLayout(_vis.operators.last).angleWidth = 2 * Math.PI;
+												
 //           	    _vis.operators.add(new RadialTreeLayout(80));
 //                RadialTreeLayout(_vis.operators.last).autoScale = true;				
 							
-				    _vis.operators.add(new CircleLayout());
-//				    _vis.operators.add(new NodeLinkTreeLayout("topToBottom", 50, 50, 50));
-            } else {
-                _vis.operators.add(_layout);
-            }
-           
-            _vis.controls.add( new DragControl(function(o:*):Boolean { return o is NodeSprite; }) );
-           
-                // ##############################################################            
-//                var bounds:Rectangle = new Rectangle(0, 0, width, height);
-//				_vis.operators.add(new ColorEncoder("index", "edges", "lineColour"))
-//				_vis.operators.add(new Labeler("data.name"));
-                trace("GBEBView: how many times GBEBView called the GBEBRouter? " + addEventCounter++);
-                // ############################################################## 
+				_vis.operators.add(new CircleLayout());
 				
-				var t:Transitioner = _vis.update(0.1);
-				t.addEventListener(TransitionEvent.END, function(evt:TransitionEvent):void {
-				   centerGraph(_vis);
-				   
-				   // bundle edges to route along the tree structure
-//				   var bundler:BundledEdgeRouter = new BundledEdgeRouter(0.95);
-//                   _vis.operators.add(bundler);
-//                   bundler.operate();
-				});
-				t.play();
+				//_vis.operators.add(new NodeLinkTreeLayout("topToBottom", 50, 50, 50));
+							
+							
+                // set the edge alpha values
+                // longer edge, lighter alpha: 1/(2*numCtrlPoints)
+//                _vis.operators.add(new PropertyEncoder({ alpha: edgeAlpha }, Data.EDGES));
+           
+                // TODO: replace by GBEB Router:
+                // ##############################################################            
+                // bundle edges to route along the tree structure
+                //_vis.operators.add(new BundledEdgeRouter(0.95));
+                
+                //var bounds:Rectangle = new Rectangle(0, 0, width, height);
+								//_vis.operators.add(new ColorEncoder("index", "edges", "lineColour"))
+//				_vis.operators.add(new Labeler("data.name"));
+                _vis.operators.add(new GBEBRouter(_bounds, 30 , 0.95));
+                trace("GBEBView: No. of times View calls router: " + addEventCounter++);
+                // ############################################################## 
+				_vis.update();
 				 
                 // show all dependencies on single-click
 //                var linkType:int = NodeSprite.OUT_LINKS;
@@ -182,11 +188,12 @@ package
         /** Remove highlight from a node and connected edges/nodes */
         private function unhighlight(n:*):void
         {
-            var node:NodeSprite = n is NodeSprite ? NodeSprite(n) : SelectionEvent(n).node;
+            var node:NodeSprite = n is NodeSprite ?
+                NodeSprite(n) : SelectionEvent(n).node;
             // set everything back to normal
             node.setEdgeProperties({
-                alpha: 0.8,
-                lineColor: 0xff0b94b1
+                alpha: edgeAlpha,
+                lineColor: 0xff0055cc
             }, NodeSprite.GRAPH_LINKS);
         }
         
@@ -236,13 +243,6 @@ package
         
         private function onStageAdd(evt:Event):void {
             removeEventListener(Event.ADDED_TO_STAGE, onStageAdd);
-            
-            try {
-                ExternalInterface.addCallback("bundleEdges", bundleEdges);
-            } catch(err:Error) {
-                trace("Error [addFunction]: " + err);
-            }
-            
             initStage();
             init();
             onResize();
@@ -271,163 +271,84 @@ package
         /**
          * Creates the visualized data.
          */
-        private function buildData(network:String):Data
+        public static function buildData(network:String):Data
         {
             var data:Data;
             var tree:Tree;
             var xml:XML = new XML(network as String);
             
-            try {
-                if (xml != null && xml.name() != null) {
-                    var isGraphml:Boolean = xml.name().localName === "graphml";
-                            
-                    if (isGraphml) {
-                        // convert from GraphML
-                        var ds:DataSet = new GraphMLConverter().parse(xml);
-                        data = Data.fromDataSet(ds);
-                    } else {
-                        // XGMML:
-                        var xgmmlConverter:XGMMLConverter = new XGMMLConverter();
-                        ds = xgmmlConverter.parse(xml);
-                        data = Data.fromDataSet(ds)
-                        
-                        var points:Object = xgmmlConverter.points;
-                        if (points != null) {
-                            _layout = new PresetLayout(points);
+            if (xml != null && xml.name() != null) {
+                // convert from GraphML
+                var ds:DataSet = new GraphMLConverter().parse(xml);
+                data = Data.fromDataSet(ds);
+                tree = data.tree;
+            } else {
+                // build from tuples
+                var tuples:Array = JSON.decode(network) as Array;
+                data = new Data();
+                tree = new Tree();
+                tree.root = data.addNode({name:"flare", size:0});
+                var map:Object = {};
+                map.flare = tree.root;
+                
+                var t:Object, u:NodeSprite, v:NodeSprite;
+                var path:Array, p:String, pp:String, i:uint;
+                
+                // build data set and tree edges
+                tuples.sortOn("name");
+                for each (t in tuples) {
+                    path = String(t.name).split(".");
+                    for (i=0, p=""; i<path.length-1; ++i) {
+                        pp = p;
+                        p += (i?".":"") + path[i];
+                        if (!map[p]) {
+                            u = data.addNode({name:p, size:0});
+                            tree.addChild(map[pp], u);
+                            map[p] = u;
                         }
                     }
-                    
-                    tree = data.tree;
-                    
-                } else {
-                    // build from tuples
-                    var tuples:Array = JSON.decode(network) as Array;
-                    data = new Data();
-                    tree = new Tree();
-                    tree.root = data.addNode({name:"flare", size:0});
-                    var map:Object = {};
-                    map.flare = tree.root;
-                    
-                    var t:Object, u:NodeSprite, v:NodeSprite;
-                    var path:Array, p:String, pp:String, i:uint;
-                    
-                    // build data set and tree edges
-                    tuples.sortOn("name");
-                    for each (t in tuples) {
-                        path = String(t.name).split(".");
-                        for (i=0, p=""; i<path.length-1; ++i) {
-                            pp = p;
-                            p += (i?".":"") + path[i];
-                            if (!map[p]) {
-                                u = data.addNode({name:p, size:0});
-                                tree.addChild(map[pp], u);
-                                map[p] = u;
-                            }
-                        }
-                        t["package"] = p;
-                        u = data.addNode(t);
-                        tree.addChild(map[p], u);
-                        map[t.name] = u;
-                    }
-                    
-                    // create graph links
-                    for each (t in tuples) {
-                        u = map[t.name];
-                        
-                        var count:int = 0;
-                        for each (var name:String in t.imports) {
-                            v = map[name];
-                            if (v && count%4 === 0) data.addEdgeFor(u, v);
-                            else trace ("Missing node: "+name);
-                            count++;
-                        }
-                    }
-                    
-                    // sort the list of children alphabetically by name
-                    for each (u in tree.nodes) {
-                        u.sortEdgesBy(NodeSprite.CHILD_LINKS, "target.data.name");
-                    }
-                    
-                    data.tree = tree;
+                    t["package"] = p;
+                    u = data.addNode(t);
+                    tree.addChild(map[p], u);
+                    map[t.name] = u;
                 }
                 
-                // DEBUG ******
-                for each (var e:EdgeSprite in data.edges) {
-                	e.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-                		var clicked:EdgeSprite = evt.target as EdgeSprite;
-                		trace("CLICK >> " + clicked.source.data.name + " - " + clicked.target.data.name);
-                        data.edges.setProperty("lineColor", 0xff0b94b1);
-                        data.edges.setProperty("props.$debug", false);
-                        clicked.lineColor = 0xffff0000;
-                        clicked.props.$debug = true;
-                	});
+                // create graph links
+                for each (t in tuples) {
+                    u = map[t.name];
+                    
+                    var count:int = 0;
+                    for each (var name:String in t.imports) {
+                        v = map[name];
+                        if (v && count%4 === 0) data.addEdgeFor(u, v);
+                        else trace ("Missing node: "+name);
+                        count++;
+                    }
                 }
-                // ************
-            } catch (err:Error) {
-                trace(err);
-                throw err;
+                
+                // sort the list of children alphabetically by name
+                for each (u in tree.nodes) {
+                    u.sortEdgesBy(NodeSprite.CHILD_LINKS, "target.data.name");
+                }
+                
+                data.tree = tree;
             }
+            
+            // DEBUG ******
+            for each (var e:EdgeSprite in data.edges) {
+            	e.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
+            		var clicked:EdgeSprite = evt.target as EdgeSprite;
+            		trace("CLICK >> " + clicked.source.data.name + " - " + clicked.target.data.name);
+//                    trace("CLICK >> " + clicked.source.data.id + " - " + clicked.target.data.id);
+                    data.edges.setProperty("lineColor", clicked.lineColor);
+                    data.edges.setProperty("props.$debug", false);
+                    clicked.lineColor = 0xffff0000;
+                    clicked.props.$debug = true;
+            	});
+            }
+            // ************
             
             return data;
-        }
-        
-        private function bundleEdges(value:Boolean):void {
-            if (value === true) {
-                _bundler = new GBEBRouter(getRealBounds(_vis.data), 30 , 0.95);
-                _vis.operators.add(_bundler);
-                _vis.data.edges.setProperty("renderer", BundleRenderer.instance);
-                _bundler.operate();
-            } else if (_bundler != null) {
-                _bundler.enabled = false;
-                _vis.operators.remove(_bundler);
-                _vis.data.edges.setProperty("shape", Shapes.LINE);
-                _vis.data.edges.setProperty("renderer", EdgeRenderer.instance);
-            }
-        }
-        
-        private function centerGraph(vis:Visualization):void {
-            var b:Rectangle = getRealBounds(vis.data);
-            
-            if (b != null && b.width > 0 && b.height > 0) {
-                // The new coordinates:
-                var newX:Number = (stage.stageWidth - b.width) / 2;
-                var newY:Number = (stage.stageHeight - b.height) / 2;
-                
-                // The amount to move, considering the new coordinates and the current position:
-                var panX:Number = newX - b.x;
-                var panY:Number = newY - b.y;
-                
-                Displays.panBy(vis, panX, panY);
-            }
-        }
-        
-        private static function getRealBounds(data:Data):Rectangle {
-
-            var bounds:Rectangle = new Rectangle();
-            
-            if (data != null && data.nodes.length > 0) {
-                var minX:Number = Number.POSITIVE_INFINITY, minY:Number = Number.POSITIVE_INFINITY;
-                var maxX:Number = Number.NEGATIVE_INFINITY, maxY:Number = Number.NEGATIVE_INFINITY;
-    
-                // First, consider the NODES bounds:
-                for each (var n:NodeSprite in data.nodes) {
-                    // The node size (its shape must have the same height and width; e.g. a circle)
-                    var ns:Number = n.height;
-                    // Verify MIN and MAX x/y again:
-                    minX = Math.min(minX, (n.x - ns/2));
-                    minY = Math.min(minY, (n.y - ns/2));
-                    maxX = Math.max(maxX, (n.x + ns/2));
-                    maxY = Math.max(maxY, (n.y + ns/2));
-                }
-                
-                const PAD:Number = 2;
-                bounds.x = minX - PAD;
-                bounds.y = minY - PAD;
-                bounds.width = maxX - bounds.x + PAD;
-                bounds.height = maxY - bounds.y + PAD;
-            }
-            
-            return bounds;
         }
         
     } // end of class DependencyGraph
