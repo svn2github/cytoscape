@@ -1,0 +1,8 @@
+nodecharts clear nodelist="all"
+nodecharts stripe node="YCL067C" labellist="A,B,C,D" valuelist="1.0,2.0,0.5,5" colorlist="#FF0000,#00FF00,#0000FF,#0000FF80"
+nodecharts stripe node="YKL101W" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1,1.5"
+nodecharts stripe node="YHR084W" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1,1.5" colorlist="random"
+nodecharts stripe node="YDR461W" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1,1.5" colorlist="rainbow"
+nodecharts stripe node="YFL026W" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1,1.5" colorlist="modulated"
+nodecharts stripe node="YGL008C" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1,1.5" colorlist="contrasting"
+nodecharts stripe node="YBR112C" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1,1.5" 
