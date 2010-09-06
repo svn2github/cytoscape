@@ -246,8 +246,13 @@ public class ValueUtils {
 			return generateModulatedRainbowColors(nColors);
 		else if (input.equals(CONTRASTING))
 			return generateContrastingColors(nColors);
-		else
-			throw new CyCommandException("unknown color keyword: '"+input+"'");
+		else {
+			String [] colorArray = null;
+			colorArray[0] = input;
+			List<Color> colors = parseColorList(colorArray);
+			return colors;
+			//throw new CyCommandException("unknown color keyword: '"+input+"'");
+		}
 	}
 
 	private static List<Color> parseColorList(String[] inputArray) throws CyCommandException {
