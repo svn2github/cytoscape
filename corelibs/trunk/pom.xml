@@ -1,10 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                               http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>cytoscape.corelibs</groupId>
   <artifactId>parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.8.0-beta1</version>
+  <version>2.8.0-beta2-SNAPSHOT</version>
   <name>Cytoscape Core Libraries Parent POM</name>
 
   <properties>
@@ -126,10 +126,9 @@
   </distributionManagement>
 
   <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/corelibs/tags/parent-2.8.0-beta1</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/corelibs/tags/parent-2.8.0-beta1</developerConnection>
-    <tag>HEAD</tag>
-    <url>http://chianti.ucsd.edu/svn/corelibs/tags/parent-2.8.0-beta1</url>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/corelibs/trunk</connection>
+    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/corelibs/trunk</developerConnection>
+    <url>http://chianti.ucsd.edu/svn/corelibs/trunk</url>
   </scm>
 
 
