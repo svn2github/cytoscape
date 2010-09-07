@@ -114,7 +114,8 @@ public class PieChart implements NodeChartViewer {
 		for (int slice = 0; slice < nSlices; slice++) {
 			CustomGraphic[] cg = createSlice(bbox, arcStart, values.get(slice), labels.get(slice), colors.get(slice), view);
 			cgList.add(cg[0]);
-			labelList.add(cg[1]);
+			if (cg[1] != null)
+				labelList.add(cg[1]);
 			arcStart += values.get(slice).doubleValue();
 		}
 
@@ -141,6 +142,7 @@ public class PieChart implements NodeChartViewer {
 	private CustomGraphic[] createSlice(Rectangle2D bbox, double arcStart, Double arc, String label, Color color,
 	                                    CyNetworkView view) {
 		CustomGraphic[] vals = new CustomGraphic[2];
+
 		// System.out.println("Creating arc from "+arcStart+" to "+(arc.doubleValue()+arcStart)+" with color: "+color);
 		double x = bbox.getX();
 		double y = bbox.getY();
@@ -157,10 +159,17 @@ public class PieChart implements NodeChartViewer {
 
 		TextAlignment tAlign = getLabelAlignment(midpointAngle);
 		
-		// Now, create the label.  Put the label on the outer edge of the circle.
+		// create the label
+		Shape textShape = ViewUtils.getLabelShape(label, null, 0, 0, view);
+
+		// Now, position the label.  Put the label on the outer edge of the circle.
 		Point2D labelPosition = getLabelPosition(bbox, midpointAngle, 1.4);
 		// vals[1] = ViewUtils.getLabelCustomGraphic(label, null, 0, 0, labelPosition, tAlign, view);
-		Shape textShape = ViewUtils.getLabelShape(label, null, 0, 0, labelPosition, tAlign, 0.0, view);
+		textShape = ViewUtils.positionLabel(textShape, labelPosition, tAlign, 0.0, 0.0, 0.0);
+		if (textShape == null) {
+			vals[1] = null;
+			return vals;
+		}
 
 		// Draw a line between our label and the slice
 		labelPosition = getLabelPosition(bbox, midpointAngle, 1.0);

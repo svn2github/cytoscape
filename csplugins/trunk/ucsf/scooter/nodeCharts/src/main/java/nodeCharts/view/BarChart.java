@@ -109,6 +109,9 @@ public class BarChart implements NodeChartViewer {
 			max = -1.0 * min;
 		}
 
+		Rectangle2D [] barArray = new Rectangle2D[values.size()];
+		double maxY = 0.0;
+
 		for (int i = 0; i < values.size(); i++) {
 			double px1 = x + (i * slice);
 			double w = slice;
@@ -126,30 +129,32 @@ public class BarChart implements NodeChartViewer {
 		    	
 		    double h = (0.5 * height) * (val / max);
 		    
-			Rectangle2D drect = new Rectangle2D.Double(px1, py1, w, h);
+			barArray[i] = new Rectangle2D.Double(px1, py1, w, h);
 			// System.out.println ("Got rectangle from: " + px1 + "," + py1 + " of width " + w + " and height " + h);
+			maxY = Math.max(maxY, barArray[i].getMaxY());
 			
-			CustomGraphic c = new CustomGraphic(drect, pf);
+			CustomGraphic c = new CustomGraphic(barArray[i], pf);
 //			System.out.println("added custome graphic for line from " + drect.getP1() + " to " + .getP2());
 			cgList.add(c);
-			// Now, create the label.  We want to do this here so we can adjust the label for the slice
-			
+		}
+
+		// Now, create the labels.  We want to do this here so we can adjust the label for the slice
+		for (int i = 0; i < values.size(); i++) {
 			
 			// add labels
 			TextAlignment tAlign = TextAlignment.ALIGN_LEFT;
 			
 			// Now, create the label.  Put the label on the outer edge of the circle.
-			Point2D labelPosition = new Point2D.Double(drect.getCenterX(), drect.getMaxY());
+			Point2D labelPosition = new Point2D.Double(barArray[i].getCenterX(), maxY);
 			// vals[1] = ViewUtils.getLabelCustomGraphic(label, null, 0, 0, labelPosition, tAlign, view);
-			Shape textShape = ViewUtils.getLabelShape(labels.get(i), null, 0, 0, labelPosition, tAlign, 70.0, view);
+			Shape textShape = ViewUtils.getLabelShape(labels.get(i), null, 0, 0, view);
 
-			// Combine the shapes
-			Area textArea = new Area(textShape);
-//			textArea.add(new Area(labelLine));
-
+			double maxHeight = barArray[i].getWidth();
+			textShape = ViewUtils.positionLabel(textShape, labelPosition, tAlign, maxHeight, 0.0, 70.0);
+			if (textShape == null) continue;
 
 //			vals[1] = new CustomGraphic(textArea, new DefaultPaintFactory(Color.BLACK));
-			CustomGraphic c1  = new CustomGraphic(textArea, new DefaultPaintFactory(Color.BLACK));
+			CustomGraphic c1  = new CustomGraphic(textShape, new DefaultPaintFactory(Color.BLACK));
 			cgList.add(c1);
 
 		}

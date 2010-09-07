@@ -182,10 +182,7 @@ public class ViewUtils {
 
 	public static enum TextAlignment {ALIGN_LEFT, ALIGN_CENTER_TOP, ALIGN_RIGHT, ALIGN_CENTER_BOTTOM, ALIGN_MIDDLE};
 
-	public static Shape getLabelShape(String label, String fontName, int fontStyle, int fontSize,
-	                                  Point2D position, TextAlignment tAlign, double rotation, CyNetworkView view) {
-
-
+	public static Shape getLabelShape(String label, String fontName, int fontStyle, int fontSize, CyNetworkView view) {
 		if (fontName == null) fontName = DEFAULT_FONT;
 		if (fontStyle == 0) fontStyle = DEFAULT_STYLE;
 		if (fontSize == 0) fontSize = DEFAULT_SIZE;
@@ -196,13 +193,37 @@ public class ViewUtils {
 		Graphics2D g2d = (Graphics2D)canvas.getGraphics();
 		FontRenderContext frc = g2d.getFontRenderContext();
 		TextLayout tl = new TextLayout(label, font, frc);
-		Shape lShape = tl.getOutline(null);
+		return tl.getOutline(null);
+	}
+
+	public static Shape positionLabel(Shape lShape, Point2D position, TextAlignment tAlign, 
+	                                  double maxHeight, double maxWidth, double rotation) {
 
 		// System.out.println("  Label = "+label);
 
 		// Figure out how to move the text to center it on the bbox
-		double textWidth = lShape.getBounds2D().getMaxX() - lShape.getBounds2D().getMinX(); 
-		double textHeight = lShape.getBounds2D().getMaxY() - lShape.getBounds2D().getMinY();
+		double textWidth = lShape.getBounds2D().getWidth(); 
+		double textHeight = lShape.getBounds2D().getHeight();
+
+		// Before we go any further, scale the text, if necessary
+		if (maxHeight > 0.0 || maxWidth > 0.0) {
+			double scaleWidth = 1.0;
+			double scaleHeight = 1.0;
+			if (maxWidth > 0.0 && textWidth > maxWidth)
+				scaleWidth = maxWidth/textWidth * 0.9;
+			if (maxHeight > 0.0 && textHeight > maxHeight)
+				scaleHeight = maxHeight/textHeight * 0.9;
+
+			double scale = Math.min(scaleWidth, scaleHeight);
+
+			// We don't want to scale down too far.  If scale < 20% of the font size, skip the label
+			if (scale < 0.20)
+				return null;
+			System.out.println("scale = "+scale);
+			AffineTransform sTransform = new AffineTransform();
+			sTransform.scale(scale, scale);
+			lShape = sTransform.createTransformedShape(lShape);
+		}
 
 		// System.out.println("  Text size = ("+textWidth+","+textHeight+")");
 
