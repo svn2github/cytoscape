@@ -57,10 +57,10 @@ import cytoscape.view.CyNetworkView;
 
 // nodeChart imports
 import nodeCharts.view.NodeChartViewer;
+import nodeCharts.view.BarChart;
+import nodeCharts.view.LineChart;
 import nodeCharts.view.PieChart;
 import nodeCharts.view.StripeChart;
-import nodeCharts.view.LineChart;
-import nodeCharts.view.BarChart;
 import nodeCharts.view.ViewUtils;
 
 /**
@@ -90,10 +90,10 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 		viewerMap = new HashMap<String, NodeChartViewer>();
 
 		// Register each command
+		register(new BarChart());
+		register(new LineChart());
 		register(new PieChart());
 		register(new StripeChart());
-		register(new LineChart());
-		register(new BarChart());
 
 		// Register our built-in commands
 		addDescription(CLEAR, "Remove all charts from a node");

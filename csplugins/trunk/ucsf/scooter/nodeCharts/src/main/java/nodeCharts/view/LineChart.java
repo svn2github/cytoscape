@@ -65,10 +65,10 @@ public class LineChart implements NodeChartViewer {
 		double x = bbox.getX();
 		double y = bbox.getY() - 1;
 		
-		System.out.println("Node bounding box = " + bbox);
+		// System.out.println("Node bounding box = " + bbox);
 		// divide width into equal size segments
 		double slice = width / (values.size() - 1);
-		System.out.println("slice = " + slice);
+		// System.out.println("slice = " + slice);
 		double divisor = getDivisor(values, height);
 
 		double min = Float.MAX_VALUE;
@@ -76,7 +76,7 @@ public class LineChart implements NodeChartViewer {
 			min = Math.min(min, i);
 		}
 
-		System.out.println ("Divisor = " + divisor);
+		// System.out.println ("Divisor = " + divisor);
 		if (divisor == 0.0) {
 			// degenerate case -- a horizontal straight line
 			divisor = 1.0d;

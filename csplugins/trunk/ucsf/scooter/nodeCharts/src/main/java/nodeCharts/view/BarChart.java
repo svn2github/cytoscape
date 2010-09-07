@@ -88,7 +88,7 @@ public class BarChart implements NodeChartViewer {
 		
 		double yMid = y + (0.5 * height);	
 		
-		System.out.println("Node bounding box = " + bbox);
+		// System.out.println("Node bounding box = " + bbox);
 		// divide width into equal size segments
 		double slice = (width / values.size()) - (values.size() * separation) + separation;  // only have n-1 separators
 //		System.out.println("slice = " + slice);
@@ -128,7 +128,7 @@ public class BarChart implements NodeChartViewer {
 		    double h = (0.5 * height) * (val / max);
 		    
 			Rectangle2D drect = new Rectangle2D.Double(px1, py1, w, h);
-			System.out.println ("Got rectangle from: " + px1 + "," + py1 + " of width " + w + " and height " + h);
+			// System.out.println ("Got rectangle from: " + px1 + "," + py1 + " of width " + w + " and height " + h);
 			
 			CustomGraphic c = new CustomGraphic(drect, pf);
 //			System.out.println("added custome graphic for line from " + drect.getP1() + " to " + .getP2());
