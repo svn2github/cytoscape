@@ -46,8 +46,8 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>cytoscape:docs:zip:html</include>
-        <include>cytoscape:docs:zip:pdf</include>
+        <include>cytoscape.corelibs:docs:zip:html</include>
+        <include>cytoscape.corelibs:docs:zip:pdf</include>
       </includes>
       <unpack>true</unpack>
       <outputDirectory>docs</outputDirectory>

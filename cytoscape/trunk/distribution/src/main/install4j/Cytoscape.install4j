@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="4.2.8" transformSequenceNumber="2">
-  <directoryPresets config="../../../target/distribution-2.8.0-SNAPSHOT-cytoscape.dir" />
+  <directoryPresets config="../../../target/distribution-2.8.0-beta1-null.dir" />
   <application name="Cytoscape" distributionSourceDir="" applicationId="5211-3645-3154-2580" mediaDir="dist" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.version}_${compiler:sys.platform}" compression="6" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" keepModificationTimes="false" missingFilesStrategy="warn" shortName="Cytoscape" publisher="Cytoscape Consortium" publisherWeb="http://cytoscape.org" version="@version@" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="true" macSignature="????" installerName="" javaMinVersion="1.5.0" javaMaxVersion="" allowBetaVM="true" jdkMode="runtimeJre" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
@@ -22,7 +22,7 @@
       <mountPoint id="1" root="" location="" mode="755" />
     </mountPoints>
     <entries>
-      <dirEntry mountPoint="1" file="../../../target/distribution-2.8.0-SNAPSHOT-cytoscape.dir/distribution-2.8.0-SNAPSHOT" overwrite="4" shared="false" mode="755" uninstallMode="0" excludeSuffixes="" dirMode="777">
+      <dirEntry mountPoint="1" file="../../../target/distribution-2.8.0-beta1-null.dir/distribution-2.8.0-beta1" overwrite="4" shared="false" mode="755" uninstallMode="0" excludeSuffixes="" dirMode="777">
         <exclude />
       </dirEntry>
     </entries>
