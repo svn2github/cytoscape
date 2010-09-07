@@ -69,7 +69,10 @@ public class CyDataTableImpl implements CyDataTable {
 	// Unique ID.
 	private final long suid;
 
+	// name of the primary key column
 	private final String primaryKey;
+
+	// type of the primary key column
 	private final Class<?> primaryKeyType;
 
 	private final CyEventHelper eventHelper;
@@ -84,19 +87,24 @@ public class CyDataTableImpl implements CyDataTable {
 	 * @param pub
 	 *            DOCUMENT ME!
 	 */
-	public CyDataTableImpl(String title, String primaryKey, Class<?> primaryKeyType, 
+	public CyDataTableImpl(String title, String primaryKey, Class<?> pkType, 
 			boolean pub, final CyEventHelper eventHelper) {
 		this.title = title;
 		this.primaryKey = primaryKey;
-		this.primaryKeyType = primaryKeyType;
+		this.primaryKeyType = getClass(pkType);
 		this.pub = pub;
 		this.suid = SUIDFactory.getNextSUID();
 		this.eventHelper = eventHelper;
 		attributes = new HashMap<String, Map<Object, Object>>();
 		rows = new HashMap<Object, CyRow>();
 		types = new HashMap<String, Class<?>>();
-		types.put(primaryKey,primaryKeyType);
 		unique = new HashMap<String, Boolean>();
+
+		// Create the primary key column.  Do this explicitly
+		// so that we don't fire an event.
+		types.put(primaryKey, primaryKeyType);
+		attributes.put(primaryKey, new HashMap<Object, Object>());
+		unique.put(primaryKey, true);
 	}
 
 	/**
@@ -382,6 +390,8 @@ public class CyDataTableImpl implements CyDataTable {
 			return List.class;
 		else if (Map.class.isAssignableFrom(c))
 			return Map.class;
+		else if (Long.class.isAssignableFrom(c))
+			return Long.class;
 		else
 			throw new IllegalArgumentException("invalid class: " + c.getName());
 	}
