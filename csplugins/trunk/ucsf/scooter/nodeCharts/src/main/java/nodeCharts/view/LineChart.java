@@ -1,4 +1,4 @@
-package main.java.nodeCharts.view;
+package nodeCharts.view;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import main.java.nodeCharts.command.ValueUtils;
+import nodeCharts.command.ValueUtils;
 import cytoscape.CyNode;
 import cytoscape.command.CyCommandException;
 import cytoscape.render.stateful.CustomGraphic;

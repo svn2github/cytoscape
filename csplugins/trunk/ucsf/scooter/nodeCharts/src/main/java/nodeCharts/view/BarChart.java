@@ -1,4 +1,4 @@
-package main.java.nodeCharts.view;
+package nodeCharts.view;
 
 import giny.view.Position;
 
@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import main.java.nodeCharts.command.ValueUtils;
-import main.java.nodeCharts.view.ViewUtils.TextAlignment;
+import nodeCharts.command.ValueUtils;
+import nodeCharts.view.ViewUtils.TextAlignment;
 import cytoscape.CyNode;
 import cytoscape.command.CyCommandException;
 import cytoscape.render.stateful.CustomGraphic;
