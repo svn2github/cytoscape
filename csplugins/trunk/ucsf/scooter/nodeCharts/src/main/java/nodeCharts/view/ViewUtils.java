@@ -180,10 +180,10 @@ public class ViewUtils {
 	private static final int DEFAULT_STYLE=Font.PLAIN;
 	private static final int DEFAULT_SIZE=8;
 
-	public static enum TextAlignment {ALIGN_LEFT, ALIGN_CENTER_TOP, ALIGN_RIGHT, ALIGN_CENTER_BOTTOM};
+	public static enum TextAlignment {ALIGN_LEFT, ALIGN_CENTER_TOP, ALIGN_RIGHT, ALIGN_CENTER_BOTTOM, ALIGN_MIDDLE};
 
 	public static Shape getLabelShape(String label, String fontName, int fontStyle, int fontSize,
-	                                  Point2D position, TextAlignment tAlign, CyNetworkView view) {
+	                                  Point2D position, TextAlignment tAlign, double rotation, CyNetworkView view) {
 
 
 		if (fontName == null) fontName = DEFAULT_FONT;
@@ -233,6 +233,10 @@ public class ViewUtils {
 			textStartX = pointX;
 			textStartY = pointY + textHeight/2;
 			break;
+		case ALIGN_MIDDLE:
+			textStartX = pointX - textWidth/2;;
+			textStartY = pointY + textHeight/2;
+			break;
 		default:
 			// System.out.println("  Align = "+tAlign);
 		}
@@ -245,6 +249,8 @@ public class ViewUtils {
 		// Use the bounding box to create an Affine transform.  We may need to scale the font
 		// shape if things are too cramped, but not beneath some arbitrary minimum
 		AffineTransform trans = new AffineTransform();
+		if (rotation != 0.0)
+			trans.rotate(Math.toRadians(rotation), pointX, pointY);
 		trans.translate(textStartX, textStartY);
 
 		// System.out.println("  Transform: "+trans);

@@ -207,12 +207,16 @@ public class ValueUtils {
 		return result;
 	}
 
-	private static final String RANDOM = "random";
 	private static final String	CONTRASTING = "contrasting";
-	private static final String	RAINBOW = "rainbow";
+	private static final String	DOWN = "down:";
 	private static final String	MODULATED = "modulated";
+	private static final String	RAINBOW = "rainbow";
+	private static final String RANDOM = "random";
+	private static final String	UP = "up:";
 
-	public static List<Color> convertInputToColor(Object input, int nColors) throws CyCommandException {
+	public static List<Color> convertInputToColor(Object input, List<Double>values) throws CyCommandException {
+		int nColors = values.size();
+
 		if (input == null) {
 			// give the default: contrasting colors
 			return generateContrastingColors(nColors);
@@ -229,12 +233,40 @@ public class ValueUtils {
 			String inputString = (String) input;
 			// See if we have a csv
 			String [] colorArray = inputString.split(",");
-			if (colorArray.length > 1)
+			// Look for up/down special case
+			if (colorArray.length == 2 &&
+			    (colorArray[0].toLowerCase().startsWith(UP) ||
+			     colorArray[1].toLowerCase().startsWith(DOWN))) {
+				return parseUpDownColor(colorArray, values);
+				
+			} else if (colorArray.length > 1)
 				return parseColorList(colorArray);
 			else
 				return parseColorKeyword(inputString.trim(), nColors);
 		} else 
 			throw new CyCommandException("unknown type for color list");
+	}
+
+	private static List<Color> parseUpDownColor(String[] colorArray, List<Double>values) throws CyCommandException {
+		String [] colors = new String[2];
+		if (colorArray[0].toLowerCase().startsWith(UP)) {
+			colors[0] = colorArray[0].substring(UP.length());
+			colors[1] = colorArray[1].substring(DOWN.length());
+		} else {
+			colors[1] = colorArray[0].substring(DOWN.length());
+			colors[0] = colorArray[1].substring(UP.length());
+		}
+		List<Color> upDownColors = parseColorList(colors);
+		Color up = upDownColors.get(0);
+		Color down = upDownColors.get(1);
+		List<Color> results = new ArrayList<Color>(values.size());
+		for (Double v: values) {
+			if (v < 0.0) 
+				results.add(down);
+			else
+				results.add(up);
+		}
+		return results;
 	}
 
 	private static List<Color> parseColorKeyword(String input, int nColors) throws CyCommandException {

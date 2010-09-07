@@ -83,9 +83,7 @@ public class StripeChart implements NodeChartViewer {
 	public List<CustomGraphic> getCustomGraphics(Map<String, Object> args, List<Double> values, List<String> labels, CyNode node,
 			CyNetworkView view, Object position) throws CyCommandException {
 		// Get our colors
-		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS),
-				args.size());
-
+		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), values);
 
 		int nStripes = colors.size();
 		

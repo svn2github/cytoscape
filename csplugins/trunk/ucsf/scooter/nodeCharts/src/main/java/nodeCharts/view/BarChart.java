@@ -56,8 +56,7 @@ public class BarChart implements NodeChartViewer {
 			CyNetworkView view, Object position) throws CyCommandException {
 	
 		// Get our colors
-		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS),
-				labels.size());
+		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), values);
 		int separation = 0;
 		Object separationObj = args.get(SEPARATION);
 		if (separationObj instanceof String)
@@ -137,12 +136,12 @@ public class BarChart implements NodeChartViewer {
 			
 			
 			// add labels
-			TextAlignment tAlign = TextAlignment.ALIGN_CENTER_BOTTOM;
+			TextAlignment tAlign = TextAlignment.ALIGN_LEFT;
 			
 			// Now, create the label.  Put the label on the outer edge of the circle.
-			Point2D labelPosition = new Point2D.Double(bbox.getMaxX(), bbox.getMaxY());
+			Point2D labelPosition = new Point2D.Double(drect.getCenterX(), drect.getMaxY());
 			// vals[1] = ViewUtils.getLabelCustomGraphic(label, null, 0, 0, labelPosition, tAlign, view);
-			Shape textShape = ViewUtils.getLabelShape(labels.get(i), null, 0, 0, labelPosition, tAlign, view);
+			Shape textShape = ViewUtils.getLabelShape(labels.get(i), null, 0, 0, labelPosition, tAlign, 70.0, view);
 
 			// Combine the shapes
 			Area textArea = new Area(textShape);
@@ -151,7 +150,7 @@ public class BarChart implements NodeChartViewer {
 
 //			vals[1] = new CustomGraphic(textArea, new DefaultPaintFactory(Color.BLACK));
 			CustomGraphic c1  = new CustomGraphic(textArea, new DefaultPaintFactory(Color.BLACK));
-			cgList.add(c);
+			cgList.add(c1);
 
 		}
 		return cgList;

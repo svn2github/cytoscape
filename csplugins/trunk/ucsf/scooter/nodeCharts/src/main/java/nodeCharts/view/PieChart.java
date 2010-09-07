@@ -90,7 +90,7 @@ public class PieChart implements NodeChartViewer {
 	                                             CyNode node, CyNetworkView view, Object position) 
 	                                                                               throws CyCommandException {
 		// Get our colors
-		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), labels.size());
+		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), values);
 
 		// Convert our data from values to increments
 		values= convertData(values);
@@ -160,7 +160,7 @@ public class PieChart implements NodeChartViewer {
 		// Now, create the label.  Put the label on the outer edge of the circle.
 		Point2D labelPosition = getLabelPosition(bbox, midpointAngle, 1.4);
 		// vals[1] = ViewUtils.getLabelCustomGraphic(label, null, 0, 0, labelPosition, tAlign, view);
-		Shape textShape = ViewUtils.getLabelShape(label, null, 0, 0, labelPosition, tAlign, view);
+		Shape textShape = ViewUtils.getLabelShape(label, null, 0, 0, labelPosition, tAlign, 0.0, view);
 
 		// Draw a line between our label and the slice
 		labelPosition = getLabelPosition(bbox, midpointAngle, 1.0);
@@ -180,8 +180,8 @@ public class PieChart implements NodeChartViewer {
 	private Point2D getLabelPosition(Rectangle2D bbox, double angle, double scale) {
 		double midpoint = Math.toRadians(360.0-angle);
 		double length = bbox.getWidth()/2; // Assumes width = height!
-		double x = Math.cos(midpoint)*length*scale;
-		double y = Math.sin(midpoint)*length*scale;
+		double x = Math.cos(midpoint)*length*scale + (bbox.getX()+bbox.getWidth()/2);
+		double y = Math.sin(midpoint)*length*scale + (bbox.getY()+bbox.getHeight()/2);
 
 		// System.out.println("getLabelPosition: bbox = "+bbox+", midpoint = "+angle+" arcpoint = ("+x+","+y+")");
 

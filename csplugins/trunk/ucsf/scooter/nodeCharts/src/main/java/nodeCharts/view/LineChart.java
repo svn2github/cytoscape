@@ -45,8 +45,7 @@ public class LineChart implements NodeChartViewer {
 			CyNetworkView view, Object position) throws CyCommandException {
 		// Get our color
 		// Get our colors
-		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS),
-				labels.size());
+		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), values);
 
 		// Sanity check
 		if (labels.size() != values.size() || labels.size() != colors.size())
