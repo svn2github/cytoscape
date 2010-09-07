@@ -1,8 +1,11 @@
 package gbeb.util
 {
+	import flare.vis.data.EdgeSprite;
+	
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.geom.Point;
 	import flash.text.TextField;
 	
 	import gbeb.util.delaunay.ITriangle;
@@ -126,6 +129,26 @@ package gbeb.util
 			trace("Delaunay: Finished Conversion: convertToMeshEdges: " + meshEdgeArray.length + " edges have been created!");
 			return meshEdgeArray;
 		}
+						
+		//return the polarCoor of an Edge Sprite with a max diff of 180 degrees
+		public static function getPolarCoor180(e:EdgeSprite):Number
+		{ 
+			var angle:Number = Math.atan2 ((e.y2 - e.y1), (e.x2 - e.x1) );
+			angle = Math.round(angle / Math.PI * 180); //working in degrees	
+			angle = (angle < 0 ? 0 - angle : 180 - angle);
+			//trace("Shape: getPolar: " + e.source.data["name"] + " to " + e.target.data["name"] + " | angle = " + angle);
+			return angle; 
+		}		
+		
+		//return the polarCoor of an Edge Sprite
+		public static function getPolarCoor360(p1:Point, p2:Point):Number
+		{ 
+			var angle:Number = Math.atan2 ((p2.y - p1.y), (p2.x - p1.x) );
+			angle = Math.round(angle / Math.PI * 180) + 180; //working in degrees	
+			return angle; 
+		}	
+		
+		// ========[ PRIVATE METHODS ]==============================================================
 		
 		// Create an Edge given the points. This function prevents duplicate edge creation.
 		private static function generateEdge(sourceIdx:int, targetIdx:int, points:Array, meshNodes:Array, mapArray:Array, meshEdgeArray:Array):MeshEdge

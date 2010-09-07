@@ -283,3 +283,89 @@ private function strightLineSegRenderer(e:EdgeSprite):void
 		//g.lineTo(e.target.x, e.target.y);
 	}
 }
+
+
+//pathfinder
+
+private function removeSharpEdges(edge:EdgeSprite):void
+{	
+	var ctrl:Array = edge.props.$controlPointsArray;
+	var source:Point = new Point(edge.source.x, edge.source.y);
+	var target:Point = new Point(edge.target.x, edge.target.y);		 
+	const minAngle:Number = Math.PI / 2;
+	
+	if(ctrl.length < 1 ) return;
+	
+	var a:Point = new Point(400, 400);
+	var b:Point = new Point(400, 300);
+	var c:Point = new Point(500, 400);
+	
+	trace("TEST!!!: " + GeometryUtil.getAnglesFromLines(b, a, c, a));
+	
+	trace("Pathfinder: removeSharpEdges: " + edge.source.data["name"], edge.target.data["name"] + " cp.length: " + ctrl.length + ": ");
+	
+	var angles:Array = []; //stores the angle between 2 lines.
+	var prev:Point = source, next:Point = ( ctrl.length == 1 ? target : ctrl[1]);
+	var p:Point;
+	var minAngleInArray:Number = Number.MAX_VALUE; var minAngleIndex:int = -1;
+	
+	for (var i:int = 0; i < ctrl.length - 1; i++)
+	{
+		p = ctrl[i];
+		angles[i] = GeometryUtil.getAnglesFromLines(prev, p, p, next);
+		//angle = GeometryUtil.getAnglesFromLines(prev, p, p , next);
+		trace("Angle: " + angles[i]);
+		prev = p; 
+		if( i == ctrl.length - 2)
+		{
+			next = target;
+		} else {
+			next = ctrl[i+2];
+		}				
+	} 
+	
+	for (var i:int = 0; i < angles.length; i++)
+	{
+		if(angles[i] < minAngle)
+		{
+			ctrl.splice(i, 1); 
+			trace("Pathfinder: removeSharpEdges: " + edge.source.data["name"] + " | " + angles[i] + " spliced");
+		}
+	}
+	
+	/*do
+	{
+	var angles:Array = []; //stores the angle between 2 lines.
+	var prev:Point = source, next:Point = ( ctrl.length == 1 ? target : ctrl[1]);
+	var p:Point;
+	var minAngleInArray:Number = Number.MAX_VALUE; var minAngleIndex:int = -1;
+	
+	for (var i:int = 0; i < ctrl.length - 1; i++)
+	{
+	p = ctrl[i];
+	angles[i] = GeometryUtil.getAnglesFromLines(prev, p, p, next);
+	prev = p; 
+	if( i == ctrl.length - 2)
+	{
+	next = target;
+	} else {
+	next = ctrl[i+2];
+	}				
+	}
+	
+	for (var i:int = 0; i < angles.length; i++)
+	{
+	if(Math.abs(angles[i]) < minAngleInArray)
+	{
+	minAngleInArray = angles[i];
+	minAngleIndex = i;
+	}
+	}
+	
+	if( minAngleIndex != -1 && Math.abs(angles[minAngleIndex]) < minAngle){
+	trace("Pathfinder: removeSharpEdges: " + edge.source.data["name"] + " | " + angles[minAngleIndex] + " spliced");
+	ctrl.splice(minAngleIndex, 1); 
+	} 
+	} while(checkAngles(angles, minAngle)) */
+	
+}

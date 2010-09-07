@@ -36,6 +36,7 @@ package gbeb.view.operator.router
 	
 	import flash.geom.Point;
 	
+	import gbeb.util.GBEBInterfaceUtil;
 	import gbeb.util.GeometryUtil;
 
 	public class Shape
@@ -99,7 +100,7 @@ package gbeb.view.operator.router
 			for each(var edge:EdgeSprite in storedDataEdges)
 			{
 				//getting the gradient of the line and expressing as a fraction of Pi. 
-				var angle:int = getPolarCoor180(edge);
+				var angle:int = GBEBInterfaceUtil.getPolarCoor180(edge);
 				
 				//trace("Shape: CalculateDirection: " + edge.source.data["name"], edge.target.data["name"] + " has an angle of " + angle);
 				
@@ -194,31 +195,7 @@ package gbeb.view.operator.router
 				ctrl.push(cp);
 				ctrlgradient.push(gradient);  //trace(edge.source.data["name"], gradient);
 			}
-		}
-		
-		// ========[ PRIVATE METHODS ]==============================================================
-		
-		//return the polarCoor of an Edge Sprite with a max diff of 180 degrees
-		private function getPolarCoor180(e:EdgeSprite):Number
-		{ 
-			var angle:Number = Math.atan2 ((e.y2 - e.y1), (e.x2 - e.x1) );
-			angle = Math.round(angle / Math.PI * 180); //working in degrees	
-			angle = (angle < 0 ? 0 - angle : 180 - angle);
-			//trace("Shape: getPolar: " + e.source.data["name"] + " to " + e.target.data["name"] + " | angle = " + angle);
-			return angle; 
-		}
-
-		//return the polarCoor of an Edge Sprite with a max diff of 90 degrees
-		private function getPolarCoor90(e:EdgeSprite):Number
-		{ 
-			var angle:Number = Math.atan2 ((e.y2 - e.y1), (e.x2 - e.x1) );
-			angle = Math.round(angle / Math.PI * 180); //working in degrees
-			angle = ( angle < 0 ? angle + 180 : angle); // inverts the direction for -ve regions
-			//angle = ( angle > 90 ? 180 - angle : angle); // gets the acute angle
-			return angle;
-		}
-		
-		
+		}				
 		
 	}//end of class
 }
