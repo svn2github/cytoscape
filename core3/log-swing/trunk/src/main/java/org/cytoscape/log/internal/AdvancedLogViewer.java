@@ -375,17 +375,19 @@ class AdvancedLogViewer {
 	}
 
 	class ExportTask extends AbstractTask {
-		final File file;
+		private final File file;
+		private boolean cancelled = false;
 
 		public ExportTask(final File file) {
 			this.file = file;
 		}
 
+		@Override
 		public void run(TaskMonitor monitor) throws Exception {
 			monitor.setTitle("Developer Log Export");
 			monitor.setStatusMessage("Saving to " + file.getName());
 			PrintWriter output = new PrintWriter(file);
-			for (int i = 0; (i < solicitedLogEvents.size()) && !cancelled(); i++) {
+			for (int i = 0; (i < solicitedLogEvents.size()) && !cancelled; i++) {
 				monitor.setProgress(i / ((double) solicitedLogEvents.size()));
 				String[] entry = solicitedLogEvents.get(i);
 				for (int j = 0; j < entry.length; j++)
@@ -397,6 +399,11 @@ class AdvancedLogViewer {
 				output.println();
 			}
 			output.close();
+		}
+
+		@Override
+		public void cancel() {
+			cancelled = true;
 		}
 	}
 }

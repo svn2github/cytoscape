@@ -97,12 +97,13 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 	                                XGMMLParser parser, 
 	                                Properties prop) {
 		super(inputStream,cyNetworkViewFactory,cyNetworkFactory); 
-        this.readDataManager = readDataManager;
-        this.attributeValueUtil = attributeValueUtil;
-        this.parser = parser;
-        this.prop = prop;
+		this.readDataManager = readDataManager;
+		this.attributeValueUtil = attributeValueUtil;
+		this.parser = parser;
+		this.prop = prop;
 	}
 
+	@Override
 	public void run(TaskMonitor tm) throws IOException {
 		tm.setProgress(-1.0);
 
@@ -120,6 +121,10 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
 		cyNetworkViews = new CyNetworkView[] { view };
 		tm.setProgress(1.0);
+	}
+
+	@Override
+	public void cancel() {
 	}
 
 	/**

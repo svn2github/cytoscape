@@ -53,6 +53,10 @@ public class AbstractNodeViewTaskTest {
 			assertNotNull(nodeView);
 			assertNotNull(netView);
 		}
+
+		@Override
+		public void cancel() {
+		}
 	}
 	
 	@Test(expected=NullPointerException.class)

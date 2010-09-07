@@ -72,4 +72,7 @@ public class SelectConnectedNodesTask extends AbstractSelectTask {
 		v.updateView();
 	}
 
+	@Override
+	public void cancel() {
+	}
 }

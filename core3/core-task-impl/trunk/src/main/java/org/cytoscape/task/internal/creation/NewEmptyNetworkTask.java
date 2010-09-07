@@ -69,4 +69,8 @@ public class NewEmptyNetworkTask extends AbstractCreationTask {
 		netmgr.addNetwork(newNet);
 		netmgr.addNetworkView(view);
 	}
+
+	@Override
+	public void cancel() {
+	}
 }

@@ -61,4 +61,8 @@ public class SaveSessionTask extends AbstractSaveSessionTask {
 	public void run(TaskMonitor taskMonitor) throws Exception {
 		saveSession(taskMonitor);
 	}
+
+	@Override
+	public void cancel() {
+	}
 } 

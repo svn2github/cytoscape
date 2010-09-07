@@ -304,6 +304,7 @@ public class LinkOut {
 			this.nodeView = v;
 		}
 
+		@Override
 		public void run(TaskMonitor tm) {
 			System.out.println("LinkoutTask " + link);
 
@@ -316,6 +317,10 @@ public class LinkOut {
 
 			link = link.replace("%" + "ID" + "%", identifier);
 			browser.openURL(link);
+		}
+
+		@Override
+		public void cancel() {
 		}
 	}
 

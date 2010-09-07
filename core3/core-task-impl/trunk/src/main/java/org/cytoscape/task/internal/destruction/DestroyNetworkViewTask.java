@@ -58,4 +58,8 @@ public class DestroyNetworkViewTask extends AbstractNetworkViewCollectionTask {
 		for ( CyNetworkView n : networkViews )
 			netmgr.destroyNetworkView(n);
 	}
+
+	@Override
+	public void cancel() {
+	}
 }

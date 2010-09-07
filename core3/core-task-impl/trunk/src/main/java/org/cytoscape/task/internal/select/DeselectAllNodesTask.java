@@ -48,10 +48,14 @@ public class DeselectAllNodesTask extends AbstractSelectTask {
 	}
 
 	public void run(TaskMonitor tm) {
-        final CyNetwork n = netmgr.getCurrentNetwork();
-        final CyNetworkView v = netmgr.getNetworkView( n.getSUID() );
-        SelectUtils.setSelectedNodes( n.getNodeList(), false);
+		final CyNetwork n = netmgr.getCurrentNetwork();
+		final CyNetworkView v = netmgr.getNetworkView( n.getSUID() );
+		SelectUtils.setSelectedNodes( n.getNodeList(), false);
 
-        v.updateView();
+		v.updateView();
+	}
+
+	@Override
+	public void cancel() {
 	}
 }

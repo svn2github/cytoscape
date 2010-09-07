@@ -81,6 +81,10 @@ public class ProxySettingsTask extends AbstractTask implements TunableValidator 
 		oldSettings.clear();
 	}
 
+	@Override
+	public void cancel() {
+	}
+
 	void storeProxySettings() {
 		oldSettings.clear();
 		for (String key : KEYS) {

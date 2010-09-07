@@ -52,7 +52,6 @@ import org.cytoscape.view.layout.CyLayouts;
  * provides the graph and attributes objects constructed from the file.
  */
 public class SIFNetworkViewReader extends AbstractNetworkViewReader {
-
 	private static final String DEF_DELIMITER = " ";
 	private static final String LINE_SEP = System.getProperty("line.separator");
 	private static final String INTERACTION = "interaction";
@@ -60,6 +59,7 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 	private final Set<Interaction> interactions = new HashSet<Interaction>();
 	private final ReadUtils readUtil;
 	private final CyLayouts layouts;
+	private boolean cancelled = false;
 
 	public SIFNetworkViewReader(InputStream is, ReadUtils readUtil, CyLayouts layouts, CyNetworkViewFactory cyNetworkViewFactory, CyNetworkFactory cyNetworkFactory) {
 		super(is,cyNetworkViewFactory, cyNetworkFactory);
@@ -67,6 +67,7 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 		this.layouts = layouts;
 	}
 
+	@Override
 	public void run(TaskMonitor tm) throws IOException {
 		try {
 			readInput(tm);
@@ -77,6 +78,11 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 				inputStream = null;
 			}
 		}
+	}
+
+	@Override
+	public void cancel() {
+		cancelled = true;
 	}
 
 	private void readInput(TaskMonitor tm) throws IOException {
@@ -118,7 +124,7 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 		tm.setProgress(0.25);
 				
 		for (String nodeName : nodeMap.keySet()) {
-			if (cancelled())
+			if (cancelled)
 				return;
 
 			//tm.setProgress(progress);
@@ -138,7 +144,7 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 		CyEdge edge;
 		
 		for (Interaction interaction : interactions) {
-			if (cancelled())
+			if (cancelled)
 				return;
 
 			srcName = interaction.getSource();

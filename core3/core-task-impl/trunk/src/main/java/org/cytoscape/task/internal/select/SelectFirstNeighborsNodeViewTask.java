@@ -65,4 +65,8 @@ public class SelectFirstNeighborsNodeViewTask extends AbstractTask {
 
 		netView.updateView();
 	} 
+
+	@Override
+	public void cancel() {
+	}
 }

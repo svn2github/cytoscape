@@ -16,8 +16,7 @@ import java.net.URL;
 
 
 public class PluginLoaderTask extends AbstractTask {
-
-	CyPluginAdapter adapter;
+	private CyPluginAdapter adapter;
 
 	@Tunable(description="Select plugin JAR to load")
 	public File filename;
@@ -26,6 +25,7 @@ public class PluginLoaderTask extends AbstractTask {
 		this.adapter = adapter;
 	}
 
+	@Override
 	public void run(TaskMonitor tm) throws Exception {
 		Object o = null; 
 		JarFile jar = null; 
@@ -39,8 +39,12 @@ public class PluginLoaderTask extends AbstractTask {
 			Constructor<CyPlugin> con = c.getConstructor(CyPluginAdapter.class);
 			o = con.newInstance(adapter);
 		} finally {
-				if (jar != null) 
-					jar.close();
+			if (jar != null) 
+				jar.close();
 		}
+	}
+
+	@Override
+	public void cancel() {
 	}
 }

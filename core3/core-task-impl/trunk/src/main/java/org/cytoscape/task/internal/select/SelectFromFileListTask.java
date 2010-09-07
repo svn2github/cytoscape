@@ -109,4 +109,8 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 
 		netmgr.getNetworkView(network.getSUID()).updateView();
 	}
+
+	@Override
+	public void cancel() {
+	}
 }

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SIFInterpreterTask extends AbstractNetworkViewTask {
-
 	private CyNetwork network;
 
 	@Tunable(description="Type in a nodes/edges expression in SIF format, e.g. A inhibits B")
@@ -25,6 +24,7 @@ public class SIFInterpreterTask extends AbstractNetworkViewTask {
 		network = view.getModel();
 	}
 
+	@Override
 	public void run(TaskMonitor tm) {
 		if ( sifString == null )
 			throw new NullPointerException("SIF input string is null");
@@ -104,6 +104,11 @@ public class SIFInterpreterTask extends AbstractNetworkViewTask {
 		}
 		}
 	}
+
+	@Override
+	public void cancel() {
+	}
+
 	private void doCircleLayout(List<View<CyNode>> nodeViews, View<CyNode> nv1) {
 
 /*

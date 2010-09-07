@@ -125,6 +125,10 @@ public class TunablesTestTask extends AbstractTask implements TunableValidator {
 		System.err.println("Validated tunable="+vt);
 	}
 
+	@Override
+	public void cancel() {
+	}
+
 	@Tunable(description="Getter/setter int")
 	public Integer getInt() { return new Integer(getterSetterInt); }
 

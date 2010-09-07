@@ -82,13 +82,13 @@ public class LoadNetworkURLTask extends AbstractLoadNetworkTask {
 			throw new Exception(String.format(BAD_INTERNET_SETTINGS_MSG, e.getMessage()), e);
 		}
 
-		if (cancelled())
+		if (cancelled)
 			return;
 
 		taskMonitor.setStatusMessage("Finding network reader...");
 		reader = mgr.getReader(url.toURI());
 
-		if (cancelled())
+		if (cancelled)
 			return;
 
 		if (reader == null)

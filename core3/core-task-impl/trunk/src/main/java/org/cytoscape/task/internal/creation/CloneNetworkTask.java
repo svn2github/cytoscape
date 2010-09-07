@@ -34,8 +34,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package org.cytoscape.task.internal.creation;
+
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyEdge;
@@ -103,5 +103,9 @@ public class CloneNetworkTask extends AbstractCreationTask {
 			Cytoscape.getVisualMappingManager().setVisualStyle(vs);
 		}
 		*/
+	}
+
+	@Override
+	public void cancel() {
 	}
 }

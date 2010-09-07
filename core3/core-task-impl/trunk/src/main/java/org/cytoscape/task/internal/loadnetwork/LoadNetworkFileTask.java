@@ -65,7 +65,7 @@ public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
 		
 		reader = mgr.getReader((file.toURI()));
 
-		if (cancelled())
+		if (cancelled)
 			return;
 
 		if (reader == null)

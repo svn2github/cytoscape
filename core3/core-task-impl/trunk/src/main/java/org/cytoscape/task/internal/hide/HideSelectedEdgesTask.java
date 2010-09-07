@@ -60,6 +60,10 @@ public class HideSelectedEdgesTask extends AbstractNetworkViewTask {
 
 		HideUtils.setVisibleEdges( selectedEdges, false, view );
 
-        view.updateView();
+		view.updateView();
 	} 
+
+	@Override
+	public void cancel() {
+	}
 }

@@ -50,6 +50,10 @@ public class AbstractNetworkViewTaskTest {
 		public void run(TaskMonitor tm) { 
 			assertNotNull(view);
 		}
+
+		@Override
+		public void cancel() {
+		}
 	}
 	
 	@Test(expected=NullPointerException.class)

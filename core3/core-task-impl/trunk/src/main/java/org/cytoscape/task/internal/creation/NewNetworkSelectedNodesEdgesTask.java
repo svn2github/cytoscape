@@ -103,4 +103,8 @@ public class NewNetworkSelectedNodesEdgesTask extends AbstractCreationTask {
         vmm.setVisualStyle(vsName);
 		*/
 	}
+
+	@Override
+	public void cancel() {
+	}
 }

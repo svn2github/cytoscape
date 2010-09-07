@@ -37,9 +37,11 @@
 
 package org.cytoscape.task.internal.zoom;
 
+
 import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.model.CyNetworkView;
+
 
 public class FitContentTask extends AbstractNetworkViewTask {
 
@@ -50,5 +52,9 @@ public class FitContentTask extends AbstractNetworkViewTask {
 	public void run(TaskMonitor tm) {
 		// Call utility methods to fire events to redraw presentation.
 		view.fitContent();
+	}
+
+	@Override
+	public void cancel() {
 	}
 }

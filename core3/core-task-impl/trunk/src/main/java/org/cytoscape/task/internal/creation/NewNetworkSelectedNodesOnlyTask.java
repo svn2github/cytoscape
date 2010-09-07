@@ -37,6 +37,7 @@
 
 package org.cytoscape.task.internal.creation;
 
+
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
 
@@ -60,6 +61,7 @@ import org.cytoscape.work.TaskMonitor;
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
+
 
 public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 
@@ -144,5 +146,9 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 			if (newVS != null)
 				vmm.setVisualStyle(newVS, new_view);
 		}
+	}
+
+	@Override
+	public void cancel() {
 	}
 }

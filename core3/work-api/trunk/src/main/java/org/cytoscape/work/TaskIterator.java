@@ -2,11 +2,12 @@ package org.cytoscape.work;
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 
-public final class TaskIterator {
+public final class TaskIterator implements Iterator<Task> {
 	private final List<Task> tasks;
 	private int currentIndex;
 
@@ -67,9 +68,9 @@ public final class TaskIterator {
 	}
 
 	private void tryToAddSelfReferenceToTask(final Task newTask) {
-		if (newTask instanceof IteratorAwareTask) {
+		if (newTask instanceof AbstractTask) {
 			try {
-				((IteratorAwareTask)newTask).setTaskIterator(this);
+				((AbstractTask)newTask).setTaskIterator(this);
 			} catch (final Exception e) {
 				// The above cast must always succeed and therefore we should never get here!
 			}

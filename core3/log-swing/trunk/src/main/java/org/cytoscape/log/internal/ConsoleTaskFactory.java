@@ -79,22 +79,25 @@ public class ConsoleTaskFactory implements TaskFactory {
 	}
 
 	class ConsoleTask extends AbstractTask {
+		@Override
 		public void run(TaskMonitor taskMonitor) {
 			getDialog().setVisible(true);
 		}
+
+		@Override
+		public void cancel() {
+		}
 	}
 
-	class ConsoleAction implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
+	class ConsoleAction implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
 			getDialog().setVisible(true);
 		}
 	}
 }
 
-class SimpleUpdater extends QueueProcesser
-{
+
+class SimpleUpdater extends QueueProcesser {
 	static DateFormat DATE_FORMATTER = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG);
 
 	final SimpleLogViewer simpleLogViewer;

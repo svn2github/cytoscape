@@ -58,4 +58,8 @@ public class DestroyNetworkTask extends AbstractNetworkCollectionTask {
 		for ( CyNetwork n : networks )
 			netmgr.destroyNetwork(n);
 	}
+
+	@Override
+	public void cancel() {
+	}
 }

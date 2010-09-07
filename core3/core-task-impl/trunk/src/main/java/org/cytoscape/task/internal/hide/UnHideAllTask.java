@@ -34,16 +34,16 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.task.internal.hide;
+
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
 
-public class UnHideAllTask extends AbstractNetworkViewTask {
 
+public class UnHideAllTask extends AbstractNetworkViewTask {
 	public UnHideAllTask(CyNetworkView v) {
 		super(v);
 	}
@@ -56,4 +56,8 @@ public class UnHideAllTask extends AbstractNetworkViewTask {
 
 		view.updateView();
 	} 
+
+	@Override
+	public void cancel() {
+	}
 }

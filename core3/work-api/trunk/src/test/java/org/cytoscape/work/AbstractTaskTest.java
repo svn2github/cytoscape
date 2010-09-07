@@ -33,37 +33,37 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class IteratorAwareTaskTest {
+public class AbstractTaskTest {
 	private TaskIterator iter;
-	private SimpleIteratorAwareTask initialTask;
+	private SimpleTask2 initialTask;
 
 	@Before
 	public void init() {
-		initialTask = new SimpleIteratorAwareTask(1);
+		initialTask = new SimpleTask2(1);
 		iter = new TaskIterator(initialTask);
 	}
 
 	@Test
 	public final void testTaskInsertion() throws Exception {
-		initialTask.addTaskAtEnd(new SimpleIteratorAwareTask(2));
-		initialTask.addTaskAtEnd(new SimpleIteratorAwareTask(3));
-		initialTask.insertTaskAfterCurrentTask(new SimpleIteratorAwareTask(4));
+		initialTask.addTaskAtEnd(new SimpleTask2(2));
+		initialTask.addTaskAtEnd(new SimpleTask2(3));
+		initialTask.insertTaskAfterCurrentTask(new SimpleTask2(4));
 
 		final int expectedSequence[] = { 1, 4, 2, 3 };
 		for (int taskId : expectedSequence) {
 			assertTrue("Invalid task count in iterator!", iter.hasNext());
 			final Task task = iter.next();
-			assertEquals("Task ID does not match expected ID!", taskId, ((SimpleIteratorAwareTask)task).getId());
+			assertEquals("Task ID does not match expected ID!", taskId, ((SimpleTask2)task).getId());
 		}
 		assertFalse("Invalid task count in iterator!", iter.hasNext());
 	}
 }
 
 
-class SimpleIteratorAwareTask extends IteratorAwareTask {
+class SimpleTask2 extends AbstractTask {
 	private int id;
 
-	SimpleIteratorAwareTask(final int id) {
+	SimpleTask2(final int id) {
 		this.id = id;
 	}
 

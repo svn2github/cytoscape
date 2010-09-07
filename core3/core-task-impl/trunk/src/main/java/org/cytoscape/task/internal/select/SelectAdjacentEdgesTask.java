@@ -69,4 +69,8 @@ public class SelectAdjacentEdgesTask extends AbstractSelectTask {
 
 		v.updateView();
 	} 
+
+	@Override
+	public void cancel() {
+	}
 }

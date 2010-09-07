@@ -1,14 +1,7 @@
 /*
  File: SelectFirstNeighborsTask.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -37,6 +30,7 @@
 
 package org.cytoscape.task.internal.select;
 
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,12 +43,13 @@ import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
 
-public class SelectFirstNeighborsTask extends AbstractSelectTask {
 
+public class SelectFirstNeighborsTask extends AbstractSelectTask {
 	public SelectFirstNeighborsTask(CyNetworkManager netmgr) {
 		super(netmgr);
 	}
 
+	@Override
 	public void run(TaskMonitor tm) {
 		final CyNetwork currentNetwork = netmgr.getCurrentNetwork();
 		final CyNetworkView view = netmgr.getNetworkView(currentNetwork
@@ -70,5 +65,9 @@ public class SelectFirstNeighborsTask extends AbstractSelectTask {
 		SelectUtils.setSelectedNodes(nodes, true);
 
 		view.updateView();
+	}
+
+	@Override
+	public void cancel() {
 	}
 }

@@ -50,10 +50,14 @@ public class SelectAllTask extends AbstractSelectTask {
 
 	public void run(TaskMonitor monitor) {
 		CyNetwork n = netmgr.getCurrentNetwork();
-        CyNetworkView v = netmgr.getNetworkView( n.getSUID() );
+		CyNetworkView v = netmgr.getNetworkView( n.getSUID() );
 		SelectUtils.setSelectedNodes( n.getNodeList(), true);
 		SelectUtils.setSelectedEdges( n.getEdgeList(), true);
 
 		v.updateView();
 	} 
+
+	@Override
+	public void cancel() {
+	}
 }

@@ -1,5 +1,6 @@
 package org.cytoscape.io.internal.read.datatable;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,8 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.cytoscape.model.GraphObject.*;
 
-public class TextDataTableReader extends AbstractDataTableReader {
 
+public class TextDataTableReader extends AbstractDataTableReader {
 	@Tunable(description="Column delimiter character")
 	public String delimiter = "\t";
 
@@ -35,7 +36,8 @@ public class TextDataTableReader extends AbstractDataTableReader {
 	public TextDataTableReader(InputStream inputStream, CyDataTableFactory tableFactory) {
 		super(inputStream, tableFactory);
 	}
-	
+
+	@Override
 	public void run(TaskMonitor tm) throws IOException {
 		try {
 	
@@ -60,7 +62,11 @@ public class TextDataTableReader extends AbstractDataTableReader {
 
 		tm.setProgress(1.0);
 	}
-	
+
+	@Override
+	public void cancel() {
+	}
+
 	private CyDataTable createTable(String line) throws IOException {
 		if (line == null)
 			throw new IllegalStateException("Column names cannot be null");

@@ -49,4 +49,8 @@ public class TunablesTestTask2 extends AbstractTask {
 		System.err.println("loopCount="+loopCount);
 		System.err.println("inputFile="+inputFile);
 	}
+
+	@Override
+	public void cancel() {
+	}
 }

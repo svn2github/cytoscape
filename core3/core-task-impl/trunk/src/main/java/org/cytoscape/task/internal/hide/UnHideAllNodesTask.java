@@ -37,10 +37,12 @@
 
 package org.cytoscape.task.internal.hide;
 
+
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.task.AbstractNetworkViewTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
+
 
 public class UnHideAllNodesTask extends AbstractNetworkViewTask {
 
@@ -55,4 +57,8 @@ public class UnHideAllNodesTask extends AbstractNetworkViewTask {
 
 		view.updateView();
 	} 
+
+	@Override
+	public void cancel() {
+	}
 }

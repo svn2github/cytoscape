@@ -59,4 +59,7 @@ public class SelectAllNodesTask extends AbstractSelectTask {
 				+ "\" have been selected");
 	}
 
+	@Override
+	public void cancel() {
+	}
 }

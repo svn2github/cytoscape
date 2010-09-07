@@ -53,6 +53,10 @@ public class AbstractEdgeViewTaskTest {
 			assertNotNull(edgeView);
 			assertNotNull(netView);
 		}
+
+		@Override
+		public void cancel() {
+		}
 	}
 	
 	@Test(expected=NullPointerException.class)

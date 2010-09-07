@@ -37,8 +37,8 @@ import org.cytoscape.work.TaskMonitor;
 
 
 public class NewSessionTask extends AbstractTask {
-
 	private CySessionManager mgr;
+
 	public NewSessionTask(CySessionManager mgr) {
 		this.mgr = mgr;
 	}
@@ -52,5 +52,9 @@ public class NewSessionTask extends AbstractTask {
 
 		//mgr.setSessionState(Cytoscape.SESSION_NEW);
 		//Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
+	}
+
+	@Override
+	public void cancel() {
 	}
 }

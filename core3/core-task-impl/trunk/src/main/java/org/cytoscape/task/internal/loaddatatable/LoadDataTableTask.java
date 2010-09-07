@@ -42,6 +42,10 @@ public class LoadDataTableTask extends AbstractTask {
 		insertTaskAfterCurrentTask(new FinalStatusMessageUpdateTask(reader));
 		insertTaskAfterCurrentTask(reader);
 	}
+
+	@Override
+	public void cancel() {
+	}
 }
 
 
@@ -57,5 +61,9 @@ class FinalStatusMessageUpdateTask extends AbstractTask {
 			taskMonitor.setStatusMessage("Successfully loaded data table: " + table.getTitle());
 
 		taskMonitor.setProgress(1.0);
+	}
+
+	@Override
+	public void cancel() {
 	}
 }

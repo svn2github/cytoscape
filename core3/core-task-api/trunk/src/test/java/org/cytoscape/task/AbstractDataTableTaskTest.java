@@ -50,6 +50,10 @@ public class AbstractDataTableTaskTest {
 		public void run(TaskMonitor tm) { 
 			assertNotNull(table);
 		}
+
+		@Override
+		public void cancel() {
+		}
 	}
 	
 	@Test(expected=NullPointerException.class)

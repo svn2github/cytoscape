@@ -59,6 +59,7 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 	protected CyNetworkManager netMgr;
 	protected Properties props;
 	protected CyNetworkNaming namingUtil;
+	protected boolean cancelled = false;
 
 	public AbstractLoadNetworkTask(final CyNetworkViewReaderManager mgr, final CyNetworkManager netMgr,
 	                               final Properties props, final CyNetworkNaming namingUtil)
@@ -82,7 +83,13 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 		insertTaskAfterCurrentTask(viewReader);                                             // This goes 2nd!
 	}
 
+	@Override
 	abstract public void run(TaskMonitor taskMonitor) throws Exception;
+
+	@Override
+	public final void cancel() {
+		cancelled = true;
+	}
 }
 
 
@@ -92,6 +99,7 @@ class GenerateNetworkViewsTask extends AbstractTask {
 	private final CyNetworkManager netMgr;
 	private final CyNetworkNaming namingUtil;
 	private final Properties props;
+	private boolean cancelled = false;
 
 	GenerateNetworkViewsTask(final String name, final CyNetworkViewReader viewReader, final CyNetworkManager netMgr,
 				 final CyNetworkNaming namingUtil, final Properties props)
@@ -110,7 +118,7 @@ class GenerateNetworkViewsTask extends AbstractTask {
 			throw new IOException("Could not create network for the producer.");
 
 		for (CyNetworkView view : cyNetworkViews) {
-			if (cancelled())
+			if (cancelled)
 				return;
 
 			// Model should not be null.  It will be tested in ViewImpl.
@@ -126,6 +134,11 @@ class GenerateNetworkViewsTask extends AbstractTask {
 		}
 
 		taskMonitor.setProgress(1.0);
+	}
+
+	@Override
+	public void cancel() {
+		cancelled = true;
 	}
 
 	/**

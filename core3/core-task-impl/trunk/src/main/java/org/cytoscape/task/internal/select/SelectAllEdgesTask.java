@@ -55,4 +55,8 @@ public class SelectAllEdgesTask extends AbstractSelectTask {
 
 		v.updateView();
 	}
+
+	@Override
+	public void cancel() {
+	}
 }

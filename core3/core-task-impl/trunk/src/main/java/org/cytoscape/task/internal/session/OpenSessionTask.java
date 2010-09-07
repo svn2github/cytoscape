@@ -46,8 +46,6 @@ import java.io.File;
  * setAcceleratorCombo(java.awt.event.KeyEvent.VK_O, ActionEvent.CTRL_MASK);
  */
 public class OpenSessionTask extends AbstractTask {
-
-
 	private CySessionManager mgr;
 	private CyNetworkViewReaderManager factory;
 
@@ -93,5 +91,9 @@ public class OpenSessionTask extends AbstractTask {
 
 		taskMonitor.setProgress(1.0);
 		taskMonitor.setStatusMessage("Session file " + name + " successfully loaded.");
+	}
+
+	@Override
+	public void cancel() {
 	}
 }
