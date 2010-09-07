@@ -1,0 +1,22 @@
+<p>
+    We added the edge-weighted layout option to "ForceDirected", implemented an alternative way of dragging the network,
+    and fixed some bugs, as usual.
+</p>
+<div class="relase_details">
+    <ul class="new_features">
+        <li><span class="bug_id">2288</span>: Continuous mapper should allow user-custom scales.</li>
+        <li><span class="bug_id">2322</span>: Implement an edge-weighted force directed layout.</li>
+        <li><span class="bug_id">2346</span>: Add an API function that returns the Data Schema.</li>
+    </ul>
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2278</span>: Incorrect node label alignment in exported PDF.</li>
+        <li><span class="bug_id">2292</span>: PDF image not correctly drawn when network is scaled down.</li>
+        <li><span class="bug_id">2329</span>: Grabber hand cursor gets stuck.</li>
+    </ul>
+    <ul class="other_changes">
+        <li>Added a mousedown-and-hold feature that automatically changes the mouse cursor to grab-to-pan mode.
+            Click the background and hold until the cursor turns into a hand icon to start dragging the whole network,
+            or do the same over any node to start dragging its disconnected component only.</li>
+        <li>Added the <code>customCursorsEnabled()</code> API function.</li>
+    </ul>
+</div>
