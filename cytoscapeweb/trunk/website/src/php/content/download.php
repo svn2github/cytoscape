@@ -1,9 +1,15 @@
 <div class="left">
 
     <?php
-    
+    	
+    	$versions_to_show = 2;
         $first = true;
+        $i = 0;
         foreach($apis as $api) {
+            
+            if( $i >= $versions_to_show ){
+            	break;
+            }
             
             $version = $api->version;
             $date = strtotime( $api->date );
@@ -34,6 +40,7 @@
     <?php
         
             $first = false;
+            $i++;
         }
     
     ?>
