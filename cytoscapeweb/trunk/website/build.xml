@@ -94,6 +94,11 @@
         <copy todir="${api.dir}/layout" overwrite="true">
             <fileset dir="${temp.dir}/symbols" includes="**.Layout.php"/>
         </copy>
+    	
+        <mkdir dir="${api.dir}/schema"/>
+        <copy todir="${api.dir}/schema" overwrite="true">
+            <fileset dir="${temp.dir}/symbols" includes="**.DataSchema.php **.DataField.php"/>
+        </copy>
         
         <mkdir dir="${api.dir}/visualization"/>
         <copy todir="${api.dir}/visualization" file="${jsdoc.dir}/metadata/empty.txt" />
