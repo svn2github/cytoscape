@@ -264,6 +264,19 @@ $(function(){
     layout_names["Radial"] = "Radial";
     layout_names["Tree"] = "Tree";
     
+//    var edgeFieldsFn = function() {
+//	    var edgeAttrList = [""];
+//		if(vis != null) {
+//			var edgeFields = vis.dataSchema().edges;
+//			$.each(edgeFields, function(i, field) {
+//				if (field.type === "number") {
+//					edgeAttrList.push(field.name);
+//				}
+//			});
+//		}
+//		return edgeAttrList;
+//    }
+    
     var layout_options = {};
     layout_options["ForceDirected"] = [
         { id: "gravitation", label: "Gravitation",       value: -500,   tip: "The gravitational constant. Negative values produce a repulsive force." },
@@ -273,8 +286,10 @@ $(function(){
         { id: "drag",        label: "Drag co-efficient", value: 0.4,    tip: "The co-efficient for frictional drag forces." },
         { id: "minDistance", label: "Minimum distance",  value: 1,      tip: "The minimum effective distance over which forces are exerted." },
         { id: "maxDistance", label: "Maximum distance",  value: 10000,  tip: "The maximum distance over which forces are exerted." },
-        { id: "iterations",  label: "Iterations",        value: 400,     tip: "The number of iterations to run the simulation." },
-        { id: "maxTime",     label: "Maximum time",      value: 30000,     tip: "The maximum time to run the simulation, in milliseconds." },
+        { id: "weightAttr",  label: "Weight Attribute",  value: "",  tip: "The name of the edge attribute that contains the weights." },
+        { id: "weightNorm",  label: "Weight Normalization", value: ["linear","invlinear","log"],  tip: "How to interpret weight values." },
+        { id: "iterations",  label: "Iterations",        value: 400,    tip: "The number of iterations to run the simulation." },
+        { id: "maxTime",     label: "Maximum time",      value: 30000,  tip: "The maximum time to run the simulation, in milliseconds." },
         { id: "autoStabilize", label: "Auto stabilize",  value: true,   tip: "If checked, Cytoscape Web automatically tries to stabilize results that seems unstable after running the regular iterations." }
     ];
     layout_options["Circle"] = [
@@ -564,7 +579,9 @@ $(function(){
     		var o = opt[i];
     		var v = o.value;
     		panel += '<tr title="'+o.tip+'">';
-    		
+
+    		if (typeof v === "function") { v = v(); }
+
     		if (typeof v === "object") {
     			panel += ('<td align="right"><label>'+o.label+' </label></td><td><select id="'+o.id+'" size="1">');
     			for(var j in v) { panel += ('<option value="'+v[j]+'">'+v[j]+'</option>'); }
@@ -625,7 +642,7 @@ $(function(){
 				vis.layout({ name: layout_id, options: options });
 			});
 			
-			$("#settings").dialog({ autoOpen: false, resizable: false, width: 430 });
+			$("#settings").dialog({ autoOpen: false, resizable: false, width: 450 });
 		}
 	    $("#settings").dialog("open");
     }
