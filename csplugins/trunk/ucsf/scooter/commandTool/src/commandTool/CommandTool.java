@@ -129,7 +129,7 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 
 
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (initialized) return;
+		if (initialized || !evt.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) return;
 
 		initialized = true;
 
@@ -168,9 +168,9 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 					}
 				}
 				if (initialized) {
+					initialized = false;
 					Cytoscape.getPropertyChangeSupport()
 					         .addPropertyChangeListener(Cytoscape.CYTOSCAPE_INITIALIZED, this);
-					initialized = false;
 				}
 			}
 		}
