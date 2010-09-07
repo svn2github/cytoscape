@@ -1,3 +1,34 @@
+/*
+This file is part of Cytoscape Web.
+Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+The Cytoscape Consortium is:
+- Agilent Technologies
+- Institut Pasteur
+- Institute for Systems Biology
+- Memorial Sloan-Kettering Cancer Center
+- National Center for Integrative Biomedical Informatics
+- Unilever
+- University of California San Diego
+- University of California San Francisco
+- University of Toronto
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+*/
+
 package gbeb.util
 {
 	import flare.vis.data.Data;
@@ -8,39 +39,17 @@ package gbeb.util
 	
 	import gbeb.view.operator.router.pathMap;
 	
-	/**Pseudo Code for pathtraversal, inspired by A* algorithm. This algorithm has:
-	 * - modified cost calculation function that takes into accountthe angles of the edges
-	 * 	 as well as the perpendicular distance of the nodes(vertices) to the original edge
-	 * - to transversed complete graphs generated from the set by all the participating nodes
-	 *   hence has to use a heuristic function (and maybe dynamic programing) to improve run time
+	/**
+	 * Pathfinder uses Kmeans clustering instead of the suggested strategy by weiwei to find bundling points. 
 	 * 
-	 * Idea:
-	 * 		1) Get the set of nodes in which the edge can transverse across, WayPoints.
-	 * 				WayPoints = {nodes that are control points of the edge} + {nodes that are within the 'search zone'}
-	 * 		2) Although conceptually the idea is to create complete graphs, there is no need to 
-	 * 		  	in exhaustively search through all possibilities.
-	 * 					- Initialize = Define start node as the closest and have the same direction as the original edge
-	 * 						Define end node similarly.
-	 * 					a) During stepping (moving through the graph), we would just step through the top 10
-	 * 					or less nodes in terms of search quality.
-	 * 					The search quality equation is given by:  Q = DistanceCost - Q(angle) - Q (distance)  
-	 * 					b) We would eliminate nodes that are further than 125% of the current node to reduce the search space
-	 * 					c) Repeat a and b until there is a path from start node to end node. 
-	 * 					d) Draw the Path
-	 * 					e) ?Smooth
-	 * 		Repeat for all dataEdges. 
-	 * 
-	 * */
+	 * It also uses A* pathfinding to tidy up the bundling, by force more edges through common paths.
+	 *  A* can be further extended to include considerations of curvature and displacement. */
 	
 	public class Pathfinder
 	{
 		private var _data:Data;
 		private var _mesh:Object;
 		private var _maxDis:Number;
-		
-		// Stores the list routes for reach index (index represents number of CP)
-		// Since there non-repeateable routes for index = 0 or 1, 2 empty objects are added as place holders.
-		private var _routes:Array = new Array({},{}); 
 		
 		//for Kmeans alt
 		private var _CPClusters:Array;
@@ -49,11 +58,19 @@ package gbeb.util
 		//for Astar pathfind
 		private var _map:pathMap;
 		
+		// ========[ CONSTRUCTOR ]==================================================================
+		
+		/**
+		 * Does nothing. Data has to be loaded with the pathfind command. */
 		public function Pathfinder()
 		{
 		}
 		
-		//This public function is exposed to allow call only after all the required steps are done. 
+		// ========[ PUBLIC METHODS ]===============================================================
+		
+		/**
+		 * This function is exposed to allow the main GBEB script to call it once all the required data
+		 * processing steps are done. */
 		public function pathfind(data:Data, mesh:*, bounds:Rectangle)
 		{
 				trace("Pathfinder: Starting...");
@@ -63,7 +80,7 @@ package gbeb.util
 				
 				Kmeans_Pathfinding2_Preprocessing(_mesh.CP);
 
-				_data.edges.visit(_pathfind);
+				_data.edges.visit(Kmeans_Pathfinding);
 
 				//For Astar pathfind
 				_data.edges.sortBy("props.$controlPointsArray.length");
@@ -79,7 +96,10 @@ package gbeb.util
 				
 		}
 		
-		function A_starPathfinding(edge:EdgeSprite):void
+		// ========[ PRIVATE METHODS ]==============================================================
+		
+		// Uses a scoring function to find the optimal path for an edge. The optimal path has the lowest scores
+		private function A_starPathfinding(edge:EdgeSprite):void
 		{
 			var searchSpace:Array = edge.props.$controlPointsArray;
 			if(searchSpace == null) return;
@@ -123,15 +143,14 @@ package gbeb.util
 				{
 					if (Point.distance(searchSpace[i], endPoint) >= disNextPointToEnd)
 					{
-						searchSpace.splice(i, 1);
-						
+						searchSpace.splice(i, 1);						
 					}
-				}
-				
+				}	
 			}
 			edge.props.$controlPointsArray = path;
 		}
 
+		// Cost calculation function of A* pathfinding. Extend with more variables here. 
 		private function findCost(currPoint:Point, nextPoint:Point, edgeLength:Number, currAngle:Number):Number
 		{
 			var cost:Number = 0;
@@ -144,47 +163,23 @@ package gbeb.util
 			return cost;
 		}
 		
+		// Not used. Function attempts to score the points via the angle difference between consequtive paths in order to
+		// the less bendy path. 
 		private function calAngleDeviationScore(currPoint:Point, nextPoint:Point, currAngle:Number):Number
 		{
 			
-			var changeInAngle = Math.abs( GBEBInterfaceUtil.getPolarCoor360(currPoint, nextPoint) - currAngle);
-			var changeInAngle = (changeInAngle > 180 ? (360 - changeInAngle) : changeInAngle );
+			var changeInAngle:Number = Math.abs( GBEBInterfaceUtil.getPolarCoor360(currPoint, nextPoint) - currAngle);
+			var changeInAngle:Number = (changeInAngle > 180 ? (360 - changeInAngle) : changeInAngle );
 			//trace("Pathfinder: A*: calAngleDeviation: Done!");
 			
 			return changeInAngle / 180;
 		}
 
-		//This function takes in an EdgeSprite and finds the appropriate path for the edge by first setting up 
-		//a search space to find all the neighbouring nodes that it can pass through and use a heuristic pathfinding algorithm
-		//to generate a path that fits the quality citeria for the curve.
-		private function _pathfind(edge:EdgeSprite):void
-		{
-			//var searchSpace:Array = generateSearchSpace(_mesh.CP, edge);
-			var searchSpaceTrace:String = ""; //debug
-			
-			//kmeans_Pathfinding(edge, searchSpace);
-			
-			Kmeans_Pathfinding2(edge);
-			//removeSharpEdges(edge);
-			
-			//AStar_pathfindingAlgrithm(edge, searchSpace);
-			//trace("Pathfinder: " + e.source.data["name"] + " | " + e.target.data["name"]);
-			//trace("Search Space: " + searchSpace.length);
-			/*for each (var p:Point in searchSpace) //debug loop
-			{
-				searchSpaceTrace += p.toString() + " | ";
-			}
-			trace(searchSpaceTrace); */
-		}
-
-		
 		//some pre-processing such that the CP forms clusters
 		private function Kmeans_Pathfinding2_Preprocessing(CPSet:Array):void
 		{
 			
-			_CPClusters = GeometryUtil.kmeans(CPSet);
-			trace("Pathfinder: KmeansPF: Pre starting");
-			
+			_CPClusters = GeometryUtil.kmeans(CPSet);		
 			for (var i:int = 0; i < _CPClusters.length; i++)
 			{
 				_centroidArray.push(GeometryUtil.findCentroidFromPoints(_CPClusters[i]));
@@ -193,8 +188,7 @@ package gbeb.util
 			trace("Pathfinding: _centroidArray.length: " + _centroidArray.length);
 		}
 		
-		//alternative kmeans_pathfinding
-		private function Kmeans_Pathfinding2(edge:EdgeSprite):void
+		private function Kmeans_Pathfinding(edge:EdgeSprite):void
 		{
 			var ctrl:Array = edge.props.$controlPointsArray;
 			var newCtrl:Array = [];
