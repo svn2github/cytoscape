@@ -35,6 +35,7 @@ package metaNodePlugin2.view;
 // System imports
 import java.util.Collection;
 import java.util.List;
+import java.awt.Color;
 import java.awt.Dimension;
 
 // giny imports
@@ -241,6 +242,21 @@ public class ViewUtils {
 	}
 
 	/**
+ 	 * Hide a set of edges for a group
+ 	 *
+ 	 * @param metaGroup the meta-group we're restoring the edges for
+ 	 * @param edgeList the list of edges we're restoring
+ 	 * @param view the CyNetworkView
+ 	 */
+	public static void hideEdges(CyGroup metaGroup, Collection<CyEdge>edgeList, CyNetworkView view) {
+		CyNetwork network = metaGroup.getNetwork();
+		for (CyEdge edge: edgeList) {
+			if (network.containsEdge(edge))
+				network.hideEdge(edge);
+		}
+	}
+
+	/**
  	 * Set the node opacity
  	 *
  	 * @param node the node we're setting the opacity for
@@ -248,6 +264,17 @@ public class ViewUtils {
  	 * @param opacity the actual opacity
  	 */
 	public static void setOpacity(CyNode node, CyNetworkView view, double opacity) {
+		NodeView nView = view.getNodeView(node);
+		if (nView != null) {
+			final Color oldPaint = (Color) nView.getUnselectedPaint();
+			Integer tp = oldPaint.getAlpha();
+			Integer newTp = new Integer((int)opacity);
+			if (tp != newTp) {
+				nView.setUnselectedPaint(new Color(oldPaint.getRed(), oldPaint.getGreen(),
+				                                   oldPaint.getBlue(), newTp));
+				// Should we set the node.opacity override?
+			}
+		}
 	}
 
 	/**

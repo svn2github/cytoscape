@@ -87,6 +87,7 @@ public class MetaNode {
 	private boolean useNestedNetworks = false;
 
 	private Map<CyEdge,CyEdge> metaEdges = new HashMap<CyEdge,CyEdge>();
+	private Map<CyNode,CyEdge> membershipEdges = null;
 	private List<CyNode> hiddenNodes = null;
 
 	private boolean collapsed = false;
@@ -124,10 +125,6 @@ public class MetaNode {
 
 		// Now, if this node is a child of a different metaNode, we need to create
 		// metaEdges for that metaNode and this node.
-		// for each group node is in:
-		// 	if !ourGroup:
-		// 		add "membership" metaNode between node and group
-		// XXX
 		updateMembershipEdges(node);
 
 		// If we're collapsed, we need to recollapse to update
@@ -147,6 +144,9 @@ public class MetaNode {
 		logger.debug("node removed "+metaGroup);
 		// First step, we need to remove any new meta-edges
 		updateMetaEdges();
+		// Now, remove our member edge (if there is one)
+		if (membershipEdges != null && membershipEdges.containsKey(node))
+			membershipEdges.remove(node);
 	}
 
 	/**
@@ -222,6 +222,15 @@ public class MetaNode {
 		ViewUtils.restoreEdges(metaGroup, metaGroup.getOuterEdges(), view);
 		ViewUtils.restoreEdges(metaGroup, metaEdges.values(), view);
 
+		// If we're not hiding the metanode, we need to hide the meta-edges, and show our "membership" edges
+		if (!hideMetanode) {
+			if (membershipEdges == null) {
+				createMembershipEdges();
+			}
+			ViewUtils.hideEdges(metaGroup, metaEdges.values(), view);
+			ViewUtils.restoreEdges(metaGroup, membershipEdges.values(), view);
+		}
+
 		collapsed = false;
 	}
 
@@ -245,11 +254,7 @@ public class MetaNode {
 	 * @return the created metaEdge
 	 */
 	public CyEdge createMetaEdge(String edgeName, CyNode source, CyNode target) {
-		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-		String identifier = "meta-"+edgeName;
-		String interaction = edgeAttributes.getStringAttribute(edgeName, Semantics.INTERACTION);
-		CyEdge newEdge = Cytoscape.getCyEdge(source.getIdentifier(),identifier,
-		                                     target.getIdentifier(),"meta-"+interaction);
+		CyEdge newEdge = createEdge("meta-", edgeName, source, target);
 		metaEdges.put(newEdge,newEdge);
 		return newEdge;
 	}
@@ -498,8 +503,28 @@ public class MetaNode {
 			CyGroup parentGroup = nodeParent.getCyGroup();
 
 			CyEdge metaMetaEdge = createMetaEdge("membership", parentGroup.getGroupNode(), node);
-
 		}
+		if (membershipEdges != null) {
+			CyEdge memberEdge = createEdge("member", metaGroup.getGroupName(), metaGroup.getGroupNode(), node);
+			membershipEdges.put(node, memberEdge);
+		}
+	}
+
+	private void createMembershipEdges() {
+		membershipEdges = new HashMap<CyNode, CyEdge>();
+		for (CyNode node: metaGroup.getNodes()) {
+			CyEdge memberEdge = createEdge("member", metaGroup.getGroupName(), metaGroup.getGroupNode(), node);
+			membershipEdges.put(node, memberEdge);
+		}
+	}
+
+	private CyEdge createEdge(String prefix, String edgeName, CyNode source, CyNode target) {
+		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+		String identifier = prefix+edgeName;
+		String interaction = edgeAttributes.getStringAttribute(edgeName, Semantics.INTERACTION);
+		CyEdge newEdge = Cytoscape.getCyEdge(source.getIdentifier(),identifier,
+		                                     target.getIdentifier(),prefix+interaction);
+		return newEdge;
 	}
 
 	private boolean isConnectingEdge(CyEdge edge) {

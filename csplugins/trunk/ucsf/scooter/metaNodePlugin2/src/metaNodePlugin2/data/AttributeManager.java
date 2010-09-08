@@ -69,21 +69,21 @@ public class AttributeManager {
 	private Object aggregateValue;
 	private int count;
 
-	static AttributeHandlingType[] stringArray = {AttributeHandlingType.NONE, AttributeHandlingType.CSV, 
-	                                              AttributeHandlingType.TSV, AttributeHandlingType.MCV};
+	static AttributeHandlingType[] stringArray = {AttributeHandlingType.MCV, AttributeHandlingType.CSV, 
+	                                              AttributeHandlingType.TSV, AttributeHandlingType.NONE};
 
-	static AttributeHandlingType[] intArray = {AttributeHandlingType.NONE, AttributeHandlingType.AVG, 
-	                                           AttributeHandlingType.SUM, AttributeHandlingType.MIN, 
-	                                           AttributeHandlingType.MAX, AttributeHandlingType.MEDIAN}; 
+	static AttributeHandlingType[] intArray = {AttributeHandlingType.AVG, AttributeHandlingType.SUM, 
+	                                           AttributeHandlingType.MIN, AttributeHandlingType.MAX, 
+	                                           AttributeHandlingType.MEDIAN, AttributeHandlingType.NONE}; 
 
-	static AttributeHandlingType[] doubleArray = {AttributeHandlingType.NONE, AttributeHandlingType.AVG, 
-	                                              AttributeHandlingType.SUM, AttributeHandlingType.MIN, 
-	                                              AttributeHandlingType.MAX, AttributeHandlingType.MEDIAN}; 
+	static AttributeHandlingType[] doubleArray = {AttributeHandlingType.AVG, AttributeHandlingType.SUM, 
+	                                              AttributeHandlingType.MIN, AttributeHandlingType.MAX, 
+	                                              AttributeHandlingType.MEDIAN, AttributeHandlingType.NONE}; 
 
-	static AttributeHandlingType[] listArray = {AttributeHandlingType.NONE, AttributeHandlingType.CONCAT};
+	static AttributeHandlingType[] listArray = {AttributeHandlingType.CONCAT, AttributeHandlingType.NONE};
 
-	static AttributeHandlingType[] booleanArray = {AttributeHandlingType.NONE, AttributeHandlingType.AND, 
-	                                               AttributeHandlingType.OR};
+	static AttributeHandlingType[] booleanArray = {AttributeHandlingType.OR, AttributeHandlingType.AND, 
+	                                               AttributeHandlingType.NONE};
 
 	static AttributeHandlingType[] emptyArray = {AttributeHandlingType.NONE};
 

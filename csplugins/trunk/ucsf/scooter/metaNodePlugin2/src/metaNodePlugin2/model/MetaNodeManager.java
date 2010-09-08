@@ -56,7 +56,7 @@ public class MetaNodeManager {
 	// Static variables
 	private static Map<CyNode,MetaNode> metaMap = new HashMap<CyNode, MetaNode>();
 	protected static boolean hideMetanodeDefault = true;
-	protected static double metanodeOpacityDefault = 0.;
+	protected static double metanodeOpacityDefault = 255.;
 	protected static boolean useNestedNetworksDefault = false;
 
 	public static final String X_HINT_ATTR = "__metanodeHintX";
@@ -173,7 +173,7 @@ public class MetaNodeManager {
 	 * @param opacity the opacity (between 0 and 100)
 	 */
 	static public void setExpandedOpacityDefault(double opacity) {
-		MetaNodeManager.metanodeOpacityDefault = 255*opacity/100;
+		MetaNodeManager.metanodeOpacityDefault = opacity;
 	}
 
 	/**

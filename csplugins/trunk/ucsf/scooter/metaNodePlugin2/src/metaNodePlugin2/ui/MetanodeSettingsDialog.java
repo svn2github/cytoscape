@@ -94,10 +94,10 @@ public class MetanodeSettingsDialog extends JDialog
 	private Tunable attrList = null;
 	private String[] attributeArray = null;
 	private List<Tunable>tunableEnablers = null;
-	private boolean hideMetaNode = false;
+	private boolean hideMetaNode = true;
   private boolean enableHandling = false;
   private boolean useNestedNetworks = false;
-	private double metanodeOpacity = 0.0f;
+	private double metanodeOpacity = 255.0f;
 	private CyGroupViewer groupViewer = null;
 
 	// Dialog components
@@ -311,7 +311,7 @@ public class MetanodeSettingsDialog extends JDialog
 
 		t = metanodeProperties.get("metanodeOpacity");
 		if ((t != null) && (t.valueChanged() || force)) {
-      metanodeOpacity = ((Double) t.getValue()).doubleValue();
+      metanodeOpacity = ((Double) t.getValue()).doubleValue()*255/100;
 			MetaNodeManager.setExpandedOpacityDefault(metanodeOpacity);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
@@ -426,6 +426,8 @@ public class MetanodeSettingsDialog extends JDialog
 					// mn.setSizeToBoundingBox(sizeToBoundingBox);
 					mn.setHideMetaNode(hideMetaNode);
 					mn.setAggregateAttributes(enableHandling);
+					// System.out.println("setting opacity for "+mn+" to "+metanodeOpacity);
+					mn.setMetaNodeOpacity(metanodeOpacity);
 				}
 			}
 			setVisible(false);
@@ -442,6 +444,8 @@ public class MetanodeSettingsDialog extends JDialog
 						// mn.setSizeToBoundingBox(sizeToBoundingBox);
 						mn.setHideMetaNode(hideMetaNode);
 						mn.setAggregateAttributes(enableHandling);
+						// System.out.println("setting opacity for "+mn+" to "+metanodeOpacity);
+						mn.setMetaNodeOpacity(metanodeOpacity);
 					}
 				}
 			}
@@ -457,12 +461,12 @@ public class MetanodeSettingsDialog extends JDialog
       useNestedNetworks = ((Boolean) t.getValue()).booleanValue();
 			MetaNodeManager.setUseNestedNetworksDefault(useNestedNetworks);
 		} else if (t.getName().equals("metanodeOpacity")) {
-      metanodeOpacity = ((Double) t.getValue()).doubleValue();
+      metanodeOpacity = ((Double) t.getValue()).doubleValue()*255/100;
 			MetaNodeManager.setExpandedOpacityDefault(metanodeOpacity);
 		} else if (t.getName().equals("enableHandling")) {
       enableHandling = ((Boolean) t.getValue()).booleanValue();
 			AttributeManager.setEnable(enableHandling);
-			// enableTunables(enableHandling);
+			enableTunables(enableHandling);
 		} else if (t.getName().equals("attributeList")) {
 			CyAttributes attrs = null;
 
