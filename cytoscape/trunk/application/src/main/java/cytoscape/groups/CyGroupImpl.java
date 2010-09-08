@@ -171,15 +171,24 @@ public class CyGroupImpl implements CyGroup {
 		// At this point, we've got a list of nodes and a list of edges.  We
 		// could now create a CyNetwork that contains the internal components
 		// of this group.
-		CytoscapeRootGraph rootGraph = Cytoscape.getRootGraph();
-		myGraph = rootGraph.createNetwork(nodeList.toArray(new Node[0]), internalEdges.toArray(new Edge[0]));
+		{
+			CytoscapeRootGraph rootGraph = Cytoscape.getRootGraph();
+
+			Node[] nodeArray = null;
+			Edge[] edgeArray = null;
+			if (nodeList != null && nodeList.size() > 0)
+				nodeArray = nodeList.toArray(new Node[0]);
+			if (internalEdges != null && internalEdges.size() > 0)
+				edgeArray = internalEdges.toArray(new Edge[0]);
+			myGraph = rootGraph.createNetwork(nodeArray, edgeArray);
+		}
 
 		// Create our node and edge map
 		for (CyNode node: nodeList) {
 			List<CyEdge> adjacentEdges = (List<CyEdge>)thisNetwork.getAdjacentEdgesList(node, true, true, true);
 			nodeToEdgeMap.put(node, adjacentEdges);
 			// If we don't have external edges, add them now
-			if (externalEdges == null) {
+			if (externalEdges == null && adjacentEdges != null) {
 				for (CyEdge edge: adjacentEdges) {
 					if (!myGraph.containsEdge(edge))
 						outerEdgeMap.put(edge, edge);
