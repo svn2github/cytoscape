@@ -21,6 +21,12 @@
 
  
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/install4j</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
    <plugins>
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
@@ -42,7 +48,7 @@
         <version>0.1.1</version>
         <configuration>
           <executable>/Applications/install4j 4/bin/install4jc</executable>
-          <configFile>${basedir}/src/main/install4j/Cytoscape.install4j</configFile>
+          <configFile>${project.build.outputDirectory}/Cytoscape.install4j</configFile>
           <releaseId>${project.version}</releaseId>
           <attach>true</attach>
           <skipOnMissingExecutable>true</skipOnMissingExecutable>
