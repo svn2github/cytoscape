@@ -46,11 +46,11 @@ import org.cytoscape.model.SUIDFactory;
 import java.util.Map;
 
 
-class GraphObjImpl implements CyTableEntry, Identifiable {
+class CyTableEntryImpl implements CyTableEntry, Identifiable {
 	private final long suid;
 	private final Map<String, CyTable> attrMgr;
 
-	GraphObjImpl(final Map<String, CyTable> attrMgr) {
+	CyTableEntryImpl(final Map<String, CyTable> attrMgr) {
 		suid = SUIDFactory.getNextSUID();
 		this.attrMgr = attrMgr;
 		attrs().set("name","");
@@ -96,10 +96,10 @@ class GraphObjImpl implements CyTableEntry, Identifiable {
 
 	@Override
     public boolean equals(Object o) {
-        if (!(o instanceof GraphObjImpl))
+        if (!(o instanceof CyTableEntryImpl))
             return false;
 
-        GraphObjImpl ir = (GraphObjImpl) o;
+        CyTableEntryImpl ir = (CyTableEntryImpl) o;
 
         if (ir.suid == this.suid)
             return true;

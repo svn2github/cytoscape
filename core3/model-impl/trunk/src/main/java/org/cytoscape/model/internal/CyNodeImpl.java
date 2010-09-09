@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 
-class CyNodeImpl extends GraphObjImpl implements CyNode {
+class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 	final private int index;
 	final private CyNetwork net;
 

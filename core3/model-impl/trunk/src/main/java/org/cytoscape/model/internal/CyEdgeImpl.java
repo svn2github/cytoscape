@@ -43,7 +43,7 @@ import org.cytoscape.model.CyNode;
 import java.util.Map;
 
 
-class CyEdgeImpl extends GraphObjImpl implements CyEdge {
+class CyEdgeImpl extends CyTableEntryImpl implements CyEdge {
 	final private CyNode source;
 	final private CyNode target;
 	final private int index;
