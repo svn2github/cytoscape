@@ -48,7 +48,7 @@
 
 <div id="note" class="slice">
 	<p>Cytoscape Web is modelled after the <strong>Cytoscape Java</strong> network visualization and analysis software.</p>
-	<p>Please visit <a href="http://www.cytoscape.org"><strong>Cytoscape.org</a></strong> to find out more.</p>
+	<p>Please visit <a href="http://www.cytoscape.org"><strong>Cytoscape.org</strong></a> to find out more.</p>
 </div>
 
 
