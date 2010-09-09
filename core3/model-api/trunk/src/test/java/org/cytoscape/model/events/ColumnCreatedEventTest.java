@@ -41,7 +41,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 
 import static org.mockito.Mockito.*;
 
@@ -51,11 +51,11 @@ import static org.mockito.Mockito.*;
 public class ColumnCreatedEventTest extends TestCase {
 
 	ColumnCreatedEvent event;
-	CyDataTable table;
+	CyTable table;
 	final String columnName = "asdf";
 
 	public void setUp() {
-		table = mock(CyDataTable.class); 
+		table = mock(CyTable.class); 
 		event = new ColumnCreatedEvent(table,columnName);
 	}
 

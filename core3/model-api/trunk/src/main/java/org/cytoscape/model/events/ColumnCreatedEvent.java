@@ -39,7 +39,7 @@ package org.cytoscape.model.events;
 import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.AbstractCyEvent;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 
 
 /**
@@ -48,7 +48,7 @@ import org.cytoscape.model.CyDataTable;
  * This should probably return the type parameter as well. 
  */
 public final class ColumnCreatedEvent extends AbstractColumnEvent {
-	public ColumnCreatedEvent(final CyDataTable source, final String columnName) {
+	public ColumnCreatedEvent(final CyTable source, final String columnName) {
 		super(source, ColumnCreatedListener.class, columnName);
 	}
 }

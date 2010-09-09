@@ -36,29 +36,45 @@
 
 package org.cytoscape.model;
 
-/**
- * DOCUMENT ME!
-  */
-public interface GraphObject extends Identifiable {
-	
-	/*
-	 * The following strings have been moved from Visual Property.
-	 * We use String instead of enum in case we need to extend it later.
-	 */
-	/**
-	 * Canonical ObjectType string for CyNode.
-	 */
-	String NODE = "NODE";
-	/**
-	 * Canonical ObjectType string for CyEdge.
-	 */
-	String EDGE = "EDGE";
-	/**
-	 * Canonical ObjectType string for CyNetwork.
-	 */
-	String NETWORK = "NETWORK";
-	
-	CyRow getCyRow(String namespace);
+import java.util.List;
+import java.util.ArrayList;
 
-	CyRow attrs();
+
+/** 
+ * 
+ */
+public class CyTableUtil {
+	private CyTableUtil() {}
+
+	/**
+	 * A utility method that returns a list of nodes that have a boolean attribute
+	 * in the CyNetwork.DEFAULT_ATTRS namespace specified by columnName and are in 
+	 * the specified state.  If the attribute doesn't exist or is not of type 
+	 * Boolean an IllegalArgumentException will be thrown.
+	 */
+	public static List<CyNode> getNodesInState(final CyNetwork net, final String columnName, final boolean state) {
+		if ( net == null )
+			throw new NullPointerException("network is null");
+		List<CyNode> ret = new ArrayList<CyNode>();
+		for ( CyNode node : net.getNodeList() )
+			if ( node.attrs().get(columnName,Boolean.class) == state )
+				ret.add( node );
+		return ret;
+	}
+	
+	/**
+	 * A utility method that returns a list of edges that have a boolean attribute
+	 * in the CyNetwork.DEFAULT_ATTRS namespace specified by columnName and are in 
+	 * the specified state.  If the attribute doesn't exist or is not of type 
+	 * Boolean an IllegalArgumentException will be thrown.
+	 */
+	public static List<CyEdge> getEdgesInState(final CyNetwork net, final String columnName, final boolean state) {
+		if ( net == null )
+			throw new NullPointerException("network is null");
+		List<CyEdge> ret = new ArrayList<CyEdge>();
+		for ( CyEdge edge : net.getEdgeList() )
+			if ( edge.attrs().get(columnName,Boolean.class) == state )
+				ret.add( edge );
+		return ret;
+	}
 }

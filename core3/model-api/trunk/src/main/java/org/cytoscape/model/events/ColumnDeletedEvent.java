@@ -38,7 +38,7 @@ package org.cytoscape.model.events;
 
 import org.cytoscape.event.CyEvent;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 
 
 /**
@@ -48,7 +48,7 @@ import org.cytoscape.model.CyDataTable;
  * that it is clear when it should be fired.
  */
 public final class ColumnDeletedEvent extends AbstractColumnEvent {
-	public ColumnDeletedEvent(final CyDataTable source, final String columnName) {
+	public ColumnDeletedEvent(final CyTable source, final String columnName) {
 		super(source, ColumnDeletedListener.class, columnName);
 	}
 }

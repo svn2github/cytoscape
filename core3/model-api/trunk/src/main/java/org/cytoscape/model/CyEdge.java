@@ -40,7 +40,7 @@ package org.cytoscape.model;
  * An object that represents an edge within a network of nodes (vertices)
  * and edges.
  */
-public interface CyEdge extends GraphObject {
+public interface CyEdge extends CyTableEntry {
 	/**
 	 * The Type enum is used by methods in {@link CyNetwork} to restrict
 	 * the edges that match a query as follows:

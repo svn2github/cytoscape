@@ -41,25 +41,25 @@ import java.util.List;
 
 /**
  * An interface describing a factory used for creating 
- * {@link CyDataTable} objects.  This factory will be
+ * {@link CyTable} objects.  This factory will be
  * provided as a service through Spring/OSGi.
  */
-public interface CyDataTableFactory {
+public interface CyTableFactory {
 	/**
-	 * @param title The name of the CyDataTable.
+	 * @param title The name of the CyTable.
 	 * @param primaryKey The name primaryKey column for this table. 
 	 * @param primaryKeyType The type of the primaryKey column for this table. 
-	 * @param pub Whether or not the CyDataTable should be public.
+	 * @param pub Whether or not the CyTable should be public.
 	 *
-	 * @return A new {@link CyDataTable} with the specified name that is either public or not (see
-	 *         {@link CyDataTable#isPublic}.
+	 * @return A new {@link CyTable} with the specified name that is either public or not (see
+	 *         {@link CyTable#isPublic}.
 	 */
-	CyDataTable createTable(String title, String primaryKey, Class<?> primaryKeyType, boolean pub);
+	CyTable createTable(String title, String primaryKey, Class<?> primaryKeyType, boolean pub);
 
 	/**
      * @param includePrivate Whether to include private CyDataTables
      * in the list (i.e. all possible CyDataTables) or not.
-     * @return A list containing CyDataTable SUIDs either
+     * @return A list containing CyTable SUIDs either
      * including private CyDataTables (i.e. meaning all possible
      * CyDataTables) or just public CyDataTables.
      */
@@ -67,10 +67,10 @@ public interface CyDataTableFactory {
 
 	/**
 	 * 
-	 * @param suid The SUID identifying the CyDataTable.
+	 * @param suid The SUID identifying the CyTable.
 	 *
-	 * @return The CyDataTable identified by the suid. Will return null if a CyDataTable doesn't
+	 * @return The CyTable identified by the suid. Will return null if a CyTable doesn't
 	 *         exist for the  specified SUID.
 	 */
-	CyDataTable getTable(long suid);
+	CyTable getTable(long suid);
 }

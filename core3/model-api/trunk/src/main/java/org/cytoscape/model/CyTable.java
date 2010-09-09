@@ -43,21 +43,21 @@ import java.util.Map;
 /** 
  * 
  */
-public interface CyDataTable {
+public interface CyTable {
 	/**
 	 * By default all {@link CyRow}s created have a primary key column of type {@link Integer} 
 	 * that gets created at initialization which is identified by this string. If the
-	 * CyDataTable is created and immediately bound to a {@link CyNetwork} then the primary key
-	 * attribute is populated with the SUID of the  {@link GraphObject}.
+	 * CyTable is created and immediately bound to a {@link CyNetwork} then the primary key
+	 * attribute is populated with the SUID of the  {@link CyTableEntry}.
 	 */
 	String PRIMARY_KEY = "AID";
 
 	/**
-	 * A public CyDataTable is a table that is accessible to the user through the user
+	 * A public CyTable is a table that is accessible to the user through the user
 	 * interface.  Private or non-public CyDataTables will not be visible to the user from the
 	 * normal user interface, although they will be accessible to plugin writers through the API.
 	 *
-	 * @return Whether or not this CyDataTable should be publicly accessible.
+	 * @return Whether or not this CyTable should be publicly accessible.
 	 */
 	boolean isPublic();
 
@@ -67,7 +67,7 @@ public interface CyDataTable {
 	long getSUID();
 
 	/**
-	 * @return A human readable name for the CyDataTable.
+	 * @return A human readable name for the CyTable.
 	 */
 	String getTitle();
 
@@ -83,13 +83,13 @@ public interface CyDataTable {
 
 	/**
 	 * 
-	 * @param title The human readable title for the CyDataTable suitable for use in a user
+	 * @param title The human readable title for the CyTable suitable for use in a user
 	 *        interface.
 	 */
 	void setTitle(String title);
 
 	/**
-     * The keySet of this map defines all columns in the CyDataTable and the
+     * The keySet of this map defines all columns in the CyTable and the
      * the values of this map define the types of the columns.
 	 *
      * @return A map of column names to the {@link Class} objects that defines
@@ -110,7 +110,7 @@ public interface CyDataTable {
 	<T> void createColumn(String columnName, Class<?extends T> type, boolean unique);
 
 	/**
-     * Unique columns can be used to map the values from one CyDataTable to another.
+     * Unique columns can be used to map the values from one CyTable to another.
      * @return A list of column names where the values within the column are
      * guaranteed to be unique. 
      */

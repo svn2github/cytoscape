@@ -41,7 +41,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
@@ -59,9 +59,9 @@ import java.util.*;
 /**
  * DOCUMENT ME!
  */
-public abstract class AbstractCyDataTableTest extends TestCase {
+public abstract class AbstractCyTableTest extends TestCase {
 
-	protected CyDataTable mgr;
+	protected CyTable mgr;
 	protected CyRow attrs;
 	protected DummyCyEventHelper eventHelper; 
 

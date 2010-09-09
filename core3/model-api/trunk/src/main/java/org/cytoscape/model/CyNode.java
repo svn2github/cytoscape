@@ -43,7 +43,7 @@ import java.util.List;
  * An object that represents a node (vertex) within a network 
  * of nodes and edges.
  */
-public interface CyNode extends GraphObject {
+public interface CyNode extends CyTableEntry {
 	
 	/**
 	 * An index of this node within this network.  The index is guaranteed to

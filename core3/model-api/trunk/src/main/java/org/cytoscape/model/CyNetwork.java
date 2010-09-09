@@ -53,18 +53,18 @@ import java.util.Map;
  * a graph, traverse it, get and set attributes, and inquire about the existence of
  * nodes and edges.
  */
-public interface CyNetwork extends Identifiable, GraphObject {
+public interface CyNetwork extends Identifiable, CyTableEntry {
 	/**
-	 * The "USER" CyDataTable is created by default for CyNetworks, CyNodes, and
-	 * CyEdges.  Other CyDataTables may also be associated -- see {@link CyDataTable}
+	 * The "USER" CyTable is created by default for CyNetworks, CyNodes, and
+	 * CyEdges.  Other CyDataTables may also be associated -- see {@link CyTable}
 	 * for more information.  The table should be referenced using this constant:
 	 * <code>CyNetwork.DEFAULT_ATTRS</code>.
 	 */
 	String DEFAULT_ATTRS = "USER";
 
 	/**
-	 * The "HIDDEN" CyDataTable is created by default for CyNetworks, CyNodes, and
-	 * CyEdges.  Other CyDataTables may also be associated -- see {@link CyDataTable}
+	 * The "HIDDEN" CyTable is created by default for CyNetworks, CyNodes, and
+	 * CyEdges.  Other CyDataTables may also be associated -- see {@link CyTable}
 	 * for more information.
 	 */
 	String HIDDEN_ATTRS = "HIDDEN";

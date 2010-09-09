@@ -47,7 +47,7 @@ public interface CyTableManager {
 	/**
 	 * @return The table containing network attributes for the specified network.
 	 */
-	Map<String,CyDataTable> getTableMap(String type, CyNetwork network);
+	Map<String,CyTable> getTableMap(String type, CyNetwork network);
 
-	void setTableMap(String type, CyNetwork network, Map<String,CyDataTable> map);	
+	void setTableMap(String type, CyNetwork network, Map<String,CyTable> map);	
 }

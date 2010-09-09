@@ -45,7 +45,7 @@ import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.CyListener;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;

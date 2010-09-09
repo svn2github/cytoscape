@@ -41,9 +41,9 @@ import java.util.HashMap;
 
 public class StubTableManager implements CyTableManager {
 
-	public Map<String,CyDataTable> getTableMap(String type, CyNetwork network) {
-		return new HashMap<String,CyDataTable>();
+	public Map<String,CyTable> getTableMap(String type, CyNetwork network) {
+		return new HashMap<String,CyTable>();
 	}
 
-	public void setTableMap(String type, CyNetwork network, Map<String,CyDataTable> map) { }
+	public void setTableMap(String type, CyNetwork network, Map<String,CyTable> map) { }
 }

@@ -49,7 +49,7 @@ import java.util.ArrayList;
 /**
  * DOCUMENT ME!
  */
-public class CyDataTableUtilTest extends TestCase {
+public class CyTableUtilTest extends TestCase {
 
 	CyNetwork net;
 
@@ -96,28 +96,28 @@ public class CyDataTableUtilTest extends TestCase {
 	}
 
 	public void testGetTrueNodes() {
-		List<CyNode> nodes = CyDataTableUtil.getNodesInState(net,columnName,true);
+		List<CyNode> nodes = CyTableUtil.getNodesInState(net,columnName,true);
 		assertNotNull(nodes);
 		assertTrue( nodes.contains(node1) );
 		assertEquals( 1, nodes.size() );
 	}
 
 	public void testGetFalseNodes() {
-		List<CyNode> nodes = CyDataTableUtil.getNodesInState(net,columnName,false);
+		List<CyNode> nodes = CyTableUtil.getNodesInState(net,columnName,false);
 		assertNotNull(nodes);
 		assertTrue( nodes.contains(node2) );
 		assertEquals( 1, nodes.size() );
 	}
 
 	public void testGetTrueEdges() {
-		List<CyEdge> edges = CyDataTableUtil.getEdgesInState(net,columnName,true);
+		List<CyEdge> edges = CyTableUtil.getEdgesInState(net,columnName,true);
 		assertNotNull(edges);
 		assertTrue( edges.contains(edge1) );
 		assertEquals( 1, edges.size() );
 	}
 
 	public void testGetFalseEdges() {
-		List<CyEdge> edges = CyDataTableUtil.getEdgesInState(net,columnName,false);
+		List<CyEdge> edges = CyTableUtil.getEdgesInState(net,columnName,false);
 		assertNotNull(edges);
 		assertTrue( edges.contains(edge2) );
 		assertEquals( 1, edges.size() );
@@ -125,7 +125,7 @@ public class CyDataTableUtilTest extends TestCase {
 
 	public void testNullNetworkNodes() {
 		try {
-		List<CyNode> nodes = CyDataTableUtil.getNodesInState(null,columnName,false);
+		List<CyNode> nodes = CyTableUtil.getNodesInState(null,columnName,false);
 		} catch (NullPointerException npe) {
 			return;
 		}
@@ -134,7 +134,7 @@ public class CyDataTableUtilTest extends TestCase {
 
 	public void testNullNetworkEdges() {
 		try {
-		List<CyEdge> nodes = CyDataTableUtil.getEdgesInState(null,columnName,false);
+		List<CyEdge> nodes = CyTableUtil.getEdgesInState(null,columnName,false);
 		} catch (NullPointerException npe) {
 			return;
 		}

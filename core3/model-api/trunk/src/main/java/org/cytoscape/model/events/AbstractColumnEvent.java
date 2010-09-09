@@ -39,7 +39,7 @@ package org.cytoscape.model.events;
 import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.AbstractCyEvent;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 
 
 /**
@@ -47,11 +47,11 @@ import org.cytoscape.model.CyDataTable;
  *<p>
  * This should probably return the type parameter as well. 
  */
-class AbstractColumnEvent extends AbstractCyEvent<CyDataTable> {
+class AbstractColumnEvent extends AbstractCyEvent<CyTable> {
 
 	private final String columnName;
 
-	AbstractColumnEvent(final CyDataTable source, final Class listenerClass, final String columnName) {
+	AbstractColumnEvent(final CyTable source, final Class listenerClass, final String columnName) {
 		super(source, listenerClass);
 		if ( columnName == null )
 			throw new NullPointerException("columnName can't be null");

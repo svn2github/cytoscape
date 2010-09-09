@@ -40,7 +40,7 @@ import java.util.Map;
 
 
 /**
- * This interface represents one row in a CyDataTable.
+ * This interface represents one row in a CyTable.
  */
 public interface CyRow {
 	/**
@@ -88,7 +88,7 @@ public interface CyRow {
 	Object getRaw(String columnName);
 
 	/**
-	 * Returns the {@link CyDataTable} that this row belongs to.
+	 * Returns the {@link CyTable} that this row belongs to.
 	 */
-	CyDataTable getDataTable();
+	CyTable getDataTable();
 }

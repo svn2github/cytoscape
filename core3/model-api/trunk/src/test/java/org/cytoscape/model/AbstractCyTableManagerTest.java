@@ -77,7 +77,7 @@ public abstract class AbstractCyTableManagerTest extends TestCase {
 
 	private void checkGetSet(String type) {
 	 	assertNotNull(n);	
-		Map<String, CyDataTable> map = new HashMap<String,CyDataTable>();
+		Map<String, CyTable> map = new HashMap<String,CyTable>();
 
 		mgr.setTableMap(type, n, map);
 	
@@ -87,7 +87,7 @@ public abstract class AbstractCyTableManagerTest extends TestCase {
 
 	// to clean up a table map
 	public void testSetNullTableMap() {
-		Map<String, CyDataTable> map = new HashMap<String,CyDataTable>();
+		Map<String, CyTable> map = new HashMap<String,CyTable>();
 
 		mgr.setTableMap("NETWORK", n, map);
 	
@@ -104,7 +104,7 @@ public abstract class AbstractCyTableManagerTest extends TestCase {
 	}
 
 	public void testSetNullGraphObjectTableMap() {
-		Map<String, CyDataTable> map = new HashMap<String,CyDataTable>();
+		Map<String, CyTable> map = new HashMap<String,CyTable>();
 		try {
 		mgr.setTableMap("NETWORK", null, map);
 		} catch (NullPointerException npe) {
