@@ -37,8 +37,8 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyDataTableUtil;
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
@@ -113,7 +113,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		CyNetwork network = netmgr.getCurrentNetwork();
 
 		// First, do we support selectedOnly?
-		selectedNodes = new HashSet<CyNode>(CyDataTableUtil.getNodesInState(network,"selected",true));
+		selectedNodes = new HashSet<CyNode>(CyTableUtil.getNodesInState(network,"selected",true));
 
 		if (layout.supportsSelectedOnly() && (selectedNodes.size() > 0)) {
 			// Add selected node/all nodes menu
@@ -140,18 +140,18 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		// Get the node attributes
 		//FIXME
 		//tableMgr.getTableMap("NODE", m_perspective)
-		//CyDataTable nodeAttributes = net.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS); 
+		//CyTable nodeAttributes = net.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS); 
 		//addAttributeMenus(parent, nodeAttributes, layout.supportsNodeAttributes(), selectedOnly);
 	}
 
 	private void addEdgeAttributeMenus(JMenu parent, CyNetwork net, boolean selectedOnly) {
 		// Get the edge attributes
 		//FIXME
-//		CyDataTable edgeAttributes = net.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS); 
+//		CyTable edgeAttributes = net.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS); 
 //		addAttributeMenus(parent, edgeAttributes, layout.supportsEdgeAttributes(), selectedOnly);
 	}
 
-	private void addAttributeMenus(JMenu parent, CyDataTable attributes, Set<Class<?>> typeSet,
+	private void addAttributeMenus(JMenu parent, CyTable attributes, Set<Class<?>> typeSet,
 	                               boolean selectedOnly) {
 		// Add any special attributes
 		List specialList = layout.getInitialAttributeList();

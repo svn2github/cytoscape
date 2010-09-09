@@ -9,7 +9,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.session.events.NetworkViewAddedEvent;

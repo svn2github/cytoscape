@@ -67,7 +67,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.model.events.SelectedEdgesEvent;
@@ -625,7 +625,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 				return ""
 						+ cyNetwork.getNodeCount()
 						+ "("
-						+ CyDataTableUtil.getNodesInState(cyNetwork,
+						+ CyTableUtil.getNodesInState(cyNetwork,
 								"selected", true).size() + ")";
 			} else if (column == 2) {
 				CyNetwork cyNetwork = netmgr
@@ -634,7 +634,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 				return ""
 						+ cyNetwork.getEdgeCount()
 						+ "("
-						+ CyDataTableUtil.getEdgesInState(cyNetwork,
+						+ CyTableUtil.getEdgesInState(cyNetwork,
 								"selected", true).size() + ")";
 			}
 

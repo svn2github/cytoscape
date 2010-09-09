@@ -36,11 +36,11 @@ import java.util.Set;
 
 import javax.swing.event.MenuEvent;
 
-import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.session.CyNetworkManager;
@@ -68,7 +68,7 @@ public class DeleteAction extends CytoscapeAction {
 	 */
 	public static final String ACTION_TITLE = "Delete Selected Nodes and Edges";
 
-	private GraphObject graphObj = null;
+	private CyTableEntry graphObj = null;
 
 	private final UndoSupport undo;
 
@@ -86,7 +86,7 @@ public class DeleteAction extends CytoscapeAction {
 	 * @param obj the object to be deleted
 	 */
 
-	public DeleteAction(GraphObject obj, final UndoSupport undo, final CyRootNetworkFactory root, CyNetworkManager netmgr) {
+	public DeleteAction(CyTableEntry obj, final UndoSupport undo, final CyRootNetworkFactory root, CyNetworkManager netmgr) {
 		super(ACTION_TITLE,netmgr);
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(KeyEvent.VK_DELETE, 0);
@@ -106,8 +106,8 @@ public class DeleteAction extends CytoscapeAction {
 
 		// delete from the base CySubNetwork so that our changes can be undone 
 		CySubNetwork cyNet = cyRootNetworkFactory.convert( myView.getModel() ).getBaseNetwork();
-		List<CyEdge> selEdges = CyDataTableUtil.getEdgesInState(cyNet,"selected",true); 
-		List<CyNode> selNodes = CyDataTableUtil.getNodesInState(cyNet,"selected",true); 
+		List<CyEdge> selEdges = CyTableUtil.getEdgesInState(cyNet,"selected",true); 
+		List<CyNode> selNodes = CyTableUtil.getNodesInState(cyNet,"selected",true); 
 		CyNode cyNode;
 		CyEdge cyEdge;
 
@@ -158,8 +158,8 @@ public class DeleteAction extends CytoscapeAction {
             return;
         }
 
-        List<CyNode> nodes = CyDataTableUtil.getNodesInState(n,"selected",true);
-        List<CyEdge> edges = CyDataTableUtil.getEdgesInState(n,"selected",true);
+        List<CyNode> nodes = CyTableUtil.getNodesInState(n,"selected",true);
+        List<CyEdge> edges = CyTableUtil.getEdgesInState(n,"selected",true);
 
         if ( nodes.size() > 0 || edges.size() > 0 )
             setEnabled(true);

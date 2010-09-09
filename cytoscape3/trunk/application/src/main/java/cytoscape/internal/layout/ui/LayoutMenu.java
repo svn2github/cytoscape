@@ -40,7 +40,7 @@ import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
 
@@ -134,7 +134,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 		CyNetwork network = netmgr.getCurrentNetwork();
 		boolean someSelected = false; 
 		if ( network != null ) {
-			List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(network,"selected",true);
+			List<CyNode> selectedNodes = CyTableUtil.getNodesInState(network,"selected",true);
 			someSelected = (selectedNodes.size() > 0);
 		}
 
