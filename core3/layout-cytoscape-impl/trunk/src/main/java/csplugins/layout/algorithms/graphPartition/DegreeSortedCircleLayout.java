@@ -1,7 +1,7 @@
 /* vim: set ts=2: */
 package csplugins.layout.algorithms.graphPartition;
 
-import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.model.CyTableEntry.NODE;
 
 import java.util.ArrayList;
 import java.util.Collections;

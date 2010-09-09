@@ -46,7 +46,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.layout.AbstractLayout;
@@ -299,7 +299,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			return;
 
 		/* construct node list with selected nodes first */
-		List selectedNodes = CyDataTableUtil.getNodesInState(network,"selected",true);
+		List selectedNodes = CyTableUtil.getNodesInState(network,"selected",true);
 		int numSelectedNodes = selectedNodes.size();
 
 		if (!selectedOnly)
@@ -317,7 +317,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		HashMap<Integer, View<CyNode>> index2NodeView = new HashMap<Integer, View<CyNode>>(numNodes);
 		
 		if (numSelectedNodes > 1) {
-			for (CyNode n: CyDataTableUtil.getNodesInState(network,"selected",true)){
+			for (CyNode n: CyTableUtil.getNodesInState(network,"selected",true)){
 			    index2NodeView.put(n.getIndex(), networkView.getNodeView(n));
 			}
 		} else {
