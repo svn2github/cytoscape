@@ -37,7 +37,7 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.bypass;
 
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 
 /**
  * ARgh.  This is a horrible, horrible hack that allows LabelPosition to
@@ -51,13 +51,13 @@ import org.cytoscape.model.GraphObject;
  * This should be handled in a completely different way in the future.
  */
 public class BypassHack {
-	private static GraphObject curr = null;
+	private static CyTableEntry curr = null;
 
-	static void setCurrentObject(GraphObject o) {
+	static void setCurrentObject(CyTableEntry o) {
 		curr = o;
 	}
 
-	public static GraphObject getCurrentObject() {
+	public static CyTableEntry getCurrentObject() {
 		return curr;
 	}
 

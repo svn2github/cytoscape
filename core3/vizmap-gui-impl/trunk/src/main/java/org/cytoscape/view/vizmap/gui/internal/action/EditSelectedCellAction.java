@@ -38,7 +38,7 @@ package org.cytoscape.view.vizmap.gui.internal.action;
 
 import java.awt.event.ActionEvent;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
@@ -106,7 +106,7 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 		 * Extract calculator
 		 */
 		final VisualMappingFunction<?, ?> mapping;
-		final CyDataTable attr;
+		final CyTable attr;
 
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
 		mapping = vizMapGUI.getSelectedVisualStyle().getVisualMappingFunction(vp);

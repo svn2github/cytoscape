@@ -41,7 +41,7 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
@@ -148,7 +148,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 //			if (parentValue != null) {
 //				ctrAttrName = parentValue.toString();
 //
-//				CyDataTable attr = tableMgr.getTableMap().(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get( CyNetwork.DEFAULT_ATTRS);
+//				CyTable attr = tableMgr.getTableMap().(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get( CyNetwork.DEFAULT_ATTRS);
 //
 //				final Class<?> dataClass = attr.getColumnTypeMap().get(
 //						ctrAttrName);
@@ -196,7 +196,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 //			/*
 //			 * Ignore if not compatible.
 //			 */
-//			final CyDataTable attrForTest = tableMgr.getTableMap(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
+//			final CyTable attrForTest = tableMgr.getTableMap(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
 //
 //			final Class<?> dataType = attrForTest.getColumnTypeMap().get(
 //					ctrAttrName);
@@ -298,7 +298,7 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 //		/*
 //		 * Need to convert this string to proper data types.
 //		 */
-//		final CyDataTable attr = tableMgr.getTableMap(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
+//		final CyTable attr = tableMgr.getTableMap(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
 //		ctrAttrName = mapping.getMappingAttributeName();
 //
 //		// Byte attrType = attr.getType(ctrAttrName);

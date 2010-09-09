@@ -44,7 +44,7 @@ import java.util.TreeSet;
 
 import javax.swing.JOptionPane;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.CyNetworkView;
@@ -103,7 +103,7 @@ public class GenerateValueAction<K, V> extends AbstractVizMapperAction {
 			final long seed = System.currentTimeMillis();
 			final Random rand = new Random(seed);
 
-			final CyDataTable attr;
+			final CyTable attr;
 
 			attr = tableMgr.getTableMap(type.getObjectType(), cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
 

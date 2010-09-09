@@ -35,8 +35,8 @@
 
 package org.cytoscape.view.vizmap.gui.internal;
 
-import static org.cytoscape.model.GraphObject.EDGE;
-import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.model.CyTableEntry.EDGE;
+import static org.cytoscape.model.CyTableEntry.NODE;
 
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;

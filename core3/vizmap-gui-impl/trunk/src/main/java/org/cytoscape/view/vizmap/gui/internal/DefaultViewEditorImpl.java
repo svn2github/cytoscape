@@ -34,9 +34,9 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
-import static org.cytoscape.model.GraphObject.EDGE;
-import static org.cytoscape.model.GraphObject.NETWORK;
-import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.model.CyTableEntry.EDGE;
+import static org.cytoscape.model.CyTableEntry.NETWORK;
+import static org.cytoscape.model.CyTableEntry.NODE;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -69,7 +69,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
@@ -478,9 +478,9 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 					public void ActionPerformed(ActionEvent e) {
 						boolean lock = false;
-						if (vp.getObjectType().equals(GraphObject.NETWORK)) {
+						if (vp.getObjectType().equals(CyTableEntry.NETWORK)) {
 							lock = ((View<CyNetwork>)networkView).isValueLocked(vp);
-						} else if (vp.getObjectType().equals(GraphObject.NODE)) {
+						} else if (vp.getObjectType().equals(CyTableEntry.NODE)) {
 
 						}
 

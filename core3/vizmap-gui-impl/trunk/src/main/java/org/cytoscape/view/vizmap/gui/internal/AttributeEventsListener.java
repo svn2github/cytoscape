@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.events.ColumnCreatedEvent;
@@ -17,7 +17,7 @@ public class AttributeEventsListener  implements RowSetMicroListener {
 
 	private CyComboBoxPropertyEditor propEditor;
 	private Class<?> filter;
-	private final CyDataTable attr;
+	private final CyTable attr;
 	private CyNetworkManager cyNetworkManager;
 	
 	private static final String NAME = "name";
@@ -26,10 +26,10 @@ public class AttributeEventsListener  implements RowSetMicroListener {
 	 * Constructor.
 	 * 
 	 * @param cyAttributes
-	 *            CyDataTable
+	 *            CyTable
 	 */
 	public AttributeEventsListener(CyComboBoxPropertyEditor propEditor, Class<?> filter, 
-			CyDataTable attributes, CyNetworkManager cyNetworkManager) {
+			CyTable attributes, CyNetworkManager cyNetworkManager) {
 
 		this.attr = attributes;
 		this.filter = filter;

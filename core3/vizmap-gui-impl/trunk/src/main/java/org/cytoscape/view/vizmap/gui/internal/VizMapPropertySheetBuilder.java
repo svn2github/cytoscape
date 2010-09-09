@@ -1,8 +1,8 @@
 package org.cytoscape.view.vizmap.gui.internal;
 
-import static org.cytoscape.model.GraphObject.EDGE;
-import static org.cytoscape.model.GraphObject.NETWORK;
-import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.model.CyTableEntry.EDGE;
+import static org.cytoscape.model.CyTableEntry.NETWORK;
+import static org.cytoscape.model.CyTableEntry.NODE;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -422,7 +422,7 @@ public class VizMapPropertySheetBuilder implements
 		// Attribute Names
 		final List<String> names = new ArrayList<String>();
 //
-//		 CyDataTable attr = /* TODO */getTargetNetwork().getNodeCyDataTables()
+//		 CyTable attr = /* TODO */getTargetNetwork().getNodeCyDataTables()
 //				.get(CyNetwork.DEFAULT_ATTRS);
 //
 //		// TODO remove the next line too!

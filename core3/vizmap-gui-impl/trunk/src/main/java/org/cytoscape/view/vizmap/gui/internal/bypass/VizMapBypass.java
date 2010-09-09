@@ -45,7 +45,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -58,7 +58,7 @@ import org.cytoscape.view.vizmap.gui.editor.EditorManager;
  */
 abstract class VizMapBypass {
 	protected VisualMappingManager vmm;
-	protected GraphObject graphObj = null;
+	protected CyTableEntry graphObj = null;
 
 	abstract protected List<String> getBypassNames();
 
@@ -123,7 +123,7 @@ abstract class VizMapBypass {
 
 					//TODO: what's the replacement?
 //					String val = ObjectToString.getStringValue(obj);
-//					CyDataTable table = graphObj.attrs().getDataTable();
+//					CyTable table = graphObj.attrs().getDataTable();
 //
 //					if (!table.getColumnTypeMap().containsKey(type.getDisplayName()))
 //						table.createColumn(type.getDisplayName(), String.class, false);

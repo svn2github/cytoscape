@@ -36,7 +36,7 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.bypass;
 
-import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.model.CyTableEntry.NODE;
 
 import java.util.ArrayList;
 import java.util.List;

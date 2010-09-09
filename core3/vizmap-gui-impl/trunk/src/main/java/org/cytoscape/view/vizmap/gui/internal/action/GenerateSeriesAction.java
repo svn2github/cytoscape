@@ -64,7 +64,7 @@ public class GenerateSeriesAction extends AbstractVizMapperAction {
 //
 //		if (vp != null && oMap != null) {
 //
-//			final CyDataTable attr = tableMgr.getTableMap(vp.getObjectType(),targetNetwork).get(
+//			final CyTable attr = tableMgr.getTableMap(vp.getObjectType(),targetNetwork).get(
 //						CyNetwork.DEFAULT_ATTRS);
 //
 //			final Set<K> attrSet = new TreeSet<K>(

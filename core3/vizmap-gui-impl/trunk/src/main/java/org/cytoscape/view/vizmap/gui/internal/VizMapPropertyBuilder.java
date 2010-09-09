@@ -35,8 +35,8 @@
 
 package org.cytoscape.view.vizmap.gui.internal;
 
-import static org.cytoscape.model.GraphObject.EDGE;
-import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.model.CyTableEntry.EDGE;
+import static org.cytoscape.model.CyTableEntry.NODE;
 
 import java.beans.PropertyEditor;
 import java.util.ArrayList;
@@ -50,9 +50,9 @@ import java.util.TreeSet;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
@@ -146,8 +146,8 @@ public class VizMapPropertyBuilder {
 				.getEditorFactory()).registerEditor(mappingHeader,
 				editorFactory.getDefaultComboBoxEditor("mappingTypeEditor"));
 
-		CyDataTable attr = null;
-		Iterator<? extends GraphObject> it = null;
+		CyTable attr = null;
+		Iterator<? extends CyTableEntry> it = null;
 
 		if (targetNetwork == null)
 			return null;
@@ -225,7 +225,7 @@ public class VizMapPropertyBuilder {
 			VizMapperProperty<K> oneProperty;
 
 			while (it.hasNext()) {
-				GraphObject go = it.next();
+				CyTableEntry go = it.next();
 				Class<?> attrClass = attr.getColumnTypeMap().get(attrName);
 				id = go.attrs().get("name", String.class);
 				

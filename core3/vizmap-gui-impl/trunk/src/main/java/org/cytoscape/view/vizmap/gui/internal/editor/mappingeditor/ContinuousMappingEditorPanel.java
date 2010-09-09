@@ -52,7 +52,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
@@ -382,7 +382,7 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 	private void initRangeValues() {
 
 		// Attribute to be mapped.
-		final CyDataTable attrs;
+		final CyTable attrs;
 
 		attrs = tableMgr.getTableMap(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
 

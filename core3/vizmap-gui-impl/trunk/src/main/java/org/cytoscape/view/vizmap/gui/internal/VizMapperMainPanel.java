@@ -358,7 +358,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	}
 
 	/*
-	 * private Set<Object> loadKeys(final String attrName, final CyDataTable
+	 * private Set<Object> loadKeys(final String attrName, final CyTable
 	 * attrs, final MappingCalculator mapping, final int nOre) { if
 	 * (attrName.equals("ID")) { return loadID(nOre); }
 	 * 
@@ -552,7 +552,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * (commented out) I'll leave it here -- abeld private Set<Object>
 	 * loadID(final int nOre) { Set<Object> ids = new TreeSet<Object>();
 	 * 
-	 * List<? extends GraphObject> obj;
+	 * List<? extends CyTableEntry> obj;
 	 * 
 	 * if (nOre == MappingCalculator.NODE_MAPPING) { obj =
 	 * cyNetworkManager.getCurrentNetworkView
@@ -560,7 +560,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * cyNetworkManager.getCurrentNetworkView
 	 * ().getGraphPerspective().getEdgeList(); }
 	 * 
-	 * for (GraphObject o : obj) { ids.add(o.attrs().get("name", String.class));
+	 * for (CyTableEntry o : obj) { ids.add(o.attrs().get("name", String.class));
 	 * }
 	 * 
 	 * return ids; }

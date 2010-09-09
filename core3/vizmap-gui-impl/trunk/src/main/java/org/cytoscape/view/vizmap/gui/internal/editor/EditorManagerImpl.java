@@ -39,7 +39,7 @@ import java.beans.PropertyEditor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnCreatedListener;
 import org.cytoscape.model.events.ColumnDeletedEvent;
@@ -256,7 +256,7 @@ public class EditorManagerImpl implements EditorManager, ColumnCreatedListener,
 		return (ValueEditor<V>) this.valueEditors.get(dataType);
 	}
 
-	public PropertyEditor getDataTableComboBoxEditor(CyDataTable table,
+	public PropertyEditor getDataTableComboBoxEditor(CyTable table,
 			String editorName) {
 		PropertyEditor editor = comboBoxEditors.get(editorName);
 		if (editor == null) {

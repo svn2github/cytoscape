@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.swing.JComboBox;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnCreatedListener;
 import org.cytoscape.model.events.ColumnDeletedEvent;
@@ -17,13 +17,13 @@ public class AttributeComboBoxPropertyEditor extends CyComboBoxPropertyEditor
 		implements ColumnDeletedListener, ColumnCreatedListener {
 
 	private Class<?> filter;
-	private CyDataTable attributes;
+	private CyTable attributes;
 
-	public AttributeComboBoxPropertyEditor(final CyDataTable attributes) {
+	public AttributeComboBoxPropertyEditor(final CyTable attributes) {
 		this(attributes, Object.class);
 	}
 
-	public AttributeComboBoxPropertyEditor(final CyDataTable attributes,
+	public AttributeComboBoxPropertyEditor(final CyTable attributes,
 			final Class<?> filter) {
 		super();
 		this.attributes = attributes;

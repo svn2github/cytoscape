@@ -34,7 +34,7 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.action;
 
-import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.model.CyTableEntry.NODE;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
@@ -110,7 +110,7 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 			final VisualStyle vs = this.vizMapperMainPanel
 					.getSelectedVisualStyle();
 
-			final CyDataTable attr = tableMgr.getTableMap(type.getObjectType(), targetNetwork).get(CyNetwork.DEFAULT_ATTRS);
+			final CyTable attr = tableMgr.getTableMap(type.getObjectType(), targetNetwork).get(CyNetwork.DEFAULT_ATTRS);
 			// If not discrete, return.
 			if ((vs.getVisualMappingFunction(type) instanceof DiscreteMapping) == false)
 				return;
