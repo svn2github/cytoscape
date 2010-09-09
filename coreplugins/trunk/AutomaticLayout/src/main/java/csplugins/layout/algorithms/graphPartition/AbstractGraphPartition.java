@@ -1,3 +1,4 @@
+/* vim: set ts=2: */
 /**
 * Copyright (C) Gerardo Huck, 2010
 *
@@ -25,7 +26,6 @@
  */
 
 
-/* vim: set ts=2: */
 package csplugins.layout.algorithms.graphPartition;
 
 import cern.colt.list.*;
@@ -200,12 +200,6 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
      */
     public void construct() {
 	initialize();
-
-	// Reset label positions if necessary
-	if (resetPosition) {
-	    resetLabelPositions();
-	    return;
-	}
 
 	if (edgeWeighter != null) 
 	    edgeWeighter.reset();
@@ -389,7 +383,6 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 
 	} else { // normal (non-label) layout
 
-	    resetLabelPositions();
 	    layoutPartition(partition);
 	}
 
@@ -438,31 +431,6 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	t = layoutProperties.get("weightCoefficient");
 	if ((t != null) && (t.valueChanged() || force))
 	    weightCoefficient = ((Double) t.getValue()).doubleValue();
-    }
-
-
-    /**
-     * Moves labels to the same position in which their parent nodes are
-     */
-    protected void resetLabelPositions() {
-
-	logger.info("Reseting labels position");
-
-	CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
-	Collection<CyNode> selectedNodes = (Collection<CyNode>)network.getSelectedNodes();
-
-	// Go through all nodes deleting the label position attribute
-	for (CyNode node: (List<CyNode>)network.nodesList()) {
-	    if (!selectedOnly || selectedNodes.contains(node) )
-		if (nodeAtts.hasAttribute(node.getIdentifier(), "node.labelPosition")) {
-		    nodeAtts.deleteAttribute(node.getIdentifier(), "node.labelPosition");
-		    // logger.info("Deleted label position attribute of node: " + node.toString() );
-		}
-	}
-	
-	// redraw the network so that the new label positions are visible
-	networkView.updateView();
-	networkView.redrawGraph(true, true);
     }
 
 
