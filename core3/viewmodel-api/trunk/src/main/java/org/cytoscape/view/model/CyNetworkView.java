@@ -39,7 +39,7 @@ import java.util.Collection;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 
 /**
  * 
@@ -92,7 +92,7 @@ public interface CyNetworkView extends View<CyNetwork> {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	Collection<View<? extends GraphObject>> getAllViews();
+	Collection<View<? extends CyTableEntry>> getAllViews();
 	
 	
 	// These are utility methods to fire events to presentation layer.

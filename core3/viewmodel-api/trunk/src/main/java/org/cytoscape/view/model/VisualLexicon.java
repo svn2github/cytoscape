@@ -60,7 +60,7 @@ public interface VisualLexicon {
 	 * Get collection of visual properties for a given object type (node/edge/network).
 	 * 
 	 * @param objectType
-	 *            GraphObject type. i.e., NODE/EDGE/NETWORK.
+	 *            CyTableEntry type. i.e., NODE/EDGE/NETWORK.
 	 * 
 	 * @return Collection of visual properties for the type
 	 */
