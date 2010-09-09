@@ -47,7 +47,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 /**
  *
  */
@@ -146,7 +146,7 @@ public class LabelPositionChooser extends JDialog implements PropertyChangeListe
 			// horrible, horrible hack
 			
 			//FIXME: where is BypassHack?
-			//GraphObject go = BypassHack.getCurrentObject();
+			//CyTableEntry go = BypassHack.getCurrentObject();
 
 //			if (go != null) {
 //				//TODO: make this work with new model.

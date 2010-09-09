@@ -34,7 +34,7 @@
  */
 package org.cytoscape.ding.impl;
 
-import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.model.CyTableEntry.NODE;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -74,8 +74,8 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.graph.render.stateful.GraphLOD;
 import org.cytoscape.graph.render.stateful.GraphRenderer;
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -364,7 +364,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 * @param perspective
 	 *            The graph model that we'll be creating a view for.
 	 */
-	public DGraphView(final CyNetworkView view, CyDataTableFactory dataFactory,
+	public DGraphView(final CyNetworkView view, CyTableFactory dataFactory,
 			CyRootNetworkFactory cyRoot, UndoSupport undo,
 			SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc,
 			VisualLexicon dingLexicon,
@@ -401,11 +401,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		this.interceptor = interceptor;
 		this.manager = manager;
 
-		final CyDataTable nodeCAM = dataFactory.createTable("node view", "SUID", Long.class, false);
+		final CyTable nodeCAM = dataFactory.createTable("node view", "SUID", Long.class, false);
 		nodeCAM.createColumn("hidden", Boolean.class, false);
 		tableMgr.getTableMap("NODE", networkModel).put("VIEW", nodeCAM);
 
-		final CyDataTable edgeCAM = dataFactory.createTable("edge view", "SUID", Long.class, false);
+		final CyTable edgeCAM = dataFactory.createTable("edge view", "SUID", Long.class, false);
 		edgeCAM.createColumn("hidden", Boolean.class, false);
 		tableMgr.getTableMap("EDGE", networkModel).put("VIEW", edgeCAM);
 

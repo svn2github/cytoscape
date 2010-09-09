@@ -34,9 +34,9 @@
  */
 package org.cytoscape.ding.impl;
 
-import static org.cytoscape.model.GraphObject.EDGE;
-import static org.cytoscape.model.GraphObject.NETWORK;
-import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.model.CyTableEntry.EDGE;
+import static org.cytoscape.model.CyTableEntry.NETWORK;
+import static org.cytoscape.model.CyTableEntry.NODE;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

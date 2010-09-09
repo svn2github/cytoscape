@@ -13,7 +13,7 @@
 	</osgi:reference>
 
 	<osgi:reference id="cyDataTableFactoryServiceRef"
-		interface="org.cytoscape.model.CyDataTableFactory">
+		interface="org.cytoscape.model.CyTableFactory">
 	</osgi:reference>
 
 	<osgi:reference id="spacialIndex2DFactoryServiceRef"

@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
@@ -41,7 +41,7 @@ public class DingNavigationRenderingEngineFactory implements
 	
 	private static final Logger logger = LoggerFactory.getLogger(DingNavigationRenderingEngineFactory.class);
 
-	private CyDataTableFactory dataTableFactory;
+	private CyTableFactory dataTableFactory;
 	private CyRootNetworkFactory rootNetworkFactory;
 	private SpacialIndex2DFactory spacialFactory;
 	private UndoSupport undo;
@@ -60,7 +60,7 @@ public class DingNavigationRenderingEngineFactory implements
 	private CyTableManager tableMgr;
 
 	public DingNavigationRenderingEngineFactory(
-			CyDataTableFactory dataTableFactory,
+			CyTableFactory dataTableFactory,
 			CyRootNetworkFactory rootNetworkFactory, UndoSupport undo,
 			SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc,
 			VisualLexicon dingLexicon, TunableInterceptor ti, TaskManager tm,

@@ -10,7 +10,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
@@ -37,7 +37,7 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	
 	private static final Logger logger = LoggerFactory.getLogger(DingRenderingEngineFactory.class);
 
-	private CyDataTableFactory dataTableFactory;
+	private CyTableFactory dataTableFactory;
 	private CyRootNetworkFactory rootNetworkFactory;
 	private SpacialIndex2DFactory spacialFactory;
 	private UndoSupport undo;
@@ -57,7 +57,7 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	private final CyEventHelper eventHelper;
 
 	
-	public DingRenderingEngineFactory(CyDataTableFactory dataTableFactory, 
+	public DingRenderingEngineFactory(CyTableFactory dataTableFactory, 
 	                            CyRootNetworkFactory rootNetworkFactory,
 								UndoSupport undo, SpacialIndex2DFactory spacialFactory,
 								RootVisualLexicon vpc, VisualLexicon dingLexicon, 
