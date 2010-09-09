@@ -38,7 +38,7 @@ package org.cytoscape.view.vizmap.mappings;
 import java.util.Collection;
 
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 
@@ -69,7 +69,7 @@ public class PassthroughMapping<K, V> extends AbstractMappingFunction<K, V> {
 	 * @param v
 	 *            DOCUMENT ME!
 	 */
-	public <G extends GraphObject> void apply(
+	public <G extends CyTableEntry> void apply(
 			final Collection<? extends View<G>> views) {
 		if (views == null || views.size() < 1)
 			return; // empty list, nothing to do

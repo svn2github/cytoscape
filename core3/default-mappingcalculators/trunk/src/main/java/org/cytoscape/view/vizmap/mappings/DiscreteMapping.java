@@ -48,7 +48,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 
@@ -80,7 +80,7 @@ public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
 	}
 
 	
-	public <G extends GraphObject> void apply(Collection<? extends View<G>> views) {
+	public <G extends CyTableEntry> void apply(Collection<? extends View<G>> views) {
 		if (views == null || views.size() < 1)
 			return; // empty list, nothing to do
 
@@ -103,7 +103,7 @@ public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
 	 * @param <V>
 	 *            the type-parameter of the View
 	 */
-	private <G extends GraphObject> void applyDiscreteMapping(final Collection<? extends View<G>> views) {
+	private <G extends CyTableEntry> void applyDiscreteMapping(final Collection<? extends View<G>> views) {
 
 		CyRow row;
 		for (final View<G> view : views) {

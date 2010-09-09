@@ -48,7 +48,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.mappings.interpolators.FlatInterpolator;
@@ -159,7 +159,7 @@ public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 	 * @param views
 	 *            DOCUMENT ME!
 	 */
-	public <G extends GraphObject> void apply(Collection<? extends View<G>> views) {
+	public <G extends CyTableEntry> void apply(Collection<? extends View<G>> views) {
 		if (views == null || views.size() < 1)
 			return; // empty list, nothing to do
 				
@@ -182,7 +182,7 @@ public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 	 * @param <V>
 	 *            the type-parameter of the View
 	 */
-	private <G extends GraphObject> void doMap(
+	private <G extends CyTableEntry> void doMap(
 			final Collection<? extends View<G>> views) {
 		
 		CyRow row;
