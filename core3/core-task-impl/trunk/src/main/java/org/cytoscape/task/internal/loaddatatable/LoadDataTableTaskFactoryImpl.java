@@ -1,15 +1,15 @@
 package org.cytoscape.task.internal.loaddatatable;
 
 
-import org.cytoscape.io.read.CyDataTableReaderManager;
+import org.cytoscape.io.read.CyTableReaderManager;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
 
 
 public class LoadDataTableTaskFactoryImpl implements TaskFactory {
-	private CyDataTableReaderManager mgr;
+	private CyTableReaderManager mgr;
 	
-	public LoadDataTableTaskFactoryImpl(CyDataTableReaderManager mgr) {
+	public LoadDataTableTaskFactoryImpl(CyTableReaderManager mgr) {
 		this.mgr = mgr;
 	}
 

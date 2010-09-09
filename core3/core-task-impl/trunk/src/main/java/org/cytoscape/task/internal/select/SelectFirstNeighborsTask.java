@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -54,7 +54,7 @@ public class SelectFirstNeighborsTask extends AbstractSelectTask {
 		final CyNetwork currentNetwork = netmgr.getCurrentNetwork();
 		final CyNetworkView view = netmgr.getNetworkView(currentNetwork
 				.getSUID());
-		final List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(
+		final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(
 				currentNetwork, "selected", true);
 		final Set<CyNode> nodes = new HashSet<CyNode>();
 

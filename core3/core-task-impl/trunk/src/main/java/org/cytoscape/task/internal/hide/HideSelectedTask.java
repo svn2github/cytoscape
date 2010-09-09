@@ -39,7 +39,7 @@ package org.cytoscape.task.internal.hide;
 
 import java.util.List;
 
-import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -56,8 +56,8 @@ public class HideSelectedTask extends AbstractNetworkViewTask {
 
 	public void run(TaskMonitor e) {
 		final CyNetwork curr = view.getModel();
-		final List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(curr,"selected",true);
-		final List<CyEdge> selectedEdges = CyDataTableUtil.getEdgesInState(curr,"selected",true); 
+		final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(curr,"selected",true);
+		final List<CyEdge> selectedEdges = CyTableUtil.getEdgesInState(curr,"selected",true); 
 
 		HideUtils.setVisibleNodes( selectedNodes, false, view );
 		HideUtils.setVisibleEdges( selectedEdges, false, view );

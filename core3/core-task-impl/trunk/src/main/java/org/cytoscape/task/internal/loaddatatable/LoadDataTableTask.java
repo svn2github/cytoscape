@@ -6,9 +6,9 @@ import static org.cytoscape.io.DataCategory.TABLE;
 import java.io.File;
 import java.util.Properties;
 
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.io.read.CyDataTableReaderManager;
-import org.cytoscape.io.read.CyDataTableReader;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.io.read.CyTableReaderManager;
+import org.cytoscape.io.read.CyTableReader;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
@@ -19,10 +19,10 @@ public class LoadDataTableTask extends AbstractTask {
 	@Tunable(description = "Data table file to load", flags = { Param.attributes })
 	public File file;
 
-	private CyDataTableReader reader;
-	private final CyDataTableReaderManager mgr;
+	private CyTableReader reader;
+	private final CyTableReaderManager mgr;
 
-	public LoadDataTableTask(final CyDataTableReaderManager mgr) {
+	public LoadDataTableTask(final CyTableReaderManager mgr) {
 		this.mgr = mgr;
 	}
 
@@ -50,14 +50,14 @@ public class LoadDataTableTask extends AbstractTask {
 
 
 class FinalStatusMessageUpdateTask extends AbstractTask {
-	private final CyDataTableReader reader;
+	private final CyTableReader reader;
 
-	FinalStatusMessageUpdateTask(final CyDataTableReader reader) {
+	FinalStatusMessageUpdateTask(final CyTableReader reader) {
 		this.reader = reader;
 	}
 
 	public void run(final TaskMonitor taskMonitor) throws Exception {
-		for (CyDataTable table : reader.getCyDataTables())
+		for (CyTable table : reader.getCyDataTables())
 			taskMonitor.setStatusMessage("Successfully loaded data table: " + table.getTitle());
 
 		taskMonitor.setProgress(1.0);

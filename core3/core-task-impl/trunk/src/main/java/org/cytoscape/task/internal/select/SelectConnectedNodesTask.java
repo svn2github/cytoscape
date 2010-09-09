@@ -41,7 +41,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -58,7 +58,7 @@ public class SelectConnectedNodesTask extends AbstractSelectTask {
 	public void run(TaskMonitor tm) {
 		final CyNetwork currentNetwork = netmgr.getCurrentNetwork();
 		final CyNetworkView v = netmgr.getNetworkView(currentNetwork.getSUID());
-		final List<CyEdge> selectedEdges = CyDataTableUtil.getEdgesInState(
+		final List<CyEdge> selectedEdges = CyTableUtil.getEdgesInState(
 				currentNetwork, "selected", true);
 		final Set<CyNode> nodes = new HashSet<CyNode>();
 

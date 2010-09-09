@@ -43,7 +43,7 @@ import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.view.model.CyNetworkView;
 //import org.cytoscape.vizmap.VisualMappingManager;
 //import org.cytoscape.vizmap.VisualStyle;
@@ -70,8 +70,8 @@ public class NewNetworkSelectedNodesEdgesTask extends AbstractCreationTask {
 		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
 			return;
 
-		List<CyNode> nodes = CyDataTableUtil.getNodesInState(current_network,"selected",true); 
-		List<CyEdge> edges = CyDataTableUtil.getEdgesInState(current_network,"selected",true); 
+		List<CyNode> nodes = CyTableUtil.getNodesInState(current_network,"selected",true); 
+		List<CyEdge> edges = CyTableUtil.getEdgesInState(current_network,"selected",true); 
 
 		CyNetwork new_network = Cytoscape.createNetwork(nodes, edges,
 		                                                CyNetworkNaming.getSuggestedSubnetworkTitle(current_network, netmgr),

@@ -35,7 +35,7 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
-import org.cytoscape.io.read.CyDataTableReader;
+import org.cytoscape.io.read.CyTableReader;
 import org.cytoscape.io.DataCategory;
 
 import java.io.File;
@@ -76,7 +76,7 @@ public class OpenSessionTask extends AbstractTask {
 		taskMonitor.setStatusMessage("Opening Session File.\n\nIt may take a while.\nPlease wait...");
 		taskMonitor.setProgress(0.0);
 
-		CyDataTableReader sr;
+		CyTableReader sr;
 
 		try {
 			//sr = factory.getReader(file.toURI(), DataCategory.SESSION);
