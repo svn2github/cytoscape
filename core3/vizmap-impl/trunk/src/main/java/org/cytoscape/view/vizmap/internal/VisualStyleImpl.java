@@ -34,9 +34,9 @@
 */
 package org.cytoscape.view.vizmap.internal;
 
-import static org.cytoscape.model.GraphObject.EDGE;
-import static org.cytoscape.model.GraphObject.NETWORK;
-import static org.cytoscape.model.GraphObject.NODE;
+import static org.cytoscape.model.CyTableEntry.EDGE;
+import static org.cytoscape.model.CyTableEntry.NETWORK;
+import static org.cytoscape.model.CyTableEntry.NODE;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -46,7 +46,7 @@ import java.util.Map;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.View;
@@ -198,7 +198,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param views DOCUMENT ME!
 	 * @param visualProperties DOCUMENT ME!
 	 */
-	public <G extends GraphObject> void applyImpl(final CyNetworkView view,
+	public <G extends CyTableEntry> void applyImpl(final CyNetworkView view,
 	                                              final Collection<View<G>> views,
 	                                              final Collection<?extends VisualProperty<?>> visualProperties) {
 		
@@ -213,7 +213,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param views DOCUMENT ME!
 	 * @param visualProperties DOCUMENT ME!
 	 */
-	public <V, G extends GraphObject> void applyImpl(final CyNetworkView view,
+	public <V, G extends CyTableEntry> void applyImpl(final CyNetworkView view,
 	                                                 final Collection<View<G>> views,
 	                                                 final VisualProperty<V> vp) {
 		
