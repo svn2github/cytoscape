@@ -5,12 +5,12 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.StubTableManager;
 import org.cytoscape.model.CyTableManager;
 
 import org.cytoscape.model.internal.CyNetworkFactoryImpl;
-import org.cytoscape.model.internal.CyDataTableFactoryImpl;
+import org.cytoscape.model.internal.CyTableFactoryImpl;
 
 public class NetworkTestSupport {
 
@@ -21,7 +21,7 @@ public class NetworkTestSupport {
 	public NetworkTestSupport() {
 		eventHelper = new DummyCyEventHelper();
 		tableMgr = new StubTableManager();
-		CyDataTableFactory tableFactory = new CyDataTableFactoryImpl(eventHelper);
+		CyTableFactory tableFactory = new CyTableFactoryImpl(eventHelper);
 
 		networkFactory = new CyNetworkFactoryImpl( eventHelper, tableMgr, tableFactory );
 	}

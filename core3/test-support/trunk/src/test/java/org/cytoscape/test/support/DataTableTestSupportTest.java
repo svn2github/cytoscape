@@ -1,8 +1,8 @@
 package org.cytoscape.test.support;
 
-import org.cytoscape.model.AbstractCyDataTableTest;
-import org.cytoscape.model.CyDataTableFactory;
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.AbstractCyTableTest;
+import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyRow;
 import java.util.Random;
 
@@ -10,10 +10,10 @@ import java.util.Random;
  * This will verify that the network created by NetworkTestSupport
  * is a good network.
  */
-public class DataTableTestSupportTest extends AbstractCyDataTableTest {
+public class DataTableTestSupportTest extends AbstractCyTableTest {
 
 	DataTableTestSupport support; 
-	CyDataTableFactory factory;
+	CyTableFactory factory;
 	Random rand;
 
 	public DataTableTestSupportTest() {

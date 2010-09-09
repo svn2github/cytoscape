@@ -4,22 +4,22 @@ package org.cytoscape.test.support;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableFactory;
 
-import org.cytoscape.model.internal.CyDataTableFactoryImpl;
+import org.cytoscape.model.internal.CyTableFactoryImpl;
 
 public class DataTableTestSupport {
 
-	protected CyDataTableFactory tableFactory;
+	protected CyTableFactory tableFactory;
 	protected DummyCyEventHelper eventHelper;
 
 	public DataTableTestSupport() {
 		eventHelper = new DummyCyEventHelper();
-		tableFactory = new CyDataTableFactoryImpl( eventHelper );
+		tableFactory = new CyTableFactoryImpl( eventHelper );
 	}
 
-	public CyDataTableFactory getDataTableFactory() {
+	public CyTableFactory getDataTableFactory() {
 		return tableFactory;	
 	}
 
