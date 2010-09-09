@@ -41,8 +41,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
-import org.cytoscape.model.CyDataTableFactory;
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.CyTable;
 
 import org.cytoscape.work.TaskIterator;
 
@@ -68,16 +68,16 @@ public class AbstractDataTableTaskFactoryTest {
 
 	@Test
 	public void testGoodSetDataTable() throws Exception {
-		factory.setDataTable(mock(CyDataTable.class));
+		factory.setDataTable(mock(CyTable.class));
 		assertNotNull( factory.table );
 	}
 
 	@Test
 	public void testNotFinal() throws Exception {
-		factory.setDataTable(mock(CyDataTable.class));
-		CyDataTable t1 = factory.table;
-		factory.setDataTable(mock(CyDataTable.class));
-		CyDataTable t2 = factory.table;
+		factory.setDataTable(mock(CyTable.class));
+		CyTable t1 = factory.table;
+		factory.setDataTable(mock(CyTable.class));
+		CyTable t2 = factory.table;
 		assertFalse( (t1 == t2) );
 	}
 }

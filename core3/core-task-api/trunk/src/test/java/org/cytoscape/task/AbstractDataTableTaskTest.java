@@ -40,13 +40,13 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.work.TaskMonitor;
 
 public class AbstractDataTableTaskTest {
 	
 	private class DataTableTask extends AbstractDataTableTask {
-		DataTableTask(CyDataTable tab) { super(tab); }
+		DataTableTask(CyTable tab) { super(tab); }
 		public void run(TaskMonitor tm) { 
 			assertNotNull(table);
 		}
@@ -63,7 +63,7 @@ public class AbstractDataTableTaskTest {
 
 	@Test
 	public void testGoodDataTable() throws Exception {
-		DataTableTask rt = new DataTableTask( mock(CyDataTable.class) );
+		DataTableTask rt = new DataTableTask( mock(CyTable.class) );
 		rt.run(mock(TaskMonitor.class));
 	}
 }

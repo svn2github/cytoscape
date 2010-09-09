@@ -29,16 +29,16 @@
 package org.cytoscape.task;
 
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.work.AbstractTask;
 
 
 public abstract class AbstractDataTableTask extends AbstractTask {
-	final protected CyDataTable table;
+	final protected CyTable table;
 
-	public AbstractDataTableTask(final CyDataTable table) {
+	public AbstractDataTableTask(final CyTable table) {
 		if (table == null)
-			throw new NullPointerException("CyDataTable is null");
+			throw new NullPointerException("CyTable is null");
 
 		this.table = table;	
 	}

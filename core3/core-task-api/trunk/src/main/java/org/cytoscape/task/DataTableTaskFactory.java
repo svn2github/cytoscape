@@ -35,7 +35,7 @@
 package org.cytoscape.task;
 
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 
 
 /**
@@ -45,5 +45,5 @@ import org.cytoscape.model.CyDataTable;
  */
 public interface DataTableTaskFactory extends TaskFactory {
 
-	void setDataTable(CyDataTable table);
+	void setDataTable(CyTable table);
 }

@@ -35,15 +35,15 @@
 
 package org.cytoscape.task;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 
 public abstract class AbstractDataTableTaskFactory implements DataTableTaskFactory {
 
-	protected CyDataTable table;
+	protected CyTable table;
 
-	public void setDataTable(final CyDataTable table) {
+	public void setDataTable(final CyTable table) {
 		if ( table == null )
-			throw new NullPointerException("CyDataTable is null");
+			throw new NullPointerException("CyTable is null");
 
 		this.table = table;
 	}
