@@ -32,7 +32,7 @@
  */
 package org.cytoscape.view.layout;
 
-import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -136,7 +136,7 @@ public class LayoutPartition {
 	public LayoutPartition(CyNetwork network, CyNetworkView networkView, boolean selectedOnly,
 	                       EdgeWeighter edgeWeighter) {
 		if (selectedOnly) {
-			initialize(network,networkView,CyDataTableUtil.getNodesInState(network,"selected",true),edgeWeighter);
+			initialize(network,networkView,CyTableUtil.getNodesInState(network,"selected",true),edgeWeighter);
 		} else {
 			initialize(network,networkView,network.getNodeList(),edgeWeighter);
 		}
@@ -590,7 +590,7 @@ public class LayoutPartition {
 	                             boolean selectedOnly, EdgeWeighter edgeWeighter) {
 
 		if (selectedOnly) {
-			return partition(network,networkView, CyDataTableUtil.getNodesInState(network,"selected",true),edgeWeighter);
+			return partition(network,networkView, CyTableUtil.getNodesInState(network,"selected",true),edgeWeighter);
 		}
 
 		return partition(network,networkView,network.getNodeList(),edgeWeighter);
