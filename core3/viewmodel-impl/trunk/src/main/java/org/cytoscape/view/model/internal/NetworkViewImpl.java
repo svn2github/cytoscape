@@ -10,7 +10,7 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
 import org.cytoscape.model.events.AboutToRemoveEdgeListener;
 import org.cytoscape.model.events.AboutToRemoveNodeEvent;
@@ -91,8 +91,8 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 	}
 
 	@Override
-	public Collection<View<? extends GraphObject>> getAllViews() {
-		final Set<View<? extends GraphObject>> views = new HashSet<View<? extends GraphObject>>();
+	public Collection<View<? extends CyTableEntry>> getAllViews() {
+		final Set<View<? extends CyTableEntry>> views = new HashSet<View<? extends CyTableEntry>>();
 
 		views.addAll(nodeViews.values());
 		views.addAll(edgeViews.values());
