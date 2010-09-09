@@ -6,7 +6,7 @@ import org.cytoscape.plugin.CyPluginAdapter;
 //
 // Keep these alphabetical by class name
 //
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.model.CyNetworkFactory;
@@ -30,7 +30,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	// Always make the field name same as the class
 	// name, but with a lower case first letter.
 	//
-	private final CyDataTableFactory cyDataTableFactory;
+	private final CyTableFactory cyTableFactory;
 	private final CyEventHelper cyEventHelper;
 	private final CyLayouts cyLayouts;
 	private final CyNetworkFactory cyNetworkFactory;
@@ -48,7 +48,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	// maintain sanity, keep the arguments in alphabetical order.
 	//
 	CyPluginAdapterImpl( 
-	                    CyDataTableFactory cyDataTableFactory,
+	                    CyTableFactory cyTableFactory,
 	                    CyEventHelper cyEventHelper,
 	                    CyLayouts cyLayouts,
                      	CyNetworkFactory cyNetworkFactory,
@@ -60,7 +60,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
                      	TaskManager taskManager,
                      	VisualMappingManager visualMappingManager
 					    ) {
-		this.cyDataTableFactory = cyDataTableFactory;
+		this.cyTableFactory = cyTableFactory;
 		this.cyEventHelper = cyEventHelper;
 		this.cyLayouts = cyLayouts;
 		this.cyNetworkFactory = cyNetworkFactory;
@@ -78,7 +78,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	// May as well keep the methods alphabetical too!
 	// 
 
-	public CyDataTableFactory getCyDataTableFactory() { return cyDataTableFactory; } 
+	public CyTableFactory getCyDataTableFactory() { return cyTableFactory; } 
 
 	public CyEventHelper getCyEventHelper() { return cyEventHelper; } 
 
