@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.cytoscape.io.internal.read.AbstractDataTableReader;
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.io.internal.read.AbstractTableReader;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
@@ -20,10 +20,10 @@ import org.cytoscape.work.Tunable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.cytoscape.model.GraphObject.*;
+import static org.cytoscape.model.CyTableEntry.*;
 
 
-public class TextDataTableReader extends AbstractDataTableReader {
+public class TextDataTableReader extends AbstractTableReader {
 	@Tunable(description="Column delimiter character")
 	public String delimiter = "\t";
 
@@ -33,7 +33,7 @@ public class TextDataTableReader extends AbstractDataTableReader {
 	private String[] columnNames;
 	private static final Logger logger = LoggerFactory.getLogger(TextDataTableReader.class);
 
-	public TextDataTableReader(InputStream inputStream, CyDataTableFactory tableFactory) {
+	public TextDataTableReader(InputStream inputStream, CyTableFactory tableFactory) {
 		super(inputStream, tableFactory);
 	}
 
@@ -46,12 +46,12 @@ public class TextDataTableReader extends AbstractDataTableReader {
 			final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		
 			line = br.readLine();
-			final CyDataTable table = createTable(line);
+			final CyTable table = createTable(line);
 		
 			while ((line = br.readLine()) != null) 
 				processLine(table, line);
 	
-			cyDataTables = new CyDataTable[] { table };
+			cyTables = new CyTable[] { table };
 
 		} finally {
 			if (inputStream != null) {
@@ -67,14 +67,14 @@ public class TextDataTableReader extends AbstractDataTableReader {
 	public void cancel() {
 	}
 
-	private CyDataTable createTable(String line) throws IOException {
+	private CyTable createTable(String line) throws IOException {
 		if (line == null)
 			throw new IllegalStateException("Column names cannot be null");
 		
 		columnNames = line.split(delimiter);
 
 		checkForDuplicates( columnNames );
-		final CyDataTable table = tableFactory.createTable(tableName, columnNames[0], 
+		final CyTable table = tableFactory.createTable(tableName, columnNames[0], 
 		                                                   String.class, true);
 		
 		for ( String col : columnNames ) 
@@ -102,7 +102,7 @@ public class TextDataTableReader extends AbstractDataTableReader {
 		}
 	}
 
-	private void processLine(CyDataTable table, String line) {
+	private void processLine(CyTable table, String line) {
 		String[] buffer = line.split(delimiter);
 
 		if ( buffer.length != columnNames.length ) {

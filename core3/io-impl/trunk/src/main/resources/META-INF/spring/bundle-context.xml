@@ -138,7 +138,7 @@
 
 	<!-- Manager for all datatable readers -->
 	<bean id="cyDataTableReaderManager" 
-	      class="org.cytoscape.io.internal.read.CyDataTableReaderManagerImpl" />
+	      class="org.cytoscape.io.internal.read.CyTableReaderManagerImpl" />
 
 	<!-- Utility for Stream/Proxy management -->
 	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">

@@ -2,15 +2,15 @@ package org.cytoscape.io.internal.read.datatable;
 
 
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.read.CyDataTableReader;
-import org.cytoscape.io.internal.read.AbstractDataTableReaderFactory;
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.io.read.CyTableReader;
+import org.cytoscape.io.internal.read.AbstractTableReaderFactory;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.work.TaskIterator;
 
 
-public class TextDataTableReaderFactory extends AbstractDataTableReaderFactory {
-	public TextDataTableReaderFactory(CyFileFilter filter, CyDataTableFactory factory) {
+public class TextDataTableReaderFactory extends AbstractTableReaderFactory {
+	public TextDataTableReaderFactory(CyFileFilter filter, CyTableFactory factory) {
 		super(filter, factory);
 	}
 

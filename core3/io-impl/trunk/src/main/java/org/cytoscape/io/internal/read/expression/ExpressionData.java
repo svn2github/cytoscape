@@ -55,7 +55,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.work.TaskMonitor;
@@ -520,7 +520,7 @@ public class ExpressionData implements Serializable {
 
 	private Map<String,List<String>> getAttributeToIdList(String keyAttributeName) throws IOException {
 		Map<String,List<String>> attributeToIdList = new HashMap<String,List<String>>();
-		// TODO needs to be converted to create a CyDataTable with node keys rather than looking
+		// TODO needs to be converted to create a CyTable with node keys rather than looking
 		// up all node ids.
 		List<CyNode> allNodes = null; //Cytoscape.getCyNodesList();
 
@@ -1048,10 +1048,10 @@ public class ExpressionData implements Serializable {
 	/**
 	 * Copies ExpressionData data structure into CyAttributes data structure.
 	 *
-	 * @param nodeAttribs Node Attributes CyDataTable.
+	 * @param nodeAttribs Node Attributes CyTable.
 	 * @param taskMonitor Task Monitor. Can be null.
 	 */
-	public void copyToAttribs(CyDataTable table, TaskMonitor taskMonitor) {
+	public void copyToAttribs(CyTable table, TaskMonitor taskMonitor) {
 		String[] condNames = getConditionNames();
 
 		// first set up the columns

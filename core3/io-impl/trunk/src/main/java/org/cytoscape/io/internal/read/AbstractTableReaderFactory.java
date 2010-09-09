@@ -32,16 +32,16 @@ import java.io.InputStream;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.read.InputStreamTaskFactory;
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyTableFactory;
 
 
-public abstract class AbstractDataTableReaderFactory implements InputStreamTaskFactory {
+public abstract class AbstractTableReaderFactory implements InputStreamTaskFactory {
 	private final CyFileFilter filter;
 
 	protected InputStream inputStream;
-	protected final CyDataTableFactory tableFactory;
+	protected final CyTableFactory tableFactory;
 
-	public AbstractDataTableReaderFactory(CyFileFilter filter, CyDataTableFactory tableFactory) {
+	public AbstractTableReaderFactory(CyFileFilter filter, CyTableFactory tableFactory) {
 		if (filter == null)
 			throw new NullPointerException("filter is null");
 		this.filter = filter;

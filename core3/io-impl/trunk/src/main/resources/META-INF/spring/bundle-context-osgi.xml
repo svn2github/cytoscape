@@ -17,7 +17,7 @@
 	                interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 	
 	<osgi:reference id="cyDataTableFactoryServiceRef" 
-	                interface="org.cytoscape.model.CyDataTableFactory" />
+	                interface="org.cytoscape.model.CyTableFactory" />
 
 	<osgi:reference id="cyPropertyServiceRef" 
 	                interface="org.cytoscape.property.CyProperty"
@@ -30,7 +30,7 @@
 	</osgi:service>
 
 	<osgi:service id="cyDataTableReaderManagerService" ref="cyDataTableReaderManager"
-		interface="org.cytoscape.io.read.CyDataTableReaderManager">
+		interface="org.cytoscape.io.read.CyTableReaderManager">
 	</osgi:service>
 
 	<osgi:service id="sifNetworkViewReaderFactoryService" ref="sifNetworkViewReaderFactory"
