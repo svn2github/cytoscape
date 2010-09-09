@@ -464,12 +464,12 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         Map<String, DataSourceWrapper> mapTgtAttrNameIDType = targetAttributeSelectionTable.getMapAttrNameIDType();
         Map<String,Byte> mapTgtAttrNameAttrType = targetAttributeSelectionTable.getMapAttrNameAttrType();
 
-        // define target attributes
-        defineTgtAttributes(mapTgtAttrNameAttrType);
+//        // define target attributes
+//        defineTgtAttributes(mapTgtAttrNameAttrType);
 
         // execute task
         AttributeBasedIDMappingTask task
-                = new AttributeBasedIDMappingTask(networks, mapSrcAttrIDTypes, mapTgtAttrNameIDType);
+                = new AttributeBasedIDMappingTask(networks, mapSrcAttrIDTypes, mapTgtAttrNameIDType, mapTgtAttrNameAttrType);
         // Configure JTask Dialog Pop-Up Box
         final JTaskConfig jTaskConfig = new JTaskConfig();
         jTaskConfig.setOwner(Cytoscape.getDesktop());
@@ -800,29 +800,29 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 //
 //        return ret;
 //    }
-
-    private void defineTgtAttributes(Map<String,Byte> attrNameType) {
-        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-        MultiHashMapDefinition mmapDef = nodeAttributes.getMultiHashMapDefinition();
-
-        for (Map.Entry<String,Byte> entry : attrNameType.entrySet()) {
-            String attrname = entry.getKey();
-            byte attrtype = entry.getValue();
-
-            byte[] keyTypes;
-            if (attrtype==CyAttributes.TYPE_STRING) {
-                    keyTypes = null;
-            } else if (attrtype==CyAttributes.TYPE_SIMPLE_LIST ) {
-                    keyTypes = new byte[] { MultiHashMapDefinition.TYPE_INTEGER };
-            } else {
-                    keyTypes = null;
-            }
-
-            mmapDef.defineAttribute(attrname,
-                                    MultiHashMapDefinition.TYPE_STRING,
-                                    keyTypes);
-        }
-    }
+//
+//    private void defineTgtAttributes(Map<String,Byte> attrNameType) {
+//        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+//        MultiHashMapDefinition mmapDef = nodeAttributes.getMultiHashMapDefinition();
+//
+//        for (Map.Entry<String,Byte> entry : attrNameType.entrySet()) {
+//            String attrname = entry.getKey();
+//            byte attrtype = entry.getValue();
+//
+//            byte[] keyTypes;
+//            if (attrtype==CyAttributes.TYPE_STRING) {
+//                    keyTypes = null;
+//            } else if (attrtype==CyAttributes.TYPE_SIMPLE_LIST ) {
+//                    keyTypes = new byte[] { MultiHashMapDefinition.TYPE_INTEGER };
+//            } else {
+//                    keyTypes = null;
+//            }
+//
+//            mmapDef.defineAttribute(attrname,
+//                                    MultiHashMapDefinition.TYPE_STRING,
+//                                    keyTypes);
+//        }
+//    }
 
     public Map<String,Set<DataSourceWrapper>> getMapSrcAttrIDTypes() {
         Map<String,Set<DataSourceWrapper>> mapSrcAttrIDTypes = sourceAttributeSelectionTable.getSourceAttrType();

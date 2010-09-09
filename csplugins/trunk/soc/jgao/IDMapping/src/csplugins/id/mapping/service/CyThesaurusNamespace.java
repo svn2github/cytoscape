@@ -37,12 +37,12 @@ import csplugins.id.mapping.IDMapperClientImplTunables;
 import csplugins.id.mapping.IDMapperClientManager;
 import csplugins.id.mapping.ui.IDMappingSourceConfigDialog;
 import csplugins.id.mapping.ui.CyThesaurusDialog;
-import csplugins.id.mapping.AttributeBasedIDMapping;
 import csplugins.id.mapping.AttributeBasedIDMappingImpl;
 import csplugins.id.mapping.util.DataSourceWrapper;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
 
 import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
@@ -101,6 +101,7 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
     private static final String TARGET_ATTR = "targetattr";
     private static final String SOURCE_ID = "sourceid";
     private static final String REPORT = "report";
+    private static final String FIRST_ONLY = "firstonly";
 
     protected CyThesaurusNamespace(CyCommandNamespace ns) {
         super(ns);
@@ -150,12 +151,14 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         addArgument(ATTRIBUTE_BASED_MAPPING, TARGET_ATTR); // optional
         addArgument(ATTRIBUTE_BASED_MAPPING, SOURCE_TYPE); // optional
         addArgument(ATTRIBUTE_BASED_MAPPING, TARGET_TYPE); // required
+        addArgument(ATTRIBUTE_BASED_MAPPING, FIRST_ONLY); // optional
         addDescription(ATTRIBUTE_BASED_MAPPING, "Mapping IDs of the sourceidtype(s) in "
                 + "sourceattribute to IDs of the targetidtype and save them to targetattribute.");
 
         addArgument(GENERAL_MAPPING, SOURCE_ID);
         addArgument(GENERAL_MAPPING, SOURCE_TYPE);
         addArgument(GENERAL_MAPPING, TARGET_TYPE);
+        addArgument(GENERAL_MAPPING, FIRST_ONLY);
         addDescription(GENERAL_MAPPING, "Mapping sourceid(s) of sourcetype to targettype.");
 
         addArgument(CHECK_ID_EXIST, SOURCE_ID);
@@ -163,7 +166,7 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         addDescription(CHECK_ID_EXIST, "Check if ID exists.");
 
         addArgument(GUESS_TYPE, SOURCE_ID);
-        addDescription(GUESS_TYPE, "Guess ID types from a set of IDs.");
+        addDescription(GUESS_TYPE, "Guess ID types from a set of IDs (only ID types in the selected resources will be included).");
 
     }
 
@@ -612,8 +615,18 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
                 tgtAttr = tgtType;
             }
         }
+
+        obj = args.get(FIRST_ONLY);
+        boolean firstOnly = false;
+        if (obj instanceof Boolean) {
+            firstOnly = (Boolean)obj;
+        } else if (obj instanceof String) {
+            firstOnly = ((String)obj).equalsIgnoreCase("yes")
+                    || ((String)obj).equalsIgnoreCase("true");
+        }
+
         // mapping ids
-        AttributeBasedIDMapping service
+        AttributeBasedIDMappingImpl service
                     = new AttributeBasedIDMappingImpl();
         Map<String,Set<DataSourceWrapper>> mapAttrTypes = new HashMap();
         for (String attr : srcAttrs) {
@@ -628,6 +641,10 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         DataSourceWrapper dsw = DataSourceWrapper.getInstance(tgtType,
                 DataSourceWrapper.DsAttr.DATASOURCE);
         Map<String,DataSourceWrapper> mapTgtTypeAttr = Collections.singletonMap(tgtAttr, dsw);
+
+        Map<String,Byte> attrNameType = Collections.singletonMap(tgtAttr,
+                firstOnly?CyAttributes.TYPE_STRING:CyAttributes.TYPE_SIMPLE_LIST);
+        service.suggestTgtAttrType(attrNameType);
 
         try {
             service.map(networks, mapAttrTypes, mapTgtTypeAttr);
@@ -701,20 +718,28 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
             result.addError("No mapping was performed.");
         } else {
             Map<String, Set<String>> mapSrcIdTargetIDs = new HashMap(mapping.size());
+            StringBuilder mappedId = new StringBuilder();
             for (Xref srcXref : mapping.keySet()) {
                 Set<Xref> tgtXrefs = mapping.get(srcXref);
                 if (tgtXrefs!=null) {
+                    String srcId = srcXref.getId();
                     Set<String> tgtIds = new HashSet();
                     for (Xref tgtXref : tgtXrefs) {
                         tgtIds.add(tgtXref.getId());
                     }
-                    mapSrcIdTargetIDs.put(srcXref.getId(), tgtIds);
+                    mapSrcIdTargetIDs.put(srcId, tgtIds);
+
+                    mappedId.append(srcId);
+                    mappedId.append("<=>");
+                    mappedId.append(tgtIds.toString());
+                    mappedId.append("\n");
                 }
             }
 
             result.addResult(mapSrcIdTargetIDs);
             result.addMessage(""+mapSrcIdTargetIDs.size()+"out of "+srcIDs.size()
-                    +" source IDs was mapping from type: "+srcType+" to type:"+tgtType);
+                    +" source IDs was mapping from type: "+srcType+" to type:"+tgtType
+                    +"\n"+mappedId.toString());
         }
 
         return result;
@@ -737,7 +762,13 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         DataSource ds = DataSource.getByFullName(type);
         IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
         try {
-            result.addResult(stack.xrefExists(new Xref(id, ds)));
+            if (stack.xrefExists(new Xref(id, ds))) {
+                result.addResult(Boolean.TRUE);
+                result.addMessage(type+":"+id+" exists.");
+            } else {
+                result.addResult(Boolean.FALSE);
+                result.addMessage(type+":"+id+" does not exist.");
+            }
         } catch (Exception e) {
             throw new CyCommandException(e);
         }
@@ -760,9 +791,19 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
             throw new CyCommandException("Parameter "+SOURCE_ID+" must contains one or more source IDs.");
         }
 
+        Set<DataSource> selectedDss = new HashSet<DataSource>();
+        try {
+            IDMapperCapabilities cap = IDMapperClientManager.selectedIDMapperStack().getCapabilities();
+            selectedDss.addAll(cap.getSupportedSrcDataSources());
+            selectedDss.addAll(cap.getSupportedTgtDataSources());
+        } catch (Exception e) {
+            throw new CyCommandException(e);
+        }
+
         Set<String> types = new HashSet<String>();
         for (String id : srcIDs) {
             Set<DataSource> dss = DataSourcePatterns.getDataSourceMatches(id);
+            dss.retainAll(selectedDss);
             for (DataSource ds : dss)
                 types.add(ds.getFullName());
         }

@@ -53,6 +53,7 @@ public class AttributeBasedIDMappingTask implements Task {
     private final Map<String,Set<DataSourceWrapper>> mapSrcAttrIDTypes;
     private final Map<String, DataSourceWrapper> mapTgtAttrNameIDType;
     private final AttributeBasedIDMappingImpl service;
+    private final Map<String,Byte> mapTgtAttrNameAttrType;
     
 	private TaskMonitor taskMonitor;
         private boolean success;
@@ -65,10 +66,12 @@ public class AttributeBasedIDMappingTask implements Task {
          */
 	public AttributeBasedIDMappingTask(final Set<CyNetwork> networks,
                                        final Map<String,Set<DataSourceWrapper>> mapSrcAttrIDTypes,
-                                       final Map<String, DataSourceWrapper> mapTgtAttrNameIDType) {
+                                       final Map<String, DataSourceWrapper> mapTgtAttrNameIDType,
+                                       Map<String,Byte> mapTgtAttrNameAttrType) {
 		this.networks = networks;
                 this.mapSrcAttrIDTypes = mapSrcAttrIDTypes;
                 this.mapTgtAttrNameIDType = mapTgtAttrNameIDType;
+                this.mapTgtAttrNameAttrType = mapTgtAttrNameAttrType;
                 service = new AttributeBasedIDMappingImpl();
                 success = false;
 	}
@@ -80,7 +83,7 @@ public class AttributeBasedIDMappingTask implements Task {
 	public void run() {
                 try {
                         service.setTaskMonitor(taskMonitor);
-                        
+                        service.suggestTgtAttrType(mapTgtAttrNameAttrType);
                         service.map(networks, mapSrcAttrIDTypes, mapTgtAttrNameIDType);
 
 

@@ -65,6 +65,7 @@ public class AttributeBasedIDMappingImpl
     protected TaskMonitor taskMonitor;
     protected boolean interrupted;
     protected String report;
+    protected Map<String,Byte> attrNameType = null;
 
     public void setTaskMonitor(TaskMonitor taskMonitor) {
         this.taskMonitor = taskMonitor;
@@ -78,6 +79,35 @@ public class AttributeBasedIDMappingImpl
 
     public String getReport() {
         return report;
+    }
+
+    /**
+     * Define target attributes.
+     * Call this method first before mapping if necessary.
+     * @param attrNameType
+     */
+    public void suggestTgtAttrType(Map<String,Byte> attrNameType) {
+        this.attrNameType = attrNameType;
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        MultiHashMapDefinition mmapDef = nodeAttributes.getMultiHashMapDefinition();
+
+        for (Map.Entry<String,Byte> entry : attrNameType.entrySet()) {
+            String attrname = entry.getKey();
+            byte attrtype = entry.getValue();
+
+            byte[] keyTypes;
+            if (attrtype==CyAttributes.TYPE_STRING) {
+                    keyTypes = null;
+            } else if (attrtype==CyAttributes.TYPE_SIMPLE_LIST ) {
+                    keyTypes = new byte[] { MultiHashMapDefinition.TYPE_INTEGER };
+            } else {
+                    keyTypes = null;
+            }
+
+            mmapDef.defineAttribute(attrname,
+                                    MultiHashMapDefinition.TYPE_STRING,
+                                    keyTypes);
+        }
     }
 
     /**
@@ -229,7 +259,13 @@ public class AttributeBasedIDMappingImpl
                 }
             } else {
                 // define the new attribute as List
-                byte[] keyTypes = new byte[] { MultiHashMapDefinition.TYPE_INTEGER };
+                // only if it is explicitly defined as String, o.w. default is list of string
+                byte[] keyTypes;
+                if (attrNameType!=null && attrNameType.get(attr)==CyAttributes.TYPE_STRING) {
+                    keyTypes = null;
+                }
+
+                keyTypes = new byte[] { MultiHashMapDefinition.TYPE_INTEGER };
                 mmapDef.defineAttribute(attr,
                                     MultiHashMapDefinition.TYPE_STRING,
                                     keyTypes);
