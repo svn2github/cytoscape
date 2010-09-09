@@ -37,13 +37,13 @@ package org.cytoscape.model;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
-import org.cytoscape.model.internal.CyDataTableImpl;
+import org.cytoscape.model.internal.CyTableImpl;
 
 
 /**
  * DOCUMENT ME!
  */
-public class CyDataTableTest extends AbstractCyDataTableTest {
+public class CyDataTableTest extends AbstractCyTableTest {
 
 	/**
 	 * DOCUMENT ME!
@@ -51,7 +51,7 @@ public class CyDataTableTest extends AbstractCyDataTableTest {
 	public void setUp() {
 
 		eventHelper = new DummyCyEventHelper();
-		mgr = new CyDataTableImpl("homer", "SUID", Long.class, true, eventHelper);
+		mgr = new CyTableImpl("homer", "SUID", Long.class, true, eventHelper);
 		attrs = mgr.getRow(1l);
 	}
 

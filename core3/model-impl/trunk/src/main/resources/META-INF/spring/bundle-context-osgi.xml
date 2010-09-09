@@ -16,7 +16,7 @@
 	</osgi:service>
 	
 	<osgi:service id="cyDataTableFactoryService"
-		ref="cyDataTableFactory" interface="org.cytoscape.model.CyDataTableFactory">
+		ref="cyDataTableFactory" interface="org.cytoscape.model.CyTableFactory">
 	</osgi:service>
 	
 	<osgi:service id="cyRootNetworkFactoryService"

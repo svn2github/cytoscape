@@ -36,7 +36,7 @@
 
 package org.cytoscape.model.internal;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -51,7 +51,7 @@ class CyNodeImpl extends GraphObjImpl implements CyNode {
 
 	private CyNetwork nestedNet;
 
-	CyNodeImpl(CyNetwork n, int ind, Map<String, CyDataTable> attrMgr) {
+	CyNodeImpl(CyNetwork n, int ind, Map<String, CyTable> attrMgr) {
 		super(attrMgr);
 		net = n;
 		index = ind;

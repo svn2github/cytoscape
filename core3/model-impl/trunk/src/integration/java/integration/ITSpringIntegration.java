@@ -2,7 +2,7 @@
 package integration; 
 
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 
@@ -26,7 +26,7 @@ public class ITSpringIntegration extends AbstractIntegrationTester {
 							  },
 		       new String[] { "cyNetworkFactory", "cyDataTableFactory", 
 			                  "cyRootNetworkFactory", "cyTableManager" },
-		       new Class[] { CyNetworkFactory.class, CyDataTableFactory.class, 
+		       new Class[] { CyNetworkFactory.class, CyTableFactory.class, 
 			                 CyRootNetworkFactory.class, CyTableManager.class },
 		       new String[] { "org.cytoscape.model", "org.cytoscape.model.subnetwork" }
 			   );

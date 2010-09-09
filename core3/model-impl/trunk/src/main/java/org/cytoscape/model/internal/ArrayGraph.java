@@ -44,9 +44,9 @@ import java.util.Map;
 import java.util.Collections;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -61,7 +61,7 @@ import org.cytoscape.model.events.RemovedNodeEvent;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 
-import static org.cytoscape.model.GraphObject.*;
+import static org.cytoscape.model.CyTableEntry.*;
 
 
 /**
@@ -94,9 +94,9 @@ public class ArrayGraph implements CyRootNetwork {
 	private NodePointer firstNode;
 	private final List<NodePointer> nodePointers;
 	private final List<EdgePointer> edgePointers;
-	private final Map<String, CyDataTable> netAttrMgr;
-	private final Map<String, CyDataTable> nodeAttrMgr;
-	private final Map<String, CyDataTable> edgeAttrMgr;
+	private final Map<String, CyTable> netAttrMgr;
+	private final Map<String, CyTable> nodeAttrMgr;
+	private final Map<String, CyTable> edgeAttrMgr;
 	private final CyEventHelper eventHelper;
 	private final List<CySubNetwork> subNetworks;
 	private final CySubNetwork base;
@@ -108,7 +108,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 * Creates a new ArrayGraph object.
 	 * @param eh The CyEventHelper used for firing events.
 	 */
-	public ArrayGraph(final CyEventHelper eh, final CyTableManager tableMgr, final CyDataTableFactory tableFactory) {
+	public ArrayGraph(final CyEventHelper eh, final CyTableManager tableMgr, final CyTableFactory tableFactory) {
 		this.tableMgr = tableMgr;
 		suid = SUIDFactory.getNextSUID();
 		numSubNetworks = 0;
@@ -118,7 +118,7 @@ public class ArrayGraph implements CyRootNetwork {
 		nodePointers = new ArrayList<NodePointer>();
 		edgePointers = new ArrayList<EdgePointer>();
 
-		netAttrMgr = new HashMap<String, CyDataTable>();
+		netAttrMgr = new HashMap<String, CyTable>();
 		netAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " network", "SUID", Long.class, true));
 		netAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " network", "SUID", Long.class, false));
 
@@ -126,14 +126,14 @@ public class ArrayGraph implements CyRootNetwork {
 		attrs().set("name","");
 		// potential leak since "this" isn't yet fully constructed
 
-		nodeAttrMgr = new HashMap<String, CyDataTable>();
+		nodeAttrMgr = new HashMap<String, CyTable>();
 		nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " node", "SUID", Long.class, true));
 		nodeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " node", "SUID", Long.class, false));
 
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
 
-		edgeAttrMgr = new HashMap<String, CyDataTable>();
+		edgeAttrMgr = new HashMap<String, CyTable>();
 		edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " edge", "SUID", Long.class, true));
 		edgeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " edge", "SUID", Long.class, false));
 
@@ -550,7 +550,7 @@ public class ArrayGraph implements CyRootNetwork {
 			throw new NullPointerException("namespace is null");
 
 		final CyRow ret; 
-		final CyDataTable mgr;
+		final CyTable mgr;
 	
 		synchronized (this) {
 			mgr = netAttrMgr.get(namespace);

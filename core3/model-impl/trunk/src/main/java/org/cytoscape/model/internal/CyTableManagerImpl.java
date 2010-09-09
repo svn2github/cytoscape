@@ -39,32 +39,32 @@ package org.cytoscape.model.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
 
 /**
  * An interface describing a factory used for managing 
- * {@link CyDataTable} objects.  This class will be
+ * {@link CyTable} objects.  This class will be
  * provided as a service through Spring/OSGi.
  */
 public class CyTableManagerImpl implements CyTableManager {
 
-	private final Map<String, Map<CyNetwork, Map<String,CyDataTable>>> map;
+	private final Map<String, Map<CyNetwork, Map<String,CyTable>>> map;
 
 	public CyTableManagerImpl() {
-		map = new HashMap<String, Map<CyNetwork, Map<String,CyDataTable>>>();	
-		map.put( "NETWORK", new HashMap<CyNetwork, Map<String,CyDataTable>>() );
-		map.put( "NODE", new HashMap<CyNetwork, Map<String,CyDataTable>>() );
-		map.put( "EDGE", new HashMap<CyNetwork, Map<String,CyDataTable>>() );
+		map = new HashMap<String, Map<CyNetwork, Map<String,CyTable>>>();	
+		map.put( "NETWORK", new HashMap<CyNetwork, Map<String,CyTable>>() );
+		map.put( "NODE", new HashMap<CyNetwork, Map<String,CyTable>>() );
+		map.put( "EDGE", new HashMap<CyNetwork, Map<String,CyTable>>() );
 	}
 	
 
-	public Map<String,CyDataTable> getTableMap(final String graphObjectType, final CyNetwork network) {
+	public Map<String,CyTable> getTableMap(final String graphObjectType, final CyNetwork network) {
 		if ( network == null || graphObjectType == null )
 			return null;
 
-		Map<CyNetwork, Map<String,CyDataTable>> tmap = map.get(graphObjectType);
+		Map<CyNetwork, Map<String,CyTable>> tmap = map.get(graphObjectType);
 
 		if ( tmap == null )
 			throw new IllegalArgumentException("no data tables of type: " + graphObjectType + " exist");
@@ -73,16 +73,16 @@ public class CyTableManagerImpl implements CyTableManager {
 	}
 
 	
-	public void setTableMap(final String graphObjectType, final CyNetwork network, final Map<String,CyDataTable> tm) {
+	public void setTableMap(final String graphObjectType, final CyNetwork network, final Map<String,CyTable> tm) {
 		if ( network == null )
 			throw new NullPointerException("CyNetwork is null");
 		if ( graphObjectType == null )
 			throw new NullPointerException("Type is null");
 
 		if ( !map.containsKey(graphObjectType) )
-			map.put(graphObjectType, new HashMap<CyNetwork, Map<String,CyDataTable>>());
+			map.put(graphObjectType, new HashMap<CyNetwork, Map<String,CyTable>>());
 
-		Map<CyNetwork, Map<String,CyDataTable>> tmap = map.get(graphObjectType);
+		Map<CyNetwork, Map<String,CyTable>> tmap = map.get(graphObjectType);
 
 		if ( tm == null )
 			tmap.remove(network);

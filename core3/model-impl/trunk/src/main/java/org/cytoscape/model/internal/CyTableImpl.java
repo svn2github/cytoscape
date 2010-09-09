@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.Collections;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.model.events.ColumnCreatedEvent;
@@ -52,7 +52,7 @@ import org.cytoscape.model.events.RowSetMicroListener;
 /**
  * 
  */
-public class CyDataTableImpl implements CyDataTable {
+public class CyTableImpl implements CyTable {
 
 	private final Map<String, Map<Object, Object>> attributes;
 	private final Map<Object, CyRow> rows;
@@ -78,7 +78,7 @@ public class CyDataTableImpl implements CyDataTable {
 	private final CyEventHelper eventHelper;
 
 	/**
-	 * Creates a new CyDataTableImpl object.
+	 * Creates a new CyTableImpl object.
 	 * 
 	 * @param typeMap
 	 *            DOCUMENT ME!
@@ -87,7 +87,7 @@ public class CyDataTableImpl implements CyDataTable {
 	 * @param pub
 	 *            DOCUMENT ME!
 	 */
-	public CyDataTableImpl(String title, String primaryKey, Class<?> pkType, 
+	public CyTableImpl(String title, String primaryKey, Class<?> pkType, 
 			boolean pub, final CyEventHelper eventHelper) {
 		this.title = title;
 		this.primaryKey = primaryKey;
@@ -429,9 +429,9 @@ public class CyDataTableImpl implements CyDataTable {
 
 	private class InternalRow implements CyRow {
 		private final Object suid;
-		private final CyDataTable table;
+		private final CyTable table;
 
-		InternalRow(Object suid, CyDataTable table) {
+		InternalRow(Object suid, CyTable table) {
 			this.suid = suid;
 			this.table = table;
 		}
@@ -490,7 +490,7 @@ public class CyDataTableImpl implements CyDataTable {
 			return suid.hashCode();
 		}
 
-		public CyDataTable getDataTable() {
+		public CyTable getDataTable() {
 			return table;
 		}
 

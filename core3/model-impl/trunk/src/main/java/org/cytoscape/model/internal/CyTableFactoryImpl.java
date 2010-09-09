@@ -41,27 +41,27 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.event.CyEventHelper;
 
 /**
  * An interface describing a factory used for creating 
- * {@link CyDataTable} objects.  This factory will be
+ * {@link CyTable} objects.  This factory will be
  * provided as a service through Spring/OSGi.
  */
-public class CyDataTableFactoryImpl implements CyDataTableFactory {
+public class CyTableFactoryImpl implements CyTableFactory {
 
-	private final Map<Long,CyDataTable> tables;
+	private final Map<Long,CyTable> tables;
 	private final CyEventHelper help;
 
-	public CyDataTableFactoryImpl(CyEventHelper help) {
+	public CyTableFactoryImpl(CyEventHelper help) {
 		this.help = help;
-		tables = new HashMap<Long,CyDataTable>();
+		tables = new HashMap<Long,CyTable>();
 	}
 
-	public CyDataTable createTable(String name, String primaryKey, Class<?> primaryKeyType, boolean pub) {
-		CyDataTable cdt = new CyDataTableImpl(name,primaryKey,primaryKeyType,pub,help);
+	public CyTable createTable(String name, String primaryKey, Class<?> primaryKeyType, boolean pub) {
+		CyTable cdt = new CyTableImpl(name,primaryKey,primaryKeyType,pub,help);
 		tables.put( cdt.getSUID(), cdt );
 		return cdt;
 	}
@@ -69,7 +69,7 @@ public class CyDataTableFactoryImpl implements CyDataTableFactory {
 	/**
      * @param includePrivate Whether to include private CyDataTables
      * in the list (i.e. all possible CyDataTables) or not.
-     * @return A list containing CyDataTable SUIDs either
+     * @return A list containing CyTable SUIDs either
      * including private CyDataTables (i.e. meaning all possible
      * CyDataTables) or just public CyDataTables.
      */
@@ -85,12 +85,12 @@ public class CyDataTableFactoryImpl implements CyDataTableFactory {
 	}
 
 	/**
-	 * @param suid The SUID identifying the CyDataTable.
+	 * @param suid The SUID identifying the CyTable.
 	 *
-	 * @return The CyDataTable identified by the suid. Will return null if a CyDataTable doesn't
+	 * @return The CyTable identified by the suid. Will return null if a CyTable doesn't
 	 *         exist for the  specified SUID.
 	 */
-	public CyDataTable getTable(long suid) {
+	public CyTable getTable(long suid) {
 		return tables.get(suid);
 	}
 }

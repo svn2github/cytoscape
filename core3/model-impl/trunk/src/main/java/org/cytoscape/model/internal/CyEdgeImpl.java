@@ -36,7 +36,7 @@
 
 package org.cytoscape.model.internal;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 
@@ -49,7 +49,7 @@ class CyEdgeImpl extends GraphObjImpl implements CyEdge {
 	final private int index;
 	final private boolean directed;
 
-	CyEdgeImpl(CyNode src, CyNode tgt, boolean dir, int ind, Map<String, CyDataTable> attrMgr) {
+	CyEdgeImpl(CyNode src, CyNode tgt, boolean dir, int ind, Map<String, CyTable> attrMgr) {
 		super(attrMgr);
 		source = src;
 		target = tgt;

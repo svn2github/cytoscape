@@ -39,7 +39,7 @@ package org.cytoscape.model;
 
 import org.cytoscape.model.internal.ArrayGraph;
 import org.cytoscape.model.internal.CyTableManagerImpl;
-import org.cytoscape.model.internal.CyDataTableFactoryImpl;
+import org.cytoscape.model.internal.CyTableFactoryImpl;
 import org.cytoscape.event.DummyCyEventHelper;
 
 import org.cytoscape.model.subnetwork.CyRootNetwork;
@@ -52,7 +52,7 @@ public class TestCyNetworkFactory {
 
 	public static CyNetwork getInstance() {
 		DummyCyEventHelper deh = new DummyCyEventHelper();
-		return new ArrayGraph(deh, new CyTableManagerImpl(),new CyDataTableFactoryImpl(deh));
+		return new ArrayGraph(deh, new CyTableManagerImpl(),new CyTableFactoryImpl(deh));
 	}
 
 	public static CyRootNetwork getRootInstance() {	

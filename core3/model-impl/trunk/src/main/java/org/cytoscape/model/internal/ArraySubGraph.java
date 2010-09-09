@@ -38,7 +38,7 @@ package org.cytoscape.model.internal;
 
 import org.cytoscape.event.CyEventHelper;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
