@@ -43,7 +43,7 @@ import java.util.Map;
 
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 
@@ -183,7 +183,7 @@ public interface EditorManager {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public PropertyEditor getDataTableComboBoxEditor(CyDataTable table, String editorName);
+	public PropertyEditor getDataTableComboBoxEditor(CyTable table, String editorName);
 	
 	public <V> ValueEditor<V> getValueEditor(Class<V> dataType);
 }
