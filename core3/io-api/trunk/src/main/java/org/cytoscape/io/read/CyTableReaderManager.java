@@ -36,7 +36,7 @@ import org.cytoscape.work.TaskIterator;
 /**
  * Central registry for all Cytoscape import classes.
  */
-public interface CyDataTableReaderManager {
+public interface CyTableReaderManager {
 
 	/**
 	 * Given a URI this method will attempt to find a CyDataTableReaderFactory
@@ -46,7 +46,7 @@ public interface CyDataTableReaderManager {
 	 * @return A reader than can read the specified URI. Will return null
 	 * if no reader can be found.
 	 */
-	 CyDataTableReader getReader(URI uri); 
+	 CyTableReader getReader(URI uri); 
 
 	/**
 	 * Given an InputStream this method will attempt to find a CyDataTableReaderFactory
@@ -56,5 +56,5 @@ public interface CyDataTableReaderManager {
 	 * @return A reader than can read the specified stream. Will return null
 	 * if no reader can be found.
 	 */
-	CyDataTableReader getReader(InputStream stream); 
+	CyTableReader getReader(InputStream stream); 
 }
