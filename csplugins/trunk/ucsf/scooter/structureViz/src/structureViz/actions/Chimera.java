@@ -453,6 +453,7 @@ public class Chimera {
   	chimera = null;
 		models = null;
 		modelHash = null;
+		staticPointer = null;
   }
 
 	/**
