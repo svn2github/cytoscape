@@ -2,7 +2,7 @@ package org.cytoscape.plugin;
 
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
-import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.layout.CyLayouts;
@@ -36,10 +36,10 @@ public interface CyPluginAdapter {
 	CyNetworkFactory getCyNetworkFactory(); 
 
 	/**
-	 * Returns an instance of {@link CyDataTableFactory}.
-	 * @return an instance of {@link CyDataTableFactory}.
+	 * Returns an instance of {@link CyTableFactory}.
+	 * @return an instance of {@link CyTableFactory}.
 	 */
-	CyDataTableFactory getCyDataTableFactory(); 
+	CyTableFactory getCyDataTableFactory(); 
 
 	/**
 	 * Returns an instance of {@link CyRootNetworkFactory}.
