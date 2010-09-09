@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 
 import java.util.Collection;
 
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
@@ -24,7 +24,7 @@ public abstract class AbstractVisualMappingFunctionTest<K, V> {
 	
 	
 	
-	protected Collection<View<GraphObject>> views;
+	protected Collection<View<CyTableEntry>> views;
 
 	@Before
 	public void setUp() throws Exception {
