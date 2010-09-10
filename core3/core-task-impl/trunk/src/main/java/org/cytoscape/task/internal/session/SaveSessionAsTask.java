@@ -37,40 +37,38 @@
 package org.cytoscape.task.internal.session; 
 
 
-import org.cytoscape.io.write.CyWriterManager;
-import org.cytoscape.io.write.CyWriter;
-
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
-
+import org.cytoscape.io.write.SessionWriterManager;
+import org.cytoscape.io.write.SessionWriter;
 import org.cytoscape.session.CySessionManager;
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.Tunable;
 
 import java.io.File;
 
 
-public class SaveSessionAsTask extends AbstractSaveSessionTask {
+public class SaveSessionAsTask extends AbstractTask {
+
+	@Tunable(description="Save Session as:")
+	public File file;
+
+	private final SessionWriterManager writerMgr;
+	private final CySessionManager sessionMgr;
 
 	/**
 	 * setAcceleratorCombo(KeyEvent.VK_S, ActionEvent.CTRL_MASK);
 	 */
-	public SaveSessionAsTask(CySessionManager mgr, CyWriterManager factory) {
-		super(mgr,factory);
-
-		// How we set file initially determines how whether this is "save"
-		// or "save as".
-		file = null;
+	public SaveSessionAsTask(SessionWriterManager writerMgr, CySessionManager sessionMgr) {
+		super();
+		this.writerMgr = writerMgr;
+		this.sessionMgr = sessionMgr;
 	}
 
-
-	/**
-	 * If no current session file exists, open dialog box to ask user a new
-	 * session file name, otherwise, overwrite the file.
-	 */
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		saveSession(taskMonitor);
+	 	insertTaskAfterCurrentTask( new SessionWriter(writerMgr, sessionMgr, file ) );
 	}
 
 	@Override
 	public void cancel() {
 	}
-} 
+}

@@ -31,7 +31,7 @@ package org.cytoscape.task.internal.session;
 
 
 import org.cytoscape.session.CySessionManager; 
-import org.cytoscape.io.write.CyWriterManager; 
+import org.cytoscape.io.write.SessionWriterManager; 
 
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
@@ -39,15 +39,15 @@ import org.cytoscape.work.TaskIterator;
 
 public class SaveSessionTaskFactory implements TaskFactory {
 
-	private CySessionManager mgr;
-	private CyWriterManager rmgr;
+	private CySessionManager sessionMgr;
+	private SessionWriterManager writerMgr;
 
-	public SaveSessionTaskFactory(CySessionManager mgr, CyWriterManager rmgr) {
-		this.mgr = mgr;
-		this.rmgr = rmgr;
+	public SaveSessionTaskFactory(SessionWriterManager writerMgr, CySessionManager sessionMgr) {
+		this.sessionMgr = sessionMgr;
+		this.writerMgr = writerMgr;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SaveSessionTask(mgr, rmgr));
+		return new TaskIterator(new SaveSessionTask(writerMgr, sessionMgr));
 	}
 }
