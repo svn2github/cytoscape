@@ -28,13 +28,6 @@ public final class TaskIterator implements Iterator<Task> {
 		}
 	}
 
-	/** Pushes "newTask" to the current end of the iterator.
-	 */
-	public void addTaskAtEnd(final Task newTask) {
-		tryToAddSelfReferenceToTask(newTask);
-		tasks.add(newTask);
-	}
-
 	/** Inserts "newTasks" immediately after "referenceTask".
 	 *  @throws IllegalStateException if "referenceTask" is not known to the iterator.
 	 */
