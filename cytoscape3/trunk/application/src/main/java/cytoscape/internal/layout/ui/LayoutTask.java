@@ -64,7 +64,7 @@ public class LayoutTask extends AbstractTask {
 	 * Run the algorithm.  
 	 */
 	public void run(TaskMonitor monitor) {
-		layout.doLayout(view, monitor);
+//		layout.doLayout(view, monitor);
 	}
 
 	@Override

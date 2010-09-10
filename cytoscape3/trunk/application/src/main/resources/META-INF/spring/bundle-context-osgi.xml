@@ -15,7 +15,7 @@
 
 	<osgi:reference id="streamUtilServiceRef" interface="org.cytoscape.io.util.StreamUtil" />
 
-	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager" />
+	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager" />
 
 	<osgi:reference id="cyServiceRegistrarServiceRef" 
 	      interface="org.cytoscape.service.util.CyServiceRegistrar" />
@@ -62,6 +62,9 @@
 	</osgi:reference>
 
 	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager">
+	</osgi:reference>
+
+	<osgi:reference id="guiTaskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager">
 	</osgi:reference>
 
 

@@ -33,8 +33,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package cytoscape.internal.task;
+
 
 import java.awt.event.ActionEvent;
 
@@ -48,13 +48,14 @@ import cytoscape.view.CytoscapeAction;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.task.NetworkViewCollectionTaskFactory;
 
+
 public class NetworkViewCollectionTaskFactoryTunableAction 
 	extends TaskFactoryTunableAction<NetworkViewCollectionTaskFactory> {
 
-	public NetworkViewCollectionTaskFactoryTunableAction(TaskManager manager, TunableInterceptor interceptor, 
+	public NetworkViewCollectionTaskFactoryTunableAction(TaskManager manager, 
 	                  NetworkViewCollectionTaskFactory factory, Map serviceProps,
 					  CyNetworkManager netmgr) {
-		super(manager, interceptor, factory, serviceProps, netmgr);
+		super(manager, factory, serviceProps, netmgr);
 	}
 
 	public void actionPerformed(ActionEvent a) {

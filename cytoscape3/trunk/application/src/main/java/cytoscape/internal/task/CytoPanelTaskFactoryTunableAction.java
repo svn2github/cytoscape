@@ -50,9 +50,8 @@ import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.swing.GUITunableInterceptor;
 import org.cytoscape.work.TunableValidator;
+import org.cytoscape.work.swing.GUITaskManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,13 +68,11 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 	 */
 	private static class ExecuteButtonListener implements ActionListener {
 		final private TaskFactory factory;
-		final private TaskManager manager;
-		final private GUITunableInterceptor interceptor;
+		final private GUITaskManager manager;
 
-		ExecuteButtonListener(final GUITunableInterceptor interceptor, final TaskFactory factory, final TaskManager manager) {
+		ExecuteButtonListener(final TaskFactory factory, final GUITaskManager manager) {
 			this.factory = factory;
 			this.manager = manager;
-			this.interceptor = interceptor;
 		}
 
 		public void actionPerformed(final ActionEvent event) {
@@ -95,33 +92,28 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 				}
 			}
 
-			if (!interceptor.validateAndWriteBackTunables())
-				return;
-
 			final TaskIterator taskIterator = factory.getTaskIterator();
 			// execute the task in a separate thread
-			manager.execute(taskIterator, interceptor);
+			manager.execute(taskIterator);
 		}
 	}
 
 
 	final private static CytoPanelName DEFAULT_CYTOPANEL = CytoPanelName.WEST;
 	final private TaskFactory factory;
-	final private TaskManager manager;
-	final private GUITunableInterceptor interceptor;
+	final private GUITaskManager manager;
 	final private Map serviceProps;
 	private CytoPanel cytoPanel;
 	final private static Logger logger = LoggerFactory.getLogger(CytoPanelTaskFactoryTunableAction.class);
 
-	public CytoPanelTaskFactoryTunableAction(final TaskFactory factory, final TaskManager manager,
-	                                         final GUITunableInterceptor interceptor, final CySwingApplication app,
+	public CytoPanelTaskFactoryTunableAction(final TaskFactory factory, final GUITaskManager manager,
+	                                         final CySwingApplication app,
 	                                         final Map serviceProps, final CyNetworkManager netmgr)
 	{
 		super(serviceProps, netmgr);
 
 		this.factory = factory;
 		this.manager = manager;
-		this.interceptor = interceptor;
 		this.serviceProps = serviceProps;
 
 		if (serviceProps.containsKey("preferredCytoPanel")) {
@@ -140,11 +132,7 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 	 *  Creates a new CytoPanel component and adds it to a CytoPanel.
 	 */
 	public void actionPerformed(final ActionEvent a) {
-		// load the tunables from the object 
-		interceptor.loadTunables(factory);
-
-		final JPanel innerPanel = interceptor.getUI(factory);
-
+		final JPanel innerPanel = manager.getConfigurationPanel(factory);
 		if (innerPanel == null)
 			return;
 
@@ -189,7 +177,7 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 		outerPanel.add(innerPanel);
 
 		final JButton executeButton = new JButton("Execute");
-		executeButton.addActionListener(new ExecuteButtonListener(interceptor, factory, manager));
+		executeButton.addActionListener(new ExecuteButtonListener(factory, manager));
 		outerPanel.add(executeButton);
 
 		final JButton closeButton = new JButton("Close");

@@ -101,7 +101,6 @@ import org.cytoscape.util.swing.JTreeTable;
 import org.cytoscape.util.swing.TreeTableModel;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TunableInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,7 +136,6 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	private final TaskManager taskManager;
 	private Map<TaskFactory,JMenuItem> popupMap;
 	private Map<TaskFactory,CyAction> popupActions;
-	private final TunableInterceptor tunableInterceptor;
 	private CyEventHelper eventHelper;
 	private Map<CyNetwork, RowSetMicroListener> nameListeners;
 
@@ -147,14 +145,13 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	 * 
 	 * @param desktop
 	 */
-	public NetworkPanel( final CyNetworkManager netmgr, final BirdsEyeViewHandler bird,
-			final TaskManager taskManager,
-			final TunableInterceptor tunableInterceptor,
-			final CyEventHelper eventHelper) {
+	public NetworkPanel(final CyNetworkManager netmgr, final BirdsEyeViewHandler bird,
+	                    final TaskManager taskManager, final CyEventHelper eventHelper)
+	{
 		super();
+
 		this.netmgr = netmgr;
 		this.taskManager = taskManager;
-		this.tunableInterceptor = tunableInterceptor;
 		this.eventHelper = eventHelper;
 
 		root = new NetworkTreeNode("Network Root", 0L);
@@ -236,7 +233,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void addTaskFactory(TaskFactory factory, Map props) {
-		addFactory(factory, new TaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
+		addFactory(factory, new TaskFactoryTunableAction(taskManager, factory, props, netmgr));
 	}
 
 	public void removeTaskFactory(TaskFactory factory, Map props) {
@@ -244,7 +241,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void addNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-		addFactory(factory,new NetworkCollectionTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
+		addFactory(factory,new NetworkCollectionTaskFactoryTunableAction(taskManager, factory, props, netmgr));
 	}
 
 	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
@@ -253,7 +250,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 
 
 	public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
-		addFactory(factory, new NetworkViewCollectionTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
+		addFactory(factory, new NetworkViewCollectionTaskFactoryTunableAction(taskManager, factory, props, netmgr));
 	}
 
 	public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
@@ -261,7 +258,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void addNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
-		addFactory(factory, new NetworkTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
+		addFactory(factory, new NetworkTaskFactoryTunableAction(taskManager, factory, props, netmgr));
 	}
 
 	public void removeNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
@@ -269,7 +266,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
-		addFactory(factory, new NetworkViewTaskFactoryTunableAction(taskManager,tunableInterceptor,factory,props,netmgr));
+		addFactory(factory, new NetworkViewTaskFactoryTunableAction(taskManager, factory, props, netmgr));
 	}
 
 	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {

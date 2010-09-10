@@ -84,8 +84,7 @@
 	<bean name="networkPanel" class="cytoscape.internal.view.NetworkPanel">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="birdsEyeViewHandler" />
-		<constructor-arg ref="taskManagerServiceRef" />
-		<constructor-arg ref="tunableGUIInterceptorServiceRef" />
+		<constructor-arg ref="guiTaskManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 
@@ -159,13 +158,12 @@
 		<constructor-arg ref="cytoscapeMenus" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="taskManagerServiceRef" />
+		<constructor-arg ref="guiTaskManagerServiceRef" />
 	</bean>
 
 	<bean name="cytoscapeMenuPopulator" class="cytoscape.internal.view.CytoscapeMenuPopulator">
 		<constructor-arg ref="cytoscapeDesktop" />
-		<constructor-arg ref="taskManagerServiceRef" />
-		<constructor-arg ref="tunableGUIInterceptorServiceRef" />
+		<constructor-arg ref="guiTaskManagerServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
@@ -174,8 +172,7 @@
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="layoutMenuManager" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="tunableGUIInterceptorServiceRef" />
-		<constructor-arg ref="taskManagerServiceRef" />
+		<constructor-arg ref="guiTaskManagerServiceRef" />
 	</bean>
 	<bean id="helpContentsTaskFactory" class="cytoscape.internal.view.help.HelpContentsTaskFactory">
 		<constructor-arg ref="cyHelpBroker" />

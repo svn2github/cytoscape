@@ -250,14 +250,16 @@
 
 
 		<!-- cytoscape layouts -->
+<!--
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-cytoscape-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-
+-->
 
 		<!-- jgraph layouts -->
+<!--
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-jgraph-impl</artifactId>
@@ -278,9 +280,10 @@
 			<artifactId>org.jgraph.layouts</artifactId>
 			<version>5.10.0.2</version>
 		</dependency>
-
+-->
 
 		<!-- prefuse layouts -->
+<!--
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-prefuse-impl</artifactId>
@@ -291,7 +294,7 @@
 			<artifactId>prefuse</artifactId>
 			<version>20071021</version>
 		</dependency>
-
+-->
 
 		<!-- linkout plugin -->
 		<dependency>

@@ -131,7 +131,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 				layout.setSelectedOnly(false);
 				layout.setLayoutAttribute(null);
 				final Task layoutTask =  new LayoutTask(layout, view);
-				tm.execute(new TaskIterator(layoutTask), null);
+				tm.execute(new TaskIterator(layoutTask));
 			}
 		}
 	}
@@ -204,7 +204,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-
+/*
 			List<CyNetworkView> views = netmgr.getSelectedNetworkViews();
 
 			for ( CyNetworkView netView : views ) {
@@ -227,8 +227,9 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 					layout.setLayoutAttribute(e.getActionCommand());
 
 				final Task layoutTask = new LayoutTask(layout, netView);
-				tm.execute(new TaskIterator(layoutTask), null); 
+				tm.execute(new TaskIterator(layoutTask)); 
 			}
+*/
 		}
 	}
 }
