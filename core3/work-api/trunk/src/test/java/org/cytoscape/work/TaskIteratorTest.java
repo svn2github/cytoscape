@@ -50,6 +50,21 @@ public class TaskIteratorTest {
 		assertEquals("Task sequence error (3)!", 2, ((SimpleTask)thirdTask).getId());
 	}
 
+	@Test
+	public final void testInsertTasksAfterUsingAnIterator() throws Exception {
+		final Task initialTask = new SimpleTask(1);
+		final TaskIterator iter = new TaskIterator(initialTask);
+		final TaskIterator newIter = new TaskIterator(new SimpleTask(2), new SimpleTask(3));
+		iter.insertTasksAfter(initialTask, newIter);
+
+		Task firstTask = iter.next();
+		assertEquals("Task sequence error (1)!", 1, ((SimpleTask)firstTask).getId());
+		Task secondTask = iter.next();
+		assertEquals("Task sequence error (2)!", 2, ((SimpleTask)secondTask).getId());
+		Task thirdTask = iter.next();
+		assertEquals("Task sequence error (3)!", 3, ((SimpleTask)thirdTask).getId());
+	}
+
 	@Test(expected=UnsupportedOperationException.class)
 	public final void testRemove() throws Exception {
 		final TaskIterator iter = new TaskIterator();

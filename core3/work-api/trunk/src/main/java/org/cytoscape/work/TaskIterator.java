@@ -43,6 +43,22 @@ public final class TaskIterator implements Iterator<Task> {
 		}
 	}
 
+	/** Inserts "newTasks" immediately after "referenceTask".
+	 *  @throws IllegalStateException if "referenceTask" is not known to the iterator.
+	 */
+	public void insertTasksAfter(final Task referenceTask, final TaskIterator newTasks) throws IllegalStateException {
+		final int referenceIndex = tasks.indexOf(referenceTask);
+		if (referenceIndex == -1)
+			throw new IllegalStateException("invalid reference task in call to insertTaskAfter()!");
+		int offset = 0;
+		while (newTasks.hasNext()) {
+			final Task newTask = newTasks.next();
+			tryToAddSelfReferenceToTask(newTask);
+			++offset;
+			tasks.add(referenceIndex + offset, newTask);
+		}
+	}
+
 	/** @return true if a call to next() would return another Task, otherwise false
 	 */
 	public boolean hasNext() {

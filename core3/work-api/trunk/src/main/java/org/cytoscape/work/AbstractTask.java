@@ -21,6 +21,12 @@ public abstract class AbstractTask implements Task {
 		taskIterator.insertTasksAfter(this, newTasks);
 	}
 
+	/** Inserts "newTasks" after the current Task, in the TaskIterator that is being managed by this class.
+	 */
+	final protected void insertTasksAfterCurrentTask(final TaskIterator newTasks) {
+		taskIterator.insertTasksAfter(this, newTasks);
+	}
+
 	/** Calling this attempts to abort the current task.  How well this works depends on the granularity of
 	 *  a Task's checking whether "cancelled" is true or not and then taking appropriate action.
 	 */
