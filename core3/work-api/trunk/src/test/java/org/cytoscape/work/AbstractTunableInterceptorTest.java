@@ -101,8 +101,18 @@ public class AbstractTunableInterceptorTest {
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-		public final void testInvalidMultipleProvidesGUIMethods() {
+	public final void testInvalidMultipleProvidesGUIMethods() {
 		interceptor.loadTunables(new Has2ProvidesGUIMethods());
+	}
+
+	@Test
+	public final void testInheritedField() {
+		assertTrue( interceptor.hasTunables( new ExtendedFieldClass() ) );
+	}
+
+	@Test
+	public final void testInheritedMethod() {
+		assertTrue( interceptor.hasTunables( new ExtendedMethodClass() ) );
 	}
 }
 
@@ -177,4 +187,22 @@ class Has2ProvidesGUIMethods {
 
 	@ProvidesGUI
 	public JPanel providesGUI2() { return null; }
+}
+
+class BaseFieldClass {
+	@Tunable
+	public int value;
+}
+
+class ExtendedFieldClass extends BaseFieldClass {
+}
+
+class BaseMethodClass {
+	@Tunable
+	public int getValue() { return 0; }
+
+	public void setValue(int a) { };
+}
+
+class ExtendedMethodClass extends BaseMethodClass {
 }
