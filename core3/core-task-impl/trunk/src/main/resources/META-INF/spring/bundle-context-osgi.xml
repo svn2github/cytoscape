@@ -33,6 +33,8 @@
 	<osgi:reference id="taskManagerServiceRef"
 		interface="org.cytoscape.work.TaskManager" />
 
+	<osgi:reference id="viewWriterManagerServiceRef"
+		interface="org.cytoscape.io.write.ViewWriterManager" />
 	<!--
 		<osgi:reference id="cyWriterManagerServiceRef"
 		interface="org.cytoscape.io.read.CyWriterManager"/> <osgi:reference
@@ -394,6 +396,15 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="exportNetworkImageTaskFactoryService" 
+	    ref="exportNetworkImageTaskFactory"
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Network View as Graphics" />
+			<entry key="preferredMenu" value="File.Export" />
+			<entry key="enableFor" value="networkAndView" />
+		</osgi:service-properties>
+	</osgi:service>
 
 <!-- #####################	Task that set the imported network as the current one   ###################-->
 	<osgi:service id="setCurrentNetworkTaskFactoryService" ref="setCurrentNetworkTaskFactory" 
