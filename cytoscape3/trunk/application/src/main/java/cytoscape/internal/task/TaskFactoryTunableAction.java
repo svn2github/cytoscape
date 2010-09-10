@@ -43,12 +43,16 @@ import org.cytoscape.work.TaskManager;
 import cytoscape.view.CytoscapeAction;
 import org.cytoscape.session.CyNetworkManager;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public class TaskFactoryTunableAction<T extends TaskFactory> extends CytoscapeAction {
 
 	protected T factory;
 	protected TunableInterceptor interceptor;
 	protected TaskManager manager;
+
+	private final static Logger logger = LoggerFactory.getLogger( TaskFactoryTunableAction.class );
 
 	public TaskFactoryTunableAction(final TaskManager manager, final TunableInterceptor interceptor, 
 	                                final T factory, final Map serviceProps, final CyNetworkManager netmgr)
@@ -60,6 +64,7 @@ public class TaskFactoryTunableAction<T extends TaskFactory> extends CytoscapeAc
 	}
 
 	public void actionPerformed(ActionEvent a) {
+		logger.debug("About to execute task from factory: " + factory.toString());
 		final TaskIterator taskIterator = factory.getTaskIterator();
 		// execute the task(s) in a separate thread
 		manager.execute(taskIterator, interceptor);
