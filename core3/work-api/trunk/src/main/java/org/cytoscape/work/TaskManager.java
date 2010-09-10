@@ -7,6 +7,12 @@ package org.cytoscape.work;
  * @author Pasteur
  */
 public interface TaskManager {
+	/** Tests an object for having tunable annotations.
+	 *
+	 *  @return true if "o" has tunable annotations and else false.
+	 */
+	boolean hasTunables(final Object o);
+
 	/**
 	 * This method is called to execute a <code>Task</code>.
 	 *
@@ -14,5 +20,5 @@ public interface TaskManager {
 	 * started execution. It does not wait for the
 	 * <code>Task</code> to finish.
 	 */
-	void execute(TaskIterator taskIterator, TunableInterceptor tunableInterceptor);
+	void execute(TaskIterator taskIterator);
 }

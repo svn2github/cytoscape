@@ -9,7 +9,7 @@ package org.cytoscape.work;
  * about any <code>Exception</code>s thrown during its
  * execution.
  *
- * <code>Task</code>s are executed by calling a <code>TaskManager</code>'s
+ * <code>Task</code>s are executed via a TaskIterator which will be passed into <code>TaskManager</code>'s
  * <code>execute</code> method.
  *
  * <p>Some hints for writing a <code>Task</code>:</p>

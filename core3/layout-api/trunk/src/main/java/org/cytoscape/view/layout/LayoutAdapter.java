@@ -1,14 +1,7 @@
-/* vim :set ts=2:
+/*
   File: LayoutAdapter.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,6 +29,7 @@
 */
 package org.cytoscape.view.layout;
 
+
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
@@ -46,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
+
 
 /**
  * LayoutAdapter provides a *very* minimal interface to implement a layout
@@ -157,9 +152,4 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 *  DOCUMENT ME!
 	 */
 	public void unlockAllNodes() {}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void halt() {}
 }

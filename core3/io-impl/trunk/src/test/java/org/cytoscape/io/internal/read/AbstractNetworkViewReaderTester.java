@@ -1,5 +1,6 @@
 package org.cytoscape.io.internal.read;
 
+
 import static org.junit.Assert.*;
 
 import org.junit.After;
@@ -19,6 +20,9 @@ import org.cytoscape.test.support.NetworkViewTestSupport;
 import org.cytoscape.io.internal.util.ReadUtils;
 import org.cytoscape.io.internal.util.StreamUtilImpl;
 
+import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -29,7 +33,12 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 
+
 public class AbstractNetworkViewReaderTester {
+	static class SimpleTask extends AbstractTask {
+		public void run(final TaskMonitor tm) {
+		}
+	}
 
 	protected TaskMonitor taskMonitor;
 	protected CyNetworkFactory netFactory; 
@@ -42,9 +51,10 @@ public class AbstractNetworkViewReaderTester {
 		taskMonitor = mock(TaskMonitor.class);	
 
 		CyLayoutAlgorithm def = mock(CyLayoutAlgorithm.class);
+		when(def.getTaskIterator()).thenReturn(new TaskIterator(new SimpleTask()));
 
 		layouts = mock(CyLayouts.class);
-		when(layouts.getDefaultLayout()).thenReturn(def);
+		when(layouts.getDefaultLayout(any(CyNetworkView.class))).thenReturn(def);
 
 		NetworkTestSupport nts = new NetworkTestSupport();
 		netFactory = nts.getNetworkFactory();

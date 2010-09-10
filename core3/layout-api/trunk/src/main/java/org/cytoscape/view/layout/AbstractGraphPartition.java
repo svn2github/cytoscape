@@ -1,19 +1,25 @@
-/* vim: set ts=2: */
 package org.cytoscape.view.layout;
+
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
+import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.undo.UndoSupport;
 
 
 /**
  * An abstract class that handles the partitioning of graphs so that
  * the partitions will be laid out individually.
  */
-public abstract class AbstractGraphPartition extends AbstractLayout {
+public abstract class AbstractGraphPartition extends LayoutTask {
+	private TaskMonitor taskMonitor;
+
 	double incr = 100;
 	protected List <LayoutPartition> partitionList = null;
 	protected EdgeWeighter edgeWeighter = null;
@@ -28,8 +34,10 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	/**
 	 * Creates a new AbstractGraphPartition object.
 	 */
-	public AbstractGraphPartition(UndoSupport undo) {
-		super(undo);
+	public AbstractGraphPartition(final CyNetworkView networkView, final String name,
+	                              final boolean selectedOnly, final Set<View<CyNode>> staticNodes)
+	{
+		super(networkView, name, selectedOnly, staticNodes);
 	}
 
 	/**
@@ -95,9 +103,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	 * AbstractGraphPartitionLayout implements the constuct method
 	 * and calls layoutPartion for each partition.
 	 */
-	public void construct() {
-		initialize();
-
+	public void doLayout(final TaskMonitor taskMonitor, final CyNetwork network) {
 		if (edgeWeighter != null)
 			edgeWeighter.reset();
 
@@ -150,7 +156,9 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 
 
 		for (LayoutPartition partition: partitionList) {
-			if (canceled) break;
+			if (cancelled)
+				break;
+
 			// get the partition
 			current_size = (double)partition.size();
 			// System.out.println("Partition #"+partition.getPartitionNumber()+" has "+current_size+" nodes");

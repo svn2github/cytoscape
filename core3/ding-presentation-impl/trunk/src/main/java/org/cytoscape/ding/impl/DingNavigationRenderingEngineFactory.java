@@ -1,5 +1,6 @@
 package org.cytoscape.ding.impl;
 
+
 import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,10 +26,10 @@ import org.cytoscape.view.model.events.NetworkViewChangedListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * RenderingEngineFactory for Navigation.
@@ -37,8 +38,8 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class DingNavigationRenderingEngineFactory implements
-		RenderingEngineFactory<CyNetwork>, NetworkViewChangedListener {
-	
+		RenderingEngineFactory<CyNetwork>, NetworkViewChangedListener
+{
 	private static final Logger logger = LoggerFactory.getLogger(DingNavigationRenderingEngineFactory.class);
 
 	private CyTableFactory dataTableFactory;
@@ -55,23 +56,21 @@ public class DingNavigationRenderingEngineFactory implements
 	private Map<EdgeViewTaskFactory, Map> edgeViewTFs;
 	private Map<NetworkViewTaskFactory, Map> emptySpaceTFs;
 
-	private TunableInterceptor ti;
 	private TaskManager tm;
 	private CyTableManager tableMgr;
 
-	public DingNavigationRenderingEngineFactory(
-			CyTableFactory dataTableFactory,
-			CyRootNetworkFactory rootNetworkFactory, UndoSupport undo,
-			SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc,
-			VisualLexicon dingLexicon, TunableInterceptor ti, TaskManager tm,
-			CyServiceRegistrar registrar, CyTableManager tableMgr) {
+	public DingNavigationRenderingEngineFactory(CyTableFactory dataTableFactory,
+	                                            CyRootNetworkFactory rootNetworkFactory, UndoSupport undo,
+	                                            SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc,
+	                                            VisualLexicon dingLexicon, TaskManager tm,
+	                                            CyServiceRegistrar registrar, CyTableManager tableMgr)
+	{
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
 		this.spacialFactory = spacialFactory;
 		this.undo = undo;
 		this.rootLexicon = vpc;
 		this.dingLexicon = dingLexicon;
-		this.ti = ti;
 		this.tm = tm;
 		this.registrar = registrar;
 		this.tableMgr = tableMgr;

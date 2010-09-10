@@ -39,8 +39,7 @@ public class LoadDataTableTask extends AbstractTask {
 
 		taskMonitor.setStatusMessage("Importing Data Table...");
 
-		insertTaskAfterCurrentTask(new FinalStatusMessageUpdateTask(reader));
-		insertTaskAfterCurrentTask(reader);
+		insertTasksAfterCurrentTask(reader, new FinalStatusMessageUpdateTask(reader));
 	}
 
 	@Override

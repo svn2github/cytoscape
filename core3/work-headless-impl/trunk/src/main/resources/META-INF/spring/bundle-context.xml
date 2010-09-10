@@ -17,7 +17,9 @@
 
 	<bean id="undoSupport" class="org.cytoscape.work.internal.UndoSupportImpl"/>
 
-	<bean name="headlessTaskManager" class="org.cytoscape.work.internal.task.HeadlessTaskManager"/>
+	<bean name="headlessTaskManager" class="org.cytoscape.work.internal.task.HeadlessTaskManager">
+		<constructor-arg ref="tunableInterceptor"/>
+	</bean>
 
 	<bean name="tunableInterceptor" class="org.cytoscape.work.internal.tunables.CLTunableInterceptor">
 		<constructor-arg ref="commandLineProviderServiceRef"/>

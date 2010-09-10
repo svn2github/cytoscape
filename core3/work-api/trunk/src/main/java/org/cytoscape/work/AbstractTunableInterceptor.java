@@ -80,19 +80,19 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 	/**
 	 *  Factory for Handlers
 	 */
-	protected HandlerFactory<TH> factory;
+	protected final HandlerFactory<TH> factory;
 
 	/**
 	 *  Store the Handlers
 	 */
-	protected Map<Object, LinkedHashMap<String, TH>> handlerMap;
+	protected final Map<Object, LinkedHashMap<String, TH>> handlerMap;
 
 	/**
 	 *  Store the JPanel-returning methods
 	 */
-	protected Map<Object, Method> guiProviderMap;
+	protected final Map<Object, Method> guiProviderMap;
 
-	protected Logger logger;
+	private final static Logger logger = LoggerFactory.getLogger(AbstractTunableInterceptor.class);
 
 	/**
 	 * Creates a new AbstractTunableInterceptor object.
@@ -105,7 +105,6 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 		this.factory = tunableHandlerFactory;
 		handlerMap = new HashMap<Object, LinkedHashMap<String, TH>>();
 		guiProviderMap = new HashMap<Object, Method>();
-		logger = LoggerFactory.getLogger(getClass());
 	}
 
 	/**
@@ -241,7 +240,7 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 	 *
 	 * @return  The map that contains all the <code>Handlers</code> that have been created for the Object o
 	 */
-	public Map<String, TH> getHandlers(final Object o) {
+	public final Map<String, TH> getHandlers(final Object o) {
 		if (o == null)
 			return null;
 

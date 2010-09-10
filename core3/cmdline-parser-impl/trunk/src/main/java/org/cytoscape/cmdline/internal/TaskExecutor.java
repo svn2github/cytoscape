@@ -16,8 +16,8 @@ import org.cytoscape.work.TunableInterceptor;
  *
  */
 public class TaskExecutor {
-	
-	public	TaskExecutor(){};
+	public	TaskExecutor() {
+	}
 	
 	/**
 	 * <code>Tasks</code> that will be executed
@@ -32,13 +32,13 @@ public class TaskExecutor {
 	/**
 	 * Number of <code>Tasks</code>
 	 */
-	private int numberTasks=0;
+	private int numberTasks = 0;
 	
 	/**
 	 * to initialize the Array of <code>Tasks</code>
 	 * @param val number of <code>Tasks</code> that will be executed
 	 */
-	public void setNumberOfTasks(int val){
+	public void setNumberOfTasks(int val) {
 		tasks = new Task[val];
 	}
 	
@@ -68,7 +68,6 @@ public class TaskExecutor {
 	 */
 	public void execute() {
 		Task superTask = new SuperTask(tasks);
-		tm.execute(new TaskIterator(superTask), null);
+		tm.execute(new TaskIterator(superTask));
 	}
-	
 }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd                                                                                                                         
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
-	default-lazy-init="false">
+        default-lazy-init="false">
 
 	<!-- Services provided by this bundle -->
+
 	<osgi:service id="undoSupportService" ref="undoSupport"
 		interface="org.cytoscape.work.undo.UndoSupport">
 	</osgi:service>
@@ -18,8 +19,17 @@
 		interface="org.cytoscape.work.TunableInterceptor">
 	</osgi:service>
 
-	<osgi:service id="swingTaskManagerService" ref="swingTaskManager"
+<!--
+	<osgi:service id="taskManagerService" ref="swingTaskManager"
 		interface="org.cytoscape.work.TaskManager">
+	</osgi:service>
+-->
+
+	<osgi:service id="taskManagerService" ref="swingTaskManager">
+		<osgi:interfaces>
+			<value>org.cytoscape.work.swing.GUITaskManager</value>
+			<value>org.cytoscape.work.TaskManager</value>
+		</osgi:interfaces>
 	</osgi:service>
 
 	<osgi:service id="guiHandlerFactoryService" ref="guiHandlerFactory"

@@ -22,9 +22,9 @@ public class FloatHandler extends AbstractGUITunableHandler {
 	 * It creates the Swing component for this Object (JTextField) that contains the initial value of the Float Object annotated as <code>Tunable</code>, its description, and displays it in a proper way
 	 *
 	 *
-	 * @param f field that has been annotated
-	 * @param o object contained in <code>f</code>
-	 * @param t tunable associated to <code>f</code>
+	 * @param field a field that has been annotated
+	 * @param o object containing <code>field</code>
+	 * @param t tunable annotating <code>field</code>
 	 */
 	protected FloatHandler(Field field, Object o, Tunable t) {
 		super(field, o, t);

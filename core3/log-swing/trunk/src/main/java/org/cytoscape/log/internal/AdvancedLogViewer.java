@@ -370,7 +370,7 @@ class AdvancedLogViewer {
 
 			File file = fileChooser.getSelectedFile();
 			final Task task = new ExportTask(file);
-			taskManager.execute(new TaskIterator(task), null);
+			taskManager.execute(new TaskIterator(task));
 		}
 	}
 

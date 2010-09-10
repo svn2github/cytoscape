@@ -45,9 +45,8 @@ public class AbstractTaskTest {
 
 	@Test
 	public final void testTaskInsertion() throws Exception {
-		initialTask.addTaskAtEnd(new SimpleTask2(2));
-		initialTask.addTaskAtEnd(new SimpleTask2(3));
-		initialTask.insertTaskAfterCurrentTask(new SimpleTask2(4));
+		initialTask.insertTasksAfterCurrentTask(new SimpleTask2(2), new SimpleTask2(3));
+		initialTask.insertTasksAfterCurrentTask(new SimpleTask2(4));
 
 		final int expectedSequence[] = { 1, 4, 2, 3 };
 		for (int taskId : expectedSequence) {

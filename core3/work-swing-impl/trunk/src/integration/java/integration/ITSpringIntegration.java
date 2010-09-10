@@ -1,10 +1,10 @@
 package integration; 
 
 
-import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.HandlerFactory;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.swing.GUITaskManager;
 import org.cytoscape.work.undo.UndoSupport;
-import org.cytoscape.work.swing.GUITunableInterceptor;
 
 import org.cytoscape.integration.AbstractIntegrationTester;
 
@@ -22,14 +22,12 @@ public class ITSpringIntegration extends AbstractIntegrationTester {
 		                      "org.cytoscape, work-swing-api, 1.0-SNAPSHOT",
 		                      "org.cytoscape, work-spring-hack, 1.0-SNAPSHOT",
 		                      "org.cytoscape, property, 1.0-SNAPSHOT",
-//		                      "org.ops4j.pax.logging, pax-logging-api, 1.5.2",
+		                      "org.ops4j.pax.logging, pax-logging-api, 1.5.2",
 		                      "org.cytoscape, work-swing-impl, 1.0-SNAPSHOT",
 		                      "org.cytoscape, integration-test-support, 1.0-SNAPSHOT" ,
 							  },
-		       new String[] { "undoSupport", "swingTaskManager", 
-			              "guiTunableInterceptor", "guiHandlerFactory" },
-		       new Class[] { UndoSupport.class, TaskManager.class, 
-				     GUITunableInterceptor.class, HandlerFactory.class },
+		       new String[] { "undoSupport", "swingTaskManager", "swingTaskManager", "guiHandlerFactory" },
+		       new Class[] { UndoSupport.class, GUITaskManager.class, TaskManager.class, HandlerFactory.class },
 		       new String[] { }
 		       );
 	}

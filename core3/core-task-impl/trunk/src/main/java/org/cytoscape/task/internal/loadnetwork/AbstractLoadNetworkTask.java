@@ -78,9 +78,9 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 		taskMonitor.setProgress(-1.0);
 		taskMonitor.setStatusMessage("Creating Cytoscape Network...");
 
-		insertTaskAfterCurrentTask(
-			new GenerateNetworkViewsTask(name, viewReader, netMgr, namingUtil, props)); // Beware of ordering!
-		insertTaskAfterCurrentTask(viewReader);                                             // This goes 2nd!
+		insertTasksAfterCurrentTask(
+			viewReader, 
+			new GenerateNetworkViewsTask(name, viewReader, netMgr, namingUtil, props));
 	}
 
 	@Override

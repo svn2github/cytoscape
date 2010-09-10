@@ -6,13 +6,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 
+/** Provides the standard implementation for most of the methods declared by the TunableHandler interface.
+ */
 public class AbstractTunableHandler implements TunableHandler {
-	final protected Field field;
-	final protected Method getter;
-	final protected Method setter;
-	final protected Object instance;
-	final protected Tunable tunable;
+	final private Field field;
+	final private Method getter;
+	final private Method setter;
+	final protected Object instance; // TODO: should this be private?
+	final protected Tunable tunable; // TODO: should this be private?
 
+	/** Standard base class constructor for TunableHandlers that deal with Tunables that annotate a field.
+	 */
 	public AbstractTunableHandler(final Field field, final Object instance, final Tunable tunable) {
 		this.field = field;
 		this.getter = null;
@@ -21,6 +25,8 @@ public class AbstractTunableHandler implements TunableHandler {
 		this.tunable = tunable;
 	}
 
+	/** Standard base class constructor for TunableHandlers that deal with Tunables that use getter and setter methods.
+	 */
 	public AbstractTunableHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		this.field = null;
 		this.getter = getter;
@@ -36,6 +42,8 @@ public class AbstractTunableHandler implements TunableHandler {
 		return field != null ? field.get(instance) : getter.invoke(instance);
 	}
 
+	/** Sets the value of the Tunable associated with this TunableHandler.
+	 */
 	final public void setValue(final Object newValue) throws IllegalAccessException, InvocationTargetException {
 		if (field != null)
 			field.set(instance, newValue);

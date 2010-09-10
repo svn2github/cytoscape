@@ -1,14 +1,7 @@
-/* vim: set ts=2:
+/*
   File: CyLayoutAlgorithm.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,6 +29,8 @@
 */
 package org.cytoscape.view.layout;
 
+
+import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
@@ -45,27 +40,8 @@ import javax.swing.*;
 import java.util.List;
 import java.util.Set;
 
-/**
- *
-  */
-public interface CyLayoutAlgorithm {
 
-	/**
-	 * This method performs the layout on the current network.
-	 *
-	 * @param networkView the CyNetworkView on which to perform the layout
-	 */
-	public void doLayout(CyNetworkView networkView);
-
-	/**
-	 * This method performs the layout on the current network, but assumes
-	 * that the layout is part of an existing monitored task
-	 *
-	 * @param networkView the CyNetworkView on which to perform the layout
-	 * @param monitor the task monitor to use
-	 */
-	public void doLayout(CyNetworkView networkView, TaskMonitor monitor);
-
+public interface CyLayoutAlgorithm extends NetworkViewTaskFactory {
 	/**
 	 * Tests to see if this layout supports doing a layout on a subset of the
 	 * nodes in this network view.
@@ -124,40 +100,4 @@ public interface CyLayoutAlgorithm {
 	 * @return String representing the name of the layout.
 	 */
 	public String getName();
-
-	/**
-	 *  Lock this array of nodes.  Locking a node prevents the node
-	 * from being moved by layout algorithmes.
-	 *
-	 * @param nodes the array of nodes to lock
-	 */
-	public void lockNodes(View<CyNode>[] nodes);
-
-	/**
-	 * Lock this node.  Locking a node prevents the node
-	 * from being moved by layout algorithmes.
-	 *
-	 * @param node the node to lock
-	 */
-	public void lockNode(View<CyNode> v);
-
-	/**
-	 * Unlock this node.  Unlocking a node allows the node
-	 * to be moved by a layout algorithmes.
-	 *
-	 * @param v the node to unlock
-	 */
-	public void unlockNode(View<CyNode> v);
-
-	/**
-	 * Unlock all of the nodes.  Unlocking a node allows the node
-	 * to be moved by a layout algorithmes.
-	 *
-	 */
-	public void unlockAllNodes();
-
-	/**
-	 * Can be used to stop the layout from running. 
-	 */
-	public void halt();
 }

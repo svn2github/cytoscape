@@ -36,23 +36,11 @@ import org.junit.Test;
 
 public class TaskIteratorTest {
 	@Test
-	public final void testAddTaskAtEnd() throws Exception {
-		final TaskIterator iter = new TaskIterator();
-		iter.addTaskAtEnd(new SimpleTask(1));
-		iter.addTaskAtEnd(new SimpleTask(2));
-
-		Task firstTask = iter.next();
-		assertEquals("Task sequence error (1)!", 1, ((SimpleTask)firstTask).getId());
-		Task secondTask = iter.next();
-		assertEquals("Task sequence error (2)!", 2, ((SimpleTask)secondTask).getId());
-	}
-
-	@Test
-	public final void testInsertTaskAfter() throws Exception {
+	public final void testInsertTasksAfter() throws Exception {
 		final Task initialTask = new SimpleTask(1);
 		final TaskIterator iter = new TaskIterator(initialTask);
-		iter.insertTaskAfter(initialTask, new SimpleTask(2));
-		iter.insertTaskAfter(initialTask, new SimpleTask(3));
+		iter.insertTasksAfter(initialTask, new SimpleTask(2));
+		iter.insertTasksAfter(initialTask, new SimpleTask(3));
 
 		Task firstTask = iter.next();
 		assertEquals("Task sequence error (1)!", 1, ((SimpleTask)firstTask).getId());
@@ -60,16 +48,6 @@ public class TaskIteratorTest {
 		assertEquals("Task sequence error (2)!", 3, ((SimpleTask)secondTask).getId());
 		Task thirdTask = iter.next();
 		assertEquals("Task sequence error (3)!", 2, ((SimpleTask)thirdTask).getId());
-	}
-
-	@Test
-	public final void testPeek() throws Exception {
-		final Task initialTask = new SimpleTask(1);
-		final TaskIterator iter = new TaskIterator(initialTask);
-
-		assertEquals("Peek at first task referenced by the iterator failed!", 1, ((SimpleTask)iter.peek()).getId());
-		iter.next();
-		assertNull("Peek when the iterator is at the end failed!", iter.peek());
 	}
 
 	@Test(expected=UnsupportedOperationException.class)

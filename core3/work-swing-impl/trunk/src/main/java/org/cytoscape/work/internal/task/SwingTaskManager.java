@@ -1,11 +1,15 @@
 package org.cytoscape.work.internal.task;
 
 
-import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.AbstractTaskManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.work.swing.GUITunableInterceptor;
+import org.cytoscape.work.swing.GUITaskManager;
+
+import java.awt.Frame;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -14,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
-import java.awt.Frame;
+import javax.swing.JPanel;
 
 
 /**
@@ -22,7 +26,7 @@ import java.awt.Frame;
  *
  * This will not work if the application is running in headless mode.
  */
-public class SwingTaskManager implements TaskManager {
+public class SwingTaskManager extends AbstractTaskManager implements GUITaskManager {
 	private SwingTaskMonitor taskMonitor;
 
 	/**
@@ -73,7 +77,9 @@ public class SwingTaskManager implements TaskManager {
 	 * <li><code>cancelExecutorService</code> is the same as <code>taskExecutorService</code>.</li>
 	 * </ul>
 	 */
-	public SwingTaskManager() {
+	public SwingTaskManager(final GUITunableInterceptor tunableInterceptor) {
+		super(tunableInterceptor);
+
 		owner = null;
 		taskExecutorService = Executors.newCachedThreadPool();
 		addShutdownHook(taskExecutorService);
@@ -108,7 +114,13 @@ public class SwingTaskManager implements TaskManager {
 		this.owner = owner;
 	}
 
-	public void execute(final TaskIterator taskIterator, final TunableInterceptor tunableInterceptor) {
+	@Override
+	public void setParent(final JPanel parent) {
+		((GUITunableInterceptor)tunableInterceptor).setParent(parent);
+	}
+
+	@Override
+	public void execute(final TaskIterator taskIterator) {
 		taskMonitor = null;
 		final Runnable executor = new Runnable() {
 			public void run() {
@@ -116,14 +128,8 @@ public class SwingTaskManager implements TaskManager {
 					while (taskIterator.hasNext()) {
 						final Task task = taskIterator.next();
 
-						if (tunableInterceptor != null) {
-							// load the tunables from the object
-							tunableInterceptor.loadTunables(task);
-
-							// create the UI based on the object
-							if (!tunableInterceptor.execUI(task))
-								return;
-						}
+						if (!displayTunables(task))
+							return;
 
 						if (taskMonitor == null) {
 							taskMonitor = new SwingTaskMonitor(cancelExecutorService, owner);
@@ -153,6 +159,23 @@ public class SwingTaskManager implements TaskManager {
 		};
 
 		final Future<?> executorFuture = taskExecutorService.submit(executor);
+	}
+
+	private boolean displayTunables(final Task task) {
+		if (tunableInterceptor == null)
+			return true;
+
+		// load the tunables from the object
+		tunableInterceptor.loadTunables(task);
+
+		// create the UI based on the object
+		return tunableInterceptor.execUI(task);
+	}
+
+	@Override
+	public JPanel getConfigurationPanel(final TaskFactory taskFactory) {
+		tunableInterceptor.loadTunables(taskFactory);
+                return ((GUITunableInterceptor)tunableInterceptor).getUI(taskFactory);
 	}
 }
 

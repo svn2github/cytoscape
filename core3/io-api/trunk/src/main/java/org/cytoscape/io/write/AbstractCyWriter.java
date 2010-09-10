@@ -38,17 +38,17 @@ public abstract class AbstractCyWriter<T extends CyWriterManager> extends Abstra
 
 	protected final T writerManager;
 
-    public AbstractCyWriter(T writerManager) {
+	public AbstractCyWriter(T writerManager) {
 		if ( writerManager == null )
 			throw new NullPointerException("CyWriterManager is null");
-        this.writerManager = writerManager;
+		this.writerManager = writerManager;
 
-        descriptionFilterMap = new TreeMap<String,CyFileFilter>();
-        for ( CyFileFilter f : writerManager.getAvailableWriters() )
-            descriptionFilterMap.put( f.getDescription(), f );
+		descriptionFilterMap = new TreeMap<String,CyFileFilter>();
+		for ( CyFileFilter f : writerManager.getAvailableWriters() )
+			descriptionFilterMap.put( f.getDescription(), f );
    
-        options = new ListSingleSelection<String>( new ArrayList<String>( descriptionFilterMap.keySet() ) );
-    }
+		options = new ListSingleSelection<String>( new ArrayList<String>( descriptionFilterMap.keySet() ) );
+	}
 
 	public final void run(TaskMonitor tm) {
 		if ( outputFile == null )
@@ -63,10 +63,10 @@ public abstract class AbstractCyWriter<T extends CyWriterManager> extends Abstra
 			throw new NullPointerException("No file filter found for specified file type!");
 		
 		CyWriter writer = getWriter(filter,outputFile); 
-        if ( writer == null )
-            throw new NullPointerException("No CyWriter found for specified file type!");
+		if ( writer == null )
+			throw new NullPointerException("No CyWriter found for specified file type!");
 
-		insertTaskAfterCurrentTask( writer );
+		insertTasksAfterCurrentTask( writer );
 	}
 
 	protected abstract CyWriter getWriter(CyFileFilter filter, File out);

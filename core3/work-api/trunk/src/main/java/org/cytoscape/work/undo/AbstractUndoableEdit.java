@@ -53,20 +53,4 @@ public abstract class AbstractUndoableEdit extends javax.swing.undo.AbstractUndo
 	public final String getPresentationName() {
 		return presentationName;
 	}
-
-	@Override
-	public final String getRedoPresentationName() {
-		return super.getRedoPresentationName();
-	}
-
-	@Override
-	public final String getUndoPresentationName() {
-		return super.getUndoPresentationName();
-	}
-
-	@Override
-	public abstract void undo() throws CannotUndoException;
-
-	@Override
-	public abstract void redo() throws CannotRedoException;
 }

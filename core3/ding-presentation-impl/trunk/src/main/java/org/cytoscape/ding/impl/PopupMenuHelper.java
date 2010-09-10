@@ -240,6 +240,6 @@ class PopupMenuHelper {
 	 */
 	private void executeTask(TaskFactory tf) {
 		final TaskIterator taskIterator = tf.getTaskIterator();
-		m_view.manager.execute(taskIterator, m_view.interceptor);
+		m_view.manager.execute(taskIterator);
 	}
 }

@@ -5,9 +5,9 @@ import java.io.PrintStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.cytoscape.work.AbstractTaskManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.TunableInterceptor;
 
@@ -25,22 +25,24 @@ import org.cytoscape.work.TunableInterceptor;
  * This cannot cancel <code>Task</code>s because it has no means for receiving
  * input from the user.
  */
-public class HeadlessTaskManager implements TaskManager {
-	final PrintStream output;
+public class HeadlessTaskManager extends AbstractTaskManager {
+	private final PrintStream output;
 
-	public HeadlessTaskManager(PrintStream output) {
+	public HeadlessTaskManager(final PrintStream output, final TunableInterceptor tunableInterceptor) {
+		super(tunableInterceptor);
+
 		this.output = output;
 	}
 
 	/**
 	 * Use <code>System.out</code> as the output stream.
 	 */
-	public HeadlessTaskManager()
-	{
-		this(System.out);
+	public HeadlessTaskManager(final TunableInterceptor tunableInterceptor) {
+		this(System.out, tunableInterceptor);
 	}
 
-	public void execute(final TaskIterator taskIterator, final TunableInterceptor tunableInterceptor) {
+	@Override
+	public void execute(final TaskIterator taskIterator) {
 		final Timer timer = new Timer();
 		final ConsoleTaskMonitor taskMonitor = new ConsoleTaskMonitor(timer);
 

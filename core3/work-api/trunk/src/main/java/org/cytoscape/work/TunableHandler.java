@@ -4,12 +4,19 @@ package org.cytoscape.work;
 import java.lang.reflect.InvocationTargetException;
 
 
+// TODO: Should we strip out the methods that are simply pass-thrus for Tunable and replace them with a single getTunable() method?
+
+/** Interface for classes that deal with reading out and writing back Tunables and their properties.
+ */
 public interface TunableHandler {
 	/**
 	 * @return an object describing a field annotated with @Tunable or null if no field has been associated with this handler
 	 */
 	Object getValue() throws IllegalAccessException, InvocationTargetException;
 
+	/** Attempts to set the value "newValue" on the associated Tunable.
+	 *  @param newValue the value to be written into the tunable property
+	 */
 	void setValue(final Object newValue) throws IllegalAccessException, InvocationTargetException;
 
 	/**

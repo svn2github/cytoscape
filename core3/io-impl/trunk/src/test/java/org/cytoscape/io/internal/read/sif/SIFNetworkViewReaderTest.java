@@ -20,6 +20,7 @@ import org.cytoscape.test.support.NetworkViewTestSupport;
 import org.cytoscape.io.internal.util.ReadUtils;
 import org.cytoscape.io.internal.util.StreamUtilImpl;
 
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -95,6 +96,7 @@ public class SIFNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 		File f = new File("./src/test/resources/testData/sif/" + file);
 		SIFNetworkViewReader snvp = new SIFNetworkViewReader(new FileInputStream(f), 
 		                                              readUtil, layouts, viewFactory, netFactory);
+		new TaskIterator(snvp);
 		snvp.run(taskMonitor);
 
 		return snvp.getNetworkViews();

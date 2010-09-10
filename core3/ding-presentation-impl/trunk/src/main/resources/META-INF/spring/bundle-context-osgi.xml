@@ -24,10 +24,6 @@
 		interface="org.cytoscape.view.model.RootVisualLexicon">
 	</osgi:reference>
 
-	<osgi:reference id="tunableInterceptorServiceRef"
-		interface="org.cytoscape.work.TunableInterceptor">
-	</osgi:reference>
-
 	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.TaskManager">
 	</osgi:reference>
 

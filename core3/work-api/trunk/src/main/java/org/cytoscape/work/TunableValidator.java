@@ -39,5 +39,5 @@ public interface TunableValidator {
 	 * @param  errMsg  if the validation failed an explanatory message can be found here and accessed via <code>errMsg.toString()</code>
 	 * @return true if the test succeeded and false otherwise
 	 */
-	boolean tunablesAreValid(final Appendable errMsg) throws Exception;
+	boolean tunablesAreValid(final Appendable errMsg);
 }

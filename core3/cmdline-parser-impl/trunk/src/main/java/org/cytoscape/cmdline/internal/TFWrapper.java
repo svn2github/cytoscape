@@ -46,7 +46,7 @@ public class TFWrapper {
 		this.factory = fact;
 		this.taskManager = taskManager;
 		this.ti = ti;
-		this.name = fact.getTaskIterator().peek().getClass().getSimpleName();
+		this.name = fact.getClass().getSimpleName();
 	}
 	
 	/**

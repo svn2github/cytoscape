@@ -52,7 +52,7 @@ public class ProxySettingsTask extends AbstractTask implements TunableValidator 
 		this.streamUtil = streamUtil;
 	}
 
-	public boolean tunablesAreValid(final Appendable errMsg) throws Exception {
+	public boolean tunablesAreValid(final Appendable errMsg) {
 		storeProxySettings();
 
 		FutureTask<Exception> executor = new FutureTask<Exception>(new TestProxySettings(streamUtil));
@@ -72,7 +72,12 @@ public class ProxySettingsTask extends AbstractTask implements TunableValidator 
 		if (result == null)
 			return true;
 
-		errMsg.append("Cytoscape was unable to connect to the internet because:\n\n" + result.getMessage());
+		try {
+			errMsg.append("Cytoscape was unable to connect to the internet because:\n\n" + result.getMessage());
+		} catch (final Exception e) {
+			/* Intentionally ignored! */
+		}
+
 		return false;
 	}
 

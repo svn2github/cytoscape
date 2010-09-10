@@ -43,6 +43,9 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.layout.CyLayouts;
 
@@ -78,11 +81,6 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 				inputStream = null;
 			}
 		}
-	}
-
-	@Override
-	public void cancel() {
-		cancelled = true;
 	}
 
 	private void readInput(TaskMonitor tm) throws IOException {
@@ -163,7 +161,10 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 		
 		final CyNetworkView view = cyNetworkViewFactory.getNetworkView(network);
 		
-		layouts.getDefaultLayout().doLayout(view);
+		TaskFactory tf = layouts.getDefaultLayout(view);
+		TaskIterator ti = tf.getTaskIterator();
+		Task task = ti.next();
+		insertTasksAfterCurrentTask(task);
 		
 		// SIF always creates only one network.
 		this.cyNetworkViews = new CyNetworkView[] { view };

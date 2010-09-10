@@ -1,14 +1,7 @@
 /*
   File: CyLayoutsImpl.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,8 +29,12 @@
 */
 package org.cytoscape.view.layout.internal;
 
+
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.layout.internal.algorithms.GridNodeLayout;
+import org.cytoscape.view.model.CyNetworkView;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +52,7 @@ public class CyLayoutsImpl implements CyLayouts {
 	public CyLayoutsImpl() {
 		layoutMap = new HashMap<String,CyLayoutAlgorithm>();
 		menuNameMap = new HashMap<CyLayoutAlgorithm,String>();
+		addLayout(new GridNodeLayout(null), new HashMap());
 	}
 
 	/**
@@ -73,7 +71,7 @@ public class CyLayoutsImpl implements CyLayouts {
 			prefMenu = CyLayouts.PREF_MENU_DEFAULT; 
 
 		layoutMap.put(layout.getName(),layout);
-		menuNameMap.put(layout,prefMenu);
+		menuNameMap.put(layout, prefMenu);
 	}
 
 	/**
@@ -114,7 +112,7 @@ public class CyLayoutsImpl implements CyLayouts {
 	 *
 	 * @return CyLayoutAlgorithm to use as the default layout algorithm
 	 */
-	public CyLayoutAlgorithm getDefaultLayout() {
+	public CyLayoutAlgorithm getDefaultLayout(CyNetworkView view) {
 		// See if the user has set the layout.default property
 //		String defaultLayout = CytoscapeInit.getProperties().getProperty("layout.default");
 //
@@ -124,7 +122,7 @@ public class CyLayoutsImpl implements CyLayouts {
 		String defaultLayout = CyLayouts.DEFAULT_LAYOUT_NAME; 
 
 		CyLayoutAlgorithm l = layoutMap.get(defaultLayout);
-
+		l.setNetworkView(view);
 		return l;
 	}
 

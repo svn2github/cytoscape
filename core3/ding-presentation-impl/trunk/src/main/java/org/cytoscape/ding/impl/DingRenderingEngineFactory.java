@@ -1,5 +1,5 @@
-
 package org.cytoscape.ding.impl;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,10 +28,10 @@ import org.cytoscape.view.model.events.NetworkViewChangedListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetwork>, NetworkViewChangedListener {
 	
@@ -51,26 +51,24 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 	private Map<EdgeViewTaskFactory,Map> edgeViewTFs;
 	private Map<NetworkViewTaskFactory,Map> emptySpaceTFs;
 
-	private TunableInterceptor ti;
 	private TaskManager tm;
 	private final CyTableManager tableMgr;
 	private final CyEventHelper eventHelper;
 
 	
-	public DingRenderingEngineFactory(CyTableFactory dataTableFactory, 
-	                            CyRootNetworkFactory rootNetworkFactory,
-								UndoSupport undo, SpacialIndex2DFactory spacialFactory,
-								RootVisualLexicon vpc, VisualLexicon dingLexicon, 
-								TunableInterceptor ti, TaskManager tm,
-								CyServiceRegistrar registrar, CyTableManager tableMgr,
-								CyEventHelper eventHelper) {
+	public DingRenderingEngineFactory(CyTableFactory dataTableFactory,
+	                                  CyRootNetworkFactory rootNetworkFactory,
+	                                  UndoSupport undo, SpacialIndex2DFactory spacialFactory,
+	                                  RootVisualLexicon vpc, VisualLexicon dingLexicon, 
+	                                  TaskManager tm, CyServiceRegistrar registrar,
+	                                  CyTableManager tableMgr, CyEventHelper eventHelper)
+	{
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
 		this.spacialFactory = spacialFactory;
 		this.undo = undo;
 		this.rootLexicon = vpc;
 		this.dingLexicon = dingLexicon;
-		this.ti = ti;
 		this.tm = tm;
 		this.registrar = registrar;
 		this.tableMgr = tableMgr;
@@ -100,7 +98,8 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 			
 			logger.debug("Start rendering presentation by Ding: " + targetView.getSUID());
 			dgv = new DGraphView(targetView, dataTableFactory,rootNetworkFactory,undo,spacialFactory,
-					rootLexicon, dingLexicon,nodeViewTFs,edgeViewTFs,emptySpaceTFs,ti,tm, eventHelper,tableMgr);
+					     rootLexicon, dingLexicon, nodeViewTFs, edgeViewTFs, emptySpaceTFs,
+					     tm, eventHelper,tableMgr);
 			logger.info("DGraphView created as a presentation for view model: " + targetView.getSUID());
 			viewMap.put(targetView, dgv);
 			
@@ -116,9 +115,8 @@ public class DingRenderingEngineFactory implements RenderingEngineFactory<CyNetw
 				component.add(dgv.getComponent());
 			}
 			
-		} else {
+		} else
 			throw new IllegalArgumentException("frame object is not of type JInternalFrame, which is invalid for this implementation of PresentationFactory");
-		}
 
 		registrar.registerAllServices(dgv, new Properties());
 		registrar.registerAllServices(new AddDeleteHandler(dgv), new Properties());

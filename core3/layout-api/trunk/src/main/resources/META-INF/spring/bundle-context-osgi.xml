@@ -10,7 +10,7 @@
 	</osgi:service>
 
 	<osgi:service id="gridNodeLayoutService"
-		ref="gridNodeLayout" interface="org.cytoscape.view.layout.CyLayoutAlgorithm">
+		ref="gridNodeLayout" interface="org.cytoscape.task.NetworkViewTaskFactory">
 	</osgi:service>
 
     <osgi:set id="cyLayoutAlgorithmSet" interface="org.cytoscape.view.layout.CyLayoutAlgorithm" cardinality="0..N">

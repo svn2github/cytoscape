@@ -1,14 +1,7 @@
-/* vim :set ts=2:
+/*
   File: AbstractLayout.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,6 +29,7 @@
 */
 package org.cytoscape.view.layout;
 
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,20 +44,17 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.undo.UndoSupport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 /**
  * The AbstractLayout provides nice starting point for Layouts
  * written for Cytoscape.
  */
 abstract public class AbstractLayout implements CyLayoutAlgorithm {
-	
-	protected static final Logger logger = LoggerFactory.getLogger(AbstractLayout.class);
+	protected CyNetworkView networkView;
 	
 	// Graph Objects and Views
 	protected Set<View<CyNode>> staticNodes;
-	protected CyNetworkView networkView;
 	protected CyNetwork network;
 
 	//
@@ -75,16 +66,6 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	protected HashMap propertyMap = null;  // TODO figure out if this is used in a child somewhere
 	protected HashMap savedPropertyMap = null;  // TODO figure out if this is used in a child somewhere
 //	private ViewChangeEdit undoableEdit;
-
-	// Monitor
-	protected TaskMonitor taskMonitor;
-
-	protected static TaskMonitor nullTaskMonitor = new TaskMonitor() {
-		public void setProgress(double percent) { }
-		public void setStatusMessage(String message) {} 
-		public void setTitle(String title) {} 
-
-	};
 
 	// Should definitely be overridden!
 	protected String propertyPrefix = "abstract";
@@ -98,10 +79,10 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		this.undo = undo;
 	}
 
-	/**
-	 * These abstract methods must be overridden.
-	 */
-	public abstract void construct();
+	@Override
+	public void setNetworkView(final CyNetworkView networkView) {
+		this.networkView = networkView;
+	}
 
 	/**
 	 * getName is used to construct property strings
@@ -189,67 +170,6 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	}
 
 	/**
-	 * doLayout on specified network view.
-	 */
-	public void doLayout(CyNetworkView nview) {
-		doLayout(nview, nullTaskMonitor);
-	}
-
-	/**
-	 * doLayout on specified network view with specified monitor.
-	 */
-	public void doLayout(CyNetworkView nview, TaskMonitor monitor) {
-		final long start = System.currentTimeMillis();
-		logger.debug("Layout Start: " + this.getName());
-		
-		canceled = false;
-
-		networkView = nview;
-
-		// do some sanity checking
-		if ( networkView == null )
-			return;
-
-		this.network = networkView.getModel();
-
-		if (network.getNodeCount() <= 0)
-			return;
-
-		if (monitor == null)
-			monitor = nullTaskMonitor;
-
-		taskMonitor = monitor;
-
-		// set up the edit
-//		undoableEdit = new ViewChangeEdit(networkView, toString() + " Layout", undo);
-
-		// this is overridden by children and does the actual layout
-		construct();
-
-		// update the view 
-//		if (!selectedOnly)
-//			networkView.fitContent();
-
-//		networkView.updateView();
-
-		// post the edit 
-//		undoableEdit.post();
-
-		// Fit Content method always redraw the presentation.
-		networkView.fitContent();
-
-		// update the __layoutAlgorithm attribute
-		CyRow networkAttributes = network.getCyRow(CyNetwork.HIDDEN_ATTRS);
-		networkAttributes.getDataTable().createColumn("layoutAlgorithm",String.class,false);
-		networkAttributes.set("layoutAlgorithm", getName());
-
-		this.network = null;
-		this.networkView = null;
-
-		logger.debug("Layout finished: " + (System.currentTimeMillis()-start) + " msec.");
-	}
-
-	/**
 	 * Initializer, calls <tt>intialize_local</tt> to
 	 * start construction process.
 	 */
@@ -270,52 +190,5 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * graph-wide data.
 	 */
 	protected void initialize_local() {
-	}
-
-	/**
-	 * Lock these nodes (i.e. prevent them from moving).
-	 *
-	 * @param nodes An array of View<CyNode>'s to lock
-	 */
-	public void lockNodes(View<CyNode>[] nodes) {
-		for (int i = 0; i < nodes.length; ++i) {
-			staticNodes.add(nodes[i]);
-		}
-	}
-
-	/**
-	 * Lock this node (i.e. prevent it from moving).
-	 *
-	 * @param v A View<CyNode> to lock
-	 */
-	public void lockNode(View<CyNode> v) {
-		staticNodes.add(v);
-	}
-
-	/**
-	 * Unlock this node
-	 *
-	 * @param v A View<CyNode> to unlock
-	 */
-	public void unlockNode(View<CyNode> v) {
-		staticNodes.remove(v);
-	}
-
-	protected boolean isLocked(View<CyNode> v) {
-		return (staticNodes.contains(v));
-	}
-
-	/**
-	 * Unlock all nodes
-	 */
-	public void unlockAllNodes() {
-		staticNodes.clear();
-	}
-
-	/**
-	 * Halt the algorithm.  
-	 */
-	public void halt() {
-		canceled = true;
 	}
 }

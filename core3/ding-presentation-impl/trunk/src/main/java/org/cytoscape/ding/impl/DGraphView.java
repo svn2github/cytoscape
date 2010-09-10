@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -107,13 +100,13 @@ import org.cytoscape.view.model.events.FitSelectedEventListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import phoebe.PhoebeCanvasDropListener;
 import phoebe.PhoebeCanvasDroppable;
+
 
 /**
  * DING implementation of the GINY view.
@@ -347,7 +340,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	Map<EdgeViewTaskFactory, Map> edgeViewTFs;
 	Map<NetworkViewTaskFactory, Map> emptySpaceTFs;
 
-	TunableInterceptor interceptor;
 	TaskManager manager;
 
 	// Will be injected.
@@ -365,15 +357,15 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 *            The graph model that we'll be creating a view for.
 	 */
 	public DGraphView(final CyNetworkView view, CyTableFactory dataFactory,
-			CyRootNetworkFactory cyRoot, UndoSupport undo,
-			SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc,
-			VisualLexicon dingLexicon,
-			Map<NodeViewTaskFactory, Map> nodeViewTFs,
-			Map<EdgeViewTaskFactory, Map> edgeViewTFs,
-			Map<NetworkViewTaskFactory, Map> emptySpaceTFs,
-			TunableInterceptor interceptor, TaskManager manager,
-			CyEventHelper eventHelper, CyTableManager tableMgr) {
-
+			  CyRootNetworkFactory cyRoot, UndoSupport undo,
+			  SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc,
+			  VisualLexicon dingLexicon,
+			  Map<NodeViewTaskFactory, Map> nodeViewTFs,
+			  Map<EdgeViewTaskFactory, Map> edgeViewTFs,
+			  Map<NetworkViewTaskFactory, Map> emptySpaceTFs,
+			  TaskManager manager, CyEventHelper eventHelper,
+			  CyTableManager tableMgr)
+	{
 		if (view == null)
 			throw new IllegalArgumentException(
 					"Network View Model cannot be null.");
@@ -398,7 +390,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		this.edgeViewTFs = edgeViewTFs;
 		this.emptySpaceTFs = emptySpaceTFs;
 
-		this.interceptor = interceptor;
 		this.manager = manager;
 
 		final CyTable nodeCAM = dataFactory.createTable("node view", "SUID", Long.class, false);

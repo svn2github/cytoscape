@@ -2,9 +2,11 @@ package org.cytoscape.work;
 
 
 /**
- *  A base class for tasks that need to be able to access the iterator that contains them.
+ *  A base class for tasks that need to be able to access the TaskIterator that contains them.
  */
 public abstract class AbstractTask implements Task {
+	protected boolean cancelled = false;
+
 	private TaskIterator taskIterator;
 
 	/** This method is typically used by a TaskIterator to set itself on the newly added Task.
@@ -13,15 +15,16 @@ public abstract class AbstractTask implements Task {
 		this.taskIterator = taskIterator;
 	}
 
-	/** Adds a Task to the end of the iterator that is managed by this class.
+	/** Inserts "newTasks" after the current Task, in the TaskIterator that is being managed by this class.
 	 */
-	final protected void addTaskAtEnd(final Task newTask) {
-		taskIterator.addTaskAtEnd(newTask);
+	final protected void insertTasksAfterCurrentTask(final Task... newTasks) {
+		taskIterator.insertTasksAfter(this, newTasks);
 	}
 
-	/** Inserts "newTask" after the current Task, in the iterator that is being managed by this class.
+	/** Calling this attempts to abort the current task.  How well this works depends on the granularity of
+	 *  a Task's checking whether "cancelled" is true or not and then taking appropriate action.
 	 */
-	final protected void insertTaskAfterCurrentTask(final Task newTask) {
-		taskIterator.insertTaskAfter(this, newTask);
+	public void cancel() {
+		cancelled = true;
 	}
 }
