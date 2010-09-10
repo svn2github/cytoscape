@@ -228,7 +228,7 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 
 	private Method findCompatibleSetter(final Object obj, final String rootName, final Class getterReturnType) {
 		try {
-			return obj.getClass().getDeclaredMethod("set" + rootName, getterReturnType);
+			return obj.getClass().getMethod("set" + rootName, getterReturnType);
 		} catch (final Exception e) {
 			return null;
 		}
