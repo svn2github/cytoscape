@@ -21,12 +21,12 @@ public abstract class AbstractCyWriter<T extends CyWriterManager> extends Abstra
 
 	private boolean cancelTask = false;
 
-	@Tunable(description="Select the output file name")
 	public final void setOutputFile(File f) {
 		if ( f != null )
 			outputFile = f;
 	}
 
+	@Tunable(description="Select the output file name")
 	public final File getOutputFile() {
 		return outputFile;
 	}
