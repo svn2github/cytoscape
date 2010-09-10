@@ -143,9 +143,11 @@ public class SwingTaskManager implements TaskManager {
 							break;
 					}
 				} catch (Exception exception) {
+					if (taskMonitor == null) 
+						taskMonitor = new SwingTaskMonitor(cancelExecutorService, owner);
 					taskMonitor.showException(exception);
 				}
-				if (taskMonitor.isOpened() && !taskMonitor.isShowingException())
+				if (taskMonitor != null && taskMonitor.isOpened() && !taskMonitor.isShowingException())
 					taskMonitor.close();
 			}
 		};
