@@ -9,21 +9,13 @@ src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="http://chianti.ucsd.edu/~kono/cytoscape/js/menu_generator.js"></script>
 
-    <style type="text/css">
-<!--
-.style1a {
-	font-size: 24px;
-	font-weight: bold;
-}
--->
-    </style>
 </head>
 
 <body>
 <div id="container"> 
   <script src="http://chianti.ucsd.edu/~kono/cytoscape//js/header.js"></script>
 
-
+<div class="blockfull">
 
 <?php
 
@@ -123,9 +115,9 @@ for ($i= 0; $i<count($plugunNameArray); $i++) {
 }
 ?>
 </table>
-<br>
+</div>
 
  <script src="http://chianti.ucsd.edu/~kono/cytoscape/js/footer.js"></script> 
-<br>
+</div>
 </body>
 </html>

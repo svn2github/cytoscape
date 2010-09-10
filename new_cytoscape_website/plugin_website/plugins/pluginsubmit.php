@@ -38,28 +38,25 @@ if ($mode == 'new') {
 	}
 ?>
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link href="http://chianti.ucsd.edu/~kono/cytoscape/css/main.css" type="text/css" rel="stylesheet" media="screen">
-<title><?php echo $pageTitle;?></title>
-<script type="text/javascript" 
-src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="http://chianti.ucsd.edu/~kono/cytoscape/js/menu_generator.js"></script>
-	<style type="text/css">
-<!--
-.style4 {color: #FF0000}
--->
-    </style>
-</head>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="http://chianti.ucsd.edu/~kono/cytoscape/css/main.css" type="text/css" rel="stylesheet" media="screen">
+    <title><?php echo $pageTitle;?></title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://chianti.ucsd.edu/~kono/cytoscape/js/menu_generator.js"></script>
+    
+    </head>
 
-<body>
-<div id="container"> 
-  <script src="http://chianti.ucsd.edu/~kono/cytoscape//js/header.js"></script>
+    <body>
+<div id="container">
+<script src="http://chianti.ucsd.edu/~kono/cytoscape//js/header.js"></script>
 
 
+<div class="blockfull">
 <?php
 
 
@@ -104,7 +101,9 @@ $themeOnly = NULL;
 // Case for 'edit', pull data out of DB for the given versionID
 if (($tried == NULL) && ($mode == 'edit')) {
 
-  ?><a href="pluginInfoEdit.php?versionid=<?php echo $versionID; ?>">Edit plugin info</a> <?php
+  ?>
+<a href="pluginInfoEdit.php?versionid=<?php echo $versionID; ?>">Edit plugin info</a>
+<?php
 
 
 	include 'getplugindatafromdb.inc';
@@ -188,45 +187,44 @@ if (!(($tried != NULL && $tried == 'yes') && $validated)) {
 
 
 ?>
-
 <blockquote>
-  <p><SPAN id="_ctl3_LabelRequired">	Fields denoted   by an (<span class="style4">*</span>) are required.</SPAN></p>
-</blockquote>
-
+      <p><SPAN id="_ctl3_LabelRequired"> Fields denoted   by an (<span class="style4">*</span>) are required.</SPAN></p>
+    </blockquote>
 <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data" name="submitplugin" id="submitplugin">
-
-<?php
+      <?php
 include "formUserInput.inc";
 ?>
-
-<p align="center">
-<?php
+      <p align="center">
+    <?php
 
 	if ($mode == 'new') {
 ?>
-<input name="btnSubmit" type="submit" id="btnSubmit" value="Submit" />
-<?php
+    <input name="btnSubmit" type="submit" id="btnSubmit" value="Submit" />
+    <?php
 
 	} else
 		if ($mode == 'edit') {
-?>	
-  <p align="center">
-	  <input name="btnSubmit" type="submit" id="btnSubmit" value="Save" />
-	  &nbsp;&nbsp;
-	  <input name="btnSubmit" type="submit" id="btnSubmit" value="Save and publish" />
-	  &nbsp;&nbsp;
-	  <input name="btnSubmit" type="submit" id="btnSubmit" value="Save and unpublish" />
-  </p>
-</form>
-	<p align="center">&nbsp;</p>
-	<?php
+?>
+  
+      
+    <input name="btnSubmit" type="submit" id="btnSubmit" value="Save" />
+    &nbsp;&nbsp;
+    <input name="btnSubmit" type="submit" id="btnSubmit" value="Save and publish" />
+    &nbsp;&nbsp;
+    <input name="btnSubmit" type="submit" id="btnSubmit" value="Save and unpublish" />
+   </form>
+
+	</p>
+    </div>
+    
+    
+<?php
 
 
 		}
 ?>
 </p>
 </form>
-
 <?php
 
 
@@ -435,9 +433,9 @@ else
 				showerror();
 		}
 ?>
-		Database is updated successfully!
-		<p>Go back to <a href="pluginadmin.php">Plugin adminstration page</a></p>
-		<?php
+Database is updated successfully!
+<p>Go back to <a href="pluginadmin.php">Plugin adminstration page</a></p>
+<?php
 
 		include 'luceneUtil.inc';
 		createLuceneIndex($connection);
@@ -458,7 +456,6 @@ else
 }
 ?>
 
-  <script src="http://chianti.ucsd.edu/~kono/cytoscape/js/footer.js"></script> 
-<br>
+<script src="http://chianti.ucsd.edu/~kono/cytoscape/js/footer.js"></script> 
 </body>
 </html>
