@@ -37,6 +37,7 @@ package csplugins.id.mapping.ui;
 
 import csplugins.id.mapping.IDMapperClient;
 import csplugins.id.mapping.IDMapperClientImplTunables;
+import csplugins.id.mapping.util.BridgeRestUtil;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -49,6 +50,7 @@ import org.bridgedb.IDMapperException;
 import org.bridgedb.webservice.biomart.BiomartStub;
 import org.bridgedb.webservice.synergizer.SynergizerStub;
 
+import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Vector;
@@ -237,29 +239,18 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         bridgedbBaseUrlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Base URL of BridgeDb web service"));
         bridgedbBaseUrlPanel.setLayout(new java.awt.GridBagLayout());
 
-        DefaultComboBoxModel bridgeComboBoxModel = new DefaultComboBoxModel();
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Arabidopsis thaliana");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Bacillus subtilis");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Caenorhabditis elegans");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Chicken");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Cow");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Danio rerio");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Dog");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Escherichia coli");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Fruit fly");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Horse");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Mouse");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Human");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Mosquito");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Populus trichocarpa");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Rat");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Rice");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Saccharomyces cerevisiae");
-        bridgeComboBoxModel.addElement("http://webservice.bridgedb.org/Xenopus tropicalis");
+        List<String> orgs = BridgeRestUtil.supportedOrganismsNr(BridgeRestUtil.defaultBaseUrl);
+        String[] orgUrls = new String[orgs.size()];
+        int iorg = 0;
+        for (String org : orgs) {
+            orgUrls[iorg++] = BridgeRestUtil.defaultBaseUrl + "/" +org;
+        }
+        DefaultComboBoxModel bridgeComboBoxModel = new DefaultComboBoxModel(orgUrls);
         bridgedbBaseUrlComboBox.setModel(bridgeComboBoxModel);
-        bridgedbComboBoxEditor = new TextComboBoxEditor("http://webservice.bridgedb.org/Human");
+        String textInEditor = orgUrls.length==0?"No organism available, please specify yours.":orgUrls[0];
+        bridgedbComboBoxEditor = new TextComboBoxEditor(textInEditor);
         bridgedbBaseUrlComboBox.setEditor(bridgedbComboBoxEditor);
-        bridgedbBaseUrlComboBox.setSelectedItem("http://webservice.bridgedb.org/Human");
+        //bridgedbBaseUrlComboBox.setSelectedItem("http://webservice.bridgedb.org/Human");
         bridgedbBaseUrlComboBox.setEditable(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;

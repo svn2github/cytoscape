@@ -487,10 +487,10 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
                 throw new CyCommandException(NETWORK_LIST+" must be String or Collection<String> "
                         + "or CyNetwork or Collection<CyNetwork>.\n");
             }
+        }
 
-            if (networks.isEmpty()) {
-                throw new CyCommandException("No network to work on.");
-            }
+        if (networks.isEmpty()) {
+            throw new CyCommandException("No network to work on.");
         }
 
         Set<String> attributes = new HashSet();
@@ -505,26 +505,24 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
         }else{
             if (obj instanceof String) {
                 String attr = (String)obj;
-                if (attributes.contains(attr)) {
-                    srcAttrs.add(attr);
-                } else {
+                if (!attributes.contains(attr)) {
                     throw new CyCommandException("Node attribute "+attr+" does not exist.");
                 }
+                srcAttrs.add(attr);
             } else if (obj instanceof Collection) {
                 Collection<String> attrs = (Collection)obj;
                 for (String attr : attrs) {
                     if (attributes.contains(attr)) {
-                        srcAttrs.add(attr);
-                    } else {
                         throw new CyCommandException("Node attribute "+attr+" does not exist.");
                     }
+                    srcAttrs.add(attr);
                 }
             } else {
                 throw new CyCommandException(SOURCE_ATTR+" must be String or Collection<String>.\n");
             }
 
             if (srcAttrs.isEmpty()) {
-                throw new CyCommandException("No network to work on.");
+                throw new CyCommandException("No source attribute to work on.");
             }
         }
 
@@ -602,17 +600,19 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
 
         String tgtAttr = getArg(command, TARGET_ATTR, args);
         if (tgtAttr==null) {
-            Set<String> usedName = new HashSet();
-            usedName.add("ID"); //TODO remove in Cy3
-            usedName.addAll(java.util.Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
-            if (usedName.contains(tgtType)) {
+            if (attributes.contains(tgtType)) {
                 int num = 1;
-                while (usedName.contains(tgtType+"."+num)) {
+                while (attributes.contains(tgtType+"."+num)) {
                     num ++;
                 }
                 tgtAttr = tgtType+"."+num;
             } else {
                 tgtAttr = tgtType;
+            }
+        } else {
+            if (attributes.contains(tgtAttr)) {
+                throw new CyCommandException(tgtAttr+" is an existing attribute "
+                        + "and hence cannot be used as target attribute name.");
             }
         }
 

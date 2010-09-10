@@ -43,5 +43,5 @@ public class FinalStaticValues {
     public static final String PLUGIN_NAME = "CyThesaurus";
     public static final String CLIENT_GLOBAL_PROPS = "cythesaurus.clients.props";
     public static final String CLIENT_SESSION_PROPS = "cythesaurus.client";
-
+    public static final String DEFAULT_SPECIES_NAME = "defaultSpeciesName";
 }

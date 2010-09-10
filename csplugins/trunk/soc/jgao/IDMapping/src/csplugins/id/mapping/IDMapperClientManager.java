@@ -35,6 +35,8 @@
 
 package csplugins.id.mapping;
 
+import csplugins.id.mapping.util.BridgeRestUtil;
+
 import cytoscape.CytoscapeInit;
 
 import java.io.BufferedReader;
@@ -47,14 +49,12 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.bridgedb.DataSource;
 import org.bridgedb.IDMapper;
-import org.bridgedb.IDMapperCapabilities;
-import org.bridgedb.IDMapperException;
 import org.bridgedb.IDMapperStack;
 
 /**
@@ -66,11 +66,11 @@ public class IDMapperClientManager {
     private static Map<String, IDMapperClient> clientConnectionStringMap;
 
     static {
-        new IDMapperClientManager();
+//        new IDMapperClientManager();
+        clientConnectionStringMap = new HashMap();
     }
 
     private IDMapperClientManager() {
-        clientConnectionStringMap = new HashMap();
         //reloadFromCytoscapeSessionProperties();
     }
 
@@ -184,6 +184,33 @@ public class IDMapperClientManager {
             registerClient(client);
         }
 
+        return true;
+    }
+
+    static boolean registerDefaultClient() {
+        Properties props = CytoscapeInit.getProperties();
+        String defaultSpecies = props.getProperty(FinalStaticValues.DEFAULT_SPECIES_NAME);
+
+        List<String> orgs = BridgeRestUtil.supportedOrganisms(BridgeRestUtil.defaultBaseUrl);
+        if (!orgs.contains(defaultSpecies))
+            return false;
+
+        String classPath = "org.bridgedb.webservice.bridgerest.BridgeRest";
+        String connStr = "idmapper-bridgerest:"+BridgeRestUtil.defaultBaseUrl+"/"+defaultSpecies;
+        IDMapperClient client;
+        try {
+            client = new IDMapperClientImplTunables
+                                .Builder(connStr, classPath)
+                                .displayName("BridgeDb("+BridgeRestUtil.defaultBaseUrl+"/"+defaultSpecies+")")
+                                .selected(true)
+                                .clientType(IDMapperClient.ClientType.WEBSERVICE)
+                                .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        registerClient(client);
         return true;
     }
 

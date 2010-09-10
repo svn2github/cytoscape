@@ -65,7 +65,8 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
     public CyThesaurusPlugin() {
         try {
             BioDataSource.init();
-            IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
+//            IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
+            registerDefaultClients();
             listenToSessionEvent();
 
             IDMappingServiceSuppport.addService();
@@ -84,8 +85,8 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
         pcs.addPropertyChangeListener(Cytoscape.CYTOSCAPE_INITIALIZED,
                 new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
-
+//                IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
+                registerDefaultClients();
                 mapSrcAttrIDTypes = null;
             }
         });
@@ -112,12 +113,20 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
 
                 if (IDMapperClientManager.countClients()==0) {
                     // load the default clients if no client
-                    IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
+//                    IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
+                    registerDefaultClients();
                 }
 
                 mapSrcAttrIDTypes = null;
             }
         });
+    }
+
+    private void registerDefaultClients() {
+        IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
+        if (IDMapperClientManager.countClients()==0) {
+            IDMapperClientManager.registerDefaultClient();
+        }
     }
 
     class IDMappingAction extends CytoscapeAction {
