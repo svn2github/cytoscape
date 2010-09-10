@@ -105,6 +105,11 @@ public class AbstractTunableInterceptorTest {
 		interceptor.loadTunables(new Has2ProvidesGUIMethods());
 	}
 
+	@Test(expected=IllegalArgumentException.class)
+	public final void testSetterAnnotatedInsteadOfGetter() {
+		interceptor.loadTunables(new SetterAnnotatedInsteadOfGetter());
+	}
+
 	@Test
 	public final void testInheritedField() {
 		assertTrue( interceptor.hasTunables( new ExtendedFieldClass() ) );
@@ -166,6 +171,13 @@ class HasInvalidSetter {
 	public int getStuff() { return -1; }
 
 	public void setStuff() { }
+}
+
+class SetterAnnotatedInsteadOfGetter {
+	public int getStuff() { return -1; }
+
+	@Tunable
+	public void setStuff(int i) { }
 }
 
 
