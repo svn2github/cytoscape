@@ -1,11 +1,13 @@
 package org.cytoscape.io.write;
 
-import java.io.IOException;
+import java.io.File;
 
 import org.cytoscape.io.FileIOFactory;
 
+/**
+ *
+ */
 public interface CyWriterFactory extends FileIOFactory {
-	
-	public CyWriter getWriter() throws IOException;
-
+	void setOutputFile(File f);
+	CyWriter getWriter();
 }
