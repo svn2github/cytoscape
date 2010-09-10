@@ -76,7 +76,6 @@ public class ListSingleHandler<T> extends AbstractGUITunableHandler {
 			try {
 				final ListSingleSelection<T> listSingleSelection = (ListSingleSelection<T>)getValue();
 				listSingleSelection.setSelectedValue(selectedItem);
-				setValue(listSingleSelection);
 			} catch(final Exception e) {
 				e.printStackTrace();
 			}

@@ -89,11 +89,6 @@ public class ListMultipleHandler<T> extends AbstractGUITunableHandler {
 		if (!selectedItems.isEmpty()) {
 			final ListMultipleSelection<T> listMultipleSelection = getList();
 			listMultipleSelection.setSelectedValues(selectedItems);
-			try {
-				setValue(listMultipleSelection);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
