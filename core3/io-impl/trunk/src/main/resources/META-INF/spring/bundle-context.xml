@@ -16,6 +16,43 @@
 
 	<context:annotation-config />
 
+	<bean id="pngFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+		<constructor-arg index="0">
+			<set>
+				<value>png</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>image/png</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Portable Network Graphics (PNG) File" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="IMAGE" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
+	</bean>
+
+	<bean id="jpegFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+		<constructor-arg index="0">
+			<set>
+				<value>jpg</value>
+				<value>jpeg</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>image/jpeg</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="JPEG Image File" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="IMAGE" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
+	</bean>
+
 	<bean id="textTableFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
 		<constructor-arg index="0">
 			<set>
@@ -81,13 +118,20 @@
 		</constructor-arg>
 	</bean>
 
-	<!-- DataTable Readers -->
+	<!-- Utility for Stream/Proxy management -->
+	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">
+		<constructor-arg ref="streamUtil" />
+	</bean>
+
+	<bean id="streamUtil" class="org.cytoscape.io.internal.util.StreamUtilImpl" />
+
+
+	<!-- Reader Factories -->
 	<bean id="textDataTableReaderFactory" class="org.cytoscape.io.internal.read.datatable.TextDataTableReaderFactory">
 		<constructor-arg ref="textTableFilter" />
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
 	</bean>
 
-	<!-- Network Readers -->
 	<bean id="sifNetworkViewReaderFactory" class="org.cytoscape.io.internal.read.sif.SIFNetworkViewReaderFactory">
 		<constructor-arg ref="readUtil" />
 		<constructor-arg ref="sifFilter" />
@@ -96,6 +140,13 @@
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 	</bean>
 
+	<!-- Writer Factories -->
+	<bean id="pngWriterFactory" class="org.cytoscape.io.internal.write.graphics.BitmapWriterFactory">
+		<constructor-arg ref="pngFilter" />
+	</bean>
+	<bean id="jpegWriterFactory" class="org.cytoscape.io.internal.write.graphics.BitmapWriterFactory">
+		<constructor-arg ref="jpegFilter" />
+	</bean>
 
 	<!-- Utilities for XGMML Reader -->
 	
@@ -132,19 +183,17 @@
 		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
 
-	<!-- Manager for all network readers -->
+	<!-- All Reader Managers -->
 	<bean id="cyNetworkViewReaderManager" 
 	      class="org.cytoscape.io.internal.read.CyNetworkViewReaderManagerImpl" />
 
-	<!-- Manager for all datatable readers -->
 	<bean id="cyDataTableReaderManager" 
 	      class="org.cytoscape.io.internal.read.CyTableReaderManagerImpl" />
 
-	<!-- Utility for Stream/Proxy management -->
-	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">
-		<constructor-arg ref="streamUtil" />
-	</bean>
+	<!-- All Writer Managers -->
 
-	<bean id="streamUtil" class="org.cytoscape.io.internal.util.StreamUtilImpl" />
+	<bean id="viewWriterManager" 
+	      class="org.cytoscape.io.internal.write.ViewWriterManagerImpl" />
+
 
 </beans>

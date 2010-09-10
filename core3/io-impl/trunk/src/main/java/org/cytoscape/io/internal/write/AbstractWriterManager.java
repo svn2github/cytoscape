@@ -1,4 +1,4 @@
-package org.cytoscape.io.internal.read;
+package org.cytoscape.io.internal.write;
 
 
 import java.io.File;
@@ -48,6 +48,7 @@ public class AbstractWriterManager<T extends CyWriterFactory>  implements CyWrit
 		for (T factory : factories.values()) {
 			CyFileFilter cff = factory.getCyFileFilter();
 			if ( filter.equals(cff) ) {
+				logger.debug("found factory for file filter: " + filter.toString());
 				factory.setOutputFile(file);
 				return factory;
 			}

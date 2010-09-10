@@ -33,6 +33,10 @@
 		interface="org.cytoscape.io.read.CyTableReaderManager">
 	</osgi:service>
 
+	<osgi:service id="viewWriterManagerService" ref="viewWriterManager"
+		interface="org.cytoscape.io.write.ViewWriterManager">
+	</osgi:service>
+
 	<osgi:service id="sifNetworkViewReaderFactoryService" ref="sifNetworkViewReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
@@ -61,6 +65,14 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="pngWriterFactoryService" ref="pngWriterFactory"
+		interface="org.cytoscape.io.write.ViewWriterFactory">
+	</osgi:service>
+
+	<osgi:service id="jpegWriterFactoryService" ref="jpegWriterFactory"
+		interface="org.cytoscape.io.write.ViewWriterFactory">
+	</osgi:service>
+
 	<osgi:service id="streamUtilService" ref="streamUtil"
 		interface="org.cytoscape.io.util.StreamUtil">
 	</osgi:service>
@@ -80,6 +92,14 @@
 		<osgi:listener bind-method="addInputStreamTaskFactory"
 		               unbind-method="removeInputStreamTaskFactory" 
 		               ref="cyDataTableReaderManager" />
+	</osgi:set>
+
+	<osgi:set id="viewWriterFactories" 
+	          interface="org.cytoscape.io.write.ViewWriterFactory"
+	          cardinality="0..N">
+		<osgi:listener bind-method="addCyWriterFactory"
+		               unbind-method="removeCyWriterFactory" 
+		               ref="viewWriterManager" />
 	</osgi:set>
 
 </beans>

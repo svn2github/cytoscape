@@ -1,4 +1,4 @@
-package org.cytoscape.io.internal.read;
+package org.cytoscape.io.internal.write;
 
 
 import org.cytoscape.io.write.CyTableWriter;
