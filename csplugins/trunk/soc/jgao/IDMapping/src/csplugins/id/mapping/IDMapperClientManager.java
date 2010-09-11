@@ -190,18 +190,36 @@ public class IDMapperClientManager {
     static boolean registerDefaultClient() {
         Properties props = CytoscapeInit.getProperties();
         String defaultSpecies = props.getProperty(FinalStaticValues.DEFAULT_SPECIES_NAME);
+        return registerDefaultClient(defaultSpecies);
+    }
+
+    static boolean registerDefaultClient(String defaultSpecies) {
+        return registerDefaultClient(defaultSpecies, null);
+    }
+
+    static boolean registerDefaultClient(String newDefaultSpecies, String oldDefaultSpecies) {
+        if (newDefaultSpecies==null) {
+            throw new IllegalArgumentException("newDefaultSpecies is null");
+        }
+
+        if (oldDefaultSpecies!=null) {
+            removeClient("idmapper-bridgerest:"+BridgeRestUtil.defaultBaseUrl+"/"+oldDefaultSpecies);
+        }
 
         List<String> orgs = BridgeRestUtil.supportedOrganisms(BridgeRestUtil.defaultBaseUrl);
-        if (!orgs.contains(defaultSpecies))
+        if (!orgs.contains(newDefaultSpecies)) {
+            System.err.println("No default ID mapping resources for species: "+newDefaultSpecies
+                    +". Please configure manually.");
             return false;
+        }
 
         String classPath = "org.bridgedb.webservice.bridgerest.BridgeRest";
-        String connStr = "idmapper-bridgerest:"+BridgeRestUtil.defaultBaseUrl+"/"+defaultSpecies;
+        String connStr = "idmapper-bridgerest:"+BridgeRestUtil.defaultBaseUrl+"/"+newDefaultSpecies;
         IDMapperClient client;
         try {
             client = new IDMapperClientImplTunables
                                 .Builder(connStr, classPath)
-                                .displayName("BridgeDb("+BridgeRestUtil.defaultBaseUrl+"/"+defaultSpecies+")")
+                                .displayName("BridgeDb("+BridgeRestUtil.defaultBaseUrl+"/"+newDefaultSpecies+")")
                                 .selected(true)
                                 .clientType(IDMapperClient.ClientType.WEBSERVICE)
                                 .build();

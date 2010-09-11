@@ -40,6 +40,7 @@ import csplugins.id.mapping.service.IDMappingServiceSuppport;
 import csplugins.id.mapping.ui.CyThesaurusDialog;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
 
@@ -67,7 +68,7 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
             BioDataSource.init();
 //            IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
             registerDefaultClients();
-            listenToSessionEvent();
+            addListeners();
 
             IDMappingServiceSuppport.addService();
             CyThesaurusNamespace.register(CyThesaurusNamespace.NAME);
@@ -79,7 +80,7 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
                         .add(new IDMappingAction());
     }
 
-    private void listenToSessionEvent() {
+    private void addListeners() {
         PropertyChangeSupport pcs = Cytoscape.getPropertyChangeSupport();
 
         pcs.addPropertyChangeListener(Cytoscape.CYTOSCAPE_INITIALIZED,
@@ -118,6 +119,16 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
                 }
 
                 mapSrcAttrIDTypes = null;
+            }
+        });
+
+        pcs.addPropertyChangeListener(Cytoscape.PREFERENCE_MODIFIED,
+                new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                if ((CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == evt.getOldValue())
+                    || (CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == evt.getNewValue())) {
+                    IDMapperClientManager.registerDefaultClient((String)evt.getNewValue(), (String)evt.getOldValue());
+                }
             }
         });
     }
