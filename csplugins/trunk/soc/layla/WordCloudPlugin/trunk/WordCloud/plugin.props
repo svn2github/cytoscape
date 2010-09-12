@@ -5,14 +5,14 @@
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users
-pluginName=SemanticSummary
+pluginName=WordCloud
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
 pluginDescription=Create and display a tag cloud semantic summary of selected nodes in a network.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.5
+pluginVersion=1.0
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6.3,2.7
@@ -31,8 +31,8 @@ projectURL=http://baderlab.org/GSoC2010_SoftwareDownload
 
 
 # Date this plugin/plugin version was released
-#releaseDate=July 20, 2010
+#releaseDate=September 12, 2010
 
 # -- The following properties are NOT OFFICIAL AND PROPRIETARY -- #
-pluginReleaseSuffix=DEV
+pluginReleaseSuffix=beta
 
