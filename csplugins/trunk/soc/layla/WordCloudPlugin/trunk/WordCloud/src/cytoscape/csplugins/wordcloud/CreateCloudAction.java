@@ -22,12 +22,18 @@
 
 package cytoscape.csplugins.wordcloud;
 
+import java.awt.Container;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import cytoscape.CyNetwork;
@@ -160,5 +166,6 @@ public class CreateCloudAction extends CytoscapeAction
 		//Enable adding of words to exclusion list
 		inputPanel.getAddWordTextField().setEditable(true);
 		inputPanel.getAddWordButton().setEnabled(true);
+		
 	}
 }
