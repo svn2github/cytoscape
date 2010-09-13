@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 
 /**
  */
-class BitmapWriter extends AbstractTask implements CyWriter {
+public class BitmapWriter extends AbstractTask implements CyWriter {
 
 	private static final Logger logger = LoggerFactory.getLogger(BitmapWriter.class);
 
@@ -63,9 +63,5 @@ class BitmapWriter extends AbstractTask implements CyWriter {
 		int height = (int) (view.getVisualProperty(NETWORK_HEIGHT).doubleValue() * scale);
 
 		ImageIO.write(((BufferedImage)re.createImage(width,height)), extension, outFile);
-	}
-
-	// TODO use the one from AbstractTask
-	public void cancel() {
 	}
 }
