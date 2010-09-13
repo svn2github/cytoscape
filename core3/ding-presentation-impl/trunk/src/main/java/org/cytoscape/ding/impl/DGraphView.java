@@ -2775,7 +2775,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	public Image createImage(int width, int height) {
 		// TODO Auto-generated method stub
-		return null;
+		return createImage(width,height,1.0);
 	}
 
 	public VisualLexicon getVisualLexicon() {
