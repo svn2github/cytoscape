@@ -37,7 +37,7 @@ public class BitmapWriter extends AbstractTask implements CyWriter {
 		this.re = re;
 		this.outFile = outFile;
 		setExtension( extensions );
-		scaleFactor = new BoundedDouble(0.0,100.0,500.0,false,false);	
+		scaleFactor = new BoundedDouble(0.0,1.0,5.0,false,false);	
 	}
 
 	private void setExtension( Set<String> extensions ) {
@@ -62,6 +62,8 @@ public class BitmapWriter extends AbstractTask implements CyWriter {
 		int width  = (int) (view.getVisualProperty(NETWORK_WIDTH).doubleValue() * scale);
 		int height = (int) (view.getVisualProperty(NETWORK_HEIGHT).doubleValue() * scale);
 
+		logger.info("image width: " + width);
+		logger.info("image height: " + width);
 		ImageIO.write(((BufferedImage)re.createImage(width,height)), extension, outFile);
 	}
 }
