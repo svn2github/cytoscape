@@ -19,8 +19,6 @@ public abstract class AbstractCyWriter<T extends CyWriterManager> extends Abstra
 
 	private File outputFile;
 
-	private boolean cancelTask = false;
-
 	public final void setOutputFile(File f) {
 		if ( f != null )
 			outputFile = f;
@@ -71,7 +69,4 @@ public abstract class AbstractCyWriter<T extends CyWriterManager> extends Abstra
 
 	protected abstract CyWriter getWriter(CyFileFilter filter, File out);
 
-	public void cancel() {
-		cancelTask = true;
-	}
 }
