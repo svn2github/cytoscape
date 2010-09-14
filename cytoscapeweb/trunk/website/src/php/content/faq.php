@@ -4,10 +4,13 @@
 	
 		<p class="question">What does Cytoscape Web do?</p>
 		<p class="answer">Cytoscape Web is a network visualisation library that you can use to embed
-		networks onto a webpage.</p>
+		networks onto a webpage.  It is not a stand alone application for users; it is a tool for developers to
+		display networks on the web.</p>
 	
 		<p class="question">What are the minimum system requirements for end users?</p>
-		<p class="answer">End users need a modern browser with the Flash plugin installed.</p>
+		<p class="answer">End users need a modern browser with the Flash plugin installed.
+		Cytoscape Web is tested on Chrome (OS X, Windows, Linux), Firefox (OS X, Windows, Linux),
+		Safari (OS X), and Internet Explorer (Windows).</p>
 		
 		<p class="question">What is the license of Cytoscape Web?</p>
 		<p class="answer">Cytoscape Web is an open source project under the 
@@ -15,7 +18,9 @@
 		
 		<p class="question">How do I reference Cytoscape Web?</p>
 		<p class="answer">You can find reference information and the publication itself on 
-		<a href="http://www.ncbi.nlm.nih.gov/pubmed/20656902">Pubmed</a>.</p>
+		<a href="http://www.ncbi.nlm.nih.gov/pubmed/20656902">Pubmed</a>.  If you want to link to
+		Cytoscape web, please see the
+		<a href="about#section/Linking_back_to_Cytoscape_Web">About section</a>.</p>
 	
 	<h1>Development background</h1>
 	
@@ -45,12 +50,15 @@
 	<h1>Loading networks</h1>
 	
 		<p class="question">What network formats does Cytoscape Web support?</p>
-		<p class="answer">Cytoscape Web supports GraphML, XGMML, and SIF.</p>
+		<p class="answer">Cytoscape Web supports
+		<a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" >GraphML</a>,
+		<a href="http://www.cs.rpi.edu/~puninj/XGMML/" >XGMML</a>, and
+		<a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" >SIF</a>.</p>
 		
 		<p class="question">My favourite network format isn't supported?  What can I do?</p>
 		<p class="answer">You can either write some code that translates your networks into a
 		supported format on-the-fly, or you could add it to Cytoscape Web itself.  Cytoscape Web
-		is an open source project, so feel free to check out the source and try things out!</p>
+		is an open source project, so feel free to check out the <a href="download#section/Source_Code">source</a> and try things out!</p>
 		
 		<p class="question">Can I load a network from Javascript objects instead of a file?</p>
 		<p class="answer">No, but the next question may interest you.</p>
@@ -62,17 +70,23 @@
 		Note that these functions are slow when applied in iteration on many elements.</p>
 		
 		<p class="question">Can I load a network from a URL?</p>
-		<p class="answer">Use AJAX to pull the file you want into a string in Javascript, and then pass that string
-		to Cytoscape Web.</p>
+		<p class="answer">Cytoscape Web does not support this feature directly, but you can implement
+		yourself easily.
+		Use AJAX to pull the file you want into a string in Javascript, and then pass that string
+		to Cytoscape Web.  <a href="http://jquery.com">jQuery</a> is a good library for this.</p>
 	
 	<h1>Interacting with Cytoscape Web</h1>
 	
 		<p class="question">I added a listener, changed the data schema, filtered, or called some function on Cytoscape Web.  Why isn't it working?</p>
-		<p class="answer">You need to call new, ready, and draw in that order with listeners within
-		the ready callback.  See the <a href="tutorial#section/Interacting_with_Cytoscape_Web">tutorial</a> for an example.</p>
+		<p class="answer">You need to call new, ready, and draw in that order with interactions with Cytoscape Web within
+		the ready callback.  All interaction with Cytoscape Web occurs within the callback function passed to the ready function.
+		See the <a href="tutorial#section/Interacting_with_Cytoscape_Web">tutorial</a> for an example.</p>
 	
 		<p class="question">What formats can I export the network to?</p>
-		<p class="answer">GraphML, SIF, XGMML, PDF, and PNG are supported.</p>
+		<p class="answer">PDF, PNG, 
+		<a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" >GraphML</a>,
+		<a href="http://www.cs.rpi.edu/~puninj/XGMML/" >XGMML</a>, and
+		<a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" >SIF</a> are supported.</p>
 	
 	<h1>Customizing visual styles</h1>
 	
@@ -80,7 +94,7 @@
 		<p class="answer">See the <a href="documentation/visual_style">API reference</a>.</p>
 		
 		<p class="question">Can I change the visual style after the network has been drawn?</p>
-		<p class="answer">Yes.</p>
+		<p class="answer">Yes, use <a href="documentation#section/visualStyle">visualStyle</a>.</p>
 		
 		<p class="question">How do I set the visual style to be dependent on the network data?</p>
 		<p class="answer">Use a <a href="documentation/mappers">mapper</a>.</p>
@@ -109,10 +123,10 @@
 	<h1>Layouts</h1>
 	
 		<p class="question">What layouts does Cytoscape Web support?</p>
-		<p class="answer">See the <a href="documentation/layout">API</a>.</p>
+		<p class="answer">Several; see the <a href="documentation/layout">API</a> for details.</p>
 		
 		<p class="question">Can I customize the layout parameters?</p>
-		<p class="answer">Yes, see the <a href="documentation/layout">API</a>.</p>
+		<p class="answer">Yes, see the <a href="documentation/layout">API</a> for details.</p>
 		
 		<p class="question">Why is the force-directed layout not animated?</p>
 		<p class="answer">It's computationally expensive such that large networks become unresponsive
@@ -122,5 +136,7 @@
 		<p class="answer">Yes, see weightAttr in the <a href="documentation/layout">API</a>.</p>
 		
 		<p class="question">Can I use my own custom layout algorithm?</p>
-		<p class="answer">Yes, calculate your layout and pass it to Cytoscape Web as a preset layout.</p>
+		<p class="answer">Yes, calculate your layout and pass it to Cytoscape Web as a preset layout.
+		You can calculate it on the client side with Javascript or on the server side with Java, PHP, 
+		and so on.</p>
 </div>
