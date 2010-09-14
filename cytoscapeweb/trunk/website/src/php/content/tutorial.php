@@ -116,7 +116,7 @@
     <a href="/documentation/cytoscape_web">API reference</a> to customise Cytoscape Web to your
     specific needs.</p>
     
-    <p>If you have still have questions, take a look at the <a href="faq">FAQ</a>.  Most likely,
+    <p>If you still have questions, take a look at the <a href="faq">FAQ</a>.  Most likely,
     your question has already been answered there.</p>
     
 </div>
