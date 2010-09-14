@@ -83,8 +83,8 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
         Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
                         .add(new IDMappingAction());
 
-        Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
-                        .add(new CyThesurrusServiceAttributeBasedIDMappingAction());
+//        Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
+//                        .add(new CyThesurrusServiceAttributeBasedIDMappingAction());
     }
 
     private void addListeners() {
