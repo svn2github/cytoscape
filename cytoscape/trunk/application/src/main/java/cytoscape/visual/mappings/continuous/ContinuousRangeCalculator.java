@@ -158,7 +158,7 @@ public class ContinuousRangeCalculator {
     private Object getRangeValue(int index, Number domainValue) {
         //  Get Lower Domain and Range
         ContinuousMappingPoint lowerBound = points.get(index - 1);
-        Number lowerDomain = lowerBound.getValue().byteValue();
+        Number lowerDomain = lowerBound.getValue().doubleValue();
         BoundaryRangeValues lv = lowerBound.getRange();
         Object lowerRange = lv.greaterValue;
 
