@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link href="http://chianti.ucsd.edu/~kono/cytoscape/css/main.css" type="text/css" rel="stylesheet" media="screen">
+<link href="http://cytoscape.org/css/main.css" type="text/css" rel="stylesheet" media="screen">
 <title>Plugin Information</title>
 <script type="text/javascript" 
 src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="http://chianti.ucsd.edu/~kono/cytoscape/js/menu_generator.js"></script>
+<script type="text/javascript" src="http://cytoscape.org/js/menu_generator.js"></script>
 
     <style type="text/css">
 <!--
@@ -21,7 +21,7 @@ src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 
 <body>
 <div id="container"> 
-  <script src="http://chianti.ucsd.edu/~kono/cytoscape//js/header.js"></script>
+  <script src="http://cytoscape.org/js/header.js"></script>
 
 
 <?php
@@ -77,7 +77,7 @@ if (@ mysql_num_rows($pluginList) != 0)
 
 <br>
 
- <script src="http://chianti.ucsd.edu/~kono/cytoscape/js/footer.js"></script> 
+ <script src="http://cytoscape.org/js/footer.js"></script> 
 <br>
 </body>
 </html>

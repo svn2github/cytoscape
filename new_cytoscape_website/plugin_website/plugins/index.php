@@ -6,7 +6,7 @@
 <meta name="description" content="Cytoscape includes a flexible Plugin architecture that enables developers to add extra functionality beyond that provided in the core. Plugins also provide a convenient place for testing out new Cytoscape features. As more Plugins become available, they will be listed on this page, and posted to our cytoscape-announce mailing list. " />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="http://chianti.ucsd.edu/~kono/cytoscape/js/menu_generator.js"></script>
+<script type="text/javascript" src="http://cytoscape.org/js/menu_generator.js"></script>
 <SCRIPT LANGUAGE="JavaScript" SRC="mktree.js"></SCRIPT>
 <style type="text/css">
 /* Expand/collapse plugin tree */
@@ -73,12 +73,12 @@
 }
 </style>
 
-<link href="http://chianti.ucsd.edu/~kono/cytoscape/css/main.css" type="text/css" rel="stylesheet" media="screen">
+<link href="http://cytoscape.org/css/main.css" type="text/css" rel="stylesheet" media="screen">
 </head>
 
 <body>
 <div id="container"> 
-	<script src="http://chianti.ucsd.edu/~kono/cytoscape/js/header.js"></script>
+	<script src="http://cytoscape.org/js/header.js"></script>
   	<div class="blockfull">
   
   	<h2>Search Plugins</h2>
@@ -184,7 +184,7 @@
  
 	<h2>Old Plugins</h2>
     <p>
-  	We also maintain a list of older <a href="http://cytoscape.org/plugins2.php">Cytoscape 2.x plugins</a> and <a href="http://cytoscape.org/plugins1.php"> Cytoscape 1.x Plugins</a>
+  	We also maintain a list of older <a href="plugins2.php">Cytoscape 2.x plugins</a> and <a href="plugins1.php"> Cytoscape 1.x Plugins</a>
     </p>
     
 
@@ -211,7 +211,7 @@
     listed on this page, and posted to our <a href="http://groups-beta.google.com/group/cytoscape-announce">cytoscape-announce</a> 		 	mailing list.
     </p>
 	</div>  
-  <script src="http://chianti.ucsd.edu/~kono/cytoscape/js/footer.js"></script> 
+  <script src="http://cytoscape.org/js/footer.js"></script> 
 </div>
 </body>
 </html>
