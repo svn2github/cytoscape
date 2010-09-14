@@ -7,7 +7,9 @@
   <target name="init">
     <tstamp/>
     <property name="name" value="GoogleChartFunctions"/>
-    <property name="version" value="1.0.1"/>
+
+	<!-- to support plugin.props, make sure the version is only two digits!-->
+    <property name="version" value="1.0"/>
 
     <echo message="Building ${name} version ${version} ..."/>
 
@@ -41,7 +43,7 @@
     <artifact:dependencies pathId="dependency.classpath">
       <dependency groupId="cytoscape" 
                   artifactId="application" 
-                  version="2.8.0-SNAPSHOT"/>
+                  version="2.8.0-beta1"/>
     </artifact:dependencies>
 
     <!-- Define the class path -->
@@ -99,12 +101,11 @@
   <!-- =================================================================== -->
   <target name="jar" 
           depends="compile" >
-<!--		  
-	<copy toDir="${build.dir}">
-		<fileset dir="${resources.dir}/testData" includes="*" />
-	</copy>
--->
-	<copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/cytoscape/equations/internal/googlechart"/>
+	<filter token="version" value="${version}"/>
+	<copy file="${resources.dir}/plugin.props" 
+	      todir="${build.dir}/org/cytoscape/equations/internal/googlechart"
+		  filtering="true"
+		  overwrite="true"/>
     <unjar dest="${build.dir}">
       <fileset dir="${lib.dir}">
         <include name="*.jar" />

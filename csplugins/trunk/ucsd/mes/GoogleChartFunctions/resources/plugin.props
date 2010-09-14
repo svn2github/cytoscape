@@ -8,10 +8,10 @@ pluginName=Google Chart API Functions
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Functions that create images via the Google Chart API
+pluginDescription=Functions that create image URLs from attribute values using the Google Chart API.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.01
+pluginVersion=@version@
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.8
@@ -19,12 +19,7 @@ cytoscapeVersion=2.8
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Other
 
-
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=MikeSmoot
-
-# -- The following properties should be set ONLY BY CORE PLUGINS -- #
-downloadURL=http://cytoscape.org/plugins/plugins.xml
-uniqueID=7123486641
+pluginAuthorsIntsitutions=Mike Smoot:UC San Diego
 
