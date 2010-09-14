@@ -37,16 +37,6 @@ BioGRID, BIND, CORUM, DIP, HPRD, INTACT, MINT, MPPI, MPACT and OPHID.</p>
 <p><a id="link_pathguide" href="http://www.pathguide.org/interactions.php" rel="external">Pathguide</a> is a meta-database that provides an overview of more than 
 300 web-accessible biological pathway and network databases. It uses Cytoscape Web to display networks that illustrate the interactions among different resources.</p>
 
-<h1>Credits</h1>
-
-<p>Cytoscape Web uses a number of libraries, and we would like to thank the creators and
-contributors of those projects for their contributions to open source software.  Cytoscape Web uses:</p>
-<ul>
-    <li><a href="http://flare.prefuse.org/" rel="external">Flare</a></li>
-    <li><a href="http://alivepdf.bytearray.org/" rel="external">AlivePDF</a></li>
-    <li><a href="http://puremvc.org/" rel="external">PureMVC</a></li>
-</ul>
-
 <h1>Linking back to Cytoscape Web</h1>
 
 <p>We appreciate people linking back to us, because that helps us keep Cytoscape Web development funded.</p>
@@ -68,9 +58,24 @@ contributors of those projects for their contributions to open source software. 
 </pre>
 </p>
 
+<h1>Publication</h1>
+   
+<p>Cytoscape Web has been published in
+<a href="http://bioinformatics.oxfordjournals.org/content/early/2010/07/23/bioinformatics.btq430.short">Bioinfomatics</a>.</p>
    
 <h1>Developers</h1>
 
 <p>Cytoscape Web is developed by <i>Christian Lopes</i> and <i>Max Franz</i>.</p> 
+   
+<h1>Credits</h1>
+
+<p>Cytoscape Web uses a number of libraries, and we would like to thank the creators and
+contributors of those projects for their contributions to open source software.  Cytoscape Web uses:</p>
+<ul>
+    <li><a href="http://flare.prefuse.org/" rel="external">Flare</a></li>
+    <li><a href="http://alivepdf.bytearray.org/" rel="external">AlivePDF</a></li>
+    <li><a href="http://puremvc.org/" rel="external">PureMVC</a></li>
+</ul>
+
    
 </div>
