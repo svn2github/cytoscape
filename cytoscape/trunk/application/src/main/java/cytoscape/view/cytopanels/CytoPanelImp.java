@@ -348,6 +348,23 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	}
 
 	/**
+	 * Adds a component to the CytoPanel with specified title, icon, and tool tip at specified index.
+	 *
+	 * @param title     Component title (can be null).
+	 * @param icon      Component icon (can be null).
+	 * @param component Component reference.
+	 * @param tip       Component Tool tip text.
+	 * @param index     Component index.
+	 */
+	public void add(String title, Icon icon, Component component, String tip, int index) {
+		// insert tab into JTabbedPane (string, icon, component, tip, index)
+		tabbedPane.insertTab(title, icon, component, tip, index);
+
+		// send out a notification
+		notifyListeners(NOTIFICATION_COMPONENT_ADDED);
+	}
+
+	/**
 	 * Returns the number of components in the CytoPanel.
 	 *
 	 * @return int Number of components.

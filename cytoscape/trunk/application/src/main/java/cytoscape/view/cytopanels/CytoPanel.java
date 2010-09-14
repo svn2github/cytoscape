@@ -101,6 +101,17 @@ public interface CytoPanel {
 	public void add(String title, Icon icon, Component component, String tip);
 
 	/**
+	 * Adds a component to the CytoPanel with specified title, icon, and tool tip at specified index.
+	 *
+	 * @param title     Component title (can be null).
+	 * @param icon      Component icon (can be null).
+	 * @param component Component reference.
+	 * @param tip       Component Tool tip text.
+	 * @param index     Component index.
+	 */
+	public void add(String title, Icon icon, Component component, String tip, int index);
+
+	/**
 	 * Returns the title of the CytoPanel.
 	 *
 	 * @return String Title.
