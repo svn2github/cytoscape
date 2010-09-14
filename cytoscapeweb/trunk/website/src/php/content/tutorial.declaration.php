@@ -2,6 +2,10 @@
 
     $content_style="side";
     
+    // code formatting    
+    include_js("/js/jquery/plugins/chili/jquery.chili-2.2.js");
+    include_js("/js/jquery/plugins/chili/recipes.js");
+    
     function escape_html($str){
         $without_lt = preg_replace( '/</', '&lt;', $str );
         $without_gt = preg_replace( '/>/', '&gt;', $without_lt );
