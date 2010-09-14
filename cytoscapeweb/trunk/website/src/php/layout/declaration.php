@@ -22,6 +22,7 @@
 	$navigation_links = array(
         "download" => "Download",
         "tutorial" => "Tutorial",
+        "faq" => "FAQ",
         "documentation" => "Documentation",
         "demo" => "Demo",
         "news" => "News",
