@@ -35,22 +35,16 @@
 
 package csplugins.id.mapping.ui;
 
-import csplugins.id.mapping.IDMapperClient;
 import csplugins.id.mapping.IDMapperClientManager;
 import csplugins.id.mapping.util.DataSourceWrapper;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.data.attr.MultiHashMapDefinition;
-
-import org.bridgedb.AttributeMapper;
-import org.bridgedb.IDMapperStack;
-import org.bridgedb.DataSource;
-import org.bridgedb.IDMapper;
-import org.bridgedb.webservice.biomart.IDMapperBiomart;
 
 import javax.swing.AbstractListModel;
 import javax.swing.ListCellRenderer;
@@ -67,7 +61,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -446,13 +439,16 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         srcConfDialog.setVisible(true);
 
         if (srcConfDialog.isModified()) {
-            srcTypes = null;
-            mapSrcTypeTgtIDTypes = null;
-            mapSrcTypeTgtAttrTypes = null;
-            srcAttrs = null;
-            setSupportedSrcTypesInTable();
-            setSupportedTgtTypesInTable();
-            setSelectedNetworkInSrcTable();
+            final JTaskConfig jTaskConfig = new JTaskConfig();
+            jTaskConfig.setOwner(Cytoscape.getDesktop());
+            jTaskConfig.displayCloseButton(false);
+            jTaskConfig.displayCancelButton(false);
+            jTaskConfig.displayStatus(true);
+            jTaskConfig.setAutoDispose(true);
+            jTaskConfig.setMillisToPopup(100); // always pop the task
+
+            // Execute Task in New Thread; pop open JTask Dialog Box.
+            TaskManager.executeTask(new ApplySourceChangeTask(), jTaskConfig);
         }
     }//GEN-LAST:event_srcConfBtnActionPerformed
 
@@ -502,7 +498,7 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
             return false;
         }
 
-        if (getSupportedSrcTypes().isEmpty()) {
+        if (IDMapperClientManager.countClients()==0) {
             JOptionPane.showMessageDialog(this, "No source ID type available. Please configure the sources of ID mapping first.");
             return false;
         }
@@ -565,219 +561,13 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
         OKBtn.repaint();
     }
 
-    private Set<String> srcTypes = null;
-    private Map<DataSourceWrapper,Set<String>> mapSrcTypeTgtIDTypes = null;
-    private Set<String> srcAttrs = null;
-    private Map<DataSourceWrapper,Set<String>> mapSrcTypeTgtAttrTypes = null;
-
-    private Set<String> getSupportedSrcTypes() {
-        if (srcTypes==null) {
-            srcTypes = new HashSet();
-
-            IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
-            Set<DataSource> dss = null;
-            try {
-                dss = stack.getCapabilities().getSupportedSrcDataSources();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            
-            if (dss!=null) {
-                for (DataSource ds : dss) {
-                    srcTypes.add(ds.getFullName());
-                }
-            }
-
-        }
-
-        return srcTypes;
-    }
-
-    private Set<String> getSupportedTgtTypes(Set<DataSourceWrapper> srcDss) {
-        if (srcDss==null || srcDss.isEmpty())
-            return new HashSet();
-
-        if (mapSrcTypeTgtIDTypes==null) {
-            mapSrcTypeTgtIDTypes = new HashMap();
-
-            // id type
-            IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
-            Set<DataSource> tgtDss = null;
-            try {
-                tgtDss = stack.getCapabilities().getSupportedTgtDataSources();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            if (tgtDss!=null) {
-                for (String src : getSupportedSrcTypes()) {
-                    DataSource srcDs = DataSource.getByFullName(src);
-                    Set<String> dss = new HashSet();
-                    for (DataSource tgt : tgtDss) {
-                        boolean mappingSupported = false;
-                        try {
-                            mappingSupported = stack.getCapabilities().isMappingSupported(srcDs, tgt);
-                        }catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                        if (mappingSupported) {
-                            dss.add(tgt.getFullName());
-                        }
-                    }
-                    mapSrcTypeTgtIDTypes.put(DataSourceWrapper.getInstance(src,
-                            DataSourceWrapper.DsAttr.DATASOURCE), dss);
-                }
-            }
-
-            // attr type
-            for (IDMapperClient client : IDMapperClientManager.selectedClients()) {
-                IDMapper mapper = client.getIDMapper();
-                if (mapper==null) {
-                    continue;
-                }
-
-                // TODO: remove next two lines after the problem of AttributeMapper in BridgeRest is solved.
-                if (mapper instanceof org.bridgedb.webservice.bridgerest.BridgeRest)
-                    continue;
-
-                if (!(mapper instanceof AttributeMapper))
-                    continue;
-
-                Set<String> attrs = null;
-                Set<DataSource> tgtTypes = null;
-                try {
-                    attrs = ((AttributeMapper)mapper).getAttributeSet();
-                    tgtTypes = mapper.getCapabilities().getSupportedTgtDataSources();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-
-                if (attrs==null || tgtTypes==null)
-                    continue;
-
-                for (String attr : attrs) {
-                    DataSourceWrapper dsw = DataSourceWrapper.getInstance(attr,
-                            DataSourceWrapper.DsAttr.ATTRIBUTE);
-                    Set<String> dss = mapSrcTypeTgtIDTypes.get(dsw);
-                    if (dss==null) {
-                        dss = new HashSet();
-                        mapSrcTypeTgtIDTypes.put(dsw, dss);
-                    }
-
-                    for (DataSource ds : tgtTypes) {
-                        dss.add(ds.getFullName());
-                    }
-                }
-            }
-        }
-
-        Set<String> ret = new HashSet();
-        for (DataSourceWrapper src : srcDss) {
-            Set<String> tgtTypes = mapSrcTypeTgtIDTypes.get(src);
-            if (tgtTypes!=null) {
-                ret.addAll(tgtTypes);
-            }
-        }
-
-        return ret;
-    }
-
-    private Set<String> getSupportedSrcAttr() {
-        if (srcAttrs==null) {
-            //IDMapperStack stack = IDMapperClientManager.selectedIDMapperStack();
-            IDMapperStack stack = new IDMapperStack();
-            for (IDMapperClient client : IDMapperClientManager.selectedClients()) {
-                IDMapper mapper = client.getIDMapper();
-                if (mapper==null)
-                    continue;
-
-                // TODO: IDMapperBiomart does not support mapping from attribute
-                // this is temperory solution
-                // there should be a AttributeMapperCapacities or something like that
-                if (mapper instanceof IDMapperBiomart)
-                    continue;
-
-                // TODO: remove next line after the problem of AttributeMapper in BridgeRest is solved.
-                if (mapper instanceof org.bridgedb.webservice.bridgerest.BridgeRest)
-                    continue;
-
-                stack.addIDMapper(mapper);
-            }
-            try {
-                srcAttrs = stack.getAttributeSet();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        return srcAttrs;
-    }
-
-    private Set<String> getSupportedTgtAttr(Set<DataSourceWrapper> srcDss) {
-        if (srcDss==null || srcDss.isEmpty())
-            return new HashSet();
-
-        if (mapSrcTypeTgtAttrTypes==null) {
-            mapSrcTypeTgtAttrTypes = new HashMap();
-
-            for (IDMapperClient client : IDMapperClientManager.selectedClients()) {
-                IDMapper mapper = client.getIDMapper();
-                if (mapper==null || !(mapper instanceof AttributeMapper))
-                    continue;
-
-                // TODO: remove next two lines after the problem of AttributeMapper in BridgeRest is solved.
-                if (mapper instanceof org.bridgedb.webservice.bridgerest.BridgeRest)
-                    continue;
-
-                Set<String> attrs = null;
-                Set<DataSource> srcTypes = null;
-                try {
-                    attrs = ((AttributeMapper)mapper).getAttributeSet();
-                    srcTypes = mapper.getCapabilities().getSupportedSrcDataSources();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-
-                if (attrs==null || srcTypes==null)
-                    continue;
-
-                for (DataSource ds : srcTypes) {
-                    DataSourceWrapper dsw = DataSourceWrapper.getInstance(ds.getFullName(),
-                            DataSourceWrapper.DsAttr.DATASOURCE);
-                    Set<String> set = mapSrcTypeTgtAttrTypes.get(dsw);
-                    if (set==null) {
-                        set = new HashSet();
-                        mapSrcTypeTgtAttrTypes.put(dsw, set);
-                    }
-
-                    set.addAll(attrs);
-                }
-            }
-        }
-
-        Set<String> ret = new HashSet();
-        for (DataSourceWrapper src : srcDss) {
-            if (src.getDsAttr() == DataSourceWrapper.DsAttr.DATASOURCE) {
-                Set<String> tgtTypes = mapSrcTypeTgtAttrTypes.get(src);
-                if (tgtTypes!=null) {
-                    ret.addAll(tgtTypes);
-                }
-            }
-        }
-
-        return ret;
-    }
-
     private void setSupportedSrcTypesInTable() {
-        sourceAttributeSelectionTable.setSupportedIDType(getSupportedSrcTypes(),
-                getSupportedSrcAttr());
+        sourceAttributeSelectionTable.setSupportedIDType();
     }
 
     private void setSupportedTgtTypesInTable() {
         Set<DataSourceWrapper> sourceDss = sourceAttributeSelectionTable.getSelectedIDTypes();
-        targetAttributeSelectionTable.setSupportedIDType(
-                getSupportedTgtTypes(sourceDss),
-                getSupportedTgtAttr(sourceDss));
+        targetAttributeSelectionTable.setSupportedIDType(sourceDss);
     }
 
     private void setSelectedNetworkInSrcTable() {
@@ -886,6 +676,61 @@ public class CyThesaurusDialog extends javax.swing.JDialog {
 
         public Collection<CyNetwork> getNetworks() {
             return model.values();
+        }
+    }
+
+
+    private class ApplySourceChangeTask implements Task {
+        private TaskMonitor taskMonitor;
+
+        public ApplySourceChangeTask() {
+        }
+
+        /**
+         * Executes Task.
+         */
+        //@Override
+        public void run() {
+                try {
+                        taskMonitor.setStatus("Applying...");
+                        setSupportedSrcTypesInTable();
+                        setSupportedTgtTypesInTable();
+                        setSelectedNetworkInSrcTable();
+                        taskMonitor.setPercentCompleted(100);
+                } catch (Exception e) {
+                        taskMonitor.setPercentCompleted(100);
+                        taskMonitor.setStatus("Failed.\n");
+                        e.printStackTrace();
+                }
+        }
+
+        /**
+         * Halts the Task: Not Currently Implemented.
+         */
+        //@Override
+        public void halt() {
+
+        }
+
+        /**
+         * Sets the Task Monitor.
+         *
+         * @param taskMonitor
+         *            TaskMonitor Object.
+         */
+        //@Override
+        public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+                this.taskMonitor = taskMonitor;
+        }
+
+        /**
+         * Gets the Task Title.
+         *
+         * @return Task Title.
+         */
+        //@Override
+        public String getTitle() {
+                return "Apply changes";
         }
     }
 }

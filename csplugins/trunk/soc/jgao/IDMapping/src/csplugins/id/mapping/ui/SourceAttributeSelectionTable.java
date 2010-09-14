@@ -40,6 +40,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 
+import csplugins.id.mapping.IDMapperClientManager;
 import csplugins.id.mapping.util.DataSourceWrapper;
 
 import giny.model.Node;
@@ -273,33 +274,13 @@ public class SourceAttributeSelectionTable extends JTable{
         return result;
     }
 
-    public void setSupportedIDType(final Set<String> types, final Set<String> attrs) {
-        if (types==null && attrs==null) {
-            throw new NullPointerException();
-        }
+    void setSupportedIDType() {
 
-        Map<String,Set<DataSourceWrapper>> oldMap = this.getSourceAttrType();
+        Map<String,Set<DataSourceWrapper>> oldMap = getSourceAttrType();
 
-        supportedIDType = new LinkedHashSet();
-
-        if (types!=null) {
-            for (String type : new TreeSet<String>(types)) {
-                supportedIDType.add(DataSourceWrapper.getInstance(type,
-                        DataSourceWrapper.DsAttr.DATASOURCE));
-            }
-        }
-
-        if (attrs!=null && !attrs.isEmpty()) {
-            if (!supportedIDType.isEmpty()) {
-                supportedIDType.add(null);
-            }
-
-            for (String attr : new TreeSet<String>(attrs)) {
-                supportedIDType.add(DataSourceWrapper.getInstance(attr,
-                        DataSourceWrapper.DsAttr.ATTRIBUTE));
-            }
-        }
-
+        supportedIDType = new LinkedHashSet<DataSourceWrapper>();
+        supportedIDType.addAll(new TreeSet<DataSourceWrapper>(IDMapperClientManager.getSupportedSrcTypes()));
+        
         //select the id type previously selected
         this.setSourceAttrType(oldMap);
         
@@ -309,7 +290,7 @@ public class SourceAttributeSelectionTable extends JTable{
         setGuessedDataSources();
     }
 
-    public void setSourceAttrType(Map<String,Set<DataSourceWrapper>> srcAttrType) {
+    void setSourceAttrType(Map<String,Set<DataSourceWrapper>> srcAttrType) {
         if (srcAttrType==null) return;
 
         this.clearRows();
@@ -327,7 +308,7 @@ public class SourceAttributeSelectionTable extends JTable{
 
     }
 
-    public Map<String,Set<DataSourceWrapper>> getSourceAttrType() {
+    Map<String,Set<DataSourceWrapper>> getSourceAttrType() {
         Map<String,Set<DataSourceWrapper>> ret = new LinkedHashMap();
         
         for (int i=0; i<rowCount; i++) {
@@ -353,7 +334,7 @@ public class SourceAttributeSelectionTable extends JTable{
         return ret;
     }
 
-    public Set<DataSourceWrapper> getSelectedIDTypes() {
+    Set<DataSourceWrapper> getSelectedIDTypes() {
         Set<DataSourceWrapper> ret = new HashSet();
 
         if (supportedIDType.isEmpty()) {

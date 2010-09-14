@@ -51,6 +51,29 @@ import org.bridgedb.Xref;
  * @author gjj
  */
 public class IDMapperWrapper {
+    public static boolean xrefExists(XrefWrapper xref) {
+        if (xref==null)
+            throw new NullPointerException();
+        IDMapperStack idMapperStack = IDMapperClientManager.selectedIDMapperStack();
+        DataSourceWrapper dsw = xref.getDataSource();
+        if (dsw.getDsAttr() == DataSourceWrapper.DsAttr.DATASOURCE) {
+            try {
+                return idMapperStack.xrefExists(xref.toXref());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return false;
+            }
+        } else {
+            try {
+                return !idMapperStack.freeAttributeSearch(xref.getValue(),
+                        xref.getDataSource().value(), 1).isEmpty();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return false;
+            }
+        }
+    }
+
     public static Map<XrefWrapper, Set<XrefWrapper>> mapID(Set<XrefWrapper> srcXrefs,
             Set<DataSourceWrapper> tgtDataSources) {
         // separate xrefs

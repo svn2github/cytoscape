@@ -239,18 +239,6 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
         bridgedbBaseUrlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Base URL of BridgeDb web service"));
         bridgedbBaseUrlPanel.setLayout(new java.awt.GridBagLayout());
 
-        List<String> orgs = BridgeRestUtil.supportedOrganismsNr(BridgeRestUtil.defaultBaseUrl);
-        String[] orgUrls = new String[orgs.size()];
-        int iorg = 0;
-        for (String org : orgs) {
-            orgUrls[iorg++] = BridgeRestUtil.defaultBaseUrl + "/" +org;
-        }
-        DefaultComboBoxModel bridgeComboBoxModel = new DefaultComboBoxModel(orgUrls);
-        bridgedbBaseUrlComboBox.setModel(bridgeComboBoxModel);
-        String textInEditor = orgUrls.length==0?"No organism available, please specify yours.":orgUrls[0];
-        bridgedbComboBoxEditor = new TextComboBoxEditor(textInEditor);
-        bridgedbBaseUrlComboBox.setEditor(bridgedbComboBoxEditor);
-        //bridgedbBaseUrlComboBox.setSelectedItem("http://webservice.bridgedb.org/Human");
         bridgedbBaseUrlComboBox.setEditable(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -661,6 +649,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
                 synergizerPanel.setVisible(false);
                 picrPanel.setVisible(false);
                 cronosPanel.setVisible(false);
+                initBridgeDb();
             } else if (type == ClientType.BIOMART) {
                 bridgedbPanel.setVisible(false);
                 biomartPanel.setVisible(true);
@@ -1103,6 +1092,24 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
 //        }
 //    }
 
+    private void initBridgeDb() {
+        if (!bridgeRestInitialized) {
+            List<String> orgs = BridgeRestUtil.supportedOrganismsNr(BridgeRestUtil.defaultBaseUrl);
+            String[] orgUrls = new String[orgs.size()];
+            int iorg = 0;
+            for (String org : orgs) {
+                orgUrls[iorg++] = BridgeRestUtil.defaultBaseUrl + "/" +org;
+            }
+            DefaultComboBoxModel bridgeComboBoxModel = new DefaultComboBoxModel(orgUrls);
+            bridgedbBaseUrlComboBox.setModel(bridgeComboBoxModel);
+            String textInEditor = orgUrls.length==0?"No organism available, please specify yours.":orgUrls[0];
+            bridgedbComboBoxEditor = new TextComboBoxEditor(textInEditor);
+            bridgedbBaseUrlComboBox.setEditor(bridgedbComboBoxEditor);
+            //bridgedbBaseUrlComboBox.setSelectedItem("http://webservice.bridgedb.org/Human");
+            bridgeRestInitialized = true;
+        }
+    }
+
     private void initBiomart() {
         if (!biomartInitialized) {
             setChooseDBComboBox();
@@ -1132,7 +1139,7 @@ public class WebserviceIDMappingClientConfigDialog extends javax.swing.JDialog {
     private Map<String, String> mapMartDisplayName;
     private Map<String, String> mapDatasetDisplayName;
 
-    private boolean biomartInitialized = false, synergizerInitialized = false;
+    private boolean biomartInitialized = false, synergizerInitialized = false, bridgeRestInitialized = false;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox bioMartBaseUrlComboBox;

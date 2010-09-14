@@ -35,6 +35,7 @@
 
 package csplugins.id.mapping.util;
 
+import org.bridgedb.DataSource;
 import org.bridgedb.Xref;
 
 /**
@@ -62,6 +63,13 @@ public class XrefWrapper {
 
     public DataSourceWrapper getDataSource() {
         return dataSource;
+    }
+
+    public Xref toXref() {
+        if (dataSource.getDsAttr() == DataSourceWrapper.DsAttr.ATTRIBUTE)
+            return null;
+
+        return new Xref(value, DataSource.getByFullName(dataSource.value()));
     }
 
     /**

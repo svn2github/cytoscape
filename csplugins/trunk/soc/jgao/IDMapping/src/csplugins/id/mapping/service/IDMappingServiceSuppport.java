@@ -222,7 +222,7 @@ public class IDMappingServiceSuppport {
 
         Set<IDMapperClient> clients = IDMapperClientManager.allClients();
         for (IDMapperClient client : clients) {
-            if (selected==null || selected==client.isSelected()) {
+            if (selected==null || selected==IDMapperClientManager.isClientSelected(client)) {
                 mappers.add(client.getConnectionString());
             }
         }
@@ -333,7 +333,7 @@ public class IDMappingServiceSuppport {
                 content.put(SUCCESS, false);
                 content.put(REPORT, "No such ID mapper.");
             } else {
-                client.setSelected(selected);
+                IDMapperClientManager.setClientSelection(client, selected);
                 content.put(SUCCESS, true);
             }
         }

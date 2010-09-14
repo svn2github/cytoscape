@@ -104,7 +104,7 @@ class IDMappingSourceSelectionTree extends JTree {
                     Object clientObj = clientNode.getUserObject();
                     if (clientObj instanceof IDMapperClient) {
                         IDMapperClient client = (IDMapperClient)clientObj;
-                        client.setSelected(selection_Model.isPathSelected(path, true));
+                        IDMapperClientManager.setClientSelection(client, selection_Model.isPathSelected(path, true));
                         modified = true;
                     } else {
                         //TODO if 2nd level can be selected
@@ -161,7 +161,7 @@ class IDMappingSourceSelectionTree extends JTree {
             if (clientType==IDMapperClient.ClientType.FILE) {
                 //fileTreeNode.add(clientNode);
                 insertAlphabetically(fileTreeNode, clientNode);
-                if (client.isSelected()) {
+                if (IDMapperClientManager.isClientSelected(client)) {
                     expandFile = true;
                     //expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,fileTreeNode}));
                     //set selected
@@ -173,7 +173,7 @@ class IDMappingSourceSelectionTree extends JTree {
             } else if (clientType==IDMapperClient.ClientType.RDB) {
                 //dbTreeNode.add(clientNode);
                 insertAlphabetically(dbTreeNode, clientNode);
-                if (client.isSelected()) {
+                if (IDMapperClientManager.isClientSelected(client)) {
                     expandDb = true;
                     //expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,dbTreeNode}));
                     //set selected
@@ -185,7 +185,7 @@ class IDMappingSourceSelectionTree extends JTree {
             } else if (clientType==IDMapperClient.ClientType.WEBSERVICE) {
                 //wsTreeNode.add(clientNode);
                 insertAlphabetically(wsTreeNode, clientNode);
-                if (client.isSelected()) {
+                if (IDMapperClientManager.isClientSelected(client)) {
                     expandWs = true;
                     //expandPath(new TreePath(new DefaultMutableTreeNode[]{rootNode,wsTreeNode}));
                     //set selected

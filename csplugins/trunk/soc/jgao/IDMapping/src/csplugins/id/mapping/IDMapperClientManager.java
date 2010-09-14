@@ -36,6 +36,7 @@
 package csplugins.id.mapping;
 
 import csplugins.id.mapping.util.BridgeRestUtil;
+import csplugins.id.mapping.util.DataSourceWrapper;
 
 import cytoscape.CytoscapeInit;
 
@@ -46,6 +47,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,8 +56,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
+import org.bridgedb.AttributeMapper;
+import org.bridgedb.DataSource;
 import org.bridgedb.IDMapper;
+import org.bridgedb.IDMapperCapabilities;
 import org.bridgedb.IDMapperStack;
 
 /**
@@ -63,11 +72,69 @@ import org.bridgedb.IDMapperStack;
  */
 public class IDMapperClientManager {
 
+    private enum CacheStatus {
+        UNCACHED, CACHING, CACHED;
+    }
+
+    public interface IDMapperChangeListener {
+        public void changed();
+    }
+
+    public static class TrackIDMapperChangeListener {
+        private boolean changed = false;
+
+        public void changed() {
+            changed = true;
+        }
+
+        public boolean reset() {
+            boolean tmp = changed;
+            changed = false;
+            return tmp;
+        }
+
+        public boolean isChanged() {
+            return changed;
+        }
+    }
+
     private static Map<String, IDMapperClient> clientConnectionStringMap;
+    private static Set<IDMapperClient> selectedClients;
+
+    private static CacheStatus cacheStatus = CacheStatus.UNCACHED;
+    private static Set<DataSourceWrapper> srcTypes = null;
+    private static Set<DataSourceWrapper> tgtTypes = null;
+    private static Set<List<DataSourceWrapper>> supportedMapping = null;
+    private static IDMapperStack selectedIDMapperStack = null;
+    private static List<IDMapperChangeListener> listeners;
+
+    private static ExecutorService executor = null;
+
+    private static int waitSeconds = 5;
 
     static {
 //        new IDMapperClientManager();
-        clientConnectionStringMap = new HashMap();
+        clientConnectionStringMap = new HashMap<String, IDMapperClient>();
+        selectedClients = new HashSet<IDMapperClient>();
+        listeners = new ArrayList<IDMapperChangeListener>();
+        addIDMapperChangeListener(new IDMapperChangeListener() {
+            public void changed() {
+                cacheStatus = CacheStatus.UNCACHED;
+            }
+        });
+    }
+
+    public static void addIDMapperChangeListener(IDMapperChangeListener listener) {
+        if (listener==null)
+            throw new NullPointerException();
+
+        listeners.add(listener);
+    }
+
+    private static void fireIDMapperChange() {
+        for (IDMapperChangeListener listener : listeners) {
+            listener.changed();
+        }
     }
 
     private IDMapperClientManager() {
@@ -100,8 +167,8 @@ public class IDMapperClientManager {
             String newPId = ""+(i++)+"-"+System.currentTimeMillis();
             IDMapperClientProperties imcp = new IDMapperClientProperties(pid);
 
-            IDMapperClient client  = new IDMapperClientImplTunables(imcp, newPId);
-            registerClient(client);
+            IDMapperClientImplTunables client  = new IDMapperClientImplTunables(imcp, newPId);
+            registerClient(client, client.isSelected());
         }
     }
 
@@ -124,7 +191,7 @@ public class IDMapperClientManager {
             return false;
         }
 
-        Set<IDMapperClient> clients = new HashSet();
+//        Set<IDMapperClient> clients = new HashSet();
 
         try {
             BufferedReader in = new BufferedReader(new FileReader(file));
@@ -146,15 +213,18 @@ public class IDMapperClientManager {
                     selected = true;
                 } else if (line.compareTo(CLIENT_END)==0) {
                     if (classStr!=null && connStr!=null) {
-                        IDMapperClient client = new IDMapperClientImplTunables
-                                .Builder(connStr, classStr)
-                                .displayName(display)
-                                .id(clientId)
-                                .selected(selected)
-                                .clientType(clientType)
-                                .build();
-
-                        clients.add(client);
+                        try {
+                            IDMapperClient client = new IDMapperClientImplTunables
+                                    .Builder(connStr, classStr)
+                                    .displayName(display)
+                                    .id(clientId)
+                                    .selected(selected)
+                                    .clientType(clientType)
+                                    .build();
+                            registerClient(client, selected);
+                        } catch(Exception e) {
+                            e.printStackTrace();
+                        }
                     } else {
                     // something is wrong with the file
                     }
@@ -178,10 +248,6 @@ public class IDMapperClientManager {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }
-
-        for (IDMapperClient client : clients) {
-            registerClient(client);
         }
 
         return true;
@@ -259,7 +325,7 @@ public class IDMapperClientManager {
             out.write(CLIENT_DISPLAY_NAME+display);
             out.newLine();
 
-            boolean selected = client.isSelected();
+            boolean selected = selectedClients.contains(client);
             out.write(CLIENT_SELECTED+Boolean.toString(selected));
             out.newLine();
 
@@ -283,26 +349,7 @@ public class IDMapperClientManager {
     }
 
     public static Set<IDMapperClient> selectedClients() {
-        Set<IDMapperClient> clients = new HashSet();
-        for (IDMapperClient client : clientConnectionStringMap.values()) {
-            if (client.isSelected()) {
-                clients.add(client);
-            }
-        }
-
-        return clients;
-    }
-
-    public static IDMapperStack selectedIDMapperStack() {
-        IDMapperStack idMapperStack = new IDMapperStack();
-        for (IDMapperClient client : selectedClients()) {
-            IDMapper idMapper = client.getIDMapper();
-            if (idMapper!=null) {
-                idMapperStack.addIDMapper(idMapper);
-            }
-        }
-
-        return idMapperStack;
+        return Collections.unmodifiableSet(selectedClients);
     }
     
     public static IDMapperClient getClient(String clientConnStr) {
@@ -343,6 +390,8 @@ public class IDMapperClientManager {
                 client instanceof IDMapperClientImplTunables) {
             ((IDMapperClientImplTunables)client).close();
         }
+
+        fireIDMapperChange();
         
         return true;
     }
@@ -357,12 +406,16 @@ public class IDMapperClientManager {
         }
     }
 
+    public static void registerClient(final IDMapperClient client) {
+        registerClient(client, true);
+    }
+
     /**
      * Register a client. If there exists a client in the manager with the same
      * connection string, that client will be replaced with the new client.
      * @param client
      */
-    public static void registerClient(final IDMapperClient client) {
+    public static void registerClient(final IDMapperClient client, boolean selected) {
         if (client == null) {
             throw new IllegalArgumentException();
         }
@@ -375,6 +428,209 @@ public class IDMapperClientManager {
         //preprocess(client); // set fullname if null
 
         clientConnectionStringMap.put(client.getConnectionString(), client);
+
+        if (selected) {
+            selectedClients.add(client);
+        }
+        
+        fireIDMapperChange();
     }
 
+    public static void setClientSelection(IDMapperClient client, boolean select) {
+        boolean changed;
+        if (select)
+            changed = selectedClients.add(client);
+        else
+            changed = selectedClients.remove(client);
+
+        if (changed) {
+            if (client instanceof IDMapperClientImplTunables) {
+                ((IDMapperClientImplTunables)client).setSelected(select);
+            }
+            fireIDMapperChange();
+        }
+    }
+
+    public static boolean isClientSelected(IDMapperClient client) {
+        return selectedClients.contains(client);
+    }
+
+    public static IDMapperStack selectedIDMapperStack() {
+        cacheAndWait(waitSeconds);
+        return selectedIDMapperStack;
+    }
+
+    /**
+     *
+     * @return supported source ID types by the selected resources
+     */
+    public static Set<DataSourceWrapper> getSupportedSrcTypes() {
+        cacheAndWait(waitSeconds);
+        return srcTypes;
+    }
+
+    /**
+     *
+     * @return supported target ID types by the selected resources
+     */
+    public static Set<DataSourceWrapper> getSupportedTgtTypes() {
+        cacheAndWait(waitSeconds);
+        return tgtTypes;
+    }
+
+    public static boolean isMappingSupported(DataSourceWrapper srcType, DataSourceWrapper tgtType) {
+        cacheAndWait(waitSeconds);
+        List<DataSourceWrapper> dsws = new ArrayList<DataSourceWrapper>(2);
+        dsws.add(srcType);
+        dsws.add(tgtType);
+        return supportedMapping.contains(dsws);
+    }
+
+    public static void resetCache() {
+        cacheStatus = CacheStatus.UNCACHED;
+    }
+
+    public static void reCache() {
+        resetCache();
+        cache();
+    }
+
+    public static void cacheAndWait(int seconds) {
+        cache();
+        if (cacheStatus == CacheStatus.CACHED)
+            return;
+        try {
+            if (!executor.awaitTermination(seconds, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+            cacheStatus = CacheStatus.CACHED;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void cache() {
+        if (cacheStatus == CacheStatus.CACHED)
+            return;
+
+        if (cacheStatus == CacheStatus.CACHING) {
+            if (executor.isTerminated()) {
+                cacheStatus = CacheStatus.CACHED;
+            }
+            return;
+        }
+
+        cacheStatus = CacheStatus.CACHING;
+
+        selectedIDMapperStack = new IDMapperStack();
+        srcTypes = Collections.synchronizedSet(new HashSet<DataSourceWrapper>());
+        tgtTypes = Collections.synchronizedSet(new HashSet<DataSourceWrapper>());
+        supportedMapping = Collections.synchronizedSet(new HashSet<List<DataSourceWrapper>>());
+
+        executor = Executors.newCachedThreadPool();
+
+        for (IDMapperClient client : selectedClients()) {
+            final IDMapper idMapper = client.getIDMapper();
+            if (idMapper==null)
+                continue;
+
+            //selectedIDMapperStack
+            selectedIDMapperStack.addIDMapper(idMapper);
+
+            executor.execute(new Runnable() {
+                public void run() {
+                    IDMapperCapabilities caps = idMapper.getCapabilities();
+
+                    Set<DataSource> srcs, tgts;
+                    try {
+                        srcs = caps.getSupportedSrcDataSources();
+                        tgts = caps.getSupportedTgtDataSources();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
+
+                    // srcTypes
+                    if (srcs!=null) {
+                        for (DataSource ds : srcs) {
+                            srcTypes.add(DataSourceWrapper.getInstance(
+                                    ds.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
+                        }
+                    }
+
+                    // tgtTypes
+                    if (tgts!=null) {
+                        for (DataSource ds : tgts) {
+                            tgtTypes.add(DataSourceWrapper.getInstance(
+                                    ds.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
+                        }
+                    }
+
+                    // mapping from type to type
+                    if (srcs!=null && tgts!=null) {
+                        for (DataSource src : srcs) {
+                            for (DataSource tgt : tgts) {
+                                boolean spt = false;
+                                try {
+                                    spt = caps.isMappingSupported(src, tgt);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                if (spt) {
+                                    List<DataSourceWrapper> dsws = new ArrayList<DataSourceWrapper>(2);
+                                    dsws.add(DataSourceWrapper.getInstance(
+                                        src.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
+                                    dsws.add(DataSourceWrapper.getInstance(
+                                        tgt.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
+                                    supportedMapping.add(dsws);
+                                }
+                            }
+                        }
+                    }
+
+                    // AttributeMapper
+                    if (!(idMapper instanceof AttributeMapper))
+                        return;
+
+                    AttributeMapper attrMapper = (AttributeMapper)idMapper;
+                    Set<String> attrs = null;
+                    try {
+                        attrs = attrMapper.getAttributeSet();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    if (attrs==null)
+                        return;
+                    
+                    for (String attr : attrs) {
+                        DataSourceWrapper dsw = DataSourceWrapper.getInstance(attr, DataSourceWrapper.DsAttr.ATTRIBUTE);
+                        if (attrMapper.isFreeAttributeSearchSupported()) {
+                            srcTypes.add(dsw);
+                            if (tgts!=null) {
+                                for (DataSource tgt : tgts) {
+                                    List<DataSourceWrapper> dsws = new ArrayList<DataSourceWrapper>(2);
+                                    dsws.add(dsw);
+                                    dsws.add(DataSourceWrapper.getInstance(
+                                        tgt.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
+                                    supportedMapping.add(dsws);
+                                }
+                            }
+                        }
+
+                        tgtTypes.add(dsw);
+                        if (srcs!=null) {
+                            for (DataSource src : srcs) {
+                                List<DataSourceWrapper> dsws = new ArrayList<DataSourceWrapper>(2);
+                                dsws.add(DataSourceWrapper.getInstance(
+                                    src.getFullName(), DataSourceWrapper.DsAttr.DATASOURCE));
+                                dsws.add(dsw);
+                                supportedMapping.add(dsws);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
 }

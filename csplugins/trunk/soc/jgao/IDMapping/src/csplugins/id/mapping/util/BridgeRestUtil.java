@@ -37,12 +37,13 @@ package csplugins.id.mapping.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import java.net.URL;
 import java.net.URLConnection;
@@ -71,13 +72,7 @@ public class BridgeRestUtil {
 
     private static List<String> supportedOrganisms(String baseUrl, int column) {
         String contentUrl = baseUrl + "/contents";
-        List<String> lines;
-        try {
-            lines = readUrl(contentUrl);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
+        List<String> lines = readUrl(contentUrl);
 
         List<String> ret = new ArrayList<String>(lines.size());
         for (String line : lines) {
@@ -90,17 +85,37 @@ public class BridgeRestUtil {
         return ret;
     }
 
-    private static List<String> readUrl(String strUrl) throws IOException {
-        URL url = new URL(strUrl);
-        URLConnection yc = url.openConnection();
-        BufferedReader in = new BufferedReader(
-                                new InputStreamReader(
-                                yc.getInputStream()));
-        List<String> ret = new ArrayList<String>();
-        String inputLine;
-        while ((inputLine = in.readLine()) != null)
-            ret.add(inputLine);
-        in.close();
+    private static List<String> readUrl(final String strUrl) {
+        final List<String> ret = new ArrayList<String>();
+        
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            public void run() {
+                try {
+                    URL url = new URL(strUrl);
+                    URLConnection yc = url.openConnection();
+                    BufferedReader in = new BufferedReader(
+                                            new InputStreamReader(
+                                            yc.getInputStream()));
+
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null)
+                        ret.add(inputLine);
+                    in.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        try {
+            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                System.err.println("Failed to connect to "+strUrl);
+                executor.shutdown();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return ret;
     }

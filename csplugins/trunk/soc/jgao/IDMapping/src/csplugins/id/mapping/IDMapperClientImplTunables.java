@@ -39,6 +39,9 @@ import cytoscape.layout.Tunable;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.bridgedb.BridgeDb;
 import org.bridgedb.DataSource;
@@ -212,7 +215,8 @@ public class IDMapperClientImplTunables implements IDMapperClient {
             try {
                 Class.forName(getClassString());
 
-                Thread thread = new Thread(new Runnable() {
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.execute(new Runnable() {
                     public void run() {
                         try {
                             mapper = BridgeDb.connect(getConnectionString());
@@ -222,8 +226,9 @@ public class IDMapperClientImplTunables implements IDMapperClient {
                     }
                 });
 
-                thread.start();
-                thread.join(10000);
+                if (executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                    executor.shutdown();
+                }
 
                 if (mapper == null) {
                     System.err.println("Failed to connect to " + this.toString());
@@ -297,11 +302,11 @@ public class IDMapperClientImplTunables implements IDMapperClient {
         return props;
     }
 
-    public boolean isSelected() {
+    boolean isSelected() {
         return (Boolean)selected.getValue();
     }
 
-    public void setSelected(boolean selected) {
+    void setSelected(boolean selected) {
         this.selected.setValue(selected);
         props.saveProperties(this.selected);
     }

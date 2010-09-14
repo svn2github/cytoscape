@@ -102,7 +102,6 @@
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private TextComboBoxEditor bridgedbComboBoxEditor;"/>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="List&lt;String&gt; orgs = BridgeRestUtil.supportedOrganismsNr(BridgeRestUtil.defaultBaseUrl);&#xa;String[] orgUrls = new String[orgs.size()];&#xa;int iorg = 0;&#xa;for (String org : orgs) {&#xa;    orgUrls[iorg++] = BridgeRestUtil.defaultBaseUrl + &quot;/&quot; +org;&#xa;}&#xa;DefaultComboBoxModel bridgeComboBoxModel = new DefaultComboBoxModel(orgUrls);&#xa;bridgedbBaseUrlComboBox.setModel(bridgeComboBoxModel);&#xa;String textInEditor = orgUrls.length==0?&quot;No organism available, please specify yours.&quot;:orgUrls[0];&#xa;bridgedbComboBoxEditor = new TextComboBoxEditor(textInEditor);&#xa;bridgedbBaseUrlComboBox.setEditor(bridgedbComboBoxEditor);&#xa;//bridgedbBaseUrlComboBox.setSelectedItem(&quot;http://webservice.bridgedb.org/Human&quot;);"/>
               </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

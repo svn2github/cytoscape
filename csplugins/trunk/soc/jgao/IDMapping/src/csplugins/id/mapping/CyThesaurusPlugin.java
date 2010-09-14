@@ -42,6 +42,10 @@ import csplugins.id.mapping.ui.CyThesaurusDialog;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import cytoscape.util.CytoscapeAction;
 
 import org.bridgedb.bio.BioDataSource;
@@ -66,9 +70,9 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
     public CyThesaurusPlugin() {
         try {
             BioDataSource.init();
-//            IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
-            registerDefaultClients();
             addListeners();
+
+            IDMapperClientManager.cache();
 
             IDMappingServiceSuppport.addService();
             CyThesaurusNamespace.register(CyThesaurusNamespace.NAME);
@@ -78,6 +82,9 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
 
         Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
                         .add(new IDMappingAction());
+
+        Cytoscape.getDesktop().getCyMenus().getOperationsMenu()
+                        .add(new CyThesurrusServiceAttributeBasedIDMappingAction());
     }
 
     private void addListeners() {
@@ -88,6 +95,7 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
             public void propertyChange(PropertyChangeEvent evt) {
 //                IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
                 registerDefaultClients();
+                IDMapperClientManager.reCache();
                 mapSrcAttrIDTypes = null;
             }
         });
@@ -100,6 +108,7 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
 
                 // reload the clients for this session (change the prop prefix)
                 IDMapperClientManager.reloadFromCytoscapeSessionProperties();
+                IDMapperClientManager.reCache();
             }
         });
 
@@ -118,6 +127,8 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
                     registerDefaultClients();
                 }
 
+                IDMapperClientManager.reCache();
+
                 mapSrcAttrIDTypes = null;
             }
         });
@@ -128,6 +139,7 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
                 if ((CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == evt.getOldValue())
                     || (CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == evt.getNewValue())) {
                     IDMapperClientManager.registerDefaultClient((String)evt.getNewValue(), (String)evt.getOldValue());
+                    IDMapperClientManager.reCache();
                 }
             }
         });
@@ -151,14 +163,120 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
          */
         @Override
         public void actionPerformed(final ActionEvent ae) {
-//            prepare(); //TODO: remove in Cytoscape3
-            final CyThesaurusDialog dialog = new CyThesaurusDialog(Cytoscape.getDesktop(), true);
-            dialog.setLocationRelativeTo(Cytoscape.getDesktop());
-            dialog.setMapSrcAttrIDTypes(mapSrcAttrIDTypes);
+            NewDialogTask task = new NewDialogTask();
+
+            final JTaskConfig jTaskConfig = new JTaskConfig();
+            jTaskConfig.setOwner(Cytoscape.getDesktop());
+            jTaskConfig.displayCloseButton(false);
+            jTaskConfig.displayCancelButton(false);
+            jTaskConfig.displayStatus(true);
+            jTaskConfig.setAutoDispose(true);
+            jTaskConfig.setMillisToPopup(100); // always pop the task
+
+            // Execute Task in New Thread; pop open JTask Dialog Box.
+            TaskManager.executeTask(task, jTaskConfig);
+
+            final CyThesaurusDialog dialog = task.dialog();
             dialog.setVisible(true);
             //if (!dialog.isCancelled()) {
                 mapSrcAttrIDTypes = dialog.getMapSrcAttrIDTypes();
             //}
+        }
+    }
+
+    private class NewDialogTask implements Task {
+        private TaskMonitor taskMonitor;
+        private CyThesaurusDialog dialog;
+
+        public NewDialogTask() {
+        }
+
+        /**
+         * Executes Task.
+         */
+        //@Override
+        public void run() {
+                try {
+                        taskMonitor.setStatus("Initializing...");
+                        dialog = new CyThesaurusDialog(Cytoscape.getDesktop(), true);
+                        dialog.setLocationRelativeTo(Cytoscape.getDesktop());
+                        dialog.setMapSrcAttrIDTypes(mapSrcAttrIDTypes);
+                        taskMonitor.setPercentCompleted(100);
+                } catch (Exception e) {
+                        taskMonitor.setPercentCompleted(100);
+                        taskMonitor.setStatus("Failed.\n");
+                        e.printStackTrace();
+                }
+        }
+
+        public CyThesaurusDialog dialog() {
+            return dialog;
+        }
+
+
+        /**
+         * Halts the Task: Not Currently Implemented.
+         */
+        //@Override
+        public void halt() {
+            
+        }
+
+        /**
+         * Sets the Task Monitor.
+         *
+         * @param taskMonitor
+         *            TaskMonitor Object.
+         */
+        //@Override
+        public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+                this.taskMonitor = taskMonitor;
+        }
+
+        /**
+         * Gets the Task Title.
+         *
+         * @return Task Title.
+         */
+        //@Override
+        public String getTitle() {
+                return "Initializing...";
+        }
+    }
+
+    private class CyThesurrusServiceAttributeBasedIDMappingAction extends CytoscapeAction {
+
+        public static final String actionName = "Attribute ID mapping service example (See Tutorial)";
+        public CyThesurrusServiceAttributeBasedIDMappingAction() {
+            super(actionName); //TODO rename
+        }
+
+        /**
+         * This method is called when the user selects the menu item.
+         */
+        @Override
+        public void actionPerformed(final ActionEvent ae) {
+
+            java.util.Set<String> srcAttrNames = new java.util.HashSet<String>();
+            srcAttrNames.add("ID");
+            srcAttrNames.add("EntrezGene ID");
+            String tgtIDType = "uniprot_swissprot_accession"; //biomart
+//            String tgtIDType = "RefSeq"; //bridgedb
+            Map<String,Object> args = new java.util.HashMap<String,Object>(5);
+            args.put("sourceattr", srcAttrNames);
+            args.put("targettype", tgtIDType);
+
+            cytoscape.command.CyCommandResult result = null;
+            try {
+                result = cytoscape.command.CyCommandManager.execute("idmapping", "attribute based mapping", args);
+            } catch (cytoscape.command.CyCommandException e) {
+                e.printStackTrace();
+            }
+
+            if (result.successful()) {
+                System.out.println(result.getMessages());
+            }
+
         }
     }
 }

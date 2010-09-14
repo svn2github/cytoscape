@@ -42,7 +42,7 @@ import java.util.HashMap;
  *
  * @author gjj
  */
-public class DataSourceWrapper implements Comparable {
+public class DataSourceWrapper implements Comparable<DataSourceWrapper> {
         private String value;
         private DsAttr da;
 
@@ -66,6 +66,14 @@ public class DataSourceWrapper implements Comparable {
 //
 //            return attributeWrappers.get(value);
 //        }
+
+        public static DataSourceWrapper getInstance(String value) {
+            DataSourceWrapper res = getInstance(value, DsAttr.DATASOURCE, false);
+            if (res!=null)
+                return res;
+
+            return getInstance(value, DsAttr.ATTRIBUTE, false);
+        }
 
         public static DataSourceWrapper getInstance(String value, DsAttr da) {
             return getInstance(value, da, true);
@@ -114,7 +122,9 @@ public class DataSourceWrapper implements Comparable {
             return value;
         }
 
-        public int compareTo(Object obj) {
-            return this.toString().compareTo(obj.toString());
+        public int compareTo(DataSourceWrapper dsw) {
+            if (da != dsw.da)
+                return da==DsAttr.DATASOURCE?-1:1;
+            return value.compareTo(dsw.value);
         }
     }

@@ -35,6 +35,7 @@
 
 package csplugins.id.mapping.ui;
 
+import csplugins.id.mapping.IDMapperClientManager;
 import csplugins.id.mapping.util.DataSourceWrapper;
 
 import cytoscape.Cytoscape;
@@ -150,29 +151,16 @@ public class TargetAttributeSelectionTable extends JTable{
         setColumnEditorAndCellRenderer();
     }
 
-    public void setSupportedIDType(final Set<String> types, final Set<String> attrs) {
-        if (types==null && attrs==null) {
-            throw new NullPointerException();
-        }
-
+    public void setSupportedIDType(Set<DataSourceWrapper> sourceDss) {
         List<DataSourceWrapper> oldDss = this.getTgtIDTypes();
 
         supportedIDType = new LinkedHashSet();
-        if (types!=null) {
-            for (String type : new TreeSet<String>(types)) {
-                supportedIDType.add(DataSourceWrapper.getInstance(type,
-                        DataSourceWrapper.DsAttr.DATASOURCE));
-            }
-        }
-
-        if (attrs!=null && !attrs.isEmpty()) {
-            if (!supportedIDType.isEmpty()) {
-                supportedIDType.add(null);
-            }
-
-            for (String attr : new TreeSet<String>(attrs)) {
-                supportedIDType.add(DataSourceWrapper.getInstance(attr,
-                        DataSourceWrapper.DsAttr.ATTRIBUTE));
+        for (DataSourceWrapper tgt : new TreeSet<DataSourceWrapper>(IDMapperClientManager.getSupportedTgtTypes())) {
+            for (DataSourceWrapper src : sourceDss) {
+                if (IDMapperClientManager.isMappingSupported(src, tgt)) {
+                    supportedIDType.add(tgt);
+                    break;
+                }
             }
         }
 
