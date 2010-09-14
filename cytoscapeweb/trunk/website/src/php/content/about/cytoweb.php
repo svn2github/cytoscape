@@ -61,7 +61,7 @@ BioGRID, BIND, CORUM, DIP, HPRD, INTACT, MINT, MPPI, MPACT and OPHID.</p>
 <h1>Publication</h1>
    
 <p>Cytoscape Web has been published in
-<a href="http://bioinformatics.oxfordjournals.org/content/early/2010/07/23/bioinformatics.btq430.short">Bioinfomatics</a>.</p>
+<a href="http://bioinformatics.oxfordjournals.org/content/early/2010/07/23/bioinformatics.btq430.short" rel="external">Bioinfomatics</a>.</p>
    
 <h1>Developers</h1>
 

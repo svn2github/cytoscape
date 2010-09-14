@@ -2,7 +2,7 @@
 
     <?php
     	
-    	$versions_to_show = 2;
+    	$versions_to_show = 3;
         $first = true;
         $i = 0;
         foreach($apis as $api) {

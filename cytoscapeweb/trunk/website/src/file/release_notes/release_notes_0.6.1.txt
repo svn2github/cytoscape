@@ -1,0 +1,9 @@
+<p>
+    This minor release fixes a bug that would switch Cytoscape Web to grab-to-pan mode after
+    double-clicking a node.
+</p>
+<div class="relase_details">
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2357</span>: Unwanted grab-to-pan mode after double-clicking nodes.</li>
+    </ul>
+</div>

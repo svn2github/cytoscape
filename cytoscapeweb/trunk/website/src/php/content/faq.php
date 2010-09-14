@@ -9,7 +9,7 @@
 	
 		<p class="question">What are the minimum system requirements for end users?</p>
 		<p class="answer">End users need a modern browser with the Flash plugin installed.
-		Cytoscape Web is tested on Chrome (OS X, Windows, Linux), Firefox (OS X, Windows, Linux),
+		Cytoscape Web is tested on the latest versions of Chrome (OS X, Windows, Ubuntu), Firefox (OS X, Windows, Ubuntu),
 		Safari (OS X), and Internet Explorer (Windows).</p>
 		
 		<p class="question">What is the license of Cytoscape Web?</p>
@@ -31,7 +31,7 @@
 		build a web app around Cytoscape Web.</p>
 		
 		<p class="question">What technologies is Cytoscape Web made from?</p>
-		<p class="answer">Cytoscape Web in a Flash component with a Javascript API.</p>
+		<p class="answer">Cytoscape Web is a Flash component with a Javascript API.</p>
 		
 		<p class="question">Do I need to be a Flash developer to use Cytoscape Web?</p>
 		<p class="answer">No, you do not need to know any Flash.  Cytoscape Web's API is all
@@ -71,7 +71,7 @@
 		
 		<p class="question">Can I load a network from a URL?</p>
 		<p class="answer">Cytoscape Web does not support this feature directly, but you can implement
-		yourself easily.
+		it yourself easily.
 		Use AJAX to pull the file you want into a string in Javascript, and then pass that string
 		to Cytoscape Web.  <a href="http://jquery.com">jQuery</a> is a good library for this.</p>
 	
@@ -79,7 +79,7 @@
 	
 		<p class="question">I added a listener, changed the data schema, filtered, or called some function on Cytoscape Web.  Why isn't it working?</p>
 		<p class="answer">You need to call new, ready, and draw in that order with interactions with Cytoscape Web within
-		the ready callback.  All interaction with Cytoscape Web occurs within the callback function passed to the ready function.
+		the ready callback.  All interaction with Cytoscape Web has to occur within the callback function passed to the ready function.
 		See the <a href="tutorial#section/Interacting_with_Cytoscape_Web">tutorial</a> for an example.</p>
 	
 		<p class="question">What formats can I export the network to?</p>
@@ -123,7 +123,7 @@
 	<h1>Layouts</h1>
 	
 		<p class="question">What layouts does Cytoscape Web support?</p>
-		<p class="answer">Several; see the <a href="documentation/layout">API</a> for details.</p>
+		<p class="answer">See the <a href="documentation/layout">API</a> for details.</p>
 		
 		<p class="question">Can I customize the layout parameters?</p>
 		<p class="answer">Yes, see the <a href="documentation/layout">API</a> for details.</p>
@@ -133,7 +133,7 @@
 		even on modern computers.</p>
 		
 		<p class="question">Does the force-directed layout support an edge-weighted option?</p>
-		<p class="answer">Yes, see weightAttr in the <a href="documentation/layout">API</a>.</p>
+		<p class="answer">Yes, see <code>weightAttr</code> in the <a href="documentation/layout">API</a>.</p>
 		
 		<p class="question">Can I use my own custom layout algorithm?</p>
 		<p class="answer">Yes, calculate your layout and pass it to Cytoscape Web as a preset layout.
