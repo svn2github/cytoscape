@@ -119,7 +119,7 @@ public interface VisualStyle {
 	 * @param vp DOCUMENT ME!
 	 * @param value DOCUMENT ME!
 	 */
-	public <V> void setDefaultValue(VisualProperty<? extends V> vp, V value);
+	<V> void setDefaultValue(VisualProperty<? extends V> vp, V value);
 
 	/**
 	 * Apply this visual style to the view.
@@ -129,5 +129,12 @@ public interface VisualStyle {
 	 */
 	void apply(CyNetworkView v);
 	
+	
+	/**
+	 * A Visual Style is always associated with a lexicon tree provided 
+	 * by a rendering engine.  This method returns its associated lexicon.
+	 * 
+	 * @return
+	 */
 	VisualLexicon getVisualLexicon();
 }
