@@ -694,11 +694,42 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					// If action is right click, then show edit pop-up menu
 					if ((SwingUtilities.isRightMouseButton(e)) || (isMacPlatform() && e.isControlDown())){
 						if (objectAndEditString != null) {
+							// Remove the last menuItem
 							rightClickPopupMenu.remove(rightClickPopupMenu.getComponentCount() - 1);
+
 							final Object validatedObject = objectAndEditString.getValidatedObject();
-							if (validatedObject != null)
+							if (validatedObject != null){	
+
+								// If there is already an menuItem "Open this URL in a browser", remove it
+								for (int i=0; i<rightClickPopupMenu.getComponentCount(); i++){
+									Object obj = rightClickPopupMenu.getComponent(i);
+									if (obj instanceof JMenuItem){
+										JMenuItem menuItem = (JMenuItem) obj;
+										if (menuItem.getText().equalsIgnoreCase("<html>Open this URL in a browser</html>")){
+											rightClickPopupMenu.remove(i);
+											break;
+										}
+									}	
+								}
+								
+								// Check if this is a URL
+								URL url = null;
+								try {
+									url = new URL((String)objectAndEditString.getValidatedObject());
+								} catch (final MalformedURLException e1) {
+									// If invalid, just ignore.
+								}
+								
+								if (url !=null){
+									// It is a URL, add a menuItem 'Open this URL in a browser'
+									rightClickPopupMenu.add(new OpenNewBrowser(url));						
+								}
+								
+								// Add last menuItem to right-click menu
 								rightClickPopupMenu.add(new HyperLinkOut(validatedObject.toString(), linkoutProps));
+							}
 							rightClickPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+							
 						}
 					} else if (SwingUtilities.isLeftMouseButton(e) && (getSelectedRows().length != 0)) {
 						
@@ -706,23 +737,10 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 						if (row >= getRowCount() || row < 0 || column >= getColumnCount() || column < 0)
 							return;
-
-						if (objectAndEditString != null && objectAndEditString.getValidatedObject() != null
-						    && objectAndEditString.getValidatedObject().getClass() == String.class)
-						{
-							URL url = null;
-							try {
-								url = new URL((String)objectAndEditString.getValidatedObject());
-							} catch (final MalformedURLException e1) {
-								// If invalid, just ignore.
-							}
-
-							if (url != null)
-								cytoscape.util.OpenBrowser.openURL(url.toString());
-						}
 					}
 				} // mouseClicked
-
+				
+				
 				public void mouseReleased(MouseEvent e) {
 					// When the mouse is released, fire signal to pass the selected
 					// objects in the table.
@@ -761,6 +779,19 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					}
 				}
 			});
+	}
+
+	class OpenNewBrowser extends JMenuItem implements ActionListener{
+		URL url;
+		public OpenNewBrowser(URL url){
+			this.url=url;
+			this.setText("<html>Open this URL in a browser</html>");
+			this.addActionListener(this);
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			cytoscape.util.OpenBrowser.openURL(url.toString());
+		}
 	}
 
 	/**
@@ -1010,7 +1041,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				});
 			curItem.add(copy);
 
-			if (item.toString().startsWith("http://")) {
+			if (item.toString().startsWith("http://")) {				
 				curItem.getMenuComponent(1).setEnabled(true);
 			} else
 				curItem.getMenuComponent(1).setEnabled(false);
