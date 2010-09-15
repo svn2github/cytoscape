@@ -55,8 +55,10 @@ import org.cytoscape.view.vizmap.events.VisualStyleDestroyedEvent;
  *
  */
 public class VisualMappingManagerImpl implements VisualMappingManager {
+	
 	private final Map<CyNetworkView, VisualStyle> vsForNetwork;
 	private final Set<VisualStyle> visualStyles;
+	
 	private CyEventHelper cyEventHelper;
 	private VisualLexiconManager rootLexicon;
 	
