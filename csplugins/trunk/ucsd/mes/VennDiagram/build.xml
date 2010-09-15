@@ -78,10 +78,10 @@
            debug="${debug}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
+           source="1.5"
+           target="1.5"
            fork="${fork}">
-<!--
        <compilerarg line="-Xlint:all -Xlint:-path"/>
--->
      </javac>
      <echo message="Successfully ran compile task!"/>
   </target>
