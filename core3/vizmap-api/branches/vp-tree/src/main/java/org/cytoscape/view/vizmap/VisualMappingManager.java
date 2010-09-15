@@ -109,10 +109,4 @@ public interface VisualMappingManager {
 	 */
 	public void removeVisualStyle(VisualStyle vs);
 
-	/**
-	 * Get all Visual Lexicons from all rendering engines.
-	 * 
-	 * @return All Visual Lexicon
-	 */
-	public VisualLexiconManager getRootVisualLexicon();	
 }
