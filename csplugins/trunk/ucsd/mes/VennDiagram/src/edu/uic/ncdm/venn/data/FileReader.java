@@ -18,9 +18,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.List;
 
 public abstract class FileReader {
-    private static Map separators = new LinkedHashMap();
+    private static Map<String,int[]> separators = new LinkedHashMap<String,int[]>();
     private static String separator = " ";
     private static int nCols;
     private static int nRows;
@@ -83,7 +84,7 @@ public abstract class FileReader {
     }
 
     private static String[][] reformData(String[][] data) {
-        ArrayList d = new ArrayList(nRows);
+        List<String[]> d = new ArrayList<String[]>(nRows);
         for (int i = 0; i < nRows; i++) {
             for (int j = 0; j < nCols - 1; j++) {
                 data[i][j] = data[i][j].trim();
@@ -97,9 +98,9 @@ public abstract class FileReader {
         }
         String[][] result = new String[d.size()][2];
         for (int i = 0; i < d.size(); i++) {
-            Object[] o = (Object[]) d.get(i);
-            result[i][0] = (String) o[0];
-            result[i][1] = (String) o[1];
+            String[] o = d.get(i);
+            result[i][0] = o[0];
+            result[i][1] = o[1];
         }
         return result;
     }
@@ -141,7 +142,7 @@ public abstract class FileReader {
             } else {
                 Object[] keys = separators.keySet().toArray();
                 separator = (String) keys[0];
-                nCols = 1 + ((int[]) separators.get(separator))[1];
+                nCols = 1 + separators.get(separator)[1];
             }
             fin.close();
         } catch (java.io.IOException ie) {
@@ -159,7 +160,7 @@ public abstract class FileReader {
                 for (int j = 0; j < keys.length; j++) {
                     String key = (String) keys[j];
                     if (record.substring(i, i + 1).equals(key)) {
-                        int[] counts = (int[]) separators.get(key);
+                        int[] counts = separators.get(key);
                         counts[0]++;
                         break;
                     }
@@ -172,7 +173,7 @@ public abstract class FileReader {
         Object[] keys = separators.keySet().toArray();
         for (int j = 0; j < keys.length; j++) {
             String key = (String) keys[j];
-            int[] counts = (int[]) separators.get(key);
+            int[] counts = separators.get(key);
             if (counts[0] == 0 || n > 0 && counts[0] != counts[1]) {
                 separators.remove(key);
             } else {

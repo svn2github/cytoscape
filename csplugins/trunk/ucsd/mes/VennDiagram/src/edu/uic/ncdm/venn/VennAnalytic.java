@@ -136,7 +136,7 @@ public class VennAnalytic {
 	}
 
     private void processAreaData(String[][] data, double[] areas) {
-        HashMap sets = new HashMap();
+        HashMap<String,Double> sets = new HashMap<String,Double>();
         for (int i = 0; i < data.length; i++) {
             String[] s = data[i][0].split("&");
             for (int j = 0; j < s.length; j++) {
@@ -147,11 +147,11 @@ public class VennAnalytic {
             }
         }
         circleLabels = new String[sets.size()];
-        Set keys = sets.keySet();
-        Iterator it = keys.iterator();
+        Set<String> keys = sets.keySet();
+        Iterator<String> it = keys.iterator();
         while (it.hasNext()) {
-            String key = (String) it.next();
-            int j = ((Double) sets.get(key)).intValue();
+            String key = it.next();
+            int j = sets.get(key).intValue();
             circleLabels[j] = key;
         }
         nRows = data.length;
@@ -166,7 +166,7 @@ public class VennAnalytic {
             int[] subsets = new int[nCircles];
             String[] s = data[i][0].split("&");
             for (int j = 0; j < s.length; j++) {
-                int jj = ((Double) sets.get(s[j])).intValue();
+                int jj = sets.get(s[j]).intValue();
                 subsets[jj] = 1;
             }
             int k = decode(subsets);
@@ -181,9 +181,10 @@ public class VennAnalytic {
     }
 
     private void processElementData(String[][] data) {
-        HashMap[] categories = new HashMap[2];
-        categories[0] = new HashMap();
-        categories[1] = new HashMap();
+		@SuppressWarnings("unchecked") 
+        HashMap<String,Double>[] categories = new HashMap[2];
+        categories[0] = new HashMap<String,Double>();
+        categories[1] = new HashMap<String,Double>();
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < 2; j++) {
                 if (!categories[j].containsKey(data[i][j])) {
@@ -193,11 +194,11 @@ public class VennAnalytic {
             }
         }
         circleLabels = new String[categories[1].size()];
-        Set keys = categories[1].keySet();
-        Iterator it = keys.iterator();
+        Set<String> keys = categories[1].keySet();
+        Iterator<String> it = keys.iterator();
         while (it.hasNext()) {
-            String key = (String) it.next();
-            int j = ((Double) categories[1].get(key)).intValue();
+            String key = it.next();
+            int j =  categories[1].get(key).intValue();
             circleLabels[j] = key;
         }
         nRows = data.length;
@@ -210,8 +211,8 @@ public class VennAnalytic {
         centers = new double[nCircles][2];
         int[][] subsets = new int[categories[0].size()][nCircles];
         for (int i = 0; i < nRows; i++) {
-            int i1 = ((Double) categories[0].get(data[i][0])).intValue();
-            int j1 = ((Double) categories[1].get(data[i][1])).intValue();
+            int i1 = categories[0].get(data[i][0]).intValue();
+            int j1 = categories[1].get(data[i][1]).intValue();
             subsets[i1][j1]++;
         }
         for (int i = 0; i < subsets.length; i++)

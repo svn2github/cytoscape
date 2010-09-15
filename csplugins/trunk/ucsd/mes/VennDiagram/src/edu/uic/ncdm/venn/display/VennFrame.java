@@ -26,6 +26,7 @@ import java.text.NumberFormat;
 import cytoscape.Cytoscape;
 
 public class VennFrame extends JDialog {
+	private static final long serialVersionUID = 1850323456623443266L;
     private int RESIDUAL_SIZE = 100;
     private int STRESS_SIZE = 50;
     private int SIZE = 700;
@@ -88,6 +89,7 @@ public class VennFrame extends JDialog {
 
 	private class WarningCellRenderer extends JLabel
                            implements TableCellRenderer {
+		private static final long serialVersionUID = 1763432456623443266L;
 		private VennDiagram vd;
 		private Color warningColor = new Color(1.0f,0f,0f,0.25f);
 		public WarningCellRenderer(VennDiagram vd) {

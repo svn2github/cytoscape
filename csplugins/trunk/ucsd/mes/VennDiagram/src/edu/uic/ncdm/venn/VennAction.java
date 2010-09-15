@@ -51,6 +51,8 @@ import edu.uic.ncdm.venn.display.VennDialog;
 
 public class VennAction extends CytoscapeAction {
 
+	private static final long serialVersionUID = 1850323456657887666L;
+
 	public VennAction() {
 		super("Venn/Euler Diagram");
 		setPreferredMenu("Plugins");

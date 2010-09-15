@@ -25,6 +25,7 @@ import java.text.NumberFormat;
 import java.text.DecimalFormat;
 
 public class VennCanvas extends JPanel {
+	private static final long serialVersionUID = 1763987987676643266L;
     private BufferedImage bi;
     private int size;
     private double mins, maxs;

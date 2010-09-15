@@ -48,6 +48,7 @@ import java.util.Collections;
 public class VennDialog extends JDialog implements ActionListener, ItemListener {
 
 
+	private static final long serialVersionUID = 1554446356623443266L;
 	private String attrName;
 	private List<CyNetwork> networks;
 	private boolean printIntersection;
