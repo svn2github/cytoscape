@@ -123,10 +123,6 @@ public abstract class BasicVisualLexicon implements VisualLexicon {
 		Set<VisualProperty<?>> newVPs = toBeMerged.getAllVisualProperties();
 		for(VisualProperty<?> vp:newVPs)
 			this.visualPropertyMap.put(vp.getIdString(), vp);
-		
-		newVPs.clear();
-		newVPs = null;
-		toBeMerged = null;
 	}
 
 }

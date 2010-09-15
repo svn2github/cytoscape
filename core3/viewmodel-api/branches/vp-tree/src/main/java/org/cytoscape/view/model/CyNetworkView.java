@@ -96,8 +96,9 @@ public interface CyNetworkView extends View<CyNetwork> {
 	
 	
 	// These are utility methods to fire events to presentation layer.
-	public void fitContent();
-	public void fitSelected();
+	void fitContent();
+	void fitSelected();
+	
 	public void updateView();
 
 }
