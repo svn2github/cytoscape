@@ -696,7 +696,9 @@ public class XGMMLReader extends AbstractGraphReader {
 			for (CyNode groupNode : groupMap.keySet()) {
 				List<CyNode> childList = groupMap.get(groupNode);
 				viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(), CyGroup.GROUP_VIEWER_ATTR);
-				boolean isLocal = nodeAttributes.getBooleanAttribute(groupNode.getIdentifier(), CyGroup.GROUP_LOCAL_ATTR);
+				boolean isLocal = false;
+				if (nodeAttributes.hasAttribute(groupNode.getIdentifier(), CyGroup.GROUP_LOCAL_ATTR))
+					isLocal = nodeAttributes.getBooleanAttribute(groupNode.getIdentifier(), CyGroup.GROUP_LOCAL_ATTR);
 
 				CyNetwork groupNetwork = null;
 
