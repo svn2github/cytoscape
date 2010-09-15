@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
+
+	<!-- Import OSGi services -->
+
+	<osgi:reference id="cyLayoutsServiceRef" 
+	                interface="org.cytoscape.view.layout.CyLayouts" />
+
+	<osgi:reference id="cyNetworkFactoryServiceRef"
+	                interface="org.cytoscape.model.CyNetworkFactory" />
+
+	<osgi:reference id="cyNetworkViewFactoryServiceRef"
+	                interface="org.cytoscape.view.model.CyNetworkViewFactory" />
+		
+	<osgi:service id="psiNetworkViewReaderFactoryService" ref="psiMiNetworkViewTaskFactory"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="psiMiNetworkViewTaskFactory" />
+			<entry key="readerId" value="psiMiNetworkViewReader" />
+			<entry key="readerDescription" value="PSI-MI Level 1/2.5 file reader" />
+		</osgi:service-properties>
+	</osgi:service>
+	
+</beans>
