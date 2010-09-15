@@ -303,12 +303,12 @@ public class VennAnalytic {
     }
 
     public void computeInitialConfiguration() {
-        if (nCircles < 3) {
+        double[][] s = computeDistanceMatrix();
+        if (s == null) {
             fixedStart();
             return;
         }
 
-        double[][] s = computeDistanceMatrix();
         double[] q = new double[nCircles];
         double[][] x = new double[nCircles][2];
 
@@ -353,6 +353,7 @@ public class VennAnalytic {
     }
 
     private double[][] computeDistanceMatrix() {
+        int nIntersections = 0;
         double[][] s = new double[nCircles][nCircles];
         for (int i = 0; i < nPolygons; i++) {
             char[] c = encode(i);
@@ -367,12 +368,16 @@ public class VennAnalytic {
                 }
             }
         }
-        for (int i = 1; i < s.length; i++) {
-            for (int j = 0; j < i; j++) {
-                s[i][j] = -s[i][j];
-                s[j][i] = s[i][j];
+        for (int j = 1; j < s.length; j++) {
+            for (int k = 0; k < j; k++) {
+                if (s[j][k] != 0)
+                    nIntersections++;
+                s[j][k] = -s[j][k];
+                s[k][j] = s[j][k];
             }
         }
+        if (nIntersections < nCircles)
+            s = null;
         return s;
     }
 
