@@ -688,7 +688,15 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					if (column >= tableModel.getColumnCount() || row >= tableModel.getRowCount())
 						return;
 
-					final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(row, column);
+					ValidatedObjectAndEditString objectAndEditString = null;
+					try {
+						objectAndEditString = (ValidatedObjectAndEditString)getValueAt(row, column);
+					}
+					catch (Exception ex){
+						// If user clicks outside the table, just ignore
+						return;
+					}
+					
 					getSelected();
 
 					// If action is right click, then show edit pop-up menu
