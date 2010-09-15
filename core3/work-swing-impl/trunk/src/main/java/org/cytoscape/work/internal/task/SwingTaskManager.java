@@ -20,6 +20,8 @@ import java.util.concurrent.ThreadFactory;
 
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Uses Swing components to create a user interface for the <code>Task</code>.
@@ -28,6 +30,8 @@ import javax.swing.JPanel;
  */
 public class SwingTaskManager extends AbstractTaskManager implements GUITaskManager {
 	private SwingTaskMonitor taskMonitor;
+
+	private static final Logger logger = LoggerFactory.getLogger(SwingTaskManager.class);
 
 	/**
 	 * The delay between the execution of the <code>Task</code> and
@@ -149,6 +153,7 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 							break;
 					}
 				} catch (Exception exception) {
+					logger.warn("Caught exception executing task. ", exception);	
 					if (taskMonitor == null) 
 						taskMonitor = new SwingTaskMonitor(cancelExecutorService, owner);
 					taskMonitor.showException(exception);
