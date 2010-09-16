@@ -13,7 +13,7 @@
 	</properties>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
-	<artifactId>psi.mi</artifactId>
+	<artifactId>psi-mi-impl</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name>${bundle.symbolicName}
 		[${bundle.namespace}]</name>
