@@ -40,6 +40,7 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.Cytoscape; 
 
 import javax.swing.JOptionPane;
+import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.ArrayList;
@@ -66,5 +67,9 @@ public class VennAction extends CytoscapeAction {
         VennAnalytic va = new VennAnalytic();
         VennDiagram vd = va.compute(data);
         new VennFrame(vd,dialog.printIntersection());
+	}
+
+    public void menuSelected(MenuEvent e) {
+		enableForNetworkAndView();
 	}
 }
