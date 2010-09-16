@@ -54,7 +54,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import cytoscape.data.CyAttributesUtils;
+// import cytoscape.data.CyAttributesUtils;
 
 
 /**
@@ -90,11 +90,14 @@ class QuickFindImpl implements QuickFind {
 	 * @param taskMonitor DOCUMENT ME!
 	 */
 	public synchronized void addNetwork(CyNetwork network, TaskMonitor taskMonitor) {
-
 		// check args - short circuit if necessary
 		if (network.getNodeCount() == 0) {
 			return;
 		}
+
+		// We need to update our node and edge attributes if the network changes
+		nodeAttributes = Cytoscape.getNodeAttributes();
+		edgeAttributes = Cytoscape.getEdgeAttributes();
 
 		//  Use default index specified by network, if available.
 		//  Otherwise, index by UNIQUE_IDENTIFIER.
@@ -107,21 +110,30 @@ class QuickFindImpl implements QuickFind {
 		}
 
 		if (controllingAttribute == null) {
-            //  Small hack to index BioPAX Networks by default with node_label.
-			
-            Iterator nodesIterator = network.nodesIterator();
-            if (nodesIterator.hasNext())
-            {
-                CyNode node = (CyNode) nodesIterator.next();
-                String bioPaxFlag = Cytoscape.getNodeAttributes().getStringAttribute
-                        (node.getIdentifier(), "biopax.node_label");
-                if (bioPaxFlag != null) {
-                    controllingAttribute = "biopax.node_label";
-                } else {
-                    controllingAttribute = QuickFind.UNIQUE_IDENTIFIER;
-                }           	
-            }
-        }
+			//  Small hack to index BioPAX Networks by default with node_label.
+
+			Iterator nodesIterator = network.nodesIterator();
+			if (nodesIterator.hasNext())
+			{
+				CyNode node = (CyNode) nodesIterator.next();
+				String bioPaxFlag = nodeAttributes.getStringAttribute
+								(node.getIdentifier(), "biopax.node_label");
+				if (bioPaxFlag != null) {
+						controllingAttribute = "biopax.node_label";
+				} else {
+						controllingAttribute = QuickFind.UNIQUE_IDENTIFIER;
+				}           	
+			}
+		}
+
+		if (controllingAttribute.equalsIgnoreCase(QuickFind.UNIQUE_IDENTIFIER)||
+		    controllingAttribute.equalsIgnoreCase(QuickFind.INDEX_ALL_ATTRIBUTES)||
+		    controllingAttribute.equalsIgnoreCase("biopax.node_label")){
+			// do nothing
+		}
+		else if (cytoscape.data.CyAttributesUtils.isNullAttribute("node", controllingAttribute)){
+			return;
+		}
 
 		//  Determine maxProgress
 		currentProgress = 0;
@@ -203,7 +215,7 @@ class QuickFindImpl implements QuickFind {
 		if (indexType == QuickFind.INDEX_EDGES){
 			_type = "edge";
 		}
-		
+
 		if (controllingAttribute.equalsIgnoreCase(QuickFind.UNIQUE_IDENTIFIER)||
 		    controllingAttribute.equalsIgnoreCase(QuickFind.INDEX_ALL_ATTRIBUTES)||
 		    controllingAttribute.equalsIgnoreCase("biopax.node_label")){
@@ -355,16 +367,6 @@ class QuickFindImpl implements QuickFind {
 	                          int attributeType, String controllingAttribute, GenericIndex index,
 	                          TaskMonitor taskMonitor) {
 		
-		// If all the values for the controllingAttribute are NULL, add a null index
-		String _type = "node";
-		if (indexType == QuickFind.INDEX_EDGES){
-			_type = "edge";
-		}
-		if (cytoscape.data.CyAttributesUtils.isNullAttribute(_type, controllingAttribute)){
-			networkMap.put(network, null);
-			return;
-		}
-		
 		//
 		Date start = new Date();
 		Iterator iterator;
@@ -417,11 +419,6 @@ class QuickFindImpl implements QuickFind {
 		if (indexType == QuickFind.INDEX_EDGES){
 			_type = "edge";
 		}
-		if (!controllingAttribute.equalsIgnoreCase(QuickFind.INDEX_ALL_ATTRIBUTES) &&
-		    cytoscape.data.CyAttributesUtils.isNullAttribute(_type, controllingAttribute)){
-			return null;
-		}
-		
 		//
 		if ((attributeType == CyAttributes.TYPE_INTEGER)
 		    || (attributeType == CyAttributes.TYPE_FLOATING)) {
