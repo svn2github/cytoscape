@@ -181,6 +181,7 @@ public class QuickFindPanel extends JPanel {
 		comboBox.setVisible(true);
 		rangeSlider.setVisible(false);
 		configButton.setEnabled(false);
+		label.setForeground(Color.GRAY);
 	}
 
 	/**
@@ -192,6 +193,7 @@ public class QuickFindPanel extends JPanel {
 		comboBox.setEnabled(true);
 		rangeSlider.setEnabled(true);
 		configButton.setEnabled(true);
+		label.setForeground(Color.BLACK);
 	}
 
 	/**
