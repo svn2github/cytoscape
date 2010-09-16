@@ -19,13 +19,25 @@ Cytoscape now contains the following directory structure:
 
 cytoscape
    +
-   +---application/ This directoy contains a maven project that builds and
-   +                assembles the Cytoscape application jar.
+   +---corelibs/       This directoy contains all libraries written by the  
+   +                   Cytoscape project and used in the Cytoscape Application.
+   +                   (is 
    +
-   +---distribution/ Contains a maven project that assembles the Cytoscape
-                     distribution based on the core plugins and the jar file
-                     built by application.  This directory includes all shell
-                     scripts, sample data, and licenses for the distribution.
+   +---application/    This directoy code for the Cytoscape application.
+   +
+   +---coreplugins/    This directoy contains all plugins delivered as part 
+   +                   of the Cytoscape Application.
+   +
+   +---distribution/    Contains a maven project that assembles the Cytoscape
+   +                    distribution based on the core plugins and the jar file
+   +                    built by application.  This directory includes all shell
+   +                    scripts, sample data, and licenses for the distribution.
+   +
+   +---release-bundles/ This directoy contains a maven pom file that creates
+   +                    Install4j release bundles.
+   +
+   +---webstart/        This directoy contains a maven pom file that creates
+                        a webstart (JNLP) distribution of Cytoscape. 
 
 
 III. New Build Process
@@ -35,34 +47,17 @@ To build cytoscape:
 
 1.  Download and install Apache Maven: http://maven.apache.org/
 
-2.  To compile the Cytoscape:
- a. go into the application directory:
-
-	cd application
-
- b. execute maven:
+2.  To compile everything: 
+ a. in the top level directory: 
 
 	mvn install
 
-3.  To run cytoscape:
- a. go into the distribution directory:
+3.  To run cytoscape (assuming you've run mvn install):
+ a. you'll find the normal cytoscape distribution directory here:
 
-	cd distribution 
-
- b. build the maven assembly:
-
-	mvn assembly:assembly
-
- c. go into the target directory:
-
-	cd target/asdf/asdf
-
- d. This will include the basic Cytoscape distribution.
+	cd distribution/target/distribution-${version}-null.dir/distribution-${version} 
 
 
 For questions, email Mike Smoot:  msmoot@ucsd.edu 
 
 
-IV.  Doing a Full Cytoscape Release
-===================================
-???
