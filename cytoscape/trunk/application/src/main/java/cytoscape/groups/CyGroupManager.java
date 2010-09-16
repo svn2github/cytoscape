@@ -427,7 +427,7 @@ public class CyGroupManager {
 			// it might be a member of
 			List<CyGroup> groupList = groupNode.getGroups();
 			if (groupList != null && groupList.size() > 0) {
-				for (CyGroup group: groupList) {
+				for (CyGroup group: new ArrayList<CyGroup>(groupList)) {
 					group.removeNode(groupNode);
 				}
 			}
