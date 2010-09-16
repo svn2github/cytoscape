@@ -421,14 +421,16 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
 
         Set<DataSourceWrapper> srcTypes = IDMapperClientManager.getSupportedSrcTypes();
         DataSourceWrapper srcds = DataSourceWrapper.getInstance(srctype);
-        if (!srcTypes.contains(srcds))
-            throw new CyCommandException(srctype + " is not supported.");
-
+        if (!srcTypes.contains(srcds)){
+        	result.addResult(Boolean.FALSE);
+            result.addMessage(srctype + " is not supported.");
+        }
         Set<DataSourceWrapper> tgtTypes = IDMapperClientManager.getSupportedTgtTypes();
         DataSourceWrapper tgtds = DataSourceWrapper.getInstance(tgttype);
-        if (!tgtTypes.contains(tgtds))
-            throw new CyCommandException(tgttype + " is not supported.");
-
+        if (!tgtTypes.contains(tgtds)){
+        	result.addResult(Boolean.FALSE);
+            result.addMessage(tgttype + " is not supported.");
+        }
         try {
              if (IDMapperClientManager.isMappingSupported(srcds, tgtds)) {
                  result.addResult(Boolean.TRUE);
