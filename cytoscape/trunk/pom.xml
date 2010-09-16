@@ -26,7 +26,8 @@
         <version>2.0</version>
         <configuration>
           <tagBase>svn+ssh://grenache.ucsd.edu/cellar/common/svn/cytoscape/tags</tagBase>
-		  <autoVersionSubmodules>true</autoVersionSubmodules>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <goals>deploy</goals>
         </configuration>
       </plugin>
     </plugins>
