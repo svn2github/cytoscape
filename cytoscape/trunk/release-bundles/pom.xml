@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>cytoscape</groupId>
+    <artifactId>parent</artifactId>
+    <version>2.8.0-beta2-SNAPSHOT</version>
+  </parent>
+
+  <groupId>cytoscape</groupId>
+  <artifactId>release-bundles</artifactId>
+  <packaging>jar</packaging>
+  <name>Cytoscape Release Bundles</name>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>googlecode-maven-install4j</id>
+      <name>googlecode-maven-install4j</name>
+      <url>http://maven-install4j.googlecode.com/svn/m2-repo</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/install4j</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <!-- This will unpack the distribution into the target directory -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-distribution</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <excludeTransitive>true</excludeTransitive>
+              <includeTypes>zip</includeTypes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- This will create the bundles -->
+      <plugin>
+        <groupId>com.google.code.maven-install4j</groupId>
+        <artifactId>maven-install4j-plugin</artifactId>
+        <version>0.1.1</version>
+        <configuration>
+          <executable>/Applications/install4j 4/bin/install4jc</executable>
+          <configFile>${project.build.outputDirectory}/Cytoscape.install4j</configFile>
+          <releaseId>${project.version}</releaseId>
+          <attach>true</attach>
+          <skipOnMissingExecutable>true</skipOnMissingExecutable>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>cytoscape</groupId>
+      <artifactId>distribution</artifactId>
+      <version>${version}</version>
+      <type>zip</type>
+    </dependency>
+  </dependencies>
+
+</project>
+

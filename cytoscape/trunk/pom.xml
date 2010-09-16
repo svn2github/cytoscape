@@ -15,6 +15,7 @@
     <module>corelibs</module>
     <module>application</module>
     <module>coreplugins</module>
+    <module>distribution</module>
   </modules>
 
   <build>
