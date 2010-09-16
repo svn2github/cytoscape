@@ -15,30 +15,9 @@
   <packaging>jar</packaging>
   <name>Cytoscape Distribution</name>
 
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>googlecode-maven-install4j</id>
-      <name>googlecode-maven-install4j</name>
-      <url>http://maven-install4j.googlecode.com/svn/m2-repo</url>
-    </pluginRepository>
-  </pluginRepositories>
-
  
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/install4j</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
    <plugins>
-      <plugin>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <goals>assembly:assembly install4j:compile</goals>
-        </configuration>
-      </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -62,18 +41,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.google.code.maven-install4j</groupId>
-        <artifactId>maven-install4j-plugin</artifactId>
-        <version>0.1.1</version>
-        <configuration>
-          <executable>/Applications/install4j 4/bin/install4jc</executable>
-          <configFile>${project.build.outputDirectory}/Cytoscape.install4j</configFile>
-          <releaseId>${project.version}</releaseId>
-          <attach>true</attach>
-          <skipOnMissingExecutable>true</skipOnMissingExecutable>
-        </configuration>
       </plugin>
     </plugins>
   </build>
