@@ -456,6 +456,7 @@ public class CytoscapeInit implements PropertyChangeListener {
 					Cytoscape.setCurrentSessionFileName(sessionFile);
 
 					final File shortName = new File(sessionFile);
+					sessionName = shortName.getName();
 					String absolutePath = shortName.getAbsolutePath();
 					if (absolutePath.startsWith("/"))
 						absolutePath = "/" + absolutePath;
