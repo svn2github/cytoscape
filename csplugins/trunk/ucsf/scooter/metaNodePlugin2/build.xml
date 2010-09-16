@@ -5,7 +5,7 @@
    <property name = "build" location = "build"/>
    <property name = "build.compiler" value = "modern"/>
    <!-- path to Cytoscape under development (CVS) -->
-   <property name = "lib" location = "../../../../cytoscape"/>
+   <property name = "lib" location = "../../../../cytoscape/build"/>
    <property name = "jar"  location = "jar"/>
    <property name = "doc" location = "doc"/>
 

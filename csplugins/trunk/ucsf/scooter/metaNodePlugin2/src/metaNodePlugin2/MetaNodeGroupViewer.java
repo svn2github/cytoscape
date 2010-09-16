@@ -32,7 +32,9 @@
  */
 package metaNodePlugin2;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cytoscape.CyNetwork;
@@ -142,7 +144,9 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	 * This is called when a new group has been created that
 	 * we care about.  This version of the groupCreated
 	 * method is called by XGMML and provides the CyNetworkView
-	 * that is in the process of being created.
+	 * that is in the process of being created.  Note that to
+	 * be efficient, this is called after all of the groups
+	 * have been created, so we can do this all at once.
 	 *
 	 * @param group the CyGroup that was just created
 	 * @param view the CyNetworkView that is being created
@@ -150,6 +154,11 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	public void groupCreated(CyGroup group, CyNetworkView myview) { 
 		// logger.debug("groupCreated("+group+", view)");
 		if (MetaNodeManager.getMetaNode(group) == null) {
+			// Have we already been here?
+			if (MetaNodeManager.getMetaNodeCount() == 0) {
+				initializeGroups(myview);
+				return;
+			}
 			MetaNode newNode = MetaNodeManager.createMetaNode(group);
 
 			// We need to be a little tricky if we are restoring a collapsed
@@ -163,6 +172,7 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 				network.hideNode(group.getGroupNode());
 			}
 		}
+
 		// logger.debug("registering");
 		logger.info("updating group panel for new group: "+group);
 		updateGroupPanel();
@@ -241,6 +251,22 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 			}
 		}
 		return;
+	}
+
+	// This method is called on the first notification that we have a group.
+	private void initializeGroups(CyNetworkView view) {
+		List<CyGroup> metaGroups = CyGroupManager.getGroupList(this);
+		if (metaGroups != null) {
+			for (CyGroup group: metaGroups) {
+				// Create the metanode
+				MetaNode newNode = MetaNodeManager.createMetaNode(group);
+				if (group.getState() == MetaNodePlugin2.COLLAPSED) {
+					newNode.recollapse(view);
+				}
+			}
+		}
+		logger.info("updating group panel");
+		updateGroupPanel();
 	}
 
 	public void registerWithGroupPanel() {

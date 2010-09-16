@@ -88,6 +88,9 @@ public class MetaNodeManager {
 		mn.setUseNestedNetworks(useNestedNetworksDefault);
 		mn.setHideMetaNode(hideMetanodeDefault);
 		mn.setMetaNodeOpacity(metanodeOpacityDefault);
+		if (metaGroup.getNetwork() == null) {
+			metaGroup.setNetwork(Cytoscape.getCurrentNetwork(), false);
+		}
 		return mn;
 	}
 
@@ -123,6 +126,19 @@ public class MetaNodeManager {
 	static public void removeMetaNode(MetaNode metaNode) {
 		if (metaNode == null) return;
 		removeMetaNode(metaNode.getCyGroup().getGroupNode());
+	}
+
+	/**
+	 * Get the number of metanodes we currently have.  This is used
+	 * by the group viewer to determine if it needs to initialize everything
+	 * the first time it gets called
+	 *
+	 * @return the number of metanodes we know about
+	 */
+	static public int getMetaNodeCount() {
+		if (metaMap == null) 
+			return 0;
+		return metaMap.size();
 	}
 
 	/**

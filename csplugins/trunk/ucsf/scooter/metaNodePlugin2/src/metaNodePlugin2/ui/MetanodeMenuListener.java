@@ -275,7 +275,7 @@ public class MetanodeMenuListener implements MenuListener {
 			nodeGroups = node.getGroups();
 		} 
 
-		// List current named selections
+		// List current metaNodes
 		for (CyGroup group: groupList) {
 			CyNode groupNode = group.getGroupNode();
 			List<CyGroup> parents = groupNode.getGroups();
