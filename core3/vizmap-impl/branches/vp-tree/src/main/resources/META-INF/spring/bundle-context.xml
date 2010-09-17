@@ -13,14 +13,19 @@
            http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
             http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
+	
+	<import resource="bundle-context-osgi.xml" />
 
 	<context:annotation-config />
 
 	<bean id="visualMappingManager"
 		class="org.cytoscape.view.vizmap.internal.VisualMappingManagerImpl">
 		<constructor-arg ref="cyEventHelperServiceRef" />
-		<constructor-arg ref="rootVisualLexiconRef" />
 	</bean>
-
+	
+	<bean id="visualStyleFactory"
+		class="org.cytoscape.view.vizmap.internal.VisualStyleFactoryImpl">
+		<constructor-arg ref="cyEventHelperServiceRef" />
+	</bean>
 
 </beans>

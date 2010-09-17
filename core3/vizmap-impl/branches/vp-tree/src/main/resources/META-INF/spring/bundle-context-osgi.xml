@@ -5,13 +5,18 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
+
+	<!-- Export VMM as an OSGi Service -->
 	<osgi:service id="visualMappingManagerService" ref="visualMappingManager"
 		interface="org.cytoscape.view.vizmap.VisualMappingManager">
+	</osgi:service>
+	
+	<!-- Export Visual Style Factory as an OSGi Service -->
+	<osgi:service id="visualStyleFactoryService" ref="visualStyleFactory"
+		interface="org.cytoscape.view.vizmap.VisualStyleFactory">
 	</osgi:service>
 
 	<!-- Import Services -->
 	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
 
-	<osgi:reference id="rootVisualLexiconRef"
-		interface="org.cytoscape.view.model.RootVisualLexicon" />
 </beans>

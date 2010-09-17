@@ -36,17 +36,14 @@ package org.cytoscape.view.vizmap.internal;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
-import org.cytoscape.view.model.VisualLexiconManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -64,8 +61,9 @@ public class VisualStyleImpl implements VisualStyle {
 
 	private final Map<VisualProperty<?>, VisualMappingFunction<?, ?>> mappings;
 	private final Map<VisualProperty<?>, Object> perVSDefaults;
-	private final VisualLexiconManager lexiconManager;
 
+	private final VisualLexicon lexicon;
+	
 	private String title;
 
 	/**
@@ -74,8 +72,8 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param rootLexicon
 	 *            DOCUMENT ME!
 	 */
-	public VisualStyleImpl(final VisualLexiconManager lexiconManager) {
-		this(lexiconManager, null);
+	public VisualStyleImpl(final VisualLexicon lexicon) {
+		this(null, lexicon);
 	}
 
 	/**
@@ -86,24 +84,22 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param rootLexicon
 	 *            DOCUMENT ME!
 	 */
-	public VisualStyleImpl(final VisualLexiconManager lexiconManager,
-			final String title) {
-		if (lexiconManager == null)
-			throw new NullPointerException("rootLexicon is null");
+	public VisualStyleImpl(final String title, final VisualLexicon lexicon) {
+		if (lexicon == null)
+			throw new NullPointerException("Lexicon is null");
 
 		if (title == null)
 			this.title = DEFAULT_TITLE;
 		else
 			this.title = title;
 
-		this.lexiconManager = lexiconManager;
+		this.lexicon = lexicon;
 		mappings = new HashMap<VisualProperty<?>, VisualMappingFunction<?, ?>>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
 
-		// Copy immutable defaults from each VP
-		final VisualLexicon root = lexiconManager.getLexicon();
+		
 
-		for (VisualProperty<?> vp : root.getAllVisualProperties())
+		for (VisualProperty<?> vp : lexicon.getAllVisualProperties())
 			perVSDefaults.put(vp, vp.getDefault());
 
 		logger.info("New Visual Style Created: Style Name = " + this.title);
@@ -201,7 +197,6 @@ public class VisualStyleImpl implements VisualStyle {
 		// networkviews.add(networkView);
 
 		// Current visual prop tree.
-		final VisualLexicon lexicon = lexiconManager.getLexicon();
 		Collection<View<? extends CyTableEntry>> allViews = networkView
 				.getAllViews();
 		applyImpl(allViews, lexicon.getAllVisualProperties());
@@ -321,8 +316,9 @@ public class VisualStyleImpl implements VisualStyle {
 	}
 
 	// TODO Is this the right set of lexicon?
+	@Override
 	public VisualLexicon getVisualLexicon() {
-		return lexiconManager.getLexicon();
+		return lexicon;
 	}
 
 }

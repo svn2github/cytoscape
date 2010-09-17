@@ -34,7 +34,6 @@
  */
 package org.cytoscape.view.vizmap.internal;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -42,12 +41,8 @@ import java.util.Set;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.VisualLexiconManager;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.events.VisualStyleCreatedEvent;
 import org.cytoscape.view.vizmap.events.VisualStyleDestroyedEvent;
 
 
@@ -56,30 +51,20 @@ import org.cytoscape.view.vizmap.events.VisualStyleDestroyedEvent;
  */
 public class VisualMappingManagerImpl implements VisualMappingManager {
 	
-	private final Map<CyNetworkView, VisualStyle> vsForNetwork;
+	private final Map<CyNetworkView, VisualStyle> network2VisualStyleMap;
 	private final Set<VisualStyle> visualStyles;
 	
-	private CyEventHelper cyEventHelper;
-	private VisualLexiconManager rootLexicon;
+	private final CyEventHelper cyEventHelper;
 	
-	/**
-	 *
-	 * @param h
-	 *            DOCUMENT ME!
-	 */
-	public VisualMappingManagerImpl(final CyEventHelper eventHelper,
-	                                final VisualLexiconManager rootLexicon) {
+	
+	public VisualMappingManagerImpl(final CyEventHelper eventHelper) {
 		if (eventHelper == null)
 			throw new IllegalArgumentException("CyEventHelper cannot be null");
 
-		if (rootLexicon == null)
-			throw new IllegalArgumentException("vpCatalog cannot be null");
-
 		this.cyEventHelper = eventHelper;
-		this.rootLexicon = rootLexicon;
 
 		visualStyles = new HashSet<VisualStyle>();
-		vsForNetwork = new HashMap<CyNetworkView, VisualStyle>();
+		network2VisualStyleMap = new HashMap<CyNetworkView, VisualStyle>();
 	}
 
 	/**
@@ -90,8 +75,8 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public VisualStyle getVisualStyle(CyNetworkView nv) {
-		return vsForNetwork.get(nv);
+	@Override public VisualStyle getVisualStyle(CyNetworkView nv) {
+		return network2VisualStyleMap.get(nv);
 	}
 
 	/**
@@ -102,51 +87,10 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	 * @param nv
 	 *            DOCUMENT ME!
 	 */
-	public void setVisualStyle(VisualStyle vs, CyNetworkView nv) {
-		vsForNetwork.put(nv, vs);
+	@Override public void setVisualStyle(VisualStyle vs, CyNetworkView nv) {
+		network2VisualStyleMap.put(nv, vs);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param originalVS DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public VisualStyle copyVisualStyle(VisualStyle originalVS) {
-		final VisualStyle copyVS = new VisualStyleImpl(rootLexicon, new String(originalVS.getTitle()));
-
-		// TODO: copy everything! This is incomplete
-		Collection<VisualMappingFunction<?, ?>> allMapping = originalVS.getAllVisualMappingFunctions();
-
-		String attrName;
-		VisualProperty<?> vp;
-
-		for (VisualMappingFunction<?, ?> mapping : allMapping) {
-			attrName = mapping.getMappingAttributeName();
-			vp = mapping.getVisualProperty();
-		}
-
-		visualStyles.add(copyVS);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEvent(this,copyVS));
-
-		return copyVS;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param title DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public VisualStyle createVisualStyle(String title) {
-		final VisualStyle newVS = new VisualStyleImpl(rootLexicon, title);
-		visualStyles.add(newVS);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleCreatedEvent(this,newVS));
-
-		return newVS;
-	}
 
 	/**
 	 * Remove the style from this manager and delete it.
@@ -154,26 +98,23 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	 * @param vs
 	 *            DOCUMENT ME!
 	 */
-	public void removeVisualStyle(VisualStyle vs) {
+	@Override public void removeVisualStyle(VisualStyle vs) {
 		visualStyles.remove(vs);
 		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEvent(this,vs));
 		vs = null;
 	}
+	
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Collection<VisualStyle> getAllVisualStyles() {
+	@Override public Set<VisualStyle> getAllVisualStyles() {
 		return visualStyles;
 	}
 
-
-	public <K, V> VisualMappingFunction<K, V> createMapping(String mappingType,
-			String attrName, Class<K> attrType, VisualProperty<V> vp) {
-		
-		
-		return null;
+	@Override public void addVisualStyle(VisualStyle vs) {
+		this.visualStyles.add(vs);
 	}
 }
