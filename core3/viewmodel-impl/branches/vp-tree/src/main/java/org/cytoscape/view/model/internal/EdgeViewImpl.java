@@ -3,8 +3,8 @@ package org.cytoscape.view.model.internal;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.EdgeViewChangeMicroListener;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.events.EdgeViewChangeMicroListener;
 
 public class EdgeViewImpl extends ViewImpl<CyEdge> {
 

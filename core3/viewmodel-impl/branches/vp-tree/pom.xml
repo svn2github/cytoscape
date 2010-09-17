@@ -32,17 +32,17 @@
 				RCP applications -->
 		</resources>
 		<plugins>
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>2.4.1</version>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${basedir}/eclipse_config</directory>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/eclipse_config</directory>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
