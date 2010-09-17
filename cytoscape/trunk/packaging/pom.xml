@@ -11,9 +11,9 @@
   </parent>
 
   <groupId>cytoscape</groupId>
-  <artifactId>release-bundles</artifactId>
+  <artifactId>packaging</artifactId>
   <packaging>jar</packaging>
-  <name>Cytoscape Release Bundles</name>
+  <name>Cytoscape Release Bundle Packaging</name>
 
   <pluginRepositories>
     <pluginRepository>
