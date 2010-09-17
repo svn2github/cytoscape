@@ -11,10 +11,6 @@
   <packaging>pom</packaging>
   <name>Cytoscape Core Libraries Parent POM</name>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
- 
   <modules>
     <module>commons-cli-1.x-cytocape-custom</module>
     <module>equations</module>
