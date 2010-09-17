@@ -31,7 +31,9 @@
       </resource>
     </resources>
     <plugins>
-      <!-- This will unpack the distribution into the target directory -->
+      <!-- This will unpack the distribution into the target directory,
+	       copy the distribution into target/install4j directory, and
+		   unpack the javadoc in the target/install4j directory -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -44,6 +46,31 @@
             </goals>
             <configuration>
               <outputDirectory>${project.build.directory}</outputDirectory>
+              <excludeTransitive>true</excludeTransitive>
+              <includeTypes>zip</includeTypes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-javadoc</id>
+            <phase>package</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/install4j/javadoc</outputDirectory>
+              <excludeTransitive>true</excludeTransitive>
+              <excludeGroupIds>junit</excludeGroupIds>
+              <includeClassifiers>javadoc</includeClassifiers>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-distribution</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/install4j</outputDirectory>
               <excludeTransitive>true</excludeTransitive>
               <includeTypes>zip</includeTypes>
             </configuration>
@@ -80,6 +107,12 @@
       <artifactId>distribution</artifactId>
       <version>${version}</version>
       <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>cytoscape</groupId>
+      <artifactId>javadoc</artifactId>
+      <version>${version}</version>
+      <classifier>javadoc</classifier>
     </dependency>
   </dependencies>
 
