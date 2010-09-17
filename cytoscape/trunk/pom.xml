@@ -15,6 +15,7 @@
     <module>corelibs</module>
     <module>application</module>
     <module>coreplugins</module>
+    <module>javadoc</module>
     <module>distribution</module>
   </modules>
 
