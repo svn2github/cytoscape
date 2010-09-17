@@ -37,9 +37,9 @@
 package org.cytoscape.view.vizmap;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.VisualLexiconManager;
 
 
 /**
@@ -54,13 +54,15 @@ import org.cytoscape.view.model.VisualLexiconManager;
  *
  */
 public interface VisualMappingManager {
+	
 	/**
 	 *  Set a Visual Style to the target view
 	 *
 	 * @param vs Visual Style to be set.
 	 * @param nv Target network view
 	 */
-	public void setVisualStyle(VisualStyle vs, CyNetworkView nv);
+	void setVisualStyle(final VisualStyle vs, final CyNetworkView nv);
+	
 
 	/**
 	 *  Returns the associated Visual Style for the target view.
@@ -69,37 +71,17 @@ public interface VisualMappingManager {
 	 *
 	 * @return  Associated Visual Style for the view.
 	 */
-	public VisualStyle getVisualStyle(CyNetworkView nv);
+	VisualStyle getVisualStyle(final CyNetworkView nv);
 
-	/**
-	 * Create a copy of given Visual Style.
-	 *
-	 * @param originalVS
-	 *            VS to be copied from.
-	 *
-	 * @return Copied VS
-	 */
-	public VisualStyle copyVisualStyle(VisualStyle originalVS);
-
-	/**
-	 * Create a new Visual Style.
-	 * 
-	 * @param title Title of the visual style.  This can be null, but in that case, 
-	 * 					default title will be used.
-	 * 			Note: This is NOT an identifier of this object, just a title.
-	 *
-	 * @return New Visual Style
-	 */
-	public VisualStyle createVisualStyle(String title);
 
 	/**
 	 * Returns all available Visual Styles managed by this object.
 	 *
 	 * @return Collection of all available Visual Styles.
 	 * 
-	 * TODO: Collection or Set? 
 	 */
-	public Collection<VisualStyle> getAllVisualStyles();
+	Set<VisualStyle> getAllVisualStyles();
+	
 
 	/**
 	 * Remove a Visual Style.
@@ -107,6 +89,14 @@ public interface VisualMappingManager {
 	 * @param vs Visual Style to be removed.
 	 * 
 	 */
-	public void removeVisualStyle(VisualStyle vs);
+	void removeVisualStyle(final VisualStyle vs);
+	
+	
+	/**
+	 * Add a new style to manager
+	 *
+	 * @param vs
+	 */
+	void addVisualStyle(final VisualStyle vs);
 
 }
