@@ -35,7 +35,6 @@
 package org.cytoscape.view.model;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -74,22 +73,8 @@ public interface VisualLexicon {
 	 * @param prop
 	 *            any visual property
 	 * 
-	 * @return Collection of visual properties for the type
+	 * @return Collection of visual properties for the type.
 	 */
-	Collection<VisualProperty<?>> getChildren(final VisualProperty<?> prop);
-	
-	
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param name
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	VisualProperty<?> getVisualProperty(String idString);
-	
-	
-	void mergeLexicon(final VisualLexicon toBeMerged);
-	
+	Collection<VisualProperty<?>> getAllDescendants(final VisualProperty<Visualizable> prop);
+		
 }

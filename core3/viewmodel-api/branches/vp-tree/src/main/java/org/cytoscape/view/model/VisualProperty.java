@@ -111,7 +111,6 @@ public interface VisualProperty<T> {
 	 * The relationship is immutable, i.e., cannot change parent/child relationship.
 	 */
 	VisualProperty<?> getParent();
-	void setParent(VisualProperty<?> parent);
 	
 	/**
 	 * 

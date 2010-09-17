@@ -60,6 +60,7 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	// Accepts all kinds of data types, so data compatibility checking is
 	// developer's responsibility.
 	protected final Collection<VisualProperty<?>> children;
+	
 	protected VisualProperty<?> parent;
 
 	/**
@@ -71,13 +72,15 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	 * @param name
 	 */
 	public AbstractVisualProperty(final T defaultValue, final String id,
-			final String name) {
+			final String name, final VisualProperty<?> parent) {
 		this.defaultValue = defaultValue;
 		this.id = id;
 		this.name = name;
 		this.children = new HashSet<VisualProperty<?>>();
 	}
 
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public Class<T> getType() {
 		if (defaultValue != null)
@@ -86,33 +89,38 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 			return null;
 	}
 
+	
+	@Override
 	public T getDefault() {
 		return defaultValue;
 	}
 
+	
+	@Override
 	public String getIdString() {
 		return id;
 	}
 
+	@Override
 	public String getDisplayName() {
 		return name;
 	}
 
+	@Override
 	public boolean isIgnoreDefault() {
 		return this.isIgnoreDefault;
 	}
 
+	
+	@Override
 	public VisualProperty<?> getParent() {
 		return this.parent;
 	}
 
+	
+	@Override
 	public Collection<VisualProperty<?>> getChildren() {
 		return this.children;
-	}
-
-	@Override
-	public void setParent(VisualProperty<?> parent) {
-		this.parent = parent;
 	}
 
 }

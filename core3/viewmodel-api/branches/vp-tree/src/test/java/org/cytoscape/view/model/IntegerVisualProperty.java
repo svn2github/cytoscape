@@ -38,9 +38,9 @@ package org.cytoscape.view.model;
 
 class IntegerVisualProperty extends AbstractVisualProperty<Integer> { 
 
-	public IntegerVisualProperty(final Integer def, final String id, final String name) {
+	public IntegerVisualProperty(final Integer def, final String id, final String name,final VisualProperty<?> parent) {
 		// isolated node.  No parent/children.
-		super(def, id, name);
+		super(def, id, name, null);
 	}
 
 

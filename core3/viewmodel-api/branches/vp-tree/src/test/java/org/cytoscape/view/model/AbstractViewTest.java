@@ -17,8 +17,8 @@ public abstract class AbstractViewTest<S> {
 	
 	@Before
 	public void setUp() throws Exception {
-		integerVP = new IntegerVisualProperty(Integer.valueOf(0), "integerVP", "INTVP");
-		stringVP = new StringVisualProperty("", "stringVP", "STRVP");
+		integerVP = new IntegerVisualProperty(Integer.valueOf(0), "integerVP", "INTVP", null);
+		stringVP = new StringVisualProperty("", "stringVP", "STRVP", null);
 	}
 
 	
