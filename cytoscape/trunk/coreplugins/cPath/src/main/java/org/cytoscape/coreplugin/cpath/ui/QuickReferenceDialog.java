@@ -146,7 +146,7 @@ public class QuickReferenceDialog implements ActionListener {
         html.append("</FONT>");
 
         html.append("<P><HR><FONT FACE=ARIAL SIZE=-1>");
-        html.append("Copyright © 2004-2007 Memorial Sloan-Kettering Cancer Center.");
+        html.append("Copyright 2004-2007 Memorial Sloan-Kettering Cancer Center.");
         html.append("</FONT>");
         return html.toString();
     }
