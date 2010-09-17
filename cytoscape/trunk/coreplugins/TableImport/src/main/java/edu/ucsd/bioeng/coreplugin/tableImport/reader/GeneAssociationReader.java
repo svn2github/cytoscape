@@ -196,7 +196,7 @@ public class GeneAssociationReader implements TextTableReader {
 			buildMap();
 
 		if (!caseSensitive) {
-			// Create all upperÅ@case ID map
+			// Create all uppercase ID map
 			uppercaseIDMap = new HashMap<String, String>();
 			List<CyNode> nodes = Cytoscape.getRootGraph().nodesList();
 			for (CyNode node : nodes)
