@@ -195,5 +195,9 @@
 	<bean id="viewWriterManager" 
 	      class="org.cytoscape.io.internal.write.ViewWriterManagerImpl" />
 
-
+	<bean id="networkWriterManager" 
+	      class="org.cytoscape.io.internal.write.CyNetworkWriterManagerImpl">
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="NETWORK" />
+	</bean>
 </beans>
