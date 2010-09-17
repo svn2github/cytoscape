@@ -9,7 +9,11 @@ You will need to have subversion installed (http://subversion.tigris.org).
 
 Then, do a clean check-out:
 
-svn checkout file:///cellar/common/svn/cytoscape/trunk cytoscape 
+	svn checkout file:///cellar/common/svn/cytoscape/trunk cytoscape 
+
+or if you're remote:
+
+	svn checkout svn+ssh://grenache.ucsd.edu/cellar/common/svn/cytoscape/trunk cytoscape 
 
 
 II.  New Directory Structure
@@ -43,10 +47,12 @@ cytoscape
    +                   this packaging ONLY happens in the deploy phase.
    +
    +---webstart/       This directoy contains a maven pom file that creates
-                       a webstart (JNLP) distribution of Cytoscape. The webstart 
-                       bundle is not created as part of the normal maven life
-                       cycle.  See the README.txt in that directory for
-                       instructions on building a webstart distribution.
+   +                   a webstart (JNLP) distribution of Cytoscape. The webstart 
+   +                   bundle is not created as part of the normal maven life
+   +                   cycle.  See the README.txt in that directory for
+   +                   instructions on building a webstart distribution.
+   +
+   +---legacy/         Contains old and currently unused test data and resources. 
 
 
 III. Build Process
