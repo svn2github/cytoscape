@@ -32,8 +32,8 @@
     </resources>
     <plugins>
       <!-- This will unpack the distribution into the target directory,
-	       copy the distribution into target/install4j directory, and
-		   unpack the javadoc in the target/install4j directory -->
+           copy the distribution into target/install4j directory, and
+           unpack the javadoc in the target/install4j directory -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -48,6 +48,7 @@
               <outputDirectory>${project.build.directory}</outputDirectory>
               <excludeTransitive>true</excludeTransitive>
               <includeTypes>zip</includeTypes>
+              <excludeTypes>tar.gz</excludeTypes>
             </configuration>
           </execution>
           <execution>
@@ -60,6 +61,8 @@
               <outputDirectory>${project.build.directory}/install4j/javadoc</outputDirectory>
               <excludeTransitive>true</excludeTransitive>
               <excludeGroupIds>junit</excludeGroupIds>
+              <excludeTypes>zip</excludeTypes>
+              <excludeTypes>tar.gz</excludeTypes>
               <includeClassifiers>javadoc</includeClassifiers>
             </configuration>
           </execution>
@@ -72,7 +75,7 @@
             <configuration>
               <outputDirectory>${project.build.directory}/install4j</outputDirectory>
               <excludeTransitive>true</excludeTransitive>
-              <includeTypes>zip</includeTypes>
+              <excludeTypes>jar</excludeTypes>
             </configuration>
           </execution>
         </executions>
@@ -104,9 +107,15 @@
   <dependencies>
     <dependency>
       <groupId>cytoscape</groupId>
-      <artifactId>distribution</artifactId>
+      <artifactId>cytoscape</artifactId>
       <version>${version}</version>
       <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>cytoscape</groupId>
+      <artifactId>cytoscape</artifactId>
+      <version>${version}</version>
+      <type>tar.gz</type>
     </dependency>
     <dependency>
       <groupId>cytoscape</groupId>

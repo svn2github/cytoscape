@@ -11,7 +11,7 @@
   </parent>
 
   <groupId>cytoscape</groupId>
-  <artifactId>distribution</artifactId>
+  <artifactId>cytoscape</artifactId>
   <packaging>jar</packaging>
   <name>Cytoscape Distribution</name>
 
