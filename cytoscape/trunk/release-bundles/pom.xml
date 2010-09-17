@@ -40,7 +40,7 @@
         <executions>
           <execution>
             <id>unpack-distribution</id>
-            <phase>validate</phase>
+            <phase>deploy</phase>
             <goals>
               <goal>unpack-dependencies</goal>
             </goals>
@@ -52,7 +52,7 @@
           </execution>
           <execution>
             <id>unpack-javadoc</id>
-            <phase>package</phase>
+            <phase>deploy</phase>
             <goals>
               <goal>unpack-dependencies</goal>
             </goals>
@@ -65,7 +65,7 @@
           </execution>
           <execution>
             <id>copy-distribution</id>
-            <phase>package</phase>
+            <phase>deploy</phase>
             <goals>
               <goal>copy-dependencies</goal>
             </goals>
@@ -91,7 +91,7 @@
         </configuration>
         <executions>
           <execution>
-            <phase>compile</phase>
+            <phase>deploy</phase>
             <goals>
               <goal>compile</goal>
             </goals>
@@ -115,6 +115,5 @@
       <classifier>javadoc</classifier>
     </dependency>
   </dependencies>
-
 </project>
 
