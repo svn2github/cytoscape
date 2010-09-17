@@ -57,7 +57,6 @@ import org.cytoscape.psi_mi.internal.schema.mi1.EntrySet;
 import org.cytoscape.psi_mi.internal.schema.mi1.ExperimentType;
 import org.cytoscape.psi_mi.internal.schema.mi1.InteractionElementType;
 import org.cytoscape.psi_mi.internal.schema.mi1.NamesType;
-import org.cytoscape.psi_mi.internal.schema.mi1.ObjectFactory;
 import org.cytoscape.psi_mi.internal.schema.mi1.ProteinInteractorType;
 import org.cytoscape.psi_mi.internal.schema.mi1.ProteinParticipantType;
 import org.cytoscape.psi_mi.internal.schema.mi1.RefType;
@@ -105,22 +104,7 @@ public class MapPsiOneToInteractions implements Mapper {
 			experimentMap = new HashMap<String, ExperimentType>();
 
 			StringReader reader = new StringReader(content);
-
-			//  Note to self.  The following method will not work
-			//  JAXBContext jc = JAXBContext.newInstance(
-			//       "org.cytoscape.coreplugin.psi_mi.schema.mi1");
-			//  Using the line above results in the following exception:
-			//  javax.xml.bind.JAXBException: "org.cytoscape.coreplugin.psi_mi.schema.mi1"
-			//  doesnt contain ObjectFactory.class or jaxb.index
-
-			//  The alternative is to use the syntax below.  I don't know why this works,
-			//  but the tip is described online here:
-			//  http://forums.java.net/jive/thread.jspa?forumID=46&threadID=20124&messageID=174472
-			Class<?>[] classes = new Class[2];
-			classes[0] = EntrySet.class;
-			classes[1] = ObjectFactory.class;
-
-			JAXBContext jc = JAXBContext.newInstance(classes);
+			JAXBContext jc = JAXBContext.newInstance(MapInteractionsToPsiOne.SCHEMA_NAMESPACE, getClass().getClassLoader());
 			Unmarshaller u = jc.createUnmarshaller();
 			EntrySet entrySet = (EntrySet) u
 			                                                                                                                 .unmarshal(reader);

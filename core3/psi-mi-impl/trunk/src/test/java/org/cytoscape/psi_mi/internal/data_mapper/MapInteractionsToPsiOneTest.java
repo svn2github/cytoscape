@@ -122,7 +122,7 @@ public class MapInteractionsToPsiOneTest {
 		MapInteractionsToPsiOne mapper4 = new MapInteractionsToPsiOne(interactions);
 		mapper4.doMapping();
 
-		EntrySet entrySet = mapper4.getPsiXml();
+		EntrySet entrySet = mapper4.getModel();
 		validateInteractors(entrySet.getEntry().get(0).getInteractorList());
 		validateInteractions(entrySet.getEntry().get(0).getInteractionList());
 

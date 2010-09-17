@@ -11,14 +11,17 @@ import org.cytoscape.io.DataCategory;
 public class PsiMiCyFileFilter implements CyFileFilter {
 	private Set<String> extensions;
 	private Set<String> contentTypes;
+	private String description;
 
-	public PsiMiCyFileFilter() {
+	private PsiMiCyFileFilter(String description) {
 		extensions = new HashSet<String>();
 		extensions.add("psi");
 		
 		contentTypes = new HashSet<String>();
 		contentTypes.add("text/psi-mi");
 		contentTypes.add("text/psi-mi+xml");
+		
+		this.description = description; 
 	}
 	
 	@Override
@@ -43,7 +46,7 @@ public class PsiMiCyFileFilter implements CyFileFilter {
 
 	@Override
 	public String getDescription() {
-		return "PSI-MI files";
+		return description;
 	}
 
 	@Override

@@ -10,15 +10,15 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskIterator;
 
 public class PsiMiNetworkViewTaskFactory implements InputStreamTaskFactory {	
-	private final CyFileFilter filter;
 	private final CyNetworkViewFactory networkViewFactory;
 	private final CyNetworkFactory networkFactory;
 	private final CyLayouts layouts;
+	private final CyFileFilter filter;
 	
 	private InputStream inputStream;
 
-	public PsiMiNetworkViewTaskFactory(CyNetworkFactory networkFactory, CyNetworkViewFactory networkViewFactory, CyLayouts layouts) {
-		this.filter = new PsiMiCyFileFilter();
+	public PsiMiNetworkViewTaskFactory(CyFileFilter filter, CyNetworkFactory networkFactory, CyNetworkViewFactory networkViewFactory, CyLayouts layouts) {
+		this.filter = filter;
 		this.networkFactory = networkFactory;
 		this.networkViewFactory = networkViewFactory;
 		this.layouts = layouts;

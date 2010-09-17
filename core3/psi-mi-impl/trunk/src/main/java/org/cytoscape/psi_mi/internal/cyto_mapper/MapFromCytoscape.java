@@ -136,17 +136,18 @@ public class MapFromCytoscape implements Mapper {
 	/**
 	 * Transfers all Node / Edge Attributes.
 	 */
+	@SuppressWarnings("unchecked")
 	private void transferAllAttributes(CyRow attrs, AttributeBag bag) {
-		List<?> dbNames = null;
-		List<?> dbIds = null;
+		List<String> dbNames = null;
+		List<String> dbIds = null;
 
 		for (Entry<String, Object> entry : attrs.getAllValues().entrySet()) {
 			String attributeName = entry.getKey();
 			Object value = entry.getValue();
 			if (attributeName.equals(CommonVocab.XREF_DB_NAME)) {
-				dbNames = (List<?>) value;
+				dbNames = (List<String>) value;
 			} else if (attributeName.equals(CommonVocab.XREF_DB_ID)) {
-				dbIds = (List<?>) value;
+				dbIds = (List<String>) value;
 			} else {
 				if (value instanceof String) {
 					bag.addAttribute(attributeName, value);
@@ -160,13 +161,13 @@ public class MapFromCytoscape implements Mapper {
 	/**
 	 * Adds External References.
 	 */
-	private void addExternalReferences(List<?> dbNames, List<?> dbIds, AttributeBag bag) {
+	private void addExternalReferences(List<String> dbNames, List<String> dbIds, AttributeBag bag) {
 		if ((dbNames != null) && (dbIds != null)) {
 			ExternalReference[] refs = new ExternalReference[dbNames.size()];
 
 			for (int i = 0; i < dbNames.size(); i++) {
-				String dbName = (String) dbNames.get(i);
-				String dbId = (String) dbIds.get(i);
+				String dbName = dbNames.get(i);
+				String dbId = dbIds.get(i);
 				refs[i] = new ExternalReference(dbName, dbId);
 			}
 

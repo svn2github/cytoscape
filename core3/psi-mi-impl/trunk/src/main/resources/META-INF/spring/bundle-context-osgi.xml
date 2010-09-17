@@ -25,4 +25,11 @@
 		</osgi:service-properties>
 	</osgi:service>
 	
+	<osgi:service id="psiMi1NetworkViewWriterFactoryService" ref="psiMi1NetworkViewWriterFactory"
+		interface="org.cytoscape.io.write.CyNetworkWriterFactory">
+	</osgi:service>
+	
+	<osgi:service id="psiMi25NetworkViewWriterFactoryService" ref="psiMi25NetworkViewWriterFactory"
+		interface="org.cytoscape.io.write.CyNetworkWriterFactory">
+	</osgi:service>
 </beans>

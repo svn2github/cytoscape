@@ -63,7 +63,9 @@ import org.cytoscape.psi_mi.internal.schema.mi25.XrefType;
  *
  * @author Ethan Cerami
  */
-public class MapInteractionsToPsiTwoFive implements Mapper {
+public class MapInteractionsToPsiTwoFive implements SchemaMapper<EntrySet> {
+	public static final String SCHEMA_NAMESPACE = "org.cytoscape.psi_mi.internal.schema.mi25";
+	
 	private static final String EXP_AFFINITY_PRECIPITATION = "Affinity Precipitation";
 	private static final String EXP_AFFINITY_CHROMOTOGRAPHY = "Affinity Chromatography";
 	private static final String EXP_TWO_HYBRID = "Two Hybrid";
@@ -72,6 +74,11 @@ public class MapInteractionsToPsiTwoFive implements Mapper {
 	private int interactionId = 0;
 	private int participantId = 0;
 	private Map<String, Integer> interactorMap = new HashMap<String, Integer>();
+
+	@Override
+	public String getSchemaNamespace() {
+		return SCHEMA_NAMESPACE;
+	}
 
 	/**
 	 * Pub Med Database.
@@ -121,7 +128,7 @@ public class MapInteractionsToPsiTwoFive implements Mapper {
 	 *
 	 * @return Root PSI Element.
 	 */
-	public EntrySet getPsiXml() {
+	public EntrySet getModel() {
 		return entrySet;
 	}
 

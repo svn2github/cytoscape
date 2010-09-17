@@ -121,7 +121,7 @@ public class MapInteractionsToPsiTwoFiveTest {
 		MapInteractionsToPsiTwoFive mapper4 = new MapInteractionsToPsiTwoFive(interactions);
 		mapper4.doMapping();
 
-		EntrySet entrySet = mapper4.getPsiXml();
+		EntrySet entrySet = mapper4.getModel();
 		validateInteractors(entrySet.getEntry().get(0).getInteractorList());
 		// TODO: Fix this -- XREFs for experiments don't seem to work
 //		validateInteractions(entrySet.getEntry().get(0).getInteractionList());
