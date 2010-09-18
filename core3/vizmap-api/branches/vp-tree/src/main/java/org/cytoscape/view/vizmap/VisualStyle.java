@@ -42,99 +42,108 @@ import org.cytoscape.view.model.VisualProperty;
 
 
 /**
- * This is simply a collection of MappingCalculators that define how a set of
- * attributes modify the visual properties of a View object.
+ * A VisualStyle is a collection of VisualMappingFunctions and default values
+ * that defines how a set of attributes modify visual properties of a View object.
  *
  */
 public interface VisualStyle {
 	
 	/**
-	 * Returns name of this visual style. This should NOT be used as ID of this
-	 * Visual Style. Just for GUI components.
+	 * Returns name of this visual style. This should NOT be used as the ID of this
+	 * Visual Style. Just for GUI components and may not be unique.
+	 * 
+	 * Title of Visual Style is a mutable field.
 	 *
 	 * @return title of this visual style
 	 */
-	public String getTitle();
+	String getTitle();
 
+	
 	/**
 	 * Set new title of this VS.
 	 * Will be used by rename function.
 	 *
-	 * @param title
-	 *            New title.
+	 * @param title New title.
 	 */
-	public void setTitle(String title);
+	void setTitle(final String title);
+	
 
 	/**
 	 * Add a new mapping for this Visual Style.
 	 *
-	 * Note: renamed from "set" to "add" for consistency.
-	 *
-	 * @param mapping
-	 *            DOCUMENT ME!
+	 * @param mapping new mapping.
 	 */
-	public void addVisualMappingFunction(VisualMappingFunction<?, ?> mapping);
+	void addVisualMappingFunction(final VisualMappingFunction<?, ?> mapping);
+	
+	
+	/**
+	 *  Remove a mapping for Visual Property.
+	 *  One visual property can be associated with only one mapping function, 
+	 *  so this always removes correct mapping.
+	 *
+	 * @param vp mapping associated with this vp will be removed.
+	 *
+	 */
+	void removeVisualMappingFunction(final VisualProperty<?> vp);
 
+	
 	/**
 	 *  get current mapping for the Visual Property vp.
 	 *
-	 * @param <V> DOCUMENT ME!
-	 * @param vp DOCUMENT ME!
+	 * @param <V> Type of visual property.
+	 * @param vp visual property associated with the target mapping.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return mapping function for vp
+	 * 
 	 */
-	public <V> VisualMappingFunction<?, V> getVisualMappingFunction(VisualProperty<V> vp);
+	<V> VisualMappingFunction<?, V> getVisualMappingFunction(final VisualProperty<V> vp);
 
+	
 	/**
 	 *  Returns all available mappings.
 	 *
 	 * @return  All visual mappings for this style.
 	 */
-	public Collection<VisualMappingFunction<?, ?>> getAllVisualMappingFunctions();
+	Collection<VisualMappingFunction<?, ?>> getAllVisualMappingFunctions();
 
-	/**
-	 *  Remove a mapping for Visual Property.
-	 *
-	 * @param <V> DOCUMENT ME!
-	 * @param vp DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public <V> VisualMappingFunction<?, V> removeVisualMappingFunction(VisualProperty<V> vp);
-
+	
 	/**
 	 *  Returns default value for the Visual Property vp.
+	 *  This is style's default value.  Not same as VP's default.
 	 *
-	 * @param <V> DOCUMENT ME!
-	 * @param vp DOCUMENT ME!
+	 * @param <V> Type of object associated with vp
+	 * @param vp target visual property
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  Style's default value for vp
 	 */
-	public <V> V getDefaultValue(VisualProperty<? extends V> vp);
+	<V> V getDefaultValue(final VisualProperty<V> vp);
 
+	
 	/**
 	 *  Setter for the default value of vp.
 	 *
-	 * @param <V> DOCUMENT ME!
-	 * @param vp DOCUMENT ME!
-	 * @param value DOCUMENT ME!
+	 * @param <V> Type of object associated with vp
+	 * @param vp target visual property
+	 * @param value Value to be set as default.  This can be child type of V.  For example, 
+	 * 				if V is Number, S can be Double, Integer, etc.
 	 */
-	<V> void setDefaultValue(VisualProperty<? extends V> vp, V value);
+	<V, S extends V> void setDefaultValue(final VisualProperty<V> vp, S value);
 
+	
 	/**
 	 * Apply this visual style to the view.
+	 * Currently this is only for network view.
 	 *
-	 * @param v
-	 *            DOCUMENT ME!
+	 * @param v Visual Style will be applied to this network view.
 	 */
-	void apply(CyNetworkView v);
+	void apply(final CyNetworkView networkViewModel);
 	
 	
 	/**
 	 * A Visual Style is always associated with a lexicon tree provided 
 	 * by a rendering engine.  This method returns its associated lexicon.
 	 * 
-	 * @return
+	 * @return VisualLexicon provided by a rendering engine.
 	 */
 	VisualLexicon getVisualLexicon();
 }

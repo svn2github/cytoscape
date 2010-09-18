@@ -1,6 +1,6 @@
 package org.cytoscape.view.vizmap;
 
-import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.view.model.VisualLexicon;
 
 public interface VisualStyleFactory {
 	
@@ -13,7 +13,7 @@ public interface VisualStyleFactory {
 	 *
 	 * @return New Visual Style
 	 */
-	VisualStyle createVisualStyle(final String title, final RenderingEngine<?> engine);
+	VisualStyle createVisualStyle(final String title, final VisualLexicon lexicon);
 	
 	
 	/**

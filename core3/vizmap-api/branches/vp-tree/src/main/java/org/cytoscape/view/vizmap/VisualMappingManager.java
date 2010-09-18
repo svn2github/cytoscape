@@ -36,7 +36,6 @@
 
 package org.cytoscape.view.vizmap;
 
-import java.util.Collection;
 import java.util.Set;
 
 import org.cytoscape.view.model.CyNetworkView;
@@ -61,7 +60,7 @@ public interface VisualMappingManager {
 	 * @param vs Visual Style to be set.
 	 * @param nv Target network view
 	 */
-	void setVisualStyle(final VisualStyle vs, final CyNetworkView nv);
+	void setVisualStyle(final VisualStyle visualStyle, final CyNetworkView networkViewModel);
 	
 
 	/**
@@ -71,7 +70,7 @@ public interface VisualMappingManager {
 	 *
 	 * @return  Associated Visual Style for the view.
 	 */
-	VisualStyle getVisualStyle(final CyNetworkView nv);
+	VisualStyle getVisualStyle(final CyNetworkView networkViewModel);
 
 
 	/**
@@ -82,21 +81,21 @@ public interface VisualMappingManager {
 	 */
 	Set<VisualStyle> getAllVisualStyles();
 	
-
-	/**
-	 * Remove a Visual Style.
-	 *
-	 * @param vs Visual Style to be removed.
-	 * 
-	 */
-	void removeVisualStyle(final VisualStyle vs);
-	
 	
 	/**
 	 * Add a new style to manager
 	 *
 	 * @param vs
 	 */
-	void addVisualStyle(final VisualStyle vs);
+	void addVisualStyle(final VisualStyle visualStyle);
+	
+	
+	/**
+	 * Remove a Visual Style.
+	 *
+	 * @param vs Visual Style to be removed.
+	 * 
+	 */
+	void removeVisualStyle(final VisualStyle visualStyle);
 
 }
