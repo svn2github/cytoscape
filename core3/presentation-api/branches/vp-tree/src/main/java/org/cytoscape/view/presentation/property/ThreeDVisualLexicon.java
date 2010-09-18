@@ -22,9 +22,13 @@ public class ThreeDVisualLexicon extends TwoDVisualLexicon {
 
 		NODE_LOCATION.getChildren().add(NODE_Z_LOCATION);
 		NODE_SIZE.getChildren().add(NODE_Z_SIZE);
+		addVisualProperty(NODE_Z_LOCATION);
+		addVisualProperty(NODE_Z_SIZE);
 		
 		NETWORK_CENTER_LOCATION.getChildren().add(NETWORK_CENTER_Z_LOCATION);
 		NETWORK_SIZE.getChildren().add(NETWORK_DEPTH);
+		addVisualProperty(NETWORK_CENTER_Z_LOCATION);
+		addVisualProperty(NETWORK_DEPTH);
 
 	}
 }

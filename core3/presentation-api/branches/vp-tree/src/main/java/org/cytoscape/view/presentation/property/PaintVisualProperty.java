@@ -42,13 +42,13 @@ import java.util.StringTokenizer;
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.VisualProperty;
 
-public class ColorVisualProperty extends AbstractVisualProperty<Paint> { 
+public class PaintVisualProperty<T extends Paint> extends AbstractVisualProperty<T> { 
 
-	public ColorVisualProperty(final Paint def, final String id, final String name, final VisualProperty<?> parent) {
+	public PaintVisualProperty(final T def, final String id, final String name, final VisualProperty<?> parent) {
 		super(def, id, name, parent);
 	}
 	
-	public String toSerializableString(final Paint color) {
+	public String toSerializableString(final T color) {
 		if(color instanceof Color == false) {
 			throw new IllegalArgumentException("This method supports Color object only.  Override this method for more implementations.");
 		}
@@ -60,12 +60,12 @@ public class ColorVisualProperty extends AbstractVisualProperty<Paint> {
 		return new String(red.toString() + "," + green.toString() + "," + blue.toString());
 	}
 
-	public Paint parseSerializableString(final String text) {
+	public T parseSerializableString(final String text) {
 		// Start by seeing if this is a hex representation
 		if (text.startsWith("#")) {
 			try {
 				Color c = Color.decode(text);
-				return c;
+				return (T) c;
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("invalid hex RGB format");	
 			}
@@ -86,7 +86,7 @@ public class ColorVisualProperty extends AbstractVisualProperty<Paint> {
 			int g = Integer.parseInt(green);
 			int b = Integer.parseInt(blue);
 
-			return new Color(r, g, b);
+			return (T) new Color(r, g, b);
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException("invalid RGB format");	
 		}

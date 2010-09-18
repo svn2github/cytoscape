@@ -38,9 +38,10 @@ import java.awt.Color;
 import java.awt.Paint;
 
 import org.cytoscape.view.model.NullDataType;
-import org.cytoscape.view.model.StringVisualProperty;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
+
+
 
 /**
  * Should be implemented as a service. 'Renderer' is simply anything that
@@ -58,13 +59,13 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 			"EDGE", "Edge Visual Property", NETWORK);
 	
 
-	public static final VisualProperty<Paint> NODE_PAINT = new ColorVisualProperty(
-			Color.RED, "NODE_PAINT", "Node Paint", NODE);
-	public static final VisualProperty<? extends Paint> NODE_COLOR = new ColorVisualProperty(
+	public static final VisualProperty<Color> NODE_PAINT = new PaintVisualProperty<Color>(
+			Color.gray, "NODE_PAINT", "Node Paint", NODE);
+	public static final VisualProperty<Color> NODE_COLOR = new PaintVisualProperty<Color>(
 			Color.RED, "NODE_COLOR", "Node Color", NODE_PAINT);
-	public static final VisualProperty<? extends Paint> NODE_SELECTED_COLOR = new ColorVisualProperty(
+	public static final VisualProperty<Color> NODE_SELECTED_COLOR = new PaintVisualProperty<Color>(
 			Color.YELLOW, "NODE_SELECTED_COLOR", "Node Selected Color", NODE_PAINT);
-	public static final VisualProperty<? extends Paint> NODE_LABEL_COLOR = new ColorVisualProperty(
+	public static final VisualProperty<Color> NODE_LABEL_COLOR = new PaintVisualProperty<Color>(
 			Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color", NODE_PAINT);
 	
 	
@@ -98,11 +99,11 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 			false, "NODE_SELECTED", "Node Selected", NODE);
 
 	
-	public static final VisualProperty<? extends Paint> EDGE_PAINT = new ColorVisualProperty(
+	public static final VisualProperty<? extends Paint> EDGE_PAINT = new PaintVisualProperty<Color>(
 			Color.gray, "EDGE_PAINT", "Edge Paint", EDGE);
-	public static final VisualProperty<? extends Paint> EDGE_COLOR = new ColorVisualProperty(
+	public static final VisualProperty<? extends Paint> EDGE_COLOR = new PaintVisualProperty<Color>(
 			Color.gray, "EDGE_COLOR", "Edge Color", EDGE_PAINT);
-	public static final VisualProperty<? extends Paint> EDGE_LABEL_COLOR = new ColorVisualProperty(
+	public static final VisualProperty<? extends Paint> EDGE_LABEL_COLOR = new PaintVisualProperty<Color>(
 			Color.BLACK, "EDGE_LABEL_COLOR", "Edge Label Color", EDGE_PAINT);
 	
 	
@@ -150,9 +151,9 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	public static final VisualProperty<String> NETWORK_TITLE = new StringVisualProperty(
 			"", "NETWORK_TITLE", "Network Title", NETWORK_TEXT);
 
-	public static final VisualProperty<Paint> NETWORK_PAINT = new ColorVisualProperty(
+	public static final VisualProperty<Color> NETWORK_PAINT = new PaintVisualProperty<Color>(
 			Color.WHITE, "NETWORK_PAINT", "Network Paint", NETWORK);
-	public static final VisualProperty<? extends Paint> NETWORK_BACKGROUND_COLOR = new ColorVisualProperty(
+	public static final VisualProperty<Paint> NETWORK_BACKGROUND_COLOR = new PaintVisualProperty<Paint>(
 			Color.WHITE, "NETWORK_BACKGROUND_COLOR", "Network Background Color", NETWORK_PAINT);
 
 	
@@ -164,29 +165,52 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	public TwoDVisualLexicon(final VisualProperty<NullDataType> root) {
 		super(root);
 		
+		addVisualProperty(NETWORK);
 		((DefaultVisualizableVisualProperty)NETWORK).setParent(root);
 
 		NETWORK.getChildren().add(NODE);
 		NETWORK.getChildren().add(EDGE);
+		addVisualProperty(NODE);
+		addVisualProperty(EDGE);
+		
 		
 		NETWORK.getChildren().add(NETWORK_TEXT);
 		NETWORK.getChildren().add(NETWORK_PAINT);
 		NETWORK.getChildren().add(NETWORK_SIZE);
 		NETWORK.getChildren().add(NETWORK_CENTER_LOCATION);
 		NETWORK.getChildren().add(NETWORK_SCALE_FACTOR);
+		addVisualProperty(NETWORK_TEXT);
+		addVisualProperty(NETWORK_PAINT);
+		addVisualProperty(NETWORK_SIZE);
+		addVisualProperty(NETWORK_CENTER_LOCATION);
+		addVisualProperty(NETWORK_SCALE_FACTOR);
 
+		
 		NODE.getChildren().add(NODE_LOCATION);
 		NODE.getChildren().add(NODE_PAINT);
 		NODE.getChildren().add(NODE_SIZE);
 		NODE.getChildren().add(NODE_TEXT);
 		NODE.getChildren().add(NODE_VISIBLE);
 		NODE.getChildren().add(NODE_SELECTED);
+		addVisualProperty(NODE_LOCATION);
+		addVisualProperty(NODE_PAINT);
+		addVisualProperty(NODE_SIZE);
+		addVisualProperty(NODE_TEXT);
+		addVisualProperty(NODE_VISIBLE);
+		addVisualProperty(NODE_SELECTED);
+		
 		
 		EDGE.getChildren().add(EDGE_PAINT);
 		EDGE.getChildren().add(EDGE_SIZE);
 		EDGE.getChildren().add(EDGE_TEXT);
 		EDGE.getChildren().add(EDGE_VISIBLE);
 		EDGE.getChildren().add(EDGE_SELECTED);
+		addVisualProperty(EDGE_PAINT);
+		addVisualProperty(EDGE_SIZE);
+		addVisualProperty(EDGE_TEXT);
+		addVisualProperty(EDGE_VISIBLE);
+		addVisualProperty(EDGE_SELECTED);
+		
 		
 		NETWORK_TEXT.getChildren().add(NETWORK_TITLE);
 		NETWORK_PAINT.getChildren().add(NETWORK_BACKGROUND_COLOR);
@@ -194,6 +218,13 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 		NETWORK_SIZE.getChildren().add(NETWORK_HEIGHT);
 		NETWORK_CENTER_LOCATION.getChildren().add(NETWORK_CENTER_X_LOCATION);
 		NETWORK_CENTER_LOCATION.getChildren().add(NETWORK_CENTER_Y_LOCATION);
+		addVisualProperty(NETWORK_TITLE);
+		addVisualProperty(NETWORK_BACKGROUND_COLOR);
+		addVisualProperty(NETWORK_WIDTH);
+		addVisualProperty(NETWORK_HEIGHT);
+		addVisualProperty(NETWORK_CENTER_X_LOCATION);
+		addVisualProperty(NETWORK_CENTER_Y_LOCATION);
+		
 		
 		NODE_LOCATION.getChildren().add(NODE_X_LOCATION);
 		NODE_LOCATION.getChildren().add(NODE_Y_LOCATION);
@@ -203,11 +234,24 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 		NODE_SIZE.getChildren().add(NODE_X_SIZE);
 		NODE_SIZE.getChildren().add(NODE_Y_SIZE);
 		NODE_TEXT.getChildren().add(NODE_LABEL);
+		addVisualProperty(NODE_X_LOCATION);
+		addVisualProperty(NODE_Y_LOCATION);
+		addVisualProperty(NODE_COLOR);
+		addVisualProperty(NODE_LABEL_COLOR);
+		addVisualProperty(NODE_SELECTED_COLOR);
+		addVisualProperty(NODE_X_SIZE);
+		addVisualProperty(NODE_Y_SIZE);
+		addVisualProperty(NODE_LABEL);
+		
 
 		EDGE_PAINT.getChildren().add(EDGE_COLOR);
 		EDGE_PAINT.getChildren().add(EDGE_LABEL_COLOR);
 		EDGE_SIZE.getChildren().add(EDGE_WIDTH);
 		EDGE_TEXT.getChildren().add(EDGE_LABEL);
+		addVisualProperty(EDGE_COLOR);
+		addVisualProperty(EDGE_LABEL_COLOR);
+		addVisualProperty(EDGE_WIDTH);
+		addVisualProperty(EDGE_LABEL);
 	}
 
 }
