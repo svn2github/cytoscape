@@ -37,6 +37,7 @@ package org.cytoscape.view.vizmap.internal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
@@ -143,11 +144,11 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @return DOCUMENT ME!
 	 */
 	@SuppressWarnings("unchecked")
-	public <V> VisualMappingFunction<?, V> removeVisualMappingFunction(
-			VisualProperty<V> t) {
-		return (VisualMappingFunction<?, V>) mappings.remove(t);
+	@Override public void removeVisualMappingFunction(VisualProperty<?> t) {
+		mappings.remove(t);
 	}
 
+	
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -159,7 +160,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @return DOCUMENT ME!
 	 */
 	@SuppressWarnings("unchecked")
-	public <V> V getDefaultValue(final VisualProperty<? extends V> vp) {
+	@Override public <V> V getDefaultValue(final VisualProperty<V> vp) {
 		// Since setter checks type, this cast is always legal.
 		return (V) perVSDefaults.get(vp);
 	}
@@ -174,8 +175,8 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param value
 	 *            DOCUMENT ME!
 	 */
-	public <T> void setDefaultValue(final VisualProperty<? extends T> vp,
-			final T value) {
+	@Override public <V, S extends V> void setDefaultValue(final VisualProperty<V> vp,
+			final S value) {
 		perVSDefaults.put(vp, value);
 	}
 
@@ -210,10 +211,6 @@ public class VisualStyleImpl implements VisualStyle {
 		logger.debug("Visual Style applied: " + this.title + "\n");
 	}
 	
-	private void traverse() {
-		
-	}
-
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -251,7 +248,9 @@ public class VisualStyleImpl implements VisualStyle {
 
 		// If mapping is available for this VP, apply the mapping.
 		if (mapping != null) {
-			mapping.apply(views);
+			
+			for(View<? extends CyTableEntry> view:views)
+				mapping.apply(view);
 		} else if (!vp.isIgnoreDefault()) { // Check ignore flag first.
 			applyStyleDefaults(views, vp);
 		} else
@@ -311,7 +310,7 @@ public class VisualStyleImpl implements VisualStyle {
 		return this.title;
 	}
 
-	public Collection<VisualMappingFunction<?, ?>> getAllVisualMappingFunctions() {
+	@Override public Collection<VisualMappingFunction<?, ?>> getAllVisualMappingFunctions() {
 		return mappings.values();
 	}
 

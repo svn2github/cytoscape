@@ -24,7 +24,7 @@ public class ITVzmapImpl extends AbstractIntegrationTester {
 				},
 				new String[] { "visualStyleFactory", "visualMappingManager" },
 				new Class[] { VisualStyleFactory.class, VisualMappingManager.class },
-				new String[] { });
+				new String[] { "org.cytoscape.view.vizmap"});
 	}
 
 }
