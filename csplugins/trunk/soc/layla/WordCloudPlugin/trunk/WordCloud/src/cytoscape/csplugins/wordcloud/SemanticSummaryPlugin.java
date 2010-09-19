@@ -24,10 +24,14 @@ package cytoscape.csplugins.wordcloud;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 
@@ -61,15 +65,19 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 	
 	public SemanticSummaryPlugin()
 	{
+		
 		//New actions for response to menu selections
 		SemanticSummaryPluginAction settings = new SemanticSummaryPluginAction();
 		CreateCloudAction create = new CreateCloudAction();
+		ShowAboutPanelAction about = new ShowAboutPanelAction();
 		create.setPreferredMenu("Plugins.WordCloud");
 		settings.setPreferredMenu("Plugins.WordCloud");
+		about.setPreferredMenu("Plugins.WordCloud");
 	
 		//Add to Plugin Menu
 		Cytoscape.getDesktop().getCyMenus().addAction(create);
 		Cytoscape.getDesktop().getCyMenus().addAction(settings);
+		Cytoscape.getDesktop().getCyMenus().addAction(about);
 		
 		//Add to right click menus
 		
@@ -466,5 +474,25 @@ public class SemanticSummaryPlugin extends CytoscapePlugin
 		}
 		
 	}//end restore session method
+	
+    /**
+     * 
+     * @param propFileName
+     * @return
+     * @throws IOException
+     */
+	private Properties getPropertiesFromClasspath(String propFileName) throws IOException {
+        // loading properties file from the classpath
+        Properties props = new Properties();
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(propFileName);
+
+        if (inputStream == null) {
+            throw new FileNotFoundException("property file '" + propFileName
+                    + "' not found in the classpath");
+        }
+
+        props.load(inputStream);
+        return props;
+    }
 	
 }

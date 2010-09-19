@@ -263,9 +263,9 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
 		
 		//Network Level Panel
-		CollapsiblePanel collapsiblePanel2 = new CollapsiblePanel("Network Parameters");
+		CollapsiblePanel collapsiblePanel2 = new CollapsiblePanel("Text Processing Parameters");
 		collapsiblePanel2.setCollapsed(false);
-		collapsiblePanel2.getTitleComponent().setToolTipText("Parameters that will be applied to all clouds created from the current network");
+		collapsiblePanel2.getTitleComponent().setToolTipText("Text processing parameters that will be applied to all clouds created from the current network");
 		
 		JPanel networkPanel = new JPanel();
 		networkPanel.setLayout(new BoxLayout(networkPanel, BoxLayout.Y_AXIS));
@@ -391,7 +391,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		//Max words input
-		JLabel maxWordsLabel = new JLabel("Max Num of Words");
+		JLabel maxWordsLabel = new JLabel("Max Number of Words");
 		maxWordsTextField = new JFormattedTextField(intFormat);
 		maxWordsTextField.setColumns(10);
 		maxWordsTextField.setValue(params.getDefaultMaxWords()); //Set to default initially
