@@ -106,8 +106,8 @@ public class AddDelimiterDialog extends JDialog implements ActionListener
 		getContentPane().add(tfDelimiter, gridBagConstraints);
 
 		btnOK.setText("OK");
-		btnOK.setPreferredSize(new Dimension(65, 23));
-		btnCancel.setPreferredSize(new Dimension(65, 23));
+		//btnOK.setPreferredSize(new Dimension(65, 23));
+		//btnCancel.setPreferredSize(new Dimension(65, 23));
 
 		jPanel1.add(btnOK);
 
