@@ -4,116 +4,195 @@
 	Author:  Maital Ashkenazi
 -->
 
-<project name="EnhancedSearch" default="run" basedir=".">
+<project name="EnhancedSearch" default="all" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
-    <!-- Plugin directories -->
-    <property name="build.dir"    value="${basedir}/build"/>
-    <property name="src.dir"      value="${basedir}/src"/>
-    <property name="lib.dir"       value="${basedir}/lib"/>
-    <property name="junit.dir"       value="${basedir}/junit"/>
-    <property name="testData.dir"    value="${basedir}/testData"/>
+	<!-- =================================================================== -->
+	<!-- Initialization target                                               -->
+	<!-- =================================================================== -->
+	<target name="init">
+		<tstamp />
+		<property name="name" value="EnhancedSearch" />
+		<property name="version" value="2.0" />
 
-    <!-- The cytoscape directory -->
-    <property name="cytoscape.dir"    value="../cytoscape"/>
+		<echo message="Building ${name} version ${version} ..." />
 
-	<!--  ============ Compilation Control Options ======================= -->
-  	<property name="compile.debug"       value="true"/>
-  	<property name="compile.deprecation" value="true"/>
-  	<property name="compile.optimize"    value="true"/>
+		<!-- Inheritable properties -->
+		<property name="debug" value="on" />
+		<property name="optimize" value="off" />
+		<property name="deprecation" value="on" />
+		<property name="fork" value="false" />
 
-	
-	<!-- ==================== Compilation Classpath ====================== -->
-    <!--
-        NB:  Compilation classpath assumes that main cytoscape project is checked out,
-        and compiled.
-    -->
-    <path id="compile.classpath">
-		<pathelement path="${build.dir}/classes"/>
-		<fileset dir="${lib.dir}">
-       		 	<include name="*.jar"/>
-		</fileset>
-		<fileset dir="${cytoscape.dir}/lib">
-       		 	<include name="*.jar"/>
-		</fileset>
-		<fileset dir="${cytoscape.dir}/plugins/core">
-       		 	<include name="quick_find.jar"/>
-		</fileset>
-         <fileset dir="${cytoscape.dir}">
-                     <include name="cytoscape.jar"/>
-         </fileset>
-  	</path>
+		<!-- Define the directories -->
+		<property name="root.dir" value="." />
+		<property name="resources.dir" value="${root.dir}/resources" />
+		<property name="src.dir" value="${root.dir}/src" />
+		<property name="tests.dir" value="${root.dir}/tests" />
+		<property name="build.dir" value="${root.dir}/build" />
+		<property name="lib.dir" value="${root.dir}/lib" />
+		<property name="log.dir" value="${build.dir}/logs" />
+		<property name="junit.report.dir" value="${log.dir}/junit-reports" />
 
-    <!-- ==================== Clean Target =============================== -->
-    <target name="clean"
-        description="Deletes all build files and starts fresh">
-        <delete dir="${build.dir}"/>
-        <delete file="${basedir}/EnhancedSearch.jar"/>
-    </target>
+		<!-- Define the relevant files -->
+		<property name="project.jar" value="${name}.jar" />
+		<property name="test.jar" value="${name}-tests.jar" />
 
-    <!-- ==================== Compile Target ============================= -->
-    <target name="compile" depends="prepare"
-        description="Compiles all Java source files">
-        <mkdir dir="${build.dir}/classes"/>
-        <javac srcdir="${src.dir}"
-		    source="1.5"
-            destdir="${build.dir}/classes"
-            debug="${compile.debug}"
-            deprecation="${compile.deprecation}"
-            optimize="${compile.optimize}">
-        <classpath refid="compile.classpath"/>
-        </javac>
-    </target>
+		<artifact:remoteRepository id="cytoscape_releases" url="http://cytoscape.wodaklab.org/nexus/content/repositories/releases/" />
+		<artifact:remoteRepository id="cytoscape_snapshots" url="http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/" />
+		<artifact:dependencies pathId="dependency.classpath">
+			<dependency groupId="cytoscape" artifactId="application" version="2.8.0-SNAPSHOT" />
+		</artifact:dependencies>
 
-    <!-- ==================== Jar Target ================================= -->
-    <target name="jar" depends="compile"
-            description="Creates Plugin Jar: EnhancedSearch.jar">
-       <unzip dest="${build.dir}/classes">
-         <fileset dir="${lib.dir}">
-           <include name="*.jar"/>
-         </fileset>
-       </unzip>
-        <copy file="${basedir}/plugin.props" todir="${build.dir}/classes/csplugins/enhanced/search" />
-        <jar destfile="${basedir}/EnhancedSearch.jar"
-             basedir="${build.dir}/classes">
-	    	<manifest>
-	     		<attribute name="Cytoscape-Plugin" 
-		           value="csplugins.enhanced.search.EnhancedSearchPlugin"/>
-	     	</manifest>
+		<!-- Define the class path -->
+		<path id="project.class.path">
+			<fileset dir="/usr/share/ant/lib">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+			<path refid="dependency.classpath" />
+		</path>
+
+		<!-- Define the junit class path - It needs to find what we just built -->
+		<path id="junit.class.path">
+			<fileset dir="/usr/share/ant/lib">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${root.dir}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+			<path refid="dependency.classpath" />
+		</path>
+
+		<!-- Make sure tests is in the right place -->
+		<condition property="tests.ok">
+			<and>
+				<available file="${tests.dir}" />
+			</and>
+		</condition>
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the project                                                -->
+	<!-- =================================================================== -->
+	<target name="compile" depends="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${log.dir}" />
+		<javac srcdir="${src.dir}" classpathref="project.class.path" destdir="${build.dir}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}">
+		       <compilerarg line="-Xlint:unchecked"/>
+			<!--
+	       <compilerarg line="-Xlint:all -Xlint:-path"/>
+	-->
+		</javac>
+		<echo message="Successfully ran compile task!" />
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Creates the project jar file                                        -->
+	<!-- =================================================================== -->
+	<target name="jar" depends="compile">
+
+		<!--copy file="${resources.dir}/plugin.props" todir="${build.dir}/org/cytoscape/equations/internal/googlechart" /-->
+		<unjar dest="${build.dir}">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+		</unjar>
+
+		<jar destfile="${project.jar}">
+			<fileset dir="${build.dir}" includes="**" />
+			<manifest>
+				<attribute name="Cytoscape-Plugin" value="csplugins.enhanced.search.EnhancedSearchPlugin" />
+			</manifest>
 		</jar>
-        <copy todir="${cytoscape.dir}/plugins/core">
-            <fileset file="${basedir}/EnhancedSearch.jar"/>
-        </copy>
-    </target>
+		<echo message="Successfully ran jar task!" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the tests                                                  -->
+	<!-- Note that this compilation occurs AFTER the distribution jar has    -->
+	<!-- been created, so that the tests aren't distributed.                 -->
+	<!-- =================================================================== -->
+	<target name="compile-tests" depends="jar" if="tests.ok">
+		<javac srcdir="${tests.dir}" classpathref="junit.class.path" destdir="${build.dir}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}">
+			<compilerarg line="-Xlint:all -Xlint:-path" />
+		</javac>
+		<echo message="Successfully ran compile-tests task!" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Creates the project-tests.jar file                                  -->
+	<!-- =================================================================== -->
+	<target name="jar-tests" depends="compile-tests" if="tests.ok">
+		<jar jarfile="${test.jar}" basedir="${build.dir}">
+		</jar>
+		<echo message="Successfully ran jar-tests task!" />
+	</target>
 
     <!-- ==================== Run Target ================================= -->
     <target description="Runs Latest Version of Cytoscape with EnhancedSearch Plugin"
         name="run">
-        <java classname="cytoscape.CyMain" classpathref="compile.classpath"
+        <java classname="cytoscape.CyMain" classpathref="project.class.path"
             fork="true" maxmemory="1000M">
-            <arg line="-p ${cytoscape.dir}/plugins/core"/>
+            <arg line="-p ${root.dir}"/>
         </java>
     </target>
 
 
-	<!-- ==================== Build jar and run ========================== -->
-    <target name="all" depends="jar"/>
 
 
-	<!-- ==================== Prepare Target ============================= -->
-    <target name="prepare">
-        <!-- Create build directories as needed -->
-        <mkdir  dir="${build.dir}"/>
-        <mkdir  dir="${build.dir}/classes"/>
-    </target>
+	<!-- =================================================================== -->
+	<!-- Runs the unit tests.                                                -->
+	<!-- =================================================================== -->
+	<target name="test" depends="jar-tests" if="tests.ok">
+		<junit printsummary="yes" haltonfailure="no" maxmemory="256m">
+			<classpath refid="junit.class.path" />
+			<formatter type="plain" usefile="true" />
+			<formatter type="xml" usefile="true" />
+			<batchtest fork="yes" todir="${log.dir}" failureProperty="junit.test.failure" errorProperty="junit.test.failure">
+				<fileset dir="${tests.dir}" includes="**/*Test.java" excludes="**/AllTests.java" />
+			</batchtest>
+		</junit>
+		<mkdir dir="${junit.report.dir}" />
+		<junitreport todir="${junit.report.dir}">
+			<fileset dir="${log.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.report.dir}" />
+		</junitreport>
+		<fail message="TEST FAILURE!!! Details: ${junit.report.dir}/index.html" if="junit.test.failure" />
+		<echo message="Successfully ran test task!" />
+	</target>
 
+	<!-- ==================== JUnit Test Target =========================== -->
+	<target name="old-test" description="Runs all JUnit tests" depends="compile">
+		<junit printsummary="yes" fork="yes" haltonfailure="yes">
+			<formatter type="plain" usefile="false" />
+			<test name="csplugins.enhanced.search.TestEnhancedSearch" />
+			<classpath refid="junit.class.path" />
+		</junit>
+	</target>
 
-    <!-- ==================== JUnit Test Target =========================== -->
-    <target name="test" description="Runs all JUnit tests" depends="compile">
-            <junit printsummary="yes" fork="yes" haltonfailure="yes">
-            <formatter type="plain" usefile="false"/>
-            <test name="csplugins.enhanced.search.TestEnhancedSearch"/>
-            <classpath refid="compile.classpath"/>
-        </junit>
-    </target>
-	
+	<!-- =================================================================== -->
+	<!-- Do everything                                                       -->
+	<!-- =================================================================== -->
+	<target name="all" depends="jar,old-test,run" />
+
+	<!-- =================================================================== -->
+	<!-- Clean up, get back to original state                                -->
+	<!-- =================================================================== -->
+	<target name="clean" depends="init">
+		<delete dir="${build.dir}" />
+		<delete dir="${javadoc.dir}" />
+		<delete file="${project.jar}" />
+		<delete file="${test.jar}" />
+		<echo message="Successfully ran clean task!" />
+	</target>
+
 </project>
+

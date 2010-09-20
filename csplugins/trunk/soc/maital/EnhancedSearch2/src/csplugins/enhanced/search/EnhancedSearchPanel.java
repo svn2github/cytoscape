@@ -48,6 +48,11 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -67,25 +72,22 @@ import csplugins.enhanced.search.IndexAndSearchTask;
 public class EnhancedSearchPanel extends JPanel {
 
 	private JTextField searchField;
-
 	private JLabel label;
 
 	private static final String ESP_LABEL = "Enhanced Search:  ";
-
 	private static final String SEARCH_MENU_ITEM = "Search";
-
 	private static final String REINDEX_MENU_ITEM = "Re-index and search";
+	private static final String QUERY_SYNTAX_MENU_ITEM = "Quick reference to query syntax";
 
 	private static final String SEARCH_TOOLTIP = "Perform search";
-
 	private static final String REINDEX_TOOLTIP = "<html>"
-			+ "Refresh the network index and perform search." + "<br>"
-			+ "This option is useful after changes to attributes." + "</html>";
+		+ "Refresh the network index and perform search." + "<br>"
+		+ "This option is useful after changes to attributes." + "</html>";
+	private static final String QUERY_SYNTAX_TOOLTIP = "Quick reference to query syntax";
 
 	private static final String ESP_ENABLED_TOOLTIP = "<html>"
 			+ "Enter search query and press return. " + "<br>"
 			+ "Right click for more options." + "</html>";
-
 	private static final String ESP_DISABLED_TOOLTIP = "Please select or load a network to activate search functionality";
 
 	/**
@@ -184,6 +186,16 @@ public class EnhancedSearchPanel extends JPanel {
 		menuItem.setToolTipText(REINDEX_TOOLTIP);
 		popup.add(menuItem);
 
+		// Add 'Reindex and search' menu item
+		menuItem = new JMenuItem(QUERY_SYNTAX_MENU_ITEM);
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				displayQuerySyntax();
+			}
+		});
+		menuItem.setToolTipText(QUERY_SYNTAX_TOOLTIP);
+		popup.add(menuItem);
+
 		// Add listener to the text area so the popup menu can come up.
 		MouseListener popupListener = new PopupListener(popup);
 		searchField.addMouseListener(popupListener);
@@ -246,6 +258,31 @@ public class EnhancedSearchPanel extends JPanel {
 			TaskManager.executeTask(task, config);
 
 		}
+	}
+
+	private void displayQuerySyntax() {
+
+		String[] columnNames = {"Search criteria", "Example"};
+	    Object[][] data = {
+	            {"Single term", "\"water channel\""},
+	            {"Restrict to a specific attribute", "annotation:aquaporin"},
+	            {"At least one of the terms must exist", "transcription or factor"},
+	            {"First term must exist but second must not", "transcription not factor"},
+	            {"Single character wildcard", "prot?in"},
+	            {"Multiple character wildcard", "HSP*"},
+	            {"Range search", "degree:[1 to 3]"},
+	            {"Control Boolean logic using parenthesis", "(intrinsic or integral) and membrane"},
+	        };
+
+		JTable table = new JTable(data, columnNames);
+		
+        JDialog dialog = new JDialog();
+        dialog.setContentPane(new JScrollPane(table));
+        dialog.setSize(500,200);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setLocation(600,200);
+        dialog.setVisible(true);
+
 	}
 
 	/**

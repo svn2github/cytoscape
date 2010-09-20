@@ -51,10 +51,10 @@ import org.apache.lucene.store.RAMDirectory;
 public class EnhancedSearchImpl implements EnhancedSearch {
 
 	// Keeps the index for each network
-	private HashMap networkIndexMap = new HashMap();
+	private HashMap<CyNetwork, RAMDirectory> networkIndexMap = new HashMap<CyNetwork, RAMDirectory>();
 
 	// Keeps indexing status of each network
-	private HashMap networkIndexStatusMap = new HashMap();
+	private HashMap<CyNetwork, String> networkIndexStatusMap = new HashMap<CyNetwork, String>();
 
 	private CyNetwork network;
 

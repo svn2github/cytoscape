@@ -36,170 +36,256 @@
 
 package csplugins.enhanced.search;
 
-import java.io.File;
-import junit.framework.TestCase;
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import junit.framework.TestCase;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import org.apache.lucene.store.RAMDirectory;
 import csplugins.enhanced.search.EnhancedSearchQuery;
 
 public class TestEnhancedSearch extends TestCase {
 
+	protected static final String LOCATION = "location";
+	protected static final String NUCLEUS = "nucleus";
+	protected static final String CYTOPLASM = "cytoplasm";
+	protected static final String CELL_MEMBRANE = "cell membrane";
+	protected static final String RANK = "rank";
+	protected static final String SCORE = "score";
+	protected static final String PMID = "pmid";
+
+	protected CyNetwork cyNetwork;
 	String query = null;
 	int hitCount;
 
-	CyNetwork cyNetwork;
+	protected void initNetwork() {
+		cyNetwork = Cytoscape.createNetwork("network1");
+		CyNode node0 = Cytoscape.getCyNode("rain", true);
+		CyNode node1 = Cytoscape.getCyNode("rainbow", true);
+		CyNode node2 = Cytoscape.getCyNode("rabbit", true);
+		CyNode node3 = Cytoscape.getCyNode("yellow", true);
 
-	// Load sample network and attributes into memory
-	public TestEnhancedSearch() {
+		cyNetwork.addNode(node0);
+		cyNetwork.addNode(node1);
+		cyNetwork.addNode(node2);
+		cyNetwork.addNode(node3);
+		
+		CyEdge edge0 = Cytoscape.getCyEdge(node0, node1, Semantics.INTERACTION, "pp", true);
+		CyEdge edge1 = Cytoscape.getCyEdge(node0, node2, Semantics.INTERACTION, "pp", true);
+		CyEdge edge2 = Cytoscape.getCyEdge(node0, node3, Semantics.INTERACTION, "pp", true);
+		cyNetwork.addEdge(edge0);
+		cyNetwork.addEdge(edge1);
+		cyNetwork.addEdge(edge2);
 
-		cyNetwork = Cytoscape.createNetworkFromFile("testData/network.sif");
+		//  Create Node String Attributes
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		nodeAttributes.setAttribute(node0.getIdentifier(), LOCATION, CYTOPLASM);
+		nodeAttributes.setAttribute(node1.getIdentifier(), LOCATION, CYTOPLASM);
+		nodeAttributes.setAttribute(node2.getIdentifier(), LOCATION, CELL_MEMBRANE);
+		nodeAttributes.setAttribute(node3.getIdentifier(), LOCATION, NUCLEUS);
 
-		String[] noa = new String[7];
-		noa[0] = new File("testData/GOMolecularFunction.NA").getAbsolutePath();
-		noa[1] = new File("testData/GOCellularComponent.NA").getAbsolutePath();
-		noa[2] = new File("testData/GOBiologicalProcess.NA").getAbsolutePath();
-		noa[3] = new File("testData/GeneTitle.NA").getAbsolutePath();
-		noa[4] = new File("testData/DesiccationResponse.NA").getAbsolutePath();
-		noa[5] = new File("testData/Chromosome.NA").getAbsolutePath();
-		noa[6] = new File("testData/AGI.NA").getAbsolutePath();
+		//  Create Sample Integer Attributes
+		nodeAttributes.setAttribute(node0.getIdentifier(), RANK, 4);
+		nodeAttributes.setAttribute(node1.getIdentifier(), RANK, 3);
+		nodeAttributes.setAttribute(node2.getIdentifier(), RANK, 1);
+		nodeAttributes.setAttribute(node3.getIdentifier(), RANK, 2);
 
-		String[] eda = new String[2];
-		eda[0] = new File("testData/weight.EA").getAbsolutePath();
-		eda[1] = new File("testData/interaction.EA").getAbsolutePath();
+		//  Create Sample Double Attributes
+		nodeAttributes.setAttribute(node0.getIdentifier(), SCORE, 45.2);
+		nodeAttributes.setAttribute(node1.getIdentifier(), SCORE, 3.211);
+		nodeAttributes.setAttribute(node2.getIdentifier(), SCORE, 22.2);
+		nodeAttributes.setAttribute(node3.getIdentifier(), SCORE, -2.1);
 
-		Cytoscape.loadAttributes(noa, eda);
+		//  Create Edge String Attributes
+		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+		edgeAttributes.setAttribute(edge0.getIdentifier(), PMID, "12345");
+		edgeAttributes.setAttribute(edge1.getIdentifier(), PMID, "12345");
+		edgeAttributes.setAttribute(edge2.getIdentifier(), PMID, "12355");
+
+		Cytoscape.setCurrentNetwork(cyNetwork.getIdentifier());
 	}
-
+	
 	// Simple queries
 	public void testSimpleQueries() throws Exception {
 
+		initNetwork();
+		
 		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
 		RAMDirectory idx = indexHandler.getIndex();
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 
-		query = "Gene_Title:putative";
-		queryHandler.executeQuery(query); // 56
+		// Limit to a particular attribute
+		query = "location:cytoplasm";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 56, hitCount);
+		assertEquals(query, 2, hitCount);
 
-		query = "gENE_TitlE:putATIVE";
-		queryHandler.executeQuery(query); // 56 - tests case insensitivity
+		// Case insensitivity
+		query = "LOCAtion:CYTOplasm";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 56, hitCount);
+		assertEquals(query, 2, hitCount);
 
-		query = "GO_Cellular_Component:\"plasma membrane\"";
-		queryHandler.executeQuery(query); // 7
+		// Phrase search
+		query = "location:\"cell membrane\"";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 7, hitCount);
+		assertEquals(query, 1, hitCount);
 
-		query = "canonicalName:251155_at";
-		queryHandler.executeQuery(query); // 12 - notice it returnes both nodes and edges.
+		// This query returns both nodes and edges (cannonicalName is a mutual attribute)
+		query = "canonicalName:rain";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 12, hitCount);
+		assertEquals(query, 4, hitCount);
 
-		query = "265480_at";
-		queryHandler.executeQuery(query); // 26 - notice: search is executed on nodes and edges.
+		 // Search is executed on nodes and edges
+		query = "rain";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 26, hitCount);
+		assertEquals(query, 4, hitCount);
 
-		query = "response";
-		queryHandler.executeQuery(query); // Search in all attributes
+		// Search in all attributes
+		query = "cytoplasm";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 70, hitCount);
+		assertEquals(query, 2, hitCount);
 	}
 
 	// Queries on multiple attribute fields
 	public void testComplexQueries() throws Exception {
 
+		initNetwork();
+		
 		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
 		RAMDirectory idx = indexHandler.getIndex();
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 
-		query = "GO_Biological_Process:\"water deprivation\" AND Gene_Title:aquaporin";
-		queryHandler.executeQuery(query); // 3
+		// Default Boolean operator is OR
+		query = "location:cytoplasm rank:2";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 3, hitCount);
 
-		query = "Desiccation_Response:true NOT Chromosome:5";
-		queryHandler.executeQuery(query); // 20
+		// Boolean logic: AND
+		query = "location:cytoplasm AND rank:4";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 20, hitCount);
+		assertEquals(query, 1, hitCount);
 
-		query = "GO_Biological_Process:stress AND (GO_Molecular_Function:peroxidase OR GO_Molecular_Function:catalase)";
-		queryHandler.executeQuery(query); // 4
+		// Boolean logic: NOT
+		query = "location:cytoplasm NOT rank:4";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 4, hitCount);
+		assertEquals(query, 1, hitCount);
+
+		// Boolean logic: AND / OR
+		query = "location:cytoplasm AND rank:4 OR rank:2";
+		queryHandler.executeQuery(query);
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 1, hitCount);
+
+		// Use parenthesis to control Boolean logic
+		query = "location:cytoplasm AND (rank:4 OR rank:2)";
+		queryHandler.executeQuery(query);
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 1, hitCount);
 	}
 
 	// Multiple values for same attribute
 	public void testFieldGrouping() throws Exception {
 
+		initNetwork();
+		
 		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
 		RAMDirectory idx = indexHandler.getIndex();
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 
-		query = "Gene_Title:(+60S +\"ribosomal protein\")";
-		queryHandler.executeQuery(query); // 9
+		// Both terms must appear in location attribute
+		query = "location:(+cell +membrane)";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 9, hitCount);
+		assertEquals(query, 1, hitCount);
 	}
 
 	// Wildcards queries
 	public void testWildcardsQueries() throws Exception {
 
+		initNetwork();
+		
 		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
 		RAMDirectory idx = indexHandler.getIndex();
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 
-		query = "Gene_Title:deHYdr*n";
-		queryHandler.executeQuery(query); // 4
+		query = "PMID:12?45";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 4, hitCount);
+		assertEquals(query, 2, hitCount);
+
+		query = "PMID:123*";
+		queryHandler.executeQuery(query);
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 3, hitCount);
+
+		query = "PMID:1*5";
+		queryHandler.executeQuery(query);
+		hitCount = queryHandler.getHitCount();
+		assertEquals(query, 3, hitCount);
 	}
 
 	// Range queries
 	public void testRangeQueries() throws Exception {
 
+		initNetwork();
+		
 		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
 		RAMDirectory idx = indexHandler.getIndex();
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 
-		query = "Chromosome:5";
-		queryHandler.executeQuery(query); // 39
+		// Limit search to a Numeric attribute
+		query = "rank:4";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 39, hitCount);
+		assertEquals(query, 1, hitCount);
 
-		query = "Chromosome:[4 TO 5]";
-		queryHandler.executeQuery(query); // 79
+		// numeric range
+		query = "rank:[1 TO 4]";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 79, hitCount);
+		assertEquals(query, 4, hitCount);
 
-		query = "weight:[0.95 TO 1]";
-		queryHandler.executeQuery(query); // 369
+		// Double range
+		query = "score:[1 TO 100]";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 369, hitCount);
+		assertEquals(query, 3, hitCount);
 
-		query = "weight:[-1 TO -0.95]";
-		queryHandler.executeQuery(query); // 30
+		// Negative double range
+		query = "score:[-100 TO -1]";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 30, hitCount);
+		assertEquals(query, 1, hitCount);
 
-		query = "weight:[0.95 TO 1] OR weight:[-1 TO -0.95]";
-		queryHandler.executeQuery(query); // 399
+		// Complex query including double range query and Boolean logic
+		query = "score:[10 TO 50] OR weight:[-100 TO -1]";
+		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
-		assertEquals(query, 399, hitCount);
+		assertEquals(query, 2, hitCount);
 	}
 	
 	
 	// Queries with no results
 	public void testNoResultsQueries() throws Exception {
 	
+		initNetwork();
+		
 		EnhancedSearchIndex indexHandler = new EnhancedSearchIndex(cyNetwork);
 		RAMDirectory idx = indexHandler.getIndex();
 		EnhancedSearchQuery queryHandler = new EnhancedSearchQuery(idx);
 
-		query = "interaction:neg AND weight:[0.9 TO 0.95]";
+		// No results
+		query = "location:cytoplasm AND rank:2";
 		queryHandler.executeQuery(query);
 		hitCount = queryHandler.getHitCount();
 		assertEquals(query, 0, hitCount);
