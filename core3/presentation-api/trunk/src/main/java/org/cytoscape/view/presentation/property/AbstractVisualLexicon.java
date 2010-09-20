@@ -47,9 +47,6 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 	
 	// Returns all visual properties as a set.
 	public Set<VisualProperty<?>> getAllVisualProperties() {
-		System.out.println("Keys = " + visualPropertyMap.keySet().size());
-		System.out.println("Values = " + visualPropertyMap.values().size());
-		
 		return new HashSet<VisualProperty<?>>(visualPropertyMap.values());
 	}
 
