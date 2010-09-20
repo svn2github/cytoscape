@@ -18,7 +18,7 @@ import org.cytoscape.work.Tunable;
  * the partitions will be laid out individually.
  */
 public abstract class AbstractGraphPartition extends LayoutTask {
-	private TaskMonitor taskMonitor;
+	protected TaskMonitor taskMonitor;
 
 	double incr = 100;
 	protected List <LayoutPartition> partitionList = null;
