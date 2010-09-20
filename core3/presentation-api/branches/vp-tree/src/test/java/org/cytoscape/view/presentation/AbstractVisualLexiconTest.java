@@ -29,18 +29,23 @@ public abstract class AbstractVisualLexiconTest {
 	}
 	
 	
-	protected void testTree(VisualLexicon lextcon) throws Exception {
-		final VisualProperty<NullDataType> root = lextcon.getRootVisualProperty();
+	protected void testTree(VisualLexicon lexicon) throws Exception {
+		final VisualProperty<NullDataType> root = lexicon.getRootVisualProperty();
 		assertNotNull(root);
-		assertEquals(lextcon.getRootVisualProperty(), root);
+		assertEquals(lexicon.getRootVisualProperty(), root);
 		
-		Collection<VisualProperty<?>> firstChildren = root.getChildren();
+		Collection<VisualProperty<?>> firstChildren = new HashSet<VisualProperty<?>>();
+		for(VisualProperty<?> child:root.getChildren()) {
+			if(lexicon.getAllVisualProperties().contains(child))
+				firstChildren.add(child);
+		}
+		
 		assertFalse(0 == firstChildren.size());
-		traverse(firstChildren);
+		traverse(firstChildren, lexicon);
 	}
 	
 
-	private void traverse(final Collection<VisualProperty<?>> vpSet) {
+	private void traverse(final Collection<VisualProperty<?>> vpSet, VisualLexicon lexicon) {
 
 		Collection<VisualProperty<?>> children = vpSet;
 		Collection<VisualProperty<?>> nextChildren = new HashSet<VisualProperty<?>>();
@@ -54,12 +59,15 @@ public abstract class AbstractVisualLexiconTest {
 			for (final VisualProperty<?> nextCh : child.getChildren())
 				assertEquals(child, nextCh.getParent());
 
-			nextChildren.addAll(child.getChildren());
+			for(VisualProperty<?> newChild:child.getChildren()) {
+				if(lexicon.getAllVisualProperties().contains(newChild))
+					nextChildren.add(newChild);
+			}
 		}
 
 		if (nextChildren.size() == 0)
 			return;
 		else
-			traverse(nextChildren);
+			traverse(nextChildren, lexicon);
 	}
 }

@@ -47,9 +47,6 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 	
 	// Returns all visual properties as a set.
 	public Set<VisualProperty<?>> getAllVisualProperties() {
-		System.out.println("Keys = " + visualPropertyMap.keySet().size());
-		System.out.println("Values = " + visualPropertyMap.values().size());
-		
 		return new HashSet<VisualProperty<?>>(visualPropertyMap.values());
 	}
 	
@@ -109,5 +106,12 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 			children.addAll(getChildNodes(vp));
 		
 		return children;
+	}
+	
+	protected void addVisualProperty(final VisualProperty<?> vp) {
+		if(this.visualPropertyMap.containsKey(vp.getIdString()))
+			throw new IllegalStateException("The key " + vp.getIdString() + " already exists in the lexicon.");
+		
+		this.visualPropertyMap.put(vp.getIdString(), vp);
 	}
 }
