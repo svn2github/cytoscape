@@ -77,6 +77,10 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 		this.id = id;
 		this.name = name;
 		this.children = new HashSet<VisualProperty<?>>();
+		this.parent = parent;
+		
+		if(parent != null)
+			parent.getChildren().add(this);
 	}
 
 	

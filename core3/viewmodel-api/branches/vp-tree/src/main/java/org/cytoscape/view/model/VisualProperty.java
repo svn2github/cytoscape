@@ -38,10 +38,8 @@ import java.util.Collection;
 
 
 /**
- *
- * Uses String constants as ObjectTypes, ie. to seperate NodeVisualProperties from EdgeVisualProperties, etc.
- * Ideally, we could use Class<? extends View<?>> or something like that, but unfortunately that is impossible due to type erasure.
- *
+ * An object which represents 
+ * 
  * @param <T> the dataType of the VisualProperty, ie. what kind of objects are the values
  */
 public interface VisualProperty<T> {
