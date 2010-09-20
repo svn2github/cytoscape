@@ -110,7 +110,7 @@ public class IDMapperClientManager {
 
     private static ExecutorService executor = null;
 
-    private static int waitSeconds = 5;
+    private static int waitSeconds = 1;
 
     static {
 //        new IDMapperClientManager();

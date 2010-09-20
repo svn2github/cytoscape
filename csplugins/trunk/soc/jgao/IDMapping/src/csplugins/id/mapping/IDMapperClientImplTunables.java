@@ -226,7 +226,7 @@ public class IDMapperClientImplTunables implements IDMapperClient {
                     }
                 });
 
-                if (executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                if (executor.awaitTermination(1, TimeUnit.SECONDS)) {
                     executor.shutdown();
                 }
 

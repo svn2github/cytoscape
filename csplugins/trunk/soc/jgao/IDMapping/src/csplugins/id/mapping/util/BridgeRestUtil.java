@@ -109,7 +109,7 @@ public class BridgeRestUtil {
         });
 
         try {
-            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+            if (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
                 System.err.println("Failed to connect to "+strUrl);
                 executor.shutdown();
             }
