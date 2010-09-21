@@ -271,7 +271,7 @@ public class VisualStyleImpl implements VisualStyle {
 				continue;
 			
 			// Not a leaf VP.  We can ignore those.
-			if(vp.getChildren().size() != 0)
+			if(lexicon.getVisualLexiconNode(vp).getChildren().size() != 0)
 				continue;
 			
 			// This is a leaf
