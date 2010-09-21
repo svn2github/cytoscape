@@ -17,6 +17,13 @@
 			<entry key="service.type" value="factory" />
 		</osgi:service-properties>
 	</osgi:service>
+	
+	<osgi:service id="visualLexiconNodeFactoryService" ref="visualLexiconNodeFactory"
+		interface="org.cytoscape.view.model.VisualLexiconNodeFactory">
+		<osgi:service-properties>
+			<entry key="service.type" value="factory" />
+		</osgi:service-properties>
+	</osgi:service>
 
 	<!--<osgi:service id="visualLexiconManagerService" ref="lexiconManager"
 		interface="org.cytoscape.view.model.VisualLexiconManager">

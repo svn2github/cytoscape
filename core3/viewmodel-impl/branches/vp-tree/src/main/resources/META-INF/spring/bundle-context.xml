@@ -18,4 +18,7 @@
 		<constructor-arg ref="cyServiceRegistrarRef" />
 	</bean>
 	
+	<bean id="visualLexiconNodeFactory" class="org.cytoscape.view.model.internal.VisualLexiconNodeFactoryImpl">
+	</bean>
+	
 </beans>
