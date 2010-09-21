@@ -38,6 +38,7 @@ import java.awt.Color;
 import java.awt.Paint;
 
 import org.cytoscape.view.model.NullDataType;
+import org.cytoscape.view.model.VisualLexiconNodeFactory;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
 
@@ -48,158 +49,147 @@ import org.cytoscape.view.model.Visualizable;
  */
 public class TwoDVisualLexicon extends AbstractVisualLexicon {
 
+	// Top level nodes has null as parent, and will be pointed by parent node.
+	// This is because all VPs are static objects.
 	public static final VisualProperty<Visualizable> NETWORK = new DefaultVisualizableVisualProperty(
-			"NETWORK", "Network Visual Property", null);
+			"NETWORK", "Network Visual Property");
 
 	public static final VisualProperty<Visualizable> NODE = new DefaultVisualizableVisualProperty(
-			"NODE", "Node Visual Property", NETWORK);
+			"NODE", "Node Visual Property");
 	public static final VisualProperty<Visualizable> EDGE = new DefaultVisualizableVisualProperty(
-			"EDGE", "Edge Visual Property", NETWORK);
+			"EDGE", "Edge Visual Property");
 
 	public static final VisualProperty<Color> NODE_PAINT = new PaintVisualProperty<Color>(
-			Color.gray, "NODE_PAINT", "Node Paint", NODE);
+			Color.gray, "NODE_PAINT", "Node Paint");
 	public static final VisualProperty<Color> NODE_COLOR = new PaintVisualProperty<Color>(
-			Color.RED, "NODE_COLOR", "Node Color", NODE_PAINT);
+			Color.RED, "NODE_COLOR", "Node Color");
 	public static final VisualProperty<Color> NODE_SELECTED_COLOR = new PaintVisualProperty<Color>(
-			Color.YELLOW, "NODE_SELECTED_COLOR", "Node Selected Color",
-			NODE_PAINT);
+			Color.YELLOW, "NODE_SELECTED_COLOR", "Node Selected Color");
 	public static final VisualProperty<Color> NODE_LABEL_COLOR = new PaintVisualProperty<Color>(
-			Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color", NODE_PAINT);
+			Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color");
 
 	public static final VisualProperty<String> NODE_TEXT = new StringVisualProperty(
-			"", "NODE_TEXT", "Node Text", NODE);
+			"", "NODE_TEXT", "Node Text");
 	public static final VisualProperty<String> NODE_LABEL = new StringVisualProperty(
-			"", "NODE_LABEL", "Node Label", NODE_TEXT);
+			"", "NODE_LABEL", "Node Label");
 
 	public static final VisualProperty<Double> NODE_LOCATION = new DoubleVisualProperty(
-			Double.NaN, "NODE_LOCATION", "Node Location", NODE, true);
+			Double.NaN, "NODE_LOCATION", "Node Location", true);
 	public static final VisualProperty<Double> NODE_X_LOCATION = new DoubleVisualProperty(
-			Double.NaN, "NODE_X_LOCATION", "Node X Location", NODE_LOCATION,
-			true);
+			Double.NaN, "NODE_X_LOCATION", "Node X Location", true);
 	public static final VisualProperty<Double> NODE_Y_LOCATION = new DoubleVisualProperty(
-			Double.NaN, "NODE_Y_LOCATION", "Node Y Location", NODE_LOCATION,
-			true);
+			Double.NaN, "NODE_Y_LOCATION", "Node Y Location", true);
 
 	public static final VisualProperty<Double> NODE_SIZE = new DoubleVisualProperty(
-			50.0, "NODE_SIZE", "Node size", NODE);
+			50.0, "NODE_SIZE", "Node size");
 	public static final VisualProperty<Double> NODE_X_SIZE = new DoubleVisualProperty(
-			50.0, "NODE_X_SIZE", "Node X size (width)", NODE_SIZE);
+			50.0, "NODE_X_SIZE", "Node X size (width)");
 	public static final VisualProperty<Double> NODE_Y_SIZE = new DoubleVisualProperty(
-			30.0, "NODE_Y_SIZE", "Node y size (height)", NODE_SIZE);
+			30.0, "NODE_Y_SIZE", "Node y size (height)");
 
 	public static final VisualProperty<Boolean> NODE_VISIBLE = new BooleanVisualProperty(
-			true, "NODE_VISIBLE", "Node Visible", NODE);
+			true, "NODE_VISIBLE", "Node Visible");
 
 	public static final VisualProperty<Boolean> NODE_SELECTED = new BooleanVisualProperty(
-			false, "NODE_SELECTED", "Node Selected", NODE);
+			false, "NODE_SELECTED", "Node Selected");
 
 	public static final VisualProperty<? extends Paint> EDGE_PAINT = new PaintVisualProperty<Color>(
-			Color.gray, "EDGE_PAINT", "Edge Paint", EDGE);
+			Color.gray, "EDGE_PAINT", "Edge Paint");
 	public static final VisualProperty<? extends Paint> EDGE_COLOR = new PaintVisualProperty<Color>(
-			Color.gray, "EDGE_COLOR", "Edge Color", EDGE_PAINT);
+			Color.gray, "EDGE_COLOR", "Edge Color");
 	public static final VisualProperty<? extends Paint> EDGE_LABEL_COLOR = new PaintVisualProperty<Color>(
-			Color.BLACK, "EDGE_LABEL_COLOR", "Edge Label Color", EDGE_PAINT);
+			Color.BLACK, "EDGE_LABEL_COLOR", "Edge Label Color");
 
 	public static final VisualProperty<String> EDGE_TEXT = new StringVisualProperty(
-			"", "EDGE_TEXT", "Edge Text", EDGE);
+			"", "EDGE_TEXT", "Edge Text");
 	public static final VisualProperty<String> EDGE_LABEL = new StringVisualProperty(
-			"", "EDGE_LABEL", "Edge Label", EDGE_TEXT);
+			"", "EDGE_LABEL", "Edge Label");
 
-	public static final VisualProperty<Double> EDGE_SIZE = new DoubleVisualProperty(
-			1d, "EDGE_SIZE", "Edge Size", EDGE);
 	public static final VisualProperty<Double> EDGE_WIDTH = new DoubleVisualProperty(
-			1d, "EDGE_WIDTH", "Edge Width", EDGE_SIZE);
+			1d, "EDGE_WIDTH", "Edge Width");
 
 	public static final VisualProperty<Boolean> EDGE_VISIBLE = new BooleanVisualProperty(
-			true, "EDGE_VISIBLE", "Edge Visible", EDGE);
+			true, "EDGE_VISIBLE", "Edge Visible");
 
 	public static final VisualProperty<Boolean> EDGE_SELECTED = new BooleanVisualProperty(
-			false, "EDGE_SELECTED", "Edge Selected", EDGE);
+			false, "EDGE_SELECTED", "Edge Selected");
 
 	public static final VisualProperty<Double> NETWORK_SCALE_FACTOR = new DoubleVisualProperty(
-			1.0, "NETWORK_SCALE_FACTOR", "Network Scale Factor", NETWORK);
+			1.0, "NETWORK_SCALE_FACTOR", "Network Scale Factor");
 
 	public static final VisualProperty<Double> NETWORK_CENTER_LOCATION = new DoubleVisualProperty(
-			0.0, "NETWORK_CENTER_LOCATION", "Network Center Location", NETWORK);
+			0.0, "NETWORK_CENTER_LOCATION", "Network Center Location");
 	public static final VisualProperty<Double> NETWORK_CENTER_X_LOCATION = new DoubleVisualProperty(
-			0.0, "NETWORK_CENTER_X_LOCATION", "Network Center X Location",
-			NETWORK_CENTER_LOCATION);
+			0.0, "NETWORK_CENTER_X_LOCATION", "Network Center X Location");
 	public static final VisualProperty<Double> NETWORK_CENTER_Y_LOCATION = new DoubleVisualProperty(
-			0.0, "NETWORK_CENTER_Y_LOCATION", "Network Center Y Location",
-			NETWORK_CENTER_LOCATION);
+			0.0, "NETWORK_CENTER_Y_LOCATION", "Network Center Y Location");
 
 	public static final VisualProperty<Double> NETWORK_SIZE = new DoubleVisualProperty(
-			100.0, "NETWORK_SIZE", "Network Size", NETWORK);
+			100.0, "NETWORK_SIZE", "Network Size");
 	public static final VisualProperty<Double> NETWORK_WIDTH = new DoubleVisualProperty(
-			100.0, "NETWORK_WIDTH", "Network Width", NETWORK_SIZE);
+			100.0, "NETWORK_WIDTH", "Network Width");
 	public static final VisualProperty<Double> NETWORK_HEIGHT = new DoubleVisualProperty(
-			100.0, "NETWORK_HEIGHT", "Network Height", NETWORK_SIZE);
+			100.0, "NETWORK_HEIGHT", "Network Height");
 
-	public static final VisualProperty<String> NETWORK_TEXT = new StringVisualProperty(
-			"", "NETWORK_TEXT", "Network Text", NETWORK);
 	public static final VisualProperty<String> NETWORK_TITLE = new StringVisualProperty(
-			"", "NETWORK_TITLE", "Network Title", NETWORK_TEXT);
+			"", "NETWORK_TITLE", "Network Title");
 
 	public static final VisualProperty<Color> NETWORK_PAINT = new PaintVisualProperty<Color>(
-			Color.WHITE, "NETWORK_PAINT", "Network Paint", NETWORK);
+			Color.WHITE, "NETWORK_PAINT", "Network Paint");
 	public static final VisualProperty<Paint> NETWORK_BACKGROUND_COLOR = new PaintVisualProperty<Paint>(
-			Color.WHITE, "NETWORK_BACKGROUND_COLOR",
-			"Network Background Color", NETWORK_PAINT);
+			Color.WHITE, "NETWORK_BACKGROUND_COLOR", "Network Background Color");
 
 	/**
 	 * Build basic VP tree.
 	 * 
 	 * @param rootVisualProperty
 	 */
-	public TwoDVisualLexicon(final VisualProperty<NullDataType> root) {
-		super(root);
-		root.getChildren().add(NETWORK);
-		
-		addVisualProperty(NETWORK);
-		((DefaultVisualizableVisualProperty) NETWORK).setParent(root);
+	public TwoDVisualLexicon(final VisualProperty<NullDataType> root,
+			final VisualLexiconNodeFactory nodeFactory) {
+		super(root, nodeFactory);
 
-		addVisualProperty(NODE);
-		addVisualProperty(EDGE);
+		addVisualProperty(NETWORK, root);
 
-		addVisualProperty(NETWORK_TEXT);
-		addVisualProperty(NETWORK_PAINT);
-		addVisualProperty(NETWORK_SIZE);
-		addVisualProperty(NETWORK_CENTER_LOCATION);
-		addVisualProperty(NETWORK_SCALE_FACTOR);
+		addVisualProperty(NODE, NETWORK);
+		addVisualProperty(EDGE, NETWORK);
 
-		addVisualProperty(NODE_LOCATION);
-		addVisualProperty(NODE_PAINT);
-		addVisualProperty(NODE_SIZE);
-		addVisualProperty(NODE_TEXT);
-		addVisualProperty(NODE_VISIBLE);
-		addVisualProperty(NODE_SELECTED);
+		addVisualProperty(NETWORK_PAINT, NETWORK);
+		addVisualProperty(NETWORK_SIZE, NETWORK);
+		addVisualProperty(NETWORK_CENTER_LOCATION, NETWORK);
+		addVisualProperty(NETWORK_SCALE_FACTOR, NETWORK);
 
-		addVisualProperty(EDGE_PAINT);
-		addVisualProperty(EDGE_SIZE);
-		addVisualProperty(EDGE_TEXT);
-		addVisualProperty(EDGE_VISIBLE);
-		addVisualProperty(EDGE_SELECTED);
+		addVisualProperty(NODE_LOCATION, NODE);
+		addVisualProperty(NODE_PAINT, NODE);
+		addVisualProperty(NODE_SIZE, NODE);
+		addVisualProperty(NODE_TEXT, NODE);
+		addVisualProperty(NODE_VISIBLE, NODE);
+		addVisualProperty(NODE_SELECTED, NODE);
 
-		addVisualProperty(NETWORK_TITLE);
-		addVisualProperty(NETWORK_BACKGROUND_COLOR);
-		addVisualProperty(NETWORK_WIDTH);
-		addVisualProperty(NETWORK_HEIGHT);
-		addVisualProperty(NETWORK_CENTER_X_LOCATION);
-		addVisualProperty(NETWORK_CENTER_Y_LOCATION);
+		addVisualProperty(EDGE_PAINT, EDGE);
+		addVisualProperty(EDGE_TEXT, EDGE);
+		addVisualProperty(EDGE_VISIBLE, EDGE);
+		addVisualProperty(EDGE_SELECTED, EDGE);
 
-		addVisualProperty(NODE_X_LOCATION);
-		addVisualProperty(NODE_Y_LOCATION);
-		addVisualProperty(NODE_COLOR);
-		addVisualProperty(NODE_LABEL_COLOR);
-		addVisualProperty(NODE_SELECTED_COLOR);
-		addVisualProperty(NODE_X_SIZE);
-		addVisualProperty(NODE_Y_SIZE);
-		addVisualProperty(NODE_LABEL);
+		addVisualProperty(NETWORK_TITLE, NETWORK);
+		addVisualProperty(NETWORK_BACKGROUND_COLOR, NETWORK_PAINT);
+		addVisualProperty(NETWORK_WIDTH, NETWORK_SIZE);
+		addVisualProperty(NETWORK_HEIGHT, NETWORK_SIZE);
+		addVisualProperty(NETWORK_CENTER_X_LOCATION, NETWORK_CENTER_LOCATION);
+		addVisualProperty(NETWORK_CENTER_Y_LOCATION, NETWORK_CENTER_LOCATION);
 
-		addVisualProperty(EDGE_COLOR);
-		addVisualProperty(EDGE_LABEL_COLOR);
-		addVisualProperty(EDGE_WIDTH);
-		addVisualProperty(EDGE_LABEL);
+		addVisualProperty(NODE_X_LOCATION, NODE_LOCATION);
+		addVisualProperty(NODE_Y_LOCATION, NODE_LOCATION);
+		addVisualProperty(NODE_COLOR, NODE_PAINT);
+		addVisualProperty(NODE_LABEL_COLOR, NODE_PAINT);
+		addVisualProperty(NODE_SELECTED_COLOR, NODE_PAINT);
+		addVisualProperty(NODE_X_SIZE, NODE_SIZE);
+		addVisualProperty(NODE_Y_SIZE, NODE_SIZE);
+		addVisualProperty(NODE_LABEL, NODE_TEXT);
+
+		addVisualProperty(EDGE_COLOR, EDGE_PAINT);
+		addVisualProperty(EDGE_LABEL_COLOR, EDGE_PAINT);
+		addVisualProperty(EDGE_WIDTH, EDGE);
+		addVisualProperty(EDGE_LABEL, EDGE_TEXT);
 	}
 
 }

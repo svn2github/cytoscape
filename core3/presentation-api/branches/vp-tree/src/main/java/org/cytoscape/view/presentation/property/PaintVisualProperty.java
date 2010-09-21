@@ -40,12 +40,11 @@ import java.awt.Paint;
 import java.util.StringTokenizer;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.VisualProperty;
 
 public class PaintVisualProperty<T extends Paint> extends AbstractVisualProperty<T> { 
 
-	public PaintVisualProperty(final T def, final String id, final String name, final VisualProperty<?> parent) {
-		super(def, id, name, parent);
+	public PaintVisualProperty(final T def, final String id, final String name) {
+		super(def, id, name);
 	}
 	
 	public String toSerializableString(final T color) {

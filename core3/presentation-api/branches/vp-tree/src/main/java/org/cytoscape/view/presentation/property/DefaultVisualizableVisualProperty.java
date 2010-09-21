@@ -1,13 +1,12 @@
 package org.cytoscape.view.presentation.property;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
 
-public class DefaultVisualizableVisualProperty extends AbstractVisualProperty<Visualizable> implements AppendableVisualProperty {
+public class DefaultVisualizableVisualProperty extends AbstractVisualProperty<Visualizable> {
 
-	public DefaultVisualizableVisualProperty(final String id, final String name, final VisualProperty<?> parent) {
-		super(null, id, name, parent);
+	public DefaultVisualizableVisualProperty(final String id, final String name) {
+		super(null, id, name);
 	}
 
 	
@@ -23,8 +22,4 @@ public class DefaultVisualizableVisualProperty extends AbstractVisualProperty<Vi
 		return null;
 	}
 
-	@Override
-	public void setParent(final VisualProperty<?> parent) {
-		this.parent = parent;
-	}
 }

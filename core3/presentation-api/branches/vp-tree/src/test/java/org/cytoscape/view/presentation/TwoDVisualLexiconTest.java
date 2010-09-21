@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.internal.VisualLexiconNodeFactoryImpl;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.junit.Before;
@@ -23,7 +24,7 @@ public class TwoDVisualLexiconTest extends AbstractVisualLexiconTest {
 		twoDRoot = new NullVisualProperty("TWO_D_ROOT",
 				"2D Root Visual Property");
 
-		twoDLex = new TwoDVisualLexicon(twoDRoot);
+		twoDLex = new TwoDVisualLexicon(twoDRoot, new VisualLexiconNodeFactoryImpl());
 	}
 
 	@Test
@@ -33,7 +34,7 @@ public class TwoDVisualLexiconTest extends AbstractVisualLexiconTest {
 
 	@Test
 	public void test2DLexicon() throws Exception {
-		assertEquals(38, twoDLex.getAllVisualProperties().size());
+		assertEquals(36, twoDLex.getAllVisualProperties().size());
 	}
 
 	@Test

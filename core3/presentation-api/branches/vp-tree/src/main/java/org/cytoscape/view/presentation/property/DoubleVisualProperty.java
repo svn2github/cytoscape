@@ -35,17 +35,16 @@
 package org.cytoscape.view.presentation.property;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.VisualProperty;
 
 public class DoubleVisualProperty extends AbstractVisualProperty<Double> {
 
-	public DoubleVisualProperty(final Double def, final String id, final String name, final VisualProperty<?> parent) {
-		this(def, id, name, parent, false);
+	public DoubleVisualProperty(final Double def, final String id, final String name) {
+		this(def, id, name, false);
 	}
 
 	public DoubleVisualProperty(final Double def, final String id,
-			final String name, final VisualProperty<?> parent, final boolean ignoreDefault) {
-		super(def, id, name, parent);
+			final String name, final boolean ignoreDefault) {
+		super(def, id, name);
 		this.isIgnoreDefault = ignoreDefault;
 	}
 

@@ -6,7 +6,7 @@ import org.cytoscape.view.model.NullDataType;
 public class NullVisualProperty extends AbstractVisualProperty<NullDataType> {
 
 	public NullVisualProperty(final String id, final String name) {
-		super(null, id, name, null);
+		super(null, id, name);
 	}
 
 	public String toSerializableString(final NullDataType value) {

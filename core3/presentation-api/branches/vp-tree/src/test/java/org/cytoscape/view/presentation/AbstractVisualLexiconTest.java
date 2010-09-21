@@ -9,7 +9,9 @@ import java.util.HashSet;
 
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.junit.After;
 import org.junit.Before;
 
@@ -34,35 +36,34 @@ public abstract class AbstractVisualLexiconTest {
 		assertNotNull(root);
 		assertEquals(lexicon.getRootVisualProperty(), root);
 		
-		Collection<VisualProperty<?>> firstChildren = new HashSet<VisualProperty<?>>();
-		for(VisualProperty<?> child:root.getChildren()) {
-			if(lexicon.getAllVisualProperties().contains(child))
-				firstChildren.add(child);
-		}
+		final VisualLexiconNode rootNode = lexicon.getVisualLexiconNode(root);
+		assertNotNull(rootNode);
+		assertEquals(root, rootNode.getVisualProperty());
 		
-		assertFalse(0 == firstChildren.size());
-		traverse(firstChildren, lexicon);
+		final Collection<VisualLexiconNode> children = rootNode.getChildren();
+		
+		assertFalse(0 == children.size());
+		traverse(children, lexicon);
 	}
 	
 
-	private void traverse(final Collection<VisualProperty<?>> vpSet, VisualLexicon lexicon) {
+	private void traverse(final Collection<VisualLexiconNode> vpSet, VisualLexicon lexicon) {
 
-		Collection<VisualProperty<?>> children = vpSet;
-		Collection<VisualProperty<?>> nextChildren = new HashSet<VisualProperty<?>>();
+		Collection<VisualLexiconNode> children = vpSet;
+		Collection<VisualLexiconNode> nextChildren = new HashSet<VisualLexiconNode>();
 
-		for (VisualProperty<?> child : children) {
-			final VisualProperty<?> parent = child.getParent();
-			assertNotNull(parent);
-			System.out.println(child.getParent().getDisplayName()
-					+ "\thas_child\t" + child.getDisplayName());
+		for (VisualLexiconNode child : children) {
+			final VisualLexiconNode parent = child.getParent();
+			
+			System.out.println(parent.getVisualProperty().getDisplayName()
+						+ "\thas_child\t" + child.getVisualProperty().getDisplayName());
+			
 
-			for (final VisualProperty<?> nextCh : child.getChildren())
+			for (final VisualLexiconNode nextCh : child.getChildren())
 				assertEquals(child, nextCh.getParent());
 
-			for(VisualProperty<?> newChild:child.getChildren()) {
-				if(lexicon.getAllVisualProperties().contains(newChild))
-					nextChildren.add(newChild);
-			}
+			nextChildren.addAll(child.getChildren());
+			
 		}
 
 		if (nextChildren.size() == 0)
@@ -70,4 +71,5 @@ public abstract class AbstractVisualLexiconTest {
 		else
 			traverse(nextChildren, lexicon);
 	}
+	
 }

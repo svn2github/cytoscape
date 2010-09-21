@@ -35,12 +35,11 @@
 package org.cytoscape.view.presentation.property;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.VisualProperty;
 
 public class StringVisualProperty extends AbstractVisualProperty<String> {
 
-	public StringVisualProperty(final String def, final String id, final String name, final VisualProperty<?> parent) {
-		super(def, id, name, parent);
+	public StringVisualProperty(final String def, final String id, final String name) {
+		super(def, id, name);
 	}
 
 	public String toSerializableString(final String value) {
