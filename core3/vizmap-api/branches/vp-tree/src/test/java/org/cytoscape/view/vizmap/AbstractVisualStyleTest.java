@@ -25,15 +25,6 @@ public abstract class AbstractVisualStyleTest {
 	
 	protected VisualLexicon lexicon;
 	
-	
-	@Before
-	public void setUp() throws Exception {
-		// Create root node.
-		final VisualProperty<NullDataType> twoDRoot = new NullVisualProperty(
-				"TWO_D_ROOT", "2D Root Visual Property");
-		
-		lexicon = new TwoDVisualLexicon(twoDRoot);
-	}
 
 	@After
 	public void tearDown() throws Exception {
