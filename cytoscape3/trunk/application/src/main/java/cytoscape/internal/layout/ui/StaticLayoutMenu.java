@@ -73,6 +73,6 @@ public class StaticLayoutMenu extends JMenuItem implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		layout.setSelectedOnly(false);
 		final Task layoutTask = new LayoutTask(layout, netmgr.getCurrentNetworkView());
-		tm.execute(new TaskIterator(layoutTask));
+		tm.execute(layout.getTaskIterator());
 	}
 }

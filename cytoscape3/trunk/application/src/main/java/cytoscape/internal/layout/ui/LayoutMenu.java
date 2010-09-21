@@ -98,6 +98,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 		subMenuList.remove(layout);
 	}
 
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -140,11 +141,10 @@ public class LayoutMenu extends JMenu implements MenuListener {
 
 		boolean enableMenuItem = checkEnabled(); 
 
-		/*
 		// Now, add each layout, as appropriate
 		for (CyLayoutAlgorithm layout: menuMgr.getLayoutsInMenu(getText())) {
 			// Make sure we don't have any lingering locked nodes
-			layout.unlockAllNodes();
+			//layout.unlockAllNodes();
 
 			if ((layout.supportsNodeAttributes().size() > 0)
 			    || (layout.supportsEdgeAttributes().size() > 0)) {
@@ -155,7 +155,6 @@ public class LayoutMenu extends JMenu implements MenuListener {
 				super.add(new StaticLayoutMenu(layout,enableMenuItem,netmgr,tm));
 			}
 		}
-		*/
 	}
 
 	private boolean checkEnabled() {
