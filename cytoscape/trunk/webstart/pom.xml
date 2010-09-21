@@ -124,12 +124,6 @@
     </dependency>
     <dependency>
       <groupId>cytoscape.coreplugins</groupId>
-      <artifactId>psi-mi</artifactId>
-      <version>${version}</version>
-      <classifier>jar-with-dependencies</classifier>
-    </dependency>
-    <dependency>
-      <groupId>cytoscape.coreplugins</groupId>
       <artifactId>rfilters</artifactId>
       <version>${version}</version>
       <classifier>jar-with-dependencies</classifier>
