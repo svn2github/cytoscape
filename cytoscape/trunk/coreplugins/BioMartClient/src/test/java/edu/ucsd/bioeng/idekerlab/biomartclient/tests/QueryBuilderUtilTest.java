@@ -3,6 +3,7 @@ package edu.ucsd.bioeng.idekerlab.biomartclient.tests;
 import java.io.BufferedReader;
 import java.util.List;
 import java.util.Map;
+import java.io.File;
 
 import edu.ucsd.bioeng.idekerlab.biomartclient.BiomartStub;
 import edu.ucsd.bioeng.idekerlab.biomartclient.utils.QueryBuilderUtil;
@@ -11,11 +12,12 @@ import junit.framework.TestCase;
 public class QueryBuilderUtilTest extends TestCase {
 
 	BiomartStub stub;
+	private final String queryString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Query count=\"\" datasetConfigVersion=\"0.6\" formatter=\"TSV\" header=\"1\" uniqueRows=\"1\" virtualSchemaName=\"default\"><Dataset name=\"hsapiens_gene_ensembl\"><Attribute name=\"ensembl_gene_id\"/></Dataset></Query>";
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		stub = new BiomartStub();
-		
+        File f = new File("./src/test/resources/mart.registry.xml");
+        stub = new BiomartStub(f.toURL().toString());
 	}
 
 	protected void tearDown() throws Exception {
@@ -24,19 +26,7 @@ public class QueryBuilderUtilTest extends TestCase {
 
 	
 	public void testGetAllAliases() throws Exception {
-		BufferedReader reader = stub.sendQuery(QueryBuilderUtil.getAllAliases(null));
-		String line;
-		while ((line = reader.readLine()) != null)
-			System.out.println(line);
-		
-		Map<String, String> ds = stub.getAvailableDatasets("ensembl");
-		int count = 1;
-		for(String e: ds.keySet()) {
-			if(e.endsWith("gene_ensembl")) {
-				System.out.println("Datasource " + count + " = " + e + "-" + ds.get(e));
-				count++;
-			}
-			
-		}
+		String query= QueryBuilderUtil.getAllAliases(null);	
+		assertEquals( queryString, query );
 	}
 }
