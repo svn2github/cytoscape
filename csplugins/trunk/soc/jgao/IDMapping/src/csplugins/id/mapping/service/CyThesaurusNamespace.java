@@ -587,8 +587,8 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
             }
         } else {
             if (attributes.contains(tgtAttr)) {
-                throw new CyCommandException(tgtAttr+" is an existing attribute "
-                        + "and hence cannot be used as target attribute name.");
+//                throw new CyCommandException(tgtAttr+" is an existing attribute "
+//                        + "and hence cannot be used as target attribute name.");
             }
         }
 

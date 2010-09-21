@@ -94,6 +94,16 @@ public class AttributeBasedIDMappingImpl
         for (Map.Entry<String,Byte> entry : attrNameType.entrySet()) {
             String attrname = entry.getKey();
             byte attrtype = entry.getValue();
+            
+            //hack to allow overwriting existing attributes
+            boolean skip = false;
+            for (String existingName : nodeAttributes.getAttributeNames()){
+            	if (attrname.equals(existingName)){
+            		skip = true;
+            	}
+            }
+            if(skip)
+            	break;
 
             byte[] keyTypes;
             if (attrtype==CyAttributes.TYPE_STRING) {
