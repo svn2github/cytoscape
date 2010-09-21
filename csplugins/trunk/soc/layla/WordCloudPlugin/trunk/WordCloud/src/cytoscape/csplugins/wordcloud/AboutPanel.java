@@ -37,7 +37,7 @@ public class AboutPanel extends JDialog {
 
 	private static final long serialVersionUID = 5805773796102997091L;
 	
-	String pluginUrl = "http://www.baderlab.org/GSoC2010";
+	String pluginUrl = "http://www.baderlab.org/Software/WordCloud";
 
     public AboutPanel() {
         super(Cytoscape.getDesktop(), "About WordCloud", false);

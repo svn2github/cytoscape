@@ -340,6 +340,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 
 	    attNames = new JTextArea();
 	    attNames.setColumns(15);
+	    attNames.setRows(1);
 	    attNames.setEditable(false);
 	    JScrollPane attListPane = new JScrollPane();
 	    attListPane.setPreferredSize(attNames.getPreferredSize());
