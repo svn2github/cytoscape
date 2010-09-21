@@ -34,11 +34,12 @@
 */
 package org.cytoscape.view.model;
 
-import java.util.Collection;
 
 
 /**
- * An object which represents 
+ * An object which represents a type of visual entity, such as node color, size, etc.
+ * 
+ * Visual Property itself does NOT have any hierarchy/dependency.  It will be implemented in VisualLexicon.
  * 
  * @param <T> the dataType of the VisualProperty, ie. what kind of objects are the values
  */
@@ -100,19 +101,5 @@ public interface VisualProperty<T> {
 	 * @return
 	 */
 	boolean isIgnoreDefault();
-	
-	
-	// New feature: Tree-like structure for visual properties.
-	
-	/**
-	 * Get the parent of this VP node.
-	 * The relationship is immutable, i.e., cannot change parent/child relationship.
-	 */
-	VisualProperty<?> getParent();
-	
-	/**
-	 * 
-	 * @return
-	 */
-	Collection<VisualProperty<?>> getChildren();
+
 }

@@ -67,6 +67,9 @@ public interface VisualLexicon {
 	Set<VisualProperty<?>> getAllVisualProperties();
 	
 	
+	VisualLexiconNode getVisualLexiconNode(final VisualProperty<?> vp);
+	
+	
 	/**
 	 * Get collection of visual properties for a given object type (node/edge/network).
 	 * 

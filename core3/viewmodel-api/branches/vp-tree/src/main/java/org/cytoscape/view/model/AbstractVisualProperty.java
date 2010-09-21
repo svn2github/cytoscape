@@ -34,8 +34,6 @@
  */
 package org.cytoscape.view.model;
 
-import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * An abstract implementation of VisualProperty that omits the methods dealing
@@ -57,12 +55,6 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 
 	protected boolean isIgnoreDefault = false;
 
-	// Accepts all kinds of data types, so data compatibility checking is
-	// developer's responsibility.
-	protected final Collection<VisualProperty<?>> children;
-	
-	protected VisualProperty<?> parent;
-
 	/**
 	 * Constructor with all required immutable field values.
 	 * 
@@ -71,16 +63,10 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	 * @param id
 	 * @param name
 	 */
-	public AbstractVisualProperty(final T defaultValue, final String id,
-			final String name, final VisualProperty<?> parent) {
+	public AbstractVisualProperty(final T defaultValue, final String id, final String name) {
 		this.defaultValue = defaultValue;
 		this.id = id;
 		this.name = name;
-		this.children = new HashSet<VisualProperty<?>>();
-		this.parent = parent;
-		
-		if(parent != null)
-			parent.getChildren().add(this);
 	}
 
 	
@@ -113,18 +99,6 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	@Override
 	public boolean isIgnoreDefault() {
 		return this.isIgnoreDefault;
-	}
-
-	
-	@Override
-	public VisualProperty<?> getParent() {
-		return this.parent;
-	}
-
-	
-	@Override
-	public Collection<VisualProperty<?>> getChildren() {
-		return this.children;
 	}
 
 }
