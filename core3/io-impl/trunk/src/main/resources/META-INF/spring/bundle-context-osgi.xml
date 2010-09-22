@@ -37,8 +37,16 @@
 		interface="org.cytoscape.io.write.ViewWriterManager">
 	</osgi:service>
 
+	<osgi:service id="cySessionReaderManagerService" ref="cySessionReaderManager"
+		interface="org.cytoscape.io.read.CySessionReaderManager">
+	</osgi:service>	
+
 	<osgi:service id="networkWriterManagerService" ref="networkWriterManager"
 		interface="org.cytoscape.io.write.CyNetworkWriterManager">
+	</osgi:service>
+
+	<osgi:service id="sessionWriterManagerService" ref="sessionWriterManager"
+		interface="org.cytoscape.io.write.SessionWriterManager">
 	</osgi:service>
 
 	<osgi:service id="sifNetworkViewReaderFactoryService" ref="sifNetworkViewReaderFactory"

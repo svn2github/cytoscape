@@ -32,6 +32,7 @@ package org.cytoscape.task.internal.session;
 
 import org.cytoscape.io.write.SessionWriterManager;
 import org.cytoscape.io.write.SessionWriter;
+import org.cytoscape.session.CySession;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
@@ -40,7 +41,7 @@ import java.io.File;
 
 
 public class SaveSessionTask extends AbstractTask {
-	private final File file;
+
 	private final SessionWriterManager writerMgr;
 	private final CySessionManager sessionMgr;
 
@@ -51,10 +52,11 @@ public class SaveSessionTask extends AbstractTask {
 		super();
 		this.writerMgr = writerMgr;
 		this.sessionMgr = sessionMgr;
-		file = new File(sessionMgr.getCurrentSessionFileName());
 	}
 
 	public void run(TaskMonitor taskMonitor) throws Exception {
-	 	insertTasksAfterCurrentTask(new SessionWriter(writerMgr, sessionMgr, file ));
+		CySession session = sessionMgr.getCurrentSession();
+		File file = new File(session.getFileName());
+	 	insertTasksAfterCurrentTask(new SessionWriter(writerMgr, session, file ));
 	}
 } 

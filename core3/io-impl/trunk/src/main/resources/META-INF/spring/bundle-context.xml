@@ -16,6 +16,24 @@
 
 	<context:annotation-config />
 
+	<bean id="cysFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+		<constructor-arg index="0">
+			<set>
+				<value>cys</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>application/zip</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Cytoscape Session (.cys) File" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="SESSION" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
+	</bean>
+
 	<bean id="pngFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
 		<constructor-arg index="0">
 			<set>
@@ -189,6 +207,9 @@
 
 	<bean id="cyDataTableReaderManager" 
 	      class="org.cytoscape.io.internal.read.CyTableReaderManagerImpl" />
+	      
+	<bean id="cySessionReaderManager" 
+	      class="org.cytoscape.io.internal.read.CySessionReaderManagerImpl" />	      
 
 	<!-- All Writer Managers -->
 
@@ -198,6 +219,11 @@
 	<bean id="networkWriterManager" 
 	      class="org.cytoscape.io.internal.write.CyNetworkWriterManagerImpl">
 		<constructor-arg type="org.cytoscape.io.DataCategory"
-			value="NETWORK" />
+			value="NETWORK" />			
 	</bean>
+	<bean id="sessionWriterManager" 
+	      class="org.cytoscape.io.internal.write.SessionWriterManagerImpl">
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="SESSION" />	
+	</bean>		
 </beans>

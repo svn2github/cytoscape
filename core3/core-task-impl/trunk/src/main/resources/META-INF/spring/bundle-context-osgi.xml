@@ -5,7 +5,7 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-
+	<!--  collect necessary services -->
 	<osgi:reference id="cyNetworkNamingServiceRef"
 		interface="org.cytoscape.session.CyNetworkNaming" />
 
@@ -38,20 +38,23 @@
 
 	<osgi:reference id="networkWriterManagerServiceRef"
 		interface="org.cytoscape.io.write.CyNetworkWriterManager" />
-
-	<!--
-		<osgi:reference id="cyWriterManagerServiceRef"
-		interface="org.cytoscape.io.read.CyWriterManager"/> <osgi:reference
-		id="cySessionManagerServiceRef"
-		interface="org.cytoscape.session.CySessionManager"/>
-	-->
+	
+	<osgi:reference id="sessionWriterManagerServiceRef"
+		interface="org.cytoscape.io.write.SessionWriterManager" />	
+		
+	<osgi:reference id="sessionReaderManagerServiceRef"
+		interface="org.cytoscape.io.read.CySessionReaderManager" />	
 
 	<osgi:reference id="cyNetworkManagerServiceRef"
 		interface="org.cytoscape.session.CyNetworkManager" />
 
+	<osgi:reference id="cySessionManagerServiceRef"
+		interface="org.cytoscape.session.CySessionManager" />
+
 	<osgi:reference id="cyPropertyServiceRef" interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=coreSettings)" />
 
+	<!--  now register our services -->
 	<osgi:service id="loadNetworkFileTaskFactoryService" ref="loadNetworkFileTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
@@ -420,37 +423,46 @@
 		</osgi:service-properties>
 	</osgi:service>
 	
-<!-- #####################	Task that set the imported network as the current one   ###################-->
+	<!--  consider removing -->
+	<!--  useful for command line, but not otherwise 
 	<osgi:service id="setCurrentNetworkTaskFactoryService" ref="setCurrentNetworkTaskFactory" 
 			interface="org.cytoscape.work.TaskFactory"/>
+			-->
 
+	<!-- session -->
+	<osgi:service id="newSessionTaskFactoryService" ref="newSessionTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Session" />
+			<entry key="preferredMenu" value="File.New" />
+		</osgi:service-properties>
+	</osgi:service>
 
-	<!--
-		<osgi:service id="newSessionTaskFactoryService"
-		ref="newSessionTaskFactory"
-		interface="org.cytoscape.work.TaskFactory"> <osgi:service-properties>
-		<entry key="title" value="Session" /> <entry key="preferredMenu"
-		value="File.New" /> </osgi:service-properties> </osgi:service>
+	<osgi:service id="openSessionTaskFactoryService" ref="openSessionTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Open" />
+			<entry key="preferredMenu" value="File" />
+		</osgi:service-properties>
+	</osgi:service>
 
-		<osgi:service id="openSessionTaskFactoryService"
-		ref="openSessionTaskFactory"
-		interface="org.cytoscape.work.TaskFactory"> <osgi:service-properties>
-		<entry key="title" value="Open" /> <entry key="preferredMenu"
-		value="File" /> </osgi:service-properties> </osgi:service>
+	<osgi:service id="saveSessionTaskFactoryService" ref="saveSessionTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Save" />
+			<entry key="preferredMenu" value="File" />
+		</osgi:service-properties>
+	</osgi:service>
 
-		<osgi:service id="saveSessionTaskFactoryService"
-		ref="saveSessionTaskFactory"
-		interface="org.cytoscape.work.TaskFactory"> <osgi:service-properties>
-		<entry key="title" value="Save" /> <entry key="preferredMenu"
-		value="File" /> </osgi:service-properties> </osgi:service>
+	<osgi:service id="saveSessionAsTaskFactoryService" ref="saveSessionAsTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Save As" />
+			<entry key="preferredMenu" value="File" />
+		</osgi:service-properties>
+	</osgi:service>
 
-		<osgi:service id="saveSessionAsTaskFactoryService"
-		ref="saveSessionAsTaskFactory"
-		interface="org.cytoscape.work.TaskFactory"> <osgi:service-properties>
-		<entry key="title" value="Save As" /> <entry key="preferredMenu"
-		value="File" /> </osgi:service-properties> </osgi:service>
-	-->
-
+	<!-- testing -->
 	<osgi:service id="tunablesTestTaskFactoryService" ref="tunablesTestTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>

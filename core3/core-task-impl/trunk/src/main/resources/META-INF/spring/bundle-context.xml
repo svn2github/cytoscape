@@ -201,33 +201,31 @@
 	      class="org.cytoscape.task.internal.zoom.FitContentTaskFactory">
 	</bean>
 
-
-
-	<!-- Off until session stuff is implemented
+	<!-- session -->
 	<bean id="newSessionTaskFactory" 
-	      class="org.cytoscape.task.internal.session.newSessionTaskFactory">
+	      class="org.cytoscape.task.internal.session.NewSessionTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
 	</bean>
 
 	<bean id="openSessionTaskFactory" 
 	      class="org.cytoscape.task.internal.session.OpenSessionTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
-		<constructor-arg ref="cyReaderManagerServiceRef" />
+		<constructor-arg ref="sessionReaderManagerServiceRef" />
 	</bean>
 
 	<bean id="saveSessionTaskFactory" 
 	      class="org.cytoscape.task.internal.session.SaveSessionTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
-		<constructor-arg ref="cyWriterManagerServiceRef" />
+		<constructor-arg ref="sessionWriterManagerServiceRef" />
 	</bean>
 
 	<bean id="saveSessionAsTaskFactory" 
 	      class="org.cytoscape.task.internal.session.SaveSessionAsTaskFactory">
 		<constructor-arg ref="cySessionManagerServiceRef" />
-		<constructor-arg ref="cyWriterManagerServiceRef" />
+		<constructor-arg ref="sessionWriterManagerServiceRef" />
 	</bean>
-	--> 
 
+	<!-- Misc -->
 	<bean id="proxySettingsTaskFactory" 
 	      class="org.cytoscape.task.internal.proxysettings.ProxySettingsTaskFactory">
 		<constructor-arg ref="taskManagerServiceRef" />

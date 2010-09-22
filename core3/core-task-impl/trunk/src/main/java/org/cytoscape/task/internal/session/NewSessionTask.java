@@ -44,14 +44,7 @@ public class NewSessionTask extends AbstractTask {
 	}
 
 	public void run(TaskMonitor taskMonitor) {
-		// All commented code should be handled by CySessionManager
-
-		//mgr.setSessionState(Cytoscape.SESSION_OPENED);
-
-		mgr.createNewSession();
-
-		//mgr.setSessionState(Cytoscape.SESSION_NEW);
-		//Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
+		mgr.setCurrentSession(null);
 	}
 
 	@Override

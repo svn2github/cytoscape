@@ -57,6 +57,6 @@ public class SaveSessionAsTask extends AbstractTask {
 	}
 
 	public void run(TaskMonitor taskMonitor) throws Exception {
-	 	insertTasksAfterCurrentTask(new SessionWriter(writerMgr, sessionMgr, file));
+	 	insertTasksAfterCurrentTask(new SessionWriter(writerMgr, sessionMgr.getCurrentSession(), file));
 	}
 }

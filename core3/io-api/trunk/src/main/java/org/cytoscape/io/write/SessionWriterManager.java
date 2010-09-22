@@ -34,11 +34,11 @@
  */
 package org.cytoscape.io.write;
 
-import org.cytoscape.session.CySessionManager;
+import org.cytoscape.session.CySession;
 import org.cytoscape.io.CyFileFilter;
 import java.io.File;
 
 public interface SessionWriterManager extends CyWriterManager {
 
-	CyWriter getWriter(CySessionManager mgr, CyFileFilter filter, File file);
+	CyWriter getWriter(CySession session, CyFileFilter filter, File file);
 }
