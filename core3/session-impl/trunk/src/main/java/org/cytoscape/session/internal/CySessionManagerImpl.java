@@ -35,38 +35,32 @@
 */
 package org.cytoscape.session.internal;
 
+import org.cytoscape.session.CySession;
 import org.cytoscape.session.CySessionManager;
+import org.cytoscape.session.CySessionManager.State;
 
 // TODO this is still pretty much just a placeholder class
 public class CySessionManagerImpl implements CySessionManager {
 
-	private String sessionName;
-	private int sessionState;
 
 	CySessionManagerImpl() {
-		sessionName = "Session 1";	
-		sessionState = 0;
+
 	}
 
-    public String getCurrentSessionFileName() {
-		return sessionName;
-	}
 
-    public void setCurrentSessionFileName(String newName) {
-		if ( newName != null && newName.length() > 0 ) {
-			sessionName = newName;
-		}
-	}
-
-    public void setSessionState(int state) {
-		sessionState = state;
-	}
-
-    public int getSessionstate() {
-		return sessionState;
-	}
-
-	public void createNewSession() {}
+    public State getCurrentSessionState() {
+		return null;
+    	
+    }
+    public CySession getCurrentSession() {
+    	return new CySessionImpl();
+    	
+    }
+    
+    public void setCurrentSession(CySession sess) {
+    		// do stuff
+    	
+    }
 
 }
 
