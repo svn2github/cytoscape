@@ -121,6 +121,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	private JButton addDelimiterButton;
 	private JButton removeDelimiterButton;
 	private JButton createNetworkButton;
+	private JButton saveCloudButton;
 	
 	//Checkbox
 	private JCheckBox numExclusion;
@@ -810,6 +811,29 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		gridBagConstraints.insets = new Insets(5, 10, 0, 0);
 		cloudLayoutPanel.add(createNetworkButton, gridBagConstraints);
 		
+		//Save file to .jpg stuff
+		JLabel saveCloudLabel = new JLabel("Save Cloud Image:");
+		
+		saveCloudButton = new JButton("Export Cloud to File");
+		saveCloudButton.setEnabled(false);
+		saveCloudButton.setToolTipText("Saves the current cloud as an image file");
+		saveCloudButton.addActionListener(new SaveCloudAction());
+		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 2;
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.insets = new Insets(5, 0, 0, 0);
+		cloudLayoutPanel.add(saveCloudLabel, gridBagConstraints);
+		
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.gridx = 1;
+		gridBagConstraints.gridy = 2;
+		gridBagConstraints.gridwidth = 2;
+		gridBagConstraints.anchor = GridBagConstraints.EAST;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.insets = new Insets(5, 10, 0, 0);
+		cloudLayoutPanel.add(saveCloudButton, gridBagConstraints);
 		
 		collapsiblePanel.getContentPane().add(panel,BorderLayout.NORTH);
 		return collapsiblePanel;
@@ -917,10 +941,12 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParameters()))
 		{
 			createNetworkButton.setEnabled(false);
+			saveCloudButton.setEnabled(false);
 		}
 		else
 		{
 			createNetworkButton.setEnabled(true);
+			saveCloudButton.setEnabled(true);
 		}
 		
 		SemanticSummaryManager.getInstance().setCurCloud(params);
@@ -1709,10 +1735,15 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	{
 		return attNames;
 	}
-	
+
 	public JButton getCreateNetworkButton()
 	{
 		return createNetworkButton;
+	}
+
+	public JButton getSaveCloudButton()
+	{
+		return saveCloudButton;
 	}
 	
 	
