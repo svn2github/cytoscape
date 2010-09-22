@@ -1,21 +1,30 @@
 package org.cytoscape.psi_mi.internal.plugin;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PsiMiCyFileFilter implements CyFileFilter {
+	private static final String PSI_MI_XML_NAMESPACE = "net:sf:psidev:mi";
+
+	private static final int DEFAULT_LINES_TO_CHECK = 20;
+	
 	private Set<String> extensions;
 	private Set<String> contentTypes;
 	private String description;
 
 	private PsiMiCyFileFilter(String description) {
 		extensions = new HashSet<String>();
-		extensions.add("psi");
+		extensions.add("xml");
 		
 		contentTypes = new HashSet<String>();
 		contentTypes.add("text/psi-mi");
@@ -26,12 +35,39 @@ public class PsiMiCyFileFilter implements CyFileFilter {
 	
 	@Override
 	public boolean accept(URI uri, DataCategory category) {
-		return category.equals(DataCategory.NETWORK);
+		try {
+			return accept(uri.toURL().openStream(), category);
+		} catch (IOException e) {
+			Logger logger = LoggerFactory.getLogger(getClass());
+			logger.error("Error while checking header", e);
+			return false;
+		}
+	}
+
+	private boolean checkHeader(InputStream stream) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		int linesToCheck = DEFAULT_LINES_TO_CHECK;
+		while (linesToCheck > 0) {
+			if (reader.readLine().contains(PSI_MI_XML_NAMESPACE)) {
+				return true;
+			}
+			linesToCheck--;
+		}
+		return false;
 	}
 
 	@Override
 	public boolean accept(InputStream stream, DataCategory category) {
-		return category.equals(DataCategory.NETWORK);
+		if (!category.equals(DataCategory.NETWORK)) {
+			return false;
+		}
+		try {
+			return checkHeader(stream);
+		} catch (IOException e) {
+			Logger logger = LoggerFactory.getLogger(getClass());
+			logger.error("Error while checking header", e);
+			return false;
+		}
 	}
 
 	@Override
