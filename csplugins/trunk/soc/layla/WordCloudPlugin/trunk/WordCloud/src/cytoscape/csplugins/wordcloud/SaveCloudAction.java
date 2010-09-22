@@ -47,7 +47,7 @@ public class SaveCloudAction extends CytoscapeAction
 	//VARIABLES
 	
 	// Extensions for the new file
-	public static String SESSION_EXT = ".jpg";
+	public static String SESSION_EXT = ".png";
 
 	
 	//CONSTRUCTORS
@@ -77,7 +77,7 @@ public class SaveCloudAction extends CytoscapeAction
 		// Open Dialog to ask user the file name.
 		try {
 	
-			name = FileUtil.getFile("Save Current Cloud as JPEG File", FileUtil.SAVE,
+			name = FileUtil.getFile("Save Current Cloud as PNG File", FileUtil.SAVE,
 			                        new CyFileFilter[] {  }).toString();
 		} catch (Exception exp) {
 			// this is because the selection was canceled
@@ -101,22 +101,23 @@ public class SaveCloudAction extends CytoscapeAction
 		String cloudName = SemanticSummaryManager.getInstance().getCurCloud().getCloudName();
 		
 		//Testing
-		
 		Dimension size = panel.getPreferredSize();
+		Dimension newSize = new Dimension(size.width + 40, size.height + 15);
+		panel.setPreferredSize(newSize);
+		
 		JFrame frame = new JFrame(cloudName);
-		//frame.setSize(size);
+		frame.setSize(newSize);
 		frame.getContentPane().add(panel);
 		frame.pack();
 		frame.setLocation(-100, -100);
 		frame.setVisible(true);
 		
-		Dimension newSize = frame.getPreferredSize();
-	
+		Dimension imageSize = frame.getPreferredSize();
 		
-		BufferedImage b = new BufferedImage(newSize.width,newSize.height,BufferedImage.TYPE_INT_RGB); /* change sizes of course */
+		BufferedImage b = new BufferedImage(imageSize.width, imageSize.height ,BufferedImage.TYPE_INT_RGB); /* change sizes of course */
 		Graphics2D g = b.createGraphics();
 		frame.printAll(g);
-		try{ImageIO.write(b,"jpg",new File(name));}catch (Exception e) {}
+		try{ImageIO.write(b,"png",new File(name));}catch (Exception e) {}
 		
 		frame.dispose();
 		
