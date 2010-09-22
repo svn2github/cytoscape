@@ -283,7 +283,7 @@
 -->
 
 		<!-- prefuse layouts -->
-<!--
+
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-prefuse-impl</artifactId>
@@ -294,7 +294,7 @@
 			<artifactId>prefuse</artifactId>
 			<version>20071021</version>
 		</dependency>
--->
+
 
 		<!-- linkout plugin -->
 		<dependency>
