@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -21,10 +22,12 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 
+import org.cytoscape.io.DataCategory;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.swing.AbstractGUITunableHandler;
 import org.cytoscape.work.Tunable.Param;
 import org.cytoscape.work.internal.tunables.utils.FileChooserFilter;
+import org.cytoscape.work.internal.tunables.utils.SupportedFileTypesManager;
 
 
 /**
@@ -43,6 +46,7 @@ public class FileHandler extends AbstractGUITunableHandler {
 	private GroupLayout layout;
 	private enum Type {NETWORK,SESSION,ATTRIBUTES,DEFAULT};
 	private Type type;
+	private SupportedFileTypesManager fileTypesManager;
 
 	/**
 	 * Constructs the <code>GUIHandler</code> for the <code>File</code> type
@@ -54,14 +58,17 @@ public class FileHandler extends AbstractGUITunableHandler {
 	 * @param f field that has been annotated
 	 * @param o object contained in <code>f</code>
 	 * @param t tunable associated to <code>f</code>
+	 * @param fileTypesManager 
 	 */
-	protected FileHandler(Field f, Object o, Tunable t) {
+	protected FileHandler(Field f, Object o, Tunable t, final SupportedFileTypesManager fileTypesManager) {
 		super(f, o, t);
+		this.fileTypesManager = fileTypesManager;
 		init();
 	}
 
-	protected FileHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+	protected FileHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable, final SupportedFileTypesManager fileTypesManager) {
 		super(getter, setter, instance, tunable);
+		this.fileTypesManager = fileTypesManager;
 		init();
 	}
 
@@ -131,21 +138,10 @@ public class FileHandler extends AbstractGUITunableHandler {
 			fileTextField.setText("Please select a network file...");
 			titleLabel.setText("import network file");
 
-			//set filters for filechooser
-			String[] biopax = {".xml",".rdf",".owl"};
-			fileChooser.addChoosableFileFilter(new FileChooserFilter("BioPAX files",biopax));
-			String[] xgmml ={".xml",".xgmml"};
-			fileChooser.addChoosableFileFilter(new FileChooserFilter("XGMML files",xgmml));
-			String[] psi ={".xml"};
-			fileChooser.addChoosableFileFilter(new FileChooserFilter("PSI-MI",psi));
-			String[] sif={".sif"};
-			fileChooser.addChoosableFileFilter(new FileChooserFilter("SIF files",sif));
-			String[] gml={".gml"};
-			fileChooser.addChoosableFileFilter(new FileChooserFilter("GML files",gml));
-			String[] sbml={".xml",".sbml"};
-			fileChooser.addChoosableFileFilter(new FileChooserFilter("SBML files",sbml));
-			String[] allnetworks = {".xml",".rdf",".owl",".xgmml",".sif",".sbml"};
-			fileChooser.addChoosableFileFilter(new FileChooserFilter("All network files (*.xml, *.rdf, *.owl, *.xgmml, *.sif, *.sbml)",allnetworks));
+			List<FileChooserFilter> filters = fileTypesManager.getSupportedFileTypes(DataCategory.NETWORK);
+			for (FileChooserFilter filter : filters) {
+				fileChooser.addChoosableFileFilter(filter);
+			}
 			break;
 		}
 		case SESSION: {

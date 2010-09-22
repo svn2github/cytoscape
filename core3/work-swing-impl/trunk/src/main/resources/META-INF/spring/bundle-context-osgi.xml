@@ -41,4 +41,13 @@
 		filter="(cyPropertyName=bookmarks)" />
 	<osgi:reference id="bookmarksUtilServiceRef"
 		interface="org.cytoscape.property.bookmark.BookmarksUtil" />
+	
+	<osgi:set id="supportedFileTypes" 
+	    interface="org.cytoscape.io.read.InputStreamTaskFactory"
+	    cardinality="0..N">
+		<osgi:listener bind-method="addInputStreamTaskFactory"
+		               unbind-method="removeInputStreamTaskFactory" 
+		               ref="supportedFileTypesManager" />
+	</osgi:set>
+	
 </beans>

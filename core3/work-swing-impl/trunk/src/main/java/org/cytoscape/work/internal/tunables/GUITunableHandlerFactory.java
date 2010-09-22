@@ -13,6 +13,7 @@ import org.cytoscape.property.bookmark.Bookmarks;
 
 import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.internal.tunables.utils.SupportedFileTypesManager;
 import org.cytoscape.work.swing.GUITunableHandler;
 import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.BoundedFloat;
@@ -31,15 +32,17 @@ import org.cytoscape.work.util.ListSingleSelection;
 public class GUITunableHandlerFactory implements HandlerFactory<GUITunableHandler> {
 	private Bookmarks bookmarks;
 	private BookmarksUtil bkUtil;
+	private SupportedFileTypesManager fileTypesManager;
 
 	/**
 	 * creates a new GUITunableHandlerFactory object
 	 * @param book	informations and properties of the <code>Bookmarks</code> registered
 	 * @param bkUtil object that provides tools to manage the <code>Bookmarks</code>
 	 */
-	public GUITunableHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil) {
+	public GUITunableHandlerFactory(CyProperty<Bookmarks> book, BookmarksUtil bkUtil, SupportedFileTypesManager fileTypesManager) {
 		this.bookmarks = book.getProperties();
 		this.bkUtil = bkUtil;
+		this.fileTypesManager = fileTypesManager;
 	}
 
 	/**
@@ -79,7 +82,7 @@ public class GUITunableHandlerFactory implements HandlerFactory<GUITunableHandle
 		if (type == ListMultipleSelection.class)
 			return new ListMultipleHandler<String>(getter, setter, instance, tunable);
 		if (type == File.class)
-			return new FileHandler(getter, setter, instance, tunable);
+			return new FileHandler(getter, setter, instance, tunable, fileTypesManager);
 		if (type == URL.class)
 			return new URLHandler(getter, setter, instance, tunable, bookmarks, bkUtil);
 		if (type == InputStream.class)
@@ -136,7 +139,7 @@ public class GUITunableHandlerFactory implements HandlerFactory<GUITunableHandle
 		if (type == ListMultipleSelection.class)
 			return new ListMultipleHandler<String>(field, instance, tunable);
 		if (type == File.class)
-			return new FileHandler(field, instance, tunable);
+			return new FileHandler(field, instance, tunable, fileTypesManager);
 		if (type == URL.class)
 			return new URLHandler(field, instance, tunable, bookmarks, bkUtil);
 		if (type == InputStream.class)
