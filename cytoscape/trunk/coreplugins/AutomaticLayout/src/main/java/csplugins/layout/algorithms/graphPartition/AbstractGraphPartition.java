@@ -38,31 +38,28 @@ import csplugins.layout.LayoutPartition;
 import csplugins.layout.LayoutLabelPartition;
 import csplugins.layout.EdgeWeighter;
 
+import cytoscape.layout.Tunable;
+import cytoscape.layout.LayoutProperties;
+import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CyNode;
-
 import cytoscape.layout.AbstractLayout;
-import cytoscape.layout.LayoutProperties;
-import cytoscape.layout.Tunable;
-
 import cytoscape.data.CyAttributes;
-
 import cytoscape.logger.CyLogger;
-
 import cytoscape.task.*;
-
 import cytoscape.view.CyNetworkView;
 
 import giny.model.*;
 
 import java.lang.Throwable;
-
 import java.util.*;
-
 import javax.swing.JOptionPane;
-
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentListener;
+import java.awt.event.ComponentEvent;
 
 enum LayoutTypes {
     NODE("Nodes Only"),
@@ -79,7 +76,7 @@ enum LayoutTypes {
  * An abstract class that handles the partitioning of graphs so that
  * the partitions will be laid out individually.
  */
-public abstract class AbstractGraphPartition extends AbstractLayout {
+public abstract class AbstractGraphPartition extends AbstractLayout implements ActionListener {
     double incr = 100;
     protected List <LayoutPartition> partitionList = null;
     protected EdgeWeighter edgeWeighter = null;
@@ -117,6 +114,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
      */
     public AbstractGraphPartition() {
 	super();
+	
     }
 
     /**
@@ -402,9 +400,13 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 					 Tunable.LIST, new Integer(0),
 					 (Object) layoutChoices, (Object) null, 0));
 
-	layoutProperties.add(new Tunable("resetPosition", 
-					 "Reset label positions",
-					 Tunable.BOOLEAN, new Boolean(resetPosition)));
+	layoutProperties.add(new Tunable("resetSelectedLabelsButton", 
+					 "(Affects only selected nodes)",
+					 Tunable.BUTTON, "Reset Label Positions", this, null, 0));
+
+	layoutProperties.add(new Tunable("resetAllLabelsButton", 
+					 "(Affects all nodes)",
+					 Tunable.BUTTON, "Reset Label Positions", this, null, 0));
 
 	layoutProperties.add(new Tunable("weightCoefficient", 
 					 "weightCoefficient",
@@ -424,13 +426,42 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	    layoutType = layoutChoices[((Integer) t.getValue()).intValue()];
 	}
 
-	t = layoutProperties.get("resetPosition");
-	if ((t != null) && (t.valueChanged() || force))
-	    resetPosition = ((Boolean) t.getValue()).booleanValue();
-
 	t = layoutProperties.get("weightCoefficient");
 	if ((t != null) && (t.valueChanged() || force))
 	    weightCoefficient = ((Double) t.getValue()).doubleValue();
+    }
+
+    public void actionPerformed(ActionEvent e) {
+	String command = e.getActionCommand();
+
+	if (command.equals("resetSelectedLabelsButton")) {
+	    
+	    this.networkView =  Cytoscape.getCurrentNetworkView(); 
+	    this.network = networkView.getNetwork();
+	    
+	    boolean oldSelectedOnly = selectedOnly;
+	    selectedOnly = true;
+
+	    // reset label positions
+	    resetLabelPositions();      
+
+	    selectedOnly = oldSelectedOnly;
+	}
+
+	if (command.equals("resetAllLabelsButton")) {
+	    
+	    this.networkView =  Cytoscape.getCurrentNetworkView(); 
+	    this.network = networkView.getNetwork();
+
+	    boolean oldSelectedOnly = selectedOnly;
+	    selectedOnly = false;
+
+	    // reset label positions
+	    resetLabelPositions();      
+
+	    selectedOnly = oldSelectedOnly;
+	}
+
     }
 
 
