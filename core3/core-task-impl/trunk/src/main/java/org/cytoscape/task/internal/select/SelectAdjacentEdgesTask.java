@@ -44,33 +44,25 @@ import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.session.CyNetworkManager;
 
 public class SelectAdjacentEdgesTask extends AbstractSelectTask {
 
-	public SelectAdjacentEdgesTask(CyNetworkManager netmgr) {
-		super(netmgr);
+	public SelectAdjacentEdgesTask(CyNetwork net, CyNetworkManager netmgr) {
+		super(net,netmgr);
 	}
 
 	public void run(TaskMonitor tm) {
-		final CyNetwork network = netmgr.getCurrentNetwork();
-		final CyNetworkView v = netmgr.getNetworkView( network.getSUID() );
 		final Set<CyEdge> edgeSet = new HashSet<CyEdge>();
 
 		// Get the list of selected nodes
-		for (CyNode node: CyTableUtil.getNodesInState(network,"selected",true)) {
+		for (CyNode node: CyTableUtil.getNodesInState(net,"selected",true)) {
 			// Get the list of edges connected to this node
-			edgeSet.addAll( network.getAdjacentEdgeList(node,CyEdge.Type.ANY) );
+			edgeSet.addAll( net.getAdjacentEdgeList(node,CyEdge.Type.ANY) );
 		}
 
 		SelectUtils.setSelectedEdges(edgeSet,true);
-
-		v.updateView();
+		updateView();
 	} 
-
-	@Override
-	public void cancel() {
-	}
 }

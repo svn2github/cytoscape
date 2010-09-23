@@ -39,35 +39,24 @@ import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.session.CyNetworkManager;
 
 
 public class SelectFirstNeighborsTask extends AbstractSelectTask {
-	public SelectFirstNeighborsTask(CyNetworkManager netmgr) {
-		super(netmgr);
+	public SelectFirstNeighborsTask(CyNetwork net, CyNetworkManager netmgr) {
+		super(net,netmgr);
 	}
 
 	@Override
 	public void run(TaskMonitor tm) {
-		final CyNetwork currentNetwork = netmgr.getCurrentNetwork();
-		final CyNetworkView view = netmgr.getNetworkView(currentNetwork
-				.getSUID());
-		final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(
-				currentNetwork, "selected", true);
+		final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(net, "selected", true);
 		final Set<CyNode> nodes = new HashSet<CyNode>();
 
 		for (CyNode currentNode : selectedNodes)
-			nodes.addAll(currentNetwork.getNeighborList(currentNode,
-					CyEdge.Type.ANY));
+			nodes.addAll(net.getNeighborList(currentNode, CyEdge.Type.ANY));
 
 		SelectUtils.setSelectedNodes(nodes, true);
-
-		view.updateView();
-	}
-
-	@Override
-	public void cancel() {
+		updateView();
 	}
 }

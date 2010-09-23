@@ -33,9 +33,10 @@ package org.cytoscape.task.internal.select;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.task.AbstractNetworkTaskFactory;
 
 
-public class InvertSelectedEdgesTaskFactory implements TaskFactory {
+public class InvertSelectedEdgesTaskFactory extends AbstractNetworkTaskFactory {
 
 	private CyNetworkManager netmgr;
 
@@ -44,6 +45,6 @@ public class InvertSelectedEdgesTaskFactory implements TaskFactory {
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new InvertSelectedEdgesTask(netmgr));
+		return new TaskIterator(new InvertSelectedEdgesTask(net,netmgr));
 	} 
 }

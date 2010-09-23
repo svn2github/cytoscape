@@ -91,7 +91,7 @@
 	
 	<!-- selection -->
 	<osgi:service id="selectAllTaskFactoryService" ref="selectAllTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Select all nodes and edges" />
 			<entry key="preferredMenu" value="Select" />
@@ -101,7 +101,7 @@
 	</osgi:service>
 
 	<osgi:service id="selectAllEdgesTaskFactoryService" ref="selectAllEdgesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Select all edges" />
 			<entry key="preferredMenu" value="Select.Edges" />
@@ -111,7 +111,7 @@
 	</osgi:service>
 
 	<osgi:service id="selectAllNodesTaskFactoryService" ref="selectAllNodesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Select all nodes" />
 			<entry key="preferredMenu" value="Select.Nodes" />
@@ -122,7 +122,7 @@
 
 
 	<osgi:service id="selectAdjacentEdgesTaskFactoryService" ref="selectAdjacentEdgesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Select adjacent edges" />
 			<entry key="preferredMenu" value="Select.Edges" />
@@ -132,7 +132,7 @@
 	</osgi:service>
 
 	<osgi:service id="selectConnectedNodesTaskFactoryService" ref="selectConnectedNodesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Nodes connected by selected edges" />
 			<entry key="preferredMenu" value="Select.Nodes" />
@@ -142,7 +142,7 @@
 	</osgi:service>
 
 	<osgi:service id="selectFirstNeighborsTaskFactoryService" ref="selectFirstNeighborsTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="First neighbors of selected nodes" />
 			<entry key="preferredMenu" value="Select.Nodes" />
@@ -153,7 +153,7 @@
 
 
 	<osgi:service id="deselectAllTaskFactoryService" ref="deselectAllTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Deselect all nodes and edges" />
 			<entry key="preferredMenu" value="Select" />
@@ -163,7 +163,7 @@
 	</osgi:service>
 
 	<osgi:service id="deselectAllEdgesTaskFactoryService" ref="deselectAllEdgesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Deselect all edges" />
 			<entry key="preferredMenu" value="Select.Edges" />
@@ -173,7 +173,7 @@
 	</osgi:service>
 
 	<osgi:service id="deselectAllNodesTaskFactoryService" ref="deselectAllNodesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Deselect all nodes" />
 			<entry key="preferredMenu" value="Select.Nodes" />
@@ -183,7 +183,7 @@
 	</osgi:service>
 
 	<osgi:service id="invertSelectedEdgesTaskFactoryService" ref="invertSelectedEdgesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Invert edge selection" />
 			<entry key="preferredMenu" value="Select.Edges" />
@@ -193,7 +193,7 @@
 	</osgi:service>
 
 	<osgi:service id="invertSelectedNodesTaskFactoryService" ref="invertSelectedNodesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Invert node selection" />
 			<entry key="preferredMenu" value="Select.Nodes" />
@@ -203,7 +203,7 @@
 	</osgi:service>
 
 	<osgi:service id="selectFromFileListTaskFactoryService" ref="selectFromFileListTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="From file..." />
 			<entry key="preferredMenu" value="Select.Nodes" />

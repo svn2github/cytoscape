@@ -37,15 +37,13 @@
 
 package org.cytoscape.task.internal.select;
 
-import org.cytoscape.session.CyNetworkManager;
 //import cytoscape.data.Semantics;
-
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.session.CyNetworkManager;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -60,16 +58,14 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 	@Tunable(description="Node selection file")
 	public File file;
 
-	public SelectFromFileListTask(CyNetworkManager netmgr) {
-		super(netmgr);
+	public SelectFromFileListTask(CyNetwork net, CyNetworkManager netmgr) {
+		super(net,netmgr);
 	}
 
 	public void run(TaskMonitor tm) throws Exception {
 
 		if ( file == null )
 			throw new Exception("You must specify a file to load!");
-
-		CyNetwork network = netmgr.getCurrentNetwork();
 
 		try {
 			FileReader fin = new FileReader(file);
@@ -89,10 +85,10 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 
 			// loop through all the node of the graph
 			// selecting those in the file
-			List<CyNode> nodeList = network.getNodeList();
+			List<CyNode> nodeList = net.getNodeList();
 
 			for ( CyNode node : nodeList ) {
-				//List<String> synonyms = Semantics.getAllSynonyms(node, network);
+				//List<String> synonyms = Semantics.getAllSynonyms(node, net);
 
 				//for ( String syn : synonyms ) {
 					//if ( fileNodes.contains(syn) ) {
@@ -102,15 +98,10 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 					}
 				//}
 			}
+			updateView();
 
 		} catch (Exception e) {
 			throw new Exception("Error reading file: " + file.getAbsolutePath(), e);
 		}
-
-		netmgr.getNetworkView(network.getSUID()).updateView();
-	}
-
-	@Override
-	public void cancel() {
 	}
 }

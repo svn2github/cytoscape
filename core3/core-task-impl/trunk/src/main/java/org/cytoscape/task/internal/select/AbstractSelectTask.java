@@ -31,15 +31,24 @@ package org.cytoscape.task.internal.select;
 
 
 import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.work.AbstractTask;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.task.AbstractNetworkTask;
 import org.cytoscape.work.TaskMonitor;
 
 
-public abstract class AbstractSelectTask extends AbstractTask {
+public abstract class AbstractSelectTask extends AbstractNetworkTask {
 
 	protected CyNetworkManager netmgr;
 
-	public AbstractSelectTask(CyNetworkManager netmgr) {
+	public AbstractSelectTask(CyNetwork net, CyNetworkManager netmgr) {
+		super(net);
 		this.netmgr = netmgr;
+	}
+
+	protected final void updateView() {
+		CyNetworkView view = netmgr.getNetworkView(net.getSUID());
+		if ( view != null )
+			view.updateView();
 	}
 }

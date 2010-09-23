@@ -45,21 +45,17 @@ import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.session.CyNetworkManager;
 
 public class SelectConnectedNodesTask extends AbstractSelectTask {
 
-	public SelectConnectedNodesTask(CyNetworkManager netmgr) {
-		super(netmgr);
+	public SelectConnectedNodesTask(CyNetwork net, CyNetworkManager netmgr) {
+		super(net,netmgr);
 	}
 
 	public void run(TaskMonitor tm) {
-		final CyNetwork currentNetwork = netmgr.getCurrentNetwork();
-		final CyNetworkView v = netmgr.getNetworkView(currentNetwork.getSUID());
-		final List<CyEdge> selectedEdges = CyTableUtil.getEdgesInState(
-				currentNetwork, "selected", true);
+		final List<CyEdge> selectedEdges = CyTableUtil.getEdgesInState(net, "selected", true);
 		final Set<CyNode> nodes = new HashSet<CyNode>();
 
 		for (CyEdge edge : selectedEdges) {
@@ -68,11 +64,6 @@ public class SelectConnectedNodesTask extends AbstractSelectTask {
 		}
 
 		SelectUtils.setSelectedNodes(nodes, true);
-
-		v.updateView();
-	}
-
-	@Override
-	public void cancel() {
+		updateView();
 	}
 }

@@ -39,29 +39,23 @@ package org.cytoscape.task.internal.select;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.session.CyNetworkManager;
 
 public class InvertSelectedEdgesTask extends AbstractSelectTask {
 
-	public InvertSelectedEdgesTask(CyNetworkManager netmgr) {
-		super(netmgr);
+	public InvertSelectedEdgesTask(CyNetwork net, CyNetworkManager netmgr) {
+		super(net,netmgr);
 	}
 
 	public void run(TaskMonitor tm) {
-		final CyNetwork cyNetwork = netmgr.getCurrentNetwork();
-		for ( CyEdge e : cyNetwork.getEdgeList() ) {
+		for ( CyEdge e : net.getEdgeList() ) {
 			if ( e.attrs().get("selected",Boolean.class) ) {
 				e.attrs().set("selected",false);
 			} else {
 				e.attrs().set("selected",true);
 			}
 		}
-
-		netmgr.getNetworkView( cyNetwork.getSUID() ).updateView();
-	}
-
-	@Override
-	public void cancel() {
+		updateView();
 	}
 }

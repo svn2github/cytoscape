@@ -38,25 +38,17 @@
 package org.cytoscape.task.internal.select;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.session.CyNetworkManager;
 
 public class DeselectAllEdgesTask extends AbstractSelectTask {
 
-	public DeselectAllEdgesTask(CyNetworkManager netmgr) {
-		super(netmgr);
+	public DeselectAllEdgesTask(CyNetwork net, CyNetworkManager netmgr) {
+		super(net,netmgr);
 	}
 
 	public void run(TaskMonitor tm) {
-		final CyNetwork n = netmgr.getCurrentNetwork();
-		final CyNetworkView v = netmgr.getNetworkView( n.getSUID() );
-		SelectUtils.setSelectedEdges( n.getEdgeList(), false);
-
-		v.updateView();
+		SelectUtils.setSelectedEdges( net.getEdgeList(), false);
+		updateView();
 	} 
-
-	@Override
-	public void cancel() {
-	}
 }
