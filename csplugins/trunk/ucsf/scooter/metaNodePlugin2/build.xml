@@ -8,6 +8,7 @@
    <property name = "lib" location = "../../../../cytoscape/build"/>
    <property name = "jar"  location = "jar"/>
    <property name = "doc" location = "doc"/>
+   <property name="java.target_version" value="1.5" />
 
    <property name="cytoscape.plugin" value="${lib}/plugins"/>
 
