@@ -13,6 +13,7 @@
 
   <modules>
     <module>sample-plugin</module>
+    <module>ant-sample-plugin</module>
   </modules>
 
 </project>
