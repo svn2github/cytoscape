@@ -58,6 +58,10 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="sifNetworkViewWriterFactoryService" ref="sifNetworkViewWriterFactory"
+		interface="org.cytoscape.io.write.CyNetworkWriterFactory">
+	</osgi:service>
+
 	<osgi:service id="xgmmlNetworkViewReaderFactoryService" ref="xgmmlNetworkViewReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>

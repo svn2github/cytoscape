@@ -166,6 +166,10 @@
 		<constructor-arg ref="jpegFilter" />
 	</bean>
 
+	<bean id="sifNetworkViewWriterFactory" class="org.cytoscape.io.internal.write.sif.SifNetworkWriterFactory">
+		<constructor-arg ref="sifFilter"/>
+	</bean>
+
 	<!-- Utilities for XGMML Reader -->
 	
 	<bean id="objectTypeMap" class="org.cytoscape.io.internal.read.xgmml.ObjectTypeMap" />
