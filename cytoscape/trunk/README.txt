@@ -52,6 +52,9 @@ cytoscape
    +                   cycle.  See the README.txt in that directory for
    +                   instructions on building a webstart distribution.
    +
+   +---archetypes/     Contains maven archetypes to assist in the construction 
+   +                   of Cytoscape plugins.
+   +
    +---legacy/         Contains old and currently unused test data and resources. 
 
 
