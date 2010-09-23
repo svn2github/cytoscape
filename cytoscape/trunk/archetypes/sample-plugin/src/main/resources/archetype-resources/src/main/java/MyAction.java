@@ -15,6 +15,8 @@ import javax.swing.JOptionPane;
  */
 public class MyAction extends CytoscapeAction {
 
+		private static final long serialVersionUID = 1234567890123456789L;
+
 		public MyAction() {
 			// Give your action a name here
 			super("Sample plugin");
