@@ -33,8 +33,7 @@
     // make page links based on tags (but make them nice with spaces instead of _ and capitalise the
     // first letter, etc
     foreach($latest_api->categories as $category_name => $category){
-        $formatted_cat = strtoupper( substr($category_name, 0, 1) ) . strtolower( substr($category_name, 1) );
-        $formatted_cat = str_replace("_", " ", $formatted_cat);
+        $formatted_cat = title_case($category_name);
         
         if( $formatted_cat == "Cytoscape web" ){
             $formatted_cat = "Cytoscape Web";

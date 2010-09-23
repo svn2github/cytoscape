@@ -99,4 +99,11 @@
         return "/file/lib/cytoscapeweb_v$version.zip";
     }
     
+    function title_case($str){
+		$ret = strtoupper( substr($str, 0, 1) ) . strtolower( substr($str, 1) );
+        $ret = str_replace("_", " ", $ret);
+        
+        return $ret;
+	}
+    
 ?>

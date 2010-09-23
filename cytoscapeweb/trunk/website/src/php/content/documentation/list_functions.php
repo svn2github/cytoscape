@@ -89,146 +89,166 @@
         }
     }
     
-    foreach($category->files as $file){
-        
-        // include $cls_info generating php file
-        require($file);
-        
-        if( ! $category->real_class ){
-            $cls_name = $cls_info->name;
-            echo '<h1 id="' . short_cls_name($cls_name) . '" name="' . short_cls_name($cls_name) . '">' . short_cls_name($cls_name) . '</h1>';
-        }
-        
-        $functions = $cls_info->funcs;
-        if( count($functions) > 0 ){
-            foreach($functions as $fn_name => $fn) {
-                
-                $parameters = $fn->params;
-                
-                if( $category->real_class ){ 
-                    echo "<h1 id=\"$fn_name\" name=\"$fn_name\">" . $fn_name . "<span class=\"arguments\">&nbsp;( ";
-                    
-                        $num_params = count($parameters);
-                    
-                        $current_param_num = 1;
-                        if( $num_params > 0 ) {
-                            foreach($parameters as $param_name => $param) {
-                                
-                                echo ($param->optional ? "[&nbsp;" : "");
-                                echo "$param_name";
-                                echo ($param->optional ? "&nbsp;]" : "");
-                                
-                                if($current_param_num < $num_params) {
-                                    echo ", ";
-                                }
-                                
-                                $current_param_num++;
-                            }
-                        }
-                    
-                    echo "&nbsp;)</span></h1>";
-                }
-                
-                $description = $fn->description;
-                if( $description ) {
-                    echo "<div class=\"description\">" . parse_para( parse_links($description) ) . "</div>";
-                }
-                
-                echo "<div class=\"details\">";
-                
-                    if( $num_params > 0 ) {
-                        echo "<label>Parameters</label>";
-                        foreach($parameters as $param_name => $param) {
-                            
-                            $descr = "";
-                            
-                            echo "<div class=\"parameter\">";
-                                $descr .= ($param->optional ? "[ " : "");
-                                $descr .= "<em>$param->name</em>";
-                                $descr .= ($param->optional ? " ]" : "");
-                                $descr .= ($param->type ? " <span class=\"type\">{" . parse_clsrefs($param->type) . "}</span>" : "");
-                                if ($param->description){
-                                    $descr .= " : ";
-                                }
-                                echo parse_para( parse_links($param->description), $descr );
-                            echo "</div>";
-                                 
-                        }
-                    }
-                    
-                    if($category->real_class){
-                    
-                        $return_value = $fn->return_value;
-                        echo "<label>Return value</label>";
-                        if( $return_value ) {
-                            $descr = ($return_value->type ? "{" . parse_clsrefs($return_value->type) . "} " : "");
-                            
-                            echo "<div class=\"return_value\">";
-                            echo parse_para( parse_links($return_value->description), $descr ); 
-                            echo "</div>";
-                        } else {
-                            echo "<div class=\"return_value\"><p>void</p></div>"; 
-                        }
-                    
-                    }
-                    
-                    
-                    $fields = $cls_info->fields;
-                    if( $fn->is_constructor && count($fields) > 0 ){
-                        echo "<label>Fields</label>";
-                        echo "<div class=\"fields\">";
-                        
-                            foreach($fields as $field){
-                                echo "<div class=\"field\">";
-                                    $descr = "";
-                                    $descr .= "<em>$field->name</em>";
-                                    $descr .= ($field->type ? " <span class=\"type\">{" . parse_clsrefs($field->type) . "}</span>" : "");
-                                    $descr .= ($field->description ? " : " : "");
-                                    
-                                    echo parse_para( parse_links($field->description), $descr );
-                                echo "</div>";
-                            }
-                            
-                        echo "</div>";
-                    }
-                    
-                    $examples = $fn->examples;
-                    if( count($examples) > 0 ) {
-                        echo "<label>Examples</label>";
-                        echo "<div class=\"examples\">";
-                            
-                            foreach($examples as $example){
-                                if( preg_match('/\&lt\;\s*html\s*\&gt\;/', $example) ){
-                                    echo "<pre class=\"example ln-\"><code class=\"html\">$example</code></pre>";
-                                } elseif( preg_match('/\&lt\;\?php\s*/', $example) ){
-                                    echo "<pre class=\"example ln-\"><code class=\"php\">$example</code></pre>";
-                                } else {
-                                    echo "<pre class=\"example ln-\"><code class=\"js\">$example</code></pre>";
-                                }
-                            }
-                            
-                        echo "</div>";
-                    }
-                    
-                    $see_list = $fn->see;
-                    if( count($see_list) > 0 ) {
-                        echo "<label>See Also</label>";
-                        echo "<ul class=\"see_also\">";
-                            
-                            foreach($see_list as $see){
-                                echo "<li>" . parse_links("{@link ".$see."}") . "</li>";
-                            }
-                            
-                        echo "</ul>";
-                    }
-                    
-                echo "</div>";
-                    
-                
-            
-            } // for each function
-        } // if fuctions
-    } // for each file
+    if( $category != null ){
+		
+		foreach($category->files as $file){
+			
+			// include $cls_info generating php file
+			require($file);
+			
+			if( ! $category->real_class ){
+				$cls_name = $cls_info->name;
+				echo '<h1 id="' . short_cls_name($cls_name) . '" name="' . short_cls_name($cls_name) . '">' . short_cls_name($cls_name) . '</h1>';
+			}
+			
+			$functions = $cls_info->funcs;
+			if( count($functions) > 0 ){
+				foreach($functions as $fn_name => $fn) {
+					
+					$parameters = $fn->params;
+					
+					if( $category->real_class ){ 
+						echo "<h1 id=\"$fn_name\" name=\"$fn_name\">" . $fn_name . "<span class=\"arguments\">&nbsp;( ";
+						
+							$num_params = count($parameters);
+						
+							$current_param_num = 1;
+							if( $num_params > 0 ) {
+								foreach($parameters as $param_name => $param) {
+									
+									echo ($param->optional ? "[&nbsp;" : "");
+									echo "$param_name";
+									echo ($param->optional ? "&nbsp;]" : "");
+									
+									if($current_param_num < $num_params) {
+										echo ", ";
+									}
+									
+									$current_param_num++;
+								}
+							}
+						
+						echo "&nbsp;)</span></h1>";
+					}
+					
+					$description = $fn->description;
+					if( $description ) {
+						echo "<div class=\"description\">" . parse_para( parse_links($description) ) . "</div>";
+					}
+					
+					echo "<div class=\"details\">";
+					
+						if( $num_params > 0 ) {
+							echo "<label>Parameters</label>";
+							foreach($parameters as $param_name => $param) {
+								
+								$descr = "";
+								
+								echo "<div class=\"parameter\">";
+									$descr .= ($param->optional ? "[ " : "");
+									$descr .= "<em>$param->name</em>";
+									$descr .= ($param->optional ? " ]" : "");
+									$descr .= ($param->type ? " <span class=\"type\">{" . parse_clsrefs($param->type) . "}</span>" : "");
+									if ($param->description){
+										$descr .= " : ";
+									}
+									echo parse_para( parse_links($param->description), $descr );
+								echo "</div>";
+									 
+							}
+						}
+						
+						if($category->real_class){
+						
+							$return_value = $fn->return_value;
+							echo "<label>Return value</label>";
+							if( $return_value ) {
+								$descr = ($return_value->type ? "{" . parse_clsrefs($return_value->type) . "} " : "");
+								
+								echo "<div class=\"return_value\">";
+								echo parse_para( parse_links($return_value->description), $descr ); 
+								echo "</div>";
+							} else {
+								echo "<div class=\"return_value\"><p>void</p></div>"; 
+							}
+						
+						}
+						
+						
+						$fields = $cls_info->fields;
+						if( $fn->is_constructor && count($fields) > 0 ){
+							echo "<label>Fields</label>";
+							echo "<div class=\"fields\">";
+							
+								foreach($fields as $field){
+									echo "<div class=\"field\">";
+										$descr = "";
+										$descr .= "<em>$field->name</em>";
+										$descr .= ($field->type ? " <span class=\"type\">{" . parse_clsrefs($field->type) . "}</span>" : "");
+										$descr .= ($field->description ? " : " : "");
+										
+										echo parse_para( parse_links($field->description), $descr );
+									echo "</div>";
+								}
+								
+							echo "</div>";
+						}
+						
+						$examples = $fn->examples;
+						if( count($examples) > 0 ) {
+							echo "<label>Examples</label>";
+							echo "<div class=\"examples\">";
+								
+								foreach($examples as $example){
+									if( preg_match('/\&lt\;\s*html\s*\&gt\;/', $example) ){
+										echo "<pre class=\"example ln-\"><code class=\"html\">$example</code></pre>";
+									} elseif( preg_match('/\&lt\;\?php\s*/', $example) ){
+										echo "<pre class=\"example ln-\"><code class=\"php\">$example</code></pre>";
+									} else {
+										echo "<pre class=\"example ln-\"><code class=\"js\">$example</code></pre>";
+									}
+								}
+								
+							echo "</div>";
+						}
+						
+						$see_list = $fn->see;
+						if( count($see_list) > 0 ) {
+							echo "<label>See Also</label>";
+							echo "<ul class=\"see_also\">";
+								
+								foreach($see_list as $see){
+									echo "<li>" . parse_links("{@link ".$see."}") . "</li>";
+								}
+								
+							echo "</ul>";
+						}
+						
+					echo "</div>";
+						
+					
+				
+				} // for each function
+			} // if fuctions
+		} // for each file
+    
+    } else {
+    ?>
+    	
+    	<h1>No documentation found</h1>
+    	
+    	<p>No documentation could be found for a section with name "<?php echo title_case($category_name); ?>".
+    	You may have clicked a link that is old and no longer valid, or you may have typed the address of
+    	the page you are looking for incorrectly.</p>
+    	
+    	<h1>What can I do?</h1>
+    	
+    	<p>The sections of the documentation are at the top of this page.  You can find what you are looking
+    	for from there.  If you are not sure what you want to see, take a look at the 
+    	<a href="/documentation">front page of the documentation</a>.</p>
+    	
+    <?php
+    } // if valid
 
     ?>
 </div>
