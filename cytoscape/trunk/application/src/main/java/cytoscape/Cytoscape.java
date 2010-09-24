@@ -1197,7 +1197,16 @@ public abstract class Cytoscape {
 	}
 
 
-	protected static void addNetwork(CyNetwork network, String title, CyNetwork parent, boolean create_view) {
+	/**
+ 	 * Add a network to Cytoscape's internal list of networks.  This also fires the NETWORK_CREATED event
+ 	 * and as a byproduct adds the network to the Network Panel.
+ 	 *
+ 	 * @param network the network to add
+ 	 * @param title the title (name) of the network
+ 	 * @param parent the parent of the network to be added
+ 	 * @param create_view if <b>true</b> create the view for this network
+ 	 */
+	public static void addNetwork(CyNetwork network, String title, CyNetwork parent, boolean create_view) {
 		getNetworkMap().put(network.getIdentifier(), network);
 		network.setTitle(title);
 
