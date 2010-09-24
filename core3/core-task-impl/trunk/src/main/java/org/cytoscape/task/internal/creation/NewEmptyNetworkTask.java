@@ -56,7 +56,7 @@ public class NewEmptyNetworkTask extends AbstractCreationTask {
 	private final CyNetworkViewFactory cnvf;
 
 	public NewEmptyNetworkTask(CyNetworkFactory cnf, CyNetworkViewFactory cnvf, CyNetworkManager netmgr) {
-		super(netmgr);
+		super(null,netmgr);
 		this.cnf = cnf;
 		this.cnvf = cnvf;
 	}
@@ -68,9 +68,5 @@ public class NewEmptyNetworkTask extends AbstractCreationTask {
 		final CyNetworkView view = cnvf.getNetworkView(newNet);		
 		netmgr.addNetwork(newNet);
 		netmgr.addNetworkView(view);
-	}
-
-	@Override
-	public void cancel() {
 	}
 }

@@ -56,16 +56,16 @@ import java.util.List;
 
 public class NewNetworkSelectedNodesEdgesTask extends AbstractCreationTask {
 
-	public NewNetworkSelectedNodesEdgesTask(CyNetworkManager netmgr) {
-		super(netmgr);
+	public NewNetworkSelectedNodesEdgesTask(CyNetwork net, CyNetworkManager netmgr) {
+		super(net,netmgr);
 	}
 
 	public void run(TaskMonitor tm) {
 		//TODO
 		System.out.println("NOT implemented");
 		/*
-        CyNetwork current_network = Cytoscape.getCurrentNetwork();
-        CyNetworkView current_network_view = Cytoscape.getCurrentNetworkView();
+        CyNetwork current_network = net; 
+        CyNetworkView current_network_view = netmgr.getNetworkView(net.getSUID());
 
 		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
 			return;
@@ -102,9 +102,5 @@ public class NewNetworkSelectedNodesEdgesTask extends AbstractCreationTask {
         }
         vmm.setVisualStyle(vsName);
 		*/
-	}
-
-	@Override
-	public void cancel() {
 	}
 }

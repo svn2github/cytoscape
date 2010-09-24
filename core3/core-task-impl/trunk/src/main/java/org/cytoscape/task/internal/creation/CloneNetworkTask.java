@@ -50,16 +50,16 @@ import org.cytoscape.work.TaskMonitor;
 
 public class CloneNetworkTask extends AbstractCreationTask {
 
-	public CloneNetworkTask(CyNetworkManager netmgr) {
-		super(netmgr);
+	public CloneNetworkTask(CyNetwork net, CyNetworkManager netmgr) {
+		super(net,netmgr);
 	}
 
 	public void run(TaskMonitor e) {
 	// TODO
 	System.out.println("NOT implemented");
 	/*
-		CyNetwork origNet = Cytoscape.getCurrentNetwork();
-		CyNetworkView origView = Cytoscape.getCurrentNetworkView();
+		CyNetwork origNet = net; 
+		CyNetworkView origView = netmgr.getNetworkView(net.getSUID()); 
 		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle(); 
 
 		CyNetwork new_network = Cytoscape.createNetwork(origNet.getNodeList(),
@@ -103,9 +103,5 @@ public class CloneNetworkTask extends AbstractCreationTask {
 			Cytoscape.getVisualMappingManager().setVisualStyle(vs);
 		}
 		*/
-	}
-
-	@Override
-	public void cancel() {
 	}
 }

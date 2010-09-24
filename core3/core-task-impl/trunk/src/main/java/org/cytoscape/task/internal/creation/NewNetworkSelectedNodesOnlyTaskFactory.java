@@ -37,9 +37,10 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.task.AbstractNetworkTaskFactory;
 
 
-public class NewNetworkSelectedNodesOnlyTaskFactory implements TaskFactory {
+public class NewNetworkSelectedNodesOnlyTaskFactory extends AbstractNetworkTaskFactory {
 
 	private CyNetworkManager netmgr;
 	private CyRootNetworkFactory crnf;
@@ -59,6 +60,6 @@ public class NewNetworkSelectedNodesOnlyTaskFactory implements TaskFactory {
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new NewNetworkSelectedNodesOnlyTask(crnf, cnvf, netmgr, naming, vmm));
+		return new TaskIterator(new NewNetworkSelectedNodesOnlyTask(net,crnf, cnvf, netmgr, naming, vmm));
 	}
 }

@@ -67,8 +67,4 @@ public class CreateNetworkViewTask extends AbstractNetworkTask {
 		taskMonitor.setStatusMessage("Network view successfully create for:  "
 				+ net.attrs().get("name", String.class));
 	}
-
-	@Override
-	public void cancel() {
-	}
 }

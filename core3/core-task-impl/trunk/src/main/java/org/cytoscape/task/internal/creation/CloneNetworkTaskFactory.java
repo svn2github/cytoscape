@@ -33,17 +33,18 @@ package org.cytoscape.task.internal.creation;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.task.AbstractNetworkTaskFactory;
 
 
-public class CloneNetworkTaskFactory implements TaskFactory {
+public class CloneNetworkTaskFactory extends AbstractNetworkTaskFactory {
 
-	private CyNetworkManager netmgr;
+	private final CyNetworkManager netmgr;
 
 	public CloneNetworkTaskFactory(CyNetworkManager netmgr) {
 		this.netmgr = netmgr;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new CloneNetworkTask(netmgr));
+		return new TaskIterator(new CloneNetworkTask(net,netmgr));
 	} 
 }

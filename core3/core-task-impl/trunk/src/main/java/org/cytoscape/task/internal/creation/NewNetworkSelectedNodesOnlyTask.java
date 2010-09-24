@@ -70,11 +70,11 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 	private final VisualMappingManager vmm;
 	private final CyNetworkNaming cyNetworkNaming;
 
-	public NewNetworkSelectedNodesOnlyTask(final CyRootNetworkFactory cyroot,
+	public NewNetworkSelectedNodesOnlyTask(final CyNetwork net, final CyRootNetworkFactory cyroot,
 			final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
 			final CyNetworkNaming cyNetworkNaming,
 			final VisualMappingManager vmm) {
-		super(netmgr);
+		super(net,netmgr);
 		this.cyroot = cyroot;
 		this.cnvf = cnvf;
 		this.cyNetworkNaming = cyNetworkNaming;
@@ -83,7 +83,7 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 
 	public void run(TaskMonitor tm) {
 
-		CyNetwork current_network = netmgr.getCurrentNetwork();
+		CyNetwork current_network = net; 
 
 		if (current_network == null)
 			return;
@@ -146,9 +146,5 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 			if (newVS != null)
 				vmm.setVisualStyle(newVS, new_view);
 		}
-	}
-
-	@Override
-	public void cancel() {
 	}
 }

@@ -285,7 +285,7 @@
 
 	<osgi:service id="newNetworkSelectedNodesEdgesTaskFactoryService" 
 	    ref="newNetworkSelectedNodesEdgesTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="From selected nodes, selected edges" />
 			<entry key="preferredMenu" value="File.New.Network" />
@@ -296,12 +296,22 @@
 	
 	<osgi:service id="newNetworkSelectedNodesOnlyTaskFactoryService" 
 	    ref="newNetworkSelectedNodesOnlyTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="From selected nodes, all edges" />
 			<entry key="preferredMenu" value="File.New.Network" />
 			<entry key="enableFor" value="selectedNetworkObjs" />
 			<entry key="accelerator" value="cmd n"/>
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="cloneNetworkTaskFactoryService" 
+	    ref="cloneNetworkTaskFactory"
+		interface="org.cytoscape.task.NetworkTaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Clone Current Network" />
+			<entry key="preferredMenu" value="File.New.Network" />
+			<entry key="enableFor" value="selectedNetworkObjs" />
 		</osgi:service-properties>
 	</osgi:service>
 
