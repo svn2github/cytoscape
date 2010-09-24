@@ -52,8 +52,9 @@ import org.cytoscape.work.Task;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 
-public class SelectAllEdgesTaskTest extends AbstractSelectTaskTester {
+public class SelectAllTaskTest extends AbstractSelectTaskTester {
 
 
 	@Before
@@ -79,12 +80,28 @@ public class SelectAllEdgesTaskTest extends AbstractSelectTaskTester {
 		el.add(e2);
 		when(net.getEdgeList()).thenReturn(el);
 
+		CyRow r3 = mock(CyRow.class);
+		CyNode e3 = mock(CyNode.class);
+		when(e3.attrs()).thenReturn(r3);
+
+		CyRow r4 = mock(CyRow.class);
+		CyNode e4 = mock(CyNode.class);
+		when(e4.attrs()).thenReturn(r4);
+
+		List<CyNode> nl = new ArrayList<CyNode>();
+		nl.add(e3);
+		nl.add(e4);
+		when(net.getNodeList()).thenReturn(nl);
+
+
 		// run the task
-		Task t = new SelectAllEdgesTask(net,netmgr);
+		Task t = new SelectAllTask(net,netmgr);
 		t.run(tm);
 
 		// check that the expected rows were set
 		verify(r1, times(1)).set("selected",true);
 		verify(r2, times(1)).set("selected",true);
+		verify(r3, times(1)).set("selected",true);
+		verify(r4, times(1)).set("selected",true);
 	}
 }

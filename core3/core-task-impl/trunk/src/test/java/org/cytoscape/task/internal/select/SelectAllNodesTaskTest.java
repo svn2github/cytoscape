@@ -51,9 +51,9 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 
-public class SelectAllEdgesTaskTest extends AbstractSelectTaskTester {
+public class SelectAllNodesTaskTest extends AbstractSelectTaskTester {
 
 
 	@Before
@@ -67,20 +67,20 @@ public class SelectAllEdgesTaskTest extends AbstractSelectTaskTester {
 		CyNetwork net = mock(CyNetwork.class);
 
 		CyRow r1 = mock(CyRow.class);
-		CyEdge e1 = mock(CyEdge.class);
+		CyNode e1 = mock(CyNode.class);
 		when(e1.attrs()).thenReturn(r1);
 
 		CyRow r2 = mock(CyRow.class);
-		CyEdge e2 = mock(CyEdge.class);
+		CyNode e2 = mock(CyNode.class);
 		when(e2.attrs()).thenReturn(r2);
 
-		List<CyEdge> el = new ArrayList<CyEdge>();
+		List<CyNode> el = new ArrayList<CyNode>();
 		el.add(e1);
 		el.add(e2);
-		when(net.getEdgeList()).thenReturn(el);
+		when(net.getNodeList()).thenReturn(el);
 
 		// run the task
-		Task t = new SelectAllEdgesTask(net,netmgr);
+		Task t = new SelectAllNodesTask(net,netmgr);
 		t.run(tm);
 
 		// check that the expected rows were set
