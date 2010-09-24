@@ -27,7 +27,6 @@ public class SetCurrentNetworkTask extends AbstractTask {
 		this.taskMonitor = taskMonitor;
 		Object[] setNetworks = netmgr.getNetworkSet().toArray();
 		netmgr.setCurrentNetwork(((CyNetwork) setNetworks[setNetworks.length-1]).getSUID());
-		System.out.println("current network ID : " + netmgr.getCurrentNetwork().getSUID());
 	}
 
 	public void cancel() {
