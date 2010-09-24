@@ -56,6 +56,8 @@ import clusterMaker.ui.HistoChangeListener;
 public class EdgeAttributeHandler
        implements TunableListener, ActionListener, HistoChangeListener {
 
+	public static final String NONEATTRIBUTE = "--None--";
+
 	private ClusterProperties clusterProperties;
 	private DistanceMatrix matrix = null;
 	private boolean adjustLoops = true;
@@ -272,6 +274,7 @@ public class EdgeAttributeHandler
 		attributeArray = new String[1];
 		// Create the list by combining node and edge attributes into a single list
 		List<String> attributeList = new ArrayList<String>();
+		attributeList.add(NONEATTRIBUTE);
 		getAttributesList(attributeList, Cytoscape.getEdgeAttributes());
 		String[] attrArray = attributeList.toArray(attributeArray);
 		if (attrArray.length > 1) 

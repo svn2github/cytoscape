@@ -64,8 +64,12 @@ public class DistanceMatrix {
 
 			edgeWeights[edgeIndex] = Double.MIN_VALUE;
 
-			if(!edgeAttributes.hasAttribute(id,edgeAttributeName))
+			if(!edgeAttributes.hasAttribute(id,edgeAttributeName)) {
+				// Special-case for "None" attribute.  We just assign an edge value of 1.
+				if (edgeAttributeName.equals(EdgeAttributeHandler.NONEATTRIBUTE))
+					edgeWeights[edgeIndex] = 1.0;
 				continue;
+			}
 
 			double edgeWeight = 0.0;
 			if(edgeAttributes.getType(edgeAttributeName) == edgeAttributes.TYPE_FLOATING)
