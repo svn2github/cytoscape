@@ -63,28 +63,12 @@ public class SelectAllNodesTaskTest extends AbstractSelectTaskTester {
 
 	@Test
 	public void testRun() throws Exception {
-		// configure the mocks
-		CyNetwork net = mock(CyNetwork.class);
-
-		CyRow r1 = mock(CyRow.class);
-		CyNode e1 = mock(CyNode.class);
-		when(e1.attrs()).thenReturn(r1);
-
-		CyRow r2 = mock(CyRow.class);
-		CyNode e2 = mock(CyNode.class);
-		when(e2.attrs()).thenReturn(r2);
-
-		List<CyNode> el = new ArrayList<CyNode>();
-		el.add(e1);
-		el.add(e2);
-		when(net.getNodeList()).thenReturn(el);
-
 		// run the task
 		Task t = new SelectAllNodesTask(net,netmgr);
 		t.run(tm);
 
 		// check that the expected rows were set
-		verify(r1, times(1)).set("selected",true);
-		verify(r2, times(1)).set("selected",true);
+		verify(r3, times(1)).set("selected",true);
+		verify(r4, times(1)).set("selected",true);
 	}
 }

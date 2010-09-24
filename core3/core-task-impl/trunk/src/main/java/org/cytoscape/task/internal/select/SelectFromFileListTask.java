@@ -65,7 +65,7 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 	public void run(TaskMonitor tm) throws Exception {
 
 		if ( file == null )
-			throw new Exception("You must specify a file to load!");
+			throw new NullPointerException("You must specify a file to load!");
 
 		try {
 			FileReader fin = new FileReader(file);

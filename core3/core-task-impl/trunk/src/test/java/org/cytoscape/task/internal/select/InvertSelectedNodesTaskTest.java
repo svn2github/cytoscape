@@ -37,66 +37,42 @@
 package org.cytoscape.task.internal.select;
 
 import static org.mockito.Mockito.*;
-
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyRow;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.Before;
 
 import java.util.List;
 import java.util.ArrayList;
 
-public class AbstractSelectTaskTester {
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.Task;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyNode;
 
-	CyNetworkManager netmgr;
-	TaskMonitor tm;
-	CyNetwork net; 
-	CyRow r1;
-	CyEdge e1;
-	CyRow r2;
-	CyEdge e2;
-	CyRow r3;
-	CyNode e3;
-	CyRow r4;
-	CyNode e4;
+public class InvertSelectedNodesTaskTest extends AbstractSelectTaskTester {
 
+
+	@Before
 	public void setUp() throws Exception {
-		CyNetworkView view = mock(CyNetworkView.class);
+		super.setUp();
+	}
 
-		netmgr = mock(CyNetworkManager.class);
-		when(netmgr.getNetworkView(anyLong())).thenReturn(view);
+	@Test
+	public void testRun() throws Exception {
+		// more setup
+		when(r3.get("selected",Boolean.class)).thenReturn(false);	
+		when(r4.get("selected",Boolean.class)).thenReturn(true);	
 
-		tm = mock(TaskMonitor.class);
+		// run the task
+		Task t = new InvertSelectedNodesTask(net,netmgr);
+		t.run(tm);
 
-		net = mock(CyNetwork.class);
-
-		r1 = mock(CyRow.class);
-		e1 = mock(CyEdge.class);
-		when(e1.attrs()).thenReturn(r1);
-
-		r2 = mock(CyRow.class);
-		e2 = mock(CyEdge.class);
-		when(e2.attrs()).thenReturn(r2);
-
-		List<CyEdge> el = new ArrayList<CyEdge>();
-		el.add(e1);
-		el.add(e2);
-		when(net.getEdgeList()).thenReturn(el);
-
-		r3 = mock(CyRow.class);
-		e3 = mock(CyNode.class);
-		when(e3.attrs()).thenReturn(r3);
-
-		r4 = mock(CyRow.class);
-		e4 = mock(CyNode.class);
-		when(e4.attrs()).thenReturn(r4);
-
-		List<CyNode> nl = new ArrayList<CyNode>();
-		nl.add(e3);
-		nl.add(e4);
-		when(net.getNodeList()).thenReturn(nl);
+		// check that the expected rows were set
+		verify(r3, times(1)).set("selected",true);
+		verify(r4, times(1)).set("selected",false);
 	}
 }

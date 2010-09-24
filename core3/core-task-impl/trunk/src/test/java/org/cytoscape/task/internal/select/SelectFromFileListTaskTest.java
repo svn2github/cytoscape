@@ -54,7 +54,9 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 
-public class SelectAllTaskTest extends AbstractSelectTaskTester {
+import java.io.File;
+
+public class SelectFromFileListTaskTest extends AbstractSelectTaskTester {
 
 
 	@Before
@@ -64,14 +66,57 @@ public class SelectAllTaskTest extends AbstractSelectTaskTester {
 
 	@Test
 	public void testRun() throws Exception {
+
+		when(r3.get("name",String.class)).thenReturn("homer");
+		when(r4.get("name",String.class)).thenReturn("marge");
+
 		// run the task
-		Task t = new SelectAllTask(net,netmgr);
+		SelectFromFileListTask t = new SelectFromFileListTask(net,netmgr);
+		t.file = new File("./src/test/resources/node_names.txt");
 		t.run(tm);
 
 		// check that the expected rows were set
-		verify(r1, times(1)).set("selected",true);
-		verify(r2, times(1)).set("selected",true);
 		verify(r3, times(1)).set("selected",true);
 		verify(r4, times(1)).set("selected",true);
 	}
+
+	@Test(expected=NullPointerException.class)
+	public void testRunWithoutFileSpecified() throws Exception {
+		// run the task
+		SelectFromFileListTask t = new SelectFromFileListTask(net,netmgr);
+		t.run(tm);
+	}
+
+	@Test(expected=Exception.class)
+	public void testNonExistantFile() throws Exception {
+		// run the task
+		SelectFromFileListTask t = new SelectFromFileListTask(net,netmgr);
+		t.file = new File("./src/test/resources/does-not-exist.txt");
+		t.run(tm);
+	}
+
+	@Test
+	public void testRunEmptyFile() throws Exception {
+		// run the task
+		SelectFromFileListTask t = new SelectFromFileListTask(net,netmgr);
+		t.file = new File("./src/test/resources/empty.txt");
+		t.run(tm);
+
+		// check that the expected rows were set
+		verify(r3, never()).set("selected",true);
+		verify(r4, never()).set("selected",true);
+	}
+
+	@Test
+	public void testRunNamesDontMatch() throws Exception {
+		// run the task
+		SelectFromFileListTask t = new SelectFromFileListTask(net,netmgr);
+		t.file = new File("./src/test/resources/bad_names.txt");
+		t.run(tm);
+
+		// check that the expected rows were set
+		verify(r3, never()).set("selected",true);
+		verify(r4, never()).set("selected",true);
+	}
+
 }

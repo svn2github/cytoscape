@@ -45,33 +45,89 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.Task;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNode;
+import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.Task;
 
-public class SelectAllTaskTest extends AbstractSelectTaskTester {
+public class AllFactoryTest {
 
+	CyNetworkManager netmgr;
+	CyNetwork net;
 
 	@Before
 	public void setUp() throws Exception {
-		super.setUp();
+		net = mock(CyNetwork.class);
+		netmgr = mock(CyNetworkManager.class);
 	}
 
 	@Test
-	public void testRun() throws Exception {
-		// run the task
-		Task t = new SelectAllTask(net,netmgr);
-		t.run(tm);
+	public void testDeselectAllEdgesTaskFactory() {
+		executeTest( new DeselectAllEdgesTaskFactory(netmgr) );
+	}
 
-		// check that the expected rows were set
-		verify(r1, times(1)).set("selected",true);
-		verify(r2, times(1)).set("selected",true);
-		verify(r3, times(1)).set("selected",true);
-		verify(r4, times(1)).set("selected",true);
+	@Test
+	public void testDeselectAllNodesTaskFactory() {
+		executeTest( new DeselectAllNodesTaskFactory(netmgr) );
+	}
+
+	@Test
+	public void testDeselectAllTaskFactory() {
+		executeTest( new DeselectAllTaskFactory(netmgr) );
+	}
+
+	@Test
+	public void testInvertSelectedEdgesTaskFactory() {
+		executeTest( new InvertSelectedEdgesTaskFactory(netmgr) );
+	}
+
+	@Test
+	public void testInvertSelectedNodesTaskFactory() {
+		executeTest( new InvertSelectedNodesTaskFactory(netmgr) );
+	}
+
+	@Test
+	public void testSelectAdjacentEdgesTaskFactory() {
+		executeTest( new SelectAdjacentEdgesTaskFactory(netmgr) );
+	}
+
+	@Test
+	public void testSelectAllEdgesTaskFactory() {
+		executeTest( new SelectAllEdgesTaskFactory(netmgr) );
+	}
+
+	@Test
+	public void testSelectAllNodesTaskFactory() {
+		executeTest( new SelectAllNodesTaskFactory(netmgr) );
+	}
+
+	@Test
+	public void testSelectAllTaskFactory() {
+		executeTest( new SelectAllTaskFactory(netmgr) );
+	}
+
+	@Test
+	public void testSelectConnectedNodesTaskFactory() {
+		executeTest( new SelectConnectedNodesTaskFactory(netmgr) );
+	}
+
+	@Test
+	public void testSelectFirstNeighborsTaskFactory() {
+		executeTest( new SelectFirstNeighborsTaskFactory(netmgr) );
+	}
+
+	@Test
+	public void testSelectFromFileListTaskFactory() {
+		executeTest( new SelectFromFileListTaskFactory(netmgr) );
+	}
+
+
+	private void executeTest(NetworkTaskFactory ntf) {
+		ntf.setNetwork(net);
+		TaskIterator ti = ntf.getTaskIterator();
+		assertNotNull(ti);
+		assertTrue( ti.hasNext() );
+		Task t = ti.next();
+		assertNotNull( t );
 	}
 }

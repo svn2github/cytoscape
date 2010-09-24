@@ -54,9 +54,9 @@ public class SelectFirstNeighborsNodeViewTask extends AbstractTask {
 
 	public void run(TaskMonitor tm) throws Exception {
 		if ( nodeView == null )
-			throw new Exception("node view is null");
+			throw new NullPointerException("node view is null");
 		if ( netView == null )
-			throw new Exception("network view is null");
+			throw new NullPointerException("network view is null");
 
 		final Set<CyNode> selNodes = new HashSet<CyNode>();
 		final CyNode node = nodeView.getModel();

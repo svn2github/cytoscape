@@ -63,22 +63,6 @@ public class SelectAllEdgesTaskTest extends AbstractSelectTaskTester {
 
 	@Test
 	public void testRun() throws Exception {
-		// configure the mocks
-		CyNetwork net = mock(CyNetwork.class);
-
-		CyRow r1 = mock(CyRow.class);
-		CyEdge e1 = mock(CyEdge.class);
-		when(e1.attrs()).thenReturn(r1);
-
-		CyRow r2 = mock(CyRow.class);
-		CyEdge e2 = mock(CyEdge.class);
-		when(e2.attrs()).thenReturn(r2);
-
-		List<CyEdge> el = new ArrayList<CyEdge>();
-		el.add(e1);
-		el.add(e2);
-		when(net.getEdgeList()).thenReturn(el);
-
 		// run the task
 		Task t = new SelectAllEdgesTask(net,netmgr);
 		t.run(tm);
