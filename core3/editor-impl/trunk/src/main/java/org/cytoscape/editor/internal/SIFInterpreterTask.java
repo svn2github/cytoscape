@@ -41,14 +41,13 @@ public class SIFInterpreterTask extends AbstractNetworkViewTask {
 						node1 = network.addNode();
 						node1.attrs().set("name",terms[0]);
 
-						//Cytoscape.getCurrentNetwork().restoreNode(node1);
 
 						//nv1 = view.getNodeView(node1);
 
 						//double[] nextLocn = new double[2];
 						//nextLocn[0] = p.getX();
 						//nextLocn[1] = p.getY();
-						//Cytoscape.getCurrentNetworkView().xformComponentToNodeCoords(nextLocn);
+						//view.xformComponentToNodeCoords(nextLocn);
 						//nv1.setOffset(nextLocn[0], nextLocn[1]);
 					} else {
 						//nv1 = view.getNodeView(node1);
@@ -56,8 +55,7 @@ public class SIFInterpreterTask extends AbstractNetworkViewTask {
 					System.out.println("Node 1 = " + node1);
 					//System.out.println("NodeView 1 = " + nv1);
 
-				//	double spacing = 3.0 * Cytoscape.getCurrentNetworkView()
-				//			.getNodeView(node1).getWidth();
+				//	double spacing = 3.0 *view.getNodeView(node1).getWidth();
 
 					if (terms.length == 3) // simple case of 'A interaction B'
 					{
@@ -66,7 +64,6 @@ public class SIFInterpreterTask extends AbstractNetworkViewTask {
 							node2 = network.addNode();
 							node2.attrs().set("name",terms[2]);
 
-							//Cytoscape.getCurrentNetwork().restoreNode(node2);
 							//nv2 = view.getNodeView(node2);
 
 							//nv2.setOffset(nv1.getXPosition() + spacing, nv1
@@ -75,7 +72,6 @@ public class SIFInterpreterTask extends AbstractNetworkViewTask {
 
 						CyEdge edge = network.addEdge(node1, node2, true);
 						edge.attrs().set("name",terms[1]);
-						//Cytoscape.getCurrentNetwork().restoreEdge(edge);
 
 					} else if (terms.length > 3) {
 						// process multiple targets and one source
@@ -88,7 +84,6 @@ public class SIFInterpreterTask extends AbstractNetworkViewTask {
 								node2 = network.addNode();
 								node2.attrs().set("name",terms[i]);
 
-								//Cytoscape.getCurrentNetwork().restoreNode(node2);
 								//nv2 = view.getNodeView(node2);
 
 								//nv2.setOffset(nv1.getXPosition() + spacing, nv1
@@ -128,7 +123,7 @@ public class SIFInterpreterTask extends AbstractNetworkViewTask {
 					nv1.getYPosition() + (int) (r * Math.cos(i * phi)));
 		}
 
-		//Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+		// update view
 */
 	}
 
