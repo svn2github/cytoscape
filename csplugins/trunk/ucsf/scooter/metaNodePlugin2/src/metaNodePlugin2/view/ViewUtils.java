@@ -206,11 +206,19 @@ public class ViewUtils {
 			Dimension offset = getAttributes(node, nodeAttributes);
 			// offset might be null if we've just added the node
 			if (offset != null) {
+				System.out.println("Offset for "+node.toString()+" is "+offset.getWidth()+"x"+offset.getHeight());
 				net.restoreNode(node);
-				minX = Math.min(minX, offset.getWidth());
-				maxX = Math.max(maxX, offset.getWidth());
-				minY = Math.min(minY, offset.getHeight());
-				maxY = Math.max(maxY, offset.getHeight());
+				NodeView nView = view.getNodeView(node);
+				double nodeWidth = 0.0;
+				double nodeHeight = 0.0;
+				if (nView != null) {
+					nodeWidth = nView.getWidth()/2;
+					nodeHeight = nView.getHeight()/2;
+				}
+				minX = Math.min(minX, offset.getWidth()-nodeWidth);
+				maxX = Math.max(maxX, offset.getWidth()+nodeWidth);
+				minY = Math.min(minY, offset.getHeight()-nodeHeight);
+				maxY = Math.max(maxY, offset.getHeight()+nodeHeight);
 				offset.setSize(centerX-offset.getWidth(), centerY-offset.getHeight());
 				setPosition(node, view, offset);
 			}

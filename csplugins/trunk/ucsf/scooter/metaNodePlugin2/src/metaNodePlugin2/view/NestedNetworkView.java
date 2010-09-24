@@ -48,6 +48,9 @@ public class NestedNetworkView {
 		// Get the network
 		CyNetwork nn = group.getGraphPerspective();
 
+		// Give it a reasonable title
+		nn.setTitle(group.toString());
+
 		// Create the view
 		CyNetworkView nnView = Cytoscape.createNetworkView(nn, group.toString());
 
@@ -57,17 +60,26 @@ public class NestedNetworkView {
 		// Move the nodes around
 		Dimension boundingBox = ViewUtils.restoreNodes(group, nn, nnView, position, Cytoscape.getNodeAttributes(), null);
 
+		System.out.println("Bounding box for "+group.toString()+" is "+boundingBox.getWidth()+"x"+boundingBox.getHeight());
+
 		// Add it to the network map as a child of the group's network
 		CyNetwork network = group.getNetwork();
+
+		Cytoscape.addNetwork(nn, group.toString(), network, false);
+
+/*
 		// We do this by firing a NETWORK_CREATED event with the parent network as the old value
 		// and our new network as the new value
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_CREATED, nn.getIdentifier(), network.getIdentifier());
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_CREATED, network.getIdentifier(), nn.getIdentifier());
+*/
 
 		// Set it as a nested network
 		group.getGroupNode().setNestedNetwork(nn);
 
 		// Update the size of our group node to match the bounding box
-		ViewUtils.setNodeSize(group.getGroupNode(), view, boundingBox);
+		// Actually, this doesn't work.  If our bounding box is not square
+		// the resulting network image in the node is really skewed
+		// ViewUtils.setNodeSize(group.getGroupNode(), view, boundingBox);
 
 		// Remember that we did it
 		nnMap.put(group, nnView);
@@ -89,6 +101,6 @@ public class NestedNetworkView {
 		Cytoscape.destroyNetworkView(nnView);
 
 		// Remove the graph perspective from our list
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_DESTROYED, group.getGraphPerspective().getIdentifier(), null);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_DESTROYED, null, group.getGraphPerspective().getIdentifier());
 	}
 }
