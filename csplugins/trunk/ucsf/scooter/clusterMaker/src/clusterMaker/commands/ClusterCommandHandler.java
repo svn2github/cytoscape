@@ -54,6 +54,7 @@ import cytoscape.task.util.TaskManager;
 
 // clusterMaker imports
 import clusterMaker.ClusterMaker;
+import clusterMaker.ui.ClusterSettingsDialog;
 import clusterMaker.ui.ClusterTask;
 import clusterMaker.algorithms.AbstractNetworkClusterer;
 import clusterMaker.algorithms.ClusterAlgorithm;
@@ -63,7 +64,8 @@ enum BuiltIn {
 	HASCLUSTER("hasCluster", "Test to see if this network has a cluster of the requested type", "type"),
 	GETNETCLUSTER("getNetworkCluster", "Get a cluster of the requested type and the requested clustertype (node or attribute)",
              "type"),
-	GETEISENCLUSTER("getCluster", "Get a cluster of the requested clustertype (node or attribute)", "type=hierarchical|clustertype=node");
+	GETEISENCLUSTER("getCluster", "Get a cluster of the requested clustertype (node or attribute)", "type=hierarchical|clustertype=node"),
+	SHOWDIALOG("showDialog", "Show the clusterMaker dialog","type");
 
 	private String command = null;
 	private String argList = null;
@@ -142,6 +144,13 @@ public class ClusterCommandHandler extends ClusterMakerCommandHandler {
 				throw new RuntimeException("clustertype must be 'node' or 'attribute'");
 			}
 
+		} else if (BuiltIn.SHOWDIALOG.equals(command)) {
+			// Get the algorithm
+			ClusterAlgorithm alg = getAlgorithm(args, command);
+			// Show it
+			ClusterSettingsDialog settingsDialog = new ClusterSettingsDialog(alg);
+			settingsDialog.showDialog();
+			result.addMessage("done");
 		} else if (algMap.containsKey(command)) {
 			// Get the algorithm
 			ClusterAlgorithm alg = algMap.get(command);

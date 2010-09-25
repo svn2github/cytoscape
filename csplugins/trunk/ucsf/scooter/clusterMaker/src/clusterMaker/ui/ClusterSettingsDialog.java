@@ -107,6 +107,13 @@ public class ClusterSettingsDialog extends JDialog
 		setResizable(false);
 	}
 
+	public void showDialog() {
+		initialize();
+		pack();
+		setLocationRelativeTo(Cytoscape.getDesktop());
+		setVisible(true);
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

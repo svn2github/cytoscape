@@ -229,7 +229,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 				// Create the dialog
 				ClusterSettingsDialog settingsDialog = new ClusterSettingsDialog(alg);
 				// Pop it up
-				settingsDialog.actionPerformed(e);
+				settingsDialog.showDialog();
 			} else if (viz != null) {
 				viz.startViz();
 			}
