@@ -393,7 +393,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout implements A
 
 	layoutProperties.add(new Tunable("labels_settings", 
 					 "General Layout Settings",
-					 Tunable.GROUP, new Integer(3))); 
+					 Tunable.GROUP, new Integer(4))); 
 
 	layoutProperties.add(new Tunable("layout_type", 
 					 "Which elements to layout",
@@ -409,7 +409,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout implements A
 					 Tunable.BUTTON, "Reset Label Positions", this, null, 0));
 
 	layoutProperties.add(new Tunable("weightCoefficient", 
-					 "weightCoefficient",
+					 "Weight coefficient",
 					 Tunable.DOUBLE, new Double(weightCoefficient)));
     }
 
