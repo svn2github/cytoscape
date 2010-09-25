@@ -11,8 +11,13 @@ import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+// import java.util.logging.Level;
+// import java.util.logging.Logger;
+
+import cytoscape.logger.CyLogger;
+import cytoscape.logger.LogLevel;
+
+import clusterMaker.algorithms.TransClust.TransClustCluster;
 
 import clusterMaker.algorithms.TransClust.de.costmatrixcreation.main.Config;
 import clusterMaker.algorithms.TransClust.de.layclust.geometric_clustering.GeometricClusteringConfig;
@@ -35,7 +40,8 @@ import clusterMaker.algorithms.TransClust.de.layclust.taskmanaging.TaskConfig;
  */
 public class Console {
 
-	private static Logger log = Logger.getLogger(Console.class.getName());
+	// private static Logger log = Logger.getLogger(Console.class.getName());
+	private static CyLogger	log = CyLogger.getLogger(TransClustCluster.class);
 
 	private String[] args = null;
 
@@ -43,7 +49,7 @@ public class Console {
 			ArgsParseException, IOException {
 		this.args = args;
 
-		log.fine("Available processors in system: "
+		log.debug("Available processors in system: "
 				+ Runtime.getRuntime().availableProcessors());
 
 		parseArgsAndInitProgram();
@@ -68,21 +74,21 @@ public class Console {
 		initGivenParameters();
 
 		/* set logging */
-		Logger logger = Logger.getLogger("");
-		if (TaskConfig.setLogLevel){
-			logger.setLevel(TaskConfig.logLevel);
-		}
-		Handler[] handler = logger.getHandlers();
-		for (Handler h : handler) {
-			if (TaskConfig.setLogLevel){			
-				h.setLevel(TaskConfig.logLevel);
-			}
-			if (h instanceof ConsoleHandler) {
-				if (!TaskConfig.verbose) {
-					h.setLevel(Level.WARNING);
-				}
-			}
-		}
+		// Logger logger = Logger.getLogger("");
+		// if (TaskConfig.setLogLevel){
+		// 	logger.setLevel(TaskConfig.logLevel);
+		// }
+		// Handler[] handler = logger.getHandlers();
+		// for (Handler h : handler) {
+		// 	if (TaskConfig.setLogLevel){			
+		// 		h.setLevel(TaskConfig.logLevel);
+		// 	}
+		// 	if (h instanceof ConsoleHandler) {
+		// 		if (!TaskConfig.verbose) {
+		// 			h.setLevel(Level.WARNING);
+		// 		}
+		// 	}
+		// }
 
 		if (TaskConfig.gui) {
 			/* start gui with previous set parameters */
@@ -184,7 +190,7 @@ public class Console {
 				TaskConfig.useConfigFile = Boolean.parseBoolean(value);
 			} else if (key.equals("-log")) {
 				TaskConfig.setLogLevel = true;
-				TaskConfig.logLevel = Level.parse(value.toUpperCase());
+				// TaskConfig.logLevel = Level.parse(value.toUpperCase());
 			} else if (key.equals("-verbose")) {
 				TaskConfig.verbose = Boolean.parseBoolean(value);
 			} else if (key.equals("-info")) {
@@ -422,7 +428,7 @@ public class Console {
 				FileInputStream s = new FileInputStream(configPath);
 				PropertyResourceBundle configrb = new PropertyResourceBundle(s);
 
-				log.fine("Using config file " + configPath);
+				log.debug("Using config file " + configPath);
 
 				TaskConfig.initFromConfigFile(configrb);
 				FORCEnDLayoutConfig.initFromConfigFile(configrb);
@@ -431,7 +437,7 @@ public class Console {
 
 			} catch (MissingResourceException ex) {
 				log
-						.severe("WARNING: Resources are missing in the given config file: "
+						.error("WARNING: Resources are missing in the given config file: "
 								+ TaskConfig.DEFAULTCONFIG
 								+ ", key="
 								+ ex.getKey()
@@ -439,12 +445,12 @@ public class Console {
 								+ TaskConfig.DEFAULTCONFIG
 								+ ". Or these parameters do not interest you, because they belong to an unused implemtation.");
 			} catch (IOException ex) {
-				log.severe("ERROR: Unable to read the given config file: "
+				log.fatal("ERROR: Unable to read the given config file: "
 						+ configPath);
 				System.exit(-1);
 			} catch (InvalidTypeException ex) {
 				log
-						.severe("ERROR: You have perhaps given an incorrect class name of an "
+						.fatal("ERROR: You have perhaps given an incorrect class name of an "
 								+ "implemtation. Please note that this is case sensitive.");
 				System.exit(-1);
 			}
