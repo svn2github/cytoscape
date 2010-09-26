@@ -937,16 +937,20 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 			useNetworkCounts.setEnabled(true);
 		}
 		
+		CloudDisplayPanel displayPanel = SemanticSummaryManager.getInstance().getCloudWindow();
+		
 		//Enable button based on cloud
 		if (params.equals(SemanticSummaryManager.getInstance().getNullCloudParameters()))
 		{
 			createNetworkButton.setEnabled(false);
 			saveCloudButton.setEnabled(false);
+			displayPanel.getSaveCloudButton().setEnabled(false);
 		}
 		else
 		{
 			createNetworkButton.setEnabled(true);
 			saveCloudButton.setEnabled(true);
+			displayPanel.getSaveCloudButton().setEnabled(true);
 		}
 		
 		SemanticSummaryManager.getInstance().setCurCloud(params);

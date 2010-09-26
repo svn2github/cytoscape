@@ -161,6 +161,9 @@ public class CreateCloudAction extends CytoscapeAction
 		inputPanel.getCreateNetworkButton().setEnabled(true);
 		inputPanel.getSaveCloudButton().setEnabled(true);
 		
+		CloudDisplayPanel displayPanel = SemanticSummaryManager.getInstance().getCloudWindow();
+		displayPanel.getSaveCloudButton().setEnabled(true);
+		
 		//Update the list of filter words and checkbox
 		inputPanel.refreshNetworkSettings();
 		

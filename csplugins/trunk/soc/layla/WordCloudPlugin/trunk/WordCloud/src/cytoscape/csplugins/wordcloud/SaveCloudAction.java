@@ -26,6 +26,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -34,6 +35,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import cytoscape.Cytoscape;
@@ -100,19 +103,95 @@ public class SaveCloudAction extends CytoscapeAction
 		CloudDisplayPanel panel = SemanticSummaryManager.getInstance().getCloudWindow();
 		String cloudName = SemanticSummaryManager.getInstance().getCurCloud().getCloudName();
 		
+		//Get Data panel??
+		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
+		Dimension curSize = cytoPanel.getSelectedComponent().getSize();
+		
+		
+		//Can I make it work with just the flow panel
+		//Gives exact copy of what is visible (includes scroll bars) - KEEPER
+		JScrollPane scroll = panel.cloudScroll;
+		JFrame frame = new JFrame(cloudName);
+		scroll.setPreferredSize(curSize);
+		frame.getContentPane().add(scroll);
+		scroll.revalidate();
+		frame.pack();
+		frame.setLocation(-100, -100);
+		frame.setVisible(true);
+		
+		/*
+		//Gives exact copy of what is visible (includes scroll bars) - KEEPER
+		JFrame frame = new JFrame(cloudName);
+		panel.setPreferredSize(curSize);
+		frame.getContentPane().add(panel);
+		panel.revalidate();
+		frame.pack();
+		frame.setLocation(-100, -100);
+		frame.setVisible(true);
+		*/
+	
+		
+		
+		//Almost right width, adds scroll bars
+		/*
+		JFrame frame = new JFrame(cloudName);
+		frame.setPreferredSize(curSize);
+		frame.getContentPane().add(panel);
+		panel.revalidate();
+		frame.pack();
+		frame.setLocation(-100, -100);
+		frame.setVisible(true);
+		*/
+		
+		/*
+		panel.revalidate();
+		JPanel flowPanel = panel.getTagCloudFlowPanel();
+		JScrollPane scroll = panel.cloudScroll;
+		flowPanel.revalidate();
+		
+		Dimension size = flowPanel.getSize();
+		Dimension preferredSize = flowPanel.getPreferredSize();
+		JFrame frame = new JFrame(cloudName);
+		Insets frameInset = frame.getInsets();
+		Insets panelInset = panel.getInsets();
+		Insets scrollInset = scroll.getInsets();
+		int width = size.width + frameInset.left + frameInset.right + panelInset.left + panelInset.right + 25 + scrollInset.left + scrollInset.right;
+		int height = size.height + frameInset.top + frameInset.bottom + panelInset.top + panelInset.bottom + 30 + scrollInset.top + scrollInset.bottom;
+		//frame.setPreferredSize(new Dimension(width, height));
+		frame.getContentPane().add(panel);
+		frame.pack();
+		frame.setLocation(-100, -100);
+		frame.setVisible(true);
+		flowPanel.revalidate();
+		panel.revalidate();
+		size = flowPanel.getSize();
+		width = size.width + frameInset.left + frameInset.right + panelInset.left + panelInset.right + 25 + + scrollInset.left + scrollInset.right;
+		height = size.height + frameInset.top + frameInset.bottom + panelInset.top + panelInset.bottom + 30 + + scrollInset.top + scrollInset.bottom;
+		//frame.setPreferredSize(new Dimension(width, height));
+		flowPanel.revalidate();
+		panel.revalidate();
+		frame.pack();
+		*/
+		
+		/*
 		//Testing
 		Dimension size = panel.getPreferredSize();
-		Dimension newSize = new Dimension(size.width + 40, size.height + 15);
-		panel.setPreferredSize(newSize);
+		//Dimension newSize = new Dimension(size.width + 40, size.height + 15);
+		//panel.setPreferredSize(newSize);
 		
 		JFrame frame = new JFrame(cloudName);
-		frame.setSize(newSize);
+		//frame.setSize(newSize);
 		frame.getContentPane().add(panel);
 		frame.pack();
 		frame.setLocation(-100, -100);
 		frame.setVisible(true);
 		
-		Dimension imageSize = frame.getPreferredSize();
+		panel.revalidate();
+		frame.setPreferredSize(panel.getPreferredSize());
+		panel.revalidate();
+		*/
+		//Dimension imageSize = frame.getPreferredSize();
+		Dimension imageSize = frame.getSize();
 		
 		BufferedImage b = new BufferedImage(imageSize.width, imageSize.height ,BufferedImage.TYPE_INT_RGB); /* change sizes of course */
 		Graphics2D g = b.createGraphics();
@@ -120,6 +199,10 @@ public class SaveCloudAction extends CytoscapeAction
 		try{ImageIO.write(b,"png",new File(name));}catch (Exception e) {}
 		
 		frame.dispose();
+		
+		//Trial - add back to regular display
+		panel.add(scroll, BorderLayout.CENTER);
+		
 		
 		new SemanticSummaryPluginAction().loadCloudPanel();
 		

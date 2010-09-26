@@ -32,6 +32,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -56,6 +57,8 @@ public class CloudDisplayPanel extends JPanel
 	JPanel tagCloudFlowPanel;//add JLabels here for words
 	JScrollPane cloudScroll;
 	CloudParameters curCloud;
+	JPanel saveCloudPanel;
+	JButton saveCloudButton;
 	
 	
 	//CONSTRUCTORS
@@ -68,6 +71,16 @@ public class CloudDisplayPanel extends JPanel
 		cloudScroll = new JScrollPane(tagCloudFlowPanel);
 		cloudScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		add(cloudScroll, BorderLayout.CENTER);
+		
+		
+		saveCloudButton = new JButton("Export Cloud to File");
+		saveCloudButton.setEnabled(false);
+		saveCloudButton.setToolTipText("Saves the current cloud as an image file");
+		saveCloudButton.addActionListener(new SaveCloudAction());
+		
+		saveCloudPanel = new JPanel(new BorderLayout());
+		saveCloudPanel.add(saveCloudButton,BorderLayout.EAST);
+		add(saveCloudPanel, BorderLayout.SOUTH);
 	}
 	
 	//METHODS
@@ -214,6 +227,11 @@ public class CloudDisplayPanel extends JPanel
 	public void setCloudParameters(CloudParameters params)
 	{
 		curCloud = params;
+	}
+	
+	public JButton getSaveCloudButton()
+	{
+		return saveCloudButton;
 	}
 
 }
