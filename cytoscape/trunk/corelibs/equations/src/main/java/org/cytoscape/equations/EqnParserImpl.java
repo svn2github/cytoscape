@@ -100,7 +100,10 @@ class EqnParserImpl implements EqnParser {
 			final Token token = tokeniser.getToken();
 			final int tokenStartPos = tokeniser.getStartPos();
 			if (token != Token.EOS)
-				throw new IllegalStateException(tokenStartPos + ": premature end of expression: expected EOS, but found " + token + "!");
+				throw new IllegalStateException(
+					tokenStartPos
+					+ ": premature end of expression: expected end-of-string, but found "
+					+ token + "!");
 		} catch (final IllegalStateException e) {
 			lastErrorMessage = e.getMessage();
 			return false;
