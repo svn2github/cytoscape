@@ -81,6 +81,15 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="gmlNetworkViewReaderFactoryService" ref="gmlNetworkViewReaderFactory"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="gmlNetworkViewReaderFactory" />
+			<entry key="readerId" value="gmlNetworkViewReader" />
+			<entry key="readerDescription" value="GML file reader" />
+		</osgi:service-properties>
+	</osgi:service>
+
 	<osgi:service id="pngWriterFactoryService" ref="pngWriterFactory"
 		interface="org.cytoscape.io.write.ViewWriterFactory">
 	</osgi:service>

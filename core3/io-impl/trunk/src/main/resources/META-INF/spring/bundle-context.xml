@@ -136,6 +136,25 @@
 		</constructor-arg>
 	</bean>
 
+	<bean id="gmlFilter" class="org.cytoscape.io.internal.read.gml.GMLFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>gml</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>text/gml</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="GML files" />
+		<constructor-arg type="org.cytoscape.io.DataCategory"
+			value="NETWORK" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
+	</bean>
+	
 	<!-- Utility for Stream/Proxy management -->
 	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">
 		<constructor-arg ref="streamUtil" />
@@ -154,6 +173,12 @@
 		<constructor-arg ref="readUtil" />
 		<constructor-arg ref="sifFilter" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkFactoryServiceRef" />
+	</bean>
+
+	<bean id="gmlNetworkViewReaderFactory" class="org.cytoscape.io.internal.read.gml.GMLNetworkViewReaderFactory">
+		<constructor-arg ref="gmlFilter" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 	</bean>

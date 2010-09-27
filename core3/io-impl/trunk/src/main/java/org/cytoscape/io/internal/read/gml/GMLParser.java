@@ -44,12 +44,9 @@ import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.Writer;
 import java.text.ParseException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
-
-import org.cytoscape.io.internal.util.ReadUtils;
 
 
 /**
@@ -57,8 +54,6 @@ import org.cytoscape.io.internal.util.ReadUtils;
  * into GML
  */
 public class GMLParser {
-	
-	private ReadUtils readUtil;
 	
 	/**
 	 * This character begsin and ends a string literal in a GML file
@@ -111,7 +106,12 @@ public class GMLParser {
 	 * Make a stream tokenizer out of the given this file and read in the file
 	 */
 	public GMLParser(InputStream stream) throws IOException, Exception {
-		tokenizer = new StreamTokenizer(new FilterNewlineReader(new InputStreamReader(stream)));
+		tokenizer = createTokenizer(stream); 
+		tokenizer.nextToken();
+	}
+
+	static StreamTokenizer createTokenizer(InputStream stream) {
+		StreamTokenizer tokenizer = new StreamTokenizer(new FilterNewlineReader(new InputStreamReader(stream)));
 
 		tokenizer.resetSyntax();
 		tokenizer.commentChar('#');
@@ -124,32 +124,30 @@ public class GMLParser {
 		tokenizer.wordChars('$', '~');
 		tokenizer.wordChars('\u00A0', '\u00FF');
 		tokenizer.whitespaceChars('\u0000', '\u0020');
-		tokenizer.nextToken();
+		return tokenizer;
 	}
-
 
 	/**
 	 * Public method to print out a given object tree(list)
 	 * using the supplied filewriter
 	 */
-	public static void printList(List list, Writer writer) throws IOException {
+	public static void printList(List<KeyValue> list, Writer writer) throws IOException {
 		printList(list, "", writer);
 	}
 
 	/**
 	 * Protected recurive helper method to print out an object tree
 	 */
-	protected static void printList(List list, String indent, Writer writer)
+	@SuppressWarnings("unchecked")
+	protected static void printList(List<KeyValue> list, String indent, Writer writer)
 	    throws IOException {
-		for (Iterator it = list.iterator(); it.hasNext();) {
-			KeyValue keyVal = (KeyValue) it.next();
-
+		for (KeyValue keyVal : list) {
 			if (keyVal.value instanceof List) {
 				//  If the value is a list, print that list recursively
 				//  surrounded by the list open and close characters
 				writer.write(indent + keyVal.key + "\t");
 				writer.write(LIST_OPEN + "\n");
-				printList((List) keyVal.value, indent + "\t", writer);
+				printList((List<KeyValue>) keyVal.value, indent + "\t", writer);
 				writer.write(indent + LIST_CLOSE + "\n");
 			} else if (keyVal.value instanceof String) {
 				//  Surround a string with the quote characters
@@ -292,7 +290,7 @@ public class GMLParser {
 		if (isList()) {
 			tokenizer.nextToken();
 
-			List list = parseList();
+			List<KeyValue> list = parseList();
 
 			if (!tokenizer.sval.equals(LIST_CLOSE)) {
 				throw new ParseException("Unterminated list", tokenizer.lineno());
@@ -312,7 +310,7 @@ public class GMLParser {
 	 * and spaces the same, we just turn all newlines and carriage returns
 	 * into spaces.  Fortunately for us, StreamTokenizer only calls the read() method.
 	 */
-	private class FilterNewlineReader extends FilterReader {
+	private static class FilterNewlineReader extends FilterReader {
 		public FilterNewlineReader(Reader r) {
 			super(r);
 		}
