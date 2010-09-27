@@ -316,9 +316,14 @@ class EqnParserImpl implements EqnParser {
 			return parseDefined();
 
 		final Function func = nameToFunctionMap.get(functionNameCandidate);
-		if (func == null)
-			throw new IllegalStateException(functionNameStartPos + ": call to unknown function "
-			                                + functionNameCandidate + "()!");
+		if (func == null) {
+			if (tokeniser.getToken() == Token.OPEN_PAREN)
+				throw new IllegalStateException(functionNameStartPos + ": call to unknown function "
+								+ functionNameCandidate + "()!");
+			else
+				throw new IllegalStateException(functionNameStartPos + ": unknown text \""
+								+ functionNameCandidate + "\", maybe you forgot to put quotes around this text?");
+		}
 
 		token = tokeniser.getToken();
 		final int openParenPos = tokeniser.getStartPos();
