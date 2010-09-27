@@ -8,7 +8,7 @@ public class ColorVisualProperty extends AbstractVisualProperty<Color> {
 
 	public ColorVisualProperty(final Color defaultValue,
 			final String id, final String name) {
-		super(defaultValue, id, name, null);
+		super(defaultValue, id, name);
 	}
 
 	public Color parseSerializableString(final String text) {
