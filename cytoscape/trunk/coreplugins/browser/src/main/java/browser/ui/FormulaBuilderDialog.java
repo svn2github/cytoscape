@@ -278,7 +278,7 @@ public class FormulaBuilderDialog extends JDialog {
 					undoStack.push(formula.length());
 					undoButton.setEnabled(true);
 
-					updateButtonsAndArgumentDropdown();
+					updateButtonsAndArgumentDropdown(/* addNextArg = */ true);
 				}
 			});
 		argumentPanel.add(addButton);
@@ -288,13 +288,19 @@ public class FormulaBuilderDialog extends JDialog {
 		undoButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					final String formula = formulaTextField.getText();
+System.err.println("Before pop: undoStack.size()="+undoStack.size());
 					final int previousLength = undoStack.pop();
+System.err.println("previousLength="+previousLength);
 					formulaTextField.setText(formula.substring(0, previousLength));
 					addButton.setEnabled(true);
+System.err.println("Before remove: leadingArgs contains " + leadingArgs.size() + " entries.");
+System.err.println("1: formulaTextField.getText()="+formulaTextField.getText());
 					leadingArgs.remove(leadingArgs.size() - 1);
 					if (undoStack.empty())
 						undoButton.setEnabled(false);
-					updateButtonsAndArgumentDropdown();
+System.err.println("2: formulaTextField.getText()="+formulaTextField.getText());
+					updateButtonsAndArgumentDropdown(/* addNextArg = */ false);
+System.err.println("3: formulaTextField.getText()="+formulaTextField.getText());
 				}
 			});
 		argumentPanel.add(undoButton);
@@ -435,30 +441,31 @@ public class FormulaBuilderDialog extends JDialog {
 	/**
 	 *  Updates the appearance and status of various GUI components based on what is currently in the formula field.
 	 */
-	private void updateButtonsAndArgumentDropdown() {
+	private void updateButtonsAndArgumentDropdown(final boolean addNextArg) {
 		final StringBuilder formula = new StringBuilder(formulaTextField.getText());
 
 		if (!leadingArgs.isEmpty()) // Not the first argument => we need a comma!
 			formula.append(',');
-		final String constExpr = constantValuesTextField.getText();
-		if (constExpr != null && constExpr.length() > 0) {
-			final List<Class> possibleArgTypes = getPossibleNextArgumentTypes();
-			final Class exprType;
-			if ((exprType = expressionIsValid(possibleArgTypes, constExpr)) == null)
-				return;
+		if (addNextArg) {
+			final String constExpr = constantValuesTextField.getText();
+			if (constExpr != null && constExpr.length() > 0) {
+				final List<Class> possibleArgTypes = getPossibleNextArgumentTypes();
+				final Class exprType;
+				if ((exprType = expressionIsValid(possibleArgTypes, constExpr)) == null)
+					return;
 
-			formula.append(constExpr);
-			constantValuesTextField.setText("");
-			leadingArgs.add(exprType);
-		}
-		else {
-			final String attribName = (String)attribNamesComboBox.getSelectedItem();
-			if (attribName != null) {
-				formula.append(EquationUtil.attribNameAsReference(attribName));
-				leadingArgs.add(attribNamesAndTypes.get(attribName));
+				formula.append(constExpr);
+				constantValuesTextField.setText("");
+				leadingArgs.add(exprType);
+			} else {
+				final String attribName = (String)attribNamesComboBox.getSelectedItem();
+				if (attribName != null) {
+					formula.append(EquationUtil.attribNameAsReference(attribName));
+					leadingArgs.add(attribNamesAndTypes.get(attribName));
+				}
 			}
+			formulaTextField.setText(formula.toString());
 		}
-		formulaTextField.setText(formula.toString());
 
 		final List<Class> possibleNextArgTypes = getPossibleNextArgumentTypes();
 		if (possibleNextArgTypes == null) {
@@ -467,10 +474,8 @@ public class FormulaBuilderDialog extends JDialog {
 
 			addButton.setEnabled(false);
 			okButton.setEnabled(true);
-		}
-		else if (possibleNextArgTypes.contains(null)) {
+		} else if (possibleNextArgTypes.contains(null))
 			okButton.setEnabled(true);
-		}
 		else {
 			addButton.setEnabled(true);
 			okButton.setEnabled(false);
