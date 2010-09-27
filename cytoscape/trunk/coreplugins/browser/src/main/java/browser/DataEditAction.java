@@ -164,7 +164,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 			}
 
 			final Class returnType = equation.getType();
-			if (returnType != Long.class && returnType != Double.class && returnType != Boolean.class) {
+			if (returnType != Long.class && returnType != Double.class && returnType != Boolean.class && returnType != Object.class) {
 				showErrorWindow("Error in attribute \"" + attrName
 						+ "\": equation is of type " + getLastDotComponent(returnType.toString())
 						+ " but should be of type Integer!");
@@ -208,7 +208,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 			}
 
 			final Class returnType = equation.getType();
-			if (returnType != Double.class && returnType != Long.class && returnType != Boolean.class) {
+			if (returnType != Double.class && returnType != Long.class && returnType != Boolean.class && returnType != Object.class) {
 				showErrorWindow("Error in attribute \"" + attrName
 						+ "\": equation is of type " + getLastDotComponent(returnType.toString())
 						+ " but should be of type Floating Point!");
@@ -252,7 +252,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 			}
 
 			final Class returnType = equation.getType();
-			if (returnType != Boolean.class && returnType != Long.class && returnType != Double.class) {
+			if (returnType != Boolean.class && returnType != Long.class && returnType != Double.class && returnType != Object.class) {
 				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
 				attrs.deleteAttribute(id, attrName);
 				showErrorWindow("Error in attribute \"" + attrName
@@ -323,7 +323,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 			}
 
 			final Class returnType = equation.getType();
-			if (!FunctionUtil.isSomeKindOfList(returnType)) {
+			if (!FunctionUtil.isSomeKindOfList(returnType) && returnType != Object.class) {
 				objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#TYPE");
 				attrs.deleteAttribute(id, attrName);
 				showErrorWindow("Error in attribute \"" + attrName

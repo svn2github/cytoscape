@@ -451,18 +451,18 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 		switch (def.valueType) { // I'm wondering what the most efficient way of doing this is.
 			case MultiHashMapDefinition.TYPE_BOOLEAN:
 				if (actualType == Boolean.class
-				    || (isEquation && (actualType == Long.class || actualType == Double.class || actualType == BooleanList.class)))
+				    || (isEquation && (actualType == Long.class || actualType == Double.class || actualType == BooleanList.class || actualType == Object.class)))
 					break;
 				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected Boolean!");
 			case MultiHashMapDefinition.TYPE_FLOATING_POINT:
 				if (actualType == Double.class
-				    || (isEquation && (actualType == Long.class || actualType == Boolean.class || actualType == DoubleList.class)))
+				    || (isEquation && (actualType == Long.class || actualType == Boolean.class || actualType == DoubleList.class || actualType == Object.class)))
 					break;
 				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected Double!");
 			case MultiHashMapDefinition.TYPE_INTEGER:
 				if (actualType == Integer.class
 				    || (isEquation && (actualType == Double.class || actualType == Boolean.class
-				                       || actualType == Long.class || actualType == LongList.class)))
+				                       || actualType == Long.class || actualType == LongList.class || actualType == Object.class)))
 					break;
 				throw new ClassCastException("found " + actualType + " for \"" + attributeName + "\", expected Integer!");
 			case MultiHashMapDefinition.TYPE_STRING:
