@@ -680,7 +680,7 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 //			view.getLabel().setText("node(" + tempid + ")");
 //		}
 
-		if (graphics_list != null) {
+		if (graphics_list != null && view != null) {
 			layoutNodeGraphics(myView, graphics_list, view);
 
 		}
