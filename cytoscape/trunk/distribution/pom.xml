@@ -186,6 +186,12 @@
       <classifier>jar-with-dependencies</classifier>
     </dependency>
     <dependency>
+      <groupId>cytoscape.coreplugins</groupId>
+      <artifactId>network-analyzer</artifactId>
+      <version>${version}</version>
+      <classifier>jar-with-dependencies</classifier>
+    </dependency>
+    <dependency>
       <groupId>cytoscape-temp</groupId>
       <artifactId>y-layouts</artifactId>
       <version>1.0</version>
