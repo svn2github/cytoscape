@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,10 +19,12 @@ public class PsiMiCyFileFilter implements CyFileFilter {
 	private static final String PSI_MI_XML_NAMESPACE = "net:sf:psidev:mi";
 
 	private static final int DEFAULT_LINES_TO_CHECK = 20;
+
+	private static final int CONNECTION_TIMEOUT = 500;
 	
-	private Set<String> extensions;
-	private Set<String> contentTypes;
-	private String description;
+	private final Set<String> extensions;
+	private final Set<String> contentTypes;
+	private final String description;
 
 	private PsiMiCyFileFilter(String description) {
 		extensions = new HashSet<String>();
@@ -35,13 +39,23 @@ public class PsiMiCyFileFilter implements CyFileFilter {
 	
 	@Override
 	public boolean accept(URI uri, DataCategory category) {
+		if (!category.equals(DataCategory.NETWORK)) {
+			return false;
+		}
 		try {
-			return accept(uri.toURL().openStream(), category);
+			return accept(getInputStream(uri.toURL()), category);
 		} catch (IOException e) {
 			Logger logger = LoggerFactory.getLogger(getClass());
 			logger.error("Error while checking header", e);
 			return false;
 		}
+	}
+
+	private InputStream getInputStream(URL url) throws IOException {
+		URLConnection connection = url.openConnection();
+		connection.setConnectTimeout(CONNECTION_TIMEOUT);
+		connection.connect();
+		return connection.getInputStream();
 	}
 
 	private boolean checkHeader(InputStream stream) throws IOException {

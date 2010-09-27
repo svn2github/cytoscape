@@ -22,7 +22,7 @@
 	<context:annotation-config />
 
 	<bean id="psiMiFilter" class="org.cytoscape.psi_mi.internal.plugin.PsiMiCyFileFilter">
-		<constructor-arg value="PSI-MI" />
+		<constructor-arg value="PSI-MI files (*.xml)" />
 	</bean>
 
 	<bean id="psiMi1Filter" class="org.cytoscape.psi_mi.internal.plugin.PsiMiCyFileFilter">
