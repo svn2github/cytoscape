@@ -26,7 +26,7 @@ public class PsiMiCyFileFilter implements CyFileFilter {
 	private final Set<String> contentTypes;
 	private final String description;
 
-	private PsiMiCyFileFilter(String description) {
+	public PsiMiCyFileFilter(String description) {
 		extensions = new HashSet<String>();
 		extensions.add("xml");
 		
