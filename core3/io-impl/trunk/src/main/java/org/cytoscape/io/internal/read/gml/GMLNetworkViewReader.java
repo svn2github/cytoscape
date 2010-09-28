@@ -37,6 +37,7 @@
 package org.cytoscape.io.internal.read.gml;
 
 import java.awt.Color;
+import java.awt.Paint;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -56,7 +57,6 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
@@ -691,20 +691,17 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	 * matches to the "graphics" key word
 	 */
 	private void layoutNodeGraphics(CyNetworkView myView, List<KeyValue> list, View<CyNode> nodeView) {
-		final VisualProperty<Double> xLoc = TwoDVisualLexicon.NODE_X_LOCATION;
-		final VisualProperty<Double> yLoc = TwoDVisualLexicon.NODE_Y_LOCATION;
-		
 		for (KeyValue keyVal : list) {
 			if (keyVal.key.equals(X)) {
-				nodeView.setVisualProperty(xLoc, ((Number) keyVal.value).doubleValue());
+				nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, asDouble(keyVal.value));
 			} else if (keyVal.key.equals(Y)) {
-				nodeView.setVisualProperty(yLoc, ((Number) keyVal.value).doubleValue());
-//			} else if (keyVal.key.equals(H)) {
-//				nodeView.setHeight(((Number) keyVal.value).doubleValue());
-//			} else if (keyVal.key.equals(W)) {
-//				nodeView.setWidth(((Number) keyVal.value).doubleValue());
-//			} else if (keyVal.key.equals(FILL)) {
-//				nodeView.setUnselectedPaint(getColor((String) keyVal.value));
+				nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, asDouble(keyVal.value));
+			} else if (keyVal.key.equals(H)) {
+				nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE, asDouble(keyVal.value));
+			} else if (keyVal.key.equals(W)) {
+				nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_SIZE, asDouble(keyVal.value));
+			} else if (keyVal.key.equals(FILL)) {
+				nodeView.setVisualProperty(TwoDVisualLexicon.NODE_COLOR, asPaint(keyVal.value));
 //			} else if (keyVal.key.equals(OUTLINE)) {
 //				nodeView.setBorderPaint(getColor((String) keyVal.value));
 //			} else if (keyVal.key.equals(OUTLINE_WIDTH)) {
@@ -731,6 +728,20 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 		}
 	}
 
+	private Paint asPaint(Object object) {
+		if (object instanceof String) {
+			return getColor((String) object);
+		}
+		return null;
+	}
+
+	private Double asDouble(Object object) {
+		if (object instanceof Number) {
+			return ((Number) object).doubleValue();
+		}
+		return null;
+	}
+	
 	//
 	// Extract node attributes from GML file
 	private void extractNodeAttributes(List<KeyValue> list, CyNode node) {
@@ -880,57 +891,50 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	// Now this method correctly translate the GML input file
 	// into graphics.
 	//
+	@SuppressWarnings("unchecked")
 	private void layoutEdgeGraphics(CyNetworkView myView, List<KeyValue> list, View<CyEdge> edgeView) {
-	/*
-		// Local vars.
-		String value = null;
-		KeyValue keyVal = null;
-
-		for (Iterator it = list.iterator(); it.hasNext();) {
-			keyVal = (KeyValue) it.next();
-
+		for (KeyValue keyVal : list) {
 			// This is a polyline obj. However, it will be translated into
 			// straight line.
 			if (keyVal.key.equals(LINE)) {
-				layoutEdgeGraphicsLine(myView, (List) keyVal.value, edgeView);
+				layoutEdgeGraphicsLine(myView, (List<KeyValue>) keyVal.value, edgeView);
 			} else if (keyVal.key.equals(WIDTH)) {
-				edgeView.setStrokeWidth(((Number) keyVal.value).floatValue());
+				edgeView.setVisualProperty(TwoDVisualLexicon.EDGE_WIDTH, asDouble(keyVal.value));
 			} else if (keyVal.key.equals(FILL)) {
-				edgeView.setUnselectedPaint(getColor((String) keyVal.value));
-			} else if (keyVal.key.equals(TYPE)) {
-				value = (String) keyVal.value;
-
-				if (value.equals(STRAIGHT_LINES)) {
-					edgeView.setLineType(EdgeView.STRAIGHT_LINES);
-				} else if (value.equals(CURVED_LINES)) {
-					edgeView.setLineType(EdgeView.CURVED_LINES);
-				}
-			} else if (keyVal.key.equals(ARROW)) {
-				// The position of the arrow.
-				// There are 4 states: no arrows, both ends have arrows, source,
-				// or target.
-				//
-				// The arrow type below is hard-coded since GML does not
-				// support shape of the arrow.
-				if (keyVal.value.equals(ARROW_FIRST)) {
-					edgeView.setSourceEdgeEnd(2);
-				} else if (keyVal.value.equals(ARROW_LAST)) {
-					edgeView.setTargetEdgeEnd(2);
-				} else if (keyVal.value.equals(ARROW_BOTH)) {
-					edgeView.setSourceEdgeEnd(2);
-					edgeView.setTargetEdgeEnd(2);
-				} else if (keyVal.value.equals(ARROW_NONE)) {
-					// Do nothing. No arrows.
-				}
-
-				if (keyVal.key.equals(SOURCE_ARROW)) {
-					edgeView.setSourceEdgeEnd(((Number) keyVal.value).intValue());
-				} else if (keyVal.value.equals(TARGET_ARROW)) {
-					edgeView.setTargetEdgeEnd(((Number) keyVal.value).intValue());
-				}
+				edgeView.setVisualProperty(TwoDVisualLexicon.EDGE_COLOR, asPaint(keyVal.value));
+//			} else if (keyVal.key.equals(TYPE)) {
+//				String value = (String) keyVal.value;
+//
+//				if (value.equals(STRAIGHT_LINES)) {
+//					edgeView.setLineType(EdgeView.STRAIGHT_LINES);
+//				} else if (value.equals(CURVED_LINES)) {
+//					edgeView.setLineType(EdgeView.CURVED_LINES);
+//				}
+//			} else if (keyVal.key.equals(ARROW)) {
+//				// The position of the arrow.
+//				// There are 4 states: no arrows, both ends have arrows, source,
+//				// or target.
+//				//
+//				// The arrow type below is hard-coded since GML does not
+//				// support shape of the arrow.
+//				if (keyVal.value.equals(ARROW_FIRST)) {
+//					edgeView.setSourceEdgeEnd(2);
+//				} else if (keyVal.value.equals(ARROW_LAST)) {
+//					edgeView.setTargetEdgeEnd(2);
+//				} else if (keyVal.value.equals(ARROW_BOTH)) {
+//					edgeView.setSourceEdgeEnd(2);
+//					edgeView.setTargetEdgeEnd(2);
+//				} else if (keyVal.value.equals(ARROW_NONE)) {
+//					// Do nothing. No arrows.
+//				}
+//
+//				if (keyVal.key.equals(SOURCE_ARROW)) {
+//					edgeView.setSourceEdgeEnd(((Number) keyVal.value).intValue());
+//				} else if (keyVal.value.equals(TARGET_ARROW)) {
+//					edgeView.setTargetEdgeEnd(((Number) keyVal.value).intValue());
+//				}
 			}
 		}
-		*/
 	}
 
 	/**
@@ -938,7 +942,6 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	 * "Line" key We make sure that there is both an x,y present in the
 	 * underlying point list before trying to generate a bend point
 	 */
-	@SuppressWarnings("unused")
 	private void layoutEdgeGraphicsLine(CyNetworkView myView, List<KeyValue> list, View<CyEdge> edgeView) {
 	/*
 		for (Iterator it = list.iterator(); it.hasNext();) {
@@ -970,7 +973,6 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	/**
 	 * Create a color object from the string like it is stored in a gml file
 	 */
-	@SuppressWarnings("unused")
 	private Color getColor(String colorString) {
 		return new Color(Integer.parseInt(colorString.substring(1), 16));
 	}
