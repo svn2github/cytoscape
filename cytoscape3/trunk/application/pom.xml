@@ -122,39 +122,6 @@
 			<version>1.5.2</version>
 		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb2-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>session</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-
-						<configuration>
-							<schemaDirectory>
-								src/main/resources/xsd
-							</schemaDirectory>
-							<schemaIncludes>
-								<include>
-									cysession.xsd
-								</include>
-							</schemaIncludes>
-							<generatePackage>
-								cytoscape.generated
-							</generatePackage>
-							<verbose>true</verbose>
-							<removeOldOutput>false</removeOldOutput>
-							<forceRegenerate>true</forceRegenerate>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 
 	<repositories>
 		<repository>
