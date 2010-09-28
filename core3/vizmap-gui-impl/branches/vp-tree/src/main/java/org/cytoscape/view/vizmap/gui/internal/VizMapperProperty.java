@@ -1,0 +1,43 @@
+package org.cytoscape.view.vizmap.gui.internal;
+
+import com.l2fprod.common.propertysheet.DefaultProperty;
+
+/**
+ * Extended version of DefaultProperty which accepts one more value as hidden
+ * object.
+ * 
+ * From 3.0: This is a type-safe container.
+ * 
+ * @author kono
+ * @version 0.5
+ */
+public class VizMapperProperty<T> extends DefaultProperty {
+	
+	private final static long serialVersionUID = 1202339868680341L;
+	
+	private T hiddenObject;
+
+	public VizMapperProperty() {
+		
+	}
+
+	
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param obj
+	 *            DOCUMENT ME!
+	 */
+	public void setHiddenObject(T obj) {
+		this.hiddenObject = obj;
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public T getHiddenObject() {
+		return hiddenObject;
+	}
+}

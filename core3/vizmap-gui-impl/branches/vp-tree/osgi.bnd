@@ -1,0 +1,8 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Import-Package: *
+DynamicImport-Package: *
+Export-Package: org.cytoscape.view.vizmap.gui.*
+Private-Package: org.cytoscape.view.vizmap.gui.internal.* 
