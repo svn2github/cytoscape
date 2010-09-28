@@ -314,7 +314,8 @@ class EqnParserImpl implements EqnParser {
 		if (token != Token.IDENTIFIER)
 			throw new IllegalStateException(functionNameStartPos + ": function name expected!");
 
-		final String functionNameCandidate = tokeniser.getIdent().toUpperCase();
+		final String originalName = tokeniser.getIdent();
+		final String functionNameCandidate = originalName.toUpperCase();
 		if (functionNameCandidate.equals("DEFINED"))
 			return parseDefined();
 
@@ -322,10 +323,10 @@ class EqnParserImpl implements EqnParser {
 		if (func == null) {
 			if (tokeniser.getToken() == Token.OPEN_PAREN)
 				throw new IllegalStateException(functionNameStartPos + ": call to unknown function "
-								+ functionNameCandidate + "()!");
+								+ originalName + "()!");
 			else
 				throw new IllegalStateException(functionNameStartPos + ": unknown text \""
-								+ functionNameCandidate + "\", maybe you forgot to put quotes around this text?");
+								+ originalName + "\", maybe you forgot to put quotes around this text?");
 		}
 
 		token = tokeniser.getToken();
