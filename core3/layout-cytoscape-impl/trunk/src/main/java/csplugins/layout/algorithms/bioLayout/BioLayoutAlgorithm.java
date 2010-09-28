@@ -37,9 +37,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.layout.AbstractGraphPartition;
 import org.cytoscape.view.layout.EdgeWeighter;
 import org.cytoscape.view.layout.LayoutPartition;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -90,9 +93,11 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	/**
 	 * This is the constructor for the bioLayout algorithm.
 	 */
-	public BioLayoutAlgorithm(UndoSupport undoSupport) {
-		super(undoSupport);
-
+	public BioLayoutAlgorithm(final CyNetworkView networkView, final String name,
+            final boolean selectedOnly, final Set<View<CyNode>> staticNodes) {
+		//super(undoSupport);
+		super(networkView, name, selectedOnly, staticNodes);
+		
 		if (edgeWeighter == null)
 			edgeWeighter = new EdgeWeighter();
 	}
@@ -143,7 +148,7 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	 */
 	public void setSelectedOnly(boolean value) {
 		// Inherited by AbstractLayout
-		selectedOnly = value;
+		//selectedOnly = value;
 	}
 
 	/**
@@ -153,7 +158,7 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	 */
 	public void setSelectedOnly(String value) {
 		Boolean val = new Boolean(value);
-		selectedOnly = val.booleanValue();
+		//selectedOnly = val.booleanValue();
 	}
 
 	/**
