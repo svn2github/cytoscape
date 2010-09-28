@@ -37,11 +37,10 @@ package org.cytoscape.view.vizmap.gui.internal.editor;
 import java.awt.Color;
 
 import javax.swing.Icon;
-import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.GradientEditorPanel;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyColorPropertyEditor;
@@ -56,11 +55,11 @@ public class ColorVisualPropertyEditor extends AbstractVisualPropertyEditor<Colo
 	/**
 	 * Constructor. Should instantiate one editor per VisualProperty.
 	 */
-	public ColorVisualPropertyEditor(VisualProperty<Color> vp, CyTableManager tm) {
+	public ColorVisualPropertyEditor(VisualProperty<Color> vp, CyTable attr) {
 		super(vp);
 		tableCellRenderer = new DefaultTableCellRenderer();
 		//FIXME
-		continuousEditor = new GradientEditorPanel(this.vp, null, tm);
+		continuousEditor = new GradientEditorPanel(this.vp, null, attr);
 		propertyEditor = new CyColorPropertyEditor();
 	}
 

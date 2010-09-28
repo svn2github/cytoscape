@@ -64,23 +64,24 @@ public class CopyStyleAction extends AbstractVizMapperAction {
 	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
+		//FIXME
 		// Pick currently selected visual style in the combobox.
-		final VisualStyle currentStyle = this.vizMapperMainPanel
-				.getSelectedVisualStyle();
-
-		// Copy-to
-		final VisualStyle clone = vmm.copyVisualStyle(currentStyle);
-
-		final String newName = vizMapperUtil.getStyleName(vizMapperMainPanel,
-				clone);
-
-		if ((newName == null) || (newName.trim().length() == 0)) {
-			return;
-		}
-
-		clone.setTitle(newName);
-
-		final Component defPanel = defViewEditor.getDefaultView(clone);
+//		final VisualStyle currentStyle = this.vizMapperMainPanel
+//				.getSelectedVisualStyle();
+//
+//		// Copy-to
+//		final VisualStyle clone = vmm.copyVisualStyle(currentStyle);
+//
+//		final String newName = vizMapperUtil.getStyleName(vizMapperMainPanel,
+//				clone);
+//
+//		if ((newName == null) || (newName.trim().length() == 0)) {
+//			return;
+//		}
+//
+//		clone.setTitle(newName);
+//
+//		final Component defPanel = defViewEditor.getDefaultView(clone);
 //FIXME
 		//		final CyNetworkView view = ((DefaultViewEditor) defPanel).getView();
 //		final Dimension panelSize = vizMapperMainPanel.getDefaultPanel()

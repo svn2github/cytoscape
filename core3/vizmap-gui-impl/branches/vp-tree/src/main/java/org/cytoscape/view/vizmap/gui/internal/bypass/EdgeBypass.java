@@ -44,13 +44,17 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.view.model.VisualLexiconManager;
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
 class EdgeBypass extends VizMapBypass {
-	EdgeBypass(EditorManager ef, VisualLexiconManager vpCatalog) {
-		super(ef, vpCatalog);
+
+	EdgeBypass(EditorManager ef, VisualLexicon lexicon) {
+		super(ef, lexicon);
+		this.visualProperties = lexicon
+				.getAllDescendants(TwoDVisualLexicon.EDGE);
 	}
 
 	JMenuItem addMenu(CyEdge e) {
@@ -62,7 +66,7 @@ class EdgeBypass extends VizMapBypass {
 		// horrible, horrible hack
 		BypassHack.setCurrentObject(e);
 
-		for (VisualProperty<?> vp : rootVisualLexicon.getVisualProperties(EDGE))
+		for (VisualProperty<?> vp : visualProperties)
 			// FIXME: pass in network instance so that it will be limited to
 			// that
 			addMenuItem(menu, vp);
@@ -75,7 +79,7 @@ class EdgeBypass extends VizMapBypass {
 	protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
 
-		for (VisualProperty<?> vp : rootVisualLexicon.getVisualProperties(EDGE))
+		for (VisualProperty<?> vp : visualProperties)
 			l.add(vp.getDisplayName());
 
 		return l;

@@ -44,14 +44,16 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.cytoscape.model.CyNode;
-import org.cytoscape.view.model.VisualLexiconManager;
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
 class NodeBypass extends VizMapBypass {
 
-	NodeBypass(EditorManager ef, VisualLexiconManager vpCatalog) {
-		super(ef, vpCatalog);
+	NodeBypass(EditorManager ef, VisualLexicon lexicon) {
+		super(ef, lexicon);
+		this.visualProperties = lexicon.getAllDescendants(TwoDVisualLexicon.NODE);
 	}
 
 	JMenuItem addMenu(CyNode n) {
@@ -62,8 +64,7 @@ class NodeBypass extends VizMapBypass {
 		// horrible, horrible hack
 		BypassHack.setCurrentObject(n);
 
-		for (VisualProperty<?> type : rootVisualLexicon
-				.getVisualProperties(NODE))
+		for (VisualProperty<?> type : visualProperties)
 			addMenuItem(menu, type);
 
 		menu.addSeparator();
@@ -76,7 +77,7 @@ class NodeBypass extends VizMapBypass {
 	protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
 
-		for (VisualProperty<?> vp : rootVisualLexicon.getVisualProperties(NODE))
+		for (VisualProperty<?> vp : visualProperties)
 			l.add(vp.getDisplayName());
 
 		return l;
