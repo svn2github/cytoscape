@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.Random;
 
 import java.awt.Dimension;
+import org.cytoscape.work.TaskMonitor;
 
 
 /**
@@ -94,6 +95,12 @@ public class LayoutPartition {
 	private static final int m_NODE_HAS_NOT_BEEN_SEEN = 0;
 	private static final int m_NODE_HAS_BEEN_SEEN = 1;
 
+	protected TaskMonitor taskMonitor = null;
+	
+	public void setTaskMonitor(final TaskMonitor taskMonitor) {
+		this.taskMonitor = taskMonitor;
+	}
+	
 	/**
 	 * LayoutPartition: use this constructor to create an empty LayoutPartition.
 	 *
