@@ -274,11 +274,12 @@ public class FormulaBuilderDialog extends JDialog {
 		addButton = new JButton("Add");
 		addButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					final StringBuilder formula = new StringBuilder(formulaTextField.getText());
-					undoStack.push(formula.length());
-					undoButton.setEnabled(true);
-
-					updateButtonsAndArgumentDropdown(/* addNextArg = */ true);
+					final int oldLength  = formulaTextField.getText().length();
+					if (addNewArg()) {
+						undoStack.push(oldLength);
+						undoButton.setEnabled(true);
+						updateButtonsAndArgumentDropdown();
+					}
 				}
 			});
 		argumentPanel.add(addButton);
@@ -288,19 +289,13 @@ public class FormulaBuilderDialog extends JDialog {
 		undoButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					final String formula = formulaTextField.getText();
-System.err.println("Before pop: undoStack.size()="+undoStack.size());
 					final int previousLength = undoStack.pop();
-System.err.println("previousLength="+previousLength);
 					formulaTextField.setText(formula.substring(0, previousLength));
 					addButton.setEnabled(true);
-System.err.println("Before remove: leadingArgs contains " + leadingArgs.size() + " entries.");
-System.err.println("1: formulaTextField.getText()="+formulaTextField.getText());
 					leadingArgs.remove(leadingArgs.size() - 1);
 					if (undoStack.empty())
 						undoButton.setEnabled(false);
-System.err.println("2: formulaTextField.getText()="+formulaTextField.getText());
-					updateButtonsAndArgumentDropdown(/* addNextArg = */ false);
-System.err.println("3: formulaTextField.getText()="+formulaTextField.getText());
+					updateButtonsAndArgumentDropdown();
 				}
 			});
 		argumentPanel.add(undoButton);
@@ -441,32 +436,7 @@ System.err.println("3: formulaTextField.getText()="+formulaTextField.getText());
 	/**
 	 *  Updates the appearance and status of various GUI components based on what is currently in the formula field.
 	 */
-	private void updateButtonsAndArgumentDropdown(final boolean addNextArg) {
-		final StringBuilder formula = new StringBuilder(formulaTextField.getText());
-
-		if (!leadingArgs.isEmpty()) // Not the first argument => we need a comma!
-			formula.append(',');
-		if (addNextArg) {
-			final String constExpr = constantValuesTextField.getText();
-			if (constExpr != null && constExpr.length() > 0) {
-				final List<Class> possibleArgTypes = getPossibleNextArgumentTypes();
-				final Class exprType;
-				if ((exprType = expressionIsValid(possibleArgTypes, constExpr)) == null)
-					return;
-
-				formula.append(constExpr);
-				constantValuesTextField.setText("");
-				leadingArgs.add(exprType);
-			} else {
-				final String attribName = (String)attribNamesComboBox.getSelectedItem();
-				if (attribName != null) {
-					formula.append(EquationUtil.attribNameAsReference(attribName));
-					leadingArgs.add(attribNamesAndTypes.get(attribName));
-				}
-			}
-			formulaTextField.setText(formula.toString());
-		}
-
+	private void updateButtonsAndArgumentDropdown() {
 		final List<Class> possibleNextArgTypes = getPossibleNextArgumentTypes();
 		if (possibleNextArgTypes == null) {
 			final String currentFormula = formulaTextField.getText();
@@ -482,6 +452,45 @@ System.err.println("3: formulaTextField.getText()="+formulaTextField.getText());
 		}
 
 		updateAttribNamesComboBox();
+	}
+
+	/**
+	 *  Attempts to add a new argument.
+	 *  @return if we succeeded in adding the new argument
+	 */
+	private boolean addNewArg() {
+		boolean successFullyAddedANewArg = false;
+
+		final StringBuilder formula = new StringBuilder(formulaTextField.getText());
+
+		if (!leadingArgs.isEmpty()) // Not the first argument => we need a comma!
+			formula.append(',');
+
+		final String constExpr = constantValuesTextField.getText();
+		if (constExpr != null && constExpr.length() > 0) {
+			final List<Class> possibleArgTypes = getPossibleNextArgumentTypes();
+			final Class exprType;
+			if ((exprType = expressionIsValid(possibleArgTypes, constExpr)) == null)
+				return false;
+
+			formula.append(constExpr);
+			constantValuesTextField.setText("");
+			leadingArgs.add(exprType);
+			successFullyAddedANewArg = true;
+		} else {
+			final String attribName = (String)attribNamesComboBox.getSelectedItem();
+			if (attribName != null) {
+				formula.append(EquationUtil.attribNameAsReference(attribName));
+				leadingArgs.add(attribNamesAndTypes.get(attribName));
+				successFullyAddedANewArg = true;
+			}
+		}
+
+		if (successFullyAddedANewArg) {
+			formulaTextField.setText(formula.toString());
+			return true;
+		} else
+			return false;
 	}
 
 	private boolean updateCells(final StringBuilder errorMessage) {
