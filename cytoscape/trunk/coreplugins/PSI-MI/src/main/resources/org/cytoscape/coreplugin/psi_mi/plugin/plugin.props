@@ -14,7 +14,7 @@ pluginDescription=Allows importing of PSI-MI 2.5 file format
 pluginVersion=0.3
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.5,2.6
+cytoscapeVersion=2.5,2.6,2.7,2.8
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Core

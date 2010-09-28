@@ -16,7 +16,7 @@ pluginDescription=Provides utilities for merging networks by set operations (uni
 pluginVersion=1.16
 
 # Compatible Cytoscape version. If there are more than one version, seperate by ",".
-cytoscapeVersion=2.6,2.7
+cytoscapeVersion=2.6,2.7,2.8
 
 # Category, use one of the categories listed on the http://cytoscape.org/plugins2.php site
 pluginCategory=Core

@@ -12,7 +12,7 @@ pluginDescription=Provides connectivity to the Pathway Commons repository (http:
 pluginVersion=2.1
 
 # Compatible Cytoscape version. If there are more than one version, seperate by ",".
-cytoscapeVersion=2.7
+cytoscapeVersion=2.7,2.8
 
 # Category, use one of the categories listed on the http://cytoscape.org/plugins2.php site
 pluginCategory=Core
