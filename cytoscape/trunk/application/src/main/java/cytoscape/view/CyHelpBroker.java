@@ -31,6 +31,7 @@ package cytoscape.view;
 
 
 import cytoscape.logger.CyLogger;
+import cytoscape.Cytoscape;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -42,6 +43,13 @@ import java.util.StringTokenizer;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 
+import java.awt.Component;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JOptionPane;
+
+import javax.help.CSH; 
+
 
 /**
  * This class creates the Cytoscape Help Broker for managing the JavaHelp system
@@ -50,29 +58,27 @@ import javax.help.HelpSet;
 public class CyHelpBroker {
 	private static HelpBroker hb;
 	private static HelpSet masterHelpSet;
+	private static CSH.DisplayHelpFromFocus csh;
+	private static ActionListener actionListener;
 	private static final String HELP_RESOURCE = "/cytoscape/help/jhelpset.hs";
+	private static final CyLogger logger = CyLogger.getLogger(CyHelpBroker.class);
 
 	static {
-		new CyHelpBroker();
+		try {
+			masterHelpSet = new HelpSet(null, CyHelpBroker.class.getResource(HELP_RESOURCE));
+			hb = masterHelpSet.createHelpBroker();
+			hb.setCurrentID("Cytoscape User Manual");
+			csh = new CSH.DisplayHelpFromFocus(hb);
+			actionListener = new SensibleActionListener();
+		} catch (Exception e) {
+			logger.warning("HelpSet " + HELP_RESOURCE + " not loaded.", e);
+		}
 	}
 
 	/**
 	 * Creates a new CyHelpBroker object.
 	 */
-	private CyHelpBroker() {
-		hb = null;
-		masterHelpSet = null;
-
-		URL hsURL = getClass().getResource(HELP_RESOURCE);
-		try {
-			masterHelpSet = new HelpSet(null, hsURL);
-			hb = masterHelpSet.createHelpBroker();
-			hb.setCurrentID("d0e1");
-		} catch (Exception e) {
-			CyLogger.getLogger().info("HelpSet " + e.getMessage());
-			CyLogger.getLogger().info("HelpSet " + masterHelpSet + " not found.");
-		}
-	}
+	private CyHelpBroker() { }
 
 	/**
 	 * Returns the HelpBroker. 
@@ -111,5 +117,43 @@ public class CyHelpBroker {
 	 */
 	public static boolean removeHelpSet(final HelpSet hs) {
 		return masterHelpSet.remove(hs);
+	}
+
+
+	/**
+	 * Provides access to an ActionListener that pops up a help dialog. To enable,
+	 * for example, a help button, you would simple add the available action as a
+	 * ActionListener to the button.
+	 * <br/>
+	 * <pre>
+	 * JButton helpButton = new JButton("Help");
+	 * helpButton.addActionListener( CyHelpBroker.getHelpActionListener() );
+	 * </pre>
+	 */
+	public static ActionListener getHelpActionListener() {
+		return actionListener;
+	}
+
+	/**
+	 * An ActionListener that wraps the available CSH ActionListener and tries
+	 * to gracefully handle exceptions. 
+	 */
+	private static class SensibleActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent ae) {
+			try {
+				csh.actionPerformed(ae);
+			} catch (Exception e) {
+				logger.warn("Couldn't display help for event: " + ae.toString(), e);
+				// Try again with a fake action with a different source, a source
+				// that has help defined for it.
+				try {
+					csh.actionPerformed( new ActionEvent( Cytoscape.getDesktop(), 
+					                                       ae.getID(), ae.getActionCommand(), 
+					                                       ae.getWhen(), ae.getModifiers() ) );
+				} catch (Exception ex) {
+					logger.error("REALLY Couldn't display help for previous event", ex);
+				}
+			}
+		}
 	}
 }

@@ -46,8 +46,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
-import javax.help.HelpBroker;
-import javax.help.HelpSet;
+import javax.help.CSH;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -340,6 +339,9 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// show the Desktop
 		setVisible(true);
 		toFront();
+
+		// sets the top level identifier for java help
+		CSH.setHelpIDString(this,"Cytoscape User Manual");
 	}
 	
 	
@@ -406,38 +408,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	public NetworkPanel getNetworkPanel() {
 		return networkPanel;
-	}
-
-	/**
-	 * @deprecated Will be removed April 2008. Use CyHelpBroker.getHelpBroker() instead.
-	 */
-	public HelpBroker getHelpBroker() {
-		return CyHelpBroker.getHelpBroker();
-	}
-
-	/**
-	 * @deprecated Will be removed April 2008. Use CyHelpBroker.getHelpSet() instead.
-	 */
-	public HelpSet getHelpSet() {
-		return CyHelpBroker.getHelpSet();
-	}
-
-	/**
-	 * Don't use this!
-	 *
-	 * @param edit An undoable edit.
-	 * @deprecated Use CyUndo.getUndoableEditSupport().postEdit(edit) instead. Will be removed March 2008.
-	 */
-	public void addEdit(javax.swing.undo.UndoableEdit edit) {
-		CyUndo.getUndoableEditSupport().postEdit(edit);
-	}
-
-	/**
-	 * Return the view type for this CytoscapeDesktop
-	 * @deprecated View type is no longer used, so just don't use this method. Will be gone August 2008.
-	 */
-	public int getViewType() {
-		return 1; // what was internal
 	}
 
 	/**

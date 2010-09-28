@@ -38,20 +38,19 @@ package cytoscape.actions;
 
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.view.CyHelpBroker;
-
+import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 
-import javax.help.CSH;
+import cytoscape.view.CyHelpBroker; 
 
 /**
  * Really just a wrapper for the CSH.DisplayHelpFromSource action.
  */
 public class HelpContentsAction extends CytoscapeAction {
 
-	private CSH.DisplayHelpFromSource csh; 
+	private final ActionListener helpActionListener = CyHelpBroker.getHelpActionListener();
 
 	/**
 	 * Creates a new HelpContentsAction object.
@@ -68,18 +67,6 @@ public class HelpContentsAction extends CytoscapeAction {
 	 * @param e The triggering event - passed to CSH.DisplayHelpFromSource.actionPerformed(e)  
 	 */
 	public void actionPerformed(ActionEvent e) {
-		if ( csh == null ) {
-			try {
-			csh = new CSH.DisplayHelpFromSource(CyHelpBroker.getHelpBroker());
-			} catch (Exception ex) {
-				JOptionPane.showMessageDialog(
-					null,
-					"Help cannot be started. Please see the manual on the Cytoscape website instead: http://cytoscape.org.",
-					"ERROR",
-					JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		}
-		csh.actionPerformed(e);
+		helpActionListener.actionPerformed(e);
 	}
 }

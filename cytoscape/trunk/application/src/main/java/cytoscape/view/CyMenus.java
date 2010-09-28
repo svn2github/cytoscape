@@ -43,7 +43,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.List;
-import javax.help.CSH;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenu;
@@ -621,20 +620,7 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 		toolBar.addSeparator();
 
 		helpButton = new JButton();
-		helpButton.addActionListener( new ActionListener() {
-			private CSH.DisplayHelpFromSource csh;
-			public void actionPerformed(ActionEvent e) {
-				if ( csh == null ) {
-					try {
-					csh = new CSH.DisplayHelpFromSource(CyHelpBroker.getHelpBroker());
-					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(null, "Help cannot be started. Please see the manual on the Cytoscape website instead: http://cytoscape.org.", "ERROR", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-				}
-				csh.actionPerformed(e);
-			}
-		});
+		helpButton.addActionListener( CyHelpBroker.getHelpActionListener() );
 		helpButton.setIcon(new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_help.png")));
 		helpButton.setToolTipText("Help");
 		helpButton.setBorderPainted(false);
