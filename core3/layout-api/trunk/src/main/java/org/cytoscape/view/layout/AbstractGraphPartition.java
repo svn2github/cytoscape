@@ -107,6 +107,8 @@ public abstract class AbstractGraphPartition extends LayoutTask {
 		if (edgeWeighter != null)
 			edgeWeighter.reset();
 
+		this.taskMonitor = taskMonitor;
+		
 		// Depending on whether we are partitioned or not,
 		// we use different initialization.  Note that if the user only wants
 		// to lay out selected nodes, partitioning becomes a very bad idea!
@@ -115,6 +117,7 @@ public abstract class AbstractGraphPartition extends LayoutTask {
 			// not partitioning.  This makes the code further down
 			// much cleaner
 			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly, edgeWeighter);
+			partition.setTaskMonitor(taskMonitor);
 			partitionList = new ArrayList(1);
 			partitionList.add(partition);
 		} else if (staticNodes != null && staticNodes.size() > 0) {
