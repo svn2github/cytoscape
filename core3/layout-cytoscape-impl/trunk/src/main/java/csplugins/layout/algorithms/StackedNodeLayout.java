@@ -41,15 +41,18 @@ import java.util.Iterator;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.layout.AbstractLayout;
+import org.cytoscape.view.layout.internal.algorithms.GridNodeLayoutTask;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
 /**
  *
  */
-public class StackedNodeLayout extends AbstractLayout {
+public class StackedNodeLayout extends AbstractLayout implements TunableValidator {
 	/**
 	 * Puts a collection of nodes into a "stack" layout. This means the nodes are
 	 * arranged in a line vertically, with each node overlapping with the previous.
@@ -58,10 +61,12 @@ public class StackedNodeLayout extends AbstractLayout {
 	 * @param x_position the x position for the nodes
 	 * @param y_start_position the y starting position for the stack
 	 */
-	private double y_start_position;
-	private double x_position;
-	private Collection nodes;
 
+	public boolean tunablesAreValid(final Appendable errMsg) {
+		return true;
+	}
+	
+	
 	/**
 	 * Creates a new StackedNodeLayout object.
 	 *
@@ -69,27 +74,16 @@ public class StackedNodeLayout extends AbstractLayout {
 	 * @param y_start_position  DOCUMENT ME!
 	 * @param nodes  DOCUMENT ME!
 	 */
-	public StackedNodeLayout(UndoSupport undoSupport, double x_position, double y_start_position, Collection nodes) {
+	public StackedNodeLayout(UndoSupport undoSupport) {
 		super(undoSupport);
-		this.x_position = x_position;
-		this.y_start_position = y_start_position;
-		this.nodes = nodes;
+		//this.x_position = x_position;
+		//this.y_start_position = y_start_position;
+		//this.nodes = nodes;
 	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void construct() {
-		Iterator it = nodes.iterator();
-		double yPosition = y_start_position;
-
-		while (it.hasNext()) {
-			CyNode node = (CyNode) it.next();
-			View<CyNode> nodeView = networkView.getNodeView(node);
-			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x_position);
-			nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, yPosition);
-			yPosition += (nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE) * 2);
-		}
+	
+	
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(new StackedNodeLayoutTask(networkView, getName(), selectedOnly, staticNodes));
 	}
 
 	/**
