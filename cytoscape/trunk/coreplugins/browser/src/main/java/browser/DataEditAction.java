@@ -357,19 +357,25 @@ public class DataEditAction extends AbstractUndoableEdit {
 		}
 
 		final String escapedString = replaceCStyleEscapes(newValueStr);
-		final List origList = attrs.getListAttribute(id, attrName);
+		final int elementType = attrs.getListElementType(attrName);
 
 		List newList = null;
-		if (origList.isEmpty() || origList.get(0).getClass() == String.class)
+		switch (elementType) {
+		case CyAttributes.TYPE_STRING:
 			newList = parseStringListValue(escapedString);
-		else if (origList.get(0).getClass() == Double.class)
+			break;
+		case CyAttributes.TYPE_FLOATING:
 			newList = parseDoubleListValue(escapedString);
-		else if (origList.get(0).getClass() == Integer.class)
+			break;
+		case CyAttributes.TYPE_INTEGER:
 			newList = parseIntegerListValue(escapedString);
-		else if (origList.get(0).getClass() == Boolean.class)
+			break;
+		case CyAttributes.TYPE_BOOLEAN:
 			newList = parseBooleanListValue(escapedString);
-		else
+			break;
+		default:
 			throw new ClassCastException("can't determined List type!");
+		}
 
 		if (newList == null) {
 			objectAndEditString = new ValidatedObjectAndEditString(null, newValueStr, "#ERROR");
