@@ -18,7 +18,10 @@ import org.slf4j.LoggerFactory;
 
 
 public abstract class LayoutTask extends AbstractTask {
+	
 	protected static final Logger logger = LoggerFactory.getLogger(LayoutTask.class);
+	
+	protected static final String LAYOUT_ALGORITHM = "layoutAlgorithm";
 
 	protected final CyNetworkView networkView;
 	private final String name;
@@ -51,28 +54,16 @@ public abstract class LayoutTask extends AbstractTask {
 		if (network.getNodeCount() <= 0)
 			return;
 
-		// set up the edit
-//		undoableEdit = new ViewChangeEdit(networkView, toString() + " Layout", undo);
-
 		// this is overridden by children and does the actual layout
 		doLayout(taskMonitor, network);
-
-		// update the view 
-//		if (!selectedOnly)
-//			networkView.fitContent();
-
-//		networkView.updateView();
-
-		// post the edit 
-//		undoableEdit.post();
 
 		// Fit Content method always redraw the presentation.
 		networkView.fitContent();
 
 		// update the __layoutAlgorithm attribute
 		final CyRow networkAttributes = network.getCyRow(CyNetwork.HIDDEN_ATTRS);
-		networkAttributes.getDataTable().createColumn("layoutAlgorithm",String.class,false);
-		networkAttributes.set("layoutAlgorithm", name);
+		networkAttributes.getDataTable().createColumn(LAYOUT_ALGORITHM, String.class, false);
+		networkAttributes.set(LAYOUT_ALGORITHM, name);
 
 		logger.debug("Layout finished: " + (System.currentTimeMillis()-start) + " msec.");
 	}
