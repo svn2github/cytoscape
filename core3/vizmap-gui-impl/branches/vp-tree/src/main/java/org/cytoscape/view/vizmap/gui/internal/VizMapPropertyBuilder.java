@@ -38,22 +38,20 @@ package org.cytoscape.view.vizmap.gui.internal;
 import static org.cytoscape.model.CyTableEntry.EDGE;
 import static org.cytoscape.model.CyTableEntry.NODE;
 
-import java.beans.PropertyEditor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
@@ -61,18 +59,20 @@ import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.l2fprod.common.propertysheet.DefaultProperty;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
 import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
-import org.cytoscape.session.CyNetworkManager;
-
 /**
  * Create property for the Property Sheet object.
  */
 public class VizMapPropertyBuilder {
+	
+	private static final Logger logger = LoggerFactory.getLogger(VizMapPropertyBuilder.class);
 
 	private DefaultTableCellRenderer emptyBoxRenderer;
 	private DefaultTableCellRenderer filledBoxRenderer;
@@ -102,6 +102,9 @@ public class VizMapPropertyBuilder {
 			final String rootObjectCategory,
 			final PropertySheetPanel propertySheetPanel, 
 			final String objectType) {
+		
+		logger.debug("\n\n\nbuildProp called!");
+		
 		// Mapping is empty
 		if (visualMapping == null)
 			return null;

@@ -49,10 +49,12 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
@@ -111,8 +113,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 		DefaultViewEditor, SelectedVisualStyleSwitchedListener {
 
 	private final static long serialVersionUID = 1202339876675416L;
-	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final Map<String, Set<VisualProperty<?>>> vpSets;
 	private final Map<String, JList> listMap;
@@ -135,12 +135,12 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 */
 	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
 			final EditorManager editorFactory,
-			final CyNetworkManager cyNetworkManager, VisualStyle defaultStyle,
-			VisualMappingManager vmm) {
+			final CyNetworkManager cyNetworkManager,
+			final VisualStyle selectedStyle, final VisualMappingManager vmm) {
 
 		super();
 		this.vmm = vmm;
-		this.selectedStyle = defaultStyle;
+		this.selectedStyle = selectedStyle;
 		vpSets = new HashMap<String, Set<VisualProperty<?>>>();
 		listMap = new HashMap<String, JList>();
 
@@ -159,34 +159,54 @@ public class DefaultViewEditorImpl extends JDialog implements
 			public void componentResized(ComponentEvent e) {
 				defaultObjectTabbedPane.repaint();
 				mainView.repaint();
-				// mainView.updateView();
+				mainView.updateView();
 			}
 		});
 
 	}
 
-
 	private void updateVisualPropertyLists() {
 		vpSets.clear();
 
 		final VisualLexicon lexicon = selectedStyle.getVisualLexicon();
-			
-		vpSets.put(NODE, getLeafNodes(lexicon.getAllDescendants(TwoDVisualLexicon.NODE)));
-		vpSets.put(EDGE, getLeafNodes(lexicon.getAllDescendants(TwoDVisualLexicon.EDGE)));
-		vpSets.put(NETWORK, getLeafNodes(lexicon.getAllDescendants(TwoDVisualLexicon.NETWORK)));
+
+		vpSets.put(NODE,
+				getLeafNodes(lexicon.getAllDescendants(TwoDVisualLexicon.NODE)));
+		vpSets.put(EDGE,
+				getLeafNodes(lexicon.getAllDescendants(TwoDVisualLexicon.EDGE)));
+		vpSets.put(NETWORK, getNetworkLeafNodes(lexicon
+				.getAllDescendants(TwoDVisualLexicon.NETWORK)));
+
 	}
-	
-	private Set<VisualProperty<?>> getLeafNodes(final Collection<VisualProperty<?>> props) {
+
+	private Set<VisualProperty<?>> getLeafNodes(
+			final Collection<VisualProperty<?>> props) {
 		final VisualLexicon lexicon = selectedStyle.getVisualLexicon();
-		final Set<VisualProperty<?>> propSet = new HashSet<VisualProperty<?>>();
-		
-		for(VisualProperty<?> vp: props) {
-			if(lexicon.getVisualLexiconNode(vp).getChildren().size() == 0)
+		final Set<VisualProperty<?>> propSet = new TreeSet<VisualProperty<?>>(new VisualPropertyComparator());
+
+		for (VisualProperty<?> vp : props) {
+			if (lexicon.getVisualLexiconNode(vp).getChildren().size() == 0)
 				propSet.add(vp);
 		}
-		
+
 		return propSet;
-		
+
+	}
+
+	private Set<VisualProperty<?>> getNetworkLeafNodes(
+			final Collection<VisualProperty<?>> props) {
+		final VisualLexicon lexicon = selectedStyle.getVisualLexicon();
+		final Set<VisualProperty<?>> propSet = new TreeSet<VisualProperty<?>>(new VisualPropertyComparator());
+
+		for (VisualProperty<?> vp : props) {
+			if (lexicon.getVisualLexiconNode(vp).getChildren().size() == 0
+					&& lexicon.getVisualLexiconNode(vp).getParent()
+							.getVisualProperty() == TwoDVisualLexicon.NETWORK)
+				propSet.add(vp);
+		}
+
+		return propSet;
+
 	}
 
 	/*
@@ -197,19 +217,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 * .Component)
 	 */
 	public void showEditor(Component parent) {
-		setSize(900, 400);
-
-		// TODO: fix the width/height lock
-		// lockSize();
-		// lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
-
-		// mainView.updateView();
-
-		updateVisualPropertyLists();
-		// initComponents();
-		buildList();
-
-		repaint();
+		setSize(900, 450);
 		setLocationRelativeTo(parent);
 		setVisible(true);
 	}
@@ -310,8 +318,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 		defaultObjectTabbedPane.addTab("Edge", edgeScrollPane);
 		defaultObjectTabbedPane.addTab("Network", globalScrollPane);
 
-		GroupLayout jXTitledPanel1Layout = new GroupLayout(jXTitledPanel1
-				.getContentContainer());
+		GroupLayout jXTitledPanel1Layout = new GroupLayout(
+				jXTitledPanel1.getContentContainer());
 		jXTitledPanel1.getContentContainer().setLayout(jXTitledPanel1Layout);
 		jXTitledPanel1Layout.setHorizontalGroup(jXTitledPanel1Layout
 				.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -338,9 +346,10 @@ public class DefaultViewEditorImpl extends JDialog implements
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-				// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
-				applyNewStyle(cyNetworkManager.getCurrentNetworkView());
+				final CyNetworkView view = cyNetworkManager
+						.getCurrentNetworkView();
+				if (view != null)
+					applyNewStyle(view);
 				dispose();
 			}
 		});
@@ -391,8 +400,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 												LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(jXTitledPanel1,
 												GroupLayout.PREFERRED_SIZE,
-												198, Short.MAX_VALUE).addGap(
-												12, 12, 12)));
+												198, Short.MAX_VALUE)
+										.addGap(12, 12, 12)));
 		jXPanel1Layout
 				.setVerticalGroup(jXPanel1Layout
 						.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -447,19 +456,23 @@ public class DefaultViewEditorImpl extends JDialog implements
 	} // </editor-fold>
 
 	private <V> void listActionPerformed(MouseEvent e) {
+		final Object source = e.getSource();
+		final JList list;
+		if(source instanceof JList)
+			list = (JList) source;
+		else
+			return;
+		
 		V newValue = null;
-		final JList list = (JList) e.getSource();
-		final VisualProperty<V> vp = (VisualProperty<V>) list
-				.getSelectedValue();
+		
+		final VisualProperty<V> vp = (VisualProperty<V>) list.getSelectedValue();
 
 		if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
 
 			try {
-				newValue = editorFactory.showVisualPropertyValueEditor(this,
-						vp, null);
+				newValue = editorFactory.showVisualPropertyValueEditor(this, vp, null);
 
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
@@ -467,11 +480,9 @@ public class DefaultViewEditorImpl extends JDialog implements
 				selectedStyle.setDefaultValue(vp, newValue);
 				selectedStyle.apply(cyNetworkManager.getCurrentNetworkView());
 			}
-			updateVisualPropertyLists();
-			buildList();
-			
-			cyNetworkManager.getCurrentNetworkView().updateView();
-			
+
+			repaint();
+			this.mainView.getView().updateView();
 		}
 	}
 
@@ -510,7 +521,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 */
 	private void buildList() {
 
-		VisualPropCellRenderer renderer = new VisualPropCellRenderer();
+		final VisualPropCellRenderer renderer = new VisualPropCellRenderer();
 
 		for (String key : vpSets.keySet()) {
 			DefaultListModel model = new DefaultListModel();
@@ -519,8 +530,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 			Set<VisualProperty<?>> vps = vpSets.get(key);
 			for (VisualProperty<?> vp : vps) {
 				model.addElement(vp);
-//				logger.debug("New Visual Property set to GUI: "
-//						+ vp.getDisplayName() + " = " + vp.getDefault());
+				// logger.debug("New Visual Property set to GUI: "
+				// + vp.getDisplayName() + " = " + vp.getDefault());
 			}
 			list.setCellRenderer(renderer);
 		}
@@ -578,7 +589,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 				RenderingEngine<?> presentation = cyNetworkManager
 						.getCurrentRenderingEngine();
-				if(presentation != null)
+				if (presentation != null)
 					icon = presentation.createIcon(vp);
 			}
 			setText(vp.getDisplayName() + "  =  "
@@ -643,5 +654,17 @@ public class DefaultViewEditorImpl extends JDialog implements
 		this.selectedStyle = e.getNewVisualStyle();
 		setTitle("Default Appearance for " + selectedStyle.getTitle());
 
+	}
+	
+	private static class VisualPropertyComparator implements Comparator<VisualProperty<?>> {
+
+		@Override
+		public int compare(VisualProperty<?> vp1, VisualProperty<?> vp2) {
+			String name1 = vp1.getDisplayName();
+			String name2 = vp2.getDisplayName();
+			
+			return name1.compareTo(name2);
+		}
+		
 	}
 }

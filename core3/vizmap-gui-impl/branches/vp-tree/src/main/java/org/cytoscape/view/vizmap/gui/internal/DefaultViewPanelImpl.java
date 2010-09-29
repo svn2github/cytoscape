@@ -144,20 +144,12 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel,
 		dummyview.getNodeView(target).setVisualProperty(NODE_X_LOCATION, 150d);
 		dummyview.getNodeView(target).setVisualProperty(NODE_Y_LOCATION, 10d);
 
-		// dummyview.getNodeView(target).setVisualProperty(NODE_X_SIZE, 30.0);
-		// dummyview.getNodeView(target).setVisualProperty(NODE_Y_SIZE, 30.0);
-		// dummyview.getNodeView(source).setVisualProperty(NODE_X_SIZE, 30.0);
-		// dummyview.getNodeView(source).setVisualProperty(NODE_Y_SIZE, 30.0);
-
-		dummyview.setVisualProperty(NETWORK_TITLE, "Dummy Network View");
-
 		// Set background color
 		// background = vs.getDefaultValue(NETWORK_BACKGROUND_COLOR);
 		// view.setVisualProperty(NETWORK_BACKGROUND_COLOR, background);
 
 		// Render it in this panel
 		presentationFactory.render(this, dummyview);
-
 	}
 
 	/**
@@ -200,7 +192,9 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel,
 	}
 
 	public void handleEvent(SelectedVisualStyleSwitchedEvent e) {
+		
 		this.vs = e.getNewVisualStyle();
+		
 		// Apply the given visual style to the dummy net
 		this.vs.apply(dummyview);
 

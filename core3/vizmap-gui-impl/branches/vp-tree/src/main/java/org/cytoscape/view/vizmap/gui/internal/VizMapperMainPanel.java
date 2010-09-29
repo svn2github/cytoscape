@@ -168,8 +168,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		refreshUI();
 
 		cytoscapeDesktop.getCytoPanel(CytoPanelName.WEST).add(TAB_TITLE, this);
-		// cytoscapeDesktop.getSwingPropertyChangeSupport()
-		// .addPropertyChangeListener(this);
 
 		// Switch to the default style.
 		switchVS(defaultVS);
