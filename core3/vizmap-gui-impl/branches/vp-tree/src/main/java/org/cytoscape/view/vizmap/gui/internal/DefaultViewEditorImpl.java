@@ -48,6 +48,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -113,18 +114,16 @@ public class DefaultViewEditorImpl extends JDialog implements
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private Map<String, Set<VisualProperty<?>>> vpSets;
-	private Map<String, JList> listMap;
+	private final Map<String, Set<VisualProperty<?>>> vpSets;
+	private final Map<String, JList> listMap;
 
-	private CyNetworkManager cyNetworkManager;
+	private final CyNetworkManager cyNetworkManager;
 
 	private EditorManager editorFactory;
 
 	private VisualStyle selectedStyle;
 
 	private VisualMappingManager vmm;
-
-	private JPopupMenu contextMenu;
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -164,21 +163,30 @@ public class DefaultViewEditorImpl extends JDialog implements
 			}
 		});
 
-		setupPopupMenu();
 	}
 
-	private void setupPopupMenu() {
-		this.contextMenu = new JPopupMenu();
-	}
 
 	private void updateVisualPropertyLists() {
 		vpSets.clear();
 
 		final VisualLexicon lexicon = selectedStyle.getVisualLexicon();
-
-		vpSets.put(NODE, new HashSet<VisualProperty<?>>(lexicon.getAllDescendants(TwoDVisualLexicon.NODE)));
-		vpSets.put(EDGE, new HashSet<VisualProperty<?>>(lexicon.getAllDescendants(TwoDVisualLexicon.EDGE)));
-		vpSets.put(NETWORK, new HashSet<VisualProperty<?>>(lexicon.getAllDescendants(TwoDVisualLexicon.NETWORK)));
+			
+		vpSets.put(NODE, getLeafNodes(lexicon.getAllDescendants(TwoDVisualLexicon.NODE)));
+		vpSets.put(EDGE, getLeafNodes(lexicon.getAllDescendants(TwoDVisualLexicon.EDGE)));
+		vpSets.put(NETWORK, getLeafNodes(lexicon.getAllDescendants(TwoDVisualLexicon.NETWORK)));
+	}
+	
+	private Set<VisualProperty<?>> getLeafNodes(final Collection<VisualProperty<?>> props) {
+		final VisualLexicon lexicon = selectedStyle.getVisualLexicon();
+		final Set<VisualProperty<?>> propSet = new HashSet<VisualProperty<?>>();
+		
+		for(VisualProperty<?> vp: props) {
+			if(lexicon.getVisualLexiconNode(vp).getChildren().size() == 0)
+				propSet.add(vp);
+		}
+		
+		return propSet;
+		
 	}
 
 	/*
@@ -568,9 +576,10 @@ public class DefaultViewEditorImpl extends JDialog implements
 			if (value instanceof VisualProperty<?>) {
 				vp = (VisualProperty<?>) value;
 
-				RenderingEngine presentation = cyNetworkManager
+				RenderingEngine<?> presentation = cyNetworkManager
 						.getCurrentRenderingEngine();
-				icon = presentation.createIcon(vp);
+				if(presentation != null)
+					icon = presentation.createIcon(vp);
 			}
 			setText(vp.getDisplayName() + "  =  "
 					+ selectedStyle.getDefaultValue(vp));

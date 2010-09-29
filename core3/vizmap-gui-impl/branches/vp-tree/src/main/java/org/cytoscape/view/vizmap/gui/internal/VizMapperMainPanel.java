@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -139,7 +140,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager,
 			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper,
-			VisualStyle defStyle) {
+			final VisualStyle defStyle) {
 
 		super(vsFactory, desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
 				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
@@ -188,9 +189,9 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	}
 
 	private void addVisualStyleChangeAction() {
-		vsComboBox.addActionListener(new ActionListener() {
+		visualStyleComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				switchVS((VisualStyle) vsComboBox.getSelectedItem());
+				switchVS((VisualStyle) visualStyleComboBox.getSelectedItem());
 			}
 		});
 	}
@@ -248,7 +249,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				.getCurrentNetworkView();
 
 		if (currentView != null) {
-			vmm.setVisualStyle((VisualStyle) vsComboBox.getModel()
+			vmm.setVisualStyle((VisualStyle) visualStyleComboBox.getModel()
 					.getSelectedItem(), currentView);
 			style.apply(cyNetworkManager.getCurrentNetworkView());
 		}
@@ -291,12 +292,12 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		// vsComboBox.getModel().getSelectedItem();
 
 		// Disable action listeners
-		final ActionListener[] li = vsComboBox.getActionListeners();
+		final ActionListener[] li = visualStyleComboBox.getActionListeners();
 
 		for (int i = 0; i < li.length; i++)
-			vsComboBox.removeActionListener(li[i]);
+			visualStyleComboBox.removeActionListener(li[i]);
 
-		vsComboBox.removeAllItems();
+		visualStyleComboBox.removeAllItems();
 
 		Component defPanel;
 
@@ -325,7 +326,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		// Restore listeners
 		for (int i = 0; i < li.length; i++)
-			vsComboBox.addActionListener(li[i]);
+			visualStyleComboBox.addActionListener(li[i]);
 	}
 
 	/**
@@ -411,8 +412,10 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		defaultImageButton.setCursor(Cursor
 				.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-		// defaultImageButton.setIcon(new ImageIcon(defImage));
-		defaultImageButton
+		if(defImage != null)
+			defaultImageButton.setIcon(new ImageIcon(defImage));
+		if(vsComboBoxModel.getSelectedItem() != null)
+			defaultImageButton
 				.setText(vsComboBoxModel.getSelectedItem().toString());
 		defaultViewImagePanel.add(defaultImageButton, BorderLayout.CENTER);
 		defaultImageButton.addMouseListener(defaultViewMouseListener);
@@ -651,8 +654,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	// return true iff 'match' is found as a name within the
 	// vsNameComboBox.
 	private boolean findVSName(String match) {
-		for (int i = 0; i < vsComboBox.getItemCount(); i++) {
-			if (vsComboBox.getItemAt(i).equals(match)) {
+		for (int i = 0; i < visualStyleComboBox.getItemCount(); i++) {
+			if (visualStyleComboBox.getItemAt(i).equals(match)) {
 				return true;
 			}
 		}

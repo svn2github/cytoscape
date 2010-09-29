@@ -100,7 +100,8 @@ public class VizMapPropertyBuilder {
 	public <K, V> VizMapperProperty<VisualProperty<V>> buildProperty(
 			final VisualMappingFunction<K, V> visualMapping,
 			final String rootObjectCategory,
-			final PropertySheetPanel propertySheetPanel) {
+			final PropertySheetPanel propertySheetPanel, 
+			final String objectType) {
 		// Mapping is empty
 		if (visualMapping == null)
 			return null;
@@ -152,14 +153,14 @@ public class VizMapPropertyBuilder {
 		if (targetNetwork == null)
 			return null;
 
-		attr = tableMgr.getTableMap(vp.getObjectType(),targetNetwork).get(
+		attr = tableMgr.getTableMap(objectType,targetNetwork).get(
 				CyNetwork.DEFAULT_ATTRS);
-		if (vp.getObjectType().equals(NODE)) {
+		if (objectType.equals(NODE)) {
 			it = targetNetwork.getNodeList().iterator();
 			((PropertyEditorRegistry) propertySheetPanel.getTable()
 					.getEditorFactory()).registerEditor(calculatorTypeProp,
 					editorFactory.getDefaultComboBoxEditor("nodeAttrEditor"));
-		} else if (vp.getObjectType().equals(EDGE)) {
+		} else if (objectType.equals(EDGE)) {
 			it = targetNetwork.getEdgeList().iterator();
 			((PropertyEditorRegistry) propertySheetPanel.getTable()
 					.getEditorFactory()).registerEditor(calculatorTypeProp,

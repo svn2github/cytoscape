@@ -24,6 +24,11 @@
 	<osgi:service id="editorManagerService" ref="editorManager" auto-export="interfaces"/>
 
 
+	<osgi:reference id="visualStyleFactoryServiceRef" interface="org.cytoscape.view.vizmap.VisualStyleFactory" />
+	
+	<!-- For now, use DING rendering engine only. -->
+	<osgi:reference id="dingVisualLexiconServiceRef" interface="org.cytoscape.view.model.VisualLexicon" />
+	
 	<!-- Import Desktop Service -->
 	<osgi:reference id="cytoscapeDesktopServiceRef"
 		interface="cytoscape.view.CySwingApplication" />
@@ -55,9 +60,9 @@
 	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
 
 	<!-- Pull-down menu items -->
-	<osgi:service id="createNewStyleActionService" ref="createNewStyleAction"
+	<!--<osgi:service id="createNewStyleActionService" ref="createNewStyleAction"
 		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
-	<osgi:service id="removeStyleActionService" ref="removeStyleAction"
+	--><osgi:service id="removeStyleActionService" ref="removeStyleAction"
 		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
 	<osgi:service id="renameStyleActionService" ref="renameStyleAction"
 		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />

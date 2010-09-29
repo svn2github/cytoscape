@@ -81,86 +81,87 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 	public void actionPerformed(ActionEvent e) {
 		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
 
-		/*
-		 * Check Selected poperty
-		 */
-		final int selectedRow = propertySheetPanel.getTable().getSelectedRow();
-
-		if (selectedRow < 0)
-			return;
-
-		final Item item = (Item) propertySheetPanel.getTable().getValueAt(
-				selectedRow, 0);
-		final VizMapperProperty<?> prop = (VizMapperProperty<?>) item
-				.getProperty();
-		final Object hidden = prop.getHiddenObject();
-
-		if (hidden instanceof VisualProperty) {
-			// OK, this is a Visual Property. Check data type next.
-			Class<?> t = ((VisualProperty<?>) hidden).getType();
-
-			if (t.equals(Color.class) == false)
-				return;
-
-			// This cast is always OK because of the type check above.
-			final VisualProperty<Color> type = (VisualProperty<Color>) hidden;
-
-			final Map<Object, Color> valueMap = new HashMap<Object, Color>();
-
-			final VisualStyle vs = this.vizMapperMainPanel
-					.getSelectedVisualStyle();
-
-			final CyTable attr = tableMgr.getTableMap(type.getObjectType(), targetNetwork).get(CyNetwork.DEFAULT_ATTRS);
-			// If not discrete, return.
-			if ((vs.getVisualMappingFunction(type) instanceof DiscreteMapping) == false)
-				return;
-
-			DiscreteMapping<Object, Color> dm = (DiscreteMapping<Object, Color>) vs
-					.getVisualMappingFunction(type);
-
-			final String attrName = dm.getMappingAttributeName();
-			List<Object> attrVals = attr.getColumnValues(attrName, dm
-					.getMappingAttributeType());
-
-			final Set<Object> attrSet = new TreeSet<Object>(attrVals);
-
-			if (type.getType() == Color.class) {
-				Color c;
-
-				if (functionType == BRIGHTER) {
-					for (Object key : attrSet) {
-						c = dm.getMapValue(key);
-
-						if (c != null)
-							valueMap.put(key, c.brighter());
-					}
-				} else if (functionType == DARKER) {
-					for (Object key : attrSet) {
-						c = dm.getMapValue(key);
-
-						if (c != null)
-							valueMap.put(key, c.darker());
-					}
-				}
-			}
-
-			dm.putAll(valueMap);
-
-			propertySheetPanel.removeProperty(prop);
-
-			final VizMapperProperty<VisualProperty<Color>> newRootProp = vizMapPropertySheetBuilder
-					.getPropertyBuilder().buildProperty(dm,
-							type.getObjectType(), propertySheetPanel);
-
-			vizMapPropertySheetBuilder.removeProperty(prop);
-			vizMapPropertySheetBuilder.getPropertyMap().get(vs)
-					.add(newRootProp);
-
-			vizMapPropertySheetBuilder.expandLastSelectedItem(type
-					.getDisplayName());
-		} else {
-			throw new IllegalStateException(
-					"Hidden object is not Visual Property.");
-		}
+		//FIXME
+//		/*
+//		 * Check Selected poperty
+//		 */
+//		final int selectedRow = propertySheetPanel.getTable().getSelectedRow();
+//
+//		if (selectedRow < 0)
+//			return;
+//
+//		final Item item = (Item) propertySheetPanel.getTable().getValueAt(
+//				selectedRow, 0);
+//		final VizMapperProperty<?> prop = (VizMapperProperty<?>) item
+//				.getProperty();
+//		final Object hidden = prop.getHiddenObject();
+//
+//		if (hidden instanceof VisualProperty) {
+//			// OK, this is a Visual Property. Check data type next.
+//			Class<?> t = ((VisualProperty<?>) hidden).getType();
+//
+//			if (t.equals(Color.class) == false)
+//				return;
+//
+//			// This cast is always OK because of the type check above.
+//			final VisualProperty<Color> type = (VisualProperty<Color>) hidden;
+//
+//			final Map<Object, Color> valueMap = new HashMap<Object, Color>();
+//
+//			final VisualStyle vs = this.vizMapperMainPanel
+//					.getSelectedVisualStyle();
+//
+//			final CyTable attr = tableMgr.getTableMap(type.getObjectType(), targetNetwork).get(CyNetwork.DEFAULT_ATTRS);
+//			// If not discrete, return.
+//			if ((vs.getVisualMappingFunction(type) instanceof DiscreteMapping) == false)
+//				return;
+//
+//			DiscreteMapping<Object, Color> dm = (DiscreteMapping<Object, Color>) vs
+//					.getVisualMappingFunction(type);
+//
+//			final String attrName = dm.getMappingAttributeName();
+//			List<Object> attrVals = attr.getColumnValues(attrName, dm
+//					.getMappingAttributeType());
+//
+//			final Set<Object> attrSet = new TreeSet<Object>(attrVals);
+//
+//			if (type.getType() == Color.class) {
+//				Color c;
+//
+//				if (functionType == BRIGHTER) {
+//					for (Object key : attrSet) {
+//						c = dm.getMapValue(key);
+//
+//						if (c != null)
+//							valueMap.put(key, c.brighter());
+//					}
+//				} else if (functionType == DARKER) {
+//					for (Object key : attrSet) {
+//						c = dm.getMapValue(key);
+//
+//						if (c != null)
+//							valueMap.put(key, c.darker());
+//					}
+//				}
+//			}
+//
+//			dm.putAll(valueMap);
+//
+//			propertySheetPanel.removeProperty(prop);
+//
+//			final VizMapperProperty<VisualProperty<Color>> newRootProp = vizMapPropertySheetBuilder
+//					.getPropertyBuilder().buildProperty(dm,
+//							type.getObjectType(), propertySheetPanel);
+//
+//			vizMapPropertySheetBuilder.removeProperty(prop);
+//			vizMapPropertySheetBuilder.getPropertyMap().get(vs)
+//					.add(newRootProp);
+//
+//			vizMapPropertySheetBuilder.expandLastSelectedItem(type
+//					.getDisplayName());
+//		} else {
+//			throw new IllegalStateException(
+//					"Hidden object is not Visual Property.");
+//		}
 	}
 }

@@ -135,45 +135,47 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 
 			if ((e.getClickCount() == 2) && (category != null)
 					&& category.equalsIgnoreCase("Unused Properties")) {
-				((VizMapperProperty) curProp).setEditable(true);
-
-				VisualProperty<?> vp = (VisualProperty<?>) ((VizMapperProperty) curProp)
-						.getHiddenObject();
-				propertySheetPanel.removeProperty(curProp);
-
-				final VizMapperProperty newProp = new VizMapperProperty();
-				final VizMapperProperty mapProp = new VizMapperProperty();
-
-				newProp.setDisplayName(vp.getDisplayName());
-				newProp.setHiddenObject(vp);
-				newProp.setValue("Please select a value!");
-
-				if (vp.getObjectType().equals(NODE)) {
-					newProp.setCategory(vp.getObjectType());
-					
-					((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(newProp, nodeAttributeEditor);
-				} else {
-					newProp.setCategory(EDGE);
-					((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(newProp, edgeAttributeEditor);
-				}
-
-				mapProp.setDisplayName("Mapping Type");
-				mapProp.setValue("Please select a mapping type!");
 				
-				((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(mapProp, mappingTypeEditor);
-				
-				System.out.println("====================> Registered: " + ((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).getEditor(newProp));
-
-				newProp.addSubProperty(mapProp);
-				mapProp.setParentProperty(newProp);
-				propertySheetPanel.addProperty(0, newProp);
-
-				vizMapPropertySheetBuilder.expandLastSelectedItem(vp
-						.getDisplayName());
-
-				propertySheetPanel.getTable().scrollRectToVisible(
-						new Rectangle(0, 0, 10, 10));
-				propertySheetPanel.repaint();
+				// FIXME
+//				((VizMapperProperty) curProp).setEditable(true);
+//
+//				VisualProperty<?> vp = (VisualProperty<?>) ((VizMapperProperty) curProp)
+//						.getHiddenObject();
+//				propertySheetPanel.removeProperty(curProp);
+//
+//				final VizMapperProperty newProp = new VizMapperProperty();
+//				final VizMapperProperty mapProp = new VizMapperProperty();
+//
+//				newProp.setDisplayName(vp.getDisplayName());
+//				newProp.setHiddenObject(vp);
+//				newProp.setValue("Please select a value!");
+//
+//				if (vp.getObjectType().equals(NODE)) {
+//					newProp.setCategory(vp.getObjectType());
+//					
+//					((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(newProp, nodeAttributeEditor);
+//				} else {
+//					newProp.setCategory(EDGE);
+//					((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(newProp, edgeAttributeEditor);
+//				}
+//
+//				mapProp.setDisplayName("Mapping Type");
+//				mapProp.setValue("Please select a mapping type!");
+//				
+//				((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(mapProp, mappingTypeEditor);
+//				
+//				System.out.println("====================> Registered: " + ((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).getEditor(newProp));
+//
+//				newProp.addSubProperty(mapProp);
+//				mapProp.setParentProperty(newProp);
+//				propertySheetPanel.addProperty(0, newProp);
+//
+//				vizMapPropertySheetBuilder.expandLastSelectedItem(vp
+//						.getDisplayName());
+//
+//				propertySheetPanel.getTable().scrollRectToVisible(
+//						new Rectangle(0, 0, 10, 10));
+//				propertySheetPanel.repaint();
 
 				return;
 			} else if ((e.getClickCount() == 1) && (category == null)) {

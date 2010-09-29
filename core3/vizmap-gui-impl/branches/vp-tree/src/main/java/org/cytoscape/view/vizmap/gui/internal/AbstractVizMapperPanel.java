@@ -110,7 +110,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	// ///////// Main GUI Components /////////////////
 
 	// Current Visual Style is managed by this object.
-	protected JComboBox vsComboBox;
+	protected JComboBox visualStyleComboBox;
 	protected DefaultComboBoxModel vsComboBoxModel;
 
 	// Default View Editor. This is a singleton.
@@ -190,7 +190,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager,
 			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper,
-			VisualStyle defStyle) {
+			final VisualStyle defStyle) {
 		
 		this.vsFactory = vsFactory;
 		this.cytoscapeDesktop = desktop;
@@ -206,6 +206,8 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		this.editorWindowManager = editorWindowManager;
 		this.cyNetworkManager = cyNetworkManager;
 		this.eventHelper = eventHelper;
+		this.defaultVS = defStyle;
+		
 		spcs = new SwingPropertyChangeSupport(this);
 
 		defaultImageManager = new HashMap<VisualStyle, Image>();
@@ -213,7 +215,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		initComponents();
 		initDefaultEditors();
 
-		this.defaultVS = defStyle;
+		
 
 	}
 
@@ -245,7 +247,9 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		buttonPanel = new javax.swing.JPanel();
 
 		vsComboBoxModel = new DefaultComboBoxModel();
-		vsComboBox = new JComboBox(vsComboBoxModel);
+		vsComboBoxModel.addElement(defaultVS);
+		vmm.addVisualStyle(defaultVS);
+		visualStyleComboBox = new JComboBox(vsComboBoxModel);
 
 		optionButton = new DropDownMenuButton(new AbstractAction() {
 			private final static long serialVersionUID = 1213748836776579L;
@@ -354,7 +358,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		vsSelectPanelLayout.setHorizontalGroup(vsSelectPanelLayout
 				.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
 						vsSelectPanelLayout.createSequentialGroup()
-								.addContainerGap().addComponent(vsComboBox, 0,
+								.addContainerGap().addComponent(visualStyleComboBox, 0,
 										146, Short.MAX_VALUE).addPreferredGap(
 										LayoutStyle.ComponentPlacement.RELATED)
 								.addComponent(optionButton,
@@ -366,7 +370,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 						vsSelectPanelLayout.createSequentialGroup().addGroup(
 								vsSelectPanelLayout.createParallelGroup(
 										GroupLayout.Alignment.BASELINE)
-										.addComponent(vsComboBox,
+										.addComponent(visualStyleComboBox,
 												GroupLayout.PREFERRED_SIZE,
 												GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE)
@@ -504,19 +508,19 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	 */
 	public VisualStyle getSelectedVisualStyle() {
 		// TODO: Type safety. Make sure this cast is always valid.
-		return (VisualStyle) vsComboBox.getSelectedItem();
+		return (VisualStyle) visualStyleComboBox.getSelectedItem();
 	}
 
 	public void setSelectedVisualStyle(final VisualStyle vs) {
 		final int itemCount = vsComboBoxModel.getSize();
 
 		for (int i = 0; i < itemCount; i++) {
-			if (vsComboBox.getItemAt(i).equals(vs)) {
+			if (visualStyleComboBox.getItemAt(i).equals(vs)) {
 
 				eventHelper.fireAsynchronousEvent(
-						new SelectedVisualStyleSwitchedEvent(vsComboBox,
-								(VisualStyle) vsComboBox.getItemAt(i), vs));
-				vsComboBox.setSelectedItem(vs);
+						new SelectedVisualStyleSwitchedEvent(visualStyleComboBox,
+								(VisualStyle) visualStyleComboBox.getItemAt(i), vs));
+				visualStyleComboBox.setSelectedItem(vs);
 				return;
 			}
 		}

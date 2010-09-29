@@ -8,10 +8,9 @@
            http://www.springframework.org/schema/context/spring-context-2.5.xsd
            http://www.springframework.org/schema/util
            http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+           
+	<import resource="bundle-context-osgi-vizmapper.xml" />
 
-	<description>
-		Configuration file for VizMapper GUI.
-	</description>
 
 	<!--
 		Setting (property) file for VizMapper GUI. This bean can be injected
@@ -27,7 +26,7 @@
 
 	<!-- Default Visual Style Builder -->
 	<bean name="defaultVisualStyleBuilder" class="org.cytoscape.view.vizmap.gui.internal.util.DefaultVisualStyleBuilder">
-		<constructor-arg ref="vmmServiceRef" />
+		<constructor-arg ref="visualStyleFactoryServiceRef" />
 	</bean>
 
 	<!-- Property Sheet -->
@@ -157,7 +156,7 @@
 
 	<!--
 		Actions for Vizmapper. These actions will be exported as Service.
-	-->
+	
 	<bean name="createNewStyleAction"
 		class="org.cytoscape.view.vizmap.gui.internal.action.CreateNewStyleAction"
 		autowire="autodetect" depends-on="vizMapperMainPanel">
@@ -169,7 +168,9 @@
 			value="${vizMapperMainPanel.menu.createNewStyleAction}" />
 		<property name="iconId"
 			value="${vizMapperMainPanel.menu.createNewStyleAction.icon}" />
-	</bean>
+	</bean>-->
+	
+	
 	<bean name="removeStyleAction"
 		class="org.cytoscape.view.vizmap.gui.internal.action.RemoveStyleAction"
 		autowire="autodetect" depends-on="vizMapperMainPanel">
@@ -184,6 +185,7 @@
 		<property name="menuLabel" value="${vizMapperMainPanel.menu.renameStyleAction}" />
 		<property name="iconId"
 			value="${vizMapperMainPanel.menu.renameStyleAction.icon}" />
+		<constructor-arg ref="vizMapperUtil" />
 	</bean>
 
 	<bean name="copyStyleAction"
@@ -192,6 +194,8 @@
 		<property name="menuLabel" value="${vizMapperMainPanel.menu.copyStyleAction}" />
 		<property name="iconId"
 			value="${vizMapperMainPanel.menu.copyStyleAction.icon}" />
+			
+		<constructor-arg ref="vizMapperUtil" />
 	</bean>
 	
 	<bean name="createLegendAction"
@@ -257,6 +261,7 @@
 
 	<!-- Create Default Visual Style using VMM -->
 	<bean id="defaultVS" factory-bean="defaultVisualStyleBuilder" factory-method="getDefaultStyle">
+		<constructor-arg ref="dingVisualLexiconServiceRef" />
 	</bean>
 
 	<bean name="vizMapperMainPanel"
@@ -278,6 +283,7 @@
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="defaultVS" />
+		<constructor-arg ref="visualStyleFactoryServiceRef" />
 
 	</bean>
 </beans>

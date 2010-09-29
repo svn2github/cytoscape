@@ -233,51 +233,53 @@ public class VizMapPropertySheetBuilder implements
 	private List<Property> setPropertyFromCalculator() {
 
 		final List<Property> props = new ArrayList<Property>();
+		
+		//FIXME
 
-		// Loop for each category: node, edge, and network
-		for (String cat : CATEGORY) {
-			
-			for (VisualMappingFunction<?, ?> mapping : selectedStyle
-					.getAllVisualMappingFunctions()) {
-				
-				// execute the following only if category matches.
-				if(cat.equalsIgnoreCase(mapping.getVisualProperty().getObjectType()) == false) continue;
-				
-				VisualProperty<?> type = null;
-
-				final VizMapperProperty<?> calculatorTypeProp = vizMapPropertyBuilder
-						.buildProperty(mapping, cat, propertySheetPanel);
-
-				PropertyEditor editor = ((PropertyEditorRegistry) this.propertySheetPanel.getTable().getEditorFactory()).getEditor(calculatorTypeProp);
-
-				if ((editor == null)
-						&& (calculatorTypeProp.getCategory().equals(
-								"Unused Properties") == false)) {
-
-					type = (VisualProperty<?>) calculatorTypeProp
-							.getHiddenObject();
-
-					if (type.getObjectType().equals(NODE)) {
-						
-						((PropertyEditorRegistry) this.propertySheetPanel.getTable().getEditorFactory())
-								.registerEditor(
-										calculatorTypeProp,
-										editorManager
-												.getDefaultComboBoxEditor("nodeAttrEditor"));
-					} else if(type.getObjectType().equals(EDGE)) {
-						((PropertyEditorRegistry) this.propertySheetPanel.getTable().getEditorFactory())
-								.registerEditor(
-										calculatorTypeProp,
-										editorManager
-												.getDefaultComboBoxEditor("edgeAttrEditor"));
-					} else {
-						// Network
-						
-					}
-				}
-				props.add(calculatorTypeProp);
-			}
-		}
+//		// Loop for each category: node, edge, and network
+//		for (String cat : CATEGORY) {
+//			
+//			for (VisualMappingFunction<?, ?> mapping : selectedStyle
+//					.getAllVisualMappingFunctions()) {
+//				
+//				// execute the following only if category matches.
+//				if(cat.equalsIgnoreCase(mapping.getVisualProperty().getObjectType()) == false) continue;
+//				
+//				VisualProperty<?> type = null;
+//
+//				final VizMapperProperty<?> calculatorTypeProp = vizMapPropertyBuilder
+//						.buildProperty(mapping, cat, propertySheetPanel);
+//
+//				PropertyEditor editor = ((PropertyEditorRegistry) this.propertySheetPanel.getTable().getEditorFactory()).getEditor(calculatorTypeProp);
+//
+//				if ((editor == null)
+//						&& (calculatorTypeProp.getCategory().equals(
+//								"Unused Properties") == false)) {
+//
+//					type = (VisualProperty<?>) calculatorTypeProp
+//							.getHiddenObject();
+//
+//					if (type.getObjectType().equals(NODE)) {
+//						
+//						((PropertyEditorRegistry) this.propertySheetPanel.getTable().getEditorFactory())
+//								.registerEditor(
+//										calculatorTypeProp,
+//										editorManager
+//												.getDefaultComboBoxEditor("nodeAttrEditor"));
+//					} else if(type.getObjectType().equals(EDGE)) {
+//						((PropertyEditorRegistry) this.propertySheetPanel.getTable().getEditorFactory())
+//								.registerEditor(
+//										calculatorTypeProp,
+//										editorManager
+//												.getDefaultComboBoxEditor("edgeAttrEditor"));
+//					} else {
+//						// Network
+//						
+//					}
+//				}
+//				props.add(calculatorTypeProp);
+//			}
+//		}
 
 		return props;
 	}

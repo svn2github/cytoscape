@@ -83,135 +83,135 @@ public class GenerateValueAction<K, V> extends AbstractVizMapperAction {
 	public void actionPerformed(ActionEvent e) {
 		// Check Selected property
 		final int selectedRow = propertySheetPanel.getTable().getSelectedRow();
-
-		if (selectedRow < 0)
-			return;
-
-		final Item item = (Item) propertySheetPanel.getTable().getValueAt(
-				selectedRow, 0);
-		final VizMapperProperty<?> prop = (VizMapperProperty<?>) item
-				.getProperty();
-		Object hidden = prop.getHiddenObject();
-
-		if (hidden instanceof VisualProperty) {
-			final CyNetworkView targetNetworkView = cyNetworkManager
-					.getCurrentNetworkView();
-
-			final VisualProperty<?> type = (VisualProperty<?>) hidden;
-
-			Map valueMap = new HashMap();
-			final long seed = System.currentTimeMillis();
-			final Random rand = new Random(seed);
-
-			final CyTable attr;
-
-			attr = tableMgr.getTableMap(type.getObjectType(), cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
-
-			final VisualMappingFunction oMap = vmm.getVisualStyle(
-					targetNetworkView).getVisualMappingFunction(type);
-			// This function is for discrete mapping only.
-			if ((oMap instanceof DiscreteMapping) == false)
-				return;
-
-			dm = (DiscreteMapping) oMap;
-
-			final Set<Object> attrSet = new TreeSet<Object>(attr
-					.getColumnValues(oMap.getMappingAttributeName(), attr
-							.getColumnTypeMap().get(
-									oMap.getMappingAttributeName())));
-
-			// Show error if there is no attribute value.
-			if (attrSet.size() == 0) {
-				JOptionPane.showMessageDialog(vizMapperMainPanel,
-						"No attribute value is available.",
-						"Cannot generate values", JOptionPane.ERROR_MESSAGE);
-			}
-
-			// /*
-			// * Create random colors
-			// */
-			// final float increment = 1f / ((Number)
-			// attrSet.size()).floatValue();
-			//
-			// float hue = 0;
-			// float sat = 0;
-			// float br = 0;
-			//
-			// if (type.getType() == Color.class) {
-			// int i = 0;
-			//
-			// if (functionType == RAINBOW1) {
-			// for (Object key : attrSet) {
-			// hue = hue + increment;
-			// valueMap.put(key,
-			// new Color(Color.HSBtoRGB(hue, 1f, 1f)));
-			// }
-			// } else if (functionType == RAINBOW2) {
-			// for (Object key : attrSet) {
-			// hue = hue + increment;
-			// sat = (Math.abs(((Number) Math.cos((8 * i)
-			// / (2 * Math.PI))).floatValue()) * 0.7f) + 0.3f;
-			// br = (Math.abs(((Number) Math.sin(((i) / (2 * Math.PI))
-			// + (Math.PI / 2))).floatValue()) * 0.7f) + 0.3f;
-			// valueMap.put(key, new Color(Color
-			// .HSBtoRGB(hue, sat, br)));
-			// i++;
-			// }
-			// } else {
-			// for (Object key : attrSet)
-			// valueMap.put(key, new Color(
-			// ((Number) (rand.nextFloat() * MAX_COLOR))
-			// .intValue()));
-			// }
-			// } else if ((type.getType() == Number.class)
-			// && (functionType == RANDOM)) {
-			// final String range = JOptionPane.showInputDialog(
-			// visualPropertySheetPanel,
-			// "Please enter the value range (example: 30-100)",
-			// "Assign Random Numbers", JOptionPane.PLAIN_MESSAGE);
-			//
-			// String[] rangeVals = range.split("-");
-			//
-			// if (rangeVals.length != 2)
-			// return;
-			//
-			// Float min = Float.valueOf(rangeVals[0]);
-			// Float max = Float.valueOf(rangeVals[1]);
-			// Float valueRange = max - min;
-			//
-			// for (Object key : attrSet)
-			// valueMap.put(key, (rand.nextFloat() * valueRange) + min);
-			// }
-			valueMap = generator.generateMap(attrSet);
-
-			dm.putAll(valueMap);
-			// vmm.setNetworkView(targetNetworkView);
-			// Cytoscape.redrawGraph(targetNetworkView);
-			propertySheetPanel.removeProperty(prop);
-
-			// final VizMapperProperty newRootProp = new VizMapperProperty();
-			//
-			// if (type.getObjectType().equals(VisualProperty.NODE))
-			// buildProperty(visualMappingManager.getVisualStyle()
-			// .getNodeAppearanceCalculator().getCalculator(type),
-			// newRootProp, NODE_VISUAL_MAPPING);
-			// else
-			// buildProperty(vmm.getVisualStyle()
-			// .getEdgeAppearanceCalculator().getCalculator(type),
-			// newRootProp, EDGE_VISUAL_MAPPING);
-			//
-			// removeProperty(prop);
-			// System.out.println("asdf pre vs name");
-			// System.out.println("asdf vs name" +
-			// vmm.getVisualStyle().getName());
-			// propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
-			//
-			// expandLastSelectedItem(type.getName());
-			// } else {
-			// System.out.println("Invalid.");
-			// }
-			//
-			// return;
-		}
+// FIXME
+//		if (selectedRow < 0)
+//			return;
+//
+//		final Item item = (Item) propertySheetPanel.getTable().getValueAt(
+//				selectedRow, 0);
+//		final VizMapperProperty<?> prop = (VizMapperProperty<?>) item
+//				.getProperty();
+//		Object hidden = prop.getHiddenObject();
+//
+//		if (hidden instanceof VisualProperty) {
+//			final CyNetworkView targetNetworkView = cyNetworkManager
+//					.getCurrentNetworkView();
+//
+//			final VisualProperty<?> type = (VisualProperty<?>) hidden;
+//
+//			Map valueMap = new HashMap();
+//			final long seed = System.currentTimeMillis();
+//			final Random rand = new Random(seed);
+//
+//			final CyTable attr;
+//
+//			attr = tableMgr.getTableMap(type.getObjectType(), cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
+//
+//			final VisualMappingFunction oMap = vmm.getVisualStyle(
+//					targetNetworkView).getVisualMappingFunction(type);
+//			// This function is for discrete mapping only.
+//			if ((oMap instanceof DiscreteMapping) == false)
+//				return;
+//
+//			dm = (DiscreteMapping) oMap;
+//
+//			final Set<Object> attrSet = new TreeSet<Object>(attr
+//					.getColumnValues(oMap.getMappingAttributeName(), attr
+//							.getColumnTypeMap().get(
+//									oMap.getMappingAttributeName())));
+//
+//			// Show error if there is no attribute value.
+//			if (attrSet.size() == 0) {
+//				JOptionPane.showMessageDialog(vizMapperMainPanel,
+//						"No attribute value is available.",
+//						"Cannot generate values", JOptionPane.ERROR_MESSAGE);
+//			}
+//
+//			// /*
+//			// * Create random colors
+//			// */
+//			// final float increment = 1f / ((Number)
+//			// attrSet.size()).floatValue();
+//			//
+//			// float hue = 0;
+//			// float sat = 0;
+//			// float br = 0;
+//			//
+//			// if (type.getType() == Color.class) {
+//			// int i = 0;
+//			//
+//			// if (functionType == RAINBOW1) {
+//			// for (Object key : attrSet) {
+//			// hue = hue + increment;
+//			// valueMap.put(key,
+//			// new Color(Color.HSBtoRGB(hue, 1f, 1f)));
+//			// }
+//			// } else if (functionType == RAINBOW2) {
+//			// for (Object key : attrSet) {
+//			// hue = hue + increment;
+//			// sat = (Math.abs(((Number) Math.cos((8 * i)
+//			// / (2 * Math.PI))).floatValue()) * 0.7f) + 0.3f;
+//			// br = (Math.abs(((Number) Math.sin(((i) / (2 * Math.PI))
+//			// + (Math.PI / 2))).floatValue()) * 0.7f) + 0.3f;
+//			// valueMap.put(key, new Color(Color
+//			// .HSBtoRGB(hue, sat, br)));
+//			// i++;
+//			// }
+//			// } else {
+//			// for (Object key : attrSet)
+//			// valueMap.put(key, new Color(
+//			// ((Number) (rand.nextFloat() * MAX_COLOR))
+//			// .intValue()));
+//			// }
+//			// } else if ((type.getType() == Number.class)
+//			// && (functionType == RANDOM)) {
+//			// final String range = JOptionPane.showInputDialog(
+//			// visualPropertySheetPanel,
+//			// "Please enter the value range (example: 30-100)",
+//			// "Assign Random Numbers", JOptionPane.PLAIN_MESSAGE);
+//			//
+//			// String[] rangeVals = range.split("-");
+//			//
+//			// if (rangeVals.length != 2)
+//			// return;
+//			//
+//			// Float min = Float.valueOf(rangeVals[0]);
+//			// Float max = Float.valueOf(rangeVals[1]);
+//			// Float valueRange = max - min;
+//			//
+//			// for (Object key : attrSet)
+//			// valueMap.put(key, (rand.nextFloat() * valueRange) + min);
+//			// }
+//			valueMap = generator.generateMap(attrSet);
+//
+//			dm.putAll(valueMap);
+//			// vmm.setNetworkView(targetNetworkView);
+//			// Cytoscape.redrawGraph(targetNetworkView);
+//			propertySheetPanel.removeProperty(prop);
+//
+//			// final VizMapperProperty newRootProp = new VizMapperProperty();
+//			//
+//			// if (type.getObjectType().equals(VisualProperty.NODE))
+//			// buildProperty(visualMappingManager.getVisualStyle()
+//			// .getNodeAppearanceCalculator().getCalculator(type),
+//			// newRootProp, NODE_VISUAL_MAPPING);
+//			// else
+//			// buildProperty(vmm.getVisualStyle()
+//			// .getEdgeAppearanceCalculator().getCalculator(type),
+//			// newRootProp, EDGE_VISUAL_MAPPING);
+//			//
+//			// removeProperty(prop);
+//			// System.out.println("asdf pre vs name");
+//			// System.out.println("asdf vs name" +
+//			// vmm.getVisualStyle().getName());
+//			// propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
+//			//
+//			// expandLastSelectedItem(type.getName());
+//			// } else {
+//			// System.out.println("Invalid.");
+//			// }
+//			//
+//			// return;
+//		}
 	}
 }

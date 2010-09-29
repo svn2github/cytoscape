@@ -17,7 +17,10 @@ import java.util.Map;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
+import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
 import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -35,6 +38,9 @@ import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
  */
 public class DefaultVisualStyleBuilder {
 	
+	private static final Logger logger = LoggerFactory.getLogger(DefaultVisualStyleBuilder.class);
+	
+	// Name of default visual style.
 	private static final String DEFAULT_VS_NAME = "default";
 	
 	// TODO: replace these!!
@@ -67,12 +73,15 @@ public class DefaultVisualStyleBuilder {
 	}
 	
 	public VisualStyle getDefaultStyle(final VisualLexicon lexicon) {
+		
 		VisualStyle defStyle = styleMap.get(lexicon);
 		if(defStyle == null) {
 			defStyle = buildDefaultStyle(lexicon);
 			styleMap.put(lexicon, defStyle);
 		}
-			
+		
+		logger.debug("Default Style Created: " + defStyle.getTitle());
+		
 		return defStyle;
 	}
 	

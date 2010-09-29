@@ -13,11 +13,7 @@ public class VisualPropertyTreeBuilder {
 	
 	
 	private void createTree(final PropertySheetTableModel model, final VisualLexicon lexicon) {
-		VisualProperty<NullDataType> root = lexicon.getRootVisualProperty();
-		
-		final DefaultProperty lexiconRoot = new DefaultProperty();
-		lexiconRoot.setDisplayName(root.getDisplayName());
-		
+	
 		
 	}
 	
