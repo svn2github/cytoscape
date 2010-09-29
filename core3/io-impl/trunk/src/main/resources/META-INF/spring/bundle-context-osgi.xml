@@ -23,6 +23,8 @@
 	                interface="org.cytoscape.property.CyProperty"
 	                filter="(cyPropertyName=coreSettings)" />
 
+	<osgi:reference id="cyNetworkManagerServiceRef"
+		interface="org.cytoscape.session.CyNetworkManager" />
 
 	<!-- Export services -->
 	<osgi:service id="cyNetworkViewReaderManagerService" ref="cyNetworkViewReaderManager"
