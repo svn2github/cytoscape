@@ -45,6 +45,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -237,6 +238,12 @@ public abstract class Cytoscape {
 	 * Fired every time a nested network is removed from a node.
 	 */
 	public static final String NESTED_NETWORK_DESTROYED = "NESTED_NETWORK_DESTROYED";
+
+	/**
+	 *  Fired every time new attributes are loaded and provides the CyAttributes that was modified
+	 *  as well as a set of the new attribute names..
+	 */
+	public static final String NEW_ATTRS_LOADED = "NEW_ATTRS_LOADED";
 
 	/**
 	 * When creating a network, use one of the standard suffixes to have it
@@ -1596,6 +1603,11 @@ public abstract class Cytoscape {
 	public static void loadAttributes(String[] nodeAttrLocations, String[] edgeAttrLocations) {
 		// check to see if there are Node Attributes passed
 		if (nodeAttrLocations != null) {
+			final Set<String> oldNodeAttrNames = new HashSet<String>();
+			for (final String attrName : nodeAttributes.getAttributeNames())
+				oldNodeAttrNames.add(attrName);
+
+			boolean fireChange = false;
 			for (int i = 0; i < nodeAttrLocations.length; ++i) {
 				try {
 					InputStreamReader reader = null;
@@ -1608,7 +1620,7 @@ public abstract class Cytoscape {
 							reader.close();
 						}
 					}
-					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
+					fireChange = true;
 				} catch (Exception e) {
 					// e.printStackTrace();
 					throw new IllegalArgumentException("Failure loading node attribute data: "
@@ -1616,23 +1628,39 @@ public abstract class Cytoscape {
 					                                   + e.getMessage());
 				}
 			}
+
+			if (fireChange) {
+				final Set<String> newNodeAttrNames = new HashSet<String>();
+				for (final String attrName : nodeAttributes.getAttributeNames()) {
+					if (!oldNodeAttrNames.contains(attrName))
+						newNodeAttrNames.add(attrName);
+				}
+
+				firePropertyChange(ATTRIBUTES_CHANGED, null, null);
+				firePropertyChange(NEW_ATTRS_LOADED, nodeAttributes, newNodeAttrNames);
+			}
 		}
 
 		// Check to see if there are Edge Attributes Passed
 		if (edgeAttrLocations != null) {
+			final Set<String> oldEdgeAttrNames = new HashSet<String>();
+			for (final String attrName : edgeAttributes.getAttributeNames())
+				oldEdgeAttrNames.add(attrName);
+
+			boolean fireChange = false;
 			for (int j = 0; j < edgeAttrLocations.length; ++j) {
 				try {
 					InputStreamReader reader = null;
-                    try {
+					try {
 						reader = new InputStreamReader(FileUtil.getInputStream(edgeAttrLocations[j]));
-                        CyAttributesReader.loadAttributes(edgeAttributes, reader);
-                    }
-                    finally {
-                        if (reader != null) {
-                            reader.close();
-                        }
-                    }
-					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
+						CyAttributesReader.loadAttributes(edgeAttributes, reader);
+					}
+					finally {
+						if (reader != null) {
+							reader.close();
+						}
+					}
+					fireChange = true;
 				} catch (Exception e) {
 					// e.printStackTrace();
 					throw new IllegalArgumentException("Failure loading edge attribute data: "
@@ -1640,9 +1668,19 @@ public abstract class Cytoscape {
 					                                   + e.getMessage());
 				}
 			}
+
+			if (fireChange) {
+				final Set<String> newEdgeAttrNames = new HashSet<String>();
+				for (final String attrName : edgeAttributes.getAttributeNames()) {
+					if (!oldEdgeAttrNames.contains(attrName))
+						newEdgeAttrNames.add(attrName);
+				}
+
+				firePropertyChange(ATTRIBUTES_CHANGED, null, null);
+				firePropertyChange(NEW_ATTRS_LOADED, edgeAttributes, newEdgeAttrNames);
+			}
 		}
 	}
-
 
 	/**
 	 * This will replace the bioDataServer.

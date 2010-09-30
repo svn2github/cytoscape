@@ -1,13 +1,6 @@
 /*
  Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
-
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
  by the Free Software Foundation; either version 2.1 of the License, or
@@ -34,6 +27,7 @@
  */
 package browser;
 
+
 import giny.model.GraphObject;
 
 import java.awt.BorderLayout;
@@ -43,11 +37,14 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -80,8 +77,7 @@ import cytoscape.view.cytopanels.CytoPanelState;
  * panel to AttrMod Dialog Peng-Liang wang 9/28/2006
  *
  */
-public class AttributeBrowser implements TableColumnModelListener {
-	
+public class AttributeBrowser implements TableColumnModelListener, PropertyChangeListener {
 	private static final Dimension PANEL_SIZE = new Dimension(400, 300);
 	
 	protected static Object pcsO = new Object();
@@ -116,7 +112,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 
 	// Each Attribute Browser operates on one CytoscapeData object, and on
 	// either Nodes or Edges.
-	private final CyAttributes attrData;
+	private final CyAttributes attributes;
 
 	// Type of attribute
 	private final DataObjectType panelType;
@@ -164,14 +160,14 @@ public class AttributeBrowser implements TableColumnModelListener {
 	/**
 	 * Creates a new DataTable object.
 	 *
-	 * @param attrData
+	 * @param attributes
 	 *            DOCUMENT ME!
 	 * @param tableObjectType
 	 *            DOCUMENT ME!
 	 */
 	private AttributeBrowser(final DataObjectType panelType) {
 		// set up CytoscapeData Object and GraphObject Type
-		this.attrData = panelType.getAssociatedAttributes();
+		this.attributes = panelType.getAssociatedAttributes();
 		this.panelType = panelType;
 		this.orderedColumn = new ArrayList<String>();
 
@@ -183,7 +179,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 	
 		// Toolbar for selecting attributes and create new attribute.
 		attributeBrowserToolBar = new AttributeBrowserToolBar(tableModel, attributeTable,
-		                                                      new AttributeModel(attrData), orderedColumn,
+		                                                      new AttributeModel(attributes), orderedColumn,
 		                                                      panelType);
 
 		// the attribute table display: CytoPanel 2, horizontal SOUTH panel.
@@ -212,8 +208,26 @@ public class AttributeBrowser implements TableColumnModelListener {
 		// Add main browser panel to CytoPanel 2 (SOUTH)
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
 		         .add(panelType.getDisplayName() + " Attribute Browser", mainPanel);
-
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setState(CytoPanelState.DOCK);
+
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NEW_ATTRS_LOADED, this);
+	}
+
+	public void propertyChange(PropertyChangeEvent e) {
+		// This will handle the case for the change of attribute userVisibility
+		if (e.getPropertyName() == Cytoscape.NEW_ATTRS_LOADED && e.getOldValue() == attributes) {
+			final Set<String> newAttrNames = (Set<String>)e.getNewValue();
+			if (JOptionPane.showConfirmDialog(
+				null,
+				"Display " + newAttrNames.size() + " newly loaded attributes in the attribute browser?",
+				"Confirmation", JOptionPane.YES_NO_OPTION)
+			    == JOptionPane.YES_OPTION)
+			{
+				for (final String newAttrName : newAttrNames)
+					orderedColumn.add(newAttrName);
+				tableModel.setTableData(null, orderedColumn);
+			}
+		}
 	}
 
 	/**
@@ -266,7 +280,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 
 	
 	private DataTableModel makeModel() {
-		final List<String> attributeNames = CyAttributesUtils.getVisibleAttributeNames(attrData);
+		final List<String> attributeNames = CyAttributesUtils.getVisibleAttributeNames(attributes);
 		final List<GraphObject> graphObjects = getSelectedGraphObjects();
 		final DataTableModel model = new DataTableModel(graphObjects, attributeNames, panelType);
 
