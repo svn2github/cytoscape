@@ -79,7 +79,7 @@ public class DingRenderingEngineFactory implements
 	 * Render given view model by Ding rendering engine.
 	 * 
 	 */
-	public RenderingEngine<CyNetwork> render(Object presentationContainer,
+	@Override public RenderingEngine<CyNetwork> render(Object presentationContainer,
 			View<CyNetwork> view) {
 
 		if (view == null)

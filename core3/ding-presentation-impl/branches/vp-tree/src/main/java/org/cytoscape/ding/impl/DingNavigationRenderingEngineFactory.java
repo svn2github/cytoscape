@@ -76,7 +76,7 @@ public class DingNavigationRenderingEngineFactory implements
 	}
 	
 	
-	public RenderingEngine<CyNetwork> render(final Object visualizationContainer, final View<CyNetwork> view) {
+	@Override public RenderingEngine<CyNetwork> render(final Object visualizationContainer, final View<CyNetwork> view) {
 
 //		if (visualizationContainer == null)
 //			throw new IllegalArgumentException(

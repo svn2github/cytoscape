@@ -10,25 +10,33 @@
 		auto-export="interfaces" />
 	<osgi:service id="defaultViewEditorService" ref="defViewEditor"
 		auto-export="interfaces" />
-		
-		
+
 	<!-- Value Editors -->
-	<osgi:service id="colorEditorService" ref="colorEditor" auto-export="interfaces"/>
-	<osgi:service id="fontEditorService" ref="fontEditor" auto-export="interfaces"/>
-	<osgi:service id="doubleValueEditorService" ref="doubleValueEditor" auto-export="interfaces"/>
-	<osgi:service id="integerValueEditorService" ref="integerValueEditor" auto-export="interfaces"/>
-	<osgi:service id="floatValueEditorService" ref="floatValueEditor" auto-export="interfaces"/>
-	<osgi:service id="stringValueEditorService" ref="stringValueEditor" auto-export="interfaces"/>
-	
+	<osgi:service id="colorEditorService" ref="colorEditor"
+		auto-export="interfaces" />
+	<osgi:service id="fontEditorService" ref="fontEditor"
+		auto-export="interfaces" />
+	<osgi:service id="doubleValueEditorService" ref="doubleValueEditor"
+		auto-export="interfaces" />
+	<osgi:service id="integerValueEditorService" ref="integerValueEditor"
+		auto-export="interfaces" />
+	<osgi:service id="floatValueEditorService" ref="floatValueEditor"
+		auto-export="interfaces" />
+	<osgi:service id="stringValueEditorService" ref="stringValueEditor"
+		auto-export="interfaces" />
+
 	<!-- Export as Editor Manager -->
-	<osgi:service id="editorManagerService" ref="editorManager" auto-export="interfaces"/>
+	<osgi:service id="editorManagerService" ref="editorManager"
+		auto-export="interfaces" />
 
 
-	<osgi:reference id="visualStyleFactoryServiceRef" interface="org.cytoscape.view.vizmap.VisualStyleFactory" />
-	
+	<osgi:reference id="visualStyleFactoryServiceRef"
+		interface="org.cytoscape.view.vizmap.VisualStyleFactory" />
+
 	<!-- For now, use DING rendering engine only. -->
-	<osgi:reference id="dingVisualLexiconServiceRef" interface="org.cytoscape.view.model.VisualLexicon" />
-	
+	<osgi:reference id="dingVisualLexiconServiceRef"
+		interface="org.cytoscape.view.model.VisualLexicon" />
+
 	<!-- Import Desktop Service -->
 	<osgi:reference id="cytoscapeDesktopServiceRef"
 		interface="cytoscape.view.CySwingApplication" />
@@ -60,9 +68,9 @@
 	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
 
 	<!-- Pull-down menu items -->
-	<!--<osgi:service id="createNewStyleActionService" ref="createNewStyleAction"
-		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
-	--><osgi:service id="removeStyleActionService" ref="removeStyleAction"
+	<!--<osgi:service id="createNewStyleActionService" ref="createNewStyleAction" 
+		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" /> -->
+	<osgi:service id="removeStyleActionService" ref="removeStyleAction"
 		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
 	<osgi:service id="renameStyleActionService" ref="renameStyleAction"
 		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
@@ -106,37 +114,27 @@
 	</osgi:set>
 
 
-	<!--
-		visual property editor services <osgi:service
-		id="continuousColorService" ref="continuousColor"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-		<osgi:service id="continuousContinuousService"
-		ref="continuousContinuous"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-		<osgi:service id="continuousDiscreteService" ref="continuousDiscrete"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-		<osgi:service id="discreteArrowShapeService" ref="discreteArrowShape"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-		<osgi:service id="discreteColorService" ref="discreteColor"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-		<osgi:service id="discreteFontService" ref="discreteFont"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-		<osgi:service id="discreteLabelPositionService"
-		ref="discreteLabelPosition"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-		<osgi:service id="discreteLineStyleService" ref="discreteLineStyle"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-		<osgi:service id="discreteNodeShapeService" ref="discreteNodeShape"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-		<osgi:service id="discreteNumberService" ref="discreteNumber"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-		<osgi:service id="discreteStringService" ref="discreteString"
-		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" />
-	-->
+	<!-- visual property editor services <osgi:service id="continuousColorService" 
+		ref="continuousColor" interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" 
+		/> <osgi:service id="continuousContinuousService" ref="continuousContinuous" 
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" /> <osgi:service 
+		id="continuousDiscreteService" ref="continuousDiscrete" interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" 
+		/> <osgi:service id="discreteArrowShapeService" ref="discreteArrowShape" 
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" /> <osgi:service 
+		id="discreteColorService" ref="discreteColor" interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" 
+		/> <osgi:service id="discreteFontService" ref="discreteFont" interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" 
+		/> <osgi:service id="discreteLabelPositionService" ref="discreteLabelPosition" 
+		interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" /> <osgi:service 
+		id="discreteLineStyleService" ref="discreteLineStyle" interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" 
+		/> <osgi:service id="discreteNodeShapeService" ref="discreteNodeShape" interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" 
+		/> <osgi:service id="discreteNumberService" ref="discreteNumber" interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" 
+		/> <osgi:service id="discreteStringService" ref="discreteString" interface="org.cytoscape.view.vizmap.gui.editor.EditorManager" 
+		/> -->
 
 
 
-	<osgi:set id="valueEditorSet" interface="org.cytoscape.view.vizmap.gui.editor.ValueEditor"
+	<osgi:set id="valueEditorSet"
+		interface="org.cytoscape.view.vizmap.gui.editor.ValueEditor"
 		cardinality="0..N">
 		<osgi:listener bind-method="addValueEditor"
 			unbind-method="removeValueEditor" ref="editorManager" />

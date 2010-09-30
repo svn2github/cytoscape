@@ -26,38 +26,39 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 
 		final int selected = propertySheetPanel.getTable()
 				.getSelectedRow();
+		// FIXME
 
-		if (0 <= selected) {
-			Item item = (Item) propertySheetPanel.getTable()
-					.getValueAt(selected, 0);
-			Property curProp = item.getProperty();
-
-			if (curProp instanceof VizMapperProperty) {
-				final VisualProperty<?> type = ((VizMapperProperty<VisualProperty<?>>) curProp)
-						.getHiddenObject();
-
-				if (type == null)
-					return;
-
-				String[] message = {
-						"The Mapping for " + type.getDisplayName()
-								+ " will be removed.", "Proceed?" };
-
-				int value = JOptionPane.showConfirmDialog(vizMapperMainPanel,
-						message, "Remove Mapping", JOptionPane.YES_NO_OPTION);
-
-				if (value == JOptionPane.YES_OPTION) {
-					// If Continuous Mapper is displayed, kill it.
-					if (editorWindowManager.isRegistered(type))
-						editorWindowManager.removeEditorWindow(type);
-
-					removeMapping(type);
-				}
-			}
-		}
+//		if (0 <= selected) {
+//			Item item = (Item) propertySheetPanel.getTable()
+//					.getValueAt(selected, 0);
+//			Property curProp = item.getProperty();
+//
+//			if (curProp instanceof VizMapperProperty) {
+//				final VisualProperty<?> type = ((VizMapperProperty<VisualProperty<?>>) curProp)
+//						.getHiddenObject();
+//
+//				if (type == null)
+//					return;
+//
+//				String[] message = {
+//						"The Mapping for " + type.getDisplayName()
+//								+ " will be removed.", "Proceed?" };
+//
+//				int value = JOptionPane.showConfirmDialog(vizMapperMainPanel,
+//						message, "Remove Mapping", JOptionPane.YES_NO_OPTION);
+//
+//				if (value == JOptionPane.YES_OPTION) {
+//					// If Continuous Mapper is displayed, kill it.
+//					if (editorWindowManager.isRegistered(type))
+//						editorWindowManager.removeEditorWindow(type);
+//
+//					removeMapping(type);
+//				}
+//			}
+//		}
 	}
 
-	private <T> void removeMapping(final VisualProperty<T> type) {
+	private <T> void removeMapping(final VisualProperty<T> type, VisualStyle style) {
 		final VisualStyle vs = this.vizMapperMainPanel.getSelectedVisualStyle();
 		
 		// Remove mapping from the style.
@@ -77,7 +78,7 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 
 		propertySheetPanel.removeProperty(toBeRemoved);
 
-		vizMapPropertySheetBuilder.removeProperty(toBeRemoved);
+		vizMapPropertySheetBuilder.removeProperty(toBeRemoved, style);
 
 		/*
 		 * Finally, move the visual property to "unused list"
@@ -100,7 +101,8 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 	
 	public void propertyChange(PropertyChangeEvent e) {
 		if(e.getPropertyName().equals("REMOVE_MAPPING") && e.getNewValue() != null) {
-			removeMapping((VisualProperty) e.getNewValue());
+			// FIXME
+			//removeMapping((VisualProperty) e.getNewValue());
 		}
 	}
 

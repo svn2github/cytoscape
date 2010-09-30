@@ -12,8 +12,12 @@ import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualLexiconNodeFactory;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractVisualLexicon implements VisualLexicon {
+	
+	private static final Logger logger = LoggerFactory.getLogger(AbstractVisualLexicon.class);
 
 	//
 	private final Map<VisualProperty<?>, VisualLexiconNode> visualPropertyMap;
@@ -71,7 +75,7 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 
 	
 	@Override
-	public Collection<VisualProperty<?>> getAllDescendants(final VisualProperty<Visualizable> prop) {
+	public Collection<VisualProperty<?>> getAllDescendants(final VisualProperty<?> prop) {
 		if(prop == null)
 			throw new NullPointerException("Target visual property cannot be null.");
 		
@@ -92,18 +96,16 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 		final VisualLexiconNode node = visualPropertyMap.get(prop);
 		final Set<VisualProperty<?>> children = new HashSet<VisualProperty<?>>();
 		
+		// if this is a leaf node, return empty set
+		if(node.getChildren().size() == 0)
+			return children;
 		
-		// FIXME
-//		// if this is a leaf node, return empty set
-//		if(node.getChildren().size() == 0)
-//			return children;
-//		
-//		Collection<VisualLexiconNode> currentChildren = node.getChildren();
-//		for(VisualLexiconNode nd: currentChildren)
-//			children.add(nd.getVisualProperty());
-//
-//		for(VisualProperty<?> vp: currentChildren)
-//			children.addAll(getChildNodes(vp));
+		Collection<VisualLexiconNode> currentChildren = node.getChildren();
+		for(VisualLexiconNode nd: currentChildren)
+			children.add(nd.getVisualProperty());
+
+		for(VisualLexiconNode nd: currentChildren)
+			children.addAll(getChildNodes(nd.getVisualProperty()));
 		
 		return children;
 	}

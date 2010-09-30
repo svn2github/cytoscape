@@ -11,24 +11,8 @@ import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-import org.junit.After;
-import org.junit.Before;
 
 public abstract class AbstractVisualLexiconTest {
-
-	@Before
-	public void setUp() throws Exception {
-		
-		
-	}
-
-	
-	@After
-	public void tearDown() throws Exception {
-		
-		
-	}
 	
 	
 	protected void testTree(VisualLexicon lexicon) throws Exception {

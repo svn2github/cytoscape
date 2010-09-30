@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.beans.PropertyEditor;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,16 +21,21 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.events.NetworkAddedEvent;
+import org.cytoscape.session.events.NetworkAddedListener;
+import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.Visualizable;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
-import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.cytoscape.view.vizmap.gui.internal.theme.ColorManager;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
@@ -44,13 +50,14 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
  * @author kono
  * 
  */
-public class VizMapPropertySheetBuilder implements
-		SelectedVisualStyleSwitchedListener {
+public class VizMapPropertySheetBuilder {
 
-	private static final String[] CATEGORY = { NODE, EDGE, NETWORK };
+	private static final Logger logger = LoggerFactory
+			.getLogger(VizMapPropertySheetBuilder.class);
 
-	// Currently selected VS. Updated by listener.
-	private VisualStyle selectedStyle;
+	private static final VisualProperty<?>[] CATEGORY = {
+			TwoDVisualLexicon.NODE, TwoDVisualLexicon.EDGE,
+			TwoDVisualLexicon.NETWORK };
 
 	private PropertySheetPanel propertySheetPanel;
 
@@ -95,13 +102,9 @@ public class VizMapPropertySheetBuilder implements
 		return this.propertyMap;
 	}
 
-	public void setPropertyTable() {
+	public void setPropertyTable(final VisualStyle style) {
 
-		if (selectedStyle == null
-				|| cyNetworkManager.getCurrentRenderingEngine() == null)
-			return;
-
-		setPropertySheetAppearence();
+		setPropertySheetAppearence(style);
 
 		for (Property item : propertySheetPanel.getProperties())
 			propertySheetPanel.removeProperty(item);
@@ -109,24 +112,27 @@ public class VizMapPropertySheetBuilder implements
 		/*
 		 * Add properties to the property sheet.
 		 */
-		List<Property> propRecord = setPropertyFromCalculator();
+		List<Property> propRecord = setPropertyFromCalculator(style);
 
 		// Save it for later use.
-		propertyMap.put(selectedStyle, propRecord);
+		propertyMap.put(style, propRecord);
 
 		/*
 		 * Finally, build unused list
 		 */
-		setUnused(propRecord);
+		setUnused(propRecord, style);
 	}
 
-	private void setPropertySheetAppearence() {
+	private void setPropertySheetAppearence(VisualStyle style) {
 		/*
 		 * Set Tooltiptext for the table.
 		 */
 		propertySheetPanel.setTable(new VizMapPropertySheetTable());
-		propertySheetPanel.getTable().getColumnModel().addColumnModelListener(
-				new VizMapPropertySheetTableColumnModelListener(this));
+		propertySheetPanel
+				.getTable()
+				.getColumnModel()
+				.addColumnModelListener(
+						new VizMapPropertySheetTableColumnModelListener(this));
 
 		/*
 		 * By default, show category.
@@ -136,16 +142,14 @@ public class VizMapPropertySheetBuilder implements
 		// TODO: fix context menu
 		// propertySheetPanel.getTable().setComponentPopupMenu(
 		// menuMgr.getContextMenu());
-		
-		
-		//TODO: fix listener
+
+		// TODO: fix listener
 		propertySheetPanel.getTable().addMouseListener(
 				new VizMapPropertySheetMouseAdapter(this, propertySheetPanel,
-						selectedStyle, editorManager));
-		
+						style, editorManager));
 
 		PropertySheetTable table = propertySheetPanel.getTable();
-		
+
 		table.setRowHeight(25);
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		table.setCategoryBackground(new Color(10, 10, 50, 20));
@@ -157,139 +161,159 @@ public class VizMapPropertySheetBuilder implements
 		 * Set editors
 		 */
 		// FIXME
-		 emptyBoxRenderer.setHorizontalTextPosition(SwingConstants.CENTER);
-		 emptyBoxRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		 emptyBoxRenderer.setBackground(new Color(0, 200, 255, 20));
-		 emptyBoxRenderer.setForeground(Color.red);
-		 emptyBoxRenderer.setFont(new Font("SansSerif", Font.BOLD, 12));
-		
-		 filledBoxRenderer.setBackground(Color.white);
-		 filledBoxRenderer.setForeground(Color.blue);
-		 //TODO: fix icon list
-//		 VisualPropertyIcon newIcon;
-//		
-//		 List<Icon> iconList = new ArrayList<Icon>();
-//		 final List<NodeShape> nodeShapes = new ArrayList<NodeShape>();
-//		
-//		 for (Object key : nodeShapeIcons.keySet()) {
-//		 NodeShape shape = (NodeShape) key;
-//		
-//		 if (shape.isSupported()) {
-//		 iconList.add(nodeShapeIcons.get(key));
-//		 nodeShapes.add(shape);
-//		 }
-//		 }
-//		
-//		 Icon[] iconArray = new Icon[iconList.size()];
-//		 String[] shapeNames = new String[iconList.size()];
-//		
-//		 for (int i = 0; i < iconArray.length; i++) {
-//		 newIcon = ((NodeIcon) iconList.get(i)).clone();
-//		 newIcon.setIconHeight(16);
-//		 newIcon.setIconWidth(16);
-//		 iconArray[i] = newIcon;
-//		 shapeNames[i] = nodeShapes.get(i).getShapeName();
-//		 }
-//		
-//		 // shapeCellEditor.setAvailableValues(nodeShapes.toArray());
-//		 // shapeCellEditor.setAvailableIcons(iconArray);
-//		 iconList.clear();
-//		 iconList.addAll(arrowShapeIcons.values());
-//		 iconArray = new Icon[iconList.size()];
-//		
-//		 String[] arrowNames = new String[iconList.size()];
-//		 Set arrowShapes = arrowShapeIcons.keySet();
-//		
-//		 for (int i = 0; i < iconArray.length; i++) {
-//		 newIcon = ((ArrowIcon) iconList.get(i));
-//		 newIcon.setIconHeight(16);
-//		 newIcon.setIconWidth(40);
-//		 newIcon.setBottomPadding(-9);
-//		 iconArray[i] = newIcon;
-//		 arrowNames[i] = newIcon.getName();
-//		 }
-//		
-//		 // arrowCellEditor.setAvailableValues(arrowShapes.toArray());
-//		 // arrowCellEditor.setAvailableIcons(iconArray);
-//		 iconList = new ArrayList();
-//		 iconList.addAll(lineTypeIcons.values());
-//		 iconArray = new Icon[iconList.size()];
-//		 shapeNames = new String[iconList.size()];
-//		
-//		 Set lineTypes = lineTypeIcons.keySet();
-//		
-//		 for (int i = 0; i < iconArray.length; i++) {
-//		 newIcon = (VisualPropertyIcon) (iconList.get(i));
-//		 newIcon.setIconHeight(16);
-//		 newIcon.setIconWidth(16);
-//		 iconArray[i] = newIcon;
-//		 shapeNames[i] = newIcon.getName();
-//		 }
-//		 lineCellEditor.setAvailableValues(lineTypes.toArray());
-//		 lineCellEditor.setAvailableIcons(iconArray);
+		emptyBoxRenderer = new DefaultTableCellRenderer();
+		emptyBoxRenderer.setHorizontalTextPosition(SwingConstants.CENTER);
+		emptyBoxRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		emptyBoxRenderer.setBackground(new Color(0, 200, 255, 20));
+		emptyBoxRenderer.setForeground(Color.red);
+		emptyBoxRenderer.setFont(new Font("SansSerif", Font.BOLD, 12));
+
+		filledBoxRenderer = new DefaultTableCellRenderer();
+		filledBoxRenderer.setBackground(Color.white);
+		filledBoxRenderer.setForeground(Color.blue);
+
+		// TODO: fix icon list
+		// VisualPropertyIcon newIcon;
+		//
+		// List<Icon> iconList = new ArrayList<Icon>();
+		// final List<NodeShape> nodeShapes = new ArrayList<NodeShape>();
+		//
+		// for (Object key : nodeShapeIcons.keySet()) {
+		// NodeShape shape = (NodeShape) key;
+		//
+		// if (shape.isSupported()) {
+		// iconList.add(nodeShapeIcons.get(key));
+		// nodeShapes.add(shape);
+		// }
+		// }
+		//
+		// Icon[] iconArray = new Icon[iconList.size()];
+		// String[] shapeNames = new String[iconList.size()];
+		//
+		// for (int i = 0; i < iconArray.length; i++) {
+		// newIcon = ((NodeIcon) iconList.get(i)).clone();
+		// newIcon.setIconHeight(16);
+		// newIcon.setIconWidth(16);
+		// iconArray[i] = newIcon;
+		// shapeNames[i] = nodeShapes.get(i).getShapeName();
+		// }
+		//
+		// // shapeCellEditor.setAvailableValues(nodeShapes.toArray());
+		// // shapeCellEditor.setAvailableIcons(iconArray);
+		// iconList.clear();
+		// iconList.addAll(arrowShapeIcons.values());
+		// iconArray = new Icon[iconList.size()];
+		//
+		// String[] arrowNames = new String[iconList.size()];
+		// Set arrowShapes = arrowShapeIcons.keySet();
+		//
+		// for (int i = 0; i < iconArray.length; i++) {
+		// newIcon = ((ArrowIcon) iconList.get(i));
+		// newIcon.setIconHeight(16);
+		// newIcon.setIconWidth(40);
+		// newIcon.setBottomPadding(-9);
+		// iconArray[i] = newIcon;
+		// arrowNames[i] = newIcon.getName();
+		// }
+		//
+		// // arrowCellEditor.setAvailableValues(arrowShapes.toArray());
+		// // arrowCellEditor.setAvailableIcons(iconArray);
+		// iconList = new ArrayList();
+		// iconList.addAll(lineTypeIcons.values());
+		// iconArray = new Icon[iconList.size()];
+		// shapeNames = new String[iconList.size()];
+		//
+		// Set lineTypes = lineTypeIcons.keySet();
+		//
+		// for (int i = 0; i < iconArray.length; i++) {
+		// newIcon = (VisualPropertyIcon) (iconList.get(i));
+		// newIcon.setIconHeight(16);
+		// newIcon.setIconWidth(16);
+		// iconArray[i] = newIcon;
+		// shapeNames[i] = newIcon.getName();
+		// }
+		// lineCellEditor.setAvailableValues(lineTypes.toArray());
+		// lineCellEditor.setAvailableIcons(iconArray);
 	}
 
-	private List<Property> setPropertyFromCalculator() {
+	private List<Property> setPropertyFromCalculator(final VisualStyle style) {
+
+		final Collection<VisualProperty<?>> nodeVP = style.getVisualLexicon().getAllDescendants(TwoDVisualLexicon.NODE);
+		final Collection<VisualProperty<?>> edgeVP = style.getVisualLexicon().getAllDescendants(TwoDVisualLexicon.EDGE);
+		//final Collection<VisualProperty<?>> networkVP = style.getVisualLexicon().getVisualLexiconNode(TwoDVisualLexicon.NETWORK).getChildren();
+		
+		final List<Property> nodeProps = setProps(style, TwoDVisualLexicon.NODE, nodeVP);
+		final List<Property> edgeProps = setProps(style, TwoDVisualLexicon.EDGE, edgeVP);
+		//final List<Property> networkProps = setProps(style, TwoDVisualLexicon.NETWORK);
+		
+		final List<Property> result = new ArrayList<Property>();
+		result.addAll(nodeProps);
+		result.addAll(edgeProps);
+		//result.addAll(networkProps);
+		
+		return result;
+
+	}
+
+	private List<Property> setProps(final VisualStyle style, final VisualProperty<Visualizable> cat, final Collection<VisualProperty<?>> vpSet) {
 
 		final List<Property> props = new ArrayList<Property>();
+		final Collection<VisualMappingFunction<?, ?>> mappings = style
+				.getAllVisualMappingFunctions();
 
-		// FIXME
+		for (VisualMappingFunction<?, ?> mapping : mappings) {
 
-		// Loop for each category: node, edge, and network
-		for (String cat : CATEGORY) {
+			final VisualProperty<?> targetVP = mapping.getVisualProperty();
+			logger.debug("!!!!!!Checking VP: " + targetVP.getDisplayName() + " for " + cat.getDisplayName());
+			// execute the following only if category matches.
+			if (vpSet.contains(targetVP) == false || style.getVisualLexicon().getVisualLexiconNode(targetVP).getChildren().size() != 0)
+				continue;
+			
+			logger.debug("This is a leaf VP: " + targetVP.getDisplayName());
 
-			for (VisualMappingFunction<?, ?> mapping : selectedStyle
-					.getAllVisualMappingFunctions()) {
+			VisualProperty<?> type = null;
 
-				// execute the following only if category matches.
-				// if(cat.equalsIgnoreCase(mapping.getVisualProperty().getObjectType())
-				// == false) continue;
+			final VizMapperProperty<?> calculatorTypeProp = vizMapPropertyBuilder
+					.buildProperty(mapping, cat, propertySheetPanel);
 
-				VisualProperty<?> type = null;
+			logger.debug("Built new PROP: " + calculatorTypeProp.getDisplayName());
+			
+			PropertyEditor editor = ((PropertyEditorRegistry) propertySheetPanel
+					.getTable().getEditorFactory())
+					.getEditor(calculatorTypeProp);
+			
+			
 
-				final VizMapperProperty<?> calculatorTypeProp = vizMapPropertyBuilder
-						.buildProperty(mapping, cat, propertySheetPanel, cat);
+			if ((editor == null)
+					&& (calculatorTypeProp.getCategory().equals(
+							"Unused Properties") == false)) {
 
-				PropertyEditor editor = ((PropertyEditorRegistry) this.propertySheetPanel
-						.getTable().getEditorFactory())
-						.getEditor(calculatorTypeProp);
+				type = (VisualProperty<?>) calculatorTypeProp.getHiddenObject();
 
-				if ((editor == null)
-						&& (calculatorTypeProp.getCategory().equals(
-								"Unused Properties") == false)) {
+				if (cat.equals(NODE)) {
 
-					type = (VisualProperty<?>) calculatorTypeProp
-							.getHiddenObject();
+					((PropertyEditorRegistry) this.propertySheetPanel
+							.getTable().getEditorFactory())
+							.registerEditor(calculatorTypeProp, editorManager
+									.getDefaultComboBoxEditor("nodeAttrEditor"));
+				} else if (cat.equals(EDGE)) {
+					((PropertyEditorRegistry) this.propertySheetPanel
+							.getTable().getEditorFactory())
+							.registerEditor(calculatorTypeProp, editorManager
+									.getDefaultComboBoxEditor("edgeAttrEditor"));
+				} else {
+					// Network
 
-					if (cat.equals(NODE)) {
-
-						((PropertyEditorRegistry) this.propertySheetPanel
-								.getTable().getEditorFactory())
-								.registerEditor(
-										calculatorTypeProp,
-										editorManager
-												.getDefaultComboBoxEditor("nodeAttrEditor"));
-					} else if (cat.equals(EDGE)) {
-						((PropertyEditorRegistry) this.propertySheetPanel
-								.getTable().getEditorFactory())
-								.registerEditor(
-										calculatorTypeProp,
-										editorManager
-												.getDefaultComboBoxEditor("edgeAttrEditor"));
-					} else {
-						// Network
-
-					}
 				}
-				props.add(calculatorTypeProp);
 			}
+			props.add(calculatorTypeProp);
 		}
 
 		return props;
 	}
 
-	private void setUnused(List<Property> propList) {
-		buildList();
+	private void setUnused(List<Property> propList, VisualStyle style) {
+		buildList(style);
 
 		// TODO: Sort the unused list.
 		// Collections.sort(getUnusedVisualPropType());
@@ -305,19 +329,18 @@ public class VizMapPropertySheetBuilder implements
 		}
 	}
 
-	private void buildList() {
+	private void buildList(final VisualStyle style) {
 
 		unusedVisualPropType = new ArrayList<VisualProperty<?>>();
 
 		VisualMappingFunction<?, ?> mapping = null;
 
-		VisualLexicon lex = this.cyNetworkManager.getCurrentRenderingEngine()
-				.getVisualLexicon();
+		final VisualLexicon lex = style.getVisualLexicon();
 
 		for (VisualProperty<?> type : lex.getAllVisualProperties()) {
-			mapping = selectedStyle.getVisualMappingFunction(type);
+			mapping = style.getVisualMappingFunction(type);
 
-			if (mapping == null)
+			if (mapping == null && style.getVisualLexicon().getVisualLexiconNode(type).getChildren().size() == 0)
 				unusedVisualPropType.add(type);
 
 			mapping = null;
@@ -408,13 +431,13 @@ public class VizMapPropertySheetBuilder implements
 	/*
 	 * Remove an entry in the browser.
 	 */
-	public void removeProperty(final Property prop) {
+	public void removeProperty(final Property prop, VisualStyle style) {
 
-		if (propertyMap.get(selectedStyle) == null)
+		if (propertyMap.get(style) == null)
 			return;
 
 		List<Property> targets = new ArrayList<Property>();
-		final List<Property> props = propertyMap.get(selectedStyle);
+		final List<Property> props = propertyMap.get(style);
 
 		for (Property p : props) {
 			if (p.getDisplayName().equals(prop.getDisplayName()))
@@ -498,11 +521,4 @@ public class VizMapPropertySheetBuilder implements
 		return unusedVisualPropType;
 	}
 
-	protected void setSelectedStyle(VisualStyle selectedStyle) {
-		this.selectedStyle = selectedStyle;
-	}
-
-	public void handleEvent(SelectedVisualStyleSwitchedEvent e) {
-		this.selectedStyle = e.getNewVisualStyle();
-	}
 }

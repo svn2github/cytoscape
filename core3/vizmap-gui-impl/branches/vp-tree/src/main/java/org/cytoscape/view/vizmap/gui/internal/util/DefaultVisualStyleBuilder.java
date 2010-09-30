@@ -17,7 +17,6 @@ import java.util.Map;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
-import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
 import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +57,7 @@ public class DefaultVisualStyleBuilder {
 	
 	private static final double DEFAULT_NODE_WIDTH = 55.0d;
 	private static final double DEFAULT_NODE_HEIGHT = 30.0d;
-	
+		
 	
 	// This should be injected
 	private final VisualStyleFactory vsFactory;

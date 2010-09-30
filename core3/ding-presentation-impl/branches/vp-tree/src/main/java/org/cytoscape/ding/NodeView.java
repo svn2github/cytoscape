@@ -106,12 +106,12 @@ public interface NodeView  extends GraphViewObject {
   /**
    * @param trans new value for the transparency
    */
-  public void setTransparency ( float trans );
+  public void setTransparency ( int trans );
   
   /**
    * @return the value for the transparency for this node
    */
-  public float getTransparency ();
+  public int getTransparency ();
 
 
   /**

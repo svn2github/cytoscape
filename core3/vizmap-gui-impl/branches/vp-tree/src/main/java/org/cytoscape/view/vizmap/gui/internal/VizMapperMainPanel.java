@@ -59,6 +59,8 @@ import javax.swing.event.PopupMenuListener;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.events.NetworkAddedEvent;
+import org.cytoscape.session.events.NetworkAddedListener;
 import org.cytoscape.session.events.NetworkViewAddedEvent;
 import org.cytoscape.session.events.NetworkViewAddedListener;
 import org.cytoscape.view.model.CyNetworkView;
@@ -72,6 +74,7 @@ import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
+import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.view.vizmap.gui.internal.theme.ColorManager;
@@ -105,7 +108,7 @@ import cytoscape.view.CytoPanelName;
  * @param <syncronized>
  */
 public class VizMapperMainPanel extends AbstractVizMapperPanel implements
-		VisualStyleCreatedListener, PropertyChangeListener, PopupMenuListener, NetworkViewAddedListener {
+		VisualStyleCreatedListener, PropertyChangeListener, PopupMenuListener, NetworkViewAddedListener,  NetworkAddedListener {
 
 	private final static long serialVersionUID = 1202339867854959L;
 	
@@ -131,7 +134,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 */
 	public VizMapperMainPanel(
 			final VisualStyleFactory vsFactory,
-			CySwingApplication desktop,
+			final CySwingApplication desktop,
 			DefaultViewEditor defViewEditor, IconManager iconMgr,
 			ColorManager colorMgr, VisualMappingManager vmm,
 			VizMapperMenuManager menuMgr, EditorManager editorFactory,
@@ -147,15 +150,14 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				vizMapEventHandlerManager, editorWindowManager,
 				cyNetworkManager, eventHelper, defStyle);
 
+		// Initialize all components
 		initPanel();
 
 	}
 
 	private void initPanel() {
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				this);
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				new VizMapListener(vmm, cyNetworkManager));
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(new VizMapListener(vmm, cyNetworkManager));
 
 		defaultViewMouseListener = new DefaultViewMouseListener(defViewEditor);
 
@@ -206,8 +208,10 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		
 		editorWindowManager.closeAllEditorWindows();
 		
-		vizMapPropertySheetBuilder.setSelectedStyle(style);
-
+		logger.debug("######## Fireing new style: " + style);
+		eventHelper.fireSynchronousEvent(new SelectedVisualStyleSwitchedEvent(this, lastVS, style));
+		logger.debug("######## Event end:  new style: " + style);
+		
 		if (vizMapPropertySheetBuilder.getPropertyMap().containsKey(style)) {
 			final List<Property> props = vizMapPropertySheetBuilder
 					.getPropertyMap().get(style);
@@ -238,7 +242,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				propertySheetPanel.addProperty(unused.get(key));
 			}
 		} else {
-			vizMapPropertySheetBuilder.setPropertyTable();
+			logger.debug("######## Set prop table called.");
+			vizMapPropertySheetBuilder.setPropertyTable(style);
 			updateAttributeList();
 		}
 
@@ -712,5 +717,12 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		vmm.setVisualStyle(targetStyle, e.getNetworkView());
 		targetStyle.apply(e.getNetworkView());
 		
+	}
+
+
+	@Override public void handleEvent(NetworkAddedEvent e) {
+		
+		logger.debug("!!!!!!!!!! Network added. Need to update prop sheet: " + e.getNetwork().getSUID());
+		vizMapPropertySheetBuilder.setPropertyTable(this.lastVS);
 	}
 }

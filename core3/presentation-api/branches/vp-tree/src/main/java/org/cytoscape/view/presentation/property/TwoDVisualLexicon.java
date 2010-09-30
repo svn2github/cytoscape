@@ -95,9 +95,9 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 
 	public static final VisualProperty<? extends Paint> EDGE_PAINT = new PaintVisualProperty<Color>(
 			Color.gray, "EDGE_PAINT", "Edge Paint");
-	public static final VisualProperty<? extends Paint> EDGE_COLOR = new PaintVisualProperty<Color>(
+	public static final VisualProperty<Color> EDGE_COLOR = new PaintVisualProperty<Color>(
 			Color.gray, "EDGE_COLOR", "Edge Color");
-	public static final VisualProperty<? extends Paint> EDGE_LABEL_COLOR = new PaintVisualProperty<Color>(
+	public static final VisualProperty<Color> EDGE_LABEL_COLOR = new PaintVisualProperty<Color>(
 			Color.BLACK, "EDGE_LABEL_COLOR", "Edge Label Color");
 
 	public static final VisualProperty<String> EDGE_TEXT = new StringVisualProperty(

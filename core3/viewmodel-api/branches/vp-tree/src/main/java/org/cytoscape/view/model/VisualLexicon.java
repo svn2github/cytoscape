@@ -78,6 +78,6 @@ public interface VisualLexicon {
 	 * 
 	 * @return Collection of visual properties for the type.
 	 */
-	Collection<VisualProperty<?>> getAllDescendants(final VisualProperty<Visualizable> prop);
+	Collection<VisualProperty<?>> getAllDescendants(final VisualProperty<?> prop);
 		
 }

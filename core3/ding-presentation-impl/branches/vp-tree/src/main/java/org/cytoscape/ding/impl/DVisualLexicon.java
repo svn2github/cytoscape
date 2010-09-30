@@ -55,8 +55,8 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 public class DVisualLexicon extends TwoDVisualLexicon {
 	
-	private static final int DEF_FONT_SIZE = 10;
-	private static final double DEF_BORDER_WIDTH = 0.0d;
+	private static final int DEF_FONT_SIZE = 12;
+	private static final double DEF_BORDER_WIDTH = 2.0d;
 	
 	// Root of Ding's VP tree.
 	public static final VisualProperty<NullDataType> DING_ROOT = new NullVisualProperty(

@@ -36,16 +36,18 @@ package org.cytoscape.view.vizmap.internal;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.slf4j.Logger;
@@ -65,6 +67,10 @@ public class VisualStyleImpl implements VisualStyle {
 
 	private final VisualLexicon lexicon;
 	
+	final Collection<VisualProperty<?>> nodeVPs;
+	final Collection<VisualProperty<?>> edgeVPs;
+	final Collection<VisualProperty<?>> networkVPs;
+
 	private String title;
 
 	/**
@@ -97,11 +103,21 @@ public class VisualStyleImpl implements VisualStyle {
 		this.lexicon = lexicon;
 		mappings = new HashMap<VisualProperty<?>, VisualMappingFunction<?, ?>>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
-
 		
-
-		for (VisualProperty<?> vp : lexicon.getAllVisualProperties())
+		for(VisualProperty<?> vp: lexicon.getAllVisualProperties())
 			perVSDefaults.put(vp, vp.getDefault());
+		
+		// Node-related Visual Properties are linked as a children of NODE VP.
+		nodeVPs = lexicon.getAllDescendants(TwoDVisualLexicon.NODE);
+		
+		// Node-related Visual Properties are linked as a children of NODE VP.
+		edgeVPs = lexicon.getAllDescendants(TwoDVisualLexicon.EDGE);
+		
+		networkVPs = new HashSet<VisualProperty<?>>();
+		for(VisualProperty<?> vp: lexicon.getAllVisualProperties()) {
+			if(!nodeVPs.contains(vp) && !edgeVPs.contains(vp))
+				networkVPs.add(vp);
+		}
 
 		logger.info("New Visual Style Created: Style Name = " + this.title);
 	}
@@ -144,11 +160,11 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @return DOCUMENT ME!
 	 */
 	@SuppressWarnings("unchecked")
-	@Override public void removeVisualMappingFunction(VisualProperty<?> t) {
+	@Override
+	public void removeVisualMappingFunction(VisualProperty<?> t) {
 		mappings.remove(t);
 	}
 
-	
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -160,8 +176,8 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @return DOCUMENT ME!
 	 */
 	@SuppressWarnings("unchecked")
-	@Override public <V> V getDefaultValue(final VisualProperty<V> vp) {
-		// Since setter checks type, this cast is always legal.
+	@Override
+	public <V> V getDefaultValue(final VisualProperty<V> vp) {
 		return (V) perVSDefaults.get(vp);
 	}
 
@@ -175,7 +191,8 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param value
 	 *            DOCUMENT ME!
 	 */
-	@Override public <V, S extends V> void setDefaultValue(final VisualProperty<V> vp,
+	@Override
+	public <V, S extends V> void setDefaultValue(final VisualProperty<V> vp,
 			final S value) {
 		perVSDefaults.put(vp, value);
 	}
@@ -188,29 +205,26 @@ public class VisualStyleImpl implements VisualStyle {
 	 */
 	@Override
 	public void apply(final CyNetworkView networkView) {
+		if (networkView == null) {
+			logger.warn("Tried to apply Visual Style to null view");
+			return;
+		}
 
 		logger.debug("Visual Style Apply method called: " + this.title);
-
-		 final Collection<View<CyNode>> nodeviews = networkView.getNodeViews();
-		 final Collection<View<CyEdge>> edgeviews = networkView.getEdgeViews();
-		// final Collection<View<CyNetwork>> networkviews = new
-		// HashSet<View<CyNetwork>>();
-		// networkviews.add(networkView);
-
+		
+		final Collection<View<CyNode>> nodeViews = networkView.getNodeViews();
+		final Collection<View<CyEdge>> edgeViews = networkView.getEdgeViews();
+		final Collection<View<CyNetwork>> networkViewSet = new HashSet<View<CyNetwork>>();
+		networkViewSet.add(networkView);
+		
 		// Current visual prop tree.
-		Collection<View<? extends CyTableEntry>> allViews = networkView
-				.getAllViews();
-		applyImpl(allViews, lexicon.getAllVisualProperties());
-		// applyImpl(networkView, nodeviews,
-		// lexicon.getVisualProperties(nodeviews));
-		// applyImpl(networkView, edgeviews,
-		// lexicon.getVisualProperties(edgeviews));
-		// applyImpl(networkView, networkviews,
-		// lexicon.getVisualProperties(NETWORK));
-
+		applyImpl(nodeViews, nodeVPs);
+		applyImpl(edgeViews, edgeVPs);
+		applyImpl(networkViewSet, networkVPs);
+		
 		logger.debug("Visual Style applied: " + this.title + "\n");
 	}
-	
+
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -222,11 +236,12 @@ public class VisualStyleImpl implements VisualStyle {
 	 *            DOCUMENT ME!
 	 */
 	private void applyImpl(
-			final Collection<View<? extends CyTableEntry>> views,
-			final Collection<? extends VisualProperty<?>> visualProperties) {
+			final Collection<?> views,
+			final Collection<VisualProperty<?>> visualProperties) {
+		
 
 		for (VisualProperty<?> vp : visualProperties)
-			applyImpl(views, vp);
+			applyToView(views, vp);
 	}
 
 	/**
@@ -239,45 +254,50 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param visualProperties
 	 *            DOCUMENT ME!
 	 */
-	private void applyImpl(
-			final Collection<View<? extends CyTableEntry>> views,
+	private void applyToView(
+			final Collection<?> views,
 			final VisualProperty<?> vp) {
 
 		final VisualMappingFunction<?, ?> mapping = getVisualMappingFunction(vp);
-		
 
-		// If mapping is available for this VP, apply the mapping.
 		if (mapping != null) {
-			
-			for(View<? extends CyTableEntry> view:views)
-				mapping.apply(view);
-		} else if (!vp.isIgnoreDefault()) { // Check ignore flag first.
-			applyStyleDefaults(views, vp);
+			// Mapping is available for this VP. Apply it.
+			for (Object view : views)
+				mapping.apply((View<? extends CyTableEntry>) view);
+		} else if (!vp.isIgnoreDefault()) {
+			// Ignore defaults flag is OFF. Apply defaults.
+			applyStyleDefaults((Collection<View<?>>) views, vp);
 		} else
 			logger.debug(vp.getDisplayName()
 					+ " is set to ignore defaults.  Skipping...");
 	}
-	
-	
-	private void applyStyleDefaults(Collection<View<? extends CyTableEntry>> views, final VisualProperty<?> vp) {
-		
-		final Object defaultValue = getDefaultValue(vp);
+
+	private void applyStyleDefaults(
+			final Collection<View<?>> views,
+			final VisualProperty<?> vp) {
+
+		Object defaultValue = getDefaultValue(vp);
 		
 		// reset all rows to allow usage of default value:
-		for (final View<? extends CyTableEntry> viewModel : views) {
+		for (final View<?> viewModel : views) {
+			final Object currentValue = viewModel.getVisualProperty(vp);
 			
+			// Some of the VP has null defaults.
+			if (currentValue == null)
+				continue;
+
 			// If equals, it is not necessary to set new value.
-			if (viewModel.getVisualProperty(vp).equals(defaultValue))
+			if (currentValue.equals(defaultValue))
 				continue;
-			
-			// Not a leaf VP.  We can ignore those.
-			if(lexicon.getVisualLexiconNode(vp).getChildren().size() != 0)
+
+			// Not a leaf VP. We can ignore those.
+			if (lexicon.getVisualLexiconNode(vp).getChildren().size() != 0)
 				continue;
-			
-			// This is a leaf
+
+			// This is a leaf, and need to be updated.
 			viewModel.setVisualProperty(vp, defaultValue);
-			// logger.debug(vp.getDisplayName() + " updated: " +
-			// defaultValue);
+			
+			//logger.debug(vp.getDisplayName() + " updated from: " + currentValue + " to " + defaultValue);
 		}
 	}
 
@@ -310,7 +330,8 @@ public class VisualStyleImpl implements VisualStyle {
 		return this.title;
 	}
 
-	@Override public Collection<VisualMappingFunction<?, ?>> getAllVisualMappingFunctions() {
+	@Override
+	public Collection<VisualMappingFunction<?, ?>> getAllVisualMappingFunctions() {
 		return mappings.values();
 	}
 

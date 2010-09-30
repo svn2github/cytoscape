@@ -81,15 +81,15 @@ public class DNodeView implements NodeView, Label {
 	static final String DEFAULT_LABEL_TEXT = "";
 	static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
 	static final Paint DEFAULT_LABEL_PAINT = Color.black;
-	static final float DEFAULT_TRANSPARENCY = 255;
+	static final int DEFAULT_TRANSPARENCY = 255;
 	
 	final int m_inx; // The FixedGraph index (non-negative).
 	boolean m_selected;
 	Paint m_unselectedPaint;
 	Paint m_selectedPaint;
 	Paint m_borderPaint;
-
-	float transparency;
+	
+	int transparency;
 
 	/**
 	 * Stores the position of a nodeView when it's hidden so that when the
@@ -263,9 +263,11 @@ public class DNodeView implements NodeView, Label {
 				dGraphView.m_nodeDetails
 						.overrideFillPaint(m_inx, m_unselectedPaint);
 
-				if (m_unselectedPaint instanceof Color)
+				if (m_unselectedPaint instanceof Color) {
+					m_unselectedPaint = new Color(((Color) m_unselectedPaint).getRed(), ((Color) m_unselectedPaint).getGreen(), ((Color) m_unselectedPaint).getBlue(), transparency);
 					dGraphView.m_nodeDetails.overrideColorLowDetail(m_inx,
 							(Color) m_unselectedPaint);
+				}
 
 				dGraphView.m_contentChanged = true;
 			}
@@ -412,8 +414,27 @@ public class DNodeView implements NodeView, Label {
 	 * @param trans
 	 *            DOCUMENT ME!
 	 */
-	public void setTransparency(float trans) {
-		// TODO: implement this
+	public void setTransparency(int trans) {
+		synchronized (dGraphView.m_lock) {
+			if (trans < 0 || trans > 255)
+				throw new IllegalArgumentException("Transparency is out of range.");
+			transparency = trans;
+
+			if (m_unselectedPaint instanceof Color) {
+				
+				m_unselectedPaint = new Color(((Color) m_unselectedPaint).getRed(), ((Color) m_unselectedPaint).getGreen(), ((Color) m_unselectedPaint).getBlue(), trans);
+				
+				dGraphView.m_nodeDetails
+					.overrideFillPaint(m_inx, m_unselectedPaint);
+
+			
+				dGraphView.m_nodeDetails.overrideColorLowDetail(m_inx,
+						(Color) m_unselectedPaint);
+			}
+
+			dGraphView.m_contentChanged = true;
+		}
+		
 	}
 
 	/**
@@ -421,8 +442,8 @@ public class DNodeView implements NodeView, Label {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public float getTransparency() {
-		return 1.0f;
+	public int getTransparency() {
+		return transparency;
 	}
 
 	/**
@@ -1368,7 +1389,7 @@ public class DNodeView implements NodeView, Label {
 		} else if (vp == DVisualLexicon.NODE_BORDER_STROKE) {
 			setBorder((Stroke) value);
 		} else if (vp == DVisualLexicon.NODE_TRANSPARENCY) {
-			setTransparency(((Integer) value).floatValue());
+			setTransparency(((Integer) value));
 		} else if (vp == TwoDVisualLexicon.NODE_X_SIZE) {
 			setWidth(((Double) value).doubleValue());
 		} else if (vp == TwoDVisualLexicon.NODE_Y_SIZE) {

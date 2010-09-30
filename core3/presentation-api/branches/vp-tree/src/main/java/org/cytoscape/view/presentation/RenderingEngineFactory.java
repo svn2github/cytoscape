@@ -26,7 +26,6 @@ public interface RenderingEngineFactory<T> {
 	 * 
 	 * @return Rendering Engine for visualization on the visualizationContainer.
 	 */
-	public RenderingEngine<T> render(final Object visualizationContainer,
-			final View<T> viewModel);
+	public RenderingEngine<T> render(final Object visualizationContainer, final View<T> viewModel);
 
 }
