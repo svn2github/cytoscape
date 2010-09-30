@@ -50,9 +50,19 @@
 		<constructor-arg type="boolean" value="true"/>
 	</bean>
 
-	<bean id="bioLayoutFRAlgorithm" class="csplugins.layout.algorithms.bioLayout.BioLayoutKKAlgorithm">
+	<bean id="bioLayoutFRAlgorithm" class="csplugins.layout.algorithms.bioLayout.BioLayoutFRAlgorithm">
 		<constructor-arg ref="undoSupportServiceRef"/>
 		<constructor-arg type="boolean" value="true"/>
+	</bean>
+
+	<bean id="stackedNodeLayout" class="csplugins.layout.algorithms.StackedNodeLayout">
+		<constructor-arg ref="undoSupportServiceRef"/>
+	</bean>
+
+
+	<bean id="groupAttributesLayout" class="csplugins.layout.algorithms.GroupAttributesLayout">
+		<constructor-arg ref="undoSupportServiceRef"/>
+		<constructor-arg ref="cyTableManagerServiceRef"/>
 	</bean>
 
 </beans>
