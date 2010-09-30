@@ -42,25 +42,30 @@ import org.cytoscape.session.CySessionManager.State;
 // TODO this is still pretty much just a placeholder class
 public class CySessionManagerImpl implements CySessionManager {
 
+	private String currentFileName;
+	private CySession currentSession;
 
 	CySessionManagerImpl() {
 
 	}
 
-
-    public State getCurrentSessionState() {
-		return null;
-    	
-    }
     public CySession getCurrentSession() {
+		// TODO 
     	return new CySessionImpl();
-    	
     }
     
-    public void setCurrentSession(CySession sess) {
-    		// do stuff
-    	
+    public void setCurrentSession(CySession sess, String fileName) {
+		if ( sess == null )
+			// TODO throw exception?
+			return;
+
+		currentSession = sess;
+		currentFileName = fileName;
+   		// do stuff
     }
 
+	public String getCurrentSessionFileName() {
+		return currentFileName;
+	}
 }
 

@@ -15,16 +15,6 @@ import org.cytoscape.session.CySession;
 public class CySessionImpl implements CySession {
 
 	@Override
-    public String getSessionName() {
-    	return "test";
-    }
-
-	@Override
-    public Set<CyNetwork> getNetworks() {
-    	return new HashSet<CyNetwork>();
-    }
-
-	@Override
     public Set<CyNetworkView> getNetworkViews() {
     	return new HashSet<CyNetworkView>();
     }
@@ -35,21 +25,22 @@ public class CySessionImpl implements CySession {
     }
 
 	@Override
-    public Set<VisualStyle> getVisualStyles() {
-    	return new HashSet<VisualStyle>();
+    public Map<CyNetworkView,String> getViewVisualStyleMap() {
+    	return new HashMap<CyNetworkView,String>();
     }
 
 	@Override
-    public Map<String,Properties> getProperties() {
-		Map<String,Properties> map = new HashMap<String,Properties>();
-		map.put("cytoscape", new Properties());
-		map.put("vizmap", new Properties());
-    	return map;
+    public Properties getCytoscapeProperties() {
+		return new Properties();
     }
 
 	@Override
-	public String getFileName() {
-		return "default";
-	}
-	
+    public Properties getVizmapProperties() {
+		return new Properties();
+    }
+
+	@Override
+    public Properties getDesktopProperties() {
+		return new Properties();
+    }
 }
