@@ -92,6 +92,15 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="sessionReaderFactoryService" ref="sessionReaderFactory"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="sessionReaderFactory" />
+			<entry key="readerId" value="sessionReaderFactory" />
+			<entry key="readerDescription" value="Cytoscape Session Reader" />
+		</osgi:service-properties>
+	</osgi:service>
+
 	<osgi:service id="pngWriterFactoryService" ref="pngWriterFactory"
 		interface="org.cytoscape.io.write.ViewWriterFactory">
 	</osgi:service>
@@ -119,6 +128,14 @@
 		<osgi:listener bind-method="addInputStreamTaskFactory"
 		               unbind-method="removeInputStreamTaskFactory" 
 		               ref="cyDataTableReaderManager" />
+	</osgi:set>
+
+	<osgi:set id="sessionReaderFactories" 
+	          interface="org.cytoscape.io.read.InputStreamTaskFactory"
+	          cardinality="0..N">
+		<osgi:listener bind-method="addInputStreamTaskFactory"
+		               unbind-method="removeInputStreamTaskFactory" 
+		               ref="cySessionReaderManager" />
 	</osgi:set>
 
 	<osgi:set id="viewWriterFactories" 

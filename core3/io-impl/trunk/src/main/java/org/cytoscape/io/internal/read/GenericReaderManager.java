@@ -76,19 +76,32 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 			}
 		}
 
+		logger.info("No reader found for uri: " + uri.toString());
 	 	return null;	
 	}
 
 	public R getReader(InputStream stream) {
-		for (T factory : factories) {
-			CyFileFilter cff = factory.getCyFileFilter();
+		try {
 
-			if (cff.accept(stream, category)) {
-				factory.setInputStream(stream);
-				return (R)factory.getTaskIterator().next();	
+			if ( !stream.markSupported() )
+				stream = new MarkSupportedInputStream(stream);
+
+			for (T factory : factories) {
+				CyFileFilter cff = factory.getCyFileFilter();
+
+				// Because we don't know who will provide the file filter or
+				// what they might do with the InputStream, we provide a copy
+				// of the first 2KB rather than the stream itself. 
+				if (cff.accept(CopyInputStream.copyKBytes(stream,2), category)) {
+					factory.setInputStream(stream);
+					return (R)factory.getTaskIterator().next();	
+				}
 			}
+		} catch (IOException ioe) {
+			logger.warn("Error setting input stream", ioe);
 		}
 
+		logger.info("No reader found for input stream");
 	 	return null;	
 	}
 }
