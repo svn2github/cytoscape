@@ -36,15 +36,9 @@
 
 package csplugins.layout.algorithms;
 
-import java.util.Collection;
-import java.util.Iterator;
-
-import org.cytoscape.model.CyNode;
 import org.cytoscape.view.layout.AbstractLayout;
-import org.cytoscape.view.layout.internal.algorithms.GridNodeLayoutTask;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -53,6 +47,17 @@ import org.cytoscape.work.undo.UndoSupport;
  *
  */
 public class StackedNodeLayout extends AbstractLayout implements TunableValidator {
+	
+	@Tunable(description="x_position")
+	public double x_position = 10.0;
+
+	@Tunable(description="y_start_position")
+	public double y_start_position = 10.0;
+
+	//@Tunable(description="nodes")
+	//public Collection nodes;
+
+	
 	/**
 	 * Puts a collection of nodes into a "stack" layout. This means the nodes are
 	 * arranged in a line vertically, with each node overlapping with the previous.
@@ -62,6 +67,7 @@ public class StackedNodeLayout extends AbstractLayout implements TunableValidato
 	 * @param y_start_position the y starting position for the stack
 	 */
 
+	// TODO
 	public boolean tunablesAreValid(final Appendable errMsg) {
 		return true;
 	}
@@ -76,14 +82,13 @@ public class StackedNodeLayout extends AbstractLayout implements TunableValidato
 	 */
 	public StackedNodeLayout(UndoSupport undoSupport) {
 		super(undoSupport);
-		//this.x_position = x_position;
-		//this.y_start_position = y_start_position;
-		//this.nodes = nodes;
 	}
 	
 	
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new StackedNodeLayoutTask(networkView, getName(), selectedOnly, staticNodes));
+		
+		return new TaskIterator(new StackedNodeLayoutTask(networkView, getName(), selectedOnly, staticNodes,
+				x_position, y_start_position));
 	}
 
 	/**
