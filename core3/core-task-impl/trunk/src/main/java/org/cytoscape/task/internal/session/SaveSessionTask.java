@@ -56,7 +56,7 @@ public class SaveSessionTask extends AbstractTask {
 
 	public void run(TaskMonitor taskMonitor) throws Exception {
 		CySession session = sessionMgr.getCurrentSession();
-		File file = new File(session.getFileName());
+		File file = new File(sessionMgr.getCurrentSessionFileName());
 	 	insertTasksAfterCurrentTask(new SessionWriter(writerMgr, session, file ));
 	}
 } 

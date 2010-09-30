@@ -76,6 +76,7 @@ public class OpenSessionTask extends AbstractTask {
 			throw new NullPointerException("No file specified!");
 		
 		CySessionReader reader = readerMgr.getReader((file.toURI()));
+		reader.run(taskMonitor);
 
 		if (cancelled)
 			return;
@@ -99,10 +100,9 @@ public class OpenSessionTask extends AbstractTask {
 				throw new NullPointerException("Session could not be read for file: " + file);
 			}
 
-			sessionMgr.setCurrentSession(newSession);
+			sessionMgr.setCurrentSession(newSession, file.getAbsolutePath());
 			taskMonitor.setProgress(1.0);
 			taskMonitor.setStatusMessage("Session file " + file + " successfully loaded.");
 		}
 	}
-
 }

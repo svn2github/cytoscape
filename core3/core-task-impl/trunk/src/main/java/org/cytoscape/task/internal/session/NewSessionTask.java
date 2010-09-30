@@ -44,7 +44,7 @@ public class NewSessionTask extends AbstractTask {
 	}
 
 	public void run(TaskMonitor taskMonitor) {
-		mgr.setCurrentSession(null);
+		mgr.setCurrentSession(null,null);
 	}
 
 	@Override
