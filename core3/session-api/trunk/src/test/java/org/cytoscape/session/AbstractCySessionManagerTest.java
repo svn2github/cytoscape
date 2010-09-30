@@ -22,15 +22,25 @@ public abstract class AbstractCySessionManagerTest {
 	public void testSetCurrentSession() {
 		assertNotNull(mgr);
 		CySession session = mock(CySession.class);
-		mgr.setCurrentSession(session);
+		mgr.setCurrentSession(session,"someFile");
 		assertNotNull(mgr.getCurrentSession());
 		assertEquals(session,mgr.getCurrentSession());
 	}
-	
+
 	@Test
-	public void testGetCurrentSessionState() {
+	public void testSetCurrentSessionFileName() {
 		assertNotNull(mgr);
-		assertNotNull(mgr.getCurrentSessionState());
-		// TODO not sure what to test here
+		CySession session = mock(CySession.class);
+		mgr.setCurrentSession(session,"someFile");
+		assertEquals("someFile",mgr.getCurrentSessionFileName());
+	}
+
+	// TODO should we allow this?  For new sessions?
+	@Test
+	public void testSetNullCurrentSessionFileName() {
+		assertNotNull(mgr);
+		CySession session = mock(CySession.class);
+		mgr.setCurrentSession(session,null);
+		assertNull(mgr.getCurrentSessionFileName());
 	}
 }

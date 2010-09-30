@@ -11,27 +11,12 @@ public abstract class AbstractCySessionTest {
 
 	protected CySession session;
 
-	
-	@Test
-	public void testSessionName() {
-		assertNotNull(session);
-		assertNotNull(session.getSessionName());
-		assertFalse(session.getSessionName().equals(""));
-	}
-	
-	@Test
-	public void testGetNetworks() {
-		assertNotNull(session);
-		assertNotNull(session.getNetworks());
-	}
-	
 	@Test
 	public void testGetNetworkViews() {
 		assertNotNull(session);
 		assertNotNull(session.getNetworkViews());
 	}
-	
-	
+
 	@Test
 	public void testGetTables() {
 		assertNotNull(session);
@@ -39,23 +24,27 @@ public abstract class AbstractCySessionTest {
 	}
 	
 	@Test
-	public void testGetVisualStyles() {
+	public void testGetViewVisualStyleMap() {
 		assertNotNull(session);
-		assertNotNull(session.getVisualStyles());
+		assertNotNull(session.getViewVisualStyleMap());
 	}
 	
 	@Test
-	public void testGetProperties() {
+	public void testGetCytoscapeProperties() {
 		assertNotNull(session);
-		assertNotNull(session.getProperties());
-		assertNotNull(session.getProperties().get("cytoscape"));
-		assertNotNull(session.getProperties().get("vizmap"));
+		assertNotNull(session.getCytoscapeProperties());
+	}
+
+	@Test
+	public void testGetVizmapProperties() {
+		assertNotNull(session);
+		assertNotNull(session.getVizmapProperties());
+	}
+
+	@Test
+	public void testGetDesktopProperties() {
+		assertNotNull(session);
+		assertNotNull(session.getDesktopProperties());
 	}
 	
-	@Test
-	public void testGetFilename() {
-		assertNotNull(session);
-		assertNotNull(session.getFileName());
-		assertFalse(session.getSessionName().equals(""));
-	}
 }

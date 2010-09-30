@@ -10,6 +10,7 @@ package org.cytoscape.session;
  */
 public interface CySessionManager {
 
+	// TODO do we need this?
 	enum State {
 		NEW, 
 		OPENED,
@@ -17,10 +18,10 @@ public interface CySessionManager {
 		CLOSED,
 	}
 
-    State getCurrentSessionState();
-    
     CySession getCurrentSession();
     
-    void setCurrentSession(CySession session);
+    void setCurrentSession(CySession session, String fileName);
+
+	String getCurrentSessionFileName();
 }
 

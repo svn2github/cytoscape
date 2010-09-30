@@ -21,18 +21,15 @@ import org.cytoscape.view.vizmap.VisualStyle;
  */
 public interface CySession {
 
-    String getSessionName();
-
-    Set<CyNetwork> getNetworks();
-
     Set<CyNetworkView> getNetworkViews();
 
     Set<CyTable> getTables();
 
-    Set<VisualStyle> getVisualStyles();
+	Map<CyNetworkView,String> getViewVisualStyleMap();
 
-    Map<String,Properties> getProperties();
+    Properties getCytoscapeProperties();
 
-	String getFileName();
+    Properties getVizmapProperties();
 
+    Properties getDesktopProperties();
 }
