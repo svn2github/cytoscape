@@ -209,6 +209,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		ret.setCytoscapeProperties( cytoscapeProps );
 		ret.setVizmapProperties( vizmapProps );
 		ret.setDesktopProperties( desktopProps );
+		ret.setPluginFileListMap( pluginFileListMap );
 
 		return ret;
 	}

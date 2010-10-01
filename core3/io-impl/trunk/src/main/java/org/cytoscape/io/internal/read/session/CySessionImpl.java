@@ -38,6 +38,8 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.io.File;
 
 
 class CySessionImpl implements CySession {
@@ -136,6 +138,15 @@ class CySessionImpl implements CySession {
 //		for ( Map.Entry<Object,Object> e : p.entrySet() )
 //			System.out.println("   " + e.getKey() + " => " + e.getValue());
 		dProps = p;
+	}
+
+	private Map<String, List<File>> pluginFiles;
+	public Map<String, List<File>> getPluginFileListMap() {
+		return pluginFiles;
+	}
+	void setPluginFileListMap( Map<String, List<File>> pluginFiles) {
+		System.out.println("SESSION setting plugin file list map");
+		this.pluginFiles = pluginFiles;
 	}
 }
 

@@ -105,6 +105,10 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="sessionWriterFactoryService" ref="sessionWriterFactory"
+		interface="org.cytoscape.io.write.SessionWriterFactory">
+	</osgi:service>
+
 	<osgi:service id="pngWriterFactoryService" ref="pngWriterFactory"
 		interface="org.cytoscape.io.write.ViewWriterFactory">
 	</osgi:service>
@@ -156,5 +160,13 @@
 		<osgi:listener bind-method="addCyWriterFactory"
 		               unbind-method="removeCyWriterFactory" 
 		               ref="networkViewWriterManager" />
+	</osgi:set>
+
+	<osgi:set id="sessionWriterFactories" 
+	          interface="org.cytoscape.io.write.SessionWriterFactory"
+	          cardinality="0..N">
+		<osgi:listener bind-method="addCyWriterFactory"
+		               unbind-method="removeCyWriterFactory" 
+		               ref="sessionWriterManager" />
 	</osgi:set>
 </beans>

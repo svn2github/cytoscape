@@ -241,6 +241,13 @@
 		<constructor-arg ref="cyNetworkViewReaderManager" />
 	</bean>
 
+	<bean id="sessionWriterFactory" 
+	      class="org.cytoscape.io.internal.write.session.SessionWriterFactoryImpl">
+		<constructor-arg ref="cysFilter" />
+		<constructor-arg ref="xgmmlFilter" />
+		<constructor-arg ref="networkViewWriterManager" />
+	</bean>
+
 	<!-- All Reader Managers -->
 	<bean id="cyNetworkViewReaderManager" 
 	      class="org.cytoscape.io.internal.read.CyNetworkViewReaderManagerImpl" />

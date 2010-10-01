@@ -42,15 +42,7 @@ import java.io.Writer;
 import java.util.List;
 
 import org.cytoscape.io.internal.generated.*;
-/*
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-import cytoscape.Cytoscape;
-import cytoscape.bookmarks.Bookmarks;
-import cytoscape.data.Semantics;
-import cytoscape.util.swing.JTreeTable;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.NetworkPanel;
-*/
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -155,10 +147,8 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private Cytopanels cytoPanels;
 	private Plugins plugins;
 
-
-
-	private String sessionDirName;
-	private String sessionDir;
+	private final String sessionDirName;
+	private final String sessionDir;
 	private ZipOutputStream zos; 
 	private TaskMonitor taskMonitor;
 
@@ -325,7 +315,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private void zipNetwork(final CyNetworkView view) throws Exception {
 		final CyNetwork network = view.getModel();
 
-		String xgmmlFile = getValidFileName( network.attrs().get("title",String.class) + XGMML_EXT );
+		String xgmmlFile = getValidFileName( network.attrs().get("name",String.class) + XGMML_EXT );
 		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile) );
 
 		// Write the XGMML file *without* our graphics attributes
@@ -357,13 +347,13 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		// TODO
-//		m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
-//		              new NamespacePrefixMapperForCysession());
+		// TODO wtf?
+		//m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+		 //             new NamespacePrefixMapperForCysession());
 
 		zos.putNextEntry(new ZipEntry(sessionDir + CYSESSION_FILE_NAME) );
 
-		m.marshal(session, zos);
+		m.marshal(cysession, zos);
 
 		zos.closeEntry();
 		m = null;
@@ -378,8 +368,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private void zipFileListMap() throws IOException {
 
 		// fire an event to tell plugins we're ready to save!
-		Map<String, List<File>> pluginFileMap = new HashMap<String, List<File>>();
-		//Cytoscape.firePropertyChange(Cytoscape.SAVE_PLUGIN_STATE, pluginFileMap, null);
+		Map<String, List<File>> pluginFileMap = session.getPluginFileListMap(); 
 
 		// now write any files to the zip files
 		if ((pluginFileMap != null) && (pluginFileMap.size() > 0)) {
@@ -889,7 +878,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 }
 
 
-//class NamespacePrefixMapperForCysession extends NamespacePrefixMapper {
+class NamespacePrefixMapperForCysession extends NamespacePrefixMapper {
 	/**
 	 * Returns a preferred prefix for the given namespace URI.
 	 *
@@ -920,6 +909,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	 *
 	 * If this method returns "" when requirePrefix=true, the return value will
 	 * be ignored and the system will generate one.
+	 */
 	public String getPreferredPrefix(final String namespaceUri, final String suggestion,
 	                                 boolean requirePrefix) {
 		// I want this namespace to be mapped to "xsi"
@@ -935,16 +925,15 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 		// may be.
 		return suggestion;
 	}
-	 */
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
+	 */
 	public String[] getPreDeclaredNamespaceUris() {
 		return new String[] {
 		           "http://www.w3.org/2001/XMLSchema-instance", "http://www.w3.org/1999/xlink",
 		       };
 	}
-	 */
-//}
+}
