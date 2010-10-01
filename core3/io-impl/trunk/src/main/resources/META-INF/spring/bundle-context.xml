@@ -196,6 +196,10 @@
 		<constructor-arg ref="sifFilter"/>
 	</bean>
 
+	<bean id="xgmmlNetworkViewWriterFactory" class="org.cytoscape.io.internal.write.xgmml.XGMMLNetworkViewWriterFactory">
+		<constructor-arg ref="xgmmlFilter"/>
+	</bean>
+
 	<!-- Utilities for XGMML Reader -->
 	
 	<bean id="objectTypeMap" class="org.cytoscape.io.internal.read.xgmml.ObjectTypeMap" />
@@ -252,8 +256,8 @@
 	<bean id="viewWriterManager" 
 	      class="org.cytoscape.io.internal.write.ViewWriterManagerImpl" />
 
-	<bean id="networkWriterManager" 
-	      class="org.cytoscape.io.internal.write.CyNetworkWriterManagerImpl">
+	<bean id="networkViewWriterManager" 
+	      class="org.cytoscape.io.internal.write.CyNetworkViewWriterManagerImpl">
 		<constructor-arg type="org.cytoscape.io.DataCategory"
 			value="NETWORK" />			
 	</bean>

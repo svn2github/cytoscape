@@ -43,8 +43,8 @@
 		interface="org.cytoscape.io.read.CySessionReaderManager">
 	</osgi:service>	
 
-	<osgi:service id="networkWriterManagerService" ref="networkWriterManager"
-		interface="org.cytoscape.io.write.CyNetworkWriterManager">
+	<osgi:service id="networkViewWriterManagerService" ref="networkViewWriterManager"
+		interface="org.cytoscape.io.write.CyNetworkViewWriterManager">
 	</osgi:service>
 
 	<osgi:service id="sessionWriterManagerService" ref="sessionWriterManager"
@@ -61,7 +61,7 @@
 	</osgi:service>
 
 	<osgi:service id="sifNetworkViewWriterFactoryService" ref="sifNetworkViewWriterFactory"
-		interface="org.cytoscape.io.write.CyNetworkWriterFactory">
+		interface="org.cytoscape.io.write.CyNetworkViewWriterFactory">
 	</osgi:service>
 
 	<osgi:service id="xgmmlNetworkViewReaderFactoryService" ref="xgmmlNetworkViewReaderFactory"
@@ -72,6 +72,10 @@
 			<entry key="readerDescription"
 				value="eXtensible Graph Markup and Modeling Language (XGMML) file reader" />
 		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="xgmmlNetworkViewWriterFactoryService" ref="xgmmlNetworkViewWriterFactory"
+		interface="org.cytoscape.io.write.CyNetworkViewWriterFactory">
 	</osgi:service>
 
 	<osgi:service id="textDataTableReaderFactoryService" ref="textDataTableReaderFactory"
@@ -146,11 +150,11 @@
 		               ref="viewWriterManager" />
 	</osgi:set>
 
-	<osgi:set id="networkWriterFactories" 
-	          interface="org.cytoscape.io.write.CyNetworkWriterFactory"
+	<osgi:set id="networkViewWriterFactories" 
+	          interface="org.cytoscape.io.write.CyNetworkViewWriterFactory"
 	          cardinality="0..N">
 		<osgi:listener bind-method="addCyWriterFactory"
 		               unbind-method="removeCyWriterFactory" 
-		               ref="networkWriterManager" />
+		               ref="networkViewWriterManager" />
 	</osgi:set>
 </beans>

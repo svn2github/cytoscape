@@ -312,7 +312,8 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 		java.util.Date now = new java.util.Date();
 		java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		writeElement("<dc:date>"+df.format(now)+"</dc:date>\n");
-		writeElement("<dc:title>"+encode(network.attrs().get("title",String.class))+"</dc:title>\n");
+		// TODO fix the use of hardcoded "name" here
+		writeElement("<dc:title>"+encode(network.attrs().get("name",String.class))+"</dc:title>\n");
 		writeElement("<dc:source>http://www.cytoscape.org/</dc:source>\n");
 		writeElement("<dc:format>Cytoscape-XGMML</dc:format>\n");
 		depth--;
