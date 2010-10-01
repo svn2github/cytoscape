@@ -35,8 +35,6 @@ import java.awt.event.ActionEvent;
 import java.util.Map;
 
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 
 import cytoscape.view.CytoscapeAction;
@@ -61,8 +59,7 @@ public class TaskFactoryTunableAction<T extends TaskFactory> extends CytoscapeAc
 
 	public void actionPerformed(ActionEvent a) {
 		logger.debug("About to execute task from factory: " + factory.toString());
-		final TaskIterator taskIterator = factory.getTaskIterator();
 		// execute the task(s) in a separate thread
-		manager.execute(taskIterator);
+		manager.execute(factory);
 	}
 }

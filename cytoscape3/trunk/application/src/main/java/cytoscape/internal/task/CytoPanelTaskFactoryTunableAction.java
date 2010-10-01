@@ -48,8 +48,6 @@ import javax.swing.JPanel;
 
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.swing.GUITaskManager;
 
@@ -92,9 +90,7 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 				}
 			}
 
-			final TaskIterator taskIterator = factory.getTaskIterator();
-			// execute the task in a separate thread
-			manager.execute(taskIterator);
+			manager.execute(factory);
 		}
 	}
 

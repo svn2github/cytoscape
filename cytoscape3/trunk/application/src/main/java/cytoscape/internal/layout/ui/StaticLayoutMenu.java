@@ -31,8 +31,6 @@ package cytoscape.internal.layout.ui;
 
 
 import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 
@@ -73,7 +71,6 @@ public class StaticLayoutMenu extends JMenuItem implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		layout.setSelectedOnly(false);
 		layout.setNetworkView(netmgr.getCurrentNetworkView());
-		
-		tm.execute(layout.getTaskIterator());
+		tm.execute(layout);
 	}
 }

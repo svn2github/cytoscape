@@ -31,8 +31,6 @@ package cytoscape.internal.layout.ui;
 
 
 import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -127,11 +125,11 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		} else {
 			// No special menus, so make sure we layout all selected
 			List<CyNetworkView> views = netmgr.getSelectedNetworkViews();
-			for ( CyNetworkView view: views ) {
+			for (final CyNetworkView view: views) {
 				layout.setSelectedOnly(false);
 				layout.setLayoutAttribute(null);
-				final Task layoutTask =  new LayoutTask(layout, view);
-				tm.execute(new TaskIterator(layoutTask));
+				layout.setNetworkView(view);
+				tm.execute(layout);
 			}
 		}
 	}
