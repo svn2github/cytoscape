@@ -43,15 +43,21 @@ import javax.swing.JOptionPane;
 
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTableManager;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.internal.AbstractVizMapperPanel;
+import org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +70,7 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 /**
  *
  */
-public class CellEditorEventHandler extends AbstractVizMapEventHandler {
+public class CellEditorEventHandler implements VizMapEventHandler {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(CellEditorEventHandler.class);
@@ -72,118 +78,139 @@ public class CellEditorEventHandler extends AbstractVizMapEventHandler {
 	// Keeps current discrete mappings. NOT PERMANENT
 	private final Map<String, Map<Object, Object>> discMapBuffer;
 
+	private final CyTableManager tableMgr;
+
+	protected VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
+	protected VisualMappingManager vmm;
+	protected VizMapperMainPanel vizMapperMainPanel;
+	protected PropertySheetPanel propertySheetPanel;
+	protected CyNetworkManager cyNetworkManager;
+
 	/**
 	 * Creates a new CellEditorEventHandler object.
 	 */
 	public CellEditorEventHandler(final PropertySheetPanel propertySheetPanel,
-			final VizMapperMainPanel vizMapperMainPanel) {
+			final VizMapperMainPanel vizMapperMainPanel,
+			final CyTableManager tableMgr, final CyNetworkManager networkMgr,
+			final VizMapPropertySheetBuilder vizMapPropertySheetBuilder) {
 		discMapBuffer = new HashMap<String, Map<Object, Object>>();
 		this.propertySheetPanel = propertySheetPanel;
 		this.vizMapperMainPanel = vizMapperMainPanel;
+		this.tableMgr = tableMgr;
+		this.cyNetworkManager = networkMgr;
+		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
 	}
 
-	private void switchControllingAttr(final AttributeComboBoxPropertyEditor editor, final VizMapperProperty<?> prop, final String ctrAttrName) {
-		
-		final VisualStyle currentStyle = this.vizMapperMainPanel.getSelectedVisualStyle();
-		
+	private <K, V> void switchControllingAttr(
+			final AttributeComboBoxPropertyEditor editor,
+			VizMapperProperty<?> prop, final String ctrAttrName) {
+
+		final VisualStyle currentStyle = this.vizMapperMainPanel
+				.getSelectedVisualStyle();
+
 		final Object hidden = prop.getHiddenObject();
-		
-		if(hidden instanceof VisualProperty<?> == false) {
+
+		if (hidden instanceof VisualProperty<?> == false) {
 			logger.debug("Hidden object is not VP.");
 			return;
 		}
-		
-		final VisualProperty<?> vp = (VisualProperty<?>) hidden;
-		final VisualMappingFunction<?, ?> mapping = currentStyle.getVisualMappingFunction(vp);
-		
+
+		final VisualProperty<V> vp = (VisualProperty<V>) hidden;
+		final VisualMappingFunction<K, V> mapping = (VisualMappingFunction<K, V>) currentStyle
+				.getVisualMappingFunction(vp);
+
 		logger.debug("!!!!!!! Got Mapping: " + mapping);
-		
+
 		// If same, do nothing.
 		if (ctrAttrName.equals(mapping.getMappingAttributeName())) {
-			logger.debug("Same controlling attr.  Do nothing for: " + ctrAttrName);
+			logger.debug("Same controlling attr.  Do nothing for: "
+					+ ctrAttrName);
 			return;
 		}
-		
-		logger.debug("Need to change from " + mapping.getMappingAttributeName() + " to " + ctrAttrName);
-	
-		
-//			/*
-//			 * Ignore if not compatible.
-//			 */
-//			final CyTable attrForTest = tableMgr.getTableMap(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
-//
-//			final Class<?> dataType = attrForTest.getColumnTypeMap().get(
-//					ctrAttrName);
-//
-//			// This part is for Continuous Mapping.
-//			if (mapping instanceof ContinuousMapping) {
-//				if ((dataType == Double.class) || (dataType == Integer.class)) {
-//					// Do nothing
-//				} else {
-//					JOptionPane
-//							.showMessageDialog(
-//									vizMapperMainPanel,
-//									"Continuous Mapper can be used with Numbers only.\nPlease select numerical attributes.",
-//									"Incompatible Mapping Type!",
-//									JOptionPane.INFORMATION_MESSAGE);
-//
-//					return;
-//				}
-//			}
 
-			
+		/*
+		 * Ignore if not compatible.
+		 */
+		final CyTable attrForTest = tableMgr.getTableMap(
+				editor.getTargetObjectName(),
+				cyNetworkManager.getCurrentNetwork()).get(
+				CyNetwork.DEFAULT_ATTRS);
 
-//			// Buffer current discrete mapping
-//			if (mapping instanceof DiscreteMapping) {
-//				final String curMappingName = mapping.toString() + "-"
-//						+ mapping.getMappingAttributeName();
-//				final String newMappingName = mapping.toString() + "-"
-//						+ ctrAttrName;
-//				final Map saved = discMapBuffer.get(newMappingName);
-//
-//				if (saved == null) {
-//					discMapBuffer.put(curMappingName,
-//							((DiscreteMapping) mapping).getAll());
-//					mapping.(ctrAttrName);
-//				} else if (saved != null) {
-//					// Mapping exists
-//					discMapBuffer.put(curMappingName,
-//							((DiscreteMapping) mapping).getAll());
-//					mapping.setControllingAttributeName(ctrAttrName);
-//					((DiscreteMapping) mapping).putAll(saved);
-//				}
-//			} else {
-//				mapping.setControllingAttributeName(ctrAttrName);
-//			}
-//
-//			propertySheetPanel.removeProperty(typeRootProp);
-//
-//			final VizMapperProperty<?> newRootProp = new VizMapperProperty<>();
-//			final VisualStyle targetVS = vmm.getVisualStyle(cyNetworkManager.getCurrentNetworkView());
-//			
-//			vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
-//					targetVS.getVisualMappingFunction(type), newRootProp,
-//					type.getObjectType(),
-//					propertySheetPanel);
-//			
-//
-//			vizMapPropertySheetBuilder.removeProperty(typeRootProp);
-//
-//			if (vizMapPropertySheetBuilder.getPropertyMap().get(
-//					targetVS) != null)
-//				vizMapPropertySheetBuilder.getPropertyMap().get(
-//						targetVS).add(newRootProp);
-//
-//			typeRootProp = null;
-//
-//			vizMapPropertySheetBuilder.expandLastSelectedItem(type.getIdString());
-//			vizMapPropertySheetBuilder.updateTableView();
-//
-//			// Finally, update graph view and focus.
-//			// vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-//			// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
-//			return;
-//		
+		final Class<K> dataType = (Class<K>) attrForTest.getColumnTypeMap()
+				.get(ctrAttrName);
+
+		VisualMappingFunction<K, V> newMapping = null;
+		if (mapping instanceof PassthroughMapping) {
+			// Create new Passthrough mapping and register to current style.
+			newMapping = new PassthroughMapping<K, V>(ctrAttrName, dataType, vp);
+			currentStyle.addVisualMappingFunction(newMapping);
+			logger.debug("Changed to new Map from "
+					+ mapping.getMappingAttributeName() + " to "
+					+ newMapping.getMappingAttributeName());
+		} else if (mapping instanceof ContinuousMapping) {
+			if ((dataType == Double.class) || (dataType == Integer.class)) {
+				// Do nothing
+			} else {
+				JOptionPane
+						.showMessageDialog(
+								vizMapperMainPanel,
+								"Continuous Mapper can be used with Numbers only.\nPlease select numerical attributes.",
+								"Incompatible Mapping Type!",
+								JOptionPane.INFORMATION_MESSAGE);
+
+				return;
+			}
+
+		} else if (mapping instanceof DiscreteMapping) {
+			// final String curMappingName = mapping.toString() + "-"
+			// + mapping.getMappingAttributeName();
+			// final String newMappingName = mapping.toString() + "-"
+			// + ctrAttrName;
+			// final Map saved = discMapBuffer.get(newMappingName);
+			//
+			// if (saved == null) {
+			// discMapBuffer.put(curMappingName,
+			// ((DiscreteMapping) mapping).getAll());
+			// mapping.(ctrAttrName);
+			// } else if (saved != null) {
+			// // Mapping exists
+			// discMapBuffer.put(curMappingName,
+			// ((DiscreteMapping) mapping).getAll());
+			// mapping.setControllingAttributeName(ctrAttrName);
+			// ((DiscreteMapping) mapping).putAll(saved);
+			// }
+		}
+
+		// Remove old property
+		propertySheetPanel.removeProperty(prop);
+
+		// Create new one.
+		final VizMapperProperty<?> newRootProp = new VizMapperProperty<V>();
+
+		logger.debug("Creating new prop sheet objects for "
+				+ newMapping.getMappingAttributeName() + ", "
+				+ vp.getDisplayName());
+		vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
+				newMapping, editor.getCategory(), propertySheetPanel);
+
+		logger.debug("!!!!!!! Removing Prop: " + prop);
+		
+		vizMapPropertySheetBuilder.removeProperty(prop, currentStyle);
+
+		if (vizMapPropertySheetBuilder.getPropertyMap().get(currentStyle) != null)
+			vizMapPropertySheetBuilder.getPropertyMap().get(currentStyle)
+					.add(newRootProp);
+
+		prop = null;
+
+		vizMapPropertySheetBuilder.expandLastSelectedItem(vp.getIdString());
+		vizMapPropertySheetBuilder.updateTableView();
+
+		// Finally, update graph view and focus.
+		currentStyle.apply(cyNetworkManager.getCurrentNetworkView());
+		cyNetworkManager.getCurrentNetworkView().updateView();
+		return;
+
 	}
 
 	/**

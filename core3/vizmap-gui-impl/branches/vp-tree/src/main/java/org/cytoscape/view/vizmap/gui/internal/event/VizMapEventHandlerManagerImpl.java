@@ -6,6 +6,8 @@ import java.beans.PropertyEditor;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.cytoscape.model.CyTableManager;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
@@ -24,23 +26,28 @@ public class VizMapEventHandlerManagerImpl implements
 	private static final Logger logger = LoggerFactory
 			.getLogger(VizMapEventHandlerManagerImpl.class);
 
-	private Map<String, AbstractVizMapEventHandler> eventHandlers;
+	private Map<String, VizMapEventHandler> eventHandlers;
 
 	private final EditorManager editorManager;
 	private final VizMapperMainPanel gui;
 
 	private VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
+	
+	private final CyTableManager tableMgr;
+	private final CyNetworkManager networkMgr;
 
 	public VizMapEventHandlerManagerImpl(final EditorManager editorManager,
 			final VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
-			final PropertySheetPanel propertySheetPanel, final VizMapperMainPanel gui) {
+			final PropertySheetPanel propertySheetPanel, final VizMapperMainPanel gui, final CyTableManager tableMgr, final CyNetworkManager networkMgr) {
 		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
 		this.editorManager = editorManager;
 		this.gui = gui;
+		this.tableMgr = tableMgr;
+		this.networkMgr = networkMgr;
 		
 		registerCellEditorListeners();
 
-		eventHandlers = new HashMap<String, AbstractVizMapEventHandler>();
+		eventHandlers = new HashMap<String, VizMapEventHandler>();
 		createHandlers(propertySheetPanel);
 		
 		
@@ -68,7 +75,7 @@ public class VizMapEventHandlerManagerImpl implements
 		eventHandlers.put(Cytoscape.NETWORK_LOADED, attrHandler);
 
 		eventHandlers.put("VALUE", new CellEditorEventHandler(
-				propertySheetPanel, gui));
+				propertySheetPanel, gui, tableMgr, networkMgr, vizMapPropertySheetBuilder));
 
 	}
 

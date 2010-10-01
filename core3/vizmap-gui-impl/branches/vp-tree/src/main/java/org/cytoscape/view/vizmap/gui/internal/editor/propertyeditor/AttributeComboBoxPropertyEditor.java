@@ -19,6 +19,9 @@ import org.cytoscape.model.events.ColumnDeletedListener;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.events.NetworkAddedEvent;
 import org.cytoscape.session.events.NetworkAddedListener;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.Visualizable;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.gui.editor.ListEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +48,8 @@ public class AttributeComboBoxPropertyEditor extends CyComboBoxPropertyEditor
 	private final Set<CyTable> targetTables;
 
 	private final SortedSet<String> attrNames;
+	
+	private VisualProperty<Visualizable> category;
 
 	public AttributeComboBoxPropertyEditor(final String name,
 			final CyTableManager tableMgr, final CyNetworkManager networkMgr) {
@@ -75,6 +80,21 @@ public class AttributeComboBoxPropertyEditor extends CyComboBoxPropertyEditor
 		final JComboBox box = (JComboBox) editor;
 		for (String attrName : attrNames)
 			box.addItem(attrName);
+		
+		assignCategory();
+	}
+	
+	private void assignCategory() {
+		if(name.equals(CyTableEntry.NODE))
+			category = TwoDVisualLexicon.NODE;
+		else if(name.equals(CyTableEntry.EDGE))
+			category = TwoDVisualLexicon.EDGE;
+		else if(name.equals(CyTableEntry.NETWORK))
+			category = TwoDVisualLexicon.NETWORK;
+	}
+	
+	public VisualProperty<Visualizable> getCategory() {
+		return this.category;
 	}
 
 	@Override

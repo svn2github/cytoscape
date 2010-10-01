@@ -109,7 +109,7 @@ import cytoscape.view.CytoPanelName;
  * @param <syncronized>
  */
 public class VizMapperMainPanel extends AbstractVizMapperPanel implements
-		VisualStyleCreatedListener, PopupMenuListener, NetworkViewAddedListener,  NetworkAddedListener {
+		VisualStyleCreatedListener, PopupMenuListener, NetworkViewAddedListener, NetworkAddedListener {
 
 	private final static long serialVersionUID = 1202339867854959L;
 	
@@ -675,9 +675,37 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 	}
 
-	public void handleEvent(VisualStyleCreatedEvent e) {
+	
+	/**
+	 * Update GUI components when new Visual Style is created.
+	 */
+	@Override public void handleEvent(final VisualStyleCreatedEvent e) {
+		final VisualStyle newStyle = e.getCreatedVisualStyle();
+		if(newStyle == null)
+			return;
+		
+		this.vsComboBoxModel.addElement(newStyle);
+		
+		// Set selected style
+		setSelectedVisualStyle(newStyle);
+		final CyNetworkView currentView = this.cyNetworkManager.getCurrentNetworkView();
+		
+		if (currentView != null)
+			vmm.setVisualStyle(newStyle, currentView);
 
-		this.vsComboBoxModel.addElement(e.getCreatedVisualStyle());
+		// Update default panel
+		final Component defPanel = defViewEditor.getDefaultView(newStyle);
+		final CyNetworkView view = (CyNetworkView) ((DefaultViewPanelImpl) defPanel).getView();
+		final Dimension panelSize = getDefaultPanel().getSize();
+
+		if (view != null) {
+			logger.debug("Creating Default Image for new visual style "
+					+ newStyle.getTitle());
+			updateDefaultImage(newStyle, view, panelSize);
+			setDefaultViewImagePanel(getDefaultImageManager().get(newStyle));
+		}
+
+		switchVS(newStyle);
 	}
 	
 	@Override

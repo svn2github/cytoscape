@@ -255,7 +255,7 @@ public class VizMapPropertySheetBuilder {
 
 	}
 
-	private List<Property> setProps(final VisualStyle style, final VisualProperty<Visualizable> cat, final Collection<VisualProperty<?>> vpSet) {
+	private List<Property> setProps(final VisualStyle style, final VisualProperty<?> cat, final Collection<VisualProperty<?>> vpSet) {
 
 		final List<Property> props = new ArrayList<Property>();
 		final Collection<VisualMappingFunction<?, ?>> mappings = style
@@ -439,22 +439,23 @@ public class VizMapPropertySheetBuilder {
 	/*
 	 * Remove an entry in the browser.
 	 */
-	public void removeProperty(final Property prop, VisualStyle style) {
+	public void removeProperty(final Property prop, final VisualStyle style) {
 
-		if (propertyMap.get(style) == null)
+		final List<Property> props = propertyMap.get(style);
+		if (props == null)
 			return;
 
-		List<Property> targets = new ArrayList<Property>();
-		final List<Property> props = propertyMap.get(style);
-
+		final List<Property> targets = new ArrayList<Property>();
+		
 		for (Property p : props) {
+			if(p.getDisplayName() == null)
+				continue;
 			if (p.getDisplayName().equals(prop.getDisplayName()))
 				targets.add(p);
 		}
 
-		for (Property p : targets) {
+		for (Property p : targets)
 			props.remove(p);
-		}
 	}
 
 	// TODO: this should be gone
