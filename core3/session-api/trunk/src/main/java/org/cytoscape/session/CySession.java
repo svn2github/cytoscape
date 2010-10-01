@@ -3,6 +3,8 @@ package org.cytoscape.session;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.List;
+import java.io.File;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
@@ -32,4 +34,6 @@ public interface CySession {
     Properties getVizmapProperties();
 
     Properties getDesktopProperties();
+
+	Map<String, List<File>> getPluginFileListMap();
 }

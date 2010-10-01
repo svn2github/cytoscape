@@ -46,5 +46,10 @@ public abstract class AbstractCySessionTest {
 		assertNotNull(session);
 		assertNotNull(session.getDesktopProperties());
 	}
-	
+
+	@Test
+	public void testGetPluginFileListMap() {
+		assertNotNull(session);
+		assertNotNull(session.getPluginFileListMap());
+	}
 }
