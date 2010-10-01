@@ -47,7 +47,7 @@ public class FileHandler extends AbstractGUITunableHandler {
 	private enum Type { NETWORK, SESSION, ATTRIBUTES, DEFAULT };
 	private Type type;
 	private SupportedFileTypesManager fileTypesManager;
-	private boolean openMode;
+	private boolean openMode; // true if we'd like to open a file and false if we'd like to save a file
 
 	/**
 	 * Constructs the <code>GUIHandler</code> for the <code>File</code> type
@@ -74,13 +74,6 @@ public class FileHandler extends AbstractGUITunableHandler {
 	}
 
 	private void init() {
-		//Construction of GUI
-		fileChooser = new JFileChooser();
-		setFileType();
-		setGui(type);
-		setLayout();
-		panel.setLayout(layout);
-
 		// Determine whether we're dealing w/ an "open" or "save" mode:
 		openMode = true;
 		for (final Param param : getFlags()) {
@@ -89,6 +82,13 @@ public class FileHandler extends AbstractGUITunableHandler {
 				break;
 			}
 		}
+
+		//Construction of GUI
+		fileChooser = new JFileChooser();
+		setFileType();
+		setGui(type);
+		setLayout();
+		panel.setLayout(layout);
 	}
 
 	/**
