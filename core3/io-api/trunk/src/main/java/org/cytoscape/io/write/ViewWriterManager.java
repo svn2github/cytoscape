@@ -38,8 +38,10 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.io.CyFileFilter;
 import java.io.File;
+import java.io.OutputStream;
 
 public interface ViewWriterManager extends CyWriterManager {
 
-	CyWriter getWriter(View<?> view, RenderingEngine re, CyFileFilter filter, File file);
+	CyWriter getWriter(View<?> view, RenderingEngine re, CyFileFilter filter, File file) throws Exception;
+	CyWriter getWriter(View<?> view, RenderingEngine re, CyFileFilter filter, OutputStream os) throws Exception;
 }

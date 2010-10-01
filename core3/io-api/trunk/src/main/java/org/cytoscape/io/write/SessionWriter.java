@@ -31,7 +31,7 @@ public final class SessionWriter extends AbstractTask implements CyWriter {
 		this.outputFile = outputFile;
 	}
 
-	public final void run(TaskMonitor tm) {
+	public final void run(TaskMonitor tm) throws Exception {
 
 		List<CyFileFilter> filters = writerMgr.getAvailableWriters();
 		if ( filters == null || filters.size() < 1)

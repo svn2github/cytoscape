@@ -48,7 +48,7 @@ public abstract class AbstractCyWriter<T extends CyWriterManager> extends Abstra
 		options = new ListSingleSelection<String>( new ArrayList<String>( descriptionFilterMap.keySet() ) );
 	}
 
-	public final void run(TaskMonitor tm) {
+	public final void run(TaskMonitor tm) throws Exception {
 		if ( outputFile == null )
 			throw new NullPointerException("Output file has not be specified!");
 
@@ -67,6 +67,6 @@ public abstract class AbstractCyWriter<T extends CyWriterManager> extends Abstra
 		insertTasksAfterCurrentTask( writer );
 	}
 
-	protected abstract CyWriter getWriter(CyFileFilter filter, File out);
+	protected abstract CyWriter getWriter(CyFileFilter filter, File out) throws Exception;
 
 }

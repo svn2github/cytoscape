@@ -25,7 +25,7 @@ public final class ViewWriter extends AbstractCyWriter<ViewWriterManager> {
 		this.re = re;
 	}
 
-	protected CyWriter getWriter(CyFileFilter filter, File file) {
+	protected CyWriter getWriter(CyFileFilter filter, File file) throws Exception {
 		return writerManager.getWriter(view,re,filter,file);
 	}
 }

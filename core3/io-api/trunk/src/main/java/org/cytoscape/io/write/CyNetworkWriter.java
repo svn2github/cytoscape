@@ -18,7 +18,7 @@ public final class CyNetworkWriter extends AbstractCyWriter<CyNetworkWriterManag
 		this.network = network;
 	}
 
-	protected CyWriter getWriter(CyFileFilter filter, File file) {
+	protected CyWriter getWriter(CyFileFilter filter, File file)  throws Exception{
 		return writerManager.getWriter(network,filter,file);
 	}
 }

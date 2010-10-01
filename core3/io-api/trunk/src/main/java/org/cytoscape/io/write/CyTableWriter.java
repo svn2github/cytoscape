@@ -18,7 +18,7 @@ public final class CyTableWriter extends AbstractCyWriter<CyTableWriterManager> 
 		this.table = table;
 	}
 
-	protected CyWriter getWriter(CyFileFilter filter, File file) {
+	protected CyWriter getWriter(CyFileFilter filter, File file)  throws Exception{
 		return writerManager.getWriter(table,filter,file);
 	}
 }

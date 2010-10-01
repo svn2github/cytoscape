@@ -1,6 +1,7 @@
 package org.cytoscape.io.write;
 
 import java.io.File;
+import java.io.OutputStream;
 
 import org.cytoscape.io.FileIOFactory;
 
@@ -8,6 +9,6 @@ import org.cytoscape.io.FileIOFactory;
  *
  */
 public interface CyWriterFactory extends FileIOFactory {
-	void setOutputFile(File f);
+	void setOutputStream(OutputStream os);
 	CyWriter getWriter();
 }

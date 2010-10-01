@@ -37,11 +37,13 @@ package org.cytoscape.io.write;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.io.CyFileFilter;
 import java.io.File;
+import java.io.OutputStream;
 
 /**
  * Central registry for all Cytoscape export classes.
  */
 public interface CyNetworkWriterManager extends CyWriterManager {
 
-	CyWriter getWriter(CyNetwork net, CyFileFilter filter, File file);
+	CyWriter getWriter(CyNetwork net, CyFileFilter filter, File file) throws Exception;
+	CyWriter getWriter(CyNetwork net, CyFileFilter filter, OutputStream os) throws Exception;
 }

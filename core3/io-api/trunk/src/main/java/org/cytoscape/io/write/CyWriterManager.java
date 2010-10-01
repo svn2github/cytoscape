@@ -35,20 +35,24 @@
 package org.cytoscape.io.write;
 
 import java.util.List;
-import java.io.File;
+import java.io.OutputStream;
 
 import org.cytoscape.io.CyFileFilter;
 
 /**
- * Central registry for all Cytoscape export classes.
+ *  
  */
 public interface CyWriterManager {
 
 	/**
-	 * Will return the names of the avai 
+	 * Will return the available CyFileFilters that define the available
+	 * output types.
 	 */
 	List<CyFileFilter> getAvailableWriters();
 
 
-	public CyWriterFactory getMatchingFactory(CyFileFilter filter, File outFile); 
+	/**
+	 * Returns a CyWriterFactory for the appropriate filter.
+	 */
+	public CyWriterFactory getMatchingFactory(CyFileFilter filter, OutputStream os); 
 }

@@ -37,8 +37,10 @@ package org.cytoscape.io.write;
 import org.cytoscape.session.CySession;
 import org.cytoscape.io.CyFileFilter;
 import java.io.File;
+import java.io.OutputStream;
 
 public interface SessionWriterManager extends CyWriterManager {
 
-	CyWriter getWriter(CySession session, CyFileFilter filter, File file);
+	CyWriter getWriter(CySession session, CyFileFilter filter, File file) throws Exception;
+	CyWriter getWriter(CySession session, CyFileFilter filter, OutputStream os) throws Exception;
 }
