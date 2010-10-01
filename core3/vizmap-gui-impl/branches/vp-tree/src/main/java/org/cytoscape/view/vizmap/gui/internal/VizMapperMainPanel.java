@@ -43,6 +43,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyEditor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -108,7 +109,7 @@ import cytoscape.view.CytoPanelName;
  * @param <syncronized>
  */
 public class VizMapperMainPanel extends AbstractVizMapperPanel implements
-		VisualStyleCreatedListener, PropertyChangeListener, PopupMenuListener, NetworkViewAddedListener,  NetworkAddedListener {
+		VisualStyleCreatedListener, PopupMenuListener, NetworkViewAddedListener,  NetworkAddedListener {
 
 	private final static long serialVersionUID = 1202339867854959L;
 	
@@ -140,14 +141,13 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			VizMapperMenuManager menuMgr, EditorManager editorFactory,
 			final PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
-			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager,
 			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper,
 			final VisualStyle defStyle) {
 
 		super(vsFactory, desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
 				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
-				vizMapEventHandlerManager, editorWindowManager,
+				editorWindowManager,
 				cyNetworkManager, eventHelper, defStyle);
 
 		// Initialize all components
@@ -156,12 +156,9 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	}
 
 	private void initPanel() {
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(new VizMapListener(vmm, cyNetworkManager));
 
 		defaultViewMouseListener = new DefaultViewMouseListener(defViewEditor);
 
-		registerCellEditorListeners();
 		addVisualStyleChangeAction();
 
 		// By default, force to sort property by prop name.
@@ -175,18 +172,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		switchVS(defaultVS);
 	}
 
-	/*
-	 * Register listeners for editors.
-	 */
-	private void registerCellEditorListeners() {
-		// FIXME
-		// for (PropertyEditor p : editorManager.get()) {
-		// p.addPropertyChangeListener(this);
-		//
-		// if (p instanceof PropertyChangeListener)
-		// spcs.addPropertyChangeListener((PropertyChangeListener) p);
-		// }
-	}
+	
 
 	private void addVisualStyleChangeAction() {
 		visualStyleComboBox.addActionListener(new ActionListener() {
@@ -445,22 +431,9 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		// }
 	}
 
-	public void propertyChange(PropertyChangeEvent e) {
-		// Set ignore flag.
-		// if (e.getPropertyName().equals(
-		// Integer.toString(Cytoscape.SESSION_OPENED))) {
-		// ignore = true;
-		// enableListeners(false);
-		// }
-		//
-		// if (ignore)
-		// return;
-
-		final VizMapEventHandler handler = vizMapEventHandlerManager
-				.getHandler(e.getPropertyName());
-		if (handler != null)
-			handler.processEvent(e);
-	}
+	
+	
+	
 
 	/**
 	 * DOCUMENT ME!

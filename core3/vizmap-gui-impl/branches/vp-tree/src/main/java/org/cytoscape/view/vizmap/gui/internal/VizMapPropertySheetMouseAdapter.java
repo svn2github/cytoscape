@@ -35,8 +35,7 @@
 
 package org.cytoscape.view.vizmap.gui.internal;
 
-import static org.cytoscape.model.CyTableEntry.EDGE;
-import static org.cytoscape.model.CyTableEntry.NODE;
+import static org.cytoscape.model.CyTableEntry.*;
 
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
@@ -52,6 +51,7 @@ import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 
 import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
@@ -70,11 +70,13 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 	private VisualStyle selectedStyle;
 	
 	private final CyComboBoxPropertyEditor mappingTypeEditor;
+	
 	private final PropertyEditor nodeAttributeEditor;
 	private final PropertyEditor edgeAttributeEditor;
+	private final PropertyEditor networkAttributeEditor;
 	
 	
-	private static final String[] MAPPING_TYPE = {"Pass Through", "Discrete", "Continuous"};
+	private static final String[] MAPPING_TYPE = {"Passthrough", "Discrete", "Continuous"};
 
 	/**
 	 * Creates a new VizMapPropertySheetMouseAdapter object.
@@ -98,8 +100,9 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 		this.mappingTypeEditor = (CyComboBoxPropertyEditor) this.editorManager.getDefaultComboBoxEditor("mappingTypeEditor");
 		this.mappingTypeEditor.setAvailableValues(MAPPING_TYPE);
 		
-		this.nodeAttributeEditor = editorManager.getDataTableComboBoxEditor(null, "nodeAttrEditor");
-		this.edgeAttributeEditor = editorManager.getDataTableComboBoxEditor(null, "edgeAttrEditor");
+		this.nodeAttributeEditor = editorManager.getDataTableComboBoxEditor(NODE);
+		this.edgeAttributeEditor = editorManager.getDataTableComboBoxEditor(EDGE);
+		this.networkAttributeEditor = editorManager.getDataTableComboBoxEditor(NETWORK);
 		
 	}
 
@@ -111,7 +114,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 	 */
 	public void mouseClicked(MouseEvent e) {
 		
-		System.out.println("====================> mouse event: " + e.getSource());
+		System.out.println("====================> Got mouse event: " + e.getSource());
 		
 		
 		int selected = propertySheetPanel.getTable().getSelectedRow();
@@ -137,19 +140,19 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 					&& category.equalsIgnoreCase("Unused Properties")) {
 				
 				// FIXME
-//				((VizMapperProperty) curProp).setEditable(true);
-//
-//				VisualProperty<?> vp = (VisualProperty<?>) ((VizMapperProperty) curProp)
-//						.getHiddenObject();
-//				propertySheetPanel.removeProperty(curProp);
-//
-//				final VizMapperProperty newProp = new VizMapperProperty();
-//				final VizMapperProperty mapProp = new VizMapperProperty();
-//
-//				newProp.setDisplayName(vp.getDisplayName());
-//				newProp.setHiddenObject(vp);
-//				newProp.setValue("Please select a value!");
-//
+				((VizMapperProperty) curProp).setEditable(true);
+
+				VisualProperty<?> vp = (VisualProperty<?>) ((VizMapperProperty) curProp)
+						.getHiddenObject();
+				propertySheetPanel.removeProperty(curProp);
+
+				final VizMapperProperty newProp = new VizMapperProperty();
+				final VizMapperProperty mapProp = new VizMapperProperty();
+
+				newProp.setDisplayName(vp.getDisplayName());
+				newProp.setHiddenObject(vp);
+				newProp.setValue("Please select a value!");
+
 //				if (vp.getObjectType().equals(NODE)) {
 //					newProp.setCategory(vp.getObjectType());
 //					
@@ -178,6 +181,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 //				propertySheetPanel.repaint();
 
 				return;
+				
 			} else if ((e.getClickCount() == 1) && (category == null)) {
 				/*
 				 * Single left-click
@@ -198,25 +202,25 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 						.getVisualMappingFunction(type);
 
 				// TODO: move this function editor manager.
-				// if (selectedMapping instanceof ContinuousMapping) {
-				// /*
-				// * Need to check other windows.
-				// */
-				// if (editorWindowManager.containsKey(type)) {
-				// // This means editor is already on display.
-				// editorWindowManager.get(type).requestFocus();
-				//
-				// return;
-				// } else {
-				// try {
-				// ((JDialog) editorFactory.showContinuousEditor(
-				// propertySheetPanel, type))
-				// .addPropertyChangeListener(propertySheetPanel);
-				// } catch (Exception e1) {
-				// e1.printStackTrace();
-				// }
-				// }
-				// }
+//				if (selectedMapping instanceof ContinuousMapping) {
+//					/*
+//					 * Need to check other windows.
+//					 */
+//					if (editorWindowManager.containsKey(type)) {
+//						// This means editor is already on display.
+//						editorWindowManager.get(type).requestFocus();
+//
+//						return;
+//					} else {
+//						try {
+//							((JDialog) editorFactory.showContinuousEditor(
+//									propertySheetPanel, type))
+//									.addPropertyChangeListener(propertySheetPanel);
+//						} catch (Exception e1) {
+//							e1.printStackTrace();
+//						}
+//					}
+//				}
 			}
 		}
 	}

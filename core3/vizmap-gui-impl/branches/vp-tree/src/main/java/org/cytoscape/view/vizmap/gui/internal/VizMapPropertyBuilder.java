@@ -116,12 +116,11 @@ public class VizMapPropertyBuilder {
 		final VisualProperty<V> vp = visualMapping.getVisualProperty();
 		final VizMapperProperty<VisualProperty<V>> calculatorTypeProp = new VizMapperProperty<VisualProperty<V>>();
 
-		/*
-		 * Set one calculator
-		 */
+		// Build Property object
 		calculatorTypeProp.setCategory(rootObjectCategory.getDisplayName());
 		calculatorTypeProp.setDisplayName(vp.getDisplayName());
 		calculatorTypeProp.setHiddenObject(vp);
+		calculatorTypeProp.setName(vp.getIdString());
 
 		final String attrName = visualMapping.getMappingAttributeName();
 		final VizMapperProperty<VisualMappingFunction<K, V>> mappingHeader = new VizMapperProperty<VisualMappingFunction<K, V>>();
@@ -140,7 +139,8 @@ public class VizMapPropertyBuilder {
 
 		// TODO: is this correct?
 		mappingHeader.setDisplayName("Mapping Type");
-		// mappingHeader.setHiddenObject(visualMapping.getClass());
+		mappingHeader.setName("Mapping Type");
+		
 		// Set mapping type as string.
 		mappingHeader.setValue(visualMapping.toString());
 		mappingHeader.setHiddenObject(visualMapping);
@@ -167,17 +167,17 @@ public class VizMapPropertyBuilder {
 				it = targetNetwork.getNodeList().iterator();
 				((PropertyEditorRegistry) propertySheetPanel.getTable()
 						.getEditorFactory()).registerEditor(calculatorTypeProp,
-						editorFactory.getDefaultComboBoxEditor("nodeAttrEditor"));
+						editorFactory.getDataTableComboBoxEditor(NODE));
 			} else if (rootObjectCategory.getIdString().equals(EDGE)) {
 				it = targetNetwork.getEdgeList().iterator();
 				((PropertyEditorRegistry) propertySheetPanel.getTable()
 						.getEditorFactory()).registerEditor(calculatorTypeProp,
-						editorFactory.getDefaultComboBoxEditor("edgeAttrEditor"));
+						editorFactory.getDataTableComboBoxEditor(EDGE));
 			} else {
 				it = cyNetworkManager.getNetworkSet().iterator();
 				((PropertyEditorRegistry) propertySheetPanel.getTable()
 						.getEditorFactory()).registerEditor(calculatorTypeProp,
-						editorFactory.getDefaultComboBoxEditor("networkAttrEditor"));
+						editorFactory.getDataTableComboBoxEditor(CyTableEntry.NETWORK));
 			}
 			
 			while(it.hasNext())
@@ -248,9 +248,10 @@ public class VizMapPropertyBuilder {
 				else
 					stringVal = null;
 				
-				oneProperty = new VizMapperProperty();
+				oneProperty = new VizMapperProperty<K>();
 
 				oneProperty.setValue(stringVal);
+				oneProperty.setName(id.toString());
 				
 				// This prop. should not be editable!
 				oneProperty.setEditable(false);

@@ -163,7 +163,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	protected PropertyRendererRegistry rendReg;
 	protected PropertyEditorRegistry editorReg;
 
-	protected VizMapEventHandlerManager vizMapEventHandlerManager;
+	//protected VizMapEventHandlerManager vizMapEventHandlerManager;
 
 	protected EditorWindowManager editorWindowManager;
 
@@ -187,7 +187,6 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 			VizMapperMenuManager menuMgr, EditorManager editorFactory,
 			PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
-			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager,
 			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper,
 			final VisualStyle defStyle) {
@@ -202,7 +201,6 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		this.editorManager = editorFactory;
 		this.propertySheetPanel = propertySheetPanel;
 		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
-		this.vizMapEventHandlerManager = vizMapEventHandlerManager;
 		this.editorWindowManager = editorWindowManager;
 		this.cyNetworkManager = cyNetworkManager;
 		this.eventHelper = eventHelper;
@@ -214,23 +212,17 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 
 		initComponents();
 		initDefaultEditors();
-
-		
-
 	}
 
 	private void initDefaultEditors() {
-		// FIXME
-		// nodeAttrEditor = editorManager
-		// .getDefaultComboBoxEditor("nodeAttrEditor");
-		// edgeAttrEditor = editorManager
-		// .getDefaultComboBoxEditor("edgeAttrEditor");
-		// nodeNumericalAttrEditor = editorManager
-		// .getDefaultComboBoxEditor("nodeNumericalAttrEditor");
-		// edgeNumericalAttrEditor = editorManager
-		// .getDefaultComboBoxEditor("edgeNumericalAttrEditor");
-		// mappingTypeEditor = editorManager
-		// .getDefaultComboBoxEditor("mappingTypeEditor");
+//		 nodeAttrEditor = editorManager.getDefaultComboBoxEditor("nodeAttrEditor");
+//		 edgeAttrEditor = editorManager.getDefaultComboBoxEditor("edgeAttrEditor");
+		 nodeNumericalAttrEditor = editorManager
+		 .getDefaultComboBoxEditor("nodeNumericalAttrEditor");
+		 edgeNumericalAttrEditor = editorManager
+		 .getDefaultComboBoxEditor("edgeNumericalAttrEditor");
+		 mappingTypeEditor = editorManager
+		 .getDefaultComboBoxEditor("mappingTypeEditor");
 	}
 
 	private void initComponents() {

@@ -271,7 +271,7 @@ public class VizMapPropertySheetBuilder {
 			
 			logger.debug("This is a leaf VP: " + targetVP.getDisplayName());
 
-			VisualProperty<?> type = null;
+			
 
 			final VizMapperProperty<?> calculatorTypeProp = vizMapPropertyBuilder
 					.buildProperty(mapping, cat, propertySheetPanel);
@@ -283,28 +283,36 @@ public class VizMapPropertySheetBuilder {
 					.getEditor(calculatorTypeProp);
 			
 			
-
+			
 			if ((editor == null)
 					&& (calculatorTypeProp.getCategory().equals(
 							"Unused Properties") == false)) {
+				
+				logger.debug("***** Testing category: " + cat.getDisplayName());
+				((PropertyEditorRegistry) this.propertySheetPanel
+						.getTable().getEditorFactory())
+						.registerEditor(calculatorTypeProp, editorManager
+								.getDataTableComboBoxEditor(NODE));
 
-				type = (VisualProperty<?>) calculatorTypeProp.getHiddenObject();
 
-				if (cat.equals(NODE)) {
-
-					((PropertyEditorRegistry) this.propertySheetPanel
-							.getTable().getEditorFactory())
-							.registerEditor(calculatorTypeProp, editorManager
-									.getDefaultComboBoxEditor("nodeAttrEditor"));
-				} else if (cat.equals(EDGE)) {
-					((PropertyEditorRegistry) this.propertySheetPanel
-							.getTable().getEditorFactory())
-							.registerEditor(calculatorTypeProp, editorManager
-									.getDefaultComboBoxEditor("edgeAttrEditor"));
-				} else {
-					// Network
-
-				}
+//				if (cat.equals(NODE)) {
+//
+//					((PropertyEditorRegistry) this.propertySheetPanel
+//							.getTable().getEditorFactory())
+//							.registerEditor(calculatorTypeProp, editorManager
+//									.getDataTableComboBoxEditor(NODE));
+//				} else if (cat.equals(EDGE)) {
+//					((PropertyEditorRegistry) this.propertySheetPanel
+//							.getTable().getEditorFactory())
+//							.registerEditor(calculatorTypeProp, editorManager
+//									.getDataTableComboBoxEditor(EDGE));
+//				} else {
+//					((PropertyEditorRegistry) this.propertySheetPanel
+//							.getTable().getEditorFactory())
+//							.registerEditor(calculatorTypeProp, editorManager
+//									.getDataTableComboBoxEditor(NETWORK));
+//
+//				}
 			}
 			props.add(calculatorTypeProp);
 		}
