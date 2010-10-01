@@ -11,7 +11,7 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 
 import javax.imageio.ImageIO;
-import java.io.File;
+import java.io.OutputStream;
 import java.awt.image.BufferedImage;
 import java.util.Set;
 
@@ -27,15 +27,15 @@ public class BitmapWriter extends AbstractTask implements CyWriter {
 	@Tunable(description="Image scale")
 	public BoundedDouble scaleFactor;
 
-	private final File outFile;
+	private final OutputStream outStream;
 	private final RenderingEngine re;
 	private final View<?> view;
 	private String extension = null; 
 	
-	public BitmapWriter(View<?> view, RenderingEngine re, File outFile, Set<String> extensions) {
+	public BitmapWriter(View<?> view, RenderingEngine re, OutputStream outStream, Set<String> extensions) {
 		this.view = view;
 		this.re = re;
-		this.outFile = outFile;
+		this.outStream = outStream;
 		setExtension( extensions );
 		scaleFactor = new BoundedDouble(0.0,1.0,5.0,false,false);	
 	}
@@ -54,16 +54,11 @@ public class BitmapWriter extends AbstractTask implements CyWriter {
 	}
 
 	public void run(TaskMonitor tm) throws Exception {
-		logger.debug("about to export graphics of type: " + extension + 
-		             " and to file: " + outFile.getName()); 
-
 		final double scale = scaleFactor.getValue().doubleValue();
 
 		int width  = (int) (view.getVisualProperty(NETWORK_WIDTH).doubleValue() * scale);
 		int height = (int) (view.getVisualProperty(NETWORK_HEIGHT).doubleValue() * scale);
 
-		logger.info("image width: " + width);
-		logger.info("image height: " + width);
-		ImageIO.write(((BufferedImage)re.createImage(width,height)), extension, outFile);
+		ImageIO.write(((BufferedImage)re.createImage(width,height)), extension, outStream);
 	}
 }

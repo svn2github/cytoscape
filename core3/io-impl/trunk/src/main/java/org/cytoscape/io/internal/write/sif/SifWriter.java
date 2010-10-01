@@ -1,8 +1,7 @@
 package org.cytoscape.io.internal.write.sif;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.List;
 
@@ -18,17 +17,17 @@ public class SifWriter implements CyWriter {
 	private static final String NODE_NAME_ATTR_LABEL = "name";
 	private static final String INTERACTION_ATTR_LABEL = "interaction";
 	
-	private File outputFile;
+	private OutputStream outputStream;
 	private CyNetwork network;
 
-	public SifWriter(File outputFile, CyNetwork network) {
-		this.outputFile = outputFile;
+	public SifWriter(OutputStream outputStream, CyNetwork network) {
+		this.outputStream = outputStream;
 		this.network = network;
 	}
 
 	@Override
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		final Writer writer = new PrintWriter(new FileWriter(outputFile));
+		final Writer writer = new OutputStreamWriter(outputStream);
 		try {
 			final String lineSep = System.getProperty("line.separator");
 			final List<CyNode> nodeList = network.getNodeList();

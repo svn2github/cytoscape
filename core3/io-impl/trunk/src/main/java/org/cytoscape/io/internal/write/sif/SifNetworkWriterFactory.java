@@ -12,6 +12,6 @@ public class SifNetworkWriterFactory extends AbstractCyNetworkWriterFactory {
 	
 	@Override
 	public CyWriter getWriter() {
-		return new SifWriter(outputFile, network);
+		return new SifWriter(outputStream, network);
 	}
 }

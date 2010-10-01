@@ -3,17 +3,17 @@ package org.cytoscape.io.internal.write;
 import java.io.OutputStream;
 
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.write.CyNetworkWriterFactory;
-import org.cytoscape.model.CyNetwork;
+import org.cytoscape.io.write.CyNetworkViewWriterFactory;
+import org.cytoscape.view.model.CyNetworkView;
 
-public abstract class AbstractCyNetworkWriterFactory implements CyNetworkWriterFactory {
+public abstract class AbstractCyNetworkViewWriterFactory implements CyNetworkViewWriterFactory {
 
 	private final CyFileFilter filter;
 	
 	protected OutputStream outputStream;
-	protected CyNetwork network;
+	protected CyNetworkView view;
 
-	public AbstractCyNetworkWriterFactory(CyFileFilter filter) {
+	public AbstractCyNetworkViewWriterFactory(CyFileFilter filter) {
 		this.filter = filter;
 	}
 	
@@ -28,7 +28,7 @@ public abstract class AbstractCyNetworkWriterFactory implements CyNetworkWriterF
 	}
 
 	@Override
-	public void setNetwork(CyNetwork network) {
-		this.network = network;
+	public void setNetworkView(CyNetworkView view) {
+		this.view = view;
 	}
 }

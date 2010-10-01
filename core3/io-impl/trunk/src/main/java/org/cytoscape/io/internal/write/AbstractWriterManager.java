@@ -2,6 +2,7 @@ package org.cytoscape.io.internal.write;
 
 
 import java.io.File;
+import java.io.OutputStream;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -44,12 +45,12 @@ public class AbstractWriterManager<T extends CyWriterFactory>  implements CyWrit
 		factories.remove(factory.getCyFileFilter());
 	}
 
-	public T getMatchingFactory(CyFileFilter filter, File file) {
+	public T getMatchingFactory(CyFileFilter filter, OutputStream stream) {
 		for (T factory : factories.values()) {
 			CyFileFilter cff = factory.getCyFileFilter();
 			if ( filter.equals(cff) ) {
 				logger.debug("found factory for file filter: " + filter.toString());
-				factory.setOutputFile(file);
+				factory.setOutputStream(stream);
 				return factory;
 			}
 		}

@@ -1,7 +1,5 @@
 /*
- File: XGMMLWriter.java
-
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2010 The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -34,20 +32,27 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
+
 package org.cytoscape.io.internal.write.xgmml;
 
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.List;
+
+import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyDataTable;
-//import org.cytoscape.groups.CyGroup;
-//import cytoscape.groups.CyGroupManager;
-//TODO
-//import org.cytoscape.view.Bend;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.AbstractTask;
+
+
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
-//import org.cytoscape.vizmap.LineStyle;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -123,20 +128,8 @@ enum ObjectType {
 	}
 }
 
+public class XGMMLWriter extends AbstractTask implements CyWriter {
 
-/**
- *
- * Write network and attributes in XGMML format and <br>
- * marshall it in a streme.<br>
- *
- * @version 1.2
- * @since Cytoscape 2.6
- * @see cytoscape.data.readers.XGMMLReader
- * @author kono
- * @author scooter
- *
- */
-public class XGMMLWriter {
 	// XML preamble information
     public static final String ENCODING = "UTF-8";
 	private static final String XML_STRING = "<?xml version=\"1.0\" encoding=\"" + ENCODING + "\" standalone=\"yes\"?>";
@@ -165,37 +158,19 @@ public class XGMMLWriter {
 	protected static final int EDGE = 2;
 	protected static final int NETWORK = 3;
 
-	/**
-	 *
-	 */
 	public static final String BACKGROUND = "backgroundColor";
-
-	/**
-	 *
-	 */
 	public static final String GRAPH_VIEW_ZOOM = "GRAPH_VIEW_ZOOM";
-
-	/**
-	 *
-	 */
 	public static final String GRAPH_VIEW_CENTER_X = "GRAPH_VIEW_CENTER_X";
-
-	/**
-	 *
-	 */
 	public static final String GRAPH_VIEW_CENTER_Y = "GRAPH_VIEW_CENTER_Y";
-
-	/**
-	 *
-	 */
     public static final String ENCODE_PROPERTY = "cytoscape.encode.xgmml.attributes";
     
-	private CyNetwork network;
-	private CyNetworkView networkView;
+	private final OutputStream outputStream;
+	private final CyNetwork network;
+	private final CyNetworkView networkView;
+
 	private boolean isMixed;
-//	private List<CyGroup> groupList;
-	private	HashMap<CyNode,CyNode> nodeMap;
-	private	HashMap<CyEdge,CyEdge> edgeMap;
+	private	HashMap<CyNode,CyNode> nodeMap = new HashMap<CyNode,CyNode>();
+	private	HashMap<CyEdge,CyEdge> edgeMap = new HashMap<CyEdge,CyEdge>();
 	private boolean noCytoscapeGraphics = false;
 
 	private int depth = 0; // XML depth
@@ -203,26 +178,13 @@ public class XGMMLWriter {
 	private Writer writer = null;
 
     private boolean doFullEncoding;
+	
 
-	/**
-	 * Constructor.<br>
-	 * Initialize data objects to be saved in XGMML file.<br>
-	 *
-	 * @param network
-	 *            CyNetwork object to be saved.
-	 * @param view
-	 *            CyNetworkView for the network.
-	 * @throws URISyntaxException
-	 * @throws JAXBException
-	 */
-	public XGMMLWriter(final CyNetwork network, final CyNetworkView view)
-	    throws IOException, URISyntaxException {
-		this.network = network;
-		this.networkView = view;
-
-//		groupList = new ArrayList<CyGroup>();
-		nodeMap = new HashMap<CyNode,CyNode>();
-		edgeMap = new HashMap<CyEdge,CyEdge>();
+	public XGMMLWriter(OutputStream outputStream, CyNetworkView networkView, boolean noCytoscapeGraphics) {
+		this.outputStream = outputStream;
+		this.networkView = networkView;
+		this.network = networkView.getModel();
+		this.noCytoscapeGraphics = noCytoscapeGraphics;
 
 		// Create our indent string (480 blanks);
 		for (int i = 0; i < 20; i++) 
@@ -231,38 +193,11 @@ public class XGMMLWriter {
         doFullEncoding = Boolean.valueOf(System.getProperty(ENCODE_PROPERTY, "true"));
 	}
 
-	/**
-	 * Constructor.<br>
-	 * Initialize data objects to be saved in XGMML file.<br>
-	 *
-	 * @param network
-	 *            CyNetwork object to be saved.
-	 * @param view
-	 *            CyNetworkView for the network.
-	 * @param noCytoscapeGraphics
-	 *            boolean to indicate whether cytoscape graphics
-	 *            attributes should be written
-	 * @throws URISyntaxException
-	 * @throws JAXBException
-	 */
-	public XGMMLWriter(final CyNetwork network, final CyNetworkView view,
-	                   boolean noCytoscapeGraphics) throws IOException, URISyntaxException {
-		this(network, view);
-		this.noCytoscapeGraphics = noCytoscapeGraphics;
-	}
+	@Override
+	public void run(TaskMonitor taskMonitor) throws Exception {
 
-	/**
-	 * Write the XGMML file.<br>
-	 * This method creates all JAXB objects from Cytoscape internal<br>
-	 * data structure, and them marshall it into an XML (XGMML) document.<br>
-	 *
-	 * @param writer
-	 *            Witer to create XGMML file
-	 * @throws IOException
-	 */
-	public void write(final Writer writer) throws  IOException {
-		this.writer = writer;
-
+		writer = new OutputStreamWriter( outputStream );
+	
 		// write out the XGMML preamble
 		writePreamble();
 		depth++;
@@ -409,12 +344,10 @@ public class XGMMLWriter {
 		}
 
 		// Now handle all of the other network attributes
-		// TODO this isn't *serializing* namespaces - I would expect name clashes with this approach
-		for ( CyDataTable table : network.getNetworkCyDataTables().values() ) {
-			CyRow row = table.getRow(network.getSUID());
-			for ( String attName : table.getColumnTypeMap().keySet() ) 
+		CyRow row = network.attrs();
+		CyTable table = row.getDataTable();
+		for ( String attName : table.getColumnTypeMap().keySet() ) 
 				writeAttribute(row, attName);
-		}
 	}
 
 	/**
@@ -1187,14 +1120,6 @@ public class XGMMLWriter {
 	 */
 	private String quote(String str) {
         return '"' + encode(str) + '"';
-    }
-
-    public boolean isDoFullEncoding() {
-        return doFullEncoding;
-    }
-
-    public void setDoFullEncoding(boolean doFullEnc) {
-        doFullEncoding = doFullEnc;
     }
 
 	/**

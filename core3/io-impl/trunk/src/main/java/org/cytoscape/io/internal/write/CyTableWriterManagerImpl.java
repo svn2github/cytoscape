@@ -9,6 +9,8 @@ import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.model.CyTable;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 
 public class CyTableWriterManagerImpl extends AbstractWriterManager<CyTableWriterFactory> 
@@ -18,8 +20,12 @@ public class CyTableWriterManagerImpl extends AbstractWriterManager<CyTableWrite
 		super(DataCategory.TABLE);
 	}
 
-	public CyWriter getWriter(CyTable table, CyFileFilter filter, File outFile) {
-		CyTableWriterFactory tf = getMatchingFactory(filter,outFile);
+	public CyWriter getWriter(CyTable table, CyFileFilter filter, File outFile) throws Exception{
+		return getWriter(table,filter,new FileOutputStream(outFile));
+	}
+
+	public CyWriter getWriter(CyTable table, CyFileFilter filter, OutputStream os) throws Exception{
+		CyTableWriterFactory tf = getMatchingFactory(filter,os);
 		if ( tf == null )
 			throw new NullPointerException("Couldn't find matching factory for filter: " + filter);
 		tf.setTable(table);

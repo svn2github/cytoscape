@@ -8,7 +8,7 @@ import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.model.View;
 
-import java.io.File;
+import java.io.OutputStream;
 
 /**
  * Returns a Task that will write
@@ -19,7 +19,7 @@ public class BitmapWriterFactory implements ViewWriterFactory {
 
 	private View<?> view;
 	private RenderingEngine re;
-	private File outputFile;
+	private OutputStream outputStream;
 
 	public BitmapWriterFactory(CyFileFilter bitmapFilter) {
 		this.bitmapFilter = bitmapFilter;	
@@ -39,13 +39,13 @@ public class BitmapWriterFactory implements ViewWriterFactory {
 		this.re = re;
 	}
 
-	public void setOutputFile(File f) {
-		if ( f == null )
-			throw new NullPointerException("OutputFile is null");
-		outputFile = f;
+	public void setOutputStream(OutputStream os) {
+		if ( os == null )
+			throw new NullPointerException("Output stream is null");
+		outputStream = os;
 	}
 
 	public CyWriter getWriter() {
-		return new BitmapWriter(view, re, outputFile, bitmapFilter.getExtensions() );
+		return new BitmapWriter(view, re, outputStream, bitmapFilter.getExtensions() );
 	}
 }
