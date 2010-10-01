@@ -135,11 +135,13 @@
 	<bean id="iconManager"
 		class="org.cytoscape.view.vizmap.gui.internal.theme.IconManager"
 		scope="singleton" />
+		
 	<bean id="menuManager"
 		class="org.cytoscape.view.vizmap.gui.internal.VizMapperMenuManager"
 		scope="singleton" depends-on="iconManager" autowire="autodetect">
 		<property name="generateMenuLabel" value="${vizMapperMainPanel.menu.generateMenu}" />
 		<property name="generateIconId" value="${vizMapperMainPanel.menu.generateMenu.icon}" />
+		<constructor-arg ref="taskManagerServiceRef" />
 	</bean>
 
 	<bean name="defaultViewPanel"
@@ -170,16 +172,27 @@
 	</bean>
 
 
-	<!-- Actions for Vizmapper. These actions will be exported as Service. <bean 
-		name="createNewStyleAction" class="org.cytoscape.view.vizmap.gui.internal.action.CreateNewStyleAction" 
-		autowire="autodetect" depends-on="vizMapperMainPanel"> <constructor-arg ref="vizMapperUtil" 
-		/> <constructor-arg ref="vmmServiceRef" /> <constructor-arg ref="cyNetworkManagerServiceRef" 
-		/> <property name="menuLabel" value="${vizMapperMainPanel.menu.createNewStyleAction}" 
-		/> <property name="iconId" value="${vizMapperMainPanel.menu.createNewStyleAction.icon}" 
-		/> </bean> -->
+	<!-- Task Factories for Vizmapper. These actions will be exported as Service. -->
+
+	<bean name="createNewVisualStyleTaskFactory"
+		class="org.cytoscape.view.vizmap.gui.internal.task.CreateNewVisualStyleTaskFactory"
+		depends-on="vizMapperMainPanel">
+		<constructor-arg ref="visualStyleFactoryServiceRef" />
+		<constructor-arg ref="vizMapperUtil" />
+		<constructor-arg ref="dingVisualLexiconServiceRef" />
+	</bean>
+	
+	<bean name="removeVisualStyleTaskFactory"
+		class="org.cytoscape.view.vizmap.gui.internal.task.RemoveVisualStyleTaskFactory"
+		depends-on="vizMapperMainPanel">
+		<constructor-arg ref="vmmServiceRef" />
+		<constructor-arg ref="vizMapperMainPanel" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="vizMapPropertySheetBuilder" />
+	</bean>
 
 
-	<bean name="removeStyleAction"
+	<!--<bean name="removeStyleAction"
 		class="org.cytoscape.view.vizmap.gui.internal.action.RemoveStyleAction"
 		autowire="autodetect" depends-on="vizMapperMainPanel">
 		<property name="menuLabel" value="${vizMapperMainPanel.menu.removeStyleAction}" />
@@ -187,7 +200,7 @@
 			value="${vizMapperMainPanel.menu.removeStyleAction.icon}" />
 	</bean>
 
-	<bean name="renameStyleAction"
+	--><bean name="renameStyleAction"
 		class="org.cytoscape.view.vizmap.gui.internal.action.RenameStyleAction"
 		autowire="autodetect" depends-on="vizMapperMainPanel">
 		<property name="menuLabel" value="${vizMapperMainPanel.menu.renameStyleAction}" />
@@ -260,6 +273,8 @@
 		<constructor-arg ref="vizMapPropertySheetBuilder" />
 		<constructor-arg ref="propertySheetPanel" />
 		<constructor-arg ref="vizMapperMainPanel" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
 	<bean id="editorWindowManager"
