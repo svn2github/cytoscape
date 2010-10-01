@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
+import java.io.File;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
@@ -42,5 +44,10 @@ public class CySessionImpl implements CySession {
 	@Override
     public Properties getDesktopProperties() {
 		return new Properties();
+    }
+
+	@Override
+    public Map<String, List<File>> getPluginFileListMap() {
+		return new HashMap<String, List<File>>(); 
     }
 }
