@@ -35,10 +35,10 @@ public class ProxySettingsTask extends AbstractTask implements TunableValidator 
 	@Tunable(description="Type")
 	public ListSingleSelection<String> type = new ListSingleSelection<String>("direct", "http", "socks");
 
-	@Tunable(description="Proxy Server",groups={"param"},dependsOn="type!=direct",alignment={Param.horizontal},groupTitles={Param.hidden})
+	@Tunable(description="Proxy Server",groups={"param"},dependsOn="type!=direct",alignment={Param.HORIZONTAL},groupTitles={Param.HIDDEN})
 	public String hostname="";
 
-	@Tunable(description="Port",groups={"param"},dependsOn="type!=direct",alignment={Param.horizontal},groupTitles={Param.hidden})
+	@Tunable(description="Port",groups={"param"},dependsOn="type!=direct",alignment={Param.HORIZONTAL},groupTitles={Param.HIDDEN})
 	public int port=0;
 
 	final TaskManager taskManager;

@@ -77,7 +77,7 @@ public class TunableHandlerTest {
 	@Test
 	public final void testGetFlags() {
 		assertTrue("The flags property of the tunable of an annotated field is not as expected!",
-			   Arrays.asList(fieldHandler.getFlags()).contains(Tunable.Param.collapsed));
+			   Arrays.asList(fieldHandler.getFlags()).contains(Tunable.Param.COLLAPSED));
 		assertArrayEquals("The flags property of the tunable of an annotated getter/setter pair is not as expected!",
 		                  new Tunable.Param[] { }, getterAndSetterHandler.getFlags());
 	}

@@ -67,7 +67,7 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGUITunabl
 	private void init() {
 		final String title = getDescription();
 		for (Param param : getFlags()) {
-			if (param.equals(Param.slider))
+			if (param.equals(Param.SLIDER))
 				useSlider = true;
 		}
 		panel = new JPanel(new BorderLayout());

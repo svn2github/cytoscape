@@ -29,7 +29,7 @@ package org.cytoscape.work;
 
 
 class HasAnnotatedField {
-	@Tunable(description="An annotated field", groups={"group1"}, dependsOn="Fred", flags={Tunable.Param.slider,Tunable.Param.horizontal,Tunable.Param.vertical,Tunable.Param.uncollapsed,Tunable.Param.collapsed,Tunable.Param.network,Tunable.Param.session,Tunable.Param.attributes,Tunable.Param.hidden,Tunable.Param.displayed})
+	@Tunable(description="An annotated field", groups={"group1"}, dependsOn="Fred", flags={Tunable.Param.SLIDER,Tunable.Param.HORIZONTAL,Tunable.Param.VERTICAL,Tunable.Param.UNCOLLAPSED,Tunable.Param.COLLAPSED,Tunable.Param.NETWORK,Tunable.Param.SESSION,Tunable.Param.ATTRIBUTES,Tunable.Param.HIDDEN,Tunable.Param.DISPLAYED,Tunable.Param.SAVE_FILE})
 	public int annotatedInt;
 
 	public int getAnnotatedInt() { return annotatedInt; }

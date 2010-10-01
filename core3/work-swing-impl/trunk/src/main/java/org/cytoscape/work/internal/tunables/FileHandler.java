@@ -44,9 +44,10 @@ public class FileHandler extends AbstractGUITunableHandler {
 	private JSeparator titleSeparator;
 	private MouseClick mouseClick;
 	private GroupLayout layout;
-	private enum Type {NETWORK,SESSION,ATTRIBUTES,DEFAULT};
+	private enum Type { NETWORK, SESSION, ATTRIBUTES, DEFAULT };
 	private Type type;
 	private SupportedFileTypesManager fileTypesManager;
+	private boolean openMode;
 
 	/**
 	 * Constructs the <code>GUIHandler</code> for the <code>File</code> type
@@ -79,6 +80,15 @@ public class FileHandler extends AbstractGUITunableHandler {
 		setGui(type);
 		setLayout();
 		panel.setLayout(layout);
+
+		// Determine whether we're dealing w/ an "open" or "save" mode:
+		openMode = true;
+		for (final Param param : getFlags()) {
+			if (param == Param.SAVE_FILE) {
+				openMode = false;
+				break;
+			}
+		}
 	}
 
 	/**
@@ -98,13 +108,13 @@ public class FileHandler extends AbstractGUITunableHandler {
 	//set the type of file that will be imported depending on the "Param" Tunable annotation of the file
 	private void setFileType() {
 		for (Param s : getFlags()) {
-			if (s.equals(Param.network)) {
+			if (s.equals(Param.NETWORK)) {
 				type = Type.NETWORK;
 				return;
-			} else if(s.equals(Param.session)) {
+			} else if(s.equals(Param.SESSION)) {
 				type = Type.SESSION;
 				return;
-			} else if(s.equals(Param.attributes)) {
+			} else if(s.equals(Param.ATTRIBUTES)) {
 				type = Type.ATTRIBUTES;
 				return;
 			}
@@ -127,8 +137,8 @@ public class FileHandler extends AbstractGUITunableHandler {
 		fileTextField.setFont(new Font(null, Font.ITALIC,12));
 		mouseClick = new MouseClick(fileTextField);
 		fileTextField.addMouseListener(mouseClick);
-		chooseButton = new JButton("Open a File...",image);
-		chooseButton.setActionCommand("open");
+		chooseButton = new JButton(openMode ? "Open a File..." : "Save a File...", image);
+		chooseButton.setActionCommand(openMode ? "open" : "save");
 		chooseButton.addActionListener(new myFileActionListener());
 
 		//for each type of file : set titlelabel and fileTextField text, and set FileChooser in order to just display files of the specified "Param" : network,attributes,session
@@ -206,12 +216,21 @@ public class FileHandler extends AbstractGUITunableHandler {
 	//Click on the "open" button actionlistener
 	private class myFileActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent ae) {
-			if(ae.getActionCommand().equals("open")) {
+			if (ae.getActionCommand().equals("open")) {
 				int ret = fileChooser.showOpenDialog(panel);
 				if (ret == JFileChooser.APPROVE_OPTION) {
 					File file = fileChooser.getSelectedFile();
-					//					File file = flUtil.getFile("TEST",flUtil.LOAD);
-					if ( file != null ) {
+					if (file != null) {
+						fileTextField.setFont(new Font(null, Font.PLAIN,10));
+						fileTextField.setText(file.getAbsolutePath());
+						fileTextField.removeMouseListener(mouseClick);
+					}
+				}
+			} else if (ae.getActionCommand().equals("save")) {
+				int ret = fileChooser.showSaveDialog(panel);
+				if (ret == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+					if (file != null) {
 						fileTextField.setFont(new Font(null, Font.PLAIN,10));
 						fileTextField.setText(file.getAbsolutePath());
 						fileTextField.removeMouseListener(mouseClick);

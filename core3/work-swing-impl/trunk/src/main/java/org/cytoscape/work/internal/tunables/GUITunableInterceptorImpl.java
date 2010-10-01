@@ -125,7 +125,7 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 		if (!panelMap.containsKey(handlers)) {
 			final String MAIN = " ";
 			Map<String, JPanel> panels = new HashMap<String, JPanel>();
-			final JPanel topLevel = createSimplePanel(MAIN, null, Param.hidden);
+			final JPanel topLevel = createSimplePanel(MAIN, null, Param.HIDDEN);
 			panels.put(MAIN, topLevel);
 
 			// construct the GUI
@@ -158,7 +158,7 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 
 					// Default alignment is "vertical."
 					for (int i = alignments.length; i < group.length; i++)
-						groupAlignment.put(group[i], Param.vertical);
+						groupAlignment.put(group[i], Param.VERTICAL);
 				}
 
 				if (group.length <= titleFlags.length) {
@@ -170,7 +170,7 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 
 					// Default group titleFlags setting is "displayed."
 					for (int i = titleFlags.length; i < group.length; i++)
-						groupTitles.put(group[i], Param.displayed);
+						groupTitles.put(group[i], Param.DISPLAYED);
 				}
 
 				// find the proper group to put the handler panel in given the Alignment/Group parameters
@@ -232,9 +232,9 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 		else {
 			// Figure out if the collapsable flag is set
 			for (Param s : gh.getFlags()) {
-				if (s.equals(Param.collapsed))
+				if (s.equals(Param.COLLAPSED))
 					return new CollapsablePanel(title, false);
-				else if (s.equals(Param.uncollapsed))
+				else if (s.equals(Param.UNCOLLAPSED))
 					return new CollapsablePanel(title, true);
 			}
 			// We're not collapsable, so return a normal jpanel
@@ -257,11 +257,11 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 		TitledBorder titleborder = BorderFactory.createTitledBorder(title);
 		titleborder.setTitleColor(Color.BLUE);
 
-		if (groupTitle == Param.displayed || groupTitle == null)
+		if (groupTitle == Param.DISPLAYED || groupTitle == null)
 			outPanel.setBorder(titleborder);
-		if (alignment == Param.vertical || alignment == null)
+		if (alignment == Param.VERTICAL || alignment == null)
 			outPanel.setLayout(new BoxLayout(outPanel, BoxLayout.PAGE_AXIS));
-		else if (alignment == Param.horizontal)
+		else if (alignment == Param.HORIZONTAL)
 			outPanel.setLayout(new BoxLayout(outPanel, BoxLayout.LINE_AXIS));
 		return outPanel;
 	}
@@ -279,11 +279,11 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 	private JDialog createSimpleDialog(final String title, final Param alignment, final Param groupTitle) {
 		final JDialog dialog = new JDialog((JDialog)null, title);
 
-		if (groupTitle == Param.displayed || groupTitle == null)
+		if (groupTitle == Param.DISPLAYED || groupTitle == null)
 			/* Do nothing. */;
-		if (alignment == Param.vertical || alignment == null)
+		if (alignment == Param.VERTICAL || alignment == null)
 			dialog.setLayout(new BoxLayout(dialog, BoxLayout.PAGE_AXIS));
-		else if (alignment == Param.horizontal)
+		else if (alignment == Param.HORIZONTAL)
 			dialog.setLayout(new BoxLayout(dialog, BoxLayout.LINE_AXIS));
 		return dialog;
 	}

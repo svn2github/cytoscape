@@ -60,7 +60,7 @@ public class DoubleHandler extends AbstractGUITunableHandler {
 
 		//choose the way the textField and its label will be displayed to user
 		for (Param param : getAlignments()) {
-			if (param.equals(Param.horizontal))
+			if (param.equals(Param.HORIZONTAL))
 				horizontal = true;
 		}
 		if (horizontal){

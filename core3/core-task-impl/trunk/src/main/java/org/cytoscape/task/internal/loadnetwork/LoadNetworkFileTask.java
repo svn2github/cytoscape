@@ -45,7 +45,7 @@ import org.cytoscape.work.Tunable.Param;
  * Specific instance of AbstractLoadNetworkTask that loads a File.
  */
 public class LoadNetworkFileTask extends AbstractLoadNetworkTask {
-	@Tunable(description = "Network file to load",flags = {Param.network})
+	@Tunable(description = "Network file to load",flags = {Param.NETWORK})
 	public File file;
 
 	public LoadNetworkFileTask(CyNetworkViewReaderManager mgr, CyNetworkManager netmgr, 

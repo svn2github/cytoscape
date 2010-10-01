@@ -16,7 +16,7 @@ import org.cytoscape.work.Tunable.Param;
 
 
 public class LoadDataTableTask extends AbstractTask {
-	@Tunable(description = "Data table file to load", flags = { Param.attributes })
+	@Tunable(description = "Data table file to load", flags = { Param.ATTRIBUTES })
 	public File file;
 
 	private CyTableReader reader;

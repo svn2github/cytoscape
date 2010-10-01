@@ -54,7 +54,7 @@ public class FloatHandler extends AbstractGUITunableHandler {
 
 		//choose the way the textField and its label will be displayed to user
 		for (Param s : getAlignments()) {
-			if (s.equals(Param.horizontal))
+			if (s.equals(Param.HORIZONTAL))
 				horizontal = true;
 		}
 		if (horizontal) {
