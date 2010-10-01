@@ -7,6 +7,7 @@ import java.util.TimerTask;
 
 import org.cytoscape.work.AbstractTaskManager;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.TunableInterceptor;
@@ -42,7 +43,8 @@ public class HeadlessTaskManager extends AbstractTaskManager {
 	}
 
 	@Override
-	public void execute(final TaskIterator taskIterator) {
+	public void execute(final TaskFactory factory) {
+		final TaskIterator taskIterator = factory.getTaskIterator();
 		final Timer timer = new Timer();
 		final ConsoleTaskMonitor taskMonitor = new ConsoleTaskMonitor(timer);
 

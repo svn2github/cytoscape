@@ -124,7 +124,8 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	}
 
 	@Override
-	public void execute(final TaskIterator taskIterator) {
+	public void execute(final TaskFactory factory) {
+		final TaskIterator taskIterator = factory.getTaskIterator();
 		taskMonitor = null;
 		final Runnable executor = new Runnable() {
 			public void run() {

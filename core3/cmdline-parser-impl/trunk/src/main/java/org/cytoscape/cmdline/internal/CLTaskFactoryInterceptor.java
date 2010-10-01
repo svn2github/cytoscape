@@ -73,11 +73,6 @@ public class CLTaskFactoryInterceptor {
      */
     private TaskFactoryGrabber grabber;
     
-    /**
-     * executor that will create a <code>SuperTask</code> to execute asynchronously the <code>Tasks</code>
-     */
-    private TaskExecutor executor;
-    
     
     /**
      * Interceptor of <code>Task Factories</code> : see details
@@ -104,19 +99,12 @@ public class CLTaskFactoryInterceptor {
     	taskMap = grabber.getTaskMap();
     	arguments = clp.getCommandLineCompleteArgs();
     	
-    	//Executor collects all the tasks, create a SuperTask, to launch them asynchronously
-    	executor = new TaskExecutor();
-    	
     	//execute the methods
     	createTaskOptions();
         findTaskArguments();
         parseTaskArguments();
         executeCommandLineArguments();
-        //Execute the SuperTask that has been created
-        executor.execute();
     }
-    
-    
 
     /**
      * creates an Option for each <code>TaskFactory</code>
@@ -178,20 +166,6 @@ public class CLTaskFactoryInterceptor {
                 }
             }
         }
-
-        executor.setNumberOfTasks(choosenTasks.size());
-        
-        
-        
-        //print the different parsed arguments
-/*  	System.out.println("tasksWithTheirArgs :");
-        for(String st : tasksWithTheirArgs.keySet())System.out.println(st + " = " + tasksWithTheirArgs.get(st));
-        System.out.println("\n\n");
-        
-        System.out.println("listOfChoosenTasks :");
-        for(String st : choosenTasks)System.out.println(st);
-        System.out.println("\n\n\n");
-*/	        
         
         //add the general help for all task
         for (String arg : arguments) {
@@ -231,37 +205,29 @@ public class CLTaskFactoryInterceptor {
         for (String st : choosenTasks) {
             for (TFWrapper tf : taskMap.values()) {
                 if (st.equals(tf.getName())) {
-
                 	String TFactoryName = tf.getName();
                		List<String> lst = new ArrayList<String>();
                		
-                	if(tasksWithTheirArgs.get(TFactoryName).size()!=0){
-                		
-	               		for(int i=0;i<tasksWithTheirArgs.get(TFactoryName).size();i++) {
+                	if (tasksWithTheirArgs.get(TFactoryName).size() != 0) {
+	               		for(int i = 0; i < tasksWithTheirArgs.get(TFactoryName).size(); i++) {
 	               			if(tasksWithTheirArgs.get(TFactoryName).get(i).contains(" ")) {
 	                   			int val = tasksWithTheirArgs.get(TFactoryName).get(i).indexOf(" ");
 	                   			lst.add(tasksWithTheirArgs.get(TFactoryName).get(i).substring(0, val));
 	                   			lst.add(tasksWithTheirArgs.get(TFactoryName).get(i).substring(val+1));
-	               			}
-	               			else{
+	               			} else
 	               				lst.add(tasksWithTheirArgs.get(TFactoryName).get(i).toString());
-	               				//lst.add("-H");
-	               			}
 	               		}
-                	}
-                	else{
+                	} else
                 		lst.add("-H");
-                	}
-                		
                 		
               		//creation of arguments
                		String[] args = new String[lst.size()];
                		for(int i=0;i<lst.size();i++)args[i]=lst.get(i);
                		
                		clp.setSpecificArgs(args);
-               		
-               		//Executor intercepts each task and store it in a SuperTask
-               		executor.intercept(tf.getT(),tf.getTI(),tf.getTM());
+
+			final TaskFactory factory =  tf.getT();
+               		tf.getTM().execute(factory);
                	}
             }
         }

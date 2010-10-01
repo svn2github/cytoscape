@@ -16,9 +16,9 @@ public interface TaskManager {
 	/**
 	 * This method is called to execute a <code>Task</code>.
 	 *
-	 * This method returns once the <code>Task</code> has
-	 * started execution. It does not wait for the
-	 * <code>Task</code> to finish.
+	 * This method returns once the <code>Task</code>s derived from the <code>TaskIterator</code>
+	 * returned by the <code>TaskFactory>'s <code>getTaskIterator()</code> method started execution.
+	 * It does not wait for the <code>Task</code>s to finish.
 	 */
-	void execute(TaskIterator taskIterator);
+	void execute(TaskFactory factory);
 }
