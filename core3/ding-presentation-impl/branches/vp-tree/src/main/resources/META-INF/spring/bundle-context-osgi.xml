@@ -64,8 +64,13 @@
 	</osgi:service>
 
 
+	<!-- Visual Lexicon for Ding -->
 	<osgi:service id="dVisualLexiconService" ref="dVisualLexicon"
 		interface="org.cytoscape.view.model.VisualLexicon">
+		<osgi:service-properties>
+			<entry key="serviceType" value="visualLexicon" />
+			<entry key="id" value="ding" />
+		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:set id="nodeViewTaskFactorySet" interface="org.cytoscape.task.NodeViewTaskFactory"

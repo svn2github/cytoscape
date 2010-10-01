@@ -1395,7 +1395,7 @@ public class DNodeView implements NodeView, Label {
 		} else if (vp == TwoDVisualLexicon.NODE_Y_SIZE) {
 			setHeight(((Double) value).doubleValue());
 		} else if (vp == TwoDVisualLexicon.NODE_LABEL) {
-			setText((String) value);
+			setText(value.toString());
 		} else if (vp == TwoDVisualLexicon.NODE_X_LOCATION) {
 			setXPosition(((Double) value).doubleValue());
 		} else if (vp == TwoDVisualLexicon.NODE_Y_LOCATION) {
