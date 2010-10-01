@@ -36,8 +36,8 @@
 	<osgi:reference id="viewWriterManagerServiceRef"
 		interface="org.cytoscape.io.write.ViewWriterManager" />
 
-	<osgi:reference id="networkWriterManagerServiceRef"
-		interface="org.cytoscape.io.write.CyNetworkWriterManager" />
+	<osgi:reference id="networkViewWriterManagerServiceRef"
+		interface="org.cytoscape.io.write.CyNetworkViewWriterManager" />
 	
 	<osgi:reference id="sessionWriterManagerServiceRef"
 		interface="org.cytoscape.io.write.SessionWriterManager" />	
@@ -423,9 +423,9 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="exportNetworkTaskFactoryService" 
-	    ref="exportNetworkTaskFactory"
-		interface="org.cytoscape.task.NetworkTaskFactory">
+	<osgi:service id="exportNetworkViewTaskFactoryService" 
+	    ref="exportNetworkViewTaskFactory"
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Network View" />
 			<entry key="preferredMenu" value="File.Export" />

@@ -248,9 +248,9 @@
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
-	<bean id="exportNetworkTaskFactory" 
-	      class="org.cytoscape.task.internal.exportnetwork.ExportNetworkTaskFactory">
-		<constructor-arg ref="networkWriterManagerServiceRef" />
+	<bean id="exportNetworkViewTaskFactory" 
+	      class="org.cytoscape.task.internal.exportnetwork.ExportNetworkViewTaskFactory">
+		<constructor-arg ref="networkViewWriterManagerServiceRef" />
 	</bean>
 
 	<bean id="tunablesTestTaskFactory" 
