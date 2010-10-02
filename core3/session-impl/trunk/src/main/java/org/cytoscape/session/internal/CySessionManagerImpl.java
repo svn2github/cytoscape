@@ -45,13 +45,18 @@ public class CySessionManagerImpl implements CySessionManager {
 	private String currentFileName;
 	private CySession currentSession;
 
-	CySessionManagerImpl() {
+//	private final CyNetworkManager netMgr;
 
-	}
+//	CySessionManagerImpl(CyNetworkManager netMgr) {
+//		this.netMgr = netMgr;		
+//
+//	}
 
     public CySession getCurrentSession() {
-		// TODO 
-    	return new CySessionImpl();
+	//	SessionPluginFileRequestEvent ev = new SessionPluginFileRequestEvent();
+	//	eventHelper.fireSynchronousEvent(ev);
+		
+		return new CySession.Builder().build();
     }
     
     public void setCurrentSession(CySession sess, String fileName) {
