@@ -6,10 +6,15 @@ import org.cytoscape.session.CySession;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class AbstractCySessionTest {
+public class CySessionTest {
 
 
 	protected CySession session;
+
+	@Before
+	public void setUp() {
+		session = new CySession.Builder().build();
+	}
 
 	@Test
 	public void testGetNetworkViews() {
