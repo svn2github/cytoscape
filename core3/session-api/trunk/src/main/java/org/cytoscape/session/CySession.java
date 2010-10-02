@@ -43,7 +43,25 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * A session is an immutable snapshot of the data contents of Cytoscape.
+ * Sessions are only meant for saving and restoring the state of Cytoscape
+ * and are not meant to be used interactively for anything besides 
+ * writing, reading, and restoring from session files.
+ * <br/>
+ * Using the data returned from the various methods in a CySession object
+ * should be sufficient to recreate all aspects of Cytoscape at the time
+ * the session was created.
+ * <br/>
+ * Creating an instance of CySession is done following the builder pattern.
+ * For example, the following code creates a session that only includes
+ * a list of networkViews and cytoscape properties, but nothing else.  
+ * <br/>
+ * <pre>
+ * CySession session = new CySession.Builder().networkViews(viewList).cytoscapeProperties(cyProps).build();
+ * </pre>
+ * <br/>
+ */
 public final class CySession {
 
 	private final Set<CyNetworkView> netViews;
@@ -105,56 +123,130 @@ public final class CySession {
 		private Properties dProps;
 		private Map<String, List<File>> pluginFiles; 
 
+		/**
+		 * Returns a complete instance of CySession based upon the methods
+		 * called on this instance of Builder.
+		 * @return A fully configured instanced of CySession. 
+		 */
 		public CySession build() { return new CySession(this); }
 
+		/**
+		 * @param views A Set of CyNetworkView objects, presumably all networks
+		 * that exist in this instance of Cytoscape.
+		 * @return An instance of Builder that has at least been configured
+		 * with the specified network views.
+		 */
 		public Builder networkViews(final Set<CyNetworkView> views) { 
 			netViews = views; 
 			return this;
 		}
 
+		/**
+		 * @param t A Set of CyTable objects, presumably all tables
+		 * that exist in this instance of Cytoscape.
+		 * @return An instance of Builder that has at least been configured
+		 * with the specified tables.
+		 */
     	public Builder tables(final Set<CyTable> t) { 
 			tables = t; 
 			return this;
 		}
 
+		/**
+		 * @param vs A map of CyNetworkViews to the names of the VisualStyle
+		 * currently applied to that network view, for presumably all network views
+		 * that exist in this instance of Cytoscape.
+		 * @return An instance of Builder that has at least been configured
+		 * with the specified network view visual style name map.
+		 */
     	public Builder viewVisualStyleMap(final  Map<CyNetworkView,String> vs) { 
 			vsMap = vs; 
 			return this;
 		}
 
+		/**
+		 * @param p A Properties object that contains the current Cytoscape 
+		 * properties.
+		 * @return An instance of Builder that has at least been configured
+		 * with the specified properties.
+		 */
     	public Builder cytoscapeProperties(final Properties p) { 
 			cyProps = p; 
 			return this;
 		}
 
+		/**
+		 * @param p A Properties object that contains the current VizMap 
+		 * properties for all VisualStyles in this instance of Cytoscape.
+		 * @return An instance of Builder that has at least been configured
+		 * with the specified properties.
+		 */
     	public Builder vizmapProperties(final Properties p) { 
 			vProps = p; 
 			return this;
 		}
 
+		/**
+		 * @param p A Properties object that contains properties defining
+		 * the current state of the Desktop in Cytoscape.
+		 * @return An instance of Builder that has at least been configured
+		 * with the specified properties.
+		 */
     	public Builder desktopProperties(final Properties p) { 
 			dProps = p; 
 			return this;
 		}
 
+		/**
+		 * @param p A map of plugin names to a list of File objects that the
+		 * given plugin wants stored in the session file.
+		 * @return An instance of Builder that has at least been configured
+		 * with the specified plugin file list map.
+		 */
 		public Builder pluginFileListMap(final Map<String, List<File>> p) { 
 			this.pluginFiles = p; 
 			return this;
 		}
 	}
 
+	/**
+	 * @return A set of all CyNetworkView objects contained in this Session. 
+	 */
     public Set<CyNetworkView> getNetworkViews() { return netViews; }
 
+	/**
+	 * @return A set of all CyTable objects contained in this Session. 
+	 */
     public Set<CyTable> getTables() { return tables; }
 
+	/**
+	 * @return A map of CyNetworkViews to the names of the VisualStyle
+	 * applied to that network view in this session.
+	 */
     public Map<CyNetworkView,String> getViewVisualStyleMap() { return vsMap; }
 
+	/**
+	 * @return A Propeties object containing all Cytoscape properties 
+	 * defined for this session. 
+	 */
     public Properties getCytoscapeProperties() { return cyProps; }
 
+	/**
+	 * @return A Propeties object containing all VisualStyles defined
+	 * for this session.
+	 */
     public Properties getVizmapProperties() { return vProps; }
 
+	/**
+	 * @return A Propeties object containing all desktop configuration properties 
+	 * for this session.
+	 */
     public Properties getDesktopProperties() { return dProps; }
 
+	/**
+	 * @return A map of plugin names to lists of File objects that are stored
+	 * as part of the session for the specified plugin.
+	 */
 	public Map<String, List<File>> getPluginFileListMap() { return pluginFiles; }
 }
 
