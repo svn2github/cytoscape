@@ -197,19 +197,20 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	}
 
 	public CySession getCySession() {
-		CySessionImpl ret = new CySessionImpl();
 
 		HashSet<CyNetworkView> views = new HashSet<CyNetworkView>();
 		for ( CyNetworkView[] va : networkViews.values() )
 			for ( CyNetworkView v : va )
 				views.add( v );
 
-		ret.setNetworkViews( views );
-		ret.setViewVisualStyleMap( visualStyleMap );
-		ret.setCytoscapeProperties( cytoscapeProps );
-		ret.setVizmapProperties( vizmapProps );
-		ret.setDesktopProperties( desktopProps );
-		ret.setPluginFileListMap( pluginFileListMap );
+		CySession ret = new CySession.Builder()
+			.networkViews( views )
+			.viewVisualStyleMap( visualStyleMap )
+			.cytoscapeProperties( cytoscapeProps )
+			.vizmapProperties( vizmapProps )
+			.desktopProperties( desktopProps )
+			.pluginFileListMap( pluginFileListMap )
+			.build();
 
 		return ret;
 	}
