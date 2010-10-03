@@ -1,9 +1,44 @@
+/**
+ * Copyright (c) 2010 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *   1. Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions, and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above
+ *      copyright notice, this list of conditions, and the following
+ *      disclaimer in the documentation and/or other materials provided
+ *      with the distribution.
+ *   3. Redistributions must acknowledge that this software was
+ *      originally developed by the UCSF Computer Graphics Laboratory
+ *      under support by the NIH National Center for Research Resources,
+ *      grant P41-RR01081.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
 package clusterMaker.algorithms.MCL;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +61,7 @@ import clusterMaker.algorithms.DistanceMatrix;
 
 import cern.colt.function.IntIntDoubleFunction;
 import cern.colt.matrix.DoubleFactory2D;
+import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.DoubleMatrix2D;
 import cern.colt.matrix.impl.SparseDoubleMatrix2D;
 
@@ -45,6 +81,7 @@ public class RunMCL {
 	private DistanceMatrix distanceMatrix = null;
 	private DoubleMatrix2D matrix = null;
 	private boolean debug = false;
+	final int NTHREADS = Runtime.getRuntime().availableProcessors();
 	
 	public RunMCL(DistanceMatrix dMat, double inflationParameter, int num_iterations, 
 	              double clusteringThresh, double maxResidual, CyLogger logger )
@@ -75,6 +112,8 @@ public class RunMCL {
 		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
+		long startTime = System.currentTimeMillis();
+
 		// Matrix matrix;
 		double numClusters;
 
@@ -96,14 +135,19 @@ public class RunMCL {
 		{
 			// Expand
 			{
+				long t = System.currentTimeMillis();
 				monitor.setStatus("Iteration: "+(i+1)+" expanding ");
 				// debugln("Iteration: "+(i+1)+" expanding ");
 				// printMatrixInfo(matrix);
-				// We really, really want to make sure this is sparse!
-				DoubleMatrix2D newMatrix = DoubleFactory2D.sparse.make(nodes.size(),nodes.size());
-				matrix = matrix.zMult(matrix, newMatrix, 1.0, 0.0, false, false);
+				if (NTHREADS > 1) {
+					matrix = multiplyMatrix(matrix, matrix);
+				} else {
+					DoubleMatrix2D newMatrix = DoubleFactory2D.sparse.make(matrix.rows(), matrix.columns());
+					matrix = matrix.zMult(matrix, newMatrix);
+				}
 				// Normalize
 				normalize(matrix, clusteringThresh, false);
+				logger.info("Expansion "+(i+1)+" took "+(System.currentTimeMillis()-t)+"ms");
 			}
 
 			// printMatrix(matrix);
@@ -111,12 +155,14 @@ public class RunMCL {
 
 			// Inflate
 			{
+				long t = System.currentTimeMillis();
 				monitor.setStatus("Iteration: "+(i+1)+" inflating");
 				// debugln("Iteration: "+(i+1)+" inflating");
 				// printMatrixInfo(matrix);
 				matrix.forEachNonZero(myPow);
 				// Normalize
 				normalize(matrix, clusteringThresh, true);
+				logger.info("Inflation "+(i+1)+" took "+(System.currentTimeMillis()-t)+"ms");
 			}
 
 			// printMatrix(matrix);
@@ -167,6 +213,8 @@ public class RunMCL {
 			cluster.setClusterNumber(clusterNumber);
 			clusterNumber++;
 		}
+
+		logger.info("Total runtime = "+(System.currentTimeMillis()-startTime)+"ms");
 
 		Set<NodeCluster>clusters = cMap.keySet();
 		return new ArrayList(clusters);
@@ -276,6 +324,101 @@ public class RunMCL {
 
 	private void debug(String message) {
 		if (debug) System.out.print(message);
+	}
+
+	private DoubleMatrix2D multiplyMatrix(DoubleMatrix2D A, DoubleMatrix2D B) {
+		int m = A.rows();
+		int n = A.columns();
+		int p = B.columns();
+
+		// Create views into B
+		final DoubleMatrix1D[] Brows= new DoubleMatrix1D[n];
+		for (int i = n; --i>=0; ) Brows[i] = B.viewRow(i);
+
+		// Create a series of 1D vectors
+		final DoubleMatrix1D[] Crows= new DoubleMatrix1D[n];
+		for (int i = m; --i>=0; ) Crows[i] = B.like1D(m);
+
+		// Create the thread pools
+		final ExecutorService[] threadPools = new ExecutorService[NTHREADS];
+		for (int pool = 0; pool < threadPools.length; pool++) {
+				threadPools[pool] = Executors.newFixedThreadPool(1);
+		}
+
+		// final cern.jet.math.PlusMult fun = cern.jet.math.PlusMult.plusMult(0);
+
+		A.forEachNonZero(
+			new cern.colt.function.IntIntDoubleFunction() {
+				public double apply(int row, int column, double value) {
+
+					Runnable r = new ThreadedDotProduct(value, Brows[column], Crows[row]);
+					//r.run();
+					threadPools[row%NTHREADS].submit(r);
+					/*
+					final int frow = row;
+					final int fcolumn = column;
+					final double fvalue = value;
+					threadPool.submit(
+						new Callable <Double>() {
+							public Double call() {
+								final cern.jet.math.PlusMult fun = cern.jet.math.PlusMult.plusMult(0);
+								fun.multiplicator = fvalue;
+								Crows[frow].assign(Brows[fcolumn], fun);
+								return fvalue;
+							}
+						}
+					);
+					*/
+					return value;
+				}
+			}
+		);
+
+		for (int pool = 0; pool < threadPools.length; pool++) {
+			threadPools[pool].shutdown();
+			try {
+				boolean result = threadPools[pool].awaitTermination(7, TimeUnit.DAYS);
+			} catch (Exception e) {}
+		}
+		// Recreate C
+		return create2DMatrix(Crows);
+	}
+
+	private DoubleMatrix2D create2DMatrix (DoubleMatrix1D[] rows) {
+		int columns = rows[0].size();
+		DoubleMatrix2D C = DoubleFactory2D.sparse.make(rows.length, columns);
+		for (int row = 0; row < rows.length; row++) {
+			for (int col = 0; col < columns; col++) {
+				double value = rows[row].getQuick(col);
+				if (value != 0.0)
+					C.setQuick(row, col, value);
+			}
+		}
+		return C;
+	}
+
+	private class ThreadedDotProduct implements Runnable {
+		double value;
+		DoubleMatrix1D Bcol;
+		DoubleMatrix1D Crow;
+		// final cern.jet.math.PlusMult fun = cern.jet.math.PlusMult.plusMult(0);
+
+		ThreadedDotProduct(double value, DoubleMatrix1D Bcol, 
+		                   DoubleMatrix1D Crow) {
+			this.value = value;
+			this.Bcol = Bcol;
+			this.Crow = Crow;
+		}
+
+		public void run() {
+			// fun.multiplicator = value;
+			for (int k = 0; k < Bcol.size(); k++) {
+				if (Bcol.getQuick(k) != 0.0) {
+					Crow.setQuick(k, Crow.getQuick(k)+Bcol.getQuick(k)*value);
+				}
+			}
+			// Crow.assign(Bcol, fun);
+		}
 	}
 
 	/**
