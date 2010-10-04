@@ -34,6 +34,8 @@
 */
 package cytoscape.visual.ui.editors.continuous;
 
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 
@@ -51,6 +53,8 @@ import cytoscape.data.attr.util.MultiHashMapHelpers;
  * @author  kono
  */
 public class MinMaxDialog extends javax.swing.JDialog {
+	
+	private static final Font TEXTBOX_FONT = new java.awt.Font("SansSerif", 1, 10);
 	
 	private static final long serialVersionUID = 7350824820761046009L;
 	
@@ -111,7 +115,11 @@ public class MinMaxDialog extends javax.swing.JDialog {
 		minLabel = new javax.swing.JLabel();
 		maxLabel = new javax.swing.JLabel();
 		minTextField = new javax.swing.JTextField();
+		minTextField.setFont(TEXTBOX_FONT);
+		
 		maxTextField = new javax.swing.JTextField();
+		maxTextField.setFont(TEXTBOX_FONT);
+		
 		okButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
 		titlePanel = new javax.swing.JPanel();
@@ -217,14 +225,14 @@ public class MinMaxDialog extends javax.swing.JDialog {
 		                                                    .add(minLabel)
 		                                                    .add(minTextField,
 		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                         18,
+		                                                         30,
 		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
 		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
 		                                                    .add(maxLabel)
 		                                                    .add(maxTextField,
 		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                         18,
+		                                                         30,
 		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
 		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
