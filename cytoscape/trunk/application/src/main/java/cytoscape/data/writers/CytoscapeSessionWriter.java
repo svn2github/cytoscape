@@ -377,16 +377,27 @@ public class CytoscapeSessionWriter {
 	}
 	
 	
+	/**
+	 * Create archive of Custom Graphics. 
+	 * 
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	private void zipCustomGraphics() throws IOException, InterruptedException {
+		
 		final CustomGraphicsManager pool = Cytoscape.getVisualMappingManager().getCustomGraphicsManager();
+		
 		// Collect all custom graphics
 		final Collection<CyCustomGraphics> customGraphics = pool.getAll();
-		
-		// Add metadata file to the session file
-		zos.putNextEntry(new ZipEntry(sessionDir + "images/" + CustomGraphicsManager.METADATA_FILE));
-		pool.getMetadata().store(zos, "Image Metadata");
-		
+	
+		final Properties graphicsProps = new Properties();
 		for(CyCustomGraphics cg: customGraphics) {
+			// Save only images used in current session.
+			if(pool.isUsedInCurrentSession(cg) == false)
+				continue;
+			else
+				graphicsProps.setProperty(cg.getIdentifier().toString(), cg.toString());
+			
 			final Image img = cg.getRenderedImage();
 			// For now, save URLImage only.
 			// TODO: how can we handle Dynamic Images?
@@ -396,7 +407,12 @@ public class CytoscapeSessionWriter {
 				ImageIO.write(ImageUtil.toBufferedImage(img), "PNG", zos);
 			}
 		}
+		
+		// Add metadata file to the session file
+		zos.putNextEntry(new ZipEntry(sessionDir + "images/" + CustomGraphicsManager.METADATA_FILE));
+		graphicsProps.store(zos, "Image Metadata");
 	}
+	
 
 	/**
 	 * Writes a network file to the session zip. 

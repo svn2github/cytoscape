@@ -66,17 +66,22 @@ public class CustomGraphicsManager extends SubjectBase implements
 	public static final String METADATA_FILE = "image_metadata.props";
 
 	private File imageHomeDirectory;
+	
+	private final Map<CyCustomGraphics,Boolean> isUsedCustomGraphics;
 
 	/**
 	 * Creates an image pool object and restore existing images from user
 	 * resource directory.
 	 */
 	public CustomGraphicsManager() {
+		
+		this.isUsedCustomGraphics = new HashMap<CyCustomGraphics, Boolean>();
 
 		// For loading images in parallel.
 		this.imageLoaderService = Executors.newFixedThreadPool(NUM_THREADS);
 
 		graphicsMap.put(NULL.getIdentifier(), NULL);
+		this.isUsedCustomGraphics.put(NULL, false);
 		restoreDefaultVectorImageObjects();
 
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
@@ -164,6 +169,7 @@ public class CustomGraphicsManager extends SubjectBase implements
 						((Taggable) cg).getTags().addAll(metatagMap.get(f));
 
 					graphicsMap.put(cg.getIdentifier(), cg);
+					this.isUsedCustomGraphics.put(cg, false);
 
 					try {
 						final URL source = new URL(fMap.get(f));
@@ -205,6 +211,7 @@ public class CustomGraphicsManager extends SubjectBase implements
 				Object obj = cls.newInstance();
 				if (obj instanceof CyCustomGraphics) {
 					graphicsMap.put( ((CyCustomGraphics) obj).getIdentifier(), (CyCustomGraphics) obj);
+					this.isUsedCustomGraphics.put((CyCustomGraphics) obj, false);
 				}
 			} catch (InstantiationException e) {
 				throw new RuntimeException(e);
@@ -235,6 +242,7 @@ public class CustomGraphicsManager extends SubjectBase implements
 			sourceMap.put(source, graphics.getIdentifier());
 
 		graphicsMap.put(graphics.getIdentifier(), graphics);
+		this.isUsedCustomGraphics.put(graphics, false);
 	}
 
 	/**
@@ -245,8 +253,10 @@ public class CustomGraphicsManager extends SubjectBase implements
 	 */
 	public void removeGraphics(final Long id) {
 		final CyCustomGraphics cg = graphicsMap.get(id);
-		if (cg != null && cg != NULL)
+		if (cg != null && cg != NULL) {
 			graphicsMap.remove(id);
+			this.isUsedCustomGraphics.remove(cg);
+		}
 	}
 
 	/**
@@ -292,6 +302,7 @@ public class CustomGraphicsManager extends SubjectBase implements
 	public void removeAll() {
 		this.graphicsMap.clear();
 		this.sourceMap.clear();
+		this.isUsedCustomGraphics.clear();
 
 		// Null Graphics should not be removed.
 		this.graphicsMap.put(NULL.getIdentifier(), NULL);
@@ -346,5 +357,24 @@ public class CustomGraphicsManager extends SubjectBase implements
 
 	public SortedSet<Long> getIDSet() {
 		return new TreeSet<Long>(graphicsMap.keySet());
+	}
+	
+	public Boolean isUsedInCurrentSession(final CyCustomGraphics graphics) {
+		if(graphics == null)
+			throw new NullPointerException("CyCustomGraphics cannot be null.");
+		if(this.isUsedCustomGraphics.containsKey(graphics) ==false)
+			throw new IllegalArgumentException("No such CyCustomGraphics: " + graphics.getDisplayName());
+
+		return isUsedCustomGraphics.get(graphics);
+	}
+	
+	public void setUsedInCurrentSession(final CyCustomGraphics graphics, final Boolean isUsed) {
+		if(isUsed == null || graphics == null)
+			throw new NullPointerException("Parameters cannot be null.");
+		
+		if(this.isUsedCustomGraphics.containsKey(graphics) == false)
+			throw new IllegalArgumentException("No such custom graphics object: " + graphics.getDisplayName());
+		
+		this.isUsedCustomGraphics.put(graphics, isUsed);
 	}
 }

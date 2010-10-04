@@ -216,6 +216,9 @@ public class NodeCustomGraphicsProp extends AbstractVisualProperty {
 			}
 		}
 		this.currentMap.put(dv, targets);
+		
+		// Flag this as used Custom Graphics
+		Cytoscape.getVisualMappingManager().getCustomGraphicsManager().setUsedInCurrentSession(graphics, true);
 	}
 
 	private CustomGraphic syncSize(CyCustomGraphics graphics,

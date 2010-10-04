@@ -399,6 +399,8 @@ public class CytoscapeSessionReader {
 		// Remove all custom graphics from current session
 		final CustomGraphicsManager manager = Cytoscape.getVisualMappingManager()
 				.getCustomGraphicsManager();
+		
+		// Remove all custom graphics before loading new images.
 		manager.removeAll();
 
 		// First, restore image-based custom graphics

@@ -19,7 +19,6 @@ import javax.swing.DefaultListModel;
 import org.jdesktop.swingx.JXList;
 
 import cytoscape.Cytoscape;
-import cytoscape.render.stateful.CustomGraphic;
 import cytoscape.visual.customgraphic.CustomGraphicsManager;
 import cytoscape.visual.customgraphic.CyCustomGraphics;
 import cytoscape.visual.customgraphic.NullCustomGraphics;
@@ -129,7 +128,9 @@ public class CustomGraphicsBrowser extends JXList implements PropertyChangeListe
 			//dumpDataFlavors(trans);
 			boolean gotData = false;
 			try {
+				
 				if (trans.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+					
 					final List<File> fileList = (List<File>) trans
 							.getTransferData(DataFlavor.javaFileListFlavor);
 
