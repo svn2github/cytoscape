@@ -96,8 +96,8 @@ public class PluginProperties extends Properties {
 				Msg = "0 bytes in input stream";
 			}
 	
-			IOException Error = new IOException("Unable to load "
-					+ configFileName + ". " + Msg);
+			IOException Error = new IOException("Unable to load " + packageName 
+					+ "/" + configFileName + ". " + Msg);
 			throw Error;
 		} else {
 			load(is);
