@@ -107,12 +107,39 @@ public class SaveCloudAction extends CytoscapeAction
 		CytoPanel cytoPanel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH);
 		Dimension curSize = cytoPanel.getSelectedComponent().getSize();
 		
-		
+		/*
 		//Can I make it work with just the flow panel
 		//Gives exact copy of what is visible (includes scroll bars) - KEEPER
 		JScrollPane scroll = panel.cloudScroll;
 		JFrame frame = new JFrame(cloudName);
 		scroll.setPreferredSize(curSize);
+		frame.getContentPane().add(scroll);
+		scroll.revalidate();
+		frame.pack();
+		frame.setLocation(-100, -100);
+		frame.setVisible(true);
+		*/
+		
+		
+		//Can I make it work with just the flow panel
+		//Gives exact copy of what is visible (includes scroll bars) - KEEPER
+		JScrollPane scroll = panel.cloudScroll;
+		JFrame frame = new JFrame(cloudName);
+		
+		int scrollHeight = scroll.getSize().height;
+		JPanel flowPanel = panel.getTagCloudFlowPanel();
+		int flowHeight = flowPanel.getSize().height;
+		flowHeight = flowHeight + 5; // need a little extra so scroll bars don't show
+		
+		//System.out.println("Scroll: " + scrollHeight);
+		//System.out.println("Flow: " + flowHeight);
+		
+		int width = curSize.width;
+		
+		Dimension fullSize = new Dimension(width, flowHeight);
+		
+		
+		scroll.setPreferredSize(fullSize);
 		frame.getContentPane().add(scroll);
 		scroll.revalidate();
 		frame.pack();

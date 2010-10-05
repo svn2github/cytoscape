@@ -812,6 +812,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		cloudLayoutPanel.add(createNetworkButton, gridBagConstraints);
 		
 		//Save file to .jpg stuff
+		/*
 		JLabel saveCloudLabel = new JLabel("Save Cloud Image:");
 		
 		saveCloudButton = new JButton("Export Cloud to File");
@@ -834,6 +835,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.insets = new Insets(5, 10, 0, 0);
 		cloudLayoutPanel.add(saveCloudButton, gridBagConstraints);
+		*/
 		
 		collapsiblePanel.getContentPane().add(panel,BorderLayout.NORTH);
 		return collapsiblePanel;
@@ -854,16 +856,22 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		JButton deleteButton = new JButton("Delete");
 		JButton updateButton = new JButton("Update");
 		JButton createButton = new JButton("Create");
+	
+		saveCloudButton = new JButton("Save Image");
+		saveCloudButton.setEnabled(false);
+		saveCloudButton.setToolTipText("Saves the current cloud as an image file");
 		
 		//Add actions to buttons
 		createButton.addActionListener(new CreateCloudAction());
 		deleteButton.addActionListener(new DeleteCloudAction());
 		updateButton.addActionListener(new UpdateCloudAction());
+		saveCloudButton.addActionListener(new SaveCloudAction());
 		
 		//Add buttons to panel
 		panel.add(deleteButton);
 		panel.add(updateButton);
 		panel.add(createButton);
+		panel.add(saveCloudButton);
 		
 		return panel;
 	}
@@ -944,13 +952,13 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		{
 			createNetworkButton.setEnabled(false);
 			saveCloudButton.setEnabled(false);
-			displayPanel.getSaveCloudButton().setEnabled(false);
+			//displayPanel.getSaveCloudButton().setEnabled(false);
 		}
 		else
 		{
 			createNetworkButton.setEnabled(true);
 			saveCloudButton.setEnabled(true);
-			displayPanel.getSaveCloudButton().setEnabled(true);
+			//displayPanel.getSaveCloudButton().setEnabled(true);
 		}
 		
 		SemanticSummaryManager.getInstance().setCurCloud(params);

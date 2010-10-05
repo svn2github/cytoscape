@@ -58,7 +58,7 @@ public class CloudDisplayPanel extends JPanel
 	JScrollPane cloudScroll;
 	CloudParameters curCloud;
 	JPanel saveCloudPanel;
-	JButton saveCloudButton;
+	//JButton saveCloudButton;
 	
 	
 	//CONSTRUCTORS
@@ -72,7 +72,7 @@ public class CloudDisplayPanel extends JPanel
 		cloudScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		add(cloudScroll, BorderLayout.CENTER);
 		
-		
+		/*
 		saveCloudButton = new JButton("Export Cloud to File");
 		saveCloudButton.setEnabled(false);
 		saveCloudButton.setToolTipText("Saves the current cloud as an image file");
@@ -81,6 +81,7 @@ public class CloudDisplayPanel extends JPanel
 		saveCloudPanel = new JPanel(new BorderLayout());
 		saveCloudPanel.add(saveCloudButton,BorderLayout.EAST);
 		add(saveCloudPanel, BorderLayout.SOUTH);
+		*/
 	}
 	
 	//METHODS
@@ -229,9 +230,11 @@ public class CloudDisplayPanel extends JPanel
 		curCloud = params;
 	}
 	
+	/*
 	public JButton getSaveCloudButton()
 	{
 		return saveCloudButton;
 	}
+	*/
 
 }

@@ -63,7 +63,7 @@ public class AboutPanel extends JDialog {
                 //"\" ></div></td>"+
                 "</tr></table>" +
                 "<p align=center>WordCloud is a Cytoscape plugin that generates a word tag cloud<BR>"+
-                "from a user-define node selection, summarizing an attribute of choice.<BR>" +
+                "from a user-define node selection, summarizing attributes of choice.<BR>" +
                 "<BR>" +
                 "by Layla Oesper, Daniele Merico, Ruth Isserlin and Gary Bader<BR>" +
                 "(<a href='http://www.baderlab.org/'>Bader Lab</a>, University of Toronto)<BR>" +
