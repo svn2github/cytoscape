@@ -76,6 +76,10 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK);
 	}
 
+	public NewWindowSelectedNodesOnlyAction(boolean isInToolbar) {
+		// Used by the toolbar action defined in CyMenus
+	}
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
