@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import giny.model.GraphPerspective;
+import giny.model.Node;
 import cytoscape.data.CyAttributes;
+import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.view.*;
 import cytoscape.*;
 
@@ -13,10 +15,19 @@ public class DetailedNetworkCreator
 	@SuppressWarnings("unchecked")
 	public static void createDetailedView(CyNetworkView view)
     {
+		if (view.getSelectedNodeIndices().length==1)
+		{
+			goToNestedNetwork(Cytoscape.getRootGraph().getNode(view.getSelectedNodeIndices()[0]));
+			System.out.println("Going to nested network.");
+			return;
+		}
+		
 		CyNetwork origPhysNetwork = PanGIAPlugin.output.getOrigPhysNetwork();
 		CyNetwork origGenNetwork = PanGIAPlugin.output.getOrigGenNetwork();
 		
-   	 	CyNetwork detailedNetwork = Cytoscape.createNetwork(findNextAvailableNetworkName("Detailed View"),	/* create_view = */false);
+		String name = findNextAvailableNetworkName("Detailed View");
+		
+   	 	CyNetwork detailedNetwork = Cytoscape.createNetwork(name,	/* create_view = */false);
    	 	CyAttributes networkAttr = Cytoscape.getNetworkAttributes();
 		networkAttr.setAttribute(detailedNetwork.getIdentifier(), VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.DETAILED.name());
 		networkAttr.setUserVisible(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
@@ -62,6 +73,25 @@ public class DetailedNetworkCreator
 		theView.setVisualStyle(VisualStyleObserver.VS_MODULE_NAME);
 		Cytoscape.getVisualMappingManager().setVisualStyle(Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VisualStyleObserver.VS_MODULE_NAME));
 		theView.redrawGraph(false, true);	
+	}
+	
+	public static void goToNestedNetwork(Node n)
+	{
+		if (n.getNestedNetwork() == null)
+            return;
+
+	    CyNetwork nestedNetwork = (CyNetwork)n.getNestedNetwork();
+	
+	    CyNetworkView theView = Cytoscape.getNetworkView(nestedNetwork.getIdentifier());
+	    if (theView == null || theView.getIdentifier() == null)
+	    {
+	    	theView = Cytoscape.createNetworkView(nestedNetwork);
+	    	CyLayoutAlgorithm alg = cytoscape.layout.CyLayouts.getLayout("force-directed");
+	    	theView.applyLayout(alg);
+	    	theView.redrawGraph(false, false);
+	    }
+
+	    Cytoscape.getDesktop().setFocus(nestedNetwork.getIdentifier());
 	}
 	
 	private static String findNextAvailableNetworkName(final String initialPreference) {

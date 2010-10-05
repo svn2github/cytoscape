@@ -6,13 +6,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.help.HelpSet;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.net.URL;
+import java.util.List;
+
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import org.idekerlab.PanGIAPlugin.ui.SearchPropertyPanel;
+import org.idekerlab.PanGIAPlugin.utilities.files.FileUtil;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CyHelpBroker;
@@ -87,6 +97,62 @@ public class PanGIAPlugin extends CytoscapePlugin {
 			}
 			cytoPanel.setSelectedIndex(index);
 			cytoPanel.setState(CytoPanelState.DOCK);
+		}
+	}
+	
+	public void saveSessionStateFiles(List<File> pFileList)
+	{
+		try
+		{
+			BufferedWriter bw = new BufferedWriter(new FileWriter("./PanGIA.session.tmp"));
+			
+			bw.write(output.isAvailable()+"\n");
+			
+			if (output.isAvailable())
+			{
+				bw.write(output.getOrigPhysNetwork().getIdentifier()+"\n");
+				bw.write(output.getOrigGenNetwork().getIdentifier()+"\n");
+			}
+			
+			bw.close();
+			
+			pFileList.add(new File("./PanGIA.session.tmp"));
+		}catch (Exception e)
+		{
+			System.out.println("Error saving PanGIA session file.");
+			e.printStackTrace();
+		}
+	}
+	
+	public void restoreSessionState(List<File> pStateFileList)
+	{
+		try
+		{
+
+			if ((pStateFileList == null) || (pStateFileList.size() == 0)) {
+				//No previous state to restore
+				return;
+			}
+			
+			File prop_file = pStateFileList.get(0);
+
+			BufferedReader in = new BufferedReader(new FileReader(prop_file));
+			boolean isAvailable = Boolean.valueOf(in.readLine());
+			
+			if (isAvailable)
+			{
+				CyNetwork physNet = Cytoscape.getNetwork(in.readLine());
+				CyNetwork genNet = Cytoscape.getNetwork(in.readLine());
+				output.initialize(physNet, genNet);
+			}else output.reset();
+			
+			
+			in.close();
+			
+		}catch (Exception e)
+		{
+			System.out.println("Error loading PanGIA session file.");
+			e.printStackTrace();
 		}
 	}
 }

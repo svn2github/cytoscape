@@ -117,7 +117,7 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				double min = Float.MAX_VALUE;
 				double max = Float.MIN_VALUE;
 				
-				for (double f : (Collection<Double>)CyAttributesUtils.getAttribute("PanGIA.edge score", Cytoscape.getEdgeAttributes()).values())
+				for (double f : (Collection<Double>)CyAttributesUtils.getAttribute(NestedNetworkCreator.EDGE_SCORE, Cytoscape.getEdgeAttributes()).values())
 				{
 					if (f<min) min = f;
 					if (f>max) max = f;
@@ -127,14 +127,14 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				EdgeAppearanceCalculator eac = style.getEdgeAppearanceCalculator();
 				
 				ContinuousMapping cm = new ContinuousMapping(0.0, ObjectMapping.EDGE_MAPPING);
-				cm.setControllingAttributeName("PanGIA.edge score", view.getNetwork(), true);
+				cm.setControllingAttributeName(NestedNetworkCreator.EDGE_SCORE, view.getNetwork(), true);
 				cm.addPoint(min, new BoundaryRangeValues(30,30,30));
 				cm.addPoint(max, new BoundaryRangeValues(255,255,255));
 				Calculator edgeCalc = new BasicCalculator(VS_OVERVIEW_NAME+"-EdgeOpacityMapping", cm, VisualPropertyType.EDGE_OPACITY);
 				eac.setCalculator(edgeCalc);
 				
 				cm = new ContinuousMapping(0.0, ObjectMapping.EDGE_MAPPING);
-				cm.setControllingAttributeName("PanGIA.edge score", view.getNetwork(), true);
+				cm.setControllingAttributeName(NestedNetworkCreator.EDGE_SCORE, view.getNetwork(), true);
 				cm.addPoint(min, new BoundaryRangeValues(5,5,5));
 				cm.addPoint(max, new BoundaryRangeValues(20,20,20));
 				edgeCalc = new BasicCalculator(VS_OVERVIEW_NAME+"-EdgeWidthMapping", cm, VisualPropertyType.EDGE_LINE_WIDTH);
@@ -144,7 +144,7 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				min = Float.MAX_VALUE;
 				max = Float.MIN_VALUE;
 				
-				for (double f : (Collection<Double>)CyAttributesUtils.getAttribute("PanGIA.SQRT of member count", Cytoscape.getNodeAttributes()).values())
+				for (double f : (Collection<Double>)CyAttributesUtils.getAttribute(NestedNetworkCreator.GENE_COUNT_SQRT, Cytoscape.getNodeAttributes()).values())
 				{
 					if (f<min) min = f;
 					if (f>max) max = f;
@@ -153,7 +153,7 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				NodeAppearanceCalculator nac = style.getNodeAppearanceCalculator();
 				
 				cm = new ContinuousMapping(0.0, ObjectMapping.NODE_MAPPING);
-				cm.setControllingAttributeName("PanGIA.SQRT of member count", view.getNetwork(), true);
+				cm.setControllingAttributeName(NestedNetworkCreator.GENE_COUNT_SQRT, view.getNetwork(), true);
 				cm.addPoint(min, new BoundaryRangeValues(20,20,20));
 				double fs = Math.max(10*max,20);
 				cm.addPoint(max, new BoundaryRangeValues(fs,fs,fs));
@@ -161,7 +161,7 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				nac.setCalculator(nodeCalc);
 				
 				cm = new ContinuousMapping(0.0, ObjectMapping.NODE_MAPPING);
-				cm.setControllingAttributeName("PanGIA.SQRT of member count", view.getNetwork(), true);
+				cm.setControllingAttributeName(NestedNetworkCreator.GENE_COUNT_SQRT, view.getNetwork(), true);
 				cm.addPoint(min, new BoundaryRangeValues(10,10,10));
 				fs = Math.max(max,10); 
 				cm.addPoint(max, new BoundaryRangeValues(fs,fs,fs));

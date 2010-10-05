@@ -270,7 +270,7 @@ public class SearchTask implements Task {
 		final TypedLinkNetwork<String, Float> pNet = physicalNetwork.asTypedLinkNetwork();
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
 
-		String networkName = "PanGIA Results: "+ new java.util.Date();
+		String networkName = "Module Overview Network";
 		final NestedNetworkCreator nnCreator =
 			new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork,
 			                         pNet, gNet, pValueThreshold, taskMonitor,

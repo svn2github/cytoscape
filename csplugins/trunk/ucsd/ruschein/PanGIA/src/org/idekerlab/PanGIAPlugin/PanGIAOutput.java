@@ -15,6 +15,13 @@ public class PanGIAOutput
 		this.origGenNetwork = origGenNetwork;
 	}
 	
+	public void reset()
+	{
+		available = false;
+		origPhysNetwork = null;
+		origGenNetwork = null;
+	}
+	
 	public boolean isAvailable()
 	{
 		return available;

@@ -40,12 +40,14 @@ public class PanGIAEdgeContextMenuListener implements EdgeContextMenuListener
         		 break;
         	 }
         
+         final JMenu pangiaMenu = new JMenu("PanGIA");
+         
          if (selectedHasNested && PanGIAPlugin.output.isAvailable())
          {
-	         final JMenu pangiaMenu = new JMenu("PanGIA");
+	         
 	
 	         JMenuItem item = new JMenuItem();
-	         item.setText("Create detailed view");
+	         item.setText("Create Detailed View");
 	         item.addActionListener(new ActionListener()
 	         {
 	             public void actionPerformed(ActionEvent e) {
@@ -54,8 +56,10 @@ public class PanGIAEdgeContextMenuListener implements EdgeContextMenuListener
 	         });
 	
 	         pangiaMenu.add(item);
-	
-	         menu.add(pangiaMenu);
          }
+         
+         
+         
+         menu.add(pangiaMenu);
 	}
 }

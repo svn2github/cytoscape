@@ -87,7 +87,7 @@ public class NestedNetworkCreator {
 	private static final String LAYOUT_ALGORITHM = "force-directed";
 	
 	// Also exists in BipartiteVisualiserPlugin!
-	static final String REFERENCE_NETWORK_NAME_ATTRIB = "BipartiteVisualiserReferenceNetworkName"; 
+	public static final String REFERENCE_NETWORK_NAME_ATTRIB = "BipartiteVisualiserReferenceNetworkName"; 
 
 	
 	/////////////// Node Attribute Names /////////////
@@ -95,15 +95,26 @@ public class NestedNetworkCreator {
 	private static final String MODULE_FINDER_PREFIX = "PanGIA.";
 	
 	// Number of nodes in a module
-	private static final String GENE_COUNT = MODULE_FINDER_PREFIX + "member count";
+	private static final String GENE_COUNT = MODULE_FINDER_PREFIX + "module size";
 	// And its SQRT value for visual mapping
-	private static final String GENE_COUNT_SQRT = MODULE_FINDER_PREFIX + "SQRT of member count";
+	public static final String GENE_COUNT_SQRT = MODULE_FINDER_PREFIX + "SQRT of module size";
 	
 	private static final String SCORE = MODULE_FINDER_PREFIX + "score";
 	
+	private static final String MEMBERS = MODULE_FINDER_PREFIX + "members";
+	
+	private static final String PHYS_EDGE_COUNT = MODULE_FINDER_PREFIX + "physical interaction count";
+	private static final String GEN_EDGE_COUNT = MODULE_FINDER_PREFIX + "genetic interaction count";
+	
 	/////////////// Edge Attribute Names /////////////
-	private static final String EDGE_SCORE = MODULE_FINDER_PREFIX + "edge score";
+	public static final String EDGE_SCORE = MODULE_FINDER_PREFIX + "edge score";
 	private static final String EDGE_PVALUE = MODULE_FINDER_PREFIX + "p-value";
+	private static final String EDGE_GEN_EDGE_COUNT = MODULE_FINDER_PREFIX + "genetic interaction count";
+	private static final String EDGE_PHYS_EDGE_COUNT = MODULE_FINDER_PREFIX + "physical interaction count";
+	private static final String EDGE_SOURCE_SIZE = MODULE_FINDER_PREFIX + "source size";
+	private static final String EDGE_TARGET_SIZE = MODULE_FINDER_PREFIX + "target size";
+	private static final String EDGE_GEN_DENSITY = MODULE_FINDER_PREFIX + "genetic interaction density";
+	
 	
 	private static final String COMPLEX_INTERACTION_TYPE = "module-module";
 	
@@ -118,6 +129,20 @@ public class NestedNetworkCreator {
 	VisualStyle moduleVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().
 								getVisualStyle(VisualStyleObserver.VS_MODULE_NAME);
 
+	public static List<String> getEdgeAttributeNames()
+	{
+		List<String> names = new ArrayList<String>(2);
+		names.add(EDGE_SCORE);
+		names.add(EDGE_PVALUE);
+		names.add(EDGE_GEN_EDGE_COUNT);
+		names.add(EDGE_PHYS_EDGE_COUNT);
+		names.add(EDGE_SOURCE_SIZE);
+		names.add(EDGE_TARGET_SIZE);
+		names.add(EDGE_GEN_DENSITY);
+		
+		return names;
+	}
+	
 	/**
 	 * Instantiates an overview network of complexes (modules) and one nested
 	 * network for each node in the overview network.
@@ -168,7 +193,7 @@ public class NestedNetworkCreator {
 			CyNode sourceNode = moduleToCyNodeMap.get(sourceModule);
 			if (sourceNode == null) {
 				final String nodeName = getNodeName(sourceModule,nodeIndex,module_name);
-				sourceNode = makeOverviewNode(nodeName, sourceModule,nodeAttribs);
+				sourceNode = makeOverviewNode(nodeName, sourceModule,nodeAttribs,physicalNetwork,geneticNetwork);
 				//moduleToCyNodeMap.put(sourceModule, sourceNode);
 				++nodeIndex;
 			}
@@ -177,7 +202,7 @@ public class NestedNetworkCreator {
 			CyNode targetNode = moduleToCyNodeMap.get(targetModule);
 			if (targetNode == null) {
 				final String nodeName = getNodeName(targetModule,nodeIndex,module_name);
-				targetNode = makeOverviewNode(nodeName, targetModule,nodeAttribs);
+				targetNode = makeOverviewNode(nodeName, targetModule,nodeAttribs,physicalNetwork,geneticNetwork);
 				//moduleToCyNodeMap.put(targetModule, targetNode);
 				++nodeIndex;
 			}
@@ -205,17 +230,17 @@ public class NestedNetworkCreator {
 			final int gConnectedness = geneticNetwork.getConnectedness(
 					sourceModule.asStringSet(), targetModule.asStringSet());
 			edgeAttribs.setAttribute(newEdge.getIdentifier(),
-					"PanGIA.genetic interaction count", Integer.valueOf(gConnectedness));
+					EDGE_GEN_EDGE_COUNT, Integer.valueOf(gConnectedness));
 			final int pConnectedness = physicalNetwork.getConnectedness(
 					sourceModule.asStringSet(), targetModule.asStringSet());
 			edgeAttribs.setAttribute(newEdge.getIdentifier(),
-					"PanGIA.physical interaction count", Integer.valueOf(pConnectedness));
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), "PanGIA.source size",
+					EDGE_PHYS_EDGE_COUNT, Integer.valueOf(pConnectedness));
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_SOURCE_SIZE,
 					Integer.valueOf(sourceModule.size()));
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), "PanGIA.target size",
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_TARGET_SIZE,
 					Integer.valueOf(targetModule.size()));
 			final double density = edgeScore / (sourceModule.size() * targetModule.size());
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), "PanGIA.genetic interaction density", Double
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_GEN_DENSITY, Double
 					.valueOf(density));
 		}
 
@@ -273,7 +298,7 @@ public class NestedNetworkCreator {
 	 */
 	private CyNode makeOverviewNode(final String nodeName,
 			final TypedLinkNodeModule<String, BFEdge> module,
-			final CyAttributes nodeAttribs) {
+			final CyAttributes nodeAttribs, TypedLinkNetwork<String, Float> physicalNetwork, TypedLinkNetwork<String, Float> geneticNetwork) {
 		
 		
 		final CyNode newNode = Cytoscape.getCyNode(nodeName, true); // create=true
@@ -282,6 +307,7 @@ public class NestedNetworkCreator {
 		
 		overviewNetwork.addNode(newNode);
 		
+		//Add attributes
 		final Set<String> genes = module.getMemberValues();
 		final Integer geneCount = Integer.valueOf(genes.size());
 		nodeAttribs.setAttribute(newNode.getIdentifier(), GENE_COUNT, geneCount);
@@ -292,8 +318,20 @@ public class NestedNetworkCreator {
 		final double score = Double.valueOf(module.score());
 		nodeAttribs.setAttribute(newNode.getIdentifier(), SCORE, score);
 
-		networksOrderedByScores
-				.add(new NetworkAndScore(nodeName, genes, score));
+		StringBuilder members = new StringBuilder();
+		for (String gene : genes)
+		{
+			if (members.length()!=0) members.append("|");
+			members.append(gene);
+		}
+		nodeAttribs.setAttribute(newNode.getIdentifier(), MEMBERS, members.toString());
+
+		
+		nodeAttribs.setAttribute(newNode.getIdentifier(), PHYS_EDGE_COUNT, physicalNetwork.subNetwork(module.asStringSet()).numEdges());
+		nodeAttribs.setAttribute(newNode.getIdentifier(), GEN_EDGE_COUNT, geneticNetwork.subNetwork(module.asStringSet()).numEdges());
+		
+		//Add to network
+		networksOrderedByScores.add(new NetworkAndScore(nodeName, genes, score));
 
 		return newNode;
 	}

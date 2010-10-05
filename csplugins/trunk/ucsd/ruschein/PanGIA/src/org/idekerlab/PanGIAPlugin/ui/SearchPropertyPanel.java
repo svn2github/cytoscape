@@ -570,7 +570,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeFilterSlider.setPreferredSize(new java.awt.Dimension(200, 25));
         edgeFilterSlider.setExtent(0);
         edgeFilterSlider.setMinimum(0);
-        edgeFilterSlider.setMaximum(100);
+        edgeFilterSlider.setMaximum(99);
         edgeFilterSlider.setValue(90);
         edgeFilterSlider.setMajorTickSpacing(10);
         edgeFilterSlider.setMinorTickSpacing(5);
@@ -1354,10 +1354,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		try
 		{
 			double p = Double.parseDouble(edgeFilterTextField.getText());
-			if (p<0 || p>100)
+			if (p<0 || p>99.9)
 			{
 				searchButton.setEnabled(false);
-				parameterErrorTextArea.setText("Please set percentile threshold in the range [0,100].");
+				parameterErrorTextArea.setText("Please set percentile threshold in the range [0,99.9].");
 				return;
 			}
 		

@@ -1,9 +1,12 @@
 package org.idekerlab.PanGIAPlugin.utilities.collections;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -44,32 +47,29 @@ public class HashMapUtil {
 	}
 
 	public static void saveMapSS(Map<String, Set<String>> hm, String filename) {
-		Set<String> keys = hm.keySet();
 		try {
-			FileOutputStream fsout = new FileOutputStream(filename);
-			PrintWriter out1 = new PrintWriter(fsout);
-
-			for (String key : keys) {
-				out1.print(key + "\t");
+			BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+			
+			for (String key : hm.keySet()) {
+				bw.write(key + "\t");
 
 				Set<String> vals = hm.get(key);
 
 				boolean first = true;
 				for (String val : vals)
 					if (!first)
-						out1.print("|" + val);
+						bw.write("|" + val);
 					else {
 						first = false;
-						out1.print(val);
+						bw.write(val);
 					}
 
-				out1.print("\n");
+				bw.write("\n");
 			}
 
-			out1.close();
-		} catch (FileNotFoundException e) {
-			System.out.println(e.getMessage());
-			System.out.println("Error! Aborting program!");
+			bw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 			System.exit(0);
 		}
 	}
