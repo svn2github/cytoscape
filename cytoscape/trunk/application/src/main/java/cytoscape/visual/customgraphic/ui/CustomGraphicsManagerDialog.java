@@ -33,12 +33,12 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 	private final CustomGraphicsDetailPanel detail;
 	
 	// Manager object for on-memory graphics.
-	private final CustomGraphicsManager pool;
+	private final CustomGraphicsManager manager;
 
 	/** Creates new form CustomGraphicsManagerDialog */
 	public CustomGraphicsManagerDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
-		pool = Cytoscape.getVisualMappingManager().getCustomGraphicsManager();
+		manager = Cytoscape.getVisualMappingManager().getCustomGraphicsManager();
 		initComponents();
 		try {
 			browser = new CustomGraphicsBrowser();
@@ -190,7 +190,7 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 				final CyCustomGraphics cg = new URLImageCustomGraphics(
 						file.toString(), img);
 				try {
-					pool.addGraphics(cg, file.toURI().toURL());
+					manager.addGraphics(cg, file.toURI().toURL());
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 					continue;
@@ -205,7 +205,7 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 		for(Object g: toBeRemoved) {
 			final CyCustomGraphics cg = (CyCustomGraphics) g;
 			browser.removeCustomGraphics(cg);
-			pool.removeGraphics(cg.getIdentifier());
+			manager.removeGraphics(cg.getIdentifier());
 		}
 	}
 

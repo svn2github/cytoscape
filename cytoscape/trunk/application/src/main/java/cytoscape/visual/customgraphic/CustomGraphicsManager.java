@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.actions.ShowCustomGraphicsManagerAction;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
@@ -87,13 +88,13 @@ public class CustomGraphicsManager extends SubjectBase implements
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
 				Cytoscape.CYTOSCAPE_EXIT, this);
 
-		restoreImages();
+		//restoreImages();
 	}
 
 	/**
 	 * Restore images from .cytoscape/images dir.
 	 */
-	private void restoreImages() {
+	public void restoreImages() {
 		final CompletionService<BufferedImage> cs = new ExecutorCompletionService<BufferedImage>(
 				imageLoaderService);
 

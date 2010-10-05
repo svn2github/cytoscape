@@ -103,7 +103,7 @@ public class VisualMappingManager extends SubjectBase {
 	private static final String DEF_STYLE_NAME = "default";
 
 	// New in Cytoscape 2.8: Pool of available custom graphics
-	private final CustomGraphicsManager pool;
+	private final CustomGraphicsManager manager;
 
 	// New in 2.8: Dynamically manage mappings
 	private final RangeValueCalculatorFactory rvcFactory;
@@ -120,7 +120,7 @@ public class VisualMappingManager extends SubjectBase {
 		this.networkView = networkView;
 		
 		// Creates a repository of static images.
-		pool = new CustomGraphicsManager();
+		manager = new CustomGraphicsManager();
 
 		// New in 2.8: dynamically manages object mappings.
 		rvcFactory = new RangeValueCalculatorFactoryImpl();
@@ -443,7 +443,7 @@ public class VisualMappingManager extends SubjectBase {
 	}
 
 	public CustomGraphicsManager getCustomGraphicsManager() {
-		return pool;
+		return manager;
 	}
 	
 	
