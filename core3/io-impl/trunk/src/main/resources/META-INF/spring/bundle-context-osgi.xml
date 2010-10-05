@@ -43,12 +43,20 @@
 		interface="org.cytoscape.io.read.CySessionReaderManager">
 	</osgi:service>	
 
+	<osgi:service id="cyPropertyReaderManagerService" ref="cyPropertyReaderManager"
+		interface="org.cytoscape.io.read.CyPropertyReaderManager">
+	</osgi:service>	
+
 	<osgi:service id="networkViewWriterManagerService" ref="networkViewWriterManager"
 		interface="org.cytoscape.io.write.CyNetworkViewWriterManager">
 	</osgi:service>
 
 	<osgi:service id="sessionWriterManagerService" ref="sessionWriterManager"
 		interface="org.cytoscape.io.write.SessionWriterManager">
+	</osgi:service>
+
+	<osgi:service id="propertyWriterManagerService" ref="propertyWriterManager"
+		interface="org.cytoscape.io.write.PropertyWriterManager">
 	</osgi:service>
 
 	<osgi:service id="sifNetworkViewReaderFactoryService" ref="sifNetworkViewReaderFactory"
@@ -102,6 +110,24 @@
 			<entry key="serviceType" value="sessionReaderFactory" />
 			<entry key="readerId" value="sessionReaderFactory" />
 			<entry key="readerDescription" value="Cytoscape Session Reader" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="cysessionReaderFactoryService" ref="cysessionReaderFactory"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="cysessionReaderFactory" />
+			<entry key="readerId" value="cysessionReaderFactory" />
+			<entry key="readerDescription" value="Cysession XML Reader" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="bookmarkReaderFactoryService" ref="bookmarkReaderFactory"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="bookmarkReaderFactory" />
+			<entry key="readerId" value="bookmarkReaderFactory" />
+			<entry key="readerDescription" value="Bookmarks XML Reader" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -168,5 +194,13 @@
 		<osgi:listener bind-method="addCyWriterFactory"
 		               unbind-method="removeCyWriterFactory" 
 		               ref="sessionWriterManager" />
+	</osgi:set>
+
+	<osgi:set id="propertyWriterFactories" 
+	          interface="org.cytoscape.io.write.PropertyWriterFactory"
+	          cardinality="0..N">
+		<osgi:listener bind-method="addCyWriterFactory"
+		               unbind-method="removeCyWriterFactory" 
+		               ref="propertyWriterManager" />
 	</osgi:set>
 </beans>

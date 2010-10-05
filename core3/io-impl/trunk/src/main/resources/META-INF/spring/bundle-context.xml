@@ -154,6 +154,48 @@
 			<ref bean="streamUtil"/>
 		</constructor-arg>
 	</bean>
+
+	<bean id="cysessionFilter" class="org.cytoscape.io.internal.read.cysession.CysessionFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>xml</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<!-- content types should be exact - don't add possible matches!
+				<value>text/xml</value>
+				<value>application/xml</value>
+				-->
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Cysession XML files" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="PROPERTIES" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
+	</bean>
+
+	<bean id="bookmarksFilter" class="org.cytoscape.io.internal.read.bookmarks.BookmarkFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>xml</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<!-- content types should be exact - don't add possible matches!
+				<value>text/xml</value>
+				<value>application/xml</value>
+				-->
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Bookmark XML files" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="PROPERTIES" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
+	</bean>
 	
 	<!-- Utility for Stream/Proxy management -->
 	<bean id="readUtil" class="org.cytoscape.io.internal.util.ReadUtils">
@@ -161,7 +203,6 @@
 	</bean>
 
 	<bean id="streamUtil" class="org.cytoscape.io.internal.util.StreamUtilImpl" />
-
 
 	<!-- Reader Factories -->
 	<bean id="textDataTableReaderFactory" class="org.cytoscape.io.internal.read.datatable.TextDataTableReaderFactory">
@@ -241,11 +282,23 @@
 		<constructor-arg ref="cyNetworkViewReaderManager" />
 	</bean>
 
+	<bean id="cysessionReaderFactory" 
+	      class="org.cytoscape.io.internal.read.cysession.CysessionReaderFactory">
+		<constructor-arg ref="cysessionFilter" />
+	</bean>
+
+	<bean id="bookmarkReaderFactory" 
+	      class="org.cytoscape.io.internal.read.bookmarks.BookmarkReaderFactory">
+		<constructor-arg ref="bookmarksFilter" />
+	</bean>
+
 	<bean id="sessionWriterFactory" 
 	      class="org.cytoscape.io.internal.write.session.SessionWriterFactoryImpl">
 		<constructor-arg ref="cysFilter" />
 		<constructor-arg ref="xgmmlFilter" />
+		<constructor-arg ref="bookmarksFilter" />
 		<constructor-arg ref="networkViewWriterManager" />
+		<constructor-arg ref="propertyWriterManager" />
 	</bean>
 
 	<!-- All Reader Managers -->
@@ -258,19 +311,20 @@
 	<bean id="cySessionReaderManager" 
 	      class="org.cytoscape.io.internal.read.CySessionReaderManagerImpl" />	      
 
+	<bean id="cyPropertyReaderManager" 
+	      class="org.cytoscape.io.internal.read.CyPropertyReaderManagerImpl" />	
+
 	<!-- All Writer Managers -->
 
 	<bean id="viewWriterManager" 
 	      class="org.cytoscape.io.internal.write.ViewWriterManagerImpl" />
 
 	<bean id="networkViewWriterManager" 
-	      class="org.cytoscape.io.internal.write.CyNetworkViewWriterManagerImpl">
-		<constructor-arg type="org.cytoscape.io.DataCategory"
-			value="NETWORK" />			
-	</bean>
+	      class="org.cytoscape.io.internal.write.CyNetworkViewWriterManagerImpl"/>
+
 	<bean id="sessionWriterManager" 
-	      class="org.cytoscape.io.internal.write.SessionWriterManagerImpl">
-		<constructor-arg type="org.cytoscape.io.DataCategory"
-			value="SESSION" />	
-	</bean>		
+	      class="org.cytoscape.io.internal.write.SessionWriterManagerImpl"/>
+		  
+	<bean id="propertyWriterManager" 
+	      class="org.cytoscape.io.internal.write.PropertyWriterManagerImpl"/>
 </beans>

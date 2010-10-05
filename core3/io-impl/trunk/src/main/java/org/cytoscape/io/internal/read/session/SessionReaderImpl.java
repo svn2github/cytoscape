@@ -35,7 +35,8 @@
 package org.cytoscape.io.internal.read.session;
 
 
-import org.cytoscape.io.internal.generated.*;
+import org.cytoscape.property.session.*;
+import org.cytoscape.property.bookmark.*;
 
 import org.cytoscape.io.read.CySessionReader;
 
@@ -85,12 +86,12 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	/**
 	 *
 	 */
-	public static final String PACKAGE_NAME = "org.cytoscape.io.internal.generated";
+	public static final String PACKAGE_NAME = "org.cytoscape.property.session";
 
 	/**
 	 *
 	 */
-	public static final String BOOKMARK_PACKAGE_NAME = "cytoscape.bookmarks";
+	public static final String BOOKMARK_PACKAGE_NAME = "org.cytoscape.property.bookmark";
 
 	/**
 	 *
@@ -123,9 +124,8 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	private final CyNetworkViewReaderManager netviewReaderMgr; 
 
 	private Cysession session;
-//	private Bookmarks bookmarks;
+	private Bookmarks bookmarks;
 	private TaskMonitor taskMonitor;
-	private Properties desktopProps;
 	private Properties cytoscapeProps;
 	private Properties vizmapProps;
 
@@ -208,7 +208,8 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 			.viewVisualStyleMap( visualStyleMap )
 			.cytoscapeProperties( cytoscapeProps )
 			.vizmapProperties( vizmapProps )
-			.desktopProperties( desktopProps )
+			.bookmarks( bookmarks )
+			.cysession( session )
 			.pluginFileListMap( pluginFileListMap )
 			.build();
 
@@ -254,12 +255,13 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 				System.out.println("   extracting network");
 			} else if (entryName.endsWith(BOOKMARKS_FILE)) {
 				System.out.println("   extracting bookmarks");
-// TODO
-//				extractBookmarks(tmpIs);
+				extractBookmarks(tmpIs);
 			} else {
 				System.out.println("Unknown entry found in session zip file!\n" + entryName);
 			}
 
+			} catch (Exception e) {
+				logger.warn("Failed reading session entry: " + entryName, e); 
 		
 			} finally {
 				if ( tmpIs != null )
@@ -336,20 +338,14 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		cytoscapeProps = new Properties();
 		cytoscapeProps.load( is );
 	}
-/*
-	private void extractBookmarks(InputStream is) {
-		try {
+
+	private void extractBookmarks(InputStream is) throws Exception {
 			final JAXBContext jaxbContext = JAXBContext.newInstance(BOOKMARK_PACKAGE_NAME,
 			                                                        this.getClass().getClassLoader());
 			final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
 			bookmarks = (Bookmarks) unmarshaller.unmarshal(is);
-
-		} catch (Exception e1) {
-			logger.warn("bookmarks not read", e1);
-		}
 	}
-	*/
 
 	private void extractSessionState(InputStream is) throws Exception {
 		final JAXBContext jaxbContext = JAXBContext.newInstance(PACKAGE_NAME,
@@ -357,25 +353,6 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
 		session = (Cysession) unmarshaller.unmarshal(is);
-
-		// extract the desktop state
-		desktopProps = new Properties();
-
-		desktopProps.setProperty("desktop.width",session.getSessionState().getDesktop().getDesktopSize().getWidth().toString());
-		desktopProps.setProperty("desktop.height",session.getSessionState().getDesktop().getDesktopSize().getHeight().toString());
-
-
-		final List<NetworkFrame> frames = session.getSessionState().getDesktop().getNetworkFrames()
-		                                                           .getNetworkFrame();
-		for(NetworkFrame netFrame: frames) {
-			String id = netFrame.getFrameID();
-			desktopProps.setProperty("network.width." + id, netFrame.getWidth().toString());
-			desktopProps.setProperty("network.height." + id, netFrame.getHeight().toString());
-			desktopProps.setProperty("network.xpos." + id, netFrame.getX().toString());
-			desktopProps.setProperty("network.ypos." + id, netFrame.getY().toString());
-		}
-
-		// TODO consider tracking cytopanel state here too!
 	}
 
 	private void processNetworks() throws JAXBException, IOException, Exception {

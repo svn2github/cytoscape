@@ -12,8 +12,8 @@ import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.view.model.CyNetworkView;
 
 public class CyNetworkViewWriterManagerImpl extends AbstractWriterManager<CyNetworkViewWriterFactory> implements CyNetworkViewWriterManager {
-	public CyNetworkViewWriterManagerImpl(DataCategory category) {
-		super(category);
+	public CyNetworkViewWriterManagerImpl() {
+		super(DataCategory.NETWORK);
 	}
 
 	@Override

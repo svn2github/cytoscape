@@ -14,8 +14,8 @@ public class SessionWriterManagerImpl extends
 		AbstractWriterManager<SessionWriterFactory> implements
 		SessionWriterManager {
 
-	public SessionWriterManagerImpl(DataCategory category) {
-		super(category);
+	public SessionWriterManagerImpl() {
+		super(DataCategory.SESSION);
 	}
 
 	@Override

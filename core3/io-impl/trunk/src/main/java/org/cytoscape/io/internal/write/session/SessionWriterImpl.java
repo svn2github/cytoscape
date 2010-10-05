@@ -41,7 +41,9 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.List;
 
-import org.cytoscape.io.internal.generated.*;
+import org.cytoscape.property.session.*;
+import org.cytoscape.property.bookmark.*;
+
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
 import org.cytoscape.model.CyEdge;
@@ -52,6 +54,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.write.CyNetworkViewWriterManager;
+import org.cytoscape.io.write.PropertyWriterManager;
 import org.cytoscape.session.CySession;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
@@ -139,7 +142,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private String sessionNote = "You can add note for this session here.";
 
 	// The following are JAXB-generated objects defined in CySession.xml. 
-	private ObjectFactory factory;
+//	private ObjectFactory factory;
 	private Cysession cysession;
 	private NetworkTree tree;
 	private SessionState sState;
@@ -155,13 +158,17 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private final OutputStream outputStream;
 	private final CySession session;
 	private final CyNetworkViewWriterManager networkViewWriterMgr;
+	private final PropertyWriterManager propertyWriterMgr;
 	private final CyFileFilter xgmmlFilter;
+	private final CyFileFilter bookmarksFilter;
 
-	public SessionWriterImpl(final OutputStream outputStream, final CySession session, final CyNetworkViewWriterManager networkViewWriterMgr, CyFileFilter xgmmlFilter) {
+	public SessionWriterImpl(final OutputStream outputStream, final CySession session, final CyNetworkViewWriterManager networkViewWriterMgr, PropertyWriterManager propertyWriterMgr, CyFileFilter xgmmlFilter, CyFileFilter bookmarksFilter) {
 		this.outputStream = outputStream;
 		this.session = session;
 		this.networkViewWriterMgr = networkViewWriterMgr;
+		this.propertyWriterMgr = propertyWriterMgr;
 		this.xgmmlFilter = xgmmlFilter;
+		this.bookmarksFilter = bookmarksFilter;
 
 		// For now, session ID is time and date
 		final DateFormat df = new SimpleDateFormat("yyyy_MM_dd-HH_mm");
@@ -219,6 +226,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	 * @throws JAXBException
 	 */
 	private void initObjectsForDataBinding() throws JAXBException {
+	/*
 		factory = new ObjectFactory();
 
 		cysession = factory.createCysession();
@@ -233,12 +241,10 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 		sState.setPlugins(plugins);
 		sState.setCytopanels(cytoPanels);
 		//sState.setServer(getServerState());
+		*/
 	}
 
 	private void setDesktopStates() throws JAXBException {
-
-
-		Properties dp = session.getDesktopProperties();
 
 	/*	
 		DesktopSize dSize = factory.createDesktopSize();
@@ -296,13 +302,16 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	/**
 	 * Writes the bookmarks.xml file to the session zip.
 	 */
-	private void zipBookmarks() throws IOException, JAXBException {
+	private void zipBookmarks() throws Exception {
 
 		zos.putNextEntry(new ZipEntry(sessionDir + BOOKMARKS_FILE) );
 
-		//BookmarksUtil.saveBookmark(Cytoscape.getBookmarks(), zos);
+		CyWriter bookmarksWriter = propertyWriterMgr.getWriter(session.getBookmarks(), bookmarksFilter, zos );
+		bookmarksWriter.run(taskMonitor);
 
 		zos.closeEntry();
+
+		bookmarksWriter = null;
 	}
 
 	/**

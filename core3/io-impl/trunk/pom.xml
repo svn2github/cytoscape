@@ -69,28 +69,6 @@
 					</instructions>
 				</configuration>
 			</plugin>
-            <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>session</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <schemaDirectory>src/main/resources/xsd</schemaDirectory>
-                            <schemaIncludes>
-                                <include>cysession.xsd</include>
-                            </schemaIncludes>
-                            <generatePackage>org.cytoscape.io.internal.generated</generatePackage>
-                            <verbose>true</verbose>
-                            <removeOldOutput>false</removeOldOutput>
-                            <forceRegenerate>true</forceRegenerate>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 		</plugins>
 	</build>
 
@@ -252,7 +230,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>property</artifactId>
+			<artifactId>property-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
