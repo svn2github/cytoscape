@@ -8,10 +8,10 @@ function sendConfirmartionEmail($yourName, $email, $pluginName, $pluginDescripti
 
 	$from = $cytostaff_emails[0];
 	$to = $email;// Author e-mail contact
-	$bcc = "";
-	for ($i=0; $i<count($cytostaff_emails); $i++){
-        	$bcc = $bcc . $cytostaff_emails[$i] . " ";
-	}
+	$bcc = $cytostaff_emails[0];
+	//for ($i=0; $i<count($cytostaff_emails); $i++){
+        // 	$bcc = $bcc . $cytostaff_emails[$i] . " ";
+	//}
 	$subject = "Your plugin -- " . $pluginName;
 	$body = $yourName.",\n\nThank you for submitting " . $pluginName . " to Cytoscape. " .
 		"\n\nDescription:\n\n".$pluginDescription."\n\n".
@@ -33,6 +33,28 @@ function sendConfirmartionEmail($yourName, $email, $pluginName, $pluginDescripti
   		//echo("<p>Confirmation e-mail was sent!</p>");
  	} else {
   		echo("<p>Failed to send a confirmation e-mail...</p>");
+ 	}
+	
+	//Send notification e-mail to staff
+
+	$to =$cytostaff_emails[0];
+	$bcc = $cytostaff_emails[0].' ';
+	for ($i=0; $i<count($cytostaff_emails); $i++){
+         	$bcc = $bcc . $cytostaff_emails[$i] . " ";
+	}
+
+	$headers = "From: " . $from . "\r\n"; 
+	if ($bcc != "") {
+		$headers = $headers . "BCC: " . $bcc;
+	}
+
+
+	$body = $body. "\n\nAdmin URL: http://chianti.ucsd.edu/cyto_web/plugins/pluginadmin.php\n\n";
+
+	if (mail($to, $subject, $body, $headers)) {
+  		//echo("<p>notification e-mail was sent to staff!</p>");
+ 	} else {
+  		echo("<p>Failed to send a notification e-mail...</p>");
  	}
 }
 ?>	
