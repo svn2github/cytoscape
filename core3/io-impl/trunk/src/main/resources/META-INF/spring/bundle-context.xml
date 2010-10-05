@@ -103,8 +103,7 @@
 			</set>
 		</constructor-arg>
 		<constructor-arg value="SIF files" />
-		<constructor-arg type="org.cytoscape.io.DataCategory"
-			value="NETWORK" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="NETWORK" />
 		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
 			<ref bean="streamUtil"/>
 		</constructor-arg>
@@ -129,8 +128,7 @@
 			</set>
 		</constructor-arg>
 		<constructor-arg value="XGMML files" />
-		<constructor-arg type="org.cytoscape.io.DataCategory"
-			value="NETWORK" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="NETWORK" />
 		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
 			<ref bean="streamUtil"/>
 		</constructor-arg>
@@ -148,8 +146,7 @@
 			</set>
 		</constructor-arg>
 		<constructor-arg value="GML files" />
-		<constructor-arg type="org.cytoscape.io.DataCategory"
-			value="NETWORK" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="NETWORK" />
 		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
 			<ref bean="streamUtil"/>
 		</constructor-arg>
@@ -191,6 +188,27 @@
 			</set>
 		</constructor-arg>
 		<constructor-arg value="Bookmark XML files" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="PROPERTIES" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
+	</bean>
+
+	<bean id="propertiesFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+		<constructor-arg index="0">
+			<set>
+				<value>props</value>
+				<value>properties</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<!-- content types should be exact - don't add possible matches!
+				<value>text/plain</value>
+				-->
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Java Properties files" />
 		<constructor-arg type="org.cytoscape.io.DataCategory" value="PROPERTIES" />
 		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
 			<ref bean="streamUtil"/>
@@ -290,6 +308,11 @@
 	<bean id="bookmarkReaderFactory" 
 	      class="org.cytoscape.io.internal.read.bookmarks.BookmarkReaderFactory">
 		<constructor-arg ref="bookmarksFilter" />
+	</bean>
+
+	<bean id="propertiesReaderFactory" 
+	      class="org.cytoscape.io.internal.read.properties.PropertiesReaderFactory">
+		<constructor-arg ref="propertiesFilter" />
 	</bean>
 
 	<bean id="sessionWriterFactory" 

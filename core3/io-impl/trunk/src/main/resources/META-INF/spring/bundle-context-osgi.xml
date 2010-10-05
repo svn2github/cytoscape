@@ -131,6 +131,15 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="propertiesReaderFactoryService" ref="propertiesReaderFactory"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="propertiesReaderFactory" />
+			<entry key="readerId" value="propertiesReaderFactory" />
+			<entry key="readerDescription" value="Java Properties File Reader" />
+		</osgi:service-properties>
+	</osgi:service>
+
 	<osgi:service id="sessionWriterFactoryService" ref="sessionWriterFactory"
 		interface="org.cytoscape.io.write.SessionWriterFactory">
 	</osgi:service>
