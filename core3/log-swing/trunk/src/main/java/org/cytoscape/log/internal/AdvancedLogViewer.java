@@ -14,6 +14,7 @@ import javax.swing.table.*;
 
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
@@ -368,9 +369,20 @@ class AdvancedLogViewer {
 			if (fileChooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION)
 				return;
 
-			File file = fileChooser.getSelectedFile();
-			final Task task = new ExportTask(file);
-			taskManager.execute(new TaskIterator(task));
+			final File file = fileChooser.getSelectedFile();
+			taskManager.execute(new ExportTaskFactory(file));
+		}
+	}
+
+	class ExportTaskFactory implements TaskFactory {
+		private final File file;
+
+		ExportTaskFactory(final File file) {
+			this.file = file;
+		}
+
+		public TaskIterator getTaskIterator() {
+			return new TaskIterator(new ExportTask(file));
 		}
 	}
 
