@@ -99,6 +99,7 @@ import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
@@ -749,11 +750,23 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 		} else
 			setPropertyTable();
-
-		Cytoscape.getCurrentNetworkView().setVisualStyle(vsName);
-
-		if (redraw && Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView())
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		
+		final List<CyNetwork> selected = Cytoscape.getSelectedNetworks();
+		final Set<CyNetworkView> views = new HashSet<CyNetworkView>();
+		
+		// Find selected views
+		for (final CyNetwork network: selected) {
+			final CyNetworkView targetView = Cytoscape.getNetworkView(network.getIdentifier());
+			if (targetView != Cytoscape.getNullNetworkView())
+				views.add(targetView);
+		}
+		
+		// Apply it for selected views.
+		for (CyNetworkView view: views) {
+			view.setVisualStyle(vsName);
+			view.redrawGraph(false, true);
+			Cytoscape.getVisualMappingManager().setNetworkView(view);
+		}
 
 		/*
 		 * Draw default view
@@ -1712,11 +1725,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				    && ((dataClass != Integer.class) && (dataClass != Double.class)
 				       && (dataClass != Float.class))) {
 					
-					JOptionPane.showMessageDialog(Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedComponent(),
-					                              "Continuous Mapper can be used with Numbers only.",
-					                              "Incompatible Mapping Type!",
-					                              JOptionPane.ERROR_MESSAGE);
-
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							JOptionPane.showMessageDialog(Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedComponent(),
+		                              "Continuous Mapper can be used with Numbers only.",
+		                              "Incompatible Mapping Type!",
+		                              JOptionPane.ERROR_MESSAGE);
+						}
+					});
+					
 					return;
 				}
 			} else {
