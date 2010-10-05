@@ -1,11 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Cytoscape 2.x Plugins</title>
-<link rel="stylesheet" type="text/css" media="screen" href="http://cytoscape.org/css/cytoscape.css">	
-<link rel="shortcut icon" href="http://cytoscape.org/images/cyto.ico">
-	<SCRIPT LANGUAGE="JavaScript" SRC="mktree.js"></SCRIPT>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Search results</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="http://cytoscape.org/js/menu_generator.js"></script>
+<SCRIPT LANGUAGE="JavaScript" SRC="mktree.js"></SCRIPT>
+
+
+
+
     <style type="text/css">
 <!--
 .style3 {
@@ -51,15 +56,12 @@
 
 -->
     </style>
+<link href="http://cytoscape.org/css/main.css" type="text/css" rel="stylesheet" media="screen">
+
 </head>
 <body bgcolor="#ffffff">
-<div id="topbar">
-	<div class="title">Search results</div>
-</div>
 <div id="container">
-
-
-<?php include "http://cytoscape.org/nav.php"; ?>
+<script src="http://cytoscape.org/js/header.js"></script>
 
 
 <br><br><b>Search words:</b> <?php echo $_POST["searchwords"] ?> <br><br>
@@ -184,8 +186,7 @@ function hightlight($str, $keywords = '')
 
 
 ?>
-
-<?php include "http://cytoscape.org/footer.php"; ?>
 <br>
+<script src="http://cytoscape.org/js/footer.js"></script>
 </body>
 </html>
