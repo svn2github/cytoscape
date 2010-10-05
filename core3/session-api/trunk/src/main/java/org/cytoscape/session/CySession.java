@@ -28,10 +28,11 @@
  */
 package org.cytoscape.session;
 
-import org.cytoscape.session.CySession;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.property.bookmark.Bookmarks;
+import org.cytoscape.property.session.Cysession;
 import java.util.Properties;
 import java.util.Set;
 import java.util.HashSet;
@@ -69,8 +70,9 @@ public final class CySession {
 	private final Map<CyNetworkView,String> vsMap;
 	private final Properties cyProps;
 	private final Properties vProps;
-	private final Properties dProps;
 	private final Map<String, List<File>> pluginFiles;
+	private final Bookmarks bookmarks; 
+	private final Cysession cysession; 
 
 	private static final Logger logger = LoggerFactory.getLogger(CySession.class);
 
@@ -102,15 +104,20 @@ public final class CySession {
 		else
 			vProps = b.vProps;
 
-		if ( b.dProps == null )
-			dProps = new Properties();
-		else
-			dProps = b.dProps;
-
 		if ( b.pluginFiles == null )
 			pluginFiles = new HashMap<String, List<File>>(); 
 		else
 			pluginFiles = b.pluginFiles;
+
+		if ( b.bookmarks == null )
+			bookmarks = new Bookmarks(); 
+		else
+			bookmarks = b.bookmarks;
+
+		if ( b.cysession == null )
+			cysession = new Cysession(); 
+		else
+			cysession = b.cysession;
 	}
 
 	public static class Builder {
@@ -120,8 +127,9 @@ public final class CySession {
 		private Map<CyNetworkView,String> vsMap; 
 		private Properties cyProps;
 		private Properties vProps; 
-		private Properties dProps;
 		private Map<String, List<File>> pluginFiles; 
+		private Bookmarks bookmarks; 
+		private Cysession cysession; 
 
 		/**
 		 * Returns a complete instance of CySession based upon the methods
@@ -187,17 +195,6 @@ public final class CySession {
 		}
 
 		/**
-		 * @param p A Properties object that contains properties defining
-		 * the current state of the Desktop in Cytoscape.
-		 * @return An instance of Builder that has at least been configured
-		 * with the specified properties.
-		 */
-    	public Builder desktopProperties(final Properties p) { 
-			dProps = p; 
-			return this;
-		}
-
-		/**
 		 * @param p A map of plugin names to a list of File objects that the
 		 * given plugin wants stored in the session file.
 		 * @return An instance of Builder that has at least been configured
@@ -205,6 +202,28 @@ public final class CySession {
 		 */
 		public Builder pluginFileListMap(final Map<String, List<File>> p) { 
 			this.pluginFiles = p; 
+			return this;
+		}
+
+		/**
+		 * @param b A Bookmarks object containing all bookmarks defined
+		 * for this session.
+		 * @return An instance of Builder that has at least been configured
+		 * with the specified bookmarks. 
+		 */
+		public Builder bookmarks(final Bookmarks b) { 
+			this.bookmarks = b; 
+			return this;
+		}
+
+		/**
+		 * @param s A {@link Cysession} object containing the session descriptor
+		 * for this session.
+		 * @return An instance of Builder that has at least been configured
+		 * with the specified session descriptor. 
+		 */
+		public Builder cysession(final Cysession s) { 
+			this.cysession = s; 
 			return this;
 		}
 	}
@@ -238,10 +257,14 @@ public final class CySession {
     public Properties getVizmapProperties() { return vProps; }
 
 	/**
-	 * @return A Propeties object containing all desktop configuration properties 
-	 * for this session.
+	 * @return A {@link Bookmarks} object containing all bookmarks for this session.
 	 */
-    public Properties getDesktopProperties() { return dProps; }
+    public Bookmarks getBookmarks() { return bookmarks; }
+
+	/**
+	 * @return A {@link Cysession} object containing a description of this session. 
+	 */
+    public Cysession getCysession() { return cysession; }
 
 	/**
 	 * @return A map of plugin names to lists of File objects that are stored

@@ -7,6 +7,8 @@ import java.io.File;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.session.CySession;
+import org.cytoscape.property.session.Cysession;
+import org.cytoscape.property.bookmark.Bookmarks;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
@@ -162,25 +164,49 @@ public class CySessionTest {
 	}
 
 	@Test
-	public void testDefaultGetDesktopProperties() {
+	public void testDefaultGetBookmarks() {
 		session = new CySession.Builder().build();
 		assertNotNull(session);
-		assertNotNull(session.getDesktopProperties());
+		assertNotNull(session.getBookmarks());
 	}
 
 	@Test
-	public void testSetNullDesktopProperties() {
-		session = new CySession.Builder().desktopProperties(null).build();
+	public void testSetNullBookmarks() {
+		session = new CySession.Builder().bookmarks(null).build();
 		assertNotNull(session);
-		assertNotNull(session.getDesktopProperties());
-		assertEquals(0,session.getDesktopProperties().size());
+		assertNotNull(session.getBookmarks());
 	}
 
 	@Test
-	public void testSetDesktopProperties() {
-		session = new CySession.Builder().desktopProperties(getFakeProps()).build();
+	public void testSetBookmarks() {
+		Bookmarks b = mock(Bookmarks.class);
+		session = new CySession.Builder().bookmarks(b).build();
 		assertNotNull(session);
-		checkProps(session.getDesktopProperties());
+		assertNotNull(session.getBookmarks());
+		assertEquals(b, session.getBookmarks());
+	}
+
+	@Test
+	public void testDefaultGetSession() {
+		session = new CySession.Builder().build();
+		assertNotNull(session);
+		assertNotNull(session.getCysession());
+	}
+
+	@Test
+	public void testSetNullSession() {
+		session = new CySession.Builder().cysession(null).build();
+		assertNotNull(session);
+		assertNotNull(session.getCysession());
+	}
+
+	@Test
+	public void testSetSession() {
+		Cysession b = mock(Cysession.class);
+		session = new CySession.Builder().cysession(b).build();
+		assertNotNull(session);
+		assertNotNull(session.getCysession());
+		assertEquals(b, session.getCysession());
 	}
 
 	@Test
