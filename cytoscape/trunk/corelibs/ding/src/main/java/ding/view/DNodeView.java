@@ -502,6 +502,11 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setHeight(double height) {
+		if (height <= 0.0) {
+			System.err.println("*** Warning: Bad height in DNodeView.setHeight(): " + height + ", set to 1.0!");
+			height = 1.0;
+		}
+
 		synchronized (graphView.m_lock) {
 			if (!graphView.m_spacial.exists(m_inx, graphView.m_extentsBuff, 0))
 				return false;
