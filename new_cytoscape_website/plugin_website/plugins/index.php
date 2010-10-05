@@ -105,7 +105,7 @@
 	  if (!($categories = @ mysql_query ($query, $connection))) 
 		 showerror();
 	?>
-    <form action="keywordsearch.php" method="post">
+    <form action="lucenesearch.php" method="post">
       <label>
         <input type="text" name="searchwords" size="30">
         <input type="submit" name="Submit" value="Search">
