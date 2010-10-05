@@ -64,6 +64,8 @@ import cytoscape.util.RecentlyOpenedTracker;
 import cytoscape.util.undo.RedoAction;
 import cytoscape.util.undo.UndoAction;
 import cytoscape.view.cytopanels.CytoPanelName;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
 
 
 /**
@@ -107,7 +109,8 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 	JButton annotationButton;
 	JButton helpButton;
 	JButton vizButton;
-
+	JButton forceDirectLayoutButton;
+	JButton createNewNetworkButton;
 	/**
 	 * Creates a new CyMenus object. This will construct the basic bar objects,
 	 * but won't fill them with menu items and associated action listeners.
@@ -634,6 +637,71 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 		                                    .getResource("images/ximian/stock_file-with-objects.png")));
 		vizButton.setToolTipText("Open VizMapper\u2122");
 		vizButton.setBorderPainted(false);
+		
+		/////Add a button -- apply force-directed layout
+		forceDirectLayoutButton = new JButton();
+		forceDirectLayoutButton.setIcon(new ImageIcon(Cytoscape.class
+		                                        .getResource("images/ximian/stock_dialog-warning-32.png")));
+		forceDirectLayoutButton.setToolTipText("Apply force-directed layout");
+		forceDirectLayoutButton.setBorderPainted(false);
+		forceDirectLayoutButton.setRolloverEnabled(true);
+		forceDirectLayoutButton.addMouseListener(new MouseListener() {
+				public void mouseClicked(MouseEvent e) {
+					//Perform force-directed layout
+					CyLayoutAlgorithm fd = CyLayouts.getLayout("force-directed");
+					fd.setSelectedOnly(false);
+					fd.getSettings().updateValues();
+					fd.updateSettings();					
+					CyNetworkView view = Cytoscape.getCurrentNetworkView();
+					if (view != null){
+						view.applyLayout(fd);
+						view.redrawGraph(true, true);						
+					}
+				}
+
+				public void mouseEntered(MouseEvent e) {}
+				public void mouseExited(MouseEvent e) {}
+
+				public void mousePressed(MouseEvent e) {
+					forceDirectLayoutButton.setSelected(true);
+				}
+
+				public void mouseReleased(MouseEvent e) {
+					forceDirectLayoutButton.setSelected(false);
+				}
+			});
+		toolBar.add(forceDirectLayoutButton);
+
+
+		/////Add a button -- Create new network from selected nodes, all edges
+		createNewNetworkButton = new JButton();
+		createNewNetworkButton.setIcon(new ImageIcon(Cytoscape.class
+		                                        .getResource("images/ximian/stock_dialog-warning-32.png")));
+		createNewNetworkButton.setToolTipText("Create new network from slected nodes, all edges");
+		createNewNetworkButton.setBorderPainted(false);
+		createNewNetworkButton.setRolloverEnabled(true);
+		createNewNetworkButton.addMouseListener(new MouseListener() {
+				public void mouseClicked(MouseEvent e) {
+					//Create New Network from selected nodes, all edges
+					if (Cytoscape.getCurrentNetworkView().getSelectedNodeIndices().length > 0){
+						NewWindowSelectedNodesOnlyAction action = new NewWindowSelectedNodesOnlyAction(true);
+						action.actionPerformed(null);						
+					}
+				}
+
+				public void mouseEntered(MouseEvent e) {}
+				public void mouseExited(MouseEvent e) {}
+
+				public void mousePressed(MouseEvent e) {
+					createNewNetworkButton.setSelected(true);
+				}
+
+				public void mouseReleased(MouseEvent e) {
+					createNewNetworkButton.setSelected(false);
+				}
+			});
+		toolBar.add(createNewNetworkButton);
+
 	}
 
 	public void propertyChange(PropertyChangeEvent e) {
