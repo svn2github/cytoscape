@@ -105,6 +105,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	 */
 	protected static final String BELOW_VALUE_CHANGED = "BELOW_VALUE_CHANGED";
 	protected static final String ABOVE_VALUE_CHANGED = "ABOVE_VALUE_CHANGED";
+	
 	protected VisualPropertyType type;
 	protected Calculator calculator;
 	protected ContinuousMapping mapping;
@@ -206,7 +207,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		visualPropertyLabel = new javax.swing.JLabel();
 
 		valueSpinner = new JSpinner();
-
 		valueSpinner.setEnabled(false);
 
 		rotaryEncoder = new JXMultiThumbSlider();
@@ -493,7 +493,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	private javax.swing.JPanel rangeEditorPanel;
 	private javax.swing.JPanel rangeSettingPanel;
 	protected JXMultiThumbSlider slider;
-	protected javax.swing.JSpinner valueSpinner;
+	protected JSpinner valueSpinner;
 	private javax.swing.JLabel visualPropertyLabel;
 	protected JXMultiThumbSlider rotaryEncoder;
 	protected JButton minMaxButton;
@@ -595,12 +595,15 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	 */
 	class SpinnerChangeListener implements ChangeListener {
 		public void stateChanged(ChangeEvent e) {
-			Number newVal = spinnerModel.getNumber();
-			int selectedIndex = slider.getSelectedIndex();
+			
+			final Number newVal = spinnerModel.getNumber();
+			final int selectedIndex = slider.getSelectedIndex();
 
-			if ((0 <= selectedIndex) && (slider.getModel().getThumbCount() > 1)) {
+			if ((0 <= selectedIndex) && (slider.getModel().getThumbCount() >= 1)) {
+				
 				if ((newVal.doubleValue() < EditorValueRangeTracer.getTracer().getMin(type))
 				    || (newVal.doubleValue() > EditorValueRangeTracer.getTracer().getMax(type))) {
+										
 					if ((lastSpinnerNumber > EditorValueRangeTracer.getTracer().getMin(type))
 					    && (lastSpinnerNumber < EditorValueRangeTracer.getTracer().getMax(type))) {
 						spinnerModel.setValue(lastSpinnerNumber);
@@ -611,10 +614,10 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 					return;
 				}
 
-				Double newPosition = ((newVal.floatValue()
+				final Double newPosition = ((newVal.floatValue()
 				                      - EditorValueRangeTracer.getTracer().getMin(type)) / EditorValueRangeTracer.getTracer()
 				                                                                                                 .getRange(type));
-
+				
 				slider.getModel().getThumbAt(selectedIndex)
 				      .setPosition(newPosition.floatValue() * 100);
 				slider.getSelectedThumb()

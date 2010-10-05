@@ -122,7 +122,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			return null;
 		}
 
-		DiscreteTrackRenderer rend = (DiscreteTrackRenderer) editor.slider.getTrackRenderer();
+		DiscreteTrackRenderer<?> rend = (DiscreteTrackRenderer) editor.slider.getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
 
 		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
