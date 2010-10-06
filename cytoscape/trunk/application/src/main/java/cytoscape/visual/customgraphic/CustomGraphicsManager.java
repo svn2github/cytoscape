@@ -77,6 +77,7 @@ public class CustomGraphicsManager extends SubjectBase implements
 	public CustomGraphicsManager() {
 		
 		this.isUsedCustomGraphics = new HashMap<CyCustomGraphics, Boolean>();
+		this.imageHomeDirectory = new File(CytoscapeInit.getConfigDirectory(), IMAGE_DIR_NAME);
 
 		// For loading images in parallel.
 		this.imageLoaderService = Executors.newFixedThreadPool(NUM_THREADS);
@@ -97,10 +98,6 @@ public class CustomGraphicsManager extends SubjectBase implements
 	public void restoreImages() {
 		final CompletionService<BufferedImage> cs = new ExecutorCompletionService<BufferedImage>(
 				imageLoaderService);
-
-		// User config directory
-		this.imageHomeDirectory = new File(CytoscapeInit.getConfigDirectory(),
-				IMAGE_DIR_NAME);
 
 		imageHomeDirectory.mkdir();
 
