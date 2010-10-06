@@ -54,9 +54,9 @@ public class NNFParser {
 	 * 
 	 * @param line
 	 */
-	public boolean parse(String line) {
+	public boolean parse(final String line) {
 		// Split with white space chars
-		parts = line.split("\\s+");
+		parts = splitLine(line);
 		length = parts.length;
 
 		CyNetwork network = networkMap.get(parts[0]);
@@ -112,6 +112,37 @@ public class NNFParser {
 		return true;
 	}
 	
+	private String[] splitLine(final String line) {
+		final List<String> parts = new ArrayList<String>();
+		boolean escaped = false;
+		StringBuilder part = null;
+		for (int i = 0; i < line.length(); ++i) {
+			final char ch = line.charAt(i);
+			if (escaped) {
+				escaped = false;
+				if (part == null)
+					part = new StringBuilder();
+				part.append(ch);
+			} else if (ch == '\\')
+				escaped = true;
+			else if (ch == ' ' || ch == '\t') {
+				if (part != null) {
+					parts.add(part.toString());
+					part = null;
+				}
+			} else {
+				if (part == null)
+					part = new StringBuilder();
+				part.append(ch);
+			}
+		}
+
+		if (part != null)
+			parts.add(part.toString());
+
+		final String[] array = new String[parts.size()];
+		return parts.toArray(array);
+	}
 
 	protected List<CyNetwork> getNetworks() {
 		return networks;
