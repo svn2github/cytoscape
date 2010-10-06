@@ -388,6 +388,7 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 		addAction(new ExportAsXGMMLAction());
 		addAction(new ExportAsGMLAction());
 		addAction(new ExportAsInteractionsAction());
+		addAction(new ExportNetworksAsNNFAction());
 		addAction(new ExportNodeAttributesAction());
 		addAction(new ExportEdgeAttributesAction());
 		addAction(new ExportVizmapAction());
