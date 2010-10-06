@@ -54,9 +54,11 @@ public class CellEditorFactory {
 		this.editorMap.put(Color.class, new CyColorPropertyEditor());
 		this.editorMap.put(Font.class, new CyFontPropertyEditor());
 		this.editorMap.put(Number.class, new CyDoublePropertyEditor());
+		
 		this.editorMap.put(ObjectPosition.class,
 				new CyObjectPositionPropertyEditor(
 						VisualPropertyType.NODE_LABEL_POSITION));
+		
 		this.editorMap.put(CyCustomGraphics.class, new CyCustomGraphicsEditor());
 
 		// Register combo-box type editors. They needs special customization.

@@ -37,6 +37,7 @@
 package cytoscape.visual.ui;
 
 import giny.model.GraphObject;
+import giny.model.Node;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -48,17 +49,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import cytoscape.Cytoscape;
-import cytoscape.CyEdge;
-import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.VisualProperty;
 import cytoscape.visual.VisualPropertyDependency;
-import cytoscape.visual.VisualStyle;
+import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.converter.ValueToStringConverterManager;
-import cytoscape.visual.parsers.ObjectToString;
 
 
 /**
@@ -66,10 +62,13 @@ import cytoscape.visual.parsers.ObjectToString;
  * Node and Edge bypass classes.
  */
 abstract class VizMapBypass {
+	
+	protected GraphObject graphObj = null;
+	
 	protected Frame parent = Cytoscape.getDesktop();
 	protected VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 	protected CyAttributes attrs = null;
-	protected GraphObject graphObj = null;
+	
 	protected CyLogger logger = CyLogger.getLogger(VizMapBypass.class);
 
 	abstract protected List<String> getBypassNames();
@@ -106,27 +105,39 @@ abstract class VizMapBypass {
 		menu.add(jmi);
 	}
 
-	protected void addMenuItem(JMenu menu, final VisualPropertyType type) {
+	
+	protected void addMenuItem(final JMenu menu, final VisualPropertyType type) {
+		
 		final JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getName()) {
-				public void actionPerformed(ActionEvent e) {
-					Object obj = null;
+			
+			private static final long serialVersionUID = -5772498870138048277L;
 
-					try {
-						obj = type.showDiscreteEditor();
-					} catch (Exception ex) {
-						logger.warn("Unable to show descrete editor", ex);
-						obj = null;
-					}
-
-					if (obj == null)
-						return;
-
-					String val = ValueToStringConverterManager.manager.toString(obj);
-					attrs.setAttribute(graphObj.getIdentifier(), type.getBypassAttrName(), val);
-					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-					BypassHack.finished();
+			public void actionPerformed(ActionEvent e) {
+				Object obj = null;
+				Object currentValue = null;
+				
+				// For now, it supports label position only.
+				if(type.equals(VisualPropertyType.NODE_LABEL_POSITION)) {
+					if(graphObj instanceof Node)
+						currentValue = Cytoscape.getCurrentNetworkView().getNodeView((Node) graphObj).getLabelPosition();
 				}
-			});
+				
+				try {
+					obj = type.showDiscreteEditor(currentValue);
+				} catch (Exception ex) {
+					logger.warn("Unable to show descrete editor", ex);
+					obj = null;
+				}
+
+				if (obj == null)
+					return;
+				
+				String val = ValueToStringConverterManager.manager.toString(obj);
+				attrs.setAttribute(graphObj.getIdentifier(), type.getBypassAttrName(), val);
+				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				BypassHack.finished();
+			}
+		});
 
 		menu.add(jmi);
 

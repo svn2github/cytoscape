@@ -495,14 +495,18 @@ public enum VisualPropertyType {
 
 		return list;
 	}
+	
 
-	private Object showEditor(final EditorDisplayer action)
+	private Object showEditor(final EditorDisplayer action, final Object defaultValue)
 	    throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
 	               SecurityException, NoSuchMethodException {
 		
-		// Special case:
+		// Special case: Object position needs a default.
 		if(EditorDisplayer.DISCRETE_OBJECT_POSITION == action) {
-			action.setParameters(new Object[] {Cytoscape.getDesktop(), this.getDefault(Cytoscape.getVisualMappingManager().getVisualStyle()), this});
+			if(defaultValue != null && defaultValue instanceof ObjectPosition)
+				action.setParameters(new Object[] {Cytoscape.getDesktop(), defaultValue, this});
+			else
+				action.setParameters(new Object[] {Cytoscape.getDesktop(), this.getDefault(Cytoscape.getVisualMappingManager().getVisualStyle()), this});
 		}
 		
 		final Method method = action.getActionClass()
@@ -537,8 +541,21 @@ public enum VisualPropertyType {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public Object showDiscreteEditor() throws Exception {
-		return showEditor(EditorDisplayer.getEditor(this, EditorType.DISCRETE));
+		return this.showDiscreteEditor(null);
 	}
+	
+	
+	/**
+	 * Display editor with default value.
+	 * 
+	 * @param defaultValue
+	 * @return
+	 * @throws Exception
+	 */
+	public Object showDiscreteEditor(final Object defaultValue) throws Exception {		
+		return showEditor(EditorDisplayer.getEditor(this, EditorType.DISCRETE), defaultValue);
+	}
+	
 
 	/**
 	 * Display continuous value editor.
@@ -562,7 +579,7 @@ public enum VisualPropertyType {
 			                         450, 300, "Continuous Editor for " + this.calcName, this
 			                     });
 
-		return showEditor(editor);
+		return showEditor(editor, null);
 	}
 
 	/**

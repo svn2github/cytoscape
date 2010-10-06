@@ -54,9 +54,12 @@ import cytoscape.visual.ui.PopupObjectPositionChooser;
  */
 public class CyObjectPositionPropertyEditor extends
 		com.l2fprod.common.beans.editor.AbstractPropertyEditor {
+	
 	private ObjectPositionCellRenderer label;
 	private JButton button;
 	private ObjectPosition position;
+	
+	private ObjectPosition oldPosition;
 	
 	private VisualPropertyType targetType;
 
@@ -64,7 +67,9 @@ public class CyObjectPositionPropertyEditor extends
 	 * Creates a new CyLabelPositionLabelEditor object.
 	 */
 	public CyObjectPositionPropertyEditor(final VisualPropertyType targetType) {
+		
 		this.targetType = targetType;
+			
 		editor = new JPanel(new PercentLayout(PercentLayout.HORIZONTAL, 0));
 		((JPanel) editor).add("*", label = new ObjectPositionCellRenderer());
 		label.setOpaque(false);
@@ -114,10 +119,10 @@ public class CyObjectPositionPropertyEditor extends
 				Cytoscape.getDesktop(), position, targetType);
 
 		if (newVal != null) {
-			final ObjectPosition old = position;
+			oldPosition = newVal;
 
 			setValue(newVal);
-			firePropertyChange(old, newVal);
+			firePropertyChange(oldPosition, newVal);
 		}
 	}
 }
