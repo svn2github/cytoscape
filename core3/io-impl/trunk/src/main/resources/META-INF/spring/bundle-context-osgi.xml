@@ -152,6 +152,18 @@
 		interface="org.cytoscape.io.write.ViewWriterFactory">
 	</osgi:service>
 
+	<osgi:service id="cysessionWriterFactoryService" ref="cysessionWriterFactory"
+		interface="org.cytoscape.io.write.PropertyWriterFactory">
+	</osgi:service>
+
+	<osgi:service id="bookmarksWriterFactoryService" ref="bookmarksWriterFactory"
+		interface="org.cytoscape.io.write.PropertyWriterFactory">
+	</osgi:service>
+
+	<osgi:service id="propertiesWriterFactoryService" ref="propertiesWriterFactory"
+		interface="org.cytoscape.io.write.PropertyWriterFactory">
+	</osgi:service>
+
 	<osgi:service id="streamUtilService" ref="streamUtil"
 		interface="org.cytoscape.io.util.StreamUtil">
 	</osgi:service>

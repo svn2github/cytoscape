@@ -259,6 +259,18 @@
 		<constructor-arg ref="xgmmlFilter"/>
 	</bean>
 
+	<bean id="cysessionWriterFactory" class="org.cytoscape.io.internal.write.cysession.CysessionWriterFactoryImpl">
+		<constructor-arg ref="cysessionFilter"/>
+	</bean>
+
+	<bean id="bookmarksWriterFactory" class="org.cytoscape.io.internal.write.bookmarks.BookmarksWriterFactoryImpl">
+		<constructor-arg ref="bookmarksFilter"/>
+	</bean>
+
+	<bean id="propertiesWriterFactory" class="org.cytoscape.io.internal.write.properties.PropertiesWriterFactoryImpl">
+		<constructor-arg ref="propertiesFilter"/>
+	</bean>
+
 	<!-- Utilities for XGMML Reader -->
 	
 	<bean id="objectTypeMap" class="org.cytoscape.io.internal.read.xgmml.ObjectTypeMap" />
