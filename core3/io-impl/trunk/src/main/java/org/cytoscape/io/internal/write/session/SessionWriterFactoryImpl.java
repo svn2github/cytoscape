@@ -12,24 +12,38 @@ public class SessionWriterFactoryImpl implements SessionWriterFactory {
 	
 	private final CyFileFilter thisFilter;
 	private final CyFileFilter xgmmlFilter;
-	private final CyNetworkViewWriterManager nvwm;
-	private final PropertyWriterManager propertyWriterMgr;
 	private final CyFileFilter bookmarksFilter;
+	private final CyFileFilter cysessionFilter;
+	private final CyFileFilter propertiesFilter;
+	private final CyNetworkViewWriterManager networkViewWriterMgr;
+	private final PropertyWriterManager propertyWriterMgr;
 
 	private OutputStream outputStream;
 	private CySession session;
 
-	public SessionWriterFactoryImpl(CyFileFilter thisFilter, CyFileFilter xgmmlFilter, CyFileFilter bookmarksFilter, CyNetworkViewWriterManager nvwm, PropertyWriterManager propertyWriterMgr) {
+
+
+	public SessionWriterFactoryImpl(final CyFileFilter thisFilter, 
+	                                final CyFileFilter xgmmlFilter, 
+	                                final CyFileFilter bookmarksFilter, 
+	                                final CyFileFilter cysessionFilter, 
+	                                final CyFileFilter propertiesFilter, 
+	                                final CyNetworkViewWriterManager networkViewWriterMgr, 
+	                                final PropertyWriterManager propertyWriterMgr) {
 		this.thisFilter = thisFilter;
 		this.xgmmlFilter = xgmmlFilter;
 		this.bookmarksFilter = bookmarksFilter;
-		this.nvwm = nvwm;
+		this.cysessionFilter = cysessionFilter;
+		this.propertiesFilter = propertiesFilter;
+		this.networkViewWriterMgr = networkViewWriterMgr;
 		this.propertyWriterMgr = propertyWriterMgr;
 	}
 	
 	@Override
 	public CyWriter getWriter() {
-		return new SessionWriterImpl(outputStream, session, nvwm, propertyWriterMgr, xgmmlFilter, bookmarksFilter);
+		return new SessionWriterImpl(outputStream, session, networkViewWriterMgr, 
+		                             propertyWriterMgr, xgmmlFilter, bookmarksFilter, 
+		                             cysessionFilter, propertiesFilter);
 	}
 
 	@Override

@@ -191,7 +191,7 @@ public class CyFileFilterImpl implements CyFileFilter {
 
 			br = null;
 		}
-		
+
 		return header;
 	}
 
@@ -215,6 +215,18 @@ public class CyFileFilterImpl implements CyFileFilter {
 		}
 
 		return header.toString();
+	}
+
+	public String toString() {
+		String s = description + " [category: " + category + "]  [extensions: ";
+		for ( String ext : extensions )
+			s += ext + ",";
+		s += "]   [contentTypes: ";
+		for ( String c : contentTypes )
+			s += c + ",";
+		s += "]";
+
+		return s;
 	}
 
 }

@@ -50,6 +50,8 @@ import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyPropertyReader;
+import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.session.CySession;
@@ -58,9 +60,6 @@ import org.cytoscape.io.internal.read.MarkSupportedInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
@@ -83,47 +82,27 @@ import java.util.zip.ZipInputStream;
 /**
  */
 public class SessionReaderImpl extends AbstractTask implements CySessionReader {
-	/**
-	 *
-	 */
-	public static final String PACKAGE_NAME = "org.cytoscape.property.session";
 
-	/**
-	 *
-	 */
-	public static final String BOOKMARK_PACKAGE_NAME = "org.cytoscape.property.bookmark";
-
-	/**
-	 *
-	 */
 	public static final String CYSESSION = "cysession.xml";
-
-	/**
-	 *
-	 */
 	public static final String VIZMAP_PROPS = "vizmap.props";
-
-	/**
-	 *
-	 */
 	public static final String CY_PROPS = "cytoscape.props";
-
-	/**
-	 *
-	 */
 	public static final String XGMML_EXT = ".xgmml";
-	private static final String BOOKMARKS_FILE = "session_bookmarks.xml";
-	private static final String NETWORK_ROOT = "Network Root";
+	public  static final String BOOKMARKS_FILE = "session_bookmarks.xml";
+	public  static final String NETWORK_ROOT = "Network Root";
+
+
 	private static final Logger logger = LoggerFactory.getLogger(SessionReaderImpl.class);
+
 	private final Map<String, List<File>> pluginFileListMap = new HashMap<String, List<File>>();
 	private final Map<String,CyNetworkView[]> networkViews = new HashMap<String,CyNetworkView[]>();
 	private final Map<CyNetworkView,String> visualStyleMap = new HashMap<CyNetworkView,String>();
 	private final Map<String, Network> netMap = new HashMap<String, Network>();
+
 	private final InputStream sourceInputStream;
-
 	private final CyNetworkViewReaderManager netviewReaderMgr; 
+	private final CyPropertyReaderManager propertyReaderMgr; 
 
-	private Cysession session;
+	private Cysession cysession;
 	private Bookmarks bookmarks;
 	private TaskMonitor taskMonitor;
 	private Properties cytoscapeProps;
@@ -131,7 +110,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 
 	/**
 	 */
-	public SessionReaderImpl(final InputStream sourceInputStream, final CyNetworkViewReaderManager netviewReaderMgr) {
+	public SessionReaderImpl(final InputStream sourceInputStream, final CyNetworkViewReaderManager netviewReaderMgr, CyPropertyReaderManager propertyReaderMgr) {
 
 		if ( sourceInputStream == null )
 			throw new NullPointerException("input stream is null!");
@@ -140,60 +119,21 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		if ( netviewReaderMgr == null )
 			throw new NullPointerException("network view reader manager is null!");
 		this.netviewReaderMgr = netviewReaderMgr;	
+
+		if ( propertyReaderMgr == null )
+			throw new NullPointerException("property reader manager is null!");
+		this.propertyReaderMgr = propertyReaderMgr;	
 	}
 
 
 	/**
 	 * Read a session file.
-	 *
-	 * @throws IOException
-	 * @throws JAXBException
 	 */
 	public void run(TaskMonitor tm) throws Exception {
-		System.out.println("SESSION starting to read");
 		taskMonitor = tm;
 
 		extractEntries();
 		processNetworks();
-
-
-//		if (session.getSessionState().getDesktop() != null) {
-//			restoreDesktopState();
-//		}
-
-//		if (session.getSessionState().getServer() != null) {
-			// TODO 
-			//restoreOntologyServerStatus();
-//		}
-
-		// Send signal to others
-//		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
-//		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
-
-		// Send signal to plugins
-//		Cytoscape.firePropertyChange(Cytoscape.RESTORE_PLUGIN_STATE, pluginFileListMap, null);
-//		deleteTmpPluginFiles();
-
-		// Send message with list of loaded networks.
-//		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, networkList);
-
-		// Restore listener for VizMapper.
-//		if (Cytoscape.getDesktop() != null) {
-
-			// Cleanup view
-//			final GraphView curView = Cytoscape.getCurrentNetworkView();
-
-//			if ((curView != null) && (curView.equals(Cytoscape.getNullNetworkView()) == false)) {
-//				VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-//				VisualStyle lastVS = vmm.getVisualStyle(lastVSName);
-//				vmm.setVisualStyleForView(curView,lastVS);
-//				vmm.setNetworkView(curView);
-//				vmm.setVisualStyle(lastVS);
-//				Cytoscape.redrawGraph(curView);
-//			}
-
-//			Cytoscape.getDesktop().getVizMapperUI().enableListeners(true);
-//		}
 	}
 
 	public CySession getCySession() {
@@ -209,7 +149,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 			.cytoscapeProperties( cytoscapeProps )
 			.vizmapProperties( vizmapProps )
 			.bookmarks( bookmarks )
-			.cysession( session )
+			.cysession( cysession )
 			.pluginFileListMap( pluginFileListMap )
 			.build();
 
@@ -233,31 +173,31 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 
 		while ((zen = zis.getNextEntry()) != null) {
 			entryName = zen.getName();
-			System.out.println("SESSION entry name: " + entryName);
+			//System.out.println("SESSION entry name: " + entryName);
 			InputStream tmpIs = new MarkSupportedInputStream(zis);
 
 			try {
 
 			if (entryName.contains("/plugins/")) {
+				//System.out.println("   extracting plugin entry");
 				extractPluginEntry(tmpIs, entryName);
-				System.out.println("   extracting plugin entry");
 			} else if (entryName.endsWith(CYSESSION)) {
+				//System.out.println("   extracting session file");
 				extractSessionState(tmpIs);
-				System.out.println("   extracting session file");
 			} else if (entryName.endsWith(VIZMAP_PROPS)) {
+				//System.out.println("   extracting vizmap props");
 				extractVizmapProps(tmpIs);
-				System.out.println("   extracting vizmap props");
 			} else if (entryName.endsWith(CY_PROPS)) {
+				//System.out.println("   extracting cytoscape props");
 				extractCytoscapeProps(tmpIs);
-				System.out.println("   extracting cytoscape props");
 			} else if (entryName.endsWith(XGMML_EXT)) {
+				//System.out.println("   extracting network");
 				extractNetwork(tmpIs, entryName);
-				System.out.println("   extracting network");
 			} else if (entryName.endsWith(BOOKMARKS_FILE)) {
-				System.out.println("   extracting bookmarks");
 				extractBookmarks(tmpIs);
+				//System.out.println("   extracting bookmarks");
 			} else {
-				System.out.println("Unknown entry found in session zip file!\n" + entryName);
+				logger.warn("Unknown entry found in session zip file!\n" + entryName);
 			}
 
 			} catch (Exception e) {
@@ -330,34 +270,32 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	}
 
 	private void extractVizmapProps(InputStream is) throws Exception {
-		vizmapProps = new Properties();
-		vizmapProps.load( is );
+		CyPropertyReader reader = propertyReaderMgr.getReader(is);
+		reader.run(taskMonitor);
+		vizmapProps = (Properties) reader.getProperty(); 
 	}
 
 	private void extractCytoscapeProps(InputStream is) throws Exception {
-		cytoscapeProps = new Properties();
-		cytoscapeProps.load( is );
+		CyPropertyReader reader = propertyReaderMgr.getReader(is);
+		reader.run(taskMonitor);
+		cytoscapeProps = (Properties) reader.getProperty(); 
 	}
 
 	private void extractBookmarks(InputStream is) throws Exception {
-			final JAXBContext jaxbContext = JAXBContext.newInstance(BOOKMARK_PACKAGE_NAME,
-			                                                        this.getClass().getClassLoader());
-			final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-
-			bookmarks = (Bookmarks) unmarshaller.unmarshal(is);
+		CyPropertyReader reader = propertyReaderMgr.getReader(is);
+		reader.run(taskMonitor);
+		bookmarks = (Bookmarks) reader.getProperty(); 
 	}
 
 	private void extractSessionState(InputStream is) throws Exception {
-		final JAXBContext jaxbContext = JAXBContext.newInstance(PACKAGE_NAME,
-		                                                        this.getClass().getClassLoader());
-		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-
-		session = (Cysession) unmarshaller.unmarshal(is);
+		CyPropertyReader reader = propertyReaderMgr.getReader(is);
+		reader.run(taskMonitor);
+		cysession = (Cysession) reader.getProperty(); 
 	}
 
-	private void processNetworks() throws JAXBException, IOException, Exception {
+	private void processNetworks() throws Exception {
 
-		for (Network curNet : session.getNetworkTree().getNetwork()) 
+		for (Network curNet : cysession.getNetworkTree().getNetwork()) 
 			netMap.put(curNet.getId(), curNet);
 
 		walkTree(netMap.get(NETWORK_ROOT), null);
@@ -368,10 +306,9 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	 *
 	 * @param currentNetwork
 	 * @param parent
-	 * @throws JAXBException
 	 * @throws IOException
 	 */
-	private void walkTree(final Network currentNetwork, final CyNetwork parent) throws JAXBException, IOException {
+	private void walkTree(final Network currentNetwork, final CyNetwork parent) throws Exception {
 
 		for (Child child : currentNetwork.getChild() ) {
 

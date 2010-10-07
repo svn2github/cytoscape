@@ -194,7 +194,7 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="propertiesFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+	<bean id="propertiesFilter" class="org.cytoscape.io.internal.read.properties.PropertiesFileFilter">
 		<constructor-arg index="0">
 			<set>
 				<value>props</value>
@@ -310,6 +310,7 @@
 	      class="org.cytoscape.io.internal.read.session.SessionReaderFactoryImpl">
 		<constructor-arg ref="cysFilter" />
 		<constructor-arg ref="cyNetworkViewReaderManager" />
+		<constructor-arg ref="cyPropertyReaderManager" />
 	</bean>
 
 	<bean id="cysessionReaderFactory" 
@@ -332,6 +333,8 @@
 		<constructor-arg ref="cysFilter" />
 		<constructor-arg ref="xgmmlFilter" />
 		<constructor-arg ref="bookmarksFilter" />
+		<constructor-arg ref="cysessionFilter" />
+		<constructor-arg ref="propertiesFilter" />
 		<constructor-arg ref="networkViewWriterManager" />
 		<constructor-arg ref="propertyWriterManager" />
 	</bean>

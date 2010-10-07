@@ -35,6 +35,7 @@ import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CyPropertyReaderManager;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 
@@ -43,11 +44,13 @@ public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 
 	private final CyFileFilter filter;
 	private final CyNetworkViewReaderManager netviewReaderMgr;
+	private final CyPropertyReaderManager propertyReaderMgr;
 	private InputStream inputStream;
 
-	public SessionReaderFactoryImpl(CyFileFilter filter, CyNetworkViewReaderManager netviewReaderMgr) {
+	public SessionReaderFactoryImpl(CyFileFilter filter, CyNetworkViewReaderManager netviewReaderMgr, CyPropertyReaderManager propertyReaderMgr) {
 		this.filter = filter;
 		this.netviewReaderMgr = netviewReaderMgr;
+		this.propertyReaderMgr = propertyReaderMgr;
 	}
 
 	public void setInputStream(InputStream is) {
@@ -61,6 +64,6 @@ public class SessionReaderFactoryImpl implements InputStreamTaskFactory {
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SessionReaderImpl(inputStream, netviewReaderMgr));
+		return new TaskIterator(new SessionReaderImpl(inputStream, netviewReaderMgr, propertyReaderMgr));
 	}
 }

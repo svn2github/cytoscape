@@ -193,6 +193,14 @@
 		               ref="cySessionReaderManager" />
 	</osgi:set>
 
+	<osgi:set id="propertyReaderFactories" 
+	          interface="org.cytoscape.io.read.InputStreamTaskFactory"
+	          cardinality="0..N">
+		<osgi:listener bind-method="addInputStreamTaskFactory"
+		               unbind-method="removeInputStreamTaskFactory" 
+		               ref="cyPropertyReaderManager" />
+	</osgi:set>
+
 	<osgi:set id="viewWriterFactories" 
 	          interface="org.cytoscape.io.write.ViewWriterFactory"
 	          cardinality="0..N">
