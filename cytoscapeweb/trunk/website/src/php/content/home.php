@@ -31,7 +31,7 @@
 	    </div>
 	    
 	    <div class="link">
-	        <a href="/documentation/tutorial"><div id="tutorial" class="button">View tutorial</div></a>
+	        <a href="/tutorial"><div id="tutorial" class="button">View tutorial</div></a>
 	    </div>
 	
 	    <div id="features">
