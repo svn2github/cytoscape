@@ -129,7 +129,7 @@ public class SaveCloudAction extends CytoscapeAction
 		int scrollHeight = scroll.getSize().height;
 		JPanel flowPanel = panel.getTagCloudFlowPanel();
 		int flowHeight = flowPanel.getSize().height;
-		flowHeight = flowHeight + 5; // need a little extra so scroll bars don't show
+		flowHeight = flowHeight; // removed addition of 5 to make scroll bar disappear
 		
 		//System.out.println("Scroll: " + scrollHeight);
 		//System.out.println("Flow: " + flowHeight);

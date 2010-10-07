@@ -850,7 +850,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	{
 		
 		JPanel panel = new JPanel();
-		panel.setLayout(new FlowLayout());
+		panel.setLayout(new ModifiedFlowLayout());
 		
 		//Create buttons
 		JButton deleteButton = new JButton("Delete");
