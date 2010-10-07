@@ -646,31 +646,9 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 		forceDirectLayoutButton.setToolTipText("Apply force-directed layout");
 		forceDirectLayoutButton.setBorderPainted(false);
 		forceDirectLayoutButton.setRolloverEnabled(true);
-		forceDirectLayoutButton.addMouseListener(new MouseListener() {
-				public void mouseClicked(MouseEvent e) {
-					//Perform force-directed layout
-					CyLayoutAlgorithm fd = CyLayouts.getLayout("force-directed");
-					fd.setSelectedOnly(false);
-					fd.getSettings().updateValues();
-					fd.updateSettings();					
-					CyNetworkView view = Cytoscape.getCurrentNetworkView();
-					if (view != null){
-						view.applyLayout(fd);
-						view.redrawGraph(true, true);						
-					}
-				}
+		
+		forceDirectLayoutButton.addMouseListener(new ApplyForcedDirectedLayoutMouseAdapter(forceDirectLayoutButton));
 
-				public void mouseEntered(MouseEvent e) {}
-				public void mouseExited(MouseEvent e) {}
-
-				public void mousePressed(MouseEvent e) {
-					forceDirectLayoutButton.setSelected(true);
-				}
-
-				public void mouseReleased(MouseEvent e) {
-					forceDirectLayoutButton.setSelected(false);
-				}
-			});
 		toolBar.add(forceDirectLayoutButton);
 
 
