@@ -89,7 +89,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	
 	private static final long serialVersionUID = -2558647616344119220L;
 
-	// Tell vizMapper main whic editor is disabled/enabled.
+	// Tell vizMapper main which editor is disabled/enabled.
 	/**
 	 * DOCUMENT ME!
 	 */

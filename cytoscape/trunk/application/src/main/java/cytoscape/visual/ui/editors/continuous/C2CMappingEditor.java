@@ -70,9 +70,13 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	
 	// Default value for below and above.
 	private static final Float DEF_BELOW_AND_ABOVE = 1f;
+	
+	private static final Float DEFAULT_MIN = 0f;
+	private static final Float DEFAULT_MAX = 100f;
 
 	/**
 	 * Creates a new C2CMappingEditor object.
+	 * This is for mappings from numbers to numbers.
 	 *
 	 * @param type DOCUMENT ME!
 	 */
@@ -85,8 +89,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 		// Add two sliders by default.
 		if ((mapping != null) && (mapping.getPointCount() == 0)) {
-			addSlider(0f, 10f);
-			addSlider(100f, 30f);
+			addSlider(DEFAULT_MIN, 10f);
+			addSlider(DEFAULT_MAX, 30f);
 		}
 	}
 
@@ -153,9 +157,10 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		return rend.getLegend(width, height);
 	}
 
+	
 	// Add slider to the editor.
 	private void addSlider(float position, float value) {
-		CyLogger.getLogger().info("=====Adding slider\n");
+		CyLogger.getLogger().info("Adding slider\n");
 
 		final double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
 
@@ -204,22 +209,29 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		addSlider(100f, 5f);
 	}
 
-	@Override
-	protected void deleteButtonActionPerformed(ActionEvent evt) {
+	
+	/**
+	 * Remove selected slider.
+	 */
+	@Override protected void deleteButtonActionPerformed(ActionEvent evt) {
+		if(slider.getModel().getThumbCount() <=0)
+			return;
+		
 		final int selectedIndex = slider.getSelectedIndex();
+		
+		if(selectedIndex<0)
+			return;
+	
+		slider.getModel().removeThumb(selectedIndex);
+		mapping.removePoint(selectedIndex);
 
-		if ((0 <= selectedIndex) && (slider.getModel().getThumbCount() > 1)) {
-			slider.getModel().removeThumb(selectedIndex);
-			mapping.removePoint(selectedIndex);
+		updateMap();
+		((ContinuousTrackRenderer) slider.getTrackRenderer()).removeSquare(selectedIndex);
 
-			updateMap();
-			((ContinuousTrackRenderer) slider.getTrackRenderer()).removeSquare(selectedIndex);
+		mapping.fireStateChanged();
 
-			mapping.fireStateChanged();
-
-			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
-			repaint();
-		}
+		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+		repaint();	
 	}
 
 	private void setSlider() {
