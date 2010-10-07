@@ -1,7 +1,6 @@
 package org.cytoscape.psi_mi.internal.plugin;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -19,12 +18,12 @@ import org.cytoscape.work.TaskMonitor;
 
 public class PsiMiWriter implements CyWriter {
 
-	private final File file;
+	private final OutputStream outputStream;
 	private final CyNetwork network;
 	private final SchemaVersion version;
 	
-	public PsiMiWriter(File file, CyNetwork network, SchemaVersion version) {
-		this.file = file;
+	public PsiMiWriter(OutputStream outputStream, CyNetwork network, SchemaVersion version) {
+		this.outputStream = outputStream;
 		this.network = network;
 		this.version = version;
 	}
@@ -53,12 +52,7 @@ public class PsiMiWriter implements CyWriter {
 		schemaMapper.doMapping();
 		Object model = schemaMapper.getModel();
 		Marshaller marshaller = createMarshaller(schemaMapper.getSchemaNamespace());
-		FileWriter writer = new FileWriter(file);
-		try {
-			marshaller.marshal(model, writer);
-		} finally {
-			writer.close();
-		}
+		marshaller.marshal(model, outputStream);
 	}
 
 	@Override

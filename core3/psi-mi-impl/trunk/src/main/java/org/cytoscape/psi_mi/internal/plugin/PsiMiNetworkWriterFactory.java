@@ -1,18 +1,19 @@
 package org.cytoscape.psi_mi.internal.plugin;
 
-import java.io.File;
+import java.io.OutputStream;
 
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.write.CyNetworkWriterFactory;
+import org.cytoscape.io.write.CyNetworkViewWriterFactory;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.CyNetworkView;
 
-public class PsiMiNetworkWriterFactory implements CyNetworkWriterFactory {
+public class PsiMiNetworkWriterFactory implements CyNetworkViewWriterFactory {
 
 	private final SchemaVersion version;
 	private final CyFileFilter filter;
 
-	private File file;
+	private OutputStream os;
 	private CyNetwork network;
 	
 	public PsiMiNetworkWriterFactory(SchemaVersion version, CyFileFilter filter) {
@@ -21,13 +22,13 @@ public class PsiMiNetworkWriterFactory implements CyNetworkWriterFactory {
 	}
 	
 	@Override
-	public void setOutputFile(File file) {
-		this.file = file;
+	public void setOutputStream(OutputStream os) {
+		this.os = os;
 	}
 
 	@Override
 	public CyWriter getWriter() {
-		return new PsiMiWriter(file, network, version);
+		return new PsiMiWriter(os, network, version);
 	}
 
 	@Override
@@ -36,8 +37,8 @@ public class PsiMiNetworkWriterFactory implements CyNetworkWriterFactory {
 	}
 
 	@Override
-	public void setNetwork(CyNetwork network) {
-		this.network = network;
+	public void setNetworkView(CyNetworkView view) {
+		this.network = view.getModel();
 	}
 
 }
