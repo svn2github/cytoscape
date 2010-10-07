@@ -53,7 +53,7 @@ public interface VisualPropertyDependency {
 		NODE_SIZE_LOCKED("nodeSizeLocked",true, "Lock Node Width/Height"),
 		ARROW_COLOR_MATCHES_EDGE("arrowColorMatchesEdge",false,"Make Arrow Color Match Edge Color"),
 		
-		// From Cytoscape 2.8: Synchlonize node size to custom cgraphics size.
+		// From Cytoscape 2.8: Synchronize node size to custom cgraphics size.
 		NODE_CUSTOM_GRAPHICS_SIZE_SYNC("nodeCustomGraphicsSizeSync", true, "Synchronize Custom Graphics Size to Node Size"),
 
 		// From Cytoscape 2.8: Create new color based on label background.

@@ -111,8 +111,8 @@ public class EdgeTargetArrowOpacityProp extends AbstractVisualProperty {
 			return;
 
 		if ( dep != null && dep.check(ARROW_COLOR_MATCHES_EDGE) ) {
-			if (ev.getUnselectedPaint() != ev.getSourceEdgeEndPaint())
-				ev.setSourceEdgeEndPaint(ev.getUnselectedPaint());
+			if (ev.getUnselectedPaint() != ev.getTargetEdgeEndPaint())
+				ev.setTargetEdgeEndPaint(ev.getUnselectedPaint());
 		} else {
 			final Color oldPaint = (Color) ev.getTargetEdgeEndPaint();
 			Integer tp = oldPaint.getAlpha();
