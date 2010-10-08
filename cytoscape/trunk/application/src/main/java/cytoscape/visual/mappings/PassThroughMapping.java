@@ -172,6 +172,10 @@ public class PassThroughMapping extends AbstractMapping {
 			return rangeValueCalculator.getRange(attrValue);
 		return null;
 	}
+	
+	public RangeValueCalculator<?> getRangeValueCalculator() {
+		return this.rangeValueCalculator;
+	}
 
 	/**
 	 * Customize this object by applying mapping defintions described by the

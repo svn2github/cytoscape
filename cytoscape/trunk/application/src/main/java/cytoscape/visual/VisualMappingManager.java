@@ -41,8 +41,10 @@ import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
@@ -50,12 +52,24 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.attr.CountedIterator;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.calculators.AbstractCalculator;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.calculators.GenericNodeCustomGraphicCalculator;
 import cytoscape.visual.customgraphic.CustomGraphicsManager;
+import cytoscape.visual.customgraphic.CyCustomGraphics;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
+import cytoscape.visual.mappings.RangeValueCalculator;
 import cytoscape.visual.mappings.RangeValueCalculatorFactory;
 import cytoscape.visual.mappings.RangeValueCalculatorFactoryImpl;
+import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 import cytoscape.visual.mappings.rangecalculators.ColorRangeValueCalculator;
 import cytoscape.visual.mappings.rangecalculators.CustomGraphicsRangeValueCalculator;
 import cytoscape.visual.mappings.rangecalculators.DoubleRangeValueCalculator;
@@ -280,6 +294,70 @@ public class VisualMappingManager extends SubjectBase {
 			nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node,
 					network, bypassedVPs);
 			myNodeApp.applyAppearance(nodeView, activeVS.getDependency());
+		}
+		
+		checkCustomGraphicsInUse();
+	}
+	
+	/**
+	 * Reset status of used Custom Graphics
+	 */
+	private void checkCustomGraphicsInUse() {
+
+		// Set everything unused.
+		final Collection<CyCustomGraphics> allCG = manager.getAll();
+		for(CyCustomGraphics cg: allCG)
+			manager.setUsedInCurrentSession(cg, false);
+		
+		final NodeAppearanceCalculator nac = activeVS.getNodeAppearanceCalculator();
+		final VisualPropertyType[] allCustomGraphicsPropType = VisualPropertyType.getAllCustomGraphicsType();
+		for(VisualPropertyType cgType: allCustomGraphicsPropType) {
+			// First, check default mapping values.
+			final Object value = nac.getDefaultAppearance().get(cgType);
+			if(value instanceof CyCustomGraphics) {
+				manager.setUsedInCurrentSession((CyCustomGraphics) value, true);
+			}
+			
+			// Next, check mapping values.
+			final Calculator cgCalc = nac.getCalculator(cgType);
+			if(cgCalc == null)
+				continue;
+			
+			final ObjectMapping cgMapping = cgCalc.getMapping(0);
+			if(cgMapping == null)
+				continue;
+			
+			if(cgMapping instanceof DiscreteMapping) {
+				final Map allMapping = ((DiscreteMapping) cgMapping).getAll();
+				Collection cgSet = allMapping.values();
+				for(Object cg: cgSet)
+					manager.setUsedInCurrentSession((CyCustomGraphics) cg, true);
+			} else if(cgMapping instanceof ContinuousMapping) {
+				final List<ContinuousMappingPoint> points = ((ContinuousMapping) cgMapping).getAllPoints();
+				for(ContinuousMappingPoint point: points) {
+					manager.setUsedInCurrentSession((CyCustomGraphics) point.getRange().equalValue, true);
+					manager.setUsedInCurrentSession((CyCustomGraphics) point.getRange().greaterValue, true);
+					manager.setUsedInCurrentSession((CyCustomGraphics) point.getRange().lesserValue, true);
+				}
+			} else if(cgMapping instanceof PassThroughMapping) {
+				final RangeValueCalculator<?> rangeValueCalculator = ((PassThroughMapping) cgMapping).getRangeValueCalculator();
+				if(rangeValueCalculator == null)
+					return;
+				
+				final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+				final String attrName = cgMapping.getControllingAttributeName();
+				CountedIterator keys = nodeAttr.getMultiHashMap().getObjectKeys(attrName);
+				while(keys.hasNext()) {
+					Object key = keys.next();
+					String attrValue = nodeAttr.getStringAttribute(key.toString(), attrName);
+					Object cg = rangeValueCalculator.getRange(attrValue);
+					if(cg instanceof CyCustomGraphics) {
+						manager.setUsedInCurrentSession((CyCustomGraphics) cg, true);
+					}
+				}
+				CyAttributesUtils.getAttributes(attrName, Cytoscape.getNodeAttributes());
+			}
+			
 		}
 	}
 

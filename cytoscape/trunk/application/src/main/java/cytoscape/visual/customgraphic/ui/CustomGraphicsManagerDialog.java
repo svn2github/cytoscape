@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
 import cytoscape.render.stateful.CustomGraphic;
@@ -204,8 +205,13 @@ public class CustomGraphicsManagerDialog extends javax.swing.JDialog {
 		final Object[] toBeRemoved = browser.getSelectedValues();
 		for(Object g: toBeRemoved) {
 			final CyCustomGraphics cg = (CyCustomGraphics) g;
-			browser.removeCustomGraphics(cg);
-			manager.removeGraphics(cg.getIdentifier());
+			if(!Cytoscape.getVisualMappingManager().getCustomGraphicsManager().isUsedInCurrentSession(cg)) {
+				browser.removeCustomGraphics(cg);
+				manager.removeGraphics(cg.getIdentifier());
+			} else {
+				JOptionPane.showMessageDialog(this, cg.getDisplayName() + " is used in current session and cannot remove it.", 
+						"Custom Graphics is in Use!", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 

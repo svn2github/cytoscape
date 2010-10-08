@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.actions.ShowCustomGraphicsManagerAction;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
@@ -361,7 +360,7 @@ public class CustomGraphicsManager extends SubjectBase implements
 		if(graphics == null)
 			throw new NullPointerException("CyCustomGraphics cannot be null.");
 		if(this.isUsedCustomGraphics.containsKey(graphics) ==false)
-			throw new IllegalArgumentException("No such CyCustomGraphics: " + graphics.getDisplayName());
+			return false;
 
 		return isUsedCustomGraphics.get(graphics);
 	}
@@ -370,9 +369,11 @@ public class CustomGraphicsManager extends SubjectBase implements
 		if(isUsed == null || graphics == null)
 			throw new NullPointerException("Parameters cannot be null.");
 		
-		if(this.isUsedCustomGraphics.containsKey(graphics) == false)
-			throw new IllegalArgumentException("No such custom graphics object: " + graphics.getDisplayName());
-		
+		if(this.isUsedCustomGraphics.containsKey(graphics) == false){
+			// Just ignore.
+			return;
+		}
+
 		this.isUsedCustomGraphics.put(graphics, isUsed);
 	}
 }

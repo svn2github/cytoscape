@@ -704,6 +704,10 @@ public enum VisualPropertyType {
 		return CUSTOM_GRAPHICS_PROPS[index];
 	}
 	
+	public static VisualPropertyType[] getAllCustomGraphicsType() {
+		return CUSTOM_GRAPHICS_PROPS;
+	}
+	
 	public static VisualPropertyType getCustomGraphicsPositionType(int index) {
 		return CUSTOM_GRAPHICS_POSITION_PROPS[index];
 	}
