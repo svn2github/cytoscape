@@ -642,7 +642,7 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 		/////Add a button -- apply force-directed layout
 		forceDirectLayoutButton = new JButton();
 		forceDirectLayoutButton.setIcon(new ImageIcon(Cytoscape.class
-		                                        .getResource("images/ximian/stock_dialog-warning-32.png")));
+		                                        .getResource("images/apply-force-directed-layout-32.png")));
 		forceDirectLayoutButton.setToolTipText("Apply force-directed layout");
 		forceDirectLayoutButton.setBorderPainted(false);
 		forceDirectLayoutButton.setRolloverEnabled(true);
@@ -655,8 +655,8 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 		/////Add a button -- Create new network from selected nodes, all edges
 		createNewNetworkButton = new JButton();
 		createNewNetworkButton.setIcon(new ImageIcon(Cytoscape.class
-		                                        .getResource("images/ximian/stock_dialog-warning-32.png")));
-		createNewNetworkButton.setToolTipText("Create new network from slected nodes, all edges");
+		                                        .getResource("images/new-network-from-selected-nodes-32.png")));
+		createNewNetworkButton.setToolTipText("Create new network from selected nodes, all edges");
 		createNewNetworkButton.setBorderPainted(false);
 		createNewNetworkButton.setRolloverEnabled(true);
 		createNewNetworkButton.addMouseListener(new MouseListener() {
