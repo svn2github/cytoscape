@@ -10,18 +10,26 @@ package org.cytoscape.session;
  */
 public interface CySessionManager {
 
-	// TODO do we need this?
-	enum State {
-		NEW, 
-		OPENED,
-		CHANGED,
-		CLOSED,
-	}
-
+	/**
+	 * This method returns a CySession object describing the current
+	 * state of Cytoscape. The object returned is meant to
+	 * be used for serialization and is not meant to be used interactively
+	 * to track the state of Cytsocape.
+	 * @return An immutable CySession object.  
+	 */
     CySession getCurrentSession();
-    
+   
+    /**
+	 * This method allows a new session to be set and in doing
+	 * so <b>erases and overrides the current session!</b>
+	 * @param session The new session to be applied to Cytoscape.
+	 * @param fileName The name of the file representing the new session.
+	 */
     void setCurrentSession(CySession session, String fileName);
 
+	/**
+	 * @return The name of the current session file.
+	 */
 	String getCurrentSessionFileName();
 }
 

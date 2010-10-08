@@ -120,6 +120,10 @@ public final class CySession {
 			cysession = b.cysession;
 	}
 
+	/**
+	 * A implementation of the builder pattern used to construct immutable
+	 * instances of CySession objects.
+	 */
 	public static class Builder {
 
 		private Set<CyNetworkView> netViews; 
