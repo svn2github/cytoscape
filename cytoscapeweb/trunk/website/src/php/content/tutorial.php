@@ -64,12 +64,12 @@
     
     <p>The main thing to keep in mind is that you can not interact with most of Cytoscape Web
     until the graph is drawn.  Thus, you can interact with Cytoscape Web by using the
-    <a href="/documentation/visualization#ready">ready</a> callback function, which is called
+    <a href="/documentation/visualization#section/ready">ready</a> callback function, which is called
     when Cytoscape Web is finished drawing the graph.</p>
     
     <p>This example interacts with Cytoscape Web by getting attributes values that were set for the
     nodes and edges in the graph.  This is achieved by registering with the
-    <a href="/documentation/visualization#addListener">addListener</a> function for click events.</p>
+    <a href="/documentation/visualization#section/addListener">addListener</a> function for click events.</p>
     
     <?php print_code("file/example_code/interacting.html"); ?>
     
