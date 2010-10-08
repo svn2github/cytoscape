@@ -1,5 +1,8 @@
 
-package org.cytoscape.session;
+package org.cytoscape.session.events;
+
+import org.cytoscape.session.CySession;
+import org.cytoscape.session.CySessionManager;
 
 import org.cytoscape.event.AbstractCyEvent;
 

@@ -1,5 +1,5 @@
 
-package org.cytoscape.session;
+package org.cytoscape.session.events;
 
 import org.cytoscape.event.CyListener;
 

@@ -1,5 +1,5 @@
 
-package org.cytoscape.session;
+package org.cytoscape.session.events;
 
 import java.util.Collections;
 import java.util.List;
@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.File;
+
+import org.cytoscape.session.CySession;
+import org.cytoscape.session.CySessionManager;
 
 import org.cytoscape.event.AbstractCyEvent;
 
