@@ -6,9 +6,24 @@ import java.io.OutputStream;
 import org.cytoscape.io.FileIOFactory;
 
 /**
- *
+ * CyWriterFactory defines the base methods for specifying output and
+ * for generating a Task to write the actual output.  Instantiations
+ * of CyWriterFactories are meant to be singleton objects registered
+ * as OSGi services.
  */
 public interface CyWriterFactory extends FileIOFactory {
+
+	/**
+	 * This method defines where the generated CyWriter Task should
+	 * write its data to. This method is meant to be called prior
+	 * to calling getWriter().
+	 * @param os The OutputStream to be written to.
+	 */
 	void setOutputStream(OutputStream os);
+
+	/**
+	 * @return A CyWriter Task suitable for writing to the specified
+	 * output stream.
+	 */
 	CyWriter getWriter();
 }

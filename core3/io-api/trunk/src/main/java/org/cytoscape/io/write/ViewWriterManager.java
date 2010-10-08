@@ -40,8 +40,28 @@ import org.cytoscape.io.CyFileFilter;
 import java.io.File;
 import java.io.OutputStream;
 
+/**
+ * A CyWriterManager specific to writing View objects. 
+ */
 public interface ViewWriterManager extends CyWriterManager {
 
+	/**
+	 * @param view The View to be written.
+	 * @param re The RenderingEngine used to generate the image to be written.
+	 * @param filter The CyFileFilter that defines the type of file to be written.
+	 * @param file The file to be written. 
+	 * @return The CyWriter Task that will attempt to write the specified view to the
+	 * specified file of the specified file type. 
+	 */
 	CyWriter getWriter(View<?> view, RenderingEngine re, CyFileFilter filter, File file) throws Exception;
+
+	/**
+	 * @param view The View to be written.
+	 * @param re The RenderingEngine used to generate the image to be written.
+	 * @param filter The CyFileFilter that defines the type of file to be written.
+	 * @param os The output stream to be written. 
+	 * @return The CyWriter Task that will attempt to write the specified view to the
+	 * specified output stream of the specified file type. 
+	 */
 	CyWriter getWriter(View<?> view, RenderingEngine re, CyFileFilter filter, OutputStream os) throws Exception;
 }

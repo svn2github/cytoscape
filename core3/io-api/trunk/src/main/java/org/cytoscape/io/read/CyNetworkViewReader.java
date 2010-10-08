@@ -7,16 +7,26 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
 
 /**
- * The basic input interface that specifies what is to be read and when it is to
- * be read. This interface should be extended by other interfaces to provide
- * access to the data that gets read. One class can then implement multiple
- * CyReader interfaces to support reading files that contain multiple types of
- * data (like networks that contain both attribute and view model information).
- * 
+ * An extension of the Task interface that returns an array of 
+ * {@link CyNetworkView} objects as well as optional 
+ * {@link VisualStyle} objects that are read as part of the Task.
+ * Instances of this interface are created by InputStreamTaskFactory
+ * objects registered as OSGi services, which are in turn processed
+ * by associated reader manager objects that distinguish 
+ * InputStreamTaskFactories based on the DataCategory associated with
+ * the CyFileFilter.
  */
 public interface CyNetworkViewReader extends Task {
 
+	/**
+	 * @return An array of CyNetworkView objects.
+	 */
 	CyNetworkView[] getNetworkViews();
 
+	/**
+	 * @return An array of VisualStyle objects. The list may be
+	 * empty if no VisualStyle is defined by the input being
+	 * read.
+	 */
 	VisualStyle[] getVisualStyles();
 }

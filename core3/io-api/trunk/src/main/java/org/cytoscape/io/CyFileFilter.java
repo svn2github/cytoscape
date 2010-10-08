@@ -24,7 +24,7 @@ public interface CyFileFilter {
 	/**
 	 * A method that attempts to determine whether the specified InputStream can be read
 	 * by the Reader using this filter.
-	 * @param uri The input steam to be checked.
+	 * @param stream The input steam to be checked.
 	 * @param category The data category of the input steam.
 	 * @return True if we believe the stream can be read, false otherwise.
 	 */

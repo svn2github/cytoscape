@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.List;
 
 /**
+ * A utility Task implementation that writes a CySession to a file.
  */
 public final class SessionWriter extends AbstractTask implements CyWriter {
 
@@ -16,6 +17,12 @@ public final class SessionWriter extends AbstractTask implements CyWriter {
 	private final SessionWriterManager writerMgr; 
 	private final File outputFile; 
 
+	/**
+	 * @param writerMgr The SessionWriterManager contains single expected
+	 * SessionWriterFactory to use to write the file.
+	 * @param session The CySession to be written out. 
+	 * @param outputFile The file the CySession should be written to.
+ 	 */
 	public SessionWriter(SessionWriterManager writerMgr, CySession session, File outputFile) {
 
 		if ( writerMgr == null )
@@ -31,6 +38,11 @@ public final class SessionWriter extends AbstractTask implements CyWriter {
 		this.outputFile = outputFile;
 	}
 
+	/**
+	 * The method that will actually write the specified session to the specified
+	 * file.
+	 * @param tm The TaskMonitor provided by the TaskManager execution environment.
+	 */
 	public final void run(TaskMonitor tm) throws Exception {
 
 		List<CyFileFilter> filters = writerMgr.getAvailableWriters();
@@ -45,5 +57,4 @@ public final class SessionWriter extends AbstractTask implements CyWriter {
 
 		insertTasksAfterCurrentTask( writer );
 	}
-
 }

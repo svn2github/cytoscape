@@ -40,10 +40,25 @@ import java.io.File;
 import java.io.OutputStream;
 
 /**
- * Central registry for all Cytoscape export classes.
+ * A CyWriterManager specific to writing CyNetworkView objects. 
  */
 public interface CyNetworkViewWriterManager extends CyWriterManager {
 
+	/**
+	 * @param view The CyNetworkView to be written.
+	 * @param filter The CyFileFilter that defines the type of file to be written.
+	 * @param file The file to be written. 
+	 * @return The CyWriter Task that will attempt to write the specified view to the
+	 * specified file of the specified file type. 
+	 */
 	CyWriter getWriter(CyNetworkView view, CyFileFilter filter, File file) throws Exception;
+
+	/**
+	 * @param view The CyNetworkView to be written.
+	 * @param filter The CyFileFilter that defines the type of file to be written.
+	 * @param os The output steam to be written. 
+	 * @return The CyWriter Task that will attempt to write the specified view to the
+	 * specified output steam of the specified file type. 
+	 */
 	CyWriter getWriter(CyNetworkView view, CyFileFilter filter, OutputStream os) throws Exception;
 }
