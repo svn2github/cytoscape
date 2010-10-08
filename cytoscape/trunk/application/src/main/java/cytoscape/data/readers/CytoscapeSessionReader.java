@@ -401,7 +401,7 @@ public class CytoscapeSessionReader {
 				.getCustomGraphicsManager();
 		
 		// Remove all custom graphics before loading new images.
-		manager.removeAll();
+		//manager.removeAll();
 
 		// First, restore image-based custom graphics
 		for (String id : imageMap.keySet()) {

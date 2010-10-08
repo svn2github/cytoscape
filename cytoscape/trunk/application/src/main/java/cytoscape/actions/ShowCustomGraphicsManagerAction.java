@@ -12,6 +12,13 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.visual.customgraphic.RestoreImageTask;
 import cytoscape.visual.customgraphic.ui.CustomGraphicsManagerDialog;
 
+/**
+ * Display Custom Graphics Manager GUI.
+ * First time user calls this function, manager loads image from .cytoscape/images directory.
+ * 
+ * @author kono
+ *
+ */
 public class ShowCustomGraphicsManagerAction extends CytoscapeAction {
 
 	private static final long serialVersionUID = 5876533870116518191L;

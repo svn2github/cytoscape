@@ -330,8 +330,10 @@ public class VisualMappingManager extends SubjectBase {
 			if(cgMapping instanceof DiscreteMapping) {
 				final Map allMapping = ((DiscreteMapping) cgMapping).getAll();
 				Collection cgSet = allMapping.values();
-				for(Object cg: cgSet)
-					manager.setUsedInCurrentSession((CyCustomGraphics) cg, true);
+				for(Object cg: cgSet) {
+					if(cg != null)
+						manager.setUsedInCurrentSession((CyCustomGraphics) cg, true);
+				}
 			} else if(cgMapping instanceof ContinuousMapping) {
 				final List<ContinuousMappingPoint> points = ((ContinuousMapping) cgMapping).getAllPoints();
 				for(ContinuousMappingPoint point: points) {

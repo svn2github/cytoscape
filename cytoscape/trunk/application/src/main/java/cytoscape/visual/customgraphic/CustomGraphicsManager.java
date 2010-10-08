@@ -85,10 +85,7 @@ public class CustomGraphicsManager extends SubjectBase implements
 		this.isUsedCustomGraphics.put(NULL, false);
 		restoreDefaultVectorImageObjects();
 
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(
-				Cytoscape.CYTOSCAPE_EXIT, this);
-
-		//restoreImages();
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.CYTOSCAPE_EXIT, this);
 	}
 
 	/**
@@ -159,7 +156,7 @@ public class CustomGraphicsManager extends SubjectBase implements
 					final BufferedImage image = f.get();
 					if (image == null)
 						continue;
-
+					
 					final CyCustomGraphics cg = new URLImageCustomGraphics(
 							fMap.get(f), image);
 					if (cg instanceof Taggable && metatagMap.get(f) != null)
@@ -357,9 +354,7 @@ public class CustomGraphicsManager extends SubjectBase implements
 	}
 	
 	public Boolean isUsedInCurrentSession(final CyCustomGraphics graphics) {
-		if(graphics == null)
-			throw new NullPointerException("CyCustomGraphics cannot be null.");
-		if(this.isUsedCustomGraphics.containsKey(graphics) ==false)
+		if(graphics == null || this.isUsedCustomGraphics.containsKey(graphics) == false)
 			return false;
 
 		return isUsedCustomGraphics.get(graphics);
@@ -367,7 +362,7 @@ public class CustomGraphicsManager extends SubjectBase implements
 	
 	public void setUsedInCurrentSession(final CyCustomGraphics graphics, final Boolean isUsed) {
 		if(isUsed == null || graphics == null)
-			throw new NullPointerException("Parameters cannot be null.");
+			return;
 		
 		if(this.isUsedCustomGraphics.containsKey(graphics) == false){
 			// Just ignore.
