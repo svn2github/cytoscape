@@ -174,7 +174,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		//Put the Options in a scroll pane
 		JPanel optionsPanel = createOptionsPanel();
 		JScrollPane optionsScroll = new JScrollPane(optionsPanel);
-		optionsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		optionsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		//Add button to bottom
 		JPanel bottomPanel = createBottomPanel();
