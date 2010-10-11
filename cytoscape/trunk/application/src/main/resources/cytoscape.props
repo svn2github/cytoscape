@@ -23,4 +23,4 @@ logger.console=false
 cytoscape.debug=false
 nestedNetworkSnapshotSize=400
 moduleNetworkViewCreationThreshold=5
-
+defaultLayoutAlgorithm=force-directed
