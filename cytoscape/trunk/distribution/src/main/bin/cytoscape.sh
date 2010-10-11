@@ -7,7 +7,7 @@
 script_path="$(dirname -- $0)"
 
 # Attempt to generate Cytoscape.vmoptions if it doesn't exist!
-if [ ! -e "$script_path/Cytoscape.vmoptions"  -a  -x "$script_path/gen_vmoptions.sh" ]; then
+if [ ! -e "$HOME/.cytoscape/Cytoscape.vmoptions"  -a  -x "$script_path/gen_vmoptions.sh" ]; then
     "$script_path/gen_vmoptions.sh"
 fi
 
