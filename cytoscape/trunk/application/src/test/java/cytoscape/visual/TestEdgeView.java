@@ -101,6 +101,10 @@ public class TestEdgeView implements EdgeView {
 		return selected;
 	}
 
+	public boolean isHidden() {
+		return false;
+	}
+
 	String toolTip;
 	public void setToolTip(String tip) {
 		toolTip = tip;

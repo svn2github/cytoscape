@@ -454,6 +454,10 @@ public class TestNodeView implements NodeView {
 		return selected;
 	}
 
+	public boolean isHidden() {
+		return false;
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *

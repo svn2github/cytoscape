@@ -36,6 +36,7 @@
 
 package ding.view;
 
+
 import giny.model.Edge;
 import giny.view.Bend;
 import giny.view.EdgeView;
@@ -567,6 +568,10 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 */
 	public boolean getSelected() {
 		return m_selected;
+	}
+
+	final public boolean isHidden() {
+		return m_view.isHidden(this);
 	}
 
 	/**

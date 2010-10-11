@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,6 +26,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 package ding.view;
+
 
 import giny.model.Edge;
 import giny.model.GraphPerspective;
@@ -1375,6 +1369,20 @@ public class DGraphView implements GraphView, Printable {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	final boolean isHidden(final DEdgeView edgeView) {
+		synchronized (m_lock) {
+			final int edgeIndex = edgeView.getRootGraphIndex();
+			return m_drawPersp.containsEdge(m_drawPersp.getEdge(edgeIndex));
+		}
+	}
+
+	final boolean isHidden(final DNodeView nodeView) {
+		synchronized (m_lock) {
+			final int nodeIndex = nodeView.getRootGraphIndex();
+			return m_drawPersp.containsNode(m_drawPersp.getNode(nodeIndex));
 		}
 	}
 
