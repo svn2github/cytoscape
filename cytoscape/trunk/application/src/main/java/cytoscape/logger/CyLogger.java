@@ -1,15 +1,7 @@
  /*
   File: CyLogger.java
 
-  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
-  - University of California San Francisco
+  Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -47,22 +39,22 @@
  * will enable the LOG_DEBUG level of logging.  Otherwise, no debug level logging
  * will be done.
  */
-
 package cytoscape.logger;
+
 
 import cytoscape.CytoscapeInit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+
 
 public class CyLogger {
 	private static HashMap<String,CyLogger> logMap = new HashMap();
 	private static HashMap<LogLevel,List<CyLogHandler>> globalHandlerMap = new HashMap();
 	private HashMap<LogLevel, List<CyLogHandler>> handlerMap = new HashMap();
 	private String loggerName = null;
-	private boolean debugging = false;
+	private static boolean debugging = false;
 
 	/**
  	 * Get a logger with the specified name
@@ -86,16 +78,16 @@ public class CyLogger {
  	 * @param logClass the class this logger logs for
  	 * @return the logger to use
  	 */
-  public static CyLogger getLogger(Class logClass) {
-    return CyLogger.getLogger(logClass.getName());
-  }
+	public static CyLogger getLogger(Class logClass) {
+		return CyLogger.getLogger(logClass.getName());
+	}
 
 	/**
  	 * Get the default ("cytoscape") logger
  	 *
  	 * @return the logger to use
  	 */
-  public static CyLogger getLogger() {
+	public static CyLogger getLogger() {
 		return getLogger("cytoscape");
 	}
 
@@ -106,12 +98,18 @@ public class CyLogger {
 	protected CyLogger(String name) {
 		loggerName = name;
 		logMap.put(name,this);
+		/*
 		Properties properties = CytoscapeInit.getProperties();
 		if (properties != null) {
 			debugging = false;
 			String debug = properties.getProperty("cytoscape.debug");
 			debugging = Boolean.parseBoolean(debug);
 		}
+		*/
+	}
+
+	public static void setDebugging(final boolean on) {
+		debugging = on;
 	}
 
 	/**

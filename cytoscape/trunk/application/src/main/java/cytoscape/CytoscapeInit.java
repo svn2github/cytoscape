@@ -110,7 +110,11 @@ public class CytoscapeInit implements PropertyChangeListener {
 	static {
 		logger = CyLogger.getLogger(CytoscapeInit.class);
 		logger.info("CytoscapeInit static initialization");
+
 		initProperties();
+
+		final String debug = properties.getProperty("cytoscape.debug", "false"); 
+		logger.setDebugging(Boolean.parseBoolean(debug));
 	}
 
 	private static CyInitParams initParams;
