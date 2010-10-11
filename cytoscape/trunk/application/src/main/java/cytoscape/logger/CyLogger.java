@@ -98,14 +98,6 @@ public class CyLogger {
 	protected CyLogger(String name) {
 		loggerName = name;
 		logMap.put(name,this);
-		/*
-		Properties properties = CytoscapeInit.getProperties();
-		if (properties != null) {
-			debugging = false;
-			String debug = properties.getProperty("cytoscape.debug");
-			debugging = Boolean.parseBoolean(debug);
-		}
-		*/
 	}
 
 	public static void setDebugging(final boolean on) {
