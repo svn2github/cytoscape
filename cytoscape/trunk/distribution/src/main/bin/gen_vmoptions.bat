@@ -9,17 +9,17 @@ for /f %%i in ('dir /b findstr.out') do if %%~zi equ 0 goto 32bit
 
 
 :64bit
-	echo -Xms20m >  Cytoscape.vmoptions 
-	echo -Xmx20g >> Cytoscape.vmoptions 
+	echo -Xms20m >  %HOMEPATH%\.cytoscape\Cytoscape.vmoptions
+	echo -Xmx20g >> %HOMEPATH%\.cytoscape\Cytoscape.vmoptions
 	goto shared
 
 
 :32bit
-	echo -Xms10m   >  Cytoscape.vmoptions 
-	echo -Xmx1550m >> Cytoscape.vmoptions 
+	echo -Xms10m   >  %HOMEPATH%\.cytoscape\Cytoscape.vmoptions
+	echo -Xmx1550m >> %HOMEPATH%\.cytoscape\Cytoscape.vmoptions
 
 :shared
-	echo -Dswing.aatext=true               >> Cytoscape.vmoptions
-	echo -Dawt.useSystemAAFontSettings=lcd >> Cytoscape.vmoptions
+	echo -Dswing.aatext=true               >> %HOMEPATH%\.cytoscape\Cytoscape.vmoptions
+	echo -Dawt.useSystemAAFontSettings=lcd >> %HOMEPATH%\.cytoscape\Cytoscape.vmoptions
 
 	del findstr.out

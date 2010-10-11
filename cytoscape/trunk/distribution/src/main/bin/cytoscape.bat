@@ -6,13 +6,13 @@
 @echo off
 
 :: Create the Cytoscape.vmoptions file, if it doesn't exist.
-IF EXIST "Cytoscape.vmoptions" GOTO vmoptionsFileExists
+IF EXIST "%HOMEPATH%\.cytoscape\Cytoscape.vmoptions" GOTO vmoptionsFileExists
 CALL gen_vmoptions.bat
 :vmoptionsFileExists
 
 :: Read vmoptions, one per line.
 setLocal EnableDelayedExpansion
-for /f "tokens=* delims= " %%a in (Cytoscape.vmoptions) do (
+for /f "tokens=* delims= " %%a in (%HOMEPATH%\.cytoscape\Cytoscape.vmoptions) do (
 set /a N+=1
 set opt!N!=%%a
 )
