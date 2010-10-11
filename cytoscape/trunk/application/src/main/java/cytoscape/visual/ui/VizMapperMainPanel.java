@@ -1119,7 +1119,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		repaint();
 	}
 
-	private void processMouseClick(MouseEvent e) {
+	private void processMouseClick(MouseEvent e) {		
+		
 		int selected = visualPropertySheetPanel.getTable().getSelectedRow();
 		/*
 		 * Adjust height if it's an legend icon.
@@ -1169,9 +1170,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				expandLastSelectedItem(type.getName());
 
 				visualPropertySheetPanel.getTable().scrollRectToVisible(new Rectangle(0, 0, 10, 10));
-				visualPropertySheetPanel.repaint();
 
 				editorReg.registerEditor(mapProp, mappingTypeEditor);
+			
+				// This is necessary because sometimes registory is lost when updating this sheet.
+				visualPropertySheetPanel.setEditorFactory(editorReg);
+				visualPropertySheetPanel.repaint();
+				
 				return;
 			} else if ((e.getClickCount() == 1) && (category == null)) {
 				/*
