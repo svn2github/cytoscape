@@ -54,6 +54,7 @@ import javax.swing.JMenuItem;
 import org.jdesktop.swingx.JXTitledSeparator;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.actions.*;
 import cytoscape.layout.ui.LayoutMenuManager;
 import cytoscape.layout.ui.SettingsAction;
@@ -109,7 +110,7 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 	JButton annotationButton;
 	JButton helpButton;
 	JButton vizButton;
-	JButton forceDirectLayoutButton;
+	JButton applyLayoutButton;
 	JButton createNewNetworkButton;
 	/**
 	 * Creates a new CyMenus object. This will construct the basic bar objects,
@@ -639,18 +640,18 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 		vizButton.setToolTipText("Open VizMapper\u2122");
 		vizButton.setBorderPainted(false);
 		
-		/////Add a button -- apply force-directed layout
-		forceDirectLayoutButton = new JButton();
-		forceDirectLayoutButton.setIcon(new ImageIcon(Cytoscape.class
+		/////Add a button -- apply layout, 'force-directed' by default
+		String layoutName = CytoscapeInit.getProperties().get("defaultLayoutAlgorithm").toString();
+				
+		applyLayoutButton = new JButton();
+		applyLayoutButton.setIcon(new ImageIcon(Cytoscape.class
 		                                        .getResource("images/apply-force-directed-layout-32.png")));
-		forceDirectLayoutButton.setToolTipText("Apply force-directed layout");
-		forceDirectLayoutButton.setBorderPainted(false);
-		forceDirectLayoutButton.setRolloverEnabled(true);
-		
-		forceDirectLayoutButton.addMouseListener(new ApplyForcedDirectedLayoutMouseAdapter(forceDirectLayoutButton));
+		applyLayoutButton.setToolTipText("Apply "+layoutName + " layout");
+		applyLayoutButton.setBorderPainted(false);
+		applyLayoutButton.setRolloverEnabled(true);		
+		applyLayoutButton.addMouseListener(new ApplyLayoutMouseAdapter(applyLayoutButton));
 
-		toolBar.add(forceDirectLayoutButton);
-
+		toolBar.add(applyLayoutButton);
 
 		/////Add a button -- Create new network from selected nodes, all edges
 		createNewNetworkButton = new JButton();
