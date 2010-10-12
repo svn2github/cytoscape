@@ -179,7 +179,7 @@ public class AttributeBrowser implements TableColumnModelListener, PropertyChang
 	
 		// Toolbar for selecting attributes and create new attribute.
 		attributeBrowserToolBar = new AttributeBrowserToolBar(tableModel, attributeTable,
-		                                                      new AttributeModel(attributes), orderedColumn,
+		                                                      new AttributeModel(attributes, this), orderedColumn,
 		                                                      panelType);
 
 		// the attribute table display: CytoPanel 2, horizontal SOUTH panel.
@@ -228,6 +228,10 @@ public class AttributeBrowser implements TableColumnModelListener, PropertyChang
 				tableModel.setTableData(null, orderedColumn);
 			}
 		}
+	}
+
+	void refresh() {
+		tableModel.setTableData(null, null);
 	}
 
 	/**

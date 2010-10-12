@@ -104,7 +104,7 @@ public class ModPanel extends JPanel implements ActionListener {
 		this.tableModel = tableModel;
 		this.objectType = graphObjectType;
 
-		this.defaultAttrModel = new AttributeModel(this.data);
+		this.defaultAttrModel = new AttributeModel(this.data, null);
 
 		setLayout(new GridBagLayout());
 
@@ -386,7 +386,7 @@ public class ModPanel extends JPanel implements ActionListener {
 					attrTypes.add(fromType);
 					if (fromType == CyAttributes.TYPE_INTEGER) // Allow copying from int to float.
 						attrTypes.add(CyAttributes.TYPE_FLOATING);
-					attributeCopyToBox.setModel(new AttributeModel(data, attrTypes));
+					attributeCopyToBox.setModel(new AttributeModel(data, null, attrTypes));
 				}
 			}
 			return;

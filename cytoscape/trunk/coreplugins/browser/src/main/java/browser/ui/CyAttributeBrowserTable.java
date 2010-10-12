@@ -1234,34 +1234,30 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	}
 
 	private void adjustColWidth() {
-				
 		final HashMap<String, Integer> widthMap = ColumnResizer.getColumnPreferredWidths(this);
 		
 		// Save the width if it does not exist
 		Iterator<String> it = widthMap.keySet().iterator();
-		while (it.hasNext()){
+		while (it.hasNext()) {
 			String key = it.next();
 			
 			// make exception for the first column (ID), save it only when the table is not empty
-			if (this.getModel().getRowCount() == 0 && key.equalsIgnoreCase("ID")){
+			if (this.getModel().getRowCount() == 0 && key.equalsIgnoreCase("ID"))
 				continue;
-			}
 			
-			if (!this.columnWidthMap.containsKey(key)){
+			if (!this.columnWidthMap.containsKey(key))
 				this.columnWidthMap.put(key, widthMap.get(key));
-			}
 		}
 		
 		// adjust column width
-		for (int i=0; i< this.getColumnCount(); i++){
+		for (int i = 0; i < this.getColumnCount(); i++) {
 			TableColumn col = this.getColumnModel().getColumn(i);
-			if (this.columnWidthMap.containsKey(this.getColumnName(i))){
+			if (this.columnWidthMap.containsKey(this.getColumnName(i)))
 				col.setPreferredWidth(this.columnWidthMap.get(this.getColumnName(i)).intValue());				
-			}
 		}
 	}
 	
-	public HashMap<String, Integer> getColumnWidthMap(){
+	public HashMap<String, Integer> getColumnWidthMap() {
 		return this.columnWidthMap;
 	}
 	
@@ -1271,48 +1267,44 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	 * @param e DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		
-		if(e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
+		if (e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED)))
 			ignore = true;
-		} else if(e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED) || e.getPropertyName().equals(Cytoscape.SESSION_LOADED) ) {
+		else if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED) || e.getPropertyName().equals(Cytoscape.SESSION_LOADED))
 			ignore = false;
-		}
 		
 		// Ignore all signal if this flag is on.
-		if(ignore) return;
+		if (ignore)
+			return;
 		
 		
-		if(e.getPropertyName().equals(AttributeBrowser.RESTORE_COLUMN) && 
-				e.getNewValue() != null && e.getNewValue().equals(objectType)) {
+		if (e.getPropertyName().equals(AttributeBrowser.RESTORE_COLUMN)
+		    && e.getNewValue() != null && e.getNewValue().equals(objectType))
+		{
 			this.adjustColWidth();
 			return;
 		}
 		
-		if(e.getPropertyName().equals(AttributeBrowser.CLEAR_INTERNAL_SELECTION)) {
-			
-			if(e.getNewValue() != null && e.getNewValue().equals(objectType)) {
+		if (e.getPropertyName().equals(AttributeBrowser.CLEAR_INTERNAL_SELECTION)) {
+			if (e.getNewValue() != null && e.getNewValue().equals(objectType)) {
 				getSelectionModel().clearSelection();
 				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 			}
 		}
 
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
-			
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 			AttributeBrowser.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
-		    || e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)) {
+		    || e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED))
 			tableModel.setTableData();
-		}
 
 		if ((e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS)
 		    || e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 		    || e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
-			if (currentNetwork != null) {
+			if (currentNetwork != null)
 				currentNetwork.removeSelectEventListener(this);
-			}
 
 			// Change the target network
 			currentNetwork = Cytoscape.getCurrentNetwork();

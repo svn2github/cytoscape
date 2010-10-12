@@ -1,14 +1,7 @@
 /*
   File: CyNode.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,6 +29,7 @@
 */
 package cytoscape;
 
+
 import giny.model.GraphPerspective;
 import giny.model.RootGraph;
 
@@ -47,9 +41,6 @@ import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 
 
-/**
- *
- */
 public class CyNode implements giny.model.Node {
 	public static final String NESTED_NETWORK_ID_ATTR = "nested_network_id";
 	public static final String NESTED_NETWORK_IS_VISIBLE_ATTR = "nested_network_is_visible";
@@ -289,6 +280,7 @@ public class CyNode implements giny.model.Node {
 			Cytoscape.getNodeAttributes().deleteAttribute(nodeID, NESTED_NETWORK_IS_VISIBLE_ATTR);
 			Cytoscape.getNodeAttributes().deleteAttribute(nodeID, NESTED_NETWORK_ID_ATTR);
 		}
+		Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, this, oldNestedNetwork);
 
 		// Let listeners know that the previous nested network was removed
 		if (oldNestedNetwork != null)

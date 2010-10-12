@@ -27,6 +27,7 @@
 */
 package browser;
 
+
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
@@ -50,10 +51,9 @@ import javax.swing.event.ListDataListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-/**
- *
- */
+
 public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDefinitionListener, PropertyChangeListener {
+	private final AttributeBrowser attribBrowser;
 	private Vector listeners = new Vector();
 	private final CyAttributes attributes;
 	private List<String> attributeNames;
@@ -66,7 +66,8 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 	 *
 	 * @param data  DOCUMENT ME!
 	 */
-	public AttributeModel(final CyAttributes data, final Set<Byte> validAttrTypes) {
+	public AttributeModel(final CyAttributes data, final AttributeBrowser attribBrowser, final Set<Byte> validAttrTypes) {
+		this.attribBrowser = attribBrowser;
 		this.attributes = data;
 		this.validAttrTypes = validAttrTypes;
 		data.getMultiHashMapDefinition().addDataDefinitionListener(this);
@@ -75,8 +76,8 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
 	}
 
-	@SuppressWarnings("unchecked") public AttributeModel(final CyAttributes data) {
-		this(data,
+	@SuppressWarnings("unchecked") public AttributeModel(final CyAttributes data, final AttributeBrowser attribBrowser) {
+		this(data, attribBrowser,
 		     new TreeSet<Byte>((List<Byte>)(Arrays.asList(new Byte[] {
 			CyAttributes.TYPE_BOOLEAN,
 			CyAttributes.TYPE_COMPLEX,
@@ -90,8 +91,10 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 
 	public void propertyChange(PropertyChangeEvent e) {
 		// This will handle the case for the change of attribute userVisibility
-		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED)){
+		if (e.getPropertyName() == Cytoscape.ATTRIBUTES_CHANGED) {
 			sortAttributes();
+			if (attribBrowser != null)
+				attribBrowser.refresh();
 		}
 	}
 	
