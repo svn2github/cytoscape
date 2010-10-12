@@ -12,6 +12,7 @@ CALL gen_vmoptions.bat
 
 IF EXIST "Cytoscape.vmoptions" GOTO itIsThere
 ; Run with defaults:
+echo "*** Missing Cytoscape.vmoptions, falling back to using defaults!"
 java -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd -Xss10M -Xmx1550M -jar cytoscape.jar -p plugins %*
 GOTO end
 
