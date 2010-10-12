@@ -6,15 +6,18 @@
 
 script_path="$(dirname -- $0)"
 
+#vm_options_path=$HOME/.cytoscape
+vm_options_path=$script_path
+
 # Attempt to generate Cytoscape.vmoptions if it doesn't exist!
-if [ ! -e "$HOME/.cytoscape/Cytoscape.vmoptions"  -a  -x "$script_path/gen_vmoptions.sh" ]; then
+if [ ! -e "$vm_options_path/Cytoscape.vmoptions"  -a  -x "$script_path/gen_vmoptions.sh" ]; then
     "$script_path/gen_vmoptions.sh"
 fi
 
-if [ -r $HOME/.cytoscape/Cytoscape.vmoptions ]; then
-    java `cat "$HOME/.cytoscape/Cytoscape.vmoptions"` -jar "$script_path/cytoscape.jar" -p "$script_path/plugins" "$@"
+if [ -r $vm_options_path/Cytoscape.vmoptions ]; then
+    java `cat "$vm_options_path/Cytoscape.vmoptions"` -jar "$script_path/cytoscape.jar" -p "$script_path/plugins" "$@"
 else # Just use sensible defaults.
-    java -d64 -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd -Xss10M -Xmx1550M \
+    java -Dswing.aatext=true -Dawt.useSystemAAFontSettings=lcd -Xss10M -Xmx1550M \
 	-jar "$script_path/cytoscape.jar" -p "$script_path/plugins" "$@"
 fi
 
