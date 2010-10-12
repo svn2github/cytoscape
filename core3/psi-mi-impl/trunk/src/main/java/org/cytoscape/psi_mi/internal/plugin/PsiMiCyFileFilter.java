@@ -6,12 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
+import org.cytoscape.io.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,13 +20,14 @@ public class PsiMiCyFileFilter implements CyFileFilter {
 
 	private static final int DEFAULT_LINES_TO_CHECK = 20;
 
-	private static final int CONNECTION_TIMEOUT = 500;
-	
+	private final StreamUtil streamUtil;
 	private final Set<String> extensions;
 	private final Set<String> contentTypes;
 	private final String description;
 
-	public PsiMiCyFileFilter(String description) {
+	public PsiMiCyFileFilter(String description, StreamUtil streamUtil) {
+		this.streamUtil = streamUtil;
+		
 		extensions = new HashSet<String>();
 		extensions.add("xml");
 		
@@ -52,10 +53,7 @@ public class PsiMiCyFileFilter implements CyFileFilter {
 	}
 
 	private InputStream getInputStream(URL url) throws IOException {
-		URLConnection connection = url.openConnection();
-		connection.setConnectTimeout(CONNECTION_TIMEOUT);
-		connection.connect();
-		return connection.getInputStream();
+		return streamUtil.getInputStream(url);
 	}
 
 	private boolean checkHeader(InputStream stream) throws IOException {

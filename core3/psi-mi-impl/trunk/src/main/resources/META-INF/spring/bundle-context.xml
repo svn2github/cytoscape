@@ -23,14 +23,17 @@
 
 	<bean id="psiMiFilter" class="org.cytoscape.psi_mi.internal.plugin.PsiMiCyFileFilter">
 		<constructor-arg value="PSI-MI files (*.xml)" />
+		<constructor-arg ref="streamUtilRef" />
 	</bean>
 
 	<bean id="psiMi1Filter" class="org.cytoscape.psi_mi.internal.plugin.PsiMiCyFileFilter">
 		<constructor-arg value="PSI-MI Level 1" />
+		<constructor-arg ref="streamUtilRef" />
 	</bean>
 
 	<bean id="psiMi25Filter" class="org.cytoscape.psi_mi.internal.plugin.PsiMiCyFileFilter">
 		<constructor-arg value="PSI-MI Level 2.5" />
+		<constructor-arg ref="streamUtilRef" />
 	</bean>
 
 	<bean id="psiMiNetworkViewTaskFactory" class="org.cytoscape.psi_mi.internal.plugin.PsiMiNetworkViewTaskFactory">

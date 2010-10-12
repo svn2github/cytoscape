@@ -16,6 +16,9 @@
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
 	                interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 		
+	<osgi:reference id="streamUtilRef"
+	                interface="org.cytoscape.io.util.StreamUtil" />
+
 	<osgi:service id="psiNetworkViewReaderFactoryService" ref="psiMiNetworkViewTaskFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
