@@ -37,7 +37,6 @@ package org.cytoscape.session.internal;
 
 import org.cytoscape.session.CySession;
 import org.cytoscape.session.CySessionManager;
-import org.cytoscape.session.CySessionManager.State;
 
 // TODO this is still pretty much just a placeholder class
 public class CySessionManagerImpl implements CySessionManager {
