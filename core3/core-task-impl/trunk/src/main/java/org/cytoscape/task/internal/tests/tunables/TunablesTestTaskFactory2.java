@@ -37,7 +37,7 @@ import org.cytoscape.work.Tunable;
 
 
 public class TunablesTestTaskFactory2 implements TaskFactory {
-	@Tunable(description="input file")
+	@Tunable(description="input file",params="input=true")
 	public File inputFile;
 
 	@Tunable(description="# of loops")
