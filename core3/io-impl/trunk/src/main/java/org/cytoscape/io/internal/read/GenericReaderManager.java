@@ -16,6 +16,8 @@ import org.cytoscape.work.Task;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+import org.springframework.core.InfrastructureProxy;
+
 
 public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Task>  {
 	protected final DataCategory category; 
@@ -35,11 +37,18 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 	 */
 	@SuppressWarnings("unchecked")
 	public void addInputStreamTaskFactory(T factory, Map props) {
-		if ( factory != null && factory.getCyFileFilter().getDataCategory() == category ) {
-			logger.info("adding IO taskFactory ");
+		if (factory == null)
+			logger.warn("Specified factory is null!");
+		else if (factory.getCyFileFilter().getDataCategory() == category) {
+			final Object f;
+			if (factory instanceof InfrastructureProxy)
+				f = ((InfrastructureProxy)factory).getWrappedObject();
+			else
+				f = factory;
+
+			logger.info("adding IO taskFactory (factory = " + f + ", category = " + category + ")");
 			factories.add(factory);
-		} else
-			logger.warn("Specified factory is null or has wrong DataCategory (" + category + ")");
+		}
 	}
 
 	/**
