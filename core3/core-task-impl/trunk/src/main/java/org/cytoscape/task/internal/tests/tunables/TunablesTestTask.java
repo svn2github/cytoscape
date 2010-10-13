@@ -129,7 +129,6 @@ public class TunablesTestTask extends AbstractTask implements TunableValidator {
 	public void cancel() {
 	}
 
-	@Tunable(description="Getter/setter int")
 	public Integer getInt() { return new Integer(getterSetterInt); }
 
 	@Tunable(description="Getter/setter int")
