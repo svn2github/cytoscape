@@ -16,7 +16,7 @@ import org.cytoscape.work.Tunable.Param;
 
 
 public class LoadDataTableTask extends AbstractTask {
-	@Tunable(description = "Data table file to load", flags = { Param.ATTRIBUTES })
+	@Tunable(description="Data table file to load", params="fileCategory=attribute")
 	public File file;
 
 	private CyTableReader reader;
@@ -40,10 +40,6 @@ public class LoadDataTableTask extends AbstractTask {
 		taskMonitor.setStatusMessage("Importing Data Table...");
 
 		insertTasksAfterCurrentTask(reader, new FinalStatusMessageUpdateTask(reader));
-	}
-
-	@Override
-	public void cancel() {
 	}
 }
 

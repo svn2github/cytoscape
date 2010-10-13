@@ -31,6 +31,8 @@ package org.cytoscape.work;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -142,6 +144,28 @@ public class TunableHandlerTest {
 		             "HasAnnotatedField.annotatedInt", fieldHandler.getQualifiedName());
 		assertEquals("Qualified name of an annotated getter/setter pair is not as expected!",
 		             "HasAnnotatedSetterAndGetterMethods.PrivateInt", getterAndSetterHandler.getQualifiedName());
+	}
+
+	@Test
+	public final void testGetParams() {
+		final Properties keysAndValues = fieldHandler.getParams();
+		assertTrue("key \"input\" is missing!", keysAndValues.containsKey("input"));
+		if (keysAndValues.containsKey("input")) {
+			final String value = keysAndValues.getProperty("input");
+			assertEquals("\"input\" does not contain \"true\"!", value, "true");
+		}
+
+		assertTrue("key \"escaped\" is missing!", keysAndValues.containsKey("escaped"));
+		if (keysAndValues.containsKey("escaped")) {
+			final String value = keysAndValues.getProperty("escaped");
+			assertEquals("\"escaped\" does not contain \"\\,;\"!", value, "\\,;");
+		}
+
+		assertTrue("key \"multiple\" is missing!", keysAndValues.containsKey("multiple"));
+		if (keysAndValues.containsKey("multiple")) {
+			final String value = keysAndValues.getProperty("multiple");
+			assertEquals("\"multiple\" does not contain \"first\" in the 0th position!", value, "first,second,third");
+		}
 	}
 }
 

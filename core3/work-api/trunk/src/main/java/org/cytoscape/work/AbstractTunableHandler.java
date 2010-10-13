@@ -5,10 +5,18 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 
 /** Provides the standard implementation for most of the methods declared by the TunableHandler interface.
  */
 public class AbstractTunableHandler implements TunableHandler {
+	private enum ParamsParseState {
+		KEY_START, LOOKING_FOR_EQUAL_SIGN, VALUE_START, LOOKING_FOR_SEMICOLON;
+	}
+
 	final private Field field;
 	final private Method getter;
 	final private Method setter;
@@ -128,5 +136,77 @@ public class AbstractTunableHandler implements TunableHandler {
 			field == null ? getter.getDeclaringClass().toString() : field.getDeclaringClass().toString();
 		
                 return unqualifiedClassName.substring(unqualifiedClassName.lastIndexOf(".") + 1) + "." + getName();
+	}
+
+	/**
+	 *  @return the parsed result from Tunable.getParams()
+	 */
+	final public Properties getParams() throws IllegalArgumentException {
+		final String rawString = tunable.params();
+		final Properties keyValuesPairs = new Properties();
+
+		StringBuilder key = null;
+		StringBuilder value = null;
+		ParamsParseState state = ParamsParseState.KEY_START;
+		boolean escaped = false;
+		for (int i = 0; i < rawString.length(); ++i) {
+			final char ch = rawString.charAt(i);
+
+			switch (state) {
+			case KEY_START:
+				key = new StringBuilder();
+				if (!Character.isLetter(ch))
+					throw new IllegalArgumentException(getName() + "'s getParams() returns an invalid key!");
+				key.append(ch);
+				state = ParamsParseState.LOOKING_FOR_EQUAL_SIGN;
+				break;
+			case LOOKING_FOR_EQUAL_SIGN:
+				if (ch == '=')
+					state = ParamsParseState.VALUE_START;
+				else {
+					if (!Character.isLetter(ch))
+						throw new IllegalArgumentException(getName() + "'s getParams() returns an invalid key!");
+					key.append(ch);
+				}
+				break;
+			case VALUE_START:
+				value = new StringBuilder();
+				if (ch == ';')
+					throw new IllegalArgumentException(getName() + "'s getParams() returns an invalid value!");
+				if (ch == '\\')
+					escaped = true;
+				else
+					value.append(ch);
+				state = ParamsParseState.LOOKING_FOR_SEMICOLON;
+				break;
+			case LOOKING_FOR_SEMICOLON:
+				if (escaped) {
+					value.append(ch);
+					escaped = false;
+				} else if (ch == ';') {
+					keyValuesPairs.setProperty(key.toString(), value.toString());
+					state = ParamsParseState.KEY_START;
+				} else {
+					if (ch == '\\')
+						escaped = true;
+					else
+						value.append(ch);
+				}
+				break;
+			}
+		}
+
+		if (escaped)
+			throw new IllegalArgumentException(getName() + "'s getParams() returns an invalid escaped character!");
+		if (state != ParamsParseState.KEY_START && state != ParamsParseState.LOOKING_FOR_SEMICOLON)
+			throw new IllegalArgumentException(getName() + "'s getParams() returns an incomplete string: \"" + rawString + "\"!");
+
+		if (key != null) {
+			if (value == null)
+				throw new IllegalArgumentException(getName() + "'s getParams() returns a key without a value!");
+			keyValuesPairs.setProperty(key.toString(), value.toString());
+		}
+
+		return keyValuesPairs;
 	}
 }

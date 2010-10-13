@@ -1,5 +1,6 @@
 package org.cytoscape.work.internal.tunables.utils;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,37 +11,56 @@ import java.util.Set;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
+import org.cytoscape.io.FileIOFactory;
 import org.cytoscape.io.read.InputStreamTaskFactory;
+import org.cytoscape.io.write.CyWriterFactory;
+
 
 /**
  * Provides a list of available file types by consulting all registered
- * <code>InputStreamTaskFactory</code> instances.
+ * <code>InputStreamTaskFactory</code> and  <code>CyWriterFactory</code>instances.
  */
 public class SupportedFileTypesManager {
-	Set<InputStreamTaskFactory> factories;
-	
+	Set<FileIOFactory> inputFactories;
+	Set<FileIOFactory> outputFactories;
+
 	public SupportedFileTypesManager() {
-		factories = new HashSet<InputStreamTaskFactory>();
+		inputFactories = new HashSet<FileIOFactory>();
+		outputFactories = new HashSet<FileIOFactory>();
 	}
-	
+
 	public void addInputStreamTaskFactory(InputStreamTaskFactory factory, Map<?,?> properties) {
-		factories.add(factory);
+		inputFactories.add(factory);
 	}
-	
+
 	public void removeInputStreamTaskFactory(InputStreamTaskFactory factory, Map<?,?> properties) {
-		factories.remove(factory);
+		inputFactories.remove(factory);
 	}
-	
-	public List<FileChooserFilter> getSupportedFileTypes(DataCategory category) {
+
+	public void addOutputStreamTaskFactory(CyWriterFactory factory, Map<?,?> properties) {
+		outputFactories.add(factory);
+	}
+
+	public void removeOutputStreamTaskFactory(CyWriterFactory factory, Map<?,?> properties) {
+		outputFactories.remove(factory);
+	}
+
+	public List<FileChooserFilter> getSupportedFileTypes(final DataCategory category, boolean input) {
+		if (input)
+			return getSupportedFileTypes(category, inputFactories);
+		else
+			return getSupportedFileTypes(category, outputFactories);
+	}
+
+	private List<FileChooserFilter> getSupportedFileTypes(final DataCategory category, final Set<FileIOFactory> factories) {
 		List<FileChooserFilter> types = new ArrayList<FileChooserFilter>();
-		
+
 		Set<String> allExtensions = new HashSet<String>();
-		for (InputStreamTaskFactory factory : factories) {
+		for (final FileIOFactory factory : factories) {
 			CyFileFilter filter = factory.getCyFileFilter();
-			if (filter.getDataCategory() != category) {
+			if (filter.getDataCategory() != category)
 				continue;
-			}
-			
+
 			String description = filter.getDescription();
 			Set<String> filterExtensions = filter.getExtensions();
 			String[] extensions = new String[filterExtensions.size()];
@@ -52,18 +72,17 @@ public class SupportedFileTypesManager {
 			}
 			types.add(new FileChooserFilter(description, extensions));
 		}
-		
-		if (types.size() == 0) {
+
+		if (types.isEmpty())
 			return types;
-		}
-		
+
 		Collections.sort(types, new Comparator<FileChooserFilter>() {
 			@Override
 			public int compare(FileChooserFilter o1, FileChooserFilter o2) {
 				return o1.getDescription().compareTo(o2.getDescription());
 			}
 		});
-		
+
 		String description = String.format("All %1$s files", category.toString().toLowerCase());
 		types.add(new FileChooserFilter(description, new ArrayList<String>(allExtensions).toArray(new String[allExtensions.size()])));
 		return types;

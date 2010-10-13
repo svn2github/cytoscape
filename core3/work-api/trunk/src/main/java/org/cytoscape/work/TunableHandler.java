@@ -2,11 +2,13 @@ package org.cytoscape.work;
 
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Properties;
 
 
 // TODO: Should we strip out the methods that are simply pass-thrus for Tunable and replace them with a single getTunable() method?
 
-/** Interface for classes that deal with reading out and writing back Tunables and their properties.
+/** Interface for classes that deal with reading out and writing back <code>Tunable</code>s and their properties.
  */
 public interface TunableHandler {
 	/**
@@ -71,4 +73,9 @@ public interface TunableHandler {
 	 *  Please note that the returned String will always contain a single embedded dot.
 	 */
 	String getQualifiedName();
+
+	/**
+	 *  @return the parsed result from Tunable.getParams()
+	 */
+	Properties getParams();
 }

@@ -44,10 +44,8 @@ public class FileHandler extends AbstractGUITunableHandler {
 	private JSeparator titleSeparator;
 	private MouseClick mouseClick;
 	private GroupLayout layout;
-	private enum Type { NETWORK, SESSION, ATTRIBUTES, DEFAULT };
-	private Type type;
 	private SupportedFileTypesManager fileTypesManager;
-	private boolean openMode; // true if we'd like to open a file and false if we'd like to save a file
+	private boolean input;
 
 	/**
 	 * Constructs the <code>GUIHandler</code> for the <code>File</code> type
@@ -74,19 +72,10 @@ public class FileHandler extends AbstractGUITunableHandler {
 	}
 
 	private void init() {
-		// Determine whether we're dealing w/ an "open" or "save" mode:
-		openMode = true;
-		for (final Param param : getFlags()) {
-			if (param == Param.SAVE_FILE) {
-				openMode = false;
-				break;
-			}
-		}
-
 		//Construction of GUI
 		fileChooser = new JFileChooser();
-		setFileType();
-		setGui(type);
+		input = isInput();
+		setGui();
 		setLayout();
 		panel.setLayout(layout);
 	}
@@ -105,29 +94,11 @@ public class FileHandler extends AbstractGUITunableHandler {
 		}
 	}
 
-	//set the type of file that will be imported depending on the "Param" Tunable annotation of the file
-	private void setFileType() {
-		for (Param s : getFlags()) {
-			if (s.equals(Param.NETWORK)) {
-				type = Type.NETWORK;
-				return;
-			} else if(s.equals(Param.SESSION)) {
-				type = Type.SESSION;
-				return;
-			} else if(s.equals(Param.ATTRIBUTES)) {
-				type = Type.ATTRIBUTES;
-				return;
-			}
-		}
-		type = Type.DEFAULT;
-	}
-
-
 	//construction of the GUI depending on the file type expected:
 	//	-field to display the file's path
 	//	-button to open the FileCHooser
 	//add listener to the field and button
-	private void setGui(Type type) {
+	private void setGui() {
 		titleSeparator = new JSeparator();
 		titleLabel = new JLabel();
 		image = new ImageIcon(getClass().getResource("/images/ximian/stock_open.png"));
@@ -137,48 +108,32 @@ public class FileHandler extends AbstractGUITunableHandler {
 		fileTextField.setFont(new Font(null, Font.ITALIC,12));
 		mouseClick = new MouseClick(fileTextField);
 		fileTextField.addMouseListener(mouseClick);
-		chooseButton = new JButton(openMode ? "Open a File..." : "Save a File...", image);
-		chooseButton.setActionCommand(openMode ? "open" : "save");
+		chooseButton = new JButton(input ? "Open a File..." : "Save a File...", image);
+		chooseButton.setActionCommand(input ? "open" : "save");
 		chooseButton.addActionListener(new myFileActionListener());
 
-		//for each type of file : set titlelabel and fileTextField text, and set FileChooser in order to just display files of the specified "Param" : network,attributes,session
-		switch (type) {
-		case NETWORK : {
-			//set title and textfield text for network type
-			fileTextField.setText("Please select a network file...");
-			titleLabel.setText("import network file");
+		//set title and textfield text for the file type
+		final String fileCategory = getFileCategory().toUpperCase();
+		fileTextField.setText("Please select a " + fileCategory.toLowerCase() + " file...");
+		titleLabel.setText("Import " + initialCaps(fileCategory) + " File");
+		List<FileChooserFilter> filters = fileTypesManager.getSupportedFileTypes(DataCategory.valueOf(fileCategory), input);
+		for (FileChooserFilter filter : filters)
+			fileChooser.addChoosableFileFilter(filter);
+	}
 
-			List<FileChooserFilter> filters = fileTypesManager.getSupportedFileTypes(DataCategory.NETWORK);
-			for (FileChooserFilter filter : filters) {
-				fileChooser.addChoosableFileFilter(filter);
-			}
-			break;
-		}
-		case SESSION: {
-			//set title and textfield text for session type
-			fileTextField.setText("Please select a session file...");
-			titleLabel.setText("import session file");
+	private String getFileCategory() {
+		return getParams().getProperty("fileCategory", "unspecified");
+	}
 
-			//set session filter for filechooser
-			fileChooser.addChoosableFileFilter(new FileChooserFilter("Session files (*.cys)",".cys"));
-			break;
-		}
-		case ATTRIBUTES: {
-			//set title and textfield text for attribute type
-			fileTextField.setText("Please select an attributes file...");
-			titleLabel.setText("import attributes file");
+	private boolean isInput() {
+		return getParams().getProperty("input", "false").equalsIgnoreCase("true");
+	}
 
-			//set filters for filechooser
-			String[] attr = {"attr","attrs"};
-			fileChooser.addChoosableFileFilter(new FileChooserFilter("Attributes files",attr));
-			break;
-		}
-		default: {
-			//set title and textfield text for attribute type
-			fileTextField.setText("Please select a file...");
-			titleLabel.setText("import file");
-		}
-		}
+	private String initialCaps(final String s) {
+		if (s.isEmpty())
+			return "";
+		else
+			return Character.toUpperCase(s.charAt(0)) + s.substring(1).toLowerCase();
 	}
 
 	//diplays the panel's component in a good view

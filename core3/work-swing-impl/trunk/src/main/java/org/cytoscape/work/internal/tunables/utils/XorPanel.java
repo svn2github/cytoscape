@@ -8,6 +8,9 @@ import java.awt.event.ActionEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import java.util.List;
+import java.util.Properties;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -95,6 +98,7 @@ public class XorPanel extends JPanel {
 		@Override public Object getValue() { return null; }
 		@Override public void setValue(final Object newValue) { }
 		@Override public String getQualifiedName() { return null; }
+		@Override public Properties getParams() { return null; }
 		public String getName() { return null; }
 		public JPanel getJPanel() { return null; }
 		public void handle() {}

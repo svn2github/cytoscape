@@ -69,7 +69,6 @@ public @interface Tunable {
 	 */
 	Param[] flags() default {};
 
-	
 	/**
 	 * Used to define all the groups in which the Tunable takes part (by default, its doesn't belong to any group).
 	 * 
@@ -212,8 +211,26 @@ public @interface Tunable {
 	 * </pre></p>
 	 */
 	Param[] groupTitles() default {};
-	
-	
+
+	/**
+	 *  Returns a key1=value1;key2=value2;...;keyN=valueN type string.  To include commas,
+	 *  semicolons or backslashes in a value you must escape it with a leading backslash.
+	 *
+	 *  Possible keys (which must consist of letters only) are<br/>
+	 *  <ul>
+	 *   <li>
+	 *     fileCategory: this is used solely for File tunables and must be one of "network",
+	 *     "table", "image", "attribute", "session", or "unspecified".
+	 *   </li>
+	 *   <li>
+	 *     input: this is used solely for File tunables and must be either "true" or "false"
+	 *   </li>
+	 *  </ul>
+	 *
+	 *  Note: Blanks/spaces in values are significant!
+	 */
+	String params() default "";
+
 	/**
 	 * Enumeration that contains the parameters used for <code>flag{}</code>, groupTitles{}, and <code>alignment{}</code>
 	 * 
@@ -250,21 +267,6 @@ public @interface Tunable {
 		COLLAPSED,
 		
 		/**
-		 * Filter for network files in a <code>Tunable File</code> : only network files will be choosable in the JFileChooser dialog
-		 */
-		NETWORK,
-		
-		/**
-		 * Filter for session files in a <code>Tunable File</code> : only session files will be choosable in the JFileChooser dialog
-		 */
-		SESSION,
-		
-		/**
-		 * Filter for attributes files in a <code>Tunable File</code> : only attributes files will be choosable in the JFileChooser dialog
-		 */
-		ATTRIBUTES,
-		
-		/**
 		 * The name of the group whose this <code>Tunable</code> is taking part shouldn't be displayed in the Borders in the GUI
 		 */
 		HIDDEN,
@@ -273,12 +275,6 @@ public @interface Tunable {
 		 * The name of the group whose this <code>Tunable</code> is taking part should be displayed in the Borders in the GUI<br>
 		 * This is the default state
 		 */
-		DISPLAYED,
-
-		/**
-		 * If the <code>Tunable</code> is a Java <code>File</code> object, this will allow
-		 * the creation of a new file.  For any other type of <code>Tunable</code> this will be ignored.
-		 */
-		SAVE_FILE
+		DISPLAYED
 	}
 }
