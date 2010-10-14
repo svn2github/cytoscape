@@ -35,7 +35,6 @@ import java.awt.event.ActionEvent;
 import java.util.Map;
 
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
 
 import cytoscape.view.CytoscapeAction;

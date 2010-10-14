@@ -36,9 +36,7 @@ import java.util.Map;
 
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
-import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
-//import org.cytoscape.work.HandlerController;
 
 import cytoscape.view.CytoscapeAction;
 import org.cytoscape.session.CyNetworkManager;
@@ -56,7 +54,7 @@ public class NetworkTaskFactoryTunableAction
 	}
 
 	public void actionPerformed(ActionEvent a) {
-		factory.setNetwork( netmgr.getCurrentNetwork() );
+		factory.setNetwork(netmgr.getCurrentNetwork());
 		super.actionPerformed(a);
 	}
 }

@@ -35,7 +35,6 @@ import cytoscape.view.CytoscapeAction;
 import cytoscape.view.CySwingApplication;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.work.swing.GUITaskManager;
-import org.cytoscape.work.swing.GUITunableInterceptor;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;

@@ -1,13 +1,5 @@
 /*
-
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -41,7 +33,6 @@ import java.awt.event.ActionEvent;
 import java.util.Map;
 
 import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.TaskManager;
 
 import cytoscape.view.CytoscapeAction;
@@ -53,13 +44,14 @@ public class NetworkViewCollectionTaskFactoryTunableAction
 	extends TaskFactoryTunableAction<NetworkViewCollectionTaskFactory> {
 
 	public NetworkViewCollectionTaskFactoryTunableAction(TaskManager manager, 
-	                  NetworkViewCollectionTaskFactory factory, Map serviceProps,
-					  CyNetworkManager netmgr) {
+							     NetworkViewCollectionTaskFactory factory, Map serviceProps,
+							     CyNetworkManager netmgr)
+	{
 		super(manager, factory, serviceProps, netmgr);
 	}
 
 	public void actionPerformed(ActionEvent a) {
-		factory.setNetworkViewCollection( netmgr.getSelectedNetworkViews() );
+		factory.setNetworkViewCollection(netmgr.getSelectedNetworkViews());
 		super.actionPerformed(a);
 	}
 }
