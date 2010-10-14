@@ -62,8 +62,4 @@ public class HideSelectedEdgesTask extends AbstractNetworkViewTask {
 
 		view.updateView();
 	} 
-
-	@Override
-	public void cancel() {
-	}
 }

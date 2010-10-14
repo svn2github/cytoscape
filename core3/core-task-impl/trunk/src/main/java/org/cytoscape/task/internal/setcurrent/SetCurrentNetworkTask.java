@@ -28,7 +28,4 @@ public class SetCurrentNetworkTask extends AbstractTask {
 		Object[] setNetworks = netmgr.getNetworkSet().toArray();
 		netmgr.setCurrentNetwork(((CyNetwork) setNetworks[setNetworks.length-1]).getSUID());
 	}
-
-	public void cancel() {
-	}
 }

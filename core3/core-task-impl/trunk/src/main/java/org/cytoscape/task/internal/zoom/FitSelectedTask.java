@@ -50,8 +50,4 @@ public class FitSelectedTask extends AbstractNetworkViewTask {
 	public void run(TaskMonitor tm) {
 		view.fitSelected();
 	}
-
-	@Override
-	public void cancel() {
-	}
 }

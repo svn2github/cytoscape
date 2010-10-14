@@ -54,7 +54,4 @@ public class FitContentTask extends AbstractNetworkViewTask {
 		view.fitContent();
 	}
 
-	@Override
-	public void cancel() {
-	}
 }

@@ -61,8 +61,4 @@ public class HideSelectedNodesTask extends AbstractNetworkViewTask {
 
 		view.updateView();
 	} 
-
-	@Override
-	public void cancel() {
-	}
 }

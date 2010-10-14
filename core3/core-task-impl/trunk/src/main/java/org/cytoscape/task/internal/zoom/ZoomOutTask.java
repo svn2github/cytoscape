@@ -46,8 +46,4 @@ public class ZoomOutTask extends AbstractZoomTask {
 	public ZoomOutTask(CyNetworkView v) {
 		super(v,0.9);
 	}
-
-	@Override
-	public void cancel() {
-	}
 }

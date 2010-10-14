@@ -57,8 +57,4 @@ class FinalStatusMessageUpdateTask extends AbstractTask {
 
 		taskMonitor.setProgress(1.0);
 	}
-
-	@Override
-	public void cancel() {
-	}
 }

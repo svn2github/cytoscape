@@ -56,8 +56,4 @@ public class UnHideAllTask extends AbstractNetworkViewTask {
 
 		view.updateView();
 	} 
-
-	@Override
-	public void cancel() {
-	}
 }

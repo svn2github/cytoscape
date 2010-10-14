@@ -57,8 +57,4 @@ public class UnHideAllEdgesTask extends AbstractNetworkViewTask {
 
 		view.updateView();
 	} 
-
-	@Override
-	public void cancel() {
-	}
 }

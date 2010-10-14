@@ -56,8 +56,4 @@ public class EditNetworkTitleTask extends AbstractNetworkTask {
 	public void run(TaskMonitor e) {
 		net.attrs().set("name",title);
 	} 
-
-	@Override
-	public void cancel() {
-	}
 }
