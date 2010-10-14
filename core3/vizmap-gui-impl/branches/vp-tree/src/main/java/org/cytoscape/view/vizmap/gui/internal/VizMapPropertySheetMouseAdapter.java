@@ -76,14 +76,11 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 
 	private VisualStyle selectedStyle;
 	
-	private final CyComboBoxPropertyEditor mappingTypeEditor;
 	
 	private final PropertyEditor nodeAttributeEditor;
 	private final PropertyEditor edgeAttributeEditor;
 	private final PropertyEditor networkAttributeEditor;
 	
-	
-	private static final String[] MAPPING_TYPE = {"Passthrough", "Discrete", "Continuous"};
 
 	/**
 	 * Creates a new VizMapPropertySheetMouseAdapter object.
@@ -103,9 +100,6 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 		this.propertySheetPanel = propertySheetPanel;
 		this.selectedStyle = selectedStyle;
 		this.editorManager = editorManager;
-		
-		this.mappingTypeEditor = (CyComboBoxPropertyEditor) this.editorManager.getDefaultComboBoxEditor("mappingTypeEditor");
-		this.mappingTypeEditor.setAvailableValues(MAPPING_TYPE);
 		
 		this.nodeAttributeEditor = editorManager.getDataTableComboBoxEditor(NODE);
 		this.edgeAttributeEditor = editorManager.getDataTableComboBoxEditor(EDGE);
@@ -181,7 +175,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 				
 				mapProp.setValue("Please select a mapping type!");
 				
-				((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(mapProp, mappingTypeEditor);
+				((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(mapProp, editorManager.getMappingFunctionSelector());
 				
 				newProp.addSubProperty(mapProp);
 				mapProp.setParentProperty(newProp);

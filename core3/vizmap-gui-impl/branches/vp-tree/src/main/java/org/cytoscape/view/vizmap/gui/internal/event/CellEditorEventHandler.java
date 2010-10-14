@@ -57,6 +57,7 @@ import org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor;
+import org.cytoscape.view.vizmap.mappings.AbstractVisualMappingFunction;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
@@ -219,43 +220,29 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 	}
 	
 	
-	private void switchMapping(final VisualProperty<?> vp) {
+	private void switchMapping(final VisualProperty<?> vp, final String newMapName, final String controllingAttrName) {
 		
 		 final VisualStyle style = manager.getCurrentVisualStyle();
+		 logger.debug("Mapping combo box clicked: " + style.getTitle());
+		 
+		 
 		
-//		 final String mappingFunctionName = style.getTitle() + "-" + vp.getIdString() + "-" + newMapName;
-//		
-//		 // Extract target calculator
-//		 Calculator newCalc = vmm.getCalculatorCatalog().getCalculator(type,
-//		 newCalcName);
-//		
-//		 Calculator oldCalc = null;
-//		
-//		 if (type.getObjectType().equals(VisualProperty.NODE))
-//		 oldCalc = vmm.getVisualStyle().getNodeAppearanceCalculator()
-//		 .getCalculator(type);
-//		 else
-//		 oldCalc = vmm.getVisualStyle().getEdgeAppearanceCalculator()
-//		 .getCalculator(type);
-//		
-//		 /*
-//		 * If not exist, create new one.
-//		 */
-//		 if (newCalc == null) {
-//		 newCalc = getNewCalculator(type, newMapName, newCalcName);
-//		 newCalc.getMapping(0)
-//		 .setControllingAttributeName((String) attrName);
-//		 vmm.getCalculatorCatalog().addCalculator(newCalc);
-//		 }
-//		
-//		 newCalc.getMapping(0).setControllingAttributeName((String) attrName);
-//		
-//		 if (type.getObjectType().equals(VisualProperty.NODE)) {
-//		 vmm.getVisualStyle().getNodeAppearanceCalculator().setCalculator(
-//		 newCalc);
-//		 } else
-//		 vmm.getVisualStyle().getEdgeAppearanceCalculator().setCalculator(
-//		 newCalc);
+		 final String mappingFunctionName = style.getTitle() + "-" + vp.getIdString() + "-" + newMapName;
+		 final VisualMappingFunction<?, ?> currentMapping = style.getVisualMappingFunction(vp);
+		
+
+		VisualMappingFunction<?,?> newMapping = null;
+		if(newMapName.equals(AbstractVisualMappingFunction.DISCRETE)) {
+			newMapping = new DiscreteMapping(controllingAttrName, vp.getType(), vp);
+		} else if(newMapName.equals(AbstractVisualMappingFunction.PASSTHROUGH)) {
+			newMapping = new PassthroughMapping(controllingAttrName, vp.getType(), vp);
+		} else if(newMapName.equals(AbstractVisualMappingFunction.CONTINUOUS)) {
+			newMapping = new ContinuousMapping(controllingAttrName, vp);
+		}
+
+		// TODO: Exception?
+		if(newMapping == null)
+			return;
 //		
 //		 /*
 //		 * If old calc is not standard name, rename it.
@@ -430,11 +417,18 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		 if (prop.getHiddenObject() instanceof VisualMappingFunction || prop.getDisplayName().equals("Mapping Type")) {
 			 logger.debug("Mapping type changed for: " + prop.getHiddenObject());
 			 logger.debug("Mapping type new = " + e.getNewValue());
-			 type = (VisualProperty<?>) ((VizMapperProperty<?>) prop.getParentProperty()).getHiddenObject();
-			 if(type == null)
+			 
+			 if(e.getNewValue() == e.getOldValue())
 				 return;
 			 
-			 switchMapping(type);
+			 final VizMapperProperty<?> parentProp = (VizMapperProperty<?>) prop.getParentProperty();
+			 Object controllingAttrName = parentProp.getValue();
+			 
+			 type = (VisualProperty<?>) ((VizMapperProperty<?>) prop.getParentProperty()).getHiddenObject();
+			 if(type == null || controllingAttrName == null)
+				 return;
+			 
+			 switchMapping(type, e.getNewValue().toString(), controllingAttrName.toString());
 		 }
 		
 

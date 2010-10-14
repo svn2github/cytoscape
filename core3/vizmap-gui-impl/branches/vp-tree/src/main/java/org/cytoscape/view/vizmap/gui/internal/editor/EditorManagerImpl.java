@@ -34,6 +34,9 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.editor;
 
+import static org.cytoscape.view.vizmap.mappings.AbstractVisualMappingFunction.*;
+
+
 import java.awt.Component;
 import java.beans.PropertyEditor;
 import java.util.ArrayList;
@@ -72,6 +75,10 @@ public class EditorManagerImpl implements EditorManager {
 	private final Map<VisualProperty<?>, Component> continuousEditors;
 
 	private final Map<Class<?>, ValueEditor<?>> valueEditors;
+	
+	private final PropertyEditor mappingTypeEditor;
+	
+	private static final String[] MAPPING_TYPES = {DISCRETE, PASSTHROUGH, CONTINUOUS};
 
 	
 	/**
@@ -88,6 +95,12 @@ public class EditorManagerImpl implements EditorManager {
 			attrComboBoxEditors.put(propEditor.getTargetObjectName(), propEditor);
 
 		valueEditors = new HashMap<Class<?>, ValueEditor<?>>();
+		
+		// Create mapping type editor
+		this.mappingTypeEditor = getDefaultComboBoxEditor("mappingTypeEditor");
+		
+		
+		((CyComboBoxPropertyEditor)mappingTypeEditor).setAvailableValues(MAPPING_TYPES);
 	}
 
 	/*
@@ -292,6 +305,6 @@ public class EditorManagerImpl implements EditorManager {
 
 	
 	@Override public PropertyEditor getMappingFunctionSelector() {
-		return getDefaultComboBoxEditor("mappingTypeEditor");
+		return mappingTypeEditor;
 	}
 }
