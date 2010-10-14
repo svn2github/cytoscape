@@ -2,9 +2,7 @@ package org.cytoscape.work.swing;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -99,9 +97,9 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 	 *
 	 * The new values that have been entered for the Object contained in <code>GUITunableHandlers</code> are also set if the user clicks on <i>"OK"</i>
 	 *
-	 * @param an array of objects with <code>Tunables</code>s
+	 * @param proxyObjs an array of objects with <code>Tunables</code>s
 	 *
-	 * @return if new values has been successfully set
+	 * @return if new values have been successfully set
 	 */
 	final public boolean execUI(Object... proxyObjs) {
 		final JPanel panel = getUI(proxyObjs);
