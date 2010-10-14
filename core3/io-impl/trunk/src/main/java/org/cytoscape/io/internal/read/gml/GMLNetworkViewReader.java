@@ -63,6 +63,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
@@ -706,7 +707,8 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 			return;
 		}
 		VisualLexicon lexicon = engine.getVisualLexicon();
-		Collection<VisualProperty<?>> properties = lexicon.getVisualProperties(CyTableEntry.NODE);
+		
+		Collection<VisualProperty<?>> properties = lexicon.getAllDescendants(TwoDVisualLexicon.NODE);
 		for (VisualProperty<?> property : properties) {
 			String id = property.getIdString();
 			
@@ -920,7 +922,7 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 			return;
 		}
 		VisualLexicon lexicon = engine.getVisualLexicon();
-		Collection<VisualProperty<?>> properties = lexicon.getVisualProperties(CyTableEntry.NODE);
+		Collection<VisualProperty<?>> properties = lexicon.getAllDescendants(TwoDVisualLexicon.NODE);
 		for (VisualProperty<?> property : properties) {
 			String id = property.getIdString();
 			

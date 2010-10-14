@@ -34,7 +34,9 @@ public class GMLNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 		
 		when(networkManager.getCurrentRenderingEngine()).thenReturn(engine);
 		when(engine.getVisualLexicon()).thenReturn(lexicon);
-		when(lexicon.getVisualProperties(any(String.class))).thenReturn(new LinkedList<VisualProperty<?>>());
+		
+		// FIXME
+		//when(lexicon.getVisualProperties(any(String.class))).thenReturn(new LinkedList<VisualProperty<?>>());
 	}
 	
 	@Test
