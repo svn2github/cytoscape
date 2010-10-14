@@ -22,7 +22,7 @@
 
 
 	<!-- Rendering Engine factory for main network views -->
-	<osgi:reference id="dingPresentationFactoryServiceRef"
+	<osgi:reference id="dingRenderingEngineFactoryServiceRef"
 		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
 		filter="(id=ding)" />
 
@@ -136,7 +136,7 @@
 
 	<!-- task factories for CyMenus -->
 	<osgi:set id="taskFactorySet" interface="org.cytoscape.work.TaskFactory"
-		cardinality="0..N">
+		cardinality="0..N" >
 		<osgi:listener bind-method="addTaskFactory"
 			unbind-method="removeTaskFactory" ref="cytoscapeMenuPopulator" />
 	</osgi:set>
