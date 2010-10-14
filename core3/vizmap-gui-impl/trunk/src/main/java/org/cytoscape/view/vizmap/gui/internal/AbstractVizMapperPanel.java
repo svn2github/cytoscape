@@ -62,7 +62,9 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
@@ -97,19 +99,13 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	// TODO remove this
 	public static final String GRAPHICAL_MAP_VIEW = "Graphical View";
 
-	// Test
-	protected static final String DEFAULT_VS_TITLE2 = "Default 2";
 
-	protected final VisualStyle defaultVS;
-
-	public VisualStyle getDefaultVisualStyle() {
-		return defaultVS;
-	}
-
+	protected final SelectedVisualStyleManager manager;
+	
 	// ///////// Main GUI Components /////////////////
 
 	// Current Visual Style is managed by this object.
-	protected JComboBox vsComboBox;
+	protected JComboBox visualStyleComboBox;
 	protected DefaultComboBoxModel vsComboBoxModel;
 
 	// Default View Editor. This is a singleton.
@@ -162,7 +158,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	protected PropertyRendererRegistry rendReg;
 	protected PropertyEditorRegistry editorReg;
 
-	protected VizMapEventHandlerManager vizMapEventHandlerManager;
+	//protected VizMapEventHandlerManager vizMapEventHandlerManager;
 
 	protected EditorWindowManager editorWindowManager;
 
@@ -173,19 +169,25 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	protected AttributeComboBoxPropertyEditor networkAttributeEditor;
 
 	protected SwingPropertyChangeSupport spcs;
+	
+	protected final VisualStyleFactory vsFactory;
+	
 	protected static final long serialVersionUID = -6839011300709287662L;
 
-	public AbstractVizMapperPanel(CySwingApplication desktop,
+	public AbstractVizMapperPanel(
+			final VisualStyleFactory vsFactory,
+			CySwingApplication desktop,
 			DefaultViewEditor defViewEditor, IconManager iconMgr,
 			ColorManager colorMgr, VisualMappingManager vmm,
 			VizMapperMenuManager menuMgr, EditorManager editorFactory,
 			PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
-			VizMapEventHandlerManager vizMapEventHandlerManager,
 			EditorWindowManager editorWindowManager,
 			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper,
-			VisualStyle defStyle) {
-
+			final SelectedVisualStyleManager manager) {
+		
+		this.manager = manager;
+		this.vsFactory = vsFactory;
 		this.cytoscapeDesktop = desktop;
 		this.defViewEditor = defViewEditor;
 		this.iconMgr = iconMgr;
@@ -195,33 +197,27 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		this.editorManager = editorFactory;
 		this.propertySheetPanel = propertySheetPanel;
 		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
-		this.vizMapEventHandlerManager = vizMapEventHandlerManager;
 		this.editorWindowManager = editorWindowManager;
 		this.cyNetworkManager = cyNetworkManager;
 		this.eventHelper = eventHelper;
+		
 		spcs = new SwingPropertyChangeSupport(this);
 
 		defaultImageManager = new HashMap<VisualStyle, Image>();
 
 		initComponents();
 		initDefaultEditors();
-
-		this.defaultVS = defStyle;
-
 	}
 
 	private void initDefaultEditors() {
-		// FIXME
-		// nodeAttrEditor = editorManager
-		// .getDefaultComboBoxEditor("nodeAttrEditor");
-		// edgeAttrEditor = editorManager
-		// .getDefaultComboBoxEditor("edgeAttrEditor");
-		// nodeNumericalAttrEditor = editorManager
-		// .getDefaultComboBoxEditor("nodeNumericalAttrEditor");
-		// edgeNumericalAttrEditor = editorManager
-		// .getDefaultComboBoxEditor("edgeNumericalAttrEditor");
-		// mappingTypeEditor = editorManager
-		// .getDefaultComboBoxEditor("mappingTypeEditor");
+//		 nodeAttrEditor = editorManager.getDefaultComboBoxEditor("nodeAttrEditor");
+//		 edgeAttrEditor = editorManager.getDefaultComboBoxEditor("edgeAttrEditor");
+		 nodeNumericalAttrEditor = editorManager
+		 .getDefaultComboBoxEditor("nodeNumericalAttrEditor");
+		 edgeNumericalAttrEditor = editorManager
+		 .getDefaultComboBoxEditor("edgeNumericalAttrEditor");
+		 mappingTypeEditor = editorManager
+		 .getDefaultComboBoxEditor("mappingTypeEditor");
 	}
 
 	private void initComponents() {
@@ -238,7 +234,10 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		buttonPanel = new javax.swing.JPanel();
 
 		vsComboBoxModel = new DefaultComboBoxModel();
-		vsComboBox = new JComboBox(vsComboBoxModel);
+		final VisualStyle defaultVS = manager.getDefaultStyle();
+		vsComboBoxModel.addElement(defaultVS);
+		vmm.addVisualStyle(defaultVS);
+		visualStyleComboBox = new JComboBox(vsComboBoxModel);
 
 		optionButton = new DropDownMenuButton(new AbstractAction() {
 			private final static long serialVersionUID = 1213748836776579L;
@@ -347,7 +346,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		vsSelectPanelLayout.setHorizontalGroup(vsSelectPanelLayout
 				.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
 						vsSelectPanelLayout.createSequentialGroup()
-								.addContainerGap().addComponent(vsComboBox, 0,
+								.addContainerGap().addComponent(visualStyleComboBox, 0,
 										146, Short.MAX_VALUE).addPreferredGap(
 										LayoutStyle.ComponentPlacement.RELATED)
 								.addComponent(optionButton,
@@ -359,7 +358,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 						vsSelectPanelLayout.createSequentialGroup().addGroup(
 								vsSelectPanelLayout.createParallelGroup(
 										GroupLayout.Alignment.BASELINE)
-										.addComponent(vsComboBox,
+										.addComponent(visualStyleComboBox,
 												GroupLayout.PREFERRED_SIZE,
 												GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE)
@@ -486,30 +485,18 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 
 	// ///////////////// Managing Visual Style Combobox //////////////////
 
-	/**
-	 * Returns currently selected Visual Style. This is the replacement for
-	 * "current visual style" in 2.x series.
-	 * 
-	 * Note: "selected visual style" is different from visual style for current
-	 * network view.
-	 * 
-	 * @return
-	 */
-	public VisualStyle getSelectedVisualStyle() {
-		// TODO: Type safety. Make sure this cast is always valid.
-		return (VisualStyle) vsComboBox.getSelectedItem();
-	}
+
 
 	public void setSelectedVisualStyle(final VisualStyle vs) {
 		final int itemCount = vsComboBoxModel.getSize();
 
 		for (int i = 0; i < itemCount; i++) {
-			if (vsComboBox.getItemAt(i).equals(vs)) {
+			if (visualStyleComboBox.getItemAt(i).equals(vs)) {
 
 				eventHelper.fireAsynchronousEvent(
-						new SelectedVisualStyleSwitchedEvent(vsComboBox,
-								(VisualStyle) vsComboBox.getItemAt(i), vs));
-				vsComboBox.setSelectedItem(vs);
+						new SelectedVisualStyleSwitchedEvent(visualStyleComboBox,
+								(VisualStyle) visualStyleComboBox.getItemAt(i), vs));
+				visualStyleComboBox.setSelectedItem(vs);
 				return;
 			}
 		}

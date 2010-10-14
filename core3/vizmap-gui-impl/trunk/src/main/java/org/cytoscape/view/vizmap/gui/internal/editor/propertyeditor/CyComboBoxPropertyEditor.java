@@ -39,6 +39,7 @@ import com.l2fprod.common.beans.editor.AbstractPropertyEditor;
  * 
  */
 public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
+	
 	private final static long serialVersionUID = 120233986911049L;
 
 	/*
@@ -47,8 +48,7 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 	private static final Color BACKGROUND = Color.white;
 	private static final Color NOT_SELECTED = new Color(51, 51, 255, 150);
 	private static final Color SELECTED = Color.red;
-	private static final Font SELECTED_FONT = new Font("SansSerif", Font.BOLD,
-			12);
+	private static final Font SELECTED_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private Object oldValue;
 	private Icon[] icons;
 
@@ -81,6 +81,8 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 				} else
 					CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
 							combo.getSelectedItem());
+				
+				System.out.println("!!!!!!!!Event fired from Combobox Editor: " + combo.getSelectedItem());
 			}
 
 			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {

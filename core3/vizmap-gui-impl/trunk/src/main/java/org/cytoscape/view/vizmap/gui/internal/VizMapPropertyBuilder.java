@@ -38,8 +38,8 @@ package org.cytoscape.view.vizmap.gui.internal;
 import static org.cytoscape.model.CyTableEntry.EDGE;
 import static org.cytoscape.model.CyTableEntry.NODE;
 
-import java.beans.PropertyEditor;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -48,31 +48,37 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.events.NetworkAddedEvent;
+import org.cytoscape.session.events.NetworkAddedListener;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.l2fprod.common.propertysheet.DefaultProperty;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
 import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
-import org.cytoscape.session.CyNetworkManager;
-
 /**
  * Create property for the Property Sheet object.
  */
 public class VizMapPropertyBuilder {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(VizMapPropertyBuilder.class);
 
 	private DefaultTableCellRenderer emptyBoxRenderer;
 	private DefaultTableCellRenderer filledBoxRenderer;
@@ -99,102 +105,115 @@ public class VizMapPropertyBuilder {
 	 */
 	public <K, V> VizMapperProperty<VisualProperty<V>> buildProperty(
 			final VisualMappingFunction<K, V> visualMapping,
-			final String rootObjectCategory,
+			final VisualProperty<?> rootObjectCategory,
 			final PropertySheetPanel propertySheetPanel) {
+
+		logger.debug("\n\n\nbuildProp called!");
+
 		// Mapping is empty
 		if (visualMapping == null)
-			return null;
+			throw new NullPointerException("Mapping is null.");
+		if (rootObjectCategory == null)
+			throw new NullPointerException("Category is null.  It should be one of the following: NODE, EDGE, or NETWORK.");
+		if (propertySheetPanel == null)
+			throw new NullPointerException("PropertySheet is null.");
 
 		final VisualProperty<V> vp = visualMapping.getVisualProperty();
-		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
-		final VizMapperProperty<VisualProperty<V>> calculatorTypeProp = new VizMapperProperty<VisualProperty<V>>();
+		final VizMapperProperty<VisualProperty<V>> topProperty = new VizMapperProperty<VisualProperty<V>>();
 
-		/*
-		 * Set one calculator
-		 */
-		calculatorTypeProp.setCategory(rootObjectCategory);
-		calculatorTypeProp.setDisplayName(vp.getDisplayName());
-		calculatorTypeProp.setHiddenObject(vp);
+		// Build Property object
+
+		topProperty.setCategory(rootObjectCategory.getDisplayName());
+		topProperty.setDisplayName(vp.getDisplayName());
+		topProperty.setHiddenObject(vp);
+		topProperty.setName(vp.getIdString());
 
 		final String attrName = visualMapping.getMappingAttributeName();
 		final VizMapperProperty<VisualMappingFunction<K, V>> mappingHeader = new VizMapperProperty<VisualMappingFunction<K, V>>();
 
 		if (attrName == null) {
-			calculatorTypeProp.setValue("Select Value");
+			topProperty.setValue("Select Value");
 			((PropertyRendererRegistry) propertySheetPanel.getTable()
-					.getRendererFactory()).registerRenderer(calculatorTypeProp,
+					.getRendererFactory()).registerRenderer(topProperty,
 					emptyBoxRenderer);
 		} else {
-			calculatorTypeProp.setValue(attrName);
+			topProperty.setValue(attrName);
 			((PropertyRendererRegistry) propertySheetPanel.getTable()
-					.getRendererFactory()).registerRenderer(calculatorTypeProp,
-					filledBoxRenderer);
+					.getRendererFactory()).registerRenderer(topProperty, filledBoxRenderer);
 		}
 
 		// TODO: is this correct?
 		mappingHeader.setDisplayName("Mapping Type");
-		// mappingHeader.setHiddenObject(visualMapping.getClass());
+		mappingHeader.setName("Mapping Type");
+
 		// Set mapping type as string.
 		mappingHeader.setValue(visualMapping.toString());
 		mappingHeader.setHiddenObject(visualMapping);
 
 		// Set parent-child relationship
-		mappingHeader.setParentProperty(calculatorTypeProp);
-		calculatorTypeProp.addSubProperty(mappingHeader);
+		mappingHeader.setParentProperty(topProperty);
+		topProperty.addSubProperty(mappingHeader);
+		
 		// TODO: Should refactor factory.
 		((PropertyEditorRegistry) propertySheetPanel.getTable()
 				.getEditorFactory()).registerEditor(mappingHeader,
 				editorFactory.getDefaultComboBoxEditor("mappingTypeEditor"));
 
-		CyTable attr = null;
-		Iterator<? extends CyTableEntry> it = null;
+		final Set<CyNetwork> networks = cyNetworkManager.getNetworkSet();
 
-		if (targetNetwork == null)
-			return null;
+		final Set<CyTableEntry> graphObjectSet = new HashSet<CyTableEntry>();
+		for (CyNetwork targetNetwork : networks) {
+			Iterator<? extends CyTableEntry> it = null;
 
-		attr = tableMgr.getTableMap(vp.getObjectType(),targetNetwork).get(
-				CyNetwork.DEFAULT_ATTRS);
-		if (vp.getObjectType().equals(NODE)) {
-			it = targetNetwork.getNodeList().iterator();
-			((PropertyEditorRegistry) propertySheetPanel.getTable()
-					.getEditorFactory()).registerEditor(calculatorTypeProp,
-					editorFactory.getDefaultComboBoxEditor("nodeAttrEditor"));
-		} else if (vp.getObjectType().equals(EDGE)) {
-			it = targetNetwork.getEdgeList().iterator();
-			((PropertyEditorRegistry) propertySheetPanel.getTable()
-					.getEditorFactory()).registerEditor(calculatorTypeProp,
-					editorFactory.getDefaultComboBoxEditor("edgeAttrEditor"));
-		} else {
-			it = cyNetworkManager.getNetworkSet().iterator();
-			((PropertyEditorRegistry) propertySheetPanel.getTable()
-					.getEditorFactory()).registerEditor(calculatorTypeProp,
-					editorFactory.getDefaultComboBoxEditor("networkAttrEditor"));
+			if (rootObjectCategory.getIdString().equals(NODE)) {
+				it = targetNetwork.getNodeList().iterator();
+				((PropertyEditorRegistry) propertySheetPanel.getTable()
+						.getEditorFactory()).registerEditor(topProperty,
+						editorFactory.getDataTableComboBoxEditor(NODE));
+			} else if (rootObjectCategory.getIdString().equals(EDGE)) {
+				it = targetNetwork.getEdgeList().iterator();
+				((PropertyEditorRegistry) propertySheetPanel.getTable()
+						.getEditorFactory()).registerEditor(topProperty,
+						editorFactory.getDataTableComboBoxEditor(EDGE));
+			} else {
+				it = cyNetworkManager.getNetworkSet().iterator();
+				((PropertyEditorRegistry) propertySheetPanel.getTable()
+						.getEditorFactory())
+						.registerEditor(
+								topProperty,
+								editorFactory
+										.getDataTableComboBoxEditor(CyTableEntry.NETWORK));
+			}
+
+			while (it.hasNext())
+				graphObjectSet.add(it.next());
 		}
 
 		/*
 		 * Discrete Mapping
 		 */
 		if (visualMapping instanceof DiscreteMapping && (attrName != null)) {
-			final Map<K, V> discMapping = ((DiscreteMapping<K, V>) visualMapping)
-					.getAll();
-
-			// Extract key attribute values.
-			Class<K> attrDataType = null;
-
-			try {
-				attrDataType = (Class<K>) attr.getColumnTypeMap().get(attrName);
-			} catch (Exception e) {
-				throw new IllegalArgumentException(
-						"Attribute is not compatible data type.");
-			}
-
-			final SortedSet<K> attrSet = new TreeSet<K>(attr.getColumnValues(
-					attrName, attrDataType));
-
-			// FIXME
-			setDiscreteProps(vp, discMapping, attrSet, editorFactory
-					.getVisualPropertyEditor(vp), calculatorTypeProp,
-					propertySheetPanel);
+			// final Map<K, V> discMapping = ((DiscreteMapping<K, V>)
+			// visualMapping)
+			// .getAll();
+			//
+			// // Extract key attribute values.
+			// Class<K> attrDataType = null;
+			//
+			// try {
+			// attrDataType = (Class<K>) attr.getColumnTypeMap().get(attrName);
+			// } catch (Exception e) {
+			// throw new IllegalArgumentException(
+			// "Attribute is not compatible data type.");
+			// }
+			//
+			// final SortedSet<K> attrSet = new TreeSet<K>(attr.getColumnValues(
+			// attrName, attrDataType));
+			//
+			// // FIXME
+			// setDiscreteProps(vp, discMapping, attrSet, editorFactory
+			// .getVisualPropertyEditor(vp), calculatorTypeProp,
+			// propertySheetPanel);
 		} else if (visualMapping instanceof ContinuousMapping
 				&& (attrName != null)) {
 			int wi = propertySheetPanel.getTable().getCellRect(0, 1, true).width;
@@ -204,55 +223,59 @@ public class VizMapPropertyBuilder {
 			graphicalView
 					.setDisplayName(AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW);
 			graphicalView.setName(vp.getDisplayName());
-			graphicalView.setParentProperty(calculatorTypeProp);
-			calculatorTypeProp.addSubProperty(graphicalView);
+			graphicalView.setParentProperty(topProperty);
+			topProperty.addSubProperty(graphicalView);
 
 			// FIXME
 			// TableCellRenderer crenderer = editorFactory
 			// .getVisualPropertyEditor(vp).getContinuousMappingEditor();
-			//			
+			//
 			// ((PropertyRendererRegistry) propertySheetPanel.getTable()
 			// .getRendererFactory()).registerRenderer(graphicalView,
 			// crenderer);
-		} else if (visualMapping instanceof PassthroughMapping
-				&& (attrName != null)) {
+		} else if (visualMapping instanceof PassthroughMapping && (attrName != null)) {
 			// Passthrough
 
 			Object id;
 			Object value;
 			String stringVal;
-			
+
 			VizMapperProperty<K> oneProperty;
 
-			while (it.hasNext()) {
-				CyTableEntry go = it.next();
-				Class<?> attrClass = attr.getColumnTypeMap().get(attrName);
-				id = go.attrs().get("name", String.class);
+			for (CyTableEntry go : graphObjectSet) {
+				Class<?> attrClass = go.attrs().getDataTable()
+						.getColumnTypeMap().get(attrName);
 				
+				id = go.attrs().get("name", String.class);
 
-				value = go.attrs().get(attrName, attrClass);
-				if(value != null)
+				if(attrName.equals("SUID"))
+					value = go.getSUID();
+				else 
+					value = go.attrs().get(attrName, attrClass);
+				
+				if (value != null)
 					stringVal = value.toString();
 				else
 					stringVal = null;
-				
-				oneProperty = new VizMapperProperty();
+
+				oneProperty = new VizMapperProperty<K>();
 
 				oneProperty.setValue(stringVal);
-				
+				oneProperty.setName(id.toString());
+
 				// This prop. should not be editable!
 				oneProperty.setEditable(false);
 
-				oneProperty.setParentProperty(calculatorTypeProp);
+				oneProperty.setParentProperty(topProperty);
 				oneProperty.setDisplayName(id.toString());
 				oneProperty.setType(String.class);
 
-				calculatorTypeProp.addSubProperty(oneProperty);
+				topProperty.addSubProperty(oneProperty);
 			}
 
 		}
 
-		propertySheetPanel.addProperty(0, calculatorTypeProp);
+		propertySheetPanel.addProperty(0, topProperty);
 		propertySheetPanel
 				.setRendererFactory(((PropertyRendererRegistry) propertySheetPanel
 						.getTable().getRendererFactory()));
@@ -260,7 +283,7 @@ public class VizMapPropertyBuilder {
 				.setEditorFactory(((PropertyEditorRegistry) propertySheetPanel
 						.getTable().getEditorFactory()));
 
-		return calculatorTypeProp;
+		return topProperty;
 	}
 
 	/*
@@ -309,4 +332,5 @@ public class VizMapPropertyBuilder {
 		// Add all children.
 		parent.addSubProperties(children);
 	}
+
 }

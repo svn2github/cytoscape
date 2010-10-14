@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,18 +31,19 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.ding.impl;
 
 import org.cytoscape.ding.NodeShape;
 import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class NodeShapeTwoDVisualProperty extends AbstractVisualProperty<NodeShape> { 
+public class NodeShapeTwoDVisualProperty extends
+		AbstractVisualProperty<NodeShape> {
 
-	public NodeShapeTwoDVisualProperty(final String ot, final NodeShape def, final String id, final String name) {
-		super(ot,def,id,name);
+	public NodeShapeTwoDVisualProperty(final NodeShape def, final String id, final String name) {
+		super(def, id, name);
 	}
-	
+
 	public String toSerializableString(final NodeShape value) {
 		return value.toString();
 	}

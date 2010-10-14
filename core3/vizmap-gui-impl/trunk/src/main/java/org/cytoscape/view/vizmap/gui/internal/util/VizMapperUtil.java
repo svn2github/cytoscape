@@ -38,7 +38,7 @@ public class VizMapperUtil {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public String getStyleName(Component parentComponent, VisualStyle vs) {
+	public String getStyleName(Component parentComponent, final VisualStyle vs) {
 		String suggestedName = null;
 		List<String> vsNames = getVisualStyleNames();
 

@@ -37,6 +37,7 @@
 package org.cytoscape.view.vizmap.gui.internal.bypass;
 
 import java.awt.event.ActionEvent;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -46,7 +47,7 @@ import javax.swing.JMenuItem;
 
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.view.model.RootVisualLexicon;
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
@@ -57,17 +58,20 @@ import org.cytoscape.view.vizmap.gui.editor.EditorManager;
  * and Edge bypass classes.
  */
 abstract class VizMapBypass {
+	
+	protected Collection<VisualProperty<?>> visualProperties;
+	
 	protected VisualMappingManager vmm;
 	protected CyTableEntry graphObj = null;
 
 	abstract protected List<String> getBypassNames();
 
 	protected EditorManager editorFactory;
-	protected RootVisualLexicon rootVisualLexicon;
+	protected VisualLexicon lexicon;
 
-	VizMapBypass(EditorManager editorFactory, RootVisualLexicon vpCatalog) {
+	VizMapBypass(EditorManager editorFactory, VisualLexicon lexicon) {
 		this.editorFactory = editorFactory;
-		this.rootVisualLexicon = vpCatalog;
+		this.lexicon = lexicon;
 	}
 
 	protected void addResetAllMenuItem(JMenu menu) {
@@ -123,7 +127,7 @@ abstract class VizMapBypass {
 
 					//TODO: what's the replacement?
 //					String val = ObjectToString.getStringValue(obj);
-//					CyTable table = graphObj.attrs().getDataTable();
+//					CyDataTable table = graphObj.attrs().getDataTable();
 //
 //					if (!table.getColumnTypeMap().containsKey(type.getDisplayName()))
 //						table.createColumn(type.getDisplayName(), String.class, false);

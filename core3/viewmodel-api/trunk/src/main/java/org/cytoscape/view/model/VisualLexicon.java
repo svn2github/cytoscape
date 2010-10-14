@@ -42,10 +42,21 @@ import java.util.Set;
  * provides VisualProperties. With a 'VisualProperties as annotations' this
  * won't be needed.
  * 
+ * This is a pre-definded tree by rendering engine developer.
+ * 
  * @since Cytoscape 3.0
  * 
  */
 public interface VisualLexicon {
+	
+	/**
+	 * Get root of this tree.
+	 * To traverse this tree, use this node as the entry point.
+	 * 
+	 * @return root node.
+	 */
+	VisualProperty<NullDataType> getRootVisualProperty();
+	
 	
 	/**
 	 * Returns the Set of VisualPropertys supported by this Renderer.
@@ -53,25 +64,20 @@ public interface VisualLexicon {
 	 * @return Set of all visual properties
 	 * 
 	 */
-	public Set<VisualProperty<?>> getAllVisualProperties();
+	Set<VisualProperty<?>> getAllVisualProperties();
+	
+	
+	VisualLexiconNode getVisualLexiconNode(final VisualProperty<?> vp);
 	
 	
 	/**
 	 * Get collection of visual properties for a given object type (node/edge/network).
 	 * 
-	 * @param objectType
-	 *            CyTableEntry type. i.e., NODE/EDGE/NETWORK.
-	 * 
-	 * @return Collection of visual properties for the type
-	 */
-	public Collection<VisualProperty<?>> getVisualProperties(final String objectType);
-	
-	
-	/**
-	 * Register new visual property to the lexicon.
-	 * 
 	 * @param prop
+	 *            any visual property
+	 * 
+	 * @return Collection of visual properties for the type.
 	 */
-	public void addVisualProperty(final VisualProperty<?> prop);
-	
+	Collection<VisualProperty<?>> getAllDescendants(final VisualProperty<?> prop);
+		
 }

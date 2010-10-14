@@ -34,10 +34,6 @@
  */
 package org.cytoscape.view.model;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 
 /**
  * An abstract implementation of VisualProperty that omits the methods dealing
@@ -47,9 +43,6 @@ import java.util.Map;
  * 
  */
 public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
-
-	// Object type (node/edge/network)
-	protected final String objectType;
 
 	// Default value for this VP.
 	protected final T defaultValue;
@@ -62,11 +55,6 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 
 	protected boolean isIgnoreDefault = false;
 
-	protected final Collection<VisualProperty<? extends T>> children;
-	protected VisualProperty<? super T> parent;
-	
-	protected final Map<VisualProperty<? extends T>, VisualPropertyDependecyCalculator<T>> dependencyCalculatorMap;
-
 	/**
 	 * Constructor with all required immutable field values.
 	 * 
@@ -75,22 +63,14 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	 * @param id
 	 * @param name
 	 */
-	public AbstractVisualProperty(final String objectType,
-			final T defaultValue, final String id, final String name) {
-		this.objectType = objectType;
+	public AbstractVisualProperty(final T defaultValue, final String id, final String name) {
 		this.defaultValue = defaultValue;
 		this.id = id;
 		this.name = name;
-		this.children = new HashSet<VisualProperty<? extends T>>();
-		this.parent = null;
-		
-		this.dependencyCalculatorMap = new HashMap<VisualProperty<? extends T>, VisualPropertyDependecyCalculator<T>>();
 	}
 
-	public String getObjectType() {
-		return objectType;
-	}
-
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public Class<T> getType() {
 		if (defaultValue != null)
@@ -99,44 +79,26 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 			return null;
 	}
 
+	
+	@Override
 	public T getDefault() {
 		return defaultValue;
 	}
 
+	
+	@Override
 	public String getIdString() {
 		return id;
 	}
 
+	@Override
 	public String getDisplayName() {
 		return name;
 	}
 
+	@Override
 	public boolean isIgnoreDefault() {
 		return this.isIgnoreDefault;
-	}
-
-	public VisualProperty<? super T> getParent() {
-		return this.parent;
-	}
-
-	public Collection<VisualProperty<? extends T>> getChildren() {
-		return this.children;
-	}
-
-	public void setParent(final VisualProperty<? super T> parent) {
-		this.parent = parent;
-	}
-
-	public void addChild(final VisualProperty<? extends T> child) {
-		this.children.add(child);
-	}
-
-	public void setDependencyCalculator(
-			final VisualProperty<? extends T> child,
-			VisualPropertyDependecyCalculator<T> calc) {
-		
-		this.dependencyCalculatorMap.put(child, calc);
-	
 	}
 
 }

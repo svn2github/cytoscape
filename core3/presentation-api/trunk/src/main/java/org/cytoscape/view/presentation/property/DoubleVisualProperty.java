@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,26 +31,29 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package org.cytoscape.view.presentation.property; 
+ */
+package org.cytoscape.view.presentation.property;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class DoubleVisualProperty extends AbstractVisualProperty<Double> { 
+public class DoubleVisualProperty extends AbstractVisualProperty<Double> {
 
-	public DoubleVisualProperty(final String ot, final Double def, final String id, final String name) {
-		this(ot,def,id,name, false);
+	public DoubleVisualProperty(final Double def, final String id, final String name) {
+		this(def, id, name, false);
 	}
-	
-	public DoubleVisualProperty(final String ot, final Double def, final String id, final String name, final boolean ignoreDefault) {
-		super(ot,def,id,name);
+
+	public DoubleVisualProperty(final Double def, final String id,
+			final String name, final boolean ignoreDefault) {
+		super(def, id, name);
 		this.isIgnoreDefault = ignoreDefault;
 	}
-	
+
+	@Override
 	public String toSerializableString(final Double value) {
 		return value.toString();
 	}
 
+	@Override
 	public Double parseSerializableString(final String text) {
 		return Double.valueOf(text);
 	}

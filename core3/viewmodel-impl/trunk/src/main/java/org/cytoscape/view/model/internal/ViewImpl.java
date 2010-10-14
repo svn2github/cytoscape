@@ -6,8 +6,8 @@ import java.util.Map;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.NodeViewChangeMicroListener;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.events.NodeViewChangeMicroListener;
 
 
 /**

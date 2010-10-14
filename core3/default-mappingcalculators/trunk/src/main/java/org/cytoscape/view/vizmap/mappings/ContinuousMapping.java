@@ -68,7 +68,8 @@ import org.cytoscape.view.vizmap.mappings.interpolators.LinearNumberToNumberInte
  *            cytoscape.visual.mappings.continuous.README.txt.
  * 
  */
-public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
+public class ContinuousMapping<V> extends
+		AbstractVisualMappingFunction<Number, V> {
 
 	private Interpolator<Number, V> interpolator; // used to interpolate between
 													// boundaries
@@ -79,8 +80,8 @@ public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 	public ContinuousMapping(final String attrName, final VisualProperty<V> vp) {
 		super(attrName, Number.class, vp);
 		this.points = new ArrayList<ContinuousMappingPoint<V>>();
-		
-		//TODO FIXME use factory here.
+
+		// TODO FIXME use factory here.
 		// Create Interpolator
 		if (Color.class.isAssignableFrom(vp.getType()))
 			interpolator = (Interpolator<Number, V>) new LinearNumberToColorInterpolator();
@@ -89,20 +90,22 @@ public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 		else
 			interpolator = (Interpolator<Number, V>) new FlatInterpolator();
 	}
-	
+
 	/**
 	 * Constructor.
 	 * 
 	 * @param defaultObj
 	 *            default object to map to
 	 */
-	public ContinuousMapping(String attrName, VisualProperty<V> vp, Interpolator<Number, V> it) {
+	public ContinuousMapping(String attrName, VisualProperty<V> vp,
+			Interpolator<Number, V> it) {
 		super(attrName, Number.class, vp);
 		this.points = new ArrayList<ContinuousMappingPoint<V>>();
 		this.interpolator = it;
 	}
-	
-	@Override public String toString() {
+
+	@Override
+	public String toString() {
 		return CONTINUOUS;
 	}
 
@@ -159,11 +162,12 @@ public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 	 * @param views
 	 *            DOCUMENT ME!
 	 */
-	public <G extends CyTableEntry> void apply(Collection<? extends View<G>> views) {
-		if (views == null || views.size() < 1)
+	@Override
+	public void apply(final View<? extends CyTableEntry> view) {
+		if (view == null)
 			return; // empty list, nothing to do
-				
-			doMap(views); 
+
+		doMap(view);
 	}
 
 	/**
@@ -182,26 +186,25 @@ public class ContinuousMapping<V> extends AbstractMappingFunction<Number, V> {
 	 * @param <V>
 	 *            the type-parameter of the View
 	 */
-	private <G extends CyTableEntry> void doMap(
-			final Collection<? extends View<G>> views) {
-		
-		CyRow row;
-		for (final View<G> view : views) {
-			row = view.getModel().attrs();
+	private void doMap(final View<? extends CyTableEntry> view) {
 
-			if (row.contains(attrName, attrType)) {
-				// skip Views where source attribute is not defined;
-				// ViewColumn will automatically substitute the per-VS or global
-				// default, as appropriate
-				
-				// In all cases, attribute value should be a number for continuous mapping.
-				final Number attrValue = view.getModel().attrs().get(attrName,attrType);
-				final V value = getRangeValue(attrValue);
-				view.setVisualProperty(vp, value);
-			} else { // remove value so that default value will be used:
-				view.setVisualProperty(vp, null);
-			}
+		CyRow row = view.getModel().attrs();
+
+		if (row.contains(attrName, attrType)) {
+			// skip Views where source attribute is not defined;
+			// ViewColumn will automatically substitute the per-VS or global
+			// default, as appropriate
+
+			// In all cases, attribute value should be a number for continuous
+			// mapping.
+			final Number attrValue = view.getModel().attrs()
+					.get(attrName, attrType);
+			final V value = getRangeValue(attrValue);
+			view.setVisualProperty(vp, value);
+		} else { // remove value so that default value will be used:
+			view.setVisualProperty(vp, null);
 		}
+
 	}
 
 	private V getRangeValue(Number domainValue) {

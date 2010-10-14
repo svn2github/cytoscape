@@ -1,5 +1,12 @@
 /*
- Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -27,8 +34,6 @@
  */
 package org.cytoscape.ding.impl;
 
-import static org.cytoscape.model.CyTableEntry.NODE;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -46,7 +51,6 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -67,11 +71,11 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.graph.render.stateful.GraphLOD;
 import org.cytoscape.graph.render.stateful.GraphRenderer;
-import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
@@ -86,27 +90,26 @@ import org.cytoscape.util.intr.IntEnumerator;
 import org.cytoscape.util.intr.IntHash;
 import org.cytoscape.util.intr.IntStack;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.EdgeViewChangeMicroListener;
-import org.cytoscape.view.model.NetworkViewChangeMicroListener;
-import org.cytoscape.view.model.NodeViewChangeMicroListener;
-import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.events.EdgeViewChangeMicroListener;
 import org.cytoscape.view.model.events.FitContentEvent;
 import org.cytoscape.view.model.events.FitContentEventListener;
 import org.cytoscape.view.model.events.FitSelectedEvent;
 import org.cytoscape.view.model.events.FitSelectedEventListener;
+import org.cytoscape.view.model.events.NetworkViewChangeMicroListener;
+import org.cytoscape.view.model.events.NodeViewChangeMicroListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import phoebe.PhoebeCanvasDropListener;
 import phoebe.PhoebeCanvasDroppable;
-
 
 /**
  * DING implementation of the GINY view.
@@ -340,6 +343,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	Map<EdgeViewTaskFactory, Map> edgeViewTFs;
 	Map<NetworkViewTaskFactory, Map> emptySpaceTFs;
 
+	TunableInterceptor interceptor;
 	TaskManager manager;
 
 	// Will be injected.
@@ -348,7 +352,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	// This is the view model. This should be immutable.
 	final CyNetworkView cyNetworkView;
 
-	private final RootVisualLexicon rootLexicon;
 
 	/**
 	 * Creates a new DGraphView object.
@@ -357,15 +360,15 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 *            The graph model that we'll be creating a view for.
 	 */
 	public DGraphView(final CyNetworkView view, CyTableFactory dataFactory,
-			  CyRootNetworkFactory cyRoot, UndoSupport undo,
-			  SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc,
-			  VisualLexicon dingLexicon,
-			  Map<NodeViewTaskFactory, Map> nodeViewTFs,
-			  Map<EdgeViewTaskFactory, Map> edgeViewTFs,
-			  Map<NetworkViewTaskFactory, Map> emptySpaceTFs,
-			  TaskManager manager, CyEventHelper eventHelper,
-			  CyTableManager tableMgr)
-	{
+			CyRootNetworkFactory cyRoot, UndoSupport undo,
+			SpacialIndex2DFactory spacialFactory,
+			VisualLexicon dingLexicon,
+			Map<NodeViewTaskFactory, Map> nodeViewTFs,
+			Map<EdgeViewTaskFactory, Map> edgeViewTFs,
+			Map<NetworkViewTaskFactory, Map> emptySpaceTFs,
+			TaskManager manager, CyEventHelper eventHelper,
+			CyTableManager tableMgr) {
+
 		if (view == null)
 			throw new IllegalArgumentException(
 					"Network View Model cannot be null.");
@@ -383,7 +386,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		logger.debug("Phase 2: service registered: time = "
 				+ (System.currentTimeMillis() - start));
 
-		rootLexicon = vpc;
 		this.dingLexicon = dingLexicon;
 
 		this.nodeViewTFs = nodeViewTFs;
@@ -764,12 +766,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 		// read in visual properties from view obj
 		// FIXME TODO: this process is not necessary
-		final Collection<VisualProperty<?>> nodeVPs = rootLexicon
-				.getVisualProperties(NODE);
-
-		for (VisualProperty<?> vp : nodeVPs)
-			nodeVisualPropertySet(nodeViewModel, vp,
-					nodeViewModel.getVisualProperty(vp));
+//		final Collection<VisualProperty<?>> nodeVPs = rootLexicon
+//				.getVisualProperties(NODE);
+//
+//		for (VisualProperty<?> vp : nodeVPs)
+//			nodeVisualPropertySet(nodeViewModel, vp,
+//					nodeViewModel.getVisualProperty(vp));
 
 		return dNodeView;
 	}
@@ -2775,7 +2777,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	public Image createImage(int width, int height) {
 		// TODO Auto-generated method stub
-		return createImage(width,height,1.0);
+		return null;
 	}
 
 	public VisualLexicon getVisualLexicon() {

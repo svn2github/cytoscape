@@ -18,20 +18,21 @@ public class RenameStyleAction extends AbstractVizMapperAction {
 
 	public void actionPerformed(ActionEvent e) {
 
-		final VisualStyle selectedStyle = this.vizMapperMainPanel.getSelectedVisualStyle();
-
-		final String name = vizMapperUtil.getStyleName(vizMapperMainPanel,
-				selectedStyle);
-
-		// Ignore if user does not enter new name.
-		if (name == null)
-			return;
-
-		// Rename the selected style
-		selectedStyle.setTitle(name);
-		
-		// Update the combo box.
-		vizMapperMainPanel.setSelectedVisualStyle(selectedStyle);
+		// FIXME
+//		final VisualStyle selectedStyle = this.vizMapperMainPanel.getSelectedVisualStyle();
+//
+//		final String name = vizMapperUtil.getStyleName(vizMapperMainPanel,
+//				selectedStyle);
+//
+//		// Ignore if user does not enter new name.
+//		if (name == null)
+//			return;
+//
+//		// Rename the selected style
+//		selectedStyle.setTitle(name);
+//		
+//		// Update the combo box.
+//		vizMapperMainPanel.setSelectedVisualStyle(selectedStyle);
 
 	}
 }

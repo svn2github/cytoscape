@@ -1,30 +1,24 @@
-package org.cytoscape.vizmap;
+package org.cytoscape.view.vizmap;
 
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.util.Collection;
-
-import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class AbstractVisualMappingFunctionTest<K, V> {
+public abstract class AbstractVisualMappingFunctionTest {
 	
-	protected VisualMappingFunction<K, V> mapping;
+	protected VisualMappingFunction<?, ?> mapping;
 	
 	// Aname of controlling attr.
 	protected String attrName;
-	protected Class<K> attrType;
-	protected VisualProperty<V> vp;
-	
-	
-	
-	protected Collection<View<CyTableEntry>> views;
+	protected Class<?> attrType;
+	protected VisualProperty<?> vp;
+		
 
 	@Before
 	public void setUp() throws Exception {
@@ -37,16 +31,12 @@ public abstract class AbstractVisualMappingFunctionTest<K, V> {
 	
 	@Test
 	public void testMappingSettings() throws Exception {
+		
+		assertNotNull(mapping);
+		
 		assertEquals(attrName, mapping.getMappingAttributeName());
 		assertEquals(attrType, mapping.getMappingAttributeType());
 		assertEquals(vp, mapping.getVisualProperty());
-	}
-	
-	@Test
-	public void testMappingApply() throws Exception {
-		//FIXME need a real test!
-		mapping.apply(views);
-		
 	}
 
 }

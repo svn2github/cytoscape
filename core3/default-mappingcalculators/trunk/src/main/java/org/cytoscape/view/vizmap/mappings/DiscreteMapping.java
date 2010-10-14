@@ -42,7 +42,6 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.view.vizmap.mappings;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -57,34 +56,34 @@ import org.cytoscape.view.model.VisualProperty;
  * data value is extracted from a bundle of attributes by using a specified data
  * attribute name.
  */
-public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
-	
-	// contains the actual map elements (sorted)
-	private final SortedMap<K, V> attribute2visualMap; 
+public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 
-	
+	// contains the actual map elements (sorted)
+	private final SortedMap<K, V> attribute2visualMap;
+
 	/**
 	 * Constructor.
 	 * 
 	 * @param defObj
 	 *            Default Object.
 	 */
-	public DiscreteMapping(final String attrName, final Class<K> attrType, final VisualProperty<V> vp) {
+	public DiscreteMapping(final String attrName, final Class<K> attrType,
+			final VisualProperty<V> vp) {
 		super(attrName, attrType, vp);
 		attribute2visualMap = new TreeMap<K, V>();
 	}
-	
-	
-	@Override public String toString() {
+
+	@Override
+	public String toString() {
 		return DISCRETE;
 	}
 
-	
-	public <G extends CyTableEntry> void apply(Collection<? extends View<G>> views) {
-		if (views == null || views.size() < 1)
+	@Override
+	public void apply(View<? extends CyTableEntry> view) {
+		if (view == null)
 			return; // empty list, nothing to do
 
-		applyDiscreteMapping(views);
+		applyDiscreteMapping(view);
 	}
 
 	/**
@@ -103,28 +102,26 @@ public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
 	 * @param <V>
 	 *            the type-parameter of the View
 	 */
-	private <G extends CyTableEntry> void applyDiscreteMapping(final Collection<? extends View<G>> views) {
+	private void applyDiscreteMapping(final View<? extends CyTableEntry> view) {
 
-		CyRow row;
-		for (final View<G> view : views) {
-			row = view.getModel().attrs();
-			if (row.contains(attrName, attrType)) {
-				// skip Views where source attribute is not defined;
-				// ViewColumn will automatically substitute the per-VS or global
-				// default, as appropriate
+		final CyRow row = view.getModel().attrs();
+		
+		if (row.contains(attrName, attrType)) {
+			// skip Views where source attribute is not defined;
+			// ViewColumn will automatically substitute the per-VS or global
+			// default, as appropriate
 
-				final K key = view.getModel().attrs().get(attrName, attrType);
-				if (attribute2visualMap.containsKey(key)) {
-					final V value = attribute2visualMap.get(key);
-					// Assign value to view
-					view.setVisualProperty(vp, value);
-				} else { // remove value so that default value will be used:
-					// Set default value
-					view.setVisualProperty(vp, null);
-				}
+			final K key = view.getModel().attrs().get(attrName, attrType);
+			if (attribute2visualMap.containsKey(key)) {
+				final V value = attribute2visualMap.get(key);
+				// Assign value to view
+				view.setVisualProperty(vp, value);
 			} else { // remove value so that default value will be used:
+				// Set default value
 				view.setVisualProperty(vp, null);
 			}
+		} else { // remove value so that default value will be used:
+			view.setVisualProperty(vp, null);
 		}
 	}
 
@@ -151,7 +148,6 @@ public class DiscreteMapping<K, V> extends AbstractMappingFunction<K, V> {
 		attribute2visualMap.put(key, value);
 		// fireStateChanged();
 	}
-
 
 	/**
 	 * Adds All Members of Specified Map.

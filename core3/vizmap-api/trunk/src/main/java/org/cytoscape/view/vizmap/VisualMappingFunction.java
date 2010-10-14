@@ -34,8 +34,6 @@
 */
 package org.cytoscape.view.vizmap;
 
-import java.util.Collection;
-
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
@@ -67,37 +65,38 @@ public interface VisualMappingFunction<K, V> {
 	
 	/**
 	 *  Returns attribute name used in this mapping.
+	 *  This field is immutable.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public String getMappingAttributeName();
+	String getMappingAttributeName();
 	
 	
 	/**
+	 * Returns data type of mapping attribute.
 	 * 
 	 * @return
 	 */
-	public Class<K> getMappingAttributeType();
+	Class<K> getMappingAttributeType();
 
 	
 	/**
-	 *  DOCUMENT ME!
+	 *  Visual Property associated with this function.
+	 *  This field is immutable.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public VisualProperty<V> getVisualProperty();
+	VisualProperty<V> getVisualProperty();
 
 	
 	/**
-	 *  Since current MappingCalculators map from Attributes to
+	 *  Since current MappingFunctions map from Attributes to
 	 *  VisualProperties, have to restrict View<?> to those
 	 *  generic types that have CyAttributes; currently this is
 	 *  CyTableEntry.
-	 *
-	 * @param <G> Graph object type.
 	 * 
 	 * @param column DOCUMENT ME!
 	 * @param views DOCUMENT ME!
 	 */
-	<G extends CyTableEntry> void apply(final Collection<? extends View<G>> views);
+	void apply(final View<? extends CyTableEntry> view);
 }

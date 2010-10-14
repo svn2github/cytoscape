@@ -13,18 +13,20 @@
            http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
             http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
+
 	<import resource="bundle-context-osgi.xml" />
 
 	<context:annotation-config />
 
-	<bean id="dVisualLexicon" class="org.cytoscape.ding.impl.DVisualLexicon" />
+	<bean id="dVisualLexicon" class="org.cytoscape.ding.impl.DVisualLexicon">
+		<constructor-arg ref="visualLexiconNodeFactoryServiceRef" />
+	</bean>
 
-	<bean id="dingPresentationFactory" class="org.cytoscape.ding.impl.DingRenderingEngineFactory">
+	<bean id="dingRenderingEngineFactory" class="org.cytoscape.ding.impl.DingRenderingEngineFactory">
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
 		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="spacialIndex2DFactoryServiceRef" />
-		<constructor-arg ref="rootVisualLexiconServiceRef" />
 		<constructor-arg ref="dVisualLexicon" />
 		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="cyServiceRegistrarRef" />
@@ -32,13 +34,12 @@
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
 
-	<bean id="dingNavigationPresentationFactory"
+	<bean id="dingNavigationRenderingEngineFactory"
 		class="org.cytoscape.ding.impl.DingNavigationRenderingEngineFactory">
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
 		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="spacialIndex2DFactoryServiceRef" />
-		<constructor-arg ref="rootVisualLexiconServiceRef" />
 		<constructor-arg ref="dVisualLexicon" />
 		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="cyServiceRegistrarRef" />

@@ -40,8 +40,10 @@ import java.beans.PropertyChangeEvent;
 
 import javax.swing.ImageIcon;
 
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
@@ -69,15 +71,15 @@ public class C2CMappingEditor<V extends Number> extends
 	
 	private final V FIRST_LOCATION = (V) new Float(10f);
 	private final V SECOND_LOCATION = (V) new Float(30f);
-
+	
 	/**
 	 * Creates a new C2CMappingEditor object.
 	 * 
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public C2CMappingEditor(VisualProperty<V> type, VizMapGUI vizMapGUI, CyTableManager tableMgr) {
-		super(type, vizMapGUI, tableMgr);
+	public C2CMappingEditor(VisualProperty<V> type, final SelectedVisualStyleManager manager, CyTable attr) {
+		super(type, manager, attr);
 		abovePanel.setVisible(false);
 		belowPanel.setVisible(false);
 

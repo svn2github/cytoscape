@@ -82,82 +82,83 @@ public class EditSelectedCellAction extends AbstractVizMapperAction {
 
 		Item item = null;
 
-		// If nothing selected, return.
-		if ((selected == null) || (selected.length == 0))
-			return;
-
-		/*
-		 * Test with the first selected item
-		 */
-		item = (Item) propertySheetPanel.getTable()
-		                                .getValueAt(selected[0], 0);
-
-		VizMapperProperty prop = (VizMapperProperty) item.getProperty();
-
-		if ((prop == null) || (prop.getParentProperty() == null)) {
-			return;
-		}
-
-		final VisualProperty<?> vp = (VisualProperty<?>) ((VizMapperProperty) prop
-		                                                                                      .getParentProperty())
-		                                .getHiddenObject();
-
-		/*
-		 * Extract calculator
-		 */
-		final VisualMappingFunction<?, ?> mapping;
-		final CyTable attr;
-
-		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
-		mapping = vizMapGUI.getSelectedVisualStyle().getVisualMappingFunction(vp);
-		attr = tableMgr.getTableMap(vp.getObjectType(),targetNetwork).get(CyNetwork.DEFAULT_ATTRS);
-		
-
-		if (mapping instanceof ContinuousMapping || mapping instanceof PassthroughMapping)
-			return;
-
-		Object newValue = null;
-
-		try {
-			newValue = editorFactory.showVisualPropertyValueEditor(vizMapperMainPanel, vp, null);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-
-		if (newValue == null)
-			return;
-
-		Object key = null;
-		final Class<?> keyClass = attr.getColumnTypeMap().get(mapping.getMappingAttributeName());
-
-		for (int i = 0; i < selected.length; i++) {
-			/*
-			 * First, update property sheet
-			 */
-			((Item) propertySheetPanel.getTable().getValueAt(selected[i], 0)).getProperty()
-			 .setValue(newValue);
-			/*
-			 * Then update backend.
-			 */
-			key = ((Item) propertySheetPanel.getTable().getValueAt(selected[i], 0)).getProperty()
-			       .getDisplayName();
-
-			if (keyClass == Integer.class) {
-				key = Integer.valueOf((String) key);
-			} else if (keyClass == Double.class) {
-				key = Double.valueOf((String) key);
-			} else if (keyClass == Boolean.class) {
-				key = Boolean.valueOf((String) key);
-			}
-
-			((DiscreteMapping) mapping).putMapValue(key, newValue);
-		}
-
-		/*
-		 * Update table and current network view.
-		 */
-		table.repaint();
-		//vmm.setNetworkView(targetView);
-		//Cytoscape.redrawGraph(targetView);
+		// FIXME
+//		// If nothing selected, return.
+//		if ((selected == null) || (selected.length == 0))
+//			return;
+//
+//		/*
+//		 * Test with the first selected item
+//		 */
+//		item = (Item) propertySheetPanel.getTable()
+//		                                .getValueAt(selected[0], 0);
+//
+//		VizMapperProperty prop = (VizMapperProperty) item.getProperty();
+//
+//		if ((prop == null) || (prop.getParentProperty() == null)) {
+//			return;
+//		}
+//
+//		final VisualProperty<?> vp = (VisualProperty<?>) ((VizMapperProperty) prop
+//		                                                                                      .getParentProperty())
+//		                                .getHiddenObject();
+//
+//		/*
+//		 * Extract calculator
+//		 */
+//		final VisualMappingFunction<?, ?> mapping;
+//		final CyTable attr;
+//
+//		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
+//		mapping = vizMapGUI.getSelectedVisualStyle().getVisualMappingFunction(vp);
+//		attr = tableMgr.getTableMap(vp.getObjectType(),targetNetwork).get(CyNetwork.DEFAULT_ATTRS);
+//		
+//
+//		if (mapping instanceof ContinuousMapping || mapping instanceof PassthroughMapping)
+//			return;
+//
+//		Object newValue = null;
+//
+//		try {
+//			newValue = editorFactory.showVisualPropertyValueEditor(vizMapperMainPanel, vp, null);
+//		} catch (Exception e1) {
+//			e1.printStackTrace();
+//		}
+//
+//		if (newValue == null)
+//			return;
+//
+//		Object key = null;
+//		final Class<?> keyClass = attr.getColumnTypeMap().get(mapping.getMappingAttributeName());
+//
+//		for (int i = 0; i < selected.length; i++) {
+//			/*
+//			 * First, update property sheet
+//			 */
+//			((Item) propertySheetPanel.getTable().getValueAt(selected[i], 0)).getProperty()
+//			 .setValue(newValue);
+//			/*
+//			 * Then update backend.
+//			 */
+//			key = ((Item) propertySheetPanel.getTable().getValueAt(selected[i], 0)).getProperty()
+//			       .getDisplayName();
+//
+//			if (keyClass == Integer.class) {
+//				key = Integer.valueOf((String) key);
+//			} else if (keyClass == Double.class) {
+//				key = Double.valueOf((String) key);
+//			} else if (keyClass == Boolean.class) {
+//				key = Boolean.valueOf((String) key);
+//			}
+//
+//			((DiscreteMapping) mapping).putMapValue(key, newValue);
+//		}
+//
+//		/*
+//		 * Update table and current network view.
+//		 */
+//		table.repaint();
+//		//vmm.setNetworkView(targetView);
+//		//Cytoscape.redrawGraph(targetView);
 	}
 }

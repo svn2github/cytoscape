@@ -34,26 +34,16 @@
 */
 package org.cytoscape.view.model;
 
-import java.util.Collection;
 
 
 /**
- *
- * Uses String constants as ObjectTypes, ie. to seperate NodeVisualProperties from EdgeVisualProperties, etc.
- * Ideally, we could use Class<? extends View<?>> or something like that, but unfortunately that is impossible due to type erasure.
- *
+ * An object which represents a type of visual entity, such as node color, size, etc.
+ * 
+ * Visual Property itself does NOT have any hierarchy/dependency.  It will be implemented in VisualLexicon.
+ * 
  * @param <T> the dataType of the VisualProperty, ie. what kind of objects are the values
  */
 public interface VisualProperty<T> {
-
-	/**
-	 * Returns what type of objects this VisualProperty stores values for.
-	 * canonical values are VisualProperty.NODE, etc.
-	 *
-	 * @return the string describing the object type
-	 */
-	String getObjectType();
-
 	
 	/**
 	 * The type of object represented by this property.
@@ -64,7 +54,7 @@ public interface VisualProperty<T> {
 	
 
 	/**
-	 * The default value of this property.
+	 * The default value of this property.  This value is immutable.
 	 *
 	 * @return  DOCUMENT ME!
 	 */
@@ -111,16 +101,5 @@ public interface VisualProperty<T> {
 	 * @return
 	 */
 	boolean isIgnoreDefault();
-	
-	
-	
-	// New feature: Tree-like structure for visual properties.
-	
-	VisualProperty<? super T> getParent();
-	Collection<VisualProperty<? extends T>> getChildren();
-	
-	void setParent(final VisualProperty<? super T> parent);
-	void addChild(final VisualProperty<? extends T> child);
-	
-	void setDependencyCalculator(final VisualProperty<? extends T> child, VisualPropertyDependecyCalculator<T> calc);
+
 }

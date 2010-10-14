@@ -1,9 +1,8 @@
 package org.cytoscape.view.model;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -18,8 +17,8 @@ public abstract class AbstractViewTest<S> {
 	
 	@Before
 	public void setUp() throws Exception {
-		integerVP = new IntegerVisualProperty("GRAPH_OBJECT", Integer.valueOf(0), "integerVP", "INTVP");
-		stringVP = new StringVisualProperty("GRAPH_OBJECT", "", "stringVP", "STRVP");
+		integerVP = new IntegerVisualProperty(Integer.valueOf(0), "integerVP", "INTVP");
+		stringVP = new StringVisualProperty("", "stringVP", "STRVP");
 	}
 
 	

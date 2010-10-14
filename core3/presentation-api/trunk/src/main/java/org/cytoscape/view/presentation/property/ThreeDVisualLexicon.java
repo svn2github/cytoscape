@@ -1,31 +1,32 @@
 package org.cytoscape.view.presentation.property;
 
-import static org.cytoscape.model.CyTableEntry.NETWORK;
-import static org.cytoscape.model.CyTableEntry.NODE;
-
+import org.cytoscape.view.model.NullDataType;
+import org.cytoscape.view.model.VisualLexiconNodeFactory;
 import org.cytoscape.view.model.VisualProperty;
 
 public class ThreeDVisualLexicon extends TwoDVisualLexicon {
 
 	public static final VisualProperty<Double> NODE_Z_LOCATION = new DoubleVisualProperty(
-			NODE, 0.0, "NODE_Z_LOCATION", "Node Z Location", true);
-	
+			0.0, "NODE_Z_LOCATION", "Node Z Location", true);
+
 	public static final VisualProperty<Double> NODE_Z_SIZE = new DoubleVisualProperty(
-			NODE, 0.0, "NODE_Z_SIZE", "Node z size (depth)");
-	
+			0.0, "NODE_Z_SIZE", "Node z size (depth)");
+
 	public static final VisualProperty<Double> NETWORK_CENTER_Z_LOCATION = new DoubleVisualProperty(
-			NETWORK, 0.0, "NETWORK_CENTER_Z_LOCATION",
-			"Network Center Z Location");
-	
+			0.0, "NETWORK_CENTER_Z_LOCATION", "Network Center Z Location");
+
 	public static final VisualProperty<Double> NETWORK_DEPTH = new DoubleVisualProperty(
-			NETWORK, 0.0, "NETWORK_DEPTH", "Network Depth");
-	
-	public ThreeDVisualLexicon() {
-		super();
-		
-		visualPropertySet.add(NODE_Z_LOCATION);
-		visualPropertySet.add(NODE_Z_SIZE);
-		visualPropertySet.add(NETWORK_CENTER_Z_LOCATION);
-		visualPropertySet.add(NETWORK_DEPTH);
+			0.0, "NETWORK_DEPTH", "Network Depth");
+
+	public ThreeDVisualLexicon(final VisualProperty<NullDataType> root,
+			final VisualLexiconNodeFactory nodeFactory) {
+		super(root, nodeFactory);
+
+		addVisualProperty(NODE_Z_LOCATION, NODE_LOCATION);
+		addVisualProperty(NODE_Z_SIZE, NODE_SIZE);
+
+		addVisualProperty(NETWORK_CENTER_Z_LOCATION, NETWORK_CENTER_LOCATION);
+		addVisualProperty(NETWORK_DEPTH, NETWORK_SIZE);
+
 	}
 }

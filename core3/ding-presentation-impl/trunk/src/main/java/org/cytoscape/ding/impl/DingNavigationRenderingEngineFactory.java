@@ -1,15 +1,11 @@
 package org.cytoscape.ding.impl;
 
 
-import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
-import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.service.util.CyServiceRegistrar;
@@ -18,7 +14,6 @@ import org.cytoscape.task.EdgeViewTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.events.NetworkViewChangedEvent;
@@ -46,7 +41,6 @@ public class DingNavigationRenderingEngineFactory implements
 	private CyRootNetworkFactory rootNetworkFactory;
 	private SpacialIndex2DFactory spacialFactory;
 	private UndoSupport undo;
-	private RootVisualLexicon rootLexicon;
 	private VisualLexicon dingLexicon;
 	private CyServiceRegistrar registrar;
 
@@ -59,17 +53,17 @@ public class DingNavigationRenderingEngineFactory implements
 	private TaskManager tm;
 	private CyTableManager tableMgr;
 
-	public DingNavigationRenderingEngineFactory(CyTableFactory dataTableFactory,
-	                                            CyRootNetworkFactory rootNetworkFactory, UndoSupport undo,
-	                                            SpacialIndex2DFactory spacialFactory, RootVisualLexicon vpc,
-	                                            VisualLexicon dingLexicon, TaskManager tm,
-	                                            CyServiceRegistrar registrar, CyTableManager tableMgr)
-	{
+	public DingNavigationRenderingEngineFactory(
+			CyTableFactory dataTableFactory,
+			CyRootNetworkFactory rootNetworkFactory, UndoSupport undo,
+			SpacialIndex2DFactory spacialFactory,
+			VisualLexicon dingLexicon, TaskManager tm,
+			CyServiceRegistrar registrar, CyTableManager tableMgr) {
+
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
 		this.spacialFactory = spacialFactory;
 		this.undo = undo;
-		this.rootLexicon = vpc;
 		this.dingLexicon = dingLexicon;
 		this.tm = tm;
 		this.registrar = registrar;
@@ -82,7 +76,7 @@ public class DingNavigationRenderingEngineFactory implements
 	}
 	
 	
-	public RenderingEngine<CyNetwork> render(final Object visualizationContainer, final View<CyNetwork> view) {
+	@Override public RenderingEngine<CyNetwork> render(final Object visualizationContainer, final View<CyNetwork> view) {
 
 //		if (visualizationContainer == null)
 //			throw new IllegalArgumentException(

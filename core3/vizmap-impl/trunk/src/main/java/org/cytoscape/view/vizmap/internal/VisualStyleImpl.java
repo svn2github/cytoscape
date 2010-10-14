@@ -31,12 +31,8 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.internal;
-
-import static org.cytoscape.model.CyTableEntry.EDGE;
-import static org.cytoscape.model.CyTableEntry.NETWORK;
-import static org.cytoscape.model.CyTableEntry.NODE;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,229 +44,301 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.RootVisualLexicon;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  */
 public class VisualStyleImpl implements VisualStyle {
-	
-	private static final Logger logger = LoggerFactory.getLogger(VisualStyleImpl.class);
-	
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(VisualStyleImpl.class);
+
 	private static final String DEFAULT_TITLE = "?";
-	
+
 	private final Map<VisualProperty<?>, VisualMappingFunction<?, ?>> mappings;
 	private final Map<VisualProperty<?>, Object> perVSDefaults;
-	private final RootVisualLexicon rootLexicon;
+
+	private final VisualLexicon lexicon;
 	
+	final Collection<VisualProperty<?>> nodeVPs;
+	final Collection<VisualProperty<?>> edgeVPs;
+	final Collection<VisualProperty<?>> networkVPs;
+
 	private String title;
 
 	/**
 	 * Creates a new VisualStyleImpl object.
-	 *
-	 * @param rootLexicon  DOCUMENT ME!
+	 * 
+	 * @param rootLexicon
+	 *            DOCUMENT ME!
 	 */
-	public VisualStyleImpl(final RootVisualLexicon rootLexicon) {
-		this(rootLexicon, null);
+	public VisualStyleImpl(final VisualLexicon lexicon) {
+		this(null, lexicon);
 	}
 
 	/**
 	 * Creates a new VisualStyleImpl object.
-	 *
-	 * @param eventHelper  DOCUMENT ME!
-	 * @param rootLexicon  DOCUMENT ME!
+	 * 
+	 * @param eventHelper
+	 *            DOCUMENT ME!
+	 * @param rootLexicon
+	 *            DOCUMENT ME!
 	 */
-	public VisualStyleImpl(final RootVisualLexicon rootLexicon, final String title) {
-		if (rootLexicon == null)
-			throw new NullPointerException("rootLexicon is null");
+	public VisualStyleImpl(final String title, final VisualLexicon lexicon) {
+		if (lexicon == null)
+			throw new NullPointerException("Lexicon is null");
 
 		if (title == null)
 			this.title = DEFAULT_TITLE;
 		else
 			this.title = title;
 
-		this.rootLexicon = rootLexicon;
+		this.lexicon = lexicon;
 		mappings = new HashMap<VisualProperty<?>, VisualMappingFunction<?, ?>>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
 		
-		// Copy immutable defaults from each VP
-		for(VisualProperty<?> vp: this.rootLexicon.getAllVisualProperties())
+		for(VisualProperty<?> vp: lexicon.getAllVisualProperties())
 			perVSDefaults.put(vp, vp.getDefault());
 		
+		// Node-related Visual Properties are linked as a children of NODE VP.
+		nodeVPs = lexicon.getAllDescendants(TwoDVisualLexicon.NODE);
+		
+		// Node-related Visual Properties are linked as a children of NODE VP.
+		edgeVPs = lexicon.getAllDescendants(TwoDVisualLexicon.EDGE);
+		
+		networkVPs = new HashSet<VisualProperty<?>>();
+		for(VisualProperty<?> vp: lexicon.getAllVisualProperties()) {
+			if(!nodeVPs.contains(vp) && !edgeVPs.contains(vp))
+				networkVPs.add(vp);
+		}
+
 		logger.info("New Visual Style Created: Style Name = " + this.title);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param c DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param c
+	 *            DOCUMENT ME!
 	 */
-	public void addVisualMappingFunction(final VisualMappingFunction<?, ?> mapping) {
+	public void addVisualMappingFunction(
+			final VisualMappingFunction<?, ?> mapping) {
 		mappings.put(mapping.getVisualProperty(), mapping);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param <V> DOCUMENT ME!
-	 * @param t DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param <V>
+	 *            DOCUMENT ME!
+	 * @param t
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	@SuppressWarnings("unchecked")
-	public <V> VisualMappingFunction<?, V> getVisualMappingFunction(VisualProperty<V> t) {
+	public <V> VisualMappingFunction<?, V> getVisualMappingFunction(
+			VisualProperty<V> t) {
 		return (VisualMappingFunction<?, V>) mappings.get(t);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param <V> DOCUMENT ME!
-	 * @param t DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param <V>
+	 *            DOCUMENT ME!
+	 * @param t
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	@SuppressWarnings("unchecked")
-	public <V> VisualMappingFunction<?, V> removeVisualMappingFunction(VisualProperty<V> t) {
-		return (VisualMappingFunction<?, V>) mappings.remove(t);
+	@Override
+	public void removeVisualMappingFunction(VisualProperty<?> t) {
+		mappings.remove(t);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param <T> DOCUMENT ME!
-	 * @param vp DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param <T>
+	 *            DOCUMENT ME!
+	 * @param vp
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	@SuppressWarnings("unchecked")
-	public <V> V getDefaultValue(final VisualProperty<? extends V> vp) {
-		// Since setter checks type, this cast is always legal.
+	@Override
+	public <V> V getDefaultValue(final VisualProperty<V> vp) {
 		return (V) perVSDefaults.get(vp);
 	}
 
 	/**
-	 *  Set the default value for a Visual Property
-	 *
-	 * @param <T> Default value data type.
-	 * @param vp DOCUMENT ME!
-	 * @param value DOCUMENT ME!
+	 * Set the default value for a Visual Property
+	 * 
+	 * @param <T>
+	 *            Default value data type.
+	 * @param vp
+	 *            DOCUMENT ME!
+	 * @param value
+	 *            DOCUMENT ME!
 	 */
-	public <T> void setDefaultValue(final VisualProperty<? extends T> vp, final T value) {
+	@Override
+	public <V, S extends V> void setDefaultValue(final VisualProperty<V> vp,
+			final S value) {
 		perVSDefaults.put(vp, value);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param networkView DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param networkView
+	 *            DOCUMENT ME!
 	 */
+	@Override
 	public void apply(final CyNetworkView networkView) {
-		
+		if (networkView == null) {
+			logger.warn("Tried to apply Visual Style to null view");
+			return;
+		}
+
 		logger.debug("Visual Style Apply method called: " + this.title);
 		
-		final Collection<View<CyNode>> nodeviews = networkView.getNodeViews();
-		final Collection<View<CyEdge>> edgeviews = networkView.getEdgeViews();
-		final Collection<View<CyNetwork>> networkviews = new HashSet<View<CyNetwork>>();
-		networkviews.add(networkView);
-
-		applyImpl(networkView, nodeviews,
-		          rootLexicon.getVisualProperties(nodeviews, NODE));
-		applyImpl(networkView, edgeviews,
-		          rootLexicon.getVisualProperties(edgeviews, EDGE));
-		applyImpl(networkView, networkviews,
-		          rootLexicon.getVisualProperties(NETWORK));
+		final Collection<View<CyNode>> nodeViews = networkView.getNodeViews();
+		final Collection<View<CyEdge>> edgeViews = networkView.getEdgeViews();
+		final Collection<View<CyNetwork>> networkViewSet = new HashSet<View<CyNetwork>>();
+		networkViewSet.add(networkView);
+		
+		// Current visual prop tree.
+		applyImpl(nodeViews, nodeVPs);
+		applyImpl(edgeViews, edgeVPs);
+		applyImpl(networkViewSet, networkVPs);
 		
 		logger.debug("Visual Style applied: " + this.title + "\n");
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param <T> DOCUMENT ME!
-	 * @param views DOCUMENT ME!
-	 * @param visualProperties DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param <T>
+	 *            DOCUMENT ME!
+	 * @param views
+	 *            DOCUMENT ME!
+	 * @param visualProperties
+	 *            DOCUMENT ME!
 	 */
-	public <G extends CyTableEntry> void applyImpl(final CyNetworkView view,
-	                                              final Collection<View<G>> views,
-	                                              final Collection<?extends VisualProperty<?>> visualProperties) {
+	private void applyImpl(
+			final Collection<?> views,
+			final Collection<VisualProperty<?>> visualProperties) {
 		
+
 		for (VisualProperty<?> vp : visualProperties)
-			applyImpl(view, views, vp);
+			applyToView(views, vp);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param <T> DOCUMENT ME!
-	 * @param views DOCUMENT ME!
-	 * @param visualProperties DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param <T>
+	 *            DOCUMENT ME!
+	 * @param views
+	 *            DOCUMENT ME!
+	 * @param visualProperties
+	 *            DOCUMENT ME!
 	 */
-	public <V, G extends CyTableEntry> void applyImpl(final CyNetworkView view,
-	                                                 final Collection<View<G>> views,
-	                                                 final VisualProperty<V> vp) {
-		
-		final VisualMappingFunction<?, V> mapping = getVisualMappingFunction(vp);
-		final V defaultValue = getDefaultValue(vp);
-		
-		// If mapping is available for this VP, apply the mapping.
+	private void applyToView(
+			final Collection<?> views,
+			final VisualProperty<?> vp) {
+
+		final VisualMappingFunction<?, ?> mapping = getVisualMappingFunction(vp);
+
 		if (mapping != null) {
-			mapping.apply(views);
-		} else if(!vp.isIgnoreDefault()) { // Check ignore flag first.
-			// reset all rows to allow usage of default value:
-			for(final View<G> viewModel: views) {
-				if(viewModel.getVisualProperty(vp).equals(defaultValue))
-					continue;
-				
-				viewModel.setVisualProperty(vp, defaultValue);
-				//logger.debug(vp.getDisplayName() + " updated: " + defaultValue);
-			}
+			// Mapping is available for this VP. Apply it.
+			for (Object view : views)
+				mapping.apply((View<? extends CyTableEntry>) view);
+		} else if (!vp.isIgnoreDefault()) {
+			// Ignore defaults flag is OFF. Apply defaults.
+			applyStyleDefaults((Collection<View<?>>) views, vp);
 		} else
-			logger.debug(vp.getDisplayName() + " is set to ignore defaults.  Skipping...");
+			logger.debug(vp.getDisplayName()
+					+ " is set to ignore defaults.  Skipping...");
+	}
+
+	private void applyStyleDefaults(
+			final Collection<View<?>> views,
+			final VisualProperty<?> vp) {
+
+		Object defaultValue = getDefaultValue(vp);
+		
+		// reset all rows to allow usage of default value:
+		for (final View<?> viewModel : views) {
+			final Object currentValue = viewModel.getVisualProperty(vp);
+			
+			// Some of the VP has null defaults.
+			if (currentValue == null)
+				continue;
+
+			// If equals, it is not necessary to set new value.
+			if (currentValue.equals(defaultValue))
+				continue;
+
+			// Not a leaf VP. We can ignore those.
+			if (lexicon.getVisualLexiconNode(vp).getChildren().size() != 0)
+				continue;
+
+			// This is a leaf, and need to be updated.
+			viewModel.setVisualProperty(vp, defaultValue);
+			
+			//logger.debug(vp.getDisplayName() + " updated from: " + currentValue + " to " + defaultValue);
+		}
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public String getTitle() {
 		return title;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param title DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param title
+	 *            DOCUMENT ME!
 	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
 	/**
-	 *  toString method returns title of this Visual Style.
-	 *
-	 * @return  DOCUMENT ME!
+	 * toString method returns title of this Visual Style.
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	@Override
 	public String toString() {
 		return this.title;
 	}
 
-	public Collection<VisualMappingFunction<?,?>> getAllVisualMappingFunctions() {
+	@Override
+	public Collection<VisualMappingFunction<?, ?>> getAllVisualMappingFunctions() {
 		return mappings.values();
 	}
 
-	//TODO Is this the right set of lexicon?
+	// TODO Is this the right set of lexicon?
+	@Override
 	public VisualLexicon getVisualLexicon() {
-		return rootLexicon;
+		return lexicon;
 	}
 
 }

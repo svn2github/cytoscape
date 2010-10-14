@@ -1,7 +1,9 @@
-package org.cytoscape.view.model;
+package org.cytoscape.view.model.events;
 
 import org.cytoscape.event.CyMicroListener;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualProperty;
 
 public interface NetworkViewChangeMicroListener extends CyMicroListener {
 

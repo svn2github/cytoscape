@@ -53,19 +53,18 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
-
-import org.cytoscape.session.CyNetworkManager;
 
 /**
  * Abstract class for all Continuous Mapping Editors. This is the mapping from
@@ -108,8 +107,9 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 	// This should be injected.
 	protected EditorValueRangeTracer tracer;
 
-	protected VizMapGUI vizMapGUI;
-	private CyTableManager tableMgr;
+	protected final SelectedVisualStyleManager manager;
+	
+	private final CyTable attrs;
 
 	/**
 	 * 
@@ -118,10 +118,10 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 	 * 
 	 * */
 	public ContinuousMappingEditorPanel(final VisualProperty<V> type,
-			VizMapGUI vizMapGUI, CyTableManager tableMgr) {
+			final SelectedVisualStyleManager manager, final CyTable attrs) {
 		this.type = type;
-		this.vizMapGUI = vizMapGUI;
-		this.tableMgr = tableMgr;
+		this.manager = manager;
+		this.attrs = attrs;
 
 		initComponents();
 		setVisualPropLabel();
@@ -167,9 +167,9 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 		JPanel mainPanel = new JPanel();
 
 		abovePanel = new BelowAndAbovePanel(type, Color.yellow, false,
-				vizMapGUI);
+				manager);
 		abovePanel.setName("abovePanel");
-		belowPanel = new BelowAndAbovePanel(type, Color.white, true, vizMapGUI);
+		belowPanel = new BelowAndAbovePanel(type, Color.white, true, manager);
 		belowPanel.setName("belowPanel");
 
 		abovePanel.setPreferredSize(new Dimension(16, 1));
@@ -381,12 +381,7 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 
 	private void initRangeValues() {
 
-		// Attribute to be mapped.
-		final CyTable attrs;
-
-		attrs = tableMgr.getTableMap(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
-
-		VisualMappingFunction<?, V> map = vizMapGUI.getSelectedVisualStyle()
+		VisualMappingFunction<?, V> map = manager.getCurrentVisualStyle()
 				.getVisualMappingFunction(type);
 
 		if (map == null || map instanceof ContinuousMapping == false)

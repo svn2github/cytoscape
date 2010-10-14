@@ -58,7 +58,7 @@ public class InitializedEventHandler extends AbstractVizMapEventHandler {
 		                                                              .get(vs));
 		vizMapperMainPanel.setSelectedVisualStyle(vs);
 
-		vizMapPropertySheetBuilder.setPropertyTable();
+		vizMapPropertySheetBuilder.setPropertyTable(vs);
 		vizMapperMainPanel.updateAttributeList();
 
 		propertySheetPanel.setSorting(true);

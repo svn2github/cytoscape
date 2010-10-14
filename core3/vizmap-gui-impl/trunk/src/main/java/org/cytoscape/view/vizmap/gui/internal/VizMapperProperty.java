@@ -12,20 +12,15 @@ import com.l2fprod.common.propertysheet.DefaultProperty;
  * @version 0.5
  */
 public class VizMapperProperty<T> extends DefaultProperty {
+	
 	private final static long serialVersionUID = 1202339868680341L;
+	
 	private T hiddenObject;
 
 	public VizMapperProperty() {
 		
 	}
-	
-//	@Override public Class<T> getType() {
-//		return super.getType();
-//	}
-//	
-//	@Override public T getValue() {
-//		return 
-//	}
+
 	
 	/**
 	 * DOCUMENT ME!
@@ -44,23 +39,5 @@ public class VizMapperProperty<T> extends DefaultProperty {
 	 */
 	public T getHiddenObject() {
 		return hiddenObject;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param object
-	 *            DOCUMENT ME!
-	 */
-	public void readFromObject(Object object) {
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param object
-	 *            DOCUMENT ME!
-	 */
-	public void writeToObject(Object object) {
 	}
 }

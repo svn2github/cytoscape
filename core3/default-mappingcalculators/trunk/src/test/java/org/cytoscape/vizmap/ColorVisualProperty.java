@@ -6,9 +6,9 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 
 public class ColorVisualProperty extends AbstractVisualProperty<Color> {
 
-	public ColorVisualProperty(final String type, final Color defaultValue,
+	public ColorVisualProperty(final Color defaultValue,
 			final String id, final String name) {
-		super(type, defaultValue, id, name);
+		super(defaultValue, id, name);
 	}
 
 	public Color parseSerializableString(final String text) {

@@ -3,8 +3,8 @@ package org.cytoscape.view.model.internal;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.NodeViewChangeMicroListener;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.events.NodeViewChangeMicroListener;
 
 public class NodeViewImpl extends ViewImpl<CyNode> {
 

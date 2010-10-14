@@ -100,7 +100,8 @@ public class ContinuousMappingPoint<T> implements Cloneable {
 	 * Clones the object. (Deep Copy)
 	 * @return Cloned Object.
 	 */
-	public Object clone() {
+	@Override public Object clone() {
+		
 		final BoundaryRangeValues<T> newRange = new BoundaryRangeValues<T>();
 		newRange.lesserValue = range.lesserValue;
 		newRange.equalValue = range.equalValue;

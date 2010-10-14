@@ -35,8 +35,6 @@
 
 package org.cytoscape.view.vizmap.mappings;
 
-import java.util.Collection;
-
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.View;
@@ -44,7 +42,8 @@ import org.cytoscape.view.model.VisualProperty;
 
 /**
  */
-public class PassthroughMapping<K, V> extends AbstractMappingFunction<K, V> {
+public class PassthroughMapping<K, V> extends
+		AbstractVisualMappingFunction<K, V> {
 
 	/**
 	 * dataType is the type of the _attribute_ !! currently we force that to be
@@ -56,46 +55,40 @@ public class PassthroughMapping<K, V> extends AbstractMappingFunction<K, V> {
 		super(attrName, attrType, vp);
 	}
 
-	
 	@Override
 	public String toString() {
 		return PASSTHROUGH;
 	}
 
-	
 	/**
 	 * DOCUMENT ME!
 	 * 
 	 * @param v
 	 *            DOCUMENT ME!
 	 */
-	public <G extends CyTableEntry> void apply(
-			final Collection<? extends View<G>> views) {
-		if (views == null || views.size() < 1)
+	@Override
+	public void apply(final View<? extends CyTableEntry> view) {
+		if (view == null)
 			return; // empty list, nothing to do
 
-		CyRow row;
-		K value;
+		final CyRow row = view.getModel().attrs();
+		
 
-		for (View<G> view : views) {
+		
+		if (row.contains(attrName, attrType)) {
+			// skip Views where source attribute is not defined;
+			// ViewColumn will automatically substitute the per-VS or
+			// global default, as appropriate
+			final K value = row.get(attrName, attrType);
+			final V converted = convertToValue(value);
 
-			row = view.getModel().attrs();
-			if (row.contains(attrName, attrType)) {
-				// skip Views where source attribute is not defined;
-				// ViewColumn will automatically substitute the per-VS or
-				// global default, as appropriate
-				value = row.get(attrName, attrType);
-				final V converted = convertToValue(value);
-				
-				view.setVisualProperty(vp, converted);
-			} else { // remove value so that default value will be used:
-				view.setVisualProperty(vp, null);
-			}
+			view.setVisualProperty(vp, converted);
+		} else {
+			// remove value, so that default value will be used:
+			view.setVisualProperty(vp, null);
 		}
-
 	}
 
-	
 	// TODO: make this converter pluggable
 	private V convertToValue(final K key) {
 		try {
@@ -103,6 +96,6 @@ public class PassthroughMapping<K, V> extends AbstractMappingFunction<K, V> {
 		} catch (Exception e) {
 			return null;
 		}
-		
+
 	}
 }

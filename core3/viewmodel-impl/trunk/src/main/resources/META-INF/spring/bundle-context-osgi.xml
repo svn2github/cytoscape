@@ -17,18 +17,25 @@
 			<entry key="service.type" value="factory" />
 		</osgi:service-properties>
 	</osgi:service>
+	
+	<osgi:service id="visualLexiconNodeFactoryService" ref="visualLexiconNodeFactory"
+		interface="org.cytoscape.view.model.VisualLexiconNodeFactory">
+		<osgi:service-properties>
+			<entry key="service.type" value="factory" />
+		</osgi:service-properties>
+	</osgi:service>
 
-	<osgi:service id="rootVisualLexiconService" ref="rootVisualLexicon"
-		interface="org.cytoscape.view.model.RootVisualLexicon">
+	<!--<osgi:service id="visualLexiconManagerService" ref="lexiconManager"
+		interface="org.cytoscape.view.model.VisualLexiconManager">
 		<osgi:service-properties>
 			<entry key="service.type" value="objectFacade" />
 		</osgi:service-properties>
 	</osgi:service>
 
-	<!-- Define OSGi Service Listener -->
+	 Define OSGi Service Listener 
 	<osgi:set id="renderers" interface="org.cytoscape.view.model.VisualLexicon"
 		cardinality="0..N">
 		<osgi:listener bind-method="addVisualLexicon"
-			unbind-method="removeVisualLexicon" ref="rootVisualLexicon" />
+			unbind-method="removeVisualLexicon" ref="lexiconManager" />
 	</osgi:set>
-</beans>
+--></beans>

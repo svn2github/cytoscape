@@ -36,12 +36,13 @@
 package org.cytoscape.ding.impl;
 
 import java.awt.Font;
+
 import org.cytoscape.view.model.AbstractVisualProperty;
 
 public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> { 
 
-	public FontTwoDVisualProperty(final String ot, final Font def, final String id, final String name) {
-		super(ot,def,id,name);
+	public FontTwoDVisualProperty(final Font def, final String id, final String name) {
+		super(def,id,name);
 	}
 	
 	public String toSerializableString(final Font value) {

@@ -36,12 +36,13 @@
 package org.cytoscape.ding.impl;
 
 import java.awt.Stroke;
+
 import org.cytoscape.view.model.AbstractVisualProperty;
 
 public class StrokeTwoDVisualProperty extends AbstractVisualProperty<Stroke> { 
 
-	public StrokeTwoDVisualProperty(final String ot, final Stroke def, final String id, final String name) {
-		super(ot,def,id,name);
+	public StrokeTwoDVisualProperty(final Stroke def, final String id, final String name) {
+		super(def,id,name);
 	}
 	
 	public String toSerializableString(final Stroke value) {

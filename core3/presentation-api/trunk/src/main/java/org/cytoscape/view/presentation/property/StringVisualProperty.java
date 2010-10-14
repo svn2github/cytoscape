@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,22 +31,22 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package org.cytoscape.view.presentation.property; 
+ */
+package org.cytoscape.view.presentation.property;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class StringVisualProperty extends AbstractVisualProperty<String> { 
+public class StringVisualProperty extends AbstractVisualProperty<String> {
 
-	public StringVisualProperty(final String ot, final String def, final String id, final String name) {
-		super(ot,def,id,name);
+	public StringVisualProperty(final String def, final String id, final String name) {
+		super(def, id, name);
 	}
-	
+
 	public String toSerializableString(final String value) {
-		return value; 
+		return value;
 	}
 
 	public String parseSerializableString(final String text) {
-		return text; 
+		return text;
 	}
 }

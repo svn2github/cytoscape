@@ -2,9 +2,10 @@ package org.cytoscape.view.model;
 
 public class StringVisualProperty extends AbstractVisualProperty<String> {
 
-	public StringVisualProperty(final String type, final String defaultValue,
-			final String id, final String name) {
-		super(type, defaultValue, id, name);
+	public StringVisualProperty(final String defaultValue, final String id,
+			final String name) {
+		// isolated node. No parent/children.
+		super(defaultValue, id, name);
 	}
 
 	public String parseSerializableString(final String text) {

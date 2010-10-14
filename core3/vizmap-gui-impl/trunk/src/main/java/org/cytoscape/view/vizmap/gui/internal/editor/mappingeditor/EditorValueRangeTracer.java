@@ -37,7 +37,7 @@ package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cytoscape.view.model.RootVisualLexicon;
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 
 /**
@@ -52,10 +52,10 @@ public class EditorValueRangeTracer {
 	 * @param vpCatalog
 	 *            DOCUMENT ME!
 	 */
-	public EditorValueRangeTracer(RootVisualLexicon vpCatalog) {
+	public EditorValueRangeTracer(final VisualLexicon lexicon) {
 		rangeMap = new HashMap<VisualProperty<?>, Range>();
 
-		for (VisualProperty<?> v : vpCatalog.getAllVisualProperties()) {
+		for (VisualProperty<?> v : lexicon.getAllVisualProperties()) {
 			Range r = new Range(0d, 0d);
 			rangeMap.put(v, r);
 		}

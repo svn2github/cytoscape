@@ -6,7 +6,7 @@
     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-    
+
 	<import resource="bundle-context-osgi.xml" />
 
 	<context:annotation-config />
@@ -17,8 +17,8 @@
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="cyServiceRegistrarRef" />
 	</bean>
-
-	<!-- Catalog object of available VP. This will be exported as service. -->
-	<bean id="rootVisualLexicon" class="org.cytoscape.view.model.internal.RootVisualLexiconImpl" />
+	
+	<bean id="visualLexiconNodeFactory" class="org.cytoscape.view.model.internal.VisualLexiconNodeFactoryImpl">
+	</bean>
 	
 </beans>

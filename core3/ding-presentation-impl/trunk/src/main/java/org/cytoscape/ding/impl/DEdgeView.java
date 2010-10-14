@@ -1566,9 +1566,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		} else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SHAPE) {
 			setSourceEdgeEnd(((ArrowShape) value).getGinyArrow());
 		} else if (vp == TwoDVisualLexicon.EDGE_LABEL) {
-			setText((String) value);
+			setText(value.toString());
 		} else if (vp == DVisualLexicon.EDGE_TOOLTIP) {
-			setToolTip((String) value);
+			setToolTip(value.toString());
 		} else if (vp == DVisualLexicon.EDGE_LABEL_EDGE_ANCHOR) {
 			setEdgeLabelAnchor(((Anchor) value).getGinyAnchor());
 		} else if (vp == DVisualLexicon.EDGE_LABEL_TEXT_ANCHOR) {
