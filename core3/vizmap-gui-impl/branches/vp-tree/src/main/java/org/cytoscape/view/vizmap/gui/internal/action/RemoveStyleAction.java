@@ -63,36 +63,37 @@ public class RemoveStyleAction extends AbstractVizMapperAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
+		//FIXME
 
-		VisualStyle currentStyle = this.vizMapperMainPanel.getSelectedVisualStyle();
-
-		if (currentStyle.equals(vizMapperMainPanel.getDefaultVisualStyle())) {
-			JOptionPane.showMessageDialog(vizMapperMainPanel, "You cannot delete default style.",
-			                              "Cannot remove defalut style!", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
-		// make sure the user really wants to do this
-		final String styleName = currentStyle.getTitle();
-		final String checkString = "Are you sure you want to permanently delete"
-		                           + " the visual style '" + styleName + "'?";
-		int ich = JOptionPane.showConfirmDialog(vizMapperMainPanel, checkString,
-		                                        "Confirm Delete Style", JOptionPane.YES_NO_OPTION);
-
-		if (ich == JOptionPane.YES_OPTION) {
-			
-			vmm.removeVisualStyle(currentStyle);
-			// try to switch to the default style
-			currentStyle = vizMapperMainPanel.getDefaultVisualStyle();
-
-			vizMapperMainPanel.switchVS(currentStyle);
-			vizMapperMainPanel.getDefaultImageManager().remove(currentStyle);
-			vizMapPropertySheetBuilder.getPropertyMap().remove(currentStyle);
-
-			// Apply to the current view
-			final CyNetworkView view = cyNetworkManager.getCurrentNetworkView();
-			if(view != null)
-				vmm.setVisualStyle(currentStyle, view);
-		}
+//		VisualStyle currentStyle = this.vizMapperMainPanel.getSelectedVisualStyle();
+//
+//		if (currentStyle.equals(vizMapperMainPanel.getDefaultVisualStyle())) {
+//			JOptionPane.showMessageDialog(vizMapperMainPanel, "You cannot delete default style.",
+//			                              "Cannot remove defalut style!", JOptionPane.ERROR_MESSAGE);
+//			return;
+//		}
+//
+//		// make sure the user really wants to do this
+//		final String styleName = currentStyle.getTitle();
+//		final String checkString = "Are you sure you want to permanently delete"
+//		                           + " the visual style '" + styleName + "'?";
+//		int ich = JOptionPane.showConfirmDialog(vizMapperMainPanel, checkString,
+//		                                        "Confirm Delete Style", JOptionPane.YES_NO_OPTION);
+//
+//		if (ich == JOptionPane.YES_OPTION) {
+//			
+//			vmm.removeVisualStyle(currentStyle);
+//			// try to switch to the default style
+//			currentStyle = vizMapperMainPanel.getDefaultVisualStyle();
+//
+//			vizMapperMainPanel.switchVS(currentStyle);
+//			vizMapperMainPanel.getDefaultImageManager().remove(currentStyle);
+//			vizMapPropertySheetBuilder.getPropertyMap().remove(currentStyle);
+//
+//			// Apply to the current view
+//			final CyNetworkView view = cyNetworkManager.getCurrentNetworkView();
+//			if(view != null)
+//				vmm.setVisualStyle(currentStyle, view);
+//		}
 	}
 }

@@ -8,8 +8,8 @@
            http://www.springframework.org/schema/context/spring-context-2.5.xsd
            http://www.springframework.org/schema/util
            http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+           
 	<import resource="bundle-context-osgi-vizmapper.xml" />
-
 
 
 	<!-- Setting (property) file for VizMapper GUI. This bean can be injected 
@@ -21,6 +21,10 @@
 		location="/META-INF/spring/config/vizmapui.properties" />
 	<context:annotation-config />
 
+
+	<bean id="selectedVisualStyleManager" class="org.cytoscape.view.vizmap.gui.internal.SelectedVisualStyleManagerImpl">
+		<constructor-arg ref="defaultVS" />
+	</bean>
 
 	<!-- Default Visual Style Builder -->
 	<bean name="defaultVisualStyleBuilder"
@@ -186,7 +190,7 @@
 		class="org.cytoscape.view.vizmap.gui.internal.task.RemoveVisualStyleTaskFactory"
 		depends-on="vizMapperMainPanel">
 		<constructor-arg ref="vmmServiceRef" />
-		<constructor-arg ref="vizMapperMainPanel" />
+		<constructor-arg ref="selectedVisualStyleManager"/>
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="vizMapPropertySheetBuilder" />
 	</bean>
@@ -269,6 +273,7 @@
 
 	<bean id="vizMapEventHandlerManager"
 		class="org.cytoscape.view.vizmap.gui.internal.event.VizMapEventHandlerManagerImpl">
+		<constructor-arg ref="selectedVisualStyleManager" />
 		<constructor-arg ref="editorManager" />
 		<constructor-arg ref="vizMapPropertySheetBuilder" />
 		<constructor-arg ref="propertySheetPanel" />
@@ -306,8 +311,8 @@
 		<constructor-arg ref="editorWindowManager" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
-		<constructor-arg ref="defaultVS" />
 		<constructor-arg ref="visualStyleFactoryServiceRef" />
+		<constructor-arg ref="selectedVisualStyleManager" />
 
 	</bean>
 </beans>

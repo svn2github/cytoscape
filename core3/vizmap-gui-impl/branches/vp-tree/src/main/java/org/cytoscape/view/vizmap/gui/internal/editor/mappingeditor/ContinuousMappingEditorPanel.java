@@ -58,6 +58,7 @@ import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
@@ -106,7 +107,7 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 	// This should be injected.
 	protected EditorValueRangeTracer tracer;
 
-	protected VizMapGUI vizMapGUI;
+	protected final SelectedVisualStyleManager manager;
 	
 	private final CyTable attrs;
 
@@ -117,9 +118,9 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 	 * 
 	 * */
 	public ContinuousMappingEditorPanel(final VisualProperty<V> type,
-			VizMapGUI vizMapGUI, final CyTable attrs) {
+			final SelectedVisualStyleManager manager, final CyTable attrs) {
 		this.type = type;
-		this.vizMapGUI = vizMapGUI;
+		this.manager = manager;
 		this.attrs = attrs;
 
 		initComponents();
@@ -166,9 +167,9 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 		JPanel mainPanel = new JPanel();
 
 		abovePanel = new BelowAndAbovePanel(type, Color.yellow, false,
-				vizMapGUI);
+				manager);
 		abovePanel.setName("abovePanel");
-		belowPanel = new BelowAndAbovePanel(type, Color.white, true, vizMapGUI);
+		belowPanel = new BelowAndAbovePanel(type, Color.white, true, manager);
 		belowPanel.setName("belowPanel");
 
 		abovePanel.setPreferredSize(new Dimension(16, 1));
@@ -380,7 +381,7 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 
 	private void initRangeValues() {
 
-		VisualMappingFunction<?, V> map = vizMapGUI.getSelectedVisualStyle()
+		VisualMappingFunction<?, V> map = manager.getCurrentVisualStyle()
 				.getVisualMappingFunction(type);
 
 		if (map == null || map instanceof ContinuousMapping == false)

@@ -38,6 +38,7 @@ package org.cytoscape.view.vizmap.gui.editor;
 
 import java.awt.Component;
 import java.beans.PropertyEditor;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -116,57 +117,62 @@ public interface EditorManager {
 	
 	public <V> VisualPropertyEditor<V> getVisualPropertyEditor(VisualProperty<V> vp);
 
-//	/**
-//	 * DOCUMENT ME!
-//	 *
-//	 * @return DOCUMENT ME!
-//	 */
-//	public List<PropertyEditor> getCellEditors();
-//
-//	/**
-//	 * DOCUMENT ME!
-//	 *
-//	 * @param type
-//	 *            DOCUMENT ME!
-//	 *
-//	 * @return DOCUMENT ME!
-//	 */
-//	public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type);
-//
-//	/**
-//	 * DOCUMENT ME!
-//	 *
-//	 * @param type
-//	 *            DOCUMENT ME!
-//	 *
-//	 * @return DOCUMENT ME!
-//	 */
-//	public TableCellRenderer getDiscreteCellRenderer(VisualProperty<?> type);
-//
-//	/**
-//	 * DOCUMENT ME!
-//	 *
-//	 * @param type
-//	 *            DOCUMENT ME!
-//	 *
-//	 * @return DOCUMENT ME!
-//	 */
-//	public PropertyEditor getContinuousCellEditor(VisualProperty<?> type);
-//
-//	/**
-//	 * DOCUMENT ME!
-//	 *
-//	 * @param type
-//	 *            DOCUMENT ME!
-//	 * @param w
-//	 *            DOCUMENT ME!
-//	 * @param h
-//	 *            DOCUMENT ME!
-//	 *
-//	 * @return DOCUMENT ME!
-//	 */
-//	public TableCellRenderer getContinuousCellRenderer(VisualProperty<?> type, int w, int h);
-//
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public List<PropertyEditor> getCellEditors();
+	
+	Collection<PropertyEditor> getAttributeSelectors();
+	
+	PropertyEditor getMappingFunctionSelector();
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param type
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type);
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param type
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public TableCellRenderer getDiscreteCellRenderer(VisualProperty<?> type);
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param type
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public PropertyEditor getContinuousCellEditor(VisualProperty<?> type);
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param type
+	 *            DOCUMENT ME!
+	 * @param w
+	 *            DOCUMENT ME!
+	 * @param h
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public TableCellRenderer getContinuousCellRenderer(VisualProperty<?> type,
+			int w, int h);
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -183,7 +189,7 @@ public interface EditorManager {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public PropertyEditor getDataTableComboBoxEditor(CyTable table, String editorName);
+	public PropertyEditor getDataTableComboBoxEditor(final String targetObjectName);
 	
 	public <V> ValueEditor<V> getValueEditor(Class<V> dataType);
 }

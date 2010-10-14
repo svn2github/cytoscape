@@ -239,7 +239,6 @@ class PopupMenuHelper {
 	 * A place to capture the common task execution behavior.
 	 */
 	private void executeTask(TaskFactory tf) {
-		final TaskIterator taskIterator = tf.getTaskIterator();
-		m_view.manager.execute(taskIterator);
+		m_view.manager.execute(tf);
 	}
 }

@@ -64,6 +64,7 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
@@ -98,15 +99,9 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	// TODO remove this
 	public static final String GRAPHICAL_MAP_VIEW = "Graphical View";
 
-	// Test
-	protected static final String DEFAULT_VS_TITLE2 = "Default 2";
 
-	protected final VisualStyle defaultVS;
-
-	public VisualStyle getDefaultVisualStyle() {
-		return defaultVS;
-	}
-
+	protected final SelectedVisualStyleManager manager;
+	
 	// ///////// Main GUI Components /////////////////
 
 	// Current Visual Style is managed by this object.
@@ -189,8 +184,9 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			EditorWindowManager editorWindowManager,
 			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper,
-			final VisualStyle defStyle) {
+			final SelectedVisualStyleManager manager) {
 		
+		this.manager = manager;
 		this.vsFactory = vsFactory;
 		this.cytoscapeDesktop = desktop;
 		this.defViewEditor = defViewEditor;
@@ -204,7 +200,6 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		this.editorWindowManager = editorWindowManager;
 		this.cyNetworkManager = cyNetworkManager;
 		this.eventHelper = eventHelper;
-		this.defaultVS = defStyle;
 		
 		spcs = new SwingPropertyChangeSupport(this);
 
@@ -239,6 +234,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		buttonPanel = new javax.swing.JPanel();
 
 		vsComboBoxModel = new DefaultComboBoxModel();
+		final VisualStyle defaultVS = manager.getDefaultStyle();
 		vsComboBoxModel.addElement(defaultVS);
 		vmm.addVisualStyle(defaultVS);
 		visualStyleComboBox = new JComboBox(vsComboBoxModel);
@@ -489,19 +485,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 
 	// ///////////////// Managing Visual Style Combobox //////////////////
 
-	/**
-	 * Returns currently selected Visual Style. This is the replacement for
-	 * "current visual style" in 2.x series.
-	 * 
-	 * Note: "selected visual style" is different from visual style for current
-	 * network view.
-	 * 
-	 * @return
-	 */
-	public VisualStyle getSelectedVisualStyle() {
-		// TODO: Type safety. Make sure this cast is always valid.
-		return (VisualStyle) visualStyleComboBox.getSelectedItem();
-	}
+
 
 	public void setSelectedVisualStyle(final VisualStyle vs) {
 		final int itemCount = vsComboBoxModel.getSize();

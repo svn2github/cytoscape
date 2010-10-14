@@ -290,4 +290,8 @@ public class EditorManagerImpl implements EditorManager {
 		return selectors;
 	}
 
+	
+	@Override public PropertyEditor getMappingFunctionSelector() {
+		return getDefaultComboBoxEditor("mappingTypeEditor");
+	}
 }

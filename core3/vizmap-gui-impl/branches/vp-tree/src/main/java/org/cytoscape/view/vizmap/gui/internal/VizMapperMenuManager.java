@@ -143,7 +143,7 @@ public class VizMapperMenuManager {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					taskManager.execute(taskFactory.getTaskIterator());
+					taskManager.execute(taskFactory);
 				}
 			});
 			

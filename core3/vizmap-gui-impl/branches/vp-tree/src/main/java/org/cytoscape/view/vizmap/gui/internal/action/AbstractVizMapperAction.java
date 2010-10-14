@@ -45,6 +45,7 @@ import javax.swing.JMenuItem;
 
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.view.vizmap.gui.internal.EditorWindowManager;
 import org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder;
@@ -89,6 +90,8 @@ public abstract class AbstractVizMapperAction extends AbstractAction implements 
 	protected String menuLabel;
 	protected String iconId;
 	protected JMenuItem menuItem;
+	
+	protected SelectedVisualStyleManager manager;
 	
 	public AbstractVizMapperAction() {
 		

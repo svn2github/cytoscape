@@ -6,6 +6,8 @@
 	default-lazy-init="false">
 
 	<!-- Export Service Listeners -->
+	<osgi:service id="selectedVisualStyleManagerService" ref="selectedVisualStyleManager" auto-export="interfaces" />
+	
 	<osgi:service id="vizMapperGUIService" ref="vizMapperMainPanel"
 		auto-export="interfaces" />
 	<osgi:service id="defaultViewEditorService" ref="defViewEditor"

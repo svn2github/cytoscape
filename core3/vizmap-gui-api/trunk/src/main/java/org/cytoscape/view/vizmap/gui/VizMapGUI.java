@@ -72,10 +72,4 @@ public interface VizMapGUI {
 	public Component getVisualMappingBrowser();
 	public void setVisualMappingBrowser(Component visualMappingBrowser);
 	
-	// GUI state is always associated with a Visual Style.
-	public VisualStyle getSelectedVisualStyle();
-	
-	// Returns default visual style.
-	public VisualStyle getDefaultVisualStyle();
-	
 }

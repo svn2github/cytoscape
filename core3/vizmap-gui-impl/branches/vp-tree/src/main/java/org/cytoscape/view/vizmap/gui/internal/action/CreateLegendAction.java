@@ -8,9 +8,10 @@ public class CreateLegendAction extends AbstractVizMapperAction {
 
 	public void actionPerformed(ActionEvent e) {
 
-		LegendDialog ld = new LegendDialog(menuItem, vizMapperMainPanel
-				.getSelectedVisualStyle());
-		ld.setLocationRelativeTo(menuItem);
-		ld.setVisible(true);
+		//FIXME
+//		LegendDialog ld = new LegendDialog(menuItem, vizMapperMainPanel
+//				.getSelectedVisualStyle());
+//		ld.setLocationRelativeTo(menuItem);
+//		ld.setVisible(true);
 	}
 }

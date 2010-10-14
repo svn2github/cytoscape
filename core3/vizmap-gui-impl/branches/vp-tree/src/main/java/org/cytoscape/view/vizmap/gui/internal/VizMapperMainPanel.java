@@ -73,6 +73,7 @@ import org.cytoscape.view.vizmap.events.VisualStyleCreatedEvent;
 import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
@@ -143,12 +144,12 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			EditorWindowManager editorWindowManager,
 			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper,
-			final VisualStyle defStyle) {
+			final SelectedVisualStyleManager manager) {
 
 		super(vsFactory, desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
 				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
 				editorWindowManager,
-				cyNetworkManager, eventHelper, defStyle);
+				cyNetworkManager, eventHelper, manager);
 
 		// Initialize all components
 		initPanel();
@@ -169,7 +170,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		cytoscapeDesktop.getCytoPanel(CytoPanelName.WEST).add(TAB_TITLE, this);
 
 		// Switch to the default style.
-		switchVS(defaultVS);
+		switchVS(manager.getDefaultStyle());
 	}
 
 	
@@ -306,7 +307,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		}
 
 		// Switch back to the original style.
-		switchVS(getDefaultVisualStyle());
+		switchVS(manager.getDefaultStyle());
 
 		// Sync check box and actual lock state
 		spcs.firePropertyChange("UPDATE_LOCK", null, true);
@@ -713,7 +714,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		VisualStyle targetStyle = lastVS;
 		
 		if(targetStyle == null) {
-			targetStyle = defaultVS;
+			targetStyle = manager.getDefaultStyle();
 		}
 		vmm.setVisualStyle(targetStyle, e.getNetworkView());
 		targetStyle.apply(e.getNetworkView());

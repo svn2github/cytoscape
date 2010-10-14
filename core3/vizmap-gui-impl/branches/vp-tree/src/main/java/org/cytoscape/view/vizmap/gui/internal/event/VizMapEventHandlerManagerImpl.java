@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
@@ -29,21 +30,22 @@ public class VizMapEventHandlerManagerImpl implements
 	private Map<String, VizMapEventHandler> eventHandlers;
 
 	private final EditorManager editorManager;
-	private final VizMapperMainPanel gui;
 
+	private final SelectedVisualStyleManager manager;
+	
 	private VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 	
 	private final CyTableManager tableMgr;
 	private final CyNetworkManager networkMgr;
 
-	public VizMapEventHandlerManagerImpl(final EditorManager editorManager,
+	public VizMapEventHandlerManagerImpl(final SelectedVisualStyleManager manager, final EditorManager editorManager,
 			final VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			final PropertySheetPanel propertySheetPanel, final VizMapperMainPanel gui, final CyTableManager tableMgr, final CyNetworkManager networkMgr) {
 		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
 		this.editorManager = editorManager;
-		this.gui = gui;
 		this.tableMgr = tableMgr;
 		this.networkMgr = networkMgr;
+		this.manager = manager;
 		
 		registerCellEditorListeners();
 
@@ -74,8 +76,8 @@ public class VizMapEventHandlerManagerImpl implements
 		eventHandlers.put(Cytoscape.ATTRIBUTES_CHANGED, attrHandler);
 		eventHandlers.put(Cytoscape.NETWORK_LOADED, attrHandler);
 
-		eventHandlers.put("VALUE", new CellEditorEventHandler(
-				propertySheetPanel, gui, tableMgr, networkMgr, vizMapPropertySheetBuilder));
+		eventHandlers.put("VALUE", new CellEditorEventHandler(manager,
+				propertySheetPanel, tableMgr, networkMgr, vizMapPropertySheetBuilder));
 
 	}
 
@@ -94,6 +96,10 @@ public class VizMapEventHandlerManagerImpl implements
 		for (PropertyEditor p : editorManager.getAttributeSelectors()) {
 			p.addPropertyChangeListener(this);
 		}
+		
+		// Add Mapping type editor
+		final PropertyEditor mappingSelector = editorManager.getMappingFunctionSelector();
+		mappingSelector.addPropertyChangeListener(this);
 
 	}
 

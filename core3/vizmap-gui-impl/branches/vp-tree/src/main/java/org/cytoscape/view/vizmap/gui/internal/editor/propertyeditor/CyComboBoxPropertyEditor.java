@@ -81,6 +81,8 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 				} else
 					CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
 							combo.getSelectedItem());
+				
+				System.out.println("!!!!!!!!Event fired from Combobox Editor: " + combo.getSelectedItem());
 			}
 
 			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {

@@ -41,14 +41,16 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
-import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
+import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.internal.AbstractVizMapperPanel;
 import org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder;
@@ -72,41 +74,38 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
  */
 public class CellEditorEventHandler implements VizMapEventHandler {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(CellEditorEventHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(CellEditorEventHandler.class);
 
+	private final SelectedVisualStyleManager manager;
+	
 	// Keeps current discrete mappings. NOT PERMANENT
 	private final Map<String, Map<Object, Object>> discMapBuffer;
 
 	private final CyTableManager tableMgr;
 
-	protected VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
-	protected VisualMappingManager vmm;
-	protected VizMapperMainPanel vizMapperMainPanel;
-	protected PropertySheetPanel propertySheetPanel;
-	protected CyNetworkManager cyNetworkManager;
+	protected final VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
+	protected final PropertySheetPanel propertySheetPanel;
+	protected final CyNetworkManager cyNetworkManager;
 
 	/**
 	 * Creates a new CellEditorEventHandler object.
 	 */
-	public CellEditorEventHandler(final PropertySheetPanel propertySheetPanel,
-			final VizMapperMainPanel vizMapperMainPanel,
+	public CellEditorEventHandler(final SelectedVisualStyleManager manager, final PropertySheetPanel propertySheetPanel,
 			final CyTableManager tableMgr, final CyNetworkManager networkMgr,
 			final VizMapPropertySheetBuilder vizMapPropertySheetBuilder) {
 		discMapBuffer = new HashMap<String, Map<Object, Object>>();
 		this.propertySheetPanel = propertySheetPanel;
-		this.vizMapperMainPanel = vizMapperMainPanel;
 		this.tableMgr = tableMgr;
 		this.cyNetworkManager = networkMgr;
 		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
+		this.manager = manager;
 	}
 
 	private <K, V> void switchControllingAttr(
 			final AttributeComboBoxPropertyEditor editor,
 			VizMapperProperty<?> prop, final String ctrAttrName) {
 
-		final VisualStyle currentStyle = this.vizMapperMainPanel
-				.getSelectedVisualStyle();
+		final VisualStyle currentStyle = manager.getCurrentVisualStyle();
 
 		final Object hidden = prop.getHiddenObject();
 
@@ -120,6 +119,13 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 				.getVisualMappingFunction(vp);
 
 		logger.debug("!!!!!!! Got Mapping: " + mapping);
+
+		if (mapping == null) {
+			// Need to create new one
+			logger.debug("Mapping is still null: " + ctrAttrName);
+			return;
+
+		}
 
 		// If same, do nothing.
 		if (ctrAttrName.equals(mapping.getMappingAttributeName())) {
@@ -151,9 +157,8 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 			if ((dataType == Double.class) || (dataType == Integer.class)) {
 				// Do nothing
 			} else {
-				JOptionPane
-						.showMessageDialog(
-								vizMapperMainPanel,
+				JOptionPane.showMessageDialog(
+								null,
 								"Continuous Mapper can be used with Numbers only.\nPlease select numerical attributes.",
 								"Incompatible Mapping Type!",
 								JOptionPane.INFORMATION_MESSAGE);
@@ -194,7 +199,7 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 				newMapping, editor.getCategory(), propertySheetPanel);
 
 		logger.debug("!!!!!!! Removing Prop: " + prop);
-		
+
 		vizMapPropertySheetBuilder.removeProperty(prop, currentStyle);
 
 		if (vizMapPropertySheetBuilder.getPropertyMap().get(currentStyle) != null)
@@ -212,22 +217,167 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		return;
 
 	}
+	
+	
+	private void switchMapping(final VisualProperty<?> vp) {
+		
+		 final VisualStyle style = manager.getCurrentVisualStyle();
+		
+//		 final String mappingFunctionName = style.getTitle() + "-" + vp.getIdString() + "-" + newMapName;
+//		
+//		 // Extract target calculator
+//		 Calculator newCalc = vmm.getCalculatorCatalog().getCalculator(type,
+//		 newCalcName);
+//		
+//		 Calculator oldCalc = null;
+//		
+//		 if (type.getObjectType().equals(VisualProperty.NODE))
+//		 oldCalc = vmm.getVisualStyle().getNodeAppearanceCalculator()
+//		 .getCalculator(type);
+//		 else
+//		 oldCalc = vmm.getVisualStyle().getEdgeAppearanceCalculator()
+//		 .getCalculator(type);
+//		
+//		 /*
+//		 * If not exist, create new one.
+//		 */
+//		 if (newCalc == null) {
+//		 newCalc = getNewCalculator(type, newMapName, newCalcName);
+//		 newCalc.getMapping(0)
+//		 .setControllingAttributeName((String) attrName);
+//		 vmm.getCalculatorCatalog().addCalculator(newCalc);
+//		 }
+//		
+//		 newCalc.getMapping(0).setControllingAttributeName((String) attrName);
+//		
+//		 if (type.getObjectType().equals(VisualProperty.NODE)) {
+//		 vmm.getVisualStyle().getNodeAppearanceCalculator().setCalculator(
+//		 newCalc);
+//		 } else
+//		 vmm.getVisualStyle().getEdgeAppearanceCalculator().setCalculator(
+//		 newCalc);
+//		
+//		 /*
+//		 * If old calc is not standard name, rename it.
+//		 */
+//		 if (oldCalc != null) {
+//		 final String oldMappingTypeName;
+//		
+//		 if (oldCalc.getMapping(0) instanceof DiscreteMapping)
+//		 oldMappingTypeName = "Discrete Mapper";
+//		 else if (oldCalc.getMapping(0) instanceof ContinuousMapping)
+//		 oldMappingTypeName = "Continuous Mapper";
+//		 else if (oldCalc.getMapping(0) instanceof PassthroughMappingCalculator)
+//		 oldMappingTypeName = "Passthrough Mapper";
+//		 else
+//		 oldMappingTypeName = null;
+//		
+//		 final String oldCalcName = type.getName() + "-"
+//		 + oldMappingTypeName;
+//		
+//		 if (vmm.getCalculatorCatalog().getCalculator(type, oldCalcName) == null)
+//		 {
+//		 final Calculator newC = getNewCalculator(type,
+//		 oldMappingTypeName, oldCalcName);
+//		 newC.getMapping(0).setControllingAttributeName(
+//		 (String) attrName);
+//		 vmm.getCalculatorCatalog().addCalculator(newC);
+//		 }
+//		 }
+//		
+//		 Property parent = prop.getParentProperty();
+//		 propertySheetPanel.removeProperty(parent);
+//		
+//		 final VizMapperProperty newRootProp = new VizMapperProperty();
+//		
+//		 if (type.getObjectType().equals(VisualProperty.NODE))
+//		 vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
+//		 vmm.getVisualStyle().getNodeAppearanceCalculator()
+//		 .getCalculator(type), newRootProp,
+//		 AbstractVizMapperPanel.NODE_VISUAL_MAPPING,
+//		 propertySheetPanel);
+//		 else
+//		 vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
+//		 vmm.getVisualStyle().getEdgeAppearanceCalculator()
+//		 .getCalculator(type), newRootProp,
+//		 AbstractVizMapperPanel.EDGE_VISUAL_MAPPING,
+//		 propertySheetPanel);
+//		
+//		 vizMapPropertySheetBuilder.expandLastSelectedItem(type.getName());
+//		
+//		 vizMapPropertySheetBuilder.removeProperty(parent);
+//		
+//		 if (vizMapPropertySheetBuilder.getPropertyMap().get(
+//		 vmm.getVisualStyle().getName()) != null) {
+//		 vizMapPropertySheetBuilder.getPropertyMap().get(
+//		 vmm.getVisualStyle().getName()).add(newRootProp);
+//		 }
+//		
+//		 // vmm.getNetworkView().redrawGraph(false, true);
+//		 // Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+//		 parent = null;
+//		 }
+//		
+//		 private <K, V> VisualMappingFunction<K, V> getNewMappingFunction(final
+//		 VisualProperty<V> type,
+//		 final String newMappingName, final String newCalcName) {
+//		
+//		 System.out.println("Mapper = " + newMappingName);
+//		
+//		 Class mapperClass = catalog.getMapping(newMappingName);
+//		
+//		 if (mapperClass == null) {
+//		 return null;
+//		 }
+//		
+//		 // create the selected mapper
+//		 Class[] conTypes = { Object.class, byte.class };
+//		 Constructor mapperCon;
+//		
+//		 try {
+//		 mapperCon = mapperClass.getConstructor(conTypes);
+//		 } catch (NoSuchMethodException exc) {
+//		 // Should not happen...
+//		 System.err.println("Invalid mapper " + mapperClass.getName());
+//		
+//		 return null;
+//		 }
+//		
+//		 final Object defaultObj = type.getDefault(vmm.getVisualStyle());
+//		
+//		 System.out.println("defobj = " + defaultObj.getClass() + ", Type = "
+//		 + type.getName());
+//		
+//		 final Object[] invokeArgs = { defaultObj };
+//		 VisualMappingFunction mapper = null;
+//		
+//		 try {
+//		 mapper = (VisualMappingFunction) mapperCon.newInstance(invokeArgs);
+//		 } catch (Exception exc) {
+//		 System.err.println("Error creating mapping");
+//		
+//		 return null;
+//		 }
+//		
+//		 return new BasicCalculator(newCalcName, mapper, type);
+		 return;
+	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Execute commands based on event.
 	 * 
 	 * @param e
 	 *            DOCUMENT ME!
 	 */
 	@Override
 	public void processEvent(PropertyChangeEvent e) {
+		
+		logger.debug("$$$$$$$$ Got new event: " + e);
 
 		if (e.getNewValue().equals(e.getOldValue())) {
 			logger.debug("No change.  No need to update.");
 			return;
 		}
-
-		// TODO: This should be completely refactored!!!
 
 		final PropertySheetTable table = propertySheetPanel.getTable();
 		final int selected = table.getSelectedRow();
@@ -237,17 +387,18 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 			return;
 
 		// Extract selected Property object in the table.
-		Item selectedItem = (Item) propertySheetPanel.getTable().getValueAt(
-				selected, 0);
-		VizMapperProperty<?> prop = (VizMapperProperty<?>) selectedItem
-				.getProperty();
+		final Item selectedItem = (Item) propertySheetPanel.getTable().getValueAt(selected, 0);
+		final VizMapperProperty<?> prop = (VizMapperProperty<?>) selectedItem.getProperty();
+		
+		logger.debug("#### Got new PROP: Name = " + prop.getDisplayName());
+		logger.debug("#### Got new PROP: Value = " + prop.getValue());
 
 		VisualProperty<?> type = null;
 		String ctrAttrName = null;
 
 		VizMapperProperty<?> typeRootProp = null;
 
-		// 1. Attribute type changed.
+		// Case 1: Attribute type changed.
 		if (e.getSource() instanceof AttributeComboBoxPropertyEditor) {
 			if (e.getNewValue() == null)
 				throw new NullPointerException(
@@ -257,40 +408,36 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 					.getSource();
 			switchControllingAttr(editor, prop, e.getNewValue().toString());
 		}
+		
+		// 2. Switch mapping type
 
-		//
-		// if ((prop.getParentProperty() == null)
-		// && e.getNewValue() instanceof String) {
-		// /*
-		// * This is a controlling attr name change signal.
-		// */
-		// typeRootProp = prop;
-		// type = (VisualProperty<?>) prop.getHiddenObject();
-		// ctrAttrName = (String) e.getNewValue();
-		// } else if ((prop.getParentProperty() == null)
-		// && (e.getNewValue() == null)) {
-		// /*
-		// * Empty cell selected. no need to change anything.
-		// */
-		// return;
-		// } else {
-		// typeRootProp = (VizMapperProperty<?>) prop.getParentProperty();
-		//
-		// if (prop.getParentProperty() == null)
-		// return;
-		//
-		// type = (VisualProperty<?>) ((VizMapperProperty<?>) prop
-		// .getParentProperty()).getHiddenObject();
-		// }
-		//
-		// /*
-		// * Mapping type changed
-		// */
-		// if (prop.getHiddenObject() instanceof VisualMappingFunction
-		// || prop.getDisplayName().equals("Mapping Type")) {
-		// System.out.println("Mapping type changed: "
-		// + prop.getHiddenObject());
-		//
+		
+//		if ((prop.getParentProperty() == null) && (e.getNewValue() == null)) {
+//			 /*
+//			 * Empty cell selected. no need to change anything.
+//			 */
+//			return;
+//		 } else {
+//			 typeRootProp = (VizMapperProperty<?>) prop.getParentProperty();
+//		
+//			 if (prop.getParentProperty() == null)
+//				 return;
+//		
+//			 type = (VisualProperty<?>) ((VizMapperProperty<?>) prop.getParentProperty()).getHiddenObject();
+//		 }
+		
+		 
+		 if (prop.getHiddenObject() instanceof VisualMappingFunction || prop.getDisplayName().equals("Mapping Type")) {
+			 logger.debug("Mapping type changed for: " + prop.getHiddenObject());
+			 logger.debug("Mapping type new = " + e.getNewValue());
+			 type = (VisualProperty<?>) ((VizMapperProperty<?>) prop.getParentProperty()).getHiddenObject();
+			 if(type == null)
+				 return;
+			 
+			 switchMapping(type);
+		 }
+		
+
 		// if (e.getNewValue() == null)
 		// return;
 		//

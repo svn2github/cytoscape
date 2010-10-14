@@ -59,44 +59,45 @@ public class RemoveMappingAction extends AbstractVizMapperAction {
 	}
 
 	private <T> void removeMapping(final VisualProperty<T> type, VisualStyle style) {
-		final VisualStyle vs = this.vizMapperMainPanel.getSelectedVisualStyle();
-		
-		// Remove mapping from the style.
-		vs.removeVisualMappingFunction(type);
-
-		// Update GUI
-		final Property[] props = propertySheetPanel
-				.getProperties();
-		Property toBeRemoved = null;
-
-		for (Property p : props) {
-			if (p.getDisplayName().equals(type.getDisplayName())) {
-				toBeRemoved = p;
-				break;
-			}
-		}
-
-		propertySheetPanel.removeProperty(toBeRemoved);
-
-		vizMapPropertySheetBuilder.removeProperty(toBeRemoved, style);
-
-		/*
-		 * Finally, move the visual property to "unused list"
-		 */
-		vizMapPropertySheetBuilder.getUnusedVisualPropType().add(type);
-
-		VizMapperProperty<VisualProperty<T>> prop = new VizMapperProperty<VisualProperty<T>>();
-		prop.setCategory(AbstractVizMapperPanel.CATEGORY_UNUSED);
-		prop.setDisplayName(type.getDisplayName());
-		prop.setHiddenObject(type);
-		prop.setValue("Double-Click to create...");
-		propertySheetPanel.addProperty(prop);
-
-		List<Property> target = vizMapPropertySheetBuilder.getPropertyMap().get(vs.getTitle());
-		if (target != null)
-			target.add(prop);
-
-		propertySheetPanel.repaint();
+		//FIXME
+//		final VisualStyle vs = this.vizMapperMainPanel.getSelectedVisualStyle();
+//		
+//		// Remove mapping from the style.
+//		vs.removeVisualMappingFunction(type);
+//
+//		// Update GUI
+//		final Property[] props = propertySheetPanel
+//				.getProperties();
+//		Property toBeRemoved = null;
+//
+//		for (Property p : props) {
+//			if (p.getDisplayName().equals(type.getDisplayName())) {
+//				toBeRemoved = p;
+//				break;
+//			}
+//		}
+//
+//		propertySheetPanel.removeProperty(toBeRemoved);
+//
+//		vizMapPropertySheetBuilder.removeProperty(toBeRemoved, style);
+//
+//		/*
+//		 * Finally, move the visual property to "unused list"
+//		 */
+//		vizMapPropertySheetBuilder.getUnusedVisualPropType().add(type);
+//
+//		VizMapperProperty<VisualProperty<T>> prop = new VizMapperProperty<VisualProperty<T>>();
+//		prop.setCategory(AbstractVizMapperPanel.CATEGORY_UNUSED);
+//		prop.setDisplayName(type.getDisplayName());
+//		prop.setHiddenObject(type);
+//		prop.setValue("Double-Click to create...");
+//		propertySheetPanel.addProperty(prop);
+//
+//		List<Property> target = vizMapPropertySheetBuilder.getPropertyMap().get(vs.getTitle());
+//		if (target != null)
+//			target.add(prop);
+//
+//		propertySheetPanel.repaint();
 	}
 	
 	public void propertyChange(PropertyChangeEvent e) {
