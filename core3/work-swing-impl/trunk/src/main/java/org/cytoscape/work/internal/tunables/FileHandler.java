@@ -25,7 +25,6 @@ import javax.swing.LayoutStyle;
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.swing.AbstractGUITunableHandler;
-import org.cytoscape.work.Tunable.Param;
 import org.cytoscape.work.internal.tunables.utils.FileChooserFilter;
 import org.cytoscape.work.internal.tunables.utils.SupportedFileTypesManager;
 
