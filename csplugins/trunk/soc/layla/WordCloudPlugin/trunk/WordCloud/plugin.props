@@ -27,12 +27,12 @@ pluginCategory=Analysis
 pluginAuthorsIntsitutions=Layla Oesper;Brown University
 
 # URL to a website that gives more information about your plugin, Ex. http://my-lab-site.org
-projectURL=http://baderlab.org/GSoC2010_SoftwareDownload
+projectURL=http://baderlab.org/Software/WordCloudPlugin
 
 
 # Date this plugin/plugin version was released
-#releaseDate=September 12, 2010
+#releaseDate=October 14, 2010
 
 # -- The following properties are NOT OFFICIAL AND PROPRIETARY -- #
-pluginReleaseSuffix=beta
+pluginReleaseSuffix=RC1
 
