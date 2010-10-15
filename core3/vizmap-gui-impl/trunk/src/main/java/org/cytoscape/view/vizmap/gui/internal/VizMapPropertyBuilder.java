@@ -114,7 +114,8 @@ public class VizMapPropertyBuilder {
 		if (visualMapping == null)
 			throw new NullPointerException("Mapping is null.");
 		if (rootObjectCategory == null)
-			throw new NullPointerException("Category is null.  It should be one of the following: NODE, EDGE, or NETWORK.");
+			throw new NullPointerException(
+					"Category is null.  It should be one of the following: NODE, EDGE, or NETWORK.");
 		if (propertySheetPanel == null)
 			throw new NullPointerException("PropertySheet is null.");
 
@@ -139,7 +140,8 @@ public class VizMapPropertyBuilder {
 		} else {
 			topProperty.setValue(attrName);
 			((PropertyRendererRegistry) propertySheetPanel.getTable()
-					.getRendererFactory()).registerRenderer(topProperty, filledBoxRenderer);
+					.getRendererFactory()).registerRenderer(topProperty,
+					filledBoxRenderer);
 		}
 
 		// TODO: is this correct?
@@ -153,7 +155,7 @@ public class VizMapPropertyBuilder {
 		// Set parent-child relationship
 		mappingHeader.setParentProperty(topProperty);
 		topProperty.addSubProperty(mappingHeader);
-		
+
 		// TODO: Should refactor factory.
 		((PropertyEditorRegistry) propertySheetPanel.getTable()
 				.getEditorFactory()).registerEditor(mappingHeader,
@@ -193,27 +195,23 @@ public class VizMapPropertyBuilder {
 		 * Discrete Mapping
 		 */
 		if (visualMapping instanceof DiscreteMapping && (attrName != null)) {
-			// final Map<K, V> discMapping = ((DiscreteMapping<K, V>)
-			// visualMapping)
-			// .getAll();
-			//
-			// // Extract key attribute values.
-			// Class<K> attrDataType = null;
-			//
-			// try {
-			// attrDataType = (Class<K>) attr.getColumnTypeMap().get(attrName);
-			// } catch (Exception e) {
-			// throw new IllegalArgumentException(
-			// "Attribute is not compatible data type.");
-			// }
-			//
-			// final SortedSet<K> attrSet = new TreeSet<K>(attr.getColumnValues(
-			// attrName, attrDataType));
-			//
-			// // FIXME
-			// setDiscreteProps(vp, discMapping, attrSet, editorFactory
-			// .getVisualPropertyEditor(vp), calculatorTypeProp,
-			// propertySheetPanel);
+			final Map<K, V> discMapping = ((DiscreteMapping<K, V>) visualMapping)
+					.getAll();
+
+			final SortedSet<K> attrSet = new TreeSet<K>();
+
+			for (CyTableEntry go : graphObjectSet) {
+				final Class<?> attrClass = go.attrs().getDataTable()
+						.getColumnTypeMap().get(attrName);
+
+				Object id = go.attrs().get(attrName, attrClass);
+				attrSet.add((K) id);
+			}
+
+			// FIXME
+			setDiscreteProps(vp, discMapping, attrSet,
+					editorFactory.getVisualPropertyEditor(vp),
+					topProperty, propertySheetPanel);
 		} else if (visualMapping instanceof ContinuousMapping
 				&& (attrName != null)) {
 			int wi = propertySheetPanel.getTable().getCellRect(0, 1, true).width;
@@ -233,7 +231,8 @@ public class VizMapPropertyBuilder {
 			// ((PropertyRendererRegistry) propertySheetPanel.getTable()
 			// .getRendererFactory()).registerRenderer(graphicalView,
 			// crenderer);
-		} else if (visualMapping instanceof PassthroughMapping && (attrName != null)) {
+		} else if (visualMapping instanceof PassthroughMapping
+				&& (attrName != null)) {
 			// Passthrough
 
 			Object id;
@@ -245,14 +244,14 @@ public class VizMapPropertyBuilder {
 			for (CyTableEntry go : graphObjectSet) {
 				Class<?> attrClass = go.attrs().getDataTable()
 						.getColumnTypeMap().get(attrName);
-				
+
 				id = go.attrs().get("name", String.class);
 
-				if(attrName.equals("SUID"))
+				if (attrName.equals("SUID"))
 					value = go.getSUID();
-				else 
+				else
 					value = go.attrs().get(attrName, attrClass);
-				
+
 				if (value != null)
 					stringVal = value.toString();
 				else
@@ -318,13 +317,13 @@ public class VizMapPropertyBuilder {
 
 			children.add(valProp);
 
-			// FIXME!
-			// ((PropertyRendererRegistry) propertySheetPanel.getTable()
-			// .getRendererFactory()).registerRenderer(valProp, rend);
+//			// FIXME!
+//			((PropertyRendererRegistry) propertySheetPanel.getTable()
+//					.getRendererFactory()).registerRenderer(valProp, vp.getType());
 
 			// FIXME!!
-			// ((PropertyEditorRegistry) propertySheetPanel.getTable()
-			// .getEditorFactory()).registerEditor(valProp, editor);
+			((PropertyEditorRegistry) propertySheetPanel.getTable()
+					.getEditorFactory()).registerEditor(valProp, editorFactory.getVisualPropertyEditor(vp).getVisualPropertyEditor());
 
 			valProp.setValue(val);
 		}
