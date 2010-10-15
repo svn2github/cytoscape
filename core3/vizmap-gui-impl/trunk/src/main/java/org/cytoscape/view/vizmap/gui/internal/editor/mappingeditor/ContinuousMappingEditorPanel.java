@@ -78,7 +78,7 @@ import org.jdesktop.swingx.multislider.Thumb;
  * @since Cytoscape 2.5
  * @author kono
  */
-public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
+public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implements
 		PropertyChangeListener {
 	private static final long serialVersionUID = 2077889066171872186L;
 
@@ -92,8 +92,8 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 	protected VisualProperty<V> type;
 
 	// Only accepts Continuous Mapping
-	protected ContinuousMapping<V> mapping;
-	protected List<ContinuousMappingPoint<V>> allPoints;
+	protected ContinuousMapping<K, V> mapping;
+	protected List<ContinuousMappingPoint<K, V>> allPoints;
 	private SpinnerNumberModel spinnerModel;
 
 	protected V below;
@@ -389,7 +389,7 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 
 		// TODO: fix the following section
 		// Assume this calc only returns cont. mapping.
-		mapping = (ContinuousMapping<V>) map;
+		mapping = (ContinuousMapping<K, V>) map;
 
 		final String controllingAttrName = mapping.getMappingAttributeName();
 
@@ -467,7 +467,7 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 		final double range = tracer.getRange(type);
 
 		Thumb<?> t;
-		Double newVal;
+		Number newVal;
 
 		if (thumbs.size() == 1) {
 			// Special case: only one handle.
@@ -477,7 +477,7 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 			mapping.getPoint(0).getRange().greaterValue = above;
 
 			newVal = ((thumbs.get(0).getPosition() / 100) * range) + min;
-			mapping.getPoint(0).setValue(newVal);
+			mapping.getPoint(0).setValue((K) newVal);
 
 			return;
 		}
@@ -501,7 +501,7 @@ public abstract class ContinuousMappingEditorPanel<V> extends JPanel implements
 			}
 
 			newVal = ((t.getPosition() / 100) * range) + min;
-			mapping.getPoint(i).setValue(newVal);
+			mapping.getPoint(i).setValue((K) newVal);
 			rg.equalValue = t.getObject();
 		}
 	}

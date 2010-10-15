@@ -50,16 +50,19 @@ import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
  * and associated BoundaryRangeValues.
  *
  */
-public class ContinuousMappingPoint<T> implements Cloneable {
-	private double value;
-	private BoundaryRangeValues<T> range;
+public class ContinuousMappingPoint<K, V> implements Cloneable {
+	private K value;
+	private BoundaryRangeValues<V> range;
 
 	/**
 	 * Constructor.
 	 * @param value double.
 	 * @param range BoundaryRangeValues object.
 	 */
-	public ContinuousMappingPoint(double value, BoundaryRangeValues<T> range) {
+	public ContinuousMappingPoint(K value, BoundaryRangeValues<V> range) {
+		if(value instanceof Number == false)
+			throw new IllegalArgumentException("Value should be a number.");
+		
 		this.value = value;
 		this.range = range;
 	}
@@ -68,7 +71,7 @@ public class ContinuousMappingPoint<T> implements Cloneable {
 	 * Gets Point Value.
 	 * @return double value.
 	 */
-	public double getValue() {
+	public K getValue() {
 		return value;
 	}
 
@@ -76,7 +79,7 @@ public class ContinuousMappingPoint<T> implements Cloneable {
 	 * Sets Point Value.
 	 * @param value double value.
 	 */
-	public void setValue(double value) {
+	public void setValue(K value) {
 		this.value = value;
 	}
 
@@ -84,7 +87,7 @@ public class ContinuousMappingPoint<T> implements Cloneable {
 	 * Gets BoundaryRangeValues.
 	 * @return BoundaryRangeValues Object.
 	 */
-	public BoundaryRangeValues<T> getRange() {
+	public BoundaryRangeValues<V> getRange() {
 		return range;
 	}
 
@@ -92,7 +95,7 @@ public class ContinuousMappingPoint<T> implements Cloneable {
 	 * Sets BoundaryRangeValues.
 	 * @param range BoundaryRangeValues Object.
 	 */
-	public void setRange(BoundaryRangeValues<T> range) {
+	public void setRange(BoundaryRangeValues<V> range) {
 		this.range = range;
 	}
 
@@ -102,11 +105,11 @@ public class ContinuousMappingPoint<T> implements Cloneable {
 	 */
 	@Override public Object clone() {
 		
-		final BoundaryRangeValues<T> newRange = new BoundaryRangeValues<T>();
+		final BoundaryRangeValues<V> newRange = new BoundaryRangeValues<V>();
 		newRange.lesserValue = range.lesserValue;
 		newRange.equalValue = range.equalValue;
 		newRange.greaterValue = range.greaterValue;
 
-		return new ContinuousMappingPoint<T>(value, newRange);
+		return new ContinuousMappingPoint<K, V>(value, newRange);
 	}
 }

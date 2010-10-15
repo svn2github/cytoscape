@@ -61,8 +61,8 @@ import org.jdesktop.swingx.multislider.TrackRenderer;
  * @author Keiichiro Ono
  * 
  */
-public class C2CMappingEditor<V extends Number> extends
-		ContinuousMappingEditorPanel<V> {
+public class C2CMappingEditor<K, V extends Number> extends
+		ContinuousMappingEditorPanel<K, V> {
 	private final static long serialVersionUID = 1213748836613718L;
 
 	// Default value for below and above.
@@ -83,13 +83,14 @@ public class C2CMappingEditor<V extends Number> extends
 		abovePanel.setVisible(false);
 		belowPanel.setVisible(false);
 
-		setSlider();
-
-		// Add two sliders by default.
-		if ((mapping != null) && (mapping.getPointCount() == 0)) {
-			addSlider(0f, FIRST_LOCATION);
-			addSlider(100f, FIRST_LOCATION);
-		}
+		//FIXME
+//		setSlider();
+//
+//		// Add two sliders by default.
+//		if ((mapping != null) && (mapping.getPointCount() == 0)) {
+//			addSlider(0f, FIRST_LOCATION);
+//			addSlider(100f, FIRST_LOCATION);
+//		}
 	}
 
 	// TODO: move this to manager.
@@ -126,7 +127,7 @@ public class C2CMappingEditor<V extends Number> extends
 		if (rend instanceof ContinuousTrackRenderer) {
 			rend.getRendererComponent(slider);
 
-			return ((ContinuousTrackRenderer<V>) rend).getTrackGraphicIcon(
+			return ((ContinuousTrackRenderer<K, V>) rend).getTrackGraphicIcon(
 					iconWidth, iconHeight);
 		} else {
 			return null;
@@ -147,64 +148,66 @@ public class C2CMappingEditor<V extends Number> extends
 	 */
 	public ImageIcon getLegend(final int width, final int height) {
 
-		final ContinuousTrackRenderer<V> rend = (ContinuousTrackRenderer<V>) slider
+		final ContinuousTrackRenderer<K, V> rend = (ContinuousTrackRenderer<K, V>) slider
 				.getTrackRenderer();
 		rend.getRendererComponent(slider);
 
 		return rend.getLegend(width, height);
 	}
 
-	// Add slider to the editor.
-	private void addSlider(float position, V value) {
-
-		final double maxValue = tracer.getMax(type);
-
-		BoundaryRangeValues<V> newRange;
-
-		if (mapping.getPointCount() == 0) {
-			slider.getModel().addThumb(position, value);
-
-			V five = (V) new Float(5);
-			newRange = new BoundaryRangeValues<V>(below, five, above);
-			mapping.addPoint(maxValue / 2, newRange);
-
-			slider.repaint();
-			repaint();
-
-			return;
-		}
-
-		// Add a new white thumb in the min.
-		slider.getModel().addThumb(position, value);
-
-		// Update continuous mapping
-		final Double newVal = maxValue;
-
-		// Pick Up first point.
-		final ContinuousMappingPoint<V> previousPoint = mapping
-				.getPoint(mapping.getPointCount() - 1);
-
-		final BoundaryRangeValues<V> previousRange = previousPoint.getRange();
-		newRange = new BoundaryRangeValues<V>(previousRange);
-
-		newRange.lesserValue = slider.getModel().getSortedThumbs().get(
-				slider.getModel().getThumbCount() - 1).getObject();
-		System.out.println("EQ color = " + newRange.lesserValue);
-		newRange.equalValue = FIVE;
-		newRange.greaterValue = previousRange.greaterValue;
-		mapping.addPoint(maxValue, newRange);
-
-		updateMap();
-
-		// Cytoscape.redrawGraph(vmm.getNetworkView());
-
-		slider.repaint();
-		repaint();
-	}
+	//FIXME
+//	// Add slider to the editor.
+//	private void addSlider(float position, V value) {
+//
+//		final K maxValue = tracer.getMax(type);
+//
+//		BoundaryRangeValues<V> newRange;
+//
+//		if (mapping.getPointCount() == 0) {
+//			slider.getModel().addThumb(position, value);
+//
+//			V five = (V) new Float(5);
+//			newRange = new BoundaryRangeValues<V>(below, five, above);
+//			mapping.addPoint(maxValue / 2, newRange);
+//
+//			slider.repaint();
+//			repaint();
+//
+//			return;
+//		}
+//
+//		// Add a new white thumb in the min.
+//		slider.getModel().addThumb(position, value);
+//
+//		// Update continuous mapping
+//		final Double newVal = maxValue;
+//
+//		// Pick Up first point.
+//		final ContinuousMappingPoint<V> previousPoint = mapping
+//				.getPoint(mapping.getPointCount() - 1);
+//
+//		final BoundaryRangeValues<V> previousRange = previousPoint.getRange();
+//		newRange = new BoundaryRangeValues<V>(previousRange);
+//
+//		newRange.lesserValue = slider.getModel().getSortedThumbs().get(
+//				slider.getModel().getThumbCount() - 1).getObject();
+//		System.out.println("EQ color = " + newRange.lesserValue);
+//		newRange.equalValue = FIVE;
+//		newRange.greaterValue = previousRange.greaterValue;
+//		mapping.addPoint(maxValue, newRange);
+//
+//		updateMap();
+//
+//		// Cytoscape.redrawGraph(vmm.getNetworkView());
+//
+//		slider.repaint();
+//		repaint();
+//	}
 
 	@Override
 	protected void addButtonActionPerformed(ActionEvent evt) {
-		addSlider(100f, FIVE);
+		//FIXME
+		//addSlider(100f, FIVE);
 	}
 
 	@Override
@@ -226,52 +229,53 @@ public class C2CMappingEditor<V extends Number> extends
 		}
 	}
 
-	private void setSlider() {
-		Dimension dim = new Dimension(600, 100);
-		setPreferredSize(dim);
-		setSize(dim);
-		setMinimumSize(new Dimension(300, 80));
-		slider.updateUI();
-
-		final double minValue = tracer.getMin(type);
-		double actualRange = tracer.getRange(type);
-
-		BoundaryRangeValues<V> bound;
-		Float fraction;
-
-		if (allPoints == null) {
-			return;
-		}
-
-		for (ContinuousMappingPoint<V> point : allPoints) {
-			bound = point.getRange();
-
-			fraction = ((Number) ((point.getValue() - minValue) / actualRange))
-					.floatValue() * 100;
-			slider.getModel().addThumb(fraction, bound.equalValue);
-		}
-
-		if (allPoints.size() != 0) {
-			below = allPoints.get(0).getRange().lesserValue;
-			above = allPoints.get(allPoints.size() - 1).getRange().greaterValue;
-		} else {
-			below = DEF_BELOW_AND_ABOVE;
-			above = DEF_BELOW_AND_ABOVE;
-		}
-
-		/*
-		 * get min and max for the value object
-		 */
-		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
-
-		ContinuousTrackRenderer<V> cRend = new ContinuousTrackRenderer<V>(type,
-				below, above, tracer);
-		cRend.addPropertyChangeListener(this);
-
-		slider.setThumbRenderer(thumbRend);
-		slider.setTrackRenderer(cRend);
-		slider.addMouseListener(new ThumbMouseListener());
-	}
+	//FIXME
+//	private void setSlider() {
+//		Dimension dim = new Dimension(600, 100);
+//		setPreferredSize(dim);
+//		setSize(dim);
+//		setMinimumSize(new Dimension(300, 80));
+//		slider.updateUI();
+//
+//		final double minValue = tracer.getMin(type);
+//		double actualRange = tracer.getRange(type);
+//
+//		BoundaryRangeValues<V> bound;
+//		Float fraction;
+//
+//		if (allPoints == null) {
+//			return;
+//		}
+//
+//		for (ContinuousMappingPoint<V> point : allPoints) {
+//			bound = point.getRange();
+//
+//			fraction = ((Number) ((point.getValue() - minValue) / actualRange))
+//					.floatValue() * 100;
+//			slider.getModel().addThumb(fraction, bound.equalValue);
+//		}
+//
+//		if (allPoints.size() != 0) {
+//			below = allPoints.get(0).getRange().lesserValue;
+//			above = allPoints.get(allPoints.size() - 1).getRange().greaterValue;
+//		} else {
+//			below = DEF_BELOW_AND_ABOVE;
+//			above = DEF_BELOW_AND_ABOVE;
+//		}
+//
+//		/*
+//		 * get min and max for the value object
+//		 */
+//		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
+//
+//		ContinuousTrackRenderer<V> cRend = new ContinuousTrackRenderer<V>(type,
+//				below, above, tracer);
+//		cRend.addPropertyChangeListener(this);
+//
+//		slider.setThumbRenderer(thumbRend);
+//		slider.setTrackRenderer(cRend);
+//		slider.addMouseListener(new ThumbMouseListener());
+//	}
 
 	/**
 	 * DOCUMENT ME!

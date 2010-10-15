@@ -164,6 +164,14 @@
 
 
 
+	<osgi:set id="mappingFunctionFactorySet"
+		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addFactory"
+			unbind-method="removeFactory" ref="mappingFunctionFactoryManager" />
+
+	</osgi:set>
+
 	<osgi:set id="valueEditorSet"
 		interface="org.cytoscape.view.vizmap.gui.editor.ValueEditor"
 		cardinality="0..N">

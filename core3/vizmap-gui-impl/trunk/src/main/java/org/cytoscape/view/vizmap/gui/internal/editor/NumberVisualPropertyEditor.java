@@ -57,7 +57,7 @@ public class NumberVisualPropertyEditor extends AbstractVisualPropertyEditor<Num
 		super(vp);
 		propertyEditor = new CyDoublePropertyEditor(null);
 		tableCellRenderer = new DefaultTableCellRenderer();
-		continuousEditor = new C2CMappingEditor<Number>(this.vp, manager, attr);
+		continuousEditor = new C2CMappingEditor<Number, Number>(this.vp, manager, attr);
 	}
 
 	/**

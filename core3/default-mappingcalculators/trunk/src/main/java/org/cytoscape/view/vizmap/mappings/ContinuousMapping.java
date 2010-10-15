@@ -44,7 +44,6 @@ package org.cytoscape.view.vizmap.mappings;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.cytoscape.model.CyRow;
@@ -68,44 +67,37 @@ import org.cytoscape.view.vizmap.mappings.interpolators.LinearNumberToNumberInte
  *            cytoscape.visual.mappings.continuous.README.txt.
  * 
  */
-public class ContinuousMapping<V> extends
-		AbstractVisualMappingFunction<Number, V> {
+public class ContinuousMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
+	
+	protected static final String CONTINUOUS = "Continuous Mapping";
 
-	private Interpolator<Number, V> interpolator; // used to interpolate between
-													// boundaries
+	// used to interpolate between boundaries
+	private Interpolator<K, V> interpolator;
 
 	// Contains List of Data Points
-	private List<ContinuousMappingPoint<V>> points;
+	private List<ContinuousMappingPoint<K, V>> points;
 
-	public ContinuousMapping(final String attrName, final VisualProperty<V> vp) {
-		super(attrName, Number.class, vp);
-		this.points = new ArrayList<ContinuousMappingPoint<V>>();
+	ContinuousMapping(final String attrName, final Class<K> attrType, final VisualProperty<V> vp) {
+		super(attrName, attrType, vp);
+		
+		// Validate type.  K is always a number.
+		if(Number.class.isAssignableFrom(attrType) == false)
+			throw new IllegalArgumentException("Attribute type should be Number.");
+		
+		this.points = new ArrayList<ContinuousMappingPoint<K, V>>();
 
 		// TODO FIXME use factory here.
 		// Create Interpolator
 		if (Color.class.isAssignableFrom(vp.getType()))
-			interpolator = (Interpolator<Number, V>) new LinearNumberToColorInterpolator();
+			interpolator = (Interpolator<K, V>) new LinearNumberToColorInterpolator();
 		else if (Number.class.isAssignableFrom(vp.getType()))
-			interpolator = (Interpolator<Number, V>) new LinearNumberToNumberInterpolator();
+			interpolator = (Interpolator<K, V>) new LinearNumberToNumberInterpolator();
 		else
-			interpolator = (Interpolator<Number, V>) new FlatInterpolator();
+			interpolator = (Interpolator<K, V>) new FlatInterpolator();
 	}
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param defaultObj
-	 *            default object to map to
-	 */
-	public ContinuousMapping(String attrName, VisualProperty<V> vp,
-			Interpolator<Number, V> it) {
-		super(attrName, Number.class, vp);
-		this.points = new ArrayList<ContinuousMappingPoint<V>>();
-		this.interpolator = it;
-	}
 
-	@Override
-	public String toString() {
+	@Override public String toString() {
 		return CONTINUOUS;
 	}
 
@@ -114,15 +106,15 @@ public class ContinuousMapping<V> extends
 	 * 
 	 * @return List of ContinuousMappingPoint objects.
 	 */
-	public List<ContinuousMappingPoint<V>> getAllPoints() {
+	public List<ContinuousMappingPoint<K, V>> getAllPoints() {
 		return points;
 	}
 
 	/**
 	 * Adds a New Data Point.
 	 */
-	public void addPoint(double value, BoundaryRangeValues<V> brv) {
-		points.add(new ContinuousMappingPoint<V>(value, brv));
+	public void addPoint(K value, BoundaryRangeValues<V> brv) {
+		points.add(new ContinuousMappingPoint<K, V>(value, brv));
 	}
 
 	/**
@@ -146,7 +138,7 @@ public class ContinuousMapping<V> extends
 	 *            Index Value.
 	 * @return ContinuousMappingPoint.
 	 */
-	public ContinuousMappingPoint<V> getPoint(int index) {
+	public ContinuousMappingPoint<K, V> getPoint(int index) {
 		return points.get(index);
 	}
 
@@ -197,7 +189,7 @@ public class ContinuousMapping<V> extends
 
 			// In all cases, attribute value should be a number for continuous
 			// mapping.
-			final Number attrValue = view.getModel().attrs()
+			final K attrValue = view.getModel().attrs()
 					.get(attrName, attrType);
 			final V value = getRangeValue(attrValue);
 			view.setVisualProperty(vp, value);
@@ -207,9 +199,9 @@ public class ContinuousMapping<V> extends
 
 	}
 
-	private V getRangeValue(Number domainValue) {
-		ContinuousMappingPoint<V> firstPoint = points.get(0);
-		Number minDomain = new Double(firstPoint.getValue());
+	private V getRangeValue(K domainValue) {
+		ContinuousMappingPoint<K, V> firstPoint = points.get(0);
+		K minDomain = firstPoint.getValue();
 
 		// if given domain value is smaller than any in our list,
 		// return the range value for the smallest domain value we have.
@@ -227,8 +219,8 @@ public class ContinuousMapping<V> extends
 
 		// if given domain value is larger than any in our Vector,
 		// return the range value for the largest domain value we have.
-		ContinuousMappingPoint<V> lastPoint = points.get(points.size() - 1);
-		Number maxDomain = new Double(lastPoint.getValue());
+		ContinuousMappingPoint<K, V> lastPoint = points.get(points.size() - 1);
+		K maxDomain = lastPoint.getValue();
 
 		if (compareValues(domainValue, maxDomain) > 0) {
 			BoundaryRangeValues<V> bv = lastPoint.getRange();
@@ -245,13 +237,13 @@ public class ContinuousMapping<V> extends
 		// Note that the list of Points is sorted.
 		// Also, the case of the inValue equalling the smallest key was
 		// checked above.
-		ContinuousMappingPoint<V> currentPoint;
+		ContinuousMappingPoint<K, V> currentPoint;
 		int index = 0;
 
 		for (index = 0; index < points.size(); index++) {
 			currentPoint = points.get(index);
 
-			Double currentValue = new Double(currentPoint.getValue());
+			K currentValue = currentPoint.getValue();
 			int cmpValue = compareValues(domainValue, currentValue);
 
 			if (cmpValue == 0) {
@@ -271,16 +263,16 @@ public class ContinuousMapping<V> extends
 	 * lower boundary value (because the desired domain value is greater) and
 	 * the "lesser" field of the upper boundary value (semantic difficulties).
 	 */
-	private V getRangeValue(int index, Number domainValue) {
+	private V getRangeValue(int index, K domainValue) {
 		// Get Lower Domain and Range
-		ContinuousMappingPoint<V> lowerBound = points.get(index - 1);
-		Number lowerDomain = new Double(lowerBound.getValue());
+		ContinuousMappingPoint<K, V> lowerBound = points.get(index - 1);
+		K lowerDomain = lowerBound.getValue();
 		BoundaryRangeValues<V> lv = lowerBound.getRange();
 		V lowerRange = lv.greaterValue;
 
 		// Get Upper Domain and Range
-		ContinuousMappingPoint<V> upperBound = points.get(index);
-		Number upperDomain = new Double(upperBound.getValue());
+		ContinuousMappingPoint<K, V> upperBound = points.get(index);
+		K upperDomain = upperBound.getValue();
 		BoundaryRangeValues<V> gv = upperBound.getRange();
 		V upperRange = gv.lesserValue;
 
@@ -292,9 +284,12 @@ public class ContinuousMapping<V> extends
 	 * Helper function to compare Number objects. This is needed because Java
 	 * doesn't allow comparing, for example, Integer objects to Double objects.
 	 */
-	private int compareValues(Number probe, Number target) {
-		double d1 = probe.doubleValue();
-		double d2 = target.doubleValue();
+	private int compareValues(K probe, K target) {
+		
+		final Number n1 = (Number) probe;
+		final Number n2 = (Number) target;
+		double d1 = n1.doubleValue();
+		double d2 = n2.doubleValue();
 
 		if (d1 < d2)
 			return -1;

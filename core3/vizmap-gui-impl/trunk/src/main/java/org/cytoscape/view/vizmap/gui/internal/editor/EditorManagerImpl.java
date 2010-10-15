@@ -50,6 +50,7 @@ import java.util.Set;
 import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.gui.MappingFunctionFactoryManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.editor.ListEditor;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
@@ -78,13 +79,12 @@ public class EditorManagerImpl implements EditorManager {
 	
 	private final PropertyEditor mappingTypeEditor;
 	
-	private static final String[] MAPPING_TYPES = {DISCRETE, PASSTHROUGH, CONTINUOUS};
-
+	
 	
 	/**
 	 * Creates a new EditorFactory object.
 	 */
-	public EditorManagerImpl(final Set<ListEditor> listEditors ) {
+	public EditorManagerImpl(final Set<ListEditor> listEditors) {
 		continuousEditors = new HashMap<VisualProperty<?>, Component>();
 
 		editors = new HashMap<VisualProperty<?>, VisualPropertyEditor<?>>();
@@ -98,9 +98,6 @@ public class EditorManagerImpl implements EditorManager {
 		
 		// Create mapping type editor
 		this.mappingTypeEditor = getDefaultComboBoxEditor("mappingTypeEditor");
-		
-		
-		((CyComboBoxPropertyEditor)mappingTypeEditor).setAvailableValues(MAPPING_TYPES);
 	}
 
 	/*

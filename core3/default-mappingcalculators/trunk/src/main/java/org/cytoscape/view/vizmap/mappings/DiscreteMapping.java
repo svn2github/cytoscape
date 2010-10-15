@@ -57,6 +57,9 @@ import org.cytoscape.view.model.VisualProperty;
  * attribute name.
  */
 public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
+	
+	protected static final String DISCRETE = "Discrete Mapping";
+	
 
 	// contains the actual map elements (sorted)
 	private final SortedMap<K, V> attribute2visualMap;

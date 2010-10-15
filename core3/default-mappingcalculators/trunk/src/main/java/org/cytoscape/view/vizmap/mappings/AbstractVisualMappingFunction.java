@@ -13,11 +13,7 @@ import org.cytoscape.view.vizmap.VisualMappingFunction;
  */
 public abstract class AbstractVisualMappingFunction<K, V> implements
 		VisualMappingFunction<K, V> {
-	
-	// TODO: Are these necessary?
-	public static final String DISCRETE = "Discrete Mapping";
-	public static final String CONTINUOUS = "Continuous Mapping";
-	public static final String PASSTHROUGH = "Passthrough Mapping";
+
 
 	// Mapping attribute name.  This is immutable.
 	protected final String attrName;

@@ -44,6 +44,8 @@ import org.cytoscape.view.model.VisualProperty;
  */
 public class PassthroughMapping<K, V> extends
 		AbstractVisualMappingFunction<K, V> {
+	
+	protected static final String PASSTHROUGH = "Passthrough Mapping";
 
 	/**
 	 * dataType is the type of the _attribute_ !! currently we force that to be

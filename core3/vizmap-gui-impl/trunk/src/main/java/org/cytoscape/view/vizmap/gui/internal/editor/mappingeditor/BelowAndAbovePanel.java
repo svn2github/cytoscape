@@ -195,7 +195,7 @@ public class BelowAndAbovePanel extends JPanel {
 				}
 
 				final VisualStyle vs = manager.getCurrentVisualStyle();
-				final ContinuousMapping<?> cMapping = (ContinuousMapping<?>) vs.getVisualMappingFunction(type);
+				final ContinuousMapping<?, ?> cMapping = (ContinuousMapping<?,?>) vs.getVisualMappingFunction(type);
 
 				BoundaryRangeValues brv;
 				BoundaryRangeValues original;

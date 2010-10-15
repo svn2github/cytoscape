@@ -65,7 +65,7 @@ import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
  * @since Cytoscpae 2.5
  * @author kono
  */
-public class GradientEditorPanel extends ContinuousMappingEditorPanel<Color>
+public class GradientEditorPanel<K> extends ContinuousMappingEditorPanel<K, Color>
     implements PropertyChangeListener {
 	private final static long serialVersionUID = 1202339877433771L;
 
@@ -127,52 +127,53 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel<Color>
 
 	@Override
 	protected void addButtonActionPerformed(ActionEvent evt) {
-		final BoundaryRangeValues lowerRange;
-
-		double maxValue = tracer.getMax(type);
-
-		if (mapping.getPointCount() == 0) {
-			double rangeValue = tracer.getRange(type);
-			double minValue = tracer.getMin(type);
-
-			final BoundaryRangeValues upperRange;
-
-			slider.getModel().addThumb(10f, DEF_LOWER_COLOR);
-			slider.getModel().addThumb(90f, DEF_UPPER_COLOR);
-
-			lowerRange = new BoundaryRangeValues(below, DEF_LOWER_COLOR, DEF_LOWER_COLOR);
-			upperRange = new BoundaryRangeValues(DEF_UPPER_COLOR, DEF_UPPER_COLOR, above);
-			// mapping.addPoint(maxValue / 2, lowerRange);
-			mapping.addPoint((rangeValue * 0.1) + minValue, lowerRange);
-			mapping.addPoint((rangeValue * 0.9) + minValue, upperRange);
-			// Cytoscape.redrawGraph(vmm.getNetworkView());
-			slider.repaint();
-			repaint();
-
-			return;
-		}
-
-		// Add a new white thumb in the min.
-		slider.getModel().addThumb(100f, Color.white);
-
-		// Pick Up first point.
-		final ContinuousMappingPoint previousPoint = mapping.getPoint(mapping.getPointCount() - 1);
-
-		final BoundaryRangeValues previousRange = previousPoint.getRange();
-		lowerRange = new BoundaryRangeValues(previousRange);
-
-		lowerRange.lesserValue = slider.getModel().getSortedThumbs()
-		                               .get(slider.getModel().getThumbCount() - 1);
-		System.out.println("EQ color = " + lowerRange.lesserValue);
-		lowerRange.equalValue = Color.white;
-		lowerRange.greaterValue = previousRange.greaterValue;
-		mapping.addPoint(maxValue, lowerRange);
-
-		updateMap();
-
-		// Cytoscape.redrawGraph(vmm.getNetworkView());
-		slider.repaint();
-		repaint();
+		//FIXME
+//		final BoundaryRangeValues<Color> lowerRange;
+//
+//		double maxValue = tracer.getMax(type);
+//
+//		if (mapping.getPointCount() == 0) {
+//			Number rangeValue = tracer.getRange(type);
+//			Number minValue = tracer.getMin(type);
+//
+//			final BoundaryRangeValues<Color> upperRange;
+//
+//			slider.getModel().addThumb(10f, DEF_LOWER_COLOR);
+//			slider.getModel().addThumb(90f, DEF_UPPER_COLOR);
+//
+//			lowerRange = new BoundaryRangeValues<Color>(below, DEF_LOWER_COLOR, DEF_LOWER_COLOR);
+//			upperRange = new BoundaryRangeValues<Color>(DEF_UPPER_COLOR, DEF_UPPER_COLOR, above);
+//			// mapping.addPoint(maxValue / 2, lowerRange);
+//			mapping.addPoint((K)((Double)(rangeValue.doubleValue() * 0.1) + minValue.doubleValue()), lowerRange);
+//			mapping.addPoint((rangeValue * 0.9) + minValue, upperRange);
+//			// Cytoscape.redrawGraph(vmm.getNetworkView());
+//			slider.repaint();
+//			repaint();
+//
+//			return;
+//		}
+//
+//		// Add a new white thumb in the min.
+//		slider.getModel().addThumb(100f, Color.white);
+//
+//		// Pick Up first point.
+//		final ContinuousMappingPoint previousPoint = mapping.getPoint(mapping.getPointCount() - 1);
+//
+//		final BoundaryRangeValues previousRange = previousPoint.getRange();
+//		lowerRange = new BoundaryRangeValues(previousRange);
+//
+//		lowerRange.lesserValue = slider.getModel().getSortedThumbs()
+//		                               .get(slider.getModel().getThumbCount() - 1);
+//		System.out.println("EQ color = " + lowerRange.lesserValue);
+//		lowerRange.equalValue = Color.white;
+//		lowerRange.greaterValue = previousRange.greaterValue;
+//		mapping.addPoint(maxValue, lowerRange);
+//
+//		updateMap();
+//
+//		// Cytoscape.redrawGraph(vmm.getNetworkView());
+//		slider.repaint();
+//		repaint();
 	}
 
 	@Override
@@ -232,72 +233,73 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel<Color>
 	 */
 	@SuppressWarnings("unchecked")
 	public void initSlider() {
-		Dimension dim = new Dimension(600, 100);
-		setPreferredSize(dim);
-		setSize(dim);
-		setMinimumSize(new Dimension(300, 80));
-		slider.updateUI();
-
-		// slider.setComponentPopupMenu(menu);
-		slider.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					if (SwingUtilities.isRightMouseButton(e)) {
-					} else {
-						final JComponent selectedThumb = slider.getSelectedThumb();
-
-						if (selectedThumb != null) {
-							// final Point location = selectedThumb.getLocation();
-							// double diff = Math.abs(location.getX() - e.getX());
-							if (e.getClickCount() == 2) {
-								final Color newColor = manager.getValueEditor(Color.class).showEditor(slider, null);
-
-								if (newColor != null) {
-									// Set new color
-									setColor(newColor);
-								}
-							}
-						}
-					}
-				}
-			});
-
-		final double actualRange = tracer.getRange(type);
-		final double minValue = tracer.getMin(type);
-
-		if (allPoints != null) {
-			for (ContinuousMappingPoint point : allPoints) {
-				BoundaryRangeValues bound = point.getRange();
-
-				slider.getModel()
-				      .addThumb(((Double) ((point.getValue() - minValue) / actualRange)).floatValue() * 100,
-				                (Color) bound.equalValue);
-			}
-
-			if (allPoints.size() != 0) {
-				below = (Color) allPoints.get(0).getRange().lesserValue;
-				above = (Color) allPoints.get(allPoints.size() - 1).getRange().greaterValue;
-			} else {
-				below = Color.black;
-				above = Color.white;
-			}
-
-			setSidePanelIconColor((Color) below, (Color) above);
-		}
-
-		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
-
-		CyGradientTrackRenderer gRend = new CyGradientTrackRenderer((VisualProperty<Color>) type,
-		                                                            (Color) below, (Color) above,
-		                                                            mapping.getMappingAttributeName());
-		// updateBelowAndAbove();
-		slider.setThumbRenderer(thumbRend);
-		slider.setTrackRenderer(gRend);
-		slider.addMouseListener(new ThumbMouseListener());
-
-		/*
-		 * Set tooltip for the slider.
-		 */
-		slider.setToolTipText("Double-click handles to edit boundary colors.");
+		//FIXME
+//		Dimension dim = new Dimension(600, 100);
+//		setPreferredSize(dim);
+//		setSize(dim);
+//		setMinimumSize(new Dimension(300, 80));
+//		slider.updateUI();
+//
+//		// slider.setComponentPopupMenu(menu);
+//		slider.addMouseListener(new MouseAdapter() {
+//				public void mouseClicked(MouseEvent e) {
+//					if (SwingUtilities.isRightMouseButton(e)) {
+//					} else {
+//						final JComponent selectedThumb = slider.getSelectedThumb();
+//
+//						if (selectedThumb != null) {
+//							// final Point location = selectedThumb.getLocation();
+//							// double diff = Math.abs(location.getX() - e.getX());
+//							if (e.getClickCount() == 2) {
+//								final Color newColor = manager.getValueEditor(Color.class).showEditor(slider, null);
+//
+//								if (newColor != null) {
+//									// Set new color
+//									setColor(newColor);
+//								}
+//							}
+//						}
+//					}
+//				}
+//			});
+//
+//		final double actualRange = tracer.getRange(type);
+//		final double minValue = tracer.getMin(type);
+//
+//		if (allPoints != null) {
+//			for (ContinuousMappingPoint point : allPoints) {
+//				BoundaryRangeValues bound = point.getRange();
+//
+//				slider.getModel()
+//				      .addThumb(((Double) ((point.getValue() - minValue) / actualRange)).floatValue() * 100,
+//				                (Color) bound.equalValue);
+//			}
+//
+//			if (allPoints.size() != 0) {
+//				below = (Color) allPoints.get(0).getRange().lesserValue;
+//				above = (Color) allPoints.get(allPoints.size() - 1).getRange().greaterValue;
+//			} else {
+//				below = Color.black;
+//				above = Color.white;
+//			}
+//
+//			setSidePanelIconColor((Color) below, (Color) above);
+//		}
+//
+//		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
+//
+//		CyGradientTrackRenderer gRend = new CyGradientTrackRenderer((VisualProperty<Color>) type,
+//		                                                            (Color) below, (Color) above,
+//		                                                            mapping.getMappingAttributeName());
+//		// updateBelowAndAbove();
+//		slider.setThumbRenderer(thumbRend);
+//		slider.setTrackRenderer(gRend);
+//		slider.addMouseListener(new ThumbMouseListener());
+//
+//		/*
+//		 * Set tooltip for the slider.
+//		 */
+//		slider.setToolTipText("Double-click handles to edit boundary colors.");
 	}
 
 	/**

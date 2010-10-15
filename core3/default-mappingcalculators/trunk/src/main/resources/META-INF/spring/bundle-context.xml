@@ -15,4 +15,9 @@
 
 	<context:annotation-config/>
 	
+	<!-- Mapping Factories.  These will be added to manager dynamically. -->
+	<bean id="discreteMappingFactory" class="org.cytoscape.view.vizmap.mappings.DiscreteMappingFactory" />
+	<bean id="continuousMappingFactory" class="org.cytoscape.view.vizmap.mappings.ContinuousMappingFactory" />
+	<bean id="passthroughMappingFactory" class="org.cytoscape.view.vizmap.mappings.PassthroughMappingFactory" />
+	
 </beans>

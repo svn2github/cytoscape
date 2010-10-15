@@ -60,7 +60,7 @@ import org.jdesktop.swingx.multislider.Thumb;
  * @since Cytoscape 2.5
  * @author Keiichiro Ono
  */
-public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<V> {
+public class C2DMappingEditor<K, V> extends ContinuousMappingEditorPanel<K, V> {
 	private final static long serialVersionUID = 1213748837197780L;
 	/**
 	 * Creates a C2DMappingEditor object.
@@ -78,7 +78,8 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<V> {
 		this.belowPanel.setVisible(false);
 		this.abovePanel.setVisible(false);
 		this.editorFactory = editorFactory;
-		setSlider();
+		//FIXME
+		//setSlider();
 	}
 
 	// /**
@@ -116,7 +117,7 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<V> {
 			return null;
 		}
 
-		DiscreteTrackRenderer<V> rend = (DiscreteTrackRenderer<V>) slider
+		DiscreteTrackRenderer<K, V> rend = (DiscreteTrackRenderer<K, V>) slider
 				.getTrackRenderer();
 		rend.getRendererComponent(slider);
 
@@ -142,7 +143,7 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<V> {
 			return null;
 		}
 
-		DiscreteTrackRenderer<V> rend = (DiscreteTrackRenderer<V>) slider
+		DiscreteTrackRenderer<K, V> rend = (DiscreteTrackRenderer<K, V>) slider
 				.getTrackRenderer();
 		rend.getRendererComponent(slider);
 
@@ -151,94 +152,96 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<V> {
 
 	@Override
 	protected void addButtonActionPerformed(ActionEvent evt) {
-		BoundaryRangeValues<V> newRange;
-		V defValue = type.getDefault();
-
-		final double maxValue = tracer.getMax(type);
-
-		if (mapping.getPointCount() == 0) {
-			slider.getModel().addThumb(50f, defValue);
-
-			newRange = new BoundaryRangeValues<V>(below, defValue, above);
-			mapping.addPoint(maxValue / 2, newRange);
-			slider.repaint();
-			repaint();
-
-			return;
-		}
-
-		// Add a new thumb with default value
-		slider.getModel().addThumb(100f, defValue);
-
-		// Pick Up first point.
-		final ContinuousMappingPoint<V> previousPoint = mapping
-				.getPoint(mapping.getPointCount() - 1);
-
-		final BoundaryRangeValues<V> previousRange = previousPoint.getRange();
-		newRange = new BoundaryRangeValues<V>(previousRange);
-
-		newRange.lesserValue = slider.getModel().getSortedThumbs().get(
-				slider.getModel().getThumbCount() - 1).getObject();
-		newRange.equalValue = defValue;
-		newRange.greaterValue = previousRange.greaterValue;
-		mapping.addPoint(maxValue, newRange);
-
-		updateMap();
-
-		// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
-
-		slider.repaint();
-		repaint();
+		//FIXME
+//		BoundaryRangeValues<V> newRange;
+//		V defValue = type.getDefault();
+//
+//		final double maxValue = tracer.getMax(type);
+//
+//		if (mapping.getPointCount() == 0) {
+//			slider.getModel().addThumb(50f, defValue);
+//
+//			newRange = new BoundaryRangeValues<V>(below, defValue, above);
+//			mapping.addPoint(maxValue / 2, newRange);
+//			slider.repaint();
+//			repaint();
+//
+//			return;
+//		}
+//
+//		// Add a new thumb with default value
+//		slider.getModel().addThumb(100f, defValue);
+//
+//		// Pick Up first point.
+//		final ContinuousMappingPoint<V> previousPoint = mapping
+//				.getPoint(mapping.getPointCount() - 1);
+//
+//		final BoundaryRangeValues<V> previousRange = previousPoint.getRange();
+//		newRange = new BoundaryRangeValues<V>(previousRange);
+//
+//		newRange.lesserValue = slider.getModel().getSortedThumbs().get(
+//				slider.getModel().getThumbCount() - 1).getObject();
+//		newRange.equalValue = defValue;
+//		newRange.greaterValue = previousRange.greaterValue;
+//		mapping.addPoint(maxValue, newRange);
+//
+//		updateMap();
+//
+//		// Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+//
+//		slider.repaint();
+//		repaint();
 	}
 
 	protected void updateMap() {
-		List<Thumb<V>> thumbs = slider.getModel().getSortedThumbs();
-
-		final double minValue = tracer.getMin(type);
-		final double valRange = tracer.getRange(type);
-
-		// List<ContinuousMappingPoint> points = mapping.getAllPoints();
-		Thumb<V> t;
-		Double newVal;
-
-		if (thumbs.size() == 1) {
-			// Special case: only one handle.
-			mapping.getPoint(0).getRange().equalValue = below;
-			mapping.getPoint(0).getRange().lesserValue = below;
-			mapping.getPoint(0).getRange().greaterValue = above;
-
-			newVal = ((thumbs.get(0).getPosition() / 100) * valRange)
-					+ minValue;
-			mapping.getPoint(0).setValue(newVal);
-
-			return;
-		}
-
-		for (int i = 0; i < thumbs.size(); i++) {
-			t = thumbs.get(i);
-
-			if (i == 0) {
-				// First thumb
-				mapping.getPoint(i).getRange().lesserValue = below;
-				mapping.getPoint(i).getRange().equalValue = below;
-				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i + 1)
-						.getObject();
-			} else if (i == (thumbs.size() - 1)) {
-				// Last thumb
-				mapping.getPoint(i).getRange().greaterValue = above;
-				mapping.getPoint(i).getRange().equalValue = t.getObject();
-				mapping.getPoint(i).getRange().lesserValue = t.getObject();
-			} else {
-				// Others
-				mapping.getPoint(i).getRange().lesserValue = t.getObject();
-				mapping.getPoint(i).getRange().equalValue = t.getObject();
-				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i + 1)
-						.getObject();
-			}
-
-			newVal = ((t.getPosition() / 100) * valRange) + minValue;
-			mapping.getPoint(i).setValue(newVal);
-		}
+		//FIXME
+//		List<Thumb<V>> thumbs = slider.getModel().getSortedThumbs();
+//
+//		final double minValue = tracer.getMin(type);
+//		final double valRange = tracer.getRange(type);
+//
+//		// List<ContinuousMappingPoint> points = mapping.getAllPoints();
+//		Thumb<V> t;
+//		Double newVal;
+//
+//		if (thumbs.size() == 1) {
+//			// Special case: only one handle.
+//			mapping.getPoint(0).getRange().equalValue = below;
+//			mapping.getPoint(0).getRange().lesserValue = below;
+//			mapping.getPoint(0).getRange().greaterValue = above;
+//
+//			newVal = ((thumbs.get(0).getPosition() / 100) * valRange)
+//					+ minValue;
+//			mapping.getPoint(0).setValue(newVal);
+//
+//			return;
+//		}
+//
+//		for (int i = 0; i < thumbs.size(); i++) {
+//			t = thumbs.get(i);
+//
+//			if (i == 0) {
+//				// First thumb
+//				mapping.getPoint(i).getRange().lesserValue = below;
+//				mapping.getPoint(i).getRange().equalValue = below;
+//				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i + 1)
+//						.getObject();
+//			} else if (i == (thumbs.size() - 1)) {
+//				// Last thumb
+//				mapping.getPoint(i).getRange().greaterValue = above;
+//				mapping.getPoint(i).getRange().equalValue = t.getObject();
+//				mapping.getPoint(i).getRange().lesserValue = t.getObject();
+//			} else {
+//				// Others
+//				mapping.getPoint(i).getRange().lesserValue = t.getObject();
+//				mapping.getPoint(i).getRange().equalValue = t.getObject();
+//				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i + 1)
+//						.getObject();
+//			}
+//
+//			newVal = ((t.getPosition() / 100) * valRange) + minValue;
+//			mapping.getPoint(i).setValue(newVal);
+//		}
 	}
 
 	@Override
@@ -256,98 +259,98 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<V> {
 		}
 	}
 
-	private void setSlider() {
-		Dimension dim = new Dimension(600, 100);
-		setPreferredSize(dim);
-		setSize(dim);
-		setMinimumSize(new Dimension(300, 80));
-		slider.updateUI();
-
-		final double minValue = tracer.getMin(type);
-		final double maxValue = tracer.getMax(type);
-
-		final C2DMappingEditor<V> parentComponent = this;
-		slider.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				int range = ((DiscreteTrackRenderer<V>) slider
-						.getTrackRenderer()).getRangeID(e.getX(), e.getY());
-
-				V newValue = null;
-
-				if (e.getClickCount() == 2) {
-					try {
-						// setAlwaysOnTop(false);
-						newValue = editorFactory.showVisualPropertyValueEditor(
-								parentComponent, type, null);
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					} finally {
-						// setAlwaysOnTop(true);
-					}
-
-					if (newValue == null)
-						return;
-
-					if (range == 0) {
-						below = newValue;
-					} else if (range == slider.getModel().getThumbCount()) {
-						above = newValue;
-					} else {
-						slider.getModel().getSortedThumbs().get(range)
-								.setObject(newValue);
-					}
-
-					updateMap();
-
-					slider.setTrackRenderer(new DiscreteTrackRenderer<V>(type,
-							mapping, below, above));
-					slider.repaint();
-
-					// Cytoscape.redrawGraph(vmm.getNetworkView());
-				}
-			}
-		});
-
-		double actualRange = tracer.getRange(type);
-
-		BoundaryRangeValues<V> bound;
-		Float fraction;
-
-		/*
-		 * NPE?
-		 */
-		if (allPoints == null) {
-			return;
-		}
-
-		for (ContinuousMappingPoint<V> point : allPoints) {
-			bound = point.getRange();
-
-			fraction = ((Number) ((point.getValue() - minValue) / actualRange))
-					.floatValue() * 100;
-			slider.getModel().addThumb(fraction, bound.equalValue);
-		}
-
-		if (allPoints.size() != 0) {
-			below = allPoints.get(0).getRange().lesserValue;
-			above = allPoints.get(allPoints.size() - 1).getRange().greaterValue;
-		} else {
-			V defaultVal = type.getDefault();
-			below = defaultVal;
-			above = defaultVal;
-		}
-
-		/*
-		 * get min and max for the value object
-		 */
-		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
-		DiscreteTrackRenderer<V> dRend = new DiscreteTrackRenderer<V>(type, mapping, below,
-				above);
-
-		slider.setThumbRenderer(thumbRend);
-		slider.setTrackRenderer(dRend);
-		slider.addMouseListener(new ThumbMouseListener());
-	}
+//	private void setSlider() {
+//		Dimension dim = new Dimension(600, 100);
+//		setPreferredSize(dim);
+//		setSize(dim);
+//		setMinimumSize(new Dimension(300, 80));
+//		slider.updateUI();
+//
+//		final double minValue = tracer.getMin(type);
+//		final double maxValue = tracer.getMax(type);
+//
+//		final C2DMappingEditor<V> parentComponent = this;
+//		slider.addMouseListener(new MouseAdapter() {
+//			public void mouseClicked(MouseEvent e) {
+//				int range = ((DiscreteTrackRenderer<V>) slider
+//						.getTrackRenderer()).getRangeID(e.getX(), e.getY());
+//
+//				V newValue = null;
+//
+//				if (e.getClickCount() == 2) {
+//					try {
+//						// setAlwaysOnTop(false);
+//						newValue = editorFactory.showVisualPropertyValueEditor(
+//								parentComponent, type, null);
+//					} catch (Exception e1) {
+//						e1.printStackTrace();
+//					} finally {
+//						// setAlwaysOnTop(true);
+//					}
+//
+//					if (newValue == null)
+//						return;
+//
+//					if (range == 0) {
+//						below = newValue;
+//					} else if (range == slider.getModel().getThumbCount()) {
+//						above = newValue;
+//					} else {
+//						slider.getModel().getSortedThumbs().get(range)
+//								.setObject(newValue);
+//					}
+//
+//					updateMap();
+//
+//					slider.setTrackRenderer(new DiscreteTrackRenderer<V>(type,
+//							mapping, below, above));
+//					slider.repaint();
+//
+//					// Cytoscape.redrawGraph(vmm.getNetworkView());
+//				}
+//			}
+//		});
+//
+//		double actualRange = tracer.getRange(type);
+//
+//		BoundaryRangeValues<V> bound;
+//		Float fraction;
+//
+//		/*
+//		 * NPE?
+//		 */
+//		if (allPoints == null) {
+//			return;
+//		}
+//
+//		for (ContinuousMappingPoint<V> point : allPoints) {
+//			bound = point.getRange();
+//
+//			fraction = ((Number) ((point.getValue() - minValue) / actualRange))
+//					.floatValue() * 100;
+//			slider.getModel().addThumb(fraction, bound.equalValue);
+//		}
+//
+//		if (allPoints.size() != 0) {
+//			below = allPoints.get(0).getRange().lesserValue;
+//			above = allPoints.get(allPoints.size() - 1).getRange().greaterValue;
+//		} else {
+//			V defaultVal = type.getDefault();
+//			below = defaultVal;
+//			above = defaultVal;
+//		}
+//
+//		/*
+//		 * get min and max for the value object
+//		 */
+//		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
+//		DiscreteTrackRenderer<V> dRend = new DiscreteTrackRenderer<V>(type, mapping, below,
+//				above);
+//
+//		slider.setThumbRenderer(thumbRend);
+//		slider.setTrackRenderer(dRend);
+//		slider.addMouseListener(new ThumbMouseListener());
+//	}
 
 	/**
 	 * DOCUMENT ME!

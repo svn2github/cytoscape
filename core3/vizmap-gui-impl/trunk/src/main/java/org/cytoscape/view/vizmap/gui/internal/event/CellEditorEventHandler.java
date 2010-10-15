@@ -47,6 +47,7 @@ import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
@@ -220,25 +221,26 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 	}
 	
 	
-	private void switchMapping(final VisualProperty<?> vp, final String newMapName, final String controllingAttrName) {
+	private void switchMapping(final VisualProperty<?> vp, final VisualMappingFunctionFactory factory, final String controllingAttrName) {
 		
 		 final VisualStyle style = manager.getCurrentVisualStyle();
 		 logger.debug("Mapping combo box clicked: " + style.getTitle());
 		 
 		 
 		
-		 final String mappingFunctionName = style.getTitle() + "-" + vp.getIdString() + "-" + newMapName;
+		 final String mappingFunctionName = style.getTitle() + "-" + vp.getIdString() + "-" + factory.toString();
 		 final VisualMappingFunction<?, ?> currentMapping = style.getVisualMappingFunction(vp);
 		
 
-		VisualMappingFunction<?,?> newMapping = null;
-		if(newMapName.equals(AbstractVisualMappingFunction.DISCRETE)) {
-			newMapping = new DiscreteMapping(controllingAttrName, vp.getType(), vp);
-		} else if(newMapName.equals(AbstractVisualMappingFunction.PASSTHROUGH)) {
-			newMapping = new PassthroughMapping(controllingAttrName, vp.getType(), vp);
-		} else if(newMapName.equals(AbstractVisualMappingFunction.CONTINUOUS)) {
-			newMapping = new ContinuousMapping(controllingAttrName, vp);
-		}
+		final VisualMappingFunction<?,?> newMapping = factory.createVisualMappingFunction(controllingAttrName, vp.getType(), vp);
+		
+//		if(newMapName.equals(AbstractVisualMappingFunction.DISCRETE)) {
+//			newMapping = new DiscreteMapping(controllingAttrName, vp.getType(), vp);
+//		} else if(newMapName.equals(AbstractVisualMappingFunction.PASSTHROUGH)) {
+//			newMapping = new PassthroughMapping(controllingAttrName, vp.getType(), vp);
+//		} else if(newMapName.equals(AbstractVisualMappingFunction.CONTINUOUS)) {
+//			newMapping = new ContinuousMapping(controllingAttrName, vp);
+//		}
 
 		// TODO: Exception?
 		if(newMapping == null)
@@ -428,7 +430,7 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 			 if(type == null || controllingAttrName == null)
 				 return;
 			 
-			 switchMapping(type, e.getNewValue().toString(), controllingAttrName.toString());
+			 switchMapping(type, (VisualMappingFunctionFactory) e.getNewValue(), controllingAttrName.toString());
 		 }
 		
 

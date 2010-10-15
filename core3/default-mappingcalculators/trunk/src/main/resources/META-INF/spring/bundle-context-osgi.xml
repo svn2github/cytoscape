@@ -7,4 +7,26 @@
 	default-lazy-init="false">
 
 	<!-- Individual Service -->
+	<osgi:service id="discreteMappingFactoryService" ref="discreteMappingFactory"
+		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory">
+		<osgi:service-properties>
+			<entry key="service.type" value="factory" />
+		</osgi:service-properties>
+	</osgi:service>
+	
+	<osgi:service id="continuousMappingFactoryService" ref="continuousMappingFactory"
+		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory">
+		<osgi:service-properties>
+			<entry key="service.type" value="factory" />
+		</osgi:service-properties>
+	</osgi:service>
+	
+	<osgi:service id="passthroughMappingFactoryService" ref="passthroughMappingFactory"
+		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory">
+		<osgi:service-properties>
+			<entry key="service.type" value="factory" />
+		</osgi:service-properties>
+	</osgi:service>
+	
+	
 </beans>

@@ -73,7 +73,7 @@ import org.cytoscape.session.CyNetworkManager;
  * 
  * @author kono
  */
-public class ContinuousTrackRenderer<V extends Number>
+public class ContinuousTrackRenderer<K, V extends Number>
 		extends JComponent implements VizMapTrackRenderer {
 	/*
 	 * Constants for diagram.
@@ -110,7 +110,7 @@ public class ContinuousTrackRenderer<V extends Number>
 	private int selectedIdx;
 	// private Point dragOrigin;
 	private VisualProperty<V> vp;
-	private ContinuousMapping<V> cMapping;
+	private ContinuousMapping<K, V> cMapping;
 	private String title;
 	private V below;
 	private V above;
@@ -144,7 +144,7 @@ public class ContinuousTrackRenderer<V extends Number>
 
 		final CyNetworkView view = manager.getCurrentNetworkView();
 
-		cMapping = (ContinuousMapping<V>) vmm.getVisualStyle(view)
+		cMapping = (ContinuousMapping<K, V>) vmm.getVisualStyle(view)
 				.getVisualMappingFunction(this.vp);
 
 		title = cMapping.getMappingAttributeName();

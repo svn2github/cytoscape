@@ -68,7 +68,7 @@ import org.jdesktop.swingx.multislider.Thumb;
  *
  * @author $author$
   */
-public class DiscreteTrackRenderer<V> extends JComponent implements VizMapTrackRenderer {
+public class DiscreteTrackRenderer<K, V> extends JComponent implements VizMapTrackRenderer {
 	private final static long serialVersionUID = 1213748837182053L;
 	/*
 	 * Constants for diagram.
@@ -113,7 +113,7 @@ public class DiscreteTrackRenderer<V> extends JComponent implements VizMapTrackR
 	 * @param below  DOCUMENT ME!
 	 * @param above  DOCUMENT ME!
 	 */
-	public DiscreteTrackRenderer(VisualProperty<V> type, ContinuousMapping<V> mapping,
+	public DiscreteTrackRenderer(VisualProperty<V> type, ContinuousMapping<K, V> mapping,
 	                             V below, V above) {
 
 		this.below = below;
@@ -145,7 +145,7 @@ public class DiscreteTrackRenderer<V> extends JComponent implements VizMapTrackR
 	 * @param cm DOCUMENT ME!
 	 */
 	public DiscreteTrackRenderer(V lastRegionObject,
-	                             ContinuousMapping<V> cm) {
+	                             ContinuousMapping<K, V> cm) {
 		rangeObjects = new ArrayList<V>();
 		rangeTooltips = new ArrayList<String>();
 
@@ -473,7 +473,7 @@ public class DiscreteTrackRenderer<V> extends JComponent implements VizMapTrackR
 	 * @return DOCUMENT ME!
 	 */
 	public ImageIcon getTrackGraphicIcon(int iconWidth, int iconHeight,
-	                                            ContinuousMapping<V> mapping) {
+	                                            ContinuousMapping<K, V> mapping) {
 		final BufferedImage bi = new BufferedImage(iconWidth, iconHeight, BufferedImage.TYPE_INT_RGB);
 		final Graphics2D g2 = bi.createGraphics();
 
@@ -497,7 +497,7 @@ public class DiscreteTrackRenderer<V> extends JComponent implements VizMapTrackR
 		/*
 		 * Compute fractions from mapping
 		 */
-		List<ContinuousMappingPoint<V>> points = mapping.getAllPoints();
+		List<ContinuousMappingPoint<K, V>> points = mapping.getAllPoints();
 		final int pointCount = points.size();
 
 		/*

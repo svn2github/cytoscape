@@ -22,6 +22,11 @@
 	<context:annotation-config />
 
 
+	<!-- Mapping Factory Manager -->
+	<bean id="mappingFunctionFactoryManager" class="org.cytoscape.view.vizmap.gui.internal.MappingFunctionFactoryManagerImpl">
+		<constructor-arg ref="editorManager" />
+	</bean>
+	
 	<bean id="selectedVisualStyleManager" class="org.cytoscape.view.vizmap.gui.internal.SelectedVisualStyleManagerImpl">
 		<constructor-arg ref="defaultVS" />
 	</bean>
