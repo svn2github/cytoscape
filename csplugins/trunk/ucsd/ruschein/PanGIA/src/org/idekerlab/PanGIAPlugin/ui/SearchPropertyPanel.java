@@ -763,8 +763,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         reportPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Report"));
         reportPanel.setToolTipText("Specify a report location.");
         
-        reportPathLabel.setText("Report folder path:");
-        reportPathLabel.setToolTipText("Select a path for the report folder.");
+        reportPathLabel.setText("Report location:");
+        reportPathLabel.setToolTipText("Select a location for the report.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -785,7 +785,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         reportPanel.add(reportPathTextField, gridBagConstraints);
         
         reportPathButton.setText("...");
-        reportPathButton.setToolTipText("Select a path for the report folder.");
+        reportPathButton.setToolTipText("Select a location for the report.");
         reportPathButton.setPreferredSize(new java.awt.Dimension(25, 25));
         reportPathButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
