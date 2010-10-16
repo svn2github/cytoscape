@@ -151,6 +151,7 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
                                         "cytoscape.hyperedge.editor.event.HyperEdgeEditEventHandler",
                                         HyperEdgeImpl.ENTITY_TYPE_ATTRIBUTE_NAME,
                                         Semantics.INTERACTION,
+                                        CytoscapeEditorManager.NETWORK_TYPE,
                                         BioChemicalReactionVisualStyle.BIOCHEMICAL_REACTION_VISUAL_STYLE);
 	// MLC 12/18/07:
         // fixUpCytoscapeDeleteMenu();
