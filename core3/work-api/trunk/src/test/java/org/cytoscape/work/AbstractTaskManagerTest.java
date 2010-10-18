@@ -31,6 +31,7 @@ package org.cytoscape.work;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.mockito.Mockito.*;
 
 
@@ -48,11 +49,37 @@ public class AbstractTaskManagerTest {
 		}
 	}
 
+	static private class SimpleTunableInterceptor<TH extends TunableHandler> extends AbstractTunableInterceptor {
+		SimpleTunableInterceptor(HandlerFactory<TH> tunableHandlerFactory) {
+			super(tunableHandlerFactory);
+		}
+
+		public boolean execUI(Object... obs) {
+			return false;
+		}
+
+		public boolean validateAndWriteBackTunables(Object... objs) {
+			return false;
+		}
+	}
+
 	@Test
 	public void testConstructor() {
 		final TunableInterceptor interceptor = mock(TunableInterceptor.class);
 		final SimpleTaskMananger taskManager = new SimpleTaskMananger(interceptor);
 		assertEquals("The TunableInterceptor passed into the TaskMananger's constructor is not that same as that of the protected data members!",
 			     interceptor, taskManager.getTunableInterceptor());
+	}
+
+	@Test
+	public void testHasTunables() {
+		final HandlerFactory<SimpleTunableHandler> handlerFactory= mock(HandlerFactory.class);
+		final TunableInterceptor interceptor = new SimpleTunableInterceptor<SimpleTunableHandler>(handlerFactory);
+		final SimpleTaskMananger taskManager = new SimpleTaskMananger(interceptor);
+		assertFalse("This object has *no* Tunable annotation!", taskManager.hasTunables(new Object()));
+		assertTrue("This object has an annotated field!",
+			   taskManager.hasTunables(new HasAnnotatedField()));
+		assertTrue("This object has annotated getter/setter methods!",
+			   taskManager.hasTunables(new HasAnnotatedSetterAndGetterMethods()));
 	}
 }

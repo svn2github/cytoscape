@@ -56,6 +56,14 @@ public class AbstractTaskTest {
 		}
 		assertFalse("Invalid task count in iterator!", iter.hasNext());
 	}
+
+	@Test
+	public final void testCancellation() throws Exception {
+		final SimpleTask2 task = new SimpleTask2(1);
+		assertFalse("\"cancelled\" must start out set to false!", task.cancelled());	
+		task.cancel();
+		assertTrue("\"cancelled\" must be true after a call to cancel()!", task.cancelled());
+	}
 }
 
 
@@ -74,11 +82,7 @@ class SimpleTask2 extends AbstractTask {
 		// Intentionally do nothing!
 	}
 
-	public void cancel() {
-		// Intentionally do nothing!
-	}
-
 	public boolean cancelled() {
-		return false;
+		return this.cancelled;
 	}
 }
