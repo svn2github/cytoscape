@@ -35,45 +35,45 @@ package org.cytoscape.work.util;
  */
 public abstract class AbstractBounded<N extends Comparable<N>> {
 	/**
-	 * Initial Value of the Bounded Object that will be modified
+	 *  Initial value of the Bounded Object that will be modified
 	 */
 	private N value;
-	
+
 	/**
-	 * Value of the lower bound of the Bounded Object
+	 *  Value of the lower bound of the Bounded Object
 	 */
 	private final N lower;
-	
+
 	/**
-	 * Value of the upper bound of the Bounded Object
+	 *  Value of the upper bound of the Bounded Object
 	 */
 	private final N upper;
-	
+
 	/**
-	 * Whether or not the <code>value</code> could be set to the <code>upper</code> value
-	 * 
-	 * <p><pre>
-	 *  <code> if(upperstrict==true)</code> , then the <code>value</code> cannot be set to <code>upper</code>  
+	 *  Whether or not the <code>value</code> could be set to the <code>upper</code> value
+	 *
+	 *  <p><pre>
+	 *    <code> if (upperStrict)</code> , then the <code>value</code> cannot be set to <code>upper</code>
 	 *  </pre></p>
 	 */
 	private final boolean upperStrict;
-	
+
 	/**
-	 * Whether or not the <code>value</code> could be set to the <code>lower</code> value
-	 * 
-	 * <p><pre>
-	 *  <code> if(lowerstrict==true)</code> , then the <code>value</code> cannot be set to <code>lower</code>
+	 *  Whether or not the <code>value</code> could be set to the <code>lower</code> value
+	 *
+	 *  <p><pre>
+	 *    <code> if (lowerStrict)</code> , then the <code>value</code> cannot be set to <code>lower</code>
 	 *  </pre></p>
 	 */
 	private final boolean lowerStrict;
 
 	/**
-	 * Creates a new Bounded object.
+	 *  Creates a new Bounded object.
 	 *
-	 * @param lower  The lower bound value
-	 * @param upper  The upper bound value
-	 * @param lowerStrict	True means that the value cannot be equal to the lower bound
-	 * @param upperStrict	True means that the value cannot be equal to the upper bound
+	 *  @param lower  The lower bound value
+	 *  @param upper  The upper bound value
+	 *  @param lowerStrict	True means that the value cannot be equal to the lower bound
+	 *  @param upperStrict	True means that the value cannot be equal to the upper bound
 	 */
 	 public AbstractBounded(final N lower, final N initValue, final N upper, boolean lowerStrict, boolean upperStrict) {
 		if (lower == null)
@@ -95,7 +95,7 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	/**
 	 *  Returns the upper limit of the object
 	 *
-	 * @return  upper
+	 * @return the upper bound
 	 */
 	public N getUpperBound() {
 		return upper;
@@ -104,16 +104,16 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	/**
 	 *  Returns the lower limit of the object
 	 *
-	 * @return  lower
+	 * @return the lower bound
 	 */
 	public N getLowerBound() {
 		return lower;
 	}
 
 	/**
-	 * Does the value have to be strictly lower than the upper bound?
+	 *  Does the value have to be strictly lower than the upper bound?
 	 *
-	 * @return  upperStrict
+	 *  @return true if the upper bound is strict, otherwise false
 	 */
 	public boolean isUpperBoundStrict() {
 		return upperStrict;
@@ -122,7 +122,7 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	/**
 	 * Does the value have to be strictly greater than the lower bound?
 	 *
-	 * @return  lowerStrict
+	 * @return true if the lower bound is strict, otherwise false
 	 */
 	public boolean isLowerBoundStrict() {
 		return lowerStrict;
@@ -131,16 +131,16 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 	/**
 	 *  Returns the value
 	 *
-	 * @return	value
+	 * @return the current value of the <code>Bounded</code> object
 	 */
 	public synchronized N getValue() {
 		return value;
 	}
 
 	/**
-	 *	Set the value <code>v</code> as the value of the Bounded Object.
+	 *  Set the value <code>v</code> as the value of the Bounded Object.
 	 *
-	 * @param v the Value
+	 *  @param v the value to be set
 	 */
 	public void setValue(final N v) {
 		if (v == null)
@@ -171,5 +171,9 @@ public abstract class AbstractBounded<N extends Comparable<N>> {
 		}
 	}
 
+	/** Sets the value of the <code>Bounded</code> object.
+	 *
+	 *  @param s  will be converted to the value type of the <code>Bounded</code> object.
+	 */
 	public abstract void setValue(String s);
 }
