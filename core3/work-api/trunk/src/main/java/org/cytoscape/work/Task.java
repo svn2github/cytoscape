@@ -183,7 +183,7 @@ public interface Task {
 	 * <p><i>WARNING:</i> this method is called by a different
 	 * thread than the thread executing <code>run</code>.
 	 * The programmer <i>must</i> be aware of
-	 * concurrency issues.</p>
+	 * concurrency issues!</p>
 	 */
 	void cancel();
 }

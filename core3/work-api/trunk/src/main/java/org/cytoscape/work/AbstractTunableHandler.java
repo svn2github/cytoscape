@@ -23,7 +23,12 @@ public class AbstractTunableHandler implements TunableHandler {
 	final protected Object instance; // TODO: should this be private?
 	final protected Tunable tunable; // TODO: should this be private?
 
-	/** Standard base class constructor for TunableHandlers that deal with Tunables that annotate a field.
+	/** Standard base class constructor for <code>TunableHandler</code>s that deal with
+	 *  <code>Tunable</code>s that annotate a field.
+	 *
+	 *  @param field    An instance of <code>Field</code> that represents a field annotated with <code>@Tunable</code>
+	 *  @param instance An object instance that contains a field corresponding to the <i>field</i> parameter
+	 *  @param tunable  The <code>Tunable</code> that annotates <i>field</i>
 	 */
 	public AbstractTunableHandler(final Field field, final Object instance, final Tunable tunable) {
 		this.field = field;
@@ -33,7 +38,13 @@ public class AbstractTunableHandler implements TunableHandler {
 		this.tunable = tunable;
 	}
 
-	/** Standard base class constructor for TunableHandlers that deal with Tunables that use getter and setter methods.
+	/** Standard base class constructor for <code>TunableHandler</code>s that deal with
+	 *  <code>Tunable</code>s that use getter and setter methods.
+	 *
+	 *  @param getter   The getter method of the tunable object represented by the <i>instance</i> parameter.
+	 *  @param setter   The setter method complimentary to the getter.
+	 *  @param instance An instance of an object with a getter method that has been determined to be annotated with <code>@Tunable</code>.
+	 *  @param tunable  The <code>Tunable</code> that annotates the <i>getter</i>.
 	 */
 	public AbstractTunableHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		this.field = null;
@@ -51,6 +62,8 @@ public class AbstractTunableHandler implements TunableHandler {
 	}
 
 	/** Sets the value of the Tunable associated with this TunableHandler.
+	 *
+	 *  @param newValue The new value that the associated tunable will be set to.
 	 */
 	final public void setValue(final Object newValue) throws IllegalAccessException, InvocationTargetException {
 		if (field != null)

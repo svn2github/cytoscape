@@ -5,6 +5,9 @@ package org.cytoscape.work;
  *  A base class for tasks that need to be able to access the TaskIterator that contains them.
  */
 public abstract class AbstractTask implements Task {
+	/**
+	 *  If this is true, we should abort whatever the <code>Task</code> is currently doing in the run() method.
+	 */
 	protected boolean cancelled = false;
 
 	private TaskIterator taskIterator;
@@ -27,8 +30,12 @@ public abstract class AbstractTask implements Task {
 		taskIterator.insertTasksAfter(this, newTasks);
 	}
 
-	/** Calling this attempts to abort the current task.  How well this works depends on the granularity of
-	 *  a Task's checking whether "cancelled" is true or not and then taking appropriate action.
+	/** {@inheritDoc}
+	 */
+	abstract public void run(TaskMonitor taskMonitor) throws Exception;
+
+	/** Calling this attempts to abort the current <code>Task</code>.  How well this works depends on the granularity of
+	 *  a <code>Task</code>'s checking whether "cancelled" is true or not and then taking appropriate action.
 	 */
 	public void cancel() {
 		cancelled = true;

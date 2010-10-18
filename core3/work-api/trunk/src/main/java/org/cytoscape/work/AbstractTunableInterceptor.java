@@ -62,15 +62,16 @@ import org.slf4j.Logger;
  * Here are the steps to get a list of handlers for each object annotated as a<code> @Tunable </code>, in order to provide :
  * <ul>
  * 	<li>a Graphic User Interface for <code>Tunables</code> in the Cytoscape Desktop(use of a <code>GuiTunableInterceptor</code>)</li>
- * 	<li>a CommandLine Interface in a terminal to execute the Tasks by just typing the name of the class implementing the <code>TaskFactory</code> interface (use of <code>CLTunableInterceptor</code>)</li>
- * 	<li>access to the properties of the <code>Tunables</code>(use of <code>LoadPropsInterceptor</code> or <code>StorePropsInterceptor</code> NEED TO BE DEVELOPPED !!!!!!!</li>
+ * 	<li>a Command-line interface to execute the Tasks by just typing the name of the class implementing the <code>TaskFactory</code> interface (use of <code>CLTunableInterceptor</code>)</li>
+ * 	<li>access to the properties of the <code>Tunables</code>(use of <code>LoadPropsInterceptor</code> or <code>StorePropsInterceptor</code></li>
  * </ul>
  *
  * <ol>
- * 	<li> First, detection of the Field annonated as <code> @Tunable </code> in the class the <code>TunableInterceptor</code> is applied to</li>
- * 	<li>	Then, the <code>Handlers</code> are created for each kind of <code>Tunable</code> Object (In this example : creation of a <code>AbstractBounded<Integer></code>, <code>AbstractBounded<Double></code> and <code>Boolean</code>  <code>Handlers<code>)</li>
- * 	<li>	The <code>Handlers</code> are stored in a <i>handlerList</i>, and are used by different <code>TunableInterceptor</code> types</li>
- * 	<li> Create a GUI, provide CommandLine Options, Store or Load properties for those <code>Tunables</code> by using those <code>Handlers</code></li>
+ * 	<li>Detection of a field or getter method annonated with <code>@Tunable </code> in the class the <code>TunableInterceptor</code> is applied to</li>
+ * 	<li>The <code>Handlers</code> are created for each kind of <code>Tunable</code> Object (In
+ *          this example : creation of a <code>AbstractBounded<Integer></code>, <code>AbstractBounded&lt;Double&gt;</code> and <code>Boolean</code>  <code>Handlers<code>)</li>
+ * 	<li>The <code>Handlers</code> are stored in a <i>handlerList</i>, and are used by different <code>TunableInterceptor</code> types</li>
+ * 	<li>Create a GUI, provide command-line options, store or load properties for those <code>Tunables</code> by using those <code>TunableHandler</code>s</li>
  * </ol>
  * </pre></p>
  *

@@ -30,12 +30,13 @@ public interface TunableHandler {
 	String[] getGroups();
 
 	/**
-	 *  @return true if the associated <code>Tunable</code> controls nested children, else false
+	 *  @return true if the associated <code>Tunable</code> allows switching of mutually exclusive nested children, else false
 	 */
 	boolean controlsMutuallyExclusiveNestedChildren();
 
 	/**
-	 *  @return returns the name of the key that determines the selection of which controlled nested child is currently presented, or the empty string if
+	 *  @return returns the name of the key that determines the selection of which controlled
+	 *          nested child is currently presented, or the empty string if
 	 *          controlsMutuallyExclusiveNestedChildren() returns false.
 	 */
 	String getChildKey();

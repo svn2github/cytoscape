@@ -53,7 +53,7 @@ public interface TunableInterceptor<TH extends TunableHandler> {
 	 * <code>Handlers</code>.<br>
 	 * Important : the value of the <code>GUIHandler</code> will be set only if its JPanel is valid.
 	 *
-	 * @param obs Object[] which contains classes with <code>Tunables</code> that need to be displayed to a user.
+	 * @param objs Object[] which contains classes with <code>Tunables</code> that need to be displayed to a user.
 	 *
 	 * @return boolean The success or failure of the validation of <code>Tunables</code>' values depending on <code>validate</code> method from <code>TunableValidator</code> interface.
 	 * <p><pre>

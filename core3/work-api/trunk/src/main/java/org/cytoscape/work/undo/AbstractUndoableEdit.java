@@ -42,6 +42,10 @@ import javax.swing.undo.CannotRedoException;
 public abstract class AbstractUndoableEdit extends javax.swing.undo.AbstractUndoableEdit {
 	private final String presentationName;
 
+	/** Initialises an UndoableEdit.
+	 *
+	 *  @param presentationName  the name that will represent the undoable action
+	 */
 	public AbstractUndoableEdit(final String presentationName) {
 		if (presentationName == null)
 			throw new IllegalArgumentException("in call to AbstractUndoableEdit(), presentationName must not be null!");
@@ -49,6 +53,8 @@ public abstract class AbstractUndoableEdit extends javax.swing.undo.AbstractUndo
 		this.presentationName = presentationName;
 	}
 
+	/** @return a string representing the action that can be undone
+	 */
 	@Override
 	public final String getPresentationName() {
 		return presentationName;
