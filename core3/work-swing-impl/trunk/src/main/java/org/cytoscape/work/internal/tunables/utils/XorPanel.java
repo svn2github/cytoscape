@@ -90,10 +90,7 @@ public class XorPanel extends JPanel {
 		@Override public String dependsOn() { return null; }
 		@Override public String getChildKey() { return null; }
 		@Override public boolean controlsMutuallyExclusiveNestedChildren() { return false; }
-		@Override public Tunable.Param[] getGroupTitleFlags() { return null; }
 		@Override public String[] getGroups() { return null; }
-		@Override public Tunable.Param[] getAlignments() { return null; }
-		@Override public Tunable.Param[] getFlags() { return null; }
 		@Override public String getDescription() { return null; }
 		@Override public Object getValue() { return null; }
 		@Override public void setValue(final Object newValue) { }

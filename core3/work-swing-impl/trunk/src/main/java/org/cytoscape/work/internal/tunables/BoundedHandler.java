@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.swing.AbstractGUITunableHandler;
-import org.cytoscape.work.Tunable.Param;
 import org.cytoscape.work.internal.tunables.utils.myBoundedSwing;
 import org.cytoscape.work.internal.tunables.utils.mySlider;
 import org.cytoscape.work.util.AbstractBounded;
@@ -66,10 +65,7 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGUITunabl
 
 	private void init() {
 		final String title = getDescription();
-		for (Param param : getFlags()) {
-			if (param.equals(Param.SLIDER))
-				useSlider = true;
-		}
+		useSlider = getParams().getProperty("slider", "false").equalsIgnoreCase("true");
 		panel = new JPanel(new BorderLayout());
 
 		try {
@@ -115,10 +111,17 @@ public class BoundedHandler<T extends AbstractBounded> extends AbstractGUITunabl
 	public void handle() {
 		try {
 			final T bounded = getBounded();
-			if (useSlider)
-				bounded.setValue(slider.getValue().doubleValue());
+			final Number fieldValue = useSlider ? slider.getValue() : boundedField.getFieldValue();
+			if (fieldValue instanceof Double)
+				bounded.setValue((Double)fieldValue);
+			else if (fieldValue instanceof Float)
+				bounded.setValue((Float)fieldValue);
+			else if (fieldValue instanceof Integer)
+				bounded.setValue((Integer)fieldValue);
+			else if (fieldValue instanceof Long)
+				bounded.setValue((Long)fieldValue);
 			else
-				bounded.setValue(boundedField.getFieldValue().doubleValue());
+				throw new IllegalStateException("unexpected type: " + fieldValue.getClass() + "!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -52,13 +52,16 @@ public interface TunableInterceptor<TH extends TunableHandler> {
 	 * This method will set the value for the Object of each <code>GUIHandler</code> taken from the <code>Map</code> that is containing the
 	 * <code>Handlers</code>.<br>
 	 * Important : the value of the <code>GUIHandler</code> will be set only if its JPanel is valid.
+	 *
+	 * @param obs Object[] which contains classes with <code>Tunables</code> that need to be displayed to a user.
+	 *
 	 * @return boolean The success or failure of the validation of <code>Tunables</code>' values depending on <code>validate</code> method from <code>TunableValidator</code> interface.
 	 * <p><pre>
 	 * True if the validation of <code>Tunables</code> values is a success : the following tasks can then be executed
 	 * 
 	 * False if an exception is thrown (from <code>TunableValidator</code>) and so the tasks won't be performed
 	 */
-	boolean validateAndWriteBackTunables();
+	boolean validateAndWriteBackTunables(Object... objs);
 
 	/** Tests an object for having tunable annotations.
 	 *

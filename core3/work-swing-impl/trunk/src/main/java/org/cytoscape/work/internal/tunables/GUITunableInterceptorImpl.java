@@ -20,7 +20,6 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.swing.AbstractGUITunableInterceptor;
 import org.cytoscape.work.swing.GUITunableHandler;
-import org.cytoscape.work.Tunable.Param;
 import org.cytoscape.work.internal.tunables.utils.CollapsablePanel;
 import org.cytoscape.work.internal.tunables.utils.XorPanel;
 
@@ -125,7 +124,7 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 		if (!panelMap.containsKey(handlers)) {
 			final String MAIN = " ";
 			Map<String, JPanel> panels = new HashMap<String, JPanel>();
-			final JPanel topLevel = createSimplePanel(MAIN, null, Param.HIDDEN);
+			final JPanel topLevel = createSimplePanel(MAIN, null, /* displayed = */ false);
 			panels.put(MAIN, topLevel);
 
 			// construct the GUI
@@ -142,35 +141,45 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 				}
 
 				// Get information about the Groups and alignment from Tunables Annotations in order to create the proper GUI
-				Map<String,Param> groupAlignment = new HashMap<String,Param>();
-				Map<String,Param> groupTitles = new HashMap<String,Param>();
+				final Map<String, Boolean> groupToVerticalMap = new HashMap<String, Boolean>();
+				final Map<String, Boolean> groupToDisplayedMap = new HashMap<String, Boolean>();
 
 				final String[] group = gh.getGroups();
-				final Param[] alignments = gh.getAlignments();
-				final Param[] titleFlags = gh.getGroupTitleFlags();
+				final String[] alignments = gh.getParams().getProperty("alignments", "").split(",");
+				final String[] groupTitles = gh.getParams().getProperty("groupTitles", "").split(",");
 
 				if (group.length <= alignments.length) {
-					for (int i = 0; i < group.length; i++)
-						groupAlignment.put(group[i], alignments[i]);
+					for (int i = 0; i < group.length; i++) {
+						final boolean vertical = groupTitles[i].equalsIgnoreCase("vertical");
+						groupToVerticalMap.put(group[i], vertical);
+					}
 				} else {
-					for (int i = 0; i < alignments.length; i++)
-						groupAlignment.put(group[i], alignments[i]);
+					for (int i = 0; i < alignments.length; i++) {
+						final boolean vertical = groupTitles[i].equalsIgnoreCase("vertical");
+						groupToVerticalMap.put(group[i], vertical);
+					}
 
 					// Default alignment is "vertical."
 					for (int i = alignments.length; i < group.length; i++)
-						groupAlignment.put(group[i], Param.VERTICAL);
+						groupToVerticalMap.put(group[i], true);
 				}
 
-				if (group.length <= titleFlags.length) {
-					for (int i = 0; i < group.length; i++)
-						groupTitles.put(group[i], titleFlags[i]);
+				if (group.length <= groupTitles.length) {
+					for (int i = 0; i < group.length; i++) {
+						final boolean displayed =
+							groupTitles[i].equalsIgnoreCase("displayed");
+						groupToDisplayedMap.put(group[i], displayed);
+					}
 				} else {
-					for (int i = 0; i < titleFlags.length; i++)
-						groupTitles.put(group[i], titleFlags[i]);
+					for (int i = 0; i < groupTitles.length; i++) {
+						final boolean displayed =
+							groupTitles[i].equalsIgnoreCase("displayed");
+						groupToDisplayedMap.put(group[i], displayed);
+					}
 
-					// Default group titleFlags setting is "displayed."
-					for (int i = titleFlags.length; i < group.length; i++)
-						groupTitles.put(group[i], Param.DISPLAYED);
+					// Default group setting is "displayed."
+					for (int i = groupTitles.length; i < group.length; i++)
+						groupToDisplayedMap.put(group[i], true);
 				}
 
 				// find the proper group to put the handler panel in given the Alignment/Group parameters
@@ -181,7 +190,9 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 						throw new IllegalArgumentException("A group's name must not be \"\"!");
 					groupNames = groupNames + g;
 					if (!panels.containsKey(groupNames)) {
-						panels.put(groupNames, createJPanel(g, gh, groupAlignment.get(g), groupTitles.get(g)));
+						panels.put(groupNames,
+						           createJPanel(g, gh, groupToVerticalMap.get(g),
+						                        groupToDisplayedMap.get(g)));
 						panels.get(lastGroup).add(panels.get(groupNames), gh.getChildKey());
 					}
 					lastGroup = groupNames;
@@ -220,9 +231,9 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 	 *
 	 * @return a container for <code>GUITunableHandler</code>' panels with special features if it is requested, or a simple one if not
 	 */
-	private JPanel createJPanel(final String title, final GUITunableHandler gh, final Param alignment, final Param groupTitle) {
+	private JPanel createJPanel(final String title, final GUITunableHandler gh, final Boolean vertical, final Boolean displayed) {
 		if (gh == null)
-			return createSimplePanel(title, alignment, groupTitle);
+			return createSimplePanel(title, vertical, displayed);
 
 		// See if we need to create an XOR panel
 		if (gh.controlsMutuallyExclusiveNestedChildren()) {
@@ -231,14 +242,19 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 		}
 		else {
 			// Figure out if the collapsable flag is set
-			for (Param s : gh.getFlags()) {
-				if (s.equals(Param.COLLAPSED))
+			final String displayState = gh.getParams().getProperty("displayState");
+			if (displayState != null) {
+				if (displayState.equalsIgnoreCase("collapsed"))
 					return new CollapsablePanel(title, false);
-				else if (s.equals(Param.UNCOLLAPSED))
+				else if (displayState.equalsIgnoreCase("uncollapsed"))
 					return new CollapsablePanel(title, true);
+				else
+					System.err.println("*** in GUITunableInterceptorImpl: invalid \"displayState\": \""
+					                   + displayState + "\"!");
 			}
+
 			// We're not collapsable, so return a normal jpanel
-			return createSimplePanel(title,alignment, groupTitle);
+			return createSimplePanel(title, vertical, displayed);
 		}
 	}
 
@@ -252,16 +268,16 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 	 *
 	 * @return a container for <code>GUITunableHandler</code>' panels
 	 */
-	private JPanel createSimplePanel(final String title, final Param alignment, final Param groupTitle) {
+	private JPanel createSimplePanel(final String title, final Boolean vertical, final Boolean displayed) {
 		JPanel outPanel = new JPanel();
 		TitledBorder titleborder = BorderFactory.createTitledBorder(title);
 		titleborder.setTitleColor(Color.BLUE);
 
-		if (groupTitle == Param.DISPLAYED || groupTitle == null)
+		if (displayed == null || displayed)
 			outPanel.setBorder(titleborder);
-		if (alignment == Param.VERTICAL || alignment == null)
+		if (vertical == null || vertical)
 			outPanel.setLayout(new BoxLayout(outPanel, BoxLayout.PAGE_AXIS));
-		else if (alignment == Param.HORIZONTAL)
+		else if (vertical != null)
 			outPanel.setLayout(new BoxLayout(outPanel, BoxLayout.LINE_AXIS));
 		return outPanel;
 	}
@@ -276,14 +292,14 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 	 *
 	 * @return a container for <code>GUITunableHandler</code>' panels
 	 */
-	private JDialog createSimpleDialog(final String title, final Param alignment, final Param groupTitle) {
+	private JDialog createSimpleDialog(final String title, final Boolean vertical, final Boolean displayed) {
 		final JDialog dialog = new JDialog((JDialog)null, title);
 
-		if (groupTitle == Param.DISPLAYED || groupTitle == null)
+		if (displayed == null || displayed)
 			/* Do nothing. */;
-		if (alignment == Param.VERTICAL || alignment == null)
+		if (vertical == null || vertical)
 			dialog.setLayout(new BoxLayout(dialog, BoxLayout.PAGE_AXIS));
-		else if (alignment == Param.HORIZONTAL)
+		else if (vertical != null)
 			dialog.setLayout(new BoxLayout(dialog, BoxLayout.LINE_AXIS));
 		return dialog;
 	}
@@ -319,4 +335,48 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 		newValuesSet = true;
 		return true;
 	}
+
+        //get the value(Handle) of the Tunable if its JPanel is enabled(Dependency) and check if we have to validate the values of tunables                      
+        /**                                                                                                                                                      
+         * get the <i>value,item,string,state...</i> from the GUI component, and check with the dependencies, if it can be set as the new one                    
+         *                                                                                                                                                       
+         * <p><pre>                                                                                                                                              
+         * If the <code>TunableValidator</code> interface is implemented by the class that contains the <code>Tunables</code> :                                  
+         * <ul>                                                                                                                                                  
+         * <li>a validate method has to be applied</li>                                                                                                          
+         * <li>it checks the conditions that have been declared about the chosen <code>Tunable(s)</code> </li>                                                   
+         * <li>if validation fails, it displays an error to the user, and new values are not set</li>                                                            
+         * </ul>                                                                                                                                                 
+         * </pre></p>                                                                                                                                            
+         * @return success or not of the <code>TunableValidator</code> validate method                                                                           
+         */
+        final public boolean validateAndWriteBackTunables(Object... proxyObjs) {
+		final Object objectsWithTunables[] = convertSpringProxyObjs(proxyObjs);
+
+		// Update handler list:
+		if (handlers == null)
+			handlers = new ArrayList<GUITunableHandler>();
+		else
+			handlers.clear();
+		JPanel providedGUI = null;
+		for (final Object objectWithTunables : objectsWithTunables) {
+			if (guiProviderMap.containsKey(objectWithTunables)) {
+				if (providedGUI != null)
+					throw new IllegalStateException("Found more than one provided GUI!");
+				try {
+					providedGUI = (JPanel)guiProviderMap.get(objectWithTunables).invoke(objectWithTunables);
+				} catch (final Exception e) {
+					logger.error("Can't retrieve @ProvidesGUI JPanel: " + e);
+					return false;
+				}
+			} else if (handlerMap.containsKey(objectWithTunables))
+				handlers.addAll(handlerMap.get(objectWithTunables).values());
+			else
+				throw new IllegalArgumentException("No Tunables and no provided GUI exists for Object yet!");
+		}
+
+                for (final GUITunableHandler h : handlers)
+                        h.handleDependents();
+                return validateTunableInput();
+        }
 }

@@ -26,6 +26,8 @@ import org.cytoscape.work.Tunable;
  * It provides the functions that are common to all types of Handlers
  */
 public abstract class AbstractGUITunableHandler extends AbstractTunableHandler implements GUITunableHandler, ActionListener, ChangeListener, ListSelectionListener {
+	protected boolean horizontal;
+
 	/**
 	 * <code>JPanel</code> that will contain the GUI object that represents in the best way the <code>Tunable</code> to the user
 	 */
@@ -71,6 +73,13 @@ public abstract class AbstractGUITunableHandler extends AbstractTunableHandler i
 	}
 
 	private void init() {
+		final String alignment = getParams().getProperty("alignments", "vertical");
+                horizontal = false;
+                if (alignment.equalsIgnoreCase("horizontal"))
+                        horizontal = true;
+                else if (!alignment.equalsIgnoreCase("vertical"))
+                        System.err.println("*** In AbstractGUITunableHandler: \"alignments\" was specified but is neither \"horizontal\" nor \"vertical\"!");
+
 		String s = dependsOn();
 		if (!s.equals("")) {
 	        	if (!s.contains("!=")) {

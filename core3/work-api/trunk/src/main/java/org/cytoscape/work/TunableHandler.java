@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Properties;
 
 
-// TODO: Should we strip out the methods that are simply pass-thrus for Tunable and replace them with a single getTunable() method?
-
 /** Interface for classes that deal with reading out and writing back <code>Tunable</code>s and their properties.
  */
 public interface TunableHandler {
@@ -27,24 +25,9 @@ public interface TunableHandler {
 	String getDescription();
 
 	/**
-	 *  @return the associated <code>Tunable</code>'s flags
-	 */
-	Tunable.Param[] getFlags();
-
-	/**
-	 *  @return the associated <code>Tunable</code>'s alignments
-	 */
-	Tunable.Param[] getAlignments();
-
-	/**
 	 *  @return the associated <code>Tunable</code>'s groups or nesting hierarchy
 	 */
 	String[] getGroups();
-
-	/**
-	 *  @return the associated <code>Tunable</code>'s group titles' flags
-	 */
-	Tunable.Param[] getGroupTitleFlags();
 
 	/**
 	 *  @return true if the associated <code>Tunable</code> controls nested children, else false

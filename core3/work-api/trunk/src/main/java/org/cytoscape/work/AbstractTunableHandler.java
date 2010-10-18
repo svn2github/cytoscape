@@ -67,31 +67,10 @@ public class AbstractTunableHandler implements TunableHandler {
 	}
 
 	/**
-	 *  @return the associated <code>Tunable</code>'s flags
-	 */
-	final public Tunable.Param[] getFlags() {
-		return tunable.flags();
-	}
-
-	/**
-	 *  @return the associated <code>Tunable</code>'s alignments
-	 */
-	final public Tunable.Param[] getAlignments() {
-		return tunable.alignment();
-	}
-
-	/**
 	 *  @return the associated <code>Tunable</code>'s groups or nesting hierarchy
 	 */
 	final public String[] getGroups() {
 		return tunable.groups();
-	}
-
-	/**
-	 *  @return the associated <code>Tunable</code>'s group titles' flags
-	 */
-	final public Tunable.Param[] getGroupTitleFlags() {
-		return tunable.groupTitles();
 	}
 
 	/**

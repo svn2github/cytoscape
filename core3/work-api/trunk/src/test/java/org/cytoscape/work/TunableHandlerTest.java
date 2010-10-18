@@ -77,35 +77,11 @@ public class TunableHandlerTest {
 	}
 
 	@Test
-	public final void testGetFlags() {
-		assertTrue("The flags property of the tunable of an annotated field is not as expected!",
-			   Arrays.asList(fieldHandler.getFlags()).contains(Tunable.Param.COLLAPSED));
-		assertArrayEquals("The flags property of the tunable of an annotated getter/setter pair is not as expected!",
-		                  new Tunable.Param[] { }, getterAndSetterHandler.getFlags());
-	}
-
-	@Test
-	public final void testGetAlignments() {
-		assertArrayEquals("The alignments property of the tunable of an annotated field is not as expected!",
-		                  new Tunable.Param[] { }, fieldHandler.getAlignments());
-		assertArrayEquals("The alignments property of the tunable of an annotated getter/setter pair is not as expected!",
-		                  new Tunable.Param[] { }, getterAndSetterHandler.getAlignments());
-	}
-
-	@Test
 	public final void testGetGroups() {
 		assertArrayEquals("The groups property of the tunable of an annotated field is not as expected!",
 		                  new String[] { "group1" }, fieldHandler.getGroups());
 		assertArrayEquals("The groups property of the tunable of an annotated getter/setter pair is not as expected!",
 		                  new String[] { "group2" }, getterAndSetterHandler.getGroups());
-	}
-
-	@Test
-	public final void testGetGroupTitleFlags() {
-		assertArrayEquals("The group title flags property of the tunable of an annotated field is not as expected!",
-		                  new Tunable.Param[] { }, fieldHandler.getGroupTitleFlags());
-		assertArrayEquals("The group title flags property of the tunable of an annotated getter/setter pair is not as expected!",
-		                  new Tunable.Param[] { }, getterAndSetterHandler.getGroupTitleFlags());
 	}
 
 	@Test

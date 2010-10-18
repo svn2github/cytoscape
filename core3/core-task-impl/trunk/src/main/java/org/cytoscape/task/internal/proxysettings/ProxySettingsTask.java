@@ -8,7 +8,6 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
-import org.cytoscape.work.Tunable.Param;
 import org.cytoscape.work.util.ListSingleSelection;
 
 import java.net.URL;
@@ -35,10 +34,10 @@ public class ProxySettingsTask extends AbstractTask implements TunableValidator 
 	@Tunable(description="Type")
 	public ListSingleSelection<String> type = new ListSingleSelection<String>("direct", "http", "socks");
 
-	@Tunable(description="Proxy Server",groups={"param"},dependsOn="type!=direct",alignment={Param.HORIZONTAL},groupTitles={Param.HIDDEN})
+	@Tunable(description="Proxy Server",groups={"param"},dependsOn="type!=direct",params="alignments=horizontal;displayState=hidden")
 	public String hostname="";
 
-	@Tunable(description="Port",groups={"param"},dependsOn="type!=direct",alignment={Param.HORIZONTAL},groupTitles={Param.HIDDEN})
+	@Tunable(description="Port",groups={"param"},dependsOn="type!=direct",params="alignments=horizontal;displayState=hidden")
 	public int port=0;
 
 	final TaskManager taskManager;

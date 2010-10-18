@@ -33,7 +33,7 @@ public class LoadPropsInterceptor extends SpringTunableInterceptor<PropHandler> 
 		return true;
 	}
 	
-	public boolean validateAndWriteBackTunables() {
+	public boolean validateAndWriteBackTunables(Object... objs) {
 		return false;
 	}
 }

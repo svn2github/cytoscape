@@ -63,26 +63,6 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 		this.parentPanel = (JPanel)parent;
 	}
 
-	//get the value(Handle) of the Tunable if its JPanel is enabled(Dependency) and check if we have to validate the values of tunables
-	/**
-	 * get the <i>value,item,string,state...</i> from the GUI component, and check with the dependencies, if it can be set as the new one
-	 *
-	 * <p><pre>
-	 * If the <code>TunableValidator</code> interface is implemented by the class that contains the <code>Tunables</code> :
-	 * <ul>
-	 * <li>a validate method has to be applied</li>
-	 * <li>it checks the conditions that have been declared about the chosen <code>Tunable(s)</code> </li>
-	 * <li>if validation fails, it displays an error to the user, and new values are not set</li>
-	 * </ul>
-	 * </pre></p>
-	 * @return success or not of the <code>TunableValidator</code> validate method
-	 */
-	final public boolean validateAndWriteBackTunables() {
-		for (final GUITunableHandler h : handlers)
-			h.handleDependents();
-		return validateTunableInput();
-	}
-
 	final public JPanel getUI(final Object... proxyObjs) {
 		this.objectsWithTunables = convertSpringProxyObjs(proxyObjs);
 		handlers = new ArrayList<GUITunableHandler>();
@@ -106,14 +86,14 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 		if (panel == null)
 			return true;
 
-		return displayGUI(panel);
+		return displayGUI(panel, proxyObjs);
 	}
 
 	final public boolean hasTunables(final Object o) {
 		return super.hasTunables(convertSpringProxyObj(o));
 	}
 
-	protected boolean displayGUI(final JPanel optionPanel) {
+	protected boolean displayGUI(final JPanel optionPanel, Object... proxyObjs) {
 		Object[] buttons = { "OK", "Cancel" };
 		int result = JOptionPane.showOptionDialog(parentPanel, optionPanel,
 							  "Set Parameters",
@@ -123,7 +103,7 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 							  buttons,
 							  buttons[0]);
 		if (result == JOptionPane.OK_OPTION)
-			return validateAndWriteBackTunables();
+			return validateAndWriteBackTunables(proxyObjs);
 		else
 			return false;
 	}

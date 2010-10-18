@@ -12,7 +12,6 @@ import org.cytoscape.io.read.CyTableReader;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.work.Tunable.Param;
 
 
 public class LoadDataTableTask extends AbstractTask {

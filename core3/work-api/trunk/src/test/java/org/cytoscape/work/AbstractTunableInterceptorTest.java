@@ -138,7 +138,7 @@ class ConcreteTunableInterceptor extends AbstractTunableInterceptor {
 		super(handlerFactory);
 	}
 
-	public boolean validateAndWriteBackTunables() {
+	public boolean validateAndWriteBackTunables(Object... objs) {
 		return true;
 	}
 

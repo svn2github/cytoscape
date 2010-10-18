@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.swing.AbstractGUITunableHandler;
-import org.cytoscape.work.Tunable.Param;
 
 
 /**
@@ -52,17 +51,12 @@ public class BooleanHandler extends AbstractGUITunableHandler {
 		label.setFont(new Font(null, Font.PLAIN, 12));
 		checkBox.addActionListener(this);
 
-		//choose the way the textField and its label will be displayed to user
-		for (Param param : getAlignments()) {
-			if (param.equals(Param.HORIZONTAL))
-				horizontal = true;
-		}
 		if (horizontal) {
-			panel.add(label,BorderLayout.NORTH);
-			panel.add(checkBox,BorderLayout.SOUTH);
+			panel.add(label, BorderLayout.NORTH);
+			panel.add(checkBox, BorderLayout.SOUTH);
 		} else {
-			panel.add(label,BorderLayout.WEST);
-			panel.add(checkBox,BorderLayout.EAST);
+			panel.add(label, BorderLayout.WEST);
+			panel.add(checkBox, BorderLayout.EAST);
 		}
 	}
 

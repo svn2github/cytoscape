@@ -59,7 +59,7 @@ public interface GUITunableInterceptor<TH extends TunableHandler> extends Tunabl
 	
 	/**
 	 * Use to add the Tunables' JPanels to an external JPanel that has been defined in another class.
-	 * @param o An Object that has to be an instance of a <code>JPanel</code>.
+	 * @param parent An Object that has to be an instance of a <code>JPanel</code>.
 	 * @throws IllegalArgumentException If the Object o is not a JPanel, it can not be set as the parent for the others : they will be displayed to the user in a <code>JOptionPanel</code>.
 	 */
 	void setParent(final JPanel parent);
@@ -69,13 +69,15 @@ public interface GUITunableInterceptor<TH extends TunableHandler> extends Tunabl
 	 * This method will set the value for the Object of each <code>GUITunableHandler</code> taken from the <code>Map</code> that is containing the
 	 * <code>Handlers</code>.<br>
 	 * Important : the value of the <code>GUITunableHandler</code> will be set only if its JPanel is valid.
+	 *
+	 * @param objs  objects which are instances classes with <code>Tunables</code> that need to be displayed to a user.
 	 * @return boolean The success or failure of the validation of <code>Tunables</code>' values depending on <code>validate</code> method from <code>TunableValidator</code> interface.
 	 * <p><pre>
 	 * True if the validation of <code>Tunables</code> values is a success : the following tasks can then be executed
 	 * 
 	 * False if an exception is thrown (from <code>TunableValidator</code>) and so the tasks won't be performed
 	 */
-	boolean validateAndWriteBackTunables();
+	boolean validateAndWriteBackTunables(Object... objs);
 
 	/** Tests an object for having tunable annotations.
 	 *

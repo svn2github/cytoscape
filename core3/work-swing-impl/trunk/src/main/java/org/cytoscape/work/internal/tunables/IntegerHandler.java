@@ -14,7 +14,6 @@ import javax.swing.JTextField;
 
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.swing.AbstractGUITunableHandler;
-import org.cytoscape.work.Tunable.Param;
 
 
 /**
@@ -62,17 +61,12 @@ public class IntegerHandler extends AbstractGUITunableHandler {
 		textField = new JTextField(i.toString(), 10);
 		textField.setHorizontalAlignment(JTextField.RIGHT);
 
-		//choose the way the textField and its label will be displayed to user
-		for (Param param : getAlignments()) {
-			if (param.equals(Param.HORIZONTAL))
-				horizontal = true;
-		}
 		if (horizontal) {
-			panel.add(label,BorderLayout.NORTH);
-			panel.add(textField,BorderLayout.SOUTH);
+			panel.add(label, BorderLayout.NORTH);
+			panel.add(textField, BorderLayout.SOUTH);
 		} else {
-			panel.add(label,BorderLayout.WEST);
-			panel.add(textField,BorderLayout.EAST);
+			panel.add(label, BorderLayout.WEST);
+			panel.add(textField, BorderLayout.EAST);
 		}
 	}
 
