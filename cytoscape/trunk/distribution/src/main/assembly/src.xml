@@ -27,6 +27,9 @@
       <includes>
         <include>cytoscape.coreplugins:*:jar:jar-with-dependencies</include>
       </includes>
+      <excludes>
+        <exclude>cytoscape:application:jar:jar-with-dependencies</exclude>
+      </excludes>
       <outputDirectory>plugins</outputDirectory>
       <unpack>false</unpack>
     </dependencySet>
