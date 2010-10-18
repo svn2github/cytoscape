@@ -13,12 +13,13 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskManager;
 import org.junit.Test;
 import junit.framework.*;
+import org.cytoscape.plugin.CyPluginAdapter;
 
 import static org.mockito.Mockito.*;
 
 public class CyPluginAdapterImplTest extends TestCase {
 	
-	CyPluginAdapterImpl adapter;
+	CyPluginAdapter adapter;
 	
 	private void defaultSetUp() {
 
