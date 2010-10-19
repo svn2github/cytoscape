@@ -38,11 +38,10 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * Should be implemented as a service. 'Renderer' is simply anything that
- * provides VisualProperties. With a 'VisualProperties as annotations' this
- * won't be needed.
  * 
- * This is a pre-definded tree by rendering engine developer.
+ * A {@linkplain RenderingEngine} should provide <strong>one, immutable</strong> lexicon implementing this interface.
+ * 
+ * This is a pre-defined tree of VisualProperties designed by the {@linkplain RenderingEngine} developer.
  * 
  * @since Cytoscape 3.0
  * 
@@ -67,6 +66,14 @@ public interface VisualLexicon {
 	Set<VisualProperty<?>> getAllVisualProperties();
 	
 	
+	/**
+	 * Get a tree node in for the given VisualProperty.
+	 * 
+	 * @param vp target VisualProperty in this lexicon.
+	 * @return tree node for the VisualProperty in this lexicon.
+	 * 
+	 * @throws IllegalArgumentException If vp does not exist in the lexicon.
+	 */
 	VisualLexiconNode getVisualLexiconNode(final VisualProperty<?> vp);
 	
 	
