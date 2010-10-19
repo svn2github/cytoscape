@@ -81,7 +81,7 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 	/**
 	 *  Factory for Handlers
 	 */
-	protected final HandlerFactory<TH> factory;
+	protected final TunableHandlerFactory<TH> factory;
 
 	/**
 	 *  Store the Handlers
@@ -102,7 +102,7 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 	 * 	<code>CLHandlerFactory</code> to get the <code>Handlers</code> that will create the <i>Options</i> for the <code>Tasks</code> runnable through the CommandLine Interface,
 	 *  or <code>PropHandlerFactory</code> to get the <code>Handlers</code> for Properties.
 	 */
-	public AbstractTunableInterceptor(HandlerFactory<TH> tunableHandlerFactory) {
+	public AbstractTunableInterceptor(TunableHandlerFactory<TH> tunableHandlerFactory) {
 		this.factory = tunableHandlerFactory;
 		handlerMap = new HashMap<Object, LinkedHashMap<String, TH>>();
 		guiProviderMap = new HashMap<Object, Method>();

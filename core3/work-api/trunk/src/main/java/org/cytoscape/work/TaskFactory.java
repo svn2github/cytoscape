@@ -8,7 +8,7 @@ package org.cytoscape.work;
 public interface TaskFactory {
 	/** @return an iterator returning a sequence of <code>Task</code>s.
 	 *
-	 * N.B.: Most factory's returned iterator only yields a single <code>Task</code>.
+	 *  Note: Most factory's returned iterator only yields a single <code>Task</code>.
 	 */
 	TaskIterator getTaskIterator();
 }

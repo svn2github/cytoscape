@@ -54,16 +54,13 @@ public class AbstractTunableHandler implements TunableHandler {
 		this.tunable = tunable;
 	}
 
-	/**
-	 * @return an object describing a field annotated with @Tunable or null if no field has been associated with this handler
+	/** {@inheritDoc}
 	 */
 	final public Object getValue() throws IllegalAccessException, InvocationTargetException {
 		return field != null ? field.get(instance) : getter.invoke(instance);
 	}
 
-	/** Sets the value of the Tunable associated with this TunableHandler.
-	 *
-	 *  @param newValue The new value that the associated tunable will be set to.
+	/** {@inheritDoc}
 	 */
 	final public void setValue(final Object newValue) throws IllegalAccessException, InvocationTargetException {
 		if (field != null)
@@ -72,44 +69,37 @@ public class AbstractTunableHandler implements TunableHandler {
 			setter.invoke(instance, newValue);
 	}
 
-	/**
-	 *  @return the associated <code>Tunable</code>'s description
+	/** {@inheritDoc}
 	 */
 	final public String getDescription() {
 		return tunable.description();
 	}
 
-	/**
-	 *  @return the associated <code>Tunable</code>'s groups or nesting hierarchy
+	/** {@inheritDoc}
 	 */
 	final public String[] getGroups() {
 		return tunable.groups();
 	}
 
-	/**
-	 *  @return true if the associated <code>Tunable</code> controls nested children, else false
+	/** {@inheritDoc}
 	 */
 	final public boolean controlsMutuallyExclusiveNestedChildren() {
 		return tunable.xorChildren();
 	}
 
-	/**
-	 *  @return returns the name of the key that determines the selection of which controlled nested child is currently presented, or the empty string if
-	 *          controlsMutuallyExclusiveNestedChildren() returns false.
+	/** {@inheritDoc}
 	 */
 	final public String getChildKey() {
 		return tunable.xorKey();
 	}
 
-	/**
-	 *  @return the dependsOn property of the tunable
+	/** {@inheritDoc}
 	 */
 	final public String dependsOn() {
 		return tunable.dependsOn();
 	}
 
-	/**
-	 * @return a name representing a tunable property
+	/** {@inheritDoc}
 	 */
 	final public String getName() {
 		if (field != null)
@@ -118,10 +108,7 @@ public class AbstractTunableHandler implements TunableHandler {
 			return setter.getName().substring(3);
 	}
 
-	/**
-	 *  @return the name of the underlying class of the tunable followed by a dot and the name of the tunable field or getter/setter root name.
-	 *
-	 *  Please note that the returned String will always contain a single embedded dot.
+	/** {@inheritDoc}
 	 */
 	final public String getQualifiedName() {
 		final String unqualifiedClassName =
@@ -130,8 +117,7 @@ public class AbstractTunableHandler implements TunableHandler {
                 return unqualifiedClassName.substring(unqualifiedClassName.lastIndexOf(".") + 1) + "." + getName();
 	}
 
-	/**
-	 *  @return the parsed result from Tunable.getParams()
+	/** {@inheritDoc}
 	 */
 	final public Properties getParams() throws IllegalArgumentException {
 		final String rawString = tunable.params();

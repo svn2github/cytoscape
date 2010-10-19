@@ -6,8 +6,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 
-import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.TunableHandlerFactory;
 import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.BoundedFloat;
 import org.cytoscape.work.util.BoundedInteger;
@@ -21,7 +21,7 @@ import org.cytoscape.work.util.ListSingleSelection;
  * @author pasteur
  *
  */
-public class CLHandlerFactory implements HandlerFactory<CLHandler> {
+public class CLHandlerFactory implements TunableHandlerFactory<CLHandler> {
 
 	public CLHandler getHandler(final Method m, final Object o, final Tunable t) {
 		return null;

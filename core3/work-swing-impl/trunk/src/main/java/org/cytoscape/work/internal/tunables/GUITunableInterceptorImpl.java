@@ -15,8 +15,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TunableHandlerFactory;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.swing.AbstractGUITunableInterceptor;
 import org.cytoscape.work.swing.GUITunableHandler;
@@ -53,10 +53,11 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 	private boolean newValuesSet;
 
 	/**
-	 * Creates an Interceptor that will use the <code>GUITunableHandlers</code> created in a <code>HandlerFactory</code> from intercepted <code>Tunables</code>.
+	 * Creates an Interceptor that will use the <code>GUITunableHandlers</code> created in a
+	 * <code>TunableHandlerFactory</code> from intercepted <code>Tunables</code>.
 	 * @param factory
 	 */
-	public GUITunableInterceptorImpl(final HandlerFactory<GUITunableHandler> factory) {
+	public GUITunableInterceptorImpl(final TunableHandlerFactory<GUITunableHandler> factory) {
 		super(factory);
 		panelMap = new HashMap<List<GUITunableHandler>, JPanel>();
 	}

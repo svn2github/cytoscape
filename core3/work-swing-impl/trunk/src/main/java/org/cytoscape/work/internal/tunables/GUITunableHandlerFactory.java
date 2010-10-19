@@ -11,8 +11,8 @@ import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.property.bookmark.Bookmarks;
 
-import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.TunableHandlerFactory;
 import org.cytoscape.work.internal.tunables.utils.SupportedFileTypesManager;
 import org.cytoscape.work.swing.GUITunableHandler;
 import org.cytoscape.work.util.BoundedDouble;
@@ -29,7 +29,7 @@ import org.cytoscape.work.util.ListSingleSelection;
  *
  * @author pasteur
  */
-public class GUITunableHandlerFactory implements HandlerFactory<GUITunableHandler> {
+public class GUITunableHandlerFactory implements TunableHandlerFactory<GUITunableHandler> {
 	private Bookmarks bookmarks;
 	private BookmarksUtil bkUtil;
 	private SupportedFileTypesManager fileTypesManager;

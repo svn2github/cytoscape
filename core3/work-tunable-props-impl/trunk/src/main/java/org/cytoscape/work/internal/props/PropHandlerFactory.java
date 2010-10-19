@@ -1,16 +1,17 @@
 package org.cytoscape.work.internal.props;
 
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.io.File;
 import java.net.URL;
 
-import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.Tunable;
+import org.cytoscape.work.TunableHandlerFactory;
 import org.cytoscape.work.util.*;
 
 
-public class PropHandlerFactory implements HandlerFactory<PropHandler> {
+public class PropHandlerFactory implements TunableHandlerFactory<PropHandler> {
 	public PropHandler getHandler(final Field field, final Object instance, final Tunable tunable) {
 		final Class<?> type = field.getType();
 

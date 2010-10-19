@@ -2,8 +2,8 @@ package org.cytoscape.work.spring;
 
 
 import org.cytoscape.work.AbstractTunableInterceptor;
-import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.TunableHandler;
+import org.cytoscape.work.TunableHandlerFactory;
 
 import org.springframework.core.InfrastructureProxy;
 
@@ -16,7 +16,7 @@ import org.springframework.core.InfrastructureProxy;
  * being used with Spring.
  */
 public abstract class SpringTunableInterceptor<T extends TunableHandler> extends AbstractTunableInterceptor<T> {
-	public SpringTunableInterceptor(HandlerFactory<T> hf) {
+	public SpringTunableInterceptor(TunableHandlerFactory<T> hf) {
 		super(hf);
 	}
 

@@ -1,8 +1,8 @@
 package integration; 
 
 
-import org.cytoscape.work.HandlerFactory;
 import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TunableHandlerFactory;
 import org.cytoscape.work.swing.GUITaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -27,7 +27,7 @@ public class ITSpringIntegration extends AbstractIntegrationTester {
 		                      "org.cytoscape, integration-test-support, 1.0-SNAPSHOT" ,
 							  },
 		       new String[] { "undoSupport", "swingTaskManager", "swingTaskManager", "guiHandlerFactory" },
-		       new Class[] { UndoSupport.class, GUITaskManager.class, TaskManager.class, HandlerFactory.class },
+		       new Class[] { UndoSupport.class, GUITaskManager.class, TaskManager.class, TunableHandlerFactory.class },
 		       new String[] { }
 		       );
 	}

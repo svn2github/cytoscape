@@ -48,7 +48,7 @@ public class AbstractTunableInterceptorTest {
 	
 	@Before
 	public void init() {
-		final HandlerFactory<AbstractTunableHandler> handlerFactory = new SimpleHandlerFactory();
+		final TunableHandlerFactory<AbstractTunableHandler> handlerFactory = new SimpleHandlerFactory();
 		interceptor = new ConcreteTunableInterceptor(handlerFactory);
 		hasAnnotatedField = new HasAnnotatedField();
 		hasAnnotatedSetterAndGetterMethods = new HasAnnotatedSetterAndGetterMethods();
@@ -122,7 +122,7 @@ public class AbstractTunableInterceptorTest {
 }
 
 
-class SimpleHandlerFactory implements HandlerFactory<AbstractTunableHandler> {
+class SimpleHandlerFactory implements TunableHandlerFactory<AbstractTunableHandler> {
 	public AbstractTunableHandler getHandler(final Field field, final Object instance, final Tunable tunable) {
 		return new AbstractTunableHandler(field, instance, tunable);
 	}
@@ -134,7 +134,7 @@ class SimpleHandlerFactory implements HandlerFactory<AbstractTunableHandler> {
 
 
 class ConcreteTunableInterceptor extends AbstractTunableInterceptor {
-	ConcreteTunableInterceptor(final HandlerFactory<AbstractTunableHandler> handlerFactory) {
+	ConcreteTunableInterceptor(final TunableHandlerFactory<AbstractTunableHandler> handlerFactory) {
 		super(handlerFactory);
 	}
 

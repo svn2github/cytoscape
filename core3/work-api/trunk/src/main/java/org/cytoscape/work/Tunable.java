@@ -7,9 +7,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD,ElementType.METHOD})
-
 /**
  * An annotation type that can be applied to a <i>field</i> or a <i>method</i> in order to allow <code>TunableInterceptor</code> to catch it,
  * and so to use its members to create a corresponding interface for a user.
@@ -30,6 +27,8 @@ import java.lang.annotation.Target;
  * display the JTextField with the <code>lastName</code> will be collapsed and needs to be expanded in order to see its components.<br>
  * 
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD,ElementType.METHOD})
 public @interface Tunable {
 	/**
 	 * Human-readable label indentifying the tunable as displayed to a user.
@@ -40,7 +39,7 @@ public @interface Tunable {
 	 * Used to define all the groups in which the Tunable takes part (by default, its doesn't belong to any group).
 	 * 
 	 * <p><pre><code>
-	 * <b>example</b>:
+	 * <b>Example</b>:
 	 * 	<code>@Tunable(description="write your last name", group={"Company","Department","office","identity"})</code>
 	 * 	public String lastName = "Smith";
 	 * </code></pre></p>
@@ -49,7 +48,7 @@ public @interface Tunable {
 	 * <b>warning</b>: Note that they are set in an order of subgroups of a main one.
 	 * 
 	 * <p><pre>
-	 * <b>example</b>:
+	 * <b>Example</b>:
 	 * 
 	 * 	<code>@Tunable(description="write your first name", groups={"Company","Department","office","identity"})</code>
 	 * 	public String firstName = "John";
@@ -75,7 +74,7 @@ public @interface Tunable {
 	 * Key that will refer to the "value" of the <code>Tunable</code> which has <code>xorChildren=true</code>
 	 * 
 	 * <p><pre><code>
-	 * <b>example</b> : 
+	 * <b>Example</b> : 
 	 * 	<code>@Tunable(description="Single list", group={"TestGroup"}, <b>xorChildren=true</b>)</code>
 	 * 	public ListSingleSelection<String> chooser = new ListSingleSelection<String>("<b>Names</b>","<b>FirstNames</b>");
 	 * 	
@@ -103,12 +102,12 @@ public @interface Tunable {
 	 * Here is an example of how to add dependencies between <code>Tunables<code> :
 	 * 
 	 * <code>
-	 * 	<code>@Tunable(description="Type")</code>
-	 *  public boolean type = false;
+	 *   @Tunable(description="Type")
+	 *   public boolean type = false;
 	 *
-	 * 	<code>@Tunable(description="Host name",dependsOn="type=true")</code>
-	 *  public String hostname="";
-	 *  </code>
+	 *   @Tunable(description="Host name",dependsOn="type=true")
+	 *   public String hostname="";
+	 * </code>
 	 *  </pre></p>
 	 *  So <code>hostname</code> will be activated if <code>type</code> is set to "true"
 	 */

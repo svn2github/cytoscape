@@ -50,7 +50,7 @@ public class AbstractTaskManagerTest {
 	}
 
 	static private class SimpleTunableInterceptor<TH extends TunableHandler> extends AbstractTunableInterceptor {
-		SimpleTunableInterceptor(HandlerFactory<TH> tunableHandlerFactory) {
+		SimpleTunableInterceptor(TunableHandlerFactory<TH> tunableHandlerFactory) {
 			super(tunableHandlerFactory);
 		}
 
@@ -73,7 +73,7 @@ public class AbstractTaskManagerTest {
 
 	@Test
 	public void testHasTunables() {
-		final HandlerFactory<SimpleTunableHandler> handlerFactory= mock(HandlerFactory.class);
+		final TunableHandlerFactory<SimpleTunableHandler> handlerFactory= mock(TunableHandlerFactory.class);
 		final TunableInterceptor interceptor = new SimpleTunableInterceptor<SimpleTunableHandler>(handlerFactory);
 		final SimpleTaskMananger taskManager = new SimpleTaskMananger(interceptor);
 		assertFalse("This object has *no* Tunable annotation!", taskManager.hasTunables(new Object()));

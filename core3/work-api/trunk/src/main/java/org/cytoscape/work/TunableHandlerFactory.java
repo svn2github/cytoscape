@@ -1,5 +1,6 @@
 package org.cytoscape.work;
 
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -13,7 +14,7 @@ import java.lang.reflect.Method;
  * @author Pasteur
  */
 
-public interface HandlerFactory<TH extends TunableHandler> {
+public interface TunableHandlerFactory<T extends TunableHandler> {
 	/**
 	 * This method returns a <code>TunableHandler</code> for a Field annotated as a <code>Tunable</code>
 	 * 
@@ -22,7 +23,7 @@ public interface HandlerFactory<TH extends TunableHandler> {
 	 * @param tunable   Tunable that contains all the information concerning the user interface
 	 * @return TH       the newly constructed <code>TunableHandler</code>
 	 */
-	 TH getHandler(final Field field, final Object instance, final Tunable tunable);
+	 T getHandler(final Field field, final Object instance, final Tunable tunable);
 
 	/**
 	 * This method returns a <code>TunableHandler</code> for a Method annotated as a <code>Tunable</code>
@@ -33,5 +34,5 @@ public interface HandlerFactory<TH extends TunableHandler> {
 	 * @param tunable   Tunable that contains all the information concerning the user interface
 	 * @return TH       the newly constructed <code>TunableHandler</code>
 	 */
-	 TH getHandler(final Method setter, final Method getter, final Object instance, final Tunable tunable);
+	 T getHandler(final Method setter, final Method getter, final Object instance, final Tunable tunable);
 }

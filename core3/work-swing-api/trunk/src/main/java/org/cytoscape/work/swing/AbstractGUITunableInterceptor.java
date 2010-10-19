@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.cytoscape.work.HandlerFactory;
+import org.cytoscape.work.TunableHandlerFactory;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.spring.SpringTunableInterceptor;
 
@@ -45,10 +45,11 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 	protected Logger logger;
 
 	/**
-	 * Creates an Interceptor that will use the <code>GUITunableHandlers</code> created in a <code>HandlerFactory</code> from intercepted <code>Tunables</code>.
-	 * @param factory
+	 * Creates an Interceptor that will use the <code>GUITunableHandlers</code> created in a
+	 * <code>TunableHandlerFactory</code> from intercepted <code>Tunables</code>.
+	 * @param factory  used to create tunable handlers
 	 */
-	public AbstractGUITunableInterceptor(final HandlerFactory<GUITunableHandler> factory) {
+	public AbstractGUITunableInterceptor(final TunableHandlerFactory<GUITunableHandler> factory) {
 		super(factory);
 		logger = LoggerFactory.getLogger(getClass());
 	}
