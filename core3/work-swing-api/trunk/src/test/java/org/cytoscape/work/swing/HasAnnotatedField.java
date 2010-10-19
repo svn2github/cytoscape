@@ -32,7 +32,7 @@ import org.cytoscape.work.Tunable;
 
 
 public class HasAnnotatedField {
-	@Tunable(description="An annotated field", groups={"group1"},
+	@Tunable(description="An annotated field", groups={"group1"}, dependsOn="other=false",
 		 params="input=true;alignments=horizontal;displayState=uncollapsed;groupTitles=hidden,displayed")
 	public int annotatedInt = 42;
 

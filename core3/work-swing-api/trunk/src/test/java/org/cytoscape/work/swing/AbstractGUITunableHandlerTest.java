@@ -47,13 +47,24 @@ public class AbstractGUITunableHandlerTest {
 		}
 	}
 
-	@Test
-	public void testConstructor() throws Exception {
+	private SimpleGUITunableHandler handler;
+
+	@Before
+	public void initialise() throws Exception {
 		final HasAnnotatedField hasAnnotatedField = new HasAnnotatedField();
 		final Field annotatedIntField = hasAnnotatedField.getClass().getField("annotatedInt");
 		final Tunable annotatedIntTunable = annotatedIntField.getAnnotation(Tunable.class);
 
-		final SimpleGUITunableHandler handler = new SimpleGUITunableHandler(annotatedIntField, hasAnnotatedField, annotatedIntTunable);
+		handler = new SimpleGUITunableHandler(annotatedIntField, hasAnnotatedField, annotatedIntTunable);
+	}
+
+	@Test
+	public void testConstructor() throws Exception {
 		assertEquals("Unexpected return value from getState()!", "42", handler.getState());
+	}
+
+	@Test
+	public void testGetJPanel() throws Exception {
+		assertNotNull("getJPanel() must *not* return null!", handler.getJPanel());
 	}
 }
