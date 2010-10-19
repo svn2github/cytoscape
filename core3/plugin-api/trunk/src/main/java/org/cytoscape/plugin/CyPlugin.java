@@ -7,6 +7,10 @@ package org.cytoscape.plugin;
  */
 public abstract class CyPlugin {
 
+	/**
+	 * Reference to access Cytoscape functionality -- various managers and 
+	 * factories that are normally available as OSGi services.
+	 */
 	protected CyPluginAdapter adapter;
 
 	// so no one calls this constructor
