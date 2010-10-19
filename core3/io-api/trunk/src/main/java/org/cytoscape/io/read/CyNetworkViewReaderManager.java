@@ -57,7 +57,7 @@ public interface CyNetworkViewReaderManager {
 	 * that can read the stream, will set the InputStream for the factory and
 	 * will return the reader task.
 	 * @param stream The input stream we're attempting to read. 
-	 * @return A reader than can read the specified stream. Will return null if
+	 * @return A reader that can read the specified stream. Will return null if
 	 * no reader can be found.
 	 */
 	CyNetworkViewReader getReader(InputStream stream); 
