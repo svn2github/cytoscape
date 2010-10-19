@@ -37,6 +37,7 @@
 package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
 
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutTask;
@@ -47,6 +48,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JMenuItem;
+import java.util.List;
 
 
 /**
@@ -74,9 +76,11 @@ public class StaticLayoutMenu extends JMenuItem implements ActionListener {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		layout.setSelectedOnly(false);
-
-		TaskManager.executeTask( new LayoutTask(layout,Cytoscape.getCurrentNetworkView()),
-		                         LayoutTask.getDefaultTaskConfig() );
+		List<CyNetworkView> views = Cytoscape.getSelectedNetworkViews();
+		for ( CyNetworkView view: views ) {
+			layout.setSelectedOnly(false);
+			TaskManager.executeTask( new LayoutTask(layout, view),
+			                         LayoutTask.getDefaultTaskConfig() );
+		}
 	}
 }
