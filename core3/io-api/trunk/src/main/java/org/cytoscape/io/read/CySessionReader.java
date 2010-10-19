@@ -6,7 +6,7 @@ import org.cytoscape.work.Task;
 /**
  * An extension of the Task interface that returns a
  * {@link CySession} object. The reader does nothing
- * beyond create the CySession object and does NOT do
+ * beyond create the CySession object and does NOT 
  * use the CySession object to define the state of 
  * Cytoscape - that is managed by the CySessionManager.
  * Instances of this interface are created by InputStreamTaskFactory
@@ -18,6 +18,7 @@ import org.cytoscape.work.Task;
 public interface CySessionReader extends Task {
 
 	/**
+	 * return a session object
 	 * @return A {@link CySession} object. 
 	 */
     CySession getCySession();
