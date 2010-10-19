@@ -19,11 +19,13 @@ import org.cytoscape.work.Task;
 public interface CyNetworkViewReader extends Task {
 
 	/**
+	 * Return an array of CyNetworkView objects
 	 * @return An array of CyNetworkView objects.
 	 */
 	CyNetworkView[] getNetworkViews();
 
 	/**
+	 * Return an array of VisualStyle objects.
 	 * @return An array of VisualStyle objects. The list may be
 	 * empty if no VisualStyle is defined by the input being
 	 * read.
