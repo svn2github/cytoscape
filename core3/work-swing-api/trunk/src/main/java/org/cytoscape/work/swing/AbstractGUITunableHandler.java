@@ -25,7 +25,12 @@ import org.cytoscape.work.Tunable;
  * <br>
  * It provides the functions that are common to all types of Handlers
  */
-public abstract class AbstractGUITunableHandler extends AbstractTunableHandler implements GUITunableHandler, ActionListener, ChangeListener, ListSelectionListener {
+public abstract class AbstractGUITunableHandler
+	extends AbstractTunableHandler implements GUITunableHandler, ActionListener, ChangeListener, ListSelectionListener
+{
+	/**
+	 *  If true the associated GUI element should be layed out next to others in the same group.
+	 */
 	protected boolean horizontal;
 
 	/**
@@ -55,18 +60,26 @@ public abstract class AbstractGUITunableHandler extends AbstractTunableHandler i
 	 */
 	private List<GUITunableHandler> dependencies;
 
-	/**
-	 * Constructs an Abstract GUITunableHandler with dependencies informations
+	/** Standard base class constructor for <code>TunableHandler</code>s that deal with
+	 *  <code>Tunable</code>s that annotate a field.
 	 *
-	 * @param f Field that is intercepted
-	 * @param o Object that is contained in the Field <code>f</code>
-	 * @param t <code>Tunable</code> annotations of the Field <code>f</code> annotated as <code>Tunable</code>
+	 *  @param field    An instance of <code>Field</code> that represents a field annotated with <code>@Tunable</code>
+	 *  @param instance An object instance that contains a field corresponding to the <i>field</i> parameter
+	 *  @param tunable  The <code>Tunable</code> that annotates <i>field</i>
 	 */
-	protected AbstractGUITunableHandler(Field f, Object o, Tunable t) {
-		super(f, o, t);
+	protected AbstractGUITunableHandler(final Field field, final Object instance, final Tunable tunable) {
+		super(field, instance, tunable);
 		init();
 	}
 
+	/** Standard base class constructor for <code>TunableHandler</code>s that deal with
+	 *  <code>Tunable</code>s that use getter and setter methods.
+	 *
+	 *  @param getter   The getter method of the tunable object represented by the <i>instance</i> parameter.
+	 *  @param setter   The setter method complimentary to the getter.
+	 *  @param instance An instance of an object with a getter method that has been determined to be annotated with <code>@Tunable</code>.
+	 *  @param tunable  The <code>Tunable</code> that annotates the <i>getter</i>.
+	 */
 	protected AbstractGUITunableHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		super(getter, setter, instance, tunable);
 		init();
@@ -97,6 +110,11 @@ public abstract class AbstractGUITunableHandler extends AbstractTunableHandler i
 		panel = new JPanel();
 	}
 
+	/**
+	 *  Action listener event handler.
+	 *
+	 *  @param ae specifics of the event (ignored!)
+	 */
 	public void actionPerformed(ActionEvent ae) {
 		notifyDependents();
 	}
@@ -106,7 +124,7 @@ public abstract class AbstractGUITunableHandler extends AbstractTunableHandler i
 	 *
 	 * @param e a modification that happened to this <code>handler</code>
 	 */
-	public void stateChanged(ChangeEvent e){
+	public void stateChanged(ChangeEvent e) {
 		notifyDependents();
 	}
 
@@ -183,13 +201,12 @@ public abstract class AbstractGUITunableHandler extends AbstractTunableHandler i
 		// if the dependency name matches ...
 		if (dependencyName.equals(name)) {
 			// ... and the state matches, then enable
-			if (dependencyState!=""){
+			if (!dependencyState.isEmpty()) {
 				if (dependencyState.equals(state))
 					setEnabledContainer(true, panel);
 				else // ... and the state doesn't match, then disable
 					setEnabledContainer(false, panel);
-			}
-			else {
+			} else {
 				if (!dependencyUnState.equals(state))
 					setEnabledContainer(true, panel);
 				else // ... and the state doesn't match, then disable
@@ -204,12 +221,12 @@ public abstract class AbstractGUITunableHandler extends AbstractTunableHandler i
 	 * Set enable or not a container and all the components that are in it
 	 *
 	 * @param enable if we enable or not the container
-	 * @param c the container that will be enabled or not
+	 * @param container the container that will be enabled or not
 	 */
-	private void setEnabledContainer(boolean enable, Container container) {
+	private void setEnabledContainer(final boolean enable, final Container container) {
 		container.setEnabled(enable);
-		for ( Component child : container.getComponents() ) {
-			if ( child instanceof Container )
+		for (final Component child : container.getComponents()) {
+			if (child instanceof Container)
 				setEnabledContainer(enable,(Container)child);
 			else
 				child.setEnabled(enable);
@@ -224,8 +241,13 @@ public abstract class AbstractGUITunableHandler extends AbstractTunableHandler i
 		return panel;
 	}
 
+	/** Update the state of the associated <code>Tunable</code>
+	 */
 	public abstract void handle();
 
+	/**
+	 *  @return the current value of the associated <code>Tunable</code> represented as a string
+	 */
 	public String getState() {
 		try {
 			final Object value = getValue();
