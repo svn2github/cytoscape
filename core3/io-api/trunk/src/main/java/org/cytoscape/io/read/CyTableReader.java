@@ -15,6 +15,7 @@ import org.cytoscape.work.Task;
 public interface CyTableReader extends Task{
 
 	/**
+	 * Return an array of CyTable objects.
 	 * @return An array of CyTable objects.
 	 */
 	public CyTable[] getCyDataTables();
