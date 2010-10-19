@@ -21,6 +21,7 @@ import org.cytoscape.work.Task;
 public interface CyPropertyReader extends Task {
 
 	/**
+	 * Return a property object.
 	 * @return A property object.  The type can be
 	 * be anything, but in practice will be
 	 * {@link java.util.Properties}, 
