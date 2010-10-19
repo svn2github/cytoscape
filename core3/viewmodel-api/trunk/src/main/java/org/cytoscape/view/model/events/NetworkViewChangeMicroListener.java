@@ -5,6 +5,12 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 
+/**
+ * Micro listener for every change in the network {@linkplain View}.
+ * 
+ * @author kono
+ *
+ */
 public interface NetworkViewChangeMicroListener extends CyMicroListener {
 
 	/**

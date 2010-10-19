@@ -38,10 +38,10 @@ import org.cytoscape.model.Identifiable;
 
 
 /**
- * The base interface that defines the methods used to set visual properties
+ * The base interface that defines methods used to set visual properties
  * for nodes, edges, and networks.
  *
- * Think of it as a row in the viewmodel table.
+ * Think of it as a row in the view-model table.
  *
  * @param <S> the base (model-level) object for which this is a View. For example, CyNode or CyEdge.
  * In the future versions, Attributes can be this parameter.

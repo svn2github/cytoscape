@@ -1,5 +1,9 @@
 package org.cytoscape.view.model;
 
+/**
+ * Factory for nodes in the visual lexicon.
+ *
+ */
 public interface VisualLexiconNodeFactory {
 	
 	/**

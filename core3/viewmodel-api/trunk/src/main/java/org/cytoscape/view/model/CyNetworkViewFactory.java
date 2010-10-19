@@ -38,15 +38,19 @@ import org.cytoscape.model.CyNetwork;
 
 
 /**
+ * Factory for {@linkplain CyNetworkView} objects.
+ * Modules which need to create view models should import this as a service.
  * 
+ * @author kono
+ *
  */
 public interface CyNetworkViewFactory {
 	
 	/** 
-	 * Create a NetworkView.
+	 * Create a {@linkplain CyNetworkView} from a {@linkplain org.cytoscape.model.CyNetwork} object. 
 	 * 
 	 * @param network for which the CyNetworkView is to be created
-	 * @return the CyNetworkView
+	 * @return the view model for the network data model
 	 */
 	public CyNetworkView getNetworkView(final CyNetwork network);
 }

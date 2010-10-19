@@ -2,16 +2,25 @@ package org.cytoscape.view.model;
 
 import java.util.Collection;
 
+/**
+ * A node in the visual property tree (lexicon).
+ * <p>
+ * Wrapping a {@linkplain VisualProperty} and holding parent-child relationships.
+ * <p>
+ * All data fields are immutable. 
+ * 
+ * @author kono
+ *
+ */
 public interface VisualLexiconNode {
 	
-	
 	/**
-	 * Wrapped object.
+	 * Returns wrapped {@linkplain VisualProerty} object.
 	 * 
 	 * Since VisualProperty itself does not have any hierarchical structure, 
 	 * such relationship is implemented by this wrapper.
 	 * 
-	 * @return
+	 * @return wrapped {@linkplain VisualProeprty} object.
 	 */
 	VisualProperty<?> getVisualProperty();
 
@@ -19,13 +28,15 @@ public interface VisualLexiconNode {
 	/**
 	 * Get the parent of this VP node. The relationship is immutable, i.e.,
 	 * cannot change parent/child relationship.
+	 * 
+	 * @return parent VisualProperty object.
 	 */
 	VisualLexiconNode getParent();
 
 	/**
-	 * Returns all children of this node.
+	 * Returns collection of all children of this node.
 	 * 
-	 * @return all child nodes.
+	 * @return collection of all children
 	 */
 	Collection<VisualLexiconNode> getChildren();
 
