@@ -22,8 +22,11 @@ public class DingNavigationRenderingEngine implements RenderingEngine<CyNetwork>
 	
 	private final DGraphView dgv;
 	
+	private final Properties props;
+	
 	public DingNavigationRenderingEngine(final DGraphView dgv) {
 		this.dgv = dgv;
+		this.props = new Properties();
 	}
 	
 
@@ -38,15 +41,10 @@ public class DingNavigationRenderingEngine implements RenderingEngine<CyNetwork>
 		return dgv.getVisualLexicon();
 	}
 
-	@Override
-	public void setProperties(Properties props) {
-		dgv.setProperties(props);
-	}
 
 	@Override
 	public Properties getProperties() {
-		// TODO Auto-generated method stub
-		return null;
+		return props;
 	}
 
 	@Override

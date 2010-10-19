@@ -22,10 +22,14 @@ public interface RenderingEngineFactory<T> {
 	 * will be rendered in a window, using same rendering engine.
 	 * 
 	 * @param visualizationContainer
-	 * @param viewModel view-model to be rendered by the RenderingEngine.
+	 *            Window component which contains the rendered view. In most
+	 *            cases, {@linkplain Window} components in Swing will be used.
+	 * @param viewModel
+	 *            view-model to be rendered by the RenderingEngine.
 	 * 
 	 * @return Rendering Engine for visualization on the visualizationContainer.
 	 */
-	public RenderingEngine<T> render(final Object visualizationContainer, final View<T> viewModel);
+	public RenderingEngine<T> render(final Object visualizationContainer,
+			final View<T> viewModel);
 
 }

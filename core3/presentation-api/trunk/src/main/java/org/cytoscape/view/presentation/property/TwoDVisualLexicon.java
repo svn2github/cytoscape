@@ -43,14 +43,18 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
 
 /**
- * Should be implemented as a service. 'Renderer' is simply anything that
- * provides VisualProperties. With a 'VisualProperties as annotations' this
- * won't be needed.
+ * Minimal set of {@linkplain VisualProperty} objects which will be required for
+ * all {@linkplain RenderingEngine}s. All of Visual Properties are singletons
+ * and accessible as static object.
+ * 
+ * @author kono
+ * 
  */
 public class TwoDVisualLexicon extends AbstractVisualLexicon {
 
 	// Top level nodes has null as parent, and will be pointed by parent node.
 	// This is because all VPs are static objects.
+
 	public static final VisualProperty<Visualizable> NETWORK = new DefaultVisualizableVisualProperty(
 			"NETWORK", "Network Visual Property");
 
@@ -140,9 +144,11 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 			Color.WHITE, "NETWORK_BACKGROUND_COLOR", "Network Background Color");
 
 	/**
-	 * Build basic VP tree.
+	 * Build tree-structure for the set of Visual Properties defined in this
+	 * class.
 	 * 
-	 * @param rootVisualProperty
+	 * @param root
+	 * @param nodeFactory
 	 */
 	public TwoDVisualLexicon(final VisualProperty<NullDataType> root,
 			final VisualLexiconNodeFactory nodeFactory) {

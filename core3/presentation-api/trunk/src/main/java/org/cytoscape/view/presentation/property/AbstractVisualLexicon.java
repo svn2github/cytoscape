@@ -11,14 +11,13 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualLexiconNodeFactory;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.Visualizable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * Implementations for common features for all VisualLexicons.
+ *
+ */
 public abstract class AbstractVisualLexicon implements VisualLexicon {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AbstractVisualLexicon.class);
-
 	//
 	private final Map<VisualProperty<?>, VisualLexiconNode> visualPropertyMap;
 	
@@ -29,9 +28,10 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 	
 
 	/**
-	 * Insert a root node to the tree and build it.
+	 * Constructor for VisualLexicon.  The parameters are required for all lexicons.
 	 * 
-	 * @param rootVisualProperty
+	 * @param rootVisualProperty Root of the visual property tree.
+	 * @param nodeFactory factory to create tree nodes for a lexicon.
 	 */
 	public AbstractVisualLexicon(final VisualProperty<NullDataType> rootVisualProperty, final VisualLexiconNodeFactory nodeFactory) {
 		this.nodeFactory = nodeFactory;
@@ -44,38 +44,12 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 	}
 
 	
-	// Returns all visual properties as a set.
-	public Set<VisualProperty<?>> getAllVisualProperties() {
+	@Override public Set<VisualProperty<?>> getAllVisualProperties() {
 		return new HashSet<VisualProperty<?>>(visualPropertyMap.keySet());
 	}
-	
-	
-//	/**
-//	 * Add a new VP as a leaf.
-//	 * 
-//	 * @param prop
-//	 * @param parent
-//	 */
-//	void insertVisualProperty(final VisualProperty<?> prop, final VisualProperty<?> parent) {
-//		//Sanity check
-//		if(prop == null)
-//			throw new NullPointerException("Cannot add null to the lexicon tree.");
-//		if(parent == null)
-//			throw new NullPointerException("Parent Visual Property should not be null.");
-//		
-//		if(this.visualPropertyMap.containsValue(prop))
-//			throw new IllegalArgumentException("The Visual Property already exists: " + prop.getDisplayName());
-//		
-//		if(!this.visualPropertyMap.containsValue(parent))
-//			throw new IllegalArgumentException("Parent Visual Property does not exist in the tree.");
-//		
-//		this.visualPropertyMap.put(prop.getIdString(), prop);
-//		parent.getChildren().add(prop);
-//	}
 
 	
-	@Override
-	public Collection<VisualProperty<?>> getAllDescendants(final VisualProperty<?> prop) {
+	@Override public Collection<VisualProperty<?>> getAllDescendants(final VisualProperty<?> prop) {
 		if(prop == null)
 			throw new NullPointerException("Target visual property cannot be null.");
 		
@@ -86,8 +60,7 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 	}
 	
 
-	@Override
-	public VisualProperty<NullDataType> getRootVisualProperty() {
+	@Override public VisualProperty<NullDataType> getRootVisualProperty() {
 		return this.rootVisualProperty;
 	}
 	
@@ -110,6 +83,12 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 		return children;
 	}
 	
+	/**
+	 * Insert a Visual Property to the tree.
+	 * 
+	 * @param vp
+	 * @param parent
+	 */
 	protected void addVisualProperty(final VisualProperty<?> vp, final VisualProperty<?> parent) {
 		if(this.visualPropertyMap.containsKey(vp))
 			throw new IllegalStateException("The key " + vp.getIdString() + " already exists in the lexicon.");

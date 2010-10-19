@@ -25,7 +25,7 @@ import org.cytoscape.view.model.VisualProperty;
 public interface RenderingEngine<T> {
 
 	/**
-	 * Returns View Model being rendered.
+	 * Returns {@linkplain View} being rendered.
 	 * 
 	 * @return view model.  This is an immutable object.
 	 */
@@ -33,21 +33,21 @@ public interface RenderingEngine<T> {
 
 	
 	/**
-	 * Provide all compatible Visual Properties as a Visual Lexicon.
+	 * Provide all compatible Visual Properties as a {@linkplain VisualLexicon}.
 	 * 
 	 * @return Visual Lexicon of this rendering engine.
 	 */
 	public VisualLexicon getVisualLexicon();
 	
-
-	/**
-	 * Set prop values to rendering engine, like LOD
-	 */
-	public void setProperties(final Properties props);
 	
 
 	/**
-	 * Get current rendering engine dependent properties, like LOD
+	 * Get property values for the rendering engine, like LOD.
+	 * Users can set each property value by getting this {@linkplain Properties} object.
+	 * <p>
+	 * {@linkplain Properties} object itself is immutable.
+	 * 
+	 * @return property values.
 	 */
 	public Properties getProperties();
 	
@@ -61,7 +61,7 @@ public interface RenderingEngine<T> {
 	
 
 	/**
-	 * Render image from the current view model state.
+	 * Render an {@linkplain Image} object from current visualization.
 	 * 
 	 * @return Image object created from current window.
 	 */
