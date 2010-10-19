@@ -649,7 +649,7 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 		applyLayoutButton.setToolTipText("Apply "+layoutName + " layout");
 		applyLayoutButton.setBorderPainted(false);
 		applyLayoutButton.setRolloverEnabled(true);		
-		applyLayoutButton.addMouseListener(new ApplyLayoutMouseAdapter(applyLayoutButton));
+		applyLayoutButton.addActionListener(new ApplyLayoutAction(applyLayoutButton));
 
 		toolBar.add(applyLayoutButton);
 
