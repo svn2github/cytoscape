@@ -20,8 +20,8 @@ public class AbstractTunableHandler implements TunableHandler {
 	final private Field field;
 	final private Method getter;
 	final private Method setter;
-	final protected Object instance; // TODO: should this be private?
-	final protected Tunable tunable; // TODO: should this be private?
+	final private Object instance;
+	final private Tunable tunable;
 
 	/** Standard base class constructor for <code>TunableHandler</code>s that deal with
 	 *  <code>Tunable</code>s that annotate a field.
