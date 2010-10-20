@@ -24,14 +24,15 @@ public abstract class CyPlugin {
 	 * argument to the constructor. Cytoscape's plugin loader will execute
 	 * the constructor and provide the proper CyPluginAdapter reference.
 	 * <br/>
-	 * <code>
+	 * 
+	 * <blockquote><pre> 
 	 * public class MyPlugin extends CyPlugin {
 	 *    public MyPlugin(CyPluginAdapter adapter) {
 	 *       super(adapter);
 	 *       // plugin code here
 	 *    }
 	 * }
-	 * </code>
+	 * </pre></blockquote>
 	 */
 	public CyPlugin(final CyPluginAdapter adapter) {
 		this.adapter = adapter;
