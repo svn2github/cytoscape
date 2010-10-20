@@ -44,8 +44,23 @@ public class AbstractTaskTest {
 	}
 
 	@Test
-	public final void testTaskInsertion() throws Exception {
+	public final void testTaskInsertion1() throws Exception {
 		initialTask.insertTasksAfterCurrentTask(new SimpleTask2(2), new SimpleTask2(3));
+		initialTask.insertTasksAfterCurrentTask(new SimpleTask2(4));
+
+		final int expectedSequence[] = { 1, 4, 2, 3 };
+		for (int taskId : expectedSequence) {
+			assertTrue("Invalid task count in iterator!", iter.hasNext());
+			final Task task = iter.next();
+			assertEquals("Task ID does not match expected ID!", taskId, ((SimpleTask2)task).getId());
+		}
+		assertFalse("Invalid task count in iterator!", iter.hasNext());
+	}
+
+	@Test
+	public final void testTaskInsertion2() throws Exception {
+		final TaskIterator tasks = new TaskIterator(new SimpleTask2(2), new SimpleTask2(3));
+		initialTask.insertTasksAfterCurrentTask(tasks);
 		initialTask.insertTasksAfterCurrentTask(new SimpleTask2(4));
 
 		final int expectedSequence[] = { 1, 4, 2, 3 };
