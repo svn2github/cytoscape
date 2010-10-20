@@ -144,7 +144,7 @@
           <artifactId>batik-maven-plugin</artifactId>
           <version>1.0-beta-1</version>
           <configuration>
-            <srcDir>${project.build.directory}/classes/cytoscape/images</srcDir>
+            <srcDir>${project.build.directory}/classes/cytoscape/images/versioned-svg</srcDir>
             <destDir>${project.build.directory}/classes/cytoscape/images</destDir>
           </configuration>
           <executions>
