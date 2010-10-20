@@ -75,10 +75,6 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		setPreferredMenu("File.New.Network");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK);
 	}
-
-	public NewWindowSelectedNodesOnlyAction(boolean isInToolbar) {
-		// Used by the toolbar action defined in CyMenus
-	}
 	
 	/**
 	 *  DOCUMENT ME!
@@ -100,6 +96,10 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
 		Set nodes = current_network.getSelectedNodes();
 
+		if (nodes == null || nodes.size() == 0){
+			return;
+		}
+		
 		CyNetwork new_network = Cytoscape.createNetwork(nodes,
 		                                                current_network.getConnectingEdges(new ArrayList(nodes)),
 		                                                CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
