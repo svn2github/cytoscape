@@ -55,8 +55,7 @@ import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyEditor<T> {
 	// Target Visual Property.
 	protected final VisualProperty<T> vp;
-	
-	protected PropertyEditor propertyEditor;
+	protected final PropertyEditor propertyEditor;
 	protected Component continuousEditor;
 	protected Window vpValueEditor;
 	protected TableCellRenderer tableCellRenderer;
@@ -66,8 +65,9 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 	 *
 	 * @param vp  DOCUMENT ME!
 	 */
-	public AbstractVisualPropertyEditor(VisualProperty<T> vp) {
+	public AbstractVisualPropertyEditor(VisualProperty<T> vp, final PropertyEditor propertyEditor) {
 		this.vp = vp;
+		this.propertyEditor = propertyEditor;
 	}
 
 	/**

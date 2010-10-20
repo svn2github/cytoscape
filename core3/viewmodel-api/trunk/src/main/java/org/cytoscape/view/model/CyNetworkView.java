@@ -66,7 +66,7 @@ public interface CyNetworkView extends View<CyNetwork> {
 	/**
 	 * Returns a list of Views for all CyNodes in the network.
 	 * 
-	 * @return List of all node views.
+	 * @return Collection of all node views in this network.
 	 */
 	Collection<View<CyNode>> getNodeViews();
 
@@ -74,31 +74,44 @@ public interface CyNetworkView extends View<CyNetwork> {
 	 * Returns a View for a specified Edge.
 	 * 
 	 * @param n
-	 *            DOCUMENT ME!
+	 *          Edge data model
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return View model for the edge data.
 	 */
 	View<CyEdge> getEdgeView(final CyEdge edge);
 
 	/**
 	 * Returns a list of Views for all CyEdges in the network.
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return All edge views in this network.
 	 */
 	Collection<View<CyEdge>> getEdgeViews();
 
 	/**
 	 * Returns a list of all View including those for Nodes, Edges, and Network.
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return All view objects in this network including network view itself.
 	 */
 	Collection<View<? extends CyTableEntry>> getAllViews();
 	
 	
-	// These are utility methods to fire events to presentation layer.
+	/**
+	 * Utility method to fit content to the presentation container (usually a Swing Window).
+	 * This fires event to the presentation layer for updating presentation.
+	 */
 	void fitContent();
+	
+	
+	/**
+	 * Utility method to fit selected graph objects to the presentation container.
+	 * This fires event to the presentation layer for updating presentation.
+	 */
 	void fitSelected();
 	
-	public void updateView();
+	
+	/**
+	 * Cascading event for the presentation layer for updating presentation.
+	 */
+	void updateView();
 
 }

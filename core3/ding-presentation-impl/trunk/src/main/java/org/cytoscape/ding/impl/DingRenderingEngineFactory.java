@@ -21,8 +21,8 @@ import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
-import org.cytoscape.view.model.events.NetworkViewChangedEvent;
-import org.cytoscape.view.model.events.NetworkViewChangedListener;
+import org.cytoscape.view.model.events.UpdateNetworkPresentationEvent;
+import org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.work.TaskManager;
@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DingRenderingEngineFactory implements
-		RenderingEngineFactory<CyNetwork>, NetworkViewChangedListener {
+		RenderingEngineFactory<CyNetwork>, UpdateNetworkPresentationEventListener {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(DingRenderingEngineFactory.class);
@@ -135,7 +135,7 @@ public class DingRenderingEngineFactory implements
 	 * 
 	 */
 	@Override
-	public void handleEvent(NetworkViewChangedEvent nvce) {
+	public void handleEvent(UpdateNetworkPresentationEvent nvce) {
 		DGraphView gv = viewMap.get(nvce.getSource());
 		logger.debug("NetworkViewChangedEvent listener got view update request: "
 				+ nvce.getSource().getSUID());

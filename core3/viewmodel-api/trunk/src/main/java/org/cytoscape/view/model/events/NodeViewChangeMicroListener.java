@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.model.events;
 
 import org.cytoscape.event.CyMicroListener;
@@ -40,17 +39,29 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 
-
 /**
- * An interface to indicate that a View has changed.  The intent is for
- * a Presentation to implement this interface so that the presentation
- * can be updated based on what has changed in the View.
+ * Micro-event listener for node view-models.
+ * 
+ * An interface to indicate that a View has changed. The intent is for a
+ * Presentation to implement this interface so that the presentation can be
+ * updated based on what has changed in the View.
+ * 
+ * <p>
+ * The purpose of this listener is different from
+ * {@linkplain UpdateNetworkPresentationEventListener}. This one catches the
+ * event to set a {@linkplain VisualProperty} from current value to the new one. It does not mean actually re-drawing the
+ * presentation.
+ * 
  */
 public interface NodeViewChangeMicroListener extends CyMicroListener {
 
 	/**
 	 * The method called when the specified VisualProperty is set to the
-	 * specified value in the View being listened to. 
+	 * specified value in the View being listened to.
+	 * <p>
+	 * Rendering engines should implement this method and update its states.
+	 * 
 	 */
-	void  nodeVisualPropertySet(final View<CyNode> target, final VisualProperty<?> vp, final Object value);
+	void nodeVisualPropertySet(final View<CyNode> target,
+			final VisualProperty<?> vp, final Object value);
 }

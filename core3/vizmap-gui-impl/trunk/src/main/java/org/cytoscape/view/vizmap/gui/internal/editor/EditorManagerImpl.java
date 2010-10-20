@@ -49,6 +49,7 @@ import java.util.Set;
 
 import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.MappingFunctionFactoryManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
@@ -107,10 +108,8 @@ public class EditorManagerImpl implements EditorManager {
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#addEditorDisplayer(org
 	 * .cytoscape.vizmap.gui.editors.EditorDisplayer, java.util.Map)
 	 */
-	@SuppressWarnings("unchecked")
-	public void addValueEditor(ValueEditor<?> ve, Map properties) {
-		logger.debug("Got Value Editor "
-				+ ve.toString() + ", this is for " + ve.getType() + "\n\n\n");
+	public void addValueEditor(ValueEditor<?> ve, @SuppressWarnings("rawtypes") Map properties) {
+		logger.debug("Got Value Editor " + ve.toString() + ", this is for " + ve.getType() + "\n\n\n");
 		this.valueEditors.put(ve.getType(), ve);
 	}
 
@@ -121,11 +120,13 @@ public class EditorManagerImpl implements EditorManager {
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#removeEditorDisplayer(
 	 * org.cytoscape.vizmap.gui.editors.EditorDisplayer, java.util.Map)
 	 */
-	@SuppressWarnings("unchecked")
-	public void removeValueEditor(ValueEditor<?> lexicon, Map properties) {
-		logger.debug("************* Removing Lexicon ****************");
-		valueEditors.remove(lexicon.getType());
+	public void removeValueEditor(ValueEditor<?> valueEditor, @SuppressWarnings("rawtypes") Map properties) {
+		logger.debug("************* Removing Value Editor ****************");
+		valueEditors.remove(valueEditor.getType());
 	}
+	
+	
+	
 	
 
 //	 private <T> VisualPropertyEditor<T> findEditor(VisualProperty<T> type) {
@@ -167,8 +168,7 @@ public class EditorManagerImpl implements EditorManager {
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#showContinuousEditor(java
 	 * .awt.Component, org.cytoscape.viewmodel.VisualProperty)
 	 */
-	public <V> void showContinuousEditor(Component parentComponent,
-			VisualProperty<V> type) throws Exception {
+	public <V> void showContinuousEditor(Component parentComponent, VisualProperty<V> type) throws Exception {
 		final VisualPropertyEditor<?> editor = editors.get(type);
 		assert editor.getVisualProperty() == type;
 
@@ -184,8 +184,7 @@ public class EditorManagerImpl implements EditorManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <V> VisualPropertyEditor<V> getVisualPropertyEditor(
-			VisualProperty<V> vp) {
+	public <V> VisualPropertyEditor<V> getVisualPropertyEditor(final VisualProperty<V> vp) {
 		return (VisualPropertyEditor<V>) editors.get(vp);
 	}
 

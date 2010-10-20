@@ -27,7 +27,7 @@ import org.cytoscape.view.model.events.AddedNodeViewEvent;
 import org.cytoscape.view.model.events.FitContentEvent;
 import org.cytoscape.view.model.events.FitSelectedEvent;
 import org.cytoscape.view.model.events.NetworkViewChangeMicroListener;
-import org.cytoscape.view.model.events.NetworkViewChangedEvent;
+import org.cytoscape.view.model.events.UpdateNetworkPresentationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,7 +164,7 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 	
 	public void updateView() {
 		logger.debug("Firing update view event from: View ID = " + this.suid);
-		cyEventHelper.fireSynchronousEvent( new NetworkViewChangedEvent(this));
+		cyEventHelper.fireSynchronousEvent( new UpdateNetworkPresentationEvent(this));
 	}
 
 

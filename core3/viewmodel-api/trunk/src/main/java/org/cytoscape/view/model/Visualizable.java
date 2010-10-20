@@ -2,12 +2,9 @@ package org.cytoscape.view.model;
 
 
 /**
- * Data type for generic data sets, like network.
+ * Marker interface for data types used by higher-level Visual Properties such as NODE, EDGE, or NETWORK.
  * 
- * TODO: what kind of method are required?
- * 
- * @author kono
- *
+ * TODO: What should RenderingEngine do once this visual property is returned as data type?
  */
 public interface Visualizable {
 

@@ -9,12 +9,12 @@ import org.cytoscape.view.model.CyNetworkView;
  * @author kono
  *
  */
-public class FitContentEvent extends AbstractCyEvent<CyNetworkView> {
+public final class FitContentEvent extends AbstractCyEvent<CyNetworkView> {
 	
 	/**
 	 * Fit the size of network view to the current container.
 	 * 
-	 * @param source
+	 * @param source network view to be fitted to the container.
 	 */
 	public FitContentEvent(final CyNetworkView source) {
 		super(source, FitContentEventListener.class);

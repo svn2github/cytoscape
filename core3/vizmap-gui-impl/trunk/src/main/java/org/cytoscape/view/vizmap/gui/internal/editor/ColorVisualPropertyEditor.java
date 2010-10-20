@@ -56,11 +56,10 @@ public class ColorVisualPropertyEditor extends AbstractVisualPropertyEditor<Colo
 	 * Constructor. Should instantiate one editor per VisualProperty.
 	 */
 	public ColorVisualPropertyEditor(VisualProperty<Color> vp, CyTable attr) {
-		super(vp);
+		super(vp, new CyColorPropertyEditor());
 		tableCellRenderer = new DefaultTableCellRenderer();
 		//FIXME
 		continuousEditor = new GradientEditorPanel(this.vp, null, attr);
-		propertyEditor = new CyColorPropertyEditor();
 	}
 
 	/**

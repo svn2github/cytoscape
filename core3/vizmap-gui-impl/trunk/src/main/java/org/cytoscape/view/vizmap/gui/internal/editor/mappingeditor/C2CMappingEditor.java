@@ -78,7 +78,7 @@ public class C2CMappingEditor<K, V extends Number> extends
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public C2CMappingEditor(VisualProperty<V> type, final SelectedVisualStyleManager manager, CyTable attr) {
+	public C2CMappingEditor(VisualProperty<V> type, final SelectedVisualStyleManager manager, final CyTable attr) {
 		super(type, manager, attr);
 		abovePanel.setVisible(false);
 		belowPanel.setVisible(false);

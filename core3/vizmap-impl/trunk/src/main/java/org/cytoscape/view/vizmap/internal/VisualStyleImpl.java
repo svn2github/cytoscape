@@ -264,7 +264,7 @@ public class VisualStyleImpl implements VisualStyle {
 			// Mapping is available for this VP. Apply it.
 			for (Object view : views)
 				mapping.apply((View<? extends CyTableEntry>) view);
-		} else if (!vp.isIgnoreDefault()) {
+		} else if (!vp.shouldIgnoreDefault()) {
 			// Ignore defaults flag is OFF. Apply defaults.
 			applyStyleDefaults((Collection<View<?>>) views, vp);
 		} else

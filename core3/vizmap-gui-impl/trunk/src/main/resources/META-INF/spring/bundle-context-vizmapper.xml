@@ -97,11 +97,6 @@
 		/> -->
 
 	<!-- Value Chooser/Editors -->
-	<bean id="colorEditor"
-		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.CyColorChooser" />
-
-	<bean id="fontEditor"
-		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.FontEditor" />
 
 	<bean id="doubleClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="java.lang.Double" />
@@ -115,11 +110,18 @@
 	<bean id="stringClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="java.lang.String" />
 	</bean>
+	
+	<bean id="colorEditor"
+		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.CyColorChooser" />
+
+	<bean id="fontEditor"
+		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.FontEditor" />
 
 	<bean id="doubleValueEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
 		<constructor-arg ref="doubleClass" />
 	</bean>
+	
 	<bean id="integerValueEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
 		<constructor-arg ref="integerClass" />
@@ -133,6 +135,7 @@
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.StringValueEditor">
 		<constructor-arg ref="stringClass" />
 	</bean>
+	
 
 
 

@@ -10,7 +10,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.junit.Test;
 
-public class AbstractCyNetworkViewTest {
+public abstract class AbstractCyNetworkViewTest {
 	
 	private static final int NODE_COUNT = 5;
 	private static final int EDGE_COUNT = 8;

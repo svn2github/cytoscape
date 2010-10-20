@@ -39,49 +39,60 @@ package org.cytoscape.view.model;
  * An abstract implementation of VisualProperty that omits the methods dealing
  * with serializing data.
  * 
- * @since Cytoscape 3.0
- * 
  */
 public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 
 	// Default value for this VP.
-	protected final T defaultValue;
+	private final T defaultValue;
+	
+	private final Class<T> dataType;
 
 	// Identifier.
-	final protected String id;
+	private final String id;
 
 	// Human-readable name of VP.
-	final protected String name;
+	private final String name;
 
-	protected boolean isIgnoreDefault = false;
+	// If this is true, default value will be ignored by VizMapper.
+	protected boolean shouldIgnoreDefault;
 
+	
 	/**
-	 * Constructor with all required immutable field values.
+	 * Constructor to set all immutable fields.
 	 * 
-	 * @param objectType
-	 * @param defaultValue
-	 * @param id
-	 * @param name
+	 * @param defaultValue default value for this visual property.
+	 * @param id unique string for serialization.
+	 * @param name human-readable name for this visual property.
+	 * 
 	 */
-	public AbstractVisualProperty(final T defaultValue, final String id, final String name) {
+	@SuppressWarnings("unchecked")
+	public AbstractVisualProperty(final T defaultValue, final String id, final String displayName) {
+		if(defaultValue == null)
+			throw new NullPointerException("defaultValue should not be null.");
+		
+		if(id == null)
+			throw new NullPointerException("id should not be null.");
+		
+		if(displayName == null)
+			throw new NullPointerException("displayName should not be null.");
+		
+		
+		this.dataType = (Class<T>) defaultValue.getClass();
+		
 		this.defaultValue = defaultValue;
 		this.id = id;
-		this.name = name;
+		this.name = displayName;
+		this.shouldIgnoreDefault = false;
 	}
 
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public Class<T> getType() {
-		if (defaultValue != null)
-			return (Class<T>) defaultValue.getClass();
-		else
-			return null;
+		return dataType;
 	}
 
 	
-	@Override
-	public T getDefault() {
+	@Override public T getDefault() {
 		return defaultValue;
 	}
 
@@ -97,8 +108,8 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	}
 
 	@Override
-	public boolean isIgnoreDefault() {
-		return this.isIgnoreDefault;
+	public boolean shouldIgnoreDefault() {
+		return this.shouldIgnoreDefault;
 	}
 
 }

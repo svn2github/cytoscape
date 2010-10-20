@@ -18,15 +18,7 @@ public abstract class AbstractVisualPropertyTest<T> {
 	protected Class<T> type;
 	protected Boolean ignore;
 	
-	@Before
-	public void setUp() throws Exception {
-		
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	
 	@Test
 	public void testAbstractVisualProperty() {
 		assertNotNull(vp);
@@ -34,7 +26,7 @@ public abstract class AbstractVisualPropertyTest<T> {
 
 	@Test
 	public void testGetType() {
-		assertEquals(type, vp.getClass());
+		assertEquals(type, vp.getType());
 	}
 
 	@Test
@@ -55,6 +47,6 @@ public abstract class AbstractVisualPropertyTest<T> {
 
 	@Test
 	public void testIsIgnoreDefault() {
-		assertEquals(ignore, vp.isIgnoreDefault());
+		assertEquals(ignore, vp.shouldIgnoreDefault());
 	}
 }

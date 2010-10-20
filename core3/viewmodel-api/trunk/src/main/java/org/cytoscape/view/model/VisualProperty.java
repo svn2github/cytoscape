@@ -100,6 +100,6 @@ public interface VisualProperty<T> {
 	 * 
 	 * @return
 	 */
-	boolean isIgnoreDefault();
+	boolean shouldIgnoreDefault();
 
 }

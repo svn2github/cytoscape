@@ -45,6 +45,7 @@ package cytoscape.internal.actions;
 import java.awt.event.ActionEvent;
 import java.awt.print.PrinterJob;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.swing.event.MenuEvent;
 
@@ -88,8 +89,9 @@ public class PrintAction extends CytoscapeAction {
 		RenderingEngine engine = cyNetworkMgr.getCurrentRenderingEngine();
 
 		PrinterJob printJob = PrinterJob.getPrinterJob();
-
-		engine.setProperties(props);
+		final Set<Object> keys = props.keySet();
+		for(Object key: keys)
+			engine.getProperties().put(key, props.get(key));
 
 		printJob.setPrintable(engine.createPrintable());
 
