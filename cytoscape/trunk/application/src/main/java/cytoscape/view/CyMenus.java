@@ -640,48 +640,27 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 		vizButton.setToolTipText("Open VizMapper\u2122");
 		vizButton.setBorderPainted(false);
 		
-		/////Add a button -- apply layout, 'force-directed' by default
-		String layoutName = CytoscapeInit.getProperties().get("defaultLayoutAlgorithm").toString();
-				
-		applyLayoutButton = new JButton();
+		///Add a button -- apply layout, 'force-directed' by default
+		String layoutName = CytoscapeInit.getProperties().get("preferredLayoutAlgorithm").toString();
+		final ApplyLayoutAction layoutAction = new ApplyLayoutAction();
+		layoutAction.putValue(Action.NAME, null);
+		applyLayoutButton = toolBar.add(layoutAction);
+		layoutAction.setButton(applyLayoutButton);
 		applyLayoutButton.setIcon(new ImageIcon(Cytoscape.class
-		                                        .getResource("images/apply-force-directed-layout-32.png")));
+                .getResource("images/apply-force-directed-layout-32.png")));
 		applyLayoutButton.setToolTipText("Apply "+layoutName + " layout");
 		applyLayoutButton.setBorderPainted(false);
 		applyLayoutButton.setRolloverEnabled(true);		
-		applyLayoutButton.addActionListener(new ApplyLayoutAction(applyLayoutButton));
-
-		toolBar.add(applyLayoutButton);
-
+		
 		/////Add a button -- Create new network from selected nodes, all edges
-		createNewNetworkButton = new JButton();
+		final NewWindowSelectedNodesOnlyAction newWindowSelectedNodesOnlyAction = new NewWindowSelectedNodesOnlyAction();
+		newWindowSelectedNodesOnlyAction.putValue(Action.NAME, null);
+		createNewNetworkButton = toolBar.add(newWindowSelectedNodesOnlyAction);
 		createNewNetworkButton.setIcon(new ImageIcon(Cytoscape.class
-		                                        .getResource("images/new-network-from-selected-nodes-32.png")));
+                .getResource("images/new-network-from-selected-nodes-32.png")));
 		createNewNetworkButton.setToolTipText("Create new network from selected nodes, all edges");
 		createNewNetworkButton.setBorderPainted(false);
-		createNewNetworkButton.setRolloverEnabled(true);
-		createNewNetworkButton.addMouseListener(new MouseListener() {
-				public void mouseClicked(MouseEvent e) {
-					//Create New Network from selected nodes, all edges
-					if (Cytoscape.getCurrentNetworkView().getSelectedNodeIndices().length > 0){
-						NewWindowSelectedNodesOnlyAction action = new NewWindowSelectedNodesOnlyAction(true);
-						action.actionPerformed(null);						
-					}
-				}
-
-				public void mouseEntered(MouseEvent e) {}
-				public void mouseExited(MouseEvent e) {}
-
-				public void mousePressed(MouseEvent e) {
-					createNewNetworkButton.setSelected(true);
-				}
-
-				public void mouseReleased(MouseEvent e) {
-					createNewNetworkButton.setSelected(false);
-				}
-			});
-		toolBar.add(createNewNetworkButton);
-
+		createNewNetworkButton.setRolloverEnabled(true);		
 	}
 
 	public void propertyChange(PropertyChangeEvent e) {
