@@ -102,10 +102,10 @@ public @interface Tunable {
 	 * Here is an example of how to add dependencies between <code>Tunables<code> :
 	 * 
 	 * <code>
-	 *   @Tunable(description="Type")
+	 *   &#64;Tunable(description="Type")
 	 *   public boolean type = false;
 	 *
-	 *   @Tunable(description="Host name",dependsOn="type=true")
+	 *   &#64;Tunable(description="Host name",dependsOn="type=true")
 	 *   public String hostname="";
 	 * </code>
 	 *  </pre></p>
