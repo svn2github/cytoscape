@@ -25,10 +25,9 @@ public class ApplyLayoutAction extends CytoscapeAction implements PropertyChange
 	private CyLayoutAlgorithm alg;
 	private JButton applyLayoutButton;
 	
-	public ApplyLayoutAction(JButton button){
-		applyLayoutButton = button;
+	public ApplyLayoutAction(){
 
-		layoutName = CytoscapeInit.getProperties().get("defaultLayoutAlgorithm").toString();
+		layoutName = CytoscapeInit.getProperties().get("preferredLayoutAlgorithm").toString();
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.PREFERENCES_UPDATED,this);
 	}
 	
@@ -69,18 +68,18 @@ public class ApplyLayoutAction extends CytoscapeAction implements PropertyChange
 		}
 	}
 	
-	public boolean isInMenuBar(){
-		return false;
+	public void setButton(JButton button){
+		this.applyLayoutButton = button;
 	}
 	
-	public boolean isInToolBar(){
+	public boolean isInMenuBar(){
 		return false;
 	}
 	
 	public void propertyChange(PropertyChangeEvent e) {
 
 		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.PREFERENCES_UPDATED)){
-			String newLayoutName = CytoscapeInit.getProperties().get("defaultLayoutAlgorithm").toString();
+			String newLayoutName = CytoscapeInit.getProperties().get("preferredLayoutAlgorithm").toString();
 
 			if (!newLayoutName.equalsIgnoreCase(layoutName)){
 				layoutName = newLayoutName;
