@@ -3,10 +3,10 @@ package org.idekerlab.PanGIAPlugin;
 
 public enum ScalingMethodX {
 	NONE("none (prescaled)"),
-	LINEAR_LOWER("linear/lower"),
-	LINEAR_UPPER("linear/upper"),
-	RANK_LOWER("rank/lower"),
-	RANK_UPPER("rank/upper");
+	LINEAR_LOWER("lower"),
+	LINEAR_UPPER("upper");
+	//RANK_LOWER("rank/lower"),
+	//RANK_UPPER("rank/upper");
 
 	private String displayString;
 

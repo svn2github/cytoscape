@@ -57,7 +57,10 @@ public class SearchTask implements Task {
 		this.parameters = parameters;
 	}
 
+	private long startTime;
+	
 	public void run() {
+		startTime = System.nanoTime();
 		taskMonitor.setPercentCompleted(1);
 		taskMonitor.setStatus("Searching for modules...");
 		
@@ -303,6 +306,8 @@ public class SearchTask implements Task {
 		
 		//Generate report
 		if (!parameters.getReportPath().equals("")) generateReport(parameters.getReportPath(), networkName, pnetNodes1, pnetNodes2, pnetEdges1, pnetEdges2, geneticNetwork.numNodes(), geneticNetwork.numEdges(), trainingComplexes, physicalRegress, geneticRegress, annotMatches, results);
+		
+		System.out.println("Execution time: "+(System.nanoTime()-startTime)/1e9+" seconds");
 	}
 
 	/*
@@ -501,13 +506,12 @@ public class SearchTask implements Task {
 		return outputNetwork;
 	}
 	
-	private float[] scaleEdgeAttribValues(final float[] edgeAttribValues, final ScalingMethodX scalingMethod,
-					      final StringBuilder errorMessage)
+	private float[] scaleEdgeAttribValues(final float[] edgeAttribValues, final ScalingMethodX scalingMethod, final StringBuilder errorMessage)
 	{
 		if (scalingMethod == ScalingMethodX.NONE)
 			return edgeAttribValues;
 
-		if (scalingMethod == ScalingMethodX.LINEAR_LOWER || scalingMethod == ScalingMethodX.RANK_LOWER) {
+		if (scalingMethod == ScalingMethodX.LINEAR_LOWER) {
 			for (int i = 0; i < edgeAttribValues.length; ++i)
 				edgeAttribValues[i] = -edgeAttribValues[i];
 		}
@@ -519,10 +523,6 @@ public class SearchTask implements Task {
 			from = 0.5f + EPS;
 			to   = 1.0f - EPS;
 			scalingType = "linear";
-		} else if (scalingMethod == ScalingMethodX.RANK_LOWER || scalingMethod == ScalingMethodX.RANK_UPPER) {
-			from = 0.5f;
-			to   = 1.0f;
-			scalingType = "rank";
 		} else
 			throw new IllegalArgumentException("unknown scaling method: " + scalingMethod);
 		

@@ -165,6 +165,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 5);
+        physicalEdgeAttribComboBox.addActionListener(new java.awt.event.ActionListener(){
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	updateFilteringOptions(evt);
+            }
+        });
         topPane.add(physicalEdgeAttribComboBox, gridBagConstraints);
 
         lbPhysicalNetwork.setText("Network:");
@@ -182,6 +187,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         lbPhysicalScale.setText("Scale:");
         lbPhysicalScale.setToolTipText("Choose an algorithm for scaling edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
+        lbPhysicalScale.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
@@ -189,6 +195,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         topPane.add(lbPhysicalScale, gridBagConstraints);
 
         phyScalingMethodComboBox.setToolTipText("Choose an algorithm for scaling edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
+        phyScalingMethodComboBox.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -245,14 +252,16 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeAttributePanel.add(geneticNetworkPanel, gridBagConstraints);
 
         lbGeneticScale.setText("Scale:");
-        lbGeneticScale.setToolTipText("Choose an algorithm for scaling edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
+        lbGeneticScale.setToolTipText("Choose whether or not to scale edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
+        lbGeneticScale.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
         edgeAttributePanel.add(lbGeneticScale, gridBagConstraints);
 
-        genScalingMethodComboBox.setToolTipText("Choose an algorithm for scaling edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
+        genScalingMethodComboBox.setToolTipText("Choose whether or not to scale edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
+        genScalingMethodComboBox.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -375,11 +384,12 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeFilterSliderLabels = new JLabel();
         lbPlaceHolder2 = new javax.swing.JLabel();
         lbPlaceHolder3 = new javax.swing.JLabel();
-        trainingCheckBoxPhysical = new JCheckBox();
-        trainingCheckBoxGenetic = new JCheckBox();
+        trainingCheckBox = new JCheckBox();
+        //trainingCheckBoxPhysical = new JCheckBox();
+        //trainingCheckBoxGenetic = new JCheckBox();
         trainingLabel = new JLabel();
-        trainingLabelPhysical = new JLabel();
-        trainingLabelGenetic = new JLabel();
+        //trainingLabelPhysical = new JLabel();
+        //trainingLabelGenetic = new JLabel();
         annotationCheckBox = new JCheckBox();
         annotationLabel = new JLabel();
         lbComplexFile = new javax.swing.JLabel();
@@ -661,6 +671,23 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
         trainingPanel.add(trainingLabel, gridBagConstraints);
         
+        trainingCheckBox.setSelected(false);
+        trainingCheckBox.setToolTipText(trainingLabel.getToolTipText());
+        trainingCheckBox.setEnabled(false);
+        trainingCheckBox.addActionListener(new java.awt.event.ActionListener(){
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	updateFilteringOptions(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
+        trainingPanel.add(trainingCheckBox, gridBagConstraints);
+        
+        /*
         trainingCheckBoxPhysical.setSelected(false);
         trainingCheckBoxPhysical.setToolTipText(trainingLabel.getToolTipText());
         trainingCheckBoxPhysical.setEnabled(false);
@@ -702,6 +729,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 110, 3, 0);
         trainingPanel.add(trainingLabelGenetic, gridBagConstraints);
+        */
         
         annotationLabel.setText("Label modules:");
         annotationLabel.setToolTipText("Label the modules using a reference annotation.");
@@ -952,10 +980,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		if (attribChosen)
 		{
 			trainingLabel.setEnabled(true);
-			trainingCheckBoxPhysical.setEnabled(true);
-			trainingLabelPhysical.setEnabled(true);
-			trainingCheckBoxGenetic.setEnabled(true);
-			trainingLabelGenetic.setEnabled(true);
+			trainingCheckBox.setEnabled(true);
+			//trainingCheckBoxPhysical.setEnabled(true);
+			//trainingLabelPhysical.setEnabled(true);
+			//trainingCheckBoxGenetic.setEnabled(true);
+			//trainingLabelGenetic.setEnabled(true);
 			annotationLabel.setEnabled(true);
 			annotationCheckBox.setEnabled(true);
 			
@@ -967,10 +996,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		}else
 		{
 			trainingLabel.setEnabled(false);
-			trainingCheckBoxPhysical.setEnabled(false);
-			trainingLabelPhysical.setEnabled(false);
-			trainingCheckBoxGenetic.setEnabled(false);
-			trainingLabelGenetic.setEnabled(false);
+			trainingCheckBox.setEnabled(false);
+			//trainingCheckBoxPhysical.setEnabled(false);
+			//trainingLabelPhysical.setEnabled(false);
+			//trainingCheckBoxGenetic.setEnabled(false);
+			//trainingLabelGenetic.setEnabled(false);
 			annotationThresholdTextField.setEnabled(false);
 			annotationThresholdLabel.setEnabled(false);
 			annotationLabel.setEnabled(false);
@@ -1019,11 +1049,12 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JLabel lbGeneticNetwork;
     private javax.swing.JLabel lbPhysicalNetwork;
     private javax.swing.JPanel trainingPanel;
-    private JCheckBox trainingCheckBoxPhysical;
-    private JCheckBox trainingCheckBoxGenetic;
+    private JCheckBox trainingCheckBox;
+    //private JCheckBox trainingCheckBoxPhysical;
+    //private JCheckBox trainingCheckBoxGenetic;
     private JLabel trainingLabel;
-    private JLabel trainingLabelPhysical;
-    private JLabel trainingLabelGenetic;
+    //private JLabel trainingLabelPhysical;
+    //private JLabel trainingLabelGenetic;
     private JCheckBox annotationCheckBox;
     private JLabel annotationLabel;
     private javax.swing.JLabel lbComplexFile;
@@ -1174,8 +1205,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		
 		parameters.setAnnotationThreshold(Double.valueOf(annotationThresholdTextField.getText()));
 		parameters.setComplexAnnotation(annotationCheckBox.isSelected());
-		parameters.setComplexTrainingPhysical(trainingCheckBoxPhysical.isSelected());
-		parameters.setComplexTrainingGenetic(trainingCheckBoxGenetic.isSelected());
+		parameters.setComplexTrainingPhysical(trainingCheckBox.isSelected());
+		parameters.setComplexTrainingGenetic(trainingCheckBox.isSelected());
 		
 		if (annotationAttribComboBox.getSelectedItem()==null) parameters.setAnnotationAttrName("");
 		else parameters.setAnnotationAttrName(annotationAttribComboBox.getSelectedItem().toString());
@@ -1206,12 +1237,32 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	
 	public void updateFilteringOptions(java.awt.event.ActionEvent evt)
 	{
+		final String physicalAttrName = (String)physicalEdgeAttribComboBox.getSelectedItem();
 		final String geneticAttrName = (String)geneticEdgeAttribComboBox.getSelectedItem();
+		
+		if (physicalAttrName==null || physicalAttrName.equals(DEFAULT_ATTRIBUTE) || trainingCheckBox.isSelected())
+		{
+			lbPhysicalScale.setEnabled(false);
+	        phyScalingMethodComboBox.setEnabled(false);
+		}else
+		{
+			lbPhysicalScale.setEnabled(true);
+	        phyScalingMethodComboBox.setEnabled(true);
+		}
+		
+		if (geneticAttrName==null || geneticAttrName.equals(DEFAULT_ATTRIBUTE) || trainingCheckBox.isSelected())
+		{
+			lbGeneticScale.setEnabled(false);
+	        genScalingMethodComboBox.setEnabled(false);
+		}else
+		{
+			lbGeneticScale.setEnabled(true);
+	        genScalingMethodComboBox.setEnabled(true);
+		}
+		
 		
 		if (geneticAttrName==null || geneticAttrName.equals(DEFAULT_ATTRIBUTE))
 		{
-			//lbNumberOfSamples.setEnabled(false);
-		    //numberOfSamplesTextField.setEnabled(false);
 			edgeFilterSliderLabels.setEnabled(false);
 			edgeFilterSlider.setEnabled(false);
 		    pValueThresholdLabel.setEnabled(false);
@@ -1220,9 +1271,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		{
 			edgeFilterSliderLabels.setEnabled(true);
 			edgeFilterSlider.setEnabled(true);
-			//lbNumberOfSamples.setEnabled(true);
-		    //numberOfSamplesTextField.setEnabled(true);
-		    pValueThresholdLabel.setEnabled(true);
+			pValueThresholdLabel.setEnabled(true);
 		    edgeFilterTextField.setEnabled(true);
 		}
 	}
@@ -1287,7 +1336,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			return;
 		}
 		
-		if ((annotationCheckBox.isSelected() || trainingCheckBoxPhysical.isSelected() || trainingCheckBoxGenetic.isSelected()) && annotationAttribComboBox.getSelectedIndex()<0)
+		if ((annotationCheckBox.isSelected() || trainingCheckBox.isSelected()) && annotationAttribComboBox.getSelectedIndex()<0)
 		{
 			searchButton.setEnabled(false);
 			parameterErrorTextArea.setText("To use annotation, please choose an annotation node attribute.");
