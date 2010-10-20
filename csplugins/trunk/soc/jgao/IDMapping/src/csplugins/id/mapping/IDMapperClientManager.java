@@ -406,8 +406,12 @@ public class IDMapperClientManager {
         }
     }
 
-    public static void registerClient(final IDMapperClient client) {
-        registerClient(client, true);
+    public static boolean registerClient(final IDMapperClient client) {
+        return registerClient(client, true);
+    }
+
+    public static boolean registerClient(final IDMapperClient client, boolean selected) {
+        return registerClient(client, selected, false);
     }
 
     /**
@@ -415,7 +419,7 @@ public class IDMapperClientManager {
      * connection string, that client will be replaced with the new client.
      * @param client
      */
-    public static void registerClient(final IDMapperClient client, boolean selected) {
+    public static boolean registerClient(final IDMapperClient client, boolean selected, boolean connectImmediately) {
         if (client == null) {
             throw new IllegalArgumentException();
         }
@@ -425,7 +429,10 @@ public class IDMapperClientManager {
             removeClient(oldClient);
         }
 
-        //preprocess(client); // set fullname if null
+        if (connectImmediately) {
+            if (null == client.getIDMapper())
+                return false;
+        }
 
         clientConnectionStringMap.put(client.getConnectionString(), client);
 
@@ -434,6 +441,7 @@ public class IDMapperClientManager {
         }
         
         fireIDMapperChange();
+        return true;
     }
 
     public static void setClientSelection(IDMapperClient client, boolean select) {

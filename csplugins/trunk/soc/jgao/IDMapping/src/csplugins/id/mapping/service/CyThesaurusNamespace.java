@@ -295,11 +295,14 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
                             .Builder(connString, classPath)
                             .displayName(displayName)
                             .build();
-            IDMapperClientManager.registerClient(client);
-            result.addMessage("Successfully registered");
+            boolean succ = IDMapperClientManager.registerClient(client, true, true);
+            if (succ)
+                result.addMessage("Successfully registered");
+            else
+                result.addError("Failed to register the resource\n");
         } catch (Exception e) {
-            // throw new CyCommandException(e);
-            result.addError("Failed to register the resource\n"+e.getMessage());
+            throw new CyCommandException(e);
+//            result.addError("Failed to register the resource\n"+e.getMessage());
         }
         return result;
     }
@@ -320,8 +323,8 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
             }
 
         } catch (Exception e) {
-            // throw new CyCommandException(e);
-            result.addError("Failed to remove the resource\n"+e.getMessage());
+             throw new CyCommandException(e);
+//            result.addError("Failed to remove the resource\n"+e.getMessage());
         }
         return result;
     }
@@ -343,8 +346,8 @@ public class CyThesaurusNamespace extends AbstractCommandHandler {
                 result.addMessage("Selected.");
             }
         } catch (Exception e) {
-            // throw new CyCommandException(e);
-            result.addError("Failed to remove the resource\n"+e.getMessage());
+             throw new CyCommandException(e);
+//            result.addError("Failed to remove the resource\n"+e.getMessage());
         }
         return result;
     }
