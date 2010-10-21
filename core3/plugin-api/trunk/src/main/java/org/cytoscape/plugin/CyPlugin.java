@@ -3,7 +3,9 @@ package org.cytoscape.plugin;
 
 /**
  * The primary plugin interface for Cytoscape that all
- * plugins must extend. 
+ * plugins must extend. Plugin developer will have access 
+ * to most of Cytoscape 3.X services, but 
+ * still program in the way as in Cytoscape 2.X.
  */
 public abstract class CyPlugin {
 
