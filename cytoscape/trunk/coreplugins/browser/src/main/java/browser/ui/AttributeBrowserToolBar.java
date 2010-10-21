@@ -50,7 +50,6 @@ import cytoscape.util.swing.CheckBoxJList;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -176,16 +175,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			}
 			tableModel.setTableData(null, orderedCol);
 		}
-	}
-
-	private Frame getActiveFrame() {
-		final Frame[] frames = Frame.getFrames();
-		for (final Frame frame : frames) {
-			if (frame.isActive())
-				return frame;
-		}
-
-		return null;
 	}
 
 	/**
