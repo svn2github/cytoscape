@@ -27,18 +27,42 @@
 */
 package browser.ui;
 
+
 import static browser.DataObjectType.EDGES;
 import static browser.DataObjectType.NETWORK;
 import static browser.DataObjectType.NODES;
 
+import browser.AttributeBrowser;
+import browser.AttributeModel;
+import browser.DataObjectType;
+import browser.DataTableModel;
+import browser.ValidatedObjectAndEditString;
+
+import cytoscape.Cytoscape;
+import cytoscape.actions.ImportEdgeAttributesAction;
+import cytoscape.actions.ImportExpressionMatrixAction;
+import cytoscape.actions.ImportNodeAttributesAction;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.dialogs.NetworkMetaDataDialog;
+import cytoscape.logger.CyLogger;
+import cytoscape.util.swing.CheckBoxJList;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -58,29 +82,11 @@ import javax.swing.event.PopupMenuListener;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
-import browser.AttributeBrowser;
-import browser.AttributeModel;
-import browser.DataObjectType;
-import browser.DataTableModel;
-import browser.ValidatedObjectAndEditString;
-
-import cytoscape.Cytoscape;
-import cytoscape.actions.ImportEdgeAttributesAction;
-import cytoscape.actions.ImportExpressionMatrixAction;
-import cytoscape.actions.ImportNodeAttributesAction;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-import cytoscape.dialogs.NetworkMetaDataDialog;
-import cytoscape.logger.CyLogger;
-import cytoscape.util.swing.CheckBoxJList;
-import java.util.HashMap;
-
 
 /**
  *  Define toolbar for Attribute Browser.
  */
-public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener {
-	
+public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener, PropertyChangeListener {
 	private static final long serialVersionUID = -508393701912596399L;
 	
 	private final CyAttributes attributes;
@@ -126,7 +132,8 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 	public AttributeBrowserToolBar(final DataTableModel tableModel, final CyAttributeBrowserTable table,
 	                               final AttributeModel a_model, final List<String> orderedCol,
-	                               final DataObjectType graphObjectType) {
+	                               final DataObjectType graphObjectType)
+	{
 		super();
 
 		this.tableModel = tableModel;
@@ -139,6 +146,8 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		logger = CyLogger.getLogger(AttributeBrowserToolBar.class);
 
 		initializeGUI();
+
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NEW_ATTRS_LOADED, this);
 	}
 
 	private void initializeGUI() {
@@ -152,6 +161,33 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 		modDialog = new ModDialog(tableModel, objectType, Cytoscape.getDesktop());
 		attrModButton.setVisible(objectType != NETWORK);
+	}
+
+	public void propertyChange(PropertyChangeEvent e) {
+		// This will handle the case for the change of attribute userVisibility
+		if (e.getPropertyName() == Cytoscape.NEW_ATTRS_LOADED && e.getOldValue() == attributes) {
+			final Set<String> newAttrNames = (Set<String>)e.getNewValue();
+			if (JOptionPane.showConfirmDialog(
+				getActiveFrame(),
+				"Display " + newAttrNames.size() + " newly loaded attribute(s) in the attribute browser?",
+				"Confirmation", JOptionPane.YES_NO_OPTION)
+			    == JOptionPane.YES_OPTION)
+			{
+				for (final String newAttrName : newAttrNames)
+					orderedCol.add(newAttrName);
+				tableModel.setTableData(null, orderedCol);
+			}
+		}
+	}
+
+	private Frame getActiveFrame() {
+		final Frame[] frames = Frame.getFrames();
+		for (final Frame frame : frames) {
+			if (frame.isActive())
+				return frame;
+		}
+
+		return null;
 	}
 
 	/**

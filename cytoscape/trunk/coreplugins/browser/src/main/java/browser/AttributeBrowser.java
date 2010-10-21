@@ -37,14 +37,12 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.JPanel;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -65,7 +63,6 @@ import cytoscape.view.cytopanels.CytoPanelState;
 
 
 /**
- *
  * DataTable class constructs all Panels for the browser.<br>
  * One DataTable contains the table of values and the toolbar above the table
  * within a jpanel. This panel is then added to CytoPanel2. Tabbed browsing
@@ -77,7 +74,7 @@ import cytoscape.view.cytopanels.CytoPanelState;
  * panel to AttrMod Dialog Peng-Liang wang 9/28/2006
  *
  */
-public class AttributeBrowser implements TableColumnModelListener, PropertyChangeListener {
+public class AttributeBrowser implements TableColumnModelListener {
 	private static final Dimension PANEL_SIZE = new Dimension(400, 300);
 	
 	protected static Object pcsO = new Object();
@@ -209,25 +206,6 @@ public class AttributeBrowser implements TableColumnModelListener, PropertyChang
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH)
 		         .add(panelType.getDisplayName() + " Attribute Browser", mainPanel);
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setState(CytoPanelState.DOCK);
-
-		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NEW_ATTRS_LOADED, this);
-	}
-
-	public void propertyChange(PropertyChangeEvent e) {
-		// This will handle the case for the change of attribute userVisibility
-		if (e.getPropertyName() == Cytoscape.NEW_ATTRS_LOADED && e.getOldValue() == attributes) {
-			final Set<String> newAttrNames = (Set<String>)e.getNewValue();
-			if (JOptionPane.showConfirmDialog(
-				null,
-				"Display " + newAttrNames.size() + " newly loaded attributes in the attribute browser?",
-				"Confirmation", JOptionPane.YES_NO_OPTION)
-			    == JOptionPane.YES_OPTION)
-			{
-				for (final String newAttrName : newAttrNames)
-					orderedColumn.add(newAttrName);
-				tableModel.setTableData(null, orderedColumn);
-			}
-		}
 	}
 
 	void refresh() {
