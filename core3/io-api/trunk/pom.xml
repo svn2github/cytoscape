@@ -78,6 +78,17 @@
 					</instructions>
 				</configuration>
 			</plugin>
+			<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-jar-plugin</artifactId>
+        		<executions>
+          			<execution>
+            			<goals>
+              			<goal>test-jar</goal>
+            			</goals>
+          			</execution>
+        		</executions>
+      		</plugin>
 		</plugins>
 	</build>
 
@@ -107,6 +118,18 @@
       		<artifactId>session-api</artifactId>
       		<version>1.0-SNAPSHOT</version>
     	</dependency>
+    	<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.8.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>
