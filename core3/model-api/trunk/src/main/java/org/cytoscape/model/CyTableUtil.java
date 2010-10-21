@@ -41,7 +41,8 @@ import java.util.ArrayList;
 
 
 /** 
- * 
+ * A collection of stateless, static utility methods provided to
+ * simplify querying of table objects.
  */
 public class CyTableUtil {
 	private CyTableUtil() {}
@@ -51,6 +52,12 @@ public class CyTableUtil {
 	 * in the CyNetwork.DEFAULT_ATTRS namespace specified by columnName and are in 
 	 * the specified state.  If the attribute doesn't exist or is not of type 
 	 * Boolean an IllegalArgumentException will be thrown.
+	 * @param net The network to be queried.
+	 * @param columnName The name of the column to be tested.
+	 * @param state The state being queried. 
+	 * @return a list of nodes that have a boolean attribute in the 
+	 * CyNetwork.DEFAULT_ATTRS namespace specified by columnName and are in 
+	 * the specified state. 
 	 */
 	public static List<CyNode> getNodesInState(final CyNetwork net, final String columnName, final boolean state) {
 		if ( net == null )
@@ -67,6 +74,12 @@ public class CyTableUtil {
 	 * in the CyNetwork.DEFAULT_ATTRS namespace specified by columnName and are in 
 	 * the specified state.  If the attribute doesn't exist or is not of type 
 	 * Boolean an IllegalArgumentException will be thrown.
+	 * @param net The network to be queried.
+	 * @param columnName The name of the column to be tested.
+	 * @param state The state being queried. 
+	 * @return a list of edges that have a boolean attribute in the 
+	 * CyNetwork.DEFAULT_ATTRS namespace specified by columnName and are in 
+	 * the specified state. 
 	 */
 	public static List<CyEdge> getEdgesInState(final CyNetwork net, final String columnName, final boolean state) {
 		if ( net == null )

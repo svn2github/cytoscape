@@ -41,9 +41,11 @@ import java.util.Map;
 
 
 /** 
- * 
+ * A simple representation of a table object consisting of rows
+ * and columns. Columns have names and specific types and rows
+ * contain the data for a specific index.
  */
-public interface CyTable {
+public interface CyTable extends Identifiable {
 	/**
 	 * By default all {@link CyRow}s created have a primary key column of type {@link Integer} 
 	 * that gets created at initialization which is identified by this string. If the
@@ -62,47 +64,48 @@ public interface CyTable {
 	boolean isPublic();
 
 	/**
-	 * @return The session unique identifier.
-	 */
-	long getSUID();
-
-	/**
+	 * Returns a human readable name for the CyTable.
 	 * @return A human readable name for the CyTable.
 	 */
 	String getTitle();
 
 	/**
-	 * @return The name of the primary key column for this table.
-	 */
-	String getPrimaryKey();
-
-	/**
-	 * @return The class type of the primary key column for this table.
-	 */
-	Class<?> getPrimaryKeyType();
-
-	/**
-	 * 
+	 * Allows the title of the table to be set. The title is meant to be
+	 * human readable and suitable for use in a user interface.
 	 * @param title The human readable title for the CyTable suitable for use in a user
 	 *        interface.
 	 */
 	void setTitle(String title);
 
 	/**
+	 * Returns the name of the primary key column for this table.
+	 * @return The name of the primary key column for this table.
+	 */
+	String getPrimaryKey();
+
+	/**
+	 * Returns the class type of the primary key column for this table.
+	 * @return The class type of the primary key column for this table.
+	 */
+	Class<?> getPrimaryKeyType();
+
+	/**
      * The keySet of this map defines all columns in the CyTable and the
      * the values of this map define the types of the columns.
-	 *
      * @return A map of column names to the {@link Class} objects that defines
      * the column type.
      */
 	Map<String, Class<?>> getColumnTypeMap();
 
 	/**
+	 * Will delete the column of the specified name.
 	 * @param columnName The name identifying the attribute.
 	 */
 	void deleteColumn(String columnName);
 
 	/**
+	 * Create a column of the specified name with the specified type
+	 * and uniqueness.
 	 * @param columnName The name identifying the attribute.
 	 * @param type The type of the column.
 	 * @param unique Whether the values contained in the column must be unique  
@@ -110,16 +113,18 @@ public interface CyTable {
 	<T> void createColumn(String columnName, Class<?extends T> type, boolean unique);
 
 	/**
-     * Unique columns can be used to map the values from one CyTable to another.
+     * Returns a list of column names where the values within the column are
+     * guaranteed to be unique.  Unique columns can be used to map the values 
+	 * from one CyTable to another.
      * @return A list of column names where the values within the column are
      * guaranteed to be unique. 
      */
 	List<String> getUniqueColumns();
 
 	/**
+	 * Returns the list of all values contained in the specified column.
 	 * @param columnName The name identifying the attribute.
 	 * @param type The type of the column.
-	 *
 	 * @return the list of all values contained in the specified column.
      */
 	<T> List<T> getColumnValues(String columnName, Class<?extends T> type);
@@ -128,16 +133,15 @@ public interface CyTable {
 	 * Returns the row specified by the primary key object and if a row
 	 * for the specified key does not yet exist in the table, a new row
 	 * will be created and the new row will be returned.
-	 *
 	 * @param primaryKey The primary key index of the row to return.
-	 *
 	 * @return The {@link CyRow} identified by the specified key or a new
 	 * row identified by the key if one did not already exist.
 	 */
 	CyRow getRow(Object primaryKey);
 
 	/**
-	 * Return a list of all the rows stored in this data table
+	 * Return a list of all the rows stored in this data table.
+	 * @return a list of all the rows stored in this data table.
 	 */
 	List<CyRow> getAllRows();
 }

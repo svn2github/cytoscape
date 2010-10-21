@@ -37,11 +37,13 @@
 package org.cytoscape.model;
 
 /**
- * DOCUMENT ME!
-  */
+ * CyTableEntry is an interface that indicates that the implementing
+ * object can be considered a key into a table. In general, table
+ * entries will be things like nodes, edges, and networks..
+ */
 public interface CyTableEntry extends Identifiable {
 	
-	/*
+	/* TODO RESOLVE THIS!!!!
 	 * The following strings have been moved from Visual Property.
 	 * We use String instead of enum in case we need to extend it later.
 	 */
@@ -58,7 +60,18 @@ public interface CyTableEntry extends Identifiable {
 	 */
 	String NETWORK = "NETWORK";
 	
-	CyRow getCyRow(String namespace);
+	/**
+	 * Returns the row for the specified table name for this object.
+	 * @param tableName the name of the table from which to extract the row..
+	 * @return the row in the table of the specified name for this object. 
+	 */
+	CyRow getCyRow(String tableName);
 
+	/**
+	 * A convenience method that returns the row in the default table 
+	 * for this object. This method is equivalent to calling 
+	 * getCyRow("default").
+	 * @return the row in the default table for this object. 
+	 */
 	CyRow attrs();
 }

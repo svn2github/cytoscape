@@ -39,8 +39,6 @@ package org.cytoscape.model.subnetwork;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
-import java.util.Set; 
-
 
 /**
  * A CySubNetwork is a {@link CyNetwork} that is contained within a parent
@@ -50,7 +48,6 @@ import java.util.Set;
 public interface CySubNetwork extends CyNetwork {
 	/**
 	 * Return the {@link CyRootNetwork} that contains this CySubNetwork. 
-	 *
 	 * @return  the {@link CyRootNetwork} that contains this CySubNetowrk.
 	 */
 	CyRootNetwork getRootNetwork(); 
@@ -58,24 +55,24 @@ public interface CySubNetwork extends CyNetwork {
 	/**
 	 * Adds a node to this {@link CySubNetwork}.  Note that the added node
 	 * is not a new node, and must already exist in the {@link CyRootNetwork}.
-	 * This method also allows {@link CyMetaNode} to be added to subnetworks.
-	 *
 	 * @param node  CyNode to add to this subnetwork
+	 * @return true if the node was successfully added to the subnetwork, 
+	 * false otherwise.
 	 */
 	boolean addNode(CyNode node);
 
 	/**
 	 * Adds an edge to this {@link CySubNetwork}.  Note that the added edge
 	 * is not a new edge, and must already exist in the {@link CyRootNetwork}.
-	 *
 	 * @param edge  CyEdge to add to this subnetwork
+	 * @return true if the edge was successfully added to the subnetwork, 
+	 * false otherwise.
 	 */
 	boolean addEdge(CyEdge edge);
 
 	/**
 	 * A shortcut method that Creates a new {@link CyNode} in both this subnetwork 
 	 * <b>AND</b> in the {@link CyRootNetwork}.
-	 *
 	 * @return A new CyNode that exists in both this subnetwork and the associated
 	 * {@link CyRootNetwork}.
 	 */
@@ -84,18 +81,23 @@ public interface CySubNetwork extends CyNetwork {
 	/**
 	 * A shortcut method that Creates a new {@link CyEdge} in both this subnetwork 
 	 * <b>AND</b> in the {@link CyRootNetwork}.
-	 *
+	 * @param source The source node of the edge. The source node must exist
+	 * in the root network.
+	 * @param target The target node of the edge. The target node must exist
+	 * in the root network.
+	 * @param directed Whether the edge should be considered directed or not.
 	 * @return A new CyEdge that exists in both this subnetwork and the associated
 	 * {@link CyRootNetwork}.
 	 */
-	CyEdge addEdge(CyNode src, CyNode tgt, boolean directed);
+	CyEdge addEdge(CyNode source, CyNode target, boolean directed);
 
 	/**
 	 * Removes a node from this {@link CySubNetwork} but not from the {@link CyRootNetwork}.  
 	 * The node is removed from the CySubNetwork, but <i>not</i> deleted
 	 * from the {@link CyRootNetwork}.
-	 *
 	 * @param node  Node to remove from this subnetwork
+	 * @return true if the node was successfully removed from the specified subnetwork,
+	 * false otherwise.
 	 */
 	boolean removeNode(CyNode node);
 
@@ -103,8 +105,9 @@ public interface CySubNetwork extends CyNetwork {
 	 * Removes a edge from this {@link CySubNetwork} but not from the {@link CyRootNetwork}.  
 	 * The edge is removed from the CySubNetwork, but <i>not</i> deleted
 	 * from the {@link CyRootNetwork}.
-	 *
 	 * @param edge  Edge to remove from this subnetwork
+	 * @return true if the edge was successfully removed from the specified subnetwork,
+	 * false otherwise.
 	 */
 	boolean removeEdge(CyEdge edge);
 }

@@ -40,14 +40,27 @@ import java.util.Map;
 
 
 /** 
- * 
+ * A singleton object that provides access to the available
+ * tables in the system. Should be provided as an OSGi service.
  */
 public interface CyTableManager {
 
 	/**
-	 * @return The table containing network attributes for the specified network.
+	 * Returns a map of table names to tables, which contain the attributes 
+	 * for the specified network.
+	 * @param type The type of map to retrieve: NODE, EDGE, or NETWORK.
+	 * @param network The network associated with the map.
+	 * @return a map of table names to tables, which contain the attributes 
+	 * for the specified network.
 	 */
 	Map<String,CyTable> getTableMap(String type, CyNetwork network);
 
+	
+	/**
+	 * Sets the map of table names to tables for the specified network. 
+	 * @param type The type of map: NODE, EDGE, or NETWORK.
+	 * @param network The network associated with the map.
+	 * @param map The map of table names to tables. 
+	 */
 	void setTableMap(String type, CyNetwork network, Map<String,CyTable> map);	
 }

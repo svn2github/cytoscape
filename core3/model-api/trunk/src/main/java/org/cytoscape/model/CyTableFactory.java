@@ -46,17 +46,20 @@ import java.util.List;
  */
 public interface CyTableFactory {
 	/**
+	 * Creates a CyTable object with the specified name, primary key, and visibility.
 	 * @param title The name of the CyTable.
 	 * @param primaryKey The name primaryKey column for this table. 
 	 * @param primaryKeyType The type of the primaryKey column for this table. 
 	 * @param pub Whether or not the CyTable should be public.
-	 *
 	 * @return A new {@link CyTable} with the specified name that is either public or not (see
 	 *         {@link CyTable#isPublic}.
 	 */
 	CyTable createTable(String title, String primaryKey, Class<?> primaryKeyType, boolean pub);
 
+	// TODO move these into table manager!
+
 	/**
+	 * Returns a list of all table SUIDs with the specified visibility.
      * @param includePrivate Whether to include private CyDataTables
      * in the list (i.e. all possible CyDataTables) or not.
      * @return A list containing CyTable SUIDs either
@@ -66,9 +69,8 @@ public interface CyTableFactory {
 	List<Long> getAllTableSUIDs(boolean includePrivate);
 
 	/**
-	 * 
+	 * Returns the table with teh specified SUID. 
 	 * @param suid The SUID identifying the CyTable.
-	 *
 	 * @return The CyTable identified by the suid. Will return null if a CyTable doesn't
 	 *         exist for the  specified SUID.
 	 */

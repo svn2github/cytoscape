@@ -37,8 +37,6 @@
 package org.cytoscape.model;
 
 import java.util.List;
-import java.util.Map;
-
 
 /**
  * CyNetwork is the primary interface for representing a network (graph) data structure.

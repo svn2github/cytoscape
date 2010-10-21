@@ -38,11 +38,16 @@ package org.cytoscape.model.subnetwork;
 
 import org.cytoscape.model.CyNetwork;
 
+/**
+ * A singleton object that provides access to the CyRootNetwork
+ * objects associated with CyNetwork objects.
+ */
 public interface CyRootNetworkFactory {
 
 	/**
 	 * Converts a CyNetwork to a CyRootNetwork
+	 * @param n The CyNetwork for which to return the CyRootNework.
+	 * @return The root network associated with the specified CyNetwork.
 	 */
 	CyRootNetwork convert(CyNetwork n);
-
 }

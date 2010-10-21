@@ -57,28 +57,16 @@ import java.util.List;
  * <ul><li>A <b>CyRootNetwork</b> is a {@link CyNetwork} that
  * adds methods for maintaining the meta-network.
  * All {@link CyNode}s and {@link CyEdge}s in all {@link CySubNetwork}s
- * that are part of this CyRootNetwork, including all {@link CyMetaNode}s.
- * <li>A {@link CySubNetwork} is a group of nodes and edges
- * that are a sub-network of a {@link CyRootNetwork}.  The
- * {@link CySubNetwork} can be represented within another {@link CySubNetwork}
- * by a {@link CyMetaNode}.  A {@link CySubNetwork} may be thought
- * of as a projection of the graph implemented by the <b>CyRootNetwork</b>.
- * <li>A {@link CyMetaNode} is a {@link CyNode} that represents
- * a {@link CySubNetwork} in a {@link CyNetwork}.
- * </ul>
- * These three additional interfaces can be used to create and
- * maintain a complex graph structure.  In order to avoid requiring
- * all plugins and other uses of this package to test for
- * and support the presence of a meta-network, Cytoscape provides
- * a {@link CyNetwork} that is a "flattened" version of the
- * meta-network (essentially all {@link CyNode}s and {@link CyEdge}s
- * except {@link CyMetaNode}s and their associated {@link CyEdge}s.
+ * that are part of this CyRootNetwork.
+ * <li>A {@link CySubNetwork} is a set of nodes and edges
+ * that comprise a sub-network of a {@link CyRootNetwork}.  
+ * A {@link CySubNetwork} may be thought of as a projection of 
+ * the graph implemented by the <b>CyRootNetwork</b>.
  */
 public interface CyRootNetwork extends CyNetwork {
 
 	/**
 	 * Create an empty {@link CySubNetwork}. 
-	 *
 	 * @return  The created {@link CySubNetwork}.
 	 */
 	CySubNetwork addSubNetwork();
@@ -86,7 +74,6 @@ public interface CyRootNetwork extends CyNetwork {
 	/**
 	 * Removes the subnetwork from the root network, but not the nodes and edges contained 
 	 * in the subnetwork.
-	 *
 	 * @param sub  the {@link CySubNetwork} to remove.
 	 */
 	void removeSubNetwork(CySubNetwork sub);

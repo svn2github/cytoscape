@@ -41,11 +41,14 @@ package org.cytoscape.model;
  */
 public abstract class SUIDFactory {
 
-	private SUIDFactory() {
-	}
+	private SUIDFactory() { }
 
 	private static long count = 1;
 
+	/**
+	 * Returns the next available SUID.
+	 * @return the next available SUID.
+	 */
 	public static synchronized long getNextSUID() {
 		return count++;
 	}

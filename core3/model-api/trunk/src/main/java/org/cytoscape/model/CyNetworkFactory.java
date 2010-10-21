@@ -36,9 +36,15 @@ package org.cytoscape.model;
 
 
 /**
- * 
-  */
+ * A singleton factory object used for instantiating CyNetwork 
+ * objects. The CyNetworkFactory should be available as an
+ * OSGi service.
+ */
 public interface CyNetworkFactory {
-	
+
+	/**
+	 * Returns a new, empty {@link CyNetwork} object. 
+	 * @return A new, empty {@link CyNetwork} object. 
+	 */
 	CyNetwork getInstance();
 }

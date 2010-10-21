@@ -44,38 +44,43 @@ import java.util.Map;
  */
 public interface CyRow {
 	/**
+	 * Returns the value found for this row in the specified column
+	 * with the specified type.
 	 * @param columnName The name identifying the attribute.
 	 * @param type The type of the column.
-	 *
 	 * @return the value found for this row in the specified column
 	 */
 	<T> T get(String columnName, Class<?extends T> type);
 
 	/**
+	 * Set the specified column for this row to the specified value.
 	 * @param columnName The name identifying the attribute.
 	 * @param value The value to assign the specified column in this row 
 	 */
 	<T> void set(String columnName, T value);
 
 	/**
+	 * Returns the Class object that is defined for this column. 
      * @param columnName The name of the column to check.
      * @return The Class object that is defined for this column. Will
      * return null if the column has not been defined. Will always return
-     * a base type. If the value is actually a {@link CyFunction} the
-     * function will be evaluated and the function must evaluate to the
-     * type of the column.
+     * a base type. 
      */
 	Class<?> contains(String columnName);
 
 	/**
+	 * Indicates whether the column of the specified type contains
+	 * a non-null value.
 	 * @param columnName The name identifying the attribute.
 	 * @param type The type of the column.
 	 * @return true if the value specified in this row at this column
-	 * is not null?
+	 * of the specified type is not null.
 	 */
 	<T> boolean contains(String columnName, Class<?extends T> type);
 
 	/**
+     * Returns a map of column names to Objects that contain the values
+     * contained in this Row.
      * @return A map of column names to Objects that contain the values
      * contained in this Row.
      */
@@ -84,11 +89,13 @@ public interface CyRow {
 	/**
 	 * Don't use this!  This is a hack for the VizMapper and will go away
 	 * once the VizMapper is refactored.
+	 * @return The row Object that represents the value in a column.
 	 */
 	Object getRaw(String columnName);
 
 	/**
 	 * Returns the {@link CyTable} that this row belongs to.
+	 * @return the {@link CyTable} that this row belongs to.
 	 */
 	CyTable getDataTable();
 }

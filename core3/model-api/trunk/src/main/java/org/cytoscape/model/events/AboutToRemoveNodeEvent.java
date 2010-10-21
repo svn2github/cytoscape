@@ -36,8 +36,6 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyEvent;
-
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 

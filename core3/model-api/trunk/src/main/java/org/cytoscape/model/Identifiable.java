@@ -39,8 +39,13 @@ package org.cytoscape.model;
 /**
  * Any object that implements this interface shall return a session unique
  * identifier that shall be unique among all instances of objects that 
- * implement this interface.  The identifier should be greater than 0.
+ * implement this interface.  The identifier shall be greater than 0.
  */
 public interface Identifiable {
+	
+	/**
+	 * Returns the SUID of the implementing object.
+	 * @return the SUID of the implementing object.
+	 */
 	long getSUID();
 }
