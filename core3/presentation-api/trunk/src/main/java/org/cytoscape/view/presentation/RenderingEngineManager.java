@@ -10,27 +10,19 @@ import org.cytoscape.view.model.View;
  * manager.
  * <P>
  * Register/unregister engines are handled through
- * {@linkplain RenderingEngineCreatedEvent}s.
- * 
- * 
- * @author kono
+ * {@linkplain PresentationCreatedEvent}s.
  * 
  */
 public interface RenderingEngineManager {
 
 	/**
 	 * Get all rendering engines for the given view model.
-	 * 
-	 * @param <T>
-	 *            Data model type. Usually they are {@linkplain CyNode},
-	 *            {@linkplain CyEdge}, {@linkplain CyNetwork}, or
-	 *            {@linkplain CyDataTable}.
+	 *
 	 * @param viewModel
 	 *            View model for the presentation.
 	 * 
 	 * @return collection of rendering engines (presentations) for the given
 	 *         view model.
 	 */
-	<T> Collection<RenderingEngine<T>> getRendringEngines(
-			final View<T> viewModel);
+	Collection<RenderingEngine<?>> getRendringEngines(final View<?> viewModel);
 }

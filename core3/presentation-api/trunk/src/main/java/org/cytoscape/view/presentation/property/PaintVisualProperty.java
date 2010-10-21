@@ -52,11 +52,11 @@ public class PaintVisualProperty<T extends Paint> extends AbstractVisualProperty
 			throw new IllegalArgumentException("This method supports Color object only.  Override this method for more implementations.");
 		}
 		
-		Integer red = new Integer(((Color) color).getRed());
-		Integer green = new Integer(((Color) color).getGreen());
-		Integer blue = new Integer(((Color) color).getBlue());
+		final Integer red = Integer.valueOf(((Color) color).getRed());
+		final Integer green = Integer.valueOf(((Color) color).getGreen());
+		final Integer blue = Integer.valueOf(((Color) color).getBlue());
 
-		return new String(red.toString() + "," + green.toString() + "," + blue.toString());
+		return red.toString() + "," + green.toString() + "," + blue.toString();
 	}
 
 	public T parseSerializableString(final String text) {

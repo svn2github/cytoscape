@@ -11,11 +11,8 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 
 /**
- * RenderingEngine is an interface for all visualizers. For a given view-model
+ * RenderingEngine is an interface for all visualizers which renders. For a given view-model
  * it renders actual view on display, documents, etc.
- * 
- * @author kono
- * @since Cytoscape 3.0
  * 
  * @param <T>
  *            source data object to be visualized. For now we have only one
@@ -39,7 +36,6 @@ public interface RenderingEngine<T> {
 	 */
 	public VisualLexicon getVisualLexicon();
 	
-	
 
 	/**
 	 * Get property values for the rendering engine, like LOD.
@@ -62,6 +58,9 @@ public interface RenderingEngine<T> {
 
 	/**
 	 * Render an {@linkplain Image} object from current visualization.
+	 * 
+	 * @param width width of the image
+	 * @param height height of the image
 	 * 
 	 * @return Image object created from current window.
 	 */

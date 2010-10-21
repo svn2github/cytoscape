@@ -6,11 +6,9 @@ import org.cytoscape.view.model.View;
  * A factory class to create visualization for a given view model. One
  * visualization (presentation) have one rendering engine
  * 
- * @author kono
- * 
  * @param <T>
  *            Compatible data model for this factory. For example, if this
- *            parameter is set to CyNetwork, the factory creates rendering
+ *            parameter is set to {@linkplain CyNetwork}, the factory creates rendering
  *            engine for CyNetwork objects.
  */
 public interface RenderingEngineFactory<T> {
@@ -29,7 +27,7 @@ public interface RenderingEngineFactory<T> {
 	 * 
 	 * @return Rendering Engine for visualization on the visualizationContainer.
 	 */
-	public RenderingEngine<T> render(final Object visualizationContainer,
+	RenderingEngine<T> render(final Object visualizationContainer,
 			final View<T> viewModel);
 
 }

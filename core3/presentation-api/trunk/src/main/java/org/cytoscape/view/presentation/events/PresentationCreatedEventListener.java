@@ -3,14 +3,12 @@ package org.cytoscape.view.presentation.events;
 import org.cytoscape.event.CyListener;
 
 /**
- * Listener for {@linkplain RenderingEngineCreatedEvent}.
+ * Listener for {@linkplain PresentationCreatedEvent}.
  * {@linkplain RenderingEngineManager} implementation should implement this
  * interface, too.
  * 
- * @author kono
- * 
  */
-public interface RenderingEngineCreatedEventListener extends CyListener {
+public interface PresentationCreatedEventListener extends CyListener {
 
 	/**
 	 * Listener can extract source RenderingEngine object in this method. This
@@ -19,5 +17,5 @@ public interface RenderingEngineCreatedEventListener extends CyListener {
 	 * @param e
 	 *            an event object which contains source RenderingEngine.
 	 */
-	void handleEvent(final RenderingEngineCreatedEvent e);
+	void handleEvent(final PresentationCreatedEvent e);
 }

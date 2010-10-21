@@ -10,7 +10,7 @@ public class VisualPropertyUtil {
 	public static boolean isChildOf(final VisualProperty<?> parent, final VisualProperty<?> vp,
 			final VisualLexicon lexicon) {
 
-		if (vp == parent || lexicon.getVisualLexiconNode(vp).getParent() == parent)
+		if (vp == parent || lexicon.getVisualLexiconNode(vp).getParent().getVisualProperty() == parent)
 			return true;
 
 		VisualLexiconNode node = lexicon.getVisualLexiconNode(vp);
