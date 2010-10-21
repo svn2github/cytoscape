@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.event;
+
 
 /**
  * The basic event handling interface for Cytoscape.  All Cytoscape events
@@ -42,7 +34,6 @@ package org.cytoscape.event;
  * as CyListener or CyMicroListener services.
  */
 public interface CyEventHelper {
-
 	/**
 	 * Calls each listener found in the Service Registry identified by the listenerClass
 	 * interface by the supplied CyEvent.
@@ -66,18 +57,19 @@ public interface CyEventHelper {
 	 * Returns a single instance of CyMicroListener that will in turn execute any method
 	 * executed on the returned object on all registered CyMicroListeners for the specified
 	 * event source object. So, executing the following code:
-	 * <br/>
+	 * <code>
 	 * eventHelper.getMicroListener(SomeListener.class, this).someEvent(...);
-	 * <br/>
+	 * </code>
 	 * will execute the "someEvent(...)" method on every registered SomeListener 
 	 * that is listening for events from "this" event source.
 	 * <br/>
 	 * In general, CyMicroListener should avoided in favor the CyEvent/CyListener combination
 	 * as that code provides more flexibility for backwards compatibility.  CyMicroListener
-	 * should <b>only</b> be used when high performance is absolutely necessary <b>AND</b>
+	 * should <b>only</b> be used when high performance is absolutely necessary <b>and</b>
 	 * when CyEvent/CyListener has been demonstrated to be inadequate!
 	 *
-	 * @param <M> The type of micro listener requested. 
+	 * @param <M> the type of micro listener requested.
+	 * @param m the class object for type M
 	 * @param source The source object that fires the event. 
 	 * @return A single instance CyMicroListener of type M that will in turn execute any
 	 * called methods on all registered CyMicroListeners.

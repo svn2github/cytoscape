@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.event;
+
 
 /**
  * The basic interface that any class interested in a particular
@@ -45,7 +37,7 @@ package org.cytoscape.event;
  * <p>where ZZZ extends CyEvent! </b> 
  * <p>
  * Unfortunately, we can't parameterize this
- * because Java doesn't reiify generic types, meaning a class 
+ * because Java doesn't reify generic types, meaning a class 
  * could only implement ONE instance of this interface, 
  * something that doesn't work for us.  And so we leave it
  * to convention.
