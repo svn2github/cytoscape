@@ -2,11 +2,14 @@ package org.cytoscape.view.presentation.property;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.Visualizable;
+import org.cytoscape.view.presentation.internal.property.VisualizableImpl;
 
 public class DefaultVisualizableVisualProperty extends AbstractVisualProperty<Visualizable> {
+	
+	private static final Visualizable visualizable = new VisualizableImpl();
 
 	public DefaultVisualizableVisualProperty(final String id, final String name) {
-		super(null, id, name);
+		super(visualizable, id, name);
 	}
 
 	
@@ -18,8 +21,7 @@ public class DefaultVisualizableVisualProperty extends AbstractVisualProperty<Vi
 	
 	@Override
 	public Visualizable parseSerializableString(final String text) {
-		// TODO: what should I return?
-		return null;
+		return visualizable;
 	}
 
 }
