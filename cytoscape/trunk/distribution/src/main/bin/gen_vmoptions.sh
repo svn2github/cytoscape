@@ -1,8 +1,10 @@
 #!/bin/sh
 # Generates the Cytoscape.vmoptions file
 
+script_path="$(dirname -- $0)"
+
 #vm_options_path="$HOME/.cytoscape"
-vm_options_path=.
+vm_options_path=$script_path
 
 if [ ! -e $vm_options_path ]; then
     /bin/mkdir $vm_options_path
