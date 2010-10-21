@@ -167,7 +167,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		// This will handle the case for the change of attribute userVisibility
 		if (e.getPropertyName() == Cytoscape.NEW_ATTRS_LOADED && e.getOldValue() == attributes) {
 			final Set<String> newAttrNames = (Set<String>)e.getNewValue();
-			if (JOptionPane.showConfirmDialog(
+			if (newAttrNames.size() < 10 || JOptionPane.showConfirmDialog(
 				getActiveFrame(),
 				"Display " + newAttrNames.size() + " newly loaded attribute(s) in the attribute browser?",
 				"Confirmation", JOptionPane.YES_NO_OPTION)
