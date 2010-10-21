@@ -34,8 +34,13 @@ import org.cytoscape.work.AbstractTask;
 
 
 public abstract class AbstractDataTableTask extends AbstractTask {
+	/** The table that this task operates on.
+	 */
 	final protected CyTable table;
 
+	/** Initialises the Task with the table that it will operate on.
+	 *  @param table  the reference to a CyTable that descendent tasks will operate on
+	 */
 	public AbstractDataTableTask(final CyTable table) {
 		if (table == null)
 			throw new NullPointerException("CyTable is null");

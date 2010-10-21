@@ -35,8 +35,12 @@ import java.util.Collection;
 
 
 public abstract class AbstractNetworkViewCollectionTask extends AbstractTask {
+	/** A collection of network views to operate on for any descendents of this class. */
 	final protected Collection<CyNetworkView> networkViews;
 
+	/** Base class for any tasks that need to operate on a collection of network views.
+	 *  @param networkViews  must be a non-null collection of network views
+	 */
 	public AbstractNetworkViewCollectionTask(final Collection<CyNetworkView> networkViews) {
 		if (networkViews == null)
 			throw new NullPointerException("CyNetworkView Collection is null");

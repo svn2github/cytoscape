@@ -36,8 +36,12 @@ import java.util.Collection;
 
 
 public abstract class AbstractNetworkCollectionTask extends AbstractTask {
+	/** The collection of networks that descendents will operate on. */
 	final protected Collection<CyNetwork> networks;
 
+	/** Base Constructor for a task that will operate on a collection of networks
+	 *  @param networks  a collection of networks
+	 */
 	public AbstractNetworkCollectionTask(final Collection<CyNetwork> networks) {
 		if ( networks == null )
 			throw new NullPointerException("CyNetwork Collection is null");

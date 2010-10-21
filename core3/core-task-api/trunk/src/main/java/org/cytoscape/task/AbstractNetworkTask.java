@@ -35,10 +35,14 @@ import org.cytoscape.work.AbstractTask;
 
 
 public abstract class AbstractNetworkTask extends AbstractTask {
+	/** The network that descendents of this class will operate on. */
 	final protected CyNetwork net;
 
+	/** Base class for tasks that need to operate on a {@link CyNetwork}
+	 *  @param net must be a non-null CyNetwork
+	 */
 	public AbstractNetworkTask(final CyNetwork net) {
-		if ( net == null )
+		if (net == null)
 			throw new NullPointerException("CyNetwork is null");
 
 		this.net = net;	

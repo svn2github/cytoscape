@@ -34,8 +34,12 @@ import org.cytoscape.model.CyNetwork;
 
 
 public abstract class AbstractNetworkTaskFactory implements NetworkTaskFactory {
+	/** Network to be passed into any task constructed by descendents of this class. */
 	protected CyNetwork net;
 
+	/** Provisions descendents of this factory class with the network for any task to be constructed by them.
+	 *  @param net  must be a non-null {@link CyNetwork}
+	 */
 	public void setNetwork(final CyNetwork net) {
 		if (net == null)
 			throw new NullPointerException("\"net\" is null!");

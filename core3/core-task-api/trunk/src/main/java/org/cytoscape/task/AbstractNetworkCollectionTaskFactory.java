@@ -29,16 +29,20 @@
 */
 package org.cytoscape.task;
 
+
 import org.cytoscape.model.CyNetwork;
 import java.util.Collection;
 
 
 public abstract class AbstractNetworkCollectionTaskFactory implements NetworkCollectionTaskFactory {
-
+	/** The collection of networks that will be passed to any task constructed by descendents of this factory. */
 	protected Collection<CyNetwork> networks;
 
+	/** Provisions descendents of this factory with a collection of networks to be passed into any constructed tasks.
+	 *  @param networks a collection of networks
+	 */
 	public void setNetworkCollection(final Collection<CyNetwork> networks) {
-		if ( networks == null )
+		if (networks == null)
 			throw new NullPointerException("CyNetwork Colleciton is null");
 		this.networks = networks;
 	}

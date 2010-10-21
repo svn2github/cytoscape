@@ -35,15 +35,21 @@ import org.cytoscape.work.AbstractTask;
 
 
 public abstract class AbstractEdgeViewTask extends AbstractTask {
-
+	/** The edge view that descendent tasks will operate on. */
 	final protected View<CyEdge> edgeView;
+
+	/** The network view associated with {@link #edgeView}. */
 	final protected CyNetworkView netView;
 
+	/** Base constructor for all tasks that need an edge view to operate on.
+	 *  @param edgeView  the edge view to work with for this task
+	 *  @param netView   the network view that contains "edgeView"
+	 */
 	public AbstractEdgeViewTask(final View<CyEdge> edgeView, final CyNetworkView netView) {
 		super();
-		if ( edgeView == null )
+		if (edgeView == null)
 			throw new NullPointerException("EdgeView is null");
-		if ( netView == null )
+		if (netView == null)
 			throw new NullPointerException("CyNetworkView is null");
 
 		this.edgeView = edgeView;	
