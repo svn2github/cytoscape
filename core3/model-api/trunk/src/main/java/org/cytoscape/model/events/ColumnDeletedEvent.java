@@ -40,13 +40,17 @@ package org.cytoscape.model.events;
 import org.cytoscape.model.CyTable;
 
 
+// TODO We might want to change the name of this guy to ColumnToBeDeleted so
+// that it is clear when it should be fired.
 /**
- * This event signals that an Attribute has been deleted.
- *<p>
- * We might want to change the name of this guy to AttributeToBeDeleted so
- * that it is clear when it should be fired.
+ * This event signals that a column has been deleted.
  */
 public final class ColumnDeletedEvent extends AbstractColumnEvent {
+	/**
+	 * Constructs event.
+	 * @param source The table from which the column was deleted. 
+	 * @param columnName The name of the column deleted. 
+	 */
 	public ColumnDeletedEvent(final CyTable source, final String columnName) {
 		super(source, ColumnDeletedListener.class, columnName);
 	}

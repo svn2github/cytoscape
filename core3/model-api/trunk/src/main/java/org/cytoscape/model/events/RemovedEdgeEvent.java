@@ -46,6 +46,10 @@ import org.cytoscape.model.CyNetwork;
  * resync after an edge has been removed.
  */
 public final class RemovedEdgeEvent extends AbstractCyEvent<CyNetwork> {
+	/**
+	 * Constructs event.
+	 * @param source The network from which an edge was deleted.
+	 */
 	public RemovedEdgeEvent(final CyNetwork source) {
 		super(source,RemovedEdgeListener.class);
 	}

@@ -46,6 +46,10 @@ import org.cytoscape.model.CyNetwork;
  * resync after a node has been removed.
  */
 public final class RemovedNodeEvent extends AbstractCyEvent<CyNetwork> {
+	/**
+	 * Constructs event.
+	 * @param source The network from which a node was deleted.
+	 */
 	public RemovedNodeEvent(final CyNetwork source) {
 		super(source, RemovedNodeListener.class);
 	}

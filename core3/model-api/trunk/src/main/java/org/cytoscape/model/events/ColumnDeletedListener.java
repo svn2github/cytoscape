@@ -43,5 +43,9 @@ import org.cytoscape.event.CyListener;
  * Listener for ColumnDeletedEvents.
  */
 public interface ColumnDeletedListener extends CyListener {
+	/**
+	 * The method that should handle the specified event.
+	 * @param e The event to be handled.
+	 */
 	void handleEvent(ColumnDeletedEvent e);
 }

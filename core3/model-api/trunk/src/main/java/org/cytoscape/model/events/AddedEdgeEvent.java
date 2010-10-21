@@ -42,10 +42,15 @@ import org.cytoscape.model.CyNetwork;
 
 
 /**
- * DOCUMENT ME!
-  */
+ * An event fired when an edge is added to a network. 
+ */
 public final class AddedEdgeEvent extends AbstractEdgeEvent {
 
+	/**
+	 * Constructs event.
+	 * @param source The CyNetwork the edge was added to.
+	 * @param edge The CyEdge added to the network. 
+	 */
 	public AddedEdgeEvent(final CyNetwork source, final CyEdge edge) {
 		super(source, AddedEdgeListener.class, edge);
 	}

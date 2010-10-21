@@ -43,9 +43,6 @@ import org.cytoscape.model.CyNetwork;
 
 import java.util.List;
 
-/**
- * DOCUMENT ME!
-  */
 class AbstractNodeListEvent extends AbstractCyEvent<CyNetwork> {
 	private final List<CyNode> nodes;
 
@@ -56,6 +53,10 @@ class AbstractNodeListEvent extends AbstractCyEvent<CyNetwork> {
 		this.nodes = nodes;
 	}
 
+	/**
+	 * Returns the list of CyNode objects for this event.
+	 * @return The list of CyNode objects for this event.
+	 */
 	public List<CyNode> getNodeList() {
 		return nodes;
 	}

@@ -42,9 +42,6 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 
 
-/**
- * DOCUMENT ME!
-  */
 class AbstractEdgeEvent extends AbstractCyEvent<CyNetwork> {
 	private final CyEdge edge;
 
@@ -55,6 +52,10 @@ class AbstractEdgeEvent extends AbstractCyEvent<CyNetwork> {
 		this.edge = edge;
 	}
 
+	/**
+	 * Returns the edge for this event.
+	 * @return The edge for this event.
+	 */
 	public CyEdge getEdge() {
 		return edge;
 	}

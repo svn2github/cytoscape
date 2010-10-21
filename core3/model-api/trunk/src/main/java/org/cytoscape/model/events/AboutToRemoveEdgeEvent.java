@@ -45,6 +45,11 @@ import org.cytoscape.model.CyNetwork;
  * have a chance to clean up before the edge object disappaears.
  */
 public final class AboutToRemoveEdgeEvent extends AbstractEdgeEvent {
+	/**
+	 * Constructs event.
+	 * @param source the network firing this event.
+	 * @param edge the edge about to be removed. 
+	 */
 	public AboutToRemoveEdgeEvent(final CyNetwork source, final CyEdge edge) {
 		super(source, AboutToRemoveEdgeListener.class, edge);
 	}

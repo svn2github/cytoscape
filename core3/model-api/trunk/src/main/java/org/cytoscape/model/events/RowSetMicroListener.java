@@ -44,7 +44,12 @@ import org.cytoscape.event.CyMicroListener;
  * will the be CyRow that is being modified. 
  */
 public interface RowSetMicroListener extends CyMicroListener {
-	
+
+	/**
+	 * The method that should react to the changed row.
+	 * @param columnName The name of the column changed.
+	 * @param value The value the column was set to. 
+	 */
 	void handleRowSet(final String columnName, final Object value);
 
 }

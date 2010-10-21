@@ -43,9 +43,6 @@ import org.cytoscape.model.CyNetwork;
 
 import java.util.List;
 
-/**
- * DOCUMENT ME!
-  */
 class AbstractEdgeListEvent extends AbstractCyEvent<CyNetwork> {
 	private final List<CyEdge> edges;
 
@@ -56,6 +53,10 @@ class AbstractEdgeListEvent extends AbstractCyEvent<CyNetwork> {
 		this.edges = edges;
 	}
 
+	/**
+	 * Returns the list of CyEdge objects for this event.
+	 * @return The list of CyEdge objects for this event.
+	 */
 	public List<CyEdge> getEdgeList() {
 		return edges;
 	}

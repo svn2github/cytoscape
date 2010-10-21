@@ -55,6 +55,10 @@ class AbstractNodeEvent extends AbstractCyEvent<CyNetwork> {
 		this.node = node;
 	}
 
+	/**
+	 * Returns the CyNode for this event.
+	 * @return The CyNode for this event.
+	 */
 	public CyNode getNode() {
 		return node;
 	}

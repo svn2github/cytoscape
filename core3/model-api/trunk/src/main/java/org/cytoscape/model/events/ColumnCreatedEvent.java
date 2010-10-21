@@ -40,11 +40,16 @@ import org.cytoscape.model.CyTable;
 
 
 /**
- * This event signals that an Attribute has been created.
+ * This event signals that a column has been created.
  *<p>
  * This should probably return the type parameter as well. 
  */
 public final class ColumnCreatedEvent extends AbstractColumnEvent {
+	/**
+	 * Constructs event.
+	 * @param source The table in which the column was created.
+	 * @param columnName The name of the column created.
+	 */
 	public ColumnCreatedEvent(final CyTable source, final String columnName) {
 		super(source, ColumnCreatedListener.class, columnName);
 	}

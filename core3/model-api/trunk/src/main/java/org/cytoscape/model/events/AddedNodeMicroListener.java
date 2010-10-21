@@ -41,8 +41,13 @@ import org.cytoscape.model.CyNode;
 
 
 /**
- * Listener for AddedEgeEvents.
+ * A micro listener that will be called when a node is 
+ * added to a network.
  */
 public interface AddedNodeMicroListener extends CyMicroListener {
+	/**
+	 * The method that should react to the added node.
+	 * @param n The node that was added to the network.
+	 */
 	void handleAddedNode(CyNode n);
 }

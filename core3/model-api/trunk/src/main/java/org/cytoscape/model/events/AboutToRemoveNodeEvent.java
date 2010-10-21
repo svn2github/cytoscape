@@ -45,6 +45,11 @@ import org.cytoscape.model.CyNode;
  * have a chance to clean up before the node object disappaears.
  */
 public final class AboutToRemoveNodeEvent extends AbstractNodeEvent {
+	/**
+	 * Constructs event.
+	 * @param source the network firing this event.
+	 * @param node the node about to be removed. 
+	 */
 	public AboutToRemoveNodeEvent(final CyNetwork source, final CyNode node) {
 		super( source, AboutToRemoveNodeListener.class, node);
 	}

@@ -41,11 +41,6 @@ import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.model.CyTable;
 
 
-/**
- * This event signals that an Attribute has been created.
- *<p>
- * This should probably return the type parameter as well. 
- */
 class AbstractColumnEvent extends AbstractCyEvent<CyTable> {
 
 	private final String columnName;
@@ -56,10 +51,10 @@ class AbstractColumnEvent extends AbstractCyEvent<CyTable> {
 			throw new NullPointerException("columnName can't be null");
 		this.columnName = columnName;
 	}
+
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return The name of the attribute that has been deleted.
+	 * Returns the name of the column for this event.
+	 * @return The name of the column for this event.
 	 */
 	public String getColumnName() {
 		return columnName;

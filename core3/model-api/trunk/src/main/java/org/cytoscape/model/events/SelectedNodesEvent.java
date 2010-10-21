@@ -6,6 +6,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
 import java.util.List;
 
+// TODO remove this event.
 public final class SelectedNodesEvent extends AbstractNodeListEvent {
 	public SelectedNodesEvent(final CyNetwork source, List<CyNode> nodes) {
 		super(source, SelectedNodesListener.class, nodes);
