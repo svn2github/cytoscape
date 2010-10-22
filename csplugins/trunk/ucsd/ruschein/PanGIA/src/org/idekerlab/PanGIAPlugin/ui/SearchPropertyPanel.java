@@ -49,7 +49,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private static final double DEF_COMPLEX_REWARD = 0;
 	private static final String DEF_DEGREE = "2";
 	private static final double DEF_CUTOFF = 20.0;
-	private static final double DEF_PVALUE_THRESHOLD = 90;
+	private static final double DEF_PVALUE_THRESHOLD = .01;
 	private static final int DEF_NUMBER_OF_SAMPLES = 1000;
 	private static final String DEFAULT_ATTRIBUTE = "none";
 	
@@ -566,7 +566,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
          */
         
         edgeFilterSliderLabels.setText("More                               Less");
-        edgeFilterSliderLabels.setToolTipText("Strength of the edge filter. (0 returns all edges)");
+        edgeFilterSliderLabels.setToolTipText("Strength of the edge filter. (P=1 returns all edges)");
         edgeFilterSliderLabels.setFont(edgeFilterSliderLabels.getFont().deriveFont(12.0f));
         edgeFilterSliderLabels.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -576,7 +576,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
         edgeFilteringPanel.add(edgeFilterSliderLabels, gridBagConstraints);
         
-        edgeFilterSlider.setToolTipText("Strength of the edge filter. (0 returns all edges)");
+        edgeFilterSlider.setToolTipText("Strength of the edge filter. (P=1 returns all edges)");
         edgeFilterSlider.setPreferredSize(new java.awt.Dimension(200, 25));
         edgeFilterSlider.setExtent(0);
         edgeFilterSlider.setMinimum(0);
@@ -594,11 +594,21 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(20, 5, 5, 10);
+        gridBagConstraints.insets = new java.awt.Insets(20, 5, 5, 20);
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         edgeFilteringPanel.add(edgeFilterSlider, gridBagConstraints);
+        
+        pValueThresholdLabel.setText("P-Value:");
+        pValueThresholdLabel.setToolTipText("Strength of the edge filter. (P=1 returns all edges)");
+        pValueThresholdLabel.setEnabled(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
+        edgeFilteringPanel.add(pValueThresholdLabel, gridBagConstraints);
         
         edgeFilterTextField.setToolTipText("Strength of the edge filter. (0 returns all edges)");
         edgeFilterTextField.addKeyListener(new java.awt.event.KeyListener(){
@@ -613,8 +623,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         });
         edgeFilterTextField.setPreferredSize(new java.awt.Dimension(50, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         edgeFilteringPanel.add(edgeFilterTextField, gridBagConstraints);
@@ -897,7 +907,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	{
 		if (!edgeFilterSliderEventLock)
 		{
-			edgeFilterTextField.setText(String.valueOf(edgeFilterSlider.getValue()));
+			edgeFilterTextField.setText(String.valueOf((100-edgeFilterSlider.getValue())/100.0));
 			updateSearchButtonState();
 		}
 	}
@@ -917,7 +927,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		{
 			double val = Double.valueOf(edgeFilterTextField.getText());
 			edgeFilterSliderEventLock = true;
-			edgeFilterSlider.setValue((int)Math.round(val));
+			edgeFilterSlider.setValue((int)Math.round((1-val)*100));
 			edgeFilterSliderEventLock = false;
 			//edgeFilterTextField.setText(String.valueOf((int)Math.round(val)));
 		} catch (Exception e){}
@@ -1403,10 +1413,10 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		try
 		{
 			double p = Double.parseDouble(edgeFilterTextField.getText());
-			if (p<0 || p>99.9)
+			if (p<.001 || p>1)
 			{
 				searchButton.setEnabled(false);
-				parameterErrorTextArea.setText("Please set percentile threshold in the range [0,99.9].");
+				parameterErrorTextArea.setText("Please set edge-reporting in the range [.001,1].");
 				return;
 			}
 		
@@ -1414,7 +1424,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		catch (NumberFormatException e)
 		{
 			searchButton.setEnabled(false);
-			parameterErrorTextArea.setText("Please choose a valid value for percentile threshold.");
+			parameterErrorTextArea.setText("Please choose a valid value for edge-reporting.");
 			return;
 		}
 		

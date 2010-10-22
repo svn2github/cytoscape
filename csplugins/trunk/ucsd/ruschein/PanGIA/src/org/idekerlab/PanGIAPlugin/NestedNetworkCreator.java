@@ -246,9 +246,6 @@ public class NestedNetworkCreator {
 
 		edgeAttribs.setUserVisible(REFERENCE_NETWORK_NAME_ATTRIB, false);
 
-		Cytoscape.createNetworkView(overviewNetwork);
-		applyNetworkLayout(overviewNetwork, cutoff, maxScore);
-
 		taskMonitor.setStatus("5. Generating network views");
 		int networkViewCount = 0;
 		NetworkAndScore network;
@@ -264,6 +261,9 @@ public class NestedNetworkCreator {
 			percentCompleted += percentIncrement;
 			taskMonitor.setPercentCompleted(Math.round(percentCompleted));
 		}
+		
+		Cytoscape.createNetworkView(overviewNetwork);
+		applyNetworkLayout(overviewNetwork, cutoff, maxScore);
 	}
 
 	private String getNodeName(TypedLinkNodeModule<String, BFEdge> module, int nodeIndex, Map<TypedLinkNodeModule<String, BFEdge>,String> module_name)

@@ -177,7 +177,7 @@ public class SearchTask implements Task {
 		final double pValueThreshold;
 		if (!Double.isNaN(parameters.getPValueThreshold()))
 		{
-			pValueThreshold = 1-parameters.getPValueThreshold()/100;
+			pValueThreshold = parameters.getPValueThreshold();
 			final int numberOfSamples = parameters.getNumberOfSamples();
 			computeSig(results, geneticNetwork, pValueThreshold, numberOfSamples, taskMonitor, SEARCH_PERCENTAGE, COMPUTE_SIG_PERCENTAGE);
 		}else 
