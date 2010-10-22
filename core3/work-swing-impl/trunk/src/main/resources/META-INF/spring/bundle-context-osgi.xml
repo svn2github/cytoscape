@@ -33,7 +33,7 @@
 	</osgi:service>
 
 	<osgi:service id="guiHandlerFactoryService" ref="guiHandlerFactory"
-		interface="org.cytoscape.work.HandlerFactory">
+		interface="org.cytoscape.work.TunableHandlerFactory">
 	</osgi:service>
 
 
