@@ -27,36 +27,43 @@ public class RenderingEngineManagerImpl implements RenderingEngineManager,
 		this.renderingEngineMap = new HashMap<View<?>, Set<RenderingEngine<?>>>();
 	}
 
+	/**
+	 * This method never returns null.
+	 */
 	@Override
-	public Collection<RenderingEngine<?>> getRendringEngines(
-			final View<?> viewModel) {
-		return renderingEngineMap.get(viewModel);
+	public Collection<RenderingEngine<?>> getRendringEngines(final View<?> viewModel) {
+		Collection<RenderingEngine<?>> engines = renderingEngineMap.get(viewModel);
+		if(engines == null)
+			engines = new HashSet<RenderingEngine<?>>();
+		
+		return engines;
 	}
 
 	@Override
 	public void handleEvent(PresentationCreatedEvent e) {
+		// This cannot be null.
 		final RenderingEngine<?> renderingEngine = e.getSource();
-		if (renderingEngine == null)
-			return;
 
+		final View<?> viewModel = renderingEngine.getViewModel();
 		Set<RenderingEngine<?>> engines = renderingEngineMap
-				.get(renderingEngine.getViewModel());
+				.get(viewModel);
 		if (engines == null)
 			engines = new HashSet<RenderingEngine<?>>();
 
 		engines.add(renderingEngine);
-		this.renderingEngineMap.put(renderingEngine.getViewModel(), engines);
-
+		this.renderingEngineMap.put(viewModel, engines);
 	}
 
 	@Override
 	public void handleEvent(PresentationDestroyedEvent e) {
+		// This cannot be null.
 		final RenderingEngine<?> renderingEngine = e.getSource();
-		if (renderingEngine == null)
-			return;
 
-		this.renderingEngineMap.remove(renderingEngine.getViewModel());
-
+		final View<?> viewModel = renderingEngine.getViewModel();
+		final Set<RenderingEngine<?>> engineSet = renderingEngineMap.get(viewModel);
+		
+		engineSet.remove(renderingEngine);
+		this.renderingEngineMap.put(viewModel, engineSet);
 	}
 
 }

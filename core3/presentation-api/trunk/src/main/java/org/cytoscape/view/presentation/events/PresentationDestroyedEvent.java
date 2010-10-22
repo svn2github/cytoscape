@@ -7,10 +7,10 @@ import org.cytoscape.view.presentation.RenderingEngine;
  * When presentation (rendered graphics) is destroyed, this event should be fired.
  *
  */
-public class PresentationDestroyedEvent extends AbstractCyEvent<RenderingEngine<?>> {
+public final class PresentationDestroyedEvent extends AbstractCyEvent<RenderingEngine<?>> {
 
 	/**
-	 * Construct an event for restroyed {@linkplain RenderingEngine}.
+	 * Construct an event for destroyed {@linkplain RenderingEngine}.
 	 * 
 	 * @param source RenderingEngine for the deleted presentation.
 	 */
