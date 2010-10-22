@@ -16,7 +16,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Cytoscape-Plugin>${groupId}.MyPlugin</Cytoscape-Plugin>
+              <Cytoscape-Plugin>${package}.MyPlugin</Cytoscape-Plugin>
             </manifestEntries>
           </archive>
         </configuration>
@@ -37,4 +37,41 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>cytoscape_snapshots</id>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <name>Cytoscape Snapshots</name>
+      <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+    </repository>
+    <repository>
+      <id>cytoscape_releases</id>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <name>Cytoscape Releases</name>
+      <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+    </repository>
+    <repository>
+      <id>cytoscape_thirdparty</id>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>            
+        <enabled>true</enabled>
+      </releases>
+      <name>Cytoscape Third Party</name>
+      <url>http://cytoscape.wodaklab.org/nexus/content/repositories/thirdparty/</url>
+    </repository>
+  </repositories>
+
 </project>

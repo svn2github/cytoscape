@@ -1,7 +1,7 @@
 #set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
-package ${packageInPathFormat};
+package ${package};
 
 import junit.framework.Test;
 import junit.framework.TestCase;
