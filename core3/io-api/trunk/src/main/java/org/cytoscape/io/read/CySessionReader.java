@@ -5,21 +5,21 @@ import org.cytoscape.work.Task;
 
 /**
  * An extension of the Task interface that returns a
- * {@link CySession} object. The reader does nothing
- * beyond create the CySession object and does NOT 
- * use the CySession object to define the state of 
+ * {@link org.cytoscape.property.session.Cysession} object. The reader does nothing
+ * beyond create the {@link org.cytoscape.property.session.Cysession} object and does NOT 
+ * use the {@link org.cytoscape.property.session.Cysession} object to define the state of 
  * Cytoscape - that is managed by the CySessionManager.
- * Instances of this interface are created by InputStreamTaskFactory
+ * Instances of this interface are created by {@link org.cytoscape.io.read.InputStreamTaskFactory}
  * objects registered as OSGi services, which are in turn processed
  * by associated reader manager objects that distinguish 
- * InputStreamTaskFactories based on the DataCategory associated with
- * the CyFileFilter.
+ * InputStreamTaskFactories based on the {@link org.cytoscape.io.DataCategory} associated with
+ * the {@link org.cytoscape.io.CyFileFilter}.
  */
 public interface CySessionReader extends Task {
 
 	/**
-	 * return a session object
-	 * @return A {@link CySession} object. 
+	 * return a {@link org.cytoscape.session.CySession} object
+	 * @return A {@link org.cytoscape.session.CySession} object. 
 	 */
     CySession getCySession();
 }

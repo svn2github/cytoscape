@@ -40,24 +40,25 @@ import java.io.File;
 import java.io.OutputStream;
 
 /**
- * A CyWriterManager specific to writing CyNetworkView objects. 
+ * A {@link org.cytoscape.io.write.CyWriterManager} specific to writing 
+ * {@link org.cytoscape.view.model.CyNetworkView} objects. 
  */
 public interface CyNetworkViewWriterManager extends CyWriterManager {
 
 	/**
-	 * @param view The CyNetworkView to be written.
-	 * @param filter The CyFileFilter that defines the type of file to be written.
+	 * @param view The {@link org.cytoscape.view.model.CyNetworkView} to be written.
+	 * @param filter The {@link org.cytoscape.io.CyFileFilter} that defines the type of file to be written.
 	 * @param file The file to be written. 
-	 * @return The CyWriter Task that will attempt to write the specified view to the
+	 * @return The {@link org.cytoscape.io.write.CyWriter} Task that will attempt to write the specified view to the
 	 * specified file of the specified file type. 
 	 */
 	CyWriter getWriter(CyNetworkView view, CyFileFilter filter, File file) throws Exception;
 
 	/**
-	 * @param view The CyNetworkView to be written.
-	 * @param filter The CyFileFilter that defines the type of file to be written.
+	 * @param view The {@link org.cytoscape.view.model.CyNetworkView} to be written.
+	 * @param filter The {@link org.cytoscape.io.CyFileFilter} that defines the type of file to be written.
 	 * @param os The output steam to be written. 
-	 * @return The CyWriter Task that will attempt to write the specified view to the
+	 * @return The {@link CyWriter} Task that will attempt to write the specified view to the
 	 * specified output steam of the specified file type. 
 	 */
 	CyWriter getWriter(CyNetworkView view, CyFileFilter filter, OutputStream os) throws Exception;

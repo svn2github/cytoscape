@@ -30,15 +30,12 @@ package org.cytoscape.io.read;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Map;
-
-import org.cytoscape.work.TaskIterator;
 
 
 /**
  * An object that registers all InputStreamReaderFactory singletons,
  * processes specified input to determine the appropriate factory to
- * use and then returns an instance of the correct CyNetworkViewReader 
+ * use and then returns an instance of the correct {@link org.cytoscape.io.read.CyNetworkViewReader} 
  * for the input.
  */
 public interface CyNetworkViewReaderManager {

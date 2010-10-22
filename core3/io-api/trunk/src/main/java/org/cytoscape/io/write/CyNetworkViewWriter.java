@@ -6,7 +6,7 @@ import org.cytoscape.io.CyFileFilter;
 import java.io.File;
 
 /**
- * A utility Task implementation specifically for writing a CyNetworkView.
+ * A utility Task implementation specifically for writing a {@link org.cytoscape.view.model.CyNetworkView}.
  */
 public final class CyNetworkViewWriter extends AbstractCyWriter<CyNetworkViewWriterManager> {
 
@@ -14,9 +14,9 @@ public final class CyNetworkViewWriter extends AbstractCyWriter<CyNetworkViewWri
 	private final CyNetworkView view;
 
 	/**
-	 * @param writerManager The CyNetworkViewWriterManager used to determine which 
-	 * CyNetworkViewWriterFactory to use to write the file.
-	 * @param view The CyNetworkView to be written out. 
+	 * @param writerManager The {@link org.cytoscape.io.write.CyNetworkViewWriterManager} used to determine which 
+	 * {@link org.cytoscape.io.write.CyNetworkViewWriterFactory} to use to write the file.
+	 * @param view The {@link org.cytoscape.view.model.CyNetworkView} to be written out. 
 	 */
     public CyNetworkViewWriter(CyNetworkViewWriterManager writerManager, CyNetworkView view ) {
 		super(writerManager);

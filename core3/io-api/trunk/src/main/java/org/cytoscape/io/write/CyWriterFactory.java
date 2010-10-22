@@ -1,6 +1,5 @@
 package org.cytoscape.io.write;
 
-import java.io.File;
 import java.io.OutputStream;
 
 import org.cytoscape.io.FileIOFactory;
@@ -14,15 +13,15 @@ import org.cytoscape.io.FileIOFactory;
 public interface CyWriterFactory extends FileIOFactory {
 
 	/**
-	 * This method defines where the generated CyWriter Task should
+	 * This method defines where the generated {@link CyWriter} Task should
 	 * write its data to. This method is meant to be called prior
 	 * to calling getWriter().
-	 * @param os The OutputStream to be written to.
+	 * @param os The {@link java.io.OutputStream} to be written to.
 	 */
 	void setOutputStream(OutputStream os);
 
 	/**
-	 * @return A CyWriter Task suitable for writing to the specified
+	 * @return A {@link CyWriter} Task suitable for writing to the specified
 	 * output stream.
 	 */
 	CyWriter getWriter();

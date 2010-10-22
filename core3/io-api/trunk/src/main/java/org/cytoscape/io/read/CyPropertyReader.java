@@ -9,14 +9,14 @@ import org.cytoscape.work.Task;
  * {@link java.util.Properties}, 
  * {@link org.cytoscape.property.bookmark.Bookmarks}, 
  * {@link org.cytoscape.property.session.Cysession}. The system
- * determines the specific object type based on the CyFileFilter
+ * determines the specific object type based on the {@link org.cytoscape.io.CyFileFilter}
  * associated with the InputStreamTaskFactory service that  
  * produces this reader.
  * Instances of this interface are created by InputStreamTaskFactory
  * objects registered as OSGi services, which are in turn processed
  * by associated reader manager objects that distinguish 
  * InputStreamTaskFactories based on the DataCategory associated with
- * the CyFileFilter.
+ * the {@link org.cytoscape.io.CyFileFilter}.
  */
 public interface CyPropertyReader extends Task {
 

@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * A utility Task implementation that writes a CySession to a file.
+ * A utility Task implementation that writes a {@link org.cytoscape.session.CySession} to a file.
  */
 public final class SessionWriter extends AbstractTask implements CyWriter {
 
@@ -18,10 +18,10 @@ public final class SessionWriter extends AbstractTask implements CyWriter {
 	private final File outputFile; 
 
 	/**
-	 * @param writerMgr The SessionWriterManager contains single expected
-	 * SessionWriterFactory to use to write the file.
-	 * @param session The CySession to be written out. 
-	 * @param outputFile The file the CySession should be written to.
+	 * @param writerMgr The {@link org.cytoscape.io.write.SessionWriterManager} contains single expected
+	 * {@link org.cytoscape.io.write.SessionWriterFactory} to use to write the file.
+	 * @param session The {@link org.cytoscape.session.CySession} to be written out. 
+	 * @param outputFile The file the {@link org.cytoscape.session.CySession} should be written to.
  	 */
 	public SessionWriter(SessionWriterManager writerMgr, CySession session, File outputFile) {
 
@@ -41,7 +41,7 @@ public final class SessionWriter extends AbstractTask implements CyWriter {
 	/**
 	 * The method that will actually write the specified session to the specified
 	 * file.
-	 * @param tm The TaskMonitor provided by the TaskManager execution environment.
+	 * @param tm The {@link org.cytoscape.work.TaskMonitor} provided by the TaskManager execution environment.
 	 */
 	public final void run(TaskMonitor tm) throws Exception {
 

@@ -5,18 +5,18 @@ import org.cytoscape.work.Task;
 
 /**
  * An extension of the Task interface that returns an array of 
- * {@link CyTable} objects. 
- * Instances of this interface are created by InputStreamTaskFactory
+ * {@link org.cytoscape.model.CyTable} objects. 
+ * Instances of this interface are created by {@link org.cytoscape.io.read.InputStreamTaskFactory}
  * objects registered as OSGi services, which are in turn processed
  * by associated reader manager objects that distinguish 
- * InputStreamTaskFactories based on the DataCategory associated with
- * the CyFileFilter.
+ * InputStreamTaskFactories based on the {@link org.cytoscape.io.DataCategory} associated with
+ * the {@link org.cytoscape.io.CyFileFilter}.
  */
 public interface CyTableReader extends Task{
 
 	/**
-	 * Return an array of CyTable objects.
-	 * @return An array of CyTable objects.
+	 * Return an array of {@link org.cytoscape.model.CyTable} objects.
+	 * @return An array of {@link org.cytoscape.model.CyTable} objects.
 	 */
 	public CyTable[] getCyDataTables();
 }

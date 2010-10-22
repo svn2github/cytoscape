@@ -14,7 +14,7 @@ public interface InputStreamTaskFactory extends TaskFactory, FileIOFactory {
 	/**
 	 * Sets the input stream that will be read by the Reader created from
 	 * this factory.
-	 * @param is The InputStream to be read.
+	 * @param is The {@link java.io.InputStream} to be read.
 	 */
 	void setInputStream(InputStream is);
 }
