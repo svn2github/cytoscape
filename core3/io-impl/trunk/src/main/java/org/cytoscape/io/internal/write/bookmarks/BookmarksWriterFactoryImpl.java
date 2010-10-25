@@ -12,7 +12,7 @@ public class BookmarksWriterFactoryImpl extends AbstractPropertyWriterFactory {
 	}
 	
 	@Override
-	public CyWriter getWriter() {
+	public CyWriter getWriterTask() {
 		return new BookmarksWriterImpl(outputStream, props);
 	}
 }
