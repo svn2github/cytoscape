@@ -9,11 +9,26 @@ public class VisualPropertyUtil {
 
 	public static boolean isChildOf(final VisualProperty<?> parent, final VisualProperty<?> vp,
 			final VisualLexicon lexicon) {
+		
+		if(vp == null)
+			throw new NullPointerException("Visual Property is null.");
+		
+		if(lexicon == null)
+			throw new NullPointerException("Lexicon is null.");
+		
+		
+		VisualLexiconNode node = lexicon.getVisualLexiconNode(vp);
+		if(node == null)
+			throw new IllegalArgumentException("No such visual property is available in the lexicon: " + vp.getDisplayName());
+		
+		// This is a root
+		if(node.getParent() == null)
+			return false;
 
-		if (vp == parent || lexicon.getVisualLexiconNode(vp).getParent().getVisualProperty() == parent)
+		if (vp == parent || node.getParent().getVisualProperty() == parent)
 			return true;
 
-		VisualLexiconNode node = lexicon.getVisualLexiconNode(vp);
+		
 		while (node.getParent() != null) {
 			node = node.getParent();
 			if (node.getVisualProperty() == parent)
