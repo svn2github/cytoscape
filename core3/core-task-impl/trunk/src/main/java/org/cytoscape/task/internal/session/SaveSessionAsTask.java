@@ -30,8 +30,8 @@
 package org.cytoscape.task.internal.session; 
 
 
-import org.cytoscape.io.write.SessionWriterManager;
-import org.cytoscape.io.write.SessionWriter;
+import org.cytoscape.io.write.CySessionWriterManager;
+import org.cytoscape.io.write.CySessionWriter;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
@@ -44,19 +44,19 @@ public class SaveSessionAsTask extends AbstractTask {
 	@Tunable(description="Save Session as:")
 	public File file;
 
-	private final SessionWriterManager writerMgr;
+	private final CySessionWriterManager writerMgr;
 	private final CySessionManager sessionMgr;
 
 	/**
 	 * setAcceleratorCombo(KeyEvent.VK_S, ActionEvent.CTRL_MASK);
 	 */
-	public SaveSessionAsTask(SessionWriterManager writerMgr, CySessionManager sessionMgr) {
+	public SaveSessionAsTask(CySessionWriterManager writerMgr, CySessionManager sessionMgr) {
 		super();
 		this.writerMgr = writerMgr;
 		this.sessionMgr = sessionMgr;
 	}
 
 	public void run(TaskMonitor taskMonitor) throws Exception {
-	 	insertTasksAfterCurrentTask(new SessionWriter(writerMgr, sessionMgr.getCurrentSession(), file));
+	 	insertTasksAfterCurrentTask(new CySessionWriter(writerMgr, sessionMgr.getCurrentSession(), file));
 	}
 }
