@@ -64,14 +64,16 @@ public class AbstractSelectTaskTester {
 	CyNode e4;
 
 	public void setUp() throws Exception {
+		net = mock(CyNetwork.class);
+
 		CyNetworkView view = mock(CyNetworkView.class);
+		when(view.getModel()).thenReturn(net);
 
 		netmgr = mock(CyNetworkManager.class);
 		when(netmgr.getNetworkView(anyLong())).thenReturn(view);
 
 		tm = mock(TaskMonitor.class);
 
-		net = mock(CyNetwork.class);
 
 		r1 = mock(CyRow.class);
 		e1 = mock(CyEdge.class);

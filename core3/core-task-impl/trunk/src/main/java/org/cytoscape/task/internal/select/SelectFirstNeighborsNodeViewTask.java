@@ -34,6 +34,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.session.CyNetworkManager;
@@ -60,8 +61,9 @@ public class SelectFirstNeighborsNodeViewTask extends AbstractTask {
 
 		final Set<CyNode> selNodes = new HashSet<CyNode>();
 		final CyNode node = nodeView.getModel();
+		final CyNetwork net = netView.getModel();
 		selNodes.add( node );
-		selNodes.addAll( node.getNeighborList( CyEdge.Type.ANY ) );		
+		selNodes.addAll( net.getNeighborList(node, CyEdge.Type.ANY ) );		
 		SelectUtils.setSelectedNodes( selNodes, true);		
 
 		netView.updateView();

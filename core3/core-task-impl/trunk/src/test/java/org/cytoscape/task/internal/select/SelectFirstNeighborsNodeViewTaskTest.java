@@ -69,11 +69,12 @@ public class SelectFirstNeighborsNodeViewTaskTest extends AbstractSelectTaskTest
 		// more setup
 		List<CyNode> nl = new ArrayList<CyNode>();
 		nl.add(e4);
-		when(e3.getNeighborList(CyEdge.Type.ANY)).thenReturn(nl);
+		when(net.getNeighborList(e3,CyEdge.Type.ANY)).thenReturn(nl);
 
 		View<CyNode> nv = (View<CyNode>)mock(View.class);
 		when(nv.getModel()).thenReturn(e3);
 		CyNetworkView netView = mock(CyNetworkView.class);
+		when(netView.getModel()).thenReturn(net);
 
 		// run the task
 		Task t = new SelectFirstNeighborsNodeViewTask(nv,netView);

@@ -46,18 +46,20 @@ import java.util.Collection;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 
 
 abstract class HideUtils {
 
 	static void setVisibleNodes(Collection<CyNode> nodes, boolean visible, CyNetworkView view) {
+		final CyNetwork net = view.getModel();
 		for ( CyNode n : nodes ) {
 			if ( view != null ) {
 				view.getNodeView(n).setVisualProperty(NODE_VISIBLE,visible);
 
-				for ( CyNode n2 : n.getNeighborList(CyEdge.Type.ANY) ) 
-					for ( CyEdge e : view.getModel().getConnectingEdgeList(n,n2,CyEdge.Type.ANY) ) 
+				for ( CyNode n2 : net.getNeighborList(n, CyEdge.Type.ANY) ) 
+					for ( CyEdge e : net.getConnectingEdgeList(n,n2,CyEdge.Type.ANY) ) 
 						view.getEdgeView( e ).setVisualProperty(EDGE_VISIBLE,visible);
 			}
 		}
