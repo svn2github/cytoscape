@@ -39,7 +39,7 @@ public abstract class AbstractEdgeViewTask extends AbstractTask {
 	final protected View<CyEdge> edgeView;
 
 	/** The network view associated with {@link #edgeView}. */
-	final protected CyNetworkView netView;
+	final protected CyNetworkView netView; // TODO: should be renamed to networkView
 
 	/** Base constructor for all tasks that need an edge view to operate on.
 	 *  @param edgeView  the edge view to work with for this task

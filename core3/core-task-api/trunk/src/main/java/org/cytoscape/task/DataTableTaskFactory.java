@@ -33,6 +33,8 @@ import org.cytoscape.model.CyTable;
 
 
 /**
+ * TODO: This interface should be renamed to: TableTaskFactory!
+ *
  * The assumption is that setDataTable() will be called before
  * getTask() and that the Task in question operates on the 
  * specified CyNetwork. 

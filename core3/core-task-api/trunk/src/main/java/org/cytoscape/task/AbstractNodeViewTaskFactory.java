@@ -38,7 +38,7 @@ import org.cytoscape.model.CyNode;
  */
 public abstract class AbstractNodeViewTaskFactory implements NodeViewTaskFactory {
 	/** The network view that will be used to provision tasks that are being created by descendents of this class. */
-	protected CyNetworkView netView;
+	protected CyNetworkView netView; // TODO: should be renamed to networkView
 
 	/** The node view that will be used to provision tasks that are being created by descendents of this class. */
 	protected View<CyNode> nodeView;
