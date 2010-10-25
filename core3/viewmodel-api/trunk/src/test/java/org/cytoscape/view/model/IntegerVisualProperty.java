@@ -40,7 +40,7 @@ class IntegerVisualProperty extends AbstractVisualProperty<Integer> {
 
 	public IntegerVisualProperty(final Integer def, final String id, final String name) {
 		// isolated node.  No parent/children.
-		super(def, id, name);
+		super(def, Integer.class, id, name);
 	}
 
 

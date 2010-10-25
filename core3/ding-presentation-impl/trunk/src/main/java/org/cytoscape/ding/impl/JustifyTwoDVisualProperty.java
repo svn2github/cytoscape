@@ -42,7 +42,7 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 public class JustifyTwoDVisualProperty extends AbstractVisualProperty<Justify> { 
 
 	public JustifyTwoDVisualProperty(final Justify def, final String id, final String name) {
-		super(def,id,name);
+		super(def,Justify.class, id,name);
 	}
 	
 	public String toSerializableString(final Justify value) {

@@ -43,8 +43,8 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 
 public class PaintVisualProperty<T extends Paint> extends AbstractVisualProperty<T> { 
 
-	public PaintVisualProperty(final T def, final String id, final String name) {
-		super(def, id, name);
+	public PaintVisualProperty(final T def, final Class<T> dataType, final String id, final String name) {
+		super(def, dataType, id, name);
 	}
 	
 	public String toSerializableString(final T color) {

@@ -40,7 +40,7 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 public class IntegerTwoDVisualProperty extends AbstractVisualProperty<Integer> { 
 
 	public IntegerTwoDVisualProperty(final Integer def, final String id, final String name) {
-		super(def,id,name);
+		super(def,Integer.class, id,name);
 	}
 	
 	public String toSerializableString(final Integer value) {

@@ -42,7 +42,7 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 public class StrokeTwoDVisualProperty extends AbstractVisualProperty<Stroke> { 
 
 	public StrokeTwoDVisualProperty(final Stroke def, final String id, final String name) {
-		super(def,id,name);
+		super(def,Stroke.class, id,name);
 	}
 	
 	public String toSerializableString(final Stroke value) {

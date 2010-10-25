@@ -44,7 +44,7 @@ public class DoubleVisualProperty extends AbstractVisualProperty<Double> {
 
 	public DoubleVisualProperty(final Double def, final String id,
 			final String name, final boolean ignoreDefault) {
-		super(def, id, name);
+		super(def, Double.class, id, name);
 		this.shouldIgnoreDefault = ignoreDefault;
 	}
 

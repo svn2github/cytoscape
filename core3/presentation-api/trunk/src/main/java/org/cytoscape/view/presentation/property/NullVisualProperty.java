@@ -9,7 +9,7 @@ public class NullVisualProperty extends AbstractVisualProperty<NullDataType> {
 	private static final NullDataType dummyObject = new NullDataTypeImpl();
 	
 	public NullVisualProperty(final String id, final String name) {
-		super(dummyObject, id, name);
+		super(dummyObject, NullDataType.class, id, name);
 	}
 
 	public String toSerializableString(final NullDataType value) {

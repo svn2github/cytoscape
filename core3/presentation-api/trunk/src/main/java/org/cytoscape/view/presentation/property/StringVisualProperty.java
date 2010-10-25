@@ -39,7 +39,7 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 public class StringVisualProperty extends AbstractVisualProperty<String> {
 
 	public StringVisualProperty(final String def, final String id, final String name) {
-		super(def, id, name);
+		super(def, String.class, id, name);
 	}
 
 	public String toSerializableString(final String value) {

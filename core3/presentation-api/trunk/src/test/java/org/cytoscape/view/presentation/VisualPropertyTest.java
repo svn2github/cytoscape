@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.awt.Color;
 
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.presentation.property.PaintVisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.junit.After;
@@ -35,11 +36,15 @@ public class VisualPropertyTest {
 		assertEquals(false, booleanProp.parseSerializableString("FALSE"));
 		
 		final VisualProperty<Double> doubleProp = TwoDVisualLexicon.NODE_SIZE;
-		assertEquals(Boolean.class, booleanProp.getType());
-		assertEquals("false", booleanProp.toSerializableString(Boolean.FALSE));
-		assertEquals(false, booleanProp.parseSerializableString("false"));
-		assertEquals(false, booleanProp.parseSerializableString("False"));
-		assertEquals(false, booleanProp.parseSerializableString("FALSE"));
+		assertEquals(Double.class, doubleProp.getType());
+		assertEquals("20.0", doubleProp.toSerializableString(Double.valueOf(20)));
+		assertEquals(Double.valueOf(100.12), doubleProp.parseSerializableString("100.12"));
+		
+		final VisualProperty<Visualizable> visualizableProp = TwoDVisualLexicon.NODE;
+		assertEquals(Visualizable.class, visualizableProp.getType());
+		
+		
+		
 	}
 
 }

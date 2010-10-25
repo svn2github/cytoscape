@@ -66,7 +66,7 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public AbstractVisualProperty(final T defaultValue, final String id, final String displayName) {
+	public AbstractVisualProperty(final T defaultValue, final Class<T> dataType, final String id, final String displayName) {
 		if(defaultValue == null)
 			throw new NullPointerException("defaultValue should not be null.");
 		
@@ -76,8 +76,10 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 		if(displayName == null)
 			throw new NullPointerException("displayName should not be null.");
 		
+		if(dataType.isAssignableFrom(defaultValue.getClass()) == false)
+			throw new IllegalArgumentException();
 		
-		this.dataType = (Class<T>) defaultValue.getClass();
+		this.dataType = dataType;
 		
 		this.defaultValue = defaultValue;
 		this.id = id;

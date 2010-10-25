@@ -13,7 +13,7 @@ public class DummyVisualPropertyTest extends AbstractVisualPropertyTest<DummyObj
 		id = "DummyVisualProperty";
 		defaultVal = new DummyObjectExtended();
 		displayName = "Dummy Visual Property";
-		type = (Class<DummyObject>) defaultVal.getClass();
+		type = DummyObject.class;
 		ignore = false;
 		vp = new DummyVisualProperty(defaultVal, id, displayName);
 	}

@@ -9,7 +9,7 @@ public class DefaultVisualizableVisualProperty extends AbstractVisualProperty<Vi
 	private static final Visualizable visualizable = new VisualizableImpl();
 
 	public DefaultVisualizableVisualProperty(final String id, final String name) {
-		super(visualizable, id, name);
+		super(visualizable, Visualizable.class, id, name);
 	}
 
 	

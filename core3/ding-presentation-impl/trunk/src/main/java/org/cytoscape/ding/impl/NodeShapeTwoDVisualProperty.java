@@ -41,7 +41,7 @@ public class NodeShapeTwoDVisualProperty extends
 		AbstractVisualProperty<NodeShape> {
 
 	public NodeShapeTwoDVisualProperty(final NodeShape def, final String id, final String name) {
-		super(def, id, name);
+		super(def, NodeShape.class, id, name);
 	}
 
 	public String toSerializableString(final NodeShape value) {

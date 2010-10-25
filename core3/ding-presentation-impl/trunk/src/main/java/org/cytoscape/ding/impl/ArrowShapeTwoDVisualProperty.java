@@ -41,7 +41,7 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 public class ArrowShapeTwoDVisualProperty extends AbstractVisualProperty<ArrowShape> { 
 
 	public ArrowShapeTwoDVisualProperty(final ArrowShape def, final String id, final String name) {
-		super(def,id,name);
+		super(def, ArrowShape.class, id,name);
 	}
 	
 	public String toSerializableString(final ArrowShape value) {
