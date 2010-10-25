@@ -29,7 +29,7 @@ public class PresentationWriterManagerImpl extends AbstractWriterManager<Present
 		PresentationWriterFactory tf = getMatchingFactory(filter,os);
 		if ( tf == null )
 			throw new NullPointerException("Couldn't find matching factory for filter: " + filter);
-		tf.setViewRenderer(view,re);
+		tf.setRenderingEngine(re);
 		return tf.getWriterTask();
 	}
 }

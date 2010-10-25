@@ -29,7 +29,7 @@ public class BitmapWriterFactory implements PresentationWriterFactory {
 		return bitmapFilter; 
 	}
 
-	public void setViewRenderer(View<?> view, RenderingEngine re) {
+	public void setRenderingEngine(RenderingEngine re) {
 		if ( view == null )
 			throw new NullPointerException("View is null");
 		if ( re == null )

@@ -27,7 +27,7 @@ public class AbstractWriterManager<T extends CyWriterFactory>  implements CyWrit
 		factories = new HashMap<CyFileFilter,T>();
 	}
 
-	public List<CyFileFilter> getAvailableWriters() {
+	public List<CyFileFilter> getAvailableWriterFilters() {
 		return new ArrayList<CyFileFilter>( factories.keySet() );
 	}
 	
