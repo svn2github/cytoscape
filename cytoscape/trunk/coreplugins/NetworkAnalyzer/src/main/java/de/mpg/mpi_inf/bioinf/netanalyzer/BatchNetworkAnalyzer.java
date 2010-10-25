@@ -148,14 +148,11 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 
 				// Run the analysis for an interpretation
 				final NetworkInterpretation interpretation = interprs[j];
-				boolean compBetw = false;
 				try {
 					if (interpretation.isDirected()) {
-						analyzer = new DirNetworkAnalyzer(network, null, interpretation, inspection.dupDirEdges);
-						compBetw = !inspection.dupDirEdges;
+						analyzer = new DirNetworkAnalyzer(network, null, interpretation);
 					} else {
-						analyzer = new UndirNetworkAnalyzer(network, null, interpretation, inspection.dupEdges);
-						compBetw = !inspection.dupEdges;
+						analyzer = new UndirNetworkAnalyzer(network, null, interpretation);
 					}
 					writeLine(Messages.DI_ANALYZINGINTERP1 + (j + 1) + Messages.DI_ANALYZINGINTERP2 + intCount);
 					final int maxProgress = analyzer.getMaxProgress();
@@ -178,7 +175,7 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 					final String extendedName = networkName + createID(interpretation);
 					try {
 						if (SettingsSerializer.getPluginSettings().getUseNodeAttributes()) {
-							if (!saveNodeAttributes(network, compBetw, interpretation.isDirected(), outputDir,
+							if (!saveNodeAttributes(network, interpretation.isDirected(), outputDir,
 									extendedName)) {
 								writeLine(Messages.SM_ATTRIBUTESNOTSAVED);
 							}
@@ -255,8 +252,6 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 	 * 
 	 * @param aNetwork
 	 *            Target network.
-	 * @param aBetwComp
-	 *            Flag indicating if betweenness has been computed.
 	 * @param aDir
 	 *            Flag indicating if the network interpretation is directed.
 	 * @param aOutputDir
@@ -266,7 +261,7 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 	 * @return <code>true</code> if any node attributes where present and have been saved, and <code>false</code>
 	 *         otherwise.
 	 */
-	private boolean saveNodeAttributes(CyNetwork aNetwork, boolean aBetwComp, boolean aDir, File aOutputDir,
+	private boolean saveNodeAttributes(CyNetwork aNetwork, boolean aDir, File aOutputDir,
 			String aExtendedName) {
 		// get node attributes computed in the last analysis run
 		Set<String> netAnayzerAttr = new HashSet<String>();
@@ -274,10 +269,6 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 			netAnayzerAttr = Messages.getDirNodeAttributes();
 		} else {
 			netAnayzerAttr = Messages.getUndirNodeAttributes();
-		}
-		if (netAnayzerAttr.contains(Messages.getAttr("nbt")) && !aBetwComp) {
-			netAnayzerAttr.remove(Messages.getAttr("nbt"));
-			netAnayzerAttr.remove(Messages.getAttr("stress"));
 		}
 		if (netAnayzerAttr.size() == 0) {
 			return false;

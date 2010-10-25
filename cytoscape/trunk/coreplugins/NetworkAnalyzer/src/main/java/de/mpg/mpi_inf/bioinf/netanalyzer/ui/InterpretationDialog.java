@@ -36,7 +36,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import cytoscape.Cytoscape;
@@ -71,13 +70,11 @@ public final class InterpretationDialog extends JDialog implements ActionListene
 	 * 
 	 * @param aStatus
 	 *            Status of the network to be analyzed.
-	 * @param aDupEdges
-	 *            Flag indicating if there are multiple edges in the network.
 	 * @exception HeadlessException
 	 *                if <code>GraphicsEnvironment.isHeadless()</code> returns <code>true</code>.
 	 */
-	public InterpretationDialog(NetworkStatus aStatus, boolean aDupEdges) throws HeadlessException {
-		this(Cytoscape.getDesktop(), aStatus, aDupEdges);
+	public InterpretationDialog(NetworkStatus aStatus) throws HeadlessException {
+		this(Cytoscape.getDesktop(), aStatus);
 	}
 
 	/**
@@ -93,18 +90,16 @@ public final class InterpretationDialog extends JDialog implements ActionListene
 	 *            The <code>JFrame</code> from which this dialog is displayed.
 	 * @param aStatus
 	 *            Status of the network to be analyzed.
-	 * @param aDupEdges
-	 *            Flag indicating if there are multiple edges in the network.
 	 * @throws HeadlessException
 	 *             if <code>GraphicsEnvironment.isHeadless()</code> returns <code>true</code>.
 	 */
-	public InterpretationDialog(JFrame aOwner, NetworkStatus aStatus, boolean aDupEdges)
+	public InterpretationDialog(JFrame aOwner, NetworkStatus aStatus)
 			throws HeadlessException {
 		super(aOwner, Messages.DT_INTERPRETATION, true);
 
 		pressedOK = false;
 		userChoice = aStatus.getDefaultInterprIndex();
-		initControls(aStatus, aDupEdges);
+		initControls(aStatus);
 		pack();
 		setLocationRelativeTo(aOwner);
 	}
@@ -180,10 +175,8 @@ public final class InterpretationDialog extends JDialog implements ActionListene
 	 * 
 	 * @param aStatus
 	 *            Status of the network to be analyzed.
-	 * @param aDupEdges
-	 *            Flag indicating if there are multiple edges in the network.
 	 */
-	private void initControls(NetworkStatus aStatus, boolean aDupEdges) {
+	private void initControls(NetworkStatus aStatus) {
 		JPanel contentPane = new JPanel(new BorderLayout(0, Utils.BORDER_SIZE));
 		Utils.setStandardBorder(contentPane);
 
@@ -195,14 +188,6 @@ public final class InterpretationDialog extends JDialog implements ActionListene
 		interprPanel.add(panTitle, BorderLayout.NORTH);
 		// Add the state of the network resulting from the interpretation
 		interprPanel.add(initInterprPanel(aStatus), BorderLayout.CENTER);
-		// Add a warning for multiple edges
-		if (aDupEdges) {
-			JLabel warnLabel = new JLabel(Messages.DI_DUPLEDGES, UIManager
-					.getIcon("OptionPane.warningIcon"), SwingConstants.CENTER);
-			JPanel panWarning = new JPanel();
-			panWarning.add(warnLabel);
-			interprPanel.add(panWarning, BorderLayout.SOUTH);
-		}
 		contentPane.add(interprPanel, BorderLayout.CENTER);
 
 		// Add OK, Cancel and Help buttons

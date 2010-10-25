@@ -56,7 +56,7 @@ public class AnalyzeSubsetAction extends NetAnalyzerAction {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			if (selectNetwork()) {
-				final AnalysisExecutor exec = AnalyzeNetworkAction.initAnalysisExecuter(network, null);
+				final AnalysisExecutor exec = AnalyzeNetworkAction.initAnalysisExecuter(network, selected);
 				if (exec != null) {
 					exec.start();
 				}

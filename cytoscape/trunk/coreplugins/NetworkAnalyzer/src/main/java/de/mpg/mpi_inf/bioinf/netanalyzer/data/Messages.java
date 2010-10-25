@@ -400,9 +400,6 @@ public abstract class Messages {
 
 	public static String DI_CUNION = "Compute Union";
 
-	public static String DI_DUPLEDGES = "<html>Note that this network contains duplicated edges and therefore <br>"
-			+ "betweenness and stress centrality will not be computed.</html>";
-
 	public static String DI_EXPORTCHART = "Export Chart";
 
 	public static String DI_EXPORTDATA = "Export Data";

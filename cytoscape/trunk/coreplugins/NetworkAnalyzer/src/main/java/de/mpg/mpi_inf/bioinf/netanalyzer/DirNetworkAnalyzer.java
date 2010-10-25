@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,17 +59,14 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	 * @param aNetwork
 	 *            Network to be analyzed.
 	 * @param aNodeSet
-	 *            Subset of nodes in <code>aNetwork</code>, for which topological parameters are to be
-	 *            calculated. Set this to <code>null</code> if parameters must be calculated for all nodes in
-	 *            the network.
+	 *            Subset of nodes in <code>aNetwork</code>, for which topological parameters are to
+	 *            be calculated. Set this to <code>null</code> if parameters must be calculated for
+	 *            all nodes in the network.
 	 * @param aInterpr
 	 *            Interpretation of the network edges.
-	 * @param aDupEdges
-	 *            Flag indicating if the network contains two or more identical directed edges. If this
-	 *            parameter is <code>true</code>, node and edge betweenness are not computed.
 	 */
-	public DirNetworkAnalyzer(CyNetwork aNetwork, Set<Node> aNodeSet, NetworkInterpretation aInterpr,
-			boolean aDupEdges) {
+	public DirNetworkAnalyzer(CyNetwork aNetwork, Set<Node> aNodeSet,
+			NetworkInterpretation aInterpr) {
 		super(aNetwork, aNodeSet, aInterpr);
 		if (nodeSet != null) {
 			stats.set("nodeCount", nodeSet.size());
@@ -85,7 +83,7 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 		this.nodeBetweenness = new HashMap<Node, NodeBetweenInfo>();
 		this.edgeBetweenness = new HashMap<Edge, Double>();
 		this.stress = new HashMap<Node, Long>();
-		this.computeNB = !aDupEdges && (nodeSet == null);
+		computeNB = true;
 	}
 
 	/*
@@ -117,7 +115,6 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 		Map<Node, Double> aplMap = new HashMap<Node, Double>();
 		// stress
 		LogBinDistribution stressDist = new LogBinDistribution();
-		long inNeighbors = 0; // total number of in-neighbors
 		long outNeighbors = 0; // total number of out-neighbors
 		diameter = 0;
 		radius = Integer.MAX_VALUE;
@@ -135,9 +132,8 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 			// Set<Node> connNodes = new HashSet<Node>(connNodes);
 			if (nodeSet != null) {
 				connNodes.retainAll(nodeSet);
-			}
-
-			if (computeNB) {
+			} 
+			if (nodeSet == null && computeNB){
 				// Initialize parameter for node and edge betweenness calculation
 				// Clear elements of last component analyzed
 				nodeBetweenness.clear();
@@ -169,7 +165,7 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 				if (neighborCount == 0) {
 					numberOfIsolatedNodes++;
 				}
-				// Number of selfloops calculation
+				// Number of self-loops calculation
 				int selfloops = 0;
 				for (int j = 0; j < inEdges.length; j++) {
 					Edge e = network.getEdge(inEdges[j]);
@@ -178,28 +174,6 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 					}
 				}
 				numberOfSelfLoops += selfloops;
-
-				if (nodeSet == null) {
-					// Compute shortest path lengths
-					PathLengthData pathLengths = computeSP(node);
-					final int eccentricity = pathLengths.getMaxLength();
-					if (diameter < eccentricity) {
-						diameter = eccentricity;
-					}
-					if (0 < eccentricity && eccentricity < radius) {
-						radius = eccentricity;
-					}
-					final double apl = (pathLengths.getCount() > 0) ? pathLengths.getAverageLength() : 0;
-					aplMap.put(node, Double.valueOf(apl));
-					final double closeness = (apl > 0.0) ? 1 / apl : 0.0;
-					closenessCent.add(new Point2D.Double(neighborCount, closeness));
-
-					if (useNodeAttributes) {
-						setAttr(nodeID, "spl", eccentricity);
-						setAttr(nodeID, "apl", Utils.roundTo(apl, roundingDigits));
-						setAttr(nodeID, "clc", Utils.roundTo(closeness, roundingDigits));
-					}
-				}
 
 				// Multi-edge node pair computation. Currently edge direction is ignored.
 				int partnerOfMultiEdgeNodePairs = 0;
@@ -243,7 +217,6 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 				neighbors = getNeighbors(node, inEdges, new int[0]);
 				neighborCount = neighbors.size();
 				if (neighborCount > 0) {
-					inNeighbors += neighborCount;
 					double inNC = averageNeighbors(neighbors, false, true);
 					accumulate(inNCps, neighborCount, inNC);
 				}
@@ -255,19 +228,41 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 					accumulate(outNCps, neighborCount, outNC);
 				}
 
-				if (computeNB) {
-					// Node and edge betweenness calculation
-					// Calculate only if there are no multiple edges
-					computeNBandEB(node);
-					// reset everything except the betweenness value
-					for (Node n : connNodes) {
-						NodeBetweenInfo nodeInfo = nodeBetweenness.get(n);
-						nodeInfo.reset();
-					}
-				}
-
 				if (useNodeAttributes) {
 					setAttr(nodeID, "nco", nco);
+				}
+
+				if (nodeSet == null) {
+					// Compute shortest path lengths
+					PathLengthData pathLengths = computeSP(node);
+					final int eccentricity = pathLengths.getMaxLength();
+					if (diameter < eccentricity) {
+						diameter = eccentricity;
+					}
+					if (0 < eccentricity && eccentricity < radius) {
+						radius = eccentricity;
+					}
+					final double apl = (pathLengths.getCount() > 0) ? pathLengths
+							.getAverageLength() : 0;
+					aplMap.put(node, Double.valueOf(apl));
+					final double closeness = (apl > 0.0) ? 1 / apl : 0.0;
+					closenessCent.add(new Point2D.Double(neighborCount, closeness));
+
+					if (useNodeAttributes) {
+						setAttr(nodeID, "spl", eccentricity);
+						setAttr(nodeID, "apl", Utils.roundTo(apl, roundingDigits));
+						setAttr(nodeID, "clc", Utils.roundTo(closeness, roundingDigits));
+					}
+
+					// Node and edge betweenness calculation
+					if (computeNB) {
+						computeNBandEB(node);
+						// reset everything except the betweenness value
+						for (Node n : connNodes) {
+							NodeBetweenInfo nodeInfo = nodeBetweenness.get(n);
+							nodeInfo.reset();
+						}
+					}
 				}
 
 				if (cancelled) {
@@ -275,8 +270,9 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 					return;
 				}
 			}
-			if (computeNB) {
-				// Normalize and save node betweenness
+			
+			// Normalize and save betweenness and stress
+			if (nodeSet == null && computeNB) {
 				final double nNormFactor = computeNormFactor(nodeBetweenness.size());
 				for (final Node n : connNodes) {
 					String id = n.getIdentifier();
@@ -295,16 +291,15 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 					}
 				}
 
-				// Normalize and save edge betweenness
-				final double eNormFactor = computeNormFactor(edgeBetweenness.size());
-				for (final Map.Entry<Edge, Double> betEntry : edgeBetweenness.entrySet()) {
-					double eb = betEntry.getValue().doubleValue() * eNormFactor;
-					final Edge e = betEntry.getKey();
-					if (Double.isNaN(eb)) {
-						eb = 0.0;
-					}
-					if (useEdgeAttributes) {
-						setEAttr(e.getIdentifier(), "ebt", Utils.roundTo(eb, roundingDigits));
+				// Save edge betweenness
+				if (useEdgeAttributes) {
+					for (final Map.Entry<Edge, Double> betEntry : edgeBetweenness.entrySet()) {
+						double eb = betEntry.getValue().doubleValue();
+						if (Double.isNaN(eb)) {
+							eb = 0.0;
+						}
+						setEAttr(betEntry.getKey().getIdentifier(), "ebt",
+								Utils.roundTo(eb, roundingDigits));
 					}
 				}
 			}
@@ -341,13 +336,13 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 				if (diameter > 1) {
 					stats.set("splDist", new LongHistogram(sPathLengths, 1, diameter));
 				}
-			}
+			}			
 		}
 
 		if (neighborsAccum != null) {
 			stats.set("avNeighbors", neighborsAccum.getAverage());
 		}
-		stats.set("density", (double) (inNeighbors + outNeighbors) / (nodeCount * (nodeCount - 1)));
+		stats.set("density", (double) (outNeighbors / (nodeCount * (nodeCount - 1))));
 		stats.set("ncc", connectedComponentsCount);
 		stats.set("usn", numberOfIsolatedNodes);
 		stats.set("nsl", numberOfSelfLoops);
@@ -375,7 +370,7 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 		}
 
 		// Save stress distribution in the statistics instance
-		if (computeNB) {
+		if (nodeSet == null && computeNB) {
 			stats.set("stressDist", stressDist.createPoints2D());
 		}
 
@@ -393,8 +388,8 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	 * 
 	 * @param aNode
 	 *            Node, of which incoming edges are to be found.
-	 * @return Array of edge indices, containing all the edges in the network that point to <code>aNode</code>
-	 *         .
+	 * @return Array of edge indices, containing all the edges in the network that point to
+	 *         <code>aNode</code> .
 	 */
 	private int[] getInEdges(Node aNode) {
 		return network.getAdjacentEdgeIndicesArray(aNode.getRootGraphIndex(), false, true, false);
@@ -471,18 +466,18 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	}
 
 	/**
-	 * Computes the shortest path lengths from the given node to all other nodes in the network. As a side
-	 * effect, this method accumulates values in the field {@link #sPathLengths}.
+	 * Computes the shortest path lengths from the given node to all other nodes in the network. As
+	 * a side effect, this method accumulates values in the field {@link #sPathLengths}.
 	 * <p>
-	 * This method uses a breadth-first traversal through the network, starting from the specified node, in
-	 * order to find all reachable nodes and accumulate their distances to <code>aNode</code> in
-	 * {@link #sPathLengths}.
+	 * This method uses a breadth-first traversal through the network, starting from the specified
+	 * node, in order to find all reachable nodes and accumulate their distances to
+	 * <code>aNode</code> in {@link #sPathLengths}.
 	 * </p>
 	 * 
 	 * @param aNode
-	 *            Starting node of the shortests paths to be found.
-	 * @return Data on the shortest path lengths from the current node to all other reachable nodes in the
-	 *         network.
+	 *            Starting node of the shortest paths to be found.
+	 * @return Data on the shortest path lengths from the current node to all other reachable nodes
+	 *         in the network.
 	 */
 	private PathLengthData computeSP(Node aNode) {
 		visited.clear();
@@ -519,8 +514,8 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	 * Computes the average number of neighbors of the nodes in a given node set.
 	 * 
 	 * @param aNodes
-	 *            Non-empty set of nodes. Specifying <code>null</code> or an empty set for this parameter
-	 *            results in throwing an exception.
+	 *            Non-empty set of nodes. Specifying <code>null</code> or an empty set for this
+	 *            parameter results in throwing an exception.
 	 * @param aInEdges
 	 *            Flag indicating if incoming edges must be considered.
 	 * @param aOutEdges
@@ -548,7 +543,8 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	 * 
 	 * @param aNeighborIndices
 	 *            Array of the indices of all the neighbors of the node of interest.
-	 * @return Clustering coefficient of <code>aNode</code> as a value in the range <code>[0,1]</code>.
+	 * @return Clustering coefficient of <code>aNode</code> as a value in the range
+	 *         <code>[0,1]</code>.
 	 */
 	private double computeCC(int[] aNeighborIndices) {
 		int edgeCount = CyNetworkUtils.getPairConnCount(network, aNeighborIndices, false);
@@ -557,20 +553,22 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	}
 
 	/**
-	 * Accumulates the node and edge betweenness of all nodes in a connected component. The node betweenness
-	 * is calculate using the algorithm of Brandes (U. Brandes: A Faster Algorithm for Betweenness Centrality.
-	 * Journal of Mathematical Sociology 25(2):163-177, 2001). The edge betweenness is calculated as used by
-	 * Newman and Girvan (M.E. Newman and M. Girvan: Finding and Evaluating Community Structure in Networks.
-	 * Phys. Rev. E Stat. Nonlin. Soft. Matter Phys., 69, 026113.). In each run of this method a different
-	 * source node is chosen and the betweenness of all nodes is replaced by the new one. For the final result
-	 * this method has to be run for all nodes of the connected component.
+	 * Accumulates the node and edge betweenness of all nodes in a connected component. The node
+	 * betweenness is calculated using the algorithm of Brandes (U. Brandes: A Faster Algorithm for
+	 * Betweenness Centrality. Journal of Mathematical Sociology 25(2):163-177, 2001). The edge
+	 * betweenness is calculated as used by Newman and Girvan (M.E. Newman and M. Girvan: Finding
+	 * and Evaluating Community Structure in Networks. Phys. Rev. E Stat. Nonlin. Soft. Matter
+	 * Phys., 69, 026113.). In each run of this method a different source node is chosen and the
+	 * betweenness of all nodes is replaced by the new one. For the final result this method has to
+	 * be run for all nodes of the connected component.
 	 * 
-	 * This method uses a breadth-first search through the network, starting from a specified source node, in
-	 * order to find all paths to the other nodes in the network and to accumulate their betweenness.
+	 * This method uses a breadth-first search through the network, starting from a specified source
+	 * node, in order to find all paths to the other nodes in the network and to accumulate their
+	 * betweenness.
 	 * 
 	 * @param source
-	 *            Node where a run of breadth-first search is started, in order to accumulate the node and
-	 *            edge betweenness of all other nodes
+	 *            Node where a run of breadth-first search is started, in order to accumulate the
+	 *            node and edge betweenness of all other nodes
 	 */
 	private void computeNBandEB(Node source) {
 		LinkedList<Node> done = new LinkedList<Node>();
@@ -591,7 +589,7 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 			final Set<Node> neighbors = getOutNeighbors(current);
 			for (Node neighbor : neighbors) {
 				final NodeBetweenInfo neighborNBInfo = nodeBetweenness.get(neighbor);
-				final Edge edge = CyNetworkUtils.getConnEdge(network, current, neighbor);
+				final List<Edge> edges = CyNetworkUtils.getConnEdge(network, current, neighbor);
 				final int expectSPLength = currentNBInfo.getSPLength() + 1;
 
 				if (neighborNBInfo.getSPLength() < 0) {
@@ -604,14 +602,18 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 					// shortest path from current to neighbor found
 					neighborNBInfo.addSPCount(currentNBInfo.getSPCount());
 					neighborNBInfo.addPredecessor(current);
-					currentNBInfo.addOutedge(edge);
+					for (final Edge edge : edges) {
+						currentNBInfo.addOutedge(edge);
+					}
 					// check for long overflow
 					if (neighborNBInfo.getSPCount() < 0) {
 						computeNB = false;
 					}
 				}
-				if (!edgeDependency.containsKey(edge)) {
-					edgeDependency.put(edge, new Double(0.0));
+				for (final Edge edge : edges) {
+					if (!edgeDependency.containsKey(edge)) {
+						edgeDependency.put(edge, new Double(0.0));
+					}
 				}
 			}
 		}
@@ -625,21 +627,24 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 				while (!currentNBInfo.isEmptyPredecessors()) {
 					final Node predecessor = currentNBInfo.pullPredecessor();
 					final NodeBetweenInfo predecessorNBInfo = nodeBetweenness.get(predecessor);
-					predecessorNBInfo
-							.addDependency((1.0 + currentNBInfo.getDependency())
-									* ((double) predecessorNBInfo.getSPCount() / (double) currentNBInfo
-											.getSPCount()));
+					predecessorNBInfo.addDependency((1.0 + currentNBInfo.getDependency())
+							* ((double) predecessorNBInfo.getSPCount() / (double) currentNBInfo
+									.getSPCount()));
 					// accumulate all sp count
 					final long oldStress = stressDependency.get(predecessor).longValue();
 					stressDependency.put(predecessor, new Long(oldStress + 1 + currentStress));
 					// accumulate edge betweenness
-					final Edge edge = CyNetworkUtils.getConnEdge(network, predecessor, current);
-					if (edge != null) {
-						LinkedList<Edge> currentedges = currentNBInfo.getOutEdges();
+					final List<Edge> edges = CyNetworkUtils.getConnEdge(network, predecessor, current);
+					if (edges.size() != 0) {
+						final Edge compEdge = edges.get(0);
+						final LinkedList<Edge> currentedges = currentNBInfo.getOutEdges();
 						double oldbetweenness = 0.0;
 						double newbetweenness = 0.0;
-						if (edgeBetweenness.containsKey(edge)) {
-							oldbetweenness = edgeBetweenness.get(edge).doubleValue();
+						for (final Edge edge : edges) {
+							if (edgeBetweenness.containsKey(edge)) {
+								oldbetweenness = edgeBetweenness.get(edge).doubleValue();
+								break;
+							}
 						}
 						// if the node is a leaf node in this search tree
 						if (currentedges.size() == 0) {
@@ -648,16 +653,19 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 						} else {
 							double neighbourbetw = 0.0;
 							for (Edge neighbouredge : currentedges) {
-								if (!edge.equals(neighbouredge)) {
-									neighbourbetw += edgeDependency.get(neighbouredge).doubleValue();
+								if (!edges.contains(neighbouredge)) {
+									neighbourbetw += edgeDependency.get(neighbouredge)
+											.doubleValue();
 								}
 							}
 							newbetweenness = (1 + neighbourbetw)
 									* ((double) predecessorNBInfo.getSPCount() / (double) currentNBInfo
 											.getSPCount());
 						}
-						edgeDependency.put(edge, new Double(newbetweenness));
-						edgeBetweenness.put(edge, new Double(newbetweenness + oldbetweenness));
+						edgeDependency.put(compEdge, new Double(newbetweenness));
+						for (final Edge edge : edges) {							
+							edgeBetweenness.put(edge, new Double(newbetweenness + oldbetweenness));
+						}
 					}
 				}
 				// accumulate betweenness in each run
@@ -665,21 +673,22 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 					currentNBInfo.addBetweenness(currentNBInfo.getDependency());
 					// accumulate number of shortest paths
 					final long allSpPaths = stress.get(current).longValue();
-					stress.put(current, new Long(allSpPaths + currentNBInfo.getSPCount() * currentStress));
+					stress.put(current, new Long(allSpPaths + currentNBInfo.getSPCount()
+							* currentStress));
 				}
 			}
 		}
 	}
 
 	/**
-	 * Computes a normalization factor for node and edge betweenness normalization.
+	 * Computes a normalization factor for node betweenness normalization.
 	 * 
 	 * @param count
-	 *            Number of nodes/edges for which betweenness has been computed.
-	 * @return Normalization factor for node and edge betweenness normalization.
+	 *            Number of nodes for which betweenness has been computed.
+	 * @return Normalization factor for node betweenness normalization.
 	 */
 	protected double computeNormFactor(int count) {
-		return (count > 2) ? 2.0 / ((count - 1) * (count - 2)) : 1.0;
+		return (count > 2) ? (1.0 / ((count - 1) * (count - 2))) : 1.0;
 	}
 
 	/**
@@ -702,8 +711,8 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	 * Histogram of shortest path lengths.
 	 * <p>
 	 * <code>sPathLength[0]</code> stores the number of nodes processed so far.<br/>
-	 * <code>sPathLength[i]</code> for <code>i &gt; 0</code> stores the number of shortest paths of length
-	 * <code>i</code> found so far.
+	 * <code>sPathLength[i]</code> for <code>i &gt; 0</code> stores the number of shortest paths of
+	 * length <code>i</code> found so far.
 	 * </p>
 	 */
 	private long[] sPathLengths;
@@ -760,10 +769,10 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	 * number of shortest paths exceeds the maximum long value.
 	 */
 	private boolean computeNB;
-
+	
 	/**
-	 * Map of all nodes with their respective node betweenness information, which stores information needed
-	 * for the node betweenness calculation
+	 * Map of all nodes with their respective node betweenness information, which stores information
+	 * needed for the node betweenness calculation
 	 */
 	private Map<Node, NodeBetweenInfo> nodeBetweenness;
 
@@ -773,7 +782,8 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	private Map<Edge, Double> edgeBetweenness;
 
 	/**
-	 * Map of all nodes with their respective stress, i.e. number of shortest paths passing through a node.
+	 * Map of all nodes with their respective stress, i.e. number of shortest paths passing through
+	 * a node.
 	 */
 	private Map<Node, Long> stress;
 }

@@ -160,28 +160,28 @@ public abstract class CyNetworkUtils {
 	}
 
 	/**
-	 * Returns the directed edge connecting two nodes. We assume this is called only if the graph has no
-	 * multiple edges.
+	 * Returns the edges connecting two nodes.
 	 * 
 	 * @param aNode1
 	 *            Node that has an edge with aNode2
 	 * @param aNode2
 	 *            Node that has an edge with aNode1
-	 * @return Edge connecting aNode1 and aNode2
+	 * @return Edges connecting aNode1 and aNode2
 	 */
-	protected static Edge getConnEdge(CyNetwork aNetwork, Node aNode1, Node aNode2) {
-		List<Node> nodes = new ArrayList<Node>(2);
+	protected static List<Edge> getConnEdge(CyNetwork aNetwork, Node aNode1, Node aNode2) {
+		final List<Node> nodes = new ArrayList<Node>(2);
 		nodes.add(aNode1);
 		nodes.add(aNode2);
 		// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
-		List<?> edges = aNetwork.getConnectingEdges(nodes);
-		for (int i = 0; i < edges.size(); i++) {
-			Edge e = (Edge) edges.get(i);
+		final List<?> allEdges = aNetwork.getConnectingEdges(nodes);
+		final List<Edge> connEdges = new ArrayList<Edge>();
+		for (int i = 0; i < allEdges.size(); i++) {
+			final Edge e = (Edge) allEdges.get(i);
 			if (!e.getSource().equals(e.getTarget())) {
-				return e;
+				connEdges.add(e);
 			}
 		}
-		return null;
+		return connEdges;
 	}
 
 	/**

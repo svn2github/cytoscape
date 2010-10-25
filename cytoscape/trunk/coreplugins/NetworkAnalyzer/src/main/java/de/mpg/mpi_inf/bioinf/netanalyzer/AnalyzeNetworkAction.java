@@ -90,9 +90,9 @@ public class AnalyzeNetworkAction extends NetAnalyzerAction {
 
 			NetworkAnalyzer analyzer = null;
 			if (interpr.isDirected()) {
-				analyzer = new DirNetworkAnalyzer(aNetwork, aNodeSet, interpr, status.dupDirEdges);
+				analyzer = new DirNetworkAnalyzer(aNetwork, aNodeSet, interpr);
 			} else {
-				analyzer = new UndirNetworkAnalyzer(aNetwork, aNodeSet, interpr, status.dupEdges);
+				analyzer = new UndirNetworkAnalyzer(aNetwork, aNodeSet, interpr);
 			}
 			return new AnalysisExecutor(Cytoscape.getDesktop(), analyzer);
 		} catch (IllegalArgumentException ex) {
@@ -118,9 +118,7 @@ public class AnalyzeNetworkAction extends NetAnalyzerAction {
 	 */
 	private static NetworkInterpretation interpretNetwork(NetworkInspection aInsp) {
 		final NetworkStatus status = NetworkStatus.getStatus(aInsp);
-		// store information about duplicated edges and inform the user about it if needed.
-		final boolean anyDupEdges = (aInsp.dupDirEdges || aInsp.dupEdges);
-		final InterpretationDialog dialog = new InterpretationDialog(status, anyDupEdges);
+		final InterpretationDialog dialog = new InterpretationDialog(status);
 		dialog.setVisible(true);
 
 		if (dialog.pressedOK()) {
