@@ -40,7 +40,7 @@ public class SessionWriterFactoryImpl implements SessionWriterFactory {
 	}
 	
 	@Override
-	public CyWriter getWriter() {
+	public CyWriter getWriterTask() {
 		return new SessionWriterImpl(outputStream, session, networkViewWriterMgr, 
 		                             propertyWriterMgr, xgmmlFilter, bookmarksFilter, 
 		                             cysessionFilter, propertiesFilter);

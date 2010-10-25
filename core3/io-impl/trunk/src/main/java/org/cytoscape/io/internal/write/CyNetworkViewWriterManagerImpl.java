@@ -28,6 +28,6 @@ public class CyNetworkViewWriterManagerImpl extends AbstractWriterManager<CyNetw
 			throw new NullPointerException("Couldn't find matching factory for filter: " + filter);
 		}
 		factory.setNetworkView(view);
-		return factory.getWriter();
+		return factory.getWriterTask();
 	}
 }

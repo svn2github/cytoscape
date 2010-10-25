@@ -27,7 +27,7 @@ public class PropertyWriterManagerImpl extends AbstractWriterManager<PropertyWri
 		if ( tf == null )
 			throw new NullPointerException("Couldn't find matching factory for filter: " + filter);
 		tf.setProperty(property);
-		return tf.getWriter();
+		return tf.getWriterTask();
 	}
 }
 
