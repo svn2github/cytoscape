@@ -106,15 +106,6 @@ public interface CyTable extends Identifiable {
 	<T> void createColumn(String columnName, Class<?extends T> type, boolean unique);
 
 	/**
-     * Returns a list of column names where the values within the column are
-     * guaranteed to be unique.  Unique columns can be used to map the values 
-	 * from one CyTable to another.
-     * @return A list of column names where the values within the column are
-     * guaranteed to be unique. 
-     */
-	List<String> getUniqueColumns();
-
-	/**
 	 * Returns the list of all values contained in the specified column.
 	 * @param columnName The name identifying the attribute.
 	 * @param type The type of the column.

@@ -250,20 +250,6 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertEquals( mgr.getColumnTypeMap().get("someInt"), Integer.class );
 	}
 
-	public void testCreateUniqueColumn() {
-		mgr.createColumn("someInt", Integer.class, true);
-		assertTrue( mgr.getColumnTypeMap().containsKey("someInt") );
-		assertEquals( mgr.getColumnTypeMap().get("someInt"), Integer.class );
-		assertTrue( mgr.getUniqueColumns().contains("someInt"));
-	}
-
-	public void testCreateNonUniqueColumn() {
-		mgr.createColumn("someInt", Integer.class, false);
-		assertTrue( mgr.getColumnTypeMap().containsKey("someInt") );
-		assertEquals( mgr.getColumnTypeMap().get("someInt"), Integer.class );
-		assertFalse( mgr.getUniqueColumns().contains("someInt"));
-	}
-
 	public void testColumnDelete() {
 		mgr.createColumn("someInt", Integer.class, false);
 		assertTrue( mgr.getColumnTypeMap().containsKey("someInt") );
