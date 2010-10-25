@@ -41,30 +41,25 @@ import java.util.StringTokenizer;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class PaintVisualProperty<T extends Paint> extends AbstractVisualProperty<T> { 
+public class ColorVisualProperty extends AbstractVisualProperty<Color> { 
 
-	public PaintVisualProperty(final T def, final Class<T> dataType, final String id, final String name) {
-		super(def, dataType, id, name);
+	public ColorVisualProperty(final Color def, final String id, final String name) {
+		super(def, Color.class, id, name);
 	}
 	
-	public String toSerializableString(final T color) {
-		if(color instanceof Color == false) {
-			throw new IllegalArgumentException("This method supports Color object only.  Override this method for more implementations.");
-		}
-		
-		final Integer red = Integer.valueOf(((Color) color).getRed());
-		final Integer green = Integer.valueOf(((Color) color).getGreen());
-		final Integer blue = Integer.valueOf(((Color) color).getBlue());
+	public String toSerializableString(final Color color) {
+		final Integer red = Integer.valueOf(color.getRed());
+		final Integer green = Integer.valueOf(color.getGreen());
+		final Integer blue = Integer.valueOf(color.getBlue());
 
 		return red.toString() + "," + green.toString() + "," + blue.toString();
 	}
 
-	public T parseSerializableString(final String text) {
+	public Color parseSerializableString(final String text) {
 		// Start by seeing if this is a hex representation
 		if (text.startsWith("#")) {
 			try {
-				Color c = Color.decode(text);
-				return (T) c;
+				return Color.decode(text);
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("invalid hex RGB format");	
 			}
@@ -85,7 +80,7 @@ public class PaintVisualProperty<T extends Paint> extends AbstractVisualProperty
 			int g = Integer.parseInt(green);
 			int b = Integer.parseInt(blue);
 
-			return (T) new Color(r, g, b);
+			return new Color(r, g, b);
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException("invalid RGB format");	
 		}
