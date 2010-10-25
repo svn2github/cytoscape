@@ -49,7 +49,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	private static final double DEF_COMPLEX_REWARD = 0;
 	private static final String DEF_DEGREE = "2";
 	private static final double DEF_CUTOFF = 20.0;
-	private static final double DEF_PVALUE_THRESHOLD = .01;
+	private static final double DEF_PVALUE_THRESHOLD = .1;
 	private static final int DEF_NUMBER_OF_SAMPLES = 1000;
 	private static final String DEFAULT_ATTRIBUTE = "none";
 	

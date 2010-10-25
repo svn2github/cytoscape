@@ -264,6 +264,8 @@ public class NestedNetworkCreator {
 		
 		Cytoscape.createNetworkView(overviewNetwork);
 		applyNetworkLayout(overviewNetwork, cutoff, maxScore);
+		
+		
 	}
 
 	private String getNodeName(TypedLinkNodeModule<String, BFEdge> module, int nodeIndex, Map<TypedLinkNodeModule<String, BFEdge>,String> module_name)
