@@ -1,7 +1,7 @@
 package org.cytoscape.io.internal.write.graphics;
 
 
-import org.cytoscape.io.write.ViewWriterFactory;
+import org.cytoscape.io.write.PresentationWriterFactory;
 import org.cytoscape.io.write.CyWriter;
 import org.cytoscape.io.CyFileFilter;
 
@@ -13,7 +13,7 @@ import java.io.OutputStream;
 /**
  * Returns a Task that will write
  */
-public class BitmapWriterFactory implements ViewWriterFactory {
+public class BitmapWriterFactory implements PresentationWriterFactory {
 
 	private final CyFileFilter bitmapFilter; 
 
