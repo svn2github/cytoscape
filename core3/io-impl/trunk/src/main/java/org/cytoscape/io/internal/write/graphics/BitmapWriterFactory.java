@@ -45,7 +45,7 @@ public class BitmapWriterFactory implements ViewWriterFactory {
 		outputStream = os;
 	}
 
-	public CyWriter getWriter() {
+	public CyWriter getWriterTask() {
 		return new BitmapWriter(view, re, outputStream, bitmapFilter.getExtensions() );
 	}
 }
