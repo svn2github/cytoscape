@@ -1,24 +1,25 @@
 package org.cytoscape.session;
 
+
 import org.cytoscape.model.CyNetwork;
 
-public interface CyNetworkNaming {
 
+public interface CyNetworkNaming {
 	/**
-	 *  DOCUMENT ME!
+	 *  Generates a unique title for a subnetwork based on a parent network
 	 *
-	 * @param parentNetwork DOCUMENT ME!
+	 * @param parentNetwork a non-null reference to a parent network
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return a unique title somehow based on the title of the parent network
 	 */
 	String getSuggestedSubnetworkTitle(CyNetwork parentNetwork);
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Generates a unique network title based on a provided suggestion.
 	 *
-	 * @param desiredTitle DOCUMENT ME!
+	 * @param desiredTitle  the "ideal" title that we would like
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return "desiredTitle" if this title is not yet in use, o/w a title that is unique and uses "desiredTitle" as a prefix
 	 */
 	String getSuggestedNetworkTitle(String desiredTitle);
 }
