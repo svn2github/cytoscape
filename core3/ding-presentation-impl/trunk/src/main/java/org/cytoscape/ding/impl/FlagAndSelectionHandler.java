@@ -53,14 +53,6 @@ import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.NodeView;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.events.SelectedEdgesEvent;
-import org.cytoscape.model.events.SelectedEdgesListener;
-import org.cytoscape.model.events.SelectedNodesEvent;
-import org.cytoscape.model.events.SelectedNodesListener;
-import org.cytoscape.model.events.UnselectedEdgesEvent;
-import org.cytoscape.model.events.UnselectedEdgesListener;
-import org.cytoscape.model.events.UnselectedNodesEvent;
-import org.cytoscape.model.events.UnselectedNodesListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,9 +64,7 @@ import org.slf4j.LoggerFactory;
  * class is only used by PhoebeNetworkView, which no longer used anywhere.
  * 
  */
-public class FlagAndSelectionHandler implements SelectedNodesListener,
-		UnselectedNodesListener, SelectedEdgesListener,
-		UnselectedEdgesListener, GraphViewChangeListener {
+public class FlagAndSelectionHandler implements GraphViewChangeListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(FlagAndSelectionHandler.class);
 
@@ -204,44 +194,6 @@ public class FlagAndSelectionHandler implements SelectedNodesListener,
 
 		logger.debug("Finished select operation: Time = "
 				+ (System.currentTimeMillis() - start) + " msec.");
-	}
-
-	/**
-	 * Responds to events indicating a change in the flagged state of one or
-	 * more nodes or edges. Sets the corresponding selection state for views of
-	 * those objects in the graph view.
-	 */
-
-	public void handleEvent(final SelectedNodesEvent event) {
-		if (event.getSource() != view.getNetwork())
-			return;
-
-		for (final CyNode n : event.getNodeList())
-			setNodeSelected(n, true);
-	}
-
-	public void handleEvent(final SelectedEdgesEvent event) {
-		if (event.getSource() != view.getNetwork())
-			return;
-
-		for (final CyEdge n : event.getEdgeList())
-			setEdgeSelected(n, true);
-	}
-
-	public void handleEvent(final UnselectedNodesEvent event) {
-		if (event.getSource() != view.getNetwork())
-			return;
-
-		for (final CyNode n : event.getNodeList())
-			setNodeSelected(n, false);
-	}
-
-	public void handleEvent(final UnselectedEdgesEvent event) {
-		if (event.getSource() != view.getNetwork())
-			return;
-
-		for (final CyEdge n : event.getEdgeList())
-			setEdgeSelected(n, false);
 	}
 
 	/**
