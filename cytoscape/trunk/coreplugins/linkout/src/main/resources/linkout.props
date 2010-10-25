@@ -72,6 +72,10 @@ nodelinkouturl.KEGG.human\ (use\ NCBI\ GeneID)=http://www.kegg.jp/dbget-bin/www_
 nodelinkouturl.KEGG.yeast\ (use\ ORF\ name)=http://www.kegg.jp/dbget-bin/www_bget?sce:%ID%
 nodelinkouturl.KEGG.mouse\ (use\ NCBI\ GeneID)=http://www.genome.jp/dbget-bin/www_bget?mmu:%ID%
 
+#BindingDB Links
+nodelinkouturl.BindingDB.BindingDB\ (UniProt)= http://www.bindingdb.org/uniprot/%biopax.xref.UNIPROT%
+nodelinkouturl.BindingDB.BindingDB\ (canonical\ name)= http://www.bindingdb.org/bind/searchby_tw.jsp?constrain=0&target1=%biopax.entity.NAME%&submit=Search
+
 #Edge Links
 edgelinkouturl.iHop.yeast=http://www.ihop-net.org/UniPub/iHOP/in?syns_1=%ID1%&ncbi_tax_id_1=4932&syns_2=%ID2%&ncbi_tax_id_2=4932
 edgelinkouturl.iHop.human=http://www.ihop-net.org/UniPub/iHOP/in?syns_1=%ID1%&ncbi_tax_id_1=9606&syns_2=%ID2%&ncbi_tax_id_2=9606
