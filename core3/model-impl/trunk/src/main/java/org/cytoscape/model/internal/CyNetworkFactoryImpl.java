@@ -51,7 +51,7 @@ public class CyNetworkFactoryImpl implements CyNetworkFactory {
 	private static final Logger logger = LoggerFactory.getLogger(CyNetworkFactoryImpl.class);
 	
 	private final CyEventHelper help;
-	private final CyTableManager mgr;
+	private final CyTableManagerImpl mgr;
 	private final CyTableFactory tableFactory;
 
 	/**
@@ -59,7 +59,7 @@ public class CyNetworkFactoryImpl implements CyNetworkFactory {
 	 *
 	 * @param help An instance of CyEventHelper. 
 	 */
-	public CyNetworkFactoryImpl(final CyEventHelper help, final CyTableManager mgr, final CyTableFactory tableFactory) {
+	public CyNetworkFactoryImpl(final CyEventHelper help, final CyTableManagerImpl mgr, final CyTableFactory tableFactory) {
 		if (help == null)
 			throw new NullPointerException("CyEventHelper is null");
 

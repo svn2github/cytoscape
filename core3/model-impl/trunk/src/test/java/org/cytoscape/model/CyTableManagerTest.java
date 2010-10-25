@@ -36,24 +36,23 @@
 package org.cytoscape.model;
 
 import org.cytoscape.model.internal.CyTableManagerImpl;
+import org.cytoscape.model.internal.CyTableFactoryImpl;
+import org.cytoscape.model.internal.ArrayGraph;
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.event.DummyCyEventHelper;
 
-/**
- * DOCUMENT ME!
- */
 public class CyTableManagerTest extends AbstractCyTableManagerTest {
 
-	/**
-	 * DOCUMENT ME!
-	 */
 	public void setUp() {
 		super.setUp();
-		mgr = new CyTableManagerImpl();
+		CyTableManagerImpl mgrImpl = new CyTableManagerImpl();
+		mgr = mgrImpl; 
+		CyEventHelper eh = new DummyCyEventHelper(); 
+		goodNetwork = new ArrayGraph(eh,mgrImpl,new CyTableFactoryImpl(eh)).getBaseNetwork();
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 */
 	public void tearDown() {
 		mgr = null;
+		goodNetwork = null;
 	}
 }

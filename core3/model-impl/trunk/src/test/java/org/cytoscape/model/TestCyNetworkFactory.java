@@ -52,13 +52,16 @@ public class TestCyNetworkFactory {
 
 	public static CyNetwork getInstance() {
 		DummyCyEventHelper deh = new DummyCyEventHelper();
-		return new ArrayGraph(deh, new CyTableManagerImpl(),new CyTableFactoryImpl(deh));
+		ArrayGraph ar = new ArrayGraph(deh, new CyTableManagerImpl(),new CyTableFactoryImpl(deh));
+		return ar.getBaseNetwork();
 	}
 
 	public static CyRootNetwork getRootInstance() {	
 		// This only works because we know that ArrayGraph (returned from 
 		// getInstance) is also a root network!
-		return (CyRootNetwork)getInstance();
+		DummyCyEventHelper deh = new DummyCyEventHelper();
+		ArrayGraph ar = new ArrayGraph(deh, new CyTableManagerImpl(),new CyTableFactoryImpl(deh));
+		return ar; 
 	}
 	
 	@Test

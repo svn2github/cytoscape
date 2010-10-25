@@ -47,13 +47,11 @@ import java.util.Map;
 
 class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 	final private int index;
-	final private CyNetwork net;
 
 	private CyNetwork nestedNet;
 
-	CyNodeImpl(CyNetwork n, int ind, Map<String, CyTable> attrMgr) {
+	CyNodeImpl(int ind, Map<String, CyTable> attrMgr) {
 		super(attrMgr);
-		net = n;
 		index = ind;
 		nestedNet = null;
 	}
@@ -74,41 +72,7 @@ class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 	 */
 	 @Override
 	public String toString() {
-		return "Node suid: " + getSUID() + " index: " + index + " network suid: " + net.getSUID();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param edgeType DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List<CyNode> getNeighborList(CyEdge.Type edgeType) {
-		return net.getNeighborList(this, edgeType);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param edgeType DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List<CyEdge> getAdjacentEdgeList(CyEdge.Type edgeType) {
-		return net.getAdjacentEdgeList(this, edgeType);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param target DOCUMENT ME!
-	 * @param edgeType DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List<CyEdge> getConnectingEdgeList(CyNode target, CyEdge.Type edgeType) {
-		return net.getConnectingEdgeList(this, target, edgeType);
+		return "Node suid: " + getSUID() + " index: " + index;
 	}
 
 	public synchronized CyNetwork getNestedNetwork() {
@@ -119,7 +83,4 @@ class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 		nestedNet = n;
 	}
 
-	public CyNetwork getNetwork() {
-		return net;
-	}
 }

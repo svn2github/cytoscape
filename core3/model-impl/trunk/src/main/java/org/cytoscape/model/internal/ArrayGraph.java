@@ -51,6 +51,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
 import org.cytoscape.model.events.AboutToRemoveNodeEvent;
@@ -101,14 +102,14 @@ public class ArrayGraph implements CyRootNetwork {
 	private final List<CySubNetwork> subNetworks;
 	private final CySubNetwork base;
 
-	private CyTableManager tableMgr;
+	private CyTableManagerImpl tableMgr;
 	
 
 	/**
 	 * Creates a new ArrayGraph object.
 	 * @param eh The CyEventHelper used for firing events.
 	 */
-	public ArrayGraph(final CyEventHelper eh, final CyTableManager tableMgr, final CyTableFactory tableFactory) {
+	public ArrayGraph(final CyEventHelper eh, final CyTableManagerImpl tableMgr, final CyTableFactory tableFactory) {
 		this.tableMgr = tableMgr;
 		suid = SUIDFactory.getNextSUID();
 		numSubNetworks = 0;
@@ -122,24 +123,25 @@ public class ArrayGraph implements CyRootNetwork {
 		netAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " network", "SUID", Long.class, true));
 		netAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " network", "SUID", Long.class, false));
 
-		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
-		attrs().set("name","");
+		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class,false);
+		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED,Boolean.class,false);
+		attrs().set(CyTableEntry.NAME,"");
 		// potential leak since "this" isn't yet fully constructed
 
 		nodeAttrMgr = new HashMap<String, CyTable>();
 		nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " node", "SUID", Long.class, true));
 		nodeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " node", "SUID", Long.class, false));
 
-		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
-		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
+		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class,false);
+		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED,Boolean.class,false);
 
 		edgeAttrMgr = new HashMap<String, CyTable>();
 		edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " edge", "SUID", Long.class, true));
 		edgeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " edge", "SUID", Long.class, false));
 
-		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
-		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
-		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("interaction",String.class,false);
+		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class,false);
+		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED,Boolean.class,false);
+		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyEdge.INTERACTION,String.class,false);
 		
 		eventHelper = eh;
 
@@ -147,9 +149,9 @@ public class ArrayGraph implements CyRootNetwork {
 
 		base = addSubNetwork(); 
 
-		tableMgr.setTableMap("NETWORK", base, netAttrMgr);
-		tableMgr.setTableMap("NODE", base, nodeAttrMgr);
-		tableMgr.setTableMap("EDGE", base, edgeAttrMgr);
+		tableMgr.setTableMap(CyTableEntry.NETWORK, base, netAttrMgr);
+		tableMgr.setTableMap(CyTableEntry.NODE, base, nodeAttrMgr);
+		tableMgr.setTableMap(CyTableEntry.EDGE, base, edgeAttrMgr);
 	}
 
 	/**
@@ -352,7 +354,7 @@ public class ArrayGraph implements CyRootNetwork {
 
 		synchronized (this) {
 			final int index = nodePointers.size();
-			n = new NodePointer(index, new CyNodeImpl(this, index, nodeAttrMgr));
+			n = new NodePointer(index, new CyNodeImpl(index, nodeAttrMgr));
 			nodePointers.add(n);
 			nodeCount++;
 			// In ArrayGraph we only ever add the node to the root.
