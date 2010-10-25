@@ -58,7 +58,7 @@ public class HandleComplexAttribute extends AbstractHandler {
 			manager.valueType = attributeValueUtil.getMultHashMapType(type);
 			// See if we've defined the attribute already
 			if (Map.class == manager.currentAttributes
-					.contains(manager.currentAttributeID)) {
+					.getType(manager.currentAttributeID)) {
 				manager.currentAttributes.getDataTable().createColumn(
 						manager.currentAttributeID, Map.class, false);
 			}

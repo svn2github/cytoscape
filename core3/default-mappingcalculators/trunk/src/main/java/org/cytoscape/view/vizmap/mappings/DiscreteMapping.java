@@ -109,7 +109,7 @@ public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 
 		final CyRow row = view.getModel().attrs();
 		
-		if (row.contains(attrName, attrType)) {
+		if (row.isSet(attrName, attrType)) {
 			// skip Views where source attribute is not defined;
 			// ViewColumn will automatically substitute the per-VS or global
 			// default, as appropriate

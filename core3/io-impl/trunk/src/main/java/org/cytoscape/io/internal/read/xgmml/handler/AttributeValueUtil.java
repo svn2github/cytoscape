@@ -303,17 +303,17 @@ public class AttributeValueUtil {
 		// must make sure to clear out any existing values before we parse.
 		case LIST:
 			manager.currentAttributeID = name;
-			if (List.class == cyAtts.contains(name))
+			if (List.class == cyAtts.getType(name))
 				cyAtts.set(name, null);
 			return ParseState.LISTATT;
 		case MAP:
 			manager.currentAttributeID = name;
-			if (Map.class == cyAtts.contains(name))
+			if (Map.class == cyAtts.getType(name))
 				cyAtts.set(name, null);
 			return ParseState.MAPATT;
 		case COMPLEX:
 			manager.currentAttributeID = name;
-			if (Map.class == cyAtts.contains(name)) // assuming complex will
+			if (Map.class == cyAtts.getType(name)) // assuming complex will
 				// become Map
 				cyAtts.set(name, null);
 			// If this is a complex attribute, we know that the value attribute

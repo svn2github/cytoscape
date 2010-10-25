@@ -112,10 +112,10 @@ public class EdgeWeighter {
 		// System.out.println("Setting weight for "+layoutEdge+" using "+weightAttribute);
 
 		if (weightAttribute != null) {
-		    if (row.contains(weightAttribute, Integer.class)) {
+		    if (row.isSet(weightAttribute, Integer.class)) {
 				Integer val = row.get(weightAttribute, Integer.class);
 				eValue = (double) val.intValue();
-			} else if (row.contains(weightAttribute, Double.class)) {
+			} else if (row.isSet(weightAttribute, Double.class)) {
 				Double val = row.get(weightAttribute, Double.class);
 				eValue = val.doubleValue();
 			}

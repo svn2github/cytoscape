@@ -58,7 +58,7 @@ public class AttributeCircleLayoutTask extends AbstractGraphPartition {
 		r *= spacing;
 
 		if (this.attribute != null && count > 0) {
-			Class<?> klass = nodes.get(0).getNode().getCyRow(namespace).contains(attribute); 
+			Class<?> klass = nodes.get(0).getNode().getCyRow(namespace).getType(attribute); 
 			if (klass != null && Comparable.class.isAssignableFrom(klass)){
 				// FIXME: I assume this would be better, but get type errors if I try:
 				//Class<Comparable<?>> kasted = (Class<Comparable<?>>) klass;

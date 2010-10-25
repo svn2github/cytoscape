@@ -76,9 +76,9 @@ public abstract class AbstractCyTableTest extends TestCase {
 		attrs.set("someString", "apple");
 		attrs.set("someStringElse", "orange");
 
-		assertTrue(attrs.contains("someString", String.class));
-		assertTrue(attrs.contains("someStringElse", String.class));
-		assertFalse(attrs.contains("yetAnotherString", String.class));
+		assertTrue(attrs.isSet("someString", String.class));
+		assertTrue(attrs.isSet("someStringElse", String.class));
+		assertFalse(attrs.isSet("yetAnotherString", String.class));
 
 		assertEquals("apple", attrs.get("someString", String.class));
 		assertEquals("orange", attrs.get("someStringElse", String.class));
@@ -94,9 +94,9 @@ public abstract class AbstractCyTableTest extends TestCase {
 		attrs.set("someInt", 50);
 		attrs.set("someOtherInt", 100);
 
-		assertTrue(attrs.contains("someInt", Integer.class));
-		assertTrue(attrs.contains("someOtherInt", Integer.class));
-		assertFalse(attrs.contains("yetAnotherInteger", Integer.class));
+		assertTrue(attrs.isSet("someInt", Integer.class));
+		assertTrue(attrs.isSet("someOtherInt", Integer.class));
+		assertFalse(attrs.isSet("yetAnotherInteger", Integer.class));
 
 		assertEquals(50, attrs.get("someInt", Integer.class).intValue());
 		assertEquals(100, attrs.get("someOtherInt", Integer.class).intValue());
@@ -112,9 +112,9 @@ public abstract class AbstractCyTableTest extends TestCase {
 		attrs.set("someDouble", 3.14);
 		attrs.set("someOtherDouble", 2.76);
 
-		assertTrue(attrs.contains("someDouble", Double.class));
-		assertTrue(attrs.contains("someOtherDouble", Double.class));
-		assertFalse(attrs.contains("yetAnotherDouble", Double.class));
+		assertTrue(attrs.isSet("someDouble", Double.class));
+		assertTrue(attrs.isSet("someOtherDouble", Double.class));
+		assertFalse(attrs.isSet("yetAnotherDouble", Double.class));
 
 		assertEquals(3.14, attrs.get("someDouble", Double.class).doubleValue());
 		assertEquals(2.76, attrs.get("someOtherDouble", Double.class).doubleValue());
@@ -130,9 +130,9 @@ public abstract class AbstractCyTableTest extends TestCase {
 		attrs.set("someBoolean", true);
 		attrs.set("someOtherBoolean", false);
 
-		assertTrue(attrs.contains("someBoolean", Boolean.class));
-		assertTrue(attrs.contains("someOtherBoolean", Boolean.class));
-		assertFalse(attrs.contains("yetAnotherBoolean", Boolean.class));
+		assertTrue(attrs.isSet("someBoolean", Boolean.class));
+		assertTrue(attrs.isSet("someOtherBoolean", Boolean.class));
+		assertFalse(attrs.isSet("yetAnotherBoolean", Boolean.class));
 
 		assertTrue(attrs.get("someBoolean", Boolean.class));
 		assertFalse(attrs.get("someOtherBoolean", Boolean.class));
@@ -150,7 +150,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 
 		attrs.set("someList", l);
 
-		assertTrue(attrs.contains("someList", List.class));
+		assertTrue(attrs.isSet("someList", List.class));
 
 		assertEquals(2, attrs.get("someList", List.class).size());
 	}
@@ -167,7 +167,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 
 		attrs.set("someMap", m);
 
-		assertTrue(attrs.contains("someMap", Map.class));
+		assertTrue(attrs.isSet("someMap", Map.class));
 
 		assertEquals(2, attrs.get("someMap", Map.class).size());
 	}

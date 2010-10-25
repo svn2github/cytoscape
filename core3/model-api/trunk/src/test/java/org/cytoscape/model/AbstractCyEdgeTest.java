@@ -153,8 +153,8 @@ public abstract class AbstractCyEdgeTest extends TestCase {
         CyNode n2 = net.addNode();
         CyEdge e1 = net.addEdge(n1,n2,true);
 
-        assertEquals( String.class, e1.attrs().contains("name"));
-        assertEquals( Boolean.class, e1.attrs().contains("selected"));
-        assertEquals( String.class, e1.attrs().contains("interaction"));
+        assertEquals( String.class, e1.attrs().getType("name"));
+        assertEquals( Boolean.class, e1.attrs().getType("selected"));
+        assertEquals( String.class, e1.attrs().getType("interaction"));
     }
 }

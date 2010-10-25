@@ -448,11 +448,11 @@ public class CyTableImpl implements CyTable {
 			return getRawX(suid, attributeName);
 		}
 
-		public <T> boolean contains(String attributeName, Class<? extends T> c) {
+		public <T> boolean isSet(String attributeName, Class<? extends T> c) {
 			return containsX(suid, attributeName, c);
 		}
 
-		public Class<?> contains(String attributeName) {
+		public Class<?> getType(String attributeName) {
 			return containsX(suid, attributeName);
 		}
 

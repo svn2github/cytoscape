@@ -66,7 +66,7 @@ public interface CyRow {
      * return null if the column has not been defined. Will always return
      * a base type. 
      */
-	Class<?> contains(String columnName);
+	Class<?> getType(String columnName);
 
 	/**
 	 * Indicates whether the column of the specified type contains
@@ -76,7 +76,7 @@ public interface CyRow {
 	 * @return true if the value specified in this row at this column
 	 * of the specified type is not null.
 	 */
-	<T> boolean contains(String columnName, Class<?extends T> type);
+	<T> boolean isSet(String columnName, Class<?extends T> type);
 
 	/**
      * Returns a map of column names to Objects that contain the values
