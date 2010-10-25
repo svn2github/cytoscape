@@ -6,22 +6,23 @@ import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.model.StubTableManager;
-import org.cytoscape.model.CyTableManager;
 
 import org.cytoscape.model.internal.CyNetworkFactoryImpl;
 import org.cytoscape.model.internal.CyTableFactoryImpl;
+import org.cytoscape.model.internal.CyTableManagerImpl;
+
+import static org.mockito.Mockito.*;
 
 public class NetworkTestSupport {
 
 	protected CyNetworkFactory networkFactory;
 	protected CyEventHelper eventHelper;
-	protected CyTableManager tableMgr;
+	protected CyTableManagerImpl tableMgr;
 
 	public NetworkTestSupport() {
 		eventHelper = new DummyCyEventHelper();
-		tableMgr = new StubTableManager();
-		CyTableFactory tableFactory = new CyTableFactoryImpl(eventHelper);
+		tableMgr = mock(CyTableManagerImpl.class); 
+		CyTableFactoryImpl tableFactory = new CyTableFactoryImpl(eventHelper);
 
 		networkFactory = new CyNetworkFactoryImpl( eventHelper, tableMgr, tableFactory );
 	}
