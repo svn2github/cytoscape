@@ -39,12 +39,12 @@ public class PsiMiCyFileFilter implements CyFileFilter {
 	}
 	
 	@Override
-	public boolean accept(URI uri, DataCategory category) {
+	public boolean accepts(URI uri, DataCategory category) {
 		if (!category.equals(DataCategory.NETWORK)) {
 			return false;
 		}
 		try {
-			return accept(getInputStream(uri.toURL()), category);
+			return accepts(getInputStream(uri.toURL()), category);
 		} catch (IOException e) {
 			Logger logger = LoggerFactory.getLogger(getClass());
 			logger.error("Error while checking header", e);
@@ -69,7 +69,7 @@ public class PsiMiCyFileFilter implements CyFileFilter {
 	}
 
 	@Override
-	public boolean accept(InputStream stream, DataCategory category) {
+	public boolean accepts(InputStream stream, DataCategory category) {
 		if (!category.equals(DataCategory.NETWORK)) {
 			return false;
 		}

@@ -27,7 +27,7 @@ public class PsiMiNetworkWriterFactory implements CyNetworkViewWriterFactory {
 	}
 
 	@Override
-	public CyWriter getWriter() {
+	public CyWriter getWriterTask() {
 		return new PsiMiWriter(os, network, version);
 	}
 
