@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
-import org.cytoscape.io.FileIOFactory;
+import org.cytoscape.io.CyFileFilterProvider;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.io.write.CyWriterFactory;
 
@@ -21,12 +21,12 @@ import org.cytoscape.io.write.CyWriterFactory;
  * <code>InputStreamTaskFactory</code> and  <code>CyWriterFactory</code>instances.
  */
 public class SupportedFileTypesManager {
-	Set<FileIOFactory> inputFactories;
-	Set<FileIOFactory> outputFactories;
+	Set<CyFileFilterProvider> inputFactories;
+	Set<CyFileFilterProvider> outputFactories;
 
 	public SupportedFileTypesManager() {
-		inputFactories = new HashSet<FileIOFactory>();
-		outputFactories = new HashSet<FileIOFactory>();
+		inputFactories = new HashSet<CyFileFilterProvider>();
+		outputFactories = new HashSet<CyFileFilterProvider>();
 	}
 
 	public void addInputStreamTaskFactory(InputStreamTaskFactory factory, Map<?,?> properties) {
@@ -52,11 +52,11 @@ public class SupportedFileTypesManager {
 			return getSupportedFileTypes(category, outputFactories);
 	}
 
-	private List<FileChooserFilter> getSupportedFileTypes(final DataCategory category, final Set<FileIOFactory> factories) {
+	private List<FileChooserFilter> getSupportedFileTypes(final DataCategory category, final Set<CyFileFilterProvider> factories) {
 		List<FileChooserFilter> types = new ArrayList<FileChooserFilter>();
 
 		Set<String> allExtensions = new HashSet<String>();
-		for (final FileIOFactory factory : factories) {
+		for (final CyFileFilterProvider factory : factories) {
 			CyFileFilter filter = factory.getCyFileFilter();
 			if (filter.getDataCategory() != category)
 				continue;
