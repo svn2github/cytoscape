@@ -45,7 +45,7 @@ public final class CySessionWriter extends AbstractTask implements CyWriter {
 	 */
 	public final void run(TaskMonitor tm) throws Exception {
 
-		List<CyFileFilter> filters = writerMgr.getAvailableWriters();
+		List<CyFileFilter> filters = writerMgr.getAvailableWriterFilters();
 		if ( filters == null || filters.size() < 1)
 			throw new NullPointerException("No Session file filters found");
 		if ( filters.size() > 1 )
