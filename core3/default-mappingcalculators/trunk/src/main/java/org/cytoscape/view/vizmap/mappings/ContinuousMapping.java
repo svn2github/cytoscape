@@ -180,7 +180,7 @@ public class ContinuousMapping<K, V> extends AbstractVisualMappingFunction<K, V>
 	 */
 	private void doMap(final View<? extends CyTableEntry> view) {
 
-		CyRow row = view.getModel().attrs();
+		CyRow row = view.getModel().getCyRow();
 
 		if (row.isSet(attrName, attrType)) {
 			// skip Views where source attribute is not defined;
@@ -189,7 +189,7 @@ public class ContinuousMapping<K, V> extends AbstractVisualMappingFunction<K, V>
 
 			// In all cases, attribute value should be a number for continuous
 			// mapping.
-			final K attrValue = view.getModel().attrs()
+			final K attrValue = view.getModel().getCyRow()
 					.get(attrName, attrType);
 			final V value = getRangeValue(attrValue);
 			view.setVisualProperty(vp, value);

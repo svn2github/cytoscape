@@ -314,7 +314,7 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 
 			if (nodeNameSet.add(label)) {
 				CyNode node = network.addNode();
-				node.attrs().set("name",label);
+				node.getCyRow().set("name",label);
 
 				nodeIDMap.put(label, node);
 				gml_id2order.put(nodes.get(idx), idx);
@@ -354,8 +354,8 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 				CyNode node_1 = nodeIDMap.get( sourceName );
 				CyNode node_2 = nodeIDMap.get( targetName ); 
 				CyEdge edge = network.addEdge(node_1, node_2, isDirected.booleanValue());
-				edge.attrs().set("name", edgeName);
-				edge.attrs().set("interaction", label);
+				edge.getCyRow().set("name", edgeName);
+				edge.getCyRow().set("interaction", label);
 				edge_names.add(idx, edge);
 
 				edge_root_index_pairs.get(idx).value = Integer.valueOf(edge.getIndex());

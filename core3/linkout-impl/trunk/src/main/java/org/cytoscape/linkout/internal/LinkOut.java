@@ -313,7 +313,7 @@ public class LinkOut {
 
 			// TODO: for now, just substitute node ID into %ID% parameter
 			CyNode node = nodeView.getModel();
-			String identifier = node.attrs().get("name", String.class);
+			String identifier = node.getCyRow().get("name", String.class);
 
 			link = link.replace("%" + "ID" + "%", identifier);
 			browser.openURL(link);

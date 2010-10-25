@@ -51,10 +51,10 @@ public class InvertSelectedNodesTask extends AbstractSelectTask {
 
 	public void run(TaskMonitor tm) {
 		for ( CyNode n : net.getNodeList() )  {
-			if ( n.attrs().get("selected",Boolean.class) ) {
-				 n.attrs().set("selected",false);
+			if ( n.getCyRow().get("selected",Boolean.class) ) {
+				 n.getCyRow().set("selected",false);
 			} else {
-				 n.attrs().set("selected",true);
+				 n.getCyRow().set("selected",true);
 			}
 		}
 		updateView();

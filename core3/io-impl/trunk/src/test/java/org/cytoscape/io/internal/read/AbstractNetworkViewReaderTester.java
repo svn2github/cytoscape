@@ -71,14 +71,14 @@ public class AbstractNetworkViewReaderTester {
 	protected void findInteraction(CyNetwork net, String source, String target, 
 	                                 String interaction, int count) {
 		for ( CyNode n : net.getNodeList() ) {
-			if ( n.attrs().get("name",String.class).equals(source) ) {
+			if ( n.getCyRow().get("name",String.class).equals(source) ) {
 				List<CyNode> neigh = net.getNeighborList(n,CyEdge.Type.ANY);
 				assertEquals(count,neigh.size());
 				for ( CyNode nn : neigh ) {
-					if ( nn.attrs().get("name",String.class).equals(target) ) {
+					if ( nn.getCyRow().get("name",String.class).equals(target) ) {
 						List<CyEdge> con = net.getConnectingEdgeList(n,nn, CyEdge.Type.ANY);
 						for ( CyEdge e : con ) {
-							if ( e.attrs().get("interaction",String.class).equals(interaction) ) {
+							if ( e.getCyRow().get("interaction",String.class).equals(interaction) ) {
 								return;
 							}
 						}

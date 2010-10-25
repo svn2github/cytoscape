@@ -51,7 +51,7 @@ public class CyNetworkNamingImpl implements CyNetworkNaming {
 
 	public String getSuggestedSubnetworkTitle(CyNetwork parentNetwork) {
 		for (int i = 0; true; i++) {
-			String nameCandidate = parentNetwork.attrs().get("name",String.class) + "--child"
+			String nameCandidate = parentNetwork.getCyRow().get("name",String.class) + "--child"
 			                       + ((i == 0) ? "" : ("." + i));
 
 			if (!isNetworkTitleTaken(nameCandidate,netmgr))
@@ -70,7 +70,7 @@ public class CyNetworkNamingImpl implements CyNetworkNaming {
 
 	private boolean isNetworkTitleTaken(String titleCandidate, CyNetworkManager netmgr) {
 		for (CyNetwork existingNetwork : netmgr.getNetworkSet() ) 
-			if (existingNetwork.attrs().get("name",String.class).equals(titleCandidate))
+			if (existingNetwork.getCyRow().get("name",String.class).equals(titleCandidate))
 				return true;
 
 		return false;

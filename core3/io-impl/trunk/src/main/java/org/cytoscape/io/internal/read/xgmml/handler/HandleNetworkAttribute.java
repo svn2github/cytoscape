@@ -16,7 +16,7 @@ public class HandleNetworkAttribute extends AbstractHandler {
 					atts, "backgroundColor");
 		} else {
 			manager.objectTarget = manager.networkName;
-			manager.currentAttributes = manager.network.attrs();
+			manager.currentAttributes = manager.network.getCyRow();
 			nextState = attributeValueUtil.handleAttribute(atts,
 					manager.currentAttributes);
 		}

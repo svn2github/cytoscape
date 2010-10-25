@@ -128,7 +128,7 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 			//tm.setProgress(progress);
 			
 			final CyNode node = network.addNode();
-			node.attrs().set(NODE_NAME_ATTR_LABEL, nodeName);
+			node.getCyRow().set(NODE_NAME_ATTR_LABEL, nodeName);
 			nodeMap.put(nodeName, node);
 		}
 
@@ -151,9 +151,9 @@ public class SIFNetworkViewReader extends AbstractNetworkViewReader {
 			for (String tgtName : interaction.getTargets()) {
 				edge = network.addEdge(nodeMap.get(srcName), nodeMap
 						.get(tgtName), true);
-				edge.attrs().set(NODE_NAME_ATTR_LABEL,
+				edge.getCyRow().set(NODE_NAME_ATTR_LABEL,
 						srcName + " (" + interactionType + ") " + tgtName);
-				edge.attrs().set(INTERACTION, interactionType);
+				edge.getCyRow().set(INTERACTION, interactionType);
 			}
 		}
 

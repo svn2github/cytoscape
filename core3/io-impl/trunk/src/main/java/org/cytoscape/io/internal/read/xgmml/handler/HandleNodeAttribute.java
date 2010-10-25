@@ -33,7 +33,7 @@ public class HandleNodeAttribute extends AbstractHandler {
 					.addAttribute("", "", name, "string", value);
 		}
 
-		manager.currentAttributes = manager.currentNode.attrs();
+		manager.currentAttributes = manager.currentNode.getCyRow();
 		ParseState nextState = attributeValueUtil.handleAttribute(atts,
 				manager.currentAttributes);
 		if (nextState != ParseState.NONE)

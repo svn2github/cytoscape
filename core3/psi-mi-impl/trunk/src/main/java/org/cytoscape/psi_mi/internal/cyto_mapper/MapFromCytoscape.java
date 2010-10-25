@@ -118,7 +118,7 @@ public class MapFromCytoscape implements Mapper {
 	 * @param interaction Data Service Interaction Object.
 	 */
 	private void transferEdgeAttributes(CyEdge edge, Interaction interaction) {
-		transferAllAttributes(edge.attrs(), interaction);
+		transferAllAttributes(edge.getCyRow(), interaction);
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class MapFromCytoscape implements Mapper {
 	 * @param interactor Data Service Interactor object.
 	 */
 	private void transferNodeAttributes(CyNode node, Interactor interactor) {
-		CyRow attributes = node.attrs();
+		CyRow attributes = node.getCyRow();
 		interactor.setName(attributes.get(AttributeUtil.NODE_NAME_ATTR_LABEL, String.class));
 		transferAllAttributes(attributes, interactor);
 	}

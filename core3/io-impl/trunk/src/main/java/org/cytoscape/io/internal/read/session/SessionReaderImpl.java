@@ -361,12 +361,12 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		// create an id map
 		Map<String,CyNode> nodeMap = new HashMap<String,CyNode>();
 		for ( CyNode n : net.getNodeList() ) 
-			nodeMap.put(n.attrs().get("name",String.class), n);
+			nodeMap.put(n.getCyRow().get("name",String.class), n);
 		
 		// set attr values based on ids
 		while (it.hasNext()) {
 			final Node nodeObject = (Node) it.next();
-			nodeMap.get(nodeObject.getId()).attrs().set(attrName,true);
+			nodeMap.get(nodeObject.getId()).getCyRow().set(attrName,true);
 		}
 	}
 
@@ -377,12 +377,12 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		// create an id map
 		Map<String,CyEdge> edgeMap = new HashMap<String,CyEdge>();
 		for ( CyEdge e : net.getEdgeList() ) 
-			edgeMap.put(e.attrs().get("name",String.class), e);
+			edgeMap.put(e.getCyRow().get("name",String.class), e);
 		
 		// set attr values based on ids
 		while (it.hasNext()) {
 			final Edge edgeObject = (Edge) it.next();
-			edgeMap.get(edgeObject.getId()).attrs().set(attrName,true);
+			edgeMap.get(edgeObject.getId()).getCyRow().set(attrName,true);
 		}
 	}
 }

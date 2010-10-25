@@ -406,13 +406,13 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 		}
 
 		for ( CyNode node : n.getNodeList() ) {
-			if ( node.attrs().get("selected",Boolean.class) ) {
+			if ( node.getCyRow().get("selected",Boolean.class) ) {
 				setEnabled(true);
 				return;
 			}
 		}
 		for ( CyEdge edge : n.getEdgeList() ) {
-			if ( edge.attrs().get("selected",Boolean.class) ) {
+			if ( edge.getCyRow().get("selected",Boolean.class) ) {
 				setEnabled(true);
 				return;
 			}

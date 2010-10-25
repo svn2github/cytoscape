@@ -18,7 +18,7 @@ public class EditNetworkTitleTaskTest {
 
 		CyRow r1 =  mock(CyRow.class);
 
-		when(net.attrs()).thenReturn(r1);
+		when(net.getCyRow()).thenReturn(r1);
 		when(r1.get("name",String.class)).thenReturn("title");
 					
 		EditNetworkTitleTask t = new EditNetworkTitleTask(net);

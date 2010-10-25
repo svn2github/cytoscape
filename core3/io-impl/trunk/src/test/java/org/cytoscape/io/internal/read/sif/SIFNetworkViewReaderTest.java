@@ -59,7 +59,7 @@ public class SIFNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 		CyNetwork net = checkSingleNetwork(views, 9, 0);
 
 		for ( CyNode n : net.getNodeList() )
-			assertTrue( n.attrs().get("name",String.class).startsWith("Y") );
+			assertTrue( n.getCyRow().get("name",String.class).startsWith("Y") );
 	} 
 
 	@Test

@@ -116,7 +116,7 @@ class GenerateNetworkViewsTask extends AbstractTask {
 
 			// Model should not be null.  It will be tested in ViewImpl.
 			final CyNetwork cyNetwork = view.getModel();
-			cyNetwork.attrs().set("name", namingUtil.getSuggestedNetworkTitle(name));
+			cyNetwork.getCyRow().set("name", namingUtil.getSuggestedNetworkTitle(name));
 
 			netMgr.addNetwork(cyNetwork);
 			netMgr.addNetworkView(view);

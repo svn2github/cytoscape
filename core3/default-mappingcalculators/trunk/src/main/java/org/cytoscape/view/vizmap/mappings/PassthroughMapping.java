@@ -73,7 +73,7 @@ public class PassthroughMapping<K, V> extends
 		if (view == null)
 			return; // empty list, nothing to do
 
-		final CyRow row = view.getModel().attrs();
+		final CyRow row = view.getModel().getCyRow();
 		
 
 		

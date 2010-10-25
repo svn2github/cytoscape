@@ -46,13 +46,6 @@ import java.util.Map;
  * contain the data for a specific index.
  */
 public interface CyTable extends Identifiable {
-	/**
-	 * By default all {@link CyRow}s created have a primary key column of type {@link Integer} 
-	 * that gets created at initialization which is identified by this string. If the
-	 * CyTable is created and immediately bound to a {@link CyNetwork} then the primary key
-	 * attribute is populated with the SUID of the  {@link CyTableEntry}.
-	 */
-	String PRIMARY_KEY = "AID";
 
 	/**
 	 * A public CyTable is a table that is accessible to the user through the user

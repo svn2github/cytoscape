@@ -50,10 +50,10 @@ public class EditNetworkTitleTask extends AbstractNetworkTask {
 
 	public EditNetworkTitleTask(CyNetwork n) {
 		super(n);
-		title = net.attrs().get("name",String.class);
+		title = net.getCyRow().get("name",String.class);
 	}
 
 	public void run(TaskMonitor e) {
-		net.attrs().set("name",title);
+		net.getCyRow().set("name",title);
 	} 
 }

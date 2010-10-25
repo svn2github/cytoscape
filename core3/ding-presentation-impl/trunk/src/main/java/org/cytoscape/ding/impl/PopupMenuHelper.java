@@ -85,7 +85,7 @@ class PopupMenuHelper {
 
 			// build a menu of actions if more than factory exists
 			if ( usableTFs.size() > 1) {
-				String edgeLabel = ev.getModel().attrs().get("interaction",String.class);
+				String edgeLabel = ev.getModel().getCyRow().get("interaction",String.class);
 				JPopupMenu menu = new JPopupMenu(edgeLabel);
 				JMenuTracker tracker = new JMenuTracker(menu);
 
@@ -115,7 +115,7 @@ class PopupMenuHelper {
 
 			// build a menu of actions if more than factory exists
 			if ( usableTFs.size() > 1) {
-				String nodeLabel = nv.getModel().attrs().get("name",String.class);
+				String nodeLabel = nv.getModel().getCyRow().get("name",String.class);
 				JPopupMenu menu = new JPopupMenu(nodeLabel);
 				JMenuTracker tracker = new JMenuTracker(menu);
 

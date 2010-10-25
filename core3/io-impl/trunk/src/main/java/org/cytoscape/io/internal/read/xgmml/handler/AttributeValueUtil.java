@@ -371,7 +371,7 @@ public class AttributeValueUtil {
 		}
 		// OK, now actually create it
 		CyNode node = manager.network.addNode();
-		node.attrs().set("name", label);
+		node.getCyRow().set("name", label);
 		// System.out.println("Created new node("+label+") id="+node.getRootGraphIndex());
 
 		// Add it our indices
@@ -385,8 +385,8 @@ public class AttributeValueUtil {
 			boolean directed) throws SAXException {
 		// OK create it
 		CyEdge edge = manager.network.addEdge(source, target, directed);
-		edge.attrs().set("name", label);
-		edge.attrs().set("interaction", interaction);
+		edge.getCyRow().set("name", label);
+		edge.getCyRow().set("interaction", interaction);
 
 		manager.edgeList.add(edge);
 		return edge;

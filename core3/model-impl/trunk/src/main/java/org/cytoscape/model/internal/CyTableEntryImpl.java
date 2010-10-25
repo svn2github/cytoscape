@@ -53,8 +53,8 @@ class CyTableEntryImpl implements CyTableEntry, Identifiable {
 	CyTableEntryImpl(final Map<String, CyTable> attrMgr) {
 		suid = SUIDFactory.getNextSUID();
 		this.attrMgr = attrMgr;
-		attrs().set("name","");
-		attrs().set("selected",Boolean.FALSE);
+		getCyRow().set("name","");
+		getCyRow().set("selected",Boolean.FALSE);
 	}
 
 	/**
@@ -90,7 +90,7 @@ class CyTableEntryImpl implements CyTableEntry, Identifiable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public CyRow attrs() {
+	public CyRow getCyRow() {
 		return getCyRow(CyNetwork.DEFAULT_ATTRS);
 	}
 

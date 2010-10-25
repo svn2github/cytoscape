@@ -46,6 +46,6 @@ import cytoscape.view.ViewUpdater;
 public class SelectNodeViewUpdater extends ViewUpdater<CyNode,Boolean> {
 
 	public SelectNodeViewUpdater(View<CyNode> nv) {
-		super(nv, NODE_SELECTED, nv.getModel().attrs(), "selected");
+		super(nv, NODE_SELECTED, nv.getModel().getCyRow(), "selected");
 	}
 }

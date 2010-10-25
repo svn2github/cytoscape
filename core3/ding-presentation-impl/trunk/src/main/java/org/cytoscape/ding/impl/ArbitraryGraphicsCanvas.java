@@ -114,7 +114,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 		if (USE_REPOSITION_CODE) {
 			// create an "anchor node"
 			CyNode node = m_cyNetwork.addNode();
-			node.attrs().set("name",component.toString());
+			node.getCyRow().set("name",component.toString());
 			//m_cyNetwork.restoreNode(node);
 
 			// set its node view coordinates

@@ -201,10 +201,10 @@ public class VizMapPropertyBuilder {
 			final SortedSet<K> attrSet = new TreeSet<K>();
 
 			for (CyTableEntry go : graphObjectSet) {
-				final Class<?> attrClass = go.attrs().getDataTable()
+				final Class<?> attrClass = go.getCyRow().getDataTable()
 						.getColumnTypeMap().get(attrName);
 
-				Object id = go.attrs().get(attrName, attrClass);
+				Object id = go.getCyRow().get(attrName, attrClass);
 				attrSet.add((K) id);
 			}
 
@@ -242,15 +242,15 @@ public class VizMapPropertyBuilder {
 			VizMapperProperty<K> oneProperty;
 
 			for (CyTableEntry go : graphObjectSet) {
-				Class<?> attrClass = go.attrs().getDataTable()
+				Class<?> attrClass = go.getCyRow().getDataTable()
 						.getColumnTypeMap().get(attrName);
 
-				id = go.attrs().get("name", String.class);
+				id = go.getCyRow().get("name", String.class);
 
 				if (attrName.equals("SUID"))
 					value = go.getSUID();
 				else
-					value = go.attrs().get(attrName, attrClass);
+					value = go.getCyRow().get(attrName, attrClass);
 
 				if (value != null)
 					stringVal = value.toString();

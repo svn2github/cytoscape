@@ -80,7 +80,7 @@ abstract class VizMapBypass {
 
 				public void actionPerformed(ActionEvent e) {
 					List<String> names = getBypassNames();
-					CyRow row = graphObj.attrs();
+					CyRow row = graphObj.getCyRow();
 
 					for (String attrName : names)
 						row.set("name", ""); // TODO should be null instead?
@@ -97,7 +97,7 @@ abstract class VizMapBypass {
 				private final static long serialVersionUID = 1202339876709140L;
 
 				public void actionPerformed(ActionEvent e) {
-					CyRow row = graphObj.attrs();
+					CyRow row = graphObj.getCyRow();
 
 					row.set(type.getDisplayName(), ""); // TODO set to null instead?
 
@@ -140,7 +140,7 @@ abstract class VizMapBypass {
 
 		menu.add(jmi);
 
-		String attrString = graphObj.attrs().get(type.getDisplayName(), String.class);
+		String attrString = graphObj.getCyRow().get(type.getDisplayName(), String.class);
 
 		if ((attrString == null) || (attrString.length() == 0))
 			jmi.setSelected(false);

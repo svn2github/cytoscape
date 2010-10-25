@@ -50,10 +50,10 @@ public class InvertSelectedEdgesTask extends AbstractSelectTask {
 
 	public void run(TaskMonitor tm) {
 		for ( CyEdge e : net.getEdgeList() ) {
-			if ( e.attrs().get("selected",Boolean.class) ) {
-				e.attrs().set("selected",false);
+			if ( e.getCyRow().get("selected",Boolean.class) ) {
+				e.getCyRow().set("selected",false);
 			} else {
-				e.attrs().set("selected",true);
+				e.getCyRow().set("selected",true);
 			}
 		}
 		updateView();

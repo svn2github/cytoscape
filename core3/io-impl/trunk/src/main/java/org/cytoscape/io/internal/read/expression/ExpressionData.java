@@ -525,8 +525,8 @@ public class ExpressionData implements Serializable {
 		List<CyNode> allNodes = null; //Cytoscape.getCyNodesList();
 
 		for (CyNode node : allNodes) {
-			String nodeName = node.attrs().get("name",String.class);
-			Object attrValue = node.attrs().getRaw(keyAttributeName);
+			String nodeName = node.getCyRow().get("name",String.class);
+			Object attrValue = node.getCyRow().getRaw(keyAttributeName);
 
 			if (attrValue != null) {
 				String attributeValue = attrValue.toString();

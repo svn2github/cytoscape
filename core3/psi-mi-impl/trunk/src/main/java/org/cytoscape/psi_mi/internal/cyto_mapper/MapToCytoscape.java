@@ -497,7 +497,7 @@ public class MapToCytoscape implements Mapper {
 
 		if (!inGraph) {
 			CyNode node = network.addNode();
-			node.attrs().set(AttributeUtil.NODE_NAME_ATTR_LABEL, name);
+			node.getCyRow().set(AttributeUtil.NODE_NAME_ATTR_LABEL, name);
 
 			nodeList.add(node);
 			mapNodeAttributes(interactor, node);
@@ -516,7 +516,7 @@ public class MapToCytoscape implements Mapper {
 		//  Map All Interactor Attributes
 		Map<String, Object> attributeMap = interactor.getAllAttributes();
 
-		CyRow attributes = cyNode.attrs();
+		CyRow attributes = cyNode.getCyRow();
 		for (Entry<String, Object> entry : attributeMap.entrySet()) {
 			Object value = entry.getValue();
 			// TODO: Review this: The original code assumed all attributes were Strings
@@ -558,7 +558,7 @@ public class MapToCytoscape implements Mapper {
 	protected void mapEdgeAttributes(Interaction interaction, CyEdge cyEdge) {
 		Map<String, Object> attributeMap = interaction.getAllAttributes();
 
-		CyRow attributes = cyEdge.attrs();
+		CyRow attributes = cyEdge.getCyRow();
 		for (Entry<String, Object> entry : attributeMap.entrySet()) {
 			String key = entry.getKey();
 			Object attrObject = entry.getValue();

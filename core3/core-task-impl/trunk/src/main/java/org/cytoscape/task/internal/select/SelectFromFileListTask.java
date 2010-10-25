@@ -92,8 +92,8 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 
 				//for ( String syn : synonyms ) {
 					//if ( fileNodes.contains(syn) ) {
-					if ( fileNodes.contains(node.attrs().get("name",String.class) ) ) {
-						node.attrs().set("selected",true);
+					if ( fileNodes.contains(node.getCyRow().get("name",String.class) ) ) {
+						node.getCyRow().set("selected",true);
 				//		break;
 					}
 				//}

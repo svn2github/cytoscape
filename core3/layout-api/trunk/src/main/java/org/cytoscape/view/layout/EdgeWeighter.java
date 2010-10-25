@@ -106,7 +106,7 @@ public class EdgeWeighter {
 
 	public void setWeight(LayoutEdge layoutEdge) {
 		CyEdge edge = layoutEdge.getEdge();
-		CyRow row = edge.attrs();
+		CyRow row = edge.getCyRow();
 		double eValue = 0.5; // FIXME: shouldn't we expose the default edge weight somehow?
 
 		// System.out.println("Setting weight for "+layoutEdge+" using "+weightAttribute);

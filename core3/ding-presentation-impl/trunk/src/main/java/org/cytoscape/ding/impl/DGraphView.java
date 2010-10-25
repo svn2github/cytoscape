@@ -431,7 +431,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				+ (System.currentTimeMillis() - start));
 
 		// from DingNetworkView
-		this.title = networkModel.attrs().get("name", String.class);
+		this.title = networkModel.getCyRow().get("name", String.class);
 
 		// Create presentations for the graph objects
 		for (CyNode nn : networkModel.getNodeList())

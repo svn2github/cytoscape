@@ -54,7 +54,7 @@ public class DummyGraphObject implements CyTableEntry {
 		return null;
 	}
 
-	public CyRow attrs() {
+	public CyRow getCyRow() {
 		return null;
 	}
 }

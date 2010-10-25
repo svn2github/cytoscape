@@ -251,8 +251,8 @@ class ArraySubGraph implements CySubNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CyRow attrs() {
-		return parent.attrs();
+	public CyRow getCyRow() {
+		return parent.getCyRow();
 	}
 
 	/**

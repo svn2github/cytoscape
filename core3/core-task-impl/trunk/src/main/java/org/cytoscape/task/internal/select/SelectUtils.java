@@ -49,13 +49,13 @@ abstract class SelectUtils {
 
 	static void setSelectedNodes(Collection<CyNode> nodes, boolean select) {
 		for ( CyNode n : nodes ) {
-			n.attrs().set("selected",select);
+			n.getCyRow().set("selected",select);
 		}
 	}
 
 	static void setSelectedEdges(Collection<CyEdge> edges, boolean select) {
 		for ( CyEdge e : edges ) {
-			e.attrs().set("selected",select);
+			e.getCyRow().set("selected",select);
 		}
 	}
 }

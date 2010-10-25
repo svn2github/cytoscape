@@ -68,19 +68,19 @@ public class CyTableUtilTest extends TestCase {
 		when(row1.get(columnName,Boolean.class)).thenReturn(true);
 
 		node1 = mock(CyNode.class);
-		when(node1.attrs()).thenReturn(row1);
+		when(node1.getCyRow()).thenReturn(row1);
 
 		edge1 = mock(CyEdge.class);
-		when(edge1.attrs()).thenReturn(row1);
+		when(edge1.getCyRow()).thenReturn(row1);
 
 		row2 = mock(CyRow.class);
 		when(row2.get(columnName,Boolean.class)).thenReturn(false);
 
 		node2 = mock(CyNode.class);
-		when(node2.attrs()).thenReturn(row2);
+		when(node2.getCyRow()).thenReturn(row2);
 
 		edge2 = mock(CyEdge.class);
-		when(edge2.attrs()).thenReturn(row2);
+		when(edge2.getCyRow()).thenReturn(row2);
 
 		List<CyNode> nlist = new ArrayList<CyNode>();
 		nlist.add(node1);

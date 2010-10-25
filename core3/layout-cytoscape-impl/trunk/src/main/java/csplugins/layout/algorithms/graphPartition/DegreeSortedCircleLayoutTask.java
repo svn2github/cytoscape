@@ -72,8 +72,8 @@ public class DegreeSortedCircleLayoutTask extends AbstractGraphPartition {
 					final int d2 = network.getAdjacentEdgeList(node2, CyEdge.Type.ANY).size();
 					
 					// Create Degree Attribute
-					node1.attrs().set(DEGREE_ATTR_NAME, (double)d1);
-					node2.attrs().set(DEGREE_ATTR_NAME, (double)d2);
+					node1.getCyRow().set(DEGREE_ATTR_NAME, (double)d1);
+					node2.getCyRow().set(DEGREE_ATTR_NAME, (double)d2);
 					
 					return (d2 - d1);
 				}

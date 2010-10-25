@@ -259,9 +259,9 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 			selectedNetworks.remove(network);
 
 			for (CyNode n : network.getNodeList())
-				n.attrs().set("selected", false);
+				n.getCyRow().set("selected", false);
 			for (CyEdge e : network.getEdgeList())
-				e.attrs().set("selected", false);
+				e.getCyRow().set("selected", false);
 
 			networkMap.remove(networkId);
 

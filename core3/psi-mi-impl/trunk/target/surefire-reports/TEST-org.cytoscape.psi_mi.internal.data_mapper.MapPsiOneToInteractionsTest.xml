@@ -1,0 +1,1159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite failures="0" time="0.026" errors="6" skipped="0" tests="6" name="org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Libraries"/>
+    <property name="java.vm.version" value="17.1-b03-307"/>
+    <property name="awt.nativeDoubleBuffering" value="true"/>
+    <property name="gopherProxySet" value="false"/>
+    <property name="mrj.build" value="10M3261"/>
+    <property name="java.vm.vendor" value="Apple Inc."/>
+    <property name="java.vendor.url" value="http://www.apple.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/Users/mes/Documents/workspace/psi-mi-impl"/>
+    <property name="java.runtime.version" value="1.6.0_22-b04-307-10M3261"/>
+    <property name="java.awt.graphicsenv" value="apple.awt.CGraphicsEnvironment"/>
+    <property name="basedir" value="/Users/mes/Documents/workspace/psi-mi-impl"/>
+    <property name="java.endorsed.dirs" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/endorsed"/>
+    <property name="os.arch" value="x86_64"/>
+    <property name="surefire.real.class.path" value="/var/folders/zj/zjARM1JeGPOMkE2zcMvtqE+++X6/-Tmp-/surefirebooter5821493049079214246.jar"/>
+    <property name="java.io.tmpdir" value="/var/folders/zj/zjARM1JeGPOMkE2zcMvtqE+++X6/-Tmp-/"/>
+    <property name="line.separator" value="
+"/>
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="os.name" value="Mac OS X"/>
+    <property name="sun.jnu.encoding" value="MacRoman"/>
+    <property name="java.library.path" value=".:/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java"/>
+    <property name="surefire.test.class.path" value="/Users/mes/Documents/workspace/psi-mi-impl/target/test-classes:/Users/mes/Documents/workspace/psi-mi-impl/target/classes:/Users/mes/.m2/repository/cytoscape/application/1.0-SNAPSHOT/application-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/cytoscape-sun/jhall/1.0/jhall-1.0.jar:/Users/mes/.m2/repository/org/cytoscape/layout-api/1.0-SNAPSHOT/layout-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/model-api/1.0-SNAPSHOT/model-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/event-api/1.0-SNAPSHOT/event-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/viewmodel-api/1.0-SNAPSHOT/viewmodel-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/work-api/1.0-SNAPSHOT/work-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/ops4j/pax/logging/pax-logging-api/1.5.2/pax-logging-api-1.5.2.jar:/Users/mes/.m2/repository/org/cytoscape/presentation-api/1.0-SNAPSHOT/presentation-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/core-task-api/1.0-SNAPSHOT/core-task-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/vizmap-api/1.0-SNAPSHOT/vizmap-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/work-swing-api/1.0-SNAPSHOT/work-swing-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/work-spring-hack/1.0-SNAPSHOT/work-spring-hack-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/property-api/1.0-SNAPSHOT/property-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/splash/1.0-SNAPSHOT/splash-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar:/Users/mes/.m2/repository/org/osgi/osgi_R4_compendium/1.0/osgi_R4_compendium-1.0.jar:/Users/mes/.m2/repository/org/cytoscape/io-api/1.0-SNAPSHOT/io-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/session-api/1.0-SNAPSHOT/session-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/junit/junit/4.8.1/junit-4.8.1.jar:/Users/mes/.m2/repository/org/cytoscape/swing-util/1.0-SNAPSHOT/swing-util-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/service-util/1.0-SNAPSHOT/service-util-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/com/sun/xml/bind/jaxb-xjc/2.1.12/jaxb-xjc-2.1.12.jar:/Users/mes/.m2/repository/com/sun/xml/bind/jaxb-impl/2.1.12/jaxb-impl-2.1.12.jar:/Users/mes/.m2/repository/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar:/Users/mes/.m2/repository/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar:/Users/mes/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar:/Users/mes/.m2/repository/org/cytoscape/test-support/1.0-SNAPSHOT/test-support-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/model-api/1.0-SNAPSHOT/model-api-1.0-SNAPSHOT-tests.jar:/Users/mes/.m2/repository/org/cytoscape/event-api/1.0-SNAPSHOT/event-api-1.0-SNAPSHOT-tests.jar:/Users/mes/.m2/repository/org/cytoscape/model-impl/1.0-SNAPSHOT/model-impl-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/viewmodel-impl/1.0-SNAPSHOT/viewmodel-impl-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/mockito/mockito-all/1.8.1/mockito-all-1.8.1.jar:"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="50.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Server Compiler"/>
+    <property name="os.version" value="10.6.4"/>
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="user.home" value="/Users/mes"/>
+    <property name="user.timezone" value=""/>
+    <property name="java.awt.printerjob" value="apple.awt.CPrinterJob"/>
+    <property name="java.specification.version" value="1.6"/>
+    <property name="file.encoding" value="MacRoman"/>
+    <property name="user.name" value="mes"/>
+    <property name="java.class.path" value="/Users/mes/Documents/workspace/psi-mi-impl/target/test-classes:/Users/mes/Documents/workspace/psi-mi-impl/target/classes:/Users/mes/.m2/repository/cytoscape/application/1.0-SNAPSHOT/application-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/cytoscape-sun/jhall/1.0/jhall-1.0.jar:/Users/mes/.m2/repository/org/cytoscape/layout-api/1.0-SNAPSHOT/layout-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/model-api/1.0-SNAPSHOT/model-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/event-api/1.0-SNAPSHOT/event-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/viewmodel-api/1.0-SNAPSHOT/viewmodel-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/work-api/1.0-SNAPSHOT/work-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/ops4j/pax/logging/pax-logging-api/1.5.2/pax-logging-api-1.5.2.jar:/Users/mes/.m2/repository/org/cytoscape/presentation-api/1.0-SNAPSHOT/presentation-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/core-task-api/1.0-SNAPSHOT/core-task-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/vizmap-api/1.0-SNAPSHOT/vizmap-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/work-swing-api/1.0-SNAPSHOT/work-swing-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/work-spring-hack/1.0-SNAPSHOT/work-spring-hack-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/property-api/1.0-SNAPSHOT/property-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/splash/1.0-SNAPSHOT/splash-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar:/Users/mes/.m2/repository/org/osgi/osgi_R4_compendium/1.0/osgi_R4_compendium-1.0.jar:/Users/mes/.m2/repository/org/cytoscape/io-api/1.0-SNAPSHOT/io-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/session-api/1.0-SNAPSHOT/session-api-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/junit/junit/4.8.1/junit-4.8.1.jar:/Users/mes/.m2/repository/org/cytoscape/swing-util/1.0-SNAPSHOT/swing-util-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/service-util/1.0-SNAPSHOT/service-util-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/com/sun/xml/bind/jaxb-xjc/2.1.12/jaxb-xjc-2.1.12.jar:/Users/mes/.m2/repository/com/sun/xml/bind/jaxb-impl/2.1.12/jaxb-impl-2.1.12.jar:/Users/mes/.m2/repository/javax/xml/bind/jaxb-api/2.1/jaxb-api-2.1.jar:/Users/mes/.m2/repository/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar:/Users/mes/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar:/Users/mes/.m2/repository/org/cytoscape/test-support/1.0-SNAPSHOT/test-support-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/model-api/1.0-SNAPSHOT/model-api-1.0-SNAPSHOT-tests.jar:/Users/mes/.m2/repository/org/cytoscape/event-api/1.0-SNAPSHOT/event-api-1.0-SNAPSHOT-tests.jar:/Users/mes/.m2/repository/org/cytoscape/model-impl/1.0-SNAPSHOT/model-impl-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/cytoscape/viewmodel-impl/1.0-SNAPSHOT/viewmodel-impl-1.0-SNAPSHOT.jar:/Users/mes/.m2/repository/org/mockito/mockito-all/1.8.1/mockito-all-1.8.1.jar:"/>
+    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home"/>
+    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.language" value="en"/>
+    <property name="awt.toolkit" value="apple.awt.CToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.6.0_22"/>
+    <property name="java.ext.dirs" value="/Library/Java/Extensions:/System/Library/Java/Extensions:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/ext"/>
+    <property name="sun.boot.class.path" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/jsfd.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar:/System/Library/Frameworks/JavaVM.framework/Frameworks/JavaRuntimeSupport.framework/Resources/Java/JavaRuntimeSupport.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/ui.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/laf.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/sunrsasign.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/jsse.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/jce.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/charsets.jar"/>
+    <property name="java.vendor" value="Apple Inc."/>
+    <property name="localRepository" value="/Users/mes/.m2/repository"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.apple.com/"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="mrj.version" value="1060.1.6.0_22-307"/>
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase time="0.002" classname="org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest" name="testPsiMapper1">
+    <error message="Unresolved compilation problems: 
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	The method extractExperimentReferenceOrElement(Object) from the type MapPsiOneToInteractions refers to the missing type ExperimentType
+	ExperimentType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	BibrefType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+" type="java.lang.Error">java.lang.Error: Unresolved compilation problems: 
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	The method extractExperimentReferenceOrElement(Object) from the type MapPsiOneToInteractions refers to the missing type ExperimentType
+	ExperimentType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	BibrefType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+
+	at org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractions.&lt;init&gt;(MapPsiOneToInteractions.java:53)
+	at org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest.testPsiMapper1(MapPsiOneToInteractionsTest.java:69)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:62)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.executeTestSet(AbstractDirectoryTestSuite.java:140)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.execute(AbstractDirectoryTestSuite.java:127)
+	at org.apache.maven.surefire.Surefire.run(Surefire.java:177)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.maven.surefire.booter.SurefireBooter.runSuitesInProcess(SurefireBooter.java:345)
+	at org.apache.maven.surefire.booter.SurefireBooter.main(SurefireBooter.java:1009)
+</error>
+  </testcase>
+  <testcase time="0.01" classname="org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest" name="testPsiMapper2">
+    <error message="Unresolved compilation problems: 
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	The method extractExperimentReferenceOrElement(Object) from the type MapPsiOneToInteractions refers to the missing type ExperimentType
+	ExperimentType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	BibrefType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+" type="java.lang.Error">java.lang.Error: Unresolved compilation problems: 
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	The method extractExperimentReferenceOrElement(Object) from the type MapPsiOneToInteractions refers to the missing type ExperimentType
+	ExperimentType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	BibrefType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+
+	at org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractions.&lt;init&gt;(MapPsiOneToInteractions.java:53)
+	at org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest.testPsiMapper2(MapPsiOneToInteractionsTest.java:86)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:62)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.executeTestSet(AbstractDirectoryTestSuite.java:140)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.execute(AbstractDirectoryTestSuite.java:127)
+	at org.apache.maven.surefire.Surefire.run(Surefire.java:177)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.maven.surefire.booter.SurefireBooter.runSuitesInProcess(SurefireBooter.java:345)
+	at org.apache.maven.surefire.booter.SurefireBooter.main(SurefireBooter.java:1009)
+</error>
+  </testcase>
+  <testcase time="0.003" classname="org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest" name="testPsiMapper3">
+    <error message="Unresolved compilation problems: 
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	The method extractExperimentReferenceOrElement(Object) from the type MapPsiOneToInteractions refers to the missing type ExperimentType
+	ExperimentType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	BibrefType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+" type="java.lang.Error">java.lang.Error: Unresolved compilation problems: 
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	The method extractExperimentReferenceOrElement(Object) from the type MapPsiOneToInteractions refers to the missing type ExperimentType
+	ExperimentType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	BibrefType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+
+	at org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractions.&lt;init&gt;(MapPsiOneToInteractions.java:53)
+	at org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest.testPsiMapper3(MapPsiOneToInteractionsTest.java:103)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:62)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.executeTestSet(AbstractDirectoryTestSuite.java:140)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.execute(AbstractDirectoryTestSuite.java:127)
+	at org.apache.maven.surefire.Surefire.run(Surefire.java:177)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.maven.surefire.booter.SurefireBooter.runSuitesInProcess(SurefireBooter.java:345)
+	at org.apache.maven.surefire.booter.SurefireBooter.main(SurefireBooter.java:1009)
+</error>
+  </testcase>
+  <testcase time="0.001" classname="org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest" name="testDipData1">
+    <error message="Unresolved compilation problems: 
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	The method extractExperimentReferenceOrElement(Object) from the type MapPsiOneToInteractions refers to the missing type ExperimentType
+	ExperimentType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	BibrefType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+" type="java.lang.Error">java.lang.Error: Unresolved compilation problems: 
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	The method extractExperimentReferenceOrElement(Object) from the type MapPsiOneToInteractions refers to the missing type ExperimentType
+	ExperimentType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	BibrefType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+
+	at org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractions.&lt;init&gt;(MapPsiOneToInteractions.java:53)
+	at org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest.testDipData1(MapPsiOneToInteractionsTest.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:62)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.executeTestSet(AbstractDirectoryTestSuite.java:140)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.execute(AbstractDirectoryTestSuite.java:127)
+	at org.apache.maven.surefire.Surefire.run(Surefire.java:177)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.maven.surefire.booter.SurefireBooter.runSuitesInProcess(SurefireBooter.java:345)
+	at org.apache.maven.surefire.booter.SurefireBooter.main(SurefireBooter.java:1009)
+</error>
+  </testcase>
+  <testcase time="0.001" classname="org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest" name="testDipData2">
+    <error message="Unresolved compilation problems: 
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	The method extractExperimentReferenceOrElement(Object) from the type MapPsiOneToInteractions refers to the missing type ExperimentType
+	ExperimentType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	BibrefType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+" type="java.lang.Error">java.lang.Error: Unresolved compilation problems: 
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	The method extractExperimentReferenceOrElement(Object) from the type MapPsiOneToInteractions refers to the missing type ExperimentType
+	ExperimentType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	BibrefType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+
+	at org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractions.&lt;init&gt;(MapPsiOneToInteractions.java:53)
+	at org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest.testDipData2(MapPsiOneToInteractionsTest.java:155)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:62)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.executeTestSet(AbstractDirectoryTestSuite.java:140)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.execute(AbstractDirectoryTestSuite.java:127)
+	at org.apache.maven.surefire.Surefire.run(Surefire.java:177)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.maven.surefire.booter.SurefireBooter.runSuitesInProcess(SurefireBooter.java:345)
+	at org.apache.maven.surefire.booter.SurefireBooter.main(SurefireBooter.java:1009)
+</error>
+  </testcase>
+  <testcase time="0.001" classname="org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest" name="testcPathData">
+    <error message="Unresolved compilation problems: 
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	The method extractExperimentReferenceOrElement(Object) from the type MapPsiOneToInteractions refers to the missing type ExperimentType
+	ExperimentType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	BibrefType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+" type="java.lang.Error">java.lang.Error: Unresolved compilation problems: 
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	The import org.cytoscape.psi_mi.internal.schema cannot be resolved
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	EntrySet cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	ProteinParticipantType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	InteractionElementType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	The method extractExperimentReferenceOrElement(Object) from the type MapPsiOneToInteractions refers to the missing type ExperimentType
+	ExperimentType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	RefType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	CvType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ExperimentType cannot be resolved to a type
+	BibrefType cannot be resolved to a type
+	XrefType cannot be resolved to a type
+	DbReferenceType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	ProteinInteractorType cannot be resolved to a type
+	NamesType cannot be resolved to a type
+
+	at org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractions.&lt;init&gt;(MapPsiOneToInteractions.java:53)
+	at org.cytoscape.psi_mi.internal.data_mapper.MapPsiOneToInteractionsTest.testcPathData(MapPsiOneToInteractionsTest.java:181)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:62)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.executeTestSet(AbstractDirectoryTestSuite.java:140)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.execute(AbstractDirectoryTestSuite.java:127)
+	at org.apache.maven.surefire.Surefire.run(Surefire.java:177)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.maven.surefire.booter.SurefireBooter.runSuitesInProcess(SurefireBooter.java:345)
+	at org.apache.maven.surefire.booter.SurefireBooter.main(SurefireBooter.java:1009)
+</error>
+  </testcase>
+</testsuite>

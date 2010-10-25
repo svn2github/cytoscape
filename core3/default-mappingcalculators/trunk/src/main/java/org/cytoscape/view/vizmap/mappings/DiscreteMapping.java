@@ -107,14 +107,14 @@ public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 	 */
 	private void applyDiscreteMapping(final View<? extends CyTableEntry> view) {
 
-		final CyRow row = view.getModel().attrs();
+		final CyRow row = view.getModel().getCyRow();
 		
 		if (row.isSet(attrName, attrType)) {
 			// skip Views where source attribute is not defined;
 			// ViewColumn will automatically substitute the per-VS or global
 			// default, as appropriate
 
-			final K key = view.getModel().attrs().get(attrName, attrType);
+			final K key = view.getModel().getCyRow().get(attrName, attrType);
 			if (attribute2visualMap.containsKey(key)) {
 				final V value = attribute2visualMap.get(key);
 				// Assign value to view

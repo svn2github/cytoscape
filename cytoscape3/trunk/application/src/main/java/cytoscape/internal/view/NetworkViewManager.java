@@ -207,7 +207,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		JInternalFrame frame = presentationContainerMap.get(network.getSUID());
 
 		if ( frame != null ) {
-			frame.setTitle(network.attrs().get("name", String.class));
+			frame.setTitle(network.getCyRow().get("name", String.class));
 			frame.repaint();
 		}
 	}
@@ -367,7 +367,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		presentationContainerMap.remove(view.getModel().getSUID());
 		RowSetMicroListener rsml = nameListeners.remove(view.getModel());
 		if ( rsml != null )
-			eventHelper.removeMicroListener(rsml, RowSetMicroListener.class, view.getModel().attrs().getDataTable());
+			eventHelper.removeMicroListener(rsml, RowSetMicroListener.class, view.getModel().getCyRow().getDataTable());
 	}
 
 	/**
@@ -457,7 +457,7 @@ public class NetworkViewManager implements InternalFrameListener,
 			}
 		};
 		
-		eventHelper.addMicroListener( rsml, RowSetMicroListener.class, view.getModel().attrs() );
+		eventHelper.addMicroListener( rsml, RowSetMicroListener.class, view.getModel().getCyRow() );
 		nameListeners.put(view.getModel(), rsml );
 	}
 }

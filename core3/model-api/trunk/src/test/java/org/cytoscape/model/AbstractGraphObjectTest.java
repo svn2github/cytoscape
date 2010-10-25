@@ -121,9 +121,9 @@ public abstract class AbstractGraphObjectTest extends TestCase {
 	 */
 	public void testAttrs() {
 		CyNode n1 = net.addNode();
-		assertNotNull("cyattrs exists", n1.attrs());
-		assertTrue("cyattrs is CyRow", n1.attrs() instanceof CyRow);
-		assertTrue("attrs equals getCyRow", n1.attrs().equals(n1.getCyRow("USER")));
+		assertNotNull("cyattrs exists", n1.getCyRow());
+		assertTrue("cyattrs is CyRow", n1.getCyRow() instanceof CyRow);
+		assertTrue("attrs equals getCyRow", n1.getCyRow().equals(n1.getCyRow("USER")));
 	}
 
 	/**

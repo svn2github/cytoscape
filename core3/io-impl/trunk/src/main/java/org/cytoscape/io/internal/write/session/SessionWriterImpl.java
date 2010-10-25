@@ -268,7 +268,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private void zipNetwork(final CyNetworkView view) throws Exception {
 		final CyNetwork network = view.getModel();
 
-		String xgmmlFile = getValidFileName( network.attrs().get("name",String.class) + XGMML_EXT );
+		String xgmmlFile = getValidFileName( network.getCyRow().get("name",String.class) + XGMML_EXT );
 		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile) );
 
 		// Write the XGMML file *without* our graphics attributes

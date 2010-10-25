@@ -125,7 +125,7 @@ public class ArrayGraph implements CyRootNetwork {
 
 		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class,false);
 		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED,Boolean.class,false);
-		attrs().set(CyTableEntry.NAME,"");
+		getCyRow().set(CyTableEntry.NAME,"");
 		// potential leak since "this" isn't yet fully constructed
 
 		nodeAttrMgr = new HashMap<String, CyTable>();
@@ -569,7 +569,7 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CyRow attrs() {
+	public CyRow getCyRow() {
 		return getCyRow(CyNetwork.DEFAULT_ATTRS);
 	}
 

@@ -11,7 +11,7 @@ public class HandleEdgeAttribute extends AbstractHandler {
 		manager.attState = current;
 
 		// TODO what if currentEdge is null?
-		manager.currentAttributes = manager.currentEdge.attrs();
+		manager.currentAttributes = manager.currentEdge.getCyRow();
 		ParseState nextState = attributeValueUtil.handleAttribute(atts,
 				manager.currentAttributes);
 		if (nextState != ParseState.NONE)

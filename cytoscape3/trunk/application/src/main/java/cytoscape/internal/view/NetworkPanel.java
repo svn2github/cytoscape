@@ -357,7 +357,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		removeNetwork(net.getSUID());
 		RowSetMicroListener rsml = nameListeners.remove(net);
 		if ( rsml != null )
-			eventHelper.removeMicroListener( rsml, RowSetMicroListener.class, net.attrs().getDataTable() ); 
+			eventHelper.removeMicroListener( rsml, RowSetMicroListener.class, net.getCyRow().getDataTable() ); 
 	}
 
 	public void handleEvent(NetworkAddedEvent e) {
@@ -370,7 +370,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 				updateTitle(n,name);
 			}
 		};
-		eventHelper.addMicroListener(rsml, RowSetMicroListener.class, net.attrs());
+		eventHelper.addMicroListener(rsml, RowSetMicroListener.class, net.getCyRow());
 		nameListeners.put(e.getNetwork(),rsml);
 	}
 
@@ -442,7 +442,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		if (getNetworkNode(network_id) == null) {
 			// logger.debug("NetworkPanel: addNetwork " + network_id);
 			NetworkTreeNode dmtn = new NetworkTreeNode(netmgr.getNetwork(
-					network_id).attrs().get("name", String.class), network_id);
+					network_id).getCyRow().get("name", String.class), network_id);
 
 			if (parent_id != null && getNetworkNode(parent_id) != null) {
 				getNetworkNode(parent_id).add(dmtn);
@@ -690,7 +690,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 			NetworkTreeNode node = (NetworkTreeNode) value;
 			CyNetwork n = netmgr.getNetwork(node.getNetworkID());
 			if (n != null)
-				setToolTipText(n.attrs().get("name", String.class));
+				setToolTipText(n.getCyRow().get("name", String.class));
 			else
 				setToolTipText("Root");
 

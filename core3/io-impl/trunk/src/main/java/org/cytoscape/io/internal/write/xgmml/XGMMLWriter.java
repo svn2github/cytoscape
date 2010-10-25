@@ -232,7 +232,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 	private void writePreamble() throws IOException {
 		String directed = getDirectionality();
 		writeElement(XML_STRING+"\n");
-		writeElement("<graph label=\""+network.attrs().get("title",String.class)+"\" directed=\""+directed+"\" "); 
+		writeElement("<graph label=\""+network.getCyRow().get("title",String.class)+"\" directed=\""+directed+"\" "); 
 		for (int ns = 0; ns < NAMESPACES.length; ns++)
 			writer.write(NAMESPACES[ns]+" ");
 		writer.write(">\n");
@@ -313,7 +313,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 		java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		writeElement("<dc:date>"+df.format(now)+"</dc:date>\n");
 		// TODO fix the use of hardcoded "name" here
-		writeElement("<dc:title>"+encode(network.attrs().get("name",String.class))+"</dc:title>\n");
+		writeElement("<dc:title>"+encode(network.getCyRow().get("name",String.class))+"</dc:title>\n");
 		writeElement("<dc:source>http://www.cytoscape.org/</dc:source>\n");
 		writeElement("<dc:format>Cytoscape-XGMML</dc:format>\n");
 		depth--;
@@ -345,7 +345,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 		}
 
 		// Now handle all of the other network attributes
-		CyRow row = network.attrs();
+		CyRow row = network.getCyRow();
 		CyTable table = row.getDataTable();
 		for ( String attName : table.getColumnTypeMap().keySet() ) 
 				writeAttribute(row, attName);
@@ -376,14 +376,14 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 		nodeMap.put(node, node);
 
 		// Output the node
-		writeElement("<node label="+quote(node.attrs().get("name",String.class)));
+		writeElement("<node label="+quote(node.getCyRow().get("name",String.class)));
 		writer.write(" id="+quote(Integer.toString(node.getIndex()))+">\n");
 		depth++;
 
 		// Output the node attributes
 		// TODO This isn't handling namespaces
-		for ( String attName : node.attrs().getDataTable().getColumnTypeMap().keySet() )
-			writeAttribute(node.attrs(), attName);
+		for ( String attName : node.getCyRow().getDataTable().getColumnTypeMap().keySet() )
+			writeAttribute(node.getCyRow(), attName);
 
 		// TODO deal with groups
 		/*
@@ -594,14 +594,14 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
 		String directedness;
 		if (curEdge.isDirected()){ directedness="\"1\""; } else { directedness="\"0\""; }
-		writeElement("<edge label="+quote(curEdge.attrs().get("name",String.class))+" source="+source+" target="+target+" cy:directed="+directedness+">\n");
+		writeElement("<edge label="+quote(curEdge.getCyRow().get("name",String.class))+" source="+source+" target="+target+" cy:directed="+directedness+">\n");
 
 		depth++;
 
 		// Write the edge attributes
 		// TODO This isn't handling namespaces
-		for ( String attName : curEdge.attrs().getDataTable().getColumnTypeMap().keySet() ) 
-			writeAttribute(curEdge.attrs(), attName);
+		for ( String attName : curEdge.getCyRow().getDataTable().getColumnTypeMap().keySet() ) 
+			writeAttribute(curEdge.getCyRow(), attName);
 
 		// Write the edge graphics
 		writeEdgeGraphics(curEdge, networkView.getEdgeView(curEdge));

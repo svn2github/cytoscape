@@ -60,11 +60,11 @@ public class CreateNetworkViewTask extends AbstractNetworkTask {
 			netmgr.addNetworkView(view);
 		} catch (Exception e) {
 			throw new Exception("Could not create network view for network: "
-					+ net.attrs().get("name", String.class), e);
+					+ net.getCyRow().get("name", String.class), e);
 		}
 
 		taskMonitor.setProgress(1.0);
 		taskMonitor.setStatusMessage("Network view successfully create for:  "
-				+ net.attrs().get("name", String.class));
+				+ net.getCyRow().get("name", String.class));
 	}
 }

@@ -113,7 +113,7 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 		for ( CyEdge e1 : edges )
 			new_network.addEdge(e1);
 
-		new_network.attrs().set("name",
+		new_network.getCyRow().set("name",
 				cyNetworkNaming.getSuggestedSubnetworkTitle(current_network));
 
 		netmgr.addNetwork(new_network);

@@ -98,7 +98,7 @@ public class FlagAndSelectionHandler implements SelectedNodesListener,
 		final Set<CyNode> selectedNodes = new HashSet<CyNode>();
 
 		for (final CyNode n : view.getNetwork().getNodeList())
-			if (n.attrs().get(SELECT_ATTR, Boolean.class))
+			if (n.getCyRow().get(SELECT_ATTR, Boolean.class))
 				selectedNodes.add(n);
 
 		return selectedNodes;
@@ -108,7 +108,7 @@ public class FlagAndSelectionHandler implements SelectedNodesListener,
 		final Set<CyEdge> selectedEdges = new HashSet<CyEdge>();
 
 		for (final CyEdge n : view.getNetwork().getEdgeList())
-			if (n.attrs().get(SELECT_ATTR, Boolean.class))
+			if (n.getCyRow().get(SELECT_ATTR, Boolean.class))
 				selectedEdges.add(n);
 
 		return selectedEdges;
@@ -147,11 +147,11 @@ public class FlagAndSelectionHandler implements SelectedNodesListener,
 
 		// flag all nodes that are selected but not currently flagged
 		for (final CyNode node : selectedNodes)
-			node.attrs().set(SELECT_ATTR, true);
+			node.getCyRow().set(SELECT_ATTR, true);
 
 		// flag all edges that are selected but not currently flagged
 		for (final CyEdge edge : selectedEdges)
-			edge.attrs().set(SELECT_ATTR, true);
+			edge.getCyRow().set(SELECT_ATTR, true);
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class FlagAndSelectionHandler implements SelectedNodesListener,
 			final CyNode[] selectedNodes = event.getSelectedNodes();
 
 			for (final CyNode node : selectedNodes)
-				node.attrs().set(SELECT_ATTR, true);
+				node.getCyRow().set(SELECT_ATTR, true);
 			
 		} else if (event.isNodesUnselectedType() || event.isNodesHiddenType()) {
 			final CyNode[] objIndecies;
@@ -184,12 +184,12 @@ public class FlagAndSelectionHandler implements SelectedNodesListener,
 				objIndecies = event.getHiddenNodes();
 
 			for (final CyNode n : objIndecies)
-				n.attrs().set(SELECT_ATTR, false);
+				n.getCyRow().set(SELECT_ATTR, false);
 		} else if (event.isEdgesSelectedType()) {
 			final CyEdge[] objIndecies = event.getSelectedEdges();
 
 			for (final CyEdge n : objIndecies)
-				n.attrs().set(SELECT_ATTR, true);
+				n.getCyRow().set(SELECT_ATTR, true);
 		} else if (event.isEdgesUnselectedType() || event.isEdgesHiddenType()) {
 			final CyEdge[] objIndecies;
 			if (event.isEdgesUnselectedType())
@@ -198,7 +198,7 @@ public class FlagAndSelectionHandler implements SelectedNodesListener,
 				objIndecies = event.getHiddenEdges();
 
 			for (final CyEdge n : objIndecies) {
-				n.attrs().set(SELECT_ATTR, false);
+				n.getCyRow().set(SELECT_ATTR, false);
 			}
 		}
 
