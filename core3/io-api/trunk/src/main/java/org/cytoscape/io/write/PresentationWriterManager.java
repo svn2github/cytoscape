@@ -43,7 +43,7 @@ import java.io.OutputStream;
 /**
  * A {@link CyWriterManager} specific to writing View objects. 
  */
-public interface ViewWriterManager extends CyWriterManager {
+public interface PresentationWriterManager extends CyWriterManager {
 
 	/**
 	 * @param view The {@link org.cytoscape.view.model.View} to be written.

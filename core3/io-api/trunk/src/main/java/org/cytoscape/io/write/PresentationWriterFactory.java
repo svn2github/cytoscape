@@ -8,7 +8,7 @@ import org.cytoscape.view.model.View;
  * A specialization of {@link CyWriterFactory} that allows a View to
  * be specified and written.
  */
-public interface ViewWriterFactory extends CyWriterFactory {
+public interface PresentationWriterFactory extends CyWriterFactory {
 
 	/**
 	 * Specifies the {@link org.cytoscape.view.model.View} to be written by the {@link CyWriter} Task
