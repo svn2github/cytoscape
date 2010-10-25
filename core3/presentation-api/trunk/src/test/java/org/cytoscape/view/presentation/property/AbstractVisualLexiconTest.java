@@ -1,8 +1,6 @@
-package org.cytoscape.view.presentation;
+package org.cytoscape.view.presentation.property;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,6 +9,7 @@ import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.DefaultVisualizableVisualProperty;
 
 public abstract class AbstractVisualLexiconTest {
 	
@@ -20,6 +19,19 @@ public abstract class AbstractVisualLexiconTest {
 		assertNotNull(root);
 		assertEquals(lexicon.getRootVisualProperty(), root);
 		
+		// test common methods
+		try{
+			Collection<VisualProperty<?>> result = lexicon.getAllDescendants(null);
+		} catch(Exception e) {
+			assertTrue(e instanceof NullPointerException);
+		}
+		try{
+			Collection<VisualProperty<?>> result = lexicon.getAllDescendants(new DefaultVisualizableVisualProperty("test", "Test Visual Property"));
+		} catch(Exception e) {
+			assertTrue(e instanceof IllegalArgumentException);
+		}
+		
+		
 		final VisualLexiconNode rootNode = lexicon.getVisualLexiconNode(root);
 		assertNotNull(rootNode);
 		assertEquals(root, rootNode.getVisualProperty());
@@ -28,6 +40,9 @@ public abstract class AbstractVisualLexiconTest {
 		
 		assertFalse(0 == children.size());
 		traverse(children, lexicon);
+		
+		// Test adding
+		((AbstractVisualLexicon) lexicon).addVisualProperty(new DoubleVisualProperty(new Double(10), "DUMMY", "Dummy VP"), root);
 	}
 	
 
@@ -55,5 +70,7 @@ public abstract class AbstractVisualLexiconTest {
 		else
 			traverse(nextChildren, lexicon);
 	}
+	
+	
 	
 }

@@ -8,7 +8,7 @@ import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.internal.VisualLexiconNodeFactoryImpl;
-import org.cytoscape.view.presentation.AbstractVisualLexiconTest;
+import org.cytoscape.view.presentation.property.AbstractVisualLexiconTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -10,6 +10,7 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.internal.VisualLexiconNodeFactoryImpl;
+import org.cytoscape.view.presentation.property.AbstractVisualLexiconTest;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.junit.Before;

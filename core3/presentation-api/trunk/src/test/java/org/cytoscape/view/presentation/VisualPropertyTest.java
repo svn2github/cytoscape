@@ -51,6 +51,25 @@ public class VisualPropertyTest {
 		final Color testColor = new Color(10, 20, 30); 
 		assertEquals("10,20,30", paintProp.toSerializableString(testColor));
 		assertEquals(testColor, paintProp.parseSerializableString("#0A141E"));
+		assertEquals(testColor, paintProp.parseSerializableString("10,20,30"));
+		
+		try {
+			final Color result = paintProp.parseSerializableString("#2JK20A141E");
+		}catch(Exception e) {
+			assertTrue(e instanceof IllegalArgumentException);
+		}
+		
+		try {
+			final Color result = paintProp.parseSerializableString("10, 20");
+		}catch(Exception e) {
+			assertTrue(e instanceof IllegalArgumentException);
+		}
+		
+		try {
+			final Color result = paintProp.parseSerializableString("10, 20, IJK");
+		}catch(Exception e) {
+			assertTrue(e instanceof IllegalArgumentException);
+		}
 		
 		final VisualProperty<Visualizable> visualizableProp = TwoDVisualLexicon.NODE;
 		assertEquals(Visualizable.class, visualizableProp.getType());
