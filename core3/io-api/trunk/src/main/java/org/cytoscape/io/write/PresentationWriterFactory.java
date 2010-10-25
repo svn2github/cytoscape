@@ -18,5 +18,5 @@ public interface PresentationWriterFactory extends CyWriterFactory {
 	 * @param re The {@link org.cytoscape.view.presentation.RenderingEngine} used to generate the image of the
 	 * specified View.
 	 */
-	void setViewRenderer(View<?> view, RenderingEngine re);
+	void setRenderingEngine(RenderingEngine re);
 }
