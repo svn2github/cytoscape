@@ -12,10 +12,13 @@ import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.plugin.CyPluginAdapterTest;
+
 import static org.mockito.Mockito.*;
+import org.junit.Before;
 
 public class CyPluginAdapterImplTest extends CyPluginAdapterTest {
-	
+
+	@Before
 	public void setUp() {
 
 		CyTableFactory cyTableFactory = mock(CyTableFactory.class);

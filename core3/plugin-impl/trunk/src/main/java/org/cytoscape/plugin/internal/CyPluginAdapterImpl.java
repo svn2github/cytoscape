@@ -78,7 +78,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	// May as well keep the methods alphabetical too!
 	// 
 
-	public CyTableFactory getCyDataTableFactory() { return cyTableFactory; } 
+	public CyTableFactory getCyTableFactory() { return cyTableFactory; } 
 
 	public CyEventHelper getCyEventHelper() { return cyEventHelper; } 
 
