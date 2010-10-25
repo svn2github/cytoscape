@@ -10,6 +10,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.view.layout.AbstractGraphPartition;
 import org.cytoscape.view.layout.LayoutNode;
 import org.cytoscape.view.layout.LayoutPartition;
@@ -45,9 +46,9 @@ public class DegreeSortedCircleLayoutTask extends AbstractGraphPartition {
 	 */
 	public void layoutPartion(LayoutPartition partition) {
 		// Create attribute
-		if(tableMgr.getTableMap(CyTableEntry.NODE, network).get(CyNetwork.DEFAULT_ATTRS).getUniqueColumns().contains(DEGREE_ATTR_NAME) == false) {
-			tableMgr.getTableMap(CyTableEntry.NODE, network).get(CyNetwork.DEFAULT_ATTRS).createColumn(DEGREE_ATTR_NAME,
-				Double.class, false);
+		CyTable table = tableMgr.getTableMap(CyTableEntry.NODE, network).get(CyNetwork.DEFAULT_ATTRS);
+		if(table.getColumnTypeMap().keySet().contains(DEGREE_ATTR_NAME) == false) {
+			table.createColumn(DEGREE_ATTR_NAME, Double.class, false);
 		}
 
     // just add the unlocked nodes
