@@ -54,7 +54,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.write.CyNetworkViewWriterManager;
-import org.cytoscape.io.write.PropertyWriterManager;
+import org.cytoscape.io.write.CyPropertyWriterManager;
 import org.cytoscape.session.CySession;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
@@ -158,7 +158,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	private final OutputStream outputStream;
 	private final CySession session;
 	private final CyNetworkViewWriterManager networkViewWriterMgr;
-	private final PropertyWriterManager propertyWriterMgr;
+	private final CyPropertyWriterManager propertyWriterMgr;
 	private final CyFileFilter xgmmlFilter;
 	private final CyFileFilter bookmarksFilter;
 	private final CyFileFilter cysessionFilter;
@@ -167,7 +167,7 @@ public class SessionWriterImpl extends AbstractTask implements CyWriter {
 	public SessionWriterImpl(final OutputStream outputStream, 
 	                         final CySession session, 
 	                         final CyNetworkViewWriterManager networkViewWriterMgr, 
-	                         final PropertyWriterManager propertyWriterMgr, 
+	                         final CyPropertyWriterManager propertyWriterMgr, 
 	                         final CyFileFilter xgmmlFilter, 
 	                         final CyFileFilter bookmarksFilter,
 	                         final CyFileFilter cysessionFilter,
