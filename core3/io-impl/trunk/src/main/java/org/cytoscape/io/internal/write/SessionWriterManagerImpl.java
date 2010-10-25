@@ -6,13 +6,13 @@ import java.io.OutputStream;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.write.CyWriter;
-import org.cytoscape.io.write.SessionWriterFactory;
-import org.cytoscape.io.write.SessionWriterManager;
+import org.cytoscape.io.write.CySessionWriterFactory;
+import org.cytoscape.io.write.CySessionWriterManager;
 import org.cytoscape.session.CySession;
 
 public class SessionWriterManagerImpl extends
-		AbstractWriterManager<SessionWriterFactory> implements
-		SessionWriterManager {
+		AbstractWriterManager<CySessionWriterFactory> implements
+		CySessionWriterManager {
 
 	public SessionWriterManagerImpl() {
 		super(DataCategory.SESSION);
@@ -25,7 +25,7 @@ public class SessionWriterManagerImpl extends
 
 	@Override
 	public CyWriter getWriter(CySession session, CyFileFilter filter, OutputStream os) throws Exception {
-		SessionWriterFactory factory = getMatchingFactory(filter, os);
+		CySessionWriterFactory factory = getMatchingFactory(filter, os);
 		if (factory == null) {
 			throw new NullPointerException("Couldn't find matching factory for filter: " + filter);
 		}

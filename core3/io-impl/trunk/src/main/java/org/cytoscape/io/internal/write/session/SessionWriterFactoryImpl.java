@@ -3,12 +3,12 @@ package org.cytoscape.io.internal.write.session;
 import org.cytoscape.session.CySession;
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.write.CyWriter;
-import org.cytoscape.io.write.SessionWriterFactory;
+import org.cytoscape.io.write.CySessionWriterFactory;
 import org.cytoscape.io.write.CyNetworkViewWriterManager;
-import org.cytoscape.io.write.PropertyWriterManager;
+import org.cytoscape.io.write.CyPropertyWriterManager;
 import java.io.OutputStream;
 
-public class SessionWriterFactoryImpl implements SessionWriterFactory {
+public class SessionWriterFactoryImpl implements CySessionWriterFactory {
 	
 	private final CyFileFilter thisFilter;
 	private final CyFileFilter xgmmlFilter;
@@ -16,7 +16,7 @@ public class SessionWriterFactoryImpl implements SessionWriterFactory {
 	private final CyFileFilter cysessionFilter;
 	private final CyFileFilter propertiesFilter;
 	private final CyNetworkViewWriterManager networkViewWriterMgr;
-	private final PropertyWriterManager propertyWriterMgr;
+	private final CyPropertyWriterManager propertyWriterMgr;
 
 	private OutputStream outputStream;
 	private CySession session;
@@ -29,7 +29,7 @@ public class SessionWriterFactoryImpl implements SessionWriterFactory {
 	                                final CyFileFilter cysessionFilter, 
 	                                final CyFileFilter propertiesFilter, 
 	                                final CyNetworkViewWriterManager networkViewWriterMgr, 
-	                                final PropertyWriterManager propertyWriterMgr) {
+	                                final CyPropertyWriterManager propertyWriterMgr) {
 		this.thisFilter = thisFilter;
 		this.xgmmlFilter = xgmmlFilter;
 		this.bookmarksFilter = bookmarksFilter;
