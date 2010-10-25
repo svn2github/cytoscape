@@ -218,22 +218,6 @@ public class CyTableImpl implements CyTable {
 	/**
 	 * DOCUMENT ME!
 	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public List<String> getUniqueColumns() {
-		List<String> l = new ArrayList<String>();
-
-		for (String s : unique.keySet()) {
-			if (unique.get(s))
-				l.add(s);
-		}
-
-		return l;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
 	 * @param <T>
 	 *            DOCUMENT ME!
 	 * @param columnName
