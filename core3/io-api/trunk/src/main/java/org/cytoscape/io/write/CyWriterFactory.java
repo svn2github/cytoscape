@@ -2,7 +2,7 @@ package org.cytoscape.io.write;
 
 import java.io.OutputStream;
 
-import org.cytoscape.io.FileIOFactory;
+import org.cytoscape.io.CyFileFilterProvider;
 
 /**
  * CyWriterFactory defines the base methods for specifying output and
@@ -10,7 +10,7 @@ import org.cytoscape.io.FileIOFactory;
  * of CyWriterFactories are meant to be singleton objects registered
  * as OSGi services.
  */
-public interface CyWriterFactory extends FileIOFactory {
+public interface CyWriterFactory extends CyFileFilterProvider {
 
 	/**
 	 * This method defines where the generated {@link CyWriter} Task should
