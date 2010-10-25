@@ -19,7 +19,7 @@ public interface CyFileFilter {
 	 * @param category The data category of URI.
 	 * @return True if we believe the URI can be read, false otherwise.
 	 */
-	public boolean accept(URI uri, DataCategory category); 
+	public boolean accepts(URI uri, DataCategory category); 
 
 	/**
 	 * A method that attempts to determine whether the specified InputStream can be read
@@ -28,7 +28,7 @@ public interface CyFileFilter {
 	 * @param category The data category of the input steam.
 	 * @return True if we believe the stream can be read, false otherwise.
 	 */
-	public boolean accept(InputStream stream, DataCategory category);
+	public boolean accepts(InputStream stream, DataCategory category);
 
 	/**
 	 * Returns a list of file extensions (xml, xgmml, sif) suitable for for use
