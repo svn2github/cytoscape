@@ -58,7 +58,6 @@ public class CyTableImpl implements CyTable {
 	private final Map<Object, CyRow> rows;
 
 	private final Map<String, Class<?>> types;
-	private final Map<String, Boolean> unique;
 	
 	// This is not unique and might be changed by user.
 	private String title;
@@ -98,13 +97,11 @@ public class CyTableImpl implements CyTable {
 		attributes = new HashMap<String, Map<Object, Object>>();
 		rows = new HashMap<Object, CyRow>();
 		types = new HashMap<String, Class<?>>();
-		unique = new HashMap<String, Boolean>();
 
 		// Create the primary key column.  Do this explicitly
 		// so that we don't fire an event.
 		types.put(primaryKey, primaryKeyType);
 		attributes.put(primaryKey, new HashMap<Object, Object>());
-		unique.put(primaryKey, true);
 	}
 
 	/**
@@ -203,7 +200,6 @@ public class CyTableImpl implements CyTable {
 		if (curr == null) {
 			types.put(attributeName, cls);
 			attributes.put(attributeName, new HashMap<Object, Object>());
-			unique.put(attributeName, u);
 			
 			// Fire event
 			eventHelper.fireAsynchronousEvent(new ColumnCreatedEvent(this, attributeName));
