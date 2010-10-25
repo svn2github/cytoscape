@@ -6,7 +6,7 @@ package org.cytoscape.io.write;
  * be specified and written. See {@link org.cytoscape.property.CyProperty}
  * for details on the type of Object.
  */
-public interface PropertyWriterFactory extends CyWriterFactory {
+public interface CyPropertyWriterFactory extends CyWriterFactory {
 
 	/**
 	 * Specifies the property object to be written by the {@link CyWriter} Task

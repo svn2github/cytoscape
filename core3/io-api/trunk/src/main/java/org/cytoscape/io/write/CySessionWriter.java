@@ -11,19 +11,19 @@ import java.util.List;
 /**
  * A utility Task implementation that writes a {@link org.cytoscape.session.CySession} to a file.
  */
-public final class SessionWriter extends AbstractTask implements CyWriter {
+public final class CySessionWriter extends AbstractTask implements CyWriter {
 
 	private final CySession session; 
-	private final SessionWriterManager writerMgr; 
+	private final CySessionWriterManager writerMgr; 
 	private final File outputFile; 
 
 	/**
-	 * @param writerMgr The {@link org.cytoscape.io.write.SessionWriterManager} contains single expected
-	 * {@link org.cytoscape.io.write.SessionWriterFactory} to use to write the file.
+	 * @param writerMgr The {@link org.cytoscape.io.write.CySessionWriterManager} contains single expected
+	 * {@link org.cytoscape.io.write.CySessionWriterFactory} to use to write the file.
 	 * @param session The {@link org.cytoscape.session.CySession} to be written out. 
 	 * @param outputFile The file the {@link org.cytoscape.session.CySession} should be written to.
  	 */
-	public SessionWriter(SessionWriterManager writerMgr, CySession session, File outputFile) {
+	public CySessionWriter(CySessionWriterManager writerMgr, CySession session, File outputFile) {
 
 		if ( writerMgr == null )
 			throw new NullPointerException("Writer Manager is null");
