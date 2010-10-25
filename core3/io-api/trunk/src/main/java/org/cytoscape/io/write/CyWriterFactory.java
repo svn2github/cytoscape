@@ -24,5 +24,5 @@ public interface CyWriterFactory extends CyFileFilterProvider {
 	 * @return A {@link CyWriter} Task suitable for writing to the specified
 	 * output stream.
 	 */
-	CyWriter getWriter();
+	CyWriter getWriterTask();
 }
