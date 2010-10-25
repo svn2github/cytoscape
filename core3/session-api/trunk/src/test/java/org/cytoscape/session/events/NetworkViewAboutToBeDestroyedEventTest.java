@@ -10,13 +10,13 @@ import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 
-public class AbstractNetworkViewEventTest {
+public class NetworkViewAboutToBeDestroyedEventTest {
 	@Test
 	public final void testGetNetworkView() {
 		final CyNetworkManager networkManager = mock(CyNetworkManager.class);
 		final CyNetworkView networkView = mock(CyNetworkView.class);
-		final AbstractNetworkViewEvent event =
-			new AbstractNetworkViewEvent(networkManager, Object.class, networkView);
+		final NetworkViewAboutToBeDestroyedEvent event =
+			new NetworkViewAboutToBeDestroyedEvent(networkManager, networkView);
 		assertEquals("Network returned by getNetworkView() is *not* the one passed into the constructor!",
 			     networkView, event.getNetworkView());
 	}
@@ -25,8 +25,8 @@ public class AbstractNetworkViewEventTest {
 	public final void testNullNetworkConstructorFailure() {
 		final CyNetworkManager networkManager = mock(CyNetworkManager.class);
 		try {
-			final AbstractNetworkViewEvent event =
-				new AbstractNetworkViewEvent(networkManager, Object.class, null);
+			final NetworkViewAboutToBeDestroyedEvent event =
+				new NetworkViewAboutToBeDestroyedEvent(networkManager, null);
 		} catch (final NullPointerException e) {
 			return;
 		}
