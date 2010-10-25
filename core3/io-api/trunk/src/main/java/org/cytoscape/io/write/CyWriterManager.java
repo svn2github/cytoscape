@@ -50,7 +50,7 @@ public interface CyWriterManager {
 	 * @return A list of the available {@link org.cytoscape.io.CyFileFilters} that define the available
 	 * output types.
 	 */
-	List<CyFileFilter> getAvailableWriters();
+	List<CyFileFilter> getAvailableWriterFilters();
 
 
 	/**
