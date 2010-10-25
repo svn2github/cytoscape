@@ -39,7 +39,7 @@ public interface CyPluginAdapter {
 	 * Returns an instance of {@link CyTableFactory}.
 	 * @return an instance of {@link CyTableFactory}.
 	 */
-	CyTableFactory getCyDataTableFactory(); 
+	CyTableFactory getCyTableFactory(); 
 
 	/**
 	 * Returns an instance of {@link CyRootNetworkFactory}.

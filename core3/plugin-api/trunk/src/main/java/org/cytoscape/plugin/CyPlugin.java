@@ -37,6 +37,8 @@ public abstract class CyPlugin {
 	 * </pre></blockquote>
 	 */
 	public CyPlugin(final CyPluginAdapter adapter) {
+		if ( adapter == null )
+			throw new NullPointerException("null adapter");
 		this.adapter = adapter;
 	}
 }
