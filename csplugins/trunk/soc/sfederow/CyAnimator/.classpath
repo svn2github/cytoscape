@@ -97,5 +97,14 @@
 	<classpathentry kind="lib" path="/home/stephen/cytoscape/extra-jars/coltginy.jar"/>
 	<classpathentry kind="lib" path="/home/stephen/cytoscape/extra-jars/jfreechart-0.9.20.jar"/>
 	<classpathentry kind="lib" path="/home/stephen/cytoscape/extra-jars/jfreechart-common-0.9.5.jar"/>
+	<classpathentry kind="lib" path="/home/stephen/cytoscape/lib/equations.jar"/>
+	<classpathentry kind="lib" path="/home/stephen/cytoscape/lib/jsr173_api.jar"/>
+	<classpathentry kind="lib" path="/home/stephen/cytoscape/lib/lucene-core-3.0.1.jar"/>
+	<classpathentry kind="lib" path="/home/stephen/cytoscape/lib/mimepull.jar"/>
+	<classpathentry kind="lib" path="/home/stephen/cytoscape/lib/phoebe.dnd.jar"/>
+	<classpathentry kind="lib" path="/home/stephen/cytoscape/lib/swing-layout-1.0.3.jar"/>
+	<classpathentry kind="lib" path="/home/stephen/cytoscape/lib/swingx-1.0.jar"/>
+	<classpathentry kind="lib" path="/home/stephen/cytoscape/lib/swingx-beaninfo-1.0.jar"/>
+	<classpathentry kind="lib" path="/home/stephen/cytoscape/lib/woodstox.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

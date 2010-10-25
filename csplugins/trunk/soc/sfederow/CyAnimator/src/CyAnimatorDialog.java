@@ -114,6 +114,7 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	private JMenuItem menuItem;
 	private JPanel mainPanel;
 	private JPopupMenu thumbnailMenu;
+	private JPopupMenu metabolicOptions;
 	private JSlider speedSlider;
 	final JFileChooser fc = new JFileChooser();
 	
@@ -233,6 +234,16 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 		this.setSize(new Dimension(500,220));
 		this.setLocation(900, 100);
+		
+		metabolicOptions = new JPopupMenu();
+		menuItem = new JMenuItem("Map Metabolic");
+		menuItem.addActionListener(this);
+		menuItem.setActionCommand("Initiate Metabolic");
+		metabolicOptions.add(menuItem);
+		//mainPanel.setComponentPopupMenu(metabolicOptions);
+		MouseListener extraPopupListener = new ExtraPopupListener();
+		framePane.addMouseListener(extraPopupListener);
+
 		
 		setContentPane(mainPanel);
 		
@@ -363,6 +374,26 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			frameManager.setKeyFrameList(frameList);
 			updateThumbnails();
 		}	
+		
+		if(command.equals("Initiate Metabolic")){
+			MetabolicModule module = null;
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int returnVal = fc.showOpenDialog(new JPanel());
+			 if (returnVal == JFileChooser.APPROVE_OPTION) {
+	                File file = fc.getSelectedFile();
+	                String filePath = file.getPath();
+	                //System.out.println(filePath+" "+file.getName());
+	                try{
+	    				module = new MetabolicModule(filePath);
+	    			}catch (Exception excp) {
+	    				System.out.println(excp.getMessage()); 
+	    			}
+			 }
+			frameManager = module.getFrameManager();
+			updateThumbnails();
+			 
+		}
+		
 		setVisible(true);
 	}
 
@@ -720,7 +751,23 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	        }
 	    }
 	}
-	
+	class ExtraPopupListener extends MouseAdapter {
+	    public void mousePressed(MouseEvent e) {
+	        maybeShowPopup(e);
+	    }
+
+	    public void mouseReleased(MouseEvent e) {
+	        maybeShowPopup(e);
+	    }
+
+	    private void maybeShowPopup(MouseEvent e) {
+	        if (e.isPopupTrigger()) {
+	            metabolicOptions.show(e.getComponent(),
+	                       e.getX(), e.getY());
+	        }
+	    }
+	}
+
 	
 	
 	protected ImageIcon createImageIcon(String path, String description) {

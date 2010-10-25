@@ -37,6 +37,7 @@ import java.awt.geom.Point2D;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.Stroke;
 import java.awt.image.*;
 import java.awt.Paint;
 import java.io.IOException;
@@ -116,7 +117,7 @@ public class CyFrame {
 		nodeViewList = new ArrayList();
 		edgeViewList = new ArrayList();
 		
-		// Initialize our node view maps
+		// Initialize our edge view maps
 		Iterator<EdgeView> eviter = networkView.getEdgeViewsIterator();
 		while(eviter.hasNext()) {
 			EdgeView ev = eviter.next();
@@ -124,7 +125,7 @@ public class CyFrame {
 			edgeViewList.add(ev);
 		}
 
-		// Initialize our edge view maps
+		// Initialize our node view maps
 		Iterator<NodeView> nviter = networkView.getNodeViewsIterator();
 		while(nviter.hasNext()) {
 			NodeView nv = nviter.next();
@@ -307,6 +308,11 @@ public class CyFrame {
 			if (p == null || edgeView == null) continue;
 			Integer trans = edgeOpacityMap.get(edge.getIdentifier());
 			edgeView.setUnselectedPaint(new Color(p.getRed(), p.getGreen(), p.getBlue(), trans));
+			//Added as of 7/1/2010, must have been some kind of internal change in the API
+			Stroke oldStroke = edgeView.getStroke();
+			Stroke newStroke = LineStyle.extractLineStyle(oldStroke).getStroke(edgeWidthMap.get(edge.getIdentifier()));
+			edgeView.setStroke(newStroke);
+			System.out.println(edge.getIdentifier()+": "+edgeWidthMap.get(edge.getIdentifier()));
 			edgeView.setStrokeWidth(edgeWidthMap.get(edge.getIdentifier()));
 		}
 		currentView.setBackgroundPaint(backgroundPaint);

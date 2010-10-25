@@ -11,12 +11,12 @@
   	<property name="src.dir" value="src"/>
 
 	<!--  The directory containing library jar files -->	
-	<property name="cytoroot.dir" value="../cytoscape"/>
+	<property name="cytoroot.dir" value="../Cytoscape_v2.7.0"/>
 	
         <property name="images.dir" value="img"/>	
-	<property name="release.dir" value="../cytoscape"/>
+	<property name="release.dir" value="../Cytoscape_v2.7.0"/>
 
-	<property name="lib.dir" value = "../cytoscape/lib"/>
+	<property name="lib.dir" value = "../Cytoscape_v2.7.0/lib"/>
 	
   	<!-- Temporary build directories -->
 
@@ -74,7 +74,7 @@
 	
 	<!-- Target to create Cytoscape Jar File  -->
 	<target name="build_cytoscape">
-		<ant antfile="${cytoroot.dir}/cytoscape/build.xml" inheritAll="false" target="jar"/>
+		<ant antfile="${cytoroot.dir}/Cytoscape_v2.7.0/build.xml" inheritAll="false" target="jar"/>
 	</target>
 
  <!--       Target to create the javadoc information -->
@@ -102,13 +102,19 @@
          <fileset dir="${pluginlib.dir}"/>
         </unjar>
 
+      <copy file="plugin.props" todir="${build.classes}" />
 
       <jar destfile="${build.dir}/${plugin.name}.jar">
         <fileset dir="${build.classes}"/>
+		<manifest>
+         <attribute name="Cytoscape-Plugin"
+                    value="CyAnimator" />
+         </manifest>
+
         </jar>
    		 
  		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
-   		<copy file="${build.dir}/${plugin.name}.jar" todir="../cytoscape/plugins/core/"/>
+   		<copy file="${build.dir}/${plugin.name}.jar" todir="../Cytoscape_v2.7.0/plugins/"/>
 	</target>
 
 </project>
