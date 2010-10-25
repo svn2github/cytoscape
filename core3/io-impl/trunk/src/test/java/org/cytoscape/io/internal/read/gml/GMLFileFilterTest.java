@@ -28,19 +28,19 @@ public class GMLFileFilterTest {
 	@Test
 	public void testAcceptUri() throws Exception {
 		File file = new File("src/test/resources/testData/gml/example1.gml");
-		assertTrue(filter.accept(file.toURI(), DataCategory.NETWORK));
+		assertTrue(filter.accepts(file.toURI(), DataCategory.NETWORK));
 	}
 
 	@Test
 	public void testAcceptStream() throws Exception {
 		File file = new File("src/test/resources/testData/gml/example1.gml");
-		assertTrue(filter.accept(new FileInputStream(file), DataCategory.NETWORK));
+		assertTrue(filter.accepts(new FileInputStream(file), DataCategory.NETWORK));
 	}
 	
 	@Test
 	public void testAcceptSomethingElse() throws Exception {
 		File file = new File("src/test/resources/testData/xgmml/galFiltered.xgmml");
-		assertFalse(filter.accept(file.toURI(), DataCategory.NETWORK));
-		assertFalse(filter.accept(new FileInputStream(file), DataCategory.NETWORK));
+		assertFalse(filter.accepts(file.toURI(), DataCategory.NETWORK));
+		assertFalse(filter.accepts(new FileInputStream(file), DataCategory.NETWORK));
 	}	
 }
