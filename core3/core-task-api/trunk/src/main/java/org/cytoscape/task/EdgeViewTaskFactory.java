@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,6 +27,7 @@
 */
 package org.cytoscape.task;
 
+
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.CyNetworkView;
@@ -46,6 +40,10 @@ import org.cytoscape.view.model.View;
  * specified View&lt;CyEdge&gt;.
  */
 public interface EdgeViewTaskFactory extends TaskFactory {
-
+	/** Used to provision this factory with the edge view and associated network view that will
+	 *  be used to create tasks.
+	 *  @param edgeView  a non-null edge view
+	 *  @param netView   a non-null network view associated with the edge view
+	 */
 	void setEdgeView(View<CyEdge> edgeView, CyNetworkView netView);
 }

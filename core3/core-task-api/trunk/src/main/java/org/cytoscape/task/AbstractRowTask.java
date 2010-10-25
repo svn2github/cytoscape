@@ -32,12 +32,16 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.work.AbstractTask;
 
 
+/** Base class for all tasks that need to operate on a {@link CyRow}. */
 public abstract class AbstractRowTask extends AbstractTask {
-
+	/** The row that descendents will operate on. */
 	final protected CyRow row;
 
+	/** Base class constructor for all tasks that need to be provisioned with a CyRow.
+	 *  @param row  a non-null CyRow that descendents will operate on
+	 */
 	public AbstractRowTask(final CyRow row) {
-		if ( row == null )
+		if (row == null)
 			throw new NullPointerException("CyRow is null");
 
 		this.row = row;	

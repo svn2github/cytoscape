@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,6 +27,7 @@
 */
 package org.cytoscape.task;
 
+
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.model.CyRow;
 
@@ -44,6 +38,9 @@ import org.cytoscape.model.CyRow;
  * specified CyNetwork. 
  */
 public interface RowTaskFactory extends TaskFactory {
-
+	/** Provisions this factory with the {@link CyRow} that will be passed into any task created
+	 *  by it.
+	 *  @param row  a non-null CyRow
+	 */
 	void setRow(CyRow row);
 }

@@ -1,12 +1,5 @@
 /*
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -32,20 +25,25 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.task;
+
 
 import org.cytoscape.model.CyRow;
 
-public abstract class AbstractRowTaskFactory implements RowTaskFactory {
 
+/** Base class for all task factories that need to create tasks that have been provisioned with a {@link CyRow}. */
+public abstract class AbstractRowTaskFactory implements RowTaskFactory {
+	/** The CyRow that will be passed into any task that will be created by descendents of this class. */
 	protected CyRow row;
 
+	/** Used to provision this class with a {@link CyRow} that will be passed into any task
+	 *  constructed by this factory.
+	 *  @param row  a non-null CyRow
+	 */
 	public void setRow(CyRow row) {
-		if ( row == null )
+		if (row == null)
 			throw new NullPointerException("CyRow is null");
 
 		this.row = row;
 	}
-
 }
