@@ -69,12 +69,11 @@ public class AttributeComboBoxPropertyEditor extends CyComboBoxPropertyEditor
 
 		final Set<CyNetwork> networkSet = networkMgr.getNetworkSet();
 		for (final CyNetwork net : networkSet) {
-			final Map<String, CyTable> tableMap = tableMgr.getTableMap(name,
-					net);
+			final Map<String, CyTable> tableMap = tableMgr.getTableMap(name, net);
 			targetTables.addAll(tableMap.values());
 
 			for (final CyTable table : tableMap.values())
-				attrNames.addAll(table.getUniqueColumns());
+				attrNames.addAll(table.getColumnTypeMap().keySet());
 		}
 
 		final JComboBox box = (JComboBox) editor;
