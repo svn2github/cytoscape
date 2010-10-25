@@ -76,7 +76,7 @@ public abstract class AbstractCyWriter<T extends CyWriterManager> extends Abstra
 		this.writerManager = writerManager;
 
 		descriptionFilterMap = new TreeMap<String,CyFileFilter>();
-		for ( CyFileFilter f : writerManager.getAvailableWriters() )
+		for ( CyFileFilter f : writerManager.getAvailableWriterFilters() )
 			descriptionFilterMap.put( f.getDescription(), f );
    
 		options = new ListSingleSelection<String>( new ArrayList<String>( descriptionFilterMap.keySet() ) );
