@@ -176,18 +176,17 @@ public class CyTableImpl implements CyTable {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
-	 * @param <T>
+	 * @param type
 	 *            DOCUMENT ME!
 	 * @param attributeName
 	 *            DOCUMENT ME!
-	 * @param type
-	 *            DOCUMENT ME!
 	 * @param u
 	 *            DOCUMENT ME!
+	 * 
+	 * @param <T>
+	 *            DOCUMENT ME!
 	 */
-	public <T> void createColumn(String attributeName, Class<? extends T> type,
-			boolean u) {
+	public <T> void createColumn(String attributeName, Class<? extends T> type) {
 		if (attributeName == null)
 			throw new NullPointerException("attribute name is null");
 

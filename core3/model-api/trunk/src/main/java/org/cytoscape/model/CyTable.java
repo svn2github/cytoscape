@@ -97,13 +97,11 @@ public interface CyTable extends Identifiable {
 	void deleteColumn(String columnName);
 
 	/**
-	 * Create a column of the specified name with the specified type
-	 * and uniqueness.
+	 * Create a column of the specified name and the specified type.
 	 * @param columnName The name identifying the attribute.
 	 * @param type The type of the column.
-	 * @param unique Whether the values contained in the column must be unique  
 	 */
-	<T> void createColumn(String columnName, Class<?extends T> type, boolean unique);
+	<T> void createColumn(String columnName, Class<?extends T> type);
 
 	/**
 	 * Returns the list of all values contained in the specified column.

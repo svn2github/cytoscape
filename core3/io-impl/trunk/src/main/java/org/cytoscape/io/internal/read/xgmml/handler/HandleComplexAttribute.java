@@ -60,7 +60,7 @@ public class HandleComplexAttribute extends AbstractHandler {
 			if (Map.class == manager.currentAttributes
 					.getType(manager.currentAttributeID)) {
 				manager.currentAttributes.getDataTable().createColumn(
-						manager.currentAttributeID, Map.class, false);
+						manager.currentAttributeID, Map.class);
 			}
 			// Now define set the attribute
 			if (manager.objectTarget != null)

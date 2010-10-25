@@ -78,7 +78,7 @@ public class TextDataTableReader extends AbstractTableReader {
 		                                                   String.class, true);
 		
 		for ( String col : columnNames ) 
-			table.createColumn(col, String.class, false);
+			table.createColumn(col, String.class);
 
 		return table;
 	}

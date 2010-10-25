@@ -123,8 +123,8 @@ public class ArrayGraph implements CyRootNetwork {
 		netAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " network", "SUID", Long.class, true));
 		netAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " network", "SUID", Long.class, false));
 
-		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class,false);
-		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED,Boolean.class,false);
+		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class);
+		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED,Boolean.class);
 		getCyRow().set(CyTableEntry.NAME,"");
 		// potential leak since "this" isn't yet fully constructed
 
@@ -132,16 +132,16 @@ public class ArrayGraph implements CyRootNetwork {
 		nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " node", "SUID", Long.class, true));
 		nodeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " node", "SUID", Long.class, false));
 
-		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class,false);
-		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED,Boolean.class,false);
+		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class);
+		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED,Boolean.class);
 
 		edgeAttrMgr = new HashMap<String, CyTable>();
 		edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " edge", "SUID", Long.class, true));
 		edgeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " edge", "SUID", Long.class, false));
 
-		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class,false);
-		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED,Boolean.class,false);
-		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyEdge.INTERACTION,String.class,false);
+		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class);
+		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED,Boolean.class);
+		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyEdge.INTERACTION,String.class);
 		
 		eventHelper = eh;
 

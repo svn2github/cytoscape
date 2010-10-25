@@ -70,8 +70,8 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddStringAttr() {
-		mgr.createColumn("someString", String.class, false);
-		mgr.createColumn("someStringElse", String.class, false);
+		mgr.createColumn("someString", String.class);
+		mgr.createColumn("someStringElse", String.class);
 
 		attrs.set("someString", "apple");
 		attrs.set("someStringElse", "orange");
@@ -88,8 +88,8 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddIntAttr() {
-		mgr.createColumn("someInt", Integer.class, false);
-		mgr.createColumn("someOtherInt", Integer.class, false);
+		mgr.createColumn("someInt", Integer.class);
+		mgr.createColumn("someOtherInt", Integer.class);
 
 		attrs.set("someInt", 50);
 		attrs.set("someOtherInt", 100);
@@ -106,8 +106,8 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddDoubleAttr() {
-		mgr.createColumn("someDouble", Double.class, false);
-		mgr.createColumn("someOtherDouble", Double.class, false);
+		mgr.createColumn("someDouble", Double.class);
+		mgr.createColumn("someOtherDouble", Double.class);
 
 		attrs.set("someDouble", 3.14);
 		attrs.set("someOtherDouble", 2.76);
@@ -124,8 +124,8 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddBooleanAttr() {
-		mgr.createColumn("someBoolean", Boolean.class, false);
-		mgr.createColumn("someOtherBoolean", Boolean.class, false);
+		mgr.createColumn("someBoolean", Boolean.class);
+		mgr.createColumn("someOtherBoolean", Boolean.class);
 
 		attrs.set("someBoolean", true);
 		attrs.set("someOtherBoolean", false);
@@ -142,7 +142,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddListAttr() {
-		mgr.createColumn("someList", List.class, false);
+		mgr.createColumn("someList", List.class);
 
 		List<String> l = new LinkedList<String>();
 		l.add("orange");
@@ -159,7 +159,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddMapAttr() {
-		mgr.createColumn("someMap", Map.class, false);
+		mgr.createColumn("someMap", Map.class);
 
 		Map<String, Integer> m = new HashMap<String, Integer>();
 		m.put("orange", 1);
@@ -209,9 +209,9 @@ public abstract class AbstractCyTableTest extends TestCase {
 	// You can't have an attribute with the same name, but
 	// a different type.
 	public void testAddDuplicateNameAttr() {
-		mgr.createColumn("something", String.class, false);
+		mgr.createColumn("something", String.class);
 		try {
-			mgr.createColumn("something", Integer.class, false);
+			mgr.createColumn("something", Integer.class);
 		} catch (Exception e) {
 			return;
 		}
@@ -219,7 +219,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	}
 
 	public void testRowSetMicroListener() {
-		mgr.createColumn("someString", String.class, false);
+		mgr.createColumn("someString", String.class);
 		attrs.set("someString", "apple");
 
 		Object last = eventHelper.getLastMicroListener();
@@ -228,7 +228,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	}
 
 	public void testColumnCreatedEvent() {
-		mgr.createColumn("someInt", Integer.class, false);
+		mgr.createColumn("someInt", Integer.class);
 
 		Object last = eventHelper.getLastAsynchronousEvent();
 		assertNotNull( last );
@@ -236,7 +236,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	}
 
 	public void testColumnDeletedEvent() {
-		mgr.createColumn("someInt", Integer.class, false);
+		mgr.createColumn("someInt", Integer.class);
 		mgr.deleteColumn("someInt");
 
 		Object last = eventHelper.getLastSynchronousEvent();
@@ -245,13 +245,13 @@ public abstract class AbstractCyTableTest extends TestCase {
 	}
 
 	public void testColumnCreate() {
-		mgr.createColumn("someInt", Integer.class, false);
+		mgr.createColumn("someInt", Integer.class);
 		assertTrue( mgr.getColumnTypeMap().containsKey("someInt") );
 		assertEquals( mgr.getColumnTypeMap().get("someInt"), Integer.class );
 	}
 
 	public void testColumnDelete() {
-		mgr.createColumn("someInt", Integer.class, false);
+		mgr.createColumn("someInt", Integer.class);
 		assertTrue( mgr.getColumnTypeMap().containsKey("someInt") );
 		
 		mgr.deleteColumn("someInt");
