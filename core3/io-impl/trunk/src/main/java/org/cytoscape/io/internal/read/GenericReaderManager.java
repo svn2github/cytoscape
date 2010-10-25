@@ -75,7 +75,7 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 			
 			CyFileFilter cff = factory.getCyFileFilter();
 
-			if (cff.accept(uri, category) && uri != null ) {
+			if (cff.accepts(uri, category) && uri != null ) {
 				try {
 					factory.setInputStream( uri.toURL().openStream() );
 					return (R)factory.getTaskIterator().next();
@@ -101,7 +101,7 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 				// Because we don't know who will provide the file filter or
 				// what they might do with the InputStream, we provide a copy
 				// of the first 2KB rather than the stream itself. 
-				if (cff.accept(CopyInputStream.copyKBytes(stream,2), category)) {
+				if (cff.accepts(CopyInputStream.copyKBytes(stream,2), category)) {
 					factory.setInputStream(stream);
 					return (R)factory.getTaskIterator().next();	
 				}

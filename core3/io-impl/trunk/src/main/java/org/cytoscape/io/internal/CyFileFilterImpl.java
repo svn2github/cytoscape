@@ -99,7 +99,7 @@ public class CyFileFilterImpl implements CyFileFilter {
 	 * @throws MalformedURLException
 	 * 
 	 */
-	public boolean accept(URI uri, DataCategory category) {
+	public boolean accepts(URI uri, DataCategory category) {
 
 		// Check data category
 		if (category != this.category) 
@@ -134,7 +134,7 @@ public class CyFileFilterImpl implements CyFileFilter {
 	/**
 	 * Must be overridden by subclasses.
 	 */
-	public boolean accept(InputStream stream, DataCategory category) {
+	public boolean accepts(InputStream stream, DataCategory category) {
 		return false;
 	}
 

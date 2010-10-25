@@ -35,7 +35,7 @@ public class XGMMLFileFilter extends CyFileFilterImpl {
 	}
 
 	@Override
-	public boolean accept(URI uri, DataCategory category) {
+	public boolean accepts(URI uri, DataCategory category) {
 		try {
 			return accept(uri.toURL().openStream(), category);
 		} catch (IOException e) {
