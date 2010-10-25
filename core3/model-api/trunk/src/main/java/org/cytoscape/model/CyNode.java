@@ -47,38 +47,12 @@ public interface CyNode extends CyTableEntry {
 	
 	/**
 	 * An index of this node within this network.  The index is guaranteed to
-	 * be between 0 and the number of nodes in the network.
+	 * be between 0 and (the number of nodes in the network) - 1 and.
+     * serves as an index into the {@link List} returned from 
+     * {@link CyNetwork#getNodeList}.
 	 * @return An index for this node within this network.
 	 */
 	int getIndex();
-
-	/** 
-	 * @param edgeType The type of edge used to determine neighbor nodes 
-	 * (incoming, outgoing, any, etc.).
-	 * @return A list of neighbor CyNodes that are connected to this node
-	 * via the specified edge type. Will return an empty list if no neighboring
-	 * nodes are found.
-	 */
-	List<CyNode> getNeighborList(CyEdge.Type edgeType);
-
-	/**
-	 * @param edgeType The type of adjacent edge desired (incoming, outgoing, any, etc.).
-	 * @return A list of CyEdges of the specified type that are members of 
-	 * this network and that are adjacent to this node. Will return an empty list
-	 * if no adjacent edges are found.
-	 */
-	List<CyEdge> getAdjacentEdgeList(CyEdge.Type edgeType);
-
-	/**
-	 * @param target The target node used to determine whether any connecting
-	 * edges exist between this and the target node.
-	 * @param edgeType The type of edge used to determine whether this node and
-	 * the target node are connected. The edgeType is relative to this node.
-	 * @return A list of CyEdges of the specified type that connect this and the
-	 * specified target node. Will return an empty list if no connecting edges
-	 * are found.
-	 */
-	List<CyEdge> getConnectingEdgeList(CyNode target, CyEdge.Type edgeType);
 
 	/**
 	 * Returns the nested network associated with this node.  If no nested

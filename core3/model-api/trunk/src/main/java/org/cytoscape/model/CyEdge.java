@@ -41,29 +41,51 @@ package org.cytoscape.model;
  * and edges.
  */
 public interface CyEdge extends CyTableEntry {
+
+	/**
+	 * A String column created by default for every CyEdge that
+	 * holds the interaction description of the edge. 
+	 */
+	String INTERACTION = "interaction";
+
 	/**
 	 * The Type enum is used by methods in {@link CyNetwork} to restrict
-	 * the edges that match a query as follows:
-	 * <ul>
-	 * <li>UNDIRECTED: matches only undirected edges</li>
-	 * <li>INCOMING: matches either undirected edges or directed edges that end with this node</li>
-	 * <li>OUTGOING: matches either undirected edges or directed edges that start with this node</li>
-	 * <li>DIRECTED: matches directed edges regardless of whether this node is the source or the target</li>
-	 * <li>ANY: matches any edge</li>
-	 * </ul>
+	 * the edges that match a query. 
 	 */
 	enum Type {
+
+		/**
+		 * matches only undirected edges
+		 */
 		UNDIRECTED,
+
+		/**
+		 * matches either undirected edges or directed edges that end with this node</li>
+		 */
 		INCOMING,
+
+		/**
+		 * matches either undirected edges or directed edges that start with this node</li>
+		 */
 		OUTGOING,
+
+		/**
+		 * matches directed edges regardless of whether this node is the source or the target
+		 */
 		DIRECTED,
+
+		/**
+	 	 * matches any edge
+		 */
 		ANY;
 	}
 
 
 	/**
 	 * An index of this edge within this network.  The index is guaranteed to
-	 * be between 0 and the number of edges in the network.
+	 * be between 0 and (the number of edges in the network) - 1 and
+	 * serves as an index into the {@link List} returned from 
+	 * {@link CyNetwork#getEdgeList}.
 	 * @return An index for this edge within this network.
 	 */
 	int getIndex();

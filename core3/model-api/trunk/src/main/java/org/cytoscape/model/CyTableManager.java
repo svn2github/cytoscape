@@ -54,13 +54,4 @@ public interface CyTableManager {
 	 * for the specified network.
 	 */
 	Map<String,CyTable> getTableMap(String type, CyNetwork network);
-
-	
-	/**
-	 * Sets the map of table names to tables for the specified network. 
-	 * @param type The type of map: NODE, EDGE, or NETWORK.
-	 * @param network The network associated with the map.
-	 * @param map The map of table names to tables. 
-	 */
-	void setTableMap(String type, CyNetwork network, Map<String,CyTable> map);	
 }

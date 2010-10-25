@@ -339,22 +339,6 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 	}
 
 	/**
-	 * Checks that getNeighbors works as expected for CyNode
-	 */
-	public void testNodeAddedInSubnetworkNodeGetNeighbors() {
-		defaultSetup();
-
-		CyNode nz1 = sub.addNode();
-		CyEdge ez1 = sub.addEdge(nz1,n1,true);
-
-		List<CyNode> nzl = nz1.getNeighborList(CyEdge.Type.ANY);
-		assertEquals(1,nzl.size());
-
-		List<CyNode> nl = n1.getNeighborList(CyEdge.Type.ANY);
-		assertEquals(3,nl.size());
-	}
-
-	/**
 	 * Checks that getNeighbors works as expected for CySubNetwork
 	 */
 	public void testNodeAddedInSubnetworkSubGetNeighbors() {

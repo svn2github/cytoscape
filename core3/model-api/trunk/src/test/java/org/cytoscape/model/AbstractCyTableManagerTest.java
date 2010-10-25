@@ -49,67 +49,39 @@ import java.util.*;
 import static org.mockito.Mockito.*; 
 
 
-/**
- * DOCUMENT ME!
- */
 public abstract class AbstractCyTableManagerTest extends TestCase {
 
+	/**
+	 * Must be supplied by implementer.
+	 */
 	protected CyTableManager mgr;
-	private CyNetwork n;
+
+	/**
+	 * Must be supplied by implementer.
+	 */
+	protected CyNetwork goodNetwork;
+
+	private CyNetwork badNetwork;
 
 	public void setUp() {
-		n = mock(CyNetwork.class);
+		badNetwork = mock(CyNetwork.class);
 	}
 
-	// we want to return null if a table map has not been set
-	public void testGetEmptyTableMap() {
-		assertNull( mgr.getTableMap("NETWORK",n) );
-		assertNull( mgr.getTableMap("NODE",n) );
-		assertNull( mgr.getTableMap("EDGE",n) );
+	public void testGoodNetwork() {
+		assertNotNull( mgr.getTableMap(CyTableEntry.NETWORK,goodNetwork) );
+		assertNotNull( mgr.getTableMap(CyTableEntry.NODE,goodNetwork) );
+		assertNotNull( mgr.getTableMap(CyTableEntry.EDGE,goodNetwork) );
 	}
 
-	public void testGetSetTableMap() {
-	 	assertNotNull(n);	
-		checkGetSet("NETWORK");
-		checkGetSet("NODE");
-		checkGetSet("EDGE");
+	public void testBadNetwork() {
+		assertNull( mgr.getTableMap(CyTableEntry.NETWORK,badNetwork) );
+		assertNull( mgr.getTableMap(CyTableEntry.NODE,badNetwork) );
+		assertNull( mgr.getTableMap(CyTableEntry.EDGE,badNetwork) );
 	}
 
-	private void checkGetSet(String type) {
-	 	assertNotNull(n);	
-		Map<String, CyTable> map = new HashMap<String,CyTable>();
-
-		mgr.setTableMap(type, n, map);
-	
-		assertNotNull(mgr.getTableMap(type, n));
-		assertEquals(map,mgr.getTableMap(type, n));
-	}
-
-	// to clean up a table map
-	public void testSetNullTableMap() {
-		Map<String, CyTable> map = new HashMap<String,CyTable>();
-
-		mgr.setTableMap("NETWORK", n, map);
-	
-		assertNotNull(mgr.getTableMap("NETWORK", n));
-		assertEquals(map,mgr.getTableMap("NETWORK", n));
-
-		mgr.setTableMap("NETWORK", n, null);
-
-		assertNull(mgr.getTableMap("NETWORK", n));
-	}
-
-	public void testNullGetTableMap() {
-		assertNull(mgr.getTableMap("NETWORK", null));
-	}
-
-	public void testSetNullGraphObjectTableMap() {
-		Map<String, CyTable> map = new HashMap<String,CyTable>();
-		try {
-		mgr.setTableMap("NETWORK", null, map);
-		} catch (NullPointerException npe) {
-			return;
-		}
-		fail("did not catch expected exception");
+	public void testNullNetwork() {
+		assertNull( mgr.getTableMap(CyTableEntry.NETWORK,null) );
+		assertNull( mgr.getTableMap(CyTableEntry.NODE,null) );
+		assertNull( mgr.getTableMap(CyTableEntry.EDGE,null) );
 	}
 }

@@ -43,6 +43,18 @@ package org.cytoscape.model;
  */
 public interface CyTableEntry extends Identifiable {
 	
+	/**
+	 * A String column created by default for every CyTableEntry that
+	 * holds the name of the entry. 
+	 */
+	String NAME = "name";
+
+	/**
+	 * A boolean column created by default for every CyTableEntry that
+	 * holds the selection state of the entry. 
+	 */
+	String SELECTED = "selected";
+
 	/* TODO RESOLVE THIS!!!!
 	 * The following strings have been moved from Visual Property.
 	 * We use String instead of enum in case we need to extend it later.

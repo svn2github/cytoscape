@@ -39,31 +39,28 @@ package org.cytoscape.model;
 import java.util.List;
 
 /**
- * CyNetwork is the primary interface for representing a network (graph) data structure.
- * All algorithms should take a 
- * CyNetwork as input, and do their best to only use the API of CyNetwork.  CyNetwork
- * provides a straightforward interface to a simple graph.  For an interface to a
- * more complicated subgraph, see {@link org.cytoscape.model.subnetwork.CyRootNetwork} 
- * and {@link org.cytoscape.model.subnetwork.CySubNetwork}, both
- * of which inherit from CyNetwork.
- *
- * The CyNetwork interface provides most of the methods a plugin would need to create
- * a graph, traverse it, get and set attributes, and inquire about the existence of
- * nodes and edges.
+ * CyNetwork is the primary interface for representing a network (graph) 
+ * data structure in Cytoscape. Specifically, CyNetwork represents a
+ * multi-graph as multiple edges may exist between nodes. Edges may
+ * be directed, undirected, or both.
  */
 public interface CyNetwork extends Identifiable, CyTableEntry {
+
 	/**
-	 * The "USER" CyTable is created by default for CyNetworks, CyNodes, and
-	 * CyEdges.  Other CyDataTables may also be associated -- see {@link CyTable}
-	 * for more information.  The table should be referenced using this constant:
+	 * The name of the defaul <b>public</b> 
+	 * CyTable that is created by default for CyNetworks, 
+	 * CyNodes, and CyEdges.  Other CyTables may also be associated with networks
+	 * -- see {@link CyTableManager} for more information.
+	 * The table should be referenced using this constant:
 	 * <code>CyNetwork.DEFAULT_ATTRS</code>.
 	 */
 	String DEFAULT_ATTRS = "USER";
 
 	/**
-	 * The "HIDDEN" CyTable is created by default for CyNetworks, CyNodes, and
-	 * CyEdges.  Other CyDataTables may also be associated -- see {@link CyTable}
-	 * for more information.
+	 * The name of the default <b>hidden</b> CyTable that is created 
+	 * by default for CyNetworks, CyNodes, and
+	 * CyEdges.  Other CyTables may also be associated with networks -- 
+	 * see {@link CyTableManager} for more information.
 	 */
 	String HIDDEN_ATTRS = "HIDDEN";
 
