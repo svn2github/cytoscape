@@ -28,10 +28,10 @@ public class CyAnimator extends CytoscapePlugin {
 	class CyAnimatorAction extends CytoscapeAction {
 		
 
-		public CyAnimatorAction() {super("CyAnimatorrr"); }	
+		public CyAnimatorAction() {super("CyAnimator"); }	
 		
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("WWDDDWWWWWWWWW");
+			//create the dialog
 			CyAnimatorDialog animationDialog = new CyAnimatorDialog();
 			// Pop it up
 			animationDialog.actionPerformed(e);
