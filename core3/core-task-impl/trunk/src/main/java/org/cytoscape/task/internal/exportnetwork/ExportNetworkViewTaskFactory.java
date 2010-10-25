@@ -1,8 +1,8 @@
 package org.cytoscape.task.internal.exportnetwork;
 
-import org.cytoscape.io.write.CyNetworkViewWriter;
 import org.cytoscape.io.write.CyNetworkViewWriterManager;
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;
+import org.cytoscape.task.internal.io.CyNetworkViewWriter;
 import org.cytoscape.work.TaskIterator;
 
 public class ExportNetworkViewTaskFactory extends AbstractNetworkViewTaskFactory {

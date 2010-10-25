@@ -29,8 +29,8 @@
 package org.cytoscape.task.internal.exportgraphics;
 
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;
+import org.cytoscape.task.internal.io.ViewWriter;
 import org.cytoscape.io.write.ViewWriterManager;
-import org.cytoscape.io.write.ViewWriter;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskIterator;
 
