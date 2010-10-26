@@ -76,9 +76,6 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 		if(displayName == null)
 			throw new NullPointerException("displayName should not be null.");
 		
-		if(dataType.isAssignableFrom(defaultValue.getClass()) == false)
-			throw new IllegalArgumentException();
-		
 		this.dataType = dataType;
 		
 		this.defaultValue = defaultValue;

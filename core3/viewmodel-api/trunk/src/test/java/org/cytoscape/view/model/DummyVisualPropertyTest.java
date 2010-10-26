@@ -11,7 +11,7 @@ public class DummyVisualPropertyTest extends AbstractVisualPropertyTest<DummyObj
 	@Before
 	public void setUp() throws Exception {
 		id = "DummyVisualProperty";
-		defaultVal = new DummyObjectExtended();
+		defaultVal = new DummyObject();
 		displayName = "Dummy Visual Property";
 		type = DummyObject.class;
 		ignore = false;

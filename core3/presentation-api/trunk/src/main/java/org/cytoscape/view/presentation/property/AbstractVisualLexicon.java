@@ -9,7 +9,6 @@ import java.util.Set;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
-import org.cytoscape.view.model.VisualLexiconNodeFactory;
 import org.cytoscape.view.model.VisualProperty;
 
 /**
@@ -24,8 +23,6 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 	// Root of this tree.
 	protected final VisualProperty<NullDataType> rootVisualProperty;
 	
-	protected final VisualLexiconNodeFactory nodeFactory;
-	
 
 	/**
 	 * Constructor for VisualLexicon.  The parameters are required for all lexicons.
@@ -33,12 +30,11 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 	 * @param rootVisualProperty Root of the visual property tree.
 	 * @param nodeFactory factory to create tree nodes for a lexicon.
 	 */
-	public AbstractVisualLexicon(final VisualProperty<NullDataType> rootVisualProperty, final VisualLexiconNodeFactory nodeFactory) {
-		this.nodeFactory = nodeFactory;
+	public AbstractVisualLexicon(final VisualProperty<NullDataType> rootVisualProperty) {
 		
 		this.visualPropertyMap = new HashMap<VisualProperty<?>, VisualLexiconNode>();
 		this.rootVisualProperty = rootVisualProperty;
-		final VisualLexiconNode rootNode = this.nodeFactory.createNode(rootVisualProperty, null);
+		final VisualLexiconNode rootNode = new VisualLexiconNode(rootVisualProperty, null);
 		
 		visualPropertyMap.put(rootVisualProperty, rootNode);
 	}
@@ -101,7 +97,7 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 		if(parentNode == null)
 			throw new IllegalArgumentException("Parent does not exist in the lexicon: " + parent.getDisplayName());
 		
-		final VisualLexiconNode newNode = this.nodeFactory.createNode(vp, parentNode);
+		final VisualLexiconNode newNode = new VisualLexiconNode(vp, parentNode);
 		this.visualPropertyMap.put(vp, newNode);
 	}
 	

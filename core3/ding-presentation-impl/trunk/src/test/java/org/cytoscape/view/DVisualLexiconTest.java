@@ -7,7 +7,6 @@ import org.cytoscape.ding.impl.DVisualLexicon;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.internal.VisualLexiconNodeFactoryImpl;
 import org.cytoscape.view.presentation.property.AbstractVisualLexiconTest;
 import org.junit.After;
 import org.junit.Before;
@@ -19,7 +18,7 @@ public class DVisualLexiconTest extends AbstractVisualLexiconTest {
 
 	@Before
 	public void setUp() throws Exception {
-		dLexicon = new DVisualLexicon(new VisualLexiconNodeFactoryImpl());
+		dLexicon = new DVisualLexicon();
 	}
 
 	@After

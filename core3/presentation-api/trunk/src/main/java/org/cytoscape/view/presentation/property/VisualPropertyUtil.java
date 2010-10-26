@@ -16,10 +16,11 @@ public class VisualPropertyUtil {
 		if(lexicon == null)
 			throw new NullPointerException("Lexicon is null.");
 		
+		if(lexicon.getAllVisualProperties().contains(vp) == false)
+			throw new IllegalArgumentException("No such Visual Porperty in the lexicon: " + vp.getDisplayName());
+		
 		
 		VisualLexiconNode node = lexicon.getVisualLexiconNode(vp);
-		if(node == null)
-			throw new IllegalArgumentException("No such visual property is available in the lexicon: " + vp.getDisplayName());
 		
 		// This is a root
 		if(node.getParent() == null)

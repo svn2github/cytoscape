@@ -1,7 +1,6 @@
 package org.cytoscape.view.presentation.property;
 
 import org.cytoscape.view.model.NullDataType;
-import org.cytoscape.view.model.VisualLexiconNodeFactory;
 import org.cytoscape.view.model.VisualProperty;
 
 public class ThreeDVisualLexicon extends TwoDVisualLexicon {
@@ -18,9 +17,8 @@ public class ThreeDVisualLexicon extends TwoDVisualLexicon {
 	public static final VisualProperty<Double> NETWORK_DEPTH = new DoubleVisualProperty(
 			0.0, "NETWORK_DEPTH", "Network Depth");
 
-	public ThreeDVisualLexicon(final VisualProperty<NullDataType> root,
-			final VisualLexiconNodeFactory nodeFactory) {
-		super(root, nodeFactory);
+	public ThreeDVisualLexicon(final VisualProperty<NullDataType> root) {
+		super(root);
 
 		addVisualProperty(NODE_Z_LOCATION, NODE_LOCATION);
 		addVisualProperty(NODE_Z_SIZE, NODE_SIZE);

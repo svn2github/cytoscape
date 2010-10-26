@@ -2,7 +2,6 @@ package org.cytoscape.view;
 
 import org.cytoscape.integration.AbstractIntegrationTester;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.VisualLexiconNodeFactory;
 
 /**
  * Integration test for viewmodel-impl bundle.
@@ -23,9 +22,9 @@ public class ITViewModelImpl extends AbstractIntegrationTester {
 					"org.cytoscape, viewmodel-api, 1.0-SNAPSHOT",
 					"org.cytoscape, viewmodel-impl, 1.0-SNAPSHOT", }, 
 				new String[] {
-					"cyNetworkViewFactory", "visualLexiconNodeFactory" }, 
+					"cyNetworkViewFactory" }, 
 				new Class[] {
-					CyNetworkViewFactory.class, VisualLexiconNodeFactory.class },
+					CyNetworkViewFactory.class },
 				new String[] { "org.cytoscape.view.model" }
 				);
 	}

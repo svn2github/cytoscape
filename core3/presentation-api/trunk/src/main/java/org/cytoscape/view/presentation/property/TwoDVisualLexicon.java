@@ -35,12 +35,11 @@
 package org.cytoscape.view.presentation.property;
 
 import java.awt.Color;
-import java.awt.Paint;
 
 import org.cytoscape.view.model.NullDataType;
-import org.cytoscape.view.model.VisualLexiconNodeFactory;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
+import org.cytoscape.view.presentation.RenderingEngine;
 
 /**
  * Minimal set of {@linkplain VisualProperty} objects which will be required for
@@ -150,9 +149,8 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	 * @param root
 	 * @param nodeFactory
 	 */
-	public TwoDVisualLexicon(final VisualProperty<NullDataType> root,
-			final VisualLexiconNodeFactory nodeFactory) {
-		super(root, nodeFactory);
+	public TwoDVisualLexicon(final VisualProperty<NullDataType> root) {
+		super(root);
 
 		addVisualProperty(NETWORK, root);
 

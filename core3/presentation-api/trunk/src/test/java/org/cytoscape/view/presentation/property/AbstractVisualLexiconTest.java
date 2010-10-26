@@ -10,6 +10,7 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.DefaultVisualizableVisualProperty;
+import org.junit.Test;
 
 public abstract class AbstractVisualLexiconTest {
 	
@@ -42,8 +43,30 @@ public abstract class AbstractVisualLexiconTest {
 		traverse(children, lexicon);
 		
 		// Test adding
-		((AbstractVisualLexicon) lexicon).addVisualProperty(new DoubleVisualProperty(new Double(10), "DUMMY", "Dummy VP"), root);
+		final DoubleVisualProperty dummyVP = new DoubleVisualProperty(new Double(10), "DUMMY", "Dummy VP");
+		
+		
+		try {
+			((AbstractVisualLexicon) lexicon).addVisualProperty(TwoDVisualLexicon.NODE_COLOR, root);
+		} catch(Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+		}
+		
+		try {
+			((AbstractVisualLexicon) lexicon).addVisualProperty(dummyVP, null);
+		} catch(Exception e) {
+			assertTrue(e instanceof NullPointerException);
+		}
+		
+		try {
+			((AbstractVisualLexicon) lexicon).addVisualProperty(dummyVP, dummyVP);
+		} catch(Exception e) {
+			assertTrue(e instanceof IllegalArgumentException);
+		}
+		
+		((AbstractVisualLexicon) lexicon).addVisualProperty(dummyVP, root);
 	}
+	
 	
 
 	private void traverse(final Collection<VisualLexiconNode> vpSet, VisualLexicon lexicon) {

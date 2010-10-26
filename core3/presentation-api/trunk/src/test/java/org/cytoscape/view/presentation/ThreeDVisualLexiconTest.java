@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.internal.VisualLexiconNodeFactoryImpl;
 import org.cytoscape.view.presentation.property.AbstractVisualLexiconTest;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
 import org.cytoscape.view.presentation.property.ThreeDVisualLexicon;
@@ -25,7 +24,7 @@ public class ThreeDVisualLexiconTest extends AbstractVisualLexiconTest {
 		threeDRoot = new NullVisualProperty("THREE_D_ROOT",
 				"3D Root Visual Property");
 
-		threeDLex = new ThreeDVisualLexicon(threeDRoot, new VisualLexiconNodeFactoryImpl());
+		threeDLex = new ThreeDVisualLexicon(threeDRoot);
 	}
 
 	@Test

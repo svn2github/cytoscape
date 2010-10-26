@@ -42,13 +42,11 @@ import java.awt.Stroke;
 import org.cytoscape.ding.ArrowShape;
 import org.cytoscape.ding.NodeShape;
 import org.cytoscape.view.model.NullDataType;
-import org.cytoscape.view.model.VisualLexiconNodeFactory;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.BooleanVisualProperty;
-import org.cytoscape.view.presentation.property.DefaultVisualizableVisualProperty;
+import org.cytoscape.view.presentation.property.ColorVisualProperty;
 import org.cytoscape.view.presentation.property.DoubleVisualProperty;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
-import org.cytoscape.view.presentation.property.ColorVisualProperty;
 import org.cytoscape.view.presentation.property.StringVisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
@@ -162,8 +160,8 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	public static final VisualProperty<Justify> EDGE_LABEL_JUSTIFY = new JustifyTwoDVisualProperty(
 			Justify.LEFT, "EDGE_LABEL_JUSTIFY", "Edge Label Justify");
 
-	public DVisualLexicon(final VisualLexiconNodeFactory nodeFactory) {
-		super(DING_ROOT, nodeFactory);
+	public DVisualLexicon() {
+		super(DING_ROOT);
 				
 		addVisualProperty(NODE_BORDER_PAINT, NODE_PAINT);
 		

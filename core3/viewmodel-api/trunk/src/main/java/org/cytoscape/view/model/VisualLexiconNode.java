@@ -1,6 +1,7 @@
 package org.cytoscape.view.model;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * A node in the visual property tree (lexicon).
@@ -12,7 +13,25 @@ import java.util.Collection;
  * @author kono
  *
  */
-public interface VisualLexiconNode {
+public final class VisualLexiconNode {
+	
+	private final VisualProperty<?> vp;
+	
+	private final VisualLexiconNode parent;
+	private final Collection<VisualLexiconNode> children;
+	
+	public VisualLexiconNode(final VisualProperty<?> vp, final VisualLexiconNode parent) {
+		if(vp == null)
+			throw new NullPointerException("Visual Property cannot be null.");
+		
+		this.vp = vp;
+		this.parent = parent;
+		this.children = new HashSet<VisualLexiconNode>();
+		
+		if(parent != null)
+			parent.getChildren().add(this);
+		
+	}
 	
 	/**
 	 * Returns wrapped {@linkplain VisualProerty} object.
@@ -22,7 +41,9 @@ public interface VisualLexiconNode {
 	 * 
 	 * @return wrapped {@linkplain VisualProeprty} object.
 	 */
-	VisualProperty<?> getVisualProperty();
+	public VisualProperty<?> getVisualProperty() {
+		return vp;
+	}
 
 	
 	/**
@@ -31,13 +52,17 @@ public interface VisualLexiconNode {
 	 * 
 	 * @return parent VisualProperty object.
 	 */
-	VisualLexiconNode getParent();
+	public VisualLexiconNode getParent() {
+		return parent;
+	}
 
 	/**
 	 * Returns collection of all children of this node.
 	 * 
 	 * @return collection of all children
 	 */
-	Collection<VisualLexiconNode> getChildren();
+	public Collection<VisualLexiconNode> getChildren() {
+		return children;
+	}
 
 }

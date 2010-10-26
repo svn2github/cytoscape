@@ -9,7 +9,6 @@ import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.internal.VisualLexiconNodeFactoryImpl;
 import org.cytoscape.view.presentation.property.AbstractVisualLexiconTest;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
@@ -28,7 +27,7 @@ public class TwoDVisualLexiconTest extends AbstractVisualLexiconTest {
 		twoDRoot = new NullVisualProperty("TWO_D_ROOT",
 				"2D Root Visual Property");
 
-		twoDLex = new TwoDVisualLexicon(twoDRoot, new VisualLexiconNodeFactoryImpl());
+		twoDLex = new TwoDVisualLexicon(twoDRoot);
 	}
 
 	@Test
