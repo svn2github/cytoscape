@@ -103,8 +103,6 @@ edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.controlle
 edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.map.Genetic=0,0,255
 edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.map.Physical=0,0,0
 edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.map.Physical&Genetic=0,153,51
-edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.map.genetic=255,0,51
-edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.map.physical=51,255,51
 edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.mapping.type=DiscreteMapping
 edgeColorCalculator.Module\ Style-Edge\ Color-Discrete\ Mapper.visualPropertyType=EDGE_COLOR
 edgeFontFaceCalculator.BasicContinuous.mapping.boundaryvalues=2
