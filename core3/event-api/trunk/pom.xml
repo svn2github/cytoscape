@@ -4,7 +4,7 @@
   <parent>
     <artifactId>parent</artifactId>
     <groupId>org.cytoscape</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <version>3.0.0-alpha2</version>
   </parent>
 
   <properties>
@@ -20,6 +20,13 @@
   <name>${bundle.symbolicName} [${bundle.namespace}]</name>
 
   <packaging>bundle</packaging>
+
+  <scm>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/event-api/trunk</connection>
+    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/event-api/trunk</developerConnection>
+    <url>http://chianti.ucsd.edu/svn/core3/event-api/trunk</url>
+  </scm>
+
 
   <build>
     <resources>
@@ -101,5 +108,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+
 
 </project>
