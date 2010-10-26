@@ -20,6 +20,7 @@
 
 	<bean id="cyDataTableFactory" class="org.cytoscape.model.internal.CyTableFactoryImpl">
 		<constructor-arg ref="cyEventHelperServiceRef" />
+		<constructor-arg ref="cyTableManager" />
 	</bean>
 
 	<bean id="cyNetworkFactory" class="org.cytoscape.model.internal.CyNetworkFactoryImpl">

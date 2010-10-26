@@ -38,10 +38,13 @@ package org.cytoscape.model.internal;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyTableEntry;
 
 /**
  * An interface describing a factory used for managing 
@@ -50,13 +53,16 @@ import org.cytoscape.model.CyTableManager;
  */
 public class CyTableManagerImpl implements CyTableManager {
 
-	private final Map<String, Map<CyNetwork, Map<String,CyTable>>> map;
+	private final Map<String, Map<CyNetwork, Map<String,CyTable>>> networkTableMap;
+	private final Map<Long,CyTable> tables;
 
 	public CyTableManagerImpl() {
-		map = new HashMap<String, Map<CyNetwork, Map<String,CyTable>>>();	
-		map.put( "NETWORK", new HashMap<CyNetwork, Map<String,CyTable>>() );
-		map.put( "NODE", new HashMap<CyNetwork, Map<String,CyTable>>() );
-		map.put( "EDGE", new HashMap<CyNetwork, Map<String,CyTable>>() );
+		networkTableMap = new HashMap<String, Map<CyNetwork, Map<String,CyTable>>>();	
+		networkTableMap.put( CyTableEntry.NETWORK, new HashMap<CyNetwork, Map<String,CyTable>>() );
+		networkTableMap.put( CyTableEntry.NODE, new HashMap<CyNetwork, Map<String,CyTable>>() );
+		networkTableMap.put( CyTableEntry.EDGE, new HashMap<CyNetwork, Map<String,CyTable>>() );
+
+		tables = new HashMap<Long,CyTable>();
 	}
 	
 
@@ -64,12 +70,12 @@ public class CyTableManagerImpl implements CyTableManager {
 		if ( network == null || graphObjectType == null )
 			return null;
 
-		Map<CyNetwork, Map<String,CyTable>> tmap = map.get(graphObjectType);
+		Map<CyNetwork, Map<String,CyTable>> tmap = networkTableMap.get(graphObjectType);
 
 		if ( tmap == null )
 			throw new IllegalArgumentException("no data tables of type: " + graphObjectType + " exist");
 
-		return map.get(graphObjectType).get(network);
+		return networkTableMap.get(graphObjectType).get(network);
 	}
 
 	
@@ -79,10 +85,10 @@ public class CyTableManagerImpl implements CyTableManager {
 		if ( graphObjectType == null )
 			throw new NullPointerException("Type is null");
 
-		if ( !map.containsKey(graphObjectType) )
-			map.put(graphObjectType, new HashMap<CyNetwork, Map<String,CyTable>>());
+		if ( !networkTableMap.containsKey(graphObjectType) )
+			networkTableMap.put(graphObjectType, new HashMap<CyNetwork, Map<String,CyTable>>());
 
-		Map<CyNetwork, Map<String,CyTable>> tmap = map.get(graphObjectType);
+		Map<CyNetwork, Map<String,CyTable>> tmap = networkTableMap.get(graphObjectType);
 
 		if ( tm == null )
 			tmap.remove(network);
@@ -90,4 +96,24 @@ public class CyTableManagerImpl implements CyTableManager {
 			tmap.put(network,tm);
 	}
 
+	public void addTable(CyTable t) {
+		if ( t == null )
+			throw new NullPointerException("added table is null");
+		tables.put( t.getSUID(), t );
+	}
+
+	public Set<CyTable> getAllTables(boolean includePrivate) {
+		Set<CyTable> res = new HashSet<CyTable>();
+		for ( CyTable t : tables.values() ) {
+			if ( includePrivate )
+				res.add(t);
+			else if ( tables.get(t).isPublic() )
+				res.add(t);
+		}
+		return res;
+	}
+
+	public CyTable getTable(long suid) {
+		return tables.get(suid);
+	}
 }

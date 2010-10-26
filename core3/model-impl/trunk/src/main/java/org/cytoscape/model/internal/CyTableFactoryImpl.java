@@ -52,45 +52,17 @@ import org.cytoscape.event.CyEventHelper;
  */
 public class CyTableFactoryImpl implements CyTableFactory {
 
-	private final Map<Long,CyTable> tables;
 	private final CyEventHelper help;
+	private final CyTableManagerImpl tm;
 
-	public CyTableFactoryImpl(CyEventHelper help) {
+	public CyTableFactoryImpl(CyEventHelper help, CyTableManagerImpl tm) {
 		this.help = help;
-		tables = new HashMap<Long,CyTable>();
+		this.tm = tm;
 	}
 
 	public CyTable createTable(String name, String primaryKey, Class<?> primaryKeyType, boolean pub) {
 		CyTable cdt = new CyTableImpl(name,primaryKey,primaryKeyType,pub,help);
-		tables.put( cdt.getSUID(), cdt );
+		tm.addTable(cdt);
 		return cdt;
-	}
-
-	/**
-     * @param includePrivate Whether to include private CyDataTables
-     * in the list (i.e. all possible CyDataTables) or not.
-     * @return A list containing CyTable SUIDs either
-     * including private CyDataTables (i.e. meaning all possible
-     * CyDataTables) or just public CyDataTables.
-     */
-	public List<Long> getAllTableSUIDs(boolean includePrivate) {
-		List<Long> suids = new ArrayList<Long>(tables.keySet().size());
-		for ( Long key : tables.keySet() ) {
-			if ( includePrivate )
-				suids.add(key);
-			else if ( tables.get(key).isPublic() )
-				suids.add(key);
-		}
-		return suids;
-	}
-
-	/**
-	 * @param suid The SUID identifying the CyTable.
-	 *
-	 * @return The CyTable identified by the suid. Will return null if a CyTable doesn't
-	 *         exist for the  specified SUID.
-	 */
-	public CyTable getTable(long suid) {
-		return tables.get(suid);
 	}
 }
