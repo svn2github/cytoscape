@@ -208,6 +208,17 @@
           <name>Cytoscape Spring OSGi Release Mirror</name>
           <url>http://cytoscape.wodaklab.org/nexus/content/repositories/spring-osgi/</url>
        </repository>
+       <repository>
+          <id>spring-osgi-snapshots</id>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <name>Cytoscape Spring OSGi Snapshot Mirror</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/spring-osgi-snapshots/</url>
+       </repository>
 	</repositories>
 
 	<pluginRepositories>
