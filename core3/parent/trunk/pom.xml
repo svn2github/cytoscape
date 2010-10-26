@@ -4,7 +4,7 @@
 	<groupId>org.cytoscape</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>3.0.0-alpha3</version>
+	<version>3.0.0-alpha4-SNAPSHOT</version>
 	<name>Basic Cytoscape POM Configuration</name>
 
 
@@ -238,9 +238,9 @@
 	</pluginRepositories>
 
   <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/parent/tags/parent-3.0.0-alpha3</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/parent/tags/parent-3.0.0-alpha3</developerConnection>
-    <url>http://chianti.ucsd.edu/svn/core3/parent/tags/parent-3.0.0-alpha3</url>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/parent/trunk</connection>
+    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/parent/trunk</developerConnection>
+    <url>http://chianti.ucsd.edu/svn/core3/parent/trunk</url>
   </scm>
 
 	<reporting>
