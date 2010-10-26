@@ -41,13 +41,19 @@ import java.util.StringTokenizer;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
 
-public class ColorVisualProperty extends AbstractVisualProperty<Color> { 
+public class PaintVisualProperty extends AbstractVisualProperty<Paint> { 
 
-	public ColorVisualProperty(final Color def, final String id, final String name) {
-		super(def, Color.class, id, name);
+	public PaintVisualProperty(final Paint def, final String id, final String name) {
+		super(def, Paint.class, id, name);
 	}
 	
-	public String toSerializableString(final Color color) {
+	
+	@Override public String toSerializableString(final Paint paint) {
+		if(paint instanceof Color == false)
+			throw new UnsupportedOperationException("Currently, this implementation supports only Color object.");
+		
+		final Color color = (Color) paint;
+		
 		final Integer red = Integer.valueOf(color.getRed());
 		final Integer green = Integer.valueOf(color.getGreen());
 		final Integer blue = Integer.valueOf(color.getBlue());
@@ -55,7 +61,8 @@ public class ColorVisualProperty extends AbstractVisualProperty<Color> {
 		return red.toString() + "," + green.toString() + "," + blue.toString();
 	}
 
-	public Color parseSerializableString(final String text) {
+	
+	@Override public Paint parseSerializableString(final String text) {
 		// Start by seeing if this is a hex representation
 		if (text.startsWith("#")) {
 			try {

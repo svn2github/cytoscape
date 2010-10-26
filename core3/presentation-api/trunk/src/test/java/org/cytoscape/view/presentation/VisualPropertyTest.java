@@ -12,7 +12,7 @@ import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.presentation.internal.property.NullDataTypeImpl;
 import org.cytoscape.view.presentation.internal.property.VisualizableImpl;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
-import org.cytoscape.view.presentation.property.ColorVisualProperty;
+import org.cytoscape.view.presentation.property.PaintVisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.junit.After;
 import org.junit.Before;
@@ -30,8 +30,8 @@ public class VisualPropertyTest {
 	
 	@Test
 	public void testVisualProperties() {
-		final VisualProperty<Color> colorProp = TwoDVisualLexicon.NODE_COLOR;
-		assertEquals(Color.class, colorProp.getType());
+		final VisualProperty<Paint> colorProp = TwoDVisualLexicon.NODE_COLOR;
+		assertEquals(Paint.class, colorProp.getType());
 		
 		final VisualProperty<Boolean> booleanProp = TwoDVisualLexicon.NODE_VISIBLE;
 		assertEquals(Boolean.class, booleanProp.getType());
@@ -45,8 +45,8 @@ public class VisualPropertyTest {
 		assertEquals("20.0", doubleProp.toSerializableString(Double.valueOf(20)));
 		assertEquals(Double.valueOf(100.12), doubleProp.parseSerializableString("100.12"));
 		
-		final VisualProperty<Color> paintProp = TwoDVisualLexicon.NODE_COLOR;
-		assertEquals(Color.class, paintProp.getType());
+		final VisualProperty<Paint> paintProp = TwoDVisualLexicon.NODE_COLOR;
+		assertEquals(Paint.class, paintProp.getType());
 		
 		final Color testColor = new Color(10, 20, 30); 
 		assertEquals("10,20,30", paintProp.toSerializableString(testColor));
@@ -54,19 +54,19 @@ public class VisualPropertyTest {
 		assertEquals(testColor, paintProp.parseSerializableString("10,20,30"));
 		
 		try {
-			final Color result = paintProp.parseSerializableString("#2JK20A141E");
+			final Paint result = paintProp.parseSerializableString("#2JK20A141E");
 		}catch(Exception e) {
 			assertTrue(e instanceof IllegalArgumentException);
 		}
 		
 		try {
-			final Color result = paintProp.parseSerializableString("10, 20");
+			final Paint result = paintProp.parseSerializableString("10, 20");
 		}catch(Exception e) {
 			assertTrue(e instanceof IllegalArgumentException);
 		}
 		
 		try {
-			final Color result = paintProp.parseSerializableString("10, 20, IJK");
+			final Paint result = paintProp.parseSerializableString("10, 20, IJK");
 		}catch(Exception e) {
 			assertTrue(e instanceof IllegalArgumentException);
 		}

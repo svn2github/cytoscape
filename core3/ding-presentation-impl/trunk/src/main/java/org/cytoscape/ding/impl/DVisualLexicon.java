@@ -37,6 +37,7 @@ package org.cytoscape.ding.impl;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Paint;
 import java.awt.Stroke;
 
 import org.cytoscape.ding.ArrowShape;
@@ -44,7 +45,7 @@ import org.cytoscape.ding.NodeShape;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.BooleanVisualProperty;
-import org.cytoscape.view.presentation.property.ColorVisualProperty;
+import org.cytoscape.view.presentation.property.PaintVisualProperty;
 import org.cytoscape.view.presentation.property.DoubleVisualProperty;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
 import org.cytoscape.view.presentation.property.StringVisualProperty;
@@ -69,10 +70,10 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	public static final VisualProperty<NodeShape> NODE_SHAPE = new NodeShapeTwoDVisualProperty(
 			NodeShape.ROUND_RECT, "NODE_SHAPE", "Node Shape");
 
-	public static final VisualProperty<Color> NODE_SELECTED_PAINT = new ColorVisualProperty(
+	public static final VisualProperty<Paint> NODE_SELECTED_PAINT = new PaintVisualProperty(
 			Color.YELLOW, "NODE_SELECTED_PAINT", "Node Selected Paint");
 
-	public static final VisualProperty<Color> NODE_BORDER_PAINT = new ColorVisualProperty(
+	public static final VisualProperty<Paint> NODE_BORDER_PAINT = new PaintVisualProperty(
 			Color.BLACK, "NODE_BORDER_PAINT", "Node Border Paint");
 
 	public static final VisualProperty<Double> NODE_BORDER_WIDTH = new DoubleVisualProperty(
@@ -110,21 +111,21 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	public static final VisualProperty<Integer> NODE_TRANSPARENCY = new IntegerTwoDVisualProperty(
 			200, "NODE_TRANSPARENCY", "Node Transparency");
 
-	public static final VisualProperty<Color> EDGE_SELECTED_PAINT = new ColorVisualProperty(
+	public static final VisualProperty<Paint> EDGE_SELECTED_PAINT = new PaintVisualProperty(
 			Color.RED, "EDGE_SELECTED_PAINT", "Edge Selected Paint");
 	
 	public static final VisualProperty<? extends Stroke> EDGE_STROKE = new StrokeTwoDVisualProperty(
 			new BasicStroke(), "EDGE_STROKE", "Edge Stroke");
 
-	public static final VisualProperty<Color> EDGE_SOURCE_ARROW_SELECTED_PAINT = new ColorVisualProperty(
+	public static final VisualProperty<Paint> EDGE_SOURCE_ARROW_SELECTED_PAINT = new PaintVisualProperty(
 			Color.YELLOW, "EDGE_SOURCE_ARROW_SELECTED_PAINT", "Edge Source Arrow Selected Paint");
-	public static final VisualProperty<Color> EDGE_TARGET_ARROW_SELECTED_PAINT = new ColorVisualProperty(
+	public static final VisualProperty<Paint> EDGE_TARGET_ARROW_SELECTED_PAINT = new PaintVisualProperty(
 			Color.YELLOW, "EDGE_TARGET_ARROW_SELECTED_PAINT",
 			"Edge Target Arrow Selected Paint");
-	public static final VisualProperty<Color> EDGE_SOURCE_ARROW_UNSELECTED_PAINT = new ColorVisualProperty(
+	public static final VisualProperty<Paint> EDGE_SOURCE_ARROW_UNSELECTED_PAINT = new PaintVisualProperty(
 			Color.BLACK, "EDGE_SOURCE_ARROW_UNSELECTED_PAINT",
 			"Edge Source Arrow Unselected Paint");
-	public static final VisualProperty<Color> EDGE_TARGET_ARROW_UNSELECTED_PAINT = new ColorVisualProperty(
+	public static final VisualProperty<Paint> EDGE_TARGET_ARROW_UNSELECTED_PAINT = new PaintVisualProperty(
 			Color.BLACK, "EDGE_TARGET_ARROW_UNSELECTED_PAINT",
 			"Edge Target Arrow Unselected Paint");
 

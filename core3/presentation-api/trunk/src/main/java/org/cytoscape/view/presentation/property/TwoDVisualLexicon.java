@@ -35,6 +35,7 @@
 package org.cytoscape.view.presentation.property;
 
 import java.awt.Color;
+import java.awt.Paint;
 
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualProperty;
@@ -62,13 +63,13 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	public static final VisualProperty<Visualizable> EDGE = new DefaultVisualizableVisualProperty(
 			"EDGE", "Edge Visual Property");
 
-	public static final VisualProperty<Color> NODE_PAINT = new ColorVisualProperty(
+	public static final VisualProperty<Paint> NODE_PAINT = new PaintVisualProperty(
 			Color.gray, "NODE_PAINT", "Node Paint");
-	public static final VisualProperty<Color> NODE_COLOR = new ColorVisualProperty(
+	public static final VisualProperty<Paint> NODE_COLOR = new PaintVisualProperty(
 			Color.RED, "NODE_COLOR", "Node Color");
-	public static final VisualProperty<Color> NODE_SELECTED_COLOR = new ColorVisualProperty(
+	public static final VisualProperty<Paint> NODE_SELECTED_COLOR = new PaintVisualProperty(
 			Color.YELLOW, "NODE_SELECTED_COLOR", "Node Selected Color");
-	public static final VisualProperty<Color> NODE_LABEL_COLOR = new ColorVisualProperty(
+	public static final VisualProperty<Paint> NODE_LABEL_COLOR = new PaintVisualProperty(
 			Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color");
 
 	public static final VisualProperty<String> NODE_TEXT = new StringVisualProperty(
@@ -96,11 +97,11 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	public static final VisualProperty<Boolean> NODE_SELECTED = new BooleanVisualProperty(
 			false, "NODE_SELECTED", "Node Selected");
 
-	public static final VisualProperty<Color> EDGE_PAINT = new ColorVisualProperty(
+	public static final VisualProperty<Paint> EDGE_PAINT = new PaintVisualProperty(
 			Color.gray, "EDGE_PAINT", "Edge Paint");
-	public static final VisualProperty<Color> EDGE_COLOR = new ColorVisualProperty(
+	public static final VisualProperty<Paint> EDGE_COLOR = new PaintVisualProperty(
 			Color.gray, "EDGE_COLOR", "Edge Color");
-	public static final VisualProperty<Color> EDGE_LABEL_COLOR = new ColorVisualProperty(
+	public static final VisualProperty<Paint> EDGE_LABEL_COLOR = new PaintVisualProperty(
 			Color.BLACK, "EDGE_LABEL_COLOR", "Edge Label Color");
 
 	public static final VisualProperty<String> EDGE_TEXT = new StringVisualProperty(
@@ -137,9 +138,9 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	public static final VisualProperty<String> NETWORK_TITLE = new StringVisualProperty(
 			"", "NETWORK_TITLE", "Network Title");
 
-	public static final VisualProperty<Color> NETWORK_PAINT = new ColorVisualProperty(
+	public static final VisualProperty<Paint> NETWORK_PAINT = new PaintVisualProperty(
 			Color.WHITE, "NETWORK_PAINT", "Network Paint");
-	public static final VisualProperty<Color> NETWORK_BACKGROUND_COLOR = new ColorVisualProperty(
+	public static final VisualProperty<Paint> NETWORK_BACKGROUND_COLOR = new PaintVisualProperty(
 			Color.WHITE, "NETWORK_BACKGROUND_COLOR", "Network Background Color");
 
 	/**

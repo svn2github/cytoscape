@@ -3,6 +3,7 @@ package org.cytoscape.vizmap;
 import static org.junit.Assert.*;
 
 import java.awt.Color;
+import java.awt.Paint;
 
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
@@ -25,7 +26,7 @@ public class DiscreteMappingTest {
 		final String attrName = "sample attr 1";
 		final Class<String> type = String.class;
 		
-		final DiscreteMapping<String, Color> mapping = new DiscreteMapping<String, Color>(attrName, type, TwoDVisualLexicon.NODE_COLOR);
+		final DiscreteMapping<String, Paint> mapping = new DiscreteMapping<String, Paint>(attrName, type, TwoDVisualLexicon.NODE_COLOR);
 		
 		assertEquals(attrName, mapping.getMappingAttributeName());
 		assertEquals(type, mapping.getMappingAttributeType());
