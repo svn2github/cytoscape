@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>3.0.0-alpha1</version>
 	<name>Basic Cytoscape POM Configuration</name>
 
 
@@ -229,9 +228,9 @@
 	</pluginRepositories>
 
   <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/parent/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/parent/trunk</developerConnection>
-    <url>http://chianti.ucsd.edu/svn/core3/parent/trunk</url>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/parent/tags/parent-3.0.0-alpha1</connection>
+    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/parent/tags/parent-3.0.0-alpha1</developerConnection>
+    <url>http://chianti.ucsd.edu/svn/core3/parent/tags/parent-3.0.0-alpha1</url>
   </scm>
 
 	<reporting>
