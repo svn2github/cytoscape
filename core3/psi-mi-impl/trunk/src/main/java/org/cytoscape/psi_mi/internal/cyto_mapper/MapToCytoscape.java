@@ -565,7 +565,7 @@ public class MapToCytoscape implements Mapper {
 
 			if (attrObject instanceof String) {
 				String object;
-				if (!attributes.contains(key, String.class)) {
+				if (!attributes.isSet(key, String.class)) {
 					attributes.getDataTable().createColumn(key, String.class);
 					object = null;
 				} else {
@@ -611,7 +611,7 @@ public class MapToCytoscape implements Mapper {
 	}
 
 	private <T> void addAttribute(CyRow attributes, String name, T value) {
-		if (!attributes.contains(name, value.getClass())) {
+		if (!attributes.isSet(name, value.getClass())) {
 			attributes.getDataTable().createColumn(name, value.getClass());
 		}
 		attributes.set(name, value);
