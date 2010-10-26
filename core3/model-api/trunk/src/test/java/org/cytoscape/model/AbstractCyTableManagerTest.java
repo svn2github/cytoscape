@@ -84,4 +84,14 @@ public abstract class AbstractCyTableManagerTest extends TestCase {
 		assertNull( mgr.getTableMap(CyTableEntry.NODE,null) );
 		assertNull( mgr.getTableMap(CyTableEntry.EDGE,null) );
 	}
+/*
+	public void testGetAllTables() {
+	}
+
+	public void testGetValidTable() {
+	}
+
+	public void testGetInvalidTable() {
+	}
+	*/
 }

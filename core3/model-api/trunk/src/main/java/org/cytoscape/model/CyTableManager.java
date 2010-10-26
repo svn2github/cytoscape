@@ -37,6 +37,7 @@
 package org.cytoscape.model;
 
 import java.util.Map;
+import java.util.Set;
 
 
 /** 
@@ -54,4 +55,22 @@ public interface CyTableManager {
 	 * for the specified network.
 	 */
 	Map<String,CyTable> getTableMap(String type, CyNetwork network);
+
+	/**
+	 * Returns a Set of all tables with the specified visibility.
+     * @param includePrivate Whether to include private CyTables
+     * in the list (i.e. all possible CyTables) or not.
+     * @return A Set containing CyTable SUIDs either
+     * including private CyTables (i.e. meaning all possible
+     * CyTables) or just public CyTables.
+     */
+	Set<CyTable> getAllTables(boolean includePrivate);
+
+	/**
+	 * Returns the table with teh specified SUID. 
+	 * @param suid The SUID identifying the CyTable.
+	 * @return The CyTable identified by the suid. Will return null if a CyTable doesn't
+	 *         exist for the  specified SUID.
+	 */
+	CyTable getTable(long suid);
 }

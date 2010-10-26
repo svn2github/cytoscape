@@ -55,24 +55,4 @@ public interface CyTableFactory {
 	 *         {@link CyTable#isPublic}.
 	 */
 	CyTable createTable(String title, String primaryKey, Class<?> primaryKeyType, boolean pub);
-
-	// TODO move these into table manager!
-
-	/**
-	 * Returns a list of all table SUIDs with the specified visibility.
-     * @param includePrivate Whether to include private CyDataTables
-     * in the list (i.e. all possible CyDataTables) or not.
-     * @return A list containing CyTable SUIDs either
-     * including private CyDataTables (i.e. meaning all possible
-     * CyDataTables) or just public CyDataTables.
-     */
-	List<Long> getAllTableSUIDs(boolean includePrivate);
-
-	/**
-	 * Returns the table with teh specified SUID. 
-	 * @param suid The SUID identifying the CyTable.
-	 * @return The CyTable identified by the suid. Will return null if a CyTable doesn't
-	 *         exist for the  specified SUID.
-	 */
-	CyTable getTable(long suid);
 }
