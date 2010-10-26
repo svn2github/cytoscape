@@ -98,7 +98,6 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.0</version>
 				<configuration>
-					<tagBase>svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/parent/tags</tagBase>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<goals>deploy</goals>
 				</configuration>
