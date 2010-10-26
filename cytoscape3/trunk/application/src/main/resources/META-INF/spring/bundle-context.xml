@@ -24,7 +24,7 @@
 	<!-- Cytoscape Properties (cytoscape.props) -->
 	<util:properties id="cytoscapeProperties" location="classpath:cytoscape.props" />
 	
-	<bean id="cyMainProps" class="org.cytoscape.property.DefaultCyProperty">
+	<bean id="cyMainProps" class="org.cytoscape.property.BasicCyProperty">
 		<constructor-arg ref="cytoscapeProperties" />
 	</bean>
 
