@@ -30,7 +30,7 @@
 	<util:properties id="linkoutProperties" location="classpath:linkout.props" />
 
 	<!-- Build CyProperty Object by using default implementation -->
-	<bean id="linkoutProps" class="org.cytoscape.property.DefaultCyProperty">
+	<bean id="linkoutProps" class="org.cytoscape.property.BasicCyProperty">
 		<constructor-arg ref="linkoutProperties" />
 	</bean>
 
