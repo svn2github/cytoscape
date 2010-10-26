@@ -22,7 +22,7 @@ public class NetworkTestSupport {
 	public NetworkTestSupport() {
 		eventHelper = new DummyCyEventHelper();
 		tableMgr = mock(CyTableManagerImpl.class); 
-		CyTableFactoryImpl tableFactory = new CyTableFactoryImpl(eventHelper);
+		CyTableFactoryImpl tableFactory = new CyTableFactoryImpl(eventHelper,tableMgr);
 
 		networkFactory = new CyNetworkFactoryImpl( eventHelper, tableMgr, tableFactory );
 	}
