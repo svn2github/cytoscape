@@ -70,14 +70,6 @@ import javax.swing.tree.TreePath;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.events.RowSetMicroListener;
-import org.cytoscape.model.events.SelectedEdgesEvent;
-import org.cytoscape.model.events.SelectedEdgesListener;
-import org.cytoscape.model.events.SelectedNodesEvent;
-import org.cytoscape.model.events.SelectedNodesListener;
-import org.cytoscape.model.events.UnselectedEdgesEvent;
-import org.cytoscape.model.events.UnselectedEdgesListener;
-import org.cytoscape.model.events.UnselectedNodesEvent;
-import org.cytoscape.model.events.UnselectedNodesListener;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.events.NetworkAboutToBeDestroyedEvent;
@@ -115,8 +107,7 @@ import cytoscape.view.CyAction;
  *
  */
 public class NetworkPanel extends JPanel implements TreeSelectionListener,
-		SelectedNodesListener, SelectedEdgesListener, UnselectedNodesListener,
-		UnselectedEdgesListener, SetCurrentNetworkViewListener,
+		SetCurrentNetworkViewListener,
 		SetCurrentNetworkListener, NetworkAddedListener,
 		NetworkViewAddedListener, NetworkAboutToBeDestroyedListener,
 		NetworkViewAboutToBeDestroyedListener {
@@ -406,26 +397,6 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		// Set current network view to the new one.
 		this.netmgr.setCurrentNetworkView(nde.getNetworkView().getModel().getSUID());
 		
-		treeTable.getTree().updateUI();
-	}
-
-	public void handleEvent(SelectedNodesEvent event) {
-		logger.debug("Selected nodes ");
-		treeTable.getTree().updateUI();
-	}
-
-	public void handleEvent(SelectedEdgesEvent event) {
-		logger.debug("Selected edges ");
-		treeTable.getTree().updateUI();
-	}
-
-	public void handleEvent(UnselectedNodesEvent event) {
-		logger.debug("Unselected nodes ");
-		treeTable.getTree().updateUI();
-	}
-
-	public void handleEvent(UnselectedEdgesEvent event) {
-		logger.debug("Unselected edges ");
 		treeTable.getTree().updateUI();
 	}
 
