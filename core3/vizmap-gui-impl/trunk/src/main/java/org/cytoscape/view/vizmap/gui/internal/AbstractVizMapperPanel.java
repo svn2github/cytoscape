@@ -236,7 +236,6 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		vsComboBoxModel = new DefaultComboBoxModel();
 		final VisualStyle defaultVS = manager.getDefaultStyle();
 		vsComboBoxModel.addElement(defaultVS);
-		vmm.addVisualStyle(defaultVS);
 		visualStyleComboBox = new JComboBox(vsComboBoxModel);
 
 		optionButton = new DropDownMenuButton(new AbstractAction() {

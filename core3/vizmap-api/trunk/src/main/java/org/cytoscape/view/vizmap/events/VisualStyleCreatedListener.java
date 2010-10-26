@@ -31,19 +31,22 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.events;
 
 import org.cytoscape.event.CyListener;
 
-
 /**
- * Listener for VisualStyleCreatedEvent.
+ * Listener for {@linkplain VisualStyleCreatedEvent}.
  */
 public interface VisualStyleCreatedListener extends CyListener {
+
 	/**
-	 * DOCUMENT ME!
-	 * @param e DOCUMENT ME!
+	 * Do something with a new {@linkplain VisualStyle}. Usually, GUI components
+	 * and managers executes this method to update their states.
+	 * 
+	 * @param e
+	 *            event contains new {@linkplain VisualStyle} object.
 	 */
-	void handleEvent(VisualStyleCreatedEvent e);
+	void handleEvent(final VisualStyleCreatedEvent e);
 }

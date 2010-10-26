@@ -40,9 +40,11 @@ import org.cytoscape.view.vizmap.VisualStyle;
 
 
 /**
- * DOCUMENT ME!
+ * TODO: Is this necessary?
+ * 
   */
 public final class VisualStyleChangedEvent extends AbstractCyEvent<VisualStyle> {
+	
 	public VisualStyleChangedEvent(final VisualStyle source) {
 		super(source, VisualStyleChangedListener.class);
 	}

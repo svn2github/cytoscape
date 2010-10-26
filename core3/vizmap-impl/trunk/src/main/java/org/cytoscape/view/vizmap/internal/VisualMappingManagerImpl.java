@@ -43,20 +43,21 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.events.VisualStyleCreatedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
 import org.cytoscape.view.vizmap.events.VisualStyleDestroyedEvent;
-
+import org.cytoscape.view.vizmap.events.VisualStyleDestroyedListener;
 
 /**
  *
  */
-public class VisualMappingManagerImpl implements VisualMappingManager {
-	
+public class VisualMappingManagerImpl implements VisualMappingManager, VisualStyleCreatedListener, VisualStyleDestroyedListener {
+
 	private final Map<CyNetworkView, VisualStyle> network2VisualStyleMap;
 	private final Set<VisualStyle> visualStyles;
-	
+
 	private final CyEventHelper cyEventHelper;
-	
-	
+
 	public VisualMappingManagerImpl(final CyEventHelper eventHelper) {
 		if (eventHelper == null)
 			throw new IllegalArgumentException("CyEventHelper cannot be null");
@@ -69,52 +70,72 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param nv
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
-	@Override public VisualStyle getVisualStyle(CyNetworkView nv) {
+	@Override
+	public VisualStyle getVisualStyle(CyNetworkView nv) {
 		return network2VisualStyleMap.get(nv);
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param vs
 	 *            DOCUMENT ME!
 	 * @param nv
 	 *            DOCUMENT ME!
 	 */
-	@Override public void setVisualStyle(VisualStyle vs, CyNetworkView nv) {
+	@Override
+	public void setVisualStyle(VisualStyle vs, CyNetworkView nv) {
 		network2VisualStyleMap.put(nv, vs);
 	}
 
-
 	/**
-	 * Remove the style from this manager and delete it.
-	 *
+	 * Remove a {@linkplain VisualStyle} from this manager. This will be called
+	 * through OSGi service mechanism.
+	 * 
 	 * @param vs
 	 *            DOCUMENT ME!
 	 */
-	@Override public void removeVisualStyle(VisualStyle vs) {
+	private void removeVisualStyle(VisualStyle vs) {
 		visualStyles.remove(vs);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEvent(this,vs));
+		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEvent(this,
+				vs));
 		vs = null;
 	}
-	
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * Add a new VisualStyle ot this manager. This will be called through OSGi
+	 * service mechanism.
+	 * 
+	 * @param vs
 	 */
-	@Override public Set<VisualStyle> getAllVisualStyles() {
+	private void addVisualStyle(final VisualStyle vs) {
+		this.visualStyles.add(vs);
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	@Override
+	public Set<VisualStyle> getAllVisualStyles() {
 		return visualStyles;
 	}
 
-	@Override public void addVisualStyle(VisualStyle vs) {
-		this.visualStyles.add(vs);
+	@Override
+	public void handleEvent(VisualStyleDestroyedEvent e) {
+		removeVisualStyle(e.getDestroyedVisualStyle());
 	}
+
+	@Override
+	public void handleEvent(VisualStyleCreatedEvent e) {
+		addVisualStyle(e.getCreatedVisualStyle());
+	}
+
 }

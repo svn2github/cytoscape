@@ -31,73 +31,73 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap;
 
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 
-
 /**
  * This class defines how an attribute gets mapped to a visual property.<br />
  * 
  * It takes two values:
  * <ul>
- *  <li>Attribute value: node name(Strings), expression values(Numbers), ...</li>
- *  <li>Visual Property: node size(Numbers), edge color(Color), node shape(NodeShape), ...</li>
+ * <li>Attribute value: node name(Strings), expression values(Numbers), ...</li>
+ * <li>Visual Property: node size(Numbers), edge color(Color), node
+ * shape(NodeShape), ...</li>
  * </ul>
  * 
- * This provides the mapping function from converting the attribute to the visual
- * property.  Essentially, this is a map using <K> as the key and <V> as the value.
- *
- * The direction of mapping is ALWAYS:<br />
+ * This provides the mapping function from converting the attribute to the
+ * visual property. Essentially, this is a map using <K> as the key and <V> as
+ * the value.
  * 
+ * The direction of mapping is ALWAYS:
+ * 
+ * <p>
  * K(Attribute) ---> V(Visual Property)
+ * </p>
  * 
  * K will be used in implementations.
  * 
- * @param <K> Attribute value object type.  This is the key of this mapping (Can be any objects)
- * @param <V> Visual property value type. (can be any type)
+ * @param <K>
+ *            Attribute object type. This is the key of mapping (Can
+ *            be any objects)
+ * @param <V>
+ *            Visual property value type. (can be any type)
  * 
  */
 public interface VisualMappingFunction<K, V> {
-	
-		
+
 	/**
-	 *  Returns attribute name used in this mapping.
-	 *  This field is immutable.
-	 *
-	 * @return  DOCUMENT ME!
+	 * Returns attribute name used in this mapping. This field is immutable.
+	 * 
+	 * @return name of attribute (a column name in data table) associated with
+	 *         this mapping.
 	 */
 	String getMappingAttributeName();
-	
-	
+
 	/**
 	 * Returns data type of mapping attribute.
 	 * 
-	 * @return
+	 * @return data type of controlling attribute.
 	 */
 	Class<K> getMappingAttributeType();
 
-	
 	/**
-	 *  Visual Property associated with this function.
-	 *  This field is immutable.
-	 *
-	 * @return  DOCUMENT ME!
+	 * Visual Property associated with this function. This field is immutable.
+	 * 
+	 * @return {@linkplain VisualProperty} used in this mapping.
 	 */
 	VisualProperty<V> getVisualProperty();
 
-	
 	/**
-	 *  Since current MappingFunctions map from Attributes to
-	 *  VisualProperties, have to restrict View<?> to those
-	 *  generic types that have CyAttributes; currently this is
-	 *  CyTableEntry.
+	 * Apply mapping to the view model. Once this method is called, Cytoscape
+	 * updates the view model and fires proper events.
 	 * 
-	 * @param column DOCUMENT ME!
-	 * @param views DOCUMENT ME!
+	 * @param view
+	 *            target View model to be updated. View should be one of the
+	 *            following: Node, Edge, or Network.
 	 */
 	void apply(final View<? extends CyTableEntry> view);
 }

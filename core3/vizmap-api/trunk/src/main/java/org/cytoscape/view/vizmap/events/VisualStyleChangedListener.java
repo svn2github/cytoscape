@@ -42,7 +42,8 @@ import org.cytoscape.event.CyListener;
  */
 public interface VisualStyleChangedListener extends CyListener {
 	/**
-	 * DOCUMENT ME!
+	 * TODO: is this necessary?
+	 * 
 	 * @param e DOCUMENT ME!
 	 */
 	void handleEvent(VisualStyleChangedEvent e);

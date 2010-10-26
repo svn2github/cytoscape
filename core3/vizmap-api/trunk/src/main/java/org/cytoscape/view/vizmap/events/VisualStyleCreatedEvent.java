@@ -38,19 +38,30 @@ import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.view.vizmap.VisualStyle;
 
 /**
- * DOCUMENT ME!
+ * When {@linkplain VisualStyleFactory} creates a new {@linkplain VisualStyle}
+ * object, it should fire this event.
+ * 
  */
 public final class VisualStyleCreatedEvent extends AbstractCyEvent<Object> {
 
 	private final VisualStyle created;
 
-	public VisualStyleCreatedEvent(final Object source, final VisualStyle created) {
+	/**
+	 * Creates an event for the newly created style.
+	 * 
+	 * @param source this is usually the {@linkplain VisualStyleFactory}.
+	 * @param created the new VisualStyle
+	 */
+	public VisualStyleCreatedEvent(final Object source,
+			final VisualStyle created) {
 		super(source, VisualStyleCreatedListener.class);
 		this.created = created;
 	}
+
 	/**
-	 * Get the newly created Visual Style by the Visual Mapping Manager.
-	 * @return
+	 * Get the newly created VisualStyle.
+	 * 
+	 * @return new VisualStyle
 	 */
 	public VisualStyle getCreatedVisualStyle() {
 		return created;

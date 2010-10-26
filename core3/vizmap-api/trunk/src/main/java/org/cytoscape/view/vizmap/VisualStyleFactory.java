@@ -2,27 +2,33 @@ package org.cytoscape.view.vizmap;
 
 import org.cytoscape.view.model.VisualLexicon;
 
+/**
+ * Factory for {@linkplain VisualStyle}s.  This object will be provided as an OSGi service.
+ *
+ */
 public interface VisualStyleFactory {
 	
 	/**
-	 * Create a new Visual Style.
+	 * Create a new {@linkplain VisualStyle}.
 	 * 
 	 * @param title Title of the visual style.  This can be null, but in that case, 
 	 * 					default title will be used.
 	 * 			Note: This is NOT an identifier of this object, just a title.
+	 * @param lexicon VisualLexicon for the new style.
 	 *
-	 * @return New Visual Style
+	 * @return New VisualStyle object.
 	 */
 	VisualStyle createVisualStyle(final String title, final VisualLexicon lexicon);
 	
 	
 	/**
-	 * Create a copy of given Visual Style.
+	 * Create a copy of given {@linkplain VisualStyle}.
 	 *
 	 * @param original
-	 *            VS to be copied from.
+	 *            VisualStyle to be copied from.
 	 *
-	 * @return Copied VS
+	 * @return New VisualStyle copied from the original.
+	 * 
 	 */
 	VisualStyle createVisualStyle(final VisualStyle original);
 

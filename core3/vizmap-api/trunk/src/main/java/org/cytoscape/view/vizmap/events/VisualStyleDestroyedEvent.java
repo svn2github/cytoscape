@@ -38,17 +38,32 @@ import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.view.vizmap.VisualStyle;
 
 /**
- * DOCUMENT ME!
+ * This event will be fired when {@linkplain VisualStyle} object is deleted from
+ * {@linkplain VisualMappingManager}.
  */
 public final class VisualStyleDestroyedEvent extends AbstractCyEvent<Object> {
 
 	private final VisualStyle destroyed;
 
-	public VisualStyleDestroyedEvent(final Object source, final VisualStyle destroyed) {
+	/**
+	 * create an event for the deleted VisualStyle.
+	 * 
+	 * @param source Usually this is the {@linkplain VisualMappingManager}.
+	 * @param destroyed VisualStyle to be deleted.
+	 */
+	public VisualStyleDestroyedEvent(final Object source,
+			final VisualStyle destroyed) {
 		super(source, VisualStyleDestroyedListener.class);
 		this.destroyed = destroyed;
 	}
 
+	
+	/**
+	 * Returns deleted VisualStyle.
+	 * 
+	 * @return VisualStyle just deleted.
+	 * 
+	 */
 	public VisualStyle getDestroyedVisualStyle() {
 		return destroyed;
 	}

@@ -31,19 +31,21 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.events;
 
 import org.cytoscape.event.CyListener;
 
-
 /**
- * Listener for VisualStyleDestroyedEvent.
+ * Listener for {@linkplain VisualStyleDestroyedEvent}.
  */
 public interface VisualStyleDestroyedListener extends CyListener {
+
 	/**
-	 * DOCUMENT ME!
-	 * @param e DOCUMENT ME!
+	 * Update states/GUI using deleted {@linkplain VisualStyle} information.
+	 * 
+	 * @param e
+	 *            Event containing deleted VisualStyle.
 	 */
 	void handleEvent(VisualStyleDestroyedEvent e);
 }

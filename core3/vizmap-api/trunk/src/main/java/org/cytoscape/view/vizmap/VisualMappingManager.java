@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,70 +31,57 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package org.cytoscape.view.vizmap;
 
+import java.util.Properties;
 import java.util.Set;
 
 import org.cytoscape.view.model.CyNetworkView;
 
-
 /**
- * Managing mapping from View --> Visual Style.
- * Also, this class manages list of all available Visual Styles.
- * Creation/deletion of VS is a function of this class.  
- *
- * @author abeld
- * @author kono
+ * Manager for {@linkplain Visual Style}s. This object manages mapping from view
+ * model to VisualStyle. User objects can access all VisualStyles and
+ * VisualMappingFunctions through this class.
  * 
- * @since Cytoscape 3.0
- *
+ * <p>
+ * Add/Remove operations will be done through events. For more information, read
+ * JavaDoc for {@linkplain VisualStyleCreatedEvent} and
+ * {@linkplain VisualStyleDestroyedEvent}.
+ * </p>
+ * 
  */
 public interface VisualMappingManager {
-	
-	/**
-	 *  Set a Visual Style to the target view
-	 *
-	 * @param vs Visual Style to be set.
-	 * @param nv Target network view
-	 */
-	void setVisualStyle(final VisualStyle visualStyle, final CyNetworkView networkViewModel);
-	
 
 	/**
-	 *  Returns the associated Visual Style for the target view.
-	 *
-	 * @param nv Target network view
-	 *
-	 * @return  Associated Visual Style for the view.
+	 * Set a {@linkplain VisualStyle} to the target network view model.
+	 * 
+	 * @param vs
+	 *            Visual Style to be set.
+	 * @param nv
+	 *            Target network view
+	 */
+	void setVisualStyle(final VisualStyle visualStyle,
+			final CyNetworkView networkViewModel);
+
+	/**
+	 * Returns the {@linkplain VisualStyle} associated with the target network
+	 * view model.
+	 * 
+	 * @param networkViewModel
+	 *            Target network view
+	 * 
+	 * @return VisualStyle associated with the network view model.
 	 */
 	VisualStyle getVisualStyle(final CyNetworkView networkViewModel);
 
-
 	/**
-	 * Returns all available Visual Styles managed by this object.
-	 *
-	 * @return Collection of all available Visual Styles.
+	 * Returns all available {@linkplain VisualStyle}s managed by this object.
+	 * 
+	 * @return Set of all registered VisualStyles.
 	 * 
 	 */
 	Set<VisualStyle> getAllVisualStyles();
-	
-	
-	/**
-	 * Add a new style to manager
-	 *
-	 * @param vs
-	 */
-	void addVisualStyle(final VisualStyle visualStyle);
-	
-	
-	/**
-	 * Remove a Visual Style.
-	 *
-	 * @param vs Visual Style to be removed.
-	 * 
-	 */
-	void removeVisualStyle(final VisualStyle visualStyle);
 
 }

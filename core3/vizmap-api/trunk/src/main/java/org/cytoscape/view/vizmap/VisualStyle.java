@@ -42,8 +42,8 @@ import org.cytoscape.view.model.VisualProperty;
 
 
 /**
- * A VisualStyle is a collection of VisualMappingFunctions and default values
- * that defines how a set of attributes modify visual properties of a View object.
+ * A VisualStyle is a collection of {@linkplain VisualMappingFunction}s and default values
+ * that define how a set of attributes is mapped to visual properties of View objects.
  *
  */
 public interface VisualStyle {
@@ -52,7 +52,8 @@ public interface VisualStyle {
 	 * Returns name of this visual style. This should NOT be used as the ID of this
 	 * Visual Style. Just for GUI components and may not be unique.
 	 * 
-	 * Title of Visual Style is a mutable field.
+	 * <p>
+	 * Title of Visual Style is a mutable field and may <strong>NOT</strong> be unique.
 	 *
 	 * @return title of this visual style
 	 */
@@ -60,88 +61,92 @@ public interface VisualStyle {
 
 	
 	/**
-	 * Set new title of this VS.
-	 * Will be used by rename function.
+	 * Set new title for this VisualStyle.
 	 *
-	 * @param title New title.
+	 * @param title New title of this VisualStyle.
 	 */
 	void setTitle(final String title);
 	
 
 	/**
-	 * Add a new mapping for this Visual Style.
+	 * Add a new {@linkplain VisualMappingFunction} to this VisualStyle.
 	 *
-	 * @param mapping new mapping.
+	 * @param mapping new VisualMappingFunction to be added.
 	 */
 	void addVisualMappingFunction(final VisualMappingFunction<?, ?> mapping);
 	
 	
 	/**
-	 *  Remove a mapping for Visual Property.
+	 *  Remove a VisualMappingFunction for the VisualProperty.
 	 *  One visual property can be associated with only one mapping function, 
-	 *  so this always removes correct mapping.
+	 *  so this always removes correct one.
 	 *
-	 * @param vp mapping associated with this vp will be removed.
+	 * @param vp VisualMappingFunction associated with this VisualProperty will be removed.
 	 *
 	 */
 	void removeVisualMappingFunction(final VisualProperty<?> vp);
 
 	
 	/**
-	 *  get current mapping for the Visual Property vp.
+	 *  Get current {@linkplain VisualMappingFunction} for the VisualProperty.
 	 *
-	 * @param <V> Type of visual property.
+	 * @param <V> Data type of VisualProperty.
+	 * 
 	 * @param vp visual property associated with the target mapping.
 	 *
-	 * @return mapping function for vp
+	 * @return mapping function for the VisualProperty.  If no mapping is available, this value is null.
 	 * 
 	 */
 	<V> VisualMappingFunction<?, V> getVisualMappingFunction(final VisualProperty<V> vp);
 
 	
 	/**
-	 *  Returns all available mappings.
+	 *  Returns all {@linkplain VisualMappingFunction}s in this style.
 	 *
-	 * @return  All visual mappings for this style.
+	 * @return  All mappings for this style.
 	 */
 	Collection<VisualMappingFunction<?, ?>> getAllVisualMappingFunctions();
 
 	
 	/**
-	 *  Returns default value for the Visual Property vp.
-	 *  This is style's default value.  Not same as VP's default.
+	 *  Returns default value for the VisualProperty.
+	 *  This is style's default value, not same as VisualProperty default.
+	 *  If VisualMappingFunction is not available for this VisualProperty, this default value will be used in the view model.
 	 *
-	 * @param <V> Type of object associated with vp
-	 * @param vp target visual property
+	 * @param <V> Data type of VisualProperty
+	 * 
+	 * @param vp target VisualProperty
 	 *
-	 * @return  Style's default value for vp
+	 * @return  Style's default value for the VisualProperty.
 	 */
 	<V> V getDefaultValue(final VisualProperty<V> vp);
 
 	
 	/**
-	 *  Setter for the default value of vp.
+	 *  Set default value for the VisualProperty.
 	 *
-	 * @param <V> Type of object associated with vp
-	 * @param vp target visual property
+	 * @param <V> Data type of VisualProperty
+	 * @param <S> Data type of actual default value.  This can be same as V or its child classes.
+	 * 
+	 * @param vp target VisualProperty
 	 * @param value Value to be set as default.  This can be child type of V.  For example, 
 	 * 				if V is Number, S can be Double, Integer, etc.
 	 */
-	<V, S extends V> void setDefaultValue(final VisualProperty<V> vp, S value);
+	<V, S extends V> void setDefaultValue(final VisualProperty<V> vp, final S value);
 
 	
 	/**
-	 * Apply this visual style to the view.
-	 * Currently this is only for network view.
-	 *
-	 * @param v Visual Style will be applied to this network view.
+	 * Apply this style to the network view model.
+	 * 
+	 * @param networkViewModel target view model to be updated.
 	 */
 	void apply(final CyNetworkView networkViewModel);
 	
 	
 	/**
-	 * A Visual Style is always associated with a lexicon tree provided 
-	 * by a rendering engine.  This method returns its associated lexicon.
+	 * A VisualStyle is always associated with a lexicon tree provided 
+	 * by a {@linkplain RenderingEngine}.  This method returns the associated lexicon.
+	 * VisualLexicon is immutable.
 	 * 
 	 * @return VisualLexicon provided by a rendering engine.
 	 */
