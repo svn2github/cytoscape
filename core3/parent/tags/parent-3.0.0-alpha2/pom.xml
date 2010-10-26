@@ -1,0 +1,333 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.cytoscape</groupId>
+	<artifactId>parent</artifactId>
+	<packaging>pom</packaging>
+	<version>3.0.0-alpha2</version>
+	<name>Basic Cytoscape POM Configuration</name>
+
+
+	<properties>
+		<!-- Eventually, we need to move all important system bundle version numbers 
+			here because the version should be consistent for all modules. -->
+		<!-- System Bundle Versions -->
+		<spring.version>2.5.6</spring.version>
+		<spring.osgi.version>1.2.1</spring.osgi.version>
+		<junit.version>4.8.1</junit.version>
+		<easymock.version>3.0</easymock.version>
+		<maven-bundle-plugin.version>2.1.0</maven-bundle-plugin.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>Internal Releases</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Internal Snapshots</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<optimize>true</optimize>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
+					<compilerArguments>
+					<!--
+						<compilerArgument>-Xlint:all -Xlint:-path</compilerArgument>
+						-->
+						<Xmaxwarns>10000</Xmaxwarns>
+						<Xmaxerrs>10000</Xmaxerrs>
+					</compilerArguments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<locale>en</locale>
+					<javadocVersion>1.6</javadocVersion>
+					<links>
+						<link>http://java.sun.com/javase/6/docs/api/</link>
+						<link>http://cytoscape.wodaklab.org/javadoc/</link>
+					</links>
+					<footer>Cytoscape 3 Core API</footer>
+					<header>Cytoscape 3 Core API</header>
+					<bottom>Copyright 2010 Cytoscape Consortium. All rights reserved.</bottom>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<inherited>false</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.0</version>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<goals>deploy</goals>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+
+		<!-- this is the preferred method of deployment transport mechanism -->
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav</artifactId>
+				<version>1.0-beta-2</version>
+			</extension>
+		</extensions>
+
+	</build>
+
+	<!-- these items don't exist in the typical public maven repos; we could 
+		add these directly to Nexus if desired -->
+	<repositories>
+      <repository>
+          <id>cytoscape_snapshots</id>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <name>Cytoscape Snapshots</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+       </repository>
+       <repository>
+          <id>cytoscape_releases</id>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <name>Cytoscape Releases</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+       </repository>
+       <repository>
+          <id>cytoscape_thirdparty</id>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <name>Cytoscape Third Party</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/thirdparty/</url>
+       </repository>
+       <repository>
+          <id>cytoscape_biopax_release</id>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <name>Cytoscape BioPAX Release Mirror</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/biopax-release/</url>
+       </repository>
+       <repository>
+          <id>cytoscape_biopax_snapshot</id>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <name>Cytoscape BioPAX Snapshot Mirror</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/biopax-snapshot/</url>
+       </repository>
+       <repository>
+          <id>ops4j-release</id>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <name>Cytoscape Ops4j Release Mirror</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/ops4j-release/</url>
+       </repository>
+       <repository>
+          <id>l2fprod-release</id>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <name>Cytoscape L2fProd Release Mirror</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/l2fprod-release/</url>
+       </repository>
+       <repository>
+          <id>spring-osgi</id>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <name>Cytoscape Spring OSGi Release Mirror</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/spring-osgi/</url>
+       </repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>maven2-repository.dev.java.net</id>
+			<name>Java.net Maven 2 Repository</name>
+			<url>http://download.java.net/maven/2
+			</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>maven-repository.dev.java.net</id>
+			<name>Java.net Maven 1 Repository (legacy)</name>
+			<url>http://download.java.net/maven/1
+			</url>
+			<layout>legacy</layout>
+		</pluginRepository>
+	</pluginRepositories>
+
+  <scm>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/parent/tags/parent-3.0.0-alpha2</connection>
+    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/parent/tags/parent-3.0.0-alpha2</developerConnection>
+    <url>http://chianti.ucsd.edu/svn/core3/parent/tags/parent-3.0.0-alpha2</url>
+  </scm>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<tags>
+						<tag>TODO</tag>
+						<tag>FIXME</tag>
+						<tag>@todo</tag>
+						<tag>@deprecated</tag>
+						<tag>DOCUMENT ME</tag>
+					</tags>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<linkXref>true</linkXref>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+					<targetJdk>1.6</targetJdk>
+					<excludes>
+						<exclude>**/*Bean.java</exclude>
+						<exclude>**/generated/*.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<configuration>
+					<threshold>Normal</threshold>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jdepend-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<excludePackageNames>*.impl</excludePackageNames>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>javadoc</report>
+							<!-- <report>test-javadoc</report> -->
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jxr-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>-Xmx256m</argLine>
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<xmlOutput>true</xmlOutput>
+					<!-- Optional directory to put findbugs xdoc xml report -->
+					<xmlOutputDirectory>target/site</xmlOutputDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+
+	<!-- Shared dependency for all projects. -->
+	<dependencies>
+		<dependency>
+			<groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-api</artifactId>
+			<version>1.5.2</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+</project>
