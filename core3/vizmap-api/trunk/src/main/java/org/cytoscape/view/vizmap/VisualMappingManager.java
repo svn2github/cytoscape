@@ -48,7 +48,7 @@ import org.cytoscape.view.model.CyNetworkView;
  * <p>
  * Add/Remove operations will be done through events. For more information, read
  * JavaDoc for {@linkplain VisualStyleCreatedEvent} and
- * {@linkplain VisualStyleDestroyedEvent}.
+ * {@linkplain VisualStyleRemovedEvent}.
  * </p>
  * 
  */

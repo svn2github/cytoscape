@@ -1,23 +1,27 @@
 package org.cytoscape.view.vizmap;
 
 
-import org.cytoscape.view.vizmap.events.VisualStyleChangedEvent;
+import static org.easymock.EasyMock.createMock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.cytoscape.view.vizmap.events.VisualStyleCreatedEvent;
-import org.cytoscape.view.vizmap.events.VisualStyleDestroyedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleRemovedEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
-
 public class VizmapEventsTest {
 
 	private VisualStyle style;
+	private VisualStyleFactory factory;
+	private VisualMappingManager manager;
 	
 	@Before
 	public void setUp() throws Exception {
 		style = createMock(VisualStyle.class);
+		factory = createMock(VisualStyleFactory.class);
+		manager = createMock(VisualMappingManager.class);
 	}
 
 	@After
@@ -26,23 +30,16 @@ public class VizmapEventsTest {
 	
 	@Test
 	public void testVisualStyleCreatedEvent() {
-		final VisualStyleCreatedEvent event = new VisualStyleCreatedEvent(style);
+		final VisualStyleCreatedEvent event = new VisualStyleCreatedEvent(factory, style);
 		assertNotNull(event);
-		assertEquals(style, event.getSource());
+		assertEquals(style, event.getCreatedVisualStyle());
 	}
 	
 	@Test
 	public void testVisualStyleDestroyedEvent() {
-		final VisualStyleDestroyedEvent event = new VisualStyleDestroyedEvent(style);
+		final VisualStyleRemovedEvent event = new VisualStyleRemovedEvent(manager, style);
 		assertNotNull(event);
-		assertEquals(style, event.getSource());
-	}
-	
-	@Test
-	public void testVisualStyleChangedEvent() {
-		final VisualStyleChangedEvent event = new VisualStyleChangedEvent(style);
-		assertNotNull(event);
-		assertEquals(style, event.getSource());
+		assertEquals(style, event.getDestroyedVisualStyle());
 	}
 
 }

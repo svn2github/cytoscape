@@ -31,21 +31,40 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.events;
 
 import org.cytoscape.event.AbstractCyEvent;
-
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 
-
 /**
- * TODO: Is this necessary?
- * 
-  */
-public final class VisualStyleChangedEvent extends AbstractCyEvent<VisualStyle> {
+ * This event will be fired when {@linkplain VisualStyle} object is deleted from
+ * {@linkplain VisualMappingManager}.
+ */
+public final class VisualStyleRemovedEvent extends AbstractCyEvent<VisualMappingManager> {
+
+	private final VisualStyle destroyed;
+
+	/**
+	 * create an event for the deleted VisualStyle.
+	 * 
+	 * @param source Source of event.  Anyone can create this event, but usually GUI components creates this event.
+	 * @param destroyed VisualStyle to be deleted.
+	 */
+	public VisualStyleRemovedEvent(final VisualMappingManager source, final VisualStyle destroyed) {
+		super(source, VisualStyleRemovedListener.class);
+		this.destroyed = destroyed;
+	}
+
 	
-	public VisualStyleChangedEvent(final VisualStyle source) {
-		super(source, VisualStyleChangedListener.class);
+	/**
+	 * Returns deleted VisualStyle.
+	 * 
+	 * @return VisualStyle just deleted.
+	 * 
+	 */
+	public VisualStyle getDestroyedVisualStyle() {
+		return destroyed;
 	}
 }

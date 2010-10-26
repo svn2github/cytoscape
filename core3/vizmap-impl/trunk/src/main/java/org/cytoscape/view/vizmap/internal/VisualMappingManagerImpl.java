@@ -45,13 +45,13 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.events.VisualStyleCreatedEvent;
 import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
-import org.cytoscape.view.vizmap.events.VisualStyleDestroyedEvent;
-import org.cytoscape.view.vizmap.events.VisualStyleDestroyedListener;
+import org.cytoscape.view.vizmap.events.VisualStyleRemovedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleRemovedListener;
 
 /**
  *
  */
-public class VisualMappingManagerImpl implements VisualMappingManager, VisualStyleCreatedListener, VisualStyleDestroyedListener {
+public class VisualMappingManagerImpl implements VisualMappingManager, VisualStyleCreatedListener, VisualStyleRemovedListener {
 
 	private final Map<CyNetworkView, VisualStyle> network2VisualStyleMap;
 	private final Set<VisualStyle> visualStyles;
@@ -103,7 +103,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager, VisualSty
 	 */
 	private void removeVisualStyle(VisualStyle vs) {
 		visualStyles.remove(vs);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEvent(vs));
+		cyEventHelper.fireSynchronousEvent(new VisualStyleRemovedEvent(this, vs));
 		vs = null;
 	}
 
@@ -128,13 +128,13 @@ public class VisualMappingManagerImpl implements VisualMappingManager, VisualSty
 	}
 
 	@Override
-	public void handleEvent(VisualStyleDestroyedEvent e) {
-		removeVisualStyle(e.getSource());
+	public void handleEvent(VisualStyleRemovedEvent e) {
+		removeVisualStyle(e.getDestroyedVisualStyle());
 	}
 
 	@Override
 	public void handleEvent(VisualStyleCreatedEvent e) {
-		addVisualStyle(e.getSource());
+		addVisualStyle(e.getCreatedVisualStyle());
 	}
 
 }

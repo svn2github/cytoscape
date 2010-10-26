@@ -681,7 +681,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * Update GUI components when new Visual Style is created.
 	 */
 	@Override public void handleEvent(final VisualStyleCreatedEvent e) {
-		final VisualStyle newStyle = e.getSource();
+		final VisualStyle newStyle = e.getCreatedVisualStyle();
 		if(newStyle == null)
 			return;
 		
