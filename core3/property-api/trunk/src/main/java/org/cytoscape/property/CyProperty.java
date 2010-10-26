@@ -11,7 +11,8 @@ package org.cytoscape.property;
 public interface CyProperty<P> {
 
 	/**
-	 * @return A property object to type P.
+	 * Return a property object
+	 * @return A property object of type P.
 	 */
 	public P getProperties();
 }

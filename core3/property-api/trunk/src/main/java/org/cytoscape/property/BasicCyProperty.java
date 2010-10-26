@@ -12,6 +12,8 @@ public final class BasicCyProperty implements CyProperty<Properties> {
 	private final Properties properties;
 
 	/**
+	 * Properties is a non-null Properties object that this CyProperty object
+	 * should encapsulate.
 	 * @param properties The non-null Properties object this CyProperty object
 	 * should encapsulate.  Throws NullPointerException if Properties is null.
 	 */
