@@ -33,7 +33,7 @@ public class VisualStyleFactoryImpl implements VisualStyleFactory {
 			vp = mapping.getVisualProperty();
 		}
 
-		eventHelper.fireSynchronousEvent(new VisualStyleCreatedEvent(this,copyVS));
+		eventHelper.fireSynchronousEvent(new VisualStyleCreatedEvent(copyVS));
 
 		return copyVS;
 	}
@@ -43,7 +43,7 @@ public class VisualStyleFactoryImpl implements VisualStyleFactory {
 	public VisualStyle createVisualStyle(String title, final VisualLexicon lexicon) {
 		final VisualStyle vs = new VisualStyleImpl(title, lexicon);
 		
-		eventHelper.fireSynchronousEvent(new VisualStyleCreatedEvent(this,vs));
+		eventHelper.fireSynchronousEvent(new VisualStyleCreatedEvent(vs));
 		return vs;
 	}
 

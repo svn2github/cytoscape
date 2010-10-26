@@ -42,28 +42,15 @@ import org.cytoscape.view.vizmap.VisualStyle;
  * object, it should fire this event.
  * 
  */
-public final class VisualStyleCreatedEvent extends AbstractCyEvent<Object> {
-
-	private final VisualStyle created;
-
+public final class VisualStyleCreatedEvent extends AbstractCyEvent<VisualStyle> {
+	
 	/**
 	 * Creates an event for the newly created style.
 	 * 
-	 * @param source this is usually the {@linkplain VisualStyleFactory}.
 	 * @param created the new VisualStyle
 	 */
-	public VisualStyleCreatedEvent(final Object source,
-			final VisualStyle created) {
-		super(source, VisualStyleCreatedListener.class);
-		this.created = created;
+	public VisualStyleCreatedEvent(final VisualStyle created) {
+		super(created, VisualStyleCreatedListener.class);
 	}
 
-	/**
-	 * Get the newly created VisualStyle.
-	 * 
-	 * @return new VisualStyle
-	 */
-	public VisualStyle getCreatedVisualStyle() {
-		return created;
-	}
 }

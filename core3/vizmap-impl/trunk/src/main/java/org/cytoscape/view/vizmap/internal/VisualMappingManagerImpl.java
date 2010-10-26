@@ -103,8 +103,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager, VisualSty
 	 */
 	private void removeVisualStyle(VisualStyle vs) {
 		visualStyles.remove(vs);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEvent(this,
-				vs));
+		cyEventHelper.fireSynchronousEvent(new VisualStyleDestroyedEvent(vs));
 		vs = null;
 	}
 
@@ -130,12 +129,12 @@ public class VisualMappingManagerImpl implements VisualMappingManager, VisualSty
 
 	@Override
 	public void handleEvent(VisualStyleDestroyedEvent e) {
-		removeVisualStyle(e.getDestroyedVisualStyle());
+		removeVisualStyle(e.getSource());
 	}
 
 	@Override
 	public void handleEvent(VisualStyleCreatedEvent e) {
-		addVisualStyle(e.getCreatedVisualStyle());
+		addVisualStyle(e.getSource());
 	}
 
 }

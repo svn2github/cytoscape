@@ -14,12 +14,10 @@ import static org.junit.Assert.*;
 public class VizmapEventsTest {
 
 	private VisualStyle style;
-	private VisualStyleFactory factory;
 	
 	@Before
 	public void setUp() throws Exception {
 		style = createMock(VisualStyle.class);
-		factory = createMock(VisualStyleFactory.class);
 	}
 
 	@After
@@ -28,16 +26,16 @@ public class VizmapEventsTest {
 	
 	@Test
 	public void testVisualStyleCreatedEvent() {
-		final VisualStyleCreatedEvent event = new VisualStyleCreatedEvent(factory, style);
+		final VisualStyleCreatedEvent event = new VisualStyleCreatedEvent(style);
 		assertNotNull(event);
-		assertEquals(style, event.getCreatedVisualStyle());
+		assertEquals(style, event.getSource());
 	}
 	
 	@Test
 	public void testVisualStyleDestroyedEvent() {
-		final VisualStyleDestroyedEvent event = new VisualStyleDestroyedEvent(factory, style);
+		final VisualStyleDestroyedEvent event = new VisualStyleDestroyedEvent(style);
 		assertNotNull(event);
-		assertEquals(style, event.getDestroyedVisualStyle());
+		assertEquals(style, event.getSource());
 	}
 	
 	@Test
