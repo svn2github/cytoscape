@@ -1,7 +1,9 @@
 package org.cytoscape.property.bookmark;
 
 import java.util.List;
-
+/**
+ * A set of utility methods to manipulate the bookmarks
+ */
 public interface BookmarksUtil {
 
 	/**
@@ -24,56 +26,47 @@ public interface BookmarksUtil {
 	public Category getCategory(String categoryName, List<Category> categoryList);
 
 	/**
-	 * DOCUMENT ME!
+	 * Given the attribute name, return the value in a bookmark 
 	 * 
-	 * @param source
-	 *            DOCUMENT ME!
-	 * @param attrName
-	 *            DOCUMENT ME!
+	 * @param source a bookmark object
+	 * @param attrName an attribute name
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return The value related to the attribute name
 	 */
 	public String getAttribute(DataSource source, String attrName);
 
 	/**
-	 * DOCUMENT ME!
+	 * Store a bookmark object in bookmarks object
 	 * 
-	 * @param pBookmarks
-	 *            DOCUMENT ME!
-	 * @param pCategoryName
-	 *            DOCUMENT ME!
-	 * @param pDataSource
-	 *            DOCUMENT ME!
+	 * @param pBookmarks bookmarks object
+	 * @param pCategoryName category name
+	 * @param pDataSource a single bookmark
 	 */
 	public void saveBookmark(Bookmarks pBookmarks, String pCategoryName,
 			DataSource pDataSource);
 
 	/**
-	 * DOCUMENT ME!
+	 * Delete a bookmark (pDataSource) from the categoty (pCategoryName) in the bookmarks object (pBookmarks)
 	 * 
-	 * @param pBookmarks
-	 *            DOCUMENT ME!
-	 * @param pCategoryName
-	 *            DOCUMENT ME!
-	 * @param pDataSource
-	 *            DOCUMENT ME!
+	 * @param pBookmarks Bookmark object, which hold a set of bookmark
+	 *  
+	 * @param pCategoryName category name
 	 * 
-	 * @return DOCUMENT ME!
+	 * @param pDataSource a single bookmark object
+	 * 
+	 * @return True if the bookmark is deleted successfully, False otherwise.
 	 */
 	public boolean deleteBookmark(Bookmarks pBookmarks, String pCategoryName,
 			DataSource pDataSource);
 
 	/**
-	 * DOCUMENT ME!
+	 * Check if a bookmark is in the bookmarks.
 	 * 
-	 * @param pBookmarks
-	 *            DOCUMENT ME!
-	 * @param pCategoryName
-	 *            DOCUMENT ME!
-	 * @param pDataSource
-	 *            DOCUMENT ME!
+	 * @param pBookmarks bookmarks object
+	 * @param pCategoryName category name
+	 * @param pDataSource a bookmark
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return True if the bookmark is in bookmarks, False otherwise
 	 */
 	public boolean isInBookmarks(Bookmarks pBookmarks, String pCategoryName,
 			DataSource pDataSource);
