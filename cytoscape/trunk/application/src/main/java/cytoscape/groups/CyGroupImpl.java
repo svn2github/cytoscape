@@ -153,8 +153,13 @@ public class CyGroupImpl implements CyGroup {
 		this.groupNode = groupNode;
 		this.groupName = this.groupNode.getIdentifier();
 
-		if (nodeList == null && internalEdges == null && externalEdges == null)
+		if (nodeList == null && internalEdges == null && externalEdges == null) {
+			CytoscapeRootGraph rootGraph = Cytoscape.getRootGraph();
+			Node[] nodeArray = null;
+			Edge[] edgeArray = null;
+			myGraph = rootGraph.createNetwork(nodeArray, edgeArray);
 			return;
+		}
 
 		// System.out.println("   Group "+groupNode+" has "+nodeList.size()+" nodes");
 
@@ -576,28 +581,30 @@ public class CyGroupImpl implements CyGroup {
 
 		// Add all of the edges
 		List<CyEdge> adjacentEdges = (List<CyEdge>)groupNetwork.getAdjacentEdgesList(node, true, true, true);
-		for (CyEdge edge: adjacentEdges) {
-			// Not sure if this is faster or slower than going through the entire loop
-			if (myGraph.containsEdge(edge))
-				continue;
-
-			edgeList.add(edge);
-			CyNode target = (CyNode)edge.getTarget();
-			CyNode source = (CyNode)edge.getSource();
-
-			// Check to see if this edge is one of our own metaEdges
-			if (source == groupNode || target == groupNode) {
-				// It is -- skip it
-				continue;
-			}
-
-			if (outerEdgeMap.containsKey(edge)) {
-				outerEdgeMap.remove(edge);
-				myGraph.addEdge(edge);
-			} else if (myGraph.containsNode(target) && myGraph.containsNode(source)) {
-				myGraph.addEdge(edge);
-			} else if (myGraph.containsNode(target) || myGraph.containsNode(source)) {
-				outerEdgeMap.put(edge,edge);
+		if (adjacentEdges != null) {
+			for (CyEdge edge: adjacentEdges) {
+				// Not sure if this is faster or slower than going through the entire loop
+				if (myGraph.containsEdge(edge))
+					continue;
+	
+				edgeList.add(edge);
+				CyNode target = (CyNode)edge.getTarget();
+				CyNode source = (CyNode)edge.getSource();
+	
+				// Check to see if this edge is one of our own metaEdges
+				if (source == groupNode || target == groupNode) {
+					// It is -- skip it
+					continue;
+				}
+	
+				if (outerEdgeMap.containsKey(edge)) {
+					outerEdgeMap.remove(edge);
+					myGraph.addEdge(edge);
+				} else if (myGraph.containsNode(target) && myGraph.containsNode(source)) {
+					myGraph.addEdge(edge);
+				} else if (myGraph.containsNode(target) || myGraph.containsNode(source)) {
+					outerEdgeMap.put(edge,edge);
+				}
 			}
 		}
 		nodeToEdgeMap.put(node, edgeList);
