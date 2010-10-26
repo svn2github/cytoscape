@@ -15,16 +15,16 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
   <artifactId>event-api</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>3.0.0-alpha1</version>
 
   <name>${bundle.symbolicName} [${bundle.namespace}]</name>
 
   <packaging>bundle</packaging>
 
   <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/event-api/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/event-api/trunk</developerConnection>
-    <url>http://chianti.ucsd.edu/svn/core3/event-api/trunk</url>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/event-api/tags/event-api-3.0.0-alpha1</connection>
+    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/event-api/tags/event-api-3.0.0-alpha1</developerConnection>
+    <url>http://chianti.ucsd.edu/svn/core3/event-api/tags/event-api-3.0.0-alpha1</url>
   </scm>
 
 
