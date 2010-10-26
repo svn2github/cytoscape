@@ -76,8 +76,8 @@ public class EnhancedSearchPanel extends JPanel {
 
 	private static final String ESP_LABEL = "Enhanced Search:  ";
 	private static final String SEARCH_MENU_ITEM = "Search";
-	private static final String REINDEX_MENU_ITEM = "Re-index and search";
-	private static final String QUERY_SYNTAX_MENU_ITEM = "Quick reference to query syntax";
+	private static final String REINDEX_MENU_ITEM = "Re-index and Search";
+	private static final String QUERY_SYNTAX_MENU_ITEM = "Enhanced Search Query Syntax";
 
 	private static final String SEARCH_TOOLTIP = "Perform search";
 	private static final String REINDEX_TOOLTIP = "<html>"
@@ -267,7 +267,7 @@ public class EnhancedSearchPanel extends JPanel {
 	            {"Single term", "\"water channel\""},
 	            {"Restrict to a specific attribute", "annotation:aquaporin"},
 	            {"At least one of the terms must exist", "transcription or factor"},
-	            {"First term must exist but second must not", "transcription not factor"},
+	            {"First term must exist but second term must not", "transcription not factor"},
 	            {"Single character wildcard", "prot?in"},
 	            {"Multiple character wildcard", "HSP*"},
 	            {"Range search", "degree:[1 to 3]"},
@@ -278,9 +278,10 @@ public class EnhancedSearchPanel extends JPanel {
 		
         JDialog dialog = new JDialog();
         dialog.setContentPane(new JScrollPane(table));
-        dialog.setSize(500,200);
+        dialog.setSize(650,200);
+        dialog.setTitle("Enhanced Search Query Syntax");
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setLocation(600,200);
+        dialog.setLocation(500,200);
         dialog.setVisible(true);
 
 	}
