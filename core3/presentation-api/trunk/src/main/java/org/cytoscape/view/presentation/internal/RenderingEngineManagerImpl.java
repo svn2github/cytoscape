@@ -10,12 +10,12 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.presentation.events.PresentationCreatedEvent;
-import org.cytoscape.view.presentation.events.PresentationCreatedEventListener;
+import org.cytoscape.view.presentation.events.PresentationCreatedListener;
 import org.cytoscape.view.presentation.events.PresentationDestroyedEvent;
-import org.cytoscape.view.presentation.events.PresentationDestroyedEventListener;
+import org.cytoscape.view.presentation.events.PresentationDestroyedListener;
 
 public class RenderingEngineManagerImpl implements RenderingEngineManager,
-		PresentationCreatedEventListener, PresentationDestroyedEventListener {
+		PresentationCreatedListener, PresentationDestroyedListener {
 
 	private final Map<View<?>, Set<RenderingEngine<?>>> renderingEngineMap;
 
@@ -42,7 +42,7 @@ public class RenderingEngineManagerImpl implements RenderingEngineManager,
 	@Override
 	public void handleEvent(PresentationCreatedEvent e) {
 		// This cannot be null.
-		final RenderingEngine<?> renderingEngine = e.getSource();
+		final RenderingEngine<?> renderingEngine = e.getRenderingEngine();
 
 		final View<?> viewModel = renderingEngine.getViewModel();
 		Set<RenderingEngine<?>> engines = renderingEngineMap
@@ -57,7 +57,7 @@ public class RenderingEngineManagerImpl implements RenderingEngineManager,
 	@Override
 	public void handleEvent(PresentationDestroyedEvent e) {
 		// This cannot be null.
-		final RenderingEngine<?> renderingEngine = e.getSource();
+		final RenderingEngine<?> renderingEngine = e.getRenderingEngine();
 
 		final View<?> viewModel = renderingEngine.getViewModel();
 		final Set<RenderingEngine<?>> engineSet = renderingEngineMap.get(viewModel);

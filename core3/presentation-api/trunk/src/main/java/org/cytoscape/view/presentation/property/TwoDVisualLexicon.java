@@ -47,28 +47,27 @@ import org.cytoscape.view.presentation.RenderingEngine;
  * all {@linkplain RenderingEngine}s. All of Visual Properties are singletons
  * and accessible as static object.
  * 
- * @author kono
- * 
  */
 public class TwoDVisualLexicon extends AbstractVisualLexicon {
 
 	// Top level nodes has null as parent, and will be pointed by parent node.
 	// This is because all VPs are static objects.
 
+	////// Top level objects ///////
 	public static final VisualProperty<Visualizable> NETWORK = new DefaultVisualizableVisualProperty(
 			"NETWORK", "Network Visual Property");
-
 	public static final VisualProperty<Visualizable> NODE = new DefaultVisualizableVisualProperty(
 			"NODE", "Node Visual Property");
 	public static final VisualProperty<Visualizable> EDGE = new DefaultVisualizableVisualProperty(
 			"EDGE", "Edge Visual Property");
+	
 
+	////// Node VP /////////
 	public static final VisualProperty<Paint> NODE_PAINT = new PaintVisualProperty(
 			Color.gray, "NODE_PAINT", "Node Paint");
 	public static final VisualProperty<Paint> NODE_COLOR = new PaintVisualProperty(
 			Color.RED, "NODE_COLOR", "Node Color");
-	public static final VisualProperty<Paint> NODE_SELECTED_COLOR = new PaintVisualProperty(
-			Color.YELLOW, "NODE_SELECTED_COLOR", "Node Selected Color");
+	
 	public static final VisualProperty<Paint> NODE_LABEL_COLOR = new PaintVisualProperty(
 			Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color");
 
@@ -97,6 +96,8 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	public static final VisualProperty<Boolean> NODE_SELECTED = new BooleanVisualProperty(
 			false, "NODE_SELECTED", "Node Selected");
 
+	
+	/////// Edge VP ///////
 	public static final VisualProperty<Paint> EDGE_PAINT = new PaintVisualProperty(
 			Color.gray, "EDGE_PAINT", "Edge Paint");
 	public static final VisualProperty<Paint> EDGE_COLOR = new PaintVisualProperty(
@@ -118,6 +119,8 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	public static final VisualProperty<Boolean> EDGE_SELECTED = new BooleanVisualProperty(
 			false, "EDGE_SELECTED", "Edge Selected");
 
+	
+	//////// Network VP ////////
 	public static final VisualProperty<Double> NETWORK_SCALE_FACTOR = new DoubleVisualProperty(
 			1.0, "NETWORK_SCALE_FACTOR", "Network Scale Factor");
 
@@ -138,17 +141,21 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	public static final VisualProperty<String> NETWORK_TITLE = new StringVisualProperty(
 			"", "NETWORK_TITLE", "Network Title");
 
-	public static final VisualProperty<Paint> NETWORK_PAINT = new PaintVisualProperty(
-			Color.WHITE, "NETWORK_PAINT", "Network Paint");
-	public static final VisualProperty<Paint> NETWORK_BACKGROUND_COLOR = new PaintVisualProperty(
-			Color.WHITE, "NETWORK_BACKGROUND_COLOR", "Network Background Color");
+	public static final VisualProperty<Paint> NETWORK_BACKGROUND_PAINT = new PaintVisualProperty(
+			Color.WHITE, "NETWORK_BACKGROUND_PAINT", "Network Background Paint");
+	
+	public static final VisualProperty<Paint> NETWORK_NODE_SELECTED_COLOR = new PaintVisualProperty(
+			Color.YELLOW, "NETWORK_NODE_SELECTED_COLOR", "Node Selected Color");
+	
+	public static final VisualProperty<Paint> NETWORK_EDGE_SELECTED_COLOR = new PaintVisualProperty(
+			Color.YELLOW, "NETWORK_EDGE_SELECTED_COLOR", "Edge Selected Color");
 
 	/**
 	 * Build tree-structure for the set of Visual Properties defined in this
 	 * class.
 	 * 
-	 * @param root
-	 * @param nodeFactory
+	 * @param root root node in the lexicon tree.  It is just an entry point for this tree.
+	 * 
 	 */
 	public TwoDVisualLexicon(final VisualProperty<NullDataType> root) {
 		super(root);
@@ -158,10 +165,12 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 		addVisualProperty(NODE, NETWORK);
 		addVisualProperty(EDGE, NETWORK);
 
-		addVisualProperty(NETWORK_PAINT, NETWORK);
 		addVisualProperty(NETWORK_SIZE, NETWORK);
 		addVisualProperty(NETWORK_CENTER_LOCATION, NETWORK);
 		addVisualProperty(NETWORK_SCALE_FACTOR, NETWORK);
+		addVisualProperty(NETWORK_NODE_SELECTED_COLOR, NETWORK);
+		addVisualProperty(NETWORK_EDGE_SELECTED_COLOR, NETWORK);
+
 
 		addVisualProperty(NODE_LOCATION, NODE);
 		addVisualProperty(NODE_PAINT, NODE);
@@ -176,7 +185,7 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 		addVisualProperty(EDGE_SELECTED, EDGE);
 
 		addVisualProperty(NETWORK_TITLE, NETWORK);
-		addVisualProperty(NETWORK_BACKGROUND_COLOR, NETWORK_PAINT);
+		addVisualProperty(NETWORK_BACKGROUND_PAINT, NETWORK);
 		addVisualProperty(NETWORK_WIDTH, NETWORK_SIZE);
 		addVisualProperty(NETWORK_HEIGHT, NETWORK_SIZE);
 		addVisualProperty(NETWORK_CENTER_X_LOCATION, NETWORK_CENTER_LOCATION);
@@ -186,7 +195,6 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 		addVisualProperty(NODE_Y_LOCATION, NODE_LOCATION);
 		addVisualProperty(NODE_COLOR, NODE_PAINT);
 		addVisualProperty(NODE_LABEL_COLOR, NODE_PAINT);
-		addVisualProperty(NODE_SELECTED_COLOR, NODE_PAINT);
 		addVisualProperty(NODE_X_SIZE, NODE_SIZE);
 		addVisualProperty(NODE_Y_SIZE, NODE_SIZE);
 		addVisualProperty(NODE_LABEL, NODE_TEXT);

@@ -3,7 +3,7 @@ package org.cytoscape.view.vizmap.gui.internal.util;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_LABEL;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_LABEL_COLOR;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_BACKGROUND_COLOR;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_LABEL;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_LABEL_COLOR;
@@ -101,7 +101,7 @@ public class DefaultVisualStyleBuilder {
 		newStyle.setDefaultValue(EDGE_LABEL_COLOR, DEFAULT_EDGE_LABEL_COLOR );
 		
 		// Set network appearance
-		newStyle.setDefaultValue(NETWORK_BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR );
+		newStyle.setDefaultValue(NETWORK_BACKGROUND_PAINT, DEFAULT_BACKGROUND_COLOR );
 		
 		// Create label mappings
 		final PassthroughMapping<String, String> labelMapping = new PassthroughMapping<String, String>(NAME, String.class, NODE_LABEL);

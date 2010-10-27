@@ -56,11 +56,11 @@ public class TwoDVisualLexiconTest extends AbstractVisualLexiconTest {
 		assertEquals(1, nodeTextChild.size());
 		
 		Collection<VisualLexiconNode> nodePaintChild = twoDLex.getVisualLexiconNode(TwoDVisualLexicon.NODE_PAINT).getChildren();
-		assertEquals(3, nodePaintChild.size());
+		assertEquals(2, nodePaintChild.size());
 		assertEquals(twoDLex.getAllDescendants(TwoDVisualLexicon.NODE_PAINT).size(), nodePaintChild.size());
 		
 		Collection<VisualProperty<?>> nodeChildren = twoDLex.getAllDescendants(TwoDVisualLexicon.NODE);
-		assertEquals(14, nodeChildren.size());
+		assertEquals(13, nodeChildren.size());
 		
 		Collection<VisualProperty<?>> edgeChildren = twoDLex.getAllDescendants(TwoDVisualLexicon.EDGE);
 		assertEquals(8, edgeChildren.size());

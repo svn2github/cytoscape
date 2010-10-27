@@ -83,7 +83,7 @@ public class VisualPropertyUtilTest {
 	
 	@Test
 	public void testGetGraphObjectType3() {
-		final String type = VisualPropertyUtil.getGraphObjectType(TwoDVisualLexicon.NETWORK_PAINT, lexicon);
+		final String type = VisualPropertyUtil.getGraphObjectType(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT, lexicon);
 		assertEquals("NETWORK", type);
 	}
 	

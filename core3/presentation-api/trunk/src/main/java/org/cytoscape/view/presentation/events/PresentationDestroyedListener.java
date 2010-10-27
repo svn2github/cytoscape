@@ -4,7 +4,7 @@ package org.cytoscape.view.presentation.events;
  * Listener for destroyed presentations.
  *
  */
-public interface PresentationDestroyedEventListener {
+public interface PresentationDestroyedListener {
 	
 	/**
 	 * Perform post-deletion tasks in this method.

@@ -2744,7 +2744,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				enableEdgeSelection();
 			else
 				disableEdgeSelection();
-		} else if (vp == TwoDVisualLexicon.NETWORK_BACKGROUND_COLOR) {
+		} else if (vp == TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT) {
 			setBackgroundPaint((Paint) o);
 		} else if (vp == TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION) {
 			setCenter(((Double) o).doubleValue(), m_networkCanvas.m_yCenter);

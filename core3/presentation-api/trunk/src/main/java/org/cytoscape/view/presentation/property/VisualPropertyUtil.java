@@ -5,8 +5,22 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 
+/**
+ * Utility functions for traversing visual lexicon tree.
+ *
+ */
 public class VisualPropertyUtil {
 
+	/**
+	 * Check whether the given {@linkplain VisualProperty} is a child of parent vp or not.
+	 * 
+	 * @param parent parent visual property
+	 * @param vp visual property to be tested
+	 * @param lexicon lexicon tree
+	 * 
+	 * @return true if it's a child of the parent or parent itself.  Otherwise, return false.
+	 *  
+	 */
 	public static boolean isChildOf(final VisualProperty<?> parent, final VisualProperty<?> vp,
 			final VisualLexicon lexicon) {
 		
@@ -39,6 +53,14 @@ public class VisualPropertyUtil {
 		return false;
 	}
 	
+	
+	/**
+	 * TODO: How can we avoid this?
+	 * 
+	 * @param vp
+	 * @param lexicon
+	 * @return
+	 */
 	public static String getGraphObjectType(final VisualProperty<?> vp, final VisualLexicon lexicon) {
 		if(isChildOf(TwoDVisualLexicon.NODE, vp, lexicon))
 			return CyTableEntry.NODE;

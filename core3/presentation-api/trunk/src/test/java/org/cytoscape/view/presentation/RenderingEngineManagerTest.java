@@ -9,9 +9,9 @@ import java.util.Set;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.events.PresentationCreatedEvent;
-import org.cytoscape.view.presentation.events.PresentationCreatedEventListener;
+import org.cytoscape.view.presentation.events.PresentationCreatedListener;
 import org.cytoscape.view.presentation.events.PresentationDestroyedEvent;
-import org.cytoscape.view.presentation.events.PresentationDestroyedEventListener;
+import org.cytoscape.view.presentation.events.PresentationDestroyedListener;
 import org.cytoscape.view.presentation.internal.RenderingEngineManagerImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -43,6 +43,8 @@ public class RenderingEngineManagerTest {
 		final CyNetworkView networkView1 = createMock(CyNetworkView.class);
 		final CyNetworkView networkView2 = createMock(CyNetworkView.class);
 		
+		final RenderingEngineFactory<CyNetwork> factory = createMock(RenderingEngineFactory.class);
+		
 		final RenderingEngine<CyNetwork> engine1 = createMock(RenderingEngine.class);
 		
 		final RenderingEngine<CyNetwork> engine2 = createMock(RenderingEngine.class);
@@ -56,29 +58,29 @@ public class RenderingEngineManagerTest {
 		assertNotNull(engineSet);
 		assertEquals(0, engineSet.size());
 		
-		final PresentationCreatedEvent createdEvent1 = new PresentationCreatedEvent(engine1);
+		final PresentationCreatedEvent createdEvent1 = new PresentationCreatedEvent(factory, engine1);
 		
 		expect(engine1.getViewModel()).andReturn(networkView1).anyTimes();
 		replay(engine1);
-		((PresentationCreatedEventListener)manager).handleEvent(createdEvent1);
+		((PresentationCreatedListener)manager).handleEvent(createdEvent1);
 
 		assertEquals(1, manager.getRendringEngines(networkView1).size());
 		assertEquals(engine1, manager.getRendringEngines(networkView1).iterator().next());
 		
 		
 		// Remove from manager
-		final PresentationDestroyedEvent destroyEvent = new PresentationDestroyedEvent(engine1);
-		((PresentationDestroyedEventListener)manager).handleEvent(destroyEvent);
+		final PresentationDestroyedEvent destroyEvent = new PresentationDestroyedEvent(factory, engine1);
+		((PresentationDestroyedListener)manager).handleEvent(destroyEvent);
 		
 		assertEquals(0, manager.getRendringEngines(networkView1).size());
 		assertTrue(manager.getRendringEngines(networkView1) instanceof Set);
 		
 		// Add multiple engines
-		final PresentationCreatedEvent createdEvent2 = new PresentationCreatedEvent(engine2);
-		final PresentationCreatedEvent createdEvent3 = new PresentationCreatedEvent(engine3);
-		((PresentationCreatedEventListener)manager).handleEvent(createdEvent2);
-		((PresentationCreatedEventListener)manager).handleEvent(createdEvent1);
-		((PresentationCreatedEventListener)manager).handleEvent(createdEvent3);
+		final PresentationCreatedEvent createdEvent2 = new PresentationCreatedEvent(factory, engine2);
+		final PresentationCreatedEvent createdEvent3 = new PresentationCreatedEvent(factory, engine3);
+		((PresentationCreatedListener)manager).handleEvent(createdEvent2);
+		((PresentationCreatedListener)manager).handleEvent(createdEvent1);
+		((PresentationCreatedListener)manager).handleEvent(createdEvent3);
 		
 		assertEquals(2, manager.getRendringEngines(networkView1).size());
 		assertEquals(1, manager.getRendringEngines(networkView2).size());

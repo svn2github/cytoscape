@@ -4,6 +4,9 @@ package org.cytoscape.view.presentation;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.presentation.events.PresentationCreatedEvent;
 import org.cytoscape.view.presentation.events.PresentationDestroyedEvent;
@@ -24,12 +27,16 @@ public class PresentationEventsTest {
 	@Test
 	public void testEvents() {
 		
+		final RenderingEngineFactory<CyNetwork> factory = createMock(RenderingEngineFactory.class);
 		final RenderingEngine<CyNetwork> engine = createMock(RenderingEngine.class);
-		final PresentationCreatedEvent createdEvent = new PresentationCreatedEvent(engine);
-		assertEquals(engine, createdEvent.getSource());
+		final PresentationCreatedEvent createdEvent = new PresentationCreatedEvent(factory, engine);
+		assertEquals(factory, createdEvent.getSource());
+		assertEquals(engine, createdEvent.getRenderingEngine());
 		
-		final PresentationDestroyedEvent destroyedEvent = new PresentationDestroyedEvent(engine);
-		assertEquals(engine, destroyedEvent.getSource());
+		final JComponent deletePanel = new JPanel();
+		final PresentationDestroyedEvent destroyedEvent = new PresentationDestroyedEvent(deletePanel, engine);
+		assertEquals(deletePanel, destroyedEvent.getSource());
+		assertEquals(engine, destroyedEvent.getRenderingEngine());
 	}
 
 }

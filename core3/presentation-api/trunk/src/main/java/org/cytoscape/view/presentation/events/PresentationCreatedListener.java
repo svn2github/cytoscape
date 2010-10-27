@@ -8,7 +8,7 @@ import org.cytoscape.event.CyListener;
  * interface, too.
  * 
  */
-public interface PresentationCreatedEventListener extends CyListener {
+public interface PresentationCreatedListener extends CyListener {
 
 	/**
 	 * Listener can extract source RenderingEngine object in this method. This
