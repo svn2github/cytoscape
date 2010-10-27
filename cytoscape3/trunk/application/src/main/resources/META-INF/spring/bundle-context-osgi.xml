@@ -273,14 +273,6 @@
 
 	<osgi:service id="networkPanelService" ref="networkPanel">
 		<osgi:interfaces>
-			<value>org.cytoscape.model.events.SelectedNodesListener
-			</value>
-			<value>org.cytoscape.model.events.SelectedEdgesListener
-			</value>
-			<value>org.cytoscape.model.events.UnselectedNodesListener
-			</value>
-			<value>org.cytoscape.model.events.UnselectedEdgesListener
-			</value>
 			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener
 			</value>
 			<value>org.cytoscape.session.events.SetCurrentNetworkListener
