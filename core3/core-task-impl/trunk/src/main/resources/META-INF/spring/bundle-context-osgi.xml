@@ -34,13 +34,13 @@
 		interface="org.cytoscape.work.TaskManager" />
 
 	<osgi:reference id="viewWriterManagerServiceRef"
-		interface="org.cytoscape.io.write.ViewWriterManager" />
+		interface="org.cytoscape.io.write.PresentationWriterManager" />
 
 	<osgi:reference id="networkViewWriterManagerServiceRef"
 		interface="org.cytoscape.io.write.CyNetworkViewWriterManager" />
 	
 	<osgi:reference id="sessionWriterManagerServiceRef"
-		interface="org.cytoscape.io.write.SessionWriterManager" />	
+		interface="org.cytoscape.io.write.CySessionWriterManager" />	
 		
 	<osgi:reference id="sessionReaderManagerServiceRef"
 		interface="org.cytoscape.io.read.CySessionReaderManager" />	
