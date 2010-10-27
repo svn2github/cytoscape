@@ -44,7 +44,6 @@ import org.junit.Before;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
@@ -53,9 +52,8 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyEdge;
 
+
 public class SelectConnectedNodesTaskTest extends AbstractSelectTaskTester {
-
-
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
@@ -71,7 +69,7 @@ public class SelectConnectedNodesTaskTest extends AbstractSelectTaskTester {
 		when(e1.getTarget()).thenReturn(e4);
 
 		// run the task
-		Task t = new SelectConnectedNodesTask(net,netmgr);
+		Task t = new SelectConnectedNodesTask(net, networkViewManager);
 		t.run(tm);
 
 		// check that the expected rows were set

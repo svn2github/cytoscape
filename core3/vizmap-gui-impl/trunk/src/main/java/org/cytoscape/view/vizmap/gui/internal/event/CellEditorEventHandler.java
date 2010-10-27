@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,6 +27,7 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.event;
 
+
 import java.beans.PropertyChangeEvent;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -44,7 +38,7 @@ import javax.swing.JOptionPane;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.presentation.property.VisualPropertyUtil;
@@ -90,19 +84,19 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 
 	protected final VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 	protected final PropertySheetPanel propertySheetPanel;
-	protected final CyNetworkManager cyNetworkManager;
+	protected final CyApplicationManager applicationManager;
 
 	/**
 	 * Creates a new CellEditorEventHandler object.
 	 */
 	public CellEditorEventHandler(final SelectedVisualStyleManager manager,
 			final PropertySheetPanel propertySheetPanel,
-			final CyTableManager tableMgr, final CyNetworkManager networkMgr,
+			final CyTableManager tableMgr, final CyApplicationManager applicationManager,
 			final VizMapPropertySheetBuilder vizMapPropertySheetBuilder) {
 		discMapBuffer = new HashMap<String, Map<Object, Object>>();
 		this.propertySheetPanel = propertySheetPanel;
 		this.tableMgr = tableMgr;
-		this.cyNetworkManager = networkMgr;
+		this.applicationManager = applicationManager;
 		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
 		this.manager = manager;
 	}
@@ -145,7 +139,7 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		 */
 		final CyTable attrForTest = tableMgr.getTableMap(
 				editor.getTargetObjectName(),
-				cyNetworkManager.getCurrentNetwork()).get(
+				applicationManager.getCurrentNetwork()).get(
 				CyNetwork.DEFAULT_ATTRS);
 
 		final Class<K> dataType = (Class<K>) attrForTest.getColumnTypeMap()
@@ -219,8 +213,8 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		vizMapPropertySheetBuilder.updateTableView();
 
 		// Finally, update graph view and focus.
-		currentStyle.apply(cyNetworkManager.getCurrentNetworkView());
-		cyNetworkManager.getCurrentNetworkView().updateView();
+		currentStyle.apply(applicationManager.getCurrentNetworkView());
+		applicationManager.getCurrentNetworkView().updateView();
 		return;
 
 	}
@@ -416,7 +410,7 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		// ctrAttrName = parentValue.toString();
 		//
 		// CyTable attr =
-		// tableMgr.getTableMap().(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(
+		// tableMgr.getTableMap().(type.getObjectType(),applicationManager.getCurrentNetwork()).get(
 		// CyNetwork.DEFAULT_ATTRS);
 		//
 		// final Class<?> dataClass = attr.getColumnTypeMap().get(
@@ -455,7 +449,7 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		// * Extract calculator
 		// */
 		// VisualMappingFunction<?, ?> mapping = vmm.getVisualStyle(
-		// cyNetworkManager.getCurrentNetworkView())
+		// applicationManager.getCurrentNetworkView())
 		// .getVisualMappingFunction(type);
 		//
 		// /*
@@ -466,7 +460,7 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		// * Ignore if not compatible.
 		// */
 		// final CyTable attrForTest =
-		// tableMgr.getTableMap(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
+		// tableMgr.getTableMap(type.getObjectType(),applicationManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
 		//
 		// final Class<?> dataType = attrForTest.getColumnTypeMap().get(
 		// ctrAttrName);
@@ -518,7 +512,7 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		//
 		// final VizMapperProperty<?> newRootProp = new VizMapperProperty<>();
 		// final VisualStyle targetVS =
-		// vmm.getVisualStyle(cyNetworkManager.getCurrentNetworkView());
+		// vmm.getVisualStyle(applicationManager.getCurrentNetworkView());
 		//
 		// vizMapPropertySheetBuilder.getPropertyBuilder().buildProperty(
 		// targetVS.getVisualMappingFunction(type), newRootProp,
@@ -539,8 +533,8 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		// vizMapPropertySheetBuilder.updateTableView();
 		//
 		// // Finally, update graph view and focus.
-		// // vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-		// // Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+		// // vmm.setNetworkView(applicationManager.getCurrentNetworkView());
+		// // Cytoscape.redrawGraph(applicationManager.getCurrentNetworkView());
 		// return;
 		// }
 		//
@@ -570,7 +564,7 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		// * Need to convert this string to proper data types.
 		// */
 		// final CyTable attr =
-		// tableMgr.getTableMap(type.getObjectType(),cyNetworkManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
+		// tableMgr.getTableMap(type.getObjectType(),applicationManager.getCurrentNetwork()).get(CyNetwork.DEFAULT_ATTRS);
 		// ctrAttrName = mapping.getMappingAttributeName();
 		//
 		// // Byte attrType = attr.getType(ctrAttrName);
@@ -622,8 +616,8 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		//
 		// propertySheetPanel.repaint();
 		//
-		// // vmm.setNetworkView(cyNetworkManager.getCurrentNetworkView());
-		// // Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+		// // vmm.setNetworkView(applicationManager.getCurrentNetworkView());
+		// // Cytoscape.redrawGraph(applicationManager.getCurrentNetworkView());
 	}
 
 	/**
@@ -642,7 +636,7 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 	// .getParentProperty()).getHiddenObject();
 	//
 	// final VisualStyle style =
-	// vmm.getVisualStyle(cyNetworkManager.getCurrentNetworkView());
+	// vmm.getVisualStyle(applicationManager.getCurrentNetworkView());
 	//
 	// final String newCalcName = vmm.getVisualStyle().getName() + "-"
 	// + type.getName() + "-" + newMapName;
@@ -736,7 +730,7 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 	// }
 	//
 	// // vmm.getNetworkView().redrawGraph(false, true);
-	// // Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+	// // Cytoscape.redrawGraph(applicationManager.getCurrentNetworkView());
 	// parent = null;
 	// }
 	//

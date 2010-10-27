@@ -240,7 +240,7 @@
 		<constructor-arg ref="gmlFilter" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<!-- Writer Factories -->

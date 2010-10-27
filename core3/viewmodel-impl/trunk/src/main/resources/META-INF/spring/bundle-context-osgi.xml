@@ -17,5 +17,7 @@
 			<entry key="service.type" value="factory" />
 		</osgi:service-properties>
 	</osgi:service>
-
+	<osgi:service id="cyNetworkViewManagerService" ref="cyNetworkViewManager"
+		auto-export="interfaces">
+	</osgi:service>
 </beans>

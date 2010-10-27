@@ -38,7 +38,6 @@ import org.cytoscape.work.TaskIterator;
 
 
 public class SelectFirstNeighborsNodeViewTaskFactory extends AbstractNodeViewTaskFactory {
-
 	public TaskIterator getTaskIterator() {
 		return new TaskIterator(new SelectFirstNeighborsNodeViewTask(nodeView, netView));
 	} 

@@ -37,7 +37,8 @@ import org.cytoscape.property.CyProperty;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.session.CyNetworkNaming;
 
 
@@ -48,20 +49,23 @@ public class LoadNetworkFileTaskFactoryImpl implements TaskFactory {
 
 	private CyNetworkViewReaderManager mgr;
 	private CyNetworkManager netmgr;
+	private final CyNetworkViewManager networkViewManager;
 	private Properties props;
 	
 	private CyNetworkNaming cyNetworkNaming;
 
 	public LoadNetworkFileTaskFactoryImpl(CyNetworkViewReaderManager mgr,
-			CyNetworkManager netmgr,
-			CyProperty<Properties> cyProp, CyNetworkNaming cyNetworkNaming) {
+					      CyNetworkManager netmgr,
+					      final CyNetworkViewManager networkViewManager,
+					      CyProperty<Properties> cyProp, CyNetworkNaming cyNetworkNaming) {
 		this.mgr = mgr;
 		this.netmgr = netmgr;
+		this.networkViewManager = networkViewManager;
 		this.props = cyProp.getProperties();
 		this.cyNetworkNaming = cyNetworkNaming;
 	}
 	
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new LoadNetworkFileTask(mgr, netmgr, props, cyNetworkNaming));
+		return new TaskIterator(new LoadNetworkFileTask(mgr, netmgr, networkViewManager, props, cyNetworkNaming));
 	}
 }

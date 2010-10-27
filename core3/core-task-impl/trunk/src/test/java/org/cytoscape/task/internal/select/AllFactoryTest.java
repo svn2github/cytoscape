@@ -1,13 +1,6 @@
 /*
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
-
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 2.1 of the License, or
@@ -32,9 +25,8 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-
 package org.cytoscape.task.internal.select;
+
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
@@ -44,81 +36,84 @@ import org.junit.Before;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Task;
 
-public class AllFactoryTest {
 
+public class AllFactoryTest {
 	CyNetworkManager netmgr;
+	CyNetworkViewManager networkViewManager;
 	CyNetwork net;
 
 	@Before
 	public void setUp() throws Exception {
 		net = mock(CyNetwork.class);
 		netmgr = mock(CyNetworkManager.class);
+		networkViewManager = mock(CyNetworkViewManager.class);
 	}
 
 	@Test
 	public void testDeselectAllEdgesTaskFactory() {
-		executeTest( new DeselectAllEdgesTaskFactory(netmgr) );
+		executeTest( new DeselectAllEdgesTaskFactory(networkViewManager) );
 	}
 
 	@Test
 	public void testDeselectAllNodesTaskFactory() {
-		executeTest( new DeselectAllNodesTaskFactory(netmgr) );
+		executeTest( new DeselectAllNodesTaskFactory(networkViewManager) );
 	}
 
 	@Test
 	public void testDeselectAllTaskFactory() {
-		executeTest( new DeselectAllTaskFactory(netmgr) );
+		executeTest( new DeselectAllTaskFactory(networkViewManager) );
 	}
 
 	@Test
 	public void testInvertSelectedEdgesTaskFactory() {
-		executeTest( new InvertSelectedEdgesTaskFactory(netmgr) );
+		executeTest( new InvertSelectedEdgesTaskFactory(networkViewManager) );
 	}
 
 	@Test
 	public void testInvertSelectedNodesTaskFactory() {
-		executeTest( new InvertSelectedNodesTaskFactory(netmgr) );
+		executeTest( new InvertSelectedNodesTaskFactory(networkViewManager) );
 	}
 
 	@Test
 	public void testSelectAdjacentEdgesTaskFactory() {
-		executeTest( new SelectAdjacentEdgesTaskFactory(netmgr) );
+		executeTest( new SelectAdjacentEdgesTaskFactory(networkViewManager) );
 	}
 
 	@Test
 	public void testSelectAllEdgesTaskFactory() {
-		executeTest( new SelectAllEdgesTaskFactory(netmgr) );
+		executeTest( new SelectAllEdgesTaskFactory(networkViewManager));
 	}
 
 	@Test
 	public void testSelectAllNodesTaskFactory() {
-		executeTest( new SelectAllNodesTaskFactory(netmgr) );
+		executeTest( new SelectAllNodesTaskFactory(networkViewManager) );
 	}
 
 	@Test
 	public void testSelectAllTaskFactory() {
-		executeTest( new SelectAllTaskFactory(netmgr) );
+		executeTest( new SelectAllTaskFactory(networkViewManager) );
 	}
 
 	@Test
 	public void testSelectConnectedNodesTaskFactory() {
-		executeTest( new SelectConnectedNodesTaskFactory(netmgr) );
+		executeTest( new SelectConnectedNodesTaskFactory(networkViewManager) );
 	}
 
 	@Test
 	public void testSelectFirstNeighborsTaskFactory() {
-		executeTest( new SelectFirstNeighborsTaskFactory(netmgr) );
+		executeTest( new SelectFirstNeighborsTaskFactory(networkViewManager) );
 	}
 
 	@Test
 	public void testSelectFromFileListTaskFactory() {
-		executeTest( new SelectFromFileListTaskFactory(netmgr) );
+		executeTest(new SelectFromFileListTaskFactory(networkViewManager) );
 	}
 
 

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
@@ -36,15 +36,17 @@ public class VizMapEventHandlerManagerImpl implements
 	private VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 	
 	private final CyTableManager tableMgr;
-	private final CyNetworkManager networkMgr;
+	private final CyApplicationManager applicationManager;
 
 	public VizMapEventHandlerManagerImpl(final SelectedVisualStyleManager manager, final EditorManager editorManager,
-			final VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
-			final PropertySheetPanel propertySheetPanel, final VizMapperMainPanel gui, final CyTableManager tableMgr, final CyNetworkManager networkMgr) {
+					     final VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
+					     final PropertySheetPanel propertySheetPanel, final VizMapperMainPanel gui,
+					     final CyTableManager tableMgr, final CyApplicationManager applicationManager)
+	{
 		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
 		this.editorManager = editorManager;
 		this.tableMgr = tableMgr;
-		this.networkMgr = networkMgr;
+		this.applicationManager = applicationManager;
 		this.manager = manager;
 		
 		registerCellEditorListeners();
@@ -77,7 +79,7 @@ public class VizMapEventHandlerManagerImpl implements
 		eventHandlers.put(Cytoscape.NETWORK_LOADED, attrHandler);
 
 		eventHandlers.put("VALUE", new CellEditorEventHandler(manager,
-				propertySheetPanel, tableMgr, networkMgr, vizMapPropertySheetBuilder));
+				propertySheetPanel, tableMgr, applicationManager, vizMapPropertySheetBuilder));
 
 	}
 

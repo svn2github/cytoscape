@@ -10,10 +10,12 @@ import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CySessionManager;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -41,6 +43,8 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	private final RenderingEngineFactory presentationFactory;
 	private final TaskManager taskManager;
 	private final VisualMappingManager visualMappingManager;
+	private final CyNetworkViewManager networkViewManager;
+	private final CyApplicationManager applicationManager;
 
 	//
 	// Since this is implementation code, there shouldn't be a
@@ -51,15 +55,18 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	                    CyTableFactory cyTableFactory,
 	                    CyEventHelper cyEventHelper,
 	                    CyLayouts cyLayouts,
-                     	CyNetworkFactory cyNetworkFactory,
-                     	CyNetworkManager cyNetworkManager,
-                     	CyNetworkViewFactory cyNetworkViewFactory,
-                     	CyRootNetworkFactory cyRootNetworkFactory,
-                     	CySessionManager cySessionManager,
-                     	RenderingEngineFactory presentationFactory,
-                     	TaskManager taskManager,
-                     	VisualMappingManager visualMappingManager
-					    ) {
+			    CyNetworkFactory cyNetworkFactory,
+			    CyNetworkManager cyNetworkManager,
+			    CyNetworkViewFactory cyNetworkViewFactory,
+			    CyRootNetworkFactory cyRootNetworkFactory,
+			    CySessionManager cySessionManager,
+			    RenderingEngineFactory presentationFactory,
+			    TaskManager taskManager,
+			    VisualMappingManager visualMappingManager,
+			    CyNetworkViewManager networkViewManager,
+			    CyApplicationManager applicationManager
+					    )
+	{
 		this.cyTableFactory = cyTableFactory;
 		this.cyEventHelper = cyEventHelper;
 		this.cyLayouts = cyLayouts;
@@ -71,6 +78,8 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 		this.presentationFactory = presentationFactory;
 		this.taskManager = taskManager;
 		this.visualMappingManager = visualMappingManager;
+		this.networkViewManager = networkViewManager;
+		this.applicationManager = applicationManager;
 	}
 
 
@@ -98,5 +107,9 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 
 	public TaskManager getTaskManager() { return taskManager; }
 
-	public VisualMappingManager getVisualMappingManager() { return visualMappingManager; } 
+	public VisualMappingManager getVisualMappingManager() { return visualMappingManager; }
+
+	public CyNetworkViewManager getCyNetworkViewManager() { return networkViewManager; }
+
+	public CyApplicationManager getCyApplicationManager() { return applicationManager; }
 }

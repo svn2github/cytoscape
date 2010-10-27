@@ -1,7 +1,7 @@
-
-package org.cytoscape.session.events;
+package org.cytoscape.model.events;
 
 import org.cytoscape.event.CyListener;
+
 
 /**
  * 

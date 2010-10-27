@@ -1,14 +1,7 @@
 /*
   File: CyNetworkNaming.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,25 +29,25 @@
 */
 package org.cytoscape.session.internal;
 
+
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 
 
 public class CyNetworkNamingImpl implements CyNetworkNaming {
+	private final CyNetworkManager networkManager;
 
-	private CyNetworkManager netmgr;
-
-	public CyNetworkNamingImpl(CyNetworkManager netmgr) {
-		this.netmgr = netmgr;
+	public CyNetworkNamingImpl(final CyNetworkManager networkManager) {
+		this.networkManager = networkManager;
 	}
 
 	public String getSuggestedSubnetworkTitle(CyNetwork parentNetwork) {
 		for (int i = 0; true; i++) {
-			String nameCandidate = parentNetwork.getCyRow().get("name",String.class) + "--child"
+			String nameCandidate = parentNetwork.getCyRow().get("name", String.class) + "--child"
 			                       + ((i == 0) ? "" : ("." + i));
 
-			if (!isNetworkTitleTaken(nameCandidate,netmgr))
+			if (!isNetworkTitleTaken(nameCandidate))
 				return nameCandidate;
 		}
 	}
@@ -63,14 +56,14 @@ public class CyNetworkNamingImpl implements CyNetworkNaming {
 		for (int i = 0; true; i++) {
 			String titleCandidate = desiredTitle + ((i == 0) ? "" : ("." + i));
 
-			if (!isNetworkTitleTaken(titleCandidate,netmgr))
+			if (!isNetworkTitleTaken(titleCandidate))
 				return titleCandidate;
 		}
 	}
 
-	private boolean isNetworkTitleTaken(String titleCandidate, CyNetworkManager netmgr) {
-		for (CyNetwork existingNetwork : netmgr.getNetworkSet() ) 
-			if (existingNetwork.getCyRow().get("name",String.class).equals(titleCandidate))
+	private boolean isNetworkTitleTaken(final String titleCandidate) {
+		for (CyNetwork existingNetwork : networkManager.getNetworkSet() ) 
+			if (existingNetwork.getCyRow().get("name", String.class).equals(titleCandidate))
 				return true;
 
 		return false;

@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,6 +26,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 package org.cytoscape.view.vizmap.gui.internal;
+
 
 import static org.cytoscape.model.CyTableEntry.EDGE;
 import static org.cytoscape.model.CyTableEntry.NETWORK;
@@ -73,7 +67,7 @@ import javax.swing.SwingUtilities;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
@@ -91,6 +85,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Dialog for editing default visual property values.<br>
@@ -117,7 +112,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	private final Map<String, Set<VisualProperty<?>>> vpSets;
 	private final Map<String, JList> listMap;
 
-	private final CyNetworkManager cyNetworkManager;
+	private final CyApplicationManager cyApplicationManager;
 
 	private EditorManager editorFactory;
 
@@ -135,16 +130,16 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 */
 	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
 			final EditorManager editorFactory,
-			final CyNetworkManager cyNetworkManager,
-			final VisualStyle selectedStyle, final VisualMappingManager vmm) {
-
+			final CyApplicationManager cyApplicationManager,
+			final VisualStyle selectedStyle, final VisualMappingManager vmm)
+	{
 		super();
 		this.vmm = vmm;
 		this.selectedStyle = selectedStyle;
 		vpSets = new HashMap<String, Set<VisualProperty<?>>>();
 		listMap = new HashMap<String, JList>();
 
-		this.cyNetworkManager = cyNetworkManager;
+		this.cyApplicationManager = cyApplicationManager;
 		this.setModal(true);
 		this.mainView = mainView;
 		this.editorFactory = editorFactory;
@@ -346,7 +341,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				final CyNetworkView view = cyNetworkManager
+				final CyNetworkView view = cyApplicationManager
 						.getCurrentNetworkView();
 				if (view != null)
 					applyNewStyle(view);
@@ -478,7 +473,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 			if (newValue != null) {
 				selectedStyle.setDefaultValue(vp, newValue);
-				selectedStyle.apply(cyNetworkManager.getCurrentNetworkView());
+				selectedStyle.apply(cyApplicationManager.getCurrentNetworkView());
 			}
 
 			repaint();
@@ -587,7 +582,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 			if (value instanceof VisualProperty<?>) {
 				vp = (VisualProperty<?>) value;
 
-				RenderingEngine<?> presentation = cyNetworkManager
+				RenderingEngine<?> presentation = cyApplicationManager
 						.getCurrentRenderingEngine();
 				if (presentation != null)
 					icon = presentation.createIcon(vp);

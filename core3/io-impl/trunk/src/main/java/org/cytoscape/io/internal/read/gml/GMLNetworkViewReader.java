@@ -1,14 +1,7 @@
 /*
  File: GMLReader.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -36,6 +29,7 @@
  */
 package org.cytoscape.io.internal.read.gml;
 
+
 import java.awt.Color;
 import java.awt.Paint;
 import java.io.InputStream;
@@ -56,7 +50,9 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.session.CyNetworkManager;
+
+import org.cytoscape.session.CyApplicationManager;
+
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.View;
@@ -191,7 +187,7 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	private final InputStream inputStream;
 	private final CyNetworkFactory networkFactory;
 	private final CyNetworkViewFactory viewFactory;
-	private final CyNetworkManager networkManager;
+	private final CyApplicationManager applicationManager;
 	
 	private CyNetwork network;
 	private CyNetworkView view;
@@ -199,17 +195,19 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	/**
 	 * Constructor.<br>
 	 * This is usually used for remote file loading.
-	 * @param networkManager 
+	 * @param applicationManager 
 	 *
 	 * @param is
 	 *            Input stream of GML file,
 	 *
 	 */
-	public GMLNetworkViewReader(InputStream inputStream, CyNetworkFactory networkFactory, CyNetworkViewFactory viewFactory, CyNetworkManager networkManager) {
+	public GMLNetworkViewReader(InputStream inputStream, CyNetworkFactory networkFactory,
+				    CyNetworkViewFactory viewFactory, CyApplicationManager applicationManager)
+	{
 		this.inputStream = inputStream;
 		this.networkFactory = networkFactory;
 		this.viewFactory = viewFactory;
-		this.networkManager = networkManager;
+		this.applicationManager = applicationManager;
 		
 		// Set new style name
 		edge_names = new Vector<CyEdge>();
@@ -700,7 +698,7 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	 * matches to the "graphics" key word
 	 */
 	private void layoutNodeGraphics(CyNetworkView myView, List<KeyValue> list, View<CyNode> nodeView) {
-		RenderingEngine<CyNetwork> engine = networkManager.getCurrentRenderingEngine();
+		RenderingEngine<CyNetwork> engine = applicationManager.getCurrentRenderingEngine();
 		if (engine == null) {
 			// TODO: Remove this once CyNetworkManager can provide an engine
 			//       instance with zero networks loaded.
@@ -915,7 +913,7 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	//
 	@SuppressWarnings("unchecked")
 	private void layoutEdgeGraphics(CyNetworkView myView, List<KeyValue> list, View<CyEdge> edgeView) {
-		RenderingEngine<CyNetwork> engine = networkManager.getCurrentRenderingEngine();
+		RenderingEngine<CyNetwork> engine = applicationManager.getCurrentRenderingEngine();
 		if (engine == null) {
 			// TODO: Remove this once CyNetworkManager can provide an engine
 			//       instance with zero networks loaded.

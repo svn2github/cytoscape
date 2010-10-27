@@ -1,8 +1,8 @@
-package org.cytoscape.session.events;
+package org.cytoscape.view.model.events;
 
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewManager;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -10,23 +10,23 @@ import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 
-public class AbstractNetworkViewEventTest {
+public class NetworkViewAddedEventTest {
 	@Test
 	public final void testGetNetworkView() {
-		final CyNetworkManager networkManager = mock(CyNetworkManager.class);
+		final CyNetworkViewManager networkViewManager = mock(CyNetworkViewManager.class);
 		final CyNetworkView networkView = mock(CyNetworkView.class);
-		final AbstractNetworkViewEvent event =
-			new AbstractNetworkViewEvent(networkManager, Object.class, networkView);
+		final NetworkViewAddedEvent event =
+			new NetworkViewAddedEvent(networkViewManager, networkView);
 		assertEquals("Network returned by getNetworkView() is *not* the one passed into the constructor!",
 			     networkView, event.getNetworkView());
 	}
 
 	@Test
 	public final void testNullNetworkConstructorFailure() {
-		final CyNetworkManager networkManager = mock(CyNetworkManager.class);
+		final CyNetworkViewManager networkViewManager = mock(CyNetworkViewManager.class);
 		try {
-			final AbstractNetworkViewEvent event =
-				new AbstractNetworkViewEvent(networkManager, Object.class, null);
+			final NetworkViewAddedEvent event =
+				new NetworkViewAddedEvent(networkViewManager, null);
 		} catch (final NullPointerException e) {
 			return;
 		}

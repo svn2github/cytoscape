@@ -1,15 +1,7 @@
-
 /*
  File: NewEmptyNetworkTask.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -35,13 +27,14 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package org.cytoscape.task.internal.creation;
+
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
 
@@ -51,12 +44,12 @@ import org.cytoscape.work.TaskMonitor;
  *
  */
 public class NewEmptyNetworkTask extends AbstractCreationTask {
-
 	private final CyNetworkFactory cnf;
 	private final CyNetworkViewFactory cnvf;
 
-	public NewEmptyNetworkTask(CyNetworkFactory cnf, CyNetworkViewFactory cnvf, CyNetworkManager netmgr) {
-		super(null,netmgr);
+	public NewEmptyNetworkTask(CyNetworkFactory cnf, CyNetworkViewFactory cnvf, CyNetworkManager netmgr,
+				   final CyNetworkViewManager networkViewManager) {
+		super(null, netmgr, networkViewManager);
 		this.cnf = cnf;
 		this.cnvf = cnvf;
 	}
@@ -66,7 +59,7 @@ public class NewEmptyNetworkTask extends AbstractCreationTask {
 		final CyNetwork newNet = cnf.getInstance();
 		newNet.getCyRow().set("name","Network");
 		final CyNetworkView view = cnvf.getNetworkView(newNet);		
-		netmgr.addNetwork(newNet);
-		netmgr.addNetworkView(view);
+		networkManager.addNetwork(newNet);
+		networkViewManager.addNetworkView(view);
 	}
 }

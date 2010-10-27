@@ -2,7 +2,8 @@ package org.cytoscape.task.internal.setcurrent;
 
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
@@ -13,11 +14,15 @@ import org.cytoscape.work.TaskMonitor;
  * make sense in GUI mode.
  */
 public class SetCurrentNetworkTask extends AbstractTask {
-	CyNetworkManager netmgr;
-	TaskMonitor taskMonitor;
+	private final CyApplicationManager applicationManager;
+	private final CyNetworkManager networkManager;
+	private TaskMonitor taskMonitor;
 	
-	public SetCurrentNetworkTask(CyNetworkManager netmgr) {
-		this.netmgr = netmgr;
+	public SetCurrentNetworkTask(final CyApplicationManager applicationManager,
+				     final CyNetworkManager networkManager)
+	{
+		this.applicationManager = applicationManager;
+		this.networkManager = networkManager;
 	}
 
 	@Override
@@ -25,7 +30,7 @@ public class SetCurrentNetworkTask extends AbstractTask {
 		// TODO Verify that we want an essentially random network and that this
 		// task shouldn't be NetworkTask instead.
 		this.taskMonitor = taskMonitor;
-		Object[] setNetworks = netmgr.getNetworkSet().toArray();
-		netmgr.setCurrentNetwork(((CyNetwork) setNetworks[setNetworks.length-1]).getSUID());
+		Object[] setNetworks = networkManager.getNetworkSet().toArray();
+		applicationManager.setCurrentNetwork(((CyNetwork) setNetworks[setNetworks.length-1]).getSUID());
 	}
 }

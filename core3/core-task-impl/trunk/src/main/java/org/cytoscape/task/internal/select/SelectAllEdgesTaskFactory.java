@@ -30,21 +30,20 @@
 package org.cytoscape.task.internal.select;  
 
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
 
 
 public class SelectAllEdgesTaskFactory extends AbstractNetworkTaskFactory {
+	private CyNetworkViewManager networkViewManager;
 
-	private CyNetworkManager netmgr;
-
-	public SelectAllEdgesTaskFactory(CyNetworkManager netmgr) {
-		this.netmgr = netmgr;
+	public SelectAllEdgesTaskFactory(final CyNetworkViewManager networkViewManager) {
+		this.networkViewManager = networkViewManager;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SelectAllEdgesTask(net,netmgr));
+		return new TaskIterator(new SelectAllEdgesTask(net,networkViewManager));
 	} 
 }

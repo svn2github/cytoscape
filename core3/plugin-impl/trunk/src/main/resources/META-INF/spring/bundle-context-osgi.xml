@@ -29,7 +29,15 @@
 	</osgi:reference>
 	
 	<osgi:reference id="cyNetworkManagerRef" 
-		interface="org.cytoscape.session.CyNetworkManager">
+		interface="org.cytoscape.model.CyNetworkManager">
+	</osgi:reference>
+	
+	<osgi:reference id="cyNetworkViewManagerRef" 
+		interface="org.cytoscape.view.model.CyNetworkViewManager">
+	</osgi:reference>
+	
+	<osgi:reference id="cyApplicationManagerRef" 
+		interface="org.cytoscape.session.CyApplicationManager">
 	</osgi:reference>
 
 	<osgi:reference id="cyNetworkViewFactoryRef" 

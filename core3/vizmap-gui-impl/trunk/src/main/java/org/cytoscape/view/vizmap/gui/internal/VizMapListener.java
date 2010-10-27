@@ -1,14 +1,7 @@
 /*
  File: VizMapListener.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -42,6 +35,7 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.view.vizmap.gui.internal;
 
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -55,24 +49,17 @@ import java.util.Set;
 
 import org.cytoscape.view.vizmap.VisualMappingManager;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 
 
-
-/**
- *
- */
 public class VizMapListener implements PropertyChangeListener {
-	/**
-	 * 
-	 */
 	public static final String VIZMAP_PROPS_FILE_NAME = "vizmap.props";
+
 	private VisualMappingManager vmm;
+	private final CyApplicationManager applicationManager;
 	
-	private CyNetworkManager cyNetworkManager;
-	
-	public VizMapListener(VisualMappingManager vmm, CyNetworkManager cyNetworkManager) {
-		this.cyNetworkManager = cyNetworkManager;
+	public VizMapListener(VisualMappingManager vmm, CyApplicationManager applicationManager) {
+		this.applicationManager = applicationManager;
 		this.vmm = vmm;
 	}
 
@@ -82,7 +69,6 @@ public class VizMapListener implements PropertyChangeListener {
 	 * @param e DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		
 		//FIXME  Need to be replaced by the new event framework.
 //		if (e.getPropertyName() == VisualMappingManager.SAVE_VIZMAP_PROPS) {
 //			// This section is for saving VS in a vizmap.props file.
@@ -160,8 +146,8 @@ public class VizMapListener implements PropertyChangeListener {
 //			// with a new visual style of the same name, then make sure it is
 //			// reapplied.
 //			vmm.setVisualStyle(vmm.getVisualStyle().getName());
-//			vmm.setVisualStyleForView(cyNetworkManager.getCurrentNetworkView(), vmm.getVisualStyle());
-//			//Cytoscape.redrawGraph(cyNetworkManager.getCurrentNetworkView());
+//			vmm.setVisualStyleForView(applicationManager.getCurrentNetworkView(), vmm.getVisualStyle());
+//			//Cytoscape.redrawGraph(applicationManager.getCurrentNetworkView());
 //		}
 	}
 

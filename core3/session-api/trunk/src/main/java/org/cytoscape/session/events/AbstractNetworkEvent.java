@@ -1,7 +1,7 @@
 package org.cytoscape.session.events;
 
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.model.CyNetwork;
 
@@ -9,10 +9,10 @@ import org.cytoscape.model.CyNetwork;
 /**
  *  Base class for all derived concrete event classes classes in this package that require a CyNetwork.
  */
-class AbstractNetworkEvent extends AbstractCyEvent<CyNetworkManager> {
+class AbstractNetworkEvent extends AbstractCyEvent<CyApplicationManager> {
 	private final CyNetwork net;
 
-	AbstractNetworkEvent(final CyNetworkManager source, final Class listenerClass, final CyNetwork net) {
+	AbstractNetworkEvent(final CyApplicationManager source, final Class listenerClass, final CyNetwork net) {
 		super(source, listenerClass);
 
 		if (net == null)

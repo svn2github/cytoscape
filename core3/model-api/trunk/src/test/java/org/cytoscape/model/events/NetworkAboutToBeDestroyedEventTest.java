@@ -1,8 +1,8 @@
-package org.cytoscape.session.events;
+package org.cytoscape.model.events;
 
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 
 import static org.junit.Assert.*;
 import org.junit.Test;

@@ -3,11 +3,13 @@ package org.cytoscape.plugin.internal;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskManager;
@@ -32,6 +34,8 @@ public class CyPluginAdapterImplTest extends CyPluginAdapterTest {
 		RenderingEngineFactory presentationFactory = mock(RenderingEngineFactory.class);
 		TaskManager taskManager = mock(TaskManager.class);
 		VisualMappingManager visualMappingManager = mock(VisualMappingManager.class);
+		CyNetworkViewManager networkViewManager = mock(CyNetworkViewManager.class);
+		CyApplicationManager applicationManager = mock(CyApplicationManager.class);
 
 		adapter = new CyPluginAdapterImpl( 
                 cyTableFactory,
@@ -44,7 +48,9 @@ public class CyPluginAdapterImplTest extends CyPluginAdapterTest {
              	cySessionManager,
              	presentationFactory,
              	taskManager,
-             	visualMappingManager
+             	visualMappingManager,
+		networkViewManager,
+		applicationManager
 			    );
 	}
 	

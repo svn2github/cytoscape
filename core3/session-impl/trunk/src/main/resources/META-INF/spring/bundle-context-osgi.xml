@@ -6,8 +6,8 @@
 	default-lazy-init="false">
 
 	<!-- Export Services -->
-	<osgi:service id="cyNetworkManagerService" ref="cyNetworkManager"
-		interface="org.cytoscape.session.CyNetworkManager">
+	<osgi:service id="cyApplicationManagerService" ref="cyApplicationManager"
+		      auto-export="interfaces"
 	</osgi:service>
 
 	<osgi:service id="cyNetworkNamingService" ref="cyNetworkNaming"
@@ -20,5 +20,6 @@
 
 	<!-- Import Services -->
 	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
-
+	<osgi:reference id="cyNetworkManagerServiceRef" interface="org.cytoscape.model.CyNetworkManager" />
+	<osgi:reference id="cyNetworkViewManagerServiceRef" interface="org.cytoscape.view.model.CyNetworkViewManager" />
 </beans>

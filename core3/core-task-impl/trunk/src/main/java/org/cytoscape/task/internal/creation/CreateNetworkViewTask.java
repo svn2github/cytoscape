@@ -37,18 +37,17 @@ import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.task.AbstractNetworkTask;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 
 
 public class CreateNetworkViewTask extends AbstractNetworkTask {
-
-	private final CyNetworkManager netmgr;
+	private final CyNetworkViewManager networkViewManager;
 	private final CyNetworkViewFactory gvf;
 
-	public CreateNetworkViewTask(CyNetwork n, CyNetworkViewFactory gvf, CyNetworkManager netmgr) {
+	public CreateNetworkViewTask(CyNetwork n, CyNetworkViewFactory gvf, CyNetworkViewManager networkViewManager) {
 		super(n);
 		this.gvf = gvf;
-		this.netmgr = netmgr;
+		this.networkViewManager = networkViewManager;
 	}
 
 	public void run(TaskMonitor taskMonitor) throws Exception {
@@ -57,7 +56,7 @@ public class CreateNetworkViewTask extends AbstractNetworkTask {
 
 		try {
 			CyNetworkView view = gvf.getNetworkView(net);
-			netmgr.addNetworkView(view);
+			networkViewManager.addNetworkView(view);
 		} catch (Exception e) {
 			throw new Exception("Could not create network view for network: "
 					+ net.getCyRow().get("name", String.class), e);

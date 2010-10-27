@@ -1,14 +1,7 @@
 /*
   File: DestroyNetworkViewTask.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -36,7 +29,8 @@
 */
 package org.cytoscape.task.internal.destruction;
 
-import org.cytoscape.session.CyNetworkManager;
+
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.task.AbstractNetworkViewCollectionTask;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.Task;
@@ -46,16 +40,15 @@ import java.util.Collection;
 
 
 public class DestroyNetworkViewTask extends AbstractNetworkViewCollectionTask {
+	private CyNetworkViewManager networkViewManager;
 
-	private CyNetworkManager netmgr;
-
-	public DestroyNetworkViewTask(Collection<CyNetworkView> views, CyNetworkManager netmgr) {
+	public DestroyNetworkViewTask(final Collection<CyNetworkView> views, final CyNetworkViewManager networkViewManager) {
 		super(views);
-		this.netmgr = netmgr;
+		this.networkViewManager = networkViewManager;
 	}
 
 	public void run(TaskMonitor tm) {
 		for ( CyNetworkView n : networkViews )
-			netmgr.destroyNetworkView(n);
+			networkViewManager.destroyNetworkView(n);
 	}
 }

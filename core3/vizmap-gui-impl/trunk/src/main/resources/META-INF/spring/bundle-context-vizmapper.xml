@@ -45,7 +45,7 @@
 	<bean id="vizMapBypassNetworkListener"
 		class="org.cytoscape.view.vizmap.gui.internal.bypass.VizMapBypassNetworkListener">
 		<constructor-arg ref="editorManager" />
-		<constructor-arg ref="cyNetworkManagerServiceRef"></constructor-arg>
+		<constructor-arg ref="cyApplicationManagerServiceRef"></constructor-arg>
 	</bean>
 
 	<!-- Editors -->
@@ -172,7 +172,7 @@
 		scope="singleton" depends-on="defaultViewPanel">
 		<constructor-arg ref="defaultViewPanel" />
 		<constructor-arg ref="editorManager" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="defaultVS" />
 		<constructor-arg ref="vmmServiceRef" />
 	</bean>
@@ -199,7 +199,7 @@
 		depends-on="vizMapperMainPanel">
 		<constructor-arg ref="vmmServiceRef" />
 		<constructor-arg ref="selectedVisualStyleManager"/>
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="vizMapPropertySheetBuilder" />
 	</bean>
 
@@ -287,7 +287,7 @@
 		<constructor-arg ref="propertySheetPanel" />
 		<constructor-arg ref="vizMapperMainPanel" />
 		<constructor-arg ref="cyTableManagerServiceRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<bean id="editorWindowManager"
@@ -317,7 +317,7 @@
 		<constructor-arg ref="propertySheetPanel" />
 		<constructor-arg ref="vizMapPropertySheetBuilder" />
 		<constructor-arg ref="editorWindowManager" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="visualStyleFactoryServiceRef" />
 		<constructor-arg ref="selectedVisualStyleManager" />

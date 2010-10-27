@@ -1,14 +1,7 @@
 /*
- File: CyNetworkManager.java
+ File: CyApplicationManager.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -36,6 +29,7 @@
  */
 package org.cytoscape.session;
 
+
 import java.util.List;
 import java.util.Set;
 
@@ -43,30 +37,30 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.presentation.RenderingEngine;
 
+
 /**
- * Basic access to networks and view in an instance of Cytoscape.
+ * Basic access to current and/or currently selected networks, views and rendering engines in an
+ * instance of Cytoscape.
  */
-public interface CyNetworkManager {
-	
+public interface CyApplicationManager {
 	/**
-	 * DOCUMENT ME!
+	 * Provides access to the current network.
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return the current network or null if there is no current network
 	 */
 	public CyNetwork getCurrentNetwork();
 
 	/**
-	 * DOCUMENT ME!
+	 * Sets the current network to the one with the provided network SUID.
 	 * 
-	 * @param network_id
-	 *            DOCUMENT ME!
+	 * @param network_id  must be the SUID of a network
 	 */
 	public void setCurrentNetwork(final long network_id);
 
 	/**
-	 * DOCUMENT ME!
+	 * Provides access to the current network view.
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return the current network view of null if no network is currently being visualised
 	 */
 	public CyNetworkView getCurrentNetworkView();
 
@@ -77,60 +71,6 @@ public interface CyNetworkManager {
 	 *            DOCUMENT ME!
 	 */
 	public void setCurrentNetworkView(final long view_id);
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public Set<CyNetwork> getNetworkSet();
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public Set<CyNetworkView> getNetworkViewSet();
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param id
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public CyNetwork getNetwork(long id);
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param network_id
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public CyNetworkView getNetworkView(long network_id);
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param network_id
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public boolean networkExists(long network_id);
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param network_id
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public boolean viewExists(long network_id);
 
 	/**
 	 * DOCUMENT ME!
@@ -149,10 +89,10 @@ public interface CyNetworkManager {
 	/**
 	 * DOCUMENT ME!
 	 * 
-	 * @param viewIDs
+	 * @param modelIDs
 	 *            DOCUMENT ME!
 	 */
-	public void setSelectedNetworkViews(final List<Long> viewIDs);
+	public void setSelectedNetworkViews(final List<Long> modelIDs);
 
 	/**
 	 * DOCUMENT ME!
@@ -161,39 +101,6 @@ public interface CyNetworkManager {
 	 *            DOCUMENT ME!
 	 */
 	public void setSelectedNetworks(final List<Long> ids);
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param network
-	 *            DOCUMENT ME!
-	 */
-	public void destroyNetwork(CyNetwork network);
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param view
-	 *            DOCUMENT ME!
-	 */
-	public void destroyNetworkView(CyNetworkView view);
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param network
-	 *            DOCUMENT ME!
-	 */
-	public void addNetwork(final CyNetwork network);
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param view
-	 *            DOCUMENT ME!
-	 */
-	public void addNetworkView(CyNetworkView view);
-
 	
 	public RenderingEngine<CyNetwork> getCurrentRenderingEngine();
 

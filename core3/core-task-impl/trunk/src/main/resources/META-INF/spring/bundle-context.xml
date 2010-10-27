@@ -36,6 +36,7 @@
 	      class="org.cytoscape.task.internal.loadnetwork.LoadNetworkFileTaskFactoryImpl">
 		<constructor-arg ref="cyNetworkViewReaderManagerServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyPropertyServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 	</bean>
@@ -45,6 +46,7 @@
 	      class="org.cytoscape.task.internal.loadnetwork.LoadNetworkURLTaskFactoryImpl">
 		<constructor-arg ref="cyNetworkViewReaderManagerServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyPropertyServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 		<constructor-arg ref="streamUtilRef" />
@@ -52,6 +54,7 @@
 
 <!--To set the Current Network through another TaskFactory-->
 	<bean id="setCurrentNetworkTaskFactory" class="org.cytoscape.task.internal.setcurrent.SetCurrentNetworkTaskFactoryImpl">
+		<constructor-arg ref="cyApplicationManagerServiceRef"/>
 		<constructor-arg ref="cyNetworkManagerServiceRef"/>
 	</bean>
 
@@ -62,57 +65,57 @@
 
 	<bean id="selectAllEdgesTaskFactory"
 	      class="org.cytoscape.task.internal.select.SelectAllEdgesTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="selectAllNodesTaskFactory"
 	      class="org.cytoscape.task.internal.select.SelectAllNodesTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="selectAdjacentEdgesTaskFactory"
 	      class="org.cytoscape.task.internal.select.SelectAdjacentEdgesTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="selectConnectedNodesTaskFactory"
 	      class="org.cytoscape.task.internal.select.SelectConnectedNodesTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="selectFirstNeighborsTaskFactory"
 	      class="org.cytoscape.task.internal.select.SelectFirstNeighborsTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="deselectAllTaskFactory"
 	      class="org.cytoscape.task.internal.select.DeselectAllTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="deselectAllEdgesTaskFactory"
 	      class="org.cytoscape.task.internal.select.DeselectAllEdgesTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="deselectAllNodesTaskFactory"
 	      class="org.cytoscape.task.internal.select.DeselectAllNodesTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="invertSelectedEdgesTaskFactory"
 	      class="org.cytoscape.task.internal.select.InvertSelectedEdgesTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="invertSelectedNodesTaskFactory"
 	      class="org.cytoscape.task.internal.select.InvertSelectedNodesTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="selectFromFileListTaskFactory"
 	      class="org.cytoscape.task.internal.select.SelectFromFileListTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="selectFirstNeighborsNodeViewTaskFactory"
@@ -152,16 +155,19 @@
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="cloneNetworkTaskFactory"
 	      class="org.cytoscape.task.internal.creation.CloneNetworkTaskFactory">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="newNetworkSelectedNodesEdgesTaskFactory"
 	      class="org.cytoscape.task.internal.creation.NewNetworkSelectedNodesEdgesTaskFactory">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="newNetworkSelectedNodesOnlyTaskFactory"
@@ -169,6 +175,7 @@
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 		<constructor-arg ref="visualMappingManagerServiceRef" />
 	</bean>
@@ -181,7 +188,7 @@
 
 	<bean id="destroyNetworkViewTaskFactory"
 	      class="org.cytoscape.task.internal.destruction.DestroyNetworkViewTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<!-- zoom -->
@@ -239,13 +246,13 @@
 	<bean id="createNetworkViewTaskFactory"
 	      class="org.cytoscape.task.internal.creation.CreateNetworkViewTaskFactory">
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="exportNetworkImageTaskFactory"
 	      class="org.cytoscape.task.internal.exportgraphics.ExportNetworkImageTaskFactory">
 		<constructor-arg ref="viewWriterManagerServiceRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<bean id="exportNetworkViewTaskFactory"

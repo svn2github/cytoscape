@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,17 +25,14 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.view.vizmap.gui.internal.event;
+
 
 import java.beans.PropertyChangeEvent;
 
 import org.cytoscape.view.vizmap.VisualStyle;
 
 
-/**
- *
- */
 public class InitializedEventHandler extends AbstractVizMapEventHandler {
 	/**
 	 *  DOCUMENT ME!
@@ -52,7 +41,7 @@ public class InitializedEventHandler extends AbstractVizMapEventHandler {
 	 */
 	@Override
 	public void processEvent(PropertyChangeEvent e) {
-		final VisualStyle vs = vmm.getVisualStyle(cyNetworkManager.getCurrentNetworkView());
+		final VisualStyle vs = vmm.getVisualStyle(applicationManager.getCurrentNetworkView());
 
 		vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel.getDefaultImageManager()
 		                                                              .get(vs));

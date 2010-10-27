@@ -17,5 +17,9 @@
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="cyServiceRegistrarRef" />
 	</bean>
-	
+
+	<bean id="cyNetworkViewManager"
+		class="org.cytoscape.view.model.internal.CyNetworkViewManagerImpl">
+		<constructor-arg ref="cyEventHelperServiceRef" />
+	</bean>
 </beans>

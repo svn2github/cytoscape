@@ -38,7 +38,7 @@ package org.cytoscape.task.internal.select;
 
 import static org.mockito.Mockito.*;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.model.CyNetwork;
@@ -49,9 +49,9 @@ import org.cytoscape.model.CyRow;
 import java.util.List;
 import java.util.ArrayList;
 
-public class AbstractSelectTaskTester {
 
-	CyNetworkManager netmgr;
+public class AbstractSelectTaskTester {
+	CyNetworkViewManager networkViewManager;
 	TaskMonitor tm;
 	CyNetwork net; 
 	CyRow r1;
@@ -69,8 +69,8 @@ public class AbstractSelectTaskTester {
 		CyNetworkView view = mock(CyNetworkView.class);
 		when(view.getModel()).thenReturn(net);
 
-		netmgr = mock(CyNetworkManager.class);
-		when(netmgr.getNetworkView(anyLong())).thenReturn(view);
+		networkViewManager = mock(CyNetworkViewManager.class);
+		when(networkViewManager.getNetworkView(anyLong())).thenReturn(view);
 
 		tm = mock(TaskMonitor.class);
 

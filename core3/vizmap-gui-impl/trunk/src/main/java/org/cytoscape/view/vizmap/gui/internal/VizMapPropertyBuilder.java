@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package org.cytoscape.view.vizmap.gui.internal;
+
 
 import static org.cytoscape.model.CyTableEntry.EDGE;
 import static org.cytoscape.model.CyTableEntry.NODE;
@@ -50,12 +43,12 @@ import java.util.TreeSet;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.session.events.NetworkAddedEvent;
-import org.cytoscape.session.events.NetworkAddedListener;
+import org.cytoscape.model.events.NetworkAddedEvent;
+import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
@@ -72,11 +65,11 @@ import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
 import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
+
 /**
  * Create property for the Property Sheet object.
  */
 public class VizMapPropertyBuilder {
-
 	private static final Logger logger = LoggerFactory
 			.getLogger(VizMapPropertyBuilder.class);
 

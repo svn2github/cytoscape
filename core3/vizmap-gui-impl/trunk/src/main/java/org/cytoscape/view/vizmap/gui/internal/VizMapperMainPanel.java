@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,6 +27,7 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -59,13 +53,13 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.session.events.NetworkAddedEvent;
-import org.cytoscape.session.events.NetworkAddedListener;
-import org.cytoscape.session.events.NetworkViewAddedEvent;
-import org.cytoscape.session.events.NetworkViewAddedListener;
+import org.cytoscape.model.events.NetworkAddedEvent;
+import org.cytoscape.model.events.NetworkAddedListener;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.events.NetworkViewAddedEvent;
+import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
@@ -143,13 +137,13 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			final PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			EditorWindowManager editorWindowManager,
-			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper,
+			CyApplicationManager applicationManager, CyEventHelper eventHelper,
 			final SelectedVisualStyleManager manager) {
 
 		super(vsFactory, desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
 				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
 				editorWindowManager,
-				cyNetworkManager, eventHelper, manager);
+				applicationManager, eventHelper, manager);
 
 		// Initialize all components
 		initPanel();
@@ -235,13 +229,13 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		}
 
 		// Apply style to the current network view.
-		final CyNetworkView currentView = cyNetworkManager
+		final CyNetworkView currentView = applicationManager
 				.getCurrentNetworkView();
 
 		if (currentView != null) {
 			vmm.setVisualStyle((VisualStyle) visualStyleComboBox.getModel()
 					.getSelectedItem(), currentView);
-			style.apply(cyNetworkManager.getCurrentNetworkView());
+			style.apply(applicationManager.getCurrentNetworkView());
 		}
 		
 		/*
@@ -538,9 +532,9 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * List<? extends CyTableEntry> obj;
 	 * 
 	 * if (nOre == MappingCalculator.NODE_MAPPING) { obj =
-	 * cyNetworkManager.getCurrentNetworkView
+	 * applicationManager.getCurrentNetworkView
 	 * ().getGraphPerspective().getNodeList(); } else { obj =
-	 * cyNetworkManager.getCurrentNetworkView
+	 * applicationManager.getCurrentNetworkView
 	 * ().getGraphPerspective().getEdgeList(); }
 	 * 
 	 * for (CyTableEntry o : obj) { ids.add(o.attrs().get("name", String.class));
@@ -559,7 +553,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	// .getSelectedItem();
 	//		
 	//
-	// final GraphView curView = cyNetworkManager.getCurrentNetworkView();
+	// final GraphView curView = applicationManager.getCurrentNetworkView();
 	//
 	// if (ignore)
 	// return;
@@ -675,21 +669,20 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		// TODO Auto-generated method stub
 
 	}
-
 	
 	/**
 	 * Update GUI components when new Visual Style is created.
 	 */
 	@Override public void handleEvent(final VisualStyleCreatedEvent e) {
 		final VisualStyle newStyle = e.getCreatedVisualStyle();
-		if(newStyle == null)
+		if (newStyle == null)
 			return;
 		
-		this.vsComboBoxModel.addElement(newStyle);
+		vsComboBoxModel.addElement(newStyle);
 		
 		// Set selected style
 		setSelectedVisualStyle(newStyle);
-		final CyNetworkView currentView = this.cyNetworkManager.getCurrentNetworkView();
+		final CyNetworkView currentView = applicationManager.getCurrentNetworkView();
 		
 		if (currentView != null)
 			vmm.setVisualStyle(newStyle, currentView);

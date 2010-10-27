@@ -1,14 +1,7 @@
 /*
  File: NewNetworkSelectedNodesOnlyTask.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -59,22 +52,24 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.TaskMonitor;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.session.CyNetworkNaming;
 
 
 public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
-
 	private final CyRootNetworkFactory cyroot;
 	private final CyNetworkViewFactory cnvf;
 	private final VisualMappingManager vmm;
 	private final CyNetworkNaming cyNetworkNaming;
 
 	public NewNetworkSelectedNodesOnlyTask(final CyNetwork net, final CyRootNetworkFactory cyroot,
-			final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
-			final CyNetworkNaming cyNetworkNaming,
-			final VisualMappingManager vmm) {
-		super(net,netmgr);
+					       final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
+					       final CyNetworkViewManager networkViewManager,
+					       final CyNetworkNaming cyNetworkNaming,
+					       final VisualMappingManager vmm)
+	{
+		super(net, netmgr, networkViewManager);
 		this.cyroot = cyroot;
 		this.cnvf = cnvf;
 		this.cyNetworkNaming = cyNetworkNaming;
@@ -90,8 +85,8 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 
 		CyNetworkView current_network_view = null;
 
-		if (netmgr.viewExists(current_network.getSUID())) {
-			current_network_view = netmgr.getNetworkView(current_network
+		if (networkViewManager.viewExists(current_network.getSUID())) {
+			current_network_view = networkViewManager.getNetworkView(current_network
 					.getSUID());
 		}
 
@@ -116,7 +111,7 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 		new_network.getCyRow().set("name",
 				cyNetworkNaming.getSuggestedSubnetworkTitle(current_network));
 
-		netmgr.addNetwork(new_network);
+		networkManager.addNetwork(new_network);
 		
 		
 		CyNetworkView new_view = cnvf.getNetworkView(new_network);
@@ -124,7 +119,7 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
 		if (new_view == null)
 			return;
 
-		netmgr.addNetworkView(new_view);
+		networkViewManager.addNetworkView(new_view);
 		
 		String vsName = "default";
 

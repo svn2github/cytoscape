@@ -63,7 +63,11 @@
 
 	<!-- Network Manager -->
 	<osgi:reference id="cyNetworkManagerServiceRef"
-		interface="org.cytoscape.session.CyNetworkManager" />
+		interface="org.cytoscape.model.CyNetworkManager" />
+
+	<!-- Application Manager -->
+	<osgi:reference id="cyApplicationManagerServiceRef"
+		interface="org.cytoscape.session.CyApplicationManager" />
 
 	<!-- Presentation Factory -->
 	<osgi:reference id="presentationFactoryServiceRef"

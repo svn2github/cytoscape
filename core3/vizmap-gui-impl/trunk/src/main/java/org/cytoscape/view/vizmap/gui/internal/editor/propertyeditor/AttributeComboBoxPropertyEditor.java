@@ -1,5 +1,6 @@
 package org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor;
 
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -16,9 +17,9 @@ import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnCreatedListener;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.ColumnDeletedListener;
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.session.events.NetworkAddedEvent;
-import org.cytoscape.session.events.NetworkAddedListener;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.events.NetworkAddedEvent;
+import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
@@ -26,19 +27,17 @@ import org.cytoscape.view.vizmap.gui.editor.ListEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * Holds list of attributes. By default, three instances of this should be
  * created (for NODE, EDGE, and NETWORK).
  * 
- * Export this as OSGi service!
- * 
- * @author kono
- * 
+ * Export this as an OSGi service!
  */
 public class AttributeComboBoxPropertyEditor extends CyComboBoxPropertyEditor
 		implements ColumnDeletedListener, ColumnCreatedListener,
-		NetworkAddedListener, ListEditor {
-
+		NetworkAddedListener, ListEditor
+{
 	private static final Logger logger = LoggerFactory
 			.getLogger(AttributeComboBoxPropertyEditor.class);
 
@@ -52,8 +51,8 @@ public class AttributeComboBoxPropertyEditor extends CyComboBoxPropertyEditor
 	private VisualProperty<Visualizable> category;
 
 	public AttributeComboBoxPropertyEditor(final String name,
-			final CyTableManager tableMgr, final CyNetworkManager networkMgr) {
-
+			final CyTableManager tableMgr, final CyNetworkManager networkMgr)
+	{
 		// Validate
 		if (!name.equals(CyTableEntry.NODE) && !name.equals(CyTableEntry.EDGE)
 				&& !name.equals(CyTableEntry.NETWORK))

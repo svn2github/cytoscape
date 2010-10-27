@@ -45,7 +45,8 @@ import java.util.Properties;
 import java.net.URI;
 
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.work.TaskMonitor;
@@ -62,6 +63,7 @@ public class AbstractLoadNetworkTaskTester {
 
     CyNetworkViewReaderManager mgr;
 	CyNetworkManager netmgr;
+	CyNetworkViewManager networkViewManager;
 	CyProperty<Properties> props;
 	CyNetworkNaming namingUtil;
 
@@ -90,6 +92,7 @@ public class AbstractLoadNetworkTaskTester {
 		when(mgr.getReader(uri)).thenReturn(reader);
 
 		netmgr = mock(CyNetworkManager.class);
+		networkViewManager = mock(CyNetworkViewManager.class);
 
 		Properties p = new Properties();
 		p.setProperty("viewThreshold","1000");

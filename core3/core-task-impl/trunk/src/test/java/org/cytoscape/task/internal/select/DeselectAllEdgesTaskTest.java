@@ -44,7 +44,6 @@ import org.junit.Before;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
@@ -64,7 +63,7 @@ public class DeselectAllEdgesTaskTest extends AbstractSelectTaskTester {
 	@Test
 	public void testRun() throws Exception {
 		// run the task
-		Task t = new DeselectAllEdgesTask(net,netmgr);
+		Task t = new DeselectAllEdgesTask(net, networkViewManager);
 		t.run(tm);
 
 		// check that the expected rows were set

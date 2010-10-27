@@ -66,7 +66,7 @@ import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 
 /**
  * Track renderer for Continuous mapping (Number-to-Number mapping)
@@ -121,7 +121,7 @@ public class ContinuousTrackRenderer<K, V extends Number>
 	private VisualMappingManager vmm;
 
 	// TODO: Should be injected
-	private CyNetworkManager manager;
+	private CyApplicationManager manager;
 	private EditorValueRangeTracer tracer;
 
 	/**

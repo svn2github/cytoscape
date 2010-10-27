@@ -41,7 +41,7 @@ import java.beans.PropertyChangeListener;
 
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import cytoscape.Cytoscape;
 import cytoscape.view.CySwingApplication;
 
@@ -51,12 +51,12 @@ import cytoscape.view.CySwingApplication;
  * the views are created.
  */
 public class VizMapBypassNetworkListener implements PropertyChangeListener {
-
-	private EditorManager ef;
-	private CyNetworkManager cyNetworkManager;
+	private final EditorManager ef;
+	private final CyApplicationManager applicationManager;
 	
-	public VizMapBypassNetworkListener(EditorManager ef, CyNetworkManager cyNetworkManager) {
+	public VizMapBypassNetworkListener(final EditorManager ef, final CyApplicationManager applicationManager) {
 		this.ef = ef;
+		this.applicationManager = applicationManager;
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
@@ -68,10 +68,10 @@ public class VizMapBypassNetworkListener implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evnt) {
 //		if (evnt.getPropertyName() == CySwingApplication.NETWORK_VIEW_CREATED) {
 //			NodeBypassMenuListener node_menu_listener = new NodeBypassMenuListener(ef);
-//			cyNetworkManager.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
+//			applicationManager.getCurrentNetworkView().addNodeContextMenuListener(node_menu_listener);
 //
 //			EdgeBypassMenuListener edge_menu_listener = new EdgeBypassMenuListener(ef);
-//			cyNetworkManager.getCurrentNetworkView().addEdgeContextMenuListener(edge_menu_listener);
+//			applicationManager.getCurrentNetworkView().addEdgeContextMenuListener(edge_menu_listener);
 //		}
 	}
 }

@@ -136,8 +136,7 @@ public class GenerateSeriesAction extends AbstractVizMapperAction {
 	 * User wants to Seed the Discrete Mapper with Random Color Values.
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
-
+		final CyNetwork targetNetwork = applicationManager.getCurrentNetwork();
 		generate(targetNetwork);
 	}
 }

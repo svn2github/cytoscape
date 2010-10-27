@@ -29,7 +29,8 @@
 package org.cytoscape.task.internal.loadnetwork;
 
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.session.CyNetworkNaming;
 
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
@@ -50,23 +51,27 @@ public class LoadNetworkURLTaskFactoryImpl implements TaskFactory {
 
 	private CyNetworkViewReaderManager mgr;
 	private CyNetworkManager netmgr;
+	private final CyNetworkViewManager networkViewManager;
 	private Properties props;
 	private StreamUtil streamUtil;
 
 	private CyNetworkNaming cyNetworkNaming;
 
 	public LoadNetworkURLTaskFactoryImpl(CyNetworkViewReaderManager mgr,
-			CyNetworkManager netmgr,
-			CyProperty<Properties> cyProps, CyNetworkNaming cyNetworkNaming,
-			StreamUtil streamUtil) {
+					     CyNetworkManager netmgr,
+					     final CyNetworkViewManager networkViewManager,
+					     CyProperty<Properties> cyProps, CyNetworkNaming cyNetworkNaming,
+					     StreamUtil streamUtil)
+	{
 		this.mgr = mgr;
 		this.netmgr = netmgr;
+		this.networkViewManager = networkViewManager;
 		this.props = cyProps.getProperties();
 		this.cyNetworkNaming = cyNetworkNaming;
 		this.streamUtil = streamUtil;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new LoadNetworkURLTask(mgr, netmgr, props, cyNetworkNaming, streamUtil));
+		return new TaskIterator(new LoadNetworkURLTask(mgr, netmgr, networkViewManager, props, cyNetworkNaming, streamUtil));
 	}
 }

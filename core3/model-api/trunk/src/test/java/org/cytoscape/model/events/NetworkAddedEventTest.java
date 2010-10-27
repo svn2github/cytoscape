@@ -1,8 +1,8 @@
-package org.cytoscape.session.events;
+package org.cytoscape.model.events;
 
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -10,12 +10,13 @@ import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 
-public class AbstractNetworkEventTest {
+public class NetworkAddedEventTest {
 	@Test
 	public final void testGetNetwork() {
 		final CyNetworkManager networkManager = mock(CyNetworkManager.class);
 		final CyNetwork network = mock(CyNetwork.class);
-		final AbstractNetworkEvent event = new AbstractNetworkEvent(networkManager, Object.class, network);
+		final NetworkAddedEvent event =
+			new NetworkAddedEvent(networkManager, network);
 		assertEquals("Network returned by getNetwork() is *not* the one passed into the constructor!",
 			     network, event.getNetwork());
 	}
@@ -24,7 +25,8 @@ public class AbstractNetworkEventTest {
 	public final void testNullNetworkConstructorFailure() {
 		final CyNetworkManager networkManager = mock(CyNetworkManager.class);
 		try {
-			final AbstractNetworkEvent event = new AbstractNetworkEvent(networkManager, Object.class, null);
+			final NetworkAddedEvent event =
+				new NetworkAddedEvent(networkManager, null);
 		} catch (final NullPointerException e) {
 			return;
 		}

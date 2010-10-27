@@ -27,7 +27,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package org.cytoscape.task.internal.select;
 
 
@@ -40,12 +39,12 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 
 
 public class SelectFirstNeighborsTask extends AbstractSelectTask {
-	public SelectFirstNeighborsTask(CyNetwork net, CyNetworkManager netmgr) {
-		super(net,netmgr);
+	public SelectFirstNeighborsTask(final CyNetwork net, final CyNetworkViewManager networkViewManager) {
+		super(net, networkViewManager);
 	}
 
 	@Override

@@ -44,7 +44,6 @@ import org.junit.Before;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;

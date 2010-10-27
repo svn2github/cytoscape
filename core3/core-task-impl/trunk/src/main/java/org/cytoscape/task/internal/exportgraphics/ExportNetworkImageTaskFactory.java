@@ -28,25 +28,24 @@
 
 package org.cytoscape.task.internal.exportgraphics;
 
+
 import org.cytoscape.task.AbstractNetworkViewTaskFactory;
 import org.cytoscape.task.internal.io.ViewWriter;
 import org.cytoscape.io.write.PresentationWriterManager;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskIterator;
 
-/**
- * 
- */
-public class ExportNetworkImageTaskFactory extends AbstractNetworkViewTaskFactory {
 
+public class ExportNetworkImageTaskFactory extends AbstractNetworkViewTaskFactory {
 	private final PresentationWriterManager viewWriterMgr; 
-	private final CyNetworkManager netMgr;
-	public ExportNetworkImageTaskFactory(PresentationWriterManager viewWriterMgr, CyNetworkManager netMgr) {
+	private final CyApplicationManager applicationManager;
+
+	public ExportNetworkImageTaskFactory(PresentationWriterManager viewWriterMgr, CyApplicationManager applicationManager) {
 		this.viewWriterMgr = viewWriterMgr;
-		this.netMgr = netMgr;
+		this.applicationManager = applicationManager;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator( new ViewWriter( viewWriterMgr, view, netMgr.getCurrentRenderingEngine() ) );
+		return new TaskIterator( new ViewWriter( viewWriterMgr, view, applicationManager.getCurrentRenderingEngine() ) );
 	}
 }

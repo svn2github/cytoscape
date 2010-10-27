@@ -39,7 +39,8 @@ import java.util.Properties;
 import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.AbstractTask;
@@ -56,15 +57,18 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 	protected String name;
 	protected boolean interrupted = false;
 	protected CyNetworkViewReaderManager mgr;
-	protected CyNetworkManager netMgr;
+	protected CyNetworkManager networkManager;
+	protected CyNetworkViewManager networkViewManager;
 	protected Properties props;
 	protected CyNetworkNaming namingUtil;
 
-	public AbstractLoadNetworkTask(final CyNetworkViewReaderManager mgr, final CyNetworkManager netMgr,
-	                               final Properties props, final CyNetworkNaming namingUtil)
+	public AbstractLoadNetworkTask(final CyNetworkViewReaderManager mgr, final CyNetworkManager networkManager,
+	                               final CyNetworkViewManager networkViewManager, final Properties props,
+				       final CyNetworkNaming namingUtil)
 	{
 		this.mgr = mgr;
-		this.netMgr = netMgr;
+		this.networkManager = networkManager;
+		this.networkViewManager = networkViewManager;
 		this.props = props;
 		this.namingUtil = namingUtil;
 	}
@@ -79,7 +83,7 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 
 		insertTasksAfterCurrentTask(
 			viewReader, 
-			new GenerateNetworkViewsTask(name, viewReader, netMgr, namingUtil, props));
+			new GenerateNetworkViewsTask(name, viewReader, networkManager, networkViewManager, namingUtil, props));
 	}
 
 	@Override
@@ -90,16 +94,18 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 class GenerateNetworkViewsTask extends AbstractTask {
 	private final String name;
 	private final CyNetworkViewReader viewReader;
-	private final CyNetworkManager netMgr;
+	private final CyNetworkManager networkManager;
+	private final CyNetworkViewManager networkViewManager;
 	private final CyNetworkNaming namingUtil;
 	private final Properties props;
 
-	GenerateNetworkViewsTask(final String name, final CyNetworkViewReader viewReader, final CyNetworkManager netMgr,
-				 final CyNetworkNaming namingUtil, final Properties props)
+	GenerateNetworkViewsTask(final String name, final CyNetworkViewReader viewReader, final CyNetworkManager networkManager,
+				 final CyNetworkViewManager networkViewManager, final CyNetworkNaming namingUtil, final Properties props)
 	{
 		this.name = name;
 		this.viewReader = viewReader;
-		this.netMgr = netMgr;
+		this.networkManager = networkManager;
+		this.networkViewManager = networkViewManager;
 		this.namingUtil = namingUtil;
 		this.props = props;
 	}
@@ -118,8 +124,8 @@ class GenerateNetworkViewsTask extends AbstractTask {
 			final CyNetwork cyNetwork = view.getModel();
 			cyNetwork.getCyRow().set("name", namingUtil.getSuggestedNetworkTitle(name));
 
-			netMgr.addNetwork(cyNetwork);
-			netMgr.addNetworkView(view);
+			networkManager.addNetwork(cyNetwork);
+			networkViewManager.addNetworkView(view);
 			
 			view.fitContent();
 

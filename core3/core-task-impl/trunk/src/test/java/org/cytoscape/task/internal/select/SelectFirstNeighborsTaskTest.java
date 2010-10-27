@@ -1,13 +1,6 @@
 /*
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
-
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 2.1 of the License, or
@@ -44,7 +37,6 @@ import org.junit.Before;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
@@ -54,9 +46,8 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 
+
 public class SelectFirstNeighborsTaskTest extends AbstractSelectTaskTester {
-
-
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
@@ -73,7 +64,7 @@ public class SelectFirstNeighborsTaskTest extends AbstractSelectTaskTester {
 		when(net.getNeighborList(e3, CyEdge.Type.ANY)).thenReturn(nl);
 
 		// run the task
-		Task t = new SelectFirstNeighborsTask(net,netmgr);
+		Task t = new SelectFirstNeighborsTask(net, networkViewManager);
 		t.run(tm);
 
 		// check that the expected rows were set

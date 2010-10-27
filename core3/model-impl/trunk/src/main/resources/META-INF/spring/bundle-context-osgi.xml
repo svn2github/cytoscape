@@ -26,4 +26,8 @@
 	<osgi:service id="cyTableManagerService"
 		ref="cyTableManager" interface="org.cytoscape.model.CyTableManager">
 	</osgi:service>
+	
+	<osgi:service id="cyNetworkManagerService"
+		ref="cyNetworkManager" interface="org.cytoscape.model.CyNetworkManager">
+	</osgi:service>
 </beans>

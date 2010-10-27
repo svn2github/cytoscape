@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,6 +27,7 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.action;
 
+
 import static org.cytoscape.model.CyTableEntry.NODE;
 
 import java.awt.Color;
@@ -54,9 +48,7 @@ import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
-/**
- *
- */
+
 public class ModifyBrightnessAction extends AbstractVizMapperAction {
 	private final static long serialVersionUID = 121374883775182L;
 	protected static final int DARKER = 1;
@@ -79,7 +71,7 @@ public class ModifyBrightnessAction extends AbstractVizMapperAction {
 	 * User wants to Seed the Discrete Mapper with Random Color Values.
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final CyNetwork targetNetwork = cyNetworkManager.getCurrentNetwork();
+		final CyNetwork targetNetwork = applicationManager.getCurrentNetwork();
 
 		//FIXME
 //		/*

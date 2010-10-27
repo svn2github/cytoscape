@@ -20,9 +20,9 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.session.events.NetworkAddedEvent;
-import org.cytoscape.session.events.NetworkAddedListener;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.events.NetworkAddedEvent;
+import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;

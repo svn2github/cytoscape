@@ -1,14 +1,7 @@
 /*
  File: DeselectAllTask.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -39,12 +32,12 @@ package org.cytoscape.task.internal.select;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
+
 
 public class DeselectAllTask extends AbstractSelectTask {
-	
-	public DeselectAllTask(CyNetwork net, CyNetworkManager netmgr) {
-		super(net,netmgr);
+	public DeselectAllTask(final CyNetwork net, final CyNetworkViewManager networkViewManager) {
+		super(net, networkViewManager);
 	}
 
 	public void run(TaskMonitor tm) {

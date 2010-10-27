@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,6 +27,7 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -59,7 +53,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
@@ -83,6 +77,7 @@ import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
 import cytoscape.view.CySwingApplication;
 
+
 /**
  * Skeleton of the VizMapper Main panel GUI.
  * 
@@ -90,9 +85,7 @@ import cytoscape.view.CySwingApplication;
  * functions are in the VizMapperMainPanel.
  * 
  */
-public abstract class AbstractVizMapperPanel extends JPanel implements
-		VizMapGUI {
-
+public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI {
 	// Visual Properties which are not used in mapping now.
 	public static final String CATEGORY_UNUSED = "Unused Properties";
 
@@ -162,7 +155,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 
 	protected EditorWindowManager editorWindowManager;
 
-	protected CyNetworkManager cyNetworkManager;
+	protected CyApplicationManager applicationManager;
 
 	protected AttributeComboBoxPropertyEditor nodeAttributeEditor;
 	protected AttributeComboBoxPropertyEditor edgeAttributeEditor;
@@ -183,9 +176,9 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 			PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			EditorWindowManager editorWindowManager,
-			CyNetworkManager cyNetworkManager, CyEventHelper eventHelper,
-			final SelectedVisualStyleManager manager) {
-		
+			CyApplicationManager applicationManager, CyEventHelper eventHelper,
+			final SelectedVisualStyleManager manager)
+	{	
 		this.manager = manager;
 		this.vsFactory = vsFactory;
 		this.cytoscapeDesktop = desktop;
@@ -198,7 +191,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		this.propertySheetPanel = propertySheetPanel;
 		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
 		this.editorWindowManager = editorWindowManager;
-		this.cyNetworkManager = cyNetworkManager;
+		this.applicationManager = applicationManager;
 		this.eventHelper = eventHelper;
 		
 		spcs = new SwingPropertyChangeSupport(this);

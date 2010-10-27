@@ -1,13 +1,6 @@
 /*
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
-
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 2.1 of the License, or
@@ -47,7 +40,6 @@ import java.net.URLConnection;
 import java.util.Properties;
 
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.work.TaskMonitor;
@@ -77,7 +69,8 @@ public class LoadNetworkURLTaskTest extends AbstractLoadNetworkTaskTester {
 		StreamUtil streamUtil = mock(StreamUtil.class);
 		when(streamUtil.getURLConnection(url)).thenReturn(con);
 
-		TaskFactory factory = new LoadNetworkURLTaskFactoryImpl(mgr, netmgr, props, namingUtil, streamUtil );
+		TaskFactory factory = new LoadNetworkURLTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil, streamUtil );
+assertNotNull(networkViewManager);
 		TaskIterator ti = factory.getTaskIterator();
 		TaskMonitor tm = mock(TaskMonitor.class);
 		boolean first = true; 
@@ -90,7 +83,7 @@ public class LoadNetworkURLTaskTest extends AbstractLoadNetworkTaskTester {
 			t.run(tm);
 		}
 		verify(netmgr).addNetwork(net);
-		verify(netmgr).addNetworkView(view);
+		verify(networkViewManager).addNetworkView(view);
 		verify(tm).setProgress(1.0);
 	}
 
@@ -102,7 +95,7 @@ public class LoadNetworkURLTaskTest extends AbstractLoadNetworkTaskTester {
 		StreamUtil streamUtil = mock(StreamUtil.class);
 		when(streamUtil.getURLConnection(url)).thenReturn(con);
 
-		TaskFactory factory = new LoadNetworkURLTaskFactoryImpl(mgr, netmgr, props, namingUtil, streamUtil );
+		TaskFactory factory = new LoadNetworkURLTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil, streamUtil );
 		TaskIterator ti = factory.getTaskIterator();
 		TaskMonitor tm = mock(TaskMonitor.class);
 		boolean first = true; 
@@ -122,7 +115,7 @@ public class LoadNetworkURLTaskTest extends AbstractLoadNetworkTaskTester {
 		StreamUtil streamUtil = mock(StreamUtil.class);
 		when(streamUtil.getURLConnection(url)).thenReturn(con);
 
-		TaskFactory factory = new LoadNetworkURLTaskFactoryImpl(mgr, netmgr, props, namingUtil, streamUtil );
+		TaskFactory factory = new LoadNetworkURLTaskFactoryImpl(mgr, netmgr, networkViewManager, props, namingUtil, streamUtil );
 		TaskIterator ti = factory.getTaskIterator();
 		TaskMonitor tm = mock(TaskMonitor.class);
 		boolean first = true; 

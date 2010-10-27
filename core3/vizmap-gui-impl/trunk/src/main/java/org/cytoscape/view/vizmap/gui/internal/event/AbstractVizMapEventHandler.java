@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.view.vizmap.gui.internal.event;
+
 
 import java.beans.PropertyChangeEvent;
 
@@ -45,19 +37,15 @@ import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
 
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 
 
-/**
- *
- */
 public abstract class AbstractVizMapEventHandler implements VizMapEventHandler {
-	
 	protected VisualMappingManager vmm;
 	protected VizMapperMainPanel vizMapperMainPanel;
 	protected VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 	protected PropertySheetPanel propertySheetPanel;
-	protected CyNetworkManager cyNetworkManager;
+	protected CyApplicationManager applicationManager;
 
 	/**
 	 * Creates a new AbstractVizMapEventHandler object.

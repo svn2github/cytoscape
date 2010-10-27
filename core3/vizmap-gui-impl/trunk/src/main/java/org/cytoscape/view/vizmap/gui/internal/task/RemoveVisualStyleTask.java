@@ -1,8 +1,9 @@
 package org.cytoscape.view.vizmap.gui.internal.task;
 
+
 import javax.swing.JOptionPane;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -12,20 +13,21 @@ import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
+
 public class RemoveVisualStyleTask extends AbstractTask {
 
 	private final VisualMappingManager vmm;
-	private final CyNetworkManager cyNetworkManager;
+	private final CyApplicationManager applicationManager;
 	private final VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 	private final SelectedVisualStyleManager manager;
 
 	public RemoveVisualStyleTask(final VisualMappingManager vmm,
 			final SelectedVisualStyleManager manager,
-			final CyNetworkManager cyNetworkManager,
+			final CyApplicationManager applicationManager,
 			final VizMapPropertySheetBuilder vizMapPropertySheetBuilder) {
 		this.vmm = vmm;
 		this.manager = manager;
-		this.cyNetworkManager = cyNetworkManager;
+		this.applicationManager = applicationManager;
 		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
 	}
 
@@ -61,7 +63,7 @@ public class RemoveVisualStyleTask extends AbstractTask {
 //
 //			vizMapperMainPanel.switchVS(defaultStyle);
 //			// Apply to the current view
-//			final CyNetworkView view = cyNetworkManager.getCurrentNetworkView();
+//			final CyNetworkView view = applicationManager.getCurrentNetworkView();
 //			if (view != null)
 //				vmm.setVisualStyle(defaultStyle, view);
 		}

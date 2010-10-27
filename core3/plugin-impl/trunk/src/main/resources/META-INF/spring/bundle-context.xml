@@ -29,6 +29,8 @@
 		<constructor-arg ref="presentationFactoryRef" />
 		<constructor-arg ref="taskManagerRef" />
 		<constructor-arg ref="visualMappingManagerRef" />
+		<constructor-arg ref="cyNetworkViewManagerRef" />
+		<constructor-arg ref="cyApplicationManagerRef" />
 	</bean>
 
 	<bean id="pluginLoaderTaskFactory" class="org.cytoscape.plugin.internal.PluginLoaderTaskFactory">

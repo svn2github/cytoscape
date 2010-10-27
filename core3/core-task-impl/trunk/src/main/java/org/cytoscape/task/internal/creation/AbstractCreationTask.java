@@ -30,20 +30,24 @@
 package org.cytoscape.task.internal.creation;  
 
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
 
 // net can be null, so don't use AbstractNetworkTask
 public abstract class AbstractCreationTask extends AbstractTask {
+	protected final CyNetworkManager networkManager;
+	protected final CyNetworkViewManager networkViewManager;
+	protected final CyNetwork net;
 
-	protected CyNetworkManager netmgr;
-	protected CyNetwork net;
-
-	public AbstractCreationTask(CyNetwork net, CyNetworkManager netmgr) {
+	public AbstractCreationTask(final CyNetwork net, final CyNetworkManager networkManager,
+				    final CyNetworkViewManager networkViewManager)
+	{
 		this.net = net;
-		this.netmgr = netmgr;
+		this.networkManager = networkManager;
+		this.networkViewManager = networkViewManager;
 	}
 }

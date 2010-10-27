@@ -31,7 +31,8 @@ package org.cytoscape.task.internal.creation;
 
 
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -41,8 +42,8 @@ import org.cytoscape.task.AbstractNetworkTaskFactory;
 
 
 public class NewNetworkSelectedNodesOnlyTaskFactory extends AbstractNetworkTaskFactory {
-
 	private CyNetworkManager netmgr;
+	private final CyNetworkViewManager networkViewManager;
 	private CyRootNetworkFactory crnf;
 	private CyNetworkViewFactory cnvf;
 	private CyNetworkNaming naming;
@@ -50,9 +51,11 @@ public class NewNetworkSelectedNodesOnlyTaskFactory extends AbstractNetworkTaskF
 
 	public NewNetworkSelectedNodesOnlyTaskFactory(CyRootNetworkFactory crnf,
 						      CyNetworkViewFactory cnvf, CyNetworkManager netmgr,
+						      final CyNetworkViewManager networkViewManager,
 						      CyNetworkNaming naming, VisualMappingManager vmm)
 	{
 		this.netmgr = netmgr;
+		this.networkViewManager = networkViewManager;
 		this.crnf = crnf;
 		this.cnvf = cnvf;
 		this.naming = naming;
@@ -60,6 +63,6 @@ public class NewNetworkSelectedNodesOnlyTaskFactory extends AbstractNetworkTaskF
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new NewNetworkSelectedNodesOnlyTask(net,crnf, cnvf, netmgr, naming, vmm));
+		return new TaskIterator(new NewNetworkSelectedNodesOnlyTask(net,crnf, cnvf, netmgr, networkViewManager, naming, vmm));
 	}
 }
