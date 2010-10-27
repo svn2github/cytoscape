@@ -20,6 +20,12 @@ public abstract class SpringTunableInterceptor<T extends TunableHandler> extends
 		super(hf);
 	}
 
+	/**
+	 * This method calls {@link AbstractTunableInterceptor.loadTunables} with the
+	 * unwrapped object instead of the Spring proxy object, which is provided as
+	 * an argument.
+	 * @param obj The Spring proxy object from which we'd like the raw object.
+	 */
 	final public void loadTunables(final Object obj) {
 		if (obj instanceof InfrastructureProxy)
 			super.loadTunables(((InfrastructureProxy)obj).getWrappedObject());
@@ -27,6 +33,11 @@ public abstract class SpringTunableInterceptor<T extends TunableHandler> extends
 			super.loadTunables( obj );
 	}
 
+	/**
+	 * This method returns the raw, unwrapped object from the Spring proxy object. 
+	 * @param o The Spring proxy object from which we'd like the raw object.
+	 * @return The raw, unwrapped object from the Spring proxy object. 
+	 */
 	final protected Object convertSpringProxyObj(final Object o) {
 		if (o instanceof InfrastructureProxy)
 			return ((InfrastructureProxy)o).getWrappedObject();
@@ -34,6 +45,11 @@ public abstract class SpringTunableInterceptor<T extends TunableHandler> extends
 			return o;
 	}
 
+	/**
+	 * This method returns the raw, unwrapped objects from the Spring proxy objects. 
+	 * @param proxyObjs The Spring proxy objects from which we'd like the raw objects.
+	 * @return An array of raw, unwrapped objects from the Spring proxy objects. 
+	 */
 	final protected Object[] convertSpringProxyObjs(final Object... proxyObjs) {
 		final Object[] objs = new Object[proxyObjs.length];
 		int i = 0;
