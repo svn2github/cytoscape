@@ -29,6 +29,7 @@ package org.cytoscape.work.swing;
 
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import org.cytoscape.work.Tunable;
 
@@ -39,32 +40,53 @@ import org.junit.Test;
 
 public class AbstractGUITunableHandlerTest {
 	private static class SimpleGUITunableHandler extends AbstractGUITunableHandler {
-		SimpleGUITunableHandler(final Field field, final Object instance, final Tunable tunable) {
+		SimpleGUITunableHandler(final Method getter, final Method setter, 
+		                        final Object instance, final Tunable tunable) {
+			super(getter, setter, instance, tunable);
+		}
+
+		SimpleGUITunableHandler(final Field field, final Object instance, 
+		                        final Tunable tunable) {
 			super(field, instance, tunable);
 		}
 
-		public void handle() {
-		}
+		public void handle() { }
 	}
 
-	private SimpleGUITunableHandler handler;
+	private SimpleGUITunableHandler fieldHandler;
+	private SimpleGUITunableHandler methodHandler;
 
 	@Before
 	public void initialise() throws Exception {
 		final HasAnnotatedField hasAnnotatedField = new HasAnnotatedField();
 		final Field annotatedIntField = hasAnnotatedField.getClass().getField("annotatedInt");
 		final Tunable annotatedIntTunable = annotatedIntField.getAnnotation(Tunable.class);
+		fieldHandler = new SimpleGUITunableHandler(annotatedIntField, hasAnnotatedField, annotatedIntTunable);
 
-		handler = new SimpleGUITunableHandler(annotatedIntField, hasAnnotatedField, annotatedIntTunable);
+		final HasAnnotatedMethod hasAnnotatedMethod = new HasAnnotatedMethod();
+		final Method setter = hasAnnotatedMethod.getClass().getMethod("setAnnotatedInt", int.class);
+		final Method getter = hasAnnotatedMethod.getClass().getMethod("getAnnotatedInt");
+		final Tunable annotatedMethodTunable = getter.getAnnotation(Tunable.class);
+		methodHandler = new SimpleGUITunableHandler(getter, setter, hasAnnotatedMethod, annotatedMethodTunable);
 	}
 
 	@Test
-	public void testConstructor() throws Exception {
-		assertEquals("Unexpected return value from getState()!", "42", handler.getState());
+	public void testFieldConstructor() throws Exception {
+		assertEquals("Unexpected return value from getState()!", "42", fieldHandler.getState());
 	}
 
 	@Test
-	public void testGetJPanel() throws Exception {
-		assertNotNull("getJPanel() must *not* return null!", handler.getJPanel());
+	public void testFieldGetJPanel() throws Exception {
+		assertNotNull("getJPanel() must *not* return null!", fieldHandler.getJPanel());
+	}
+
+	@Test
+	public void testMethodConstructor() throws Exception {
+		assertEquals("Unexpected return value from getState()!", "47", methodHandler.getState());
+	}
+
+	@Test
+	public void testMethodGetJPanel() throws Exception {
+		assertNotNull("getJPanel() must *not* return null!", methodHandler.getJPanel());
 	}
 }
