@@ -35,15 +35,11 @@
 		interface="org.cytoscape.event.CyEventHelper">
 	</osgi:reference>
 	
-	<osgi:reference id="visualLexiconNodeFactoryServiceRef" interface="org.cytoscape.view.model.VisualLexiconNodeFactory">
-	</osgi:reference>
-
 	<!-- Individual Service -->
 	<osgi:service id="dingRenderingEngineFactoryService" ref="dingRenderingEngineFactory">
 		<osgi:interfaces>
 			<value>org.cytoscape.view.presentation.RenderingEngineFactory</value>
-			<value>org.cytoscape.view.model.events.NetworkViewChangedListener
-			</value>
+			<value>org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="serviceType" value="presentationFactory" />
@@ -54,8 +50,7 @@
 	<osgi:service id="dingNavigationRenderingEngineFactoryService" ref="dingNavigationRenderingEngineFactory">
 		<osgi:interfaces>
 			<value>org.cytoscape.view.presentation.RenderingEngineFactory</value>
-			<value>org.cytoscape.view.model.events.NetworkViewChangedListener
-			</value>
+			<value>org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="serviceType" value="presentationFactory" />
