@@ -10,7 +10,7 @@
 
   <bean name="QuickFindPlugInBean" class="org.cytoscape.csplugins.quickfind.plugin.QuickFindPlugIn">
     <constructor-arg ref="cytoscapeDesktopRef" />
-    <constructor-arg ref="cyNetworkManagerServiceRef" />
+    <constructor-arg ref="cyApplicationManagerServiceRef" />
     <constructor-arg ref="taskManagerRef" />
   </bean>
 

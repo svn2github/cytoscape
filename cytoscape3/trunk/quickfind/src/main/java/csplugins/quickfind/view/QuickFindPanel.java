@@ -52,7 +52,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskManager;
 
 import java.awt.*;
@@ -74,17 +74,17 @@ public class QuickFindPanel extends JPanel {
 	private static final String SEARCH_STRING = "Search:  ";
 	private static final String SELECT_STRING = "Select:  ";
 	
-	private final CyNetworkManager netMgr;
+	private final CyApplicationManager applicationManager;
 	private final CySwingApplication cyDesktop;
 	private final TaskManager taskMgr;
 
 	/**
 	 * Constructor.
 	 */
-	public QuickFindPanel(CyNetworkManager netMgr,
+	public QuickFindPanel(CyApplicationManager applicationManager,
                           CySwingApplication cyDesktop,
                           TaskManager taskMgr) {
-	    this.netMgr = netMgr;
+	    this.applicationManager = applicationManager;
 	    this.cyDesktop = cyDesktop;
 	    this.taskMgr = taskMgr;
 	    
@@ -209,7 +209,7 @@ public class QuickFindPanel extends JPanel {
 		button.setEnabled(false);
 		button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					new QuickFindConfigDialog(netMgr, cyDesktop, taskMgr);
+					new QuickFindConfigDialog(applicationManager, cyDesktop, taskMgr);
 				}
 			});
 		button.setBorderPainted(false);

@@ -76,7 +76,6 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.session.events.NetworkViewDestroyedEvent;
 import org.cytoscape.session.events.NetworkViewAddedEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
-import org.cytoscape.session.CyNetworkManager;
 //import cytoscape.view.CySwingApplication;
 import org.cytoscape.view.model.CyNetworkView;
 
@@ -88,7 +87,7 @@ import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.session.events.NetworkViewAddedListener;
 import org.cytoscape.session.events.NetworkViewDestroyedListener;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import cytoscape.view.CySwingApplication;
 import org.cytoscape.work.TaskManager;
 
@@ -104,15 +103,15 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 	private static final int NODE_SIZE_MULTIPLER = 10;
 
 	public static CySwingApplication cytoscapeDesktop;
-	public static CyNetworkManager cyNetworkManagerServiceRef;
+	public static CyApplicationManager applicationManager;
 	public static TaskManager taskManager;	
 	/**
 	 * Constructor.
 	 */	
-	public QuickFindPlugIn(CySwingApplication cytoscapeDesktop, CyNetworkManager cyNetworkManagerServiceRef,
+	public QuickFindPlugIn(CySwingApplication cytoscapeDesktop, CyApplicationManager applicationManager,
 			TaskManager taskmgr){
 		QuickFindPlugIn.cytoscapeDesktop = cytoscapeDesktop;
-		QuickFindPlugIn.cyNetworkManagerServiceRef = cyNetworkManagerServiceRef;
+		QuickFindPlugIn.applicationManager = applicationManager;
 		QuickFindPlugIn.taskManager = taskmgr;
 				
 		initListeners();
@@ -144,7 +143,7 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 		
 		CyMenus cyMenus = QuickFindPlugIn.cytoscapeDesktop.getCyMenus();
 		CyToolBar toolBar = cyMenus.getToolBar();
-		quickFindToolBar = new QuickFindPanel( QuickFindPlugIn.cyNetworkManagerServiceRef, 
+		quickFindToolBar = new QuickFindPanel( QuickFindPlugIn.applicationManager, 
 				QuickFindPlugIn.cytoscapeDesktop, QuickFindPlugIn.taskManager);
 
 		TextIndexComboBox comboBox = quickFindToolBar.getTextIndexComboBox();
@@ -167,7 +166,7 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 
 		//  If a network already exists within Cytoscape, index it
-		final CyNetwork cyNetwork = this.cyNetworkManagerServiceRef.getCurrentNetwork();
+		final CyNetwork cyNetwork = this.applicationManager.getCurrentNetwork();
 
 		if ((cyNetwork != null) && (cyNetwork.getNodeCount() > 0)) {
 			//  Run Indexer in separate background daemon thread.
@@ -196,7 +195,7 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 	public void handleEvent(NetworkViewAddedEvent event) {
 		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 
-		final CyNetwork cyNetwork = this.cyNetworkManagerServiceRef.getCurrentNetwork();
+		final CyNetwork cyNetwork = this.applicationManager.getCurrentNetwork();
 
 		//  Run Indexer in separate background daemon thread.
 		Thread thread = new Thread() {
@@ -224,12 +223,12 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 	 * If no network view has focus, disable quick find.
 	 */
 	private void swapCurrentNetwork(QuickFind quickFind) {
-		CyNetwork network = this.cyNetworkManagerServiceRef.getCurrentNetwork();
+		CyNetwork network = this.applicationManager.getCurrentNetwork();
 		boolean networkHasFocus = false;
 
 		if (network != null) {
 			//GraphView networkView = Cytoscape.getNetworkView(network.getIdentifier());
-			View networkView = this.cyNetworkManagerServiceRef.getNetworkView(network.getSUID());
+			View networkView = this.applicationManager.getNetworkView(network.getSUID());
 			
 			//if (networkView != Cytoscape.getNullNetworkView()) {
 			if (networkView != null) {
@@ -281,7 +280,7 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 	 */
 	public void indexingEnded() {
 		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-		CyNetwork cyNetwork = this.cyNetworkManagerServiceRef.getCurrentNetwork();
+		CyNetwork cyNetwork = this.applicationManager.getCurrentNetwork();
 		GenericIndex index = quickFind.getIndex(cyNetwork);
 		quickFindToolBar.setIndex(index);
 		quickFindToolBar.enableAllQuickFindButtons();
@@ -313,13 +312,13 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 		SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-					final CyNetwork cyNetwork = QuickFindPlugIn.cyNetworkManagerServiceRef.getCurrentNetwork();
+					final CyNetwork cyNetwork = QuickFindPlugIn.applicationManager.getCurrentNetwork();
 					GenericIndex index = quickFind.getIndex(cyNetwork);
 
 					if (index.getIndexType() == QuickFind.INDEX_NODES) {
 						//network.setSelectedNodeState(list, true);
 						QuickFindPlugIn.setSelectedNodeState(network, list, true);
-						QuickFindPlugIn.this.cyNetworkManagerServiceRef.getCurrentNetworkView().fitSelected();
+						QuickFindPlugIn.this.applicationManager.getCurrentNetworkView().fitSelected();
 					} else {
 						//network.setSelectedEdgeState(list, true);
 						QuickFindPlugIn.setSelectedEdgeState(network, list, true);
@@ -335,7 +334,7 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 
 						//network..setSelectedNodeState(nodeList, true);
 						QuickFindPlugIn.setSelectedNodeState(network, nodeList, true);
-						//QuickFindPlugIn.this.cyNetworkManagerServiceRef.fitSelected();
+						//QuickFindPlugIn.this.applicationManager.fitSelected();
 					}
 
 					//  If only one node is selected, auto-adjust zoom factor
@@ -345,20 +344,20 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 							CyNode node = (CyNode) graphObjects[0];
 
 							//  Obtain dimensions of current InnerCanvas
-							View graphView = QuickFindPlugIn.this.cyNetworkManagerServiceRef.getCurrentNetworkView();
+							View graphView = QuickFindPlugIn.this.applicationManager.getCurrentNetworkView();
 							//Component innerCanvas = graphView.getComponent();
 
-							View<CyNode> nodeView = QuickFindPlugIn.this.cyNetworkManagerServiceRef.getCurrentNetworkView().getNodeView(node);
+							View<CyNode> nodeView = QuickFindPlugIn.this.applicationManager.getCurrentNetworkView().getNodeView(node);
 
 							//double width = nodeView.getWidth() * NODE_SIZE_MULTIPLER;
 							//double height = nodeView.getHeight() * NODE_SIZE_MULTIPLER;
 							//double scaleFactor = Math.min(innerCanvas.getWidth() / width,
 							//                              (innerCanvas.getHeight() / height));
-							//QuickFindPlugIn.this.cyNetworkManagerServiceRef.getCurrentNetworkView().setZoom(scaleFactor);
+							//QuickFindPlugIn.this.applicationManager.getCurrentNetworkView().setZoom(scaleFactor);
 						}
 					}
 
-					QuickFindPlugIn.this.cyNetworkManagerServiceRef.getCurrentNetworkView().updateView();
+					QuickFindPlugIn.this.applicationManager.getCurrentNetworkView().updateView();
 				}
 			});
 	}
@@ -476,7 +475,7 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 					}
 					//cyNetwork.setSelectedNodeState(toBeSelected, true);
 					//cyNetwork.setSelectedNodeState(toBeUnselected, false);
-					QuickFindPlugIn.cyNetworkManagerServiceRef.getCurrentNetworkView().updateView();
+					QuickFindPlugIn.applicationManager.getCurrentNetworkView().updateView();
 				}
 			});
 	}
@@ -526,7 +525,7 @@ NetworkViewDestroyedListener, NetworkViewAddedListener {
 						CyEdge e = (CyEdge) it.next();
 						e.attrs().set("selected", false);
 					}
-					QuickFindPlugIn.this.cyNetworkManagerServiceRef.getCurrentNetworkView().updateView();
+					QuickFindPlugIn.this.applicationManager.getCurrentNetworkView().updateView();
 				}
 			});
 	}
@@ -557,7 +556,7 @@ class UserSelectionListener implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		//  Get Current Network
-		final CyNetwork currentNetwork = QuickFindPlugIn.cyNetworkManagerServiceRef.getCurrentNetwork();
+		final CyNetwork currentNetwork = QuickFindPlugIn.applicationManager.getCurrentNetwork();
 
 		//  Get Current User Selection
 		Object o = comboBox.getSelectedItem();
@@ -595,7 +594,7 @@ class RangeSelectionListener implements ChangeListener {
 	 */
 	public void stateChanged(ChangeEvent e) {
 		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
-		final CyNetwork cyNetwork = QuickFindPlugIn.cyNetworkManagerServiceRef.getCurrentNetwork();
+		final CyNetwork cyNetwork = QuickFindPlugIn.applicationManager.getCurrentNetwork();
 		GenericIndex index = quickFind.getIndex(cyNetwork);
 		NumberRangeModel model = (NumberRangeModel) slider.getModel();
 
@@ -622,7 +621,7 @@ class NetworkModifiedListener implements PropertyChangeListener {
         if (event.getPropertyName() != null) {
             if (event.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)) {
 
-				final CyNetwork cyNetwork = QuickFindPlugIn.cyNetworkManagerServiceRef.getCurrentNetwork();
+				final CyNetwork cyNetwork = QuickFindPlugIn.applicationManager.getCurrentNetwork();
                 if (cyNetwork.getNodeList() != null) {
 
 					// this network may not have been added to quick find - 

@@ -47,7 +47,7 @@ import cytoscape.view.CySwingApplication;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.GraphObject;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
@@ -131,7 +131,7 @@ public class QuickFindConfigDialog extends JDialog {
 	/**
 	 * Network manager to get current network
 	 */
-	private final CyNetworkManager netMgr;
+	private final CyApplicationManager applicationManager;
 	
 	/**
 	 * The Cytoscape desktop
@@ -151,14 +151,14 @@ public class QuickFindConfigDialog extends JDialog {
 	/**
 	 * Constructor.
 	 */
-	public QuickFindConfigDialog(CyNetworkManager netMgr,
+	public QuickFindConfigDialog(CyApplicationManager applicationManager,
 	                             CySwingApplication cyDesktop,
 	                             TaskManager taskMgr) {
-	    this.netMgr = netMgr;
+	    this.applicationManager = applicationManager;
 	    this.cyDesktop = cyDesktop;
 	    this.taskMgr = taskMgr;
 		//  Initialize, based on currently selected network
-		currentNetwork = netMgr.getCurrentNetwork();
+		currentNetwork = applicationManager.getCurrentNetwork();
 
 		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 		currentIndex = quickFind.getIndex(currentNetwork);
@@ -597,17 +597,17 @@ public class QuickFindConfigDialog extends JDialog {
 
 		if (indexType == QuickFind.INDEX_NODES) {
 		    // FIXME: is this correct?
-			attributes = netMgr.getCurrentNetwork().getCyDataTables("node").get(CyNetwork.DEFAULT_ATTRS);
+			attributes = applicationManager.getCurrentNetwork().getCyDataTables("node").get(CyNetwork.DEFAULT_ATTRS);
 		} else {
 		    // FIXME: is this correct?
-			attributes = netMgr.getCurrentNetwork().getCyDataTables("edge").get(CyNetwork.DEFAULT_ATTRS);
+			attributes = applicationManager.getCurrentNetwork().getCyDataTables("edge").get(CyNetwork.DEFAULT_ATTRS);
 		}
 
 		return attributes;
 	}
 	
-	CyNetworkManager getCyNetworkMgr() {
-	    return netMgr;
+	CyApplicationManager getCyApplicationManager() {
+	    return applicationManager;
 	}
 	
 	/**
