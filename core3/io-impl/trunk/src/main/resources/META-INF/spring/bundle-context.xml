@@ -355,7 +355,7 @@
 	<!-- All Writer Managers -->
 
 	<bean id="viewWriterManager" 
-	      class="org.cytoscape.io.internal.write.ViewWriterManagerImpl" />
+	      class="org.cytoscape.io.internal.write.PresentationWriterManagerImpl" />
 
 	<bean id="networkViewWriterManager" 
 	      class="org.cytoscape.io.internal.write.CyNetworkViewWriterManagerImpl"/>
