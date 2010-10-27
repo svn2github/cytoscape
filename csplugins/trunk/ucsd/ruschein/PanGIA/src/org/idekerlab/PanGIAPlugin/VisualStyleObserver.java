@@ -122,7 +122,6 @@ public class VisualStyleObserver implements PropertyChangeListener {
 					if (f<min) min = f;
 					if (f>max) max = f;
 				}
-					
 				
 				EdgeAppearanceCalculator eac = style.getEdgeAppearanceCalculator();
 				
