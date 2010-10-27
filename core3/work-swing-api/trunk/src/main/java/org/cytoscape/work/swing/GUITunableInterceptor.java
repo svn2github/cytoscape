@@ -9,21 +9,27 @@ import org.cytoscape.work.TunableHandler;
 
 
 /**
- * Provides methods to intercept the Objects annotated as <code>@Tunable</code>, use, and display them.
- * Intended to be used as an OSGi server.
- * @param <TH> <code>TunableHandler</code>s that will be detected. It will contain the information provided
+ * Provides methods to intercept the Objects annotated as <code>@Tunable</code>, 
+ * use, and display them.
+ * Intended to be used as an OSGi service.
+ * @param <TH> <code>TunableHandler</code>s that will be detected. 
+ * It will contain the information provided
  * by the <code>@Tunable</code> annotations and the Object itself.
  * @author Pasteur
  */
 public interface GUITunableInterceptor<TH extends TunableHandler> extends TunableInterceptor<TH> {
 	/**
-	 * Identify Tunables of an Object o and assign a <code>Handler</code> to each <code>Tunable</code>.
+	 * Identify Tunables of an Object o and assign a <code>Handler</code> to 
+	 * each <code>Tunable</code>.
 	 * 
-	 * This method detects the fields and the methods of the object o, then searches for <code>@Tunable</code> annotations, and finally creates a
+	 * This method detects the fields and the methods of the object o, then searches 
+	 * for <code>@Tunable</code> annotations, and finally creates a
 	 * <code>Handler</code> for each type of Object by using the <code>HandlerFactory</code>. 
-	 * The handlers are stored in a HashMap and can then be retrieved by their key (i.e name of the field or method).
+	 * The handlers are stored in a HashMap and can then be retrieved by their key 
+	 * (i.e name of the field or method).
 	 * 
-	 * @param o This has to be an instance of a class that contains at least one <code>@Tunable</code> annotation.
+	 * @param o This has to be an instance of a class that contains at least 
+	 * one <code>@Tunable</code> annotation.
 	 */
 	void loadTunables(Object o);
 	
@@ -31,13 +37,16 @@ public interface GUITunableInterceptor<TH extends TunableHandler> extends Tunabl
 	 * Returns the Map that contains all the <code>Handler</code>s for the Object <code>o</code>.
 	 * 
 	 * @param o An Object on which the loadTunable() method has previously been executed.
-	 * @return The Map with all the <code>Handlers</code> that have been previously assigned to <code>o</code>.
+	 * @return The Map with all the <code>Handlers</code> that have been previously assigned 
+	 * to <code>o</code>.
 	 */
 	Map<String, TH> getHandlers(Object o);
 
 	/**
-	 *  @param obs  objects which are instances classes with <code>Tunables</code> that need to be displayed to a user.
-	 *  @return a panel that contains a visual representation of the tunables and is appropriate for embedding in a dialog or another panel
+	 * @param obs  objects which are instances classes with <code>Tunables</code> that need 
+	 * to be displayed to a user.
+	 * @return a panel that contains a visual representation of the tunables and is 
+	 * appropriate for embedding in a dialog or another panel
 	 */
 	JPanel getUI(Object... obs);
 

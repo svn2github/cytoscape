@@ -7,23 +7,22 @@ import org.cytoscape.work.TunableHandler;
 
 
 /**
- *	Specific <code>Handler</code> for construction of GUI
- *
- * 	Access to the <code>Handler</code> for any type of <code>Tunable</code> will be provided by using this interface
- * 
- * @author pasteur
- *
+ *	Specific <code>Handler</code> for construction of GUI.
+ * 	Access to the <code>Handler</code> for any type of <code>Tunable</code> 
+ * will be provided by using this interface
  */
 public interface GUITunableHandler extends TunableHandler {
 	/**
-	 * to get the panel that contains the GUI representation (<code>JTextField, JFileChooser, JLabel, JList ...</code>)
+	 * to get the panel that contains the GUI representation 
+	 * (<code>JTextField, JFileChooser, JLabel, JList ...</code>)
 	 * 
 	 * @return the panel containing GUI
 	 */
 	JPanel getJPanel();
 	
 	/**
-	 * To get the current value of a <code>Handler</code> (or path for a <code>FileHandler</code>, or selected item(s)
+	 * To get the current value of a <code>Handler</code> 
+	 * (or path for a <code>FileHandler</code>, or selected item(s)
 	 * for <code>ListMultipleSelection ListSingleSelection</code>, ...)
 	 *
 	 * @return string representing the state
@@ -32,7 +31,8 @@ public interface GUITunableHandler extends TunableHandler {
 
 	
 	/**
-	 * Use to set the intercepted object (with <code>Tunable</code> annotation) with the new <i>"value"</i> that has been chosen or entered by the user through GUI
+	 * Use to set the intercepted object (with <code>Tunable</code> annotation) 
+	 * with the new <i>"value"</i> that has been chosen or entered by the user through GUI.
 	 */
 	void handle();
 	
@@ -50,15 +50,16 @@ public interface GUITunableHandler extends TunableHandler {
 	void addDependent(GUITunableHandler gh);
 	
 	/**
-	 * Check if the dependency matches with the rule provided on the other <code>GUITunableHandler</code> 
+	 * Check if the dependency matches with the rule provided on the 
+	 * other <code>GUITunableHandler</code> 
 	 * <p>
-	 * <pre>
-	 * the checking is dynamically done.
+	 * The checking is done dynamically.
+	 * <p>
 	 * 
-	 * If it matches : the GUI for this <code>GUITunableHandler</code> is available, or not if it doesn't match
-	 * 
-	 * the dependency can me made on String, a boolean value, a specific value for an Integer,Double..., a selected item of a list ...
-	 * </pre>
+	 * If it matches : the GUI for this <code>GUITunableHandler</code> is available, 
+	 * or not if it doesn't match the dependency can me made on String, 
+	 * a boolean value, a specific value for 
+	 * an Integer,Double..., a selected item of a list ...
 	 * </p>
 	 * 
 	 * @param name of the <code>GUITunableHandler</code> on which it depends
@@ -67,7 +68,8 @@ public interface GUITunableHandler extends TunableHandler {
 	void checkDependency(String name, String state);
 	
 	/**
-	 * Get the new "values" for the <code>Tunables</code> object that have been modified if their JPanel is enabled : if the dependencies are matching
+	 * Get the new "values" for the <code>Tunables</code> object that have 
+	 * been modified if their JPanel is enabled : if the dependencies are matching
 	 */
 	void handleDependents();
 	
