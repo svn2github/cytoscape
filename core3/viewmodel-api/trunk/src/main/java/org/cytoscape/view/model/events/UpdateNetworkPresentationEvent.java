@@ -9,15 +9,23 @@ import org.cytoscape.view.model.CyNetworkView;
  * objects, mainly rendering engines, in the presentation layer. This means by
  * firing this event, Cytoscape will invoke "redraw" method in the rendering
  * engine.
- * 
+ * <p>
+ * This event should
+ * be created and fired by the view being updated and not anyone else,
+ * instead call the {@link CyNetworkView.updateView()} method.
  */
 public final class UpdateNetworkPresentationEvent extends
 		AbstractCyEvent<CyNetworkView> {
 
 	/**
 	 * Event for updating (redrawing) presentation.
+     * <p>
+     * This event should
+     * be created and fired by the view being updated and not anyone else,
+     * instead call the {@link CyNetworkView.updateView()} method.
 	 * 
-	 * @param source source network view-model.  Presentations associated with this view-model use this event.
+	 * @param source source network view-model.  Presentations 
+	 * associated with this view-model use this event.
 	 */
 	public UpdateNetworkPresentationEvent(final CyNetworkView source) {
 		super(source, UpdateNetworkPresentationEventListener.class);
