@@ -392,7 +392,7 @@ public class NetworkViewManager implements InternalFrameListener,
 
 		long start = System.currentTimeMillis();
 		logger.debug("Rendering view model: " + view.getSUID());
-		final RenderingEngine<CyNetwork> renderingEngine = currentRenderingEngineFactory.render(iframe, view);
+		final RenderingEngine<CyNetwork> renderingEngine = currentRenderingEngineFactory.getInstance(iframe, view);
 		logger.debug("Rendering finished in " + (System.currentTimeMillis() - start) + " m sec.");
 		
 		this.presentationMap.put(view.getModel().getSUID(), renderingEngine);

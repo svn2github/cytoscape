@@ -14,7 +14,7 @@ import org.cytoscape.view.model.View;
 public interface RenderingEngineFactory<T> {
 
 	/**
-	 * A presentation can contain multiple view models. This enable developers
+	 * A view model can have multiple presentations. This enable developers
 	 * to render multiple View Models in the same display. For example, if
 	 * View<CyNetwork> and View<Decoration> are passed to this, both of them
 	 * will be rendered in a window, using same rendering engine.
@@ -27,7 +27,7 @@ public interface RenderingEngineFactory<T> {
 	 * 
 	 * @return Rendering Engine for visualization on the visualizationContainer.
 	 */
-	RenderingEngine<T> render(final Object visualizationContainer,
+	RenderingEngine<T> getInstance(final Object visualizationContainer,
 			final View<T> viewModel);
 
 }

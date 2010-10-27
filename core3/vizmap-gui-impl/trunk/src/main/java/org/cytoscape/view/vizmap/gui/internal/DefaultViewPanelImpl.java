@@ -149,7 +149,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel,
 		// view.setVisualProperty(NETWORK_BACKGROUND_COLOR, background);
 
 		// Render it in this panel
-		presentationFactory.render(this, dummyview);
+		presentationFactory.getInstance(this, dummyview);
 	}
 
 	/**
@@ -170,7 +170,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel,
 		// TODO: is this correct???
 		this.removeAll();
 
-		presentationFactory.render(this, dummyview);
+		presentationFactory.getInstance(this, dummyview);
 
 		// canvas.setLocation(PADDING / 2, PADDING / 2);
 		// vs.apply(dummyview);
