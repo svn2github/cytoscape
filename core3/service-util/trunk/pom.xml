@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>1.0-SNAPSHOT</version>
+		<version>3.0.0-alpha3</version>
 	</parent>
 
 	<properties>
@@ -22,6 +22,12 @@
 	<name>${bundle.symbolicName}</name>
 
 	<packaging>bundle</packaging>
+
+	<scm>
+		<connection>scm:svn:http://chianti.ucsd.edu/svn/core3/service-util/trunk</connection>
+		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/service-util/trunk</developerConnection>
+		<url>http://chianti.ucsd.edu/svn/core3/service-util/trunk</url>
+	</scm>
 
 	<repositories>
 		<!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
@@ -91,12 +97,6 @@
 
 
 	<dependencies>
-		<dependency>
-			<groupId>org.ops4j.pax.logging</groupId>
-			<artifactId>pax-logging-api</artifactId>
-			<version>1.5.2</version>
-			<scope>provided</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi_R4_core</artifactId>
