@@ -40,7 +40,8 @@
 // $Author: mes $
 package cytoscape.internal.actions;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import cytoscape.CytoscapeShutdown;
 import cytoscape.view.CytoscapeAction;
 
@@ -58,8 +59,8 @@ public class ExitAction extends CytoscapeAction {
 	/**
 	 * Creates a new ExitAction object.
 	 */
-	public ExitAction(CyNetworkManager netmgr, CytoscapeShutdown shutdown) {
-		super("Quit",netmgr);
+	public ExitAction(CyApplicationManager appMgr, CyNetworkViewManager netViewMgr, CytoscapeShutdown shutdown) {
+		super("Quit",appMgr,netViewMgr);
 		this.shutdown = shutdown;
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_Q, ActionEvent.CTRL_MASK);

@@ -36,7 +36,8 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 
 import cytoscape.view.CytoscapeAction;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.task.NetworkCollectionTaskFactory;
 
 
@@ -45,13 +46,13 @@ public class NetworkCollectionTaskFactoryTunableAction
 
 	public NetworkCollectionTaskFactoryTunableAction(TaskManager manager,
 	                                                 NetworkCollectionTaskFactory factory,
-	                                                 Map serviceProps, CyNetworkManager netmgr)
-	{
-		super(manager, factory, serviceProps, netmgr);
+	                                                 Map serviceProps, CyApplicationManager appMgr,
+													 CyNetworkViewManager netViewMgr) {
+		super(manager, factory, serviceProps, appMgr, netViewMgr);
 	}
 
 	public void actionPerformed(ActionEvent a) {
-		factory.setNetworkCollection( netmgr.getSelectedNetworks() );
+		factory.setNetworkCollection( applicationManager.getSelectedNetworks() );
 		super.actionPerformed(a);
 	}
 }

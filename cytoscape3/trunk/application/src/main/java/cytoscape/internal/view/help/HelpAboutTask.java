@@ -32,7 +32,6 @@ package cytoscape.internal.view.help;
 
 import org.cytoscape.splash.CreditScreen;
 
-import org.cytoscape.session.CyNetworkManager;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
@@ -46,9 +45,5 @@ public class HelpAboutTask extends AbstractTask {
 
 	public void run(TaskMonitor tm) {
 		credits.showCredits();
-	}
-
-	@Override
-	public void cancel() {
 	}
 }

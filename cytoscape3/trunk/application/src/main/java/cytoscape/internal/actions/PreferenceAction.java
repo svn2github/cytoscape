@@ -42,7 +42,8 @@
 //-------------------------------------------------------------------------
 package cytoscape.internal.actions;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import cytoscape.internal.dialogs.PreferencesDialogImpl;
 import cytoscape.internal.dialogs.PreferencesDialogFactoryImpl;
 import cytoscape.view.CytoscapeAction;
@@ -62,8 +63,8 @@ public class PreferenceAction extends CytoscapeAction {
 	 */
 	private CySwingApplication desktop;
 	private PreferencesDialogFactoryImpl pdf;
-	public PreferenceAction(CySwingApplication desktop, CyNetworkManager netmgr, PreferencesDialogFactoryImpl pdf ) {
-		super("Properties...",netmgr);
+	public PreferenceAction(CySwingApplication desktop, CyApplicationManager appMgr, CyNetworkViewManager netViewMgr, PreferencesDialogFactoryImpl pdf ) {
+		super("Properties...",appMgr,netViewMgr);
 		this.desktop = desktop;
 		this.pdf = pdf;
 		System.out.println("PreferenceAction()...");

@@ -49,7 +49,8 @@ import java.util.Set;
 
 import javax.swing.event.MenuEvent;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.presentation.RenderingEngine;
 
 import cytoscape.view.CytoscapeAction;
@@ -65,18 +66,15 @@ public class PrintAction extends CytoscapeAction {
 	 */
 	public final static String MENU_LABEL = "Print...";
 	private Properties props;
-	private CyNetworkManager cyNetworkMgr;
 
 	/**
 	 * Creates a new PrintAction object.
 	 */
-	public PrintAction(CyNetworkManager netmgr, Properties props,
-			CyNetworkManager cyNetworkMgr) {
-		super(MENU_LABEL, netmgr);
+	public PrintAction(CyApplicationManager appMgr, CyNetworkViewManager netViewMgr, Properties props ) {
+		super(MENU_LABEL, appMgr, netViewMgr);
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK);
 		this.props = props;
-		this.cyNetworkMgr = cyNetworkMgr;
 	}
 
 	/**
@@ -86,7 +84,7 @@ public class PrintAction extends CytoscapeAction {
 	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		RenderingEngine engine = cyNetworkMgr.getCurrentRenderingEngine();
+		RenderingEngine engine = applicationManager.getCurrentRenderingEngine();
 
 		PrinterJob printJob = PrinterJob.getPrinterJob();
 		final Set<Object> keys = props.keySet();

@@ -37,7 +37,7 @@ import org.cytoscape.work.TaskManager;
 
 import cytoscape.view.CytoscapeAction;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.session.CyAppliactionManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.task.NetworkViewCollectionTaskFactory;
 
 
@@ -46,7 +46,7 @@ public class NetworkViewCollectionTaskFactoryTunableAction
 
 	public NetworkViewCollectionTaskFactoryTunableAction(TaskManager manager, 
 							     NetworkViewCollectionTaskFactory factory, Map serviceProps,
-							     final CyAppliactionManager applicationManager,
+							     final CyApplicationManager applicationManager,
 							     final CyNetworkViewManager networkViewManager)
 	{
 		super(manager, factory, serviceProps, applicationManager, networkViewManager);

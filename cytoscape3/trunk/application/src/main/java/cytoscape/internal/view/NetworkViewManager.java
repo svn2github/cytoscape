@@ -51,16 +51,17 @@ import javax.swing.event.InternalFrameListener;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.events.RowSetMicroListener;
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.session.events.NetworkViewAboutToBeDestroyedEvent;
-import org.cytoscape.session.events.NetworkViewAboutToBeDestroyedListener;
-import org.cytoscape.session.events.NetworkViewAddedEvent;
-import org.cytoscape.session.events.NetworkViewAddedListener;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedEvent;
+import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener;
 import org.cytoscape.session.events.SetCurrentNetworkEvent;
 import org.cytoscape.session.events.SetCurrentNetworkListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.model.events.NetworkViewAddedEvent;
+import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 
@@ -108,7 +109,8 @@ public class NetworkViewManager implements InternalFrameListener,
 	private final Map<CyNetwork,RowSetMicroListener> nameListeners;
 	
 	private final CyEventHelper eventHelper;
-	private final CyNetworkManager networkManager;
+	private final CyNetworkViewManager networkViewManager;
+	private final CyApplicationManager applicationManager;
 	
 	
 	/**
@@ -117,11 +119,12 @@ public class NetworkViewManager implements InternalFrameListener,
 	 * @param desktop
 	 *            DOCUMENT ME!
 	 */
-	public NetworkViewManager(CyNetworkManager netmgr, Properties props,
+	public NetworkViewManager(CyApplicationManager appMgr, CyNetworkViewManager netViewMgr, Properties props,
 			CyHelpBroker help, CyEventHelper eventHelper) {
 		this.factories = new HashMap<String, RenderingEngineFactory<CyNetwork>>();
 		
-		this.networkManager = netmgr;
+		this.networkViewManager = netViewMgr;
+		this.applicationManager = appMgr;
 		this.props = props;
 		this.eventHelper = eventHelper;
 		desktopPane = new JDesktopPane();
@@ -221,7 +224,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		if (network_id == null)
 			return;
 
-		networkManager.setCurrentNetworkView(network_id);
+		applicationManager.setCurrentNetworkView(network_id);
 	}
 
 	/**
@@ -297,7 +300,7 @@ public class NetworkViewManager implements InternalFrameListener,
 			return;
 		}
 		
-		final CyNetworkView targetViewModel = networkManager.getNetworkView(networkModelID);
+		final CyNetworkView targetViewModel = networkViewManager.getNetworkView(networkModelID);
 		if(targetViewModel == null) {
 			logger.debug("View model does not exist for model ID: " + networkModelID);
 			return;
@@ -385,7 +388,7 @@ public class NetworkViewManager implements InternalFrameListener,
 				.getVisualProperty(NETWORK_TITLE), true, true, true, true);
 		iframe.addInternalFrameListener(new InternalFrameAdapter() {
 			public void internalFrameClosing(InternalFrameEvent e) {
-				networkManager.destroyNetworkView(view);
+				networkViewManager.destroyNetworkView(view);
 			}
 		});
 		desktopPane.add(iframe);
@@ -447,7 +450,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		componentMap.put(iframe, view.getModel().getSUID());
 
 		Long sourceNetwork = view.getModel().getSUID();
-		networkManager.setCurrentRenderingEngine(presentationMap.get(sourceNetwork));
+		applicationManager.setCurrentRenderingEngine(presentationMap.get(sourceNetwork));
 
 		updateNetworkTitle( view.getModel() );	
 

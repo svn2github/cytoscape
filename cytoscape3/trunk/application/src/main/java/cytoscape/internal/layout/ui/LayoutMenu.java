@@ -36,7 +36,7 @@
 */
 package cytoscape.internal.layout.ui;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
@@ -63,7 +63,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 	private final static long serialVersionUID = 1202339874255880L;
 	List<CyLayoutAlgorithm> subMenuList;
 	LayoutMenuManager menuMgr;
-	private CyNetworkManager netmgr;
+	private CyApplicationManager appMgr;
 	private TaskManager tm;
 
 	/**
@@ -71,12 +71,12 @@ public class LayoutMenu extends JMenu implements MenuListener {
 	 *
 	 * @param menuName  DOCUMENT ME!
 	 */
-	public LayoutMenu(String menuName, LayoutMenuManager menuMgr, CyNetworkManager netmgr,TaskManager tm) {
+	public LayoutMenu(String menuName, LayoutMenuManager menuMgr, CyApplicationManager appMgr,TaskManager tm) {
 		super(menuName);
 		addMenuListener(this);
 		subMenuList = new ArrayList<CyLayoutAlgorithm>();
 		this.menuMgr = menuMgr;
-		this.netmgr = netmgr;
+		this.appMgr = appMgr;
 		this.tm = tm;
 	}
 
@@ -132,7 +132,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 		this.removeAll();
 
 		// Figure out if we have anything selected
-		CyNetwork network = netmgr.getCurrentNetwork();
+		CyNetwork network = appMgr.getCurrentNetwork();
 		boolean someSelected = false; 
 		if ( network != null ) {
 			List<CyNode> selectedNodes = CyTableUtil.getNodesInState(network,"selected",true);
@@ -148,21 +148,21 @@ public class LayoutMenu extends JMenu implements MenuListener {
 
 			if ((layout.supportsNodeAttributes().size() > 0)
 			    || (layout.supportsEdgeAttributes().size() > 0)) {
-				super.add(new DynamicLayoutMenu(layout,enableMenuItem,netmgr,tm));
+				super.add(new DynamicLayoutMenu(layout,enableMenuItem,appMgr,tm));
 			} else if (layout.supportsSelectedOnly() && someSelected) {
-				super.add(new DynamicLayoutMenu(layout,enableMenuItem,netmgr,tm));
+				super.add(new DynamicLayoutMenu(layout,enableMenuItem,appMgr,tm));
 			} else {
-				super.add(new StaticLayoutMenu(layout,enableMenuItem,netmgr,tm));
+				super.add(new StaticLayoutMenu(layout,enableMenuItem,appMgr,tm));
 			}
 		}
 	}
 
 	private boolean checkEnabled() {
-		CyNetwork network = netmgr.getCurrentNetwork();
+		CyNetwork network = appMgr.getCurrentNetwork();
 		if ( network == null )
 			return false;
 
-		CyNetworkView view = netmgr.getCurrentNetworkView();
+		CyNetworkView view = appMgr.getCurrentNetworkView();
 		if ( view == null )
 			return false;
 		else

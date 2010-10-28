@@ -38,7 +38,7 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 
 import cytoscape.view.CytoscapeAction;
-import org.cytoscape.view.manager.CyNetworkViewManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.task.NetworkViewTaskFactory;
 

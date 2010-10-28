@@ -34,7 +34,8 @@ import cytoscape.view.CyAction;
 import cytoscape.view.CyMenuBar;
 import cytoscape.view.CyToolBar;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 
 import cytoscape.internal.task.CytoPanelTaskFactoryTunableAction;
 import cytoscape.internal.task.TaskFactoryTunableAction;
@@ -70,7 +71,8 @@ public class CytoscapeMenuPopulator {
 	final private CySwingApplication app;
 	final private CyMenus cyMenus;
 	final private GUITaskManager taskManager;
-	final private CyNetworkManager netManager;
+	final private CyNetworkViewManager netViewManager;
+	final private CyApplicationManager appManager;
 
 	final private Map<TaskFactory, CyAction> taskMap;
 
@@ -80,21 +82,22 @@ public class CytoscapeMenuPopulator {
 	 * but won't fill them with menu items and associated action listeners.
 	 */
 	public CytoscapeMenuPopulator(final CySwingApplication app, final GUITaskManager taskManager,
-				      final CyNetworkManager netManager)
+				      final CyApplicationManager appManager, final CyNetworkViewManager netViewManager)
 	{
 		this.app = app;
 		this.cyMenus = app.getCyMenus();
 		this.taskManager = taskManager;
-		this.netManager = netManager;
+		this.appManager = appManager;
+		this.netViewManager = netViewManager;
 
 		taskMap = new HashMap<TaskFactory,CyAction>();
 	}
 
 	public void addTaskFactory(TaskFactory factory, Map props) {
 		if (taskManager.hasTunables(factory))
-			addFactory(new CytoPanelTaskFactoryTunableAction(factory, taskManager, app, props, netManager), factory, props);
+			addFactory(new CytoPanelTaskFactoryTunableAction(factory, taskManager, app, props, appManager, netViewManager), factory, props);
 		else
-			addFactory(new TaskFactoryTunableAction<TaskFactory>(taskManager, factory, props, netManager), factory, props);
+			addFactory(new TaskFactoryTunableAction<TaskFactory>(taskManager, factory, props, appManager, netViewManager), factory, props);
 	}
 
 	public void removeTaskFactory(TaskFactory factory, Map props) {
@@ -102,7 +105,7 @@ public class CytoscapeMenuPopulator {
 	}
 
 	public void addNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
-		addFactory(new NetworkTaskFactoryTunableAction(taskManager, factory, props, netManager), factory, props);
+		addFactory(new NetworkTaskFactoryTunableAction(taskManager, factory, props, appManager, netViewManager), factory, props);
 	}
 
 	public void removeNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
@@ -110,7 +113,7 @@ public class CytoscapeMenuPopulator {
 	}
 
 	public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
-		addFactory(new NetworkViewTaskFactoryTunableAction(taskManager, factory, props, netManager), factory, props);
+		addFactory(new NetworkViewTaskFactoryTunableAction(taskManager, factory, props, appManager, netViewManager), factory, props);
 	}
 
 	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
@@ -118,7 +121,7 @@ public class CytoscapeMenuPopulator {
 	}
 
 	public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
-		addFactory(new NetworkViewCollectionTaskFactoryTunableAction(taskManager, factory, props, netManager), factory, props);
+		addFactory(new NetworkViewCollectionTaskFactoryTunableAction(taskManager, factory, props, appManager, netViewManager), factory, props);
 	}
 
 	public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
@@ -126,7 +129,7 @@ public class CytoscapeMenuPopulator {
 	}
 	
 	public void addNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-		addFactory(new NetworkCollectionTaskFactoryTunableAction(taskManager, factory, props, netManager), factory, props);
+		addFactory(new NetworkCollectionTaskFactoryTunableAction(taskManager, factory, props, appManager, netViewManager), factory, props);
 	}
 
 	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {

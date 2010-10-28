@@ -30,7 +30,7 @@
 package cytoscape.internal.layout.ui;
 
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -64,7 +64,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 	private CyLayoutAlgorithm layout;
 	private static final String NOATTRIBUTE = "(none)";
 	private Set<CyNode> selectedNodes;
-	private CyNetworkManager netmgr;
+	private CyApplicationManager appMgr;
 	private TaskManager tm;
 
 	/**
@@ -72,11 +72,11 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 	 *
 	 * @param layout  DOCUMENT ME!
 	 */
-	public DynamicLayoutMenu(CyLayoutAlgorithm layout, boolean enabled, CyNetworkManager netmgr, TaskManager tm) {
+	public DynamicLayoutMenu(CyLayoutAlgorithm layout, boolean enabled, CyApplicationManager appMgr, TaskManager tm) {
 		super(layout.toString());
 		addMenuListener(this);
 		this.layout = layout;
-		this.netmgr = netmgr;
+		this.appMgr = appMgr;
 		this.tm = tm;
 		selectedNodes = new HashSet<CyNode>();
 		setEnabled(enabled);
@@ -108,7 +108,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		this.removeAll();
 
 		// Base the menu structure only on the current network. 
-		CyNetwork network = netmgr.getCurrentNetwork();
+		CyNetwork network = appMgr.getCurrentNetwork();
 
 		// First, do we support selectedOnly?
 		selectedNodes = new HashSet<CyNode>(CyTableUtil.getNodesInState(network,"selected",true));
@@ -124,7 +124,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 			addEdgeAttributeMenus(this, network, false);
 		} else {
 			// No special menus, so make sure we layout all selected
-			List<CyNetworkView> views = netmgr.getSelectedNetworkViews();
+			List<CyNetworkView> views = appMgr.getSelectedNetworkViews();
 			for (final CyNetworkView view: views) {
 				layout.setSelectedOnly(false);
 				layout.setLayoutAttribute(null);
@@ -203,7 +203,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 
 		public void actionPerformed(ActionEvent e) {
 /*
-			List<CyNetworkView> views = netmgr.getSelectedNetworkViews();
+			List<CyNetworkView> views = appMgr.getSelectedNetworkViews();
 
 			for ( CyNetworkView netView : views ) {
 

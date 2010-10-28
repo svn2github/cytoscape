@@ -46,7 +46,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.swing.GUITaskManager;
@@ -102,11 +103,14 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 	private CytoPanel cytoPanel;
 	final private static Logger logger = LoggerFactory.getLogger(CytoPanelTaskFactoryTunableAction.class);
 
-	public CytoPanelTaskFactoryTunableAction(final TaskFactory factory, final GUITaskManager manager,
+	public CytoPanelTaskFactoryTunableAction(final TaskFactory factory, 
+	                                         final GUITaskManager manager,
 	                                         final CySwingApplication app,
-	                                         final Map serviceProps, final CyNetworkManager netmgr)
+	                                         final Map serviceProps, 
+	                                         final CyApplicationManager appMgr, 
+	                                         final CyNetworkViewManager netViewMgr)
 	{
-		super(serviceProps, netmgr);
+		super(serviceProps, appMgr, netViewMgr);
 
 		this.factory = factory;
 		this.manager = manager;

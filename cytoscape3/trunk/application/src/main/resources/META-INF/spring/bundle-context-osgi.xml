@@ -7,6 +7,12 @@
 
 	<!-- Import OSGi services -->
 
+	<osgi:reference id="cyApplicationManagerServiceRef"
+		interface="org.cytoscape.session.CyApplicationManager" />
+
+	<osgi:reference id="cyNetworkViewManagerServiceRef"
+		interface="org.cytoscape.view.model.CyNetworkViewManager" />
+
 	<osgi:reference id="cyNetworkManagerServiceRef"
 		interface="org.cytoscape.model.CyNetworkManager" />
 

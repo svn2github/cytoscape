@@ -9,7 +9,7 @@ import java.util.Set;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 
@@ -28,18 +28,18 @@ class DeleteEdit extends CyAbstractEdit {
 	double[] yPos;
 	final CySubNetwork net;
 	final DeleteAction deleteAction;
-	final CyNetworkManager netmgr;
+	final CyNetworkViewManager netViewMgr;
 	
-	DeleteEdit(CySubNetwork net, Set<CyNode> nodes, Set<CyEdge> edges,	DeleteAction deleteAction, CyNetworkManager netmgr) {
+	DeleteEdit(CySubNetwork net, Set<CyNode> nodes, Set<CyEdge> edges,	DeleteAction deleteAction, CyNetworkViewManager netViewMgr) {
 		super("Delete");
 		this.deleteAction = deleteAction;
 		if ( net == null )
 			throw new NullPointerException("network is null");
 		this.net = net;
 
-		if ( netmgr == null )
+		if ( netViewMgr == null )
 			throw new NullPointerException("network manager is null");
-		this.netmgr = netmgr;
+		this.netViewMgr = netViewMgr;
 
 		if ( nodes == null )
 			throw new NullPointerException("nodes is null");
@@ -52,7 +52,7 @@ class DeleteEdit extends CyAbstractEdit {
 		// save the positions of the nodes
 		xPos = new double[nodes.size()]; 
 		yPos = new double[nodes.size()]; 
-		CyNetworkView netView = netmgr.getNetworkView(net.getSUID());
+		CyNetworkView netView = netViewMgr.getNetworkView(net.getSUID());
 		if ( netView != null ) {
 			int i = 0;
 			for ( CyNode n : nodes ) {
@@ -72,7 +72,7 @@ class DeleteEdit extends CyAbstractEdit {
 		for ( CyEdge e : edges )
 			net.removeEdge(e);
 
-		CyNetworkView netView = netmgr.getNetworkView(net.getSUID());
+		CyNetworkView netView = netViewMgr.getNetworkView(net.getSUID());
 		
 		// Manually call update presentation
 		netView.updateView();
@@ -88,7 +88,7 @@ class DeleteEdit extends CyAbstractEdit {
 		for ( CyEdge e : edges )
 			net.addEdge(e);
 
-		CyNetworkView netView = netmgr.getNetworkView(net.getSUID());
+		CyNetworkView netView = netViewMgr.getNetworkView(net.getSUID());
 		if ( netView != null ) {
 			int i = 0;
 			for ( CyNode n : nodes ) {

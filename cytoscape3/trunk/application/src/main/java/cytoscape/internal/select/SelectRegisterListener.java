@@ -12,8 +12,8 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
-import org.cytoscape.session.events.NetworkViewAddedEvent;
-import org.cytoscape.session.events.NetworkViewAddedListener;
+import org.cytoscape.view.model.events.NetworkViewAddedEvent;
+import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 

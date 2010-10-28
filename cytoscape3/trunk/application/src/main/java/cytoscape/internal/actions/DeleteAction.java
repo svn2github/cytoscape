@@ -90,8 +90,8 @@ public class DeleteAction extends CytoscapeAction {
 	 * @param obj the object to be deleted
 	 */
 
-	public DeleteAction(CyTableEntry obj, final UndoSupport undo, final CyRootNetworkFactory root, CyNetworkManager netmgr) {
-		super(ACTION_TITLE,netmgr);
+	public DeleteAction(CyTableEntry obj, final UndoSupport undo, final CyRootNetworkFactory root, final CyApplicationManager applicationManager, final CyNetworkViewManager networkViewManager) {
+		super(ACTION_TITLE,applicationManager, networkViewManager);
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(KeyEvent.VK_DELETE, 0);
 		graphObj = obj;
@@ -143,7 +143,7 @@ public class DeleteAction extends CytoscapeAction {
 			edges.add( cyEdge );
 		}
 
-		undo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodes,edges,this, netmgr) );
+		undo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodes,edges,this, networkViewManager) );
 		
 		// delete the actual nodes and edges
 
