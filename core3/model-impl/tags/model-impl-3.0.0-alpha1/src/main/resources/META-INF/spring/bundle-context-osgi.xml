@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
+
+	
+	<osgi:reference id="cyEventHelperServiceRef"
+		interface="org.cytoscape.event.CyEventHelper" />
+
+	<!-- Individual Service -->
+	<osgi:service id="cyNetworkFactoryService"
+		ref="cyNetworkFactory" interface="org.cytoscape.model.CyNetworkFactory">
+	</osgi:service>
+	
+	<osgi:service id="cyDataTableFactoryService"
+		ref="cyDataTableFactory" interface="org.cytoscape.model.CyTableFactory">
+	</osgi:service>
+	
+	<osgi:service id="cyRootNetworkFactoryService"
+		ref="cyRootNetworkFactory" interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory">
+	</osgi:service>
+	
+	<osgi:service id="cyTableManagerService"
+		ref="cyTableManager" interface="org.cytoscape.model.CyTableManager">
+	</osgi:service>
+	
+	<osgi:service id="cyNetworkManagerService"
+		ref="cyNetworkManager" interface="org.cytoscape.model.CyNetworkManager">
+	</osgi:service>
+</beans>
