@@ -64,7 +64,7 @@ public final class VisualStyleRemovedEvent extends AbstractCyEvent<Object> {
 	 * @return VisualStyle just deleted.
 	 * 
 	 */
-	public VisualStyle getDestroyedVisualStyle() {
+	public VisualStyle getRemovedVisualStyle() {
 		return destroyed;
 	}
 }
