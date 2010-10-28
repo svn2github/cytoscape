@@ -1,7 +1,7 @@
 package org.cytoscape.view.vizmap;
 
 
-import static org.easymock.EasyMock.createMock;
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -19,9 +19,9 @@ public class VizmapEventsTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		style = createMock(VisualStyle.class);
-		factory = createMock(VisualStyleFactory.class);
-		manager = createMock(VisualMappingManager.class);
+		style = mock(VisualStyle.class);
+		factory = mock(VisualStyleFactory.class);
+		manager = mock(VisualMappingManager.class);
 	}
 
 	@After
