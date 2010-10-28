@@ -129,7 +129,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager, VisualSty
 
 	@Override
 	public void handleEvent(VisualStyleRemovedEvent e) {
-		removeVisualStyle(e.getDestroyedVisualStyle());
+		removeVisualStyle(e.getRemovedVisualStyle());
 	}
 
 	@Override
