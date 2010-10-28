@@ -42,41 +42,61 @@ import cytoscape.logger.CyLogger;
 /**
  * 
  */
-public class Database {
-	CyLogger logger;
+public class Gene extends Reactant {
 
-	String orgid = null;
-	String version = null;
-	String species = null;
-	String strain = null;
-	List<DbLink> dbLink = null;
+	List<Gene> parents = null;
+	String commonName = null;
+	List<Protein> product = null;
+	List<Gene> instances = null;
 
-	public Database(Element database) {
-		this.orgid = DomUtils.getAttribute(database,"orgid");
-		this.version = DomUtils.getAttribute(database,"version");
-		this.species = DomUtils.getChildData(database, "species");
-		this.strain = DomUtils.getChildData(database, "strain");
-		this.dbLink = DomUtils.getDbLinks(database);
-	}
+	public Gene(Element gene) {
+		super(gene);
 
-	public String getOrgID() { return orgid; }
-	public String getVersion() { return version; }
-	public String getSpecies() { return species; }
-	public String getStrain() { return strain; }
-	public List<DbLink> getDbLinks() { return dbLink; }
-	public String toString() {
-		// String result = "OrgID:"+orgid+"|Version:"+version+"|Species:"+species+"|Strain:"+strain;
-		return orgid;
-	}
+		List<Element> parentElements = DomUtils.getChildElements(gene, "parent");
+		this.parents = getGenes(parentElements);
 
-	public static List<Database> getDatabases(Document response) {
-		NodeList dbNodes = response.getElementsByTagName("PGDB");
-		if (dbNodes == null || dbNodes.getLength() == 0) return null;
+		List<Element> productElements = DomUtils.getChildElements(gene, "product");
+		this.product = Protein.getProteins(productElements);
 
-		List<Database> databases = new ArrayList<Database>();
-		for (int index = 0; index < dbNodes.getLength(); index++) {
-			databases.add(new Database((Element)dbNodes.item(index)));
+		this.commonName = DomUtils.getChildData(gene, "common-name");
+
+		NodeList subclassElements = gene.getElementsByTagName("instance");
+		if (subclassElements != null && subclassElements.getLength() > 0) {
+			this.instances = new ArrayList<Gene>();
+			for (int index = 0; index < subclassElements.getLength(); index++) {
+				NodeList nl = ((Element)subclassElements.item(index)).getElementsByTagName("Gene");
+				if (nl != null && nl.getLength() > 0) {
+					this.instances.add(new Gene((Element)nl.item(0)));
+				}
+			}
 		}
-		return databases;
 	}
+
+	public static List<Gene> getGenes(List<Element> gElements) {
+		if (gElements == null || gElements.size() == 0)
+			return null;
+
+		List<Gene> resultList = new ArrayList<Gene>();
+		for (Element e: gElements) {
+			NodeList childList = e.getElementsByTagName("Gene");
+			// childList is either null or the Gene element...
+			if (childList == null || childList.getLength() == 0) continue;
+			resultList.add(new Gene((Element)(childList.item(0))));
+		}
+		return resultList;
+	}
+
+	public static List<Gene> getGenes(Document response) {
+		NodeList gNodes = response.getElementsByTagName("Gene");
+		if (gNodes == null || gNodes.getLength() == 0) return null;
+
+		List<Gene> genes = new ArrayList<Gene>();
+		for (int index = 0; index < gNodes.getLength(); index++) {
+			Gene g = new Gene((Element)gNodes.item(index));
+			if (g.getID() != null)
+				genes.add(g);
+		}
+		return genes;
+	}
+
 }

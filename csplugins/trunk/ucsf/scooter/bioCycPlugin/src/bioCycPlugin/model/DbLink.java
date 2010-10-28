@@ -35,38 +35,28 @@ package bioCycPlugin.model;
 import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import cytoscape.logger.CyLogger;
 
 /**
  * 
  */
-public class Reactant {
-	String ID = null;
-	String orgid = null;
-	String frameid = null;
-	String resource = null;
-	List<DbLink> dblinks = null;
-	List<String> synonyms = null;
+public class DbLink {
+	String db;
+	String oid;
+	String relationship;
+	String URL;
 
-	public Reactant (Element reactant) {
-		this.ID = DomUtils.getAttribute(reactant,"ID");
-		this.orgid = DomUtils.getAttribute(reactant,"orgid");
-		this.frameid = DomUtils.getAttribute(reactant,"frameid");
-		this.resource = DomUtils.getAttribute(reactant,"resource");
-		this.dblinks = DomUtils.getDbLinks(reactant);
-		this.synonyms = new ArrayList<String>();
-		List<Element> synonymElements = DomUtils.getChildElements(reactant, "synonym");
-		if (synonymElements != null && synonymElements.size() > 0) {
-			for (Element e: synonymElements) {
-				synonyms.add(DomUtils.getChildData(e));
-			}
-		}
+	public DbLink(Element dblink) {
+		this.db = DomUtils.getChildData(dblink, "dblink-db");
+		this.oid = DomUtils.getChildData(dblink, "dblink-oid");
+		this.relationship = DomUtils.getChildData(dblink, "dblink-relationship");
+		this.URL = DomUtils.getChildData(dblink, "dblink-URL");
 	}
 
-	public String getID() { return ID; }
-	public String getOrgID() { return orgid; }
-	public String getFrameID() { return frameid; }
-	public List<DbLink> getDbLinks() { return dblinks; }
-	public List<String> getSynonyms() { return synonyms; }
+	public String getDb() { return db; }
+	public String getOid() { return oid; }
+	public String getRelationship() { return relationship; }
+	public String getURL() { return URL; }
+
 }

@@ -34,39 +34,69 @@ package bioCycPlugin.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import cytoscape.logger.CyLogger;
 
 /**
  * 
  */
-public class Reactant {
-	String ID = null;
-	String orgid = null;
-	String frameid = null;
-	String resource = null;
-	List<DbLink> dblinks = null;
-	List<String> synonyms = null;
+public class DomUtils {
 
-	public Reactant (Element reactant) {
-		this.ID = DomUtils.getAttribute(reactant,"ID");
-		this.orgid = DomUtils.getAttribute(reactant,"orgid");
-		this.frameid = DomUtils.getAttribute(reactant,"frameid");
-		this.resource = DomUtils.getAttribute(reactant,"resource");
-		this.dblinks = DomUtils.getDbLinks(reactant);
-		this.synonyms = new ArrayList<String>();
-		List<Element> synonymElements = DomUtils.getChildElements(reactant, "synonym");
-		if (synonymElements != null && synonymElements.size() > 0) {
-			for (Element e: synonymElements) {
-				synonyms.add(DomUtils.getChildData(e));
-			}
-		}
+	public static String getChildData(Element e, String tag) {
+		NodeList children = e.getElementsByTagName(tag);
+		if (children == null || children.getLength() == 0)
+			return null;
+
+		return getChildData((Element)children.item(0));
 	}
 
-	public String getID() { return ID; }
-	public String getOrgID() { return orgid; }
-	public String getFrameID() { return frameid; }
-	public List<DbLink> getDbLinks() { return dblinks; }
-	public List<String> getSynonyms() { return synonyms; }
+	public static String getAttribute(Element e, String attribute) {
+		if (e.hasAttribute(attribute))
+			return e.getAttribute(attribute);
+		return null;
+	}
+
+	public static String getChildData(Element e) {
+		NodeList eChildren = e.getChildNodes();
+		if (eChildren == null || eChildren.getLength() == 0)
+			return null;
+
+		// OK, now, find the text node and return it's value
+		for (int index = 0; index < eChildren.getLength(); index++) {
+			Node n = eChildren.item(index);
+			if (n.getNodeType() == Node.TEXT_NODE) {
+				return n.getNodeValue();
+			}
+		}
+		return null;
+	}
+
+	public static List<Element> getChildElements(Element e, String tag) {
+		NodeList children = e.getElementsByTagName(tag);
+		if (children == null || children.getLength() == 0)
+			return null;
+
+		List<Element> result = new ArrayList<Element>();
+		for (int index = 0; index < children.getLength(); index++) {
+			Node n = children.item(index);
+			if (n.getNodeType() == Node.ELEMENT_NODE) {
+				result.add((Element)n);
+			}
+		}
+		return result;
+	}
+
+	public static List<DbLink> getDbLinks(Element parent) {
+		List<Element> dbLinkElements = getChildElements(parent, "dblink");
+		if (dbLinkElements == null || dbLinkElements.size() == 0)
+			return null;
+		List<DbLink> result = new ArrayList<DbLink>();
+		for (Element e: dbLinkElements) {
+			result.add(new DbLink(e));
+		}
+		return result;
+	}
 }

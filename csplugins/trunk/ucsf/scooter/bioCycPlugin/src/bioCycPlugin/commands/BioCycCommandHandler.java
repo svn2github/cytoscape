@@ -35,12 +35,11 @@ package bioCycPlugin.commands;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import cytoscape.Cytoscape;
-import cytoscape.CyNode;
+import cytoscape.actions.LoadNetworkTask;
 import cytoscape.command.AbstractCommandHandler;
 import cytoscape.command.CyCommandException;
 import cytoscape.command.CyCommandManager;
@@ -48,12 +47,24 @@ import cytoscape.command.CyCommandResult;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 
+import bioCycPlugin.model.Database;
+import bioCycPlugin.model.Gene;
+import bioCycPlugin.model.Pathway;
+import bioCycPlugin.model.Protein;
+import bioCycPlugin.model.Reaction;
+
 enum Command {
   LISTDATABASES("list databases", 
 	                "List all of the available databases", ""),
+  LISTGENES("list genes", 
+	            "List all of the genes that meet the criteria",
+	            "database=ecoli|name"),
   LISTPATHWAYS("list pathways", 
 	            "List all of the pathways that meet the criteria",
-	            "database=ecoli|protein|gene"),
+	            "database=ecoli|gene"),
+  LISTPROTEINS("list proteins", 
+	            "List all of the proteins that meet the criteria",
+	            "database=ecoli|name"),
   LISTREACTIONS("list reactions", 
 	            "List all of the reactions that meet the criteria",
 	            "database=ecoli|protein|gene"),
@@ -83,6 +94,17 @@ enum Command {
  */
 public class BioCycCommandHandler extends AbstractCommandHandler {
 	CyLogger logger;
+	QueryHandler handler;
+
+	public static final String DATABASE = "database";
+	public static final String ENZYME = "enzyme";
+	public static final String GENE = "gene";
+	public static final String NAME = "name";
+	public static final String PATHWAY = "pathway";
+	public static final String PROTEIN = "protein";
+	public static final String REACTION = "reaction";
+	public static final String SUBSTRATE = "substrate";
+	public static final String BASEURL = "http://brg-preview.ai.sri.com/";
 
 	public BioCycCommandHandler(String namespace, CyLogger logger) {
 		super(CyCommandManager.reserveNamespace(namespace));
@@ -92,6 +114,9 @@ public class BioCycCommandHandler extends AbstractCommandHandler {
 		for (Command command: Command.values()) {
 			addCommand(command.getCommand(), command.getDescription(), command.getArgString());
 		}
+
+		// TODO: this really needs to be externalized!
+		handler = new QueryHandler(logger);
 	}
 
   public CyCommandResult execute(String command, Collection<Tunable>args)
@@ -105,28 +130,127 @@ public class BioCycCommandHandler extends AbstractCommandHandler {
 
   	// LISTDATABASES("list databases", 
 	 	//               "List all of the available databases", ""),
-	 	if (Command.LISTDATABSES.equals(command)) {
-			
+	 	if (Command.LISTDATABASES.equals(command)) {
+			result.addMessage("Available databases: ");
+			List<Database>databases = Database.getDatabases(handler.query("dbs"));
+			for (Database d: databases) {
+				result.addMessage("   "+d.getOrgID());
+				result.addResult(d.getOrgID(), d);
+			}
+			return result;
+		}
 
-  	// LISTPATHWAYS("list pathways", 
-	 	//            "List all of the pathways that meet the criteria",
-	 	//            "database=ecoli|protein|gene"),
-	 	} else if (Command.LISTPATHWAYS.equals(command)) {
-
-
-  	// LISTREACTIONS("list reactions", 
-	 	//            "List all of the reactions that meet the criteria",
-	 	//            "database=ecoli|protein|gene"),
-	 	} else if (Command.LISTREACTIONS.equals(command)) {
-
+		// All of the rest of these require a database
+		String database = getArg(command, DATABASE, args);
+		if (database == null)
+			throw new CyCommandException("Must specify a database");
 
 		// LOADPATHWAY("load pathway",
 	 	//            "Load a pathway in biopax format",
 	 	//            "database=ecoli|pathway");
-	 	} else if (Command.LOADPATHWAY.equals(command)) {
+	 	if (Command.LOADPATHWAY.equals(command)) {
+			// Get the pathway
+			String pathway = getArg(command, PATHWAY, args);
+			if (pathway == null)
+				throw new CyCommandException("Must specify a pathway to load");
+			
+			try {
+				handler.loadNetwork(database+"/pathway-biopax?type=2&object="+pathway);
+				result.addMessage("Loaded pathway "+pathway);
+			} catch (Exception ex) {
+				result.addError("Unable to load network from "+database+"/pathway-biopax?type=2&object="+pathway+": "+ex.getMessage());
+			}
+			return result;
 		}
 
+  	// LISTGENES("list genes", 
+	 	//            "List all of the genes that meet the criteria",
+	 	//            "database=ecoli|name"),
+	 	if (Command.LISTGENES.equals(command)) {
+			String name = getArg(command, NAME, args);
+			String query = "[x:x<-"+database+"^^genes";
+			if (name != null) {
+				query = query+",\""+name+"\" instringci x^names";
+				result.addMessage("Available genes with name "+name+": ");
+			} else {
+				result.addMessage("Available genes: ");
+			}
+			query = query+"]";
+
+			List<Gene>genes = Gene.getGenes(handler.query(query));
+			for (Gene g: genes) {
+				result.addMessage("   "+g.getID());
+				result.addResult(g.getID(), g);
+			}
+			return result;
+		}
+
+		// Both of the next commands can take protein or gene restrictions
+		// String protein = getArg(command, PROTEIN, args);
+		String gene = getArg(command, GENE, args);
+
+  	// LISTPATHWAYS("list pathways", 
+	 	//            "List all of the pathways that meet the criteria",
+	 	//            "database=ecoli|gene"),
+	 	if (Command.LISTPATHWAYS.equals(command)) {
+			String queryString = "[x:x<-"+database+"^^pathways";
+			if (gene != null)
+				queryString = queryString+","+database+"~"+gene+" in (pathway-to-genes x)";
+			queryString = queryString+"]";
+
+			List<Pathway>pathways = Pathway.getPathways(handler.query(queryString));
+			for (Pathway p: pathways) {
+				result.addMessage("   "+p.getID());
+				result.addResult(p.getID(), p);
+			}
+			return result;
+		}
+
+  	// LISTPROTEINS("list proteins", 
+	 	//            "List all of the proteins that meet the criteria",
+	 	//            "database=ecoli|name"),
+	 	if (Command.LISTPROTEINS.equals(command)) {
+			String name = getArg(command, NAME, args);
+			String query = "[x:x<-"+database+"^^proteins";
+			if (name != null) {
+				query = query+",\""+name+"\" instringci x^names";
+				result.addMessage("Available proteins with name "+name+": ");
+			} else {
+				result.addMessage("Available proteins: ");
+			}
+			query = query+"]";
+
+			try {
+				List<Protein>proteins = Protein.getProteins(handler.query(query));
+				for (Protein p: proteins) {
+					result.addMessage("   "+p.getID());
+					result.addResult(p.getID(), p);
+				}
+			} catch (Exception e) {
+				logger.error("Unable to get proteins: "+e.getMessage(),e);
+				result.addError("Unable to get proteins: "+e.getMessage());
+			}
+			return result;
+		}
+
+  	// LISTREACTIONS("list reactions", 
+	 	//            "List all of the reactions that meet the criteria",
+	 	//            "database=ecoli|gene"),
+	 	if (Command.LISTREACTIONS.equals(command)) {
+			String query = "[x:x<-"+database+"^^reactions";
+			if (gene != null)
+				query = query+","+database+"~"+gene+" in (reaction-to-genes x)";
+			query = query+"]";
+			result.addMessage("Available reactions with gene "+gene+": ");
+			List<Reaction>reactions = Reaction.getReactions(handler.query(query));
+			for (Reaction r: reactions) {
+				result.addMessage("   "+r.getID());
+				result.addResult(r.getID(), r);
+			}
+			return result;
+		}
 		return result;
+
 	}
 
 	private boolean getBooleanArg(String command, String arg, Map<String, Object>args) {

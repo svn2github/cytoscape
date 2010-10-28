@@ -30,43 +30,58 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package bioCycPlugin.model;
+package bioCycPlugin.webservices;
+
+import cytoscape.logger.CyLogger;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+
+import bioCycPlugin.commands.QueryHandler;
+import bioCycPlugin.model.Database;
+import bioCycPlugin.model.Gene;
+import bioCycPlugin.model.Pathway;
+import bioCycPlugin.model.Protein;
+import bioCycPlugin.model.Reaction;
+
 
 /**
  * 
  */
-public class Reactant {
-	String ID = null;
-	String orgid = null;
-	String frameid = null;
-	String resource = null;
-	List<DbLink> dblinks = null;
-	List<String> synonyms = null;
+public class BioCycRESTClient {
+	CyLogger logger;
+	QueryHandler handler;
 
-	public Reactant (Element reactant) {
-		this.ID = DomUtils.getAttribute(reactant,"ID");
-		this.orgid = DomUtils.getAttribute(reactant,"orgid");
-		this.frameid = DomUtils.getAttribute(reactant,"frameid");
-		this.resource = DomUtils.getAttribute(reactant,"resource");
-		this.dblinks = DomUtils.getDbLinks(reactant);
-		this.synonyms = new ArrayList<String>();
-		List<Element> synonymElements = DomUtils.getChildElements(reactant, "synonym");
-		if (synonymElements != null && synonymElements.size() > 0) {
-			for (Element e: synonymElements) {
-				synonyms.add(DomUtils.getChildData(e));
-			}
+	public BioCycRESTClient(String urlString, CyLogger logger) {
+		this.logger = logger;
+		handler = new QueryHandler(logger);
+	}
+
+	public void loadNetwork(String identifier, String database) {
+		try {
+			handler.loadNetwork(database+"/pathway-biopax?type=2&object="+identifier);
+		} catch (Exception e) {
+			logger.error("Unable to load network: "+e.getMessage(), e);
 		}
 	}
 
-	public String getID() { return ID; }
-	public String getOrgID() { return orgid; }
-	public String getFrameID() { return frameid; }
-	public List<DbLink> getDbLinks() { return dblinks; }
-	public List<String> getSynonyms() { return synonyms; }
+	public List<Database> listDatabases() {
+		return Database.getDatabases(handler.query("dbs"));
+	}
+
+	public List<Pathway> findPathwaysByText(String query, String db) {
+		System.out.println("findPathwaysByTest("+query+","+db+")");
+		return handler.searchForPathways(db, query);
+		// List<Pathway>pathways = new ArrayList<Pathway>();
+		// addAllPathways(pathways, Pathway.getPathways(handler.findPathways(db, query)));
+		// return pathways;
+	}
+
+	private void addAllPathways(List<Pathway>pList, List<Pathway> p2List) {
+		if (p2List != null) {
+			System.out.println("Adding "+p2List.size()+" pathways");
+			pList.addAll(p2List);
+		}
+	}
+
 }

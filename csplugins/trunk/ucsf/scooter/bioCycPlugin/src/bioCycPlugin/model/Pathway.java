@@ -42,89 +42,88 @@ import cytoscape.logger.CyLogger;
 /**
  * 
  */
-public class Reaction {
+public class Pathway {
 	CyLogger logger;
 
-	List<Reaction> parents = null;
-	List<Reactant> left = null;
-	List<Reactant> right = null;
-	String resource;
-	String ID;
-	String orgid;
-	String frameid;
+	List<Reaction> reactionList = null;
+	List<Pathway> parents = null;
+	List<Pathway> superPathways = null;
+	String ID = null;
+	String orgid = null;
+	String frameid = null;
+	String commonName = null;
+	String comment = null;
+	String resource = null;
 
 
-	public Reaction(Element reaction) {
-		this.ID = DomUtils.getAttribute(reaction, "ID");
-		this.orgid = DomUtils.getAttribute(reaction, "orgid");
-		this.frameid = DomUtils.getAttribute(reaction, "frameid");
-		this.resource = DomUtils.getAttribute(reaction, "resource");
-		List<Element> parentElements = DomUtils.getChildElements(reaction, "parent");
-		this.parents = getReactions(parentElements);
-		List<Element> leftElements = DomUtils.getChildElements(reaction, "left");
-		this.left = getReactants(leftElements);
-		List<Element> rightElements = DomUtils.getChildElements(reaction, "right");
-		this.right = getReactants(rightElements);
-		
+	public Pathway(Element pathway) {
+		this.ID = DomUtils.getAttribute(pathway,"ID");
+		this.orgid = DomUtils.getAttribute(pathway,"orgid");
+		this.frameid = DomUtils.getAttribute(pathway,"frameid");
+		this.resource = DomUtils.getAttribute(pathway,"resource");
+		this.commonName = DomUtils.getChildData(pathway, "common-name");
+		this.comment = DomUtils.getChildData(pathway, "comment");
+		List<Element> parentElements = DomUtils.getChildElements(pathway, "parent");
+		this.parents = getPathwayElements(parentElements);
+		List<Element> superElements = DomUtils.getChildElements(pathway, "super-pathways");
+		this.superPathways = getPathwayElements(superElements);
+
+		List<Element> reactionElements = DomUtils.getChildElements(pathway, "reaction-list");
+		this.reactionList = getReactionElements(reactionElements);
+
 	}
 
 	public String getID() { return ID; }
 	public String getOrgID() { return orgid; }
 	public String getFrameID() { return frameid; }
-	public String getResource() { return resource; }
-	public List<Reaction> getParents() { return parents; }
-	public List<Reactant> getLeft() { return left; }
-	public List<Reactant> getRight() { return right; }
+	public String getCommonName() { return commonName; }
+	public String getComment() { return comment; }
+	public List<Pathway> getParents() { return parents; }
+	public List<Pathway> getSuperPathways() { return superPathways; }
+	public List<Reaction> getReactions() { return reactionList; }
 	public String toString() {
-		String result = "ID:"+ID+"|OrgID:"+orgid;
+		String result = "ID:"+ID+"|OrgID:"+orgid+"|common-name:"+commonName;
 		return result;
 	}
 
-	public static List<Reaction> getReactions(Document response) {
-		NodeList rNodes = response.getElementsByTagName("Reaction");
-		if (rNodes == null || rNodes.getLength() == 0) return null;
+	public static List<Pathway> getPathways(Document response) {
+		NodeList pNodes = response.getElementsByTagName("Pathway");
+		if (pNodes == null || pNodes.getLength() == 0) return null;
 
-		List<Reaction> reactions = new ArrayList<Reaction>();
-		for (int index = 0; index < rNodes.getLength(); index++) {
-			Reaction r = new Reaction((Element)rNodes.item(index));
-			if (r.getID() != null)
-				reactions.add(r);
+		List<Pathway> pathways = new ArrayList<Pathway>();
+		for (int index = 0; index < pNodes.getLength(); index++) {
+			Pathway p = new Pathway((Element)pNodes.item(index));
+			if (p.getID() != null)
+				pathways.add(p);
 		}
-		return reactions;
+		return pathways;
 	}
 
-	public static List<Reaction> getReactions(List<Element> pElements) {
+	private List<Pathway> getPathwayElements(List<Element> pElements) {
 		if (pElements == null || pElements.size() == 0)
 			return null;
 
-		List<Reaction> resultList = new ArrayList<Reaction>();
+		List<Pathway> resultList = new ArrayList<Pathway>();
 		for (Element e: pElements) {
-			NodeList childList = e.getElementsByTagName("Reaction");
-			// childList is either null or the Reaction element...
+			NodeList childList = e.getElementsByTagName("Pathway");
+			// childList is either null or the Pathway element...
 			if (childList == null || childList.getLength() == 0) continue;
-			resultList.add(new Reaction((Element)(childList.item(0))));
+			resultList.add(new Pathway((Element)(childList.item(0))));
 		}
 		return resultList;
 	}
 
-	private List<Reactant> getReactants(List<Element> rElements) {
+	private List<Reaction> getReactionElements(List<Element> rElements) {
 		if (rElements == null || rElements.size() == 0)
 			return null;
 
-		List<Reactant> resultList = new ArrayList<Reactant>();
+		List<Reaction> resultList = new ArrayList<Reaction>();
 		for (Element e: rElements) {
-			NodeList childList = e.getElementsByTagName("Protein");
+			NodeList childList = e.getElementsByTagName("Reaction");
 			// childList is either null or the Protein element...
 			if (childList != null && childList.getLength() > 0) {
-				resultList.add(new Protein((Element)(childList.item(0))));
-			} else {
-				// might be a compound
-				childList = e.getElementsByTagName("Compound");
-				if (childList == null || childList.getLength() == 0) {
-					continue;
-				}
-				resultList.add(new Compound((Element)(childList.item(0))));
-			}
+				resultList.add(new Reaction((Element)(childList.item(0))));
+			} 
 		}
 		return resultList;
 	}

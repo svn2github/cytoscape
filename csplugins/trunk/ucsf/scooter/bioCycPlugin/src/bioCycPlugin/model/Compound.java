@@ -32,8 +32,10 @@
  */
 package bioCycPlugin.model;
 
-import org.w3c.dom.NamedNodeMap;
+import java.util.ArrayList;
+import java.util.List;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import cytoscape.logger.CyLogger;
 
 /**
@@ -44,13 +46,30 @@ public class Compound extends Reactant {
 	Element cml = null;
 	String inchi = null;
 	String componentOf = null;
+	List<Compound>subclasses = null;
 
 	public Compound(Element compound) {
 		super(compound);
-		cml = compound.getElementByTagName("cml");
+		NodeList cmlList = compound.getElementsByTagName("cml");
+		if (cmlList != null && cmlList.getLength() > 0) {
+			this.cml = (Element)cmlList.item(0);
+		}
+
+		// Get our subclasses
+		NodeList subclassElements = compound.getElementsByTagName("subclass");
+		if (subclassElements != null && subclassElements.getLength() > 0) {
+			subclasses = new ArrayList<Compound>();
+			for (int index = 0; index < subclassElements.getLength(); index++) {
+				NodeList nl = ((Element)subclassElements.item(index)).getElementsByTagName("Compound");
+				if (nl != null && nl.getLength() > 0) {
+					subclasses.add(new Compound((Element)nl.item(0)));
+				}
+			}
+		}
 	}
 
 	public Element getCML() { return cml; }
 	public String getInCHI() { return inchi; }
 	public String getComponentOf() { return componentOf; }
+	public List<Compound> getSubClasses() { return subclasses; }
 }

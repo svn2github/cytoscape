@@ -32,21 +32,96 @@
  */
 package bioCycPlugin.model;
 
-import org.w3c.dom.NamedNodeMap;
+import java.util.ArrayList;
+import java.util.List;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import cytoscape.logger.CyLogger;
+import org.w3c.dom.NodeList;
 
 /**
  * 
  */
 public class Protein extends Reactant {
 
-	Protein parent = null;
+	List<Protein> parents = null;
+	Gene gene = null;
+	List<Protein> componentOf = null;
+	List<Protein> components = null;
+	String commonName = null;
+	List<Protein> subclasses = null;
+	List<Reaction> catalyzes = null;
+
+	// Future
+	// List<GO-Term> goTerms;
+	// List<Feature> features;
+	// String location = null;
 
 	public Protein(Element protein) {
 		super(protein);
 
-		// TO
+		// Get our parents (if any)
+		List<Element> parentElements = DomUtils.getChildElements(protein, "parent");
+		this.parents = getProteins(parentElements);
+		// Get any complexes we're part of
+		List<Element> componentOfElements = DomUtils.getChildElements(protein, "component-of");
+		this.componentOf = getProteins(componentOfElements);
+		// Get any components we have
+		List<Element> componentElements = DomUtils.getChildElements(protein, "component");
+		this.components = getProteins(componentElements);
+		// Get our gene list
+		List<Element> geneElements = DomUtils.getChildElements(protein, "gene");
+		if (geneElements != null && geneElements.size() > 0) {
+			this.gene = new Gene(geneElements.get(0));
+		}
+		// Get the reactions we catalyze
+		List<Element> reactionElements = DomUtils.getChildElements(protein, "catalyzes");
+		this.catalyzes = Reaction.getReactions(reactionElements);
+
+		// Get our subclasses
+		NodeList subclassElements = protein.getElementsByTagName("subclass");
+		if (subclassElements != null && subclassElements.getLength() > 0) {
+			this.subclasses = new ArrayList<Protein>();
+			for (int index = 0; index < subclassElements.getLength(); index++) {
+				NodeList nl = ((Element)subclassElements.item(index)).getElementsByTagName("Compound");
+				if (nl != null && nl.getLength() > 0) {
+					this.subclasses.add(new Protein((Element)nl.item(0)));
+				}
+			}
+		}
+	}
+
+	public List<Protein> getProteinSubClasses() { return subclasses; }
+	public List<Reaction> getReactionsCatalyzed() { return catalyzes; }
+	public Gene getGene() { return gene; }
+	public String getCommonName() { return commonName; }
+	public List<Protein> getComponents() { return components; }
+	public List<Protein> getComponentMembership() { return componentOf; }
+
+	public static List<Protein> getProteins(List<Element> pElements) {
+		if (pElements == null || pElements.size() == 0)
+			return null;
+
+		List<Protein> resultList = new ArrayList<Protein>();
+		for (Element e: pElements) {
+			NodeList childList = e.getElementsByTagName("Protein");
+			// childList is either null or the Protein element...
+			if (childList == null || childList.getLength() == 0) continue;
+			resultList.add(new Protein((Element)(childList.item(0))));
+		}
+		return resultList;
+	}
+
+	public static List<Protein> getProteins(Document response) {
+		NodeList pNodes = response.getElementsByTagName("Protein");
+		if (pNodes == null || pNodes.getLength() == 0) return null;
+
+		List<Protein> proteins = new ArrayList<Protein>();
+		for (int index = 0; index < pNodes.getLength(); index++) {
+			Protein p = new Protein((Element)pNodes.item(index));
+			if (p.getID() != null)
+				proteins.add(p);
+		}
+		return proteins;
 	}
 
 }

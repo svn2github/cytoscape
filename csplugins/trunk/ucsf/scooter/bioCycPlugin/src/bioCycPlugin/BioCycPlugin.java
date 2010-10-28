@@ -33,13 +33,23 @@
 package bioCycPlugin;
 
 import cytoscape.Cytoscape;
-import cytoscape.command.CyCommandManager;
-import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CytoscapeInit;
+import cytoscape.command.CyCommandManager;
+import cytoscape.data.webservice.WebServiceClientManager;
+import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.logger.CyLogger;
+
+import java.util.Properties;
+
+import bioCycPlugin.commands.BioCycCommandHandler;
+import bioCycPlugin.webservices.BioCycClient;
 
 public class BioCycPlugin extends CytoscapePlugin {
 	private CyLogger logger = null;
+	private BioCycClient wpclient;
+
+	protected static final String WEBSERVICE_URL = "biocyc.webservice.uri";
+	protected static final String DEFAULT_URL = "http://brg-preview.ai.sri.com/";
 
 	/**
 	 * We don't do much at initialization time
@@ -49,10 +59,23 @@ public class BioCycPlugin extends CytoscapePlugin {
 
 		// Register our commands
 		try {
+			new BioCycCommandHandler("biocyc", logger);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
 
+		// Setup any global properties
+		Properties p = CytoscapeInit.getProperties();
+		if (p.get(WEBSERVICE_URL) == null) {
+			p.put(WEBSERVICE_URL, DEFAULT_URL);
+		}
 		// Register ourselves with the web services infrastructure
+		wpclient = new BioCycClient(logger);
+		WebServiceClientManager.registerClient(wpclient);
+
+	}
+
+	public static String getBaseUrl() {
+		return CytoscapeInit.getProperties().getProperty(WEBSERVICE_URL);
 	}
 }
