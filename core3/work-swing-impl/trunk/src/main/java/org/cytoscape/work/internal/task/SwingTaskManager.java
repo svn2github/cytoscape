@@ -125,10 +125,23 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 
 	@Override
 	public void execute(final TaskFactory factory) {
-		if (tunableInterceptor.hasTunables(factory) && !tunableInterceptor.validateAndWriteBackTunables(factory))
-			return;
+		TaskIterator tryTaskIterator;
 
-		final TaskIterator taskIterator = factory.getTaskIterator();
+		try {
+			if (tunableInterceptor.hasTunables(factory) && 
+			    !tunableInterceptor.validateAndWriteBackTunables(factory))
+				throw new IllegalArgumentException("Tunables are not valid");
+
+			tryTaskIterator = factory.getTaskIterator();
+		} catch (Exception exception) {
+			tryTaskIterator = null;
+			logger.warn("Caught exception getting and validating task. ", exception);	
+			new SwingTaskMonitor(cancelExecutorService, owner).showException(exception);
+			return;
+		}
+
+		final TaskIterator taskIterator = tryTaskIterator;
+
 		taskMonitor = null;
 		final Runnable executor = new Runnable() {
 			public void run() {
