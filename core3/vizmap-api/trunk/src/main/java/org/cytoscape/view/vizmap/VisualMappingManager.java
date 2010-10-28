@@ -35,10 +35,11 @@
 
 package org.cytoscape.view.vizmap;
 
-import java.util.Properties;
 import java.util.Set;
 
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.vizmap.events.VisualStyleAboutToBeRemovedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleAddedEvent;
 
 /**
  * Manager for {@linkplain Visual Style}s. This object manages mapping from view
@@ -47,8 +48,8 @@ import org.cytoscape.view.model.CyNetworkView;
  * 
  * <p>
  * Add/Remove operations will be done through events. For more information, read
- * JavaDoc for {@linkplain VisualStyleCreatedEvent} and
- * {@linkplain VisualStyleRemovedEvent}.
+ * JavaDoc for {@linkplain VisualStyleAddedEvent} and
+ * {@linkplain VisualStyleAboutToBeRemovedEvent}.
  * </p>
  * 
  */
@@ -83,5 +84,21 @@ public interface VisualMappingManager {
 	 * 
 	 */
 	Set<VisualStyle> getAllVisualStyles();
+	
+	
+	/**
+	 * Add a new {@link VisualStyle} to this manager.
+	 * 
+	 * @param visualStyle new visual style to be registered.
+	 */
+	void addVisualStyle(final VisualStyle visualStyle);
+	
+	
+	/**
+	 * Remove a VisualStyle from this manager.
+	 * 
+	 * @param visualStyle VisualStyle to be removed.
+	 */
+	void removeVisualStyle(VisualStyle visualStyle);
 
 }

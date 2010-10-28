@@ -8,7 +8,6 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
-import org.cytoscape.view.vizmap.events.VisualStyleCreatedEvent;
 
 public class VisualStyleFactoryImpl implements VisualStyleFactory {
 	
@@ -33,18 +32,13 @@ public class VisualStyleFactoryImpl implements VisualStyleFactory {
 			vp = mapping.getVisualProperty();
 		}
 
-		eventHelper.fireSynchronousEvent(new VisualStyleCreatedEvent(this, copyVS));
-
 		return copyVS;
 	}
 	
 
 	@Override
 	public VisualStyle createVisualStyle(String title, final VisualLexicon lexicon) {
-		final VisualStyle vs = new VisualStyleImpl(title, lexicon);
-		
-		eventHelper.fireSynchronousEvent(new VisualStyleCreatedEvent(this, vs));
-		return vs;
+		return new VisualStyleImpl(title, lexicon);
 	}
 
 }

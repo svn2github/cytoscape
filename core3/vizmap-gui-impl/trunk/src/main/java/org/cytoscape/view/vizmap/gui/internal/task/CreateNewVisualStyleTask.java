@@ -32,7 +32,7 @@ public class CreateNewVisualStyleTask extends AbstractTask {
 		if (title == null)
 			return;
 
-		// Create new style
+		// Create new style.  This method call automatically fire event.
 		final VisualStyle newStyle = vsFactory.createVisualStyle(title, lexicon);
 		logger.info("CreateNewVisualStyleTask created new Visual Style: " + newStyle.getTitle());
 	}

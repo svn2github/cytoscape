@@ -9,13 +9,12 @@ import java.util.Set;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineManager;
-import org.cytoscape.view.presentation.events.PresentationCreatedEvent;
-import org.cytoscape.view.presentation.events.PresentationCreatedListener;
-import org.cytoscape.view.presentation.events.PresentationDestroyedEvent;
-import org.cytoscape.view.presentation.events.PresentationDestroyedListener;
+import org.cytoscape.view.presentation.events.RenderingEngineAddedEvent;
+import org.cytoscape.view.presentation.events.RenderingEngineAddedListener;
+import org.cytoscape.view.presentation.events.RenderingEngineAboutToBeRemovedEvent;
+import org.cytoscape.view.presentation.events.RenderingEngineAboutToBeRemovedListener;
 
-public class RenderingEngineManagerImpl implements RenderingEngineManager,
-		PresentationCreatedListener, PresentationDestroyedListener {
+public class RenderingEngineManagerImpl implements RenderingEngineManager {
 
 	private final Map<View<?>, Set<RenderingEngine<?>>> renderingEngineMap;
 
@@ -40,24 +39,35 @@ public class RenderingEngineManagerImpl implements RenderingEngineManager,
 	}
 
 	@Override
-	public void handleEvent(PresentationCreatedEvent e) {
-		// This cannot be null.
-		final RenderingEngine<?> renderingEngine = e.getRenderingEngine();
+	public Collection<RenderingEngine<?>> getAllRenderingEngines() {
+		final Set<RenderingEngine<?>> engines = new HashSet<RenderingEngine<?>>();
+		
+		for(View<?> key:renderingEngineMap.keySet())
+			engines.addAll(renderingEngineMap.get(key));
 
+		return engines;
+	}
+	
+
+	@Override
+	public void addRenderingEngine(final RenderingEngine<?> renderingEngine) {
+
+		System.out.println("##Adding Engine 0: ");
 		final View<?> viewModel = renderingEngine.getViewModel();
-		Set<RenderingEngine<?>> engines = renderingEngineMap
-				.get(viewModel);
+		Set<RenderingEngine<?>> engines = renderingEngineMap.get(viewModel);
 		if (engines == null)
 			engines = new HashSet<RenderingEngine<?>>();
 
+		
 		engines.add(renderingEngine);
+		System.out.println("##Adding Engine: " + engines.size());
+		
 		this.renderingEngineMap.put(viewModel, engines);
 	}
+	
 
 	@Override
-	public void handleEvent(PresentationDestroyedEvent e) {
-		// This cannot be null.
-		final RenderingEngine<?> renderingEngine = e.getRenderingEngine();
+	public void removeRenderingEngine(RenderingEngine<?> renderingEngine) {
 
 		final View<?> viewModel = renderingEngine.getViewModel();
 		final Set<RenderingEngine<?>> engineSet = renderingEngineMap.get(viewModel);

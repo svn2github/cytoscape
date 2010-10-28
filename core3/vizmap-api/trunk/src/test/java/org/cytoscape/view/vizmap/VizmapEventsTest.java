@@ -5,8 +5,8 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.cytoscape.view.vizmap.events.VisualStyleCreatedEvent;
-import org.cytoscape.view.vizmap.events.VisualStyleRemovedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleAddedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleAboutToBeRemovedEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,13 +14,11 @@ import org.junit.Test;
 public class VizmapEventsTest {
 
 	private VisualStyle style;
-	private VisualStyleFactory factory;
 	private VisualMappingManager manager;
 	
 	@Before
 	public void setUp() throws Exception {
 		style = mock(VisualStyle.class);
-		factory = mock(VisualStyleFactory.class);
 		manager = mock(VisualMappingManager.class);
 	}
 
@@ -30,16 +28,16 @@ public class VizmapEventsTest {
 	
 	@Test
 	public void testVisualStyleCreatedEvent() {
-		final VisualStyleCreatedEvent event = new VisualStyleCreatedEvent(factory, style);
+		final VisualStyleAddedEvent event = new VisualStyleAddedEvent(manager, style);
 		assertNotNull(event);
-		assertEquals(style, event.getCreatedVisualStyle());
+		assertEquals(style, event.getVisualStyleAdded());
 	}
 	
 	@Test
 	public void testVisualStyleDestroyedEvent() {
-		final VisualStyleRemovedEvent event = new VisualStyleRemovedEvent(manager, style);
+		final VisualStyleAboutToBeRemovedEvent event = new VisualStyleAboutToBeRemovedEvent(manager, style);
 		assertNotNull(event);
-		assertEquals(style, event.getRemovedVisualStyle());
+		assertEquals(style, event.getVisualStyleToBeRemoved());
 	}
 
 }

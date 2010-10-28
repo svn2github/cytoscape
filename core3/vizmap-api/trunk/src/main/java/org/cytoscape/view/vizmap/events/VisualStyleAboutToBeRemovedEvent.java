@@ -34,18 +34,37 @@
  */
 package org.cytoscape.view.vizmap.events;
 
-import org.cytoscape.event.CyListener;
+import org.cytoscape.event.AbstractCyEvent;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 /**
- * Listener for {@linkplain VisualStyleRemovedEvent}.
+ * This event will be fired when {@linkplain VisualStyle} object is removed from
+ * {@linkplain VisualMappingManager}.
  */
-public interface VisualStyleRemovedListener extends CyListener {
+public final class VisualStyleAboutToBeRemovedEvent extends AbstractCyEvent<VisualMappingManager> {
+
+	private final VisualStyle removedStyle;
 
 	/**
-	 * Update states/GUI using deleted {@linkplain VisualStyle} information.
+	 * Create an event for the removed VisualStyle.
 	 * 
-	 * @param e
-	 *            Event containing deleted VisualStyle.
+	 * @param source Source of event.  This is always a {@link VisualMappingManager}.
+	 * @param destroyed VisualStyle to be deleted.
 	 */
-	void handleEvent(VisualStyleRemovedEvent e);
+	public VisualStyleAboutToBeRemovedEvent(final VisualMappingManager source, final VisualStyle style) {
+		super(source, VisualStyleAboutToBeRemovedListener.class);
+		this.removedStyle = style;
+	}
+
+	
+	/**
+	 * Returns target {@link VisualStyle} to be removed from manager.
+	 * 
+	 * @return VisualStyle to be removed from manager.
+	 * 
+	 */
+	public VisualStyle getVisualStyleToBeRemoved() {
+		return removedStyle;
+	}
 }

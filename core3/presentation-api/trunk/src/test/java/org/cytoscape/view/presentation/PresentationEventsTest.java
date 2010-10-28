@@ -8,8 +8,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.view.presentation.events.PresentationCreatedEvent;
-import org.cytoscape.view.presentation.events.PresentationDestroyedEvent;
+import org.cytoscape.view.presentation.events.RenderingEngineAddedEvent;
+import org.cytoscape.view.presentation.events.RenderingEngineAboutToBeRemovedEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,15 +27,15 @@ public class PresentationEventsTest {
 	@Test
 	public void testEvents() {
 		
-		final RenderingEngineFactory<CyNetwork> factory = mock(RenderingEngineFactory.class);
+		final RenderingEngineManager manager = mock(RenderingEngineManager.class);
 		final RenderingEngine<CyNetwork> engine = mock(RenderingEngine.class);
-		final PresentationCreatedEvent createdEvent = new PresentationCreatedEvent(factory, engine);
-		assertEquals(factory, createdEvent.getSource());
+		final RenderingEngineAddedEvent createdEvent = new RenderingEngineAddedEvent(manager, engine);
+		
+		assertEquals(manager, createdEvent.getSource());
 		assertEquals(engine, createdEvent.getRenderingEngine());
 		
-		final JComponent deletePanel = new JPanel();
-		final PresentationDestroyedEvent destroyedEvent = new PresentationDestroyedEvent(deletePanel, engine);
-		assertEquals(deletePanel, destroyedEvent.getSource());
+		final RenderingEngineAboutToBeRemovedEvent destroyedEvent = new RenderingEngineAboutToBeRemovedEvent(manager, engine);
+		assertEquals(manager, destroyedEvent.getSource());
 		assertEquals(engine, destroyedEvent.getRenderingEngine());
 	}
 

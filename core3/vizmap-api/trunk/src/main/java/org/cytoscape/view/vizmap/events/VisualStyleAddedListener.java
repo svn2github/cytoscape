@@ -34,37 +34,19 @@
  */
 package org.cytoscape.view.vizmap.events;
 
-import org.cytoscape.event.AbstractCyEvent;
-import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.VisualStyleFactory;
+import org.cytoscape.event.CyListener;
 
 /**
- * When {@linkplain VisualStyleFactory} creates a new {@linkplain VisualStyle}
- * object, it should fire this event.
- * 
+ * Listener for {@linkplain VisualStyleAddedEvent}.
  */
-public final class VisualStyleCreatedEvent extends AbstractCyEvent<VisualStyleFactory> {
-
-	private final VisualStyle created;
+public interface VisualStyleAddedListener extends CyListener {
 
 	/**
-	 * Creates an event for the newly created style.
+	 * Do something with a new {@linkplain VisualStyle}. Usually, GUI components
+	 * and managers executes this method to update their states.
 	 * 
-	 * @param source Source object which has created new VisualStyle.
-	 * @param created the new VisualStyle
+	 * @param e
+	 *            event contains new {@linkplain VisualStyle} object.
 	 */
-	public VisualStyleCreatedEvent(final VisualStyleFactory source,
-			final VisualStyle created) {
-		super(source, VisualStyleCreatedListener.class);
-		this.created = created;
-	}
-
-	/**
-	 * Get the newly created VisualStyle.
-	 * 
-	 * @return new VisualStyle
-	 */
-	public VisualStyle getCreatedVisualStyle() {
-		return created;
-	}
+	void handleEvent(final VisualStyleAddedEvent e);
 }

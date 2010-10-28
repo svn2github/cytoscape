@@ -10,7 +10,7 @@ import org.cytoscape.view.model.View;
  * manager.
  * <P>
  * Register/unregister engines are handled through
- * {@linkplain PresentationCreatedEvent}s.
+ * {@linkplain RenderingEngineAddedEvent}s.
  * 
  */
 public interface RenderingEngineManager {
@@ -25,4 +25,32 @@ public interface RenderingEngineManager {
 	 *         view model.
 	 */
 	Collection<RenderingEngine<?>> getRendringEngines(final View<?> viewModel);
+	
+	/**
+	 * Get all {@link RenderingEngine}s registered in this manager.
+	 * 
+	 * @return all rendering engines.  
+	 */
+	Collection<RenderingEngine<?>> getAllRenderingEngines();
+	
+	
+	/**
+	 * Add new {@link RenderingEngine} to this manager.
+	 * <p>
+	 * This method fires {@link VisualStyleCreatedEvent}.
+	 * 
+	 * @param engine New engine to be added.
+	 */
+	void addRenderingEngine(final RenderingEngine<?> engine);
+	
+	
+	/**
+	 * Remove a rendering engine.
+	 * 
+	 * <p>
+	 * This method fires {@link VisualStyleAboutToBeRemovedEvent}.
+	 * 
+	 * @param engine engine to be removed.
+	 */
+	void removeRenderingEngine(final RenderingEngine<?> engine);
 }

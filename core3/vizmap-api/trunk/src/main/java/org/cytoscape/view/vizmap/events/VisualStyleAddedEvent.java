@@ -39,32 +39,32 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 
 /**
- * This event will be fired when {@linkplain VisualStyle} object is deleted from
- * {@linkplain VisualMappingManager}.
+ * When new {@linkplain VisualStyle} is added to the {@link VisualMappingManager},
+ * it fires this event.
+ * 
  */
-public final class VisualStyleRemovedEvent extends AbstractCyEvent<Object> {
+public final class VisualStyleAddedEvent extends AbstractCyEvent<VisualMappingManager> {
 
-	private final VisualStyle removedStyle;
+	private final VisualStyle style;
 
 	/**
-	 * create an event for the deleted VisualStyle.
+	 * Creates an event for the newly created style.
 	 * 
-	 * @param source Source of event.  Anyone can create this event, but usually GUI components creates this event.
-	 * @param destroyed VisualStyle to be deleted.
+	 * @param source Source of this event.  This is always {@link VisualMappingManager}.
+	 * @param created New VisualStyle
 	 */
-	public VisualStyleRemovedEvent(final Object source, final VisualStyle destroyed) {
-		super(source, VisualStyleRemovedListener.class);
-		this.removedStyle = destroyed;
+	public VisualStyleAddedEvent(final VisualMappingManager source,
+			final VisualStyle created) {
+		super(source, VisualStyleAddedListener.class);
+		this.style = created;
 	}
 
-	
 	/**
-	 * Returns deleted VisualStyle.
+	 * Get the newly created VisualStyle.
 	 * 
-	 * @return VisualStyle just deleted.
-	 * 
+	 * @return new VisualStyle
 	 */
-	public VisualStyle getRemovedVisualStyle() {
-		return removedStyle;
+	public VisualStyle getVisualStyleAdded() {
+		return style;
 	}
 }

@@ -43,15 +43,13 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.events.VisualStyleCreatedEvent;
-import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
-import org.cytoscape.view.vizmap.events.VisualStyleRemovedEvent;
-import org.cytoscape.view.vizmap.events.VisualStyleRemovedListener;
+import org.cytoscape.view.vizmap.events.VisualStyleAboutToBeRemovedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleAddedEvent;
 
 /**
  *
  */
-public class VisualMappingManagerImpl implements VisualMappingManager, VisualStyleCreatedListener, VisualStyleRemovedListener {
+public class VisualMappingManagerImpl implements VisualMappingManager {
 
 	private final Map<CyNetworkView, VisualStyle> network2VisualStyleMap;
 	private final Set<VisualStyle> visualStyles;
@@ -69,7 +67,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager, VisualSty
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Get VisualStyle for the given view model.
 	 * 
 	 * @param nv
 	 *            DOCUMENT ME!
@@ -78,6 +76,11 @@ public class VisualMappingManagerImpl implements VisualMappingManager, VisualSty
 	 */
 	@Override
 	public VisualStyle getVisualStyle(CyNetworkView nv) {
+		if(nv == null)
+			throw new NullPointerException("network view is null.");
+		if(network2VisualStyleMap.containsKey(nv) == false)
+			throw new IllegalArgumentException("No such network view is registered in this manager.");
+		
 		return network2VisualStyleMap.get(nv);
 	}
 
@@ -90,8 +93,17 @@ public class VisualMappingManagerImpl implements VisualMappingManager, VisualSty
 	 *            DOCUMENT ME!
 	 */
 	@Override
-	public void setVisualStyle(VisualStyle vs, CyNetworkView nv) {
-		network2VisualStyleMap.put(nv, vs);
+	public void setVisualStyle(final VisualStyle vs, final CyNetworkView nv) {
+		if(nv == null)
+			throw new NullPointerException("Network view is null.");
+		
+		if(vs == null)
+			network2VisualStyleMap.remove(nv);
+		else
+			network2VisualStyleMap.put(nv, vs);
+		
+		if(this.visualStyles.contains(vs) == false)
+			this.visualStyles.add(vs);
 	}
 
 	/**
@@ -101,9 +113,15 @@ public class VisualMappingManagerImpl implements VisualMappingManager, VisualSty
 	 * @param vs
 	 *            DOCUMENT ME!
 	 */
-	private void removeVisualStyle(VisualStyle vs) {
+	@Override public void removeVisualStyle(VisualStyle vs) {
+		if(vs == null)
+			throw new NullPointerException("Visual Style is null.");
+		
+		if(this.network2VisualStyleMap.values().contains(vs))
+			throw new IllegalArgumentException("Visual Style is associated with a view and cannot be removed.");
+		
+		cyEventHelper.fireSynchronousEvent(new VisualStyleAboutToBeRemovedEvent(this, vs));
 		visualStyles.remove(vs);
-		cyEventHelper.fireSynchronousEvent(new VisualStyleRemovedEvent(this, vs));
 		vs = null;
 	}
 
@@ -113,8 +131,9 @@ public class VisualMappingManagerImpl implements VisualMappingManager, VisualSty
 	 * 
 	 * @param vs
 	 */
-	private void addVisualStyle(final VisualStyle vs) {
+	@Override public void addVisualStyle(final VisualStyle vs) {
 		this.visualStyles.add(vs);
+		cyEventHelper.fireSynchronousEvent(new VisualStyleAddedEvent(this, vs));
 	}
 
 	/**
@@ -126,15 +145,4 @@ public class VisualMappingManagerImpl implements VisualMappingManager, VisualSty
 	public Set<VisualStyle> getAllVisualStyles() {
 		return visualStyles;
 	}
-
-	@Override
-	public void handleEvent(VisualStyleRemovedEvent e) {
-		removeVisualStyle(e.getRemovedVisualStyle());
-	}
-
-	@Override
-	public void handleEvent(VisualStyleCreatedEvent e) {
-		addVisualStyle(e.getCreatedVisualStyle());
-	}
-
 }

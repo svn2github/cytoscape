@@ -2,13 +2,14 @@ package org.cytoscape.view.presentation.events;
 
 import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.view.presentation.RenderingEngineManager;
 
 /**
  * When presentation (rendered graphics) is destroyed, this event should be
  * fired.
  * 
  */
-public final class PresentationDestroyedEvent extends AbstractCyEvent<Object> {
+public final class RenderingEngineAboutToBeRemovedEvent extends AbstractCyEvent<RenderingEngineManager> {
 
 	private final RenderingEngine<?> engine;
 
@@ -22,8 +23,8 @@ public final class PresentationDestroyedEvent extends AbstractCyEvent<Object> {
 	 *            {@linkplain RenderingEngine} associated with the deleted
 	 *            presentation.
 	 */
-	public PresentationDestroyedEvent(final Object source, final RenderingEngine<?> engine) {
-		super(source, PresentationDestroyedListener.class);
+	public RenderingEngineAboutToBeRemovedEvent(final RenderingEngineManager source, final RenderingEngine<?> engine) {
+		super(source, RenderingEngineAboutToBeRemovedListener.class);
 		this.engine = engine;
 	}
 

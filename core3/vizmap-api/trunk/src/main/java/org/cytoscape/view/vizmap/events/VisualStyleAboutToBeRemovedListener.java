@@ -37,16 +37,15 @@ package org.cytoscape.view.vizmap.events;
 import org.cytoscape.event.CyListener;
 
 /**
- * Listener for {@linkplain VisualStyleCreatedEvent}.
+ * Listener for {@linkplain VisualStyleAboutToBeRemovedEvent}.
  */
-public interface VisualStyleCreatedListener extends CyListener {
+public interface VisualStyleAboutToBeRemovedListener extends CyListener {
 
 	/**
-	 * Do something with a new {@linkplain VisualStyle}. Usually, GUI components
-	 * and managers executes this method to update their states.
+	 * Update states/GUI using deleted {@linkplain VisualStyle} information.
 	 * 
 	 * @param e
-	 *            event contains new {@linkplain VisualStyle} object.
+	 *            Event containing deleted VisualStyle.
 	 */
-	void handleEvent(final VisualStyleCreatedEvent e);
+	void handleEvent(VisualStyleAboutToBeRemovedEvent e);
 }

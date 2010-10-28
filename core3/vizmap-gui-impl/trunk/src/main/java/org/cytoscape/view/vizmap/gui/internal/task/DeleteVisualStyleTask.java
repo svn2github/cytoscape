@@ -3,7 +3,6 @@ package org.cytoscape.view.vizmap.gui.internal.task;
 import javax.swing.JOptionPane;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.events.VisualStyleRemovedEvent;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
@@ -46,8 +45,7 @@ public class DeleteVisualStyleTask extends AbstractTask {
 
 		if (ich == JOptionPane.YES_OPTION) {
 			// VMM removes style.
-			eventHelper.fireSynchronousEvent(new VisualStyleRemovedEvent(this,
-					currentStyle));
+			eventHelper.fireSynchronousEvent(new VisualStyleRemovedEvent(this,currentStyle));
 		}
 	}
 }
