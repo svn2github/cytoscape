@@ -42,7 +42,7 @@ import org.cytoscape.view.vizmap.VisualStyle;
  * This event will be fired when {@linkplain VisualStyle} object is deleted from
  * {@linkplain VisualMappingManager}.
  */
-public final class VisualStyleRemovedEvent extends AbstractCyEvent<VisualMappingManager> {
+public final class VisualStyleRemovedEvent extends AbstractCyEvent<Object> {
 
 	private final VisualStyle destroyed;
 
@@ -52,7 +52,7 @@ public final class VisualStyleRemovedEvent extends AbstractCyEvent<VisualMapping
 	 * @param source Source of event.  Anyone can create this event, but usually GUI components creates this event.
 	 * @param destroyed VisualStyle to be deleted.
 	 */
-	public VisualStyleRemovedEvent(final VisualMappingManager source, final VisualStyle destroyed) {
+	public VisualStyleRemovedEvent(final Object source, final VisualStyle destroyed) {
 		super(source, VisualStyleRemovedListener.class);
 		this.destroyed = destroyed;
 	}
