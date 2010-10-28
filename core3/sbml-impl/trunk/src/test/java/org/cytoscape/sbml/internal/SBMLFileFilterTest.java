@@ -44,7 +44,7 @@ public class SBMLFileFilterTest {
 	@Test
 	public void testAcceptSBMLLevel2() throws Exception {
 		File file = new File("src/test/resources/BIOMD0000000003.xml");
-		assertTrue(filter.accept(new FileInputStream(file), DataCategory.NETWORK));
-		assertTrue(filter.accept(file.toURI(), DataCategory.NETWORK));
+		assertTrue(filter.accepts(new FileInputStream(file), DataCategory.NETWORK));
+		assertTrue(filter.accepts(file.toURI(), DataCategory.NETWORK));
 	}
 }

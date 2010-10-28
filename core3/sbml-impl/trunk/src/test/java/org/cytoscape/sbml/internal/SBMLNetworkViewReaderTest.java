@@ -66,14 +66,14 @@ public class SBMLNetworkViewReaderTest {
 		
 		CyNode cyclin = findNodeById("C", model);
 		assertNotNull(cyclin);
-		CyRow attributes = cyclin.attrs();
+		CyRow attributes = cyclin.getCyRow();
 		assertEquals("Cyclin", attributes.get(SBMLNetworkViewReader.NODE_NAME_ATTR_LABEL, String.class));
 		assertEquals((Double) 0.01, attributes.get(SBMLNetworkViewReader.SBML_INITIAL_CONCENTRATION_ATTR, Double.class));
 	}
 
 	private CyNode findNodeById(String sbmlId, CyNetwork network) {
 		for (CyNode node : network.getNodeList()) {
-			CyRow attributes = node.attrs();
+			CyRow attributes = node.getCyRow();
 			String id = attributes.get(SBMLNetworkViewReader.SBML_ID_ATTR, String.class);
 			if (id.equals(sbmlId)) {
 				return node;
