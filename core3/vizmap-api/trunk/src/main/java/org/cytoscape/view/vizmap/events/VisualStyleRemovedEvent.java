@@ -44,7 +44,7 @@ import org.cytoscape.view.vizmap.VisualStyle;
  */
 public final class VisualStyleRemovedEvent extends AbstractCyEvent<Object> {
 
-	private final VisualStyle destroyed;
+	private final VisualStyle removedStyle;
 
 	/**
 	 * create an event for the deleted VisualStyle.
@@ -54,7 +54,7 @@ public final class VisualStyleRemovedEvent extends AbstractCyEvent<Object> {
 	 */
 	public VisualStyleRemovedEvent(final Object source, final VisualStyle destroyed) {
 		super(source, VisualStyleRemovedListener.class);
-		this.destroyed = destroyed;
+		this.removedStyle = destroyed;
 	}
 
 	
@@ -65,6 +65,6 @@ public final class VisualStyleRemovedEvent extends AbstractCyEvent<Object> {
 	 * 
 	 */
 	public VisualStyle getRemovedVisualStyle() {
-		return destroyed;
+		return removedStyle;
 	}
 }
