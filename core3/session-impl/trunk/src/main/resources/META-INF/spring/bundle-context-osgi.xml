@@ -7,7 +7,7 @@
 
 	<!-- Export Services -->
 	<osgi:service id="cyApplicationManagerService" ref="cyApplicationManager"
-		      auto-export="interfaces"
+		interface="org.cytoscape.session.CyApplicationManager">
 	</osgi:service>
 
 	<osgi:service id="cyNetworkNamingService" ref="cyNetworkNaming"
@@ -19,7 +19,12 @@
 	</osgi:service>
 
 	<!-- Import Services -->
-	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
-	<osgi:reference id="cyNetworkManagerServiceRef" interface="org.cytoscape.model.CyNetworkManager" />
-	<osgi:reference id="cyNetworkViewManagerServiceRef" interface="org.cytoscape.view.model.CyNetworkViewManager" />
+	<osgi:reference id="cyEventHelperServiceRef" 
+		interface="org.cytoscape.event.CyEventHelper" />
+
+	<osgi:reference id="cyNetworkManagerServiceRef" 
+		interface="org.cytoscape.model.CyNetworkManager" />
+
+	<osgi:reference id="cyNetworkViewManagerServiceRef" 
+	interface="org.cytoscape.view.model.CyNetworkViewManager" />
 </beans>
