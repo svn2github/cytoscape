@@ -3,9 +3,14 @@ package org.cytoscape.plugin;
 
 /**
  * The primary plugin interface for Cytoscape that all
- * plugins must extend. Plugin developer will have access 
- * to most of Cytoscape 3.X services, but 
- * still program in the way as in Cytoscape 2.X.
+ * plugins must extend. Plugin developers will have access 
+ * to all Cytoscape 3.X services, but are not required to
+ * know about or use Maven, OSGi, or Spring.
+ * However, there are limitations on which packages may
+ * be included in the plugin jar based on those already loaded in the classpath.
+ * To load alternative versions of the same library used by other plugins or 
+ * Cytoscape itself, it will be necessary to write your plugin using OSGi
+ * and Spring.
  */
 public abstract class CyPlugin {
 
