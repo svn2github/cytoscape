@@ -16,7 +16,7 @@
   <property name="test.dir" location="testData" />
   <property name="lib.dir" location="lib" />
 
-  <property name="cytoscape.dir" location="../../../../cytoscape" />
+  <property name="cytoscape.dir" location="../../../../cytoscape/build" />
   <property name="cytoscape.plugin" value="${cytoscape.dir}/plugins" />
 
   <!-- Compilation Parameters -->
@@ -27,9 +27,6 @@
   <!-- Classpaths -->
   <path id="compile.classpath">
     <pathelement path="${build.dir}/classes" />
-    <fileset dir="${cytoscape.dir}/lib">
-      <include name="*.jar" />
-    </fileset>
     <fileset dir="${cytoscape.dir}">
       <include name="cytoscape.jar" />
     </fileset>
