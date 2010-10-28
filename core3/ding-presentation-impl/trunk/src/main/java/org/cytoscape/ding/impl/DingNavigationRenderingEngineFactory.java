@@ -20,6 +20,7 @@ import org.cytoscape.view.model.events.UpdateNetworkPresentationEvent;
 import org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
+import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
@@ -37,6 +38,9 @@ public class DingNavigationRenderingEngineFactory implements
 {
 	private static final Logger logger = LoggerFactory.getLogger(DingNavigationRenderingEngineFactory.class);
 
+	
+	private final RenderingEngineManager renderingEngineManager;
+	
 	private CyTableFactory dataTableFactory;
 	private CyRootNetworkFactory rootNetworkFactory;
 	private SpacialIndex2DFactory spacialFactory;
@@ -58,7 +62,7 @@ public class DingNavigationRenderingEngineFactory implements
 			CyRootNetworkFactory rootNetworkFactory, UndoSupport undo,
 			SpacialIndex2DFactory spacialFactory,
 			VisualLexicon dingLexicon, TaskManager tm,
-			CyServiceRegistrar registrar, CyTableManager tableMgr) {
+			CyServiceRegistrar registrar, CyTableManager tableMgr, RenderingEngineManager renderingEngineManager) {
 
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
@@ -68,6 +72,7 @@ public class DingNavigationRenderingEngineFactory implements
 		this.tm = tm;
 		this.registrar = registrar;
 		this.tableMgr = tableMgr;
+		this.renderingEngineManager = renderingEngineManager;
 
 		viewMap = new HashMap<CyNetworkView, DGraphView>();
 		nodeViewTFs = new HashMap<NodeViewTaskFactory, Map>();
@@ -103,7 +108,10 @@ public class DingNavigationRenderingEngineFactory implements
 //				dgv);
 //		target.add(bev);
 
-		return new DingNavigationRenderingEngine(null);
+		DingNavigationRenderingEngine bev = new DingNavigationRenderingEngine(null);
+		// Register engine to manager
+		this.renderingEngineManager.addRenderingEngine(bev);
+		return bev;
 
 	}
 

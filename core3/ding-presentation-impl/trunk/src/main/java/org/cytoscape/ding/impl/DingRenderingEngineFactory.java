@@ -25,6 +25,7 @@ import org.cytoscape.view.model.events.UpdateNetworkPresentationEvent;
 import org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
+import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
@@ -35,6 +36,8 @@ public class DingRenderingEngineFactory implements
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(DingRenderingEngineFactory.class);
+	
+	final RenderingEngineManager renderingEngineManager;
 
 	private CyTableFactory dataTableFactory;
 	private CyRootNetworkFactory rootNetworkFactory;
@@ -58,7 +61,7 @@ public class DingRenderingEngineFactory implements
 			CyRootNetworkFactory rootNetworkFactory, UndoSupport undo,
 			SpacialIndex2DFactory spacialFactory, VisualLexicon dingLexicon,
 			TaskManager tm, CyServiceRegistrar registrar,
-			CyTableManager tableMgr, CyEventHelper eventHelper) {
+			CyTableManager tableMgr, CyEventHelper eventHelper, RenderingEngineManager renderingEngineManager) {
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
 		this.spacialFactory = spacialFactory;
@@ -68,6 +71,7 @@ public class DingRenderingEngineFactory implements
 		this.registrar = registrar;
 		this.tableMgr = tableMgr;
 		this.eventHelper = eventHelper;
+		this.renderingEngineManager = renderingEngineManager;
 
 		viewMap = new HashMap<CyNetworkView, DGraphView>();
 		nodeViewTFs = new HashMap<NodeViewTaskFactory, Map>();
@@ -125,7 +129,10 @@ public class DingRenderingEngineFactory implements
 		registrar.registerAllServices(dgv, new Properties());
 		registrar.registerAllServices(new AddDeleteHandler(dgv),
 				new Properties());
-
+		
+		// Register engine to manager
+		this.renderingEngineManager.addRenderingEngine(dgv);
+		
 		return dgv;
 	}
 
