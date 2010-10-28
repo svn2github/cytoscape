@@ -9,6 +9,9 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.junit.Test;
+import static org.mockito.Mockito.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public abstract class AbstractCyNetworkViewTest {
 	
@@ -59,7 +62,6 @@ public abstract class AbstractCyNetworkViewTest {
 			modelTypeTest = true;
 		
 		assertTrue(modelTypeTest);
-		
 	}
 	
 	
@@ -68,22 +70,42 @@ public abstract class AbstractCyNetworkViewTest {
 	 */
 	protected void buildNetwork() {
 		
-		node1 = network.addNode();
-		node2 = network.addNode();
-		node3 = network.addNode();
-		node4 = network.addNode();
-		node5 = network.addNode();
-		
-		edge1 = network.addEdge(node1, node2, true);
-		edge2 = network.addEdge(node2, node2, true);
-		edge3 = network.addEdge(node3, node4, true);
-		edge4 = network.addEdge(node1, node5, true);
-		edge5 = network.addEdge(node5, node4, true);
-		edge6 = network.addEdge(node3, node2, true);
-		edge7 = network.addEdge(node5, node1, true);
-		edge8 = network.addEdge(node4, node3, true);
-	}
-	
-	
+		network = mock(CyNetwork.class);
 
+		node1 = mock(CyNode.class); 
+		node2 = mock(CyNode.class); 
+		node3 = mock(CyNode.class); 
+		node4 = mock(CyNode.class); 
+		node5 = mock(CyNode.class); 
+
+		List<CyNode> nl = new ArrayList<CyNode>();
+		nl.add(node1);
+		nl.add(node2);
+		nl.add(node3);
+		nl.add(node4);
+		nl.add(node5);
+
+		when(network.getNodeList()).thenReturn(nl);
+
+		edge1 = mock(CyEdge.class);
+		edge2 = mock(CyEdge.class);
+		edge3 = mock(CyEdge.class);
+		edge4 = mock(CyEdge.class);
+		edge5 = mock(CyEdge.class);
+		edge6 = mock(CyEdge.class);
+		edge7 = mock(CyEdge.class);
+		edge8 = mock(CyEdge.class);
+
+		List<CyEdge> el = new ArrayList<CyEdge>();
+		el.add(edge1);
+		el.add(edge2);
+		el.add(edge3);
+		el.add(edge4);
+		el.add(edge5);
+		el.add(edge6);
+		el.add(edge7);
+		el.add(edge8);
+
+		when(network.getEdgeList()).thenReturn(el);
+	}
 }
