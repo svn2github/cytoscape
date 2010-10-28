@@ -1,0 +1,6 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Import-Package: *
+Export-Package: org.cytoscape.io, org.cytoscape.io.util,org.cytoscape.io.read,org.cytoscape.io.write
