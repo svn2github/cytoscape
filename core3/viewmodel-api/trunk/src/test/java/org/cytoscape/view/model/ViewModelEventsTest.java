@@ -13,7 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 public class ViewModelEventsTest {
@@ -31,14 +31,14 @@ public class ViewModelEventsTest {
 	
 	@Test
 	public void testEvents() {
-		final View<CyNode> nodeView = createMock(View.class);
-		final CyNetworkView networkView = createMock(CyNetworkView.class);
+		final View<CyNode> nodeView = mock(View.class);
+		final CyNetworkView networkView = mock(CyNetworkView.class);
 		AddedNodeViewEvent ev1 = new AddedNodeViewEvent(networkView, nodeView);
 		
 		assertEquals(nodeView, ev1.getNodeView());
 		assertEquals(networkView, ev1.getSource());
 		
-		final View<CyEdge> edgeView = createMock(View.class);
+		final View<CyEdge> edgeView = mock(View.class);
 		AddedEdgeViewEvent ev2 = new AddedEdgeViewEvent(networkView, edgeView);
 		
 		assertEquals(edgeView, ev2.getEdgeView());
