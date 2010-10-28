@@ -167,7 +167,7 @@
 	<bean id="layoutMenuManager" class="cytoscape.internal.layout.ui.LayoutMenuManager">
 		<constructor-arg ref="cytoscapeMenus" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 	</bean>
 
@@ -182,7 +182,8 @@
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="layoutMenuManager" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 	</bean>
 	<bean id="helpContentsTaskFactory" class="cytoscape.internal.view.help.HelpContentsTaskFactory">

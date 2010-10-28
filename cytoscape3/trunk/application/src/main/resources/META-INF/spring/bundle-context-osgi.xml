@@ -16,12 +16,6 @@
 	<osgi:reference id="cyNetworkManagerServiceRef"
 		interface="org.cytoscape.model.CyNetworkManager" />
 
-	<osgi:reference id="cyNetworkViewManagerServiceRef"
-		interface="org.cytoscape.view.model.CyNetworkManager" />
-
-	<osgi:reference id="cyApplicationManagerServiceRef"
-		interface="org.cytoscape.session.CyApplicationManager" />
-
 	<osgi:reference id="cyNetworkNamingServiceRef"
 		interface="org.cytoscape.session.CyNetworkNaming" />
 
@@ -289,22 +283,22 @@
 			</value>
 			<value>org.cytoscape.session.events.SetCurrentNetworkListener
 			</value>
-			<value>org.cytoscape.session.events.NetworkAddedListener
+			<value>org.cytoscape.model.events.NetworkAddedListener
 			</value>
-			<value>org.cytoscape.session.events.NetworkViewAddedListener
+			<value>org.cytoscape.view.model.events.NetworkViewAddedListener
 			</value>
-			<value>org.cytoscape.session.events.NetworkAboutToBeDestroyedListener
+			<value>org.cytoscape.model.events.NetworkAboutToBeDestroyedListener
 			</value>
-			<value>org.cytoscape.session.events.NetworkViewAboutToBeDestroyedListener
+			<value>org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener
 			</value>
 		</osgi:interfaces>
 	</osgi:service>
 
 	<osgi:service id="networkViewManagerService" ref="networkViewManager">
 		<osgi:interfaces>
-			<value>org.cytoscape.session.events.NetworkViewAddedListener
+			<value>org.cytoscape.view.model.events.NetworkViewAddedListener
 			</value>
-			<value>org.cytoscape.session.events.NetworkViewAboutToBeDestroyedListener
+			<value>org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener
 			</value>
 			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener
 			</value>
@@ -319,7 +313,7 @@
 			</value>
 			<value>org.cytoscape.session.events.SetCurrentNetworkListener
 			</value>
-			<value>org.cytoscape.session.events.NetworkViewDestroyedListener
+			<value>org.cytoscape.view.model.events.NetworkViewDestroyedListener
 			</value>
 		</osgi:interfaces>
 	</osgi:service>
@@ -331,7 +325,7 @@
 		interface="cytoscape.dialogs.AboutDialogFactory" />
 
 	<osgi:service id="selectRegisterListenerService" ref="selectRegisterListener"
-		interface="org.cytoscape.session.events.NetworkViewAddedListener" />
+		interface="org.cytoscape.view.model.events.NetworkViewAddedListener" />
 
 	<osgi:service id="sessionShutdownHandlerService" ref="sessionShutdownHandler"
 		interface="cytoscape.events.CytoscapeShutdownListener" />
