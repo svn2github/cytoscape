@@ -1,7 +1,7 @@
 package org.cytoscape.view.presentation;
 
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 import javax.swing.JComponent;
@@ -27,8 +27,8 @@ public class PresentationEventsTest {
 	@Test
 	public void testEvents() {
 		
-		final RenderingEngineFactory<CyNetwork> factory = createMock(RenderingEngineFactory.class);
-		final RenderingEngine<CyNetwork> engine = createMock(RenderingEngine.class);
+		final RenderingEngineFactory<CyNetwork> factory = mock(RenderingEngineFactory.class);
+		final RenderingEngine<CyNetwork> engine = mock(RenderingEngine.class);
 		final PresentationCreatedEvent createdEvent = new PresentationCreatedEvent(factory, engine);
 		assertEquals(factory, createdEvent.getSource());
 		assertEquals(engine, createdEvent.getRenderingEngine());

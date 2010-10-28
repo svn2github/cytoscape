@@ -1,7 +1,7 @@
 package org.cytoscape.view.presentation;
 
 import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Collection;
 import java.util.Set;
@@ -40,19 +40,17 @@ public class RenderingEngineManagerTest {
 	public void testGetRendringEngines() {
 		
 		// First, create mock view models.
-		final CyNetworkView networkView1 = createMock(CyNetworkView.class);
-		final CyNetworkView networkView2 = createMock(CyNetworkView.class);
+		final CyNetworkView networkView1 = mock(CyNetworkView.class);
+		final CyNetworkView networkView2 = mock(CyNetworkView.class);
 		
-		final RenderingEngineFactory<CyNetwork> factory = createMock(RenderingEngineFactory.class);
+		final RenderingEngineFactory<CyNetwork> factory = mock(RenderingEngineFactory.class);
 		
-		final RenderingEngine<CyNetwork> engine1 = createMock(RenderingEngine.class);
+		final RenderingEngine<CyNetwork> engine1 = mock(RenderingEngine.class);
 		
-		final RenderingEngine<CyNetwork> engine2 = createMock(RenderingEngine.class);
-		expect(engine2.getViewModel()).andReturn(networkView1).anyTimes();
-		replay(engine2);
-		final RenderingEngine<CyNetwork> engine3 = createMock(RenderingEngine.class);
-		expect(engine3.getViewModel()).andReturn(networkView2).anyTimes();
-		replay(engine3);
+		final RenderingEngine<CyNetwork> engine2 = mock(RenderingEngine.class);
+		when(engine2.getViewModel()).thenReturn(networkView1);
+		final RenderingEngine<CyNetwork> engine3 = mock(RenderingEngine.class);
+		when(engine3.getViewModel()).thenReturn(networkView2);
 		
 		final Collection<RenderingEngine<?>> engineSet = manager.getRendringEngines(networkView1);
 		assertNotNull(engineSet);
@@ -60,8 +58,7 @@ public class RenderingEngineManagerTest {
 		
 		final PresentationCreatedEvent createdEvent1 = new PresentationCreatedEvent(factory, engine1);
 		
-		expect(engine1.getViewModel()).andReturn(networkView1).anyTimes();
-		replay(engine1);
+		when(engine1.getViewModel()).thenReturn(networkView1);
 		((PresentationCreatedListener)manager).handleEvent(createdEvent1);
 
 		assertEquals(1, manager.getRendringEngines(networkView1).size());
@@ -90,5 +87,4 @@ public class RenderingEngineManagerTest {
 		assertTrue(manager.getRendringEngines(networkView2).contains(engine3));
 		
 	}
-
 }
