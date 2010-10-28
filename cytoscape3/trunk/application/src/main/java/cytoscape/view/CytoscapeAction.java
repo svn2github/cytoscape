@@ -1,14 +1,7 @@
 /*
  File: CytoscapeAction.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -36,7 +29,9 @@
  */
 package cytoscape.view;
 
-import org.cytoscape.session.CyNetworkManager;
+
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
@@ -52,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 import cytoscape.internal.util.AcceleratorParser;
+
 
 /**
  * An abstract implemenation of the CyAction interface.  Instead of using this
@@ -69,7 +65,8 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	protected int keyCode;
 	protected String consoleName;
 	protected boolean useCheckBoxMenuItem = false;
-	protected CyNetworkManager netmgr;
+	protected CyApplicationManager applicationManager;
+	protected CyNetworkViewManager networkViewManager;
 	protected boolean inToolBar = false;
 	protected String enableFor = null;
 
@@ -79,10 +76,14 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * @param name  The name of the action. 
 	 * @param netmgr The NetworkManger providing context for this action.
 	 */
-	public CytoscapeAction(String name, CyNetworkManager netmgr) {
+	public CytoscapeAction(String name, final CyApplicationManager applicationManager,
+			       final CyNetworkViewManager networkViewManager)
+	{
 		super(name);
 		this.consoleName = name;
-		this.netmgr = netmgr;
+		this.applicationManager = applicationManager;
+		this.networkViewManager = networkViewManager;
+
 		consoleName = consoleName.replaceAll(":. \'", "");
 	}
 
@@ -93,9 +94,10 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * will usually be the Map provided by the Spring service configuration.
 	 * @param netmgr The NetworkManger providing context for this action.
 	 */
-	public CytoscapeAction(Map configProps, CyNetworkManager netmgr) {
-
-		this((String)(configProps.get("title")), netmgr);
+	public CytoscapeAction(Map configProps, final CyApplicationManager applicationManager,
+                               final CyNetworkViewManager networkViewManager)
+	{
+		this((String)(configProps.get("title")), applicationManager, networkViewManager);
 
 		String prefMenu = (String)(configProps.get("preferredMenu"));
 		if ( prefMenu != null )
@@ -373,7 +375,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * Enable the action if the current network exists and is not null.
 	 */
 	protected void enableForNetwork() {
-		CyNetwork n = netmgr.getCurrentNetwork();
+		CyNetwork n = applicationManager.getCurrentNetwork();
 		if ( n == null ) 
 			setEnabled(false);
 		else
@@ -384,13 +386,13 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * Enable the action if the current network and view exist and are not null.
 	 */
 	protected void enableForNetworkAndView() {
-		CyNetwork n = netmgr.getCurrentNetwork();
+		CyNetwork n = applicationManager.getCurrentNetwork();
 		if ( n == null ) {
 			setEnabled(false);
 			return;
 		}
 		
-		CyNetworkView v = netmgr.getNetworkView(n.getSUID());
+		CyNetworkView v = networkViewManager.getNetworkView(n.getSUID());
 		if ( v == null )
 			setEnabled(false);
 		else
@@ -398,7 +400,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	}
 
 	protected void enableForSelectedNetworkObjs() {
-		CyNetwork n = netmgr.getCurrentNetwork();
+		CyNetwork n = applicationManager.getCurrentNetwork();
 
 		if ( n == null ) {
 			setEnabled(false);

@@ -25,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.internal.actions;
+
 
 import cytoscape.view.CytoscapeAction;
 import cytoscape.view.CytoPanelName;
@@ -36,7 +36,8 @@ import cytoscape.view.CySwingApplication;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.session.CyApplicationManager;
 
 
 public class CytoPanelAction extends CytoscapeAction {
@@ -49,8 +50,12 @@ public class CytoPanelAction extends CytoscapeAction {
 	protected CytoPanelName position;
 	private CySwingApplication desktop;
 
-	public CytoPanelAction(final CytoPanelName position, final boolean show, final CySwingApplication desktop, final CyNetworkManager netmgr) {
-		super(show ? HIDE + " " + position.getTitle() : SHOW + " " + position.getTitle(), netmgr);
+	public CytoPanelAction(final CytoPanelName position, final boolean show, final CySwingApplication desktop,
+			       final CyApplicationManager applicationManager, final CyNetworkViewManager networkViewManger)
+	{
+		super(show ? HIDE + " " + position.getTitle() : SHOW + " " + position.getTitle(),
+		      applicationManager, networkViewManger);
+
 		this.title = position.getTitle();
 		this.position = position;
 		setPreferredMenu("View");
