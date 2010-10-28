@@ -40,7 +40,7 @@ package cytoscape.internal;
 
 
 //import org.cytoscape.session.CySessionManager;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.model.CyNetworkManager;
 
 import cytoscape.events.CytoscapeShutdownListener;
 import cytoscape.events.CytoscapeShutdownEvent;

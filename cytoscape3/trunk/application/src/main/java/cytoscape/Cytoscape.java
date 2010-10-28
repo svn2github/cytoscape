@@ -45,7 +45,6 @@ import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.view.CySwingApplication;
-import org.cytoscape.session.CyNetworkManager;
 
 
 
