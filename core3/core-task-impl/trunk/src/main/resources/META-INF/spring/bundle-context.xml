@@ -60,7 +60,7 @@
 
 	<bean id="selectAllTaskFactory"
 	      class="org.cytoscape.task.internal.select.SelectAllTaskFactory">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="selectAllEdgesTaskFactory"

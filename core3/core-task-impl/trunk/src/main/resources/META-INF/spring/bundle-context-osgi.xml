@@ -49,7 +49,7 @@
 		interface="org.cytoscape.model.CyNetworkManager" />
 
 	<osgi:reference id="cyNetworkViewManagerServiceRef"
-		interface="org.cytoscape.view.model.CyNetworkManager" />
+		interface="org.cytoscape.view.model.CyNetworkViewManager" />
 
 	<osgi:reference id="cyApplicationManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
