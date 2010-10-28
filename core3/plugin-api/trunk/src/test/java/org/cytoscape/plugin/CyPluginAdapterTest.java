@@ -18,14 +18,15 @@ public abstract class CyPluginAdapterTest {
 		assertNotNull("dataTable exists", adapter.getCyEventHelper());
 	} 
 
-	@Test
-	public void testGetCyLayouts() { 
-		assertNotNull("CyLayouts exists", adapter.getCyLayouts());
-	} 
+// TODO once layout api has stabilized
+//	@Test
+//	public void testGetCyLayouts() { 
+//		assertNotNull("CyLayouts exists", adapter.getCyLayouts());
+//	} 
 
 	@Test
 	public void testGetCyNetworkFactory() { 
-		assertNotNull("CyLayouts exists", adapter.getCyNetworkFactory());
+		assertNotNull("CyNetworkFactory exists", adapter.getCyNetworkFactory());
 	}
 
 	@Test
@@ -35,17 +36,17 @@ public abstract class CyPluginAdapterTest {
 
 	@Test
 	public void testGetCyNetworkViewFactory() {
-		assertNotNull("CyLayouts exists", adapter.getCyNetworkViewFactory());
+		assertNotNull("CyNetworkViewFactory exists", adapter.getCyNetworkViewFactory());
 	}
 
 	@Test
 	public void testGetCyRootNetworkFactory() {
-		assertNotNull("CyLayouts exists", adapter.getCyRootNetworkFactory());
+		assertNotNull("CyRootNetworkFactory exists", adapter.getCyRootNetworkFactory());
 	} 
 
 	@Test
 	public void testGetCySessionManager() { 
-		assertNotNull("CyLayouts exists", adapter.getCySessionManager());
+		assertNotNull("CySessionManager exists", adapter.getCySessionManager());
 	} 
 
 	@Test

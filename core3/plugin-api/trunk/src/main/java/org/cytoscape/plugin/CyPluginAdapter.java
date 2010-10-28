@@ -7,7 +7,8 @@ import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.layout.CyLayouts;
+// TODO once the layout api has stabilized
+//import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.session.CyApplicationManager;
@@ -128,10 +129,11 @@ public interface CyPluginAdapter {
 	// layout api
 	//
 
+// TODO once the layout api has stabilized
 	/**
 	 * Returns an instance of {@link CyLayouts}.
 	 * @return an instance of {@link CyLayouts}.
-	 */
 	CyLayouts getCyLayouts();
+	 */
 
 }
