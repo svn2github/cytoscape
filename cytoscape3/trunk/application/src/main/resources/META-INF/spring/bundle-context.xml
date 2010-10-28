@@ -127,7 +127,8 @@
 	<bean id="deleteAction" class="cytoscape.internal.actions.DeleteAction">
 		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 	<bean id="preferenceAction" class="cytoscape.internal.actions.PreferenceAction">
 		<constructor-arg ref="cytoscapeDesktop" />
