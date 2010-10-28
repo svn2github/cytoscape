@@ -87,7 +87,10 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 			} else if (handlerMap.containsKey(objectWithTunables))
 				handlers.addAll(handlerMap.get(objectWithTunables).values());
 			else
-				throw new IllegalArgumentException("No Tunables and no provided GUI exists for Object yet!");
+				// TODO For task factories throwing an exception is wrong because
+				// their tunables simply haven't been loaded yet. 
+				//throw new IllegalArgumentException("No Tunables and no provided GUI exists for Object yet!");
+				logger.warn("No Tunables and no provided GUI exists for Object yet!");
 		}
 
 		// Sanity check:
@@ -337,21 +340,21 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 		return true;
 	}
 
-        //get the value(Handle) of the Tunable if its JPanel is enabled(Dependency) and check if we have to validate the values of tunables                      
-        /**                                                                                                                                                      
-         * get the <i>value,item,string,state...</i> from the GUI component, and check with the dependencies, if it can be set as the new one                    
-         *                                                                                                                                                       
-         * <p><pre>                                                                                                                                              
-         * If the <code>TunableValidator</code> interface is implemented by the class that contains the <code>Tunables</code> :                                  
-         * <ul>                                                                                                                                                  
-         * <li>a validate method has to be applied</li>                                                                                                          
-         * <li>it checks the conditions that have been declared about the chosen <code>Tunable(s)</code> </li>                                                   
-         * <li>if validation fails, it displays an error to the user, and new values are not set</li>                                                            
-         * </ul>                                                                                                                                                 
-         * </pre></p>                                                                                                                                            
-         * @return success or not of the <code>TunableValidator</code> validate method                                                                           
-         */
-        final public boolean validateAndWriteBackTunables(Object... proxyObjs) {
+	//get the value(Handle) of the Tunable if its JPanel is enabled(Dependency) and check if we have to validate the values of tunables                      
+	/**
+	 * get the <i>value,item,string,state...</i> from the GUI component, and check with the dependencies, if it can be set as the new one 
+	 *
+	 * <p><pre>
+	 * If the <code>TunableValidator</code> interface is implemented by the class that contains the <code>Tunables</code> :
+	 * <ul>
+	 * <li>a validate method has to be applied</li>
+	 * <li>it checks the conditions that have been declared about the chosen <code>Tunable(s)</code> </li>
+	 * <li>if validation fails, it displays an error to the user, and new values are not set</li>
+	 * </ul>
+	 * </pre></p>
+	 * @return success or not of the <code>TunableValidator</code> validate method
+	 */
+	final public boolean validateAndWriteBackTunables(Object... proxyObjs) {
 		final Object objectsWithTunables[] = convertSpringProxyObjs(proxyObjs);
 
 		// Update handler list:
@@ -373,11 +376,15 @@ public class GUITunableInterceptorImpl extends AbstractGUITunableInterceptor {
 			} else if (handlerMap.containsKey(objectWithTunables))
 				handlers.addAll(handlerMap.get(objectWithTunables).values());
 			else
-				throw new IllegalArgumentException("No Tunables and no provided GUI exists for Object yet!");
+				// TODO For task factories throwing an exception is wrong because
+				// their tunables simply haven't been loaded yet. 
+				//throw new IllegalArgumentException("No Tunables and no provided GUI exists for Object yet!");
+				logger.warn("No Tunables and no provided GUI exists for Object yet!");
 		}
 
-                for (final GUITunableHandler h : handlers)
-                        h.handleDependents();
-                return validateTunableInput();
-        }
+		for (final GUITunableHandler h : handlers)
+			h.handleDependents();
+
+		return validateTunableInput();
+	}
 }

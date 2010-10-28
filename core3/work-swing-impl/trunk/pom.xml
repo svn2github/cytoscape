@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>1.0-SNAPSHOT</version>
+		<version>3.0.0-alpha3</version>
 	</parent>
 
 	<properties>
@@ -22,6 +22,14 @@
 	<name>${bundle.symbolicName}</name>
 
 	<packaging>bundle</packaging>
+
+	<scm>
+		<connection>scm:svn:http://chianti.ucsd.edu/svn/core3/work-swing-impl/trunk</connection>
+		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/work-swing-impl/trunk</developerConnection>
+		<url>http://chianti.ucsd.edu/svn/core3/work-swing-impl/trunk</url>
+	</scm>
+
+
 
 	<repositories>
 		<!--
@@ -167,7 +175,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -177,12 +185,12 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-spring-hack</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>property-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -197,7 +205,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>integration-test-support</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
