@@ -19,11 +19,11 @@
 	<osgi:reference id="cyEventHelperRef" 
 		interface="org.cytoscape.event.CyEventHelper">
 	</osgi:reference>
-
+<!--
 	<osgi:reference id="cyLayoutsRef" 
 		interface="org.cytoscape.view.layout.CyLayouts">
 	</osgi:reference>
-
+-->
 	<osgi:reference id="cyNetworkFactoryRef" 
 	    interface="org.cytoscape.model.CyNetworkFactory">
 	</osgi:reference>

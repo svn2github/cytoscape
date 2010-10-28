@@ -8,7 +8,7 @@ import org.cytoscape.plugin.CyPluginAdapter;
 //
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.view.layout.CyLayouts;
+//import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
@@ -34,7 +34,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	//
 	private final CyTableFactory cyTableFactory;
 	private final CyEventHelper cyEventHelper;
-	private final CyLayouts cyLayouts;
+//	private final CyLayouts cyLayouts;
 	private final CyNetworkFactory cyNetworkFactory;
 	private final CyNetworkManager cyNetworkManager;
 	private final CyNetworkViewFactory cyNetworkViewFactory;
@@ -54,7 +54,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	CyPluginAdapterImpl( 
 	                    CyTableFactory cyTableFactory,
 	                    CyEventHelper cyEventHelper,
-	                    CyLayouts cyLayouts,
+//	                    CyLayouts cyLayouts,
 			    CyNetworkFactory cyNetworkFactory,
 			    CyNetworkManager cyNetworkManager,
 			    CyNetworkViewFactory cyNetworkViewFactory,
@@ -69,7 +69,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	{
 		this.cyTableFactory = cyTableFactory;
 		this.cyEventHelper = cyEventHelper;
-		this.cyLayouts = cyLayouts;
+//		this.cyLayouts = cyLayouts;
 		this.cyNetworkFactory = cyNetworkFactory;
 		this.cyNetworkManager = cyNetworkManager;
 		this.cyNetworkViewFactory = cyNetworkViewFactory;
@@ -91,7 +91,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 
 	public CyEventHelper getCyEventHelper() { return cyEventHelper; } 
 
-	public CyLayouts getCyLayouts() { return cyLayouts; } 
+//	public CyLayouts getCyLayouts() { return cyLayouts; } 
 
 	public CyNetworkFactory getCyNetworkFactory() { return cyNetworkFactory; }
 

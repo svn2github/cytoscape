@@ -7,7 +7,7 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CySessionManager;
-import org.cytoscape.view.layout.CyLayouts;
+//import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
@@ -25,7 +25,7 @@ public class CyPluginAdapterImplTest extends CyPluginAdapterTest {
 
 		CyTableFactory cyTableFactory = mock(CyTableFactory.class);
 		CyEventHelper cyEventHelper = mock(CyEventHelper.class);
-		CyLayouts cyLayouts = mock(CyLayouts.class);
+//		CyLayouts cyLayouts = mock(CyLayouts.class);
 		CyNetworkFactory cyNetworkFactory = mock(CyNetworkFactory.class);
 		CyNetworkManager cyNetworkManager = mock(CyNetworkManager.class);
 		CyNetworkViewFactory cyNetworkViewFactory = mock(CyNetworkViewFactory.class);
@@ -40,7 +40,7 @@ public class CyPluginAdapterImplTest extends CyPluginAdapterTest {
 		adapter = new CyPluginAdapterImpl( 
                 cyTableFactory,
                 cyEventHelper,
-                cyLayouts,
+//                cyLayouts,
              	cyNetworkFactory,
              	cyNetworkManager,
              	cyNetworkViewFactory,

@@ -20,7 +20,9 @@
 	<bean id="cyPluginAdapter" class="org.cytoscape.plugin.internal.CyPluginAdapterImpl">
 		<constructor-arg ref="cyDataTableFactoryRef" />
 		<constructor-arg ref="cyEventHelperRef" />
+		<!--
 		<constructor-arg ref="cyLayoutsRef" />
+		-->
 		<constructor-arg ref="cyNetworkFactoryRef" />
 		<constructor-arg ref="cyNetworkManagerRef" />
 		<constructor-arg ref="cyNetworkViewFactoryRef" />
