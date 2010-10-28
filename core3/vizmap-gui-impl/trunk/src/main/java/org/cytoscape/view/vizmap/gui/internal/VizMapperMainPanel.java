@@ -65,6 +65,8 @@ import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.events.VisualStyleCreatedEvent;
 import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
+import org.cytoscape.view.vizmap.events.VisualStyleRemovedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleRemovedListener;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
@@ -100,11 +102,10 @@ import cytoscape.view.CytoPanelName;
  * 
  * @version 0.8
  * @since Cytoscape 2.5
- * @author Keiichiro Ono
  * @param <syncronized>
  */
 public class VizMapperMainPanel extends AbstractVizMapperPanel implements
-		VisualStyleCreatedListener, PopupMenuListener, NetworkViewAddedListener, NetworkAddedListener {
+		VisualStyleCreatedListener, VisualStyleRemovedListener, PopupMenuListener, NetworkViewAddedListener, NetworkAddedListener {
 
 	private final static long serialVersionUID = 1202339867854959L;
 	
@@ -719,5 +720,25 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		
 		logger.debug("!!!!!!!!!! Network added. Need to update prop sheet: " + e.getNetwork().getSUID());
 		vizMapPropertySheetBuilder.setPropertyTable(this.lastVS);
+	}
+
+	
+	/**
+	 * Update panel when removed
+	 */
+	@Override
+	public void handleEvent(VisualStyleRemovedEvent e) {
+
+		// Update image
+		getDefaultImageManager().remove(e.getRemovedVisualStyle());
+		vizMapPropertySheetBuilder.getPropertyMap().remove(e.getRemovedVisualStyle());
+		// Switch to the default style
+		final VisualStyle defaultStyle = manager.getDefaultStyle();
+
+		switchVS(defaultStyle);
+		// Apply to the current view
+		final CyNetworkView view = applicationManager.getCurrentNetworkView();
+		if (view != null)
+			vmm.setVisualStyle(defaultStyle, view);
 	}
 }

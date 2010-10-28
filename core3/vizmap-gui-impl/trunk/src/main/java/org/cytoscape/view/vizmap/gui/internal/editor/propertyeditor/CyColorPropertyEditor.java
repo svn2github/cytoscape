@@ -35,6 +35,7 @@
 package org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor;
 
 import java.awt.Color;
+import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -67,6 +68,7 @@ public class CyColorPropertyEditor extends AbstractPropertyEditor {
 	 * Creates a new CyColorPropertyEditor object.
 	 */
 	public CyColorPropertyEditor() {
+		color = Color.white;
 		chooser = new CyColorChooser();
 		editor = new JPanel(new PercentLayout(PercentLayout.HORIZONTAL, 0));
 		((JPanel) editor).add("*", label = new CyColorCellRenderer());
@@ -109,11 +111,14 @@ public class CyColorPropertyEditor extends AbstractPropertyEditor {
 	protected void selectColor() {
 		ResourceManager rm = ResourceManager.all(FilePropertyEditor.class);
 		String title = rm.getString("ColorPropertyEditor.title");
-		Color selectedColor = chooser.showEditor(editor, color);
+		Paint selectedColor = chooser.showEditor(editor, color);
+		
+		if(selectedColor instanceof Color == false)
+			return;
 
 		if (selectedColor != null) {
 			Color oldColor = color;
-			Color newColor = selectedColor;
+			Color newColor = (Color) selectedColor;
 			label.setValue(newColor);
 			color = newColor;
 			firePropertyChange(oldColor, newColor);

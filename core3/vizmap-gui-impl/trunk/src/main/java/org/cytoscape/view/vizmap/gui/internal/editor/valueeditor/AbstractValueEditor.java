@@ -9,22 +9,23 @@ import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 
 public abstract class AbstractValueEditor<V> implements ValueEditor<V> {
 
-	protected Class<? extends V> type;
+	protected Class<V> type;
 	
 	protected final JOptionPane pane;
 	protected JDialog editorDialog;
 	
-	public AbstractValueEditor(Class<? extends V> type) {
+	public AbstractValueEditor(Class<V> type) {
 		this.type = type;
+		
 		pane = new JOptionPane();
 		pane.setMessageType(JOptionPane.QUESTION_MESSAGE);
 		pane.setOptionType(JOptionPane.OK_CANCEL_OPTION);
 	}
 
-	public Class<? extends V> getType() {
+	@Override public Class<V> getType() {
 		return type;
 	}
 
-	public abstract V showEditor(Component parent, V initialValue);
+	@Override public abstract <S extends V> V showEditor(Component parent, S initialValue);
 
 }

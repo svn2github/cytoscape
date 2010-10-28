@@ -108,15 +108,17 @@ abstract class VizMapBypass {
 		menu.add(jmi);
 	}
 
-	protected void addMenuItem(final JMenu menu, final VisualProperty<?> type) {
-		final JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getDisplayName()) {
+	
+	//TODO: is this OK???
+	protected <T extends Object> void addMenuItem(final JMenu menu, final VisualProperty<T> vp) {
+		final JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(vp.getDisplayName()) {
 				private final static long serialVersionUID = 1202339876717506L;
 
 				public void actionPerformed(ActionEvent e) {
 					Object obj = null;
 
 					try {
-						obj = editorFactory.showVisualPropertyValueEditor(menu, type, null);
+						obj = editorFactory.showVisualPropertyValueEditor(menu, vp, vp.getDefault());
 					} catch (Exception ex) {
 						ex.printStackTrace();
 						obj = null;
@@ -140,13 +142,13 @@ abstract class VizMapBypass {
 
 		menu.add(jmi);
 
-		String attrString = graphObj.getCyRow().get(type.getDisplayName(), String.class);
+		String attrString = graphObj.getCyRow().get(vp.getDisplayName(), String.class);
 
 		if ((attrString == null) || (attrString.length() == 0))
 			jmi.setSelected(false);
 		else {
 			jmi.setSelected(true);
-			addResetMenuItem(menu, type);
+			addResetMenuItem(menu, vp);
 		}
 	}
 

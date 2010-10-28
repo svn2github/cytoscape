@@ -148,17 +148,15 @@ public class EditorManagerImpl implements EditorManager {
 	 * .awt.Component, org.cytoscape.viewmodel.VisualProperty)
 	 */
 	@SuppressWarnings("unchecked")
-	public <V> V showVisualPropertyValueEditor(Component parentComponent,
-			VisualProperty<V> type, V initial) throws Exception {
+	public <V> V showVisualPropertyValueEditor(Component parentComponent, VisualProperty<V> type, V initialValue) throws Exception {
 
-		ValueEditor<V> editor = (ValueEditor<V>) valueEditors.get(type
-				.getType());
+		final ValueEditor<V> editor = (ValueEditor<V>) valueEditors.get(type.getType());
 
 		if (editor == null)
 			throw new IllegalStateException("No value editor for "
-					+ type.getDisplayName() + "is available.");
+					+ type.getDisplayName() + " is available.");
 
-		return editor.showEditor(null, initial);
+		return editor.showEditor(null, initialValue);
 	}
 
 	/*

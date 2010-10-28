@@ -38,6 +38,7 @@ package org.cytoscape.view.vizmap.gui.internal.editor.valueeditor;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -50,28 +51,14 @@ import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
  * This is an annoying re-implementation of JColorChooser.showDialog() that
  * remembers recently used colors between invocations of the chooser dialog.
  */
-public class CyColorChooser implements ValueEditor<Color> {
+public class CyColorChooser implements ValueEditor<Paint> {
+	
 	protected JColorChooser chooser = new JColorChooser();
 	protected ColorListener listener = new ColorListener();
-	protected Color color = Color.white;
+	protected Paint color = Color.white;
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param component
-	 *            DOCUMENT ME!
-	 * @param title
-	 *            DOCUMENT ME!
-	 * @param initialColor
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public CyColorChooser() {
 
-	}
-
-	public Color showEditor(Component parent, Color initialValue) {
+	@Override public Paint showEditor(Component parent, Paint initialValue) {
 
 		color = initialValue;
 		JDialog dialog = JColorChooser.createDialog(parent,
@@ -87,8 +74,7 @@ public class CyColorChooser implements ValueEditor<Color> {
 		}
 	}
 
-	public Class<Color> getType() {
-		// TODO Auto-generated method stub
-		return Color.class;
+	public Class<Paint> getType() {
+		return Paint.class;
 	}
 }

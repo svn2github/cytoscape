@@ -8,8 +8,10 @@
 	<!-- Export Service Listeners -->
 	<osgi:service id="selectedVisualStyleManagerService" ref="selectedVisualStyleManager" auto-export="interfaces" />
 	
+	<!--  The main pane is a service -->
 	<osgi:service id="vizMapperGUIService" ref="vizMapperMainPanel"
 		auto-export="interfaces" />
+		
 	<osgi:service id="defaultViewEditorService" ref="defViewEditor"
 		auto-export="interfaces" />
 
@@ -176,6 +178,8 @@
 
 	</osgi:set>
 
+
+	<!-- Export value editors as services -->
 	<osgi:set id="valueEditorSet"
 		interface="org.cytoscape.view.vizmap.gui.editor.ValueEditor"
 		cardinality="0..N">

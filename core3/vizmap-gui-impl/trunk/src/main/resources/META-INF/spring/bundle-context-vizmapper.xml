@@ -195,12 +195,10 @@
 	</bean>
 	
 	<bean name="removeVisualStyleTaskFactory"
-		class="org.cytoscape.view.vizmap.gui.internal.task.RemoveVisualStyleTaskFactory"
+		class="org.cytoscape.view.vizmap.gui.internal.task.DeleteVisualStyleTaskFactory"
 		depends-on="vizMapperMainPanel">
-		<constructor-arg ref="vmmServiceRef" />
+		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="selectedVisualStyleManager"/>
-		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="vizMapPropertySheetBuilder" />
 	</bean>
 
 

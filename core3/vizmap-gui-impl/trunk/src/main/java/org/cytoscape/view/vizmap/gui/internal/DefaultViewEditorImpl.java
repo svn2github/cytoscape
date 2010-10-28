@@ -464,9 +464,12 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 		if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
 
+			final V defaultVal = selectedStyle.getDefaultValue(vp);
 			try {
-				newValue = editorFactory.showVisualPropertyValueEditor(this, vp, null);
-
+				if(defaultVal != null)
+					newValue = editorFactory.showVisualPropertyValueEditor(this, vp, defaultVal);
+				else
+					newValue = editorFactory.showVisualPropertyValueEditor(this, vp, vp.getDefault());
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}

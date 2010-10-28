@@ -8,12 +8,12 @@ public class StringValueEditor extends AbstractValueEditor<String> {
 
 	private static final String MESSAGE = "Please enter new text value";
 
-	public StringValueEditor(Class<? extends String> type) {
+	public StringValueEditor(Class<String> type) {
 		super(type);
 	}
 
-	@Override
-	public String showEditor(Component parent, String initialValue) {
+	
+	@Override public String showEditor(Component parent, String initialValue) {
 		return JOptionPane.showInputDialog(parent, MESSAGE, initialValue);
 	}
 
