@@ -39,7 +39,7 @@ public class VizmapEventsTest {
 	public void testVisualStyleDestroyedEvent() {
 		final VisualStyleRemovedEvent event = new VisualStyleRemovedEvent(manager, style);
 		assertNotNull(event);
-		assertEquals(style, event.getDestroyedVisualStyle());
+		assertEquals(style, event.getRemovedVisualStyle());
 	}
 
 }
