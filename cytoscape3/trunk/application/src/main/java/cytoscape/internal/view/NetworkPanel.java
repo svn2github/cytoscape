@@ -1,14 +1,7 @@
 /*
  File: NetworkPanel.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -35,6 +28,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 package cytoscape.internal.view;
+
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -71,15 +65,17 @@ import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.session.CyNetworkManager;
-import org.cytoscape.session.events.NetworkAboutToBeDestroyedEvent;
-import org.cytoscape.session.events.NetworkAboutToBeDestroyedListener;
-import org.cytoscape.session.events.NetworkAddedEvent;
-import org.cytoscape.session.events.NetworkAddedListener;
-import org.cytoscape.session.events.NetworkViewAboutToBeDestroyedEvent;
-import org.cytoscape.session.events.NetworkViewAboutToBeDestroyedListener;
-import org.cytoscape.session.events.NetworkViewAddedEvent;
-import org.cytoscape.session.events.NetworkViewAddedListener;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
+import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
+import org.cytoscape.model.events.NetworkAddedEvent;
+import org.cytoscape.model.events.NetworkAddedListener;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedEvent;
+import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener;
+import org.cytoscape.view.model.events.NetworkViewAddedEvent;
+import org.cytoscape.view.model.events.NetworkViewAddedListener;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SetCurrentNetworkEvent;
 import org.cytoscape.session.events.SetCurrentNetworkListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
@@ -103,9 +99,7 @@ import cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
 import cytoscape.internal.task.TaskFactoryTunableAction;
 import cytoscape.view.CyAction;
 
-/**
- *
- */
+
 public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		SetCurrentNetworkViewListener,
 		SetCurrentNetworkListener, NetworkAddedListener,
@@ -122,7 +116,9 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	private JPopupMenu popup;
 	private JSplitPane split;
 	private final NetworkTreeTableModel treeTableModel;
+	private final CyApplicationManager applicationManager;
 	private final CyNetworkManager netmgr;
+	private final CyNetworkViewManager networkViewManager;
 	private Long currentNetId;
 	private final TaskManager taskManager;
 	private Map<TaskFactory,JMenuItem> popupMap;
@@ -136,12 +132,16 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	 * 
 	 * @param desktop
 	 */
-	public NetworkPanel(final CyNetworkManager netmgr, final BirdsEyeViewHandler bird,
-	                    final TaskManager taskManager, final CyEventHelper eventHelper)
+	public NetworkPanel(final CyApplicationManager applicationManager, final CyNetworkManager netmgr,
+			    final CyNetworkViewManager networkViewManager,
+			    final BirdsEyeViewHandler bird, final TaskManager taskManager,
+			    final CyEventHelper eventHelper)
 	{
 		super();
 
+		this.applicationManager = applicationManager;
 		this.netmgr = netmgr;
+		this.networkViewManager = networkViewManager;
 		this.taskManager = taskManager;
 		this.eventHelper = eventHelper;
 
@@ -395,7 +395,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 				+ nde.getNetworkView().getModel().getSUID());
 		
 		// Set current network view to the new one.
-		this.netmgr.setCurrentNetworkView(nde.getNetworkView().getModel().getSUID());
+		applicationManager.setCurrentNetworkView(nde.getNetworkView().getModel().getSUID());
 		
 		treeTable.getTree().updateUI();
 	}
@@ -505,7 +505,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 			return;
 		}
 
-		netmgr.setCurrentNetwork(node.getNetworkID());
+		applicationManager.setCurrentNetwork(node.getNetworkID());
 
 		// creates a list of all selected networks
 		List<Long> networkList = new LinkedList<Long>();
@@ -522,9 +522,8 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 			ex.printStackTrace();
 		}
 
-		if (networkList.size() > 0) {
-			netmgr.setSelectedNetworkViews(networkList);
-		}
+		if (networkList.size() > 0)
+			applicationManager.setSelectedNetworkViews(networkList);
 	}
 
 	/**
@@ -665,7 +664,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 			else
 				setToolTipText("Root");
 
-			return netmgr.viewExists(node.getNetworkID());
+			return networkViewManager.viewExists(node.getNetworkID());
 		}
 	}
 

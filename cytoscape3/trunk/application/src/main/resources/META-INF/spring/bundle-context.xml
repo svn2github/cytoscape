@@ -82,7 +82,9 @@
 	</bean>
 
 	<bean name="networkPanel" class="cytoscape.internal.view.NetworkPanel">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="birdsEyeViewHandler" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
