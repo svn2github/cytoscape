@@ -143,6 +143,8 @@ public final class CySession {
 		public CySession build() { return new CySession(this); }
 
 		/**
+		 * Returns an instance of Builder that has at least been configured
+		 * with the specified network views.
 		 * @param views A Set of CyNetworkView objects, presumably all networks
 		 * that exist in this instance of Cytoscape.
 		 * @return An instance of Builder that has at least been configured
@@ -154,6 +156,8 @@ public final class CySession {
 		}
 
 		/**
+		 * Returns an instance of Builder that has at least been configured
+		 * with the specified tables.
 		 * @param t A Set of CyTable objects, presumably all tables
 		 * that exist in this instance of Cytoscape.
 		 * @return An instance of Builder that has at least been configured
@@ -165,6 +169,8 @@ public final class CySession {
 		}
 
 		/**
+		 * Returns an instance of Builder that has at least been configured
+		 * with the specified network view visual style name map.
 		 * @param vs A map of CyNetworkViews to the names of the VisualStyle
 		 * currently applied to that network view, for presumably all network views
 		 * that exist in this instance of Cytoscape.
@@ -177,6 +183,8 @@ public final class CySession {
 		}
 
 		/**
+		 * Returns an instance of Builder that has at least been configured
+		 * with the specified properties.
 		 * @param p A Properties object that contains the current Cytoscape 
 		 * properties.
 		 * @return An instance of Builder that has at least been configured
@@ -188,6 +196,8 @@ public final class CySession {
 		}
 
 		/**
+		 * Returns an instance of Builder that has at least been configured
+		 * with the specified properties.
 		 * @param p A Properties object that contains the current VizMap 
 		 * properties for all VisualStyles in this instance of Cytoscape.
 		 * @return An instance of Builder that has at least been configured
@@ -199,6 +209,8 @@ public final class CySession {
 		}
 
 		/**
+		 * Returns an instance of Builder that has at least been configured
+		 * with the specified plugin file list map.
 		 * @param p A map of plugin names to a list of File objects that the
 		 * given plugin wants stored in the session file.
 		 * @return An instance of Builder that has at least been configured
@@ -210,6 +222,8 @@ public final class CySession {
 		}
 
 		/**
+		 * Returns an instance of Builder that has at least been configured
+		 * with the specified bookmarks. 
 		 * @param b A Bookmarks object containing all bookmarks defined
 		 * for this session.
 		 * @return An instance of Builder that has at least been configured
@@ -221,6 +235,8 @@ public final class CySession {
 		}
 
 		/**
+		 * Returns an instance of Builder that has at least been configured
+		 * with the specified session descriptor. 
 		 * @param s A {@link Cysession} object containing the session descriptor
 		 * for this session.
 		 * @return An instance of Builder that has at least been configured
@@ -233,44 +249,56 @@ public final class CySession {
 	}
 
 	/**
+	 * Returns a set of all CyNetworkView objects contained in this Session. 
 	 * @return A set of all CyNetworkView objects contained in this Session. 
 	 */
     public Set<CyNetworkView> getNetworkViews() { return netViews; }
 
 	/**
+	 * Returns a set of all CyTable objects contained in this Session. 
 	 * @return A set of all CyTable objects contained in this Session. 
 	 */
     public Set<CyTable> getTables() { return tables; }
 
 	/**
+	 * Returns a map of CyNetworkViews to the names of the VisualStyle
+	 * applied to that network view in this session.
 	 * @return A map of CyNetworkViews to the names of the VisualStyle
 	 * applied to that network view in this session.
 	 */
     public Map<CyNetworkView,String> getViewVisualStyleMap() { return vsMap; }
 
 	/**
+	 * Returns a Propeties object containing all Cytoscape properties 
+	 * defined for this session. 
 	 * @return A Propeties object containing all Cytoscape properties 
 	 * defined for this session. 
 	 */
     public Properties getCytoscapeProperties() { return cyProps; }
 
 	/**
+	 * Returns a Propeties object containing all VisualStyles defined
+	 * for this session.
 	 * @return A Propeties object containing all VisualStyles defined
 	 * for this session.
 	 */
     public Properties getVizmapProperties() { return vProps; }
 
 	/**
+	 * Returns a {@link Bookmarks} object containing all bookmarks for this session.
 	 * @return A {@link Bookmarks} object containing all bookmarks for this session.
 	 */
     public Bookmarks getBookmarks() { return bookmarks; }
 
 	/**
+	 * Returns a {@link Cysession} object containing a description of this session. 
 	 * @return A {@link Cysession} object containing a description of this session. 
 	 */
     public Cysession getCysession() { return cysession; }
 
 	/**
+	 * Returns a map of plugin names to lists of File objects that are stored
+	 * as part of the session for the specified plugin.
 	 * @return A map of plugin names to lists of File objects that are stored
 	 * as part of the session for the specified plugin.
 	 */

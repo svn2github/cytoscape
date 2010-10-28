@@ -20,6 +20,10 @@ class AbstractNetworkViewEvent extends AbstractCyEvent<CyApplicationManager> {
 		this.view = view;
 	}
 
+	/**
+	 * Returns the network view associated with this event.
+	 * @return the network view associated with this event.
+	 */
 	final public CyNetworkView getNetworkView() {
 		return view;
 	}

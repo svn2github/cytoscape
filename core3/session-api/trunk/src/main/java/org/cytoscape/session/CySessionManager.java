@@ -28,6 +28,7 @@ public interface CySessionManager {
     void setCurrentSession(CySession session, String fileName);
 
 	/**
+	 * Returns the name of the current session file.
 	 * @return The name of the current session file.
 	 */
 	String getCurrentSessionFileName();

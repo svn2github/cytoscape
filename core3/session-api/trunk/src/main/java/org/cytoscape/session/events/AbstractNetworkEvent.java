@@ -20,6 +20,10 @@ class AbstractNetworkEvent extends AbstractCyEvent<CyApplicationManager> {
 		this.net = net;
 	}
 
+	/**
+	 * Returns the network associated with this event.
+	 * @return the network associated with this event.
+	 */
 	public final CyNetwork getNetwork() {
 		return net;
 	}

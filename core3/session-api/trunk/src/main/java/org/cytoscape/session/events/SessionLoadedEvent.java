@@ -18,6 +18,7 @@ public final class SessionLoadedEvent extends AbstractCyEvent<CySessionManager> 
 	private final String fileName;
 
 	/**
+	 * Constructor.
 	 * @param source The CySessionManager that is the source of this event.
 	 * @param session The CySession object that was just loaded.
 	 */
@@ -28,6 +29,7 @@ public final class SessionLoadedEvent extends AbstractCyEvent<CySessionManager> 
 	}
 
 	/**
+	 * Returns the session that was just loaded.
 	 * @return The session that was just loaded.
 	 */
 	public CySession getLoadedSession() {
@@ -35,6 +37,7 @@ public final class SessionLoadedEvent extends AbstractCyEvent<CySessionManager> 
 	}
 
 	/**
+	 * Returns the file name of the session just loaded.
 	 * @return The file name of the session just loaded.
 	 */
 	public String getLoadedFileName() {

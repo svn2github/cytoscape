@@ -22,7 +22,11 @@ import org.cytoscape.event.AbstractCyEvent;
 public final class SessionAboutToBeSavedEvent extends AbstractCyEvent<CySessionManager> {
 	final Map<String,List<File>> pluginFileListMap;
 
-	// TODO should the source be the session manager
+	// TODO should the source be the session manager??
+	/**
+	 * Constructor.
+	 * @param source The CySessionManager that will be saving the session.
+	 */
 	public SessionAboutToBeSavedEvent(final CySessionManager source) {
 		super(source, SessionAboutToBeSavedListener.class);
 
@@ -30,6 +34,8 @@ public final class SessionAboutToBeSavedEvent extends AbstractCyEvent<CySessionM
 	}
 
 	/**
+	 * A method that allows plugins to specify a list of files that should be
+	 * stored in the session.
 	 * @param pluginName The name of the plugin that these files should be stored for.
 	 * @param files The list of File objects to be stored in the session file.
 	 */
@@ -55,7 +61,9 @@ public final class SessionAboutToBeSavedEvent extends AbstractCyEvent<CySessionM
 
 	/**
 	 * This method is not meant to be used by listeners for this event, 
-	 * although you can and no harm should come to you.
+	 * although you can and no harm should come to you.  This method is
+	 * used by the CySessionManager to retrieve the list of files from
+	 * plugins.
 	 * @return A map of plugin names to lists of files to be stored in the
 	 * session for that plugin.
 	 */

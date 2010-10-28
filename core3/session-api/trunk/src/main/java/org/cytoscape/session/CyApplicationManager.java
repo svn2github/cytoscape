@@ -39,70 +39,71 @@ import org.cytoscape.view.presentation.RenderingEngine;
 
 
 /**
- * Basic access to current and/or currently selected networks, views and rendering engines in an
- * instance of Cytoscape.
+ * Basic access to current and/or currently selected networks, 
+ * views and rendering engines in an instance of Cytoscape.
  */
 public interface CyApplicationManager {
 	/**
 	 * Provides access to the current network.
-	 * 
 	 * @return the current network or null if there is no current network
 	 */
 	public CyNetwork getCurrentNetwork();
 
 	/**
 	 * Sets the current network to the one with the provided network SUID.
-	 * 
 	 * @param network_id  must be the SUID of a network
 	 */
 	public void setCurrentNetwork(final long network_id);
 
 	/**
-	 * Provides access to the current network view.
-	 * 
-	 * @return the current network view of null if no network is currently being visualised
+	 * Returns the current network view.
+	 * @return the current network view or null if no network 
+	 * is currently being visualised
 	 */
 	public CyNetworkView getCurrentNetworkView();
 
 	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param view_id
-	 *            DOCUMENT ME!
+	 * Sets the current network view based on the specified id.
+	 * @param view_id The <i>network</i> SUID of the network view to
+	 * be made current.
 	 */
 	public void setCurrentNetworkView(final long view_id);
 
 	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
+	 * Returns the list of selected networks.  
+	 * @return The list of selected networks.
 	 */
 	public List<CyNetwork> getSelectedNetworks();
 
 	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
+	 * Returns the list of selected network views.  
+	 * @return The list of selected network views.
 	 */
 	public List<CyNetworkView> getSelectedNetworkViews();
 
 	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param modelIDs
-	 *            DOCUMENT ME!
+	 * Sets the network views associated with the specified network 
+	 * ids as selected.
+	 * @param modelIDs The <i>model</i> SUIDs of the networks that have 
+	 * been selected.
 	 */
 	public void setSelectedNetworkViews(final List<Long> modelIDs);
 
 	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param ids
-	 *            DOCUMENT ME!
+	 * Sets the networks associated with the specified ids as selected.
+	 * @param ids The SUIDs of the networks that have been selected.
 	 */
 	public void setSelectedNetworks(final List<Long> ids);
-	
+
+	/**
+	 * Returns the rendering engine associated with the current network view.
+	 * @return The rendering engine associated with the current network view.
+	 */
 	public RenderingEngine<CyNetwork> getCurrentRenderingEngine();
 
+	/**
+	 * Sets the current rendering engine.
+	 * @param engine The rendering engine that should be made current.
+	 */
 	public void setCurrentRenderingEngine(final RenderingEngine<CyNetwork> engine);
 }
