@@ -1,6 +1,6 @@
 package org.cytoscape.view.vizmap;
 
-import static org.easymock.EasyMock.createMock;
+import static org.mockito.Mockito.*;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.NullDataType;
@@ -22,7 +22,7 @@ public class VisualStyleTest extends AbstractVisualStyleTest {
 
 		lexicon = new TwoDVisualLexicon(twoDRoot);
 
-		final CyEventHelper helperMock = createMock(CyEventHelper.class);
+		final CyEventHelper helperMock = mock(CyEventHelper.class);
 		final VisualStyleFactoryImpl visualStyleFactory = new VisualStyleFactoryImpl(
 				helperMock);
 		originalTitle = "Style 1";
