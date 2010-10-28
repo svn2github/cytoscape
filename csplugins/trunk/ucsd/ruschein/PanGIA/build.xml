@@ -19,7 +19,7 @@
     <!-- Define the directories -->
     <property name="root.dir" value="."/>
     <property name="cytoscape.dir" value="${root.dir}/../../../../cytoscape"/>
-    <property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
+  	
     <property name="resources.dir" value="${root.dir}/resources"/>
     <property name="src.dir" value="${root.dir}/src"/>
     <property name="tests.dir" value="${root.dir}/tests"/>
@@ -40,9 +40,7 @@
       <fileset dir="${cytoscape.dir}">
         <include name="*.jar"/>
       </fileset>
-      <fileset dir="${cytoscape.lib.dir}">
-        <include name="*.jar"/>
-      </fileset>
+
     </path>
    
     <!-- Define the junit class path - It needs to find what we just built --> 
@@ -53,9 +51,7 @@
       <fileset dir="${cytoscape.dir}">
         <include name="*.jar"/>
       </fileset>
-      <fileset dir="${cytoscape.lib.dir}">
-        <include name="*.jar"/>
-      </fileset>
+
     </path>
 
     <!-- Make sure tests is in the right place -->
