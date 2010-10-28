@@ -43,7 +43,8 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.session.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -75,8 +76,11 @@ public class DeleteAction extends CytoscapeAction {
 	/**
 	 * action for deleting selected Cytoscape nodes and edges
 	 */
-	public DeleteAction(final UndoSupport undo, final CyRootNetworkFactory root,CyNetworkManager netmgr) {
-		this(null,undo,root,netmgr);
+	public DeleteAction(final UndoSupport undo, final CyRootNetworkFactory root,
+			    final CyApplicationManager applicationManager,
+			    final CyNetworkViewManager networkViewManager)
+	{
+		this(null,undo,root, applicationManager, networkViewManager);
 	}
 
 	/**
@@ -102,7 +106,7 @@ public class DeleteAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent ae) {
 
-		CyNetworkView myView = netmgr.getCurrentNetworkView();
+		CyNetworkView myView = applicationManager.getCurrentNetworkView();
 
 		// delete from the base CySubNetwork so that our changes can be undone 
 		CySubNetwork cyNet = cyRootNetworkFactory.convert( myView.getModel() ).getBaseNetwork();
@@ -139,7 +143,7 @@ public class DeleteAction extends CytoscapeAction {
 			edges.add( cyEdge );
 		}
 
-		undo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodes,edges,this,netmgr) );
+		undo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodes,edges,this, netmgr) );
 		
 		// delete the actual nodes and edges
 
@@ -152,7 +156,7 @@ public class DeleteAction extends CytoscapeAction {
 	}
 
     public void menuSelected(MenuEvent me) {
-        CyNetwork n = netmgr.getCurrentNetwork();
+        CyNetwork n = applicationManager.getCurrentNetwork();
         if ( n == null ) {
             setEnabled(false);
             return;
