@@ -95,7 +95,7 @@ public class ParseCMLAttributes implements PropertyChangeListener {
 		}
 		NodeList pNodes = cml.getElementsByTagName("string");
 		Node smilesNode = pNodes.item(0); // We assume that we only have one...
-		if (smilesNode.getNodeType() == Node.ELEMENT_NODE) {
+		if (smilesNode != null && smilesNode.getNodeType() == Node.ELEMENT_NODE) {
 			Element smilesElement = (Element)smilesNode;
 			if (smilesElement.getAttribute("title").equals("smiles")) {
 				String smiles = DomUtils.getChildData(smilesElement);
