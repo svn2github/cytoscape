@@ -104,7 +104,6 @@ public class BioCycCommandHandler extends AbstractCommandHandler {
 	public static final String PROTEIN = "protein";
 	public static final String REACTION = "reaction";
 	public static final String SUBSTRATE = "substrate";
-	public static final String BASEURL = "http://brg-preview.ai.sri.com/";
 
 	public BioCycCommandHandler(String namespace, CyLogger logger) {
 		super(CyCommandManager.reserveNamespace(namespace));

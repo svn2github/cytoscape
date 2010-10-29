@@ -42,7 +42,7 @@ import cytoscape.logger.CyLogger;
 /**
  * 
  */
-public class Database {
+public class Database implements Comparable<Database> {
 	CyLogger logger;
 
 	String orgid = null;
@@ -59,17 +59,22 @@ public class Database {
 		this.dbLink = DomUtils.getDbLinks(database);
 	}
 
+	public int compareTo(Database o2) {
+		return toString().compareTo(o2.toString());
+	}
+
 	public String getOrgID() { return orgid; }
 	public String getVersion() { return version; }
 	public String getSpecies() { return species; }
 	public String getStrain() { return strain; }
 	public List<DbLink> getDbLinks() { return dbLink; }
 	public String toString() {
-		// String result = "OrgID:"+orgid+"|Version:"+version+"|Species:"+species+"|Strain:"+strain;
-		return orgid;
+		return species+" "+strain+" ("+orgid+")";
 	}
 
 	public static List<Database> getDatabases(Document response) {
+		if (response == null) return null;
+
 		NodeList dbNodes = response.getElementsByTagName("PGDB");
 		if (dbNodes == null || dbNodes.getLength() == 0) return null;
 

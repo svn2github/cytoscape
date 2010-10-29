@@ -39,6 +39,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URI;
@@ -53,6 +55,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -95,9 +98,9 @@ public class QueryHandler {
 			// System.out.println("Executing query: "+queryString);
 			input = URLUtil.getBasicInputStream(new URL(queryString));
 			// result = builder.parse(teeInput(input));
-			result = builder.parse(input);
+			result = builder.parse(teeInput(input));
 		} catch (Exception e) {
-			logger.error("Unable to process query "+queryString+": "+e.getMessage());
+			logger.error("Unable to process query "+queryString+": "+e.getMessage(),e);
 			return null;
 		}
 		return result;
@@ -136,11 +139,28 @@ public class QueryHandler {
 		}
 	}
 
+	public List<Pathway> andPathways(List<Pathway>a, List<Pathway>b) {
+	}
+
+	public List<Pathway> orPathways(List<Pathway>pathways1, List<Pathway>pathways2) {
+		for (Pathway p: pathways2) {
+			if (!pathways1.contains(p))
+				pathways1.add(p);
+		}
+		return pathways1;
+
+	}
+
 	public List<Pathway> searchForPathways(String database, String text) {
 		Map<String,Pathway> pathwayMap = new HashMap<String,Pathway>();
 		// We do this iteratively.  First, do a direct match on pathways,
 		// then we to find all genes with that text, then
 		// all proteins.  Then we'll get all of the pathways that match those genes.
+		String queryString = "{y: y<- [x:x<-"+database+"^^pathways,\""+text+"\" instringci x^names]";
+		queryString += " ++ [x:x<-"+database+"^^genes,\""+text+"\" instringci x^names]";
+		queryString += " ++ {p:x<-"+database+"^^proteins,\""+text+"\" instringci x^names, g<-genes-of-protein(x), p<-"+database+"^^pathways, g in (pathway-to-genes p)}";
+		queryString += " ++ {p:x<-"+database+"^^compounds,\""+text+"\" instringci x^names, p<-"+database+"^^pathways, x in (compounds-of-pathway p)} }";
+/*
 		{ 
 			String queryString = "[x:x<-"+database+"^^pathways,\""+text+"\" instringci x^names]";
 			List<Pathway>pathways = Pathway.getPathways(query(queryString));
@@ -163,45 +183,53 @@ public class QueryHandler {
 				}
 			}
 			// OK, now that we have the first set, get all of the proteins
-			queryString = "[x:x<-"+database+"^^proteins,\""+text+"\" instringci x^names]";
-			List<Protein>proteins = Protein.getProteins(query(queryString));
-			if (proteins != null) {
-				for (Protein p: proteins) {
-					if (p.getGene() != null && !geneList.containsKey(p.getGene().getFrameID())) {
-						geneList.put(p.getGene().getFrameID(), p.getGene());
-					}
-				}
-			}
-			// Finally, we've got a list of genes based on our query.  If the list of genes
-			// is not empty, query the database and get all of the pathways
-			for (String g: geneList.keySet()) {
-				List<Pathway> pathways = Pathway.getPathways(findPathways(database, g));
-				if (pathways != null) {
-					for (Pathway p: pathways) {
-						if (!pathwayMap.containsKey(p.getFrameID()))
-							pathwayMap.put(p.getFrameID(), p);
-					}
+			queryString = "{p:x<-"+database+"^^proteins,\""+text+"\" instringci x^names, g<-genes-of-protein(x), p<-"+database+"^^pathways, g in (pathway-to-genes p)}";
+
+			List<Pathway> pathways = Pathway.getPathways(query(queryString));
+			if (pathways != null) {
+				for (Pathway p: pathways) {
+					if (!pathwayMap.containsKey(p.getFrameID()))
+						pathwayMap.put(p.getFrameID(), p);
 				}
 			}
 		}
 
-		// TODO: How to we find the pathways that a compound is in?
+		{
+			String queryString = "{p:x<-"+database+"^^compounds,\""+text+"\" instringci x^names, p<-"+database+"^^pathways, x in (compounds-of-pathway p)}";
+			List<Pathway> pathways = Pathway.getPathways(query(queryString));
+			if (pathways != null) {
+				for (Pathway p: pathways) {
+					if (!pathwayMap.containsKey(p.getFrameID()))
+						pathwayMap.put(p.getFrameID(), p);
+				}
+			}
+		}
+*/
+		List<Pathway> pathways = Pathway.getPathways(query(queryString));
+		if (pathways != null) {
+			for (Pathway p: pathways) {
+				if (!pathwayMap.containsKey(p.getFrameID()))
+					pathwayMap.put(p.getFrameID(), p);
+			}
+		}
 
 		return new ArrayList<Pathway>(pathwayMap.values());
 	}
 
-	private String teeInput(InputStream input) {
+	private InputSource teeInput(InputStream input) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-		String s = "";
+		StringBuilder sBuilder = new StringBuilder();
 		String line;
 		try {
 			while ((line = reader.readLine()) != null) {
-				System.out.println(line);
-				s = s + line;
+				// System.out.println(": "+line);
+				sBuilder.append(line);
 			}
 		} catch (Exception e) {
 			logger.error("",e);
 		}
-		return s;
+		InputSource is = new InputSource();
+		is.setCharacterStream(new StringReader(sBuilder.toString()));
+		return is;
 	}
 }

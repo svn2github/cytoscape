@@ -49,7 +49,8 @@ public class BioCycPlugin extends CytoscapePlugin {
 	private BioCycClient wpclient;
 
 	protected static final String WEBSERVICE_URL = "biocyc.webservice.uri";
-	protected static final String DEFAULT_URL = "http://brg-preview.ai.sri.com/";
+	// protected static final String DEFAULT_URL = "http://brg-preview.ai.sri.com/";
+	protected static final String DEFAULT_URL = "http://websvc.biocyc.org/";
 
 	/**
 	 * We don't do much at initialization time

@@ -42,7 +42,7 @@ import cytoscape.logger.CyLogger;
 /**
  * 
  */
-public class Pathway {
+public class Pathway implements Comparable<Pathway> {
 	CyLogger logger;
 
 	List<Reaction> reactionList = null;
@@ -81,6 +81,9 @@ public class Pathway {
 	public List<Pathway> getParents() { return parents; }
 	public List<Pathway> getSuperPathways() { return superPathways; }
 	public List<Reaction> getReactions() { return reactionList; }
+	public int compareTo(Pathway o2) {
+		return frameid.compareTo(o2.getFrameID());
+	}
 	public String toString() {
 		String result = "ID:"+ID+"|OrgID:"+orgid+"|common-name:"+commonName;
 		return result;

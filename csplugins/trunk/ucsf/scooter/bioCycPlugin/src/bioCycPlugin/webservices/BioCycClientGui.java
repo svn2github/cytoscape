@@ -93,25 +93,29 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 
 		setLayout(new FormLayout(
 				"4dlu, pref, 2dlu, fill:pref:grow, 4dlu, pref, 4dlu, pref, 4dlu",
-				"4dlu, pref, 4dlu, fill:pref:grow, 4dlu"
+				"4dlu, pref, 4dlu, pref, 4dlu, fill:pref:grow, 4dlu"
 		));
 		CellConstraints cc = new CellConstraints();
-		add(new JLabel("Search:"), cc.xy(2, 2));
-		add(searchText, cc.xy(4, 2));
-		add(databaseCombo, cc.xy(6, 2));
-		add(searchBtn, cc.xy(8, 2));
-		add(new JScrollPane(resultTable), cc.xyw(2, 4, 7));
+		add(new JLabel("Database:"), cc.xy(2, 2));
+		add(databaseCombo, cc.xy(4, 2));
+		add(new JLabel("Search:"), cc.xy(2, 4));
+		add(searchText, cc.xy(4, 4));
+		add(searchBtn, cc.xy(8, 4));
+		add(new JScrollPane(resultTable), cc.xyw(2, 6, 7));
 	}
 
 	protected void resetDatabases() {
 		List<Database> databases = new ArrayList<Database>();
 		try {
-			databases.addAll(client.listDatabases());
+			if (client.listDatabases() != null)
+				databases.addAll(client.listDatabases());
 		} catch (Exception e) {
 			logger.error("Unable to get databases for BioCyc client", e);
 		}
 
-		databaseCombo.setModel(new DefaultComboBoxModel(databases.toArray()));
+		Object dbArray[] = databases.toArray();
+		Arrays.sort(dbArray);
+		databaseCombo.setModel(new DefaultComboBoxModel(dbArray));
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -119,7 +123,7 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 		if(ACTION_SEARCH.equals(action)) {
 			FindPathwaysByTextParameters request = new FindPathwaysByTextParameters();
 			request.query = searchText.getText();
-			request.db = databaseCombo.getSelectedItem().toString();
+			request.db = ((Database)databaseCombo.getSelectedItem()).getOrgID();
 			try {
 				WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(
 					new CyWebServiceEvent<FindPathwaysByTextParameters>(
