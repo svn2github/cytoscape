@@ -19,14 +19,5 @@
 	<!-- Import Services -->
 	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
 	
-	
-	<!-- Import Default Style. -->
-	<osgi:set id="defaultStyleSet"
-		interface="org.cytoscape.view.vizmap.VisualStyle"
-		cardinality="0..N">
-		<osgi:listener bind-method="addDefaultStyle"
-			unbind-method="removeDefaultStyle" ref="visualMappingManager" />
-
-	</osgi:set>
 
 </beans>

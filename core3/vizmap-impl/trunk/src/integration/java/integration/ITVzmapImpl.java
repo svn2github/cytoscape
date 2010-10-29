@@ -13,11 +13,11 @@ public class ITVzmapImpl extends AbstractIntegrationTester {
 				"org.cytoscape, event-api, 1.0-SNAPSHOT",
 				"org.cytoscape, event-impl, 1.0-SNAPSHOT",
 				"org.cytoscape, model-api, 1.0-SNAPSHOT",
-				"org.cytoscape, integration-test-support, 1.0-SNAPSHOT",
+				"org.cytoscape, integration-test-support, 3.0.0-alpha3-SNAPSHOT",
 				"org.cytoscape, service-util, 1.0-SNAPSHOT",
 				"org.cytoscape, viewmodel-api, 1.0-SNAPSHOT",
 				"org.cytoscape, viewmodel-impl, 1.0-SNAPSHOT",
-				"org.cytoscape, vizmap-api, 1.0-SNAPSHOT",
+				"org.cytoscape, vizmap-api, 3.0.0-alpha2-SNAPSHOT",
 				"org.cytoscape, vizmap-impl, 1.0-SNAPSHOT",
 				"org.cytoscape, presentation-api, 1.0-SNAPSHOT"
 				

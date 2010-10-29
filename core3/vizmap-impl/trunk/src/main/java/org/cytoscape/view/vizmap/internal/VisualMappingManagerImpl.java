@@ -41,8 +41,14 @@ import java.util.Set;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.NullDataType;
+import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.NullVisualProperty;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.events.VisualStyleAboutToBeRemovedEvent;
 import org.cytoscape.view.vizmap.events.VisualStyleAddedEvent;
 
@@ -50,7 +56,8 @@ import org.cytoscape.view.vizmap.events.VisualStyleAddedEvent;
  *
  */
 public class VisualMappingManagerImpl implements VisualMappingManager {
-	
+	private static final String DEFAULT_STYLE_NAME = "Default";
+
 	private VisualStyle defaultStyle;
 
 	private final Map<CyNetworkView, VisualStyle> network2VisualStyleMap;
@@ -58,26 +65,19 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 
 	private final CyEventHelper cyEventHelper;
 
-	public VisualMappingManagerImpl(final CyEventHelper eventHelper) {
-		if(eventHelper == null)
+	public VisualMappingManagerImpl(final CyEventHelper eventHelper,
+			final VisualStyleFactory factory, final VisualLexicon defaultLexicon) {
+		if (eventHelper == null)
 			throw new NullPointerException("CyEventHelper cannot be null");
 
 		this.cyEventHelper = eventHelper;
 
 		visualStyles = new HashSet<VisualStyle>();
 		network2VisualStyleMap = new HashMap<CyNetworkView, VisualStyle>();
-	}
-	
-	/**
-	 * This is for OSGi service listener.
-	 */
-	public void addDefaultStyle(final VisualStyle defaultStyle, Map props) {
-		this.defaultStyle = defaultStyle;
-		visualStyles.add(this.defaultStyle);
-	}
-	
-	public void removeDefaultStyle(final VisualStyle defaultStyle, Map props) {
-		// TODO: support multiple engines!
+
+		this.defaultStyle = factory.getInstance(DEFAULT_STYLE_NAME,
+				defaultLexicon);
+		this.visualStyles.add(defaultStyle);
 	}
 
 	/**
@@ -90,14 +90,15 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	 */
 	@Override
 	public VisualStyle getVisualStyle(CyNetworkView nv) {
-		if(nv == null)
+		if (nv == null)
 			throw new NullPointerException("network view is null.");
-		
-		if(network2VisualStyleMap.containsKey(nv) == false) {
-			if(this.defaultStyle == null)
-				throw new IllegalStateException("No rendering engine is available, and cannot create default style!");
-			
-			// Not registered yet.  Provide default style.
+
+		if (network2VisualStyleMap.containsKey(nv) == false) {
+			if (this.defaultStyle == null)
+				throw new IllegalStateException(
+						"No rendering engine is available, and cannot create default style!");
+
+			// Not registered yet. Provide default style.
 			network2VisualStyleMap.put(nv, defaultStyle);
 			return defaultStyle;
 		}
@@ -114,15 +115,15 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	 */
 	@Override
 	public void setVisualStyle(final VisualStyle vs, final CyNetworkView nv) {
-		if(nv == null)
+		if (nv == null)
 			throw new NullPointerException("Network view is null.");
-		
-		if(vs == null)
+
+		if (vs == null)
 			network2VisualStyleMap.remove(nv);
 		else
 			network2VisualStyleMap.put(nv, vs);
-		
-		if(this.visualStyles.contains(vs) == false)
+
+		if (this.visualStyles.contains(vs) == false)
 			this.visualStyles.add(vs);
 	}
 
@@ -133,16 +134,21 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	 * @param vs
 	 *            DOCUMENT ME!
 	 */
-	@Override public void removeVisualStyle(VisualStyle vs) {
-		if(vs == null)
+	@Override
+	public void removeVisualStyle(VisualStyle vs) {
+		if (vs == null)
 			throw new NullPointerException("Visual Style is null.");
-		if(vs == defaultStyle)
-			throw new IllegalArgumentException("Cannot remove default visual style.");
-		
-		if(this.network2VisualStyleMap.values().contains(vs))
-			throw new IllegalArgumentException("Visual Style is associated with a view and cannot be removed.");
-		
-		cyEventHelper.fireSynchronousEvent(new VisualStyleAboutToBeRemovedEvent(this, vs));
+		if (vs == defaultStyle)
+			throw new IllegalArgumentException(
+					"Cannot remove default visual style.");
+
+		if (this.network2VisualStyleMap.values().contains(vs))
+			throw new IllegalArgumentException(
+					"Visual Style is associated with a view and cannot be removed.");
+
+		cyEventHelper
+				.fireSynchronousEvent(new VisualStyleAboutToBeRemovedEvent(
+						this, vs));
 		visualStyles.remove(vs);
 		vs = null;
 	}
@@ -153,7 +159,8 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	 * 
 	 * @param vs
 	 */
-	@Override public void addVisualStyle(final VisualStyle vs) {
+	@Override
+	public void addVisualStyle(final VisualStyle vs) {
 		this.visualStyles.add(vs);
 		cyEventHelper.fireSynchronousEvent(new VisualStyleAddedEvent(this, vs));
 	}

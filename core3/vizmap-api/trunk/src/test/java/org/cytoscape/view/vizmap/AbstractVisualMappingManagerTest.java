@@ -11,7 +11,6 @@ import org.junit.Test;
 public abstract class AbstractVisualMappingManagerTest {
 
 	protected VisualMappingManager vmm;
-	protected VisualStyle defaultStyle;
 
 	@Test
 	public void testVisualMappingManager() {
@@ -32,14 +31,15 @@ public abstract class AbstractVisualMappingManagerTest {
 		
 		//Should contain default style.
 		assertEquals(1, vmm.getAllVisualStyles().size());
-		assertEquals(defaultStyle, vmm.getDefaultVisualStyle());
+		assertNotNull(vmm.getAllVisualStyles().iterator().next());
+		assertNotNull(vmm.getDefaultVisualStyle());
 		
 		vmm.setVisualStyle(style1, view1);
 		vmm.addVisualStyle(style2);
 		vmm.setVisualStyle(style2, view2);
 		final VisualStyle targetStyle = vmm.getVisualStyle(view3);
 		
-		assertEquals(defaultStyle, targetStyle);
+		assertEquals(vmm.getDefaultVisualStyle(), targetStyle);
 		assertEquals(3, vmm.getAllVisualStyles().size());
 		
 		vmm.setVisualStyle(style3, view3);

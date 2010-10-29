@@ -4,24 +4,25 @@ package org.cytoscape.view.vizmap;
 import static org.mockito.Mockito.*;
 
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.presentation.property.NullVisualProperty;
 import org.cytoscape.view.vizmap.internal.VisualMappingManagerImpl;
+import org.cytoscape.view.vizmap.internal.VisualStyleFactoryImpl;
 import org.junit.After;
 import org.junit.Before;
 
 public class VisualMappingManagerTest extends AbstractVisualMappingManagerTest {
-
-	
 	
 	@Before
 	public void setUp() throws Exception {
 		final CyEventHelper eventHelper = mock(CyEventHelper.class);
-		defaultStyle = mock(VisualStyle.class);
-		when(defaultStyle.getTitle()).thenReturn("DEFAULT");
+		final VisualStyleFactory factory = mock(VisualStyleFactory.class);
+		final VisualStyle dummyDefaultStyle = mock(VisualStyle.class);
+		final VisualLexicon defaultLexicon = mock(VisualLexicon.class);
 		
-		vmm = new VisualMappingManagerImpl(eventHelper);
+		when(factory.getInstance("Default", defaultLexicon)).thenReturn(dummyDefaultStyle);
 		
-		// In the real implementations, this will be done through OSGi.
-		((VisualMappingManagerImpl)vmm).addDefaultStyle(defaultStyle, null);
+		vmm = new VisualMappingManagerImpl(eventHelper, factory, defaultLexicon);
 	}
 
 	@After
