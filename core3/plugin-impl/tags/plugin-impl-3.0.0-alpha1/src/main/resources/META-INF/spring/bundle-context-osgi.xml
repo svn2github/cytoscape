@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+	default-lazy-init="false">
+
+	<!-- 
+	     Keep services in alphabetical order to maintain sanity and
+	     make service reference names the class name with a lower case
+		 first letter and with "Ref" as a suffix. 
+	 -->
+
+	<osgi:reference id="cyDataTableFactoryRef" 
+	    interface="org.cytoscape.model.CyTableFactory">
+	</osgi:reference>
+
+	<osgi:reference id="cyEventHelperRef" 
+		interface="org.cytoscape.event.CyEventHelper">
+	</osgi:reference>
+<!--
+	<osgi:reference id="cyLayoutsRef" 
+		interface="org.cytoscape.view.layout.CyLayouts">
+	</osgi:reference>
+-->
+	<osgi:reference id="cyNetworkFactoryRef" 
+	    interface="org.cytoscape.model.CyNetworkFactory">
+	</osgi:reference>
+	
+	<osgi:reference id="cyNetworkManagerRef" 
+		interface="org.cytoscape.model.CyNetworkManager">
+	</osgi:reference>
+	
+	<osgi:reference id="cyNetworkViewManagerRef" 
+		interface="org.cytoscape.view.model.CyNetworkViewManager">
+	</osgi:reference>
+	
+	<osgi:reference id="cyApplicationManagerRef" 
+		interface="org.cytoscape.session.CyApplicationManager">
+	</osgi:reference>
+
+	<osgi:reference id="cyNetworkViewFactoryRef" 
+	    interface="org.cytoscape.view.model.CyNetworkViewFactory">
+	</osgi:reference>
+
+	<osgi:reference id="cyRootNetworkFactoryRef" 
+		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory">
+	</osgi:reference>
+
+	<osgi:reference id="cySessionManagerRef" 
+		interface="org.cytoscape.session.CySessionManager">
+	</osgi:reference>
+
+	<osgi:reference id="presentationFactoryRef" 
+		interface="org.cytoscape.view.presentation.RenderingEngineFactory">
+	</osgi:reference>
+
+	<osgi:reference id="taskManagerRef" 
+	    interface="org.cytoscape.work.TaskManager">
+	</osgi:reference>
+
+	<osgi:reference id="visualMappingManagerRef" 
+		interface="org.cytoscape.view.vizmap.VisualMappingManager">
+	</osgi:reference>
+
+
+    <osgi:service id="pluginLoaderTaskFactoryService" ref="pluginLoaderTaskFactory"
+	        interface="org.cytoscape.work.TaskFactory">
+        <osgi:service-properties>
+	            <entry key="title" value="Load Plugin..." />
+	            <entry key="preferredMenu" value="File.Import" />
+        </osgi:service-properties>
+    </osgi:service>
+
+
+</beans>
