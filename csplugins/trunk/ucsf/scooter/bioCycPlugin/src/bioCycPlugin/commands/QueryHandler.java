@@ -46,7 +46,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -90,7 +92,7 @@ public class QueryHandler {
 		logger.info("Executing query: "+baseUrl+"xmlquery?query="+queryString);
 		try {
 			queryString = baseUrl+"xmlquery?query="+URLEncoder.encode(queryString, "UTF-8");
-			System.out.println("Executing query: "+queryString);
+			// System.out.println("Executing query: "+queryString);
 			input = URLUtil.getBasicInputStream(new URL(queryString));
 			// result = builder.parse(teeInput(input));
 			result = builder.parse(input);
@@ -135,34 +137,57 @@ public class QueryHandler {
 	}
 
 	public List<Pathway> searchForPathways(String database, String text) {
-		// We do this iteratively.  First, we want to find all genes with that text, then
+		Map<String,Pathway> pathwayMap = new HashMap<String,Pathway>();
+		// We do this iteratively.  First, do a direct match on pathways,
+		// then we to find all genes with that text, then
 		// all proteins.  Then we'll get all of the pathways that match those genes.
-		List<Gene> geneList = new ArrayList<Gene>();
-		String queryString = "[x:x<-"+database+"^^genes,\""+text+"\" instringci x^names]";
-		List<Gene>genes = Gene.getGenes(query(queryString));
-		if (genes != null) geneList.addAll(genes);
-
-		// OK, now that we have the first set, get all of the proteins
-		queryString = "[x:x<-"+database+"^^proteins,\""+text+"\" instringci x^names]";
-		List<Protein>proteins = Protein.getProteins(query(queryString));
-		if (proteins != null) {
-			for (Protein p: proteins) {
-				if (p.getGene() != null) geneList.add(p.getGene());
+		{ 
+			String queryString = "[x:x<-"+database+"^^pathways,\""+text+"\" instringci x^names]";
+			List<Pathway>pathways = Pathway.getPathways(query(queryString));
+			if (pathways != null) {
+				for (Pathway p: pathways) {
+					if (!pathwayMap.containsKey(p.getFrameID()))
+						pathwayMap.put(p.getFrameID(), p);
+				}
 			}
 		}
-
-		// Finally, we've got a list of genes based on our query.  If the list of genes
-		// is not empty, query the database and get all of the pathways
-		List<Pathway> pathwayList = new ArrayList<Pathway>();
-		for (Gene g: geneList) {
-			List<Pathway> pathways = Pathway.getPathways(findPathways(database, g.getFrameID()));
-			if (pathways != null)
-				pathwayList.addAll(pathways);
+		// Now look for all genes that match.  We do this by first finding matching genes,
+		// then finding the genes for the proteins that match
+		{
+			Map<String,Gene> geneList = new HashMap<String,Gene>();
+			String queryString = "[x:x<-"+database+"^^genes,\""+text+"\" instringci x^names]";
+			List<Gene>genes = Gene.getGenes(query(queryString));
+			if (genes != null) {
+				for (Gene g: genes) {
+					geneList.put(g.getFrameID(), g);
+				}
+			}
+			// OK, now that we have the first set, get all of the proteins
+			queryString = "[x:x<-"+database+"^^proteins,\""+text+"\" instringci x^names]";
+			List<Protein>proteins = Protein.getProteins(query(queryString));
+			if (proteins != null) {
+				for (Protein p: proteins) {
+					if (p.getGene() != null && !geneList.containsKey(p.getGene().getFrameID())) {
+						geneList.put(p.getGene().getFrameID(), p.getGene());
+					}
+				}
+			}
+			// Finally, we've got a list of genes based on our query.  If the list of genes
+			// is not empty, query the database and get all of the pathways
+			for (String g: geneList.keySet()) {
+				List<Pathway> pathways = Pathway.getPathways(findPathways(database, g));
+				if (pathways != null) {
+					for (Pathway p: pathways) {
+						if (!pathwayMap.containsKey(p.getFrameID()))
+							pathwayMap.put(p.getFrameID(), p);
+					}
+				}
+			}
 		}
 
 		// TODO: How to we find the pathways that a compound is in?
 
-		return pathwayList;
+		return new ArrayList<Pathway>(pathwayMap.values());
 	}
 
 	private String teeInput(InputStream input) {

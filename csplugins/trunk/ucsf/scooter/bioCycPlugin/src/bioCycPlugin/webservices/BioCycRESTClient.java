@@ -70,7 +70,6 @@ public class BioCycRESTClient {
 	}
 
 	public List<Pathway> findPathwaysByText(String query, String db) {
-		System.out.println("findPathwaysByTest("+query+","+db+")");
 		return handler.searchForPathways(db, query);
 		// List<Pathway>pathways = new ArrayList<Pathway>();
 		// addAllPathways(pathways, Pathway.getPathways(handler.findPathways(db, query)));
@@ -79,7 +78,6 @@ public class BioCycRESTClient {
 
 	private void addAllPathways(List<Pathway>pList, List<Pathway> p2List) {
 		if (p2List != null) {
-			System.out.println("Adding "+p2List.size()+" pathways");
 			pList.addAll(p2List);
 		}
 	}
