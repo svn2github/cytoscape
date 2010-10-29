@@ -14,8 +14,7 @@
 
 	<!-- Setting (property) file for VizMapper GUI. This bean can be injected 
 		as a regular Java Property object. -->
-	<util:properties id="vizmapUIResource"
-		location="/META-INF/spring/config/vizmapui.properties" />
+	<util:properties id="vizmapUIResource" location="/META-INF/spring/config/vizmapui.properties" />
 
 	<context:property-placeholder
 		location="/META-INF/spring/config/vizmapui.properties" />

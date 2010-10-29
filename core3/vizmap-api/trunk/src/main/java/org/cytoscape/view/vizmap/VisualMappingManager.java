@@ -73,7 +73,9 @@ public interface VisualMappingManager {
 	 * @param networkViewModel
 	 *            Target network view
 	 * 
-	 * @return VisualStyle associated with the network view model.
+	 * @return VisualStyle associated with the network view model. This is
+	 *         always non-null value. If there is no mapping from given view
+	 *         model to a style, then default style will be used.
 	 */
 	VisualStyle getVisualStyle(final CyNetworkView networkViewModel);
 
@@ -84,21 +86,28 @@ public interface VisualMappingManager {
 	 * 
 	 */
 	Set<VisualStyle> getAllVisualStyles();
-	
-	
+
 	/**
 	 * Add a new {@link VisualStyle} to this manager.
 	 * 
-	 * @param visualStyle new visual style to be registered.
+	 * @param visualStyle
+	 *            new visual style to be registered.
 	 */
 	void addVisualStyle(final VisualStyle visualStyle);
-	
-	
+
 	/**
 	 * Remove a VisualStyle from this manager.
 	 * 
-	 * @param visualStyle VisualStyle to be removed.
+	 * @param visualStyle
+	 *            VisualStyle to be removed.
 	 */
 	void removeVisualStyle(VisualStyle visualStyle);
+
+	/**
+	 * Return default {@link VisualStyle}.  This is just an empty visual style.
+	 * 
+	 * @return default Visual Style.
+	 */
+	VisualStyle getDefaultVisualStyle();
 
 }

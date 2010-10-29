@@ -18,6 +18,7 @@
 
 	<context:annotation-config />
 
+	
 	<bean id="visualMappingManager"
 		class="org.cytoscape.view.vizmap.internal.VisualMappingManagerImpl">
 		<constructor-arg ref="cyEventHelperServiceRef" />

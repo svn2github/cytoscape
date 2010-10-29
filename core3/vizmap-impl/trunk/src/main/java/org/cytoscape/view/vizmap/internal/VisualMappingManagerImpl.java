@@ -50,6 +50,8 @@ import org.cytoscape.view.vizmap.events.VisualStyleAddedEvent;
  *
  */
 public class VisualMappingManagerImpl implements VisualMappingManager {
+	
+	private VisualStyle defaultStyle;
 
 	private final Map<CyNetworkView, VisualStyle> network2VisualStyleMap;
 	private final Set<VisualStyle> visualStyles;
@@ -57,13 +59,25 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	private final CyEventHelper cyEventHelper;
 
 	public VisualMappingManagerImpl(final CyEventHelper eventHelper) {
-		if (eventHelper == null)
-			throw new IllegalArgumentException("CyEventHelper cannot be null");
+		if(eventHelper == null)
+			throw new NullPointerException("CyEventHelper cannot be null");
 
 		this.cyEventHelper = eventHelper;
 
 		visualStyles = new HashSet<VisualStyle>();
 		network2VisualStyleMap = new HashMap<CyNetworkView, VisualStyle>();
+	}
+	
+	/**
+	 * This is for OSGi service listener.
+	 */
+	public void addDefaultStyle(final VisualStyle defaultStyle, Map props) {
+		this.defaultStyle = defaultStyle;
+		visualStyles.add(this.defaultStyle);
+	}
+	
+	public void removeDefaultStyle(final VisualStyle defaultStyle, Map props) {
+		// TODO: support multiple engines!
 	}
 
 	/**
@@ -78,9 +92,15 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	public VisualStyle getVisualStyle(CyNetworkView nv) {
 		if(nv == null)
 			throw new NullPointerException("network view is null.");
-		if(network2VisualStyleMap.containsKey(nv) == false)
-			throw new IllegalArgumentException("No such network view is registered in this manager.");
 		
+		if(network2VisualStyleMap.containsKey(nv) == false) {
+			if(this.defaultStyle == null)
+				throw new IllegalStateException("No rendering engine is available, and cannot create default style!");
+			
+			// Not registered yet.  Provide default style.
+			network2VisualStyleMap.put(nv, defaultStyle);
+			return defaultStyle;
+		}
 		return network2VisualStyleMap.get(nv);
 	}
 
@@ -116,6 +136,8 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	@Override public void removeVisualStyle(VisualStyle vs) {
 		if(vs == null)
 			throw new NullPointerException("Visual Style is null.");
+		if(vs == defaultStyle)
+			throw new IllegalArgumentException("Cannot remove default visual style.");
 		
 		if(this.network2VisualStyleMap.values().contains(vs))
 			throw new IllegalArgumentException("Visual Style is associated with a view and cannot be removed.");
@@ -144,5 +166,10 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	@Override
 	public Set<VisualStyle> getAllVisualStyles() {
 		return visualStyles;
+	}
+
+	@Override
+	public VisualStyle getDefaultVisualStyle() {
+		return defaultStyle;
 	}
 }

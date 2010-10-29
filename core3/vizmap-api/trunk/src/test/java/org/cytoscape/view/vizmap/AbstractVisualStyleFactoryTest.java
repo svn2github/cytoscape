@@ -29,12 +29,12 @@ public abstract class AbstractVisualStyleFactoryTest {
 		assertNotNull(lexicon);
 		
 		final String title = "original style";
-		final VisualStyle style = factory.createVisualStyle(title, lexicon);
+		final VisualStyle style = factory.getInstance(title, lexicon);
 		
 		assertNotNull(style);
 		assertEquals(lexicon, style.getVisualLexicon());
 		
-		final VisualStyle copyStyle = factory.createVisualStyle(style);
+		final VisualStyle copyStyle = factory.getInstance(style);
 		assertNotNull(copyStyle);
 
 		assertEquals(title, copyStyle.getTitle());

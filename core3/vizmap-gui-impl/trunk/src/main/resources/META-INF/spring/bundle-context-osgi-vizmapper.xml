@@ -5,6 +5,10 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
+
+	<!-- Export Ding's default VS as service. -->
+	<osgi:service id="defaultVSService" ref="defaultVS" auto-export="interfaces" />
+	
 	<!-- Export Service Listeners -->
 	<osgi:service id="selectedVisualStyleManagerService" ref="selectedVisualStyleManager" auto-export="interfaces" />
 	

@@ -27,7 +27,7 @@ public class VisualStyleTest extends AbstractVisualStyleTest {
 				helperMock);
 		originalTitle = "Style 1";
 		newTitle = "Style 2";
-		style = visualStyleFactory.createVisualStyle(originalTitle, lexicon);
+		style = visualStyleFactory.getInstance(originalTitle, lexicon);
 	}
 
 	@After

@@ -18,7 +18,7 @@ public interface VisualStyleFactory {
 	 *
 	 * @return New VisualStyle object.
 	 */
-	VisualStyle createVisualStyle(final String title, final VisualLexicon lexicon);
+	VisualStyle getInstance(final String title, final VisualLexicon lexicon);
 	
 	
 	/**
@@ -30,6 +30,6 @@ public interface VisualStyleFactory {
 	 * @return New VisualStyle copied from the original.
 	 * 
 	 */
-	VisualStyle createVisualStyle(final VisualStyle original);
+	VisualStyle getInstance(final VisualStyle original);
 
 }
