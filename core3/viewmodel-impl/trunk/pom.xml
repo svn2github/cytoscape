@@ -158,12 +158,12 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>service-util</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 
 		<!-- for spring integration testing -->
@@ -174,35 +174,28 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>integration-test-support</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>model-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>model-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
