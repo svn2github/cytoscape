@@ -76,6 +76,9 @@ public class DiscreteMapping extends AbstractMapping {
 	 * @param mapType
 	 *            Map Type, ObjectMapping.EDGE_MAPPING or
 	 *            ObjectMapping.NODE_MAPPING.
+	 *            
+	 * @deprecated 	Use new constructor instead.  Will be removed in 10/2011.
+	 * 				Controlling attribute name is always required, and now it's a part of constructor argument.
 	 */
 	@Deprecated
 	public DiscreteMapping(Object defObj, byte mapType) {
@@ -92,12 +95,22 @@ public class DiscreteMapping extends AbstractMapping {
 	 * @param mapType
 	 *            Map Type, ObjectMapping.EDGE_MAPPING or
 	 *            ObjectMapping.NODE_MAPPING.
+	 *            
+	 * @deprecated 	Use new constructor instead.  Will be removed in 10/2011.
+	 * 				Controlling attribute name is always required, and now it's a part of constructor argument.
 	 */
 	@Deprecated
 	public DiscreteMapping(Object defObj, String attrName, byte mapType) {
 		this((Class<?>)defObj.getClass(), attrName);
 	}
 
+	
+	/**
+	 * Constructor for Discrete mapping.
+	 * 
+	 * @param rangeClass Mapped value type.
+	 * @param controllingAttrName attribute name used in this mapping.
+	 */
 	public DiscreteMapping(final Class<?> rangeClass,
 			final String controllingAttrName) {
 		super(rangeClass, controllingAttrName);

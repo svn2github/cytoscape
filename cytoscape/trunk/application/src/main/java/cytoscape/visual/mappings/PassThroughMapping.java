@@ -84,6 +84,9 @@ public class PassThroughMapping extends AbstractMapping {
 	 * 
 	 *            Will be removed in the next release (2.8). Map Type is not in
 	 *            use.
+	 *            
+	 * @deprecated 	Use new constructor instead.  Will be removed in 10/2011.
+	 * 				Controlling attribute name is always required, and now it's a part of constructor argument.
 	 */
 	@Deprecated
 	public PassThroughMapping(final Object defaultObj, final byte mapType) {
@@ -95,6 +98,9 @@ public class PassThroughMapping extends AbstractMapping {
 	 * 
 	 * @param defaultObj
 	 *            DOCUMENT ME!
+	 * 
+	 * @deprecated 	Use new constructor instead.  Will be removed in 10/2011.
+	 * 				Controlling attribute name is always required, and now it's a part of constructor argument.
 	 */
 	@Deprecated
 	public PassThroughMapping(final Object defaultObj) {
@@ -102,6 +108,14 @@ public class PassThroughMapping extends AbstractMapping {
 	}
 	
 	
+	/**
+	 * 
+	 * @param defaultObj
+	 * @param attrName
+	 * 
+	 * @deprecated 	Use new constructor instead.  Will be removed in 10/2011.
+	 * 				Controlling attribute name is always required, and now it's a part of constructor argument.
+	 */
 	@Deprecated
 	public PassThroughMapping(Object defaultObj, String attrName) {
 		this((Class<?>)defaultObj.getClass(), attrName);
@@ -112,11 +126,11 @@ public class PassThroughMapping extends AbstractMapping {
 	 * 
 	 * @param defaultObj
 	 *            DOCUMENT ME!
-	 * @param attrName
+	 * @param controllingAttributeName
 	 *            DOCUMENT ME!
 	 */
-	public PassThroughMapping(final Class<?> rangeClass, final String attrName) {
-		super(rangeClass, attrName);
+	public PassThroughMapping(final Class<?> rangeClass, final String controllingAttributeName) {
+		super(rangeClass, controllingAttributeName);
 		this.acceptedClasses = ACCEPTED_CLASS;
 	}
 

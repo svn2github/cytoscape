@@ -82,6 +82,9 @@ public class ContinuousMapping extends
 	 * @param mapType
 	 *            Type of mapping, one of {@link ObjectMapping#EDGE_MAPPING} or
 	 *            {@link ObjectMapping#NODE_MAPPING}
+	 *            
+	 * @deprecated 	Use new constructor instead.  Will be removed in 10/2011.
+	 * 				Controlling attribute name is always required, and now it's a part of constructor argument.
 	 */
 	@Deprecated
 	public ContinuousMapping(Object defaultObj, byte mapType)
