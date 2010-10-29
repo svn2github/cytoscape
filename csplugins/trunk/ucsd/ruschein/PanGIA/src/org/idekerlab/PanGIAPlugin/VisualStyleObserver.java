@@ -45,7 +45,7 @@ public class VisualStyleObserver implements PropertyChangeListener {
 	
 	// Name of the network attribute for checking network type.
 	protected static final String NETWORK_TYPE_ATTRIBUTE_NAME = "Network Type";
-	protected static final String PARENT_MODULE_ATTRIBUTE_NAME = "Parent Module";
+	public static final String PARENT_MODULE_ATTRIBUTE_NAME = "Parent Module";
 	
 	private static final URL visualStypePropLocation = PanGIAPlugin.class.getResource("/resources/PanGIAVS.props");
 	
@@ -57,12 +57,17 @@ public class VisualStyleObserver implements PropertyChangeListener {
 	
 	private Map<String, VisualStyle> styleMap;
 
-	private CyNetworkView overviewView;
+	private static CyNetworkView overviewView;
 	
 	VisualStyleObserver() {
 		styleMap = new HashMap<String, VisualStyle>();
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 		restoreVS();
+	}
+	
+	public static void setOverviewView(CyNetworkView overviewView)
+	{
+		VisualStyleObserver.overviewView = overviewView;
 	}
 	
 	
@@ -180,7 +185,7 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				view.redrawGraph(true, true);
 			}else if (type.toString().equals(NetworkType.DETAILED.name()))
 			{
-				DetailedViewLayout.layout(view, overviewView);
+				//DetailedViewLayout.layout(view, overviewView);
 				
 			}else view.redrawGraph(false, true);
 		}

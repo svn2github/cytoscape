@@ -22,6 +22,8 @@ public class DetailedNetworkCreator
 			return;
 		}
 		
+		VisualStyleObserver.setOverviewView(view);
+		
 		CyNetwork origPhysNetwork = PanGIAPlugin.output.getOrigPhysNetwork();
 		CyNetwork origGenNetwork = PanGIAPlugin.output.getOrigGenNetwork();
 		
@@ -69,7 +71,9 @@ public class DetailedNetworkCreator
 		}
 
 		CyNetworkView theView = Cytoscape.createNetworkView(detailedNetwork);
-			
+		
+		DetailedViewLayout.layout(theView, view);
+		
 		theView.setVisualStyle(VisualStyleObserver.VS_MODULE_NAME);
 		Cytoscape.getVisualMappingManager().setVisualStyle(Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VisualStyleObserver.VS_MODULE_NAME));
 		theView.redrawGraph(false, true);	
