@@ -575,7 +575,7 @@ nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Map
 nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.bv1.equal=30.0
 nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.bv1.greater=1.0
 nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.bv1.lesser=30.0
-nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.controller=PanGIA.SQRT of member count
+nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.controller=PanGIA.SQRT of module size
 nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.interpolator=LinearNumberToNumberInterpolator
 nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.mapping.type=ContinuousMapping
 nodeFontSizeCalculator.Complex\ Overview\ Style-Node\ Font\ Size-Continuous\ Mapper.visualPropertyType=NODE_FONT_SIZE
@@ -818,7 +818,7 @@ nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper
 nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.bv2.equal=250.0
 nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.bv2.greater=1.0
 nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.bv2.lesser=250.0
-nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.controller=PanGIA.SQRT of member count
+nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.controller=PanGIA.SQRT of module size
 nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.interpolator=LinearNumberToNumberInterpolator
 nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.mapping.type=ContinuousMapping
 nodeUniformSizeCalculator.Complex\ Overview\ Style-Node\ Size-Continuous\ Mapper.visualPropertyType=NODE_SIZE
