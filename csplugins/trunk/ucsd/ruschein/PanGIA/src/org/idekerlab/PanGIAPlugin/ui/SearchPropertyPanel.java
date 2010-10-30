@@ -565,7 +565,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeFilteringPanel.add(pValueThresholdLabel, gridBagConstraints);
          */
         
-        edgeFilterSliderLabels.setText("More                               Less");
+        edgeFilterSliderLabels.setText("Less                          More");
         edgeFilterSliderLabels.setToolTipText("Strength of the edge filter. (P=1 returns all edges)");
         edgeFilterSliderLabels.setFont(edgeFilterSliderLabels.getFont().deriveFont(12.0f));
         edgeFilterSliderLabels.setEnabled(false);
@@ -579,9 +579,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeFilterSlider.setToolTipText("Strength of the edge filter. (P=1 returns all edges)");
         edgeFilterSlider.setPreferredSize(new java.awt.Dimension(200, 25));
         edgeFilterSlider.setExtent(0);
-        edgeFilterSlider.setMinimum(0);
-        edgeFilterSlider.setMaximum(99);
-        edgeFilterSlider.setValue(90);
+        edgeFilterSlider.setMinimum(1);
+        edgeFilterSlider.setMaximum(100);
+        edgeFilterSlider.setValue(10);
         edgeFilterSlider.setMajorTickSpacing(10);
         edgeFilterSlider.setMinorTickSpacing(5);
         edgeFilterSlider.setPaintLabels(false);
@@ -907,7 +907,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	{
 		if (!edgeFilterSliderEventLock)
 		{
-			edgeFilterTextField.setText(String.valueOf((100-edgeFilterSlider.getValue())/100.0));
+			edgeFilterTextField.setText(String.valueOf((edgeFilterSlider.getValue())/100.0));
 			updateSearchButtonState();
 		}
 	}
@@ -927,7 +927,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		{
 			double val = Double.valueOf(edgeFilterTextField.getText());
 			edgeFilterSliderEventLock = true;
-			edgeFilterSlider.setValue((int)Math.round((1-val)*100));
+			edgeFilterSlider.setValue((int)Math.round(val*100));
 			edgeFilterSliderEventLock = false;
 			//edgeFilterTextField.setText(String.valueOf((int)Math.round(val)));
 		} catch (Exception e){}
