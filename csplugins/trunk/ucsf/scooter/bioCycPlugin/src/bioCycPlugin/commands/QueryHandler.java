@@ -139,72 +139,22 @@ public class QueryHandler {
 		}
 	}
 
-	public List<Pathway> andPathways(List<Pathway>a, List<Pathway>b) {
+	public Map<String, Pathway> andPathways(Map<String, Pathway>pathways1, List<Pathway>pathways2) {
+		return null;
 	}
 
-	public List<Pathway> orPathways(List<Pathway>pathways1, List<Pathway>pathways2) {
-		for (Pathway p: pathways2) {
-			if (!pathways1.contains(p))
-				pathways1.add(p);
-		}
-		return pathways1;
-
+	public Map<String, Pathway> orPathways(Map<String, Pathway>pathways1, List<Pathway>pathways2) {
+		return null;
 	}
 
 	public List<Pathway> searchForPathways(String database, String text) {
 		Map<String,Pathway> pathwayMap = new HashMap<String,Pathway>();
-		// We do this iteratively.  First, do a direct match on pathways,
-		// then we to find all genes with that text, then
-		// all proteins.  Then we'll get all of the pathways that match those genes.
-		String queryString = "{y: y<- [x:x<-"+database+"^^pathways,\""+text+"\" instringci x^names]";
-		queryString += " ++ [x:x<-"+database+"^^genes,\""+text+"\" instringci x^names]";
-		queryString += " ++ {p:x<-"+database+"^^proteins,\""+text+"\" instringci x^names, g<-genes-of-protein(x), p<-"+database+"^^pathways, g in (pathway-to-genes p)}";
-		queryString += " ++ {p:x<-"+database+"^^compounds,\""+text+"\" instringci x^names, p<-"+database+"^^pathways, x in (compounds-of-pathway p)} }";
-/*
-		{ 
-			String queryString = "[x:x<-"+database+"^^pathways,\""+text+"\" instringci x^names]";
-			List<Pathway>pathways = Pathway.getPathways(query(queryString));
-			if (pathways != null) {
-				for (Pathway p: pathways) {
-					if (!pathwayMap.containsKey(p.getFrameID()))
-						pathwayMap.put(p.getFrameID(), p);
-				}
-			}
-		}
-		// Now look for all genes that match.  We do this by first finding matching genes,
-		// then finding the genes for the proteins that match
-		{
-			Map<String,Gene> geneList = new HashMap<String,Gene>();
-			String queryString = "[x:x<-"+database+"^^genes,\""+text+"\" instringci x^names]";
-			List<Gene>genes = Gene.getGenes(query(queryString));
-			if (genes != null) {
-				for (Gene g: genes) {
-					geneList.put(g.getFrameID(), g);
-				}
-			}
-			// OK, now that we have the first set, get all of the proteins
-			queryString = "{p:x<-"+database+"^^proteins,\""+text+"\" instringci x^names, g<-genes-of-protein(x), p<-"+database+"^^pathways, g in (pathway-to-genes p)}";
 
-			List<Pathway> pathways = Pathway.getPathways(query(queryString));
-			if (pathways != null) {
-				for (Pathway p: pathways) {
-					if (!pathwayMap.containsKey(p.getFrameID()))
-						pathwayMap.put(p.getFrameID(), p);
-				}
-			}
-		}
+		String queryString = "{y: y<- "+pathwayQuery(database, text)+ " ++ " +
+		                     pathwaysWithGeneQuery(database, text) + " ++ " +
+		                     pathwaysWithProteinQuery(database, text) + " ++ " +
+		                     pathwaysWithCompoundQuery(database, text) + " }";
 
-		{
-			String queryString = "{p:x<-"+database+"^^compounds,\""+text+"\" instringci x^names, p<-"+database+"^^pathways, x in (compounds-of-pathway p)}";
-			List<Pathway> pathways = Pathway.getPathways(query(queryString));
-			if (pathways != null) {
-				for (Pathway p: pathways) {
-					if (!pathwayMap.containsKey(p.getFrameID()))
-						pathwayMap.put(p.getFrameID(), p);
-				}
-			}
-		}
-*/
 		List<Pathway> pathways = Pathway.getPathways(query(queryString));
 		if (pathways != null) {
 			for (Pathway p: pathways) {
@@ -214,6 +164,49 @@ public class QueryHandler {
 		}
 
 		return new ArrayList<Pathway>(pathwayMap.values());
+	}
+
+	public String pathwayQuery(String database, String text) {
+		return objectQuery("pathways", database, text);
+	}
+
+	public String geneQuery(String database, String text) {
+		return objectQuery("genes", database, text);
+	}
+
+	public String proteinQuery(String database, String text) {
+		return objectQuery("proteins", database, text);
+	}
+
+	public String compoundQuery(String database, String text) {
+		return objectQuery("compounds", database, text);
+	}
+
+	public String pathwaysWithGeneQuery(String database, String text) {
+		if (text == null || text.length() == 0)
+			return "[p:x<-"+database+"^^genes, p<-"+database+"^^pathways, x in (pathway-to-genes p)]";
+		return "[p:x<-"+database+"^^genes,\""+text+"\" instringci x^names, p<-"+database+"^^pathways, x in (pathway-to-genes p)]";
+	}
+
+	public String pathwaysWithProteinQuery(String database, String text) {
+		if (text == null || text.length() == 0)
+			return "{p:x<-"+database+"^^proteins, g<-genes-of-protein(x), p<-"+ database+"^^pathways, g in (pathway-to-genes p)}";
+		return "{p:x<-"+database+"^^proteins,\""+text+"\" instringci x^names, g<-genes-of-protein(x), p<-"+
+		        database+"^^pathways, g in (pathway-to-genes p)}";
+	}
+
+	public String pathwaysWithCompoundQuery(String database, String text) {
+		if (text == null || text.length() == 0)
+			return "{p:x<-"+database+"^^compounds, p<-"+database+"^^pathways, x in (compounds-of-pathway p)}";
+		return "{p:x<-"+database+"^^compounds,\""+text+"\" instringci x^names, p<-"+
+		        database+"^^pathways, x in (compounds-of-pathway p)}";
+	}
+
+	private String objectQuery (String object, String database, String text) {
+		String queryString = "[x:x<-"+database+"^^"+object;
+		if (text == null || text.length() == 0)
+			return queryString + "]";
+		return queryString + ",\""+text+"\" instringci x^names]";
 	}
 
 	private InputSource teeInput(InputStream input) {

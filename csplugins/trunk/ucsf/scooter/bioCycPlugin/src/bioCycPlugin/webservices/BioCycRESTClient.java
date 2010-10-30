@@ -35,7 +35,9 @@ package bioCycPlugin.webservices;
 import cytoscape.logger.CyLogger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import bioCycPlugin.commands.QueryHandler;
 import bioCycPlugin.model.Database;
@@ -51,6 +53,8 @@ import bioCycPlugin.model.Reaction;
 public class BioCycRESTClient {
 	CyLogger logger;
 	QueryHandler handler;
+
+	enum Operator {AND, OR};
 
 	public BioCycRESTClient(String urlString, CyLogger logger) {
 		this.logger = logger;
@@ -70,15 +74,62 @@ public class BioCycRESTClient {
 	}
 
 	public List<Pathway> findPathwaysByText(String query, String db) {
-		return handler.searchForPathways(db, query);
-		// List<Pathway>pathways = new ArrayList<Pathway>();
-		// addAllPathways(pathways, Pathway.getPathways(handler.findPathways(db, query)));
-		// return pathways;
+
+		// Split query into words
+		String words[] = query.split(" ");
+
+		
+		Operator op = Operator.OR;
+		boolean foundOp = false;
+		Map<String, Pathway> opResults = new HashMap<String, Pathway>();
+
+		for (String term: words) {
+			if (term.equals("AND")) {
+				op = Operator.AND;
+				foundOp = true;
+				continue;
+			}
+
+			if (term.equals("OR")) {
+				op = Operator.OR;
+				foundOp = true;
+				continue;
+			}
+
+			if (!foundOp) {
+				op = Operator.OR;
+			}
+			foundOp = false;
+
+			List<Pathway> resultMap = handler.searchForPathways(db, term);
+			switch (op) {
+			case OR:
+				combineResultsOR(opResults, resultMap);
+				break;
+			case AND:
+				combineResultsAND(opResults, resultMap);
+				break;
+			}
+		}
+
+		List<Pathway> list = new ArrayList<Pathway>();
+		list.addAll(opResults.values());
+		return list;
 	}
 
-	private void addAllPathways(List<Pathway>pList, List<Pathway> p2List) {
-		if (p2List != null) {
-			pList.addAll(p2List);
+	private void combineResultsOR(Map<String, Pathway> dest, List<Pathway> source) {
+		for (Pathway p: source) {
+			if (!dest.containsKey(p.getFrameID())) {
+				dest.put(p.getFrameID(), p);
+			}
+		}
+	}
+
+	private void combineResultsAND(Map<String, Pathway> dest, List<Pathway> source) {
+		for (Pathway p: source) {
+			if (dest.containsKey(p.getFrameID())) {
+				dest.remove(p.getFrameID());
+			}
 		}
 	}
 
