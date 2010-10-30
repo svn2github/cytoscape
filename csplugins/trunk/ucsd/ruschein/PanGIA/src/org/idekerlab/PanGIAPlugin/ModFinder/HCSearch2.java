@@ -116,6 +116,8 @@ public class HCSearch2 {
 				break;
 
 			// Merge the best pair
+			//System.out.println(best.source()+", "+best.target());
+			
 			TypedLinkNode<TypedLinkNodeModule<String, BFEdge>, BFEdge> mergedNode = mergeNodes(
 					results, best.source(), best.target(), sfunc);
 			mergedNode.value().setScore(best.value().complexMerge());
@@ -163,9 +165,7 @@ public class HCSearch2 {
 
 				for (TypedLinkNodeModule<String, BFEdge> m : allc)
 					csizes.add(m.size());
-				final int percentCompleted =
-					Math.round((INITIAL_NODE_COUNT - results.numNodes())
-					           * percentAllocated / INITIAL_NODE_COUNT);
+				final int percentCompleted = Math.round((INITIAL_NODE_COUNT - results.numNodes()) * percentAllocated / INITIAL_NODE_COUNT);
 				taskMonitor.setPercentCompleted(percentCompleted);
 				taskMonitor.setStatus("3. Forming clusters (# of clusters: "
 				                      + results.numNodes() + ", largest cluster size: "
@@ -178,6 +178,7 @@ public class HCSearch2 {
 		taskMonitor.setPercentCompleted(Math.round(percentAllocated));
 		System.out.println("Best score: " + global_scores.max(true));
 		System.out.println("Best score index: " + global_scores.maxI());
+		System.out.println("Number of edges before filtering: "+results.numEdges());
 
 		return results;
 	}

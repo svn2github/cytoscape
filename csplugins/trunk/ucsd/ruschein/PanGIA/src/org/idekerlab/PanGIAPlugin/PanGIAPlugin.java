@@ -112,6 +112,8 @@ public class PanGIAPlugin extends CytoscapePlugin {
 			{
 				bw.write(output.getOrigPhysNetwork().getIdentifier()+"\n");
 				bw.write(output.getOrigGenNetwork().getIdentifier()+"\n");
+				bw.write(output.getPhysAttrName()+"\n");
+				bw.write(output.getGenAttrName()+"\n");
 			}
 			
 			bw.close();
@@ -143,7 +145,9 @@ public class PanGIAPlugin extends CytoscapePlugin {
 			{
 				CyNetwork physNet = Cytoscape.getNetwork(in.readLine());
 				CyNetwork genNet = Cytoscape.getNetwork(in.readLine());
-				output.initialize(physNet, genNet);
+				String physAttr = in.readLine();
+				String genAttr = in.readLine();
+				output.initialize(physNet, genNet, physAttr, genAttr);
 			}else output.reset();
 			
 			

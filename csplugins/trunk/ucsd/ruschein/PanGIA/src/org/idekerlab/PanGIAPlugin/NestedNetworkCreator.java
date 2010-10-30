@@ -254,7 +254,7 @@ public class NestedNetworkCreator {
 		float percentCompleted = 100.0f - remainingPercentage;
 		while ((network = networksOrderedByScores.poll()) != null) {
 			final boolean createView = networkViewCount++ < MAX_NETWORK_VIEWS;
-			final CyNetwork nestedNetwork = generateNestedNetwork(network.getNodeName(), network.getGenes(), origPhysNetwork,origGenNetwork, createView, networkAttr);
+			final CyNetwork nestedNetwork = generateNestedNetwork(network.getNodeName(), network.getGenes(), origPhysNetwork, origGenNetwork, physicalNetwork,geneticNetwork, createView, networkAttr);
 			final CyNode node = Cytoscape.getCyNode(network.getNodeName(), false);
 			node.setNestedNetwork(nestedNetwork);
 
@@ -340,7 +340,7 @@ public class NestedNetworkCreator {
 
 	private CyNetwork generateNestedNetwork(final String networkName,
 			final Set<String> nodeNames, final CyNetwork origPhysNetwork,
-			final CyNetwork origGenNetwork, final boolean createNetworkView,
+			final CyNetwork origGenNetwork, TypedLinkNetwork<String, Float> physicalNetwork, TypedLinkNetwork<String, Float> geneticNetwork, final boolean createNetworkView,
 			final CyAttributes networkAttr)
 	{
 		if (nodeNames.isEmpty())
@@ -373,18 +373,24 @@ public class NestedNetworkCreator {
 		List<CyEdge> edges = (List<CyEdge>) origPhysNetwork.getConnectingEdges(getIntersectingNodes(origPhysNetwork, nodes));
 		for (final CyEdge edge : edges)
 		{
-			nestedNetwork.addEdge(edge);
-			cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical");
+			if (physicalNetwork.containsEdge(edge.getSource().getIdentifier(),edge.getTarget().getIdentifier()))
+			{
+				nestedNetwork.addEdge(edge);
+				cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical");
+			}
 		}
 
 		// Add the edges induced by "origGenNetwork" to our new nested network.
 		edges = (List<CyEdge>) origGenNetwork.getConnectingEdges(getIntersectingNodes(origGenNetwork, nodes));
 		for (final CyEdge edge : edges)
 		{
-			nestedNetwork.addEdge(edge);
-			Object existingAttribute = cyEdgeAttrs.getAttribute(edge.getIdentifier(), "PanGIA.Interaction Type");
-			if (existingAttribute==null || !existingAttribute.equals("Physical"))  cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic");
-			else cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
+			if (geneticNetwork.containsEdge(edge.getSource().getIdentifier(),edge.getTarget().getIdentifier()))
+			{
+				nestedNetwork.addEdge(edge);
+				Object existingAttribute = cyEdgeAttrs.getAttribute(edge.getIdentifier(), "PanGIA.Interaction Type");
+				if (existingAttribute==null || !existingAttribute.equals("Physical"))  cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic");
+				else cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
+			}
 		}
 
 		if (createNetworkView) {

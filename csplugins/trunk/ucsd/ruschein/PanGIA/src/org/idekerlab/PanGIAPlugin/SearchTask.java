@@ -167,13 +167,11 @@ public class SearchTask implements Task {
 		if (needsToHalt) return;
 		
 		//Run the clustering algorithm
-		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results =
-			HCSearch2.search(physicalNetwork, geneticNetwork, hcScoringFunction,
-			                 taskMonitor, SEARCH_PERCENTAGE, this);
+		final TypedLinkNetwork<TypedLinkNodeModule<String, BFEdge>, BFEdge> results = HCSearch2.search(physicalNetwork, geneticNetwork, hcScoringFunction, taskMonitor, SEARCH_PERCENTAGE, this);
 		
 		if (needsToHalt) return;
 		
-		//Compute significance
+		//Compute significance and filter edges
 		final double pValueThreshold;
 		if (!Double.isNaN(parameters.getPValueThreshold()))
 		{
@@ -197,7 +195,7 @@ public class SearchTask implements Task {
 				continue;
 			}
 			
-			if (edge.value().link() <= 0) deleteSet.add(edge);
+			if (edge.value().link() < 0) deleteSet.add(edge);
 		}
 		results.removeAllEdges(deleteSet);
 		
@@ -209,10 +207,10 @@ public class SearchTask implements Task {
         for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge : results.edges())
         {
                 float pval = edge.value().linkMerge();
-                if (pval<pValueThreshold)
+                if (pval<=pValueThreshold)
                 {
-                        goodNodes.add(edge.source());
-                        goodNodes.add(edge.target());
+                	goodNodes.add(edge.source());
+                	goodNodes.add(edge.target());
                 }
                 
                 if (edge.source().value().size()>1 || edge.target().value().size()>1)
@@ -285,7 +283,7 @@ public class SearchTask implements Task {
 
 		setPercentCompleted(100);
 		
-		PanGIAPlugin.output.initialize(physicalInputNetwork, geneticInputNetwork);
+		PanGIAPlugin.output.initialize(physicalInputNetwork, geneticInputNetwork,parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName());
 		
 		/*
 		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
@@ -428,7 +426,7 @@ public class SearchTask implements Task {
 				pVal = temp.getEmpiricalValueFromSortedDist(sumOfGeneticValues);	
 			}
 
-			if (pVal < pValueThreshold)
+			if (pVal <= pValueThreshold)
 				edge.value().setLinkMerge((float)pVal);
 			else
 				deleteSet.add(edge);
@@ -486,7 +484,7 @@ public class SearchTask implements Task {
 				}
 				++edgeIndex;
 			}
-
+			
 			final StringBuilder errorMessage = new StringBuilder();
 			final float[] scaledEdgeAttribValues = scaleEdgeAttribValues(edgeAttribValues, scalingMethod, errorMessage);
 			if (scaledEdgeAttribValues == null)
