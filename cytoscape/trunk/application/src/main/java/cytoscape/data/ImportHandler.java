@@ -433,7 +433,9 @@ public class ImportHandler {
 		// if none of the extensions match, then use the the content type as
 		// a suffix and create a temp file.
 		if (tmpFile == null) {
-			String ct = "." + extractExtensionFromContentType(conn.getContentType());
+			String contentType = conn.getContentType();
+			if (contentType == null) contentType = "";
+			String ct = "." + extractExtensionFromContentType(contentType);
 			tmpFile = File.createTempFile("url.download.", ct, new File(tmpDir));
 		}
 
