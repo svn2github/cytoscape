@@ -39,7 +39,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -715,7 +717,7 @@ public class Compound {
 	public Image depictWithCDK(int width, int height, Color background) {
 		BufferedImage bufferedImage = null;
 
-		if (iMolecule == null) {
+		if (iMolecule == null || width == 0 || height == 0) {
 			return null;
 		}
 
@@ -750,9 +752,9 @@ public class Compound {
 			model.setBondWidth(model.getBondWidth()*2);
 
 			int renderWidth = width;
-			if (renderWidth < 150) renderWidth = 200;
+			if (renderWidth < 200) renderWidth = 200;
 			int renderHeight = height;
-			if (renderHeight < 150) renderHeight = 200;
+			if (renderHeight < 200) renderHeight = 200;
 			Rectangle2D bbox = new Rectangle2D.Double(0,0,renderWidth,renderHeight);
 
 			bufferedImage = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_ARGB);
@@ -766,10 +768,17 @@ public class Compound {
 			renderer.paintMolecule(iMolecule, new AWTDrawVisitor(graphics), bbox, true);
 
 			if (renderWidth != width || renderHeight != height) {
-				if (width < height)
-					return bufferedImage.getScaledInstance(width, width, java.awt.Image.SCALE_SMOOTH);
-				else
-					return bufferedImage.getScaledInstance(height, height, java.awt.Image.SCALE_SMOOTH);
+				AffineTransform tx = new AffineTransform();
+				if (width < height) {
+					tx.scale((double)width/(double)renderWidth, (double)width/(double)renderWidth);
+					// return bufferedImage.getScaledInstance(width, width, java.awt.Image.SCALE_SMOOTH);
+				} else {
+					tx.scale((double)height/(double)renderHeight, (double)height/(double)renderHeight);
+					// return bufferedImage.getScaledInstance(height, height, java.awt.Image.SCALE_SMOOTH);
+				}
+
+				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+				bufferedImage = op.filter(bufferedImage, null);
 			}
 		} catch (Exception e) {
 			logger.warning("Unable to depict molecule with CDK depiction: "+e.getMessage(), e);
