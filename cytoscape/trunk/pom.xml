@@ -31,7 +31,7 @@
         <configuration>
           <tagBase>svn+ssh://grenache.ucsd.edu/cellar/common/svn/cytoscape/tags</tagBase>
           <autoVersionSubmodules>true</autoVersionSubmodules>
-          <goals>deploy</goals>
+          <goals>deploy install4j:compile</goals>
           <!-- we need this for corelibs/docs to be installed so that 
                application will build correctly -->
           <preparationGoals>clean install</preparationGoals>
@@ -41,8 +41,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>1.6</source>
+          <target>1.6</target>
+          <optimize>true</optimize>
+          <showWarnings>true</showWarnings>
+          <showDeprecation>true</showDeprecation>
         </configuration>
       </plugin>
       <plugin>
