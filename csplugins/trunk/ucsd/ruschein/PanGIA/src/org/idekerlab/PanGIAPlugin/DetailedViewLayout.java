@@ -53,6 +53,8 @@ public class DetailedViewLayout
 		}
 		
 		//For each parent module
+		CyLayoutAlgorithm fd = CyLayouts.getLayout("force-directed");
+		fd.setSelectedOnly(true);
 		for (Entry<String,Set<Node>> e : module_nodes.entrySet())
 		{
 			//Select all nodes with this attribute value
@@ -60,15 +62,14 @@ public class DetailedViewLayout
 			view.getNetwork().setSelectedNodeState(e.getValue(), true);
 			
 			//Perform force-directed layout of just the selected
-			CyLayoutAlgorithm fd = CyLayouts.getLayout("force-directed");
 			
-			fd.setSelectedOnly(true);
 			fd.getSettings().updateValues();
 			fd.updateSettings();
 			view.applyLayout(fd);
 			
 			view.redrawGraph(true, true);
 		}
+		fd.setSelectedOnly(false);
 		view.getNetwork().unselectAllNodes();
 		
 		//Get the meanPosition and radius of each group
