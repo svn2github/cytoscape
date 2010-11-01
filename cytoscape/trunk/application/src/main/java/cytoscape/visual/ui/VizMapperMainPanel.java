@@ -2056,10 +2056,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if ((curProp != null) && (curProp.getDisplayName().equals(name))) {
 				table.setRowSelectionInterval(i, i);
-
-				if (item.isVisible() == false) {
+				if (item.isVisible() == false)
 					item.toggle();
-				}
 
 				return;
 			}
