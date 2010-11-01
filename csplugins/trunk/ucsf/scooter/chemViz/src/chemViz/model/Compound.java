@@ -715,6 +715,10 @@ public class Compound {
 	public Image depictWithCDK(int width, int height, Color background) {
 		BufferedImage bufferedImage = null;
 
+		if (iMolecule == null) {
+			return null;
+		}
+
 		try {
 			if (!laidOut) {
 				StructureDiagramGenerator sdg = new StructureDiagramGenerator();
@@ -746,9 +750,9 @@ public class Compound {
 			model.setBondWidth(model.getBondWidth()*2);
 
 			int renderWidth = width;
-			// if (renderWidth < 150) renderWidth = 150;
+			if (renderWidth < 150) renderWidth = 200;
 			int renderHeight = height;
-			// if (renderHeight < 150) renderHeight = 150;
+			if (renderHeight < 150) renderHeight = 200;
 			Rectangle2D bbox = new Rectangle2D.Double(0,0,renderWidth,renderHeight);
 
 			bufferedImage = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_ARGB);
@@ -761,14 +765,12 @@ public class Compound {
 
 			renderer.paintMolecule(iMolecule, new AWTDrawVisitor(graphics), bbox, true);
 
-			/*
 			if (renderWidth != width || renderHeight != height) {
 				if (width < height)
 					return bufferedImage.getScaledInstance(width, width, java.awt.Image.SCALE_SMOOTH);
 				else
 					return bufferedImage.getScaledInstance(height, height, java.awt.Image.SCALE_SMOOTH);
 			}
-			*/
 		} catch (Exception e) {
 			logger.warning("Unable to depict molecule with CDK depiction: "+e.getMessage(), e);
 		}

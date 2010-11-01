@@ -197,7 +197,8 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 
 		if (removeCustomGraphics) {
-			for (NodeView nv: graphMap.keySet()) {
+			ArrayList<NodeView> removeList = new ArrayList<NodeView>(graphMap.keySet());
+			for (NodeView nv: removeList) {
 				if (nodeSelection == null || nodeSelection.contains(nv.getNode())) {
 					// System.out.println("Removing cg for "+nv.getNode().getIdentifier());
 					CustomGraphic cg = graphMap.get(nv);

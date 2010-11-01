@@ -28,6 +28,9 @@
   <path id="compile.classpath">
     <pathelement path="${build.dir}/classes" />
     <fileset dir="${cytoscape.dir}">
+      <include name="*.jar" />
+    </fileset>
+    <fileset dir="${cytoscape.dir}">
       <include name="cytoscape.jar" />
     </fileset>
     <fileset dir="${lib.dir}">
