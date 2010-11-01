@@ -37,7 +37,6 @@
         <executions>
           <execution>
             <id>unpack-distribution</id>
-            <phase>deploy</phase>
             <goals>
               <goal>unpack-dependencies</goal>
             </goals>
@@ -50,7 +49,6 @@
           </execution>
           <execution>
             <id>unpack-javadoc</id>
-            <phase>deploy</phase>
             <goals>
               <goal>unpack-dependencies</goal>
             </goals>
@@ -65,7 +63,6 @@
           </execution>
           <execution>
             <id>copy-distribution</id>
-            <phase>deploy</phase>
             <goals>
               <goal>copy-dependencies</goal>
             </goals>
@@ -89,14 +86,6 @@
           <attach>true</attach>
           <skipOnMissingExecutable>true</skipOnMissingExecutable>
         </configuration>
-        <executions>
-          <execution>
-            <phase>deploy</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
