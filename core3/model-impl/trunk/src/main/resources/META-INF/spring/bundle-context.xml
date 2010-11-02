@@ -18,7 +18,7 @@
 	<bean id="cyTableManager" class="org.cytoscape.model.internal.CyTableManagerImpl">
 	</bean>
 
-	<bean id="cyDataTableFactory" class="org.cytoscape.model.internal.CyTableFactoryImpl">
+	<bean id="cyTableFactory" class="org.cytoscape.model.internal.CyTableFactoryImpl">
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="cyTableManager" />
 	</bean>
@@ -26,7 +26,7 @@
 	<bean id="cyNetworkFactory" class="org.cytoscape.model.internal.CyNetworkFactoryImpl">
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="cyTableManager" />
-		<constructor-arg ref="cyDataTableFactory" />
+		<constructor-arg ref="cyTableFactory" />
 	</bean>
 
 	<bean id="cyNetworkManager" class="org.cytoscape.model.internal.CyNetworkManagerImpl">
