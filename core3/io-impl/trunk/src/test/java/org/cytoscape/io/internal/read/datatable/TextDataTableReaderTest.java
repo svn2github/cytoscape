@@ -103,6 +103,6 @@ public class TextDataTableReaderTest {
 		snvp.delimiter = delim; // setting the tunable
 		snvp.run(taskMonitor);
 
-		return snvp.getCyDataTables();
+		return snvp.getCyTables();
 	}
 }
