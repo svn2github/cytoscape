@@ -66,7 +66,8 @@ import cytoscape.visual.parsers.ValueParser;
 public class ContinuousMapping extends
 		AbstractMapping {
 
-	final Class<?>[] ACCEPTED_CLASS = { Number.class };
+	// Accepts only numbers.
+	private static final Class<?>[] ACCEPTED_CLASS = { Number.class };
 
 	// used to interpolate between boundaries
 	private Interpolator interpolator;
@@ -113,6 +114,9 @@ public class ContinuousMapping extends
 	 * @return Cloned Mapping Object.
 	 */
 	public Object clone() {
+		
+		// Constructor arguments
+		final Class<?> rangeClassClone;
 		final ContinuousMapping clone = new ContinuousMapping(
 				rangeClass, controllingAttrName);
 
@@ -120,7 +124,9 @@ public class ContinuousMapping extends
 		for (ChangeListener listener : observers)
 			clone.addChangeListener(listener);
 
-		for (ContinuousMappingPoint cmp : points) {
+		
+		// Copy points
+		for (final ContinuousMappingPoint cmp : points) {
 			final ContinuousMappingPoint cmpClone = (ContinuousMappingPoint) cmp.clone();
 			clone.addPoint(cmpClone.getValue(), cmpClone.getRange());
 		}

@@ -100,14 +100,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 		}
 
 		copy.setDefaultAppearance(defAppr);
-
-		//Copy mappings
-		for (Calculator cal : this.calcs) {
-			final ObjectMapping mCopy = (ObjectMapping) cal.getMapping(0).clone();
-			BasicCalculator bCalc = new BasicCalculator(cal.toString(), mCopy,
-			                                            cal.getVisualPropertyType());
-			copy.setCalculator(bCalc);
-		}
+		copyCalculators(copy);
 
 		return copy;
 	}

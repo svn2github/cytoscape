@@ -2327,6 +2327,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	protected class CopyStyleListener extends AbstractAction {
+		
+		private static final long serialVersionUID = 4741684758183028809L;
+
 		public void actionPerformed(ActionEvent e) {
 			final VisualStyle currentStyle = vmm.getVisualStyle();
 			VisualStyle clone = null;
@@ -2339,9 +2342,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			final String newName = getStyleName(clone);
 
-			if ((newName == null) || (newName.trim().length() == 0)) {
+			if ((newName == null) || (newName.trim().length() == 0))
 				return;
-			}
 
 			clone.setName(newName);
 

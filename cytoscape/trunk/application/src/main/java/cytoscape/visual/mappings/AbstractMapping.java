@@ -33,7 +33,6 @@ public abstract class AbstractMapping extends SubjectBase implements
 	}
 	
 	
-	
 	abstract public void applyProperties(Properties props, String baseKey,
 			ValueParser parser);
 	

@@ -98,14 +98,17 @@ public class ContinuousMappingPoint implements Cloneable {
 
 	/**
 	 * Clones the object. (Deep Copy)
+	 * 
 	 * @return Cloned Object.
 	 */
 	public Object clone() {
 		final BoundaryRangeValues newRange = new BoundaryRangeValues();
+		
 		newRange.lesserValue = range.lesserValue;
 		newRange.equalValue = range.equalValue;
 		newRange.greaterValue = range.greaterValue;
 
-		return new ContinuousMappingPoint(value, newRange);
+		Double copyValue = new Double(value);
+		return new ContinuousMappingPoint(copyValue, newRange);
 	}
 }

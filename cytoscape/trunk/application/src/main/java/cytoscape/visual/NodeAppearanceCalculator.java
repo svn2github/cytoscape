@@ -52,6 +52,7 @@ import cytoscape.visual.mappings.ObjectMapping;
  * a (possibly null) calculator for each visual attribute.
  */
 public class NodeAppearanceCalculator extends AppearanceCalculator {
+	
     private NodeAppearance defaultAppearance = new NodeAppearance();
 
 	/**
@@ -103,6 +104,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * Create deep copy of the object.
      */
     public Object clone() {
+    	
     	final NodeAppearanceCalculator copy = new NodeAppearanceCalculator(deps);
     	
     	// Copy defaults
@@ -112,12 +114,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     	}
     	copy.setDefaultAppearance(defAppr);
     	
-    	//Copy mappings
-    	for(Calculator cal  : this.calcs) {
-    		ObjectMapping mCopy = (ObjectMapping) cal.getMapping(0).clone();
-    		BasicCalculator bCalc = new BasicCalculator(cal.toString(), mCopy, cal.getVisualPropertyType());
-    		copy.setCalculator(bCalc);
-    	}
+    	this.copyCalculators(copy);
     	
     	return copy;
     }

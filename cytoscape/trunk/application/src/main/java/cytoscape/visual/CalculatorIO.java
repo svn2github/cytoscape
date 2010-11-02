@@ -39,7 +39,6 @@
 package cytoscape.visual;
 
 
-//----------------------------------------------------------------------------
 import static cytoscape.visual.VisualPropertyType.EDGE_LINETYPE;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_STYLE;
 import static cytoscape.visual.VisualPropertyType.EDGE_LINE_WIDTH;
@@ -58,10 +57,6 @@ import static cytoscape.visual.VisualPropertyType.NODE_LINE_WIDTH;
 import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.CalculatorFactory;
-import cytoscape.logger.CyLogger;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -69,20 +64,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.Writer;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
+
+import cytoscape.logger.CyLogger;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.calculators.CalculatorFactory;
 
 
-//----------------------------------------------------------------------------
 /**
  * This class defines static methods for reading calculator definitions from a
  * properties object and installing them into a CalculatorCatalog, and for

@@ -36,7 +36,9 @@
  */
 package cytoscape.visual;
 
+import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.logger.CyLogger;
 
 import java.util.ArrayList;
@@ -49,8 +51,13 @@ import java.util.Properties;
  * a (possibly null) calculator for each visual attribute.
  */
 abstract class AppearanceCalculator implements Cloneable {
-	protected List<Calculator> calcs = new ArrayList<Calculator>();
+	
+	protected static final String CLONE_SUFFIX = "-clone-";
+	
+	protected final List<Calculator> calcs = new ArrayList<Calculator>();
+	
 	protected Appearance tmpDefaultAppearance;
+	
 	protected VisualPropertyDependency deps;
 
 	/**
@@ -240,4 +247,20 @@ abstract class AppearanceCalculator implements Cloneable {
 	}
 
 	protected abstract void copyDefaultAppearance(AppearanceCalculator toCopy);
+	
+	protected void copyCalculators(AppearanceCalculator copy) {
+		// Copy individual calculators
+    	for(Calculator cal  : this.calcs) {
+    		final ObjectMapping mCopy = (ObjectMapping) cal.getMapping(0).clone();
+    		final String originalName = cal.toString();
+    		String copyName;
+    		if(originalName.contains(CLONE_SUFFIX))
+    			copyName = originalName.split(CLONE_SUFFIX)[0] + CLONE_SUFFIX + System.currentTimeMillis();
+    		else
+    			copyName = originalName + CLONE_SUFFIX + System.currentTimeMillis();
+    		
+    		final Calculator bCalc = new BasicCalculator(copyName, mCopy, cal.getVisualPropertyType());
+    		copy.setCalculator(bCalc);
+    	}
+	}
 }

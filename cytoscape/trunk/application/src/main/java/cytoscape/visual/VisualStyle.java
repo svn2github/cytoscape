@@ -35,11 +35,6 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual;
 
 import java.util.Vector;
@@ -49,7 +44,6 @@ import cytoscape.visual.calculators.Calculator;
 import cytoscape.logger.CyLogger;
 
 
-//----------------------------------------------------------------------------
 /**
  * This class encapsulates a full set of visual mapping specifications for
  * Cytoscape. Currently this is implemented by holding a reference to three
@@ -108,6 +102,7 @@ public class VisualStyle implements Cloneable {
 	 * Perform deep copy of this VisualStyle.
 	 */
 	public Object clone() throws CloneNotSupportedException {
+		
 		VisualStyle copy = (VisualStyle) super.clone();
 		String dupeFreeName;
 
@@ -123,6 +118,7 @@ public class VisualStyle implements Cloneable {
 
 		copy.name = dupeFreeName;
 		copy.dupeCount++;
+		
 		copy.nodeAC = (NodeAppearanceCalculator) this.nodeAC.clone();
 		copy.edgeAC = (EdgeAppearanceCalculator) this.edgeAC.clone();
 		copy.globalAC = (GlobalAppearanceCalculator) this.globalAC.clone();
