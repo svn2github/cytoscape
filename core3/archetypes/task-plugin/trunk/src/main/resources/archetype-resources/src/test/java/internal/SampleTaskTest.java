@@ -5,7 +5,7 @@ import org.junit.Before;
 import static org.junit.Assert.*;
 
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.work.TaskMonitor;
 
 import org.cytoscape.test.support.NetworkTestSupport;
@@ -69,7 +69,7 @@ public class SampleTaskTest {
 		sampleTask.numNodesToSelect = x;
 		sampleTask.run( taskMonitor );
         assertEquals("num selected nodes",x,
-		             CyDataTableUtil.getNodesInState(network,"selected",true).size());
+		             CyTableUtil.getNodesInState(network,"selected",true).size());
 	}
 
 	// Instead of writing your own dummy object, you could use a
