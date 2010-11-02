@@ -43,7 +43,7 @@ import org.cytoscape.model.internal.CyTableImpl;
 /**
  * DOCUMENT ME!
  */
-public class CyDataTableTest extends AbstractCyTableTest {
+public class CyTableTest extends AbstractCyTableTest {
 
 	/**
 	 * DOCUMENT ME!
