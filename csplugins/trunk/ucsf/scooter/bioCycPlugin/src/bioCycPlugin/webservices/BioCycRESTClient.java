@@ -53,6 +53,7 @@ import bioCycPlugin.model.Reaction;
 public class BioCycRESTClient {
 	CyLogger logger;
 	QueryHandler handler;
+	List<Database> databaseCache = null;
 
 	enum Operator {AND, OR};
 
@@ -70,7 +71,9 @@ public class BioCycRESTClient {
 	}
 
 	public List<Database> listDatabases() {
-		return Database.getDatabases(handler.query("dbs"));
+		if (databaseCache == null)
+			databaseCache = Database.getDatabases(handler.query("dbs"));
+		return databaseCache;
 	}
 
 	public List<Pathway> findPathwaysByText(String query, String db) {

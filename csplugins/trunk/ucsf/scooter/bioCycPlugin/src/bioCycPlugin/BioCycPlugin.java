@@ -39,14 +39,21 @@ import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.logger.CyLogger;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import bioCycPlugin.commands.BioCycCommandHandler;
 import bioCycPlugin.webservices.BioCycClient;
 
-public class BioCycPlugin extends CytoscapePlugin {
+public class BioCycPlugin extends CytoscapePlugin implements PropertyChangeListener {
 	private CyLogger logger = null;
 	private BioCycClient wpclient;
+	private static Properties defaultProps = null;
 
 	protected static final String WEBSERVICE_URL = "biocyc.webservice.uri";
 	// protected static final String DEFAULT_URL = "http://brg-preview.ai.sri.com/";
@@ -65,18 +72,59 @@ public class BioCycPlugin extends CytoscapePlugin {
 			logger.error(e.getMessage());
 		}
 
+		// Listen for exits
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.CYTOSCAPE_EXIT, this);
+
 		// Setup any global properties
 		Properties p = CytoscapeInit.getProperties();
 		if (p.get(WEBSERVICE_URL) == null) {
 			p.put(WEBSERVICE_URL, DEFAULT_URL);
 		}
+
+		// Initialize our properties file
+		initBioCycProps();
+
 		// Register ourselves with the web services infrastructure
 		wpclient = new BioCycClient(logger);
 		WebServiceClientManager.registerClient(wpclient);
+	}
 
+	public static void initBioCycProps() {
+		if (defaultProps == null) {
+			defaultProps = new Properties();
+			File propsFile = new File(CytoscapeInit.getConfigVersionDirectory(), "bioCycPlugin.props");
+			if (propsFile != null) {
+				try {
+					FileInputStream inputStream = new FileInputStream(propsFile);
+					defaultProps.load(inputStream);
+				} catch (IOException e) {}
+			}
+		}
+	}
+
+	public static String getProp(String prop) {
+		if (defaultProps != null)
+			return defaultProps.getProperty(prop);
+		return null;
+	}
+
+	public static void setProp(String propName, String propValue) {
+		defaultProps.setProperty(propName, propValue);
 	}
 
 	public static String getBaseUrl() {
 		return CytoscapeInit.getProperties().getProperty(WEBSERVICE_URL);
 	}
+
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName().equals(Cytoscape.CYTOSCAPE_EXIT)) {
+			File propsFile = new File(CytoscapeInit.getConfigVersionDirectory(), "bioCycPlugin.props");
+			if (propsFile != null) {
+				try {
+					defaultProps.store(new FileOutputStream(propsFile), "");
+				} catch (IOException e) {}
+			}
+		}
+	}
+
 }

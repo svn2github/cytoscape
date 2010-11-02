@@ -32,6 +32,8 @@
  */
 package bioCycPlugin.model;
 
+import bioCycPlugin.BioCycPlugin;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Document;
@@ -83,5 +85,18 @@ public class Database implements Comparable<Database> {
 			databases.add(new Database((Element)dbNodes.item(index)));
 		}
 		return databases;
+	}
+
+	public static Database getDefaultDatabase(List<Database>databases) {
+		String db = BioCycPlugin.getProp("defaultDatabase");
+		for (Database d: databases) {
+			if (d.getOrgID().equals(db))
+				return d;
+		}
+		return null;
+	}
+
+	public static void setDefaultDatabase(Database database) {
+		BioCycPlugin.setProp("defaultDatabase", database.getOrgID());
 	}
 }

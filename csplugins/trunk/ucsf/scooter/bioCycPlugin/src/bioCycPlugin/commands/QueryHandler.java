@@ -125,6 +125,12 @@ public class QueryHandler {
 
 		ImportHandler inputHandler = Cytoscape.getImportHandler();
 		try {
+			// Add a listener so we can fix up some attributes
+			Cytoscape.getPropertyChangeSupport()
+			                  .addPropertyChangeListener( Cytoscape.NETWORK_LOADED, new ParseCMLAttributes(logger) );
+			LoadNetworkTask.loadURL(new URL(baseUrl+queryString), false);
+
+/*
 			File rawFile = inputHandler.downloadFromURL(new URL(baseUrl+queryString), null);
 			File bioPaxFile = new File(rawFile.getAbsolutePath()+".xml");
 			rawFile.renameTo(bioPaxFile);
@@ -133,8 +139,11 @@ public class QueryHandler {
 			                  .addPropertyChangeListener( Cytoscape.NETWORK_LOADED, new ParseCMLAttributes(logger) );
 
 			LoadNetworkTask.loadFile(bioPaxFile, false);
+			logger.info("Loading file into: "+bioPaxFile.getAbsolutePath());
 			bioPaxFile.delete();
+*/
 		} catch (Exception e) {
+			logger.error("Error loading network from "+baseUrl+queryString+": "+e.getMessage(), e);
 			throw new MalformedURLException("Unable to load network from "+baseUrl+queryString+" ("+e.getMessage()+")");
 		}
 	}

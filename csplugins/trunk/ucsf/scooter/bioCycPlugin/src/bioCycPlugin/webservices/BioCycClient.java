@@ -115,41 +115,6 @@ public class BioCycClient extends WebServiceClientImplWithGUI<BioCycRESTClient, 
 		}
 	}
 
-	public List<JMenuItem> getNodeContextMenuItems(NodeView nv) {
-		List<JMenuItem> menuList = new ArrayList<JMenuItem>();
-
-		//Add an item to find interactions
-		// menuList.add(new JMenuItem(new NodeInteractionsAction(this, nv)));
-
-		//If the node is a found interaction, add items to open the source on WP
-		CyAttributes attr = Cytoscape.getNodeAttributes();
-		String nid = nv.getNode().getIdentifier();
-		// addPathwayMenuItems(attr, nid, menuList);
-		return menuList;
-	}
-
-	public List<JMenuItem> getEdgeContextMenuItems(EdgeView ev) {
-		List<JMenuItem> menuList = new ArrayList<JMenuItem>();
-
-		//If the edge is a found interaction, add items to open the source on WP
-		CyAttributes attr = Cytoscape.getEdgeAttributes();
-		String eid = ev.getEdge().getIdentifier();
-		// addPathwayMenuItems(attr, eid, menuList);
-
-		return menuList;
-	}
-
-	/**
-	 * Adds menu items to open and import pathways based on the pathway info
-	 * stored in the attributes (by the find interactions function).
-	 * @param attr The attribute store
-	 * @param nid The node or edge id
-	 * @param menuList The list to add the menu items to
-	 */
-	private void addPathwayMenuItems(CyAttributes attr, String nid, List<JMenuItem> menuList) {
-		// TODO
-	}
-
 	public void executeService(CyWebServiceEvent e)
 	throws CyWebServiceException {
 		if(CLIENT_ID.equals(e.getSource())) {
@@ -237,10 +202,6 @@ public class BioCycClient extends WebServiceClientImplWithGUI<BioCycRESTClient, 
 		}
 
 		public void halt() {
-			//Not 2.6 compatible
-			//			WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(
-			//				new CyWebServiceEvent(CLIENT_ID, WSEventType.CANCEL, query)
-			//			);
 		}
 
 		public void setTaskMonitor(TaskMonitor m)
@@ -250,10 +211,6 @@ public class BioCycClient extends WebServiceClientImplWithGUI<BioCycRESTClient, 
 
 		public void executeService(CyWebServiceEvent event)
 		throws CyWebServiceException {
-			//Not 2.6 compatible
-			//			if (event.getEventType().equals(WSEventType.CANCEL)) {
-			//				throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
-			//			}
 		}
 	}
 

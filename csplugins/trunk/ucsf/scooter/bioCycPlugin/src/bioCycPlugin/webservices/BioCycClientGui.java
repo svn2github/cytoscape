@@ -16,9 +16,9 @@
 //
 package bioCycPlugin.webservices;
 
-import bioCycPlugin.webservices.ResultProperty;
 import bioCycPlugin.model.Database;
 import bioCycPlugin.model.Pathway;
+import bioCycPlugin.webservices.ResultProperty;
 
 import bioCycPlugin.webservices.BioCycClient.FindPathwaysByTextParameters;
 import bioCycPlugin.webservices.BioCycClient.GetPathwayParameters;
@@ -59,6 +59,7 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 	final BioCycClient client;
 	private CyLogger logger;
 
+	Database defaultDatabase = null;
 	JComboBox databaseCombo;
 	JTextField searchText;
 	JTable resultTable;
@@ -69,6 +70,8 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 		this.logger = logger;
 
 		databaseCombo = new JComboBox();
+		databaseCombo.addActionListener(this);
+		databaseCombo.setActionCommand(ACTION_SET_DATABASE);
 		resetDatabases();
 
 		searchText = new JTextField();
@@ -116,6 +119,9 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 		Object dbArray[] = databases.toArray();
 		Arrays.sort(dbArray);
 		databaseCombo.setModel(new DefaultComboBoxModel(dbArray));
+		defaultDatabase = Database.getDefaultDatabase(databases);
+		if (defaultDatabase != null) 
+			databaseCombo.setSelectedItem(defaultDatabase);
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -150,6 +156,9 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 				}
 				ex.printStackTrace();
 			}
+		} else if (ACTION_SET_DATABASE.equals(action)) {
+			defaultDatabase = (Database) databaseCombo.getSelectedItem();
+			Database.setDefaultDatabase(defaultDatabase);
 		}
 	}
 
@@ -215,4 +224,5 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 	}
 
 	private static final String ACTION_SEARCH = "Search";
+	private static final String ACTION_SET_DATABASE = "Set Database";
 }
