@@ -19,6 +19,8 @@ package cytoscape.visual.ui.editors.discrete;
 
 import com.l2fprod.common.beans.editor.AbstractPropertyEditor;
 
+import cytoscape.logger.CyLogger;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -71,19 +73,28 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 
 				public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
 					
-					if(combo.getSelectedItem() == null && combo.getItemCount() != 0) {
-						combo.setSelectedIndex(0);
-						CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
-                                combo.getItemAt(0));
-					} else 
-					CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
-					                                                 combo.getSelectedItem());
-					
+					try {
+						if(combo.getSelectedItem() == null && combo.getItemCount() != 0) {
+							combo.setSelectedIndex(0);
+							CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
+	                                combo.getItemAt(0));
+						} else {
+							CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
+						                                                 combo.getSelectedItem());
+						}
+					} catch(Exception ex1) {
+						ex1.printStackTrace();
+						CyLogger.getLogger().warning("Combo Box property editor caught an error.", ex1);
+						
+						// TODO: update table view if crash?
+						return;
+					}
 				}
 
 				public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
 				}
 			});
+		
 		combo.addKeyListener(new KeyAdapter() {
 				public void keyPressed(KeyEvent e) {
 					if (e.getKeyCode() == KeyEvent.VK_ENTER)
