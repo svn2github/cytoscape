@@ -19,7 +19,6 @@ public class ITSpringIntegration extends AbstractIntegrationTester {
 	public ITSpringIntegration() {
 		super( "org.cytoscape.model-impl",
 		       new String[] { "org.cytoscape, event-api, 3.0.0-alpha1",
-		                      "org.cytoscape, event-impl, 3.0.0-alpha1",
 		                      "org.cytoscape, model-api, 3.0.0-alpha1", 
 		                      "org.cytoscape, model-impl, 3.0.0-alpha2-SNAPSHOT",
 		                      "org.cytoscape, integration-test-support, 3.0.0-alpha2" ,
