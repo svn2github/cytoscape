@@ -34,7 +34,7 @@
 */
 package org.cytoscape.webservice.client;
 
-import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.VisualStyle;
 
 /**
  *
