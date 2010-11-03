@@ -184,7 +184,7 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
     	 
     	 try
     	 {
-    		 bw.write("Gene\t");
+    		 bw.write("Gene");
     		 
     		 for (String id : ids)
     			 bw.write("\t"+id);
