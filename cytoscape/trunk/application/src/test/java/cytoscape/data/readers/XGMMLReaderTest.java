@@ -51,7 +51,7 @@ import java.io.File;
  *
  */
 public class XGMMLReaderTest extends TestCase {
-	private static String testDataDir;
+	private static String testDataDir = "src/test/resources/testData";
 
 	/**
 	 *  DOCUMENT ME!
@@ -78,7 +78,7 @@ public class XGMMLReaderTest extends TestCase {
 		super(arg0);
 
 		if (AllTests.runAllTests()) {
-			testDataDir = "testData";
+			testDataDir = "src/test/resources/testData";
 		}
 	}
 
@@ -98,9 +98,9 @@ public class XGMMLReaderTest extends TestCase {
 	public void testXGMMLGraphRead() throws Exception {
 		AllTests.standardOut("testXGMMLGraphRead");
 
-		XGMMLReader reader = new XGMMLReader("testData/galFiltered2.xgmml");
+		XGMMLReader reader = new XGMMLReader(testDataDir+"/galFiltered2.xgmml");
 
-		File testfile = new File("testData/galFiltered2.xgmml");
+		File testfile = new File(testDataDir+"/galFiltered2.xgmml");
 
 		if (testfile.canRead()) {
 			System.out.println("Reading XGMML: " + testfile.getAbsolutePath());

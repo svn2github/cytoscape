@@ -34,6 +34,9 @@
 */
 package cytoscape.data;
 
+import cytoscape.AllTests;
+
+import cytoscape.Cytoscape;
 import cytoscape.data.ImportHandler;
 
 import cytoscape.data.readers.GraphReader;
@@ -45,10 +48,15 @@ import cytoscape.util.SIFFileFilter;
 import junit.framework.TestCase;
 
 import java.io.*;
+import java.io.File;
 
 import java.lang.String;
 
+import java.net.URL;
+
 import java.util.*;
+
+import giny.model.RootGraph;
 
 
 /**
@@ -62,6 +70,7 @@ public class ImportHandlerTest extends TestCase {
 	private File DUMMY_GML_FILE;
 	private File DUMMY_XML_FILE;
 	private File DUMMY_DOC_FILE;
+	private File TEST_XGMML_FILE;
 	private GraphReader graphReader;
 	private InteractionsReader DUMMY_GRAPH_READER;
 	private Collection dummyCollection;
@@ -73,6 +82,9 @@ public class ImportHandlerTest extends TestCase {
 	private static String DUMMY_GRAPH_NATURE = "NETWORK";
 	private static String DUMMY_NATURE = "xxxx";
 	private ImportHandler importHandler;
+	private static String testDataDir;
+
+	private static final String FILE_LOCATION = "src/test/resources/testData";
 
 	/**
 	 * Set things up.
@@ -89,6 +101,7 @@ public class ImportHandlerTest extends TestCase {
 		DUMMY_GML_FILE = File.createTempFile("inputGmlTest", ".gml");
 		DUMMY_XML_FILE = File.createTempFile("inputXmlTest", ".xml");
 		DUMMY_DOC_FILE = File.createTempFile("inputDocTest", ".doc");
+		TEST_XGMML_FILE = new File(FILE_LOCATION+"/galFiltered2.xgmml");
 		DUMMY_GRAPH_READER = new InteractionsReader(DUMMY_SIF_FILE.toString());
 	}
 
@@ -312,6 +325,27 @@ public class ImportHandlerTest extends TestCase {
 		graphReader = importHandler.getReader(DUMMY_SIF_FILE.toString());
 		exists = (graphReader == null);
 		assertFalse(exists);
+	}
+
+	/**
+ 	 * Test to make sure getReader does the right thing with URL's
+ 	 */
+	public void testGetReaderURL() throws Exception {
+		URL url = TEST_XGMML_FILE.toURI().toURL();
+		System.out.println(url);
+		graphReader = importHandler.getReader(url);
+		assertTrue(graphReader != null);
+		RootGraph network = Cytoscape.getRootGraph();
+		network.removeNodes(network.nodesList());
+		graphReader.read();
+		System.out.println("GetReaderURL: Node count = " + network.getNodeCount());
+		System.out.println("GetReaderURL: Edge count = " + network.getEdgeCount());
+
+		assertTrue("GetReaderURL: Node count, expect 331, got " + network.getNodeCount(),
+		           network.getNodeCount() == 331);
+		assertTrue("GetReaderURL: Edge count, expect 362, got " + network.getEdgeCount(),
+               network.getEdgeCount() == 362);
+
 	}
 
 	//not sure if I should test a private method 
