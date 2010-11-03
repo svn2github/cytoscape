@@ -316,6 +316,8 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 		if (image == null) return null;
 
 		// Create the image
+		// TODO: Should we extend TexturePaint to get higher resolution printing?  How would
+		// we know if we're printing or not???
 		TexturePaint tp = new TexturePaint(image, new Rectangle2D.Double(x,y,width,height));
 
 		// Add it to the view
