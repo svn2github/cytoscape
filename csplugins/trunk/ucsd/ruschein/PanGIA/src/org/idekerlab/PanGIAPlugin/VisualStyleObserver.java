@@ -130,21 +130,30 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				
 				EdgeAppearanceCalculator eac = style.getEdgeAppearanceCalculator();
 				
-				ContinuousMapping cm = new ContinuousMapping(0.0, ObjectMapping.EDGE_MAPPING);
-				cm.setControllingAttributeName(NestedNetworkCreator.EDGE_SCORE, view.getNetwork(), true);
-				cm.addPoint(min, new BoundaryRangeValues(30,30,30));
-				cm.addPoint(max, new BoundaryRangeValues(255,255,255));
-				Calculator edgeCalc = new BasicCalculator(VS_OVERVIEW_NAME+"-EdgeOpacityMapping", cm, VisualPropertyType.EDGE_OPACITY);
-				eac.setCalculator(edgeCalc);
+				// Set EDGE_OPACITY
+				BasicCalculator cal = (BasicCalculator) eac.getCalculator(VisualPropertyType.EDGE_OPACITY);
+				if (cal.getMapping(0) instanceof ContinuousMapping){
+					
+					ContinuousMapping c_m = (ContinuousMapping)cal.getMapping(0);
+					if (c_m.getControllingAttributeName().equalsIgnoreCase(NestedNetworkCreator.EDGE_SCORE)){
+						c_m.addPoint(min, new BoundaryRangeValues(30,30,30));
+						c_m.addPoint(max, new BoundaryRangeValues(255,255,255));
+					}
+					
+				}
 				
-				cm = new ContinuousMapping(0.0, ObjectMapping.EDGE_MAPPING);
-				cm.setControllingAttributeName(NestedNetworkCreator.EDGE_SCORE, view.getNetwork(), true);
-				cm.addPoint(min, new BoundaryRangeValues(5,5,5));
-				cm.addPoint(max, new BoundaryRangeValues(20,20,20));
-				edgeCalc = new BasicCalculator(VS_OVERVIEW_NAME+"-EdgeWidthMapping", cm, VisualPropertyType.EDGE_LINE_WIDTH);
-				eac.setCalculator(edgeCalc);
-				
-				
+				//Set EDGE_LINE_WIDTH
+				cal = (BasicCalculator) eac.getCalculator(VisualPropertyType.EDGE_LINE_WIDTH);
+				if (cal.getMapping(0) instanceof ContinuousMapping){
+					
+					ContinuousMapping c_m = (ContinuousMapping)cal.getMapping(0);
+					if (c_m.getControllingAttributeName().equalsIgnoreCase(NestedNetworkCreator.EDGE_SCORE)){
+						c_m.addPoint(min, new BoundaryRangeValues(5,5,5));
+						c_m.addPoint(max, new BoundaryRangeValues(20,20,20));
+					}
+					
+				}				
+					
 				min = Float.MAX_VALUE;
 				max = Float.MIN_VALUE;
 				
@@ -153,24 +162,32 @@ public class VisualStyleObserver implements PropertyChangeListener {
 					if (f<min) min = f;
 					if (f>max) max = f;
 				}
-				
+
 				NodeAppearanceCalculator nac = style.getNodeAppearanceCalculator();
 				
-				cm = new ContinuousMapping(0.0, ObjectMapping.NODE_MAPPING);
-				cm.setControllingAttributeName(NestedNetworkCreator.GENE_COUNT_SQRT, view.getNetwork(), true);
-				cm.addPoint(min, new BoundaryRangeValues(20,20,20));
-				double fs = Math.max(10*max,20);
-				cm.addPoint(max, new BoundaryRangeValues(fs,fs,fs));
-				Calculator nodeCalc = new BasicCalculator(VS_OVERVIEW_NAME+"-NodeSizeMapping", cm, VisualPropertyType.NODE_SIZE);
-				nac.setCalculator(nodeCalc);
+				// Set Node Size
+				cal = (BasicCalculator) nac.getCalculator(VisualPropertyType.NODE_SIZE);
+				if (cal.getMapping(0) instanceof ContinuousMapping){
+					ContinuousMapping c_m = (ContinuousMapping)cal.getMapping(0);
+					if (c_m.getControllingAttributeName().equalsIgnoreCase(NestedNetworkCreator.GENE_COUNT_SQRT)){
+						c_m.addPoint(min, new BoundaryRangeValues(20,20,20));
+						
+						double fs = Math.max(10*max,20);
+						c_m.addPoint(max, new BoundaryRangeValues(fs,fs,fs));						
+					}
+				}
 				
-				cm = new ContinuousMapping(0.0, ObjectMapping.NODE_MAPPING);
-				cm.setControllingAttributeName(NestedNetworkCreator.GENE_COUNT_SQRT, view.getNetwork(), true);
-				cm.addPoint(min, new BoundaryRangeValues(10,10,10));
-				fs = Math.max(max,10); 
-				cm.addPoint(max, new BoundaryRangeValues(fs,fs,fs));
-				nodeCalc = new BasicCalculator(VS_OVERVIEW_NAME+"-NodeFontSizeMapping", cm, VisualPropertyType.NODE_FONT_SIZE);
-				nac.setCalculator(nodeCalc);
+				//Set NODE_FONT_SIZE
+				cal = (BasicCalculator) nac.getCalculator(VisualPropertyType.NODE_FONT_SIZE);
+				if (cal.getMapping(0) instanceof ContinuousMapping){
+					ContinuousMapping c_m = (ContinuousMapping)cal.getMapping(0);
+					if (c_m.getControllingAttributeName().equalsIgnoreCase(NestedNetworkCreator.GENE_COUNT_SQRT)){
+						c_m.addPoint(min, new BoundaryRangeValues(10,10,10));
+						double fs = Math.max(max,10); 
+						c_m.addPoint(max, new BoundaryRangeValues(fs,fs,fs));
+					}
+				}
+
 			}
 			
 			view.setVisualStyle(style.getName());
