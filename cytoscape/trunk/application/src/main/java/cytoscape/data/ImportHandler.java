@@ -486,6 +486,8 @@ public class ImportHandler {
                 double percent = 0.0d;
 
                 while ((inputLine = in.readLine()) != null) {
+                    // Guard against leading blank lines...
+                    if (progressCount == 0 && inputLine.length() == 0) continue;
                     progressCount += inputLine.length();
 
                     //  Report on Progress
