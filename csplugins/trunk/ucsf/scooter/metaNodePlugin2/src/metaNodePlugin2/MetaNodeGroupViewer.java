@@ -46,7 +46,6 @@ import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
 
 import cytoscape.groups.CyGroup;
-import cytoscape.groups.CyGroupChangeEvent;
 import cytoscape.groups.CyGroupChangeListener;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
@@ -208,24 +207,24 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	 * @param node the CyNode that caused the change
 	 * @param change the change that occured
 	 */
-	public void groupChanged(CyGroup group, GraphObject nodeOrEdge, ChangeType change) { 
+	public void groupChanged(CyGroup group, GraphObject nodeOrEdge, CyGroupViewer.ChangeType change) { 
 
 		MetaNode mn = MetaNodeManager.getMetaNode(group);
 		if (mn == null) return;
 
-		if (change == ChangeType.NODE_ADDED) {
+		if (change == CyGroupViewer.ChangeType.NODE_ADDED) {
 			mn.nodeAdded((CyNode)nodeOrEdge);
 			updateGroupPanel();
-		} else if (change == ChangeType.NODE_REMOVED) {
+		} else if (change == CyGroupViewer.ChangeType.NODE_REMOVED) {
 			mn.nodeRemoved((CyNode)nodeOrEdge);
 			updateGroupPanel();
-		} else if (change == ChangeType.OUTER_EDGE_ADDED) {
+		} else if (change == CyGroupViewer.ChangeType.OUTER_EDGE_ADDED) {
 			// We need to add a meta-edge for this
-		} else if (change == ChangeType.OUTER_EDGE_REMOVED) {
-		} else if (change == ChangeType.INNER_EDGE_ADDED || 
-		           change == ChangeType.INNER_EDGE_REMOVED) {
+		} else if (change == CyGroupViewer.ChangeType.OUTER_EDGE_REMOVED) {
+		} else if (change == CyGroupViewer.ChangeType.INNER_EDGE_ADDED || 
+		           change == CyGroupViewer.ChangeType.INNER_EDGE_REMOVED) {
 			// Nothing to do here
-		} else if (change == ChangeType.STATE_CHANGED) {
+		} else if (change == CyGroupViewer.ChangeType.STATE_CHANGED) {
 			// Handle different representations here....
 			if (group.getState() == MetaNodePlugin2.COLLAPSED && !mn.isCollapsed()) {
 				// Actually collapse the group
