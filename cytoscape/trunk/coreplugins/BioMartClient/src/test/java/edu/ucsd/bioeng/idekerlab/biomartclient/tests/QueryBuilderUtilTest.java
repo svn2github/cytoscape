@@ -1,13 +1,10 @@
 package edu.ucsd.bioeng.idekerlab.biomartclient.tests;
 
-import java.io.BufferedReader;
-import java.util.List;
-import java.util.Map;
 import java.io.File;
 
+import junit.framework.TestCase;
 import edu.ucsd.bioeng.idekerlab.biomartclient.BiomartStub;
 import edu.ucsd.bioeng.idekerlab.biomartclient.utils.QueryBuilderUtil;
-import junit.framework.TestCase;
 
 public class QueryBuilderUtilTest extends TestCase {
 
@@ -17,7 +14,7 @@ public class QueryBuilderUtilTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
         File f = new File("./src/test/resources/mart.registry.xml");
-        stub = new BiomartStub(f.toURL().toString());
+        stub = new BiomartStub(f.toURI().toURL().toString());
 	}
 
 	protected void tearDown() throws Exception {

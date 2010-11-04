@@ -1,17 +1,10 @@
 package edu.ucsd.bioeng.idekerlab.biomartclient.tests;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.io.File;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import edu.ucsd.bioeng.idekerlab.biomartclient.BiomartStub;
-import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Attribute;
-import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Dataset;
-import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Filter;
-import edu.ucsd.bioeng.idekerlab.biomartclient.utils.XMLQueryBuilder;
 
 public class BiomartStubTest extends TestCase {
 
@@ -20,7 +13,7 @@ public class BiomartStubTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		File f = new File("./src/test/resources/mart.registry.xml");
-		stub = new BiomartStub(f.toURL().toString());
+		stub = new BiomartStub(f.toURI().toURL().toString());
 		stub.getRegistry();
 	}
 
