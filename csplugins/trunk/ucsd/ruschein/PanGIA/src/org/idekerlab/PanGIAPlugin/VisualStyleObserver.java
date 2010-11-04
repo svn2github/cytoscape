@@ -133,9 +133,13 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				// Set EDGE_OPACITY
 				BasicCalculator cal = (BasicCalculator) eac.getCalculator(VisualPropertyType.EDGE_OPACITY);
 				if (cal.getMapping(0) instanceof ContinuousMapping){
-					
 					ContinuousMapping c_m = (ContinuousMapping)cal.getMapping(0);
 					if (c_m.getControllingAttributeName().equalsIgnoreCase(NestedNetworkCreator.EDGE_SCORE)){
+						// Clear points
+						for (int i=c_m.getPointCount()-1; i>=0; i--){
+							c_m.removePoint(i);
+						}
+						// Add new points
 						c_m.addPoint(min, new BoundaryRangeValues(30,30,30));
 						c_m.addPoint(max, new BoundaryRangeValues(255,255,255));
 					}
@@ -145,13 +149,16 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				//Set EDGE_LINE_WIDTH
 				cal = (BasicCalculator) eac.getCalculator(VisualPropertyType.EDGE_LINE_WIDTH);
 				if (cal.getMapping(0) instanceof ContinuousMapping){
-					
 					ContinuousMapping c_m = (ContinuousMapping)cal.getMapping(0);
 					if (c_m.getControllingAttributeName().equalsIgnoreCase(NestedNetworkCreator.EDGE_SCORE)){
+						// Clear points
+						for (int i=c_m.getPointCount()-1; i>=0; i--){
+							c_m.removePoint(i);
+						}
+						// Add new points
 						c_m.addPoint(min, new BoundaryRangeValues(5,5,5));
 						c_m.addPoint(max, new BoundaryRangeValues(20,20,20));
 					}
-					
 				}				
 					
 				min = Float.MAX_VALUE;
@@ -170,8 +177,12 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				if (cal.getMapping(0) instanceof ContinuousMapping){
 					ContinuousMapping c_m = (ContinuousMapping)cal.getMapping(0);
 					if (c_m.getControllingAttributeName().equalsIgnoreCase(NestedNetworkCreator.GENE_COUNT_SQRT)){
-						c_m.addPoint(min, new BoundaryRangeValues(20,20,20));
-						
+						// Clear points
+						for (int i=c_m.getPointCount()-1; i>=0; i--){
+							c_m.removePoint(i);
+						}
+						// Add new points
+						c_m.addPoint(min, new BoundaryRangeValues(20,20,20));						
 						double fs = Math.max(10*max,20);
 						c_m.addPoint(max, new BoundaryRangeValues(fs,fs,fs));						
 					}
@@ -182,12 +193,16 @@ public class VisualStyleObserver implements PropertyChangeListener {
 				if (cal.getMapping(0) instanceof ContinuousMapping){
 					ContinuousMapping c_m = (ContinuousMapping)cal.getMapping(0);
 					if (c_m.getControllingAttributeName().equalsIgnoreCase(NestedNetworkCreator.GENE_COUNT_SQRT)){
+						// Clear points
+						for (int i=c_m.getPointCount()-1; i>=0; i--){
+							c_m.removePoint(i);
+						}
+						// Add new points
 						c_m.addPoint(min, new BoundaryRangeValues(10,10,10));
 						double fs = Math.max(max,10); 
 						c_m.addPoint(max, new BoundaryRangeValues(fs,fs,fs));
 					}
 				}
-
 			}
 			
 			view.setVisualStyle(style.getName());
