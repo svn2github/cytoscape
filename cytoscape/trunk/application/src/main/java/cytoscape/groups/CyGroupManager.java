@@ -264,7 +264,7 @@ public class CyGroupManager {
 		// Create the group itself
 		CyGroup group = new CyGroupImpl(groupNode, nodeList, innerEdgeList, outerEdgeList, network);
 		groupMap.put(group.getGroupNode(), group);
-		notifyListeners(group, CyGroupChangeEvent.GROUP_CREATED);
+		notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_CREATED);
 		if (viewer != null)
 			setGroupViewer(group, viewer, null, true);
 		return group;
@@ -289,7 +289,7 @@ public class CyGroupManager {
 		CyGroup group = new CyGroupImpl(groupName);
 		groupMap.put(group.getGroupNode(), group);
 		setGroupNetwork(group, network);
-		notifyListeners(group, CyGroupChangeEvent.GROUP_CREATED);
+		notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_CREATED);
 		setGroupViewer(group, viewer, null, true);
 		return group;
 	}
@@ -313,7 +313,7 @@ public class CyGroupManager {
 		CyGroup group = new CyGroupImpl(groupName, nodeList);
 		groupMap.put(group.getGroupNode(), group);
 		setGroupNetwork(group, network);
-		notifyListeners(group, CyGroupChangeEvent.GROUP_CREATED);
+		notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_CREATED);
 		setGroupViewer(group, viewer, null, false);
 		return group;
 	}
@@ -352,7 +352,7 @@ public class CyGroupManager {
 
 		setGroupNetwork(group, network);
 
-		notifyListeners(group, CyGroupChangeEvent.GROUP_CREATED);
+		notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_CREATED);
 
 		if (viewer != null)
 			setGroupViewer(group, viewer, null, true);
@@ -469,7 +469,7 @@ public class CyGroupManager {
 			RootGraph rg = groupNode.getRootGraph();
 			rg.removeNode(groupNode);
 
-			notifyListeners(group, CyGroupChangeEvent.GROUP_DELETED);
+			notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_DELETED);
 		}
 	}
 
@@ -544,7 +544,7 @@ public class CyGroupManager {
 				} else if (currentView != null) {
 					v.groupCreated(group, currentView);
 				}
-				notifyListeners(group, CyGroupChangeEvent.GROUP_MODIFIED);
+				notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_MODIFIED);
 			}
 		}
 
@@ -615,7 +615,7 @@ public class CyGroupManager {
 	 * @param group the group that has changed
 	 * @param whatChanged the thing that has changed about the group
 	 */
-	private static void notifyListeners(CyGroup group, CyGroupChangeEvent whatChanged) {
+	private static void notifyListeners(CyGroup group, CyGroupChangeListener.ChangeType whatChanged) {
 		for (CyGroupChangeListener listener: changeListeners) {
 			listener.groupChanged(group, whatChanged);
 		}

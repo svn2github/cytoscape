@@ -42,9 +42,11 @@ package cytoscape.groups;
  * group-related events to get notified of global group changes (new groups, etc.).
  */
 public interface CyGroupChangeListener {
+	public enum ChangeType { GROUP_CREATED, GROUP_DELETED, GROUP_MODIFIED }
+
 	/**
  	 * This method will be called by the CyGroupManager when a group is created, deleted, 
  	 * or modified.
  	 */
-	public void groupChanged(CyGroup group, CyGroupChangeEvent change);
+	public void groupChanged(CyGroup group, ChangeType change);
 }
