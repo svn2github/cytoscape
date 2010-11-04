@@ -71,6 +71,10 @@ import javax.xml.parsers.ParserConfigurationException;
  *
  */
 public class BiomartStub {
+	
+	private static final int CONNECTION_TIMEOUT = 3000;
+	private static final int READ_TIMEOUT = 5000;
+	
 	private String baseURL = "http://www.biomart.org/biomart/martservice?";
 	private static final String RESOURCE = "/resource/filterconversion.txt";
 	private static final String TAXONOMY_TABLE = "/resource/tax_report.txt";
@@ -250,11 +254,23 @@ public class BiomartStub {
 
 		String urlStr = "http://" + detail.get("host") + ":" + detail.get("port")
 		                + detail.get("path") + "?type=datasets&mart=" + detail.get("name");
-		//System.out.println("DB name = " + martName + ", Target URL = " + urlStr + "\n");
+		
+		//System.out.println("Connection start:  DB name = " + martName + ", Target URL = " + urlStr + "\n");
 
 		URL url = new URL(urlStr);
-		InputStream is = URLUtil.getBasicInputStream(url);
-
+		
+		final URLConnection connection = URLUtil.getURLConnection(url);
+		connection.setReadTimeout(READ_TIMEOUT);
+		connection.setConnectTimeout(CONNECTION_TIMEOUT);
+		
+		InputStream is = null;
+		try {
+			is = connection.getInputStream();
+		} catch (Exception e) {
+			// Could not create connection.
+			throw new IOException("Could not create connection.");
+		}
+		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String s;
 

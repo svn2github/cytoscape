@@ -191,6 +191,9 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 				try {
 					datasources = stub.getAvailableDatasets(databaseName);
 				} catch (IOException e) {
+					// If timeout/connection error is found, skip the source. 
+					percentCompleted += increment;
+					monitor.setPercentCompleted(percentCompleted);
 					continue;
 				}
 
