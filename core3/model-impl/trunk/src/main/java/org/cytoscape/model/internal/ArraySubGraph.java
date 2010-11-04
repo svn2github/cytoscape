@@ -209,14 +209,32 @@ class ArraySubGraph implements CySubNetwork {
 	 * {@inheritDoc}
 	 */
 	public CyNode getNode(final int index) {
-		return parent.getNode(index);
+		// get the node from the parent
+		final CyNode n = parent.getNode(index);
+		if ( n == null )
+			return null;
+
+		// make sure the subnetwork still contains the node
+		if ( nodeSet.contains(n) )
+			return n;
+		else	
+			return null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public CyEdge getEdge(final int index) {
-		return parent.getEdge(index);
+		// get the edge from the parent
+		final CyEdge e = parent.getEdge(index);
+		if ( e == null )
+			return null;
+
+		// make sure the subnetwork still contains the edge
+		if ( edgeSet.contains(e) )
+			return e;
+		else	
+			return null;
 	}
 
 	/**

@@ -189,10 +189,13 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public synchronized CyNode getNode(final int n) {
-		if ((n >= 0) && (n < nodePointers.size()))
-			return nodePointers.get(n).cyNode;
-		else
-			return null;
+		if ((n >= 0) && (n < nodePointers.size())) {
+			final NodePointer np = nodePointers.get(n);
+			if ( np != null )
+				return np.cyNode;
+		}
+
+		return null;
 	}
 
 	/**
