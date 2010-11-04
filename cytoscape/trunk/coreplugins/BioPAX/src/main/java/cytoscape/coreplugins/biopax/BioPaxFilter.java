@@ -59,6 +59,11 @@ public class BioPaxFilter extends CyFileFilter {
 	private static String[] fileExtensions = { "xml", "owl", "rdf" };
 
 	/**
+	 * Content types
+	 **/
+	private static String[] biopaxContentTypes = { "text/xml", "application/rdf+xml" };
+
+	/**
 	 * Filter Description.
 	 */
 	private static String description = "BioPAX files";
@@ -68,6 +73,9 @@ public class BioPaxFilter extends CyFileFilter {
 	 */
 	public BioPaxFilter() {
 		super(fileExtensions, description, fileNature);
+		// Add our content types
+		for (int i = 0; i < biopaxContentTypes.length; i++)
+			addContentType(biopaxContentTypes[i]);
 	}
 
 	/**
