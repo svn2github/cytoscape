@@ -726,6 +726,10 @@ public class XGMMLReader extends AbstractGraphReader {
 					}
 				}
 			}
+			// Hide all of the group nodes.
+			network.hideNodes(new ArrayList<CyNode>(groupMap.keySet()));
+
+			// If we have a view, notify the group viewer
 			if (view != null && view != Cytoscape.getNullNetworkView()) {
 				CyGroupManager.setGroupViewer(newGroup, viewer, view, true);
 			}
