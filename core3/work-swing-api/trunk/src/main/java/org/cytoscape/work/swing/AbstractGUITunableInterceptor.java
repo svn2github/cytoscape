@@ -95,7 +95,7 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 		return displayGUI(panel, proxyObjs);
 	}
 
-	/** {@inhertDoc} */
+	/** {@inheritDoc} */
 	final public boolean hasTunables(final Object o) {
 		return super.hasTunables(convertSpringProxyObj(o));
 	}
