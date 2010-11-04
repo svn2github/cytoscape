@@ -19,7 +19,7 @@ import org.cytoscape.work.TunableHandler;
  */
 public interface GUITunableInterceptor<TH extends TunableHandler> extends TunableInterceptor<TH> {
 	/**
-	 * Identify Tunables of an Object o and assign a <code>Handler</code> to 
+	 * Identify Tunables of an Object o and assign a <code>TunableHandler</code> to 
 	 * each <code>Tunable</code>.
 	 * 
 	 * This method detects the fields and the methods of the object o, then searches 
@@ -34,10 +34,10 @@ public interface GUITunableInterceptor<TH extends TunableHandler> extends Tunabl
 	void loadTunables(Object o);
 	
 	/**
-	 * Returns the Map that contains all the <code>Handler</code>s for the Object <code>o</code>.
+	 * Returns the Map that contains all the <code>TunableHandler</code>s for an object <code>o</code>.
 	 * 
 	 * @param o An Object on which the loadTunable() method has previously been executed.
-	 * @return The Map with all the <code>Handlers</code> that have been previously assigned 
+	 * @return the map with all the <code>Handlers</code> that have been previously assigned 
 	 * to <code>o</code>.
 	 */
 	Map<String, TH> getHandlers(Object o);
@@ -88,9 +88,8 @@ public interface GUITunableInterceptor<TH extends TunableHandler> extends Tunabl
 	 */
 	boolean validateAndWriteBackTunables(Object... objs);
 
-	/** Tests an object for having tunable annotations.
-	 *
-	 *  @return true if "o" has tunable annotations and else false.
+	/** Tests an object for whether it has been annotated with <code>@Tunable</code> or not.
+	 *  @return true if <code>o</code> has been annoated with <code>@Tunable</code>, otherwise false
 	 */
 	boolean hasTunables(final Object o);
 }

@@ -9,7 +9,7 @@ import org.cytoscape.work.TaskFactory;
 
 /**
  * A Swing specific extension of {@link TaskManager} that allows a
- * JPanels to be used to present the {@link org.cytoscape.work.Tunable}s.
+ * JPanel to be used to present the {@link org.cytoscape.work.Tunable}s.
  */
 public interface GUITaskManager extends TaskManager {
 	/**

@@ -7,21 +7,19 @@ import org.cytoscape.work.TunableHandler;
 
 
 /**
- *	Specific <code>Handler</code> for construction of GUI.
- * 	Access to the <code>Handler</code> for any type of <code>Tunable</code> 
- * will be provided by using this interface
+ * An extension of <code>TunableHandler</code> with added functionality to support the construction of a Swing-based UI.
  */
 public interface GUITunableHandler extends TunableHandler {
 	/**
-	 * to get the panel that contains the GUI representation 
+	 * to get the panel that contains the GUI representation
 	 * (<code>JTextField, JFileChooser, JLabel, JList ...</code>)
-	 * 
+	 *
 	 * @return the panel containing GUI
 	 */
 	JPanel getJPanel();
-	
+
 	/**
-	 * To get the current value of a <code>Handler</code> 
+	 * To get the current value of a <code>Handler</code>
 	 * (or path for a <code>FileHandler</code>, or selected item(s)
 	 * for <code>ListMultipleSelection ListSingleSelection</code>, ...)
 	 *
@@ -29,53 +27,47 @@ public interface GUITunableHandler extends TunableHandler {
 	 */
 	String getState();
 
-	
 	/**
-	 * Use to set the intercepted object (with <code>Tunable</code> annotation) 
-	 * with the new <i>"value"</i> that has been chosen or entered by the user through GUI.
+	 * Updates an annotated object with the current value as retrieved from the GUI.
 	 */
 	void handle();
-	
-	
+
 	/**
-	 *  Notify dependents that this object is changing, i.e. an event occured.
+	 *  Notify dependents that this object has changed, i.e. an event occured.
 	 */
 	void notifyDependents();
-	
+
 	/**
-	 * add a dependency to this <code>GUITunableHandler</code> on another one
-	 * 
+	 * Adds a dependency to this <code>GUITunableHandler</code> on another one.
+	 *
 	 * @param gh the <code>GUITunableHandler</code> it will depend on
 	 */
 	void addDependent(GUITunableHandler gh);
-	
+
 	/**
-	 * Check if the dependency matches with the rule provided on the 
-	 * other <code>GUITunableHandler</code> 
-	 * <p>
-	 * The checking is done dynamically.
-	 * <p>
-	 * 
-	 * If it matches : the GUI for this <code>GUITunableHandler</code> is available, 
-	 * or not if it doesn't match the dependency can me made on String, 
-	 * a boolean value, a specific value for 
-	 * an Integer,Double..., a selected item of a list ...
-	 * </p>
-	 * 
-	 * @param name of the <code>GUITunableHandler</code> on which it depends
-	 * @param state of the <code>GUITunableHandler</code> that is needed to make the GUI available 
+	 * To check the dependencies of this <code>GUITunableHandler</code> with the others.
+	 *
+	 * <p><pre>
+	 * Check the dependencies :
+	 *
+	 *  - if there isn't any dependency, this handler's JPanel container is enabled
+	 *  - if there is, enable or not the JPanel, depending on the name (<code>depName</code>) and the state(<code>depState</code>)
+	 *  of the dependencies of this <code>GUITunableHandler</code>
+	 *  </pre></p>
+	 *
+	 *  @param depName  if this handler has a dependency, it must match this in order for the associated <code>JPanel</code> to be enabled
+	 *  @param depState if this handler has a dependency, this must match the condition in order for the associated <code>JPanel</code> to be enabled
 	 */
-	void checkDependency(String name, String state);
-	
+	void checkDependency(String depName, String depState);
+
 	/**
-	 * Get the new "values" for the <code>Tunables</code> object that have 
-	 * been modified if their JPanel is enabled : if the dependencies are matching
+	 *  Retrieves the settings for the <code>Tunables</code> object that have been modified if their JPanel is enabled.
 	 */
 	void handleDependents();
-	
+
 	/**
-	 * To get the name of the dependency of this <code>GUITunableHandler</code>
-	 * @return the name of the dependency
+	 * Provides the name of the dependency of this <code>GUITunableHandler</code>.
+	 * @return the name of the dependency, if any
 	 */
 	String getDependency();
 }

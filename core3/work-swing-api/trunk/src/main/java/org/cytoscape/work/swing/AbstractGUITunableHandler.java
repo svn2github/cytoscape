@@ -20,22 +20,17 @@ import org.cytoscape.work.AbstractTunableHandler;
 import org.cytoscape.work.Tunable;
 
 
-/**
- * Abstract handler for the creation of the GUI.
- * <br>
- * It provides the functions that are common to all types of Handlers
- */
+/** Base class for the various Swing implementations of <code>TunableHandler</code>. */
 public abstract class AbstractGUITunableHandler
 	extends AbstractTunableHandler implements GUITunableHandler, ActionListener, ChangeListener, ListSelectionListener
 {
 	/**
-	 *  If true the associated GUI element should be layed out next to others in the same group.
+	 *  If true, the associated GUI element should be layed out next to others in the same group,
+	 *  if false, it should be vertically stacked relative to the others.
 	 */
 	protected boolean horizontal;
 
-	/**
-	 * <code>JPanel</code> that will contain the GUI object that represents in the best way the <code>Tunable</code> to the user
-	 */
+	/** <code>JPanel</code> that will contain the GUI representation of the <code>TunableHandler</code>. */
 	protected JPanel panel;
 
 	/**
@@ -47,13 +42,14 @@ public abstract class AbstractGUITunableHandler
 	private String dependencyName;
 
 	/**
-	 * <pre>
-	 * Represents the state of the dependency :
-	 * could be : "true, false, an item of a <code>ListSelection</code>, a value ..."
-	 * </pre>
+	 *  <pre>
+	 *  Represents the value of the dependency.
+	 *  Could be : "true, false, an item of a <code>ListSelection</code>, a value ..."
+	 *  </pre>
+	 *  Either mustMatch is non-empty and mustNotMatch, or vice versa, or both are null if there is no dependency.
 	 */
-	private String dependencyState;
-	private String dependencyUnState;
+	private String mustMatch;
+	private String mustNotMatch;
 
 	/**
 	 * The list of dependencies between the <code>GUITunableHandlers</code>
@@ -94,15 +90,15 @@ public abstract class AbstractGUITunableHandler
                         System.err.println("*** In AbstractGUITunableHandler: \"alignments\" was specified but is neither \"horizontal\" nor \"vertical\"!");
 
 		String s = dependsOn();
-		if (!s.equals("")) {
+		if (!s.isEmpty()) {
 	        	if (!s.contains("!=")) {
 	        		dependencyName = s.substring(0, s.indexOf("="));
-	        		dependencyState = s.substring(s.indexOf("=") + 1);
-	        		dependencyUnState = "";
+	        		mustMatch = s.substring(s.indexOf("=") + 1);
+	        		mustNotMatch = "";
 	        	} else {
 	        		dependencyName = s.substring(0, s.indexOf("!"));
-	        		dependencyUnState = s.substring(s.indexOf("=") + 1);
-	        		dependencyState = "";
+	        		mustNotMatch = s.substring(s.indexOf("=") + 1);
+	        		mustMatch = "";
 	        	}
 	        }
 
@@ -120,9 +116,9 @@ public abstract class AbstractGUITunableHandler
 	}
 
 	/**
-	 * Notify a change of state of a <code>GUITunableHandler</code>
+	 * Notification of a state change of a <code>GUITunableHandler</code>
 	 *
-	 * @param e a modification that happened to this <code>handler</code>
+	 * @param e  the details of the state change
 	 */
 	public void stateChanged(ChangeEvent e) {
 		notifyDependents();
@@ -131,7 +127,7 @@ public abstract class AbstractGUITunableHandler
 	/**
 	 * Notify a change during the selection of an item in the <code>ListSelection</code> objects
 	 *
-	 * @param le change in the selection of an item in a list
+	 * @param le  the specifics of the list selection change
 	 */
 	public void valueChanged(ListSelectionEvent le) {
 		boolean ok = le.getValueIsAdjusting();
@@ -139,75 +135,54 @@ public abstract class AbstractGUITunableHandler
 			notifyDependents();
 	}
 
-
 	/**
-	 *  Notify dependencies that this object is changing
+	 *  Notifies all dependents that this object has changed.
 	 */
 	public void notifyDependents() {
 		String state = getState();
 		String name = getName();
-		for ( GUITunableHandler gh : dependencies )
-			gh.checkDependency( name, state );
+		for (GUITunableHandler gh : dependencies)
+			gh.checkDependency(name, state);
 	}
 
 	/**
-	 *  Add a dependency on this <code>GUITunableHandler</code> to another <code>Tunable</code>
-	 *  While the dependency rule to this other <code>GUITunableHandler</code> doesn't match, this one won't be available
-	 *
-	 *  @param gh <code>Handler</code> on which this one depends on.
+	 *  Adds the argument as a new dependency to this <code>GUITunableHandler</code>.
+	 *  @param gh <code>Handler</code> on which this one will depend on
 	 */
 	public void addDependent(GUITunableHandler gh) {
-		//System.out.println("adding " + gh.getName() + " dependent to " + this.getName() );
-		if ( !dependencies.contains(gh) )
+		if (!dependencies.contains(gh))
 			dependencies.add(gh);
 	}
 
-
-	/**
-	 * To get the name of the dependency of this <code>GUITunableHandler</code>
-	 * @return the name of the dependency
-	 */
+	/** {@inheritDoc} */
 	public String getDependency() {
 		return dependencyName;
 	}
 
-	/**
-	 * Get the new "values" for the <code>Tunables</code> object that have been modified if their JPanel is enabled
-	 */
-	public void handleDependents(){
+	/** {@inheritDoc} */
+	public void handleDependents() {
 		if (panel.isEnabled())
 			handle();
 	}
 
-	/**
-	 * To check the dependencies of this <code>GUITunableHandler</code> with the others.
-	 *
-	 *
-	 * <p><pre>
-	 * Check the dependencies :
-	 *
-	 *  - if there isn't any dependency, the JPanel container is enabled
-	 *  - if there is, enable or not the JPanel, depending on the name (<code>depName</code>) and the state(<code>depState</code>)
-	 *  of the dependencies of this <code>GUITunableHandler</code>
-	 *  </pre></p>
-	 */
-	public void checkDependency(String name, String state) {
+	/** {@inheritDoc} */
+	final public void checkDependency(final String depName, final String depState) {
 		// if we don't depend on anything, then we should be enabled
-		if (dependencyName == null || dependencyState == null) {
+		if (dependencyName == null || mustMatch == null) {
 			setEnabledContainer(true, panel);
 			return;
 		}
 
 		// if the dependency name matches ...
-		if (dependencyName.equals(name)) {
+		if (dependencyName.equals(depName)) {
 			// ... and the state matches, then enable
-			if (!dependencyState.isEmpty()) {
-				if (dependencyState.equals(state))
+			if (!mustMatch.isEmpty()) {
+				if (mustMatch.equals(depState))
 					setEnabledContainer(true, panel);
 				else // ... and the state doesn't match, then disable
 					setEnabledContainer(false, panel);
 			} else {
-				if (!dependencyUnState.equals(state))
+				if (!mustNotMatch.equals(depState))
 					setEnabledContainer(true, panel);
 				else // ... and the state doesn't match, then disable
 					setEnabledContainer(false, panel);
@@ -218,34 +193,35 @@ public abstract class AbstractGUITunableHandler
 	}
 
 	/**
-	 * Set enable or not a container and all the components that are in it
+	 * Enables or disables a container and all its children.
 	 *
-	 * @param enable if we enable or not the container
-	 * @param container the container that will be enabled or not
+	 * @param enable     whether to enable the container or not
+	 * @param container  the container that will be enabled or not
 	 */
 	private void setEnabledContainer(final boolean enable, final Container container) {
 		container.setEnabled(enable);
 		for (final Component child : container.getComponents()) {
 			if (child instanceof Container)
-				setEnabledContainer(enable,(Container)child);
+				setEnabledContainer(enable, (Container)child);
 			else
 				child.setEnabled(enable);
 		}
 	}
 
 	/**
-	 * To get the <code>JPanel</code> container
-	 * @return the <code>JPanel</code> container of the <code>GUITunableHandler</code>
+	 * Returns the panel associated with this <code>GUITunableHandler</code>.
+	 * @return the <code>JPanel</code> container of this <code>GUITunableHandler</code>
 	 */
 	public JPanel getJPanel() {
 		return panel;
 	}
 
-	/** Update the state of the associated <code>Tunable</code>
-	 */
+	/** Updates the state of the associated <code>Tunable</code>. */
 	public abstract void handle();
 
-	/**
+	/** Returns a string representation of the value of the <code>Tunable</code> associated with
+	 *  this <code>GUITunableHandler</code>.
+	 *
 	 *  @return the current value of the associated <code>Tunable</code> represented as a string
 	 */
 	public String getState() {

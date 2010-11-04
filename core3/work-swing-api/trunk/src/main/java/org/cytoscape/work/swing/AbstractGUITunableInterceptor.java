@@ -18,16 +18,16 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Interceptor of <code>Tunable</code> that will be applied on <code>GUITunableHandlers</code>.
+ * Interceptor of <code>Tunable</code>s that will be applied on <code>GUITunableHandlers</code>.
  *
  * <p><pre>
  * To set the new value to the original objects contained in the <code>GUITunableHandlers</code>:
  * <ul>
- *   <li>Creates the parent container for the GUI, or use the one that is specified </li>
- *   <li>Creates a GUI with swing components for each intercepted <code>Tunable</code> </li>
+ *   <li>Creates the parent container for the GUI, or uses the one that has been specified</li>
+ *   <li>Creates a GUI with Swing components for each intercepted <code>Tunable</code></li>
  *   <li>
  *     Displays the GUI to the user, following the layout construction rule specified in the <code>Tunable</code>
- *     annotations, and the dependencies to enable or not the graphic components
+ *     annotations, and the dependencies to enable or disable the graphic components
  *   </li>
  *   <li>
  *     Applies the new <i>value,item,string,state...</i> to the object contained in the <code>GUITunableHandler</code>,
@@ -39,9 +39,16 @@ import org.slf4j.LoggerFactory;
  * @author pasteur
  */
 public abstract class AbstractGUITunableInterceptor extends SpringTunableInterceptor<GUITunableHandler> implements GUITunableInterceptor<GUITunableHandler> {
+	/** A reference to the parent <code>JPanel</code>, if any. */
 	protected JPanel parentPanel = null;
+
+	/** The list of handlers associated with this interceptor. */
 	protected List<GUITunableHandler> handlers;
+
+	/** The actual/original objects whose tunables this interceptor manages. */
 	protected Object[] objectsWithTunables;
+
+	/** Provides an initialised logger. */
 	protected Logger logger;
 
 	/**
@@ -54,22 +61,20 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 		logger = LoggerFactory.getLogger(getClass());
 	}
 
-	/**
-	 * set the parent JPanel that will contain the GUI
-	 * If no parent JPanel is specified, the GUI will be made using a JOptionPane
-	 *
-	 * @param parent component for the <code>GUITunableHandlers</code>'s panels
-	 */
+	/** {@inheritDoc} */
 	final public void setParent(final JPanel parent) {
 		this.parentPanel = (JPanel)parent;
 	}
 
+	/** {@inheritDoc} */
 	final public JPanel getUI(final Object... proxyObjs) {
 		this.objectsWithTunables = convertSpringProxyObjs(proxyObjs);
 		handlers = new ArrayList<GUITunableHandler>();
 		return constructUI();
 	}
 
+	/** This is the final action in getUI() after the translating the arguments to the original/actual annotated objects.
+	 */
 	abstract protected JPanel constructUI();
 
 	/**
@@ -90,10 +95,15 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 		return displayGUI(panel, proxyObjs);
 	}
 
+	/** {@inhertDoc} */
 	final public boolean hasTunables(final Object o) {
 		return super.hasTunables(convertSpringProxyObj(o));
 	}
 
+	/** This implements the final action in execUI() and executes the UI.
+	 *  @param optionPanel  the panel containing the various UI elements corresponding to individual tunables
+	 *  @param proxyObjs    represents the objects annotated with tunables
+	 */
 	protected boolean displayGUI(final JPanel optionPanel, Object... proxyObjs) {
 		Object[] buttons = { "OK", "Cancel" };
 		int result = JOptionPane.showOptionDialog(parentPanel, optionPanel,
