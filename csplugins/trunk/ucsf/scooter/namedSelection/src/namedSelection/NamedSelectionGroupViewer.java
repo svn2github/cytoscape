@@ -51,10 +51,8 @@ import cytoscape.view.CyNetworkView;
 
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
-import cytoscape.groups.CyGroupChangeEvent;
 import cytoscape.groups.CyGroupChangeListener;
 import cytoscape.groups.CyGroupViewer;
-import cytoscape.groups.CyGroupViewer.ChangeType;
 
 // our imports
 import namedSelection.ui.GroupPanel;
@@ -139,14 +137,14 @@ public class NamedSelectionGroupViewer implements CyGroupViewer,
 	 * @param node the CyNode that caused the change
 	 * @param change the change that occured
 	 */
-	public void groupChanged(CyGroup group, GraphObject nodeOrEdge, ChangeType change) { 
+	public void groupChanged(CyGroup group, GraphObject nodeOrEdge, CyGroupViewer.ChangeType change) { 
 		// At some point, this should be a little more granular.  Do we really
 		// need to rebuild the tree when we have a simple node addition/removal?
-		if (change == ChangeType.NODE_ADDED ||
-		    change == ChangeType.NODE_REMOVED ||
-		    change == ChangeType.NETWORK_CHANGED ) {
+		if (change == CyGroupViewer.ChangeType.NODE_ADDED ||
+		    change == CyGroupViewer.ChangeType.NODE_REMOVED ||
+		    change == CyGroupViewer.ChangeType.NETWORK_CHANGED ) {
 			groupPanel.groupChanged(group);
-		} else if (change == ChangeType.STATE_CHANGED) {
+		} else if (change == CyGroupViewer.ChangeType.STATE_CHANGED) {
 			boolean selected = true;
 			if (group.getState() == UNSELECTED)
 				selected = false;
@@ -166,12 +164,12 @@ public class NamedSelectionGroupViewer implements CyGroupViewer,
 
 	/**                                   
    */                                   
-	public void groupChanged(CyGroup group, CyGroupChangeEvent change) {
+	public void groupChanged(CyGroup group, CyGroupChangeListener.ChangeType change) {
 		// Special-case for deleted groups
-		if (change == CyGroupChangeEvent.GROUP_DELETED) {
+		if (change == CyGroupChangeListener.ChangeType.GROUP_DELETED) {
 			// System.out.println("Group deleted: "+group);
 			groupPanel.groupChanged(null);
-		} else if (change == CyGroupChangeEvent.GROUP_CREATED) {
+		} else if (change == CyGroupChangeListener.ChangeType.GROUP_CREATED) {
 			// System.out.println("Group added: "+group);
 		}
 	} 
