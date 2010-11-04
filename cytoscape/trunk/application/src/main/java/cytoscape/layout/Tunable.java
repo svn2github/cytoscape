@@ -1014,7 +1014,8 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 		dim.height = Math.min(list.length * 12, 300);
 		int maxString = 0;
 		for (int i = 0; i < list.length; i++)
-			maxString = Math.max(list[i].toString().length(), maxString);
+			if (list[i].toString() != null)
+				maxString = Math.max(list[i].toString().length(), maxString);
 		dim.width = Math.min(maxString*12, 400);
 
 		return dim;
