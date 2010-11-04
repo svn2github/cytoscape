@@ -43,6 +43,7 @@ public interface GUITunableInterceptor<TH extends TunableHandler> extends Tunabl
 	Map<String, TH> getHandlers(Object o);
 
 	/**
+	 * Returns the <code>JPanel</code> that will be constructed from annotations on <code>objs</code>.
 	 * @param obs  objects which are instances classes with <code>Tunables</code> that need 
 	 * to be displayed to a user.
 	 * @return a panel that contains a visual representation of the tunables and is 
