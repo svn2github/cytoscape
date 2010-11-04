@@ -264,6 +264,7 @@ public class CyGroupManager {
 		// Create the group itself
 		CyGroup group = new CyGroupImpl(groupNode, nodeList, innerEdgeList, outerEdgeList, network);
 		groupMap.put(group.getGroupNode(), group);
+		setGroupNetwork(group, network);
 		notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_CREATED);
 		if (viewer != null)
 			setGroupViewer(group, viewer, null, true);
