@@ -20,7 +20,7 @@ import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import cytoscape.view.CySwingApplication;
+import org.cytoscape.view.CySwingApplication;
 
 
 /**

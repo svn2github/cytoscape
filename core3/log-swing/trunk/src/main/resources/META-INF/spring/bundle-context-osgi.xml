@@ -38,5 +38,5 @@
 	</osgi:service>
 
 	<osgi:reference id="taskManagerRef" interface="org.cytoscape.work.TaskManager"/>
-	<osgi:reference id="cySwingApplicationRef" interface="cytoscape.view.CySwingApplication"/>
+	<osgi:reference id="cySwingApplicationRef" interface="org.cytoscape.view.CySwingApplication"/>
 </beans>

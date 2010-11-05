@@ -21,8 +21,7 @@
 	<artifactId>log-swing</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
-	<name>${bundle.symbolicName}
-		[${bundle.namespace}]</name>
+	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
 
 	<packaging>bundle</packaging>
 
@@ -112,31 +111,16 @@
 	</repositories>
 
 	<dependencies>
-
 		<dependency>
-			<groupId>cytoscape</groupId>
-			<artifactId>application</artifactId>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>swing-application-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.logging</groupId>
-			<artifactId>pax-logging-api</artifactId>
-			<version>1.5.2</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-service</artifactId>
 			<version>1.5.2</version>
 			<scope>compile</scope>
-		</dependency>
-		
-		<!-- Modules for Testing -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
