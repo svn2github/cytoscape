@@ -34,8 +34,10 @@
  */
 package cytoscape.visual.properties;
 
+import giny.view.Justification;
 import giny.view.NodeView;
 import giny.view.ObjectPosition;
+import giny.view.Position;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -45,6 +47,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.Icon;
 
+import cytoscape.visual.LabelPosition;
 import cytoscape.visual.VisualPropertyDependency;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.ui.ObjectPlacerGraphic;
@@ -56,6 +59,9 @@ import ding.view.ObjectPositionImpl;
  *
  */
 public class NodeLabelPositionProp extends AbstractVisualProperty {
+	
+	private static final ObjectPosition DEF_OP = new ObjectPositionImpl();
+	
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -80,8 +86,16 @@ public class NodeLabelPositionProp extends AbstractVisualProperty {
 				BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = bi.createGraphics();
 
+		ObjectPosition op;
+		if(value instanceof ObjectPosition)
+			op = (ObjectPosition) value;
+		else if(value instanceof LabelPosition)
+			op = this.convert((LabelPosition) value);
+		else
+			op = DEF_OP;
+		
 		ObjectPlacerGraphic lp = new ObjectPlacerGraphic(
-				(ObjectPosition) value, size, false, "Label", null, null);
+				op, size, false, "Label", null, null);
 		lp.paint(g2);
 
 		NodeIcon icon = new NodeIcon() {
@@ -123,5 +137,20 @@ public class NodeLabelPositionProp extends AbstractVisualProperty {
 	 */
 	public Object getDefaultAppearanceObject() {
 		return new ObjectPositionImpl();
+	}
+	
+	
+	// This is for backword compatibility.
+	private ObjectPosition convert(LabelPosition lp) {
+		ObjectPosition op = new ObjectPositionImpl();
+		
+		op.setJustify(Justification.parse(lp.getLabelAnchor()));
+		op.setAnchor(Position.parse(lp.getLabelAnchor()));
+		op.setTargetAnchor(Position.parse(lp.getTargetAnchor()));
+		op.setOffsetX(lp.getOffsetX());
+		op.setOffsetY(lp.getOffsetY());
+		
+		return op;
+		
 	}
 }
