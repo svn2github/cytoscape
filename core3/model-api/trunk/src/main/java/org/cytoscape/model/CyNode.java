@@ -47,9 +47,9 @@ public interface CyNode extends CyTableEntry {
 	
 	/**
 	 * An index of this node within this network.  The index is guaranteed to
-	 * be between 0 and (the number of nodes in the network) - 1 and.
-     * serves as an index into the {@link List} returned from 
-     * {@link CyNetwork#getNodeList}.
+	 * be between 0 and (the number of nodes in the network) - 1. This index
+	 * can be used as a parameter to {@link CyNetwork#getNode}, however it is not
+	 * necessarily an index into {@link CyNetwork#getNodeList}.
 	 * @return An index for this node within this network.
 	 */
 	int getIndex();

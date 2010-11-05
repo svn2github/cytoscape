@@ -111,4 +111,31 @@ public abstract class AbstractCyNodeTest extends TestCase {
 		n1.setNestedNetwork( null );
 		assertNull(n1.getNestedNetwork());
 	}
+
+	public void testRemoveNodeIndexStaysConstant() {
+		assertEquals(0,net.getNodeCount());
+		CyNode n0 = net.addNode();
+		CyNode n1 = net.addNode();
+		int n0i = n0.getIndex();
+		int n1i = n1.getIndex();
+		assertEquals(0,n0i);
+		assertEquals(1,n1i);
+		net.removeNode(n0);
+		assertEquals(1,n1i);
+	}
+
+	public void testRemoveNodeGetNodeFromIndex() {
+		assertEquals(0,net.getNodeCount());
+		CyNode n0 = net.addNode();
+		CyNode n1 = net.addNode();
+		int n0i = n0.getIndex();
+		int n1i = n1.getIndex();
+		assertEquals(0,n0i);
+		assertEquals(1,n1i);
+		assertEquals(net.getNode(0),n0);
+		assertEquals(net.getNode(1),n1);
+		assertTrue( net.removeNode(n0) );
+		assertNull(net.getNode(0));
+		assertEquals(n1,net.getNode(1));
+	}
 }
