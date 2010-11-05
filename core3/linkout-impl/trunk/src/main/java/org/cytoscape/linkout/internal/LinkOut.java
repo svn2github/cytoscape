@@ -17,7 +17,7 @@ import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 
-import cytoscape.util.OpenBrowser;
+import org.cytoscape.util.OpenBrowser;
 
 
 /**

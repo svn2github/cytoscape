@@ -17,6 +17,6 @@
 
 	<osgi:reference id="cyServiceRegistrarRef"
 		interface="org.cytoscape.service.util.CyServiceRegistrar" />
-	<osgi:reference id="openBrowserRef" interface="cytoscape.util.OpenBrowser" />
+	<osgi:reference id="openBrowserRef" interface="org.cytoscape.util.OpenBrowser" />
 
 </beans>
