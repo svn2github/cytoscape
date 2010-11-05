@@ -1,25 +1,24 @@
 package org.cytoscape.view.vizmap.gui.internal.task;
 
-import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 public class DeleteVisualStyleTaskFactory implements TaskFactory {
 
-	private final CyEventHelper eventHelper;
+	private final VisualMappingManager vmm;
 	private final SelectedVisualStyleManager manager;
 
-	public DeleteVisualStyleTaskFactory(final CyEventHelper eventHelper,
+	public DeleteVisualStyleTaskFactory(final VisualMappingManager vmm,
 			final SelectedVisualStyleManager manager) {
 		this.manager = manager;
-		this.eventHelper = eventHelper;
-
+		this.vmm = vmm;
 	}
 
 	@Override
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new DeleteVisualStyleTask(eventHelper, manager));
+		return new TaskIterator(new DeleteVisualStyleTask(vmm, manager));
 	}
 
 }

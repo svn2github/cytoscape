@@ -61,7 +61,7 @@
 
 	<!-- Import Desktop Service -->
 	<osgi:reference id="cytoscapeDesktopServiceRef"
-		interface="cytoscape.view.CySwingApplication" />
+		interface="org.cytoscape.view.CySwingApplication" />
 
 	<!-- Visual Mapping Manager Service -->
 	<osgi:reference id="vmmServiceRef"
@@ -113,8 +113,7 @@
 	</osgi:service>
 
 	
-	<osgi:service id="renameStyleActionService" ref="renameStyleAction"
-		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
+	
 	<osgi:service id="copyStyleActionService" ref="copyStyleAction"
 		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
 	<osgi:service id="createLegendActionService" ref="createLegendAction"

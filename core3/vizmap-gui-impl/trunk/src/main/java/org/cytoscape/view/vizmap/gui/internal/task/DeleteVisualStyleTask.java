@@ -2,9 +2,8 @@ package org.cytoscape.view.vizmap.gui.internal.task;
 
 import javax.swing.JOptionPane;
 
-import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.events.VisualStyleRemovedEvent;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
@@ -14,13 +13,12 @@ import org.cytoscape.work.TaskMonitor;
  */
 public class DeleteVisualStyleTask extends AbstractTask {
 
-	private final CyEventHelper eventHelper;
 	private final SelectedVisualStyleManager manager;
+	private final VisualMappingManager vmm;
 
-	public DeleteVisualStyleTask(final CyEventHelper eventHelper,
+	public DeleteVisualStyleTask(final VisualMappingManager vmm,
 			final SelectedVisualStyleManager manager) {
-
-		this.eventHelper = eventHelper;
+		this.vmm = vmm;
 		this.manager = manager;
 	}
 
@@ -43,9 +41,7 @@ public class DeleteVisualStyleTask extends AbstractTask {
 		int ich = JOptionPane.showConfirmDialog(null, checkString,
 				"Confirm Delete Style", JOptionPane.YES_NO_OPTION);
 
-		if (ich == JOptionPane.YES_OPTION) {
-			// VMM removes style.
-			eventHelper.fireSynchronousEvent(new VisualStyleRemovedEvent(this,currentStyle));
-		}
+		if (ich == JOptionPane.YES_OPTION)
+			vmm.removeVisualStyle(currentStyle);
 	}
 }

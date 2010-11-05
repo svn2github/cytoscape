@@ -191,12 +191,13 @@
 		<constructor-arg ref="visualStyleFactoryServiceRef" />
 		<constructor-arg ref="vizMapperUtil" />
 		<constructor-arg ref="dingVisualLexiconServiceRef" />
+		<constructor-arg ref="vmmServiceRef" />
 	</bean>
 	
 	<bean name="removeVisualStyleTaskFactory"
 		class="org.cytoscape.view.vizmap.gui.internal.task.DeleteVisualStyleTaskFactory"
 		depends-on="vizMapperMainPanel">
-		<constructor-arg ref="cyEventHelperServiceRef" />
+		<constructor-arg ref="vmmServiceRef" />
 		<constructor-arg ref="selectedVisualStyleManager"/>
 	</bean>
 
@@ -209,14 +210,14 @@
 			value="${vizMapperMainPanel.menu.removeStyleAction.icon}" />
 	</bean>
 
-	--><bean name="renameStyleAction"
+	<bean name="renameStyleAction"
 		class="org.cytoscape.view.vizmap.gui.internal.action.RenameStyleAction"
 		autowire="autodetect" depends-on="vizMapperMainPanel">
 		<property name="menuLabel" value="${vizMapperMainPanel.menu.renameStyleAction}" />
 		<property name="iconId"
 			value="${vizMapperMainPanel.menu.renameStyleAction.icon}" />
 		<constructor-arg ref="vizMapperUtil" />
-	</bean>
+	</bean>-->
 
 	<bean name="copyStyleAction"
 		class="org.cytoscape.view.vizmap.gui.internal.action.CopyStyleAction"

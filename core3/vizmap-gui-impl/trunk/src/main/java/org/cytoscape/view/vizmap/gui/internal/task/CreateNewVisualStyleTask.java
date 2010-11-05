@@ -1,6 +1,7 @@
 package org.cytoscape.view.vizmap.gui.internal.task;
 
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
@@ -17,12 +18,15 @@ public class CreateNewVisualStyleTask extends AbstractTask {
 	private final VizMapperUtil vizMapperUtil;
 	private final VisualLexicon lexicon;
 	
+	private final VisualMappingManager vmm;
+	
 	public CreateNewVisualStyleTask(final VizMapperUtil vizMapperUtil,
-			final VisualStyleFactory vsFactory, final VisualLexicon lexicon) {
+			final VisualStyleFactory vsFactory, final VisualLexicon lexicon, final VisualMappingManager vmm) {
 		super();
 		this.vizMapperUtil = vizMapperUtil;
 		this.vsFactory = vsFactory;
 		this.lexicon = lexicon;
+		this.vmm = vmm;
 	}
 
 	
@@ -33,7 +37,8 @@ public class CreateNewVisualStyleTask extends AbstractTask {
 			return;
 
 		// Create new style.  This method call automatically fire event.
-		final VisualStyle newStyle = vsFactory.createVisualStyle(title, lexicon);
+		final VisualStyle newStyle = vsFactory.getInstance(title, lexicon);
+		vmm.addVisualStyle(newStyle);
 		logger.info("CreateNewVisualStyleTask created new Visual Style: " + newStyle.getTitle());
 	}
 }

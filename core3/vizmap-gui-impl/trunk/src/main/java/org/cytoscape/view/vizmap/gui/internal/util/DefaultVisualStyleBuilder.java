@@ -88,7 +88,7 @@ public class DefaultVisualStyleBuilder {
 	private VisualStyle buildDefaultStyle(final VisualLexicon lexicon) {
 
 		// Create new style 
-		final VisualStyle newStyle = vsFactory.createVisualStyle(DEFAULT_VS_NAME, lexicon);
+		final VisualStyle newStyle = vsFactory.getInstance(DEFAULT_VS_NAME, lexicon);
 		
 		// Set node appearance
 		newStyle.setDefaultValue(NODE_COLOR, DEFAULT_NODE_COLOR );

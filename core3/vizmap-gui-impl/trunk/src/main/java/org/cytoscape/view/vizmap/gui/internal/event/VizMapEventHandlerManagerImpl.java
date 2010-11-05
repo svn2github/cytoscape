@@ -19,8 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
-import cytoscape.Cytoscape;
-
 public class VizMapEventHandlerManagerImpl implements
 		VizMapEventHandlerManager, PropertyChangeListener {
 
@@ -59,27 +57,29 @@ public class VizMapEventHandlerManagerImpl implements
 
 	private void createHandlers(PropertySheetPanel propertySheetPanel) {
 		AbstractVizMapEventHandler windowEventHandler = new EditorWindowEventHandler();
-		eventHandlers.put(EditorManager.EDITOR_WINDOW_CLOSED,
-				windowEventHandler);
-		eventHandlers.put(EditorManager.EDITOR_WINDOW_OPENED,
-				windowEventHandler);
-
-		eventHandlers.put(Cytoscape.CYTOSCAPE_INITIALIZED,
-				new InitializedEventHandler());
-
-		AbstractVizMapEventHandler loadHandler = new DataLoadedEventHandler();
-		eventHandlers.put(Cytoscape.VIZMAP_LOADED, loadHandler);
-
-		// TODO: create session event handler
-		// eventHandlers.put(Cytoscape.SESSION_LOADED, loadHandler);
-
-		AbstractVizMapEventHandler attrHandler = new AttributeUpdateEventHandler(
-				vizMapPropertySheetBuilder);
-		eventHandlers.put(Cytoscape.ATTRIBUTES_CHANGED, attrHandler);
-		eventHandlers.put(Cytoscape.NETWORK_LOADED, attrHandler);
-
-		eventHandlers.put("VALUE", new CellEditorEventHandler(manager,
-				propertySheetPanel, tableMgr, applicationManager, vizMapPropertySheetBuilder));
+		
+		//FIXME
+//		eventHandlers.put(EditorManager.EDITOR_WINDOW_CLOSED,
+//				windowEventHandler);
+//		eventHandlers.put(EditorManager.EDITOR_WINDOW_OPENED,
+//				windowEventHandler);
+//
+//		eventHandlers.put(Cytoscape.CYTOSCAPE_INITIALIZED,
+//				new InitializedEventHandler());
+//
+//		AbstractVizMapEventHandler loadHandler = new DataLoadedEventHandler();
+//		eventHandlers.put(Cytoscape.VIZMAP_LOADED, loadHandler);
+//
+//		// TODO: create session event handler
+//		// eventHandlers.put(Cytoscape.SESSION_LOADED, loadHandler);
+//
+//		AbstractVizMapEventHandler attrHandler = new AttributeUpdateEventHandler(
+//				vizMapPropertySheetBuilder);
+//		eventHandlers.put(Cytoscape.ATTRIBUTES_CHANGED, attrHandler);
+//		eventHandlers.put(Cytoscape.NETWORK_LOADED, attrHandler);
+//
+//		eventHandlers.put("VALUE", new CellEditorEventHandler(manager,
+//				propertySheetPanel, tableMgr, applicationManager, vizMapPropertySheetBuilder));
 
 	}
 

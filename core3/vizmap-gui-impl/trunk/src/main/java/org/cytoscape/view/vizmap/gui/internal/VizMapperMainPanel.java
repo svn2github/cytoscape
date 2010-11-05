@@ -35,9 +35,6 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyEditor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +45,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -56,6 +52,8 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.CySwingApplication;
+import org.cytoscape.view.CytoPanelName;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
@@ -63,18 +61,15 @@ import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
-import org.cytoscape.view.vizmap.events.VisualStyleCreatedEvent;
-import org.cytoscape.view.vizmap.events.VisualStyleCreatedListener;
-import org.cytoscape.view.vizmap.events.VisualStyleRemovedEvent;
-import org.cytoscape.view.vizmap.events.VisualStyleRemovedListener;
+import org.cytoscape.view.vizmap.events.VisualStyleAboutToBeRemovedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleAboutToBeRemovedListener;
+import org.cytoscape.view.vizmap.events.VisualStyleAddedEvent;
+import org.cytoscape.view.vizmap.events.VisualStyleAddedListener;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
-import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
-import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
-import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
 import org.cytoscape.view.vizmap.gui.internal.theme.ColorManager;
 import org.cytoscape.view.vizmap.gui.internal.theme.IconManager;
 import org.slf4j.Logger;
@@ -84,10 +79,6 @@ import com.l2fprod.common.propertysheet.Property;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
-
-import cytoscape.Cytoscape;
-import cytoscape.view.CySwingApplication;
-import cytoscape.view.CytoPanelName;
 
 
 /**
@@ -105,7 +96,7 @@ import cytoscape.view.CytoPanelName;
  * @param <syncronized>
  */
 public class VizMapperMainPanel extends AbstractVizMapperPanel implements
-		VisualStyleCreatedListener, VisualStyleRemovedListener, PopupMenuListener, NetworkViewAddedListener, NetworkAddedListener {
+		VisualStyleAddedListener, VisualStyleAboutToBeRemovedListener, PopupMenuListener, NetworkViewAddedListener, NetworkAddedListener {
 
 	private final static long serialVersionUID = 1202339867854959L;
 	
@@ -674,8 +665,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	/**
 	 * Update GUI components when new Visual Style is created.
 	 */
-	@Override public void handleEvent(final VisualStyleCreatedEvent e) {
-		final VisualStyle newStyle = e.getCreatedVisualStyle();
+	@Override public void handleEvent(final VisualStyleAddedEvent e) {
+		final VisualStyle newStyle = e.getVisualStyleAdded();
 		if (newStyle == null)
 			return;
 		
@@ -727,11 +718,11 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * Update panel when removed
 	 */
 	@Override
-	public void handleEvent(VisualStyleRemovedEvent e) {
+	public void handleEvent(VisualStyleAboutToBeRemovedEvent e) {
 
 		// Update image
-		getDefaultImageManager().remove(e.getRemovedVisualStyle());
-		vizMapPropertySheetBuilder.getPropertyMap().remove(e.getRemovedVisualStyle());
+		getDefaultImageManager().remove(e.getVisualStyleToBeRemoved());
+		vizMapPropertySheetBuilder.getPropertyMap().remove(e.getVisualStyleToBeRemoved());
 		// Switch to the default style
 		final VisualStyle defaultStyle = manager.getDefaultStyle();
 

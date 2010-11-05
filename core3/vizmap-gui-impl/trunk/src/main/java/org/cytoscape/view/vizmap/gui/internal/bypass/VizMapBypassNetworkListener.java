@@ -39,11 +39,8 @@ package org.cytoscape.view.vizmap.gui.internal.bypass;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.cytoscape.view.vizmap.gui.editor.EditorManager;
-
 import org.cytoscape.session.CyApplicationManager;
-import cytoscape.Cytoscape;
-import cytoscape.view.CySwingApplication;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
 
 /**
@@ -57,7 +54,6 @@ public class VizMapBypassNetworkListener implements PropertyChangeListener {
 	public VizMapBypassNetworkListener(final EditorManager ef, final CyApplicationManager applicationManager) {
 		this.ef = ef;
 		this.applicationManager = applicationManager;
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
 	/**
