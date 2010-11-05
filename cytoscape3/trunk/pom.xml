@@ -325,9 +325,9 @@
 		<module>provision</module>
 		<module>phoebe.dnd</module>
 		<module>wrappers</module>
-		<module>application</module>
 		<!--<module>table.import</module>--> 
 		<!--
+		<module>application</module>
 		<module>quickfind</module>
 			<module>webservice</module> <module>vizmap-gui</module>
 			<module>cpath</module>

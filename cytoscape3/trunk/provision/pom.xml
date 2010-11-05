@@ -112,21 +112,99 @@
 		</dependency>
 
 
-		<!-- Cytoscape Core Bundles -->
+		<!-- Cytoscape API Bundles -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>model-api</artifactId>
+			<version>3.0.0-alpha1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>viewmodel-api</artifactId>
+			<version>3.0.0-alpha2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>vizmap-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>work-api</artifactId>
+			<version>3.0.0-alpha1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>work-swing-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>swing-application-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-api</artifactId>
+			<version>3.0.0-alpha1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>plugin-api</artifactId>
+			<version>3.0.0-alpha1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>dnd-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>io-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>session-api</artifactId>
+			<version>3.0.0-alpha1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>core-task-api</artifactId>
+			<version>3.0.0-alpha1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>layout-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>presentation-api</artifactId>
+			<version>3.0.0-alpha1</version>
+		</dependency>
+
+
+		<!-- Cytoscape Implementation Bundles -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>swing-application-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>ding-presentation-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -141,7 +219,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>session-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -156,7 +234,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -178,16 +256,13 @@
 			<artifactId>spacial</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>ding-presentation-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
+		<!--
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-gui-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>default-mappings</artifactId>
@@ -203,7 +278,23 @@
 			<artifactId>property-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>splash</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>swing-util</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
+		<!-- Other dependencies -->
+		<dependency>
+			<groupId>cytoscape-sun</groupId>
+			<artifactId>jhall</artifactId>
+			<version>1.0</version>
+		</dependency>
 
 		<dependency>  
 			<groupId>org.apache.commons</groupId>  
@@ -215,36 +306,20 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>plugin-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>plugin-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
 		<!-- A utility that allows you to register services dynamically -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>service-util</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
-
-
 		<!-- Editor Plugin -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>editor-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>dnd-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
 
 		<!-- cytoscape layouts -->
 <!--
