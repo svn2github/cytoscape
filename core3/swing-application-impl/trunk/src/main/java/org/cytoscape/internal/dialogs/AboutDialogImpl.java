@@ -44,8 +44,8 @@ import javax.swing.Icon;
 import javax.swing.JEditorPane;
 import javax.swing.LayoutStyle;
 import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
-import org.cytoscape.dialogs.AboutDialog;
 import org.cytoscape.util.OpenBrowser;
 
 
@@ -55,7 +55,7 @@ import org.cytoscape.util.OpenBrowser;
  *
  * @author  kono
  */
-class AboutDialogImpl extends javax.swing.JDialog implements AboutDialog {
+class AboutDialogImpl extends javax.swing.JDialog implements HyperlinkListener {
 	private final static long serialVersionUID = 1213748837120927L;
 
 	private OpenBrowser openBrowser;

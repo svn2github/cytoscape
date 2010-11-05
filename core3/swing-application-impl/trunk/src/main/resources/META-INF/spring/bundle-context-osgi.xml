@@ -79,9 +79,6 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="cyOperatingContextService" ref="cyOperatingContext"
-		interface="org.cytoscape.CyOperatingContext" />
-
 	<osgi:service id="cyMenusService" ref="cytoscapeMenus"
 		interface="org.cytoscape.view.CyMenus" />
 
@@ -314,9 +311,6 @@
 
 	<osgi:service id="undoMonitorSetCurrentNetworkViewListenerService"
 		ref="undoMonitor" interface="org.cytoscape.session.events.SetCurrentNetworkViewListener" />
-
-	<osgi:service id="aboutDialogFactoryService" ref="aboutDialogFactory"
-		interface="org.cytoscape.dialogs.AboutDialogFactory" />
 
 	<osgi:service id="selectRegisterListenerService" ref="selectRegisterListener"
 		interface="org.cytoscape.view.model.events.NetworkViewAddedListener" />

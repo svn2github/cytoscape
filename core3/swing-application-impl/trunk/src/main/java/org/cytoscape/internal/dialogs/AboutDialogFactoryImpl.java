@@ -38,12 +38,10 @@ package org.cytoscape.internal.dialogs;
 import java.awt.Window;
 
 import org.cytoscape.util.OpenBrowser;
-import org.cytoscape.dialogs.AboutDialog;
-import org.cytoscape.dialogs.AboutDialogFactory;
 
 /**
  */
-public class AboutDialogFactoryImpl implements AboutDialogFactory {
+public class AboutDialogFactoryImpl {
 
 	private OpenBrowser ob;
 
@@ -54,7 +52,7 @@ public class AboutDialogFactoryImpl implements AboutDialogFactory {
 			this.ob = ob;
 	}
 
-	public AboutDialog getAboutDialog(Window parent, boolean modal) {
+	public AboutDialogImpl getAboutDialog(Window parent, boolean modal) {
 		return new AboutDialogImpl(parent,modal,ob);
 	}
 }

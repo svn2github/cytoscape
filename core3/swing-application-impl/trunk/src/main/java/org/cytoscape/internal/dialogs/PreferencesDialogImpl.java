@@ -67,7 +67,7 @@ import javax.swing.table.TableModel;
 
 import org.cytoscape.event.CyEventHelper;
 
-import org.cytoscape.CyOperatingContext;
+import org.cytoscape.internal.CyOperatingContextImpl;
 import org.cytoscape.events.PreferencesUpdatedEvent;
 
 
@@ -79,7 +79,7 @@ public class PreferencesDialogImpl extends JDialog {
 
 	int[] selection = null;
 	private Properties props;
-	private CyOperatingContext context;
+	private CyOperatingContextImpl context;
 	private CyEventHelper eh;
 
 	JScrollPane propsTablePane = new JScrollPane();
@@ -196,7 +196,7 @@ public class PreferencesDialogImpl extends JDialog {
 	 *
 	 * @param owner  DOCUMENT ME!
 	 */
-	public PreferencesDialogImpl(Frame owner,CyOperatingContext context, CyEventHelper eh) {
+	public PreferencesDialogImpl(Frame owner,CyOperatingContextImpl context, CyEventHelper eh) {
 		super(owner);
 		this.context = context;
 		this.props = context.getProperties();

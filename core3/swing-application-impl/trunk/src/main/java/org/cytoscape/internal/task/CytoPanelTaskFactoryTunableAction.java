@@ -30,7 +30,6 @@
 package org.cytoscape.internal.task;
 
 
-import org.cytoscape.Cytoscape;
 import org.cytoscape.view.CySwingApplication;
 import org.cytoscape.view.CytoscapeAction;
 import org.cytoscape.view.CytoPanel;

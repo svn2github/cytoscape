@@ -37,6 +37,8 @@
 package org.cytoscape.internal;
 
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.cytoscape.CytoscapeVersion; 
 
 /** 
@@ -44,21 +46,29 @@ import org.cytoscape.CytoscapeVersion;
  */
 public class CyVersion implements CytoscapeVersion {
 
+	private final static Pattern p = Pattern.compile(CytoscapeVersion.VERSION_REGEX);
+
 	private final int major;
 	private final int minor;
 	private final int bugfix;
+	private final String qualifier;
 	private final String version;
 
-	public CyVersion(Properties props) {
-		version = props.getProperty("cytoscape.version.number");
+	public CyVersion(final Properties props) {
+		version = props.getProperty(CytoscapeVersion.VERSION_PROPERTY_NAME);
 
-		if ( !version.matches("^\\d+\\.\\d+\\.\\d+$") )
-			throw new IllegalArgumentException("Malformed version number:  must be of the form X.Y.Z where X,Y, and Z are positive integers.");
+		if ( version == null )
+			throw new NullPointerException("No version number found in the provided properties with property name: " + CytoscapeVersion.VERSION_PROPERTY_NAME);
 
-		final String[] vers = version.split("\\.");
-		major = Integer.parseInt(vers[0]);
-		minor = Integer.parseInt(vers[1]);
-		bugfix = Integer.parseInt(vers[2]);
+		Matcher m = p.matcher(version);
+
+		if ( !m.matches() )
+			throw new IllegalArgumentException("Malformed version number: " + version + "  The version number must match this regular expression: " + CytoscapeVersion.VERSION_REGEX);
+
+		major = Integer.parseInt(m.group(1));
+		minor = Integer.parseInt(m.group(2));
+		bugfix = Integer.parseInt(m.group(3));
+		qualifier = m.group(4);
 	}
 
 	/**
@@ -87,5 +97,12 @@ public class CyVersion implements CytoscapeVersion {
 	 */
 	public int getBugFixVersion() {
 		return bugfix;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public String getQualifier() {
+		return qualifier;
 	}
 }

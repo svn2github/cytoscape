@@ -38,16 +38,16 @@ package org.cytoscape.internal.dialogs;
 
 import java.awt.Frame;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.CyOperatingContext;
+import org.cytoscape.internal.CyOperatingContextImpl;
 
 /**
  */
 public class PreferencesDialogFactoryImpl {
 
 	private CyEventHelper eh;
-	private CyOperatingContext coc;
+	private CyOperatingContextImpl coc;
 
-	public PreferencesDialogFactoryImpl(CyOperatingContext coc, CyEventHelper eh) {
+	public PreferencesDialogFactoryImpl(CyOperatingContextImpl coc, CyEventHelper eh) {
 		this.coc = coc;
 		this.eh = eh;
 	}

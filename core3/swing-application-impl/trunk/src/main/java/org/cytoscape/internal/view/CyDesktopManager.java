@@ -36,7 +36,6 @@
 */
 package org.cytoscape.internal.view;
 
-import org.cytoscape.Cytoscape;
 
 import javax.swing.*;
 import java.awt.*;

@@ -38,8 +38,6 @@
 
 package org.cytoscape.internal;
 
-import org.cytoscape.CyOperatingContext;
-
 import java.util.Properties;
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,7 +48,13 @@ import org.cytoscape.property.CyProperty;
 /**
  * Basic access to Cytoscape's operating context. 
  */
-public class CyOperatingContextImpl implements CyOperatingContext {
+// TODO This is currently only used to store properties when saved in the preferences
+// dialog - this needs to be supported more generally on an application level, perhaps
+// on a shutdown event?
+public class CyOperatingContextImpl {
+
+	public static final String CONFIG_DIR = ".cytoscape";
+	public static final String PROPS = "cytoscape.props";
 
 	private Properties props;
 
