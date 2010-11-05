@@ -43,5 +43,10 @@ package org.cytoscape;
  * notified before actually shutting down.
  */
 public interface CytoscapeShutdown {
+	/**
+	 * Calling this method indicates that the application should shutdown.
+	 * @param retVal The return value with which to (eventually)
+	 * call {@link System.exit} with.
+	 */
 	void exit(int retVal);
 }

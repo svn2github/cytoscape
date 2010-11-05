@@ -36,11 +36,24 @@
  */
 package org.cytoscape;
 
+/**
+ * An interface providing access to version information about this
+ * version of the Cytoscape application.
+ */
 public interface CytoscapeVersion {
+
+	/**
+	 * The string used to identify the Property containing the version number.
+	 */
+	public static final String VERSION_PROPERTY_NAME = "cytoscape.version.number";
+
+	/**
+	 * The regular expression used to test the property version string.
+	 */
+	public static final String VERSION_REGEX = "^(\\d+)\\.(\\d+)\\.(\\d+)([\\-\\.\\w]*)$";
 	
 	/**
-	 * The full version as a string, for example "3.2.5".  Should
-	 * not include any other text or name.
+	 * The full version as a string, for example "3.2.5-alpha".  
 	 */
 	public String getVersion();
 
@@ -75,4 +88,11 @@ public interface CytoscapeVersion {
 	 * versions of the code).
 	 */
 	public int getBugFixVersion();
+
+	/**
+	 * Any text following the last digit of the bug fix version.  If
+	 * the version is 3.0.2-beta1 then the qualifier will be "-beta1".
+	 * @return Any text following the last digit of the bug fix version.
+	 */
+	public String getQualifier();
 }
