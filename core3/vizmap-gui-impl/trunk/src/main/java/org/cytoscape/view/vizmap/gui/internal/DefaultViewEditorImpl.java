@@ -27,7 +27,6 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
-
 import static org.cytoscape.model.CyTableEntry.EDGE;
 import static org.cytoscape.model.CyTableEntry.NETWORK;
 import static org.cytoscape.model.CyTableEntry.NODE;
@@ -77,6 +76,7 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
@@ -85,7 +85,6 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Dialog for editing default visual property values.<br>
@@ -116,9 +115,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	private EditorManager editorFactory;
 
-	private VisualStyle selectedStyle;
-
 	private VisualMappingManager vmm;
+	final SelectedVisualStyleManager selectedManager;
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -131,11 +129,11 @@ public class DefaultViewEditorImpl extends JDialog implements
 	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
 			final EditorManager editorFactory,
 			final CyApplicationManager cyApplicationManager,
-			final VisualMappingManager vmm)
-	{
+			final VisualMappingManager vmm,
+			final SelectedVisualStyleManager selectedManager) {
 		super();
 		this.vmm = vmm;
-		this.selectedStyle = this.vmm.getDefaultVisualStyle();
+		this.selectedManager = selectedManager;
 		vpSets = new HashMap<String, Set<VisualProperty<?>>>();
 		listMap = new HashMap<String, JList>();
 
@@ -162,6 +160,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	private void updateVisualPropertyLists() {
 		vpSets.clear();
+		VisualStyle selectedStyle = selectedManager.getCurrentVisualStyle();
 
 		final VisualLexicon lexicon = selectedStyle.getVisualLexicon();
 
@@ -176,8 +175,11 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	private Set<VisualProperty<?>> getLeafNodes(
 			final Collection<VisualProperty<?>> props) {
+		final VisualStyle selectedStyle = selectedManager
+				.getCurrentVisualStyle();
 		final VisualLexicon lexicon = selectedStyle.getVisualLexicon();
-		final Set<VisualProperty<?>> propSet = new TreeSet<VisualProperty<?>>(new VisualPropertyComparator());
+		final Set<VisualProperty<?>> propSet = new TreeSet<VisualProperty<?>>(
+				new VisualPropertyComparator());
 
 		for (VisualProperty<?> vp : props) {
 			if (lexicon.getVisualLexiconNode(vp).getChildren().size() == 0)
@@ -190,8 +192,11 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	private Set<VisualProperty<?>> getNetworkLeafNodes(
 			final Collection<VisualProperty<?>> props) {
+		final VisualStyle selectedStyle = selectedManager
+				.getCurrentVisualStyle();
 		final VisualLexicon lexicon = selectedStyle.getVisualLexicon();
-		final Set<VisualProperty<?>> propSet = new TreeSet<VisualProperty<?>>(new VisualPropertyComparator());
+		final Set<VisualProperty<?>> propSet = new TreeSet<VisualProperty<?>>(
+				new VisualPropertyComparator());
 
 		for (VisualProperty<?> vp : props) {
 			if (lexicon.getVisualLexiconNode(vp).getChildren().size() == 0
@@ -212,6 +217,9 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 * .Component)
 	 */
 	public void showEditor(Component parent) {
+		updateVisualPropertyLists();
+		buildList();
+
 		setSize(900, 450);
 		setLocationRelativeTo(parent);
 		setVisible(true);
@@ -453,30 +461,35 @@ public class DefaultViewEditorImpl extends JDialog implements
 	private <V> void listActionPerformed(MouseEvent e) {
 		final Object source = e.getSource();
 		final JList list;
-		if(source instanceof JList)
+		if (source instanceof JList)
 			list = (JList) source;
 		else
 			return;
-		
+
 		V newValue = null;
-		
-		final VisualProperty<V> vp = (VisualProperty<V>) list.getSelectedValue();
+
+		final VisualProperty<V> vp = (VisualProperty<V>) list
+				.getSelectedValue();
 
 		if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
-
+			final VisualStyle selectedStyle = selectedManager
+					.getCurrentVisualStyle();
 			final V defaultVal = selectedStyle.getDefaultValue(vp);
 			try {
-				if(defaultVal != null)
-					newValue = editorFactory.showVisualPropertyValueEditor(this, vp, defaultVal);
+				if (defaultVal != null)
+					newValue = editorFactory.showVisualPropertyValueEditor(
+							this, vp, defaultVal);
 				else
-					newValue = editorFactory.showVisualPropertyValueEditor(this, vp, vp.getDefault());
+					newValue = editorFactory.showVisualPropertyValueEditor(
+							this, vp, vp.getDefault());
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 
 			if (newValue != null) {
 				selectedStyle.setDefaultValue(vp, newValue);
-				selectedStyle.apply(cyApplicationManager.getCurrentNetworkView());
+				selectedStyle.apply(cyApplicationManager
+						.getCurrentNetworkView());
 			}
 
 			repaint();
@@ -486,6 +499,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	private void applyNewStyle(CyNetworkView view) {
 		VisualStyle curVS = vmm.getVisualStyle(view);
+		final VisualStyle selectedStyle = selectedManager
+				.getCurrentVisualStyle();
 
 		if (curVS == null) {
 			// Set new style
@@ -579,6 +594,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 
+			final VisualStyle selectedStyle = selectedManager
+					.getCurrentVisualStyle();
 			Icon icon = null;
 			VisualProperty<?> vp = null;
 
@@ -649,20 +666,22 @@ public class DefaultViewEditorImpl extends JDialog implements
 	}
 
 	public void handleEvent(SelectedVisualStyleSwitchedEvent e) {
-		this.selectedStyle = e.getNewVisualStyle();
+
+		final VisualStyle selectedStyle = e.getNewVisualStyle();
 		setTitle("Default Appearance for " + selectedStyle.getTitle());
 
 	}
-	
-	private static class VisualPropertyComparator implements Comparator<VisualProperty<?>> {
+
+	private static class VisualPropertyComparator implements
+			Comparator<VisualProperty<?>> {
 
 		@Override
 		public int compare(VisualProperty<?> vp1, VisualProperty<?> vp2) {
 			String name1 = vp1.getDisplayName();
 			String name2 = vp2.getDisplayName();
-			
+
 			return name1.compareTo(name2);
 		}
-		
+
 	}
 }

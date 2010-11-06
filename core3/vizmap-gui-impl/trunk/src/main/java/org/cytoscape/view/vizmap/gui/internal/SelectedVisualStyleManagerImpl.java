@@ -22,6 +22,7 @@ public class SelectedVisualStyleManagerImpl implements
 			throw new NullPointerException("Visual Mapping Manager is missing.");
 		
 		this.defaultVS = vmm.getDefaultVisualStyle();
+		this.selectedStyle = this.defaultVS;
 	}
 
 	public VisualStyle getDefaultVisualStyle() {

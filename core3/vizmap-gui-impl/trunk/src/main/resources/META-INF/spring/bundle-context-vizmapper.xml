@@ -173,6 +173,7 @@
 		<constructor-arg ref="editorManager" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="vmmServiceRef" />
+		<constructor-arg ref="selectedVisualStyleManager" />
 	</bean>
 
 
