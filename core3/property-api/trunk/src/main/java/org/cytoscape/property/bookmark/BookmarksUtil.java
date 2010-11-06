@@ -13,8 +13,7 @@ public interface BookmarksUtil {
 	 * @param categoryName
 	 * @return
 	 */
-	public List<DataSource> getDataSourceList(String categoryName,
-			List<Category> categoryList);
+	List<DataSource> getDataSourceList(String categoryName, List<Category> categoryList);
 
 	/**
 	 * Select specific category from a list of categories.
@@ -23,7 +22,7 @@ public interface BookmarksUtil {
 	 * @param categoryList
 	 * @return
 	 */
-	public Category getCategory(String categoryName, List<Category> categoryList);
+	Category getCategory(String categoryName, List<Category> categoryList);
 
 	/**
 	 * Given the attribute name, return the value in a bookmark 
@@ -33,7 +32,7 @@ public interface BookmarksUtil {
 	 * 
 	 * @return The value related to the attribute name
 	 */
-	public String getAttribute(DataSource source, String attrName);
+	String getAttribute(DataSource source, String attrName); 
 
 	/**
 	 * Store a bookmark object in bookmarks object
@@ -42,7 +41,7 @@ public interface BookmarksUtil {
 	 * @param pCategoryName category name
 	 * @param pDataSource a single bookmark
 	 */
-	public void saveBookmark(Bookmarks pBookmarks, String pCategoryName,
+	void saveBookmark(Bookmarks pBookmarks, String pCategoryName,
 			DataSource pDataSource);
 
 	/**
@@ -56,8 +55,7 @@ public interface BookmarksUtil {
 	 * 
 	 * @return True if the bookmark is deleted successfully, False otherwise.
 	 */
-	public boolean deleteBookmark(Bookmarks pBookmarks, String pCategoryName,
-			DataSource pDataSource);
+	boolean deleteBookmark(Bookmarks pBookmarks, String pCategoryName, DataSource pDataSource);
 
 	/**
 	 * Check if a bookmark is in the bookmarks.
@@ -68,7 +66,6 @@ public interface BookmarksUtil {
 	 * 
 	 * @return True if the bookmark is in bookmarks, False otherwise
 	 */
-	public boolean isInBookmarks(Bookmarks pBookmarks, String pCategoryName,
-			DataSource pDataSource);
+	boolean isInBookmarks(Bookmarks pBookmarks, String pCategoryName, DataSource pDataSource);
 
 }
