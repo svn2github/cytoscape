@@ -45,39 +45,75 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 
 /**
- * This is a temporary interface that captures everything
- * in CytoscapeAction so that CytoscapeActions can be registered
- * as Services. 
+ * An interface that describes how an action should be placed within 
+ * the menus and/or toolbars of the Swing application.
  */
 public interface CyAction extends Action, MenuListener, PopupMenuListener {
 
-	 void setName(String name);
-	 String getName();
+	/**
+	 * Returns the name of the action.
+	 * @return the name of the action.
+	 */
+	String getName();
 
-	 boolean isInMenuBar();
+	/**
+	 * Returns whether the action should be in the menu bar.
+	 * @return whether the action should be in the menu bar.
+	 */
+	boolean isInMenuBar();
 
-	 boolean isInToolBar();
+	/**
+	 * Returns whether the action should be in the tool bar.
+	 * @return whether the action should be in the tool bar.
+	 */
+	boolean isInToolBar();
 
-	 void setPreferredIndex(int index);
-	 Integer getPrefferedIndex();
+	/**
+	 * Returns the gravity used to place the menu item for this action.
+	 * @return The gravity used to place the menu item for this action.
+	 */
+	float getMenuGravity();
 
-	 void setAcceleratorCombo(int key_code, int key_mods);
-	 boolean isAccelerated();
+	/**
+	 * Returns the gravity used to place this action in the toolbar.
+	 * @return The gravity used to place this action in the toolbar.
+	 */
+	float getToolbarGravity();
 
-	 int getKeyCode();
+	/**
+	 * Returns whether or not this action is accelerated.
+	 * @return Whether or not this action is accelerated.
+	 */
+	boolean isAccelerated();
 
-	 int getKeyModifiers();
+	/**
+	 * Returns the key code used to identify this action.
+	 * @return the key code used to identify this action.
+	 */
+	int getKeyCode();
 
-	 String getPreferredMenu();
-	 void setPreferredMenu(String new_preferred);
+	/**
+	 * Returns the key modifiers used to identify this action.
+	 * @return the key modifiers used to identify this action.
+	 */
+	int getKeyModifiers();
 
-	 /**
-	  * Buttons will be grouped according to name.  Buttons are added 
-	  * sequentially to groups as the service is registered. Groups are
-	  * ordered lexicographically within the toolbar.
-	  */
-	 String getPreferredButtonGroup();
-	 void setPreferredButtonGroup(String new_preferred);
+	/** 
+	 * Returns the string identifying the preferred menu.
+	 * @return the string identifying the preferred menu.
+	 */
+	String getPreferredMenu();
 
-	 boolean useCheckBoxMenuItem();
+	/**
+	 * Buttons will be grouped according to name and according to gravity
+	 * within the group.  
+	 * @return The name identifying the button group.
+	 */
+	String getPreferredButtonGroup();
+
+	/** 
+	 * Returns whether or not a checkbox menu item should be used.
+	 * @return whether or not a checkbox menu item should be used.
+	 */
+	boolean useCheckBoxMenuItem();
 }

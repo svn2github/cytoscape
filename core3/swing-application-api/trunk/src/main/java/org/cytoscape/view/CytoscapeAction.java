@@ -57,30 +57,28 @@ import java.util.Map;
 public abstract class CytoscapeAction extends AbstractAction implements CyAction {
 	protected String preferredMenu = null;
 	protected String preferredButtonGroup = null;
-	protected Integer menuIndex = Integer.valueOf(-1);
+	protected float menuGravity = 1.0f; 
+	protected float toolbarGravity = 1.0f; 
 	protected boolean acceleratorSet = false;
 	protected int keyModifiers;
 	protected int keyCode;
 	protected String consoleName;
 	protected boolean useCheckBoxMenuItem = false;
-	protected CyApplicationManager applicationManager;
-	protected CyNetworkViewManager networkViewManager;
 	protected boolean inToolBar = false;
+	protected boolean inMenuBar = true;
 	protected String enableFor = null;
+	protected CyApplicationManager applicationManager;
 
 	/**
 	 * Creates a new CytoscapeAction object.
 	 *
 	 * @param name  The name of the action. 
-	 * @param netmgr The NetworkManger providing context for this action.
+	 * @param applicationManager The application manager providing context for this action.
 	 */
-	public CytoscapeAction(String name, final CyApplicationManager applicationManager,
-			       final CyNetworkViewManager networkViewManager)
-	{
+	public CytoscapeAction(final String name, final CyApplicationManager applicationManager) {
 		super(name);
 		this.consoleName = name;
 		this.applicationManager = applicationManager;
-		this.networkViewManager = networkViewManager;
 
 		consoleName = consoleName.replaceAll(":. \'", "");
 	}
@@ -90,12 +88,10 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 *
 	 * @param configProps A String-String Map of configuration metadata. This
 	 * will usually be the Map provided by the Spring service configuration.
-	 * @param netmgr The NetworkManger providing context for this action.
+	 * @param applicationManager The application manager providing context for this action.
 	 */
-	public CytoscapeAction(Map configProps, final CyApplicationManager applicationManager,
-                               final CyNetworkViewManager networkViewManager)
-	{
-		this((String)(configProps.get("title")), applicationManager, networkViewManager);
+	public CytoscapeAction(final Map configProps, final CyApplicationManager applicationManager) {
+		this((String)(configProps.get("title")), applicationManager);
 
 		String prefMenu = (String)(configProps.get("preferredMenu"));
 		if ( prefMenu != null )
@@ -135,41 +131,18 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param name DOCUMENT ME!
+	 * @inheritdoc 
 	 */
 	public void setName(String name) {
 		this.consoleName = name;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * @inheritdoc 
 	 */
 	public String getName() {
 		return consoleName;
 	}
-
-	// implements AbstractAction
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public abstract void actionPerformed(ActionEvent e);
-
-	/**
-	 * The default clone() implementation delegates to the create() method of
-	 * DataTypeUtilities.getDataTypeFactory( this.getClass() ). Override if your
-	 * CytoscapeAction maintains state that must be transmitted to the clone.
-	 */
-
-	// implements Cloneable
-	public Object clone() {
-		return this;
-	} // clone()
 
 	/**
 	 * By default all CytoscapeActions wish to be included in CommunityMenuBars,
@@ -180,7 +153,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * @beaninfo (ri)
 	 */
 	public boolean isInMenuBar() {
-		return true;
+		return inMenuBar;
 	}
 
 	/**
@@ -196,28 +169,35 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param index DOCUMENT ME!
+	 * @inheritdoc 
 	 */
-	public void setPreferredIndex(int index) {
-		menuIndex = Integer.valueOf(index);
+	public void setMenuGravity(float gravity) {
+		menuGravity = gravity;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * @inheritdoc 
 	 */
-	public Integer getPrefferedIndex() {
-		return menuIndex;
+	public float getMenuGravity() {
+		return menuGravity;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param key_code DOCUMENT ME!
-	 * @param key_mods DOCUMENT ME!
+	 * @inheritdoc 
+	 */
+	public void setToolbarGravity(float gravity) {
+		toolbarGravity = gravity;
+	}
+
+	/**
+	 * @inheritdoc 
+	 */
+	public float getToolbarGravity() {
+		return toolbarGravity;
+	}
+
+	/**
+	 * @inheritdoc 
 	 */
 	public void setAcceleratorCombo(int key_code, int key_mods) {
 		acceleratorSet = true;
@@ -226,27 +206,21 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * @inheritdoc 
 	 */
 	public boolean isAccelerated() {
 		return acceleratorSet;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * @inheritdoc 
 	 */
 	public int getKeyCode() {
 		return keyCode;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * @inheritdoc 
 	 */
 	public int getKeyModifiers() {
 		return keyModifiers;
@@ -267,7 +241,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	}
 
 	/**
-	 * @beaninfo (rwb)
+	 * @inheritdoc 
 	 */
 	public void setPreferredMenu(String new_preferred) {
 		preferredMenu = new_preferred;
@@ -288,7 +262,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	}
 
 	/**
-	 * @beaninfo (rwb)
+	 * @inheritdoc 
 	 */
 	public void setPreferredButtonGroup(String new_preferred) {
 		preferredButtonGroup = new_preferred;
@@ -384,19 +358,17 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * Enable the action if the current network and view exist and are not null.
 	 */
 	protected void enableForNetworkAndView() {
-		CyNetwork n = applicationManager.getCurrentNetwork();
-		if ( n == null ) {
-			setEnabled(false);
-			return;
-		}
-		
-		CyNetworkView v = networkViewManager.getNetworkView(n.getSUID());
+		CyNetworkView v = applicationManager.getCurrentNetworkView();
 		if ( v == null )
 			setEnabled(false);
 		else
 			setEnabled(true);
 	}
 
+	/**
+	 * Enable the action if more than one network object is required to execute
+	 * the action.
+	 */
 	protected void enableForSelectedNetworkObjs() {
 		CyNetwork n = applicationManager.getCurrentNetwork();
 

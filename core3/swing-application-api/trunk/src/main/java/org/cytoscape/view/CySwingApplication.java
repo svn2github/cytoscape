@@ -38,54 +38,59 @@ package org.cytoscape.view;
 
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JToolBar;
 
 
+/**
+ * This interface provides basic access to the Swing objects that
+ * constitute this application.
+ */
 public interface CySwingApplication {
-	/**
-	 *
+
+	/** 
+	 * Returns the JMenu for the specified name and null if no 
+	 * menu exists for the name.
+	 * @return The JMenu for the specified name and null if no 
+	 * menu exists for the name.
 	 */
-	String NETWORK_VIEWS_SELECTED = "NETWORK_VIEWS_SELECTED";
+	public JMenu getJMenu(String menuName);
 
 	/**
-	 *
+	 * Returns the JMenuBar object for the application. 
+	 * @return The JMenuBar object for the application. 
 	 */
-	String NETWORK_VIEW_FOCUSED = "NETWORK_VIEW_FOCUSED";
+	public JMenuBar getJMenuBar();
 
 	/**
-	 *
+	 * Returns the JToolBar object for the application. 
+	 * @return The JToolBar object for the application. 
 	 */
-	String NETWORK_VIEW_FOCUS = "NETWORK_VIEW_FOCUS";
+	public JToolBar getJToolBar();
 
 	/**
-	 *
+	 * Add a CyAction to application.
+	 * @param action The CyAction to be added to the application.
 	 */
-	String NETWORK_VIEW_CREATED = "NETWORK_VIEW_CREATED";
+	void addAction(CyAction action);
 
 	/**
-	 *
+	 * Remove the specified CyAction from the application.
+	 * @param action The CyAction to be removed from the application.
 	 */
-	String NETWORK_VIEW_DESTROYED = "NETWORK_VIEW_DESTROYED";
+	void removeAction(CyAction action);
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	CyMenus getCyMenus();
-
-	/**
-	 *  DOCUMENT ME!
-	 *
+	 * Returns the appropriate CytoPanel for the specified compass direction.
 	 * @param compassDirection  one of the enum values of CytoPanelName
-	 *
 	 * @return the CytoPanel corresponding to "compassDirection"
 	 */
 	CytoPanel getCytoPanel(CytoPanelName compassDirection);
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * Returns the JFrame that contains the application. 
+	 * @return the JFrame that contains the application. 
 	 */
 	JFrame getJFrame();
 }
