@@ -122,5 +122,13 @@
 			<version>1.5.2</version>
 			<scope>compile</scope>
 		</dependency>
+		
+		<!-- for testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
