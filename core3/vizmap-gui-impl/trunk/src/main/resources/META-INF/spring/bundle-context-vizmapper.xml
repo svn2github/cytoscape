@@ -27,7 +27,7 @@
 	</bean>
 	
 	<bean id="selectedVisualStyleManager" class="org.cytoscape.view.vizmap.gui.internal.SelectedVisualStyleManagerImpl">
-		<constructor-arg ref="defaultVS" />
+		<constructor-arg ref="vmmServiceRef" />
 	</bean>
 
 	<!-- Default Visual Style Builder -->
@@ -172,7 +172,6 @@
 		<constructor-arg ref="defaultViewPanel" />
 		<constructor-arg ref="editorManager" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="defaultVS" />
 		<constructor-arg ref="vmmServiceRef" />
 	</bean>
 
@@ -186,8 +185,7 @@
 	<!-- Task Factories for Vizmapper. These actions will be exported as Service. -->
 
 	<bean name="createNewVisualStyleTaskFactory"
-		class="org.cytoscape.view.vizmap.gui.internal.task.CreateNewVisualStyleTaskFactory"
-		depends-on="vizMapperMainPanel">
+		class="org.cytoscape.view.vizmap.gui.internal.task.CreateNewVisualStyleTaskFactory">
 		<constructor-arg ref="visualStyleFactoryServiceRef" />
 		<constructor-arg ref="vizMapperUtil" />
 		<constructor-arg ref="dingVisualLexiconServiceRef" />
@@ -195,10 +193,26 @@
 	</bean>
 	
 	<bean name="removeVisualStyleTaskFactory"
-		class="org.cytoscape.view.vizmap.gui.internal.task.DeleteVisualStyleTaskFactory"
-		depends-on="vizMapperMainPanel">
+		class="org.cytoscape.view.vizmap.gui.internal.task.DeleteVisualStyleTaskFactory">
 		<constructor-arg ref="vmmServiceRef" />
 		<constructor-arg ref="selectedVisualStyleManager"/>
+	</bean>
+	
+	<bean name="renameVisualStyleTaskFactory"
+		class="org.cytoscape.view.vizmap.gui.internal.task.RenameVisualStyleTaskFactory">
+		<constructor-arg ref="vmmServiceRef" />
+		<constructor-arg ref="selectedVisualStyleManager"/>
+		<constructor-arg ref="vizMapperUtil" />
+		<constructor-arg ref="vizMapperMainPanel" />
+	</bean>
+	
+	<bean name="copyVisualStyleTaskFactory"
+		class="org.cytoscape.view.vizmap.gui.internal.task.CopyVisualStyleTaskFactory">
+		<constructor-arg ref="visualStyleFactoryServiceRef" />
+		<constructor-arg ref="vmmServiceRef" />
+		<constructor-arg ref="selectedVisualStyleManager"/>
+		<constructor-arg ref="vizMapperUtil" />
+		<constructor-arg ref="vizMapperMainPanel" />
 	</bean>
 
 
@@ -218,16 +232,6 @@
 			value="${vizMapperMainPanel.menu.renameStyleAction.icon}" />
 		<constructor-arg ref="vizMapperUtil" />
 	</bean>-->
-
-	<bean name="copyStyleAction"
-		class="org.cytoscape.view.vizmap.gui.internal.action.CopyStyleAction"
-		autowire="autodetect" depends-on="vizMapperMainPanel">
-		<property name="menuLabel" value="${vizMapperMainPanel.menu.copyStyleAction}" />
-		<property name="iconId"
-			value="${vizMapperMainPanel.menu.copyStyleAction.icon}" />
-
-		<constructor-arg ref="vizMapperUtil" />
-	</bean>
 
 	<bean name="createLegendAction"
 		class="org.cytoscape.view.vizmap.gui.internal.action.CreateLegendAction"
@@ -259,14 +263,6 @@
 	<bean id="filledBoxRenderer" class="javax.swing.table.DefaultTableCellRenderer" />
 
 	<!-- Context Menu Commands -->
-	<bean name="removeMappingAction"
-		class="org.cytoscape.view.vizmap.gui.internal.action.RemoveMappingAction"
-		depends-on="vizMapperMainPanel" autowire="autodetect">
-		<property name="menuLabel"
-			value="${vizMapperMainPanel.menu.removeMappingAction}" />
-		<property name="iconId"
-			value="${vizMapperMainPanel.menu.removeMappingAction.icon}" />
-	</bean>
 
 	<bean id="vizMapPropertySheetBuilder"
 		class="org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder">
@@ -292,12 +288,6 @@
 		class="org.cytoscape.view.vizmap.gui.internal.EditorWindowManager">
 		<constructor-arg ref="editorManager" />
 		<constructor-arg ref="propertySheetPanel" />
-	</bean>
-
-	<!-- Create Default Visual Style using VMM -->
-	<bean id="defaultVS" factory-bean="defaultVisualStyleBuilder"
-		factory-method="getDefaultStyle">
-		<constructor-arg ref="dingVisualLexiconServiceRef" />
 	</bean>
 
 	<bean name="vizMapperMainPanel"

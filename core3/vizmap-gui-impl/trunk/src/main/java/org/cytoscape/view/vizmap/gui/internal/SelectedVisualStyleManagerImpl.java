@@ -1,5 +1,6 @@
 package org.cytoscape.view.vizmap.gui.internal;
 
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
@@ -16,11 +17,11 @@ public class SelectedVisualStyleManagerImpl implements
 	
 	protected final VisualStyle defaultVS;
 	
-	public SelectedVisualStyleManagerImpl(final VisualStyle defaultVS) {
-		if(defaultVS == null)
-			throw new NullPointerException("Default Visual Style should be provided.  It should not be null.");
+	public SelectedVisualStyleManagerImpl(final VisualMappingManager vmm) {
+		if(vmm == null)
+			throw new NullPointerException("Visual Mapping Manager is missing.");
 		
-		this.defaultVS = defaultVS;
+		this.defaultVS = vmm.getDefaultVisualStyle();
 	}
 
 	public VisualStyle getDefaultVisualStyle() {

@@ -49,7 +49,7 @@ public class VizMapperUtil {
 		// name
 		while (true) {
 			String ret = (String) JOptionPane.showInputDialog(parentComponent,
-					"Please enter new name for the visual style.",
+					"Please enter name for the new Visual Style.",
 					"Enter Visual Style Name", JOptionPane.QUESTION_MESSAGE,
 					null, null, suggestedName);
 

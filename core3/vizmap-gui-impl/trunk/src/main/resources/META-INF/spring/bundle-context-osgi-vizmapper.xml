@@ -4,10 +4,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
-
-
-	<!-- Export Ding's default VS as service. -->
-	<osgi:service id="defaultVSService" ref="defaultVS" auto-export="interfaces" />
 	
 	<!-- Export Service Listeners -->
 	<osgi:service id="selectedVisualStyleManagerService" ref="selectedVisualStyleManager" auto-export="interfaces" />
@@ -108,14 +104,27 @@
 		<osgi:service-properties>
 			<entry key="service.type" value="vizmapUI.taskFactory" />
 			<entry key="menu" value="main" />
-			<entry key="title" value="Remove Selected Visual Style" />
+			<entry key="title" value="Remove Visual Style" />
 		</osgi:service-properties>
 	</osgi:service>
+	<osgi:service id="renameVisualStyleTaskFactoryService"
+		ref="renameVisualStyleTaskFactory" auto-export="interfaces">
+		<osgi:service-properties>
+			<entry key="service.type" value="vizmapUI.taskFactory" />
+			<entry key="menu" value="main" />
+			<entry key="title" value="Rename Visual Style" />
+		</osgi:service-properties>
+	</osgi:service>
+	<osgi:service id="copyVisualStyleTaskFactoryService"
+		ref="copyVisualStyleTaskFactory" auto-export="interfaces">
+		<osgi:service-properties>
+			<entry key="service.type" value="vizmapUI.taskFactory" />
+			<entry key="menu" value="main" />
+			<entry key="title" value="Copy Visual Style" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 
-	
-	
-	<osgi:service id="copyStyleActionService" ref="copyStyleAction"
-		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
 	<osgi:service id="createLegendActionService" ref="createLegendAction"
 		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
 
@@ -139,12 +148,6 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="removeMappingActionService" ref="removeMappingAction"
-		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction">
-		<osgi:service-properties>
-			<entry key="service.type" value="vizmapUI.contextMenu" />
-		</osgi:service-properties>
-	</osgi:service>
 
 	<osgi:set id="vizMapperActionServiceRef"
 		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction"

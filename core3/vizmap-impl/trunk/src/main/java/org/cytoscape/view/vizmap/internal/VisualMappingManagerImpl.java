@@ -41,11 +41,7 @@ import java.util.Set;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.NullVisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
@@ -58,7 +54,7 @@ import org.cytoscape.view.vizmap.events.VisualStyleAddedEvent;
 public class VisualMappingManagerImpl implements VisualMappingManager {
 	private static final String DEFAULT_STYLE_NAME = "Default";
 
-	private VisualStyle defaultStyle;
+	private final VisualStyle defaultStyle;
 
 	private final Map<CyNetworkView, VisualStyle> network2VisualStyleMap;
 	private final Set<VisualStyle> visualStyles;
@@ -142,10 +138,15 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 			throw new IllegalArgumentException(
 					"Cannot remove default visual style.");
 
-		if (this.network2VisualStyleMap.values().contains(vs))
-			throw new IllegalArgumentException(
-					"Visual Style is associated with a view and cannot be removed.");
-
+		
+		// Use default for all views using this vs.
+		if (this.network2VisualStyleMap.values().contains(vs)) {
+			for(final CyNetworkView view: network2VisualStyleMap.keySet()) {
+				if(network2VisualStyleMap.get(view).equals(vs))
+					network2VisualStyleMap.put(view, defaultStyle);
+			}
+		}
+		
 		cyEventHelper
 				.fireSynchronousEvent(new VisualStyleAboutToBeRemovedEvent(
 						this, vs));

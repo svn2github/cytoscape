@@ -131,11 +131,11 @@ public class DefaultViewEditorImpl extends JDialog implements
 	public DefaultViewEditorImpl(final DefaultViewPanelImpl mainView,
 			final EditorManager editorFactory,
 			final CyApplicationManager cyApplicationManager,
-			final VisualStyle selectedStyle, final VisualMappingManager vmm)
+			final VisualMappingManager vmm)
 	{
 		super();
 		this.vmm = vmm;
-		this.selectedStyle = selectedStyle;
+		this.selectedStyle = this.vmm.getDefaultVisualStyle();
 		vpSets = new HashMap<String, Set<VisualProperty<?>>>();
 		listMap = new HashMap<String, JList>();
 
