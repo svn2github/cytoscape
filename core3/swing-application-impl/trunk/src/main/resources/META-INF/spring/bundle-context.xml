@@ -116,18 +116,15 @@
 	-->
 	<bean id="exitAction" class="org.cytoscape.internal.actions.ExitAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cytoscapeShutdown" />
 	</bean>
 	<bean id="undoAction" class="org.cytoscape.internal.actions.UndoAction">
 		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 	<bean id="redoAction" class="org.cytoscape.internal.actions.RedoAction">
 		<constructor-arg ref="undoSupportServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 	<bean id="deleteAction" class="org.cytoscape.internal.actions.DeleteAction">
 		<constructor-arg ref="undoSupportServiceRef" />
@@ -138,13 +135,11 @@
 	<bean id="preferenceAction" class="org.cytoscape.internal.actions.PreferenceAction">
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="preferencesDialogFactory" />
 	</bean>
 	<bean id="bookmarkAction" class="org.cytoscape.internal.actions.BookmarkAction">
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="bookmarkDialogFactory" />
 	</bean>
 	<!--
@@ -165,7 +160,7 @@
 	-->
 	<!-- not a CyAction, but adds menu -->
 	<bean id="layoutMenuManager" class="org.cytoscape.internal.layout.ui.LayoutMenuManager">
-		<constructor-arg ref="cytoscapeMenus" />
+		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
@@ -175,7 +170,6 @@
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="settingsAction" class="org.cytoscape.internal.layout.ui.SettingsAction">
@@ -183,7 +177,6 @@
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="layoutMenuManager" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 	</bean>
 	<bean id="helpContentsTaskFactory" class="org.cytoscape.internal.view.help.HelpContentsTaskFactory">
@@ -222,29 +215,19 @@
 		<constructor-arg value="true" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 	<bean id="cytoPanelSouthAction" class="org.cytoscape.internal.actions.CytoPanelAction">
 		<constructor-arg type="org.cytoscape.view.CytoPanelName" value="SOUTH" />
 		<constructor-arg value="true" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 	<bean id="cytoPanelEastAction" class="org.cytoscape.internal.actions.CytoPanelAction">
 		<constructor-arg type="org.cytoscape.view.CytoPanelName" value="EAST" />
 		<constructor-arg value="false" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
-
-	<!-- this bean is not a CyAction! 
-	<bean id="selectionModeAction" class="org.cytoscape.internal.actions.SelectionModeAction">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="cytoscapeMenus" />
-	</bean>
-	-->
 
 	<!-- Other stuff to be started -->
 	<bean id="undoMonitor" class="org.cytoscape.internal.util.undo.UndoMonitor">

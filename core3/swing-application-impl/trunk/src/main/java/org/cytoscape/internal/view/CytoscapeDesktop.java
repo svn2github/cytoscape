@@ -30,11 +30,11 @@
 package org.cytoscape.internal.view;
 
 import org.cytoscape.CytoscapeShutdown;
-import org.cytoscape.view.CyMenus;
 import org.cytoscape.view.CySwingApplication;
 import org.cytoscape.view.CytoPanel;
 import org.cytoscape.view.CytoPanelName;
 import org.cytoscape.view.CytoPanelState;
+import org.cytoscape.view.CyAction;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -46,6 +46,9 @@ import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JToolBar;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
@@ -76,7 +79,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	 * The CyMenus object provides access to the all of the menus and toolbars
 	 * that will be needed.
 	 */
-	protected CyMenus cyMenus;
+	protected CytoscapeMenus cyMenus;
 
 	/**
 	 * The NetworkViewManager can support three types of interfaces.
@@ -88,19 +91,19 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	//
 	// CytoPanel Variables
 	//
-	protected CytoPanelImp cytoPanelWest;
-	protected CytoPanelImp cytoPanelEast;
-	protected CytoPanelImp cytoPanelSouth;
-	protected CytoPanelImp cytoPanelSouthWest; 
+	private CytoPanelImp cytoPanelWest;
+	private CytoPanelImp cytoPanelEast;
+	private CytoPanelImp cytoPanelSouth;
+	private CytoPanelImp cytoPanelSouthWest; 
 
 	// Status Bar TODO: Move this to log-swing to avoid cyclic dependency.
-	protected JPanel main_panel;
+	private JPanel main_panel;
 	private final CytoscapeShutdown shutdown; 
 
 	/**
 	 * Creates a new CytoscapeDesktop object.
 	 */
-	public CytoscapeDesktop(CyMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel, CytoscapeShutdown shut) {
+	public CytoscapeDesktop(CytoscapeMenus cyMenus, NetworkViewManager networkViewManager, NetworkPanel networkPanel, CytoscapeShutdown shut) {
 		super("Cytoscape Desktop (New Session)");
 
 		this.cyMenus = cyMenus;
@@ -120,10 +123,10 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		// note - proper networkViewManager has been properly selected in
 		// setupCytoPanels()
 		main_panel.add(masterPane, BorderLayout.CENTER);
-		main_panel.add(cyMenus.getToolBar().getJToolBar(), BorderLayout.NORTH);
+		main_panel.add(cyMenus.getJToolBar(), BorderLayout.NORTH);
 
 		// Remove status bar.
-		setJMenuBar(cyMenus.getMenuBar().getJMenuBar());
+		setJMenuBar(cyMenus.getJMenuBar());
 
 		//don't automatically close window. Let shutdown.exit(returnVal)
 		//handle this
@@ -143,72 +146,6 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		toFront();
 	}
 
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public NetworkPanel getNetworkPanel() {
-		return networkPanel;
-	}
-
-	/**
-	 * Gets the NetworkView Manager.
-	 *
-	 * @return NetworkViewManager Object.
-	 */
-	public NetworkViewManager getNetworkViewManager() {
-		return this.networkViewManager;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public JFrame getJFrame() {
-		return this;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public CyMenus getCyMenus() {
-		return cyMenus;
-	}
-
-
-	// ---------------------------------------------------------------------------//
-	// Cytopanels - Public and Protected methods
-
-	/**
-	 * Gets a cytoPanel given a Compass direction.
-	 *
-	 * @param compassDirection any of the CytoPanelName enum values
-	 * @return CytoPanel The CytoPanel that lives in the region specified by
-	 *         compass direction.
-	 */
-	public CytoPanel getCytoPanel(final CytoPanelName compassDirection) {
-		// return appropriate cytoPanel based on compass direction
-		switch (compassDirection) {
-		case SOUTH:
-			return (CytoPanel)cytoPanelSouth;
-		case EAST:
-			return (CytoPanel) cytoPanelEast;
-		case WEST:
-			return (CytoPanel) cytoPanelWest;
-		case SOUTH_WEST:
-			return (CytoPanel) cytoPanelSouthWest;
-		}
-
-		// houston we have a problem
-		throw new IllegalArgumentException("Illegal Argument:  " + compassDirection
-		                                   + ".  Must be one of:  {SOUTH,EAST,WEST,SOUTH_WEST}.");
-	}
-
 	/**
 	 * Create the CytoPanels UI.
 	 *
@@ -218,7 +155,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	 *            to load on left side (CytoPanel West).
 	 * @return BiModalJSplitPane Object.
 	 */
-	protected BiModalJSplitPane setupCytoPanels(NetworkPanel networkPanel,
+	private BiModalJSplitPane setupCytoPanels(NetworkPanel networkPanel,
 	                                            NetworkViewManager networkViewManager) {
 		// bimodals that our Cytopanels Live within
 		BiModalJSplitPane topRightPane = createTopRightPane(networkViewManager);
@@ -235,7 +172,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	 *            to load on left side of top right bimodal.
 	 * @return BiModalJSplitPane Object.
 	 */
-	protected BiModalJSplitPane createTopRightPane(NetworkViewManager networkViewManager) {
+	private BiModalJSplitPane createTopRightPane(NetworkViewManager networkViewManager) {
 		// create cytopanel with tabs along the top
 		cytoPanelEast = new CytoPanelImp(CytoPanelName.EAST, JTabbedPane.TOP, CytoPanelState.HIDE);
 
@@ -266,7 +203,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	 *            TopRightPane Object.
 	 * @return BiModalJSplitPane Object
 	 */
-	protected BiModalJSplitPane createRightPane(BiModalJSplitPane topRightPane) {
+	private BiModalJSplitPane createRightPane(BiModalJSplitPane topRightPane) {
 		// create cytopanel with tabs along the bottom
 		cytoPanelSouth = new CytoPanelImp(CytoPanelName.SOUTH, JTabbedPane.BOTTOM,
 		                                  CytoPanelState.HIDE);
@@ -300,7 +237,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	 *            BiModalJSplitPane Object.
 	 * @return BiModalJSplitPane Object.
 	 */
-	protected BiModalJSplitPane createMasterPane(NetworkPanel networkPanel,
+	private BiModalJSplitPane createMasterPane(NetworkPanel networkPanel,
 	                                             BiModalJSplitPane rightPane) {
 		// create cytopanel with tabs along the top
 		cytoPanelWest = new CytoPanelImp(CytoPanelName.WEST, JTabbedPane.TOP, CytoPanelState.DOCK);
@@ -322,4 +259,49 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		return splitPane;
 	}
 
+	NetworkViewManager getNetworkViewManager() {
+		return networkViewManager;
+	}
+
+	public void addAction(CyAction action) {
+		cyMenus.addAction(action);
+	}
+
+	public void removeAction(CyAction action) {
+		cyMenus.removeAction(action);
+	}
+
+	public JMenu getJMenu(String name) {
+		return cyMenus.getJMenu(name);
+	}
+
+	public JMenuBar getJMenuBar() {
+		return cyMenus.getJMenuBar();
+	}
+
+	public JToolBar getJToolBar() {
+		return cyMenus.getJToolBar();
+	}
+
+	public JFrame getJFrame() {
+		return this;
+	}
+
+	public CytoPanel getCytoPanel(final CytoPanelName compassDirection) {
+		// return appropriate cytoPanel based on compass direction
+		switch (compassDirection) {
+		case SOUTH:
+			return (CytoPanel)cytoPanelSouth;
+		case EAST:
+			return (CytoPanel) cytoPanelEast;
+		case WEST:
+			return (CytoPanel) cytoPanelWest;
+		case SOUTH_WEST:
+			return (CytoPanel) cytoPanelSouthWest;
+		}
+
+		// houston we have a problem
+		throw new IllegalArgumentException("Illegal Argument:  " + compassDirection
+		                                   + ".  Must be one of:  {SOUTH,EAST,WEST,SOUTH_WEST}.");
+	}
 }

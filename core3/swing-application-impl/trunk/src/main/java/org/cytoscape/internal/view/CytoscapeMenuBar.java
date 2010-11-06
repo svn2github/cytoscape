@@ -34,7 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.internal.util;
+package org.cytoscape.internal.view;
 
 
 import javax.swing.*;
@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.cytoscape.view.CyMenuBar;
 import org.cytoscape.view.CyAction;
 
 import org.cytoscape.util.swing.JMenuTracker;
@@ -51,7 +50,7 @@ import org.cytoscape.util.swing.JMenuTracker;
 /**
  *
  */
-public class CytoscapeMenuBar extends JMenuBar implements CyMenuBar {
+public class CytoscapeMenuBar extends JMenuBar {
 	private final static long serialVersionUID = 1202339868642259L;
 	/**
 	 *
@@ -134,10 +133,6 @@ public class CytoscapeMenuBar extends JMenuBar implements CyMenuBar {
 				return false;
 			}
 
-		if (index != NO_INDEX) {
-			action.setPreferredIndex(index);
-		}
-
 		return addAction(menu_name, action);
 	}
 
@@ -169,7 +164,7 @@ public class CytoscapeMenuBar extends JMenuBar implements CyMenuBar {
 		// If it wants to be anywhere in particular, try to put it there..
 		Object index_object = Integer.valueOf(-1);
 
-		index_object = action.getPrefferedIndex();
+		//index_object = action.getPrefferedIndex();
 
 		if (action.isAccelerated() && (action.getValue(Action.ACCELERATOR_KEY) == null)) {
 			KeyStroke keyStroke = KeyStroke.getKeyStroke(action.getKeyCode(), action.getKeyModifiers());

@@ -46,7 +46,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.swing.GUITaskManager;
@@ -106,10 +105,9 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 	                                         final GUITaskManager manager,
 	                                         final CySwingApplication app,
 	                                         final Map serviceProps, 
-	                                         final CyApplicationManager appMgr, 
-	                                         final CyNetworkViewManager netViewMgr)
+	                                         final CyApplicationManager appMgr )
 	{
-		super(serviceProps, appMgr, netViewMgr);
+		super(serviceProps, appMgr);
 
 		this.factory = factory;
 		this.manager = manager;

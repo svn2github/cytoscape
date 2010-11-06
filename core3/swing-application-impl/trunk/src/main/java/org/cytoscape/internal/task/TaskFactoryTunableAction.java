@@ -38,7 +38,6 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 
 import org.cytoscape.view.CytoscapeAction;
-import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.session.CyApplicationManager;
 
 import org.slf4j.LoggerFactory;
@@ -52,10 +51,9 @@ public class TaskFactoryTunableAction<T extends TaskFactory> extends CytoscapeAc
 	
 	public TaskFactoryTunableAction(final TaskManager manager, final T factory,
 	                                final Map serviceProps,
-	                                final CyApplicationManager applicationManager, 
-	                                final CyNetworkViewManager networkViewManager)
+	                                final CyApplicationManager applicationManager)
 	{
-		super(serviceProps, applicationManager, networkViewManager);
+		super(serviceProps, applicationManager);
 		this.manager = manager;
 		this.factory = factory;
 	}

@@ -72,6 +72,7 @@ public class DeleteAction extends CytoscapeAction {
 	private CyTableEntry graphObj = null;
 
 	private final UndoSupport undo;
+	private final CyNetworkViewManager networkViewManager;
 
 	/**
 	 * action for deleting selected Cytoscape nodes and edges
@@ -91,7 +92,8 @@ public class DeleteAction extends CytoscapeAction {
 	 */
 
 	public DeleteAction(CyTableEntry obj, final UndoSupport undo, final CyRootNetworkFactory root, final CyApplicationManager applicationManager, final CyNetworkViewManager networkViewManager) {
-		super(ACTION_TITLE,applicationManager, networkViewManager);
+		super(ACTION_TITLE,applicationManager);
+		this.networkViewManager = networkViewManager;
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(KeyEvent.VK_DELETE, 0);
 		graphObj = obj;

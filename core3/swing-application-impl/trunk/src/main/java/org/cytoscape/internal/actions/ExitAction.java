@@ -59,8 +59,8 @@ public class ExitAction extends CytoscapeAction {
 	/**
 	 * Creates a new ExitAction object.
 	 */
-	public ExitAction(CyApplicationManager appMgr, CyNetworkViewManager netViewMgr, CytoscapeShutdown shutdown) {
-		super("Quit",appMgr,netViewMgr);
+	public ExitAction(CyApplicationManager appMgr, CytoscapeShutdown shutdown) {
+		super("Quit",appMgr);
 		this.shutdown = shutdown;
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_Q, ActionEvent.CTRL_MASK);

@@ -79,8 +79,8 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="cyMenusService" ref="cytoscapeMenus"
-		interface="org.cytoscape.view.CyMenus" />
+<!-- <osgi:service id="cyMenusService" ref="cytoscapeMenus"
+		interface="org.cytoscape.view.CyMenus" /> -->
 
 	<!-- <osgi:service id="proxyHandlerService" ref="proxyHandler"> -->
 	<!-- <osgi:interfaces> -->
@@ -125,13 +125,15 @@
 	<osgi:service id="cytoPanelEastActionService" ref="cytoPanelEastAction"
 		interface="org.cytoscape.view.CyAction" />
 
+<!--
 	<osgi:set id="cyActionSet" interface="org.cytoscape.view.CyAction"
 		cardinality="0..N">
 		<osgi:listener bind-method="addAction" unbind-method="removeAction"
 			ref="cytoscapeMenus" />
 	</osgi:set>
+	-->
 
-	<!-- task factories for CyMenus -->
+	<!-- task factories for CyMenuPopulator -->
 	<osgi:set id="taskFactorySet" interface="org.cytoscape.work.TaskFactory"
 		cardinality="0..N" >
 		<osgi:listener bind-method="addTaskFactory"

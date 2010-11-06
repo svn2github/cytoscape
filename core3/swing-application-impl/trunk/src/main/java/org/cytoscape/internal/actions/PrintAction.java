@@ -70,8 +70,8 @@ public class PrintAction extends CytoscapeAction {
 	/**
 	 * Creates a new PrintAction object.
 	 */
-	public PrintAction(CyApplicationManager appMgr, CyNetworkViewManager netViewMgr, Properties props ) {
-		super(MENU_LABEL, appMgr, netViewMgr);
+	public PrintAction(CyApplicationManager appMgr, Properties props ) {
+		super(MENU_LABEL, appMgr );
 		setPreferredMenu("File");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK);
 		this.props = props;

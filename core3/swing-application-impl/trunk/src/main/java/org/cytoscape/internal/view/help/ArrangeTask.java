@@ -32,7 +32,6 @@ package org.cytoscape.internal.view.help;
 
 import org.cytoscape.internal.view.CyDesktopManager;
 import org.cytoscape.internal.view.CytoscapeDesktop;
-import org.cytoscape.view.CyMenus;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 

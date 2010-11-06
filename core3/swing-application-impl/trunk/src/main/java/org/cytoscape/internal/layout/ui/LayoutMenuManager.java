@@ -39,7 +39,7 @@ package org.cytoscape.internal.layout.ui;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.view.CyMenus;
+import org.cytoscape.view.CySwingApplication;
 import org.cytoscape.session.CyApplicationManager;
 
 import javax.swing.*;
@@ -58,7 +58,7 @@ public class LayoutMenuManager implements MenuListener {
 
 	private CyLayouts cyLayouts;
 
-	public LayoutMenuManager(CyMenus cyMenus, CyLayouts cyLayouts, CyApplicationManager appMgr, TaskManager tm) {
+	public LayoutMenuManager(CySwingApplication swingApp, CyLayouts cyLayouts, CyApplicationManager appMgr, TaskManager tm) {
 		menuAlgorithmMap = new HashMap<String,List<CyLayoutAlgorithm>>();
 		menuMap = new HashMap<String,LayoutMenu>();
 		existingLayouts = new HashSet<CyLayoutAlgorithm>();
@@ -66,7 +66,7 @@ public class LayoutMenuManager implements MenuListener {
 		this.appMgr = appMgr;
 		this.tm = tm;
 
-		cyMenus.getLayoutMenu().addMenuListener(this);
+		swingApp.getJMenu("Layout").addMenuListener(this);
 	}
 
 	public void menuCanceled(MenuEvent e) { };

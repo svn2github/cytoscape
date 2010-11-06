@@ -44,7 +44,6 @@ import javax.swing.event.MenuEvent;
 import javax.swing.undo.CannotUndoException;
 
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.undo.UndoSupport;
 
 import org.cytoscape.view.CytoscapeAction;
@@ -61,8 +60,8 @@ public class UndoAction extends CytoscapeAction {
 	/**
 	 * Constructs the action.
 	 */
-	public UndoAction(UndoSupport undo,CyApplicationManager appMgr, CyNetworkViewManager netViewMgr) {
-		super("Undo",appMgr,netViewMgr);
+	public UndoAction(UndoSupport undo,CyApplicationManager appMgr) {
+		super("Undo",appMgr);
 		setAcceleratorCombo(KeyEvent.VK_Z, ActionEvent.CTRL_MASK);
 		setPreferredMenu("Edit");
 		setEnabled(true);

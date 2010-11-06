@@ -34,7 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.internal.util;
+package org.cytoscape.internal.view;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -44,13 +44,12 @@ import java.util.SortedMap;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.cytoscape.view.CyToolBar;
 import org.cytoscape.view.CyAction;
 
 /**
  *
  */
-public class CytoscapeToolBar extends JToolBar implements CyToolBar {
+public class CytoscapeToolBar extends JToolBar {
 	private final static long serialVersionUID = 1202339868655256L;
 	private Map<CyAction,JButton> actionButtonMap; 
 	private SortedMap<String,Integer> groupNameCount; 

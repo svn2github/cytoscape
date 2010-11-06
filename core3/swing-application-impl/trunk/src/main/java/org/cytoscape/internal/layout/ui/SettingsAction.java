@@ -31,7 +31,6 @@ package org.cytoscape.internal.layout.ui;
 
 
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.CytoscapeAction;
 import org.cytoscape.view.CySwingApplication;
 import org.cytoscape.view.layout.CyLayouts;
@@ -49,9 +48,9 @@ public class SettingsAction extends CytoscapeAction {
 	private LayoutMenuManager menuMgr;
 	private GUITaskManager tm;
 
-	public SettingsAction(final CyLayouts cyl, final CySwingApplication desk, final LayoutMenuManager menuMgr, final CyApplicationManager appMgr, final CyNetworkViewManager netViewMgr, final GUITaskManager tm)
+	public SettingsAction(final CyLayouts cyl, final CySwingApplication desk, final LayoutMenuManager menuMgr, final CyApplicationManager appMgr, final GUITaskManager tm)
 	{
-		super("Settings...",appMgr,netViewMgr);
+		super("Settings...",appMgr);
 		setPreferredMenu("Layout");
 		this.cyl = cyl;
 		this.desk = desk;

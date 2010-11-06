@@ -45,7 +45,6 @@ package org.cytoscape.internal.actions;
 import java.awt.event.ActionEvent;
 
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.internal.dialogs.BookmarkDialogImpl;
 import org.cytoscape.internal.dialogs.BookmarkDialogFactoryImpl;
 import org.cytoscape.view.CytoscapeAction;
@@ -62,8 +61,8 @@ public class BookmarkAction extends CytoscapeAction {
 	/**
 	 * Creates a new BookmarkAction object.
 	 */
-	public BookmarkAction(CySwingApplication desktop, CyApplicationManager appMgr, CyNetworkViewManager netViewMgr, BookmarkDialogFactoryImpl bookmarkDialogFactory) {
-		super("Bookmarks...", appMgr, netViewMgr);
+	public BookmarkAction(CySwingApplication desktop, CyApplicationManager appMgr, BookmarkDialogFactoryImpl bookmarkDialogFactory) {
+		super("Bookmarks...", appMgr);
 		this.bookmarkDialogFactory = bookmarkDialogFactory;
 		System.out.println("BookmarkAction()...");
 		setPreferredMenu("Edit.Preferences");

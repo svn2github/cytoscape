@@ -36,7 +36,6 @@ import org.cytoscape.view.CySwingApplication;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
-import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.session.CyApplicationManager;
 
 
@@ -51,10 +50,10 @@ public class CytoPanelAction extends CytoscapeAction {
 	private CySwingApplication desktop;
 
 	public CytoPanelAction(final CytoPanelName position, final boolean show, final CySwingApplication desktop,
-			       final CyApplicationManager applicationManager, final CyNetworkViewManager networkViewManger)
+			       final CyApplicationManager applicationManager)
 	{
 		super(show ? HIDE + " " + position.getTitle() : SHOW + " " + position.getTitle(),
-		      applicationManager, networkViewManger);
+		      applicationManager);
 
 		this.title = position.getTitle();
 		this.position = position;

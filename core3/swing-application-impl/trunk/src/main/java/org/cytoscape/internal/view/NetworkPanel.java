@@ -224,7 +224,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void addTaskFactory(TaskFactory factory, Map props) {
-		addFactory(factory, new TaskFactoryTunableAction(taskManager, factory, props, applicationManager,networkViewManager));
+		addFactory(factory, new TaskFactoryTunableAction(taskManager, factory, props, applicationManager));
 	}
 
 	public void removeTaskFactory(TaskFactory factory, Map props) {
@@ -232,7 +232,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void addNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
-		addFactory(factory,new NetworkCollectionTaskFactoryTunableAction(taskManager, factory, props, applicationManager,networkViewManager));
+		addFactory(factory,new NetworkCollectionTaskFactoryTunableAction(taskManager, factory, props, applicationManager));
 	}
 
 	public void removeNetworkCollectionTaskFactory(NetworkCollectionTaskFactory factory, Map props) {
@@ -241,7 +241,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 
 
 	public void addNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
-		addFactory(factory, new NetworkViewCollectionTaskFactoryTunableAction(taskManager, factory, props, applicationManager,networkViewManager));
+		addFactory(factory, new NetworkViewCollectionTaskFactoryTunableAction(taskManager, factory, props, applicationManager));
 	}
 
 	public void removeNetworkViewCollectionTaskFactory(NetworkViewCollectionTaskFactory factory, Map props) {
@@ -249,7 +249,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void addNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
-		addFactory(factory, new NetworkTaskFactoryTunableAction(taskManager, factory, props, applicationManager,networkViewManager));
+		addFactory(factory, new NetworkTaskFactoryTunableAction(taskManager, factory, props, applicationManager));
 	}
 
 	public void removeNetworkTaskFactory(NetworkTaskFactory factory, Map props) {
@@ -257,7 +257,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void addNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
-		addFactory(factory, new NetworkViewTaskFactoryTunableAction(taskManager, factory, props, applicationManager,networkViewManager));
+		addFactory(factory, new NetworkViewTaskFactoryTunableAction(taskManager, factory, props, applicationManager));
 	}
 
 	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory factory, Map props) {
