@@ -34,25 +34,25 @@ public interface CyFileFilter {
 	 * Returns a list of file extensions (xml, xgmml, sif) suitable for for use
 	 * in FileChoosers. 
 	 */
-	public Set<String> getExtensions();
+	Set<String> getExtensions();
 
 	/**
 	 * The MIME content types suppored by this filter.
 	 * @return A set of strings the describe the different MIME types supported by this filter.
 	 */
-	public Set<String> getContentTypes();
+	Set<String> getContentTypes();
 
 	/**
 	 * A short, human readable description of the file extensions suitable for
 	 * display in FileChoosers. 
 	 * @return A string describing this file type.
 	 */
-	public String getDescription();
+	String getDescription();
 
 	/**
 	 * The DataCategory supported by this filter.
 	 * @return The DataCategory supported by this filter.
 	 */
-	public DataCategory getDataCategory();
+	DataCategory getDataCategory();
 
 }

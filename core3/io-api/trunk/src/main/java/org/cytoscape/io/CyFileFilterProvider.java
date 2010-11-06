@@ -9,6 +9,6 @@ public interface CyFileFilterProvider {
 	/**
 	 * Return the file filter associated with the IOFactory
 	 */
-	public CyFileFilter getCyFileFilter();
+	CyFileFilter getCyFileFilter();
 
 }

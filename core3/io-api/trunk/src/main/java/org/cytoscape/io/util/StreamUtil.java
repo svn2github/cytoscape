@@ -17,7 +17,7 @@ public interface StreamUtil {
 	 * @param source The URL from which to generate the InputStream.
 	 * @return An input stream from the specified URL.
 	 */
-	public InputStream getInputStream(URL source) throws IOException;
+	InputStream getInputStream(URL source) throws IOException;
 
 	/**
 	 * Obtain an InputStream for a given URL. Ensure proxy servers and an input
@@ -27,13 +27,13 @@ public interface StreamUtil {
 	 * @param source The URL from which to generate the InputStream.
 	 * @return An input stream from the specified URL.
 	 */
-	public InputStream getBasicInputStream(URL source) throws IOException;
+	InputStream getBasicInputStream(URL source) throws IOException;
 
 	/**
 	 * Obtain a {@link java.net.URLConnectio} for a given {@link java.net.URL}.
 	 * @param source The URL from which to generate the URLConnection.
 	 * @return An URLConnection from the specified URL.
 	 */
-	public URLConnection getURLConnection(URL source) throws IOException;
+	URLConnection getURLConnection(URL source) throws IOException;
 
 }
