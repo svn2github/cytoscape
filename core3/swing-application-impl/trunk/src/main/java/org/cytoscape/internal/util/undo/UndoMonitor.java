@@ -41,6 +41,7 @@ import java.util.Properties;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.work.undo.UndoSupport;
+import org.cytoscape.property.CyProperty;
 
 /**
  * This class monitors the undoable edit stack and implements whatever
@@ -52,10 +53,10 @@ public class UndoMonitor implements SetCurrentNetworkViewListener {
 	private UndoSupport undo;
 	private Properties props;
 
-	public UndoMonitor(UndoSupport undo,Properties props) {
+	public UndoMonitor(UndoSupport undo,CyProperty<Properties> cyProps) {
 
 		this.undo = undo;
-		this.props = props;
+		this.props = cyProps.getProperties();
 
 		undo.getUndoManager().setLimit( getLimit() );
 	}

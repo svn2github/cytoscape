@@ -21,16 +21,9 @@
 
 	<context:annotation-config />
 
-	<!-- Cytoscape Properties (cytoscape.props) -->
-	<util:properties id="cytoscapeProperties" location="classpath:cytoscape.props" />
-	
-	<bean id="cyMainProps" class="org.cytoscape.property.BasicCyProperty">
-		<constructor-arg ref="cytoscapeProperties" />
-	</bean>
-
 	<!-- Cytoscape Version -->
 	<bean name="cytoscapeVersion" class="org.cytoscape.internal.CyVersion">
-		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 	</bean>
 
 	<!-- shutdown support -->
@@ -41,10 +34,10 @@
 
 	<!-- Various Utilities -->
 	<bean name="openBrowser" class="org.cytoscape.internal.util.OpenBrowserImpl">
-		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 	</bean>
 	<bean name="cyOperatingContext" class="org.cytoscape.internal.CyOperatingContextImpl">
-		<constructor-arg ref="cyMainProps" />
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 	</bean>
 	
 	<bean name="cyHelpBroker" class="org.cytoscape.internal.view.CyHelpBrokerImpl">
@@ -71,7 +64,7 @@
 	<bean name="networkViewManager" class="org.cytoscape.internal.view.NetworkViewManager">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
-		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 		<constructor-arg ref="cyHelpBroker" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
 	</bean>
@@ -110,7 +103,7 @@
 	<!--
 	<bean id="printAction" class="org.cytoscape.internal.actions.PrintAction">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 		<constructor-arg ref="presentationManagerServiceRef" />
 	</bean>
 	-->
@@ -155,7 +148,7 @@
 	</bean>
 	<bean id="showGraphicsDetailsAction" class="org.cytoscape.internal.actions.ShowGraphicsDetailsAction">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
-		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 	</bean>
 	-->
 	<!-- not a CyAction, but adds menu -->
@@ -232,7 +225,7 @@
 	<!-- Other stuff to be started -->
 	<bean id="undoMonitor" class="org.cytoscape.internal.util.undo.UndoMonitor">
 		<constructor-arg ref="undoSupportServiceRef" />
-		<constructor-arg ref="cytoscapeProperties" />
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 	</bean>
 
 	<bean id="selectRegisterListener" class="org.cytoscape.internal.select.SelectRegisterListener">

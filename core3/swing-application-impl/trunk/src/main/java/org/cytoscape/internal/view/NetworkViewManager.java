@@ -64,6 +64,7 @@ import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
+import org.cytoscape.property.CyProperty;
 
 import org.cytoscape.event.CyEventHelper;
 import org.slf4j.Logger;
@@ -119,13 +120,13 @@ public class NetworkViewManager implements InternalFrameListener,
 	 * @param desktop
 	 *            DOCUMENT ME!
 	 */
-	public NetworkViewManager(CyApplicationManager appMgr, CyNetworkViewManager netViewMgr, Properties props,
+	public NetworkViewManager(CyApplicationManager appMgr, CyNetworkViewManager netViewMgr, CyProperty<Properties> cyProps,
 			CyHelpBroker help, CyEventHelper eventHelper) {
 		this.factories = new HashMap<String, RenderingEngineFactory<CyNetwork>>();
 		
 		this.networkViewManager = netViewMgr;
 		this.applicationManager = appMgr;
-		this.props = props;
+		this.props = cyProps.getProperties();
 		this.eventHelper = eventHelper;
 		desktopPane = new JDesktopPane();
 

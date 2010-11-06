@@ -7,6 +7,10 @@
 
 	<!-- Import OSGi services -->
 
+	<osgi:reference id="cytoscapePropertiesServiceRef" 
+		interface="org.cytoscape.property.CyProperty"
+		filter="(cyPropertyName=coreSettings)" />
+
 	<osgi:reference id="cyApplicationManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
 
@@ -69,18 +73,6 @@
 
 
 	<!-- define services that application provides -->
-
-	<!-- Props are manages in this service -->
-	<osgi:service id="cyMainPropsService" ref="cyMainProps"
-		interface="org.cytoscape.property.CyProperty">
-		<osgi:service-properties>
-			<entry key="serviceType" value="property" />
-			<entry key="cyPropertyName" value="application" />
-		</osgi:service-properties>
-	</osgi:service>
-
-<!-- <osgi:service id="cyMenusService" ref="cytoscapeMenus"
-		interface="org.cytoscape.view.CyMenus" /> -->
 
 	<!-- <osgi:service id="proxyHandlerService" ref="proxyHandler"> -->
 	<!-- <osgi:interfaces> -->

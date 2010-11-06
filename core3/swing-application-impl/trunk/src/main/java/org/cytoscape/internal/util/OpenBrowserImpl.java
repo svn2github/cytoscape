@@ -47,15 +47,16 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.cytoscape.util.OpenBrowser;
+import org.cytoscape.property.CyProperty;
 
 public class OpenBrowserImpl implements OpenBrowser {
 
 	private Properties props;
 
-	public OpenBrowserImpl(Properties props) {
-		if ( props == null )
+	public OpenBrowserImpl(CyProperty<Properties> cyProps) {
+		if ( cyProps == null )
 			throw new NullPointerException("Properties is null");	
-		this.props = props;
+		this.props = cyProps.getProperties();
 	}
 
 	/**

@@ -41,6 +41,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.cytoscape.CytoscapeVersion; 
 
+import org.cytoscape.property.CyProperty;
+
 /** 
  * Identify the version of cytoscape. 
  */
@@ -54,8 +56,8 @@ public class CyVersion implements CytoscapeVersion {
 	private final String qualifier;
 	private final String version;
 
-	public CyVersion(final Properties props) {
-		version = props.getProperty(CytoscapeVersion.VERSION_PROPERTY_NAME);
+	public CyVersion(final CyProperty<Properties> props) {
+		version = props.getProperties().getProperty(CytoscapeVersion.VERSION_PROPERTY_NAME);
 
 		if ( version == null )
 			throw new NullPointerException("No version number found in the provided properties with property name: " + CytoscapeVersion.VERSION_PROPERTY_NAME);
