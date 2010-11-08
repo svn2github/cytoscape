@@ -15,7 +15,6 @@ public class CalculateClustersTask implements Runnable{
 	}
 	
 
-	@Override
 	public void run() {
 		boolean already[] = new boolean[this.cc.getNodeNumber()];
 		int[] clusters = new int[this.cc.getNodeNumber()];

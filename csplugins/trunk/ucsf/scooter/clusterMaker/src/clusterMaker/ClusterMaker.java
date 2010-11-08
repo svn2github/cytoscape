@@ -65,6 +65,7 @@ import clusterMaker.algorithms.FORCE.FORCECluster;
 import clusterMaker.algorithms.MCL.MCLCluster;
 import clusterMaker.algorithms.MCODE.MCODECluster;
 import clusterMaker.algorithms.glay.GLayCluster;
+import clusterMaker.algorithms.ConnectedComponents.ConnectedComponentsCluster;
 // import clusterMaker.algorithms.QT.QTCluster;
 // import clusterMaker.algorithms.Spectral.SpectralCluster;
 // import clusterMaker.algorithms.CP.CPCluster;
@@ -96,9 +97,9 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
    */
   public ClusterMaker() {
 
-		vizMenus = new HashMap();
-		vizMap = new HashMap();
-		algMap = new HashMap();
+		vizMenus = new HashMap<JMenuItem, ClusterViz>();
+		vizMap = new HashMap<String, ClusterViz>();
+		algMap = new HashMap<String, ClusterAlgorithm>();
 		JMenu menu = new JMenu("Cluster");
 		addClusterAlgorithm(menu, new HierarchicalCluster());
 		addClusterAlgorithm(menu, new KMeansCluster());
@@ -109,8 +110,9 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		// addClusterAlgorithm(menu, new CPCluster());
 		addClusterAlgorithm(menu, new APCluster());
 		addClusterAlgorithm(menu, new GLayCluster());
-		addClusterAlgorithm(menu, new FORCECluster());
+		// addClusterAlgorithm(menu, new FORCECluster());
 		addClusterAlgorithm(menu, new TransClustCluster());
+		addClusterAlgorithm(menu, new ConnectedComponentsCluster());
 		// addClusterAlgorithm(new HOPACHCluster());
 		menu.addSeparator();
 

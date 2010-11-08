@@ -35,13 +35,13 @@ public class GSimpleGraphData {
 				this.selectedOnly = selectedOnly;
 				this.undirectedEdges = undirectedEdges;
 				if (!selectedOnly) {
-					this.nodeList = network.nodesList();
+					this.nodeList = (List<Node>)network.nodesList();
 				} else {
-					this.nodeList = new ArrayList(network.getSelectedNodes());
+					this.nodeList = new ArrayList<Node>(network.getSelectedNodes());
 				}
 
 				this.nodeCount = nodeList.size();
-				this.connectingEdges = network.getConnectingEdges(nodeList);
+				this.connectingEdges = (List<Edge>)network.getConnectingEdges(nodeList);
 				this.edgeCount = this.connectingEdges.size();
         this.graphIndices = new int[this.nodeCount];
         this.degree = new int[this.nodeCount];

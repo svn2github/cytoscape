@@ -30,57 +30,64 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package clusterMaker.algorithms.glay;
+package clusterMaker.algorithms.ConnectedComponents;
 
-import java.text.NumberFormat;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JPanel;
 
 // Cytoscape imports
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
-import cytoscape.groups.CyGroup;
-import cytoscape.groups.CyGroupManager;
 import cytoscape.layout.Tunable;
+import cytoscape.layout.TunableListener;
 import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
-
-import giny.model.Node;
 
 import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.AbstractNetworkClusterer;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.ClusterResults;
+import clusterMaker.algorithms.DistanceMatrix;
+import clusterMaker.algorithms.EdgeAttributeHandler;
 import clusterMaker.algorithms.NodeCluster;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.NewNetworkView;
 
 // clusterMaker imports
 
-public class GLayCluster extends AbstractNetworkClusterer  {
+public class ConnectedComponentsCluster extends AbstractNetworkClusterer  {
 	
+	EdgeAttributeHandler edgeAttributeHandler = null;
+
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
-	FastGreedyAlgorithm fa = null;
-	boolean selectedOnly = false;
-	boolean createNewNetwork = false;
-	boolean undirectedEdges = true;
 
-	public GLayCluster() {
+	public ConnectedComponentsCluster() {
 		super();
-		clusterAttributeName = Cytoscape.getCurrentNetwork().getIdentifier()+"_GLay_cluster";
-		logger = CyLogger.getLogger(GLayCluster.class);
+		clusterAttributeName = Cytoscape.getCurrentNetwork().getIdentifier()+"_MCL_cluster";
+		logger = CyLogger.getLogger(ConnectedComponentsCluster.class);
 		initializeProperties();
 	}
 
-	public String getShortName() {return "GLay";};
-	public String getName() {return "Community cluster (GLay)";};
+	public String getShortName() {return "ConnectedComponents";};
+	public String getName() {return "Connected Components cluster";};
 
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
+		edgeAttributeHandler.updateAttributeList();
+
 		return clusterProperties.getTunablePanel();
 	}
 
@@ -91,30 +98,8 @@ public class GLayCluster extends AbstractNetworkClusterer  {
 	public void initializeProperties() {
 		super.initializeProperties();
 
-		/**
-		 * Tuning values
-		 */
-		clusterProperties.add(new Tunable("tunables_panel",
-		                                  "GLay Options",
-		                                  Tunable.GROUP, new Integer(2)));
-
-		// Whether or not to create a new network from the results
-		clusterProperties.add(new Tunable("selectedOnly","Cluster only selected nodes",
-		                                  Tunable.BOOLEAN, new Boolean(false)));
-
-		//Whether or not to assume the edges are undirected
-		clusterProperties.add(new Tunable("undirectedEdges","Assume edges are undirected",
-		                                  Tunable.BOOLEAN, new Boolean(true)));
-
-		clusterProperties.add(new Tunable("results_panel",
-		                                  "Results",
-		                                  Tunable.GROUP, new Integer(2)));
-
-		clusterProperties.add(new Tunable("modularity","Modularity",
-		                                  Tunable.DOUBLE, new Double(0), Tunable.IMMUTABLE));
-
-		clusterProperties.add(new Tunable("clusters","Number of clusters",
-		                                  Tunable.INTEGER, new Integer(0), Tunable.IMMUTABLE));
+		// Use the standard edge attribute handling stuff....
+		edgeAttributeHandler = new EdgeAttributeHandler(clusterProperties, true);
 
 		super.advancedProperties();
 
@@ -127,17 +112,10 @@ public class GLayCluster extends AbstractNetworkClusterer  {
 	}
 
 	public void updateSettings(boolean force) {
-		
 		clusterProperties.updateValues();
 		super.updateSettings(force);
 
-		Tunable t = clusterProperties.get("selectedOnly");
-		if ((t != null) && (t.valueChanged() || force))
-			selectedOnly = ((Boolean) t.getValue()).booleanValue();
-
-		t = clusterProperties.get("undirectedEdges");
-		if ((t != null) && (t.valueChanged() || force))
-			undirectedEdges = ((Boolean) t.getValue()).booleanValue();
+		edgeAttributeHandler.updateSettings(force);
 	}
 
 	public void doCluster(TaskMonitor monitor) {
@@ -148,34 +126,38 @@ public class GLayCluster extends AbstractNetworkClusterer  {
 		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
-		// Sanity check all of our settings
-		if (debug)
-			logger.debug("Performing community clustering (GLay)");
-
-    GSimpleGraphData simpleGraph = new GSimpleGraphData(network, selectedOnly, undirectedEdges);
-		fa = new FastGreedyAlgorithm();
-		//fa.partition(simpleGraph);
-		fa.execute(simpleGraph, monitor);
-
-		NumberFormat nf = NumberFormat.getInstance();
-		String modularityString = nf.format(fa.getModularity());
-		Tunable t = clusterProperties.get("modularity");
-		t.setValue(new Double(modularityString));
-
-		t = clusterProperties.get("clusters");
-		t.setValue(new Integer(fa.getClusterNumber()));
-
-		List<NodeCluster> clusterList = new ArrayList<NodeCluster>();
-		for (int cluster = 0; cluster < fa.getClusterNumber(); cluster++) {
-			clusterList.add(new NodeCluster());
+		DistanceMatrix matrix = edgeAttributeHandler.getMatrix();
+		if (matrix == null) {
+			logger.error("Can't get distance matrix: no attribute value?");
+			return;
 		}
 
-    int membership[] = fa.getMembership();
-    for(int index=0; index < simpleGraph.graphIndices.length; index++){
-      int cluster = membership[index];
-      CyNode node = (CyNode) network.getNode(simpleGraph.graphIndices[index]);
-      clusterList.get(cluster).add(node);
-    }
+		logger.info("Calculating Connected Components");
+		monitor.setStatus("Calculating Connected Components");
+
+		Map<Integer, List<CyNode>> components = matrix.findConnectedComponents();
+
+		// Create the NodeClusters
+		Map<Integer, NodeCluster> clusterMap = new HashMap<Integer, NodeCluster>();
+		for (Integer cluster: components.keySet()) {
+			clusterMap.put(cluster, new NodeCluster(components.get(cluster)));
+		}
+
+		// Now get the sorted cluster map
+		int clusterNumber = 1;
+		HashMap<NodeCluster,NodeCluster> cMap = new HashMap<NodeCluster, NodeCluster>();
+		for (NodeCluster cluster: NodeCluster.sortMap(clusterMap)) {
+
+			if (cMap.containsKey(cluster))
+				continue;
+
+			cMap.put(cluster,cluster);
+
+			cluster.setClusterNumber(clusterNumber);
+			clusterNumber++;
+		}
+
+		List<NodeCluster> clusters = new ArrayList<NodeCluster> (cMap.keySet());
 
 		logger.info("Removing groups");
 
@@ -186,17 +168,15 @@ public class GLayCluster extends AbstractNetworkClusterer  {
 		monitor.setStatus("Creating groups");
 
 		List<List<CyNode>> nodeClusters = 
-		     createGroups(netAttributes, networkID, nodeAttributes, clusterList);
+		     createGroups(netAttributes, networkID, nodeAttributes, clusters);
 
-		ClusterResults results = new ClusterResults(network, nodeClusters, "Modularity: "+modularityString);
-		monitor.setStatus("Done.  Community Clustering results:\n"+results+"\n  Modularity: "+modularityString);
+		ClusterResults results = new ClusterResults(network, nodeClusters);
+		monitor.setStatus("Done.  MCL results:\n"+results);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
 	}
 
 	public void halt() {
-		if (fa != null)
-			fa.halt();
 	}
 }

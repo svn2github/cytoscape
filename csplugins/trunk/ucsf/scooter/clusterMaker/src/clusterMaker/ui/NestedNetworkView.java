@@ -146,7 +146,7 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 
 		String cluster_type = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
 		if (cluster_type != "MCL" && cluster_type != "GLay" && cluster_type != "AP" && cluster_type != "FORCE" &&
-		    cluster_type != "MCODE" && cluster_type != "TransClust")
+		    cluster_type != "MCODE" && cluster_type != "TransClust" && cluster_type != "ConnectedComponents")
 			return false;
 
 		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE)) {

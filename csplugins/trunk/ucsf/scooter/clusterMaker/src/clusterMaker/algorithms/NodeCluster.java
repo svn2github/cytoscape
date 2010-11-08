@@ -34,6 +34,7 @@ package clusterMaker.algorithms;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,12 @@ public class NodeCluster extends ArrayList<CyNode> {
 
 	public NodeCluster() {
 		super();
+		clusterCount++;
+		clusterNumber = clusterCount;
+	}
+
+	public NodeCluster(Collection<CyNode> collection) {
+		super(collection);
 		clusterCount++;
 		clusterNumber = clusterCount;
 	}

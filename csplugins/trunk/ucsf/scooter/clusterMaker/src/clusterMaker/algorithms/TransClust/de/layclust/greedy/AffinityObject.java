@@ -20,7 +20,6 @@ public class AffinityObject implements Comparable{
 		}
 	}
 
-	@Override
 	public int compareTo(Object o) {
                 AffinityObject a = (AffinityObject) o;
                 if(this.affinity<a.affinity){
