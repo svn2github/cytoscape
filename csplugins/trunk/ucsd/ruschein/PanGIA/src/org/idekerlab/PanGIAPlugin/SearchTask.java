@@ -283,7 +283,7 @@ public class SearchTask implements Task {
 
 		setPercentCompleted(100);
 		
-		PanGIAPlugin.output.initialize(physicalInputNetwork, geneticInputNetwork,parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName());
+		PanGIAPlugin.output.initialize(nnCreator.getOverviewNetwork(), physicalInputNetwork, geneticInputNetwork,parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName());
 		
 		/*
 		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
@@ -455,10 +455,14 @@ public class SearchTask implements Task {
 		if (inputNetwork == null)
 			throw new IllegalArgumentException("input parameter inputNetwork must not be null!");
 
-		if (numericAttrName == null || numericAttrName.length() == 0) {
+		if (numericAttrName == null || numericAttrName.length() == 0)
+		{
+			int numNodes = inputNetwork.getNodeCount();
+			
+			float defaultScore = -(float)Math.log(edges.size()/((float)numNodes*(numNodes-1)/2.0f));
+			
 			for (final CyEdge edge : edges)
-				outputNetwork.add(edge.getSource().getIdentifier(),
-				                  edge.getTarget().getIdentifier(), 1.0f);
+				outputNetwork.add(edge.getSource().getIdentifier(), edge.getTarget().getIdentifier(), defaultScore);
 		} else
 		{
 			// Validate that "numericAttrName" is a known numeric edge attribute.

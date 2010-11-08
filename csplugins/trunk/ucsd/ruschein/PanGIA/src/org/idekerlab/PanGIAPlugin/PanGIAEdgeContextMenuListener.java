@@ -40,10 +40,14 @@ public class PanGIAEdgeContextMenuListener implements EdgeContextMenuListener
         		 break;
         	 }
         
-         final JMenu pangiaMenu = new JMenu("PanGIA");
          
-         if (selectedHasNested && PanGIAPlugin.output.isAvailable())
+         boolean isOverviewNetwork = PanGIAPlugin.output.isAvailable() && view.getNetwork().getIdentifier().equals(PanGIAPlugin.output.getOverviewNetwork().getIdentifier());
+         
+         
+         if (selectedHasNested && isOverviewNetwork)
          {
+        	 final JMenu pangiaMenu = new JMenu("PanGIA");
+         
 	         
 	
 	         JMenuItem item = new JMenuItem();
@@ -56,10 +60,14 @@ public class PanGIAEdgeContextMenuListener implements EdgeContextMenuListener
 	         });
 	
 	         pangiaMenu.add(item);
+	         
+	         
+	         
+	         menu.add(pangiaMenu);
          }
          
          
          
-         menu.add(pangiaMenu);
+         
 	}
 }

@@ -55,8 +55,10 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
         		 break;
         	 }
          
+         boolean isOverviewNetwork = PanGIAPlugin.output.isAvailable() && view.getNetwork().getIdentifier().equals(PanGIAPlugin.output.getOverviewNetwork().getIdentifier());
+         
          //ITEM1
-         if (selectedHasNested && PanGIAPlugin.output.isAvailable())
+         if (selectedHasNested && isOverviewNetwork)
          {
 	         JMenuItem item = new JMenuItem();
 	         item.addActionListener(new ActionListener()
@@ -71,27 +73,32 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
          }
          
          //ITEM2
-         //ONLY IF NETWORK IS THE OVERVIEW GRAPH!!!
-         JMenuItem item2 = new JMenuItem();
-         item2.setText("Export Modules to Tab-Delimited File");
-         item2.addActionListener(new ActionListener()
+         if (isOverviewNetwork)
          {
-        	 public void actionPerformed(ActionEvent e) {
-            	 saveModules(view);
-             }
-         });
-         pangiaMenu.add(item2);
+	         JMenuItem item2 = new JMenuItem();
+	         item2.setText("Export Modules to Tab-Delimited File");
+	         item2.addActionListener(new ActionListener()
+	         {
+	        	 public void actionPerformed(ActionEvent e) {
+	            	 saveModules(view);
+	             }
+	         });
+	         pangiaMenu.add(item2);
+         }
          
          //ITEM3
-         JMenuItem item3 = new JMenuItem();
-         item3.setText("Export Module Map to Tab-Delimited File");
-         item3.addActionListener(new ActionListener()
+         if (isOverviewNetwork)
          {
-        	 public void actionPerformed(ActionEvent e) {
-            	 saveOverviewNetwork(view);
-             }
-         });
-         pangiaMenu.add(item3);
+	         JMenuItem item3 = new JMenuItem();
+	         item3.setText("Export Module Map to Tab-Delimited File");
+	         item3.addActionListener(new ActionListener()
+	         {
+	        	 public void actionPerformed(ActionEvent e) {
+	            	 saveOverviewNetwork(view);
+	             }
+	         });
+	         pangiaMenu.add(item3);
+         }
          
          //ITEM4
          JMenu item1 = new JMenu();

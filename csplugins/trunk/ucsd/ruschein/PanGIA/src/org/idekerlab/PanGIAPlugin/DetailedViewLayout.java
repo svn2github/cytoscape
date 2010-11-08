@@ -21,7 +21,7 @@ import cytoscape.view.CyNetworkView;
 
 public class DetailedViewLayout
 {
-	private static double BUFFER_RATIO = 1.2;
+	private static double BUFFER_RATIO = 1.5;
 	
 	public static void layout(CyNetworkView view, CyNetworkView overview)
 	{
@@ -81,6 +81,13 @@ public class DetailedViewLayout
 		for (int i=0;i<moduleList.size();i++)
 		{
 			Set<Node> nodes = module_nodes.get(moduleList.get(i));
+			
+			if (nodes.size()<=1)
+			{
+				radius[i] = 10;
+				continue;
+			}
+			
 			double minX = Double.MAX_VALUE;
 			double maxX = Double.MIN_VALUE;
 			double minY = Double.MAX_VALUE;
@@ -105,6 +112,8 @@ public class DetailedViewLayout
 			double diffX = maxX-centerX[i]; 
 			double diffY = maxY-centerY[i];
 			radius[i] = Math.sqrt(diffX*diffX+diffY*diffY);
+			
+			if (Double.isNaN(radius[i])) radius[i] = 10;
 		}
 		
 		
@@ -157,21 +166,53 @@ public class DetailedViewLayout
 			else if (y>maxY) maxY = y;
 		}
 		
-		newCenterX = DoubleVector.times(newCenterX, scale / (maxX-minX));
-		newCenterY = DoubleVector.times(newCenterY, scale / (maxY-minY));
+		if (Math.abs(maxX-minX) < 1e-3) DoubleVector.fill(newCenterX,0);
+		else newCenterX = DoubleVector.times(newCenterX, scale / (maxX-minX));
+		
+		if (Math.abs(maxY-minY) < 1e-3) DoubleVector.fill(newCenterY,0);
+		else newCenterY = DoubleVector.times(newCenterY, scale / (maxY-minY));
+		
+		newCenterX = DoubleVector.meanCenter(newCenterX);
+		newCenterY = DoubleVector.meanCenter(newCenterY);
 		
 		double maxOverlapRatio = Double.MIN_VALUE;
-		for (int i=0;i<radius.length;i++)
-			for (int j=i+1;j<radius.length;j++)
-			{
-				double diffX = newCenterX[i]-newCenterX[j];
-				double diffY = newCenterY[i]-newCenterY[j];
-				
-				double overlapRatio = BUFFER_RATIO*(radius[i]+radius[j])/Math.sqrt(diffX*diffX+diffY*diffY);
-				
-				if (overlapRatio>maxOverlapRatio) maxOverlapRatio = overlapRatio;
-			}
+		OverlapRatio:
+		while (maxOverlapRatio==Double.MIN_VALUE)
+			for (int i=0;i<radius.length;i++)
+				for (int j=i+1;j<radius.length;j++)
+				{
+					double diffX = Math.abs(newCenterX[i]-newCenterX[j]);
+					double diffY = Math.abs(newCenterY[i]-newCenterY[j]);
+					
+					double overlapRatio = BUFFER_RATIO*(radius[i]+radius[j])/Math.sqrt(diffX*diffX+diffY*diffY);
+					
+					if (diffX<1e-3 || diffY<1e-3)
+					{
+						//System.out.println(i+", "+j+",  "+diffX+", "+diffY);
+						
+						if (diffX<1e-3)
+						{
+							newCenterX[i]-=(radius[i]/2+scale/100);
+							newCenterX[j]+=(radius[j]/2+scale/100);
+						}
+						
+						if (diffY<1e-3)
+						{
+							newCenterY[i]-=(radius[i]/2+scale/100);
+							newCenterY[j]+=(radius[j]/2+scale/100);
+						}
+						
+						maxOverlapRatio = Double.MIN_VALUE;
+						continue OverlapRatio;
+					}
+					
+					if (overlapRatio>maxOverlapRatio) maxOverlapRatio = overlapRatio;
+				}
 		
+		if (Double.isInfinite(maxOverlapRatio)) maxOverlapRatio = Double.MAX_VALUE/1000;
+		
+		//System.out.println("Max overlap ratio: "+maxOverlapRatio);
+				
 		newCenterX = DoubleVector.times(newCenterX, maxOverlapRatio);
 		newCenterY = DoubleVector.times(newCenterY, maxOverlapRatio);
 		

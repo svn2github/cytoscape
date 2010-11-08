@@ -9,10 +9,12 @@ public class PanGIAOutput
 	private CyNetwork origGenNetwork = null;
 	private String physAttrName = null;
 	private String genAttrName = null;
+	private CyNetwork overviewNetwork = null;
 	
-	public void initialize(CyNetwork origPhysNetwork, CyNetwork origGenNetwork, String physAttrName, String genAttrName)
+	public void initialize(CyNetwork overviewNetwork, CyNetwork origPhysNetwork, CyNetwork origGenNetwork, String physAttrName, String genAttrName)
 	{
 		this.available = true;
+		this.overviewNetwork = overviewNetwork;
 		this.origPhysNetwork = origPhysNetwork;
 		this.origGenNetwork = origGenNetwork;
 		this.physAttrName = physAttrName;
@@ -49,5 +51,10 @@ public class PanGIAOutput
 	public String getGenAttrName()
 	{
 		return genAttrName;
+	}
+	
+	public CyNetwork getOverviewNetwork()
+	{
+		return overviewNetwork;
 	}
 }

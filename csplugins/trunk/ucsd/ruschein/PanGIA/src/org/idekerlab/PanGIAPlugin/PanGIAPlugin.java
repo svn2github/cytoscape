@@ -110,8 +110,9 @@ public class PanGIAPlugin extends CytoscapePlugin {
 			
 			if (output.isAvailable())
 			{
-				bw.write(output.getOrigPhysNetwork().getIdentifier()+"\n");
-				bw.write(output.getOrigGenNetwork().getIdentifier()+"\n");
+				bw.write(output.getOverviewNetwork().getTitle()+"\n");
+				bw.write(output.getOrigPhysNetwork().getTitle()+"\n");
+				bw.write(output.getOrigGenNetwork().getTitle()+"\n");
 				bw.write(output.getPhysAttrName()+"\n");
 				bw.write(output.getGenAttrName()+"\n");
 			}
@@ -143,11 +144,15 @@ public class PanGIAPlugin extends CytoscapePlugin {
 			
 			if (isAvailable)
 			{
-				CyNetwork physNet = Cytoscape.getNetwork(in.readLine());
-				CyNetwork genNet = Cytoscape.getNetwork(in.readLine());
+				String overviewNetID = in.readLine();
+				System.out.println("Overview net title: "+overviewNetID);
+				
+				CyNetwork overviewNet = getNetworkFromTitle(overviewNetID);
+				CyNetwork physNet = getNetworkFromTitle(in.readLine());
+				CyNetwork genNet = getNetworkFromTitle(in.readLine());
 				String physAttr = in.readLine();
 				String genAttr = in.readLine();
-				output.initialize(physNet, genNet, physAttr, genAttr);
+				output.initialize(overviewNet, physNet, genNet, physAttr, genAttr);
 			}else output.reset();
 			
 			
@@ -158,6 +163,14 @@ public class PanGIAPlugin extends CytoscapePlugin {
 			System.out.println("Error loading PanGIA session file.");
 			e.printStackTrace();
 		}
+	}
+	
+	private static CyNetwork getNetworkFromTitle(String title)
+	{
+		for (CyNetwork net : Cytoscape.getNetworkSet())
+			if (net.getTitle().equals(title)) return net;
+		
+		return null;
 	}
 }
 
