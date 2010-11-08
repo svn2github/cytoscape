@@ -1,4 +1,4 @@
-package org.cytoscape.equations.parse_tree;
+package org.cytoscape.equations;
 
 
 import static org.junit.Assert.*;
