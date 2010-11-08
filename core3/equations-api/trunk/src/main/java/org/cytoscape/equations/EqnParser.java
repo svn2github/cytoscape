@@ -32,7 +32,6 @@ package org.cytoscape.equations;
 
 import java.util.Map;
 import java.util.Set;
-import org.cytoscape.equations.parse_tree.*;
 
 
 public interface EqnParser {
