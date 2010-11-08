@@ -57,7 +57,7 @@ public class EquationUtil {
 			throw new IllegalArgumentException("floating point value is too large to be converted to a Long!");
 
 		double x = ((Double)d).longValue();
-		if (x != d && x < 0.0)
+		if (x != d && d < 0.0)
 			--x;
 
 		return (long)x;
