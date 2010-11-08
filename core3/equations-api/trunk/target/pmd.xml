@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd version="4.2.5" timestamp="2010-11-08T14:29:33.041">
+<file name="/Users/ruschein/code/core3/equations-api/src/main/java/org/cytoscape/equations/AbstractFunction.java">
+<violation beginline="33" endline="33" begincolumn="1" endcolumn="26" rule="UnusedImports" ruleset="Import Statement Rules" package="org.cytoscape.equations" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.util.Iterator'
+</violation>
+</file>
+<file name="/Users/ruschein/code/core3/equations-api/src/main/java/org/cytoscape/equations/ArgDescriptor.java">
+<violation beginline="34" endline="34" begincolumn="1" endcolumn="27" rule="UnusedImports" ruleset="Import Statement Rules" package="org.cytoscape.equations" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.util.ArrayList'
+</violation>
+</file>
+<file name="/Users/ruschein/code/core3/equations-api/src/main/java/org/cytoscape/equations/ArgType.java">
+<violation beginline="34" endline="34" begincolumn="1" endcolumn="27" rule="UnusedImports" ruleset="Import Statement Rules" package="org.cytoscape.equations" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.util.ArrayList'
+</violation>
+</file>
+<file name="/Users/ruschein/code/core3/equations-api/src/main/java/org/cytoscape/equations/Equation.java">
+<violation beginline="33" endline="33" begincolumn="1" endcolumn="25" rule="UnusedImports" ruleset="Import Statement Rules" package="org.cytoscape.equations" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.util.HashMap'
+</violation>
+<violation beginline="34" endline="34" begincolumn="1" endcolumn="21" rule="UnusedImports" ruleset="Import Statement Rules" package="org.cytoscape.equations" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.util.Map'
+</violation>
+<violation beginline="72" endline="72" begincolumn="34" endcolumn="59" rule="OverrideBothEqualsAndHashcode" ruleset="Basic Rules" package="org.cytoscape.equations" class="Equation" method="equals" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OverrideBothEqualsAndHashcode" priority="3">
+Ensure you override both equals() and hashCode()
+</violation>
+</file>
+<file name="/Users/ruschein/code/core3/equations-api/src/main/java/org/cytoscape/equations/FunctionUtil.java">
+<violation beginline="140" endline="140" begincolumn="58" endcolumn="72" rule="BooleanInstantiation" ruleset="Basic Rules" package="org.cytoscape.equations" class="FunctionUtil" method="getArgAsBoolean" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BooleanInstantiation" priority="2">
+Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead.
+</violation>
+<violation beginline="142" endline="142" begincolumn="58" endcolumn="72" rule="BooleanInstantiation" ruleset="Basic Rules" package="org.cytoscape.equations" class="FunctionUtil" method="getArgAsBoolean" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BooleanInstantiation" priority="2">
+Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead.
+</violation>
+</file>
+</pmd>
