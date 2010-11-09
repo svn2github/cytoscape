@@ -70,10 +70,10 @@ public class IdentDescriptor {
 	/** Returns the, possibly adjusted, type of the descriptor as one of the types internally supported by equations.
 	 *  @return the (translated) type of the descriptor
 	 */
-	Class getType() { return type; }
+	public Class getType() { return type; }
 
 	/** Returns the value of the descriptor.
 	 *  @return the (translated) value of the descriptor
 	 */
-	Object getValue() { return value; }
+	public Object getValue() { return value; }
 }
