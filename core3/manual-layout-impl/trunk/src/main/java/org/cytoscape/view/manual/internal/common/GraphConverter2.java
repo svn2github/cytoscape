@@ -161,7 +161,7 @@ public final class GraphConverter2 {
 					if (noNodesSelected)
 						return true;
 
-					return node.attrs().get(CyTableEntry.SELECTED,boolean.class); 
+					return node.getCyRow().get(CyTableEntry.SELECTED,boolean.class); 
 				}
 
 				public void setNodePosition(CyNode node, double xPos, double yPos) {
