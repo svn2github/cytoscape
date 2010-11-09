@@ -48,7 +48,7 @@ import java.util.Map;
 
 
 /**
- * An abstract implemenation of the CyAction interface.  Instead of using this
+ * An abstract implementation of the CyAction interface.  Instead of using this
  * class directly you should (strongly) consider implementing a 
  * {@link org.cytoscape.work.TaskFactory}/{@link org.cytoscape.work.Task} pair. Doing
  * so will allow your action to be used outside of a Swing specific application 
