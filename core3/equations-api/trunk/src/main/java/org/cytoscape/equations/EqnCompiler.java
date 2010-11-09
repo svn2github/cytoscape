@@ -64,4 +64,9 @@ public interface EqnCompiler {
 	 *  @return the error equation
 	 */
 	public Equation getErrorEquation(final String equation, final Class type, final String errorMessage);
+
+	/** Returns the parser which can be used for checking the sytax of equations.
+	 *  @return the parser used by the compiler
+	 */
+	public EqnParser getParser();
 }
