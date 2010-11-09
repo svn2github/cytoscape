@@ -36,9 +36,9 @@
 
 package org.cytoscape.view.manual.internal.rotate;
 
-import com.nerius.math.xform.AffineTransform3D;
-import com.nerius.math.xform.AxisRotation3D;
-import com.nerius.math.xform.Translation3D;
+import org.cytoscape.math.xform.AffineTransform3D;
+import org.cytoscape.math.xform.AxisRotation3D;
+import org.cytoscape.math.xform.Translation3D;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;

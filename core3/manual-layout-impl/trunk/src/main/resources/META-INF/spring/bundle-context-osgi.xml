@@ -5,13 +5,11 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
-<!--
 	
-	<osgi:reference id="cyEventHelperServiceRef"
-		interface="org.cytoscape.event.CyEventHelper" />
+	<osgi:reference id="cySwingApplicationServiceRef"
+		interface="org.cytoscape.view.CySwingApplication" />
 
-	<osgi:service id="cyNetworkFactoryService"
-		ref="cyNetworkFactory" interface="org.cytoscape.model.CyNetworkFactory">
-	</osgi:service>
--->	
+	<osgi:reference id="cyApplicationManagerServiceRef"
+		interface="org.cytoscape.session.CyApplicationManager" />
+
 </beans>

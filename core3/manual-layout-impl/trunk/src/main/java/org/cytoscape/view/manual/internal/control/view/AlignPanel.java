@@ -54,12 +54,12 @@ public class AlignPanel extends JPanel {
 	 * Creates a new AlignPanel object.
 	 */
 	public AlignPanel(CyApplicationManager app) {
-		ImageIcon hari = new ImageIcon(getClass().getResource("/H_ALIGN_RIGHT.gif"));
-		ImageIcon haci = new ImageIcon(getClass().getResource("/H_ALIGN_CENTER.gif"));
-		ImageIcon hali = new ImageIcon(getClass().getResource("/H_ALIGN_LEFT.gif"));
-		ImageIcon vati = new ImageIcon(getClass().getResource("/V_ALIGN_TOP.gif"));
-		ImageIcon vaci = new ImageIcon(getClass().getResource("/V_ALIGN_CENTER.gif"));
-		ImageIcon vabi = new ImageIcon(getClass().getResource("/V_ALIGN_BOTTOM.gif"));
+		ImageIcon hari = new ImageIcon(getClass().getResource("/images/H_ALIGN_RIGHT.gif"));
+		ImageIcon haci = new ImageIcon(getClass().getResource("/images/H_ALIGN_CENTER.gif"));
+		ImageIcon hali = new ImageIcon(getClass().getResource("/images/H_ALIGN_LEFT.gif"));
+		ImageIcon vati = new ImageIcon(getClass().getResource("/images/V_ALIGN_TOP.gif"));
+		ImageIcon vaci = new ImageIcon(getClass().getResource("/images/V_ALIGN_CENTER.gif"));
+		ImageIcon vabi = new ImageIcon(getClass().getResource("/images/V_ALIGN_BOTTOM.gif"));
 
 		HAlignRight har = new HAlignRight(hari,app);
 		HAlignCenter hac = new HAlignCenter(haci,app);

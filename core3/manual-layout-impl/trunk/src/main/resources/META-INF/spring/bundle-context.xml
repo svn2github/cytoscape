@@ -15,13 +15,9 @@
 
 	<context:annotation-config/>
 
-<!--
-	<bean id="cyTableManager" class="org.cytoscape.model.internal.CyTableManagerImpl">
+	<bean id="manualLayoutPlugin" class="org.cytoscape.view.manual.internal.ManualLayoutPlugin">
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
-	<bean id="cyTableFactory" class="org.cytoscape.model.internal.CyTableFactoryImpl">
-		<constructor-arg ref="cyEventHelperServiceRef" />
-		<constructor-arg ref="cyTableManager" />
-	</bean>
--->
 </beans>

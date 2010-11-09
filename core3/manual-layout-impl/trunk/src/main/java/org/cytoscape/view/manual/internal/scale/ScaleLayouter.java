@@ -28,9 +28,9 @@
 package org.cytoscape.view.manual.internal.scale;
 
 
-import com.nerius.math.xform.AffineTransform3D;
-import com.nerius.math.xform.Scale3D;
-import com.nerius.math.xform.Translation3D;
+import org.cytoscape.math.xform.AffineTransform3D;
+import org.cytoscape.math.xform.Scale3D;
+import org.cytoscape.math.xform.Translation3D;
 
 import org.cytoscape.view.manual.internal.layout.algorithm.MutablePolyEdgeGraphLayout;
 

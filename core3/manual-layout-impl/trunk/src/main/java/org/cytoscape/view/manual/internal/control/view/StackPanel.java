@@ -54,12 +54,12 @@ public class StackPanel extends JPanel {
 	 */
 	public StackPanel(CyApplicationManager app) {
 
-		ImageIcon vali = new ImageIcon(getClass().getResource("/V_STACK_LEFT.gif"));
-		ImageIcon vaci = new ImageIcon(getClass().getResource("/V_STACK_CENTER.gif"));
-		ImageIcon vari = new ImageIcon(getClass().getResource("/V_STACK_RIGHT.gif"));
-		ImageIcon hati = new ImageIcon(getClass().getResource("/H_STACK_TOP.gif"));
-		ImageIcon haci = new ImageIcon(getClass().getResource("/H_STACK_CENTER.gif"));
-		ImageIcon habi = new ImageIcon(getClass().getResource("/H_STACK_BOTTOM.gif"));
+		ImageIcon vali = new ImageIcon(getClass().getResource("/images/V_STACK_LEFT.gif"));
+		ImageIcon vaci = new ImageIcon(getClass().getResource("/images/V_STACK_CENTER.gif"));
+		ImageIcon vari = new ImageIcon(getClass().getResource("/images/V_STACK_RIGHT.gif"));
+		ImageIcon hati = new ImageIcon(getClass().getResource("/images/H_STACK_TOP.gif"));
+		ImageIcon haci = new ImageIcon(getClass().getResource("/images/H_STACK_CENTER.gif"));
+		ImageIcon habi = new ImageIcon(getClass().getResource("/images/H_STACK_BOTTOM.gif"));
 
 		VStackLeft val = new VStackLeft(vali,app);
 		VStackCenter vac = new VStackCenter(vaci,app);

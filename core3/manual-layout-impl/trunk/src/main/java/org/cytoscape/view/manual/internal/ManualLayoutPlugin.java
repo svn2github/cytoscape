@@ -37,16 +37,16 @@
 package org.cytoscape.view.manual.internal;
 
 import org.cytoscape.view.manual.internal.control.ControlPanel;
-
+import org.cytoscape.view.manual.internal.control.ControlPanelAction;
 import org.cytoscape.view.manual.internal.rotate.RotatePanel;
-
+import org.cytoscape.view.manual.internal.rotate.RotatePanelAction;
 import org.cytoscape.view.manual.internal.scale.ScalePanel;
+import org.cytoscape.view.manual.internal.scale.ScalePanelAction;
 
 
 import org.cytoscape.view.CySwingApplication;
 import org.cytoscape.view.CytoPanelName;
 import org.cytoscape.session.CyApplicationManager;
-
 
 
 
@@ -71,8 +71,8 @@ public class ManualLayoutPlugin {
 		app.getCytoPanel(CytoPanelName.SOUTH_WEST).add("Align and Distribute", controlPanel);
 
 		// create the actions
-	//	Cytoscape.getDesktop().getCyMenus().addAction( new RotatePanelAction(), 0);
-	//	Cytoscape.getDesktop().getCyMenus().addAction( new ScalePanelAction(), 1);
-	//	Cytoscape.getDesktop().getCyMenus().addAction( new ControlPanelAction(), 2);
+		app.addAction( new RotatePanelAction(app,appMgr));
+		app.addAction( new ScalePanelAction(app,appMgr));
+		app.addAction( new ControlPanelAction(app,appMgr));
 	}
 }

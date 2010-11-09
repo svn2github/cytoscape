@@ -54,12 +54,12 @@ public class DistPanel extends JPanel {
 	 * Creates a new DistPanel object.
 	 */
 	public DistPanel(CyApplicationManager app) {
-		ImageIcon hali = new ImageIcon(getClass().getResource("/H_DIST_LEFT.gif"));
-		ImageIcon haci = new ImageIcon(getClass().getResource("/H_DIST_CENTER.gif"));
-		ImageIcon hari = new ImageIcon(getClass().getResource("/H_DIST_RIGHT.gif"));
-		ImageIcon vati = new ImageIcon(getClass().getResource("/V_DIST_TOP.gif"));
-		ImageIcon vaci = new ImageIcon(getClass().getResource("/V_DIST_CENTER.gif"));
-		ImageIcon vabi = new ImageIcon(getClass().getResource("/V_DIST_BOTTOM.gif"));
+		ImageIcon hali = new ImageIcon(getClass().getResource("/images/H_DIST_LEFT.gif"));
+		ImageIcon haci = new ImageIcon(getClass().getResource("/images/H_DIST_CENTER.gif"));
+		ImageIcon hari = new ImageIcon(getClass().getResource("/images/H_DIST_RIGHT.gif"));
+		ImageIcon vati = new ImageIcon(getClass().getResource("/images/V_DIST_TOP.gif"));
+		ImageIcon vaci = new ImageIcon(getClass().getResource("/images/V_DIST_CENTER.gif"));
+		ImageIcon vabi = new ImageIcon(getClass().getResource("/images/V_DIST_BOTTOM.gif"));
 
 		HDistLeft hal = new HDistLeft(hali,app);
 		HDistCenter hac = new HDistCenter(haci,app);
