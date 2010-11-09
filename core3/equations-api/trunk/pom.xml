@@ -15,7 +15,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
   <artifactId>equations-api</artifactId>
-  <version>3.0.0-alpha2-SNAPSHOT</version>
+  <version>3.0.0-alpha2</version>
 
   <name>${bundle.symbolicName}</name>
 
