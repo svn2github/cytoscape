@@ -45,14 +45,11 @@ import org.cytoscape.equations.LongList;
 import org.cytoscape.equations.StringList;
 
 
-public class InterpreterImpl {
+public class InterpreterImpl implements Interpreter {
 	private Stack<Object> argumentStack;
 	private Map<String, IdentDescriptor> variableNameToDescriptorMap;
 
-	public InterpreterImpl()
-		throws IllegalStateException
-	{
-	}
+	public InterpreterImpl() { }
 
 	/** Executes the code that was passed into the constructor.
 	 *  @return a Double, Boolean or String object that is the result of a successful execution.
@@ -60,7 +57,7 @@ public class InterpreterImpl {
 	 *  @throws IllegalArgumentException thrown if a function invocation resulted in a function detecting an invalid argument
 	 *  @throws IllegalStateException thrown if an invalid interpreter internal state was reached
 	 */
-	public Object run(final Equation equation, final Map<String, IdentDescriptor> variableNameToDescriptorMap)
+	public Object execute(final Equation equation, final Map<String, IdentDescriptor> variableNameToDescriptorMap)
 		throws NullPointerException, ArithmeticException, IllegalArgumentException, IllegalStateException
 	{
 		if (equation == null || variableNameToDescriptorMap == null)

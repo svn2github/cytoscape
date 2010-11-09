@@ -44,7 +44,7 @@ import org.cytoscape.equations.internal.builtins.*;
 import org.cytoscape.equations.internal.parse_tree.*;
 
 
-class EqnParserImpl implements EqnParser {
+public class EqnParserImpl implements EqnParser {
 	private String formula;
 	private Tokeniser tokeniser;
 	private Map<String, Function> nameToFunctionMap;
