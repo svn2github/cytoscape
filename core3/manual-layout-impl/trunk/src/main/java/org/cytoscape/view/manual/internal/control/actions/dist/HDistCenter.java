@@ -36,12 +36,17 @@
 
 package org.cytoscape.view.manual.internal.control.actions.dist;
 
+import java.util.Collections;
+import java.util.List;
+
+import javax.swing.Icon;
+
 import org.cytoscape.view.manual.internal.control.actions.AbstractControlAction;
 
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.properties.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 /**
  *

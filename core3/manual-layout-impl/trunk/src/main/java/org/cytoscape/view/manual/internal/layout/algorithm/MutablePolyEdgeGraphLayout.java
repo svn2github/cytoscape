@@ -36,6 +36,8 @@
 
 package org.cytoscape.view.manual.internal.layout.algorithm;
 
+import java.util.List;
+
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 
@@ -75,7 +77,7 @@ public interface MutablePolyEdgeGraphLayout {
 	 * @exception IllegalArgumentException if specified node is not
 	 *   a node in this graph.
 	 **/
-	public double getNodePosition(int node, boolean xPosition);
+	public double getNodePosition(CyNode node, boolean xPosition);
 
 
 	/**
@@ -87,7 +89,7 @@ public interface MutablePolyEdgeGraphLayout {
 	 *   in this graph.
 	 * @see #setNodePosition(int, double, double)
 	 */
-	public boolean isMovableNode(int node);
+	public boolean isMovableNode(CyNode node);
 
 	/**
 	 * Sets the X,Y position of a node.
@@ -125,7 +127,7 @@ public interface MutablePolyEdgeGraphLayout {
 	 * @see #getNodePosition(int, boolean)
 	 * @see #isMovableNode(int)
 	 */
-	public void setNodePosition(int node, double xPos, double yPos);
+	public void setNodePosition(CyNode node, double xPos, double yPos);
 
 
 	/**

@@ -37,21 +37,17 @@
 package org.cytoscape.view.manual.internal;
 
 import org.cytoscape.view.manual.internal.control.ControlPanel;
-import org.cytoscape.view.manual.internal.control.ControlPanelAction;
 
 import org.cytoscape.view.manual.internal.rotate.RotatePanel;
-import org.cytoscape.view.manual.internal.rotate.RotatePanelAction;
 
 import org.cytoscape.view.manual.internal.scale.ScalePanel;
-import org.cytoscape.view.manual.internal.scale.ScalePanelAction;
+
 
 import org.cytoscape.view.CySwingApplication;
+import org.cytoscape.view.CytoPanelName;
+import org.cytoscape.session.CyApplicationManager;
 
-import java.awt.Dimension;
 
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.SwingConstants;
 
 
 /**
@@ -62,17 +58,17 @@ public class ManualLayoutPlugin {
 	/**
 	 * Creates a new ManualLayoutPlugin object.
 	 */
-	public ManualLayoutPlugin(CySwingApplication app) {
+	public ManualLayoutPlugin(CySwingApplication app, CyApplicationManager appMgr) {
 
 		// create the panels 
-		RotatePanel rotatePanel = new RotatePanel(app);
-		ScalePanel scalePanel = new ScalePanel(app);
-		ControlPanel controlPanel = new ControlPanel(app);
+		RotatePanel rotatePanel = new RotatePanel(appMgr);
+		ScalePanel scalePanel = new ScalePanel(appMgr);
+		ControlPanel controlPanel = new ControlPanel(appMgr);
 
 		// add them to the cytopanel
-		app.getCytoPanel(SwingConstants.SOUTH_WEST).add("Rotate", rotatePanel);
-		app.getCytoPanel(SwingConstants.SOUTH_WEST).add("Scale", scalePanel);
-		app.getCytoPanel(SwingConstants.SOUTH_WEST).add("Align and Distribute", controlPanel);
+		app.getCytoPanel(CytoPanelName.SOUTH_WEST).add("Rotate", rotatePanel);
+		app.getCytoPanel(CytoPanelName.SOUTH_WEST).add("Scale", scalePanel);
+		app.getCytoPanel(CytoPanelName.SOUTH_WEST).add("Align and Distribute", controlPanel);
 
 		// create the actions
 	//	Cytoscape.getDesktop().getCyMenus().addAction( new RotatePanelAction(), 0);

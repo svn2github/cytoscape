@@ -28,32 +28,17 @@
 package org.cytoscape.view.manual.internal.common;
 
 
-import org.cytoscape.view.manual.internal.rotate.RotatePanel;
-import org.cytoscape.view.manual.internal.rotate.RotationLayouter;
-
-import org.cytoscape.view.manual.internal.scale.ScaleLayouter;
-import org.cytoscape.view.manual.internal.scale.ScalePanel;
-
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JCheckBox;
-import javax.swing.JMenu;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.session.events.SetCurrentNetworkEvent;
+import org.cytoscape.session.events.SetCurrentNetworkListener;
 
 
-public class CheckBoxTracker implements SelectEventListener, SetCurrentNetworkListener {
+public class CheckBoxTracker implements /*SelectEventListener,*/ SetCurrentNetworkListener {
 	private JCheckBox jCheckBox;
 	private Set<CyNetwork> listeningNetworks;
 
@@ -62,18 +47,18 @@ public class CheckBoxTracker implements SelectEventListener, SetCurrentNetworkLi
 		listeningNetworks = new HashSet<CyNetwork>();
 	}
 
-	public void onSelectEvent(SelectEvent event) {
+/*	public void onSelectEvent(SelectEvent event) {
 		jCheckBox.setSelected(Cytoscape.getCurrentNetworkView().getSelectedNodeIndices().length > 0);
-	} 
+	} */
 
-	public void handleEvent(SetCurrentNetwork e) {
+	public void handleEvent(SetCurrentNetworkEvent e) {
 			CyNetwork curr = e.getNetwork();
 
-			// only add this as a listener if it hasn't been done already
-			if ( !listeningNetworks.contains(curr) )
-				curr.addSelectEventListener(this);	
-		
-		 	// to make sure we're set intially	
-			onSelectEvent(null);
+//			// only add this as a listener if it hasn't been done already
+//			if ( !listeningNetworks.contains(curr) )
+//				curr.addSelectEventListener(this);	
+//		
+//		 	// to make sure we're set intially	
+//			onSelectEvent(null);
 	}
 }

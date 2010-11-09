@@ -37,13 +37,17 @@
 package org.cytoscape.view.manual.internal.control.actions;
 
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
+import javax.swing.Icon;
+
 import java.awt.event.ActionEvent;
 
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableUtil;
@@ -55,11 +59,15 @@ import org.cytoscape.session.CyApplicationManager;
  *
  */
 public abstract class AbstractControlAction extends AbstractAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 482354803994808731L;
 	protected double X_min;
 	protected double X_max;
 	protected double Y_min;
 	protected double Y_max;
-	protected List<View<CyNode>> selecteNodeViews;
+	protected List<View<CyNode>> selectedNodeViews;
 	protected CyNetworkView view;
 
 	private final CyApplicationManager appMgr;
@@ -74,11 +82,11 @@ public abstract class AbstractControlAction extends AbstractAction {
 		this.appMgr = appMgr;
 	}
 
-	private List<View<CyNode>> findSelectedNodes() {
+	private void findSelectedNodes() {
 		List<View<CyNode>> snv = new ArrayList<View<CyNode>>();
 		for (CyNode n : CyTableUtil.getNodesInState(view.getModel(),CyTableEntry.SELECTED,true))
 			snv.add( view.getNodeView(n) );
-		selecteNodeViews = snv; 
+		selectedNodeViews = snv; 
 	}
 
 	/**
@@ -88,7 +96,7 @@ public abstract class AbstractControlAction extends AbstractAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		view = appMgr.getCurrentNetworkView();
-		findSelecteNodeViews();
+		findSelectedNodes();
 		//ViewChangeEdit vce = new ViewChangeEdit(view, title);
 		computeDimensions();
 		control(selectedNodeViews);
@@ -103,7 +111,7 @@ public abstract class AbstractControlAction extends AbstractAction {
 	 * with special cases.
 	 */
 	protected double getX(View<CyNode> n) {
-		return n.getVisualProperty(TwoDVisualProperty.NODE_X_LOCATION);
+		return n.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
 	}
 
 	/**
@@ -111,7 +119,7 @@ public abstract class AbstractControlAction extends AbstractAction {
 	 * with special cases.
 	 */
 	protected double getY(View<CyNode> n) {
-		return n.getVisualProperty(TwoDVisualProperty.NODE_Y_LOCATION);
+		return n.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
 	}
 
 	private void computeDimensions() {

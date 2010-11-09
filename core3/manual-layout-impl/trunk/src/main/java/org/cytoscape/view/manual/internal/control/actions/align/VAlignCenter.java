@@ -36,12 +36,16 @@
 
 package org.cytoscape.view.manual.internal.control.actions.align;
 
+import java.util.List;
+
+import javax.swing.Icon;
+
 import org.cytoscape.view.manual.internal.control.actions.AbstractControlAction;
 
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.properties.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 /**
  *
  */
@@ -54,6 +58,6 @@ public class VAlignCenter extends AbstractControlAction {
 	protected void control(List<View<CyNode>> nodes) {
 		double mid = Y_min + ((Y_max - Y_min) / 2);
 		for ( View<CyNode> n : nodes ) 
-			n.setVisualProperty(TwoDVisualLexicon.NODE_Y_POSITION, mid);
+			n.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, mid);
 	}
 }

@@ -45,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import java.awt.GridLayout;
 
+import org.cytoscape.session.CyApplicationManager;
 
 /**
  *
@@ -54,6 +55,12 @@ import java.awt.GridLayout;
  *
  */
 public class ControlPanel extends JPanel {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2098655182032300315L;
+
 	/**
 	 * Creates a new ControlPanel object.
 	 */

@@ -36,11 +36,16 @@
 
 package org.cytoscape.view.manual.internal.control.actions.dist;
 
+import java.util.Collections;
+import java.util.List;
+
+import javax.swing.Icon;
+
 import org.cytoscape.view.manual.internal.control.actions.AbstractControlAction;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.properties.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 
 /**
@@ -49,7 +54,7 @@ import org.cytoscape.view.presentation.properties.TwoDVisualLexicon;
 public class VDistTop extends AbstractControlAction {
 
 	public VDistTop(Icon i,CyApplicationManager mgr) {
-		super("Vertical Distribute Top",i,appMgr);
+		super("Vertical Distribute Top",i,mgr);
 	}
 	
 	protected void control(List<View<CyNode>> nodes) {
@@ -63,14 +68,14 @@ public class VDistTop extends AbstractControlAction {
 
 		for (int i = 0; i < nodes.size(); i++) {
 			View<CyNode> n = nodes.get(i);
-			double h = n.getVisualProperty(TwoDVisualLexicon.NODE_HEIGHT) / 2;
-			n.setVisualProperty(TwoDVisualLexicon.NODE_Y_POSITION,Y_min + (i * d) + h);
+			double h = n.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE) / 2;
+			n.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION,Y_min + (i * d) + h);
 		}
 	}
 
 	protected double getY(View<CyNode> n) {
-		double y = n.getVisualProperty(TwoDVisualLexicon.NODE_Y_POSITION);
-		double h = n.getVisualProperty(TwoDVisualLexicon.NODE_HEIGHT) / 2;
+		double y = n.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
+		double h = n.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE) / 2;
 
 		return y - h;
 	}

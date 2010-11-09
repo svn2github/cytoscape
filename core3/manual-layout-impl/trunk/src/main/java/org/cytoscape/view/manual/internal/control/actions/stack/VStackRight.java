@@ -36,12 +36,17 @@
 
 package org.cytoscape.view.manual.internal.control.actions.stack;
 
+import java.util.Collections;
+import java.util.List;
+
+import javax.swing.Icon;
+
 import org.cytoscape.view.manual.internal.control.actions.AbstractControlAction;
 
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.properties.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 /**
  *
@@ -49,7 +54,7 @@ import org.cytoscape.view.presentation.properties.TwoDVisualLexicon;
 public class VStackRight extends AbstractControlAction {
 
 	public VStackRight(Icon i,CyApplicationManager mgr) {
-		super("Vertical Stack Right",i,appMgr);
+		super("Vertical Stack Right",i,mgr);
 	}
 
 	protected void control(List<View<CyNode>> nodes) {
@@ -66,13 +71,13 @@ public class VStackRight extends AbstractControlAction {
 		for (int i = 1; i < nodes.size(); i++) {
 			nodes.get(i).setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION,
 					nodes.get(i-1).getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION) + 
-					nodes.get(i-1).getVisualProperty(TwoDVisualLexicon.NODE_HEIGHT) *0.5 +
-					nodes.get(i).getVisualProperty(TwoDVisualLexicon.NODE_HEIGHT) * 0.5
+					nodes.get(i-1).getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE) *0.5 +
+					nodes.get(i).getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE) * 0.5
 					);
 			nodes.get(i).setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION,
 					nodes.get(i-1).getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION) +
-					nodes.get(i-1).getVisualProperty(TwoDVisualLexicon.NODE_WIDTH) * 0.5 -
-					nodes.get(i).getVisualProperty(TwoDVisualLexicon.NODE_WIDTH) * 0.5
+					nodes.get(i-1).getVisualProperty(TwoDVisualLexicon.NODE_X_SIZE) * 0.5 -
+					nodes.get(i).getVisualProperty(TwoDVisualLexicon.NODE_X_SIZE) * 0.5
 					);
 			
 		}

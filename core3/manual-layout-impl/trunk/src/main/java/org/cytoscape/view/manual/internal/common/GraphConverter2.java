@@ -41,6 +41,7 @@ import org.cytoscape.view.manual.internal.layout.algorithm.MutablePolyEdgeGraphL
 
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
@@ -77,7 +78,7 @@ public final class GraphConverter2 {
 	public static MutablePolyEdgeGraphLayout getGraphReference(double percentBorder,
 	                                                           boolean preserveEdgeAnchors,
 	                                                           boolean onlySelectedNodesMovable,
-															   CyNetworkView graphView) {
+															   final CyNetworkView graphView) {
 		if (percentBorder < 0.0d)
 			throw new IllegalArgumentException("percentBorder < 0.0");
 
@@ -150,9 +151,9 @@ public final class GraphConverter2 {
 					View<CyNode> nodeView = graphView.getNodeView(node);
 
 					if (xPosition)
-						return nodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION) - xOff;
+						return (nodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION) - xOff);
 
-					return nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION) - yOff;
+					return (nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION) - yOff);
 				}
 
 				// MutableGraphLayout methods.

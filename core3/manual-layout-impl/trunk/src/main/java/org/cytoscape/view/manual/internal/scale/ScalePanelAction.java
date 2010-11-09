@@ -36,6 +36,8 @@
 
 package org.cytoscape.view.manual.internal.scale; 
 
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.CySwingApplication;
 import org.cytoscape.view.manual.internal.common.AbstractManualLayoutAction;
 
 /**
@@ -44,9 +46,14 @@ import org.cytoscape.view.manual.internal.common.AbstractManualLayoutAction;
 public class ScalePanelAction extends AbstractManualLayoutAction {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3813165574373725579L;
+
+	/**
 	 * Scale network action. Should be in menu slot 1.
 	 */
-	public ScalePanelAction() {
-		super("Scale",1);
+	public ScalePanelAction(CySwingApplication swingApp, CyApplicationManager appMgr) {
+		super("Scale",1, swingApp, appMgr);
 	}
 }

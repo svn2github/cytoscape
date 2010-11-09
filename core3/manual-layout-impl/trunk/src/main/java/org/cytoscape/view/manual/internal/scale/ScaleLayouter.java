@@ -34,14 +34,9 @@ import com.nerius.math.xform.Translation3D;
 
 import org.cytoscape.view.manual.internal.layout.algorithm.MutablePolyEdgeGraphLayout;
 
-import org.cytoscape.view.presentation.properties.TwoDVisualLexicon;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.View;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyTableUtil;
-import org.cytoscape.model.CyTableEntry;
+
 
 
 public final class ScaleLayouter {

@@ -36,12 +36,16 @@
 
 package org.cytoscape.view.manual.internal.control.actions.align;
 
+import java.util.List;
+
+import javax.swing.Icon;
+
 import org.cytoscape.view.manual.internal.control.actions.AbstractControlAction;
 
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.properties.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 /**
  *
@@ -54,15 +58,14 @@ public class HAlignLeft extends AbstractControlAction {
 
 	protected void control(List<View<CyNode>> nodes) {
 		for ( View<CyNode> n : nodes ) {
-			double w = n.getWidth() / 2;
-			n.setXPosition(X_min + w);
+			double w = n.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION) / 2;
 			n.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, X_min + w);
 		}
 	}
 
 	protected double getX(View<CyNode> n) {
 		double x = n.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
-		double w = n.getVisualProperty(TwoDVisualLexicon.NODE_WIDTH) / 2;
+		double w = n.getVisualProperty(TwoDVisualLexicon.NODE_X_SIZE) / 2;
 
 		return x - w;
 	}

@@ -36,6 +36,8 @@
 
 package org.cytoscape.view.manual.internal.rotate; 
 
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.CySwingApplication;
 import org.cytoscape.view.manual.internal.common.AbstractManualLayoutAction;
 
 /**
@@ -46,7 +48,7 @@ public class RotatePanelAction extends AbstractManualLayoutAction {
 	/**
  	 * Rotate network action. Should be in menu slot 0.
 	 */
-	public RotatePanelAction() {
-		super("Rotate",0);
+	public RotatePanelAction(CySwingApplication swingApp, CyApplicationManager appMgr) {
+		super("Rotate",0,swingApp, appMgr);
 	}
 }

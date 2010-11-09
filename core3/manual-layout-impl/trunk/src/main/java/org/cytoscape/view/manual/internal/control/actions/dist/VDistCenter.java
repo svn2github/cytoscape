@@ -36,11 +36,16 @@
 
 package org.cytoscape.view.manual.internal.control.actions.dist;
 
+import java.util.Collections;
+import java.util.List;
+
+import javax.swing.Icon;
+
 import org.cytoscape.view.manual.internal.control.actions.AbstractControlAction;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.properties.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 /**
  *
@@ -61,7 +66,7 @@ public class VDistCenter extends AbstractControlAction {
 		d = d / (nodes.size() - 1);
 
 		for (int i = 0; i < nodes.size(); i++) {
-			nodes.get(i).setVisualProperty(TwoDVisualLexicon.NODE_Y_POSITION,Y_min + (i * d));
+			nodes.get(i).setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION,Y_min + (i * d));
 		}
 	}
 }

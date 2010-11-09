@@ -44,6 +44,7 @@ import javax.swing.event.ChangeListener;
 
 import org.cytoscape.view.manual.internal.layout.algorithm.MutablePolyEdgeGraphLayout;
 import org.cytoscape.view.manual.internal.common.*;
+import org.cytoscape.view.model.CyNetworkView;
 
 import org.cytoscape.session.CyApplicationManager;
 
@@ -59,7 +60,7 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 	private int prevValue; 
 
 	private boolean startAdjusting = true;
-	private ViewChangeEdit currentEdit = null;
+	//private ViewChangeEdit currentEdit = null;
 
 	private final CyApplicationManager appMgr;
 
@@ -134,7 +135,7 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 		}
 
 		MutablePolyEdgeGraphLayout nativeGraph = GraphConverter2.getGraphReference(128.0d, true,
-		                                                   jCheckBox.isSelected());
+		                                                   jCheckBox.isSelected(), currentView);
 		RotationLayouter rotation = new RotationLayouter(nativeGraph);
 
 		double radians = (((double) (jSlider.getValue() - prevValue)) * 2.0d * Math.PI) / 360.0d;
@@ -145,7 +146,7 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 
 		// only post edit when adjustment is complete
 		if ( !jSlider.getValueIsAdjusting() ) {
-			currentEdit.post();
+			//currentEdit.post();
 			startAdjusting = true;
 		}
 	}

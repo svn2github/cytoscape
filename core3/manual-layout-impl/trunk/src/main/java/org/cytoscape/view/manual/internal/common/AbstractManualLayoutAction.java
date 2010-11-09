@@ -53,9 +53,13 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.MenuEvent;
 
 import org.cytoscape.view.CySwingApplication;
+import org.cytoscape.view.CytoscapeAction;
 import org.cytoscape.view.CytoPanel;
 import org.cytoscape.view.CytoPanelState;
+import org.cytoscape.view.CytoPanelName;
+import org.cytoscape.view.CytoPanelListener;
 
+import org.cytoscape.session.CyApplicationManager;
 
 /**
  * Base class for displaying cytopanel menu items. This class primarily
@@ -77,9 +81,9 @@ public abstract class AbstractManualLayoutAction
 	 * @param title The title of the menu item. 
 	 * @param menuIndex The desired menu index for the action. 
 	 */
-	public AbstractManualLayoutAction(String title, int menuIndex, CySwingApplication swingApp) {
-		super(title);
-    	manualLayoutPanel = swingApp.getCytoPanel(SwingConstants.SOUTH_WEST);
+	public AbstractManualLayoutAction(String title, int menuIndex, CySwingApplication swingApp, CyApplicationManager appMgr) {
+		super(title, appMgr);
+    	manualLayoutPanel = swingApp.getCytoPanel(CytoPanelName.SOUTH_WEST);
 		this.menuIndex = menuIndex;
 		setPreferredMenu("Layout");
 		useCheckBoxMenuItem = true;
@@ -118,7 +122,7 @@ public abstract class AbstractManualLayoutAction
 	 * Enables of disables the action based on system state. 
 	 *
 	 * @param ev Triggering event - not used. 
-	 */
+	 
 	public void menuSelected(MenuEvent e) {
 		enableForNetworkAndView();
 		JCheckBoxMenuItem item = (JCheckBoxMenuItem)Cytoscape.getDesktop().getCyMenus().getLayoutMenu().getItem(menuIndex);
@@ -137,7 +141,7 @@ public abstract class AbstractManualLayoutAction
 		}
 
 	}
-
+*/
 	/**
 	 * Makes sure the menu check stays in sync with the selections made in the cytopanel.
 	 *

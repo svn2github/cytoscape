@@ -36,12 +36,16 @@
 
 package org.cytoscape.view.manual.internal.control.actions.align;
 
+import java.util.List;
+
+import javax.swing.Icon;
+
 import org.cytoscape.view.manual.internal.control.actions.AbstractControlAction;
 
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.presentation.properties.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 /**
  *
@@ -54,14 +58,14 @@ public class VAlignBottom extends AbstractControlAction {
 
 	protected void control(List<View<CyNode>> nodes) {
 		for ( View<CyNode> n : nodes ) {
-			double h = n.getVisualProperty(TwoDVisualLexicon.NODE_HEIGHT) / 2;
-			n.setVisualProperty(TwoDVisualLexicon.NODE_Y_POSITION,Y_max - h);
+			double h = n.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE) / 2;
+			n.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION,Y_max - h);
 		}
 	}
 
 	protected double getY(View<CyNode> n) {
-		double y = n.getVisualProperty(TwoDVisualLexicon.NODE_Y_POSITION);
-		double h = n.getVisualProperty(TwoDVisualLexicon.NODE_HEIGHT) / 2;
+		double y = n.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
+		double h = n.getVisualProperty(TwoDVisualLexicon.NODE_Y_SIZE) / 2;
 
 		return y + h;
 	}

@@ -40,6 +40,8 @@ import com.nerius.math.xform.AffineTransform3D;
 import com.nerius.math.xform.AxisRotation3D;
 import com.nerius.math.xform.Translation3D;
 
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.manual.internal.layout.algorithm.MutablePolyEdgeGraphLayout;
 
 

@@ -36,47 +36,25 @@
 
 package org.cytoscape.view.manual.internal.common;
 
-import org.cytoscape.view.manual.internal.rotate.RotatePanel;
-import org.cytoscape.view.manual.internal.rotate.RotationLayouter;
-
-import org.cytoscape.view.manual.internal.scale.ScaleLayouter;
-import org.cytoscape.view.manual.internal.scale.ScalePanel;
-
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JCheckBox;
-import javax.swing.JSlider;
-import javax.swing.JMenu;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import org.cytoscape.session.events.SetCurrentNetworkListener;
-import org.cytoscape.session.events.SetCurrentNetworkEvent;
+import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
+import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.view.model.CyNetworkView;
 
 /**
  *
  */
-public class SliderStateTracker implements  SetCurrentNetworkListener {
+public class SliderStateTracker implements  SetCurrentNetworkViewListener {
 
-	String preFocusedViewId;
+	long preFocusedViewId;
 	Map<Long,Integer> layoutStateMap;
 	PolymorphicSlider slider;
 
 	public SliderStateTracker(PolymorphicSlider s) {
 		layoutStateMap = new HashMap<Long,Integer>();
-		preFocusedViewId = "none";
+		preFocusedViewId = 0l;
 		slider = s;
 	}
 
