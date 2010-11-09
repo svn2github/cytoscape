@@ -108,6 +108,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	private int m_lastRenderDetail = 0;
 	private Rectangle m_selectionRect = null;
 	private ViewChangeEdit m_undoable_edit;
+	private boolean isPrinting = false;
 
 	FontMetrics m_fontMetrics = null;
 	
@@ -264,10 +265,12 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 * @param g Usually Graphics2D object for drawing network view as image.
 	 */
 	public void print(Graphics g) {
+		isPrinting = true;
 		renderGraph(new GraphGraphics(
 				new ImageImposter(g, getWidth(), getHeight()), false), 
 				/* setLastRenderDetail = */ false, m_view.m_printLOD);
 		// g.drawImage(img, 0, 0, null);
+		isPrinting = false;
 	}
 
 	/**
@@ -276,10 +279,19 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 * @param g DOCUMENT ME!
 	 */
 	public void printNoImposter(Graphics g) {
+		isPrinting = true;
 		final Image img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 		renderGraph(new GraphGraphics(img, false), /* setLastRenderDetail = */ false, m_view.m_printLOD);
 		// g.drawImage(img, 0, 0, null);
+		isPrinting = false;
 	}
+
+	/**
+ 	 * Return true if this view is curerntly being printed (as opposed to painted on the screen)
+ 	 *
+ 	 * @return true if we're currently being printed, false otherwise
+ 	 */
+	public boolean isPrinting() {return isPrinting;}
 
 	private int m_currMouseButton = 0;
 	private int m_lastXMousePos = 0;
