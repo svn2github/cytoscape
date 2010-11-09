@@ -52,6 +52,7 @@ import javax.swing.JToolBar;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
+import java.util.Dictionary;
 
 
 /**
@@ -263,8 +264,16 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		return networkViewManager;
 	}
 
+	public void addAction(CyAction action, Dictionary props) {
+		cyMenus.addAction(action);
+	}
+
 	public void addAction(CyAction action) {
 		cyMenus.addAction(action);
+	}
+
+	public void removeAction(CyAction action, Dictionary props) {
+		cyMenus.removeAction(action);
 	}
 
 	public void removeAction(CyAction action) {
