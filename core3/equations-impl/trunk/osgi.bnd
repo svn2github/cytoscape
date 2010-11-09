@@ -1,0 +1,10 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+
+Spring-Context: META-INF/spring/*.xml
+Private-Package: ${bundle.namespace}.internal.*
+Private-Package: ${bundle.namespace}.internal.builtins.*
+Private-Package: ${bundle.namespace}.internal.interpreter.*
+Private-Package: ${bundle.namespace}.internal.parse_tree.*
