@@ -513,6 +513,9 @@ public class SearchTask implements Task {
 		if (scalingMethod == ScalingMethodX.NONE)
 			return edgeAttribValues;
 
+		for (int i = 0; i < edgeAttribValues.length; ++i)
+			edgeAttribValues[i] = Math.abs(edgeAttribValues[i]);
+		
 		if (scalingMethod == ScalingMethodX.LINEAR_LOWER) {
 			for (int i = 0; i < edgeAttribValues.length; ++i)
 				edgeAttribValues[i] = -edgeAttribValues[i];
