@@ -113,8 +113,9 @@
 		interface="org.cytoscape.view.CyAction" />
 	<osgi:service id="cytoPanelSouthActionService" ref="cytoPanelSouthAction"
 		interface="org.cytoscape.view.CyAction" />
-
 	<osgi:service id="cytoPanelEastActionService" ref="cytoPanelEastAction"
+		interface="org.cytoscape.view.CyAction" />
+	<osgi:service id="cytoPanelSouthWestActionService" ref="cytoPanelSouthWestAction"
 		interface="org.cytoscape.view.CyAction" />
 
 	<osgi:set id="cyActionSet" interface="org.cytoscape.view.CyAction"

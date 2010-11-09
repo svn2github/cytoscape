@@ -69,6 +69,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 
 	private static final String SMALL_ICON = "/images/c16.png";
 
+	private static final int DEVIDER_SIZE = 4;
 
 	/**
 	 * The network panel that sends out events when a network is selected from
@@ -121,12 +122,8 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		// create the CytoscapeDesktop
 		BiModalJSplitPane masterPane = setupCytoPanels(networkPanel, networkViewManager);
 
-		// note - proper networkViewManager has been properly selected in
-		// setupCytoPanels()
 		main_panel.add(masterPane, BorderLayout.CENTER);
 		main_panel.add(cyMenus.getJToolBar(), BorderLayout.NORTH);
-
-		// Remove status bar.
 		setJMenuBar(cyMenus.getJMenuBar());
 
 		//don't automatically close window. Let shutdown.exit(returnVal)
@@ -134,6 +131,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
 		addWindowListener(new WindowAdapter() {
+			// TODO should use shutdown handler!!!
 				public void windowClosing(WindowEvent we) {
 					shutdown.exit(0);
 				}
@@ -162,6 +160,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		BiModalJSplitPane topRightPane = createTopRightPane(networkViewManager);
 		BiModalJSplitPane rightPane = createRightPane(topRightPane);
 		BiModalJSplitPane masterPane = createMasterPane(networkPanel, rightPane);
+		createBottomLeft();
 
 		return masterPane;
 	}
@@ -178,9 +177,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		cytoPanelEast = new CytoPanelImp(CytoPanelName.EAST, JTabbedPane.TOP, CytoPanelState.HIDE);
 
 		// determine proper network view manager component
-		Component networkViewComp = null;
-
-		networkViewComp = (Component) networkViewManager.getDesktopPane();
+		Component networkViewComp = (Component) networkViewManager.getDesktopPane();
 
 		// create the split pane - we show this on startup
 		BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.HORIZONTAL_SPLIT,
@@ -217,16 +214,34 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		// set the cytopanel container
 		cytoPanelSouth.setCytoPanelContainer(splitPane);
 
+		splitPane.setDividerSize(DEVIDER_SIZE);
+
 		// set resize weight - top component gets all the extra space.
 		splitPane.setResizeWeight(1.0);
+
+		// outta here
+		return splitPane;
+	}
+
+	private void createBottomLeft() {
 
 		// create cytopanel with tabs along the top for manual layout
 		cytoPanelSouthWest = new CytoPanelImp(CytoPanelName.SOUTH_WEST,
 						      JTabbedPane.TOP,
 						      CytoPanelState.HIDE);
 
-		// outta here
-		return splitPane;
+        final BiModalJSplitPane split = new BiModalJSplitPane(this, JSplitPane.VERTICAL_SPLIT,
+                                      BiModalJSplitPane.MODE_HIDE_SPLIT, new JPanel(),
+                                      cytoPanelSouthWest);
+        split.setResizeWeight(0);
+        cytoPanelSouthWest.setCytoPanelContainer(split);
+        cytoPanelSouthWest.setMinimumSize(new Dimension(180, 330));
+        cytoPanelSouthWest.setMaximumSize(new Dimension(180, 330));
+        cytoPanelSouthWest.setPreferredSize(new Dimension(180, 330));
+
+        split.setDividerSize(DEVIDER_SIZE);
+
+		new ToolCytoPanelListener( split, (CytoPanelImp)cytoPanelWest, cytoPanelSouthWest );
 	}
 
 	/**
@@ -252,6 +267,8 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 		BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.HORIZONTAL_SPLIT,
 		                                                    BiModalJSplitPane.MODE_SHOW_SPLIT,
 		                                                    cytoPanelWest, rightPane);
+
+		splitPane.setDividerSize(DEVIDER_SIZE);
 
 		// set the cytopanel container
 		cytoPanelWest.setCytoPanelContainer(splitPane);

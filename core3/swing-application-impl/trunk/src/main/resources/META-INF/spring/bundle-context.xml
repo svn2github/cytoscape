@@ -221,6 +221,12 @@
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
+	<bean id="cytoPanelSouthWestAction" class="org.cytoscape.internal.actions.CytoPanelAction">
+		<constructor-arg type="org.cytoscape.view.CytoPanelName" value="SOUTH_WEST" />
+		<constructor-arg value="false" />
+		<constructor-arg ref="cytoscapeDesktop" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+	</bean>
 
 	<!-- Other stuff to be started -->
 	<bean id="undoMonitor" class="org.cytoscape.internal.util.undo.UndoMonitor">
