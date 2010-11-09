@@ -40,6 +40,7 @@ import java.util.TreeSet;
 import org.cytoscape.equations.EqnParser;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.Node;
+import org.cytoscape.equations.internal.builtins.*;
 import org.cytoscape.equations.internal.parse_tree.*;
 
 
@@ -57,6 +58,8 @@ class EqnParserImpl implements EqnParser {
 		this.nameToFunctionMap = new HashMap<String, Function>();
 		this.registeredFunctions = new HashSet<Function>();
 		this.parseTree = null;
+
+		registerBuiltins();
 	}
 
 	public void registerFunction(final Function func) throws IllegalArgumentException {
@@ -502,5 +505,70 @@ class EqnParserImpl implements EqnParser {
 			                           + operator.asString() + "\"! (lhs="
 			                           + lhs.toString() + ":" + lhs.getType() + ", rhs="
 			                           + rhs.toString() + ":" + rhs.getType() + ")");
-	 }
+	}
+
+	private void registerBuiltins() {
+		registerFunction(new Abs());
+		registerFunction(new ACos());
+		registerFunction(new ASin());
+		registerFunction(new And());
+		registerFunction(new ATan2());
+		registerFunction(new Average());
+		registerFunction(new BList());
+		registerFunction(new Combin());
+		registerFunction(new Concatenate());
+		registerFunction(new Cos());
+		registerFunction(new Cosh());
+		registerFunction(new Count());
+		registerFunction(new Degrees());
+		registerFunction(new org.cytoscape.equations.internal.builtins.Error());
+		registerFunction(new Exp());
+		registerFunction(new First());
+		registerFunction(new FList());
+		registerFunction(new GeoMean());
+		registerFunction(new HarMean());
+		registerFunction(new If());
+		registerFunction(new IList());
+		registerFunction(new Largest());
+		registerFunction(new Last());
+		registerFunction(new Left());
+		registerFunction(new Len());
+		registerFunction(new ListToString());
+		registerFunction(new Ln());
+		registerFunction(new Log());
+		registerFunction(new Lower());
+		registerFunction(new Max());
+		registerFunction(new Median());
+		registerFunction(new Mid());
+		registerFunction(new Min());
+		registerFunction(new Mod());
+		registerFunction(new Mode());
+		registerFunction(new Not());
+		registerFunction(new NormDist());
+		registerFunction(new Now());
+		registerFunction(new Nth());
+		registerFunction(new Or());
+		registerFunction(new Permut());
+		registerFunction(new Pi());
+		registerFunction(new Product());
+		registerFunction(new Radians());
+		registerFunction(new Right());
+		registerFunction(new Round());
+		registerFunction(new Sign());
+		registerFunction(new Sin());
+		registerFunction(new Sinh());
+		registerFunction(new SList());
+		registerFunction(new StDev());
+		registerFunction(new Sqrt());
+		registerFunction(new Substitute());
+		registerFunction(new Sum());
+		registerFunction(new Tan());
+		registerFunction(new Tanh());
+		registerFunction(new Text());
+		registerFunction(new Today());
+		registerFunction(new Trunc());
+		registerFunction(new Upper());
+		registerFunction(new Value());
+		registerFunction(new Var());
+	}
 }

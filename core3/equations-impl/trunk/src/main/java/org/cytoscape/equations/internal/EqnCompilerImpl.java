@@ -86,6 +86,8 @@ public class EqnCompilerImpl implements EqnCompiler {
 
 	public Equation getEquation() { return equation; }
 
+	public EqnParser getParser() { return parser; }
+
 	/**
 	 *  A factory method that returns an Equation that always fails at runtime.
 	 *
