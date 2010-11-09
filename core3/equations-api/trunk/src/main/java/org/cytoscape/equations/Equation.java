@@ -51,8 +51,8 @@ public final class Equation {
 	 *                             the original equation
 	 *  @param type                the type of the equation, String.class, Boolean.class or Double.class
 	 */
-	Equation(final String equation, final Set<String> variableReferences, final Object[] code,
-	         final int[] sourceLocations, final Class type)
+	public Equation(final String equation, final Set<String> variableReferences, final Object[] code,
+	               final int[] sourceLocations, final Class type)
 	{
 		this.equation           = equation;
 		this.variableReferences = variableReferences;
@@ -101,37 +101,4 @@ public final class Equation {
 	 *  @return the type of this 
 	 */
 	public Class getType() { return type; }
-
-	/**
-	 *  A factory method that returns an Equation that always fails at runtime.
-	 *
-	 *  @param equation      an arbitrary string that is usually a syntactically invalid equation
-	 *  @param type          the return type of the error equation
-	 *  @param errorMessage  the runtime error message that the returned equation will produce
-	 */
-	/*
-	public static Equation getErrorEquation(final String equation, final Class type, final String errorMessage) {
-		final EqnCompiler compiler = new EqnCompiler();
-		final Map<String, Class> variableNameToTypeMap = new HashMap<String, Class>();
-		if (!compiler.compile("=ERROR(\"" + escapeQuotes(errorMessage) + "\")", variableNameToTypeMap))
-			throw new IllegalStateException("internal error in Equation.getErrorEquation().  This should *never* happen!");
-
-		final Equation errorEquation = compiler.getEquation();
-
-		return new Equation(equation, errorEquation.variableReferences, errorEquation.code,
-		                    errorEquation.sourceLocations, type);
-	}
-
-	private static  String escapeQuotes(final String s) {
-		final StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < s.length(); ++i) {
-			final char ch = s.charAt(i);
-			if (ch == '"')
-				builder.append('\\');
-			builder.append(ch);
-		}
-
-		return builder.toString();
-	}
-	*/
 }
