@@ -15,13 +15,13 @@ public class SUIDToNodeMapper implements AddedNodeListener, AboutToRemoveNodeLis
 	private final Map<Long, CyNode> suidToNodeMap = new HashMap<Long, CyNode>();
 
 	public void handleEvent(final AddedNodeEvent event) {
-		final CyNode edge = event.getNode();
-		suidToNodeMap.put(edge.getSUID(), edge);
+		final CyNode node = event.getNode();
+		suidToNodeMap.put(node.getSUID(), node);
 	}
 
 	public void handleEvent(final AboutToRemoveNodeEvent event) {
-		final CyNode edge = event.getNode();
-		suidToNodeMap.remove(edge.getSUID());
+		final CyNode node = event.getNode();
+		suidToNodeMap.remove(node.getSUID());
 	}
 
 	public CyNode getNode(final Long id) {
