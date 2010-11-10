@@ -36,8 +36,12 @@
 		auto-export="interfaces" />
 	<osgi:service id="stringValueEditorService" ref="stringValueEditor"
 		auto-export="interfaces" />
+		
+	<osgi:service id="colorPropertyEditorService" ref="colorPropertyEditor" auto-export="interfaces" />
+	<osgi:service id="numberPropertyEditorService" ref="numberPropertyEditor" auto-export="interfaces" />
 
 	<!-- Export as Editor Manager -->
+	
 	<osgi:service id="editorManagerService" ref="editorManager"
 		auto-export="interfaces" />
 
@@ -123,10 +127,17 @@
 			<entry key="title" value="Copy Visual Style" />
 		</osgi:service-properties>
 	</osgi:service>
+	<osgi:service id="createLegendTaskFactoryService"
+		ref="createLegendTaskFactory" auto-export="interfaces">
+		<osgi:service-properties>
+			<entry key="service.type" value="vizmapUI.taskFactory" />
+			<entry key="menu" value="main" />
+			<entry key="title" value="Create Legend" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 	
 
-	<osgi:service id="createLegendActionService" ref="createLegendAction"
-		interface="org.cytoscape.view.vizmap.gui.action.VizMapUIAction" />
 
 	<!-- Mapping generator services -->
 	<osgi:service id="rainbowGeneratorService" ref="rainbowGenerator"
@@ -191,6 +202,14 @@
 		cardinality="0..N">
 		<osgi:listener bind-method="addValueEditor"
 			unbind-method="removeValueEditor" ref="editorManager" />
+
+	</osgi:set>
+	
+	<osgi:set id="visualPropertyEditorSet"
+		interface="org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor"
+		cardinality="0..N">
+		<osgi:listener bind-method="addVisualPropertyEditor"
+			unbind-method="removeVisualPropertyEditor" ref="editorManager" />
 
 	</osgi:set>
 

@@ -27,13 +27,14 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyEditor;
 import java.util.HashMap;
@@ -75,7 +76,6 @@ import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
-
 /**
  * Skeleton of the VizMapper Main panel GUI.
  * 
@@ -83,16 +83,16 @@ import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
  * functions are in the VizMapperMainPanel.
  * 
  */
-public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI {
+public abstract class AbstractVizMapperPanel extends JPanel implements
+		VizMapGUI {
 	// Visual Properties which are not used in mapping now.
 	public static final String CATEGORY_UNUSED = "Unused Properties";
 
 	// TODO remove this
 	public static final String GRAPHICAL_MAP_VIEW = "Graphical View";
 
-
 	protected final SelectedVisualStyleManager manager;
-	
+
 	// ///////// Main GUI Components /////////////////
 
 	// Current Visual Style is managed by this object.
@@ -149,7 +149,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 	protected PropertyRendererRegistry rendReg;
 	protected PropertyEditorRegistry editorReg;
 
-	//protected VizMapEventHandlerManager vizMapEventHandlerManager;
+	// protected VizMapEventHandlerManager vizMapEventHandlerManager;
 
 	protected EditorWindowManager editorWindowManager;
 
@@ -160,23 +160,21 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 	protected AttributeComboBoxPropertyEditor networkAttributeEditor;
 
 	protected SwingPropertyChangeSupport spcs;
-	
+
 	protected final VisualStyleFactory vsFactory;
-	
+
 	protected static final long serialVersionUID = -6839011300709287662L;
 
-	public AbstractVizMapperPanel(
-			final VisualStyleFactory vsFactory,
-			CySwingApplication desktop,
-			DefaultViewEditor defViewEditor, IconManager iconMgr,
-			ColorManager colorMgr, VisualMappingManager vmm,
-			VizMapperMenuManager menuMgr, EditorManager editorFactory,
-			PropertySheetPanel propertySheetPanel,
+	public AbstractVizMapperPanel(final VisualStyleFactory vsFactory,
+			CySwingApplication desktop, DefaultViewEditor defViewEditor,
+			IconManager iconMgr, ColorManager colorMgr,
+			VisualMappingManager vmm, VizMapperMenuManager menuMgr,
+			EditorManager editorFactory, PropertySheetPanel propertySheetPanel,
 			VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 			EditorWindowManager editorWindowManager,
 			CyApplicationManager applicationManager, CyEventHelper eventHelper,
-			final SelectedVisualStyleManager manager)
-	{	
+			final SelectedVisualStyleManager manager) {
+		
 		this.manager = manager;
 		this.vsFactory = vsFactory;
 		this.cytoscapeDesktop = desktop;
@@ -191,7 +189,13 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 		this.editorWindowManager = editorWindowManager;
 		this.applicationManager = applicationManager;
 		this.eventHelper = eventHelper;
-		
+
+		editorReg = new PropertyEditorRegistry();
+		rendReg = new PropertyRendererRegistry();
+		this.propertySheetPanel.getTable().setEditorFactory(editorReg);
+		this.propertySheetPanel.getTable().setRendererFactory(rendReg);
+
+
 		spcs = new SwingPropertyChangeSupport(this);
 
 		defaultImageManager = new HashMap<VisualStyle, Image>();
@@ -201,14 +205,17 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 	}
 
 	private void initDefaultEditors() {
-//		 nodeAttrEditor = editorManager.getDefaultComboBoxEditor("nodeAttrEditor");
-//		 edgeAttrEditor = editorManager.getDefaultComboBoxEditor("edgeAttrEditor");
-		 nodeNumericalAttrEditor = editorManager
-		 .getDefaultComboBoxEditor("nodeNumericalAttrEditor");
-		 edgeNumericalAttrEditor = editorManager
-		 .getDefaultComboBoxEditor("edgeNumericalAttrEditor");
-		 mappingTypeEditor = editorManager
-		 .getDefaultComboBoxEditor("mappingTypeEditor");
+		// nodeAttrEditor =
+		// editorManager.getDefaultComboBoxEditor("nodeAttrEditor");
+		// edgeAttrEditor =
+		// editorManager.getDefaultComboBoxEditor("edgeAttrEditor");
+		nodeNumericalAttrEditor = editorManager
+				.getDefaultComboBoxEditor("nodeNumericalAttrEditor");
+		edgeNumericalAttrEditor = editorManager
+				.getDefaultComboBoxEditor("edgeNumericalAttrEditor");
+		mappingTypeEditor = editorManager
+				.getDefaultComboBoxEditor("mappingTypeEditor");
+
 	}
 
 	private void initComponents() {
@@ -285,16 +292,19 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 		bottomPanelLayout.setHorizontalGroup(bottomPanelLayout
 				.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addComponent(noMapListScrollPane, GroupLayout.DEFAULT_SIZE,
-						272, Short.MAX_VALUE).addComponent(buttonPanel,
-						GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-						Short.MAX_VALUE));
+						272, Short.MAX_VALUE)
+				.addComponent(buttonPanel, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
 		bottomPanelLayout.setVerticalGroup(bottomPanelLayout
 				.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
-						bottomPanelLayout.createSequentialGroup().addComponent(
-								buttonPanel, GroupLayout.PREFERRED_SIZE, 25,
-								GroupLayout.PREFERRED_SIZE).addComponent(
-								noMapListScrollPane, GroupLayout.DEFAULT_SIZE,
-								135, Short.MAX_VALUE)));
+						bottomPanelLayout
+								.createSequentialGroup()
+								.addComponent(buttonPanel,
+										GroupLayout.PREFERRED_SIZE, 25,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(noMapListScrollPane,
+										GroupLayout.DEFAULT_SIZE, 135,
+										Short.MAX_VALUE)));
 
 		listSplitPane.setLeftComponent(mainSplitPane);
 		listSplitPane.setRightComponent(bottomPanel);
@@ -335,9 +345,12 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 		vsSelectPanel.setLayout(vsSelectPanelLayout);
 		vsSelectPanelLayout.setHorizontalGroup(vsSelectPanelLayout
 				.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
-						vsSelectPanelLayout.createSequentialGroup()
-								.addContainerGap().addComponent(visualStyleComboBox, 0,
-										146, Short.MAX_VALUE).addPreferredGap(
+						vsSelectPanelLayout
+								.createSequentialGroup()
+								.addContainerGap()
+								.addComponent(visualStyleComboBox, 0, 146,
+										Short.MAX_VALUE)
+								.addPreferredGap(
 										LayoutStyle.ComponentPlacement.RELATED)
 								.addComponent(optionButton,
 										GroupLayout.PREFERRED_SIZE, 64,
@@ -346,8 +359,9 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 		vsSelectPanelLayout.setVerticalGroup(vsSelectPanelLayout
 				.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
 						vsSelectPanelLayout.createSequentialGroup().addGroup(
-								vsSelectPanelLayout.createParallelGroup(
-										GroupLayout.Alignment.BASELINE)
+								vsSelectPanelLayout
+										.createParallelGroup(
+												GroupLayout.Alignment.BASELINE)
 										.addComponent(visualStyleComboBox,
 												GroupLayout.PREFERRED_SIZE,
 												GroupLayout.DEFAULT_SIZE,
@@ -359,19 +373,25 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 
 		GroupLayout layout = new GroupLayout(this);
 		this.setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(
-				GroupLayout.Alignment.LEADING).addComponent(vsSelectPanel,
-				GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-				Short.MAX_VALUE).addComponent(mainSplitPane,
-				GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE));
+		layout.setHorizontalGroup(layout
+				.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addComponent(vsSelectPanel, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+				.addComponent(mainSplitPane, GroupLayout.DEFAULT_SIZE, 280,
+						Short.MAX_VALUE));
 		layout.setVerticalGroup(layout.createParallelGroup(
-				GroupLayout.Alignment.LEADING).addGroup(
-				layout.createSequentialGroup().addComponent(vsSelectPanel,
-						GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-						GroupLayout.PREFERRED_SIZE).addPreferredGap(
-						LayoutStyle.ComponentPlacement.RELATED).addComponent(
-						mainSplitPane, GroupLayout.DEFAULT_SIZE, 510,
-						Short.MAX_VALUE)));
+				GroupLayout.Alignment.LEADING)
+				.addGroup(
+						layout.createSequentialGroup()
+								.addComponent(vsSelectPanel,
+										GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(
+										LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(mainSplitPane,
+										GroupLayout.DEFAULT_SIZE, 510,
+										Short.MAX_VALUE)));
 	} // </editor-fold>
 
 	// Variables declaration - do not modify
@@ -475,17 +495,17 @@ public abstract class AbstractVizMapperPanel extends JPanel implements VizMapGUI
 
 	// ///////////////// Managing Visual Style Combobox //////////////////
 
-
-
 	public void setSelectedVisualStyle(final VisualStyle vs) {
 		final int itemCount = vsComboBoxModel.getSize();
 
 		for (int i = 0; i < itemCount; i++) {
 			if (visualStyleComboBox.getItemAt(i).equals(vs)) {
 
-				eventHelper.fireAsynchronousEvent(
-						new SelectedVisualStyleSwitchedEvent(visualStyleComboBox,
-								(VisualStyle) visualStyleComboBox.getItemAt(i), vs));
+				eventHelper
+						.fireAsynchronousEvent(new SelectedVisualStyleSwitchedEvent(
+								visualStyleComboBox,
+								(VisualStyle) visualStyleComboBox.getItemAt(i),
+								vs));
 				visualStyleComboBox.setSelectedItem(vs);
 				return;
 			}

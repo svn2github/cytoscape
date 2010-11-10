@@ -1,7 +1,7 @@
 /*
  * LegendDialog.java
  */
-package org.cytoscape.view.vizmap.gui.internal.action;
+package org.cytoscape.view.vizmap.gui.internal.task.ui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
@@ -37,7 +38,6 @@ public class LegendDialog extends JDialog {
 	private JButton jButton1;
 	private JButton jButton2;
 	private JScrollPane jScrollPane1;
-	private Component parent;
 
 	/**
 	 * Creates a new LegendDialog object.
@@ -45,13 +45,18 @@ public class LegendDialog extends JDialog {
 	 * @param parent  DOCUMENT ME!
 	 * @param vs  DOCUMENT ME!
 	 */
-	public LegendDialog(Component parentComponent, VisualStyle vs) {
+	public LegendDialog(final VisualStyle vs) {
 		super();
 		this.setModal(true);
-		this.setLocationRelativeTo(parentComponent);
+		
 		visualStyle = vs;
-		this.parent = parentComponent;
 		initComponents();
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	}
+	
+	public void showDialog(final Component parent) {
+		setLocationRelativeTo(parent);
+		setVisible(true);
 	}
 
 	/**
@@ -61,7 +66,7 @@ public class LegendDialog extends JDialog {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static JPanel generateLegendPanel(final VisualStyle visualStyle) {
+	private JPanel generateLegendPanel(final VisualStyle visualStyle) {
 		final JPanel legend = new JPanel();
 
 		Collection<VisualMappingFunction<?, ?>> mappings = visualStyle.getAllVisualMappingFunctions();

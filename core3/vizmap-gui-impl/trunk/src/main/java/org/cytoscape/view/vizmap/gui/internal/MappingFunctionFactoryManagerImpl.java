@@ -1,6 +1,7 @@
 package org.cytoscape.view.vizmap.gui.internal;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -17,24 +18,24 @@ public class MappingFunctionFactoryManagerImpl implements
 	
 	private static final Logger logger = LoggerFactory.getLogger(MappingFunctionFactoryManagerImpl.class);
 	
-	private final Set<VisualMappingFunctionFactory> factories;
+	private final Map<Class<?>, VisualMappingFunctionFactory> factories;
 	
 	private final EditorManager editorManager;
 	
 	public MappingFunctionFactoryManagerImpl(final EditorManager editorManager) {
 		this.editorManager = editorManager;
-		factories = new HashSet<VisualMappingFunctionFactory>();
+		factories = new HashMap<Class<?>, VisualMappingFunctionFactory>();
 	}
 
 	@Override
 	public Collection<VisualMappingFunctionFactory> getFactories() {
-		return factories;
+		return factories.values();
 	}
 	
 	
 	public void addFactory(VisualMappingFunctionFactory factory, @SuppressWarnings("rawtypes") Map properties) {
 		logger.debug("Got Mapping Factory: " + factory.toString());
-		factories.add(factory);
+		factories.put(factory.getMappingFunctionType(), factory);
 		
 		updateSelectorGUI();
 	}
@@ -42,7 +43,7 @@ public class MappingFunctionFactoryManagerImpl implements
 	
 	public void removeFactory(VisualMappingFunctionFactory factory, @SuppressWarnings("rawtypes") Map properties) {
 		logger.debug("************* Removing VM Function Factory ****************");
-		factories.remove(factory);
+		factories.remove(factory.getMappingFunctionType());
 		
 		updateSelectorGUI();
 	}
@@ -52,7 +53,12 @@ public class MappingFunctionFactoryManagerImpl implements
 //		for(final VisualMappingFunctionFactory factory: factories)
 //			mappingNames.add(factory.toString());
 		
-		((CyComboBoxPropertyEditor)editorManager.getMappingFunctionSelector()).setAvailableValues(factories.toArray());
+		((CyComboBoxPropertyEditor)editorManager.getMappingFunctionSelector()).setAvailableValues(factories.values().toArray());
+	}
+
+	@Override
+	public VisualMappingFunctionFactory getFactory(Class<?> mappingType) {
+		return factories.get(mappingType);
 	}
 
 }

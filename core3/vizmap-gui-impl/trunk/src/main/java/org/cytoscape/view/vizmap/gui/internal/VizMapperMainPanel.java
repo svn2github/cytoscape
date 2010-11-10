@@ -466,44 +466,46 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		VizMapperProperty prop = ((VizMapperProperty) curProp);
 
-		if (prop.getHiddenObject() instanceof VisualProperty
-				&& (prop.getDisplayName().contains("Mapping Type") == false)
-				&& (prop.getValue() != null)
-				&& (prop.getValue().toString().startsWith("Please select") == false)) {
-			// Enble delete menu
-			// delete.setEnabled(true);
-			Property[] children = prop.getSubProperties();
-
-			for (Property p : children) {
-				if ((p.getDisplayName() != null)
-						&& p.getDisplayName().contains("Mapping Type")) {
-					if ((p.getValue() == null)
-							|| (p.getValue().equals("Discrete Mapping") == false)) {
-						return;
-					}
-				}
-			}
-
-			VisualProperty type = ((VisualProperty) prop.getHiddenObject());
-
-			Class dataType = type.getType();
-
-			// if (dataType == Color.class) {
-			// rainbow1.setEnabled(true);
-			// rainbow2.setEnabled(true);
-			// randomize.setEnabled(true);
-			// brighter.setEnabled(true);
-			// darker.setEnabled(true);
-			// } else if (dataType == Number.class) {
-			// randomize.setEnabled(true);
-			// series.setEnabled(true);
-			// }
-			//
-			// if ((type == VisualProperty.NODE_WIDTH)
-			// || (type == VisualProperty.NODE_HEIGHT)) {
-			// fit.setEnabled(true);
-			// }
-		}
+		
+		//FIXME
+//		if (prop.getHiddenObject() instanceof VisualProperty
+//				&& (prop.getDisplayName().contains("Mapping Type") == false)
+//				&& (prop.getValue() != null)
+//				&& (prop.getValue().toString().startsWith("Please select") == false)) {
+//			// Enble delete menu
+//			// delete.setEnabled(true);
+//			Property[] children = prop.getSubProperties();
+//
+//			for (Property p : children) {
+//				if ((p.getDisplayName() != null)
+//						&& p.getDisplayName().contains("Mapping Type")) {
+//					if ((p.getValue() == null)
+//							|| (p.getValue().equals("Discrete Mapping") == false)) {
+//						return;
+//					}
+//				}
+//			}
+//
+//			VisualProperty type = ((VisualProperty) prop.getHiddenObject());
+//
+//			Class dataType = type.getType();
+//
+//			// if (dataType == Color.class) {
+//			// rainbow1.setEnabled(true);
+//			// rainbow2.setEnabled(true);
+//			// randomize.setEnabled(true);
+//			// brighter.setEnabled(true);
+//			// darker.setEnabled(true);
+//			// } else if (dataType == Number.class) {
+//			// randomize.setEnabled(true);
+//			// series.setEnabled(true);
+//			// }
+//			//
+//			// if ((type == VisualProperty.NODE_WIDTH)
+//			// || (type == VisualProperty.NODE_HEIGHT)) {
+//			// fit.setEnabled(true);
+//			// }
+//		}
 
 		return;
 	}

@@ -24,4 +24,6 @@ public interface VisualMappingFunctionFactory {
 	<K, V> VisualMappingFunction<K, V> createVisualMappingFunction(
 			final String attributeName, final Class<K> attrValueType,
 			final VisualProperty<V> vp);
+	
+	Class<?> getMappingFunctionType();
 }

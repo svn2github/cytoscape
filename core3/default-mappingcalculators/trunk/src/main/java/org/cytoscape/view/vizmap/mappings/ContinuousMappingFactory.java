@@ -21,4 +21,9 @@ public class ContinuousMappingFactory implements VisualMappingFunctionFactory {
 		return ContinuousMapping.CONTINUOUS;
 	}
 
+	@Override
+	public Class<?> getMappingFunctionType() {
+		return ContinuousMapping.class;
+	}
+
 }

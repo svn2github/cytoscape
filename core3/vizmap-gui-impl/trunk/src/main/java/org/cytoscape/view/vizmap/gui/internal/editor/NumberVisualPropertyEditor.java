@@ -51,10 +51,10 @@ public class NumberVisualPropertyEditor extends AbstractVisualPropertyEditor<Num
 	/**
 	 * Creates a new DiscreteNumber object.
 	 */
-	public NumberVisualPropertyEditor(VisualProperty<Number> vp, final SelectedVisualStyleManager manager, CyTable attr) {
-		super(vp, new CyDoublePropertyEditor(null));
+	public NumberVisualPropertyEditor(Class<Number> type, final SelectedVisualStyleManager manager) {
+		super(type, new CyDoublePropertyEditor(null));
 		tableCellRenderer = new DefaultTableCellRenderer();
-		continuousEditor = new C2CMappingEditor<Number, Number>(this.vp, manager, attr);
+		//continuousEditor = new C2CMappingEditor<Number, Number>(this.vp, manager, attr);
 	}
 
 	/**

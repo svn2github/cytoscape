@@ -18,4 +18,9 @@ public class DiscreteMappingFactory implements
 		return DiscreteMapping.DISCRETE;
 	}
 
+	@Override
+	public Class<?> getMappingFunctionType() {
+		return DiscreteMapping.class;
+	}
+
 }

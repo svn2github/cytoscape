@@ -36,7 +36,6 @@ package org.cytoscape.view.vizmap.gui.internal.editor;
 
 import static org.cytoscape.view.vizmap.mappings.AbstractVisualMappingFunction.*;
 
-
 import java.awt.Component;
 import java.beans.PropertyEditor;
 import java.util.ArrayList;
@@ -64,39 +63,38 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class EditorManagerImpl implements EditorManager {
-	
-	private static final Logger logger = LoggerFactory.getLogger(EditorManagerImpl.class);
 
-	private final Map<VisualProperty<?>, VisualPropertyEditor<?>> editors;
+	private static final Logger logger = LoggerFactory
+			.getLogger(EditorManagerImpl.class);
 
-	
+	private final Map<Class<?>, VisualPropertyEditor<?>> editors;
+
 	private final Map<String, PropertyEditor> comboBoxEditors;
-	
+
 	private final Map<String, ListEditor> attrComboBoxEditors;
 
 	private final Map<VisualProperty<?>, Component> continuousEditors;
 
 	private final Map<Class<?>, ValueEditor<?>> valueEditors;
-	
+
 	private final PropertyEditor mappingTypeEditor;
-	
-	
-	
+
 	/**
 	 * Creates a new EditorFactory object.
 	 */
 	public EditorManagerImpl(final Set<ListEditor> listEditors) {
 		continuousEditors = new HashMap<VisualProperty<?>, Component>();
 
-		editors = new HashMap<VisualProperty<?>, VisualPropertyEditor<?>>();
+		editors = new HashMap<Class<?>, VisualPropertyEditor<?>>();
 
 		comboBoxEditors = new HashMap<String, PropertyEditor>();
 		attrComboBoxEditors = new HashMap<String, ListEditor>();
-		for(ListEditor propEditor: listEditors)
-			attrComboBoxEditors.put(propEditor.getTargetObjectName(), propEditor);
+		for (ListEditor propEditor : listEditors)
+			attrComboBoxEditors.put(propEditor.getTargetObjectName(),
+					propEditor);
 
 		valueEditors = new HashMap<Class<?>, ValueEditor<?>>();
-		
+
 		// Create mapping type editor
 		this.mappingTypeEditor = getDefaultComboBoxEditor("mappingTypeEditor");
 	}
@@ -108,8 +106,10 @@ public class EditorManagerImpl implements EditorManager {
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#addEditorDisplayer(org
 	 * .cytoscape.vizmap.gui.editors.EditorDisplayer, java.util.Map)
 	 */
-	public void addValueEditor(ValueEditor<?> ve, @SuppressWarnings("rawtypes") Map properties) {
-		logger.debug("Got Value Editor " + ve.toString() + ", this is for " + ve.getType() + "\n\n\n");
+	public void addValueEditor(ValueEditor<?> ve,
+			@SuppressWarnings("rawtypes") Map properties) {
+		logger.debug("Got Value Editor " + ve.toString() + ", this is for "
+				+ ve.getType() + "\n\n\n");
 		this.valueEditors.put(ve.getType(), ve);
 	}
 
@@ -120,25 +120,42 @@ public class EditorManagerImpl implements EditorManager {
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#removeEditorDisplayer(
 	 * org.cytoscape.vizmap.gui.editors.EditorDisplayer, java.util.Map)
 	 */
-	public void removeValueEditor(ValueEditor<?> valueEditor, @SuppressWarnings("rawtypes") Map properties) {
+	public void removeValueEditor(ValueEditor<?> valueEditor,
+			@SuppressWarnings("rawtypes") Map properties) {
 		logger.debug("************* Removing Value Editor ****************");
 		valueEditors.remove(valueEditor.getType());
 	}
-	
-	
-	
-	
 
-//	 private <T> VisualPropertyEditor<T> findEditor(VisualProperty<T> type) {
-//		 final Class<T> dataType = type.getType();
-//		
-//		 for (VisualPropertyEditor<?> disp : displayers)
-//		 if ((dataType == disp.getVisualProperty().getType()))
-//		 return disp;
-//		
-//		 throw new NullPointerException("no editor displayer found for: "
-//		 + type.toString());
-//	 }
+	public void addVisualPropertyEditor(VisualPropertyEditor<?> ve,
+			@SuppressWarnings("rawtypes") Map properties) {
+		logger.debug("### Got VP Editor " + ve.toString() + ", this is for "
+				+ ve.getType());
+		this.editors.put(ve.getType(), ve);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.cytoscape.vizmap.gui.editors.EditorFactory#removeEditorDisplayer(
+	 * org.cytoscape.vizmap.gui.editors.EditorDisplayer, java.util.Map)
+	 */
+	public void removeVisualPropertyEditor(VisualPropertyEditor<?> vpEditor,
+			@SuppressWarnings("rawtypes") Map properties) {
+		logger.debug("************* Removing VP Editor ****************");
+		editors.remove(vpEditor.getType());
+	}
+
+	// private <T> VisualPropertyEditor<T> findEditor(VisualProperty<T> type) {
+	// final Class<T> dataType = type.getType();
+	//
+	// for (VisualPropertyEditor<?> disp : displayers)
+	// if ((dataType == disp.getVisualProperty().getType()))
+	// return disp;
+	//
+	// throw new NullPointerException("no editor displayer found for: "
+	// + type.toString());
+	// }
 
 	/*
 	 * (non-Javadoc)
@@ -148,9 +165,11 @@ public class EditorManagerImpl implements EditorManager {
 	 * .awt.Component, org.cytoscape.viewmodel.VisualProperty)
 	 */
 	@SuppressWarnings("unchecked")
-	public <V> V showVisualPropertyValueEditor(Component parentComponent, VisualProperty<V> type, V initialValue) throws Exception {
+	public <V> V showVisualPropertyValueEditor(Component parentComponent,
+			VisualProperty<V> type, V initialValue) throws Exception {
 
-		final ValueEditor<V> editor = (ValueEditor<V>) valueEditors.get(type.getType());
+		final ValueEditor<V> editor = (ValueEditor<V>) valueEditors.get(type
+				.getType());
 
 		if (editor == null)
 			throw new IllegalStateException("No value editor for "
@@ -166,15 +185,15 @@ public class EditorManagerImpl implements EditorManager {
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#showContinuousEditor(java
 	 * .awt.Component, org.cytoscape.viewmodel.VisualProperty)
 	 */
-	public <V> void showContinuousEditor(Component parentComponent, VisualProperty<V> type) throws Exception {
-		final VisualPropertyEditor<?> editor = editors.get(type);
-		assert editor.getVisualProperty() == type;
+	public <V> void showContinuousEditor(Component parentComponent,
+			VisualProperty<V> type) throws Exception {
+		final VisualPropertyEditor<?> editor = editors.get(type.getType());
 
 		// TODO: design dialog state mamagement
-		//		
-		//		
+		//
+		//
 		// Component mappingEditor = editor.getContinuousMappingEditor();
-		//		
+		//
 		// JDialog editorDialog = new JDialog();
 		// editorDialog.setModal(true);
 		// editorDialog.setLocationRelativeTo(parentComponent);
@@ -182,79 +201,82 @@ public class EditorManagerImpl implements EditorManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <V> VisualPropertyEditor<V> getVisualPropertyEditor(final VisualProperty<V> vp) {
+	public <V> VisualPropertyEditor<V> getVisualPropertyEditor(
+			final VisualProperty<V> vp) {
 		return (VisualPropertyEditor<V>) editors.get(vp);
 	}
 
-	 /*
+	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.cytoscape.vizmap.gui.editors.EditorFactory#getCellEditors()
 	 */
-	 @Override public List<PropertyEditor> getCellEditors() {
-		 List<PropertyEditor> ret = new ArrayList<PropertyEditor>();
-	
-		 for (VisualProperty<?> vp : editors.keySet())
-			 ret.add(editors.get(vp).getVisualPropertyEditor());
-	
-		 return ret;
-	 }
-	
-	 /*
+	@Override
+	public List<PropertyEditor> getCellEditors() {
+		List<PropertyEditor> ret = new ArrayList<PropertyEditor>();
+
+		for (Class<?> type : editors.keySet())
+			ret.add(editors.get(type).getPropertyEditor());
+
+		return ret;
+	}
+
+	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellEditor(
 	 * org.cytoscape.viewmodel.VisualProperty)
 	 */
-	 public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type) {
-		 return null;
-	 }
-	
-	 /*
+	public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type) {
+		VisualPropertyEditor<?> editor = editors.get(type.getType());
+		if (editor == null)
+			return null;
+
+		return editor.getPropertyEditor();
+	}
+
+	@Override
+	public TableCellRenderer getDiscreteCellRenderer(
+			final VisualProperty<?> type) {
+		
+		final VisualPropertyEditor<?> editor = editors.get(type.getType());
+		if(editor == null)
+			return null;
+		else
+			return editor.getTableCellRenderer();
+	}
+
+	/*
 	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellRenderer
-	 * (org.cytoscape.viewmodel.VisualProperty)
-	 */
-	 public TableCellRenderer getDiscreteCellRenderer(VisualProperty type) {
-		return null;
-//		 return findEditor(type,
-//		 EditorDisplayer.MappingType.VisualPropertyEditor)
-//		 .getCellRenderer(type, 0, 0);
-	 }
-	
-	 /*
-	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellEditor
 	 * (org.cytoscape.viewmodel.VisualProperty)
 	 */
-	 public PropertyEditor getContinuousCellEditor(VisualProperty type) {
+	public PropertyEditor getContinuousCellEditor(VisualProperty type) {
 		return null;
-//		 return findEditor(type,
-//		 EditorDisplayer.MappingType.VisualPropertyEditor)
-//		 .getVisualPropertyEditor();
-	 }
-	
-	 /*
+		// return findEditor(type,
+		// EditorDisplayer.MappingType.VisualPropertyEditor)
+		// .getVisualPropertyEditor();
+	}
+
+	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
-	 *
-	 org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellRenderer
+	 * 
+	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellRenderer
 	 * (org.cytoscape.viewmodel.VisualProperty, int, int)
 	 */
-	 public TableCellRenderer getContinuousCellRenderer(VisualProperty type,
-	 int w, int h) {
+	public TableCellRenderer getContinuousCellRenderer(VisualProperty type,
+			int w, int h) {
 		return null;
-//		 return findEditor(type,
-//		 EditorDisplayer.MappingType.VisualPropertyEditor)
-//		 .getCellRenderer(type, w, h);
-	 }
-	
+		// return findEditor(type,
+		// EditorDisplayer.MappingType.VisualPropertyEditor)
+		// .getCellRenderer(type, w, h);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -275,30 +297,32 @@ public class EditorManagerImpl implements EditorManager {
 		return (ValueEditor<V>) this.valueEditors.get(dataType);
 	}
 
-	
 	/**
 	 * Editor name is NODE, EDGE, or NETWORK.
 	 */
-	@Override public PropertyEditor getDataTableComboBoxEditor(final String targetObjectName) {
-		
+	@Override
+	public PropertyEditor getDataTableComboBoxEditor(
+			final String targetObjectName) {
+
 		final ListEditor editor = attrComboBoxEditors.get(targetObjectName);
-		
-		if(editor == null)
-			throw new IllegalArgumentException("No such list editor: " + targetObjectName);
-		
+
+		if (editor == null)
+			throw new IllegalArgumentException("No such list editor: "
+					+ targetObjectName);
+
 		return (PropertyEditor) editor;
 	}
 
 	@Override
 	public Collection<PropertyEditor> getAttributeSelectors() {
 		final Collection<PropertyEditor> selectors = new HashSet<PropertyEditor>();
-		for(ListEditor selector : attrComboBoxEditors.values())
+		for (ListEditor selector : attrComboBoxEditors.values())
 			selectors.add((PropertyEditor) selector);
 		return selectors;
 	}
 
-	
-	@Override public PropertyEditor getMappingFunctionSelector() {
+	@Override
+	public PropertyEditor getMappingFunctionSelector() {
 		return mappingTypeEditor;
 	}
 }

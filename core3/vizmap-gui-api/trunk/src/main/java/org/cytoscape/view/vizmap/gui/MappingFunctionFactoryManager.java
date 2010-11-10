@@ -8,4 +8,5 @@ public interface MappingFunctionFactoryManager {
 	
 	Collection<VisualMappingFunctionFactory> getFactories();
 	
+	VisualMappingFunctionFactory getFactory(Class<?> mappingType);
 }

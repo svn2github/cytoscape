@@ -43,7 +43,6 @@ import java.beans.PropertyEditor;
 import javax.swing.Icon;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 
 
@@ -53,11 +52,12 @@ import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
  * @param <T>  DOCUMENT ME!
  */
 public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyEditor<T> {
-	// Target Visual Property.
-	protected final VisualProperty<T> vp;
+	
+	protected final Class<T> type;
 	protected final PropertyEditor propertyEditor;
 	protected Component continuousEditor;
 	protected Window vpValueEditor;
+	
 	protected TableCellRenderer tableCellRenderer;
 
 	/**
@@ -65,18 +65,13 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 	 *
 	 * @param vp  DOCUMENT ME!
 	 */
-	public AbstractVisualPropertyEditor(VisualProperty<T> vp, final PropertyEditor propertyEditor) {
-		this.vp = vp;
+	public AbstractVisualPropertyEditor(final Class<T> type, final PropertyEditor propertyEditor) {
+		this.type = type;
 		this.propertyEditor = propertyEditor;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public VisualProperty<T> getVisualProperty() {
-		return vp;
+	@Override public Class<T> getType() {
+		return this.type;
 	}
 
 	/**
@@ -84,7 +79,7 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public PropertyEditor getVisualPropertyEditor() {
+	@Override public PropertyEditor getPropertyEditor() {
 		return propertyEditor;
 	}
 
@@ -93,7 +88,7 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public T showVisualPropertyValueEditor() {
+	@Override public T showVisualPropertyValueEditor() {
 		if(vpValueEditor == null) {
 			// Search value editor repository 
 		}
@@ -111,7 +106,7 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public TableCellRenderer getTableCellRenderer(int width, int height) {
+	@Override public TableCellRenderer getTableCellRenderer() {
 		return tableCellRenderer;
 	}
 
@@ -122,7 +117,7 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 	 *
 	 * @throws IllegalArgumentException DOCUMENT ME!
 	 */
-	public Component getContinuousMappingEditor() throws IllegalArgumentException {
+	@Override public Component getContinuousMappingEditor() throws IllegalArgumentException {
 		return continuousEditor;
 	}
 
@@ -134,7 +129,7 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon(int width, int height) {
+	@Override public Icon getDefaultIcon(int width, int height) {
 		// TODO: need to return default Image Icon object.
 		return null;
 	}

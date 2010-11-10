@@ -40,80 +40,72 @@ import java.beans.PropertyEditor;
 import javax.swing.Icon;
 import javax.swing.table.TableCellRenderer;
 
-import org.cytoscape.view.model.VisualProperty;
-
-
 /**
  * Facade of all editor-related objects for a Visual Property.
- *
+ * 
  * If plugin developer adds a custom visual property, they should implement this
  * in the presentation layer.
- *
+ * 
  * @param <T>
  *            Type of object managed in the Visual Prop.
- *
- * @author kono
+ * 
  */
 public interface VisualPropertyEditor<T> {
-	/**
-	 * Returns visual property managed by this object.
-	 *
-	 * @return
-	 */
-	public VisualProperty<T> getVisualProperty();
+
+	Class<T> getType();
 
 	/**
 	 * Returns continuous mapping editor for the Visual Property. Return value
 	 * is null is Continuous Editor does not exist.
-	 *
+	 * 
 	 * @param parent
 	 * @param type
 	 */
-	public Component getContinuousMappingEditor() throws IllegalArgumentException;
+	Component getContinuousMappingEditor() throws IllegalArgumentException;
 
 	/**
 	 * Returns Property Editor object for this data type.
-	 *
+	 * 
 	 * @return
 	 */
-	public PropertyEditor getVisualPropertyEditor();
+	PropertyEditor getPropertyEditor();
 
 	/**
 	 * Display editor and get user input. Note: editor is associated with data
 	 * type (String, Number, Color...), so we do not need to provide
 	 * VisualProperty as parameter.
-	 *
+	 * 
 	 * @param parent
 	 *            parent component of this window
 	 * @return
 	 */
-	public T showVisualPropertyValueEditor();
+	T showVisualPropertyValueEditor();
 
 	/**
 	 * Provide Cell renderer for JTable or JList. Developers can implement
 	 * custom cell renderers my using returned component.
-	 *
+	 * 
 	 * @param type
 	 * @param width
 	 *            component width
 	 * @param height
 	 *            component height
-	 *
+	 * 
 	 * @return
 	 */
-	public TableCellRenderer getTableCellRenderer(int width, int height);
+	TableCellRenderer getTableCellRenderer();
 
 	/**
 	 * This is for default view editor.
-	 *
+	 * 
 	 * @param vp
 	 *            DOCUMENT ME!
 	 * @param width
 	 *            DOCUMENT ME!
 	 * @param height
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public Icon getDefaultIcon(int width, int height);
+	Icon getDefaultIcon(int width, int height);
 }

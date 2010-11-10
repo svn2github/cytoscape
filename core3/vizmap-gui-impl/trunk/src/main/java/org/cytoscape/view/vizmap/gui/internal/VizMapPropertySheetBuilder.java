@@ -32,6 +32,7 @@ import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import org.cytoscape.view.vizmap.gui.internal.event.CellType;
 import org.cytoscape.view.vizmap.gui.internal.theme.ColorManager;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.slf4j.Logger;
@@ -273,8 +274,8 @@ public class VizMapPropertySheetBuilder {
 
 			
 
-			final VizMapperProperty<?> calculatorTypeProp = vizMapPropertyBuilder
-					.buildProperty(mapping, cat, propertySheetPanel);
+			final VizMapperProperty<?, String, ?> calculatorTypeProp = vizMapPropertyBuilder
+					.buildProperty(mapping, cat, propertySheetPanel, null);
 
 			logger.debug("Built new PROP: " + calculatorTypeProp.getDisplayName());
 			
@@ -327,10 +328,9 @@ public class VizMapPropertySheetBuilder {
 		// Collections.sort(getUnusedVisualPropType());
 
 		for (VisualProperty<?> type : getUnusedVisualPropType()) {
-			VizMapperProperty<VisualProperty<?>> prop = new VizMapperProperty<VisualProperty<?>>();
+			VizMapperProperty<VisualProperty<?>, String, ?> prop = new VizMapperProperty<VisualProperty<?>, String, Object>(CellType.UNUSED, type, String.class);
 			prop.setCategory(AbstractVizMapperPanel.CATEGORY_UNUSED);
 			prop.setDisplayName(type.getDisplayName());
-			prop.setHiddenObject(type);
 			prop.setValue("Double-Click to create...");
 			propertySheetPanel.addProperty(prop);
 			propList.add(prop);
@@ -358,14 +358,14 @@ public class VizMapPropertySheetBuilder {
 	public void updateTableView() {
 
 		final PropertySheetTable table = propertySheetPanel.getTable();
-		Property shownProp = null;
+		VizMapperProperty<?, ?, ?> shownProp = null;
 		final DefaultTableCellRenderer empRenderer = new DefaultTableCellRenderer();
 
 		// Number of rows shown now.
 		int rowCount = table.getRowCount();
 
 		for (int i = 0; i < rowCount; i++) {
-			shownProp = ((Item) table.getValueAt(i, 0)).getProperty();
+			shownProp = (VizMapperProperty<?, ?, ?>) ((Item) table.getValueAt(i, 0)).getProperty();
 
 			if ((shownProp != null)) {
 				// FIXME
@@ -375,12 +375,10 @@ public class VizMapPropertySheetBuilder {
 				// // This is label position cell. Need laeger cell.
 				// table.setRowHeight(i, 50);
 			} else if ((shownProp != null)
-					&& shownProp.getDisplayName().equals(
-							AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW)) {
+					&& shownProp.getCellType().equals(CellType.CONTINUOUS)) {
 				// This is a Continuous Icon cell.
 				final Property parent = shownProp.getParentProperty();
-				final Object type = ((VizMapperProperty) parent)
-						.getHiddenObject();
+				final Object type = ((VizMapperProperty) parent).getInternalValue();
 
 				if (type instanceof ContinuousMapping) {
 

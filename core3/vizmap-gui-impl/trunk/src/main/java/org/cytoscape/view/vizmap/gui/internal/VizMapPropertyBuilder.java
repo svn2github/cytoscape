@@ -31,6 +31,7 @@ package org.cytoscape.view.vizmap.gui.internal;
 import static org.cytoscape.model.CyTableEntry.EDGE;
 import static org.cytoscape.model.CyTableEntry.NODE;
 
+import java.beans.PropertyEditor;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
@@ -48,8 +50,10 @@ import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.event.CellType;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
@@ -57,9 +61,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.l2fprod.common.propertysheet.DefaultProperty;
+import com.l2fprod.common.propertysheet.PropertyEditorFactory;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
+import com.l2fprod.common.propertysheet.PropertyRendererFactory;
 import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
+import com.l2fprod.common.propertysheet.PropertySheetTable;
 
 
 /**
@@ -72,14 +79,15 @@ public class VizMapPropertyBuilder {
 	private DefaultTableCellRenderer emptyBoxRenderer;
 	private DefaultTableCellRenderer filledBoxRenderer;
 
-	private EditorManager editorFactory;
+	private EditorManager editorManager;
+	
 	private CyNetworkManager cyNetworkManager;
 	private CyTableManager tableMgr;
 
 	public VizMapPropertyBuilder(CyNetworkManager cyNetworkManager,
-			EditorManager editorFactory, CyTableManager tableMgr) {
+			EditorManager editorManager, CyTableManager tableMgr) {
 		this.cyNetworkManager = cyNetworkManager;
-		this.editorFactory = editorFactory;
+		this.editorManager = editorManager;
 		this.tableMgr = tableMgr;
 	}
 
@@ -92,10 +100,10 @@ public class VizMapPropertyBuilder {
 	 *            data type of Visual Property.
 	 * 
 	 */
-	public <K, V> VizMapperProperty<VisualProperty<V>> buildProperty(
+	public <K, V> VizMapperProperty<VisualProperty<V>, String, VisualMappingFunctionFactory> buildProperty(
 			final VisualMappingFunction<K, V> visualMapping,
 			final VisualProperty<?> rootObjectCategory,
-			final PropertySheetPanel propertySheetPanel) {
+			final PropertySheetPanel propertySheetPanel, final VisualMappingFunctionFactory factory) {
 
 		logger.debug("\n\n\nbuildProp called!");
 
@@ -109,20 +117,20 @@ public class VizMapPropertyBuilder {
 			throw new NullPointerException("PropertySheet is null.");
 
 		final VisualProperty<V> vp = visualMapping.getVisualProperty();
-		final VizMapperProperty<VisualProperty<V>> topProperty = new VizMapperProperty<VisualProperty<V>>();
+		final VizMapperProperty<VisualProperty<V>, String, VisualMappingFunctionFactory> topProperty 
+			= new VizMapperProperty<VisualProperty<V>, String, VisualMappingFunctionFactory>(CellType.VISUAL_PROPERTY_TYPE, vp, String.class);
 
 		// Build Property object
-
 		topProperty.setCategory(rootObjectCategory.getDisplayName());
 		topProperty.setDisplayName(vp.getDisplayName());
-		topProperty.setHiddenObject(vp);
-		topProperty.setName(vp.getIdString());
-
+		topProperty.setInternalValue(factory);
+		
 		final String attrName = visualMapping.getMappingAttributeName();
-		final VizMapperProperty<VisualMappingFunction<K, V>> mappingHeader = new VizMapperProperty<VisualMappingFunction<K, V>>();
-
+		final VizMapperProperty<String, VisualMappingFunctionFactory, VisualMappingFunction<K, V>> mappingHeader 
+			= new VizMapperProperty<String, VisualMappingFunctionFactory, VisualMappingFunction<K, V>>(CellType.MAPPING_TYPE, "Mapping Type", VisualMappingFunctionFactory.class);
+		
 		if (attrName == null) {
-			topProperty.setValue("Select Value");
+			topProperty.setValue("Select Attribute");
 			((PropertyRendererRegistry) propertySheetPanel.getTable()
 					.getRendererFactory()).registerRenderer(topProperty,
 					emptyBoxRenderer);
@@ -133,13 +141,11 @@ public class VizMapPropertyBuilder {
 					filledBoxRenderer);
 		}
 
-		// TODO: is this correct?
 		mappingHeader.setDisplayName("Mapping Type");
-		mappingHeader.setName("Mapping Type");
 
 		// Set mapping type as string.
-		mappingHeader.setValue(visualMapping.toString());
-		mappingHeader.setHiddenObject(visualMapping);
+		mappingHeader.setValue(factory);
+		mappingHeader.setInternalValue(visualMapping);
 
 		// Set parent-child relationship
 		mappingHeader.setParentProperty(topProperty);
@@ -148,7 +154,7 @@ public class VizMapPropertyBuilder {
 		// TODO: Should refactor factory.
 		((PropertyEditorRegistry) propertySheetPanel.getTable()
 				.getEditorFactory()).registerEditor(mappingHeader,
-				editorFactory.getDefaultComboBoxEditor("mappingTypeEditor"));
+				editorManager.getDefaultComboBoxEditor("mappingTypeEditor"));
 
 		final Set<CyNetwork> networks = cyNetworkManager.getNetworkSet();
 
@@ -160,19 +166,19 @@ public class VizMapPropertyBuilder {
 				it = targetNetwork.getNodeList().iterator();
 				((PropertyEditorRegistry) propertySheetPanel.getTable()
 						.getEditorFactory()).registerEditor(topProperty,
-						editorFactory.getDataTableComboBoxEditor(NODE));
+						editorManager.getDataTableComboBoxEditor(NODE));
 			} else if (rootObjectCategory.getIdString().equals(EDGE)) {
 				it = targetNetwork.getEdgeList().iterator();
 				((PropertyEditorRegistry) propertySheetPanel.getTable()
 						.getEditorFactory()).registerEditor(topProperty,
-						editorFactory.getDataTableComboBoxEditor(EDGE));
+						editorManager.getDataTableComboBoxEditor(EDGE));
 			} else {
 				it = cyNetworkManager.getNetworkSet().iterator();
 				((PropertyEditorRegistry) propertySheetPanel.getTable()
 						.getEditorFactory())
 						.registerEditor(
 								topProperty,
-								editorFactory
+								editorManager
 										.getDataTableComboBoxEditor(CyTableEntry.NETWORK));
 			}
 
@@ -184,8 +190,7 @@ public class VizMapPropertyBuilder {
 		 * Discrete Mapping
 		 */
 		if (visualMapping instanceof DiscreteMapping && (attrName != null)) {
-			final Map<K, V> discMapping = ((DiscreteMapping<K, V>) visualMapping)
-					.getAll();
+			
 
 			final SortedSet<K> attrSet = new TreeSet<K>();
 
@@ -194,22 +199,23 @@ public class VizMapPropertyBuilder {
 						.getColumnTypeMap().get(attrName);
 
 				Object id = go.getCyRow().get(attrName, attrClass);
-				attrSet.add((K) id);
+				if(id != null)
+					attrSet.add((K) id);
 			}
 
 			// FIXME
-			setDiscreteProps(vp, discMapping, attrSet,
-					editorFactory.getVisualPropertyEditor(vp),
+			setDiscreteProps(vp, visualMapping, attrSet,
+					editorManager.getVisualPropertyEditor(vp),
 					topProperty, propertySheetPanel);
 		} else if (visualMapping instanceof ContinuousMapping
 				&& (attrName != null)) {
 			int wi = propertySheetPanel.getTable().getCellRect(0, 1, true).width;
 
-			VizMapperProperty<?> graphicalView = new VizMapperProperty();
-
+			VizMapperProperty<String, String, VisualMappingFunction<K, V>> graphicalView 
+				= new VizMapperProperty<String, String, VisualMappingFunction<K, V>>(CellType.CONTINUOUS, AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW, String.class);
+			graphicalView.setValue(visualMapping);
 			graphicalView
 					.setDisplayName(AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW);
-			graphicalView.setName(vp.getDisplayName());
 			graphicalView.setParentProperty(topProperty);
 			topProperty.addSubProperty(graphicalView);
 
@@ -222,14 +228,12 @@ public class VizMapPropertyBuilder {
 			// crenderer);
 		} else if (visualMapping instanceof PassthroughMapping
 				&& (attrName != null)) {
-			// Passthrough
 
-			Object id;
+			String id;
 			Object value;
 			String stringVal;
 
-			VizMapperProperty<K> oneProperty;
-
+			
 			for (CyTableEntry go : graphObjectSet) {
 				Class<?> attrClass = go.getCyRow().getDataTable()
 						.getColumnTypeMap().get(attrName);
@@ -246,17 +250,16 @@ public class VizMapPropertyBuilder {
 				else
 					stringVal = null;
 
-				oneProperty = new VizMapperProperty<K>();
-
+				final VizMapperProperty<String, V, VisualMappingFunction<K, V>> oneProperty 
+					= new VizMapperProperty<String, V, VisualMappingFunction<K, V>>(CellType.DISCRETE, id, (Class<V>) value.getClass());
+				oneProperty.setInternalValue(visualMapping);
 				oneProperty.setValue(stringVal);
-				oneProperty.setName(id.toString());
 
 				// This prop. should not be editable!
 				oneProperty.setEditable(false);
 
 				oneProperty.setParentProperty(topProperty);
-				oneProperty.setDisplayName(id.toString());
-				oneProperty.setType(String.class);
+				oneProperty.setDisplayName(id);
 
 				topProperty.addSubProperty(oneProperty);
 			}
@@ -264,12 +267,12 @@ public class VizMapPropertyBuilder {
 		}
 
 		propertySheetPanel.addProperty(0, topProperty);
-		propertySheetPanel
-				.setRendererFactory(((PropertyRendererRegistry) propertySheetPanel
-						.getTable().getRendererFactory()));
-		propertySheetPanel
-				.setEditorFactory(((PropertyEditorRegistry) propertySheetPanel
-						.getTable().getEditorFactory()));
+//		propertySheetPanel
+//				.setRendererFactory(((PropertyRendererRegistry) propertySheetPanel
+//						.getTable().getRendererFactory()));
+//		propertySheetPanel
+//				.setEditorFactory(((PropertyEditorRegistry) propertySheetPanel
+//						.getTable().getEditorFactory()));
 
 		return topProperty;
 	}
@@ -278,24 +281,30 @@ public class VizMapPropertyBuilder {
 	 * Set value, title, and renderer for each property in the category. This
 	 * list should be created against all available attribute values.
 	 */
-	private <K, V> void setDiscreteProps(VisualProperty<V> vp,
-			Map<K, V> discMapping, SortedSet<K> attrSet,
+	private <K, V> void setDiscreteProps(VisualProperty<V> vp, VisualMappingFunction<K, V> mapping,
+			SortedSet<K> attrSet,
 			VisualPropertyEditor<V> visualPropertyEditor,
 			DefaultProperty parent, PropertySheetPanel propertySheetPanel) {
 		if (attrSet == null)
 			return;
 
+		final Map<K, V> discMapping = ((DiscreteMapping<K, V>) mapping)
+		.getAll();
+		
 		V val = null;
-		VizMapperProperty<V> valProp;
+		VizMapperProperty<K, V, VisualMappingFunction<K, V>> valProp;
 		String strVal;
 
-		final List<VizMapperProperty<V>> children = new ArrayList<VizMapperProperty<V>>();
-
+		final List<VizMapperProperty<K, V, VisualMappingFunction<K, V>>> children = new ArrayList<VizMapperProperty<K, V, VisualMappingFunction<K, V>>>();
+		final PropertySheetTable table = propertySheetPanel.getTable();
+		final PropertyRendererRegistry cellRendererFactory = (PropertyRendererRegistry) table.getRendererFactory();
+		final PropertyEditorRegistry cellEditorFactory = (PropertyEditorRegistry) table.getEditorFactory();
+		
 		for (K key : attrSet) {
-			valProp = new VizMapperProperty<V>();
+			
+			valProp = new VizMapperProperty<K, V, VisualMappingFunction<K, V>>(CellType.DISCRETE, key, mapping.getVisualProperty().getType());
 			strVal = key.toString();
 			valProp.setDisplayName(strVal);
-			valProp.setName(strVal + "-" + vp.toString());
 			valProp.setParentProperty(parent);
 
 			// Get the mapped value
@@ -306,13 +315,13 @@ public class VizMapPropertyBuilder {
 
 			children.add(valProp);
 
-//			// FIXME!
-//			((PropertyRendererRegistry) propertySheetPanel.getTable()
-//					.getRendererFactory()).registerRenderer(valProp, vp.getType());
+			final TableCellRenderer renderer = editorManager.getDiscreteCellRenderer(vp);
+			if(renderer != null)
+				cellRendererFactory.registerRenderer(valProp, renderer);
 
-			// FIXME!!
-			((PropertyEditorRegistry) propertySheetPanel.getTable()
-					.getEditorFactory()).registerEditor(valProp, editorFactory.getVisualPropertyEditor(vp).getVisualPropertyEditor());
+			final PropertyEditor cellEditor = editorManager.getDiscreteCellEditor(vp);
+			if(cellEditor != null)
+				cellEditorFactory.registerEditor(valProp, cellEditor);
 
 			valProp.setValue(val);
 		}

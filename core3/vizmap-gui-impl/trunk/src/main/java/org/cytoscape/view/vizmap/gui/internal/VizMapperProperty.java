@@ -1,43 +1,79 @@
 package org.cytoscape.view.vizmap.gui.internal;
 
+import org.cytoscape.view.vizmap.gui.internal.event.CellType;
+
 import com.l2fprod.common.propertysheet.DefaultProperty;
 
 /**
  * Extended version of DefaultProperty which accepts one more value as hidden
  * object.
  * 
- * From 3.0: This is a type-safe container.
+ * Refactored for 3 to keep more information.
  * 
- * @author kono
- * @version 0.5
  */
-public class VizMapperProperty<T> extends DefaultProperty {
+public final class VizMapperProperty<K, V, T> extends DefaultProperty {
 	
 	private final static long serialVersionUID = 1202339868680341L;
 	
-	private T hiddenObject;
+	private final CellType cellType;
+	private final K key;
+	
+	private T internalValue;
+	
 
-	public VizMapperProperty() {
+	public VizMapperProperty(final CellType cellType, final K key, final Class<V> valueType) {
+		super();
 		
+		if(key == null)
+			throw new NullPointerException("Key cannot be null.");
+		if(cellType == null)
+			throw new NullPointerException("CellType cannot be null.");	
+		if(valueType == null)
+			throw new NullPointerException("Value Type cannot be null.");
+		
+		this.cellType = cellType;
+		this.key = key;
+		
+		super.setName(key.toString());
+		super.setType(valueType);
 	}
-
 	
 	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param obj
-	 *            DOCUMENT ME!
+	 * Make name immutable.
 	 */
-	public void setHiddenObject(T obj) {
-		this.hiddenObject = obj;
+	@Override public void setName(String name) {
+		throw new UnsupportedOperationException("Name is immutable in this implementation.");
 	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public T getHiddenObject() {
-		return hiddenObject;
+	
+	@Override public String getName() {
+		return key.toString();
+	}
+	
+//	@Override public void setValue(Object value) {
+//		if(value == null)
+//			super.setValue(null);
+//		
+//		final Class<?> valClass = value.getClass();
+//		if(true )
+//			super.setValue(value);
+//		else
+//			throw new IllegalArgumentException("Cannot not set value: " + value.getClass() +".  Type should be " + this.getType());
+//			
+//	}
+	
+	public void setInternalValue(final T internalValue) {
+		this.internalValue = internalValue;
+	}
+	
+	public CellType getCellType() {
+		return this.cellType;
+	}
+	
+	public T getInternalValue() {
+		return this.internalValue;
+	}
+	
+	public K getKey() {
+		return key;
 	}
 }

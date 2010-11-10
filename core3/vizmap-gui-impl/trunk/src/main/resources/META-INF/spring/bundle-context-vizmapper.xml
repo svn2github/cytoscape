@@ -109,6 +109,12 @@
 	<bean id="stringClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="java.lang.String" />
 	</bean>
+	<bean id="paintClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="java.awt.Paint" />
+	</bean>
+	<bean id="numberClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="java.lang.Number" />
+	</bean>
 	
 	<bean id="colorEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.CyColorChooser" />
@@ -133,6 +139,15 @@
 	<bean id="stringValueEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.StringValueEditor">
 		<constructor-arg ref="stringClass" />
+	</bean>
+	
+	<!-- VP Editors -->
+	<bean id="colorPropertyEditor" class="org.cytoscape.view.vizmap.gui.internal.editor.ColorVisualPropertyEditor">
+		<constructor-arg ref="paintClass" />
+	</bean>
+	<bean id="numberPropertyEditor" class="org.cytoscape.view.vizmap.gui.internal.editor.NumberVisualPropertyEditor">
+		<constructor-arg ref="numberClass" />
+		<constructor-arg ref="selectedVisualStyleManager" />
 	</bean>
 	
 
@@ -215,33 +230,13 @@
 		<constructor-arg ref="vizMapperUtil" />
 		<constructor-arg ref="vizMapperMainPanel" />
 	</bean>
-
-
-	<!--<bean name="removeStyleAction"
-		class="org.cytoscape.view.vizmap.gui.internal.action.RemoveStyleAction"
-		autowire="autodetect" depends-on="vizMapperMainPanel">
-		<property name="menuLabel" value="${vizMapperMainPanel.menu.removeStyleAction}" />
-		<property name="iconId"
-			value="${vizMapperMainPanel.menu.removeStyleAction.icon}" />
+	
+	<bean name="createLegendTaskFactory"
+		class="org.cytoscape.view.vizmap.gui.internal.task.CreateLegendTaskFactory">		
+		<constructor-arg ref="selectedVisualStyleManager"/>
+		<constructor-arg ref="vizMapperMainPanel" />
 	</bean>
 
-	<bean name="renameStyleAction"
-		class="org.cytoscape.view.vizmap.gui.internal.action.RenameStyleAction"
-		autowire="autodetect" depends-on="vizMapperMainPanel">
-		<property name="menuLabel" value="${vizMapperMainPanel.menu.renameStyleAction}" />
-		<property name="iconId"
-			value="${vizMapperMainPanel.menu.renameStyleAction.icon}" />
-		<constructor-arg ref="vizMapperUtil" />
-	</bean>-->
-
-	<bean name="createLegendAction"
-		class="org.cytoscape.view.vizmap.gui.internal.action.CreateLegendAction"
-		autowire="autodetect" depends-on="vizMapperMainPanel">
-		<property name="menuLabel"
-			value="${vizMapperMainPanel.menu.createLegendAction}" />
-		<property name="iconId"
-			value="${vizMapperMainPanel.menu.createLegendAction.icon}" />
-	</bean>
 
 	<!-- Value generators: generate discrete mapping from simple algorithms. -->
 	<bean name="rainbowGenerator"

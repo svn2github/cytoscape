@@ -24,6 +24,9 @@ public class VizMapEventHandlerManagerImpl implements
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(VizMapEventHandlerManagerImpl.class);
+	
+	// This event is used in PropertyEditor object.
+	private static final String VALUE = "VALUE";
 
 	private Map<String, VizMapEventHandler> eventHandlers;
 
@@ -59,27 +62,29 @@ public class VizMapEventHandlerManagerImpl implements
 		AbstractVizMapEventHandler windowEventHandler = new EditorWindowEventHandler();
 		
 		//FIXME
-//		eventHandlers.put(EditorManager.EDITOR_WINDOW_CLOSED,
-//				windowEventHandler);
-//		eventHandlers.put(EditorManager.EDITOR_WINDOW_OPENED,
-//				windowEventHandler);
-//
+		eventHandlers.put(EditorManager.EDITOR_WINDOW_CLOSED,
+				windowEventHandler);
+		eventHandlers.put(EditorManager.EDITOR_WINDOW_OPENED,
+				windowEventHandler);
+
 //		eventHandlers.put(Cytoscape.CYTOSCAPE_INITIALIZED,
 //				new InitializedEventHandler());
-//
+
 //		AbstractVizMapEventHandler loadHandler = new DataLoadedEventHandler();
 //		eventHandlers.put(Cytoscape.VIZMAP_LOADED, loadHandler);
-//
-//		// TODO: create session event handler
-//		// eventHandlers.put(Cytoscape.SESSION_LOADED, loadHandler);
-//
+
+		// TODO: create session event handler
+		// eventHandlers.put(Cytoscape.SESSION_LOADED, loadHandler);
+
 //		AbstractVizMapEventHandler attrHandler = new AttributeUpdateEventHandler(
 //				vizMapPropertySheetBuilder);
 //		eventHandlers.put(Cytoscape.ATTRIBUTES_CHANGED, attrHandler);
 //		eventHandlers.put(Cytoscape.NETWORK_LOADED, attrHandler);
-//
-//		eventHandlers.put("VALUE", new CellEditorEventHandler(manager,
-//				propertySheetPanel, tableMgr, applicationManager, vizMapPropertySheetBuilder));
+
+		
+		// Create handler for local property editor event.
+		eventHandlers.put(VALUE, new CellEditorEventHandler(manager,
+				propertySheetPanel, tableMgr, applicationManager, vizMapPropertySheetBuilder));
 
 	}
 

@@ -45,12 +45,13 @@ public class EditorWindowManager {
 			for (Property prop : props) {
 				vprop = (VizMapperProperty) prop;
 
-				if ((vprop.getHiddenObject() != null)
-						&& (type == vprop.getHiddenObject())) {
-					vprop = (VizMapperProperty) prop;
-
-					break;
-				}
+				//FIXME
+//				if ((vprop.getHiddenObject() != null)
+//						&& (type == vprop.getHiddenObject())) {
+//					vprop = (VizMapperProperty) prop;
+//
+//					break;
+//				}
 			}
 
 			final Property[] subProps = vprop.getSubProperties();

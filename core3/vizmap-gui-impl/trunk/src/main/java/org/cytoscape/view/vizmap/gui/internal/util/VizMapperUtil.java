@@ -63,57 +63,57 @@ public class VizMapperUtil {
 		}
 	}
 
-	public DiscreteMapping<?, ?> getSelectedProperty(VisualStyle style,
-			PropertySheetPanel propertySheetPanel) {
+//	public DiscreteMapping<?, ?> getSelectedProperty(VisualStyle style,
+//			PropertySheetPanel propertySheetPanel) {
+//
+//		final int selectedRow = propertySheetPanel.getTable().getSelectedRow();
+//
+//		if (selectedRow < 0)
+//			return null;
+//
+//		final Item item = (Item) propertySheetPanel.getTable().getValueAt(
+//				selectedRow, 0);
+//		final VizMapperProperty<?> prop = (VizMapperProperty<?>) item
+//				.getProperty();
+//		final Object hidden = prop.getHiddenObject();
+//
+//		if (hidden instanceof VisualProperty) {
+//			final VisualProperty<?> type = (VisualProperty<?>) hidden;
+//
+//			final VisualMappingFunction<?, ?> oMap = style
+//					.getVisualMappingFunction(type);
+//
+//			if ((oMap instanceof DiscreteMapping) == false)
+//				return null;
+//			else
+//				return (DiscreteMapping<?, ?>) oMap;
+//		}
+//
+//		return null;
+//	}
 
-		final int selectedRow = propertySheetPanel.getTable().getSelectedRow();
-
-		if (selectedRow < 0)
-			return null;
-
-		final Item item = (Item) propertySheetPanel.getTable().getValueAt(
-				selectedRow, 0);
-		final VizMapperProperty<?> prop = (VizMapperProperty<?>) item
-				.getProperty();
-		final Object hidden = prop.getHiddenObject();
-
-		if (hidden instanceof VisualProperty) {
-			final VisualProperty<?> type = (VisualProperty<?>) hidden;
-
-			final VisualMappingFunction<?, ?> oMap = style
-					.getVisualMappingFunction(type);
-
-			if ((oMap instanceof DiscreteMapping) == false)
-				return null;
-			else
-				return (DiscreteMapping<?, ?>) oMap;
-		}
-
-		return null;
-	}
-
-	public VisualProperty<?> getSelectedVisualProperty(
-			PropertySheetPanel propertySheetPanel) {
-
-		final int selectedRow = propertySheetPanel.getTable().getSelectedRow();
-
-		if (selectedRow < 0)
-			return null;
-
-		final Item item = (Item) propertySheetPanel.getTable().getValueAt(
-				selectedRow, 0);
-
-		if (item.getProperty() instanceof VizMapperProperty) {
-			final VizMapperProperty<?> prop = (VizMapperProperty<?>) item
-					.getProperty();
-			final Object hidden = prop.getHiddenObject();
-
-			if (hidden instanceof VisualProperty)
-				return (VisualProperty<?>) hidden;
-		}
-
-		return null;
-	}
+//	public VisualProperty<?> getSelectedVisualProperty(
+//			PropertySheetPanel propertySheetPanel) {
+//
+//		final int selectedRow = propertySheetPanel.getTable().getSelectedRow();
+//
+//		if (selectedRow < 0)
+//			return null;
+//
+//		final Item item = (Item) propertySheetPanel.getTable().getValueAt(
+//				selectedRow, 0);
+//
+//		if (item.getProperty() instanceof VizMapperProperty) {
+//			final VizMapperProperty<?> prop = (VizMapperProperty<?>) item
+//					.getProperty();
+//			final Object hidden = prop.getHiddenObject();
+//
+//			if (hidden instanceof VisualProperty)
+//				return (VisualProperty<?>) hidden;
+//		}
+//
+//		return null;
+//	}
 
 	private List<String> getVisualStyleNames() {
 		final List<String> vsNames = new ArrayList<String>();

@@ -40,6 +40,9 @@ import static org.cytoscape.model.CyTableEntry.*;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
 
 import javax.swing.SwingUtilities;
@@ -48,11 +51,13 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.presentation.property.VisualPropertyUtil;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.event.CellType;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +85,8 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 	private final PropertyEditor nodeAttributeEditor;
 	private final PropertyEditor edgeAttributeEditor;
 	private final PropertyEditor networkAttributeEditor;
+	
+	private VisualMappingFunction<?, ?> currentMapping;
 	
 
 	/**
@@ -113,7 +120,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 	 * @param e
 	 *            DOCUMENT ME!
 	 */
-	public void mouseClicked(MouseEvent e) {
+	@Override public void mouseClicked(MouseEvent e) {
 		
 		logger.debug("====================> VizMapper GUI got mouse event: Click = " + e.getClickCount());
 		
@@ -126,34 +133,30 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 
 		if (SwingUtilities.isLeftMouseButton(e) && (0 <= selected)) {
 			final Item item = (Item) propertySheetPanel.getTable().getValueAt(selected, 0);
-			final Property curProp = item.getProperty();
+			final VizMapperProperty<?, ?, ?> curProp = (VizMapperProperty<?, ?, ?>) item.getProperty();
 
 			if (curProp == null)
 				return;
 			
 			logger.debug("Got prop: " + curProp.getDisplayName());
 
-			final String category = curProp.getCategory();
-
-			if ((e.getClickCount() == 2) && (category != null)
-					&& category.equalsIgnoreCase("Unused Properties")) {
+			final CellType cellType = curProp.getCellType();
+			if ((e.getClickCount() == 2) && cellType.equals(CellType.UNUSED)) {
 				
 				// Create new mapping from unused Visual Property.
-				
-				// FIXME
-				((VizMapperProperty<?>) curProp).setEditable(true);
+				curProp.setEditable(true);
 
-				final VisualProperty<?> vp = (VisualProperty<?>) ((VizMapperProperty<?>) curProp).getHiddenObject();
+				final VisualProperty<?> vp = (VisualProperty<?>) curProp.getKey();
 				propertySheetPanel.removeProperty(curProp);
 				
 				logger.debug("VP removed: " + vp.getDisplayName());
 
-				final VizMapperProperty newProp = new VizMapperProperty();
-				final VizMapperProperty mapProp = new VizMapperProperty();
+				final VizMapperProperty<VisualProperty<?>, String, VisualMappingFunctionFactory> newProp 
+					= new VizMapperProperty<VisualProperty<?>, String, VisualMappingFunctionFactory>(CellType.VISUAL_PROPERTY_TYPE, vp, String.class);
+				final VizMapperProperty<String, VisualMappingFunctionFactory, VisualMappingFunction<?, ?>> mapProp 
+					= new VizMapperProperty<String, VisualMappingFunctionFactory, VisualMappingFunction<?, ?>>(CellType.MAPPING_TYPE, "Mapping Type", VisualMappingFunctionFactory.class);
 
 				newProp.setDisplayName(vp.getDisplayName());
-				newProp.setName(vp.getDisplayName());
-				newProp.setHiddenObject(vp);
 				newProp.setValue("Please select a value!");
 
 				if (VisualPropertyUtil.isChildOf(TwoDVisualLexicon.NODE, vp, selectedStyle.getVisualLexicon())) {
@@ -170,10 +173,7 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 					logger.debug("This is network prop: " + vp.getDisplayName());
 				}
 
-				mapProp.setDisplayName("Mapping Type");
-				mapProp.setName("Mapping Type");
-				
-				mapProp.setValue("Please select a mapping type!");
+				mapProp.setDisplayName("Mapping Type");				
 				
 				((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(mapProp, editorManager.getMappingFunctionSelector());
 				
@@ -190,24 +190,18 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 
 				return;
 				
-			} else if ((e.getClickCount() == 1) && (category == null)) {
+			} else if ((e.getClickCount() == 1) && (cellType.equals(CellType.DISCRETE))) {
 				/*
 				 * Single left-click
 				 */
-				VisualProperty<?> type = null;
+				final VisualProperty<?> type = (VisualProperty<?>) curProp.getInternalValue();
 
-				if ((curProp.getParentProperty() == null)
-						&& ((VizMapperProperty) curProp).getHiddenObject() instanceof VisualProperty)
-					type = (VisualProperty) ((VizMapperProperty) curProp)
-							.getHiddenObject();
-				else if (curProp.getParentProperty() != null)
-					type = (VisualProperty) ((VizMapperProperty) curProp
-							.getParentProperty()).getHiddenObject();
-				else
-					return;
 
 				final VisualMappingFunction<?, ?> selectedMapping = selectedStyle
 						.getVisualMappingFunction(type);
+				logger.debug("==========Target Mapping = " + selectedMapping);
+				logger.debug("==========Target Key = " + curProp.getDisplayName());
+				logger.debug("==========Target Val = " + curProp.getValue());
 
 				// TODO: move this function editor manager.
 //				if (selectedMapping instanceof ContinuousMapping) {
@@ -236,4 +230,33 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 	public void handleEvent(SelectedVisualStyleSwitchedEvent e) {
 		this.selectedStyle = e.getNewVisualStyle();
 	}
+
+//	@Override
+//	public void mousePressed(MouseEvent e) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void mouseReleased(MouseEvent e) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void mouseEntered(MouseEvent e) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void mouseExited(MouseEvent e) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void propertyChange(PropertyChangeEvent evt) {
+//		logger.debug("Mouse Listener Got PC: " + evt.getSource());
+//	}
 }

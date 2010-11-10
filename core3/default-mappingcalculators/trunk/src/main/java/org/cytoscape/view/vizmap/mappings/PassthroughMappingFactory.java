@@ -16,4 +16,9 @@ public class PassthroughMappingFactory implements VisualMappingFunctionFactory{
 		return PassthroughMapping.PASSTHROUGH;
 	}
 
+	@Override
+	public Class<?> getMappingFunctionType() {
+		return PassthroughMapping.class;
+	}
+
 }
