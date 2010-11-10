@@ -30,15 +30,19 @@
 package org.cytoscape.internal.view;
 
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-import org.cytoscape.view.CytoPanelContainer;
+import javax.swing.JFrame;
+import javax.swing.JSplitPane;
+
+import org.cytoscape.view.CytoPanel;
 import org.cytoscape.view.CytoPanelName;
 import org.cytoscape.view.CytoPanelState;
-import org.cytoscape.view.CytoPanel;
 
 
 /**
