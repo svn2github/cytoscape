@@ -71,6 +71,9 @@
 	<osgi:reference id="guiTaskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager">
 	</osgi:reference>
 
+	<osgi:reference id="cyServiceRegistrarServiceRef" interface="org.cytoscape.service.util.CyServiceRegistrar">
+	</osgi:reference>
+
 
 	<!-- define services that application provides -->
 
@@ -121,6 +124,12 @@
 	<osgi:set id="cyActionSet" interface="org.cytoscape.view.CyAction"
 		cardinality="0..N">
 		<osgi:listener bind-method="addAction" unbind-method="removeAction"
+			ref="cytoscapeDesktop" />
+	</osgi:set>
+
+	<osgi:set id="cytoPanelComponentSet" interface="org.cytoscape.view.CytoPanelComponent"
+		cardinality="0..N">
+		<osgi:listener bind-method="addCytoPanelComponent" unbind-method="removeCytoPanelComponent"
 			ref="cytoscapeDesktop" />
 	</osgi:set>
 

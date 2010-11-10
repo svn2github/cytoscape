@@ -40,6 +40,7 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 
+import org.cytoscape.internal.view.CytoPanelContainer;
 import org.cytoscape.view.CytoPanel;
 import org.cytoscape.view.CytoPanelName;
 import org.cytoscape.view.CytoPanelState;

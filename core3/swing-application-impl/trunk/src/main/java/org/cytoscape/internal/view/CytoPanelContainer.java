@@ -30,8 +30,9 @@
 package org.cytoscape.internal.view;
 
 
-import java.awt.Point;
-import java.awt.Rectangle;
+import org.cytoscape.view.CytoPanel;
+import org.cytoscape.view.CytoPanelName;
+import java.awt.*;
 
 import org.cytoscape.view.CytoPanel;
 import org.cytoscape.view.CytoPanelName;

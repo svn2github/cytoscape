@@ -92,6 +92,8 @@
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="networkPanel" />
 		<constructor-arg ref="cytoscapeShutdown" />
+		<constructor-arg ref="cyEventHelperServiceRef" />
+		<constructor-arg ref="cyServiceRegistrarServiceRef" />
 	</bean>
 
 	<!-- session support -->
@@ -163,6 +165,7 @@
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cyServiceRegistrarServiceRef" />
 	</bean>
 
 	<bean id="settingsAction" class="org.cytoscape.internal.layout.ui.SettingsAction">

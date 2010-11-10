@@ -36,7 +36,8 @@
 
 package org.cytoscape.internal.view;
 
-import org.cytoscape.view.CytoPanelListener;
+import org.cytoscape.view.events.CytoPanelStateChangedListener;
+import org.cytoscape.view.events.CytoPanelStateChangedEvent;
 import org.cytoscape.view.CytoPanelState;
 import org.cytoscape.view.CytoPanel;
 
@@ -49,22 +50,24 @@ import javax.swing.JLabel;
  * but because tools panel is within another cytopanel, we have to handle things
  * separately.
  */
-class ToolCytoPanelListener implements CytoPanelListener {
+public class ToolCytoPanelListener implements CytoPanelStateChangedListener {
 
 	BiModalJSplitPane split;
 	CytoPanel southWest;
 	CytoPanelImp west;
 	
-	ToolCytoPanelListener(BiModalJSplitPane split, CytoPanelImp west, CytoPanel southWest) {
+	public ToolCytoPanelListener(BiModalJSplitPane split, CytoPanelImp west, CytoPanel southWest) {
 		this.split = split;
 		this.west = west;
 		this.southWest = southWest;
-
-		southWest.addCytoPanelListener(this);
 	}
 
 
-    public void onStateChange(CytoPanelState newState) {
+    public void handleEvent(CytoPanelStateChangedEvent e) {
+		if ( e.getCytoPanel() != southWest )
+			return;
+
+		CytoPanelState newState = e.getNewState();
 
 		if (newState == CytoPanelState.DOCK) 
 			west.addComponentToSouth(split);
@@ -74,8 +77,4 @@ class ToolCytoPanelListener implements CytoPanelListener {
 
 		west.validate();
 	}
-
-	public void onComponentSelected(int componentIndex) {}
-	public void onComponentAdded(int count) {}
-	public void onComponentRemoved(int count) {}
 }

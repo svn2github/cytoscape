@@ -54,6 +54,7 @@ import org.cytoscape.task.NetworkTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.NetworkCollectionTaskFactory;
 import org.cytoscape.task.NetworkViewCollectionTaskFactory;
+import org.cytoscape.service.util.CyServiceRegistrar;
 
 
 /**
@@ -68,6 +69,7 @@ public class CytoscapeMenuPopulator {
 	final private CySwingApplication app;
 	final private GUITaskManager taskManager;
 	final private CyApplicationManager appManager;
+	final private CyServiceRegistrar registrar;
 
 	final private Map<TaskFactory, CyAction> taskMap;
 
@@ -77,18 +79,19 @@ public class CytoscapeMenuPopulator {
 	 * but won't fill them with menu items and associated action listeners.
 	 */
 	public CytoscapeMenuPopulator(final CySwingApplication app, final GUITaskManager taskManager,
-				      final CyApplicationManager appManager)
+				      final CyApplicationManager appManager, final CyServiceRegistrar registrar)
 	{
 		this.app = app;
 		this.taskManager = taskManager;
 		this.appManager = appManager;
+		this.registrar = registrar;
 
 		taskMap = new HashMap<TaskFactory,CyAction>();
 	}
 
 	public void addTaskFactory(TaskFactory factory, Map props) {
 		if (taskManager.hasTunables(factory))
-			addFactory(new CytoPanelTaskFactoryTunableAction(factory, taskManager, app, props, appManager), factory, props);
+			addFactory(new CytoPanelTaskFactoryTunableAction(factory, taskManager, props, appManager, registrar), factory, props);
 		else
 			addFactory(new TaskFactoryTunableAction<TaskFactory>(taskManager, factory, props, appManager), factory, props);
 	}

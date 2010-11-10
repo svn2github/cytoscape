@@ -39,16 +39,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Icon;
+import java.awt.Component;
 
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.swing.GUITaskManager;
+import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.view.CytoPanelComponent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,31 +103,38 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 	final private TaskFactory factory;
 	final private GUITaskManager manager;
 	final private Map serviceProps;
-	private CytoPanel cytoPanel;
+	final private CytoPanelName cytoPanelName;
+	final private CyServiceRegistrar registrar;
 	final private static Logger logger = LoggerFactory.getLogger(CytoPanelTaskFactoryTunableAction.class);
 
 	public CytoPanelTaskFactoryTunableAction(final TaskFactory factory, 
 	                                         final GUITaskManager manager,
-	                                         final CySwingApplication app,
 	                                         final Map serviceProps, 
-	                                         final CyApplicationManager appMgr )
+	                                         final CyApplicationManager appMgr,
+											 final CyServiceRegistrar registrar)
 	{
 		super(serviceProps, appMgr);
 
 		this.factory = factory;
 		this.manager = manager;
 		this.serviceProps = serviceProps;
+		this.registrar = registrar;
+		this.cytoPanelName = getCytoPanelName(); 
+	}
 
-		if (serviceProps.containsKey("preferredCytoPanel")) {
-			try {
-				cytoPanel = app.getCytoPanel(CytoPanelName.valueOf(serviceProps.get("preferredCytoPanel").toString()));
-			} catch (final Exception e) {
-				logger.warn("in CytoPanelTaskFactoryTunableAction constructor: value of serviceProps(\"preferredCytoPanel\") is \""
-					    + serviceProps.get("preferredCytoPanel").toString() + "\"");
-				cytoPanel = app.getCytoPanel(DEFAULT_CYTOPANEL);
-			}
-		} else
-			this.cytoPanel = app.getCytoPanel(DEFAULT_CYTOPANEL);
+	private CytoPanelName getCytoPanelName() {
+		CytoPanelName n;
+		try {
+			Object name = serviceProps.get("preferredCytoPanel");
+			if ( name != null )
+				n = CytoPanelName.valueOf(name.toString());
+			else 
+				n = CytoPanelName.WEST;
+		} catch (Exception e) {
+			logger.warn("couldn't find 'preferredCytoPanel' property",e);
+			n = CytoPanelName.WEST;
+		}
+		return n;
 	}
 
 	/**
@@ -133,7 +145,9 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 		if (innerPanel == null)
 			return;
 
-		cytoPanel.add(getCytoPanelComponentTitle(), createCytoPanelComponent(innerPanel));
+		CytoPanelComponentImp imp = new CytoPanelComponentImp(innerPanel,
+		                                                      getCytoPanelComponentTitle());
+		registrar.registerService(imp,CytoPanelComponent.class,new Properties());
 	}
 
 	/**
@@ -159,32 +173,41 @@ public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
 
 			return "*No Title*";
 		} catch (final ClassCastException e) {
-			logger.warn("This should *never* happen!\n" + e.toString());
+			logger.warn("This should *never* happen!",e);
 			return "*Missing Title*";
 		}
 	}
 
-	/**
-	 *  Adds Close/Execute buttons below "innerPanel" in a new enclosing panel.
-	 *
-	 *  @return the new enclosing panel
-	 */
-	private JPanel createCytoPanelComponent(final JPanel innerPanel) {
-		final JPanel outerPanel = new JPanel();
-		outerPanel.add(innerPanel);
+	private class CytoPanelComponentImp implements CytoPanelComponent {
+		private final Component innerPanel;
+		private final Component comp;
+		private final String title;
+		CytoPanelComponentImp(Component innerPanel, String title) {
+			this.innerPanel = innerPanel;
+			this.title = title;
+			this.comp = createComponent();
+		}
+		public String getTitle() { return title; }
+		public CytoPanelName getCytoPanelName() { return cytoPanelName; }
+		public Icon getIcon() { return null; }
+		public Component getComponent() { return comp; }
+		private Component createComponent() { 
+			final JPanel outerPanel = new JPanel();
+			outerPanel.add(innerPanel);
 
-		final JButton executeButton = new JButton("Execute");
-		executeButton.addActionListener(new ExecuteButtonListener(factory, manager));
-		outerPanel.add(executeButton);
-
-		final JButton closeButton = new JButton("Close");
-		closeButton.addActionListener(new ActionListener() {
-				public void actionPerformed(final ActionEvent event) {
-					cytoPanel.remove(outerPanel);
-				}
-			});
-		outerPanel.add(closeButton);
+			final JButton executeButton = new JButton("Execute");
+			executeButton.addActionListener(new ExecuteButtonListener(factory, manager));
+			outerPanel.add(executeButton);
+	
+			final JButton closeButton = new JButton("Close");
+			closeButton.addActionListener(new ActionListener() {
+					public void actionPerformed(final ActionEvent event) {
+						registrar.unregisterService(this,CytoPanelComponent.class);	
+					}
+				});
+			outerPanel.add(closeButton);
 		
-		return outerPanel;
+			return outerPanel;
+		}
 	}
 }

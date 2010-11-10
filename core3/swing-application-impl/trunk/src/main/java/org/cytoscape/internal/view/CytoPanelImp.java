@@ -62,9 +62,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.cytoscape.view.CytoPanel;
-import org.cytoscape.view.CytoPanelListener;
 import org.cytoscape.view.CytoPanelName;
 import org.cytoscape.view.CytoPanelState;
+import org.cytoscape.view.events.CytoPanelStateChangedEvent;
+import org.cytoscape.view.events.CytoPanelComponentSelectedEvent;
+import org.cytoscape.view.CytoPanelComponent;
+import org.cytoscape.event.CyEventHelper;
 
 
 /**
@@ -93,11 +96,6 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * Our compass direction.
 	 */
 	private CytoPanelName compassDirection;
-
-	/**
-	 * An array of CytoPanelListeners
-	 */
-	private ArrayList<CytoPanelListener> cytoPanelListenerList;
 
 	/**
 	 * Notification state change.
@@ -191,6 +189,8 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 */
 	private static final String FILE_SEPARATOR = "/";
 
+	private final CyEventHelper cyEventHelper;
+
 	/**
 	 * Constructor.
 	 *
@@ -198,16 +198,14 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * @param tabPlacement      Tab placement of this CytoPanel.
 	 * @param cytoPanelState    The starting CytoPanel state.
 	 */
-	public CytoPanelImp(final CytoPanelName compassDirection, final int tabPlacement, final CytoPanelState cytoPanelState) {
+	public CytoPanelImp(final CytoPanelName compassDirection, final int tabPlacement, final CytoPanelState cytoPanelState, final CyEventHelper eh) {
+		this.cyEventHelper = eh;
 		// setup our tabbed pane
 		tabbedPane = new JTabbedPane(tabPlacement);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedPane.addChangeListener(this);
 
 		this.compassDirection = compassDirection;
-
-		// init listener list
-		cytoPanelListenerList = new ArrayList<CytoPanelListener>();
 
 		// init the icons
 		initIcons();
@@ -234,75 +232,17 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 *
 	 * @return A title string
 	 */
-	public String getTitle() {
+	private String getTitle() {
 		return compassDirection.getTitle();
 	}
 
-	/**
-	 * Adds a component to the CytoPanel.
-	 *
-	 * @param component Component reference.
-	 * @return component Component reference.
-	 */
-	public Component add(Component component) {
-		// add tab to JTabbedPane (component)
-		Component c = tabbedPane.add(component);
-
-		// send out a notification
-		notifyListeners(NOTIFICATION_COMPONENT_ADDED);
-
-		// outta here
-		return c;
+	public CytoPanelName getCytoPanelName() {
+		return compassDirection;
 	}
 
-	/**
-	 * Adds a component to the CytoPanel at specified index.
-	 *
-	 * @param component Component reference.
-	 * @param index     Component index.
-	 * @return component Component reference.
-	 */
-	public Component add(Component component, int index) {
-		// add tab to JTabbedPane (component, index)
-		Component c = tabbedPane.add(component, index);
 
-		// send out a notification
-		notifyListeners(NOTIFICATION_COMPONENT_ADDED);
-
-		// outta here
-		return c;
-	}
-
-	/**
-	 * Adds a component to the CytoPanel with a specified title.
-	 *
-	 * @param title     Component title.
-	 * @param component Component reference.
-	 * @return component Component reference.
-	 */
-	public Component add(String title, Component component) {
-		// add tab to JTabbedPane (title, component)
-		Component c = tabbedPane.add(title, component);
-
-		// send out a notification
-		notifyListeners(NOTIFICATION_COMPONENT_ADDED);
-
-		// outta here
-		return c;
-	}
-
-	/**
-	 * Adds a component to the CytoPanel with specified title and icon.
-	 *
-	 * @param title     Component title (can be null).
-	 * @param icon      Component icon (can be null).
-	 * @param component Component reference.
-	 */
-	public void add(String title, Icon icon, Component component) {
-		// add tab to JTabbedPane (title, icon, component)
-		tabbedPane.addTab(title, icon, component);
-
-		// send out a notification
+	public void add(CytoPanelComponent comp) {
+		tabbedPane.addTab(comp.getTitle(), comp.getIcon(), comp.getComponent());
 		notifyListeners(NOTIFICATION_COMPONENT_ADDED);
 	}
 
@@ -396,6 +336,10 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 		notifyListeners(NOTIFICATION_COMPONENT_REMOVED);
 	}
 
+	public void remove(CytoPanelComponent comp) {
+		tabbedPane.remove(comp.getComponent());
+	}
+
 	/**
 	 * Removes the component from the CytoPanel at the specified index.
 	 *
@@ -473,33 +417,6 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 */
 	public CytoPanelState getState() {
 		return cytoPanelState;
-	}
-
-	/**
-	 * Adds a CytoPanel listener.
-	 *
-	 * @param cytoPanelListener Reference to a CytoPanelListener.
-	 */
-	public void addCytoPanelListener(CytoPanelListener cytoPanelListener) {
-		// nothing to do if listener is already in our list
-		if (cytoPanelListenerList.contains(cytoPanelListener)) {
-			return;
-		}
-
-		// add listener to our list
-		cytoPanelListenerList.add(cytoPanelListener);
-	}
-
-	/**
-	 * Removes a CytoPanel listener.
-	 *
-	 * @param cytoPanelListener Reference to a CytoPanelListener.
-	 */
-	public void removeCytoPanelListener(CytoPanelListener cytoPanelListener) {
-		// remove listener if they exist in our list
-		if (cytoPanelListenerList.contains(cytoPanelListener)) {
-			cytoPanelListenerList.remove(cytoPanelListenerList.indexOf(cytoPanelListener));
-		}
 	}
 
 	/**
@@ -833,35 +750,32 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	 * @param notificationType What type of notification to perform.
 	 */
 	private void notifyListeners(int notificationType) {
-		// interate through all our listeners
-		for (int lc = 0; lc < cytoPanelListenerList.size(); lc++) {
-			CytoPanelListener cytoPanelListener = (CytoPanelListener) cytoPanelListenerList.get(lc);
 
 			// determine what event to fire
 			switch (notificationType) {
 				case NOTIFICATION_STATE_CHANGE:
-					cytoPanelListener.onStateChange(cytoPanelState);
+					cyEventHelper.fireSynchronousEvent(new CytoPanelStateChangedEvent(this,this,cytoPanelState));
 
 					break;
 
 				case NOTIFICATION_COMPONENT_SELECTED:
 
 					int selectedIndex = tabbedPane.getSelectedIndex();
-					cytoPanelListener.onComponentSelected(selectedIndex);
+					cyEventHelper.fireSynchronousEvent(new CytoPanelComponentSelectedEvent(this,this,selectedIndex));
+					//cytoPanelListener.onComponentSelected(selectedIndex);
 
 					break;
 
 				case NOTIFICATION_COMPONENT_ADDED:
-					cytoPanelListener.onComponentAdded(getCytoPanelComponentCount());
+					//cytoPanelListener.onComponentAdded(getCytoPanelComponentCount());
 
 					break;
 
 				case NOTIFICATION_COMPONENT_REMOVED:
-					cytoPanelListener.onComponentRemoved(getCytoPanelComponentCount());
+					//cytoPanelListener.onComponentRemoved(getCytoPanelComponentCount());
 
 					break;
 			}
-		}
 	}
 
 	/**
