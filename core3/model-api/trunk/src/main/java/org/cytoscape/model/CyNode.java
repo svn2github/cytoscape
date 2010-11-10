@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,10 +25,13 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
 
+
 import java.util.List;
+
+import org.cytoscape.model.events.SetNestedNetworkEvent;
+import org.cytoscape.model.events.UnsetNestedNetworkEvent;
 
 
 /**
@@ -44,7 +39,6 @@ import java.util.List;
  * of nodes and edges.
  */
 public interface CyNode extends CyTableEntry {
-	
 	/**
 	 * An index of this node within this network.  The index is guaranteed to
 	 * be between 0 and (the number of nodes in the network) - 1. This index
@@ -72,6 +66,10 @@ public interface CyNode extends CyTableEntry {
 	 *
 	 * @param nestedNetwork The network that is to be referenced by this node. If
 	 * this value is null, any existing reference will be removed.
+	 *
+	 * Note that this if a previous nested network is being replaced or nulled out, an
+	 * {@link UnsetNestedNetworkEvent} will be fired and if a new nested network will be set a
+	 * {@link SetNestedNetworkEvent} will be fired.
 	 */
 	void setNestedNetwork(CyNetwork nestedNetwork);
 }
