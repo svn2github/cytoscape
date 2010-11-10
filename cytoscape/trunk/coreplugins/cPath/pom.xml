@@ -3,7 +3,7 @@
   <parent>
     <groupId>cytoscape.coreplugins</groupId>
     <artifactId>parent</artifactId>
-    <version>2.8.0-beta3</version>
+    <version>2.8.0-beta4-SNAPSHOT</version>
   </parent>
 
   <artifactId>cpath</artifactId>
