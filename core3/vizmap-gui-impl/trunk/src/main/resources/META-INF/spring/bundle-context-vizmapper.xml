@@ -291,7 +291,6 @@
 		depends-on="colorMgr,
 		iconManager, defViewEditor, vizMapperUtil, menuManager, propertySheetPanel, editorWindowManager"
 		scope="singleton">
-		<constructor-arg ref="cytoscapeDesktopServiceRef" />
 		<constructor-arg ref="defViewEditor" />
 		<constructor-arg ref="iconManager" />
 		<constructor-arg ref="colorMgr" />

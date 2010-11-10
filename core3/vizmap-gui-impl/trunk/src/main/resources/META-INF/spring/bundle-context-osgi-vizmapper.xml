@@ -59,10 +59,6 @@
 		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
 		filter="(id=ding)" />
 
-	<!-- Import Desktop Service -->
-	<osgi:reference id="cytoscapeDesktopServiceRef"
-		interface="org.cytoscape.view.CySwingApplication" />
-
 	<!-- Visual Mapping Manager Service -->
 	<osgi:reference id="vmmServiceRef"
 		interface="org.cytoscape.view.vizmap.VisualMappingManager" />

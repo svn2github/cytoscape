@@ -55,7 +55,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.CySwingApplication;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
@@ -116,9 +115,6 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 
 	protected CyEventHelper eventHelper;
 
-	// Cytoscape Desktop Application Frame.
-	protected CySwingApplication cytoscapeDesktop;
-
 	protected VisualMappingManager vmm;
 
 	protected ColorManager colorMgr;
@@ -166,7 +162,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 	protected static final long serialVersionUID = -6839011300709287662L;
 
 	public AbstractVizMapperPanel(final VisualStyleFactory vsFactory,
-			CySwingApplication desktop, DefaultViewEditor defViewEditor,
+			DefaultViewEditor defViewEditor,
 			IconManager iconMgr, ColorManager colorMgr,
 			VisualMappingManager vmm, VizMapperMenuManager menuMgr,
 			EditorManager editorFactory, PropertySheetPanel propertySheetPanel,
@@ -177,7 +173,6 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 		
 		this.manager = manager;
 		this.vsFactory = vsFactory;
-		this.cytoscapeDesktop = desktop;
 		this.defViewEditor = defViewEditor;
 		this.iconMgr = iconMgr;
 		this.colorMgr = colorMgr;

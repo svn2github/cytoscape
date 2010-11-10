@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -52,8 +53,8 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.CySwingApplication;
 import org.cytoscape.view.CytoPanelName;
+import org.cytoscape.view.CytoPanelComponent;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
@@ -96,7 +97,7 @@ import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
  * @param <syncronized>
  */
 public class VizMapperMainPanel extends AbstractVizMapperPanel implements
-		VisualStyleAddedListener, VisualStyleAboutToBeRemovedListener, PopupMenuListener, NetworkViewAddedListener, NetworkAddedListener {
+		VisualStyleAddedListener, VisualStyleAboutToBeRemovedListener, PopupMenuListener, NetworkViewAddedListener, NetworkAddedListener, CytoPanelComponent {
 
 	private final static long serialVersionUID = 1202339867854959L;
 	
@@ -112,7 +113,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * Create new instance of VizMapperMainPanel object. GUI layout is handled
 	 * by abstract class.
 	 * 
-	 * @param desktop
 	 * @param dab
 	 * @param iconMgr
 	 * @param colorMgr
@@ -122,7 +122,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 */
 	public VizMapperMainPanel(
 			final VisualStyleFactory vsFactory,
-			final CySwingApplication desktop,
 			DefaultViewEditor defViewEditor, IconManager iconMgr,
 			ColorManager colorMgr, VisualMappingManager vmm,
 			VizMapperMenuManager menuMgr, EditorManager editorFactory,
@@ -132,7 +131,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			CyApplicationManager applicationManager, CyEventHelper eventHelper,
 			final SelectedVisualStyleManager manager) {
 
-		super(vsFactory, desktop, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
+		super(vsFactory, defViewEditor, iconMgr, colorMgr, vmm, menuMgr,
 				editorFactory, propertySheetPanel, vizMapPropertySheetBuilder,
 				editorWindowManager,
 				applicationManager, eventHelper, manager);
@@ -152,8 +151,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		propertySheetPanel.setSorting(true);
 
 		refreshUI();
-
-		cytoscapeDesktop.getCytoPanel(CytoPanelName.WEST).add(TAB_TITLE, this);
 
 		// Switch to the default style.
 		switchVS(manager.getDefaultStyle());
@@ -733,5 +730,21 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		final CyNetworkView view = applicationManager.getCurrentNetworkView();
 		if (view != null)
 			vmm.setVisualStyle(defaultStyle, view);
+	}
+
+	public String getTitle() {
+		return TAB_TITLE;
+	}
+
+	public CytoPanelName getCytoPanelName() {
+		return CytoPanelName.WEST;
+	}
+
+	public Component getComponent() {
+		return this;
+	}
+
+	public Icon getIcon() {
+		return null;
 	}
 }
