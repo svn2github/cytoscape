@@ -1,0 +1,114 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>cytoscape</groupId>
+    <artifactId>parent</artifactId>
+    <version>2.8.0-beta3</version>
+  </parent>
+
+  <groupId>cytoscape</groupId>
+  <artifactId>packaging</artifactId>
+  <packaging>jar</packaging>
+  <name>Cytoscape Release Bundle Packaging</name>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>googlecode-maven-install4j</id>
+      <name>googlecode-maven-install4j</name>
+      <url>http://maven-install4j.googlecode.com/svn/m2-repo</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/install4j</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <!-- This will unpack the distribution into the target directory,
+           copy the distribution into target/install4j directory, and
+           unpack the javadoc in the target/install4j directory -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-distribution</id>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <excludeTransitive>true</excludeTransitive>
+              <includeTypes>zip</includeTypes>
+              <excludeTypes>tar.gz</excludeTypes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-javadoc</id>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/install4j/javadoc</outputDirectory>
+              <excludeTransitive>true</excludeTransitive>
+              <excludeGroupIds>junit</excludeGroupIds>
+              <excludeTypes>zip</excludeTypes>
+              <excludeTypes>tar.gz</excludeTypes>
+              <includeClassifiers>javadoc</includeClassifiers>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-distribution</id>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/install4j</outputDirectory>
+              <excludeTransitive>true</excludeTransitive>
+              <excludeTypes>jar</excludeTypes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- This will create the bundles -->
+      <plugin>
+        <groupId>com.google.code.maven-install4j</groupId>
+        <artifactId>maven-install4j-plugin</artifactId>
+        <version>0.1.1</version>
+        <configuration>
+          <executable>/Applications/install4j 4/bin/install4jc</executable>
+          <configFile>${project.build.outputDirectory}/Cytoscape.install4j</configFile>
+          <releaseId>${project.version}</releaseId>
+          <attach>true</attach>
+          <skipOnMissingExecutable>true</skipOnMissingExecutable>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>cytoscape</groupId>
+      <artifactId>cytoscape</artifactId>
+      <version>${version}</version>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>cytoscape</groupId>
+      <artifactId>cytoscape</artifactId>
+      <version>${version}</version>
+      <type>tar.gz</type>
+    </dependency>
+    <dependency>
+      <groupId>cytoscape</groupId>
+      <artifactId>javadoc</artifactId>
+      <version>${version}</version>
+      <classifier>javadoc</classifier>
+    </dependency>
+  </dependencies>
+</project>
+

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="project" type="Project" />
+
+        <xs:complexType name="Project">
+            <xs:all>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="description" type="xs:string"/>
+                <xs:element name="url" type="xs:string"/>
+                <xs:element name="pluginlist" type="PluginList"/>
+            </xs:all>
+        </xs:complexType>
+
+        <xs:complexType name="PluginList">
+            <xs:sequence>
+                <xs:element name="plugin" type="Plugin" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+        
+        <xs:complexType name="Plugin">
+            <xs:all>
+                <xs:element name="uniqueID" type="xs:string"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="description" type="xs:string"/>
+                <xs:element name="pluginVersion" type="xs:double"/>
+                <xs:element name="cytoscapeVersion" type="xs:string"/>
+                <xs:element name="filetype" type="xs:string"/>
+                <xs:element name="category" type="xs:string" minOccurs="0"/>
+                <xs:element name="url" type="xs:string"/>
+                <xs:element name="license" type="License" minOccurs="0"/>
+                <xs:element name="authorlist" type="AuthorList" maxOccurs="1"/>
+            </xs:all>
+        </xs:complexType>
+         
+        <xs:complexType name="License">
+            <xs:sequence>
+                <xs:choice id="license.choice">
+                    <xs:element name="text" type="xs:string"/>
+                    <xs:element name="url" type="xs:string"/>
+                </xs:choice> 
+            </xs:sequence>
+        </xs:complexType>
+         
+        <xs:complexType name="AuthorList">
+            <xs:sequence>
+                <xs:element name="author" type="Author" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+         
+        <xs:complexType name="Author">
+            <xs:all>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="institution" type="xs:string"/>
+            </xs:all>    
+        </xs:complexType>
+    
+</xs:schema>

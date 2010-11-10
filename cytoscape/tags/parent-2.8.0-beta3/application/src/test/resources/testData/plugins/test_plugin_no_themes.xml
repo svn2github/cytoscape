@@ -1,0 +1,183 @@
+<!-- Test xml file describing plugins and where to d/l them -->
+<project>
+
+	<name> Cytoscape Plugins </name>
+	<description> Test </description>
+	<url> http://cytoscape.org </url>
+
+	<pluginlist>				
+		<!-- 
+		The urls for each of these plugins SHOULD start with http://...
+		For testing these will be concatenated with file:///user_dir/url
+		Do NOT set up your xml file with partial urls
+		 -->
+		 	
+		<plugin>
+			<uniqueID> goodJarPlugin123 </uniqueID>
+			<name> Good Jar </name>
+			<description> 
+				This plugin demonstrates the use of a jar file with the PluginInfo object created and a correct manifest file. 
+			</description>
+			<pluginVersion> 1.0 </pluginVersion>
+
+			<cytoscapeVersions>
+				<version>2.4</version>
+				<version>current</version>
+			</cytoscapeVersions>
+
+			<filetype> jar </filetype>
+			<category> Test </category>
+			<url> GoodPlugin.jar </url>
+			<license>
+				<text>
+					This is some license text a user would see and have to ok in order to install a plugin.
+				</text>
+			</license>
+			<authorlist>
+				<author>
+					<name> Ann Smith </name>
+					<institution> UW </institution>
+				</author>
+			</authorlist>
+		</plugin>
+
+		<plugin>
+			<uniqueID> goodJarPlugin123 </uniqueID>
+			<name> Good Jar </name>
+			<description> 
+				This plugin demonstrates the use of a jar file with the PluginInfo object created and a correct manifest file. 
+				This one is an "update" to the previous one for the purposes of testing.
+			</description>
+			<pluginVersion> 2.1 </pluginVersion>
+
+			<cytoscapeVersions>
+				<version>current</version>
+			</cytoscapeVersions>
+
+
+			<filetype> jar </filetype>
+			<category> Test </category>
+			<url> GoodPlugin.jar </url>
+
+<!-- Not sure how to deal with testing this at the moment.  I need to turn it into file:/// structure...
+			<license>
+				<url> license.txt </url>
+			</license>
+-->
+			<authorlist>
+				<author>
+					<name> Ann Smith and George James</name>
+					<institution> UW </institution>
+				</author>
+				<author>
+					<name> John Doe </name>
+					<institution> CU </institution>
+				</author>
+			</authorlist>
+		</plugin>
+
+
+		<plugin>
+			<uniqueID> goodZIPPlugin777 </uniqueID>
+			<name> Good Jar </name>
+			<description> 
+				This plugin demonstrates the use of a zip file with the correct directories (at least one plugins/*.jar file required) and
+				a correct manifest file.
+			</description>
+			<pluginVersion> 0.45 </pluginVersion>
+
+			<cytoscapeVersions>
+				<version>current</version>
+			</cytoscapeVersions>
+
+			<filetype> zip </filetype>
+			<category> Test </category>
+			<url> GoodPlugin.zip </url>
+			<authorlist>
+				<author>
+					<name> George Smith </name>
+					<institution> UC Mars </institution>
+				</author>
+			</authorlist>
+		</plugin>
+
+
+		<plugin>
+			<uniqueID> badJarPlugin123 </uniqueID>
+			<name> Bad Jar </name>
+			<description> 
+				This plugin jar file does not contain the correct manifest file and should fail to install.
+			</description>
+			<pluginVersion> 0.3 </pluginVersion>
+
+			<cytoscapeVersions>
+				<version>current</version>
+			</cytoscapeVersions>
+
+			<filetype> jar </filetype>
+			<category> Test </category>
+			<url> BadPlugin.jar </url>
+			<authorlist>
+				<author>
+					<name> George Smith </name>
+					<institution> UCLA </institution>
+				</author>
+			</authorlist>
+		</plugin>
+
+		<plugin>
+			<uniqueID> badZIPPlugin123 </uniqueID>
+			<name> Bad Jar </name>
+			<description> 
+				This plugin zip file does not contain the correct directories (one plugin/*.jar file required) and will fail to install.
+			</description>
+			<pluginVersion> 0.9 </pluginVersion>
+
+			<cytoscapeVersions>
+				<version>current</version>
+			</cytoscapeVersions>
+
+			<filetype> jar </filetype>
+			<category> Test </category>
+			<url> BadPlugin.zip </url>
+			<authorlist>
+				<author>
+					<name> Jill Jones </name>
+					<institution> CSU </institution>
+				</author>
+			</authorlist>
+		</plugin>
+
+		<!-- this is to test the case where the xml incorrectly id's the file type -->
+		<plugin>
+			<uniqueID> badFileType123 </uniqueID>
+			<name> Good Jar </name>
+			<description> 
+				This plugin demonstrates the use of a jar file with the PluginInfo object created and a correct manifest file. 
+			</description>
+			<pluginVersion> 1.0 </pluginVersion>
+			
+			<cytoscapeVersions>
+				<version>2.4</version>
+				<version>current</version>
+			</cytoscapeVersions>
+			
+			<filetype> zip </filetype>
+			<category> Test </category>
+			<url> GoodPlugin.jar </url>
+			<license>
+				<text>
+					This is some license text a user would see and have to ok in order to install a plugin.
+				</text>
+			</license>
+			<authorlist>
+				<author>
+					<name> Ann Smith </name>
+					<institution> UW </institution>
+				</author>
+			</authorlist>
+		</plugin>
+	</pluginlist>
+
+
+</project>

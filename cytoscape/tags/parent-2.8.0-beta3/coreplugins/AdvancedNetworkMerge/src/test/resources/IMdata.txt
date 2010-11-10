@@ -1,0 +1,4 @@
+NCBI	RefSeq	EMBL
+N0	R3	E1
+N1	R4	E2
+N2	R5	E3

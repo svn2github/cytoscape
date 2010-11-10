@@ -1,0 +1,101 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>cytoscape.coreplugins</groupId>
+    <artifactId>parent</artifactId>
+    <version>2.8.0-beta3</version>
+  </parent>
+
+  <artifactId>cpath2</artifactId>
+  <packaging>jar</packaging>
+
+  <name>cPath2</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>cytoscape-temp</groupId>
+      <artifactId>biopax</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.1</version>
+    </dependency>
+  </dependencies>
+
+
+  <build>
+    <plugins>
+	  <plugin>
+        <artifactId>maven-assembly-plugin</artifactId> 
+	  </plugin>
+      <plugin>
+        <groupId>org.jvnet.jaxb2.maven2</groupId>
+        <artifactId>maven-jaxb2-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>SearchResponse</id>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+              <configuration>
+                <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+                <schemaIncludes>
+                  <include>SearchResponse.xsd</include>
+                </schemaIncludes>
+                <generatePackage>org.cytoscape.coreplugin.cpath2.schemas.search_response</generatePackage>
+                <verbose>true</verbose>
+                <removeOldOutput>false</removeOldOutput>
+                <forceRegenerate>true</forceRegenerate>
+              </configuration>
+            </execution>
+            <execution>
+              <id>SummaryResponse</id>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+              <configuration>
+                <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+                <schemaIncludes>
+                  <include>SummaryResponse.xsd</include>
+                </schemaIncludes>
+                <generatePackage>org.cytoscape.coreplugin.cpath2.schemas.summary_response</generatePackage>
+                <verbose>true</verbose>
+                <removeOldOutput>false</removeOldOutput>
+                <forceRegenerate>true</forceRegenerate>
+              </configuration>
+            </execution>
+          </executions>
+       </plugin>
+    </plugins>
+  </build>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven2-repository.dev.java.net</id>
+            <name>Java.net Maven 2 Repository</name>
+            <url>http://download.java.net/maven/2
+            </url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>maven-repository.dev.java.net</id>
+            <name>Java.net Maven 1 Repository (legacy)</name>
+            <url>http://download.java.net/maven/1
+            </url>
+            <layout>legacy</layout>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>
+

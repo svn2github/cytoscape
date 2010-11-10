@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><archetype>
+  <id>sample-plugin</id>
+  <sources>
+    <source>src/main/java/MyAction.java</source>
+    <source>src/main/java/MyPlugin.java</source>
+  </sources>
+  <testSources>
+    <source>src/test/java/MyActionTest.java</source>
+  </testSources>
+  <resources>
+    <resource>src/main/resources/plugin.props</resource>
+  </resources>
+</archetype>

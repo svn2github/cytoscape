@@ -1,0 +1,11 @@
+
+This directory contains a basic Ant build file and skeleton code for creating
+a Cytoscape plugin.  For this build file to work, you must have Ant installed
+(http://ant.apache.org/) AND the Maven Ant Tasks plugin 
+(http://maven.apache.org/ant-tasks/index.html).
+
+Put any library jar files that your project depends on in the library directory.
+These jars will be unjarred and re-jarred with your plugin.  DO NOT include
+the Cytoscape jar!  The Cytoscape jar is referenced from our Maven repository.
+
+
