@@ -36,16 +36,20 @@ import java.util.List;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.equations.Function;
+import org.cytoscape.equations.AbstractFunction;
+import org.cytoscape.equations.ArgDescriptor;
+import org.cytoscape.equations.ArgType;
+import org.cytoscape.equations.FunctionUtil;
 import org.cytoscape.equations.internal.SUIDToNodeMapper;
 import org.cytoscape.session.CyApplicationManager;
 
 
-public class Degree implements Function {
+public class Degree extends AbstractFunction {
 	private final CyApplicationManager applicationManager;
 	private final SUIDToNodeMapper suidToNodeMapper;
 
 	public Degree(final CyApplicationManager applicationManager, final SUIDToNodeMapper suidToNodeMapper) {
+		super(new ArgDescriptor[] { new ArgDescriptor(ArgType.INT, "node_ID", "An ID identifying a node.") });
 		this.applicationManager = applicationManager;
 		this.suidToNodeMapper = suidToNodeMapper;
 	}
@@ -62,30 +66,14 @@ public class Degree implements Function {
 	 */
 	public String getFunctionSummary() { return "Returns degree of a node."; }
 
-	/**
-	 *  Used to provide help for users.
-	 *  @return a description of how to use this function
-	 */
-	public String getUsageDescription() { return "Call this with \"DEGREE(node_ID)\""; }
-
 	public Class getReturnType() { return Long.class; }
-
-	/**
-	 *  @return String.class or null if there is not exactly 1 arg or the arg is not of type String
-	 */
-	public Class validateArgTypes(final Class[] argTypes) {
-		if (argTypes.length != 1 || (argTypes[0] != Long.class))
-			return null;
-
-		return Long.class;
-	}
 
 	/**
 	 *  @param args the function arguments which must be either one object of type Double or Long
 	 *  @return the result of the function evaluation which is the natural logarithm of the first argument
 	 */
 	public Object evaluateFunction(final Object[] args) {
-		final Long nodeID = (Long)args[0];
+		final Long nodeID = FunctionUtil.getArgAsLong(args[0]);
 
 		final CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
 		if (currentNetwork == null)
@@ -96,23 +84,5 @@ public class Degree implements Function {
 			throw new IllegalArgumentException("\"" + nodeID + "\" is not a valid node identifier!");
 		
 		return (Long)(long)currentNetwork.getAdjacentEdgeList(node, CyEdge.Type.ANY).size();
-	}
-
-	/**
-	 *  Used with the equation builder.
-	 *
-	 *  @param leadingArgs the types of the arguments that have already been selected by the user.
-	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class,
-	 *           Boolean.class and List.class) that are candidates for the next argument.  An empty
-	 *           set indicates that no further arguments are valid.
-	 */
-	public List<Class> getPossibleArgTypes(final Class[] leadingArgs) {
-		if (leadingArgs.length == 0) {
-			final List<Class> possibleNextArgs = new ArrayList<Class>();
-			possibleNextArgs.add(String.class);
-			return possibleNextArgs;
-		}
-
-		return null;
 	}
 }
