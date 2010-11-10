@@ -12,16 +12,37 @@
 	<osgi:reference id="cyApplicationManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
 
-	<osgi:service id="controlPanelActionService"
-		ref="controlPanelAction" interface="org.cytoscape.view.CyAction">
+	<osgi:service id="controlPanelActionService" ref="controlPanelAction" >
+		<osgi:interfaces>
+			<value>org.cytoscape.view.CyAction</value>
+			<value>org.cytoscape.view.events.CytoPanelComponentSelectedListener</value>
+		</osgi:interfaces>
 	</osgi:service>
 
-	<osgi:service id="scalePanelActionService"
-		ref="scalePanelAction" interface="org.cytoscape.view.CyAction">
+	<osgi:service id="scalePanelActionService" ref="scalePanelAction" >
+		<osgi:interfaces>
+			<value>org.cytoscape.view.CyAction</value>
+			<value>org.cytoscape.view.events.CytoPanelComponentSelectedListener</value>
+		</osgi:interfaces>
 	</osgi:service>
 
-	<osgi:service id="rotatePanelActionService"
-		ref="rotatePanelAction" interface="org.cytoscape.view.CyAction">
+	<osgi:service id="rotatePanelActionService" ref="rotatePanelAction">
+		<osgi:interfaces>
+			<value>org.cytoscape.view.CyAction</value>
+			<value>org.cytoscape.view.events.CytoPanelComponentSelectedListener</value>
+		</osgi:interfaces>
+	</osgi:service>
+
+	<osgi:service id="controlPanelService"
+		ref="controlPanel" interface="org.cytoscape.view.CytoPanelComponent">
+	</osgi:service>
+
+	<osgi:service id="scalePanelService"
+		ref="scalePanel" interface="org.cytoscape.view.CytoPanelComponent">
+	</osgi:service>
+
+	<osgi:service id="rotatePanelService"
+		ref="rotatePanel" interface="org.cytoscape.view.CytoPanelComponent">
 	</osgi:service>
 
 </beans>

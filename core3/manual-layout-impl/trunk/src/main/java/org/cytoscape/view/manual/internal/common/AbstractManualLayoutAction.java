@@ -58,7 +58,9 @@ import org.cytoscape.view.CytoscapeAction;
 import org.cytoscape.view.CytoPanel;
 import org.cytoscape.view.CytoPanelState;
 import org.cytoscape.view.CytoPanelName;
-import org.cytoscape.view.CytoPanelListener;
+import org.cytoscape.view.CytoPanelComponent;
+import org.cytoscape.view.events.CytoPanelComponentSelectedListener;
+import org.cytoscape.view.events.CytoPanelComponentSelectedEvent;
 
 import org.cytoscape.session.CyApplicationManager;
 
@@ -68,7 +70,7 @@ import org.cytoscape.session.CyApplicationManager;
  */
 public abstract class AbstractManualLayoutAction 
 	extends CytoscapeAction 
-	implements CytoPanelListener {
+	implements CytoPanelComponentSelectedListener {
 
     static protected CytoPanel manualLayoutPanel; 
 
@@ -76,26 +78,23 @@ public abstract class AbstractManualLayoutAction
 
 	private final CySwingApplication swingApp;
 
-	int menuIndex; 
-
 	private final static String preferredMenu = "Layout";
 	private final String title;
+	private final CytoPanelComponent comp;
 
 	/**
 	 * Base class for displaying cytopanel menu items. 
 	 *
 	 * @param title The title of the menu item. 
-	 * @param menuIndex The desired menu index for the action. 
 	 */
-	public AbstractManualLayoutAction(String title, int menuIndex, CySwingApplication swingApp, CyApplicationManager appMgr) {
-		super(title, appMgr);
-		this.title = title;
+	public AbstractManualLayoutAction(CytoPanelComponent comp, CySwingApplication swingApp, CyApplicationManager appMgr) {
+		super(comp.getTitle(), appMgr);
+		this.title = comp.getTitle();
 		this.swingApp = swingApp;
+		this.comp = comp;
     	manualLayoutPanel = swingApp.getCytoPanel(CytoPanelName.SOUTH_WEST);
-		this.menuIndex = menuIndex;
 		setPreferredMenu(preferredMenu);
 		useCheckBoxMenuItem = true;
-		manualLayoutPanel.addCytoPanelListener(this);
 	}
 
 	/**
@@ -107,6 +106,8 @@ public abstract class AbstractManualLayoutAction
 
 		// Check the state of the manual layout Panel
 		CytoPanelState curState = manualLayoutPanel.getState();
+
+		int menuIndex = manualLayoutPanel.indexOfComponent(comp.getComponent());
 
 		// Case 1: Panel is disabled
 		if (curState == CytoPanelState.HIDE) {
@@ -145,6 +146,8 @@ public abstract class AbstractManualLayoutAction
 	public void menuSelected(MenuEvent e) {
 		// set the check next to the menu item
 		JCheckBoxMenuItem item = getThisItem(); 
+		int menuIndex = manualLayoutPanel.indexOfComponent(comp.getComponent());
+
 		if ( item != null ) {
 			if ( manualLayoutPanel.getSelectedIndex() != menuIndex || 
 			     manualLayoutPanel.getState() == CytoPanelState.HIDE )
@@ -169,11 +172,7 @@ public abstract class AbstractManualLayoutAction
 	 *
 	 * @param componentIndex the index of the menu
 	 */
-	public void onComponentSelected(int componentIndex) {
-		selectedIndex = componentIndex;
+	public void handleEvent(CytoPanelComponentSelectedEvent e) {
+		selectedIndex = e.getSelectedIndex();
 	}
-
-    public void onStateChange(CytoPanelState newState) {}
-	public void onComponentAdded(int count) {}
-	public void onComponentRemoved(int count) {}
 }

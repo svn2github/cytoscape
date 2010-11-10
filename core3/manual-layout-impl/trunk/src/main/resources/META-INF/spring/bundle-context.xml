@@ -15,25 +15,35 @@
 
 	<context:annotation-config/>
 
-	<bean id="manualLayoutPlugin" class="org.cytoscape.view.manual.internal.ManualLayoutPlugin">
-		<constructor-arg ref="cySwingApplicationServiceRef" />
+	<bean id="controlPanel" class="org.cytoscape.view.manual.internal.control.ControlPanel">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+	</bean>
+
+	<bean id="rotatePanel" class="org.cytoscape.view.manual.internal.rotate.RotatePanel">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+	</bean>
+
+	<bean id="scalePanel" class="org.cytoscape.view.manual.internal.scale.ScalePanel">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<bean id="controlPanelAction" 
 	      class="org.cytoscape.view.manual.internal.control.ControlPanelAction">
+		<constructor-arg ref="controlPanel" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<bean id="rotatePanelAction" 
 	      class="org.cytoscape.view.manual.internal.rotate.RotatePanelAction">
+		<constructor-arg ref="rotatePanel" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<bean id="scalePanelAction" 
 	      class="org.cytoscape.view.manual.internal.scale.ScalePanelAction">
+		<constructor-arg ref="scalePanel" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>

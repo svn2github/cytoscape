@@ -64,7 +64,7 @@ import javax.swing.event.ChangeListener;
  *      Rewrite based on the class ScaleAction       9/13/2006        Peng-Liang Wang
  *
  */
-public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSlider {
+public class ScalePanel extends AbstractManualPanel implements ChangeListener, PolymorphicSlider {
 	private JCheckBox jCheckBox;
 	private JSlider jSlider;
 	private JRadioButton alongXAxisOnlyRadioButton;
@@ -79,6 +79,7 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 	private final CyApplicationManager appMgr;
 
 	public ScalePanel(CyApplicationManager appMgr) {
+		super("Scale");
 		this.appMgr = appMgr;
 		JLabel jLabel = new JLabel();
 		jLabel.setText("Scale:");

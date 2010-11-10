@@ -54,7 +54,7 @@ import org.cytoscape.session.CyApplicationManager;
  *
  *      Rewrite based on the class RotateAction       9/13/2006        Peng-Liang Wang
  */
-public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSlider {
+public class RotatePanel extends AbstractManualPanel implements ChangeListener, PolymorphicSlider {
 	private JCheckBox jCheckBox;
 	private JSlider jSlider;
 	private int prevValue; 
@@ -65,6 +65,7 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 	private final CyApplicationManager appMgr;
 
 	public RotatePanel(CyApplicationManager appMgr) {
+		super("Rotate");
 		this.appMgr = appMgr;
 		// set up the user interface
 		JLabel jLabel = new JLabel();

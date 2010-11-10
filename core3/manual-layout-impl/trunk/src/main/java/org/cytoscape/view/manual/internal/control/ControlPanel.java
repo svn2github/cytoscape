@@ -39,6 +39,7 @@ package org.cytoscape.view.manual.internal.control;
 import org.cytoscape.view.manual.internal.control.view.AlignPanel;
 import org.cytoscape.view.manual.internal.control.view.DistPanel;
 import org.cytoscape.view.manual.internal.control.view.StackPanel;
+import org.cytoscape.view.manual.internal.common.AbstractManualPanel;
 
 
 import javax.swing.JPanel;
@@ -54,7 +55,7 @@ import org.cytoscape.session.CyApplicationManager;
  *      Rewrite based on the class ControlAction       9/13/2006        Peng-Liang Wang
  *
  */
-public class ControlPanel extends JPanel {
+public class ControlPanel extends AbstractManualPanel {
 	
 	/**
 	 * 
@@ -65,6 +66,7 @@ public class ControlPanel extends JPanel {
 	 * Creates a new ControlPanel object.
 	 */
 	public ControlPanel(CyApplicationManager app) {
+		super("Align and Distribute");
 		setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 		setLayout(new GridLayout(3,1));
 

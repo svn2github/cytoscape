@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,40 +33,36 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.view.manual.internal;
+package org.cytoscape.view.manual.internal.common; 
 
-import org.cytoscape.view.manual.internal.control.ControlPanel;
-import org.cytoscape.view.manual.internal.control.ControlPanelAction;
-import org.cytoscape.view.manual.internal.rotate.RotatePanel;
-import org.cytoscape.view.manual.internal.rotate.RotatePanelAction;
-import org.cytoscape.view.manual.internal.scale.ScalePanel;
-import org.cytoscape.view.manual.internal.scale.ScalePanelAction;
-
-
-import org.cytoscape.view.CySwingApplication;
+import java.awt.Component;
+import javax.swing.JPanel;
+import javax.swing.Icon;
+import org.cytoscape.view.CytoPanelComponent;
 import org.cytoscape.view.CytoPanelName;
-import org.cytoscape.session.CyApplicationManager;
 
+public abstract class AbstractManualPanel extends JPanel implements CytoPanelComponent {
 
+	private final String title;
 
-/**
- *
- */
-public class ManualLayoutPlugin {
+	public AbstractManualPanel(String title) {
+		super();
+		this.title = title;
+	}
 
-	/**
-	 * Creates a new ManualLayoutPlugin object.
-	 */
-	public ManualLayoutPlugin(CySwingApplication app, CyApplicationManager appMgr) {
+	public CytoPanelName getCytoPanelName() {
+		return CytoPanelName.SOUTH_WEST;
+	}
 
-		// create the panels 
-		RotatePanel rotatePanel = new RotatePanel(appMgr);
-		ScalePanel scalePanel = new ScalePanel(appMgr);
-		ControlPanel controlPanel = new ControlPanel(appMgr);
+	public String getTitle() {
+		return title;
+	}
 
-		// add them to the cytopanel
-		app.getCytoPanel(CytoPanelName.SOUTH_WEST).add("Rotate", rotatePanel);
-		app.getCytoPanel(CytoPanelName.SOUTH_WEST).add("Scale", scalePanel);
-		app.getCytoPanel(CytoPanelName.SOUTH_WEST).add("Align and Distribute", controlPanel);
+	public Component getComponent() {
+		return this;
+	}
+
+	public Icon getIcon() {
+		return null;
 	}
 }
