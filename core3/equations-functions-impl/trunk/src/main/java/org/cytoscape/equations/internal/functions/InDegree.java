@@ -44,15 +44,15 @@ import org.cytoscape.session.CyApplicationManager;
 
 
 public class InDegree extends AbstractFunction {
-	private final SUIDToNodeMapper suidToNodeMapper;
 	private final CyApplicationManager applicationManager;
+	private final SUIDToNodeMapper suidToNodeMapper;
 
-	public InDegree(final SUIDToNodeMapper suidToNodeMapper,
-			final CyApplicationManager applicationManager)
+	public InDegree(final CyApplicationManager applicationManager,
+			final SUIDToNodeMapper suidToNodeMapper)
 	{
 		super(new ArgDescriptor[] { new ArgDescriptor(ArgType.INT, "node_ID", "An ID identifying a node.") });
-		this.suidToNodeMapper = suidToNodeMapper;
 		this.applicationManager = applicationManager;
+		this.suidToNodeMapper = suidToNodeMapper;
 	}
 
 	/**

@@ -28,8 +28,8 @@ public class FunctionRegistrar {
 	private void registerAllFunctions() {
 		final EqnParser parser = compiler.getParser();
 		parser.registerFunction(new Degree(applicationManager, suidToNodeMapper));
-		parser.registerFunction(new InDegree(suidToNodeMapper, applicationManager));
-		parser.registerFunction(new OutDegree(suidToNodeMapper, applicationManager));
+		parser.registerFunction(new InDegree(applicationManager, suidToNodeMapper));
+		parser.registerFunction(new OutDegree(applicationManager, suidToNodeMapper));
 		parser.registerFunction(new SourceID(suidToEdgeMapper));
 		parser.registerFunction(new TargetID(suidToEdgeMapper));
 	}
