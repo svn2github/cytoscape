@@ -12,7 +12,7 @@ public class BiomartStubTest extends TestCase {
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		File f = new File("./src/test/resources/mart.registry.xml");
+		File f = new File("src/test/resources/mart.registry.xml");
 		stub = new BiomartStub(f.toURI().toURL().toString());
 		stub.getRegistry();
 	}
