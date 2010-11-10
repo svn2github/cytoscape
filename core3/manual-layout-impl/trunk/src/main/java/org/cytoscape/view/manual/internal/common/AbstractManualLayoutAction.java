@@ -45,6 +45,7 @@ import java.util.HashMap;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
@@ -73,7 +74,12 @@ public abstract class AbstractManualLayoutAction
 
 	private static int selectedIndex = -1;
 
+	private final CySwingApplication swingApp;
+
 	int menuIndex; 
+
+	private final static String preferredMenu = "Layout";
+	private final String title;
 
 	/**
 	 * Base class for displaying cytopanel menu items. 
@@ -83,9 +89,11 @@ public abstract class AbstractManualLayoutAction
 	 */
 	public AbstractManualLayoutAction(String title, int menuIndex, CySwingApplication swingApp, CyApplicationManager appMgr) {
 		super(title, appMgr);
+		this.title = title;
+		this.swingApp = swingApp;
     	manualLayoutPanel = swingApp.getCytoPanel(CytoPanelName.SOUTH_WEST);
 		this.menuIndex = menuIndex;
-		setPreferredMenu("Layout");
+		setPreferredMenu(preferredMenu);
 		useCheckBoxMenuItem = true;
 		manualLayoutPanel.addCytoPanelListener(this);
 	}
@@ -118,30 +126,44 @@ public abstract class AbstractManualLayoutAction
 		}
 	} 
 
+	private JCheckBoxMenuItem getThisItem() {
+		JMenu layouts = swingApp.getJMenu(preferredMenu);
+		for ( int i = 0; i < layouts.getItemCount(); i++ ) {
+			JMenuItem item = layouts.getItem(i);
+			if ( item.getText().equals(title) && item instanceof JCheckBoxMenuItem) {
+				return (JCheckBoxMenuItem)item;	
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Enables of disables the action based on system state. 
 	 *
 	 * @param ev Triggering event - not used. 
-	 
+	 */
 	public void menuSelected(MenuEvent e) {
-		enableForNetworkAndView();
-		JCheckBoxMenuItem item = (JCheckBoxMenuItem)Cytoscape.getDesktop().getCyMenus().getLayoutMenu().getItem(menuIndex);
-		if ( manualLayoutPanel.getSelectedIndex() != menuIndex || 
-		     manualLayoutPanel.getState() == CytoPanelState.HIDE )
-			item.setState(false);
-		else 
-			item.setState(true);
-		
-		CytoPanelState parentState = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getState();
-		if ( parentState == CytoPanelState.HIDE ) {
+		// set the check next to the menu item
+		JCheckBoxMenuItem item = getThisItem(); 
+		if ( item != null ) {
+			if ( manualLayoutPanel.getSelectedIndex() != menuIndex || 
+			     manualLayoutPanel.getState() == CytoPanelState.HIDE )
+				item.setState(false);
+			else 
+				item.setState(true);
+		}
+	
+		// enable the menu based on cytopanel state
+		CytoPanelState parentState = swingApp.getCytoPanel(CytoPanelName.WEST).getState();
+		if ( parentState == CytoPanelState.HIDE )
 			setEnabled(false);
-		}
-		else { 
+		else 
 			setEnabled(true);
-		}
 
+		// enable the menu based on presence of network 
+		enableForNetworkAndView();
 	}
-*/
+
 	/**
 	 * Makes sure the menu check stays in sync with the selections made in the cytopanel.
 	 *

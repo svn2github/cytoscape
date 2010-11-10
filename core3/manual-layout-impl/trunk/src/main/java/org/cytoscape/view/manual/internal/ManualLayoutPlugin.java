@@ -69,10 +69,5 @@ public class ManualLayoutPlugin {
 		app.getCytoPanel(CytoPanelName.SOUTH_WEST).add("Rotate", rotatePanel);
 		app.getCytoPanel(CytoPanelName.SOUTH_WEST).add("Scale", scalePanel);
 		app.getCytoPanel(CytoPanelName.SOUTH_WEST).add("Align and Distribute", controlPanel);
-
-		// create the actions
-		app.addAction( new RotatePanelAction(app,appMgr));
-		app.addAction( new ScalePanelAction(app,appMgr));
-		app.addAction( new ControlPanelAction(app,appMgr));
 	}
 }

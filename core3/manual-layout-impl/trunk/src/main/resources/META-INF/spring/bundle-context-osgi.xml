@@ -12,4 +12,16 @@
 	<osgi:reference id="cyApplicationManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
 
+	<osgi:service id="controlPanelActionService"
+		ref="controlPanelAction" interface="org.cytoscape.view.CyAction">
+	</osgi:service>
+
+	<osgi:service id="scalePanelActionService"
+		ref="scalePanelAction" interface="org.cytoscape.view.CyAction">
+	</osgi:service>
+
+	<osgi:service id="rotatePanelActionService"
+		ref="rotatePanelAction" interface="org.cytoscape.view.CyAction">
+	</osgi:service>
+
 </beans>

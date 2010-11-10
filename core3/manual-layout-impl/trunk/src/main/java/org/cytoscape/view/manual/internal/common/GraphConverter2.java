@@ -102,8 +102,8 @@ public final class GraphConverter2 {
 
 			if ((!preserveEdgeAnchors)
 			    && (noNodesSelected
-			       || currentEdgeView.getModel().getSource().getCyRow().get(CyTableEntry.SELECTED,boolean.class)
-			       || currentEdgeView.getModel().getTarget().getCyRow().get(CyTableEntry.SELECTED,boolean.class))) {
+			       || currentEdgeView.getModel().getSource().getCyRow().get(CyTableEntry.SELECTED,Boolean.class)
+			       || currentEdgeView.getModel().getTarget().getCyRow().get(CyTableEntry.SELECTED,Boolean.class))) {
 				currentEdgeView.getBend().removeAllHandles();
 			} else {
 				List handles = currentEdgeView.getBend().getHandles();
@@ -161,7 +161,7 @@ public final class GraphConverter2 {
 					if (noNodesSelected)
 						return true;
 
-					return node.getCyRow().get(CyTableEntry.SELECTED,boolean.class); 
+					return node.getCyRow().get(CyTableEntry.SELECTED,Boolean.class); 
 				}
 
 				public void setNodePosition(CyNode node, double xPos, double yPos) {
