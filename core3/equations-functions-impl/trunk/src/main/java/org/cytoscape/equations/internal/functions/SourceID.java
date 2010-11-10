@@ -33,6 +33,7 @@ package org.cytoscape.equations.internal.functions;
 import org.cytoscape.equations.AbstractFunction;
 import org.cytoscape.equations.ArgDescriptor;
 import org.cytoscape.equations.ArgType;
+import org.cytoscape.equations.FunctionUtil;
 import org.cytoscape.equations.internal.SUIDToEdgeMapper;
 import org.cytoscape.equations.internal.SUIDToNodeMapper;
 
@@ -45,7 +46,7 @@ public class SourceID extends AbstractFunction {
 	private final SUIDToEdgeMapper suidToEdgeMapper;
 
 	public SourceID(final SUIDToEdgeMapper suidToEdgeMapper) {
-		super(new ArgDescriptor[] { new ArgDescriptor(ArgType.STRICT_INT, "edge_ID", "An ID identifying an edge.") });
+		super(new ArgDescriptor[] { new ArgDescriptor(ArgType.INT, "edge_ID", "An ID identifying an edge.") });
 		this.suidToEdgeMapper = suidToEdgeMapper;
 	}
 
@@ -68,7 +69,7 @@ public class SourceID extends AbstractFunction {
 	 *  @return the result of the function evaluation which is the natural logarithm of the first argument
 	 */
 	public Object evaluateFunction(final Object[] args) {
-		final Long edgeID = (Long)args[0];
+		final Long edgeID = FunctionUtil.getArgAsLong(args[0]);
 
 		final CyEdge edge = suidToEdgeMapper.getEdge(edgeID);
 		if (edge == null)

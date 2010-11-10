@@ -37,6 +37,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.equations.AbstractFunction;
 import org.cytoscape.equations.ArgDescriptor;
 import org.cytoscape.equations.ArgType;
+import org.cytoscape.equations.FunctionUtil;
 import org.cytoscape.equations.internal.SUIDToNodeMapper;
 
 import org.cytoscape.session.CyApplicationManager;
@@ -49,7 +50,7 @@ public class InDegree extends AbstractFunction {
 	public InDegree(final SUIDToNodeMapper suidToNodeMapper,
 			final CyApplicationManager applicationManager)
 	{
-		super(new ArgDescriptor[] { new ArgDescriptor(ArgType.STRICT_INT, "node_ID", "An ID identifying a node.") });
+		super(new ArgDescriptor[] { new ArgDescriptor(ArgType.INT, "node_ID", "An ID identifying a node.") });
 		this.suidToNodeMapper = suidToNodeMapper;
 		this.applicationManager = applicationManager;
 	}
@@ -73,7 +74,7 @@ public class InDegree extends AbstractFunction {
 	 *  @return the result of the function evaluation which is the natural logarithm of the first argument
 	 */
 	public Object evaluateFunction(final Object[] args) {
-		final Long nodeID = (Long)args[0];
+		final Long nodeID = FunctionUtil.getArgAsLong(args[0]);
 
 		final CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
 		if (currentNetwork == null)
