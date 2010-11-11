@@ -16,6 +16,7 @@
 //
 package bioCycPlugin.webservices;
 
+import bioCycPlugin.BioCycPlugin;
 import bioCycPlugin.model.Database;
 import bioCycPlugin.model.Pathway;
 import bioCycPlugin.webservices.ResultProperty;
@@ -62,6 +63,7 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 	Database defaultDatabase = null;
 	JComboBox databaseCombo;
 	JTextField searchText;
+	JTextField webServiceText;
 	JTable resultTable;
 	ListWithPropertiesTableModel<ResultProperty, ResultRow> tableModel;
 
@@ -77,6 +79,11 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 		searchText = new JTextField();
 		searchText.setActionCommand(ACTION_SEARCH);
 		searchText.addActionListener(this);
+
+		webServiceText = new JTextField();
+		webServiceText.setActionCommand(ACTION_SET_WEBSERVICE);
+		webServiceText.addActionListener(this);
+		webServiceText.setText(BioCycPlugin.getBaseUrl());
 
 		JButton searchBtn = new JButton("Search");
 		searchBtn.setActionCommand(ACTION_SEARCH);
@@ -96,15 +103,17 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 
 		setLayout(new FormLayout(
 				"4dlu, pref, 2dlu, fill:pref:grow, 4dlu, pref, 4dlu, pref, 4dlu",
-				"4dlu, pref, 4dlu, pref, 4dlu, fill:pref:grow, 4dlu"
+				"4dlu, pref, 4dlu, pref, 4dlu, pref, 4dlu, fill:pref:grow, 4dlu"
 		));
 		CellConstraints cc = new CellConstraints();
-		add(new JLabel("Database:"), cc.xy(2, 2));
-		add(databaseCombo, cc.xy(4, 2));
-		add(new JLabel("Search:"), cc.xy(2, 4));
-		add(searchText, cc.xy(4, 4));
-		add(searchBtn, cc.xy(8, 4));
-		add(new JScrollPane(resultTable), cc.xyw(2, 6, 7));
+		add(new JLabel("Web Server:"), cc.xy(2, 2));
+		add(webServiceText, cc.xy(4, 2));
+		add(new JLabel("Database:"), cc.xy(2, 4));
+		add(databaseCombo, cc.xy(4, 4));
+		add(new JLabel("Search:"), cc.xy(2, 6));
+		add(searchText, cc.xy(4, 6));
+		add(searchBtn, cc.xy(8, 6));
+		add(new JScrollPane(resultTable), cc.xyw(2, 8, 7));
 	}
 
 	protected void resetDatabases() {
@@ -159,6 +168,15 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 		} else if (ACTION_SET_DATABASE.equals(action)) {
 			defaultDatabase = (Database) databaseCombo.getSelectedItem();
 			Database.setDefaultDatabase(defaultDatabase);
+		} else if (ACTION_SET_WEBSERVICE.equals(action)) {
+			String url = webServiceText.getText();
+			if (url == null || url.length() == 0)
+				url = BioCycPlugin.DEFAULT_URL;
+			BioCycPlugin.setProp(BioCycPlugin.WEBSERVICE_URL, url);
+			client.getStub();
+			// Now, update the text again
+			webServiceText.setText(url);
+			resetDatabases();
 		}
 	}
 
@@ -225,4 +243,5 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 
 	private static final String ACTION_SEARCH = "Search";
 	private static final String ACTION_SET_DATABASE = "Set Database";
+	private static final String ACTION_SET_WEBSERVICE = "Set Web Service URL";
 }

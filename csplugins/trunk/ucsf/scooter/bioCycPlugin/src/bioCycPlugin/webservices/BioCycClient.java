@@ -100,6 +100,14 @@ public class BioCycClient extends WebServiceClientImplWithGUI<BioCycRESTClient, 
 		return stub;
 	}
 
+	public String getDescription() {
+		String description = "<html><body><b>BioCyc</b> is one of several repositories using the Pathway Tools software (";
+		description += "<a href=\"http://bioinformatics.ai.sri.com/ptools\">http://bioinformatics.ai.sri.com/ptools</a>) ";
+		description += "for pathway information on a variety of species.  This plugin supports any of the repositories ";
+		description += "running Pathway Tools release <b>14.5</b> or later</body></html>";
+		return description;
+	}
+
 	/**
 	 * Check if a working connection to the wikipathways
 	 * web service is available.

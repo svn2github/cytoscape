@@ -55,9 +55,9 @@ public class BioCycPlugin extends CytoscapePlugin implements PropertyChangeListe
 	private BioCycClient wpclient;
 	private static Properties defaultProps = null;
 
-	protected static final String WEBSERVICE_URL = "biocyc.webservice.uri";
+	public static final String WEBSERVICE_URL = "biocyc.webservice.uri";
 	// protected static final String DEFAULT_URL = "http://brg-preview.ai.sri.com/";
-	protected static final String DEFAULT_URL = "http://websvc.biocyc.org/";
+	public static final String DEFAULT_URL = "http://websvc.biocyc.org/";
 
 	/**
 	 * We don't do much at initialization time
@@ -74,12 +74,6 @@ public class BioCycPlugin extends CytoscapePlugin implements PropertyChangeListe
 
 		// Listen for exits
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.CYTOSCAPE_EXIT, this);
-
-		// Setup any global properties
-		Properties p = CytoscapeInit.getProperties();
-		if (p.get(WEBSERVICE_URL) == null) {
-			p.put(WEBSERVICE_URL, DEFAULT_URL);
-		}
 
 		// Initialize our properties file
 		initBioCycProps();
@@ -113,7 +107,12 @@ public class BioCycPlugin extends CytoscapePlugin implements PropertyChangeListe
 	}
 
 	public static String getBaseUrl() {
-		return CytoscapeInit.getProperties().getProperty(WEBSERVICE_URL);
+		String url = defaultProps.getProperty(WEBSERVICE_URL);
+		if (url == null) {
+			url = DEFAULT_URL;
+			setProp(WEBSERVICE_URL, DEFAULT_URL);
+		}
+		return url;
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
