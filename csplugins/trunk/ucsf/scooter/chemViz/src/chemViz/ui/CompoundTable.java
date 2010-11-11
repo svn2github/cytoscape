@@ -326,7 +326,7 @@ public class CompoundTable extends JDialog implements ListSelectionListener,
 			}
 		} else if (e.getActionCommand().equals("print")) {
 			try {
-				table.print();
+				((JTable)table).print();
 			} catch (Exception ePrint) {
 				logger.error("Unable to print table: "+ePrint.getMessage(), ePrint);
 			}

@@ -52,6 +52,7 @@ import giny.model.Edge;
 import giny.view.NodeView;
 import ding.view.DGraphView;
 import ding.view.DNodeView;
+import ding.view.InnerCanvas;
 import ding.view.ViewportChangeListener;
 
 import cytoscape.CyEdge;
@@ -164,6 +165,8 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 	}
 
 	public void viewportChanged(int w, int h, double xCenter, double yCenter, double scale) {
+		zoom = scale;
+/*
 		// System.out.println("viewport: size="+w+"x"+h+", center = "+xCenter+", "+yCenter+" scale = "+scale);
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		double lastScale = zoom;
@@ -186,6 +189,7 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 			}
 		}
 		if (needUpdate) view.updateView();
+*/
 	}
 
 	/**
@@ -312,13 +316,7 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 			x = 0.0; y = 0.0;
 		}
 
-		BufferedImage image = (BufferedImage) cmpd.getImage((int)(width*zoom), (int)(height*zoom));
-		if (image == null) return null;
-
-		// Create the image
-		// TODO: Should we extend TexturePaint to get higher resolution printing?  How would
-		// we know if we're printing or not???
-		TexturePaint tp = new TexturePaint(image, new Rectangle2D.Double(x,y,width,height));
+		TexturePaint tp = new MyPaint(nv, cmpd, new Rectangle2D.Double(x,y,width,height));
 
 		// Add it to the view
 		return ((DNodeView)nv).addCustomGraphic(new Rectangle2D.Double(x,y,width,height), tp, 
@@ -349,4 +347,34 @@ public class CreateNodeGraphicsTask extends AbstractCompoundTask
 
 		return true;
 	}
+
+	class MyPaint extends TexturePaint {
+		InnerCanvas canvas = null;
+		DGraphView view = null;
+		Compound compound = null;
+		int width;
+		int height;
+		double aspectRatio;
+
+		public MyPaint(NodeView nv, Compound compound, Rectangle2D anchor) {
+			super(new BufferedImage((int)anchor.getWidth(), (int)anchor.getHeight(), BufferedImage.TYPE_INT_RGB), anchor);
+			this.compound = compound;
+			this.view = (DGraphView)nv.getGraphView();
+			this.canvas = (InnerCanvas)view.getComponent();
+			this.width = (int) anchor.getWidth();
+			this.height = (int) anchor.getHeight();
+			this.aspectRatio = (double)width/(double)height;
+		}
+
+		public BufferedImage getImage() {
+			double zoom = view.getZoom();
+			if (canvas.isPrinting()) {
+				// System.out.println("Is printing");
+				return (BufferedImage) compound.getImage((int)(512*aspectRatio), (int)(512/aspectRatio));
+			} else {
+				return (BufferedImage) compound.getImage((int)(this.width*zoom), (int)(this.height*zoom));
+			}
+		}
+	}
+
 }

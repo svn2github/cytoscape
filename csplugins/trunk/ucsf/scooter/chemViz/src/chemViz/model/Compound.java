@@ -39,6 +39,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.AffineTransformOp;
@@ -66,7 +67,9 @@ import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.URLUtil;
 
+import org.openscience.cdk.ChemModel;
 import org.openscience.cdk.Molecule;
+import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.config.IsotopeFactory;
@@ -79,17 +82,23 @@ import org.openscience.cdk.inchi.InChIGenerator;
 import org.openscience.cdk.inchi.InChIGeneratorFactory;
 import org.openscience.cdk.inchi.InChIToStructure;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IIsotope;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
 import org.openscience.cdk.modeling.builder3d.TemplateHandler3D;
-import org.openscience.cdk.renderer.Renderer;
+import org.openscience.cdk.renderer.AtomContainerRenderer;
+import org.openscience.cdk.renderer.ChemModelRenderer;
 import org.openscience.cdk.renderer.RendererModel;
 import org.openscience.cdk.renderer.font.AWTFontManager;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
+import org.openscience.cdk.renderer.generators.BasicBondGenerator;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
 import org.openscience.cdk.renderer.generators.RingGenerator;
 import org.openscience.cdk.renderer.generators.IGenerator;
 import org.openscience.cdk.renderer.visitor.AWTDrawVisitor;
@@ -103,6 +112,7 @@ import org.openscience.cdk.qsar.descriptors.molecular.*;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
+import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 
 import net.sf.jniinchi.INCHI_RET;
@@ -717,6 +727,8 @@ public class Compound {
 	public Image depictWithCDK(int width, int height, Color background) {
 		BufferedImage bufferedImage = null;
 
+		// System.out.println("depictWithCDK("+width+","+height+")");
+
 		if (iMolecule == null || width == 0 || height == 0) {
 			return null;
 		}
@@ -732,40 +744,41 @@ public class Compound {
 			}
 
 			// generators make the image elements
-			List<IGenerator> generators = new ArrayList<IGenerator>();
+			List<IGenerator<IAtomContainer>> generators = new ArrayList<IGenerator<IAtomContainer>>();
+			generators.add(new BasicSceneGenerator());
+			generators.add(new BasicBondGenerator());
 			generators.add(new RingGenerator());
 			generators.add(new BasicAtomGenerator());
        
 			// the renderer needs to have a toolkit-specific font manager 
-			Renderer renderer = new Renderer(generators, new AWTFontManager());
+			AtomContainerRenderer renderer = new AtomContainerRenderer(generators, new AWTFontManager());
 			RendererModel model = renderer.getRenderer2DModel();
-			
-			model.setDrawNumbers(false);
-			model.setUseAntiAliasing(true);
-			// model.setColorAtomsByType(true); 
-			model.setShowExplicitHydrogens(true);
-			model.setShowImplicitHydrogens(true);
-			model.setShowAromaticity(true); 
-			model.setShowReactionBoxes(false);
-			model.setKekuleStructure(false);
-			// model.setShowAromaticityCDKStyle(true);
-			model.setBondWidth(model.getBondWidth()*2);
 
+			if (background == null)
+				background = new Color(255,255,255,255);
+
+			// Set up our rendering parameters
+			model.set(BasicSceneGenerator.UseAntiAliasing.class, true);
+			model.set(BasicSceneGenerator.BackgroundColor.class, background);
+			model.set(BasicBondGenerator.BondWidth.class, 2.0);
+			model.set(RingGenerator.BondWidth.class, 2.0);
+			model.set(BasicAtomGenerator.ColorByType.class, true);
+			model.set(BasicAtomGenerator.ShowExplicitHydrogens.class, true);
+			
 			int renderWidth = width;
 			if (renderWidth < 200) renderWidth = 200;
 			int renderHeight = height;
 			if (renderHeight < 200) renderHeight = 200;
 			Rectangle2D bbox = new Rectangle2D.Double(0,0,renderWidth,renderHeight);
+			renderer.setup(iMolecule, new Rectangle(renderWidth, renderHeight));
 
 			bufferedImage = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D graphics = bufferedImage.createGraphics();
-			if (background == null)
-				graphics.setColor(new Color(255, 255, 255, 0));
-			else
-				graphics.setColor(background);
+			graphics.setColor(background);
+			graphics.setBackground(background);
 			graphics.fillRect(0,0,renderWidth,renderHeight);
 
-			renderer.paintMolecule(iMolecule, new AWTDrawVisitor(graphics), bbox, true);
+			renderer.paint(iMolecule, new AWTDrawVisitor(graphics), bbox, true);
 
 			if (renderWidth != width || renderHeight != height) {
 				AffineTransform tx = new AffineTransform();

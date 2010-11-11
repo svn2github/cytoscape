@@ -94,7 +94,7 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 			}
 		}
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBackground(Color.WHITE);
+		setBackground(Color.BLACK);
 
 		addImages(400);
 		pack();
@@ -114,7 +114,7 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 			height = height - LABEL_HEIGHT;
 		// Is it in our map?
 		if (imageMap.containsKey(labelComponent)) {
-			Image img = imageMap.get(labelComponent).getImage(width,height);
+			Image img = imageMap.get(labelComponent).getImage(width,height, Color.WHITE);
 			labelComponent.setIcon(new ImageIcon(img));
 		}
 	}
@@ -150,6 +150,7 @@ public class CompoundPopup extends JDialog implements ComponentListener {
 				label.setVerticalTextPosition(JLabel.BOTTOM);
 				label.setHorizontalTextPosition(JLabel.CENTER);
 			}
+			label.setBackground(Color.WHITE);
 			label.addComponentListener(this);
 			imageMap.put(label, compound);
 			add (label);

@@ -48,7 +48,6 @@ import javax.swing.JMenuItem;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
 
 import giny.view.EdgeView;
 import giny.view.NodeView;
@@ -109,7 +108,7 @@ public class AttributesMenu extends ChemVizAbstractMenu {
 
 		// Populating popup menu
 		JMenu thisNodeMenu = new JMenu(systemProps.getProperty("chemViz.menu.createattributes.thisNode"));
-		List<CyNode> thisNode = new ArrayList();
+		List<CyNode> thisNode = new ArrayList<CyNode>();
 		thisNode.add((CyNode)nodeContext.getNode());
 		addDescriptors(thisNodeMenu, thisNode, null);
 		if (!settingsDialog.hasNodeCompounds(thisNode)) {
@@ -158,7 +157,7 @@ public class AttributesMenu extends ChemVizAbstractMenu {
 		// Populating popup menu
 		JMenu create = new JMenu(systemProps.getProperty("chemViz.menu.createattributes"));
 		JMenu thisEdgeMenu = new JMenu(systemProps.getProperty("chemViz.menu.createattributes.thisEdge"));
-		List<CyEdge> thisEdge = new ArrayList();
+		List<CyEdge> thisEdge = new ArrayList<CyEdge>();
 		thisEdge.add((CyEdge)edgeContext.getEdge());
 		addDescriptors(thisEdgeMenu, null, thisEdge);
 		if (!settingsDialog.hasEdgeCompounds(thisEdge)) {

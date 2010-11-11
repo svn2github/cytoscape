@@ -36,29 +36,17 @@
 package chemViz;
 
 import giny.model.Node;
-import giny.view.EdgeView;
-import giny.view.NodeView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.task.Task;
 import cytoscape.task.util.TaskManager;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
@@ -66,7 +54,6 @@ import ding.view.DGraphView;
 
 import chemViz.menus.ChemVizMenu;
 import chemViz.menus.ChemVizContextMenu;
-import chemViz.model.Compound;
 import chemViz.tasks.CreateNodeGraphicsTask;
 import chemViz.ui.ChemInfoSettingsDialog;
 
