@@ -31,7 +31,7 @@
         <configuration>
           <tagBase>svn+ssh://grenache.ucsd.edu/cellar/common/svn/cytoscape/tags</tagBase>
           <autoVersionSubmodules>true</autoVersionSubmodules>
-          <goals>deploy install4j:compile</goals>
+          <goals>deploy</goals>
           <!-- we need this for corelibs/docs to be installed so that 
                application will build correctly -->
           <preparationGoals>clean install</preparationGoals>
