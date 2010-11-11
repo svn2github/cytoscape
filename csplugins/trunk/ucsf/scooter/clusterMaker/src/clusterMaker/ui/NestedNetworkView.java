@@ -80,6 +80,7 @@ import giny.view.EdgeView;
 
 // ClusterMaker imports
 import clusterMaker.ClusterMaker;
+import clusterMaker.algorithms.AbstractNetworkClusterer;
 import clusterMaker.algorithms.ClusterProperties;
 import clusterMaker.algorithms.ClusterAlgorithm;
 
@@ -145,8 +146,8 @@ public class NestedNetworkView implements ClusterViz, ClusterAlgorithm {
 		}
 
 		String cluster_type = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
-		if (cluster_type != "MCL" && cluster_type != "GLay" && cluster_type != "AP" && cluster_type != "FORCE" &&
-		    cluster_type != "MCODE" && cluster_type != "TransClust" && cluster_type != "ConnectedComponents")
+		ClusterMaker instance = ClusterMaker.getInstance();
+		if (!(instance.getAlgorithm(cluster_type) instanceof AbstractNetworkClusterer))
 			return false;
 
 		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE)) {

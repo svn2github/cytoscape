@@ -160,7 +160,7 @@ public class DistanceMatrix {
 		if (matrix == null)
 			getDistanceMatrix();
 
-		Map<Integer, List<CyNode>> cmap = new HashMap();
+		Map<Integer, List<CyNode>> cmap = new HashMap<Integer, List<CyNode>>();
 		matrix.forEachNonZero(new FindComponents(cmap));
 		return cmap;
 	}
@@ -318,24 +318,25 @@ public class DistanceMatrix {
   private class FindComponents implements IntIntDoubleFunction {
     Map<CyNode,Integer> nodeToCluster;
     Map<Integer, List<CyNode>> clusterMap;
+    int clusterNumber = 0;
 
     public FindComponents(Map<Integer, List<CyNode>> cMap) {
       clusterMap = cMap;
-      nodeToCluster = new HashMap();
+      nodeToCluster = new HashMap<CyNode, Integer>();
     }
 
     public double apply(int row, int column, double value) {
       CyNode node1 = nodes.get(row);
       CyNode node2 = nodes.get(column);
       if (nodeToCluster.containsKey(node1)) {
-        if(!nodeToCluster.containsKey(node2))
+        if(!nodeToCluster.containsKey(node2)) {
           addNodeToCluster(nodeToCluster.get(node1), node2);
-        else
+        } else
           combineClusters(nodeToCluster.get(node1), nodeToCluster.get(node2));
       } else {
-        if (nodeToCluster.containsKey(node2))
+        if (nodeToCluster.containsKey(node2)) {
           addNodeToCluster(nodeToCluster.get(node2), node1);
-        else
+        } else
           createCluster(node1, node2);
       }
       return value;
@@ -348,14 +349,16 @@ public class DistanceMatrix {
     }
 
     private void createCluster(CyNode node1, CyNode node2) {
-      List<CyNode> nodeList = new ArrayList();
-      int clusterNumber = clusterMap.keySet().size();
+      List<CyNode> nodeList = new ArrayList<CyNode>();
       clusterMap.put(clusterNumber, nodeList);
       addNodeToCluster(clusterNumber, node1);
       addNodeToCluster(clusterNumber, node2);
+      clusterNumber++;
     }
 
     private void combineClusters(Integer cluster1, Integer cluster2) {
+      if (cluster1.intValue() == cluster2.intValue())
+          return;
       List<CyNode> list1 = clusterMap.get(cluster1);
       List<CyNode> list2 = clusterMap.get(cluster2);
       clusterMap.remove(cluster2);

@@ -1,5 +1,5 @@
 
-<project name="MyPlugin" 
+<project name="clusterMaker" 
          default="all" 
          basedir="." 
          xmlns:artifact="antlib:org.apache.maven.artifact.ant">
@@ -23,7 +23,7 @@
 
     <!-- The version of your plugin. To support plugin.props, make sure the 
          version is expressed in decimal notation, e.g. 3.0, 3.1, 3.14, etc. -->
-    <property name="version" value="1.7"/>
+    <property name="version" value="1.8"/>
 
     <!-- The version of Cytoscape that you depend on. -->
     <property name="cytoscape.version" value="2.8.0-beta2-SNAPSHOT"/>
@@ -67,21 +67,24 @@
     <artifact:remoteRepository 
        id="cytoscape_snapshots" 
        url="http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/" />
-    <artifact:dependencies pathId="dependency.classpath">
+    <!-- artifact:dependencies pathId="dependency.classpath">
       <dependency groupId="cytoscape" 
                   artifactId="application" 
                   version="${cytoscape.version}"/>
       <dependency groupId="junit" 
                   artifactId="junit" 
                   version="3.8.1"/>
-    </artifact:dependencies>
+    </artifact:dependencies-->
+    <property name="dependency.classpath" value="../../../../cytoscape/"/>
 
     <!-- Define the class path -->
     <path id="project.class.path">
       <fileset dir="${lib.dir}">
         <include name="*.jar"/>
       </fileset>
-      <path refid="dependency.classpath"/>
+      <fileset dir="../../../../cytoscape/build/">
+       <include name="*.jar"/>
+      </fileset>
     </path>
    
     <!-- Define the junit class path - It needs to find what we just built --> 
@@ -115,6 +118,9 @@
            classpathref="project.class.path"
            destdir="${build.dir}"
            debug="${debug}"
+           source="1.5"
+           target="1.5"
+           nowarn="on"
            deprecation="${deprecation}" 
            optimize="${optimize}"
            fork="${fork}">

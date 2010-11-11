@@ -99,7 +99,7 @@ public class ConnectedComponentsCluster extends AbstractNetworkClusterer  {
 		super.initializeProperties();
 
 		// Use the standard edge attribute handling stuff....
-		edgeAttributeHandler = new EdgeAttributeHandler(clusterProperties, true);
+		edgeAttributeHandler = new EdgeAttributeHandler(clusterProperties, false);
 
 		super.advancedProperties();
 
@@ -171,7 +171,7 @@ public class ConnectedComponentsCluster extends AbstractNetworkClusterer  {
 		     createGroups(netAttributes, networkID, nodeAttributes, clusters);
 
 		ClusterResults results = new ClusterResults(network, nodeClusters);
-		monitor.setStatus("Done.  MCL results:\n"+results);
+		monitor.setStatus("Done.  Connected component results:\n"+results);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

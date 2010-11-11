@@ -79,6 +79,7 @@ import giny.view.EdgeView;
 import clusterMaker.ClusterMaker;
 import clusterMaker.algorithms.ClusterProperties;
 import clusterMaker.algorithms.ClusterAlgorithm;
+import clusterMaker.algorithms.AbstractNetworkClusterer;
 
 /**
  * The ClusterViz class provides the primary interface to the
@@ -97,9 +98,7 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 	protected PropertyChangeSupport pcs;
 
 	public NewNetworkView() {
-		super();
-		initialize();
-		checkForAvailability = false;
+		this(false);
 	}
 
 	public NewNetworkView(boolean available) {
@@ -142,9 +141,14 @@ public class NewNetworkView implements ClusterViz, ClusterAlgorithm {
 		}
 
 		String cluster_type = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
+		ClusterMaker instance = ClusterMaker.getInstance();
+		if (!(instance.getAlgorithm(cluster_type) instanceof AbstractNetworkClusterer))
+			return false;
+/*
 		if (cluster_type != "MCL" && cluster_type != "GLay" && cluster_type != "AP" && cluster_type != "FORCE" &&
 		    cluster_type != "MCODE" && cluster_type != "TransClust" && cluster_type != "ConnectedComponents")
 			return false;
+*/
 
 		if (networkAttributes.hasAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE)) {
 			clusterAttribute = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE);

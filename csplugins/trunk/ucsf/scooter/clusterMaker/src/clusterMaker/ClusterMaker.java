@@ -92,10 +92,15 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 	public final static String CLUSTER_ATTRIBUTE = "__clusterAttribute";
 	public final static String CLUSTER_PARAMS_ATTRIBUTE = "__clusterParams";
 
+	public static ClusterMaker clusterMakerInstance = null;
+
   /**
    * Create our action and add it to the plugins menu
    */
   public ClusterMaker() {
+
+		if (ClusterMaker.clusterMakerInstance == null) 
+			clusterMakerInstance = this;
 
 		vizMenus = new HashMap<JMenuItem, ClusterViz>();
 		vizMap = new HashMap<String, ClusterViz>();
@@ -169,6 +174,19 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		     evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED ){
 			updateVizMenus();
     }
+	}
+
+	public static ClusterMaker getInstance() {
+		if (clusterMakerInstance == null)
+			new ClusterMaker();
+
+		return clusterMakerInstance;
+	}
+
+	public ClusterAlgorithm getAlgorithm(String algName) {
+		if (algMap.containsKey(algName))
+			return algMap.get(algName);
+		return null;
 	}
 
 	/**

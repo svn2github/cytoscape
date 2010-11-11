@@ -64,6 +64,7 @@ public class ClusterResults {
 	private int maxSize;
 	private int minSize;
 	private double clusterCoefficient;
+	private double modularity;
 	private String extraText = null;
 
 	public ClusterResults(CyNetwork network, List<List<CyNode>> cl, String extraInformation) { 
@@ -83,7 +84,7 @@ public class ClusterResults {
 		result += "  Average size: "+nf.format(averageSize)+"\n";
 		result += "  Maximum size: "+maxSize+"\n";
 		result += "  Minimum size: "+minSize+"\n";
-		result += "  Average cluster coefficient: "+nf.format(clusterCoefficient);
+		result += "  Modularity: "+nf.format(modularity);
 		if (extraText != null)
 			result += "  "+extraText;
 		return result;
@@ -99,7 +100,10 @@ public class ClusterResults {
 		maxSize = -1;
 		minSize = Integer.MAX_VALUE;
 		clusterCoefficient = 0.0;
+		modularity = 0.0;
+		double edgeCount = (double)network.getEdgeCount();
 
+		int clusterNumber = 0;
 		for (List<CyNode> cluster: clusters) {
 			averageSize += (double)cluster.size() / (double)clusterCount;
 			maxSize = Math.max(maxSize, cluster.size());
@@ -107,6 +111,11 @@ public class ClusterResults {
 			double innerEdges = getInnerEdgeCount(cluster);
 			double outerEdges = getOuterEdgeCount(cluster);
 			clusterCoefficient += (innerEdges / (innerEdges+outerEdges)) / (double)(clusterCount);
+
+			double percentEdgesInCluster = innerEdges/edgeCount;
+			double percentEdgesTouchingCluster = (innerEdges+outerEdges)/edgeCount;
+			modularity += percentEdgesInCluster - percentEdgesTouchingCluster*percentEdgesTouchingCluster;
+			clusterNumber++;
 		}
 	}
 
