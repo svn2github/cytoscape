@@ -357,7 +357,7 @@ public class ArrayGraph implements CyRootNetwork {
 
 		synchronized (this) {
 			final int index = nodePointers.size();
-			n = new NodePointer(index, new CyNodeImpl(index, nodeAttrMgr));
+			n = new NodePointer(index, new CyNodeImpl(index, nodeAttrMgr, eventHelper));
 			nodePointers.add(n);
 			nodeCount++;
 			// In ArrayGraph we only ever add the node to the root.

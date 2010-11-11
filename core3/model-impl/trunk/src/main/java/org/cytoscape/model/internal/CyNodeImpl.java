@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,13 +25,16 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model.internal;
 
+
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.events.SetNestedNetworkEvent;
+import org.cytoscape.model.events.UnsetNestedNetworkEvent;
 
 import java.util.List;
 import java.util.Map;
@@ -47,13 +42,14 @@ import java.util.Map;
 
 class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 	final private int index;
-
 	private CyNetwork nestedNet;
+	final private CyEventHelper eventHelper;
 
-	CyNodeImpl(int ind, Map<String, CyTable> attrMgr) {
+	CyNodeImpl(int ind, Map<String, CyTable> attrMgr, final CyEventHelper eventHelper) {
 		super(attrMgr);
 		index = ind;
 		nestedNet = null;
+		this.eventHelper = eventHelper;
 	}
 
 	/**
@@ -70,7 +66,7 @@ class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	 @Override
+	@Override
 	public String toString() {
 		return "Node suid: " + getSUID() + " index: " + index;
 	}
@@ -80,6 +76,13 @@ class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 	}
 
 	public synchronized void setNestedNetwork(CyNetwork n) {
+		if (n == nestedNet)
+			return;
+
+		if (nestedNet != null)
+			eventHelper.fireSynchronousEvent(new UnsetNestedNetworkEvent(this, nestedNet));
+		if (n != null)
+			eventHelper.fireSynchronousEvent(new SetNestedNetworkEvent(this, n));
 		nestedNet = n;
 	}
 
