@@ -20,11 +20,10 @@
 	<packaging>bundle</packaging>
 	<dependencies>
 		<dependency>
-			<groupId>cytoscape</groupId>
-			<artifactId>application</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>io-api</artifactId>
+			<version>3.0.0-alpha1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>cytoscape-temp</groupId>
 			<artifactId>jsbml</artifactId>
@@ -64,21 +63,6 @@
 			<groupId>cytoscape-temp</groupId>
 			<artifactId>xstream</artifactId>
 			<version>1.3.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>osgi_R4_core</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>osgi_R4_compendium</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
