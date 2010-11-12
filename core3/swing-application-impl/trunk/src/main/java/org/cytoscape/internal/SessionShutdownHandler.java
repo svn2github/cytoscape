@@ -39,12 +39,12 @@
 package org.cytoscape.internal;
 
 
-//import org.cytoscape.session.CySessionManager;
+//import org.cytoscape.application.swing.session.CySessionManager;
 import org.cytoscape.model.CyNetworkManager;
 
-import org.cytoscape.events.CytoscapeShutdownListener;
-import org.cytoscape.events.CytoscapeShutdownEvent;
-import org.cytoscape.view.CySwingApplication;
+import org.cytoscape.application.swing.events.CytoscapeShutdownEvent;
+import org.cytoscape.application.swing.events.CytoscapeShutdownListener;
+import org.cytoscape.application.swing.view.CySwingApplication;
 
 import javax.swing.JOptionPane;
 

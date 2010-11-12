@@ -65,10 +65,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
+import org.cytoscape.application.swing.events.PreferencesUpdatedEvent;
 import org.cytoscape.event.CyEventHelper;
 
 import org.cytoscape.internal.CyOperatingContextImpl;
-import org.cytoscape.events.PreferencesUpdatedEvent;
 
 
 /**

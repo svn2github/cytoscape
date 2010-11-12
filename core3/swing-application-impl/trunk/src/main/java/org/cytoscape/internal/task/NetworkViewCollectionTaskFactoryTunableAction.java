@@ -35,7 +35,7 @@ import java.util.Map;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 
-import org.cytoscape.view.CytoscapeAction;
+import org.cytoscape.application.swing.view.CytoscapeAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.task.NetworkViewCollectionTaskFactory;
 

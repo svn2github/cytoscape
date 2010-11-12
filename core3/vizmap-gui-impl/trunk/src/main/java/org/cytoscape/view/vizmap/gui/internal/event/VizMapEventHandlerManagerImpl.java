@@ -114,7 +114,7 @@ public class VizMapEventHandlerManagerImpl implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.vizmap.gui.event.VizMapEventHandlerManager#getHandler(java
+	 * org.cytoscape.application.swing.vizmap.gui.event.VizMapEventHandlerManager#getHandler(java
 	 * .lang.String)
 	 */
 	public VizMapEventHandler getHandler(String name) {

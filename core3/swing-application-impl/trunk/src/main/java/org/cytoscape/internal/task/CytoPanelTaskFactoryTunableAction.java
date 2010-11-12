@@ -30,10 +30,6 @@
 package org.cytoscape.internal.task;
 
 
-import org.cytoscape.view.CySwingApplication;
-import org.cytoscape.view.CytoscapeAction;
-import org.cytoscape.view.CytoPanel;
-import org.cytoscape.view.CytoPanelName;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,12 +44,16 @@ import javax.swing.JPanel;
 import javax.swing.Icon;
 import java.awt.Component;
 
+import org.cytoscape.application.swing.view.CySwingApplication;
+import org.cytoscape.application.swing.view.CytoPanel;
+import org.cytoscape.application.swing.view.CytoPanelComponent;
+import org.cytoscape.application.swing.view.CytoPanelName;
+import org.cytoscape.application.swing.view.CytoscapeAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.swing.GUITaskManager;
 import org.cytoscape.service.util.CyServiceRegistrar;
-import org.cytoscape.view.CytoPanelComponent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -29,14 +29,14 @@
  */
 package org.cytoscape.internal.view;
 
-import org.cytoscape.CytoscapeShutdown;
-import org.cytoscape.view.CySwingApplication;
-import org.cytoscape.view.CytoPanel;
-import org.cytoscape.view.CytoPanelName;
-import org.cytoscape.view.CytoPanelState;
-import org.cytoscape.view.CytoPanelComponent;
-import org.cytoscape.view.events.CytoPanelStateChangedListener;
-import org.cytoscape.view.CyAction;
+import org.cytoscape.application.swing.CytoscapeShutdown;
+import org.cytoscape.application.swing.view.CyAction;
+import org.cytoscape.application.swing.view.CySwingApplication;
+import org.cytoscape.application.swing.view.CytoPanel;
+import org.cytoscape.application.swing.view.CytoPanelComponent;
+import org.cytoscape.application.swing.view.CytoPanelName;
+import org.cytoscape.application.swing.view.CytoPanelState;
+import org.cytoscape.application.swing.view.events.CytoPanelStateChangedListener;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.service.util.CyServiceRegistrar;
 

@@ -6,6 +6,7 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.application.swing.view.CySwingApplication;
 import org.cytoscape.log.statusbar.CytoStatusBar;
 
 import org.ops4j.pax.logging.spi.PaxLoggingEvent;
@@ -20,7 +21,6 @@ import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import org.cytoscape.view.CySwingApplication;
 
 
 /**

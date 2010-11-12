@@ -38,8 +38,9 @@ package org.cytoscape.view.manual.internal.common;
 import java.awt.Component;
 import javax.swing.JPanel;
 import javax.swing.Icon;
-import org.cytoscape.view.CytoPanelComponent;
-import org.cytoscape.view.CytoPanelName;
+
+import org.cytoscape.application.swing.view.CytoPanelComponent;
+import org.cytoscape.application.swing.view.CytoPanelName;
 
 public abstract class AbstractManualPanel extends JPanel implements CytoPanelComponent {
 

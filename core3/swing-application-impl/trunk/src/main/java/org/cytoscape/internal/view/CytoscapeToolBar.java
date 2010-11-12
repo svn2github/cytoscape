@@ -44,7 +44,7 @@ import java.util.SortedMap;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.cytoscape.view.CyAction;
+import org.cytoscape.application.swing.view.CyAction;
 
 /**
  *

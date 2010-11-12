@@ -1,7 +1,6 @@
-/*
- File: CyHelpBroker.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -34,29 +33,37 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.view;
+package org.cytoscape.application.swing.view;
 
-import javax.help.HelpBroker;
-import javax.help.HelpSet;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.View;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.events.RowSetMicroListener;
 
+public class ViewUpdater<T,S> implements RowSetMicroListener {
 
-/**
- * This interface provides access to the Cytoscape Help Broker and 
- * Help Set for managing the JavaHelp system. 
- */
-public interface CyHelpBroker {
+	protected final CyRow row; 
+	protected final View<T> view;
+	protected final VisualProperty<S> vp;
+	protected final String columnName;
 
-	/**
-	 * Returns the HelpBroker. 
-	 *
-	 * @return the HelpBroker. 
-	 */
-	public HelpBroker getHelpBroker();
+	public ViewUpdater(View<T> view, VisualProperty<S> vp, CyRow row, String columnName) {
+		this.view = view;
+		this.vp = vp;
+		this.row = row;
+		this.columnName = columnName;
+	}
 
-	/**
-	 * Returns the HelpSet. 
-	 *
-	 * @return the HelpSet. 
-	 */
-	public HelpSet getHelpSet();
+	public Object getEventSource() {
+		return row;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void handleRowSet(final String columnName, final Object value) {
+		if ( columnName == null || !columnName.equals(this.columnName) )
+			return;
+
+		// Assume caller checks validity of value parameter.
+		view.setVisualProperty(vp, (S)value);
+	}
 }

@@ -39,7 +39,8 @@ package org.cytoscape.internal.view;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import java.net.URL;
-import org.cytoscape.view.CyHelpBroker;
+
+import org.cytoscape.application.swing.view.CyHelpBroker;
 
 
 /**

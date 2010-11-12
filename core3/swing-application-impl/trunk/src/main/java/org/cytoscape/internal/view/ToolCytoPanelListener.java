@@ -36,10 +36,10 @@
 
 package org.cytoscape.internal.view;
 
-import org.cytoscape.view.events.CytoPanelStateChangedListener;
-import org.cytoscape.view.events.CytoPanelStateChangedEvent;
-import org.cytoscape.view.CytoPanelState;
-import org.cytoscape.view.CytoPanel;
+import org.cytoscape.application.swing.view.CytoPanel;
+import org.cytoscape.application.swing.view.CytoPanelState;
+import org.cytoscape.application.swing.view.events.CytoPanelStateChangedEvent;
+import org.cytoscape.application.swing.view.events.CytoPanelStateChangedListener;
 
 import javax.swing.JLabel;
 

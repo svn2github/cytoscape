@@ -1,6 +1,6 @@
 
 /*
-  File: OpenBrowser.java
+  File: CytoscapeShutdown.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,24 +34,19 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
-package org.cytoscape.util;
-
+ */
+package org.cytoscape.application.swing;
 
 /**
- *
+ * A service that will shutdown Cytoscape cleanly. Will fire a 
+ * CytoscapeShutdownEvent such that all CytoscapeShutdownListener will be
+ * notified before actually shutting down.
  */
-public interface OpenBrowser {
-
-	String UNIX_PATH = "htmlview";
-	String MAC_PATH = "open";
-	String WIN_PATH = "rundll32 url.dll,FileProtocolHandler";
-
+public interface CytoscapeShutdown {
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param url DOCUMENT ME!
+	 * Calling this method indicates that the application should shutdown.
+	 * @param retVal The return value with which to (eventually)
+	 * call {@link System.exit} with.
 	 */
-	void openURL(String url);
+	void exit(int retVal);
 }

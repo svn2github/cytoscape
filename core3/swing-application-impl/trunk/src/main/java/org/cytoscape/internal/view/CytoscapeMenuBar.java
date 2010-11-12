@@ -43,8 +43,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.cytoscape.view.CyAction;
 
+import org.cytoscape.application.swing.view.CyAction;
 import org.cytoscape.util.swing.JMenuTracker;
 
 /**

@@ -64,6 +64,7 @@ import javax.swing.tree.TreePath;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.events.RowSetMicroListener;
+import org.cytoscape.application.swing.view.CyAction;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
@@ -97,7 +98,6 @@ import org.cytoscape.internal.task.NetworkTaskFactoryTunableAction;
 import org.cytoscape.internal.task.NetworkViewCollectionTaskFactoryTunableAction;
 import org.cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
 import org.cytoscape.internal.task.TaskFactoryTunableAction;
-import org.cytoscape.view.CyAction;
 
 
 public class NetworkPanel extends JPanel implements TreeSelectionListener,

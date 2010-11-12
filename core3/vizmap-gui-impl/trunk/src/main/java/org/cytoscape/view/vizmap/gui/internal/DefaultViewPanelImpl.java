@@ -180,7 +180,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.cytoscape.vizmap.gui.internal.DefaultViewPanel#getView()
+	 * @see org.cytoscape.application.swing.vizmap.gui.internal.DefaultViewPanel#getView()
 	 */
 	/**
 	 * DOCUMENT ME!

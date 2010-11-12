@@ -43,10 +43,10 @@
 package org.cytoscape.internal.actions;
 
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.application.swing.view.CySwingApplication;
+import org.cytoscape.application.swing.view.CytoscapeAction;
 import org.cytoscape.internal.dialogs.PreferencesDialogImpl;
 import org.cytoscape.internal.dialogs.PreferencesDialogFactoryImpl;
-import org.cytoscape.view.CytoscapeAction;
-import org.cytoscape.view.CySwingApplication;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

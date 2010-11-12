@@ -30,8 +30,8 @@
 package org.cytoscape.internal.view.help;
 
 
-import org.cytoscape.view.CyHelpBroker;
-import org.cytoscape.view.CySwingApplication;
+import org.cytoscape.application.swing.view.CyHelpBroker;
+import org.cytoscape.application.swing.view.CySwingApplication;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 

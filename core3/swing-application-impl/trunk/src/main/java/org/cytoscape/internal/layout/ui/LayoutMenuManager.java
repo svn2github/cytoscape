@@ -39,7 +39,7 @@ package org.cytoscape.internal.layout.ui;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.view.CySwingApplication;
+import org.cytoscape.application.swing.view.CySwingApplication;
 import org.cytoscape.session.CyApplicationManager;
 
 import javax.swing.*;

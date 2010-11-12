@@ -38,9 +38,9 @@
 
 package org.cytoscape.internal;
 
-import org.cytoscape.events.CytoscapeShutdownEvent;
-import org.cytoscape.events.CytoscapeShutdownListener;
-import org.cytoscape.CytoscapeShutdown;
+import org.cytoscape.application.swing.CytoscapeShutdown;
+import org.cytoscape.application.swing.events.CytoscapeShutdownEvent;
+import org.cytoscape.application.swing.events.CytoscapeShutdownListener;
 import org.cytoscape.event.CyEventHelper;
 
 /**

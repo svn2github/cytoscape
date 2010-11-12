@@ -27,7 +27,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.view;
+package org.cytoscape.application.swing.view;
 
 
 import org.cytoscape.session.CyApplicationManager;
@@ -50,7 +50,7 @@ import java.util.Map;
 /**
  * An abstract implementation of the CyAction interface.  Instead of using this
  * class directly you should (strongly) consider implementing a 
- * {@link org.cytoscape.work.TaskFactory}/{@link org.cytoscape.work.Task} pair. Doing
+ * {@link org.cytoscape.application.swing.work.TaskFactory}/{@link org.cytoscape.application.swing.work.Task} pair. Doing
  * so will allow your action to be used outside of a Swing specific application 
  * (which the CyAction interface binds you to)!
  */

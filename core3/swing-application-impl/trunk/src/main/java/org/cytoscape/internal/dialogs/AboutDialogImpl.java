@@ -46,7 +46,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import org.cytoscape.util.OpenBrowser;
+import org.cytoscape.application.swing.util.OpenBrowser;
 
 
 /**

@@ -36,6 +36,7 @@ import java.util.Set;
 
 import javax.swing.event.MenuEvent;
 
+import org.cytoscape.application.swing.view.CytoscapeAction;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -48,7 +49,6 @@ import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.undo.UndoSupport;
 
-import org.cytoscape.view.CytoscapeAction;
 
 
 /**

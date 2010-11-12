@@ -28,8 +28,8 @@
 package org.cytoscape.view.vizmap.gui.internal;
 
 
-import static org.cytoscape.model.CyTableEntry.EDGE;
-import static org.cytoscape.model.CyTableEntry.NODE;
+import static org.cytoscape.application.swing.model.CyTableEntry.EDGE;
+import static org.cytoscape.application.swing.model.CyTableEntry.NODE;
 
 import java.beans.PropertyEditor;
 import java.util.ArrayList;

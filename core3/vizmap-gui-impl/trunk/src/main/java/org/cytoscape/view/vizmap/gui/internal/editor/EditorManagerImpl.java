@@ -103,7 +103,7 @@ public class EditorManagerImpl implements EditorManager {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#addEditorDisplayer(org
+	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#addEditorDisplayer(org
 	 * .cytoscape.vizmap.gui.editors.EditorDisplayer, java.util.Map)
 	 */
 	public void addValueEditor(ValueEditor<?> ve,
@@ -117,8 +117,8 @@ public class EditorManagerImpl implements EditorManager {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#removeEditorDisplayer(
-	 * org.cytoscape.vizmap.gui.editors.EditorDisplayer, java.util.Map)
+	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#removeEditorDisplayer(
+	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorDisplayer, java.util.Map)
 	 */
 	public void removeValueEditor(ValueEditor<?> valueEditor,
 			@SuppressWarnings("rawtypes") Map properties) {
@@ -137,8 +137,8 @@ public class EditorManagerImpl implements EditorManager {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#removeEditorDisplayer(
-	 * org.cytoscape.vizmap.gui.editors.EditorDisplayer, java.util.Map)
+	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#removeEditorDisplayer(
+	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorDisplayer, java.util.Map)
 	 */
 	public void removeVisualPropertyEditor(VisualPropertyEditor<?> vpEditor,
 			@SuppressWarnings("rawtypes") Map properties) {
@@ -161,8 +161,8 @@ public class EditorManagerImpl implements EditorManager {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#showDiscreteEditor(java
-	 * .awt.Component, org.cytoscape.viewmodel.VisualProperty)
+	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#showDiscreteEditor(java
+	 * .awt.Component, org.cytoscape.application.swing.viewmodel.VisualProperty)
 	 */
 	@SuppressWarnings("unchecked")
 	public <V> V showVisualPropertyValueEditor(Component parentComponent,
@@ -182,8 +182,8 @@ public class EditorManagerImpl implements EditorManager {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#showContinuousEditor(java
-	 * .awt.Component, org.cytoscape.viewmodel.VisualProperty)
+	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#showContinuousEditor(java
+	 * .awt.Component, org.cytoscape.application.swing.viewmodel.VisualProperty)
 	 */
 	public <V> void showContinuousEditor(Component parentComponent,
 			VisualProperty<V> type) throws Exception {
@@ -209,7 +209,7 @@ public class EditorManagerImpl implements EditorManager {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.cytoscape.vizmap.gui.editors.EditorFactory#getCellEditors()
+	 * @see org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#getCellEditors()
 	 */
 	@Override
 	public List<PropertyEditor> getCellEditors() {
@@ -225,8 +225,8 @@ public class EditorManagerImpl implements EditorManager {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getDiscreteCellEditor(
-	 * org.cytoscape.viewmodel.VisualProperty)
+	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#getDiscreteCellEditor(
+	 * org.cytoscape.application.swing.viewmodel.VisualProperty)
 	 */
 	public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type) {
 		VisualPropertyEditor<?> editor = editors.get(type.getType());
@@ -251,8 +251,8 @@ public class EditorManagerImpl implements EditorManager {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellEditor
-	 * (org.cytoscape.viewmodel.VisualProperty)
+	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#getContinuousCellEditor
+	 * (org.cytoscape.application.swing.viewmodel.VisualProperty)
 	 */
 	public PropertyEditor getContinuousCellEditor(VisualProperty type) {
 		return null;
@@ -266,8 +266,8 @@ public class EditorManagerImpl implements EditorManager {
 	 * 
 	 * @see
 	 * 
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getContinuousCellRenderer
-	 * (org.cytoscape.viewmodel.VisualProperty, int, int)
+	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#getContinuousCellRenderer
+	 * (org.cytoscape.application.swing.viewmodel.VisualProperty, int, int)
 	 */
 	public TableCellRenderer getContinuousCellRenderer(VisualProperty type,
 			int w, int h) {
@@ -281,7 +281,7 @@ public class EditorManagerImpl implements EditorManager {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.vizmap.gui.editors.EditorFactory#getDefaultComboBoxEditor
+	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#getDefaultComboBoxEditor
 	 * (java.lang.String)
 	 */
 	public PropertyEditor getDefaultComboBoxEditor(String editorName) {

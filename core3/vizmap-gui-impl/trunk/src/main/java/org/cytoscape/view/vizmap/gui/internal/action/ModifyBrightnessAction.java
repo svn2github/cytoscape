@@ -28,7 +28,7 @@
 package org.cytoscape.view.vizmap.gui.internal.action;
 
 
-import static org.cytoscape.model.CyTableEntry.NODE;
+import static org.cytoscape.application.swing.model.CyTableEntry.NODE;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;

@@ -30,7 +30,7 @@
 package org.cytoscape.internal.view.help;
 
 
-import org.cytoscape.util.OpenBrowser;
+import org.cytoscape.application.swing.util.OpenBrowser;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 

@@ -30,11 +30,12 @@
 package org.cytoscape.internal.view;
 
 
-import org.cytoscape.view.CyAction;
 
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 
+import org.cytoscape.application.swing.view.CyAction;
+import org.cytoscape.application.swing.view.CySwingApplication;
 import org.cytoscape.internal.task.CytoPanelTaskFactoryTunableAction;
 import org.cytoscape.internal.task.TaskFactoryTunableAction;
 import org.cytoscape.internal.task.NetworkCollectionTaskFactoryTunableAction;
@@ -42,7 +43,6 @@ import org.cytoscape.internal.task.NetworkTaskFactoryTunableAction;
 import org.cytoscape.internal.task.NetworkViewCollectionTaskFactoryTunableAction;
 import org.cytoscape.internal.task.NetworkViewTaskFactoryTunableAction;
 
-import org.cytoscape.view.CySwingApplication;
 
 import java.util.Map;
 import java.util.HashMap;

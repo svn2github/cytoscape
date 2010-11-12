@@ -43,10 +43,10 @@ import javax.swing.Action;
 import javax.swing.event.MenuEvent;
 import javax.swing.undo.CannotUndoException;
 
+import org.cytoscape.application.swing.view.CytoscapeAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.undo.UndoSupport;
 
-import org.cytoscape.view.CytoscapeAction;
 
 /**
  * An action that calls undo for the most recent edit in the

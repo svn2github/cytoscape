@@ -5,7 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.Map;
 
-import org.cytoscape.view.CySwingApplication;
+import org.cytoscape.application.swing.view.CySwingApplication;
 
 class ConsoleDialog extends JDialog
 {

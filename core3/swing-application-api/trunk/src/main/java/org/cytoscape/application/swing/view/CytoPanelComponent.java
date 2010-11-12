@@ -1,7 +1,8 @@
-/*
-  File: CytoPanelName.java
 
-  Copyright (c) 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+/*
+  File: CytoPanelComponent.java
+
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -27,26 +28,42 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.view;
+package org.cytoscape.application.swing.view;
 
 
-/** 
- * An enum that maps names to compass directions.
+import java.awt.Component;
+import javax.swing.Icon;
+
+
+/**
+ * An interface that allows a component to be registered as a service
+ * that will then be added to the appropriate CytoPanel.
  */
-public enum CytoPanelName {
-	SOUTH("Data Panel"),
-	EAST("Results Panel"),
-	WEST("Control Panel"),
-	SOUTH_WEST("Tool Panel"),
-	;
+public interface CytoPanelComponent {
 
-	private final String title;
+	/**
+	 * Returns the Component to be added to the CytoPanel. 
+	 * @return The Component to be added to the CytoPanel. 
+	 */
+	Component getComponent();
 
-	private CytoPanelName(final String title) {
-		this.title = title;
-	}
+	/**
+	 * Returns the name of the CytoPanel that this component should be added to.
+	 * @return the name of the CytoPanel that this component should be added to.
+	 */
+	CytoPanelName getCytoPanelName();
 
-	public String getTitle() {
-		return title;
-	}
+	/**
+	 * Returns the title of the tab within the CytoPanel for this component.
+	 * @return the title of the tab within the CytoPanel for this component.
+	 */
+	String getTitle();
+
+	/**
+	 * Returns the Icon to be used along with the title in the tab for this
+	 * this component. May be null!
+	 * @return the Icon to be used along with the title in the tab for this
+	 * this component. May be null!
+	 */
+	Icon getIcon();
 }

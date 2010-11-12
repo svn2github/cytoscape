@@ -39,8 +39,8 @@ package org.cytoscape.internal;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.cytoscape.CytoscapeVersion; 
 
+import org.cytoscape.application.swing.CytoscapeVersion;
 import org.cytoscape.property.CyProperty;
 
 /** 

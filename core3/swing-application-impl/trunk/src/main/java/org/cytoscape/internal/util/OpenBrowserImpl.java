@@ -46,7 +46,7 @@ package org.cytoscape.internal.util;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.cytoscape.util.OpenBrowser;
+import org.cytoscape.application.swing.util.OpenBrowser;
 import org.cytoscape.property.CyProperty;
 
 public class OpenBrowserImpl implements OpenBrowser {

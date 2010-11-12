@@ -1,4 +1,4 @@
-package org.cytoscape.view;
+package org.cytoscape.application.swing.view;
 
 import java.util.StringTokenizer;
 import java.awt.event.InputEvent;

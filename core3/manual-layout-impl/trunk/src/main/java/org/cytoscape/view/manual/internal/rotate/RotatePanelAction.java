@@ -36,10 +36,10 @@
 
 package org.cytoscape.view.manual.internal.rotate; 
 
+import org.cytoscape.application.swing.view.CySwingApplication;
+import org.cytoscape.application.swing.view.CytoPanelComponent;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.CySwingApplication;
 import org.cytoscape.view.manual.internal.common.AbstractManualLayoutAction;
-import org.cytoscape.view.CytoPanelComponent;
 
 /**
  * Rotate network action.

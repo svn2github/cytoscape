@@ -30,7 +30,7 @@
 package org.cytoscape.internal.view;
 
 
-import org.cytoscape.view.CytoPanelName;
+import org.cytoscape.application.swing.view.CytoPanelName;
 
 import javax.swing.*;
 import java.awt.*;

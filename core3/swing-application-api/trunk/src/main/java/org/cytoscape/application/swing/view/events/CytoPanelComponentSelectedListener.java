@@ -1,5 +1,5 @@
 
-package org.cytoscape.view.events;
+package org.cytoscape.application.swing.view.events;
 
 import org.cytoscape.event.CyListener;
 

@@ -27,9 +27,9 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
-import static org.cytoscape.model.CyTableEntry.EDGE;
-import static org.cytoscape.model.CyTableEntry.NETWORK;
-import static org.cytoscape.model.CyTableEntry.NODE;
+import static org.cytoscape.application.swing.model.CyTableEntry.EDGE;
+import static org.cytoscape.application.swing.model.CyTableEntry.NETWORK;
+import static org.cytoscape.application.swing.model.CyTableEntry.NODE;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -213,7 +213,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.vizmap.gui.internal.DefaultViewEditor#showDialog(java.awt
+	 * org.cytoscape.application.swing.vizmap.gui.internal.DefaultViewEditor#showDialog(java.awt
 	 * .Component)
 	 */
 	public void showEditor(Component parent) {
@@ -229,7 +229,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.vizmap.gui.internal.DefaultViewEditor#getDefaultView(java
+	 * org.cytoscape.application.swing.vizmap.gui.internal.DefaultViewEditor#getDefaultView(java
 	 * .lang.String)
 	 */
 	public JPanel getDefaultView(String vsName) {

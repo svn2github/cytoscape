@@ -57,7 +57,7 @@ public abstract class AbstractVizMapEventHandler implements VizMapEventHandler {
 	 * (non-Javadoc)
 	 *
 	 * @see
-	 * org.cytoscape.vizmap.gui.event.VizMapEventHandler#processEvent(java.beans
+	 * org.cytoscape.application.swing.vizmap.gui.event.VizMapEventHandler#processEvent(java.beans
 	 * .PropertyChangeEvent)
 	 */
 	/**

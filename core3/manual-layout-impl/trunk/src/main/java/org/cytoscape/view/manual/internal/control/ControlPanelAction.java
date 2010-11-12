@@ -37,9 +37,9 @@
 package org.cytoscape.view.manual.internal.control; 
 
 import org.cytoscape.view.manual.internal.common.AbstractManualLayoutAction;
-import org.cytoscape.view.CySwingApplication;
+import org.cytoscape.application.swing.view.CySwingApplication;
+import org.cytoscape.application.swing.view.CytoPanelComponent;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.view.CytoPanelComponent;
 
 /**
  * Action for the Align and Distribute functionality. 
