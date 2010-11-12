@@ -77,7 +77,7 @@ public interface CyNode extends CyTableEntry {
 	 * Note that this if a previous nested network is being replaced or nulled out, an
 	 * {@link UnsetNestedNetworkEvent} will be fired and if a new nested network will be set a
 	 * {@link SetNestedNetworkEvent} will be fired.  Furthermore the (@link NESTED_NETWORK_ATTR}
-	 * column in the user table will be updated.
+	 * and {@link HAS_NESTED_NETWORK_ATTR} columns in the user table will be updated.
 	 */
 	void setNestedNetwork(CyNetwork nestedNetwork);
 }
