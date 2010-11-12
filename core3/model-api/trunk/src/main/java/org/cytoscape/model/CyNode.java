@@ -42,6 +42,10 @@ public interface CyNode extends CyTableEntry {
 	/** The column name for the nested network associated with a <code>CyNode</code> in the user table. */
 	final static String NESTED_NETWORK_ATTR = "NestedNetwork";
 
+	/** The column name for the attribute that allows testing of whether a <code>CyNode</code>
+	    has an associated nested network or not.  (Found in the user table.) */
+	final static String HAS_NESTED_NETWORK_ATTR = "hasNestedNetwork";
+
 	/**
 	 * An index of this node within this network.  The index is guaranteed to
 	 * be between 0 and (the number of nodes in the network) - 1. This index
@@ -72,7 +76,8 @@ public interface CyNode extends CyTableEntry {
 	 *
 	 * Note that this if a previous nested network is being replaced or nulled out, an
 	 * {@link UnsetNestedNetworkEvent} will be fired and if a new nested network will be set a
-	 * {@link SetNestedNetworkEvent} will be fired.
+	 * {@link SetNestedNetworkEvent} will be fired.  Furthermore the (@link NESTED_NETWORK_ATTR}
+	 * column in the user table will be updated.
 	 */
 	void setNestedNetwork(CyNetwork nestedNetwork);
 }

@@ -29,10 +29,11 @@ package org.cytoscape.model.internal;
 
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.SetNestedNetworkEvent;
 import org.cytoscape.model.events.UnsetNestedNetworkEvent;
 
@@ -50,6 +51,8 @@ class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 		index = ind;
 		nestedNet = null;
 		this.eventHelper = eventHelper;
+
+		getCyRow().set(HAS_NESTED_NETWORK_ATTR, Boolean.valueOf(false));
 	}
 
 	/**
@@ -75,7 +78,7 @@ class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 		return nestedNet;
 	}
 
-	public synchronized void setNestedNetwork(CyNetwork n) {
+	public synchronized void setNestedNetwork(final CyNetwork n) {
 		if (n == nestedNet)
 			return;
 
@@ -84,6 +87,14 @@ class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 		if (n != null)
 			eventHelper.fireSynchronousEvent(new SetNestedNetworkEvent(this, n));
 		nestedNet = n;
-	}
 
+		final CyRow row = getCyRow();
+		if (n == null) {
+			row.set(NESTED_NETWORK_ATTR, null);
+			row.set(HAS_NESTED_NETWORK_ATTR, Boolean.valueOf(false));
+		} else {
+			row.set(NESTED_NETWORK_ATTR, Long.valueOf(n.getSUID()).toString());
+			row.set(HAS_NESTED_NETWORK_ATTR, Boolean.valueOf(true));
+		}
+	}
 }

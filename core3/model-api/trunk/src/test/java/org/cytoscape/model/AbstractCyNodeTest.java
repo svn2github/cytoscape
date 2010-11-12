@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
+
 
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -53,9 +45,8 @@ import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
-/**
- * DOCUMENT ME!
-  */
+
+/** Base class for CyNode tests. */
 public abstract class AbstractCyNodeTest extends TestCase {
 	protected CyNetwork net;
 
@@ -137,5 +128,21 @@ public abstract class AbstractCyNodeTest extends TestCase {
 		assertTrue( net.removeNode(n0) );
 		assertNull(net.getNode(0));
 		assertEquals(n1,net.getNode(1));
+	}
+
+	public void testNestedNetworkUserTableUpdates() {
+		CyNode n1 = net.addNode();
+		CyNetwork net2 = mock(CyNetwork.class);
+		when(net2.getSUID()).thenReturn(223L);
+		final CyRow row = n1.getCyRow();
+		assertFalse(row.isSet(CyNode.NESTED_NETWORK_ATTR, String.class));
+		assertFalse(row.get(CyNode.HAS_NESTED_NETWORK_ATTR, Boolean.class));
+		n1.setNestedNetwork(net2);
+		assertTrue(row.isSet(CyNode.NESTED_NETWORK_ATTR, String.class));
+		assertTrue(row.get(CyNode.HAS_NESTED_NETWORK_ATTR, Boolean.class));
+		assertEquals("223", row.get(CyNode.NESTED_NETWORK_ATTR, String.class));
+		n1.setNestedNetwork(null);
+		assertFalse(row.isSet(CyNode.NESTED_NETWORK_ATTR, String.class));
+		assertFalse(row.get(CyNode.HAS_NESTED_NETWORK_ATTR, Boolean.class));
 	}
 }
