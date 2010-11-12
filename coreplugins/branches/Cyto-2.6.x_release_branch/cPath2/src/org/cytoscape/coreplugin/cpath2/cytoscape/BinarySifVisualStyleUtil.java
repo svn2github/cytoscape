@@ -23,16 +23,13 @@ public class BinarySifVisualStyleUtil {
     public final static String BINARY_SIF_VISUAL_STYLE = "Binary_SIF_Version_1";
     public final static String BINARY_NETWORK = "BINARY_NETWORK";
     public final static String COMPONENT_OF = "COMPONENT_OF";
-    public final static String COMPONENT_IN_SAME = "COMPONENT_IN_SAME";
+    public final static String IN_SAME_COMPONENT = "IN_SAME_COMPONENT";
     public final static String SEQUENTIAL_CATALYSIS = "SEQUENTIAL_CATALYSIS";
-    public final static String CONTROLS_STATE_CHANGE = "CONTROLS_STATE_CHANGE";
-    public final static String CONTROLS_METABOLIC_CHANGE = "CONTROLS_METABOLIC_CHANGE";
-    public final static String PARTICIPATES_CONVERSION = "PARTICIPATES_CONVERSION";
-    public final static String PARTICIPATES_INTERACTION = "PARTICIPATES_INTERACTION";
-    public final static String CO_CONTROL_INDEPENDENT_SIMILAR = "CO_CONTROL_INDEPENDENT_SIMILAR";
-    public final static String CO_CONTROL_INDEPENDENT_ANTI = "CO_CONTROL_INDEPENDENT_ANTI";
-    public final static String CO_CONTROL_DEPENDENT_SIMILAR = "CO_CONTROL_DEPENDENT_SIMILAR";
-    public final static String CO_CONTROL_DEPENDENT_ANTI = "CO_CONTROL_DEPENDENT_ANTI";
+    public final static String STATE_CHANGE = "STATE_CHANGE";
+    public final static String METABOLIC_CATALYSIS = "METABOLIC_CATALYSIS";
+    public final static String REACTS_WITH = "REACTS_WITH";
+    public final static String INTERACTS_WITH = "INTERACTS_WITH";
+    public final static String CO_CONTROL = "CO_CONTROL";
     private final static String COMPLEX = "Complex"; 
 
     /**
@@ -114,16 +111,13 @@ public class BinarySifVisualStyleUtil {
 		DiscreteMapping discreteMapping = new DiscreteMapping(Color.BLACK,
             Semantics.INTERACTION, ObjectMapping.EDGE_MAPPING);
 
-        discreteMapping.putMapValue(PARTICIPATES_CONVERSION, Color.decode("#ccc1da"));
-        discreteMapping.putMapValue(PARTICIPATES_INTERACTION, Color.decode("#7030a0"));
-        discreteMapping.putMapValue(CONTROLS_STATE_CHANGE, Color.decode("#0070c0"));
-        discreteMapping.putMapValue(CONTROLS_METABOLIC_CHANGE, Color.decode("#00b0f0"));
+        discreteMapping.putMapValue(REACTS_WITH, Color.decode("#ccc1da"));
+        discreteMapping.putMapValue(INTERACTS_WITH, Color.decode("#7030a0"));
+        discreteMapping.putMapValue(STATE_CHANGE, Color.decode("#0070c0"));
+        discreteMapping.putMapValue(METABOLIC_CATALYSIS, Color.decode("#00b0f0"));
         discreteMapping.putMapValue(SEQUENTIAL_CATALYSIS, Color.decode("#7f7f7f"));        
-        discreteMapping.putMapValue(CO_CONTROL_DEPENDENT_ANTI, Color.decode("#ff0000"));
-        discreteMapping.putMapValue(CO_CONTROL_INDEPENDENT_ANTI, Color.decode("#fd95a6"));
-        discreteMapping.putMapValue(CO_CONTROL_DEPENDENT_SIMILAR, Color.decode("#00b050"));
-        discreteMapping.putMapValue(CO_CONTROL_INDEPENDENT_SIMILAR, Color.decode("#92d050"));
-        discreteMapping.putMapValue(COMPONENT_IN_SAME, Color.decode("#ffff00"));
+        discreteMapping.putMapValue(CO_CONTROL, Color.decode("#00b050"));
+        discreteMapping.putMapValue(IN_SAME_COMPONENT, Color.decode("#ffff00"));
         discreteMapping.putMapValue(COMPONENT_OF, Color.decode("#ffc000"));
 
         // create and set edge label calculator in edge appearance calculator
@@ -141,8 +135,8 @@ public class BinarySifVisualStyleUtil {
             Semantics.INTERACTION, ObjectMapping.EDGE_MAPPING);
 
         discreteMapping.putMapValue(COMPONENT_OF, ArrowShape.ARROW);
-        discreteMapping.putMapValue(CONTROLS_STATE_CHANGE, ArrowShape.ARROW);
-        discreteMapping.putMapValue(CONTROLS_METABOLIC_CHANGE, ArrowShape.ARROW);
+        discreteMapping.putMapValue(STATE_CHANGE, ArrowShape.ARROW);
+        discreteMapping.putMapValue(METABOLIC_CATALYSIS, ArrowShape.ARROW);
         discreteMapping.putMapValue(SEQUENTIAL_CATALYSIS, ArrowShape.ARROW);
 
         // create and set edge label calculator in edge appearance calculator
