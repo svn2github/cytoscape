@@ -45,32 +45,20 @@ public interface CyTableEntry extends Identifiable {
 	
 	/**
 	 * A String column created by default for every CyTableEntry that
-	 * holds the name of the entry. 
+	 * holds the name of the entry.
+	 * 
+	 *  FIXME: create new enum for default attribute names?
 	 */
 	String NAME = "name";
 
 	/**
 	 * A boolean column created by default for every CyTableEntry that
 	 * holds the selection state of the entry. 
+	 * 
+	 * FIXME: FIXME: create new enum for default attribute names?
 	 */
 	String SELECTED = "selected";
-
-	/* TODO RESOLVE THIS!!!!
-	 * The following strings have been moved from Visual Property.
-	 * We use String instead of enum in case we need to extend it later.
-	 */
-	/**
-	 * Canonical ObjectType string for CyNode.
-	 */
-	String NODE = "NODE";
-	/**
-	 * Canonical ObjectType string for CyEdge.
-	 */
-	String EDGE = "EDGE";
-	/**
-	 * Canonical ObjectType string for CyNetwork.
-	 */
-	String NETWORK = "NETWORK";
+	
 	
 	/**
 	 * Returns the row for the specified table name for this object.

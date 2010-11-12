@@ -257,13 +257,13 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		
-		<dependency>
+		<!--<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-gui-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
+		--><dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>default-mappings</artifactId>
 			<version>1.0-SNAPSHOT</version>

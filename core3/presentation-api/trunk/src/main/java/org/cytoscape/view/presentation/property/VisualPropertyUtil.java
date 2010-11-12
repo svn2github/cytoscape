@@ -52,23 +52,4 @@ public class VisualPropertyUtil {
 
 		return false;
 	}
-	
-	
-	/**
-	 * TODO: How can we avoid this?
-	 * 
-	 * @param vp
-	 * @param lexicon
-	 * @return
-	 */
-	public static String getGraphObjectType(final VisualProperty<?> vp, final VisualLexicon lexicon) {
-		if(isChildOf(TwoDVisualLexicon.NODE, vp, lexicon))
-			return CyTableEntry.NODE;
-		else if(isChildOf(TwoDVisualLexicon.EDGE, vp, lexicon))
-			return CyTableEntry.EDGE;
-		else if(isChildOf(TwoDVisualLexicon.NETWORK, vp, lexicon))
-			return CyTableEntry.NETWORK;
-		else
-			throw new IllegalStateException("Could not find a category for Visual Property: " + vp.getDisplayName()); 
-	}
 }

@@ -50,6 +50,8 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implements a lookup table mapping data to values of a particular class. The
@@ -58,9 +60,11 @@ import org.cytoscape.view.model.VisualProperty;
  */
 public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 	
+	private static final Logger logger = LoggerFactory.getLogger(DiscreteMapping.class);
+	
+	// Name of mapping.  This will be used by toString() method.
 	protected static final String DISCRETE = "Discrete Mapping";
 	
-
 	// contains the actual map elements (sorted)
 	private final SortedMap<K, V> attribute2visualMap;
 
@@ -84,7 +88,7 @@ public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 	@Override
 	public void apply(View<? extends CyTableEntry> view) {
 		if (view == null)
-			return; // empty list, nothing to do
+			return; // empty view, nothing to do
 
 		applyDiscreteMapping(view);
 	}
@@ -109,12 +113,22 @@ public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 
 		final CyRow row = view.getModel().getCyRow();
 		
+		logger.debug("Target View = " + view.getModel().getSUID());
+		logger.debug("AttrName = " + attrName);
+		logger.debug("AttrType = " + attrType);
+		logger.debug("Row keys = " + row.getAllValues().keySet());
+		logger.debug("Row vals = " + row.getAllValues().values());
+		
+		
 		if (row.isSet(attrName, attrType)) {
 			// skip Views where source attribute is not defined;
 			// ViewColumn will automatically substitute the per-VS or global
 			// default, as appropriate
 
 			final K key = view.getModel().getCyRow().get(attrName, attrType);
+			
+			logger.debug("Discrete apply Key = " + key);
+			
 			if (attribute2visualMap.containsKey(key)) {
 				final V value = attribute2visualMap.get(key);
 				// Assign value to view
@@ -147,9 +161,9 @@ public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 	 * @param value
 	 *            Value Object.
 	 */
-	public void putMapValue(K key, V value) {
+	public <T extends V> void putMapValue(final K key, final T value) {
 		attribute2visualMap.put(key, value);
-		// fireStateChanged();
+		// TODO: fire event here.
 	}
 
 	/**
@@ -158,7 +172,7 @@ public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 	 * @param map
 	 *            Map.
 	 */
-	public void putAll(Map<K, V> map) {
+	public <T extends V> void putAll(Map<K, T> map) {
 		attribute2visualMap.putAll(map);
 	}
 

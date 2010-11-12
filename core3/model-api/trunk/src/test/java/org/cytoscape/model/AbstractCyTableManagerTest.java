@@ -36,17 +36,8 @@
 
 package org.cytoscape.model;
 
-import junit.framework.Assert;
-import junit.framework.Test;
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-
-import java.lang.RuntimeException;
-
-import java.util.*;
-
-import static org.mockito.Mockito.*; 
 
 
 public abstract class AbstractCyTableManagerTest extends TestCase {
@@ -68,21 +59,21 @@ public abstract class AbstractCyTableManagerTest extends TestCase {
 	}
 
 	public void testGoodNetwork() {
-		assertNotNull( mgr.getTableMap(CyTableEntry.NETWORK,goodNetwork) );
-		assertNotNull( mgr.getTableMap(CyTableEntry.NODE,goodNetwork) );
-		assertNotNull( mgr.getTableMap(CyTableEntry.EDGE,goodNetwork) );
+		assertNotNull( mgr.getTableMap(CyNetwork.class, goodNetwork) );
+		assertNotNull( mgr.getTableMap(CyNode.class, goodNetwork) );
+		assertNotNull( mgr.getTableMap(CyEdge.class, goodNetwork) );
 	}
 
 	public void testBadNetwork() {
-		assertNull( mgr.getTableMap(CyTableEntry.NETWORK,badNetwork) );
-		assertNull( mgr.getTableMap(CyTableEntry.NODE,badNetwork) );
-		assertNull( mgr.getTableMap(CyTableEntry.EDGE,badNetwork) );
+		assertNull( mgr.getTableMap(CyNetwork.class,badNetwork) );
+		assertNull( mgr.getTableMap(CyNode.class,badNetwork) );
+		assertNull( mgr.getTableMap(CyEdge.class,badNetwork) );
 	}
 
 	public void testNullNetwork() {
-		assertNull( mgr.getTableMap(CyTableEntry.NETWORK,null) );
-		assertNull( mgr.getTableMap(CyTableEntry.NODE,null) );
-		assertNull( mgr.getTableMap(CyTableEntry.EDGE,null) );
+		assertNull( mgr.getTableMap(CyNetwork.class,null) );
+		assertNull( mgr.getTableMap(CyNode.class,null) );
+		assertNull( mgr.getTableMap(CyEdge.class,null) );
 	}
 /*
 	public void testGetAllTables() {

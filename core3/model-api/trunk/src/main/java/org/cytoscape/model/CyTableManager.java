@@ -49,12 +49,14 @@ public interface CyTableManager {
 	/**
 	 * Returns a map of table names to tables, which contain the attributes 
 	 * for the specified network.
-	 * @param type The type of map to retrieve: NODE, EDGE, or NETWORK.
+	 * 
+	 * @param type The type of map to retrieve: CyNode, CyEdge, or CyNetwork (for now).
 	 * @param network The network associated with the map.
+	 * 
 	 * @return a map of table names to tables, which contain the attributes 
 	 * for the specified network.
 	 */
-	Map<String,CyTable> getTableMap(String type, CyNetwork network);
+	Map<String, CyTable> getTableMap(Class<?> type, CyNetwork network);
 
 	/**
 	 * Returns a Set of all tables with the specified visibility.

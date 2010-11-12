@@ -68,28 +68,5 @@ public class VisualPropertyUtilTest {
 	public void testIsChildOfInvalid2() {
 		VisualPropertyUtil.isChildOf(twoDRoot, dummy, null);
 	}
-	
-	
-
-	@Test
-	public void testGetGraphObjectType1() {
-		assertEquals("NODE", VisualPropertyUtil.getGraphObjectType(TwoDVisualLexicon.NODE_COLOR, lexicon));
-	}
-	
-	@Test
-	public void testGetGraphObjectType2() {
-		assertEquals("EDGE", VisualPropertyUtil.getGraphObjectType(TwoDVisualLexicon.EDGE_COLOR, lexicon));
-	}
-	
-	@Test
-	public void testGetGraphObjectType3() {
-		final String type = VisualPropertyUtil.getGraphObjectType(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT, lexicon);
-		assertEquals("NETWORK", type);
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testGetGraphObjectTypeInvalid() {
-		VisualPropertyUtil.getGraphObjectType(dummy, lexicon);
-	}
 
 }

@@ -35,11 +35,14 @@
 
 package org.cytoscape.model;
 
+import java.util.Map;
+
 import org.cytoscape.model.internal.CyTableManagerImpl;
 import org.cytoscape.model.internal.CyTableFactoryImpl;
 import org.cytoscape.model.internal.ArrayGraph;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
+import org.junit.Test;
 
 public class CyTableManagerTest extends AbstractCyTableManagerTest {
 
@@ -54,5 +57,23 @@ public class CyTableManagerTest extends AbstractCyTableManagerTest {
 	public void tearDown() {
 		mgr = null;
 		goodNetwork = null;
+	}
+	
+	@Test
+	public void testGetTableMap4ArrayGraphImpl() throws Exception {
+		final Map<String, CyTable> networkMap = mgr.getTableMap(CyNetwork.class, goodNetwork);
+		final Map<String, CyTable> nodeMap = mgr.getTableMap(CyNode.class, goodNetwork);
+		final Map<String, CyTable> edgeMap = mgr.getTableMap(CyEdge.class, goodNetwork);
+		
+		assertEquals(2, networkMap.size());
+		assertEquals(2, nodeMap.size());
+		assertEquals(2, edgeMap.size());
+		
+		assertTrue(networkMap.keySet().contains(CyNetwork.DEFAULT_ATTRS));
+		assertTrue(networkMap.keySet().contains(CyNetwork.HIDDEN_ATTRS));
+		assertTrue(nodeMap.keySet().contains(CyNetwork.DEFAULT_ATTRS));
+		assertTrue(nodeMap.keySet().contains(CyNetwork.HIDDEN_ATTRS));
+		assertTrue(edgeMap.keySet().contains(CyNetwork.DEFAULT_ATTRS));
+		assertTrue(edgeMap.keySet().contains(CyNetwork.HIDDEN_ATTRS));
 	}
 }

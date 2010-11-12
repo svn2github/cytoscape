@@ -90,7 +90,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-api</artifactId>
-			<version>3.0.0-alpha1</version>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
 		</dependency>
 
 		<!-- For Testing -->

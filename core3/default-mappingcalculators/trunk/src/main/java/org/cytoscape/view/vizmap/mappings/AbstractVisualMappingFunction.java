@@ -14,7 +14,6 @@ import org.cytoscape.view.vizmap.VisualMappingFunction;
 public abstract class AbstractVisualMappingFunction<K, V> implements
 		VisualMappingFunction<K, V> {
 
-
 	// Mapping attribute name.  This is immutable.
 	protected final String attrName;
 	

@@ -149,9 +149,9 @@ public class ArrayGraph implements CyRootNetwork {
 
 		base = addSubNetwork(); 
 
-		tableMgr.setTableMap(CyTableEntry.NETWORK, base, netAttrMgr);
-		tableMgr.setTableMap(CyTableEntry.NODE, base, nodeAttrMgr);
-		tableMgr.setTableMap(CyTableEntry.EDGE, base, edgeAttrMgr);
+		tableMgr.setTableMap(CyNetwork.class, base, netAttrMgr);
+		tableMgr.setTableMap(CyNode.class, base, nodeAttrMgr);
+		tableMgr.setTableMap(CyEdge.class, base, edgeAttrMgr);
 	}
 
 	/**
