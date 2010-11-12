@@ -39,6 +39,9 @@ import org.cytoscape.model.events.UnsetNestedNetworkEvent;
  * of nodes and edges.
  */
 public interface CyNode extends CyTableEntry {
+	/** The column name for the nested network associated with a <code>CyNode</code> in the user table. */
+	final static String NESTED_NETWORK_ATTR = "NestedNetwork";
+
 	/**
 	 * An index of this node within this network.  The index is guaranteed to
 	 * be between 0 and (the number of nodes in the network) - 1. This index
