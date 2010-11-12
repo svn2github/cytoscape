@@ -284,8 +284,7 @@ public class CyTableImpl implements CyTable {
 	}
 
 	private void setX(Object suid, String attrName, Object value) {
-		if (value == null)
-			throw new NullPointerException("value is null");
+		assert(value!=null);
 
 		if (!types.containsKey(attrName) || !attributes.containsKey(attrName))
 			throw new IllegalArgumentException("attribute: '" + attrName
@@ -302,6 +301,18 @@ public class CyTableImpl implements CyTable {
 		} else
 			throw new IllegalArgumentException("value is not of type: "
 					+ types.get(attrName));
+	}
+
+	private void unSetX(Object suid, String attrName) {
+
+		if (!types.containsKey(attrName) || !attributes.containsKey(attrName))
+			throw new IllegalArgumentException("attribute: '" + attrName
+					+ "' does not yet exist!");
+
+		Map<Object, Object> vls = attributes.get(attrName);
+
+		vls.remove(suid);
+		eventHelper.getMicroListener(RowSetMicroListener.class, getRow(suid)).handleRowSet(attrName,null);
 	}
 
 	private Object getRawX(Object suid, String attrName) {
@@ -416,7 +427,10 @@ public class CyTableImpl implements CyTable {
 		}
 
 		public void set(String attributeName, Object value) {
-			setX(suid, attributeName, value);
+			if ( value == null )
+				unSetX(suid, attributeName);
+			else
+				setX(suid, attributeName, value);
 		}
 
 		public <T> T get(String attributeName, Class<? extends T> c) {
