@@ -263,5 +263,61 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertEquals( mgr.getPrimaryKeyType(), mgr.getColumnTypeMap().get(pk) );
 	}
 
+	public void testUnsetRowBoolean() {
+		mgr.createColumn("someBoolean", Boolean.class);
+		attrs.set("someBoolean", true);
+		assertTrue(attrs.isSet("someBoolean", Boolean.class));
+		attrs.set("someBoolean", null);
+		assertFalse(attrs.isSet("someBoolean", Boolean.class));
+		attrs.set("someBoolean", false);
+		assertTrue(attrs.isSet("someBoolean", Boolean.class));
+		attrs.set("someBoolean", null);
+		assertFalse(attrs.isSet("someBoolean", Boolean.class));
+	}
+
+	public void testUnsetRowString() {
+		mgr.createColumn("someString", String.class);
+		attrs.set("someString", "homer");
+		assertTrue(attrs.isSet("someString", String.class));
+		attrs.set("someString", null);
+		assertFalse(attrs.isSet("someString", String.class));
+	}
+
+	public void testUnsetRowInt() {
+		mgr.createColumn("someInt", Integer.class);
+		attrs.set("someInt", 5);
+		assertTrue(attrs.isSet("someInt", Integer.class));
+		attrs.set("someInt", null);
+		assertFalse(attrs.isSet("someInt", Integer.class));
+	}
+
+	public void testUnsetRowDouble() {
+		mgr.createColumn("someDouble", Double.class);
+		attrs.set("someDouble", 5.0);
+		assertTrue(attrs.isSet("someDouble", Double.class));
+		attrs.set("someDouble", null);
+		assertFalse(attrs.isSet("someDouble", Double.class));
+	}
+
+	public void testUnsetRowList() {
+		List<String> ls = new ArrayList<String>();
+		ls.add("asdf");
+		mgr.createColumn("someList", List.class);
+		attrs.set("someList", ls);
+		assertTrue(attrs.isSet("someList", List.class));
+		attrs.set("someList", null);
+		assertFalse(attrs.isSet("someList", List.class));
+	}
+
+	public void testUnsetRowMap() {
+		Map<Integer,String> mis = new HashMap<Integer,String>();
+		mis.put(1,"two");
+		mgr.createColumn("someMap", Map.class);
+		attrs.set("someMap", mis);
+		assertTrue(attrs.isSet("someMap", Map.class));
+		attrs.set("someMap", null);
+		assertFalse(attrs.isSet("someMap", Map.class));
+	}
+
 	// lots more needed
 }

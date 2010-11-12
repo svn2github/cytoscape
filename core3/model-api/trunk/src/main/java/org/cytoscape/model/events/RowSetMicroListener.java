@@ -48,7 +48,8 @@ public interface RowSetMicroListener extends CyMicroListener {
 	/**
 	 * The method that should react to the changed row.
 	 * @param columnName The name of the column changed.
-	 * @param value The value the column was set to. 
+	 * @param value The value the column was set to. The value may 
+	 * be null, in which case the row should be considered "unset".
 	 */
 	void handleRowSet(final String columnName, final Object value);
 

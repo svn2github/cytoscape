@@ -54,6 +54,7 @@ public interface CyRow {
 
 	/**
 	 * Set the specified column for this row to the specified value.
+	 * To unset a column entry use null for value.
 	 * @param columnName The name identifying the attribute.
 	 * @param value The value to assign the specified column in this row 
 	 */
