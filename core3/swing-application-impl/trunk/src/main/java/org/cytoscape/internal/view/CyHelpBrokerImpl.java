@@ -40,7 +40,7 @@ import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import java.net.URL;
 
-import org.cytoscape.application.swing.view.CyHelpBroker;
+import org.cytoscape.application.swing.CyHelpBroker;
 
 
 /**

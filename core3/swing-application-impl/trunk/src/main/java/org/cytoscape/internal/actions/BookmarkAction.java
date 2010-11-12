@@ -45,8 +45,8 @@ package org.cytoscape.internal.actions;
 import java.awt.event.ActionEvent;
 
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.application.swing.view.CySwingApplication;
-import org.cytoscape.application.swing.view.CytoscapeAction;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.application.swing.CytoscapeAction;
 import org.cytoscape.internal.dialogs.BookmarkDialogImpl;
 import org.cytoscape.internal.dialogs.BookmarkDialogFactoryImpl;
 

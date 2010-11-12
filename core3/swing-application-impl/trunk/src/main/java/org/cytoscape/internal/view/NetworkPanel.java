@@ -64,7 +64,7 @@ import javax.swing.tree.TreePath;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.events.RowSetMicroListener;
-import org.cytoscape.application.swing.view.CyAction;
+import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;

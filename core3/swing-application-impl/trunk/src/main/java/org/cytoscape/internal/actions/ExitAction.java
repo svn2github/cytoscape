@@ -40,8 +40,8 @@
 // $Author: mes $
 package org.cytoscape.internal.actions;
 
+import org.cytoscape.application.swing.CytoscapeAction;
 import org.cytoscape.application.swing.CytoscapeShutdown;
-import org.cytoscape.application.swing.view.CytoscapeAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 

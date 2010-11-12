@@ -54,12 +54,12 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.MenuEvent;
 
 
-import org.cytoscape.application.swing.view.CySwingApplication;
-import org.cytoscape.application.swing.view.CytoPanel;
-import org.cytoscape.application.swing.view.CytoPanelComponent;
-import org.cytoscape.application.swing.view.CytoPanelName;
-import org.cytoscape.application.swing.view.CytoPanelState;
-import org.cytoscape.application.swing.view.CytoscapeAction;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.application.swing.CytoPanel;
+import org.cytoscape.application.swing.CytoPanelComponent;
+import org.cytoscape.application.swing.CytoPanelName;
+import org.cytoscape.application.swing.CytoPanelState;
+import org.cytoscape.application.swing.CytoscapeAction;
 import org.cytoscape.application.swing.view.events.CytoPanelComponentSelectedEvent;
 import org.cytoscape.application.swing.view.events.CytoPanelComponentSelectedListener;
 import org.cytoscape.session.CyApplicationManager;

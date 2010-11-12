@@ -36,8 +36,8 @@
 
 package org.cytoscape.internal.view;
 
-import org.cytoscape.application.swing.view.CytoPanel;
-import org.cytoscape.application.swing.view.CytoPanelState;
+import org.cytoscape.application.swing.CytoPanel;
+import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.application.swing.view.events.CytoPanelStateChangedEvent;
 import org.cytoscape.application.swing.view.events.CytoPanelStateChangedListener;
 

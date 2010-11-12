@@ -1,7 +1,14 @@
 /*
-  File: CytoPanelName.java
+  File: CytoPanelState.java
 
-  Copyright (c) 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+  - Institute for Systems Biology
+  - University of California San Diego
+  - Memorial Sloan-Kettering Cancer Center
+  - Institut Pasteur
+  - Agilent Technologies
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -27,26 +34,31 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.application.swing.view;
+
+package org.cytoscape.application.swing;
 
 
-/** 
- * An enum that maps names to compass directions.
+/**
+ *  CytoPanelState enum.  The following States are supported:
+ * <UL>
+ * <LI>CytoPanelState.HIDE:  Hide the CytoPanel.
+ * <LI>CytoPanelState.FLOAT: Float the CytoPanel.
+ * <LI>CytoPanelState.DOCK:  Dock the CytoPanel.
+ * </UL>
  */
-public enum CytoPanelName {
-	SOUTH("Data Panel"),
-	EAST("Results Panel"),
-	WEST("Control Panel"),
-	SOUTH_WEST("Tool Panel"),
+public enum CytoPanelState {
+	HIDE("hide"),
+	FLOAT("float"),
+	DOCK("dock"),
 	;
 
-	private final String title;
+	private final String name;
 
-	private CytoPanelName(final String title) {
-		this.title = title;
+	private CytoPanelState(String name) {
+		this.name = name;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getName() {
+		return name;
 	}
 }

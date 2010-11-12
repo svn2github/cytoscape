@@ -1,8 +1,8 @@
 
 package org.cytoscape.application.swing.view.events;
 
-import org.cytoscape.application.swing.view.CytoPanel;
-import org.cytoscape.application.swing.view.CytoPanelState;
+import org.cytoscape.application.swing.CytoPanel;
+import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.event.AbstractCyEvent;
 
 /**

@@ -36,8 +36,8 @@
 
 package org.cytoscape.view.manual.internal.rotate; 
 
-import org.cytoscape.application.swing.view.CySwingApplication;
-import org.cytoscape.application.swing.view.CytoPanelComponent;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.manual.internal.common.AbstractManualLayoutAction;
 

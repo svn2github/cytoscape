@@ -44,11 +44,11 @@ import javax.swing.JPanel;
 import javax.swing.Icon;
 import java.awt.Component;
 
-import org.cytoscape.application.swing.view.CySwingApplication;
-import org.cytoscape.application.swing.view.CytoPanel;
-import org.cytoscape.application.swing.view.CytoPanelComponent;
-import org.cytoscape.application.swing.view.CytoPanelName;
-import org.cytoscape.application.swing.view.CytoscapeAction;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.application.swing.CytoPanel;
+import org.cytoscape.application.swing.CytoPanelComponent;
+import org.cytoscape.application.swing.CytoPanelName;
+import org.cytoscape.application.swing.CytoscapeAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableValidator;

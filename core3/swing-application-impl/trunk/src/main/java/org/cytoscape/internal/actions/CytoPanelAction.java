@@ -33,10 +33,10 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 
-import org.cytoscape.application.swing.view.CySwingApplication;
-import org.cytoscape.application.swing.view.CytoPanelName;
-import org.cytoscape.application.swing.view.CytoPanelState;
-import org.cytoscape.application.swing.view.CytoscapeAction;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.application.swing.CytoPanelName;
+import org.cytoscape.application.swing.CytoPanelState;
+import org.cytoscape.application.swing.CytoscapeAction;
 import org.cytoscape.session.CyApplicationManager;
 
 

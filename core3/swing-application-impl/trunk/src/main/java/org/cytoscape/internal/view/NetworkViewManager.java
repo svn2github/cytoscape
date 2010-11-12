@@ -66,7 +66,7 @@ import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.property.CyProperty;
 
-import org.cytoscape.application.swing.view.CyHelpBroker;
+import org.cytoscape.application.swing.CyHelpBroker;
 import org.cytoscape.event.CyEventHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

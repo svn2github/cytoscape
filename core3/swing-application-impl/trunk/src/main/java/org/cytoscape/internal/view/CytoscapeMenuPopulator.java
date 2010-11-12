@@ -34,8 +34,8 @@ package org.cytoscape.internal.view;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 
-import org.cytoscape.application.swing.view.CyAction;
-import org.cytoscape.application.swing.view.CySwingApplication;
+import org.cytoscape.application.swing.CyAction;
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.internal.task.CytoPanelTaskFactoryTunableAction;
 import org.cytoscape.internal.task.TaskFactoryTunableAction;
 import org.cytoscape.internal.task.NetworkCollectionTaskFactoryTunableAction;

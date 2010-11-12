@@ -1,14 +1,8 @@
+
 /*
-  File: CytoPanelState.java
+  File: CytoPanelComponent.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -34,31 +28,42 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+package org.cytoscape.application.swing;
 
-package org.cytoscape.application.swing.view;
+
+import java.awt.Component;
+import javax.swing.Icon;
 
 
 /**
- *  CytoPanelState enum.  The following States are supported:
- * <UL>
- * <LI>CytoPanelState.HIDE:  Hide the CytoPanel.
- * <LI>CytoPanelState.FLOAT: Float the CytoPanel.
- * <LI>CytoPanelState.DOCK:  Dock the CytoPanel.
- * </UL>
+ * An interface that allows a component to be registered as a service
+ * that will then be added to the appropriate CytoPanel.
  */
-public enum CytoPanelState {
-	HIDE("hide"),
-	FLOAT("float"),
-	DOCK("dock"),
-	;
+public interface CytoPanelComponent {
 
-	private final String name;
+	/**
+	 * Returns the Component to be added to the CytoPanel. 
+	 * @return The Component to be added to the CytoPanel. 
+	 */
+	Component getComponent();
 
-	private CytoPanelState(String name) {
-		this.name = name;
-	}
+	/**
+	 * Returns the name of the CytoPanel that this component should be added to.
+	 * @return the name of the CytoPanel that this component should be added to.
+	 */
+	CytoPanelName getCytoPanelName();
 
-	public String getName() {
-		return name;
-	}
+	/**
+	 * Returns the title of the tab within the CytoPanel for this component.
+	 * @return the title of the tab within the CytoPanel for this component.
+	 */
+	String getTitle();
+
+	/**
+	 * Returns the Icon to be used along with the title in the tab for this
+	 * this component. May be null!
+	 * @return the Icon to be used along with the title in the tab for this
+	 * this component. May be null!
+	 */
+	Icon getIcon();
 }

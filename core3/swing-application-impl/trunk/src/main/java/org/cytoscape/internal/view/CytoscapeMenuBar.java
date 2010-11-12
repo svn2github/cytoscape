@@ -44,7 +44,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 
-import org.cytoscape.application.swing.view.CyAction;
+import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.util.swing.JMenuTracker;
 
 /**

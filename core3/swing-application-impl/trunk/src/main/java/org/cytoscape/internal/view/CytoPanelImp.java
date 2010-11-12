@@ -61,10 +61,10 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.cytoscape.application.swing.view.CytoPanel;
-import org.cytoscape.application.swing.view.CytoPanelComponent;
-import org.cytoscape.application.swing.view.CytoPanelName;
-import org.cytoscape.application.swing.view.CytoPanelState;
+import org.cytoscape.application.swing.CytoPanel;
+import org.cytoscape.application.swing.CytoPanelComponent;
+import org.cytoscape.application.swing.CytoPanelName;
+import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.application.swing.view.events.CytoPanelComponentSelectedEvent;
 import org.cytoscape.application.swing.view.events.CytoPanelStateChangedEvent;
 import org.cytoscape.event.CyEventHelper;

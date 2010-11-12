@@ -38,7 +38,7 @@ package org.cytoscape.internal.select;
 
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_SELECTED;
 
-import org.cytoscape.application.swing.view.ViewUpdater;
+import org.cytoscape.application.swing.ViewUpdater;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.View;
 

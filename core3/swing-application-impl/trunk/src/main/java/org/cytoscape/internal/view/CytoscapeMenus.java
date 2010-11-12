@@ -30,7 +30,7 @@
 package org.cytoscape.internal.view;
 
 
-import org.cytoscape.application.swing.view.CyAction;
+import org.cytoscape.application.swing.CyAction;
 
 import java.util.Map;
 import java.util.HashMap;

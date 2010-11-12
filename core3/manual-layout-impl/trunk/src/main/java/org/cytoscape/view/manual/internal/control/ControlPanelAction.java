@@ -37,8 +37,8 @@
 package org.cytoscape.view.manual.internal.control; 
 
 import org.cytoscape.view.manual.internal.common.AbstractManualLayoutAction;
-import org.cytoscape.application.swing.view.CySwingApplication;
-import org.cytoscape.application.swing.view.CytoPanelComponent;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.session.CyApplicationManager;
 
 /**

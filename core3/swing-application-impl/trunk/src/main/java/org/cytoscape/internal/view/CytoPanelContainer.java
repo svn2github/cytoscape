@@ -30,8 +30,8 @@
 package org.cytoscape.internal.view;
 
 
-import org.cytoscape.application.swing.view.CytoPanel;
-import org.cytoscape.application.swing.view.CytoPanelName;
+import org.cytoscape.application.swing.CytoPanel;
+import org.cytoscape.application.swing.CytoPanelName;
 
 import java.awt.*;
 

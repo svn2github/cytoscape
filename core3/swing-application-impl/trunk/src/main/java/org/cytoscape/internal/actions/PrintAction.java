@@ -49,7 +49,7 @@ import java.util.Set;
 
 import javax.swing.event.MenuEvent;
 
-import org.cytoscape.application.swing.view.CytoscapeAction;
+import org.cytoscape.application.swing.CytoscapeAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.presentation.RenderingEngine;
