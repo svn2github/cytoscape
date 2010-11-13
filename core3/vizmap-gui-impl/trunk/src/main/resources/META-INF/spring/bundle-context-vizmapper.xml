@@ -8,25 +8,32 @@
            http://www.springframework.org/schema/context/spring-context-2.5.xsd
            http://www.springframework.org/schema/util
            http://www.springframework.org/schema/util/spring-util-2.5.xsd">
-           
 	<import resource="bundle-context-osgi-vizmapper.xml" />
 
 
 	<!-- Setting (property) file for VizMapper GUI. This bean can be injected 
 		as a regular Java Property object. -->
-	<util:properties id="vizmapUIResource" location="/META-INF/spring/config/vizmapui.properties" />
+	<util:properties id="vizmapUIResource"
+		location="/META-INF/spring/config/vizmapui.properties" />
 
 	<context:property-placeholder
 		location="/META-INF/spring/config/vizmapui.properties" />
 	<context:annotation-config />
 
 
+	<bean id="attributeSetManager"
+		class="org.cytoscape.view.vizmap.gui.internal.AttributeSetManager">
+		<constructor-arg ref="cyTableManagerServiceRef" />
+	</bean>
+
 	<!-- Mapping Factory Manager -->
-	<bean id="mappingFunctionFactoryManager" class="org.cytoscape.view.vizmap.gui.internal.MappingFunctionFactoryManagerImpl">
+	<bean id="mappingFunctionFactoryManager"
+		class="org.cytoscape.view.vizmap.gui.internal.MappingFunctionFactoryManagerImpl">
 		<constructor-arg ref="editorManager" />
 	</bean>
-	
-	<bean id="selectedVisualStyleManager" class="org.cytoscape.view.vizmap.gui.internal.SelectedVisualStyleManagerImpl">
+
+	<bean id="selectedVisualStyleManager"
+		class="org.cytoscape.view.vizmap.gui.internal.SelectedVisualStyleManagerImpl">
 		<constructor-arg ref="vmmServiceRef" />
 	</bean>
 
@@ -47,36 +54,17 @@
 		<constructor-arg ref="cyApplicationManagerServiceRef"></constructor-arg>
 	</bean>
 
-	<!-- Editors -->
-	<bean id="nodeAttributeComboBoxEditor"
-		class="org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor">
-		<constructor-arg value="NODE" />
-		<constructor-arg ref="cyTableManagerServiceRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
-	</bean>
-	<bean id="edgeAttributeComboBoxEditor"
-		class="org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor">
-		<constructor-arg value="EDGE" />
-		<constructor-arg ref="cyTableManagerServiceRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
-	</bean>
-	<bean id="networkAttributeComboBoxEditor"
-		class="org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor">
-		<constructor-arg value="NETWORK" />
-		<constructor-arg ref="cyTableManagerServiceRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
-	</bean>
 
 	<!-- Editor Manager -->
+
+	<bean id="nodeAttributeComboBoxEditor" factory-bean="editorManager" factory-method="getNodeEditor" />
+	<bean id="edgeAttributeComboBoxEditor" factory-bean="editorManager" factory-method="getEdgeEditor" />
+	<bean id="networkAttributeComboBoxEditor" factory-bean="editorManager" factory-method="getNetworkEditor" />
+
+
 	<bean name="editorManager"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.EditorManagerImpl">
-		<constructor-arg>
-			<set>
-				<ref bean="nodeAttributeComboBoxEditor" />
-				<ref bean="edgeAttributeComboBoxEditor" />
-				<ref bean="networkAttributeComboBoxEditor" />
-			</set>
-		</constructor-arg>
+		<constructor-arg ref="attributeSetManager" />
 	</bean>
 
 
@@ -115,7 +103,7 @@
 	<bean id="numberClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="java.lang.Number" />
 	</bean>
-	
+
 	<bean id="colorEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.CyColorChooser" />
 
@@ -126,7 +114,7 @@
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
 		<constructor-arg ref="doubleClass" />
 	</bean>
-	
+
 	<bean id="integerValueEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.NumericValueEditor">
 		<constructor-arg ref="integerClass" />
@@ -140,16 +128,18 @@
 		class="org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.StringValueEditor">
 		<constructor-arg ref="stringClass" />
 	</bean>
-	
+
 	<!-- VP Editors -->
-	<bean id="colorPropertyEditor" class="org.cytoscape.view.vizmap.gui.internal.editor.ColorVisualPropertyEditor">
+	<bean id="colorPropertyEditor"
+		class="org.cytoscape.view.vizmap.gui.internal.editor.ColorVisualPropertyEditor">
 		<constructor-arg ref="paintClass" />
 	</bean>
-	<bean id="numberPropertyEditor" class="org.cytoscape.view.vizmap.gui.internal.editor.NumberVisualPropertyEditor">
+	<bean id="numberPropertyEditor"
+		class="org.cytoscape.view.vizmap.gui.internal.editor.NumberVisualPropertyEditor">
 		<constructor-arg ref="numberClass" />
 		<constructor-arg ref="selectedVisualStyleManager" />
 	</bean>
-	
+
 
 
 
@@ -161,7 +151,7 @@
 	<bean id="iconManager"
 		class="org.cytoscape.view.vizmap.gui.internal.theme.IconManager"
 		scope="singleton" />
-		
+
 	<bean id="menuManager"
 		class="org.cytoscape.view.vizmap.gui.internal.VizMapperMenuManager"
 		scope="singleton" depends-on="iconManager" autowire="autodetect">
@@ -171,8 +161,7 @@
 	</bean>
 
 	<bean name="defaultViewPanel"
-		class="org.cytoscape.view.vizmap.gui.internal.DefaultViewPanelImpl"
-		depends-on="nodeAttributeComboBoxEditor, edgeAttributeComboBoxEditor, networkAttributeComboBoxEditor">
+		class="org.cytoscape.view.vizmap.gui.internal.DefaultViewPanelImpl">
 		<description>
 			Create default view panel.	
 		</description>
@@ -207,33 +196,33 @@
 		<constructor-arg ref="dingVisualLexiconServiceRef" />
 		<constructor-arg ref="vmmServiceRef" />
 	</bean>
-	
+
 	<bean name="removeVisualStyleTaskFactory"
 		class="org.cytoscape.view.vizmap.gui.internal.task.DeleteVisualStyleTaskFactory">
 		<constructor-arg ref="vmmServiceRef" />
-		<constructor-arg ref="selectedVisualStyleManager"/>
+		<constructor-arg ref="selectedVisualStyleManager" />
 	</bean>
-	
+
 	<bean name="renameVisualStyleTaskFactory"
 		class="org.cytoscape.view.vizmap.gui.internal.task.RenameVisualStyleTaskFactory">
 		<constructor-arg ref="vmmServiceRef" />
-		<constructor-arg ref="selectedVisualStyleManager"/>
+		<constructor-arg ref="selectedVisualStyleManager" />
 		<constructor-arg ref="vizMapperUtil" />
 		<constructor-arg ref="vizMapperMainPanel" />
 	</bean>
-	
+
 	<bean name="copyVisualStyleTaskFactory"
 		class="org.cytoscape.view.vizmap.gui.internal.task.CopyVisualStyleTaskFactory">
 		<constructor-arg ref="visualStyleFactoryServiceRef" />
 		<constructor-arg ref="vmmServiceRef" />
-		<constructor-arg ref="selectedVisualStyleManager"/>
+		<constructor-arg ref="selectedVisualStyleManager" />
 		<constructor-arg ref="vizMapperUtil" />
 		<constructor-arg ref="vizMapperMainPanel" />
 	</bean>
-	
+
 	<bean name="createLegendTaskFactory"
-		class="org.cytoscape.view.vizmap.gui.internal.task.CreateLegendTaskFactory">		
-		<constructor-arg ref="selectedVisualStyleManager"/>
+		class="org.cytoscape.view.vizmap.gui.internal.task.CreateLegendTaskFactory">
+		<constructor-arg ref="selectedVisualStyleManager" />
 		<constructor-arg ref="vizMapperMainPanel" />
 	</bean>
 
@@ -278,6 +267,8 @@
 		<constructor-arg ref="vizMapperMainPanel" />
 		<constructor-arg ref="cyTableManagerServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="attributeSetManager" />
+		<constructor-arg ref="vizMapperUtil" />
 	</bean>
 
 	<bean id="editorWindowManager"

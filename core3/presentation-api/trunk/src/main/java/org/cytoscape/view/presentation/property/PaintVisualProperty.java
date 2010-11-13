@@ -43,8 +43,8 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 
 public class PaintVisualProperty extends AbstractVisualProperty<Paint> { 
 
-	public PaintVisualProperty(final Paint def, final String id, final String name) {
-		super(def, Paint.class, id, name);
+	public PaintVisualProperty(final Paint def, final String id, final String name, final Class<?> targetDataType) {
+		super(def, Paint.class, id, name, targetDataType);
 	}
 	
 	

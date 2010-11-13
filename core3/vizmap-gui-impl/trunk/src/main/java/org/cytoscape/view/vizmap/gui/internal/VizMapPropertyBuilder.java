@@ -27,10 +27,6 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
-
-import static org.cytoscape.application.swing.model.CyTableEntry.EDGE;
-import static org.cytoscape.application.swing.model.CyTableEntry.NODE;
-
 import java.beans.PropertyEditor;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,8 +40,10 @@ import java.util.TreeSet;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
@@ -61,9 +59,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.l2fprod.common.propertysheet.DefaultProperty;
-import com.l2fprod.common.propertysheet.PropertyEditorFactory;
 import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
-import com.l2fprod.common.propertysheet.PropertyRendererFactory;
 import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
@@ -105,7 +101,7 @@ public class VizMapPropertyBuilder {
 			final VisualProperty<?> rootObjectCategory,
 			final PropertySheetPanel propertySheetPanel, final VisualMappingFunctionFactory factory) {
 
-		logger.debug("\n\n\nbuildProp called!");
+		logger.debug("\n\n\nbuildProp called: Root VP = " + rootObjectCategory.getDisplayName());
 
 		// Mapping is empty
 		if (visualMapping == null)
@@ -162,24 +158,26 @@ public class VizMapPropertyBuilder {
 		for (CyNetwork targetNetwork : networks) {
 			Iterator<? extends CyTableEntry> it = null;
 
-			if (rootObjectCategory.getIdString().equals(NODE)) {
+			if (vp.getTargetDataType().equals(CyNode.class)) {
 				it = targetNetwork.getNodeList().iterator();
 				((PropertyEditorRegistry) propertySheetPanel.getTable()
 						.getEditorFactory()).registerEditor(topProperty,
-						editorManager.getDataTableComboBoxEditor(NODE));
-			} else if (rootObjectCategory.getIdString().equals(EDGE)) {
+						editorManager.getDataTableComboBoxEditor(CyNode.class));
+			} else if (vp.getTargetDataType().equals(CyEdge.class)) {
 				it = targetNetwork.getEdgeList().iterator();
 				((PropertyEditorRegistry) propertySheetPanel.getTable()
 						.getEditorFactory()).registerEditor(topProperty,
-						editorManager.getDataTableComboBoxEditor(EDGE));
-			} else {
+						editorManager.getDataTableComboBoxEditor(CyEdge.class));
+			} else if (vp.getTargetDataType().equals(CyNetwork.class)) {
 				it = cyNetworkManager.getNetworkSet().iterator();
 				((PropertyEditorRegistry) propertySheetPanel.getTable()
 						.getEditorFactory())
 						.registerEditor(
 								topProperty,
 								editorManager
-										.getDataTableComboBoxEditor(CyTableEntry.NETWORK));
+										.getDataTableComboBoxEditor(CyNetwork.class));
+			} else {
+				throw new IllegalArgumentException("Data type not supported: " + vp.getTargetDataType());
 			}
 
 			while (it.hasNext())
@@ -324,6 +322,7 @@ public class VizMapPropertyBuilder {
 				cellEditorFactory.registerEditor(valProp, cellEditor);
 
 			valProp.setValue(val);
+			valProp.setInternalValue(mapping);
 		}
 
 		// Add all children.

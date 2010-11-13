@@ -2,13 +2,14 @@ package org.cytoscape.vizmap;
 
 import java.awt.Color;
 
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.AbstractVisualProperty;
 
 public class ColorVisualProperty extends AbstractVisualProperty<Color> {
 
 	public ColorVisualProperty(final Color defaultValue,
 			final String id, final String name) {
-		super(defaultValue, Color.class, id, name);
+		super(defaultValue, Color.class, id, name, CyNode.class);
 	}
 
 	public Color parseSerializableString(final String text) {

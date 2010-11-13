@@ -12,8 +12,10 @@ import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandlerManager;
+import org.cytoscape.view.vizmap.gui.internal.AttributeSetManager;
 import org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
+import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,17 +40,23 @@ public class VizMapEventHandlerManagerImpl implements
 	
 	private final CyTableManager tableMgr;
 	private final CyApplicationManager applicationManager;
+	
+	private final AttributeSetManager attrManager;
+	
+	private final VizMapperUtil util;
 
 	public VizMapEventHandlerManagerImpl(final SelectedVisualStyleManager manager, final EditorManager editorManager,
 					     final VizMapPropertySheetBuilder vizMapPropertySheetBuilder,
 					     final PropertySheetPanel propertySheetPanel, final VizMapperMainPanel gui,
-					     final CyTableManager tableMgr, final CyApplicationManager applicationManager)
+					     final CyTableManager tableMgr, final CyApplicationManager applicationManager, final AttributeSetManager attrManager,  final VizMapperUtil util)
 	{
 		this.vizMapPropertySheetBuilder = vizMapPropertySheetBuilder;
 		this.editorManager = editorManager;
 		this.tableMgr = tableMgr;
 		this.applicationManager = applicationManager;
 		this.manager = manager;
+		this.attrManager = attrManager;
+		this.util = util;
 		
 		registerCellEditorListeners();
 
@@ -84,7 +92,7 @@ public class VizMapEventHandlerManagerImpl implements
 		
 		// Create handler for local property editor event.
 		eventHandlers.put(VALUE, new CellEditorEventHandler(manager,
-				propertySheetPanel, tableMgr, applicationManager, vizMapPropertySheetBuilder));
+				propertySheetPanel, tableMgr, applicationManager, vizMapPropertySheetBuilder, attrManager, util));
 
 	}
 

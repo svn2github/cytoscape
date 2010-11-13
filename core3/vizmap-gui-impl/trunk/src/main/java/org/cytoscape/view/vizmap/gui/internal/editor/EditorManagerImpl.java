@@ -48,6 +48,10 @@ import java.util.Set;
 
 import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.MappingFunctionFactoryManager;
@@ -55,6 +59,8 @@ import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.editor.ListEditor;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.AttributeSetManager;
+import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,33 +77,53 @@ public class EditorManagerImpl implements EditorManager {
 
 	private final Map<String, PropertyEditor> comboBoxEditors;
 
-	private final Map<String, ListEditor> attrComboBoxEditors;
+	private final Map<Class<?>, ListEditor> attrComboBoxEditors;
 
 	private final Map<VisualProperty<?>, Component> continuousEditors;
 
 	private final Map<Class<?>, ValueEditor<?>> valueEditors;
 
 	private final PropertyEditor mappingTypeEditor;
+	
 
 	/**
 	 * Creates a new EditorFactory object.
 	 */
-	public EditorManagerImpl(final Set<ListEditor> listEditors) {
+	public EditorManagerImpl(final AttributeSetManager attrManager) {
 		continuousEditors = new HashMap<VisualProperty<?>, Component>();
 
 		editors = new HashMap<Class<?>, VisualPropertyEditor<?>>();
 
 		comboBoxEditors = new HashMap<String, PropertyEditor>();
-		attrComboBoxEditors = new HashMap<String, ListEditor>();
-		for (ListEditor propEditor : listEditors)
-			attrComboBoxEditors.put(propEditor.getTargetObjectName(),
-					propEditor);
+		attrComboBoxEditors = new HashMap<Class<?>, ListEditor>();
+		
+		
+		final AttributeComboBoxPropertyEditor nodeAttrEditor = new AttributeComboBoxPropertyEditor(CyNode.class, attrManager);
+		final AttributeComboBoxPropertyEditor edgeAttrEditor = new AttributeComboBoxPropertyEditor(CyEdge.class, attrManager);
+		final AttributeComboBoxPropertyEditor networkAttrEditor = new AttributeComboBoxPropertyEditor(CyNetwork.class, attrManager);
+		attrComboBoxEditors.put(nodeAttrEditor.getTargetObjectType(), nodeAttrEditor);
+		attrComboBoxEditors.put(edgeAttrEditor.getTargetObjectType(), edgeAttrEditor);
+		attrComboBoxEditors.put(networkAttrEditor.getTargetObjectType(), networkAttrEditor);
 
 		valueEditors = new HashMap<Class<?>, ValueEditor<?>>();
 
 		// Create mapping type editor
 		this.mappingTypeEditor = getDefaultComboBoxEditor("mappingTypeEditor");
 	}
+	
+	public AttributeComboBoxPropertyEditor getNodeEditor() {
+		return (AttributeComboBoxPropertyEditor) attrComboBoxEditors.get(CyNode.class);
+	}
+	
+	public AttributeComboBoxPropertyEditor getEdgeEditor() {
+		return (AttributeComboBoxPropertyEditor) attrComboBoxEditors.get(CyEdge.class);
+	}
+	
+	public AttributeComboBoxPropertyEditor getNetworkEditor() {
+		return (AttributeComboBoxPropertyEditor) attrComboBoxEditors.get(CyNetwork.class);
+	}
+	
+	
 
 	/*
 	 * (non-Javadoc)
@@ -302,13 +328,13 @@ public class EditorManagerImpl implements EditorManager {
 	 */
 	@Override
 	public PropertyEditor getDataTableComboBoxEditor(
-			final String targetObjectName) {
+			final Class<? extends CyTableEntry> targetObjectType) {
 
-		final ListEditor editor = attrComboBoxEditors.get(targetObjectName);
+		final ListEditor editor = attrComboBoxEditors.get(targetObjectType);
 
 		if (editor == null)
 			throw new IllegalArgumentException("No such list editor: "
-					+ targetObjectName);
+					+ targetObjectType);
 
 		return (PropertyEditor) editor;
 	}

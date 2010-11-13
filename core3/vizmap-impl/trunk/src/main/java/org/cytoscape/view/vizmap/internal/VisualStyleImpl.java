@@ -262,6 +262,7 @@ public class VisualStyleImpl implements VisualStyle {
 
 		if (mapping != null) {
 			// Mapping is available for this VP. Apply it.
+			logger.debug("###### Mapping found for " + vp.getDisplayName() + ": " + mapping.toString());
 			for (Object view : views)
 				mapping.apply((View<? extends CyTableEntry>) view);
 		} else if (!vp.shouldIgnoreDefault()) {

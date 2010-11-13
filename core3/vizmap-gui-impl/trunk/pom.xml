@@ -107,7 +107,7 @@
 			<version>0.9.7</version>
 			<type>bundle</type>
 		</dependency>
-		
+
 		<!-- This is necessary to validate Spring XML. -->
 		<dependency>
 			<groupId>org.springframework</groupId>

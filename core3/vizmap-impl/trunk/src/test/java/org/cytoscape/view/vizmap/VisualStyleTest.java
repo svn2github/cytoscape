@@ -17,8 +17,7 @@ public class VisualStyleTest extends AbstractVisualStyleTest {
 	public void setUp() throws Exception {
 
 		// Create root node.
-		final VisualProperty<NullDataType> twoDRoot = new NullVisualProperty(
-				"TWO_D_ROOT", "2D Root Visual Property");
+		final VisualProperty<NullDataType> twoDRoot = new NullVisualProperty("TWO_D_ROOT", "2D Root Visual Property");
 
 		lexicon = new TwoDVisualLexicon(twoDRoot);
 

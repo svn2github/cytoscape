@@ -101,5 +101,16 @@ public interface VisualProperty<T> {
 	 * @return
 	 */
 	boolean shouldIgnoreDefault();
+	
+	
+	/**
+	 * VisualProperty is always associated with a data type.  For example, EDGE_COLOR is associated with 
+	 * {@link CyEdge} data object.  In that case, this returns Class<CyEdge>.  
+	 * For now, return data types are CyNode, CyEdge, and CyNetwork.
+	 * 
+	 * @return target data type of this visual property.  CyNode, CyEdge, or CyNetwork.
+	 * 
+	 */
+	Class<?> getTargetDataType();
 
 }

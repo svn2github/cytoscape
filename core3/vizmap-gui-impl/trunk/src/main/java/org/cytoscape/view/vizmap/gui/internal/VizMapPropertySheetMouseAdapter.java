@@ -47,6 +47,9 @@ import java.beans.PropertyEditor;
 
 import javax.swing.SwingUtilities;
 
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.presentation.property.VisualPropertyUtil;
@@ -108,9 +111,9 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 		this.selectedStyle = selectedStyle;
 		this.editorManager = editorManager;
 		
-		this.nodeAttributeEditor = editorManager.getDataTableComboBoxEditor(NODE);
-		this.edgeAttributeEditor = editorManager.getDataTableComboBoxEditor(EDGE);
-		this.networkAttributeEditor = editorManager.getDataTableComboBoxEditor(NETWORK);
+		this.nodeAttributeEditor = editorManager.getDataTableComboBoxEditor(CyNode.class);
+		this.edgeAttributeEditor = editorManager.getDataTableComboBoxEditor(CyEdge.class);
+		this.networkAttributeEditor = editorManager.getDataTableComboBoxEditor(CyNetwork.class);
 		
 	}
 
@@ -194,11 +197,12 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 				/*
 				 * Single left-click
 				 */
-				final VisualProperty<?> type = (VisualProperty<?>) curProp.getInternalValue();
-
+				final VisualMappingFunction<?, ?> mapping = (VisualMappingFunction<?, ?>) curProp.getInternalValue();
+				if(mapping == null)
+					return;
 
 				final VisualMappingFunction<?, ?> selectedMapping = selectedStyle
-						.getVisualMappingFunction(type);
+						.getVisualMappingFunction(mapping.getVisualProperty());
 				logger.debug("==========Target Mapping = " + selectedMapping);
 				logger.debug("==========Target Key = " + curProp.getDisplayName());
 				logger.debug("==========Target Val = " + curProp.getValue());

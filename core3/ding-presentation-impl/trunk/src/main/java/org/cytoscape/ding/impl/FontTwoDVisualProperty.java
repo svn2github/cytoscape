@@ -41,8 +41,8 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 
 public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> { 
 
-	public FontTwoDVisualProperty(final Font def, final String id, final String name) {
-		super(def,Font.class, id,name);
+	public FontTwoDVisualProperty(final Font def, final String id, final String name, final Class<?> targetDataType) {
+		super(def,Font.class, id, name, targetDataType);
 	}
 	
 	public String toSerializableString(final Font value) {

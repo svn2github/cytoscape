@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.awt.Color;
 import java.awt.Paint;
 
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
@@ -39,6 +40,7 @@ public class VisualPropertyTest {
 		assertEquals(false, booleanProp.parseSerializableString("false"));
 		assertEquals(false, booleanProp.parseSerializableString("False"));
 		assertEquals(false, booleanProp.parseSerializableString("FALSE"));
+		assertEquals(CyNode.class, booleanProp.getTargetDataType());
 		
 		final VisualProperty<Double> doubleProp = TwoDVisualLexicon.NODE_SIZE;
 		assertEquals(Double.class, doubleProp.getType());
@@ -47,6 +49,7 @@ public class VisualPropertyTest {
 		
 		final VisualProperty<Paint> paintProp = TwoDVisualLexicon.NODE_COLOR;
 		assertEquals(Paint.class, paintProp.getType());
+		assertEquals(CyNode.class, paintProp.getTargetDataType());
 		
 		final Color testColor = new Color(10, 20, 30); 
 		assertEquals("10,20,30", paintProp.toSerializableString(testColor));

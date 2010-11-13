@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
@@ -27,7 +28,7 @@ public abstract class AbstractVisualLexiconTest {
 			assertTrue(e instanceof NullPointerException);
 		}
 		try{
-			Collection<VisualProperty<?>> result = lexicon.getAllDescendants(new DefaultVisualizableVisualProperty("test", "Test Visual Property"));
+			Collection<VisualProperty<?>> result = lexicon.getAllDescendants(new DefaultVisualizableVisualProperty("test", "Test Visual Property", CyNode.class));
 		} catch(Exception e) {
 			assertTrue(e instanceof IllegalArgumentException);
 		}
@@ -43,7 +44,7 @@ public abstract class AbstractVisualLexiconTest {
 		traverse(children, lexicon);
 		
 		// Test adding
-		final DoubleVisualProperty dummyVP = new DoubleVisualProperty(new Double(10), "DUMMY", "Dummy VP");
+		final DoubleVisualProperty dummyVP = new DoubleVisualProperty(new Double(10), "DUMMY", "Dummy VP", CyNode.class);
 		
 		
 		try {

@@ -27,9 +27,6 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
-import static org.cytoscape.application.swing.model.CyTableEntry.EDGE;
-import static org.cytoscape.application.swing.model.CyTableEntry.NETWORK;
-import static org.cytoscape.application.swing.model.CyTableEntry.NODE;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -44,7 +41,6 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -52,23 +48,21 @@ import java.util.TreeSet;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.Icon;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.LayoutStyle;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngine;
@@ -83,8 +77,6 @@ import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Dialog for editing default visual property values.<br>
@@ -108,8 +100,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	private final static long serialVersionUID = 1202339876675416L;
 
-	private final Map<String, Set<VisualProperty<?>>> vpSets;
-	private final Map<String, JList> listMap;
+	private final Map<Class<? extends CyTableEntry>, Set<VisualProperty<?>>> vpSets;
+	private final Map<Class<? extends CyTableEntry>, JList> listMap;
 
 	private final CyApplicationManager cyApplicationManager;
 
@@ -134,8 +126,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 		super();
 		this.vmm = vmm;
 		this.selectedManager = selectedManager;
-		vpSets = new HashMap<String, Set<VisualProperty<?>>>();
-		listMap = new HashMap<String, JList>();
+		vpSets = new HashMap<Class<? extends CyTableEntry>, Set<VisualProperty<?>>>();
+		listMap = new HashMap<Class<? extends CyTableEntry>, JList>();
 
 		this.cyApplicationManager = cyApplicationManager;
 		this.setModal(true);
@@ -164,11 +156,11 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 		final VisualLexicon lexicon = selectedStyle.getVisualLexicon();
 
-		vpSets.put(NODE,
+		vpSets.put(CyNode.class,
 				getLeafNodes(lexicon.getAllDescendants(TwoDVisualLexicon.NODE)));
-		vpSets.put(EDGE,
+		vpSets.put(CyEdge.class,
 				getLeafNodes(lexicon.getAllDescendants(TwoDVisualLexicon.EDGE)));
-		vpSets.put(NETWORK, getNetworkLeafNodes(lexicon
+		vpSets.put(CyNetwork.class, getNetworkLeafNodes(lexicon
 				.getAllDescendants(TwoDVisualLexicon.NETWORK)));
 
 	}
@@ -213,7 +205,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.application.swing.vizmap.gui.internal.DefaultViewEditor#showDialog(java.awt
+	 * org.cytoscape.vizmap.gui.internal.DefaultViewEditor#showDialog(java.awt
 	 * .Component)
 	 */
 	public void showEditor(Component parent) {
@@ -229,7 +221,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.cytoscape.application.swing.vizmap.gui.internal.DefaultViewEditor#getDefaultView(java
+	 * org.cytoscape.vizmap.gui.internal.DefaultViewEditor#getDefaultView(java
 	 * .lang.String)
 	 */
 	public JPanel getDefaultView(String vsName) {
@@ -263,9 +255,9 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 		networkList = new JXList();
 
-		listMap.put(NODE, nodeList);
-		listMap.put(EDGE, edgeList);
-		listMap.put(NETWORK, networkList);
+		listMap.put(CyNode.class, nodeList);
+		listMap.put(CyEdge.class, edgeList);
+		listMap.put(CyNetwork.class, networkList);
 
 		cancelButton = new javax.swing.JButton();
 		cancelButton.setVisible(false);
@@ -536,7 +528,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 		final VisualPropCellRenderer renderer = new VisualPropCellRenderer();
 
-		for (String key : vpSets.keySet()) {
+		for (Class<? extends CyTableEntry> key : vpSets.keySet()) {
 			DefaultListModel model = new DefaultListModel();
 			JList list = listMap.get(key);
 			list.setModel(model);

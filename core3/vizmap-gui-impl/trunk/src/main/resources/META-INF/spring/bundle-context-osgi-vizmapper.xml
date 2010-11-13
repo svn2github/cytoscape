@@ -8,6 +8,8 @@
 	<!-- Export Service Listeners -->
 	<osgi:service id="selectedVisualStyleManagerService" ref="selectedVisualStyleManager" auto-export="interfaces" />
 	
+	<osgi:service id="attributeSetManagerService" ref="attributeSetManager" auto-export="interfaces" />
+	
 	<!--  The main pane is a service -->
 	<osgi:service id="vizMapperGUIService" ref="vizMapperMainPanel"
 		auto-export="interfaces" />
@@ -15,13 +17,10 @@
 	<osgi:service id="defaultViewEditorService" ref="defViewEditor"
 		auto-export="interfaces" />
 
-	<osgi:service id="nodeAttributeComboBoxEditorService" ref="nodeAttributeComboBoxEditor"
-		auto-export="interfaces" />
-	<osgi:service id="edgeAttributeComboBoxEditorService" ref="edgeAttributeComboBoxEditor"
-		auto-export="interfaces" />
-	<osgi:service id="networkAttributeComboBoxEditorService"
-		ref="networkAttributeComboBoxEditor" auto-export="interfaces" />
 
+	<osgi:service id="nodeEditorService" ref="nodeAttributeComboBoxEditor" auto-export="interfaces" />
+	<osgi:service id="edgeEditorService" ref="edgeAttributeComboBoxEditor" auto-export="interfaces" />
+	<osgi:service id="networkEditorService" ref="networkAttributeComboBoxEditor" auto-export="interfaces" />
 
 	<!-- Value Editors -->
 	<osgi:service id="colorEditorService" ref="colorEditor"

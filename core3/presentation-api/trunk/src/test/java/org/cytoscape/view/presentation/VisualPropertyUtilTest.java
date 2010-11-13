@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.DoubleVisualProperty;
@@ -22,7 +23,7 @@ public class VisualPropertyUtilTest {
 
 	@Before
 	public void setUp() throws Exception {
-		dummy = new DoubleVisualProperty(new Double(10), "DUMMY", "Dummy Prop");
+		dummy = new DoubleVisualProperty(new Double(10), "DUMMY", "Dummy Prop", CyNode.class);
 		
 		// Create root node.
 		twoDRoot = new NullVisualProperty("TWO_D_ROOT",

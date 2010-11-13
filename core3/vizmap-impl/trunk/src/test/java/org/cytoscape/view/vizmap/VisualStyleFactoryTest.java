@@ -1,6 +1,5 @@
 package org.cytoscape.view.vizmap;
 
-
 import static org.mockito.Mockito.mock;
 
 import org.cytoscape.event.CyEventHelper;
@@ -15,17 +14,17 @@ import org.junit.Before;
 
 public class VisualStyleFactoryTest extends AbstractVisualStyleFactoryTest {
 
-	
-	private static final VisualProperty<NullDataType> TWO_D_ROOT = new NullVisualProperty("DEFAULT_LEXICON_ROOT",
-	"2D Lexicon Root Visual Property");
-	
-	private static final VisualLexicon DEFAULT_LEXICON = new TwoDVisualLexicon(TWO_D_ROOT);
-	
+	private static final VisualProperty<NullDataType> TWO_D_ROOT = new NullVisualProperty(
+			"DEFAULT_LEXICON_ROOT", "2D Lexicon Root Visual Property");
+
+	private static final VisualLexicon DEFAULT_LEXICON 
+		= new TwoDVisualLexicon(TWO_D_ROOT);
+
 	@Before
 	public void setUp() throws Exception {
 		final CyEventHelper eventHelper = mock(CyEventHelper.class);
 		factory = new VisualStyleFactoryImpl(eventHelper);
-		
+
 		lexicon = DEFAULT_LEXICON;
 	}
 

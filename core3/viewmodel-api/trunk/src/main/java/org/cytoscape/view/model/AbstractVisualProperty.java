@@ -55,6 +55,8 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 
 	// If this is true, default value will be ignored by VizMapper.
 	protected boolean shouldIgnoreDefault;
+	
+	private final Class<?> targetObjectDataType;
 
 	
 	/**
@@ -66,7 +68,7 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public AbstractVisualProperty(final T defaultValue, final Class<T> dataType, final String id, final String displayName) {
+	public AbstractVisualProperty(final T defaultValue, final Class<T> dataType, final String id, final String displayName, final Class<?> targetObjectDataType) {
 		if(defaultValue == null)
 			throw new NullPointerException("defaultValue should not be null.");
 		
@@ -82,6 +84,7 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 		this.id = id;
 		this.name = displayName;
 		this.shouldIgnoreDefault = false;
+		this.targetObjectDataType = targetObjectDataType;
 	}
 
 	
@@ -109,6 +112,10 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	@Override
 	public boolean shouldIgnoreDefault() {
 		return this.shouldIgnoreDefault;
+	}
+	
+	@Override public Class<?> getTargetDataType() {
+		return this.targetObjectDataType;
 	}
 
 }

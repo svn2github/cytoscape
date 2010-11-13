@@ -36,12 +36,13 @@
 package org.cytoscape.ding.impl; 
 
 import org.cytoscape.ding.ArrowShape;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.AbstractVisualProperty;
 
 public class ArrowShapeTwoDVisualProperty extends AbstractVisualProperty<ArrowShape> { 
 
 	public ArrowShapeTwoDVisualProperty(final ArrowShape def, final String id, final String name) {
-		super(def, ArrowShape.class, id,name);
+		super(def, ArrowShape.class, id, name, CyEdge.class);
 	}
 	
 	public String toSerializableString(final ArrowShape value) {

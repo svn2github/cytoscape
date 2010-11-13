@@ -35,13 +35,14 @@
 package org.cytoscape.ding.impl;
 
 import org.cytoscape.ding.NodeShape;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.AbstractVisualProperty;
 
 public class NodeShapeTwoDVisualProperty extends
 		AbstractVisualProperty<NodeShape> {
 
 	public NodeShapeTwoDVisualProperty(final NodeShape def, final String id, final String name) {
-		super(def, NodeShape.class, id, name);
+		super(def, NodeShape.class, id, name, CyNode.class);
 	}
 
 	public String toSerializableString(final NodeShape value) {

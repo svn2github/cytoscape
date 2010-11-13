@@ -28,25 +28,10 @@
 package org.cytoscape.view.vizmap.gui.internal.action;
 
 
-import static org.cytoscape.application.swing.model.CyTableEntry.NODE;
-
-import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
-import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
-import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
-
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
 
 public class ModifyBrightnessAction extends AbstractVizMapperAction {

@@ -15,8 +15,8 @@ public class DefaultVisualizableVisualProperty extends
 
 	private static final Visualizable visualizable = new VisualizableImpl();
 
-	public DefaultVisualizableVisualProperty(final String id, final String name) {
-		super(visualizable, Visualizable.class, id, name);
+	public DefaultVisualizableVisualProperty(final String id, final String name, final Class<?> targetDataType) {
+		super(visualizable, Visualizable.class, id, name, targetDataType);
 	}
 
 	@Override

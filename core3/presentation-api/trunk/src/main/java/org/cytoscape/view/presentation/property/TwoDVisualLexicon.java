@@ -37,6 +37,9 @@ package org.cytoscape.view.presentation.property;
 import java.awt.Color;
 import java.awt.Paint;
 
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
@@ -55,100 +58,100 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 
 	////// Top level objects ///////
 	public static final VisualProperty<Visualizable> NETWORK = new DefaultVisualizableVisualProperty(
-			"NETWORK", "Network Visual Property");
+			"NETWORK", "Network Visual Property", CyNetwork.class);
 	public static final VisualProperty<Visualizable> NODE = new DefaultVisualizableVisualProperty(
-			"NODE", "Node Visual Property");
+			"NODE", "Node Visual Property", CyNode.class);
 	public static final VisualProperty<Visualizable> EDGE = new DefaultVisualizableVisualProperty(
-			"EDGE", "Edge Visual Property");
+			"EDGE", "Edge Visual Property", CyEdge.class);
 	
 
 	////// Node VP /////////
 	public static final VisualProperty<Paint> NODE_PAINT = new PaintVisualProperty(
-			Color.gray, "NODE_PAINT", "Node Paint");
+			Color.gray, "NODE_PAINT", "Node Paint", CyNode.class);
 	public static final VisualProperty<Paint> NODE_COLOR = new PaintVisualProperty(
-			Color.RED, "NODE_COLOR", "Node Color");
+			Color.RED, "NODE_COLOR", "Node Color", CyNode.class);
 	
 	public static final VisualProperty<Paint> NODE_LABEL_COLOR = new PaintVisualProperty(
-			Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color");
+			Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color", CyNode.class);
 
 	public static final VisualProperty<String> NODE_TEXT = new StringVisualProperty(
-			"", "NODE_TEXT", "Node Text");
+			"", "NODE_TEXT", "Node Text", CyNode.class);
 	public static final VisualProperty<String> NODE_LABEL = new StringVisualProperty(
-			"", "NODE_LABEL", "Node Label");
+			"", "NODE_LABEL", "Node Label", CyNode.class);
 
 	public static final VisualProperty<Double> NODE_LOCATION = new DoubleVisualProperty(
-			Double.NaN, "NODE_LOCATION", "Node Location", true);
+			Double.NaN, "NODE_LOCATION", "Node Location", true, CyNode.class);
 	public static final VisualProperty<Double> NODE_X_LOCATION = new DoubleVisualProperty(
-			Double.NaN, "NODE_X_LOCATION", "Node X Location", true);
+			Double.NaN, "NODE_X_LOCATION", "Node X Location", true, CyNode.class);
 	public static final VisualProperty<Double> NODE_Y_LOCATION = new DoubleVisualProperty(
-			Double.NaN, "NODE_Y_LOCATION", "Node Y Location", true);
+			Double.NaN, "NODE_Y_LOCATION", "Node Y Location", true, CyNode.class);
 
 	public static final VisualProperty<Double> NODE_SIZE = new DoubleVisualProperty(
-			50.0, "NODE_SIZE", "Node size");
+			50.0, "NODE_SIZE", "Node size", CyNode.class);
 	public static final VisualProperty<Double> NODE_X_SIZE = new DoubleVisualProperty(
-			50.0, "NODE_X_SIZE", "Node X size (width)");
+			50.0, "NODE_X_SIZE", "Node X size (width)", CyNode.class);
 	public static final VisualProperty<Double> NODE_Y_SIZE = new DoubleVisualProperty(
-			30.0, "NODE_Y_SIZE", "Node y size (height)");
+			30.0, "NODE_Y_SIZE", "Node y size (height)", CyNode.class);
 
 	public static final VisualProperty<Boolean> NODE_VISIBLE = new BooleanVisualProperty(
-			true, "NODE_VISIBLE", "Node Visible");
+			true, "NODE_VISIBLE", "Node Visible", CyNode.class);
 
 	public static final VisualProperty<Boolean> NODE_SELECTED = new BooleanVisualProperty(
-			false, "NODE_SELECTED", "Node Selected");
+			false, "NODE_SELECTED", "Node Selected", CyNode.class);
 
 	
 	/////// Edge VP ///////
 	public static final VisualProperty<Paint> EDGE_PAINT = new PaintVisualProperty(
-			Color.gray, "EDGE_PAINT", "Edge Paint");
+			Color.gray, "EDGE_PAINT", "Edge Paint", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_COLOR = new PaintVisualProperty(
-			Color.gray, "EDGE_COLOR", "Edge Color");
+			Color.gray, "EDGE_COLOR", "Edge Color", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_LABEL_COLOR = new PaintVisualProperty(
-			Color.BLACK, "EDGE_LABEL_COLOR", "Edge Label Color");
+			Color.BLACK, "EDGE_LABEL_COLOR", "Edge Label Color", CyEdge.class);
 
 	public static final VisualProperty<String> EDGE_TEXT = new StringVisualProperty(
-			"", "EDGE_TEXT", "Edge Text");
+			"", "EDGE_TEXT", "Edge Text", CyEdge.class);
 	public static final VisualProperty<String> EDGE_LABEL = new StringVisualProperty(
-			"", "EDGE_LABEL", "Edge Label");
+			"", "EDGE_LABEL", "Edge Label", CyEdge.class);
 
 	public static final VisualProperty<Double> EDGE_WIDTH = new DoubleVisualProperty(
-			1d, "EDGE_WIDTH", "Edge Width");
+			1d, "EDGE_WIDTH", "Edge Width", CyEdge.class);
 
 	public static final VisualProperty<Boolean> EDGE_VISIBLE = new BooleanVisualProperty(
-			true, "EDGE_VISIBLE", "Edge Visible");
+			true, "EDGE_VISIBLE", "Edge Visible", CyEdge.class);
 
 	public static final VisualProperty<Boolean> EDGE_SELECTED = new BooleanVisualProperty(
-			false, "EDGE_SELECTED", "Edge Selected");
+			false, "EDGE_SELECTED", "Edge Selected", CyEdge.class);
 
 	
 	//////// Network VP ////////
 	public static final VisualProperty<Double> NETWORK_SCALE_FACTOR = new DoubleVisualProperty(
-			1.0, "NETWORK_SCALE_FACTOR", "Network Scale Factor");
+			1.0, "NETWORK_SCALE_FACTOR", "Network Scale Factor", CyNetwork.class);
 
 	public static final VisualProperty<Double> NETWORK_CENTER_LOCATION = new DoubleVisualProperty(
-			0.0, "NETWORK_CENTER_LOCATION", "Network Center Location");
+			0.0, "NETWORK_CENTER_LOCATION", "Network Center Location", CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_CENTER_X_LOCATION = new DoubleVisualProperty(
-			0.0, "NETWORK_CENTER_X_LOCATION", "Network Center X Location");
+			0.0, "NETWORK_CENTER_X_LOCATION", "Network Center X Location", CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_CENTER_Y_LOCATION = new DoubleVisualProperty(
-			0.0, "NETWORK_CENTER_Y_LOCATION", "Network Center Y Location");
+			0.0, "NETWORK_CENTER_Y_LOCATION", "Network Center Y Location", CyNetwork.class);
 
 	public static final VisualProperty<Double> NETWORK_SIZE = new DoubleVisualProperty(
-			100.0, "NETWORK_SIZE", "Network Size");
+			100.0, "NETWORK_SIZE", "Network Size", CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_WIDTH = new DoubleVisualProperty(
-			100.0, "NETWORK_WIDTH", "Network Width");
+			100.0, "NETWORK_WIDTH", "Network Width", CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_HEIGHT = new DoubleVisualProperty(
-			100.0, "NETWORK_HEIGHT", "Network Height");
+			100.0, "NETWORK_HEIGHT", "Network Height", CyNetwork.class);
 
 	public static final VisualProperty<String> NETWORK_TITLE = new StringVisualProperty(
-			"", "NETWORK_TITLE", "Network Title");
+			"", "NETWORK_TITLE", "Network Title", CyNetwork.class);
 
 	public static final VisualProperty<Paint> NETWORK_BACKGROUND_PAINT = new PaintVisualProperty(
-			Color.WHITE, "NETWORK_BACKGROUND_PAINT", "Network Background Paint");
+			Color.WHITE, "NETWORK_BACKGROUND_PAINT", "Network Background Paint", CyNetwork.class);
 	
 	public static final VisualProperty<Paint> NETWORK_NODE_SELECTED_COLOR = new PaintVisualProperty(
-			Color.YELLOW, "NETWORK_NODE_SELECTED_COLOR", "Node Selected Color");
+			Color.YELLOW, "NETWORK_NODE_SELECTED_COLOR", "Node Selected Color", CyNetwork.class);
 	
 	public static final VisualProperty<Paint> NETWORK_EDGE_SELECTED_COLOR = new PaintVisualProperty(
-			Color.YELLOW, "NETWORK_EDGE_SELECTED_COLOR", "Edge Selected Color");
+			Color.YELLOW, "NETWORK_EDGE_SELECTED_COLOR", "Edge Selected Color", CyNetwork.class);
 
 	/**
 	 * Build tree-structure for the set of Visual Properties defined in this

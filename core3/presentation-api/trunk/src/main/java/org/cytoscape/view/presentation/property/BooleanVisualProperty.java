@@ -39,8 +39,8 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 
 public class BooleanVisualProperty extends AbstractVisualProperty<Boolean> { 
 
-	public BooleanVisualProperty(final Boolean def, final String id, final String name) {
-		super(def, Boolean.class, id,name);
+	public BooleanVisualProperty(final Boolean def, final String id, final String name, final Class<?> targetDataType) {
+		super(def, Boolean.class, id,name, targetDataType);
 	}
 	
 	public String toSerializableString(final Boolean value) {

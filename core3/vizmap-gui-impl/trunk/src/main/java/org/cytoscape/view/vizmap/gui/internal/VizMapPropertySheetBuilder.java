@@ -1,9 +1,5 @@
 package org.cytoscape.view.vizmap.gui.internal;
 
-import static org.cytoscape.application.swing.model.CyTableEntry.EDGE;
-import static org.cytoscape.application.swing.model.CyTableEntry.NETWORK;
-import static org.cytoscape.application.swing.model.CyTableEntry.NODE;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.beans.PropertyEditor;
@@ -12,21 +8,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import javax.swing.Icon;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.events.NetworkAddedEvent;
-import org.cytoscape.model.events.NetworkAddedListener;
-import org.cytoscape.view.model.NullDataType;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -293,7 +284,7 @@ public class VizMapPropertySheetBuilder {
 				((PropertyEditorRegistry) this.propertySheetPanel
 						.getTable().getEditorFactory())
 						.registerEditor(calculatorTypeProp, editorManager
-								.getDataTableComboBoxEditor(NODE));
+								.getDataTableComboBoxEditor(CyNode.class));
 
 
 //				if (cat.equals(NODE)) {

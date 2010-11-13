@@ -39,8 +39,8 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 
 public class AnchorTwoDVisualProperty extends AbstractVisualProperty<Anchor> { 
 
-	public AnchorTwoDVisualProperty(final Anchor def, final String id, final String name) {
-		super(def, Anchor.class, id,name);
+	public AnchorTwoDVisualProperty(final Anchor def, final String id, final String name, final Class<?> tagretDataType) {
+		super(def, Anchor.class, id, name, tagretDataType);
 	}
 	
 	public String toSerializableString(final Anchor value) {
