@@ -116,12 +116,12 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha1</version>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-api</artifactId>
-			<version>3.0.0-alpha2</version>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -146,12 +146,12 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-api</artifactId>
-			<version>3.0.0-alpha1</version>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>plugin-api</artifactId>
-			<version>3.0.0-alpha1</version>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -171,7 +171,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-api</artifactId>
-			<version>3.0.0-alpha1</version>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -204,7 +204,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-impl</artifactId>
-			<version>3.0.0-alpha1</version>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -257,13 +257,13 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		
-		<!--<dependency>
+		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-gui-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
-		--><dependency>
+		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>default-mappings</artifactId>
 			<version>1.0-SNAPSHOT</version>
@@ -317,7 +317,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>plugin-impl</artifactId>
-			<version>3.0.0-alpha1</version>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
 		<!-- A utility that allows you to register services dynamically -->
 		<dependency>
