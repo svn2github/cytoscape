@@ -43,11 +43,13 @@
 package org.cytoscape.internal.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.print.PrinterJob;
 import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.event.MenuEvent;
+import javax.swing.KeyStroke;
 
 import org.cytoscape.application.swing.CytoscapeAction;
 import org.cytoscape.session.CyApplicationManager;
@@ -73,7 +75,7 @@ public class PrintAction extends CytoscapeAction {
 	public PrintAction(CyApplicationManager appMgr, Properties props ) {
 		super(MENU_LABEL, appMgr );
 		setPreferredMenu("File");
-		setAcceleratorCombo(java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK);
+		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
 		this.props = props;
 	}
 

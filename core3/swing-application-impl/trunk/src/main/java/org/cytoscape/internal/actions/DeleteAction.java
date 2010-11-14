@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.event.MenuEvent;
+import javax.swing.KeyStroke;
 
 import org.cytoscape.application.swing.CytoscapeAction;
 import org.cytoscape.model.CyTableUtil;
@@ -95,7 +96,7 @@ public class DeleteAction extends CytoscapeAction {
 		super(ACTION_TITLE,applicationManager);
 		this.networkViewManager = networkViewManager;
 		setPreferredMenu("Edit");
-		setAcceleratorCombo(KeyEvent.VK_DELETE, 0);
+		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		graphObj = obj;
 		this.undo = undo;
 		cyRootNetworkFactory = root; 

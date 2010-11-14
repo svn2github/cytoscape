@@ -40,6 +40,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.Action;
+import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.undo.CannotUndoException;
 
@@ -62,7 +63,7 @@ public class UndoAction extends CytoscapeAction {
 	 */
 	public UndoAction(UndoSupport undo,CyApplicationManager appMgr) {
 		super("Undo",appMgr);
-		setAcceleratorCombo(KeyEvent.VK_Z, ActionEvent.CTRL_MASK);
+		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
 		setPreferredMenu("Edit");
 		setEnabled(true);
 		this.undo = undo;

@@ -159,17 +159,16 @@ public class CytoscapeMenuBar extends JMenuBar {
 		JMenu menu = getMenu(menu_name);
 		menu_item = createJMenuItem(action);
 
-		// Add an Accelerator Key, if wanted
 
 		// If it wants to be anywhere in particular, try to put it there..
 		Object index_object = Integer.valueOf(-1);
 
 		//index_object = action.getPrefferedIndex();
 
-		if (action.isAccelerated() && (action.getValue(Action.ACCELERATOR_KEY) == null)) {
-			KeyStroke keyStroke = KeyStroke.getKeyStroke(action.getKeyCode(), action.getKeyModifiers());
-			menu_item.setAccelerator(keyStroke);
-		}
+		// Add an Accelerator Key, if wanted
+		KeyStroke accelerator = action.getAcceleratorKeyStroke();
+		if ( accelerator != null )
+			menu_item.setAccelerator(accelerator);
 			
 		menu.addMenuListener(action);
 
