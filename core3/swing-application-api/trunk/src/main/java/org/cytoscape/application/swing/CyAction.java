@@ -38,6 +38,7 @@
 package org.cytoscape.application.swing;
 
 import javax.swing.Action;
+import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.event.PopupMenuListener;
@@ -81,25 +82,18 @@ public interface CyAction extends Action, MenuListener, PopupMenuListener {
 	float getToolbarGravity();
 
 	/**
-	 * Returns whether or not this action is accelerated.
-	 * @return Whether or not this action is accelerated.
+	 * Returns the accelerator KeyStroke defined for this action. 
+	 * Will return null if no accelerator is set.
+	 * @return the accelerator KeyStroke defined for this action. 
+	 * Will return null if no accelerator is set.
 	 */
-	boolean isAccelerated();
-
-	/**
-	 * Returns the key code used to identify this action.
-	 * @return the key code used to identify this action.
-	 */
-	int getKeyCode();
-
-	/**
-	 * Returns the key modifiers used to identify this action.
-	 * @return the key modifiers used to identify this action.
-	 */
-	int getKeyModifiers();
+	KeyStroke getAcceleratorKeyStroke();
 
 	/** 
-	 * Returns the string identifying the preferred menu.
+	 * This method returns a Menu specification string. Submenus are preceeded
+	 * by dots in this string, so the result "File.Import" specifies the submenu
+	 * "Import" of the menu "File". If the result is null, the menu will be
+	 * placed in a default location.
 	 * @return the string identifying the preferred menu.
 	 */
 	String getPreferredMenu();

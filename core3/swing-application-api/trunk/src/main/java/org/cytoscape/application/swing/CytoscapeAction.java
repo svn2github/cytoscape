@@ -60,9 +60,8 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	protected float menuGravity = 1.0f; 
 	protected float toolbarGravity = 1.0f; 
 	protected boolean acceleratorSet = false;
-	protected int keyModifiers;
-	protected int keyCode;
-	protected String consoleName;
+	protected KeyStroke acceleratorKeyStroke = null;
+	protected String name;
 	protected boolean useCheckBoxMenuItem = false;
 	protected boolean inToolBar = false;
 	protected boolean inMenuBar = true;
@@ -77,17 +76,27 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 */
 	public CytoscapeAction(final String name, final CyApplicationManager applicationManager) {
 		super(name);
-		this.consoleName = name;
+		this.name = name;
 		this.applicationManager = applicationManager;
-
-		consoleName = consoleName.replaceAll(":. \'", "");
 	}
 
 	/**
 	 * Creates a new CytoscapeAction object.
 	 *
 	 * @param configProps A String-String Map of configuration metadata. This
-	 * will usually be the Map provided by the Spring service configuration.
+	 * will usually be the Map provided by the Spring service configuration. 
+	 * Available configuration keys include:
+	 * <ul>
+	 * <li>title</li>
+	 * <li>preferredMenu</li>
+	 * <li>preferredButtonGroup</li>
+	 * <li>iconName</li>
+	 * <li>tooltip</li>
+	 * <li>inToolBar</li>
+	 * <li>inMenuBar</li>
+	 * <li>enableFor</li>
+	 * <li>accelerator</li>
+	 * </ul>
 	 * @param applicationManager The application manager providing context for this action.
 	 */
 	public CytoscapeAction(final Map configProps, final CyApplicationManager applicationManager) {
@@ -113,63 +122,53 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 		if ( foundInToolBar != null )
 		 	inToolBar = true;
 
+		String foundInMenuBar = (String)(configProps.get("inMenuBar"));
+		if ( foundInMenuBar != null )
+		 	inMenuBar = true;
+
 		enableFor = (String)(configProps.get("enableFor"));
 
 		String keyComboString = (String) configProps.get("accelerator");
-		if (keyComboString != null) {
-			try
-			{
-				KeyStroke keyStroke = AcceleratorParser.parse(keyComboString);
-				super.putValue(Action.ACCELERATOR_KEY, keyStroke);
-			}
-			catch (IllegalArgumentException ex)
-			{
-				System.out.println(String.format("WARNING: The action \'%s\' has specified the following invalid key combination: %s", consoleName, keyComboString));
-				System.out.println(" => " + ex.getMessage());
-			}
-		}
+		if (keyComboString != null) 
+			setAcceleratorKeyStroke( AcceleratorParser.parse(keyComboString) );
 	}
 
 	/**
-	 * @inheritdoc 
+	 * Sets the name of the action.
+	 * @param name The name of the action. 
 	 */
 	public void setName(String name) {
-		this.consoleName = name;
+		this.name = name;
 	}
 
 	/**
 	 * @inheritdoc 
 	 */
 	public String getName() {
-		return consoleName;
+		return name;
 	}
 
 	/**
-	 * By default all CytoscapeActions wish to be included in CommunityMenuBars,
-	 * but you may override if you wish.
-	 *
-	 * @return true If this Action should be included in a CommunityMenuBar.
-	 * @see #getPrefferedMenu();
-	 * @beaninfo (ri)
+	 * By default all CytoscapeActions wish to be included in the menu bar
+	 * at the 'preferredMenuName' location is specified and the 'Tools' menu
+	 * not.
+	 * @return true if this CyAction should be included in menu bar. 
 	 */
 	public boolean isInMenuBar() {
 		return inMenuBar;
 	}
 
 	/**
-	 * By default no CytoscapeActions wish to be included in CommunityToolBars,
-	 * but you may override if you wish.
-	 *
-	 * @return true If this Action should be included in a CommunityMenuBar.
-	 * @see #getPrefferedButtonGroup();
-	 * @beaninfo (ri)
+	 * By default no CytoscapeActions will be included in the toolbar. 
+	 * @return true if this Action should be included in the toolbar. 
 	 */
 	public boolean isInToolBar() {
 		return inToolBar;
 	}
 
 	/**
-	 * @inheritdoc 
+	 * Sets the gravity used to order this action in the menu bar.
+	 * @param gravity The gravity for ordering menu bar actions.
 	 */
 	public void setMenuGravity(float gravity) {
 		menuGravity = gravity;
@@ -183,7 +182,8 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	}
 
 	/**
-	 * @inheritdoc 
+	 * Sets the gravity used to order this action in the toolbar.
+	 * @param gravity The gravity for ordering toolbar actions.
 	 */
 	public void setToolbarGravity(float gravity) {
 		toolbarGravity = gravity;
@@ -197,94 +197,67 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	}
 
 	/**
-	 * @inheritdoc 
+     * Sets the accelerator KeyStroke for this action. 
+     * @param ks The KeyStroke to be used as an accelerator for this action. 
+     * This parameter may be null, in which case no accelerator is defined.
 	 */
-	public void setAcceleratorCombo(int key_code, int key_mods) {
-		acceleratorSet = true;
-		keyCode = key_code;
-		keyModifiers = key_mods;
+	public void setAcceleratorKeyStroke(KeyStroke ks) {
+		acceleratorKeyStroke = ks;	
 	}
 
 	/**
-	 * @inheritdoc 
+	 * @inheritdoc
 	 */
-	public boolean isAccelerated() {
-		return acceleratorSet;
+	public KeyStroke getAcceleratorKeyStroke() {
+		return acceleratorKeyStroke;
 	}
 
 	/**
-	 * @inheritdoc 
-	 */
-	public int getKeyCode() {
-		return keyCode;
-	}
-
-	/**
-	 * @inheritdoc 
-	 */
-	public int getKeyModifiers() {
-		return keyModifiers;
-	}
-
-	/**
-	 * This method returns a Menu specification string. Submenus are preceeded
-	 * by dots in this string, so the result "File.Import" specifies the submenu
-	 * "Import" of the menu "File". If the result is null, the menu will be
-	 * placed in a default location.
-	 *
-	 * @return a Menu specification string, or null if this Action should be
-	 *         placed in a default Menu.
-	 * @see #inMenuBar()
+	 * @inheritdoc
 	 */
 	public String getPreferredMenu() {
 		return preferredMenu;
 	}
 
 	/**
-	 * @inheritdoc 
+	 * Sets the preferredMenuString.  See the {@link #getPreferredMenu} 
+	 * description for formatting description.
+	 * @param new_preferred The string describing the preferred menu name.
 	 */
 	public void setPreferredMenu(String new_preferred) {
 		preferredMenu = new_preferred;
 	} 
 
-	/**
-	 * This method returns a ButtonGroup specification string. Subgroups are
-	 * preceeded by dots in this string, so the result "Edit.Selection Modes"
-	 * specifies the subgroup "Selection Modes" of the group "Edit". If the
-	 * result is null, the button will be placed in a default location.
-	 *
-	 * @return a ButtonGroup specification string, or null if the button for
-	 *         this Action should be placed in a default ButtonGroup.
-	 * @see #inToolBar()
+	/** 
+	 * @inheritdoc
 	 */
 	public String getPreferredButtonGroup() {
 		return preferredButtonGroup;
 	}
 
 	/**
-	 * @inheritdoc 
+	 * Sets the preferred button group.
+	 * @param new_preferred The preferred button group for this action. 
 	 */
 	public void setPreferredButtonGroup(String new_preferred) {
 		preferredButtonGroup = new_preferred;
 	} 
 
 	/**
-	 * Indicates whether a check box menu item should be used instead of a normal one.
+	 * @inheritdoc
 	 */
 	public boolean useCheckBoxMenuItem() {
 		return useCheckBoxMenuItem;
 	}
 
 	/**
-	 * This method can be used at your discretion, but otherwise does nothing.  It exists
-	 * primarily to have access to menuSelected().
+	 * This method can be used at your discretion, but otherwise does nothing.  
 	 * @param e The triggering event.
 	 */
     public void menuCanceled(MenuEvent e) {}
 
 	/**
-	 * This method can be used at your discretion, but otherwise does nothing.  It exists
-	 * primarily to have access to menuSelected().
+	 * This method can be used at your discretion, but otherwise does nothing.  
 	 * @param e The triggering event.
 	 */
     public void menuDeselected(MenuEvent e) {}
@@ -310,18 +283,25 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	public void popupMenuWillBecomeVisible(PopupMenuEvent e) { enableMenus(); }
 
 	/**
-	 * This method can be used at your discretion, but otherwise does nothing.  It exists
-	 * primarily to have access to menuSelected().
+	 * This method can be used at your discretion, but otherwise does nothing.  
 	 * @param e The triggering event.
 	 */
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
 
 	/**
-	 * This method can be used at your discretion, but otherwise does nothing.  It exists
-	 * primarily to have access to menuSelected().
+	 * This method can be used at your discretion, but otherwise does nothing.
 	 * @param e The triggering event.
 	 */
 	public void popupMenuCanceled(PopupMenuEvent e) {}
+
+	//
+	// The following methods are utility methods that that enable or disable 
+	// the action based on the state of Cytoscape.  These methods are meant to
+	// reduce duplicate code since many actions demand the same state to be
+	// functional (e.g. a network and network view must exist). These methods
+	// are generally called from within implementations of {@link #menuSelected}, 
+	// but can be called from anywhere.
+	//
 
 	private void enableMenus() {
 		if ( enableFor == null || enableFor.equals("") )
@@ -333,15 +313,6 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 		else if ( enableFor.equals("selectedNetworkObjs") ) 
 			enableForSelectedNetworkObjs();
 	}
-
-	//
-	// The following methods are utility methods that that enable or disable 
-	// the action based on the state of Cytoscape.  These methods are meant to
-	// reduce duplicate code since many actions demand the same state to be
-	// functional (e.g. a network and network view must exist). These methods
-	// are generally called from within implementations of {@link #menuSelected}, 
-	// but can be called from anywhere.
-	//
 
 	/**
 	 * Enable the action if the current network exists and is not null.

@@ -7,6 +7,8 @@ import javax.swing.KeyStroke;
 import java.awt.Toolkit;
 import java.util.Map;
 import java.util.HashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parses accelerator combinations to be used with menu items.
@@ -42,9 +44,9 @@ import java.util.HashMap;
  */
 class AcceleratorParser
 {
-	static final Map<String,Integer> modifiers = new HashMap<String,Integer>(8, 1.0f);
-	static
-	{
+	private static final Map<String,Integer> modifiers = new HashMap<String,Integer>();
+	private static final Logger logger = LoggerFactory.getLogger(AcceleratorParser.class);
+	static {
 		modifiers.put("command",	Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 		modifiers.put("cmd",		Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 		modifiers.put("meta",		Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
@@ -85,52 +87,47 @@ class AcceleratorParser
 	 * <li><code>shift circumflex</code></li>
 	 * </ul></p>
 	 * @param string A well formatted accelerator combination described above.
-	 * @throws IllegalArgumentException if <code>string</code> is not well formed
 	 */
-	static KeyStroke parse(String string)
-	{
+	static KeyStroke parse(String string) {
 		int keyCode = 0;
 		int modifierCode = 0;
 		final StringTokenizer tokenizer = new StringTokenizer(string);
-		while (tokenizer.hasMoreTokens())
-		{
+		while (tokenizer.hasMoreTokens()) {
 			String token = tokenizer.nextToken();
-			if (tokenizer.hasMoreTokens())
-			{
-				Integer modifier = modifiers.get(token);
-				if (modifier == null)
-					throw new IllegalArgumentException(String.format("The modifier \'%s\' in \'%s\' is invalid; valid modifiers are: %s", token, string, modifiers.keySet().toString()));
-				modifierCode |= modifier.intValue();
-			}
-			else
-			{
+			if (tokenizer.hasMoreTokens()) {
+				modifierCode |= lookupModifier(token); 
+			} else {
 				keyCode = lookupVKCode(token);
 			}
 		}
 
 		if (keyCode == 0)
-			throw new IllegalArgumentException("No virtual key was specified");
+			return null;	
 
 		return KeyStroke.getKeyStroke(keyCode, modifierCode);
 	}
 
-	static int lookupVKCode(String name)
-	{
-		String error = String.format("The virtual key \'%s\' does not exist", name);
-		name = "VK_" + name.toUpperCase();
+	private static int lookupModifier(String name) {
+		Integer modifier = modifiers.get(name);
+		if (modifier == null) {
+			logger.warn("The modifier '" + name + "' is invalid; valid modifiers are: " + modifiers.keySet().toString());
+			return 0;
+		}
+		return modifier.intValue();
+	}
+
+	private static int lookupVKCode(String name) {
+		String error = "The virtual key 'VK_" + name +"' does not exist";
 
 		int code = 0;
-		try
-		{
+		try {
 			code = KeyEvent.class.getField(name).getInt(KeyEvent.class);
-		}
-		catch (NoSuchFieldException ex)
-		{
-			throw new IllegalArgumentException(error, ex);
-		}
-		catch (IllegalAccessException ex)
-		{
-			throw new IllegalArgumentException(error, ex);
+		} catch (NoSuchFieldException ex) {
+			code = 0;
+			logger.warn(error);	
+		} catch (IllegalAccessException ex) {
+			code = 0;
+			logger.warn(error);	
 		}
 
 		return code;
