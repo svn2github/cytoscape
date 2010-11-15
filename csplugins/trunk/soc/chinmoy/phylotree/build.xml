@@ -49,7 +49,7 @@
     <path id="project.class.path">
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
       <pathelement path="${java.class.path}/"/>
-      <pathelement location="${cytoscape.lib.dir}/forester.jar"/>
+      <pathelement location="${lib.dir}/forester.jar"/>
     </path>
 
 	
