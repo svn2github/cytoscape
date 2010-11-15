@@ -11,6 +11,9 @@
 		interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=coreSettings)" />
 
+	<osgi:reference id="openBrowserServiceRef"
+		interface="org.cytoscape.util.swing.OpenBrowser" />
+
 	<osgi:reference id="cyApplicationManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
 
@@ -89,42 +92,42 @@
 	<!-- <osgi:service id="printActionService" ref="printAction" interface="cytoscape.view.CyAction" 
 		/> -->
 	<osgi:service id="exitActionService" ref="exitAction"
-		interface="org.cytoscape.view.CyAction" />
+		interface="org.cytoscape.application.swing.CyAction" />
 	<osgi:service id="undoActionService" ref="undoAction"
-		interface="org.cytoscape.view.CyAction" />
+		interface="org.cytoscape.application.swing.CyAction" />
 	<osgi:service id="redoActionService" ref="redoAction"
-		interface="org.cytoscape.view.CyAction" />
+		interface="org.cytoscape.application.swing.CyAction" />
 	<osgi:service id="deleteActionService" ref="deleteAction"
-		interface="org.cytoscape.view.CyAction" />
+		interface="org.cytoscape.application.swing.CyAction" />
 	<osgi:service id="preferenceActionService" ref="preferenceAction"
-		interface="org.cytoscape.view.CyAction" />
+		interface="org.cytoscape.application.swing.CyAction" />
 	<osgi:service id="bookmarkActionService" ref="bookmarkAction"
-		interface="org.cytoscape.view.CyAction" />
+		interface="org.cytoscape.application.swing.CyAction" />
 	<!-- <osgi:service id="alphabeticalSelectionActionService" ref="alphabeticalSelectionAction" 
-		interface="org.cytoscape.view.CyAction" /> <osgi:service id="bendSelectedEdgesActionService" 
-		ref="bendSelectedEdgesAction" interface="org.cytoscape.view.CyAction" /> <osgi:service 
+		interface="org.cytoscape.application.swing.CyAction" /> <osgi:service id="bendSelectedEdgesActionService" 
+		ref="bendSelectedEdgesAction" interface="org.cytoscape.application.swing.CyAction" /> <osgi:service 
 		id="straightenSelectedEdgesActionService" ref="straightenSelectedEdgesAction" 
-		interface="org.cytoscape.view.CyAction" /> <osgi:service id="showGraphicsDetailsActionService" 
-		ref="showGraphicsDetailsAction" interface="org.cytoscape.view.CyAction" /> -->
+		interface="org.cytoscape.application.swing.CyAction" /> <osgi:service id="showGraphicsDetailsActionService" 
+		ref="showGraphicsDetailsAction" interface="org.cytoscape.application.swing.CyAction" /> -->
 	<osgi:service id="settingsActionService" ref="settingsAction"
-		interface="org.cytoscape.view.CyAction" />
+		interface="org.cytoscape.application.swing.CyAction" />
 
 	<osgi:service id="cytoPanelWestActionService" ref="cytoPanelWestAction"
-		interface="org.cytoscape.view.CyAction" />
+		interface="org.cytoscape.application.swing.CyAction" />
 	<osgi:service id="cytoPanelSouthActionService" ref="cytoPanelSouthAction"
-		interface="org.cytoscape.view.CyAction" />
+		interface="org.cytoscape.application.swing.CyAction" />
 	<osgi:service id="cytoPanelEastActionService" ref="cytoPanelEastAction"
-		interface="org.cytoscape.view.CyAction" />
+		interface="org.cytoscape.application.swing.CyAction" />
 	<osgi:service id="cytoPanelSouthWestActionService" ref="cytoPanelSouthWestAction"
-		interface="org.cytoscape.view.CyAction" />
+		interface="org.cytoscape.application.swing.CyAction" />
 
-	<osgi:set id="cyActionSet" interface="org.cytoscape.view.CyAction"
+	<osgi:set id="cyActionSet" interface="org.cytoscape.application.swing.CyAction"
 		cardinality="0..N">
 		<osgi:listener bind-method="addAction" unbind-method="removeAction"
 			ref="cytoscapeDesktop" />
 	</osgi:set>
 
-	<osgi:set id="cytoPanelComponentSet" interface="org.cytoscape.view.CytoPanelComponent"
+	<osgi:set id="cytoPanelComponentSet" interface="org.cytoscape.application.swing.CytoPanelComponent"
 		cardinality="0..N">
 		<osgi:listener bind-method="addCytoPanelComponent" unbind-method="removeCytoPanelComponent"
 			ref="cytoscapeDesktop" />
@@ -265,7 +268,7 @@
 	<!-- Finally, Export Cytoscape Desktop itself as a service. Other desktop 
 		components (like VizMapper GUI) can use it through DI -->
 	<osgi:service id="cytoscapeDesktopService" ref="cytoscapeDesktop"
-		interface="org.cytoscape.view.CySwingApplication" />
+		interface="org.cytoscape.application.swing.CySwingApplication" />
 
 	<osgi:service id="networkPanelService" ref="networkPanel">
 		<osgi:interfaces>

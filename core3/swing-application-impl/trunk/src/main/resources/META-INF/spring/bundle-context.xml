@@ -43,7 +43,7 @@
 
 	<!-- Dialog Factories -->
 	<bean name="aboutDialogFactory" class="org.cytoscape.internal.dialogs.AboutDialogFactoryImpl">
-		<constructor-arg ref="openBrowser" />
+		<constructor-arg ref="openBrowserServiceRef" />
 	</bean>
 	<bean name="preferencesDialogFactory"
 		class="org.cytoscape.internal.dialogs.PreferencesDialogFactoryImpl">
@@ -178,7 +178,7 @@
 		<constructor-arg ref="cytoscapeDesktop" />
 	</bean>
 	<bean id="helpContactHelpDeskTaskFactory" class="org.cytoscape.internal.view.help.HelpContactHelpDeskTaskFactory">
-		<constructor-arg ref="openBrowser" />
+		<constructor-arg ref="openBrowserServiceRef" />
 	</bean>
 	<bean id="helpAboutTaskFactory" class="org.cytoscape.internal.view.help.HelpAboutTaskFactory">
 		<constructor-arg ref="creditScreenServiceRef" />
@@ -205,25 +205,25 @@
 	<!-- not a CyAction, but adds menu -->
 
 	<bean id="cytoPanelWestAction" class="org.cytoscape.internal.actions.CytoPanelAction">
-		<constructor-arg type="org.cytoscape.view.CytoPanelName" value="WEST" />
+		<constructor-arg type="org.cytoscape.application.swing.CytoPanelName" value="WEST" />
 		<constructor-arg value="true" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 	<bean id="cytoPanelSouthAction" class="org.cytoscape.internal.actions.CytoPanelAction">
-		<constructor-arg type="org.cytoscape.view.CytoPanelName" value="SOUTH" />
+		<constructor-arg type="org.cytoscape.application.swing.CytoPanelName" value="SOUTH" />
 		<constructor-arg value="true" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 	<bean id="cytoPanelEastAction" class="org.cytoscape.internal.actions.CytoPanelAction">
-		<constructor-arg type="org.cytoscape.view.CytoPanelName" value="EAST" />
+		<constructor-arg type="org.cytoscape.application.swing.CytoPanelName" value="EAST" />
 		<constructor-arg value="false" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 	<bean id="cytoPanelSouthWestAction" class="org.cytoscape.internal.actions.CytoPanelAction">
-		<constructor-arg type="org.cytoscape.view.CytoPanelName" value="SOUTH_WEST" />
+		<constructor-arg type="org.cytoscape.application.swing.CytoPanelName" value="SOUTH_WEST" />
 		<constructor-arg value="false" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
