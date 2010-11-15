@@ -33,9 +33,7 @@
 
 
 	<!-- Various Utilities -->
-	<bean name="openBrowser" class="org.cytoscape.internal.util.OpenBrowserImpl">
-		<constructor-arg ref="cytoscapePropertiesServiceRef" />
-	</bean>
+
 	<bean name="cyOperatingContext" class="org.cytoscape.internal.CyOperatingContextImpl">
 		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 	</bean>

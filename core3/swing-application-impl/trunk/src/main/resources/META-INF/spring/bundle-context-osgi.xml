@@ -86,9 +86,6 @@
 	<!-- </osgi:service> -->
 
 
-	<osgi:service id="openBrowserService" ref="openBrowser"
-		interface="org.cytoscape.util.OpenBrowser" />
-
 	<!-- <osgi:service id="printActionService" ref="printAction" interface="cytoscape.view.CyAction" 
 		/> -->
 	<osgi:service id="exitActionService" ref="exitAction"

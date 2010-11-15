@@ -15,4 +15,10 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:reference id="openBrowserServiceRef" 
+		interface="org.cytoscape.util.swing.OpenBrowser"/>
+		
+	<osgi:reference id="cyServiceRegistrarServiceRef" 
+		interface="org.cytoscape.service.util.CyServiceRegistrar"/>	
+
 </beans>

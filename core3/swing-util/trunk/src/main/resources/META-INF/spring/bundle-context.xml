@@ -23,4 +23,8 @@
 
 	<bean name="fileUtil" class="org.cytoscape.util.swing.internal.FileUtilImpl">
 	</bean>
+	
+	<bean name="openBrowser" class="org.cytoscape.util.swing.internal.OpenBrowserImpl">
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
+	</bean>
 </beans>

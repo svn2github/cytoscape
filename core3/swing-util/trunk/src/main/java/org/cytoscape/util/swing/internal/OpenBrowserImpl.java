@@ -40,14 +40,14 @@
 // $Date: 2008-02-26 16:37:29 -0800 (Tue, 26 Feb 2008) $
 // $Author: kono $
 //-------------------------------------------------------------------------
-package org.cytoscape.internal.util;
+package org.cytoscape.util.swing.internal;
 
 
 import java.io.IOException;
 import java.util.Properties;
 
-import org.cytoscape.application.swing.util.OpenBrowser;
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.util.swing.OpenBrowser;
 
 public class OpenBrowserImpl implements OpenBrowser {
 

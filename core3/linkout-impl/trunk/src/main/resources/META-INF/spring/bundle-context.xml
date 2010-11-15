@@ -36,8 +36,8 @@
 
 	<bean id="linkout" class="org.cytoscape.linkout.internal.LinkOut">
 		<constructor-arg ref="linkoutProps" />
-		<constructor-arg ref="cyServiceRegistrarRef" />
-		<constructor-arg ref="openBrowserRef" />
+		<constructor-arg ref="cyServiceRegistrarServiceRef" />
+		<constructor-arg ref="openBrowserServiceRef" />
 	</bean>
 
 </beans>

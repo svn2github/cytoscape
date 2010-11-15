@@ -37,7 +37,7 @@ package org.cytoscape.internal.dialogs;
 
 import java.awt.Window;
 
-import org.cytoscape.application.swing.util.OpenBrowser;
+import org.cytoscape.util.swing.OpenBrowser;
 
 /**
  */
