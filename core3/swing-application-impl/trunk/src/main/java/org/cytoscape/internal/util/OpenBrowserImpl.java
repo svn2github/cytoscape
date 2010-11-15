@@ -51,7 +51,11 @@ import org.cytoscape.property.CyProperty;
 
 public class OpenBrowserImpl implements OpenBrowser {
 
-	private Properties props;
+	private final Properties props;
+
+	private final static String UNIX_PATH = "htmlview";
+	private final static String MAC_PATH = "open";
+	private final static String WIN_PATH = "rundll32 url.dll,FileProtocolHandler";
 
 	public OpenBrowserImpl(CyProperty<Properties> cyProps) {
 		if ( cyProps == null )
@@ -65,21 +69,21 @@ public class OpenBrowserImpl implements OpenBrowser {
 	 * @param url DOCUMENT ME!
 	 */
 	public void openURL(String url) {
-		String defBrowser = props.getProperty("defaultWebBrowser");
+		String defBrowser = props.getProperty(OpenBrowser.DEF_WEB_BROWSER_PROP_NAME);
 		String osName = System.getProperty("os.name");
 
 		try {
 			String cmd;
 
 			if (osName.startsWith("Windows")) {
-				cmd = OpenBrowser.WIN_PATH + " " + url;
+				cmd = WIN_PATH + " " + url;
 			} else if (osName.startsWith("Mac")) {
-				cmd = OpenBrowser.MAC_PATH + " " + url;
+				cmd = MAC_PATH + " " + url;
 			} else {
 				if (defBrowser != null && !defBrowser.equals("")) {
 					cmd = defBrowser + " " + url;
 				} else {
-					cmd = OpenBrowser.UNIX_PATH + " " + url;
+					cmd = UNIX_PATH + " " + url;
 				}
 			}
 
