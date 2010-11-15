@@ -38,8 +38,8 @@ package org.cytoscape.internal.view;
 
 import org.cytoscape.application.swing.CytoPanel;
 import org.cytoscape.application.swing.CytoPanelState;
-import org.cytoscape.application.swing.view.events.CytoPanelStateChangedEvent;
-import org.cytoscape.application.swing.view.events.CytoPanelStateChangedListener;
+import org.cytoscape.application.swing.events.CytoPanelStateChangedEvent;
+import org.cytoscape.application.swing.events.CytoPanelStateChangedListener;
 
 import javax.swing.JLabel;
 

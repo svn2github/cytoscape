@@ -60,8 +60,8 @@ import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.application.swing.CytoscapeAction;
-import org.cytoscape.application.swing.view.events.CytoPanelComponentSelectedEvent;
-import org.cytoscape.application.swing.view.events.CytoPanelComponentSelectedListener;
+import org.cytoscape.application.swing.events.CytoPanelComponentSelectedEvent;
+import org.cytoscape.application.swing.events.CytoPanelComponentSelectedListener;
 import org.cytoscape.session.CyApplicationManager;
 
 /**

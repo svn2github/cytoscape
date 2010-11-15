@@ -1,5 +1,5 @@
 
-package org.cytoscape.application.swing.view.events;
+package org.cytoscape.application.swing.events;
 
 import org.cytoscape.application.swing.CytoPanel;
 import org.cytoscape.application.swing.CytoPanelState;

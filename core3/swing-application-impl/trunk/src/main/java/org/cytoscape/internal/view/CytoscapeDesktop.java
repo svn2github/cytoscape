@@ -36,7 +36,7 @@ import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.application.swing.CytoscapeShutdown;
-import org.cytoscape.application.swing.view.events.CytoPanelStateChangedListener;
+import org.cytoscape.application.swing.events.CytoPanelStateChangedListener;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.service.util.CyServiceRegistrar;
 
