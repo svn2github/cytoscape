@@ -67,7 +67,8 @@ public class ViewUpdater<T,S> implements RowSetMicroListener {
 	}
 
 	/**
-	 * @inheritdoc
+	 * Returns the source of the event.  
+	 * @return the source of the event.  
 	 */
 	public Object getEventSource() {
 		return row;

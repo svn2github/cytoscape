@@ -50,7 +50,7 @@ import java.util.Map;
 /**
  * An abstract implementation of the CyAction interface.  Instead of using this
  * class directly you should (strongly) consider implementing a 
- * {@link org.cytoscape.application.swing.work.TaskFactory}/{@link org.cytoscape.application.swing.work.Task} pair. Doing
+ * org.cytoscape.work.TaskFactory/org.cytoscape.work.Task pair. Doing
  * so will allow your action to be used outside of a Swing specific application 
  * (which the CyAction interface binds you to)!
  */
@@ -142,7 +142,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	}
 
 	/**
-	 * @inheritdoc 
+	 * {@inheritDoc} 
 	 */
 	public String getName() {
 		return name;
@@ -175,7 +175,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	}
 
 	/**
-	 * @inheritdoc 
+	 * {@inheritDoc} 
 	 */
 	public float getMenuGravity() {
 		return menuGravity;
@@ -190,7 +190,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	}
 
 	/**
-	 * @inheritdoc 
+	 * {@inheritDoc} 
 	 */
 	public float getToolbarGravity() {
 		return toolbarGravity;
@@ -206,14 +206,14 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	public KeyStroke getAcceleratorKeyStroke() {
 		return acceleratorKeyStroke;
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	public String getPreferredMenu() {
 		return preferredMenu;
@@ -229,7 +229,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	} 
 
 	/** 
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	public String getPreferredButtonGroup() {
 		return preferredButtonGroup;
@@ -244,7 +244,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	} 
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	public boolean useCheckBoxMenuItem() {
 		return useCheckBoxMenuItem;
