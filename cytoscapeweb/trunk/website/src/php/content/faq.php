@@ -88,6 +88,10 @@
 		<a href="http://www.cs.rpi.edu/~puninj/XGMML/" >XGMML</a>, and
 		<a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" >SIF</a> are supported.</p>
 	
+		<p class="question">How do I make a node edge link to somewhere?</p>
+		<p class="answer">You can perform any action you want on mouse click of a node or edge.  See <a href="documentation#section/addListener">the documentation</a>
+		for more information</p>
+	
 	<h1>Customizing visual styles</h1>
 	
 		<p class="question">What options do I have to change the visual style?</p>
