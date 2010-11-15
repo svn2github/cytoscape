@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -31,9 +24,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.ding.impl;
+
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -57,11 +50,12 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
-class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 
+class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	static final float DEFAULT_ARROW_SIZE = 5.0f;
 	static final Paint DEFAULT_ARROW_PAINT = Color.black;
 	static final float DEFAULT_EDGE_THICKNESS = 1.0f;
+	static final Stroke DEFAULT_EDGE_STROKE = new BasicStroke(); 
 	static final Color DEFAULT_EDGE_PAINT = Color.black;
 	static final String DEFAULT_LABEL_TEXT = "";
 	static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
@@ -174,23 +168,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 *            DOCUMENT ME!
 	 */
 	public void setStroke(Stroke stroke) {
-		if (stroke instanceof BasicStroke) {
-			synchronized (m_view.m_lock) {
-				final BasicStroke bStroke = (BasicStroke) stroke;
-				m_view.m_edgeDetails.overrideSegmentThickness(m_inx,
-						bStroke.getLineWidth());
-
-				final float[] dashArr = bStroke.getDashArray();
-
-				if ((dashArr != null) && (dashArr.length > 0))
-					m_view.m_edgeDetails.overrideSegmentDashLength(m_inx,
-							dashArr[0]);
-				else
-					m_view.m_edgeDetails
-							.overrideSegmentDashLength(m_inx, -1.0f);
-
-				m_view.m_contentChanged = true;
-			}
+		synchronized (m_view.m_lock) {
+			m_view.m_edgeDetails.overrideSegmentStroke(m_inx, stroke);
+			m_view.m_contentChanged = true;
 		}
 	}
 
@@ -201,21 +181,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 */
 	public Stroke getStroke() {
 		synchronized (m_view.m_lock) {
-			final float segmentThickness = m_view.m_edgeDetails
-					.segmentThickness(m_inx);
-			final float segmentDashLength = m_view.m_edgeDetails
-					.segmentDashLength(m_inx);
-
-			if (segmentDashLength > 0.0f) {
-				final float[] dashes = new float[] { segmentDashLength,
-						segmentDashLength };
-
-				return new BasicStroke(segmentThickness,
-						BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f,
-						dashes, 0.0f);
-			} else
-
-				return new BasicStroke(segmentThickness);
+			return m_view.m_edgeDetails.segmentStroke(m_inx);
 		}
 	}
 
@@ -599,6 +565,10 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 */
 	public boolean getSelected() {
 		return m_selected;
+	}
+
+	final public boolean isHidden() {
+		return m_view.isHidden(this);
 	}
 
 	/**

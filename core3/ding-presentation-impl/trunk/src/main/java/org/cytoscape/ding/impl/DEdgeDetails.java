@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.ding.impl;
+
 
 import org.cytoscape.graph.render.immed.EdgeAnchors;
 import org.cytoscape.util.intr.IntEnumerator;
@@ -54,6 +46,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	final IntObjHash m_colorsLowDetail = new IntObjHash();
 	final Object m_deletedEntry = new Object();
 	final HashMap<Integer,Object> m_segmentThicknesses = new HashMap<Integer,Object>();
+	final HashMap m_segmentStrokes = new HashMap();
 	final HashMap<Integer,Object> m_sourceArrows = new HashMap<Integer,Object>();
 	final HashMap<Integer,Object> m_sourceArrowPaints = new HashMap<Integer,Object>();
 	final HashMap<Integer,Object> m_targetArrows = new HashMap<Integer,Object>();
@@ -77,6 +70,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 
 		final Integer key = Integer.valueOf(edge);
 		m_segmentThicknesses.remove(key);
+		m_segmentStrokes.remove(key);
 		m_sourceArrows.remove(key);
 		m_sourceArrowPaints.remove(key);
 		m_targetArrows.remove(key);
@@ -417,20 +411,23 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 			m_segmentThicknesses.put(Integer.valueOf(edge), new Float(thickness));
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param edge DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint segmentPaint(int edge) {
-		final Object o = m_segmentPaints.get(Integer.valueOf(edge));
+	public Stroke segmentStroke(int edge) {
+		final Object o = m_segmentStrokes.get(new Integer(edge));
 
 		if (o == null)
-			return super.segmentPaint(edge);
+			return super.segmentStroke(edge);
 
-		return (Paint) o;
+		return (Stroke) o;
+	}
+
+	/*
+	 * A null paint has the special meaning to remove overridden paint.
+	 */
+	void overrideSegmentStroke(int edge, Stroke stroke) {
+		if ((stroke == null) || stroke.equals(super.segmentStroke(edge)))
+			m_segmentStrokes.remove(new Integer(edge));
+		else
+			m_segmentStrokes.put(new Integer(edge), stroke);
 	}
 
 	/*

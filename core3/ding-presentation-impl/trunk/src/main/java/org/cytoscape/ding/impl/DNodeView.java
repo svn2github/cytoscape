@@ -878,6 +878,10 @@ public class DNodeView implements NodeView, Label {
 		return true;
 	}
 
+	final public boolean isHidden() {
+		return graphView.isHidden(this);
+	}
+
 	/**
 	 * DOCUMENT ME!
 	 *

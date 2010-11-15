@@ -1428,6 +1428,20 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		}
 	}
 
+	final boolean isHidden(final DEdgeView edgeView) {
+		synchronized (m_lock) {
+			final int edgeIndex = edgeView.getRootGraphIndex();
+			return m_drawPersp.containsEdge(m_drawPersp.getEdge(edgeIndex));
+		}
+	}
+
+	final boolean isHidden(final DNodeView nodeView) {
+		synchronized (m_lock) {
+			final int nodeIndex = nodeView.getRootGraphIndex();
+			return m_drawPersp.containsNode(m_drawPersp.getNode(nodeIndex));
+		}
+	}
+
 	/**
 	 * @param obj
 	 *            should be either a DEdgeView or a DNodeView.

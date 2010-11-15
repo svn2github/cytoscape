@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -107,6 +99,17 @@ class IntermediateEdgeDetails extends EdgeDetails {
 	 */
 	public float segmentThickness(int edge) {
 		return DEdgeView.DEFAULT_EDGE_THICKNESS;
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param edge DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public Stroke segmentStroke(int edge) {
+		return DEdgeView.DEFAULT_EDGE_STROKE;
 	}
 
 	/**
