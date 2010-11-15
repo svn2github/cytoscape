@@ -267,7 +267,7 @@
 	<!-- Finally, Export Cytoscape Desktop itself as a service. Other desktop 
 		components (like VizMapper GUI) can use it through DI -->
 	<osgi:service id="cytoscapeDesktopService" ref="cytoscapeDesktop"
-		interface="org.cytoscape.application.CySwingApplication" />
+		interface="org.cytoscape.application.swing.CySwingApplication" />
 
 	<osgi:service id="networkPanelService" ref="networkPanel">
 		<osgi:interfaces>
@@ -317,11 +317,11 @@
 		interface="org.cytoscape.view.model.events.NetworkViewAddedListener" />
 
 	<osgi:service id="sessionShutdownHandlerService" ref="sessionShutdownHandler"
-		interface="org.cytoscape.events.CytoscapeShutdownListener" />
+		interface="org.cytoscape.application.swing.events.CytoscapeShutdownListener" />
 
 	<osgi:service id="cytoscapeShutdownService" ref="cytoscapeShutdown"
-		interface="org.cytoscape.CytoscapeShutdown" />
+		interface="org.cytoscape.application.swing.CytoscapeShutdown" />
 
 	<osgi:service id="cytoscapeVersionService" ref="cytoscapeVersion"
-		interface="org.cytoscape.CytoscapeVersion" />
+		interface="org.cytoscape.application.swing.CytoscapeVersion" />
 </beans>
