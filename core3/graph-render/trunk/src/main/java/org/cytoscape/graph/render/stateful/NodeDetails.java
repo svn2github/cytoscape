@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.graph.render.stateful;
+
 
 import org.cytoscape.graph.render.immed.GraphGraphics;
 
@@ -444,67 +436,67 @@ public class NodeDetails {
 		return 0.0f;
 	}
 
-    /**
-     * A thread-safe method returning the number of custom graphics
-     * associated with a given Node. If none are associated, zero is
-     * returned.
-     * NOTE: This method should be abstract, but since it isn't, any real use should override this
-     *       method in a subclass.
-     * @see #customGraphics(int)
-     * @since Cytoscape 2.6
-     */
-    public int customGraphicCount(final int node) {
-	return 0;
-    }
+	/**
+	 * A thread-safe method returning the number of custom graphics
+	 * associated with a given Node. If none are associated, zero is
+	 * returned.
+	 * NOTE: This method should be abstract, but since it isn't, any real use should override this
+	 *       method in a subclass.
+	 * @see #customGraphics(int)
+	 * @since Cytoscape 2.6
+	 */
+	public int customGraphicCount(final int node) {
+		return 0;
+	}
 
-    /**
-     * Return a non-null, read-only Iterator over all CustomGraphics contained in this Node.
-     * The Iterator will return each CustomGraphic in draw order.
-     * The Iterator cannot be used to modify the underlying set of CustomGraphics.
-     * NOTE: This method should be abstract, but since it isn't, any real use should override this
-     *       method in a subclass.
-     * @return The CustomGraphics Iterator. If no CustomGraphics are
-     * associated with this Node, an empty Iterator is returned.
-     * @throws UnsupportedOperationException if an attempt is made to use the Iterator's remove() method.
-     * @since Cytoscape 2.6
-     * @see #customGraphicsLock(int)
-     */
-    // Should probably be getCustomGraphics(), but all the methods
-    // seem to have this form.
-    public Iterator<CustomGraphic> customGraphics (final int node) {
-	return new Iterator<CustomGraphic>() {
-	    private Iterator<CustomGraphic> _iterator =  new ArrayList<CustomGraphic>(0).iterator();
-	    public boolean hasNext() {return _iterator.hasNext();}
-	    public CustomGraphic next() {return _iterator.next();}
-	    public void remove() {
-		throw new UnsupportedOperationException();
-	    }
-	};
-    }
+	/**
+	 * Return a non-null, read-only Iterator over all CustomGraphics contained in this Node.
+	 * The Iterator will return each CustomGraphic in draw order.
+	 * The Iterator cannot be used to modify the underlying set of CustomGraphics.
+	 * NOTE: This method should be abstract, but since it isn't, any real use should override this
+	 *       method in a subclass.
+	 * @return The CustomGraphics Iterator. If no CustomGraphics are
+	 * associated with this Node, an empty Iterator is returned.
+	 * @throws UnsupportedOperationException if an attempt is made to use the Iterator's remove() method.
+	 * @since Cytoscape 2.6
+	 * @see #customGraphicsLock(int)
+	 */
+	// Should probably be getCustomGraphics(), but all the methods
+	// seem to have this form.
+	public Iterator<CustomGraphic> customGraphics (final int node) {
+		return new Iterator<CustomGraphic>() {
+			private Iterator<CustomGraphic> _iterator =  new ArrayList<CustomGraphic>(0).iterator();
+			public boolean hasNext() {return _iterator.hasNext();}
+			public CustomGraphic next() {return _iterator.next();}
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+		};
+	}
 
-    /**
-     * Return the object used for synchronizing custom graphics operations for a given Node.
-     * This is used in conjunction with the customGraphics() Iterator to allow iteration over
-     * the custom graphics without fear of the underlying CustomGraphics mutating.
-     * For example:
-     * <PRE>
-     *    NodeDetails nd = ...;
-     *    synchronized (nd.customGraphicsLock(node)) {
-     *       Iterator<CustomGraphic> dNodeIt = nodeDetails.customGraphics (node);
-     *       CustomGraphic cg = null;
-     *       while (dNodeIt.hasNext()) {
-     *          cg = dNodeIt.next();
-     *          // DO STUFF WITH cg HERE.
-     *       }
-     *    }
-     * </PRE>
-     * NOTE: This method should be abstract, but since it isn't, any real use should override this
-     *       method in a subclass.
-     * @since Cytoscape 2.6
-     */
-    public Object customGraphicsLock(final int node) {
-	return this;
-    }
+	/**
+	 * Return the object used for synchronizing custom graphics operations for a given Node.
+	 * This is used in conjunction with the customGraphics() Iterator to allow iteration over
+	 * the custom graphics without fear of the underlying CustomGraphics mutating.
+	 * For example:
+	 * <PRE>
+	 *    NodeDetails nd = ...;
+	 *    synchronized (nd.customGraphicsLock(node)) {
+	 *       Iterator<CustomGraphic> dNodeIt = nodeDetails.customGraphics (node);
+	 *       CustomGraphic cg = null;
+	 *       while (dNodeIt.hasNext()) {
+	 *          cg = dNodeIt.next();
+	 *          // DO STUFF WITH cg HERE.
+	 *       }
+	 *    }
+	 * </PRE>
+	 * NOTE: This method should be abstract, but since it isn't, any real use should override this
+	 *       method in a subclass.
+	 * @since Cytoscape 2.6
+	 */
+	public Object customGraphicsLock(final int node) {
+		return this;
+	}
 
 	/**
 	 * Used to set selected state of given node.
@@ -531,5 +523,24 @@ public class NodeDetails {
 			return selectedMap.get(node);
 		}
 		return false;
+	}
+
+	/**
+	 * Returns the label width of the node.  By default this method
+	 * returns 100.  Take note of certain constraints specified in
+	 * GraphGraphics.drawNodeFull().
+	 */
+	public double labelWidth(final int node) {
+		return 100.0;
+	}
+	
+	/**
+	 * Child class should ovrride this method to render correct Nexted Network Image.
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public TexturePaint getNestedNetworkTexturePaint(final int node) {
+		return null;
 	}
 }

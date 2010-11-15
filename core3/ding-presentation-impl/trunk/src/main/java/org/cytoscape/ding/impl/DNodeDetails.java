@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.ding.impl;
+
 
 import org.cytoscape.graph.render.stateful.CustomGraphic;
 import org.cytoscape.graph.render.stateful.NodeDetails;
@@ -44,6 +36,7 @@ import org.cytoscape.ding.Label;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 
 /*
@@ -68,6 +61,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	final HashMap<Integer,Object> m_labelOffsetXs = new HashMap<Integer,Object>();
 	final HashMap<Integer,Object> m_labelOffsetYs = new HashMap<Integer,Object>();
 	final HashMap<Long,Paint> m_labelPaints = new HashMap<Long,Paint>();
+	final Map<Integer, Double> m_labelWidths = new HashMap<Integer, Double>();
 	final HashMap<Long,Object> m_labelTexts = new HashMap<Long,Object>();
 	final HashMap<Long,Font> m_labelFonts = new HashMap<Long,Font>();
 
@@ -86,6 +80,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 		m_fillPaints.remove(key);
 		m_borderWidths.remove(key);
 		m_borderPaints.remove(key);
+		m_labelWidths.remove(node);
 		m_labelTextAnchors.remove(key);
 		m_labelNodeAnchors.remove(key);
 		m_labelJustifys.remove(key);
@@ -489,6 +484,38 @@ class DNodeDetails extends IntermediateNodeDetails {
 			m_labelJustifys.remove(Integer.valueOf(node));
 		else
 			m_labelJustifys.put(Integer.valueOf(node), Integer.valueOf(justify));
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param node DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public double labelWidth(int node) {
+		final Double o = m_labelWidths.get(node);
+
+		if (o == null)
+			return super.labelWidth(node);
+
+		return o;
+	}
+	
+	@Override
+	public TexturePaint getNestedNetworkTexturePaint(final int node) {
+		final DNodeView dNodeView = (DNodeView) m_view.getNodeView(~node);
+		return dNodeView.getNestedNetworkTexturePaint();
+	}
+	
+	/*
+	 * A negative width value has the special meaning to remove overridden width.
+	 */
+	void overrideLabelWidth(int node, double width) {
+		if ((width < 0.0) || (width == super.labelWidth(node)))
+			m_labelWidths.remove(new Integer(node));
+		else
+			m_labelWidths.put(new Integer(node), new Double(width));
 	}
 
 	static int convertG2ND(int giny) {

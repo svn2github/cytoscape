@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -31,8 +24,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.ding.impl;
+
 
 import java.awt.Color;
 import java.awt.Component;
@@ -42,14 +36,19 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
+import java.awt.TexturePaint;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
@@ -113,14 +113,14 @@ import phoebe.PhoebeCanvasDroppable;
 
 /**
  * DING implementation of the GINY view.
- * 
+ *
  * Explain relationship to cytoscape.
- * 
+ *
  * Throughout this code I am assuming that nodes or edges are never removed from
  * the underlying RootGraph. This assumption was made in the old GraphView
  * implementation. Removal from the RootGraph is the only thing that can affect
  * m_drawPersp and m_structPersp that is beyond our control.
- * 
+ *
  * @author Nerius Landys
  */
 public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
@@ -150,6 +150,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	static final float DEFAULT_ANCHOR_SIZE = 9.0f;
 	static final Paint DEFAULT_ANCHOR_SELECTED_PAINT = Color.red;
 	static final Paint DEFAULT_ANCHOR_UNSELECTED_PAINT = Color.black;
+
+	boolean calledFromGetSnapshot = false;
+
+	// Size of snapshot image
+	protected static int DEF_SNAPSHOT_SIZE = 400;
 
 	/**
 	 * Enum to identify ding canvases - used in getCanvas(Canvas canvasId)
@@ -322,22 +327,38 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 * ???
 	 */
 	private final IntHash m_hash = new IntHash();
+
 	/**
 	 * Used for holding edge anchors.
 	 */
 	final float[] m_anchorsBuff = new float[2];
+
 	/**
 	 *
 	 */
 	int m_lastSize = 0;
+
 	/**
 	 * Used for caching texture paint.
 	 */
 	Paint m_lastPaint = null;
+
 	/**
 	 * Used for caching texture paint.
 	 */
 	Paint m_lastTexturePaint = null;
+	
+	/**
+	 * Snapshot of current view.  Will be updated by CONTENT_CHANGED event.
+	 * 
+	 * This is used by a new nested network feature from 2.7.
+	 */
+	private BufferedImage snapshotImage;
+
+	/**
+	 * Represents current snapshot is latest version or not.
+	 */
+	private boolean latest;
 
 	Map<NodeViewTaskFactory, Map> nodeViewTFs;
 	Map<EdgeViewTaskFactory, Map> edgeViewTFs;
@@ -355,7 +376,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Creates a new DGraphView object.
-	 * 
+	 *
 	 * @param perspective
 	 *            The graph model that we'll be creating a view for.
 	 */
@@ -455,7 +476,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Returns the graph model that this view was created for.
-	 * 
+	 *
 	 * @return The GraphPerspective that the view was created for.
 	 */
 	public CyNetwork getGraphPerspective() {
@@ -468,7 +489,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Whether node selection is enabled.
-	 * 
+	 *
 	 * @return Whether node selection is enabled.
 	 */
 	public boolean nodeSelectionEnabled() {
@@ -477,7 +498,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Whether edge selection is enabled.
-	 * 
+	 *
 	 * @return Whether edge selection is enabled.
 	 */
 	public boolean edgeSelectionEnabled() {
@@ -576,7 +597,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Returns an array of selected node indices.
-	 * 
+	 *
 	 * @return An array of selected node indices.
 	 */
 	public int[] getSelectedNodeIndices() {
@@ -597,7 +618,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Returns a list of selected node objects.
-	 * 
+	 *
 	 * @return A list of selected node objects.
 	 */
 	public List<CyNode> getSelectedNodes() {
@@ -619,7 +640,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Returns an array of selected edge indices.
-	 * 
+	 *
 	 * @return An array of selected edge indices.
 	 */
 	public int[] getSelectedEdgeIndices() {
@@ -637,7 +658,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Returns a list of selected edge objects.
-	 * 
+	 *
 	 * @return A list of selected edge objects.
 	 */
 	public List<CyEdge> getSelectedEdges() {
@@ -657,7 +678,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Add GraphViewChangeListener to linked list of GraphViewChangeListeners.
 	 * AAAAAARRRGGGGHHHHHH!!!!
-	 * 
+	 *
 	 * @param l
 	 *            GraphViewChangeListener to be added to the list.
 	 */
@@ -668,7 +689,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Remove GraphViewChangeListener from linked list of
 	 * GraphViewChangeListeners. AAAAAARRRGGGGHHHHHH!!!!
-	 * 
+	 *
 	 * @param l
 	 *            GraphViewChangeListener to be removed from the list.
 	 */
@@ -678,7 +699,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Sets the background color on the canvas.
-	 * 
+	 *
 	 * @param paint
 	 *            The Paint (color) to apply to the background.
 	 */
@@ -696,7 +717,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Returns the background color on the canvas.
-	 * 
+	 *
 	 * @return The background color on the canvas.
 	 */
 	public Paint getBackgroundPaint() {
@@ -706,7 +727,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Returns the InnerCanvas object. The InnerCanvas object is the actual
 	 * component that the network is rendered on.
-	 * 
+	 *
 	 * @return The InnerCanvas object.
 	 */
 	public Component getComponent() {
@@ -716,10 +737,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Adds a NodeView object to the GraphView. Creates NodeView if one doesn't
 	 * already exist.
-	 * 
+	 *
 	 * @param nodeInx
 	 *            The index of the NodeView object to be added.
-	 * 
+	 *
 	 * @return The NodeView object that is added to the GraphView.
 	 */
 	public NodeView addNodeView(CyNode node) {
@@ -778,10 +799,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Adds EdgeView to the GraphView.
-	 * 
+	 *
 	 * @param edgeInx
 	 *            The index of EdgeView to be added.
-	 * 
+	 *
 	 * @return The EdgeView that was added.
 	 */
 	public EdgeView addEdgeView(final CyEdge edge) {
@@ -854,10 +875,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Removes a NodeView based on specified NodeView.
-	 * 
+	 *
 	 * @param nodeView
 	 *            The NodeView object to be removed.
-	 * 
+	 *
 	 * @return The NodeView object that was removed.
 	 */
 	public NodeView removeNodeView(NodeView nodeView) {
@@ -866,10 +887,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Removes a NodeView based on specified Node.
-	 * 
+	 *
 	 * @param node
 	 *            The Node object connected to the NodeView to be removed.
-	 * 
+	 *
 	 * @return The NodeView object that was removed.
 	 */
 	public NodeView removeNodeView(CyNode node) {
@@ -878,10 +899,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Removes a NodeView based on a specified index.
-	 * 
+	 *
 	 * @param nodeInx
 	 *            The index of the NodeView to be removed.
-	 * 
+	 *
 	 * @return The NodeView object that was removed.
 	 */
 	public NodeView removeNodeView(int nodeInx) {
@@ -941,10 +962,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Removes an EdgeView based on an EdgeView.
-	 * 
+	 *
 	 * @param edgeView
 	 *            The EdgeView to be removed.
-	 * 
+	 *
 	 * @return The EdgeView that was removed.
 	 */
 	public EdgeView removeEdgeView(EdgeView edgeView) {
@@ -953,10 +974,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Removes an EdgeView based on an Edge.
-	 * 
+	 *
 	 * @param edge
 	 *            The Edge of the EdgeView to be removed.
-	 * 
+	 *
 	 * @return The EdgeView that was removed.
 	 */
 	public EdgeView removeEdgeView(CyEdge edge) {
@@ -965,10 +986,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Removes an EdgeView based on an EdgeIndex.
-	 * 
+	 *
 	 * @param edgeInx
 	 *            The edge index of the EdgeView to be removed.
-	 * 
+	 *
 	 * @return The EdgeView that was removed.
 	 */
 	public EdgeView removeEdgeView(int edgeInx) {
@@ -1022,7 +1043,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Long getIdentifier() {
@@ -1031,7 +1052,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param id
 	 *            DOCUMENT ME!
 	 */
@@ -1041,7 +1062,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public double getZoom() {
@@ -1050,46 +1071,65 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param zoom
 	 *            DOCUMENT ME!
 	 */
-	public void setZoom(double zoom) {
+	private void setZoom(final double zoom, final boolean updateView) {
 		synchronized (m_lock) {
-			m_networkCanvas.m_scaleFactor = checkZoom(zoom,
-					m_networkCanvas.m_scaleFactor);
+			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
 
-		// updateView();
+		if (updateView) {
+			this.updateView();
+		}
+	}
+	
+	/**
+	 * Set the zoom level and redraw the view.
+	 */
+	public void setZoom(final double zoom) {
+		setZoom(zoom, /* updateView = */ true);
 	}
 
 	/**
 	 * DOCUMENT ME!
 	 */
-	public void fitContent() {
+	private void fitContent(final boolean updateView) {
 		synchronized (m_lock) {
-			if (m_spacial.queryOverlap(Float.NEGATIVE_INFINITY,
-					Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY,
-					Float.POSITIVE_INFINITY, m_extentsBuff, 0, false)
-					.numRemaining() == 0) {
+			if (m_spacial.queryOverlap(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
+			                           Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+			                           m_extentsBuff, 0, false).numRemaining() == 0) {
 				return;
 			}
 
 			m_networkCanvas.m_xCenter = (((double) m_extentsBuff[0]) + ((double) m_extentsBuff[2])) / 2.0d;
 			m_networkCanvas.m_yCenter = (((double) m_extentsBuff[1]) + ((double) m_extentsBuff[3])) / 2.0d;
-			final double zoom = Math
-					.min(((double) m_networkCanvas.getWidth())
-							/ (((double) m_extentsBuff[2]) - ((double) m_extentsBuff[0])),
-							((double) m_networkCanvas.getHeight())
-									/ (((double) m_extentsBuff[3]) - ((double) m_extentsBuff[1])));
-			m_networkCanvas.m_scaleFactor = checkZoom(zoom,
-					m_networkCanvas.m_scaleFactor);
+			final double zoom = Math.min(((double) m_networkCanvas.getWidth()) / 
+			                             (((double) m_extentsBuff[2]) - 
+			                              ((double) m_extentsBuff[0])), 
+			                              ((double) m_networkCanvas.getHeight()) / 
+			                             (((double) m_extentsBuff[3]) - 
+			                              ((double) m_extentsBuff[1])));
+			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
+			if (calledFromGetSnapshot) {
+				calledFromGetSnapshot = false;
+				m_networkCanvas.m_scaleFactor = 1.0;
+				//System.out.println("in fitContent(), m_networkCanvas.m_scaleFactor = " + m_networkCanvas.m_scaleFactor);
+			}
 			m_viewportChanged = true;
 		}
-
-		// Redraw camvas.
-		updateView();
+		if (updateView) {
+			this.updateView();
+		}
+	}
+	
+	/**
+	 * Resize the network view to the size of the canvas and redraw it. 
+	 */
+	public void fitContent() {
+		fitContent(/* updateView = */ true);
 	}
 
 	/**
@@ -1106,7 +1146,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Returns an iterator of all node views, including those that are currently
 	 * hidden.
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Iterator<NodeView> getNodeViewsIterator() {
@@ -1118,7 +1158,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Returns the count of all node views, including those that are currently
 	 * hidden.
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int getNodeViewCount() {
@@ -1130,7 +1170,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Returns the count of all edge views, including those that are currently
 	 * hidden.
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int getEdgeViewCount() {
@@ -1141,7 +1181,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param node
 	 *            DOCUMENT ME!
 	 * @return DOCUMENT ME!
@@ -1152,7 +1192,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @return DOCUMENT ME!
@@ -1166,7 +1206,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Returns a list of all edge views, including those that are currently
 	 * hidden.
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public List<EdgeView> getEdgeViewsList() {
@@ -1187,12 +1227,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 * directed, having oneNode as source and otherNode as target or 2.
 	 * undirected, having oneNode and otherNode as endpoints. Note that this
 	 * behaviour is similar to that of CyNetwork.edgesList(Node, Node).
-	 * 
+	 *
 	 * @param oneNode
 	 *            DOCUMENT ME!
 	 * @param otherNode
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public List<EdgeView> getEdgeViewsList(CyNode oneNode, CyNode otherNode) {
@@ -1221,14 +1261,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Similar to getEdgeViewsList(Node, Node), only that one has control of
 	 * whether or not to include undirected edges.
-	 * 
+	 *
 	 * @param oneNodeInx
 	 *            DOCUMENT ME!
 	 * @param otherNodeInx
 	 *            DOCUMENT ME!
 	 * @param includeUndirected
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public List<EdgeView> getEdgeViewsList(int oneNodeInx, int otherNodeInx,
@@ -1245,10 +1285,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Returns an edge view with specified edge index whether or not the edge
 	 * view is hidden; null is returned if view does not exist.
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public EdgeView getEdgeView(int edgeInx) {
@@ -1260,7 +1300,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Returns an iterator of all edge views, including those that are currently
 	 * hidden.
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Iterator<EdgeView> getEdgeViewsIterator() {
@@ -1271,10 +1311,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edge
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public EdgeView getEdgeView(CyEdge edge) {
@@ -1283,7 +1323,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Alias to getEdgeViewCount().
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int edgeCount() {
@@ -1292,7 +1332,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Alias to getNodeViewCount().
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int nodeCount() {
@@ -1302,7 +1342,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * @param obj
 	 *            should be either a DEdgeView or a DNodeView.
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean hideGraphObject(Object obj) {
@@ -1391,7 +1431,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * @param obj
 	 *            should be either a DEdgeView or a DNodeView.
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean showGraphObject(Object obj) {
@@ -1496,10 +1536,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param objects
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean hideGraphObjects(List<? extends GraphViewObject> objects) {
@@ -1513,10 +1553,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param objects
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean showGraphObjects(List<? extends GraphViewObject> objects) {
@@ -1530,7 +1570,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param data
@@ -1541,10 +1581,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Object[] getAllNodePropertyData(int nodeInx) {
@@ -1553,7 +1593,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param data
@@ -1564,10 +1604,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Object[] getAllEdgePropertyData(int edgeInx) {
@@ -1576,12 +1616,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Object getNodeObjectProperty(int nodeInx, int property) {
@@ -1590,14 +1630,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param value
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setNodeObjectProperty(int nodeInx, int property, Object value) {
@@ -1606,12 +1646,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Object getEdgeObjectProperty(int edgeInx, int property) {
@@ -1620,14 +1660,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param value
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setEdgeObjectProperty(int edgeInx, int property, Object value) {
@@ -1636,12 +1676,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public double getNodeDoubleProperty(int nodeInx, int property) {
@@ -1650,14 +1690,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param val
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setNodeDoubleProperty(int nodeInx, int property, double val) {
@@ -1666,12 +1706,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public double getEdgeDoubleProperty(int edgeInx, int property) {
@@ -1680,14 +1720,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param val
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setEdgeDoubleProperty(int edgeInx, int property, double val) {
@@ -1696,12 +1736,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public float getNodeFloatProperty(int nodeInx, int property) {
@@ -1710,14 +1750,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param value
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setNodeFloatProperty(int nodeInx, int property, float value) {
@@ -1726,12 +1766,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public float getEdgeFloatProperty(int edgeInx, int property) {
@@ -1740,14 +1780,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param value
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setEdgeFloatProperty(int edgeInx, int property, float value) {
@@ -1756,12 +1796,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean getNodeBooleanProperty(int nodeInx, int property) {
@@ -1770,14 +1810,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param val
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setNodeBooleanProperty(int nodeInx, int property, boolean val) {
@@ -1786,12 +1826,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean getEdgeBooleanProperty(int edgeInx, int property) {
@@ -1800,14 +1840,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param val
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setEdgeBooleanProperty(int edgeInx, int property, boolean val) {
@@ -1816,12 +1856,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int getNodeIntProperty(int nodeInx, int property) {
@@ -1830,14 +1870,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param value
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setNodeIntProperty(int nodeInx, int property, int value) {
@@ -1846,12 +1886,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int getEdgeIntProperty(int edgeInx, int property) {
@@ -1860,14 +1900,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edgeInx
 	 *            DOCUMENT ME!
 	 * @param property
 	 *            DOCUMENT ME!
 	 * @param value
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setEdgeIntProperty(int edgeInx, int property, int value) {
@@ -1877,7 +1917,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	// Auxillary methods specific to this GraphView implementation:
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param x
 	 *            DOCUMENT ME!
 	 * @param y
@@ -1895,7 +1935,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Point2D getCenter() {
@@ -2010,7 +2050,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param lod
 	 *            DOCUMENT ME!
 	 */
@@ -2025,7 +2065,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public GraphLOD getGraphLOD() {
@@ -2034,7 +2074,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param textAsShape
 	 *            DOCUMENT ME!
 	 */
@@ -2056,7 +2096,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 * <p>
 	 * HINT: To perform a point query simply set xMin equal to xMax and yMin
 	 * equal to yMax.
-	 * 
+	 *
 	 * @param xMinimum
 	 *            a boundary of the query rectangle: the minimum X coordinate.
 	 * @param yMinimum
@@ -2130,7 +2170,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param xMin
 	 *            DOCUMENT ME!
 	 * @param yMin
@@ -2173,7 +2213,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param coords
 	 *            DOCUMENT ME!
 	 */
@@ -2185,7 +2225,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param img
 	 *            DOCUMENT ME!
 	 * @param lod
@@ -2212,7 +2252,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param l
 	 *            DOCUMENT ME!
 	 */
@@ -2222,7 +2262,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param l
 	 *            DOCUMENT ME!
 	 */
@@ -2232,7 +2272,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param l
 	 *            DOCUMENT ME!
 	 */
@@ -2242,7 +2282,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param l
 	 *            DOCUMENT ME!
 	 */
@@ -2252,14 +2292,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param g
 	 *            DOCUMENT ME!
 	 * @param pageFormat
 	 *            DOCUMENT ME!
 	 * @param page
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int print(Graphics g, PageFormat pageFormat, int page) {
@@ -2301,7 +2341,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 * Method to return a reference to the network canvas. This method existed
 	 * before the addition of background and foreground canvases, and it remains
 	 * for backward compatibility.
-	 * 
+	 *
 	 * @return InnerCanvas
 	 */
 	public InnerCanvas getCanvas() {
@@ -2310,7 +2350,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Method to return a reference to a DingCanvas object, given a canvas id.
-	 * 
+	 *
 	 * @param canvasId
 	 *            Canvas
 	 * @return DingCanvas
@@ -2329,69 +2369,85 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	}
 
 	/**
-	 * Method to return a reference to an Image object, which represents the
-	 * current network view.
-	 * 
-	 * @param width
-	 *            Width of desired image.
-	 * @param height
-	 *            Height of desired image.
-	 * @param shrink
-	 *            Percent to shrink the network shown in the image. This doesn't
-	 *            shrink the image, just the network shown, as if the user
-	 *            zoomed out. Can be between 0 and 1, if not it will default to
-	 *            1.
+	 * Method to return a reference to an Image object,
+	 * which represents the current network view.
+	 *
+	 * @param width Width of desired image.
+	 * @param height Height of desired image.
+	 * @param shrink Percent to shrink the network shown in the image.
+	 * @param skipBackground If true, we don't draw the background
+	 * This doesn't shrink the image, just the network shown, as if the user zoomed out.
+	 * Can be between 0 and 1, if not it will default to 1.  
 	 * @return Image
 	 * @throws IllegalArgumentException
 	 */
-	public Image createImage(int width, int height, double shrink) {
-
-		// check args
+	private Image createImage(final int width, final int height, double shrink, final boolean skipBackground) {
+		// Validate arguments
 		if (width < 0 || height < 0) {
-			throw new IllegalArgumentException(
-					"DGraphView.createImage(int width, int height): "
-							+ "width and height arguments must be greater than zero");
+			throw new IllegalArgumentException("DGraphView.createImage(int width, int height): "
+							   + "width and height arguments must be greater than zero");
 		}
 
 		if (shrink < 0 || shrink > 1.0) {
-			System.out
-					.println("DGraphView.createImage(width,height,shrink) shrink is invalid: "
-							+ shrink + "  using default of 1.0");
+			System.out.println("DGraphView.createImage(width,height,shrink) shrink is invalid: "
+			                   + shrink + "  using default of 1.0");
 			shrink = 1.0;
 		}
 
 		// create image to return
-		Image image = new BufferedImage(width, height,
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics g = image.getGraphics();
+		final Image image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);		
+		final Graphics g = image.getGraphics();
 
-		// paint background canvas into image
-		Dimension dim = m_backgroundCanvas.getSize();
-		m_backgroundCanvas.setSize(width, height);
-		m_backgroundCanvas.paint(g);
-		m_backgroundCanvas.setSize(dim);
+		Dimension originalSize;
 
+		if (!skipBackground) {
+			// paint background canvas into image
+			originalSize = m_backgroundCanvas.getSize();
+			m_backgroundCanvas.setSize(width, height);
+			m_backgroundCanvas.paint(g);
+			// Restore background size
+			m_backgroundCanvas.setSize(originalSize);
+		}
+		
 		// paint inner canvas (network)
-		dim = m_networkCanvas.getSize();
+		originalSize = m_networkCanvas.getSize();
 		m_networkCanvas.setSize(width, height);
-		fitContent();
-		setZoom(getZoom() * shrink);
+		fitContent(/* updateView = */ false);
+		setZoom(getZoom() * shrink, /* updateView = */ false);
 		m_networkCanvas.paint(g);
-		m_networkCanvas.setSize(dim);
-
+		// Restore network to original size
+		m_networkCanvas.setSize(originalSize);
+		fitContent(/* updateView = */ false);
+		
 		// paint foreground canvas
-		dim = m_foregroundCanvas.getSize();
+		originalSize = m_foregroundCanvas.getSize();
 		m_foregroundCanvas.setSize(width, height);
 		m_foregroundCanvas.paint(g);
-		m_foregroundCanvas.setSize(dim);
+		// Restore foreground to original size
+		m_foregroundCanvas.setSize(originalSize);
 
-		// outta here
 		return image;
 	}
 
 	/**
+	 * Method to return a reference to an Image object,
+	 * which represents the current network view.
+	 *
+	 * @param width Width of desired image.
+	 * @param height Height of desired image.
+	 * @param shrink Percent to shrink the network shown in the image. 
+	 * This doesn't shrink the image, just the network shown, as if the user zoomed out.
+	 * Can be between 0 and 1, if not it will default to 1.  
+	 * @return Image
+	 * @throws IllegalArgumentException
+	 */
+	public Image createImage(int width, int height, double shrink) {
+		return createImage(width, height, shrink, /* skipBackground = */ false);
+	}
+
+	/**
 	 * utility that returns the nodeView that is located at input point
-	 * 
+	 *
 	 * @param pt
 	 */
 	public NodeView getPickedNodeView(Point2D pt) {
@@ -2423,7 +2479,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param pt
 	 *            DOCUMENT ME!
 	 * @return DOCUMENT ME!
@@ -2446,7 +2502,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public final float getAnchorSize() {
@@ -2455,7 +2511,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public final Paint getAnchorSelectedPaint() {
@@ -2464,7 +2520,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public final Paint getAnchorUnselectedPaint() {
@@ -2483,7 +2539,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param title
 	 *            DOCUMENT ME!
 	 */
@@ -2493,7 +2549,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public String getTitle() {
@@ -2502,10 +2558,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param nodes
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setSelected(CyNode[] nodes) {
@@ -2524,10 +2580,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param node_views
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setSelected(NodeView[] node_views) {
@@ -2540,10 +2596,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edges
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setSelected(CyEdge[] edges) {
@@ -2562,10 +2618,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param edge_views
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setSelected(EdgeView[] edge_views) {
@@ -2578,7 +2634,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public List<NodeView> getNodeViewsList() {
@@ -2615,7 +2671,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * Our implementation of Component setBounds(). If we don't do this, the
 	 * individual canvas do not get rendered.
-	 * 
+	 *
 	 * @param x
 	 *            int
 	 * @param y
@@ -2704,11 +2760,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 		m_nodeViewMap.get(nodeView.getModel()
 				.getIndex()).setVisualPropertyValue(vp, value);
-	} 
+	}
 
 	/**
 	 * This should be called from DGraphView.
-	 * 
+	 *
 	 */
 	@Override
 	public void edgeVisualPropertySet(final View<CyEdge> edgeView,
@@ -2723,7 +2779,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	/**
 	 * Listener for all view change events.
-	 * 
+	 *
 	 */
 	@Override
 	public void networkVisualPropertySet(View<CyNetwork> target,
@@ -2807,6 +2863,72 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		if (e.getSource().equals(cyNetworkView)) {
 			logger.info("Fit Content called by event.");
 			fitContent();
+		}
+	}
+
+	/**
+	 * Returns the current snapshot image of this view.
+	 *
+	 * <p>
+	 * No unnecessary image object will be created if networks in the current
+	 * session does not contain any nested network, i.e., should not have
+	 * performance/memory issue.
+	 *
+	 * @return Image of this view.  It is always up-to-date.
+	 */
+	TexturePaint getSnapshot(final double width, final double height) {
+		if (!latest) {
+			// Need to update snapshot.
+			snapshotImage =
+				(BufferedImage)createImage(DEF_SNAPSHOT_SIZE, DEF_SNAPSHOT_SIZE, 1,
+				                           /* skipBackground = */ true);
+			latest = true;
+		}
+
+		final Rectangle2D rect = new Rectangle2D.Double(-width / 2, -height / 2, width, height);
+		final TexturePaint texturePaint = new TexturePaint(snapshotImage, rect);
+		return texturePaint;
+	}
+
+
+	/**
+	 * Converts a BufferedImage to a lossless PNG.
+	 */
+	private byte[] convertToCompressedImage(final BufferedImage bufferedImage) {
+		try {
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream(100000);
+			ImageIO.write(bufferedImage, "png", baos);
+			final byte[] retval = baos.toByteArray();
+			return retval;
+		} catch (final IOException e) {
+			System.err.println("Failed to convert a BufferedImage to a PNG! (" + e + ")");
+			return null;
+		}
+	}
+
+	/**
+	 * Converts a PNG to a BufferedImage.
+	 */
+	private BufferedImage convertToBufferedImage(final byte[] compressedImage) {
+		try {
+			final ByteArrayInputStream is = new ByteArrayInputStream(compressedImage);
+			final BufferedImage retval = (BufferedImage)ImageIO.read(is);
+			return retval;
+		} catch (final IOException e) {
+			System.err.println("Failed to convert a PNG to a BufferedImage! (" + e + ")");
+			return null;
+		}
+	}
+
+	/**
+	 * Listener for update flag of snapshot image.
+	 *
+	 * @author kono
+	 *
+	 */
+	private final class DGraphViewContentChangeListener implements ContentChangeListener {
+		public void contentChanged() {
+			latest = false;
 		}
 	}
 }

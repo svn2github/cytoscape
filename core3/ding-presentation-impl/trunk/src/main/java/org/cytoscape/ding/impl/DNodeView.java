@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package org.cytoscape.ding.impl;
+
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -47,11 +40,14 @@ import java.awt.TexturePaint;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
@@ -67,13 +63,39 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
+
 /**
  * Ding implementation of node presentation.
- * 
+ *
  * @author $author$
  */
 public class DNodeView implements NodeView, Label {
-	
+
+	// For Cytoscape 2.7: Nested Network Image size
+	private static final float NESTED_IMAGE_SCALE_FACTOR = 0.6f;
+
+	// This image will be used when view is not available for a nested network.
+	private static BufferedImage DEFAULT_NESTED_NETWORK_IMAGE;
+	private static BufferedImage RECURSIVE_NESTED_NETWORK_IMAGE;
+
+	// Used to detect recursive rendering of nested networks.
+	private static int nestedNetworkPaintingDepth = 0;
+
+	static {
+		try {
+			DEFAULT_NESTED_NETWORK_IMAGE = ImageIO.read(DNodeView.class
+					.getClassLoader().getResource(
+							"images/default_network.png"));
+			RECURSIVE_NESTED_NETWORK_IMAGE = ImageIO.read(DNodeView.class
+					.getClassLoader().getResource(
+							"images/recursive_network.png"));
+		} catch (final IOException e) {
+			e.printStackTrace();
+			DEFAULT_NESTED_NETWORK_IMAGE = null;
+			RECURSIVE_NESTED_NETWORK_IMAGE = null;
+		}
+	}
+
 	static final float DEFAULT_WIDTH = 20.0f;
 	static final float DEFAULT_HEIGHT = 20.0f;
 	static final int DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
@@ -81,30 +103,37 @@ public class DNodeView implements NodeView, Label {
 	static final String DEFAULT_LABEL_TEXT = "";
 	static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
 	static final Paint DEFAULT_LABEL_PAINT = Color.black;
+	static final double DEFAULT_LABEL_WIDTH = 100.0;
+
+	DGraphView graphView;
+
 	static final int DEFAULT_TRANSPARENCY = 255;
-	
-	final int m_inx; // The FixedGraph index (non-negative).
-	boolean m_selected;
-	Paint m_unselectedPaint;
-	Paint m_selectedPaint;
-	Paint m_borderPaint;
-	
-	int transparency;
+
+	private final int m_inx; // The FixedGraph index (non-negative).
+	private boolean m_selected;
+	private Paint m_unselectedPaint;
+	private Paint m_selectedPaint;
+	private Paint m_borderPaint;
+
+	private int transparency;
 
 	/**
 	 * Stores the position of a nodeView when it's hidden so that when the
-	 * nodeView is retored we can restore the view into the same position.
+	 * nodeView is restored we can restore the view into the same position.
 	 */
-	float m_hiddenXMin;
-	float m_hiddenYMin;
-	float m_hiddenXMax;
-	float m_hiddenYMax;
+	float m_hiddenXMin = Float.MIN_VALUE;
+	float m_hiddenYMin = Float.MIN_VALUE;
+	float m_hiddenXMax = Float.MAX_VALUE;
+	float m_hiddenYMax = Float.MAX_VALUE;
 
 	ArrayList<Shape> m_graphicShapes;
 	ArrayList<Paint> m_graphicPaints;
 
 	// AJK: 04/26/06 for tooltip
-	String m_toolTipText = null;
+	private String m_toolTipText = null;
+
+	private DGraphView nestedNetworkView;
+	private boolean nestedNetworkVisible = true;
 
 	// A LinkedHashSet of the custom graphics associated with this
 	// DNodeView. We need the HashSet linked since the ordering of
@@ -123,7 +152,7 @@ public class DNodeView implements NodeView, Label {
 
 	// Parent network.
 	DGraphView dGraphView;
-	
+
 	// View Model for this presentation.
 	private final View<CyNode> nodeViewModel;
 
@@ -145,7 +174,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public GraphView getGraphView() {
@@ -154,7 +183,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public CyNode getNode() {
@@ -169,7 +198,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int getGraphPerspectiveIndex() {
@@ -178,7 +207,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int getRootGraphIndex() {
@@ -187,10 +216,10 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param otherNodeView
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public List<EdgeView> getEdgeViewsList(NodeView otherNodeView) {
@@ -201,7 +230,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int getShape() {
@@ -214,7 +243,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param paint
 	 *            DOCUMENT ME!
 	 */
@@ -239,7 +268,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getSelectedPaint() {
@@ -248,7 +277,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param paint
 	 *            DOCUMENT ME!
 	 */
@@ -276,7 +305,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getUnselectedPaint() {
@@ -285,7 +314,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param paint
 	 *            DOCUMENT ME!
 	 */
@@ -299,7 +328,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getBorderPaint() {
@@ -308,7 +337,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param width
 	 *            DOCUMENT ME!
 	 */
@@ -321,7 +350,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public float getBorderWidth() {
@@ -332,7 +361,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param stroke
 	 *            DOCUMENT ME!
 	 */
@@ -393,7 +422,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Stroke getBorder() {
@@ -410,7 +439,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param trans
 	 *            DOCUMENT ME!
 	 */
@@ -421,25 +450,25 @@ public class DNodeView implements NodeView, Label {
 			transparency = trans;
 
 			if (m_unselectedPaint instanceof Color) {
-				
+
 				m_unselectedPaint = new Color(((Color) m_unselectedPaint).getRed(), ((Color) m_unselectedPaint).getGreen(), ((Color) m_unselectedPaint).getBlue(), trans);
-				
+
 				dGraphView.m_nodeDetails
 					.overrideFillPaint(m_inx, m_unselectedPaint);
 
-			
+
 				dGraphView.m_nodeDetails.overrideColorLowDetail(m_inx,
 						(Color) m_unselectedPaint);
 			}
 
 			dGraphView.m_contentChanged = true;
 		}
-		
+
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int getTransparency() {
@@ -448,10 +477,10 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param width
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setWidth(double width) {
@@ -487,7 +516,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public double getWidth() {
@@ -501,10 +530,10 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param height
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setHeight(double height) {
@@ -542,7 +571,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public double getHeight() {
@@ -556,7 +585,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Label getLabel() {
@@ -565,7 +594,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int getDegree() {
@@ -576,7 +605,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param x
 	 *            DOCUMENT ME!
 	 * @param y
@@ -612,7 +641,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Point2D getOffset() {
@@ -629,12 +658,12 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param xPos
 	 *            DOCUMENT ME!
 	 */
 	public void setXPosition(double xPos) {
-		
+
 		synchronized (dGraphView.m_lock) {
 			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0)
 					|| Double.isNaN(xPos))
@@ -658,7 +687,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param xPos
 	 *            DOCUMENT ME!
 	 * @param update
@@ -670,7 +699,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public double getXPosition() {
@@ -684,7 +713,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param yPos
 	 *            DOCUMENT ME!
 	 */
@@ -712,7 +741,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param yPos
 	 *            DOCUMENT ME!
 	 * @param update
@@ -724,7 +753,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public double getYPosition() {
@@ -738,7 +767,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param animate
 	 *            DOCUMENT ME!
 	 */
@@ -825,7 +854,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean isSelected() {
@@ -834,10 +863,10 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param selected
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean setSelected(boolean selected) {
@@ -851,7 +880,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param shape
 	 *            DOCUMENT ME!
 	 */
@@ -880,7 +909,7 @@ public class DNodeView implements NodeView, Label {
 	// AJK: 04/26/06 BEGIN
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param tip
 	 *            DOCUMENT ME!
 	 */
@@ -890,7 +919,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public String getToolTip() {
@@ -900,7 +929,7 @@ public class DNodeView implements NodeView, Label {
 	// AJK: 04/26/06 END
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param position
 	 *            DOCUMENT ME!
 	 */
@@ -909,7 +938,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getTextPaint() {
@@ -920,7 +949,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param textPaint
 	 *            DOCUMENT ME!
 	 */
@@ -933,7 +962,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public double getGreekThreshold() {
@@ -942,7 +971,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param threshold
 	 *            DOCUMENT ME!
 	 */
@@ -951,7 +980,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public String getText() {
@@ -962,7 +991,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param text
 	 *            DOCUMENT ME!
 	 */
@@ -982,7 +1011,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Font getFont() {
@@ -993,7 +1022,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param font
 	 *            DOCUMENT ME!
 	 */
@@ -1010,7 +1039,7 @@ public class DNodeView implements NodeView, Label {
 	 * calling: <CODE>
 	 *   addCustomGraphic (new CustomGraphic (shape,paint,anchor))
 	 * </CODE> except the the new CustomGraphic created is returned.
-	 * 
+	 *
 	 * @param shape
 	 * @param paint
 	 * @param anchor
@@ -1038,13 +1067,13 @@ public class DNodeView implements NodeView, Label {
 	 * make sure you add them in the order you desire. Note that since
 	 * CustomGraphics may be added by multiple plugins, your additions may be
 	 * interleaved with others.
-	 * 
+	 *
 	 * <P>
 	 * A CustomGraphic can only be associated with a DNodeView once. If you wish
 	 * to have a custom graphic, with the same paint and shape information,
 	 * occur in multiple places in the draw order, simply create a new
 	 * CustomGraphic and add it.
-	 * 
+	 *
 	 * @since Cytoscape 2.6
 	 * @throws IllegalArgumentException
 	 *             if shape or paint are null.
@@ -1073,7 +1102,7 @@ public class DNodeView implements NodeView, Label {
 	/**
 	 * A thread-safe way to determine if this DNodeView contains a given custom
 	 * graphic.
-	 * 
+	 *
 	 * @param cg
 	 *            the CustomGraphic for which we are checking containment.
 	 * @since Cytoscape 2.6
@@ -1099,7 +1128,7 @@ public class DNodeView implements NodeView, Label {
 	 * in this DNodeView. The Iterator will return each CustomGraphic in draw
 	 * order. The Iterator cannot be used to modify the underlying set of
 	 * CustomGraphics.
-	 * 
+	 *
 	 * @return The CustomGraphics Iterator. If no CustomGraphics are associated
 	 *         with this DNOdeView, an empty Iterator is returned.
 	 * @throws UnsupportedOperationException
@@ -1139,7 +1168,7 @@ public class DNodeView implements NodeView, Label {
 	/**
 	 * A thread-safe method for removing a given custom graphic from this
 	 * DNodeView.
-	 * 
+	 *
 	 * @return true if the custom graphic was found an removed. Returns false if
 	 *         cg is null or is not a custom graphic associated with this
 	 *         DNodeView.
@@ -1164,7 +1193,7 @@ public class DNodeView implements NodeView, Label {
 	/**
 	 * A thread-safe method returning the number of custom graphics associated
 	 * with this DNodeView. If none are associated, zero is returned.
-	 * 
+	 *
 	 * @since Cytoscape 2.6
 	 */
 	public int getNumCustomGraphics() {
@@ -1196,7 +1225,7 @@ public class DNodeView implements NodeView, Label {
 	 * customGraphicIterator(). For example, to iterate over all custom graphics
 	 * without fear of the underlying custom graphics being mutated, you could
 	 * perform:
-	 * 
+	 *
 	 * <PRE>
 	 *    DNodeView dnv = ...;
 	 *    CustomGraphic cg = null;
@@ -1208,7 +1237,7 @@ public class DNodeView implements NodeView, Label {
 	 *       }
 	 *   }
 	 * </PRE>
-	 * 
+	 *
 	 * NOTE: A better concurrency approach would be to return the read lock from
 	 * a java.util.concurrent.locks.ReentrantReadWriteLock. However, this
 	 * requires users to manually lock and unlock blocks of code where many
@@ -1216,7 +1245,7 @@ public class DNodeView implements NodeView, Label {
 	 * DNodeView may be permanently locked. Since concurrency will most likely
 	 * be very low, we opt for the simpler approach of having users use
 	 * synchronized {} blocks on a standard lock object.
-	 * 
+	 *
 	 * @return the lock object used for custom graphics of this DNodeView.
 	 */
 	public Object customGraphicLock() {
@@ -1245,7 +1274,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param position
 	 *            DOCUMENT ME!
 	 */
@@ -1258,7 +1287,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int getTextAnchor() {
@@ -1270,7 +1299,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param justify
 	 *            DOCUMENT ME!
 	 */
@@ -1283,7 +1312,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int getJustify() {
@@ -1295,7 +1324,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param x
 	 *            DOCUMENT ME!
 	 */
@@ -1308,7 +1337,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public double getLabelOffsetX() {
@@ -1319,7 +1348,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param y
 	 *            DOCUMENT ME!
 	 */
@@ -1332,7 +1361,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public double getLabelOffsetY() {
@@ -1343,7 +1372,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param position
 	 *            DOCUMENT ME!
 	 */
@@ -1356,7 +1385,7 @@ public class DNodeView implements NodeView, Label {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public int getNodeLabelAnchor() {
@@ -1366,9 +1395,93 @@ public class DNodeView implements NodeView, Label {
 		}
 	}
 
+        public double getLabelWidth() {
+                synchronized (graphView.m_lock) {
+                        return graphView.m_nodeDetails.labelWidth(m_inx);
+                }
+        }
+
+        public void setLabelWidth(double width) {
+                synchronized (graphView.m_lock) {
+                        graphView.m_nodeDetails.overrideLabelWidth(m_inx, width);
+                        graphView.m_contentChanged = true;
+                }
+        }
+
+	TexturePaint getNestedNetworkTexturePaint() {
+		synchronized (graphView.m_lock) {
+			++nestedNetworkPaintingDepth;
+			try {
+				if (nestedNetworkPaintingDepth > 1
+						|| getNode().getNestedNetwork() == null
+						|| !nestedNetworkVisible)
+					return null;
+
+				final double IMAGE_WIDTH = getWidth()
+					* NESTED_IMAGE_SCALE_FACTOR;
+				final double IMAGE_HEIGHT = getHeight()
+					* NESTED_IMAGE_SCALE_FACTOR;
+
+				// Do we have a node w/ a self-reference?
+				if (graphView == nestedNetworkView) {
+					if (RECURSIVE_NESTED_NETWORK_IMAGE == null)
+						return null;
+
+					final Rectangle2D rect = new Rectangle2D.Double(
+							-IMAGE_WIDTH / 2, -IMAGE_HEIGHT / 2, IMAGE_WIDTH,
+							IMAGE_HEIGHT);
+					return new TexturePaint(RECURSIVE_NESTED_NETWORK_IMAGE,
+							rect);
+				}
+				if (nestedNetworkView != null) {
+					final double scaleFactor = graphView.getGraphLOD().getNestedNetworkImageScaleFactor();
+					return nestedNetworkView.getSnapshot(IMAGE_WIDTH * scaleFactor,
+									     IMAGE_HEIGHT * scaleFactor);
+				} else {
+					if (DEFAULT_NESTED_NETWORK_IMAGE == null)
+						return null;
+
+					final Rectangle2D rect = new Rectangle2D.Double(
+							-IMAGE_WIDTH / 2, -IMAGE_HEIGHT / 2, IMAGE_WIDTH,
+							IMAGE_HEIGHT);
+					return new TexturePaint(DEFAULT_NESTED_NETWORK_IMAGE, rect);
+				}
+			} finally {
+				--nestedNetworkPaintingDepth;
+			}
+		}
+	}
+
+	public void setNestedNetworkView(final DGraphView nestedNetworkView) {
+		this.nestedNetworkView = nestedNetworkView;
+	}
+
+	/**
+	 * Determines whether a nested network should be rendered as part of a
+	 * node's view or not.
+	 *
+	 * @return true if the node has a nested network and we want it rendered,
+	 *         else false.
+	 */
+	public boolean nestedNetworkIsVisible() {
+		return nestedNetworkVisible;
+	}
+
+	/**
+	 * Set the visibility of a node's nested network when rendered.
+	 *
+	 * @param makeVisible
+	 *            forces the visibility of a nested network. Please note that
+	 *            this call has no effect if a node has no associated nested
+	 *            network!
+	 */
+	public void showNestedNetwork(final boolean makeVisible) {
+		nestedNetworkVisible = makeVisible;
+	}
+
 	@Override
 	public void setVisualPropertyValue(VisualProperty<?> vp, Object value) {
-		
+
 		if (vp == DVisualLexicon.NODE_SHAPE) {
 			setShape(((NodeShape) value).getGinyShape());
 		} else if (vp == DVisualLexicon.NODE_SELECTED_PAINT) {
