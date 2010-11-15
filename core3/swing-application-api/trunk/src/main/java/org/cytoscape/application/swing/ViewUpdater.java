@@ -40,6 +40,11 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.events.RowSetMicroListener;
 
+/**
+ * A utility class that provides an implementation of
+ * {@link RowSetMicroListener} for a particular {@link View}
+ * and {@link VisualProperty}.
+ */
 public class ViewUpdater<T,S> implements RowSetMicroListener {
 
 	protected final CyRow row; 
@@ -47,6 +52,13 @@ public class ViewUpdater<T,S> implements RowSetMicroListener {
 	protected final VisualProperty<S> vp;
 	protected final String columnName;
 
+	/**
+	 * Constructor.
+	 * @param view The view that the visual property should be set whne the row is changed. 
+	 * @param vp The visual property that should be set on the view when the row is changed.
+	 * @param row The row that is being listened to.
+	 * @param columnName The name of the column within the row that is being listened to.
+	 */
 	public ViewUpdater(View<T> view, VisualProperty<S> vp, CyRow row, String columnName) {
 		this.view = view;
 		this.vp = vp;
@@ -54,10 +66,20 @@ public class ViewUpdater<T,S> implements RowSetMicroListener {
 		this.columnName = columnName;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public Object getEventSource() {
 		return row;
 	}
 
+	/**
+	 * Called whenever the {@link CyRow} is changed. Will attempt to set
+	 * the visual property on the view with the new value that has been
+	 * set in the row.
+	 * @param columnName The name of the column with the row that was changed.
+	 * @param value The new value that the row has been set to. 
+	 */
 	@SuppressWarnings("unchecked")
 	public void handleRowSet(final String columnName, final Object value) {
 		if ( columnName == null || !columnName.equals(this.columnName) )

@@ -38,7 +38,9 @@ package org.cytoscape.application.swing;
 
 /**
  * An interface providing access to version information about this
- * version of the Cytoscape application.
+ * version of the Cytoscape application. Cytoscape strives to follow
+ * the <a href="http://semver.org">Semantic Versioning</a> standard
+ * to ensure comprehensible backwards compatibility versioning. 
  */
 public interface CytoscapeVersion {
 
@@ -63,6 +65,7 @@ public interface CytoscapeVersion {
 	 * changes only for comprehensive software changes and while APIs
 	 * may be similar between versions, they are not guaranteed to be
 	 * compatible.
+	 * @return The integer describing the major version of this application.
 	 */
 	public int getMajorVersion(); 
 
@@ -74,6 +77,7 @@ public interface CytoscapeVersion {
 	 * Minor version APIs are guaranteed to be backwards compatibile for 
 	 * all previous versions within the major version (i.e. version 3.2
 	 * will be completely compatible with all 3.1.x, and 3.0.x code).
+	 * @return The integer describing the minor version of this application.
 	 */
 	public int getMinorVersion();
 
@@ -81,17 +85,22 @@ public interface CytoscapeVersion {
 	/**
 	 * The third of the three numbers defining the version of the 
 	 * software, meaning "5" if the version is "3.2.5". This number
-	 * changes as bug fixes are made and no new features or APIs should be 
-	 * added. Bug fix version APIs are guaranteed to be backwards 
+	 * changes as bug fixes are made but no new features or APIs are 
+	 * added. Bug fix versions contain NO NEW FEATRURES!
+	 * Bug fix version APIs are guaranteed to be backwards 
 	 * compatibile for all previous versions within the major version 
 	 * (i.e. version 3.2.5 will be completely compatible with all 3.x 
 	 * versions of the code).
+	 * @return The integer describing the bug fix version of this application.
 	 */
 	public int getBugFixVersion();
 
 	/**
 	 * Any text following the last digit of the bug fix version.  If
 	 * the version is 3.0.2-beta1 then the qualifier will be "-beta1".
+	 * Final (stable) versions of the application should not include any
+	 * qualifying information. All qualifying text indicates a pre-release,
+	 * an unstable release, or unfinished release.
 	 * @return Any text following the last digit of the bug fix version.
 	 */
 	public String getQualifier();

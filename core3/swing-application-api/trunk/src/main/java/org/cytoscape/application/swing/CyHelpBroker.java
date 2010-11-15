@@ -48,14 +48,12 @@ public interface CyHelpBroker {
 
 	/**
 	 * Returns the HelpBroker. 
-	 *
 	 * @return the HelpBroker. 
 	 */
 	public HelpBroker getHelpBroker();
 
 	/**
 	 * Returns the HelpSet. 
-	 *
 	 * @return the HelpSet. 
 	 */
 	public HelpSet getHelpSet();

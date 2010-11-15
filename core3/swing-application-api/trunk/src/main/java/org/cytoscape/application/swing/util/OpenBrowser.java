@@ -40,18 +40,22 @@ package org.cytoscape.application.swing.util;
 
 
 /**
- *
+ * A utility provided as an OSGi service for opening
+ * a web browser. The Cytoscape property "defaultWebBrowser"
+ * may be set with an alternative command for opening
+ * a different web browser than default.
  */
 public interface OpenBrowser {
 
-	String UNIX_PATH = "htmlview";
-	String MAC_PATH = "open";
-	String WIN_PATH = "rundll32 url.dll,FileProtocolHandler";
+	/**
+	 * The name of a property for a Properties object used to define an alternative
+	 * web browser command.
+	 */
+	String DEF_WEB_BROWSER_PROP_NAME = "defaultWebBrowser";
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param url DOCUMENT ME!
+	 * Opens a web browser pointing to the specified URL.  
+	 * @param url A string URL that should be opened in the web browser. 
 	 */
 	void openURL(String url);
 }

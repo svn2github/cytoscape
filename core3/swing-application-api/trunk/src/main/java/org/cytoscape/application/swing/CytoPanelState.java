@@ -39,26 +39,24 @@ package org.cytoscape.application.swing;
 
 
 /**
- *  CytoPanelState enum.  The following States are supported:
- * <UL>
- * <LI>CytoPanelState.HIDE:  Hide the CytoPanel.
- * <LI>CytoPanelState.FLOAT: Float the CytoPanel.
- * <LI>CytoPanelState.DOCK:  Dock the CytoPanel.
- * </UL>
+ *  The different display states available for a CytoPanel.
  */
 public enum CytoPanelState {
-	HIDE("hide"),
-	FLOAT("float"),
-	DOCK("dock"),
+	/**
+	 * The CytoPanel will be hidden and only appear as a menu item.
+	 */
+	HIDE,
+
+	/**
+	 * The CytoPanel will be open and appear as a separate frame 
+	 * independent of the application.
+	 */
+	FLOAT,
+
+	/**
+	 * The CytoPanel will be open and appear as a nested frame 
+	 * within the application.
+	 */
+	DOCK,
 	;
-
-	private final String name;
-
-	private CytoPanelState(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
 }

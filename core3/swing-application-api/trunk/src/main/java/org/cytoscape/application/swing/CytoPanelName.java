@@ -31,12 +31,28 @@ package org.cytoscape.application.swing;
 
 
 /** 
- * An enum that maps names to compass directions.
+ * An enum that describes CytoPanels uses compass directions
+ * to describe their location within the application.
  */
 public enum CytoPanelName {
+	/**
+	 * The south or bottom panel.
+	 */
 	SOUTH("Data Panel"),
+
+	/**
+	 * The east or righthand panel.
+	 */
 	EAST("Results Panel"),
+
+	/**
+	 * The west or lefthand panel.
+	 */
 	WEST("Control Panel"),
+
+	/**
+	 * The southwest or bottom left panel.
+	 */
 	SOUTH_WEST("Tool Panel"),
 	;
 
@@ -46,6 +62,10 @@ public enum CytoPanelName {
 		this.title = title;
 	}
 
+	/**
+	 * Returns the human readable title used for labeling this CytoPanel.
+	 * @return The human readable title used for labeling this CytoPanel.
+	 */
 	public String getTitle() {
 		return title;
 	}
