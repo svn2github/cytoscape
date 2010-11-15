@@ -11,9 +11,6 @@
 		interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=coreSettings)" />
 
-	<osgi:reference id="openBrowserServiceRef"
-		interface="org.cytoscape.util.swing.OpenBrowser" />
-
 	<osgi:reference id="cyApplicationManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
 
@@ -88,6 +85,8 @@
 	<!-- </osgi:interfaces> -->
 	<!-- </osgi:service> -->
 
+
+	<osgi:reference id="openBrowserService" interface="org.cytoscape.util.swing.OpenBrowser" />
 
 	<!-- <osgi:service id="printActionService" ref="printAction" interface="cytoscape.view.CyAction" 
 		/> -->
@@ -268,7 +267,7 @@
 	<!-- Finally, Export Cytoscape Desktop itself as a service. Other desktop 
 		components (like VizMapper GUI) can use it through DI -->
 	<osgi:service id="cytoscapeDesktopService" ref="cytoscapeDesktop"
-		interface="org.cytoscape.application.swing.CySwingApplication" />
+		interface="org.cytoscape.application.CySwingApplication" />
 
 	<osgi:service id="networkPanelService" ref="networkPanel">
 		<osgi:interfaces>
