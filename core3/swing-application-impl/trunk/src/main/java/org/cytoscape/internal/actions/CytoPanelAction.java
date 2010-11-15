@@ -36,11 +36,11 @@ import java.awt.event.ActionEvent;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.application.swing.CytoPanelState;
-import org.cytoscape.application.swing.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
 
 
-public class CytoPanelAction extends CytoscapeAction {
+public class CytoPanelAction extends AbstractCyAction {
 	private final static long serialVersionUID = 1202339869395571L;
 
 	protected static String SHOW = "Show";

@@ -38,7 +38,7 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskManager;
 
-import org.cytoscape.application.swing.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.task.NetworkTaskFactory;
 

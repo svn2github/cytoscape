@@ -51,7 +51,7 @@ import java.util.Set;
 import javax.swing.event.MenuEvent;
 import javax.swing.KeyStroke;
 
-import org.cytoscape.application.swing.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.presentation.RenderingEngine;
@@ -60,7 +60,7 @@ import org.cytoscape.view.presentation.RenderingEngine;
 /**
  *
  */
-public class PrintAction extends CytoscapeAction {
+public class PrintAction extends AbstractCyAction {
 	private final static long serialVersionUID = 1202339870257629L;
 
 	/**

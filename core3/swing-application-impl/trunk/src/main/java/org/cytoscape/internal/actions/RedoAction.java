@@ -44,7 +44,7 @@ import javax.swing.event.MenuEvent;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.KeyStroke;
 
-import org.cytoscape.application.swing.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -53,7 +53,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * An action that calls redo for the most recent edit in the
  * undoable edit stack.  
  */
-public class RedoAction extends CytoscapeAction {
+public class RedoAction extends AbstractCyAction {
 	private final static long serialVersionUID = 1202339875203626L;
 
 	private final UndoSupport undo;

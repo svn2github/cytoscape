@@ -40,7 +40,7 @@
 // $Author: mes $
 package org.cytoscape.internal.actions;
 
-import org.cytoscape.application.swing.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CytoscapeShutdown;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
@@ -53,7 +53,7 @@ import javax.swing.KeyStroke;
 /**
  *
  */
-public class ExitAction extends CytoscapeAction {
+public class ExitAction extends AbstractCyAction {
 	private final static long serialVersionUID = 1202339869460858L;
 	protected int returnVal;
 	private final CytoscapeShutdown shutdown;

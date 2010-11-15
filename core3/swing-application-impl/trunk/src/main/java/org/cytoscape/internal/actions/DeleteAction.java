@@ -37,7 +37,7 @@ import java.util.Set;
 import javax.swing.event.MenuEvent;
 import javax.swing.KeyStroke;
 
-import org.cytoscape.application.swing.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
@@ -60,7 +60,7 @@ import org.cytoscape.work.undo.UndoSupport;
  * @version 1.0
  *
  */
-public class DeleteAction extends CytoscapeAction {
+public class DeleteAction extends AbstractCyAction {
 	private static final long serialVersionUID = -5769255815829787466L;
 
 	private CyRootNetworkFactory cyRootNetworkFactory;

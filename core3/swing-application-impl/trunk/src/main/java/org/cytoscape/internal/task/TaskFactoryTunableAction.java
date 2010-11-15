@@ -37,14 +37,14 @@ import java.util.Map;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskManager;
 
-import org.cytoscape.application.swing.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 
-public class TaskFactoryTunableAction<T extends TaskFactory> extends CytoscapeAction {
+public class TaskFactoryTunableAction<T extends TaskFactory> extends AbstractCyAction {
 	protected T factory;
 	protected TaskManager manager;
 	private final static Logger logger = LoggerFactory.getLogger( TaskFactoryTunableAction.class );

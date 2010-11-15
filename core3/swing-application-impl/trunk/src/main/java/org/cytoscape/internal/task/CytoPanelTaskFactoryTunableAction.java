@@ -48,7 +48,7 @@ import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.CytoPanel;
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
-import org.cytoscape.application.swing.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TunableValidator;
@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
  *  This class is used to provide actions for task factories that have been annotated with tunables and therefore
  *  should end up wrapped in CytoPanel components.
  */
-public class CytoPanelTaskFactoryTunableAction extends CytoscapeAction {
+public class CytoPanelTaskFactoryTunableAction extends AbstractCyAction {
 	/**
 	 *  A listener that upon receiving the button-click event validates the tunables and then
 	 *  creates and executes a task.

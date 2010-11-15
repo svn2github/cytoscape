@@ -1,5 +1,5 @@
 /*
- File: CytoscapeAction.java
+ File: AbstractCyAction.java
 
  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -54,7 +54,7 @@ import java.util.Map;
  * so will allow your action to be used outside of a Swing specific application 
  * (which the CyAction interface binds you to)!
  */
-public abstract class CytoscapeAction extends AbstractAction implements CyAction {
+public abstract class AbstractCyAction extends AbstractAction implements CyAction {
 	protected String preferredMenu = null;
 	protected String preferredButtonGroup = null;
 	protected float menuGravity = 1.0f; 
@@ -69,19 +69,19 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	protected CyApplicationManager applicationManager;
 
 	/**
-	 * Creates a new CytoscapeAction object.
+	 * Creates a new AbstractCyAction object.
 	 *
 	 * @param name  The name of the action. 
 	 * @param applicationManager The application manager providing context for this action.
 	 */
-	public CytoscapeAction(final String name, final CyApplicationManager applicationManager) {
+	public AbstractCyAction(final String name, final CyApplicationManager applicationManager) {
 		super(name);
 		this.name = name;
 		this.applicationManager = applicationManager;
 	}
 
 	/**
-	 * Creates a new CytoscapeAction object.
+	 * Creates a new AbstractCyAction object.
 	 *
 	 * @param configProps A String-String Map of configuration metadata. This
 	 * will usually be the Map provided by the Spring service configuration. 
@@ -99,7 +99,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	 * </ul>
 	 * @param applicationManager The application manager providing context for this action.
 	 */
-	public CytoscapeAction(final Map configProps, final CyApplicationManager applicationManager) {
+	public AbstractCyAction(final Map configProps, final CyApplicationManager applicationManager) {
 		this((String)(configProps.get("title")), applicationManager);
 
 		String prefMenu = (String)(configProps.get("preferredMenu"));

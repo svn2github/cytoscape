@@ -31,7 +31,7 @@ package org.cytoscape.internal.layout.ui;
 
 
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.application.swing.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.work.swing.GUITaskManager;
@@ -40,7 +40,7 @@ import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 
 
-public class SettingsAction extends CytoscapeAction {
+public class SettingsAction extends AbstractCyAction {
 	private final static long serialVersionUID = 1202339874289357L;
 
 	private CyLayouts cyl;

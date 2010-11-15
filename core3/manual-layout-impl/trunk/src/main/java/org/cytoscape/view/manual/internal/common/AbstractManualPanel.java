@@ -42,6 +42,7 @@ import javax.swing.Icon;
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
 
+@SuppressWarnings("serial")
 public abstract class AbstractManualPanel extends JPanel implements CytoPanelComponent {
 
 	private final String title;

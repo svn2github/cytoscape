@@ -44,7 +44,7 @@ package org.cytoscape.internal.actions;
 
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.application.swing.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.internal.dialogs.PreferencesDialogImpl;
 import org.cytoscape.internal.dialogs.PreferencesDialogFactoryImpl;
 
@@ -55,7 +55,7 @@ import java.awt.event.ActionEvent;
 /**
  *
  */
-public class PreferenceAction extends CytoscapeAction {
+public class PreferenceAction extends AbstractCyAction {
 	private final static long serialVersionUID = 1202339870248574L;
 	/**
 	 * Creates a new PreferenceAction object.

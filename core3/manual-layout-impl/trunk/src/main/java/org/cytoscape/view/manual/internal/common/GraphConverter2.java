@@ -37,21 +37,17 @@
 package org.cytoscape.view.manual.internal.common;
 
 
-import org.cytoscape.view.manual.internal.layout.algorithm.MutablePolyEdgeGraphLayout;
+import java.util.List;
 
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.view.manual.internal.layout.algorithm.MutablePolyEdgeGraphLayout;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.model.CyTableUtil;
-
-import java.awt.geom.Point2D;
-
-import java.util.Iterator;
-import java.util.List;
 
 
 /**

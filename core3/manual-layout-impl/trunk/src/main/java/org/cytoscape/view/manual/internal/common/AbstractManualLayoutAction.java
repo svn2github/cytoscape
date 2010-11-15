@@ -37,29 +37,19 @@
 package org.cytoscape.view.manual.internal.common; 
 
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.HashMap;
-import javax.swing.Action;
+
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.MenuEvent;
 
-
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.CytoPanel;
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.application.swing.CytoPanelState;
-import org.cytoscape.application.swing.CytoscapeAction;
 import org.cytoscape.application.swing.events.CytoPanelComponentSelectedEvent;
 import org.cytoscape.application.swing.events.CytoPanelComponentSelectedListener;
 import org.cytoscape.session.CyApplicationManager;
@@ -68,8 +58,9 @@ import org.cytoscape.session.CyApplicationManager;
  * Base class for displaying cytopanel menu items. This class primarily
  * manages the Layout Menu logic and tab selection of the tools cytopanel. 
  */
+@SuppressWarnings("serial")
 public abstract class AbstractManualLayoutAction 
-	extends CytoscapeAction 
+	extends AbstractCyAction 
 	implements CytoPanelComponentSelectedListener {
 
     static protected CytoPanel manualLayoutPanel; 

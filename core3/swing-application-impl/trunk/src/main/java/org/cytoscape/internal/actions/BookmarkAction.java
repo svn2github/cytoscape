@@ -46,14 +46,14 @@ import java.awt.event.ActionEvent;
 
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.application.swing.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.internal.dialogs.BookmarkDialogImpl;
 import org.cytoscape.internal.dialogs.BookmarkDialogFactoryImpl;
 
 /**
  *
  */
-public class BookmarkAction extends CytoscapeAction {
+public class BookmarkAction extends AbstractCyAction {
 	private final static long serialVersionUID = 120233986993206L;
 	private CySwingApplication desktop;
 
