@@ -17,7 +17,17 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 		super();
 
 		// This action represents the actual behavior of the plugin.
-		UploadFileToGenomeSpace action = new UploadFileToGenomeSpace();
-		Cytoscape.getDesktop().getCyMenus().addAction(action);
+		UploadFileToGenomeSpace uploadAction = new UploadFileToGenomeSpace();
+		Cytoscape.getDesktop().getCyMenus().addAction(uploadAction);
+
+		DeleteFileInGenomeSpace deleteAction = new DeleteFileInGenomeSpace();
+		Cytoscape.getDesktop().getCyMenus().addAction(deleteAction);
+
+		DownloadFileFromGenomeSpace downloadAction = new DownloadFileFromGenomeSpace();
+		Cytoscape.getDesktop().getCyMenus().addAction(downloadAction);
+
+		ListFilesInGenomeSpace listAction = new ListFilesInGenomeSpace();
+		Cytoscape.getDesktop().getCyMenus().addAction(listAction);
+	
 	}
 }	

@@ -6,7 +6,7 @@
   <artifactId>genomespace-plugin</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>sample-plugin</name>
+  <name>GenomeSpace Plugin</name>
 
   <build>
     <plugins>
@@ -22,23 +22,17 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-5</version>
         <configuration>
           <archive>
             <manifestEntries>
               <Cytoscape-Plugin>cytoscape.genomespace.GenomeSpacePlugin</Cytoscape-Plugin>
             </manifestEntries>
           </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-5</version>
-        <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
+          <descriptors>
+            <descriptor>src/main/assembly/src.xml</descriptor>
+          </descriptors>
         </configuration>
         <executions>
           <execution>
@@ -109,7 +103,7 @@
     <dependency>
       <groupId>org.codehaus.jettison</groupId>
       <artifactId>jettison</artifactId>
-      <version>1.2</version>
+      <version>1.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
