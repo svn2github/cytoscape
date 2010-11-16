@@ -112,6 +112,8 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 	private JButton recordButton;
 	
 	private JMenuItem menuItem;
+	private JMenuItem attrItem;
+	
 	private JPanel mainPanel;
 	private JPopupMenu thumbnailMenu;
 	private JPopupMenu metabolicOptions;
@@ -237,9 +239,13 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 		
 		metabolicOptions = new JPopupMenu();
 		menuItem = new JMenuItem("Map Metabolic");
+		attrItem = new JMenuItem("Attribute Mapper");
 		menuItem.addActionListener(this);
+		attrItem.addActionListener(this);
 		menuItem.setActionCommand("Initiate Metabolic");
+		attrItem.setActionCommand("Initiate Attribute Mapper");
 		metabolicOptions.add(menuItem);
+		metabolicOptions.add(attrItem);
 		//mainPanel.setComponentPopupMenu(metabolicOptions);
 		MouseListener extraPopupListener = new ExtraPopupListener();
 		framePane.addMouseListener(extraPopupListener);
@@ -393,6 +399,14 @@ public class CyAnimatorDialog extends JDialog implements ActionListener, java.be
 			updateThumbnails();
 			 
 		}
+		
+		if(command.equals("Initiate Attribute Mapper")){
+			
+			AttributeMapper mapper = new AttributeMapper();
+			frameManager = mapper.getFrameManager();
+			updateThumbnails();
+		}
+	
 		
 		setVisible(true);
 	}
