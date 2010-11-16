@@ -272,8 +272,8 @@
 
         <!-- swingx -->
         <dependency>
-            <groupId>org.cytoscape.wrappers</groupId>
-            <artifactId>com.l2fprod.common.sheet</artifactId>
+            <groupId>cytoscape-temp</groupId>
+            <artifactId>l2fprod-common-sheet</artifactId>
             <version>7.3</version>
         </dependency>
         <dependency>
@@ -282,13 +282,13 @@
             <version>0.9.7</version>
         </dependency>
         <dependency>
-            <groupId>org.cytoscape.wrappers</groupId>
-            <artifactId>com.l2fprod.common.shared</artifactId>
+            <groupId>cytoscape-temp</groupId>
+            <artifactId>l2fprod-common-shared</artifactId>
             <version>7.3</version>
         </dependency>
         <dependency>
-            <groupId>org.cytoscape.wrappers</groupId>
-            <artifactId>com.l2fprod.common.fontchooser</artifactId>
+            <groupId>cytoscape-temp</groupId>
+            <artifactId>l2fprod-common-fontchooser</artifactId>
             <version>7.3</version>
         </dependency>
 
