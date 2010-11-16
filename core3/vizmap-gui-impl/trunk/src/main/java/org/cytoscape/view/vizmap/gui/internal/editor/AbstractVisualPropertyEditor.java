@@ -45,6 +45,8 @@ import javax.swing.table.TableCellRenderer;
 
 import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 
+import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
+
 
 /**
  *
@@ -52,6 +54,12 @@ import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
  * @param <T>  DOCUMENT ME!
  */
 public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyEditor<T> {
+	
+	protected static final PropertyRendererRegistry REG = new PropertyRendererRegistry();
+	
+	static {
+		REG.registerDefaults();
+	}
 	
 	protected final Class<T> type;
 	protected final PropertyEditor propertyEditor;

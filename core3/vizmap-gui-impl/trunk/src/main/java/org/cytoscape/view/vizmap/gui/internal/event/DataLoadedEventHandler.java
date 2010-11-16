@@ -44,7 +44,8 @@ public class DataLoadedEventHandler extends AbstractVizMapEventHandler {
 		final VisualStyle vs = vmm.getVisualStyle(applicationManager.getCurrentNetworkView());
 
 		vizMapperMainPanel.refreshUI();
-		vizMapperMainPanel.switchVS(vs);
-		vizMapperMainPanel.setSelectedVisualStyle(vs);
+		// FIXME: remove this class.
+//		vizMapperMainPanel.switchVS(vs);
+//		vizMapperMainPanel.setSelectedVisualStyle(vs);
 	}
 }

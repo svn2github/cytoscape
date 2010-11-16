@@ -94,17 +94,23 @@ public class VizMapPropertySheetBuilder {
 		return this.propertyMap;
 	}
 
+	/**
+	 * Create new properties.
+	 * 
+	 * @param style
+	 */
 	public void setPropertyTable(final VisualStyle style) {
 
 		setPropertySheetAppearence(style);
 
+		// Remove all.
 		for (Property item : propertySheetPanel.getProperties())
 			propertySheetPanel.removeProperty(item);
 
 		/*
 		 * Add properties to the property sheet.
 		 */
-		List<Property> propRecord = setPropertyFromCalculator(style);
+		List<Property> propRecord = getPropertyListFromVisualStyle(style);
 
 		// Save it for later use.
 		propertyMap.put(style, propRecord);
@@ -228,14 +234,14 @@ public class VizMapPropertySheetBuilder {
 		// lineCellEditor.setAvailableIcons(iconArray);
 	}
 
-	private List<Property> setPropertyFromCalculator(final VisualStyle style) {
+	private List<Property> getPropertyListFromVisualStyle(final VisualStyle style) {
 
 		final Collection<VisualProperty<?>> nodeVP = style.getVisualLexicon().getAllDescendants(TwoDVisualLexicon.NODE);
 		final Collection<VisualProperty<?>> edgeVP = style.getVisualLexicon().getAllDescendants(TwoDVisualLexicon.EDGE);
 		//final Collection<VisualProperty<?>> networkVP = style.getVisualLexicon().getVisualLexiconNode(TwoDVisualLexicon.NETWORK).getChildren();
 		
-		final List<Property> nodeProps = setProps(style, TwoDVisualLexicon.NODE, nodeVP);
-		final List<Property> edgeProps = setProps(style, TwoDVisualLexicon.EDGE, edgeVP);
+		final List<Property> nodeProps = getProps(style, TwoDVisualLexicon.NODE.getDisplayName(), nodeVP);
+		final List<Property> edgeProps = getProps(style, TwoDVisualLexicon.EDGE.getDisplayName(), edgeVP);
 		//final List<Property> networkProps = setProps(style, TwoDVisualLexicon.NETWORK);
 		
 		final List<Property> result = new ArrayList<Property>();
@@ -247,16 +253,16 @@ public class VizMapPropertySheetBuilder {
 
 	}
 
-	private List<Property> setProps(final VisualStyle style, final VisualProperty<?> cat, final Collection<VisualProperty<?>> vpSet) {
+	
+	private List<Property> getProps(final VisualStyle style, final String categoryName, final Collection<VisualProperty<?>> vpSet) {
 
 		final List<Property> props = new ArrayList<Property>();
-		final Collection<VisualMappingFunction<?, ?>> mappings = style
-				.getAllVisualMappingFunctions();
+		final Collection<VisualMappingFunction<?, ?>> mappings = style.getAllVisualMappingFunctions();
 
 		for (VisualMappingFunction<?, ?> mapping : mappings) {
 
 			final VisualProperty<?> targetVP = mapping.getVisualProperty();
-			logger.debug("!!!!!!Checking VP: " + targetVP.getDisplayName() + " for " + cat.getDisplayName());
+			logger.debug("!!!!!!Checking VP: " + targetVP.getDisplayName() + " for " + categoryName);
 			// execute the following only if category matches.
 			if (vpSet.contains(targetVP) == false || style.getVisualLexicon().getVisualLexiconNode(targetVP).getChildren().size() != 0)
 				continue;
@@ -266,7 +272,7 @@ public class VizMapPropertySheetBuilder {
 			
 
 			final VizMapperProperty<?, String, ?> calculatorTypeProp = vizMapPropertyBuilder
-					.buildProperty(mapping, cat, propertySheetPanel, null);
+					.buildProperty(mapping, categoryName, propertySheetPanel, null);
 
 			logger.debug("Built new PROP: " + calculatorTypeProp.getDisplayName());
 			
@@ -280,7 +286,7 @@ public class VizMapPropertySheetBuilder {
 					&& (calculatorTypeProp.getCategory().equals(
 							"Unused Properties") == false)) {
 				
-				logger.debug("***** Testing category: " + cat.getDisplayName());
+				logger.debug("***** Testing category: " + categoryName);
 				((PropertyEditorRegistry) this.propertySheetPanel
 						.getTable().getEditorFactory())
 						.registerEditor(calculatorTypeProp, editorManager

@@ -112,12 +112,12 @@ public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 	private void applyDiscreteMapping(final View<? extends CyTableEntry> view) {
 
 		final CyRow row = view.getModel().getCyRow();
-		
-		logger.debug("Target View = " + view.getModel().getSUID());
-		logger.debug("AttrName = " + attrName);
-		logger.debug("AttrType = " + attrType);
-		logger.debug("Row keys = " + row.getAllValues().keySet());
-		logger.debug("Row vals = " + row.getAllValues().values());
+//		
+//		logger.debug("Target View = " + view.getModel().getSUID());
+//		logger.debug("AttrName = " + attrName);
+//		logger.debug("AttrType = " + attrType);
+//		logger.debug("Row keys = " + row.getAllValues().keySet());
+//		logger.debug("Row vals = " + row.getAllValues().values());
 		
 		
 		if (row.isSet(attrName, attrType)) {
@@ -126,16 +126,14 @@ public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 			// default, as appropriate
 
 			final K key = view.getModel().getCyRow().get(attrName, attrType);
-			
-			logger.debug("Discrete apply Key = " + key);
-			
+						
 			if (attribute2visualMap.containsKey(key)) {
 				final V value = attribute2visualMap.get(key);
 				// Assign value to view
 				view.setVisualProperty(vp, value);
 			} else { // remove value so that default value will be used:
 				// Set default value
-				view.setVisualProperty(vp, null);
+				view.setVisualProperty(vp, null);				
 			}
 		} else { // remove value so that default value will be used:
 			view.setVisualProperty(vp, null);

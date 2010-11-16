@@ -212,6 +212,18 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 				.getDefaultComboBoxEditor("mappingTypeEditor");
 
 	}
+	
+	private void initializeVisualStyleComboBox() {
+		vsComboBoxModel = new DefaultComboBoxModel();
+		final VisualStyle defaultVS = manager.getDefaultStyle();
+		final Set<VisualStyle> styles = vmm.getAllVisualStyles();
+		
+		for(VisualStyle style: styles)
+			vsComboBoxModel.addElement(style);
+		
+		visualStyleComboBox = new JComboBox(vsComboBoxModel);
+		visualStyleComboBox.setSelectedItem(defaultVS);
+	}
 
 	private void initComponents() {
 		mainSplitPane = new javax.swing.JSplitPane();
@@ -226,10 +238,7 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 
 		buttonPanel = new javax.swing.JPanel();
 
-		vsComboBoxModel = new DefaultComboBoxModel();
-		final VisualStyle defaultVS = manager.getDefaultStyle();
-		vsComboBoxModel.addElement(defaultVS);
-		visualStyleComboBox = new JComboBox(vsComboBoxModel);
+		initializeVisualStyleComboBox();
 
 		optionButton = new DropDownMenuButton(new AbstractAction() {
 			private final static long serialVersionUID = 1213748836776579L;
@@ -490,25 +499,25 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 
 	// ///////////////// Managing Visual Style Combobox //////////////////
 
-	public void setSelectedVisualStyle(final VisualStyle vs) {
-		final int itemCount = vsComboBoxModel.getSize();
-
-		for (int i = 0; i < itemCount; i++) {
-			if (visualStyleComboBox.getItemAt(i).equals(vs)) {
-
-				eventHelper
-						.fireAsynchronousEvent(new SelectedVisualStyleSwitchedEvent(
-								visualStyleComboBox,
-								(VisualStyle) visualStyleComboBox.getItemAt(i),
-								vs));
-				visualStyleComboBox.setSelectedItem(vs);
-				return;
-			}
-		}
-
-		throw new IllegalArgumentException(
-				"No such Visual Style in the combo box: " + vs);
-	}
+//	public void setSelectedVisualStyle(final VisualStyle vs) {
+//		final int itemCount = vsComboBoxModel.getSize();
+//
+//		for (int i = 0; i < itemCount; i++) {
+//			if (visualStyleComboBox.getItemAt(i).equals(vs)) {
+//
+//				eventHelper
+//						.fireAsynchronousEvent(new SelectedVisualStyleSwitchedEvent(
+//								visualStyleComboBox,
+//								(VisualStyle) visualStyleComboBox.getItemAt(i),
+//								vs));
+//				visualStyleComboBox.setSelectedItem(vs);
+//				return;
+//			}
+//		}
+//
+//		throw new IllegalArgumentException(
+//				"No such Visual Style in the combo box: " + vs);
+//	}
 
 	public JPanel getDefaultViewPanel() {
 		return this.defaultViewImagePanel;

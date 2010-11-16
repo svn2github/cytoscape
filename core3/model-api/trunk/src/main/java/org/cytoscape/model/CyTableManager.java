@@ -56,7 +56,7 @@ public interface CyTableManager {
 	 * @return a map of table names to tables, which contain the attributes 
 	 * for the specified network.
 	 */
-	Map<String, CyTable> getTableMap(Class<?> type, CyNetwork network);
+	public Map<String, CyTable> getTableMap(Class<?> type, CyNetwork network);
 
 	/**
 	 * Returns a Set of all tables with the specified visibility.

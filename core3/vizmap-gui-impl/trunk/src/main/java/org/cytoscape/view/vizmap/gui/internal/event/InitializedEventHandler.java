@@ -43,13 +43,14 @@ public class InitializedEventHandler extends AbstractVizMapEventHandler {
 	public void processEvent(PropertyChangeEvent e) {
 		final VisualStyle vs = vmm.getVisualStyle(applicationManager.getCurrentNetworkView());
 
-		vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel.getDefaultImageManager()
-		                                                              .get(vs));
-		vizMapperMainPanel.setSelectedVisualStyle(vs);
-
-		vizMapPropertySheetBuilder.setPropertyTable(vs);
-		vizMapperMainPanel.updateAttributeList();
-
-		propertySheetPanel.setSorting(true);
+		// FIXME: remove this.
+//		vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel.getDefaultImageManager()
+//		                                                              .get(vs));
+//		vizMapperMainPanel.setSelectedVisualStyle(vs);
+//
+//		vizMapPropertySheetBuilder.setPropertyTable(vs);
+//		vizMapperMainPanel.updateAttributeList();
+//
+//		propertySheetPanel.setSorting(true);
 	}
 }

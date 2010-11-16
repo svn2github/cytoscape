@@ -35,38 +35,42 @@
 package org.cytoscape.view.vizmap.gui.internal.editor;
 
 import javax.swing.Icon;
-import javax.swing.table.DefaultTableCellRenderer;
 
-import org.cytoscape.model.CyTable;
-import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
-import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.C2CMappingEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyDoublePropertyEditor;
-
 
 /**
  *
  */
-public class NumberVisualPropertyEditor extends AbstractVisualPropertyEditor<Number> {
+public class DoubleVisualPropertyEditor extends
+		AbstractVisualPropertyEditor<Double> {
+	
+
 	/**
 	 * Creates a new DiscreteNumber object.
 	 */
-	public NumberVisualPropertyEditor(Class<Number> type, final SelectedVisualStyleManager manager) {
+	public DoubleVisualPropertyEditor(Class<Double> type,
+			final SelectedVisualStyleManager manager) {
 		super(type, new CyDoublePropertyEditor(null));
-		tableCellRenderer = new DefaultTableCellRenderer();
-		//continuousEditor = new C2CMappingEditor<Number, Number>(this.vp, manager, attr);
+		tableCellRenderer = REG.getRenderer(Double.class);
+		// continuousEditor = new C2CMappingEditor<Number, Number>(this.vp,
+		// manager, attr);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param vp DOCUMENT ME!
-	 * @param width DOCUMENT ME!
-	 * @param height DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param vp
+	 *            DOCUMENT ME!
+	 * @param width
+	 *            DOCUMENT ME!
+	 * @param height
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
-	@Override public Icon getDefaultIcon(int width, int height) {
+	@Override
+	public Icon getDefaultIcon(int width, int height) {
 		// TODO Auto-generated method stub
 		return null;
 	}

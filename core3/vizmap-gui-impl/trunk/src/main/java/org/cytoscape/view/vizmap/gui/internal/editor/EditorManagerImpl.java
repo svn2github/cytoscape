@@ -154,8 +154,7 @@ public class EditorManagerImpl implements EditorManager {
 
 	public void addVisualPropertyEditor(VisualPropertyEditor<?> ve,
 			@SuppressWarnings("rawtypes") Map properties) {
-		logger.debug("### Got VP Editor " + ve.toString() + ", this is for "
-				+ ve.getType());
+		logger.debug("### Got VP Editor " + ve.toString() + ", this is for " + ve.getType());
 		this.editors.put(ve.getType(), ve);
 	}
 
@@ -247,14 +246,8 @@ public class EditorManagerImpl implements EditorManager {
 		return ret;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.cytoscape.application.swing.vizmap.gui.editors.EditorFactory#getDiscreteCellEditor(
-	 * org.cytoscape.application.swing.viewmodel.VisualProperty)
-	 */
-	public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type) {
+	
+	@Override public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type) {
 		VisualPropertyEditor<?> editor = editors.get(type.getType());
 		if (editor == null)
 			return null;

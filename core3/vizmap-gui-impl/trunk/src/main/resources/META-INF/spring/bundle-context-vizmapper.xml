@@ -134,9 +134,9 @@
 		class="org.cytoscape.view.vizmap.gui.internal.editor.ColorVisualPropertyEditor">
 		<constructor-arg ref="paintClass" />
 	</bean>
-	<bean id="numberPropertyEditor"
-		class="org.cytoscape.view.vizmap.gui.internal.editor.NumberVisualPropertyEditor">
-		<constructor-arg ref="numberClass" />
+	<bean id="doublePropertyEditor"
+		class="org.cytoscape.view.vizmap.gui.internal.editor.DoubleVisualPropertyEditor">
+		<constructor-arg ref="doubleClass" />
 		<constructor-arg ref="selectedVisualStyleManager" />
 	</bean>
 
@@ -162,9 +162,6 @@
 
 	<bean name="defaultViewPanel"
 		class="org.cytoscape.view.vizmap.gui.internal.DefaultViewPanelImpl">
-		<description>
-			Create default view panel.	
-		</description>
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="graphViewFactoryServiceRef" />
 		<constructor-arg ref="presentationFactoryServiceRef" />

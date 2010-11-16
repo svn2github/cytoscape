@@ -31,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor;
 
 import java.awt.event.FocusEvent;
@@ -40,15 +40,22 @@ import java.awt.event.FocusListener;
 import javax.swing.JTextField;
 
 import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.l2fprod.common.beans.editor.DoublePropertyEditor;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
 
 /**
  *
  */
 public class CyDoublePropertyEditor extends DoublePropertyEditor {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(CyDoublePropertyEditor.class);
+	
+	private final VizMapperMainPanel panel;
+
 	private Object currentValue;
 	private Object selected;
 
@@ -57,18 +64,22 @@ public class CyDoublePropertyEditor extends DoublePropertyEditor {
 	 */
 	public CyDoublePropertyEditor(final VizMapperMainPanel vmp) {
 		super();
+		panel = vmp;
 
 		((JTextField) editor).addFocusListener(new FocusListener() {
-				public void focusGained(FocusEvent e) {
-					final Item item = (Item) vmp.getSelectedItem();
-					selected = item.getProperty().getDisplayName();
-					setCurrentValue();
-				}
+			public void focusGained(FocusEvent e) {
+				
+				logger.debug("Double Editor got val: " + currentValue);
+				
+				final Item item = (Item) panel.getSelectedItem();
+				selected = item.getProperty().getDisplayName();
+				setCurrentValue();
+			}
 
-				public void focusLost(FocusEvent arg0) {
-					checkChange();
-				}
-			});
+			public void focusLost(FocusEvent arg0) {
+				checkChange();
+			}
+		});
 	}
 
 	private void setCurrentValue() {

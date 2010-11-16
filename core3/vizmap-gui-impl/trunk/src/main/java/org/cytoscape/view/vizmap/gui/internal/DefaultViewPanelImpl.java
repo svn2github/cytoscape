@@ -34,6 +34,9 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Paint;
@@ -46,7 +49,6 @@ import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
@@ -55,14 +57,11 @@ import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.*;
-
 /**
  * Panel to show the default properties visually (as graphics).
  * 
  * @version 0.6
  * @since Cytoscape 2.5
- * @author kono
  */
 public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel,
 		SelectedVisualStyleSwitchedListener {

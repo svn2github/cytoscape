@@ -53,11 +53,7 @@ import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
  */
 public class ColorVisualPropertyEditor extends AbstractVisualPropertyEditor<Paint> {
 	
-	private static final PropertyRendererRegistry REG = new PropertyRendererRegistry();
 	
-	static {
-		REG.registerDefaults();
-	}
 	/**
 	 * Constructor. Should instantiate one editor per VisualProperty.
 	 */

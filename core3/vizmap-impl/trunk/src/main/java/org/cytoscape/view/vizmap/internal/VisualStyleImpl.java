@@ -236,7 +236,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 *            DOCUMENT ME!
 	 */
 	private void applyImpl(
-			final Collection<?> views,
+			final Collection<? extends View<?>> views,
 			final Collection<VisualProperty<?>> visualProperties) {
 		
 
@@ -255,7 +255,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 *            DOCUMENT ME!
 	 */
 	private void applyToView(
-			final Collection<?> views,
+			final Collection<? extends View<?>> views,
 			final VisualProperty<?> vp) {
 
 		final VisualMappingFunction<?, ?> mapping = getVisualMappingFunction(vp);
@@ -263,8 +263,13 @@ public class VisualStyleImpl implements VisualStyle {
 		if (mapping != null) {
 			// Mapping is available for this VP. Apply it.
 			logger.debug("###### Mapping found for " + vp.getDisplayName() + ": " + mapping.toString());
-			for (Object view : views)
+			final Object styleDefaultValue = getDefaultValue(vp);
+			for (View<?> view : views) {
 				mapping.apply((View<? extends CyTableEntry>) view);
+				
+				if(view.getVisualProperty(vp) == vp.getDefault())
+					view.setVisualProperty(vp, styleDefaultValue);
+			}
 		} else if (!vp.shouldIgnoreDefault()) {
 			// Ignore defaults flag is OFF. Apply defaults.
 			applyStyleDefaults((Collection<View<?>>) views, vp);

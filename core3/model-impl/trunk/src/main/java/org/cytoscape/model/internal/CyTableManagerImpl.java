@@ -67,7 +67,7 @@ public class CyTableManagerImpl implements CyTableManager {
 	}
 	
 
-	public Map<String,CyTable> getTableMap(final Class<?> graphObjectType, final CyNetwork network) {
+	@Override public Map<String, CyTable> getTableMap(final Class<?> graphObjectType, final CyNetwork network) {
 		if ( network == null || graphObjectType == null )
 			return null;
 
@@ -103,7 +103,8 @@ public class CyTableManagerImpl implements CyTableManager {
 		tables.put( t.getSUID(), t );
 	}
 
-	public Set<CyTable> getAllTables(boolean includePrivate) {
+	
+	@Override public Set<CyTable> getAllTables(boolean includePrivate) {
 		Set<CyTable> res = new HashSet<CyTable>();
 		for ( CyTable t : tables.values() ) {
 			if ( includePrivate )
@@ -114,7 +115,7 @@ public class CyTableManagerImpl implements CyTableManager {
 		return res;
 	}
 
-	public CyTable getTable(long suid) {
+	@Override public CyTable getTable(long suid) {
 		return tables.get(suid);
 	}
 }

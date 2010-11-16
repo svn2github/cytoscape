@@ -98,15 +98,15 @@ public class VizMapPropertyBuilder {
 	 */
 	public <K, V> VizMapperProperty<VisualProperty<V>, String, VisualMappingFunctionFactory> buildProperty(
 			final VisualMappingFunction<K, V> visualMapping,
-			final VisualProperty<?> rootObjectCategory,
+			final String categoryName,
 			final PropertySheetPanel propertySheetPanel, final VisualMappingFunctionFactory factory) {
 
-		logger.debug("\n\n\nbuildProp called: Root VP = " + rootObjectCategory.getDisplayName());
+		logger.debug("\n\n\nbuildProp called: Root VP = " + categoryName);
 
 		// Mapping is empty
 		if (visualMapping == null)
 			throw new NullPointerException("Mapping is null.");
-		if (rootObjectCategory == null)
+		if (categoryName == null)
 			throw new NullPointerException(
 					"Category is null.  It should be one of the following: NODE, EDGE, or NETWORK.");
 		if (propertySheetPanel == null)
@@ -117,7 +117,7 @@ public class VizMapPropertyBuilder {
 			= new VizMapperProperty<VisualProperty<V>, String, VisualMappingFunctionFactory>(CellType.VISUAL_PROPERTY_TYPE, vp, String.class);
 
 		// Build Property object
-		topProperty.setCategory(rootObjectCategory.getDisplayName());
+		topProperty.setCategory(categoryName);
 		topProperty.setDisplayName(vp.getDisplayName());
 		topProperty.setInternalValue(factory);
 		
