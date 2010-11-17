@@ -941,7 +941,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			m_spacial.delete(nodeInx);
 
 			// m_selectedNodes.delete(nodeInx);
-			returnThis.dGraphView = null;
+			returnThis.graphView = null;
 			m_contentChanged = true;
 		}
 
