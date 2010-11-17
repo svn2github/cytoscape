@@ -663,13 +663,16 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setXPosition(double xPos) {
+		synchronized (graphView.m_lock) {
+			final double wDiv2;
+			final boolean nodeVisible = graphView.m_spacial.exists(m_inx,
+					graphView.m_extentsBuff, 0);
 
-		synchronized (dGraphView.m_lock) {
-			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0)
-					|| Double.isNaN(xPos))
-				return;
+			if (nodeVisible)
+				wDiv2 = (((double) graphView.m_extentsBuff[2]) - graphView.m_extentsBuff[0]) / 2.0d;
+			else
+				wDiv2 = (double) (m_hiddenXMax - m_hiddenXMin) / 2.0d;
 
-			final double wDiv2 = (((double) dGraphView.m_extentsBuff[2]) - dGraphView.m_extentsBuff[0]) / 2.0d;
 			final float xMin = (float) (xPos - wDiv2);
 			final float xMax = (float) (xPos + wDiv2);
 
@@ -678,10 +681,23 @@ public class DNodeView implements NodeView, Label {
 						"width of node has degenerated to zero after "
 								+ "rounding");
 
-			dGraphView.m_spacial.delete(m_inx);
-			dGraphView.m_spacial.insert(m_inx, xMin, dGraphView.m_extentsBuff[1], xMax,
-					dGraphView.m_extentsBuff[3]);
-			dGraphView.m_contentChanged = true;
+			// If the node is visible, set the extents.
+			if (nodeVisible) {
+				graphView.m_spacial.delete(m_inx);
+				graphView.m_spacial.insert(m_inx, xMin,
+						graphView.m_extentsBuff[1], xMax,
+						graphView.m_extentsBuff[3]);
+				graphView.m_contentChanged = true;
+
+				// If the node is NOT visible (hidden), then update the hidden
+				// extents. Doing
+				// this will mean that the node view will be properly scaled and
+				// rotated
+				// relative to the other nodes.
+			} else {
+				m_hiddenXMax = xMax;
+				m_hiddenXMin = xMin;
+			}
 		}
 	}
 
@@ -703,11 +719,11 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public double getXPosition() {
-		synchronized (dGraphView.m_lock) {
-			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0))
-				return Double.NaN;
-
-			return (((double) dGraphView.m_extentsBuff[0]) + dGraphView.m_extentsBuff[2]) / 2.0d;
+		synchronized (graphView.m_lock) {
+			if (graphView.m_spacial.exists(m_inx, graphView.m_extentsBuff, 0))
+				return (((double) graphView.m_extentsBuff[0]) + graphView.m_extentsBuff[2]) / 2.0d;
+			else
+				return (double) (m_hiddenXMin + m_hiddenXMax) / 2.0;
 		}
 	}
 
@@ -718,12 +734,16 @@ public class DNodeView implements NodeView, Label {
 	 *            DOCUMENT ME!
 	 */
 	public void setYPosition(double yPos) {
-		synchronized (dGraphView.m_lock) {
-			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0)
-					|| Double.isNaN(yPos))
-				return;
+		synchronized (graphView.m_lock) {
+			final double hDiv2;
+			final boolean nodeVisible = graphView.m_spacial.exists(m_inx,
+					graphView.m_extentsBuff, 0);
 
-			final double hDiv2 = (((double) dGraphView.m_extentsBuff[3]) - dGraphView.m_extentsBuff[1]) / 2.0d;
+			if (nodeVisible)
+				hDiv2 = (((double) graphView.m_extentsBuff[3]) - graphView.m_extentsBuff[1]) / 2.0d;
+			else
+				hDiv2 = (double) (m_hiddenYMax - m_hiddenYMin) / 2.0d;
+
 			final float yMin = (float) (yPos - hDiv2);
 			final float yMax = (float) (yPos + hDiv2);
 
@@ -732,10 +752,22 @@ public class DNodeView implements NodeView, Label {
 						"height of node has degenerated to zero after "
 								+ "rounding");
 
-			dGraphView.m_spacial.delete(m_inx);
-			dGraphView.m_spacial.insert(m_inx, dGraphView.m_extentsBuff[0], yMin,
-					dGraphView.m_extentsBuff[2], yMax);
-			dGraphView.m_contentChanged = true;
+			// If the node is visible, set the extents.
+			if (nodeVisible) {
+				graphView.m_spacial.delete(m_inx);
+				graphView.m_spacial.insert(m_inx, graphView.m_extentsBuff[0],
+						yMin, graphView.m_extentsBuff[2], yMax);
+				graphView.m_contentChanged = true;
+
+				// If the node is NOT visible (hidden), then update the hidden
+				// extents. Doing
+				// this will mean that the node view will be properly scaled and
+				// rotated
+				// relative to the other nodes.
+			} else {
+				m_hiddenYMax = yMax;
+				m_hiddenYMin = yMin;
+			}
 		}
 	}
 
@@ -757,11 +789,11 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public double getYPosition() {
-		synchronized (dGraphView.m_lock) {
-			if (!dGraphView.m_spacial.exists(m_inx, dGraphView.m_extentsBuff, 0))
-				return Double.NaN;
-
-			return (((double) dGraphView.m_extentsBuff[1]) + dGraphView.m_extentsBuff[3]) / 2.0d;
+		synchronized (graphView.m_lock) {
+			if (graphView.m_spacial.exists(m_inx, graphView.m_extentsBuff, 0))
+				return (((double) graphView.m_extentsBuff[1]) + graphView.m_extentsBuff[3]) / 2.0d;
+			else
+				return ((double) (m_hiddenYMin + m_hiddenYMax)) / 2.0d;
 		}
 	}
 
