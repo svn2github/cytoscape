@@ -28,41 +28,30 @@
 package org.cytoscape.view.vizmap.gui.internal.event;
 
 import java.beans.PropertyChangeEvent;
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
 
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-import org.cytoscape.view.presentation.property.VisualPropertyUtil;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
-import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.view.vizmap.gui.MappingFunctionFactoryManager;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
-import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.event.VizMapEventHandler;
-import org.cytoscape.view.vizmap.gui.internal.AbstractVizMapperPanel;
 import org.cytoscape.view.vizmap.gui.internal.AttributeSet;
 import org.cytoscape.view.vizmap.gui.internal.AttributeSetManager;
 import org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder;
-import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
-import org.cytoscape.view.vizmap.mappings.AbstractVisualMappingFunction;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
@@ -578,12 +567,10 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 						category.getDisplayName(), propertySheetPanel, factory);
 
 		logger.debug("!!!!!!! Removing Prop: " + prop);
-
 		vizMapPropertySheetBuilder.removeProperty(prop, currentStyle);
 
-		if (vizMapPropertySheetBuilder.getPropertyMap().get(currentStyle) != null)
-			vizMapPropertySheetBuilder.getPropertyMap().get(currentStyle)
-					.add(newRootProp);
+		final List<Property> propList = vizMapPropertySheetBuilder.getPropertyList(currentStyle);
+		propList.add(newRootProp);
 
 		prop = null;
 
@@ -648,10 +635,8 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		vizMapPropertySheetBuilder.expandLastSelectedItem(vp.getDisplayName());
 		vizMapPropertySheetBuilder.removeProperty(parent, style);
 
-		if (vizMapPropertySheetBuilder.getPropertyMap().get(style.getTitle()) != null) {
-			vizMapPropertySheetBuilder.getPropertyMap().get(style.getTitle())
-					.add(newRootProp);
-		}
+		final List<Property> propList = vizMapPropertySheetBuilder.getPropertyList(style);
+		propList.add(newRootProp);
 
 		parent = null;
 	}

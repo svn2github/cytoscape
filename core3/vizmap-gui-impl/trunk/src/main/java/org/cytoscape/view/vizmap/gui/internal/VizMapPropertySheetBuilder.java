@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
@@ -47,13 +48,8 @@ public class VizMapPropertySheetBuilder {
 	private static final Logger logger = LoggerFactory
 			.getLogger(VizMapPropertySheetBuilder.class);
 
-	private static final VisualProperty<?>[] CATEGORY = {
-			TwoDVisualLexicon.NODE, TwoDVisualLexicon.EDGE,
-			TwoDVisualLexicon.NETWORK };
 
 	private PropertySheetPanel propertySheetPanel;
-
-	private DefaultViewPanel defViewPanel;
 
 	private DefaultTableCellRenderer emptyBoxRenderer;
 	private DefaultTableCellRenderer filledBoxRenderer;
@@ -90,9 +86,6 @@ public class VizMapPropertySheetBuilder {
 				editorManager, tableMgr);
 	}
 
-	public Map<VisualStyle, List<Property>> getPropertyMap() {
-		return this.propertyMap;
-	}
 
 	/**
 	 * Create new properties.
@@ -276,6 +269,7 @@ public class VizMapPropertySheetBuilder {
 
 			logger.debug("Built new PROP: " + calculatorTypeProp.getDisplayName());
 			
+			
 			PropertyEditor editor = ((PropertyEditorRegistry) propertySheetPanel
 					.getTable().getEditorFactory())
 					.getEditor(calculatorTypeProp);
@@ -290,27 +284,7 @@ public class VizMapPropertySheetBuilder {
 				((PropertyEditorRegistry) this.propertySheetPanel
 						.getTable().getEditorFactory())
 						.registerEditor(calculatorTypeProp, editorManager
-								.getDataTableComboBoxEditor(CyNode.class));
-
-
-//				if (cat.equals(NODE)) {
-//
-//					((PropertyEditorRegistry) this.propertySheetPanel
-//							.getTable().getEditorFactory())
-//							.registerEditor(calculatorTypeProp, editorManager
-//									.getDataTableComboBoxEditor(NODE));
-//				} else if (cat.equals(EDGE)) {
-//					((PropertyEditorRegistry) this.propertySheetPanel
-//							.getTable().getEditorFactory())
-//							.registerEditor(calculatorTypeProp, editorManager
-//									.getDataTableComboBoxEditor(EDGE));
-//				} else {
-//					((PropertyEditorRegistry) this.propertySheetPanel
-//							.getTable().getEditorFactory())
-//							.registerEditor(calculatorTypeProp, editorManager
-//									.getDataTableComboBoxEditor(NETWORK));
-//
-//				}
+								.getDataTableComboBoxEditor((Class<? extends CyTableEntry>) targetVP.getTargetDataType()));
 			}
 			props.add(calculatorTypeProp);
 		}
@@ -337,7 +311,6 @@ public class VizMapPropertySheetBuilder {
 	private void buildList(final VisualStyle style) {
 
 		unusedVisualPropType = new ArrayList<VisualProperty<?>>();
-
 		VisualMappingFunction<?, ?> mapping = null;
 
 		final VisualLexicon lex = style.getVisualLexicon();
@@ -430,6 +403,21 @@ public class VizMapPropertySheetBuilder {
 			}
 		}
 	}
+	
+	public List<Property> getPropertyList(final VisualStyle style) {
+		if(propertyMap.containsKey(style) == false) {
+			final List<Property> newList = new ArrayList<Property>();
+			propertyMap.put(style, newList);
+			return newList;
+		} else
+			return propertyMap.get(style);
+	}
+	
+	public void removePropertyList(final VisualStyle style) {
+		propertyMap.remove(style);
+	}
+	
+	
 
 	/*
 	 * Remove an entry in the browser.

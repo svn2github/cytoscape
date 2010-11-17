@@ -158,24 +158,15 @@ public class VizMapPropertyBuilder {
 		for (CyNetwork targetNetwork : networks) {
 			Iterator<? extends CyTableEntry> it = null;
 
+			((PropertyEditorRegistry) propertySheetPanel.getTable()
+					.getEditorFactory()).registerEditor(topProperty,
+					editorManager.getDataTableComboBoxEditor((Class<? extends CyTableEntry>) vp.getTargetDataType()));
 			if (vp.getTargetDataType().equals(CyNode.class)) {
 				it = targetNetwork.getNodeList().iterator();
-				((PropertyEditorRegistry) propertySheetPanel.getTable()
-						.getEditorFactory()).registerEditor(topProperty,
-						editorManager.getDataTableComboBoxEditor(CyNode.class));
 			} else if (vp.getTargetDataType().equals(CyEdge.class)) {
 				it = targetNetwork.getEdgeList().iterator();
-				((PropertyEditorRegistry) propertySheetPanel.getTable()
-						.getEditorFactory()).registerEditor(topProperty,
-						editorManager.getDataTableComboBoxEditor(CyEdge.class));
 			} else if (vp.getTargetDataType().equals(CyNetwork.class)) {
 				it = cyNetworkManager.getNetworkSet().iterator();
-				((PropertyEditorRegistry) propertySheetPanel.getTable()
-						.getEditorFactory())
-						.registerEditor(
-								topProperty,
-								editorManager
-										.getDataTableComboBoxEditor(CyNetwork.class));
 			} else {
 				throw new IllegalArgumentException("Data type not supported: " + vp.getTargetDataType());
 			}
@@ -188,10 +179,8 @@ public class VizMapPropertyBuilder {
 		 * Discrete Mapping
 		 */
 		if (visualMapping instanceof DiscreteMapping && (attrName != null)) {
-			
 
 			final SortedSet<K> attrSet = new TreeSet<K>();
-
 			for (CyTableEntry go : graphObjectSet) {
 				final Class<?> attrClass = go.getCyRow().getDataTable()
 						.getColumnTypeMap().get(attrName);
@@ -207,9 +196,8 @@ public class VizMapPropertyBuilder {
 					topProperty, propertySheetPanel);
 		} else if (visualMapping instanceof ContinuousMapping
 				&& (attrName != null)) {
-			int wi = propertySheetPanel.getTable().getCellRect(0, 1, true).width;
 
-			VizMapperProperty<String, String, VisualMappingFunction<K, V>> graphicalView 
+			final VizMapperProperty<String, String, VisualMappingFunction<K, V>> graphicalView 
 				= new VizMapperProperty<String, String, VisualMappingFunction<K, V>>(CellType.CONTINUOUS, AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW, String.class);
 			graphicalView.setValue(visualMapping);
 			graphicalView
@@ -231,7 +219,6 @@ public class VizMapPropertyBuilder {
 			Object value;
 			String stringVal;
 
-			
 			for (CyTableEntry go : graphObjectSet) {
 				Class<?> attrClass = go.getCyRow().getDataTable()
 						.getColumnTypeMap().get(attrName);
@@ -262,15 +249,11 @@ public class VizMapPropertyBuilder {
 				topProperty.addSubProperty(oneProperty);
 			}
 
+		} else {
+			throw new IllegalArgumentException("Unsupported mapping type: " + visualMapping);
 		}
 
 		propertySheetPanel.addProperty(0, topProperty);
-//		propertySheetPanel
-//				.setRendererFactory(((PropertyRendererRegistry) propertySheetPanel
-//						.getTable().getRendererFactory()));
-//		propertySheetPanel
-//				.setEditorFactory(((PropertyEditorRegistry) propertySheetPanel
-//						.getTable().getEditorFactory()));
 
 		return topProperty;
 	}

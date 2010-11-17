@@ -139,8 +139,6 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		// Initialize all components
 		initPanel();
-
-		
 	}
 
 	private void initPanel() {
@@ -180,6 +178,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	private void switchVS(final VisualStyle style) {
 		switchVS(style, false);
 	}
+	
+	
 	private void switchVS(final VisualStyle style, boolean forceUpdate) {
 
 		logger.debug("######## Switching start: " + style.getTitle() );
@@ -193,10 +193,10 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		// Close editor windows
 		editorWindowManager.closeAllEditorWindows();
 		
-		
-		if (vizMapPropertySheetBuilder.getPropertyMap().containsKey(style)) {
+		final List<Property> props = vizMapPropertySheetBuilder.getPropertyList(style);
+		if (props.size() != 0) {
 			logger.debug("######## Style exists in buffer: " + style.getTitle() );
-			final List<Property> props = vizMapPropertySheetBuilder.getPropertyMap().get(style);
+			
 
 			final Map<String, Property> unused = new TreeMap<String, Property>();
 
@@ -735,7 +735,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		
 		// Update image
 		getDefaultImageManager().remove(e.getVisualStyleToBeRemoved());
-		vizMapPropertySheetBuilder.getPropertyMap().remove(e.getVisualStyleToBeRemoved());
+		vizMapPropertySheetBuilder.removePropertyList(e.getVisualStyleToBeRemoved());
 		this.visualStyleComboBox.removeItem(toBeRemoved);
 		
 		// Switch to the default style
