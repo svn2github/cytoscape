@@ -68,7 +68,7 @@ public enum NodeShape {
 	private int ginyShape;
 	private String name;
 	private boolean isSupported;
-	private static Map<Integer, Shape> nodeShapes = GraphGraphics.getNodeShapes();
+	private static Map<Byte, Shape> nodeShapes = GraphGraphics.getNodeShapes();
 
 	private NodeShape(int ginyShape, String name, boolean isSupported) {
 		this.ginyShape = ginyShape;

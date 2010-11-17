@@ -120,6 +120,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	private int m_lastRenderDetail = 0;
 	private Rectangle m_selectionRect = null;
 	private ViewChangeEdit m_undoable_edit;
+	private boolean isPrinting = false;
 	private PopupMenuHelper popup;
 
 	//final boolean[] m_printingTextAsShape = new boolean[1];
@@ -222,21 +223,12 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		double xCenter = 0.0d;
 		double yCenter = 0.0d;
 		double scaleFactor = 1.0d;
-		m_fontMetrics = g.getFontMetrics();
 
-		// set color alpha based on opacity setting
-		int alpha = (m_isOpaque) ? 255 : 0;
-		Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
-		                                  m_backgroundColor.getBlue(), alpha);
+		m_fontMetrics = g.getFontMetrics();
 
 		synchronized (m_lock) {
 			if (m_view.m_contentChanged || m_view.m_viewportChanged) {
-				m_lastRenderDetail = GraphRenderer.renderGraph(m_view.networkModel,
-				                                               m_view.m_spacial, m_lod[0],
-				                                               m_view.m_nodeDetails,
-				                                               m_view.m_edgeDetails, m_hash,
-				                                               m_grafx, backgroundColor, m_xCenter,
-				                                               m_yCenter, m_scaleFactor);
+				renderGraph(m_grafx,/* setLastRenderDetail = */ true, m_lod[0]);
 				contentChanged = m_view.m_contentChanged;
 				m_view.m_contentChanged = false;
 				viewportChanged = m_view.m_viewportChanged;
@@ -252,8 +244,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			g.drawImage(m_img, 0, 0, null);
 		}
 
-		// AJK: 01/14/2007 only draw selection rectangle when selection flag is on
-		//        if (m_selectionRect != null) {
 		if ((m_selectionRect != null) && (this.isSelecting())) {
 			final Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.red);
@@ -287,22 +277,15 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	/**
 	 * DOCUMENT ME!
 	 *
-	 * @param g DOCUMENT ME!
+	 * @param g Usually Graphics2D object for drawing network view as image.
 	 */
 	public void print(Graphics g) {
-		final Image img = new ImageImposter(g, getWidth(), getHeight());
-
-		// set color alpha based on opacity setting
-		int alpha = (m_isOpaque) ? 255 : 0;
-		Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
-										  m_backgroundColor.getBlue(), alpha);
-
-		synchronized (m_lock) {
-			GraphRenderer.renderGraph(m_view.networkModel, m_view.m_spacial,
-			                          m_view.m_printLOD, m_view.m_nodeDetails,
-			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
-			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
-		}
+		isPrinting = true;
+		renderGraph(new GraphGraphics(
+				new ImageImposter(g, getWidth(), getHeight()), false), 
+				/* setLastRenderDetail = */ false, m_view.m_printLOD);
+		// g.drawImage(img, 0, 0, null);
+		isPrinting = false;
 	}
 
 	/**
@@ -311,21 +294,19 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 * @param g DOCUMENT ME!
 	 */
 	public void printNoImposter(Graphics g) {
+		isPrinting = true;
 		final Image img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-		// set color alpha based on opacity setting
-		int alpha = (m_isOpaque) ? 255 : 0;
-		Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
-										  m_backgroundColor.getBlue(), alpha);
-
-		synchronized (m_lock) {
-			GraphRenderer.renderGraph(m_view.networkModel, m_view.m_spacial,
-			                          m_view.m_printLOD, m_view.m_nodeDetails,
-			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
-			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
-		}
-		g.drawImage(img, 0, 0, null);
+		renderGraph(new GraphGraphics(img, false), /* setLastRenderDetail = */ false, m_view.m_printLOD);
+		// g.drawImage(img, 0, 0, null);
+		isPrinting = false;
 	}
+
+	/**
+ 	 * Return true if this view is curerntly being printed (as opposed to painted on the screen)
+ 	 *
+ 	 * @return true if we're currently being printed, false otherwise
+ 	 */
+	public boolean isPrinting() { return isPrinting; }
 
 	private int m_currMouseButton = 0;
 	private int m_lastXMousePos = 0;
@@ -1157,8 +1138,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		edgeNodesEnum = m_stack.elements();
 		stack.empty();
 
-		//final FixedGraph graph = (FixedGraph) m_view.m_perspective;
-		final CyNetwork graph = m_view.networkModel;
+		final CyNetwork graph = m_view.m_drawPersp;
 
 		if ((m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) == 0) {
 			// We won't need to look up arrows and their sizes.
@@ -1173,10 +1153,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 				final float nodeY = (m_view.m_extentsBuff[1] + m_view.m_extentsBuff[3]) / 2;
 				final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(nodeObj, CyEdge.Type.ANY);
 
-				for ( CyEdge e : touchingEdges ) {	
+				for ( CyEdge e : touchingEdges ) {      
 					final int edge = e.getIndex(); // Positive.
 					final int otherNode =  // Positive.
-					                      node ^ e.getSource().getIndex() ^ e.getTarget().getIndex(); 
+						node ^ e.getSource().getIndex() ^ e.getTarget().getIndex(); 
 
 					if (m_hash.get(otherNode) < 0) {
 						m_view.m_spacial.exists(otherNode, m_view.m_extentsBuff, 0);
@@ -1186,14 +1166,13 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						m_line.setLine(nodeX, nodeY, otherNodeX, otherNodeY);
 
 						if (m_line.intersects(xMin, yMin, xMax - xMin, yMax - yMin))
-							stack.push(edge);
+							stack.push(~edge);
 					}
 				}
 
 				m_hash.put(node);
 			}
 		} else { // Last render high detail.
-
 			for (int i = 0; i < edgeNodesCount; i++) {
 				final int node = edgeNodesEnum.nextInt(); // Positive.
 				final CyNode nodeObj = graph.getNode(node);
@@ -1201,10 +1180,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 				if (!m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0))
 					continue; /* Will happen if e.g. node was removed. */
 
-				final int nodeShape = m_view.m_nodeDetails.shape(node);
+				final byte nodeShape = m_view.m_nodeDetails.shape(node);
 				final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(nodeObj, CyEdge.Type.ANY);
-
-				for ( CyEdge e : touchingEdges ) {	
+ 
+				for ( CyEdge e : touchingEdges ) {      
 					final int edge = e.getIndex(); // Positive.
 					final double segThicknessDiv2 = m_view.m_edgeDetails.segmentThickness(edge) / 2.0d;
 					final int otherNode = node ^ e.getSource().getIndex() ^ e.getTarget().getIndex();
@@ -1212,9 +1191,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 					if (m_hash.get(otherNode) < 0) {
 						m_view.m_spacial.exists(otherNode, m_extentsBuff2, 0);
 
-						final int otherNodeShape = m_view.m_nodeDetails.shape(otherNode);
-						final int srcShape;
-						final int trgShape;
+						final byte otherNodeShape = m_view.m_nodeDetails.shape(otherNode);
+						final byte srcShape;
+						final byte trgShape;
 						final float[] srcExtents;
 						final float[] trgExtents;
 
@@ -1230,8 +1209,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 							trgExtents = m_view.m_extentsBuff;
 						}
 
-						final int srcArrow;
-						final int trgArrow;
+						final byte srcArrow;
+						final byte trgArrow;
 						final float srcArrowSize;
 						final float trgArrowSize;
 
@@ -1241,13 +1220,12 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						} else {
 							srcArrow = m_view.m_edgeDetails.sourceArrow(edge);
 							trgArrow = m_view.m_edgeDetails.targetArrow(edge);
-							srcArrowSize = ((srcArrow == GraphGraphics.ARROW_NONE) ? 0.0f
-							                                                       : m_view.m_edgeDetails
-							                                                         .sourceArrowSize(edge));
-							trgArrowSize = (((trgArrow == GraphGraphics.ARROW_NONE)
-							                || (trgArrow == GraphGraphics.ARROW_MONO)) ? 0.0f
-							                                                           : m_view.m_edgeDetails
-							                                                             .targetArrowSize(edge));
+							srcArrowSize = ((srcArrow == GraphGraphics.ARROW_NONE) 
+							                ? 0.0f
+							                : m_view.m_edgeDetails.sourceArrowSize(edge));
+							trgArrowSize = ((trgArrow == GraphGraphics.ARROW_NONE) 
+							                ? 0.0f
+							                : m_view.m_edgeDetails.targetArrowSize(edge));
 						}
 
 						final EdgeAnchors anchors = (((m_lastRenderDetail
@@ -1269,7 +1247,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						if (m_path2.intersects(xMin - segThicknessDiv2, yMin - segThicknessDiv2,
 						                       (xMax - xMin) + (segThicknessDiv2 * 2),
 						                       (yMax - yMin) + (segThicknessDiv2 * 2)))
-							stack.push(edge);
+							stack.push(~edge);
 					}
 				}
 
@@ -1277,8 +1255,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			}
 		}
 	}
-
-	// AJK: 04/02/06 BEGIN
 
 	/**
 	 * default dragEnter handler.  Accepts the drag.
@@ -1500,4 +1476,25 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		return !(this.NodeMovement);
 	}
 
+	/**
+	 *  @param setLastRenderDetail if true, "m_lastRenderDetail" will be updated, otherwise it will not be updated.
+	 */
+	private void renderGraph(GraphGraphics graphics, final boolean setLastRenderDetail, final GraphLOD lod) {
+		// Set color alpha based on opacity setting
+		final int alpha = (m_isOpaque) ? 255 : 0;
+
+		final Color backgroundColor = new Color(m_backgroundColor.getRed(), m_backgroundColor.getGreen(),
+							m_backgroundColor.getBlue(), alpha);
+
+		synchronized (m_lock) {
+			final int lastRenderDetail = GraphRenderer.renderGraph(m_view.m_drawPersp,
+									       m_view.m_spacial, lod,
+									       m_view.m_nodeDetails,
+									       m_view.m_edgeDetails, m_hash,
+									       graphics, backgroundColor, m_xCenter,
+									       m_yCenter, m_scaleFactor);
+			if (setLastRenderDetail)
+				m_lastRenderDetail = lastRenderDetail;
+		}
+	}
 }

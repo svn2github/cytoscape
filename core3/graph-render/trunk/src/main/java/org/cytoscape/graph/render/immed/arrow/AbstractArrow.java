@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2009, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -24,71 +24,45 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package org.cytoscape.ding.impl;
+ */
+package org.cytoscape.graph.render.immed.arrow;
 
 
-import org.cytoscape.graph.render.stateful.NodeDetails;
-
-import java.awt.*;
+import java.awt.Shape;
 
 
-class IntermediateNodeDetails extends NodeDetails {
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public byte shape(int node) {
-		return DNodeView.DEFAULT_SHAPE;
+/**
+ * Try to keep this package protected.
+ */
+class AbstractArrow implements Arrow {
+	protected final double tOffset;
+	protected final byte type;
+
+	protected Shape arrow;
+	protected Shape cap;
+
+	AbstractArrow(final byte type, final double tOffset) {
+		this.type = type;
+		this.tOffset = tOffset;
+		this.arrow = null;
+		this.cap = null;
+	}
+	
+	public Shape getArrowShape() {
+		return arrow;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint borderPaint(int node) {
-		return DNodeView.DEFAULT_BORDER_PAINT;
+	public Shape getCapShape(final double ratio) {
+		// ignore the ratio by default
+		return cap;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public String labelText(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_TEXT;
+	public byte getType() {
+		return type;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Font labelFont(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_FONT;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint labelPaint(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_PAINT;
+	public double getTOffset() {
+		return tOffset;
 	}
 }
+

@@ -597,106 +597,56 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 */
 	public void setSourceEdgeEnd(final int type) {
 		synchronized (m_view.m_lock) {
-			// if (type == m_sourceEdgeEnd) { return; }
 			switch (type) {
 			case NO_END:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_NONE);
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_NONE);
 
 				break;
 
 			case WHITE_DELTA:
-			case WHITE_ARROW:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_DELTA);
-				// setSourceEdgeEndPaint(Color.white);
-
-				break;
-
 			case BLACK_DELTA:
-			case BLACK_ARROW:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_DELTA);
-				// setSourceEdgeEndPaint(Color.black);
+			case EDGE_COLOR_DELTA:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DELTA);
 
 				break;
 
-			case EDGE_COLOR_DELTA:
+			case WHITE_ARROW:
+			case BLACK_ARROW:
 			case EDGE_COLOR_ARROW:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_DELTA);
-				// setSourceEdgeEndPaint(getUnselectedPaint());
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_ARROWHEAD);
 
 				break;
 
 			case WHITE_DIAMOND:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_DIAMOND);
-				// setSourceEdgeEndPaint(Color.white);
-
-				break;
-
 			case BLACK_DIAMOND:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_DIAMOND);
-				// setSourceEdgeEndPaint(Color.black);
-
-				break;
-
 			case EDGE_COLOR_DIAMOND:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_DIAMOND);
-				// setSourceEdgeEndPaint(getUnselectedPaint());
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
 
 				break;
 
 			case WHITE_CIRCLE:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_DISC);
-				// setSourceEdgeEndPaint(Color.white);
-
-				break;
-
 			case BLACK_CIRCLE:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_DISC);
-				// setSourceEdgeEndPaint(Color.black);
-
-				break;
-
 			case EDGE_COLOR_CIRCLE:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_DISC);
-				// setSourceEdgeEndPaint(getUnselectedPaint());
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DISC);
 
 				break;
 
 			case WHITE_T:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_TEE);
-				// setSourceEdgeEndPaint(Color.white);
-
-				break;
-
 			case BLACK_T:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_TEE);
-				// setSourceEdgeEndPaint(Color.black);
+			case EDGE_COLOR_T:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_TEE);
 
 				break;
 
-			case EDGE_COLOR_T:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx,
-						GraphGraphics.ARROW_TEE);
-				// setSourceEdgeEndPaint(getUnselectedPaint());
-
+			case EDGE_HALF_ARROW_BOTTOM:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_HALF_BOTTOM);
+				break;
+			case EDGE_HALF_ARROW_TOP:
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_HALF_TOP);
 				break;
 
 			default:
-				// assume type is OK
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx, type);
-				// throw new
-				// IllegalArgumentException("unrecognized edge end type");
+				throw new IllegalArgumentException("unrecognized edge end type");
 			}
 
 			m_sourceEdgeEnd = type;
@@ -1499,20 +1449,27 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		return 0.0;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
 	public int getEdgeLabelAnchor() {
 		// System.out.println("getEdgeLabelAnchor");
 
 		return 0;
 	}
 
+	public void setLabelWidth(double width) {
+		synchronized (m_view.m_lock) {
+			m_view.m_edgeDetails.overrideLabelWidth(m_inx, width);
+			m_view.m_contentChanged = true;
+		}
+	}
+
+	public double getLabelWidth() {
+		synchronized (m_view.m_lock) {
+			return m_view.m_edgeDetails.labelWidth(m_inx);
+		}
+	}
+
 	@Override
 	public void setVisualPropertyValue(final VisualProperty<?> vp, final Object value) {	
-		
 		if (vp == DVisualLexicon.EDGE_SELECTED_PAINT) {
 			setSelectedPaint((Paint) value);
 		} else if (vp == TwoDVisualLexicon.EDGE_COLOR) {

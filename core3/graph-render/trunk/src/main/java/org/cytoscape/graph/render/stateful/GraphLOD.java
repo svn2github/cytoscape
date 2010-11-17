@@ -25,7 +25,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.graph.render.stateful;
 
 
@@ -35,7 +34,7 @@ package org.cytoscape.graph.render.stateful;
  * methods are meant to be overridden; nonetheless, sane defaults are
  * used in the default method implementations.<p>
  * To understand the significance of each method's return value, it makes
- * sense to become familiar with the API org.cytoscape.graph.render.immed.GraphGraphics.
+ * sense to become familiar with the API cytoscape.render.immed.GraphGraphics.
  */
 public class GraphLOD {
 	/**
@@ -62,7 +61,7 @@ public class GraphLOD {
 	 *   positive if all edges are to be rendered, or negative if no edges
 	 *   are to be rendered.
 	 */
-	public int renderEdges(final int visibleNodeCount, final int totalNodeCount,
+	public byte renderEdges(final int visibleNodeCount, final int totalNodeCount,
 	                        final int totalEdgeCount) {
 		return 0;
 	}

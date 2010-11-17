@@ -57,6 +57,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	final HashMap<Long,String> m_labelTexts = new HashMap<Long,String>();
 	final HashMap<Long,Font> m_labelFonts = new HashMap<Long,Font>();
 	final HashMap<Long,Paint> m_labelPaints = new HashMap<Long,Paint>();
+	final HashMap m_labelWidths = new HashMap();
 
 	DEdgeDetails(DGraphView view) {
 		m_view = view;
@@ -81,6 +82,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 		m_labelTexts.remove(key);
 		m_labelFonts.remove(key);
 		m_labelPaints.remove(key);
+		m_labelWidths.remove(key);
 	}
 
 	/**
@@ -119,24 +121,24 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int sourceArrow(int edge) {
-		final Object o = m_sourceArrows.get(Integer.valueOf(edge));
+	public byte sourceArrow(int edge) {
+		final Object o = m_sourceArrows.get(new Integer(edge));
 
 		if (o == null)
 			return super.sourceArrow(edge);
 
-		return ((Integer) o).intValue();
+		return ((Byte) o).byteValue();
 	}
 
 	/*
 	 * A non-negative arrowType has the special meaning to remove overridden
 	 * arrow.
 	 */
-	void overrideSourceArrow(int edge, int arrowType) {
+	void overrideSourceArrow(int edge, byte arrowType) {
 		if ((arrowType >= 0) || (arrowType == super.sourceArrow(edge)))
-			m_sourceArrows.remove(Integer.valueOf(edge));
+			m_sourceArrows.remove(new Integer(edge));
 		else
-			m_sourceArrows.put(Integer.valueOf(edge), new Integer(arrowType));
+			m_sourceArrows.put(new Integer(edge), new Byte(arrowType));
 	}
 
 	/**
@@ -172,13 +174,13 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int targetArrow(int edge) {
-		final Object o = m_targetArrows.get(Integer.valueOf(edge));
+	public byte targetArrow(int edge) {
+		final Object o = m_targetArrows.get(new Integer(edge));
 
 		if (o == null)
 			return super.targetArrow(edge);
 
-		return ((Integer) o).intValue();
+		return ((Byte) o).byteValue();
 	}
 
 	/*
@@ -447,33 +449,6 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public float segmentDashLength(int edge) {
-		final Object o = m_segmentDashLengths.get(Integer.valueOf(edge));
-
-		if (o == null)
-			return super.segmentDashLength(edge);
-
-		return ((Float) o).floatValue();
-	}
-
-	/*
-	 * A negative length value has the special meaning to remove overridden
-	 * length.
-	 */
-	void overrideSegmentDashLength(int edge, float length) {
-		if ((length < 0.0f) || (length == super.segmentDashLength(edge)))
-			m_segmentDashLengths.remove(Integer.valueOf(edge));
-		else
-			m_segmentDashLengths.put(Integer.valueOf(edge), new Float(length));
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param edge DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
 	public int labelCount(int edge) {
 		final Object o = m_labelCounts.get(Integer.valueOf(edge));
 
@@ -595,5 +570,24 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	public float targetArrowSize(int edge) {
 		return (segmentThickness(edge) + DEdgeView.DEFAULT_ARROW_SIZE);
+	}
+
+	public double labelWidth(int edge) {
+		final Object o = m_labelWidths.get(new Integer(edge));
+
+		if (o == null)
+			return super.labelWidth(edge);
+
+		return ((Double) o).doubleValue();
+	}
+
+	/*
+	 * A negative width value has the special meaning to remove overridden width.
+	 */
+	void overrideLabelWidth(int edge, double width) {
+		if ((width < 0.0) || (width == super.labelWidth(edge)))
+			m_labelWidths.remove(new Integer(edge));
+		else
+			m_labelWidths.put(new Integer(edge), new Double(width));
 	}
 }

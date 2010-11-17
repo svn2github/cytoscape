@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2009, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -25,70 +25,38 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ding.impl;
+package org.cytoscape.graph.render.immed.nodeshape;
 
 
-import org.cytoscape.graph.render.stateful.NodeDetails;
-
-import java.awt.*;
+import java.awt.Shape;
 
 
-class IntermediateNodeDetails extends NodeDetails {
+/**
+ * An interface defining the methods necessary to render a node shape in GraphGraphics.
+ */
+public interface NodeShape {
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * A legacy method to interact cleanly with the current implementation of
+	 * GraphGraphics.  
+	 * @return the byte associated with this node shape.
 	 */
-	public byte shape(int node) {
-		return DNodeView.DEFAULT_SHAPE;
-	}
+	byte getType();
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * Returns a Shape object scaled to fit within the bounding box defined by the
+	 * input parameters.
 	 */
-	public Paint borderPaint(int node) {
-		return DNodeView.DEFAULT_BORDER_PAINT;
-	}
+	Shape getShape(final float xMin,final float yMin, final float xMax, final float yMax);
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * Computes the intersection of the node shape with and edge.  The edge is defined
+	 * by the point at the center of the bounding box defined by xMin, yMin, xMax, yMax 
+	 * and the point defined by ptX and ptY.  If the edge intersects with the shape then
+	 * the point at which the edge and shape itersect is stored in returnVal, where the
+	 * X location is in element 0 and the Y location is in element 1.
 	 */
-	public String labelText(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_TEXT;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Font labelFont(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_FONT;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint labelPaint(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_PAINT;
-	}
+	boolean computeEdgeIntersection(final float xMin, final float yMin, final float xMax,
+	                                final float yMax, final float ptX, final float ptY, 
+	                                final float[] returnVal);
 }
+

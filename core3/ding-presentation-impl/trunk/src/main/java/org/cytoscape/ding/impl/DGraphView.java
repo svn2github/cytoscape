@@ -2128,21 +2128,21 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 *            will be placed onto this stack; the stack is not emptied by
 	 *            this method initially.
 	 */
-	public void getNodesIntersectingRectangle(double xMinimum, double yMinimum,
-			double xMaximum, double yMaximum,
-			boolean treatNodeShapesAsRectangle, IntStack returnVal) {
+	public void getNodesIntersectingRectangle(double xMinimum, double yMinimum, double xMaximum,
+	                                          double yMaximum, boolean treatNodeShapesAsRectangle,
+	                                          IntStack returnVal) {
 		synchronized (m_lock) {
 			final float xMin = (float) xMinimum;
 			final float yMin = (float) yMinimum;
 			final float xMax = (float) xMaximum;
 			final float yMax = (float) yMaximum;
-			final SpacialEntry2DEnumerator under = m_spacial.queryOverlap(xMin,
-					yMin, xMax, yMax, null, 0, false);
+			final SpacialEntry2DEnumerator under = m_spacial.queryOverlap(xMin, yMin, xMax, yMax,
+			                                                              null, 0, false);
 			final int totalHits = under.numRemaining();
 
 			if (treatNodeShapesAsRectangle) {
 				for (int i = 0; i < totalHits; i++)
-					returnVal.push(under.nextInt());
+					returnVal.push(~under.nextInt());
 			} else {
 				final double x = xMin;
 				final double y = yMin;
@@ -2157,25 +2157,25 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 					// if it intersects one of the four query rectangle's
 					// corners.
 					if (((m_extentsBuff[0] < xMin) && (m_extentsBuff[1] < yMin))
-							|| ((m_extentsBuff[0] < xMin) && (m_extentsBuff[3] > yMax))
-							|| ((m_extentsBuff[2] > xMax) && (m_extentsBuff[3] > yMax))
-							|| ((m_extentsBuff[2] > xMax) && (m_extentsBuff[1] < yMin))) {
-						m_networkCanvas.m_grafx.getNodeShape(
-								m_nodeDetails.shape(node), m_extentsBuff[0],
-								m_extentsBuff[1], m_extentsBuff[2],
-								m_extentsBuff[3], m_path);
+					    || ((m_extentsBuff[0] < xMin) && (m_extentsBuff[3] > yMax))
+					    || ((m_extentsBuff[2] > xMax) && (m_extentsBuff[3] > yMax))
+					    || ((m_extentsBuff[2] > xMax) && (m_extentsBuff[1] < yMin))) {
+						m_networkCanvas.m_grafx.getNodeShape(m_nodeDetails.shape(node),
+						                                     m_extentsBuff[0], m_extentsBuff[1],
+						                                     m_extentsBuff[2], m_extentsBuff[3],
+						                                     m_path);
 
 						if ((w > 0) && (h > 0)) {
 							if (m_path.intersects(x, y, w, h)) {
-								returnVal.push(node);
+								returnVal.push(~node);
 							}
 						} else {
 							if (m_path.contains(x, y)) {
-								returnVal.push(node);
+								returnVal.push(~node);
 							}
 						}
 					} else {
-						returnVal.push(node);
+						returnVal.push(~node);
 					}
 				}
 			}
@@ -2253,14 +2253,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 * @param scaleFactor
 	 *            DOCUMENT ME!
 	 */
-	public void drawSnapshot(Image img, GraphLOD lod, Paint bgPaint,
-			double xCenter, double yCenter, double scaleFactor) {
+	public void drawSnapshot(Image img, GraphLOD lod, Paint bgPaint, double xCenter,
+	                         double yCenter, double scaleFactor) {
 		synchronized (m_lock) {
-			GraphRenderer
-					.renderGraph(m_drawPersp, m_spacial, lod, m_nodeDetails,
-							m_edgeDetails, m_hash,
-							new GraphGraphics(img, false), bgPaint, xCenter,
-							yCenter, scaleFactor);
+			GraphRenderer.renderGraph(m_drawPersp, m_spacial, lod, m_nodeDetails,
+			                          m_edgeDetails, m_hash, new GraphGraphics(img, false),
+			                          bgPaint, xCenter, yCenter, scaleFactor);
 		}
 	}
 

@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,13 +25,17 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.graph.render.stateful;
+
 
 import org.cytoscape.graph.render.immed.EdgeAnchors;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
+import java.awt.Stroke;
+import java.awt.BasicStroke;
 
 
 /**
@@ -48,25 +44,25 @@ import java.awt.*;
  * some of its methods (especially segmentThickness()) in order to gain
  * control over edge visual properties.<p>
  * To understand the significance of each method's return value, it makes
- * sense to become familiar with the API org.cytoscape.graph.render.immed.GraphGraphics.
+ * sense to become familiar with the API cytoscape.render.immed.GraphGraphics.
  */
 public class EdgeDetails {
 	/**
 	 * Specifies that an anchor point lies at the midpoint of an edge.
 	 */
-	public static final int EDGE_ANCHOR_MIDPOINT = 16;
+	public static final byte EDGE_ANCHOR_MIDPOINT = 16;
 
 	/**
 	 * Specifies that an anchor point lies at an edge's endpoint at source
 	 * node.
 	 */
-	public static final int EDGE_ANCHOR_SOURCE = 17;
+	public static final byte EDGE_ANCHOR_SOURCE = 17;
 
 	/**
 	 * Specifies that an anchor point lies at an edge's endpoint at target
 	 * node.
 	 */
-	public static final int EDGE_ANCHOR_TARGET = 18;
+	public static final byte EDGE_ANCHOR_TARGET = 18;
 
 	/**
 	 * Instantiates edge details with defaults.  Documentation on each method
@@ -96,7 +92,7 @@ public class EdgeDetails {
 	 * Take note of certain constraints specified in
 	 * GraphGraphics.drawEdgeFull().
 	 */
-	public int sourceArrow(final int edge) {
+	public byte sourceArrow(final int edge) {
 		return GraphGraphics.ARROW_NONE;
 	}
 
@@ -114,9 +110,8 @@ public class EdgeDetails {
 	/**
 	 * Returns the paint of the arrow at edge endpoint touching source node.
 	 * By default this method returns null.  This return value is ignored if
-	 * sourceArrow(edge) returns GraphGraphics.ARROW_NONE or
-	 * GraphGraphics.ARROW_BIDIRECTIONAL; otherwise, it is an error to return
-	 * null.
+	 * sourceArrow(edge) returns GraphGraphics.ARROW_NONE 
+	 *  it is an error to return null.
 	 */
 	public Paint sourceArrowPaint(final int edge) {
 		return null;
@@ -129,15 +124,14 @@ public class EdgeDetails {
 	 * Take note of certain constraints specified in
 	 * GraphGraphics.drawEdgeFull().
 	 */
-	public int targetArrow(final int edge) {
+	public byte targetArrow(final int edge) {
 		return GraphGraphics.ARROW_NONE;
 	}
 
 	/**
 	 * Returns the size of the arrow at edge endpoint touching target node.
-	 * By default this method returns zero.  This return value is ignored
-	 * if targetArrow(edge) returns GraphGraphics.ARROW_NONE or
-	 * GraphGraphics.ARROW_MONO.  Take note of certain constraints specified
+	 * By default this method returns zero.  
+	 * Take note of certain constraints specified
 	 * in GraphGraphics.drawEdgeFull().
 	 */
 	public float targetArrowSize(final int edge) {
@@ -148,8 +142,7 @@ public class EdgeDetails {
 	 * Returns the paint of the arrow at edge endpoint touching target node.
 	 * By default this method returns null.  This return value is ignored if
 	 * targetArrow(edge) returns GraphGraphics.ARROW_NONE,
-	 * GraphGraphics.ARROW_BIDIRECTIONAL, or GraphGraphics.ARROW_MONO;
-	 * otherwise, it is an error to return null.
+	 * it is an error to return null.
 	 */
 	public Paint targetArrowPaint(final int edge) {
 		return null;
@@ -201,6 +194,11 @@ public class EdgeDetails {
 		return 0.0f;
 	}
 
+	private static final Stroke default_stroke = new BasicStroke();
+	public Stroke segmentStroke(final int edge) {
+		return default_stroke;
+	}
+
 	/**
 	 * Returns the paint of the edge segment.
 	 * By default this method returns Color.blue.  It is an error to
@@ -208,14 +206,6 @@ public class EdgeDetails {
 	 */
 	public Paint segmentPaint(final int edge) {
 		return Color.blue;
-	}
-
-	/**
-	 * Returns the length of dashes on edge segment, or zero to indicate
-	 * that the edge segment is solid.  By default this method returns zero.
-	 */
-	public float segmentDashLength(final int edge) {
-		return 0.0f;
 	}
 
 	/**
@@ -296,7 +286,7 @@ public class EdgeDetails {
 	 * @see #labelOffsetVectorX(int, int)
 	 * @see #labelOffsetVectorY(int, int)
 	 */
-	public int labelTextAnchor(final int edge, final int labelInx) {
+	public byte labelTextAnchor(final int edge, final int labelInx) {
 		return NodeDetails.ANCHOR_CENTER;
 	}
 
@@ -317,7 +307,7 @@ public class EdgeDetails {
 	 * @see #labelOffsetVectorX(int, int)
 	 * @see #labelOffsetVectorY(int, int)
 	 */
-	public int labelEdgeAnchor(final int edge, final int labelInx) {
+	public byte labelEdgeAnchor(final int edge, final int labelInx) {
 		return EDGE_ANCHOR_MIDPOINT;
 	}
 
@@ -373,15 +363,17 @@ public class EdgeDetails {
 	 * multiple lines.
 	 * @see NodeDetails#LABEL_WRAP_JUSTIFY_CENTER
 	 */
-	public int labelJustify(final int edge, final int labelInx) {
+	public byte labelJustify(final int edge, final int labelInx) {
 		return NodeDetails.LABEL_WRAP_JUSTIFY_CENTER;
 	}
 
-	//   /**
-	//    * Determines whether or not a label is to be rendered horizontally or
-	//    * following the tangent at edge anchor point.  By default this method
-	//    * always returns true, which results in horizontal text labels.
-	//    */
-	//   public boolean labelHorizontal(final int edge, final int labelInx) {
-	//     return true; }
+	/**
+	 * Returns the width of the label. 
+	 * <font color="red">By default this method returns 100.</font>
+	 * Take note of certain constraints specified in
+	 * GraphGraphics.drawEdgeFull().
+	 */
+	public double labelWidth(final int edge) {
+		return 100.0;
+	}
 }

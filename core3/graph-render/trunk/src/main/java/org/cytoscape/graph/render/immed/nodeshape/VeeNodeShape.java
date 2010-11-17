@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2009, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -25,70 +25,35 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ding.impl;
+package org.cytoscape.graph.render.immed.nodeshape;
 
 
-import org.cytoscape.graph.render.stateful.NodeDetails;
+import org.cytoscape.graph.render.immed.GraphGraphics;
 
-import java.awt.*;
+import java.awt.geom.GeneralPath;
+import java.awt.Shape;
 
 
-class IntermediateNodeDetails extends NodeDetails {
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public byte shape(int node) {
-		return DNodeView.DEFAULT_SHAPE;
+public class VeeNodeShape extends AbstractNodeShape {
+	private final GeneralPath path; 
+
+	public VeeNodeShape() {
+		super(GraphGraphics.SHAPE_VEE);
+		path = new GeneralPath(); 
 	}
+		
+	public Shape getShape(float xMin, float yMin, float xMax, float yMax) {
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint borderPaint(int node) {
-		return DNodeView.DEFAULT_BORDER_PAINT;
-	}
+		path.reset();
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public String labelText(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_TEXT;
-	}
+		path.moveTo(xMin, yMin);
+		path.lineTo((xMin + xMax) / 2.0f, ((2.0f * yMin) + yMax) / 3.0f);
+		path.lineTo(xMax, yMin);
+		path.lineTo((xMin + xMax) / 2.0f, yMax);
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Font labelFont(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_FONT;
-	}
+		path.closePath();
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint labelPaint(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_PAINT;
+		return path;
 	}
 }
+

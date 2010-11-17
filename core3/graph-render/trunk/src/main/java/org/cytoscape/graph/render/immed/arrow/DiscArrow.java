@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2009, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -25,70 +25,56 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ding.impl;
+package org.cytoscape.graph.render.immed.arrow;
 
 
-import org.cytoscape.graph.render.stateful.NodeDetails;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Arc2D;
+import java.awt.geom.GeneralPath;
 
-import java.awt.*;
+import org.cytoscape.graph.render.immed.GraphGraphics;
 
 
-class IntermediateNodeDetails extends NodeDetails {
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public byte shape(int node) {
-		return DNodeView.DEFAULT_SHAPE;
+public class DiscArrow extends AbstractArrow {
+	private final GeneralPath capGP; 
+	private final Arc2D.Double capA;
+
+	private double currentRatio;
+
+	public DiscArrow() {
+		super(GraphGraphics.ARROW_DISC,1.0);
+
+		// create the arrow
+		final Ellipse2D.Double arrowE = new Ellipse2D.Double();
+		arrowE.setFrame(-1.0, -0.5, 1.0d, 1.0d);
+
+		arrow = arrowE;
+
+		// cap is calculated dynamically below!
+		capGP = new GeneralPath();
+		capA = new Arc2D.Double();
+
+		currentRatio = Double.NaN;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint borderPaint(int node) {
-		return DNodeView.DEFAULT_BORDER_PAINT;
-	}
+	public synchronized Shape getCapShape(final double ratio) {
+		// only recreate the shape if we need to
+		if ( currentRatio != Double.NaN && ratio == currentRatio )
+			return capGP;
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public String labelText(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_TEXT;
-	}
+		currentRatio = ratio;
+		final double theta = Math.toDegrees(Math.asin(1.0d / ratio));
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Font labelFont(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_FONT;
-	}
+		capA.setArc(0.0d, ratio / -2.0d, ratio, ratio, 180.0d - theta, theta * 2, Arc2D.OPEN);
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint labelPaint(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_PAINT;
+		capGP.reset();
+		capGP.append(capA, false);
+		capGP.lineTo(0.0f, 0.5f);
+		capGP.lineTo(0.0f, -0.5f);
+		capGP.closePath();
+
+		return capGP;
 	}
 }
+

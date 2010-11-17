@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2009, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -25,70 +25,24 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ding.impl;
+package org.cytoscape.graph.render.immed.arrow;
 
 
-import org.cytoscape.graph.render.stateful.NodeDetails;
+import java.awt.geom.Arc2D;
+import org.cytoscape.graph.render.immed.GraphGraphics;
 
-import java.awt.*;
 
+public class NoArrow extends AbstractArrow {
+	public NoArrow() {
+		super(GraphGraphics.ARROW_NONE,0.0);
 
-class IntermediateNodeDetails extends NodeDetails {
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public byte shape(int node) {
-		return DNodeView.DEFAULT_SHAPE;
-	}
+		// no arrow
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint borderPaint(int node) {
-		return DNodeView.DEFAULT_BORDER_PAINT;
-	}
+		// create the cap
+		Arc2D.Double capA = new Arc2D.Double();
+		capA.setArc(-0.5, -0.5, 1.0, 1.0, 270.0, 180.0, Arc2D.CHORD);
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public String labelText(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_TEXT;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Font labelFont(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_FONT;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint labelPaint(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_PAINT;
+		cap = capA;
 	}
 }
+

@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.graph.render.stateful;
+
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -144,6 +136,7 @@ public final class GraphRenderer {
 	                                    final GraphGraphics grafx, final Paint bgPaint,
 	                                    final double xCenter, final double yCenter,
 	                                    final double scaleFactor) {
+		
 		nodeBuff.empty(); // Make sure we keep our promise.
 
 		// Define the visible window in node coordinate space.
@@ -196,7 +189,7 @@ public final class GraphRenderer {
 		// Determine the number of nodes and edges that we are about to render.
 		final int renderNodeCount;
 		final int renderEdgeCount;
-		final int renderEdges;
+		final byte renderEdges;
 
 		{
 			final SpacialEntry2DEnumerator nodeHits = nodePositions.queryOverlap(xMin, yMin, xMax,
@@ -243,7 +236,7 @@ public final class GraphRenderer {
 
 					final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),CyEdge.Type.ANY);
 
-					for ( CyEdge e : touchingEdges ) {
+                                        for ( CyEdge e : touchingEdges ) {
 						final int edge = e.getIndex(); 
 						final int otherNode = node ^ e.getSource().getIndex() ^ e.getTarget().getIndex();
 
@@ -331,11 +324,11 @@ public final class GraphRenderer {
 					final float nodeX = (floatBuff1[0] + floatBuff1[2]) / 2;
 					final float nodeY = (floatBuff1[1] + floatBuff1[3]) / 2;
 
-					java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),CyEdge.Type.ANY);
-					for ( CyEdge e : touchingEdges ) {
-						final int edge = e.getIndex();
-						final int otherNode = node ^ e.getSource().getIndex()
-						                      ^ e.getTarget().getIndex();
+                                        java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),CyEdge.Type.ANY);
+                                        for ( CyEdge e : touchingEdges ) {
+                                                final int edge = e.getIndex();
+                                                final int otherNode = node ^ e.getSource().getIndex()
+							^ e.getTarget().getIndex();
 
 						if (nodeBuff.get(otherNode) < 0) { // Has not yet been rendered.
 							nodePositions.exists(otherNode, floatBuff2, 0);
@@ -351,33 +344,29 @@ public final class GraphRenderer {
 					nodeBuff.put(node);
 				}
 			} else { // High detail.
-
 				while (nodeHits.numRemaining() > 0) {
 					final int node = nodeHits.nextExtents(floatBuff1, 0);
-					final int nodeShape = nodeDetails.shape(node);
-					//final IntEnumerator touchingEdges = graph.edgesAdjacent(node, true, true, true);
+					final byte nodeShape = nodeDetails.shape(node);
 					java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),CyEdge.Type.ANY);
 					for ( CyEdge e : touchingEdges ) {
-					//while (touchingEdges.numRemaining() > 0) {
 						final int edge = e.getIndex(); 
 						final int otherNode = node ^ e.getSource().getIndex()
-						                      ^ e.getTarget().getIndex();
+							^ e.getTarget().getIndex();
 
 						if (nodeBuff.get(otherNode) < 0) { // Has not yet been rendered.
 
 							if (!nodePositions.exists(otherNode, floatBuff2, 0))
 								throw new IllegalStateException("nodePositions not recognizing node that exists in graph");
 
-							final int otherNodeShape = nodeDetails.shape(otherNode);
+							final byte otherNodeShape = nodeDetails.shape(otherNode);
 
 							// Compute node shapes, center positions, and extents.
-							final int srcShape;
+							final byte srcShape;
 
 							// Compute node shapes, center positions, and extents.
-							final int trgShape;
+							final byte trgShape;
 							final float[] srcExtents;
 							final float[] trgExtents;
-
 							if (node == graph.getEdge(edge).getSource().getIndex()) {
 								srcShape = nodeShape;
 								trgShape = otherNodeShape;
@@ -392,13 +381,14 @@ public final class GraphRenderer {
 
 							// Compute visual attributes that do not depend on LOD.
 							final float thickness = edgeDetails.segmentThickness(edge);
+							final Stroke edgeStroke = edgeDetails.segmentStroke(edge);
 							final Paint segPaint = edgeDetails.segmentPaint(edge);
 
 							// Compute arrows.
-							final int srcArrow;
+							final byte srcArrow;
 
 							// Compute arrows.
-							final int trgArrow;
+							final byte trgArrow;
 							final float srcArrowSize;
 							final float trgArrowSize;
 							final Paint srcArrowPaint;
@@ -411,27 +401,17 @@ public final class GraphRenderer {
 							} else { // Rendering edge arrows.
 								srcArrow = edgeDetails.sourceArrow(edge);
 								trgArrow = edgeDetails.targetArrow(edge);
-								srcArrowSize = ((srcArrow == GraphGraphics.ARROW_NONE) ? 0.0f
-								                                                       : edgeDetails
-								                                                         .sourceArrowSize(edge));
-								trgArrowSize = (((trgArrow == GraphGraphics.ARROW_NONE)
-								                || (trgArrow == GraphGraphics.ARROW_MONO)) ? 0.0f
-								                                                           : edgeDetails
-								                                                             .targetArrowSize(edge));
-								srcArrowPaint = (((srcArrow == GraphGraphics.ARROW_NONE)
-								                 || (srcArrow == GraphGraphics.ARROW_BIDIRECTIONAL))
+								srcArrowSize = ((srcArrow == GraphGraphics.ARROW_NONE) 
+								                 ? 0.0f
+								                 : edgeDetails.sourceArrowSize(edge));
+								trgArrowSize = ((trgArrow == GraphGraphics.ARROW_NONE)
+								                 ? 0.0f
+								                 : edgeDetails.targetArrowSize(edge));
+								srcArrowPaint = ((srcArrow == GraphGraphics.ARROW_NONE)
 								                 ? null : edgeDetails.sourceArrowPaint(edge));
-								trgArrowPaint = (((trgArrow == GraphGraphics.ARROW_NONE)
-								                 || (trgArrow == GraphGraphics.ARROW_BIDIRECTIONAL)
-								                 || (trgArrow == GraphGraphics.ARROW_MONO)) ? null
-								                                                            : edgeDetails
-								                                                              .targetArrowPaint(edge));
+								trgArrowPaint = ((trgArrow == GraphGraphics.ARROW_NONE)
+								                 ? null : edgeDetails.targetArrowPaint(edge));
 							}
-
-							// Compute dash length.
-							final float dashLength = (((lodBits & LOD_DASHED_EDGES) == 0) ? 0.0f
-							                                                              : edgeDetails
-							                                                                .segmentDashLength(edge));
 
 							// Compute the anchors to use when rendering edge.
 							final EdgeAnchors anchors = (((lodBits & LOD_EDGE_ANCHORS) == 0) ? null
@@ -447,10 +427,10 @@ public final class GraphRenderer {
 							final float srcYAdj = floatBuff3[1];
 							final float trgXAdj = floatBuff4[0];
 							final float trgYAdj = floatBuff4[1];
+
 							grafx.drawEdgeFull(srcArrow, srcArrowSize, srcArrowPaint, trgArrow,
 							                   trgArrowSize, trgArrowPaint, srcXAdj, srcYAdj,
-							                   anchors, trgXAdj, trgYAdj, thickness, segPaint,
-							                   dashLength);
+							                   anchors, trgXAdj, trgYAdj, thickness, edgeStroke, segPaint);
 
 							// Take care of edge anchor rendering.
 							if (anchors != null) {
@@ -484,15 +464,15 @@ public final class GraphRenderer {
 									final double fontScaleFactor = edgeDetails.labelScaleFactor(edge,
 									                                                            labelInx);
 									final Paint paint = edgeDetails.labelPaint(edge, labelInx);
-									final int textAnchor = edgeDetails.labelTextAnchor(edge,
+									final byte textAnchor = edgeDetails.labelTextAnchor(edge,
 									                                                    labelInx);
-									final int edgeAnchor = edgeDetails.labelEdgeAnchor(edge,
+									final byte edgeAnchor = edgeDetails.labelEdgeAnchor(edge,
 									                                                    labelInx);
 									final float offsetVectorX = edgeDetails.labelOffsetVectorX(edge,
 									                                                           labelInx);
 									final float offsetVectorY = edgeDetails.labelOffsetVectorY(edge,
 									                                                           labelInx);
-									final int justify;
+									final byte justify;
 
 									if (text.indexOf('\n') >= 0)
 										justify = edgeDetails.labelJustify(edge, labelInx);
@@ -501,6 +481,8 @@ public final class GraphRenderer {
 
 									final double edgeAnchorPointX;
 									final double edgeAnchorPointY;
+
+									final double edgeLabelWidth = edgeDetails.labelWidth(edge);
 
 									if (edgeAnchor == EdgeDetails.EDGE_ANCHOR_SOURCE) {
 										edgeAnchorPointX = srcXAdj;
@@ -610,23 +592,25 @@ public final class GraphRenderer {
 										throw new IllegalStateException("encountered an invalid EDGE_ANCHOR_* constant: "
 										                                + edgeAnchor);
 
-									TextRenderingUtils.computeTextDimensions(grafx, text, font,
-									                                         fontScaleFactor,
-									                                         (lodBits
-									                                         & LOD_TEXT_AS_SHAPE) != 0,
-									                                         floatBuff3);
-									doubleBuff1[0] = -0.5d * floatBuff3[0];
-									doubleBuff1[1] = -0.5d * floatBuff3[1];
-									doubleBuff1[2] = 0.5d * floatBuff3[0];
-									doubleBuff1[3] = 0.5d * floatBuff3[1];
+									final MeasuredLineCreator measuredText = 
+										new MeasuredLineCreator(text,font,
+										                         grafx.getFontRenderContextFull(),
+										                         fontScaleFactor, 
+										                         (lodBits&LOD_TEXT_AS_SHAPE)!= 0, 
+										                         edgeLabelWidth);
+
+									doubleBuff1[0] = -0.5d * measuredText.getMaxLineWidth();
+									doubleBuff1[1] = -0.5d * measuredText.getTotalHeight(); 
+									doubleBuff1[2] = 0.5d * measuredText.getMaxLineWidth(); 
+									doubleBuff1[3] = 0.5d * measuredText.getTotalHeight(); 
 									lemma_computeAnchor(textAnchor, doubleBuff1, doubleBuff2);
 
 									final double textXCenter = edgeAnchorPointX - doubleBuff2[0]
 									                           + offsetVectorX;
 									final double textYCenter = edgeAnchorPointY - doubleBuff2[1]
 									                           + offsetVectorY;
-									TextRenderingUtils.renderHorizontalText(grafx, text, font,
-									                                        fontScaleFactor,
+									TextRenderingUtils.renderHorizontalText(grafx, measuredText, 
+									                                        font, fontScaleFactor,
 									                                        (float) textXCenter,
 									                                        (float) textYCenter,
 									                                        justify, paint,
@@ -660,92 +644,11 @@ public final class GraphRenderer {
 						                  floatBuff1[3], nodeDetails.colorLowDetail(node));
 				}
 			} else { // High detail.
-
 				while (nodeHits.numRemaining() > 0) {
 					final int node = nodeHits.nextExtents(floatBuff1, 0);
-
-					if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
-						// Compute visual attributes that do not depend on LOD.
-						final int shape = nodeDetails.shape(node);
-						final Paint fillPaint = nodeDetails.fillPaint(node);
-
-						// Compute node border information.
-						final float borderWidth;
-						final Paint borderPaint;
-
-						if ((lodBits & LOD_NODE_BORDERS) == 0) { // Not rendering borders.
-							borderWidth = 0.0f;
-							borderPaint = null;
-						} else { // Rendering node borders.
-							borderWidth = nodeDetails.borderWidth(node);
-
-							if (borderWidth == 0.0f)
-								borderPaint = null;
-							else
-								borderPaint = nodeDetails.borderPaint(node);
-						}
-
-						// Draw the node.
-						grafx.drawNodeFull(shape, floatBuff1[0], floatBuff1[1], floatBuff1[2],
-						                   floatBuff1[3], fillPaint, borderWidth, borderPaint);
-					}
-
-					// Take care of custom graphic rendering.
-					if ((lodBits & LOD_CUSTOM_GRAPHICS) != 0) {
-					    // NOTE: The following block of code should be removed when the deprecated index-based API
-					    //       methods are removed:
-					    // BEGIN BLOCK TO REMOVE.						
-					    final int graphicCount = nodeDetails.graphicCount(node);
-
-						for (int graphicInx = 0; graphicInx < graphicCount; graphicInx++) {
-							final Shape gShape = nodeDetails.graphicShape(node, graphicInx);
-							final Paint paint = nodeDetails.graphicPaint(node, graphicInx);
-							final int anchor = nodeDetails.graphicNodeAnchor(node, graphicInx);
-				// Shouldn't these be graphicOffsetVectorX and Y versus labelOffsetVectorX and Y:
-										final float offsetVectorX = nodeDetails.labelOffsetVectorX(node,
-							                                                           graphicInx);
-							final float offsetVectorY = nodeDetails.labelOffsetVectorY(node,
-							                                                           graphicInx);
-							doubleBuff1[0] = floatBuff1[0];
-							doubleBuff1[1] = floatBuff1[1];
-							doubleBuff1[2] = floatBuff1[2];
-							doubleBuff1[3] = floatBuff1[3];
-							lemma_computeAnchor(anchor, doubleBuff1, doubleBuff2);
-							grafx.drawCustomGraphicFull(gShape,
-							                            (float) (doubleBuff2[0] + offsetVectorX),
-							                            (float) (doubleBuff2[1] + offsetVectorY),
-							                            paint);
-						
-					}
-						// END BLOCK TO REMOVE.
-
-						// don't allow our custom graphics to mutate while we iterate over them:
-						synchronized (nodeDetails.customGraphicsLock(node)) {
-						    // This iterator will return CustomGraphics in rendering order:
-						    Iterator<CustomGraphic> dNodeIt = nodeDetails.customGraphics (node);
-						    CustomGraphic cg = null;
-						    // The graphic index used to retrieve non custom graphic info corresponds to the zero-based
-						    // index of the CustomGraphic returned by the iterator:
-						    int graphicInx = 0;
-						    while (dNodeIt.hasNext()) {
-							cg = dNodeIt.next();
-							final float offsetVectorX = nodeDetails.labelOffsetVectorX(node,
-														   graphicInx);
-							final float offsetVectorY = nodeDetails.labelOffsetVectorY(node,
-														   graphicInx);
-							doubleBuff1[0] = floatBuff1[0];
-							doubleBuff1[1] = floatBuff1[1];
-							doubleBuff1[2] = floatBuff1[2];
-							doubleBuff1[3] = floatBuff1[3];
-							lemma_computeAnchor(cg.getAnchor(), doubleBuff1, doubleBuff2);
-							grafx.drawCustomGraphicFull(cg.getShape(),
-										    (float) (doubleBuff2[0] + offsetVectorX),
-										    (float) (doubleBuff2[1] + offsetVectorY),
-										    cg.getPaint());
-							graphicInx++;
-						    }
-						}
-					}
+					
+					renderNodeHigh(graph, grafx, node, floatBuff1, doubleBuff1, doubleBuff2, nodeDetails, lodBits);
+				
 
 					// Take care of label rendering.
 					if ((lodBits & LOD_NODE_LABELS) != 0) { // Potential label rendering.
@@ -758,18 +661,20 @@ public final class GraphRenderer {
 							final double fontScaleFactor = nodeDetails.labelScaleFactor(node,
 							                                                            labelInx);
 							final Paint paint = nodeDetails.labelPaint(node, labelInx);
-							final int textAnchor = nodeDetails.labelTextAnchor(node, labelInx);
-							final int nodeAnchor = nodeDetails.labelNodeAnchor(node, labelInx);
+							final byte textAnchor = nodeDetails.labelTextAnchor(node, labelInx);
+							final byte nodeAnchor = nodeDetails.labelNodeAnchor(node, labelInx);
 							final float offsetVectorX = nodeDetails.labelOffsetVectorX(node,
 							                                                           labelInx);
 							final float offsetVectorY = nodeDetails.labelOffsetVectorY(node,
 							                                                           labelInx);
-							final int justify;
+							final byte justify;
 
 							if (text.indexOf('\n') >= 0)
 								justify = nodeDetails.labelJustify(node, labelInx);
 							else
 								justify = NodeDetails.LABEL_WRAP_JUSTIFY_CENTER;
+
+							final double nodeLabelWidth = nodeDetails.labelWidth(node);
 
 							doubleBuff1[0] = floatBuff1[0];
 							doubleBuff1[1] = floatBuff1[1];
@@ -779,21 +684,21 @@ public final class GraphRenderer {
 
 							final double nodeAnchorPointX = doubleBuff2[0];
 							final double nodeAnchorPointY = doubleBuff2[1];
-							TextRenderingUtils.computeTextDimensions(grafx, text, font,
-							                                         fontScaleFactor,
-							                                         (lodBits & LOD_TEXT_AS_SHAPE) != 0,
-							                                         floatBuff3);
-							doubleBuff1[0] = -0.5d * floatBuff3[0];
-							doubleBuff1[1] = -0.5d * floatBuff3[1];
-							doubleBuff1[2] = 0.5d * floatBuff3[0];
-							doubleBuff1[3] = 0.5d * floatBuff3[1];
+							final MeasuredLineCreator measuredText = new MeasuredLineCreator(
+							    text, font, grafx.getFontRenderContextFull(), fontScaleFactor,
+							    (lodBits & LOD_TEXT_AS_SHAPE) != 0, nodeLabelWidth);
+
+							doubleBuff1[0] = -0.5d * measuredText.getMaxLineWidth();
+							doubleBuff1[1] = -0.5d * measuredText.getTotalHeight();
+							doubleBuff1[2] = 0.5d * measuredText.getMaxLineWidth();
+							doubleBuff1[3] = 0.5d * measuredText.getTotalHeight();
 							lemma_computeAnchor(textAnchor, doubleBuff1, doubleBuff2);
 
 							final double textXCenter = nodeAnchorPointX - doubleBuff2[0]
 							                           + offsetVectorX;
 							final double textYCenter = nodeAnchorPointY - doubleBuff2[1]
 							                           + offsetVectorY;
-							TextRenderingUtils.renderHorizontalText(grafx, text, font,
+							TextRenderingUtils.renderHorizontalText(grafx, measuredText, font,
 							                                        fontScaleFactor,
 							                                        (float) textXCenter,
 							                                        (float) textYCenter, justify,
@@ -874,36 +779,33 @@ public final class GraphRenderer {
 	private final static float[] s_floatBuff = new float[2];
 
 	/**
-	 * DOCUMENT ME!
+	 * Calculates the edge endpoints given two nodes, any edge anchors, and any arrows. 
 	 *
-	 * @param grafx DOCUMENT ME!
-	 * @param srcNodeExtents DOCUMENT ME!
-	 * @param srcNodeShape DOCUMENT ME!
-	 * @param srcArrow DOCUMENT ME!
-	 * @param srcArrowSize DOCUMENT ME!
-	 * @param anchors DOCUMENT ME!
-	 * @param trgNodeExtents DOCUMENT ME!
-	 * @param trgNodeShape DOCUMENT ME!
-	 * @param trgArrow DOCUMENT ME!
-	 * @param trgArrowSize DOCUMENT ME!
-	 * @param rtnValSrc DOCUMENT ME!
-	 * @param rtnValTrg DOCUMENT ME!
+	 * @param grafx The GraphGraphics being used to render everything. Used only to 
+	 * calculate the edge intersection of the node.
+	 * @param srcNodeExtents The extents of the source node.
+	 * @param srcNodeShape The node shape type.
+	 * @param srcArrow The source arrow type.
+	 * @param srcArrowSize The source arrow size.
+	 * @param anchors an EdgeAnchors object listing any anchors for the edge, possibly null.
+	 * @param trgNodeExtents The extends of the target node.
+	 * @param trgNodeShape The target node type.
+	 * @param trgArrow The target arrow type.
+	 * @param trgArrowSize The target arrow size.
+	 * @param rtnValSrc The array where X,Y positions of the source end of the edge are stored. 
+	 * @param rtnValTrg The array where X,Y positions of the target end of the edge are stored. 
 	 *
 	 * @return DOCUMENT ME!
 	 */
 	public final static boolean computeEdgeEndpoints(final GraphGraphics grafx,
 	                                                 final float[] srcNodeExtents,
-	                                                 final int srcNodeShape, final int srcArrow,
+	                                                 final byte srcNodeShape, final byte srcArrow,
 	                                                 final float srcArrowSize, EdgeAnchors anchors,
 	                                                 final float[] trgNodeExtents,
-	                                                 final int trgNodeShape, final int trgArrow,
+	                                                 final byte trgNodeShape, final byte trgArrow,
 	                                                 final float trgArrowSize,
 	                                                 final float[] rtnValSrc,
 	                                                 final float[] rtnValTrg) {
-		final boolean alwaysCompute = true;
-
-		if ((anchors != null) && (anchors.numAnchors() == 0))
-			anchors = null;
 
 		final float srcX = (float) ((((double) srcNodeExtents[0]) + srcNodeExtents[2]) / 2.0d);
 		final float srcY = (float) ((((double) srcNodeExtents[1]) + srcNodeExtents[3]) / 2.0d);
@@ -914,150 +816,34 @@ public final class GraphRenderer {
 		final float trgXOut;
 		final float trgYOut;
 
-		synchronized (s_floatBuff) {
-			if (anchors == null) {
-				srcXOut = trgX;
-				srcYOut = trgY;
-				trgXOut = srcX;
-				trgYOut = srcY;
-			} else {
-				anchors.getAnchor(0, s_floatBuff, 0);
-				srcXOut = s_floatBuff[0];
-				srcYOut = s_floatBuff[1];
-				anchors.getAnchor(anchors.numAnchors() - 1, s_floatBuff, 0);
-				trgXOut = s_floatBuff[0];
-				trgYOut = s_floatBuff[1];
-			}
+		final float[] floatBuff = new float[2];
+
+		if ((anchors != null) && (anchors.numAnchors() == 0))
+			anchors = null;
+
+		if (anchors == null) {
+			srcXOut = trgX;
+			srcYOut = trgY;
+			trgXOut = srcX;
+			trgYOut = srcY;
+		} else {
+			anchors.getAnchor(0, floatBuff, 0);
+			srcXOut = floatBuff[0];
+			srcYOut = floatBuff[1];
+			anchors.getAnchor(anchors.numAnchors() - 1, floatBuff, 0);
+			trgXOut = floatBuff[0];
+			trgYOut = floatBuff[1];
 		}
 
-		final float srcOffset;
+		calcIntersection(grafx, srcNodeShape, srcNodeExtents, srcX, srcY, 
+		                 srcXOut, srcYOut, floatBuff); 
+		final float srcXAdj = floatBuff[0];
+		final float srcYAdj = floatBuff[1];
 
-		if (srcArrow == GraphGraphics.ARROW_DISC)
-			srcOffset = (float) (0.5d * srcArrowSize);
-		else if (srcArrow == GraphGraphics.ARROW_TEE)
-			srcOffset = (float) srcArrowSize;
-		else
-			srcOffset = 0.0f;
-
-		final float srcXAdj;
-		final float srcYAdj;
-
-		synchronized (s_floatBuff) {
-			if ((srcNodeExtents[0] == srcNodeExtents[2])
-			    || (srcNodeExtents[1] == srcNodeExtents[3])) {
-				if (!_computeEdgeIntersection(srcX, srcY, srcOffset, srcXOut, srcYOut,
-				                              alwaysCompute, s_floatBuff))
-					return false;
-			} else {
-				if (!grafx.computeEdgeIntersection(srcNodeShape, srcNodeExtents[0],
-				                                   srcNodeExtents[1], srcNodeExtents[2],
-				                                   srcNodeExtents[3], srcOffset, srcXOut, srcYOut,
-				                                   s_floatBuff)) {
-					if (!alwaysCompute)
-						return false;
-
-					final float newSrcXOut;
-					final float newSrcYOut;
-
-					{ // Compute newSrcXOut and newSrcYOut.
-
-						final double srcXCenter = (((double) srcNodeExtents[0]) + srcNodeExtents[2]) / 2.0d;
-						final double srcYCenter = (((double) srcNodeExtents[1]) + srcNodeExtents[3]) / 2.0d;
-						final double desiredDist = Math.max(((double) srcNodeExtents[2])
-						                                    - srcNodeExtents[0],
-						                                    ((double) srcNodeExtents[3])
-						                                    - srcNodeExtents[1]) + srcOffset;
-						final double dX = srcXOut - srcXCenter;
-						final double dY = srcYOut - srcYCenter;
-						final double len = Math.sqrt((dX * dX) + (dY * dY));
-
-						if (len == 0.0d) {
-							newSrcXOut = (float) (srcXOut + desiredDist);
-							newSrcYOut = srcYOut;
-						} else {
-							newSrcXOut = (float) (((dX / len) * desiredDist) + srcXOut);
-							newSrcYOut = (float) (((dY / len) * desiredDist) + srcYOut);
-						}
-					}
-
-					grafx.computeEdgeIntersection(srcNodeShape, srcNodeExtents[0],
-					                              srcNodeExtents[1], srcNodeExtents[2],
-					                              srcNodeExtents[3], srcOffset, newSrcXOut,
-					                              newSrcYOut, s_floatBuff);
-				}
-			}
-
-			srcXAdj = s_floatBuff[0];
-			srcYAdj = s_floatBuff[1];
-		}
-
-		final float trgOffset;
-
-		if (trgArrow == GraphGraphics.ARROW_DISC)
-			trgOffset = (float) (0.5d * trgArrowSize);
-		else if (trgArrow == GraphGraphics.ARROW_TEE)
-			trgOffset = (float) trgArrowSize;
-		else
-			trgOffset = 0.0f;
-
-		final float trgXAdj;
-		final float trgYAdj;
-
-		synchronized (s_floatBuff) {
-			if ((trgNodeExtents[0] == trgNodeExtents[2])
-			    || (trgNodeExtents[1] == trgNodeExtents[3])) {
-				if (!_computeEdgeIntersection(trgX, trgY, trgOffset, trgXOut, trgYOut,
-				                              alwaysCompute, s_floatBuff))
-					return false;
-			} else {
-				if (!grafx.computeEdgeIntersection(trgNodeShape, trgNodeExtents[0],
-				                                   trgNodeExtents[1], trgNodeExtents[2],
-				                                   trgNodeExtents[3], trgOffset, trgXOut, trgYOut,
-				                                   s_floatBuff)) {
-					if (!alwaysCompute)
-						return false;
-
-					final float newTrgXOut;
-					final float newTrgYOut;
-
-					{ // Compute newTrgXOut and newTrgYOut.
-
-						final double trgXCenter = (((double) trgNodeExtents[0]) + trgNodeExtents[2]) / 2.0d;
-						final double trgYCenter = (((double) trgNodeExtents[1]) + trgNodeExtents[3]) / 2.0d;
-						final double desiredDist = Math.max(((double) trgNodeExtents[2])
-						                                    - trgNodeExtents[0],
-						                                    ((double) trgNodeExtents[3])
-						                                    - trgNodeExtents[1]) + trgOffset;
-						final double dX = trgXOut - trgXCenter;
-						final double dY = trgYOut - trgYCenter;
-						final double len = Math.sqrt((dX * dX) + (dY * dY));
-
-						if (len == 0.0d) {
-							newTrgXOut = (float) (trgXOut - desiredDist);
-							newTrgYOut = trgYOut;
-						} else {
-							newTrgXOut = (float) (((dX / len) * desiredDist) + trgXOut);
-							newTrgYOut = (float) (((dY / len) * desiredDist) + trgYOut);
-						}
-					}
-
-					grafx.computeEdgeIntersection(trgNodeShape, trgNodeExtents[0],
-					                              trgNodeExtents[1], trgNodeExtents[2],
-					                              trgNodeExtents[3], trgOffset, newTrgXOut,
-					                              newTrgYOut, s_floatBuff);
-				}
-			}
-
-			trgXAdj = s_floatBuff[0];
-			trgYAdj = s_floatBuff[1];
-		}
-
-		if ((anchors == null) && (!alwaysCompute)
-		    && !((((((double) srcX) - trgX) * (((double) srcXAdj) - trgXAdj))
-		         + ((((double) srcY) - trgY) * (((double) srcYAdj) - trgYAdj))) > 0.0d))
-
-			// The direction of the chopped segment has flipped.
-			return false;
+		calcIntersection(grafx, trgNodeShape, trgNodeExtents, trgX, trgY, 
+		                 trgXOut, trgYOut, floatBuff); 
+		final float trgXAdj = floatBuff[0];
+		final float trgYAdj = floatBuff[1];
 
 		rtnValSrc[0] = srcXAdj;
 		rtnValSrc[1] = srcYAdj;
@@ -1065,6 +851,48 @@ public final class GraphRenderer {
 		rtnValTrg[1] = trgYAdj;
 
 		return true;
+	}
+
+	private static void calcIntersection(GraphGraphics grafx, byte nodeShape, 
+	                                     float[] nodeExtents, float x, float y,
+	                                     float xOut, float yOut, float[] retVal) {
+		if ((nodeExtents[0] == nodeExtents[2]) || 
+		    (nodeExtents[1] == nodeExtents[3])) {
+			retVal[0] = x;
+			retVal[1] = y;
+		} else {
+			if (!grafx.computeEdgeIntersection(nodeShape, nodeExtents[0],
+			                                   nodeExtents[1], nodeExtents[2],
+			                                   nodeExtents[3], 0.0f, xOut, yOut,
+			                                   retVal)) {
+
+				final float newXOut;
+				final float newYOut;
+
+				final double xCenter = (((double) nodeExtents[0]) + nodeExtents[2]) / 2.0d;
+				final double yCenter = (((double) nodeExtents[1]) + nodeExtents[3]) / 2.0d;
+				final double desiredDist = Math.max(((double) nodeExtents[2])
+						                                    - nodeExtents[0],
+						                                    ((double) nodeExtents[3])
+						                                    - nodeExtents[1]);
+				final double dX = xOut - xCenter;
+				final double dY = yOut - yCenter;
+				final double len = Math.sqrt((dX * dX) + (dY * dY));
+
+				if (len == 0.0d) {
+					newXOut = (float) (xOut + desiredDist);
+					newYOut = yOut;
+				} else {
+					newXOut = (float) (((dX / len) * desiredDist) + xOut);
+					newYOut = (float) (((dY / len) * desiredDist) + yOut);
+				}
+
+				grafx.computeEdgeIntersection(nodeShape, nodeExtents[0],
+				                              nodeExtents[1], nodeExtents[2],
+				                              nodeExtents[3], 0.0f, newXOut,
+				                              newYOut, retVal);
+			}
+		}
 	}
 
 	private final static float[] s_floatTemp = new float[6];
@@ -1199,6 +1027,87 @@ public final class GraphRenderer {
 			returnVal[1] = (float) (((dY / len) * offset) + nodeY);
 
 			return true;
+		}
+	}
+	
+	/**
+	 * Render node view with details, including custom graphics.
+	 * 
+	 * @param graph
+	 * @param grafx
+	 * @param node
+	 * @param floatBuff1
+	 * @param doubleBuff1
+	 * @param doubleBuff2
+	 * @param nodeDetails
+	 * @param lodBits
+	 */
+	private static final void renderNodeHigh(final CyNetwork graph, final GraphGraphics grafx, 
+			final int node, final float[] floatBuff1, final double[] doubleBuff1, final double[] doubleBuff2, 
+			final NodeDetails nodeDetails, final int lodBits) {
+		if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
+						
+			// Compute visual attributes that do not depend on LOD.
+			final byte shape = nodeDetails.shape(node);
+			final Paint fillPaint = nodeDetails.fillPaint(node);
+
+			// Compute node border information.
+			final float borderWidth;
+			final Paint borderPaint;
+
+			if ((lodBits & LOD_NODE_BORDERS) == 0) { // Not rendering borders.
+				borderWidth = 0.0f;
+				borderPaint = null;
+			} else { // Rendering node borders.
+				borderWidth = nodeDetails.borderWidth(node);
+
+				if (borderWidth == 0.0f)
+					borderPaint = null;
+				else
+					borderPaint = nodeDetails.borderPaint(node);
+			}
+
+			// Draw the node.
+			grafx.drawNodeFull(shape, floatBuff1[0], floatBuff1[1], floatBuff1[2], floatBuff1[3], fillPaint, borderWidth, borderPaint);
+		}
+
+		// Take care of custom graphic rendering.
+		if ((lodBits & LOD_CUSTOM_GRAPHICS) != 0) {
+
+			// draw any nested networks first
+			final TexturePaint nestedNetworkPaint = nodeDetails.getNestedNetworkTexturePaint(node);
+			if (nestedNetworkPaint != null) {
+				doubleBuff1[0] = floatBuff1[0];
+				doubleBuff1[1] = floatBuff1[1];
+				doubleBuff1[2] = floatBuff1[2];
+				doubleBuff1[3] = floatBuff1[3];
+				lemma_computeAnchor(NodeDetails.ANCHOR_CENTER, doubleBuff1, doubleBuff2);
+				grafx.drawCustomGraphicFull(nestedNetworkPaint.getAnchorRect(), (float)doubleBuff2[0],  (float)doubleBuff2[1], nestedNetworkPaint); 
+			}
+
+			// draw custom graphics on top of nested networks 
+			// don't allow our custom graphics to mutate while we iterate over them:
+			synchronized (nodeDetails.customGraphicsLock(node)) {
+				// This iterator will return CustomGraphics in rendering order:
+				Iterator<CustomGraphic> dNodeIt = nodeDetails.customGraphics(node);
+				CustomGraphic cg = null;
+				// The graphic index used to retrieve non custom graphic info corresponds to the zero-based
+				// index of the CustomGraphic returned by the iterator:
+				int graphicInx = 0;
+				while (dNodeIt.hasNext()) {
+					cg = dNodeIt.next();
+					final float offsetVectorX = nodeDetails.graphicOffsetVectorX(node, graphicInx);
+					final float offsetVectorY = nodeDetails.graphicOffsetVectorY(node, graphicInx);
+					doubleBuff1[0] = floatBuff1[0];
+					doubleBuff1[1] = floatBuff1[1];
+					doubleBuff1[2] = floatBuff1[2];
+					doubleBuff1[3] = floatBuff1[3];
+					lemma_computeAnchor(NodeDetails.ANCHOR_CENTER, doubleBuff1, doubleBuff2);
+					grafx.drawCustomGraphicFull(cg.getShape(), (float) (doubleBuff2[0] + offsetVectorX), (float) (doubleBuff2[1] + offsetVectorY),
+								    cg.getPaint());
+					graphicInx++;
+				}
+			}
 		}
 	}
 }

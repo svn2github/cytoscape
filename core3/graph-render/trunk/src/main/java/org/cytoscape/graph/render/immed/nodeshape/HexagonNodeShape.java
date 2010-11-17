@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2009, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -25,70 +25,36 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ding.impl;
+package org.cytoscape.graph.render.immed.nodeshape;
 
 
-import org.cytoscape.graph.render.stateful.NodeDetails;
-
-import java.awt.*;
+import org.cytoscape.graph.render.immed.GraphGraphics;
 
 
-class IntermediateNodeDetails extends NodeDetails {
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public byte shape(int node) {
-		return DNodeView.DEFAULT_SHAPE;
+public class HexagonNodeShape extends LegacyCustomNodeShape {
+	private static final double[] coords = new double[12]; 
+
+	static {
+		// 1x1 square centered around 0,0
+		final double min = -0.5;
+		final double max = 0.5;
+
+		// defines a right triangle found within the hexagon
+		final double x = (max - min)/4.0;             // horizontal
+		final double z = x * 2.0;                     // hypotenuse
+		final double y = z * Math.sin(Math.PI/3.0);   // vertical
+		
+		// X coordinates              Y coordinates
+		coords[0]  = min;             coords[1]  = min + z;
+		coords[2]  = min + x;         coords[3]  = min + z + y; 
+		coords[4]  = min + x + z;     coords[5]  = min + z + y; 
+		coords[6]  = max;             coords[7]  = min + z; 
+		coords[8]  = min + x + z;     coords[9]  = max - z - y; 
+		coords[10] = min + x;         coords[11] = max - z - y; 
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint borderPaint(int node) {
-		return DNodeView.DEFAULT_BORDER_PAINT;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public String labelText(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_TEXT;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Font labelFont(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_FONT;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param labelInx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint labelPaint(int node, int labelInx) {
-		return DNodeView.DEFAULT_LABEL_PAINT;
+	public HexagonNodeShape() {
+		super(coords, GraphGraphics.SHAPE_HEXAGON);
 	}
 }
+

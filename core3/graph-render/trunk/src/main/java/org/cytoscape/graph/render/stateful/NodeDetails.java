@@ -30,96 +30,99 @@ package org.cytoscape.graph.render.stateful;
 
 import org.cytoscape.graph.render.immed.GraphGraphics;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
+import java.awt.TexturePaint;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 
 /**
- * Defines visual properties of a node modulo the node size and location.
+ * Defines visual properties of a node modulo the node size and location
  * Even though this class is not declared abstract, in most situations it
  * makes sense to override at least some of its methods in order to gain
  * control over node visual properties.<p>
  * To understand the significance of each method's return value, it makes
- * sense to become familiar with the API org.cytoscape.graph.render.immed.GraphGraphics.
+ * sense to become familiar with the API cytoscape.render.immed.GraphGraphics.
  */
 public class NodeDetails {
 	/**
 	 * Specifies that an anchor point lies at the center of a bounding box.
 	 */
-	public static final int ANCHOR_CENTER = 0;
+	public static final byte ANCHOR_CENTER = 0;
 
 	/**
 	 * Specifies that an anchor point lies on the north edge of a
 	 * bounding box, halfway between the east and west edges.
 	 */
-	public static final int ANCHOR_NORTH = 1;
+	public static final byte ANCHOR_NORTH = 1;
 
 	/**
 	 * Specifies that an anchor point lies on the northeast corner of
 	 * a bounding box.
 	 */
-	public static final int ANCHOR_NORTHEAST = 2;
+	public static final byte ANCHOR_NORTHEAST = 2;
 
 	/**
 	 * Specifies that an anchor point lies on the east edge of a
 	 * bounding box, halfway between the north and south edges.
 	 */
-	public static final int ANCHOR_EAST = 3;
+	public static final byte ANCHOR_EAST = 3;
 
 	/**
 	 * Specifies that an anchor point lies on the southeast corner of
 	 * a bounding box.
 	 */
-	public static final int ANCHOR_SOUTHEAST = 4;
+	public static final byte ANCHOR_SOUTHEAST = 4;
 
 	/**
 	 * Specifies that an anchor point lies on the south edge of a
 	 * bounding box, halfway between the east and west edges.
 	 */
-	public static final int ANCHOR_SOUTH = 5;
+	public static final byte ANCHOR_SOUTH = 5;
 
 	/**
 	 * Specifies that an anchor point lies on the southwest corner of a
 	 * bounding box.
 	 */
-	public static final int ANCHOR_SOUTHWEST = 6;
+	public static final byte ANCHOR_SOUTHWEST = 6;
 
 	/**
 	 * Specifies that an anchor point lies on the west edge of a
 	 * bounding box, halfway between the north and south edges.
 	 */
-	public static final int ANCHOR_WEST = 7;
+	public static final byte ANCHOR_WEST = 7;
 
 	/**
 	 * Specifies that an anchor point lies on the northwest corner of a
 	 * bounding box.
 	 */
-	public static final int ANCHOR_NORTHWEST = 8;
+	public static final byte ANCHOR_NORTHWEST = 8;
 
         /**
          * Used for range checking the anchor values. 
          */
         // Seems like these values should really be an enum...:
-        public static final int MAX_ANCHOR_VAL = 8;
+        public static final byte MAX_ANCHOR_VAL = 8;
 
 	/**
 	 * Specifies that the lines in a multi-line node label should each have
 	 * a center point with similar X coordinate.
 	 */
-	public static final int LABEL_WRAP_JUSTIFY_CENTER = 64;
+	public static final byte LABEL_WRAP_JUSTIFY_CENTER = 64;
 
 	/**
 	 * Specifies that the lines of a multi-line node label should each have
 	 * a leftmost point with similar X coordinate.
 	 */
-	public static final int LABEL_WRAP_JUSTIFY_LEFT = 65;
+	public static final byte LABEL_WRAP_JUSTIFY_LEFT = 65;
 
 	/**
 	 * Specifies that the lines of a multi-line node label should each have
 	 * a rightmost point with similar X coordinate.
 	 */
-	public static final int LABEL_WRAP_JUSTIFY_RIGHT = 66;
+	public static final byte LABEL_WRAP_JUSTIFY_RIGHT = 66;
 
 	/**
 	 * Hashmap which records selected state of nodes - information used
@@ -157,7 +160,7 @@ public class NodeDetails {
 	 * Take note of certain constraints specified in
 	 * GraphGraphics.drawNodeFull() that pertain to rounded rectangles.
 	 */
-	public int shape(final int node) {
+	public byte shape(final int node) {
 		return GraphGraphics.SHAPE_RECTANGLE;
 	}
 
@@ -224,29 +227,6 @@ public class NodeDetails {
 	}
 
 	/**
-	 * By returning one of the ANCHOR_* constants, specifies
-	 * where on a text label's logical bounds box an anchor point lies.  This
-	 * <i>text anchor point</i> together with the
-	 * node anchor point and label offset vector
-	 * determines where, relative to the node, the text's logical bounds
-	 * box is to be placed.  The text's logical bounds box is placed such that
-	 * the label offset vector plus the node anchor point equals the text anchor
-	 * point.<p>
-	 * By default this method always returns ANCHOR_CENTER.
-	 * This method is only called by the rendering engine if labelCount(node)
-	 * returns a value greater than zero.
-	 * @param labelInx a value in the range [0, labelCount(node)-1] indicating
-	 *   which node label in question.
-	 * @see #ANCHOR_CENTER
-	 * @see #labelNodeAnchor(int, int)
-	 * @see #labelOffsetVectorX(int, int)
-	 * @see #labelOffsetVectorY(int, int)
-	 */
-	public int labelTextAnchor(final int node, final int labelInx) {
-		return ANCHOR_CENTER;
-	}
-	
-	/**
 	 * Returns an additional scaling factor that is to be applied to the font
 	 * used to render this label; this scaling factor, applied to the point
 	 * size of the font returned by labelFont(node, labelInx), yields a new
@@ -273,7 +253,28 @@ public class NodeDetails {
 		return null;
 	}
 
-
+	/**
+	 * By returning one of the ANCHOR_* constants, specifies
+	 * where on a text label's logical bounds box an anchor point lies.  This
+	 * <i>text anchor point</i> together with the
+	 * node anchor point and label offset vector
+	 * determines where, relative to the node, the text's logical bounds
+	 * box is to be placed.  The text's logical bounds box is placed such that
+	 * the label offset vector plus the node anchor point equals the text anchor
+	 * point.<p>
+	 * By default this method always returns ANCHOR_CENTER.
+	 * This method is only called by the rendering engine if labelCount(node)
+	 * returns a value greater than zero.
+	 * @param labelInx a value in the range [0, labelCount(node)-1] indicating
+	 *   which node label in question.
+	 * @see #ANCHOR_CENTER
+	 * @see #labelNodeAnchor(int, int)
+	 * @see #labelOffsetVectorX(int, int)
+	 * @see #labelOffsetVectorY(int, int)
+	 */
+	public byte labelTextAnchor(final int node, final int labelInx) {
+		return ANCHOR_CENTER;
+	}
 
 	/**
 	 * By returning one of the ANCHOR_* constants, specifies
@@ -293,7 +294,7 @@ public class NodeDetails {
 	 * @see #labelOffsetVectorX(int, int)
 	 * @see #labelOffsetVectorY(int, int)
 	 */
-	public int labelNodeAnchor(final int node, final int labelInx) {
+	public byte labelNodeAnchor(final int node, final int labelInx) {
 		return ANCHOR_CENTER;
 	}
 
@@ -350,60 +351,8 @@ public class NodeDetails {
 	 * string that does not span multiple lines.
 	 * @see #LABEL_WRAP_JUSTIFY_CENTER
 	 */
-	public int labelJustify(final int node, final int labelInx) {
+	public byte labelJustify(final int node, final int labelInx) {
 		return LABEL_WRAP_JUSTIFY_CENTER;
-	}
-
-	/**
-	 * Returns the number of custom graphics that this node has.  By default this
-	 * method returns zero.  A custom graphic extends the concept of node label
-	 * to include any arbitrary filled shape.
-	 */
-	public int graphicCount(final int node) {
-		return 0;
-	}
-
-	/**
-	 * Returns a custom graphic's shape.  This shape will be filled by the
-	 * rendering engine.  By default this method always returns null.  This
-	 * method is only called by the rendering engine if graphicCount(node)
-	 * returns a value greater than zero.  It is an error to return null if
-	 * this method is called by the rendering engine.
-	 * @param graphicInx a value in the range [0, graphicCount(node)-1]
-	 *   indicating which node graphic in question.
-	 */
-	public Shape graphicShape(final int node, final int graphicInx) {
-		return null;
-	}
-
-	/**
-	 * Returns the fill paint of a custom graphic.  By default this
-	 * method always returns null.  This method is only called by the rendering
-	 * engine if graphicCount(node) returns a value greater than zero.  It is
-	 * an error to return null if this method is called by the rendering engine.
-	 * @param graphicInx a value in the range [0, graphicCount(node)-1]
-	 *   indicating which node graphic in question.
-	 */
-	public Paint graphicPaint(final int node, final int graphicInx) {
-		return null;
-	}
-
-	/**
-	 * By returning one of the ANCHOR_* constants, specifies
-	 * where on the node's extents rectangle the graphic anchor point lies.
-	 * The filled shape is rendered at a location which is equal to this
-	 * anchor point plus the offset vector.<p>
-	 * By default this method always returns ANCHOR_CENTER.
-	 * This method is only called by the rendering engine if graphicCount(node)
-	 * returns a value greater than zero.
-	 * @param graphicInx a value in the range [0, graphicCount(node)-1]
-	 *   indicating which node graphic in question.
-	 * @see #ANCHOR_CENTER
-	 * @see #graphicOffsetVectorX(int, int)
-	 * @see #graphicOffsetVectorY(int, int)
-	 */
-	public int graphicNodeAnchor(final int node, final int graphicInx) {
-		return ANCHOR_CENTER;
 	}
 
 	/**
@@ -435,6 +384,7 @@ public class NodeDetails {
 	public float graphicOffsetVectorY(final int node, final int graphicInx) {
 		return 0.0f;
 	}
+
 
 	/**
 	 * A thread-safe method returning the number of custom graphics

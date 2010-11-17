@@ -84,7 +84,7 @@ public enum ArrowShape {
 	;
 
 
-	private static Map<Integer,Shape> arrowShapes = GraphGraphics.getArrowShapes();
+	private static Map<Byte,Shape> arrowShapes = GraphGraphics.getArrowShapes();
 
 	private String shapeName;
 	private String ginyShapeName;

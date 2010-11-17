@@ -8,13 +8,21 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 
 
-/** 
+/**
  * Any and all questions should be directed to me.
- 
  * @author Rowan Christmas
  */
 public interface NodeView  extends GraphViewObject {
-  
+	public static final int TRIANGLE = 0;
+	public static final int DIAMOND = 1;
+	public static final int ELLIPSE = 2;
+	public static final int HEXAGON = 3;
+	public static final int OCTAGON = 4;
+	public static final int PARALELLOGRAM = 5;
+	public static final int RECTANGLE = 6;
+	public static final int ROUNDED_RECTANGLE = 7;
+	public static final int VEE = 8;
+
 	/**
 	 * @return The Node we are a view on
 	 */
@@ -31,20 +39,18 @@ public interface NodeView  extends GraphViewObject {
 	 */
 	public int getRootGraphIndex () ;
 
-
 	/**
 	 * @return The list of EdgeViews connecting these two nodes. Possibly null.
 	 */
 	public java.util.List<EdgeView> getEdgeViewsList(NodeView otherNode) ;
 
 	/**
-	 * Shape is currently defined via predefined variables in 
+	 * Shape is currently defined via predefined variables in
 	 * the NodeView interface. To get the actual java.awt.Shape
 	 * use getPathReference()
 	 * @return the current int-tpye shape
 	 */
 	public int getShape () ;
-
 
 	/**
 	 * This sets the Paint that will be used by this node
@@ -58,13 +64,11 @@ public interface NodeView  extends GraphViewObject {
 	 */
 	public Paint getSelectedPaint () ;
 
-
-
 	/**
 	 * Set the deafult paint of this node
 	 * @param paint the default Paint of this node
 	 */
-	public void setUnselectedPaint ( Paint paint ) ; 
+	public void setUnselectedPaint ( Paint paint ) ;
 
 	/**
 	 * @return the currently set paint
@@ -75,8 +79,8 @@ public interface NodeView  extends GraphViewObject {
 
 	/**
 	 * @param b_paint the paint the border will use
-	 */ 
-	public void setBorderPaint ( Paint b_paint ) ; 
+	 */
+	public void setBorderPaint ( Paint b_paint ) ;
 
 	/**
 	 * @return the currently set BOrder Paint
@@ -93,14 +97,14 @@ public interface NodeView  extends GraphViewObject {
 	 */
 	public float getBorderWidth () ;
 
-  
+
 	/**
 	 * @param stroke the new stroke for the border
 	 */
 	public void setBorder ( Stroke stroke );
 
 
-	/** 
+	/**
 	 * @return the current border
 	 */
 	public Stroke getBorder ();
@@ -109,7 +113,7 @@ public interface NodeView  extends GraphViewObject {
 	 * @param trans new value for the transparency
 	 */
 	public void setTransparency ( int trans );
-  
+
 	/**
 	 * @return the value for the transparency for this node
 	 */
@@ -163,54 +167,54 @@ public interface NodeView  extends GraphViewObject {
 	 * Set udpdate to false in order to do a layout, and then call updateNode on all the nodes..
 	 // TODO -- HACKY
 	 * @param  new_x_position for this node
-	 * @param  update if this is true, the node will move immediatly. 
+	 * @param  update if this is true, the node will move immediatly.
 	 */
 	public void setXPosition ( double new_x_position, boolean update ) ;
-  
+
 	/**
-	 * note that unless updateNode() has been called, this may not be 
+	 * note that unless updateNode() has been called, this may not be
 	 * the "real" location of this node
 	 * @return the current x position of this node
 	 * @see #setXPosition
 	 */
 	public double getXPosition() ;
-  
+
 	/**
 	 * @param new_y_position the new Y position for this node
 	 */
 	public void setYPosition(double new_y_position) ;
-  
+
 	/**
 	 * Set udpdate to false in order to do a layout, and then call updateNode on all the nodes..
 	 // TODO -- HACKY
 	 * @param  new_y_position for this node
-	 * @param  update if this is true, the node will move immediatly. 
+	 * @param  update if this is true, the node will move immediatly.
 	 */
 	public void setYPosition ( double new_y_position, boolean update ) ;
-  
+
 	/**
-	 * note that unless updateNode() has been called, this may not be 
+	 * note that unless updateNode() has been called, this may not be
 	 * the "real" location of this node
 	 * @return the current y position of this node
 	 * @see #setYPosition
 	 */
 	public double getYPosition() ;
-  
+
 	/**
 	 * moves this node to its stored x and y locations.
 	 */
 	public void setNodePosition(boolean animate) ;
-  
+
 	/**
 	 * This draws us as selected
 	 */
 	public void select() ;
-  
+
 	/**
 	 * This draws us as unselected
 	 */
 	public void unselect() ;
-  
+
 	/**
 	 *
 	 */
@@ -220,7 +224,7 @@ public interface NodeView  extends GraphViewObject {
 	 *
 	 */
 	public boolean setSelected(boolean selected) ;
-  
+
 	/**
 	 *  @return true if the NodeView is hidden, else false
 	 */
@@ -232,7 +236,7 @@ public interface NodeView  extends GraphViewObject {
 	 * java.awt.Shape ( i.e. A picture of Johnny Cash )
 	 */
 	public void setShape(int shape) ;
-  
+
 	/**
 	 * Sets what the tooltip will be for this NodeView
 	 */

@@ -888,25 +888,12 @@ public class DNodeView implements NodeView, Label {
 	 * @param shape
 	 *            DOCUMENT ME!
 	 */
-	public void setShape(final int inshape) {
-		synchronized (dGraphView.m_lock) {
+	public void setShape(final int shape) {
+		synchronized (graphView.m_lock) {
+			byte nativeShape = GinyUtil.getNativeNodeType(shape);
 
-			int shape = inshape;
-
-			// special case
-			if (shape == GraphGraphics.SHAPE_ROUNDED_RECTANGLE) {
-				final double width = getWidth();
-				final double height = getHeight();
-
-				if (!(Math.max(width, height) < (1.99d * Math
-						.min(width, height))))
-					shape = GraphGraphics.SHAPE_RECTANGLE;
-				else
-					shape = GraphGraphics.SHAPE_ROUNDED_RECTANGLE;
-			}
-
-			dGraphView.m_nodeDetails.overrideShape(m_inx, shape);
-			dGraphView.m_contentChanged = true;
+			graphView.m_nodeDetails.overrideShape(m_inx, nativeShape);
+			graphView.m_contentChanged = true;
 		}
 	}
 

@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -31,8 +24,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.graph.render.immed;
+
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -45,6 +39,28 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
+
+
+import org.cytoscape.graph.render.immed.arrow.Arrow;
+import org.cytoscape.graph.render.immed.arrow.ArrowheadArrow;
+import org.cytoscape.graph.render.immed.arrow.DeltaArrow;
+import org.cytoscape.graph.render.immed.arrow.DiamondArrow;
+import org.cytoscape.graph.render.immed.arrow.DiscArrow;
+import org.cytoscape.graph.render.immed.arrow.HalfBottomArrow;
+import org.cytoscape.graph.render.immed.arrow.HalfTopArrow;
+import org.cytoscape.graph.render.immed.arrow.NoArrow;
+import org.cytoscape.graph.render.immed.arrow.TeeArrow;
+import org.cytoscape.graph.render.immed.nodeshape.DiamondNodeShape;
+import org.cytoscape.graph.render.immed.nodeshape.EllipseNodeShape;
+import org.cytoscape.graph.render.immed.nodeshape.HexagonNodeShape;
+import org.cytoscape.graph.render.immed.nodeshape.LegacyCustomNodeShape;
+import org.cytoscape.graph.render.immed.nodeshape.NodeShape;
+import org.cytoscape.graph.render.immed.nodeshape.OctagonNodeShape;
+import org.cytoscape.graph.render.immed.nodeshape.ParallelogramNodeShape;
+import org.cytoscape.graph.render.immed.nodeshape.RectangleNodeShape;
+import org.cytoscape.graph.render.immed.nodeshape.RoundedRectangleNodeShape;
+import org.cytoscape.graph.render.immed.nodeshape.TriangleNodeShape;
+import org.cytoscape.graph.render.immed.nodeshape.VeeNodeShape;
 
 /**
  * The purpose of this class is to make the proper calls on a Graphics2D object
@@ -87,48 +103,50 @@ public final class GraphGraphics {
 	/**
 	 * 
 	 */
-	public static final int SHAPE_RECTANGLE = 0;
+	public static final byte SHAPE_RECTANGLE = 0;
 
 	/**
 	 * 
 	 */
-	public static final int SHAPE_DIAMOND = 1;
+	public static final byte SHAPE_DIAMOND = 1;
 
 	/**
 	 * 
 	 */
-	public static final int SHAPE_ELLIPSE = 2;
+	public static final byte SHAPE_ELLIPSE = 2;
 
 	/**
 	 * 
 	 */
-	public static final int SHAPE_HEXAGON = 3;
+	public static final byte SHAPE_HEXAGON = 3;
 
 	/**
 	 * 
 	 */
-	public static final int SHAPE_OCTAGON = 4;
+	public static final byte SHAPE_OCTAGON = 4;
 
 	/**
 	 * 
 	 */
-	public static final int SHAPE_PARALLELOGRAM = 5;
+	public static final byte SHAPE_PARALLELOGRAM = 5;
 
 	/**
 	 * 
 	 */
-	public static final int SHAPE_ROUNDED_RECTANGLE = 6;
+	public static final byte SHAPE_ROUNDED_RECTANGLE = 6;
 
 	/**
 	 * 
 	 */
-	public static final int SHAPE_TRIANGLE = 7;
+	public static final byte SHAPE_TRIANGLE = 7;
 
 	/**
 	 * 
 	 */
-	public static final int SHAPE_VEE = 8;
-	private static final int s_last_shape = SHAPE_VEE;
+	public static final byte SHAPE_VEE = 8;
+	private static final byte s_last_shape = SHAPE_VEE;
+
+	private static final Map<Byte, NodeShape> nodeShapes;
 
 	/**
 	 * This value is currently 100.
@@ -138,38 +156,46 @@ public final class GraphGraphics {
 	/**
 	 * 
 	 */
-	public static final int ARROW_NONE = -1;
+	public static final byte ARROW_NONE = -1;
 
 	/**
 	 * 
 	 */
-	public static final int ARROW_DELTA = -2;
+	public static final byte ARROW_DELTA = -2;
 
 	/**
 	 * 
 	 */
-	public static final int ARROW_DIAMOND = -3;
+	public static final byte ARROW_DIAMOND = -3;
 
 	/**
 	 * 
 	 */
-	public static final int ARROW_DISC = -4;
+	public static final byte ARROW_DISC = -4;
 
 	/**
 	 * 
 	 */
-	public static final int ARROW_TEE = -5;
-	private static final int last_arrow_shape = ARROW_TEE;
+	public static final byte ARROW_TEE = -5;
 
 	/**
 	 * 
 	 */
-	public static final int ARROW_BIDIRECTIONAL = -6;
+	public static final byte ARROW_HALF_TOP = -6;
 
 	/**
 	 * 
 	 */
-	public static final int ARROW_MONO = -7;
+	public static final byte ARROW_HALF_BOTTOM = -7;
+
+	/**
+	 * 
+	 */
+	public static final byte ARROW_ARROWHEAD = -8;
+	private static final byte last_arrow_shape = ARROW_ARROWHEAD;
+
+	// The way to access all Arrow objects.
+	private static final Map<Byte, Arrow> arrows;
 
 	/**
 	 * This value is currently 64.
@@ -187,11 +213,37 @@ public final class GraphGraphics {
 	 */
 	private static final GraphGraphics dummyGraphics;
 
+	private static final Map<Float,Stroke> borderStrokes = new HashMap<Float,Stroke>();
+
 	static {
 		dummyGraphics = new GraphGraphics(null, false);
+		
+		nodeShapes = new HashMap<Byte,NodeShape>();
+
+		nodeShapes.put(SHAPE_RECTANGLE, new RectangleNodeShape()); 
+
+		nodeShapes.put(SHAPE_ELLIPSE, new EllipseNodeShape()); 
+		nodeShapes.put(SHAPE_ROUNDED_RECTANGLE, new RoundedRectangleNodeShape()); 
+		nodeShapes.put(SHAPE_DIAMOND, new DiamondNodeShape()); 
+		nodeShapes.put(SHAPE_HEXAGON, new HexagonNodeShape()); 
+		nodeShapes.put(SHAPE_OCTAGON, new OctagonNodeShape()); 
+		nodeShapes.put(SHAPE_PARALLELOGRAM, new ParallelogramNodeShape()); 
+		nodeShapes.put(SHAPE_TRIANGLE, new TriangleNodeShape()); 
+		nodeShapes.put(SHAPE_VEE, new VeeNodeShape());
+
+		arrows = new HashMap<Byte,Arrow>();
+
+		arrows.put(ARROW_NONE, new NoArrow() );
+		arrows.put(ARROW_DELTA, new DeltaArrow() );
+		arrows.put(ARROW_DISC, new DiscArrow() );
+		arrows.put(ARROW_DIAMOND, new DiamondArrow() );
+		arrows.put(ARROW_TEE, new TeeArrow() );
+		arrows.put(ARROW_ARROWHEAD, new ArrowheadArrow() );
+		arrows.put(ARROW_HALF_TOP, new HalfTopArrow() );
+		arrows.put(ARROW_HALF_BOTTOM, new HalfBottomArrow() );
 	}
 
-	private static final double DEF_SHAPE_SIZE = 32;
+	private static final float DEF_SHAPE_SIZE = 32.0f;
 
 	/**
 	 * The image that was passed into the constructor.
@@ -593,28 +645,15 @@ public final class GraphGraphics {
 	 *                nodeShape is neither one of the SHAPE_* constants nor a
 	 *                previously defined custom node shape.
 	 */
-	public final void drawNodeFull(final int nodeShape, final float xMin,
+	public final void drawNodeFull(final byte nodeShape, final float xMin,
 			final float yMin, final float xMax, final float yMax,
 			final Paint fillPaint, final float borderWidth,
 			final Paint borderPaint) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!m_cleared) {
-				throw new IllegalStateException(
-						"clear() has not been called previously");
-			}
-
-			if (!(xMin < xMax)) {
-				throw new IllegalArgumentException("xMin not less than xMax");
-			}
-
-			if (!(yMin < yMax)) {
-				throw new IllegalArgumentException("yMin not less than yMax");
-			}
+			checkDispatchThread();
+			checkCleared();
+			checkOrder(xMin,xMax,"x");
+			checkOrder(yMin,yMax,"y");
 
 			if (!(borderWidth >= 0.0f)) {
 				throw new IllegalArgumentException(
@@ -627,111 +666,19 @@ public final class GraphGraphics {
 						"borderWidth is not less than the minimum of node width and node "
 								+ "height divided by six");
 			}
-
-			if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
-				final double width = ((double) xMax) - xMin;
-				final double height = ((double) yMax) - yMin;
-
-				if (!(Math.max(width, height) < (2.0d * Math.min(width, height)))) {
-					throw new IllegalArgumentException(
-							"rounded rectangle does not meet constraint "
-									+ "max(width, height) < 2 * min(width, height)");
-				}
-			}
 		}
 
-		if (borderWidth == 0.0f) {
-			m_g2d.setPaint(fillPaint);
-			m_g2d.fill(getShape(nodeShape, xMin, yMin, xMax, yMax));
-		} else { // There is a border.
-			m_path2dPrime.reset();
-			m_path2dPrime.append(getShape(nodeShape, xMin, yMin, xMax, yMax),
-					false); // Make a copy, essentially.
+		final float off = borderWidth/2.0f; // border offset
+		final Shape sx = getShape(nodeShape,xMin+off,yMin+off,xMax-off,yMax-off);
 
-			final Shape innerShape;
-
-			if (nodeShape == SHAPE_ELLIPSE) {
-				// TODO: Compute a more accurate inner area for ellipse +
-				// border.
-				innerShape = getShape(SHAPE_ELLIPSE, ((double) xMin)
-						+ borderWidth, ((double) yMin) + borderWidth,
-						((double) xMax) - borderWidth, ((double) yMax)
-								- borderWidth);
-			} else if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
-				computeRoundedRectangle(((double) xMin) + borderWidth,
-						((double) yMin) + borderWidth, ((double) xMax)
-								- borderWidth, ((double) yMax) - borderWidth,
-						(Math.max(((double) xMax) - xMin, ((double) yMax)
-								- yMin) / 4.0d)
-								- borderWidth, m_path2d);
-				innerShape = m_path2d;
-			} else {
-				// A general [possibly non-convex] polygon with certain
-				// restrictions: no two consecutive line segments can be
-				// parallel,
-				// each line segment must have nonzero length, the polygon
-				// cannot
-				// self-intersect, and the polygon must be clockwise
-				// in the node coordinate system.
-				m_path2d.reset();
-
-				final double xNot = m_polyCoords[0];
-				final double yNot = m_polyCoords[1];
-				final double xOne = m_polyCoords[2];
-				final double yOne = m_polyCoords[3];
-				double xPrev = xNot;
-				double yPrev = yNot;
-				double xCurr = xOne;
-				double yCurr = yOne;
-				double xNext = m_polyCoords[4];
-				double yNext = m_polyCoords[5];
-				computeInnerPoint(m_ptsBuff, xPrev, yPrev, xCurr, yCurr, xNext,
-						yNext, borderWidth);
-				m_path2d.moveTo((float) m_ptsBuff[0], (float) m_ptsBuff[1]);
-
-				int i = 6;
-
-				while (true) {
-					if (i == (m_polyNumPoints * 2)) {
-						computeInnerPoint(m_ptsBuff, xCurr, yCurr, xNext,
-								yNext, xNot, yNot, borderWidth);
-						m_path2d.lineTo((float) m_ptsBuff[0],
-								(float) m_ptsBuff[1]);
-						computeInnerPoint(m_ptsBuff, xNext, yNext, xNot, yNot,
-								xOne, yOne, borderWidth);
-						m_path2d.lineTo((float) m_ptsBuff[0],
-								(float) m_ptsBuff[1]);
-						m_path2d.closePath();
-
-						break;
-					} else {
-						xPrev = xCurr;
-						yPrev = yCurr;
-						xCurr = xNext;
-						yCurr = yNext;
-						xNext = m_polyCoords[i++];
-						yNext = m_polyCoords[i++];
-						computeInnerPoint(m_ptsBuff, xPrev, yPrev, xCurr,
-								yCurr, xNext, yNext, borderWidth);
-						m_path2d.lineTo((float) m_ptsBuff[0],
-								(float) m_ptsBuff[1]);
-					}
-				}
-
-				innerShape = m_path2d;
-			}
-
-			m_g2d.setPaint(fillPaint);
-			m_g2d.fill(innerShape);
-
-			// Render the border such that it does not overlap with the fill
-			// region because translucent colors may be used. Don't do
-			// things differently for opaque and translucent colors for the
-			// sake of consistency.
-			m_path2dPrime.append(innerShape, false);
+		if (borderWidth > 0.0f) {
 			m_g2d.setPaint(borderPaint);
-			m_g2d.fill(m_path2dPrime);
+			m_g2d.setStroke(getStroke(borderWidth));
+			m_g2d.draw(sx);
 		}
+
+		m_g2d.setPaint(fillPaint);
+		m_g2d.fill(sx);
 	}
 
 	/**
@@ -755,33 +702,13 @@ public final class GraphGraphics {
 	 *            path's coordinate system is the node coordinate system; the
 	 *            computed path is closed.
 	 */
-	public final void getNodeShape(final int nodeShape, final float xMin,
+	public final void getNodeShape(final byte nodeShape, final float xMin,
 			final float yMin, final float xMax, final float yMax,
 			final GeneralPath path) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!(xMin < xMax)) {
-				throw new IllegalArgumentException("xMin not less than xMax");
-			}
-
-			if (!(yMin < yMax)) {
-				throw new IllegalArgumentException("yMin not less than yMax");
-			}
-
-			if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
-				final double width = ((double) xMax) - xMin;
-				final double height = ((double) yMax) - yMin;
-
-				if (!(Math.max(width, height) < (2.0d * Math.min(width, height)))) {
-					throw new IllegalArgumentException(
-							"rounded rectangle does not meet constraint "
-									+ "max(width, height) < 2 * min(width, height)");
-				}
-			}
+			checkDispatchThread();
+			checkOrder(xMin,xMax,"x");
+			checkOrder(yMin,yMax,"y");
 		}
 
 		path.reset();
@@ -1062,224 +989,41 @@ public final class GraphGraphics {
 		}
 	}
 
-	/*
-	 * This method has the side effect of setting m_ellp2d or m_path2d; if
-	 * m_path2d is set (every case but the ellipse and rounded rectangle), then
-	 * m_polyCoords and m_polyNumPoints are also set.
-	 */
-	private final Shape getShape(final int nodeShape, final double xMin,
-			final double yMin, final double xMax, final double yMax) {
-		switch (nodeShape) {
-		case SHAPE_ELLIPSE:
-			m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
-
-			return m_ellp2d;
-
-		case SHAPE_RECTANGLE:
-			m_polyNumPoints = 4;
-			m_polyCoords[0] = xMin;
-			m_polyCoords[1] = yMin;
-			m_polyCoords[2] = xMax;
-			m_polyCoords[3] = yMin;
-			m_polyCoords[4] = xMax;
-			m_polyCoords[5] = yMax;
-			m_polyCoords[6] = xMin;
-			m_polyCoords[7] = yMax;
-
-			break;
-
-		case SHAPE_DIAMOND:
-			m_polyNumPoints = 4;
-			m_polyCoords[0] = (xMin + xMax) / 2.0d;
-			m_polyCoords[1] = yMin;
-			m_polyCoords[2] = xMax;
-			m_polyCoords[3] = (yMin + yMax) / 2.0d;
-			m_polyCoords[4] = (xMin + xMax) / 2.0d;
-			m_polyCoords[5] = yMax;
-			m_polyCoords[6] = xMin;
-			m_polyCoords[7] = (yMin + yMax) / 2.0d;
-
-			break;
-
-		case SHAPE_HEXAGON:
-			m_polyNumPoints = 6;
-			m_polyCoords[0] = ((2.0d * xMin) + xMax) / 3.0d;
-			m_polyCoords[1] = yMin;
-			m_polyCoords[2] = ((2.0d * xMax) + xMin) / 3.0d;
-			m_polyCoords[3] = yMin;
-			m_polyCoords[4] = xMax;
-			m_polyCoords[5] = (yMin + yMax) / 2.0d;
-			m_polyCoords[6] = ((2.0d * xMax) + xMin) / 3.0d;
-			m_polyCoords[7] = yMax;
-			m_polyCoords[8] = ((2.0d * xMin) + xMax) / 3.0d;
-			m_polyCoords[9] = yMax;
-			m_polyCoords[10] = xMin;
-			m_polyCoords[11] = (yMin + yMax) / 2.0d;
-
-			break;
-
-		case SHAPE_OCTAGON:
-			m_polyNumPoints = 8;
-			m_polyCoords[0] = ((2.0d * xMin) + xMax) / 3.0d;
-			m_polyCoords[1] = yMin;
-			m_polyCoords[2] = ((2.0d * xMax) + xMin) / 3.0d;
-			m_polyCoords[3] = yMin;
-			m_polyCoords[4] = xMax;
-			m_polyCoords[5] = ((2.0d * yMin) + yMax) / 3.0d;
-			m_polyCoords[6] = xMax;
-			m_polyCoords[7] = ((2.0d * yMax) + yMin) / 3.0d;
-			m_polyCoords[8] = ((2.0d * xMax) + xMin) / 3.0d;
-			m_polyCoords[9] = yMax;
-			m_polyCoords[10] = ((2.0d * xMin) + xMax) / 3.0d;
-			m_polyCoords[11] = yMax;
-			m_polyCoords[12] = xMin;
-			m_polyCoords[13] = ((2.0d * yMax) + yMin) / 3.0d;
-			m_polyCoords[14] = xMin;
-			m_polyCoords[15] = ((2.0d * yMin) + yMax) / 3.0d;
-
-			break;
-
-		case SHAPE_PARALLELOGRAM:
-			m_polyNumPoints = 4;
-			m_polyCoords[0] = xMin;
-			m_polyCoords[1] = yMin;
-			m_polyCoords[2] = ((2.0d * xMax) + xMin) / 3.0d;
-			m_polyCoords[3] = yMin;
-			m_polyCoords[4] = xMax;
-			m_polyCoords[5] = yMax;
-			m_polyCoords[6] = ((2.0d * xMin) + xMax) / 3.0d;
-			m_polyCoords[7] = yMax;
-
-			break;
-
-		case SHAPE_ROUNDED_RECTANGLE:
-			// A condition that must be satisfied (pertaining to radius) is that
-			// max(width, height) <= 2 * min(width, height).
-			computeRoundedRectangle(xMin, yMin, xMax, yMax, Math.max(xMax
-					- xMin, yMax - yMin) / 4.0d, m_path2d);
-
-			return m_path2d;
-
-		case SHAPE_TRIANGLE:
-			m_polyNumPoints = 3;
-			m_polyCoords[0] = (xMin + xMax) / 2.0d;
-			m_polyCoords[1] = yMin;
-			m_polyCoords[2] = xMax;
-			m_polyCoords[3] = yMax;
-			m_polyCoords[4] = xMin;
-			m_polyCoords[5] = yMax;
-
-			break;
-
-		case SHAPE_VEE:
-			m_polyNumPoints = 4;
-			m_polyCoords[0] = xMin;
-			m_polyCoords[1] = yMin;
-			m_polyCoords[2] = (xMin + xMax) / 2.0d;
-			m_polyCoords[3] = ((2.0d * yMin) + yMax) / 3.0d;
-			m_polyCoords[4] = xMax;
-			m_polyCoords[5] = yMin;
-			m_polyCoords[6] = (xMin + xMax) / 2.0d;
-			m_polyCoords[7] = yMax;
-
-			break;
-
-		default: // Try a custom node shape or throw an exception.
-
-			final double[] storedPolyCoords = // To optimize don't construct Integer.
-			(double[]) m_customShapes.get(new Integer(nodeShape));
-
-			if (storedPolyCoords == null) {
-				throw new IllegalArgumentException(
-						"nodeShape is not recognized");
-			}
-
-			m_polyNumPoints = storedPolyCoords.length / 2;
-
-			final double desiredXCenter = (xMin + xMax) / 2.0d;
-			final double desiredYCenter = (yMin + yMax) / 2.0d;
-			final double desiredWidth = xMax - xMin;
-			final double desiredHeight = yMax - yMin;
-			m_xformUtil.setToTranslation(desiredXCenter, desiredYCenter);
-			m_xformUtil.scale(desiredWidth, desiredHeight);
-			m_xformUtil.transform(storedPolyCoords, 0, m_polyCoords, 0,
-					m_polyNumPoints);
-
-			break;
-		}
-
-		m_path2d.reset();
-
-		m_path2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
-
-		for (int i = 2; i < (m_polyNumPoints * 2);)
-			m_path2d.lineTo((float) m_polyCoords[i++],
-					(float) m_polyCoords[i++]);
-
-		m_path2d.closePath();
-
-		return m_path2d;
+	private final Shape getShape(final byte nodeShape, final float xMin,
+			final float yMin, final float xMax, final float yMax) {
+		NodeShape ns = nodeShapes.get(nodeShape);
+		if ( ns != null )
+			return ns.getShape(xMin,yMin,xMax,yMax);
+		else
+			return null;
 	}
 
 	/**
 	 * get list of node shapes.
 	 * 
-	 * @return
+	 * @return A map of node shape bytes to Shape objects.
 	 */
-	public static Map<Integer, Shape> getNodeShapes() {
-		return getShapes(ShapeTypes.NODE_SHAPE);
+	public static Map<Byte, Shape> getNodeShapes() {
+		final Map<Byte, Shape> shapeMap = new HashMap<Byte, Shape>();
+
+		for ( NodeShape ns : nodeShapes.values() ) {
+			final Shape shape = ns.getShape(0f, 0f, DEF_SHAPE_SIZE, DEF_SHAPE_SIZE);
+			shapeMap.put(ns.getType(), new GeneralPath( shape ));
+		}
+
+		return shapeMap;
 	}
 
 	/**
 	 * Get list of arrow heads.
 	 * 
-	 * @return
+	 * @return A map of arrow shape bytes to Shape objects.
 	 */
-	public static Map<Integer, Shape> getArrowShapes() {
-		return getShapes(ShapeTypes.ARROW_SHAPE);
-	}
-
-	/**
-	 * Actually create map of shapes.
-	 * 
-	 * @param type
-	 * @return
-	 */
-	private static Map<Integer, Shape> getShapes(final ShapeTypes type) {
-		final Map<Integer, Shape> shapeMap = new HashMap<Integer, Shape>();
-
-		final int minIndex;
-		final int maxIndex;
-
-		if (type == ShapeTypes.NODE_SHAPE) {
-			minIndex = 0;
-			maxIndex = s_last_shape;
-		} else if (type == ShapeTypes.ARROW_SHAPE) {
-			minIndex = last_arrow_shape;
-			maxIndex = -1;
-		} else {
-			minIndex = 0;
-			maxIndex = s_last_shape;
-		}
-
-		Shape shape;
-
-		for (int i = minIndex; i <= maxIndex; i++) {
-			if (type == ShapeTypes.NODE_SHAPE) {
-				shape = dummyGraphics.getShape((int) i, 0, 0, DEF_SHAPE_SIZE,
-						DEF_SHAPE_SIZE);
-			} else {
-				shape = dummyGraphics.computeUntransformedArrow((int) i);
-			}
-
-			if ((shape != null) && (shape.getClass() == GeneralPath.class)) {
-				final Shape copiedShape = (Shape) ((GeneralPath) shape).clone();
-				shapeMap.put((int) i, copiedShape);
-			} else if (shape != null) {
-				shapeMap.put((int) i, shape);
-			}
-		}
-
+	public static Map<Byte, Shape> getArrowShapes() {
+		final Map<Byte, Shape> shapeMap = new HashMap<Byte, Shape>();
+		for ( Arrow a : arrows.values() )
+			shapeMap.put( a.getType(), a.getArrowShape() );
+ 
 		return shapeMap;
 	}
 
@@ -1456,24 +1200,14 @@ public final class GraphGraphics {
 	 * specified, and the span of the top of the tee is two times the arrow size</td>
 	 * </tr>
 	 * <tr>
-	 * <td>ARROW_BIDIRECTIONAL</td>
-	 * <td>either both arrowheads must be of this type or neither one must be
-	 * of this type; bidirectional edges look completely different from other
-	 * edges; arrow paints are completely ignored for this type of edge; the
-	 * edge arrow is drawn such that it fits snugly inside of an ARROW_DELTA of
-	 * size 2s + e[sqrt(17)+5]/4 where s is the arrow size specified and e is
-	 * edge thickness specified; the delta's tip is at edge endpoint specified;
-	 * note that edge anchors are not supported for this type of edge</td>
+	 * <td>ARROW_HALF_TOP</td>
+	 * <td>Draws a line the width of the stroke away from the node at the midpoint 
+	 * between the edge and the node on the "top" of the edge.</td>
 	 * </tr>
 	 * <tr>
-	 * <td>ARROW_MONO</td>
-	 * <td>either both arrowheads must be of this type or neither one must be
-	 * of this type; mono edges look completely different from other edges
-	 * because an arrowhead (an ARROW_DELTA) is placed such that its tip is in
-	 * the middle of the edge segment, pointing from (x0,y0) to (x1,y1); the
-	 * paint and size of the first arrow (arrow0) are read and the paint and
-	 * size of the other arrow are completely ignored; note that edge anchors
-	 * are not supported for this type of edge</td>
+	 * <td>ARROW_HALF_BOTTOM</td>
+	 * <td>Draws a line the width of the stroke away from the node at the midpoint 
+	 * between the edge and the node on the "bottom" of the edge.</td>
 	 * </tr>
 	 * </table></blockquote>
 	 * <p>
@@ -1482,10 +1216,7 @@ public final class GraphGraphics {
 	 * This method will not work unless clear() has been called at least once
 	 * previously.
 	 * <p>
-	 * A discussion pertaining to edge anchors. Edge anchors are only supported
-	 * for the primitive arrow types (ARROW_NONE, ARROW_DELTA, ARROW_DIAMOND,
-	 * ARROW_DISC, and ARROW_TEE); <font color="red">ARROW_BIDIRECTIONAL and
-	 * ARROW_MONO do not support edge anchors</font>. At most MAX_EDGE_ANCHORS
+	 * A discussion pertaining to edge anchors. At most MAX_EDGE_ANCHORS
 	 * edge anchors may be specified. The edge anchors are used to define cubic
 	 * Bezier curves. The exact algorithm for determining the Bezier curves from
 	 * the input parameters is too complicated to describe in this Javadoc. Some
@@ -1539,25 +1270,22 @@ public final class GraphGraphics {
 	 * @param edgeThickness
 	 *            the thickness of the edge segment; the edge segment is the
 	 *            part of the edge between the two endpoint arrows.
+	 * @param edgeStroke
+	 *            the Stroke to use when drawing the edge segment.
 	 * @param edgePaint
 	 *            the paint to use when drawing the edge segment.
-	 * @param dashLength
-	 *            a positive value representing the length of dashes on the
-	 *            edge, or zero to indicate that the edge is solid; note that
-	 *            drawing dashed segments is computationally expensive.
 	 * @exception IllegalArgumentException
-	 *                if edgeThickness is less than zero, if dashLength is less
-	 *                than zero, if any one of the arrow configurations does not
-	 *                meet specified criteria, or if more than MAX_EDGE_ANCHORS
-	 *                anchors are specified.
+	 *                if edgeThickness is less than zero, if any one of the arrow 
+	 *                configurations does not meet specified criteria, or if more 
+	 *                than MAX_EDGE_ANCHORS anchors are specified.
 	 */
-	public final void drawEdgeFull(final int arrow0Type,
+	public final void drawEdgeFull(final byte arrow0Type,
 			final float arrow0Size, final Paint arrow0Paint,
-			final int arrow1Type, final float arrow1Size,
+			final byte arrow1Type, final float arrow1Size,
 			final Paint arrow1Paint, final float x0, final float y0,
 			EdgeAnchors anchors, final float x1, final float y1,
-			final float edgeThickness, final Paint edgePaint,
-			final float dashLength) {
+			final float edgeThickness, final Stroke edgeStroke, final Paint edgePaint) {
+		final long startTime = System.nanoTime();
 		final double curveFactor = CURVE_ELLIPTICAL;
 
 		if (anchors == null) {
@@ -1566,7 +1294,7 @@ public final class GraphGraphics {
 
 		if (m_debug) {
 			edgeFullDebug(arrow0Type, arrow0Size, arrow1Type, arrow1Size,
-					edgeThickness, dashLength, anchors);
+					edgeStroke, edgeThickness, anchors);
 		}
 
 		if (!computeCubicPolyEdgePath(arrow0Type,
@@ -1580,51 +1308,47 @@ public final class GraphGraphics {
 						arrow1Type, arrow1Size, arrow1Paint,
 						(float) m_edgePtsBuff[0], (float) m_edgePtsBuff[1],
 						(float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3],
-						edgeThickness, edgePaint, dashLength);
+						edgeThickness, edgeStroke, edgePaint );
 			}
 
 			return;
 		}
 
-		{ // Render the edge polypath.
+		// Render the edge polypath.
+		final boolean simpleSegment = arrow0Type == ARROW_NONE && arrow1Type == ARROW_NONE;
+		m_g2d.setStroke(edgeStroke);
 
-			final boolean simpleSegment = (arrow0Type == ARROW_NONE)
-					&& (arrow1Type == ARROW_NONE) && (dashLength == 0.0f);
-			setStroke(edgeThickness, dashLength,
-					simpleSegment ? BasicStroke.CAP_ROUND
-							: BasicStroke.CAP_BUTT, false);
-			// Set m_path2d to contain the cubic curves computed in
-			// m_edgePtsBuff.
-			m_path2d.reset();
-			m_path2d.moveTo((float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3]);
+		// Set m_path2d to contain the cubic curves computed in
+		// m_edgePtsBuff.
+		m_path2d.reset();
+		m_path2d.moveTo((float) m_edgePtsBuff[2], (float) m_edgePtsBuff[3]);
 
-			int inx = 4;
-			final int count = ((m_edgePtsCount - 1) * 6) - 2;
+		int inx = 4;
+		final int count = ((m_edgePtsCount - 1) * 6) - 2;
 
-			while (inx < count) {
-				m_path2d.curveTo((float) m_edgePtsBuff[inx++],
-						(float) m_edgePtsBuff[inx++],
-						(float) m_edgePtsBuff[inx++],
-						(float) m_edgePtsBuff[inx++],
-						(float) m_edgePtsBuff[inx++],
-						(float) m_edgePtsBuff[inx++]);
-			}
-
-			m_g2d.setPaint(edgePaint);
-			m_g2d.draw(m_path2d);
-
-			if (simpleSegment) {
-				return;
-			}
-
-			// We need to figure out the phase at the end of the cubic poly-path
-			// for dashed segments. I cannot find a Java API to do this; our
-			// best
-			// bet would be to implement our own cubic curve length calculating
-			// function, but our computation may not agree with BasicStroke's
-			// computation. So what we're going to do is never render the arrow
-			// caps for dashed edges.
+		while (inx < count) {
+			m_path2d.curveTo((float) m_edgePtsBuff[inx++],
+					(float) m_edgePtsBuff[inx++],
+					(float) m_edgePtsBuff[inx++],
+					(float) m_edgePtsBuff[inx++],
+					(float) m_edgePtsBuff[inx++],
+					(float) m_edgePtsBuff[inx++]);
 		}
+
+		m_g2d.setPaint(edgePaint);
+		m_g2d.draw(m_path2d);
+
+		if (simpleSegment) {
+			return;
+		}
+
+		// We need to figure out the phase at the end of the cubic poly-path
+		// for dashed segments. I cannot find a Java API to do this; our
+		// best
+		// bet would be to implement our own cubic curve length calculating
+		// function, but our computation may not agree with BasicStroke's
+		// computation. So what we're going to do is never render the arrow
+		// caps for dashed edges.
 
 		final double dx0 = m_edgePtsBuff[0] - m_edgePtsBuff[4];
 		final double dy0 = m_edgePtsBuff[1] - m_edgePtsBuff[5];
@@ -1640,8 +1364,11 @@ public final class GraphGraphics {
 		final double cosTheta1 = dx1 / len1;
 		final double sinTheta1 = dy1 / len1;
 
-		if (dashLength == 0.0f) { // Render arrow cap at origin of poly path.
+		// Only draw the edge caps if the stroke is a BasicStroke, which is to
+		// say, don't worry about how fancy strokes intersect the arrow. 
+		if ( edgeStroke instanceof BasicStroke ) {
 
+			// Render arrow cap at origin of poly path.
 			final Shape arrow0Cap = computeUntransformedArrowCap(arrow0Type,
 					((double) arrow0Size) / edgeThickness);
 
@@ -1654,13 +1381,11 @@ public final class GraphGraphics {
 				m_g2d.fill(arrow0Cap);
 				m_g2d.setTransform(m_currNativeXform);
 			}
-		}
-
-		if (dashLength == 0.0f) { // Render arrow cap at end of poly path.
-
+	
+			// Render arrow cap at end of poly path.
 			final Shape arrow1Cap = computeUntransformedArrowCap(arrow1Type,
 					((double) arrow1Size) / edgeThickness);
-
+	
 			if (arrow1Cap != null) {
 				m_xformUtil.setTransform(cosTheta1, sinTheta1, -sinTheta1,
 						cosTheta1,
@@ -1674,129 +1399,63 @@ public final class GraphGraphics {
 			}
 		}
 
-		{ // Render arrow at origin of poly path.
+		// Render arrow at origin of poly path.
+		final Shape arrow0 = computeUntransformedArrow(arrow0Type);
 
-			final Shape arrow0 = computeUntransformedArrow(arrow0Type);
-
-			if (arrow0 != null) {
-				m_xformUtil.setTransform(cosTheta0, sinTheta0, -sinTheta0,
-						cosTheta0, m_edgePtsBuff[0], m_edgePtsBuff[1]);
-				m_g2d.transform(m_xformUtil);
-				m_g2d.scale(arrow0Size, arrow0Size);
-				m_g2d.setPaint(arrow0Paint);
-				m_g2d.fill(arrow0);
-				m_g2d.setTransform(m_currNativeXform);
-			}
+		if (arrow0 != null) {
+			m_xformUtil.setTransform(cosTheta0, sinTheta0, -sinTheta0,
+					cosTheta0, m_edgePtsBuff[0], m_edgePtsBuff[1]);
+			m_g2d.transform(m_xformUtil);
+			m_g2d.scale(arrow0Size, arrow0Size);
+			m_g2d.setPaint(arrow0Paint);
+			m_g2d.fill(arrow0);
+			m_g2d.setTransform(m_currNativeXform);
 		}
 
-		{ // Render arrow at end of poly path.
+		// Render arrow at end of poly path.
+		final Shape arrow1 = computeUntransformedArrow(arrow1Type);
 
-			final Shape arrow1 = computeUntransformedArrow(arrow1Type);
-
-			if (arrow1 != null) {
-				m_xformUtil.setTransform(cosTheta1, sinTheta1, -sinTheta1,
-						cosTheta1,
-						m_edgePtsBuff[((m_edgePtsCount - 1) * 6) - 2],
-						m_edgePtsBuff[((m_edgePtsCount - 1) * 6) - 1]);
-				m_g2d.transform(m_xformUtil);
-				m_g2d.scale(arrow1Size, arrow1Size);
-				m_g2d.setPaint(arrow1Paint);
-				m_g2d.fill(arrow1);
-				m_g2d.setTransform(m_currNativeXform);
-			}
+		if (arrow1 != null) {
+				
+			m_xformUtil.setTransform(cosTheta1, sinTheta1, -sinTheta1,
+				cosTheta1,
+				m_edgePtsBuff[((m_edgePtsCount - 1) * 6) - 2],
+				m_edgePtsBuff[((m_edgePtsCount - 1) * 6) - 1]);
+			m_g2d.transform(m_xformUtil);
+			m_g2d.scale(arrow1Size, arrow1Size);
+			m_g2d.setPaint(arrow1Paint);
+			m_g2d.fill(arrow1);
+			m_g2d.setTransform(m_currNativeXform);
 		}
 	}
 
 	@SuppressWarnings("fallthrough")
-	private final void edgeFullDebug(final int arrow0Type,
-			final float arrow0Size, final int arrow1Type, float arrow1Size,
-			final float edgeThickness, final float dashLength,
+	private final void edgeFullDebug(final byte arrow0Type,
+			final float arrow0Size, final byte arrow1Type, float arrow1Size,
+			final Stroke edgeStroke,
+			final float edgeThickness, 
 			final EdgeAnchors anchors) {
-		if (!EventQueue.isDispatchThread()) {
-			throw new IllegalStateException(
-					"calling thread is not AWT event dispatcher");
-		}
-
-		if (!m_cleared) {
-			throw new IllegalStateException(
-					"clear() has not been called previously");
-		}
-
+		checkDispatchThread();
+		checkCleared();
 		if (!(edgeThickness >= 0.0f)) {
 			throw new IllegalArgumentException("edgeThickness < 0");
 		}
 
-		if (!(dashLength >= 0.0f)) {
-			throw new IllegalArgumentException("dashLength < 0");
-		}
-
-		switch (arrow0Type) {
-		case ARROW_NONE:
-			break;
-
-		case ARROW_MONO:
-			arrow1Size = arrow0Size;
-
-			// Don't break; fall through.
-		case ARROW_BIDIRECTIONAL:
-
-			if (anchors.numAnchors() > 0) {
-				throw new IllegalArgumentException(
-						"ARROW_BIDIRECTIONAL and ARROW_MONO not supported for poly edges");
-			}
-
-			if (arrow1Type != arrow0Type) {
-				throw new IllegalArgumentException(
-						"for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be "
-								+ "identical");
-			}
-
-			// Don't break; fall through.
-		case ARROW_DELTA:
-		case ARROW_DIAMOND:
-		case ARROW_DISC:
-		case ARROW_TEE:
-
-			if (!(arrow0Size >= edgeThickness)) {
-				throw new IllegalArgumentException(
-						"arrow size must be at least as large as edge thickness");
-			}
-
-			break;
-
-		default:
+		if ( !arrows.containsKey( arrow0Type ) )
 			throw new IllegalArgumentException("arrow0Type is not recognized");
-		}
 
-		switch (arrow1Type) {
-		case ARROW_NONE:
-			break;
-
-		case ARROW_BIDIRECTIONAL:
-		case ARROW_MONO:
-
-			if (arrow0Type != arrow1Type) {
-				throw new IllegalArgumentException(
-						"for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be "
-								+ "identical");
-			}
-
-			// Don't break; fall through.
-		case ARROW_DELTA:
-		case ARROW_DIAMOND:
-		case ARROW_DISC:
-		case ARROW_TEE:
-
-			if (!(arrow1Size >= edgeThickness)) {
+		if ( arrow0Type != ARROW_NONE )
+			if (!(arrow0Size >= edgeThickness)) 
 				throw new IllegalArgumentException(
 						"arrow size must be at least as large as edge thickness");
-			}
 
-			break;
-
-		default:
+		if ( !arrows.containsKey( arrow1Type ) )
 			throw new IllegalArgumentException("arrow1Type is not recognized");
-		}
+
+		if ( arrow1Type != ARROW_NONE )
+			if (!(arrow1Size >= edgeThickness)) 
+				throw new IllegalArgumentException(
+						"arrow size must be at least as large as edge thickness");
 
 		if (anchors.numAnchors() > MAX_EDGE_ANCHORS) {
 			throw new IllegalArgumentException("at most MAX_EDGE_ANCHORS ("
@@ -1804,179 +1463,63 @@ public final class GraphGraphics {
 		}
 	}
 
-	private final void drawSimpleEdgeFull(final int arrow0Type,
+	private final void drawSimpleEdgeFull(final byte arrow0Type,
 			final float arrow0Size, final Paint arrow0Paint,
-			final int arrow1Type, final float arrow1Size,
+			final byte arrow1Type, final float arrow1Size,
 			final Paint arrow1Paint, final float x0, final float y0,
 			final float x1, final float y1, final float edgeThickness,
-			final Paint edgePaint, final float dashLength) {
-		final double len = Math
-				.sqrt(((((double) x1) - x0) * (((double) x1) - x0))
-						+ ((((double) y1) - y0) * (((double) y1) - y0)));
+			final Stroke edgeStroke,
+			final Paint edgePaint) {
+		final double len = Math.sqrt(((((double) x1) - x0) * (((double) x1) - x0))
+		                           + ((((double) y1) - y0) * (((double) y1) - y0)));
 
 		// If the length of the edge is zero we're going to skip completely over
 		// all rendering. This check is now redundant because the code that
-		// calls
-		// us makes this check automatically.
-		if (len == 0.0d) {
+		// calls us makes this check automatically.
+		if (len == 0.0d) 
 			return;
-		}
-
-		if (arrow0Type == ARROW_BIDIRECTIONAL) { // Draw and return.
-
-			final double a = (6.0d + (Math.sqrt(17.0d) / 2.0d)) * edgeThickness;
-			m_path2d.reset();
-
-			final double f = ((double) arrow0Size) - edgeThickness;
-			m_path2d.moveTo((float) (a + (4.0d * f)),
-					(float) (f + (1.5d * edgeThickness)));
-			m_path2d.lineTo((float) a, (float) (1.5d * edgeThickness));
-
-			if ((2.0d * a) < len) {
-				m_path2d.lineTo((float) (len - a),
-						(float) (1.5d * edgeThickness));
-			}
-
-			final double g = ((double) arrow1Size) - edgeThickness;
-			m_path2d.moveTo((float) (len - (a + (4.0d * g))),
-					(float) (-g + (-1.5d * edgeThickness)));
-			m_path2d.lineTo((float) (len - a), (float) (-1.5d * edgeThickness));
-
-			if ((2.0d * a) < len) {
-				m_path2d.lineTo((float) a, (float) (-1.5d * edgeThickness));
-			}
-
-			// I want the transform to first rotate, then translate.
-			final double cosTheta = (((double) x1) - x0) / len;
-			final double sinTheta = (((double) y1) - y0) / len;
-			m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta, cosTheta,
-					x0, y0);
-			m_path2d.transform(m_xformUtil);
-			setStroke(edgeThickness, dashLength,
-					(dashLength == 0.0f) ? BasicStroke.CAP_ROUND
-							: BasicStroke.CAP_BUTT, false);
-			m_g2d.setPaint(edgePaint);
-			m_g2d.draw(m_path2d);
-
-			return;
-		} // End ARROW_BIDIRECTIONAL.
-
-		if (arrow0Type == ARROW_MONO) { // Draw and return.
-			m_g2d.setPaint(edgePaint); // We're going to render at least one
-			// segment.
-
-			setStroke(edgeThickness, dashLength, BasicStroke.CAP_BUTT, false);
-
-			final double deltaLen = getT(ARROW_DELTA) * arrow0Size;
-			final double tDeltaLenFactor = 0.5d - (deltaLen / len);
-
-			if (tDeltaLenFactor > 0.0d) { // We must render the "pre" line
-				// segment.
-
-				final double x0Prime = (tDeltaLenFactor * (((double) x1) - x0))
-						+ x0;
-				final double y0Prime = (tDeltaLenFactor * (((double) y1) - y0))
-						+ y0;
-				m_line2d.setLine(x0, y0, x0Prime, y0Prime);
-				m_g2d.draw(m_line2d);
-			}
-
-			// Render the "post" segment.
-			final double midX = (((double) x0) + x1) / 2.0d;
-			final double midY = (((double) y0) + y1) / 2.0d;
-			m_line2d.setLine(x1, y1, midX, midY);
-			m_g2d.draw(m_line2d);
-
-			final double cosTheta = (((double) x0) - x1) / len;
-			final double sinTheta = (((double) y0) - y1) / len;
-
-			if ((tDeltaLenFactor > 0.0d) && (dashLength == 0.0f)) { // Render
-				// begin
-				// cap.
-				m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta,
-						cosTheta, x0, y0);
-				m_g2d.transform(m_xformUtil);
-				m_g2d.scale(edgeThickness, edgeThickness);
-				// The paint is already set to edge paint.
-				m_g2d.fill(computeUntransformedArrowCap(ARROW_NONE, 0.0d));
-				m_g2d.setTransform(m_currNativeXform);
-			}
-
-			if (dashLength == 0.0f) { // Render end cap.
-				m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta,
-						-cosTheta, x1, y1);
-				m_g2d.transform(m_xformUtil);
-				m_g2d.scale(edgeThickness, edgeThickness);
-				// The paint is already set to edge paint.
-				m_g2d.fill(computeUntransformedArrowCap(ARROW_NONE, 0.0d));
-				m_g2d.setTransform(m_currNativeXform);
-			}
-
-			if (dashLength == 0.0f) { // Render delta wedge cap.
-				m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta,
-						-cosTheta, midX, midY);
-				m_g2d.transform(m_xformUtil);
-				m_g2d.scale(edgeThickness, edgeThickness);
-				// The paint is already set to edge paint.
-				m_g2d.fill(computeUntransformedDeltaWedgeCap());
-				m_g2d.setTransform(m_currNativeXform);
-			}
-			// Finally, render the mono delta wedge.
-			{
-				m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta,
-						-cosTheta, midX, midY);
-				m_g2d.transform(m_xformUtil);
-				m_g2d.scale(arrow0Size, arrow0Size);
-				m_g2d.setPaint(arrow0Paint);
-				m_g2d.fill(computeUntransformedArrow(ARROW_DELTA));
-				m_g2d.setTransform(m_currNativeXform);
-			}
-
-			return;
-		} // End ARROW_MONO.
 
 		final double x0Adj;
 		final double y0Adj;
 		final double x1Adj;
 		final double y1Adj;
-		final int simpleSegment;
+		final byte simpleSegment;
 
-		{ // Render the line segment if necessary.
+		// Render the line segment if necessary.
 
-			final double t0 = (getT(arrow0Type) * arrow0Size) / len;
-			x0Adj = (t0 * (((double) x1) - x0)) + x0;
-			y0Adj = (t0 * (((double) y1) - y0)) + y0;
+		final double t0 = (getT(arrow0Type) * arrow0Size) / len;
+		x0Adj = (t0 * (((double) x1) - x0)) + x0;
+		y0Adj = (t0 * (((double) y1) - y0)) + y0;
 
-			final double t1 = (getT(arrow1Type) * arrow1Size) / len;
-			x1Adj = (t1 * (((double) x0) - x1)) + x1;
-			y1Adj = (t1 * (((double) y0) - y1)) + y1;
+		final double t1 = (getT(arrow1Type) * arrow1Size) / len;
+		x1Adj = (t1 * (((double) x0) - x1)) + x1;
+		y1Adj = (t1 * (((double) y0) - y1)) + y1;
 
-			// If the vector point0->point1 is pointing opposite to
-			// adj0->adj1, then don't render the line segment.
-			// Dot product determines this.
-			if ((((((double) x1) - x0) * (x1Adj - x0Adj)) + ((((double) y1) - y0) * (y1Adj - y0Adj))) > 0.0d) {
-				// Must render the line segment.
-				if ((arrow0Type == ARROW_NONE) && (arrow1Type == ARROW_NONE)
-						&& (dashLength == 0.0f)) {
-					simpleSegment = 1;
-				} else {
-					simpleSegment = -1;
-				}
+		// If the vector point0->point1 is pointing opposite to
+		// adj0->adj1, then don't render the line segment.
+		// Dot product determines this.
+		if ((((((double) x1) - x0) * (x1Adj - x0Adj)) + 
+		     ((((double) y1) - y0) * (y1Adj - y0Adj))) > 0.0d) {
+				                
+			if (arrow0Type == ARROW_NONE && arrow1Type == ARROW_NONE) {
+				simpleSegment = 1; 
+			} else { 
+				simpleSegment = -1; 
+			}
 
-				setStroke(edgeThickness, dashLength,
-						(simpleSegment > 0) ? BasicStroke.CAP_ROUND
-								: BasicStroke.CAP_BUTT, false);
-				m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
-				m_g2d.setPaint(edgePaint);
-				m_g2d.draw(m_line2d);
+			m_g2d.setStroke(edgeStroke);
+			m_line2d.setLine(x0Adj, y0Adj, x1Adj, y1Adj);
+			m_g2d.setPaint(edgePaint);
+			m_g2d.draw(m_line2d);
 
-				if (simpleSegment > 0) {
-					return;
-				}
-			} else {
-				simpleSegment = 0;
-			} // Did not render segment.
-		} // End rendering of line segment.
+			if ( simpleSegment > 0 )
+				return;
+
+		} else {
+			simpleSegment = 0; // Did not render segment.
+		}
+
+		// End rendering of line segment.
 
 		// Using x0, x1, y0, and y1 instead of the "adjusted" endpoints is
 		// accurate enough in computation of cosine and sine because the
@@ -1985,10 +1528,9 @@ public final class GraphGraphics {
 		// points are double.
 		final double cosTheta = (((double) x0) - x1) / len;
 		final double sinTheta = (((double) y0) - y1) / len;
-
-		if ((simpleSegment < 0) && (dashLength == 0.0f)) { // Arrow cap at
-			// point 0.
-
+	
+		if ( simpleSegment < 0 && edgeStroke instanceof BasicStroke ) { 
+			// Arrow cap at point 0.
 			final Shape arrow0Cap = computeUntransformedArrowCap(arrow0Type,
 					((double) arrow0Size) / edgeThickness);
 
@@ -2001,11 +1543,8 @@ public final class GraphGraphics {
 				m_g2d.fill(arrow0Cap);
 				m_g2d.setTransform(m_currNativeXform);
 			}
-		}
 
-		if ((simpleSegment < 0) && (dashLength == 0.0f)) { // Arrow cap at
-			// point 1.
-
+			// Arrow cap at point 1.
 			final Shape arrow1Cap = computeUntransformedArrowCap(arrow1Type,
 					((double) arrow1Size) / edgeThickness);
 
@@ -2020,34 +1559,30 @@ public final class GraphGraphics {
 			}
 		}
 
-		{ // Render arrow at point 0.
+		// Render arrow at point 0.
+		final Shape arrow0 = computeUntransformedArrow(arrow0Type);
 
-			final Shape arrow0 = computeUntransformedArrow(arrow0Type);
-
-			if (arrow0 != null) {
-				m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta,
-						cosTheta, x0, y0);
-				m_g2d.transform(m_xformUtil);
-				m_g2d.scale(arrow0Size, arrow0Size);
-				m_g2d.setPaint(arrow0Paint);
-				m_g2d.fill(arrow0);
-				m_g2d.setTransform(m_currNativeXform);
-			}
+		if (arrow0 != null) {
+			m_xformUtil.setTransform(cosTheta, sinTheta, -sinTheta,
+					cosTheta, x0, y0);
+			m_g2d.transform(m_xformUtil);
+			m_g2d.scale(arrow0Size, arrow0Size);
+			m_g2d.setPaint(arrow0Paint);
+			m_g2d.fill(arrow0);
+			m_g2d.setTransform(m_currNativeXform);
 		}
 
-		{ // Render arrow at point 1.
+		// Render arrow at point 1.
+		final Shape arrow1 = computeUntransformedArrow(arrow1Type);
 
-			final Shape arrow1 = computeUntransformedArrow(arrow1Type);
-
-			if (arrow1 != null) {
-				m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta,
-						-cosTheta, x1, y1);
-				m_g2d.transform(m_xformUtil);
-				m_g2d.scale(arrow1Size, arrow1Size);
-				m_g2d.setPaint(arrow1Paint);
-				m_g2d.fill(arrow1);
-				m_g2d.setTransform(m_currNativeXform);
-			}
+		if (arrow1 != null) {
+			m_xformUtil.setTransform(-cosTheta, -sinTheta, sinTheta,
+					-cosTheta, x1, y1);
+			m_g2d.transform(m_xformUtil);
+			m_g2d.scale(arrow1Size, arrow1Size);
+			m_g2d.setPaint(arrow1Paint);
+			m_g2d.fill(arrow1);
+			m_g2d.setTransform(m_currNativeXform);
 		}
 	}
 
@@ -2092,8 +1627,8 @@ public final class GraphGraphics {
 	 *                if any one of the edge arrow criteria specified in
 	 *                drawEdgeFull() is not satisfied.
 	 */
-	public final boolean getEdgePath(final int arrow0Type,
-			final float arrow0Size, final int arrow1Type,
+	public final boolean getEdgePath(final byte arrow0Type,
+			final float arrow0Size, final byte arrow1Type,
 			final float arrow1Size, final float x0, final float y0,
 			EdgeAnchors anchors, final float x1, final float y1,
 			final GeneralPath path) {
@@ -2104,63 +1639,13 @@ public final class GraphGraphics {
 		}
 
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
+			checkDispatchThread();
 
-			switch (arrow0Type) {
-			case ARROW_NONE:
-			case ARROW_DELTA:
-			case ARROW_DIAMOND:
-			case ARROW_DISC:
-			case ARROW_TEE:
-				break;
+			if ( !arrows.containsKey( arrow0Type ) )
+				throw new IllegalArgumentException("arrow0Type is not recognized");
 
-			case ARROW_BIDIRECTIONAL:
-			case ARROW_MONO:
-
-				if (arrow1Type != arrow0Type) {
-					throw new IllegalArgumentException(
-							"for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be "
-									+ "identical");
-				}
-
-				if (anchors.numAnchors() > 0) {
-					throw new IllegalArgumentException(
-							"ARROW_BIDIRECTIONAL and ARROW_MONO not supported in poly edges");
-				}
-
-				break;
-
-			default:
-				throw new IllegalArgumentException(
-						"arrow0Type is not recognized");
-			}
-
-			switch (arrow1Type) {
-			case ARROW_NONE:
-			case ARROW_DELTA:
-			case ARROW_DIAMOND:
-			case ARROW_DISC:
-			case ARROW_TEE:
-				break;
-
-			case ARROW_BIDIRECTIONAL:
-			case ARROW_MONO:
-
-				if (arrow0Type != arrow1Type) {
-					throw new IllegalArgumentException(
-							"for ARROW_BIDIRECTIONAL and ARROW_MONO, both arrows must be "
-									+ "identical");
-				}
-
-				break;
-
-			default:
-				throw new IllegalArgumentException(
-						"arrow1Type is not recognized");
-			}
+			if ( !arrows.containsKey( arrow1Type ) )
+				throw new IllegalArgumentException("arrow1Type is not recognized");
 
 			if (anchors.numAnchors() > MAX_EDGE_ANCHORS) {
 				throw new IllegalArgumentException("at most MAX_EDGE_ANCHORS ("
@@ -2168,24 +1653,8 @@ public final class GraphGraphics {
 			}
 		}
 
-		int arrow0 = arrow0Type;
-		int arrow1 = arrow1Type;
-
-		if (arrow0 == ARROW_BIDIRECTIONAL) { // Assume arrow1 is also.
-			// If we wanted to start our path where the bidirectional edge
-			// actually started, we'd have to pass edge thickness into this
-			// method.
-			// So instead we do a quick and simple approximation by extending
-			// the
-			// bidirectional edge to the tip of the encapsulating delta.
-			arrow0 = ARROW_NONE;
-			arrow1 = ARROW_NONE;
-		}
-
-		if (arrow0 == ARROW_MONO) { // Assume arrow1 is also.
-			arrow0 = ARROW_NONE;
-			arrow1 = ARROW_NONE;
-		}
+		byte arrow0 = arrow0Type;
+		byte arrow1 = arrow1Type;
 
 		if (!computeCubicPolyEdgePath(arrow0, (arrow0 == ARROW_NONE) ? 0.0f
 				: arrow0Size, arrow1, (arrow1 == ARROW_NONE) ? 0.0f
@@ -2226,99 +1695,27 @@ public final class GraphGraphics {
 
 	/*
 	 * Returns non-null if and only if an arrow is necessary for the arrow type
-	 * specified. m_path2d and m_ellp2d may be mangled as a side effect.
-	 * arrowType must be one of the primitive arrow types or ARROW_NONE (no
-	 * ARROW_BIDIRECTIONAL or ARROW_MONO allowed).
+	 * specified. 
 	 */
-	private final Shape computeUntransformedArrow(final int arrowType) {
-		switch (arrowType) {
-		case ARROW_NONE:
+	private final Shape computeUntransformedArrow(final byte arrowType) {
+		Arrow a = arrows.get(arrowType);
+		if ( a != null )
+			return a.getArrowShape();
+		else
 			return null;
-
-		case ARROW_DELTA:
-			m_path2d.reset();
-			m_path2d.moveTo(-2.0f, -0.5f);
-			m_path2d.lineTo(0.0f, 0.0f);
-			m_path2d.lineTo(-2.0f, 0.5f);
-			m_path2d.closePath();
-
-			return m_path2d;
-
-		case ARROW_DIAMOND:
-			m_path2d.reset();
-			m_path2d.moveTo(-1.0f, -0.5f);
-			m_path2d.lineTo(0.0f, 0.0f);
-			m_path2d.lineTo(-1.0f, 0.5f);
-			m_path2d.lineTo(-2.0f, 0.0f);
-			m_path2d.closePath();
-
-			return m_path2d;
-
-		case ARROW_DISC:
-			m_ellp2d.setFrame(-0.5d, -0.5d, 1.0d, 1.0d);
-
-			return m_ellp2d;
-
-		default: // ARROW_TEE.
-			m_path2d.reset();
-			m_path2d.moveTo(-0.125f, -1.0f);
-			m_path2d.lineTo(0.125f, -1.0f);
-			m_path2d.lineTo(0.125f, 1.0f);
-			m_path2d.lineTo(-0.125f, 1.0f);
-			m_path2d.closePath();
-
-			return m_path2d;
-		}
 	}
 
 	/*
 	 * The ratio parameter specifies the ratio of arrow size (disc diameter) to
 	 * edge thickness (only used for some arrow types). Returns non-null if and
-	 * only if a cap is necessary for the arrow type specified. If non-null is
-	 * returned then m_path2d and m_arc2d may be mangled as a side effect.
-	 * arrowType must be one of the primitive arrow types or ARROW_NONE (no
-	 * ARROW_BIDIRECTIONAL or ARROW_MONO allowed).
+	 * only if a cap is necessary for the arrow type specified. 
 	 */
-	private final Shape computeUntransformedArrowCap(final int arrowType,
-			final double ratio) {
-		switch (arrowType) {
-		case ARROW_NONE:
-			m_arc2d.setArc(-0.5d, -0.5d, 1.0d, 1.0d, 270.0d, 180.0d,
-					Arc2D.CHORD);
-
-			return m_arc2d;
-
-		case ARROW_DELTA:
+	private final Shape computeUntransformedArrowCap(final byte arrowType, final double ratio) {
+		Arrow a = arrows.get(arrowType);
+		if ( a != null )
+			return a.getCapShape(ratio);
+		else
 			return null;
-
-		case ARROW_DIAMOND:
-			m_path2d.reset();
-			m_path2d.moveTo(0.0f, -0.5f);
-			m_path2d.lineTo(1.0f, -0.5f);
-			m_path2d.lineTo(0.0f, 0.0f);
-			m_path2d.lineTo(1.0f, 0.5f);
-			m_path2d.lineTo(0.0f, 0.5f);
-			m_path2d.closePath();
-
-			return m_path2d;
-
-		case ARROW_DISC:
-
-			final double theta = Math.toDegrees(Math.asin(1.0d / ratio));
-			m_arc2d.setArc(0.0d, ratio / -2.0d, ratio, ratio, 180.0d - theta,
-					theta * 2, Arc2D.OPEN);
-			m_path2d.reset();
-			m_path2d.append(m_arc2d, false);
-			m_path2d.lineTo(0.0f, 0.5f);
-			m_path2d.lineTo(0.0f, -0.5f);
-			m_path2d.closePath();
-
-			return m_path2d;
-
-		default: // ARROW_TEE.
-
-			return null;
-		}
 	}
 
 	/*
@@ -2603,293 +2000,24 @@ public final class GraphGraphics {
 	 *                nodeShape is neither one of the SHAPE_* constants nor a
 	 *                previously defined custom node shape.
 	 */
-	public final boolean computeEdgeIntersection(final int nodeShape,
+	public final boolean computeEdgeIntersection(final byte nodeShape,
 			final float xMin, final float yMin, final float xMax,
 			final float yMax, final float offset, final float ptX,
 			final float ptY, final float[] returnVal) {
 		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!(xMin < xMax)) {
-				throw new IllegalArgumentException("xMin not less than xMax");
-			}
-
-			if (!(yMin < yMax)) {
-				throw new IllegalArgumentException("yMin not less than yMax");
-			}
-
-			if (!(offset >= 0.0f)) {
+			checkDispatchThread();
+			checkOrder(xMin,xMax,"x");
+			checkOrder(yMin,yMax,"y");
+			if (offset < 0.0f) {
 				throw new IllegalArgumentException("offset < 0");
 			}
-
-			if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
-				final double width = ((double) xMax) - xMin;
-				final double height = ((double) yMax) - yMin;
-
-				if (!(Math.max(width, height) < (2.0d * Math.min(width, height)))) {
-					throw new IllegalArgumentException(
-							"rounded rectangle does not meet constraint "
-									+ "max(width, height) < 2 * min(width, height)");
-				}
-			}
 		}
 
-		final double centerX = (((double) xMin) + xMax) / 2.0d;
-		final double centerY = (((double) yMin) + yMax) / 2.0d;
-
-		if (nodeShape == SHAPE_ELLIPSE) {
-			if ((centerX == ptX) && (centerY == ptY)) {
-				return false;
-			}
-
-			// First, compute the actual intersection of the edge with the
-			// ellipse, if it exists. We will use this intersection point
-			// regardless of whether or not offset is zero.
-			// For nonzero offsets on the ellipse, use tangent lines to
-			// approximate
-			// intersection with offset instead of solving a quartic equation.
-			final double ptPrimeX = ptX - centerX;
-			final double ptPrimeY = ptY - centerY;
-			final double ellpW = ((double) xMax) - xMin;
-			final double ellpH = ((double) yMax) - yMin;
-			final double xScaleFactor = 2.0d / ellpW;
-			final double yScaleFactor = 2.0d / ellpH;
-			final double xformedPtPrimeX = ptPrimeX * xScaleFactor;
-			final double xformedPtPrimeY = ptPrimeY * yScaleFactor;
-			final double xformedDist = Math
-					.sqrt((xformedPtPrimeX * xformedPtPrimeX)
-							+ (xformedPtPrimeY * xformedPtPrimeY));
-			final double xsectXformedPtPrimeX = xformedPtPrimeX / xformedDist;
-			final double xsectXformedPtPrimeY = xformedPtPrimeY / xformedDist;
-			final double tangentXformedPtPrimeX = xsectXformedPtPrimeX
-					+ xsectXformedPtPrimeY;
-			final double tangentXformedPtPrimeY = xsectXformedPtPrimeY
-					- xsectXformedPtPrimeX;
-			final double xsectPtPrimeX = xsectXformedPtPrimeX / xScaleFactor;
-			final double xsectPtPrimeY = xsectXformedPtPrimeY / yScaleFactor;
-			final double tangentPtPrimeX = tangentXformedPtPrimeX
-					/ xScaleFactor;
-			final double tangentPtPrimeY = tangentXformedPtPrimeY
-					/ yScaleFactor;
-			final double vTangentX = tangentPtPrimeX - xsectPtPrimeX;
-			final double vTangentY = tangentPtPrimeY - xsectPtPrimeY;
-			final double tanLen = Math.sqrt((vTangentX * vTangentX)
-					+ (vTangentY * vTangentY));
-			final double distPtPrimeToTangent = (((vTangentX * ptPrimeY)
-					- (vTangentY * ptPrimeX) + (xsectPtPrimeX * tangentPtPrimeY)) - (tangentPtPrimeX * xsectPtPrimeY))
-					/ tanLen;
-
-			if (distPtPrimeToTangent < offset) { // This includes cases where
-				// distPtPrimeToTangent is negative, which means that the true
-				// intersection point lies inside the ellipse (no intersection
-				// even
-				// with zero offset).
-
-				return false;
-			}
-
-			if (distPtPrimeToTangent == 0.0d) { // Therefore offset is zero
-				// also.
-				returnVal[0] = (float) (xsectPtPrimeX + centerX);
-				returnVal[1] = (float) (xsectPtPrimeY + centerY);
-
-				return true;
-			}
-
-			// Even if offset is zero, do extra computation for sake of simple
-			// code.
-			final double multFactor = offset / distPtPrimeToTangent;
-			returnVal[0] = (float) (centerX + (xsectPtPrimeX + (multFactor * (ptPrimeX - xsectPtPrimeX))));
-			returnVal[1] = (float) (centerY + (xsectPtPrimeY + (multFactor * (ptPrimeY - xsectPtPrimeY))));
-
-			return true;
-		} else { // Not ellipse.
-
-			final double trueOffset;
-
-			if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
-				final double radius = Math.max(((double) xMax) - xMin,
-						((double) yMax) - yMin) / 4.0d;
-				// One of our constraints is that for rounded rectangle,
-				// max(width, height) < 2 * min(width, height) in 32 bit
-				// floating
-				// point world. Therefore, with 64 bits of precision, the
-				// rectangle
-				// calculated below does not degenerate in width or height.
-				getShape(SHAPE_RECTANGLE, radius + xMin, radius + yMin, -radius
-						+ xMax, -radius + yMax);
-				trueOffset = radius + offset;
-			} else {
-				// This next method call has the side effect of setting
-				// m_polyCoords
-				// and m_polyNumPoints - this is all that we are going to use.
-				getShape(nodeShape, xMin, yMin, xMax, yMax);
-				trueOffset = offset;
-			}
-
-			if (trueOffset == 0.0d) {
-				final int twicePolyNumPoints = m_polyNumPoints * 2;
-
-				for (int i = 0; i < twicePolyNumPoints;) {
-					final double x0 = m_polyCoords[i++];
-					final double y0 = m_polyCoords[i++];
-					final double x1 = m_polyCoords[i % twicePolyNumPoints];
-					final double y1 = m_polyCoords[(i + 1) % twicePolyNumPoints];
-
-					if (segmentIntersection(m_ptsBuff, ptX, ptY, centerX,
-							centerY, x0, y0, x1, y1)) {
-						returnVal[0] = (float) m_ptsBuff[0];
-						returnVal[1] = (float) m_ptsBuff[1];
-
-						return true;
-					}
-				}
-
-				return false;
-			}
-
-			// The rest of this code is the polygonal case where offset is
-			// nonzero.
-			for (int i = 0; i < m_polyNumPoints; i++) {
-				final double x0 = m_polyCoords[i * 2];
-				final double y0 = m_polyCoords[(i * 2) + 1];
-				final double x1 = m_polyCoords[((i * 2) + 2)
-						% (m_polyNumPoints * 2)];
-				final double y1 = m_polyCoords[((i * 2) + 3)
-						% (m_polyNumPoints * 2)];
-				final double vX = x1 - x0;
-				final double vY = y1 - y0;
-				final double len = Math.sqrt((vX * vX) + (vY * vY));
-				final double vNormX = vX / len;
-				final double vNormY = vY / len;
-				m_fooPolyCoords[i * 4] = x0 + (vNormY * trueOffset);
-				m_fooPolyCoords[(i * 4) + 1] = y0 - (vNormX * trueOffset);
-				m_fooPolyCoords[(i * 4) + 2] = x1 + (vNormY * trueOffset);
-				m_fooPolyCoords[(i * 4) + 3] = y1 - (vNormX * trueOffset);
-			}
-
-			int inx = 0;
-
-			for (int i = 0; i < m_polyNumPoints; i++) {
-				if (segmentIntersection // We could perhaps use the sign of a
-				// cross
-				(
-						m_ptsBuff, // product to perform this test quicker.
-						m_fooPolyCoords[(i * 4) + 2], // Because non-convex
-						// polygons are
-						m_fooPolyCoords[(i * 4) + 3], // rare, we will almost
-						// never use
-						m_fooPolyCoords[i * 4], // the computed intersection
-						// point.
-						m_fooPolyCoords[(i * 4) + 1],
-						m_fooPolyCoords[((i * 4) + 4) % (m_polyNumPoints * 4)],
-						m_fooPolyCoords[((i * 4) + 5) % (m_polyNumPoints * 4)],
-						m_fooPolyCoords[((i * 4) + 6) % (m_polyNumPoints * 4)],
-						m_fooPolyCoords[((i * 4) + 7) % (m_polyNumPoints * 4)])) {
-					m_foo2PolyCoords[inx++] = m_ptsBuff[0];
-					m_foo2PolyCoords[inx++] = m_ptsBuff[1];
-					m_fooRoundedCorners[i] = false;
-				} else {
-					m_foo2PolyCoords[inx++] = m_fooPolyCoords[(i * 4) + 2];
-					m_foo2PolyCoords[inx++] = m_fooPolyCoords[(i * 4) + 3];
-					m_foo2PolyCoords[inx++] = m_fooPolyCoords[((i * 4) + 4)
-							% (m_polyNumPoints * 4)];
-					m_foo2PolyCoords[inx++] = m_fooPolyCoords[((i * 4) + 5)
-							% (m_polyNumPoints * 4)];
-					m_fooRoundedCorners[i] = true;
-				}
-			}
-
-			final int foo2Count = inx;
-			inx = 0;
-
-			for (int i = 0; i < m_polyNumPoints; i++) {
-				if (m_fooRoundedCorners[i]) {
-					if (segmentIntersection(m_ptsBuff, ptX, ptY, centerX,
-							centerY, m_foo2PolyCoords[inx++],
-							m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx],
-							m_foo2PolyCoords[inx + 1])) {
-						final double segXsectX = m_ptsBuff[0];
-						final double segXsectY = m_ptsBuff[1];
-						final int numXsections = bad_circleIntersection(
-								m_ptsBuff,
-								ptX,
-								ptY,
-								centerX,
-								centerY,
-								m_polyCoords[2 * ((i + 1) % m_polyNumPoints)],
-								m_polyCoords[(2 * ((i + 1) % m_polyNumPoints)) + 1],
-								trueOffset);
-
-						// We don't expect tangential intersections because of
-						// constraints on allowed polygons. Therefore, if the
-						// circle
-						// intersects the edge segment in only one point, then
-						// that
-						// intersection point is the "outer arc" only if the
-						// edge segment
-						// intersection point with the corner polygon segment
-						// (the arc
-						// approximation) lies between the center of the polygon
-						// and
-						// this one circle intersection point.
-						if ((numXsections == 2)
-								|| ((numXsections == 1)
-										&& (Math.min(centerX, m_ptsBuff[0]) <= segXsectX)
-										&& (segXsectX <= Math.max(centerX,
-												m_ptsBuff[0]))
-										&& (Math.min(centerY, m_ptsBuff[1]) <= segXsectY) && (segXsectY <= Math
-										.max(centerY, m_ptsBuff[1])))) {
-							returnVal[0] = (float) m_ptsBuff[0]; // The first
-							// returnVal
-							// is
-
-							returnVal[1] = (float) m_ptsBuff[1]; // closer to
-							// (ptX,
-							// ptY);
-							// see API.
-
-							return true;
-						} else {
-							// The edge segment didn't quite make it to the
-							// outer section
-							// of the circle; only the inner part was
-							// intersected.
-							return false;
-						}
-					} else if (segmentIntersection // Test against the true
-					// line segment
-					(
-							m_ptsBuff, // that comes after the arc.
-							ptX, ptY, centerX, centerY,
-							m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx++],
-							m_foo2PolyCoords[inx % foo2Count],
-							m_foo2PolyCoords[(inx + 1) % foo2Count])) {
-						returnVal[0] = (float) m_ptsBuff[0];
-						returnVal[1] = (float) m_ptsBuff[1];
-
-						return true;
-					}
-				} else { // Not a rounded corner here.
-
-					if (segmentIntersection(m_ptsBuff, ptX, ptY, centerX,
-							centerY, m_foo2PolyCoords[inx++],
-							m_foo2PolyCoords[inx++], m_foo2PolyCoords[inx
-									% foo2Count], m_foo2PolyCoords[(inx + 1)
-									% foo2Count])) {
-						returnVal[0] = (float) m_ptsBuff[0];
-						returnVal[1] = (float) m_ptsBuff[1];
-
-						return true;
-					}
-				}
-			}
-
+		NodeShape ns = nodeShapes.get(nodeShape);
+		if (ns == null)
 			return false;
-		}
+		else
+			return ns.computeEdgeIntersection( xMin, yMin, xMax, yMax, ptX, ptY, returnVal);
 	}
 
 	/*
@@ -3392,5 +2520,29 @@ public final class GraphGraphics {
 
 	private enum ShapeTypes {
 		NODE_SHAPE, ARROW_SHAPE, LINE_STROKE;
+	}
+
+	private Stroke getStroke(float borderWidth) {
+		Stroke s = borderStrokes.get(borderWidth);
+		if ( s == null ) {
+			s = new BasicStroke(borderWidth);
+			borderStrokes.put(borderWidth, s);
+		}
+		return s; 
+	}
+
+	private void checkDispatchThread() {
+		if (!EventQueue.isDispatchThread()) 
+			throw new IllegalStateException( "calling thread is not AWT event dispatcher");
+	}
+
+	private void checkCleared() {
+		if (!m_cleared) 
+			throw new IllegalStateException( "clear() has not been called previously");
+	}
+
+	private void checkOrder(float min, float max, String id) {
+		if (!(min < max)) 
+			throw new IllegalArgumentException( id + "Min not less than " + id + "Max");
 	}
 }

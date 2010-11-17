@@ -48,22 +48,23 @@ class DNodeDetails extends IntermediateNodeDetails {
 	final IntObjHash m_colorsLowDetail = new IntObjHash();
 	final Object m_deletedEntry = new Object();
 
-	// The values are Integer objects; the ints are shapes defined in
-	// org.cytoscape.graph.render.immed.GraphGraphics.
-	final HashMap<Integer,Object> m_shapes = new HashMap<Integer,Object>();
-	final HashMap<Integer,Object> m_fillPaints = new HashMap<Integer,Object>();
-	final HashMap<Integer,Object> m_borderWidths = new HashMap<Integer,Object>();
-	final HashMap<Integer,Object> m_borderPaints = new HashMap<Integer,Object>();
-	final HashMap<Integer,Object> m_labelCounts = new HashMap<Integer,Object>();
-	final HashMap<Integer,Object> m_labelTextAnchors = new HashMap<Integer,Object>();
-	final HashMap<Integer,Object> m_labelNodeAnchors = new HashMap<Integer,Object>();
-	final HashMap<Integer,Object> m_labelJustifys = new HashMap<Integer,Object>();
-	final HashMap<Integer,Object> m_labelOffsetXs = new HashMap<Integer,Object>();
-	final HashMap<Integer,Object> m_labelOffsetYs = new HashMap<Integer,Object>();
-	final HashMap<Long,Paint> m_labelPaints = new HashMap<Long,Paint>();
+	// The values are Byte objects; the bytes are shapes defined in
+	// cytoscape.render.immed.GraphGraphics.
+	final Map<Integer, Byte> m_shapes = new HashMap<Integer, Byte>();
+	final Map<Integer, Paint> m_fillPaints = new HashMap<Integer, Paint>();
+	final Map<Integer, Float> m_borderWidths = new HashMap<Integer, Float>();
+	final Map<Integer, Paint> m_borderPaints = new HashMap<Integer, Paint>();
+	final Map<Integer, Integer> m_labelCounts = new HashMap<Integer, Integer>();
+	final Map<Long, String> m_labelTexts = new HashMap<Long, String>();
+	final Map<Long, Font> m_labelFonts = new HashMap<Long, Font>();
+	final Map<Long, Paint> m_labelPaints = new HashMap<Long, Paint>();
 	final Map<Integer, Double> m_labelWidths = new HashMap<Integer, Double>();
-	final HashMap<Long,Object> m_labelTexts = new HashMap<Long,Object>();
-	final HashMap<Long,Font> m_labelFonts = new HashMap<Long,Font>();
+	
+	final Map<Integer, Integer> m_labelTextAnchors = new HashMap<Integer, Integer>();
+	final Map<Integer, Integer> m_labelNodeAnchors = new HashMap<Integer, Integer>();
+	final Map<Integer, Integer> m_labelJustifys = new HashMap<Integer, Integer>();
+	final Map<Integer, Double> m_labelOffsetXs = new HashMap<Integer, Double>();
+	final Map<Integer, Double> m_labelOffsetYs = new HashMap<Integer, Double>();
 
 	DNodeDetails(DGraphView view) {
 		m_view = view;
@@ -134,24 +135,24 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int shape(int node) {
-		final Object o = m_shapes.get(Integer.valueOf(node));
+	public byte shape(int node) {
+		final Object o = m_shapes.get(new Integer(node));
 
 		if (o == null)
 			return super.shape(node);
 
-		return ((Integer) o).intValue();
+		return ((Byte) o).byteValue();
 	}
 
 	/*
 	 * The shape argument must be pre-checked for correctness.
 	 * A negative shape value has the special meaning to remove overridden shape.
 	 */
-	void overrideShape(int node, int shape) {
+	void overrideShape(int node, byte shape) {
 		if ((shape < 0) || (shape == super.shape(node)))
-			m_shapes.remove(Integer.valueOf(node));
+			m_shapes.remove(new Integer(node));
 		else
-			m_shapes.put(Integer.valueOf(node), new Integer(shape));
+			m_shapes.put(new Integer(node), new Byte(shape));
 	}
 
 	/**
@@ -348,22 +349,22 @@ class DNodeDetails extends IntermediateNodeDetails {
 			m_labelPaints.put(Long.valueOf(key), paint);
 	}
 
-    // overrides NodeDetails.customGraphicCount():
-    public int customGraphicCount(final int node) {
-	final DNodeView dnv = (DNodeView) m_view.getNodeView(node);	
-	return dnv.getNumCustomGraphics();
-    }
+	// overrides NodeDetails.customGraphicCount():
+	public int customGraphicCount(final int node) {
+		final DNodeView dnv = (DNodeView) m_view.getNodeView(node);	
+		return dnv.getNumCustomGraphics();
+	}
 
-    // overrides NodeDetails.customGraphics():
-    public Iterator<CustomGraphic> customGraphics (final int node) {
-	final DNodeView dnv = (DNodeView) m_view.getNodeView(node);
-	return dnv.customGraphicIterator();
-    }
-    // overrides NodeDetails.customGraphicLock():
-    public Object customGraphicLock (final int node) {
-	final DNodeView dnv = (DNodeView) m_view.getNodeView(node);
-	return dnv.customGraphicLock();	
-    }
+	// overrides NodeDetails.customGraphics():
+	public Iterator<CustomGraphic> customGraphics (final int node) {
+		final DNodeView dnv = (DNodeView) m_view.getNodeView(node);
+		return dnv.customGraphicIterator();
+	}
+	// overrides NodeDetails.customGraphicLock():
+	public Object customGraphicLock (final int node) {
+		final DNodeView dnv = (DNodeView) m_view.getNodeView(node);
+		return dnv.customGraphicLock();	
+	}
 
 	// label positioning
 	/**
@@ -374,13 +375,13 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int labelTextAnchor(final int node, final int labelInx) {
-		final Object o = m_labelTextAnchors.get(Integer.valueOf(node));
+	public byte labelTextAnchor(final int node, final int labelInx) {
+		final Integer p = m_labelTextAnchors.get(node);
 
-		if (o == null)
+		if (p == null)
 			return super.labelTextAnchor(node, labelInx);
-
-		return convertG2ND(((Integer) o).intValue());
+		else
+			return convertG2ND(p);
 	}
 
 	void overrideLabelTextAnchor(final int node, final int inx, final int anchor) {
@@ -398,13 +399,13 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int labelNodeAnchor(final int node, final int labelInx) {
-		final Object o = m_labelNodeAnchors.get(Integer.valueOf(node));
+	public byte labelNodeAnchor(final int node, final int labelInx) {
+		final Integer o = m_labelNodeAnchors.get(node);
 
 		if (o == null)
 			return super.labelNodeAnchor(node, labelInx);
 
-		return convertG2ND(((Integer) o).intValue());
+		return convertG2ND(o);
 	}
 
 	void overrideLabelNodeAnchor(final int node, final int inx, final int anchor) {
@@ -470,13 +471,13 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int labelJustify(final int node, final int labelInx) {
-		final Object o = m_labelJustifys.get(Integer.valueOf(node));
+	public byte labelJustify(final int node, final int labelInx) {
+		Integer o = m_labelJustifys.get(node);
 
 		if (o == null)
 			return super.labelJustify(node, labelInx);
 
-		return convertG2ND(((Integer) o).intValue());
+		return convertG2ND(o);
 	}
 
 	void overrideLabelJustify(final int node, final int inx, final int justify) {
@@ -518,7 +519,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 			m_labelWidths.put(new Integer(node), new Double(width));
 	}
 
-	static int convertG2ND(int giny) {
+	static byte convertG2ND(int giny) {
 		switch (giny) {
 			case (Label.NORTH):
 				return NodeDetails.ANCHOR_NORTH;
@@ -561,7 +562,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 		}
 	}
 
-	static int convertND2G(int nd) {
+	static int convertND2G(byte nd) {
 		switch (nd) {
 			case (NodeDetails.ANCHOR_NORTH):
 				return Label.NORTH;

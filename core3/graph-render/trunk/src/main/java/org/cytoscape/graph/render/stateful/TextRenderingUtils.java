@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.graph.render.stateful;
+
 
 import org.cytoscape.graph.render.immed.GraphGraphics;
 
@@ -99,59 +91,33 @@ final class TextRenderingUtils {
 	 * @param paint DOCUMENT ME!
 	 * @param textAsShape DOCUMENT ME!
 	 */
-	public final static void renderHorizontalText(final GraphGraphics grafx, final String text,
+	public final static void renderHorizontalText(final GraphGraphics grafx, 
+	                                              final MeasuredLineCreator measuredText,
 	                                              final Font font, final double fontScaleFactor,
 	                                              final float textXCenter, final float textYCenter,
-	                                              final int textJustify, final Paint paint,
+	                                              final byte textJustify, final Paint paint,
 	                                              final boolean textAsShape) {
-		final float[] dims = new float[2];
-		computeTextDimensions(grafx, text, font, fontScaleFactor, textAsShape, dims);
 
-		final double overallWidth = dims[0];
-		final double overallHeight = dims[1];
-		double currHeight = overallHeight / -2.0d;
-		final StringTokenizer tokenizer = new StringTokenizer(text, "\n");
+		double currHeight = measuredText.getTotalHeight() / -2.0d;
+		final double overallWidth =  measuredText.getMaxLineWidth();
 
-		while (tokenizer.hasMoreTokens()) {
-			final String token = tokenizer.nextToken();
-			final double textWidth;
-			final double textHeight;
-
-			if (textAsShape) {
-				final GlyphVector glyphV;
-
-				{
-					final char[] charBuff = new char[token.length()];
-					token.getChars(0, charBuff.length, charBuff, 0);
-					glyphV = font.layoutGlyphVector(grafx.getFontRenderContextFull(), charBuff, 0,
-					                                charBuff.length, Font.LAYOUT_NO_LIMIT_CONTEXT);
-				}
-
-				final Rectangle2D bounds = glyphV.getLogicalBounds();
-				textWidth = fontScaleFactor * bounds.getWidth();
-				textHeight = fontScaleFactor * bounds.getHeight();
-			} else {
-				final Rectangle2D bounds = font.getStringBounds(token,
-				                                                grafx.getFontRenderContextFull());
-				textWidth = fontScaleFactor * bounds.getWidth();
-				textHeight = fontScaleFactor * bounds.getHeight();
-			}
-
-			final double yCenter = currHeight + textYCenter + (textHeight / 2.0d);
+		for ( MeasuredLine line : measuredText.getMeasuredLines() ) {
+			final double yCenter = currHeight + textYCenter + (line.getHeight() / 2.0d);
 			final double xCenter;
 
 			if (textJustify == NodeDetails.LABEL_WRAP_JUSTIFY_CENTER)
 				xCenter = textXCenter;
 			else if (textJustify == NodeDetails.LABEL_WRAP_JUSTIFY_LEFT)
-				xCenter = (-0.5d * (overallWidth - textWidth)) + textXCenter;
+				xCenter = (-0.5d * (overallWidth - line.getWidth())) + textXCenter;
 			else if (textJustify == NodeDetails.LABEL_WRAP_JUSTIFY_RIGHT)
-				xCenter = (0.5d * (overallWidth - textWidth)) + textXCenter;
+				xCenter = (0.5d * (overallWidth - line.getWidth())) + textXCenter;
 			else
 				throw new IllegalStateException("textJustify value unrecognized");
 
-			grafx.drawTextFull(font, fontScaleFactor, token, (float) xCenter, (float) yCenter, 0,
+			grafx.drawTextFull(font, fontScaleFactor, line.getLine(), 
+			                   (float) xCenter, (float) yCenter, 0,
 			                   paint, textAsShape);
-			currHeight += textHeight;
+			currHeight += line.getHeight();
 		}
 	}
 }
