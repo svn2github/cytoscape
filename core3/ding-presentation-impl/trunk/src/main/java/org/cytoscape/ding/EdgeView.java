@@ -37,7 +37,12 @@ public interface EdgeView  extends GraphViewObject {
 	public static int EDGE_COLOR_T = 15;
 	public static int EDGE_HALF_ARROW_TOP = 16;
 	public static int EDGE_HALF_ARROW_BOTTOM = 17;
-
+	public static int EDGE_COLOR_HALF_TOP = 18;
+	public static int WHITE_HALF_TOP = 19;
+	public static int BLACK_HALF_TOP = 20;
+	public static int EDGE_COLOR_HALF_BOTTOM = 21;
+	public static int WHITE_HALF_BOTTOM = 22;
+	public static int BLACK_HALF_BOTTOM = 23;
 
 	/**
 	 * @return the index of this edge in the GraphPerspective

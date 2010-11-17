@@ -34,6 +34,7 @@
 */
 package org.cytoscape.ding;
 
+
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.icon.ArrowIcon;
 import org.cytoscape.ding.icon.VisualPropertyIcon;
@@ -43,6 +44,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * Defines arrow shapes.<br>
@@ -54,34 +56,36 @@ import java.util.Map;
  */
 public enum ArrowShape {
 	NONE("No Arrow", "NONE", GraphGraphics.ARROW_NONE, 
-	     new int[]{EdgeView.NO_END},
-		 new String[]{"NO_END"}),
+	     new int[]{ EdgeView.NO_END },
+		 new String[] { "NO_END" }),
 
 	DIAMOND("Diamond", "COLOR_DIAMOND", GraphGraphics.ARROW_DIAMOND,
-	     new int[]{EdgeView.EDGE_COLOR_DIAMOND, EdgeView.WHITE_DIAMOND,EdgeView.BLACK_DIAMOND},
-	     new String[]{"EDGE_COLOR_DIAMOND", "WHITE_DIAMOND","BLACK_DIAMOND"}),
+	     new int[] { EdgeView.EDGE_COLOR_DIAMOND, EdgeView.WHITE_DIAMOND, EdgeView.BLACK_DIAMOND },
+	     new String[] { "EDGE_COLOR_DIAMOND", "WHITE_DIAMOND", "BLACK_DIAMOND" }),
 
 	DELTA("Delta", "COLOR_DELTA", GraphGraphics.ARROW_DELTA,
-	     new int[]{EdgeView.EDGE_COLOR_DELTA, EdgeView.WHITE_DELTA,EdgeView.BLACK_DELTA},
-	     new String[]{"EDGE_COLOR_DELTA", "WHITE_DELTA","BLACK_DELTA"}),
+	     new int[] { EdgeView.EDGE_COLOR_DELTA, EdgeView.WHITE_DELTA, EdgeView.BLACK_DELTA },
+	     new String[] { "EDGE_COLOR_DELTA", "WHITE_DELTA", "BLACK_DELTA" }),
 
-	ARROW("Arrow", "COLOR_ARROW", GraphGraphics.ARROW_DELTA,
-	     new int[]{EdgeView.EDGE_COLOR_ARROW, EdgeView.WHITE_ARROW,EdgeView.BLACK_ARROW},
-	     new String[]{"EDGE_COLOR_ARROW", "WHITE_ARROW","BLACK_ARROW"}),
+	ARROW("Arrow", "COLOR_ARROW", GraphGraphics.ARROW_ARROWHEAD,
+	     new int[] { EdgeView.EDGE_COLOR_ARROW, EdgeView.WHITE_ARROW, EdgeView.BLACK_ARROW },
+	     new String[] { "EDGE_COLOR_ARROW", "WHITE_ARROW", "BLACK_ARROW"}),
 
 	T("T", "COLOR_T", GraphGraphics.ARROW_TEE,
-	     new int[]{EdgeView.EDGE_COLOR_T, EdgeView.WHITE_T,EdgeView.BLACK_T},
-	     new String[]{"EDGE_COLOR_T", "WHITE_T","BLACK_T"}),
+	     new int[] { EdgeView.EDGE_COLOR_T, EdgeView.WHITE_T, EdgeView.BLACK_T },
+	     new String[] { "EDGE_COLOR_T", "WHITE_T", "BLACK_T" }),
 
 	CIRCLE("Circle", "COLOR_CIRCLE", GraphGraphics.ARROW_DISC,
-	     new int[]{EdgeView.EDGE_COLOR_CIRCLE, EdgeView.WHITE_CIRCLE,EdgeView.BLACK_CIRCLE},
-	     new String[]{"EDGE_COLOR_CIRCLE", "WHITE_CIRCLE","BLACK_CIRCLE"}),
+	     new int[] { EdgeView.EDGE_COLOR_CIRCLE, EdgeView.WHITE_CIRCLE, EdgeView.BLACK_CIRCLE },
+	     new String[] { "EDGE_COLOR_CIRCLE", "WHITE_CIRCLE", "BLACK_CIRCLE" }),
 
-	// Not yet implemented
-	//	REVERSE_ARROW("Reverse Arrow", "REVERSE_ARROW", -1,
-	//	     new int[]{-1},
-	//		 new String[]{""}),
-	;
+	HALF_TOP("Half Top", "COLOR_HALF_TOP", GraphGraphics.ARROW_HALF_TOP,
+	     new int[] { EdgeView.EDGE_COLOR_HALF_TOP, EdgeView.WHITE_HALF_TOP, EdgeView.BLACK_HALF_TOP },
+	     new String[] { "EDGE_COLOR_HALF_TOP", "WHITE_HALF_TOP", "BLACK_HALF_TOP" }),
+
+	HALF_BOTTOM("Half Top", "COLOR_HALF_BOTTOM", GraphGraphics.ARROW_HALF_BOTTOM,
+	     new int[] { EdgeView.EDGE_COLOR_HALF_BOTTOM, EdgeView.WHITE_HALF_BOTTOM, EdgeView.BLACK_HALF_BOTTOM },
+	     new String[] { "EDGE_COLOR_HALF_BOTTOM", "WHITE_HALF_BOTTOM", "BLACK_HALF_BOTTOM" });
 
 
 	private static Map<Byte,Shape> arrowShapes = GraphGraphics.getArrowShapes();
