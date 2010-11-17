@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.ding.impl;
+
 
 import java.awt.Color;
 import java.awt.FontMetrics;
@@ -86,7 +78,7 @@ import phoebe.PhoebeCanvasDropEvent;
 import phoebe.PhoebeCanvasDropListener;
 import phoebe.PhoebeCanvasDroppable;
 
-// AJK: 04/26/06 END
+
 /**
  *
  */
@@ -1166,7 +1158,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						m_line.setLine(nodeX, nodeY, otherNodeX, otherNodeY);
 
 						if (m_line.intersects(xMin, yMin, xMax - xMin, yMax - yMin))
-							stack.push(~edge);
+							stack.push(edge);
 					}
 				}
 
@@ -1247,7 +1239,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						if (m_path2.intersects(xMin - segThicknessDiv2, yMin - segThicknessDiv2,
 						                       (xMax - xMin) + (segThicknessDiv2 * 2),
 						                       (yMax - yMin) + (segThicknessDiv2 * 2)))
-							stack.push(~edge);
+							stack.push(edge);
 					}
 				}
 

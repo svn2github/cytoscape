@@ -505,7 +505,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	
 	@Override
 	public TexturePaint getNestedNetworkTexturePaint(final int node) {
-		final DNodeView dNodeView = (DNodeView) m_view.getNodeView(~node);
+		final DNodeView dNodeView = (DNodeView) m_view.getNodeView(node);
 		return dNodeView.getNestedNetworkTexturePaint();
 	}
 	

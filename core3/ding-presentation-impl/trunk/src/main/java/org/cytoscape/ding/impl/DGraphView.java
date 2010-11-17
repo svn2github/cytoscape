@@ -2140,7 +2140,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 			if (treatNodeShapesAsRectangle) {
 				for (int i = 0; i < totalHits; i++)
-					returnVal.push(~under.nextInt());
+					returnVal.push(under.nextInt());
 			} else {
 				final double x = xMin;
 				final double y = yMin;
@@ -2164,17 +2164,14 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 						                                     m_path);
 
 						if ((w > 0) && (h > 0)) {
-							if (m_path.intersects(x, y, w, h)) {
-								returnVal.push(~node);
-							}
+							if (m_path.intersects(x, y, w, h))
+								returnVal.push(node);
 						} else {
-							if (m_path.contains(x, y)) {
-								returnVal.push(~node);
-							}
+							if (m_path.contains(x, y))
+								returnVal.push(node);
 						}
-					} else {
-						returnVal.push(~node);
-					}
+					} else
+						returnVal.push(node);
 				}
 			}
 		}

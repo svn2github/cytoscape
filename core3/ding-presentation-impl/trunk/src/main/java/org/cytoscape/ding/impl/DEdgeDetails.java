@@ -239,7 +239,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public EdgeAnchors anchors(int edge) {
-		final EdgeAnchors returnThis = (EdgeAnchors) (m_view.getEdgeView(~edge));
+		final EdgeAnchors returnThis = (EdgeAnchors) (m_view.getEdgeView(edge));
 
 		if (returnThis.numAnchors() > 0) 
 			return returnThis;
@@ -319,14 +319,14 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 				break;
 
 			// So we don't count the other edge twice?
-			int i = (((EdgeAnchors) m_view.getEdgeView(~otherEdge)).numAnchors() == 0) ? 1 : 0;
+			int i = (((EdgeAnchors) m_view.getEdgeView(otherEdge)).numAnchors() == 0) ? 1 : 0;
 
 			// Count the number of other edges.
 			while (true) {
 				if (edge == (otherEdge = otherEdges.nextInt()))
 					break;
 
-				if (((EdgeAnchors) m_view.getEdgeView(~otherEdge)).numAnchors() == 0)
+				if (((EdgeAnchors) m_view.getEdgeView(otherEdge)).numAnchors() == 0)
 					i++;
 			}
 
@@ -407,8 +407,8 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public float anchorSize(int edge, int anchorInx) {
-		if (m_view.getEdgeView(~edge).isSelected()
-		    && (((DEdgeView) m_view.getEdgeView(~edge)).numAnchors() > 0))
+		if (m_view.getEdgeView(edge).isSelected()
+		    && (((DEdgeView) m_view.getEdgeView(edge)).numAnchors() > 0))
 			return m_view.getAnchorSize();
 		else
 
@@ -424,7 +424,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public Paint anchorPaint(int edge, int anchorInx) {
-		if (((DEdgeView) (m_view.getEdgeView(~edge))).m_lineType == DEdgeView.STRAIGHT_LINES)
+		if (((DEdgeView) (m_view.getEdgeView(edge))).m_lineType == DEdgeView.STRAIGHT_LINES)
 			anchorInx = anchorInx / 2;
 
 		if (m_view.m_selectedAnchors.count((edge << 6) | anchorInx) > 0)
