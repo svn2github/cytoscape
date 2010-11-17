@@ -70,11 +70,10 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
  * @author $author$
  */
 public class DNodeView implements NodeView, Label {
-
-	// For Cytoscape 2.7: Nested Network Image size
+	// Affects size of the nested network image relative to the node size:
 	private static final float NESTED_IMAGE_SCALE_FACTOR = 0.6f;
 
-	// This image will be used when view is not available for a nested network.
+	// These images will be used when a view is not available for a nested network.
 	private static BufferedImage DEFAULT_NESTED_NETWORK_IMAGE;
 	private static BufferedImage RECURSIVE_NESTED_NETWORK_IMAGE;
 

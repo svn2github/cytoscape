@@ -1,14 +1,7 @@
 /*
   File: ArbitraryGraphicsCanvas.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -34,18 +27,19 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-// package
 package org.cytoscape.ding.impl;
 
-
-// import
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.ding.NodeView;
 
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Composite;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -59,10 +53,6 @@ import java.util.Map;
  */
 public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChangeListener {
 	private final static long serialVersionUID = 1202416510975364L;
-	/**
-	 * Testing boolean to quickly turn on/off anchor nodes.
-	 */
-	private static final boolean USE_REPOSITION_CODE = false;
 
 	/**
 	 * Our reference to the GraphPerspective our view belongs to
@@ -81,7 +71,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 
 	/*
 	 * Map of component(s) to hidden node(s)
-	 */
+	 */        
 	private Map<Component, CyNode> m_componentToNodeMap;
 
 	/**
@@ -110,45 +100,20 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 	/**
 	 * Our implementation of add
 	 */
+        @Override
 	public Component add(Component component) {
-		if (USE_REPOSITION_CODE) {
-			// create an "anchor node"
-			CyNode node = m_cyNetwork.addNode();
-			node.getCyRow().set("name",component.toString());
-			//m_cyNetwork.restoreNode(node);
-
-			// set its node view coordinates
-			NodeView nodeView = m_dGraphView.getNodeView(node);
-			double[] nodeCanvasCoordinates = new double[2];
-			nodeCanvasCoordinates[0] = component.getX();
-			nodeCanvasCoordinates[1] = component.getY();
-			m_dGraphView.xformComponentToNodeCoords(nodeCanvasCoordinates);
-			nodeView.setXPosition(nodeCanvasCoordinates[0]);
-			nodeView.setYPosition(nodeCanvasCoordinates[1]);
-
-			// add to map
-			m_componentToNodeMap.put(component, node);
-
-			// hide the node - make it very small -
-			// hiding it via hideGraphObject takes it out of the ding repositioning loop
-			//m_dGraphView.hideGraphObject(nodeView, true, true);
-			nodeView.setWidth(1.0);
-			nodeView.setHeight(1.0);
-		}
-
 		// do our stuff
 		return super.add(component);
 	}
-
+        
 	/**
 	 * Our implementation of ViewportChangeListener.
 	 */
 	public void viewportChanged(int viewportWidth, int viewportHeight, double newXCenter,
 	                            double newYCenter, double newScaleFactor) {
-		if (USE_REPOSITION_CODE) {
-			if (setBoundsChildren())
-				repaint();
-		}
+	}
+
+	public void modifyComponentLocation(int x,int y, int componentNum){
 	}
 
 	/**
@@ -156,16 +121,11 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 	 */
 	public void setBounds(int x, int y, int width, int height) {
 		super.setBounds(x, y, width, height);
-
+                
 		// our bounds have changed, create a new image with new size
-		if ((width > 0) && (height > 0)) {
+		if ((width > 1) && (height > 1)) {
 			// create the buffered image
 			m_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
-			// update childrens bounds
-			if (USE_REPOSITION_CODE) {
-				setBoundsChildren();
-			}
 		}
 	}
 
@@ -179,19 +139,40 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 		// only paint if we have an image to paint on
 		if (m_img != null) {
 			// get image graphics
-			Graphics2D image2D = ((BufferedImage) m_img).createGraphics();
+			final Graphics2D image2D = ((BufferedImage) m_img).createGraphics();
 
 			// first clear the image
 			clearImage(image2D);
 
 			// now paint children
-			if (m_isVisible)
-				paintChildren(image2D);
-
+			if (m_isVisible){
+				int num=this.getComponentCount();
+				for(int i=0;i<num;i++){
+					this.getComponent(i).paint(image2D);
+				}
+			}
+			image2D.dispose();
 			// render image
 			graphics.drawImage(m_img, 0, 0, null);
 		}
+                
 	}
+
+
+	@Override
+	public Component getComponentAt(int x, int y) {
+
+		int n=getComponentCount();
+
+		for(int i=0;i<n;i++){
+				Component c=this.getComponent(i).getComponentAt(x, y);
+
+				if(c!=null)
+						return c;
+		}
+		return null;
+	}
+
 
 	/**
 	 * Invoke this method to print the component.
@@ -199,48 +180,10 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 	 * @param graphics Graphics
 	 */
 	public void print(Graphics graphics) {
-		//if we have an image to print, lets print it.
-		if (m_img != null) {
-			graphics.drawImage(m_img, 0, 0, null);
+		int num=this.getComponentCount();
+		for(int i=0;i<num;i++){
+			this.getComponent(i).print(graphics);
 		}
-	}
-
-	/**
-	 * Called to update the bounds of our child components.
-	 *
-	 * @return boolean
-	 */
-	private boolean setBoundsChildren() {
-		// get list of child components
-		Component[] components = getComponents();
-
-		// no components, outta here
-		if (components.length == 0)
-			return false;
-
-		// interate through the components
-		for (Component c : components) {
-			// get node
-			CyNode node = m_componentToNodeMap.get(c);
-
-			// get node view
-			NodeView nodeView = m_dGraphView.getNodeView(node);
-
-			// new image coordinates
-			double[] currentNodeCoordinates = new double[2];
-			currentNodeCoordinates[0] = nodeView.getXPosition();
-			currentNodeCoordinates[1] = nodeView.getYPosition();
-
-			AffineTransform transform = m_innerCanvas.getAffineTransform();
-			transform.transform(currentNodeCoordinates, 0, currentNodeCoordinates, 0, 1);
-
-			// set bounds
-			c.setBounds((int) currentNodeCoordinates[0], (int) currentNodeCoordinates[1],
-			            c.getWidth(), c.getHeight());
-		}
-
-		// outta here
-		return true;
 	}
 
 	/**

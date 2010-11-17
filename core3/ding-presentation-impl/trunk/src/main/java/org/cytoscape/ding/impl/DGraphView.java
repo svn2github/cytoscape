@@ -2073,8 +2073,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			m_networkCanvas.m_lod[0] = lod;
 			m_contentChanged = true;
 		}
-
-		updateView();
 	}
 
 	/**
