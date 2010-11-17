@@ -22,30 +22,30 @@
   <packaging>bundle</packaging>
 
   <repositories>
-      <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
-      <repository>
-          <id>cytoscape_snapshots</id>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-          <name>Cytoscape Snapshots</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
-       </repository>
-       <!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
-       <repository>
-          <id>cytoscape_releases</id>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <name>Cytoscape Releases</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
-       </repository>
+    <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
+    <repository>
+      <id>cytoscape_snapshots</id>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <name>Cytoscape Snapshots</name>
+      <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+    </repository>
+    <!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
+    <repository>
+      <id>cytoscape_releases</id>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <name>Cytoscape Releases</name>
+      <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+    </repository>
   </repositories>
 
   <build>
@@ -54,8 +54,8 @@
         <directory>src/main/resources</directory>
       </resource>
       <!--
-       | example additional resource entries, useful when building Eclipse RCP applications
-      -->
+	  | example additional resource entries, useful when building Eclipse RCP applications
+	-->
       <resource>
         <directory>.</directory>
         <includes>
@@ -71,9 +71,9 @@
         <artifactId>maven-pax-plugin</artifactId>
         <version>1.4</version>
         <!--
-           | enable improved OSGi compilation support for the bundle life-cycle.
-           | to switch back to the standard bundle life-cycle, move this setting
-           | down to the maven-bundle-plugin section
+            | enable improved OSGi compilation support for the bundle life-cycle.
+            | to switch back to the standard bundle life-cycle, move this setting
+            | down to the maven-bundle-plugin section
           -->
         <extensions>true</extensions>
       </plugin>
@@ -93,7 +93,6 @@
   </build>
 
   <dependencies>
-    
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>spacial</artifactId>
@@ -108,6 +107,12 @@
       <groupId>org.cytoscape</groupId>
       <artifactId>model-api</artifactId>
       <version>3.0.0-alpha2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
