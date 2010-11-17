@@ -277,9 +277,9 @@
             <version>7.3</version>
         </dependency>
         <dependency>
-            <groupId>org.cytoscape.wrappers</groupId>
-            <artifactId>org.swinglabs.swingx</artifactId>
-            <version>0.9.7</version>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swingx</artifactId>
+            <version>1.6.1</version>
         </dependency>
         <dependency>
             <groupId>cytoscape-temp</groupId>
