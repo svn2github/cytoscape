@@ -17,6 +17,7 @@
 	
 
 	<!-- constructor args are in alphabetical order! -->
+
 	<bean id="cyPluginAdapter" class="org.cytoscape.plugin.internal.CyPluginAdapterImpl">
 		<constructor-arg ref="cyDataTableFactoryRef" />
 		<constructor-arg ref="cyEventHelperRef" />
@@ -38,4 +39,17 @@
 	<bean id="pluginLoaderTaskFactory" class="org.cytoscape.plugin.internal.PluginLoaderTaskFactory">
 		<constructor-arg ref="cyPluginAdapter" />
 	</bean>
+			
+		
+	<bean id="pluginManagerAction" class="org.cytoscape.plugin.internal.action.PluginManagerAction">
+		<constructor-arg ref="cytoscapeDesktopService" />
+		<constructor-arg ref="cyApplicationManagerRef" />
+		<constructor-arg ref="cytoscapeVersionService" />
+		<constructor-arg ref="bookmarkServiceRef" />		
+		<constructor-arg ref="bookmarksUtilServiceRef" />
+		
+		<constructor-arg ref="guiTaskManagerServiceRef" />
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
+	</bean>
+	
 </beans>
