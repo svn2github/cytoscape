@@ -254,13 +254,13 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	 * This method can be used at your discretion, but otherwise does nothing.  
 	 * @param e The triggering event.
 	 */
-    public void menuCanceled(MenuEvent e) {}
+	public void menuCanceled(MenuEvent e) { }
 
 	/**
 	 * This method can be used at your discretion, but otherwise does nothing.  
 	 * @param e The triggering event.
 	 */
-    public void menuDeselected(MenuEvent e) {}
+	public void menuDeselected(MenuEvent e) { }
 
 	/**
 	 * This method can be overridden by individual actions to set the state of menu items
@@ -270,7 +270,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	 * and "selectedNetworkObjs".
 	 * @param e The triggering event.
 	 */
-    public void menuSelected(MenuEvent e) { enableMenus(); }
+	public void menuSelected(MenuEvent e) { enableMenus(); }
 
 	/**
 	 * This method can be overridden by individual actions to set the state of menu items
@@ -304,14 +304,18 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	//
 
 	private void enableMenus() {
-		if ( enableFor == null || enableFor.equals("") )
+		if (enableFor == null || enableFor.equals(""))
 			setEnabled(true);
-		else if ( enableFor.equals("network") ) 
+		else if (enableFor.equals("network")) 
 			enableForNetwork();
-		else if ( enableFor.equals("networkAndView") ) 
+		else if (enableFor.equals("networkAndView")) 
 			enableForNetworkAndView();
-		else if ( enableFor.equals("selectedNetworkObjs") ) 
-			enableForSelectedNetworkObjs();
+		else if (enableFor.equals("selectedNodesOrEdges")) 
+			enableForSelectedNodesOrEdges();
+		else if (enableFor.equals("selectedNodes")) 
+			enableForSelectedNodes();
+		else if (enableFor.equals("selectedEdges")) 
+			enableForSelectedEdges();
 	}
 
 	/**
@@ -337,25 +341,63 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	}
 
 	/**
-	 * Enable the action if more than one network object is required to execute
-	 * the action.
+	 * Enable the action if at least one selected node or edge is required to perform the action.
 	 */
-	protected void enableForSelectedNetworkObjs() {
+	protected void enableForSelectedNodesOrEdges() {
 		CyNetwork n = applicationManager.getCurrentNetwork();
 
-		if ( n == null ) {
+		if (n == null) {
 			setEnabled(false);
 			return;
 		}
 
-		for ( CyNode node : n.getNodeList() ) {
-			if ( node.getCyRow().get("selected",Boolean.class) ) {
+		for (CyNode node : n.getNodeList()) {
+			if (node.getCyRow().get("selected", Boolean.class)) {
 				setEnabled(true);
 				return;
 			}
 		}
-		for ( CyEdge edge : n.getEdgeList() ) {
-			if ( edge.getCyRow().get("selected",Boolean.class) ) {
+		for (CyEdge edge : n.getEdgeList()) {
+			if (edge.getCyRow().get("selected", Boolean.class)) {
+				setEnabled(true);
+				return;
+			}
+		}
+		setEnabled(false);
+	}
+
+	/**
+	 * Enable the action if at least one selected node is required to perform the action.
+	 */
+	protected void enableForSelectedNodes() {
+		CyNetwork n = applicationManager.getCurrentNetwork();
+
+		if (n == null) {
+			setEnabled(false);
+			return;
+		}
+
+		for (CyNode node : n.getNodeList()) {
+			if (node.getCyRow().get("selected", Boolean.class)) {
+				setEnabled(true);
+				return;
+			}
+		}
+		setEnabled(false);
+	}
+	/**
+	 * Enable the action if at least one selected edge is required to perform the action.
+	 */
+	protected void enableForSelectedEdges() {
+		CyNetwork n = applicationManager.getCurrentNetwork();
+
+		if (n == null) {
+			setEnabled(false);
+			return;
+		}
+
+		for (CyEdge edge : n.getEdgeList()) {
+			if (edge.getCyRow().get("selected", Boolean.class)) {
 				setEnabled(true);
 				return;
 			}
