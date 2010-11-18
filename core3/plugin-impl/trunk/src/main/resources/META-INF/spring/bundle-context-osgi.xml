@@ -68,31 +68,25 @@
     <osgi:service id="pluginLoaderTaskFactoryService" ref="pluginLoaderTaskFactory"
 	        interface="org.cytoscape.work.TaskFactory">
         <osgi:service-properties>
-	            <entry key="title" value="Load Plugin...XXX" />
+	            <entry key="title" value="Load Plugin..." />
 	            <entry key="preferredMenu" value="File.Import" />
         </osgi:service-properties>
     </osgi:service>
  
-
-
-
 	<!-- Plugin manager -->
+	<osgi:service id="pluginManagerActionService" ref="pluginManagerAction"
+		interface="org.cytoscape.application.swing.CyAction" />
+
 	<osgi:reference id="cytoscapeDesktopService"
 		interface="org.cytoscape.application.swing.CySwingApplication" />
 
 	<osgi:reference id="cytoscapeVersionService"
 		interface="org.cytoscape.application.swing.CytoscapeVersion" />
 
-	<osgi:service id="pluginManagerActionService" ref="pluginManagerAction"
-		interface="org.cytoscape.application.swing.CyAction" />
-
-<!-- Bookmark -->
-
 	<osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=bookmarks)" />
 	<osgi:reference id="bookmarksUtilServiceRef"
 		interface="org.cytoscape.property.bookmark.BookmarksUtil" />
-
 
 	<osgi:reference id="guiTaskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager">
 	</osgi:reference>
