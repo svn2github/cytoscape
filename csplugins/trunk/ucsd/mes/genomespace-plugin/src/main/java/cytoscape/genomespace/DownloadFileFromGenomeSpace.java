@@ -10,6 +10,8 @@ import javax.swing.JOptionPane;
 import java.io.File;
 import java.awt.FileDialog;
 import java.util.List;
+import java.util.Map;
+import java.util.Collection;
 
 import org.genomespace.client.GsFile;
 import org.genomespace.client.GsSession;
@@ -47,18 +49,28 @@ public class DownloadFileFromGenomeSpace extends CytoscapeAction {
 		logger.info("Logged in to GenomeSpace: " + client.isLoggedIn() + " as " + user.getUsername());
 
 		// list the files present for this user
-		List<GsFile> myFiles = client.list();
+		Map<String,GsFile> files = GSUtils.getFileNameMap( client.list() );
+
+		String selectedFile = getSelectedFile( files.keySet() ); 
 
 		// Download the file back from GenomeSpace
-		myFiles = client.list();
-		if (myFiles.size() > 0){
-			logger.info("Downloading " + myFiles.get(0).getFilename());
-			GsFile localCopy = client.downloadFile(myFiles.get(0));
+		if (selectedFile != null && files.get(selectedFile) != null) {
+			logger.info("Downloading " + files.get(selectedFile));
+			GsFile localCopy = client.downloadFile(files.get(selectedFile));
 			logger.info("\t saved to: " + localCopy.getFile().getAbsolutePath());
 		}
 	
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed",ex);
 		}
+	}
+
+	private String getSelectedFile(Collection<String> names) {
+		String s = (String)JOptionPane.showInputDialog(
+                    Cytoscape.getDesktop(), "Select a file to download:",
+                    "Download from GenomeSpace",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null, names.toArray() ,null);
+		return s;
 	}
 }

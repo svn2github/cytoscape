@@ -71,7 +71,7 @@ public class ListFilesInGenomeSpace extends CytoscapeAction {
 		JList jl = new JList( fileNames );
 		jl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(jl);
-		scrollPane.setPreferredSize(new Dimension(250, 80));
+		scrollPane.setPreferredSize(new Dimension(250, 200));
 		JPanel jp = new JPanel();
 		jp.add(scrollPane);
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),jp);

@@ -10,6 +10,8 @@ import javax.swing.JOptionPane;
 import java.io.File;
 import java.awt.FileDialog;
 import java.util.List;
+import java.util.Map;
+import java.util.Collection;
 
 import org.genomespace.client.GsFile;
 import org.genomespace.client.GsSession;
@@ -47,15 +49,27 @@ public class DeleteFileInGenomeSpace extends CytoscapeAction {
 		logger.info("Logged in to GenomeSpace: " + client.isLoggedIn() + " as " + user.getUsername());
 
 		// list the files present for this user
-		List<GsFile> myFiles = client.list();
-		if (myFiles.size() > 0){
-			logger.info("Deleting " + myFiles.get(0).getFilename());
-			client.delete(myFiles.get(0));
-		}
+		Map<String,GsFile> files = GSUtils.getFileNameMap( client.list() );
 
+		String selectedFile = getSelectedFile( files.keySet() ); 
+
+		// Delete the file from GenomeSpace
+		if (selectedFile != null && files.get(selectedFile) != null) {
+			logger.info("Deleting " + selectedFile);
+			client.delete(files.get(selectedFile));
+		}
+	
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed",ex);
 		}
 	}
 
+	private String getSelectedFile(Collection<String> names) {
+		String s = (String)JOptionPane.showInputDialog(
+                    Cytoscape.getDesktop(), "Select a file to delete:",
+                    "Delete from GenomeSpace",
+                    JOptionPane.WARNING_MESSAGE,
+                    null, names.toArray() ,null);
+		return s;
+	}
 }
