@@ -92,9 +92,9 @@ public class PluginManagerAction extends AbstractCyAction {
 		
 		
 		// For debug only
-		PluginManageDialog dlg = new PluginManageDialog(desktop.getJFrame(), theBookmarks, this.bookmarksUtil, 
-				this.guiTaskManagerServiceRef);
-		dlg.setVisible(true);
+		//PluginManageDialog dlg = new PluginManageDialog(desktop.getJFrame(), theBookmarks, this.bookmarksUtil, 
+		//		this.guiTaskManagerServiceRef);
+		//dlg.setVisible(true);
 	}
 
 
