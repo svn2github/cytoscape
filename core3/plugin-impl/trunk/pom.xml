@@ -130,15 +130,13 @@
       <version>3.0.0-alpha2-SNAPSHOT</version>
     </dependency>
     
-    <!-- 
+    <!-- dependencies needed for plugin manager -->
     <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-core</artifactId>
-      <version>3.0.2</version>
-    </dependency>    
- 	-->
-    
-      <!-- dependencies needed for plugin manager -->
+      <groupId>org.cytoscape</groupId>
+      <artifactId>io-api</artifactId>
+      <version>3.0.0-alpha2-SNAPSHOT</version>
+    </dependency>
+
     <dependency>
     	<groupId>org.cytoscape.wrappers</groupId>
 		<artifactId>org.apache.lucene</artifactId>
