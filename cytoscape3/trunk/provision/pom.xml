@@ -437,6 +437,23 @@
 			<version>1.0.0</version>
 		</dependency>
 
+		<!-- Required by plugin manager -->
+	    <dependency>
+	    	<groupId>org.cytoscape.wrappers</groupId>
+			<artifactId>org.apache.lucene</artifactId>
+			<version>3.0.2</version>
+	    </dependency>
+		<dependency>
+		    <groupId>org.jdom</groupId>
+		    <artifactId>com.springsource.org.jdom</artifactId>
+		    <version>1.1.0</version>
+		</dependency>
+	    <dependency>
+	    	<groupId>org.cytoscape.wrappers</groupId>
+			<artifactId>org.swinglabs.swing-layout</artifactId>
+			<version>1.0.3</version>
+	    </dependency>
+
 		<!-- If you want to run your plugin, add dependencies below -->
 
 
