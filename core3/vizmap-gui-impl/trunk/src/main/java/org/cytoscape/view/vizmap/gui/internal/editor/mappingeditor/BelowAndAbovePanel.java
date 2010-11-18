@@ -74,7 +74,7 @@ public class BelowAndAbovePanel extends JPanel {
 		
 	private EditorManager editorManager;
 
-	private final SelectedVisualStyleManager manager; 
+	private final ContinuousMapping<?, ?> mapping; 
 	
 	/**
 	 * DOCUMENT ME!
@@ -90,11 +90,11 @@ public class BelowAndAbovePanel extends JPanel {
 	 * @param below
 	 *            DOCUMENT ME!
 	 */
-	public BelowAndAbovePanel(VisualProperty<?> type, Color color, boolean below, final SelectedVisualStyleManager manager) {
+	public BelowAndAbovePanel(Color color, boolean below, final ContinuousMapping<?, ?> mapping) {
 		this.boxColor = color;
 		this.below = below;
-		this.type = type;
-		this.manager = manager;
+		this.mapping = mapping;
+		this.type = mapping.getVisualProperty();
 
 		if (below)
 			this.setToolTipText("Double-click triangle to set below color...");
@@ -110,8 +110,8 @@ public class BelowAndAbovePanel extends JPanel {
 	 * @param type DOCUMENT ME!
 	 * @param below DOCUMENT ME!
 	 */
-	public BelowAndAbovePanel(VisualProperty<Number> type, boolean below, final SelectedVisualStyleManager manager) {
-		this(type, Color.DARK_GRAY, below, manager);
+	public BelowAndAbovePanel(boolean below, ContinuousMapping<?, ?> mapping) {
+		this(Color.DARK_GRAY, below, mapping);
 	}
 
 	/**
@@ -194,26 +194,26 @@ public class BelowAndAbovePanel extends JPanel {
 					return;
 				}
 
-				final VisualStyle vs = manager.getCurrentVisualStyle();
-				final ContinuousMapping<?, ?> cMapping = (ContinuousMapping<?,?>) vs.getVisualMappingFunction(type);
+				
+				
 
 				BoundaryRangeValues brv;
 				BoundaryRangeValues original;
 
 				if (below) {
-					original = cMapping.getPoint(0).getRange();
+					original = mapping.getPoint(0).getRange();
 					brv = new BoundaryRangeValues(newValue, original.equalValue,
 					                              original.greaterValue);
-					cMapping.getPoint(0).setRange(brv);
+					mapping.getPoint(0).setRange(brv);
 				} else {
-					original = cMapping.getPoint(cMapping.getPointCount() - 1).getRange();
+					original = mapping.getPoint(mapping.getPointCount() - 1).getRange();
 
 					brv = new BoundaryRangeValues(original.lesserValue, original.equalValue,
 					                              newValue);
-					cMapping.getPoint(cMapping.getPointCount() - 1).setRange(brv);
+					mapping.getPoint(mapping.getPointCount() - 1).setRange(brv);
 				}
 
-				//cMapping.fireStateChanged();
+				//mapping.fireStateChanged();
 
 				// Update view.
 				//Cytoscape.redrawGraph(vmm.getNetworkView());

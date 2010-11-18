@@ -49,6 +49,7 @@ import javax.swing.SwingUtilities;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
@@ -65,7 +66,7 @@ import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
  * @since Cytoscpae 2.5
  * @author kono
  */
-public class GradientEditorPanel<K> extends ContinuousMappingEditorPanel<K, Color>
+public class GradientEditorPanel extends ContinuousMappingEditorPanel<Double, Color>
     implements PropertyChangeListener {
 	private final static long serialVersionUID = 1202339877433771L;
 
@@ -81,8 +82,9 @@ public class GradientEditorPanel<K> extends ContinuousMappingEditorPanel<K, Colo
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public GradientEditorPanel(VisualProperty<Color> type, final SelectedVisualStyleManager manager, CyTable attr) {
-		super(type, manager, attr);
+	public GradientEditorPanel(final VisualStyle style, final ContinuousMapping<Double, Color> mapping, final CyTable attr) {
+		super(style, mapping, attr);
+		
 		iconPanel.setVisible(false);
 		initSlider();
 
@@ -106,8 +108,7 @@ public class GradientEditorPanel<K> extends ContinuousMappingEditorPanel<K, Colo
 	 * @return DOCUMENT ME!
 	 */
 	public ImageIcon getLegend(final int width, final int height) {
-		final CyGradientTrackRenderer rend = (CyGradientTrackRenderer) slider
-		                                                                                                 .getTrackRenderer();
+		final CyGradientTrackRenderer rend = (CyGradientTrackRenderer) slider.getTrackRenderer();
 		rend.getRendererComponent(slider);
 
 		return rend.getLegend(width, height);

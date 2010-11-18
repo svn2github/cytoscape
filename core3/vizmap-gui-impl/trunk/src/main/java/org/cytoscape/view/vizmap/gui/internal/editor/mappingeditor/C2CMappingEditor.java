@@ -43,9 +43,11 @@ import javax.swing.ImageIcon;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
 import org.jdesktop.swingx.multislider.TrackRenderer;
 
@@ -78,8 +80,8 @@ public class C2CMappingEditor<K, V extends Number> extends
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public C2CMappingEditor(VisualProperty<V> type, final SelectedVisualStyleManager manager, final CyTable attr) {
-		super(type, manager, attr);
+	public C2CMappingEditor(final VisualStyle style, final ContinuousMapping<K, V> mapping, final CyTable attr) {
+		super(style, mapping, attr);
 		abovePanel.setVisible(false);
 		belowPanel.setVisible(false);
 

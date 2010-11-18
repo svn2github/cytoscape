@@ -45,10 +45,12 @@ import javax.swing.ImageIcon;
 
 import org.cytoscape.model.CyTable;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
 import org.jdesktop.swingx.multislider.Thumb;
 
@@ -71,13 +73,11 @@ public class C2DMappingEditor<K, V> extends ContinuousMappingEditorPanel<K, V> {
 
 	private EditorManager editorFactory;
 
-	public C2DMappingEditor(VisualProperty<V> type,
-			EditorManager editorFactory, final SelectedVisualStyleManager manager, CyTable attr) {
-		super(type, manager, attr);
+	public C2DMappingEditor(final VisualStyle style, final ContinuousMapping<K, V> mapping, CyTable attr) {
+		super(style, mapping, attr);
 		this.iconPanel.setVisible(false);
 		this.belowPanel.setVisible(false);
 		this.abovePanel.setVisible(false);
-		this.editorFactory = editorFactory;
 		//FIXME
 		//setSlider();
 	}

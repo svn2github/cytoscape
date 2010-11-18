@@ -228,7 +228,7 @@ public class EditorManagerImpl implements EditorManager {
 	@SuppressWarnings("unchecked")
 	public <V> VisualPropertyEditor<V> getVisualPropertyEditor(
 			final VisualProperty<V> vp) {
-		return (VisualPropertyEditor<V>) editors.get(vp);
+		return (VisualPropertyEditor<V>) editors.get(vp.getType());
 	}
 
 	/*
@@ -247,25 +247,6 @@ public class EditorManagerImpl implements EditorManager {
 	}
 
 	
-	@Override public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type) {
-		VisualPropertyEditor<?> editor = editors.get(type.getType());
-		if (editor == null)
-			return null;
-
-		return editor.getPropertyEditor();
-	}
-
-	@Override
-	public TableCellRenderer getDiscreteCellRenderer(
-			final VisualProperty<?> type) {
-		
-		final VisualPropertyEditor<?> editor = editors.get(type.getType());
-		if(editor == null)
-			return null;
-		else
-			return editor.getTableCellRenderer();
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 

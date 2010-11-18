@@ -63,10 +63,11 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 	
 	protected final Class<T> type;
 	protected final PropertyEditor propertyEditor;
-	protected Component continuousEditor;
+	protected PropertyEditor continuousEditor;
 	protected Window vpValueEditor;
 	
-	protected TableCellRenderer tableCellRenderer;
+	protected TableCellRenderer discreteTableCellRenderer;
+	protected TableCellRenderer continuousTableCellRenderer;
 
 	/**
 	 * Creates a new AbstractVisualPropertyEditor object.
@@ -114,8 +115,12 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	@Override public TableCellRenderer getTableCellRenderer() {
-		return tableCellRenderer;
+	@Override public TableCellRenderer getDiscreteTableCellRenderer() {
+		return discreteTableCellRenderer;
+	}
+	
+	@Override public TableCellRenderer getContinuousTableCellRenderer() {
+		return continuousTableCellRenderer;
 	}
 
 	/**
@@ -125,7 +130,7 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 	 *
 	 * @throws IllegalArgumentException DOCUMENT ME!
 	 */
-	@Override public Component getContinuousMappingEditor() throws IllegalArgumentException {
+	@Override public PropertyEditor getContinuousMappingEditor() throws IllegalArgumentException {
 		return continuousEditor;
 	}
 

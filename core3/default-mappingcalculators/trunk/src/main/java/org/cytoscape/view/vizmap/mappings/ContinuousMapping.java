@@ -157,7 +157,10 @@ public class ContinuousMapping<K, V> extends AbstractVisualMappingFunction<K, V>
 	@Override
 	public void apply(final View<? extends CyTableEntry> view) {
 		if (view == null)
-			return; // empty list, nothing to do
+			return;
+		
+		if(this.points.size() == 0)
+			return;
 
 		doMap(view);
 	}
@@ -180,7 +183,7 @@ public class ContinuousMapping<K, V> extends AbstractVisualMappingFunction<K, V>
 	 */
 	private void doMap(final View<? extends CyTableEntry> view) {
 
-		CyRow row = view.getModel().getCyRow();
+		final CyRow row = view.getModel().getCyRow();
 
 		if (row.isSet(attrName, attrType)) {
 			// skip Views where source attribute is not defined;

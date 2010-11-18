@@ -38,12 +38,13 @@ import java.awt.Color;
 import java.awt.Paint;
 
 import javax.swing.Icon;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.model.CyTableManager;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
+import org.cytoscape.view.vizmap.gui.internal.cellrenderer.ColorContinuousMappingCellRenderer;
+import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.GradientEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyColorPropertyEditor;
-
-import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 
 
 /**
@@ -57,32 +58,15 @@ public class ColorVisualPropertyEditor extends AbstractVisualPropertyEditor<Pain
 	/**
 	 * Constructor. Should instantiate one editor per VisualProperty.
 	 */
-	public ColorVisualPropertyEditor(final Class<Paint> type) {
+	public ColorVisualPropertyEditor(final Class<Paint> type, final CyTableManager manager, final CyApplicationManager appManager, final SelectedVisualStyleManager selectedManager) {
 		super(type, new CyColorPropertyEditor());
-		tableCellRenderer = REG.getRenderer(Color.class);
 		
-		//FIXME
-		//continuousEditor = new GradientEditorPanel(this.vp, null, attr);
+		discreteTableCellRenderer = REG.getRenderer(Color.class);
+		continuousTableCellRenderer = new ColorContinuousMappingCellRenderer();
+		
+		continuousEditor = new GradientEditor(manager, appManager, selectedManager);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param type
-	 *            DOCUMENT ME!
-	 * @param width
-	 *            DOCUMENT ME!
-	 * @param height
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	@Override public TableCellRenderer getTableCellRenderer() {
-		//FIXME
-		//((JLabel) tableCellRenderer).setIcon(GradientEditorPanel.getIcon(width, height, vp));
-
-		return tableCellRenderer;
-	}
 
 	/**
 	 * DOCUMENT ME!

@@ -129,50 +129,6 @@ public interface EditorManager {
 	
 	PropertyEditor getMappingFunctionSelector();
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param type
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public PropertyEditor getDiscreteCellEditor(VisualProperty<?> type);
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param type
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public TableCellRenderer getDiscreteCellRenderer(VisualProperty<?> type);
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param type
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public PropertyEditor getContinuousCellEditor(VisualProperty<?> type);
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param type
-	 *            DOCUMENT ME!
-	 * @param w
-	 *            DOCUMENT ME!
-	 * @param h
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public TableCellRenderer getContinuousCellRenderer(VisualProperty<?> type,
-			int w, int h);
 
 	/**
 	 *  DOCUMENT ME!

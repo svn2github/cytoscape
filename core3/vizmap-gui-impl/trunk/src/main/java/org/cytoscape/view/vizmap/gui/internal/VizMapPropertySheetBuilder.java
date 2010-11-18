@@ -303,6 +303,7 @@ public class VizMapPropertySheetBuilder {
 			prop.setCategory(AbstractVizMapperPanel.CATEGORY_UNUSED);
 			prop.setDisplayName(type.getDisplayName());
 			prop.setValue("Double-Click to create...");
+			prop.setEditable(false);
 			propertySheetPanel.addProperty(prop);
 			propList.add(prop);
 		}

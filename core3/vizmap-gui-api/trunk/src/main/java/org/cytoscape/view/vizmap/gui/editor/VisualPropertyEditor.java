@@ -61,7 +61,7 @@ public interface VisualPropertyEditor<T> {
 	 * @param parent
 	 * @param type
 	 */
-	Component getContinuousMappingEditor() throws IllegalArgumentException;
+	PropertyEditor getContinuousMappingEditor();
 
 	/**
 	 * Returns Property Editor object for this data type.
@@ -93,7 +93,9 @@ public interface VisualPropertyEditor<T> {
 	 * 
 	 * @return
 	 */
-	TableCellRenderer getTableCellRenderer();
+	TableCellRenderer getDiscreteTableCellRenderer();
+	
+	TableCellRenderer getContinuousTableCellRenderer();
 
 	/**
 	 * This is for default view editor.

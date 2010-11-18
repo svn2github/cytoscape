@@ -133,15 +133,15 @@
 	<bean id="colorPropertyEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.ColorVisualPropertyEditor">
 		<constructor-arg ref="paintClass" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="selectedVisualStyleManager" />
 	</bean>
 	<bean id="doublePropertyEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.DoubleVisualPropertyEditor">
 		<constructor-arg ref="doubleClass" />
 		<constructor-arg ref="selectedVisualStyleManager" />
 	</bean>
-
-
-
 
 	<!-- Main Panel Configurations -->
 	<bean id="colorMgr"

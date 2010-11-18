@@ -44,6 +44,7 @@ import org.cytoscape.view.model.VisualProperty;
  *
  */
 public class EditorValueRangeTracer {
+	
 	private Map<VisualProperty<?>, Range> rangeMap;
 
 	/**

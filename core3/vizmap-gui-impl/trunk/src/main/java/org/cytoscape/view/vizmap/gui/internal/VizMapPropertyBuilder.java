@@ -64,7 +64,6 @@ import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 
-
 /**
  * Create property for the Property Sheet object.
  */
@@ -76,7 +75,7 @@ public class VizMapPropertyBuilder {
 	private DefaultTableCellRenderer filledBoxRenderer;
 
 	private EditorManager editorManager;
-	
+
 	private CyNetworkManager cyNetworkManager;
 	private CyTableManager tableMgr;
 
@@ -99,9 +98,11 @@ public class VizMapPropertyBuilder {
 	public <K, V> VizMapperProperty<VisualProperty<V>, String, VisualMappingFunctionFactory> buildProperty(
 			final VisualMappingFunction<K, V> visualMapping,
 			final String categoryName,
-			final PropertySheetPanel propertySheetPanel, final VisualMappingFunctionFactory factory) {
+			final PropertySheetPanel propertySheetPanel,
+			final VisualMappingFunctionFactory factory) {
 
-		logger.debug("\n\n\nbuildProp called: Root VP = " + categoryName);
+		logger.debug("\n\n\n************************* buildProp called: Root VP = "
+				+ categoryName);
 
 		// Mapping is empty
 		if (visualMapping == null)
@@ -113,18 +114,19 @@ public class VizMapPropertyBuilder {
 			throw new NullPointerException("PropertySheet is null.");
 
 		final VisualProperty<V> vp = visualMapping.getVisualProperty();
-		final VizMapperProperty<VisualProperty<V>, String, VisualMappingFunctionFactory> topProperty 
-			= new VizMapperProperty<VisualProperty<V>, String, VisualMappingFunctionFactory>(CellType.VISUAL_PROPERTY_TYPE, vp, String.class);
+		final VizMapperProperty<VisualProperty<V>, String, VisualMappingFunctionFactory> topProperty = new VizMapperProperty<VisualProperty<V>, String, VisualMappingFunctionFactory>(
+				CellType.VISUAL_PROPERTY_TYPE, vp, String.class);
 
 		// Build Property object
 		topProperty.setCategory(categoryName);
 		topProperty.setDisplayName(vp.getDisplayName());
 		topProperty.setInternalValue(factory);
-		
+
 		final String attrName = visualMapping.getMappingAttributeName();
-		final VizMapperProperty<String, VisualMappingFunctionFactory, VisualMappingFunction<K, V>> mappingHeader 
-			= new VizMapperProperty<String, VisualMappingFunctionFactory, VisualMappingFunction<K, V>>(CellType.MAPPING_TYPE, "Mapping Type", VisualMappingFunctionFactory.class);
-		
+		final VizMapperProperty<String, VisualMappingFunctionFactory, VisualMappingFunction<K, V>> mappingHeader = new VizMapperProperty<String, VisualMappingFunctionFactory, VisualMappingFunction<K, V>>(
+				CellType.MAPPING_TYPE, "Mapping Type",
+				VisualMappingFunctionFactory.class);
+
 		if (attrName == null) {
 			topProperty.setValue("Select Attribute");
 			((PropertyRendererRegistry) propertySheetPanel.getTable()
@@ -159,8 +161,12 @@ public class VizMapPropertyBuilder {
 			Iterator<? extends CyTableEntry> it = null;
 
 			((PropertyEditorRegistry) propertySheetPanel.getTable()
-					.getEditorFactory()).registerEditor(topProperty,
-					editorManager.getDataTableComboBoxEditor((Class<? extends CyTableEntry>) vp.getTargetDataType()));
+					.getEditorFactory())
+					.registerEditor(
+							topProperty,
+							editorManager
+									.getDataTableComboBoxEditor((Class<? extends CyTableEntry>) vp
+											.getTargetDataType()));
 			if (vp.getTargetDataType().equals(CyNode.class)) {
 				it = targetNetwork.getNodeList().iterator();
 			} else if (vp.getTargetDataType().equals(CyEdge.class)) {
@@ -168,37 +174,43 @@ public class VizMapPropertyBuilder {
 			} else if (vp.getTargetDataType().equals(CyNetwork.class)) {
 				it = cyNetworkManager.getNetworkSet().iterator();
 			} else {
-				throw new IllegalArgumentException("Data type not supported: " + vp.getTargetDataType());
+				throw new IllegalArgumentException("Data type not supported: "
+						+ vp.getTargetDataType());
 			}
 
 			while (it.hasNext())
 				graphObjectSet.add(it.next());
 		}
 
-		/*
-		 * Discrete Mapping
-		 */
+		
+		
+		final VisualPropertyEditor<V> vpEditor = editorManager.getVisualPropertyEditor(vp);
+		logger.debug("vpEditor is " + vpEditor);
+		
 		if (visualMapping instanceof DiscreteMapping && (attrName != null)) {
-
+			
+			// Discrete Mapping
 			final SortedSet<K> attrSet = new TreeSet<K>();
 			for (CyTableEntry go : graphObjectSet) {
 				final Class<?> attrClass = go.getCyRow().getDataTable()
 						.getColumnTypeMap().get(attrName);
 
 				Object id = go.getCyRow().get(attrName, attrClass);
-				if(id != null)
+				if (id != null)
 					attrSet.add((K) id);
 			}
 
 			// FIXME
 			setDiscreteProps(vp, visualMapping, attrSet,
-					editorManager.getVisualPropertyEditor(vp),
-					topProperty, propertySheetPanel);
+					vpEditor, topProperty,
+					propertySheetPanel);
+
 		} else if (visualMapping instanceof ContinuousMapping
 				&& (attrName != null)) {
 
-			final VizMapperProperty<String, String, VisualMappingFunction<K, V>> graphicalView 
-				= new VizMapperProperty<String, String, VisualMappingFunction<K, V>>(CellType.CONTINUOUS, AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW, String.class);
+			final VizMapperProperty<String, String, VisualMappingFunction<K, V>> graphicalView = new VizMapperProperty<String, String, VisualMappingFunction<K, V>>(
+					CellType.CONTINUOUS,
+					AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW, String.class);
 			graphicalView.setValue(visualMapping);
 			graphicalView
 					.setDisplayName(AbstractVizMapperPanel.GRAPHICAL_MAP_VIEW);
@@ -206,12 +218,19 @@ public class VizMapPropertyBuilder {
 			topProperty.addSubProperty(graphicalView);
 
 			// FIXME
-			// TableCellRenderer crenderer = editorFactory
-			// .getVisualPropertyEditor(vp).getContinuousMappingEditor();
-			//
-			// ((PropertyRendererRegistry) propertySheetPanel.getTable()
-			// .getRendererFactory()).registerRenderer(graphicalView,
-			// crenderer);
+			final TableCellRenderer continuousRenderer = vpEditor.getContinuousTableCellRenderer();
+
+			final PropertySheetTable table = propertySheetPanel.getTable();
+			((PropertyRendererRegistry) table
+					.getRendererFactory()).registerRenderer(graphicalView,
+							continuousRenderer);
+			
+			final PropertyEditorRegistry cellEditorFactory = (PropertyEditorRegistry) table.getEditorFactory();
+			final PropertyEditor continuousCellEditor = editorManager.getVisualPropertyEditor(vp).getContinuousMappingEditor();
+			
+			if (continuousCellEditor != null)
+				cellEditorFactory.registerEditor(graphicalView, continuousCellEditor);
+			
 		} else if (visualMapping instanceof PassthroughMapping
 				&& (attrName != null)) {
 
@@ -235,8 +254,8 @@ public class VizMapPropertyBuilder {
 				else
 					stringVal = null;
 
-				final VizMapperProperty<String, V, VisualMappingFunction<K, V>> oneProperty 
-					= new VizMapperProperty<String, V, VisualMappingFunction<K, V>>(CellType.DISCRETE, id, (Class<V>) value.getClass());
+				final VizMapperProperty<String, V, VisualMappingFunction<K, V>> oneProperty = new VizMapperProperty<String, V, VisualMappingFunction<K, V>>(
+						CellType.DISCRETE, id, (Class<V>) value.getClass());
 				oneProperty.setInternalValue(visualMapping);
 				oneProperty.setValue(stringVal);
 
@@ -250,7 +269,8 @@ public class VizMapPropertyBuilder {
 			}
 
 		} else {
-			throw new IllegalArgumentException("Unsupported mapping type: " + visualMapping);
+			throw new IllegalArgumentException("Unsupported mapping type: "
+					+ visualMapping);
 		}
 
 		propertySheetPanel.addProperty(0, topProperty);
@@ -262,28 +282,32 @@ public class VizMapPropertyBuilder {
 	 * Set value, title, and renderer for each property in the category. This
 	 * list should be created against all available attribute values.
 	 */
-	private <K, V> void setDiscreteProps(VisualProperty<V> vp, VisualMappingFunction<K, V> mapping,
-			SortedSet<K> attrSet,
+	private <K, V> void setDiscreteProps(VisualProperty<V> vp,
+			VisualMappingFunction<K, V> mapping, SortedSet<K> attrSet,
 			VisualPropertyEditor<V> visualPropertyEditor,
 			DefaultProperty parent, PropertySheetPanel propertySheetPanel) {
 		if (attrSet == null)
 			return;
 
 		final Map<K, V> discMapping = ((DiscreteMapping<K, V>) mapping)
-		.getAll();
-		
+				.getAll();
+
 		V val = null;
 		VizMapperProperty<K, V, VisualMappingFunction<K, V>> valProp;
 		String strVal;
 
 		final List<VizMapperProperty<K, V, VisualMappingFunction<K, V>>> children = new ArrayList<VizMapperProperty<K, V, VisualMappingFunction<K, V>>>();
 		final PropertySheetTable table = propertySheetPanel.getTable();
-		final PropertyRendererRegistry cellRendererFactory = (PropertyRendererRegistry) table.getRendererFactory();
-		final PropertyEditorRegistry cellEditorFactory = (PropertyEditorRegistry) table.getEditorFactory();
-		
+		final PropertyRendererRegistry cellRendererFactory = (PropertyRendererRegistry) table
+				.getRendererFactory();
+		final PropertyEditorRegistry cellEditorFactory = (PropertyEditorRegistry) table
+				.getEditorFactory();
+
 		for (K key : attrSet) {
-			
-			valProp = new VizMapperProperty<K, V, VisualMappingFunction<K, V>>(CellType.DISCRETE, key, mapping.getVisualProperty().getType());
+
+			valProp = new VizMapperProperty<K, V, VisualMappingFunction<K, V>>(
+					CellType.DISCRETE, key, mapping.getVisualProperty()
+							.getType());
 			strVal = key.toString();
 			valProp.setDisplayName(strVal);
 			valProp.setParentProperty(parent);
@@ -296,12 +320,13 @@ public class VizMapPropertyBuilder {
 
 			children.add(valProp);
 
-			final TableCellRenderer renderer = editorManager.getDiscreteCellRenderer(vp);
-			if(renderer != null)
+			final TableCellRenderer renderer = editorManager.getVisualPropertyEditor(vp).getDiscreteTableCellRenderer();
+			if (renderer != null)
 				cellRendererFactory.registerRenderer(valProp, renderer);
 
-			final PropertyEditor cellEditor = editorManager.getDiscreteCellEditor(vp);
-			if(cellEditor != null)
+			final PropertyEditor cellEditor = editorManager.getVisualPropertyEditor(vp).getPropertyEditor();
+			
+			if (cellEditor != null)
 				cellEditorFactory.registerEditor(valProp, cellEditor);
 
 			valProp.setValue(val);

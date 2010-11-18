@@ -52,7 +52,7 @@ public class DoubleVisualPropertyEditor extends
 	public DoubleVisualPropertyEditor(Class<Double> type,
 			final SelectedVisualStyleManager manager) {
 		super(type, new CyDoublePropertyEditor(null));
-		tableCellRenderer = REG.getRenderer(Double.class);
+		discreteTableCellRenderer = REG.getRenderer(Double.class);
 		// continuousEditor = new C2CMappingEditor<Number, Number>(this.vp,
 		// manager, attr);
 	}

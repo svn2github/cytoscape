@@ -49,9 +49,8 @@ import javax.swing.event.ChangeListener;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
@@ -66,26 +65,19 @@ import org.jdesktop.swingx.multislider.Thumb;
  * @param T
  *            type of the value associated with the thumb.
  * 
- * 
- * @version 0.5
- * @since Cytoscape 2.5
- * @author kono
  */
 public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implements
 		PropertyChangeListener {
 	private static final long serialVersionUID = 2077889066171872186L;
 
-	/*
-	 * Used by track renderers.
-	 */
 	protected static final String BELOW_VALUE_CHANGED = "BELOW_VALUE_CHANGED";
 	protected static final String ABOVE_VALUE_CHANGED = "ABOVE_VALUE_CHANGED";
 
-	// Continuous mapping only accepts numerical attributes.
-	protected VisualProperty<V> type;
-
 	// Only accepts Continuous Mapping
-	protected ContinuousMapping<K, V> mapping;
+	protected final ContinuousMapping<K, V> mapping;
+	protected final VisualProperty<V> type;
+	private final CyTable attr;
+	
 	protected List<ContinuousMappingPoint<K, V>> allPoints;
 	private SpinnerNumberModel spinnerModel;
 
@@ -98,24 +90,31 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 	protected VisualMappingManager vmm;
 
 	// This should be injected.
-	protected EditorValueRangeTracer tracer;
-
-	protected final SelectedVisualStyleManager manager;
+	private final EditorValueRangeTracer tracer;
 	
-	private final CyTable attrs;
-
 	/**
 	 * 
 	 * Creates new form ContinuousMapperEditorPanel Accepts only one visual
 	 * property type T.
 	 * 
 	 * */
-	public ContinuousMappingEditorPanel(final VisualProperty<V> type,
-			final SelectedVisualStyleManager manager, final CyTable attrs) {
-		this.type = type;
-		this.manager = manager;
-		this.attrs = attrs;
-
+	public ContinuousMappingEditorPanel(final VisualStyle style, final ContinuousMapping<K, V> mapping, final CyTable attr) {
+		if(mapping == null)
+			throw new NullPointerException("ContinuousMapping should not be null.");
+		if(attr == null)
+			throw new NullPointerException("Data table should not be null.");
+		
+		this.tracer = new EditorValueRangeTracer(style.getVisualLexicon());
+		this.mapping = mapping;
+		this.type = mapping.getVisualProperty();
+		
+		final String controllingAttrName = mapping.getMappingAttributeName();
+		final Class<?> attrType = attr.getColumnTypeMap().get(controllingAttrName);
+		if (attrType != Double.class)
+			throw new IllegalArgumentException("Cannot support attribute data type: " + attrType);
+		
+		this.attr = attr;
+		
 		initComponents();
 		setVisualPropLabel();
 
@@ -157,12 +156,12 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
-		JPanel mainPanel = new JPanel();
+		
+		final JPanel mainPanel = new JPanel();
 
-		abovePanel = new BelowAndAbovePanel(type, Color.yellow, false,
-				manager);
+		abovePanel = new BelowAndAbovePanel(Color.yellow, false, mapping);
 		abovePanel.setName("abovePanel");
-		belowPanel = new BelowAndAbovePanel(type, Color.white, true, manager);
+		belowPanel = new BelowAndAbovePanel(Color.white, true, mapping);
 		belowPanel.setName("belowPanel");
 
 		abovePanel.setPreferredSize(new Dimension(16, 1));
@@ -374,28 +373,12 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 
 	private void initRangeValues() {
 
-		VisualMappingFunction<?, V> map = manager.getCurrentVisualStyle()
-				.getVisualMappingFunction(type);
-
-		if (map == null || map instanceof ContinuousMapping == false)
-			return;
-
-		// TODO: fix the following section
-		// Assume this calc only returns cont. mapping.
-		mapping = (ContinuousMapping<K, V>) map;
-
-		final String controllingAttrName = mapping.getMappingAttributeName();
-
-		if (attrs.getColumnTypeMap().get(controllingAttrName) != Double.class)
-			return;
-
 		// Set range values
 		if (tracer.getRange(type) == 0) {
 			Double maxValue = Double.NEGATIVE_INFINITY;
 			Double minValue = Double.POSITIVE_INFINITY;
-
-			for (Double val : attrs.getColumnValues(controllingAttrName,
-					Double.class)) {
+			final List<Double> valueList = attr.getColumnValues(mapping.getMappingAttributeName(), Double.class);
+			for (Double val : valueList) {
 				if (val > maxValue)
 					maxValue = val;
 
