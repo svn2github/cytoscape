@@ -43,6 +43,7 @@
 package org.cytoscape.view.vizmap.mappings;
 
 import java.awt.Color;
+import java.awt.Paint;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +89,7 @@ public class ContinuousMapping<K, V> extends AbstractVisualMappingFunction<K, V>
 
 		// TODO FIXME use factory here.
 		// Create Interpolator
-		if (Color.class.isAssignableFrom(vp.getType()))
+		if (vp.getType() == Color.class || vp.getType() == Paint.class)
 			interpolator = (Interpolator<K, V>) new LinearNumberToColorInterpolator();
 		else if (Number.class.isAssignableFrom(vp.getType()))
 			interpolator = (Interpolator<K, V>) new LinearNumberToNumberInterpolator();
