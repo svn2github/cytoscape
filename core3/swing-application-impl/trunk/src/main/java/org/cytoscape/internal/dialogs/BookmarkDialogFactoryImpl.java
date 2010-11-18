@@ -17,7 +17,7 @@ public class BookmarkDialogFactoryImpl {
 		this.bkUtil = bkUtil;
 	}
 
-	public BookmarkDialogImpl getBookamrkDialog(Frame parent) {
+	public BookmarkDialogImpl getBookmarkDialog(Frame parent) {
 		return new BookmarkDialogImpl(parent, bookmarksProp.getProperties(),
 				bkUtil);
 	}

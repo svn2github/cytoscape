@@ -1,14 +1,7 @@
 /*
  File: PreferenceAction.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,14 +26,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
-//-------------------------------------------------------------------------
-// $Revision: 7760 $
-// $Date: 2006-06-26 09:28:49 -0700 (Mon, 26 Jun 2006) $
-// $Author: mes $
-//-------------------------------------------------------------------------
+*/
 package org.cytoscape.internal.actions;
+
 
 import java.awt.event.ActionEvent;
 
@@ -50,9 +38,7 @@ import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.internal.dialogs.BookmarkDialogImpl;
 import org.cytoscape.internal.dialogs.BookmarkDialogFactoryImpl;
 
-/**
- *
- */
+
 public class BookmarkAction extends AbstractCyAction {
 	private final static long serialVersionUID = 120233986993206L;
 	private CySwingApplication desktop;
@@ -76,7 +62,7 @@ public class BookmarkAction extends AbstractCyAction {
 	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final BookmarkDialogImpl bookmarkDialog = bookmarkDialogFactory.getBookamrkDialog(desktop.getJFrame());
+		final BookmarkDialogImpl bookmarkDialog = bookmarkDialogFactory.getBookmarkDialog(desktop.getJFrame());
 		bookmarkDialog.showDialog();
 	}
 }
