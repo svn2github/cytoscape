@@ -155,12 +155,6 @@
 		<version>1.0.3</version>
     </dependency>
 
-    <dependency>
-    	<groupId>org.cytoscape.wrappers</groupId>
-		<artifactId>org.swinglabs.swingx</artifactId>
-		<version>1.6.1</version> 
-    </dependency>
-
 	<dependency>
     	<groupId>org.cytoscape</groupId>
     	<artifactId>swing-application-api</artifactId>
