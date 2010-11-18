@@ -1,13 +1,15 @@
-<project name="BiNGO" default="all" basedir=".">
+
+<project name="genomespace-plugin-ant" default="all" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init">
     <tstamp/>
-    <property name="name" value="BiNGO"/>
-    <property name="plugin.class" value="BiNGO.BiNGOplugin"/>
-    <property name="version" value=""/>
+    <property name="name" value="GenomeSpacePlugin"/>
+
+	<!-- to support plugin.props, make sure the version is only two digits!-->
+    <property name="version" value="1.0"/>
 
     <echo message="Building ${name} version ${version} ..."/>
 
@@ -19,12 +21,11 @@
 
     <!-- Define the directories -->
     <property name="root.dir" value="."/>
-    <property name="lib.dir" value="${root.dir}/lib"/>
-    <property name="cy.dir" value="../../../../cytoscape"/>
-    <property name="src.dir" value="${root.dir}/src"/>
     <property name="resources.dir" value="${root.dir}/resources"/>
+    <property name="src.dir" value="${root.dir}/src"/>
     <property name="tests.dir" value="${root.dir}/tests"/>
     <property name="build.dir" value="${root.dir}/build"/>
+    <property name="lib.dir" value="${root.dir}/lib"/>
     <property name="javadoc.dir" value="${root.dir}/API"/>
     <property name="log.dir" value="${build.dir}/logs" />
     <property name="junit.report.dir" value="${log.dir}/junit-reports" />
@@ -33,17 +34,34 @@
     <property name="project.jar" value="${name}.jar"/>
     <property name="test.jar" value="${name}-tests.jar"/>
 
-    <!-- Define the class path - Defaults to everything in the lib.dir -->
+    <!-- Make sure tests is in the right place -->
+    <condition property="tests.ok">
+      <and>
+        <available file="${tests.dir}" />
+      </and>
+    </condition>
+  </target>
+
+  <target name="build-classpath"
+          depends="init" >
+    <artifact:remoteRepository 
+       id="cytoscape_releases" 
+       url="http://cytoscape.wodaklab.org/nexus/content/repositories/releases/" />
+    <artifact:remoteRepository 
+       id="cytoscape_snapshots" 
+       url="http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/" />
+    <artifact:dependencies pathId="dependency.classpath">
+      <dependency groupId="cytoscape" 
+                  artifactId="application" 
+                  version="2.8.0-beta4-SNAPSHOT"/>
+    </artifact:dependencies>
+
+    <!-- Define the class path -->
     <path id="project.class.path">
       <fileset dir="${lib.dir}">
         <include name="*.jar"/>
       </fileset>
-      <fileset dir="${cy.dir}">
-        <include name="*.jar"/>
-      </fileset>
-      <fileset dir="${cy.dir}/lib">
-        <include name="*.jar"/>
-      </fileset>
+	  <path refid="dependency.classpath"/>
     </path>
    
     <!-- Define the junit class path - It needs to find what we just built --> 
@@ -54,22 +72,15 @@
       <fileset dir="${lib.dir}">
         <include name="*.jar"/>
       </fileset>
+	  <path refid="dependency.classpath"/>
     </path>
-
-    <!-- Make sure tests is in the right place -->
-    <condition property="tests.ok">
-      <and>
-        <available file="${tests.dir}" />
-      </and>
-    </condition>
-
   </target>
 
   <!-- =================================================================== -->
   <!-- Compiles the project                                                -->
   <!-- =================================================================== -->
   <target name="compile" 
-          depends="init" >
+          depends="build-classpath" >
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${log.dir}"/>
     <javac srcdir="${src.dir}"
@@ -92,18 +103,25 @@
   <!-- =================================================================== -->
   <target name="jar" 
           depends="compile" >
-    <mkdir dir="${lib.dir}"/>
-    <copy toDir="${build.dir}">
-      <fileset dir="${resources.dir}"/>
-    </copy>
-	<move file="${build.dir}/plugin.props" 
-	      todir="${build.dir}/BiNGO" /> 
-    <jar destfile="${project.jar}">
+	<filter token="version" value="${version}"/>
+	<copy file="${resources.dir}/mime.types" 
+	      todir="${build.dir}"/>
+	<copy file="${resources.dir}/plugin.props" 
+	      todir="${build.dir}/cytoscape/genomespace"
+		  filtering="true"
+		  overwrite="true"/>
+    <unjar dest="${build.dir}">
+      <fileset dir="${lib.dir}">
+        <include name="*.jar" />
+      </fileset>
+    </unjar>
+
+    <jar destfile="${project.jar}" >
       <fileset dir="${build.dir}"
                includes="**"/>
       <manifest>
-         <attribute name="Cytoscape-Plugin"
-                    value="${plugin.class}"/>
+        <attribute name="Cytoscape-Plugin"
+	           value="cytoscape.genomespace.GenomeSpacePlugin"/>
       </manifest>
     </jar>
     <echo message="Successfully ran jar task!"/>
@@ -123,6 +141,8 @@
            debug="${debug}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
+           source="1.5"
+           target="1.5"
            fork="${fork}">
       <compilerarg line="-Xlint:all -Xlint:-path"/>
     </javac>
