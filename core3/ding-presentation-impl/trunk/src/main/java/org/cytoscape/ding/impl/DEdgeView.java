@@ -91,8 +91,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		m_sourceSelectedPaint = Color.red;
 		m_targetUnselectedPaint = m_view.m_edgeDetails.targetArrowPaint(m_inx);
 		m_targetSelectedPaint = Color.red;
-		m_sourceEdgeEnd = GraphGraphics.ARROW_NONE;
-		m_targetEdgeEnd = GraphGraphics.ARROW_NONE;
+		m_sourceEdgeEnd = NO_END;
+		m_targetEdgeEnd = NO_END;
 		m_anchors = null;
 		m_lineType = EdgeView.STRAIGHT_LINES;
 	}
@@ -600,53 +600,52 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 			switch (type) {
 			case NO_END:
 				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_NONE);
-
 				break;
 
 			case WHITE_DELTA:
 			case BLACK_DELTA:
 			case EDGE_COLOR_DELTA:
 				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DELTA);
-
 				break;
 
 			case WHITE_ARROW:
 			case BLACK_ARROW:
 			case EDGE_COLOR_ARROW:
 				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_ARROWHEAD);
-
 				break;
 
 			case WHITE_DIAMOND:
 			case BLACK_DIAMOND:
 			case EDGE_COLOR_DIAMOND:
 				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-
 				break;
 
 			case WHITE_CIRCLE:
 			case BLACK_CIRCLE:
 			case EDGE_COLOR_CIRCLE:
 				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DISC);
-
 				break;
 
 			case WHITE_T:
 			case BLACK_T:
 			case EDGE_COLOR_T:
 				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_TEE);
-
 				break;
 
+			case WHITE_HALF_BOTTOM:
+			case BLACK_HALF_BOTTOM:
 			case EDGE_HALF_ARROW_BOTTOM:
 				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_HALF_BOTTOM);
 				break;
+
+			case WHITE_HALF_TOP:
+			case BLACK_HALF_TOP:
 			case EDGE_HALF_ARROW_TOP:
 				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_HALF_TOP);
 				break;
 
 			default:
-				throw new IllegalArgumentException("unrecognized edge end type");
+				throw new IllegalArgumentException("unrecognized edge end type: " + type);
 			}
 
 			m_sourceEdgeEnd = type;
@@ -664,54 +663,54 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		synchronized (m_view.m_lock) {
 			//       if (type == m_targetEdgeEnd) { return; }
 			switch (type) {
-				case NO_END:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_NONE);
+			case NO_END:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_NONE);
+				break;
 
-					break;
+			case WHITE_DELTA:
+			case BLACK_DELTA:
+			case EDGE_COLOR_DELTA:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
+				break;
 
-				case WHITE_DELTA:
-				case BLACK_DELTA:
-				case EDGE_COLOR_DELTA:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
+			case WHITE_ARROW:
+			case BLACK_ARROW:
+			case EDGE_COLOR_ARROW:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_ARROWHEAD);
+				break;
 
-					break;
+			case WHITE_DIAMOND:
+			case BLACK_DIAMOND:
+			case EDGE_COLOR_DIAMOND:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
+				break;
 
-				case WHITE_ARROW:
-				case BLACK_ARROW:
-				case EDGE_COLOR_ARROW:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_ARROWHEAD);
+			case WHITE_CIRCLE:
+			case BLACK_CIRCLE:
+			case EDGE_COLOR_CIRCLE:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
+				break;
 
-					break;
+			case WHITE_T:
+			case BLACK_T:
+			case EDGE_COLOR_T:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
+				break;
 
-				case WHITE_DIAMOND:
-				case BLACK_DIAMOND:
-				case EDGE_COLOR_DIAMOND:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
+			case WHITE_HALF_BOTTOM:
+			case BLACK_HALF_BOTTOM:
+			case EDGE_HALF_ARROW_BOTTOM:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_HALF_BOTTOM);
+				break;
 
-					break;
+			case WHITE_HALF_TOP:
+			case BLACK_HALF_TOP:
+			case EDGE_HALF_ARROW_TOP:
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_HALF_TOP);
+				break;
 
-				case WHITE_CIRCLE:
-				case BLACK_CIRCLE:
-				case EDGE_COLOR_CIRCLE:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
-
-					break;
-
-				case WHITE_T:
-				case BLACK_T:
-				case EDGE_COLOR_T:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
-
-					break;
-				case EDGE_HALF_ARROW_BOTTOM:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_HALF_BOTTOM);
-					break;
-				case EDGE_HALF_ARROW_TOP:
-					m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_HALF_TOP);
-					break;
-
-				default:
-					throw new IllegalArgumentException("unrecognized edge end type");
+			default:
+				throw new IllegalArgumentException("unrecognized edge end type: " + type);
 			}
 
 			m_targetEdgeEnd = type;
