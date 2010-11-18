@@ -7,13 +7,13 @@
 		<bundle.symbolicName>org.apache.lucene</bundle.symbolicName>
 		<wrapped.groupId>org.apache.lucene</wrapped.groupId>
 		<wrapped.artifactId>lucene-core</wrapped.artifactId>
-		<wrapped.version>2.9.0</wrapped.version>
+		<wrapped.version>3.0.2</wrapped.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape.wrappers</groupId>
 	<artifactId>org.apache.lucene</artifactId>
-	<version>2.9.0</version>
+	<version>3.0.2</version>
 
 	<name>${bundle.symbolicName} ${wrapped.version} [osgi]</name>
 
