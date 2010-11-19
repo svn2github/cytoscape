@@ -60,7 +60,6 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	final HashMap m_targetArrows = new HashMap();
 	final HashMap m_targetArrowPaints = new HashMap();
 	final HashMap m_segmentPaints = new HashMap();
-	//final HashMap m_segmentDashLengths = new HashMap();
 	final HashMap m_labelCounts = new HashMap();
 	final HashMap m_labelTexts = new HashMap();
 	final HashMap m_labelFonts = new HashMap();
