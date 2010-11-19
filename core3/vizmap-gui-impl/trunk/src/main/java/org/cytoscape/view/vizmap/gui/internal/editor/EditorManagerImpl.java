@@ -79,8 +79,6 @@ public class EditorManagerImpl implements EditorManager {
 
 	private final Map<Class<?>, ListEditor> attrComboBoxEditors;
 
-	private final Map<VisualProperty<?>, Component> continuousEditors;
-
 	private final Map<Class<?>, ValueEditor<?>> valueEditors;
 
 	private final PropertyEditor mappingTypeEditor;
@@ -90,8 +88,6 @@ public class EditorManagerImpl implements EditorManager {
 	 * Creates a new EditorFactory object.
 	 */
 	public EditorManagerImpl(final AttributeSetManager attrManager) {
-		continuousEditors = new HashMap<VisualProperty<?>, Component>();
-
 		editors = new HashMap<Class<?>, VisualPropertyEditor<?>>();
 
 		comboBoxEditors = new HashMap<String, PropertyEditor>();

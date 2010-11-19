@@ -136,11 +136,15 @@
 		<constructor-arg ref="cyTableManagerServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="selectedVisualStyleManager" />
+		<constructor-arg ref="editorManager" />
 	</bean>
 	<bean id="doublePropertyEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.DoubleVisualPropertyEditor">
 		<constructor-arg ref="doubleClass" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="selectedVisualStyleManager" />
+		<constructor-arg ref="editorManager" />
 	</bean>
 
 	<!-- Main Panel Configurations -->

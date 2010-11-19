@@ -58,36 +58,39 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
-import org.cytoscape.session.CyApplicationManager;
-
 /**
  * Track renderer for Continuous mapping (Number-to-Number mapping)
  * 
- * @author kono
  */
-public class ContinuousTrackRenderer<K, V extends Number>
+public class ContinuousTrackRenderer<K extends Number, V extends Number>
 		extends JComponent implements VizMapTrackRenderer {
-	/*
-	 * Constants for diagram.
-	 */
+	
 	private final static long serialVersionUID = 1202339877100033L;
-	private static Float UPPER_LIMIT = 2000f;
-	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
+	
+	// Preset colors
+	private static final Color VALUE_AREA_COLOR = new Color(0x1C, 0x86, 0xEE, 130);
+	
+	// Preset fonts
+	private static final Font smallFont = new Font("SansSerif", Font.BOLD, 10);
+	private static final Font defFont = new Font("SansSerif", Font.BOLD, 12);
+	private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private static final Font ICON_FONT = new Font("SansSerif", Font.BOLD, 8);
+	
+	private static final Float UPPER_LIMIT = 2000f;
+	
 	private static final int THUMB_WIDTH = 12;
-	private final Font smallFont = new Font("SansSerif", Font.BOLD, 10);
-	private final Font defFont = new Font("SansSerif", Font.BOLD, 12);
-	private static final Color VALUE_AREA_COLOR = new Color(0, 180, 255, 100);
-	private Map<Integer, Double> valueMap;
 	private static final int LEFT_SPACE = 50;
+	
+	private Map<Integer, Double> valueMap;
+	
 
 	/*
 	 * Define Colors used in this diagram.
@@ -109,8 +112,7 @@ public class ContinuousTrackRenderer<K, V extends Number>
 	private Map<Integer, Point> verticesList;
 	private int selectedIdx;
 	// private Point dragOrigin;
-	private VisualProperty<V> vp;
-	private ContinuousMapping<K, V> cMapping;
+	
 	private String title;
 	private V below;
 	private V above;
@@ -118,11 +120,13 @@ public class ContinuousTrackRenderer<K, V extends Number>
 	private Polygon valueArea = new Polygon();
 	private Point belowSquare;
 	private Point aboveSquare;
-	private VisualMappingManager vmm;
 
-	// TODO: Should be injected
-	private CyApplicationManager manager;
-	private EditorValueRangeTracer tracer;
+	private final CyApplicationManager manager;
+	private final EditorValueRangeTracer tracer;
+	private final VisualStyle style;
+	
+	private final VisualProperty<V> vp;
+	private final ContinuousMapping<K, V> cMapping;
 
 	/**
 	 * Creates a new ContinuousTrackRenderer object.
@@ -134,37 +138,42 @@ public class ContinuousTrackRenderer<K, V extends Number>
 	 * @param above
 	 *            DOCUMENT ME!
 	 */
-	@SuppressWarnings("unchecked")
-	public ContinuousTrackRenderer(VisualProperty<V> vp, V below, V above,
-			EditorValueRangeTracer tracer) {
+	public ContinuousTrackRenderer(final VisualStyle style, final ContinuousMapping<K, V> mapping, V below, V above,
+			final EditorValueRangeTracer tracer,  final CyApplicationManager manager) {
+
+		if(mapping == null)
+			throw new NullPointerException("Continuous Mapping object is null. is missing.");
+		if(tracer == null)
+			throw new NullPointerException("Tracer is missing.");
+		if(manager == null)
+			throw new NullPointerException("Application manager is missing.");
+		
 		this.below = below;
 		this.above = above;
-		this.vp = vp;
+		this.vp = mapping.getVisualProperty();
 		this.tracer = tracer;
+		this.manager = manager;
+		this.style = style;
 
-		final CyNetworkView view = manager.getCurrentNetworkView();
-
-		cMapping = (ContinuousMapping<K, V>) vmm.getVisualStyle(view)
-				.getVisualMappingFunction(this.vp);
-
+		cMapping = mapping;
 		title = cMapping.getMappingAttributeName();
 
-		// Float val;
-		// TODO: where should I put this property value?
-		// Object propStr =
-		// CytoscapeInit.getProperties().getProperty("vizmapper.cntMapperUpperLimit");
-		//
-		// if (propStr != null) {
-		// try {
-		// val = Float.parseFloat(propStr.toString());
-		// } catch (NumberFormatException e) {
-		// val = 2000f;
-		// }
-		//
-		// UPPER_LIMIT = val;
-		// } else {
-		// UPPER_LIMIT = 2000f;
-		// }
+		 Float val;
+		 //TODO: where should I put this property value?
+//		 Object propStr =
+//		 CytoscapeInit.getProperties().getProperty("vizmapper.cntMapperUpperLimit");
+//		
+//		 if (propStr != null) {
+//		 try {
+//		 val = Float.parseFloat(propStr.toString());
+//		 } catch (NumberFormatException e) {
+//		 val = 2000f;
+//		 }
+//		
+//		 UPPER_LIMIT = val;
+//		 } else {
+//		 UPPER_LIMIT = 2000f;
+//		 }
 
 	}
 
@@ -213,7 +222,7 @@ public class ContinuousTrackRenderer<K, V extends Number>
 
 		// set up the data for the gradient
 		float[] fractions = new float[numPoints];
-		Number[] floatProperty = new Float[numPoints];
+		final Double[] doubleValues = new Double[numPoints];
 		int i = 0;
 
 		values.clear();
@@ -221,7 +230,7 @@ public class ContinuousTrackRenderer<K, V extends Number>
 		values.add(above);
 
 		for (Thumb<V> thumb : stops) {
-			floatProperty[i] = thumb.getObject();
+			doubleValues[i] = thumb.getObject().doubleValue();
 			fractions[i] = thumb.getPosition();
 			values.add(thumb.getObject());
 			i++;
@@ -296,13 +305,13 @@ public class ContinuousTrackRenderer<K, V extends Number>
 		Point2D p1 = new Point2D.Float(0, 5);
 		Point2D p2 = new Point2D.Float(0, 5);
 
-		for (i = 0; i < floatProperty.length; i++) {
+		for (i = 0; i < doubleValues.length; i++) {
 			newX = (int) (track_width * (fractions[i] / 100));
 
 			p2.setLocation(newX, 5);
 
 			int newY = (5 + trackHeight)
-					- (int) ((floatProperty[i].floatValue() / max) * trackHeight);
+					- (int) ((doubleValues[i].floatValue() / max) * trackHeight);
 
 			valueArea.reset();
 
@@ -325,7 +334,8 @@ public class ContinuousTrackRenderer<K, V extends Number>
 			}
 
 			for (int j = 0; j < stops.size(); j++) {
-				if (slider.getModel().getThumbAt(j).getObject() == floatProperty[i]) {
+				final V tValue = slider.getModel().getThumbAt(j).getObject();
+				if (tValue.doubleValue() == doubleValues[i].doubleValue()) {
 					Point newPoint = new Point(newX, newY);
 
 					if (verticesList.containsValue(newPoint) == false)
@@ -342,17 +352,17 @@ public class ContinuousTrackRenderer<K, V extends Number>
 			g.setFont(smallFont);
 
 			int numberWidth = SwingUtilities.computeStringWidth(g
-					.getFontMetrics(), floatProperty[i].toString());
+					.getFontMetrics(), doubleValues[i].toString());
 
 			g.setColor(Color.DARK_GRAY);
 
 			if (fractions[i] < 10) {
 				g.drawLine(newX, newY, newX + 15, newY - 35);
-				g.drawString(floatProperty[i].toString(), newX + numberWidth,
+				g.drawString(doubleValues[i].toString(), newX + numberWidth,
 						newY - 48);
 			} else {
 				g.drawLine(newX, newY, newX - 15, newY + 35);
-				g.drawString(floatProperty[i].toString(), newX
+				g.drawString(doubleValues[i].toString(), newX
 						- (numberWidth + 5), newY + 48);
 			}
 
@@ -410,7 +420,8 @@ public class ContinuousTrackRenderer<K, V extends Number>
 				- (int) ((above.floatValue() / max) * trackHeight);
 		g.fillRect((int) p1.getX(), h, track_width - (int) p1.getX(),
 				(int) ((above.floatValue() / max) * trackHeight));
-		g.setColor(Color.red);
+		
+		g.setColor(Color.RED);
 		g.fillRect(track_width - 5, h - 5, 10, 10);
 		aboveSquare = new Point(track_width, h);
 
@@ -426,7 +437,6 @@ public class ContinuousTrackRenderer<K, V extends Number>
 
 		for (Integer key : verticesList.keySet()) {
 			Point p = verticesList.get(key);
-
 			if (clickFlag) {
 				int diffX = Math.abs(p.x - (curPoint.x - 6));
 				int diffY = Math.abs(p.y - (curPoint.y - 12));
@@ -471,9 +481,9 @@ public class ContinuousTrackRenderer<K, V extends Number>
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	@SuppressWarnings("unchecked")
-	public JComponent getRendererComponent(JXMultiThumbSlider slider) {
+	@Override public JComponent getRendererComponent(JXMultiThumbSlider slider) {
 		this.slider = slider;
+		
 
 		if (listener == null) {
 			listener = new CMouseListener();
@@ -612,9 +622,9 @@ public class ContinuousTrackRenderer<K, V extends Number>
 						brv.greaterValue = newVal;
 					}
 
-					// cMapping.fireStateChanged();
 
-					// Cytoscape.redrawGraph(vmm.getNetworkView());
+					style.apply(manager.getCurrentNetworkView());
+					manager.getCurrentNetworkView().updateView();
 					slider.repaint();
 				}
 
@@ -646,10 +656,10 @@ public class ContinuousTrackRenderer<K, V extends Number>
 						original.greaterValue);
 				cMapping.getPoint(0).setRange(brv);
 
-				// cMapping.fireStateChanged();
 
 				// Update view.
-				// Cytoscape.redrawGraph(vmm.getNetworkView());
+				style.apply(manager.getCurrentNetworkView());
+				manager.getCurrentNetworkView().updateView();
 
 				slider.repaint();
 				repaint();
@@ -681,10 +691,9 @@ public class ContinuousTrackRenderer<K, V extends Number>
 						original.equalValue, above);
 				cMapping.getPoint(cMapping.getPointCount() - 1).setRange(brv);
 
-				// cMapping.fireStateChanged();
-
 				// Update view.
-				// Cytoscape.redrawGraph(vmm.getNetworkView());
+				style.apply(manager.getCurrentNetworkView());
+				manager.getCurrentNetworkView().updateView();
 
 				slider.repaint();
 				repaint();
@@ -754,8 +763,8 @@ public class ContinuousTrackRenderer<K, V extends Number>
 
 			if (dragFlag == true) {
 				dragFlag = false;
-				// cMapping.fireStateChanged();
-				// Cytoscape.redrawGraph(vmm.getNetworkView());
+				style.apply(manager.getCurrentNetworkView());
+				manager.getCurrentNetworkView().updateView();
 			}
 		}
 
@@ -779,14 +788,14 @@ public class ContinuousTrackRenderer<K, V extends Number>
 		}
 
 		private void updateMax() {
-			Float val;
+			Number val;
 			Float curMax = 0f;
 
-			for (Object thumb : slider.getModel().getSortedThumbs()) {
-				val = (Float) ((Thumb) thumb).getObject();
+			for (Thumb<V> thumb : slider.getModel().getSortedThumbs()) {
+				val = thumb.getObject();
 
-				if (val > curMax)
-					curMax = val;
+				if (val.floatValue() > curMax)
+					curMax = val.floatValue();
 			}
 
 			max = curMax;
@@ -1063,9 +1072,5 @@ public class ContinuousTrackRenderer<K, V extends Number>
 		}
 
 		return new ImageIcon(bi);
-	}
-
-	public void setVmm(VisualMappingManager vmm) {
-		this.vmm = vmm;
 	}
 }

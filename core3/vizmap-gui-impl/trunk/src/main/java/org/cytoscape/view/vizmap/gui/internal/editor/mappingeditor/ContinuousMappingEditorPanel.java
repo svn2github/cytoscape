@@ -32,6 +32,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
@@ -48,6 +50,7 @@ import javax.swing.event.ChangeListener;
 
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
@@ -56,6 +59,8 @@ import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -69,6 +74,8 @@ import org.jdesktop.swingx.multislider.Thumb;
 public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implements
 		PropertyChangeListener {
 	private static final long serialVersionUID = 2077889066171872186L;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ContinuousMappingEditorPanel.class);
 
 	protected static final String BELOW_VALUE_CHANGED = "BELOW_VALUE_CHANGED";
 	protected static final String ABOVE_VALUE_CHANGED = "ABOVE_VALUE_CHANGED";
@@ -90,7 +97,12 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 	protected VisualMappingManager vmm;
 
 	// This should be injected.
-	private final EditorValueRangeTracer tracer;
+	protected final EditorValueRangeTracer tracer;
+	protected final CyApplicationManager appManager;
+	
+	protected final VisualStyle style;
+	
+	final JPanel mainPanel;
 	
 	/**
 	 * 
@@ -98,15 +110,22 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 	 * property type T.
 	 * 
 	 * */
-	public ContinuousMappingEditorPanel(final VisualStyle style, final ContinuousMapping<K, V> mapping, final CyTable attr) {
+	public ContinuousMappingEditorPanel(final VisualStyle style, final ContinuousMapping<K, V> mapping, final CyTable attr, final CyApplicationManager appManager) {
 		if(mapping == null)
 			throw new NullPointerException("ContinuousMapping should not be null.");
 		if(attr == null)
 			throw new NullPointerException("Data table should not be null.");
+		if(appManager == null)
+			throw new NullPointerException("Application Manager should not be null.");
+		if(style == null)
+			throw new NullPointerException("Visual Style should not be null.");
 		
 		this.tracer = new EditorValueRangeTracer(style.getVisualLexicon());
 		this.mapping = mapping;
 		this.type = mapping.getVisualProperty();
+		this.appManager = appManager;
+		this.style = style;
+		this.mainPanel = new JPanel();
 		
 		final String controllingAttrName = mapping.getMappingAttributeName();
 		final Class<?> attrType = attr.getColumnTypeMap().get(controllingAttrName);
@@ -156,9 +175,10 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
-		
-		final JPanel mainPanel = new JPanel();
 
+		mainPanel.setSize(600, 400);
+		mainPanel.setPreferredSize(new Dimension(600, 400));
+		
 		abovePanel = new BelowAndAbovePanel(Color.yellow, false, mapping);
 		abovePanel.setName("abovePanel");
 		belowPanel = new BelowAndAbovePanel(Color.white, true, mapping);
@@ -437,7 +457,7 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 	}
 
 	protected void updateMap() {
-		List<Thumb<V>> thumbs = slider.getModel().getSortedThumbs();
+		final List<Thumb<V>> thumbs = slider.getModel().getSortedThumbs();
 
 		final double min = tracer.getMin(type);
 		final double range = tracer.getRange(type);
@@ -454,7 +474,9 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 
 			newVal = ((thumbs.get(0).getPosition() / 100) * range) + min;
 			mapping.getPoint(0).setValue((K) newVal);
-
+			
+			// Apply it.
+			style.apply(appManager.getCurrentNetworkView());
 			return;
 		}
 
@@ -480,11 +502,18 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 			mapping.getPoint(i).setValue((K) newVal);
 			rg.equalValue = t.getObject();
 		}
+		
+		// Apply it.
+		style.apply(appManager.getCurrentNetworkView());
 	}
 
 	// End of variables declaration
 	protected class ThumbMouseListener extends MouseAdapter {
+		
 		public void mouseReleased(MouseEvent e) {
+			
+			logger.debug("$$$$$$$$ Mouse released: ");
+			
 			int selectedIndex = slider.getSelectedIndex();
 
 			if ((0 <= selectedIndex) && (slider.getModel().getThumbCount() > 0)) {
@@ -500,7 +529,7 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 				slider.repaint();
 				repaint();
 
-				// Cytoscape.redrawGraph(vmm.getNetworkView());
+				appManager.getCurrentNetworkView().updateView();
 			} else {
 				valueSpinner.setEnabled(false);
 				valueSpinner.setValue(0);
@@ -549,15 +578,5 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 				lastSpinnerNumber = newVal.doubleValue();
 			}
 		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param vmm
-	 *            DOCUMENT ME!
-	 */
-	public void setVmm(VisualMappingManager vmm) {
-		this.vmm = vmm;
 	}
 }

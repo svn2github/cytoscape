@@ -36,7 +36,12 @@ package org.cytoscape.view.vizmap.gui.internal.editor;
 
 import javax.swing.Icon;
 
+import org.cytoscape.model.CyTableManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import org.cytoscape.view.vizmap.gui.internal.cellrenderer.ColorContinuousMappingCellRenderer;
+import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.C2CEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyDoublePropertyEditor;
 
 /**
@@ -44,17 +49,21 @@ import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyDoubleProp
  */
 public class DoubleVisualPropertyEditor extends
 		AbstractVisualPropertyEditor<Double> {
-	
 
 	/**
 	 * Creates a new DiscreteNumber object.
 	 */
 	public DoubleVisualPropertyEditor(Class<Double> type,
-			final SelectedVisualStyleManager manager) {
+			final CyTableManager manager,
+			final CyApplicationManager appManager,
+			final SelectedVisualStyleManager selectedManager,
+			final EditorManager editorManager) {
 		super(type, new CyDoublePropertyEditor(null));
 		discreteTableCellRenderer = REG.getRenderer(Double.class);
-		// continuousEditor = new C2CMappingEditor<Number, Number>(this.vp,
-		// manager, attr);
+
+		continuousTableCellRenderer = new ColorContinuousMappingCellRenderer();
+		continuousEditor = new C2CEditor(manager, appManager, selectedManager,
+				editorManager);
 	}
 
 	/**

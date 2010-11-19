@@ -42,45 +42,49 @@ import javax.swing.Icon;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
+import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.cellrenderer.ColorContinuousMappingCellRenderer;
 import org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor.GradientEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyColorPropertyEditor;
 
-
 /**
  * Manages editors for Color Visual Properties. This object can be used with any
  * VisualProperty using Color as its type.
- *
+ * 
  */
-public class ColorVisualPropertyEditor extends AbstractVisualPropertyEditor<Paint> {
-	
-	
+public class ColorVisualPropertyEditor extends
+		AbstractVisualPropertyEditor<Paint> {
+
 	/**
 	 * Constructor. Should instantiate one editor per VisualProperty.
 	 */
-	public ColorVisualPropertyEditor(final Class<Paint> type, final CyTableManager manager, final CyApplicationManager appManager, final SelectedVisualStyleManager selectedManager) {
+	public ColorVisualPropertyEditor(final Class<Paint> type,
+			final CyTableManager manager,
+			final CyApplicationManager appManager,
+			final SelectedVisualStyleManager selectedManager, final EditorManager editorManager) {
 		super(type, new CyColorPropertyEditor());
-		
+
 		discreteTableCellRenderer = REG.getRenderer(Color.class);
 		continuousTableCellRenderer = new ColorContinuousMappingCellRenderer();
-		
-		continuousEditor = new GradientEditor(manager, appManager, selectedManager);
-	}
 
+		continuousEditor = new GradientEditor(manager, appManager,
+				selectedManager, editorManager);
+	}
 
 	/**
 	 * DOCUMENT ME!
-	 *
+	 * 
 	 * @param vp
 	 *            DOCUMENT ME!
 	 * @param width
 	 *            DOCUMENT ME!
 	 * @param height
 	 *            DOCUMENT ME!
-	 *
+	 * 
 	 * @return DOCUMENT ME!
 	 */
-	@Override public Icon getDefaultIcon(int width, int height) {
+	@Override
+	public Icon getDefaultIcon(int width, int height) {
 		// TODO: need to implement new icon generator for Color
 		return null;
 	}
