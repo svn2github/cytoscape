@@ -66,6 +66,7 @@ import clusterMaker.algorithms.MCL.MCLCluster;
 import clusterMaker.algorithms.MCODE.MCODECluster;
 import clusterMaker.algorithms.glay.GLayCluster;
 import clusterMaker.algorithms.ConnectedComponents.ConnectedComponentsCluster;
+import clusterMaker.algorithms.SCPS.SCPSCluster;
 // import clusterMaker.algorithms.QT.QTCluster;
 // import clusterMaker.algorithms.Spectral.SpectralCluster;
 // import clusterMaker.algorithms.CP.CPCluster;
@@ -109,15 +110,17 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		addClusterAlgorithm(menu, new HierarchicalCluster());
 		addClusterAlgorithm(menu, new KMeansCluster());
 		// addClusterAlgorithm(menu, new QTCluster());
+		menu.addSeparator();
+		addClusterAlgorithm(menu, new APCluster());
+		addClusterAlgorithm(menu, new ConnectedComponentsCluster());
+		addClusterAlgorithm(menu, new GLayCluster());
 		addClusterAlgorithm(menu, new MCODECluster());
 		addClusterAlgorithm(menu, new MCLCluster());
 		// addClusterAlgorithm(menu, new SpectralCluster());
 		// addClusterAlgorithm(menu, new CPCluster());
-		addClusterAlgorithm(menu, new APCluster());
-		addClusterAlgorithm(menu, new GLayCluster());
 		// addClusterAlgorithm(menu, new FORCECluster());
+		addClusterAlgorithm(menu, new SCPSCluster());
 		addClusterAlgorithm(menu, new TransClustCluster());
-		addClusterAlgorithm(menu, new ConnectedComponentsCluster());
 		// addClusterAlgorithm(new HOPACHCluster());
 		menu.addSeparator();
 
