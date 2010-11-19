@@ -67,7 +67,6 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 /**
  * Ding implementation of node presentation.
  *
- * @author $author$
  */
 public class DNodeView implements NodeView, Label {
 	// Affects size of the nested network image relative to the node size:
@@ -1517,21 +1516,21 @@ public class DNodeView implements NodeView, Label {
 		} else if (vp == DVisualLexicon.NODE_BORDER_PAINT) {
 			setBorderPaint((Paint) value);
 		} else if (vp == DVisualLexicon.NODE_BORDER_WIDTH) {
-			setBorderWidth(((Double) value).floatValue());
+			setBorderWidth(((Number) value).floatValue());
 		} else if (vp == DVisualLexicon.NODE_BORDER_STROKE) {
 			setBorder((Stroke) value);
 		} else if (vp == DVisualLexicon.NODE_TRANSPARENCY) {
 			setTransparency(((Integer) value));
 		} else if (vp == TwoDVisualLexicon.NODE_X_SIZE) {
-			setWidth(((Double) value).doubleValue());
+			setWidth(((Number) value).doubleValue());
 		} else if (vp == TwoDVisualLexicon.NODE_Y_SIZE) {
-			setHeight(((Double) value).doubleValue());
+			setHeight(((Number) value).doubleValue());
 		} else if (vp == TwoDVisualLexicon.NODE_LABEL) {
 			setText(value.toString());
 		} else if (vp == TwoDVisualLexicon.NODE_X_LOCATION) {
-			setXPosition(((Double) value).doubleValue());
+			setXPosition(((Number) value).doubleValue());
 		} else if (vp == TwoDVisualLexicon.NODE_Y_LOCATION) {
-			setYPosition(((Double) value).doubleValue());
+			setYPosition(((Number) value).doubleValue());
 		} else if (vp == DVisualLexicon.NODE_TOOLTIP) {
 			setToolTip((String) value);
 		} else if (vp == TwoDVisualLexicon.NODE_LABEL_COLOR) {
