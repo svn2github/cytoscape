@@ -11,19 +11,12 @@
 		interface="org.cytoscape.work.undo.UndoSupport">
 	</osgi:service>
 
-	<osgi:service id="guiTunableInterceptorService" ref="guiTunableInterceptor"
-		interface="org.cytoscape.work.swing.GUITunableInterceptor">
+	<osgi:service id="guiTunableInterceptorService" ref="guiTunableInterceptor">
+		<osgi:interfaces>
+			<value>org.cytoscape.work.swing.GUITunableInterceptor</value>
+			<value>org.cytoscape.work.TunableInterceptor</value>
+		</osgi:interfaces>
 	</osgi:service>
-
-	<osgi:service id="tunableInterceptorService" ref="guiTunableInterceptor"
-		interface="org.cytoscape.work.TunableInterceptor">
-	</osgi:service>
-
-<!--
-	<osgi:service id="taskManagerService" ref="swingTaskManager"
-		interface="org.cytoscape.work.TaskManager">
-	</osgi:service>
--->
 
 	<osgi:service id="taskManagerService" ref="swingTaskManager">
 		<osgi:interfaces>
