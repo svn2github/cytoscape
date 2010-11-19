@@ -17,6 +17,7 @@
 		<junit.version>4.8.1</junit.version>
 		<maven-bundle-plugin.version>2.1.0</maven-bundle-plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<pax.exam.version>1.2.2</pax.exam.version>
 	</properties>
 
 	<distributionManagement>
@@ -194,25 +195,13 @@
        </repository>
        <repository>
           <id>spring-osgi</id>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
           <name>Cytoscape Spring OSGi Release Mirror</name>
           <url>http://cytoscape.wodaklab.org/nexus/content/repositories/spring-osgi/</url>
        </repository>
        <repository>
           <id>spring-osgi-snapshots</id>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-          <name>Cytoscape Spring OSGi Snapshot Mirror</name>
-          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/spring-osgi-snapshots/</url>
+          <name>Cytoscape Spring OSGi External Mirror</name>
+          <url>http://cytoscape.wodaklab.org/nexus/content/repositories/spring-osgi-external/</url>
        </repository>
 	</repositories>
 
