@@ -58,6 +58,7 @@
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-api</artifactId>
 			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
