@@ -52,10 +52,18 @@
 		<constructor-arg ref="streamUtilRef" />
 	</bean>
 
-<!--To set the Current Network through another TaskFactory-->
+	<!--To set the Current Network through another TaskFactory-->
 	<bean id="setCurrentNetworkTaskFactory" class="org.cytoscape.task.internal.setcurrent.SetCurrentNetworkTaskFactoryImpl">
 		<constructor-arg ref="cyApplicationManagerServiceRef"/>
 		<constructor-arg ref="cyNetworkManagerServiceRef"/>
+	</bean>
+
+	<bean id="deleteSelectedNodesAndEdgesTaskFactory"
+	      class="org.cytoscape.task.internal.networkobjects.DeleteSelectedNodesAndEdgesTaskFactory">
+		<constructor-arg ref="undoSupportServiceRef" />
+		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
 
 	<bean id="selectAllTaskFactory"

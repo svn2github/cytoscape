@@ -1,5 +1,5 @@
+package org.cytoscape.task.internal.networkobjects;
 
-package org.cytoscape.internal.actions;
 
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
@@ -20,18 +20,20 @@ import org.cytoscape.util.swing.CyAbstractEdit;
  * An undoable edit that will undo and redo deletion of nodes and edges.
  */ 
 class DeleteEdit extends CyAbstractEdit {
-
-	private static final long serialVersionUID = -1164181258019250610L;
 	Set<CyNode> nodes;
 	Set<CyEdge> edges;
 	double[] xPos;
 	double[] yPos;
 	final CySubNetwork net;
-	final DeleteAction deleteAction;
+	final DeleteSelectedNodesAndEdgesTask deleteAction;
 	final CyNetworkViewManager netViewMgr;
 	
-	DeleteEdit(CySubNetwork net, Set<CyNode> nodes, Set<CyEdge> edges,	DeleteAction deleteAction, CyNetworkViewManager netViewMgr) {
+	DeleteEdit(CySubNetwork net, Set<CyNode> nodes, Set<CyEdge> edges,
+		   final DeleteSelectedNodesAndEdgesTask deleteAction,
+		   final CyNetworkViewManager netViewMgr)
+	{
 		super("Delete");
+
 		this.deleteAction = deleteAction;
 		if ( net == null )
 			throw new NullPointerException("network is null");
@@ -76,8 +78,6 @@ class DeleteEdit extends CyAbstractEdit {
 		
 		// Manually call update presentation
 		netView.updateView();
-        
-		deleteAction.setEnabled(false);
 	}
 
 	public void undo() {
@@ -100,7 +100,5 @@ class DeleteEdit extends CyAbstractEdit {
 		}
 
 		netView.updateView();
-
-		deleteAction.setEnabled(true);
 	}
 }

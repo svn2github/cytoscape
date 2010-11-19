@@ -9,6 +9,9 @@
 	<osgi:reference id="cyNetworkNamingServiceRef"
 		interface="org.cytoscape.session.CyNetworkNaming" />
 
+	<osgi:reference id="undoSupportServiceRef"
+			interface="org.cytoscape.work.undo.UndoSupport" />
+
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
 		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 
@@ -94,6 +97,15 @@
 	</osgi:service>
 	
 	<!-- selection -->
+	<osgi:service id="deleteSelectedNodesAndEdgesTaskFactoryService" ref="deleteSelectedNodesAndEdgesTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Delete Selected Nodes and Edges..." />
+			<entry key="preferredMenu" value="Edit" />
+			<entry key="enableFor" value="selectedNodesOrEdges" />
+		</osgi:service-properties>
+	</osgi:service>
+
 	<osgi:service id="selectAllTaskFactoryService" ref="selectAllTaskFactory"
 		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
