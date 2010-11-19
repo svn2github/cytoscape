@@ -50,9 +50,6 @@
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
 		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 
-	<osgi:reference id="cyRootNetworkFactoryServiceRef"
-		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory" />
-
 	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayouts">
 	</osgi:reference>
 
