@@ -77,16 +77,18 @@ public class DeleteSelectedNodesAndEdgesTask extends AbstractTask {
 		final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(network, "selected", true);
 		final Set<CyEdge> selectedEdges = new HashSet<CyEdge>(CyTableUtil.getEdgesInState(network, "selected", true));
 
-		// Delete the actual nodes and edges:
-		for (CyNode selectedNode : selectedNodes) {
+		// Make sure we're not loosing any edges for a possible undo!
+		for (CyNode selectedNode : selectedNodes)
 			selectedEdges.addAll(network.getAdjacentEdgeList(selectedNode, CyEdge.Type.ANY));
-			network.removeNode(selectedNode);
-		}
-		for (CyEdge selectedEdge : selectedEdges)
-			network.removeEdge(selectedEdge);
 
 		undoSupport.getUndoableEditSupport().postEdit(
 			new DeleteEdit(network, selectedNodes, selectedEdges, this, networkViewManager));
+
+		// Delete the actual nodes and edges:
+		for (CyNode selectedNode : selectedNodes)
+			network.removeNode(selectedNode);
+		for (CyEdge selectedEdge : selectedEdges)
+			network.removeEdge(selectedEdge);
 
 		myView.updateView();
 	}
