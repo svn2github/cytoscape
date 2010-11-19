@@ -7,7 +7,7 @@
 
 	<h1>Reporting software bugs</h1>
     
-    <p>The best way to report a bug to us is to <a href="http://cbio.mskcc.org/cytoscape/bugs" rel="external">use our bug tracker</a>.  However, if you find it difficult to use the bug tracker, feel free to use the <a href="write">contact form</a> to contact us about the bug.</p>
+    <p>The best way to report a bug to us is to <a href="http://cbio.mskcc.org/cytoscape/bugs" rel="external">use our bug tracker</a>.  However, if you find it difficult to use the bug tracker, feel free to use the <a href="contact/write">contact form</a> to contact us about the bug.</p>
     
     <p>Though we greatly appreciate it when you point out a bug, several pieces of information are required to fix it, including</p>
     
