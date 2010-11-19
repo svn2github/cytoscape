@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
-		<artifactId>parent</artifactId>
+		<artifactId>event-impl-parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-alpha2</version>
+		<version>3.0.0-alpha2-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -15,7 +15,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>event-impl</artifactId>
-	<version>3.0.0-alpha2-SNAPSHOT</version>
 
 	<name>${bundle.symbolicName}</name>
 
@@ -28,24 +27,6 @@
 	</scm>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>src/integration/resources</directory>
-			</resource>
-			<!-- | example additional resource entries, useful when building Eclipse 
-				RCP applications -->
-			<resource>
-				<directory>.</directory>
-				<includes>
-					<include>plugin.xml</include>
-					<include>plugin.properties</include>
-					<include>icons/**</include>
-				</includes>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -77,59 +58,6 @@
 					</instructions>
 				</configuration>
 			</plugin>
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>2.4.1</version>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${basedir}/eclipse_config</directory>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <id>add-test-source</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${basedir}/src/integration/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <testSourceDirectory>${basedir}/src/integration/java</testSourceDirectory>
-                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>integration-test</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>verify</id>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
 		</plugins>
 	</build>
 
@@ -201,13 +129,6 @@
 			<version>1.0</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>integration-test-support</artifactId>
-			<version>3.0.0-alpha1</version>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 </project>
