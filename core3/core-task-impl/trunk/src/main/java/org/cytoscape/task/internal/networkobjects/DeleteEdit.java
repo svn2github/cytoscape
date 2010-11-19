@@ -5,6 +5,7 @@ import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
 
 import java.util.List;
+import java.util.Set;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
@@ -21,14 +22,14 @@ import org.cytoscape.util.swing.CyAbstractEdit;
  */ 
 class DeleteEdit extends CyAbstractEdit {
 	final private List<CyNode> nodes;
-	final private List<CyEdge> edges;
+	final private Set<CyEdge> edges;
 	final private double[] xPos;
 	final private double[] yPos;
 	final private CySubNetwork net;
 	final private DeleteSelectedNodesAndEdgesTask deleteAction;
 	final private CyNetworkViewManager netViewMgr;
 	
-	DeleteEdit(CySubNetwork net, List<CyNode> nodes, List<CyEdge> edges,
+	DeleteEdit(final CySubNetwork net, final List<CyNode> nodes, final Set<CyEdge> edges,
 		   final DeleteSelectedNodesAndEdgesTask deleteAction,
 		   final CyNetworkViewManager netViewMgr)
 	{

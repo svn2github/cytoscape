@@ -41,6 +41,7 @@ import javax.swing.KeyStroke;
 
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyEdge.Type;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
@@ -73,17 +74,19 @@ public class DeleteSelectedNodesAndEdgesTask extends AbstractTask {
 
 		// Delete from the base network so that our changes can be undone:
 		final CySubNetwork network = (CySubNetwork)myView.getModel();
-		final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(network, "selected", true); 
-		final List<CyEdge> selectedEdges = CyTableUtil.getEdgesInState(network, "selected", true); 
+		final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(network, "selected", true);
+		final Set<CyEdge> selectedEdges = new HashSet<CyEdge>(CyTableUtil.getEdgesInState(network, "selected", true));
+
+		// Delete the actual nodes and edges:
+		for (CyNode selectedNode : selectedNodes) {
+			selectedEdges.addAll(network.getAdjacentEdgeList(selectedNode, CyEdge.Type.ANY));
+			network.removeNode(selectedNode);
+		}
+		for (CyEdge selectedEdge : selectedEdges)
+			network.removeEdge(selectedEdge);
 
 		undoSupport.getUndoableEditSupport().postEdit(
 			new DeleteEdit(network, selectedNodes, selectedEdges, this, networkViewManager));
-		
-		// Delete the actual nodes and edges:
-		for (CyNode selectedNode : selectedNodes)
-			network.removeNode(selectedNode);
-		for (CyEdge selectedEdge : selectedEdges)
-			network.removeEdge(selectedEdge);
 
 		myView.updateView();
 	}
