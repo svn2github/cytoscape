@@ -30,7 +30,6 @@
 package org.cytoscape.task.internal.networkobjects;
 
 
-import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.undo.UndoSupport;
@@ -40,24 +39,20 @@ import org.cytoscape.view.model.CyNetworkViewManager;
 
 public class DeleteSelectedNodesAndEdgesTaskFactory implements TaskFactory {
 	private final UndoSupport undoSupport;
-	private final CyRootNetworkFactory rootNetworkFactory;
 	private final CyApplicationManager applicationManager;
 	private final CyNetworkViewManager networkViewManager;
 
 	public DeleteSelectedNodesAndEdgesTaskFactory(final UndoSupport undoSupport,
-						      final CyRootNetworkFactory rootNetworkFactory,
 						      final CyApplicationManager applicationManager,
 						      final CyNetworkViewManager networkViewManager)
 	{
 		this.undoSupport = undoSupport;
-		this.rootNetworkFactory = rootNetworkFactory;
 		this.applicationManager = applicationManager;
 		this.networkViewManager = networkViewManager;
 	}
 
 	public TaskIterator getTaskIterator() {
 		return new TaskIterator(
-			new DeleteSelectedNodesAndEdgesTask(undoSupport, rootNetworkFactory,
-							    applicationManager, networkViewManager));
+			new DeleteSelectedNodesAndEdgesTask(undoSupport, applicationManager, networkViewManager));
 	}
 }

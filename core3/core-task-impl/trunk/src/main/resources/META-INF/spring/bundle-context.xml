@@ -61,7 +61,6 @@
 	<bean id="deleteSelectedNodesAndEdgesTaskFactory"
 	      class="org.cytoscape.task.internal.networkobjects.DeleteSelectedNodesAndEdgesTaskFactory">
 		<constructor-arg ref="undoSupportServiceRef" />
-		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 	</bean>
