@@ -52,121 +52,68 @@
 		</plugins>
 	</build>
 
-	<repositories>
-		<!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
-		<repository>
-			<id>cytoscape_snapshots</id>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<name>Cytoscape Snapshots</name>
-			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
-		</repository>
-		<!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
-		<repository>
-			<id>cytoscape_releases</id>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<name>Cytoscape Releases</name>
-			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
-		</repository>
-	</repositories>
-
+	<!--
+	This is where any additional implementation dependencies necessary for
+	running the integration tests should reside, NOT in the top level pom.xml.
+	-->
 	<dependencies>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>vizmap-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<artifactId>vizmap-impl</artifactId>
+			<version>${version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
 			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-impl</artifactId>
 			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-api</artifactId>
 			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-impl</artifactId>
 			<version>3.0.0-alpha2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>presentation-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>vizmap-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.8.1</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>integration-test-support</artifactId>
 			<version>3.0.0-alpha3-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>vizmap-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>presentation-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-impl</artifactId>
 			<version>3.0.0-alpha1</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam</artifactId>
-			<version>1.2.0</version>
+			<version>${pax.exam.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam-junit</artifactId>
-			<version>1.2.0</version>
+			<version>${pax.exam.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam-container-default</artifactId>
-			<version>1.2.0</version>
+			<version>${pax.exam.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

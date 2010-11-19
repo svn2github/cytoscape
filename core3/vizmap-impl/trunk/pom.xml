@@ -1,21 +1,101 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.cytoscape</groupId>
-    <artifactId>parent</artifactId>
-    <version>3.0.0-alpha4-SNAPSHOT</version>
-  </parent>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cytoscape</groupId>
+		<artifactId>parent</artifactId>
+		<version>3.0.0-alpha4-SNAPSHOT</version>
+	</parent>
 
-  <groupId>org.cytoscape</groupId>
-  <artifactId>vizmap-impl-parent</artifactId>
-  <packaging>pom</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>vizmap-impl-parent</name>
+	<groupId>org.cytoscape</groupId>
+	<artifactId>vizmap-impl-parent</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>vizmap-impl-parent</name>
 
-  <modules>
-    <module>impl</module>
-    <module>it</module>
-  </modules>
+	<modules>
+		<module>impl</module>
+		<module>it</module>
+	</modules>
 
+	<scm>
+		<connection>scm:svn:http://chianti.ucsd.edu/svn/core3/vizmap-impl/trunk</connection>
+		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/vizmap-impl/trunk</developerConnection>
+		<url>http://chianti.ucsd.edu/svn/core3/vizmap-impl/trunk</url>
+	</scm>
+
+	<repositories>
+		<repository>
+			<id>cytoscape_snapshots</id>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<name>Cytoscape Snapshots</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>cytoscape_releases</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Cytoscape Releases</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+		</repository>
+	</repositories>
+
+	<!--
+	Dependencies included here should *ONLY* be for the impl bundle.
+	All additional dependencies necessary for the integration tests (it) 
+	should be kept in the it/pom.xml
+	-->
+	<dependencies>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>vizmap-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>viewmodel-api</artifactId>
+			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>vizmap-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>presentation-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>viewmodel-impl</artifactId>
+			<version>3.0.0-alpha1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>
-
