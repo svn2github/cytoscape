@@ -18,6 +18,8 @@ import org.cytoscape.spacial.SpacialIndex2DFactory;
 import org.cytoscape.task.EdgeViewTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
+import org.cytoscape.dnd.DropNetworkViewTaskFactory;
+import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
@@ -51,6 +53,8 @@ public class DingRenderingEngineFactory implements
 	private Map<NodeViewTaskFactory, Map> nodeViewTFs;
 	private Map<EdgeViewTaskFactory, Map> edgeViewTFs;
 	private Map<NetworkViewTaskFactory, Map> emptySpaceTFs;
+	private Map<DropNodeViewTaskFactory, Map> dropNodeViewTFs;
+	private Map<DropNetworkViewTaskFactory, Map> dropEmptySpaceTFs;
 
 	private TaskManager tm;
 	private final CyTableManager tableMgr;
@@ -77,6 +81,8 @@ public class DingRenderingEngineFactory implements
 		nodeViewTFs = new HashMap<NodeViewTaskFactory, Map>();
 		edgeViewTFs = new HashMap<EdgeViewTaskFactory, Map>();
 		emptySpaceTFs = new HashMap<NetworkViewTaskFactory, Map>();
+		dropNodeViewTFs = new HashMap<DropNodeViewTaskFactory, Map>();
+		dropEmptySpaceTFs = new HashMap<DropNetworkViewTaskFactory, Map>();
 	}
 
 	/**
@@ -102,7 +108,8 @@ public class DingRenderingEngineFactory implements
 					+ targetView.getSUID());
 			dgv = new DGraphView(targetView, dataTableFactory,
 					rootNetworkFactory, undo, spacialFactory, dingLexicon,
-					nodeViewTFs, edgeViewTFs, emptySpaceTFs, tm, eventHelper,
+					nodeViewTFs, edgeViewTFs, emptySpaceTFs, dropNodeViewTFs,
+					dropEmptySpaceTFs, tm, eventHelper,
 					tableMgr);
 			logger.info("DGraphView created as a presentation for view model: "
 					+ targetView.getSUID());
@@ -113,9 +120,8 @@ public class DingRenderingEngineFactory implements
 				JDesktopPane desktopPane = inFrame.getDesktopPane();
 
 				// TODO - not sure this layered pane bit is optimal
-				inFrame.setContentPane(dgv.getContainer(inFrame
-						.getLayeredPane()));
-				dgv.addTransferComponent(desktopPane);
+				inFrame.setContentPane(dgv.getContainer(inFrame.getLayeredPane()));
+			//	dgv.addTransferComponent(desktopPane);
 			} else {
 				JComponent component = (JComponent) presentationContainer;
 				component.add(dgv.getComponent());
@@ -189,11 +195,38 @@ public class DingRenderingEngineFactory implements
 		emptySpaceTFs.put(evtf, props);
 	}
 
-	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory evtf,
-			Map props) {
+	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory evtf, Map props) {
 		if (evtf == null)
 			return;
 
 		emptySpaceTFs.remove(evtf);
+	}
+
+	public void addDropNetworkViewTaskFactory(DropNetworkViewTaskFactory evtf, Map props) {
+		if (evtf == null)
+			return;
+
+		dropEmptySpaceTFs.put(evtf, props);
+	}
+
+	public void removeDropNetworkViewTaskFactory(DropNetworkViewTaskFactory evtf, Map props) {
+		if (evtf == null)
+			return;
+
+		dropEmptySpaceTFs.remove(evtf);
+	}
+
+	public void addDropNodeViewTaskFactory(DropNodeViewTaskFactory nvtf, Map props) {
+		if (nvtf == null)
+			return;
+
+		dropNodeViewTFs.put(nvtf, props);
+	}
+
+	public void removeDropNodeViewTaskFactory(DropNodeViewTaskFactory nvtf, Map props) {
+		if (nvtf == null)
+			return;
+
+		dropNodeViewTFs.remove(nvtf);
 	}
 }

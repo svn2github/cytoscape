@@ -38,6 +38,10 @@ import java.awt.Rectangle;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetListener;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -74,17 +78,12 @@ import org.cytoscape.util.intr.IntHash;
 import org.cytoscape.util.intr.IntStack;
 import org.cytoscape.work.undo.UndoSupport;
 
-import phoebe.PhoebeCanvasDropEvent;
-import phoebe.PhoebeCanvasDropListener;
-import phoebe.PhoebeCanvasDroppable;
-
-
 /**
  *
  */
 public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotionListener,
-                                                       java.awt.dnd.DropTargetListener,
-                                                       PhoebeCanvasDroppable, KeyListener,
+                                                       DropTargetListener,
+                                                       KeyListener,
                                                        MouseWheelListener {
 
 	private final static long serialVersionUID = 1202416511420671L;
@@ -136,20 +135,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 	// AJK: 1/14/2007 END
 
-	/**
-	 * DOCUMENT ME!
-	 */
-	public Vector<PhoebeCanvasDropListener> listeners = new Vector<PhoebeCanvasDropListener>();
-
-	/**
-	 * AJK: 01/12/07
-	 * Transfer handler components -- contain transfer handlers
-	 * N.B. -- don't use this code -- just a quick fix that will be replaced in
-	 * Cytosape 2.5.
-	 */
-	private Vector<JComponent> transferComponents = new Vector<JComponent>();
-
-
 	private UndoSupport m_undo;
 
 	InnerCanvas(Object lock, DGraphView view, UndoSupport undo) {
@@ -170,9 +155,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		addMouseWheelListener(this);
 		addKeyListener(this);
 		setFocusable(true);
-		dropTarget = new DropTarget(this, // component
-		                            DnDConstants.ACTION_COPY, // actions
-		                            this); // DropTargetListener
+		dropTarget = new DropTarget(this, DnDConstants.ACTION_COPY, this); 
 		popup = new PopupMenuHelper(m_view, this);
 	}
 
@@ -1253,7 +1236,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 * @param dte the DropTargetDragEvent
 	 *
 	 */
-	public void dragEnter(java.awt.dnd.DropTargetDragEvent dte) {
+	public void dragEnter(DropTargetDragEvent dte) {
 		dte.acceptDrag(DnDConstants.ACTION_COPY);
 	}
 
@@ -1262,114 +1245,41 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 * @param dte the DropTargetDragEvent
 	 *
 	 */
-	public void dragExit(java.awt.dnd.DropTargetEvent dte) {
-	}
+	public void dragExit(DropTargetEvent dte) { }
 
 	/**
 	 * default dropActionChanged handler.  Does nothing, can be overridden.
 	 * @param dte the DropTargetDragEvent
 	 *
 	 */
-	public void dropActionChanged(java.awt.dnd.DropTargetDragEvent dte) {
-	}
+	public void dropActionChanged(DropTargetDragEvent dte) { }
 
 	/**
 	 * default dragOver handler.  Does nothing, can be overridden.
 	 * @param dte the DropTargetDragEvent
 	 *
 	 */
-	public void dragOver(java.awt.dnd.DropTargetDragEvent dte) {
-	}
+	public void dragOver(DropTargetDragEvent dte) { }
 
 	/**
-	 * default drop handler.  Accepts drop, builds a transferable, creates and
-	 * fires a PhoebeCanvasDropEvent, then calls dropComplete().
-	 * @param dte the DropTargetDragEvent
-	 *
+	 * default drop handler.  
 	 */
-	public void drop(java.awt.dnd.DropTargetDropEvent dte) {
+	public void drop(DropTargetDropEvent dte) {
 		dte.acceptDrop(DnDConstants.ACTION_COPY);
 
 		Transferable t = dte.getTransferable();
 
 		Point pt = dte.getLocation();
 
-		PhoebeCanvasDropEvent event = new PhoebeCanvasDropEvent(m_view, // the view should be the event source
-		                                                        t, // item dropped
-		                                                        pt // location
-		);
-		processPhoebeCanvasDropEvent(event);
+		NodeView nview = m_view.getPickedNodeView(pt);
+		if ( nview != null )
+			popup.createDropNodeViewMenu(nview,pt,t);
+		else 
+			popup.createDropEmptySpaceMenu(pt,t); 
 
 		dte.dropComplete(true);
 	}
 
-	/**
-	 * adds a listener to the store of PhoebeCanvasDropTargetListeners
-	 * @param l the PhoebeCanvasDropTargetListener
-	 *
-	 */
-	public void addPhoebeCanvasDropListener(PhoebeCanvasDropListener l) {
-		listeners.addElement(l);
-	}
-
-	/**
-	 * removes a listener from the store of PhoebeCanvasDropTargetListeners
-	 * @param l the PhoebeCanvasDropTargetListener
-	 *
-	 */
-	public void removePhoebeCanvasDropListener(PhoebeCanvasDropListener l) {
-		listeners.removeElement(l);
-	}
-
-	/**
-	 * handles a PhoebeCanvasDropEvent.  For each listerner, calls its itemDropped() method
-	 * @param event the PhoebeCanvasDropEvent
-	 *
-	 */
-	protected synchronized void processPhoebeCanvasDropEvent(PhoebeCanvasDropEvent event) {
-		Enumeration e = listeners.elements();
-
-		Transferable t = event.getTransferable();
-		TransferHandler th;
-		JComponent jComp;
-		Iterator<JComponent> it = transferComponents.iterator();
-
-		while (it.hasNext()) {
-			jComp = it.next();
-			th = jComp.getTransferHandler();
-
-			if (th != null) {
-				//            	th.importData(jComp, t);
-			}
-		}
-
-		while (e.hasMoreElements()) {
-			PhoebeCanvasDropListener l = (PhoebeCanvasDropListener) e.nextElement();
-			l.itemDropped(event);
-		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param comp DOCUMENT ME!
-	 */
-	public void addTransferComponent(JComponent comp) {
-		if (!transferComponents.contains(comp)) {
-			transferComponents.addElement(comp);
-		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param comp DOCUMENT ME!
-	 */
-	public void removeTransferComponent(JComponent comp) {
-		transferComponents.removeElement(comp);
-	}
-
-	// AJK: 01/12/07 END
 
 	public void mouseWheelMoved(MouseWheelEvent e) {
         int notches = e.getWheelRotation();

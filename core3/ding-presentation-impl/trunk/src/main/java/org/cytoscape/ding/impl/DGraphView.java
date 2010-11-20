@@ -85,6 +85,8 @@ import org.cytoscape.spacial.SpacialIndex2DFactory;
 import org.cytoscape.task.EdgeViewTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
+import org.cytoscape.dnd.DropNetworkViewTaskFactory;
+import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.util.intr.IntBTree;
 import org.cytoscape.util.intr.IntEnumerator;
 import org.cytoscape.util.intr.IntHash;
@@ -108,9 +110,6 @@ import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import phoebe.PhoebeCanvasDropListener;
-import phoebe.PhoebeCanvasDroppable;
-
 /**
  * DING implementation of the GINY view.
  *
@@ -124,7 +123,7 @@ import phoebe.PhoebeCanvasDroppable;
  * @author Nerius Landys
  */
 public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
-		Printable, PhoebeCanvasDroppable, NetworkViewChangeMicroListener,
+		Printable, NetworkViewChangeMicroListener,
 		NodeViewChangeMicroListener, EdgeViewChangeMicroListener,
 		FitContentEventListener, FitSelectedEventListener {
 
@@ -363,6 +362,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	Map<NodeViewTaskFactory, Map> nodeViewTFs;
 	Map<EdgeViewTaskFactory, Map> edgeViewTFs;
 	Map<NetworkViewTaskFactory, Map> emptySpaceTFs;
+	Map<DropNodeViewTaskFactory, Map> dropNodeViewTFs;
+	Map<DropNetworkViewTaskFactory, Map> dropEmptySpaceTFs;
 
 	TunableInterceptor interceptor;
 	TaskManager manager;
@@ -387,6 +388,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			Map<NodeViewTaskFactory, Map> nodeViewTFs,
 			Map<EdgeViewTaskFactory, Map> edgeViewTFs,
 			Map<NetworkViewTaskFactory, Map> emptySpaceTFs,
+			Map<DropNodeViewTaskFactory, Map> dropNodeViewTFs,
+			Map<DropNetworkViewTaskFactory, Map> dropEmptySpaceTFs,
 			TaskManager manager, CyEventHelper eventHelper,
 			CyTableManager tableMgr) {
 
@@ -412,6 +415,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		this.nodeViewTFs = nodeViewTFs;
 		this.edgeViewTFs = edgeViewTFs;
 		this.emptySpaceTFs = emptySpaceTFs;
+		this.dropNodeViewTFs = dropNodeViewTFs;
+		this.dropEmptySpaceTFs = dropEmptySpaceTFs;
 
 		this.manager = manager;
 
@@ -2652,10 +2657,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		return list;
 	}
 
-	public void addTransferComponent(JComponent comp) {
-		m_networkCanvas.addTransferComponent(comp);
-	}
-
 	/**
 	 * This method is used by freehep lib to export network as graphics.
 	 */
@@ -2725,14 +2726,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	public void removeKeyListener(KeyListener k) {
 		m_networkCanvas.removeKeyListener(k);
-	}
-
-	public void addPhoebeCanvasDropListener(PhoebeCanvasDropListener l) {
-		m_networkCanvas.addPhoebeCanvasDropListener(l);
-	}
-
-	public void removePhoebeCanvasDropListener(PhoebeCanvasDropListener l) {
-		m_networkCanvas.removePhoebeCanvasDropListener(l);
 	}
 
 	static <X> List<X> makeList(X nodeOrEdge) {

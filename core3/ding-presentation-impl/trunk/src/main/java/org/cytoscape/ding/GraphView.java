@@ -7,7 +7,6 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
-import phoebe.PhoebeCanvasDropListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -523,7 +522,7 @@ public static int NODE_X_POSITION = 0;
 	public GraphLOD getGraphLOD();
 	public void fitSelected();
 
-	public void addTransferComponent(JComponent comp); 
+//	public void addTransferComponent(JComponent comp); 
 
 	// for printing
 	public void setBounds(int x, int y, int width, int height) ;
@@ -558,8 +557,6 @@ public static int NODE_X_POSITION = 0;
 	public void removeMouseMotionListener(MouseMotionListener m);
 	public void removeKeyListener(KeyListener k);
 
-    public void addPhoebeCanvasDropListener(PhoebeCanvasDropListener l);
-	public void removePhoebeCanvasDropListener(PhoebeCanvasDropListener l);
 	public CyNetworkView getViewModel();
 }
 

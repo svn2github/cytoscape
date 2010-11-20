@@ -33,6 +33,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.Point;
+import java.awt.datatransfer.Transferable;
 import java.util.Map; 
 import java.util.Collection; 
 import java.util.List; 
@@ -49,6 +51,9 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.task.EdgeViewTaskFactory;
+import org.cytoscape.dnd.DropNetworkViewTaskFactory;
+import org.cytoscape.dnd.DropNodeViewTaskFactory;
+
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.model.CyNode;
@@ -106,6 +111,38 @@ class PopupMenuHelper {
 	}
 
 	/**
+	 * Creates a menu based on a drop event on a NodeView.
+	 */
+	void createDropNodeViewMenu(NodeView nview, Point p, Transferable t) {
+		if (nview != null ) {
+			Collection<DropNodeViewTaskFactory> usableTFs = getPreferredActions(m_view.dropNodeViewTFs,null);
+			View<CyNode> nv = nview.getNodeViewModel();
+
+			// build a menu of actions if more than factory exists
+			if ( usableTFs.size() > 1) {
+				String nodeLabel = nv.getModel().getCyRow().get("name",String.class);
+				JPopupMenu menu = new JPopupMenu(nodeLabel);
+				JMenuTracker tracker = new JMenuTracker(menu);
+
+				for ( DropNodeViewTaskFactory nvtf : usableTFs ) {
+					nvtf.setNodeView(nv,m_view.cyNetworkView);
+					nvtf.setDropInformation(t,p);
+					createMenuItem(menu, nvtf, tracker, m_view.dropNodeViewTFs.get( nvtf ));
+				}
+
+				menu.show(invoker, new Double(p.getX()).intValue(), new Double(p.getY()).intValue());
+
+			// execute the task directly if only one factory exists 
+			} else if ( usableTFs.size() == 1) {
+				DropNodeViewTaskFactory tf  = usableTFs.iterator().next();
+				tf.setNodeView(nv,m_view.cyNetworkView);
+				tf.setDropInformation(t,p);
+				executeTask(tf);
+			}
+		}
+	}
+
+	/**
 	 * Creates a menu based on the NodeView.
 	 */
 	void createNodeViewMenu(NodeView nview, int x, int y , String action) {
@@ -135,6 +172,29 @@ class PopupMenuHelper {
 		}
 	}
 
+	/**
+	 * Creates a menu based on the NetworkView.
+	 */
+	void createDropEmptySpaceMenu(Point p, Transferable t) {
+		// build a menu of actions if more than factory exists
+		Collection<DropNetworkViewTaskFactory> usableTFs = getPreferredActions(m_view.dropEmptySpaceTFs,null);
+		if ( usableTFs.size() > 1 ) {
+			JPopupMenu menu = new JPopupMenu("Double Click Menu: empty");
+			JMenuTracker tracker = new JMenuTracker(menu);
+			for ( DropNetworkViewTaskFactory nvtf : usableTFs ) {
+				nvtf.setNetworkView(m_view.cyNetworkView);
+				nvtf.setDropInformation(t,p);
+				createMenuItem(menu, nvtf, tracker, m_view.dropEmptySpaceTFs.get( nvtf ) );
+			}
+			menu.show(invoker, new Double(p.getX()).intValue(), new Double(p.getY()).intValue());
+		// execute the task directly if only one factory exists 
+		} else if ( usableTFs.size() == 1) {
+			DropNetworkViewTaskFactory tf = usableTFs.iterator().next();
+			tf.setNetworkView(m_view.cyNetworkView);
+			tf.setDropInformation(t,p);
+			executeTask(tf);
+		}
+	}
 	/**
 	 * Creates a menu based on the NetworkView.
 	 */

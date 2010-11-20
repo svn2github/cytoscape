@@ -91,4 +91,16 @@
 			unbind-method="removeNetworkViewTaskFactory" ref="dingRenderingEngineFactory" />
 	</osgi:set>
 
+	<osgi:set id="dropNodeViewTaskFactorySet" interface="org.cytoscape.dnd.DropNodeViewTaskFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addDropNodeViewTaskFactory"
+			unbind-method="removeDropNodeViewTaskFactory" ref="dingRenderingEngineFactory" />
+	</osgi:set>
+
+	<osgi:set id="dropEmptySpaceTaskFactorySet" interface="org.cytoscape.dnd.DropNetworkViewTaskFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addDropNetworkViewTaskFactory"
+			unbind-method="removeDropNetworkViewTaskFactory" ref="dingRenderingEngineFactory" />
+	</osgi:set>
+
 </beans>
