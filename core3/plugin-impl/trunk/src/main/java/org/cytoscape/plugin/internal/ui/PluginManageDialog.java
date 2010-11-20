@@ -28,6 +28,7 @@
  */
 package org.cytoscape.plugin.internal.ui;
 
+import org.cytoscape.plugin.CyPluginAdapter;
 import org.cytoscape.plugin.internal.util.CytoscapeVersion;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
@@ -42,7 +43,7 @@ import org.cytoscape.plugin.internal.ManagerUtil;
 import org.cytoscape.plugin.internal.PluginInquireAction;
 import org.cytoscape.plugin.internal.PluginManagerInquireTask;
 import org.cytoscape.plugin.internal.PluginStatus;
-import org.cytoscape.plugin.internal.PluginTracker;
+//import org.cytoscape.plugin.internal.PluginTracker;
 import org.cytoscape.plugin.internal.ThemeInfo;
 import org.cytoscape.plugin.internal.PluginInfo;
 import org.cytoscape.plugin.internal.PluginManager;
@@ -52,8 +53,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.cytoscape.work.TaskMonitor;
-//import cytoscape.task.ui.JTaskConfig;
-//import cytoscape.util.BookmarksUtil;
 //import cytoscape.util.OpenBrowser;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
@@ -88,6 +87,7 @@ import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.work.swing.GUITaskManager;
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.plugin.internal.PluginManagerInquireTaskFactory;
 
 public class PluginManageDialog extends javax.swing.JDialog implements
 		TreeSelectionListener, ActionListener {
@@ -109,6 +109,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	//private final TaskManager taskManager;
 	private GUITaskManager guiTaskManagerServiceRef;
+	private CyPluginAdapter adapter;
 	
 	public enum PluginInstallStatus {
 		INSTALLED(CURRENTLY_INSTALLED), AVAILABLE(AVAILABLE_FOR_INSTALL);
@@ -140,13 +141,16 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	private String baseSiteLabel = "Plugins available for download from: ";
 
-	public PluginManageDialog() {
+
+	// This constructor is for test only
+	private PluginManageDialog() {
 		this.setTitle("Manage Plugins");
 		initComponents();
 		initTree();
 		this.setSize(600, 500);
 	}
 
+	/*
 	public PluginManageDialog(javax.swing.JDialog owner) {
 		super(owner, "Manage Plugins");
 		setLocationRelativeTo(owner);
@@ -154,9 +158,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		initTree();
 		this.setSize(600, 500);
 	}
-
+*/
 	public PluginManageDialog(JFrame owner, Bookmarks bookmarks, BookmarksUtil bookmarksUtil,
-			GUITaskManager guiTaskManagerServiceRef) {
+			GUITaskManager guiTaskManagerServiceRef, CyPluginAdapter adapter) {
 
 		super(owner, "Manage Plugins");
 		this.desktop = owner;
@@ -164,6 +168,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		this.theBookmarks = bookmarks;
 		this.bookmarksUtil = bookmarksUtil;
 		this.guiTaskManagerServiceRef = guiTaskManagerServiceRef;
+		this.adapter = adapter;
 		
 		setLocationRelativeTo(owner);
 		initComponents();
@@ -188,7 +193,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		this.lstDownloadSites.setSelectedIndex(0);
 		
 		//this.lbSiteURL.setText(((DataSource)this.cmbDownloadSites.getSelectedItem()).getHref());
-		this.jTabbedPane1.setSelectedIndex(1);
+		this.jTabbedPane1.setSelectedIndex(0);
 		
 		this.jTabbedPane1.addChangeListener(new MyChangeListener());
 		this.tfSearch.setToolTipText(HOWTOSEARCH);
@@ -231,16 +236,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		(this.currentPluginSiteURL, new UrlAction(this, this.currentPluginSiteURL));
 		
 		PluginManagerInquireTaskFactory _taskFactory = new PluginManagerInquireTaskFactory(task);
-		
-		// Configure JTask Dialog Pop-Up Box
-		//JTaskConfig jTaskConfig = new JTaskConfig();
-		//jTaskConfig.setOwner(Cytoscape.getDesktop());
-		//jTaskConfig.displayCloseButton(false);
-		//jTaskConfig.displayStatus(true);
-		//jTaskConfig.setAutoDispose(true);
-		//jTaskConfig.displayCancelButton(true);
-		// Execute Task in New Thread; pop open JTask Dialog Box.
-		//TaskManager.executeTask(task, jTaskConfig);
 
 		this.guiTaskManagerServiceRef.execute(_taskFactory);
 		
@@ -248,6 +243,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		
 	}
 	
+	/*
 	private class PluginManagerInquireTaskFactory implements TaskFactory {
 		Task task;
 		public PluginManagerInquireTaskFactory(Task task){
@@ -258,7 +254,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			return new TaskIterator(task);
 		}
 	}
-	
+	*/
 	private class UrlAction extends PluginInquireAction {
 
 		private PluginManageDialog dialog;
@@ -434,10 +430,18 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 		javax.swing.ToolTipManager.sharedInstance().registerComponent(
 				pluginTree);
-		javax.swing.ImageIcon warningIcon = createImageIcon(
-				"/cytoscape/images/misc/alert-red2.gif", "Warning");
-		javax.swing.ImageIcon okIcon = createImageIcon(
-				"/cytoscape/images/misc/check-mark.gif", "Ok");
+
+		//javax.swing.ImageIcon warningIcon = createImageIcon(
+		//		"/resources/images/alert-red2.gif", "Warning");
+		//javax.swing.ImageIcon okIcon = createImageIcon(
+		//		"/resources/imagescheck-mark.gif", "Ok");
+	
+		
+		javax.swing.ImageIcon warningIcon = new ImageIcon(getClass().getResource("/images/alert-red2.gif"));
+		warningIcon.setDescription("Warning");
+		javax.swing.ImageIcon okIcon = new ImageIcon(getClass().getResource("/images/check-mark.gif"));
+		okIcon.setDescription("OK");
+
 		if (warningIcon != null) {
 			treeRenderer = new TreeCellRenderer(warningIcon, okIcon);
 			pluginTree.setCellRenderer(treeRenderer);
@@ -520,7 +524,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	// delete event
 	private void deleteButtonActionPerformed(ActionEvent evt) {
-		/*
+		
 		TreeNode Node = (TreeNode) pluginTree.getLastSelectedPathComponent();
 
 		if (Node == null) {
@@ -544,11 +548,11 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 				treeModel.removeNodeFromParent(Node);
 				setMessage(NodeInfo.getName()
 						+ " will be removed when you restart Cytoscape.");
-			} catch (cytoscape.plugin.WebstartException we) {
+			} catch (org.cytoscape.plugin.internal.WebstartException we) {
 				logger.warn("Unable to remove '"+NodeInfo.getName()+"': "+we.getMessage(), we);
 			}
 		}
-		*/
+		
 	}
 
 	// install new downloadable obj
@@ -1192,16 +1196,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		// Create Task
 		InstallTask task = new InstallTask(obj, node);
 
-		// Configure JTask Dialog Pop-Up Box
-		//JTaskConfig jTaskConfig = new JTaskConfig();
-		//jTaskConfig.setOwner(Cytoscape.getDesktop());
-		//jTaskConfig.displayCloseButton(false);
-		//jTaskConfig.displayStatus(true);
-		//jTaskConfig.setAutoDispose(true);
-		//jTaskConfig.displayCancelButton(true);
-		// Execute Task in New Thread; pop open JTask Dialog Box.
-		//TaskManager.executeTask(task, jTaskConfig);
-
 		PluginManagerInstallTaskFactory _taskFactory = new PluginManagerInstallTaskFactory(task);
 		this.guiTaskManagerServiceRef.execute(_taskFactory);
 
@@ -1259,7 +1253,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	}
 
 	private class InstallTask implements Task {
-		private TaskMonitor taskMonitor;
 
 		private DownloadableInfo infoObj;
 
@@ -1285,6 +1278,11 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			taskMonitor.setProgress(-1);
 
 			PluginManager Mgr = PluginManager.getPluginManager();
+			
+			if (Mgr.getCyPluginAdapter() == null){
+				Mgr.setCyPluginAdapter(adapter);
+			}
+			
 			Installable ins = infoObj.getInstallable();
 			try {
 				infoObj = Mgr.download(infoObj, taskMonitor);
@@ -1356,10 +1354,10 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			// not haltable
 		}
 
-		public void setTaskMonitor(TaskMonitor monitor)
-				throws IllegalThreadStateException {
-			this.taskMonitor = monitor;
-		}
+		//public void setTaskMonitor(TaskMonitor monitor)
+		//		throws IllegalThreadStateException {
+		//	this.taskMonitor = monitor;
+		//}
 
 		public String getTitle() {
 			return "Installing Cytoscape " + infoObj.getType().name() + " '" + infoObj.getName() + "'";
