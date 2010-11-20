@@ -36,6 +36,9 @@
 
 package org.cytoscape.plugin.internal;
 
+import org.cytoscape.plugin.CyPlugin;
+import org.cytoscape.plugin.CyPluginAdapter;
+import org.cytoscape.plugin.internal.action.PluginManagerAction;
 import org.cytoscape.plugin.internal.util.FileUtil;
 import org.cytoscape.plugin.internal.util.ZipUtil;
 import org.cytoscape.work.TaskMonitor;
@@ -45,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.JarURLConnection;
@@ -98,6 +102,8 @@ public class PluginManager {
 	private static String cyVersion;// = new CytoscapeVersion().getMajorVersion();
 
 	private static final Logger logger = LoggerFactory.getLogger(PluginTracker.class);
+	private CyPluginAdapter adapter = null;
+	
 	/**
 	/**
 	 * Returns list of loading exceptions.
@@ -255,11 +261,8 @@ public class PluginManager {
 		setWebstart();
 		String trackerFileName = "track_plugins.xml";
 
-
-		//TODO XXXXXXXXXX hard-coded for now, should get it from somewhere
-		String cyConfigDir = ".cytoscape";
-		String cyConfigVerDir = "3.0.0";
-		
+		String cyConfigDir = PluginManagerAction.cyConfigDir; 
+		String cyConfigVerDir = PluginManagerAction.cyConfigVerDir;
 		
 		if (tempDir == null) {
 			if (usingWebstartManager()) {
@@ -683,19 +686,49 @@ public class PluginManager {
 	public void loadPlugin(PluginInfo p) throws ManagerException {
 		List<URL> ToLoad = new ArrayList<URL>();
 
+		System.out.println("\nPluginManager.loadPlugin()...");
+		
 		for (String FileName : p.getFileList()) {
+			
+			System.out.println("\n\tFileName = "+ FileName);			
+			
 			if (FileName.endsWith(".jar")) {
+				
+				
+				Object o = null; 
+				JarFile jar = null; 
+				try {
+
+					File filename = new File(FileName);
+					
+					jar = new JarFile(filename);
+					String name = jar.getManifest().getMainAttributes().getValue("Cytoscape-Plugin");
+					URL jarurl = filename.toURI().toURL(); 
+					
+					URLClassLoader ucl = URLClassLoader.newInstance( new URL[]{jarurl}, 
+					                                      PluginLoaderTask.class.getClassLoader() );
+					Class c = ucl.loadClass(name);
+					Constructor<CyPlugin> con = c.getConstructor(CyPluginAdapter.class);
+					o = con.newInstance(adapter);
+				}
+				catch (Exception e){
+					System.out.println("Caught Exception in PluginManager.loadPlugin()...\n");
+					e.printStackTrace();
+				}
+
+				/*
 				try {
 					ToLoad.add(jarURL(FileName));
 				} catch (MalformedURLException mue) {
 					// mue.printStackTrace();
 					loadingErrors.add(mue);
 				}
+				*/
 			}
 		}
 		// don't need to register if we have the info object
 		InstallablePlugin insp = new InstallablePlugin(p);
-		loadURLPlugins(ToLoad, false);
+		//loadURLPlugins(ToLoad, false);
 
 		if (duplicateLoadError) {
 			insp.uninstall();
@@ -710,6 +743,7 @@ public class PluginManager {
 	 * URLs or resource names. The method first checks to see if the
 	 */
 	public void loadPlugins(List<String> p) {
+		
 		Set<String> PluginsSeen = new HashSet<String>();
 
 		// Parse the plugin strings and determine whether they're urls,
@@ -822,6 +856,8 @@ public class PluginManager {
 	private void loadURLPlugins(List<URL> pluginUrls, boolean register) {
 		
 		
+		System.out.println("\nPluginManager.loadURLPlugins()....\n");
+		
 		
 		URL[] urls = new URL[pluginUrls.size()];
 		pluginUrls.toArray(urls);
@@ -845,7 +881,10 @@ public class PluginManager {
 		// iterate through the given jar files and find classes that are
 		// assignable from CytoscapePlugin
 		for (int i = 0; i < urls.length; ++i) {
-
+			
+		}
+		
+		/*	
 			try {
 				logger.info("attempting to load plugin url: "+urls[i]);
 
@@ -874,7 +913,7 @@ public class PluginManager {
 						continue;
 					}
 				}
-
+			
 				// new-school failed, so revert to old school. Search through
 				// the jar entries
 				Enumeration entries = jar.entries();
@@ -921,6 +960,7 @@ public class PluginManager {
 				loadingErrors.add(new PluginException("problem loading plugin URL: " + urls[i], t));
 			}
 		}
+		*/
 	}
 
 	// these are jars that *may or may not* extend CytoscapePlugin but may be
@@ -1005,4 +1045,13 @@ public class PluginManager {
 		method.invoke(ClassLoader.getSystemClassLoader(), new Object[] { url });
 	}
 
+	
+	public void setCyPluginAdapter(CyPluginAdapter adapter){
+		this.adapter = adapter;
+	}
+
+	public CyPluginAdapter getCyPluginAdapter(){
+		return adapter;
+	}
+	
 }
