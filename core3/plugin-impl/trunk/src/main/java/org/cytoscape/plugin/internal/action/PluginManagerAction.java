@@ -48,12 +48,19 @@ import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.CytoscapeVersion;
+import org.cytoscape.plugin.CyPluginAdapter;
 import org.cytoscape.plugin.internal.ui.PluginManageDialog;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.work.swing.GUITaskManager;
-import java.util.Properties;
+//import java.util.Properties;
+import org.cytoscape.plugin.internal.*;
+//import org.cytoscape.plugin.internal.ui.*;
+
+import java.util.List;
+import java.util.Map;
+import org.cytoscape.work.Task;
 
 
 /**
@@ -66,13 +73,17 @@ public class PluginManagerAction extends AbstractCyAction {
 	private Bookmarks theBookmarks;
 	private GUITaskManager guiTaskManagerServiceRef;
 	private CyProperty cytoscapePropertiesServiceRef;
+	private CyPluginAdapter adapter;
 	
+	// Hard-coded for now, should get system configuration
+	public static String cyConfigDir = ".cytoscape";
+	public static String cyConfigVerDir = "3.0.0";
 	/**
 	 * Creates a new BookmarkAction object.
 	 */
 	public PluginManagerAction(CySwingApplication desktop, CyApplicationManager appMgr, CytoscapeVersion version,
 			CyProperty<Bookmarks> bookmarksProp, BookmarksUtil bookmarksUtil, GUITaskManager guiTaskManagerServiceRef
-			, CyProperty cytoscapePropertiesServiceRef) {
+			, CyProperty cytoscapePropertiesServiceRef, CyPluginAdapter adapter) {
 				
 		super("Plugin manager", appMgr);
 
@@ -84,17 +95,14 @@ public class PluginManagerAction extends AbstractCyAction {
 
 		// Note: We need pass cyConfigDir = ".cytoscape" and cyConfigVerDir to PluginManager.java
 		this.cytoscapePropertiesServiceRef = cytoscapePropertiesServiceRef;
+		this.adapter = adapter;
 				
 		// initialize version
 		org.cytoscape.plugin.internal.util.CytoscapeVersion.version = version.getVersion();
+		cyConfigVerDir = version.getVersion();
 
 		setPreferredMenu("Plugins");
 		
-		
-		// For debug only
-		//PluginManageDialog dlg = new PluginManageDialog(desktop.getJFrame(), theBookmarks, this.bookmarksUtil, 
-		//		this.guiTaskManagerServiceRef);
-		//dlg.setVisible(true);
 	}
 
 
@@ -106,7 +114,73 @@ public class PluginManagerAction extends AbstractCyAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		PluginManageDialog dlg = new PluginManageDialog(desktop.getJFrame(), theBookmarks, this.bookmarksUtil, 
-				this.guiTaskManagerServiceRef);
-		dlg.setVisible(true);
+				this.guiTaskManagerServiceRef, adapter);
+		
+		
+		PluginManager Mgr = PluginManager.getPluginManager();
+		
+		List<DownloadableInfo> Current = Mgr.getDownloadables(PluginStatus.CURRENT);
+		Map<String, List<DownloadableInfo>> InstalledInfo = ManagerUtil.sortByCategory(Current);
+
+		for (String Category : InstalledInfo.keySet()) {
+			dlg.addCategory(Category, InstalledInfo.get(Category),
+					PluginManageDialog.PluginInstallStatus.INSTALLED);
+		}
+
+		String DefaultUrl = "http://chianti.ucsd.edu/cyto_web/plugins/plugins_test.xml";//getDefaultUrl();
+		String DefaultTitle = "Cytoscape";
+		
+		Task task = new PluginManagerInquireTask(DefaultUrl, new ManagerAction(dlg, DefaultTitle, DefaultUrl));
+
+		PluginManagerInquireTaskFactory _taskFactory = new PluginManagerInquireTaskFactory(task);
+
+		this.guiTaskManagerServiceRef.execute(_taskFactory);
+
 	}
+
+	private class ManagerAction extends PluginInquireAction {
+		  // private CyLogger logger = CyLogger.getLogger(ManagerAction.class);
+		   private PluginManageDialog dialog;
+				private String title;
+				private String url;
+
+				public ManagerAction(PluginManageDialog Dialog, String Title, String Url) {
+					dialog = Dialog;
+					title = Title;
+					url = Url;
+				}
+
+				public String getProgressBarMessage() {
+					return "Attempting to connect to " + url;
+				}
+
+				public void inquireAction(List<DownloadableInfo> Results) {
+					PluginManager Mgr = PluginManager.getPluginManager();
+					if (isExceptionThrown()) {
+						if (getIOException() != null) {
+							// failed to read the given url
+							//logger.error(getIOException().getMessage(), getIOException());
+							dialog.setError(PluginManageDialog.CommonError.NOXML.toString());
+						} else if (getJDOMException() != null) {
+							// failed to parse the xml file at the url
+							//logger.error(getJDOMException().getMessage(), getJDOMException());
+							dialog.setError(PluginManageDialog.CommonError.BADXML.toString());
+						} else {
+							//logger.error(getException().getMessage(), getException());
+							dialog.setError(getException().getMessage());
+						}
+					} else {
+						List<DownloadableInfo> Unique = ManagerUtil.getUnique(Mgr.getDownloadables(PluginStatus.CURRENT), Results);
+						Map<String, List<DownloadableInfo>> AvailableInfo = ManagerUtil.sortByCategory(Unique);
+						
+						for (String Category : AvailableInfo.keySet()) {
+							// get only the unique ones
+							dialog.addCategory(Category, AvailableInfo.get(Category),
+									PluginManageDialog.PluginInstallStatus.AVAILABLE);
+						}
+					}
+					dialog.setSiteName(title);
+					dialog.setVisible(true);
+				}
+			}
 }
