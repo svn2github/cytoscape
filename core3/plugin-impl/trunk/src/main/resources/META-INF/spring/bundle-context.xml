@@ -47,9 +47,9 @@
 		<constructor-arg ref="cytoscapeVersionService" />
 		<constructor-arg ref="bookmarkServiceRef" />		
 		<constructor-arg ref="bookmarksUtilServiceRef" />
-		
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 		<constructor-arg ref="cytoscapePropertiesServiceRef" />
+		<constructor-arg ref="cyPluginAdapter" />
 	</bean>
 	
 </beans>
