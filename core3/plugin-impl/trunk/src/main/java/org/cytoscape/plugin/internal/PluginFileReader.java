@@ -131,7 +131,7 @@ public class PluginFileReader {
 				PluginXml.THEME_LIST.getTag());
 
 		if (ThemeList != null) {
-		  logger.debug("Theme list from xml: " + ThemeList.getChildren().size());
+		  //logger.debug("Theme list from xml: " + ThemeList.getChildren().size());
 				Iterator<Element> themeI = ThemeList.getChildren(
 					PluginXml.THEME.getTag()).iterator();
 
