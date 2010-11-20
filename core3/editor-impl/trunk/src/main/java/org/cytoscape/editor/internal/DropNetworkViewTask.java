@@ -10,15 +10,12 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskMonitor;
 
 
-public class DropListenerTask extends AbstractNetworkViewTask {
-	Transferable t;
-	Point pt;
-	
-	public DropListenerTask(final CyNetworkView view) {
-		super(view);
-	}
+public class DropNetworkViewTask extends AbstractNetworkViewTask {
 
-	public DropListenerTask(CyNetworkView view, Transferable t, Point pt) {
+	private final Transferable t;
+	private final Point pt;
+	
+	public DropNetworkViewTask(CyNetworkView view, Transferable t, Point pt) {
 		super(view);
 		this.t = t;
 		this.pt = pt;
@@ -26,9 +23,9 @@ public class DropListenerTask extends AbstractNetworkViewTask {
 
 	@Override
 	public void run(TaskMonitor tm) throws Exception {
-		System.out.println ("DropListenerTask: transferrable = " + t + 
-				", location = " + pt);
-		
+		System.out.println ("DropNetworkViewTask: transferrable = " + t + 
+		                    ", location = " + pt);
+	/*	
 		DataFlavor[] dfl = t.getTransferDataFlavors();
 
 		for (DataFlavor d : dfl) {
@@ -38,8 +35,6 @@ public class DropListenerTask extends AbstractNetworkViewTask {
 
 			Class<?> mimeClass = d.getRepresentationClass();
 		}
-	}
-	@Override
-	public void cancel() {
+		*/
 	}
 }

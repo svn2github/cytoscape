@@ -4,27 +4,26 @@ package org.cytoscape.editor.internal;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 
-import org.cytoscape.dnd.DropTaskFactory;
+import org.cytoscape.dnd.DropNetworkViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.TaskIterator;
 
 
-public class DropListener implements DropTaskFactory {
+public class DropNetworkViewTaskFactoryImpl implements DropNetworkViewTaskFactory {
 	private CyNetworkView view;
 	private Transferable t;
 	private Point pt;
-	
-	public void setDropInformation(CyNetworkView view, Transferable t, Point pt) {
-		System.out.println("Got drop: " + t);
-		this.pt = pt;
-		this.t = t;
+
+	public void setNetworkView(CyNetworkView view) {
 		this.view = view;
 	}
 
-	
-	public TaskIterator getTaskIterator() {
-		// TODO Auto-generated method stub
-		return new TaskIterator(new DropListenerTask(view, t, pt));
+	public void setDropInformation(Transferable t, Point pt) {
+		this.pt = pt;
+		this.t = t;
 	}
 
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(new DropNetworkViewTask(view, t, pt));
+	}
 }
