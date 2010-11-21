@@ -1269,13 +1269,19 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 		Transferable t = dte.getTransferable();
 
-		Point pt = dte.getLocation();
+		Point rawPt = dte.getLocation();
+		double[] loc = new double[2];
+		loc[0] = rawPt.getX();
+		loc[1] = rawPt.getY();
+		m_view.xformComponentToNodeCoords(loc);
+		Point xformPt = new Point();
+		xformPt.setLocation(loc[0],loc[1]); 
 
-		NodeView nview = m_view.getPickedNodeView(pt);
+		NodeView nview = m_view.getPickedNodeView(rawPt);
 		if ( nview != null )
-			popup.createDropNodeViewMenu(nview,pt,t);
+			popup.createDropNodeViewMenu(nview,rawPt,xformPt,t);
 		else 
-			popup.createDropEmptySpaceMenu(pt,t); 
+			popup.createDropEmptySpaceMenu(rawPt,xformPt,t); 
 
 		dte.dropComplete(true);
 	}

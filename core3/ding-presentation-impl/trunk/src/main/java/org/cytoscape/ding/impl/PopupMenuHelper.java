@@ -113,7 +113,7 @@ class PopupMenuHelper {
 	/**
 	 * Creates a menu based on a drop event on a NodeView.
 	 */
-	void createDropNodeViewMenu(NodeView nview, Point p, Transferable t) {
+	void createDropNodeViewMenu(NodeView nview, Point rawPt, Point xformPt, Transferable t) {
 		if (nview != null ) {
 			Collection<DropNodeViewTaskFactory> usableTFs = getPreferredActions(m_view.dropNodeViewTFs,null);
 			View<CyNode> nv = nview.getNodeViewModel();
@@ -126,17 +126,17 @@ class PopupMenuHelper {
 
 				for ( DropNodeViewTaskFactory nvtf : usableTFs ) {
 					nvtf.setNodeView(nv,m_view.cyNetworkView);
-					nvtf.setDropInformation(t,p);
+					nvtf.setDropInformation(t,rawPt,xformPt);
 					createMenuItem(menu, nvtf, tracker, m_view.dropNodeViewTFs.get( nvtf ));
 				}
 
-				menu.show(invoker, new Double(p.getX()).intValue(), new Double(p.getY()).intValue());
+				menu.show(invoker, (int)(rawPt.getX()), (int)(rawPt.getY()));
 
 			// execute the task directly if only one factory exists 
 			} else if ( usableTFs.size() == 1) {
 				DropNodeViewTaskFactory tf  = usableTFs.iterator().next();
 				tf.setNodeView(nv,m_view.cyNetworkView);
-				tf.setDropInformation(t,p);
+				tf.setDropInformation(t,rawPt,xformPt);
 				executeTask(tf);
 			}
 		}
@@ -175,7 +175,7 @@ class PopupMenuHelper {
 	/**
 	 * Creates a menu based on the NetworkView.
 	 */
-	void createDropEmptySpaceMenu(Point p, Transferable t) {
+	void createDropEmptySpaceMenu(Point rawPt, Point xformPt, Transferable t) {
 		// build a menu of actions if more than factory exists
 		Collection<DropNetworkViewTaskFactory> usableTFs = getPreferredActions(m_view.dropEmptySpaceTFs,null);
 		if ( usableTFs.size() > 1 ) {
@@ -183,15 +183,15 @@ class PopupMenuHelper {
 			JMenuTracker tracker = new JMenuTracker(menu);
 			for ( DropNetworkViewTaskFactory nvtf : usableTFs ) {
 				nvtf.setNetworkView(m_view.cyNetworkView);
-				nvtf.setDropInformation(t,p);
+				nvtf.setDropInformation(t,rawPt,xformPt);
 				createMenuItem(menu, nvtf, tracker, m_view.dropEmptySpaceTFs.get( nvtf ) );
 			}
-			menu.show(invoker, new Double(p.getX()).intValue(), new Double(p.getY()).intValue());
+			menu.show(invoker, (int)(rawPt.getX()), (int)(rawPt.getY()));
 		// execute the task directly if only one factory exists 
 		} else if ( usableTFs.size() == 1) {
 			DropNetworkViewTaskFactory tf = usableTFs.iterator().next();
 			tf.setNetworkView(m_view.cyNetworkView);
-			tf.setDropInformation(t,p);
+			tf.setDropInformation(t,rawPt,xformPt);
 			executeTask(tf);
 		}
 	}
