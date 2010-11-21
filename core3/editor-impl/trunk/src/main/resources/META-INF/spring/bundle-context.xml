@@ -19,6 +19,7 @@
 
 	<bean id="dropNodeViewTaskFactory"
 		class="org.cytoscape.editor.internal.DropNodeViewTaskFactoryImpl">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
 	<bean id="editorCytoPanelComponent"

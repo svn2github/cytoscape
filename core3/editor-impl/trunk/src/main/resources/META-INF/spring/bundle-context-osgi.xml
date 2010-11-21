@@ -8,6 +8,9 @@
 	<osgi:reference id="cySwingApplicationServiceRef" 
 	                interface="org.cytoscape.application.swing.CySwingApplication"/>
 
+	<osgi:reference id="cyNetworkManagerServiceRef" 
+	                interface="org.cytoscape.model.CyNetworkManager"/>
+
 	<osgi:service id="editorCytoPanelComponentService" ref="editorCytoPanelComponent"
 		interface="org.cytoscape.application.swing.CytoPanelComponent"/>
 

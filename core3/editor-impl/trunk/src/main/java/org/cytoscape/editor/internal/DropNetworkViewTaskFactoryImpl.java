@@ -1,7 +1,7 @@
 package org.cytoscape.editor.internal;
 
 
-import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.awt.datatransfer.Transferable;
 
 import org.cytoscape.dnd.DropNetworkViewTaskFactory;
@@ -12,18 +12,20 @@ import org.cytoscape.work.TaskIterator;
 public class DropNetworkViewTaskFactoryImpl implements DropNetworkViewTaskFactory {
 	private CyNetworkView view;
 	private Transferable t;
-	private Point pt;
+	private Point2D javaPt;
+	private Point2D xformPt;
 
 	public void setNetworkView(CyNetworkView view) {
 		this.view = view;
 	}
 
-	public void setDropInformation(Transferable t, Point pt) {
-		this.pt = pt;
+	public void setDropInformation(Transferable t, Point2D javaPt, Point2D xformPt) {
 		this.t = t;
+		this.javaPt = javaPt;
+		this.xformPt = xformPt;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new DropNetworkViewTask(view, t, pt));
+		return new TaskIterator(new DropNetworkViewTask(view, t, xformPt));
 	}
 }
