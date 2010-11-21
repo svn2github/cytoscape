@@ -21,4 +21,9 @@
 		class="org.cytoscape.editor.internal.DropNodeViewTaskFactoryImpl">
 	</bean>
 
+	<bean id="editorCytoPanelComponent"
+		class="org.cytoscape.editor.internal.gui.EditorCytoPanelComponent">
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
 </beans>
