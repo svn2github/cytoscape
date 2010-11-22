@@ -133,23 +133,23 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
             }
         });
 
-        pcs.addPropertyChangeListener(Cytoscape.PREFERENCE_MODIFIED,
-                new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                if ((CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == evt.getOldValue())
-                    || (CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == evt.getNewValue())) {
-                    IDMapperClientManager.registerDefaultClient((String)evt.getNewValue(), (String)evt.getOldValue());
-                    IDMapperClientManager.reCache();
-                }
-            }
-        });
+//        pcs.addPropertyChangeListener(Cytoscape.PREFERENCE_MODIFIED,
+//                new PropertyChangeListener() {
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                if ((CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == evt.getOldValue())
+//                    || (CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == evt.getNewValue())) {
+//                    IDMapperClientManager.registerDefaultClient((String)evt.getNewValue(), (String)evt.getOldValue());
+//                    IDMapperClientManager.reCache();
+//                }
+//            }
+//        });
     }
 
     private void registerDefaultClients() {
         IDMapperClientManager.reloadFromCytoscapeGlobalProperties();
-        if (IDMapperClientManager.countClients()==0) {
-            IDMapperClientManager.registerDefaultClient();
-        }
+//        if (IDMapperClientManager.countClients()==0) {
+//            IDMapperClientManager.registerDefaultClient();
+//        }
     }
 
     class IDMappingAction extends CytoscapeAction {
@@ -244,10 +244,10 @@ public final class CyThesaurusPlugin extends CytoscapePlugin {
         }
     }
 
-    private class CyThesurrusServiceAttributeBasedIDMappingAction extends CytoscapeAction {
+    private class CyThesurrusServiceAttributeBasedIDMappingActionTest extends CytoscapeAction {
 
         public static final String actionName = "Attribute ID mapping service example (See Tutorial)";
-        public CyThesurrusServiceAttributeBasedIDMappingAction() {
+        public CyThesurrusServiceAttributeBasedIDMappingActionTest() {
             super(actionName); //TODO rename
         }
 
