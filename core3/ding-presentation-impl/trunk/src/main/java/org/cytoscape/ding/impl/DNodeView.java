@@ -103,7 +103,7 @@ public class DNodeView implements NodeView, Label {
 	static final Paint DEFAULT_LABEL_PAINT = Color.black;
 	static final double DEFAULT_LABEL_WIDTH = 100.0;
 
-	DGraphView graphView;
+	final DGraphView graphView;
 
 	static final int DEFAULT_TRANSPARENCY = 255;
 
@@ -155,6 +155,9 @@ public class DNodeView implements NodeView, Label {
 	 * @param inx the RootGraph index of node (a negative number).
 	 */
 	DNodeView(DGraphView view, int inx, View<CyNode> nv) {
+		if (view == null)
+			throw new NullPointerException("view must never be null!");
+
 		graphView = view;
 		m_inx = inx;
 		nodeViewModel = nv;
@@ -182,6 +185,7 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public CyNode getNode() {
+if (graphView == null) System.err.println("++++++++++++++++++++++++++++++++++++++ in DNodeView.getNode(): graphView is NULL!!");
 		synchronized (graphView.m_lock) {
 			return graphView.networkModel.getNode(m_inx);
 		}

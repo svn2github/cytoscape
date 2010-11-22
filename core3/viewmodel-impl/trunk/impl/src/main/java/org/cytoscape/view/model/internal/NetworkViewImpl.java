@@ -1,5 +1,6 @@
 package org.cytoscape.view.model.internal;
 
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +23,8 @@ import org.cytoscape.model.events.AddedNodeListener;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.events.AboutToRemoveEdgeViewMicroListener;
+import org.cytoscape.view.model.events.AboutToRemoveNodeViewMicroListener;
 import org.cytoscape.view.model.events.AddedEdgeViewEvent;
 import org.cytoscape.view.model.events.AddedNodeViewEvent;
 import org.cytoscape.view.model.events.FitContentEvent;
@@ -31,22 +34,19 @@ import org.cytoscape.view.model.events.UpdateNetworkPresentationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * Row-oriented implementation of CyNetworkView model. This is a consolidated
  * view model representing a network.
- * 
- * @author kono
- * 
  */
 public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkView, AddedEdgeListener,
-		AddedNodeListener, AboutToRemoveEdgeListener, AboutToRemoveNodeListener {
-	
+		AddedNodeListener, AboutToRemoveEdgeListener, AboutToRemoveNodeListener
+{
 	private static final Logger logger = LoggerFactory.getLogger(NetworkViewImpl.class);
 
 	private Map<CyNode, View<CyNode>> nodeViews;
 	private Map<CyEdge, View<CyEdge>> edgeViews;
 
-	
 	/**
 	 * Create a new instance of a network view model.
 	 * This constructor do NOT fire event for presentation layer.
@@ -109,6 +109,13 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 		if (model != e.getSource())
 			return;
 
+		if (!nodeViews.containsKey(e.getNode()))
+			return;
+
+		final AboutToRemoveNodeViewMicroListener listener =
+			cyEventHelper.getMicroListener(AboutToRemoveNodeViewMicroListener.class, this);
+		listener.nodeViewAboutToBeRemoved(nodeViews.get(e.getNode()), this);
+
 		nodeViews.remove(e.getNode());
 	}
 
@@ -116,6 +123,13 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 	public void handleEvent(AboutToRemoveEdgeEvent e) {
 		if (model != e.getSource())
 			return;
+
+		if (!edgeViews.containsKey(e.getEdge()))
+			return;
+
+		final AboutToRemoveEdgeViewMicroListener listener =
+			cyEventHelper.getMicroListener(AboutToRemoveEdgeViewMicroListener.class, this);
+		listener.edgeViewAboutToBeRemoved(edgeViews.get(e.getEdge()), this);
 
 		edgeViews.remove(e.getEdge());
 	}

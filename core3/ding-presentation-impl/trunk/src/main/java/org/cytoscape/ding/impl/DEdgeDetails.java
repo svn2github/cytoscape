@@ -245,8 +245,24 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 
 		final CyNetwork graph = m_view.networkModel;
 		final CyEdge edgeObj = graph.getEdge(edge);
-		final int srcNode = edgeObj.getSource().getIndex();
-		final int trgNode = edgeObj.getTarget().getIndex();
+		if (edgeObj == null) {
+			System.err.println("in DEdgeDetails.anchors(): Warning: non-existent edge="+edge);
+			return returnThis;
+		}
+
+		final CyNode source = edgeObj.getSource();
+		if (source == null) {
+			System.err.println("in DEdgeDetails.anchors(): Warning: non-existent source!");
+			return returnThis;
+		}
+		final int srcNode = source.getIndex();
+
+		final CyNode target = edgeObj.getTarget();
+		if (target == null) {
+			System.err.println("in DEdgeDetails.anchors(): Warning: non-existent target!");
+			return returnThis;
+		}
+		final int trgNode = target.getIndex();
 
 		// Calculate anchors necessary for self edges.
 		if (srcNode == trgNode) { // Self-edge.

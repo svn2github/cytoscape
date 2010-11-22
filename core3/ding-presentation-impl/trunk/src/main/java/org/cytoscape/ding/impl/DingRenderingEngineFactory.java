@@ -1,5 +1,6 @@
 package org.cytoscape.ding.impl;
 
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -23,6 +24,8 @@ import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.events.AboutToRemoveEdgeViewMicroListener;
+import org.cytoscape.view.model.events.AboutToRemoveNodeViewMicroListener;
 import org.cytoscape.view.model.events.UpdateNetworkPresentationEvent;
 import org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener;
 import org.cytoscape.view.presentation.RenderingEngine;
@@ -32,6 +35,7 @@ import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class DingRenderingEngineFactory implements
 		RenderingEngineFactory<CyNetwork>, UpdateNetworkPresentationEventListener {
@@ -133,8 +137,10 @@ public class DingRenderingEngineFactory implements
 		}
 
 		registrar.registerAllServices(dgv, new Properties());
-		registrar.registerAllServices(new AddDeleteHandler(dgv),
-				new Properties());
+		final AddDeleteHandler addDeleteHandler = new AddDeleteHandler(dgv);
+		registrar.registerAllServices(addDeleteHandler, new Properties());
+		eventHelper.addMicroListener(addDeleteHandler, AboutToRemoveEdgeViewMicroListener.class, view);
+		eventHelper.addMicroListener(addDeleteHandler, AboutToRemoveNodeViewMicroListener.class, view);
 		
 		// Register engine to manager
 		this.renderingEngineManager.addRenderingEngine(dgv);

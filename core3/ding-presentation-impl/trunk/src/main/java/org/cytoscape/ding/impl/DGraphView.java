@@ -945,8 +945,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			// If this node was hidden, it won't be in m_spacial.
 			m_spacial.delete(nodeInx);
 
-			// m_selectedNodes.delete(nodeInx);
-			returnThis.graphView = null;
 			m_contentChanged = true;
 		}
 
@@ -2755,11 +2753,13 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	public void nodeVisualPropertySet(final View<CyNode> nodeView,
 			final VisualProperty<?> vp, final Object value) {
 		// Both objects should exist.
-		if (value == null || nodeView == null)
+		if (value == null || nodeView == null || nodeView.getModel() == null)
 			return;
 
-		m_nodeViewMap.get(nodeView.getModel()
-				.getIndex()).setVisualPropertyValue(vp, value);
+		// Convert to Ding's view object.
+		final Integer index = nodeView.getModel().getIndex();
+		if (m_nodeViewMap.containsKey(index))
+			m_nodeViewMap.get(index).setVisualPropertyValue(vp, value);
 	}
 
 	/**
@@ -2768,13 +2768,15 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 */
 	@Override
 	public void edgeVisualPropertySet(final View<CyEdge> edgeView,
-			final VisualProperty<?> vp, final Object value) {
-		if (value == null || edgeView == null)
+			final VisualProperty<?> vp, final Object value)
+	{
+		if (value == null || edgeView == null || edgeView.getModel() == null)
 			return;
 
 		// Convert to Ding's view object.
-		m_edgeViewMap.get(edgeView.getModel().getIndex())
-				.setVisualPropertyValue(vp, value);
+		final Integer index = edgeView.getModel().getIndex();
+		if (m_edgeViewMap.containsKey(index))
+			m_edgeViewMap.get(index).setVisualPropertyValue(vp, value);
 	}
 
 	/**

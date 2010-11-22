@@ -1,14 +1,7 @@
 /*
  File: AddDeleteHandler.java
 
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,13 +26,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
-//---------------------------------------------------------------------------
-//  $Revision: 13022 $ 
-//  $Date: 2008-02-11 13:59:26 -0800 (Mon, 11 Feb 2008) $
-//  $Author: mes $
-//---------------------------------------------------------------------------
+*/
 package org.cytoscape.ding.impl;
 
 
@@ -49,13 +36,11 @@ import org.cytoscape.model.CyNode;
 
 import org.cytoscape.view.model.events.AddedEdgeViewEvent;
 import org.cytoscape.view.model.events.AddedNodeViewEvent;
-//import org.cytoscape.view.model.events.AboutToRemoveEdgeEvent;
-//import org.cytoscape.view.model.events.AboutToRemoveNodeEvent;
 
 import org.cytoscape.view.model.events.AddedEdgeViewListener;
 import org.cytoscape.view.model.events.AddedNodeViewListener;
-//import org.cytoscape.view.model.events.AboutToRemoveEdgeListener;
-//import org.cytoscape.view.model.events.AboutToRemoveNodeListener;
+import org.cytoscape.view.model.events.AboutToRemoveEdgeViewMicroListener;
+import org.cytoscape.view.model.events.AboutToRemoveNodeViewMicroListener;
 
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
@@ -74,11 +59,10 @@ import java.util.HashSet;
  */
 public class AddDeleteHandler 
 	implements AddedEdgeViewListener, 
-	           AddedNodeViewListener
-			  /* , 
-	           AboutToRemoveEdgeListener, 
-	           AboutToRemoveNodeListener */{
-
+	           AddedNodeViewListener,
+	           AboutToRemoveEdgeViewMicroListener, 
+	           AboutToRemoveNodeViewMicroListener
+{
 	private final GraphView view;
 	private final CyNetworkView networkView;
 
@@ -104,24 +88,20 @@ public class AddDeleteHandler
 		view.addNodeView(nv.getModel());
 		view.updateView();
 	}
-/*
-	public void handleEvent(final AboutToRemoveEdgeEvent e) {
-		if ( networkView != e.getSource() )
+
+	public void edgeViewAboutToBeRemoved(final View<CyEdge> edgeView, final CyNetworkView networkView) {
+		if (this.networkView != networkView || edgeView == null)
 			return;
 
-		final View<CyEdge> edge = e.getEdgeView();
-		view.removeEdgeView(edge.getIndex());
+		view.removeEdgeView(edgeView.getModel());
 		view.updateView();
 	}
 
-	public void handleEvent(final AboutToRemoveNodeEvent e) {
-		if ( networkView != e.getSource() )
+	public void nodeViewAboutToBeRemoved(final View<CyNode> nodeView, final CyNetworkView networkView) {
+		if (this.networkView != networkView || nodeView == null)
 			return;
 
-		final View<CyNode> node = e.getNodeView();
-		view.removeNodeView(node.getIndex());
+		view.removeNodeView(nodeView.getModel());
 		view.updateView();
 	}
-	*/
 }
-
