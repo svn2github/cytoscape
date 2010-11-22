@@ -45,7 +45,7 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	// Default value for this VP.
 	private final T defaultValue;
 	
-	private final Class<T> dataType;
+	private final Range<T> range;
 
 	// Identifier.
 	private final String id;
@@ -68,7 +68,7 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public AbstractVisualProperty(final T defaultValue, final Class<T> dataType, final String id, final String displayName, final Class<?> targetObjectDataType) {
+	public AbstractVisualProperty(final T defaultValue, final Range<T> range, final String id, final String displayName, final Class<?> targetObjectDataType) {
 		if(defaultValue == null)
 			throw new NullPointerException("defaultValue should not be null.");
 		
@@ -78,7 +78,7 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 		if(displayName == null)
 			throw new NullPointerException("displayName should not be null.");
 		
-		this.dataType = dataType;
+		this.range = range;
 		
 		this.defaultValue = defaultValue;
 		this.id = id;
@@ -89,8 +89,8 @@ public abstract class AbstractVisualProperty<T> implements VisualProperty<T> {
 
 	
 	@Override
-	public Class<T> getType() {
-		return dataType;
+	public Range<T> getRange() {
+		return range;
 	}
 
 	

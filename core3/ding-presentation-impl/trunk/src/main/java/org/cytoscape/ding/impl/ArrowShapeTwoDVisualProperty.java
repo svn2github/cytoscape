@@ -35,14 +35,28 @@
 */
 package org.cytoscape.ding.impl; 
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.cytoscape.ding.ArrowShape;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.AbstractVisualProperty;
+import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.Range;
 
 public class ArrowShapeTwoDVisualProperty extends AbstractVisualProperty<ArrowShape> { 
 
+	private static final Range<ArrowShape> ARROW_SHAPE_RANGE;
+	
+	static {
+		final Set<ArrowShape> arrowSet = new HashSet<ArrowShape>();
+		for(final ArrowShape arrow: ArrowShape.values())
+			arrowSet.add(arrow);
+		ARROW_SHAPE_RANGE = new DiscreteRangeImpl<ArrowShape>(ArrowShape.class, arrowSet);
+	}
+	
 	public ArrowShapeTwoDVisualProperty(final ArrowShape def, final String id, final String name) {
-		super(def, ArrowShape.class, id, name, CyEdge.class);
+		super(def, ARROW_SHAPE_RANGE, id, name, CyEdge.class);
 	}
 	
 	public String toSerializableString(final ArrowShape value) {

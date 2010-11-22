@@ -1,12 +1,24 @@
 package org.cytoscape.view.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.cytoscape.model.CyNode;
 
 public class StringVisualProperty extends AbstractVisualProperty<String> {
 
+	
+	private static final Range<String> sRange;
+	
+	static  {
+		final Set<String> valSet = new HashSet<String>();
+		valSet.add("Foo");
+		sRange = new DiscreteRangeImpl<String>(String.class, valSet);
+	}
+	
 	public StringVisualProperty() {
 		// isolated node. No parent/children.
-		super("test", String.class, "string", "String Visual Property", CyNode.class);
+		super("test", sRange, "string", "String Visual Property", CyNode.class);
 	}
 
 	public String parseSerializableString(final String text) {

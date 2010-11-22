@@ -35,12 +35,26 @@
 */
 package org.cytoscape.ding.impl; 
 
-import org.cytoscape.view.model.AbstractVisualProperty;
+import java.util.HashSet;
+import java.util.Set;
 
-public class AnchorTwoDVisualProperty extends AbstractVisualProperty<Anchor> { 
+import org.cytoscape.view.model.AbstractVisualProperty;
+import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.Range;
+
+public class AnchorTwoDVisualProperty extends AbstractVisualProperty<Anchor> {
+	
+	private static final Range<Anchor> ANCHOR_RANGE;
+	
+	static {
+		final Set<Anchor> anchorSet = new HashSet<Anchor>();
+		for(final Anchor anchor: Anchor.values())
+			anchorSet.add(anchor);
+		ANCHOR_RANGE = new DiscreteRangeImpl<Anchor>(Anchor.class, anchorSet);
+	}
 
 	public AnchorTwoDVisualProperty(final Anchor def, final String id, final String name, final Class<?> tagretDataType) {
-		super(def, Anchor.class, id, name, tagretDataType);
+		super(def, ANCHOR_RANGE, id, name, tagretDataType);
 	}
 	
 	public String toSerializableString(final Anchor value) {

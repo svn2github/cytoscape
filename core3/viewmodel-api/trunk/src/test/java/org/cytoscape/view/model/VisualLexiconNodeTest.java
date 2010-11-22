@@ -5,6 +5,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +24,10 @@ public class VisualLexiconNodeTest {
 
 	@Before
 	public void setUp() throws Exception {
-		vp1 = new DummyVisualProperty(new DummyObject(), "dummy", "Dummy Visual Property");
+		final Set<DummyObject> dummySet = new HashSet<DummyObject>();
+		dummySet.add(new DummyObject());
+		DiscreteRangeImpl<DummyObject> range = new DiscreteRangeImpl<DummyObject>(DummyObject.class, dummySet);
+		vp1 = new DummyVisualProperty(new DummyObject(), "dummy", "Dummy Visual Property", range);
 		vp2 = new IntegerVisualProperty();
 		vp3 = new StringVisualProperty();
 		node1 = new VisualLexiconNode(vp1, null);

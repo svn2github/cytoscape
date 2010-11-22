@@ -2,6 +2,9 @@ package org.cytoscape.view.model;
 
 import static org.junit.Assert.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +16,12 @@ public class DummyVisualPropertyTest extends AbstractVisualPropertyTest<DummyObj
 		id = "DummyVisualProperty";
 		defaultVal = new DummyObject();
 		displayName = "Dummy Visual Property";
-		type = DummyObject.class;
+		
+		final Set<DummyObject> dummySet = new HashSet<DummyObject>();
+		dummySet.add(new DummyObject());
+		range = new DiscreteRangeImpl<DummyObject>(DummyObject.class, dummySet);
 		ignore = false;
-		vp = new DummyVisualProperty(defaultVal, id, displayName);
+		vp = new DummyVisualProperty(defaultVal, id, displayName, range);
 	}
 
 	@After
@@ -26,7 +32,7 @@ public class DummyVisualPropertyTest extends AbstractVisualPropertyTest<DummyObj
 	public void testDummyVisualProperty() {
 		DummyVisualProperty dummy1 = null;
 		try {
-			dummy1 = new DummyVisualProperty(null, id, displayName);
+			dummy1 = new DummyVisualProperty(null, id, displayName, range);
 		} catch(Exception ex) {
 			assertNull(dummy1);
 			assertEquals(NullPointerException.class, ex.getClass());
@@ -34,7 +40,7 @@ public class DummyVisualPropertyTest extends AbstractVisualPropertyTest<DummyObj
 		
 		DummyVisualProperty dummy2 = null;
 		try {
-			dummy2 = new DummyVisualProperty(defaultVal, null, displayName);
+			dummy2 = new DummyVisualProperty(defaultVal, null, displayName, range);
 		} catch(Exception ex) {
 			assertNull(dummy2);
 			assertEquals(NullPointerException.class, ex.getClass());
@@ -42,7 +48,7 @@ public class DummyVisualPropertyTest extends AbstractVisualPropertyTest<DummyObj
 		
 		DummyVisualProperty dummy3 = null;
 		try {
-			dummy3 = new DummyVisualProperty(defaultVal, id, null);
+			dummy3 = new DummyVisualProperty(defaultVal, id, null, range);
 		} catch(Exception ex) {
 			assertNull(dummy3);
 			assertEquals(NullPointerException.class, ex.getClass());

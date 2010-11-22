@@ -12,16 +12,16 @@ import org.cytoscape.view.model.VisualProperty;
 public class ThreeDVisualLexicon extends TwoDVisualLexicon {
 
 	public static final VisualProperty<Double> NODE_Z_LOCATION = new DoubleVisualProperty(
-			0.0, "NODE_Z_LOCATION", "Node Z Location", true, CyNode.class);
+			0.0, ARBITRARY_DOUBLE_RANGE, "NODE_Z_LOCATION", "Node Z Location", true, CyNode.class);
 
 	public static final VisualProperty<Double> NODE_Z_SIZE = new DoubleVisualProperty(
-			0.0, "NODE_Z_SIZE", "Node z size (depth)", CyNode.class);
+			0.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_Z_SIZE", "Node z size (depth)", CyNode.class);
 
 	public static final VisualProperty<Double> NETWORK_CENTER_Z_LOCATION = new DoubleVisualProperty(
-			0.0, "NETWORK_CENTER_Z_LOCATION", "Network Center Z Location", CyNetwork.class);
+			0.0, ARBITRARY_DOUBLE_RANGE, "NETWORK_CENTER_Z_LOCATION", "Network Center Z Location", CyNetwork.class);
 
 	public static final VisualProperty<Double> NETWORK_DEPTH = new DoubleVisualProperty(
-			0.0, "NETWORK_DEPTH", "Network Depth", CyNetwork.class);
+			0.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_DEPTH", "Network Depth", CyNetwork.class);
 
 	/**
 	 * Construct a {@linkplain VisalLexicon} for 3D rendering engine.

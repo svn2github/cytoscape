@@ -35,12 +35,26 @@
 */
 package org.cytoscape.view.presentation.property; 
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.cytoscape.view.model.AbstractVisualProperty;
+import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.Range;
 
 public class BooleanVisualProperty extends AbstractVisualProperty<Boolean> { 
-
+	
+	private static final Range<Boolean> BOOLEAN_RANGE;
+	
+	static {
+		final Set<Boolean> bRange = new HashSet<Boolean>();
+		bRange.add(true);
+		bRange.add(false);
+		BOOLEAN_RANGE = new DiscreteRangeImpl<Boolean>(Boolean.class, bRange); 
+	}
+	
 	public BooleanVisualProperty(final Boolean def, final String id, final String name, final Class<?> targetDataType) {
-		super(def, Boolean.class, id,name, targetDataType);
+		super(def, BOOLEAN_RANGE, id,name, targetDataType);
 	}
 	
 	public String toSerializableString(final Boolean value) {

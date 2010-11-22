@@ -89,9 +89,9 @@ public class ContinuousMapping<K, V> extends AbstractVisualMappingFunction<K, V>
 
 		// TODO FIXME use factory here.
 		// Create Interpolator
-		if (vp.getType() == Color.class || vp.getType() == Paint.class)
+		if (vp.getRange().getType() == Color.class || vp.getRange().getType() == Paint.class)
 			interpolator = (Interpolator<K, V>) new LinearNumberToColorInterpolator();
-		else if (Number.class.isAssignableFrom(vp.getType()))
+		else if (Number.class.isAssignableFrom(vp.getRange().getType()))
 			interpolator = (Interpolator<K, V>) new LinearNumberToNumberInterpolator();
 		else
 			interpolator = (Interpolator<K, V>) new FlatInterpolator();

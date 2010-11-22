@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,19 +31,32 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package org.cytoscape.ding.impl; 
+ */
+package org.cytoscape.ding.impl;
 
+import java.util.HashSet;
+import java.util.Set;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
+import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.Range;
 
+public class JustifyTwoDVisualProperty extends AbstractVisualProperty<Justify> {
 
-public class JustifyTwoDVisualProperty extends AbstractVisualProperty<Justify> { 
+	private static final Range<Justify> JUSTIFY_RANGE;
 
-	public JustifyTwoDVisualProperty(final Justify def, final String id, final String name, final Class<?> targetDataType) {
-		super(def,Justify.class, id, name, targetDataType);
+	static {
+		final Set<Justify> justifySet = new HashSet<Justify>();
+		for (final Justify arrow : Justify.values())
+			justifySet.add(arrow);
+		JUSTIFY_RANGE = new DiscreteRangeImpl<Justify>(Justify.class, justifySet);
 	}
-	
+
+	public JustifyTwoDVisualProperty(final Justify def, final String id,
+			final String name, final Class<?> targetDataType) {
+		super(def, JUSTIFY_RANGE, id, name, targetDataType);
+	}
+
 	public String toSerializableString(final Justify value) {
 		return value.toString();
 	}

@@ -45,12 +45,7 @@ package org.cytoscape.view.model;
  */
 public interface VisualProperty<T> {
 	
-	/**
-	 * The type of object represented by this property.
-	 *
-	 * @return  Type of object stored in this VP.
-	 */
-	Class<T> getType();
+	Range<T> getRange();
 	
 
 	/**

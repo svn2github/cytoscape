@@ -1,6 +1,11 @@
 package org.cytoscape.view.presentation.property;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.cytoscape.view.model.AbstractVisualProperty;
+import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.Range;
 import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.presentation.internal.property.VisualizableImpl;
 
@@ -14,9 +19,17 @@ public class DefaultVisualizableVisualProperty extends
 		AbstractVisualProperty<Visualizable> {
 
 	private static final Visualizable visualizable = new VisualizableImpl();
+	private static final Range<Visualizable> VISUALIZABLE_RANGE;
 
-	public DefaultVisualizableVisualProperty(final String id, final String name, final Class<?> targetDataType) {
-		super(visualizable, Visualizable.class, id, name, targetDataType);
+	static {
+		final Set<Visualizable> vRange = new HashSet<Visualizable>();
+		VISUALIZABLE_RANGE = new DiscreteRangeImpl<Visualizable>(
+				Visualizable.class, vRange);
+	}
+
+	public DefaultVisualizableVisualProperty(final String id,
+			final String name, final Class<?> targetDataType) {
+		super(visualizable, VISUALIZABLE_RANGE, id, name, targetDataType);
 	}
 
 	@Override

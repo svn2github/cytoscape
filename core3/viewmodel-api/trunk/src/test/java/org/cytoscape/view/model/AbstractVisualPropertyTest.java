@@ -13,7 +13,7 @@ public abstract class AbstractVisualPropertyTest<T> {
 	protected String id;
 	protected T defaultVal;
 	protected String displayName;
-	protected Class<T> type;
+	protected Range<T> range;
 	protected Boolean ignore;
 	
 	
@@ -24,7 +24,7 @@ public abstract class AbstractVisualPropertyTest<T> {
 
 	@Test
 	public void testGetType() {
-		assertEquals(type, vp.getType());
+		assertEquals(range, vp.getRange());
 	}
 
 	@Test

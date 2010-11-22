@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,19 +31,34 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.ding.impl;
 
 import java.awt.Font;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.cytoscape.ding.ArrowShape;
 import org.cytoscape.view.model.AbstractVisualProperty;
+import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.Range;
 
-public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> { 
+public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
 
-	public FontTwoDVisualProperty(final Font def, final String id, final String name, final Class<?> targetDataType) {
-		super(def,Font.class, id, name, targetDataType);
+	private static final Range<Font> FONT_RANGE;
+
+	static {
+		final Set<Font> fontSet = new HashSet<Font>();
+		//TODO: register all available system fonts here.
+		FONT_RANGE = new DiscreteRangeImpl<Font>(Font.class,
+				fontSet);
 	}
-	
+
+	public FontTwoDVisualProperty(final Font def, final String id,
+			final String name, final Class<?> targetDataType) {
+		super(def, FONT_RANGE, id, name, targetDataType);
+	}
+
 	public String toSerializableString(final Font value) {
 		return value.toString();
 	}
@@ -52,5 +66,11 @@ public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
 	public Font parseSerializableString(final String text) {
 		// TODO
 		return null;
+	}
+
+	private static Set<Font> getSystemFonts() {
+		//TODO: implement this.
+		final Set<Font> fontSet = new HashSet<Font>();
+		return fontSet;
 	}
 }

@@ -74,19 +74,19 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 			NodeShape.ROUND_RECT, "NODE_SHAPE", "Node Shape");
 
 	public static final VisualProperty<Paint> NODE_SELECTED_PAINT = new PaintVisualProperty(
-			Color.YELLOW, "NODE_SELECTED_PAINT", "Node Selected Paint", CyNode.class);
+			Color.YELLOW, TwoDVisualLexicon.PAINT_RANGE, "NODE_SELECTED_PAINT", "Node Selected Paint", CyNode.class);
 
 	public static final VisualProperty<Paint> NODE_BORDER_PAINT = new PaintVisualProperty(
-			Color.BLACK, "NODE_BORDER_PAINT", "Node Border Paint", CyNode.class);
+			Color.BLACK, TwoDVisualLexicon.PAINT_RANGE, "NODE_BORDER_PAINT", "Node Border Paint", CyNode.class);
 
 	public static final VisualProperty<Double> NODE_BORDER_WIDTH = new DoubleVisualProperty(
-			DEF_BORDER_WIDTH, "NODE_BORDER_WIDTH", "Node Border Width", CyNode.class);
+			DEF_BORDER_WIDTH, TwoDVisualLexicon.NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_BORDER_WIDTH", "Node Border Width", CyNode.class);
 
 	public static final VisualProperty<? extends Stroke> NODE_BORDER_STROKE = new StrokeTwoDVisualProperty(
 			new BasicStroke(), "NODE_BORDER_STROKE", "Node Border Stroke", CyNode.class);
 
 	public static final VisualProperty<String> NODE_TOOLTIP = new StringVisualProperty(
-			"", "NODE_TOOLTIP", "Node Tooltip", CyNode.class);
+			"", TwoDVisualLexicon.ARBITRARY_STRING_RANGE, "NODE_TOOLTIP", "Node Tooltip", CyNode.class);
 	public static final VisualProperty<Font> NODE_LABEL_FONT_FACE = new FontTwoDVisualProperty(
 			new Font("SansSerif", Font.PLAIN, DEF_FONT_SIZE),
 			"NODE_LABEL_FONT_FACE", "Node Label Font Face", CyNode.class);
@@ -102,10 +102,10 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 			"Node Label Node Anchor", CyNode.class);
 
 	public static final VisualProperty<Double> NODE_LABEL_ANCHOR_X_OFFSET = new DoubleVisualProperty(
-			0.0, "NODE_LABEL_ANCHOR_X_OFFSET",
+			0.0, TwoDVisualLexicon.ARBITRARY_DOUBLE_RANGE, "NODE_LABEL_ANCHOR_X_OFFSET",
 			"Node Label Anchor X Offset", CyNode.class);
 	public static final VisualProperty<Double> NODE_LABEL_ANCHOR_Y_OFFSET = new DoubleVisualProperty(
-			0.0, "NODE_LABEL_ANCHOR_Y_OFFSET",
+			0.0, TwoDVisualLexicon.ARBITRARY_DOUBLE_RANGE, "NODE_LABEL_ANCHOR_Y_OFFSET",
 			"Node Label Anchor Y Offset", CyNode.class);
 
 	public static final VisualProperty<Justify> NODE_LABEL_JUSTIFY = new JustifyTwoDVisualProperty(
@@ -117,21 +117,21 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	
 	// Edge VPs
 	public static final VisualProperty<Paint> EDGE_SELECTED_PAINT = new PaintVisualProperty(
-			Color.RED, "EDGE_SELECTED_PAINT", "Edge Selected Paint", CyEdge.class);
+			Color.RED, TwoDVisualLexicon.PAINT_RANGE, "EDGE_SELECTED_PAINT", "Edge Selected Paint", CyEdge.class);
 	
 	public static final VisualProperty<? extends Stroke> EDGE_STROKE = new StrokeTwoDVisualProperty(
 			new BasicStroke(), "EDGE_STROKE", "Edge Stroke", CyEdge.class);
 
 	public static final VisualProperty<Paint> EDGE_SOURCE_ARROW_SELECTED_PAINT = new PaintVisualProperty(
-			Color.YELLOW, "EDGE_SOURCE_ARROW_SELECTED_PAINT", "Edge Source Arrow Selected Paint", CyEdge.class);
+			Color.YELLOW, TwoDVisualLexicon.PAINT_RANGE, "EDGE_SOURCE_ARROW_SELECTED_PAINT", "Edge Source Arrow Selected Paint", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_TARGET_ARROW_SELECTED_PAINT = new PaintVisualProperty(
-			Color.YELLOW, "EDGE_TARGET_ARROW_SELECTED_PAINT",
+			Color.YELLOW, TwoDVisualLexicon.PAINT_RANGE, "EDGE_TARGET_ARROW_SELECTED_PAINT",
 			"Edge Target Arrow Selected Paint", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_SOURCE_ARROW_UNSELECTED_PAINT = new PaintVisualProperty(
-			Color.BLACK, "EDGE_SOURCE_ARROW_UNSELECTED_PAINT",
+			Color.BLACK, TwoDVisualLexicon.PAINT_RANGE, "EDGE_SOURCE_ARROW_UNSELECTED_PAINT",
 			"Edge Source Arrow Unselected Paint", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_TARGET_ARROW_UNSELECTED_PAINT = new PaintVisualProperty(
-			Color.BLACK, "EDGE_TARGET_ARROW_UNSELECTED_PAINT",
+			Color.BLACK, TwoDVisualLexicon.PAINT_RANGE, "EDGE_TARGET_ARROW_UNSELECTED_PAINT",
 			"Edge Target Arrow Unselected Paint", CyEdge.class);
 
 	public static final VisualProperty<ArrowShape> EDGE_SOURCE_ARROW_SHAPE = new ArrowShapeTwoDVisualProperty(
@@ -142,7 +142,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 			"Edge Target Arrow Shape");
 
 	public static final VisualProperty<String> EDGE_TOOLTIP = new StringVisualProperty(
-			"", "EDGE_TOOLTIP", "Edge Tooltip", CyEdge.class);
+			"", TwoDVisualLexicon.ARBITRARY_STRING_RANGE, "EDGE_TOOLTIP", "Edge Tooltip", CyEdge.class);
 
 	public static final VisualProperty<Anchor> EDGE_LABEL_TEXT_ANCHOR = new AnchorTwoDVisualProperty(
 			Anchor.CENTER, "EDGE_LABEL_TEXT_ANCHOR",
@@ -152,10 +152,10 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 			"Edge Label Edge Anchor", CyEdge.class);
 
 	public static final VisualProperty<Double> EDGE_LABEL_ANCHOR_X_OFFSET = new DoubleVisualProperty(
-			0.0, "EDGE_LABEL_ANCHOR_X_OFFSET",
+			0.0, TwoDVisualLexicon.ARBITRARY_DOUBLE_RANGE, "EDGE_LABEL_ANCHOR_X_OFFSET",
 			"Edge Label Anchor X Offset", CyEdge.class);
 	public static final VisualProperty<Double> EDGE_LABEL_ANCHOR_Y_OFFSET = new DoubleVisualProperty(
-			0.0, "EDGE_LABEL_ANCHOR_Y_OFFSET",
+			0.0, TwoDVisualLexicon.ARBITRARY_DOUBLE_RANGE, "EDGE_LABEL_ANCHOR_Y_OFFSET",
 			"Edge Label Anchor Y Offset", CyEdge.class);
 
 	public static final VisualProperty<Font> EDGE_LABEL_FONT_FACE = new FontTwoDVisualProperty(

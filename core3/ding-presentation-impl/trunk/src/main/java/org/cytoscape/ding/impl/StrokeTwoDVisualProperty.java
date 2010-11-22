@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,19 +31,34 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.ding.impl;
 
 import java.awt.Stroke;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.cytoscape.ding.ArrowShape;
 import org.cytoscape.view.model.AbstractVisualProperty;
+import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.Range;
 
-public class StrokeTwoDVisualProperty extends AbstractVisualProperty<Stroke> { 
+public class StrokeTwoDVisualProperty extends AbstractVisualProperty<Stroke> {
 
-	public StrokeTwoDVisualProperty(final Stroke def, final String id, final String name, final Class<?> targetDataType) {
-		super(def,Stroke.class, id, name, targetDataType);
+	private static final Range<Stroke> STROKE_RANGE;
+
+	static {
+		final Set<Stroke> strokeSet = new HashSet<Stroke>();
+		// This range is empty.
+		STROKE_RANGE = new DiscreteRangeImpl<Stroke>(Stroke.class,
+				strokeSet);
 	}
-	
+
+	public StrokeTwoDVisualProperty(final Stroke def, final String id,
+			final String name, final Class<?> targetDataType) {
+		super(def, STROKE_RANGE, id, name, targetDataType);
+	}
+
 	public String toSerializableString(final Stroke value) {
 		return value.toString();
 	}

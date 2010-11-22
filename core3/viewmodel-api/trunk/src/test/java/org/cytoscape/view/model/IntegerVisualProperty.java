@@ -38,11 +38,14 @@ package org.cytoscape.view.model;
 import org.cytoscape.model.CyNode;
 
 
-class IntegerVisualProperty extends AbstractVisualProperty<Integer> { 
+class IntegerVisualProperty extends AbstractVisualProperty<Integer> {
+	
+	private static final ContinuousRange<Integer> cRange = new ContinuousRangeImpl<Integer>(Integer.class, -10, 10);
+	
 
 	public IntegerVisualProperty() {
 		// isolated node.  No parent/children.
-		super(10, Integer.class, "integer", "Integer Visual Property", CyNode.class);
+		super(10, cRange, "integer", "Integer Visual Property", CyNode.class);
 	}
 
 

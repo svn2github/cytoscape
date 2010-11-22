@@ -44,7 +44,7 @@ public abstract class AbstractVisualLexiconTest {
 		traverse(children, lexicon);
 		
 		// Test adding
-		final DoubleVisualProperty dummyVP = new DoubleVisualProperty(new Double(10), "DUMMY", "Dummy VP", CyNode.class);
+		final DoubleVisualProperty dummyVP = new DoubleVisualProperty(new Double(10), TwoDVisualLexicon.ARBITRARY_DOUBLE_RANGE, "DUMMY", "Dummy VP", CyNode.class);
 		
 		
 		try {

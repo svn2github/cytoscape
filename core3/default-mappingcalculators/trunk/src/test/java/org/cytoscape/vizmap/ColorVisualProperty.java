@@ -4,12 +4,19 @@ import java.awt.Color;
 
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.AbstractVisualProperty;
+import org.cytoscape.view.model.ContinuousRangeImpl;
+import org.cytoscape.view.model.Range;
 
 public class ColorVisualProperty extends AbstractVisualProperty<Color> {
 
+	
+	private static final Color MIN_COLOR = new Color(0, 0, 0);
+	private static final Color MAX_COLOR = new Color(0xFF, 0xFF, 0xFF);
+	private static final Range<Color> COLOR_RANGE = new ContinuousRangeImpl<Color>(Color.class, MIN_COLOR, MAX_COLOR);
+	
 	public ColorVisualProperty(final Color defaultValue,
 			final String id, final String name) {
-		super(defaultValue, Color.class, id, name, CyNode.class);
+		super(defaultValue, COLOR_RANGE, id, name, CyNode.class);
 	}
 
 	public Color parseSerializableString(final String text) {

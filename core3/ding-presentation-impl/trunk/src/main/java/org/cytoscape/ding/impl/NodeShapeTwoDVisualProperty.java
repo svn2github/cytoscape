@@ -34,15 +34,31 @@
  */
 package org.cytoscape.ding.impl;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.cytoscape.ding.NodeShape;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.AbstractVisualProperty;
+import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.Range;
 
 public class NodeShapeTwoDVisualProperty extends
 		AbstractVisualProperty<NodeShape> {
 
-	public NodeShapeTwoDVisualProperty(final NodeShape def, final String id, final String name) {
-		super(def, NodeShape.class, id, name, CyNode.class);
+	private static final Range<NodeShape> NODE_SHAPE_RANGE;
+
+	static {
+		final Set<NodeShape> shapeSet = new HashSet<NodeShape>();
+		for (final NodeShape shape : NodeShape.values())
+			shapeSet.add(shape);
+		NODE_SHAPE_RANGE = new DiscreteRangeImpl<NodeShape>(NodeShape.class,
+				shapeSet);
+	}
+
+	public NodeShapeTwoDVisualProperty(final NodeShape def, final String id,
+			final String name) {
+		super(def, NODE_SHAPE_RANGE, id, name, CyNode.class);
 	}
 
 	public String toSerializableString(final NodeShape value) {

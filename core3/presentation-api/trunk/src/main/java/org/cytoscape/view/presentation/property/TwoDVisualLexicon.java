@@ -36,11 +36,16 @@ package org.cytoscape.view.presentation.property;
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.view.model.ContinuousRangeImpl;
+import org.cytoscape.view.model.DiscreteRangeImpl;
 import org.cytoscape.view.model.NullDataType;
+import org.cytoscape.view.model.Range;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.presentation.RenderingEngine;
@@ -52,6 +57,17 @@ import org.cytoscape.view.presentation.RenderingEngine;
  * 
  */
 public class TwoDVisualLexicon extends AbstractVisualLexicon {
+	
+	private static final Color MIN_COLOR = new Color(0, 0, 0);
+	private static final Color MAX_COLOR = new Color(0xFF, 0xFF, 0xFF);
+	public static final Range<Paint> PAINT_RANGE = new ContinuousRangeImpl<Paint>(Paint.class, MIN_COLOR, MAX_COLOR);
+	
+	public static final Set<String> STRING_SET = new HashSet<String>();
+	// This will be used to for String VP which accepts any string values.
+	public static final Range<String> ARBITRARY_STRING_RANGE = new DiscreteRangeImpl<String>(String.class, STRING_SET);
+	
+	public static final Range<Double> ARBITRARY_DOUBLE_RANGE = new ContinuousRangeImpl<Double>(Double.class, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+	public static final Range<Double> NONE_ZERO_POSITIVE_DOUBLE_RANGE = new ContinuousRangeImpl<Double>(Double.class, 0d, Double.POSITIVE_INFINITY, false, true);
 
 	// Top level nodes has null as parent, and will be pointed by parent node.
 	// This is because all VPs are static objects.
@@ -67,31 +83,31 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 
 	////// Node VP /////////
 	public static final VisualProperty<Paint> NODE_PAINT = new PaintVisualProperty(
-			Color.gray, "NODE_PAINT", "Node Paint", CyNode.class);
+			Color.gray, PAINT_RANGE, "NODE_PAINT", "Node Paint", CyNode.class);
 	public static final VisualProperty<Paint> NODE_COLOR = new PaintVisualProperty(
-			Color.RED, "NODE_COLOR", "Node Color", CyNode.class);
+			Color.RED, PAINT_RANGE, "NODE_COLOR", "Node Color", CyNode.class);
 	
 	public static final VisualProperty<Paint> NODE_LABEL_COLOR = new PaintVisualProperty(
-			Color.BLACK, "NODE_LABEL_COLOR", "Node Label Color", CyNode.class);
+			Color.BLACK, PAINT_RANGE, "NODE_LABEL_COLOR", "Node Label Color", CyNode.class);
 
 	public static final VisualProperty<String> NODE_TEXT = new StringVisualProperty(
-			"", "NODE_TEXT", "Node Text", CyNode.class);
+			"", ARBITRARY_STRING_RANGE, "NODE_TEXT", "Node Text", CyNode.class);
 	public static final VisualProperty<String> NODE_LABEL = new StringVisualProperty(
-			"", "NODE_LABEL", "Node Label", CyNode.class);
+			"", ARBITRARY_STRING_RANGE, "NODE_LABEL", "Node Label", CyNode.class);
 
 	public static final VisualProperty<Double> NODE_LOCATION = new DoubleVisualProperty(
-			Double.NaN, "NODE_LOCATION", "Node Location", true, CyNode.class);
+			Double.NaN, ARBITRARY_DOUBLE_RANGE, "NODE_LOCATION", "Node Location", true, CyNode.class);
 	public static final VisualProperty<Double> NODE_X_LOCATION = new DoubleVisualProperty(
-			Double.NaN, "NODE_X_LOCATION", "Node X Location", true, CyNode.class);
+			Double.NaN, ARBITRARY_DOUBLE_RANGE, "NODE_X_LOCATION", "Node X Location", true, CyNode.class);
 	public static final VisualProperty<Double> NODE_Y_LOCATION = new DoubleVisualProperty(
-			Double.NaN, "NODE_Y_LOCATION", "Node Y Location", true, CyNode.class);
+			Double.NaN, ARBITRARY_DOUBLE_RANGE, "NODE_Y_LOCATION", "Node Y Location", true, CyNode.class);
 
 	public static final VisualProperty<Double> NODE_SIZE = new DoubleVisualProperty(
-			50.0, "NODE_SIZE", "Node size", CyNode.class);
+			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_SIZE", "Node size", CyNode.class);
 	public static final VisualProperty<Double> NODE_X_SIZE = new DoubleVisualProperty(
-			50.0, "NODE_X_SIZE", "Node X size (width)", CyNode.class);
+			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_X_SIZE", "Node X size (width)", CyNode.class);
 	public static final VisualProperty<Double> NODE_Y_SIZE = new DoubleVisualProperty(
-			30.0, "NODE_Y_SIZE", "Node y size (height)", CyNode.class);
+			70.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_Y_SIZE", "Node y size (height)", CyNode.class);
 
 	public static final VisualProperty<Boolean> NODE_VISIBLE = new BooleanVisualProperty(
 			true, "NODE_VISIBLE", "Node Visible", CyNode.class);
@@ -102,19 +118,19 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	
 	/////// Edge VP ///////
 	public static final VisualProperty<Paint> EDGE_PAINT = new PaintVisualProperty(
-			Color.gray, "EDGE_PAINT", "Edge Paint", CyEdge.class);
+			Color.gray, PAINT_RANGE, "EDGE_PAINT", "Edge Paint", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_COLOR = new PaintVisualProperty(
-			Color.gray, "EDGE_COLOR", "Edge Color", CyEdge.class);
+			Color.gray, PAINT_RANGE, "EDGE_COLOR", "Edge Color", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_LABEL_COLOR = new PaintVisualProperty(
-			Color.BLACK, "EDGE_LABEL_COLOR", "Edge Label Color", CyEdge.class);
+			Color.BLACK, PAINT_RANGE, "EDGE_LABEL_COLOR", "Edge Label Color", CyEdge.class);
 
 	public static final VisualProperty<String> EDGE_TEXT = new StringVisualProperty(
-			"", "EDGE_TEXT", "Edge Text", CyEdge.class);
+			"", ARBITRARY_STRING_RANGE, "EDGE_TEXT", "Edge Text", CyEdge.class);
 	public static final VisualProperty<String> EDGE_LABEL = new StringVisualProperty(
-			"", "EDGE_LABEL", "Edge Label", CyEdge.class);
+			"", ARBITRARY_STRING_RANGE, "EDGE_LABEL", "Edge Label", CyEdge.class);
 
 	public static final VisualProperty<Double> EDGE_WIDTH = new DoubleVisualProperty(
-			1d, "EDGE_WIDTH", "Edge Width", CyEdge.class);
+			1d, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "EDGE_WIDTH", "Edge Width", CyEdge.class);
 
 	public static final VisualProperty<Boolean> EDGE_VISIBLE = new BooleanVisualProperty(
 			true, "EDGE_VISIBLE", "Edge Visible", CyEdge.class);
@@ -125,33 +141,33 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	
 	//////// Network VP ////////
 	public static final VisualProperty<Double> NETWORK_SCALE_FACTOR = new DoubleVisualProperty(
-			1.0, "NETWORK_SCALE_FACTOR", "Network Scale Factor", CyNetwork.class);
+			1.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_SCALE_FACTOR", "Network Scale Factor", CyNetwork.class);
 
 	public static final VisualProperty<Double> NETWORK_CENTER_LOCATION = new DoubleVisualProperty(
-			0.0, "NETWORK_CENTER_LOCATION", "Network Center Location", CyNetwork.class);
+			0.0, ARBITRARY_DOUBLE_RANGE, "NETWORK_CENTER_LOCATION", "Network Center Location", CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_CENTER_X_LOCATION = new DoubleVisualProperty(
-			0.0, "NETWORK_CENTER_X_LOCATION", "Network Center X Location", CyNetwork.class);
+			0.0, ARBITRARY_DOUBLE_RANGE, "NETWORK_CENTER_X_LOCATION", "Network Center X Location", CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_CENTER_Y_LOCATION = new DoubleVisualProperty(
-			0.0, "NETWORK_CENTER_Y_LOCATION", "Network Center Y Location", CyNetwork.class);
+			0.0, ARBITRARY_DOUBLE_RANGE, "NETWORK_CENTER_Y_LOCATION", "Network Center Y Location", CyNetwork.class);
 
 	public static final VisualProperty<Double> NETWORK_SIZE = new DoubleVisualProperty(
-			100.0, "NETWORK_SIZE", "Network Size", CyNetwork.class);
+			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_SIZE", "Network Size", CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_WIDTH = new DoubleVisualProperty(
-			100.0, "NETWORK_WIDTH", "Network Width", CyNetwork.class);
+			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_WIDTH", "Network Width", CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_HEIGHT = new DoubleVisualProperty(
-			100.0, "NETWORK_HEIGHT", "Network Height", CyNetwork.class);
+			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_HEIGHT", "Network Height", CyNetwork.class);
 
 	public static final VisualProperty<String> NETWORK_TITLE = new StringVisualProperty(
-			"", "NETWORK_TITLE", "Network Title", CyNetwork.class);
+			"", ARBITRARY_STRING_RANGE, "NETWORK_TITLE", "Network Title", CyNetwork.class);
 
 	public static final VisualProperty<Paint> NETWORK_BACKGROUND_PAINT = new PaintVisualProperty(
-			Color.WHITE, "NETWORK_BACKGROUND_PAINT", "Network Background Paint", CyNetwork.class);
+			Color.WHITE, PAINT_RANGE, "NETWORK_BACKGROUND_PAINT", "Network Background Paint", CyNetwork.class);
 	
 	public static final VisualProperty<Paint> NETWORK_NODE_SELECTED_COLOR = new PaintVisualProperty(
-			Color.YELLOW, "NETWORK_NODE_SELECTED_COLOR", "Node Selected Color", CyNetwork.class);
+			Color.YELLOW, PAINT_RANGE, "NETWORK_NODE_SELECTED_COLOR", "Node Selected Color", CyNetwork.class);
 	
 	public static final VisualProperty<Paint> NETWORK_EDGE_SELECTED_COLOR = new PaintVisualProperty(
-			Color.YELLOW, "NETWORK_EDGE_SELECTED_COLOR", "Edge Selected Color", CyNetwork.class);
+			Color.YELLOW, PAINT_RANGE, "NETWORK_EDGE_SELECTED_COLOR", "Edge Selected Color", CyNetwork.class);
 
 	/**
 	 * Build tree-structure for the set of Visual Properties defined in this

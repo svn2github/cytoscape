@@ -40,11 +40,12 @@ import java.awt.Paint;
 import java.util.StringTokenizer;
 
 import org.cytoscape.view.model.AbstractVisualProperty;
+import org.cytoscape.view.model.Range;
 
 public class PaintVisualProperty extends AbstractVisualProperty<Paint> { 
 
-	public PaintVisualProperty(final Paint def, final String id, final String name, final Class<?> targetDataType) {
-		super(def, Paint.class, id, name, targetDataType);
+	public PaintVisualProperty(final Paint def, final Range<Paint> range, final String id, final String name, final Class<?> targetDataType) {
+		super(def, range, id, name, targetDataType);
 	}
 	
 	
