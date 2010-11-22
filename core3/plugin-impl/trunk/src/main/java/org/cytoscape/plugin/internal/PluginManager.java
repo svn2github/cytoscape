@@ -339,8 +339,6 @@ public class PluginManager {
 	public List<DownloadableInfo> inquire(String Url) throws IOException,
 			org.jdom.JDOMException {	
 		
-		System.out.println("PluginManager.inquire(): url = "+ Url);
-		
 		List<DownloadableInfo> infoObjs = null;
 		PluginFileReader Reader = new PluginFileReader(Url);
 		infoObjs = Reader.getDownloadables();
@@ -686,15 +684,10 @@ public class PluginManager {
 	public void loadPlugin(PluginInfo p) throws ManagerException {
 		List<URL> ToLoad = new ArrayList<URL>();
 
-		System.out.println("\nPluginManager.loadPlugin()...");
-		
 		for (String FileName : p.getFileList()) {
 			
-			System.out.println("\n\tFileName = "+ FileName);			
-			
 			if (FileName.endsWith(".jar")) {
-				
-				
+								
 				Object o = null; 
 				JarFile jar = null; 
 				try {
@@ -712,18 +705,8 @@ public class PluginManager {
 					o = con.newInstance(adapter);
 				}
 				catch (Exception e){
-					System.out.println("Caught Exception in PluginManager.loadPlugin()...\n");
 					e.printStackTrace();
 				}
-
-				/*
-				try {
-					ToLoad.add(jarURL(FileName));
-				} catch (MalformedURLException mue) {
-					// mue.printStackTrace();
-					loadingErrors.add(mue);
-				}
-				*/
 			}
 		}
 		// don't need to register if we have the info object
