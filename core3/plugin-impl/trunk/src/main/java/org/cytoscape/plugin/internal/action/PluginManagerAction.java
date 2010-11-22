@@ -73,7 +73,6 @@ public class PluginManagerAction extends AbstractCyAction {
 	private Bookmarks theBookmarks;
 	private GUITaskManager guiTaskManagerServiceRef;
 	private CyProperty cytoscapePropertiesServiceRef;
-	private CyPluginAdapter adapter;
 	
 	// Hard-coded for now, should get system configuration
 	public static String cyConfigDir = ".cytoscape";
@@ -95,14 +94,35 @@ public class PluginManagerAction extends AbstractCyAction {
 
 		// Note: We need pass cyConfigDir = ".cytoscape" and cyConfigVerDir to PluginManager.java
 		this.cytoscapePropertiesServiceRef = cytoscapePropertiesServiceRef;
-		this.adapter = adapter;
 				
 		// initialize version
 		org.cytoscape.plugin.internal.util.CytoscapeVersion.version = version.getVersion();
 		cyConfigVerDir = version.getVersion();
 
 		setPreferredMenu("Plugins");
+	
+		//Initialize the PluginManager
+		PluginManager Mgr = PluginManager.getPluginManager();
+		Mgr.setCyPluginAdapter(adapter);
 		
+		// Delete plugins which are marked 'delete' in the track file
+		try {
+			Mgr.delete();			
+		}
+		catch (ManagerException me){
+			me.printStackTrace();
+		}
+		
+		//Load plugins installed through pluiginManager
+		List<DownloadableInfo> Current = PluginManager.getPluginManager().getDownloadables(PluginStatus.CURRENT);
+		for (int i=0; i< Current.size(); i++){
+			try {
+				Mgr.loadPlugin(Current.get(i));				
+			}
+			catch (Exception e){
+				e.printStackTrace();
+			}
+		}
 	}
 
 
@@ -113,20 +133,18 @@ public class PluginManagerAction extends AbstractCyAction {
 	 *            DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
+		
 		PluginManageDialog dlg = new PluginManageDialog(desktop.getJFrame(), theBookmarks, this.bookmarksUtil, 
-				this.guiTaskManagerServiceRef, adapter);
+				this.guiTaskManagerServiceRef);
 		
+		List<DownloadableInfo> Current = PluginManager.getPluginManager().getDownloadables(PluginStatus.CURRENT);
+		Map<String, List<DownloadableInfo>> InstalledInfo = ManagerUtil.sortByCategory(Current);				
 		
-		PluginManager Mgr = PluginManager.getPluginManager();
-		
-		List<DownloadableInfo> Current = Mgr.getDownloadables(PluginStatus.CURRENT);
-		Map<String, List<DownloadableInfo>> InstalledInfo = ManagerUtil.sortByCategory(Current);
-
 		for (String Category : InstalledInfo.keySet()) {
-			dlg.addCategory(Category, InstalledInfo.get(Category),
-					PluginManageDialog.PluginInstallStatus.INSTALLED);
+			dlg.addCategory(Category, InstalledInfo.get(Category),PluginManageDialog.PluginInstallStatus.INSTALLED);
 		}
 
+		// Get defaultURL from Cytoscape properties, hard-code for now
 		String DefaultUrl = "http://chianti.ucsd.edu/cyto_web/plugins/plugins_test.xml";//getDefaultUrl();
 		String DefaultTitle = "Cytoscape";
 		
@@ -135,11 +153,10 @@ public class PluginManagerAction extends AbstractCyAction {
 		PluginManagerInquireTaskFactory _taskFactory = new PluginManagerInquireTaskFactory(task);
 
 		this.guiTaskManagerServiceRef.execute(_taskFactory);
-
 	}
 
 	private class ManagerAction extends PluginInquireAction {
-		  // private CyLogger logger = CyLogger.getLogger(ManagerAction.class);
+		  //private CyLogger logger = CyLogger.getLogger(ManagerAction.class);
 		   private PluginManageDialog dialog;
 				private String title;
 				private String url;
