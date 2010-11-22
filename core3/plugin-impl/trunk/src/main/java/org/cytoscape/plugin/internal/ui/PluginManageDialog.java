@@ -28,7 +28,6 @@
  */
 package org.cytoscape.plugin.internal.ui;
 
-import org.cytoscape.plugin.CyPluginAdapter;
 import org.cytoscape.plugin.internal.util.CytoscapeVersion;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
@@ -56,8 +55,8 @@ import org.cytoscape.work.TaskMonitor;
 //import cytoscape.util.OpenBrowser;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TaskMonitor;
+//import org.cytoscape.work.TaskManager;
+//import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.swing.GUITaskManager;
 
 import java.awt.Component;
@@ -109,7 +108,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	//private final TaskManager taskManager;
 	private GUITaskManager guiTaskManagerServiceRef;
-	private CyPluginAdapter adapter;
 	
 	public enum PluginInstallStatus {
 		INSTALLED(CURRENTLY_INSTALLED), AVAILABLE(AVAILABLE_FOR_INSTALL);
@@ -160,7 +158,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 	}
 */
 	public PluginManageDialog(JFrame owner, Bookmarks bookmarks, BookmarksUtil bookmarksUtil,
-			GUITaskManager guiTaskManagerServiceRef, CyPluginAdapter adapter) {
+			GUITaskManager guiTaskManagerServiceRef) {
 
 		super(owner, "Manage Plugins");
 		this.desktop = owner;
@@ -168,7 +166,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		this.theBookmarks = bookmarks;
 		this.bookmarksUtil = bookmarksUtil;
 		this.guiTaskManagerServiceRef = guiTaskManagerServiceRef;
-		this.adapter = adapter;
 		
 		setLocationRelativeTo(owner);
 		initComponents();
@@ -190,7 +187,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		
 		loadBookmarkCMBox(false);
 		//Select the Cytoscape download site by default
-		this.lstDownloadSites.setSelectedIndex(0);
+		//this.lstDownloadSites.setSelectedIndex(0);
 		
 		//this.lbSiteURL.setText(((DataSource)this.cmbDownloadSites.getSelectedItem()).getHref());
 		this.jTabbedPane1.setSelectedIndex(0);
@@ -1278,10 +1275,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			taskMonitor.setProgress(-1);
 
 			PluginManager Mgr = PluginManager.getPluginManager();
-			
-			if (Mgr.getCyPluginAdapter() == null){
-				Mgr.setCyPluginAdapter(adapter);
-			}
 			
 			Installable ins = infoObj.getInstallable();
 			try {
