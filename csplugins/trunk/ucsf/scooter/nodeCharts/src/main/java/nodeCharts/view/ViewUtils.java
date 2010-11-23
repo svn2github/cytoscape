@@ -219,7 +219,7 @@ public class ViewUtils {
 			// We don't want to scale down too far.  If scale < 20% of the font size, skip the label
 			if (scale < 0.20)
 				return null;
-			System.out.println("scale = "+scale);
+			// System.out.println("scale = "+scale);
 			AffineTransform sTransform = new AffineTransform();
 			sTransform.scale(scale, scale);
 			lShape = sTransform.createTransformedShape(lShape);

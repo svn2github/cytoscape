@@ -82,14 +82,22 @@ public class ValueUtils {
  	 * @return the list of values
  	 * @throws CyCommandException if the attributes aren't numeric
  	 */
-	public static List<Double> getDataFromAttributes (CyNode node, String attributesList, List<String> labels) 
+	public static List<Double> getDataFromAttributes (CyNode node, Object attributesList, List<String> labels) 
 	                                                                                     throws CyCommandException {
 		if (attributesList == null)
 			throw new CyCommandException("no attributes with data?");
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		String nodeName = node.getIdentifier();
 
-		String[] attributeArray = attributesList.split(",");
+		String[] attributeArray = null;
+		if (attributesList instanceof String) {
+			attributeArray = ((String)attributesList).split(",");
+		} else if (attributesList instanceof List) {
+			String[] s = new String[1];
+			attributeArray = ((List<String>)attributesList).toArray(s);
+		} else {
+			return new ArrayList<Double>();
+		}
 		if (attributeArray.length == 1) {
 			// Handle the case where we were given a single, list attribute
 			if (labels.size() == 0) {
@@ -163,14 +171,23 @@ public class ValueUtils {
 	public static List<Double> parseStringList(String input) throws CyCommandException {
 		if (input == null)
 			throw new CyCommandException("no input data?");
-
-		String[] inputArray = input.split(",");
+		String[] inputArray = ((String)input).split(",");
 		return convertStringList(Arrays.asList(inputArray));
 	}
 
-	public static List<String> getStringList(String input) {
-		String[] inputArray = input.split(",");
-		return Arrays.asList(inputArray);
+	public static List<String> getStringList(Object input) {
+		if (input instanceof String) {
+			String[] inputArray = ((String)input).split(",");
+			return Arrays.asList(inputArray);
+		} else if (input instanceof List) {
+			List<String> result = new ArrayList<String>();
+			for (Object o: (List)input) {
+				result.add(o.toString());
+			}
+			return result;
+		}
+
+		return new ArrayList<String>();
 	}
 
 	/**

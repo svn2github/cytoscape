@@ -76,6 +76,7 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 	public static final String CLEAR = "clear";
 	public static final String CURRENT = "current";
 	public static final String LABELS = "labellist";
+	public static final String LIST = "list";
 	public static final String NETWORK = "network";
 	public static final String NODE = "node";
 	public static final String NODELIST = "nodelist";
@@ -99,6 +100,9 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 		addDescription(CLEAR, "Remove all charts from a node");
 		addArgument(CLEAR, NODE);
 		addArgument(CLEAR, NODELIST, SELECTED);
+
+		addDescription(LIST, "List available chart types");
+		addArgument(LIST);
 	}
 
   public CyCommandResult execute(String command, Collection<Tunable>args)
@@ -118,6 +122,15 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 	                                         boolean saveCommand, CyNetworkView view)
                                                       throws CyCommandException, RuntimeException {
 		CyCommandResult result = new CyCommandResult();
+
+		if (command.equals(LIST)) {
+			result.addMessage("Available chart types: ");
+			for (String type: viewerMap.keySet()) {
+				result.addMessage("  "+type);
+			}
+			result.addResult("typeList", new ArrayList<String>(viewerMap.keySet()));
+			return result;
+		}
 
 		if (!args.containsKey(NODE) && !args.containsKey(NODELIST)) {
 			throw new CyCommandException("node or nodelist to map chart to must be specified");
@@ -165,13 +178,13 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 		List<Double> values = null;
 		if (args.containsKey(VALUES)) {
 			// Get our values.  convertData returns an array of values in degrees of arc
-			values = ValueUtils.convertInputToDouble((String)args.get(VALUES));
+			values = ValueUtils.convertInputToDouble(args.get(VALUES));
 		}
 
 		List<String> labels = new ArrayList<String>();
 		if (args.containsKey(LABELS)) {
 			// Get our labels.  These may or may not be printed depending on options
-			labels = ValueUtils.getStringList((String)args.get(LABELS));
+			labels = ValueUtils.getStringList(args.get(LABELS));
 		}
 
 		// Get our position
@@ -188,7 +201,7 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 			// If we've got an attributelist, we need to get our values now since they will change based on
 			// the node
 			if (args.containsKey(ATTRIBUTELIST))
-				values = ValueUtils.getDataFromAttributes (node, (String)args.get(ATTRIBUTELIST), labels);
+				values = ValueUtils.getDataFromAttributes (node, args.get(ATTRIBUTELIST), labels);
 
 			List<CustomGraphic> cgList = viewer.getCustomGraphics(args, values, labels, node, view, pos);
 			ViewUtils.addCustomGraphics(cgList, node, view);
