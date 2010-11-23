@@ -1,7 +1,7 @@
 package org.cytoscape.io.internal.write.graphics;
 
 import org.cytoscape.view.model.CyNetworkView;
-import org.freehep.graphicsio.svg.SVGGraphics2D;
+//import org.freehep.graphicsio.svg.SVGGraphics2D;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
