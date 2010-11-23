@@ -217,7 +217,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	private BiModalJSplitPane createRightPane(BiModalJSplitPane topRightPane) {
 		// create cytopanel with tabs along the bottom
 		cytoPanelSouth = new CytoPanelImp(CytoPanelName.SOUTH, JTabbedPane.BOTTOM,
-		                                  CytoPanelState.HIDE, cyEventHelper);
+		                                  CytoPanelState.DOCK, cyEventHelper);
 
 		// create the split pane - hidden by default
 		BiModalJSplitPane splitPane = new BiModalJSplitPane(this, JSplitPane.VERTICAL_SPLIT,
