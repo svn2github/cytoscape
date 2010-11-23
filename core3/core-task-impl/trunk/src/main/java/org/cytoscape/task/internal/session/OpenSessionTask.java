@@ -52,7 +52,7 @@ public class OpenSessionTask extends AbstractTask {
 	private CySessionManager sessionMgr;
 	private CySessionReaderManager readerMgr;
 
-	@Tunable(description="Session file to load")
+	@Tunable(description="Session file to load", params="fileCategory=session;input=true")
 	public File file;
 
 	/**
