@@ -105,6 +105,24 @@ public abstract class AbstractCyTableTest extends TestCase {
 	/**
 	 *  DOCUMENT ME!
 	 */
+	public void testAddLongAttr() {
+		mgr.createColumn("someLong", Long.class);
+		mgr.createColumn("someOtherLong", Long.class);
+
+		attrs.set("someLong", 50L);
+		attrs.set("someOtherLong", 100L);
+
+		assertTrue(attrs.isSet("someLong", Long.class));
+		assertTrue(attrs.isSet("someOtherLong", Long.class));
+		assertFalse(attrs.isSet("yetAnotherLong", Long.class));
+
+		assertEquals(50, attrs.get("someLong", Long.class).intValue());
+		assertEquals(100, attrs.get("someOtherLong", Long.class).intValue());
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 */
 	public void testAddDoubleAttr() {
 		mgr.createColumn("someDouble", Double.class);
 		mgr.createColumn("someOtherDouble", Double.class);
