@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -31,9 +24,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.model.internal;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,11 +42,8 @@ import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.RowSetMicroListener;
 
-/**
- * 
- */
-public class CyTableImpl implements CyTable {
 
+public class CyTableImpl implements CyTable {
 	private final Map<String, Map<Object, Object>> attributes;
 	private final Map<Object, CyRow> rows;
 
@@ -394,6 +384,8 @@ public class CyTableImpl implements CyTable {
 		else if (o instanceof Boolean)
 			return;
 		else if (o instanceof Double)
+			return;
+		else if (o instanceof Long)
 			return;
 		else if (o instanceof List) {
 			List l = (List) o;
