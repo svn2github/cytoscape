@@ -5,15 +5,12 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
-import org.cytoscape.log.statusbar.CytoStatusBar;
+import org.cytoscape.application.swing.CySwingApplication;
 
 /**
- * FIXME: Move this class to log-swing module.  This is a cause of  dependency. 
- * 
  * @author Pasteur
  */
-class CytoStatusBarImpl implements CytoStatusBar
-{
+class CytoStatusBar extends JPanel {
 	JPanel		panel;
 	JButton		statusMessage;
 	JProgressBar	memoryAvailable;
@@ -22,15 +19,26 @@ class CytoStatusBarImpl implements CytoStatusBar
 
 	long		timeSinceLastMessage = 0;
 	String		lastMessage = null;
+	private final int uiUpdateDelay = 500;
+	private final String trashIconPath;
 
-	public CytoStatusBarImpl(int uiUpdateDelay, String trashIconPath)
-	{
+	public CytoStatusBar(CySwingApplication app, String trashIconPath) {
+		super();
+		this.trashIconPath = trashIconPath;
+		initGui();
+		app.getStatusToolBar().add(panel);
+	}
+
+	private void initGui() {
+		panel = new JPanel(new GridBagLayout());
+
 		statusMessage = new JButton();
 		statusMessage.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		setFontSize(statusMessage, 9);
-		statusMessage.setToolTipText("Open Console");
+		statusMessage.setToolTipText("Open Log Console");
 		statusMessage.setBorderPainted(false);
-		statusMessage.setContentAreaFilled(false);
+		//statusMessage.setContentAreaFilled(false);
+		statusMessage.setContentAreaFilled(true);
 		statusMessage.setHorizontalTextPosition(SwingConstants.RIGHT);
 		statusMessage.setHorizontalAlignment(SwingConstants.LEFT);
 
@@ -49,11 +57,13 @@ class CytoStatusBarImpl implements CytoStatusBar
 		updateUITimer = new Timer(uiUpdateDelay, new UpdateUIAction());
 		updateUITimer.start();
 
-		panel = new JPanel(new GridBagLayout());
+		// status
 		JPanel panel1 = new JPanel(new GridBagLayout());
 		panel1.setBorder(new EtchedBorder());
 		panel1.add(statusMessage, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 		panel.add(panel1, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(3, 3, 2, 1), 0, 0));
+
+		// memory
 		JPanel panel2 = new JPanel(new GridBagLayout());
 		panel2.setBorder(new EtchedBorder());
 		JPanel panel3 = new JPanel(new GridBagLayout());
@@ -63,37 +73,26 @@ class CytoStatusBarImpl implements CytoStatusBar
 		panel.add(panel2, new GridBagConstraints(1, 0, 1, 1, 0, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(3, 1, 2, 2), 0, 0));
 	}
 
-	public JPanel getPanel()
-	{
-		return panel;
-	}
-
-	static void setFontSize(Component component, int size)
-	{
+	static void setFontSize(Component component, int size) {
 		Font font = component.getFont();
 		component.setFont(new Font(font.getFontName(), font.getStyle(), size));
 	}
 
-	public void setMessage(String message, Icon icon)
-	{
+	public void setMessage(String message, Icon icon) {
 		statusMessage.setIcon(icon);
 		lastMessage = message;
 		timeSinceLastMessage = System.currentTimeMillis();
 		updateStatusMessage();
 	}
 
-	public void addActionListener(ActionListener actionListener)
-	{
+	public void addActionListener(ActionListener actionListener) {
 		statusMessage.addActionListener(actionListener);
 	}
 
-	class PerformGCAction implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
+	class PerformGCAction implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
 			performGC.setEnabled(false);
-			for (int i = 0; i < 5; i++)
-			{
+			for (int i = 0; i < 5; i++) {
 				System.runFinalization();
 				System.gc();
 			}
@@ -103,13 +102,11 @@ class CytoStatusBarImpl implements CytoStatusBar
 
 	static final String[] MEMORY_SUFFIXES = { "b", "kb", "Mb", "Gb" };
 	static final double MEMORY_UNIT = 1024.0;
-	static String formatMemory(long freeMemory, long totalMemory)
-	{
+	static String formatMemory(long freeMemory, long totalMemory) {
 		double free = (double) freeMemory;
 		double total = (double) totalMemory;
 		int suffix = 0;
-		while ((total >= MEMORY_UNIT) && (suffix < MEMORY_SUFFIXES.length - 1))
-		{
+		while ((total >= MEMORY_UNIT) && (suffix < MEMORY_SUFFIXES.length - 1)) {
 			free /= MEMORY_UNIT;
 			total /= MEMORY_UNIT;
 			suffix++;
@@ -117,8 +114,7 @@ class CytoStatusBarImpl implements CytoStatusBar
 		return String.format("%.2f of %.2f %s", free, total, MEMORY_SUFFIXES[suffix]);
 	}
 
-	static String formatTime(long totalMilliseconds)
-	{
+	static String formatTime(long totalMilliseconds) {
 		long totalSeconds = totalMilliseconds / 1000;
 		if (totalSeconds < 60)
 			return formatTimeUnit(totalSeconds, "second");
@@ -136,29 +132,23 @@ class CytoStatusBarImpl implements CytoStatusBar
 			return formatTimeUnit(hours, "hour") + ", " + formatTimeUnit(minutes, "minute");
 	}
 
-	static String formatTimeUnit(long time, String unit)
-	{
+	static String formatTimeUnit(long time, String unit) {
 		if (time == 1)
 			return String.format("%d %s", time, unit);
 		else
 			return String.format("%d %ss", time, unit);
 	}
 
-	void updateStatusMessage()
-	{
-		if (lastMessage == null)
-		{
+	void updateStatusMessage() {
+		if (lastMessage == null) {
 			statusMessage.setText("");
-		}
-		else
-		{
+		} else {
 			long delta = System.currentTimeMillis() - timeSinceLastMessage;
 			statusMessage.setText(String.format("%s (%s ago)", lastMessage, formatTime(delta))); 
 		}
 	}
 
-	void updateMemoryAvailable()
-	{
+	void updateMemoryAvailable() {
 		long free = Runtime.getRuntime().freeMemory();
 		long total = Runtime.getRuntime().totalMemory();
 
@@ -166,10 +156,8 @@ class CytoStatusBarImpl implements CytoStatusBar
 		memoryAvailable.setString(formatMemory(free, total));
 	}
 
-	class UpdateUIAction implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
+	class UpdateUIAction implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
 			updateStatusMessage();
 			updateMemoryAvailable();
 		}

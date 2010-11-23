@@ -1,6 +1,5 @@
 package org.cytoscape.log.internal;
 
-import org.cytoscape.log.statusbar.CytoStatusBar;
 import org.ops4j.pax.logging.spi.PaxLoggingEvent;
 
 import java.util.Map;

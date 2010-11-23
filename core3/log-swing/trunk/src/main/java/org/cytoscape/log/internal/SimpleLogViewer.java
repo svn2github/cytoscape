@@ -5,8 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import org.cytoscape.log.statusbar.CytoStatusBar;
-
 /**
  * @author Pasteur
  */
