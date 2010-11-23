@@ -38,6 +38,7 @@ package org.cytoscape.application.swing;
 
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JToolBar;
@@ -93,4 +94,10 @@ public interface CySwingApplication {
 	 * @return the JFrame that contains the application. 
 	 */
 	JFrame getJFrame();
+
+	/**
+	 * Returns the status JToolBar of the application. 
+	 * @return the status JToolBar of the application. 
+	 */
+	JToolBar getStatusToolBar();
 }
