@@ -108,6 +108,7 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	private final CytoscapeShutdown shutdown; 
 	private final CyEventHelper cyEventHelper;
 	private final CyServiceRegistrar registrar;
+	private final JToolBar statusToolBar;
 
 	/**
 	 * Creates a new CytoscapeDesktop object.
@@ -133,6 +134,10 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 
 		main_panel.add(masterPane, BorderLayout.CENTER);
 		main_panel.add(cyMenus.getJToolBar(), BorderLayout.NORTH);
+
+		statusToolBar = new JToolBar();
+		main_panel.add(statusToolBar, BorderLayout.SOUTH);
+
 		setJMenuBar(cyMenus.getJMenuBar());
 
 		//don't automatically close window. Let shutdown.exit(returnVal)
@@ -353,5 +358,9 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 	public void removeCytoPanelComponent(CytoPanelComponent cp, Dictionary props) {
 		CytoPanelImp impl = getCytoPanelInternal(cp.getCytoPanelName());
 		impl.remove(cp);
+	}
+
+	public JToolBar getStatusToolBar() {
+		return statusToolBar;
 	}
 }
