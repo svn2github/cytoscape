@@ -58,6 +58,8 @@ public class MetaNodeManager {
 	protected static boolean hideMetanodeDefault = true;
 	protected static double metanodeOpacityDefault = 255.;
 	protected static boolean useNestedNetworksDefault = false;
+	protected static String chartTypeDefault = null;
+	protected static String nodeChartAttributeDefault = null;
 
 	public static final String X_HINT_ATTR = "__metanodeHintX";
 	public static final String Y_HINT_ATTR = "__metanodeHintY";
@@ -88,6 +90,8 @@ public class MetaNodeManager {
 		mn.setUseNestedNetworks(useNestedNetworksDefault);
 		mn.setHideMetaNode(hideMetanodeDefault);
 		mn.setMetaNodeOpacity(metanodeOpacityDefault);
+		mn.setChartType(chartTypeDefault);
+		mn.setNodeChartAttribute(nodeChartAttributeDefault);
 		if (metaGroup.getNetwork() == null) {
 			metaGroup.setNetwork(Cytoscape.getCurrentNetwork(), false);
 		}
@@ -221,5 +225,41 @@ public class MetaNodeManager {
 	 */
 	static public boolean getUseNestedNetworksDefault() {
 		return MetaNodeManager.useNestedNetworksDefault;
+	}
+
+	/**
+	 * Sets the attribute to use for node charting.
+	 *
+	 * @param nodeChartAttribute the attribute to use for node charts
+	 */
+	static public void setNodeChartAttributeDefault(String nodeChartAttribute) {
+		MetaNodeManager.nodeChartAttributeDefault = nodeChartAttribute;
+	}
+
+	/**
+	 * Gets the attribute to use for node charting.
+	 *
+	 * @return the attribute to use for node charts
+	 */
+	static public String getNodeChartAttributeDefault() {
+		return MetaNodeManager.nodeChartAttributeDefault;
+	}
+
+	/**
+	 * Sets the chart type to use for node charting.
+	 *
+	 * @param chartType the chart type to use for node charts
+	 */
+	static public void setChartTypeDefault(String chartType) {
+		MetaNodeManager.chartTypeDefault = chartType;
+	}
+
+	/**
+	 * Gets the node chart type.
+	 *
+	 * @return the node chart type
+	 */
+	static public String getChartTypeDefault() {
+		return MetaNodeManager.chartTypeDefault;
 	}
 }

@@ -38,6 +38,7 @@
 */
 package metaNodePlugin2.ui;
 
+import metaNodePlugin2.MetaNodeGroupViewer;
 import metaNodePlugin2.model.MetaNode;
 import metaNodePlugin2.model.MetaNodeManager;
 import metaNodePlugin2.model.MetanodeProperties;
@@ -92,18 +93,24 @@ public class MetanodeSettingsDialog extends JDialog
 	private Tunable typeString = null;
 	private Tunable typeList = null;
 	private Tunable attrList = null;
+	private Tunable nodeChartAttrList = null;
+	private Tunable nodeChartTypeList = null;
 	private String[] attributeArray = null;
 	private List<Tunable>tunableEnablers = null;
+	private List<Tunable>nodeChartEnablers = null;
 	private boolean hideMetaNode = true;
   private boolean enableHandling = false;
   private boolean useNestedNetworks = false;
 	private double metanodeOpacity = 255.0f;
-	private CyGroupViewer groupViewer = null;
+	private String chartType = null;
+	private String nodeChartAttribute = null;
+	private MetaNodeGroupViewer groupViewer = null;
+	private static String NONETYPE = "-- None --";
 
 	// Dialog components
 	JPanel tunablePanel = null;
 
-	public MetanodeSettingsDialog(CyGroupViewer viewer) {
+	public MetanodeSettingsDialog(MetaNodeGroupViewer viewer) {
 		super(Cytoscape.getDesktop(), "Metanode Settings Dialog", false);
 		metanodeProperties = new MetanodeProperties("metanode");
 		this.groupViewer = viewer;
@@ -181,31 +188,34 @@ public class MetanodeSettingsDialog extends JDialog
 	}
 
 	private void initializeProperties() {
-		tunableEnablers = new ArrayList();
+		tunableEnablers = new ArrayList<Tunable>();
+		nodeChartEnablers = new ArrayList<Tunable>();
 
 		
 		metanodeProperties.add(new Tunable("appearanceGroup", "Metanode Appearance",
 		                                   Tunable.GROUP, new Integer(2),
 		                                   new Boolean(true), null, Tunable.COLLAPSABLE));
 		{
-			Tunable t = new Tunable("useNestedNetworks",
-			                        "Create a nested network for collapsed metanodes",
-			                        Tunable.BOOLEAN, new Boolean(false), 0);
-			t.addTunableValueListener(this);
-			metanodeProperties.add(t);
-		}
+			{
+				Tunable t = new Tunable("useNestedNetworks",
+				                        "Create a nested network for collapsed metanodes",
+				                        Tunable.BOOLEAN, new Boolean(false), 0);
+				t.addTunableValueListener(this);
+				metanodeProperties.add(t);
+			}
 
-		// Sliders always look better when grouped
-		metanodeProperties.add(new Tunable("opacityGroup", "Metanode Opacity",
-		                                   Tunable.GROUP, new Integer(1),
-		                                   null, null, 0));
+			// Sliders always look better when grouped
+			metanodeProperties.add(new Tunable("opacityGroup", "Metanode Opacity",
+		 	                                  Tunable.GROUP, new Integer(1),
+		 	                                  null, null, 0));
 
-		{
-			Tunable t = new Tunable("metanodeOpacity",
-			                        "Percent opacity of collapsed metanodes",
-			                        Tunable.DOUBLE, new Double(0), new Double(0), new Double(100), Tunable.USESLIDER);
-			t.addTunableValueListener(this);
-			metanodeProperties.add(t);
+			{
+				Tunable t = new Tunable("metanodeOpacity",
+				                        "Percent opacity of collapsed metanodes",
+				                        Tunable.DOUBLE, new Double(0), new Double(0), new Double(100), Tunable.USESLIDER);
+				t.addTunableValueListener(this);
+				metanodeProperties.add(t);
+			}
 		}
 
 		{
@@ -214,6 +224,32 @@ public class MetanodeSettingsDialog extends JDialog
 			                        Tunable.BOOLEAN, new Boolean(false), 0);
 			t.addTunableValueListener(this);
 			metanodeProperties.add(t);
+		}
+
+		// If we have nodeCharts, provide chart options for aggregated attributes
+		{
+			Tunable t = new Tunable("nodeChartsGroup", "Node Chart Options",
+			                        Tunable.GROUP, new Integer(2),
+		                          new Boolean(true), null, Tunable.COLLAPSABLE);
+			metanodeProperties.add(t);
+
+			{
+				// Get the attribute to map
+				nodeChartAttrList = new Tunable("nodeChartAttribute", "Attribute to use for node chart",
+		 	 	                                Tunable.LIST, new Integer(0),
+		 	 	                                getNodeAttributes(), null, 0);
+				nodeChartEnablers.add(nodeChartAttrList);
+				metanodeProperties.add(nodeChartAttrList);
+				nodeChartAttrList.addTunableValueListener(this);
+
+				// Get the chart type (might change depending on the chart type)
+				nodeChartTypeList = new Tunable("chartType", "Chart type",
+		 	 	                                Tunable.LIST, new Integer(0),
+		 	 	                                getChartTypes(), null, 0);
+				nodeChartEnablers.add(nodeChartTypeList);
+				metanodeProperties.add(nodeChartTypeList);
+				nodeChartTypeList.addTunableValueListener(this);
+			}
 		}
 
 		metanodeProperties.add(new Tunable("defaultsGroup", "Defaults",
@@ -316,6 +352,20 @@ public class MetanodeSettingsDialog extends JDialog
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
+		t = metanodeProperties.get("nodeChartAttribute");
+		if ((t != null) && (t.valueChanged() || force)) {
+			nodeChartAttribute = (String)getListValue(t);
+			MetaNodeManager.setNodeChartAttributeDefault(nodeChartAttribute);
+			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
+		}
+
+		t = metanodeProperties.get("chartType");
+		if ((t != null) && (t.valueChanged() || force)) {
+			chartType = (String)getListValue(t);
+			MetaNodeManager.setChartTypeDefault(chartType);
+			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
+		}
+
 
 		// For each default value, get the default and set it
 		t = metanodeProperties.get("stringDefaults");
@@ -360,6 +410,15 @@ public class MetanodeSettingsDialog extends JDialog
 
 	public void updateAttributes() {
 		attrList.setLowerBound(getAttributes());
+		nodeChartAttrList.setLowerBound(getNodeAttributes());
+	}
+
+	public void updateNodeChartTypes() {
+		if (groupViewer.checkNodeCharts()) {
+			enableNodeCharts(true);
+			nodeChartTypeList.setLowerBound(getChartTypes());
+		} else
+			enableNodeCharts(false);
 	}
 
 	public boolean getUseNestedNetworks() {
@@ -367,6 +426,16 @@ public class MetanodeSettingsDialog extends JDialog
 		String bv = (String)metanodeProperties.getProperties().get("useNestedNetworks");
 		useNestedNetworks = Boolean.parseBoolean(bv);
 		return useNestedNetworks;
+	}
+
+	private String[] getNodeAttributes() {
+		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+		List<String> attributeList = new ArrayList();
+		makeAttributes(null, nodeAttributes, attributeList);
+		String [] a = new String[1];
+		attributeArray = attributeList.toArray(a);
+		Arrays.sort(attributeArray);
+		return attributeArray;
 	}
 
 	private String[] getAttributes() {
@@ -382,13 +451,25 @@ public class MetanodeSettingsDialog extends JDialog
 		return attributeArray;
 	}
 
+	private String[] getChartTypes() {
+		String [] a = new String[1];
+		List<String> viewerList = groupViewer.getChartTypes();
+		viewerList.add(NONETYPE);
+		String [] viewerArray = viewerList.toArray(a);
+		Arrays.sort(viewerArray);
+		return viewerArray;
+	}
+
 	private void makeAttributes(String prefix, CyAttributes attrs, List<String>list) {
 		// Build a list
 		String[] names = attrs.getAttributeNames();
 		for (int i = 0; i < names.length; i++) {
 			if (!attrs.getUserVisible(names[i]))
 				continue;
-			list.add(prefix+"."+names[i]);
+			if (prefix != null)
+				list.add(prefix+"."+names[i]);
+			else
+				list.add(names[i]);
 		}
 	}
 
@@ -422,12 +503,7 @@ public class MetanodeSettingsDialog extends JDialog
 			for (CyNode node: nodeList) {
 				MetaNode mn = MetaNodeManager.getMetaNode(node);
 				if (mn != null) {
-					mn.setUseNestedNetworks(useNestedNetworks);
-					// mn.setSizeToBoundingBox(sizeToBoundingBox);
-					mn.setHideMetaNode(hideMetaNode);
-					mn.setAggregateAttributes(enableHandling);
-					// System.out.println("setting opacity for "+mn+" to "+metanodeOpacity);
-					mn.setMetaNodeOpacity(metanodeOpacity);
+					updateMetaNodeSettings(mn);
 				}
 			}
 			setVisible(false);
@@ -440,17 +516,23 @@ public class MetanodeSettingsDialog extends JDialog
 				for (CyGroup group: groupList) 	{
 					MetaNode mn = MetaNodeManager.getMetaNode(group);
 					if (mn != null) {
-						mn.setUseNestedNetworks(useNestedNetworks);
-						// mn.setSizeToBoundingBox(sizeToBoundingBox);
-						mn.setHideMetaNode(hideMetaNode);
-						mn.setAggregateAttributes(enableHandling);
-						// System.out.println("setting opacity for "+mn+" to "+metanodeOpacity);
-						mn.setMetaNodeOpacity(metanodeOpacity);
+						updateMetaNodeSettings(mn);
 					}
 				}
 			}
 			setVisible(false);
 		}
+	}
+
+	private void updateMetaNodeSettings(MetaNode mn) {
+		mn.setUseNestedNetworks(useNestedNetworks);
+		// mn.setSizeToBoundingBox(sizeToBoundingBox);
+		mn.setHideMetaNode(hideMetaNode);
+		mn.setAggregateAttributes(enableHandling);
+		// System.out.println("setting opacity for "+mn+" to "+metanodeOpacity);
+		mn.setMetaNodeOpacity(metanodeOpacity);
+		mn.setChartType(chartType);
+		mn.setNodeChartAttribute(nodeChartAttribute);
 	}
 
 	public void tunableChanged(Tunable t) {
@@ -467,6 +549,12 @@ public class MetanodeSettingsDialog extends JDialog
       enableHandling = ((Boolean) t.getValue()).booleanValue();
 			AttributeManager.setEnable(enableHandling);
 			enableTunables(enableHandling);
+		} else if (t.getName().equals("nodeChartAttribute")) {
+			nodeChartAttribute = (String)getListValue(t);
+			MetaNodeManager.setNodeChartAttributeDefault(nodeChartAttribute);
+		} else if (t.getName().equals("chartType")) {
+			chartType = (String)getListValue(t);
+			MetaNodeManager.setChartTypeDefault(chartType);
 		} else if (t.getName().equals("attributeList")) {
 			CyAttributes attrs = null;
 
@@ -562,6 +650,15 @@ public class MetanodeSettingsDialog extends JDialog
 
 	private void enableTunables(boolean enableHandling) {
 		for (Tunable t: tunableEnablers) {
+			// System.out.println("Setting immutable for "+t+" to "+(!enableHandling));
+		 	t.setImmutable(!enableHandling);
+		}
+		doLayout();
+		pack();
+	}
+
+	private void enableNodeCharts(boolean enableHandling) {
+		for (Tunable t: nodeChartEnablers) {
 			// System.out.println("Setting immutable for "+t+" to "+(!enableHandling));
 		 	t.setImmutable(!enableHandling);
 		}

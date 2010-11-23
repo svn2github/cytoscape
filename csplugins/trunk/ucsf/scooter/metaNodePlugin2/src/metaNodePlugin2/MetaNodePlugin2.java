@@ -119,11 +119,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	public static final int EXPANDED = 1;
 	public static final int COLLAPSED = 2;
 
-	private static boolean registeredWithGroupPanel = false;
-
 	private static boolean addedGraphViewChangeListener = false;
 
-	private MetanodeSettingsDialog settingsDialog = null;
 	private MetaNodeGroupViewer groupViewer = null;
 
 	protected int descendents = 0;
@@ -132,6 +129,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 * The main constructor
 	 */
 	public MetaNodePlugin2() {
+
 		logger = CyLogger.getLogger(MetaNodePlugin2.class);
 		// Register with CyGroup
 		groupViewer = new MetaNodeGroupViewer(viewerName, logger);
@@ -145,6 +143,9 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			// We also want to add ourselves to the network view focused change list
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 			          .addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
+
+			Cytoscape.getPropertyChangeSupport()
+			          .addPropertyChangeListener( Cytoscape.CYTOSCAPE_INITIALIZED, this);
 
 			// Add our context menu
 			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
@@ -181,6 +182,11 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			// Load the default aggregation values for this network
 			groupViewer.getSettingsDialog().updateOverrides(Cytoscape.getCurrentNetwork());
 			// MetaNodeManager.newView(Cytoscape.getCurrentNetworkView());
+		} else if (e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED) {
+			// Handle interaction with other plugins
+			groupViewer.registerWithGroupPanel();
+			groupViewer.haveNodeCharts();
+			groupViewer.getSettingsDialog().updateNodeChartTypes();
 		}
 	}
 

@@ -85,6 +85,8 @@ public class MetaNode {
 	private boolean hideMetanode = true;
 	private double metanodeOpacity = 0.;
 	private boolean useNestedNetworks = false;
+	private String nodeChartAttribute = null;
+	private String chartType = null;
 
 	private Map<CyEdge,CyEdge> metaEdges = new HashMap<CyEdge,CyEdge>();
 	private Map<CyNode,CyEdge> membershipEdges = null;
@@ -337,6 +339,32 @@ public class MetaNode {
 	 */
 	public void setMetaNodeOpacity(double opacity) {
 		this.metanodeOpacity = opacity;
+	}
+
+	/**
+	 * Sets the attribute to use node charting
+	 *
+	 * @param attribute the attribute to use for node charting
+	 */
+	public void setNodeChartAttribute(String nodeChartAttribute) {
+		this.nodeChartAttribute = nodeChartAttribute;
+	}
+
+	public String getNodeChartAttribute() {
+		return this.nodeChartAttribute;
+	}
+
+	/**
+	 * Sets the node chart type
+	 *
+	 * @param chartType the chart type
+	 */
+	public void setChartType(String chartType) {
+		this.chartType = chartType;
+	}
+
+	public String getChartType() {
+		return this.chartType;
 	}
 
 	/**

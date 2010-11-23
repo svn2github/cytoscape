@@ -206,7 +206,7 @@ public class ViewUtils {
 			Dimension offset = getAttributes(node, nodeAttributes);
 			// offset might be null if we've just added the node
 			if (offset != null) {
-				System.out.println("Offset for "+node.toString()+" is "+offset.getWidth()+"x"+offset.getHeight());
+				// System.out.println("Offset for "+node.toString()+" is "+offset.getWidth()+"x"+offset.getHeight());
 				net.restoreNode(node);
 				NodeView nView = view.getNodeView(node);
 				double nodeWidth = 0.0;

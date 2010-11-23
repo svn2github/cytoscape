@@ -42,6 +42,7 @@ import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 
+import cytoscape.command.CyCommandHandler;
 import cytoscape.command.CyCommandManager;
 import cytoscape.command.CyCommandResult;
 
@@ -60,6 +61,7 @@ import metaNodePlugin2.model.MetaNodeManager;
 import metaNodePlugin2.model.MetanodeProperties;
 import metaNodePlugin2.ui.MetanodeMenuListener;
 import metaNodePlugin2.ui.MetanodeSettingsDialog;
+import metaNodePlugin2.view.NodeCharts;
 
 /**
  * 
@@ -72,8 +74,10 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	CyGroupViewer namedSelectionViewer = null;
 	MetanodeSettingsDialog settingsDialog = null;
 	boolean registeredWithGroupPanel = false;
+	boolean haveNodeCharts = false;
 
 	private static String NAMEDSELECTION = "namedselection";
+	private static String NODECHARTS = "nodecharts";
 
 	public MetaNodeGroupViewer (String viewerName, CyLogger logger) {
 		this.viewerName = viewerName;
@@ -86,9 +90,6 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 		}
-
-		// Tell the group panel we want to use it
-		registerWithGroupPanel();
 	}
 
 	/**
@@ -227,14 +228,48 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 		} else if (change == CyGroupViewer.ChangeType.STATE_CHANGED) {
 			// Handle different representations here....
 			if (group.getState() == MetaNodePlugin2.COLLAPSED && !mn.isCollapsed()) {
+				System.out.println("Collapsing");
 				// Actually collapse the group
 				mn.collapse(Cytoscape.getCurrentNetworkView());
 				// Handle our attributes
 				AttributeManager.updateAttributes(mn);
+				if (haveNodeCharts) {
+					// Handle our node charts
+					System.out.println("Updating node charts");
+					NodeCharts.updateNodeCharts(mn, logger);
+				}
 			} else if (group.getState() == MetaNodePlugin2.EXPANDED && mn.isCollapsed()) {
 				mn.expand(Cytoscape.getCurrentNetworkView());
 			}
 		}
+	}
+
+	public boolean haveNodeCharts() {
+		if (!haveNodeCharts)
+			haveNodeCharts = checkNodeCharts();
+		return haveNodeCharts;
+	}
+
+	public List<String> getChartTypes() {
+		try {
+			Map<String,Object> args = new HashMap<String,Object>();
+			CyCommandResult result = CyCommandManager.execute(NODECHARTS, "list", args);
+			Object chartTypes = result.getResult("typeList");
+			if (chartTypes instanceof List)
+				return (List<String>)chartTypes;
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+		}
+		return new ArrayList<String>();
+	}
+
+	public boolean checkNodeCharts() {
+		try {
+			CyCommandManager.getCommand(NODECHARTS, "clear");
+		} catch (RuntimeException e) {
+			return false;
+		}
+		return true;
 	}
 
 	private void updateGroupPanel() {
@@ -269,10 +304,20 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	}
 
 	public void registerWithGroupPanel() {
+		// First, see if the named selection plugin is loaded
+		CyCommandHandler handler = null;
+
+		registeredWithGroupPanel = false; // probably redundant
+		try {
+			handler = CyCommandManager.getCommand(NAMEDSELECTION, "add viewer");
+		} catch (RuntimeException e) {
+			return;
+		}
+
 		try {
 			Map<String,Object> args = new HashMap<String,Object>();
 			args.put("viewer",viewerName);
-			CyCommandResult result = CyCommandManager.execute(NAMEDSELECTION, "add viewer", args);
+			CyCommandResult result = handler.execute("add viewer", args);
 			if (result.getErrors() != null && result.getErrors().size() > 0) {
 				for (String error: result.getErrors())
 					logger.warning(error);
