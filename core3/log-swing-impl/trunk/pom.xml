@@ -10,15 +10,13 @@
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.cytoscape.log-swing
-		</bundle.symbolicName>
-		<bundle.namespace>org.cytoscape.log
-		</bundle.namespace>
+		<bundle.symbolicName>org.cytoscape.log-swing-impl</bundle.symbolicName>
+		<bundle.namespace>org.cytoscape.log</bundle.namespace>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
-	<artifactId>log-swing</artifactId>
+	<artifactId>log-swing-impl</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
