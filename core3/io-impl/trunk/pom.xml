@@ -83,7 +83,11 @@
 			<artifactId>io-api</artifactId>
 			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>property-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>com.lowagie.text</groupId>
 			<artifactId>com.springsource.com.lowagie.text</artifactId>

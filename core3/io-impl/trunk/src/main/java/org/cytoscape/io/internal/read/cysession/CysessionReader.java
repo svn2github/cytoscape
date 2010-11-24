@@ -21,7 +21,12 @@ public class CysessionReader extends AbstractPropertyReader {
 
 	public void run(TaskMonitor tm) throws Exception {
 
-		final JAXBContext jaxbContext = JAXBContext.newInstance(CYSESSION_PACKAGE);
+		// No idea why, but ObjectFactory doesn't get picked up in the default
+		// Thread.currentThread().getContextClassLoader() classloader, whereas 
+		// that approach works fine for bookmarks.  Anyway, just force the issue
+		// by getting this classloader.
+		final JAXBContext jaxbContext = JAXBContext.newInstance(CYSESSION_PACKAGE,
+		                                                        getClass().getClassLoader());
 
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
