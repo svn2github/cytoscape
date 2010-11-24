@@ -12,16 +12,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CysessionFileFilter extends CyFileFilterImpl {
+
+	private static final Logger logger = LoggerFactory.getLogger(CysessionFileFilter.class);
 	
 	public CysessionFileFilter(Set<String> extensions, Set<String> contentTypes,
 			String description, DataCategory category, StreamUtil streamUtil) {
 		super(extensions, contentTypes, description, category, streamUtil);
 	}
 
-	public boolean accept(InputStream stream, DataCategory category) {
+	@Override
+	public boolean accepts(InputStream stream, DataCategory category) {
 
-		// Check data category
-		if (category != this.category)
+		if (category != this.category) 
 			return false;
 		
 		final String header = this.getHeader(stream,20);
@@ -34,9 +36,8 @@ public class CysessionFileFilter extends CyFileFilterImpl {
 	@Override
 	public boolean accepts(URI uri, DataCategory category) {
 		try {
-			return accept(uri.toURL().openStream(), category);
+			return accepts(uri.toURL().openStream(), category);
 		} catch (IOException e) {
-			Logger logger = LoggerFactory.getLogger(getClass());
 			logger.error("Error while opening stream: " + uri, e);
 			return false;
 		}

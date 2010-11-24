@@ -23,7 +23,8 @@ public class PropertiesFileFilter extends CyFileFilterImpl {
 	 	matcher = p.matcher("");
 	}
 
-	public boolean accept(InputStream stream, DataCategory category) {
+	@Override
+	public boolean accepts(InputStream stream, DataCategory category) {
 
 		// Check data category
 		if (category != this.category)

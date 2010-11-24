@@ -63,12 +63,13 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 	 */
 	public R getReader(URI uri) {
 		for (T factory : factories) {
-			logger.info("trying factory: " + factory);
 			
 			CyFileFilter cff = factory.getCyFileFilter();
+			logger.debug("trying factory: " + factory + " with filter: " + cff);
 
 			if (cff.accepts(uri, category) && uri != null ) {
 				try {
+					logger.debug("successfully matched factory " + factory);
 					factory.setInputStream( uri.toURL().openStream() );
 					return (R)factory.getTaskIterator().next();
 				} catch (IOException e) {
@@ -89,11 +90,13 @@ public class GenericReaderManager<T extends InputStreamTaskFactory, R extends Ta
 
 			for (T factory : factories) {
 				CyFileFilter cff = factory.getCyFileFilter();
+				logger.debug("trying factory: " + factory + " with filter: " + cff);
 
 				// Because we don't know who will provide the file filter or
 				// what they might do with the InputStream, we provide a copy
 				// of the first 2KB rather than the stream itself. 
 				if (cff.accepts(CopyInputStream.copyKBytes(stream,2), category)) {
+					logger.debug("successfully matched factory " + factory);
 					factory.setInputStream(stream);
 					return (R)factory.getTaskIterator().next();	
 				}
