@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
+
 
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -52,13 +44,8 @@ import java.util.List;
 import java.util.Map;
 
 
-/**
- * DOCUMENT ME!
-  */
 public abstract class AbstractCyEdgeTest extends TestCase {
-
 	protected CyNetwork net;
-
 
 	private CyEdge eDir;
 	private CyEdge eUndir;
@@ -70,7 +57,6 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	private void defaultSetUp() {
-
 		n1 = net.addNode();
 		n2 = net.addNode();
 		n3 = net.addNode();
@@ -79,7 +65,6 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 		eDir = net.addEdge(n1, n2, true);
 		eUndir = net.addEdge(n2, n3, false);
 	}
-
 
 	/**
 	 *  DOCUMENT ME!
@@ -146,15 +131,15 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 		assertTrue("string has non zero length", eUndir.toString().length() > 0);
 	}
 
-    public void testDefaultAttributes() {
+	public void testDefaultAttributes() {
 		defaultSetUp();
 
-        CyNode n1 = net.addNode();
-        CyNode n2 = net.addNode();
-        CyEdge e1 = net.addEdge(n1,n2,true);
+		CyNode n1 = net.addNode();
+		CyNode n2 = net.addNode();
+		CyEdge e1 = net.addEdge(n1,n2,true);
 
-        assertEquals( String.class, e1.getCyRow().getType("name"));
-        assertEquals( Boolean.class, e1.getCyRow().getType("selected"));
-        assertEquals( String.class, e1.getCyRow().getType("interaction"));
-    }
+		assertEquals(String.class, e1.getCyRow().getDataTable().getColumnTypeMap().get("name"));
+		assertEquals(Boolean.class, e1.getCyRow().getDataTable().getColumnTypeMap().get("selected"));
+		assertEquals(String.class, e1.getCyRow().getDataTable().getColumnTypeMap().get("interaction"));
+	}
 }

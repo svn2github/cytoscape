@@ -1,6 +1,7 @@
 package org.cytoscape.browser.internal;
 
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.JPanel;
@@ -12,15 +13,16 @@ import org.cytoscape.application.swing.CytoPanelName;
 
 
 @SuppressWarnings("serial")
-public class TableBrowser extends JPanel implements CytoPanelComponent {
+	public class TableBrowser extends JPanel implements CytoPanelComponent {
+	private final Dimension PANEL_SIZE = new Dimension(400, 300);
+
 	public TableBrowser() {
 		super();
 
-		setPreferredSize(new Dimension(0, 100));
-		add(new JLabel("Here's the table browser!"));
-
-		setVisible(true);
-System.err.println("========================================== after setVisible()!");
+		setLayout(new BorderLayout());
+		add(new JLabel("Jello mold!"));
+                setPreferredSize(PANEL_SIZE);
+		setBorder(null);
 	}
 
 	/**

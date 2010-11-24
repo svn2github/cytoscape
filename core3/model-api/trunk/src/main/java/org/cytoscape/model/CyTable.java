@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -46,7 +38,6 @@ import java.util.Map;
  * contain the data for a specific index.
  */
 public interface CyTable extends Identifiable {
-
 	/**
 	 * A public CyTable is a table that is accessible to the user through the user
 	 * interface.  Private or non-public CyTables will not be visible to the user from the
@@ -83,12 +74,22 @@ public interface CyTable extends Identifiable {
 	Class<?> getPrimaryKeyType();
 
 	/**
-     * The keySet of this map defines all columns in the CyTable and the
-     * the values of this map define the types of the columns.
-     * @return A map of column names to the {@link Class} objects that defines
-     * the column type.
-     */
+	 * The keySet of this map defines all columns in the CyTable and the
+	 * the values of this map define the types of the columns.
+	 * @return A map of column names to the {@link Class} objects that defines
+	 * the column type.
+	 */
 	Map<String, Class<?>> getColumnTypeMap();
+
+	/**
+	 * Returns the Class object that represents the element type for the List type of
+	 * column identified by "columnName".
+	 * @param columnName The name of the column to check.
+	 * @return The Class object that is defined for this column. Will
+	 * Since a call to this method only makes sense if the column type is some kind of List,
+	 * we throw and exception if this is called on a column that is not of type List!
+	 */
+	Class<?> getListElementType(String columnName);
 
 	/**
 	 * Will delete the column of the specified name.
@@ -104,11 +105,18 @@ public interface CyTable extends Identifiable {
 	<T> void createColumn(String columnName, Class<?extends T> type);
 
 	/**
+	 * Create a column of Lists with the specified name and the specified element type.
+	 * @param columnName The name identifying the attribute.
+	 * @param listElementType The type of the elements of the list.
+	 */
+	<T> void createListColumn(String columnName, Class<T> listElementType);
+
+	/**
 	 * Returns the list of all values contained in the specified column.
 	 * @param columnName The name identifying the attribute.
 	 * @param type The type of the column.
 	 * @return the list of all values contained in the specified column.
-     */
+	 */
 	<T> List<T> getColumnValues(String columnName, Class<?extends T> type);
 
 	/**
@@ -126,4 +134,11 @@ public interface CyTable extends Identifiable {
 	 * @return a list of all the rows stored in this data table.
 	 */
 	List<CyRow> getAllRows();
+
+	/**
+	 * Returns a descriptive message for certain internal errors.  Please
+	 * note that only the very last message will be retrieved.
+	 * @return if available, a message describing an internal error, otherwise null
+	 */
+	String getLastInternalError();
 }

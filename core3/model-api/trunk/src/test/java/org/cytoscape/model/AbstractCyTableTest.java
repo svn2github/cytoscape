@@ -160,7 +160,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddListAttr() {
-		mgr.createColumn("someList", List.class);
+		mgr.createListColumn("someList", String.class);
 
 		List<String> l = new LinkedList<String>();
 		l.add("orange");
@@ -170,7 +170,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 
 		assertTrue(attrs.isSet("someList", List.class));
 
-		assertEquals(2, attrs.get("someList", List.class).size());
+		assertEquals(2, attrs.getList("someList", String.class).size());
 	}
 
 	/**
@@ -320,7 +320,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	public void testUnsetRowList() {
 		List<String> ls = new ArrayList<String>();
 		ls.add("asdf");
-		mgr.createColumn("someList", List.class);
+		mgr.createListColumn("someList", String.class);
 		attrs.set("someList", ls);
 		assertTrue(attrs.isSet("someList", List.class));
 		attrs.set("someList", null);

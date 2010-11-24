@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,9 +25,10 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
 
+
+import java.util.List;
 import java.util.Map;
 
 
@@ -49,25 +42,30 @@ public interface CyRow {
 	 * @param columnName The name identifying the attribute.
 	 * @param type The type of the column.
 	 * @return the value found for this row in the specified column
+	 * Please not that this method cannot be used to retrieve values that are Lists!
 	 */
 	<T> T get(String columnName, Class<?extends T> type);
+
+	/**
+	 * Returns the value found for this row in the specified column
+	 * with the specified type.
+	 * @param columnName The name identifying the attribute.
+	 * @param listElementType  The type of the elements of the list that we wish to retrieve.
+	 * @return the value found for this row in the specified column
+	 * Please not that this method can only be used to retrieve values that are Lists!
+	 */
+	<T> List<?extends T> getList(String columnName, Class<T> listElementType);
 
 	/**
 	 * Set the specified column for this row to the specified value.
 	 * To unset a column entry use null for value.
 	 * @param columnName The name identifying the attribute.
-	 * @param value The value to assign the specified column in this row 
+	 * @param value The value to assign the specified column in this row
+	 * Please note that if "value" is a List it is your responsibility that all the
+	 * elements are of the type specified when the column was created with
+	 * {@link CyTable#createListColumn}!
 	 */
 	<T> void set(String columnName, T value);
-
-	/**
-	 * Returns the Class object that is defined for this column. 
-     * @param columnName The name of the column to check.
-     * @return The Class object that is defined for this column. Will
-     * return null if the column has not been defined. Will always return
-     * a base type. 
-     */
-	Class<?> getType(String columnName);
 
 	/**
 	 * Indicates whether the column of the specified type contains
@@ -80,16 +78,16 @@ public interface CyRow {
 	<T> boolean isSet(String columnName, Class<?extends T> type);
 
 	/**
-     * Returns a map of column names to Objects that contain the values
-     * contained in this Row.
-     * @return A map of column names to Objects that contain the values
-     * contained in this Row.
-     */
+	 * Returns a map of column names to Objects that contain the values
+	 * contained in this Row.
+	 * @return A map of column names to Objects that contain the values
+	 * contained in this Row.
+	 */
 	Map<String, Object> getAllValues();
 
 	/**
-	 * Don't use this!  This is a hack for the VizMapper and will go away
-	 * once the VizMapper is refactored.
+	 * Note that the returned object may well not be of the type that get() for this column might
+	 * return!  You should therefore almost always use get() instead!
 	 * @return The row Object that represents the value in a column.
 	 */
 	Object getRaw(String columnName);

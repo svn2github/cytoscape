@@ -34,7 +34,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Collections;
 
+import org.cytoscape.equations.BooleanList;
+import org.cytoscape.equations.DoubleList;
+import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.LongList;
+import org.cytoscape.equations.StringList;
+
 import org.cytoscape.event.CyEventHelper;
+
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.SUIDFactory;
@@ -48,13 +55,14 @@ public class CyTableImpl implements CyTable {
 	private final Map<Object, CyRow> rows;
 
 	private final Map<String, Class<?>> types;
-	
+	private final Map<String, Class<?>> listElementTypes;
+
 	// This is not unique and might be changed by user.
 	private String title;
-	
+
 	// Visibility value is immutable.
 	private final boolean pub;
-	
+
 	// Unique ID.
 	private final long suid;
 
@@ -66,9 +74,11 @@ public class CyTableImpl implements CyTable {
 
 	private final CyEventHelper eventHelper;
 
+	private String lastInternalError = null;
+
 	/**
 	 * Creates a new CyTableImpl object.
-	 * 
+	 *
 	 * @param typeMap
 	 *            DOCUMENT ME!
 	 * @param name
@@ -76,8 +86,9 @@ public class CyTableImpl implements CyTable {
 	 * @param pub
 	 *            DOCUMENT ME!
 	 */
-	public CyTableImpl(String title, String primaryKey, Class<?> pkType, 
-			boolean pub, final CyEventHelper eventHelper) {
+	public CyTableImpl(String title, String primaryKey, Class<?> pkType,
+			   boolean pub, final CyEventHelper eventHelper)
+	{
 		this.title = title;
 		this.primaryKey = primaryKey;
 		this.primaryKeyType = getClass(pkType);
@@ -87,6 +98,7 @@ public class CyTableImpl implements CyTable {
 		attributes = new HashMap<String, Map<Object, Object>>();
 		rows = new HashMap<Object, CyRow>();
 		types = new HashMap<String, Class<?>>();
+		listElementTypes = new HashMap<String, Class<?>>();
 
 		// Create the primary key column.  Do this explicitly
 		// so that we don't fire an event.
@@ -96,7 +108,7 @@ public class CyTableImpl implements CyTable {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public long getSUID() {
@@ -105,7 +117,7 @@ public class CyTableImpl implements CyTable {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public boolean isPublic() {
@@ -114,16 +126,16 @@ public class CyTableImpl implements CyTable {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public String getTitle() {
-		return this.title;
+		return title;
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param title
 	 *            DOCUMENT ME!
 	 */
@@ -133,11 +145,19 @@ public class CyTableImpl implements CyTable {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public Map<String, Class<?>> getColumnTypeMap() {
 		return Collections.unmodifiableMap(types);
+	}
+
+	public Class<?> getListElementType(final String columnName) {
+		final Class<?> listElementType = listElementTypes.get(columnName);
+		if (listElementType == null)
+			throw new IllegalArgumentException("can't get list element type for nonexistent or non-List column '"
+							   + columnName + "'!");
+		return listElementType;
 	}
 
 	public String getPrimaryKey() {
@@ -150,17 +170,18 @@ public class CyTableImpl implements CyTable {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
-	 * @param attributeName
+	 *
+	 * @param columnName
 	 *            DOCUMENT ME!
 	 */
-	public void deleteColumn(String attributeName) {
-		if (attributes.containsKey(attributeName)) {
-			attributes.remove(attributeName);
-			types.remove(attributeName);
-			
-			// This event should be Synchronous
-			eventHelper.fireSynchronousEvent(new ColumnDeletedEvent(this, attributeName));
+	public void deleteColumn(String columnName) {
+		if (attributes.containsKey(columnName)) {
+			attributes.remove(columnName);
+			types.remove(columnName);
+			listElementTypes.remove(columnName);
+
+			// This event must be synchronous!
+			eventHelper.fireSynchronousEvent(new ColumnDeletedEvent(this, columnName));
 		}
 	}
 
@@ -168,52 +189,69 @@ public class CyTableImpl implements CyTable {
 	 * DOCUMENT ME!
 	 * @param type
 	 *            DOCUMENT ME!
-	 * @param attributeName
+	 * @param columnName
 	 *            DOCUMENT ME!
-	 * @param u
-	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @param <T>
 	 *            DOCUMENT ME!
 	 */
-	public <T> void createColumn(String attributeName, Class<? extends T> type) {
-		if (attributeName == null)
+	public <T> void createColumn(String columnName, Class<? extends T> type) {
+		if (columnName == null)
 			throw new NullPointerException("attribute name is null");
 
 		if (type == null)
 			throw new NullPointerException("type is null");
 
-		Class<?> cls = getClass(type);
-		Class<?> curr = types.get(attributeName);
+		if (types.get(columnName) != null)
+			throw new IllegalArgumentException("attribute already exists for name: '"
+							   + columnName + "' with type: "
+							   + types.get(columnName).getName());
 
-		if (curr == null) {
-			types.put(attributeName, cls);
-			attributes.put(attributeName, new HashMap<Object, Object>());
-			
-			// Fire event
-			eventHelper.fireAsynchronousEvent(new ColumnCreatedEvent(this, attributeName));
-		} else {
-			if (!curr.equals(cls))
-				throw new IllegalArgumentException(
-						"attribute already exists for name: '" + attributeName
-								+ "' with type: " + cls.getName());
-		}
+		if (type == List.class)
+			throw new IllegalArgumentException(
+				"use createListColumn() to create List columns instead of createColumn for attribute '"
+				+ columnName + "'!");
+
+		types.put(columnName, type);
+		attributes.put(columnName, new HashMap<Object, Object>());
+
+		eventHelper.fireAsynchronousEvent(new ColumnCreatedEvent(this, columnName));
+	}
+
+	public <T> void createListColumn(final String columnName, final Class<T> listElementType)
+	{
+		if (columnName == null)
+			throw new NullPointerException("attribute name is null");
+
+		if (listElementType == null)
+			throw new NullPointerException("listElementType is null");
+
+		if (types.get(columnName) != null)
+			throw new IllegalArgumentException("attribute already exists for name: '"
+							   + columnName + "' with type: "
+							   + types.get(columnName).getName());
+		types.put(columnName, List.class);
+		listElementTypes.put(columnName, listElementType);
+		attributes.put(columnName, new HashMap<Object, Object>());
+
+		eventHelper.fireAsynchronousEvent(new ColumnCreatedEvent(this, columnName));
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param <T>
 	 *            DOCUMENT ME!
 	 * @param columnName
 	 *            DOCUMENT ME!
 	 * @param type
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public <T> List<T> getColumnValues(String columnName,
-			Class<? extends T> type) {
+			Class<? extends T> type)
+	{
 		if (columnName == null)
 			throw new NullPointerException("column name is null");
 
@@ -225,17 +263,17 @@ public class CyTableImpl implements CyTable {
 		List<T> l = new ArrayList<T>(vals.size());
 
 		for (Object o : vals.values())
-			l.add(type.cast(o));
+			l.add(type.cast(o)); // TODO: add equation support
 
 		return l;
 	}
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param suid
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public CyRow getRow(final Object suid) {
@@ -249,19 +287,24 @@ public class CyTableImpl implements CyTable {
 		return row;
 	}
 
-    private void checkKey(final Object suid) {
-        if ( suid == null )
-            throw new NullPointerException("key is null");
+	@Override
+	public String getLastInternalError() {
+		return lastInternalError;
+	}
 
-        if ( !primaryKeyType.isAssignableFrom( suid.getClass() ) )
-            throw new IllegalArgumentException("key of type " + suid.getClass() + " and not the expected: " + primaryKeyType);
+	private void checkKey(final Object suid) {
+		if (suid == null)
+			throw new NullPointerException("key is null");
 
-    }
+		if (!primaryKeyType.isAssignableFrom(suid.getClass()))
+			throw new IllegalArgumentException("key of type " + suid.getClass()
+							   + " and not the expected: " + primaryKeyType);
+
+	}
 
 	public List<CyRow> getAllRows() {
 		return new ArrayList<CyRow>(rows.values());
 	}
-
 
 	// internal methods
 	private void removeX(Object suid, String attributeName) {
@@ -274,17 +317,25 @@ public class CyTableImpl implements CyTable {
 	}
 
 	private void setX(Object suid, String attrName, Object value) {
-		assert(value!=null);
+		assert(value != null);
 
 		if (!types.containsKey(attrName) || !attributes.containsKey(attrName))
 			throw new IllegalArgumentException("attribute: '" + attrName
 					+ "' does not yet exist!");
 
+		if (types.get(attrName) == List.class) {
+			setListX(suid, attrName, value);
+			return;
+		}
+
 		checkType(value);
 
 		Map<Object, Object> vls = attributes.get(attrName);
 
-		if (types.get(attrName).isAssignableFrom(value.getClass())) {
+		final Class targetType = types.get(attrName);
+		if (targetType.isAssignableFrom(value.getClass())
+		    || scalarEquationIsCompatible(value, targetType))
+		{
 			// TODO this is an implicit addRow - not sure if we want to refactor this or not
 			vls.put(suid, value);
 			eventHelper.getMicroListener(RowSetMicroListener.class, getRow(suid)).handleRowSet(attrName,value);
@@ -293,20 +344,77 @@ public class CyTableImpl implements CyTable {
 					+ types.get(attrName));
 	}
 
-	private void unSetX(Object suid, String attrName) {
+	private static boolean scalarEquationIsCompatible(final Object equationCandidate,
+							  final Class targetType)
+	{
+		if (!(equationCandidate instanceof Equation))
+			return false;
 
-		if (!types.containsKey(attrName) || !attributes.containsKey(attrName))
-			throw new IllegalArgumentException("attribute: '" + attrName
-					+ "' does not yet exist!");
+		final Equation equation = (Equation)equationCandidate;
+		final Class<?> eqnReturnType = equation.getType();
 
-		Map<Object, Object> vls = attributes.get(attrName);
-
-		vls.remove(suid);
-		eventHelper.getMicroListener(RowSetMicroListener.class, getRow(suid)).handleRowSet(attrName,null);
+		if (targetType == Double.class || targetType == Boolean.class
+		    || targetType == Integer.class || targetType == Long.class)
+			return eqnReturnType == Double.class || eqnReturnType == Long.class
+			       || eqnReturnType == Boolean.class;
+		else if (targetType == String.class)
+			return true; // Everything can be turned into a String!
+		else
+			return false;
 	}
 
-	private Object getRawX(Object suid, String attrName) {
-		Map<Object, Object> vls = attributes.get(attrName);
+	private void setListX(final Object suid, final String columnName, final Object value) {
+		if (value instanceof List) {
+			final List list = (List)value;
+			if (!list.isEmpty())
+				checkType(list.get(0));
+		} else if (!(value instanceof Equation))
+			throw new IllegalArgumentException("value is not a List for column '"
+							   + columnName + "'!");
+		else if (!listEquationIsCompatible((Equation)value, listElementTypes.get(columnName)))
+			throw new IllegalArgumentException(
+				"value is not a List equation of a compatible type for column '"
+				+ columnName + "'!");
+
+		Map<Object, Object> vls = attributes.get(columnName);
+
+		// TODO this is an implicit addRow - not sure if we want to refactor this or not
+		vls.put(suid, value);
+		eventHelper.getMicroListener(RowSetMicroListener.class,
+					     getRow(suid)).handleRowSet(columnName, value);
+	}
+
+	private static boolean listEquationIsCompatible(final Equation equation,
+							final Class listElementType)
+	{
+		final Class<?> eqnReturnType = equation.getType();
+		if (eqnReturnType == BooleanList.class)
+			return listElementType == Boolean.class;
+		if (eqnReturnType == DoubleList.class)
+			return listElementType == Double.class;
+		if (eqnReturnType == StringList.class)
+			return listElementType == String.class;
+		if (eqnReturnType == LongList.class)
+			return listElementType == Long.class;
+		// TODO: Add support for a hypothetical IntegerList type.
+
+		return false;
+	}
+
+	private void unSetX(Object suid, String columnName) {
+
+		if (!types.containsKey(columnName) || !attributes.containsKey(columnName))
+			throw new IllegalArgumentException("attribute: '" + columnName
+					+ "' does not yet exist!");
+
+		Map<Object, Object> vls = attributes.get(columnName);
+
+		vls.remove(suid);
+		eventHelper.getMicroListener(RowSetMicroListener.class, getRow(suid)).handleRowSet(columnName,null);
+	}
+
+	private Object getRawX(Object suid, String columnName) {
+		Map<Object, Object> vls = attributes.get(columnName);
 
 		if (vls == null)
 			return null;
@@ -314,47 +422,67 @@ public class CyTableImpl implements CyTable {
 		return vls.get(suid);
 	}
 
-	private <T> T getX(Object suid, String attrName, Class<? extends T> type) {
-		Object vl = getRawX(suid, attrName);
+	private <T> T getX(Object suid, String columnName, Class<? extends T> type) {
+		if (type.isAssignableFrom(List.class))
+			throw new IllegalArgumentException("use getList() to retrieve lists!");
 
+		final Object vl = getRawX(suid, columnName);
 		if (vl == null)
 			return null;
 
-		return type.cast(vl);
+		if (vl instanceof Equation) {
+			final Object result = evalEquation((Equation)vl, suid, columnName);
+			return type.cast(result);
+		} else
+			return type.cast(vl);
 	}
 
-	private <T> boolean containsX(Object suid, String attrName,
-			Class<? extends T> type) {
-		Map<Object, Object> vls = attributes.get(attrName);
+	private <T> List<?extends T> getListX(final Object suid, final String columnName,
+					      final Class<? extends T> listElementType)
+	{
+		final Class<?> expectedListElementType = listElementTypes.get(columnName);
+		if (expectedListElementType == null)
+			throw new IllegalArgumentException("'" + columnName
+							   + "' is either not a List or does not exist!");
+		if (expectedListElementType != listElementType)
+			throw new IllegalArgumentException("invalid list element type for column '"
+							   + columnName + ", found: " + listElementType.getName()
+							   + ", expected: " + expectedListElementType.getName()
+							   + "!");
 
+		final Object vl = getRawX(suid, columnName);
+		if (vl == null)
+			return null;
+
+		if (vl instanceof Equation) {
+			final Object result = evalEquation((Equation)vl, suid, columnName);
+			return (List)result;
+		} else
+			return (List)vl;
+	}
+
+	private Object evalEquation(final Equation equation, final Object suid,
+				    final String columnName)
+	{
+		return null;
+	}
+
+	private <T> boolean isSetX(final Object suid, final String columnName,
+				   final Class<? extends T> type)
+	{
+		final Map<Object, Object> vls = attributes.get(columnName);
 		if (vls == null)
 			return false;
 
 		Object vl = vls.get(suid);
-
 		if (vl == null)
 			return false;
 
-		if (types.get(attrName).isAssignableFrom(type))
+		if (types.get(columnName).isAssignableFrom(type))
 			return true;
 		else
 
 			return false;
-	}
-
-	private Class<?> containsX(Object suid, String attrName) {
-		Map<Object, Object> vls = attributes.get(attrName);
-
-		if (vls == null)
-			return null;
-
-		Object vl = vls.get(suid);
-
-		if (vl == null)
-			return null;
-		else
-
-			return types.get(attrName);
 	}
 
 	private Class<?> getClass(Class<?> c) {
@@ -419,14 +547,25 @@ public class CyTableImpl implements CyTable {
 		}
 
 		public void set(String attributeName, Object value) {
-			if ( value == null )
+			if (value == null)
 				unSetX(suid, attributeName);
 			else
 				setX(suid, attributeName, value);
 		}
 
+		public <T> void setList(String attributeName, List<?extends T> list) {
+			if (list == null)
+				unSetX(suid, attributeName);
+			else
+				setListX(suid, attributeName, list);
+		}
+
 		public <T> T get(String attributeName, Class<? extends T> c) {
 			return getX(suid, attributeName, c);
+		}
+
+		public <T> List<?extends T> getList(String attributeName, Class<T> c) {
+			return getListX(suid, attributeName, c);
 		}
 
 		public Object getRaw(String attributeName) {
@@ -434,11 +573,7 @@ public class CyTableImpl implements CyTable {
 		}
 
 		public <T> boolean isSet(String attributeName, Class<? extends T> c) {
-			return containsX(suid, attributeName, c);
-		}
-
-		public Class<?> getType(String attributeName) {
-			return containsX(suid, attributeName);
+			return isSetX(suid, attributeName, c);
 		}
 
 		public void remove(String attributeName) {
@@ -488,4 +623,242 @@ public class CyTableImpl implements CyTable {
 			return builder.toString();
 		}
 	}
+
+/*
+	/**
+	 *  Returns any attribute-equation related error message after a call to getAttribute() or
+	 *  getXXXAttribute().  N.B., the last error message will be cached!
+	 *
+	 *  @return an error message or null if the last call to getAttribute() did not result in an
+	 *           equation related error
+	 * /
+	public String getLastEquationError() { return lastEquationError; }
+
+	private Object evalEquation(final String id, final String attribName, final Equation equation,
+	                            final StringBuilder errorMessage)
+	{
+		if (currentlyActiveAttributes.contains(attribName)) {
+			currentlyActiveAttributes.clear();
+			errorMessage.append("Recursive equation evaluation of \"" + attribName + "\"!");
+			return null;
+		} else
+			currentlyActiveAttributes.add(attribName);
+
+		final Collection<String> attribReferences = equation.getAttribReferences();
+
+		final Map<String, IdentDescriptor> nameToDescriptorMap = new TreeMap<String, IdentDescriptor>();
+		for (final String attribRef : attribReferences) {
+			if (attribRef.equals("ID")) {
+				nameToDescriptorMap.put("ID", new IdentDescriptor(id));
+				continue;
+			}
+
+			final Object attribValue = getAttribute(id, attribRef);
+			if (attribValue == null) {
+				currentlyActiveAttributes.clear();
+				errorMessage.append("Missing value for referenced attribute \"" + attribRef + "\"!");
+				logger.warn("Missing value for \"" + attribRef
+				            + "\" while evaluating an equation (ID:" + id
+				            + ", attribute name:" + attribName + ")");
+				return null;
+			}
+
+			try {
+				nameToDescriptorMap.put(attribRef, new IdentDescriptor(attribValue));
+			} catch (final Exception e) {
+				currentlyActiveAttributes.clear();
+				errorMessage.append("Bad attribute reference to \"" + attribRef + "\"!");
+				logger.warn("Bad attribute reference to \"" + attribRef
+				            + "\" while evaluating an equation (ID:" + id
+				            + ", attribute name:" + attribName + ")");
+				return null;
+			}
+		}
+
+		final Interpreter interpreter = new Interpreter(equation, nameToDescriptorMap);
+		try {
+			final Object result = interpreter.run();
+			currentlyActiveAttributes.remove(attribName);
+			return result;
+		} catch (final Exception e) {
+			currentlyActiveAttributes.clear();
+			errorMessage.append(e.getMessage());
+			logger.warn("Error while evaluating an equation: " + e.getMessage() + " (ID:"
+			            + id + ", attribute name:" + attribName + ")");
+			return null;
+		}
+	}
+
+	/**
+	 *  @return an in-order list of attribute names that will have to be evaluated before "attribName" can be evaluated
+	 * /
+	private List<String> topoSortAttribReferences(final String id, final String attribName) {
+		final Object equationCandidate = mmap.getAttributeValue(id, attribName, null);
+		if (!(equationCandidate instanceof Equation))
+			return new ArrayList<String>();
+
+		final Equation equation = (Equation)equationCandidate;
+		final Set<String> attribReferences = equation.getAttribReferences();
+		if (attribReferences.size() == 0)
+			return new ArrayList<String>();
+
+		final Set<String> alreadyProcessed = new TreeSet<String>();
+		alreadyProcessed.add(attribName);
+		final List<TopoGraphNode> dependencies = new ArrayList<TopoGraphNode>();
+		for (final String attribReference : attribReferences)
+                        followReferences(id, attribReference, alreadyProcessed, dependencies);
+
+
+		final List<TopoGraphNode> topoOrder = TopologicalSort.sort(dependencies);
+		final List<String> retVal = new ArrayList<String>();
+		for (final TopoGraphNode node : topoOrder) {
+			final AttribTopoGraphNode attribTopoGraphNode = (AttribTopoGraphNode)node;
+			final String nodeName = attribTopoGraphNode.getNodeName();
+			if (nodeName.equals(attribName))
+				return retVal;
+			else
+				retVal.add(nodeName);
+		}
+
+		// We should never get here because "attribName" should have been found in the for-loop above!
+		throw new IllegalStateException("\"" + attribName
+		                                + "\" was not found in the toplogical order, which should be impossible!");
+	}
+
+	/**
+	 *  Helper function for topoSortAttribReferences() performing a depth-first search of equation evaluation dependencies.
+	 * /
+	private void followReferences(final String id, final String attribName, final Collection<String> alreadyProcessed,
+	                              final Collection<TopoGraphNode> dependencies)
+	{
+		// Already visited this attribute?
+		if (alreadyProcessed.contains(attribName))
+			return;
+
+		alreadyProcessed.add(attribName);
+		final Object equationCandidate = mmap.getAttributeValue(id, attribName, null);
+		if (!(equationCandidate instanceof Equation))
+			return;
+
+		final Equation equation = (Equation)equationCandidate;
+		final Set<String> attribReferences = equation.getAttribReferences();
+		for (final String attribReference : attribReferences)
+			followReferences(id, attribReference, alreadyProcessed, dependencies);
+	}
+
+	/**
+	 *  @return "x" truncated using Excel's notion of truncation.
+	 * /
+	private static double excelTrunc(final double x) {
+		final boolean isNegative = x < 0.0;
+		return Math.round(x + (isNegative ? +0.5 : -0.5));
+	}
+
+	/**
+	 *  @return "d" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
+	 * /
+	private static Integer doubleToInteger(final double d) {
+		if (d > Integer.MAX_VALUE || d < Integer.MIN_VALUE)
+			return null;
+
+		double x = ((Double)d).intValue();
+		if (x != d && x < 0.0)
+			--x;
+
+		return (Integer)(int)x;
+	}
+
+	/**
+	 *  @return "l" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
+	 * /
+	private static Integer longToInteger(final double l) {
+		if (l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE)
+			return (Integer)(int)l;
+
+		return null;
+	}
+
+	/**
+	 *  @return "equationValue" interpreted according to Excel rules as an integer or null if that is not possible
+	 * /
+	private Integer convertEqnRetValToInteger(final String id, final String attribName, final Object equationValue) {
+		if (equationValue.getClass() == Double.class) {
+			final Integer retVal = doubleToInteger((Double)equationValue);
+			if (retVal == null)
+				logger.warn("Cannot convert a floating point value ("
+					    + equationValue + ") to an integer!  (ID:" + id
+					    + ", attribute name:" + attribName + ")");
+			return retVal;
+		}
+		else if (equationValue.getClass() == Long.class) {
+			final Integer retVal = longToInteger((Long)equationValue);
+			if (retVal == null)
+				logger.warn("Cannot convert a large integer (long) value ("
+					    + equationValue + ") to an integer! (ID:" + id
+					    + ", attribute name:" + attribName + ")");
+			return retVal;
+		}
+		else if (equationValue.getClass() == Boolean.class) {
+			final Boolean boolValue = (Boolean)equationValue;
+			return (Integer)(boolValue ? 1 : 0);
+		}
+		else
+			throw new IllegalStateException("we should never get here!");
+	}
+
+	/**
+	 *  @return "equationValue" interpreted according to Excel rules as a double or null if that is not possible
+	 * /
+	private Double convertEqnRetValToDouble(final String id, final String attribName, final Object equationValue) {
+		if (equationValue.getClass() == Double.class)
+			return (Double)equationValue;
+		else if (equationValue.getClass() == Long.class)
+			return (double)(Long)(equationValue);
+		else if (equationValue.getClass() == Boolean.class) {
+			final Boolean boolValue = (Boolean)equationValue;
+			return boolValue ? 1.0 : 0.0;
+		}
+		else if (equationValue.getClass() == String.class) {
+			final String valueAsString = (String)equationValue;
+			try {
+				return Double.parseDouble(valueAsString);
+			} catch (final NumberFormatException e) {
+				logger.warn("Cannot convert a string (\"" + valueAsString
+				            + "\") to a floating point value! (ID:" + id
+                                            + ", attribute name:" + attribName + ")");
+				return null;
+			}
+		}
+		else
+			throw new IllegalStateException("we should never get here!");
+	}
+
+	/**
+	 *  @return "equationValue" interpreted according to Excel rules as a boolean
+	 * /
+	private Boolean convertEqnRetValToBoolean(final String id, final String attribName, final Object equationValue) {
+		if (equationValue.getClass() == Double.class)
+			return (Double)equationValue != 0.0;
+		else if (equationValue.getClass() == Long.class)
+			return (Long)(equationValue) != 0L;
+		else if (equationValue.getClass() == Boolean.class) {
+			return (Boolean)equationValue;
+		}
+		else if (equationValue.getClass() == String.class) {
+			final String stringValue = (String)equationValue;
+			if (stringValue.compareToIgnoreCase("true") == 0)
+				return true;
+			else if (stringValue.compareToIgnoreCase("false") == 0)
+				return false;
+			else {
+				logger.warn("Cannot convert a string (\"" + stringValue
+				            + "\") to a boolean value! (ID:" + id
+                                            + ", attribute name:" + attribName + ")");
+				return null;
+			}
+		}
+		else
+			throw new IllegalStateException("we should never get here!");
+	}
+*/
 }
