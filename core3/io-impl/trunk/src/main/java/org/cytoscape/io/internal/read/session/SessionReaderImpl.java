@@ -256,7 +256,7 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 			in.close();
 			out.close();
 		} catch (IOException e) {
-			logger.warn("Error: read from zip: " + entryName);
+			logger.warn("Error: read from zip: " + entryName, e);
 			return;
 		}
 
