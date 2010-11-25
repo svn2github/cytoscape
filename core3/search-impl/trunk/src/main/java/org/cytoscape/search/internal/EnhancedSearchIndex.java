@@ -81,10 +81,13 @@ public class EnhancedSearchIndex {
 			// writer.setMaxFieldLength(MAX_FIELD_LENGTH);
 
 			// Add a document for each graph object - node and edge
-			for (CyNode cyNode : network.getNodeList()) {
+			List<CyNode> nodeList = network.getNodeList();
+			for (CyNode cyNode : nodeList) {
 				writer.addDocument(createDocument(cyNode, EnhancedSearch.NODE_TYPE, cyNode.getIndex()));
 			}
-			for (CyEdge cyEdge : network.getEdgeList()) {
+			
+			List<CyEdge> edgeList = network.getEdgeList();
+			for (CyEdge cyEdge : edgeList) {
 				writer.addDocument(createDocument(cyEdge, EnhancedSearch.EDGE_TYPE, cyEdge.getIndex()));
 			}
 

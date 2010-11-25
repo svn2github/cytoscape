@@ -78,12 +78,12 @@ public class AttributeFields {
 
 		//CyTable nodeCyDataTable = network.getCyRow().getDataTable()..getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 		
-		CyTable nodeCyDataTable = tableMgr.getTableMap(CyTableEntry.NODE, network).get(CyNetwork.DEFAULT_ATTRS);
+		CyTable nodeCyDataTable = (CyTable) tableMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
 		
 		nodeColumnTypeMap = nodeCyDataTable.getColumnTypeMap();
 
 		//CyTable edgeCyDataTable = network.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
-		CyTable edgeCyDataTable = tableMgr.getTableMap(CyTableEntry.EDGE, network).get(CyNetwork.DEFAULT_ATTRS);
+		CyTable edgeCyDataTable = (CyTable) tableMgr.getTableMap(CyEdge.class, network).get(CyNetwork.DEFAULT_ATTRS);
 		
 		edgeColumnTypeMap = edgeCyDataTable.getColumnTypeMap();
 
@@ -100,7 +100,6 @@ public class AttributeFields {
 			fields[j] = EnhancedSearchUtils.replaceWhitespace(fields[j]);
 			fields[j] = fields[j].toLowerCase();
 		}
-
 	}
 
 
@@ -118,5 +117,4 @@ public class AttributeFields {
 		
 		return valueType;
 	}
-
 }

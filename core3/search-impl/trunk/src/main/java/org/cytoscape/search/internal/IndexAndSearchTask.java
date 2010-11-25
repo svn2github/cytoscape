@@ -115,10 +115,12 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 		}
 
 		// Display results
-		for (CyNode n : network.getNodeList()) {
+		List<CyNode> nodeList = network.getNodeList();
+		for (CyNode n : nodeList) {
 			n.getCyRow().set("selected",false);
     	}
-		for (CyEdge e : network.getEdgeList()) {
+		List<CyEdge> edgeList = network.getEdgeList();
+		for (CyEdge e : edgeList) {
 			e.getCyRow().set("selected",false);
 		}
 

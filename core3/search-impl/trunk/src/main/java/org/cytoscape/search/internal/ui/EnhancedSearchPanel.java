@@ -20,7 +20,8 @@ public class EnhancedSearchPanel extends javax.swing.JPanel{
        initComponents();
        
        // Turn off this for now, we may need this later
-       this.lbSearch.setVisible(false);
+       this.btnSearch.setVisible(false);
+       this.lbSearch.setVisible(true);
        
        this.netmgr = netmgr;
        this.tableMgr = tableMgr;
