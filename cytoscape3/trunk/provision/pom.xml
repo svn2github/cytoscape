@@ -338,11 +338,12 @@
 		</dependency>
 
 		<!-- Attribute Browser -->
-		<dependency>
+<!--		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>table-browser-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+-->
 
 		<!-- cytoscape layouts -->
 <!--
