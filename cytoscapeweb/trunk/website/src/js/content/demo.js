@@ -892,7 +892,7 @@ $(function(){
             });
         }
 
-        function make_selection(fn, title, description, isImage){
+        function make_selection(fn, title, description, isImage, binary){
         	var id = "exporter_" + fn;
         	var containerClass = isImage ? ".image_formats" : ".data_formats";
         	
@@ -908,7 +908,7 @@ $(function(){
             var options = {
                     swfPath: path("swf/Exporter"),
                     flashInstallerPath: path("swf/playerProductInstall"),
-                    base64: isImage,
+                    base64: binary,
                 	data: function(){
                 		return vis[fn]();
                     },
@@ -942,15 +942,23 @@ $(function(){
     		false
         );
         make_selection(
-            "pdf",
-            "PDF",
+            "svg",
+            "SVG",
             "Vector Image",
             true
+        );
+        make_selection(
+    		"pdf",
+    		"PDF",
+    		"Vector Image",
+    		true,
+    		true
         );
         make_selection(
     		"png",
     		"PNG",
     		"Bitmap Image",
+    		true,
     		true
         );
         
