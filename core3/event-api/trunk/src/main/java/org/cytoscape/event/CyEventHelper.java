@@ -41,7 +41,7 @@ public interface CyEventHelper {
 	 * @param <E> The type of event fired. 
 	 * @param event The event to be fired. 
 	 */
-	public <E extends CyEvent> void fireSynchronousEvent(final E event);
+	public <E extends CyEvent<?>> void fireSynchronousEvent(final E event);
 
 	/**
 	 * Calls each listener found in the Service Registry identified by the listenerClass
@@ -51,7 +51,7 @@ public interface CyEventHelper {
 	 * @param <E> The type of event fired. 
 	 * @param event The event to be fired. 
 	 */
-	public <E extends CyEvent> void fireAsynchronousEvent(final E event);
+	public <E extends CyEvent<?>> void fireAsynchronousEvent(final E event);
 
 	/**
 	 * Returns a single instance of CyMicroListener that will in turn execute any method

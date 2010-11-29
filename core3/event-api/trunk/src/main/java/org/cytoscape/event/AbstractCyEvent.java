@@ -41,14 +41,14 @@ package org.cytoscape.event;
 public abstract class AbstractCyEvent<T> implements CyEvent<T> {
 
 	private final T source;
-	private final Class listenerClass; 
+	private final Class<?> listenerClass; 
 
 	/** 
 	 * Constructor.
 	 * @param source The source object that fires the event. May NOT be null.
 	 * @param listenerClass The Class that defines the listener interface. May NOT be null.
 	 */
-	public AbstractCyEvent(final T source, Class listenerClass) {
+	public AbstractCyEvent(final T source, Class<?> listenerClass) {
 		if ( source == null )
 			throw new NullPointerException("event source is null");
 
@@ -71,7 +71,7 @@ public abstract class AbstractCyEvent<T> implements CyEvent<T> {
 	 * The Class of the listener that is expected to handle this event. 
 	 * @return The Class of the listener that is expected to handle this event. 
 	 */
-	public Class getListenerClass() {
+	public Class<?> getListenerClass() {
 		return listenerClass;
 	}
 }

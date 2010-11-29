@@ -36,14 +36,7 @@
 
 package org.cytoscape.event;
 
-import junit.framework.Assert;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import java.lang.RuntimeException;
-
-import java.util.List;
 
 
 /**
@@ -51,7 +44,7 @@ import java.util.List;
 public class AbstractCyEventTest extends TestCase {
 
 	private static class TestEvent<T> extends AbstractCyEvent<T> {
-		TestEvent(T src, Class c) {
+		TestEvent(T src, Class<?> c) {
 			super(src,c);
 		}
 	}

@@ -36,13 +36,9 @@
 
 package org.cytoscape.event;
 
-import org.cytoscape.event.CyEvent;
-import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.event.CyListener;
-
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * DOCUMENT ME!
@@ -53,11 +49,11 @@ public class DummyCyEventHelper implements CyEventHelper {
 	private Object lastAsynchronousEvent;
 	private Object lastMicroListener;
 	
-	public <E extends CyEvent> void fireSynchronousEvent(final E event) {
+	public <E extends CyEvent<?>> void fireSynchronousEvent(final E event) {
 		lastSynchronousEvent = event;
 	}
 
-	public <E extends CyEvent> void fireAsynchronousEvent(final E event) {
+	public <E extends CyEvent<?>> void fireAsynchronousEvent(final E event) {
 		lastAsynchronousEvent = event;
 	}
 

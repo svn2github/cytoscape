@@ -76,7 +76,7 @@ public class CyListenerAdapter {
 	 * @param <E> The type of event. 
 	 * @param event  The event object. 
 	 */
-	public <E extends CyEvent> void fireSynchronousEvent(final E event) {
+	public <E extends CyEvent<?>> void fireSynchronousEvent(final E event) {
 		final Class<?> listenerClass = event.getListenerClass();
 		
 		final Object[] listeners = getListeners(listenerClass);

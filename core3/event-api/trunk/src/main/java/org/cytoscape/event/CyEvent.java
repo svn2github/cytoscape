@@ -41,15 +41,19 @@ package org.cytoscape.event;
  * relevant to that specific event.
  */
 public interface CyEvent<T> {
+	
 	/**
-	 * The object that fired the event. 
+	 * The object that fired the event.
+	 * 
 	 * @return The object that fired the event.
 	 */
 	T getSource();
 
+	
 	/**
-	 * The Class of the listener that is expected to handle this event. 
+	 * The Class of the listener that is expected to handle this event.
+	 * 
 	 * @return The Class of the listener that is expected to handle this event. 
 	 */
-	Class getListenerClass();
+	Class<?> getListenerClass();
 }
