@@ -39,6 +39,8 @@ package cytoscape.visual;
 import giny.view.Label;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -460,8 +462,8 @@ public class LabelPosition {
 	 * @return DOCUMENT ME!
 	 */
 	public String shortString() {
-		DecimalFormat df = new DecimalFormat();
-		df.setMaximumFractionDigits(2);
+		// force the locale to US so that we consistently serialize
+		DecimalFormat df = new DecimalFormat("#0.00;-#0.00", new DecimalFormatSymbols(Locale.US));
 
 		StringBuffer sb = new StringBuffer();
 		sb.append(getShortName(targetAnchor));

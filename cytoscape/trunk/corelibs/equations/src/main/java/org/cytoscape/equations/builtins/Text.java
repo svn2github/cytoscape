@@ -31,6 +31,8 @@ package org.cytoscape.equations.builtins;
 
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 import org.cytoscape.equations.AbstractFunction;
 import org.cytoscape.equations.ArgDescriptor;
@@ -78,7 +80,8 @@ public class Text extends AbstractFunction {
 
 			final DecimalFormat decimalFormat;
 			try {
-				decimalFormat = new DecimalFormat(format);
+				// force the locale to US so that we consistently serialize
+				decimalFormat = new DecimalFormat(format, new DecimalFormatSymbols(Locale.US));
 			} catch (final Exception e) {
 				throw new IllegalStateException("we should *never* get here!");
 			}
@@ -93,7 +96,8 @@ public class Text extends AbstractFunction {
 
 	private boolean isValidFormat(final String format) {
 		try {
-			new DecimalFormat(format);
+			// force the locale to US so that we consistently serialize
+			new DecimalFormat(format, new DecimalFormatSymbols(Locale.US));
 			return true;
 		} catch (final Exception e) {
 			return false;

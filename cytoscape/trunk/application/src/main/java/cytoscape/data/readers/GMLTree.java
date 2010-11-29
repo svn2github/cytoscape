@@ -55,6 +55,8 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -134,8 +136,8 @@ public class GMLTree {
 	 *            the GraphView used to create the GMLTree
 	 */
 	public GMLTree(CyNetworkView networkView) {
-		// DecimalFormat cf = new DecimalFormat("00");
-		DecimalFormat df = new DecimalFormat("####0.0#");
+		// force the locale to US so that we consistently serialize things
+		DecimalFormat df = new DecimalFormat("####0.0#", new DecimalFormatSymbols(Locale.US));
 		GraphView myView = networkView.getView();
 
 		// networkView.getNetwork().getNodeAttributes();

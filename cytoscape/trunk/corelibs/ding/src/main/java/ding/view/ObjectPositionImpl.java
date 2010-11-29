@@ -8,6 +8,8 @@ import giny.view.ObjectPosition;
 import giny.view.Position;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 /**
 *
@@ -210,7 +212,8 @@ public class ObjectPositionImpl implements ObjectPosition {
 	 * @see cytoscape.visual.ObjectPosition#shortString()
 	 */
 	public String shortString() {
-		DecimalFormat df = new DecimalFormat("#0.00;-#0.00");
+		// force the locale to US so that we consistently serialize
+		DecimalFormat df = new DecimalFormat("#0.00;-#0.00", new DecimalFormatSymbols(Locale.US));
 
 		final StringBuilder sb = new StringBuilder();
 		sb.append(targetAnchor.getShortName());
