@@ -88,5 +88,11 @@
 			<artifactId>pax-exam-container-default</artifactId>
 			<version>${pax.exam.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>equations-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>
