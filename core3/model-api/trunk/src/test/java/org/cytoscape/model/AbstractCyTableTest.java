@@ -61,7 +61,7 @@ import java.util.*;
  */
 public abstract class AbstractCyTableTest extends TestCase {
 
-	protected CyTable mgr;
+	protected CyTable table;
 	protected CyRow attrs;
 	protected DummyCyEventHelper eventHelper; 
 
@@ -70,8 +70,8 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddStringAttr() {
-		mgr.createColumn("someString", String.class);
-		mgr.createColumn("someStringElse", String.class);
+		table.createColumn("someString", String.class);
+		table.createColumn("someStringElse", String.class);
 
 		attrs.set("someString", "apple");
 		attrs.set("someStringElse", "orange");
@@ -88,8 +88,8 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddIntAttr() {
-		mgr.createColumn("someInt", Integer.class);
-		mgr.createColumn("someOtherInt", Integer.class);
+		table.createColumn("someInt", Integer.class);
+		table.createColumn("someOtherInt", Integer.class);
 
 		attrs.set("someInt", 50);
 		attrs.set("someOtherInt", 100);
@@ -106,8 +106,8 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddLongAttr() {
-		mgr.createColumn("someLong", Long.class);
-		mgr.createColumn("someOtherLong", Long.class);
+		table.createColumn("someLong", Long.class);
+		table.createColumn("someOtherLong", Long.class);
 
 		attrs.set("someLong", 50L);
 		attrs.set("someOtherLong", 100L);
@@ -124,8 +124,8 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddDoubleAttr() {
-		mgr.createColumn("someDouble", Double.class);
-		mgr.createColumn("someOtherDouble", Double.class);
+		table.createColumn("someDouble", Double.class);
+		table.createColumn("someOtherDouble", Double.class);
 
 		attrs.set("someDouble", 3.14);
 		attrs.set("someOtherDouble", 2.76);
@@ -142,8 +142,8 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddBooleanAttr() {
-		mgr.createColumn("someBoolean", Boolean.class);
-		mgr.createColumn("someOtherBoolean", Boolean.class);
+		table.createColumn("someBoolean", Boolean.class);
+		table.createColumn("someOtherBoolean", Boolean.class);
 
 		attrs.set("someBoolean", true);
 		attrs.set("someOtherBoolean", false);
@@ -160,7 +160,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddListAttr() {
-		mgr.createListColumn("someList", String.class);
+		table.createListColumn("someList", String.class);
 
 		List<String> l = new LinkedList<String>();
 		l.add("orange");
@@ -177,7 +177,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testAddMapAttr() {
-		mgr.createColumn("someMap", Map.class);
+		table.createColumn("someMap", Map.class);
 
 		Map<String, Integer> m = new HashMap<String, Integer>();
 		m.put("orange", 1);
@@ -227,9 +227,9 @@ public abstract class AbstractCyTableTest extends TestCase {
 	// You can't have an attribute with the same name, but
 	// a different type.
 	public void testAddDuplicateNameAttr() {
-		mgr.createColumn("something", String.class);
+		table.createColumn("something", String.class);
 		try {
-			mgr.createColumn("something", Integer.class);
+			table.createColumn("something", Integer.class);
 		} catch (Exception e) {
 			return;
 		}
@@ -237,7 +237,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	}
 
 	public void testRowSetMicroListener() {
-		mgr.createColumn("someString", String.class);
+		table.createColumn("someString", String.class);
 		attrs.set("someString", "apple");
 
 		Object last = eventHelper.getLastMicroListener();
@@ -246,7 +246,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	}
 
 	public void testColumnCreatedEvent() {
-		mgr.createColumn("someInt", Integer.class);
+		table.createColumn("someInt", Integer.class);
 
 		Object last = eventHelper.getLastAsynchronousEvent();
 		assertNotNull( last );
@@ -254,8 +254,8 @@ public abstract class AbstractCyTableTest extends TestCase {
 	}
 
 	public void testColumnDeletedEvent() {
-		mgr.createColumn("someInt", Integer.class);
-		mgr.deleteColumn("someInt");
+		table.createColumn("someInt", Integer.class);
+		table.deleteColumn("someInt");
 
 		Object last = eventHelper.getLastSynchronousEvent();
 		assertNotNull( last );
@@ -263,26 +263,26 @@ public abstract class AbstractCyTableTest extends TestCase {
 	}
 
 	public void testColumnCreate() {
-		mgr.createColumn("someInt", Integer.class);
-		assertTrue( mgr.getColumnTypeMap().containsKey("someInt") );
-		assertEquals( mgr.getColumnTypeMap().get("someInt"), Integer.class );
+		table.createColumn("someInt", Integer.class);
+		assertTrue( table.getColumnTypeMap().containsKey("someInt") );
+		assertEquals( table.getColumnTypeMap().get("someInt"), Integer.class );
 	}
 
 	public void testColumnDelete() {
-		mgr.createColumn("someInt", Integer.class);
-		assertTrue( mgr.getColumnTypeMap().containsKey("someInt") );
+		table.createColumn("someInt", Integer.class);
+		assertTrue( table.getColumnTypeMap().containsKey("someInt") );
 		
-		mgr.deleteColumn("someInt");
-		assertFalse( mgr.getColumnTypeMap().containsKey("someInt") );
+		table.deleteColumn("someInt");
+		assertFalse( table.getColumnTypeMap().containsKey("someInt") );
 	}
 
 	public void testPrimaryKey() {
-		String pk = mgr.getPrimaryKey();
-		assertEquals( mgr.getPrimaryKeyType(), mgr.getColumnTypeMap().get(pk) );
+		String pk = table.getPrimaryKey();
+		assertEquals( table.getPrimaryKeyType(), table.getColumnTypeMap().get(pk) );
 	}
 
 	public void testUnsetRowBoolean() {
-		mgr.createColumn("someBoolean", Boolean.class);
+		table.createColumn("someBoolean", Boolean.class);
 		attrs.set("someBoolean", true);
 		assertTrue(attrs.isSet("someBoolean", Boolean.class));
 		attrs.set("someBoolean", null);
@@ -294,7 +294,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	}
 
 	public void testUnsetRowString() {
-		mgr.createColumn("someString", String.class);
+		table.createColumn("someString", String.class);
 		attrs.set("someString", "homer");
 		assertTrue(attrs.isSet("someString", String.class));
 		attrs.set("someString", null);
@@ -302,7 +302,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	}
 
 	public void testUnsetRowInt() {
-		mgr.createColumn("someInt", Integer.class);
+		table.createColumn("someInt", Integer.class);
 		attrs.set("someInt", 5);
 		assertTrue(attrs.isSet("someInt", Integer.class));
 		attrs.set("someInt", null);
@@ -310,7 +310,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	}
 
 	public void testUnsetRowDouble() {
-		mgr.createColumn("someDouble", Double.class);
+		table.createColumn("someDouble", Double.class);
 		attrs.set("someDouble", 5.0);
 		assertTrue(attrs.isSet("someDouble", Double.class));
 		attrs.set("someDouble", null);
@@ -320,7 +320,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 	public void testUnsetRowList() {
 		List<String> ls = new ArrayList<String>();
 		ls.add("asdf");
-		mgr.createListColumn("someList", String.class);
+		table.createListColumn("someList", String.class);
 		attrs.set("someList", ls);
 		assertTrue(attrs.isSet("someList", List.class));
 		attrs.set("someList", null);
@@ -330,12 +330,15 @@ public abstract class AbstractCyTableTest extends TestCase {
 	public void testUnsetRowMap() {
 		Map<Integer,String> mis = new HashMap<Integer,String>();
 		mis.put(1,"two");
-		mgr.createColumn("someMap", Map.class);
+		table.createColumn("someMap", Map.class);
 		attrs.set("someMap", mis);
 		assertTrue(attrs.isSet("someMap", Map.class));
 		attrs.set("someMap", null);
 		assertFalse(attrs.isSet("someMap", Map.class));
 	}
 
-	// lots more needed
+	public void testGetListElementType() {
+		table.createListColumn("someList2", Boolean.class);
+		assertEquals(table.getListElementType("someList2"), Boolean.class);
+	}
 }
