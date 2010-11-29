@@ -48,7 +48,7 @@ import org.cytoscape.model.CyNode;
 class AbstractNodeEvent extends AbstractCyEvent<CyNetwork> {
 	private final CyNode node;
 
-	AbstractNodeEvent(final CyNetwork source, final Class listenerClass, final CyNode node) {
+	AbstractNodeEvent(final CyNetwork source, final Class<?> listenerClass, final CyNode node) {
 		super(source, listenerClass);
 		if ( node == null )
 			throw new NullPointerException("node cannot be null");

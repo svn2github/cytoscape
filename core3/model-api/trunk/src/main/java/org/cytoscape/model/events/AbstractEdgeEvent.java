@@ -45,7 +45,7 @@ import org.cytoscape.model.CyNetwork;
 class AbstractEdgeEvent extends AbstractCyEvent<CyNetwork> {
 	private final CyEdge edge;
 
-	AbstractEdgeEvent(final CyNetwork source, final Class listenerClass, final CyEdge edge) {
+	AbstractEdgeEvent(final CyNetwork source, final Class<?> listenerClass, final CyEdge edge) {
 		super(source, listenerClass);
 		if ( edge == null )
 			throw new NullPointerException("edge cannot be null");

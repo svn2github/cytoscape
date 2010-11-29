@@ -28,20 +28,7 @@
 package org.cytoscape.model;
 
 
-import junit.framework.Assert;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-
-import java.lang.RuntimeException;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public abstract class AbstractCyEdgeTest extends TestCase {

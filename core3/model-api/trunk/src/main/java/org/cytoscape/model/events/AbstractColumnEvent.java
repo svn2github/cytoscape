@@ -45,7 +45,7 @@ class AbstractColumnEvent extends AbstractCyEvent<CyTable> {
 
 	private final String columnName;
 
-	AbstractColumnEvent(final CyTable source, final Class listenerClass, final String columnName) {
+	AbstractColumnEvent(final CyTable source, final Class<?> listenerClass, final String columnName) {
 		super(source, listenerClass);
 		if ( columnName == null )
 			throw new NullPointerException("columnName can't be null");

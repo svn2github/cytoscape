@@ -29,32 +29,23 @@ package org.cytoscape.model.internal;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableManager;
-import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.SUIDFactory;
-import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
-import org.cytoscape.model.events.AboutToRemoveNodeEvent;
-import org.cytoscape.model.events.AddedEdgeEvent;
-import org.cytoscape.model.events.AddedNodeEvent;
-import org.cytoscape.model.events.RemovedEdgeEvent;
-import org.cytoscape.model.events.RemovedNodeEvent;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CySubNetwork;
-
-import static org.cytoscape.model.CyTableEntry.*;
 
 
 /**

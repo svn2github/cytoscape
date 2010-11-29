@@ -46,7 +46,7 @@ import java.util.List;
 class AbstractEdgeListEvent extends AbstractCyEvent<CyNetwork> {
 	private final List<CyEdge> edges;
 
-	AbstractEdgeListEvent(final CyNetwork source, final Class listenerClass, final List<CyEdge> edges) {
+	AbstractEdgeListEvent(final CyNetwork source, final Class<?> listenerClass, final List<CyEdge> edges) {
 		super(source, listenerClass);
 		if ( edges == null )
 			throw new NullPointerException("edge list can't be null");

@@ -12,7 +12,7 @@ import org.cytoscape.model.CyNetworkManager;
 class AbstractNetworkEvent extends AbstractCyEvent<CyNetworkManager> {
 	private final CyNetwork net;
 
-	AbstractNetworkEvent(final CyNetworkManager source, final Class listenerClass, final CyNetwork net) {
+	AbstractNetworkEvent(final CyNetworkManager source, final Class<?> listenerClass, final CyNetwork net) {
 		super(source, listenerClass);
 
 		if (net == null)

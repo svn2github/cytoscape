@@ -39,7 +39,7 @@ class AbstractNestedNetworkEvent extends AbstractCyEvent<CyNode> {
 	private final CyNode node;
 	private final CyNetwork network;
 
-	AbstractNestedNetworkEvent(final Class listenerClass, final CyNode node, final CyNetwork network) {
+	AbstractNestedNetworkEvent(final Class<?> listenerClass, final CyNode node, final CyNetwork network) {
 		super(node, listenerClass);
 		if (node == null)
 			throw new NullPointerException("node cannot be null!");

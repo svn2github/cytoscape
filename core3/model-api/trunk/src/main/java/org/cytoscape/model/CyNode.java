@@ -28,8 +28,6 @@
 package org.cytoscape.model;
 
 
-import java.util.List;
-
 import org.cytoscape.model.events.SetNestedNetworkEvent;
 import org.cytoscape.model.events.UnsetNestedNetworkEvent;
 
@@ -39,6 +37,7 @@ import org.cytoscape.model.events.UnsetNestedNetworkEvent;
  * of nodes and edges.
  */
 public interface CyNode extends CyTableEntry {
+	
 	/** The column name for the nested network associated with a <code>CyNode</code> in the user table. */
 	final static String NESTED_NETWORK_ATTR = "NestedNetwork";
 
