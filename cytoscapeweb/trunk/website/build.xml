@@ -77,7 +77,7 @@
         
         <mkdir dir="${api.dir}/elements"/>
         <copy todir="${api.dir}/elements" overwrite="true">
-            <fileset dir="${temp.dir}/symbols" includes="**.Edge.php **.Node.php **.Group.php"/>
+            <fileset dir="${temp.dir}/symbols" includes="**.NetworkModel.php **.Edge.php **.Node.php **.Group.php"/>
         </copy>
         
         <mkdir dir="${api.dir}/events"/>

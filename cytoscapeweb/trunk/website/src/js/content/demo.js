@@ -1734,6 +1734,13 @@ $(function(){
                                     mapgroup: "edges"
                                 },
                                 {
+                                	name: "Style",
+                                	variable: "edges.style",
+                                	type: "edge style",
+                                	mappable: true,
+                                	mapgroup: "edges"
+                                },
+                                {
                                 	name: "Curvature",
                                 	variable: "edges.curvature",
                                 	type: "number",
@@ -1799,6 +1806,13 @@ $(function(){
                                     type: "per cent number",
                                     mappable: true,
                                     mapgroup: "edges"
+                                },
+                                {
+                                	name: "Style",
+                                	variable: "edges.mergeStyle",
+                                	type: "edge style",
+                                	mappable: true,
+                                	mapgroup: "edges"
                                 }
                             ]
                         }
@@ -1858,9 +1872,7 @@ $(function(){
                 case "integer":
                     return parseInt(value);
                 case "string":
-                case "non-empty string":
-                case "node shape":
-                case "edge shape":
+                default:
                     return "" + value;
             }
             
@@ -1875,9 +1887,7 @@ $(function(){
                 case "integer":
                     return "continuous";
                 case "string":
-                case "non-empty string":
-                case "node shape":
-                case "edge shape":
+                default:
                     return "discrete";
             }
         }
@@ -1900,6 +1910,8 @@ $(function(){
                     return value.match(/^(ellipse)|(diamond)|(rectangle)|(triangle)|(hexagon)|(roundrect)|(parallelogram)|(octagon)|(vee)|(v)$/i);
                 case "edge shape":
                     return value.match(/^(circle)|(diamond)|(delta)|(arrow)|(T)|(none)$/i);
+                case "edge style":
+                	return value.match(/^(SOLID)|(DOT)|(LONG_DASH)|(EQUAL_DASH)$/i);
             }
             
             return false;
