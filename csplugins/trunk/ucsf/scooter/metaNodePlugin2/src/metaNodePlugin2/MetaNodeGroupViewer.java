@@ -79,6 +79,12 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 	private static String NAMEDSELECTION = "namedselection";
 	private static String NODECHARTS = "nodecharts";
 
+	/**
+	 * Create a new group viewer for metanodes
+	 *
+	 * @param viewerName the name of the viewer
+	 * @param logger our current logger
+	 */
 	public MetaNodeGroupViewer (String viewerName, CyLogger logger) {
 		this.viewerName = viewerName;
 		this.logger = logger;
@@ -104,10 +110,16 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 			return null;
 	}
 
+	/**
+	 * Return the settings dialog for this group viewer
+	 */
 	public MetanodeSettingsDialog getSettingsDialog() {
 		return settingsDialog;
 	}
 
+	/**
+	 * Return our logger
+	 */
 	public CyLogger getLogger() {
 		return this.logger;
 	}
@@ -228,14 +240,12 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 		} else if (change == CyGroupViewer.ChangeType.STATE_CHANGED) {
 			// Handle different representations here....
 			if (group.getState() == MetaNodePlugin2.COLLAPSED && !mn.isCollapsed()) {
-				System.out.println("Collapsing");
 				// Actually collapse the group
 				mn.collapse(Cytoscape.getCurrentNetworkView());
 				// Handle our attributes
 				AttributeManager.updateAttributes(mn);
 				if (haveNodeCharts) {
 					// Handle our node charts
-					System.out.println("Updating node charts");
 					NodeCharts.updateNodeCharts(mn, logger);
 				}
 			} else if (group.getState() == MetaNodePlugin2.EXPANDED && mn.isCollapsed()) {
@@ -244,12 +254,22 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 		}
 	}
 
+	/**
+	 * Returns true if the nodeChartPlugin is loaded, false otherwise
+	 *
+	 * @return 'true' if the nodeChartPlugin is loaded
+	 */
 	public boolean haveNodeCharts() {
 		if (!haveNodeCharts)
 			haveNodeCharts = checkNodeCharts();
 		return haveNodeCharts;
 	}
 
+	/**
+	 * Return the list of chart types the nodeChartPlugin supports
+	 *
+	 * @return a list of chart types (as Strings)
+	 */
 	public List<String> getChartTypes() {
 		try {
 			Map<String,Object> args = new HashMap<String,Object>();
@@ -263,6 +283,9 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 		return new ArrayList<String>();
 	}
 
+	/**
+	 * This routine checks to see if the nodeChartPlugin is loaded
+	 */
 	public boolean checkNodeCharts() {
 		try {
 			CyCommandManager.getCommand(NODECHARTS, "clear");
@@ -303,6 +326,9 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 		updateGroupPanel();
 	}
 
+	/**
+	 * Method to register ourselves with the group panel
+	 */
 	public void registerWithGroupPanel() {
 		// First, see if the named selection plugin is loaded
 		CyCommandHandler handler = null;

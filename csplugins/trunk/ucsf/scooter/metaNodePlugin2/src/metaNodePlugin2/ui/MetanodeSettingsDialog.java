@@ -50,6 +50,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
@@ -110,6 +111,11 @@ public class MetanodeSettingsDialog extends JDialog
 	// Dialog components
 	JPanel tunablePanel = null;
 
+	/**
+	 * Create a new settings dialog
+	 *
+	 * @param viewer the group viewer
+	 */
 	public MetanodeSettingsDialog(MetaNodeGroupViewer viewer) {
 		super(Cytoscape.getDesktop(), "Metanode Settings Dialog", false);
 		metanodeProperties = new MetanodeProperties("metanode");
@@ -123,6 +129,9 @@ public class MetanodeSettingsDialog extends JDialog
 		pack();
 	}
 
+	/**
+	 * Initialize the dialog
+	 */
 	private void initialize() {
 
 		JPanel mainPanel = new JPanel();
@@ -187,6 +196,10 @@ public class MetanodeSettingsDialog extends JDialog
 		setContentPane(mainPanel);
 	}
 
+
+	/**
+	 * Create all of our properties
+	 */
 	private void initializeProperties() {
 		tunableEnablers = new ArrayList<Tunable>();
 		nodeChartEnablers = new ArrayList<Tunable>();
@@ -395,24 +408,43 @@ public class MetanodeSettingsDialog extends JDialog
 		}
 	}
 
+	/**
+	 * Revert our settings
+	 */
 	public void revertSettings() {
 		metanodeProperties.revertProperties();
 		AttributeManager.revertSettings();
 	}
 
+	/**
+	 * Return our settings
+	 *
+	 * @return our properties
+	 */
 	public MetanodeProperties getSettings() {
 		return metanodeProperties;
 	}
 
+	/**
+	 * Update all of our attribute manager override values
+	 *
+	 * @param network the network we're updating our override values for
+	 */
 	public void updateOverrides(CyNetwork network) {
 		AttributeManager.loadHandlerMappings(network);
 	}
 
+	/**
+	 * Update the tunables that list attribute values
+	 */
 	public void updateAttributes() {
 		attrList.setLowerBound(getAttributes());
 		nodeChartAttrList.setLowerBound(getNodeAttributes());
 	}
 
+	/**
+	 * Update our list of node chart types
+	 */
 	public void updateNodeChartTypes() {
 		if (groupViewer.checkNodeCharts()) {
 			enableNodeCharts(true);
@@ -421,6 +453,9 @@ public class MetanodeSettingsDialog extends JDialog
 			enableNodeCharts(false);
 	}
 
+	/**
+	 * Return 'true' if we're supposed to use the nested network viewer
+	 */
 	public boolean getUseNestedNetworks() {
 		updateSettings(false);
 		String bv = (String)metanodeProperties.getProperties().get("useNestedNetworks");
@@ -428,6 +463,11 @@ public class MetanodeSettingsDialog extends JDialog
 		return useNestedNetworks;
 	}
 
+	/**
+	 * Return all of the node attributes as a string array
+	 *
+	 * @return array of node attributes
+	 */
 	private String[] getNodeAttributes() {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		List<String> attributeList = new ArrayList();
@@ -438,6 +478,11 @@ public class MetanodeSettingsDialog extends JDialog
 		return attributeArray;
 	}
 
+	/**
+	 * Return all of the attributes as a string array
+	 *
+	 * @return array of attributes
+	 */
 	private String[] getAttributes() {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
@@ -451,6 +496,11 @@ public class MetanodeSettingsDialog extends JDialog
 		return attributeArray;
 	}
 
+	/**
+	 * Return all of the chart types as a string array
+	 *
+	 * @return array of chart types
+	 */
 	private String[] getChartTypes() {
 		String [] a = new String[1];
 		List<String> viewerList = groupViewer.getChartTypes();
@@ -473,6 +523,9 @@ public class MetanodeSettingsDialog extends JDialog
 		}
 	}
 
+	/**
+	 * Methods to support the ComponentListener interface
+	 */
 	public void componentHidden(ComponentEvent e) {}
 	public void componentShown(ComponentEvent e) {}
 	public void componentMoved(ComponentEvent e) {}
@@ -481,6 +534,9 @@ public class MetanodeSettingsDialog extends JDialog
 		pack();
 	}
 
+	/**
+	 * This method is called when the user performs an action
+	 */
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
 
@@ -496,6 +552,8 @@ public class MetanodeSettingsDialog extends JDialog
 		} else if (command.equals("clear")) {
 			AttributeManager.clearSettings();
 			tunableChanged(attrList);
+
+		// Apply the current settings to the selected metanodes
 		} else if (command.equals("applySelected")) {
 			updateSettings(true);
 			// Get all selected nodes
@@ -507,6 +565,8 @@ public class MetanodeSettingsDialog extends JDialog
 				}
 			}
 			setVisible(false);
+
+		// Apply the current settings to all metanodes
 		} else if (command.equals("applyAll")) {
 			updateSettings(true);
 			// Get the list of groups
@@ -556,52 +616,10 @@ public class MetanodeSettingsDialog extends JDialog
 			chartType = (String)getListValue(t);
 			MetaNodeManager.setChartTypeDefault(chartType);
 		} else if (t.getName().equals("attributeList")) {
-			CyAttributes attrs = null;
-
-			// Get the attribute
 			String attributeWP = (String)getListValue(t);
-
 			if (attributeWP == null)
 				return;
-
-			// Strip prefix
-			String attribute = attributeWP.substring(5);
-
-			if (attributeWP.startsWith("edge"))
-				attrs = Cytoscape.getEdgeAttributes();
-			else
-				attrs = Cytoscape.getNodeAttributes();
-
-			byte type = attrs.getType(attribute);
-
-			// Get the list
-			AttributeHandlingType[] hTypes = AttributeManager.getHandlingOptions(type);
-			AttributeHandlingType[] handlingTypes = new AttributeHandlingType[hTypes.length+1];
-
-			handlingTypes[0] = AttributeHandlingType.DEFAULT;
-			for (int i = 0; i < hTypes.length; i++) {
-				handlingTypes[i+1] = hTypes[i];
-			}
-
-			// Set the name
-			typeString.setValue(attributeName(type));
-
-			typeList.removeTunableValueListener(this);
-			// Update the list
-			typeList.setLowerBound(handlingTypes);
-
-			// Do we already have a handler?
-			AttributeHandler handler = AttributeManager.getHandler(attributeWP);
-			if (handler != null) {
-				// Yes, show the right one to the user
-				for (int i = 0; i < handlingTypes.length; i++) {
-					if (handler.getHandlerType() == handlingTypes[i]) {
-						typeList.setValue(Integer.valueOf(i));
-						break;
-					}
-				}
-			}
-			typeList.addTunableValueListener(this);
+			updateAttributeHandlers(attributeWP);
 		} else if (t.getName().equals("aggregationType")) {
 			// Get the attribute
 			String attributeWP = (String)getListValue(attrList);
@@ -615,25 +633,48 @@ public class MetanodeSettingsDialog extends JDialog
 		repaint();
 	}
 
-	private String attributeName(byte type) {
-		switch (type) {
-			case CyAttributes.TYPE_BOOLEAN:
-				return "Boolean";
-			case CyAttributes.TYPE_INTEGER:
-				return "Integer";
-			case CyAttributes.TYPE_FLOATING:
-				return "Floating-point";
-			case CyAttributes.TYPE_STRING:
-				return "String";
-			case CyAttributes.TYPE_SIMPLE_LIST:
-				return "Simple List";
-			case CyAttributes.TYPE_SIMPLE_MAP:
-				return "Simple Map";
-			case CyAttributes.TYPE_COMPLEX:
-				return "Complex type (unsupported)";
-			default:
-				return "Undefined";
+	private void updateAttributeHandlers(String attributeWP) {
+		CyAttributes attrs = null;
+
+		// Strip prefix
+		String attribute = attributeWP.substring(5);
+
+		if (attributeWP.startsWith("edge"))
+			attrs = Cytoscape.getEdgeAttributes();
+		else
+			attrs = Cytoscape.getNodeAttributes();
+
+		byte type = attrs.getType(attribute);
+
+		// Get the list
+		AttributeHandlingType[] hTypes = AttributeManager.getHandlingOptions(type);
+		AttributeHandlingType[] handlingTypes = new AttributeHandlingType[hTypes.length+1];
+
+		handlingTypes[0] = AttributeHandlingType.DEFAULT;
+		for (int i = 0; i < hTypes.length; i++) {
+			handlingTypes[i+1] = hTypes[i];
 		}
+
+		// Set the name
+		typeString.setValue(CyAttributesUtils.toString(type));
+
+		typeList.removeTunableValueListener(this);
+		// Update the list
+		typeList.setLowerBound(handlingTypes);
+
+		// Do we already have a handler?
+		AttributeHandler handler = AttributeManager.getHandler(attributeWP);
+		if (handler != null) {
+			// Yes, show the right one to the user
+			for (int i = 0; i < handlingTypes.length; i++) {
+					if (handler.getHandlerType() == handlingTypes[i]) {
+					typeList.setValue(Integer.valueOf(i));
+					break;
+				}
+			}
+		}
+		typeList.addTunableValueListener(this);
+		return;
 	}
 
 	private Object getListValue(Tunable t) {
