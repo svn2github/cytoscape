@@ -33,37 +33,25 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ding.impl; 
+package org.cytoscape.ding.impl.visualproperty;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.cytoscape.ding.ArrowShape;
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.DiscreteRangeImpl;
+import org.cytoscape.view.model.ContinuousRangeImpl;
 import org.cytoscape.view.model.Range;
 
-public class ArrowShapeTwoDVisualProperty extends AbstractVisualProperty<ArrowShape> { 
+public class IntegerTwoDVisualProperty extends AbstractVisualProperty<Integer> { 
 
-	private static final Range<ArrowShape> ARROW_SHAPE_RANGE;
+	private static final Range<Integer> INT_RANGE = new ContinuousRangeImpl<Integer>(Integer.class, Integer.MIN_VALUE, Integer.MAX_VALUE);
 	
-	static {
-		final Set<ArrowShape> arrowSet = new HashSet<ArrowShape>();
-		for(final ArrowShape arrow: ArrowShape.values())
-			arrowSet.add(arrow);
-		ARROW_SHAPE_RANGE = new DiscreteRangeImpl<ArrowShape>(ArrowShape.class, arrowSet);
+	public IntegerTwoDVisualProperty(final Integer def, final String id, final String name, final Class<?> targetDataType) {
+		super(def,INT_RANGE, id, name, targetDataType);
 	}
 	
-	public ArrowShapeTwoDVisualProperty(final ArrowShape def, final String id, final String name) {
-		super(def, ARROW_SHAPE_RANGE, id, name, CyEdge.class);
-	}
-	
-	public String toSerializableString(final ArrowShape value) {
+	public String toSerializableString(final Integer value) {
 		return value.toString();
 	}
 
-	public ArrowShape parseSerializableString(final String text) {
-		return ArrowShape.valueOf(text);
+	public Integer parseSerializableString(final String text) {
+		return Integer.valueOf(text);
 	}
 }

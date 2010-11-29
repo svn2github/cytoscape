@@ -32,36 +32,45 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.ding.impl;
+package org.cytoscape.ding.impl.visualproperty;
 
+import java.awt.Font;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.cytoscape.ding.ArrowShape;
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRangeImpl;
 import org.cytoscape.view.model.Range;
 
-public class JustifyTwoDVisualProperty extends AbstractVisualProperty<Justify> {
+public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
 
-	private static final Range<Justify> JUSTIFY_RANGE;
+	private static final Range<Font> FONT_RANGE;
 
 	static {
-		final Set<Justify> justifySet = new HashSet<Justify>();
-		for (final Justify arrow : Justify.values())
-			justifySet.add(arrow);
-		JUSTIFY_RANGE = new DiscreteRangeImpl<Justify>(Justify.class, justifySet);
+		final Set<Font> fontSet = new HashSet<Font>();
+		//TODO: register all available system fonts here.
+		FONT_RANGE = new DiscreteRangeImpl<Font>(Font.class,
+				fontSet);
 	}
 
-	public JustifyTwoDVisualProperty(final Justify def, final String id,
+	public FontTwoDVisualProperty(final Font def, final String id,
 			final String name, final Class<?> targetDataType) {
-		super(def, JUSTIFY_RANGE, id, name, targetDataType);
+		super(def, FONT_RANGE, id, name, targetDataType);
 	}
 
-	public String toSerializableString(final Justify value) {
+	public String toSerializableString(final Font value) {
 		return value.toString();
 	}
 
-	public Justify parseSerializableString(final String text) {
-		return Justify.valueOf(text);
+	public Font parseSerializableString(final String text) {
+		// TODO
+		return null;
+	}
+
+	private static Set<Font> getSystemFonts() {
+		//TODO: implement this.
+		final Set<Font> fontSet = new HashSet<Font>();
+		return fontSet;
 	}
 }

@@ -33,25 +33,36 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.ding.impl;
+package org.cytoscape.ding.impl.visualproperty; 
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.cytoscape.ding.impl.Anchor;
 import org.cytoscape.view.model.AbstractVisualProperty;
-import org.cytoscape.view.model.ContinuousRangeImpl;
+import org.cytoscape.view.model.DiscreteRangeImpl;
 import org.cytoscape.view.model.Range;
 
-public class IntegerTwoDVisualProperty extends AbstractVisualProperty<Integer> { 
-
-	private static final Range<Integer> INT_RANGE = new ContinuousRangeImpl<Integer>(Integer.class, Integer.MIN_VALUE, Integer.MAX_VALUE);
+public class AnchorTwoDVisualProperty extends AbstractVisualProperty<Anchor> {
 	
-	public IntegerTwoDVisualProperty(final Integer def, final String id, final String name, final Class<?> targetDataType) {
-		super(def,INT_RANGE, id, name, targetDataType);
+	private static final Range<Anchor> ANCHOR_RANGE;
+	
+	static {
+		final Set<Anchor> anchorSet = new HashSet<Anchor>();
+		for(final Anchor anchor: Anchor.values())
+			anchorSet.add(anchor);
+		ANCHOR_RANGE = new DiscreteRangeImpl<Anchor>(Anchor.class, anchorSet);
+	}
+
+	public AnchorTwoDVisualProperty(final Anchor def, final String id, final String name, final Class<?> tagretDataType) {
+		super(def, ANCHOR_RANGE, id, name, tagretDataType);
 	}
 	
-	public String toSerializableString(final Integer value) {
+	public String toSerializableString(final Anchor value) {
 		return value.toString();
 	}
 
-	public Integer parseSerializableString(final String text) {
-		return Integer.valueOf(text);
+	public Anchor parseSerializableString(final String text) {
+		return Anchor.valueOf(text);
 	}
 }

@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,36 +31,38 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package org.cytoscape.ding.impl; 
+ */
+package org.cytoscape.ding.impl.visualproperty;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import org.cytoscape.ding.impl.Justify;
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRangeImpl;
 import org.cytoscape.view.model.Range;
 
-public class AnchorTwoDVisualProperty extends AbstractVisualProperty<Anchor> {
-	
-	private static final Range<Anchor> ANCHOR_RANGE;
-	
+public class JustifyTwoDVisualProperty extends AbstractVisualProperty<Justify> {
+
+	private static final Range<Justify> JUSTIFY_RANGE;
+
 	static {
-		final Set<Anchor> anchorSet = new HashSet<Anchor>();
-		for(final Anchor anchor: Anchor.values())
-			anchorSet.add(anchor);
-		ANCHOR_RANGE = new DiscreteRangeImpl<Anchor>(Anchor.class, anchorSet);
+		final Set<Justify> justifySet = new HashSet<Justify>();
+		for (final Justify arrow : Justify.values())
+			justifySet.add(arrow);
+		JUSTIFY_RANGE = new DiscreteRangeImpl<Justify>(Justify.class, justifySet);
 	}
 
-	public AnchorTwoDVisualProperty(final Anchor def, final String id, final String name, final Class<?> tagretDataType) {
-		super(def, ANCHOR_RANGE, id, name, tagretDataType);
+	public JustifyTwoDVisualProperty(final Justify def, final String id,
+			final String name, final Class<?> targetDataType) {
+		super(def, JUSTIFY_RANGE, id, name, targetDataType);
 	}
-	
-	public String toSerializableString(final Anchor value) {
+
+	public String toSerializableString(final Justify value) {
 		return value.toString();
 	}
 
-	public Anchor parseSerializableString(final String text) {
-		return Anchor.valueOf(text);
+	public Justify parseSerializableString(final String text) {
+		return Justify.valueOf(text);
 	}
 }

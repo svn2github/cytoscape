@@ -45,15 +45,24 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.DiscreteRange;
+import org.cytoscape.view.model.Range;
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
@@ -93,67 +102,48 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements VizMapTra
 	private String title;
 
 	// Mainly for Icons
-	private List<V> rangeObjects;
+//	private List<Icon> rangeObjects;
 	private V lastObject;
 
 	// HTML document fot tooltip text.
 	private List<String> rangeTooltips;
 	private JXMultiThumbSlider<V> slider;
-	private VisualMappingManager vmm;
 	
-	// TODO: Should be injected
-	private EditorValueRangeTracer tracer;
-
+	private final EditorValueRangeTracer tracer;
+	private final Set<V> values;
+		
 	/**
-	 * Creates a new DiscreteTrackRenderer object.
-	 *
-	 * @param type  DOCUMENT ME!
-	 * @param minValue  DOCUMENT ME!
-	 * @param maxValue  DOCUMENT ME!
-	 * @param below  DOCUMENT ME!
-	 * @param above  DOCUMENT ME!
+	 * Create new track renderer for numbers-discrete value mappings.
+	 * 
+	 * @param mapping
+	 * @param below
+	 * @param above
 	 */
-	public DiscreteTrackRenderer(VisualProperty<V> type, ContinuousMapping<K, V> mapping,
-	                             V below, V above) {
+	public DiscreteTrackRenderer(final ContinuousMapping<K, V> mapping, final V below, final V above, final EditorValueRangeTracer tracer) {
 
+		if(mapping == null)
+			throw new NullPointerException("Mapping is null.");
+		if(tracer == null)
+			throw new NullPointerException("Tracer is null.");
+		
 		this.below = below;
 		this.above = above;
+		this.tracer = tracer;
 
-		this.type = type;
+		this.type = mapping.getVisualProperty();
+		Range<V> rangeObject = type.getRange();
+		if(!rangeObject.isDiscrete())
+			throw new IllegalArgumentException("Range type should be discrete.");
 		
+		this.values = ((DiscreteRange<V>)rangeObject).values();
 		this.title = mapping.getMappingAttributeName();
-
-//		if (type.getObjectType().equals(VisualProperty.NODE))
-//			title = vmm.getVisualStyle()
-//			                 .getNodeAppearanceCalculator().getCalculator(type).getMapping(0)
-//			                 .getControllingAttributeName();
-//		else
-//			title = vmm.getVisualStyle()
-//			                 .getEdgeAppearanceCalculator().getCalculator(type).getMapping(0)
-//			                 .getControllingAttributeName();
+		
+		
 
 		this.setBackground(Color.white);
 		this.setForeground(Color.white);
 	}
-
-	/**
-	 * Creates a new DiscreteTrackRenderer object.
-	 *
-	 * @param minValue DOCUMENT ME!
-	 * @param maxValue DOCUMENT ME!
-	 * @param lastRegionObject DOCUMENT ME!
-	 * @param cm DOCUMENT ME!
-	 */
-	public DiscreteTrackRenderer(V lastRegionObject,
-	                             ContinuousMapping<K, V> cm) {
-		rangeObjects = new ArrayList<V>();
-		rangeTooltips = new ArrayList<String>();
-
-		this.lastObject = lastRegionObject;
-
-		this.setBackground(Color.white);
-		this.setForeground(Color.white);
-	}
+	
 
 	/**
 	 * DOCUMENT ME!
@@ -184,14 +174,13 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements VizMapTra
 		double maxValue = tracer.getMax(type);
 		double valueRange = tracer.getRange(type);
 		
-		//		 get the list of tumbs
-		List<Thumb<V>> stops = slider.getModel().getSortedThumbs();
-
-		int numPoints = stops.size();
+		// get the list of tumbs
+		final List<Thumb<V>> stops = slider.getModel().getSortedThumbs();
+		final int numPoints = stops.size();
 
 		// set up the data for the gradient
-		float[] fractions = new float[numPoints];
-		Object[] objectValues = new Object[numPoints];
+		final float[] fractions = new float[numPoints];
+		final Object[] objectValues = new Object[numPoints];
 
 		/*
 		 * Find min, max, and ranges
@@ -256,7 +245,6 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements VizMapTra
 		g.setColor(Color.white);
 		g.fillRect(0, 5, track_width, TRACK_HEIGHT);
 
-		//TODO: fix this!
 //		rangeObjects = buildIconArray(stops.size() + 1);
 
 		int newX = 0;
@@ -321,16 +309,16 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements VizMapTra
 			iconLocX = newX - (((newX - (int) p1.getX()) / 2) + (ICON_SIZE / 2));
 			iconLocY = ((TRACK_HEIGHT) / 2) - (ICON_SIZE / 2) + 5;
 
-			//			if (ICON_SIZE < (newX - p1.getX()))
-			//				g.drawImage(((ImageIcon) rangeObjects.get(i)).getImage(), iconLocX, iconLocY, this);
+			// TODO: is this necessary?
+//			if (ICON_SIZE < (newX - p1.getX()))
+//				g.drawImage(((ImageIcon) rangeObjects.get(i)).getImage(), iconLocX, iconLocY, this);
+			
 			if (i == 0) {
-				drawIcon(below, g, iconLocX, iconLocY, ICON_SIZE);
-
-				//				g.drawString(below.toString(), iconLocX, iconLocY);
+				//drawIcon(below, g, iconLocX, iconLocY, ICON_SIZE);
+				g.drawString(below.toString(), iconLocX, iconLocY);
 			} else {
-				drawIcon(objectValues[i], g, iconLocX, iconLocY, ICON_SIZE);
-
-				//				g.drawString(objectValues[i].toString(), iconLocX, iconLocY);
+				//drawIcon(objectValues[i], g, iconLocX, iconLocY, ICON_SIZE);
+				g.drawString(objectValues[i].toString(), iconLocX, iconLocY);
 			}
 
 			p1.setLocation(p2);
@@ -343,9 +331,9 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements VizMapTra
 
 		iconLocX = track_width - (((track_width - (int) p1.getX()) / 2) + (ICON_SIZE / 2));
 		iconLocY = ((TRACK_HEIGHT) / 2) - (ICON_SIZE / 2) + 5;
-		//		g.drawImage(((ImageIcon) rangeObjects.get(i)).getImage(), iconLocX, iconLocY, this);
-		//		g.drawString(above.toString(), iconLocX, iconLocY);
-		drawIcon(above, g, iconLocX, iconLocY, ICON_SIZE);
+		//g.drawImage(((ImageIcon) rangeObjects.get(i)).getImage(), iconLocX, iconLocY, this);
+		g.drawString(above.toString(), iconLocX, iconLocY);
+		//drawIcon(above, g, iconLocX, iconLocY, ICON_SIZE);
 		/*
 		 * Finally, draw border line (rectangle)
 		 */
@@ -415,19 +403,19 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements VizMapTra
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Object getObjectInRange(int x, int y) {
-		final int range = getRangeID(x, y);
-
-		if (range == -1)
-			return null;
-
-		if (range == 0) {
-			return null;
-		} else if (range == slider.getModel().getThumbCount()) {
-		}
-
-		return rangeObjects.get(getRangeID(x, y));
-	}
+//	public Object getObjectInRange(int x, int y) {
+//		final int range = getRangeID(x, y);
+//
+//		if (range == -1)
+//			return null;
+//
+//		if (range == 0) {
+//			return null;
+//		} else if (range == slider.getModel().getThumbCount()) {
+//		}
+//
+//		return rangeObjects.get(getRangeID(x, y));
+//	}
 
 	/*
 	 * Get region id.
@@ -545,19 +533,18 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements VizMapTra
 		return new ImageIcon(bi);
 	}
 
-	private static List<Icon> buildIconArray(int size) {
-		List<Icon> icons = new ArrayList<Icon>();
-
-		//TODO: Fix to build icon list from given VP
+//	private List<Icon> buildIconArray(int size) {
+//		final List<Icon> icons = new ArrayList<Icon>();
+//		
 //		Map iconMap = NodeShape.getIconSet();
 //
 //		Object[] keys = iconMap.keySet().toArray();
 //
 //		for (int i = 0; i < size; i++)
 //			icons.add((ImageIcon) iconMap.get(keys[i]));
-
-		return icons;
-	}
+//
+//		return icons;
+//	}
 
 //	private Shape getIcon(Object key) {
 //		final BufferedImage image = new BufferedImage(40, 40, BufferedImage.TYPE_INT_RGB);
@@ -575,17 +562,17 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements VizMapTra
 //		return ((VisualPropertyIcon) icons.get(key)).getShape();
 //	}
 
-	/*
-	 * Draw icon object based on the given data type.
-	 */
-	private void drawIcon(Object key, Graphics2D g, int x, int y, final int size) {
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.translate(x, y);
-		g.setColor(ICON_COLOR);
-		g.setStroke(STROKE2);
-
-		
-		// TODO: Move this to somewhere more appropreate!
+//	/*
+//	 * Draw icon object based on the given data type.
+//	 */
+//	private void drawIcon(Object key, Graphics2D g, int x, int y, final int size) {
+//		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//		g.translate(x, y);
+//		g.setColor(ICON_COLOR);
+//		g.setStroke(STROKE2);
+//
+//		
+//		// TODO: Move this to somewhere more appropreate!
 //		if(type.equals(NODE_SHAPE)) {
 //			
 //
@@ -654,184 +641,176 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements VizMapTra
 //		}
 //
 //		g.translate(-x, -y);
-	}
+//	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param iconWidth DOCUMENT ME!
-	 * @param iconHeight DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public ImageIcon getTrackGraphicIcon(int iconWidth, int iconHeight) {
-		return drawIcon(iconWidth, iconHeight, false);
-	}
-	
-	public ImageIcon getLegend(int iconWidth, int iconHeight) {
-		return drawIcon(iconWidth, iconHeight, true);
-	}
-	
-	private ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
-		if (slider == null) {
-			return null;
-		}
-
-		final BufferedImage bi = new BufferedImage(iconWidth, iconHeight, BufferedImage.TYPE_INT_RGB);
-		final Graphics2D g = bi.createGraphics();
-
-		// Turn AA on.
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		// Fill background
-		g.setColor(Color.white);
-		g.fillRect(0, 0, iconWidth, iconHeight);
-		
-		double minValue = tracer.getMin(type);
-		double maxValue = tracer.getMax(type);
-		double valueRange = tracer.getRange(type);
-
-		int track_width = iconWidth;
-		int trackHeight = iconHeight - 8;
-		if(detail) {
-			trackHeight = iconHeight - 30;
-			SMALL_ICON_SIZE = (int) (trackHeight * 0.5);
-		} else {
-			trackHeight = iconHeight - 8;
-		}
-
-		//		 get the list of tumbs
-		List<Thumb<V>> stops = slider.getModel().getSortedThumbs();
-
-		int numPoints = stops.size();
-
-		// set up the data for the gradient
-		float[] fractions = new float[numPoints];
-		Object[] objectValues = new Object[numPoints];
-
-		/*
-		 * Find min, max, and ranges
-		 */
-		int i = 0;
-
-		for (Thumb<V> thumb : stops) {
-			objectValues[i] = thumb.getObject();
-			fractions[i] = thumb.getPosition();
-			i++;
-		}
-
-		/*
-		 * If no points, just draw empty box.
-		 */
-		if (numPoints == 0) {
-			g.setColor(BORDER_COLOR);
-			g.setStroke(new BasicStroke(1.0f));
-			g.drawRect(0, 0, track_width - 3, trackHeight);
-
-			return new ImageIcon(bi);
-		}
-
-		//TODO: fix this!
+//	/**
+//	 *  DOCUMENT ME!
+//	 *
+//	 * @param iconWidth DOCUMENT ME!
+//	 * @param iconHeight DOCUMENT ME!
+//	 *
+//	 * @return  DOCUMENT ME!
+//	 */
+//	public ImageIcon getTrackGraphicIcon(int iconWidth, int iconHeight) {
+//		return drawIcon(iconWidth, iconHeight, false);
+//	}
+//	
+//	public ImageIcon getLegend(int iconWidth, int iconHeight) {
+//		return drawIcon(iconWidth, iconHeight, true);
+//	}
+//	
+//	private ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
+//		if (slider == null) {
+//			return null;
+//		}
+//
+//		final BufferedImage bi = new BufferedImage(iconWidth, iconHeight, BufferedImage.TYPE_INT_RGB);
+//		final Graphics2D g = bi.createGraphics();
+//
+//		// Turn AA on.
+//		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//
+//		// Fill background
+//		g.setColor(Color.white);
+//		g.fillRect(0, 0, iconWidth, iconHeight);
+//		
+//		double minValue = tracer.getMin(type);
+//		double maxValue = tracer.getMax(type);
+//		double valueRange = tracer.getRange(type);
+//
+//		int track_width = iconWidth;
+//		int trackHeight = iconHeight - 8;
+//		if(detail) {
+//			trackHeight = iconHeight - 30;
+//			SMALL_ICON_SIZE = (int) (trackHeight * 0.5);
+//		} else {
+//			trackHeight = iconHeight - 8;
+//		}
+//
+//		//		 get the list of tumbs
+//		List<Thumb<V>> stops = slider.getModel().getSortedThumbs();
+//
+//		int numPoints = stops.size();
+//
+//		// set up the data for the gradient
+//		float[] fractions = new float[numPoints];
+//		Object[] objectValues = new Object[numPoints];
+//
+//		/*
+//		 * Find min, max, and ranges
+//		 */
+//		int i = 0;
+//
+//		for (Thumb<V> thumb : stops) {
+//			objectValues[i] = thumb.getObject();
+//			fractions[i] = thumb.getPosition();
+//			i++;
+//		}
+//
+//		/*
+//		 * If no points, just draw empty box.
+//		 */
+//		if (numPoints == 0) {
+//			g.setColor(BORDER_COLOR);
+//			g.setStroke(new BasicStroke(1.0f));
+//			g.drawRect(0, 0, track_width - 3, trackHeight);
+//
+//			return new ImageIcon(bi);
+//		}
+//
+//		//TODO: fix this!
 //		rangeObjects = buildIconArray(stops.size() + 1);
-
-		int newX = 0;
-
-		Point2D p1 = new Point2D.Float(0, 5);
-		Point2D p2 = new Point2D.Float(0, 5);
-
-		int iconLocX;
-		int iconLocY;
-
-		/*
-		 * Draw separators and icons
-		 */
-		for (i = 0; i < stops.size(); i++) {
-			newX = (int) (track_width * (fractions[i] / 100));
-
-			p2.setLocation(newX, 0);
-			iconLocX = newX - (((newX - (int) p1.getX()) / 2) + (SMALL_ICON_SIZE / 2));
-			iconLocY = ((trackHeight) / 2) - (SMALL_ICON_SIZE / 2);
-
-			if (i == 0) {
-				drawIcon(below, g, iconLocX, iconLocY, SMALL_ICON_SIZE);
-			} else {
-				drawIcon(objectValues[i], g, iconLocX, iconLocY, SMALL_ICON_SIZE);
-			}
-
-			g.setColor(Color.DARK_GRAY);
-			g.setStroke(STROKE1);
-			g.drawLine(newX, 0, newX, trackHeight);
-
-			p1.setLocation(p2);
-		}
-
-		/*
-		 * Draw last region (above region)
-		 */
-		p2.setLocation(track_width, 0);
-
-		iconLocX = track_width - (((track_width - (int) p1.getX()) / 2) + (SMALL_ICON_SIZE / 2));
-		iconLocY = ((trackHeight) / 2) - (SMALL_ICON_SIZE / 2);
-		drawIcon(above, g, iconLocX, iconLocY, SMALL_ICON_SIZE);
-
-		/*
-		 * Finally, draw border line (rectangle)
-		 */
-		g.setColor(BORDER_COLOR);
-		g.setStroke(new BasicStroke(1.0f));
-		g.drawRect(0, 0, track_width - 3, trackHeight);
-		
-		
-		g.setFont(new Font("SansSerif", Font.BOLD, 9));
-
-		final String minStr = String.format("%.2f", minValue);
-		final String maxStr = String.format("%.2f", maxValue);
-		int strWidth;
-		g.setColor(Color.black);
-		if(detail) {
-			String fNum = null;
-			for(int j=0; j<fractions.length; j++) {
-				fNum = String.format("%.2f", ((fractions[j]/100)*valueRange) + minValue);
-				strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), fNum);
-				g.drawString(fNum, (fractions[j]/100)*iconWidth-strWidth/2, iconHeight-20);
-			}
-			
-			g.drawString(minStr, 0, iconHeight);
-			strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
-			g.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
-			
-			g.setFont(TITLE_FONT);
-
-			final int titleWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), title);
-			g.setColor(Color.black);
-			g.drawString(title, (iconWidth / 2) - (titleWidth / 2),
-			             iconHeight-5);
-			Polygon p = new Polygon();
-			p.addPoint(iconWidth,iconHeight-9);
-			p.addPoint(iconWidth-15,iconHeight-15 );
-			p.addPoint(iconWidth-15,iconHeight-9 );
-			g.fillPolygon(p);
-			g.drawLine(0, iconHeight-9, (iconWidth / 2) - (titleWidth / 2)-3, iconHeight-9);
-			g.drawLine((iconWidth / 2) + (titleWidth / 2)+3, iconHeight-9, iconWidth, iconHeight-9);
-			
-		} else {
-			g.drawString(minStr, 0, iconHeight);
-			strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
-			g.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
-		}
-		
-		
-		
-
-		return new ImageIcon(bi);
-	}
+//
+//		int newX = 0;
+//
+//		Point2D p1 = new Point2D.Float(0, 5);
+//		Point2D p2 = new Point2D.Float(0, 5);
+//
+//		int iconLocX;
+//		int iconLocY;
+//
+//		/*
+//		 * Draw separators and icons
+//		 */
+//		for (i = 0; i < stops.size(); i++) {
+//			newX = (int) (track_width * (fractions[i] / 100));
+//
+//			p2.setLocation(newX, 0);
+//			iconLocX = newX - (((newX - (int) p1.getX()) / 2) + (SMALL_ICON_SIZE / 2));
+//			iconLocY = ((trackHeight) / 2) - (SMALL_ICON_SIZE / 2);
+//
+//			if (i == 0) {
+//				drawIcon(below, g, iconLocX, iconLocY, SMALL_ICON_SIZE);
+//			} else {
+//				drawIcon(objectValues[i], g, iconLocX, iconLocY, SMALL_ICON_SIZE);
+//			}
+//
+//			g.setColor(Color.DARK_GRAY);
+//			g.setStroke(STROKE1);
+//			g.drawLine(newX, 0, newX, trackHeight);
+//
+//			p1.setLocation(p2);
+//		}
+//
+//		/*
+//		 * Draw last region (above region)
+//		 */
+//		p2.setLocation(track_width, 0);
+//
+//		iconLocX = track_width - (((track_width - (int) p1.getX()) / 2) + (SMALL_ICON_SIZE / 2));
+//		iconLocY = ((trackHeight) / 2) - (SMALL_ICON_SIZE / 2);
+//		drawIcon(above, g, iconLocX, iconLocY, SMALL_ICON_SIZE);
+//
+//		/*
+//		 * Finally, draw border line (rectangle)
+//		 */
+//		g.setColor(BORDER_COLOR);
+//		g.setStroke(new BasicStroke(1.0f));
+//		g.drawRect(0, 0, track_width - 3, trackHeight);
+//		
+//		
+//		g.setFont(new Font("SansSerif", Font.BOLD, 9));
+//
+//		final String minStr = String.format("%.2f", minValue);
+//		final String maxStr = String.format("%.2f", maxValue);
+//		int strWidth;
+//		g.setColor(Color.black);
+//		if(detail) {
+//			String fNum = null;
+//			for(int j=0; j<fractions.length; j++) {
+//				fNum = String.format("%.2f", ((fractions[j]/100)*valueRange) + minValue);
+//				strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), fNum);
+//				g.drawString(fNum, (fractions[j]/100)*iconWidth-strWidth/2, iconHeight-20);
+//			}
+//			
+//			g.drawString(minStr, 0, iconHeight);
+//			strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
+//			g.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
+//			
+//			g.setFont(TITLE_FONT);
+//
+//			final int titleWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), title);
+//			g.setColor(Color.black);
+//			g.drawString(title, (iconWidth / 2) - (titleWidth / 2),
+//			             iconHeight-5);
+//			Polygon p = new Polygon();
+//			p.addPoint(iconWidth,iconHeight-9);
+//			p.addPoint(iconWidth-15,iconHeight-15 );
+//			p.addPoint(iconWidth-15,iconHeight-9 );
+//			g.fillPolygon(p);
+//			g.drawLine(0, iconHeight-9, (iconWidth / 2) - (titleWidth / 2)-3, iconHeight-9);
+//			g.drawLine((iconWidth / 2) + (titleWidth / 2)+3, iconHeight-9, iconWidth, iconHeight-9);
+//			
+//		} else {
+//			g.drawString(minStr, 0, iconHeight);
+//			strWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), maxStr);
+//			g.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
+//		}
+//
+//		return new ImageIcon(bi);
+//	}
 	
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
 	public Double getSelectedThumbValue() {
 		final double minValue = tracer.getMin(type);
 		final double valueRange = tracer.getRange(type);
@@ -841,7 +820,4 @@ public class DiscreteTrackRenderer<K, V> extends JComponent implements VizMapTra
 		return (((position / 100) * valueRange) + minValue);
 	}
 	
-	public void setVmm(VisualMappingManager vmm) {
-		this.vmm = vmm;
-	}
 }

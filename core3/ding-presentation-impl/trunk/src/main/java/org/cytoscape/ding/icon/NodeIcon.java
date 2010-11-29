@@ -34,9 +34,13 @@
 */
 package org.cytoscape.ding.icon;
 
-import org.cytoscape.ding.NodeShape;
-
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
@@ -44,32 +48,15 @@ import java.awt.geom.Rectangle2D;
 /**
  * Icon for node shapes.
  *
- * @version 0.5
- * @since Cytoscape 2.5
- * @author kono
- *
  */
-public class NodeIcon extends VisualPropertyIcon {
-	private final static long serialVersionUID = 1202339876280466L;
-	protected Shape newShape;
-	protected Graphics2D g2d;
-
+public class NodeIcon extends VisualPropertyIcon<Shape> {
 	
-	public NodeIcon(NodeShape ns) {
-		this(ns.getShape(), DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE, ns.getShapeName(), DEFAULT_ICON_COLOR);
-	}
+	private final static long serialVersionUID = 1202339876280466L;
 
-	/**
-	 * Creates a new NodeShapeIcon object.
-	 *
-	 * @param shape
-	 * @param width
-	 * @param height
-	 * @param name
-	 */
-	public NodeIcon(Shape shape, int width, int height, String name) {
-		this(shape, width, height, name, DEFAULT_ICON_COLOR);
-	}
+	private Shape newShape;
+	
+	private Graphics2D g2d;
+
 
 	/**
 	 * Creates a new NodeShapeIcon object.
@@ -86,51 +73,32 @@ public class NodeIcon extends VisualPropertyIcon {
 		adjustShape();
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param width DOCUMENT ME!
-	 */
-	public void setIconWidth(int width) {
-		super.setIconWidth(width);
-		adjustShape();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param height DOCUMENT ME!
-	 */
-	public void setIconHeight(int height) {
-		super.setIconHeight(height);
-		adjustShape();
-	}
 
 	private void adjustShape() {
-		final double shapeWidth = shape.getBounds2D().getWidth();
-		final double shapeHeight = shape.getBounds2D().getHeight();
+		final double shapeWidth = value.getBounds2D().getWidth();
+		final double shapeHeight = value.getBounds2D().getHeight();
 
 		final double xRatio = width / shapeWidth;
 		final double yRatio = height / shapeHeight;
 
 		final AffineTransform af = new AffineTransform();
 
-		final Rectangle2D bound = shape.getBounds2D();
+		final Rectangle2D bound = value.getBounds2D();
 		final double minx = bound.getMinX();
 		final double miny = bound.getMinY();
 
 		if (minx < 0) {
 			af.setToTranslation(Math.abs(minx), 0);
-			shape = af.createTransformedShape(shape);
+			newShape = af.createTransformedShape(value);
 		}
 
 		if (miny < 0) {
 			af.setToTranslation(0, Math.abs(miny));
-			shape = af.createTransformedShape(shape);
+			newShape = af.createTransformedShape(value);
 		}
 
 		af.setToScale(xRatio, yRatio);
-		shape = af.createTransformedShape(shape);
+		newShape = af.createTransformedShape(value);
 	}
 
 	/**
@@ -151,7 +119,7 @@ public class NodeIcon extends VisualPropertyIcon {
 
 		g2d.translate(0, bottomPad);
 
-		newShape = shape;
+		newShape = value;
 
 		af.setToTranslation(leftPad, (c.getHeight() - newShape.getBounds2D().getHeight()) / 2);
 		newShape = af.createTransformedShape(newShape);
@@ -169,7 +137,7 @@ public class NodeIcon extends VisualPropertyIcon {
 	 * @return DOCUMENT ME!
 	 */
 	public NodeIcon clone() {
-		final NodeIcon cloned = new NodeIcon(shape, width, height, name, color);
+		final NodeIcon cloned = new NodeIcon(value, width, height, name, color);
 
 		return cloned;
 	}

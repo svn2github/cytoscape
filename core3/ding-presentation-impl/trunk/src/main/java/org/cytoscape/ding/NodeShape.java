@@ -193,21 +193,21 @@ public enum NodeShape {
 		return nodeShapes.get(ginyShape);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Map<Object, Icon> getIconSet() {
-		Map<Object, Icon> nodeShapeIcons = new HashMap<Object, Icon>();
-
-		for (NodeShape shape : values()) {
-			NodeIcon icon = new NodeIcon(nodeShapes.get(shape.getGinyShape()),
-			                             VisualPropertyIcon.DEFAULT_ICON_SIZE,
-			                             VisualPropertyIcon.DEFAULT_ICON_SIZE, shape.getShapeName());
-			nodeShapeIcons.put(shape, icon);
-		}
-
-		return nodeShapeIcons;
-	}
+//	/**
+//	 *  DOCUMENT ME!
+//	 *
+//	 * @return  DOCUMENT ME!
+//	 */
+//	public static Map<Object, Icon> getIconSet() {
+//		Map<Object, Icon> nodeShapeIcons = new HashMap<Object, Icon>();
+//
+//		for (NodeShape shape : values()) {
+//			NodeIcon icon = new NodeIcon(nodeShapes.get(shape.getGinyShape()),
+//			                             VisualPropertyIcon.DEFAULT_ICON_SIZE,
+//			                             VisualPropertyIcon.DEFAULT_ICON_SIZE, shape.getShapeName());
+//			nodeShapeIcons.put(shape, icon);
+//		}
+//
+//		return nodeShapeIcons;
+//	}
 }

@@ -750,19 +750,19 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		logger.debug("######## Event:  removed style: " + toBeRemoved);
 	}
 
-	public String getTitle() {
+	@Override public String getTitle() {
 		return TAB_TITLE;
 	}
 
-	public CytoPanelName getCytoPanelName() {
+	@Override public CytoPanelName getCytoPanelName() {
 		return CytoPanelName.WEST;
 	}
 
-	public Component getComponent() {
+	@Override  public Component getComponent() {
 		return this;
 	}
 
-	public Icon getIcon() {
+	@Override public Icon getIcon() {
 		return null;
 	}
 

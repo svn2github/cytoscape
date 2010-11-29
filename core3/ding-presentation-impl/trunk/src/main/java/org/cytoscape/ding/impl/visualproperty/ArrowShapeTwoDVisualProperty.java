@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -31,40 +32,38 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-package org.cytoscape.ding.impl;
+*/
+package org.cytoscape.ding.impl.visualproperty; 
 
-import java.awt.Stroke;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.cytoscape.ding.ArrowShape;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRangeImpl;
 import org.cytoscape.view.model.Range;
 
-public class StrokeTwoDVisualProperty extends AbstractVisualProperty<Stroke> {
+public class ArrowShapeTwoDVisualProperty extends AbstractVisualProperty<ArrowShape> { 
 
-	private static final Range<Stroke> STROKE_RANGE;
-
+	private static final Range<ArrowShape> ARROW_SHAPE_RANGE;
+	
 	static {
-		final Set<Stroke> strokeSet = new HashSet<Stroke>();
-		// This range is empty.
-		STROKE_RANGE = new DiscreteRangeImpl<Stroke>(Stroke.class,
-				strokeSet);
+		final Set<ArrowShape> arrowSet = new HashSet<ArrowShape>();
+		for(final ArrowShape arrow: ArrowShape.values())
+			arrowSet.add(arrow);
+		ARROW_SHAPE_RANGE = new DiscreteRangeImpl<ArrowShape>(ArrowShape.class, arrowSet);
 	}
-
-	public StrokeTwoDVisualProperty(final Stroke def, final String id,
-			final String name, final Class<?> targetDataType) {
-		super(def, STROKE_RANGE, id, name, targetDataType);
+	
+	public ArrowShapeTwoDVisualProperty(final ArrowShape def, final String id, final String name) {
+		super(def, ARROW_SHAPE_RANGE, id, name, CyEdge.class);
 	}
-
-	public String toSerializableString(final Stroke value) {
+	
+	public String toSerializableString(final ArrowShape value) {
 		return value.toString();
 	}
 
-	public Stroke parseSerializableString(final String text) {
-		// TODO
-		return null;
+	public ArrowShape parseSerializableString(final String text) {
+		return ArrowShape.valueOf(text);
 	}
 }

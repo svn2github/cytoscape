@@ -306,8 +306,7 @@ public class VizMapPropertyBuilder {
 		for (K key : attrSet) {
 
 			valProp = new VizMapperProperty<K, V, VisualMappingFunction<K, V>>(
-					CellType.DISCRETE, key, mapping.getVisualProperty()
-							.getType());
+					CellType.DISCRETE, key, mapping.getVisualProperty().getRange().getType());
 			strVal = key.toString();
 			valProp.setDisplayName(strVal);
 			valProp.setParentProperty(parent);

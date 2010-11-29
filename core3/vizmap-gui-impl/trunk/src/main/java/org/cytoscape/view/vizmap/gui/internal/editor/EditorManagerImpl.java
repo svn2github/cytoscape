@@ -189,8 +189,7 @@ public class EditorManagerImpl implements EditorManager {
 	public <V> V showVisualPropertyValueEditor(Component parentComponent,
 			VisualProperty<V> type, V initialValue) throws Exception {
 
-		final ValueEditor<V> editor = (ValueEditor<V>) valueEditors.get(type
-				.getType());
+		final ValueEditor<V> editor = (ValueEditor<V>) valueEditors.get(type.getRange().getType());
 
 		if (editor == null)
 			throw new IllegalStateException("No value editor for "
@@ -208,7 +207,7 @@ public class EditorManagerImpl implements EditorManager {
 	 */
 	public <V> void showContinuousEditor(Component parentComponent,
 			VisualProperty<V> type) throws Exception {
-		final VisualPropertyEditor<?> editor = editors.get(type.getType());
+		final VisualPropertyEditor<?> editor = editors.get(type.getRange().getType());
 
 		// TODO: design dialog state mamagement
 		//
@@ -224,7 +223,7 @@ public class EditorManagerImpl implements EditorManager {
 	@SuppressWarnings("unchecked")
 	public <V> VisualPropertyEditor<V> getVisualPropertyEditor(
 			final VisualProperty<V> vp) {
-		return (VisualPropertyEditor<V>) editors.get(vp.getType());
+		return (VisualPropertyEditor<V>) editors.get(vp.getRange().getType());
 	}
 
 	/*

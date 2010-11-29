@@ -99,6 +99,9 @@ public class DefaultViewEditorImpl extends JDialog implements
 		DefaultViewEditor, SelectedVisualStyleSwitchedListener {
 
 	private final static long serialVersionUID = 1202339876675416L;
+	
+	private static final int ICON_WIDTH = 48;
+	private static final int ICON_HEIGHT = 48;
 
 	private final Map<Class<? extends CyTableEntry>, Set<VisualProperty<?>>> vpSets;
 	private final Map<Class<? extends CyTableEntry>, JList> listMap;
@@ -583,21 +586,21 @@ public class DefaultViewEditorImpl extends JDialog implements
 			setOpaque(true);
 		}
 
-		public Component getListCellRendererComponent(JList list, Object value,
+		@Override public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 
 			final VisualStyle selectedStyle = selectedManager
 					.getCurrentVisualStyle();
 			Icon icon = null;
-			VisualProperty<?> vp = null;
+			VisualProperty<Object> vp = null;
 
 			if (value instanceof VisualProperty<?>) {
-				vp = (VisualProperty<?>) value;
+				vp = (VisualProperty<Object>) value;
 
 				RenderingEngine<?> presentation = cyApplicationManager
 						.getCurrentRenderingEngine();
 				if (presentation != null)
-					icon = presentation.createIcon(vp);
+					icon = presentation.createIcon(vp, selectedStyle.getDefaultValue(vp), ICON_WIDTH, ICON_HEIGHT);
 			}
 			setText(vp.getDisplayName() + "  =  "
 					+ selectedStyle.getDefaultValue(vp));
@@ -609,8 +612,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 			this.setVerticalAlignment(SwingConstants.CENTER);
 			this.setIconTextGap(55);
 
-			if (vp != null && vp.getType() != null
-					&& vp.getType().equals(String.class))
+			if (vp != null && vp.getRange().getType() != null
+					&& vp.getRange().getType().equals(String.class))
 				this.setToolTipText(vp.getDefault().toString());
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());

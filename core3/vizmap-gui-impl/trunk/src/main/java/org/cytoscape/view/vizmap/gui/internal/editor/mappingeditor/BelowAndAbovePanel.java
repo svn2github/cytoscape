@@ -180,11 +180,11 @@ public class BelowAndAbovePanel extends JPanel {
 			if (e.getClickCount() == 2) {
 				Object newValue = null;
 
-				if (type.getType() == Color.class) {
+				if (type.getRange().getType() == Color.class) {
 					//FIXME
 //					newValue = editorManager).showDialog(caller, "Select new color", boxColor);
 					caller.setColor((Color) newValue);
-				} else if (type.getType() == Number.class) {
+				} else if (type.getRange().getType() == Number.class) {
 					newValue = Double.parseDouble(JOptionPane.showInputDialog(caller,
 					                                                          "Please enter new value."));
 					caller.setValue(newValue);

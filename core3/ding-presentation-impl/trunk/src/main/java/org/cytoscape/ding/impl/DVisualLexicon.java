@@ -42,6 +42,13 @@ import java.awt.Stroke;
 
 import org.cytoscape.ding.ArrowShape;
 import org.cytoscape.ding.NodeShape;
+import org.cytoscape.ding.impl.visualproperty.AnchorTwoDVisualProperty;
+import org.cytoscape.ding.impl.visualproperty.ArrowShapeTwoDVisualProperty;
+import org.cytoscape.ding.impl.visualproperty.FontTwoDVisualProperty;
+import org.cytoscape.ding.impl.visualproperty.IntegerTwoDVisualProperty;
+import org.cytoscape.ding.impl.visualproperty.JustifyTwoDVisualProperty;
+import org.cytoscape.ding.impl.visualproperty.NodeShapeTwoDVisualProperty;
+import org.cytoscape.ding.impl.visualproperty.StrokeTwoDVisualProperty;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;

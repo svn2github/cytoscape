@@ -60,7 +60,7 @@ public class DingNavigationRenderingEngine implements RenderingEngine<CyNetwork>
 	}
 
 	@Override
-	public Icon createIcon(VisualProperty<?> vp) {
+	public <V> Icon createIcon(VisualProperty<V> vp, V value, int w, int h) {
 		// TODO Auto-generated method stub
 		return null;
 	}

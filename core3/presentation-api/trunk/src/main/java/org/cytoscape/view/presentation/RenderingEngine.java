@@ -68,17 +68,17 @@ public interface RenderingEngine<T> {
 	
 
 	/**
-	 * For a given Visual Property, render an Icon based on the default value of
-	 * the Visual Property.
+	 * Create {@link Icon} object for the given VisualProperty value.
 	 * 
-	 * @param vp
-	 *            Visual Property.
+	 * @param <V> Data type, such as Color, String, Double, etc.
 	 * 
-	 * @return Rendered icon for the Visual Property.
+	 * @param vp VisualProperty to be rendered as Icon.
+	 * @param value Value for the Icon.  For example, if V is shape, this can be redtangle, triangle, and so on.
+	 * @param width width of the icon
+	 * @param height height of the icon
 	 * 
-	 * @exception IllegalArgumentException
-	 *                if vp is not in the lexicon.
+	 * @return Icon rendered by this engine.
 	 */
-	public Icon createIcon(final VisualProperty<?> vp);
+	public <V> Icon createIcon(final VisualProperty<V> vp, final V value, final int width, final int height);
 
 }

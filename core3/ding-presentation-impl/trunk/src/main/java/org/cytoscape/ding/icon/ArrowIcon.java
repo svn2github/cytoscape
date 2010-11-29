@@ -48,7 +48,7 @@ import java.awt.geom.Rectangle2D;
  * @since Cytoscape 2.5
  * @author kono
  */
-public class ArrowIcon extends VisualPropertyIcon {
+public class ArrowIcon extends VisualPropertyIcon<Shape> {
 	private final static long serialVersionUID = 1202339877462891L;
 	private static final Stroke EDGE_STROKE = new BasicStroke(6.0f, BasicStroke.CAP_SQUARE,
 	                                                          BasicStroke.JOIN_MITER);
@@ -57,17 +57,6 @@ public class ArrowIcon extends VisualPropertyIcon {
 	protected Graphics2D g2d;
 	private static final int DEF_L_PAD = 15;
 
-	/**
-	 * Creates a new ArrowIcon object.
-	 *
-	 * @param shape DOCUMENT ME!
-	 * @param width DOCUMENT ME!
-	 * @param height DOCUMENT ME!
-	 * @param name DOCUMENT ME!
-	 */
-	public ArrowIcon(Shape shape, int width, int height, String name) {
-		super(shape, width, height, name);
-	}
 
 	/**
 	 * Creates a new ArrowIcon object.
@@ -102,7 +91,7 @@ public class ArrowIcon extends VisualPropertyIcon {
 		/*
 		 * If shape is not defined, treat as no-head.
 		 */
-		if (shape == null) {
+		if (value == null) {
 			if ((width < 20) || (height < 20)) {
 				g2d.translate(-leftPad, -bottomPad);
 				g2d.setStroke(EDGE_STROKE_SMALL);
@@ -122,11 +111,11 @@ public class ArrowIcon extends VisualPropertyIcon {
 
 		g2d.setStroke(new BasicStroke(2.0f));
 
-		final Rectangle2D bound = shape.getBounds2D();
+		final Rectangle2D bound = value.getBounds2D();
 		final double minx = bound.getMinX();
 		final double miny = bound.getMinY();
 
-		Shape newShape = shape;
+		Shape newShape = value;
 
 		/*
 		 * Adjust position if it is NOT in first quadrant.

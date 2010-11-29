@@ -56,11 +56,9 @@ import java.util.regex.Pattern;
  *
  */
 public enum LineStyle {
+	
 	SOLID(null,"line"),
 	LONG_DASH("10.0f,4.0f","dash");
-
-	// DASH("4.0f,4.0f"),
-	// DASH_DOT("12.0f,3.0f,3.0f,3.0f"),
 
 	private final float[] strokeDef;
 	private String regex;
@@ -158,17 +156,17 @@ public enum LineStyle {
 		return strokeDef;
 	}
 
-    public static Map<Object,Icon> getIconSet() {
-        Map<Object,Icon> icons = new HashMap<Object,Icon>();
-
-        for (LineStyle def : values()) {
-            LineTypeIcon icon = new LineTypeIcon((BasicStroke) def.getStroke(5.0f), 
-                                                 VisualPropertyIcon.DEFAULT_ICON_SIZE * 4, 
-                                                 VisualPropertyIcon.DEFAULT_ICON_SIZE, 
-												 def.name());
-            icons.put(def, icon);
-        }
-
-        return icons;
-    }
+//    public static Map<Object,Icon> getIconSet() {
+//        Map<Object,Icon> icons = new HashMap<Object,Icon>();
+//
+//        for (LineStyle def : values()) {
+//            LineTypeIcon icon = new LineTypeIcon((BasicStroke) def.getStroke(5.0f), 
+//                                                 VisualPropertyIcon.DEFAULT_ICON_SIZE * 4, 
+//                                                 VisualPropertyIcon.DEFAULT_ICON_SIZE, 
+//												 def.name());
+//            icons.put(def, icon);
+//        }
+//
+//        return icons;
+//    }
 }

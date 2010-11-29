@@ -9,10 +9,6 @@ import java.util.Set;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineManager;
-import org.cytoscape.view.presentation.events.RenderingEngineAddedEvent;
-import org.cytoscape.view.presentation.events.RenderingEngineAddedListener;
-import org.cytoscape.view.presentation.events.RenderingEngineAboutToBeRemovedEvent;
-import org.cytoscape.view.presentation.events.RenderingEngineAboutToBeRemovedListener;
 
 public class RenderingEngineManagerImpl implements RenderingEngineManager {
 

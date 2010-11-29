@@ -202,24 +202,24 @@ public enum ArrowShape {
 		return arrowShapes.get(ginyType);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param size DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Map<Object, Icon> getIconSet() {
-		Map<Object, Icon> arrowShapeIcons = new HashMap<Object, Icon>();
-
-		for (ArrowShape shape : values()) {
-			ArrowIcon icon = new ArrowIcon(arrowShapes.get(shape.getGinyArrow()), 
-			                               VisualPropertyIcon.DEFAULT_ICON_SIZE, 
-			                               VisualPropertyIcon.DEFAULT_ICON_SIZE, 
-										   shape.getName());
-			arrowShapeIcons.put(shape, icon);
-		}
-
-		return arrowShapeIcons;
-	}
+//	/**
+//	 *  DOCUMENT ME!
+//	 *
+//	 * @param size DOCUMENT ME!
+//	 *
+//	 * @return  DOCUMENT ME!
+//	 */
+//	public static Map<Object, Icon> getIconSet() {
+//		Map<Object, Icon> arrowShapeIcons = new HashMap<Object, Icon>();
+//
+//		for (ArrowShape shape : values()) {
+//			ArrowIcon icon = new ArrowIcon(arrowShapes.get(shape.getGinyArrow()), 
+//			                               VisualPropertyIcon.DEFAULT_ICON_SIZE, 
+//			                               VisualPropertyIcon.DEFAULT_ICON_SIZE, 
+//										   shape.getName());
+//			arrowShapeIcons.put(shape, icon);
+//		}
+//
+//		return arrowShapeIcons;
+//	}
 }

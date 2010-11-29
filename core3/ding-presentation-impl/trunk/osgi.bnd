@@ -3,4 +3,4 @@
 #-----------------------------------------------------------------
 
 Import-package: *
-Export-Package: org.cytoscape.ding, org.cytoscape.ding.impl, org.cytoscape.ding.icon
+Export-Package: org.cytoscape.ding, org.cytoscape.ding.impl, org.cytoscape.ding.icon, org.cytoscape.ding.impl.visualproperty

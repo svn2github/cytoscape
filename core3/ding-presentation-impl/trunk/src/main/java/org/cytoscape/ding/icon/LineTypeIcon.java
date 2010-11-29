@@ -56,23 +56,12 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	private Color textColor = null;
 
 	
-	public LineTypeIcon(org.cytoscape.ding.LineStyle style) {
-		this(style.getStroke(2f), DEFAULT_ICON_SIZE * 3,
-			     DEFAULT_ICON_SIZE, style.name());
-	}
+//	public LineTypeIcon(org.cytoscape.ding.LineStyle style) {
+//		this(style.getStroke(2f), DEFAULT_ICON_SIZE * 3,
+//			     DEFAULT_ICON_SIZE, style.name());
+//	}
 
-	/**
-	 * Creates a new LineTypeIcon object.
-	 *
-	 * @param stroke DOCUMENT ME!
-	 * @param width DOCUMENT ME!
-	 * @param height DOCUMENT ME!
-	 * @param name DOCUMENT ME!
-	 */
-	public LineTypeIcon(Stroke stroke, int width, int height, String name) {
-		super(null, width, height, name);
-		this.stroke = (BasicStroke) stroke;
-	}
+
 
 	/**
 	 * Creates a new LineTypeIcon object.

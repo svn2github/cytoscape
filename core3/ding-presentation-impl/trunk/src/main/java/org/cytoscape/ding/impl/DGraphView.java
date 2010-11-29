@@ -130,6 +130,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	private static final Logger logger = LoggerFactory
 			.getLogger(DGraphView.class);
 
+	
 	private static enum ZOrder {
 		BACKGROUND_PANE, NETWORK_PANE, FOREGROUND_PANE;
 		int layer() {
@@ -2847,7 +2848,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	}
 
 	@Override
-	public Icon createIcon(VisualProperty<?> vp) {
+	public <V> Icon createIcon(VisualProperty<V> vp, V value, int w, int h) {
 		// TODO Auto-generated method stub
 		return null;
 	}
