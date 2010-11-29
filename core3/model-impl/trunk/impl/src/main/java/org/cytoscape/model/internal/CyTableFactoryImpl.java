@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model.internal; 
+
 
 import java.util.List;
 import java.util.ArrayList;
@@ -43,7 +35,9 @@ import java.util.HashMap;
 
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.equations.Interpreter;
 import org.cytoscape.event.CyEventHelper;
+
 
 /**
  * An interface describing a factory used for creating 
@@ -51,18 +45,21 @@ import org.cytoscape.event.CyEventHelper;
  * provided as a service through Spring/OSGi.
  */
 public class CyTableFactoryImpl implements CyTableFactory {
-
 	private final CyEventHelper help;
 	private final CyTableManagerImpl tm;
+	private final Interpreter interpreter;
 
-	public CyTableFactoryImpl(CyEventHelper help, CyTableManagerImpl tm) {
+	public CyTableFactoryImpl(final CyEventHelper help, final CyTableManagerImpl tm,
+				  final Interpreter interpreter)
+	{
 		this.help = help;
 		this.tm = tm;
+		this.interpreter = interpreter;
 	}
 
 	public CyTable createTable(String name, String primaryKey, Class<?> primaryKeyType, boolean pub) {
-		CyTable cdt = new CyTableImpl(name,primaryKey,primaryKeyType,pub,help);
-		tm.addTable(cdt);
-		return cdt;
+		CyTable table = new CyTableImpl(name, primaryKey, primaryKeyType, pub, help, interpreter);
+		tm.addTable(table);
+		return table;
 	}
 }

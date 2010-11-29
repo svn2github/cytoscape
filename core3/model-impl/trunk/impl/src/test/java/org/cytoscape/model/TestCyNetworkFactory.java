@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,18 +25,21 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
 
 
+import org.cytoscape.event.DummyCyEventHelper;
+import org.cytoscape.equations.Interpreter;
+import org.cytoscape.equations.internal.interpreter.InterpreterImpl;
 import org.cytoscape.model.internal.ArrayGraph;
 import org.cytoscape.model.internal.CyTableManagerImpl;
 import org.cytoscape.model.internal.CyTableFactoryImpl;
-import org.cytoscape.event.DummyCyEventHelper;
-
 import org.cytoscape.model.subnetwork.CyRootNetwork;
+
+
 import org.junit.Test;
 import static org.junit.Assert.*;
+
 
 public class TestCyNetworkFactory {
 
@@ -57,7 +52,8 @@ public class TestCyNetworkFactory {
 	public static CyRootNetwork getRootInstance() {	
 		DummyCyEventHelper deh = new DummyCyEventHelper();
 		CyTableManagerImpl tm = new CyTableManagerImpl();
-		ArrayGraph ar = new ArrayGraph(deh, tm,new CyTableFactoryImpl(deh,tm));
+		Interpreter interp = new InterpreterImpl();
+		ArrayGraph ar = new ArrayGraph(deh, tm, new CyTableFactoryImpl(deh, tm, interp));
 		return ar; 
 	}
 	

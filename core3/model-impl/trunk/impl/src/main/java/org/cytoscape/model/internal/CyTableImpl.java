@@ -29,14 +29,21 @@ package org.cytoscape.model.internal;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.cytoscape.equations.BooleanList;
 import org.cytoscape.equations.DoubleList;
 import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.IdentDescriptor;
+import org.cytoscape.equations.Interpreter;
 import org.cytoscape.equations.LongList;
 import org.cytoscape.equations.StringList;
 
@@ -49,8 +56,17 @@ import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.RowSetMicroListener;
 
+import org.cytoscape.util.tsort.TopoGraphNode;
+import org.cytoscape.util.tsort.TopologicalSort;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class CyTableImpl implements CyTable {
+	private static final Logger logger = LoggerFactory.getLogger(CyTableImpl.class);
+
+	private final Set<String> currentlyActiveAttributes;
 	private final Map<String, Map<Object, Object>> attributes;
 	private final Map<Object, CyRow> rows;
 
@@ -73,6 +89,7 @@ public class CyTableImpl implements CyTable {
 	private final Class<?> primaryKeyType;
 
 	private final CyEventHelper eventHelper;
+	private final Interpreter interpreter;
 
 	private String lastInternalError = null;
 
@@ -86,8 +103,9 @@ public class CyTableImpl implements CyTable {
 	 * @param pub
 	 *            DOCUMENT ME!
 	 */
-	public CyTableImpl(String title, String primaryKey, Class<?> pkType,
-			   boolean pub, final CyEventHelper eventHelper)
+	public CyTableImpl(final String title, final String primaryKey, Class<?> pkType,
+			   final boolean pub, final CyEventHelper eventHelper,
+			   final Interpreter interpreter)
 	{
 		this.title = title;
 		this.primaryKey = primaryKey;
@@ -95,6 +113,9 @@ public class CyTableImpl implements CyTable {
 		this.pub = pub;
 		this.suid = SUIDFactory.getNextSUID();
 		this.eventHelper = eventHelper;
+		this.interpreter = interpreter;
+
+		currentlyActiveAttributes = new HashSet<String>();
 		attributes = new HashMap<String, Map<Object, Object>>();
 		rows = new HashMap<Object, CyRow>();
 		types = new HashMap<String, Class<?>>();
@@ -437,6 +458,17 @@ public class CyTableImpl implements CyTable {
 			return type.cast(vl);
 	}
 
+	private Object getX(Object suid, String columnName) {
+		final Object vl = getRawX(suid, columnName);
+		if (vl == null)
+			return null;
+
+		if (vl instanceof Equation)
+			return evalEquation((Equation)vl, suid, columnName);
+		else
+			return vl;
+	}
+
 	private <T> List<?extends T> getListX(final Object suid, final String columnName,
 					      final Class<? extends T> listElementType)
 	{
@@ -459,12 +491,6 @@ public class CyTableImpl implements CyTable {
 			return (List)result;
 		} else
 			return (List)vl;
-	}
-
-	private Object evalEquation(final Equation equation, final Object suid,
-				    final String columnName)
-	{
-		return null;
 	}
 
 	private <T> boolean isSetX(final Object suid, final String columnName,
@@ -624,42 +650,32 @@ public class CyTableImpl implements CyTable {
 		}
 	}
 
-/*
-	/**
-	 *  Returns any attribute-equation related error message after a call to getAttribute() or
-	 *  getXXXAttribute().  N.B., the last error message will be cached!
-	 *
-	 *  @return an error message or null if the last call to getAttribute() did not result in an
-	 *           equation related error
-	 * /
-	public String getLastEquationError() { return lastEquationError; }
-
-	private Object evalEquation(final String id, final String attribName, final Equation equation,
-	                            final StringBuilder errorMessage)
+	private Object evalEquation(final Equation equation, final Object suid,
+				    final String columnName)
 	{
-		if (currentlyActiveAttributes.contains(attribName)) {
+		if (currentlyActiveAttributes.contains(columnName)) {
 			currentlyActiveAttributes.clear();
-			errorMessage.append("Recursive equation evaluation of \"" + attribName + "\"!");
+			lastInternalError = "Recursive equation evaluation of \"" + columnName + "\"!";
 			return null;
 		} else
-			currentlyActiveAttributes.add(attribName);
+			currentlyActiveAttributes.add(columnName);
 
-		final Collection<String> attribReferences = equation.getAttribReferences();
+		final Collection<String> attribReferences = equation.getVariableReferences();
 
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new TreeMap<String, IdentDescriptor>();
 		for (final String attribRef : attribReferences) {
 			if (attribRef.equals("ID")) {
-				nameToDescriptorMap.put("ID", new IdentDescriptor(id));
+				nameToDescriptorMap.put("ID", new IdentDescriptor(suid));
 				continue;
 			}
 
-			final Object attribValue = getAttribute(id, attribRef);
+			final Object attribValue = getX(suid, attribRef);
 			if (attribValue == null) {
 				currentlyActiveAttributes.clear();
-				errorMessage.append("Missing value for referenced attribute \"" + attribRef + "\"!");
+				lastInternalError = "Missing value for referenced attribute \"" + attribRef + "\"!";
 				logger.warn("Missing value for \"" + attribRef
-				            + "\" while evaluating an equation (ID:" + id
-				            + ", attribute name:" + attribName + ")");
+				            + "\" while evaluating an equation (ID:" + suid
+				            + ", attribute name:" + columnName + ")");
 				return null;
 			}
 
@@ -667,46 +683,45 @@ public class CyTableImpl implements CyTable {
 				nameToDescriptorMap.put(attribRef, new IdentDescriptor(attribValue));
 			} catch (final Exception e) {
 				currentlyActiveAttributes.clear();
-				errorMessage.append("Bad attribute reference to \"" + attribRef + "\"!");
+				lastInternalError = "Bad attribute reference to \"" + attribRef + "\"!";
 				logger.warn("Bad attribute reference to \"" + attribRef
-				            + "\" while evaluating an equation (ID:" + id
-				            + ", attribute name:" + attribName + ")");
+				            + "\" while evaluating an equation (ID:" + suid
+				            + ", attribute name:" + columnName + ")");
 				return null;
 			}
 		}
 
-		final Interpreter interpreter = new Interpreter(equation, nameToDescriptorMap);
 		try {
-			final Object result = interpreter.run();
-			currentlyActiveAttributes.remove(attribName);
+			final Object result = interpreter.execute(equation, nameToDescriptorMap);
+			currentlyActiveAttributes.remove(columnName);
 			return result;
 		} catch (final Exception e) {
 			currentlyActiveAttributes.clear();
-			errorMessage.append(e.getMessage());
+			lastInternalError = e.getMessage();
 			logger.warn("Error while evaluating an equation: " + e.getMessage() + " (ID:"
-			            + id + ", attribute name:" + attribName + ")");
+			            + suid + ", attribute name:" + columnName + ")");
 			return null;
 		}
 	}
 
 	/**
-	 *  @return an in-order list of attribute names that will have to be evaluated before "attribName" can be evaluated
-	 * /
-	private List<String> topoSortAttribReferences(final String id, final String attribName) {
-		final Object equationCandidate = mmap.getAttributeValue(id, attribName, null);
+	 *  @return an in-order list of attribute names that will have to be evaluated before "columnName" can be evaluated
+	 */
+	private List<String> topoSortAttribReferences(final Object suid, final String columnName) {
+		final Object equationCandidate = getRawX(suid, columnName);
 		if (!(equationCandidate instanceof Equation))
 			return new ArrayList<String>();
 
 		final Equation equation = (Equation)equationCandidate;
-		final Set<String> attribReferences = equation.getAttribReferences();
+		final Set<String> attribReferences = equation.getVariableReferences();
 		if (attribReferences.size() == 0)
 			return new ArrayList<String>();
 
 		final Set<String> alreadyProcessed = new TreeSet<String>();
-		alreadyProcessed.add(attribName);
+		alreadyProcessed.add(columnName);
 		final List<TopoGraphNode> dependencies = new ArrayList<TopoGraphNode>();
 		for (final String attribReference : attribReferences)
-                        followReferences(id, attribReference, alreadyProcessed, dependencies);
+                        followReferences(suid, attribReference, alreadyProcessed, dependencies);
 
 
 		final List<TopoGraphNode> topoOrder = TopologicalSort.sort(dependencies);
@@ -714,41 +729,41 @@ public class CyTableImpl implements CyTable {
 		for (final TopoGraphNode node : topoOrder) {
 			final AttribTopoGraphNode attribTopoGraphNode = (AttribTopoGraphNode)node;
 			final String nodeName = attribTopoGraphNode.getNodeName();
-			if (nodeName.equals(attribName))
+			if (nodeName.equals(columnName))
 				return retVal;
 			else
 				retVal.add(nodeName);
 		}
 
-		// We should never get here because "attribName" should have been found in the for-loop above!
-		throw new IllegalStateException("\"" + attribName
+		// We should never get here because "columnName" should have been found in the for-loop above!
+		throw new IllegalStateException("\"" + columnName
 		                                + "\" was not found in the toplogical order, which should be impossible!");
 	}
 
 	/**
 	 *  Helper function for topoSortAttribReferences() performing a depth-first search of equation evaluation dependencies.
-	 * /
-	private void followReferences(final String id, final String attribName, final Collection<String> alreadyProcessed,
+	 */
+	private void followReferences(final Object suid, final String columnName, final Collection<String> alreadyProcessed,
 	                              final Collection<TopoGraphNode> dependencies)
 	{
 		// Already visited this attribute?
-		if (alreadyProcessed.contains(attribName))
+		if (alreadyProcessed.contains(columnName))
 			return;
 
-		alreadyProcessed.add(attribName);
-		final Object equationCandidate = mmap.getAttributeValue(id, attribName, null);
+		alreadyProcessed.add(columnName);
+		final Object equationCandidate = getRawX(suid, columnName);
 		if (!(equationCandidate instanceof Equation))
 			return;
 
 		final Equation equation = (Equation)equationCandidate;
-		final Set<String> attribReferences = equation.getAttribReferences();
+		final Set<String> attribReferences = equation.getVariableReferences();
 		for (final String attribReference : attribReferences)
-			followReferences(id, attribReference, alreadyProcessed, dependencies);
+			followReferences(suid, attribReference, alreadyProcessed, dependencies);
 	}
 
 	/**
 	 *  @return "x" truncated using Excel's notion of truncation.
-	 * /
+	 */
 	private static double excelTrunc(final double x) {
 		final boolean isNegative = x < 0.0;
 		return Math.round(x + (isNegative ? +0.5 : -0.5));
@@ -756,7 +771,7 @@ public class CyTableImpl implements CyTable {
 
 	/**
 	 *  @return "d" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
-	 * /
+	 */
 	private static Integer doubleToInteger(final double d) {
 		if (d > Integer.MAX_VALUE || d < Integer.MIN_VALUE)
 			return null;
@@ -770,7 +785,7 @@ public class CyTableImpl implements CyTable {
 
 	/**
 	 *  @return "l" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
-	 * /
+	 */
 	private static Integer longToInteger(final double l) {
 		if (l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE)
 			return (Integer)(int)l;
@@ -780,14 +795,14 @@ public class CyTableImpl implements CyTable {
 
 	/**
 	 *  @return "equationValue" interpreted according to Excel rules as an integer or null if that is not possible
-	 * /
-	private Integer convertEqnRetValToInteger(final String id, final String attribName, final Object equationValue) {
+	 */
+	private Integer convertEqnRetValToInteger(final String id, final String columnName, final Object equationValue) {
 		if (equationValue.getClass() == Double.class) {
 			final Integer retVal = doubleToInteger((Double)equationValue);
 			if (retVal == null)
 				logger.warn("Cannot convert a floating point value ("
 					    + equationValue + ") to an integer!  (ID:" + id
-					    + ", attribute name:" + attribName + ")");
+					    + ", attribute name:" + columnName + ")");
 			return retVal;
 		}
 		else if (equationValue.getClass() == Long.class) {
@@ -795,7 +810,7 @@ public class CyTableImpl implements CyTable {
 			if (retVal == null)
 				logger.warn("Cannot convert a large integer (long) value ("
 					    + equationValue + ") to an integer! (ID:" + id
-					    + ", attribute name:" + attribName + ")");
+					    + ", attribute name:" + columnName + ")");
 			return retVal;
 		}
 		else if (equationValue.getClass() == Boolean.class) {
@@ -808,8 +823,8 @@ public class CyTableImpl implements CyTable {
 
 	/**
 	 *  @return "equationValue" interpreted according to Excel rules as a double or null if that is not possible
-	 * /
-	private Double convertEqnRetValToDouble(final String id, final String attribName, final Object equationValue) {
+	 */
+	private Double convertEqnRetValToDouble(final String id, final String columnName, final Object equationValue) {
 		if (equationValue.getClass() == Double.class)
 			return (Double)equationValue;
 		else if (equationValue.getClass() == Long.class)
@@ -825,7 +840,7 @@ public class CyTableImpl implements CyTable {
 			} catch (final NumberFormatException e) {
 				logger.warn("Cannot convert a string (\"" + valueAsString
 				            + "\") to a floating point value! (ID:" + id
-                                            + ", attribute name:" + attribName + ")");
+                                            + ", attribute name:" + columnName + ")");
 				return null;
 			}
 		}
@@ -835,8 +850,8 @@ public class CyTableImpl implements CyTable {
 
 	/**
 	 *  @return "equationValue" interpreted according to Excel rules as a boolean
-	 * /
-	private Boolean convertEqnRetValToBoolean(final String id, final String attribName, final Object equationValue) {
+	 */
+	private Boolean convertEqnRetValToBoolean(final String id, final String columnName, final Object equationValue) {
 		if (equationValue.getClass() == Double.class)
 			return (Double)equationValue != 0.0;
 		else if (equationValue.getClass() == Long.class)
@@ -853,12 +868,11 @@ public class CyTableImpl implements CyTable {
 			else {
 				logger.warn("Cannot convert a string (\"" + stringValue
 				            + "\") to a boolean value! (ID:" + id
-                                            + ", attribute name:" + attribName + ")");
+                                            + ", attribute name:" + columnName + ")");
 				return null;
 			}
 		}
 		else
 			throw new IllegalStateException("we should never get here!");
 	}
-*/
 }

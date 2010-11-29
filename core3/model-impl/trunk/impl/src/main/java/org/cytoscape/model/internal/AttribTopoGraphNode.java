@@ -1,5 +1,5 @@
 /*
-  File: TopoGraphNode.java
+  File: AttribTopoGraphNode.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -27,16 +27,43 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.util;
+package org.cytoscape.model.internal;
 
 
 import java.util.Collection;
+import java.util.HashSet;
+
+import org.cytoscape.util.tsort.TopoGraphNode;
 
 
 /**
  *  Represents a node in a topological graph.
  */
-public interface TopoGraphNode {
-	public Collection<TopoGraphNode> getDependents();
-}
+public class AttribTopoGraphNode implements TopoGraphNode {
+	private final String nodeName;
+	private final Collection<TopoGraphNode> dependents;
 
+	public AttribTopoGraphNode(final String nodeName, final Collection<String> dependents) {
+		this.nodeName = nodeName;
+		this.dependents = new HashSet<TopoGraphNode>();
+
+		for (final String dependent : dependents)
+			this.dependents.add(new AttribTopoGraphNode(dependent));
+	}
+
+	private AttribTopoGraphNode(final String nodeName) {
+		this.nodeName = nodeName;
+		this.dependents = new HashSet<TopoGraphNode>();
+	}
+
+	public String getNodeName() { return nodeName; }
+	public Collection<TopoGraphNode> getDependents() { return dependents; }
+	@Override public int hashCode() { return nodeName.hashCode(); }
+	@Override public boolean equals(final Object o) {
+		if (!(o instanceof AttribTopoGraphNode))
+			return false;
+
+		final AttribTopoGraphNode other = (AttribTopoGraphNode)o;
+		return nodeName.equals(other.nodeName);
+	}
+}

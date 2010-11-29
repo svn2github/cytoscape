@@ -8,13 +8,13 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.cytoscape.misc-util</bundle.symbolicName>
-    <bundle.namespace>org.cytoscape.util</bundle.namespace>
+    <bundle.symbolicName>org.cytoscape.topo-sort</bundle.symbolicName>
+    <bundle.namespace>org.cytoscape.util.tsort</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
-  <artifactId>misc-util</artifactId>
+  <artifactId>topo-sort</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>${bundle.symbolicName}</name>
