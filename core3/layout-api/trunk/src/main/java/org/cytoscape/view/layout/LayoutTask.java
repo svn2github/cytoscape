@@ -6,6 +6,7 @@ import java.util.Set;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
 
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
@@ -62,7 +63,9 @@ public abstract class LayoutTask extends AbstractTask {
 
 		// update the __layoutAlgorithm attribute
 		final CyRow networkAttributes = network.getCyRow(CyNetwork.HIDDEN_ATTRS);
-		networkAttributes.getDataTable().createColumn(LAYOUT_ALGORITHM, String.class);
+		final CyTable netAttrsTable = networkAttributes.getDataTable();
+		if (netAttrsTable.getColumnTypeMap().get(LAYOUT_ALGORITHM) == null)
+			netAttrsTable.createColumn(LAYOUT_ALGORITHM, String.class);
 		networkAttributes.set(LAYOUT_ALGORITHM, name);
 
 		logger.debug("Layout finished: " + (System.currentTimeMillis()-start) + " msec.");
