@@ -13,7 +13,7 @@
 
 	<context:annotation-config />
 
-	<bean id="interpreter" class="org.cytoscape.equations.internal.InterpreterImpl" />
+	<bean id="interpreter" class="org.cytoscape.equations.internal.interpreter.InterpreterImpl" />
 
 	<bean id="compiler" class="org.cytoscape.equations.internal.EqnCompilerImpl">
 		 <constructor-arg ref="parser" />
