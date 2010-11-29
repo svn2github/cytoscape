@@ -256,17 +256,15 @@ public class NetworkColorDialog extends JDialog
 		}
 
 		// Get the right mapping, depending on whether we are mapping an edge or a node
-		byte mapping = ObjectMapping.NODE_MAPPING;
+		// byte mapping = ObjectMapping.NODE_MAPPING;
 		VisualPropertyType vizType = VisualPropertyType.NODE_FILL_COLOR;
 		if (edge) {
-			mapping = ObjectMapping.EDGE_MAPPING;
+			// mapping = ObjectMapping.EDGE_MAPPING;
 			vizType = VisualPropertyType.EDGE_COLOR;
 		}
 
 		// Create the new continuous mapper
-		ContinuousMapping colorMapping = new ContinuousMapping(missingColor, mapping);
-		colorMapping.setControllingAttributeName(attribute, Cytoscape.getCurrentNetwork(), false);
-		colorMapping.setInterpolator(new LinearNumberToColorInterpolator());
+		ContinuousMapping colorMapping = new ContinuousMapping(Color.class, attribute);
 		
 		double minStep = minValue/5.0;
 		for (int i = 0; i < 5; i++) {

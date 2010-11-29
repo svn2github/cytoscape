@@ -165,12 +165,12 @@ public class EisenCluster {
 		resetAttributes();
 	}
 
-	public void setCreateGroups() { createGroups = true; }
-	public void setIgnoreMissing() { ignoreMissing = true; }
-	public void setSelectedOnly() { selectedOnly = true; }
-	public void setAdjustDiagonals() { adjustDiagonals = true; }
-	public void setZeroMissing() { zeroMissing = true; }
-	public void setDebug() { debug = true; }
+	public void setCreateGroups(boolean val) { createGroups = val; }
+	public void setIgnoreMissing(boolean val) { ignoreMissing = val; }
+	public void setSelectedOnly(boolean val) { selectedOnly = val; }
+	public void setAdjustDiagonals(boolean val) { adjustDiagonals = val; }
+	public void setZeroMissing(boolean val) { zeroMissing = val; }
+	public void setDebug(boolean val) { debug = val; }
 
 	public String cluster(boolean transpose) { 
 		String keyword = "GENE";

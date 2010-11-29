@@ -291,16 +291,11 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	}
 
 	private void setParameters(EisenCluster algorithm) {
-		if (createGroups)
-			algorithm.setCreateGroups();
-		if (ignoreMissing)
-			algorithm.setIgnoreMissing();
-		if (selectedOnly)
-			algorithm.setSelectedOnly();
-		if (adjustDiagonals)
-			algorithm.setAdjustDiagonals();
-		if (zeroMissing)
-			algorithm.setZeroMissing();
+		algorithm.setCreateGroups(createGroups);
+		algorithm.setIgnoreMissing(ignoreMissing);
+		algorithm.setSelectedOnly(selectedOnly);
+		algorithm.setAdjustDiagonals(adjustDiagonals);
+		algorithm.setZeroMissing(zeroMissing);
 	}
 
 	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 

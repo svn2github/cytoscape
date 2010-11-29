@@ -241,7 +241,7 @@ public class ClusterSettingsDialog extends JDialog
 	}
 
 	private void updateAllSettings() {
-			currentAlgorithm.updateSettings();
+			currentAlgorithm.updateSettings(true);
 	}
 
 	private void revertAllSettings() {
