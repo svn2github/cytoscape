@@ -51,8 +51,8 @@ public class InterpreterImpl implements Interpreter {
 
 	public InterpreterImpl() { }
 
-	/** Executes the code that was passed into the constructor.
-	 *  @return a Double, Boolean or String object that is the result of a successful execution.
+	/** Executes the code that is passed in and returns the result of an equation's evaluation.
+	 *  @return a Double, Boolean, String etc. object that is the result of a successful execution.
 	 *  @throws ArithmeticException thrown if an arithmetic error was detected like a division by zero etc.
 	 *  @throws IllegalArgumentException thrown if a function invocation resulted in a function detecting an invalid argument
 	 *  @throws IllegalStateException thrown if an invalid interpreter internal state was reached
@@ -63,7 +63,7 @@ public class InterpreterImpl implements Interpreter {
 		if (equation == null || variableNameToDescriptorMap == null)
 			throw new NullPointerException("null equation or variableNameToDescriptorMap!");
 
-		this.argumentStack       = new Stack<Object>();
+		this.argumentStack               = new Stack<Object>();
 		this.variableNameToDescriptorMap = variableNameToDescriptorMap;
 
 		final Object[] code = equation.getCode();
