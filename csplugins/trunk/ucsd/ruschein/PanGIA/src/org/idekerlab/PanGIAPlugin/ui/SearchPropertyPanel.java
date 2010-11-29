@@ -1191,8 +1191,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		parameters.setGeneticEdgeAttrName(geneticEdgeAttrName);
 		parameters.setPhysicalEdgeAttrName(physicalEdgeAttrName);
 
-		parameters.setPhysicalScalingMethod((String)phyScalingMethodComboBox.getSelectedItem());
-		parameters.setGeneticScalingMethod((String)genScalingMethodComboBox.getSelectedItem());
+		if (phyScalingMethodComboBox.isEnabled()) parameters.setPhysicalScalingMethod((String)phyScalingMethodComboBox.getSelectedItem());
+		else parameters.setPhysicalScalingMethod(ScalingMethodX.NONE.getDisplayString());
+		
+		if (genScalingMethodComboBox.isEnabled()) parameters.setGeneticScalingMethod((String)genScalingMethodComboBox.getSelectedItem());
+		else parameters.setGeneticScalingMethod(ScalingMethodX.NONE.getDisplayString());
 		
 		//parameters.setAlpha(Double.parseDouble(alphaTextField.getText()));
 		//parameters.setAlphaMultiplier(Double.parseDouble(alphaMultiplierTextField.getText()));
