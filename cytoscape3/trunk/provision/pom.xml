@@ -266,6 +266,16 @@
 			<artifactId>equations-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>equations-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>topo-sort</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 		
 		<!--<dependency>
 			<groupId>org.cytoscape</groupId>
