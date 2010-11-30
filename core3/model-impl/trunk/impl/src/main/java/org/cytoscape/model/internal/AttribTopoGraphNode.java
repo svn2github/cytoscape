@@ -33,7 +33,7 @@ package org.cytoscape.model.internal;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.cytoscape.util.tsort.TopoGraphNode;
+import org.cytoscape.model.internal.tsort.TopoGraphNode;
 
 
 /**

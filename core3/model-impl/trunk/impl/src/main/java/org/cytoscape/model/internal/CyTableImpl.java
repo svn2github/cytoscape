@@ -56,8 +56,8 @@ import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.RowSetMicroListener;
 
-import org.cytoscape.util.tsort.TopoGraphNode;
-import org.cytoscape.util.tsort.TopologicalSort;
+import org.cytoscape.model.internal.tsort.TopoGraphNode;
+import org.cytoscape.model.internal.tsort.TopologicalSort;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
