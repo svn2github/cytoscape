@@ -42,10 +42,16 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.internal.CyTableImpl;
 
+import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 
 public class CyTableTest extends AbstractCyTableTest {
 	private final EqnCompiler compiler = new EqnCompilerImpl(new EqnParserImpl());
 
+	@Before
 	public void setUp() {
 		eventHelper = new DummyCyEventHelper();
 		final Interpreter interpreter = new InterpreterImpl();
@@ -53,11 +59,13 @@ public class CyTableTest extends AbstractCyTableTest {
 		attrs = table.getRow(1L);
 	}
 
+	@After
 	public void tearDown() {
 		table = null;
 		attrs = null;
 	}
 
+	@Test
 	public void testSetEquation() {
 		table.createColumn("someDouble", Double.class);
 		table.createColumn("someOtherDouble", Double.class);
@@ -67,9 +75,10 @@ public class CyTableTest extends AbstractCyTableTest {
 		attrs.set("someDouble", eqn);
 
 		assertTrue(attrs.isSet("someDouble", Double.class));
-		assertEquals(2.0, attrs.get("someDouble", Double.class).doubleValue());
+		assertEquals(2.0, attrs.get("someDouble", Double.class).doubleValue(), 0.00001);
 	}
 
+	@Test
 	public void testSetEquationWithIncompatibleEquationReturnType() {
 		table.createColumn("someDouble", Double.class);
 		table.createColumn("someOtherDouble", Double.class);
@@ -84,6 +93,7 @@ public class CyTableTest extends AbstractCyTableTest {
 		}
 	}
 
+	@Test
 	public void testCreateList() {
 		table.createListColumn("booleanList", Boolean.class);
 		attrs.set("booleanList", new BooleanList());
@@ -92,6 +102,7 @@ public class CyTableTest extends AbstractCyTableTest {
 		assertEquals(attrs.getList("booleanList", Boolean.class), nonEmptyList);
 	}
 
+	@Test
 	public void testSetListWithACompatibleEquation() {
 		table.createListColumn("stringList", String.class);
 		attrs.set("stringList", new StringList());

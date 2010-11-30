@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,13 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.RowSetMicroListener;
@@ -49,26 +36,21 @@ import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
 
+import static org.junit.Assert.*;
+import org.junit.Test;
+
+
 import java.awt.Color;
-
 import java.lang.RuntimeException;
-
 import java.util.*;
 
 
-/**
- * DOCUMENT ME!
- */
-public abstract class AbstractCyTableTest extends TestCase {
-
+public abstract class AbstractCyTableTest {
 	protected CyTable table;
 	protected CyRow attrs;
 	protected DummyCyEventHelper eventHelper; 
 
-
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAddStringAttr() {
 		table.createColumn("someString", String.class);
 		table.createColumn("someStringElse", String.class);
@@ -84,9 +66,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertEquals("orange", attrs.get("someStringElse", String.class));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAddIntAttr() {
 		table.createColumn("someInt", Integer.class);
 		table.createColumn("someOtherInt", Integer.class);
@@ -102,9 +82,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertEquals(100, attrs.get("someOtherInt", Integer.class).intValue());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAddLongAttr() {
 		table.createColumn("someLong", Long.class);
 		table.createColumn("someOtherLong", Long.class);
@@ -120,9 +98,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertEquals(100, attrs.get("someOtherLong", Long.class).intValue());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAddDoubleAttr() {
 		table.createColumn("someDouble", Double.class);
 		table.createColumn("someOtherDouble", Double.class);
@@ -134,13 +110,11 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertTrue(attrs.isSet("someOtherDouble", Double.class));
 		assertFalse(attrs.isSet("yetAnotherDouble", Double.class));
 
-		assertEquals(3.14, attrs.get("someDouble", Double.class).doubleValue());
-		assertEquals(2.76, attrs.get("someOtherDouble", Double.class).doubleValue());
+		assertEquals(3.14, attrs.get("someDouble", Double.class).doubleValue(), 0.000001);
+		assertEquals(2.76, attrs.get("someOtherDouble", Double.class).doubleValue(), 0.000001);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAddBooleanAttr() {
 		table.createColumn("someBoolean", Boolean.class);
 		table.createColumn("someOtherBoolean", Boolean.class);
@@ -156,9 +130,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertFalse(attrs.get("someOtherBoolean", Boolean.class));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAddListAttr() {
 		table.createListColumn("someList", String.class);
 
@@ -173,9 +145,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertEquals(2, attrs.getList("someList", String.class).size());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAddMapAttr() {
 		table.createColumn("someMap", Map.class);
 
@@ -190,9 +160,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertEquals(2, attrs.get("someMap", Map.class).size());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAddBadAttr() {
 		try {
 			attrs.set("nodeColor", Color.white);
@@ -205,9 +173,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		fail();
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
+	@Test
 	public void testAddBadList() {
 		List<Color> l = new LinkedList<Color>();
 		l.add(Color.white);
@@ -226,6 +192,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 
 	// You can't have an attribute with the same name, but
 	// a different type.
+	@Test
 	public void testAddDuplicateNameAttr() {
 		table.createColumn("something", String.class);
 		try {
@@ -236,6 +203,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		fail();
 	}
 
+	@Test
 	public void testRowSetMicroListener() {
 		table.createColumn("someString", String.class);
 		attrs.set("someString", "apple");
@@ -245,6 +213,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertTrue( last instanceof RowSetMicroListener );
 	}
 
+	@Test
 	public void testColumnCreatedEvent() {
 		table.createColumn("someInt", Integer.class);
 
@@ -253,6 +222,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertTrue( last instanceof ColumnCreatedEvent );
 	}
 
+	@Test
 	public void testColumnDeletedEvent() {
 		table.createColumn("someInt", Integer.class);
 		table.deleteColumn("someInt");
@@ -262,12 +232,14 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertTrue( last instanceof ColumnDeletedEvent );
 	}
 
+	@Test
 	public void testColumnCreate() {
 		table.createColumn("someInt", Integer.class);
 		assertTrue( table.getColumnTypeMap().containsKey("someInt") );
 		assertEquals( table.getColumnTypeMap().get("someInt"), Integer.class );
 	}
 
+	@Test
 	public void testColumnDelete() {
 		table.createColumn("someInt", Integer.class);
 		assertTrue( table.getColumnTypeMap().containsKey("someInt") );
@@ -276,11 +248,13 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertFalse( table.getColumnTypeMap().containsKey("someInt") );
 	}
 
+	@Test
 	public void testPrimaryKey() {
 		String pk = table.getPrimaryKey();
 		assertEquals( table.getPrimaryKeyType(), table.getColumnTypeMap().get(pk) );
 	}
 
+	@Test
 	public void testUnsetRowBoolean() {
 		table.createColumn("someBoolean", Boolean.class);
 		attrs.set("someBoolean", true);
@@ -293,6 +267,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertFalse(attrs.isSet("someBoolean", Boolean.class));
 	}
 
+	@Test
 	public void testUnsetRowString() {
 		table.createColumn("someString", String.class);
 		attrs.set("someString", "homer");
@@ -301,6 +276,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertFalse(attrs.isSet("someString", String.class));
 	}
 
+	@Test
 	public void testUnsetRowInt() {
 		table.createColumn("someInt", Integer.class);
 		attrs.set("someInt", 5);
@@ -309,6 +285,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertFalse(attrs.isSet("someInt", Integer.class));
 	}
 
+	@Test
 	public void testUnsetRowDouble() {
 		table.createColumn("someDouble", Double.class);
 		attrs.set("someDouble", 5.0);
@@ -317,6 +294,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertFalse(attrs.isSet("someDouble", Double.class));
 	}
 
+	@Test
 	public void testUnsetRowList() {
 		List<String> ls = new ArrayList<String>();
 		ls.add("asdf");
@@ -327,6 +305,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertFalse(attrs.isSet("someList", List.class));
 	}
 
+	@Test
 	public void testUnsetRowMap() {
 		Map<Integer,String> mis = new HashMap<Integer,String>();
 		mis.put(1,"two");
@@ -337,6 +316,7 @@ public abstract class AbstractCyTableTest extends TestCase {
 		assertFalse(attrs.isSet("someMap", Map.class));
 	}
 
+	@Test
 	public void testGetListElementType() {
 		table.createListColumn("someList2", Boolean.class);
 		assertEquals(table.getListElementType("someList2"), Boolean.class);
