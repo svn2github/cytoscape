@@ -36,9 +36,9 @@ import java.util.ArrayList;
 public final class DoubleList extends ArrayList<Double> {
 	public static final long serialVersionUID = 9241560324069182L;
 
-	public DoubleList(final double[] numbers) {
-		ensureCapacity(numbers.length);
-		for (final double d : numbers)
+	public DoubleList(final double... doubles) {
+		ensureCapacity(doubles.length);
+		for (final double d : doubles)
 			add(d);
 	}
 }

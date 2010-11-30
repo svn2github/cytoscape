@@ -36,7 +36,7 @@ import java.util.ArrayList;
 public final class BooleanList extends ArrayList<Boolean> {
 	public static final long serialVersionUID = -39245160342061982L;
 
-	public BooleanList(final boolean[] booleans) {
+	public BooleanList(final boolean... booleans) {
 		ensureCapacity(booleans.length);
 		for (final boolean b : booleans)
 			add(b);

@@ -36,7 +36,7 @@ import java.util.ArrayList;
 public final class StringList extends ArrayList<String> {
 	public static final long serialVersionUID = -4245160342069182L;
 
-	public StringList(final String[] strings) {
+	public StringList(final String... strings) {
 		ensureCapacity(strings.length);
 		for (final String s : strings)
 			add(s);

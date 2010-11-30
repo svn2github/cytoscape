@@ -36,9 +36,9 @@ import java.util.ArrayList;
 public final class LongList extends ArrayList<Long> {
 	public static final long serialVersionUID = -245160324069812L;
 
-	public LongList(final long[] numbers) {
-		ensureCapacity(numbers.length);
-		for (final long l : numbers)
+	public LongList(final long... longs) {
+		ensureCapacity(longs.length);
+		for (final long l : longs)
 			add(l);
 	}
 }
