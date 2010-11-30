@@ -65,8 +65,10 @@ import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.GraphViewObject;
+import org.cytoscape.ding.IconFactory;
 import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.PrintLOD;
+import org.cytoscape.ding.icon.VisualPropertyIconFactory;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.graph.render.stateful.GraphLOD;
@@ -374,6 +376,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	// This is the view model. This should be immutable.
 	final CyNetworkView cyNetworkView;
+	
+	private final IconFactory iconFactory;
 
 
 	/**
@@ -476,6 +480,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		// cyNetworkView.getVisualProperty(vp));
 
 		new FlagAndSelectionHandler(this);
+		
+		iconFactory = new VisualPropertyIconFactory();
 
 		logger.debug("Phase 4: Everything created: time = " + (System.currentTimeMillis() - start));
 	}
@@ -2849,8 +2855,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	@Override
 	public <V> Icon createIcon(VisualProperty<V> vp, V value, int w, int h) {
-		// TODO Auto-generated method stub
-		return null;
+		return iconFactory.createIcon(vp, value, w, h);
 	}
 
 	@Override

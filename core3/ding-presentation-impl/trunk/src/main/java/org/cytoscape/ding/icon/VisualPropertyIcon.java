@@ -80,9 +80,11 @@ public abstract class VisualPropertyIcon<T> extends ImageIcon {
 	 * @param color
 	 */
 	public VisualPropertyIcon(final T value, final int width,
-			final int height, final String name, final Color color) {
+			final int height, final String name) {
 
 		// Validate parameters
+		if (value == null)
+			throw new NullPointerException("Value parameter is null.");
 		if (name == null)
 			throw new NullPointerException("Name parameter is null.");
 		if (width <= 0 || height <= 0)
@@ -95,11 +97,7 @@ public abstract class VisualPropertyIcon<T> extends ImageIcon {
 		this.height = height;
 		this.name = name;
 
-		// For color, use default value if null.
-		if (color != null)
-			this.color = color;
-		else
-			this.color = DEFAULT_ICON_COLOR;
+		this.color = DEFAULT_ICON_COLOR;
 	}
 
 	

@@ -27,7 +27,6 @@
  */
 package org.cytoscape.view.vizmap.gui.internal;
 
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -77,6 +76,8 @@ import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Dialog for editing default visual property values.<br>
@@ -99,7 +100,10 @@ public class DefaultViewEditorImpl extends JDialog implements
 		DefaultViewEditor, SelectedVisualStyleSwitchedListener {
 
 	private final static long serialVersionUID = 1202339876675416L;
-	
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(DefaultViewEditorImpl.class);
+
 	private static final int ICON_WIDTH = 48;
 	private static final int ICON_HEIGHT = 48;
 
@@ -493,14 +497,10 @@ public class DefaultViewEditorImpl extends JDialog implements
 	}
 
 	private void applyNewStyle(CyNetworkView view) {
-		VisualStyle curVS = vmm.getVisualStyle(view);
 		final VisualStyle selectedStyle = selectedManager
 				.getCurrentVisualStyle();
 
-		if (curVS == null) {
-			// Set new style
-			vmm.setVisualStyle(selectedStyle, view);
-		}
+		vmm.setVisualStyle(selectedStyle, view);
 
 		selectedStyle.apply(view);
 		view.updateView();
@@ -574,7 +574,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 * 
 	 */
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
-		private final static long serialVersionUID = 1202339876646385L;
+
+		private static final long serialVersionUID = -1325179272895141114L;
 
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC,
 				14);
@@ -586,24 +587,29 @@ public class DefaultViewEditorImpl extends JDialog implements
 			setOpaque(true);
 		}
 
-		@Override public Component getListCellRendererComponent(JList list, Object value,
+		@Override
+		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 
 			final VisualStyle selectedStyle = selectedManager
 					.getCurrentVisualStyle();
+
 			Icon icon = null;
 			VisualProperty<Object> vp = null;
 
 			if (value instanceof VisualProperty<?>) {
 				vp = (VisualProperty<Object>) value;
 
-				RenderingEngine<?> presentation = cyApplicationManager
+				final RenderingEngine<?> presentation = cyApplicationManager
 						.getCurrentRenderingEngine();
-				if (presentation != null)
-					icon = presentation.createIcon(vp, selectedStyle.getDefaultValue(vp), ICON_WIDTH, ICON_HEIGHT);
+
+				if (presentation != null) {
+					icon = presentation.createIcon(vp,
+							selectedStyle.getDefaultValue(vp), ICON_WIDTH,
+							ICON_HEIGHT);
+				}
 			}
-			setText(vp.getDisplayName() + "  =  "
-					+ selectedStyle.getDefaultValue(vp));
+			setText(vp.getDisplayName());
 			setToolTipText(vp.getDisplayName());
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);

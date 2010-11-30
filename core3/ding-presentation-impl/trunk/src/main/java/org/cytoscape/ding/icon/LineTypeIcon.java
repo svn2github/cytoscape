@@ -34,18 +34,24 @@
 */
 package org.cytoscape.ding.icon;
 
-import org.cytoscape.ding.LineStyle;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.geom.Line2D;
+
+import javax.swing.SwingUtilities;
 
 /**
  * DOCUMENT ME!
  *
  * @author $author$
   */
-public class LineTypeIcon extends VisualPropertyIcon {
+public class LineTypeIcon extends VisualPropertyIcon<Stroke> {
 	private final static long serialVersionUID = 1202339875918391L;
 	private BasicStroke stroke;
 	protected Graphics2D g2d;
@@ -72,8 +78,8 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	 * @param name DOCUMENT ME!
 	 * @param color DOCUMENT ME!
 	 */
-	public LineTypeIcon(Stroke stroke, int width, int height, String name, Color color) {
-		super(null, width, height, name, color);
+	public LineTypeIcon(Stroke stroke, int width, int height, String name) {
+		super(null, width, height, name);
 
 		// TODO this value used to be set by the visual style default
 		final float lineWidth = 5.0f; 

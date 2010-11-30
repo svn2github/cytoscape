@@ -67,8 +67,8 @@ public class NodeIcon extends VisualPropertyIcon<Shape> {
 	 * @param name DOCUMENT ME!
 	 * @param color DOCUMENT ME!
 	 */
-	public NodeIcon(Shape shape, int width, int height, String name, Color color) {
-		super(shape, width, height, name, color);
+	public NodeIcon(Shape shape, int width, int height, String name) {
+		super(shape, width, height, name);
 
 		adjustShape();
 	}
@@ -109,7 +109,7 @@ public class NodeIcon extends VisualPropertyIcon<Shape> {
 	 * @param x DOCUMENT ME!
 	 * @param y DOCUMENT ME!
 	 */
-	public void paintIcon(Component c, Graphics g, int x, int y) {
+	@Override public void paintIcon(Component c, Graphics g, int x, int y) {
 		g2d = (Graphics2D) g;
 
 		final AffineTransform af = new AffineTransform();
@@ -137,7 +137,7 @@ public class NodeIcon extends VisualPropertyIcon<Shape> {
 	 * @return DOCUMENT ME!
 	 */
 	public NodeIcon clone() {
-		final NodeIcon cloned = new NodeIcon(value, width, height, name, color);
+		final NodeIcon cloned = new NodeIcon(value, width, height, name);
 
 		return cloned;
 	}

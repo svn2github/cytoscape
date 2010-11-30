@@ -8,7 +8,6 @@ import org.cytoscape.ding.IconFactory;
 import org.cytoscape.ding.LineStyle;
 import org.cytoscape.ding.NodeShape;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 public class VisualPropertyIconFactory implements IconFactory {
 
@@ -16,17 +15,19 @@ public class VisualPropertyIconFactory implements IconFactory {
 	
 	@Override
 	public <V> Icon createIcon(VisualProperty<V> vp, V value, int w, int h) {
+		if(value == null)
+			return null;
 		
 		Icon icon = null;
 		
 		if(value instanceof Color) {
-			
+			icon = new ColorIcon((Color) value, w, h, value.toString());
 		} else if(value instanceof NodeShape) {
-			icon = new NodeIcon(((NodeShape) value).getShape(), w, h, ((NodeShape) value).getShapeName(), VisualPropertyIcon.DEFAULT_ICON_COLOR);
+			icon = new NodeIcon(((NodeShape) value).getShape(), w, h, ((NodeShape) value).getShapeName());
 		} else if(value instanceof LineStyle) {
-			
+			icon = new LineTypeIcon(((LineStyle) value).getStroke(5), w, h, ((LineStyle) value).name());
 		} else {
-			
+			icon = new TextIcon(value, w, h, value.toString());
 		}
 		
 		return icon;

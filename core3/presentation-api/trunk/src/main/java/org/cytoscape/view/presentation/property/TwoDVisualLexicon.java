@@ -105,9 +105,9 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	public static final VisualProperty<Double> NODE_SIZE = new DoubleVisualProperty(
 			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_SIZE", "Node size", CyNode.class);
 	public static final VisualProperty<Double> NODE_X_SIZE = new DoubleVisualProperty(
-			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_X_SIZE", "Node X size (width)", CyNode.class);
+			60.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_X_SIZE", "Node X size (width)", CyNode.class);
 	public static final VisualProperty<Double> NODE_Y_SIZE = new DoubleVisualProperty(
-			70.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_Y_SIZE", "Node y size (height)", CyNode.class);
+			40.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_Y_SIZE", "Node y size (height)", CyNode.class);
 
 	public static final VisualProperty<Boolean> NODE_VISIBLE = new BooleanVisualProperty(
 			true, "NODE_VISIBLE", "Node Visible", CyNode.class);
@@ -141,21 +141,21 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	
 	//////// Network VP ////////
 	public static final VisualProperty<Double> NETWORK_SCALE_FACTOR = new DoubleVisualProperty(
-			1.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_SCALE_FACTOR", "Network Scale Factor", CyNetwork.class);
+			1.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_SCALE_FACTOR", "Network Scale Factor", true,  CyNetwork.class);
 
 	public static final VisualProperty<Double> NETWORK_CENTER_LOCATION = new DoubleVisualProperty(
-			0.0, ARBITRARY_DOUBLE_RANGE, "NETWORK_CENTER_LOCATION", "Network Center Location", CyNetwork.class);
+			0.0, ARBITRARY_DOUBLE_RANGE, "NETWORK_CENTER_LOCATION", "Network Center Location", true, CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_CENTER_X_LOCATION = new DoubleVisualProperty(
-			0.0, ARBITRARY_DOUBLE_RANGE, "NETWORK_CENTER_X_LOCATION", "Network Center X Location", CyNetwork.class);
+			0.0, ARBITRARY_DOUBLE_RANGE, "NETWORK_CENTER_X_LOCATION", "Network Center X Location", true, CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_CENTER_Y_LOCATION = new DoubleVisualProperty(
-			0.0, ARBITRARY_DOUBLE_RANGE, "NETWORK_CENTER_Y_LOCATION", "Network Center Y Location", CyNetwork.class);
+			0.0, ARBITRARY_DOUBLE_RANGE, "NETWORK_CENTER_Y_LOCATION", "Network Center Y Location", true, CyNetwork.class);
 
 	public static final VisualProperty<Double> NETWORK_SIZE = new DoubleVisualProperty(
-			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_SIZE", "Network Size", CyNetwork.class);
+			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_SIZE", "Network Size", true, CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_WIDTH = new DoubleVisualProperty(
-			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_WIDTH", "Network Width", CyNetwork.class);
+			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_WIDTH", "Network Width", true, CyNetwork.class);
 	public static final VisualProperty<Double> NETWORK_HEIGHT = new DoubleVisualProperty(
-			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_HEIGHT", "Network Height", CyNetwork.class);
+			100.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NETWORK_HEIGHT", "Network Height", true, CyNetwork.class);
 
 	public static final VisualProperty<String> NETWORK_TITLE = new StringVisualProperty(
 			"", ARBITRARY_STRING_RANGE, "NETWORK_TITLE", "Network Title", CyNetwork.class);

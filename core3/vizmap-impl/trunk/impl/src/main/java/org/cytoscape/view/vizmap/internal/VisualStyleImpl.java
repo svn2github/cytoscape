@@ -286,19 +286,22 @@ public class VisualStyleImpl implements VisualStyle {
 		
 		// reset all rows to allow usage of default value:
 		for (final View<?> viewModel : views) {
-			final Object currentValue = viewModel.getVisualProperty(vp);
 			
-			// Some of the VP has null defaults.
-			if (currentValue == null)
-				continue;
-
-			// If equals, it is not necessary to set new value.
-			if (currentValue.equals(defaultValue))
-				continue;
-
 			// Not a leaf VP. We can ignore those.
 			if (lexicon.getVisualLexiconNode(vp).getChildren().size() != 0)
 				continue;
+			
+			final Object currentValue = viewModel.getVisualProperty(vp);
+			
+//			// Some of the VP has null defaults.
+//			if (currentValue == null)
+//				continue;
+
+//			// If equals, it is not necessary to set new value.
+//			if (currentValue.equals(defaultValue))
+//				continue;
+//
+//			
 
 			// This is a leaf, and need to be updated.
 			viewModel.setVisualProperty(vp, defaultValue);

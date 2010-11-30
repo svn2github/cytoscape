@@ -645,7 +645,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 				break;
 
 			default:
-				throw new IllegalArgumentException("unrecognized edge end type: " + type);
+				// TODO: is this OK?
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_NONE);
+				//throw new IllegalArgumentException("unrecognized edge end type: " + type);
 			}
 
 			m_sourceEdgeEnd = type;
@@ -710,7 +712,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 				break;
 
 			default:
-				throw new IllegalArgumentException("unrecognized edge end type: " + type);
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_NONE);
+//				throw new IllegalArgumentException("unrecognized edge end type: " + type);
 			}
 
 			m_targetEdgeEnd = type;

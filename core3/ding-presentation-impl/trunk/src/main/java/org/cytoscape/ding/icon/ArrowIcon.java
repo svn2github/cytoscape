@@ -34,9 +34,13 @@
 */
 package org.cytoscape.ding.icon;
 
-import org.cytoscape.ding.ArrowShape;
-
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
@@ -67,8 +71,8 @@ public class ArrowIcon extends VisualPropertyIcon<Shape> {
 	 * @param name DOCUMENT ME!
 	 * @param color DOCUMENT ME!
 	 */
-	public ArrowIcon(Shape shape, int width, int height, String name, Color color) {
-		super(shape, width, height, name, color);
+	public ArrowIcon(Shape shape, int width, int height, String name) {
+		super(shape, width, height, name);
 	}
 
 	/**

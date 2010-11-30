@@ -639,6 +639,10 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 		propList.add(newRootProp);
 
 		parent = null;
+		
+		final VisualStyle currentStyle = manager.getCurrentVisualStyle();
+		currentStyle.apply(applicationManager.getCurrentNetworkView());
+		applicationManager.getCurrentNetworkView().updateView();
 	}
 
 	// private <K, V> VisualMappingFunction<K, V> getNewMappingFunction(

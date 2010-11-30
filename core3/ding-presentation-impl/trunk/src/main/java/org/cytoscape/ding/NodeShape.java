@@ -65,12 +65,13 @@ public enum NodeShape {
 	HEXAGON(GraphGraphics.SHAPE_HEXAGON, "Hexagon", true),
 	OCTAGON(GraphGraphics.SHAPE_OCTAGON, "Octagon", true);
 
-	private int ginyShape;
-	private String name;
-	private boolean isSupported;
-	private static Map<Byte, Shape> nodeShapes = GraphGraphics.getNodeShapes();
+	private final Byte ginyShape;
+	private final String name;
+	private final boolean isSupported;
+	
+	private static final Map<Byte, Shape> nodeShapes = GraphGraphics.getNodeShapes();
 
-	private NodeShape(int ginyShape, String name, boolean isSupported) {
+	private NodeShape(Byte ginyShape, String name, boolean isSupported) {
 		this.ginyShape = ginyShape;
 		this.name = name;
 		this.isSupported = isSupported;
@@ -166,7 +167,7 @@ public enum NodeShape {
 	 * @return Giny shape as integer.
 	 */
 	 // TODO rename this method so that it doesn't reference GINY
-	public int getGinyShape() {
+	public Byte getGinyShape() {
 		return ginyShape;
 	}
 
@@ -176,7 +177,7 @@ public enum NodeShape {
 	 * @param ginyShape
 	 * @return
 	 */
-	public static NodeShape getNodeShape(int ginyShape) {
+	public static NodeShape getNodeShape(Byte ginyShape) {
 		for (NodeShape shape : values()) {
 			if (shape.ginyShape == ginyShape)
 				return shape;
