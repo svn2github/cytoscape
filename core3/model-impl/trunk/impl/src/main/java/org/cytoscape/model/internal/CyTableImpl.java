@@ -349,7 +349,8 @@ public class CyTableImpl implements CyTable {
 			return;
 		}
 
-		checkType(value);
+		if (!(value instanceof Equation))
+			checkType(value);
 
 		Map<Object, Object> vls = attributes.get(attrName);
 
@@ -544,9 +545,7 @@ public class CyTableImpl implements CyTable {
 		else if (o instanceof List) {
 			List l = (List) o;
 
-			if (l.size() <= 0)
-				throw new RuntimeException("empty list");
-			else
+			if (!l.isEmpty())
 				checkType(l.get(0));
 		} else if (o instanceof Map) {
 			Map m = (Map) o;

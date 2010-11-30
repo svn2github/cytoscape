@@ -28,33 +28,77 @@
 package org.cytoscape.model;
 
 
+import java.util.HashMap;
+
+import org.cytoscape.equations.BooleanList;
+import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.Equation;
 import org.cytoscape.equations.Interpreter;
+import org.cytoscape.equations.StringList;
+import org.cytoscape.equations.internal.EqnCompilerImpl;
+import org.cytoscape.equations.internal.EqnParserImpl;
 import org.cytoscape.equations.internal.interpreter.InterpreterImpl;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.internal.CyTableImpl;
 
 
-/**
- * DOCUMENT ME!
- */
 public class CyTableTest extends AbstractCyTableTest {
+	private final EqnCompiler compiler = new EqnCompilerImpl(new EqnParserImpl());
 
-	/**
-	 * DOCUMENT ME!
-	 */
 	public void setUp() {
 		eventHelper = new DummyCyEventHelper();
 		final Interpreter interpreter = new InterpreterImpl();
 		table = new CyTableImpl("homer", "SUID", Long.class, true, eventHelper, interpreter);
-		attrs = table.getRow(1l);
+		attrs = table.getRow(1L);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 */
 	public void tearDown() {
 		table = null;
 		attrs = null;
+	}
+
+	public void testSetEquation() {
+		table.createColumn("someDouble", Double.class);
+		table.createColumn("someOtherDouble", Double.class);
+
+		compiler.compile("=6/3", new HashMap<String, Class>());
+		final Equation eqn = compiler.getEquation();
+		attrs.set("someDouble", eqn);
+
+		assertTrue(attrs.isSet("someDouble", Double.class));
+		assertEquals(2.0, attrs.get("someDouble", Double.class).doubleValue());
+	}
+
+	public void testSetEquationWithIncompatibleEquationReturnType() {
+		table.createColumn("someDouble", Double.class);
+		table.createColumn("someOtherDouble", Double.class);
+
+		compiler.compile("=\"String\"", new HashMap<String, Class>());
+		final Equation eqn = compiler.getEquation();
+		try {
+			attrs.set("someDouble", eqn);
+			fail();
+		} catch (IllegalArgumentException e) {
+			/* Intentionally empty! */
+		}
+	}
+
+	public void testCreateList() {
+		table.createListColumn("booleanList", Boolean.class);
+		attrs.set("booleanList", new BooleanList());
+		final BooleanList nonEmptyList = new BooleanList(true, false);
+		attrs.set("booleanList", nonEmptyList);
+		assertEquals(attrs.getList("booleanList", Boolean.class), nonEmptyList);
+	}
+
+	public void testSetListWithACompatibleEquation() {
+		table.createListColumn("stringList", String.class);
+		attrs.set("stringList", new StringList());
+		compiler.compile("=SLIST(\"one\",\"two\")", new HashMap<String, Class>());
+		final Equation eqn = compiler.getEquation();
+		attrs.set("stringList", eqn);
+		final StringList expectedList = new StringList("one", "two");
+		assertEquals(attrs.getList("stringList", String.class), expectedList);
 	}
 }
