@@ -93,23 +93,4 @@ class CyTableEntryImpl implements CyTableEntry, Identifiable {
 	public CyRow getCyRow() {
 		return getCyRow(CyNetwork.DEFAULT_ATTRS);
 	}
-
-	@Override
-    public boolean equals(Object o) {
-        if (!(o instanceof CyTableEntryImpl))
-            return false;
-
-        CyTableEntryImpl ir = (CyTableEntryImpl) o;
-
-        if (ir.suid == this.suid)
-            return true;
-        else
-
-            return false;
-    }
-
-	@Override
-    public int hashCode() {
-        return (int) (suid ^ (suid >>> 32));
-    }
 }
