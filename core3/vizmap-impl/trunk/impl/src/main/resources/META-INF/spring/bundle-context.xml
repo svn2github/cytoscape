@@ -42,4 +42,8 @@
 		<constructor-arg ref="defaultLexicon" />
 	</bean>
 
+	<bean id="visualStyleSerializer"
+		class="org.cytoscape.view.vizmap.internal.VisualStyleSerializerImpl">
+	</bean>
+
 </beans>

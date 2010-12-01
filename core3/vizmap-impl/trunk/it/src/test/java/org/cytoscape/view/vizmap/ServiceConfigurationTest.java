@@ -19,5 +19,6 @@ public class ServiceConfigurationTest extends ServiceTestSupport {
 			System.out.println("XXXXXXXXXX bundle: " + b.getSymbolicName());
 		checkService(VisualMappingManager.class);
 		checkService(VisualStyleFactory.class);
+		checkService(VisualStyleSerializer.class);
 	}
 }
