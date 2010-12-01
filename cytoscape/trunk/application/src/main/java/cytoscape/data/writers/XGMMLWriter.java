@@ -520,7 +520,13 @@ public class XGMMLWriter {
 
 		// Write out the Cytoscape-specific attributes
 		if (!noCytoscapeGraphics) {
-			writeAttributePair("cy:nodeTransparency", Double.toString(nodeView.getTransparency()));
+			// Get the opacity
+			Integer tp = ((Color) nodeView.getUnselectedPaint()).getAlpha();
+			double transparency = 1.0;
+			if (tp != null && tp.intValue() != 255)
+				transparency = tp.doubleValue()/255.0;
+
+			writeAttributePair("cy:nodeTransparency", Double.toString(transparency));
 			writeAttributePair("cy:nodeLabelFont", encodeFont(nodeView.getLabel().getFont()));
 
 			// Where should we store line-type info???
