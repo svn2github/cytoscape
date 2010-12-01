@@ -43,6 +43,14 @@ import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.layout.TunableListener;
 
+
+import clusterMaker.algorithms.edgeConverters.EdgeWeightConverter;
+import clusterMaker.algorithms.edgeConverters.DistanceConverter;
+import clusterMaker.algorithms.edgeConverters.LogConverter;
+import clusterMaker.algorithms.edgeConverters.NegLogConverter;
+import clusterMaker.algorithms.edgeConverters.NoneConverter;
+import clusterMaker.algorithms.edgeConverters.SCPSConverter;
+
 import clusterMaker.ui.HistogramDialog;
 import clusterMaker.ui.HistoChangeListener;
 
@@ -62,12 +70,12 @@ public class EdgeAttributeHandler
 	private DistanceMatrix matrix = null;
 	private boolean adjustLoops = true;
 	private boolean undirectedEdges = true;
-	private boolean takeNegLOG = false;
 	private boolean selectedOnly = false;
-	private boolean distanceValues = false;
+	private EdgeWeightConverter converter = null;
 	private boolean supportAdjustments = false;
 	private Double edgeCutOff = null;
 	private String[] attributeArray = new String[1];
+	private List<EdgeWeightConverter>converters = null;
 
 	private String dataAttribute = null;
 
@@ -76,6 +84,15 @@ public class EdgeAttributeHandler
 	public EdgeAttributeHandler(ClusterProperties clusterProperties, boolean supportAdjustments) {
 		this.clusterProperties = clusterProperties;
 		this.supportAdjustments = supportAdjustments;
+		// Create all of our edge weight converters
+		converters = new ArrayList<EdgeWeightConverter>();
+		converters.add(new NoneConverter());
+		converters.add(new DistanceConverter());
+		converters.add(new LogConverter());
+		converters.add(new NegLogConverter());
+		converters.add(new SCPSConverter());
+		converter = converters.get(0); // Initialize to the None converter
+
 		initializeTunables(clusterProperties);
 	}
 
@@ -99,20 +116,21 @@ public class EdgeAttributeHandler
 		                              Tunable.BOOLEAN, new Boolean(false));
 		clusterProperties.add(selTune);
 
-		//Whether the attribute values are weights or distances
-		Tunable dValue = new Tunable("distanceValues","Attributes represent distance (use 1/value)",
-		                           Tunable.BOOLEAN, new Boolean(false));
-		clusterProperties.add(dValue);
-
-		//Whether or not take -LOG of Edge-Weights
-		Tunable tLog = new Tunable("takeNegLOG","Take the -LOG of Edge Weights in Network",
-		                           Tunable.BOOLEAN, new Boolean(false));
-		clusterProperties.add(tLog);
+		// TODO: Change this to a LIST with:
+		// 		--None--
+		// 		1/value
+		// 		-LOG(value)
+		// 		LOG(value)
+		// 		SCPS
+		EdgeWeightConverter[] edgeWeightConverters = converters.toArray(new EdgeWeightConverter[1]);
+		Tunable edgeWeighter = new Tunable("edgeWeight","Edge weight conversion",
+		                                   Tunable.LIST, 0, 
+		                                   (Object)edgeWeightConverters, new Integer(0), 0);
+		clusterProperties.add(edgeWeighter);
+		edgeWeighter.addTunableValueListener(this);
 
 		// We want to "listen" for changes to these
 		attrTunable.addTunableValueListener(this);
-		tLog.addTunableValueListener(this);
-		dValue.addTunableValueListener(this);
 		selTune.addTunableValueListener(this);
 
 		clusterProperties.add(new Tunable("edgeCutoffGroup",
@@ -146,9 +164,12 @@ public class EdgeAttributeHandler
 	}
 
 	public void updateSettings(boolean force) {
-		Tunable t = clusterProperties.get("takeNegLOG");
-		if ((t != null) && (t.valueChanged() || force))
-			takeNegLOG = ((Boolean) t.getValue()).booleanValue();
+		Tunable t = clusterProperties.get("edgeWeighter");
+		if ((t != null) && (t.valueChanged() || force)) {
+			int index = ((Integer) t.getValue()).intValue();
+			if (index < 0) index = 0;
+			converter = converters.get(index);
+		}
 
 		t = clusterProperties.get("edgeCutOff");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -166,10 +187,6 @@ public class EdgeAttributeHandler
 		t = clusterProperties.get("adjustLoops");
 		if ((t != null) && (t.valueChanged() || force))
 			adjustLoops = ((Boolean) t.getValue()).booleanValue();
-
-		t = clusterProperties.get("distanceValues");
-		if ((t != null) && (t.valueChanged() || force))
-			distanceValues = ((Boolean) t.getValue()).booleanValue();
 
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -212,7 +229,7 @@ public class EdgeAttributeHandler
 		Tunable t = clusterProperties.get("edgeHistogram");
 		t.clearFlag(Tunable.IMMUTABLE);
 
-		this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, distanceValues, takeNegLOG);
+		this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, converter);
 		double dataArray[] = matrix.getEdgeValues();
 		double range = matrix.getMaxWeight() - matrix.getMinWeight();
 		edgeCutOffTunable.setUpperBound(matrix.getMaxWeight());
@@ -228,7 +245,7 @@ public class EdgeAttributeHandler
 
 	public void actionPerformed(ActionEvent e) {
 		if (this.matrix == null)
-			this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, distanceValues, takeNegLOG);
+			this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, converter);
 		double dataArray[] = matrix.getEdgeValues();
 
 		int nbins = 100;
@@ -246,7 +263,7 @@ public class EdgeAttributeHandler
 	public DistanceMatrix getMatrix() {
 		if (this.matrix == null) {
 			if (dataAttribute == null) return null;
-			this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, distanceValues, takeNegLOG);
+			this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, converter);
 		}
 
 		matrix.setUndirectedEdges(undirectedEdges);

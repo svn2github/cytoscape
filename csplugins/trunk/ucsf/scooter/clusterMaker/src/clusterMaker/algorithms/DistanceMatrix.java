@@ -18,6 +18,8 @@ import cern.colt.matrix.DoubleFactory2D;
 import cern.colt.matrix.DoubleMatrix2D;
 import cern.colt.matrix.impl.SparseDoubleMatrix2D;
 
+import clusterMaker.algorithms.edgeConverters.EdgeWeightConverter;
+
 public class DistanceMatrix {
 	private String edgeAttributeName = null;
 	private double minWeight = Double.MAX_VALUE;
@@ -31,15 +33,14 @@ public class DistanceMatrix {
 	private List<CyNode> nodes = null;
 	private List<CyEdge> edges = null;
 	private DoubleMatrix2D matrix = null;
+	private EdgeWeightConverter converter = null;
 
 	private double[] edgeWeights = null;
 
-	public DistanceMatrix(String edgeAttributeName, boolean selectedOnly, boolean distanceValues,
-	                      boolean takeNegLOG) {
+	public DistanceMatrix(String edgeAttributeName, boolean selectedOnly, EdgeWeightConverter converter) {
 
 		this.edgeAttributeName = edgeAttributeName;
-		this.distanceValues = distanceValues;
-		this.logValues = takeNegLOG;
+		this.converter = converter;
 
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		String networkID = network.getIdentifier();
@@ -91,7 +92,7 @@ public class DistanceMatrix {
 			double edgeWeight = edgeWeights[edgeIndex];
 			if (edgeWeight == Double.MIN_VALUE) continue;
 
-			edgeWeight = scaleValue(edgeWeight);
+			edgeWeight = converter.convert(edgeWeight, minAttribute, maxAttribute);
 			
 			if (edgeWeight == Double.MIN_VALUE)
 					edgeCase.add(edgeIndex);
@@ -125,7 +126,7 @@ public class DistanceMatrix {
 				if (value != 0.0)
 					value = 1/value;
 				else {
-					value = Double.MIN_VALUE;
+					value = Double.MAX_VALUE;
 				}
 			}
 
