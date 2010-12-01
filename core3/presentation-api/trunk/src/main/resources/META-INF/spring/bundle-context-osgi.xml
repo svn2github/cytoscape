@@ -6,6 +6,8 @@
 	default-lazy-init="false">
 
 
+	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
+
 	<!-- Export Rendering Engine Manager Bean as a Service -->
 	<osgi:service id="renderingEngineManagerService" ref="renderingEngineManager"
 		interface="org.cytoscape.view.presentation.RenderingEngineManager">
@@ -13,5 +15,19 @@
 			<entry key="service.type" value="manager" />
 		</osgi:service-properties>
 	</osgi:service>
+
+	<osgi:service id="renderingEngineFactoryManagerService"
+		ref="renderingEngineFactoryManager" interface="org.cytoscape.view.presentation.RenderingEngineFactoryManager">
+		<osgi:service-properties>
+			<entry key="service.type" value="manager" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:set id="renderingEngineFactorySet"
+		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addRenderingEngineFactory"
+			unbind-method="removeRenderingEngineFactory" ref="renderingEngineFactoryManager" />
+	</osgi:set>
 
 </beans>
