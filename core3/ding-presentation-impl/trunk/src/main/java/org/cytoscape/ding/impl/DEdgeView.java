@@ -157,6 +157,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 */
 	public float getStrokeWidth() {
 		synchronized (m_view.m_lock) {
+			System.out.println("!!@@@@@@@@@@@@@@ GOT Stroke WIDTH: " + m_view.m_edgeDetails.segmentThickness(m_inx));
 			return m_view.m_edgeDetails.segmentThickness(m_inx);
 		}
 	}
@@ -1427,6 +1428,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		} else if (vp == TwoDVisualLexicon.EDGE_COLOR) {
 			setUnselectedPaint((Paint) value);
 		} else if (vp == DVisualLexicon.EDGE_WIDTH) {
+			
 			setStrokeWidth(((Double) value).floatValue());
 		} else if (vp == DVisualLexicon.EDGE_STROKE) {
 			setStroke((Stroke) value);

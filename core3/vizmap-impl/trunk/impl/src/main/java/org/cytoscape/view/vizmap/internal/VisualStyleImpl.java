@@ -219,10 +219,21 @@ public class VisualStyleImpl implements VisualStyle {
 		
 		// Current visual prop tree.
 		applyImpl(nodeViews, nodeVPs);
+		
+		dump(nodeViews);
+		
 		applyImpl(edgeViews, edgeVPs);
 		applyImpl(networkViewSet, networkVPs);
 		
 		logger.debug("Visual Style applied: " + this.title + "\n");
+	}
+	
+	private void dump(Collection<View<CyNode>> nodeViews) {
+		for(View<CyNode> nv: nodeViews) {
+			final Double x = nv.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
+			final Double y = nv.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
+			logger.debug("X, Y = " + x + ", " + y);
+		}
 	}
 
 	/**

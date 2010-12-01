@@ -36,13 +36,8 @@
 
 package org.cytoscape.ding;
 
-import org.cytoscape.ding.icon.LineTypeIcon;
-import org.cytoscape.ding.icon.VisualPropertyIcon;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.BasicStroke;
+import java.awt.Stroke;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,12 +52,13 @@ import java.util.regex.Pattern;
  */
 public enum LineStyle {
 	
+	// TODO: marge new line styles from 2.7/8.
 	SOLID(null,"line"),
 	LONG_DASH("10.0f,4.0f","dash");
 
 	private final float[] strokeDef;
 	private String regex;
-
+	
 	private LineStyle(String def, String regex) {
 		if (def == null)
 			strokeDef = null;

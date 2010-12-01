@@ -34,24 +34,31 @@
  */
 package org.cytoscape.ding.impl.visualproperty;
 
+import java.awt.BasicStroke;
 import java.awt.Stroke;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.cytoscape.ding.ArrowShape;
+import org.cytoscape.ding.LineStyle;
 import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRangeImpl;
 import org.cytoscape.view.model.Range;
 
 public class StrokeTwoDVisualProperty extends AbstractVisualProperty<Stroke> {
 
+	private static final float DEFAULT_STROKE_WIDTH = 2.0f;
+	
 	private static final Range<Stroke> STROKE_RANGE;
+	
+	public static final Stroke DEFAULT_STROKE = new BasicStroke(DEFAULT_STROKE_WIDTH);
 
 	static {
 		final Set<Stroke> strokeSet = new HashSet<Stroke>();
-		// This range is empty.
-		STROKE_RANGE = new DiscreteRangeImpl<Stroke>(Stroke.class,
-				strokeSet);
+		strokeSet.add(DEFAULT_STROKE);
+		for(LineStyle ls : LineStyle.values())
+			strokeSet.add(ls.getStroke(DEFAULT_STROKE_WIDTH));
+
+		STROKE_RANGE = new DiscreteRangeImpl<Stroke>(Stroke.class, strokeSet);
 	}
 
 	public StrokeTwoDVisualProperty(final Stroke def, final String id,

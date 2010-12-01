@@ -34,6 +34,7 @@
  */
 package org.cytoscape.view.vizmap.internal;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -42,6 +43,7 @@ import java.util.Set;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
@@ -53,6 +55,13 @@ import org.cytoscape.view.vizmap.events.VisualStyleAddedEvent;
  */
 public class VisualMappingManagerImpl implements VisualMappingManager {
 	private static final String DEFAULT_STYLE_NAME = "Default";
+	
+	// Default Style
+	private static final Color NODE_COLOR = new Color(0, 50, 200);
+	private static final Color EDGE_COLOR = new Color(20, 20, 20);
+	private static final Double EDGE_WIDTH = 3d;
+	private static final Double NODE_WIDTH = 65d;
+	private static final Double NODE_HEIGHT = 30d;
 
 	private final VisualStyle defaultStyle;
 
@@ -71,9 +80,20 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 		visualStyles = new HashSet<VisualStyle>();
 		network2VisualStyleMap = new HashMap<CyNetworkView, VisualStyle>();
 
-		this.defaultStyle = factory.getInstance(DEFAULT_STYLE_NAME,
-				defaultLexicon);
+		this.defaultStyle = buildGlobalDefaultStyle(factory, defaultLexicon);
 		this.visualStyles.add(defaultStyle);
+	}
+	
+	private VisualStyle buildGlobalDefaultStyle(final VisualStyleFactory factory, final VisualLexicon defaultLexicon) {
+		final VisualStyle defStyle = factory.getInstance(DEFAULT_STYLE_NAME, defaultLexicon);
+		
+		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_COLOR, NODE_COLOR);
+		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_X_SIZE, NODE_WIDTH);
+		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_Y_SIZE, NODE_HEIGHT);
+		defStyle.setDefaultValue(TwoDVisualLexicon.EDGE_WIDTH, EDGE_WIDTH);
+		defStyle.setDefaultValue(TwoDVisualLexicon.EDGE_COLOR, EDGE_COLOR);
+		
+		return defStyle;
 	}
 
 	/**

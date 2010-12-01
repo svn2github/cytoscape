@@ -90,7 +90,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 			DEF_BORDER_WIDTH, TwoDVisualLexicon.NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_BORDER_WIDTH", "Node Border Width", CyNode.class);
 
 	public static final VisualProperty<? extends Stroke> NODE_BORDER_STROKE = new StrokeTwoDVisualProperty(
-			new BasicStroke(), "NODE_BORDER_STROKE", "Node Border Stroke", CyNode.class);
+			StrokeTwoDVisualProperty.DEFAULT_STROKE, "NODE_BORDER_STROKE", "Node Border Stroke", CyNode.class);
 
 	public static final VisualProperty<String> NODE_TOOLTIP = new StringVisualProperty(
 			"", TwoDVisualLexicon.ARBITRARY_STRING_RANGE, "NODE_TOOLTIP", "Node Tooltip", CyNode.class);
@@ -127,7 +127,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 			Color.RED, TwoDVisualLexicon.PAINT_RANGE, "EDGE_SELECTED_PAINT", "Edge Selected Paint", CyEdge.class);
 	
 	public static final VisualProperty<? extends Stroke> EDGE_STROKE = new StrokeTwoDVisualProperty(
-			new BasicStroke(), "EDGE_STROKE", "Edge Stroke", CyEdge.class);
+			StrokeTwoDVisualProperty.DEFAULT_STROKE, "EDGE_STROKE", "Edge Stroke", CyEdge.class);
 
 	public static final VisualProperty<Paint> EDGE_SOURCE_ARROW_SELECTED_PAINT = new PaintVisualProperty(
 			Color.YELLOW, TwoDVisualLexicon.PAINT_RANGE, "EDGE_SOURCE_ARROW_SELECTED_PAINT", "Edge Source Arrow Selected Paint", CyEdge.class);

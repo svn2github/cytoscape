@@ -168,12 +168,12 @@ public class NetworkViewImpl extends ViewImpl<CyNetwork> implements CyNetworkVie
 	
 	public void fitContent() {
 		logger.debug("Firing fitContent event from: View ID = " + this.suid);
-		cyEventHelper.fireAsynchronousEvent( new FitContentEvent(this));
+		cyEventHelper.fireSynchronousEvent( new FitContentEvent(this));
 	}
 	
 	public void fitSelected() {
 		logger.debug("Firing fitSelected event from: View ID = " + this.suid);
-		cyEventHelper.fireAsynchronousEvent( new FitSelectedEvent(this));
+		cyEventHelper.fireSynchronousEvent( new FitSelectedEvent(this));
 	}
 	
 	public void updateView() {
