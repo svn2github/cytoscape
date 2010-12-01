@@ -219,21 +219,11 @@ public class VisualStyleImpl implements VisualStyle {
 		
 		// Current visual prop tree.
 		applyImpl(nodeViews, nodeVPs);
-		
-		dump(nodeViews);
-		
+				
 		applyImpl(edgeViews, edgeVPs);
 		applyImpl(networkViewSet, networkVPs);
 		
 		logger.debug("Visual Style applied: " + this.title + "\n");
-	}
-	
-	private void dump(Collection<View<CyNode>> nodeViews) {
-		for(View<CyNode> nv: nodeViews) {
-			final Double x = nv.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION);
-			final Double y = nv.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION);
-			logger.debug("X, Y = " + x + ", " + y);
-		}
 	}
 
 	/**
@@ -248,8 +238,7 @@ public class VisualStyleImpl implements VisualStyle {
 	 */
 	private void applyImpl(
 			final Collection<? extends View<?>> views,
-			final Collection<VisualProperty<?>> visualProperties) {
-		
+			final Collection<VisualProperty<?>> visualProperties) {	
 
 		for (VisualProperty<?> vp : visualProperties)
 			applyToView(views, vp);
@@ -284,9 +273,16 @@ public class VisualStyleImpl implements VisualStyle {
 		} else if (!vp.shouldIgnoreDefault()) {
 			// Ignore defaults flag is OFF. Apply defaults.
 			applyStyleDefaults((Collection<View<?>>) views, vp);
-		} else
-			logger.debug(vp.getDisplayName()
-					+ " is set to ignore defaults.  Skipping...");
+		} else if(lexicon.getVisualLexiconNode(vp).getChildren().size() == 0){
+			Object defVal = getDefaultValue(vp);
+			for (View<?> view : views) {
+				Object val = view.getVisualProperty(vp);
+				//logger.debug(vp.getDisplayName() + ": Ignore flag.  Val = " + val);
+				//logger.debug(vp.getDisplayName() + ": DEF Val = " + defVal);
+				if(defVal.equals(val) == false)
+					view.setVisualProperty(vp, val);
+			}
+		}
 	}
 
 	private void applyStyleDefaults(
