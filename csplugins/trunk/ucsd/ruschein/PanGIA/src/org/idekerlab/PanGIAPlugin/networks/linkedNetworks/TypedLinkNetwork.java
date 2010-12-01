@@ -160,6 +160,16 @@ public class TypedLinkNetwork<NT,ET>
 		edge.target().removeNeighbor(edge.source());
 	}
 	
+	public void removeEdgeWNodeUpdate(TypedLinkEdge<NT,ET> edge)
+	{
+		edges.remove(edge);
+		edge.source().removeNeighbor(edge.target());
+		edge.target().removeNeighbor(edge.source());
+		
+		if (edge.source().numNeighbors()==0) this.removeNode(edge.source());
+		if (edge.target().numNeighbors()==0) this.removeNode(edge.target());
+	}
+	
 	public void removeAllNodes(Collection<TypedLinkNode<NT,ET>> nodes)
 	{
 		for (TypedLinkNode<NT,ET> node : nodes)
@@ -170,6 +180,12 @@ public class TypedLinkNetwork<NT,ET>
 	{
 		for (TypedLinkEdge<NT,ET> edge : edges)
 			this.removeEdge(edge);
+	}
+	
+	public void removeAllEdgesWNodeUpdate(Collection<TypedLinkEdge<NT,ET>> edges)
+	{
+		for (TypedLinkEdge<NT,ET> edge : edges)
+			this.removeEdgeWNodeUpdate(edge);
 	}
 	
 	public void addEdgeWNodeUpdate(TypedLinkNode<NT,ET> n1, TypedLinkNode<NT,ET> n2, ET value)

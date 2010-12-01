@@ -101,35 +101,40 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
          }
          
          //ITEM4
-         JMenu item1 = new JMenu();
-         item1.setText("Save Selected Nodes to Matrix File");
-         
-         String[] ean = edgeAttr.getAttributeNames();
-         List<String> eaNames = new ArrayList<String>(ean.length);
-         for (String s : ean) eaNames.add(s);
-         
-         eaNames.removeAll(NestedNetworkCreator.getEdgeAttributeNames());
-         eaNames.remove(NestedNetworkCreator.REFERENCE_NETWORK_NAME_ATTRIB);
-         
-         for (final String ea : eaNames)
+         if (PanGIAPlugin.output.isAvailable())
          {
-        	 JMenuItem eaItem = new JMenuItem();
-        	 eaItem.setText(ea);
-        	 eaItem.addActionListener(new ActionListener()
+	         JMenu item1 = new JMenu();
+	         item1.setText("Save Selected Nodes to Matrix File");
+	         
+	         //String[] ean = edgeAttr.getAttributeNames();
+	         
+	         String[] ean = new String[]{PanGIAPlugin.output.getPhysAttrName(),PanGIAPlugin.output.getGenAttrName()};
+	         
+	         List<String> eaNames = new ArrayList<String>(ean.length);
+	         for (String s : ean) eaNames.add(s);
+	         
+	         eaNames.removeAll(NestedNetworkCreator.getEdgeAttributeNames());
+	         eaNames.remove(NestedNetworkCreator.REFERENCE_NETWORK_NAME_ATTRIB);
+	         
+	         for (final String ea : eaNames)
 	         {
-	             public void actionPerformed(ActionEvent e) {
-	            	 JFileChooser jfc = new JFileChooser();
-	            	 jfc.setCurrentDirectory(new File("."));
-	            	 int returnVal = jfc.showSaveDialog(view.getComponent());
-	            	 
-	            	 if (returnVal==JFileChooser.APPROVE_OPTION)
-	            		 saveNodesToMatrix(jfc.getSelectedFile(),ea);
-	             }
-	         });
-        	 item1.add(eaItem);
+	        	 JMenuItem eaItem = new JMenuItem();
+	        	 eaItem.setText(ea);
+	        	 eaItem.addActionListener(new ActionListener()
+		         {
+		             public void actionPerformed(ActionEvent e) {
+		            	 JFileChooser jfc = new JFileChooser();
+		            	 jfc.setCurrentDirectory(new File("."));
+		            	 int returnVal = jfc.showSaveDialog(view.getComponent());
+		            	 
+		            	 if (returnVal==JFileChooser.APPROVE_OPTION)
+		            		 saveNodesToMatrix(jfc.getSelectedFile(),ea);
+		             }
+		         });
+	        	 item1.add(eaItem);
+	         }
+	         pangiaMenu.add(item1);
          }
-         pangiaMenu.add(item1);
-
 	     
          //MENU
          menu.add(pangiaMenu);

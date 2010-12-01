@@ -173,10 +173,8 @@ public class NestedNetworkCreator {
 		
 		moduleToCyNodeMap = new HashMap<TypedLinkNodeModule<String, BFEdge>, CyNode>();
 
-		overviewNetwork = Cytoscape.createNetwork(
-				findNextAvailableNetworkName(networkName),	/* create_view = */false);
-		networkAttr.setAttribute(overviewNetwork.getIdentifier(), 
-				VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.OVERVIEW.name());
+		overviewNetwork = Cytoscape.createNetwork( findNextAvailableNetworkName(networkName),	/* create_view = */false);
+		networkAttr.setAttribute(overviewNetwork.getIdentifier(), VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, NetworkType.OVERVIEW.name());
 		networkAttr.setUserVisible(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
 		networkAttr.setUserEditable(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
 		
@@ -186,6 +184,7 @@ public class NestedNetworkCreator {
 		taskMonitor.setStatus("5. Generating Cytoscape networks");
 		int nodeIndex = 1;
 		double maxScore = Double.NEGATIVE_INFINITY;
+
 		maxSize = 0;
 		for (final TypedLinkEdge<TypedLinkNodeModule<String, BFEdge>, BFEdge> edge : networkOfModules.edgeIterator())
 		{
@@ -208,12 +207,8 @@ public class NestedNetworkCreator {
 			}
 			
 			
-			final CyEdge newEdge = Cytoscape.getCyEdge(sourceNode, targetNode,
-					Semantics.INTERACTION, COMPLEX_INTERACTION_TYPE,
-					/* create = */true);
-			edgeAttribs.setAttribute(newEdge.getIdentifier(),
-					REFERENCE_NETWORK_NAME_ATTRIB, origPhysNetwork.getTitle()
-							+ "/" + origGenNetwork.getTitle());
+			final CyEdge newEdge = Cytoscape.getCyEdge(sourceNode, targetNode, Semantics.INTERACTION, COMPLEX_INTERACTION_TYPE, /* create = */true);
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), REFERENCE_NETWORK_NAME_ATTRIB, origPhysNetwork.getTitle()	+ "/" + origGenNetwork.getTitle());
 			overviewNetwork.addEdge(newEdge);
 
 			// Add various edge attributes.
@@ -227,21 +222,17 @@ public class NestedNetworkCreator {
 			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_PVALUE, Double
 					.valueOf(pValue));
 			
-			final int gConnectedness = geneticNetwork.getConnectedness(
-					sourceModule.asStringSet(), targetModule.asStringSet());
-			edgeAttribs.setAttribute(newEdge.getIdentifier(),
-					EDGE_GEN_EDGE_COUNT, Integer.valueOf(gConnectedness));
-			final int pConnectedness = physicalNetwork.getConnectedness(
-					sourceModule.asStringSet(), targetModule.asStringSet());
-			edgeAttribs.setAttribute(newEdge.getIdentifier(),
-					EDGE_PHYS_EDGE_COUNT, Integer.valueOf(pConnectedness));
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_SOURCE_SIZE,
-					Integer.valueOf(sourceModule.size()));
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_TARGET_SIZE,
-					Integer.valueOf(targetModule.size()));
+			final int gConnectedness = geneticNetwork.getConnectedness(sourceModule.asStringSet(), targetModule.asStringSet());
+			edgeAttribs.setAttribute(newEdge.getIdentifier(),EDGE_GEN_EDGE_COUNT, Integer.valueOf(gConnectedness));
+			
+			final int pConnectedness = physicalNetwork.getConnectedness(sourceModule.asStringSet(), targetModule.asStringSet());
+			edgeAttribs.setAttribute(newEdge.getIdentifier(),EDGE_PHYS_EDGE_COUNT, Integer.valueOf(pConnectedness));
+			
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_SOURCE_SIZE,	Integer.valueOf(sourceModule.size()));
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_TARGET_SIZE,	Integer.valueOf(targetModule.size()));
+			
 			final double density = edgeScore / (sourceModule.size() * targetModule.size());
-			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_GEN_DENSITY, Double
-					.valueOf(density));
+			edgeAttribs.setAttribute(newEdge.getIdentifier(), EDGE_GEN_DENSITY, Double.valueOf(density));
 		}
 
 		edgeAttribs.setUserVisible(REFERENCE_NETWORK_NAME_ATTRIB, false);
@@ -249,8 +240,7 @@ public class NestedNetworkCreator {
 		taskMonitor.setStatus("5. Generating network views");
 		int networkViewCount = 0;
 		NetworkAndScore network;
-		final float percentIncrement = remainingPercentage
-				/ networksOrderedByScores.size();
+		final float percentIncrement = remainingPercentage / networksOrderedByScores.size();
 		float percentCompleted = 100.0f - remainingPercentage;
 		while ((network = networksOrderedByScores.poll()) != null) {
 			final boolean createView = networkViewCount++ < MAX_NETWORK_VIEWS;

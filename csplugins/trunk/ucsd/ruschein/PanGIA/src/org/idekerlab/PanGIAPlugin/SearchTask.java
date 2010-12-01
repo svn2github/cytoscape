@@ -197,7 +197,7 @@ public class SearchTask implements Task {
 			
 			if (edge.value().link() < 0) deleteSet.add(edge);
 		}
-		results.removeAllEdges(deleteSet);
+		results.removeAllEdgesWNodeUpdate(deleteSet);
 		
 		if (needsToHalt) return;
 		
@@ -272,14 +272,9 @@ public class SearchTask implements Task {
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
 
 		String networkName = "Module Overview Network";
-		final NestedNetworkCreator nnCreator =
-			new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork,
-			                         pNet, gNet, pValueThreshold, taskMonitor,
-			                         100.0f - COMPUTE_SIG_PERCENTAGE, module_name, networkName);
+		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork, pNet, gNet, pValueThreshold, taskMonitor, 100.0f - COMPUTE_SIG_PERCENTAGE, module_name, networkName);
 
-		setStatus("Search finished!\n\n" + "Number of modules = "
-		          + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n"
-		          + HCSearch2.report(results));
+		setStatus("Search finished!\n\n" + "Number of modules = " + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n" + HCSearch2.report(results));
 
 		setPercentCompleted(100);
 		
@@ -436,7 +431,7 @@ public class SearchTask implements Task {
 			taskMonitor.setPercentCompleted(Math.round(percentCompleted));
 			taskMonitor.setStatus("4. Computing permutations: " + Math.round(permutationsFraction * 100.0f) + "% completed.");
 		}
-		results.removeAllEdges(deleteSet);
+		results.removeAllEdgesWNodeUpdate(deleteSet);
 	}
 
 	/**
