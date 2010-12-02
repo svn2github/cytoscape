@@ -41,21 +41,5 @@ public abstract class AbstractVisualStyleTest {
 		assertEquals(originalTitle, style.getTitle());
 		style.setTitle(newTitle);
 		assertEquals(newTitle, style.getTitle());
-		
-		// Test lexicon
-		assertEquals(lexicon, style.getVisualLexicon());
-		
-		// Test default values.
-		assertEquals(Color.white, style.getDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT));
-		style.setDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT, Color.BLACK);
-		assertEquals(Color.BLACK, style.getDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT));
-		
-		assertEquals(Color.GRAY, style.getDefaultValue(TwoDVisualLexicon.NODE_PAINT));
-		
-		
-		
-		
-		
-		
 	}
 }

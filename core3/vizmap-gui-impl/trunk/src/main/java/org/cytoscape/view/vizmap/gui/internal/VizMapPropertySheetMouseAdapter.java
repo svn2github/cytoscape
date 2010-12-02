@@ -162,12 +162,12 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 				newProp.setDisplayName(vp.getDisplayName());
 				newProp.setValue("Please select a value!");
 
-				if (VisualPropertyUtil.isChildOf(TwoDVisualLexicon.NODE, vp, selectedStyle.getVisualLexicon())) {
+				if (vp.getTargetDataType().equals(CyNode.class)) {
 					newProp.setCategory(TwoDVisualLexicon.NODE.getDisplayName());
 					((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(newProp, nodeAttributeEditor);
 					
 					logger.debug("This is node prop: " + vp.getDisplayName());
-				} else if (VisualPropertyUtil.isChildOf(TwoDVisualLexicon.EDGE, vp, selectedStyle.getVisualLexicon())){
+				} else if (vp.getTargetDataType().equals(CyEdge.class)){
 					newProp.setCategory(TwoDVisualLexicon.EDGE.getDisplayName());
 					((PropertyEditorRegistry) propertySheetPanel.getTable().getEditorFactory()).registerEditor(newProp, edgeAttributeEditor);
 					logger.debug("This is edge prop: " + vp.getDisplayName());

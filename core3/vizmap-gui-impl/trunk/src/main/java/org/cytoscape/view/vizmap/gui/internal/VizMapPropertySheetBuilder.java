@@ -8,11 +8,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
@@ -21,11 +23,13 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.event.CellType;
 import org.cytoscape.view.vizmap.gui.internal.theme.ColorManager;
+import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +67,10 @@ public class VizMapPropertySheetBuilder {
 	private VizMapperMenuManager menuMgr;
 
 	private CyNetworkManager cyNetworkManager;
+	
+	private final VizMapperUtil util;
+	
+	private final VisualMappingManager vmm;
 
 	/*
 	 * Keeps Properties in the browser.
@@ -73,10 +81,12 @@ public class VizMapPropertySheetBuilder {
 
 	public VizMapPropertySheetBuilder(CyNetworkManager cyNetworkManager,
 			PropertySheetPanel propertySheetPanel, EditorManager editorManager,
-			DefaultViewPanel defViewPanel, CyTableManager tableMgr) {
+			DefaultViewPanel defViewPanel, CyTableManager tableMgr, final VizMapperUtil util, final VisualMappingManager vmm) {
 
 		this.cyNetworkManager = cyNetworkManager;
 		this.propertySheetPanel = propertySheetPanel;
+		this.util = util;
+		this.vmm = vmm;
 
 		this.editorManager = editorManager;
 
@@ -229,8 +239,8 @@ public class VizMapPropertySheetBuilder {
 
 	private List<Property> getPropertyListFromVisualStyle(final VisualStyle style) {
 
-		final Collection<VisualProperty<?>> nodeVP = style.getVisualLexicon().getAllDescendants(TwoDVisualLexicon.NODE);
-		final Collection<VisualProperty<?>> edgeVP = style.getVisualLexicon().getAllDescendants(TwoDVisualLexicon.EDGE);
+		final Collection<VisualProperty<?>> nodeVP = util.getVisualPropertySet(CyNode.class);
+		final Collection<VisualProperty<?>> edgeVP = util.getVisualPropertySet(CyEdge.class);
 		//final Collection<VisualProperty<?>> networkVP = style.getVisualLexicon().getVisualLexiconNode(TwoDVisualLexicon.NETWORK).getChildren();
 		
 		final List<Property> nodeProps = getProps(style, TwoDVisualLexicon.NODE.getDisplayName(), nodeVP);
@@ -257,7 +267,7 @@ public class VizMapPropertySheetBuilder {
 			final VisualProperty<?> targetVP = mapping.getVisualProperty();
 			logger.debug("!!!!!!Checking VP: " + targetVP.getDisplayName() + " for " + categoryName);
 			// execute the following only if category matches.
-			if (vpSet.contains(targetVP) == false || style.getVisualLexicon().getVisualLexiconNode(targetVP).getChildren().size() != 0)
+			if (vpSet.contains(targetVP) == false)
 				continue;
 			
 			logger.debug("This is a leaf VP: " + targetVP.getDisplayName());
@@ -314,15 +324,17 @@ public class VizMapPropertySheetBuilder {
 		unusedVisualPropType = new ArrayList<VisualProperty<?>>();
 		VisualMappingFunction<?, ?> mapping = null;
 
-		final VisualLexicon lex = style.getVisualLexicon();
+		final Set<VisualLexicon> lexSet = vmm.getAllVisualLexicon();
+		for(VisualLexicon lex: lexSet) {
 
-		for (VisualProperty<?> type : lex.getAllVisualProperties()) {
-			mapping = style.getVisualMappingFunction(type);
-
-			if (mapping == null && style.getVisualLexicon().getVisualLexiconNode(type).getChildren().size() == 0)
-				unusedVisualPropType.add(type);
-
-			mapping = null;
+			for (VisualProperty<?> type : lex.getAllVisualProperties()) {
+				mapping = style.getVisualMappingFunction(type);
+	
+				if (mapping == null && lex.getVisualLexiconNode(type).getChildren().size() == 0)
+					unusedVisualPropType.add(type);
+	
+				mapping = null;
+			}
 		}
 	}
 

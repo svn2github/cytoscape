@@ -142,13 +142,4 @@ public interface VisualStyle {
 	 */
 	void apply(final CyNetworkView networkViewModel);
 	
-	
-	/**
-	 * A VisualStyle is always associated with a lexicon tree provided 
-	 * by a {@linkplain RenderingEngine}.  This method returns the associated lexicon.
-	 * VisualLexicon is immutable.
-	 * 
-	 * @return VisualLexicon provided by a rendering engine.
-	 */
-	VisualLexicon getVisualLexicon();
 }

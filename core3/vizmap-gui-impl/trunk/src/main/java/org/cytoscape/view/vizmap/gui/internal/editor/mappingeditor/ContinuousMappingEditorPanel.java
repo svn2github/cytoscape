@@ -94,7 +94,6 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 	protected double lastSpinnerNumber = 0;
 
 	protected CyNetworkManager cyNetworkManager;
-	protected VisualMappingManager vmm;
 
 	// This should be injected.
 	protected final EditorValueRangeTracer tracer;
@@ -110,7 +109,7 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 	 * property type T.
 	 * 
 	 * */
-	public ContinuousMappingEditorPanel(final VisualStyle style, final ContinuousMapping<K, V> mapping, final CyTable attr, final CyApplicationManager appManager) {
+	public ContinuousMappingEditorPanel(final VisualStyle style, final ContinuousMapping<K, V> mapping, final CyTable attr, final CyApplicationManager appManager, final VisualMappingManager vmm) {
 		if(mapping == null)
 			throw new NullPointerException("ContinuousMapping should not be null.");
 		if(attr == null)
@@ -120,7 +119,7 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 		if(style == null)
 			throw new NullPointerException("Visual Style should not be null.");
 		
-		this.tracer = new EditorValueRangeTracer(style.getVisualLexicon());
+		this.tracer = new EditorValueRangeTracer(vmm);
 		this.mapping = mapping;
 		this.type = mapping.getVisualProperty();
 		this.appManager = appManager;

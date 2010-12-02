@@ -137,6 +137,7 @@
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="selectedVisualStyleManager" />
 		<constructor-arg ref="editorManager" />
+		<constructor-arg ref="vmmServiceRef" />
 	</bean>
 	<bean id="doublePropertyEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.editor.DoubleVisualPropertyEditor">
@@ -145,6 +146,7 @@
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="selectedVisualStyleManager" />
 		<constructor-arg ref="editorManager" />
+		<constructor-arg ref="vmmServiceRef" />
 	</bean>
 
 	<!-- Main Panel Configurations -->
@@ -179,6 +181,7 @@
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="vmmServiceRef" />
 		<constructor-arg ref="selectedVisualStyleManager" />
+		<constructor-arg ref="vizMapperUtil" />
 	</bean>
 
 
@@ -194,7 +197,6 @@
 		class="org.cytoscape.view.vizmap.gui.internal.task.CreateNewVisualStyleTaskFactory">
 		<constructor-arg ref="visualStyleFactoryServiceRef" />
 		<constructor-arg ref="vizMapperUtil" />
-		<constructor-arg ref="dingVisualLexiconServiceRef" />
 		<constructor-arg ref="vmmServiceRef" />
 	</bean>
 
@@ -257,6 +259,8 @@
 		<constructor-arg ref="editorManager" />
 		<constructor-arg ref="defaultViewPanel" />
 		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="vizMapperUtil" />
+		<constructor-arg ref="vmmServiceRef" />
 	</bean>
 
 	<bean id="vizMapEventHandlerManager"

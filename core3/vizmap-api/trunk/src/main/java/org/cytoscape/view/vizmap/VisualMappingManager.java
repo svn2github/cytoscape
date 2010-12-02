@@ -38,6 +38,7 @@ package org.cytoscape.view.vizmap;
 import java.util.Set;
 
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.vizmap.events.VisualStyleAboutToBeRemovedEvent;
 import org.cytoscape.view.vizmap.events.VisualStyleAddedEvent;
 
@@ -109,5 +110,7 @@ public interface VisualMappingManager {
 	 * @return default Visual Style.
 	 */
 	VisualStyle getDefaultVisualStyle();
+	
+	Set<VisualLexicon> getAllVisualLexicon();
 
 }

@@ -69,23 +69,25 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	private final Set<VisualStyle> visualStyles;
 
 	private final CyEventHelper cyEventHelper;
+	private final VisualLexiconManager lexManager;
 
 	public VisualMappingManagerImpl(final CyEventHelper eventHelper,
-			final VisualStyleFactory factory, final VisualLexicon defaultLexicon) {
+			final VisualStyleFactory factory, final VisualLexiconManager lexManager) {
 		if (eventHelper == null)
 			throw new NullPointerException("CyEventHelper cannot be null");
 
 		this.cyEventHelper = eventHelper;
+		this.lexManager = lexManager;
 
 		visualStyles = new HashSet<VisualStyle>();
 		network2VisualStyleMap = new HashMap<CyNetworkView, VisualStyle>();
 
-		this.defaultStyle = buildGlobalDefaultStyle(factory, defaultLexicon);
+		this.defaultStyle = buildGlobalDefaultStyle(factory);
 		this.visualStyles.add(defaultStyle);
 	}
 	
-	private VisualStyle buildGlobalDefaultStyle(final VisualStyleFactory factory, final VisualLexicon defaultLexicon) {
-		final VisualStyle defStyle = factory.getInstance(DEFAULT_STYLE_NAME, defaultLexicon);
+	private VisualStyle buildGlobalDefaultStyle(final VisualStyleFactory factory) {
+		final VisualStyle defStyle = factory.getInstance(DEFAULT_STYLE_NAME);
 		
 		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_COLOR, NODE_COLOR);
 		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_X_SIZE, NODE_WIDTH);
@@ -199,5 +201,10 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	@Override
 	public VisualStyle getDefaultVisualStyle() {
 		return defaultStyle;
+	}
+
+	@Override
+	public Set<VisualLexicon> getAllVisualLexicon() {
+		return lexManager.getAllVisualLexicon();
 	}
 }

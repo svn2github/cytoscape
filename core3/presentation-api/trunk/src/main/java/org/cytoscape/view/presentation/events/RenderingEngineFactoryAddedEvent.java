@@ -18,7 +18,7 @@ public final class RenderingEngineFactoryAddedEvent extends
 	 */
 	public RenderingEngineFactoryAddedEvent(final RenderingEngineFactoryManager source,
 			final RenderingEngineFactory<?> factory) {
-		super(source, RenderingEngineAddedListener.class);
+		super(source, RenderingEngineFactoryAddedListener.class);
 		this.factory = factory;
 	}
 

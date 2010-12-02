@@ -127,4 +127,11 @@ public class DingNavigationRenderingEngineFactory implements
 			gv.updateView();
 	}
 
+
+	@Override
+	public VisualLexicon getVisualLexicon() {
+		
+		return dingLexicon;
+	}
+
 }

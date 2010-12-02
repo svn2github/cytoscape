@@ -45,9 +45,8 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.slf4j.Logger;
@@ -64,24 +63,10 @@ public class VisualStyleImpl implements VisualStyle {
 
 	private final Map<VisualProperty<?>, VisualMappingFunction<?, ?>> mappings;
 	private final Map<VisualProperty<?>, Object> perVSDefaults;
-
-	private final VisualLexicon lexicon;
 	
-	final Collection<VisualProperty<?>> nodeVPs;
-	final Collection<VisualProperty<?>> edgeVPs;
-	final Collection<VisualProperty<?>> networkVPs;
+	private final VisualLexiconManager lexManager;
 
 	private String title;
-
-	/**
-	 * Creates a new VisualStyleImpl object.
-	 * 
-	 * @param rootLexicon
-	 *            DOCUMENT ME!
-	 */
-	public VisualStyleImpl(final VisualLexicon lexicon) {
-		this(null, lexicon);
-	}
 
 	/**
 	 * Creates a new VisualStyleImpl object.
@@ -91,34 +76,21 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param rootLexicon
 	 *            DOCUMENT ME!
 	 */
-	public VisualStyleImpl(final String title, final VisualLexicon lexicon) {
-		if (lexicon == null)
-			throw new NullPointerException("Lexicon is null");
+	public VisualStyleImpl(final String title, final VisualLexiconManager lexManager) {
+		
+		if(lexManager == null)
+			throw new NullPointerException("Lexicon Manager is missing.");
+		
+		this.lexManager = lexManager;
 
 		if (title == null)
 			this.title = DEFAULT_TITLE;
 		else
 			this.title = title;
 
-		this.lexicon = lexicon;
 		mappings = new HashMap<VisualProperty<?>, VisualMappingFunction<?, ?>>();
 		perVSDefaults = new HashMap<VisualProperty<?>, Object>();
 		
-		for(VisualProperty<?> vp: lexicon.getAllVisualProperties())
-			perVSDefaults.put(vp, vp.getDefault());
-		
-		// Node-related Visual Properties are linked as a children of NODE VP.
-		nodeVPs = lexicon.getAllDescendants(TwoDVisualLexicon.NODE);
-		
-		// Node-related Visual Properties are linked as a children of NODE VP.
-		edgeVPs = lexicon.getAllDescendants(TwoDVisualLexicon.EDGE);
-		
-		networkVPs = new HashSet<VisualProperty<?>>();
-		for(VisualProperty<?> vp: lexicon.getAllVisualProperties()) {
-			if(!nodeVPs.contains(vp) && !edgeVPs.contains(vp))
-				networkVPs.add(vp);
-		}
-
 		logger.info("New Visual Style Created: Style Name = " + this.title);
 	}
 
@@ -211,18 +183,17 @@ public class VisualStyleImpl implements VisualStyle {
 		}
 
 		logger.debug("Visual Style Apply method called: " + this.title);
-		
+
 		final Collection<View<CyNode>> nodeViews = networkView.getNodeViews();
 		final Collection<View<CyEdge>> edgeViews = networkView.getEdgeViews();
 		final Collection<View<CyNetwork>> networkViewSet = new HashSet<View<CyNetwork>>();
 		networkViewSet.add(networkView);
-		
+
 		// Current visual prop tree.
-		applyImpl(nodeViews, nodeVPs);
-				
-		applyImpl(edgeViews, edgeVPs);
-		applyImpl(networkViewSet, networkVPs);
-		
+		applyImpl(nodeViews, lexManager.getNodeVisualProperties());
+		applyImpl(edgeViews, lexManager.getEdgeVisualProperties());
+		applyImpl(networkViewSet, lexManager.getNetworkVisualProperties());
+
 		logger.debug("Visual Style applied: " + this.title + "\n");
 	}
 
@@ -236,9 +207,8 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param visualProperties
 	 *            DOCUMENT ME!
 	 */
-	private void applyImpl(
-			final Collection<? extends View<?>> views,
-			final Collection<VisualProperty<?>> visualProperties) {	
+	private void applyImpl(final Collection<? extends View<?>> views,
+			final Collection<VisualProperty<?>> visualProperties) {
 
 		for (VisualProperty<?> vp : visualProperties)
 			applyToView(views, vp);
@@ -254,66 +224,74 @@ public class VisualStyleImpl implements VisualStyle {
 	 * @param visualProperties
 	 *            DOCUMENT ME!
 	 */
-	private void applyToView(
-			final Collection<? extends View<?>> views,
+	private void applyToView(final Collection<? extends View<?>> views,
 			final VisualProperty<?> vp) {
 
 		final VisualMappingFunction<?, ?> mapping = getVisualMappingFunction(vp);
 
 		if (mapping != null) {
 			// Mapping is available for this VP. Apply it.
-			logger.debug("###### Mapping found for " + vp.getDisplayName() + ": " + mapping.toString());
+			logger.debug("###### Mapping found for " + vp.getDisplayName()
+					+ ": " + mapping.toString());
 			final Object styleDefaultValue = getDefaultValue(vp);
 			for (View<?> view : views) {
 				mapping.apply((View<? extends CyTableEntry>) view);
-				
-				if(view.getVisualProperty(vp) == vp.getDefault())
+
+				if (view.getVisualProperty(vp) == vp.getDefault())
 					view.setVisualProperty(vp, styleDefaultValue);
 			}
 		} else if (!vp.shouldIgnoreDefault()) {
 			// Ignore defaults flag is OFF. Apply defaults.
 			applyStyleDefaults((Collection<View<?>>) views, vp);
-		} else if(lexicon.getVisualLexiconNode(vp).getChildren().size() == 0){
+		} else if (vp.getDefault() instanceof Visualizable == false) {
 			Object defVal = getDefaultValue(vp);
+			if(defVal == null) {
+				this.perVSDefaults.put(vp, vp.getDefault());
+				defVal = getDefaultValue(vp);
+			}
 			for (View<?> view : views) {
 				Object val = view.getVisualProperty(vp);
-				//logger.debug(vp.getDisplayName() + ": Ignore flag.  Val = " + val);
-				//logger.debug(vp.getDisplayName() + ": DEF Val = " + defVal);
-				if(defVal.equals(val) == false)
+				// logger.debug(vp.getDisplayName() + ": Ignore flag.  Val = " +
+				// val);
+				// logger.debug(vp.getDisplayName() + ": DEF Val = " + defVal);
+				if (defVal.equals(val) == false)
 					view.setVisualProperty(vp, val);
 			}
 		}
 	}
 
-	private void applyStyleDefaults(
-			final Collection<View<?>> views,
+	private void applyStyleDefaults(final Collection<View<?>> views,
 			final VisualProperty<?> vp) {
 
 		Object defaultValue = getDefaultValue(vp);
-		
+		if(defaultValue == null) {
+			this.perVSDefaults.put(vp, vp.getDefault());
+			defaultValue = getDefaultValue(vp);
+		}
 		// reset all rows to allow usage of default value:
 		for (final View<?> viewModel : views) {
-			
-			// Not a leaf VP. We can ignore those.
-			if (lexicon.getVisualLexiconNode(vp).getChildren().size() != 0)
-				continue;
-			
-			final Object currentValue = viewModel.getVisualProperty(vp);
-			
-//			// Some of the VP has null defaults.
-//			if (currentValue == null)
-//				continue;
 
-//			// If equals, it is not necessary to set new value.
-//			if (currentValue.equals(defaultValue))
-//				continue;
-//
-//			
+			// Not a leaf VP. We can ignore those.
+			if (vp.getDefault() instanceof Visualizable)
+				continue;
+
+			final Object currentValue = viewModel.getVisualProperty(vp);
+
+			// // Some of the VP has null defaults.
+			// if (currentValue == null)
+			// continue;
+
+			// // If equals, it is not necessary to set new value.
+			// if (currentValue.equals(defaultValue))
+			// continue;
+			//
+			//
 
 			// This is a leaf, and need to be updated.
 			viewModel.setVisualProperty(vp, defaultValue);
-			
-			//logger.debug(vp.getDisplayName() + " updated from: " + currentValue + " to " + defaultValue);
+
+			// logger.debug(vp.getDisplayName() + " updated from: " +
+			// currentValue + " to " + defaultValue);
 		}
 	}
 
@@ -349,12 +327,6 @@ public class VisualStyleImpl implements VisualStyle {
 	@Override
 	public Collection<VisualMappingFunction<?, ?>> getAllVisualMappingFunctions() {
 		return mappings.values();
-	}
-
-	// TODO Is this the right set of lexicon?
-	@Override
-	public VisualLexicon getVisualLexicon() {
-		return lexicon;
 	}
 
 }

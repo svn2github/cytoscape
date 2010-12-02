@@ -235,4 +235,9 @@ public class DingRenderingEngineFactory implements
 
 		dropNodeViewTFs.remove(nvtf);
 	}
+
+	@Override
+	public VisualLexicon getVisualLexicon() {
+		return dingLexicon;
+	}
 }

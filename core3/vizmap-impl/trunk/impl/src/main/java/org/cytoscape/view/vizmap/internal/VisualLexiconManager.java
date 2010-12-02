@@ -1,0 +1,70 @@
+package org.cytoscape.view.vizmap.internal;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.events.RenderingEngineFactoryAddedEvent;
+import org.cytoscape.view.presentation.events.RenderingEngineFactoryAddedListener;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+
+public class VisualLexiconManager implements
+		RenderingEngineFactoryAddedListener {
+
+	private final Set<VisualLexicon> lexiconSet;
+	
+	private final Collection<VisualProperty<?>> nodeVPs;
+	private final Collection<VisualProperty<?>> edgeVPs;
+	private final Collection<VisualProperty<?>> networkVPs;
+
+	public VisualLexiconManager() {
+		this.lexiconSet = new HashSet<VisualLexicon>();
+		
+		nodeVPs = new HashSet<VisualProperty<?>>();
+		edgeVPs = new HashSet<VisualProperty<?>>();
+		networkVPs = new HashSet<VisualProperty<?>>();
+		
+	}
+	
+	public Collection<VisualProperty<?>> getNodeVisualProperties() {
+		return this.nodeVPs;
+	}
+	
+	public Collection<VisualProperty<?>> getEdgeVisualProperties() {
+		return this.edgeVPs;
+	}
+	
+	public Collection<VisualProperty<?>> getNetworkVisualProperties() {
+		return this.networkVPs;
+	}
+	
+	public Set<VisualLexicon> getAllVisualLexicon() {
+		return this.lexiconSet;
+	}
+
+	@Override
+	public void handleEvent(RenderingEngineFactoryAddedEvent e) {
+		
+		lexiconSet.add(e.getRenderingEngineFactory().getVisualLexicon());
+		
+		final VisualLexicon lexicon = e.getRenderingEngineFactory().getVisualLexicon();
+		
+		System.out.println("\n\n\n\n### Got New lexicon: " + lexicon);
+
+		// Node-related Visual Properties are linked as a children of NODE
+		// VP.
+		nodeVPs.addAll(lexicon.getAllDescendants(TwoDVisualLexicon.NODE));
+
+		// Node-related Visual Properties are linked as a children of NODE
+		// VP.
+		edgeVPs.addAll(lexicon.getAllDescendants(TwoDVisualLexicon.EDGE));
+
+		for (VisualProperty<?> vp : lexicon.getAllVisualProperties()) {
+			if (!nodeVPs.contains(vp) && !edgeVPs.contains(vp))
+				networkVPs.add(vp);
+		}
+	}
+
+}

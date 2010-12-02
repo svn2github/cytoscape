@@ -18,28 +18,18 @@
 
 	<context:annotation-config />
 
+	<bean id="visualLexiconManager" class="org.cytoscape.view.vizmap.internal.VisualLexiconManager" />
+	
 	<bean id="visualStyleFactory"
 		class="org.cytoscape.view.vizmap.internal.VisualStyleFactoryImpl">
-		<constructor-arg ref="cyEventHelperServiceRef" />
-	</bean>
-
-
-	<bean id="rootProperty"
-		class="org.cytoscape.view.presentation.property.NullVisualProperty">
-		<constructor-arg value="DEFAULT_ROOT" />
-		<constructor-arg value="Default Lexicon Root" />
-	</bean>
-
-	<bean id="defaultLexicon"
-		class="org.cytoscape.view.presentation.property.TwoDVisualLexicon">
-		<constructor-arg ref="rootProperty" />
+		<constructor-arg ref="visualLexiconManager" />
 	</bean>
 
 	<bean id="visualMappingManager"
 		class="org.cytoscape.view.vizmap.internal.VisualMappingManagerImpl">
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="visualStyleFactory" />
-		<constructor-arg ref="defaultLexicon" />
+		<constructor-arg ref="visualLexiconManager" />
 	</bean>
 
 	<bean id="visualStyleSerializer"

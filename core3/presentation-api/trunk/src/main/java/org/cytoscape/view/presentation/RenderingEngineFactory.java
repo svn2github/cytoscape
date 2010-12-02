@@ -1,6 +1,7 @@
 package org.cytoscape.view.presentation;
 
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualLexicon;
 
 /**
  * A factory class to create visualization for a given view model. One
@@ -29,5 +30,13 @@ public interface RenderingEngineFactory<T> {
 	 */
 	RenderingEngine<T> getInstance(final Object visualizationContainer,
 			final View<T> viewModel);
+	
+	
+	/**
+	 * Returns supported VisualLexicon supported by this rendering engine implementation.
+	 * 
+	 * @return lexicon for this implementation.
+	 */
+	VisualLexicon getVisualLexicon();
 
 }

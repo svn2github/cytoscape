@@ -11,12 +11,10 @@ public class CreateNewVisualStyleTaskFactory implements TaskFactory {
 	
 	private final VizMapperUtil vizMapperUtil;
 	private final VisualStyleFactory vsFactory;
-	private final VisualLexicon lexicon;
 	private final VisualMappingManager vmm;
 	
 	public CreateNewVisualStyleTaskFactory(final VizMapperUtil vizMapperUtil,
-	final VisualStyleFactory vsFactory, final VisualLexicon lexicon, final VisualMappingManager vmm) {
-		this.lexicon = lexicon;
+	final VisualStyleFactory vsFactory, final VisualMappingManager vmm) {
 		this.vizMapperUtil = vizMapperUtil;
 		this.vsFactory = vsFactory;
 		this.vmm = vmm;
@@ -24,7 +22,7 @@ public class CreateNewVisualStyleTaskFactory implements TaskFactory {
 
 	@Override
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new CreateNewVisualStyleTask(vizMapperUtil, vsFactory, lexicon, vmm));
+		return new TaskIterator(new CreateNewVisualStyleTask(vizMapperUtil, vsFactory, vmm));
 	}
 
 }

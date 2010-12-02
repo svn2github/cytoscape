@@ -11,9 +11,7 @@ import org.junit.Test;
 public abstract class AbstractVisualStyleFactoryTest {
 	
 	protected VisualStyleFactory factory;
-	
-	protected VisualLexicon lexicon;
-	
+		
 
 	@Before
 	public void setUp() throws Exception {
@@ -26,19 +24,16 @@ public abstract class AbstractVisualStyleFactoryTest {
 	@Test
 	public void testVisualStyleFactory() {
 		assertNotNull(factory);
-		assertNotNull(lexicon);
 		
 		final String title = "original style";
-		final VisualStyle style = factory.getInstance(title, lexicon);
+		final VisualStyle style = factory.getInstance(title);
 		
 		assertNotNull(style);
-		assertEquals(lexicon, style.getVisualLexicon());
 		
 		final VisualStyle copyStyle = factory.getInstance(style);
 		assertNotNull(copyStyle);
 
 		assertEquals(title, copyStyle.getTitle());
-		assertEquals(lexicon, style.getVisualLexicon());
 	}
 
 }

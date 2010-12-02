@@ -45,6 +45,7 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.VizMapGUI;
@@ -82,8 +83,8 @@ public class C2CMappingEditor<V extends Number> extends
 	 */
 	public C2CMappingEditor(final VisualStyle style,
 			final ContinuousMapping<Double, V> mapping, final CyTable attr,
-			final CyApplicationManager appManager) {
-		super(style, mapping, attr, appManager);
+			final CyApplicationManager appManager, final VisualMappingManager vmm) {
+		super(style, mapping, attr, appManager, vmm);
 		abovePanel.setVisible(false);
 		belowPanel.setVisible(false);
 

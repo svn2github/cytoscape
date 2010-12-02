@@ -73,6 +73,7 @@ import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
+import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
@@ -117,6 +118,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 	private VisualMappingManager vmm;
 	final SelectedVisualStyleManager selectedManager;
 
+	private final VizMapperUtil util;
+
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
 	 * 
@@ -129,9 +132,11 @@ public class DefaultViewEditorImpl extends JDialog implements
 			final EditorManager editorFactory,
 			final CyApplicationManager cyApplicationManager,
 			final VisualMappingManager vmm,
-			final SelectedVisualStyleManager selectedManager) {
+			final SelectedVisualStyleManager selectedManager,
+			final VizMapperUtil util) {
 		super();
 		this.vmm = vmm;
+		this.util = util;
 		this.selectedManager = selectedManager;
 		vpSets = new HashMap<Class<? extends CyTableEntry>, Set<VisualProperty<?>>>();
 		listMap = new HashMap<Class<? extends CyTableEntry>, JList>();
@@ -159,51 +164,48 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	private void updateVisualPropertyLists() {
 		vpSets.clear();
-		VisualStyle selectedStyle = selectedManager.getCurrentVisualStyle();
-
-		final VisualLexicon lexicon = selectedStyle.getVisualLexicon();
 
 		vpSets.put(CyNode.class,
-				getLeafNodes(lexicon.getAllDescendants(TwoDVisualLexicon.NODE)));
+				getLeafNodes(util.getVisualPropertySet(CyNode.class)));
 		vpSets.put(CyEdge.class,
-				getLeafNodes(lexicon.getAllDescendants(TwoDVisualLexicon.EDGE)));
-		vpSets.put(CyNetwork.class, getNetworkLeafNodes(lexicon
-				.getAllDescendants(TwoDVisualLexicon.NETWORK)));
-
+				getLeafNodes(util.getVisualPropertySet(CyEdge.class)));
+		vpSets.put(CyNetwork.class, getNetworkLeafNodes(util.getVisualPropertySet(CyNetwork.class)));
 	}
 
 	private Set<VisualProperty<?>> getLeafNodes(
 			final Collection<VisualProperty<?>> props) {
-		final VisualStyle selectedStyle = selectedManager
-				.getCurrentVisualStyle();
-		final VisualLexicon lexicon = selectedStyle.getVisualLexicon();
+
+		final Set<VisualLexicon> lexSet = vmm.getAllVisualLexicon();
+
 		final Set<VisualProperty<?>> propSet = new TreeSet<VisualProperty<?>>(
 				new VisualPropertyComparator());
 
-		for (VisualProperty<?> vp : props) {
-			if (lexicon.getVisualLexiconNode(vp).getChildren().size() == 0)
-				propSet.add(vp);
-		}
+		for (VisualLexicon lexicon : lexSet) {
+			for (VisualProperty<?> vp : props) {
+				if (lexicon.getVisualLexiconNode(vp).getChildren().size() == 0)
+					propSet.add(vp);
+			}
 
+		}
 		return propSet;
 
 	}
 
 	private Set<VisualProperty<?>> getNetworkLeafNodes(
 			final Collection<VisualProperty<?>> props) {
-		final VisualStyle selectedStyle = selectedManager
-				.getCurrentVisualStyle();
-		final VisualLexicon lexicon = selectedStyle.getVisualLexicon();
+		final Set<VisualLexicon> lexSet = vmm.getAllVisualLexicon();
+
 		final Set<VisualProperty<?>> propSet = new TreeSet<VisualProperty<?>>(
 				new VisualPropertyComparator());
 
-		for (VisualProperty<?> vp : props) {
-			if (lexicon.getVisualLexiconNode(vp).getChildren().size() == 0
-					&& lexicon.getVisualLexiconNode(vp).getParent()
-							.getVisualProperty() == TwoDVisualLexicon.NETWORK)
-				propSet.add(vp);
+		for (VisualLexicon lexicon : lexSet) {
+			for (VisualProperty<?> vp : props) {
+				if (lexicon.getVisualLexiconNode(vp).getChildren().size() == 0
+						&& lexicon.getVisualLexiconNode(vp).getParent()
+								.getVisualProperty() == TwoDVisualLexicon.NETWORK)
+					propSet.add(vp);
+			}
 		}
-
 		return propSet;
 
 	}

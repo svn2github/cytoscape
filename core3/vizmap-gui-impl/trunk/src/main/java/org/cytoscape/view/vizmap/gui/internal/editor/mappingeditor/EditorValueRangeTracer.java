@@ -36,16 +36,18 @@ package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 
 /**
  *
  */
 public class EditorValueRangeTracer {
-	
-	private Map<VisualProperty<?>, Range> rangeMap;
+
+	private final Map<VisualProperty<?>, Range> rangeMap;
 
 	/**
 	 * Creates a new EditorValueRangeTracer object.
@@ -53,12 +55,16 @@ public class EditorValueRangeTracer {
 	 * @param vpCatalog
 	 *            DOCUMENT ME!
 	 */
-	public EditorValueRangeTracer(final VisualLexicon lexicon) {
+	public EditorValueRangeTracer(final VisualMappingManager vmm) {
+
+		final Set<VisualLexicon> lexSet = vmm.getAllVisualLexicon();
 		rangeMap = new HashMap<VisualProperty<?>, Range>();
 
-		for (VisualProperty<?> v : lexicon.getAllVisualProperties()) {
-			Range r = new Range(0d, 0d);
-			rangeMap.put(v, r);
+		for (VisualLexicon lexicon : lexSet) {
+			for (VisualProperty<?> v : lexicon.getAllVisualProperties()) {
+				Range r = new Range(0d, 0d);
+				rangeMap.put(v, r);
+			}
 		}
 	}
 

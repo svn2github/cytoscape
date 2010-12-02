@@ -49,6 +49,7 @@ import javax.swing.JComponent;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
@@ -86,9 +87,9 @@ public class GradientEditorPanel extends
 	 */
 	public GradientEditorPanel(final VisualStyle style,
 			final ContinuousMapping<Double, Color> mapping, final CyTable attr,
-			final CyApplicationManager appManager, final ValueEditor<Paint> colorEditor) {
+			final CyApplicationManager appManager, final ValueEditor<Paint> colorEditor, final VisualMappingManager vmm) {
 		
-		super(style, mapping, attr, appManager);
+		super(style, mapping, attr, appManager, vmm);
 		
 		if(colorEditor == null)
 			throw new NullPointerException("Color Value Editor is missing.");

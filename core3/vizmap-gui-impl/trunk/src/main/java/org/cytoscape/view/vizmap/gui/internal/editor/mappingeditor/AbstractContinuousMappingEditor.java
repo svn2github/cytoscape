@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
@@ -25,9 +26,12 @@ public abstract class AbstractContinuousMappingEditor<K, V> extends AbstractProp
 	protected final SelectedVisualStyleManager selectedManager;
 	protected final EditorManager editorManager;
 	
-	public AbstractContinuousMappingEditor(final CyTableManager manager, final CyApplicationManager appManager, 
-			final SelectedVisualStyleManager selectedManager, final EditorManager editorManager) {
+	protected final VisualMappingManager vmm;
 	
+	public AbstractContinuousMappingEditor(final CyTableManager manager, final CyApplicationManager appManager, 
+			final SelectedVisualStyleManager selectedManager, final EditorManager editorManager, final VisualMappingManager vmm) {
+	
+		this.vmm = vmm;
 		this.manager = manager;
 		this.appManager = appManager;
 		this.selectedManager = selectedManager;

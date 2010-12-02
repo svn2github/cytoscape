@@ -41,6 +41,7 @@ import javax.swing.Icon;
 
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.internal.cellrenderer.ColorContinuousMappingCellRenderer;
@@ -61,14 +62,14 @@ public class ColorVisualPropertyEditor extends
 	public ColorVisualPropertyEditor(final Class<Paint> type,
 			final CyTableManager manager,
 			final CyApplicationManager appManager,
-			final SelectedVisualStyleManager selectedManager, final EditorManager editorManager) {
+			final SelectedVisualStyleManager selectedManager, final EditorManager editorManager, final VisualMappingManager vmm) {
 		super(type, new CyColorPropertyEditor());
 
 		discreteTableCellRenderer = REG.getRenderer(Color.class);
 		continuousTableCellRenderer = new ColorContinuousMappingCellRenderer();
 
 		continuousEditor = new GradientEditor(manager, appManager,
-				selectedManager, editorManager);
+				selectedManager, editorManager, vmm);
 	}
 
 	/**

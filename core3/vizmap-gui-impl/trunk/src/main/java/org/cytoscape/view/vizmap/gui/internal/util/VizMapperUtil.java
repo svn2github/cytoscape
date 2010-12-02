@@ -3,8 +3,10 @@ package org.cytoscape.view.vizmap.gui.internal.util;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
@@ -12,6 +14,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.Visualizable;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
@@ -35,11 +38,28 @@ public class VizMapperUtil {
 	}
 	
 
-	private VisualMappingManager vmm;
+	private final VisualMappingManager vmm;
 	
-	public VizMapperUtil(VisualMappingManager vmm) {
+	public VizMapperUtil(final VisualMappingManager vmm) {
 		this.vmm = vmm;
 	}
+	
+	
+	public Set<VisualProperty<?>> getVisualPropertySet(final Class<?> targetDataType) {
+		final Set<VisualProperty<?>> props = new HashSet<VisualProperty<?>>();
+		
+		final Set<VisualLexicon> lexSet = vmm.getAllVisualLexicon();
+		for(final VisualLexicon lex: lexSet) {
+			final Set<VisualProperty<?>> vps = lex.getAllVisualProperties();
+			for(final VisualProperty<?> vp: vps) {
+				if(vp.getTargetDataType().equals(targetDataType))
+					props.add(vp);
+			}
+		}
+		
+		return props;
+	}
+	
 
 	/**
 	 * Get a new Visual Style name
