@@ -145,6 +145,22 @@ public abstract class AbstractCyTableTest {
 		assertEquals(2, attrs.getList("someList", String.class).size());
 	}
 
+	@Test(expected=NullPointerException.class)
+	public void testCreateListColumnWithFirstArgNull() {
+		table.createListColumn(null, String.class);
+	}
+
+	@Test(expected=NullPointerException.class)
+	public void testCreateListColumnWithSecondArgNull() {
+		table.createListColumn("someList", null);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testCreateListColumnWithAlreadyExistingCoulmnName() {
+		table.createListColumn("someList", String.class);
+		table.createListColumn("someList", String.class);
+	}
+
 	@Test
 	public void testAddMapAttr() {
 		table.createColumn("someMap", Map.class);
@@ -320,5 +336,51 @@ public abstract class AbstractCyTableTest {
 	public void testGetListElementType() {
 		table.createListColumn("someList2", Boolean.class);
 		assertEquals(table.getListElementType("someList2"), Boolean.class);
+	}
+
+	@Test
+	public void testGetColumnValues() {
+		table.createColumn("someLongs", Long.class);
+		final CyRow row1 = table.getRow(1L);
+		row1.set("someLongs", 15L);
+		final CyRow row2 = table.getRow(2L);
+		row2.set("someLongs", -27L);
+		final List<Long> values = table.getColumnValues("someLongs", Long.class);
+		assertTrue(values.size() == 2);
+		assertTrue(values.contains(15L));
+		assertTrue(values.contains(-27L));
+	}
+
+	@Test(expected=NullPointerException.class)
+	public void testGetRowWithNullKey() {
+		table.createColumn("someLongs", Long.class);
+		final CyRow row1 = table.getRow(null);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetRowWithWrongKeyType() {
+		table.createColumn("someLongs", Long.class);
+		final CyRow row1 = table.getRow("key");
+	}
+
+	@Test(expected=NullPointerException.class)
+	public void testCreateColumnWithFirstArgNull() {
+		table.createColumn(null, Map.class);
+	}
+
+	@Test(expected=NullPointerException.class)
+	public void testCreateColumnWithSecondArgNull() {
+		table.createColumn("someMap", null);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testCreateColumnWithListColmnType() {
+		table.createColumn("someList", List.class);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetForListCoulmnWithInvalidValueType() {
+		table.createListColumn("someList", String.class);
+		attrs.set("someList", 3.5);
 	}
 }

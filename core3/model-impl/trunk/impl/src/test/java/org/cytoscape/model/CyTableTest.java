@@ -19,7 +19,6 @@
  out of the use of this software and its documentation, even if the
  Institute for Systems Biology and the Whitehead Institute
  have been advised of the possibility of such damage.  See
- the GNU Lesser General Public License for more details.
 
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
@@ -29,6 +28,8 @@ package org.cytoscape.model;
 
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.cytoscape.equations.BooleanList;
 import org.cytoscape.equations.EqnCompiler;
@@ -38,7 +39,9 @@ import org.cytoscape.equations.StringList;
 import org.cytoscape.equations.internal.EqnCompilerImpl;
 import org.cytoscape.equations.internal.EqnParserImpl;
 import org.cytoscape.equations.internal.interpreter.InterpreterImpl;
+import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.event.CyMicroListener;
 import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.internal.CyTableImpl;
 
@@ -61,6 +64,7 @@ public class CyTableTest extends AbstractCyTableTest {
 
 	@After
 	public void tearDown() {
+		eventHelper = null;
 		table = null;
 		attrs = null;
 	}
@@ -111,5 +115,67 @@ public class CyTableTest extends AbstractCyTableTest {
 		attrs.set("stringList", eqn);
 		final StringList expectedList = new StringList("one", "two");
 		assertEquals(attrs.getList("stringList", String.class), expectedList);
+	}
+
+	@Test
+	public void testSetWithAnEvaluableCompatibleEquation() {
+		table.createColumn("strings", String.class);
+		final Map<String, Class> varnameToTypeMap = new HashMap<String, Class>();
+		compiler.compile("=\"one\"", new HashMap<String, Class>());
+		final Equation eqn = compiler.getEquation();
+		attrs.set("strings", eqn);
+                assertTrue(eventHelper.microListenerWasCalled());
+	}
+
+	@Test
+	public void testSetWithANonEvaluableCompatibleEquation() {
+		table.createColumn("strings", String.class);
+		final Map<String, Class> varnameToTypeMap = new HashMap<String, Class>();
+		varnameToTypeMap.put("a", String.class);
+		compiler.compile("=$a&\"one\"", varnameToTypeMap);
+		final Equation eqn = compiler.getEquation();
+		attrs.set("strings", eqn);
+                assertFalse(eventHelper.microListenerWasCalled());
+	}
+
+	@Test
+	public void testGetColumnValuesWithEquations() {
+		table.createColumn("someLongs", Long.class);
+		final CyRow row1 = table.getRow(1L);
+		compiler.compile("=LEN(\"one\")", new HashMap<String, Class>());
+		final Equation eqn = compiler.getEquation();
+		row1.set("someLongs", eqn);
+		final CyRow row2 = table.getRow(2L);
+		row2.set("someLongs", -27L);
+		final List<Long> values = table.getColumnValues("someLongs", Long.class);
+		assertTrue(values.size() == 2);
+		assertTrue(values.contains(3L));
+		assertTrue(values.contains(-27L));
+	}
+
+	@Test
+	public void testGetLastInternalError() {
+		assertNull(table.getLastInternalError());
+		table.createColumn("someLongs", Long.class);
+		final Map<String, Class> varnameToTypeMap = new HashMap<String, Class>();
+		varnameToTypeMap.put("someLongs", Long.class);
+		compiler.compile("=$someLongs", varnameToTypeMap);
+		attrs.set("someLongs", compiler.getEquation());
+		assertNotNull(table.getLastInternalError());
+	}
+
+	@Test
+	public void testGetColumnValuesWithEquationsWithDependentColumns() {
+		table.createColumn("a", Double.class);
+		table.createColumn("b", Double.class);
+		attrs.set("a", 10.0);
+
+		final Map<String, Class> varnameToTypeMap = new HashMap<String, Class>();
+		varnameToTypeMap.put("a", Double.class);
+		compiler.compile("=$a+20", varnameToTypeMap);
+		attrs.set("b", compiler.getEquation());
+                assertTrue(eventHelper.microListenerWasCalled());
+
+		assertEquals(attrs.get("b", Double.class), 30.0, 0.00001);
 	}
 }

@@ -44,7 +44,6 @@ import java.lang.reflect.Proxy;
  * DOCUMENT ME!
   */
 public class DummyCyEventHelper implements CyEventHelper {
-
 	private Object lastSynchronousEvent;
 	private Object lastAsynchronousEvent;
 	private Object lastMicroListener;
@@ -69,10 +68,17 @@ public class DummyCyEventHelper implements CyEventHelper {
 	public <M extends CyMicroListener> void removeMicroListener(M m, Class<M> c, Object o) {
 	}
 
+	private boolean invoked = false;
+
 	private class DummyListenerHandler implements InvocationHandler {
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			invoked = true;
 			return null;
 		}
+	}
+
+	public boolean microListenerWasCalled() {
+		return invoked;
 	}
 
 	public Object getLastMicroListener() {

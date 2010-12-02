@@ -64,6 +64,7 @@ import org.slf4j.LoggerFactory;
 
 
 public class CyTableImpl implements CyTable {
+	private static int counter = 0;
 	private static final Logger logger = LoggerFactory.getLogger(CyTableImpl.class);
 
 	private final Set<String> currentlyActiveAttributes;
@@ -270,21 +271,25 @@ public class CyTableImpl implements CyTable {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public <T> List<T> getColumnValues(String columnName,
-			Class<? extends T> type)
-	{
+	public <T> List<T> getColumnValues(String columnName, Class<? extends T> type) {
 		if (columnName == null)
 			throw new NullPointerException("column name is null");
 
 		Map<Object, Object> vals = attributes.get(columnName);
-
 		if (vals == null)
-			throw new NullPointerException("attribute does not exist");
+			throw new IllegalArgumentException("attribute does not exist");
 
 		List<T> l = new ArrayList<T>(vals.size());
-
-		for (Object o : vals.values())
-			l.add(type.cast(o)); // TODO: add equation support
+		for (final Object suid : vals.keySet()) {
+			final Object value = vals.get(suid);
+			if (value instanceof Equation) {
+				final Object eqnValue = evalEquation((Equation)value, suid, columnName);
+				if (eqnValue == null)
+					throw new IllegalStateException("can't convert an equation to a value!");
+				l.add(type.cast(eqnValue));
+			} else
+				l.add(type.cast(value));
+		}
 
 		return l;
 	}
@@ -327,43 +332,52 @@ public class CyTableImpl implements CyTable {
 		return new ArrayList<CyRow>(rows.values());
 	}
 
-	// internal methods
-	private void removeX(Object suid, String attributeName) {
-		if (attributes.containsKey(attributeName)) {
-			Map<Object, Object> map = attributes.get(attributeName);
+	private void setX(final Object suid, final String columnName, final Object value) {
+		++counter;
+		if (columnName == null)
+			throw new NullPointerException("columnName must not be null!");
+		if (value == null)
+			throw new NullPointerException("value must not be null!");
 
-			if (map.containsKey(suid))
-				map.remove(suid);
-		}
-	}
-
-	private void setX(Object suid, String attrName, Object value) {
-		assert(value != null);
-
-		if (!types.containsKey(attrName) || !attributes.containsKey(attrName))
-			throw new IllegalArgumentException("attribute: '" + attrName
+		final Class<?> columnType = types.get(columnName);
+		if (columnType == null || !attributes.containsKey(columnName))
+			throw new IllegalArgumentException("attribute: '" + columnName
 					+ "' does not yet exist!");
 
-		if (types.get(attrName) == List.class) {
-			setListX(suid, attrName, value);
+		if (types.get(columnName) == List.class) {
+			setListX(suid, columnName, value);
 			return;
 		}
 
 		if (!(value instanceof Equation))
 			checkType(value);
 
-		Map<Object, Object> vls = attributes.get(attrName);
+		Map<Object, Object> vls = attributes.get(columnName);
 
-		final Class targetType = types.get(attrName);
+		final Class targetType = types.get(columnName);
 		if (targetType.isAssignableFrom(value.getClass())
 		    || scalarEquationIsCompatible(value, targetType))
 		{
-			// TODO this is an implicit addRow - not sure if we want to refactor this or not
-			vls.put(suid, value);
-			eventHelper.getMicroListener(RowSetMicroListener.class, getRow(suid)).handleRowSet(attrName,value);
+			if (value instanceof Equation) {
+				final Equation equation = (Equation)value;
+				// TODO this is an implicit addRow - not sure if we want to refactor this or not
+				vls.put(suid, equation);
+				final Object eqnValue = evalEquation(equation, suid, columnName);
+				if (eqnValue == null)
+					logger.warn("attempted premature evaluation evaluation for " + equation);
+				else
+				eventHelper.getMicroListener(
+						RowSetMicroListener.class,
+						getRow(suid)).handleRowSet(columnName, eqnValue);
+			} else {
+				// TODO this is an implicit addRow - not sure if we want to refactor this or not
+				vls.put(suid, columnType.cast(value));
+				eventHelper.getMicroListener(RowSetMicroListener.class,
+							     getRow(suid)).handleRowSet(columnName, value);
+			}
 		} else
 			throw new IllegalArgumentException("value is not of type: "
-					+ types.get(attrName));
+					+ types.get(columnName));
 	}
 
 	private static boolean scalarEquationIsCompatible(final Object equationCandidate,
@@ -391,7 +405,8 @@ public class CyTableImpl implements CyTable {
 			if (!list.isEmpty())
 				checkType(list.get(0));
 		} else if (!(value instanceof Equation))
-			throw new IllegalArgumentException("value is not a List for column '"
+			throw new IllegalArgumentException("value is a " + value.getClass().getName()
+							   + " and not a List for column '"
 							   + columnName + "'!");
 		else if (!listEquationIsCompatible((Equation)value, listElementTypes.get(columnName)))
 			throw new IllegalArgumentException(
@@ -459,7 +474,7 @@ public class CyTableImpl implements CyTable {
 			return type.cast(vl);
 	}
 
-	private Object getX(Object suid, String columnName) {
+	private Object getValue(Object suid, String columnName) {
 		final Object vl = getRawX(suid, columnName);
 		if (vl == null)
 			return null;
@@ -542,24 +557,15 @@ public class CyTableImpl implements CyTable {
 			return;
 		else if (o instanceof Long)
 			return;
-		else if (o instanceof List) {
-			List l = (List) o;
-
-			if (!l.isEmpty())
-				checkType(l.get(0));
-		} else if (o instanceof Map) {
+		else if (o instanceof Map) {
 			Map m = (Map) o;
 			Object[] keys = m.keySet().toArray();
-
-			if (keys.length <= 0) {
-				throw new RuntimeException("empty map");
-			} else {
+			if (keys.length > 0) {
 				checkType(m.get(keys[0]));
 				checkType(keys[0]);
 			}
 		} else
-			throw new RuntimeException("invalid type: "
-					+ o.getClass().toString());
+			throw new RuntimeException("invalid type: " + o.getClass().toString());
 	}
 
 	private class InternalRow implements CyRow {
@@ -601,10 +607,6 @@ public class CyTableImpl implements CyTable {
 			return isSetX(suid, attributeName, c);
 		}
 
-		public void remove(String attributeName) {
-			removeX(suid, attributeName);
-		}
-
 		public Map<String, Object> getAllValues() {
 			Map<String, Object> m = new HashMap<String, Object>(attributes
 					.size());
@@ -613,26 +615,6 @@ public class CyTableImpl implements CyTable {
 				m.put(attr, attributes.get(attr).get(suid));
 
 			return m;
-		}
-
-		public @Override
-		boolean equals(Object o) {
-			if (!(o instanceof InternalRow))
-				return false;
-
-			InternalRow ir = (InternalRow) o;
-
-			// TODO is this sufficent since we're not using long any more?
-			if (ir.suid == this.suid)
-				return true;
-			else
-				return false;
-		}
-
-		public @Override
-		int hashCode() {
-			// TODO is this right?
-			return suid.hashCode();
 		}
 
 		public CyTable getDataTable() {
@@ -668,7 +650,7 @@ public class CyTableImpl implements CyTable {
 				continue;
 			}
 
-			final Object attribValue = getX(suid, attribRef);
+			final Object attribValue = getValue(suid, attribRef);
 			if (attribValue == null) {
 				currentlyActiveAttributes.clear();
 				lastInternalError = "Missing value for referenced attribute \"" + attribRef + "\"!";
