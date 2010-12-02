@@ -383,4 +383,17 @@ public abstract class AbstractCyTableTest {
 		table.createListColumn("someList", String.class);
 		attrs.set("someList", 3.5);
 	}
+
+	@Test
+	public void testGetMatchingColumns() {
+		table.createColumn("someLongs", Long.class);
+		final CyRow row1 = table.getRow(1L);
+		row1.set("someLongs", 15L);
+		final CyRow row2 = table.getRow(2L);
+		row2.set("someLongs", -27L);
+		Set<CyRow> matchingRows = table.getMatchingRows("someLongs", 15L);
+		assertTrue(matchingRows.size() == 1);
+		matchingRows = table.getMatchingRows("someLongs", -15L);
+		assertTrue(matchingRows.isEmpty());
+	}
 }
