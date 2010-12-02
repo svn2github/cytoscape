@@ -69,6 +69,7 @@ public class CyTableImpl implements CyTable {
 
 	private final Set<String> currentlyActiveAttributes;
 	private final Map<String, Map<Object, Object>> attributes;
+	private final Map<String, Map<Object, Set<Object>>> reverse;
 	private final Map<Object, CyRow> rows;
 
 	private final Map<String, Class<?>> types;
@@ -118,6 +119,7 @@ public class CyTableImpl implements CyTable {
 
 		currentlyActiveAttributes = new HashSet<String>();
 		attributes = new HashMap<String, Map<Object, Object>>();
+		reverse =  new HashMap<String, Map<Object, Set<Object>>>();
 		rows = new HashMap<Object, CyRow>();
 		types = new HashMap<String, Class<?>>();
 		listElementTypes = new HashMap<String, Class<?>>();
@@ -196,9 +198,10 @@ public class CyTableImpl implements CyTable {
 	 * @param columnName
 	 *            DOCUMENT ME!
 	 */
-	public void deleteColumn(String columnName) {
+	synchronized public void deleteColumn(String columnName) {
 		if (attributes.containsKey(columnName)) {
 			attributes.remove(columnName);
+			reverse.remove(columnName);
 			types.remove(columnName);
 			listElementTypes.remove(columnName);
 
@@ -236,6 +239,7 @@ public class CyTableImpl implements CyTable {
 
 		types.put(columnName, type);
 		attributes.put(columnName, new HashMap<Object, Object>());
+		reverse.put(columnName, new HashMap<Object, Set<Object>>());
 
 		eventHelper.fireAsynchronousEvent(new ColumnCreatedEvent(this, columnName));
 	}
@@ -255,6 +259,7 @@ public class CyTableImpl implements CyTable {
 		types.put(columnName, List.class);
 		listElementTypes.put(columnName, listElementType);
 		attributes.put(columnName, new HashMap<Object, Object>());
+		reverse.put(columnName, new HashMap<Object, Set<Object>>());
 
 		eventHelper.fireAsynchronousEvent(new ColumnCreatedEvent(this, columnName));
 	}
@@ -302,14 +307,14 @@ public class CyTableImpl implements CyTable {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public CyRow getRow(final Object suid) {
-		checkKey(suid);
-		CyRow row = rows.get(suid);
+	public CyRow getRow(final Object key) {
+		checkKey(key);
+		CyRow row = rows.get(key);
 		if (row != null)
 			return row;
 
-		row = new InternalRow(suid, this);
-		rows.put(suid, row);
+		row = new InternalRow(key, this);
+		rows.put(key, row);
 		return row;
 	}
 
@@ -330,6 +335,20 @@ public class CyTableImpl implements CyTable {
 
 	public List<CyRow> getAllRows() {
 		return new ArrayList<CyRow>(rows.values());
+	}
+
+	public Set<CyRow> getMatchingRows(final String columnName, final Object value) {
+		final Map<Object, Set<Object>> valueToKeysMap = reverse.get(columnName);
+
+		final Set<Object> keys = valueToKeysMap.get(value);
+		if (keys == null)
+			return new HashSet<CyRow>();
+
+		final Set<CyRow> matchingRows = new HashSet<CyRow>(keys.size());
+		for (final Object key : keys)
+			matchingRows.add(rows.get(key));
+
+		return matchingRows;
 	}
 
 	private void setX(final Object key, final String columnName, final Object value) {
@@ -371,13 +390,26 @@ public class CyTableImpl implements CyTable {
 						getRow(key)).handleRowSet(columnName, eqnValue);
 			} else {
 				// TODO this is an implicit addRow - not sure if we want to refactor this or not
-				vls.put(key, columnType.cast(value));
+				final Object newValue = columnType.cast(value);
+				vls.put(key, newValue);
+				addToReverseMap(columnName, key, newValue);
 				eventHelper.getMicroListener(RowSetMicroListener.class,
-							     getRow(key)).handleRowSet(columnName, value);
+							     getRow(key)).handleRowSet(columnName, newValue);
 			}
 		} else
 			throw new IllegalArgumentException("value is not of type: "
 					+ types.get(columnName));
+	}
+
+	private void addToReverseMap(final String columnName, final Object key, final Object value) {
+		final Map<Object, Set<Object>> valueTokeysMap = reverse.get(columnName);
+		Set<Object> keys = valueTokeysMap.get(value);
+		if (keys == null) {
+			keys = new HashSet<Object>();
+			valueTokeysMap.put(value, keys);
+		}
+
+		keys.add(key);
 	}
 
 	private static boolean scalarEquationIsCompatible(final Object equationCandidate,
@@ -439,15 +471,22 @@ public class CyTableImpl implements CyTable {
 	}
 
 	private void unSetX(Object suid, String columnName) {
-
 		if (!types.containsKey(columnName) || !attributes.containsKey(columnName))
 			throw new IllegalArgumentException("attribute: '" + columnName
-					+ "' does not yet exist!");
+							   + "' does not yet exist!");
 
 		Map<Object, Object> vls = attributes.get(columnName);
 
 		vls.remove(suid);
 		eventHelper.getMicroListener(RowSetMicroListener.class, getRow(suid)).handleRowSet(columnName,null);
+	}
+
+	private void removeFromReverseMap(final String columnName, final Object key, final Object value) {
+		final Map<Object, Set<Object>> valueTokeysMap = reverse.get(columnName);
+		Set<Object> keys = valueTokeysMap.get(value);
+		keys.remove(key);
+		if (keys.isEmpty())
+			valueTokeysMap.remove(value);
 	}
 
 	private Object getRawX(Object suid, String columnName) {

@@ -30,6 +30,7 @@ package org.cytoscape.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /** 
@@ -141,4 +142,11 @@ public interface CyTable extends Identifiable {
 	 * @return if available, a message describing an internal error, otherwise null
 	 */
 	String getLastInternalError();
+
+	/** Returns all the rows of a specified column that contain a certain value for that column.
+	 *  @param columnName  the column for which we want the rows
+	 *  @param value       the value for which we want the rows that contain it
+	 *  @return the rows, if any that contain the value "value" for the column "columnName"
+	 */
+	Set<CyRow> getMatchingRows(String columnName, Object value);
 }
