@@ -332,7 +332,7 @@ public class CyTableImpl implements CyTable {
 		return new ArrayList<CyRow>(rows.values());
 	}
 
-	private void setX(final Object suid, final String columnName, final Object value) {
+	private void setX(final Object key, final String columnName, final Object value) {
 		++counter;
 		if (columnName == null)
 			throw new NullPointerException("columnName must not be null!");
@@ -345,7 +345,7 @@ public class CyTableImpl implements CyTable {
 					+ "' does not yet exist!");
 
 		if (types.get(columnName) == List.class) {
-			setListX(suid, columnName, value);
+			setListX(key, columnName, value);
 			return;
 		}
 
@@ -361,19 +361,19 @@ public class CyTableImpl implements CyTable {
 			if (value instanceof Equation) {
 				final Equation equation = (Equation)value;
 				// TODO this is an implicit addRow - not sure if we want to refactor this or not
-				vls.put(suid, equation);
-				final Object eqnValue = evalEquation(equation, suid, columnName);
+				vls.put(key, equation);
+				final Object eqnValue = evalEquation(equation, key, columnName);
 				if (eqnValue == null)
 					logger.warn("attempted premature evaluation evaluation for " + equation);
 				else
 				eventHelper.getMicroListener(
 						RowSetMicroListener.class,
-						getRow(suid)).handleRowSet(columnName, eqnValue);
+						getRow(key)).handleRowSet(columnName, eqnValue);
 			} else {
 				// TODO this is an implicit addRow - not sure if we want to refactor this or not
-				vls.put(suid, columnType.cast(value));
+				vls.put(key, columnType.cast(value));
 				eventHelper.getMicroListener(RowSetMicroListener.class,
-							     getRow(suid)).handleRowSet(columnName, value);
+							     getRow(key)).handleRowSet(columnName, value);
 			}
 		} else
 			throw new IllegalArgumentException("value is not of type: "
@@ -459,33 +459,33 @@ public class CyTableImpl implements CyTable {
 		return vls.get(suid);
 	}
 
-	private <T> T getX(Object suid, String columnName, Class<? extends T> type) {
+	private <T> T getX(Object key, String columnName, Class<? extends T> type) {
 		if (type.isAssignableFrom(List.class))
 			throw new IllegalArgumentException("use getList() to retrieve lists!");
 
-		final Object vl = getRawX(suid, columnName);
+		final Object vl = getRawX(key, columnName);
 		if (vl == null)
 			return null;
 
 		if (vl instanceof Equation) {
-			final Object result = evalEquation((Equation)vl, suid, columnName);
+			final Object result = evalEquation((Equation)vl, key, columnName);
 			return type.cast(result);
 		} else
 			return type.cast(vl);
 	}
 
-	private Object getValue(Object suid, String columnName) {
-		final Object vl = getRawX(suid, columnName);
+	private Object getValue(Object key, String columnName) {
+		final Object vl = getRawX(key, columnName);
 		if (vl == null)
 			return null;
 
 		if (vl instanceof Equation)
-			return evalEquation((Equation)vl, suid, columnName);
+			return evalEquation((Equation)vl, key, columnName);
 		else
 			return vl;
 	}
 
-	private <T> List<?extends T> getListX(final Object suid, final String columnName,
+	private <T> List<?extends T> getListX(final Object key, final String columnName,
 					      final Class<? extends T> listElementType)
 	{
 		final Class<?> expectedListElementType = listElementTypes.get(columnName);
@@ -498,25 +498,25 @@ public class CyTableImpl implements CyTable {
 							   + ", expected: " + expectedListElementType.getName()
 							   + "!");
 
-		final Object vl = getRawX(suid, columnName);
+		final Object vl = getRawX(key, columnName);
 		if (vl == null)
 			return null;
 
 		if (vl instanceof Equation) {
-			final Object result = evalEquation((Equation)vl, suid, columnName);
+			final Object result = evalEquation((Equation)vl, key, columnName);
 			return (List)result;
 		} else
 			return (List)vl;
 	}
 
-	private <T> boolean isSetX(final Object suid, final String columnName,
+	private <T> boolean isSetX(final Object key, final String columnName,
 				   final Class<? extends T> type)
 	{
 		final Map<Object, Object> vls = attributes.get(columnName);
 		if (vls == null)
 			return false;
 
-		Object vl = vls.get(suid);
+		Object vl = vls.get(key);
 		if (vl == null)
 			return false;
 
@@ -569,42 +569,42 @@ public class CyTableImpl implements CyTable {
 	}
 
 	private class InternalRow implements CyRow {
-		private final Object suid;
+		private final Object key;
 		private final CyTable table;
 
-		InternalRow(Object suid, CyTable table) {
-			this.suid = suid;
+		InternalRow(Object key, CyTable table) {
+			this.key = key;
 			this.table = table;
 		}
 
 		public void set(String attributeName, Object value) {
 			if (value == null)
-				unSetX(suid, attributeName);
+				unSetX(key, attributeName);
 			else
-				setX(suid, attributeName, value);
+				setX(key, attributeName, value);
 		}
 
 		public <T> void setList(String attributeName, List<?extends T> list) {
 			if (list == null)
-				unSetX(suid, attributeName);
+				unSetX(key, attributeName);
 			else
-				setListX(suid, attributeName, list);
+				setListX(key, attributeName, list);
 		}
 
 		public <T> T get(String attributeName, Class<? extends T> c) {
-			return getX(suid, attributeName, c);
+			return getX(key, attributeName, c);
 		}
 
 		public <T> List<?extends T> getList(String attributeName, Class<T> c) {
-			return getListX(suid, attributeName, c);
+			return getListX(key, attributeName, c);
 		}
 
 		public Object getRaw(String attributeName) {
-			return getRawX(suid, attributeName);
+			return getRawX(key, attributeName);
 		}
 
 		public <T> boolean isSet(String attributeName, Class<? extends T> c) {
-			return isSetX(suid, attributeName, c);
+			return isSetX(key, attributeName, c);
 		}
 
 		public Map<String, Object> getAllValues() {
@@ -612,7 +612,7 @@ public class CyTableImpl implements CyTable {
 					.size());
 
 			for (String attr : attributes.keySet())
-				m.put(attr, attributes.get(attr).get(suid));
+				m.put(attr, attributes.get(attr).get(key));
 
 			return m;
 		}
@@ -631,7 +631,7 @@ public class CyTableImpl implements CyTable {
 		}
 	}
 
-	private Object evalEquation(final Equation equation, final Object suid,
+	private Object evalEquation(final Equation equation, final Object key,
 				    final String columnName)
 	{
 		if (currentlyActiveAttributes.contains(columnName)) {
@@ -646,16 +646,16 @@ public class CyTableImpl implements CyTable {
 		final Map<String, IdentDescriptor> nameToDescriptorMap = new TreeMap<String, IdentDescriptor>();
 		for (final String attribRef : attribReferences) {
 			if (attribRef.equals("ID")) {
-				nameToDescriptorMap.put("ID", new IdentDescriptor(suid));
+				nameToDescriptorMap.put("ID", new IdentDescriptor(key));
 				continue;
 			}
 
-			final Object attribValue = getValue(suid, attribRef);
+			final Object attribValue = getValue(key, attribRef);
 			if (attribValue == null) {
 				currentlyActiveAttributes.clear();
 				lastInternalError = "Missing value for referenced attribute \"" + attribRef + "\"!";
 				logger.warn("Missing value for \"" + attribRef
-				            + "\" while evaluating an equation (ID:" + suid
+				            + "\" while evaluating an equation (ID:" + key
 				            + ", attribute name:" + columnName + ")");
 				return null;
 			}
@@ -666,7 +666,7 @@ public class CyTableImpl implements CyTable {
 				currentlyActiveAttributes.clear();
 				lastInternalError = "Bad attribute reference to \"" + attribRef + "\"!";
 				logger.warn("Bad attribute reference to \"" + attribRef
-				            + "\" while evaluating an equation (ID:" + suid
+				            + "\" while evaluating an equation (ID:" + key
 				            + ", attribute name:" + columnName + ")");
 				return null;
 			}
@@ -680,7 +680,7 @@ public class CyTableImpl implements CyTable {
 			currentlyActiveAttributes.clear();
 			lastInternalError = e.getMessage();
 			logger.warn("Error while evaluating an equation: " + e.getMessage() + " (ID:"
-			            + suid + ", attribute name:" + columnName + ")");
+			            + key + ", attribute name:" + columnName + ")");
 			return null;
 		}
 	}
@@ -688,8 +688,8 @@ public class CyTableImpl implements CyTable {
 	/**
 	 *  @return an in-order list of attribute names that will have to be evaluated before "columnName" can be evaluated
 	 */
-	private List<String> topoSortAttribReferences(final Object suid, final String columnName) {
-		final Object equationCandidate = getRawX(suid, columnName);
+	private List<String> topoSortAttribReferences(final Object key, final String columnName) {
+		final Object equationCandidate = getRawX(key, columnName);
 		if (!(equationCandidate instanceof Equation))
 			return new ArrayList<String>();
 
@@ -702,7 +702,7 @@ public class CyTableImpl implements CyTable {
 		alreadyProcessed.add(columnName);
 		final List<TopoGraphNode> dependencies = new ArrayList<TopoGraphNode>();
 		for (final String attribReference : attribReferences)
-                        followReferences(suid, attribReference, alreadyProcessed, dependencies);
+                        followReferences(key, attribReference, alreadyProcessed, dependencies);
 
 
 		final List<TopoGraphNode> topoOrder = TopologicalSort.sort(dependencies);
@@ -724,7 +724,7 @@ public class CyTableImpl implements CyTable {
 	/**
 	 *  Helper function for topoSortAttribReferences() performing a depth-first search of equation evaluation dependencies.
 	 */
-	private void followReferences(final Object suid, final String columnName, final Collection<String> alreadyProcessed,
+	private void followReferences(final Object key, final String columnName, final Collection<String> alreadyProcessed,
 	                              final Collection<TopoGraphNode> dependencies)
 	{
 		// Already visited this attribute?
@@ -732,14 +732,14 @@ public class CyTableImpl implements CyTable {
 			return;
 
 		alreadyProcessed.add(columnName);
-		final Object equationCandidate = getRawX(suid, columnName);
+		final Object equationCandidate = getRawX(key, columnName);
 		if (!(equationCandidate instanceof Equation))
 			return;
 
 		final Equation equation = (Equation)equationCandidate;
 		final Set<String> attribReferences = equation.getVariableReferences();
 		for (final String attribReference : attribReferences)
-			followReferences(suid, attribReference, alreadyProcessed, dependencies);
+			followReferences(key, attribReference, alreadyProcessed, dependencies);
 	}
 
 	/**
