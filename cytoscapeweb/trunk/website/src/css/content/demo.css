@@ -220,6 +220,7 @@ input[type=button].ui-state-default { cursor: pointer; }
 #examples .entry.disconnected .icon { background-image: url("../../img/content/demo/examples/disconnected.png"); }
 #examples .entry.shapes .icon { background-image: url("../../img/content/demo/examples/shapes.png"); }
 #examples .entry.peterson .icon { background-image: url("../../img/content/demo/examples/petersen.png"); }
+#examples .entry.reindeers .icon { background-image: url("../../img/content/demo/examples/reindeers.png"); }
 #examples .entry, #examples .entry * { cursor: pointer; }
 #examples .entry .description { color: #707070; line-height: 1; }
 

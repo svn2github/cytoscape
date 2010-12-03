@@ -354,25 +354,26 @@ $(function(){
 		edgeTooltipsEnabled: true,
 		swfPath: path("swf/CytoscapeWeb"),
 		flashInstallerPath: path("swf/playerProductInstall"),
+		preloadImages: false,
 		useProxy: false
     };
     
     // example graphs    
     var examples = {
+        reindeers: {
+	        name: "Reindeers",
+	        description: "Merry Christmas!",
+	        url: path("file/example_graphs/santa.xgmml"),
+	        visualStyleName: "Dark",
+	        visualStyle: GRAPH_STYLES["Images"],
+	        nodeLabelsVisible: true
+	    },
         shapes: {
             name: "Shapes example",
             description: "A graph that contains all possible shapes for nodes and arrows",
             url: path("file/example_graphs/sample1.graphml"),
             visualStyleName: "Shapes",
             visualStyle: GRAPH_STYLES["Shapes"],
-            nodeLabelsVisible: false
-        },
-        peterson: {
-            name: "Petersen example",
-            description: "The Petersen graph",
-            url: path("file/example_graphs/petersen.xgmml"),
-            visualStyleName: "Circles",
-            visualStyle: GRAPH_STYLES["Circles"],
             nodeLabelsVisible: false
         },
         disconnected: {
@@ -438,6 +439,7 @@ $(function(){
         if( options.url != undefined ) {
             $.ajax({
                 url: options.url,
+                dataType: "text/plain",
                 
                 success: function(data){
             		options.network = data;

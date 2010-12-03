@@ -280,6 +280,10 @@ $(function(){
 	
 	GRAPH_STYLES["Shapes"] = {
 			nodes: {
+				selectionColor: "#aaaaff",
+				selectionOpacity: 1,
+				hoverOpacity: 1,
+        		image: "/file/php/proxy.php?mimeType=image/gif&url=http://chart.apis.google.com/chart?chs=300x300%26cht=p%26chd=e0:U-gh..bR",
 				shape: { passthroughMapper: { attrName: "shape" } }
 			},
 			edges: {
@@ -407,6 +411,45 @@ $(function(){
 				hoverOpacity: 1,
 				selectionOpacity: 1
 			}
+	};
+	
+	/*---- IMAGES ------------------------------------------------------------------------------------*/
+	
+	GRAPH_STYLES["Images"] = {
+			global: {
+			backgroundColor: "#000000",
+			selectionLineColor: "#ffffff",
+			selectionLineOpacity: 0.5,
+			selectionLineWidth: 1,
+			selectionFillColor: "#fefefe",
+			selectionFillOpacity: 0.1
+		},
+		nodes: {
+			opacity: 1,
+			size: 40,
+			labelFontColor: "#ffffff",
+			labelVerticalAnchor: "top",
+			tooltipText: "${label}",
+			tooltipFontColor: "#ffffff",
+			tooltipBackgroundColor: "#000000",
+			tooltipBorderColor: "#999999",
+			labelGlowOpacity: 0,
+			selectionGlowColor: "#ffffaa",
+			image: { passthroughMapper: { attrName: "image" } }
+		},
+		edges: {
+			opacity: 1,
+			color: "#ff0000",
+			width: 3,
+			mergeWidth: 3,
+			labelFontColor: "#ffffff",
+			tooltipFontColor: "#ffffff",
+			tooltipBackgroundColor: "#000000",
+			tooltipBorderColor: "#999999",
+			selectionGlowColor: "#ffffaa",
+			hoverOpacity: 1,
+			selectionOpacity: 1
+		}
 	};
 
 });
