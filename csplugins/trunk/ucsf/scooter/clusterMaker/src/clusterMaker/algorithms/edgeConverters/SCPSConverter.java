@@ -32,6 +32,8 @@
  */
 package clusterMaker.algorithms.edgeConverters;
 
+import java.lang.Math;
+
 public class SCPSConverter implements EdgeWeightConverter {
 
 	/**
@@ -58,6 +60,11 @@ public class SCPSConverter implements EdgeWeightConverter {
  	 * @return the converted edge weight
  	 */
 	public double convert(double weight, double minValue, double maxValue) {
+		double w = 6.1302;
+		double b = 1.2112;
+	    
+		weight = 1/(1 + Math.exp(w*Math.log10(weight) + b));
+
 		return weight;
 	}
 }
