@@ -396,4 +396,67 @@ public abstract class AbstractCyTableTest {
 		matchingRows = table.getMatchingRows("someLongs", -15L);
 		assertTrue(matchingRows.isEmpty());
 	}
+
+	@Test
+	public void testSetAndGetTitle() {
+		table.setTitle("my title");
+		assertEquals(table.getTitle(), "my title");
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetListElementTypeForANonListColumn() {
+		table.createColumn("someList2", Boolean.class);
+		table.getListElementType("someList2");
+	}
+
+	@Test
+	public void testDeleteColumnNoOpWithNonexistingColumn() {
+		table.deleteColumn("x");
+	}
+
+	@Test(expected=NullPointerException.class)
+	public void testGetColumnValuesWithNullFirstArgument() {
+		table.getColumnValues(null, String.class);
+	}
+
+	@Test(expected=NullPointerException.class)
+	public void testGetColumnValuesWithNullSecondArgument() {
+		table.createColumn("x", String.class);
+		table.getColumnValues("x", null);
+	}
+
+	@Test
+	public void testGetAllRows() {
+		assertTrue(table.getAllRows().size() == 1);
+		final CyRow row1 = table.getRow(11L);
+		assertTrue(table.getAllRows().size() == 2);
+		final CyRow row2 = table.getRow(22L);
+		assertTrue(table.getAllRows().size() == 3);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetListWithANonExistantColumn() {
+		attrs.getList("x", String.class);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetListWithAnInvalidListElementType() {
+		table.createListColumn("x", Long.class);
+		attrs.getList("x", String.class);
+	}
+
+	@Test
+	public void testGetListWithAnMissingRowEntry() {
+		table.createListColumn("x", Long.class);
+		assertNull(attrs.getList("x", Long.class));
+	}
+
+	@Test
+	public void testSetlist() {
+		table.createListColumn("l", String.class);
+		final List<String> strings = new ArrayList<String>();
+		strings.add("joe");
+		attrs.set("l", strings);
+		assertEquals(attrs.getList("l", String.class), strings);
+	}
 }

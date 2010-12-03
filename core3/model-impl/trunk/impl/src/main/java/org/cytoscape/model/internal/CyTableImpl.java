@@ -278,7 +278,10 @@ public class CyTableImpl implements CyTable {
 	 */
 	public <T> List<T> getColumnValues(String columnName, Class<? extends T> type) {
 		if (columnName == null)
-			throw new NullPointerException("column name is null");
+			throw new NullPointerException("column name is null!");
+
+		if (type == null)
+			throw new NullPointerException("column type is null!");
 
 		Map<Object, Object> vals = attributes.get(columnName);
 		if (vals == null)
@@ -371,7 +374,7 @@ public class CyTableImpl implements CyTable {
 		if (!(value instanceof Equation))
 			checkType(value);
 
-		Map<Object, Object> vls = attributes.get(columnName);
+		Map<Object, Object> keyToValueMap = attributes.get(columnName);
 
 		final Class targetType = types.get(columnName);
 		if (targetType.isAssignableFrom(value.getClass())
@@ -380,7 +383,7 @@ public class CyTableImpl implements CyTable {
 			if (value instanceof Equation) {
 				final Equation equation = (Equation)value;
 				// TODO this is an implicit addRow - not sure if we want to refactor this or not
-				vls.put(key, equation);
+				keyToValueMap.put(key, equation);
 				final Object eqnValue = evalEquation(equation, key, columnName);
 				if (eqnValue == null)
 					logger.warn("attempted premature evaluation evaluation for " + equation);
@@ -391,7 +394,7 @@ public class CyTableImpl implements CyTable {
 			} else {
 				// TODO this is an implicit addRow - not sure if we want to refactor this or not
 				final Object newValue = columnType.cast(value);
-				vls.put(key, newValue);
+				keyToValueMap.put(key, newValue);
 				addToReverseMap(columnName, key, newValue);
 				eventHelper.getMicroListener(RowSetMicroListener.class,
 							     getRow(key)).handleRowSet(columnName, newValue);
@@ -431,7 +434,7 @@ public class CyTableImpl implements CyTable {
 			return false;
 	}
 
-	private void setListX(final Object suid, final String columnName, final Object value) {
+	private void setListX(final Object key, final String columnName, final Object value) {
 		if (value instanceof List) {
 			final List list = (List)value;
 			if (!list.isEmpty())
@@ -445,12 +448,14 @@ public class CyTableImpl implements CyTable {
 				"value is not a List equation of a compatible type for column '"
 				+ columnName + "'!");
 
-		Map<Object, Object> vls = attributes.get(columnName);
+		Map<Object, Object> keyToValueMap = attributes.get(columnName);
 
 		// TODO this is an implicit addRow - not sure if we want to refactor this or not
-		vls.put(suid, value);
+		keyToValueMap.put(key, value);
+		if (value instanceof List)
+			addToReverseMap(columnName, key, value);
 		eventHelper.getMicroListener(RowSetMicroListener.class,
-					     getRow(suid)).handleRowSet(columnName, value);
+					     getRow(key)).handleRowSet(columnName, value);
 	}
 
 	private static boolean listEquationIsCompatible(final Equation equation,
@@ -470,15 +475,24 @@ public class CyTableImpl implements CyTable {
 		return false;
 	}
 
-	private void unSetX(Object suid, String columnName) {
+	private void unSetX(final Object key, final String columnName) {
 		if (!types.containsKey(columnName) || !attributes.containsKey(columnName))
 			throw new IllegalArgumentException("attribute: '" + columnName
 							   + "' does not yet exist!");
 
-		Map<Object, Object> vls = attributes.get(columnName);
+		final Map<Object, Object> keyToValueMap = attributes.get(columnName);
+		if (!keyToValueMap.containsKey(key))
+			return;
 
-		vls.remove(suid);
-		eventHelper.getMicroListener(RowSetMicroListener.class, getRow(suid)).handleRowSet(columnName,null);
+		final Object value = keyToValueMap.get(key);
+		if (!(value instanceof Equation))
+			removeFromReverseMap(columnName, key, value);
+		keyToValueMap.remove(key);
+		eventHelper.getMicroListener(RowSetMicroListener.class, getRow(key)).handleRowSet(columnName, null);
+	}
+
+	private static boolean isScalarColumnType(final Class type) {
+		return type != List.class && type != Map.class;
 	}
 
 	private void removeFromReverseMap(final String columnName, final Object key, final Object value) {
@@ -489,16 +503,15 @@ public class CyTableImpl implements CyTable {
 			valueTokeysMap.remove(value);
 	}
 
-	private Object getRawX(Object suid, String columnName) {
-		Map<Object, Object> vls = attributes.get(columnName);
-
-		if (vls == null)
+	private Object getRawX(final Object key, final String columnName) {
+		Map<Object, Object> keyToValueMap = attributes.get(columnName);
+		if (keyToValueMap == null)
 			return null;
 
-		return vls.get(suid);
+		return keyToValueMap.get(key);
 	}
 
-	private <T> T getX(Object key, String columnName, Class<? extends T> type) {
+	private <T> T getX(final Object key, final String columnName, final Class<? extends T> type) {
 		if (type.isAssignableFrom(List.class))
 			throw new IllegalArgumentException("use getList() to retrieve lists!");
 
@@ -551,12 +564,12 @@ public class CyTableImpl implements CyTable {
 	private <T> boolean isSetX(final Object key, final String columnName,
 				   final Class<? extends T> type)
 	{
-		final Map<Object, Object> vls = attributes.get(columnName);
-		if (vls == null)
+		final Map<Object, Object> keyToValueMap = attributes.get(columnName);
+		if (keyToValueMap == null)
 			return false;
 
-		Object vl = vls.get(key);
-		if (vl == null)
+		Object value = keyToValueMap.get(key);
+		if (value == null)
 			return false;
 
 		if (types.get(columnName).isAssignableFrom(type))
@@ -567,8 +580,14 @@ public class CyTableImpl implements CyTable {
 	}
 
 	private Class<?> getClass(Class<?> c) {
+		if (c == Integer.class || c == Long.class || c == Double.class || c == String.class
+		    || c == Boolean.class)
+			return c;
+
 		if (Integer.class.isAssignableFrom(c))
 			return Integer.class;
+		else if (Long.class.isAssignableFrom(c))
+			return Long.class;
 		else if (Double.class.isAssignableFrom(c))
 			return Double.class;
 		else if (Boolean.class.isAssignableFrom(c))
@@ -579,8 +598,6 @@ public class CyTableImpl implements CyTable {
 			return List.class;
 		else if (Map.class.isAssignableFrom(c))
 			return Map.class;
-		else if (Long.class.isAssignableFrom(c))
-			return Long.class;
 		else
 			throw new IllegalArgumentException("invalid class: " + c.getName());
 	}
