@@ -108,6 +108,7 @@ public class DNodeView implements NodeView, Label {
 	static final int DEFAULT_TRANSPARENCY = 255;
 
 	private final int m_inx; // The FixedGraph index (non-negative).
+	
 	private boolean m_selected;
 	private Paint m_unselectedPaint;
 	private Paint m_selectedPaint;
@@ -505,7 +506,7 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 
 			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
 					&& (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
-				setShape(GraphGraphics.SHAPE_RECTANGLE);
+				setShape(NodeShape.RECT);
 
 			graphView.m_contentChanged = true;
 
@@ -560,7 +561,7 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 
 			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
 					&& (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
-				setShape(GraphGraphics.SHAPE_RECTANGLE);
+				setShape(NodeShape.RECT);
 
 			graphView.m_contentChanged = true;
 
@@ -919,11 +920,12 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 	 * @param shape
 	 *            DOCUMENT ME!
 	 */
-	public void setShape(final int shape) {
+	public void setShape(final NodeShape shape) {
 		synchronized (graphView.m_lock) {
-			byte nativeShape = GinyUtil.getNativeNodeType(shape);
+			//byte nativeShape = GinyUtil.getNativeNodeType(shape);
+			
 
-			graphView.m_nodeDetails.overrideShape(m_inx, nativeShape);
+			graphView.m_nodeDetails.overrideShape(m_inx, shape);
 			graphView.m_contentChanged = true;
 		}
 	}
@@ -1505,7 +1507,7 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 	public void setVisualPropertyValue(VisualProperty<?> vp, Object value) {
 
 		if (vp == DVisualLexicon.NODE_SHAPE) {
-			setShape(((NodeShape) value).getGinyShape());
+			setShape(((NodeShape) value));
 		} else if (vp == DVisualLexicon.NODE_SELECTED_PAINT) {
 			setSelectedPaint((Paint) value);
 		} else if (vp == TwoDVisualLexicon.NODE_SELECTED) {

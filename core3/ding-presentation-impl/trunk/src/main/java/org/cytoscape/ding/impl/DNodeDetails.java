@@ -32,6 +32,7 @@ import org.cytoscape.graph.render.stateful.CustomGraphic;
 import org.cytoscape.graph.render.stateful.NodeDetails;
 import org.cytoscape.util.intr.IntObjHash;
 import org.cytoscape.ding.Label;
+import org.cytoscape.ding.NodeShape;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -148,11 +149,12 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * The shape argument must be pre-checked for correctness.
 	 * A negative shape value has the special meaning to remove overridden shape.
 	 */
-	void overrideShape(int node, byte shape) {
-		if ((shape < 0) || (shape == super.shape(node)))
-			m_shapes.remove(new Integer(node));
-		else
-			m_shapes.put(new Integer(node), new Byte(shape));
+	void overrideShape(int node, NodeShape shape) {
+//		if ((shape < 0) || (shape == super.shape(node)))
+//			m_shapes.remove(new Integer(node));
+//		else
+//			m_shapes.put(new Integer(node), new Byte(shape));
+		m_shapes.put(node, shape.getNativeShape());
 	}
 
 	/**

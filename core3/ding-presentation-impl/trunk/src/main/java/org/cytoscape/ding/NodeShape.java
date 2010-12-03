@@ -34,66 +34,58 @@
 */
 package org.cytoscape.ding;
 
-import org.cytoscape.ding.icon.NodeIcon;
-import org.cytoscape.ding.icon.VisualPropertyIcon;
+import java.awt.Shape;
+import java.util.Map;
 
 import org.cytoscape.graph.render.immed.GraphGraphics;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * This is a replacement for ShapeNodeRealizer.java
- *
- * @since Cytoscape 2.5
- * @version 0.7
- * @author kono
+ * Defines node shapes used in DING rendering engine.
+ * This enum wires shape definitions to actual rendering code in graph-render bundle.
  *
  */
 public enum NodeShape {
-	RECT(GraphGraphics.SHAPE_RECTANGLE, "Rectangle", true),
-	ROUND_RECT(GraphGraphics.SHAPE_ROUNDED_RECTANGLE, "Round Rectangle", true),
-	RECT_3D(GraphGraphics.SHAPE_RECTANGLE, "3D Rectabgle", false),
-	TRAPEZOID(GraphGraphics.SHAPE_RECTANGLE, "Trapezoid", false),
-	TRAPEZOID_2(GraphGraphics.SHAPE_RECTANGLE, "Trapezoid 2", false),
-	TRIANGLE(GraphGraphics.SHAPE_TRIANGLE, "Triangle", true),
-	PARALLELOGRAM(GraphGraphics.SHAPE_PARALLELOGRAM, "Parallelogram", true),
-	DIAMOND(GraphGraphics.SHAPE_DIAMOND, "Diamond", true),
-	ELLIPSE(GraphGraphics.SHAPE_ELLIPSE, "Ellipse", true),
-	HEXAGON(GraphGraphics.SHAPE_HEXAGON, "Hexagon", true),
-	OCTAGON(GraphGraphics.SHAPE_OCTAGON, "Octagon", true);
 
-	private final Byte ginyShape;
-	private final String name;
-	private final boolean isSupported;
+	RECT(GraphGraphics.SHAPE_RECTANGLE, "Rectangle"),
+	ROUND_RECT(GraphGraphics.SHAPE_ROUNDED_RECTANGLE, "Round Rectangle"),
+	TRIANGLE(GraphGraphics.SHAPE_TRIANGLE, "Triangle"),
+	PARALLELOGRAM(GraphGraphics.SHAPE_PARALLELOGRAM, "Parallelogram"),
+	DIAMOND(GraphGraphics.SHAPE_DIAMOND, "Diamond"),
+	ELLIPSE(GraphGraphics.SHAPE_ELLIPSE, "Ellipse"),
+	HEXAGON(GraphGraphics.SHAPE_HEXAGON, "Hexagon"),
+	OCTAGON(GraphGraphics.SHAPE_OCTAGON, "Octagon");
+
+	private final Byte rendererShapeID;
+	private final String displayName;
 	
 	private static final Map<Byte, Shape> nodeShapes = GraphGraphics.getNodeShapes();
 
-	private NodeShape(Byte ginyShape, String name, boolean isSupported) {
-		this.ginyShape = ginyShape;
-		this.name = name;
-		this.isSupported = isSupported;
+	private NodeShape(final Byte rendererShapeID, final String displayName) {
+		this.rendererShapeID = rendererShapeID;
+		this.displayName = displayName;
 	}
-
+	
+	
 	/**
-	 * If the shape is supported by rendering engine, return true.<br>
-	 * Otherwise, return false.
-	 * @return
+	 * Display name will be used for toString() method.
 	 */
-	public boolean isSupported() {
-		return isSupported;
+	@Override public String toString() {
+		return displayName;
+	}
+	
+	public Byte getNativeShape() {
+		return this.rendererShapeID;
 	}
 
+
 	/**
-	 * DOCUMENT ME!
+	 * Get a node shape from a given string.
 	 *
 	 * @param text DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public static NodeShape parseNodeShapeText(String text) {
+	public static NodeShape parseNodeShapeText(final String text) {
 		String trimed = text.trim();
 
 		for (NodeShape shape : values()) {
@@ -126,25 +118,9 @@ public enum NodeShape {
 	 * @return DOCUMENT ME!
 	 */
 	public String getShapeName() {
-		return name;
+		return displayName;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param type
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public static boolean isValidShape(NodeShape type) {
-		for (NodeShape curType : values()) {
-			if (type == curType)
-				return true;
-		}
-
-		return false;
-	}
 
 	/**
 	 * DOCUMENT ME!
@@ -161,37 +137,29 @@ public enum NodeShape {
 		return nstext.toLowerCase();
 	}
 
-	/**
-	 * Get GINY shape as integer.
-	 *
-	 * @return Giny shape as integer.
-	 */
-	 // TODO rename this method so that it doesn't reference GINY
-	public Byte getGinyShape() {
-		return ginyShape;
-	}
-
+	
 	/**
 	 * Convert from Giny shape to Cytoscape NodeShape enum.
 	 *
 	 * @param ginyShape
 	 * @return
 	 */
-	public static NodeShape getNodeShape(Byte ginyShape) {
+	public static NodeShape getNodeShape(final Byte ginyShape) {
 		for (NodeShape shape : values()) {
-			if (shape.ginyShape == ginyShape)
+			if (shape.rendererShapeID == ginyShape)
 				return shape;
 		}
 
 		// Unknown. Return rectangle as the def val.
 		return NodeShape.RECT;
 	}
+	
 
 	/**
 	 * Returns a Shape object for the NodeShape in question.
 	 */
 	public Shape getShape() {
-		return nodeShapes.get(ginyShape);
+		return nodeShapes.get(rendererShapeID);
 	}
 
 //	/**

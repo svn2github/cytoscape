@@ -235,7 +235,7 @@ public interface NodeView  extends GraphViewObject {
 	 * <B>Note:</B> calling setPathTo( Shape ), allows one to define their own
 	 * java.awt.Shape ( i.e. A picture of Johnny Cash )
 	 */
-	public void setShape(int shape) ;
+	public void setShape(NodeShape shape) ;
 
 	/**
 	 * Sets what the tooltip will be for this NodeView
