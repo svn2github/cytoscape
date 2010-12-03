@@ -48,8 +48,7 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 	private static final Color BACKGROUND = Color.white;
 	private static final Color NOT_SELECTED = new Color(51, 51, 255, 150);
 	private static final Color SELECTED = Color.red;
-	private static final Font SELECTED_FONT = new Font("SansSerif", Font.BOLD,
-			12);
+	private static final Font SELECTED_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private Object oldValue;
 	private Icon[] icons;
 

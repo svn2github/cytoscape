@@ -42,6 +42,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
@@ -55,6 +56,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 /**
@@ -68,59 +70,31 @@ import org.jdesktop.swingx.border.DropShadowBorder;
  * 
  * @author kono
  */
-public class DiscreteValueChooser<T> extends JDialog {
+public class DiscreteValueEditor<T> extends JDialog implements ValueEditor<T> {
+	
 	private final static long serialVersionUID = 1202339876950593L;
 
-	private final VisualProperty<T> type;
-
-	private Map<T, Icon> valueMap;
-	private List<T> orderedKeyList;
-	private T defaultValue;
+	private final Class<T> type;
+	private final Set<T> values;
+	
+//	private Map<T, Icon> valueMap;
+//	
+//	private List<T> orderedKeyList;
+//	private T defaultValue;
 	private boolean canceled = false;
 
-	public DiscreteValueChooser(VisualProperty<T> vp) {
-		this(vp, null, null);
-	}
-
-	/**
-	 * Creates a new DiscreteValueChooser object.
-	 * 
-	 * If List of discrete values and
-	 * 
-	 * @param vp
-	 *            DOCUMENT ME!
-	 */
-	public DiscreteValueChooser(VisualProperty<T> vp, Map<T, Icon> valueMap,
-			T defaultValue) {
+	public DiscreteValueEditor(Class<T> type, Set<T> values) {
 		super();
+		this.values = values;
+		this.type = type;
+		
 		this.setModal(true);
-		this.type = vp;
-		this.setTitle("Select " + type.getDisplayName());
+		this.setTitle("Select a value");
 
-		this.valueMap = valueMap;
 		initComponents();
 		setListItems();
-
-		this.defaultValue = defaultValue;
 	}
 
-	/**
-	 * This should be a listener for OSGi service.
-	 */
-
-	/**
-	 * Static method to show dialog and get a value from user.
-	 * 
-	 * @param type
-	 * @param parent
-	 * @return
-	 */
-	public T showDialog(Component parentComponent) {
-		setLocationRelativeTo(parentComponent);
-		setVisible(true);
-
-		return getValue();
-	}
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -138,14 +112,6 @@ public class DiscreteValueChooser<T> extends JDialog {
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Select New Value");
-
-		// TODO: should change the design
-		// mainPanel.setTitlePainter(new BasicGradientPainter(new
-		// Point2D.Double(.2d, 0),
-		// new Color(Color.gray.getRed(),
-		// Color.gray.getGreen(),
-		// Color.gray.getBlue(), 100),
-		// new Point2D.Double(.8d, 0), Color.WHITE));
 
 		mainPanel.setTitleFont(new java.awt.Font("SansSerif", 1, 14));
 
@@ -232,31 +198,35 @@ public class DiscreteValueChooser<T> extends JDialog {
 	 */
 	public T getValue() {
 		if (canceled == true)
-			return defaultValue;
+			return null;
+		
+		return (T) iconList.getSelectedValue();
 
-		final int selectedIndex = iconList.getSelectedIndex();
-
-		if ((0 <= selectedIndex) && (selectedIndex < orderedKeyList.size()))
-			return orderedKeyList.get(selectedIndex);
-		else
-
-			return defaultValue;
+//		final int selectedIndex = iconList.getSelectedIndex();
+//
+//		if ((0 <= selectedIndex) && (selectedIndex < orderedKeyList.size()))
+//			return orderedKeyList.get(selectedIndex);
+//		else
+//
+//			return defaultValue;
 	}
 
+	
 	private void setListItems() {
-		List<Icon> icons = new ArrayList<Icon>();
-		orderedKeyList = new ArrayList<T>();
+		final List<Icon> icons = new ArrayList<Icon>();
+		//orderedKeyList = new ArrayList<T>();
 
+		
 		model = new DefaultListModel();
 		iconList.setModel(model);
 
 		Icon icon;
 
-		for (T key : valueMap.keySet()) {
-			icon = valueMap.get(key);
+		for (final T key : values) {
+			//icon = valueMap.get(key);
 
-			icons.add(icon);
-			orderedKeyList.add(key);
+			//icons.add(icon);
+			//orderedKeyList.add(key);
 			model.addElement(key);
 		}
 
@@ -280,11 +250,13 @@ public class DiscreteValueChooser<T> extends JDialog {
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 			// Get icon for the target value
-			final Icon icon = valueMap.get(value);
+			
+			//TODO: fix icon
+			//final Icon icon = valueMap.get(value);
 
 			setText(value.toString());
 			// icon.setLeftPadding(15);
-			setIcon(icon);
+			//setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
@@ -294,11 +266,26 @@ public class DiscreteValueChooser<T> extends JDialog {
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list
 					.getForeground());
-			setPreferredSize(new Dimension(icon.getIconWidth(), icon
-					.getIconHeight() + 20));
+			
+			this.setHorizontalTextPosition(CENTER);
+			setPreferredSize(new Dimension(100, 40));
+//			setPreferredSize(new Dimension(icon.getIconWidth(), icon
+//					.getIconHeight() + 20));
 			this.setBorder(new DropShadowBorder());
 
 			return this;
 		}
+	}
+
+	@Override
+	public <S extends T> T showEditor(Component parent, S initialValue) {
+		setLocationRelativeTo(parent);
+		setVisible(true);
+		return getValue();
+	}
+
+	@Override
+	public Class<T> getType() {
+		return type;
 	}
 }

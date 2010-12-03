@@ -52,8 +52,13 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.view.model.DiscreteRange;
+import org.cytoscape.view.model.Range;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.events.RenderingEngineFactoryAddedEvent;
+import org.cytoscape.view.presentation.events.RenderingEngineFactoryAddedListener;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.MappingFunctionFactoryManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.editor.ListEditor;
@@ -62,13 +67,14 @@ import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.AttributeSetManager;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.AttributeComboBoxPropertyEditor;
 import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPropertyEditor;
+import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.DiscreteValueEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  *
  */
-public class EditorManagerImpl implements EditorManager {
+public class EditorManagerImpl implements EditorManager, RenderingEngineFactoryAddedListener {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(EditorManagerImpl.class);
@@ -87,7 +93,7 @@ public class EditorManagerImpl implements EditorManager {
 	/**
 	 * Creates a new EditorFactory object.
 	 */
-	public EditorManagerImpl(final AttributeSetManager attrManager) {
+	public EditorManagerImpl(final AttributeSetManager attrManager, final VisualMappingManager vmm) {
 		editors = new HashMap<Class<?>, VisualPropertyEditor<?>>();
 
 		comboBoxEditors = new HashMap<String, PropertyEditor>();
@@ -105,7 +111,15 @@ public class EditorManagerImpl implements EditorManager {
 
 		// Create mapping type editor
 		this.mappingTypeEditor = getDefaultComboBoxEditor("mappingTypeEditor");
+		
+		Set<VisualLexicon> lexSet = vmm.getAllVisualLexicon();
+		
+		for(final VisualLexicon lex: lexSet) {
+			this.buildDiscreteEditors(lex);
+		}
 	}
+	
+	
 	
 	public AttributeComboBoxPropertyEditor getNodeEditor() {
 		return (AttributeComboBoxPropertyEditor) attrComboBoxEditors.get(CyNode.class);
@@ -319,5 +333,39 @@ public class EditorManagerImpl implements EditorManager {
 	@Override
 	public PropertyEditor getMappingFunctionSelector() {
 		return mappingTypeEditor;
+	}
+
+	
+	private void buildDiscreteEditors(final VisualLexicon lexicon) {
+		
+		logger.debug("\n\n\nNew Engine Factory: Adding discrete value editors------------------------");
+		
+		Set<VisualProperty<?>> vps = lexicon.getAllVisualProperties();
+		for(final VisualProperty<?> vp: vps) {
+			Range<?> range = vp.getRange();
+			
+			if(range instanceof DiscreteRange<?>) {
+				
+				// Visual Property Editor.
+				logger.debug("Got new Discrete.  Creating new VP editor: " + vp.getDisplayName());
+				final Set<?> values = ((DiscreteRange<?>) range).values();
+				VisualPropertyEditor<?> vpEditor = new DiscreteValuePropertyEditor(range.getType(), values);
+				this.addVisualPropertyEditor(vpEditor, null);
+				
+				if(this.getValueEditor(range.getType()) == null) {
+					ValueEditor<?> valEditor = new DiscreteValueEditor(range.getType(), values);
+					this.addValueEditor(valEditor, null);
+				}
+				
+			}
+		}
+	}
+	@Override
+	public void handleEvent(RenderingEngineFactoryAddedEvent e) {
+		
+		
+		final VisualLexicon lexicon = e.getRenderingEngineFactory().getVisualLexicon();
+		buildDiscreteEditors(lexicon);
+		
 	}
 }
