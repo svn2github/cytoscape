@@ -452,11 +452,54 @@ public abstract class AbstractCyTableTest {
 	}
 
 	@Test
-	public void testSetlist() {
+	public void testSetList() {
 		table.createListColumn("l", String.class);
 		final List<String> strings = new ArrayList<String>();
 		strings.add("joe");
 		attrs.set("l", strings);
 		assertEquals(attrs.getList("l", String.class), strings);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetColumnValuesWithNonExistentColumnName() {
+		table.getColumnValues("l", String.class);
+	}
+
+	@Test(expected=NullPointerException.class)
+	public void testSetWithNullColumnName() {
+		table.createColumn("l", String.class);
+		attrs.set(null, "xyz");
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetWithInvalidValueType() {
+		table.createColumn("l", Long.class);
+		attrs.set("l", "xyz");
+	}
+
+	@Test
+	public void testToStringMethodOfCyTable() {
+		table.createColumn("l", Long.class);
+		attrs.set("l", 13L);
+		assertTrue(table.toString().length() > 0);
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testUnsetWithNonExistentColumnName() {
+		attrs.set("l", null);
+	}
+
+	@Test(expected=Exception.class)
+	public void testGetWhereGetListShouldHaveBeenUsed() {
+		table.createListColumn("l", Long.class);
+		attrs.set("l", new ArrayList<Long>());
+		attrs.get("l", Long.class);
+	}
+
+	@Test(expected=Exception.class)
+	public void testGetWithAnInvalidType() {
+		table.createColumn("l", Long.class);
+		attrs.set("l", 15L);
+		attrs.get("l", CyTable.class);
 	}
 }

@@ -178,4 +178,15 @@ public class CyTableTest extends AbstractCyTableTest {
 
 		assertEquals(attrs.get("b", Double.class), 30.0, 0.00001);
 	}
+
+	@Test
+	public void testSetWithAnEquationWhichReferencesANonExistentAttribute() {
+		table.createColumn("a", Double.class);
+		final Map<String, Class> varnameToTypeMap = new HashMap<String, Class>();
+		varnameToTypeMap.put("b", Double.class);
+		compiler.compile("=$b+10", varnameToTypeMap);
+		assertNull(table.getLastInternalError());
+		attrs.set("a", compiler.getEquation());
+		assertNotNull(table.getLastInternalError());
+	}
 }

@@ -503,7 +503,7 @@ public class CyTableImpl implements CyTable {
 			valueTokeysMap.remove(value);
 	}
 
-	private Object getRawX(final Object key, final String columnName) {
+	private Object getValueOrEquation(final Object key, final String columnName) {
 		Map<Object, Object> keyToValueMap = attributes.get(columnName);
 		if (keyToValueMap == null)
 			return null;
@@ -515,7 +515,7 @@ public class CyTableImpl implements CyTable {
 		if (type.isAssignableFrom(List.class))
 			throw new IllegalArgumentException("use getList() to retrieve lists!");
 
-		final Object vl = getRawX(key, columnName);
+		final Object vl = getValueOrEquation(key, columnName);
 		if (vl == null)
 			return null;
 
@@ -527,7 +527,7 @@ public class CyTableImpl implements CyTable {
 	}
 
 	private Object getValue(Object key, String columnName) {
-		final Object vl = getRawX(key, columnName);
+		final Object vl = getValueOrEquation(key, columnName);
 		if (vl == null)
 			return null;
 
@@ -550,7 +550,7 @@ public class CyTableImpl implements CyTable {
 							   + ", expected: " + expectedListElementType.getName()
 							   + "!");
 
-		final Object vl = getRawX(key, columnName);
+		final Object vl = getValueOrEquation(key, columnName);
 		if (vl == null)
 			return null;
 
@@ -656,7 +656,7 @@ public class CyTableImpl implements CyTable {
 		}
 
 		public Object getRaw(String attributeName) {
-			return getRawX(key, attributeName);
+			return getValueOrEquation(key, attributeName);
 		}
 
 		public <T> boolean isSet(String attributeName, Class<? extends T> c) {
@@ -745,7 +745,7 @@ public class CyTableImpl implements CyTable {
 	 *  @return an in-order list of attribute names that will have to be evaluated before "columnName" can be evaluated
 	 */
 	private List<String> topoSortAttribReferences(final Object key, final String columnName) {
-		final Object equationCandidate = getRawX(key, columnName);
+		final Object equationCandidate = getValueOrEquation(key, columnName);
 		if (!(equationCandidate instanceof Equation))
 			return new ArrayList<String>();
 
@@ -788,7 +788,7 @@ public class CyTableImpl implements CyTable {
 			return;
 
 		alreadyProcessed.add(columnName);
-		final Object equationCandidate = getRawX(key, columnName);
+		final Object equationCandidate = getValueOrEquation(key, columnName);
 		if (!(equationCandidate instanceof Equation))
 			return;
 
@@ -807,7 +807,8 @@ public class CyTableImpl implements CyTable {
 	}
 
 	/**
-	 *  @return "d" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
+	 *  @return "d" converted to an Integer using Excel rules, should the number be outside the
+	 *          range of an int, null will be returned
 	 */
 	private static Integer doubleToInteger(final double d) {
 		if (d > Integer.MAX_VALUE || d < Integer.MIN_VALUE)
@@ -821,7 +822,8 @@ public class CyTableImpl implements CyTable {
 	}
 
 	/**
-	 *  @return "l" converted to an Integer using Excel rules, should the number be outside the range of an int, null will be returned
+	 *  @return "l" converted to an Integer using Excel rules, should the number be outside the
+	 *          range of an int, null will be returned
 	 */
 	private static Integer longToInteger(final double l) {
 		if (l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE)
@@ -831,9 +833,12 @@ public class CyTableImpl implements CyTable {
 	}
 
 	/**
-	 *  @return "equationValue" interpreted according to Excel rules as an integer or null if that is not possible
+	 *  @return "equationValue" interpreted according to Excel rules as an integer or null if
+	 *          that is not possible
 	 */
-	private Integer convertEqnRetValToInteger(final String id, final String columnName, final Object equationValue) {
+	private Integer convertEqnRetValToInteger(final String id, final String columnName,
+						  final Object equationValue)
+	{
 		if (equationValue.getClass() == Double.class) {
 			final Integer retVal = doubleToInteger((Double)equationValue);
 			if (retVal == null)
