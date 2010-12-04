@@ -638,13 +638,6 @@ public class CyTableImpl implements CyTable {
 				setX(key, attributeName, value);
 		}
 
-		public <T> void setList(String attributeName, List<?extends T> list) {
-			if (list == null)
-				unSetX(key, attributeName);
-			else
-				setListX(key, attributeName, list);
-		}
-
 		public <T> T get(String attributeName, Class<? extends T> c) {
 			return getX(key, attributeName, c);
 		}
