@@ -502,4 +502,17 @@ public abstract class AbstractCyTableTest {
 		attrs.set("l", 15L);
 		attrs.get("l", CyTable.class);
 	}
+
+	@Test
+	public void testGetAllValues() {
+		table.createColumn("x", Long.class);
+		table.createColumn("y", Double.class);
+		attrs.set("x", 15L);
+		attrs.set("y", 3.14);
+		final Map<String, Object> values = attrs.getAllValues();
+		assertTrue(values.keySet().contains("x"));
+		assertTrue(values.keySet().contains("y"));
+		assertEquals((long)(Long)values.get("x"), 15L);
+		assertEquals((double)(Double)values.get("y"), 3.14, 0.00001);
+	}
 }
