@@ -358,8 +358,6 @@ public class CyTableImpl implements CyTable {
 		++counter;
 		if (columnName == null)
 			throw new NullPointerException("columnName must not be null!");
-		if (value == null)
-			throw new NullPointerException("value must not be null!");
 
 		final Class<?> columnType = types.get(columnName);
 		if (columnType == null || !attributes.containsKey(columnName))
