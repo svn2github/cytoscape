@@ -52,13 +52,14 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 
 class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
+	
 	static final float DEFAULT_ARROW_SIZE = 5.0f;
 	static final Paint DEFAULT_ARROW_PAINT = Color.black;
 	static final float DEFAULT_EDGE_THICKNESS = 1.0f;
 	static final Stroke DEFAULT_EDGE_STROKE = new BasicStroke(); 
 	static final Color DEFAULT_EDGE_PAINT = Color.black;
 	static final String DEFAULT_LABEL_TEXT = "";
-	static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
+	static final Font DEFAULT_LABEL_FONT = new Font("SansSerif", Font.PLAIN, 12);
 	static final Paint DEFAULT_LABEL_PAINT = Color.black;
 	DGraphView m_view;
 	final int m_inx; // Positive.
@@ -91,8 +92,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		m_sourceSelectedPaint = Color.red;
 		m_targetUnselectedPaint = m_view.m_edgeDetails.targetArrowPaint(m_inx);
 		m_targetSelectedPaint = Color.red;
-		m_sourceEdgeEnd = NO_END;
-		m_targetEdgeEnd = NO_END;
+		m_sourceEdgeEnd = GraphGraphics.ARROW_NONE;
+		m_targetEdgeEnd = GraphGraphics.ARROW_NONE;
 		m_anchors = null;
 		m_lineType = EdgeView.STRAIGHT_LINES;
 	}
@@ -157,7 +158,6 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 */
 	public float getStrokeWidth() {
 		synchronized (m_view.m_lock) {
-			System.out.println("!!@@@@@@@@@@@@@@ GOT Stroke WIDTH: " + m_view.m_edgeDetails.segmentThickness(m_inx));
 			return m_view.m_edgeDetails.segmentThickness(m_inx);
 		}
 	}
@@ -596,64 +596,66 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public void setSourceEdgeEnd(final int type) {
+	public void setSourceEdgeEnd(final int rendererTypeID) {
 		synchronized (m_view.m_lock) {
-			switch (type) {
-			case NO_END:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_NONE);
-				break;
-
-			case WHITE_DELTA:
-			case BLACK_DELTA:
-			case EDGE_COLOR_DELTA:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DELTA);
-				break;
-
-			case WHITE_ARROW:
-			case BLACK_ARROW:
-			case EDGE_COLOR_ARROW:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_ARROWHEAD);
-				break;
-
-			case WHITE_DIAMOND:
-			case BLACK_DIAMOND:
-			case EDGE_COLOR_DIAMOND:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-				break;
-
-			case WHITE_CIRCLE:
-			case BLACK_CIRCLE:
-			case EDGE_COLOR_CIRCLE:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DISC);
-				break;
-
-			case WHITE_T:
-			case BLACK_T:
-			case EDGE_COLOR_T:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_TEE);
-				break;
-
-			case WHITE_HALF_BOTTOM:
-			case BLACK_HALF_BOTTOM:
-			case EDGE_HALF_ARROW_BOTTOM:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_HALF_BOTTOM);
-				break;
-
-			case WHITE_HALF_TOP:
-			case BLACK_HALF_TOP:
-			case EDGE_HALF_ARROW_TOP:
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_HALF_TOP);
-				break;
-
-			default:
-				// TODO: is this OK?
-				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_NONE);
-				//throw new IllegalArgumentException("unrecognized edge end type: " + type);
+//			switch (type) {
+//			case NO_END:
+//				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_NONE);
+//				break;
+//
+//			case WHITE_DELTA:
+//			case BLACK_DELTA:
+//			case EDGE_COLOR_DELTA:
+//				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DELTA);
+//				break;
+//
+//			case WHITE_ARROW:
+//			case BLACK_ARROW:
+//			case EDGE_COLOR_ARROW:
+//				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_ARROWHEAD);
+//				break;
+//
+//			case WHITE_DIAMOND:
+//			case BLACK_DIAMOND:
+//			case EDGE_COLOR_DIAMOND:
+//				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
+//				break;
+//
+//			case WHITE_CIRCLE:
+//			case BLACK_CIRCLE:
+//			case EDGE_COLOR_CIRCLE:
+//				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_DISC);
+//				break;
+//
+//			case WHITE_T:
+//			case BLACK_T:
+//			case EDGE_COLOR_T:
+//				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_TEE);
+//				break;
+//
+//			case WHITE_HALF_BOTTOM:
+//			case BLACK_HALF_BOTTOM:
+//			case EDGE_HALF_ARROW_BOTTOM:
+//				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_HALF_BOTTOM);
+//				break;
+//
+//			case WHITE_HALF_TOP:
+//			case BLACK_HALF_TOP:
+//			case EDGE_HALF_ARROW_TOP:
+//				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_HALF_TOP);
+//				break;
+//
+//			default:
+//				// TODO: is this OK?
+//				m_view.m_edgeDetails.overrideSourceArrow(m_inx, GraphGraphics.ARROW_NONE);
+//				//throw new IllegalArgumentException("unrecognized edge end type: " + type);
+			
+				m_view.m_edgeDetails.overrideSourceArrow(m_inx, (byte) rendererTypeID);
 			}
 
-			m_sourceEdgeEnd = type;
+			m_sourceEdgeEnd = rendererTypeID;
 			m_view.m_contentChanged = true;
-		}
+		
 	}
 
 	/**
@@ -662,64 +664,66 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public void setTargetEdgeEnd(int type) {
+	public void setTargetEdgeEnd(final int rendererTypeID) {
 		synchronized (m_view.m_lock) {
-			//       if (type == m_targetEdgeEnd) { return; }
-			switch (type) {
-			case NO_END:
-				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_NONE);
-				break;
-
-			case WHITE_DELTA:
-			case BLACK_DELTA:
-			case EDGE_COLOR_DELTA:
-				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
-				break;
-
-			case WHITE_ARROW:
-			case BLACK_ARROW:
-			case EDGE_COLOR_ARROW:
-				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_ARROWHEAD);
-				break;
-
-			case WHITE_DIAMOND:
-			case BLACK_DIAMOND:
-			case EDGE_COLOR_DIAMOND:
-				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
-				break;
-
-			case WHITE_CIRCLE:
-			case BLACK_CIRCLE:
-			case EDGE_COLOR_CIRCLE:
-				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
-				break;
-
-			case WHITE_T:
-			case BLACK_T:
-			case EDGE_COLOR_T:
-				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
-				break;
-
-			case WHITE_HALF_BOTTOM:
-			case BLACK_HALF_BOTTOM:
-			case EDGE_HALF_ARROW_BOTTOM:
-				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_HALF_BOTTOM);
-				break;
-
-			case WHITE_HALF_TOP:
-			case BLACK_HALF_TOP:
-			case EDGE_HALF_ARROW_TOP:
-				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_HALF_TOP);
-				break;
-
-			default:
-				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_NONE);
-//				throw new IllegalArgumentException("unrecognized edge end type: " + type);
+//			//       if (type == m_targetEdgeEnd) { return; }
+//			switch (type) {
+//			case NO_END:
+//				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_NONE);
+//				break;
+//
+//			case WHITE_DELTA:
+//			case BLACK_DELTA:
+//			case EDGE_COLOR_DELTA:
+//				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DELTA);
+//				break;
+//
+//			case WHITE_ARROW:
+//			case BLACK_ARROW:
+//			case EDGE_COLOR_ARROW:
+//				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_ARROWHEAD);
+//				break;
+//
+//			case WHITE_DIAMOND:
+//			case BLACK_DIAMOND:
+//			case EDGE_COLOR_DIAMOND:
+//				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DIAMOND);
+//				break;
+//
+//			case WHITE_CIRCLE:
+//			case BLACK_CIRCLE:
+//			case EDGE_COLOR_CIRCLE:
+//				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_DISC);
+//				break;
+//
+//			case WHITE_T:
+//			case BLACK_T:
+//			case EDGE_COLOR_T:
+//				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_TEE);
+//				break;
+//
+//			case WHITE_HALF_BOTTOM:
+//			case BLACK_HALF_BOTTOM:
+//			case EDGE_HALF_ARROW_BOTTOM:
+//				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_HALF_BOTTOM);
+//				break;
+//
+//			case WHITE_HALF_TOP:
+//			case BLACK_HALF_TOP:
+//			case EDGE_HALF_ARROW_TOP:
+//				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_HALF_TOP);
+//				break;
+//
+//			default:
+//				m_view.m_edgeDetails.overrideTargetArrow(m_inx, GraphGraphics.ARROW_NONE);
+////				throw new IllegalArgumentException("unrecognized edge end type: " + type);
+				m_view.m_edgeDetails.overrideTargetArrow(m_inx, (byte) rendererTypeID);
 			}
 
-			m_targetEdgeEnd = type;
+			
+			m_targetEdgeEnd = rendererTypeID;
 			m_view.m_contentChanged = true;
-		}
+		
 	}
 
 	/**
@@ -1428,7 +1432,6 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		} else if (vp == TwoDVisualLexicon.EDGE_COLOR) {
 			setUnselectedPaint((Paint) value);
 		} else if (vp == DVisualLexicon.EDGE_WIDTH) {
-			
 			setStrokeWidth(((Double) value).floatValue());
 		} else if (vp == DVisualLexicon.EDGE_STROKE) {
 			setStroke((Stroke) value);
@@ -1443,9 +1446,9 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		} else if (vp == TwoDVisualLexicon.EDGE_SELECTED) {
 			setSelected((Boolean) value);
 		} else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SHAPE) {
-			setTargetEdgeEnd(((ArrowShape) value).getGinyArrow());
+			setTargetEdgeEnd(((ArrowShape) value).getRendererTypeID());
 		} else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SHAPE) {
-			setSourceEdgeEnd(((ArrowShape) value).getGinyArrow());
+			setSourceEdgeEnd(((ArrowShape) value).getRendererTypeID());
 		} else if (vp == TwoDVisualLexicon.EDGE_LABEL) {
 			setText(value.toString());
 		} else if (vp == DVisualLexicon.EDGE_TOOLTIP) {
@@ -1474,5 +1477,4 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		}
 
 	}
-
 }

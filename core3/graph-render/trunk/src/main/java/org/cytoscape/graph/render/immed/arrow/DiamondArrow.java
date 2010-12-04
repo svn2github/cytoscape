@@ -29,12 +29,11 @@ package org.cytoscape.graph.render.immed.arrow;
 
 
 import java.awt.geom.GeneralPath;
-import org.cytoscape.graph.render.immed.GraphGraphics;
 
 
 public class DiamondArrow extends AbstractArrow {
 	public DiamondArrow() {
-		super(GraphGraphics.ARROW_DIAMOND,2.0);
+		super(2.0);
 
 		// create the arrow
 		GeneralPath arrowGP = new GeneralPath();

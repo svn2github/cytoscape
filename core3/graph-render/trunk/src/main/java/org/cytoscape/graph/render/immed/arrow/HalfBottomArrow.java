@@ -29,12 +29,11 @@ package org.cytoscape.graph.render.immed.arrow;
 
 
 import java.awt.geom.GeneralPath;
-import org.cytoscape.graph.render.immed.GraphGraphics;
 
 
 public class HalfBottomArrow extends AbstractArrow {
 	public HalfBottomArrow() {
-		super(GraphGraphics.ARROW_HALF_BOTTOM, 0.5);
+		super(0.5);
 
 		// create the arrow
 		GeneralPath arrowGP = new GeneralPath();

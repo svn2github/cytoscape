@@ -35,101 +35,55 @@
 package org.cytoscape.ding;
 
 
-import org.cytoscape.ding.EdgeView;
-import org.cytoscape.ding.icon.ArrowIcon;
-import org.cytoscape.ding.icon.VisualPropertyIcon;
 import org.cytoscape.graph.render.immed.GraphGraphics;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
  * Defines arrow shapes.<br>
  * This replaces constants defined in Arrow.java.
  *
- * @since Cytoscape 2.5
- * @author kono
  *
  */
 public enum ArrowShape {
-	NONE("No Arrow", "NONE", GraphGraphics.ARROW_NONE, 
-	     new int[]{ EdgeView.NO_END },
-		 new String[] { "NO_END" }),
+	NONE("No Arrow", GraphGraphics.ARROW_NONE),
+	DIAMOND("Diamond", GraphGraphics.ARROW_DIAMOND),
+	DELTA("Delta", GraphGraphics.ARROW_DELTA),
+	ARROW("Arrow", GraphGraphics.ARROW_ARROWHEAD),
+	T("T", GraphGraphics.ARROW_TEE),
+	CIRCLE("Circle", GraphGraphics.ARROW_DISC),
+	HALF_TOP("Half Top", GraphGraphics.ARROW_HALF_TOP),
+	HALF_BOTTOM("Half Top", GraphGraphics.ARROW_HALF_BOTTOM);
+	
 
-	DIAMOND("Diamond", "COLOR_DIAMOND", GraphGraphics.ARROW_DIAMOND,
-	     new int[] { EdgeView.EDGE_COLOR_DIAMOND, EdgeView.WHITE_DIAMOND, EdgeView.BLACK_DIAMOND },
-	     new String[] { "EDGE_COLOR_DIAMOND", "WHITE_DIAMOND", "BLACK_DIAMOND" }),
+	private final String displayName;
+	private final byte rendererTypeID;
 
-	DELTA("Delta", "COLOR_DELTA", GraphGraphics.ARROW_DELTA,
-	     new int[] { EdgeView.EDGE_COLOR_DELTA, EdgeView.WHITE_DELTA, EdgeView.BLACK_DELTA },
-	     new String[] { "EDGE_COLOR_DELTA", "WHITE_DELTA", "BLACK_DELTA" }),
-
-	ARROW("Arrow", "COLOR_ARROW", GraphGraphics.ARROW_ARROWHEAD,
-	     new int[] { EdgeView.EDGE_COLOR_ARROW, EdgeView.WHITE_ARROW, EdgeView.BLACK_ARROW },
-	     new String[] { "EDGE_COLOR_ARROW", "WHITE_ARROW", "BLACK_ARROW"}),
-
-	T("T", "COLOR_T", GraphGraphics.ARROW_TEE,
-	     new int[] { EdgeView.EDGE_COLOR_T, EdgeView.WHITE_T, EdgeView.BLACK_T },
-	     new String[] { "EDGE_COLOR_T", "WHITE_T", "BLACK_T" }),
-
-	CIRCLE("Circle", "COLOR_CIRCLE", GraphGraphics.ARROW_DISC,
-	     new int[] { EdgeView.EDGE_COLOR_CIRCLE, EdgeView.WHITE_CIRCLE, EdgeView.BLACK_CIRCLE },
-	     new String[] { "EDGE_COLOR_CIRCLE", "WHITE_CIRCLE", "BLACK_CIRCLE" }),
-
-	HALF_TOP("Half Top", "COLOR_HALF_TOP", GraphGraphics.ARROW_HALF_TOP,
-	     new int[] { EdgeView.EDGE_COLOR_HALF_TOP, EdgeView.WHITE_HALF_TOP, EdgeView.BLACK_HALF_TOP },
-	     new String[] { "EDGE_COLOR_HALF_TOP", "WHITE_HALF_TOP", "BLACK_HALF_TOP" }),
-
-	HALF_BOTTOM("Half Top", "COLOR_HALF_BOTTOM", GraphGraphics.ARROW_HALF_BOTTOM,
-	     new int[] { EdgeView.EDGE_COLOR_HALF_BOTTOM, EdgeView.WHITE_HALF_BOTTOM, EdgeView.BLACK_HALF_BOTTOM },
-	     new String[] { "EDGE_COLOR_HALF_BOTTOM", "WHITE_HALF_BOTTOM", "BLACK_HALF_BOTTOM" });
-
-
-	private static Map<Byte,Shape> arrowShapes = GraphGraphics.getArrowShapes();
-
-	private String shapeName;
-	private String ginyShapeName;
-	private int ginyType;
-	private int[] possibleGinyTypes;
-	private String[] possibleGinyNames;
-
-	private ArrowShape(String shapeName, String ginyShapeName, int ginyType, int[] possibleGinyTypes,
-	                   String[] possibleGinyNames) {
-		this.shapeName = shapeName;
-		this.ginyShapeName = ginyShapeName;
-		this.ginyType = ginyType;
-		this.possibleGinyTypes = possibleGinyTypes;
-		this.possibleGinyNames = possibleGinyNames;
+	private ArrowShape(final String displayName, final byte rendererTypeID) {
+		this.displayName = displayName;
+		this.rendererTypeID = rendererTypeID;
 	}
 
 	/**
-	 * Returns arrow type in GINY.
+	 * Returns arrow type ID used in renderer code.
 	 *
 	 * @return
 	 */
-	public int getGinyArrow() {
-		return ginyType;
+	public byte getRendererTypeID() {
+		return rendererTypeID;
 	}
 
-	/**
-	 * Returns name of arrow shape.
-	 *
-	 * @return
-	 */
-	public String getGinyName() {
-		return ginyShapeName;
-	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Returns human-readable name of this object.  This will be used in labels.
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public String getName() {
-		return shapeName;
+	public String getDisplayName() {
+		return displayName;
+	}
+	
+	@Override public String toString() {
+		return this.displayName;
 	}
 
 	/**
@@ -137,7 +91,7 @@ public enum ArrowShape {
 	 * @param text
 	 * @return
 	 */
-	public static ArrowShape parseArrowText(String text) {
+	public static ArrowShape parseArrowText(final String text) {
 		try {
 			ArrowShape val = valueOf(text);
 			return val;
@@ -147,60 +101,46 @@ public enum ArrowShape {
 		
 		// if string doesn't match, then try other possible GINY names 
 		for (ArrowShape shape : values())  {
-			if (shape.shapeName.equals(text) || shape.ginyShapeName.equals(text))
+			if (shape.displayName.equals(text))
 				return shape;
-			for (String possibleName : shape.getPossibleGinyNames()) {
-				if ( possibleName.equals(text) ) 
-					return shape;
-			}
+			
+			// TODO: backward-compatibility
+//			for (String possibleName : shape.getPossibleGinyNames()) {
+//				if ( possibleName.equals(text) ) 
+//					return shape;
+//			}
 		}
 
 		return NONE;
 	}
 
-	public String[] getPossibleGinyNames() {
-		return possibleGinyNames;
-	}
-
-	public int[] getPossibleGinyTypes() {
-		return possibleGinyTypes;
-	}
-
 	/**
 	 * DOCUMENT ME!
 	 *
-	 * @param ginyType
+	 * @param rendererTypeID
 	 *            DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public static ArrowShape getArrowShape(int ginyType) {
+	public static ArrowShape getArrowShape(final int rendererTypeID) {
 		// first try for an exact match
 		for (ArrowShape shape : values()) {
-			if (shape.getGinyArrow() == ginyType)
+			if (shape.getRendererTypeID() == rendererTypeID)
 				return shape;
-		}
-
-		// if no exact match is found, then try the possible ginyTypes 
-		for (ArrowShape shape : values()) {
-			for ( int possible : shape.getPossibleGinyTypes() ) {
-				if ( possible == ginyType ) 
-					return shape;
-			}
 		}
 
 		// if we can't match anything, just return NONE.
 		return NONE;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Shape getShape() {
-		return arrowShapes.get(ginyType);
-	}
+//	/**
+//	 *  DOCUMENT ME!
+//	 *
+//	 * @return  DOCUMENT ME!
+//	 */
+//	public Shape getShape() {
+//		return arrowShapes.get(ginyType);
+//	}
 
 //	/**
 //	 *  DOCUMENT ME!

@@ -99,7 +99,9 @@ public class DNodeView implements NodeView, Label {
 	static final int DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
 	static final Paint DEFAULT_BORDER_PAINT = Color.black;
 	static final String DEFAULT_LABEL_TEXT = "";
-	static final Font DEFAULT_LABEL_FONT = new Font(null, Font.PLAIN, 1);
+	
+	static final Font DEFAULT_LABEL_FONT = new Font("SansSerif", Font.PLAIN, 12);
+	
 	static final Paint DEFAULT_LABEL_PAINT = Color.black;
 	static final double DEFAULT_LABEL_WIDTH = 100.0;
 

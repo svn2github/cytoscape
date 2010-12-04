@@ -29,21 +29,20 @@ package org.cytoscape.graph.render.immed.arrow;
 
 
 import java.awt.Shape;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
-
-import org.cytoscape.graph.render.immed.GraphGraphics;
 
 
 public class DiscArrow extends AbstractArrow {
+	
 	private final GeneralPath capGP; 
 	private final Arc2D.Double capA;
 
 	private double currentRatio;
 
 	public DiscArrow() {
-		super(GraphGraphics.ARROW_DISC,1.0);
+		super(1.0);
 
 		// create the arrow
 		final Ellipse2D.Double arrowE = new Ellipse2D.Double();

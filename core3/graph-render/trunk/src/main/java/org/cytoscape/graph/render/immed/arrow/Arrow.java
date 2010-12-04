@@ -31,7 +31,12 @@ package org.cytoscape.graph.render.immed.arrow;
 import java.awt.Shape;
 
 
+/**
+ * Definition of Arrow shapes in this rendering engine.
+ *
+ */
 public interface Arrow {
+		
 	/**
 	 * The Shape of the main Arrow body.
 	 */
@@ -44,10 +49,6 @@ public interface Arrow {
 	 */
 	Shape getCapShape(final double ratio);
 
-	/**
-	 * A legacy identifier for GraphGraphics.
-	 */
-	byte getType();
 
 	/**
 	 * The distance that the arrow should be offset from the intersection with the node.

@@ -29,12 +29,11 @@ package org.cytoscape.graph.render.immed.arrow;
 
 
 import java.awt.geom.GeneralPath;
-import org.cytoscape.graph.render.immed.GraphGraphics;
 
 
 public class TeeArrow extends AbstractArrow {
 	public TeeArrow() {
-		super(GraphGraphics.ARROW_TEE,0.5);
+		super(0.5);
 
 		// create the arrow
 		GeneralPath arrowGP = new GeneralPath();

@@ -36,10 +36,33 @@
 
 package org.cytoscape.ding;
 
-import java.awt.BasicStroke;
 import java.awt.Stroke;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.swing.Icon;
+
+import org.cytoscape.ding.icon.LineTypeIcon;
+import org.cytoscape.ding.icon.VisualPropertyIcon;
+import org.cytoscape.ding.impl.strokes.BackwardSlashStroke;
+import org.cytoscape.ding.impl.strokes.ContiguousArrowStroke;
+import org.cytoscape.ding.impl.strokes.DashDotStroke;
+import org.cytoscape.ding.impl.strokes.DotStroke;
+import org.cytoscape.ding.impl.strokes.EqualDashStroke;
+import org.cytoscape.ding.impl.strokes.ForwardSlashStroke;
+import org.cytoscape.ding.impl.strokes.LongDashStroke;
+import org.cytoscape.ding.impl.strokes.ParallelStroke;
+import org.cytoscape.ding.impl.strokes.PipeStroke;
+import org.cytoscape.ding.impl.strokes.SeparateArrowStroke;
+import org.cytoscape.ding.impl.strokes.SineWaveStroke;
+import org.cytoscape.ding.impl.strokes.SolidStroke;
+import org.cytoscape.ding.impl.strokes.VerticalSlashStroke;
+import org.cytoscape.ding.impl.strokes.WidthStroke;
+import org.cytoscape.ding.impl.strokes.ZeroStroke;
+import org.cytoscape.ding.impl.strokes.ZigzagStroke;
+
 
 /**
  *
@@ -47,44 +70,56 @@ import java.util.regex.Pattern;
  *
  * TODO: need to modify rendering engine to fully support dash lines.
  *
- * @author kono
  *
  */
 public enum LineStyle {
 	
-	// TODO: marge new line styles from 2.7/8.
-	SOLID(null,"line"),
-	LONG_DASH("10.0f,4.0f","dash");
+	// note that "line" and "dash" regexs are legacy, so don't change them!
+	SOLID("line", new SolidStroke(1.0f)),
+	LONG_DASH( "dash", new LongDashStroke(1.0f)),
+	EQUAL_DASH( "equal_dash", new EqualDashStroke(1.0f)),
+	DASH_DOT( "dash_dot", new DashDotStroke(1.0f)),
+	//FIXME  //DOT("dot_dot", new DotStroke(1.0f)),
+	ZIGZAG("zigzag", new ZigzagStroke(1.0f)),
+	SINEWAVE("sinewave", new SineWaveStroke(1.0f)),
+	VERTICAL_SLASH("vertical_slash",new VerticalSlashStroke(1.0f,PipeStroke.Type.VERTICAL)),
+	FORWARD_SLASH("forward_slash",new ForwardSlashStroke(1.0f,PipeStroke.Type.FORWARD)),
+	BACKWARD_SLASH("backward_slash",new BackwardSlashStroke(1.0f,PipeStroke.Type.BACKWARD)),
+	PARALLEL_LINES("parallel_lines", new ParallelStroke(1.0f)),
+	CONTIGUOUS_ARROW("contiguous_arrow", new ContiguousArrowStroke(1.0f)),
+	SEPARATE_ARROW("separate_arrow", new SeparateArrowStroke(1.0f));
 
-	private final float[] strokeDef;
 	private String regex;
-	
-	private LineStyle(String def, String regex) {
-		if (def == null)
-			strokeDef = null;
-		else {
-			final String[] parts = def.split(",");
-			strokeDef = new float[parts.length];
+	private WidthStroke stroke;
 
-			for (int i = 0; i < strokeDef.length; i++)
-				strokeDef[i] = Float.parseFloat(parts[i]);
-		}
-
+	private LineStyle(String regex, WidthStroke stroke) {
 		this.regex = regex;
+		this.stroke = stroke;
 	}
 
 	private String getRegex() {
 		return regex;
 	}
+	
+	@Override public String toString() {
+		return name();
+	}
 
+	/**
+	 * Attempts to parse a LineStyle object from a string.  If the string does
+	 * not match any LineStyle.toString() value exactly, then it attempts a regular
+	 * expression match on regex pattern defined in this Enum. The regex support
+	 * exists primarily to support legacy file formats.  
+	 */
 	public static LineStyle parse(String val) {
-		// first check the style names
+		// First check the style names.
 		for ( LineStyle ls : values() ) {
 			if ( ls.toString().equals(val) )
 				return ls;
 		}
 
-		// then try regex matching instead 
+		// Then try regex matching. This is for legacy line types and 
+		// should really only either match "line" or "dash".
 		for ( LineStyle ls : values() ) {
 			Pattern p = Pattern.compile(ls.getRegex(),Pattern.CASE_INSENSITIVE);
 			Matcher m = p.matcher(val);
@@ -97,72 +132,50 @@ public enum LineStyle {
 		return SOLID;
 	}
 
-	private static Pattern numPattern = Pattern.compile("(\\d+)");
-
-	/** 
-	 * This method attempts to extract a width from a string that has
-	 * a number in it like "dashed1" or "line2". This exists to support
-	 * old-style line type definitions.
-	 * @return The parsed value or if something doesn't match, 1.0
-	 */
-	public static float parseWidth(String s) {
-		Matcher m = numPattern.matcher(s);
-		if ( m.matches() ) {
-			try {
-				return (new Float(m.group(1))).floatValue();
-			} catch (Exception e) { }
-		}
-		return 1.0f;
-	}
-
 	/**
-	 * A method that attempts to figure out if a stroke is dashed
-	 * or not.  If the Stroke object is not a BasicStroke, it will
-	 * return SOLID by default.
-	 * @return the LineStyle guessed based on the BasicStroke dash array.
+	 * Will attempt to find the LineStyle based on the type of stroke.
+	 * If it doesn't match a known stroke, it will return SOLID.
+	 * @return the LineStyle guessed from the stroke. 
 	 */
-	public static LineStyle extractLineStyle(Stroke stroke) {
-		if ( stroke instanceof BasicStroke ) {
-        	final float[] dash = ((BasicStroke)stroke).getDashArray();
-			if ( dash == null )
-				return SOLID;
-			else
-				return LONG_DASH;
+	public static LineStyle extractLineStyle(Stroke s) {
+		
+		
+		if ( s instanceof WidthStroke ) {
+			for(LineStyle ls: values()){
+				if(ls.stroke.equals(s))
+					return ls;
+			}
+			
+			
 		} 
 
 		return SOLID;
 	}
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param width DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * Creates a new stroke of this LineStyle with the specified width.
 	 */
 	public Stroke getStroke(float width) {
-		if (strokeDef != null)
-			return new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f,
-			                       strokeDef, 0.0f);
+		if ( width <= 0 )
+			return new ZeroStroke(stroke);
 		else
-			return new BasicStroke(width);
-	}
-	
-	public float[] getDashDef() {
-		return strokeDef;
+			return stroke.newInstanceForWidth( width );
 	}
 
-//    public static Map<Object,Icon> getIconSet() {
-//        Map<Object,Icon> icons = new HashMap<Object,Icon>();
-//
-//        for (LineStyle def : values()) {
-//            LineTypeIcon icon = new LineTypeIcon((BasicStroke) def.getStroke(5.0f), 
-//                                                 VisualPropertyIcon.DEFAULT_ICON_SIZE * 4, 
-//                                                 VisualPropertyIcon.DEFAULT_ICON_SIZE, 
-//												 def.name());
-//            icons.put(def, icon);
-//        }
-//
-//        return icons;
-//    }
+	/**
+	 * Returns a map of Icons that can be used for user interfaces.
+	 */
+    public static Map<Object,Icon> getIconSet() {
+        Map<Object,Icon> icons = new HashMap<Object,Icon>();
+
+        for (LineStyle def : values()) {
+            LineTypeIcon icon = new LineTypeIcon(def.getStroke(5.0f), 
+                                                 VisualPropertyIcon.DEFAULT_ICON_SIZE * 4, 
+                                                 VisualPropertyIcon.DEFAULT_ICON_SIZE, 
+												 def.name());
+            icons.put(def, icon);
+        }
+
+        return icons;
+    }
 }

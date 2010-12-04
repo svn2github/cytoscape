@@ -29,15 +29,14 @@ package org.cytoscape.graph.render.immed.arrow;
 
 
 import java.awt.geom.GeneralPath;
-import org.cytoscape.graph.render.immed.GraphGraphics;
 
 
 public class HalfTopArrow extends AbstractArrow {
 	public HalfTopArrow() {
-		super(GraphGraphics.ARROW_HALF_TOP,0.5);
+		super(0.5);
 
 		// create the arrow
-		GeneralPath arrowGP = new GeneralPath();
+		final GeneralPath arrowGP = new GeneralPath();
 		arrowGP.moveTo(-0.3f,-0.1f);
 		arrowGP.lineTo(-1.3f, -1.1f);
 		arrowGP.lineTo(-1.435f, -1.1f);

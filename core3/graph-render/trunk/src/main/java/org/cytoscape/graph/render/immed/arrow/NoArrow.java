@@ -29,17 +29,16 @@ package org.cytoscape.graph.render.immed.arrow;
 
 
 import java.awt.geom.Arc2D;
-import org.cytoscape.graph.render.immed.GraphGraphics;
 
 
 public class NoArrow extends AbstractArrow {
 	public NoArrow() {
-		super(GraphGraphics.ARROW_NONE,0.0);
+		super(0.0);
 
 		// no arrow
 
 		// create the cap
-		Arc2D.Double capA = new Arc2D.Double();
+		final Arc2D.Double capA = new Arc2D.Double();
 		capA.setArc(-0.5, -0.5, 1.0, 1.0, 270.0, 180.0, Arc2D.CHORD);
 
 		cap = capA;

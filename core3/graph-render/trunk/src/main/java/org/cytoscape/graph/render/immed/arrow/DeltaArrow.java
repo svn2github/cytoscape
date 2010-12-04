@@ -29,15 +29,14 @@ package org.cytoscape.graph.render.immed.arrow;
 
 
 import java.awt.geom.GeneralPath;
-import org.cytoscape.graph.render.immed.GraphGraphics;
 
 
 public class DeltaArrow extends AbstractArrow {
 	public DeltaArrow() {
-		super(GraphGraphics.ARROW_DELTA,2.0);
+		super(2.0);
 
 		// create the arrow
-		GeneralPath arrowGP = new GeneralPath();
+		final GeneralPath arrowGP = new GeneralPath();
 		arrowGP.moveTo(-2.0f, -0.5f);
 		arrowGP.lineTo(0.0f, 0.0f);
 		arrowGP.lineTo(-2.0f, 0.5f);

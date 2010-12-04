@@ -32,17 +32,18 @@ import java.awt.Shape;
 
 
 /**
- * Try to keep this package protected.
+ * Abstract arrow.
+ * 
+ *
  */
-class AbstractArrow implements Arrow {
+abstract class AbstractArrow implements Arrow {
+	
 	protected final double tOffset;
-	protected final byte type;
 
 	protected Shape arrow;
 	protected Shape cap;
 
-	AbstractArrow(final byte type, final double tOffset) {
-		this.type = type;
+	AbstractArrow(final double tOffset) {
 		this.tOffset = tOffset;
 		this.arrow = null;
 		this.cap = null;
@@ -55,10 +56,6 @@ class AbstractArrow implements Arrow {
 	public Shape getCapShape(final double ratio) {
 		// ignore the ratio by default
 		return cap;
-	}
-
-	public byte getType() {
-		return type;
 	}
 
 	public double getTOffset() {

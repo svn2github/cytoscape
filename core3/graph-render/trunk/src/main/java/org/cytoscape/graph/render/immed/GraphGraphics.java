@@ -231,8 +231,8 @@ public final class GraphGraphics {
 		nodeShapes.put(SHAPE_TRIANGLE, new TriangleNodeShape()); 
 		nodeShapes.put(SHAPE_VEE, new VeeNodeShape());
 
+		// Defines arrow shapes used in this rendering engine.
 		arrows = new HashMap<Byte,Arrow>();
-
 		arrows.put(ARROW_NONE, new NoArrow() );
 		arrows.put(ARROW_DELTA, new DeltaArrow() );
 		arrows.put(ARROW_DISC, new DiscArrow() );
@@ -1014,18 +1014,19 @@ public final class GraphGraphics {
 		return shapeMap;
 	}
 
-	/**
-	 * Get list of arrow heads.
-	 * 
-	 * @return A map of arrow shape bytes to Shape objects.
-	 */
-	public static Map<Byte, Shape> getArrowShapes() {
-		final Map<Byte, Shape> shapeMap = new HashMap<Byte, Shape>();
-		for ( Arrow a : arrows.values() )
-			shapeMap.put( a.getType(), a.getArrowShape() );
- 
-		return shapeMap;
-	}
+//	/**
+//	 * Get list of arrow heads.
+//	 * 
+//	 * @return A map of arrow shape bytes to Shape objects.
+//	 */
+//	public static Map<Byte, Shape> getArrowShapes() {
+//		final Map<Byte, Shape> shapeMap = new HashMap<Byte, Shape>();
+//		
+//		for ( Arrow a : arrows.values() )
+//			shapeMap.put( a.getType(), a.getArrowShape() );
+// 
+//		return shapeMap;
+//	}
 
 	private final static void computeRoundedRectangle(final double xMin,
 			final double yMin, final double xMax, final double yMax,
