@@ -36,7 +36,7 @@ import org.cytoscape.equations.FunctionUtil;
 import org.cytoscape.equations.LongList;
 import org.cytoscape.equations.StringList;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.work.AbstractUndoableEdit;
+import org.cytoscape.work.undo.AbstractUndoableEdit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +49,7 @@ import javax.swing.JOptionPane;
 /**
  * Validate and set new value to the CyAttributes.
  */
-public class DataEditAction extends org.cytoscape.work.AbstractUndoableEdit {
+public class DataEditAction extends AbstractUndoableEdit {
 	private final String attrKey;
 	private final String attrName;
 	private final Object old_value;

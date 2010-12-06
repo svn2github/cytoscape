@@ -28,22 +28,14 @@
 package org.cytoscape.browser.internal;
 
 
-//import browser.ui.CyAttributeBrowserTable;
-
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
-
-import org.cytoscape.view.CyNetworkView;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.View;
 import org.cytoscape.work.undo.UndoSupport;
-
-import cytoscape.visual.GlobalAppearanceCalculator;
-
-import giny.model.Edge;
-import giny.model.GraphObject;
-import giny.model.Node;
-
-import giny.view.EdgeView;
-import giny.view.NodeView;
 
 import org.cytoscape.equations.Equation;
 
@@ -80,13 +72,10 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	private final UndoSupport undoSupport;
 
 	// Currently selected data objects
-	private List<GraphObject> graphObjects;
+	private List<CyTableEntry> graphObjects;
 
 	// Ordered list of attribute names shown as column names.
 	private List<String> attributeNames;
-	private final GlobalAppearanceCalculator gac = Cytoscape.getVisualMappingManager()
-	                                                        .getVisualStyle()
-	                                                        .getGlobalAppearanceCalculator();
 
 	/*
 	 * Selected nodes & edges color
@@ -114,7 +103,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @param attributeNames  DOCUMENT ME!
 	 * @param type  DOCUMENT ME!
 	 */
-	public DataTableModel(final List<GraphObject> graph_objects, final List<String> attributeNames,
+	public DataTableModel(final List<CyTableEntry> graph_objects, final List<String> attributeNames,
 	                      final CyTable table, final UndoSupport undoSupport)
 	{
 		this.graphObjects = graph_objects;
@@ -157,12 +146,12 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		internalSelection = new HashMap<String, Boolean>();
 
-		NodeView nv;
-		EdgeView edgeView;
+		View<CyNode> nv;
+		View<CyEdge> edgeView;
 		final CyNetworkView netView = Cytoscape.getCurrentNetworkView();
 
 		if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-			for (GraphObject obj : graphObjects) {
+			for (CyTableEntry obj : graphObjects) {
 				internalSelection.put(obj.getIdentifier(), DEFAULT_FLAG);
 			}
 		}
@@ -269,12 +258,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			return null;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List getGraphObjects() {
+	public List<CyTableEntry> getGraphObjects() {
 		return graphObjects;
 	}
 
