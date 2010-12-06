@@ -138,6 +138,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	private int m_lastYMousePos = 0;
 	private boolean m_button1NodeDrag = false;
 
+	private final boolean isMacPlatform;
+
 	InnerCanvas(Object lock, DGraphView view, UndoSupport undo) {
 		super();
 		m_lock = lock;
@@ -158,6 +160,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		setFocusable(true);
 		dropTarget = new DropTarget(this, DnDConstants.ACTION_COPY, this); 
 		popup = new PopupMenuHelper(m_view, this);
+
+		String os = System.getProperty("os.name");
+		isMacPlatform = os.regionMatches(true, 0, MAC_OS_ID, 0, MAC_OS_ID.length());
 	}
 
 	/**
@@ -297,7 +302,23 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	// MouseMotionListener
 	//
 
+	private String getMouseEventString(MouseEvent e) {
+		return "MouseEvent: button (x " + e.getClickCount() + "): " + e.getButton() + " [" 
+		+ (e.isControlDown() ? "ctrl " : "")
+		+ (e.isShiftDown() ? "shft " : "")
+		+ (e.isAltDown() ? "alt " : "")
+		+ (e.isMetaDown() ? "meta " : "")
+		+ (e.isAltGraphDown() ? "grph " : "")
+		+ "{"
+		+ MouseEvent.getMouseModifiersText(e.getModifiers())
+		+ "}"
+		+ (Integer.toBinaryString(e.getModifiers()) )
+		+ " "
+		+ (Integer.toBinaryString(e.getModifiersEx()) )
+		+ "]";
+	}
 	public void mouseDragged(MouseEvent e) {
+		System.out.println("mouseDragged: " + getMouseEventString(e));
 		if (m_currMouseButton == 1) {
 			processLeftDrag(e);
 		} else if (m_currMouseButton == 2) {
@@ -322,6 +343,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	public void mouseExited(MouseEvent e) { }
 
 	public void mouseReleased(MouseEvent e) {
+		System.out.println("mouseReleased: " + getMouseEventString(e));
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			finishLeftClick(e);
 		} else if (e.getButton() == MouseEvent.BUTTON2) {
@@ -332,44 +354,57 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 
 	public void mousePressed(MouseEvent e) {
+		System.out.println("mousePressed: " + getMouseEventString(e));
 		// single-click
 		if ( e.getClickCount() == 1 ) {
-			
-			// normal single click (i.e. left click without control and not on a mac) 
-			if ((e.getButton() == MouseEvent.BUTTON1) && !e.isControlDown()) { 
-	
-				if (e.isShiftDown() && isAnchorKeyDown(e))
-					return;
-	
-				startSingleLeftClick(e);
-	
-			// we have control + single-click
-			} else if ((e.getButton() == MouseEvent.BUTTON1) && !isMacPlatform() && e.isControlDown()) {
-				// on mac, mouse button1 click and control is simulate button 3 press
-				// It's too complicated to correctly handle both control and shift
-				// simultaneously.
-				startSingleControlClick(e);
-				
-			// middle click
-			} else if (e.getButton() == MouseEvent.BUTTON2) {
+			if ( isLeftClick(e) ) {
+				if ( e.isControlDown() ) {
+					startSingleControlClick(e);
+				} else {
+					startSingleLeftClick(e);
+				}
+			} else if ( isMiddleClick(e) ) {
 				startSingleMiddleClick(e);
-
-			// right click
-			} else if ((e.getButton() == MouseEvent.BUTTON3) || (isMacPlatform() && e.isControlDown())) {
+			} else if ( isRightClick(e) ) {
 				startSingleRightClick(e);
 			} 
 
 		// double click
 		} else if ( e.getClickCount() == 2 ) {
-
-			// normal (left) double click 
-			if (e.getButton() == MouseEvent.BUTTON1) {
+			if ( isLeftClick(e) ) {
 				startDoubleLeftClick(e);
 			}
 		}
 
 		requestFocusInWindow();
 	}
+
+	private boolean isLeftClick(MouseEvent e) {
+		boolean b1 = (e.getButton() == MouseEvent.BUTTON1);
+		if ( isMacPlatform ) {
+			return (!e.isMetaDown() && !e.isAltDown() && b1);
+		}
+		return b1;
+	}
+
+	private boolean isRightClick(MouseEvent e) {
+		boolean b3 = (e.getButton() == MouseEvent.BUTTON3); 
+		if ( !b3 && isMacPlatform ) {
+			// meta - left click
+			return (e.isMetaDown() && !e.isAltDown() && (e.getButton() == MouseEvent.BUTTON1));
+		}
+		return b3;
+	}
+
+	private boolean isMiddleClick(MouseEvent e) {
+		boolean b2 = (e.getButton() == MouseEvent.BUTTON2); 
+		if ( !b2 && isMacPlatform ) {
+			// alt - left click
+			return (!e.isMetaDown() && e.isAltDown() && (e.getButton() == MouseEvent.BUTTON1));
+		}
+		return b2;
+	}
+
 
 	// KeyListener
 
@@ -454,7 +489,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 	}
 	
-	
 	private int[] getUnselectedEdges() {
 		int[] unselectedEdges;
 		if (m_view.m_edgeSelection) { // Unselect all selected edges.
@@ -489,7 +523,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	
 	
 	private void toggleChosenAnchor (int chosenAnchor, MouseEvent e) {
-		if (isAnchorKeyDown(e)) {
+		if (e.isControlDown()) {
 			final int edge = chosenAnchor >>> 6;
 			final int anchorInx = chosenAnchor & 0x0000003f;
 			// Save remove handle
@@ -516,8 +550,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	
 	private int toggleSelectedEdge(int chosenEdge, MouseEvent e) {
 		int chosenEdgeSelected = 0;
-		if (isAnchorKeyDown(e)
-			    && ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
+		if (e.isControlDown() && ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
 				m_view.m_selectedAnchors.empty();
 				m_ptBuff[0] = m_lastXMousePos;
 				m_ptBuff[1] = m_lastYMousePos;
@@ -959,30 +992,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public AffineTransform getAffineTransform() {
 		return (m_grafx != null) ? m_grafx.getTransform() : null;
-	}
-
-	/**
-	 * Routine which determines if anchor qualifier key has been pressed:
-	 *
-	 * on Mac -> meta key
-	 * on PC -> control key
-	 *
-	 * @param e MouseEvent
-	 * @return boolean
-	 */
-	private boolean isAnchorKeyDown(MouseEvent e) {
-		return ((!isMacPlatform() && e.isControlDown()) || (isMacPlatform() && e.isMetaDown()));
-	}
-
-	/**
-	 * Routine which determines if we are running on mac platform
-	 *
-	 * @return boolean
-	 */
-	private boolean isMacPlatform() {
-		String os = System.getProperty("os.name");
-
-		return os.regionMatches(true, 0, MAC_OS_ID, 0, MAC_OS_ID.length());
 	}
 
 	public void enableNodeMovement(){
