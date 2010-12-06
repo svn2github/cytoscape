@@ -125,17 +125,18 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	static final String MAC_OS_ID = "mac";
 
-	//AJK: 04/02/06 BEGIN
 	private DropTarget dropTarget;
 	private String CANVAS_DROP = "CanvasDrop";
 
-	// AJK: 1/14/2007 BEGIN
 	//  for turning selection rectangle on and off
 	private boolean selecting = true;
 
-	// AJK: 1/14/2007 END
-
 	private UndoSupport m_undo;
+
+	private int m_currMouseButton = 0;
+	private int m_lastXMousePos = 0;
+	private int m_lastYMousePos = 0;
+	private boolean m_button1NodeDrag = false;
 
 	InnerCanvas(Object lock, DGraphView view, UndoSupport undo) {
 		super();
@@ -278,46 +279,128 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 	/**
  	 * Return true if this view is curerntly being printed (as opposed to painted on the screen)
- 	 *
  	 * @return true if we're currently being printed, false otherwise
  	 */
-	public boolean isPrinting() { return isPrinting; }
-
-	private int m_currMouseButton = 0;
-	private int m_lastXMousePos = 0;
-	private int m_lastYMousePos = 0;
-	private boolean m_button1NodeDrag = false;
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void mouseClicked(MouseEvent e) {
+	public boolean isPrinting() { 
+		return isPrinting; 
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void mouseEntered(MouseEvent e) {
+	//
+	// MouseWheelListener
+	//
+
+	public void mouseWheelMoved(MouseWheelEvent e) {
+        adjustZoom( e.getWheelRotation() );
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void mouseExited(MouseEvent e) {
+	//
+	// MouseMotionListener
+	//
+
+	public void mouseDragged(MouseEvent e) {
+		if (m_currMouseButton == 1) {
+			processLeftDrag(e);
+		} else if (m_currMouseButton == 2) {
+			processMiddleDrag(e);
+		} else if (m_currMouseButton == 3) {
+			processRightDrag(e);
+		}
 	}
+
+	public void mouseMoved(MouseEvent e) {
+		setToolTipText( getToolTipText( e.getPoint() ) );
+	}
+
+	//
+	// MouseListener
+	//
+
+	public void mouseClicked(MouseEvent e) { }
+
+	public void mouseEntered(MouseEvent e) { }
+
+	public void mouseExited(MouseEvent e) { }
+
+	public void mouseReleased(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			finishLeftClick(e);
+		} else if (e.getButton() == MouseEvent.BUTTON2) {
+			finishMiddleClick(e);
+		} else if (e.getButton() == MouseEvent.BUTTON3) {
+			finishRightClick(e);
+		}
+	}
+
+	public void mousePressed(MouseEvent e) {
+		// single-click
+		if ( e.getClickCount() == 1 ) {
+			
+			// normal single click (i.e. left click without control and not on a mac) 
+			if ((e.getButton() == MouseEvent.BUTTON1) && !e.isControlDown()) { 
 	
+				if (e.isShiftDown() && isAnchorKeyDown(e))
+					return;
+	
+				startSingleLeftClick(e);
+	
+			// we have control + single-click
+			} else if ((e.getButton() == MouseEvent.BUTTON1) && !isMacPlatform() && e.isControlDown()) {
+				// on mac, mouse button1 click and control is simulate button 3 press
+				// It's too complicated to correctly handle both control and shift
+				// simultaneously.
+				startSingleControlClick(e);
+				
+			// middle click
+			} else if (e.getButton() == MouseEvent.BUTTON2) {
+				startSingleMiddleClick(e);
+
+			// right click
+			} else if ((e.getButton() == MouseEvent.BUTTON3) || (isMacPlatform() && e.isControlDown())) {
+				startSingleRightClick(e);
+			} 
+
+		// double click
+		} else if ( e.getClickCount() == 2 ) {
+
+			// normal (left) double click 
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				startDoubleLeftClick(e);
+			}
+		}
+
+		requestFocusInWindow();
+	}
+
+	// KeyListener
+
 	/**
-	 * 
-	 * @return
+	 * Handles key press events. Currently used with the up/down, left/right arrow
+	 * keys. Pressing any of the listed keys will move the selected nodes one pixel
+	 * in that direction.
+	 * @param k The key event that we're listening for.
 	 */
-	private int getChosenNode()
-	{
+	public void keyPressed(KeyEvent k) {
+		final int code = k.getKeyCode();
+		if ( (code == KeyEvent.VK_UP) || (code == KeyEvent.VK_DOWN) || 
+		     (code == KeyEvent.VK_LEFT) || (code == KeyEvent.VK_RIGHT)) {
+			handleArrowKeys(k);
+		}
+	}
+
+	/**
+	 * Currently not used.
+	 * @param k The key event that we're listening for.
+	 */
+	public void keyReleased(KeyEvent k) { }
+
+	/**
+	 * Currently not used.
+	 * @param k The key event that we're listening for.
+	 */
+	public void keyTyped(KeyEvent k) { }
+
+
+	private int getChosenNode() {
 		m_ptBuff[0] = m_lastXMousePos;
 		m_ptBuff[1] = m_lastYMousePos;
 		m_view.xformComponentToNodeCoords(m_ptBuff);
@@ -331,12 +414,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		return chosenNode;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	private int getChosenAnchor ()
-	{
+	private int getChosenAnchor() {
 		m_ptBuff[0] = m_lastXMousePos;
 		m_ptBuff[1] = m_lastYMousePos;
 		m_view.xformComponentToNodeCoords(m_ptBuff);
@@ -350,12 +428,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		return chosenAnchor;
 	}
 	
-	/**
-	 * 
-	 */
-	private int getChosenEdge()
-	{
-		
+	private int getChosenEdge() {
 		computeEdgesIntersecting(m_lastXMousePos - 1, m_lastYMousePos - 1,
                 m_lastXMousePos + 1, m_lastYMousePos + 1, m_stack2);
         int chosenEdge = (m_stack2.size() > 0) ? m_stack2.peek() : 0;
@@ -363,11 +436,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 	
 	/**
-	 * 
 	 * @return an array of indices of unselected nodes
 	 */
-	private int[] getUnselectedNodes()
-	{
+	private int[] getUnselectedNodes() {
 		int [] unselectedNodes;
 		if (m_view.m_nodeSelection) { // Unselect all selected nodes.
 			unselectedNodes = m_view.getSelectedNodeIndices();
@@ -384,8 +455,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 	
 	
-	private int[] getUnselectedEdges()
-	{
+	private int[] getUnselectedEdges() {
 		int[] unselectedEdges;
 		if (m_view.m_edgeSelection) { // Unselect all selected edges.
 			unselectedEdges = m_view.getSelectedEdgeIndices();
@@ -400,8 +470,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		return unselectedEdges;
 	}
 	
-	private int toggleSelectedNode(int chosenNode, MouseEvent e)
-	{
+	private int toggleSelectedNode(int chosenNode, MouseEvent e) {
 		int chosenNodeSelected = 0;
 		final boolean wasSelected = m_view.getNodeView(chosenNode).isSelected();
 
@@ -419,15 +488,11 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 	
 	
-	/**
-	 * 
-	 */
-	private void toggleChosenAnchor (int chosenAnchor, MouseEvent e)
-	{
+	private void toggleChosenAnchor (int chosenAnchor, MouseEvent e) {
 		if (isAnchorKeyDown(e)) {
 			final int edge = chosenAnchor >>> 6;
 			final int anchorInx = chosenAnchor & 0x0000003f;
-			//****** Save remove handle
+			// Save remove handle
 			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Remove Edge Handle",m_undo);
 			((DEdgeView) m_view.getEdgeView(edge)).removeHandle(anchorInx);
 			m_button1NodeDrag = false;
@@ -449,11 +514,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		m_view.m_contentChanged = true;	
 	}
 	
-	
-	
-	
-	private int toggleSelectedEdge (int chosenEdge, MouseEvent e)
-	{
+	private int toggleSelectedEdge(int chosenEdge, MouseEvent e) {
 		int chosenEdgeSelected = 0;
 		if (isAnchorKeyDown(e)
 			    && ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
@@ -461,7 +522,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 				m_ptBuff[0] = m_lastXMousePos;
 				m_ptBuff[1] = m_lastYMousePos;
 				m_view.xformComponentToNodeCoords(m_ptBuff);
-				//******* Store current handle list *********
+				// Store current handle list 
 				m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Add Edge Handle",m_undo);
 				final int chosenInx = ((DEdgeView) m_view.getEdgeView(chosenEdge))
 																												.addHandleFoo(new Point2D.Float((float) m_ptBuff[0],
@@ -503,183 +564,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			return chosenEdgeSelected;
 	}
 	
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void mousePressed(MouseEvent e) {
 
-		// single-click
-		if ( e.getClickCount() == 1 ) {
-			
-			System.out.println ("SINGLE click -------");                                                                                    
-
-			// normal single click (i.e. left click without control and not on a mac) 
-			if ((e.getButton() == MouseEvent.BUTTON1) && !e.isControlDown()) { 
-				System.out.println ("left click -------");                                                                                    
-	
-				if (e.isShiftDown() && isAnchorKeyDown(e))
-					return;
-				
-				// m_undoable_edit = new ViewChangeEdit(m_view, "Move");
-				m_undoable_edit = null;
-	
-				m_currMouseButton = 1;
-				m_lastXMousePos = e.getX();
-				m_lastYMousePos = e.getY();
-	
-				int[] unselectedNodes = null;
-				int[] unselectedEdges = null;
-				int chosenNode = 0;
-				int chosenEdge = 0;
-				int chosenAnchor = -1;
-				int chosenNodeSelected = 0;
-				int chosenEdgeSelected = 0;
-	
-				synchronized (m_lock) {
-					if (m_view.m_nodeSelection) {
-						chosenNode = getChosenNode();
-					}
-	
-					if (m_view.m_edgeSelection && (chosenNode == 0)
-					    && ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
-						chosenAnchor = getChosenAnchor();
-					}
-	
-					if (m_view.m_edgeSelection && (chosenNode == 0) && (chosenAnchor < 0)) {
-						chosenEdge = getChosenEdge();
-					}
-	
-					if ((!e.isShiftDown()) // If shift is down never unselect.
-					    && (((chosenNode == 0) && (chosenEdge == 0) && (chosenAnchor < 0)) // Mouse missed all.
-					       // Not [we hit something but it was already selected].
-					       || !( ((chosenNode != 0) && m_view.getNodeView(chosenNode).isSelected())
-					             || (chosenAnchor >= 0) 
-					             || ((chosenEdge != 0) && m_view.getEdgeView(chosenEdge).isSelected()) ))) {
-					
-							unselectedNodes = getUnselectedNodes();
-							unselectedEdges = getUnselectedEdges();
-	
-						if ((unselectedNodes.length > 0) || (unselectedEdges.length > 0))
-							m_view.m_contentChanged = true;
-					}
-					
-		
-					if (chosenNode != 0) {
-					    chosenNodeSelected = toggleSelectedNode(chosenNode, e);
-					}
-	
-					if (chosenAnchor >= 0) {
-						toggleChosenAnchor (chosenAnchor, e);
-					}
-	
-					if (chosenEdge != 0) {
-						chosenEdgeSelected = toggleSelectedEdge (chosenEdge, e);
-					}
-	
-					if ((chosenNode == 0) && (chosenEdge == 0) && (chosenAnchor < 0)) {
-						m_selectionRect = new Rectangle(m_lastXMousePos, m_lastYMousePos, 0, 0);
-						m_button1NodeDrag = false;
-					}
-				}
-	
-				final GraphViewChangeListener listener = m_view.m_lis[0];
-	
-				// delegating to listeners
-				if (listener != null) {
-					if ((unselectedNodes != null) && (unselectedNodes.length > 0))
-						listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
-					                                                            DGraphView.makeNodeList(unselectedNodes,m_view)));
-	
-					if ((unselectedEdges != null) && (unselectedEdges.length > 0))
-						listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
-					                                                            DGraphView.makeEdgeList(unselectedEdges,m_view)));
-	
-					if (chosenNode != 0) {
-						if (chosenNodeSelected > 0)
-							listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
-								DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
-						else if (chosenNodeSelected < 0)
-							listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
-								DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
-					}
-	
-					if (chosenEdge != 0) {
-						if (chosenEdgeSelected > 0)
-							listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view,
-								DGraphView.makeList(m_view.getEdgeView(chosenEdge).getEdge())));
-						else if (chosenEdgeSelected < 0)
-							listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
-								DGraphView.makeList(m_view.getEdgeView(chosenEdge).getEdge())));
-					}
-				}
-	
-				// Repaint after listener events are fired because listeners may change
-				// something in the graph view.
-				repaint();
-	
-			// we have control + single-click
-			} else if ((e.getButton() == MouseEvent.BUTTON1) && !isMacPlatform() && e.isControlDown()) {
-
-				// on mac, mouse button1 click and control is simulate button 3 press
-				// It's too complicated to correctly handle both control and shift
-				// simultaneously.
-				
-				System.out.println("left control click ----------");
-				// clicking on empty space
-				if ((getChosenNode() == 0) && (getChosenEdge() == 0) && (getChosenAnchor() < 0)) {
-					popup.createEmptySpaceMenu(e.getX(), e.getY(),"NEW"); 
-				}
-			}
-	
-			// middle click
-			else if (e.getButton() == MouseEvent.BUTTON2) {
-				System.out.println("middle click -----------");
-				//******** Save all node positions
-				m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
-				m_currMouseButton = 2;
-				m_lastXMousePos = e.getX();
-				m_lastYMousePos = e.getY();
-	
-			// right click
-			} else if ((e.getButton() == MouseEvent.BUTTON3) || (isMacPlatform() && e.isControlDown())) {
-				System.out.println("right click -----------");
-				//******** Save all node positions
-				// TODO figure out if we should actually be saving anything for the edit
-				//m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
-				m_currMouseButton = 3;
-				m_lastXMousePos = e.getX();
-				m_lastYMousePos = e.getY();
-	
-				NodeView nview = m_view.getPickedNodeView(e.getPoint());
-				popup.createNodeViewMenu(nview,e.getX(),e.getY(),null);
-	
-				EdgeView edgeView = m_view.getPickedEdgeView(e.getPoint());
-				popup.createEdgeViewMenu(edgeView,e.getX(),e.getY(),null);
-			} 
-
-		// double click
-		} else if ( e.getClickCount() == 2 ) {
-			System.out.println("DOUBLE click -----------");
-
-			// normal (left) double click 
-			if (e.getButton() == MouseEvent.BUTTON1) {
-				System.out.println("left click -----------");
-
-				NodeView nview = m_view.getPickedNodeView(e.getPoint());
-				if ( nview != null )
-					popup.createNodeViewMenu(nview,e.getX(),e.getY(),"OPEN");
-				else 
-					popup.createEmptySpaceMenu(e.getX(), e.getY(),"OPEN"); 
-			}
-		}
-
-		requestFocusInWindow();
-	}
-
-	private int[] setSelectedNodes ()
-	{
+	private int[] setSelectedNodes() {
 		int [] selectedNodes = null;
 		m_ptBuff[0] = m_selectionRect.x;
 		m_ptBuff[1] = m_selectionRect.y;
@@ -726,8 +612,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 	
 	
-	private int [] setSelectedEdges ()
-	{
+	private int [] setSelectedEdges() {
 		int [] selectedEdges = null;
 		if ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0) {
 			m_ptBuff[0] = m_selectionRect.x;
@@ -792,296 +677,25 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 * Returns the tool tip text for the specified location if any exists first
+	 * checking nodes, then edges, and then returns null if it's empty space.
 	 */
-	public void mouseReleased(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON1) {
-			if (m_currMouseButton == 1) {
-				m_currMouseButton = 0;
+	private String getToolTipText(Point p) {
+		// display tips for nodes before edges
+		NodeView nv = m_view.getPickedNodeView(p);
+		if (nv != null) 
+			return ((DNodeView) nv).getToolTip();
 
-				if (m_selectionRect != null) {
-					int[] selectedNodes = null;
-					int[] selectedEdges = null;
-
-					synchronized (m_lock) {
-						if (m_view.m_nodeSelection || m_view.m_edgeSelection) {
-							if (m_view.m_nodeSelection) 
-								{
-									selectedNodes = setSelectedNodes();
-								}
-	
-
-							if (m_view.m_edgeSelection) {
-								selectedEdges = setSelectedEdges ();
-							}								
-
-						}
-					}
-
-					m_selectionRect = null;
-
-					final GraphViewChangeListener listener = m_view.m_lis[0];
-
-					if (listener != null) {
-						if ((selectedNodes != null) && (selectedNodes.length > 0))
-							listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
-					                                                          DGraphView.makeNodeList(selectedNodes,m_view)));
-
-						if ((selectedEdges != null) && (selectedEdges.length > 0))
-							listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view,
-					                                                          DGraphView.makeEdgeList(selectedEdges,m_view)));
-					}
-
-					// Repaint after listener events are fired because listeners may
-					// change something in the graph view.
-					repaint();
-				}
-			}
-
-			if (m_undoable_edit != null)
-				m_undoable_edit.post();
-		} else if (e.getButton() == MouseEvent.BUTTON2) {
-			if (m_currMouseButton == 2)
-				m_currMouseButton = 0;
-
-			if (m_undoable_edit != null)
-				m_undoable_edit.post();
-		} else if (e.getButton() == MouseEvent.BUTTON3) {
-			if (m_currMouseButton == 3)
-				m_currMouseButton = 0;
-
-			if (m_undoable_edit != null)
-				m_undoable_edit.post();
-		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void mouseDragged(MouseEvent e) {
-		if (m_currMouseButton == 1) {
-			if (m_button1NodeDrag) {
-				//*****SAVE SELECTED NODE & EDGE POSITIONS******
-				if (m_undoable_edit == null) {
-					m_undoable_edit = new ViewChangeEdit(m_view, ViewChangeEdit.SavedObjs.SELECTED, "Move",m_undo);
-				}
-				synchronized (m_lock) {
-					m_ptBuff[0] = m_lastXMousePos;
-					m_ptBuff[1] = m_lastYMousePos;
-					m_view.xformComponentToNodeCoords(m_ptBuff);
-
-					final double oldX = m_ptBuff[0];
-					final double oldY = m_ptBuff[1];
-					m_lastXMousePos = e.getX();
-					m_lastYMousePos = e.getY();
-					m_ptBuff[0] = m_lastXMousePos;
-					m_ptBuff[1] = m_lastYMousePos;
-					m_view.xformComponentToNodeCoords(m_ptBuff);
-
-					final double newX = m_ptBuff[0];
-					final double newY = m_ptBuff[1];
-					double deltaX = newX - oldX;
-					double deltaY = newY - oldY;
-
-					// If the shift key is down, then only move horizontally,
-					// vertically, or diagonally, depending on the slope.
-					if (e.isShiftDown()) {
-						final double slope = deltaY / deltaX;
-
-						// slope of 2.41 ~ 67.5 degrees (halfway between 45 and 90)
-						// slope of 0.41 ~ 22.5 degrees (halfway between 0 and 45)
-						if ((slope > 2.41) || (slope < -2.41)) {
-							deltaX = 0.0; // just move vertical
-						} else if ((slope < 0.41) && (slope > -0.41)) {
-							deltaY = 0.0; // just move horizontal
-						} else {
-							final double avg = (Math.abs(deltaX) + Math.abs(deltaY)) / 2.0;
-							deltaX = (deltaX < 0) ? (-avg) : avg;
-							deltaY = (deltaY < 0) ? (-avg) : avg;
-						}
-					}
-
-					// TODO: Optimize to not instantiate new array on every call.
-					final int[] selectedNodes = m_view.getSelectedNodeIndices();
-
-					for (int i = 0; i < selectedNodes.length; i++) {
-						final NodeView nv = m_view.getNodeView(selectedNodes[i]);
-						final double oldXPos = nv.getXPosition();
-						final double oldYPos = nv.getYPosition();
-						nv.setOffset(oldXPos + deltaX, oldYPos + deltaY);
-					}
-
-					final IntEnumerator anchorsToMove = m_view.m_selectedAnchors.searchRange(Integer.MIN_VALUE,
-					                                                                         Integer.MAX_VALUE,
-					                                                                         false);
-
-					while (anchorsToMove.numRemaining() > 0) {
-						final int edgeAndAnchor = anchorsToMove.nextInt();
-						final int edge = edgeAndAnchor >>> 6;
-						final int anchorInx = edgeAndAnchor & 0x0000003f;
-						final DEdgeView ev = (DEdgeView) m_view.getEdgeView(edge);
-						ev.getHandleInternal(anchorInx, m_floatBuff1);
-						ev.moveHandleInternal(anchorInx, m_floatBuff1[0] + deltaX,
-						                      m_floatBuff1[1] + deltaY);
-					}
-
-					if ((selectedNodes.length > 0) || (m_view.m_selectedAnchors.size() > 0))
-						m_view.m_contentChanged = true;
-				}
-			}
-
-			if (m_selectionRect != null) {
-				final int x = Math.min(m_lastXMousePos, e.getX());
-				final int y = Math.min(m_lastYMousePos, e.getY());
-				final int w = Math.abs(m_lastXMousePos - e.getX());
-				final int h = Math.abs(m_lastYMousePos - e.getY());
-				m_selectionRect.setBounds(x, y, w, h);
-			}
-
-			repaint();
-		} else if (m_currMouseButton == 2) {
-			double deltaX = e.getX() - m_lastXMousePos;
-			double deltaY = e.getY() - m_lastYMousePos;
-			m_lastXMousePos = e.getX();
-			m_lastYMousePos = e.getY();
-
-			synchronized (m_lock) {
-				m_xCenter -= (deltaX / m_scaleFactor);
-				m_yCenter -= (deltaY / m_scaleFactor);
-			}
-
-			m_view.m_viewportChanged = true;
-			repaint();
-		} else if (m_currMouseButton == 3) {
-			double deltaY = e.getY() - m_lastYMousePos;
-
-			synchronized (m_lock) {
-				m_lastXMousePos = e.getX();
-				m_lastYMousePos = e.getY();
-				m_scaleFactor *= Math.pow(2, -deltaY / 300.0d);
-			}
-
-			m_view.m_viewportChanged = true;
-			repaint();
-		}
-	}
-
-	// AJK: 05/02/06 BEGIN
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
-	public void mouseMoved(MouseEvent e) {
-		NodeView nv = m_view.getPickedNodeView(e.getPoint());
-		boolean toolTipSet = false;
-
-		if (nv != null) {
-			setToolTipText(((DNodeView) nv).getToolTip());
-			toolTipSet = true;
-		} else {
-			if ((m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) != 0) {
-				EdgeView ev = m_view.getPickedEdgeView(e.getPoint());
-
-				if (ev != null) {
-					setToolTipText(((DEdgeView) ev).getToolTip());
-					toolTipSet = true;
-				}
-			}
+		// only display edge tool tips if the LOD is sufficient
+		if ((m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) != 0) {
+				EdgeView ev = m_view.getPickedEdgeView(p);
+				if (ev != null) 
+					return ((DEdgeView) ev).getToolTip();
 		}
 
-		if (!toolTipSet)
-			setToolTipText(null);
+		return null;
 	}
 
-	/**
-	 * Handles key press events. Currently used with the up/down, left/right arrow
-	 * keys. Pressing any of the listed keys will move the selected nodes one pixel
-	 * in that direction.
-	 *
-	 * @param k The key event that we're listening for.
-	 */
-	public void keyPressed(KeyEvent k) {
-		int code = k.getKeyCode();
-
-		if ((code == KeyEvent.VK_UP) || (code == KeyEvent.VK_DOWN) || (code == KeyEvent.VK_LEFT)
-		    || (code == KeyEvent.VK_RIGHT)) {
-			double move = 1.0;
-
-			if (k.isShiftDown())
-				move = 10.0;
-
-			if (m_view.m_nodeSelection) {
-				// move nodes
-				int[] selectedNodes = m_view.getSelectedNodeIndices();
-
-				for (int i = 0; i < selectedNodes.length; i++) {
-					DNodeView nv = ((DNodeView) m_view.getNodeView(selectedNodes[i]));
-					double xPos = nv.getXPosition();
-					double yPos = nv.getYPosition();
-
-					if (code == KeyEvent.VK_UP) {
-						yPos -= move;
-					} else if (code == KeyEvent.VK_DOWN) {
-						yPos += move;
-					} else if (code == KeyEvent.VK_LEFT) {
-						xPos -= move;
-					} else if (code == KeyEvent.VK_RIGHT) {
-						xPos += move;
-					}
-
-					nv.setOffset(xPos, yPos);
-				}
-
-				// move edge anchors
-				IntEnumerator anchorsToMove = m_view.m_selectedAnchors.searchRange(Integer.MIN_VALUE,
-				                                                                   Integer.MAX_VALUE,
-				                                                                   false);
-
-				while (anchorsToMove.numRemaining() > 0) {
-					final int edgeAndAnchor = anchorsToMove.nextInt();
-					final int edge = edgeAndAnchor >>> 6;
-					final int anchorInx = edgeAndAnchor & 0x0000003f;
-					final DEdgeView ev = (DEdgeView) m_view.getEdgeView(edge);
-					ev.getHandleInternal(anchorInx, m_floatBuff1);
-
-					if (code == KeyEvent.VK_UP) {
-						ev.moveHandleInternal(anchorInx, m_floatBuff1[0], m_floatBuff1[1] - move);
-					} else if (code == KeyEvent.VK_DOWN) {
-						ev.moveHandleInternal(anchorInx, m_floatBuff1[0], m_floatBuff1[1] + move);
-					} else if (code == KeyEvent.VK_LEFT) {
-						ev.moveHandleInternal(anchorInx, m_floatBuff1[0] - move, m_floatBuff1[1]);
-					} else if (code == KeyEvent.VK_RIGHT) {
-						ev.moveHandleInternal(anchorInx, m_floatBuff1[0] + move, m_floatBuff1[1]);
-					}
-				}
-
-				repaint();
-			}
-		}
-	}
-
-	/**
-	 * Currently not used.
-	 *
-	 * @param k The key event that we're listening for.
-	 */
-	public void keyReleased(KeyEvent k) {
-	}
-
-	/**
-	 * Currently not used.
-	 *
-	 * @param k The key event that we're listening for.
-	 */
-	public void keyTyped(KeyEvent k) {
-	}
-
-	// AJK: 05/02/06 END
 	// Puts [last drawn] edges intersecting onto stack; as RootGraph indices.
 	// Depends on the state of several member variables, such as m_hash.
 	// Clobbers m_stack and m_ptBuff.
@@ -1287,9 +901,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 
 
-	public void mouseWheelMoved(MouseWheelEvent e) {
-        int notches = e.getWheelRotation();
-        double factor = 1.0; 
+	private void adjustZoom(int notches) {
+        double factor; 
 
 		// scroll up, zoom in
         if (notches < 0) {
@@ -1403,6 +1016,379 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 									       m_yCenter, m_scaleFactor);
 			if (setLastRenderDetail)
 				m_lastRenderDetail = lastRenderDetail;
+		}
+	}
+
+	private void startSingleLeftClick(MouseEvent e) {
+		System.out.println("----> startSingleLeftClick");
+		m_undoable_edit = null;
+	
+		m_currMouseButton = 1;
+		m_lastXMousePos = e.getX();
+		m_lastYMousePos = e.getY();
+	
+		int[] unselectedNodes = null;
+		int[] unselectedEdges = null;
+		int chosenNode = 0;
+		int chosenEdge = 0;
+		int chosenAnchor = -1;
+		int chosenNodeSelected = 0;
+		int chosenEdgeSelected = 0;
+
+		synchronized (m_lock) {
+			if (m_view.m_nodeSelection) {
+				chosenNode = getChosenNode();
+			}
+
+			if (m_view.m_edgeSelection && (chosenNode == 0)
+			    && ((m_lastRenderDetail & GraphRenderer.LOD_EDGE_ANCHORS) != 0)) {
+				chosenAnchor = getChosenAnchor();
+			}
+
+			if (m_view.m_edgeSelection && (chosenNode == 0) && (chosenAnchor < 0)) {
+				chosenEdge = getChosenEdge();
+			}
+
+			if ((!e.isShiftDown()) // If shift is down never unselect.
+			    && (((chosenNode == 0) && (chosenEdge == 0) && (chosenAnchor < 0)) // Mouse missed all.
+			       // Not [we hit something but it was already selected].
+			       || !( ((chosenNode != 0) && m_view.getNodeView(chosenNode).isSelected())
+			             || (chosenAnchor >= 0) 
+			             || ((chosenEdge != 0) && m_view.getEdgeView(chosenEdge).isSelected()) ))) {
+			
+					unselectedNodes = getUnselectedNodes();
+					unselectedEdges = getUnselectedEdges();
+
+				if ((unselectedNodes.length > 0) || (unselectedEdges.length > 0))
+					m_view.m_contentChanged = true;
+			}
+			
+
+			if (chosenNode != 0) {
+			    chosenNodeSelected = toggleSelectedNode(chosenNode, e);
+			}
+
+			if (chosenAnchor >= 0) {
+				toggleChosenAnchor(chosenAnchor, e);
+			}
+
+			if (chosenEdge != 0) {
+				chosenEdgeSelected = toggleSelectedEdge(chosenEdge, e);
+			}
+
+			if ((chosenNode == 0) && (chosenEdge == 0) && (chosenAnchor < 0)) {
+				m_selectionRect = new Rectangle(m_lastXMousePos, m_lastYMousePos, 0, 0);
+				m_button1NodeDrag = false;
+			}
+		}
+
+		final GraphViewChangeListener listener = m_view.m_lis[0];
+
+		// delegating to listeners
+		if (listener != null) {
+			if ((unselectedNodes != null) && (unselectedNodes.length > 0))
+				listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
+                                          DGraphView.makeNodeList(unselectedNodes,m_view)));
+
+			if ((unselectedEdges != null) && (unselectedEdges.length > 0))
+				listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
+                                          DGraphView.makeEdgeList(unselectedEdges,m_view)));
+
+			if (chosenNode != 0) {
+				if (chosenNodeSelected > 0)
+					listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
+						DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
+				else if (chosenNodeSelected < 0)
+					listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
+						DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
+			}
+
+			if (chosenEdge != 0) {
+				if (chosenEdgeSelected > 0)
+					listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view,
+						DGraphView.makeList(m_view.getEdgeView(chosenEdge).getEdge())));
+				else if (chosenEdgeSelected < 0)
+					listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
+						DGraphView.makeList(m_view.getEdgeView(chosenEdge).getEdge())));
+			}
+		}
+
+		// Repaint after listener events are fired because listeners may change
+		// something in the graph view.
+		repaint();
+	}
+
+	private void startSingleControlClick(MouseEvent e) {
+		System.out.println("----> startSingleControlClick");
+		// clicking on empty space
+		if ((getChosenNode() == 0) && (getChosenEdge() == 0) && (getChosenAnchor() < 0)) {
+			popup.createEmptySpaceMenu(e.getX(), e.getY(),"NEW"); 
+		}
+	}
+
+	private void startSingleMiddleClick(MouseEvent e) {
+		System.out.println("----> startSingleMiddleClick");
+		// Save all node positions
+		m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
+		m_currMouseButton = 2;
+		m_lastXMousePos = e.getX();
+		m_lastYMousePos = e.getY();
+	}
+
+
+	private void startSingleRightClick(MouseEvent e) {
+		System.out.println("----> startSingleRightClick");
+		// Save all node positions
+		m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
+		m_currMouseButton = 3;
+		m_lastXMousePos = e.getX();
+		m_lastYMousePos = e.getY();
+	
+		NodeView nview = m_view.getPickedNodeView(e.getPoint());
+		popup.createNodeViewMenu(nview,e.getX(),e.getY(),null);
+	
+		EdgeView edgeView = m_view.getPickedEdgeView(e.getPoint());
+		popup.createEdgeViewMenu(edgeView,e.getX(),e.getY(),null);
+	}
+
+	private void startDoubleLeftClick(MouseEvent e) {
+		System.out.println("----> startDoubleLeftClick");
+		NodeView nview = m_view.getPickedNodeView(e.getPoint());
+		if ( nview != null )
+			popup.createNodeViewMenu(nview,e.getX(),e.getY(),"OPEN");
+		else 
+			popup.createEmptySpaceMenu(e.getX(), e.getY(),"OPEN"); 
+	}
+
+	private void finishLeftClick(MouseEvent e) {
+		System.out.println("----> finishLeftClick");
+		if (m_currMouseButton == 1) {
+			m_currMouseButton = 0;
+
+			if (m_selectionRect != null) {
+				int[] selectedNodes = null;
+				int[] selectedEdges = null;
+
+				synchronized (m_lock) {
+					if (m_view.m_nodeSelection || m_view.m_edgeSelection) {
+						if (m_view.m_nodeSelection) {
+							selectedNodes = setSelectedNodes();
+						}
+
+						if (m_view.m_edgeSelection) {
+							selectedEdges = setSelectedEdges ();
+						}								
+					}
+				}
+
+				m_selectionRect = null;
+
+				final GraphViewChangeListener listener = m_view.m_lis[0];
+
+				if (listener != null) {
+					if ((selectedNodes != null) && (selectedNodes.length > 0))
+						listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
+				                                DGraphView.makeNodeList(selectedNodes,m_view)));
+
+					if ((selectedEdges != null) && (selectedEdges.length > 0))
+						listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view,
+				                               DGraphView.makeEdgeList(selectedEdges,m_view)));
+				}
+
+				// Repaint after listener events are fired because listeners may
+				// change something in the graph view.
+				repaint();
+			}
+		}
+
+		if (m_undoable_edit != null)
+			m_undoable_edit.post();
+	}
+
+	private void finishMiddleClick(MouseEvent e) {
+		System.out.println("----> finishMiddleClick");
+		if (m_currMouseButton == 2)
+			m_currMouseButton = 0;
+
+		if (m_undoable_edit != null)
+			m_undoable_edit.post();
+	}
+
+	private void finishRightClick(MouseEvent e) {
+		System.out.println("----> finishRightClick");
+		if (m_currMouseButton == 3)
+			m_currMouseButton = 0;
+
+		if (m_undoable_edit != null)
+			m_undoable_edit.post();
+	}
+
+	private void processLeftDrag(MouseEvent e) {
+		System.out.println("----> processLeftDrag");
+		if (m_button1NodeDrag) {
+			// save selected node and edge positions
+			if (m_undoable_edit == null) {
+				m_undoable_edit = new ViewChangeEdit(m_view, ViewChangeEdit.SavedObjs.SELECTED, "Move",m_undo);
+			}
+			synchronized (m_lock) {
+				m_ptBuff[0] = m_lastXMousePos;
+				m_ptBuff[1] = m_lastYMousePos;
+				m_view.xformComponentToNodeCoords(m_ptBuff);
+
+				final double oldX = m_ptBuff[0];
+				final double oldY = m_ptBuff[1];
+				m_lastXMousePos = e.getX();
+				m_lastYMousePos = e.getY();
+				m_ptBuff[0] = m_lastXMousePos;
+				m_ptBuff[1] = m_lastYMousePos;
+				m_view.xformComponentToNodeCoords(m_ptBuff);
+
+				final double newX = m_ptBuff[0];
+				final double newY = m_ptBuff[1];
+				double deltaX = newX - oldX;
+				double deltaY = newY - oldY;
+
+				// If the shift key is down, then only move horizontally,
+				// vertically, or diagonally, depending on the slope.
+				if (e.isShiftDown()) {
+					final double slope = deltaY / deltaX;
+
+					// slope of 2.41 ~ 67.5 degrees (halfway between 45 and 90)
+					// slope of 0.41 ~ 22.5 degrees (halfway between 0 and 45)
+					if ((slope > 2.41) || (slope < -2.41)) {
+						deltaX = 0.0; // just move vertical
+					} else if ((slope < 0.41) && (slope > -0.41)) {
+						deltaY = 0.0; // just move horizontal
+					} else {
+						final double avg = (Math.abs(deltaX) + Math.abs(deltaY)) / 2.0;
+						deltaX = (deltaX < 0) ? (-avg) : avg;
+						deltaY = (deltaY < 0) ? (-avg) : avg;
+					}
+				}
+
+				// TODO: Optimize to not instantiate new array on every call.
+				final int[] selectedNodes = m_view.getSelectedNodeIndices();
+
+				for (int i = 0; i < selectedNodes.length; i++) {
+					final NodeView nv = m_view.getNodeView(selectedNodes[i]);
+					final double oldXPos = nv.getXPosition();
+					final double oldYPos = nv.getYPosition();
+					nv.setOffset(oldXPos + deltaX, oldYPos + deltaY);
+				}
+
+				final IntEnumerator anchorsToMove = m_view.m_selectedAnchors.searchRange(Integer.MIN_VALUE,
+				                                                                         Integer.MAX_VALUE,
+				                                                                         false);
+
+				while (anchorsToMove.numRemaining() > 0) {
+					final int edgeAndAnchor = anchorsToMove.nextInt();
+					final int edge = edgeAndAnchor >>> 6;
+					final int anchorInx = edgeAndAnchor & 0x0000003f;
+					final DEdgeView ev = (DEdgeView) m_view.getEdgeView(edge);
+					ev.getHandleInternal(anchorInx, m_floatBuff1);
+					ev.moveHandleInternal(anchorInx, m_floatBuff1[0] + deltaX,
+					                      m_floatBuff1[1] + deltaY);
+				}
+
+				if ((selectedNodes.length > 0) || (m_view.m_selectedAnchors.size() > 0))
+					m_view.m_contentChanged = true;
+			}
+		}
+
+		if (m_selectionRect != null) {
+			final int x = Math.min(m_lastXMousePos, e.getX());
+			final int y = Math.min(m_lastYMousePos, e.getY());
+			final int w = Math.abs(m_lastXMousePos - e.getX());
+			final int h = Math.abs(m_lastYMousePos - e.getY());
+			m_selectionRect.setBounds(x, y, w, h);
+		}
+
+		repaint();
+	}
+
+	private void processMiddleDrag(MouseEvent e) {
+		System.out.println("----> processMiddleDrag");
+		double deltaX = e.getX() - m_lastXMousePos;
+		double deltaY = e.getY() - m_lastYMousePos;
+		m_lastXMousePos = e.getX();
+		m_lastYMousePos = e.getY();
+
+		synchronized (m_lock) {
+			m_xCenter -= (deltaX / m_scaleFactor);
+			m_yCenter -= (deltaY / m_scaleFactor);
+		}
+
+		m_view.m_viewportChanged = true;
+		repaint();
+	}
+
+	private void processRightDrag(MouseEvent e) {
+		System.out.println("----> processRightDrag");
+		double deltaY = e.getY() - m_lastYMousePos;
+
+		synchronized (m_lock) {
+			m_lastXMousePos = e.getX();
+			m_lastYMousePos = e.getY();
+			m_scaleFactor *= Math.pow(2, -deltaY / 300.0d);
+		}
+
+		m_view.m_viewportChanged = true;
+		repaint();
+	}
+
+	private void handleArrowKeys(KeyEvent k) {
+		final int code = k.getKeyCode();
+		double move = 1.0;
+
+		if (k.isShiftDown())
+			move = 10.0;
+
+		if (m_view.m_nodeSelection) {
+			// move nodes
+			int[] selectedNodes = m_view.getSelectedNodeIndices();
+
+			for (int i = 0; i < selectedNodes.length; i++) {
+				DNodeView nv = ((DNodeView) m_view.getNodeView(selectedNodes[i]));
+				double xPos = nv.getXPosition();
+				double yPos = nv.getYPosition();
+
+				if (code == KeyEvent.VK_UP) {
+					yPos -= move;
+				} else if (code == KeyEvent.VK_DOWN) {
+					yPos += move;
+				} else if (code == KeyEvent.VK_LEFT) {
+					xPos -= move;
+				} else if (code == KeyEvent.VK_RIGHT) {
+					xPos += move;
+				}
+
+				nv.setOffset(xPos, yPos);
+			}
+
+			// move edge anchors
+			IntEnumerator anchorsToMove = m_view.m_selectedAnchors.searchRange(Integer.MIN_VALUE,
+			                                                                   Integer.MAX_VALUE,
+			                                                                   false);
+
+			while (anchorsToMove.numRemaining() > 0) {
+				final int edgeAndAnchor = anchorsToMove.nextInt();
+				final int edge = edgeAndAnchor >>> 6;
+				final int anchorInx = edgeAndAnchor & 0x0000003f;
+				final DEdgeView ev = (DEdgeView) m_view.getEdgeView(edge);
+				ev.getHandleInternal(anchorInx, m_floatBuff1);
+
+				if (code == KeyEvent.VK_UP) {
+					ev.moveHandleInternal(anchorInx, m_floatBuff1[0], m_floatBuff1[1] - move);
+				} else if (code == KeyEvent.VK_DOWN) {
+					ev.moveHandleInternal(anchorInx, m_floatBuff1[0], m_floatBuff1[1] + move);
+				} else if (code == KeyEvent.VK_LEFT) {
+					ev.moveHandleInternal(anchorInx, m_floatBuff1[0] - move, m_floatBuff1[1]);
+				} else if (code == KeyEvent.VK_RIGHT) {
+					ev.moveHandleInternal(anchorInx, m_floatBuff1[0] + move, m_floatBuff1[1]);
+				}
+			}
+
+			repaint();
 		}
 	}
 }
