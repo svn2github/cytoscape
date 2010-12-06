@@ -115,8 +115,8 @@ public class ZigzagStroke implements WidthStroke {
 		return new ZigzagStroke(w);
 	}
 
-	public String toString() {
-		return this.getClass().toString() + " " + Float.toString(width);
+	@Override public String toString() {
+		return this.getClass().getSimpleName() + " " + Float.toString(width);
 	}
 
 }

@@ -50,6 +50,8 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
+import org.cytoscape.ding.LineStyle;
+
 
 class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	
@@ -1432,9 +1434,15 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 		} else if (vp == TwoDVisualLexicon.EDGE_COLOR) {
 			setUnselectedPaint((Paint) value);
 		} else if (vp == DVisualLexicon.EDGE_WIDTH) {
-			setStrokeWidth(((Double) value).floatValue());
+			final float currentWidth = this.getStrokeWidth();
+			final float newWidth = ((Double) value).floatValue();
+			if(currentWidth != newWidth) {
+				setStrokeWidth(newWidth);
+				setStroke(LineStyle.extractLineStyle(getStroke()).getStroke(newWidth));
+			}
 		} else if (vp == DVisualLexicon.EDGE_STROKE) {
-			setStroke((Stroke) value);
+			final Stroke newStroke = LineStyle.extractLineStyle((Stroke) value).getStroke(this.getStrokeWidth());
+			setStroke(newStroke);
 		} else if (vp == DVisualLexicon.EDGE_SOURCE_ARROW_SELECTED_PAINT) {
 			setSourceEdgeEndSelectedPaint((Paint) value);
 		} else if (vp == DVisualLexicon.EDGE_TARGET_ARROW_SELECTED_PAINT) {
@@ -1475,6 +1483,5 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 			else
 				m_view.hideGraphObject(this);
 		}
-
 	}
 }

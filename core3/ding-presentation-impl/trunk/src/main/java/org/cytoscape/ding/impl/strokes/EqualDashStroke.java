@@ -19,7 +19,7 @@ public class EqualDashStroke extends BasicStroke implements WidthStroke {
 		return new EqualDashStroke(w);
 	}
 
-	public String toString() { return this.getClass().toString() + " " + Float.toString(width); }
+	@Override public String toString() { return this.getClass().getSimpleName() + " " + Float.toString(width); }
 }
 
 

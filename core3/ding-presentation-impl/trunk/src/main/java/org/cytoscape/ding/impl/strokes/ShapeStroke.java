@@ -112,9 +112,8 @@ public abstract class ShapeStroke implements WidthStroke {
 	}
 
 	
-	// FIXME Is this correct?
-	public String toString() { 
-		return this.getClass().toString() + " " + Float.toString(width); 
+	@Override public String toString() { 
+		return this.getClass().getSimpleName() + " " + Float.toString(width); 
 	}
 	
 	abstract public WidthStroke newInstanceForWidth(float w);

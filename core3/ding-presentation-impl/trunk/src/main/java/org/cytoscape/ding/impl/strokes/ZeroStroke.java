@@ -33,7 +33,7 @@ public class ZeroStroke extends BasicStroke implements WidthStroke {
 
 	
 	//TODO: is this correct?
-	public String toString() { return actualStroke.toString() + " 0"; }
+	@Override public String toString() { return actualStroke.getClass().getSimpleName() + " 0.0"; }
 }
 
 

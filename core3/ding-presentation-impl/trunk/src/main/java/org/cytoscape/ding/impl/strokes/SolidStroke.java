@@ -22,7 +22,7 @@ public class SolidStroke extends BasicStroke implements WidthStroke {
 		return LineStyle.SOLID;
 	}
 
-	public String toString() { return LineStyle.SOLID.toString() + " " + Float.toString(width); }
+	@Override public String toString() { return LineStyle.SOLID.toString() + " " + Float.toString(width); }
 }
 
 

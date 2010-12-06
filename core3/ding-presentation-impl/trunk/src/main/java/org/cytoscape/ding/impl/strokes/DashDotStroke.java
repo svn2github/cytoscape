@@ -2,10 +2,6 @@ package org.cytoscape.ding.impl.strokes;
 
 import java.awt.BasicStroke;
 
-import org.cytoscape.ding.LineStyle;
-
-import static org.cytoscape.ding.LineStyle.DASH_DOT;
-
 public class DashDotStroke extends BasicStroke implements WidthStroke {
 
 	private float width;
@@ -21,11 +17,8 @@ public class DashDotStroke extends BasicStroke implements WidthStroke {
 		return new DashDotStroke(w);
 	}
 
-	public LineStyle getLineStyle() {
-		return DASH_DOT;
-	}
 
 	public String toString() {
-		return DASH_DOT + " " + Float.toString(width);
+		return this.getClass().getSimpleName() + " " + Float.toString(width);
 	}
 }

@@ -79,7 +79,7 @@ public enum LineStyle {
 	LONG_DASH( "dash", new LongDashStroke(1.0f)),
 	EQUAL_DASH( "equal_dash", new EqualDashStroke(1.0f)),
 	DASH_DOT( "dash_dot", new DashDotStroke(1.0f)),
-	//FIXME  //DOT("dot_dot", new DotStroke(1.0f)),
+	DOT("dot_dot", new DotStroke(1.0f)),
 	ZIGZAG("zigzag", new ZigzagStroke(1.0f)),
 	SINEWAVE("sinewave", new SineWaveStroke(1.0f)),
 	VERTICAL_SLASH("vertical_slash",new VerticalSlashStroke(1.0f,PipeStroke.Type.VERTICAL)),
@@ -137,16 +137,14 @@ public enum LineStyle {
 	 * If it doesn't match a known stroke, it will return SOLID.
 	 * @return the LineStyle guessed from the stroke. 
 	 */
-	public static LineStyle extractLineStyle(Stroke s) {
+	public static LineStyle extractLineStyle(final Stroke s) {
 		
 		
 		if ( s instanceof WidthStroke ) {
 			for(LineStyle ls: values()){
-				if(ls.stroke.equals(s))
+				if(ls.stroke.getClass().equals(s.getClass()))
 					return ls;
 			}
-			
-			
 		} 
 
 		return SOLID;
