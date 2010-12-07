@@ -35,6 +35,7 @@
 
 package org.cytoscape.view.vizmap.gui.internal;
 
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -76,15 +77,17 @@ public class DefaultViewMouseListener extends MouseAdapter {
 		if (SwingUtilities.isLeftMouseButton(e)) {
 
 			defViewEditor.showEditor(vizMapperMainPanel);
+			
+			final Dimension panelSize = vizMapperMainPanel.getDefaultViewPanel().getSize();
+			final int newWidth = ((Number)(panelSize.width * 0.9)).intValue();
+			final int newHeight = ((Number)(panelSize.height * 0.9)).intValue();
 
 			vizMapperMainPanel.updateDefaultImage(manager
 					.getCurrentVisualStyle(), ((DefaultViewPanel) defViewEditor
 					.getDefaultView(manager.getCurrentVisualStyle()))
-					.getRenderingEngine(), vizMapperMainPanel
-					.getDefaultViewPanel().getSize());
+					.getRenderingEngine(), new Dimension(newWidth, newHeight));
 			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
-					.getDefaultImageManager().get(
-							manager.getCurrentVisualStyle()));
+					.getDefaultImageManager().get(manager.getCurrentVisualStyle()));
 		}
 	}
 }

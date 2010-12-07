@@ -321,7 +321,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * @param size
 	 */
 	// TODO: this should be called by listeners.
-	public void updateDefaultImage(VisualStyle vs, RenderingEngine<CyNetwork> engine, Dimension size) {
+	public void updateDefaultImage(final VisualStyle vs, final RenderingEngine<CyNetwork> engine, final Dimension size) {
 		
 		Image image = defaultImageManager.remove(vs);
 
