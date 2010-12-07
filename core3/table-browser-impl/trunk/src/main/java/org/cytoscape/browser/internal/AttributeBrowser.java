@@ -38,7 +38,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -53,13 +55,12 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumnModel;
 
-import browser.ui.AttributeBrowserToolBar;
-import browser.ui.CyAttributeBrowserTable;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-import cytoscape.view.cytopanels.CytoPanelListener;
-import cytoscape.view.cytopanels.CytoPanelState;
+import org.cytoscape.browser.internal.ui.AttributeBrowserToolBar;
+import org.cytoscape.browser.internal.ui.CyAttributeBrowserTable;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.application.swing.CytoPanelState;
+import org.cytoscape.application.swing.events.CytoPanelComponentSelectedListener;
 
 
 /**
@@ -109,7 +110,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 
 	// Each Attribute Browser operates on one CytoscapeData object, and on
 	// either Nodes or Edges.
-	private final CyAttributes attributes;
+	private final CyTable attributes;
 
 	// Main panel for put everything
 	private JPanel mainPanel;
@@ -218,7 +219,7 @@ public class AttributeBrowser implements TableColumnModelListener {
 		return attributeTable;
 	}
 
-	static class Listener implements CytoPanelListener {
+	static class Listener implements CytoPanelComponentSelectedListener {
 		int WEST;
 		int SOUTH;
 		int EAST;
@@ -231,35 +232,23 @@ public class AttributeBrowser implements TableColumnModelListener {
 			myIndex = my;
 		}
 
-		public void onComponentAdded(int count) {
-		}
-
-		public void onComponentRemoved(int count) {
-		}
-
-		public void onComponentSelected(int componentIndex) {
-			if (componentIndex == myIndex) {
-				if (WEST != -1) {
+		public void handleEvent(CytoPanelComponentSelectedEvent e) {
+			if (e.getSelectedIndex() == myIndex) {
+				if (WEST != -1)
 					Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(WEST);
-				}
 
-				if (SOUTH != -1) {
+				if (SOUTH != -1)
 					Cytoscape.getDesktop().getCytoPanel(SwingConstants.SOUTH).setSelectedIndex(SOUTH);
-				}
 
-				if (EAST != -1) {
+				if (EAST != -1)
 					Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST).setSelectedIndex(EAST);
-				}
 			}
-		}
-
-		public void onStateChange(CytoPanelState newState) {
 		}
 	}
 
 	
 	private DataTableModel makeModel() {
-		final List<String> attributeNames = CyAttributesUtils.getVisibleAttributeNames(attributes);
+		final Collection<String> attributeNames = attributes.getColumnTypeMap().values();
 		final List<CyTableEntry> graphObjects = getSelectedTableEntries();
 		final DataTableModel model = new DataTableModel(graphObjects, attributeNames, panelType);
 

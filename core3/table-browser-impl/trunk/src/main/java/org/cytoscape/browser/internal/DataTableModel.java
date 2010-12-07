@@ -152,7 +152,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
 			for (CyTableEntry obj : graphObjects) {
-				internalSelection.put(obj.getIdentifier(), DEFAULT_FLAG);
+				internalSelection.put(obj.getSUID(), DEFAULT_FLAG);
 			}
 		}
 
@@ -175,7 +175,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			column_names[0] = SUID_COLUMN_NAME;
 
 			for (int j = 0; j < go_length; ++j)
-				data_vector[j][0] = new ValidatedObjectAndEditString(graphObjects.get(j).getIdentifier());
+				data_vector[j][0] = new ValidatedObjectAndEditString(graphObjects.get(j).getSUID());
 
 			setDataVector(data_vector, column_names);
 			AttributeBrowser.getPropertyChangeSupport()
@@ -190,16 +190,16 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			column_names[0] = SUID_COLUMN_NAME;
 
 			for (int j = 0; j < go_length; ++j)
-				data_vector[j][0] = new ValidatedObjectAndEditString(graphObjects.get(j).getIdentifier());
+				data_vector[j][0] = new ValidatedObjectAndEditString(graphObjects.get(j).getSUID());
 
 			for (int i1 = 0; i1 < att_length; ++i1) {
 				column_names[i1 + 1] = attributeNames.get(i1);
 				attributeName = attributeNames.get(i1);
-				type = data.getType(attributeName);
+				type = table.getType(attributeName);
 
 				for (int j = 0; j < go_length; ++j) {
 					data_vector[j][i1 + 1] = getValidatedObjectAndEditString(type,
-					                                                         graphObjects.get(j).getIdentifier(),
+					                                                         graphObjects.get(j).getSUID(),
 					                                                         attributeName);
 				}
 			}
@@ -210,13 +210,13 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			for (int i1 = 0; i1 < att_length; ++i1) {
 				column_names[i1] = attributeNames.get(i1);
 				attributeName = (String) attributeNames.get(i1);
-				type = data.getType(attributeName);
+				type = table.getType(attributeName);
 				for (int j = 0; j < go_length; ++j) {
 					if (attributeName.equals(SUID_COLUMN_NAME))
-						data_vector[j][i1] = new ValidatedObjectAndEditString(graphObjects.get(j).getIdentifier());
+						data_vector[j][i1] = new ValidatedObjectAndEditString(graphObjects.get(j).getSUID());
 					else
 						data_vector[j][i1] =
-							getValidatedObjectAndEditString(type, graphObjects.get(j).getIdentifier(),
+							getValidatedObjectAndEditString(type, graphObjects.get(j).getSUID(),
 						                                        attributeName);
 				}
 			}
@@ -232,20 +232,19 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 *  Returns a validated object and edit string which is a data structure used to display values or error messages in a
 	 *  browser cell.
 	 *
-	 * @param type      the expected data type for the attribute
-	 * @param id        the key representing the particular  node/edge/network
-	 * @param attrName  which attribute we're dealing with
+	 * @param type        the expected data type for the attribute
+	 * @param id          the key representing the particular  node/edge/network
+	 * @param columnName  which attribute we're dealing with
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public ValidatedObjectAndEditString getValidatedObjectAndEditString(final Class type, final String id, final String attrName) {
-		final Object attribValue = data.getAttribute(id, attrName);
-		final Equation equation = data.getEquation(id, attrName);
-		if (attribValue == null && equation == null)
+	public ValidatedObjectAndEditString getValidatedObjectAndEditString(final Class<?> type, final String id, final String columnName) {
+		final Object value = table.getRow(id).getRaw(columnName);
+		if (value == null)
 			return null;
 
-		final String equationFormula = equation == null ? null : equation.toString();
-		String errorMessage = data.getLastEquationError();
+		final String equationFormula = value instanceof Equation ? value.toString() : null;
+		String errorMessage = table.getLastEquationError();
 		if (errorMessage != null)
 			errorMessage = "#ERROR(" + errorMessage + ")";
 
@@ -270,7 +269,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @return  DOCUMENT ME!
 	 */
 	public Class getObjectTypeAt(String colName) {
-		return CyAttributesUtils.getClass(colName, data);
+		return CyAttributesUtils.getClass(colName, table);
 	}
 
 	/**
@@ -422,7 +421,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	void setDataTableRow(final int rowIdx, final int skipIdx) {
 		final Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
 		final int noOfColumns = attributeNames.contains(SUID_COLUMN_NAME) ? attributeNames.size() : attributeNames.size() + 1;
-		final String id = graphObjects.get(rowIdx).getIdentifier();
+		final String id = graphObjects.get(rowIdx).getSUID();
 		for (int colIdx = 0; colIdx < noOfColumns; ++colIdx) {
 			if (colIdx == skipIdx)
 				continue;
