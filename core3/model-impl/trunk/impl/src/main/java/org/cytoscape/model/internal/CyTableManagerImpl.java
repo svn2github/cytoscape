@@ -106,11 +106,12 @@ public class CyTableManagerImpl implements CyTableManager {
 	
 	@Override public Set<CyTable> getAllTables(boolean includePrivate) {
 		Set<CyTable> res = new HashSet<CyTable>();
-		for ( CyTable t : tables.values() ) {
+		
+		for ( Long key : tables.keySet() ) {	
 			if ( includePrivate )
-				res.add(t);
-			else if ( tables.get(t).isPublic() )
-				res.add(t);
+				res.add(tables.get(key));
+			else if ( tables.get(key).isPublic() )
+				res.add(tables.get(key));
 		}
 		return res;
 	}
