@@ -1,17 +1,17 @@
 
 package org.cytoscape.session.events;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 import java.io.File;
-
-import org.cytoscape.session.CySession;
-import org.cytoscape.session.CySessionManager;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.cytoscape.event.AbstractCyEvent;
+import org.cytoscape.property.session.Cytopanel;
+import org.cytoscape.property.session.Desktop;
+import org.cytoscape.session.CySessionManager;
 
 /**
  * This event is fired synchronously by the CySessionManager at beginning of the
@@ -20,8 +20,10 @@ import org.cytoscape.event.AbstractCyEvent;
  * state before that state is interrogated by the CySessionManager. 
  */
 public final class SessionAboutToBeSavedEvent extends AbstractCyEvent<CySessionManager> {
-	final Map<String,List<File>> pluginFileListMap;
-
+	private final Map<String,List<File>> pluginFileListMap;
+	private final List<Cytopanel> cytopanels;
+	private Desktop desktop;
+	
 	// TODO should the source be the session manager??
 	/**
 	 * Constructor.
@@ -31,6 +33,7 @@ public final class SessionAboutToBeSavedEvent extends AbstractCyEvent<CySessionM
 		super(source, SessionAboutToBeSavedListener.class);
 
 		pluginFileListMap = new HashMap<String,List<File>>();
+		cytopanels = new ArrayList<Cytopanel>();
 	}
 
 	/**
@@ -55,7 +58,6 @@ public final class SessionAboutToBeSavedEvent extends AbstractCyEvent<CySessionM
 			throw new Exception("file list is null");
 
 		// allow empty lists
-
 		pluginFileListMap.put(pluginName, new ArrayList<File>(files));
 	}
 
@@ -72,4 +74,42 @@ public final class SessionAboutToBeSavedEvent extends AbstractCyEvent<CySessionM
 		// can't mess with us.
 		return Collections.unmodifiableMap( pluginFileListMap );
 	}
+
+	/**
+	 * This method is not meant to be used by listeners for this event.
+	 * @return
+	 */
+	public Desktop getDesktop() {
+		return desktop;
+	}
+
+	/**
+	 * A method that allows plugins to specify desktop-related data to be
+	 * stored in the session.
+	 * @param desktop
+	 */
+	public void setDesktop(Desktop desktop) {
+		this.desktop = desktop;
+	}
+
+	/**
+	 * This method is not meant to be used by listeners for this event.
+	 * @return
+	 */
+	public List<Cytopanel> getCytopanels() {
+		// Make the return value immutable so that listeners
+		// can't mess with us.
+		return Collections.unmodifiableList( cytopanels );
+	}
+
+	/**
+	 * A method that allows plugins to add Cytopanel-related information to be
+	 * stored in the session.
+	 * @param cytopanels
+	 */
+	public void addCytopanels(Cytopanel cytopanel) throws Exception {
+		if ( cytopanel == null ) throw new Exception("cytopanel is null");
+		cytopanels.add(cytopanel);
+	}
+	
 }
