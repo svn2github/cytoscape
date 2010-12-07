@@ -83,6 +83,7 @@ import javax.swing.border.TitledBorder;
 
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.dnd.GraphicalEntity;
 
 
 /**
@@ -96,7 +97,7 @@ import org.cytoscape.application.swing.CySwingApplication;
  * @version 1.0
  *
  */
-public class BasicCytoShapeEntity extends JComponent implements DragGestureListener {
+public class BasicCytoShapeEntity extends JComponent implements DragGestureListener, GraphicalEntity {
 	// MLC 07/27/06:
 	private static final long serialVersionUID = -5229827235046946347L;
 
@@ -210,21 +211,6 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 		myDragSource.createDefaultDragGestureRecognizer(_cytoShape, DnDConstants.ACTION_COPY, this);
 		handler = (new BasicCytoShapeTransferHandler(this, null));
 		this.setTransferHandler(handler);
-/*
-		Dimension mySize = new Dimension(((JPanel) Cytoscape.getDesktop()
-		                                                    .getCytoPanel(SwingConstants.WEST))
-		                                                                                                                                                                                                                                         .getSize().width
-		                                 - 5,
-		                                 Math.max(_image.getIconHeight(),
-		                                          CytoShapeIcon.DEFAULT_HEIGHT)
-		                                 + CytoShapeIcon.DEFAULT_HEIGHT);
-
-		this.setMaximumSize(mySize);
-		this.setMinimumSize(mySize);
-		this.setPreferredSize(mySize);
-		*/
-
-
 	}
 
 	/**
@@ -238,7 +224,7 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 	 * @param title The title to set.
 	 *
 	 */
-	public void setTitle(String title) {
+	private void setTitle(String title) {
 		this.title = title;
 	}
 
@@ -252,7 +238,7 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 	/**
 	 * @param myDragSource The DragSource to set.
 	 */
-	public void setMyDragSource(DragSource myDragSource) {
+	private void setMyDragSource(DragSource myDragSource) {
 		this.myDragSource = myDragSource;
 	}
 
@@ -267,21 +253,21 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 	 * @param _image the icon to set for the shape
 	 *
 	 */
-	public void setIcon(Icon _image) {
+	private void setIcon(Icon _image) {
 		this._image = _image;
 	}
 
 	/**
 	 * @return Returns the image associated with the shape's icon
 	 */
-	public Image get_image() {
+	public Image getImage() {
 		return _img;
 	}
 
 	/**
 	 * @param _img The _img to set.
 	 */
-	public void set_image(Image _img) {
+	private void setImage(Image _img) {
 		this._img = _img;
 	}
 
@@ -295,7 +281,7 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 	/**
 	 * @param attributeName The attributeName to set.
 	 */
-	public void setAttributeName(String attributeName) {
+	private void setAttributeName(String attributeName) {
 		this.attributeName = attributeName;
 	}
 
@@ -309,7 +295,7 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 	/**
 	 * @param attributeValue The attributeValue to set.
 	 */
-	public void setAttributeValue(String attributeValue) {
+	private void setAttributeValue(String attributeValue) {
 		this.attributeValue = attributeValue;
 	}
 

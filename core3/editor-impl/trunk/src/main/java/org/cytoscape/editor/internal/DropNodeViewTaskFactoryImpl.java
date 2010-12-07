@@ -14,7 +14,7 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.AbstractTask;
 
-import org.cytoscape.editor.internal.gui.BasicCytoShapeEntity;
+import org.cytoscape.dnd.GraphicalEntity;
 
 
 public class DropNodeViewTaskFactoryImpl implements DropNodeViewTaskFactory {
@@ -42,39 +42,6 @@ public class DropNodeViewTaskFactoryImpl implements DropNodeViewTaskFactory {
 	}
 
 	public TaskIterator getTaskIterator() {
-
-        if ( t==null)
-            return null;
-
-		try {
-
-        DataFlavor[] dfl = t.getTransferDataFlavors();
-
-        if ( dfl==null)
-            return null;
-
-        for (DataFlavor d : dfl) {
-            if ( d.getRepresentationClass() == BasicCytoShapeEntity.class ) {
-                String myShape = t.getTransferData(d).toString();
-				System.out.println("got shape drop: " + myShape);
-                if ( myShape.equals("Edge") ) {
-					return new TaskIterator(new AddEdgeTask(nv, view));
-                } else if ( myShape.equals("Network") ) {
-					return new TaskIterator(new AddNestedNetworkTask(nv, view, netMgr));
-				}
-            }
-        }
-
-		} catch (Exception e) {
-			return new TaskIterator(new ExceptionTask(e));
-		}
-
-		return null;
-	}
-
-	private static class ExceptionTask extends AbstractTask {
-		private final Exception e;
-		ExceptionTask(Exception e) { this.e = e; }
-		public void run(TaskMonitor tm) throws Exception { throw e; }
+		return new TaskIterator(new AddNestedNetworkTask(nv, view, netMgr, t));
 	}
 }

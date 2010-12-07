@@ -14,13 +14,17 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 
-import org.cytoscape.editor.internal.gui.BasicCytoShapeEntity;
+import org.cytoscape.dnd.DropUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DropNetworkViewTask extends AbstractNetworkViewTask {
 
 	private final Transferable t;
 	private final Point2D xformPt;
+
+	private static final Logger logger = LoggerFactory.getLogger(DropNetworkViewTask.class);
 	
 	public DropNetworkViewTask(CyNetworkView view, Transferable t, Point2D xformPt) {
 		super(view);
@@ -30,25 +34,11 @@ public class DropNetworkViewTask extends AbstractNetworkViewTask {
 
 	@Override
 	public void run(TaskMonitor tm) throws Exception {
-		if ( t==null) 
+		if ( !DropUtil.transferableMatches(t,"Node") ) {
+			logger.warn("Transferable object does not match expected type (Node) for task.");
 			return;
-
-		DataFlavor[] dfl = t.getTransferDataFlavors();
-
-		if ( dfl==null) 
-			return;
-
-		for (DataFlavor d : dfl) {
-			if ( d.getRepresentationClass() == BasicCytoShapeEntity.class ) {
-				String myShape = t.getTransferData(d).toString();
-				if ( myShape.equals("Node") ) {
-					addNode();
-				} 
-			}
 		}
-	}
 
-	private void addNode() {
 		CyNetwork net = view.getModel();
 		CyNode n = net.addNode();
 		View<CyNode> nv = view.getNodeView(n);
