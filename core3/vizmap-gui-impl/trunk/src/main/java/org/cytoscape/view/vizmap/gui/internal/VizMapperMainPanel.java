@@ -52,6 +52,7 @@ import javax.swing.event.PopupMenuListener;
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.session.CyApplicationManager;
@@ -59,6 +60,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
+import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
@@ -138,12 +140,12 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 				applicationManager, eventHelper, manager);
 
 		// Initialize all components
-		initPanel();
+		initPanel(manager);
 	}
 
-	private void initPanel() {
+	private void initPanel(final SelectedVisualStyleManager manager) {
 
-		defaultViewMouseListener = new DefaultViewMouseListener(defViewEditor);
+		defaultViewMouseListener = new DefaultViewMouseListener(defViewEditor, this, manager);
 
 		addVisualStyleChangeAction();
 
@@ -247,10 +249,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		if (defImg == null) {
 			// Default image is not available in the buffer. Create a new one.
-			// updateDefaultImage(style,
-			// defViewEditor.
-			// .getDefaultView(style).getView(),
-			// defaultViewImagePanel.getSize());
+			 updateDefaultImage(style, ((DefaultViewPanel)defViewEditor.getDefaultView(style)).getRenderingEngine(),
+			 defaultViewImagePanel.getSize());
 			defImg = defaultImageManager.get(style);
 		}
 
@@ -293,9 +293,9 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			logger.info("Adding VS: " + vs.getTitle());
 			vsComboBoxModel.addElement(vs);
 			defPanel = defViewEditor.getDefaultView(vs);
-			view = ((DefaultViewPanel) defPanel).getView();
+			RenderingEngine<CyNetwork> engine = ((DefaultViewPanel) defPanel).getRenderingEngine();
 
-			updateDefaultImage(vs, view, panelSize);
+			updateDefaultImage(vs, engine, panelSize);
 		}
 
 		// Switch back to the original style.
@@ -319,8 +319,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 * @param size
 	 */
 	// TODO: this should be called by listeners.
-	public void updateDefaultImage(VisualStyle vs, CyNetworkView view,
-			Dimension size) {
+	public void updateDefaultImage(VisualStyle vs, RenderingEngine<CyNetwork> engine, Dimension size) {
+		
 		Image image = defaultImageManager.remove(vs);
 
 		if (image != null) {
@@ -328,9 +328,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 			image = null;
 		}
 
-		// TODO: Add image nenerator method in presentation
-		// defaultImageManager.put(vs, view.createImage((int) size.getWidth(),
-		// (int) size.getHeight(), 0.9));
+		defaultImageManager.put(vs, engine.createImage((int) size.getWidth(), (int) size.getHeight()));
 	}
 
 	public void updateAttributeList() {
@@ -383,8 +381,7 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 */
 	public void setDefaultViewImagePanel(final Image defImage) {
 		if (defImage == null) {
-
-			// return;
+			logger.debug("****************** image is null.");
 		}
 
 		defaultViewImagePanel.removeAll();
@@ -396,9 +393,10 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		if(defImage != null)
 			defaultImageButton.setIcon(new ImageIcon(defImage));
-		if(vsComboBoxModel.getSelectedItem() != null)
-			defaultImageButton
-				.setText(vsComboBoxModel.getSelectedItem().toString());
+		
+//		if(vsComboBoxModel.getSelectedItem() != null)
+//			defaultImageButton
+//				.setText(vsComboBoxModel.getSelectedItem().toString());
 		defaultViewImagePanel.add(defaultImageButton, BorderLayout.CENTER);
 		defaultImageButton.addMouseListener(defaultViewMouseListener);
 		this.repaint();
@@ -689,13 +687,13 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 
 		// Update default panel
 		final Component defPanel = defViewEditor.getDefaultView(newStyle);
-		final CyNetworkView view = (CyNetworkView) ((DefaultViewPanelImpl) defPanel).getView();
+		final RenderingEngine<CyNetwork> engine = ((DefaultViewPanelImpl) defPanel).getRenderingEngine();
 		final Dimension panelSize = getDefaultPanel().getSize();
 
-		if (view != null) {
+		if (engine != null) {
 			logger.debug("Creating Default Image for new visual style "
 					+ newStyle.getTitle());
-			updateDefaultImage(newStyle, view, panelSize);
+			updateDefaultImage(newStyle, engine, panelSize);
 			setDefaultViewImagePanel(getDefaultImageManager().get(newStyle));
 		}
 

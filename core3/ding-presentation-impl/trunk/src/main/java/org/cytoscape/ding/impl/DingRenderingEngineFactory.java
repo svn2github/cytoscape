@@ -1,6 +1,7 @@
 package org.cytoscape.ding.impl;
 
 
+import java.awt.BorderLayout;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -8,6 +9,7 @@ import java.util.Properties;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.JLayeredPane;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
@@ -93,9 +95,14 @@ public class DingRenderingEngineFactory implements
 	 * Render given view model by Ding rendering engine.
 	 * 
 	 */
-	@Override public RenderingEngine<CyNetwork> getInstance(Object presentationContainer,
+	@Override public RenderingEngine<CyNetwork> getInstance(final Object presentationContainer,
 			View<CyNetwork> view) {
 
+		// Validate arguments
+		if (presentationContainer == null)
+			throw new IllegalArgumentException(
+					"Container is null.");
+		
 		if (view == null)
 			throw new IllegalArgumentException(
 					"Cannot create presentation for null view model.");
@@ -105,22 +112,25 @@ public class DingRenderingEngineFactory implements
 					"Ding accepts CyNetworkView only.");
 
 		final CyNetworkView targetView = (CyNetworkView) view;
+		
 		DGraphView dgv = null;
 		if (presentationContainer instanceof JComponent) {
 
 			logger.debug("Start rendering presentation by Ding: "
 					+ targetView.getSUID());
+			
 			dgv = new DGraphView(targetView, dataTableFactory,
 					rootNetworkFactory, undo, spacialFactory, dingLexicon,
 					nodeViewTFs, edgeViewTFs, emptySpaceTFs, dropNodeViewTFs,
 					dropEmptySpaceTFs, tm, eventHelper,
 					tableMgr);
+			
 			logger.info("DGraphView created as a presentation for view model: "
 					+ targetView.getSUID());
 			viewMap.put(targetView, dgv);
 
 			if (presentationContainer instanceof JInternalFrame) {
-				JInternalFrame inFrame = (JInternalFrame) presentationContainer;
+				final JInternalFrame inFrame = (JInternalFrame) presentationContainer;
 				JDesktopPane desktopPane = inFrame.getDesktopPane();
 
 				// TODO - not sure this layered pane bit is optimal
@@ -128,7 +138,8 @@ public class DingRenderingEngineFactory implements
 			//	dgv.addTransferComponent(desktopPane);
 			} else {
 				JComponent component = (JComponent) presentationContainer;
-				component.add(dgv.getComponent());
+				component.setLayout(new BorderLayout());
+				component.add(dgv.getComponent(), BorderLayout.CENTER);
 			}
 
 		} else {

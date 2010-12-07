@@ -172,6 +172,7 @@
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="graphViewFactoryServiceRef" />
 		<constructor-arg ref="presentationFactoryServiceRef" />
+		<constructor-arg ref="selectedVisualStyleManager" />
 	</bean>
 
 	<bean name="defViewEditor"

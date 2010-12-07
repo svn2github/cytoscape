@@ -41,6 +41,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
+import org.cytoscape.view.vizmap.gui.DefaultViewPanel;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 
 /**
  * Moulse Listener for the default view panel.
@@ -48,11 +50,18 @@ import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 public class DefaultViewMouseListener extends MouseAdapter {
 
 	// Singleton managed by DI container.
-	private DefaultViewEditor defViewEditor;
+	private final DefaultViewEditor defViewEditor;
+	private final VizMapperMainPanel vizMapperMainPanel;
+	private final SelectedVisualStyleManager manager;
 	
-	public DefaultViewMouseListener(DefaultViewEditor defViewEditor) {
+
+	public DefaultViewMouseListener(final DefaultViewEditor defViewEditor,
+			final VizMapperMainPanel vizMapperMainPanel, SelectedVisualStyleManager manager) {
 		this.defViewEditor = defViewEditor;
+		this.vizMapperMainPanel = vizMapperMainPanel;
+		this.manager = manager;
 	}
+
 
 	/**
 	 * Creates a new DefaultViewMouseListener object. / public
@@ -68,13 +77,12 @@ public class DefaultViewMouseListener extends MouseAdapter {
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			
 			defViewEditor.showEditor(null);
-			
 			// TODO Should be handled by listener.
-			// vizMapperMainPanel.updateDefaultImage(targetStyle,
-			// panel.getView(),
-			// vizMapperMainPanel.getDefaultViewPanel().getSize());
-			// vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
-			// .getDefaultImageManager().get(targetStyle));
+			 vizMapperMainPanel.updateDefaultImage(manager.getCurrentVisualStyle(),
+					 ((DefaultViewPanel)defViewEditor.getDefaultView(manager.getCurrentVisualStyle())).getRenderingEngine(),
+			 vizMapperMainPanel.getDefaultViewPanel().getSize());
+			 vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
+			 .getDefaultImageManager().get(manager.getCurrentVisualStyle()));
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package org.cytoscape.view.vizmap.gui;
 
-import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.presentation.RenderingEngine;
 
 public interface DefaultViewPanel {
 
@@ -11,6 +12,6 @@ public interface DefaultViewPanel {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public CyNetworkView getView();
+	public RenderingEngine<CyNetwork> getRenderingEngine();
 
 }

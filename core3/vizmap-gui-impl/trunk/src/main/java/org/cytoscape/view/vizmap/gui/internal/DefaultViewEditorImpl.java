@@ -93,17 +93,13 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * </p>
  * 
- * @version 0.5
- * @since Cytoscape 2.5
- * @author kono
  */
 public class DefaultViewEditorImpl extends JDialog implements
 		DefaultViewEditor, SelectedVisualStyleSwitchedListener {
 
 	private final static long serialVersionUID = 1202339876675416L;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(DefaultViewEditorImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(DefaultViewEditorImpl.class);
 
 	private static final int ICON_WIDTH = 48;
 	private static final int ICON_HEIGHT = 48;
@@ -113,12 +109,13 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	private final CyApplicationManager cyApplicationManager;
 
-	private EditorManager editorFactory;
-
-	private VisualMappingManager vmm;
-	final SelectedVisualStyleManager selectedManager;
+	private final EditorManager editorFactory;
+	private final VisualMappingManager vmm;
+	private final SelectedVisualStyleManager selectedManager;
 
 	private final VizMapperUtil util;
+	
+	private final DefaultViewPanelImpl mainView;
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -135,6 +132,10 @@ public class DefaultViewEditorImpl extends JDialog implements
 			final SelectedVisualStyleManager selectedManager,
 			final VizMapperUtil util) {
 		super();
+		
+		if(mainView == null)
+			throw new NullPointerException("DefaultViewPanel is missing.");
+		
 		this.vmm = vmm;
 		this.util = util;
 		this.selectedManager = selectedManager;
@@ -155,7 +156,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 		this.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
 				defaultObjectTabbedPane.repaint();
-				mainView.repaint();
 				mainView.updateView();
 			}
 		});
@@ -210,17 +210,12 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.cytoscape.vizmap.gui.internal.DefaultViewEditor#showDialog(java.awt
-	 * .Component)
-	 */
-	public void showEditor(Component parent) {
+	
+	@Override public void showEditor(Component parent) {
 		updateVisualPropertyLists();
 		buildList();
 
+		mainView.updateView();
 		setSize(900, 450);
 		setLocationRelativeTo(parent);
 		setVisible(true);
@@ -234,11 +229,11 @@ public class DefaultViewEditorImpl extends JDialog implements
 	 * .lang.String)
 	 */
 	public JPanel getDefaultView(String vsName) {
-		// TODO: update background color
-		// mainView.updateBackgroungColor(vmm.getVisualStyle()
-		// .getGlobalAppearanceCalculator().getDefaultBackgroundColor());
-
-		// mainView.updateView();
+//		// TODO: update background color
+//		 mainView.updateBackgroungColor(vmm.getVisualStyle()
+//		 .getGlobalAppearanceCalculator().getDefaultBackgroundColor());
+//
+//		 mainView.updateView();
 
 		return mainView;
 	}
@@ -293,15 +288,6 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-		mainView.setBorder(new javax.swing.border.LineBorder(
-				java.awt.Color.darkGray, 1, true));
-
-		GroupLayout jXPanel2Layout = new GroupLayout(mainView);
-		mainView.setLayout(jXPanel2Layout);
-		jXPanel2Layout.setHorizontalGroup(jXPanel2Layout.createParallelGroup(
-				GroupLayout.Alignment.LEADING).addGap(0, 300, Short.MAX_VALUE));
-		jXPanel2Layout.setVerticalGroup(jXPanel2Layout.createParallelGroup(
-				GroupLayout.Alignment.LEADING).addGap(0, 237, Short.MAX_VALUE));
 
 		jXTitledPanel1.setTitle("Default Visual Properties");
 		// TODO: fix gradient
@@ -462,6 +448,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 	private <V> void listActionPerformed(MouseEvent e) {
 		final Object source = e.getSource();
 		final JList list;
+		
+		
 		if (source instanceof JList)
 			list = (JList) source;
 		else
@@ -469,8 +457,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 
 		V newValue = null;
 
-		final VisualProperty<V> vp = (VisualProperty<V>) list
-				.getSelectedValue();
+		@SuppressWarnings("unchecked")
+		final VisualProperty<V> vp = (VisualProperty<V>) list.getSelectedValue();
 
 		if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
 			final VisualStyle selectedStyle = selectedManager
@@ -488,22 +476,21 @@ public class DefaultViewEditorImpl extends JDialog implements
 			}
 
 			if (newValue != null) {
+				// Got new value.  Apply to the dummy view.
 				selectedStyle.setDefaultValue(vp, newValue);
-				selectedStyle.apply(cyApplicationManager
-						.getCurrentNetworkView());
+				mainView.updateView();
+				mainView.repaint();
+				//selectedStyle.apply(mainView.updateView());
 			}
 
 			repaint();
-			this.mainView.getView().updateView();
 		}
 	}
 
-	private void applyNewStyle(CyNetworkView view) {
-		final VisualStyle selectedStyle = selectedManager
-				.getCurrentVisualStyle();
-
+	private void applyNewStyle(final CyNetworkView view) {
+		final VisualStyle selectedStyle = selectedManager.getCurrentVisualStyle();
+		
 		vmm.setVisualStyle(selectedStyle, view);
-
 		selectedStyle.apply(view);
 		view.updateView();
 	}
@@ -524,7 +511,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	private org.jdesktop.swingx.JXTitledPanel jXTitledPanel1;
 
 	// End of variables declaration
-	protected DefaultViewPanelImpl mainView;
+	
 
 	/**
 	 * DOCUMENT ME!
@@ -663,8 +650,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	// }
 
 	public Component getDefaultView(VisualStyle vs) {
-		// mainView.updateView();
-
+		mainView.updateView(vs);
 		return mainView;
 	}
 

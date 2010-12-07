@@ -2840,9 +2840,8 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	}
 
-	public Image createImage(int width, int height) {
-		// TODO Auto-generated method stub
-		return null;
+	@Override public Image createImage(int width, int height) {
+		return createImage(width, height, 1, true);
 	}
 
 	public VisualLexicon getVisualLexicon() {
