@@ -25,24 +25,23 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package browser.ui;
+package org.cytoscape.browser.internal.ui;
 
 
-import static browser.DataObjectType.EDGES;
-import static browser.DataObjectType.NETWORK;
-import static browser.DataObjectType.NODES;
+import static org.cytoscape.browser.internal.DataObjectType.EDGES;
+import static org.cytoscape.browser.internal.DataObjectType.NETWORK;
+import static org.cytoscape.browser.internal.DataObjectType.NODES;
 
-import browser.AttributeBrowser;
-import browser.AttributeModel;
-import browser.DataObjectType;
-import browser.DataTableModel;
-import browser.ValidatedObjectAndEditString;
+import org.cytoscape.browser.internal.AttributeBrowser;
+import org.cytoscape.browser.internal.AttributeModel;
+import org.cytoscape.browser.internal.DataObjectType;
+import org.cytoscape.browser.internal.DataTableModel;
+import org.cytoscape.browser.internal.ValidatedObjectAndEditString;
+import org.cytoscape.model.CyTable;
 
-import cytoscape.Cytoscape;
 import cytoscape.actions.ImportEdgeAttributesAction;
 import cytoscape.actions.ImportExpressionMatrixAction;
 import cytoscape.actions.ImportNodeAttributesAction;
-import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.logger.CyLogger;
@@ -88,7 +87,7 @@ import org.jdesktop.layout.LayoutStyle;
 public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener, PropertyChangeListener {
 	private static final long serialVersionUID = -508393701912596399L;
 	
-	private final CyAttributes attributes;
+	private final CyTable attributes;
 	private DataTableModel tableModel;
 	private final JTable table;
 	private final DataObjectType objectType;
@@ -736,7 +735,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 						else {
 							final String attrName = getAttribName(cellRow, cellColumn);
 							final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
-							Util.initAttribNameToTypeMap(objectType, attrName, attribNameToTypeMap);
+							Util.initAttribNameToTypeMap(table, attrName, attribNameToTypeMap);
 							formulaBuilderDialog =
 								new FormulaBuilderDialog(tableModel, table, objectType, Cytoscape.getDesktop(),
 								                         attribNameToTypeMap, attrName);
@@ -855,7 +854,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		Arrays.sort(attrArray);
 
 		final DeletionDialog dDialog = new DeletionDialog(Cytoscape.getDesktop(), true, attrArray,
-		                                                  attributeType, tableModel);
+		                                                  graphObjectType, tableModel);
 
 		dDialog.pack();
 		dDialog.setLocationRelativeTo(browserToolBar);
@@ -898,7 +897,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	}
 
 	private String[] getAttributeArray() {
-		final CyAttributes currentAttributes;
+		final CyTable currentAttributes;
 
 		if (objectType == NODES) {
 			attributeType = "Node";

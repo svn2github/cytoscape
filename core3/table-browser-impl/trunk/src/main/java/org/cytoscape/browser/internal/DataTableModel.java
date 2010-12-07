@@ -303,7 +303,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * @return  DOCUMENT ME!
 	 */
 	public boolean isCellEditable(int rowIndex, int colIndex) {
-		if (!data.getUserEditable(getColumnName(colIndex)))
+		if (getColumnName(colIndex).equals("ID"))
 			return false;
 
 		Class objectType = null;
@@ -338,7 +338,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
 	}
 
-	public CyAttributes getCyAttributes() { return data; }
+	public CyTable getCyAttributes() { return table; }
 
 	/**
 	 *  Updates an entire column.

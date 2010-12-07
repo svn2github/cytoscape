@@ -8,11 +8,13 @@
 
  =====================================================================
  */
-package browser.ui;
+package org.cytoscape.browser.internal.ui;
 
-import static browser.DataObjectType.EDGES;
-import static browser.DataObjectType.NETWORK;
-import static browser.DataObjectType.NODES;
+
+import static org.cytoscape.browser.internal.DataObjectType.EDGES;
+import static org.cytoscape.browser.internal.DataObjectType.NETWORK;
+import static org.cytoscape.browser.internal.DataObjectType.NODES;
+
 import giny.model.Edge;
 import giny.model.GraphObject;
 import giny.model.Node;
@@ -411,7 +413,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					else {
 						final String columnName = tableModel.getColumnName(cellColumn);
 						final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
-						initAttribNameToTypeMap(objectType, columnName, attribNameToTypeMap);
+						initAttribNameToTypeMap(model.getCyAttributes(), columnName, attribNameToTypeMap);
 						formulaBuilderDialog =
 							new FormulaBuilderDialog(tableModel, table, objectType, Cytoscape.getDesktop(),
 										 attribNameToTypeMap, columnName);

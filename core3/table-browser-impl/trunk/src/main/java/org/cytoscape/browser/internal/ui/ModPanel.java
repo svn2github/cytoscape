@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,7 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package browser.ui;
+package org.cytoscape.browser.internal.ui;
+
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -50,25 +44,21 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
-import browser.AttributeModel;
-import browser.DataObjectType;
-import browser.DataTableModel;
-import browser.MultiDataEditAction;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
+import org.cytoscape.browser.internal.AttributeModel;
+import org.cytoscape.browser.internal.DataObjectType;
+import org.cytoscape.browser.internal.DataTableModel;
+import org.cytoscape.browser.internal.MultiDataEditAction;
+import org.cytoscape.model.CyTable;
 
 
-/**
- *
- */
 public class ModPanel extends JPanel implements ActionListener {
 	// Backend data objects
-	private CyAttributes data;
+	private CyTable data;
 	private DataTableModel tableModel;
 	private DataObjectType objectType;
 
-	private CyAttributes attrData;
-	private byte currentAttributeCopyToType = CyAttributes.TYPE_UNDEFINED;
+	private CyTable attrData;
+	private byte currentAttributeCopyToType = CyTable.TYPE_UNDEFINED;
 	private final AttributeModel defaultAttrModel;
 
 	// Set/Modify
@@ -384,8 +374,8 @@ public class ModPanel extends JPanel implements ActionListener {
 				if (fromType != currentAttributeCopyToType) {
 					final Set<Byte> attrTypes = new TreeSet<Byte>();
 					attrTypes.add(fromType);
-					if (fromType == CyAttributes.TYPE_INTEGER) // Allow copying from int to float.
-						attrTypes.add(CyAttributes.TYPE_FLOATING);
+					if (fromType == CyTable.TYPE_INTEGER) // Allow copying from int to float.
+						attrTypes.add(CyTable.TYPE_FLOATING);
 					attributeCopyToBox.setModel(new AttributeModel(data, null, attrTypes));
 				}
 			}

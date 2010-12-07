@@ -25,14 +25,12 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package browser.ui;
+package org.cytoscape.browser.internal.ui;
 
 
-import browser.DataObjectType;
-import browser.DataTableModel;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.attr.MultiHashMapDefinition;
+import org.cytoscape.browser.internal.DataObjectType;
+import org.cytoscape.browser.internal.DataTableModel;
+import org.cytoscape.model.CyTable;
 
 import giny.model.GraphObject;
 
@@ -195,15 +193,15 @@ public class FormulaBuilderDialog extends JDialog {
 	private Class getAttributeType(final String attribName) {
 		final byte type = tableObjectType.getAssociatedAttributes().getType(attribName);
 		switch (type) {
-		case CyAttributes.TYPE_BOOLEAN:
+		case CyTable.TYPE_BOOLEAN:
 			return Boolean.class;
-		case CyAttributes.TYPE_FLOATING:
+		case CyTable.TYPE_FLOATING:
 			return Double.class;
-		case CyAttributes.TYPE_INTEGER:
+		case CyTable.TYPE_INTEGER:
 			return Long.class;
-		case CyAttributes.TYPE_STRING:
+		case CyTable.TYPE_STRING:
 			return String.class;
-		case CyAttributes.TYPE_SIMPLE_LIST:
+		case CyTable.TYPE_SIMPLE_LIST:
 			return List.class;
 		default:
 			return null;
@@ -500,7 +498,7 @@ public class FormulaBuilderDialog extends JDialog {
 
 		final int cellColum = table.getSelectedColumn();
 		final String attribName = tableModel.getColumnName(cellColum);
-		final CyAttributes attribs = tableModel.getCyAttributes();
+		final CyTable attribs = tableModel.getCyTable();
 
 		final Equation equation = compileEquation(attribs, attribName, formula, errorMessage);
 		if (equation == null)
@@ -539,7 +537,7 @@ public class FormulaBuilderDialog extends JDialog {
 	/**
 	 *  @returns the compiled equation upon success or null if an error occurred
 	 */
-	private Equation compileEquation(final CyAttributes attribs, final String attribName,
+	private Equation compileEquation(final CyTable attribs, final String attribName,
 	                                 final String formula, final StringBuilder errorMessage) 
 	{
 		final Map<String, Class> attribNameToTypeMap = new HashMap<String, Class>();
@@ -555,7 +553,7 @@ public class FormulaBuilderDialog extends JDialog {
 	/**
 	 *  @returns true if the attribute value has been successfully updated, else false
 	 */
-	private boolean setAttribute(final CyAttributes attribs, final String id,
+	private boolean setAttribute(final CyTable attribs, final String id,
 	                             final String attribName, final Equation newValue,
 	                             final StringBuilder errorMessage)
 	{
@@ -631,41 +629,6 @@ public class FormulaBuilderDialog extends JDialog {
 	private static void displayErrorMessage(final String errorMessage) {
 		JOptionPane.showMessageDialog(new JFrame(), errorMessage, "Error",
 		                              JOptionPane.ERROR_MESSAGE);
-	}
-
-	/**
-	 *  Populates "attribNameToTypeMap" with the names from "cyAttribs" and their types as mapped
-	 *  to the types used by attribute equations.  Types (and associated names) not used by
-	 *  attribute equations are ommitted.
-	 *
-	 *  @param cyAttribs            the attributes to map
-	 *  @param ignore               if not null, skip the attribute with this name
-	 *  @param attribNameToTypeMap  the result of the translation from attribute types to
-	 *                              attribute equation types
-	 */
-	private static void initAttribNameToTypeMap(final CyAttributes cyAttribs, final String ignore,
-	                                            final Map<String, Class> attribNameToTypeMap)
-	{
-		for (final String attribName : cyAttribs.getAttributeNames()) {
-			if (ignore == null || ignore.equals(attribName))
-				continue;
-			if (!cyAttribs.getUserVisible(attribName))
-				continue;
-
-			final byte type = cyAttribs.getType(attribName);
-			if (type == CyAttributes.TYPE_BOOLEAN)
-				attribNameToTypeMap.put(attribName, Boolean.class);
-			else if (type == CyAttributes.TYPE_INTEGER)
-				attribNameToTypeMap.put(attribName, Long.class);
-			else if (type == CyAttributes.TYPE_FLOATING)
-				attribNameToTypeMap.put(attribName, Double.class);
-			else if (type == CyAttributes.TYPE_STRING)
-				attribNameToTypeMap.put(attribName, String.class);
-			else if (type == CyAttributes.TYPE_SIMPLE_LIST)
-				attribNameToTypeMap.put(attribName, List.class);
-			else
-				/* We intentionally ignore everything else! */;
-		}
 	}
 
 	private void wrapLabelText(final JLabel label, final String text) {

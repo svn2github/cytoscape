@@ -1,17 +1,5 @@
-/*
- * DeletionDialog.java
- *
- * Created on 2006/03/20, 10:46
- */
-package browser.ui;
+package org.cytoscape.browser.internal.ui;
 
-import browser.DataTableModel;
-
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import org.jdesktop.layout.GroupLayout;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -19,23 +7,25 @@ import java.awt.event.ActionListener;
 
 import javax.swing.AbstractListModel;
 import javax.swing.JDialog;
+import javax.swing.GroupLayout;
+
+import org.cytoscape.browser.internal.DataObjectType;
+import org.cytoscape.browser.internal.DataTableModel;
+import org.cytoscape.model.CyTable;
 
 
-/**
- *
- * @author kono
- */
 public class DeletionDialog extends JDialog {
-	private String[] attributes = null;
-	private String type;
+	private String[] attributes;
+	private final CyTable table;
 	private DataTableModel model;
 
 	/** Creates new form DeletionDialog */
-	protected DeletionDialog(Frame parent, boolean modal, String[] attributes, String type,
-	                         DataTableModel model) {
+	protected DeletionDialog(Frame parent, boolean modal, String[] attributes, final CyTable table,
+	                         DataTableModel model)
+	{
 		super(parent, modal);
 
-		this.type = type;
+		this.table = table;
 		this.attributes = attributes;
 		this.model = model;
 
@@ -81,7 +71,6 @@ public class DeletionDialog extends JDialog {
 		cancelButton.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					cancelButtonActionPerformed(evt);
-					;
 				}
 			});
 
@@ -123,25 +112,9 @@ public class DeletionDialog extends JDialog {
 	} // </editor-fold>
 
 	private void deleteButtonActionPerformed(ActionEvent evt) {
-		CyAttributes attr = null;
-
-		if (type.equalsIgnoreCase("node")) {
-			attr = Cytoscape.getNodeAttributes();
-		} else if (type.equalsIgnoreCase("edge")) {
-			attr = Cytoscape.getEdgeAttributes();
-		} else {
-			attr = Cytoscape.getNetworkAttributes();
-		}
-
-		Object[] selected = attributeList.getSelectedValues();
-
-		for (int i = 0; i < selected.length; i++)
-			attr.deleteAttribute(selected[i].toString());
-
-		Cytoscape.getSwingPropertyChangeSupport()
-		         .firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
-		Cytoscape.getPropertyChangeSupport()
-		         .firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		final Object[] selectedAttrs = attributeList.getSelectedValues();
+		for (Object selected : selectedAttrs)
+			table.deleteColumn(selected.toString());
 
 		model.setTableData();
 		dispose();

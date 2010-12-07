@@ -25,12 +25,11 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package browser.ui;
+package org.cytoscape.browser.internal.ui;
 
 
-import browser.DataObjectType;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
+import org.cytoscape.browser.internal.DataObjectType;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.equations.EquationUtil;
 
 import java.util.List;
@@ -39,58 +38,36 @@ import java.util.Map;
 
 public class Util {
 	/**
-	 *  Populates "attribNameToTypeMap" with the names from "cyAttribs" and their types as mapped
+	 *  Populates "attribNameToTypeMap" with the names from "table" and their types as mapped
 	 *  to the types used by attribute equations.  Types (and associated names) not used by
 	 *  attribute equations are ommitted.
 	 *
-	 *  @param cyAttribs            the attributes to map
+	 *  @param table                the attributes to map
 	 *  @param ignore               if not null, skip the attribute with this name
 	 *  @param attribNameToTypeMap  the result of the translation from attribute types to
 	 *                              attribute equation types
 	 */
-	public static void initAttribNameToTypeMap(final CyAttributes cyAttribs, final String ignore,
-	                                            final Map<String, Class> attribNameToTypeMap)
+	public static void initAttribNameToTypeMap(final CyTable table, final String ignore,
+	                                           final Map<String, Class> attribNameToTypeMap)
 	{
-		for (final String attribName : cyAttribs.getAttributeNames()) {
-			if (ignore == null || ignore.equals(attribName))
-				continue;
-			if (!cyAttribs.getUserVisible(attribName))
+		final Map<String, Class<?>> columnsAndTypes = table.getColumnTypeMap();
+		for (final String columnName : columnsAndTypes.keySet()) {
+			if (ignore != null && ignore.equals(columnName))
 				continue;
 
-			final byte type = cyAttribs.getType(attribName);
-			if (type == CyAttributes.TYPE_BOOLEAN)
+			final Class<?> type = columnsAndTypes.get(columnName);
+			if (type == Boolean.class)
 				attribNameToTypeMap.put(attribName, Boolean.class);
-			else if (type == CyAttributes.TYPE_INTEGER)
+			else if (type == Integer.class || type == Long.class)
 				attribNameToTypeMap.put(attribName, Long.class);
-			else if (type == CyAttributes.TYPE_FLOATING)
+			else if (type == Double.class)
 				attribNameToTypeMap.put(attribName, Double.class);
-			else if (type == CyAttributes.TYPE_STRING)
+			else if (type == String.class)
 				attribNameToTypeMap.put(attribName, String.class);
-			else if (type == CyAttributes.TYPE_SIMPLE_LIST)
+			else if (type == List.class)
 				attribNameToTypeMap.put(attribName, List.class);
 			else
 				/* We intentionally ignore everything else! */;
 		}
-	}
-
-	public static void initAttribNameToTypeMap(final DataObjectType objectType, final String columnName,
-	                                           final Map<String, Class> attribNameToTypeMap)
-	{
-		final CyAttributes cyAttribs;
-		switch (objectType) {
-		case NODES:
-			cyAttribs = Cytoscape.getNodeAttributes();
-			break;
-		case EDGES:
-			cyAttribs = Cytoscape.getEdgeAttributes();
-			break;
-		case NETWORK:
-			cyAttribs = Cytoscape.getNetworkAttributes();
-			break;
-		default:
-			throw new IllegalStateException("unknown DataObjectType: " + objectType + "!");
-		}
-
-		initAttribNameToTypeMap(cyAttribs, columnName, attribNameToTypeMap);
 	}
 }

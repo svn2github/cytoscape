@@ -1,17 +1,4 @@
 /*
- * $Archive: SourceJammer$
- * $FileName: SortArrowIcon.java$
- * $FileID: 3986$
- *
- * Last change:
- * $AuthorName: Timo Haberkern$
- * $Date$
- * $Comment: $
- *
- * $KeyWordsOff: $
- */
-
-/*
  =====================================================================
 
  SortArrowIcon.java
@@ -21,7 +8,8 @@
 
  =====================================================================
  */
-package browser.ui;
+package org.cytoscape.browser.internal.ui;
+
 
 import java.awt.Color;
 import java.awt.Component;
@@ -30,9 +18,6 @@ import java.awt.Graphics;
 import javax.swing.Icon;
 
 
-/**
- *
- */
 public class SortArrowIcon implements Icon {
 	/**
 	 * 

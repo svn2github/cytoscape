@@ -21,7 +21,7 @@
 
 =====================================================================
 */
-package browser.ui;
+package org.cytoscape.browser.internal.ui;
 
 import java.awt.Component;
 

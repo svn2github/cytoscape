@@ -26,7 +26,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package browser.ui;
+package org.cytoscape.browser.internal.ui;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;

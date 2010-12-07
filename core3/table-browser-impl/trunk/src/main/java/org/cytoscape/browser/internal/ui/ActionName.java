@@ -1,7 +1,7 @@
 /**
  *
  */
-package browser.ui;
+package org.cytoscape.browser.internal.ui;
 
 public enum ActionName {
 	SET("Set"),
