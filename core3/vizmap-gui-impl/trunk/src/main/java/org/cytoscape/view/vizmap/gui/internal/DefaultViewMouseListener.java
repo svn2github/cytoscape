@@ -53,15 +53,14 @@ public class DefaultViewMouseListener extends MouseAdapter {
 	private final DefaultViewEditor defViewEditor;
 	private final VizMapperMainPanel vizMapperMainPanel;
 	private final SelectedVisualStyleManager manager;
-	
 
 	public DefaultViewMouseListener(final DefaultViewEditor defViewEditor,
-			final VizMapperMainPanel vizMapperMainPanel, SelectedVisualStyleManager manager) {
+			final VizMapperMainPanel vizMapperMainPanel,
+			SelectedVisualStyleManager manager) {
 		this.defViewEditor = defViewEditor;
 		this.vizMapperMainPanel = vizMapperMainPanel;
 		this.manager = manager;
 	}
-
 
 	/**
 	 * Creates a new DefaultViewMouseListener object. / public
@@ -75,14 +74,17 @@ public class DefaultViewMouseListener extends MouseAdapter {
 	 */
 	public void mouseClicked(MouseEvent e) {
 		if (SwingUtilities.isLeftMouseButton(e)) {
-			
-			defViewEditor.showEditor(null);
-			// TODO Should be handled by listener.
-			 vizMapperMainPanel.updateDefaultImage(manager.getCurrentVisualStyle(),
-					 ((DefaultViewPanel)defViewEditor.getDefaultView(manager.getCurrentVisualStyle())).getRenderingEngine(),
-			 vizMapperMainPanel.getDefaultViewPanel().getSize());
-			 vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
-			 .getDefaultImageManager().get(manager.getCurrentVisualStyle()));
+
+			defViewEditor.showEditor(vizMapperMainPanel);
+
+			vizMapperMainPanel.updateDefaultImage(manager
+					.getCurrentVisualStyle(), ((DefaultViewPanel) defViewEditor
+					.getDefaultView(manager.getCurrentVisualStyle()))
+					.getRenderingEngine(), vizMapperMainPanel
+					.getDefaultViewPanel().getSize());
+			vizMapperMainPanel.setDefaultViewImagePanel(vizMapperMainPanel
+					.getDefaultImageManager().get(
+							manager.getCurrentVisualStyle()));
 		}
 	}
 }

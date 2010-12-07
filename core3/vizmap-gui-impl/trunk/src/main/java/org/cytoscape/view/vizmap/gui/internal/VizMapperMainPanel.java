@@ -29,6 +29,7 @@ package org.cytoscape.view.vizmap.gui.internal;
 
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -61,6 +62,7 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
@@ -381,7 +383,8 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 	 */
 	public void setDefaultViewImagePanel(final Image defImage) {
 		if (defImage == null) {
-			logger.debug("****************** image is null.");
+			logger.debug("Default image is null!");
+			return;
 		}
 
 		defaultViewImagePanel.removeAll();
@@ -390,13 +393,11 @@ public class VizMapperMainPanel extends AbstractVizMapperPanel implements
 		defaultImageButton.setUI(new BlueishButtonUI());
 		defaultImageButton.setCursor(Cursor
 				.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-		if(defImage != null)
-			defaultImageButton.setIcon(new ImageIcon(defImage));
 		
-//		if(vsComboBoxModel.getSelectedItem() != null)
-//			defaultImageButton
-//				.setText(vsComboBoxModel.getSelectedItem().toString());
+		defaultImageButton.setIcon(new ImageIcon(defImage));
+		final VisualStyle currentStyle = manager.getCurrentVisualStyle();
+		defaultImageButton.setBackground((Color) currentStyle.getDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT));
+
 		defaultViewImagePanel.add(defaultImageButton, BorderLayout.CENTER);
 		defaultImageButton.addMouseListener(defaultViewMouseListener);
 		this.repaint();

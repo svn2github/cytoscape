@@ -2442,7 +2442,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		m_foregroundCanvas.paint(g);
 		// Restore foreground to original size
 		m_foregroundCanvas.setSize(originalSize);
-
+		
 		return image;
 	}
 
@@ -2840,6 +2840,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	}
 
+	
+	/**
+	 * Common API for all rendering engines.
+	 */
 	@Override public Image createImage(int width, int height) {
 		return createImage(width, height, 1, true);
 	}

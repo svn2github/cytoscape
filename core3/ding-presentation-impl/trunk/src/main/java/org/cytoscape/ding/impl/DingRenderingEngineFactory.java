@@ -137,7 +137,7 @@ public class DingRenderingEngineFactory implements
 				inFrame.setContentPane(dgv.getContainer(inFrame.getLayeredPane()));
 			//	dgv.addTransferComponent(desktopPane);
 			} else {
-				JComponent component = (JComponent) presentationContainer;
+				final JComponent component = (JComponent) presentationContainer;
 				component.setLayout(new BorderLayout());
 				component.add(dgv.getComponent(), BorderLayout.CENTER);
 			}
