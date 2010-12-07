@@ -113,9 +113,9 @@ class PopupMenuHelper {
 	/**
 	 * Creates a menu based on a drop event on a NodeView.
 	 */
-	void createDropNodeViewMenu(NodeView nview, Point rawPt, Point xformPt, Transferable t) {
+	void createDropNodeViewMenu(NodeView nview, Point rawPt, Point xformPt, Transferable t, String action) {
 		if (nview != null ) {
-			Collection<DropNodeViewTaskFactory> usableTFs = getPreferredActions(m_view.dropNodeViewTFs,null);
+			Collection<DropNodeViewTaskFactory> usableTFs = getPreferredActions(m_view.dropNodeViewTFs,action);
 			View<CyNode> nv = nview.getNodeViewModel();
 
 			// build a menu of actions if more than factory exists

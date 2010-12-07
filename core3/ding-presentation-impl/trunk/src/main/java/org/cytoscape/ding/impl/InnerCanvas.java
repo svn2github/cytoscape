@@ -36,6 +36,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
@@ -77,6 +78,7 @@ import org.cytoscape.util.intr.IntEnumerator;
 import org.cytoscape.util.intr.IntHash;
 import org.cytoscape.util.intr.IntStack;
 import org.cytoscape.work.undo.UndoSupport;
+import org.cytoscape.dnd.DropUtil;
 
 /**
  *
@@ -126,7 +128,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	static final String MAC_OS_ID = "mac";
 
 	private DropTarget dropTarget;
-	private String CANVAS_DROP = "CanvasDrop";
 
 	//  for turning selection rectangle on and off
 	private boolean selecting = true;
@@ -141,6 +142,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	private final MousePressedDelegator mousePressedDelegator;
 	private final MouseReleasedDelegator mouseReleasedDelegator;
 	private final MouseDraggedDelegator mouseDraggedDelegator;
+	private final AddEdgeMousePressedDelegator addEdgeMousePressedDelegator;
+
+	private final AddEdgeStateMonitor addEdgeMode;
 
 	InnerCanvas(Object lock, DGraphView view, UndoSupport undo) {
 		super();
@@ -166,6 +170,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		mousePressedDelegator = new MousePressedDelegator();
 		mouseReleasedDelegator = new MouseReleasedDelegator();
 		mouseDraggedDelegator = new MouseDraggedDelegator();
+		addEdgeMousePressedDelegator = new AddEdgeMousePressedDelegator();
+
+		addEdgeMode = new AddEdgeStateMonitor(this,m_view);
 	}
 
 	/**
@@ -268,7 +275,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		renderGraph(new GraphGraphics(
 				new ImageImposter(g, getWidth(), getHeight()), false), 
 				/* setLastRenderDetail = */ false, m_view.m_printLOD);
-		// g.drawImage(img, 0, 0, null);
 		isPrinting = false;
 	}
 
@@ -281,7 +287,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		isPrinting = true;
 		final Image img = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 		renderGraph(new GraphGraphics(img, false), /* setLastRenderDetail = */ false, m_view.m_printLOD);
-		// g.drawImage(img, 0, 0, null);
 		isPrinting = false;
 	}
 
@@ -310,7 +315,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 
 	public void mouseMoved(MouseEvent e) {
-		setToolTipText( getToolTipText( e.getPoint() ) );
+		if ( addEdgeMode.addingEdge() )
+			addEdgeMode.drawRubberBand(e);
+		else
+			setToolTipText( getToolTipText( e.getPoint() ) );
 	}
 
 	//
@@ -328,7 +336,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	}
 
 	public void mousePressed(MouseEvent e) {
-		mousePressedDelegator.delegateMouseEvent(e);
+		if ( addEdgeMode.addingEdge() )
+			addEdgeMousePressedDelegator.delegateMouseEvent(e);
+		else
+			mousePressedDelegator.delegateMouseEvent(e);
 		requestFocusInWindow();
 	}
 
@@ -346,6 +357,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		if ( (code == KeyEvent.VK_UP) || (code == KeyEvent.VK_DOWN) || 
 		     (code == KeyEvent.VK_LEFT) || (code == KeyEvent.VK_RIGHT)) {
 			handleArrowKeys(k);
+		} else if ( code == KeyEvent.VK_ESCAPE ) {
+			handleEscapeKey();
 		}
 	}
 
@@ -839,9 +852,11 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 * default drop handler.  
 	 */
 	public void drop(DropTargetDropEvent dte) {
+		requestFocusInWindow();
 		dte.acceptDrop(DnDConstants.ACTION_COPY);
 
 		Transferable t = dte.getTransferable();
+		String action = getPreferredDropAction(t);
 
 		Point rawPt = dte.getLocation();
 		double[] loc = new double[2];
@@ -852,14 +867,21 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		xformPt.setLocation(loc[0],loc[1]); 
 
 		NodeView nview = m_view.getPickedNodeView(rawPt);
-		if ( nview != null )
-			popup.createDropNodeViewMenu(nview,rawPt,xformPt,t);
-		else 
+		if ( nview != null ) 
+			popup.createDropNodeViewMenu(nview,rawPt,xformPt,t,action);
+		else
 			popup.createDropEmptySpaceMenu(rawPt,xformPt,t); 
 
 		dte.dropComplete(true);
 	}
 
+	private String getPreferredDropAction(Transferable t) {
+		String[] actions = DropUtil.getTransferableDataStrings(t);
+		if (actions.length > 0)
+			return actions[0];
+		else
+			return null;
+	}
 
 	private void adjustZoom(int notches) {
         double factor; 
@@ -955,6 +977,11 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		}
 	}
 
+	private void handleEscapeKey() {
+		AddEdgeStateMonitor.reset(m_view.cyNetworkView);
+		repaint();
+	}
+
 	private void handleArrowKeys(KeyEvent k) {
 		final int code = k.getKeyCode();
 		double move = 1.0;
@@ -1008,6 +1035,23 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			}
 
 			repaint();
+		}
+	}
+
+	private class AddEdgeMousePressedDelegator extends ButtonDelegator {
+		@Override
+		void singleLeftClick(MouseEvent e) {
+			Point rawPt = e.getPoint();
+			double[] loc = new double[2];
+			loc[0] = rawPt.getX();
+			loc[1] = rawPt.getY();
+			m_view.xformComponentToNodeCoords(loc);
+			Point xformPt = new Point();
+			xformPt.setLocation(loc[0],loc[1]); 
+			String action = "Edge";
+			NodeView nview = m_view.getPickedNodeView(rawPt);
+			if ( nview != null ) 
+				popup.createDropNodeViewMenu(nview,rawPt,xformPt,null,action);
 		}
 	}
 

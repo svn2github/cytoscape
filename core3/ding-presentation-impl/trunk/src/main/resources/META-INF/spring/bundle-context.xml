@@ -45,4 +45,9 @@
 		<constructor-arg ref="cyTableManagerServiceRef" />
 		<constructor-arg ref="renderingEngineManagerServiceRef" />
 	</bean>
+
+	<bean id="addEdgeNodeViewTaskFactory" 
+	      class="org.cytoscape.ding.impl.AddEdgeNodeViewTaskFactoryImpl">
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
 </beans>
