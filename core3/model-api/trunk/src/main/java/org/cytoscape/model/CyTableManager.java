@@ -1,13 +1,5 @@
-
 /*
  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
+
 
 import java.util.Map;
 import java.util.Set;
@@ -45,7 +37,6 @@ import java.util.Set;
  * tables in the system. Should be provided as an OSGi service.
  */
 public interface CyTableManager {
-
 	/**
 	 * Returns a map of table names to tables, which contain the attributes 
 	 * for the specified network.
@@ -60,16 +51,16 @@ public interface CyTableManager {
 
 	/**
 	 * Returns a Set of all tables with the specified visibility.
-     * @param includePrivate Whether to include private CyTables
-     * in the list (i.e. all possible CyTables) or not.
-     * @return A Set containing CyTable SUIDs either
-     * including private CyTables (i.e. meaning all possible
-     * CyTables) or just public CyTables.
-     */
+	 * @param includePrivate Whether to include private CyTables
+	 * in the list (i.e. all possible CyTables) or not.
+	 * @return A Set containing CyTable SUIDs either
+	 * including private CyTables (i.e. meaning all possible
+	 * CyTables) or just public CyTables.
+	 */
 	Set<CyTable> getAllTables(boolean includePrivate);
 
 	/**
-	 * Returns the table with teh specified SUID. 
+	 * Returns the table with the specified SUID. 
 	 * @param suid The SUID identifying the CyTable.
 	 * @return The CyTable identified by the suid. Will return null if a CyTable doesn't
 	 *         exist for the  specified SUID.
