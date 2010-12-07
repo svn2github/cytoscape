@@ -5,6 +5,9 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
+        <osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager">
+        </osgi:reference>
+
 	<osgi:service id="tableBrowserCytoPanelComponentService" ref="tableBrowser"
 		interface="org.cytoscape.application.swing.CytoPanelComponent"/>
 </beans>

@@ -26,5 +26,6 @@
 	<context:annotation-config/>
 
 	<bean id="tableBrowser" class="org.cytoscape.browser.internal.TableBrowser">
+		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 </beans>
