@@ -9,6 +9,7 @@ import org.cytoscape.model.CyTableFactory;
 
 import org.cytoscape.model.internal.CyTableFactoryImpl;
 import org.cytoscape.model.internal.CyTableManagerImpl;
+import org.cytoscape.equations.Interpreter;
 
 import static org.mockito.Mockito.*;
 
@@ -19,7 +20,7 @@ public class DataTableTestSupport {
 
 	public DataTableTestSupport() {
 		eventHelper = new DummyCyEventHelper();
-		tableFactory = new CyTableFactoryImpl( eventHelper, mock(CyTableManagerImpl.class) );
+		tableFactory = new CyTableFactoryImpl( eventHelper, mock(CyTableManagerImpl.class), mock(Interpreter.class) );
 	}
 
 	public CyTableFactory getDataTableFactory() {

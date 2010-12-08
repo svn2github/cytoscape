@@ -1,6 +1,7 @@
 
 package org.cytoscape.test.support;
 
+import org.cytoscape.equations.Interpreter;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
 import org.cytoscape.model.CyNetwork;
@@ -22,7 +23,7 @@ public class NetworkTestSupport {
 	public NetworkTestSupport() {
 		eventHelper = new DummyCyEventHelper();
 		tableMgr = mock(CyTableManagerImpl.class); 
-		CyTableFactoryImpl tableFactory = new CyTableFactoryImpl(eventHelper,tableMgr);
+		CyTableFactoryImpl tableFactory = new CyTableFactoryImpl(eventHelper,tableMgr, mock(Interpreter.class));
 
 		networkFactory = new CyNetworkFactoryImpl( eventHelper, tableMgr, tableFactory );
 	}
