@@ -13,8 +13,7 @@ package org.cytoscape.work;
  *
  * @author Pasteur
  */
-public interface ValuedTask<V>
-{
+public interface ValuedTask<V> {
 	/**
 	 * This method contains the action of the <code>ValuedTask</code>.
 	 *

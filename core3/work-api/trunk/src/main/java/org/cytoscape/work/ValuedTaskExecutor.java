@@ -10,26 +10,14 @@ import java.util.concurrent.TimeoutException;
  * by a <code>TaskManager</code>.
  * This class is analogous to <code>java.util.concurrency.FutureTask</code>.
  * 
- * <p>Here is an example of how this class can be used:
- * <br>
- * <code>
- * ValuedTask&lt;Integer&gt; myValuedTask = ...;<br>
- * TaskManager taskManager = ...;<br>
- * ValuedTaskExecutor&lt;Integer&gt; myValuedTaskExecutor = new ValuedTaskExecutor&lt;Integer&gt;(myValuedTask);<br>
- * taskManager.execute(myValuedTaskExecutor);<br>
- * ...<br>
- * Integer result = myValuedTaskExecutor.get();<br>
- * </code></p>
- *
  * @author Pasteur
  */
-public class ValuedTaskExecutor<V> implements Task
-{
+public final class ValuedTaskExecutor<V> implements Task {
+
 	/**
 	 * Describes the state the <code>ValuedTask</code> is in.
 	 */
-	public static enum State
-	{
+	private enum State {
 		/**
 		 * The <code>ValuedTask</code> has been created
 		 * and is ready to be executed, but the
@@ -68,14 +56,13 @@ public class ValuedTaskExecutor<V> implements Task
 		EXCEPTION_THROWN;
 	}
 
-	final ValuedTask<V> valuedTask;
+	private final ValuedTask<V> valuedTask;
 
-	V result = null;
-	State state = State.READY;
-	Exception exception = null;
+	private V result = null;
+	private State state = State.READY;
+	private Exception exception = null;
 
-	public ValuedTaskExecutor(ValuedTask<V> valuedTask)
-	{
+	public ValuedTaskExecutor(ValuedTask<V> valuedTask) {
 		this.valuedTask = valuedTask;
 	}
 
@@ -83,25 +70,18 @@ public class ValuedTaskExecutor<V> implements Task
 	 * This method will be called by the <code>TaskManager</code> and
 	 * should not be called by the programmer.
 	 */
-	public void run(TaskMonitor taskMonitor) throws Exception
-	{
+	public void run(TaskMonitor taskMonitor) throws Exception {
 		state = State.RUNNING;
-		try
-		{
+		try {
 			result = valuedTask.run(taskMonitor);
 			if (state == State.RUNNING)
 				state = State.COMPLETED;
-		}
-		catch (Exception exception)
-		{
+		} catch (Exception exception) {
 			this.exception = exception;
 			state = State.EXCEPTION_THROWN;
 			throw exception;
-		}
-		finally
-		{
-			synchronized(this)
-			{
+		} finally {
+			synchronized(this) {
 				this.notifyAll();
 			}
 		}
@@ -111,8 +91,7 @@ public class ValuedTaskExecutor<V> implements Task
 	 * This method might be called by the <code>TaskManager</code> and
 	 * should not be called by the programmer.
 	 */
-	public void cancel()
-	{
+	public void cancel() {
 		state = State.CANCELLED;
 		valuedTask.cancel();
 	}
@@ -135,15 +114,9 @@ public class ValuedTaskExecutor<V> implements Task
 	 * @throws CancellationException if the user cancelled the
 	 * <code>ValueTask</code>
 	 */
-	public V get()	
-		throws	InterruptedException,
-			ExecutionException,
-			CancellationException
-	{
-		if (state == State.READY || state == State.RUNNING)
-		{
-			synchronized(this)
-			{
+	public V get() throws InterruptedException, ExecutionException, CancellationException {
+		if (state == State.READY || state == State.RUNNING) {
+			synchronized(this) {
 				this.wait();
 			}
 		}
@@ -176,16 +149,11 @@ public class ValuedTaskExecutor<V> implements Task
 	 * <code>ValueTask</code>
 	 * @throws TimeoutException if the wait period specified timed out
 	 */
-	public V get(long timeout, TimeUnit unit)
-		throws	InterruptedException,
-			ExecutionException,
-			CancellationException,
-			TimeoutException
-	{
-		if (state == State.READY || state == State.RUNNING)
-		{
-			synchronized(this)
-			{
+	public V get(long timeout, TimeUnit unit) 
+		throws InterruptedException, ExecutionException, CancellationException, TimeoutException {
+
+		if (state == State.READY || state == State.RUNNING) {
+			synchronized(this) {
 				unit.timedWait(this, timeout);
 			}
 		}
@@ -196,13 +164,5 @@ public class ValuedTaskExecutor<V> implements Task
 			throw new ExecutionException(exception);
 
 		return result;
-	}
-
-	/**
-	 * Retrieves the current state of the <code>ValuedTask</code>.
-	 */
-	public State getState()
-	{
-		return state;
 	}
 }
