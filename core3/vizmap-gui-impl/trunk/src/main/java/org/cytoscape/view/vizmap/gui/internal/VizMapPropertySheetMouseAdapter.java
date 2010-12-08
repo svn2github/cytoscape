@@ -37,6 +37,7 @@ package org.cytoscape.view.vizmap.gui.internal;
 
 import static org.cytoscape.model.CyTableEntry.*;
 
+import java.awt.Component;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -45,6 +46,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
 
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 import org.cytoscape.model.CyEdge;
@@ -81,6 +83,8 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 	private VizMapPropertySheetBuilder vizMapPropertySheetBuilder;
 	private PropertySheetPanel propertySheetPanel;
 	private EditorManager editorManager;
+	
+	private final VizMapperMenuManager menuManager;
 
 	private VisualStyle selectedStyle;
 	
@@ -102,14 +106,18 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 	 * @param editorWindowManager
 	 *            DOCUMENT ME!
 	 */
-	public VizMapPropertySheetMouseAdapter(
+	public VizMapPropertySheetMouseAdapter(final VizMapperMenuManager menuManager,
 			VizMapPropertySheetBuilder sheetBuilder,
 			PropertySheetPanel propertySheetPanel, VisualStyle selectedStyle, EditorManager editorManager) {
+		
+		if(menuManager == null)
+			throw new NullPointerException("VizMapperMenuManager is null.");
 
 		this.vizMapPropertySheetBuilder = sheetBuilder;
 		this.propertySheetPanel = propertySheetPanel;
 		this.selectedStyle = selectedStyle;
 		this.editorManager = editorManager;
+		this.menuManager = menuManager;
 		
 		this.nodeAttributeEditor = editorManager.getDataTableComboBoxEditor(CyNode.class);
 		this.edgeAttributeEditor = editorManager.getDataTableComboBoxEditor(CyEdge.class);
@@ -133,8 +141,12 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 		 * Adjust height if it's an legend icon.
 		 */
 		vizMapPropertySheetBuilder.updateTableView();
-
-		if (SwingUtilities.isLeftMouseButton(e) && (0 <= selected)) {
+		
+		if(SwingUtilities.isRightMouseButton(e)) {
+			
+			this.handleContextMenuEvent(e);
+			
+		} else if (SwingUtilities.isLeftMouseButton(e) && (0 <= selected)) {
 			final Item item = (Item) propertySheetPanel.getTable().getValueAt(selected, 0);
 			final VizMapperProperty<?, ?, ?> curProp = (VizMapperProperty<?, ?, ?>) item.getProperty();
 
@@ -229,6 +241,12 @@ public final class VizMapPropertySheetMouseAdapter extends MouseAdapter
 //				}
 			}
 		}
+	}
+	
+	private void handleContextMenuEvent(MouseEvent e) {
+		final JPopupMenu contextMenu = menuManager.getContextMenu();
+		final Component parent = (Component) e.getSource();
+		contextMenu.show(parent, e.getX(), e.getY());
 	}
 
 	public void handleEvent(SelectedVisualStyleSwitchedEvent e) {

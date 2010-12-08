@@ -131,6 +131,16 @@
 		</osgi:service-properties>
 	</osgi:service>
 	
+	<!-- Context Menu Items -->
+	<osgi:service id="deleteMappingFunctionTaskFactoryService"
+		ref="deleteMappingFunctionTaskFactory" auto-export="interfaces">
+		<osgi:service-properties>
+			<entry key="service.type" value="vizmapUI.taskFactory" />
+			<entry key="menu" value="context" />
+			<entry key="title" value="Delete Selected Mapping" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 	
 
 

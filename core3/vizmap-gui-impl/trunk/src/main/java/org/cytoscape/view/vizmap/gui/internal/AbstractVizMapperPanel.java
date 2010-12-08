@@ -171,6 +171,9 @@ public abstract class AbstractVizMapperPanel extends JPanel implements
 			CyApplicationManager applicationManager, CyEventHelper eventHelper,
 			final SelectedVisualStyleManager manager) {
 		
+		if(menuMgr == null)
+			throw new NullPointerException("Menu manager is missing.");
+		
 		this.manager = manager;
 		this.vsFactory = vsFactory;
 		this.defViewEditor = defViewEditor;

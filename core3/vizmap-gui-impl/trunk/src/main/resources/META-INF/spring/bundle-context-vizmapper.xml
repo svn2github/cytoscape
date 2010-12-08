@@ -161,9 +161,7 @@
 
 	<bean id="menuManager"
 		class="org.cytoscape.view.vizmap.gui.internal.VizMapperMenuManager"
-		scope="singleton" depends-on="iconManager" autowire="autodetect">
-		<property name="generateMenuLabel" value="${vizMapperMainPanel.menu.generateMenu}" />
-		<property name="generateIconId" value="${vizMapperMainPanel.menu.generateMenu.icon}" />
+		scope="singleton">
 		<constructor-arg ref="taskManagerServiceRef" />
 	</bean>
 
@@ -230,6 +228,14 @@
 		<constructor-arg ref="selectedVisualStyleManager" />
 		<constructor-arg ref="vizMapperMainPanel" />
 	</bean>
+	
+	<!-- Context Menu -->
+	<bean name="deleteMappingFunctionTaskFactory"
+		class="org.cytoscape.view.vizmap.gui.internal.task.DeleteMappingFunctionTaskFactory">
+		<constructor-arg ref="propertySheetPanel" />
+		<constructor-arg ref="selectedVisualStyleManager" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+	</bean>
 
 
 	<!-- Value generators: generate discrete mapping from simple algorithms. -->
@@ -256,6 +262,7 @@
 
 	<bean id="vizMapPropertySheetBuilder"
 		class="org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder">
+		<constructor-arg ref="menuManager" />
 		<constructor-arg ref="propertySheetPanel" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="editorManager" />

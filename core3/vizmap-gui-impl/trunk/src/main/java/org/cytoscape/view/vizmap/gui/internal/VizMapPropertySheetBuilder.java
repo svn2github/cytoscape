@@ -64,7 +64,7 @@ public class VizMapPropertySheetBuilder {
 
 	private ColorManager colorMgr;
 
-	private VizMapperMenuManager menuMgr;
+	private final VizMapperMenuManager menuMgr;
 
 	private CyNetworkManager cyNetworkManager;
 	
@@ -79,10 +79,11 @@ public class VizMapPropertySheetBuilder {
 
 	private List<VisualProperty<?>> unusedVisualPropType;
 
-	public VizMapPropertySheetBuilder(CyNetworkManager cyNetworkManager,
+	public VizMapPropertySheetBuilder(final VizMapperMenuManager menuMgr, CyNetworkManager cyNetworkManager,
 			PropertySheetPanel propertySheetPanel, EditorManager editorManager,
 			DefaultViewPanel defViewPanel, CyTableManager tableMgr, final VizMapperUtil util, final VisualMappingManager vmm) {
 
+		this.menuMgr = menuMgr;
 		this.cyNetworkManager = cyNetworkManager;
 		this.propertySheetPanel = propertySheetPanel;
 		this.util = util;
@@ -141,12 +142,11 @@ public class VizMapPropertySheetBuilder {
 		propertySheetPanel.setMode(PropertySheetPanel.VIEW_AS_CATEGORIES);
 
 		// TODO: fix context menu
-		// propertySheetPanel.getTable().setComponentPopupMenu(
-		// menuMgr.getContextMenu());
+		//propertySheetPanel.getTable().setComponentPopupMenu(menuMgr.getContextMenu());
 
 		// TODO: fix listener
 		propertySheetPanel.getTable().addMouseListener(
-				new VizMapPropertySheetMouseAdapter(this, propertySheetPanel,
+				new VizMapPropertySheetMouseAdapter(this.menuMgr, this, propertySheetPanel,
 						style, editorManager));
 
 		PropertySheetTable table = propertySheetPanel.getTable();
