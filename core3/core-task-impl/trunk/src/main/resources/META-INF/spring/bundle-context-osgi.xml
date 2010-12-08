@@ -291,8 +291,11 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="newEmptyNetworkTaskFactoryService" ref="newEmptyNetworkTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+	<osgi:service id="newEmptyNetworkTaskFactoryService" ref="newEmptyNetworkTaskFactory">
+		<osgi:interfaces>
+			<value>org.cytoscape.work.TaskFactory</value>
+			<value>org.cytoscape.task.creation.NewEmptyNetworkViewFactory</value>
+		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="title" value="Empty Network" />
 			<entry key="preferredMenu" value="File.New.Network" />

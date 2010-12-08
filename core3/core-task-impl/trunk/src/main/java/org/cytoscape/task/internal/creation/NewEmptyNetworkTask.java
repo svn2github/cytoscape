@@ -33,33 +33,47 @@ package org.cytoscape.task.internal.creation;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.ValuedTask;
+import org.cytoscape.session.CyNetworkNaming;
 
 
 /**
  * Create an empty network with view.
  *
  */
-public class NewEmptyNetworkTask extends AbstractCreationTask {
+public class NewEmptyNetworkTask implements ValuedTask<CyNetworkView> {
+
 	private final CyNetworkFactory cnf;
 	private final CyNetworkViewFactory cnvf;
+	private final CyNetworkNaming namingUtil; 
+	private final CyNetworkManager networkManager;
+	private final CyNetworkViewManager networkViewManager;
+	private boolean cancel = false;
 
 	public NewEmptyNetworkTask(CyNetworkFactory cnf, CyNetworkViewFactory cnvf, CyNetworkManager netmgr,
-				   final CyNetworkViewManager networkViewManager) {
-		super(null, netmgr, networkViewManager);
+				   final CyNetworkViewManager networkViewManager, final CyNetworkNaming namingUtil) {
+		this.networkManager = netmgr;
+		this.networkViewManager = networkViewManager;
 		this.cnf = cnf;
 		this.cnvf = cnvf;
+		this.namingUtil = namingUtil;
 	}
 
-	
-	public void run(TaskMonitor tm) {
+	public CyNetworkView run(TaskMonitor tm) {
 		final CyNetwork newNet = cnf.getInstance();
-		newNet.getCyRow().set("name","Network");
+		newNet.getCyRow().set(CyTableEntry.NAME,namingUtil.getSuggestedNetworkTitle("Network"));
 		final CyNetworkView view = cnvf.getNetworkView(newNet);		
 		networkManager.addNetwork(newNet);
 		networkViewManager.addNetworkView(view);
+		return view;
+	}
+
+	public void cancel() {
+		cancel = true;
 	}
 }

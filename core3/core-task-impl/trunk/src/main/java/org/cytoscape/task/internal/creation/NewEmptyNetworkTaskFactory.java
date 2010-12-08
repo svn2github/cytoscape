@@ -29,31 +29,51 @@
  */
 package org.cytoscape.task.internal.creation;  
 
-
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.ValuedTaskExecutor;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.task.creation.NewEmptyNetworkViewFactory;
 
-
-public class NewEmptyNetworkTaskFactory implements TaskFactory {
-	private CyNetworkFactory cnf;
-	private CyNetworkViewFactory cnvf;
-	private CyNetworkManager netmgr;
+public class NewEmptyNetworkTaskFactory implements TaskFactory, NewEmptyNetworkViewFactory {
+	private final CyNetworkFactory cnf;
+	private final CyNetworkViewFactory cnvf;
+	private final CyNetworkManager netmgr;
 	private final CyNetworkViewManager networkViewManager;
+	private final CyNetworkNaming namingUtil;
+	private final TaskManager taskManager;
 
-	public NewEmptyNetworkTaskFactory(CyNetworkFactory cnf, CyNetworkViewFactory cnvf, CyNetworkManager netmgr,
-					  final CyNetworkViewManager networkViewManager)
+	private ValuedTaskExecutor<CyNetworkView> resultHolder; 
+
+	public NewEmptyNetworkTaskFactory(final CyNetworkFactory cnf, final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr, final CyNetworkViewManager networkViewManager, final CyNetworkNaming namingUtil, final TaskManager taskManager)
 	{
 		this.cnf = cnf;
 		this.cnvf = cnvf;
 		this.netmgr = netmgr;
 		this.networkViewManager = networkViewManager;
+		this.namingUtil = namingUtil;
+		this.taskManager = taskManager;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new NewEmptyNetworkTask(cnf, cnvf, netmgr, networkViewManager));
+		resultHolder = new ValuedTaskExecutor<CyNetworkView>(
+			new NewEmptyNetworkTask(cnf, cnvf, netmgr, networkViewManager,namingUtil));
+
+		return new TaskIterator(resultHolder);
 	} 
+
+	public CyNetworkView createNewEmptyNetworkView() {
+		taskManager.execute(this);	
+		CyNetworkView view = null; 
+		try {
+			view = resultHolder.get();
+		} catch (Exception ie) { ie.printStackTrace(); return null; }
+		return view;
+	}
 }

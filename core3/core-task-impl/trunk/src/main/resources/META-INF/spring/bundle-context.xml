@@ -163,6 +163,8 @@
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
+		<constructor-arg ref="cyNetworkNamingServiceRef" />
+		<constructor-arg ref="taskManagerServiceRef" />
 	</bean>
 
 	<bean id="cloneNetworkTaskFactory"
