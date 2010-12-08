@@ -3,8 +3,14 @@ package org.idekerlab.PanGIAPlugin.ui;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Point;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -12,6 +18,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
@@ -881,8 +888,36 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
 	private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
 		
-		JOptionPane pane = new JOptionPane("",JOptionPane.PLAIN_MESSAGE);
-		pane.setPreferredSize(new Dimension(400,200));
+		JFrame aboutFrame = new JFrame();
+		aboutFrame.setTitle("About PanGIA v"+PanGIAPlugin.VERSION);
+		
+		aboutFrame.setSize(new Dimension(400,175));
+		aboutFrame.setResizable(false);
+		aboutFrame.setLocationRelativeTo(null);
+		aboutFrame.setLayout(new java.awt.GridBagLayout());
+		
+		aboutFrame.setAlwaysOnTop(true);
+				
+		try
+		{
+			BufferedImage smallIcon = ImageIO.read(PanGIAPlugin.class.getClassLoader().getResource("images/PanGIA_Icon.bmp"));
+			aboutFrame.setIconImage(smallIcon);
+						
+			BufferedImage img = ImageIO.read(PanGIAPlugin.class.getClassLoader().getResource("images/PanGIA_Graphic.jpg"));
+			Image imgScaled = img.getScaledInstance(80,80, Image.SCALE_SMOOTH);
+			JLabel imgLabel = new JLabel(new ImageIcon(imgScaled));		
+			
+			java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+			gridBagConstraints.gridx=1;
+			gridBagConstraints.gridy=0;
+			gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 25);
+
+			aboutFrame.add(imgLabel,gridBagConstraints);
+		}catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
 				
 		JTextArea text = new JTextArea();
 		text.setEditable(false);
@@ -890,12 +925,25 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		text.setBackground(Color.white);
 		text.setWrapStyleWord(true);
 		text.setLineWrap(true);
-		text.setColumns(20);
-		text.setPreferredSize(new Dimension(350,100));
+		text.setColumns(10);
+		text.setPreferredSize(new Dimension(250,100));
 		text.setText("PanGIA is a tool for aligning physical and genetic interaction networks.\n\nPlease cite:\n...\n...");
-		pane.add(text,0);
 		
-		pane.createDialog(null,"About PanGIA v"+PanGIAPlugin.VERSION).setVisible(true);
+		java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridx=2;
+		gridBagConstraints.gridy=0;
+		
+		aboutFrame.add(text,gridBagConstraints);
+		
+		/*
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridx=1;
+		gridBagConstraints.gridy=1;
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		aboutFrame.add(new JLabel(""),gridBagConstraints);
+		*/
+		
+		aboutFrame.setVisible(true);
 		
 	}                                           
 
