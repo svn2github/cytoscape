@@ -128,6 +128,7 @@ public class CyTableImpl implements CyTable {
 		// so that we don't fire an event.
 		types.put(primaryKey, primaryKeyType);
 		attributes.put(primaryKey, new HashMap<Object, Object>());
+		reverse.put(primaryKey, new HashMap<Object, Set<Object>>());
 	}
 
 	/**
@@ -358,6 +359,8 @@ public class CyTableImpl implements CyTable {
 		++counter;
 		if (columnName == null)
 			throw new NullPointerException("columnName must not be null!");
+		if (value == null)
+			throw new NullPointerException("value must not be null!");
 
 		final Class<?> columnType = types.get(columnName);
 		if (columnType == null || !attributes.containsKey(columnName))
