@@ -688,11 +688,10 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeAttribute(final CyRow attributes, final String attributeName) 
-		throws IOException {
-		// create an attribute and its type
-		final Class attType = attributes.getType(attributeName);
-		if ( attType == null )
+	private void writeAttribute(final CyRow attributes, final String attributeName)  throws IOException {
+		// create an attribute and its type:
+		final Class attType = attributes.getDataTable().getColumnTypeMap().get(attributeName);
+		if (attType == null)
 			return;
 			
 		String value = null;

@@ -271,8 +271,7 @@ public class AttributeValueUtil {
 		return new Color(Integer.parseInt(attribute.substring(1), 16));
 	}
 
-	public ParseState handleAttribute(Attributes atts, CyRow cyAtts)
-			throws SAXParseException {
+	public ParseState handleAttribute(Attributes atts, CyRow cyAtts) throws SAXParseException {
 		String name = atts.getValue("name");
 		ObjectType objType = typeMap.getType(atts.getValue("type"));
 		Object obj = getTypedAttributeValue(objType, atts);
@@ -303,17 +302,17 @@ public class AttributeValueUtil {
 		// must make sure to clear out any existing values before we parse.
 		case LIST:
 			manager.currentAttributeID = name;
-			if (List.class == cyAtts.getType(name))
+			if (List.class == cyAtts.getDataTable().getColumnTypeMap().get(name))
 				cyAtts.set(name, null);
 			return ParseState.LISTATT;
 		case MAP:
 			manager.currentAttributeID = name;
-			if (Map.class == cyAtts.getType(name))
+			if (Map.class == cyAtts.getDataTable().getColumnTypeMap().get(name))
 				cyAtts.set(name, null);
 			return ParseState.MAPATT;
 		case COMPLEX:
 			manager.currentAttributeID = name;
-			if (Map.class == cyAtts.getType(name)) // assuming complex will
+			if (Map.class == cyAtts.getDataTable().getColumnTypeMap().get(name)) // assuming complex will
 				// become Map
 				cyAtts.set(name, null);
 			// If this is a complex attribute, we know that the value attribute
@@ -329,7 +328,6 @@ public class AttributeValueUtil {
 	}
 
 	public void addAttributes(Attributes attI, Attributes atts) {
-
 		final int attrLength = atts.getLength();
 
 		for (int i = 0; i < attrLength; i++)

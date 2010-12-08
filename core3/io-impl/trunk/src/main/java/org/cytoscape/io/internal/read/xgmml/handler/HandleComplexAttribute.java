@@ -38,8 +38,8 @@ import org.xml.sax.SAXException;
  * properties are only set for keys
  */
 public class HandleComplexAttribute extends AbstractHandler {
-	public ParseState handle(String tag, Attributes atts, ParseState current)
-			throws SAXException {
+	public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException
+	{
 		// We can't create the complex attribute until we know what the
 		// definition is, but
 		// since a complex attribute is really nothing more than a HashMap with
@@ -49,19 +49,19 @@ public class HandleComplexAttribute extends AbstractHandler {
 		// Get our attributes
 		ObjectType type = typeMap.getType(atts.getValue("type"));
 		String value = atts.getValue("value");
-		// System.out.println("Complex attribute: "+currentAttributeID+" level "+level+" value="+atts.getValue("value"));
 
 		if (manager.level == manager.numKeys) {
 			manager.complexMap[manager.level - 1].put(
 					manager.complexKey[manager.level - 1], typeMap
 							.getTypedValue(type, value));
 			manager.valueType = attributeValueUtil.getMultHashMapType(type);
+
 			// See if we've defined the attribute already
-			if (Map.class == manager.currentAttributes
-					.getType(manager.currentAttributeID)) {
+			if (Map.class == manager.currentAttributes.getDataTable().getColumnTypeMap()
+			    .get(manager.currentAttributeID))
 				manager.currentAttributes.getDataTable().createColumn(
 						manager.currentAttributeID, Map.class);
-			}
+
 			// Now define set the attribute
 			if (manager.objectTarget != null)
 				manager.currentAttributes.set(manager.currentAttributeID,
