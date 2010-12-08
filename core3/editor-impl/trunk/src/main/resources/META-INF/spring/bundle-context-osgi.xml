@@ -11,6 +11,9 @@
 	<osgi:reference id="cyNetworkManagerServiceRef" 
 	                interface="org.cytoscape.model.CyNetworkManager"/>
 
+	<osgi:reference id="newEmptyNetworkViewFactoryServiceRef" 
+	                interface="org.cytoscape.task.creation.NewEmptyNetworkViewFactory"/>
+
 	<osgi:service id="editorCytoPanelComponentService" ref="editorCytoPanelComponent"
 		interface="org.cytoscape.application.swing.CytoPanelComponent"/>
 
@@ -37,5 +40,13 @@
            <entry key="title" value="Create Nested Network" />
            <entry key="preferredAction" value="Network" />
         </osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="currentNetworkViewListenerService" ref="currentNetworkViewListener"
+		interface="org.cytoscape.session.events.SetCurrentNetworkViewListener">
+	</osgi:service>
+
+	<osgi:service id="editorPanelSelectedListenerService" ref="editorPanelSelectedListener"
+		interface="org.cytoscape.application.swing.events.CytoPanelComponentSelectedListener">
 	</osgi:service>
 </beans>

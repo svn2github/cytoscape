@@ -27,4 +27,18 @@
 		<constructor-arg ref="cySwingApplicationServiceRef" />
 	</bean>
 
+	<bean id="currentNetworkViewListener"
+		class="org.cytoscape.editor.internal.CurrentNetworkViewListener">
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+		<constructor-arg ref="editorCytoPanelComponent" />
+	</bean>
+
+	<bean id="editorPanelSelectedListener"
+		class="org.cytoscape.editor.internal.EditorPanelSelectedListener">
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+		<constructor-arg ref="editorCytoPanelComponent" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="newEmptyNetworkViewFactoryServiceRef" />
+	</bean>
+
 </beans>
