@@ -576,8 +576,8 @@ public class CyTableImpl implements CyTable {
 		if (types.get(columnName).isAssignableFrom(type))
 			return true;
 		else
-
-			return false;
+			throw new IllegalArgumentException("isSet(): expected \"" + types.get(columnName).getName()
+							   + "\" got \"" + type.getName() + "\"!");
 	}
 
 	private Class<?> getClass(Class<?> c) {
