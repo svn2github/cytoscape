@@ -7,8 +7,12 @@ import java.util.Set;
 
 import org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator;
 
-public class RainbowColorMappingGenerator implements
-		DiscreteMappingGenerator<Color> {
+public class RainbowColorMappingGenerator extends
+		AbstractDiscreteMappingGenerator<Color> {
+
+	public RainbowColorMappingGenerator(final Class<Color> type) {
+		super(type);
+	}
 
 	public <T> Map<T, Color> generateMap(Set<T> attributeSet) {
 		// Error check

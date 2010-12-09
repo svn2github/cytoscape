@@ -31,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.gui.internal.util.mapgenerator;
 
 import java.util.HashMap;
@@ -41,19 +41,23 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator;
-
-
 /**
  *
  */
-public class RandomNumberMappingGenerator implements DiscreteMappingGenerator<Number> {
+public class RandomNumberMappingGenerator extends
+		AbstractDiscreteMappingGenerator<Number> {
+	
+	public RandomNumberMappingGenerator(Class<Number> type) {
+		super(type);
+	}
+
 	/**
-	 *  Generate discrete mapping between any attribute values and numbers.
-	 *
-	 * @param attributeSet set of attribute values.  ? can be anything.
-	 *
-	 * @return  DOCUMENT ME!
+	 * Generate discrete mapping between any attribute values and numbers.
+	 * 
+	 * @param attributeSet
+	 *            set of attribute values. ? can be anything.
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public <T> Map<T, Number> generateMap(Set<T> attributeSet) {
 		// Error if attributeSet is empty or null
@@ -62,9 +66,8 @@ public class RandomNumberMappingGenerator implements DiscreteMappingGenerator<Nu
 
 		// Ask user to input number range
 		final String range = JOptionPane.showInputDialog(null,
-		                                                 "Please enter the value range (example: 30-100)",
-		                                                 "Assign Random Numbers",
-		                                                 JOptionPane.PLAIN_MESSAGE);
+				"Please enter the value range (example: 30-100)",
+				"Assign Random Numbers", JOptionPane.PLAIN_MESSAGE);
 
 		String[] rangeVals = range.split("-");
 

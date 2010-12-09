@@ -31,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.gui.internal.util.mapgenerator;
 
 import java.awt.Color;
@@ -39,23 +39,29 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator;
-
-
 /**
  *
  */
-public class RainbowOscColorMappingGenerator implements DiscreteMappingGenerator<Color> {
+public class RainbowOscColorMappingGenerator extends
+		AbstractDiscreteMappingGenerator<Color> {
+	public RainbowOscColorMappingGenerator(Class<Color> type) {
+		super(type);
+	}
+
 	/**
-	 *  Generate discrete mapping from T to Color (Rainbow w/ oscillation algorithm)
-	 *
-	 * @param <T> Attribute type
-	 * @param attributeSet Set of attribute type T
-	 *
-	 * @return  Discrete mapping from T to Color
+	 * Generate discrete mapping from T to Color (Rainbow w/ oscillation
+	 * algorithm)
+	 * 
+	 * @param <T>
+	 *            Attribute type
+	 * @param attributeSet
+	 *            Set of attribute type T
+	 * 
+	 * @return Discrete mapping from T to Color
 	 */
 	public <T> Map<T, Color> generateMap(Set<T> attributeSet) {
-		final float increment = 1f / ((Number) attributeSet.size()).floatValue();
+		final float increment = 1f / ((Number) attributeSet.size())
+				.floatValue();
 
 		float hue = 0;
 		float sat = 0;
@@ -67,10 +73,10 @@ public class RainbowOscColorMappingGenerator implements DiscreteMappingGenerator
 
 		for (T key : attributeSet) {
 			hue = hue + increment;
-			sat = (Math.abs(((Number) Math.cos((8 * i) / (2 * Math.PI))).floatValue()) * 0.7f)
-			      + 0.3f;
-			br = (Math.abs(((Number) Math.sin(((i) / (2 * Math.PI)) + (Math.PI / 2))).floatValue()) * 0.7f)
-			     + 0.3f;
+			sat = (Math.abs(((Number) Math.cos((8 * i) / (2 * Math.PI)))
+					.floatValue()) * 0.7f) + 0.3f;
+			br = (Math.abs(((Number) Math.sin(((i) / (2 * Math.PI))
+					+ (Math.PI / 2))).floatValue()) * 0.7f) + 0.3f;
 			valueMap.put(key, new Color(Color.HSBtoRGB(hue, sat, br)));
 			i++;
 		}

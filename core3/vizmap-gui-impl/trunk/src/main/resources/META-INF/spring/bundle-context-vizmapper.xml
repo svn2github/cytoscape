@@ -101,6 +101,9 @@
 	<bean id="paintClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="java.awt.Paint" />
 	</bean>
+	<bean id="colorClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="java.awt.Color" />
+	</bean>
 	<bean id="numberClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="java.lang.Number" />
 	</bean>
@@ -163,6 +166,9 @@
 		class="org.cytoscape.view.vizmap.gui.internal.VizMapperMenuManager"
 		scope="singleton">
 		<constructor-arg ref="taskManagerServiceRef" />
+		<constructor-arg ref="propertySheetPanel" />
+		<constructor-arg ref="selectedVisualStyleManager" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<bean name="defaultViewPanel"
@@ -239,20 +245,23 @@
 
 
 	<!-- Value generators: generate discrete mapping from simple algorithms. -->
+	
 	<bean name="rainbowGenerator"
 		class="org.cytoscape.view.vizmap.gui.internal.util.mapgenerator.RainbowColorMappingGenerator"
-		scope="singleton" depends-on="generateValueAction" />
+		scope="singleton">
+		<constructor-arg ref="colorClass" />
+	</bean>
 	<bean name="rainbowOscGenerator"
 		class="org.cytoscape.view.vizmap.gui.internal.util.mapgenerator.RainbowOscColorMappingGenerator"
-		scope="singleton" depends-on="generateValueAction" />
+		scope="singleton">
+		<constructor-arg ref="colorClass" />
+	</bean>
 	<bean name="randomColorGenerator"
 		class="org.cytoscape.view.vizmap.gui.internal.util.mapgenerator.RandomColorMappingGenerator"
-		scope="singleton" depends-on="generateValueAction" />
-	<bean name="generateValueAction"
-		class="org.cytoscape.view.vizmap.gui.internal.action.GenerateValueAction"
-		scope="singleton" depends-on="vizMapperMainPanel">
-		<constructor-arg ref="cyTableManagerServiceRef" />
+		scope="singleton">
+		<constructor-arg ref="colorClass" />
 	</bean>
+	
 
 	<!-- For property sheet table -->
 	<bean id="emptyBoxRenderer" class="javax.swing.table.DefaultTableCellRenderer" />

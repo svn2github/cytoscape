@@ -31,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.gui.internal.util.mapgenerator;
 
 import java.awt.Color;
@@ -40,30 +40,37 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator;
-
-
 /**
  * Mapping generator from any attributes to random color
  */
-public class RandomColorMappingGenerator implements DiscreteMappingGenerator<Color> {
+public class RandomColorMappingGenerator extends
+		AbstractDiscreteMappingGenerator<Color> {
+
+	public RandomColorMappingGenerator(Class<Color> type) {
+		super(type);
+	}
+
 	private final int MAX_COLOR = 256 * 256 * 256;
 	private final long seed = System.currentTimeMillis();
 	private final Random rand = new Random(seed);
 
 	/**
-	 *  From a given set of attributes, create a discrete mapping from the attribute to random color.
-	 *
-	 * @param <T> Attribute type
-	 * @param attributeSet Set of attribute values
-	 *
-	 * @return  map from T to Color
+	 * From a given set of attributes, create a discrete mapping from the
+	 * attribute to random color.
+	 * 
+	 * @param <T>
+	 *            Attribute type
+	 * @param attributeSet
+	 *            Set of attribute values
+	 * 
+	 * @return map from T to Color
 	 */
 	public <T> Map<T, Color> generateMap(Set<T> attributeSet) {
 		final Map<T, Color> valueMap = new HashMap<T, Color>();
 
 		for (T key : attributeSet)
-			valueMap.put(key, new Color(((Number) (rand.nextFloat() * MAX_COLOR)).intValue()));
+			valueMap.put(key, new Color(
+					((Number) (rand.nextFloat() * MAX_COLOR)).intValue()));
 
 		return valueMap;
 	}

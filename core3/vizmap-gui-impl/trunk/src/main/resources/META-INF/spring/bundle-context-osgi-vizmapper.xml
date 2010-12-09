@@ -149,18 +149,24 @@
 		interface="org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator">
 		<osgi:service-properties>
 			<entry key="service.type" value="vizmapUI.contextMenu" />
+			<entry key="menu" value="context" />
+			<entry key="title" value="Rainbow" />
 		</osgi:service-properties>
 	</osgi:service>
 	<osgi:service id="rainbowOscGeneratorService" ref="rainbowOscGenerator"
 		interface="org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator">
 		<osgi:service-properties>
 			<entry key="service.type" value="vizmapUI.contextMenu" />
+			<entry key="menu" value="context" />
+			<entry key="title" value="Rainbow OSC" />
 		</osgi:service-properties>
 	</osgi:service>
 	<osgi:service id="randomColorGeneratorService" ref="randomColorGenerator"
 		interface="org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator">
 		<osgi:service-properties>
 			<entry key="service.type" value="vizmapUI.contextMenu" />
+			<entry key="menu" value="context" />
+			<entry key="title" value="Random" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -223,7 +229,13 @@
 		cardinality="0..N" filter="(service.type=vizmapUI.taskFactory)" >
 		<osgi:listener bind-method="addTaskFactory"
 			unbind-method="removeTaskFactory" ref="menuManager" />
-
+	</osgi:set>
+	
+	<osgi:set id="mappingGeneratorSet"
+		interface="org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator"
+		cardinality="0..N"  >
+		<osgi:listener bind-method="addMappingGenerator"
+			unbind-method="removeMappingGenerator" ref="menuManager" />
 	</osgi:set>
 
 </beans>
