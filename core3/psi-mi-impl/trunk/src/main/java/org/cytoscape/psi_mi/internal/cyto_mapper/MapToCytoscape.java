@@ -1,12 +1,5 @@
 /*
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -33,6 +26,7 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 package org.cytoscape.psi_mi.internal.cyto_mapper;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -452,8 +446,8 @@ public class MapToCytoscape implements Mapper {
 	 * Creates Edge Between Node1 and Node2.
 	 */
 	private void createEdge(Interactor interactor1, Interactor interactor2,
-	                        Interaction interaction, Map<String, CyNode> nodeMap, Set<String> edgeIds) {
-		
+	                        Interaction interaction, Map<String, CyNode> nodeMap, Set<String> edgeIds)
+	{
 		String name1 = interactor1.getName();
 		String name2 = interactor2.getName();
 		
@@ -520,9 +514,8 @@ public class MapToCytoscape implements Mapper {
 		for (Entry<String, Object> entry : attributeMap.entrySet()) {
 			Object value = entry.getValue();
 			// TODO: Review this: The original code assumed all attributes were Strings
-			if (value instanceof String) {
+			if (value instanceof String)
 				addAttribute(attributes, entry.getKey(), value);
-			}
 		}
 
 		//  Map All External References
@@ -538,13 +531,11 @@ public class MapToCytoscape implements Mapper {
 				idsList.add(ref.getId());
 			}
 
-			if ((dbsList != null) && (dbsList.size() != 0)) {
-				addAttribute(attributes, CommonVocab.XREF_DB_NAME, dbsList);
-			}
+			if ((dbsList != null) && (dbsList.size() != 0))
+				addListAttribute(attributes, CommonVocab.XREF_DB_NAME, dbsList, String.class);
 
-			if ((idsList != null) && (idsList.size() != 0)) {
-				addAttribute(attributes, CommonVocab.XREF_DB_ID, idsList);
-			}
+			if ((idsList != null) && (idsList.size() != 0))
+				addListAttribute(attributes, CommonVocab.XREF_DB_ID, idsList, String.class);
 		}
 	}
 
@@ -565,25 +556,20 @@ public class MapToCytoscape implements Mapper {
 
 			if (attrObject instanceof String) {
 				String object;
-				if (!attributes.isSet(key, String.class)) {
+				if (!attribExists(attributes, key)) {
 					attributes.getDataTable().createColumn(key, String.class);
 					object = null;
-				} else {
+				} else
 					object = attributes.get(key, String.class);
-				}
-				String str = (String) attrObject;
 
+				String str = (String) attrObject;
 				if (object != null) {
 					String[] values = AttributeUtil.appendString(object, str);
 
-					if ((values != null) && (values.toString().length() != 0)) {
+					if ((values != null) && (values.toString().length() != 0))
 						attributes.set(key, values.toString());
-					}
-				} else {
-					if ((str != null) && (str.length() != 0)) {
-						attributes.set(key, str);
-					}
-				}
+				} else if ((str != null) && (str.length() != 0))
+					attributes.set(key, str);
 			}
 		}
 
@@ -600,21 +586,30 @@ public class MapToCytoscape implements Mapper {
 				idsList.add(ref.getId());
 			}
 
-			if ((dbsList != null) && (dbsList.size() != 0)) {
-				addAttribute(attributes, CommonVocab.XREF_DB_NAME, dbsList);
-			}
+			if ((dbsList != null) && (dbsList.size() != 0))
+				addListAttribute(attributes, CommonVocab.XREF_DB_NAME, dbsList, String.class);
 
-			if ((idsList != null) && (idsList.size() != 0)) {
-				addAttribute(attributes, CommonVocab.XREF_DB_ID, idsList);
-			}
+			if ((idsList != null) && (idsList.size() != 0))
+				addListAttribute(attributes, CommonVocab.XREF_DB_ID, idsList, String.class);
 		}
 	}
 
-	private <T> void addAttribute(CyRow attributes, String name, T value) {
-		if (!attributes.isSet(name, value.getClass())) {
+	private <T> void addAttribute(final CyRow attributes, final String name, final T value) {
+		if (!attribExists(attributes, name))
 			attributes.getDataTable().createColumn(name, value.getClass());
-		}
 		attributes.set(name, value);
+	}
+
+	private <T> void addListAttribute(final CyRow attributes, final String name,
+					  final List<T> value, final Class<T> listElementType)
+	{
+		if (!attribExists(attributes, name))
+			attributes.getDataTable().createListColumn(name, listElementType);
+		attributes.set(name, value);
+	}
+
+	private boolean attribExists(final CyRow attributes, final String attrName) {
+		return attributes.getDataTable().getColumnTypeMap().get(attrName) != null;
 	}
 
 	/**
