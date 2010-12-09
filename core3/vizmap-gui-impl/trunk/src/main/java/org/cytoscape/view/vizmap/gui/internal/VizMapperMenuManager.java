@@ -190,7 +190,7 @@ public class VizMapperMenuManager {
 			throw new NullPointerException("Title metadata is missing.");
 
 		// Create mapping generator task factory
-		final GenerateValuesTaskFactory taskFactory = new GenerateValuesTaskFactory(generator, panel.getTable(), manager, appManager);
+		final GenerateValuesTaskFactory taskFactory = new GenerateValuesTaskFactory(generator, panel, manager, appManager);
 		
 		// Add new menu to the pull-down
 		final JMenuItem menuItem = new JMenuItem(title.toString());

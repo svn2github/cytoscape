@@ -6,18 +6,19 @@ import org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
+import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
 
 public class GenerateValuesTaskFactory implements TaskFactory {
 
 	private final DiscreteMappingGenerator<?> generator;
-	private final PropertySheetTable table;
+	private final PropertySheetPanel table;
 	private final SelectedVisualStyleManager manager;
 	private final CyApplicationManager appManager;
 
 	public GenerateValuesTaskFactory(
 			final DiscreteMappingGenerator<?> generator,
-			final PropertySheetTable table,
+			final PropertySheetPanel table,
 			final SelectedVisualStyleManager manager,
 			final CyApplicationManager appManager) {
 		this.generator = generator;

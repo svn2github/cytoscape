@@ -39,6 +39,27 @@ public final class VizMapperProperty<K, V, T> extends DefaultProperty {
 	}
 	
 	/**
+	 * Copy constructor
+	 * @param original
+	 */
+	public VizMapperProperty(final VizMapperProperty<K, V, T> original) {
+		super();
+		if(original == null)
+			throw new NullPointerException("Original value cannot be null.");
+		
+		this.cellType = original.getCellType();
+		this.key = original.getKey();
+		
+		super.setName(key.toString());
+		super.setType(original.getType());
+		
+		super.setValue(original.getValue());
+		this.internalValue = original.getInternalValue();
+		
+		
+	}
+	
+	/**
 	 * Make name immutable.
 	 */
 	@Override public void setName(String name) {
