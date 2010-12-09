@@ -31,15 +31,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
+import org.cytoscape.model.CyNetwork;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.MutInteger;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkInspection;
 
 /**
- * Utility class providing network functionality absent or deprecated in {@link cytoscape.CyNetwork} .
+ * Utility class providing network functionality absent or deprecated in {@link org.cytoscape.model.CyNetwork} .
  * 
  * @author Yassen Assenov
  * @author Sven-Eric Schelhorn
@@ -62,11 +60,12 @@ public abstract class CyNetworkUtils {
 	 *         array in alphabetical order.
 	 */
 	private static String[][] keepAvailableAttributes(CyNetwork aNetwork, Set<String> computedAttr,
-			CyAttributes cyAttr, Set<String> netAnalyzerAttr) {
+			CyTable table, Set<String> netAnalyzerAttr) {
 		final List<String> visualizeAttr = new ArrayList<String>(computedAttr.size() + 1);
+		final Map<String,Class<?>> columnTypeMap = table.getColumnTypeMap();
 		for (final String attr : computedAttr) {
-			if (cyAttr.getType(attr) == CyAttributes.TYPE_FLOATING
-					|| cyAttr.getType(attr) == CyAttributes.TYPE_INTEGER) {
+			if (columnTypeMap.get(attr) == Double.class || 
+			    columnTypeMap.get(attr) == Integer.class) {
 				visualizeAttr.add(attr);
 			}
 		}
@@ -91,20 +90,15 @@ public abstract class CyNetworkUtils {
 	 *         set if no such attributes are found.
 	 */
 	public static String[][] getComputedEdgeAttributes(CyNetwork aNetwork) {
-		final CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-		final Collection<String> allAttrs = Arrays.asList(edgeAttributes.getAttributeNames());
-		final Set<String> computedAttr = new HashSet<String>(allAttrs);
-		// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
-		final Iterator<?> itn = aNetwork.edgesIterator();
-		while (itn.hasNext()) {
-			final String id = ((Edge) itn.next()).getIdentifier();
-			for (final String attr : allAttrs) {
-				if (!hasAttr(id, edgeAttributes, attr)) {
-					computedAttr.remove(attr);
-				}
-			}
+		final CyTable table = tableMgr.getTableMap(CyEdge.class,aNetwork).get(CyNetwork.DEFAULT_ATTRS);
+		final Map<String,Class<?>> columnTypeMap = table.getColumnTypeMap();
+		final Set<String> computedAttr = new HashSet<String>(columnTypeMap.keySet());
+		for (final CyEdge n : aNetwork.getEdgeList()) {
+			for ( final Map.Entry<String,Class<?> e : columnTypeMap.entrySet() )
+			if (!n.getCyRow().isSet(e.getKey(),e.getValue())
+				computedAttr.remove(e.getKey());
 		}
-		return keepAvailableAttributes(aNetwork, computedAttr, edgeAttributes, Messages.getEdgeAttributes());
+		return keepAvailableAttributes(aNetwork, computedAttr, table, Messages.getEdgeAttributes());
 	}
 
 	/**
@@ -116,72 +110,15 @@ public abstract class CyNetworkUtils {
 	 *         set if no such attributes are found.
 	 */
 	public static String[][] getComputedNodeAttributes(CyNetwork aNetwork) {
-		final CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		final Collection<String> allAttrs = Arrays.asList(nodeAttributes.getAttributeNames());
-		final Set<String> computedAttr = new HashSet<String>(allAttrs);
-		// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
-		final Iterator<?> itn = aNetwork.nodesIterator();
-		while (itn.hasNext()) {
-			final String id = ((Node) itn.next()).getIdentifier();
-			for (final String attr : allAttrs) {
-				if (!hasAttr(id, nodeAttributes, attr)) {
-					computedAttr.remove(attr);
-				}
-			}
+		final CyTable table = tableMgr.getTableMap(CyNode.class,aNetwork).get(CyNetwork.DEFAULT_ATTRS);
+		final Map<String,Class<?>> columnTypeMap = table.getColumnTypeMap();
+		final Set<String> computedAttr = new HashSet<String>(columnTypeMap.keySet());
+		for (final CyNode n : aNetwork.getNodeList()) {
+			for ( final Map.Entry<String,Class<?> e : columnTypeMap.entrySet() )
+			if (!n.getCyRow().isSet(e.getKey(),e.getValue())
+				computedAttr.remove(e.getKey());
 		}
-		return keepAvailableAttributes(aNetwork, computedAttr, nodeAttributes, Messages.getNodeAttributes());
-	}
-
-	/**
-	 * Checks if the attribute of a node with current id has a computed value.
-	 * 
-	 * @param id
-	 *            Id of a node of interest.
-	 * @param cyAttr
-	 *            Set of node/edge attributes in Cytoscape.
-	 * @param attr
-	 *            An attribute shown in Cytoscape.
-	 * @return <code>true</code> when there are computed values for the given attribute; <code>false</code>
-	 *         otherwise.
-	 */
-	private static boolean hasAttr(String id, CyAttributes cyAttr, String attr) {
-		final byte attrType = cyAttr.getType(attr);
-		if (attrType == CyAttributes.TYPE_FLOATING) {
-			if (cyAttr.getDoubleAttribute(id, attr) != null) {
-				return true;
-			}
-		}
-		if (attrType == CyAttributes.TYPE_INTEGER) {
-			if (cyAttr.getIntegerAttribute(id, attr) != null) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Returns the edges connecting two nodes.
-	 * 
-	 * @param aNode1
-	 *            Node that has an edge with aNode2
-	 * @param aNode2
-	 *            Node that has an edge with aNode1
-	 * @return Edges connecting aNode1 and aNode2
-	 */
-	protected static List<Edge> getConnEdge(CyNetwork aNetwork, Node aNode1, Node aNode2) {
-		final List<Node> nodes = new ArrayList<Node>(2);
-		nodes.add(aNode1);
-		nodes.add(aNode2);
-		// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
-		final List<?> allEdges = aNetwork.getConnectingEdges(nodes);
-		final List<Edge> connEdges = new ArrayList<Edge>();
-		for (int i = 0; i < allEdges.size(); i++) {
-			final Edge e = (Edge) allEdges.get(i);
-			if (!e.getSource().equals(e.getTarget())) {
-				connEdges.add(e);
-			}
-		}
-		return connEdges;
+		return keepAvailableAttributes(aNetwork, computedAttr, table, Messages.getNodeAttributes());
 	}
 
 	/**
@@ -202,24 +139,39 @@ public abstract class CyNetworkUtils {
 	 *         <code>aIgnoreDir == true</code>) and <code>[0, n(n-1)]</code> for directed networks (
 	 *         <code>aIgnoreDir == true</code>).
 	 */
-	public static int getPairConnCount(CyNetwork aNetwork, int[] aNodeIndices, boolean aIgnoreDir) {
-		int[] connEdges = aNetwork.getConnectingEdgeIndicesArray(aNodeIndices);
-		int edgeCount = connEdges.length;
+	public static int getPairConnCount(CyNetwork aNetwork, Collection<CyNode> aNodeIndices, boolean aIgnoreDir) {
 
-		for (int i = 0; i < connEdges.length; ++i) {
-			int edgeIndex = connEdges[i];
-			int sourceNodeIndex = aNetwork.getEdgeSourceIndex(edgeIndex);
-			int targetNodeIndex = aNetwork.getEdgeTargetIndex(edgeIndex);
-			if (sourceNodeIndex == targetNodeIndex) {
-				// Ignore self-loops
+		Set<CyEdge> connEdgeSet = new HashSet<CyEdge>();
+		for ( CyNode n1 : aNodeIndices ) 
+			for ( CyNode n2 : aNodeIndices ) 
+				connEdges.addAll( aNetwork.getConnectingEdgeList(n1,n2,CyEdge.Type.ANY) );
+			
+		int edgeCount = connEdges.size();
+
+		List<CyEdge> connEdges = new ArrayList<CyEdge>(connEdgeSet);
+
+		for (int i = 0; i < connEdges.size; ++i) {
+			CyEdge e = connEdges.get(i); 
+			
+			// Ignore self-loops
+			if ( e.getSource() == e.getTarget() ) {
 				edgeCount--;
 			} else {
-				for (int j = i + 1; j < connEdges.length; j++) {
-					if (edgeMatches(aNetwork, connEdges[j], sourceNodeIndex, targetNodeIndex, aIgnoreDir)) {
-						// Ignore multiple edges
+				// Ignore multiple edges
+				for (int j = i + 1; j < connEdges.size; ++j) {
+					CyEdge ee = connEdges.get(j); 
+					if ( // directed edges have same source + target 
+					     ( e.getSource() == ee.getSource() &&
+					       e.getTarget() == ee.getTarget() ) ||
+						 // or undirected edges have same source + target (if we care)
+					     ( aIgnoreDir &&
+						   ( e.getSource() == ee.getTarget() &&
+						      e.getTarget() == ee.getSource() ) ) ) {
+
 						edgeCount--;
+						// TODO I think this break is wrong! 
+						// What if there are more than two edges?
 						break;
-					}
 				}
 			}
 		}
@@ -243,8 +195,7 @@ public abstract class CyNetworkUtils {
 	 * @see #getNeighbors(CyNetwork, Node, int[])
 	 */
 	public static Set<Node> getNeighbors(CyNetwork aNetwork, Node aNode) {
-		return getNeighbors(aNetwork, aNode, aNetwork.getAdjacentEdgeIndicesArray(aNode.getRootGraphIndex(),
-				true, true, true));
+		return getNeighbors(aNetwork, aNode, aNetwork.getAdjacentEdgeList(aNode)); 
 	}
 
 	/**
@@ -262,15 +213,14 @@ public abstract class CyNetworkUtils {
 	 * @return <code>Set</code> of <code>Node</code> instances, containing all the neighbors of
 	 *         <code>aNode</code>; empty set if the node specified is an isolated vertex.
 	 */
-	public static Set<Node> getNeighbors(CyNetwork aNetwork, Node aNode, int[] aIncEdges) {
-		Set<Node> neighborsSet = new HashSet<Node>();
-		for (int i = 0; i < aIncEdges.length; ++i) {
-			Edge e = aNetwork.getEdge(aIncEdges[i]);
-			Node sourceNode = e.getSource();
+	public static Set<Node> getNeighbors(CyNetwork aNetwork, Node aNode, List<CyEdge> aIncEdges) {
+		Set<CyNode> neighborsSet = new HashSet<CyNode>();
+		for ( CyEdge e : aIncEdges ) {
+			CyNode sourceNode = e.getSource();
 			if (sourceNode != aNode) {
 				neighborsSet.add(sourceNode);
 			} else {
-				Node targetNode = e.getTarget();
+				CyNode targetNode = e.getTarget();
 				if (targetNode != aNode) {
 					neighborsSet.add(targetNode);
 				}
@@ -354,30 +304,6 @@ public abstract class CyNetworkUtils {
 			indices[i++] = node.getRootGraphIndex();
 		}
 		return indices;
-	}
-
-	/**
-	 * Checks if two edges match.
-	 * 
-	 * @param aNetwork
-	 *            Network containing the edges.
-	 * @param aEdgeIndex
-	 *            Index of the first edge.
-	 * @param aSourceIndex
-	 *            Source node of the second edge.
-	 * @param aTargetIndex
-	 *            Target node of the second edge.
-	 * @param aIgnoreDir
-	 *            Flag indicating if the direction of the edges is to be ignored.
-	 * @return <code>true</code> if the edges connect the same pair of nodes (and have same direction, when
-	 *         <code>aIgnoreDir</code> is <code>false</code>); <code>false</code> otherwise.
-	 */
-	private static boolean edgeMatches(CyNetwork aNetwork, int aEdgeIndex, int aSourceIndex,
-			int aTargetIndex, boolean aIgnoreDir) {
-		int eSource = aNetwork.getEdgeSourceIndex(aEdgeIndex);
-		int eTarget = aNetwork.getEdgeTargetIndex(aEdgeIndex);
-		return (eSource == aSourceIndex && eTarget == aTargetIndex)
-				|| (aIgnoreDir && eSource == aTargetIndex && eTarget == aSourceIndex);
 	}
 
 	/**

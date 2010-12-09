@@ -24,12 +24,8 @@ import java.io.PrintStream;
 
 import javax.swing.JMenu;
 
-import cytoscape.Cytoscape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CyMenus;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.io.SettingsSerializer;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
@@ -39,7 +35,7 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
  * 
  * @author Yassen Assenov
  */
-public class Plugin extends CytoscapePlugin {
+public class Plugin {
 
 	private static final Logger logger = LoggerFactory.getLogger(Plugin.class);
 
@@ -184,57 +180,10 @@ public class Plugin extends CytoscapePlugin {
 	 * Initializes a new instance of <code>Plugin</code>.
 	 */
 	public Plugin() {
-		// loadLibraries();
-		CyMenus menus = Cytoscape.getDesktop().getCyMenus();
-
-		new JMenu("Hello");
 		try {
 			// Initiate default visual settings
 			SettingsSerializer.initVisualSettings();
 			// If initialization fails, the following lines are not executed:
-
-			// Add "Analyze Network" action
-			addAction(menus, Messages.AC_MENU_ANALYSIS, new AnalyzeNetworkAction());
-			// Add "Analyze subset" action
-			addAction(menus, Messages.AC_MENU_ANALYSIS, new AnalyzeSubsetAction());
-			// Add "Batch Analysis" action
-			addAction(menus, Messages.AC_MENU_ANALYSIS, new BatchAnalysisAction());
-			// Add "Load Network Statistics" action
-			addAction(menus, Messages.AC_MENU_ANALYSIS, new LoadNetstatsAction());
-
-			// Add separators
-			JMenu analysis = null;
-			for (final Component cmp : menus.getOperationsMenu().getMenuComponents()) {
-				if (cmp instanceof JMenu && Messages.AC_MENU_ANALYSIS.equals(((JMenu) cmp).getText())) {
-					analysis = (JMenu) cmp;
-					break;
-				}
-			}
-			if (analysis != null) {
-				analysis.addSeparator();
-			}
-			// Add "Plot Parameters" action
-			addAction(menus, Messages.AC_MENU_ANALYSIS, new PlotParameterAction());
-			// Add "Map To Visual Style" action
-			addAction(menus, Messages.AC_MENU_ANALYSIS, new MapParameterAction());
-			if (analysis != null) {
-				analysis.addSeparator();
-			}
-			// Add "NetworkAnalyzer Settings" action
-			addAction(menus, Messages.AC_MENU_ANALYSIS, new SettingsAction());
-
-			// Add "Compare Two Networks" action
-			addAction(menus, Messages.AC_MENU_MODIFICATION, new CompareAction());
-			// Add "Connected Components" action
-			addAction(menus, Messages.AC_MENU_MODIFICATION, new ConnComponentAction());
-			// Add "Clear multiple edges" action
-			addAction(menus, Messages.AC_MENU_MODIFICATION, new RemDupEdgesAction());
-			// Add "Remove Self-Loops" action
-			addAction(menus, Messages.AC_MENU_MODIFICATION, new RemoveSelfLoopsAction());
-
-			// Add "About" action
-			addAction(menus, Messages.AC_MENU_ANALYSIS, new AboutAction());
-			addAction(menus, Messages.AC_MENU_MODIFICATION, new AboutAction());
 
 		} catch (SecurityException ex) {
 			Utils.showErrorBox(Messages.DT_SECERROR, Messages.SM_SECERROR1);
@@ -252,20 +201,5 @@ public class Plugin extends CytoscapePlugin {
 				logger.error(Messages.SM_LOGERROR, ex);
 			}
 		}
-	}
-
-	/**
-	 * Adds a new action to the given submenu.
-	 * 
-	 * @param aMenus
-	 *            Cytoscape menus instance.
-	 * @param aSubMenu
-	 *            Name of the submenu that will contain the action.
-	 * @param aAction
-	 *            Action to be added.
-	 */
-	private static void addAction(CyMenus aMenus, String aSubMenu, CytoscapeAction aAction) {
-		aAction.setPreferredMenu("Plugins." + aSubMenu);
-		aMenus.addCytoscapeAction(aAction);
 	}
 }

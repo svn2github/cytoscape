@@ -41,8 +41,9 @@ public class PlotParameterAction extends NetAnalyzerAction implements AnalysisLi
 	/**
 	 * Initializes a new instance of <code>PlotParameterAction</code>.
 	 */
-	public PlotParameterAction() {
-		super(Messages.AC_PLOTPARAM);
+	public PlotParameterAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+		super(Messages.AC_PLOTPARAM,appMgr,swingApp);
+		setPreferredMenu("Plugins." + Messages.AC_MENU_ANALYSIS);
 	}
 
 	/*
@@ -67,7 +68,7 @@ public class PlotParameterAction extends NetAnalyzerAction implements AnalysisLi
 				openDialog();
 			} else if (!settings.getUseNodeAttributes() && !settings.getUseEdgeAttributes()) {
 				// Network does not contain computed parameters stored as attributes
-				if (JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), Messages.SM_LOADPARAMETERS,
+				if (JOptionPane.showConfirmDialog(swingApp.getJFrame(), Messages.SM_LOADPARAMETERS,
 						Messages.DT_ANALYSISNEEDED, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					settings.setUseNodeAttributes(true);
 					settings.setUseEdgeAttributes(true);
@@ -75,7 +76,7 @@ public class PlotParameterAction extends NetAnalyzerAction implements AnalysisLi
 				}
 			} else {
 				// Network does not contain computed parameters stored as attributes
-				if (JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), Messages.SM_RUNNETWORKANALYZER,
+				if (JOptionPane.showConfirmDialog(swingApp.getJFrame(), Messages.SM_RUNNETWORKANALYZER,
 						Messages.DT_ANALYSISNEEDED, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					runNetworkAnalyzer();
 				}
@@ -110,7 +111,7 @@ public class PlotParameterAction extends NetAnalyzerAction implements AnalysisLi
 	 */
 	private void openDialog() {
 		nodeAttr = CyNetworkUtils.getComputedNodeAttributes(network);
-		final PlotParameterDialog d = new PlotParameterDialog(Cytoscape.getDesktop(), network, nodeAttr);
+		final PlotParameterDialog d = new PlotParameterDialog(swingApp.getJFrame(), network, nodeAttr);
 		d.setVisible(true);
 	}
 

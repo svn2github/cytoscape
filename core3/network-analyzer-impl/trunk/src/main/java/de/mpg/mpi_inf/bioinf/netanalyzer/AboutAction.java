@@ -20,7 +20,7 @@ package de.mpg.mpi_inf.bioinf.netanalyzer;
 import java.awt.event.ActionEvent;
 
 import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.AboutDialog;
 
@@ -29,13 +29,14 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.AboutDialog;
  * 
  * @author Yassen Assenov
  */
-public final class AboutAction extends CytoscapeAction {
+public final class AboutAction extends AbstractCyAction {
 
 	/**
 	 * Initializes a new instance of <code>AboutAction</code>.
 	 */
-	public AboutAction() {
-		super(Messages.AC_ABOUT);
+	public AboutAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+		super(Messages.AC_ABOUT,appMgr,swingApp);
+		setPreferredMenu("Plugins." + Messages.AC_MENU_ANALYSIS);
 	}
 
 	/*
@@ -45,8 +46,8 @@ public final class AboutAction extends CytoscapeAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		AboutDialog d = new AboutDialog(Cytoscape.getDesktop());
-		d.setLocationRelativeTo(Cytoscape.getDesktop());
+		AboutDialog d = new AboutDialog(swingApp.getJFrame());
+		d.setLocationRelativeTo(swingApp.getJFrame());
 		d.setVisible(true);
 	}
 

@@ -41,8 +41,9 @@ public class MapParameterAction extends NetAnalyzerAction implements AnalysisLis
 	/**
 	 * Initializes a new instance of <code>MapParameterAction</code>.
 	 */
-	public MapParameterAction() {
-		super(Messages.AC_MAPPARAM);
+	public MapParameterAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+		super(Messages.AC_MAPPARAM,appMgr,swingApp);
+		setPreferredMenu("Plugins."+Messages.AC_MENU_ANALYSIS);
 	}
 
 	/*
@@ -68,7 +69,7 @@ public class MapParameterAction extends NetAnalyzerAction implements AnalysisLis
 				openMapParameterDialog();
 			} else if (!settings.getUseNodeAttributes() && !settings.getUseEdgeAttributes()) {
 				// Network does not contain computed parameters stored as attributes
-				if (JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), Messages.SM_LOADPARAMETERS,
+				if (JOptionPane.showConfirmDialog(swingApp.getJFrame(), Messages.SM_LOADPARAMETERS,
 						Messages.DT_ANALYSISNEEDED, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					settings.setUseNodeAttributes(true);
 					settings.setUseEdgeAttributes(true);
@@ -76,7 +77,7 @@ public class MapParameterAction extends NetAnalyzerAction implements AnalysisLis
 				}
 			} else {
 				// Network does not contain computed parameters stored as attributes
-				if (JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), Messages.SM_RUNNETWORKANALYZER,
+				if (JOptionPane.showConfirmDialog(swingApp.getJFrame(), Messages.SM_RUNNETWORKANALYZER,
 						Messages.DT_ANALYSISNEEDED, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					runNetworkAnalyzer();
 				}
@@ -125,7 +126,7 @@ public class MapParameterAction extends NetAnalyzerAction implements AnalysisLis
 	private void openMapParameterDialog() {
 		nodeAttr = CyNetworkUtils.getComputedNodeAttributes(network);
 		edgeAttr = CyNetworkUtils.getComputedEdgeAttributes(network);
-		final MapParameterDialog d = new MapParameterDialog(Cytoscape.getDesktop(), network, nodeAttr,
+		final MapParameterDialog d = new MapParameterDialog(swingApp.getJFrame(), network, nodeAttr,
 				edgeAttr);
 		d.setVisible(true);
 	}

@@ -26,7 +26,7 @@ import javax.swing.JFileChooser;
 import cytoscape.Cytoscape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cytoscape.util.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import cytoscape.view.CytoscapeDesktop;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkStats;
@@ -39,15 +39,16 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
  * 
  * @author Yassen Assenov
  */
-public class LoadNetstatsAction extends CytoscapeAction {
+public class LoadNetstatsAction extends AbstractCyAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoadNetstatsAction.class);
 
 	/**
 	 * Initializes a new instance of <code>LoadNetstatsAction</code>.
 	 */
-	public LoadNetstatsAction() {
-		super(Messages.AC_LOAD);
+	public LoadNetstatsAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+		super(Messages.AC_LOAD,appMgr,swingApp);
+		setPreferredMenu("Plugins." + Messages.AC_MENU_ANALYSIS);
 	}
 
 	/*
@@ -58,7 +59,7 @@ public class LoadNetstatsAction extends CytoscapeAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			final CytoscapeDesktop desktop = Cytoscape.getDesktop();
+			final Frame desktop = swingApp.getJFrame();
 			final JFileChooser dialog = AnalysisDialog.netstatsDialog;
 			final int openIt = dialog.showOpenDialog(desktop);
 			if (openIt == JFileChooser.APPROVE_OPTION) {
@@ -85,7 +86,7 @@ public class LoadNetstatsAction extends CytoscapeAction {
 	 *            Network statistics file to be open.
 	 */
 	public static void openNetstats(File aFile) {
-		final CytoscapeDesktop desktop = Cytoscape.getDesktop();
+		final Frame desktop = swingApp.getJFrame();
 		try {
 			final NetworkStats stats = StatsSerializer.load(aFile);
 			final AnalysisDialog d = new AnalysisDialog(desktop, stats, null);

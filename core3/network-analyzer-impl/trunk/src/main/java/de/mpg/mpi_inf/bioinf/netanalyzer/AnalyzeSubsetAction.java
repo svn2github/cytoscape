@@ -45,8 +45,9 @@ public class AnalyzeSubsetAction extends NetAnalyzerAction {
 	/**
 	 * Initializes a new instance of <code>NetSubsetAction</code>.
 	 */
-	public AnalyzeSubsetAction() {
-		super(Messages.AC_ANALYZE_SUBSET);
+	public AnalyzeSubsetAction(CyApplicationManager appMgr) {
+		super(Messages.AC_ANALYZE_SUBSET,appMgr,swingApp);
+		setPreferredMenu("Plugins." + Messages.AC_MENU_ANALYSIS);
 		selected = null;
 	}
 

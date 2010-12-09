@@ -42,8 +42,9 @@ public class ConnComponentAction extends NetAnalyzerAction {
 	/**
 	 * Initializes a new instance of <code>ConnComponentAction</code>.
 	 */
-	public ConnComponentAction() {
-		super(Messages.AC_CONNCOMP);
+	public ConnComponentAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+		super(Messages.AC_CONNCOMP,appMgr,swingApp);
+		setPreferredMenu("Plugins." + Messages.AC_MENU_MODIFICATION);
 	}
 
 	/*
@@ -70,7 +71,7 @@ public class ConnComponentAction extends NetAnalyzerAction {
 				Utils.showInfoBox(Messages.DT_CONNCOMP, msg);
 			} else {
 				Arrays.sort(comps, new CCInfoInvComparator());
-				ConnComponentsDialog d = new ConnComponentsDialog(Cytoscape.getDesktop(), network, comps);
+				ConnComponentsDialog d = new ConnComponentsDialog(swingApp.getJFrame(), network, comps);
 				d.setVisible(true);
 			}
 		} catch (InnerException ex) {

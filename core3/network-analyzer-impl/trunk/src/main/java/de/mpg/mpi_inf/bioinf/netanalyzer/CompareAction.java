@@ -22,7 +22,7 @@ import java.awt.event.ActionEvent;
 import cytoscape.Cytoscape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cytoscape.util.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.CompareDialog;
 
@@ -31,15 +31,16 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.CompareDialog;
  * 
  * @author Yassen Assenov
  */
-public class CompareAction extends CytoscapeAction {
+public class CompareAction extends AbstractCyAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(CompareAction.class);
 
 	/**
 	 * Initializes a new instance of <code>GOPTRunAlgorithm</code>.
 	 */
-	public CompareAction() {
-		super(Messages.AC_COMPARE);
+	public CompareAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+		super(Messages.AC_COMPARE,appMgr,swingApp);
+		setPreferredMenu("Plugins." + Messages.AC_MENU_MODIFICATION);
 	}
 
 	/*
@@ -50,7 +51,7 @@ public class CompareAction extends CytoscapeAction {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		try {
-			CompareDialog d = new CompareDialog(Cytoscape.getDesktop());
+			CompareDialog d = new CompareDialog(swingApp.getJFrame());
 			d.setVisible(true);
 		} catch (InnerException ex) {
 			// NetworkAnalyzer internal error

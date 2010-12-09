@@ -50,8 +50,9 @@ public class BatchAnalysisAction extends NetAnalyzerAction {
 	/**
 	 * Constructs a new batch analysis action.
 	 */
-	protected BatchAnalysisAction() {
-		super(Messages.AC_BATCH_ANALYSIS);
+	protected BatchAnalysisAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+		super(Messages.AC_BATCH_ANALYSIS,appMgr,swingApp);
+		setPreferredMenu("Plugins." + Messages.AC_MENU_ANALYSIS);
 	}
 
 	/*
@@ -62,7 +63,7 @@ public class BatchAnalysisAction extends NetAnalyzerAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			final CytoscapeDesktop desktop = Cytoscape.getDesktop();
+			final Frame desktop = swingApp.getJFrame();
 			// Step 1 - Adjust settings
 			BatchSettingsDialog d1 = new BatchSettingsDialog(desktop);
 			d1.setVisible(true);

@@ -45,8 +45,9 @@ public class AnalyzeNetworkAction extends NetAnalyzerAction {
 	/**
 	 * Initializes a new instance of <code>AnalyzeNetworkAction</code>.
 	 */
-	public AnalyzeNetworkAction() {
-		super(Messages.AC_ANALYZE);
+	public AnalyzeNetworkAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+		super(Messages.AC_ANALYZE,appMgr,swingApp);
+		setPreferredMenu("Plugins." + Messages.AC_MENU_ANALYSIS);
 	}
 
 	/*
@@ -97,7 +98,7 @@ public class AnalyzeNetworkAction extends NetAnalyzerAction {
 			} else {
 				analyzer = new UndirNetworkAnalyzer(aNetwork, aNodeSet, interpr);
 			}
-			return new AnalysisExecutor(Cytoscape.getDesktop(), analyzer);
+			return new AnalysisExecutor(swingApp.getJFrame(), analyzer);
 		} catch (IllegalArgumentException ex) {
 			Utils.showInfoBox(Messages.DT_INFO, Messages.SM_NETWORKEMPTY);
 			return null;

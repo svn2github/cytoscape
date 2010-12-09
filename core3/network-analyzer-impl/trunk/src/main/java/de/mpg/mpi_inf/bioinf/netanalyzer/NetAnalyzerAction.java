@@ -20,9 +20,9 @@ package de.mpg.mpi_inf.bioinf.netanalyzer;
 import java.util.List;
 import java.util.Set;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeAction;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.application.swing.AbstractCyAction;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
 
@@ -31,7 +31,9 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
  * 
  * @author Yassen Assenov
  */
-public abstract class NetAnalyzerAction extends CytoscapeAction {
+public abstract class NetAnalyzerAction extends AbstractCyAction {
+
+	protected final CySwingApplication swingApp;
 
 	/**
 	 * Constructs an action with the given name.
@@ -39,8 +41,9 @@ public abstract class NetAnalyzerAction extends CytoscapeAction {
 	 * @param aName
 	 *            Name of the action as it will appear in a menu.
 	 */
-	protected NetAnalyzerAction(String aName) {
-		super(aName);
+	protected NetAnalyzerAction(final String aName, final CyApplicationManager appMgr, final CySwingApplication swingApp) {
+		super(aName,appMgr);
+		this.swingApp = swingApp;
 		network = null;
 	}
 
@@ -60,34 +63,9 @@ public abstract class NetAnalyzerAction extends CytoscapeAction {
 	 */
 	@SuppressWarnings("fallthrough")
 	protected boolean selectNetwork() {
-		network = null;
-		String error = null;
-		final Set<CyNetwork> networksSet = Cytoscape.getNetworkSet();
-		switch (networksSet.size()) {
-			case 0: // no network is loaded
-				error = Messages.SM_LOADNET;
-				break;
-			case 1: // single network is available
-				network = networksSet.iterator().next();
-				break;
-			default:
-				final List<CyNetwork> networks = Cytoscape.getSelectedNetworks();
-				switch (networks.size()) {
-					case 1:
-						network = networks.get(0);
-						if (network != null && network != Cytoscape.getNullNetwork()) {
-							// single network is selected
-							break;
-						}
-					case 0: // no network is selected
-						error = Messages.SM_SELECTNET;
-						break;
-					default: // multiple networks are selected
-						error = Messages.SM_SELECTONENET;
-				}
-		}
-		if (error != null) {
-			Utils.showErrorBox(Messages.DT_WRONGDATA, error);
+		network = applicationManager.getCurrentNetwork();
+		if ( network == null ) {
+			Utils.showErrorBox(Messages.DT_WRONGDATA, Messages.SM_LOADNET);
 			return false;
 		}
 		return true;

@@ -22,7 +22,7 @@ import java.awt.event.ActionEvent;
 import cytoscape.Cytoscape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cytoscape.util.CytoscapeAction;
+import org.cytoscape.application.swing.AbstractCyAction;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.PluginSettingsDialog;
 
@@ -31,15 +31,16 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.PluginSettingsDialog;
  * 
  * @author Yassen Assenov
  */
-public class SettingsAction extends CytoscapeAction {
+public class SettingsAction extends AbstractCyAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(SettingsAction.class);
 
 	/**
 	 * Initializes a new instance of <code>SettingsAction</code>.
 	 */
-	public SettingsAction() {
-		super(Messages.AC_SETTINGS);
+	public SettingsAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+		super(Messages.AC_SETTINGS,appMgr,swingApp);
+		setPreferredMenu("Plugins." + Messages.AC_MENU_ANALYSIS);
 	}
 
 	/*
@@ -51,7 +52,7 @@ public class SettingsAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			// Display settings dialog
-			PluginSettingsDialog d = new PluginSettingsDialog(Cytoscape.getDesktop());
+			PluginSettingsDialog d = new PluginSettingsDialog(swingApp.getJFrame());
 			d.setVisible(true);
 		} catch (InnerException ex) {
 			// NetworkAnalyzer internal error

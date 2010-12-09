@@ -40,8 +40,9 @@ public class RemDupEdgesAction extends NetAnalyzerAction {
 	/**
 	 * Initializes a new instance of <code>ReDupEdgesAction</code>.
 	 */
-	public RemDupEdgesAction() {
-		super(Messages.AC_REMDUPEDGES);
+	public RemDupEdgesAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+		super(Messages.AC_REMDUPEDGES,appMgr,swingApp);
+		setPreferredMenu("Plugins." + Messages.AC_MENU_MODIFICATION);
 	}
 
 	/*
@@ -56,7 +57,7 @@ public class RemDupEdgesAction extends NetAnalyzerAction {
 				return;
 			}
 
-			final Frame desktop = Cytoscape.getDesktop();
+			final Frame desktop = swingApp.getJFrame();
 			final ClearMultEdgesDialog d = new ClearMultEdgesDialog(desktop);
 			d.setVisible(true);
 

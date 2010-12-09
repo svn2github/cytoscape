@@ -162,7 +162,6 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 					final Set<Node> neighbors = neighborMap.keySet();
 
 					// Neighborhood connectivity computation
-					int[] neighborInd = CyNetworkUtils.getIndices(neighbors);
 					final double neighborConnect = averageNeighbors(neighbors);
 					accumulate(NCps, neighborCount, neighborConnect);
 
@@ -177,7 +176,7 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 						}
 
 						// Clustering coefficients computation
-						final double nodeCCp = computeCC(neighborInd);
+						final double nodeCCp = computeCC(neighbors);
 						accumulate(CCps, neighborCount, nodeCCp);
 						if (useNodeAttributes) {
 							setAttr(nodeID, "cco", Utils.roundTo(nodeCCp, roundingDigits));
@@ -466,7 +465,7 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 	 * @return Clustering coefficient of <code>aNode</code> as a value in the range
 	 *         <code>[0,1]</code>.
 	 */
-	private double computeCC(int[] aNeighborIndices) {
+	private double computeCC(Collection<CyNode> aNeighborIndices) {
 		int edgeCount = CyNetworkUtils.getPairConnCount(network, aNeighborIndices, true);
 		int neighborsCount = aNeighborIndices.length;
 		return (double) 2 * edgeCount / (neighborsCount * (neighborsCount - 1));
@@ -568,7 +567,7 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 			final Set<Node> neighbors = getNeighbors(current);
 			for (Node neighbor : neighbors) {
 				final NodeBetweenInfo neighborNBInfo = nodeBetweenness.get(neighbor);
-				final List<Edge> edges = CyNetworkUtils.getConnEdge(network, current, neighbor);
+				final List<Edge> edges = network.getConnectionEdgeList(current,neighbor,CyEdge.Type.ANY);
 				final int expectSPLength = currentNBInfo.getSPLength() + 1;
 				if (neighborNBInfo.getSPLength() < 0) {
 					// Neighbor traversed for the first time
@@ -615,8 +614,7 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 					final long oldStress = stressDependency.get(predecessor).longValue();
 					stressDependency.put(predecessor, new Long(oldStress + 1 + currentStress));
 					// accumulate edge betweenness
-					final List<Edge> edges = CyNetworkUtils.getConnEdge(network, predecessor,
-							current);
+					final List<Edge> edges = network.getConnectingEdgeList(predecessor,current,CyEdge.Type.ANY);
 					if (edges.size() != 0) {
 						final Edge compEdge = edges.get(0);
 						final LinkedList<Edge> currentedges = currentNBInfo.getOutEdges();

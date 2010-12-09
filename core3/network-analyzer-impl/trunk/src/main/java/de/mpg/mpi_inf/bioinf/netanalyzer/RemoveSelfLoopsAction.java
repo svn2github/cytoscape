@@ -42,8 +42,9 @@ public class RemoveSelfLoopsAction extends NetAnalyzerAction {
 	/**
 	 * Initializes a new instance of <code>RemoveSelfLoopsAction</code>.
 	 */
-	public RemoveSelfLoopsAction() {
-		super(Messages.AC_REMSELFLOOPS);
+	public RemoveSelfLoopsAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+		super(Messages.AC_REMSELFLOOPS,appMgr,swingApp);
+		setPreferredMenu("Plugins." + Messages.AC_MENU_MODIFICATION);
 	}
 
 	/*
@@ -58,7 +59,7 @@ public class RemoveSelfLoopsAction extends NetAnalyzerAction {
 				return;
 			}
 
-			final Frame desktop = Cytoscape.getDesktop();
+			final Frame desktop = swingApp.getJFrame();
 			final String helpURL = HelpConnector.getRemSelfloopsURL();
 			final NetModificationDialog d = new NetModificationDialog(desktop, Messages.DT_REMSELFLOOPS,
 					Messages.DI_REMOVESL, helpURL);
