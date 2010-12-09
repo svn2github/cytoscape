@@ -492,10 +492,6 @@ public class CyTableImpl implements CyTable {
 		eventHelper.getMicroListener(RowSetMicroListener.class, getRow(key)).handleRowSet(columnName, null);
 	}
 
-	private static boolean isScalarColumnType(final Class type) {
-		return type != List.class && type != Map.class;
-	}
-
 	private void removeFromReverseMap(final String columnName, final Object key, final Object value) {
 		final Map<Object, Set<Object>> valueTokeysMap = reverse.get(columnName);
 		Set<Object> keys = valueTokeysMap.get(value);
@@ -565,19 +561,16 @@ public class CyTableImpl implements CyTable {
 	private <T> boolean isSetX(final Object key, final String columnName,
 				   final Class<? extends T> type)
 	{
-		final Map<Object, Object> keyToValueMap = attributes.get(columnName);
-		if (keyToValueMap == null)
+		if (!attributes.containsKey(columnName))
 			return false;
 
-		Object value = keyToValueMap.get(key);
-		if (value == null)
-			return false;
-
-		if (types.get(columnName).isAssignableFrom(type))
-			return true;
-		else
-			throw new IllegalArgumentException("isSet(): expected \"" + types.get(columnName).getName()
+		if (!types.get(columnName).isAssignableFrom(type))
+			throw new IllegalArgumentException("type mismatch: expected \""
+							   + types.get(columnName).getName()
 							   + "\" got \"" + type.getName() + "\"!");
+
+		final Map<Object, Object> keyToValueMap = attributes.get(columnName);
+		return keyToValueMap.get(key) != null;
 	}
 
 	private Class<?> getClass(Class<?> c) {
