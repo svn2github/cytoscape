@@ -17,18 +17,17 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer;
 
-import giny.model.Edge;
-import giny.model.Node;
-
 import java.awt.geom.Point2D;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableManager;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkInterpretation;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkStats;
@@ -125,13 +124,13 @@ public abstract class NetworkAnalyzer {
 	 * @see #interpr
 	 * @see #stats
 	 */
-	protected NetworkAnalyzer(CyNetwork aNetwork, Set<Node> aNodeSet, NetworkInterpretation aInterpr) {
+	protected NetworkAnalyzer(CyNetwork aNetwork, Set<CyNode> aNodeSet, NetworkInterpretation aInterpr) {
 		network = aNetwork;
 		nodeSet = aNodeSet;
 		interpr = aInterpr;
 		stats = new NetworkStats(aNetwork, aInterpr.getInterpretSuffix());
-		nodeAttributes = Cytoscape.getNodeAttributes();
-		edgeAttributes = Cytoscape.getEdgeAttributes();
+		nodeAttributes = tableMgr.getTableMap(CyNode.class,aNetwork).get(CyNetwork.DEFAULT_ATTRS); 
+		edgeAttributes = tableMgr.getTableMap(CyNode.class,aNetwork).get(CyNetwork.DEFAULT_ATTRS); 
 		progress = 0;
 	}
 
@@ -143,7 +142,7 @@ public abstract class NetworkAnalyzer {
 	 */
 	protected void analysisStarting() {
 		if (interpr.isIgnoreUSL()) {
-			removedEdges = new HashSet<Edge>();
+			removedEdges = new HashSet<CyEdge>();
 			// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
 			Iterator<?> edgesIter = network.edgesIterator();
 			while (edgesIter.hasNext()) {
@@ -169,7 +168,7 @@ public abstract class NetworkAnalyzer {
 	 */
 	protected void analysisFinished() {
 		if (interpr.isIgnoreUSL()) {
-			for (final Edge e : removedEdges) {
+			for (final CyEdge e : removedEdges) {
 				network.addEdge(e);
 			}
 		}
@@ -400,7 +399,7 @@ public abstract class NetworkAnalyzer {
 	/**
 	 * Subset of nodes to be analyzed.
 	 */
-	protected Set<Node> nodeSet;
+	protected Set<CyNode> nodeSet;
 
 	/**
 	 * Interpretation of edges in {@link #network}.
@@ -437,16 +436,16 @@ public abstract class NetworkAnalyzer {
 	/**
 	 * Global <code>HashMap</code> for storing node attributes.
 	 */
-	protected CyAttributes nodeAttributes;
+	protected CyTable nodeAttributes;
 
 	/**
 	 * Global <code>HashMap</code> for storing edge attributes.
 	 */
-	protected CyAttributes edgeAttributes;
+	protected CyTable edgeAttributes;
 
 	/**
 	 * Set of all edges that are removed from {@link #network} before the analysis. These edges are added back
 	 * to the network after the analysis completes or is cancelled.
 	 */
-	private Set<Edge> removedEdges;
+	private Set<CyEdge> removedEdges;
 }

@@ -17,13 +17,9 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer;
 
-import giny.model.Edge;
-import giny.model.Node;
-
-import java.util.Iterator;
-
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
 
 /**
  * Controller class providing algorithms for intersection, union and difference of two networks.
@@ -74,11 +70,7 @@ public class GOPTAlgorithm {
 			}
 
 			// Iterate over the nodes of the two networks
-			// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
-			Iterator<?> nodeIt = network1.nodesIterator();
-			Node actNode;
-			while (nodeIt.hasNext()) {
-				actNode = (Node) nodeIt.next();
+			for ( CyNode actNode : network1.getNodeList() ) {
 				if (network2.containsNode(actNode)) {
 					if (aIntersection) {
 						intersectionNw.addNode(actNode);
@@ -92,9 +84,7 @@ public class GOPTAlgorithm {
 					}
 				}
 			}
-			nodeIt = network2.nodesIterator();
-			while (nodeIt.hasNext()) {
-				actNode = (Node) nodeIt.next();
+			for ( CyNode actNode : network2.getNodeList() ) {
 				if (aUnion) {
 					unionNw.addNode(actNode);
 				}
@@ -104,11 +94,7 @@ public class GOPTAlgorithm {
 			}
 
 			// Iterate over the edges of the two networks
-			// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
-			Iterator<?> edgeIt = network1.edgesIterator();
-			Edge actEdge;
-			while (edgeIt.hasNext()) {
-				actEdge = (Edge) edgeIt.next();
+			for ( CyEdge actEdge : network1.getEdgeList() ) {
 				if (network2.containsEdge(actEdge)) {
 					if (aIntersection) {
 						intersectionNw.addEdge(actEdge);
@@ -123,9 +109,7 @@ public class GOPTAlgorithm {
 					}
 				}
 			}
-			edgeIt = network2.edgesIterator();
-			while (edgeIt.hasNext()) {
-				actEdge = (Edge) edgeIt.next();
+			for ( CyEdge actEdge : network2.getEdgeList() ) {
 				if (aUnion) {
 					unionNw.addEdge(actEdge);
 				}
@@ -167,4 +151,12 @@ public class GOPTAlgorithm {
 	 * Network obtained the difference {@link #network2} <code>\</code> {@link #network1}.
 	 */
 	private CyNetwork diffNw2;
+
+	// TODO This should be refactored out into a Task
+	private CyNetwork createNetwork(String name) {
+		CyNetwork n = cyNetworkFactory.getInstance();
+		n.getCyRow().set("name",name);
+		netMgr.addNetwork(n);
+		return n;
+	}
 }

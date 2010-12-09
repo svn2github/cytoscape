@@ -17,13 +17,12 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer;
 
-import giny.model.Node;
 
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
@@ -83,7 +82,7 @@ public class AnalyzeNetworkAction extends NetAnalyzerAction {
 	 * @return Newly initialized analysis executor; <code>null</code> if the user has decided to cancel the
 	 *         operation.
 	 */
-	public static AnalysisExecutor initAnalysisExecuter(CyNetwork aNetwork, Set<Node> aNodeSet) {
+	public static AnalysisExecutor initAnalysisExecuter(CyNetwork aNetwork, Set<CyNode> aNodeSet) {
 		// Ask the user for an interpretation of the network edges
 		try {
 			final NetworkInspection status = CyNetworkUtils.inspectNetwork(aNetwork);

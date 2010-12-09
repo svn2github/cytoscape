@@ -17,20 +17,18 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer;
 
-import giny.model.Node;
 
 import java.awt.event.ActionEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import cytoscape.Cytoscape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.model.CyNode;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
-import ding.view.DNodeView;
 
 /**
  * Action handler for the menu item &quot;Analyze Subset of Nodes&quot;.
@@ -79,20 +77,14 @@ public class AnalyzeSubsetAction extends NetAnalyzerAction {
 	@Override
 	protected boolean selectNetwork() {
 		if (super.selectNetwork()) {
-			final CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
-			if (view == null) {
-				Utils.showErrorBox(Messages.DT_WRONGDATA, Messages.SM_CREATEVIEW);
-				return false;
-			}
-			// TODO: [Cytoscape 2.8] Check if the returned list is parameterized
-			final List<?> nodes = view.getSelectedNodes();
+			final List<CyNode> nodes = CyTableUtil.getNodesInState(network,"selected",true);
 			if (nodes.isEmpty()) {
 				Utils.showErrorBox(Messages.DT_WRONGDATA, Messages.SM_SELECTNODES);
 				return false;
 			}
-			selected = new HashSet<Node>();
-			for (final Object node : nodes) {
-				selected.add(((DNodeView) node).getNode());
+			selected = new HashSet<CyNode>();
+			for (final CyNode node : nodes) {
+				selected.add(node);
 			}
 			return true;
 		}
@@ -102,7 +94,7 @@ public class AnalyzeSubsetAction extends NetAnalyzerAction {
 	/**
 	 * Set of nodes in the networks that were selected before the user clicked on the item.
 	 */
-	protected Set<Node> selected;
+	protected Set<CyNode> selected;
 
 	/**
 	 * Unique ID for this version of this class. It is used in serialization.
