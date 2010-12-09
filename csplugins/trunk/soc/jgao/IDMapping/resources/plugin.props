@@ -16,7 +16,7 @@ pluginDescription=Provides utilities for mapping attributes of source ID types t
 pluginVersion=1.20
 
 # Compatible Cytoscape version. If there are more than one version, seperate by ",".
-cytoscapeVersion=2.7
+cytoscapeVersion=2.8
 
 # Category, use one of the categories listed on the http://cytoscape.org/plugins2.php site
 pluginCategory=Network and Attribute I/O
