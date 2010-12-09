@@ -1,20 +1,24 @@
 package org.cytoscape.test.support;
 
+
 import org.cytoscape.model.AbstractCyTableTest;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyRow;
+
+import org.junit.Before;
+import org.junit.After;
+
 import java.util.Random;
+
 
 /**
  * This will verify that the network created by NetworkTestSupport
  * is a good network.
  */
 public class DataTableTestSupportTest extends AbstractCyTableTest {
-
 	DataTableTestSupport support; 
 	CyTableFactory factory;
-	CyTable mgr;
 	Random rand;
 
 	public DataTableTestSupportTest() {
@@ -23,14 +27,16 @@ public class DataTableTestSupportTest extends AbstractCyTableTest {
 		rand = new Random(15);
 	}
 
+	@Before
 	public void setUp() {
 		eventHelper = support.getDummyCyEventHelper(); 
-		CyTable mgr = factory.createTable(Integer.toString( rand.nextInt(10000) ), "SUID", Long.class, false);
-		attrs = mgr.getRow(1l);
+		table = factory.createTable(Integer.toString( rand.nextInt(10000) ), "SUID", Long.class, false);
+		attrs = table.getRow(1l);
 	}
 
+	@After
 	public void tearDown() {
-		mgr = null;
+		table = null;
 		attrs = null;
 	}
 }
