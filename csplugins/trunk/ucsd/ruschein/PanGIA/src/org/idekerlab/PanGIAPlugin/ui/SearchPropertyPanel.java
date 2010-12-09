@@ -428,7 +428,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         complexRewardLabel.setToolTipText("Module size parameters AB. (Module reward = AB * size ^ |AB|)");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5,3, 20);
+        gridBagConstraints.insets = new java.awt.Insets(0, 5,3, 5);
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         scorePanel.add(complexRewardLabel, gridBagConstraints);
@@ -439,7 +439,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 5,3, 10);
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         scorePanel.add(complexRewardSliderLabels, gridBagConstraints);
         
@@ -462,7 +462,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(10, 20, 10, 10);
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         scorePanel.add(complexRewardSlider, gridBagConstraints);
@@ -481,7 +481,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         	}
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
@@ -532,6 +532,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
         scorePanel.add(degreeLabel, gridBagConstraints);
@@ -540,7 +541,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         degreeTextField.addKeyListener(textFieldKeyListener);
         degreeTextField.setToolTipText(degreeLabel.getToolTipText());
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
@@ -548,7 +549,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.gridx=2;
+        gridBagConstraints.gridx=3;
         gridBagConstraints.weightx = 1.0;
         scorePanel.add(lbPlaceHolder1, gridBagConstraints);
 
