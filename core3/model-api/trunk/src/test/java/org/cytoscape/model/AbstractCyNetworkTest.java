@@ -936,4 +936,19 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	public void testDefaultAttributes() {
 		assertEquals(String.class, net.getCyRow().getDataTable().getColumnTypeMap().get("name"));
 	}
+
+	public void testGetDefaultNetworkTable() {
+		assertNotNull(net.getDefaultNetworkTable());
+		assertEquals(String.class, net.getDefaultNetworkTable().getColumnTypeMap().get("name"));
+	}
+
+	public void testGetDefaultNodeTable() {
+		assertNotNull(net.getDefaultNodeTable());
+		assertEquals(String.class, net.getDefaultNodeTable().getColumnTypeMap().get("name"));
+	}
+
+	public void testGetDefaultEdgeTable() {
+		assertNotNull(net.getDefaultEdgeTable());
+		assertEquals(String.class, net.getDefaultEdgeTable().getColumnTypeMap().get("name"));
+	}
 }

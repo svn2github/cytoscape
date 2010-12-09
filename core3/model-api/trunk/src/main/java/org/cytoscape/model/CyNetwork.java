@@ -210,4 +210,27 @@ public interface CyNetwork extends Identifiable, CyTableEntry {
 	 */
 	List<CyEdge> getConnectingEdgeList(CyNode source, CyNode target, CyEdge.Type edgeType);
 
+	/**
+	 * A convenience method returns the default attribute table for this network.
+	 * This is equivalent to 
+	 * <code>cyTableManager.getTableMap(CyNetwork.class,this).get(CyNetwork.DEFAULT_ATTRS);</code>
+	 * @return The default attribute table for this network.
+	 */
+	CyTable getDefaultNetworkTable();
+
+	/**
+	 * A convenience method returns the default attribute table for the nodes of this network.
+	 * This is equivalent to 
+	 * <code>cyTableManager.getTableMap(CyNode.class,this).get(CyNetwork.DEFAULT_ATTRS);</code>
+	 * @return The default attribute table for the nodes of this network.
+	 */
+	CyTable getDefaultNodeTable();
+
+	/**
+	 * A convenience method returns the default attribute table for the edges of this network.
+	 * This is equivalent to 
+	 * <code>cyTableManager.getTableMap(CyEdge.class,this).get(CyNetwork.DEFAULT_ATTRS);</code>
+	 * @return The default attribute table for the edges of this network.
+	 */
+	CyTable getDefaultEdgeTable();
 }
