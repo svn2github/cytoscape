@@ -858,4 +858,25 @@ public class ArrayGraph implements CyRootNetwork {
 	public CySubNetwork getBaseNetwork() {
 		return base;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public CyTable getDefaultNetworkTable() {
+		return netAttrMgr.get(CyNetwork.DEFAULT_ATTRS);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public CyTable getDefaultNodeTable() {
+		return nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public CyTable getDefaultEdgeTable() {
+		return edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS);
+	}
 }

@@ -407,5 +407,15 @@ class ArraySubGraph implements CySubNetwork {
         return (int) (internalSUID ^ (internalSUID >>> 32));
     }
 
+	public CyTable getDefaultNetworkTable() {
+		return parent.getDefaultNetworkTable();
+	}
 
+	public CyTable getDefaultNodeTable() {
+		return parent.getDefaultNodeTable();
+	}
+
+	public CyTable getDefaultEdgeTable() {
+		return parent.getDefaultEdgeTable();
+	}
 }
