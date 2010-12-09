@@ -1,7 +1,7 @@
-pluginName=DenovoPGNetworkAlignment
-pluginDescription=test
+pluginName=PanGIA
+pluginDescription=PanGIA is a plugin for Physical and Genetic Interaction Alignment.(see http://prosecco.ucsd.edu/PanGIA) 
 pluginVersion=1.0
-cytoscapeVersion=2.6,2.7,2.8
+cytoscapeVersion=2.8
 pluginCategory=Analysis
-pluginAuthorsInstitutions=Johannes Ruscheinski,Kei Ono:UCSD,Gregory Hannum:UCSD
-releaseDate=January 8, 2010
+pluginAuthorsInstitutions=Gregory Hannum:UCSD,Rohith Srivas:UCSD,Johannes Ruscheinski:UCSD,Kei Ono:UCSD,Peng-Liang Wang:UCSD,Michael Smoot:UCSD,Trey Ideker:UCSD
+releaseDate=December 8, 2010
