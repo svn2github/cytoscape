@@ -640,7 +640,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 1;
         edgeFilteringPanel.add(lbPlaceHolder2, gridBagConstraints);
 
