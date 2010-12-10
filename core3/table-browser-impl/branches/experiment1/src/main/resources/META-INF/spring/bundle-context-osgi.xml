@@ -7,6 +7,8 @@
 
         <osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager">
         </osgi:reference>
+        <osgi:reference id="cyServiceRegistrarServiceRef" interface="org.cytoscape.service.util.CyServiceRegistrar">
+        </osgi:reference>
 
 	<osgi:service id="tableBrowserCytoPanelComponentService" ref="tableBrowser"
 		interface="org.cytoscape.application.swing.CytoPanelComponent"/>

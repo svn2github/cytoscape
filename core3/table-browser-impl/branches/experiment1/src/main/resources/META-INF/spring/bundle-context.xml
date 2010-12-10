@@ -27,5 +27,6 @@
 
 	<bean id="tableBrowser" class="org.cytoscape.browser.internal.TableBrowser">
 		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="cyServiceRegistrarServiceRef" />
 	</bean>
 </beans>
