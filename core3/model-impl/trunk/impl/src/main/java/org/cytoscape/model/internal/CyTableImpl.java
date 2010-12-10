@@ -292,6 +292,13 @@ public class CyTableImpl implements CyTable {
 		if (type == null)
 			throw new NullPointerException("column type is null!");
 
+		if (columnName.equals(primaryKey)) {
+			final List<T> primaryKeys = new ArrayList<T>(rows.size());
+			for (final Object primaryKey : rows.keySet())
+				primaryKeys.add(type.cast(primaryKey));
+			return primaryKeys;
+		}
+
 		Map<Object, Object> vals = attributes.get(columnName);
 		if (vals == null)
 			throw new IllegalArgumentException("attribute does not exist");
