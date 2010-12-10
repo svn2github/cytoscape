@@ -15,11 +15,11 @@ import static org.cytoscape.browser.internal.DataObjectType.EDGES;
 import static org.cytoscape.browser.internal.DataObjectType.NETWORK;
 import static org.cytoscape.browser.internal.DataObjectType.NODES;
 
-import giny.model.Edge;
-import giny.model.GraphObject;
-import giny.model.Node;
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableManager;
+import org.cytoscape.view.model.View;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -285,9 +285,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		return newColor;
 	}
 
-	protected Edge getEdge(final String edgeString) {
+	protected CyEdge getEdge(final String edgeString) {
 		String[] edgeNameParts = edgeString.split(" \\(");
-		final Node source = Cytoscape.getCyNode(edgeNameParts[0]);
+		final CyNode source = Cytoscape.getCyNode(edgeNameParts[0]);
 		edgeNameParts = edgeNameParts[1].split("\\) ");
 
 		final String interaction = edgeNameParts[0];
@@ -296,9 +296,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		return Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, false);
 	}
 
-	private Map<String, GraphObject> paintNodesAndEdges(int idLocation) {
+	private Map<String, CyTableEntry> paintNodesAndEdges(int idLocation) {
 		final int[] rowsSelected = getSelectedRows();
-		final Map<String, GraphObject> selectedMap = new HashMap<String, GraphObject>();
+		final Map<String, CyTableEntry> selectedMap = new HashMap<String, CyTableEntry>();
 		final int selectedRowLength = rowsSelected.length;
 		final CyNetworkView netView = Cytoscape.getCurrentNetworkView();
 
@@ -318,7 +318,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				selectedMap.put(selectedName, selectedNode);
 
 				if (netView != Cytoscape.getNullNetworkView()) {
-					final NodeView nv = netView.getNodeView(selectedNode);
+					final View<CyNode> nv = netView.getNodeView(selectedNode);
 					if (nv != null)
 						nv.setSelectedPaint(reverseSelectedNodeColor);
 				}
@@ -327,7 +327,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				selectedMap.put(selectedName, selectedEdge);
 
 				if (netView != Cytoscape.getNullNetworkView()) {
-					final EdgeView ev = netView.getEdgeView(selectedEdge);
+					final View<CyEdge> ev = netView.getEdgeView(selectedEdge);
 					if (ev != null)
 						ev.setSelectedPaint(reverseSelectedEdgeColor);
 				}
@@ -339,7 +339,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 	private void resetObjectColor(int idLocation) {
 		final CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		if ((view == Cytoscape.getNullNetworkView()) || (view == null))
+		if (view == null)
 			return;
 
 		final int rowCount = dataModel.getRowCount();
@@ -357,14 +357,14 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 				// Set to the original color
 				if (selectedNode != null) {
-					final NodeView nv = view.getNodeView(selectedNode);
+					final View<CyNode> nv = view.getNodeView(selectedNode);
 					if (nv != null)
 						nv.setSelectedPaint(selectedNodeColor);
 				}
 			} else if (objectType == EDGES) {
 				final Edge selectedEdge = this.getEdge(objectName);
 				if (selectedEdge != null) {
-					final EdgeView ev = view.getEdgeView(selectedEdge);
+					final View<CyEdge> ev = view.getEdgeView(selectedEdge);
 					if (ev != null)
 						ev.setSelectedPaint(selectedEdgeColor);
 				}
@@ -474,19 +474,19 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		newSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(final ActionEvent e) {
 					final int idLocation = getIdColumn();
-					final Map<String, GraphObject> selectedMap = paintNodesAndEdges(idLocation);
+					final Map<String, CyTableEntry> selectedMap = paintNodesAndEdges(idLocation);
 					final CyNetwork curNet = Cytoscape.getCurrentNetwork();
 
-					final List<GraphObject> nonSelectedObjects = new ArrayList<GraphObject>();
+					final List<CyTableEntry> nonSelectedObjects = new ArrayList<CyTableEntry>();
 
-					GraphObject fromMap;
+					CyTableEntry fromMap;
 
 					if (objectType == NODES) {
 						for (Object curNode : curNet.getSelectedNodes()) {
 							fromMap = selectedMap.get(((Node) curNode).getIdentifier());
 
 							if (fromMap == null) {
-								nonSelectedObjects.add((GraphObject) curNode);
+								nonSelectedObjects.add((CyTableEntry) curNode);
 							}
 						}
 
@@ -497,7 +497,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 							fromMap = selectedMap.get(((Edge) curEdge).getIdentifier());
 
 							if (fromMap == null) {
-								nonSelectedObjects.add((GraphObject) curEdge);
+								nonSelectedObjects.add((CyTableEntry) curEdge);
 							}
 						}
 
@@ -1143,9 +1143,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				return;
 		}
 
-		final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
+		final List<CyTableEntry> selectedCyTableEntries = tableModel.getObjects();
 		final StringBuilder errorMessage = new StringBuilder();
-		for (final GraphObject graphObject : selectedGraphObjects)
+		for (final CyTableEntry graphObject : selectedCyTableEntries)
 			CyAttributesUtils.copyAttribute(attribs, rowId, graphObject.getIdentifier(),
 							attribName, /* copyEquation = */ false, errorMessage);
 		tableModel.updateColumn(attribs.getAttribute(rowId, attribName), tableColumn, tableRow);
@@ -1169,9 +1169,9 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 				return;
 		}
 
-		final List<GraphObject> selectedGraphObjects = tableModel.getObjects();
+		final List<CyTableEntry> selectedCyTableEntries = tableModel.getObjects();
 		final StringBuilder errorMessage = new StringBuilder();
-		for (final GraphObject graphObject : selectedGraphObjects)
+		for (final CyTableEntry graphObject : selectedCyTableEntries)
 			CyAttributesUtils.copyAttribute(attribs, rowId, graphObject.getIdentifier(),
 							attribName, /* copyEquation = */ true, errorMessage);
 		final Equation equation = attribs.getEquation(rowId, attribName);
@@ -1401,7 +1401,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			tableModel.setSelectedColor(CyAttributeBrowserTable.SELECTED_NODE);
 			tableModel.setSelectedColor(CyAttributeBrowserTable.REV_SELECTED_NODE);
 
-			tableModel.setTableData(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
+			tableModel.setTableData(new ArrayList<CyTableEntry>(Cytoscape.getCurrentNetwork()
 			                                                            .getSelectedNodes()), null);
 		} else if ((objectType == EDGES)
 		           && ((event.getTargetType() == SelectEvent.SINGLE_EDGE)
@@ -1410,7 +1410,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			// edge selection
 			tableModel.setSelectedColor(CyAttributeBrowserTable.SELECTED_EDGE);
 			tableModel.setSelectedColor(CyAttributeBrowserTable.REV_SELECTED_EDGE);
-			tableModel.setTableData(new ArrayList<GraphObject>(Cytoscape.getCurrentNetwork()
+			tableModel.setTableData(new ArrayList<CyTableEntry>(Cytoscape.getCurrentNetwork()
 			                                                            .getSelectedEdges()), null);
 		}
 

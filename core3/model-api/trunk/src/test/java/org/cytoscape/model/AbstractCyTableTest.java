@@ -515,4 +515,17 @@ public abstract class AbstractCyTableTest {
 		assertEquals((long)(Long)values.get("x"), 15L);
 		assertEquals((double)(Double)values.get("y"), 3.14, 0.00001);
 	}
+
+	@Test
+	public void testGetType() {
+		table.createColumn("someInt", Integer.class);
+		assertEquals(table.getType("someInt"), Integer.class);
+		assertNull(table.getType("nonExistentColumnName"));
+	}
+
+	@Test
+	public void testGetRowCount() {
+		final CyRow row = table.getRow(2L);
+		assertEquals(table.getRowCount(), table.getAllRows().size());
+	}
 }

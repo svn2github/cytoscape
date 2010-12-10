@@ -75,6 +75,14 @@ public interface CyTable extends Identifiable {
 	Class<?> getPrimaryKeyType();
 
 	/**
+	 * Returns the class type of a column for this table.
+	 * @param columnName  The name of the column whose type we desire.
+	 * @return The class type of the column whose column name was provided, or null if there is
+	 *         no column named "columnName".
+	 */
+	Class<?> getType(String columnName);
+
+	/**
 	 * The keySet of this map defines all columns in the CyTable and the
 	 * the values of this map define the types of the columns.
 	 * @return A map of column names to the {@link Class} objects that defines
@@ -149,4 +157,9 @@ public interface CyTable extends Identifiable {
 	 *  @return the rows, if any that contain the value "value" for the column "columnName"
 	 */
 	Set<CyRow> getMatchingRows(String columnName, Object value);
+
+	/** Returns the number of rows in this table.
+	 *  @return The number if rows in the table.
+	 */
+	int getRowCount();
 }

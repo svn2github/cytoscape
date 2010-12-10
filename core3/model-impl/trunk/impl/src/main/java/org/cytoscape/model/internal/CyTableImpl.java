@@ -177,6 +177,10 @@ public class CyTableImpl implements CyTable {
 		return Collections.unmodifiableMap(types);
 	}
 
+	public Class<?> getType(final String columnName) {
+		return types.get(columnName);
+	}
+
 	public Class<?> getListElementType(final String columnName) {
 		final Class<?> listElementType = listElementTypes.get(columnName);
 		if (listElementType == null)
@@ -191,6 +195,10 @@ public class CyTableImpl implements CyTable {
 
 	public Class<?> getPrimaryKeyType() {
 		return primaryKeyType;
+	}
+
+	public int getRowCount() {
+		return rows.size();
 	}
 
 	/**
