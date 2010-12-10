@@ -5,17 +5,17 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-	<osgi:reference id="cySwingApplicationServiceRef" 
-	                interface="org.cytoscape.application.swing.CySwingApplication"/>
-
 	<osgi:reference id="cyApplicationManagerServiceRef" 
-	                interface="org.cytoscape.session.CyApplicationManager"/>
+		interface="org.cytoscape.session.CyApplicationManager"/>
+
+	<osgi:reference id="cySwingApplicationServiceRef"
+		interface="org.cytoscape.application.swing.CySwingApplication" />
 
 	<osgi:reference id="cyNetworkManagerServiceRef" 
-	                interface="org.cytoscape.model.CyNetworkManager"/>
+		interface="org.cytoscape.model.CyNetworkManager"/>
 	                
 	<osgi:reference id="cyNetworkViewReaderManagerServiceRef" 
-	                interface="org.cytoscape.io.read.CyNetworkViewReaderManager"/>	                
+		interface="org.cytoscape.io.read.CyNetworkViewReaderManager"/>
 
 	<osgi:service id="analyzeNetworkActionService" ref="analyzeNetworkAction" 
 		interface="org.cytoscape.application.swing.CyAction"/>
@@ -41,10 +41,5 @@
 		interface="org.cytoscape.application.swing.CyAction"/>
 	<osgi:service id="aboutActionService" ref="aboutAction" 
 		interface="org.cytoscape.application.swing.CyAction"/>
-
-</beans>
-
-
-
 
 </beans>
