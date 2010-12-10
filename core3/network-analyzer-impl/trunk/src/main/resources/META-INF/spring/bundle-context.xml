@@ -10,6 +10,7 @@
 	<context:annotation-config />
 
 	<bean id="plugin" class="de.mpg.mpi_inf.bioinf.netanalyzer.Plugin">
+		<constructor-arg ref="cySwingApplicationServiceRef" />
 	</bean>
 	
 	<bean id="aboutAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.AboutAction">
