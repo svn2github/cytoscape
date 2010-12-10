@@ -11,7 +11,11 @@
 
 	<bean id="plugin" class="de.mpg.mpi_inf.bioinf.netanalyzer.Plugin">
 	</bean>
-
+	
+	<bean id="aboutAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.AboutAction">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
 	<bean id="analyzeNetworkAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.AnalyzeNetworkAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
@@ -23,40 +27,41 @@
 	<bean id="batchAnalysisAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.BatchAnalysisAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewReaderManagerServiceRef" />
 	</bean>
-	<bean id="loadNetstatsAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.LoadNetstatsAction">
+	<bean id="compareAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.CompareAction">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>	
+	<bean id="connComponentAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.ConnComponentAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
 	</bean>
-	<bean id="plotParameterAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.PlotParameterAction">
+	<bean id="loadNetstatsAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.LoadNetstatsAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
 	</bean>
 	<bean id="mapParameterAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.MapParameterAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
-	</bean>
-	<bean id="settingsAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.SettingsAction">
-		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cySwingApplicationServiceRef" />
-	</bean>
-	<bean id="compareAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.CompareAction">
-		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="cySwingApplicationServiceRef" />
-	</bean>
-	<bean id="connComponentAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.ConnComponentAction">
+	</bean>	
+	<bean id="plotParameterAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.PlotParameterAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
 	</bean>
 	<bean id="remDupEdgesAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.RemDupEdgesAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />		
 	</bean>
 	<bean id="removeSelfLoopsAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.RemoveSelfLoopsAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />		
 	</bean>
-	<bean id="aboutAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.AboutAction">
+	<bean id="settingsAction" class="de.mpg.mpi_inf.bioinf.netanalyzer.SettingsAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
 	</bean>
