@@ -40,6 +40,10 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.view.model.CyNetworkView;
+
 import de.mpg.mpi_inf.bioinf.netanalyzer.LoadNetstatsAction;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkAnalysisReport;
@@ -52,6 +56,8 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkInterpretation;
  */
 public class BatchResultsDialog extends JDialog implements ActionListener, ListSelectionListener {
 
+	private final CyNetworkViewReaderManager cyNetworkViewReaderMgr;
+	private final Frame aOwner;
 
 	/**
 	 * Initializes a new instance of <code>BatchResultsDialog</code>.
@@ -61,10 +67,12 @@ public class BatchResultsDialog extends JDialog implements ActionListener, ListS
 	 * @param aReports
 	 *            List of analysis reports to be visualized.
 	 */
-	public BatchResultsDialog(Frame aOwner, List<NetworkAnalysisReport> aReports) {
+	public BatchResultsDialog(Frame aOwner, List<NetworkAnalysisReport> aReports, CyNetworkViewReaderManager cyNetworkViewReaderMgr) {
 		super(aOwner, Messages.DT_BATCHRESULTS, false);
 		init(aReports);
 		setLocationRelativeTo(aOwner);
+		this.cyNetworkViewReaderMgr = cyNetworkViewReaderMgr;
+		this.aOwner = aOwner;
 	}
 
 	/*
@@ -98,12 +106,14 @@ public class BatchResultsDialog extends JDialog implements ActionListener, ListS
 				if (c == 2) {
 					final File file = model.getNetstatsFile(r);
 					if (file != null) {
-						LoadNetstatsAction.openNetstats(file);
+						LoadNetstatsAction.openNetstats(aOwner,file);
 					}
 				} else if (c == 0) {
 					final File file = model.getNetwork(r);
 					if (file != null && file.isFile()) {
-						Cytoscape.createNetworkFromFile(file.getAbsolutePath(), false);
+						CyNetworkViewReader reader = cyNetworkViewReaderMgr.getReader(file.toURI());
+						CyNetworkView[] views = reader.getNetworkViews();
+						// TODO do something with the networks?
 					}
 				}
 			} catch (ClassCastException ex) {

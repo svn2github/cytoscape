@@ -137,7 +137,11 @@
             <artifactId>l2fprod-common-shared</artifactId>
             <version>7.3</version>
         </dependency>
-		
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>io-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+		</dependency>		
 	</dependencies>
 
 </project>

@@ -21,19 +21,20 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import cytoscape.Cytoscape;
-import cytoscape.data.ImportHandler;
-import cytoscape.data.readers.GraphReader;
+import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.model.CyNetworkManager;
 
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.session.CyApplicationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cytoscape.view.CytoscapeDesktop;
+
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Interpretations;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.BatchAnalysisDialog;
@@ -50,12 +51,17 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
 public class BatchAnalysisAction extends NetAnalyzerAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(BatchAnalysisAction.class);
+	
+	private final CyNetworkViewReaderManager cyNetworkViewReaderMgr;
+	private final CyNetworkManager netMgr;
 
 	/**
 	 * Constructs a new batch analysis action.
 	 */
-	protected BatchAnalysisAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+	protected BatchAnalysisAction(CyApplicationManager appMgr,CySwingApplication swingApp, CyNetworkManager netMgr, CyNetworkViewReaderManager cyNetworkViewReaderMgr) {
 		super(Messages.AC_BATCH_ANALYSIS,appMgr,swingApp);
+		this.netMgr = netMgr;
+		this.cyNetworkViewReaderMgr = cyNetworkViewReaderMgr;
 		setPreferredMenu("Plugins." + Messages.AC_MENU_ANALYSIS);
 	}
 
@@ -78,12 +84,12 @@ public class BatchAnalysisAction extends NetAnalyzerAction {
 				final List<File> files = getInputFiles(inOutDirs[0]);
 				if (files.size() > 0) {
 					final Interpretations ins = d1.getInterpretations();
-					final BatchNetworkAnalyzer analyzer = new BatchNetworkAnalyzer(inOutDirs[1], files, ins);
+					final BatchNetworkAnalyzer analyzer = new BatchNetworkAnalyzer(inOutDirs[1], files, ins,netMgr,cyNetworkViewReaderMgr );
 					final BatchAnalysisDialog d2 = new BatchAnalysisDialog(desktop, analyzer);
 					d2.setVisible(true);
 					if (d2.resultsPressed()) {
 						// Step 3 - Show results
-						BatchResultsDialog d3 = new BatchResultsDialog(analyzer.getReports());
+						BatchResultsDialog d3 = new BatchResultsDialog(swingApp.getJFrame(),analyzer.getReports(),cyNetworkViewReaderMgr);
 						d3.setVisible(true);
 					}
 				} else {
@@ -112,8 +118,7 @@ public class BatchAnalysisAction extends NetAnalyzerAction {
 			public boolean accept(File aPathname) {
 				if (aPathname.isFile() && aPathname.canRead()) {
 					final String name = aPathname.getAbsolutePath();
-					ImportHandler handler = new ImportHandler();
-					GraphReader reader = handler.getReader(name);
+					CyNetworkViewReader reader =  cyNetworkViewReaderMgr.getReader(aPathname.toURI()); 
 					if (reader != null) {
 						return true;
 					}

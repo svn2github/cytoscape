@@ -17,17 +17,18 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
-import cytoscape.Cytoscape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.cytoscape.application.swing.AbstractCyAction;
-import cytoscape.view.CytoscapeDesktop;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
+
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkStats;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.io.StatsSerializer;
@@ -39,7 +40,7 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
  * 
  * @author Yassen Assenov
  */
-public class LoadNetstatsAction extends AbstractCyAction {
+public class LoadNetstatsAction extends NetAnalyzerAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoadNetstatsAction.class);
 
@@ -63,7 +64,7 @@ public class LoadNetstatsAction extends AbstractCyAction {
 			final JFileChooser dialog = AnalysisDialog.netstatsDialog;
 			final int openIt = dialog.showOpenDialog(desktop);
 			if (openIt == JFileChooser.APPROVE_OPTION) {
-				openNetstats(dialog.getSelectedFile());
+				openNetstats(desktop, dialog.getSelectedFile());
 				Utils.removeSelectedFile(dialog);
 			}
 			if (openIt == JFileChooser.ERROR_OPTION) {
@@ -85,17 +86,16 @@ public class LoadNetstatsAction extends AbstractCyAction {
 	 * @param aFile
 	 *            Network statistics file to be open.
 	 */
-	public static void openNetstats(File aFile) {
-		final Frame desktop = swingApp.getJFrame();
+	public static void openNetstats(Frame owner, File aFile) {
 		try {
 			final NetworkStats stats = StatsSerializer.load(aFile);
-			final AnalysisDialog d = new AnalysisDialog(desktop, stats, null);
+			final AnalysisDialog d = new AnalysisDialog(owner, stats, null);
 			d.setVisible(true);
 		} catch (IOException ex) {
 			// FileNotFoundException, IOException
-			Utils.showErrorBox(desktop, Messages.DT_IOERROR, Messages.SM_IERROR);
+			Utils.showErrorBox(owner, Messages.DT_IOERROR, Messages.SM_IERROR);
 		} catch (NullPointerException ex) {
-			Utils.showErrorBox(desktop, Messages.DT_WRONGDATA, Messages.SM_WRONGDATAFILE);
+			Utils.showErrorBox(owner, Messages.DT_WRONGDATA, Messages.SM_WRONGDATAFILE);
 		}
 	}
 

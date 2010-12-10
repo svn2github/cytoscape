@@ -19,6 +19,7 @@ package de.mpg.mpi_inf.bioinf.netanalyzer;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -276,7 +277,7 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 						if (Double.isNaN(eb)) {
 							eb = 0.0;
 						}
-						setEAttr(betEntry.getKey().getIdentifier(), "ebt",
+						betEntry.getKey().getCyRow().set( "ebt",
 								Utils.roundTo(eb, roundingDigits));
 					}
 				}
@@ -394,7 +395,7 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 	 *            Instance to accumulate the computed values.
 	 * @return Number of neighbors of the node of interest.
 	 */
-	private int calcSimple(CyNode aNode, int[] aIncEdges, Map<CyNode, MutInteger> aNeMap,
+	private int calcSimple(CyNode aNode, List<CyEdge> aIncEdges, Map<CyNode, MutInteger> aNeMap,
 			SimpleUndirParams aParams) {
 		final int neighborCount = aNeMap.size();
 
@@ -420,8 +421,8 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 		// calculation
 		int selfLoops = 0;
 		int dirEdges = 0;
-		for (int j = 0; j < aIncEdges.length; j++) {
-			CyEdge e = network.getEdge(aIncEdges[j]);
+		for (int j = 0; j < aIncEdges.size(); j++) {
+			CyEdge e = aIncEdges.get(j);
 			if (e.isDirected()) {
 				dirEdges++;
 			}
@@ -430,7 +431,7 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 			}
 		}
 		aParams.selfLoopCount += selfLoops;
-		int undirEdges = aIncEdges.length - dirEdges;
+		int undirEdges = aIncEdges.size() - dirEdges;
 
 		// Number of multi-edge node partners calculation
 		int partnerOfMultiEdgeNodePairs = 0;
@@ -462,7 +463,7 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 	 */
 	private double computeCC(Collection<CyNode> aNeighborIndices) {
 		int edgeCount = CyNetworkUtils.getPairConnCount(network, aNeighborIndices, true);
-		int neighborsCount = aNeighborIndices.length;
+		int neighborsCount = aNeighborIndices.size();
 		return (double) 2 * edgeCount / (neighborsCount * (neighborsCount - 1));
 	}
 
@@ -562,7 +563,7 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 			final Set<CyNode> neighbors = getNeighbors(current);
 			for (CyNode neighbor : neighbors) {
 				final NodeBetweenInfo neighborNBInfo = nodeBetweenness.get(neighbor);
-				final List<CyEdge> edges = network.getConnectionEdgeList(current,neighbor,CyEdge.Type.ANY);
+				final List<CyEdge> edges = network.getConnectingEdgeList(current,neighbor,CyEdge.Type.ANY);
 				final int expectSPLength = currentNBInfo.getSPLength() + 1;
 				if (neighborNBInfo.getSPLength() < 0) {
 					// Neighbor traversed for the first time
@@ -751,10 +752,10 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 	 * @return Degree of the given node, as defined in the book &qout;Graph Theory&qout; by Reinhard
 	 *         Diestel.
 	 */
-	private int getDegree(CyNode aNode, int[] aIncEdges) {
-		int degree = aIncEdges.length;
-		for (int i = 0; i < aIncEdges.length; ++i) {
-			Edge e = network.getEdge(aIncEdges[i]);
+	private int getDegree(CyNode aNode, List<CyEdge> aIncEdges) {
+		int degree = aIncEdges.size();
+		for (int i = 0; i < aIncEdges.size(); ++i) {
+			CyEdge e = aIncEdges.get(i);
 			if (e.getSource() == e.getTarget() && (!(e.isDirected() && interpr.isPaired()))) {
 				degree++;
 			}
@@ -770,9 +771,8 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 	 * @return Array of edge indices, containing all the edges in the network incident on
 	 *         <code>aNode</code>.
 	 */
-	private int[] getIncidentEdges(CyNode aNode) {
-		int ni = aNode.getRootGraphIndex();
-		return network.getAdjacentEdgeIndicesArray(ni, true, !interpr.isPaired(), true);
+	private List<CyEdge> getIncidentEdges(CyNode aNode) {
+		return network.getAdjacentEdgeList(aNode, (interpr.isPaired() ? CyEdge.Type.INCOMING : CyEdge.Type.ANY));
 	}
 
 	/**

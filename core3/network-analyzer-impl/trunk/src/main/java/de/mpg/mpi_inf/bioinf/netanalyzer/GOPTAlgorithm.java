@@ -18,6 +18,8 @@
 package de.mpg.mpi_inf.bioinf.netanalyzer;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 
@@ -30,6 +32,9 @@ import org.cytoscape.model.CyEdge;
  */
 public class GOPTAlgorithm {
 
+	private final CyNetworkManager netMgr;
+	private final CyNetworkFactory netFactory;
+	
 	/**
 	 * Initializes a new instance of <code>GOPTAlgorithm</code>.
 	 * 
@@ -38,12 +43,14 @@ public class GOPTAlgorithm {
 	 * @throws NullPointerException If <code>aNetwork1</code> or <code>aNetwork2</code> is
 	 *         <code>null</code>.
 	 */
-	public GOPTAlgorithm(CyNetwork aNetwork1, CyNetwork aNetwork2) {
+	public GOPTAlgorithm(CyNetwork aNetwork1, CyNetwork aNetwork2, CyNetworkManager netMgr, CyNetworkFactory netFactory) {
 		if (aNetwork1 == null || aNetwork2 == null) {
 			throw new NullPointerException();
 		}
 		network1 = aNetwork1;
 		network2 = aNetwork2;
+		this.netMgr = netMgr;
+		this.netFactory = netFactory;
 	}
 
 	/**
@@ -70,55 +77,56 @@ public class GOPTAlgorithm {
 			}
 
 			// Iterate over the nodes of the two networks
-			for ( CyNode actNode : network1.getNodeList() ) {
-				if (network2.containsNode(actNode)) {
-					if (aIntersection) {
-						intersectionNw.addNode(actNode);
-					}
-				} else {
-					if (aUnion) {
-						unionNw.addNode(actNode);
-					}
-					if (aDifference) {
-						diffNw1.addNode(actNode);
-					}
-				}
-			}
-			for ( CyNode actNode : network2.getNodeList() ) {
-				if (aUnion) {
-					unionNw.addNode(actNode);
-				}
-				if (aDifference && (! network1.containsNode(actNode))) {
-					diffNw2.addNode(actNode);
-				}
-			}
-
-			// Iterate over the edges of the two networks
-			for ( CyEdge actEdge : network1.getEdgeList() ) {
-				if (network2.containsEdge(actEdge)) {
-					if (aIntersection) {
-						intersectionNw.addEdge(actEdge);
-					}
-				} else {
-					if (aUnion) {
-						unionNw.addEdge(actEdge);
-					}
-					if (aDifference && diffNw1.containsNode(actEdge.getSource())
-						&& diffNw1.containsNode(actEdge.getTarget())) {
-						diffNw1.addEdge(actEdge);
-					}
-				}
-			}
-			for ( CyEdge actEdge : network2.getEdgeList() ) {
-				if (aUnion) {
-					unionNw.addEdge(actEdge);
-				}
-				if (aDifference && ( !network1.containsEdge(actEdge))
-					&& diffNw2.containsNode(actEdge.getSource())
-					&& diffNw2.containsNode(actEdge.getTarget())) {
-					diffNw2.addEdge(actEdge);
-				}
-			}
+//			for ( CyNode actNode : network1.getNodeList() ) {
+//				if (network2.containsNode(actNode)) {
+//					if (aIntersection) {
+//						CyNode n = intersectionNw.addNode();
+//						n.getCyRow().set("name", actNode.getCyRow().get("name", String.class));
+//					}
+//				} else {
+//					if (aUnion) {
+//						unionNw.addNode(actNode);
+//					}
+//					if (aDifference) {
+//						diffNw1.addNode(actNode);
+//					}
+//				}
+//			}
+//			for ( CyNode actNode : network2.getNodeList() ) {
+//				if (aUnion) {
+//					unionNw.addNode(actNode);
+//				}
+//				if (aDifference && (! network1.containsNode(actNode))) {
+//					diffNw2.addNode(actNode);
+//				}
+//			}
+//
+//			// Iterate over the edges of the two networks
+//			for ( CyEdge actEdge : network1.getEdgeList() ) {
+//				if (network2.containsEdge(actEdge)) {
+//					if (aIntersection) {
+//						intersectionNw.addEdge(actEdge);
+//					}
+//				} else {
+//					if (aUnion) {
+//						unionNw.addEdge(actEdge);
+//					}
+//					if (aDifference && diffNw1.containsNode(actEdge.getSource())
+//						&& diffNw1.containsNode(actEdge.getTarget())) {
+//						diffNw1.addEdge(actEdge);
+//					}
+//				}
+//			}
+//			for ( CyEdge actEdge : network2.getEdgeList() ) {
+//				if (aUnion) {
+//					unionNw.addEdge(actEdge);
+//				}
+//				if (aDifference && ( !network1.containsEdge(actEdge))
+//					&& diffNw2.containsNode(actEdge.getSource())
+//					&& diffNw2.containsNode(actEdge.getTarget())) {
+//					diffNw2.addEdge(actEdge);
+//				}
+//			}
 		}
 	}
 
@@ -154,7 +162,7 @@ public class GOPTAlgorithm {
 
 	// TODO This should be refactored out into a Task
 	private CyNetwork createNetwork(String name) {
-		CyNetwork n = cyNetworkFactory.getInstance();
+		CyNetwork n = netFactory.getInstance();
 		n.getCyRow().set("name",name);
 		netMgr.addNetwork(n);
 		return n;

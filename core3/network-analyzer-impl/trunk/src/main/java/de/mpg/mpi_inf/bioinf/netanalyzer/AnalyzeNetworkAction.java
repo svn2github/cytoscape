@@ -88,7 +88,7 @@ public class AnalyzeNetworkAction extends NetAnalyzerAction {
 		// Ask the user for an interpretation of the network edges
 		try {
 			final NetworkInspection status = CyNetworkUtils.inspectNetwork(aNetwork);
-			NetworkInterpretation interpr = interpretNetwork(status);
+			NetworkInterpretation interpr = interpretNetwork(swingApp, status);
 			if (interpr == null) {
 				return null;
 			}
@@ -121,9 +121,9 @@ public class AnalyzeNetworkAction extends NetAnalyzerAction {
 	 * 
 	 * @see InterpretationDialog
 	 */
-	private static NetworkInterpretation interpretNetwork(NetworkInspection aInsp) {
-		final NetworkStatus status = NetworkStatus.getStatus(aInsp);
-		final InterpretationDialog dialog = new InterpretationDialog(status);
+	private static NetworkInterpretation interpretNetwork(CySwingApplication swingApp, NetworkInspection aInsp) {
+		final NetworkStatus status = NetworkStatus.getStatus( aInsp);
+		final InterpretationDialog dialog = new InterpretationDialog(swingApp.getJFrame(),status);
 		dialog.setVisible(true);
 
 		if (dialog.pressedOK()) {

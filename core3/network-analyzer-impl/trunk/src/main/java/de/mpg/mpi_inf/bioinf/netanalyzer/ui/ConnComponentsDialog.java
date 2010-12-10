@@ -36,6 +36,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -97,7 +98,10 @@ public class ConnComponentsDialog extends JDialog
 			CCInfo comp = components[listComp.getSelectedIndex()];
 			ArrayList<CyNode> nodes = new ArrayList<CyNode>(ConnComponentAnalyzer.getNodesOf(network, comp));
 			Set<CyEdge> edges = CyNetworkUtils.getAllConnectingEdges(network,nodes);
-			Cytoscape.createNetwork(nodes, edges, fieldNetName.getText());
+			// TODO figure out what the procedure should be for creating new networks from selected nodes/edges.
+			// This should be resolved in the NewNetworkFromNodesAndEdges tasks in core-task-impl, not here.
+//			Cytoscape.createNetwork(nodes, edges, fieldNetName.getText());
+			JOptionPane.showMessageDialog(getOwner(), "This functionality is not yet implemented");
 		}
 	}
 

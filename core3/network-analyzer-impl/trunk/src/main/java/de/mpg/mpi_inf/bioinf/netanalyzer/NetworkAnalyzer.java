@@ -19,7 +19,6 @@ package de.mpg.mpi_inf.bioinf.netanalyzer;
 
 import java.awt.geom.Point2D;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,8 +26,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableManager;
-import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
+import org.cytoscape.model.subnetwork.CySubNetwork;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkInterpretation;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkStats;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.SumCountPair;
@@ -129,8 +127,8 @@ public abstract class NetworkAnalyzer {
 		nodeSet = aNodeSet;
 		interpr = aInterpr;
 		stats = new NetworkStats(aNetwork, aInterpr.getInterpretSuffix());
-		nodeAttributes = tableMgr.getTableMap(CyNode.class,aNetwork).get(CyNetwork.DEFAULT_ATTRS); 
-		edgeAttributes = tableMgr.getTableMap(CyNode.class,aNetwork).get(CyNetwork.DEFAULT_ATTRS); 
+		nodeAttributes = aNetwork.getDefaultNodeTable(); 
+		edgeAttributes = aNetwork.getDefaultEdgeTable(); 
 		progress = 0;
 	}
 
@@ -143,14 +141,11 @@ public abstract class NetworkAnalyzer {
 	protected void analysisStarting() {
 		if (interpr.isIgnoreUSL()) {
 			removedEdges = new HashSet<CyEdge>();
-			// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
-			Iterator<?> edgesIter = network.edgesIterator();
-			while (edgesIter.hasNext()) {
-				Edge edge = (Edge) edgesIter.next();
+			for ( CyEdge edge : network.getEdgeList() ) {
 				if (!edge.isDirected()) {
-					int ei = edge.getRootGraphIndex();
-					if (network.getEdgeSourceIndex(ei) == network.getEdgeTargetIndex(ei)) {
-						network.removeEdge(ei, false);
+
+					if (edge.getSource() == edge.getTarget()) {
+						network.removeEdge(edge);
 						removedEdges.add(edge);
 					}
 				}
@@ -169,7 +164,10 @@ public abstract class NetworkAnalyzer {
 	protected void analysisFinished() {
 		if (interpr.isIgnoreUSL()) {
 			for (final CyEdge e : removedEdges) {
-				network.addEdge(e);
+				// TODO we should consider using CySubNetwork carefully!!!
+				// Perhaps we shouldn't use it at all, or we might actually want to use it 
+				// more pervasively.  I don't know.
+				((CySubNetwork)network).addEdge(e);
 			}
 		}
 	}
@@ -269,126 +267,6 @@ public abstract class NetworkAnalyzer {
 			averages.add(new Point2D.Double(x.doubleValue(), y));
 		}
 		return averages;
-	}
-
-	/**
-	 * Sets the boolean value of the given node attribute.
-	 * 
-	 * @param aNodeID
-	 *            ID of node to have its attribute set.
-	 * @param aAttributeID
-	 *            ID of attribute name. The attribute name itself is obtained by calling
-	 *            {@link Messages#getAttr(String)}.
-	 * @param aValue
-	 *            Value of the attribute.
-	 */
-	protected void setAttr(String aNodeID, String aAttributeID, boolean aValue) {
-		nodeAttributes.setAttribute(aNodeID, Messages.getAttr(aAttributeID), new Boolean(aValue));
-	}
-
-	/**
-	 * Sets the floating-point value of the given node attribute.
-	 * 
-	 * @param aNodeID
-	 *            ID of node to have its attribute set.
-	 * @param aAttributeID
-	 *            ID of attribute name. The attribute name itself is obtained by calling
-	 *            {@link Messages#getAttr(String)}.
-	 * @param aValue
-	 *            Value of the attribute.
-	 */
-	protected void setAttr(String aNodeID, String aAttributeID, double aValue) {
-		nodeAttributes.setAttribute(aNodeID, Messages.getAttr(aAttributeID), new Double(aValue));
-	}
-
-	/**
-	 * Sets the floating-point (<code>Double</code>) value of the given node attribute.
-	 * 
-	 * @param aNodeID
-	 *            ID of node to have its attribute set.
-	 * @param aAttributeID
-	 *            ID of attribute name. The attribute name itself is obtained by calling
-	 *            {@link Messages#getAttr(String)}.
-	 * @param aValue
-	 *            Value of the attribute.
-	 */
-	protected void setAttr(String aNodeID, String aAttributeID, Double aValue) {
-		nodeAttributes.setAttribute(aNodeID, Messages.getAttr(aAttributeID), aValue);
-	}
-
-	/**
-	 * Sets the integer value of the given node attribute.
-	 * 
-	 * @param aNodeID
-	 *            ID of node to have its attribute set.
-	 * @param aAttributeID
-	 *            ID of attribute name. The attribute name itself is obtained by calling
-	 *            {@link Messages#getAttr(String)}.
-	 * @param aValue
-	 *            Value of the attribute.
-	 */
-	protected void setAttr(String aNodeID, String aAttributeID, int aValue) {
-		nodeAttributes.setAttribute(aNodeID, Messages.getAttr(aAttributeID), new Integer(aValue));
-	}
-
-	/**
-	 * Sets the boolean value of the given edge attribute.
-	 * 
-	 * @param anEdgeID
-	 *            ID of edge to have its attribute set.
-	 * @param aAttributeID
-	 *            ID of attribute name. The attribute name itself is obtained by calling
-	 *            {@link Messages#getAttr(String)}.
-	 * @param aValue
-	 *            Value of the attribute.
-	 */
-	protected void setEAttr(String anEdgeID, String aAttributeID, boolean aValue) {
-		edgeAttributes.setAttribute(anEdgeID, Messages.getAttr(aAttributeID), new Boolean(aValue));
-	}
-
-	/**
-	 * Sets the floating-point value of the given edge attribute.
-	 * 
-	 * @param anEdgeID
-	 *            ID of edge to have its attribute set.
-	 * @param aAttributeID
-	 *            ID of attribute name. The attribute name itself is obtained by calling
-	 *            {@link Messages#getAttr(String)}.
-	 * @param aValue
-	 *            Value of the attribute.
-	 */
-	protected void setEAttr(String anEdgeID, String aAttributeID, double aValue) {
-		edgeAttributes.setAttribute(anEdgeID, Messages.getAttr(aAttributeID), new Double(aValue));
-	}
-
-	/**
-	 * Sets the floating-point (<code>Double</code>) value of the given edge attribute.
-	 * 
-	 * @param anEdgeID
-	 *            ID of edge to have its attribute set.
-	 * @param aAttributeID
-	 *            ID of attribute name. The attribute name itself is obtained by calling
-	 *            {@link Messages#getAttr(String)}.
-	 * @param aValue
-	 *            Value of the attribute.
-	 */
-	protected void setEAttr(String anEdgeID, String aAttributeID, Double aValue) {
-		edgeAttributes.setAttribute(anEdgeID, Messages.getAttr(aAttributeID), aValue);
-	}
-
-	/**
-	 * Sets the integer value of the given edge attribute.
-	 * 
-	 * @param anEdgeID
-	 *            ID of edge to have its attribute set.
-	 * @param aAttributeID
-	 *            ID of attribute name. The attribute name itself is obtained by calling
-	 *            {@link Messages#getAttr(String)}.
-	 * @param aValue
-	 *            Value of the attribute.
-	 */
-	protected void setEAttr(String anEdgeID, String aAttributeID, int aValue) {
-		edgeAttributes.setAttribute(anEdgeID, Messages.getAttr(aAttributeID), new Integer(aValue));
 	}
 
 	/**

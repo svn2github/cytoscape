@@ -27,6 +27,7 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
@@ -77,8 +78,10 @@ public class CompareDialog extends NetworkListDialog implements ActionListener {
 			final int[] indices = listNetNames.getSelectedIndices();
 			final CyNetwork network1 = networks.get(indices[0]);
 			final CyNetwork network2 = networks.get(indices[1]);
-			GOPTAlgorithm algorithm = new GOPTAlgorithm(network1, network2);
-			algorithm.computeNetworks(intersect.isSelected(), union.isSelected(), diff.isSelected());
+			// TODO use Advanced Network Merge once that becomes available.
+			//GOPTAlgorithm algorithm = new GOPTAlgorithm(network1, network2);
+			//algorithm.computeNetworks(intersect.isSelected(), union.isSelected(), diff.isSelected());
+			JOptionPane.showMessageDialog(aOwner, "This functionality is currently disabled");
 			setVisible(false);
 			dispose();
 		}

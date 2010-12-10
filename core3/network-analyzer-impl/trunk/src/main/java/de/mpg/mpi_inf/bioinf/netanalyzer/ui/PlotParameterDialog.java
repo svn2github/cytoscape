@@ -202,7 +202,7 @@ public class PlotParameterDialog extends VisualizeParameterDialog implements Act
 		final Class<?> attrType2 = cyAttr.getType(attrY);
 		final List<Point2D.Double> plotValues = new ArrayList<Point2D.Double>(network
 				.getNodeCount());
-		for ( CyNode n : network.getNodeList()) {
+		for ( CyNode node : network.getNodeList()) {
 			Double value1 = getAttrValue(node, attrX, attrType1);
 			Double value2 = getAttrValue(node, attrY, attrType2);
 			if (value1 != null && value2 != null) {

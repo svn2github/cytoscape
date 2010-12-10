@@ -21,7 +21,8 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
 
-import cytoscape.Cytoscape;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
@@ -112,7 +113,7 @@ public class MapParameterAction extends NetAnalyzerAction implements AnalysisLis
 	 * mapped to visual styles afterwards.
 	 */
 	private void runNetworkAnalyzer() {
-		final AnalysisExecutor exec = AnalyzeNetworkAction.initAnalysisExecuter(network, null);
+		final AnalysisExecutor exec = AnalyzeNetworkAction.initAnalysisExecuter(network, null, swingApp);
 		if (exec != null) {
 			exec.setShowDialog(false);
 			exec.addAnalysisListener(this);

@@ -19,6 +19,7 @@ package de.mpg.mpi_inf.bioinf.netanalyzer.ui;
 
 import java.awt.Dialog;
 import java.awt.Frame;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +43,7 @@ import org.cytoscape.model.CyNetworkManager;
 abstract class NetworkListDialog extends JDialog implements ListSelectionListener {
 
 	private final CyNetworkManager netMgr;
+	protected final Window aOwner;
 	
 	/**
 	 * Initializes the fields of <code>NetworkListDialog</code>.
@@ -51,6 +53,7 @@ abstract class NetworkListDialog extends JDialog implements ListSelectionListene
 	 */
 	protected NetworkListDialog(Frame aOwner, String aTitle, final CyNetworkManager netMgr) {
 		super(aOwner, aTitle, true);
+		this.aOwner = aOwner;
 		this.netMgr = netMgr;
 		initNetworkList();
 	}
@@ -64,6 +67,7 @@ abstract class NetworkListDialog extends JDialog implements ListSelectionListene
 	protected NetworkListDialog(Dialog aOwner, String aTitle, final CyNetworkManager netMgr) {
 		super(aOwner, aTitle, true);
 		this.netMgr = netMgr;
+		this.aOwner = aOwner;
 		initNetworkList();
 	}
 

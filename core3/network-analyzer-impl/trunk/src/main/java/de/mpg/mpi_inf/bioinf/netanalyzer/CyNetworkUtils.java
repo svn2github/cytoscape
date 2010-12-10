@@ -178,6 +178,7 @@ public abstract class CyNetworkUtils {
 						// TODO I think this break is wrong! 
 						// What if there are more than two edges?
 						break;
+					}
 				}
 			}
 		}
@@ -312,7 +313,6 @@ public abstract class CyNetworkUtils {
 		for( CyEdge edge : aNetwork.getEdgeList()) {
 			// Get all the edges that connect the two ends of the given edge
 			final CyNode source = edge.getSource();
-			final CyNode target = edge.getTarget();
 			final List<CyEdge> connecting = aNetwork.getConnectingEdgeList(edge.getSource(), edge.getTarget(), CyEdge.Type.ANY);
 			if (edge.getSource() == edge.getTarget()) {
 				// Self-loop inspection
@@ -495,7 +495,7 @@ public abstract class CyNetworkUtils {
 	 * are considered - incoming, outgoing and undirected.
 	 * 
 	 * @param aNetwork
-	 *            Network from which self-loops are to be removed.
+	 *            Network from which self-loops are to be removed. 
 	 * @return Number of removed self-loops.
 	 */
 	public static int removeSelfLoops(CyNetwork aNetwork) {

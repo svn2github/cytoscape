@@ -17,9 +17,6 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer.ui;
 
-import giny.model.Edge;
-import giny.model.Node;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -46,27 +43,27 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 
-import cytoscape.view.CyNetworkView;
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.EdgeAppearance;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.NodeAppearance;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyDependency;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.calculators.BasicCalculator;
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.Interpolator;
-import cytoscape.visual.mappings.LinearNumberToColorInterpolator;
-import cytoscape.visual.mappings.LinearNumberToNumberInterpolator;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
+//import cytoscape.view.CyNetworkView;
+//import cytoscape.visual.CalculatorCatalog;
+//import cytoscape.visual.EdgeAppearance;
+//import cytoscape.visual.EdgeAppearanceCalculator;
+//import cytoscape.visual.GlobalAppearanceCalculator;
+//import cytoscape.visual.NodeAppearance;
+//import cytoscape.visual.NodeAppearanceCalculator;
+//import cytoscape.visual.NodeShape;
+//import cytoscape.visual.VisualMappingManager;
+//import cytoscape.visual.VisualPropertyDependency;
+//import cytoscape.visual.VisualPropertyType;
+//import cytoscape.visual.VisualStyle;
+//import cytoscape.visual.calculators.BasicCalculator;
+//import cytoscape.visual.calculators.Calculator;
+//import cytoscape.visual.mappings.BoundaryRangeValues;
+//import cytoscape.visual.mappings.ContinuousMapping;
+//import cytoscape.visual.mappings.Interpolator;
+//import cytoscape.visual.mappings.LinearNumberToColorInterpolator;
+//import cytoscape.visual.mappings.LinearNumberToNumberInterpolator;
+//import cytoscape.visual.mappings.ObjectMapping;
+//import cytoscape.visual.mappings.PassThroughMapping;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.io.SettingsSerializer;
 
@@ -136,25 +133,25 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 			}
 			// get the network view on which to apply the visual style based on
 			// this.network
-			CyNetworkView networkView = null;
-			Map<String, CyNetworkView> networkViewMap = Cytoscape.getNetworkViewMap();
-			if (networkViewMap.containsKey(network.getIdentifier())) {
-				networkView = networkViewMap.get(network.getIdentifier());
-			} else {
-				networkView = Cytoscape.createNetworkView(network);
-			}
-			// get the current visual style and modify it according to the user
-			// specified criteria
-			VisualMappingManager manager = Cytoscape.getVisualMappingManager();
-			CalculatorCatalog catalog = manager.getCalculatorCatalog();
-			VisualStyle newStyle = createVisualStyle();
-			String name = newStyle.getName();
-			if (catalog.getVisualStyle(name) != null) {
-				catalog.removeVisualStyle(name);
-			}
-			catalog.addVisualStyle(newStyle);
-			manager.setVisualStyle(newStyle);
-			networkView.redrawGraph(true, true);
+//			CyNetworkView networkView = null;
+//			Map<String, CyNetworkView> networkViewMap = Cytoscape.getNetworkViewMap();
+//			if (networkViewMap.containsKey(network.getIdentifier())) {
+//				networkView = networkViewMap.get(network.getIdentifier());
+//			} else {
+//				networkView = Cytoscape.createNetworkView(network);
+//			}
+//			// get the current visual style and modify it according to the user
+//			// specified criteria
+//			VisualMappingManager manager = Cytoscape.getVisualMappingManager();
+//			CalculatorCatalog catalog = manager.getCalculatorCatalog();
+//			VisualStyle newStyle = createVisualStyle();
+//			String name = newStyle.getName();
+//			if (catalog.getVisualStyle(name) != null) {
+//				catalog.removeVisualStyle(name);
+//			}
+//			catalog.addVisualStyle(newStyle);
+//			manager.setVisualStyle(newStyle);
+//			networkView.redrawGraph(true, true);
 
 			setVisible(false);
 			dispose();
@@ -389,7 +386,7 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 	 * computed attributes.
 	 * 
 	 * @return New visual style.
-	 */
+	 
 	private VisualStyle createVisualStyle() {
 
 		// Create new visual style
@@ -471,6 +468,7 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 		visualStyle.setName(name);
 		return visualStyle;
 	}
+	*/
 
 	/**
 	 * Computes the minimal, maximal and mean value for each computed attribute by consequently processing
@@ -490,7 +488,7 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 				final Class<?> attrType = entry.getCyRow().getDataTable().getType(attr[i][j]);
 				Double attrValue = new Double(0.0);
 				if (attrType == Integer.class) {
-					attrValue = entry.getCyRow().get(attr[i][j], Integer.class).doubleValue());
+					attrValue = entry.getCyRow().get(attr[i][j], Integer.class).doubleValue();
 				} else if (attrType == Double.class) {
 					attrValue = entry.getCyRow().get(attr[i][j], Double.class);
 				}
@@ -562,7 +560,7 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 	 * @param objectMapping
 	 *            Contains the information whether a node or edge attribute is mapped.
 	 * @return A continuous mapping ot an attribute to the color of nodes/edges.
-	 */
+	
 	private ContinuousMapping getColorMapping(String attr, byte objectMapping) {
 		ContinuousMapping conMapColor = new ContinuousMapping(Color.WHITE, objectMapping);
 		conMapColor.setControllingAttributeName(attr, network, false);
@@ -572,6 +570,7 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 
 		return conMapColor;
 	}
+	 */
 
 	/**
 	 * Creates a continuous mapping of a node or edge attribute to the size of the nodes (width &
@@ -582,7 +581,7 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 	 * @param objectMapping
 	 *            Contains the information whether a node or edge attribute is mapped.
 	 * @return A continuous mapping ot an attribute to the size of nodes/edges.
-	 */
+	
 	private ContinuousMapping getSizeMapping(String attr, byte objectMapping) {
 		ContinuousMapping conMapSize = new ContinuousMapping(new Double(1.0), objectMapping);
 		conMapSize.setControllingAttributeName(attr, network, false);
@@ -592,6 +591,7 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 
 		return conMapSize;
 	}
+	 */
 
 	/**
 	 * Adds boundaries to the continuous mapping by defining minimal, maximal and middle values for both color
@@ -611,7 +611,7 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 	 * @param max
 	 *            Maximal value of size/color for the mapping.
 	 * @return The value of the <code>conMap</code> parameter.
-	 */
+	 
 	private ContinuousMapping addBoundaries(ContinuousMapping conMap, String attr, String mapType,
 			Object min, Object mid, Object max) {
 		Object min_ = min;
@@ -638,7 +638,7 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 
 		return conMap;
 	}
-
+*/
 	/**
 	 * Unique ID for this version of this class. It is used in serialization.
 	 */

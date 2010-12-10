@@ -28,6 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -51,6 +54,9 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.BatchAnalysisDialog;
  */
 public class BatchNetworkAnalyzer extends SwingWorker {
 
+	private final CyNetworkManager netMgr;
+	private final CyNetworkViewReaderManager cyNetworkViewReaderMgr;
+	
 	/**
 	 * Initializes a new instance of <code>BatchNetworkAnalyzer</code>.
 	 * 
@@ -61,7 +67,7 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 	 * @param aInterpr
 	 *            Parameter specifying which interpretations to be applied to each network.
 	 */
-	public BatchNetworkAnalyzer(File aOutputDir, List<File> aInputFiles, Interpretations aInterpr) {
+	public BatchNetworkAnalyzer(File aOutputDir, List<File> aInputFiles, Interpretations aInterpr, CyNetworkManager netMgr, CyNetworkViewReaderManager cyNetworkViewReaderMgr) {
 		analyzer = null;
 		cancelled = false;
 		dialog = null;
@@ -73,6 +79,8 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 		scale = 0.0;
 		analyzing = false;
 		subProgress = 0;
+		this.netMgr = netMgr;
+		this.cyNetworkViewReaderMgr = cyNetworkViewReaderMgr;
 	}
 
 	/**
@@ -109,7 +117,8 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 				if (!inputFile.isFile()) {
 					throw new RuntimeException();
 				}
-				network = Cytoscape.createNetworkFromFile(inputFile.getPath(), false);
+				CyNetworkViewReader reader = cyNetworkViewReaderMgr.getReader(inputFile.toURI());
+				network = reader.getNetworkViews()[0].getModel();
 			} catch (RuntimeException e) {
 				writeLine(Messages.SM_READERROR);
 				reports.add(new NetworkAnalysisReport(inputFile, null, AnalysisError.NETWORK_NOT_OPENED));
@@ -419,7 +428,7 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 		// Unload the network
 		write(Messages.SM_UNLOADING + inputFile.getName() + " ... ");
 		try {
-			Cytoscape.destroyNetwork(network, true);
+			netMgr.destroyNetwork(network);
 		} catch (Exception ex) {
 			// Network already removed (by another plugin); ignore
 		}

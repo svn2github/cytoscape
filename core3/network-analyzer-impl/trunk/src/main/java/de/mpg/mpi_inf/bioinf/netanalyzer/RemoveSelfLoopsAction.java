@@ -20,8 +20,11 @@ package de.mpg.mpi_inf.bioinf.netanalyzer;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
+
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
@@ -38,13 +41,15 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
 public class RemoveSelfLoopsAction extends NetAnalyzerAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(RemoveSelfLoopsAction.class);
+	private final CyNetworkManager netMgr;
 
 	/**
 	 * Initializes a new instance of <code>RemoveSelfLoopsAction</code>.
 	 */
-	public RemoveSelfLoopsAction(CyApplicationManager appMgr,CySwingApplication swingApp) {
+	public RemoveSelfLoopsAction(CyApplicationManager appMgr,CySwingApplication swingApp, CyNetworkManager netMgr) {
 		super(Messages.AC_REMSELFLOOPS,appMgr,swingApp);
 		setPreferredMenu("Plugins." + Messages.AC_MENU_MODIFICATION);
+		this.netMgr = netMgr;
 	}
 
 	/*
@@ -62,7 +67,7 @@ public class RemoveSelfLoopsAction extends NetAnalyzerAction {
 			final Frame desktop = swingApp.getJFrame();
 			final String helpURL = HelpConnector.getRemSelfloopsURL();
 			final NetModificationDialog d = new NetModificationDialog(desktop, Messages.DT_REMSELFLOOPS,
-					Messages.DI_REMOVESL, helpURL);
+					Messages.DI_REMOVESL, helpURL, netMgr);
 			d.setVisible(true);
 
 			// Remove the self-loops from all networks selected by the user
@@ -73,7 +78,7 @@ public class RemoveSelfLoopsAction extends NetAnalyzerAction {
 				String[] networkNames = new String[size];
 				for (int i = 0; i < size; ++i) {
 					final CyNetwork currentNet = networks[i];
-					networkNames[i] = currentNet.getTitle();
+					networkNames[i] = currentNet.getCyRow().get("name",String.class);
 					removedLoops[i] = CyNetworkUtils.removeSelfLoops(currentNet);
 				}
 
