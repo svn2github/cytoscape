@@ -19,8 +19,10 @@ package de.mpg.mpi_inf.bioinf.netanalyzer;
 
 import java.awt.event.ActionEvent;
 
-import cytoscape.Cytoscape;
 import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
+
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.AboutDialog;
 
@@ -29,7 +31,7 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.AboutDialog;
  * 
  * @author Yassen Assenov
  */
-public final class AboutAction extends AbstractCyAction {
+public final class AboutAction extends NetAnalyzerAction {
 
 	/**
 	 * Initializes a new instance of <code>AboutAction</code>.

@@ -30,7 +30,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import cytoscape.util.OpenBrowser;
+import de.mpg.mpi_inf.bioinf.netanalyzer.OpenBrowser;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Utils;
 

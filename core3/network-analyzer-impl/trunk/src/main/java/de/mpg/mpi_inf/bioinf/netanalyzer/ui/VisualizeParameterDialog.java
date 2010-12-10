@@ -21,7 +21,7 @@ import java.awt.Frame;
 
 import javax.swing.JDialog;
 
-import cytoscape.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 /**
  * Basic class for a visualization dialog.

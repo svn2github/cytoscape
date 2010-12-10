@@ -17,14 +17,14 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer;
 
-import giny.model.Node;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
-import cytoscape.CyNetwork;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.CCInfo;
 
 /**
@@ -42,16 +42,16 @@ public class ConnComponentAnalyzer {
 	 * @return Set of all nodes in <code>aCompInfo</code>; empty set if this component is not
 	 *         contained in <code>aNetwork</code>.
 	 */
-	public static Set<Node> getNodesOf(CyNetwork aNetwork, CCInfo aCompInfo) {
-		Set<Node> nodes = new HashSet<Node>(aCompInfo.getSize());
+	public static Set<CyNode> getNodesOf(CyNetwork aNetwork, CCInfo aCompInfo) {
+		Set<CyNode> nodes = new HashSet<CyNode>(aCompInfo.getSize());
 		nodes.add(aCompInfo.getNode());
-		LinkedList<Node> toTraverse = new LinkedList<Node>();
+		LinkedList<CyNode> toTraverse = new LinkedList<CyNode>();
 		toTraverse.add(aCompInfo.getNode());
 
 		while (!toTraverse.isEmpty()) {
-			final Node node = toTraverse.removeFirst();
-			final Set<Node> neighbors = CyNetworkUtils.getNeighbors(aNetwork, node);
-			for (Node nb : neighbors) {
+			final CyNode node = toTraverse.removeFirst();
+			final Set<CyNode> neighbors = CyNetworkUtils.getNeighbors(aNetwork, node);
+			for (CyNode nb : neighbors) {
 				if (!nodes.contains(nb)) {
 					nodes.add(nb);
 					toTraverse.add(nb);
@@ -79,13 +79,10 @@ public class ConnComponentAnalyzer {
 	public Set<CCInfo> findComponents() {
 		int untravCount = network.getNodeCount();
 
-		Set<Node> traversed = new HashSet<Node>(untravCount);
+		Set<CyNode> traversed = new HashSet<CyNode>(untravCount);
 		Set<CCInfo> components = new HashSet<CCInfo>();
 
-		// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
-		Iterator<?> it = network.nodesIterator();
-		while (untravCount > 0 && it.hasNext()) {
-			final Node node = (Node) it.next();
+		for ( CyNode node : network.getNodeList()) {
 			if (!traversed.contains(node)) {
 				// Unmarked node reached - create new conn. component
 				final int ccSize = traverseReachable(node, traversed);
@@ -137,7 +134,7 @@ public class ConnComponentAnalyzer {
 	 * 
 	 * @see #getNodesOf(CyNetwork, CCInfo)
 	 */
-	public Set<Node> getNodesOf(CCInfo aCompInfo) {
+	public Set<CyNode> getNodesOf(CCInfo aCompInfo) {
 		return getNodesOf(network, aCompInfo);
 	}
 
@@ -149,15 +146,15 @@ public class ConnComponentAnalyzer {
 	 * @return Number of nodes which were traversed. <code>aNode</code> itself is also counted as
 	 *         traversed.
 	 */
-	private int traverseReachable(Node aNode, Set<Node> aTraversed) {
+	private int traverseReachable(CyNode aNode, Set<CyNode> aTraversed) {
 		int size = 1;
-		LinkedList<Node> toTraverse = new LinkedList<Node>();
+		LinkedList<CyNode> toTraverse = new LinkedList<CyNode>();
 		aTraversed.add(aNode);
 		toTraverse.add(aNode);
 		while (!toTraverse.isEmpty()) {
-			final Node currentNode = toTraverse.removeFirst();
-			final Set<Node> neighbors = CyNetworkUtils.getNeighbors(network, currentNode);
-			for (Node nb : neighbors) {
+			final CyNode currentNode = toTraverse.removeFirst();
+			final Set<CyNode> neighbors = CyNetworkUtils.getNeighbors(network, currentNode);
+			for (CyNode nb : neighbors) {
 				if (!aTraversed.contains(nb)) {
 					size++;
 					toTraverse.add(nb);

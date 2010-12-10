@@ -80,7 +80,7 @@ public class BatchSettingsDialog extends JDialog implements ActionListener {
 					txfInputDir.setText(file.getAbsolutePath());
 				} else {
 					txfInputDir.setText("");
-					Utils.showErrorBox(Messages.DT_IOERROR, Messages.SM_BADINPUT);
+					Utils.showErrorBox(this,Messages.DT_IOERROR, Messages.SM_BADINPUT);
 				}
 				updateStartButton();
 			}
@@ -92,7 +92,7 @@ public class BatchSettingsDialog extends JDialog implements ActionListener {
 					txfOutputDir.setText(file.getAbsolutePath());
 				} else {
 					txfOutputDir.setText("");
-					Utils.showErrorBox(Messages.DT_IOERROR, Messages.SM_BADOUTPUT);
+					Utils.showErrorBox(this,Messages.DT_IOERROR, Messages.SM_BADOUTPUT);
 				}
 				updateStartButton();
 			}

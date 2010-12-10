@@ -1,18 +1,20 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.cytoscape</groupId>
-    <artifactId>parent</artifactId>
-    <version>3.0.0-alpha4-SNAPSHOT</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cytoscape</groupId>
+		<artifactId>parent</artifactId>
+		<version>3.0.0-alpha4-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>network-analyzer-impl</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>bundle</packaging>
-  <name>NetworkAnalyzer</name>
+	<artifactId>network-analyzer-impl</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+	<name>NetworkAnalyzer</name>
 
 	<properties>
-		<bundle.symbolicName>org.cytoscape.network-analyzer-impl</bundle.symbolicName>
+		<bundle.symbolicName>org.cytoscape.network-analyzer-impl
+		</bundle.symbolicName>
 		<bundle.namespace>de.mpg.mpi_inf.bioinf.netanalyzer</bundle.namespace>
 	</properties>
 
@@ -57,7 +59,8 @@
 				<enabled>false</enabled>
 			</releases>
 			<name>Cytoscape Snapshots</name>
-			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/
+			</url>
 		</repository>
 		<repository>
 			<id>cytoscape_releases</id>
@@ -68,7 +71,8 @@
 				<enabled>true</enabled>
 			</releases>
 			<name>Cytoscape Releases</name>
-			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/
+			</url>
 		</repository>
 	</repositories>
 
@@ -93,17 +97,48 @@
 			<artifactId>core-task-api</artifactId>
 			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
-    <dependency>
-      <groupId>jfree</groupId>
-      <artifactId>jfreechart</artifactId>
-      <version>1.0.13</version>
-    </dependency>
-    <dependency>
-      <groupId>jfree</groupId>
-      <artifactId>jcommon</artifactId>
-      <version>1.0.15</version>
-    </dependency>
-  </dependencies>
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jcommon</artifactId>
+			<version>1.0.15</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>com.springsource.org.jdom</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+        <dependency>
+            <groupId>org.freehep</groupId>
+            <artifactId>freehep-graphicsio</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.freehep</groupId>
+            <artifactId>freehep-graphicsio-svg</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cytoscape-temp</groupId>
+            <artifactId>l2fprod-common-sheet</artifactId>
+            <version>7.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cytoscape.wrappers</groupId>
+            <artifactId>org.swinglabs.swingx</artifactId>
+            <version>0.9.7</version>
+        </dependency>
+        <dependency>
+            <groupId>cytoscape-temp</groupId>
+            <artifactId>l2fprod-common-shared</artifactId>
+            <version>7.3</version>
+        </dependency>
+		
+	</dependencies>
 
 </project>
 

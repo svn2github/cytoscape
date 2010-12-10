@@ -20,7 +20,7 @@ package de.mpg.mpi_inf.bioinf.netanalyzer.data;
 import java.util.HashMap;
 import java.util.Map;
 
-import cytoscape.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 /**
  * Storage class for network parameters.
@@ -91,7 +91,7 @@ public class NetworkStats {
 	 */
 	public NetworkStats() {
 		params = new HashMap<String, Object>();
-		networkID = null;
+		network = null;
 	}
 
 	/**
@@ -101,9 +101,9 @@ public class NetworkStats {
 	 */
 	public NetworkStats(CyNetwork aNetwork, String aInterpretName) {
 		params = new HashMap<String, Object>();
-		set("networkTitle", aNetwork.getTitle() + aInterpretName);
+		set("networkTitle", aNetwork.getCyRow().get("name",String.class) + aInterpretName);
 		set("nodeCount", new Integer(aNetwork.getNodeCount()));
-		networkID = aNetwork.getIdentifier();
+		network = aNetwork;
 	}
 
 	/**
@@ -191,12 +191,12 @@ public class NetworkStats {
 	}
 
 	/**
-	 * Gets the id of the analyzed network.
+	 * Gets the analyzed network.
 	 *
-	 * @return Network id; <code>null</code> if the id is not stored in this instance.
+	 * @return Network; <code>null</code> if the network is not stored in this instance.
 	 */
-	public String getID() {
-		return networkID;
+	public CyNetwork getNetwork() {
+		return network;
 	}
 
 	/**
@@ -283,5 +283,5 @@ public class NetworkStats {
 	/**
 	 * Unique network id. Needed for parameter visualization.
 	 */
-	private String networkID; 
+	private CyNetwork network; 
 }

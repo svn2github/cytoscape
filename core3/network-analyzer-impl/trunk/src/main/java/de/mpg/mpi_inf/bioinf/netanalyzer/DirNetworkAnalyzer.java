@@ -19,6 +19,7 @@ package de.mpg.mpi_inf.bioinf.netanalyzer;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -147,11 +148,10 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 
 			for (final CyNode node : connNodes) {
 				++progress;
-				final int[] inEdges = getInEdges(node);
-				final int[] outEdges = getOutEdges(node);
-				inDegreeDist.addObservation(inEdges.length);
-				outDegreeDist.addObservation(outEdges.length);
-				String nodeID = node.getIdentifier();
+				final List<CyEdge> inEdges = getInEdges(node);
+				final List<CyEdge> outEdges = getOutEdges(node);
+				inDegreeDist.addObservation(inEdges.size());
+				outDegreeDist.addObservation(outEdges.size());
 
 				Set<CyNode> neighbors = getNeighbors(node, inEdges, outEdges);
 				int neighborCount = neighbors.size();
@@ -167,8 +167,8 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 				}
 				// Number of self-loops calculation
 				int selfloops = 0;
-				for (int j = 0; j < inEdges.length; j++) {
-					Edge e = network.getEdge(inEdges[j]);
+				for (int j = 0; j < inEdges.size(); j++) {
+					CyEdge e = inEdges.get(j);
 					if (e.getSource() == node) {
 						selfloops++;
 					}
@@ -185,13 +185,13 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 				multiEdgePartners += partnerOfMultiEdgeNodePairs;
 
 				if (useNodeAttributes) {
-					setAttr(nodeID, "cco", 0.0);
-					setAttr(nodeID, "din", inEdges.length);
-					setAttr(nodeID, "dou", outEdges.length);
-					setAttr(nodeID, "dal", inEdges.length + outEdges.length);
-					setAttr(nodeID, "isn", (neighborCount == 0));
-					setAttr(nodeID, "slo", selfloops);
-					setAttr(nodeID, "pmn", partnerOfMultiEdgeNodePairs);
+					node.getCyRow().set("cco", 0.0);
+					node.getCyRow().set("din", inEdges.size());
+					node.getCyRow().set("dou", outEdges.size());
+					node.getCyRow().set("dal", inEdges.size() + outEdges.size());
+					node.getCyRow().set("isn", (neighborCount == 0));
+					node.getCyRow().set("slo", selfloops);
+					node.getCyRow().set("pmn", partnerOfMultiEdgeNodePairs);
 				}
 
 				if (neighborCount > 1) {
@@ -201,10 +201,10 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 					final double nodeCCp = computeCC(neighbors);
 					accumulate(CCps, neighborCount, nodeCCp);
 					if (useNodeAttributes) {
-						setAttr(nodeID, "cco", Utils.roundTo(nodeCCp, roundingDigits));
+						node.getCyRow().set("cco", Utils.roundTo(nodeCCp, roundingDigits));
 					}
 				} else if (useNodeAttributes) {
-					setAttr(nodeID, "cco", 0.0);
+					node.getCyRow().set("cco", 0.0);
 				}
 
 				// Neighborhood connectivity calculation
@@ -213,13 +213,13 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 				if (neighborCount > 0) {
 					accumulate(ioNCps, neighborCount, nco);
 				}
-				neighbors = getNeighbors(node, inEdges, new int[0]);
+				neighbors = getNeighbors(node, inEdges, new ArrayList<CyEdge>());
 				neighborCount = neighbors.size();
 				if (neighborCount > 0) {
 					double inNC = averageNeighbors(neighbors, false, true);
 					accumulate(inNCps, neighborCount, inNC);
 				}
-				neighbors = getNeighbors(node, new int[0], outEdges);
+				neighbors = getNeighbors(node, new ArrayList<CyEdge>(), outEdges);
 				neighborCount = neighbors.size();
 				if (neighborCount > 0) {
 					outNeighbors += neighborCount;
@@ -228,7 +228,7 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 				}
 
 				if (useNodeAttributes) {
-					setAttr(nodeID, "nco", nco);
+					node.getCyRow().set("nco", nco);
 				}
 
 				if (nodeSet == null) {
@@ -248,9 +248,9 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 					closenessCent.add(new Point2D.Double(neighborCount, closeness));
 
 					if (useNodeAttributes) {
-						setAttr(nodeID, "spl", eccentricity);
-						setAttr(nodeID, "apl", Utils.roundTo(apl, roundingDigits));
-						setAttr(nodeID, "clc", Utils.roundTo(closeness, roundingDigits));
+						node.getCyRow().set("spl", eccentricity);
+						node.getCyRow().set("apl", Utils.roundTo(apl, roundingDigits));
+						node.getCyRow().set("clc", Utils.roundTo(closeness, roundingDigits));
 					}
 
 					// CyNode and edge betweenness calculation
@@ -274,7 +274,6 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 			if (nodeSet == null && computeNB) {
 				final double nNormFactor = computeNormFactor(nodeBetweenness.size());
 				for (final CyNode n : connNodes) {
-					String id = n.getIdentifier();
 					final NodeBetweenInfo nbi = nodeBetweenness.get(n);
 					double nb = nbi.getBetweenness() * nNormFactor;
 					final int connectivity = getNeighbors(n).size();
@@ -285,8 +284,8 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 					final long nodeStress = stress.get(n).longValue();
 					stressDist.addObservation(nodeStress);
 					if (useNodeAttributes) {
-						setAttr(n.getIdentifier(), "nbt", Utils.roundTo(nb, roundingDigits));
-						setAttr(id, "stress", nodeStress);
+						n.getCyRow().set("nbt", Utils.roundTo(nb, roundingDigits));
+						n.getCyRow().set("stress", nodeStress);
 					}
 				}
 
@@ -297,7 +296,7 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 						if (Double.isNaN(eb)) {
 							eb = 0.0;
 						}
-						setEAttr(betEntry.getKey().getIdentifier(), "ebt",
+						betEntry.getKey().getCyRow().set("ebt",
 								Utils.roundTo(eb, roundingDigits));
 					}
 				}
@@ -387,8 +386,8 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	 * @return Array of edge indices, containing all the edges in the network that point to
 	 *         <code>aNode</code> .
 	 */
-	private int[] getInEdges(CyNode aNode) {
-		return network.getAdjacentEdgeIndicesArray(aNode.getRootGraphIndex(), false, true, false);
+	private List<CyEdge> getInEdges(CyNode aNode) {
+		return network.getAdjacentEdgeList(aNode, CyEdge.Type.INCOMING);
 	}
 
 	/**
@@ -399,8 +398,8 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	 * @return Array of edge indices, containing all the edges in the network that start from
 	 *         <code>aNode</code>.
 	 */
-	private int[] getOutEdges(CyNode aNode) {
-		return network.getAdjacentEdgeIndicesArray(aNode.getRootGraphIndex(), false, false, true);
+	private List<CyEdge> getOutEdges(CyNode aNode) {
+		return network.getAdjacentEdgeList(aNode, CyEdge.Type.OUTGOING);
 	}
 
 	/**
@@ -418,16 +417,16 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	 * @return <code>Set</code> of <code>Node</code> instances, containing all the neighbors of
 	 *         <code>aNode</code>; empty set if the node specified is an isolatd vertex.
 	 */
-	private Set<CyNode> getNeighbors(CyNode aNode, int[] aInEdges, int[] aOutEdges) {
+	private Set<CyNode> getNeighbors(CyNode aNode, List<CyEdge> aInEdges, List<CyEdge> aOutEdges) {
 		Set<CyNode> neighborSet = new HashSet<CyNode>();
-		for (final int edgeIndex : aInEdges) {
-			final CyNode sourceNode = network.getEdge(edgeIndex).getSource();
+		for (final CyEdge e : aInEdges) {
+			final CyNode sourceNode = e.getSource();
 			if (sourceNode != aNode) {
 				neighborSet.add(sourceNode);
 			}
 		}
-		for (final int edgeIndex : aOutEdges) {
-			final CyNode targetNode = network.getEdge(edgeIndex).getTarget();
+		for (final CyEdge e : aOutEdges) {
+			final CyNode targetNode = e.getTarget();
 			if (targetNode != aNode) {
 				neighborSet.add(targetNode);
 			}
@@ -525,10 +524,10 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 				if (aOutEdges) {
 					neighbors += getNeighbors(nNode, getInEdges(nNode), getOutEdges(nNode)).size();
 				} else {
-					neighbors += getNeighbors(nNode, getInEdges(nNode), new int[0]).size();
+					neighbors += getNeighbors(nNode, getInEdges(nNode), new ArrayList<CyEdge>()).size();
 				}
 			} else {
-				neighbors += getNeighbors(nNode, new int[0], getOutEdges(nNode)).size();
+				neighbors += getNeighbors(nNode, new ArrayList<CyEdge>(), getOutEdges(nNode)).size();
 			}
 		}
 		return (double) neighbors / aNodes.size();
@@ -544,7 +543,7 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 	 */
 	private double computeCC(Collection<CyNode> aNeighborIndices) {
 		int edgeCount = CyNetworkUtils.getPairConnCount(network, aNeighborIndices, false);
-		int neighborsCount = aNeighborIndices.length;
+		int neighborsCount = aNeighborIndices.size();
 		return (double) edgeCount / (neighborsCount * (neighborsCount - 1));
 	}
 

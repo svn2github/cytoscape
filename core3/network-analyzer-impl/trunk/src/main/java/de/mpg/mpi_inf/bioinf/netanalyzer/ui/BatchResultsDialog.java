@@ -40,7 +40,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import cytoscape.Cytoscape;
 import de.mpg.mpi_inf.bioinf.netanalyzer.LoadNetstatsAction;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkAnalysisReport;
@@ -53,15 +52,6 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkInterpretation;
  */
 public class BatchResultsDialog extends JDialog implements ActionListener, ListSelectionListener {
 
-	/**
-	 * Initializes a new instance of <code>BatchResultsDialog</code>.
-	 * 
-	 * @param aReports
-	 *            List of analysis reports to be visualized.
-	 */
-	public BatchResultsDialog(List<NetworkAnalysisReport> aReports) {
-		this(Cytoscape.getDesktop(), aReports);
-	}
 
 	/**
 	 * Initializes a new instance of <code>BatchResultsDialog</code>.

@@ -21,7 +21,8 @@ import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.Set;
 
-import cytoscape.Cytoscape;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.CCInfo;
@@ -67,8 +68,8 @@ public class ConnComponentAction extends NetAnalyzerAction {
 			compsSet.toArray(comps);
 
 			if (compsCount == 1) {
-				final String msg = "<html><b>" + network.getTitle() + "</b>" + Messages.SM_CONNECTED;
-				Utils.showInfoBox(Messages.DT_CONNCOMP, msg);
+				final String msg = "<html><b>" + network.getCyRow().get("name",String.class) + "</b>" + Messages.SM_CONNECTED;
+				Utils.showInfoBox(swingApp.getJFrame(),Messages.DT_CONNCOMP, msg);
 			} else {
 				Arrays.sort(comps, new CCInfoInvComparator());
 				ConnComponentsDialog d = new ConnComponentsDialog(swingApp.getJFrame(), network, comps);

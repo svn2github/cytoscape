@@ -17,7 +17,6 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer.ui;
 
-import giny.model.Node;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -40,9 +39,9 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
 import de.mpg.mpi_inf.bioinf.netanalyzer.InnerException;
 import de.mpg.mpi_inf.bioinf.netanalyzer.Plugin;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.ComplexParam;
@@ -61,6 +60,7 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.dec.Decorator;
  */
 public class PlotParameterDialog extends VisualizeParameterDialog implements ActionListener {
 
+	private final Frame parent;
 	/**
 	 * Initializes a new instance of <code>PlotParameterDialog</code>.
 	 * 
@@ -75,10 +75,11 @@ public class PlotParameterDialog extends VisualizeParameterDialog implements Act
 	 */
 	public PlotParameterDialog(Frame aOwner, CyNetwork aNetwork, String[][] aNodeAttr) {
 		super(aOwner, Messages.DT_PLOTPARAM, true, aNetwork, aNodeAttr, null);
-		cyAttr = Cytoscape.getNodeAttributes();
+		cyAttr = aNetwork.getDefaultNodeTable();
+		parent = aOwner;
 		init();
 		setResizable(true);
-		setLocationRelativeTo(Cytoscape.getDesktop());
+		setLocationRelativeTo(aOwner);
 	}
 
 	/*
@@ -109,12 +110,12 @@ public class PlotParameterDialog extends VisualizeParameterDialog implements Act
 	 * @return A Double value representation of the attribute value for the node with node
 	 *         identifier id.
 	 */
-	private Double getAttrValue(String id, String attr, byte attrType) {
-		if (attrType == CyAttributes.TYPE_FLOATING) {
-			return cyAttr.getDoubleAttribute(id, attr);
+	private Double getAttrValue(CyNode node, String attr, Class<?> attrType) {
+		if (attrType == Double.class) {
+			return node.getCyRow().get(attr,Double.class);
 		}
-		if (attrType == CyAttributes.TYPE_INTEGER) {
-			return new Double(cyAttr.getIntegerAttribute(id, attr).doubleValue());
+		if (attrType == Integer.class) {
+			return node.getCyRow().get(attr,Integer.class).doubleValue();
 		}
 		return null;
 	}
@@ -133,7 +134,7 @@ public class PlotParameterDialog extends VisualizeParameterDialog implements Act
 		// Add title
 		final JPanel panTop = new JPanel(new BorderLayout(0, 0));
 		final JPanel panTitle = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		final JLabel title = new JLabel("<html>" + Messages.DI_PLOT1 + "<b>" + network.getTitle()
+		final JLabel title = new JLabel("<html>" + Messages.DI_PLOT1 + "<b>" + network.getCyRow().get("name",String.class)
 				+ "</b>" + Messages.DI_PLOT2);
 		panTitle.add(title);
 		panTop.add(panTitle, BorderLayout.PAGE_START);
@@ -197,15 +198,13 @@ public class PlotParameterDialog extends VisualizeParameterDialog implements Act
 	private void update() {
 		final String attrX = cbxAttr1.getSelectedItem().toString();
 		final String attrY = cbxAttr2.getSelectedItem().toString();
-		final byte attrType1 = cyAttr.getType(attrX);
-		final byte attrType2 = cyAttr.getType(attrY);
+		final Class<?> attrType1 = cyAttr.getColumnTypeMap().get(attrX);
+		final Class<?> attrType2 = cyAttr.getColumnTypeMap().get(attrY);
 		final List<Point2D.Double> plotValues = new ArrayList<Point2D.Double>(network
 				.getNodeCount());
-		Iterator<?> it = network.nodesIterator();
-		while (it.hasNext()) {
-			String id = ((Node) it.next()).getIdentifier();
-			Double value1 = getAttrValue(id, attrX, attrType1);
-			Double value2 = getAttrValue(id, attrY, attrType2);
+		for ( CyNode n : network.getNodeList()) {
+			Double value1 = getAttrValue(node, attrX, attrType1);
+			Double value2 = getAttrValue(node, attrY, attrType2);
 			if (value1 != null && value2 != null) {
 				plotValues.add(new Point2D.Double(value1.doubleValue(), value2.doubleValue()));
 			}
@@ -213,7 +212,7 @@ public class PlotParameterDialog extends VisualizeParameterDialog implements Act
 		initChartPanel(plotValues, attrX, attrY);
 		pack();
 		((JPanel) getContentPane()).updateUI();
-		setLocationRelativeTo(Cytoscape.getDesktop());
+		setLocationRelativeTo(parent);
 	}
 
 	private void initChartPanel(List<Point2D.Double> plotValues, String attrX, String attrY) {
@@ -276,5 +275,5 @@ public class PlotParameterDialog extends VisualizeParameterDialog implements Act
 	/**
 	 * Cytoscape's node attributes.
 	 */
-	private CyAttributes cyAttr;
+	private CyTable cyAttr;
 }

@@ -34,7 +34,6 @@ import javax.swing.WindowConstants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cytoscape.util.OpenBrowser;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.io.SettingsSerializer;
 import de.mpg.mpi_inf.bioinf.netanalyzer.sconnect.HelpConnector;
@@ -95,7 +94,7 @@ public class PluginSettingsDialog extends JDialog implements ActionListener {
 				// NetworkAnalyzer internal error
 				logger.error(Messages.SM_LOGERROR, ex);
 			} catch (IOException ex) {
-				Utils.showErrorBox(Messages.DT_IOERROR, Messages.SM_DEFFAILED);
+				Utils.showErrorBox(this,Messages.DT_IOERROR, Messages.SM_DEFFAILED);
 			} finally {
 				this.setVisible(false);
 				this.dispose();
@@ -104,7 +103,7 @@ public class PluginSettingsDialog extends JDialog implements ActionListener {
 			this.setVisible(false);
 			this.dispose();
 		} else if (source == btnHelp) {
-			OpenBrowser.openURL(HelpConnector.getSettingsURL());
+			de.mpg.mpi_inf.bioinf.netanalyzer.OpenBrowser.openURL(HelpConnector.getSettingsURL());
 		}
 	}
 

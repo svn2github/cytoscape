@@ -27,8 +27,8 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionListener;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 
 /**
  * Base class for dialogs which display a list of all loaded networks in Cytoscape.
@@ -41,14 +41,17 @@ import cytoscape.Cytoscape;
  */
 abstract class NetworkListDialog extends JDialog implements ListSelectionListener {
 
+	private final CyNetworkManager netMgr;
+	
 	/**
 	 * Initializes the fields of <code>NetworkListDialog</code>.
 	 * 
 	 * @param aOwner The <code>Frame</code> from which this dialog is displayed.
 	 * @param aTitle Title of the dialog.
 	 */
-	protected NetworkListDialog(Frame aOwner, String aTitle) {
+	protected NetworkListDialog(Frame aOwner, String aTitle, final CyNetworkManager netMgr) {
 		super(aOwner, aTitle, true);
+		this.netMgr = netMgr;
 		initNetworkList();
 	}
 
@@ -58,8 +61,9 @@ abstract class NetworkListDialog extends JDialog implements ListSelectionListene
 	 * @param aOwner The <code>Dialog</code> from which this dialog is displayed.
 	 * @param aTitle Title of the dialog.
 	 */
-	protected NetworkListDialog(Dialog aOwner, String aTitle) {
+	protected NetworkListDialog(Dialog aOwner, String aTitle, final CyNetworkManager netMgr) {
 		super(aOwner, aTitle, true);
+		this.netMgr = netMgr;
 		initNetworkList();
 	}
 
@@ -94,14 +98,14 @@ abstract class NetworkListDialog extends JDialog implements ListSelectionListene
 	 * Initializes the network list and list control containing network names.
 	 */
 	private void initNetworkList() {
-		final Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
+		final Set<CyNetwork> networkSet = netMgr.getNetworkSet();
 		final int netCount = networkSet.size();
 		networks = new ArrayList<CyNetwork>(netCount);
 		String[] netTitles = new String[netCount];
 		int i = 0;
 		for (final CyNetwork network : networkSet) {
 			networks.add(network);
-			netTitles[i++] = network.getTitle();
+			netTitles[i++] = network.getCyRow().get("name", String.class);
 		}
 		listNetNames = new JList(netTitles);
 		listNetNames.addListSelectionListener(this);

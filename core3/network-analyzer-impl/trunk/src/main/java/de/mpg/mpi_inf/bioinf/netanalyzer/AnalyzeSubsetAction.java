@@ -25,8 +25,11 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.session.CyApplicationManager;
+
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
 
@@ -43,7 +46,7 @@ public class AnalyzeSubsetAction extends NetAnalyzerAction {
 	/**
 	 * Initializes a new instance of <code>NetSubsetAction</code>.
 	 */
-	public AnalyzeSubsetAction(CyApplicationManager appMgr) {
+	public AnalyzeSubsetAction(CyApplicationManager appMgr, CySwingApplication swingApp) {
 		super(Messages.AC_ANALYZE_SUBSET,appMgr,swingApp);
 		setPreferredMenu("Plugins." + Messages.AC_MENU_ANALYSIS);
 		selected = null;
@@ -58,7 +61,7 @@ public class AnalyzeSubsetAction extends NetAnalyzerAction {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			if (selectNetwork()) {
-				final AnalysisExecutor exec = AnalyzeNetworkAction.initAnalysisExecuter(network, selected);
+				final AnalysisExecutor exec = AnalyzeNetworkAction.initAnalysisExecuter(network, selected,swingApp);
 				if (exec != null) {
 					exec.start();
 				}
@@ -79,7 +82,7 @@ public class AnalyzeSubsetAction extends NetAnalyzerAction {
 		if (super.selectNetwork()) {
 			final List<CyNode> nodes = CyTableUtil.getNodesInState(network,"selected",true);
 			if (nodes.isEmpty()) {
-				Utils.showErrorBox(Messages.DT_WRONGDATA, Messages.SM_SELECTNODES);
+				Utils.showErrorBox(swingApp.getJFrame(),Messages.DT_WRONGDATA, Messages.SM_SELECTNODES);
 				return false;
 			}
 			selected = new HashSet<CyNode>();

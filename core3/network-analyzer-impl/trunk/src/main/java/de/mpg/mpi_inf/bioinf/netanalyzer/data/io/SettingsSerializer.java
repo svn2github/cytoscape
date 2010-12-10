@@ -124,7 +124,7 @@ public abstract class SettingsSerializer {
 			} catch (Exception ex) {
 				final String msg = Messages.SM_LOADSETTINGSFAIL1 + Plugin.getSettingsFileName()
 						+ Messages.SM_LOADSETTINGSFAIL2;
-				logger.warning(msg);
+				logger.warn(msg);
 			}
 		}
 
@@ -137,7 +137,7 @@ public abstract class SettingsSerializer {
 			save();
 		} catch (Exception ex) {
 			// FileNotFoundException; IOException; SecurityException
-			Utils.showErrorBox(Messages.DT_IOERROR, Messages.SM_SAVESETERROR);
+			logger.warn(Messages.DT_IOERROR + " " + Messages.SM_SAVESETERROR, ex);
 			return;
 		}
 	}

@@ -31,8 +31,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyNetwork;
+
 import de.mpg.mpi_inf.bioinf.netanalyzer.GOPTAlgorithm;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 
@@ -52,12 +53,12 @@ public class CompareDialog extends NetworkListDialog implements ActionListener {
 	 * @throws HeadlessException If <code>GraphicsEnvironment.isHeadless()</code> returns
 	 *         <code>true</code>.
 	 */
-	public CompareDialog(Frame aOwner) throws HeadlessException {
-		super(aOwner, Messages.DT_COMPNETWORKS);
+	public CompareDialog(Frame aOwner, CyNetworkManager netMgr) throws HeadlessException {
+		super(aOwner, Messages.DT_COMPNETWORKS, netMgr);
 
 		initControls();
 		pack();
-		setLocationRelativeTo(Cytoscape.getDesktop());
+		setLocationRelativeTo(aOwner);
 	}
 
 	/*

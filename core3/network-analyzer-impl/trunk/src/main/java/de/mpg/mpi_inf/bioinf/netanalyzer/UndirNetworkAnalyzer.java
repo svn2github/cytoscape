@@ -141,7 +141,7 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 			int componentDiameter = 0;
 			for (final CyNode node : connNodes) {
 				++progress;
-				final int[] incEdges = getIncidentEdges(node);
+				final List<CyEdge> incEdges = getIncidentEdges(node);
 				final Map<CyNode, MutInteger> neighborMap = CyNetworkUtils.getNeighborMap(network,
 						node, incEdges);
 

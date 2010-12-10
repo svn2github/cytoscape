@@ -31,6 +31,8 @@ import java.util.Set;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyTable;
+
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.MutInteger;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkInspection;
@@ -89,12 +91,12 @@ public abstract class CyNetworkUtils {
 	 *         set if no such attributes are found.
 	 */
 	public static String[][] getComputedEdgeAttributes(CyNetwork aNetwork) {
-		final CyTable table = tableMgr.getTableMap(CyEdge.class,aNetwork).get(CyNetwork.DEFAULT_ATTRS);
+		final CyTable table = aNetwork.getDefaultEdgeTable();
 		final Map<String,Class<?>> columnTypeMap = table.getColumnTypeMap();
 		final Set<String> computedAttr = new HashSet<String>(columnTypeMap.keySet());
 		for (final CyEdge n : aNetwork.getEdgeList()) {
-			for ( final Map.Entry<String,Class<?> e : columnTypeMap.entrySet() )
-			if (!n.getCyRow().isSet(e.getKey(),e.getValue())
+			for ( final Map.Entry<String,Class<?>> e : columnTypeMap.entrySet() )
+			if (!n.getCyRow().isSet(e.getKey(),e.getValue()))
 				computedAttr.remove(e.getKey());
 		}
 		return keepAvailableAttributes(aNetwork, computedAttr, table, Messages.getEdgeAttributes());
@@ -109,17 +111,25 @@ public abstract class CyNetworkUtils {
 	 *         set if no such attributes are found.
 	 */
 	public static String[][] getComputedNodeAttributes(CyNetwork aNetwork) {
-		final CyTable table = tableMgr.getTableMap(CyNode.class,aNetwork).get(CyNetwork.DEFAULT_ATTRS);
+		final CyTable table = aNetwork.getDefaultNodeTable();
 		final Map<String,Class<?>> columnTypeMap = table.getColumnTypeMap();
 		final Set<String> computedAttr = new HashSet<String>(columnTypeMap.keySet());
 		for (final CyNode n : aNetwork.getNodeList()) {
-			for ( final Map.Entry<String,Class<?> e : columnTypeMap.entrySet() )
-			if (!n.getCyRow().isSet(e.getKey(),e.getValue())
+			for ( final Map.Entry<String,Class<?>> e : columnTypeMap.entrySet() )
+			if (!n.getCyRow().isSet(e.getKey(),e.getValue()))
 				computedAttr.remove(e.getKey());
 		}
 		return keepAvailableAttributes(aNetwork, computedAttr, table, Messages.getNodeAttributes());
 	}
 
+	public static Set<CyEdge> getAllConnectingEdges(CyNetwork aNetwork, Collection<CyNode> nodes) {
+		Set<CyEdge> connEdgeSet = new HashSet<CyEdge>();
+		ArrayList<CyNode> nl = new ArrayList<CyNode>(nodes);
+		for ( int i = 0; i < nl.size(); i++ ) 
+			for ( int j = i+1; j < nl.size(); j++) 
+				connEdgeSet.addAll( aNetwork.getConnectingEdgeList(nl.get(i), nl.get(j),CyEdge.Type.ANY) );
+		return connEdgeSet;
+	}
 	/**
 	 * Gets the number of pair connections between the given set of nodes.
 	 * <p>
@@ -140,16 +150,13 @@ public abstract class CyNetworkUtils {
 	 */
 	public static int getPairConnCount(CyNetwork aNetwork, Collection<CyNode> aNodeIndices, boolean aIgnoreDir) {
 
-		Set<CyEdge> connEdgeSet = new HashSet<CyEdge>();
-		for ( CyNode n1 : aNodeIndices ) 
-			for ( CyNode n2 : aNodeIndices ) 
-				connEdges.addAll( aNetwork.getConnectingEdgeList(n1,n2,CyEdge.Type.ANY) );
+		Set<CyEdge> connEdgeSet = getAllConnectingEdges(aNetwork, aNodeIndices);
 			
-		int edgeCount = connEdges.size();
+		int edgeCount = connEdgeSet.size();
 
 		List<CyEdge> connEdges = new ArrayList<CyEdge>(connEdgeSet);
 
-		for (int i = 0; i < connEdges.size; ++i) {
+		for (int i = 0; i < connEdges.size(); ++i) {
 			CyEdge e = connEdges.get(i); 
 			
 			// Ignore self-loops
@@ -157,7 +164,7 @@ public abstract class CyNetworkUtils {
 				edgeCount--;
 			} else {
 				// Ignore multiple edges
-				for (int j = i + 1; j < connEdges.size; ++j) {
+				for (int j = i + 1; j < connEdges.size(); ++j) {
 					CyEdge ee = connEdges.get(j); 
 					if ( // directed edges have same source + target 
 					     ( e.getSource() == ee.getSource() &&
@@ -194,7 +201,7 @@ public abstract class CyNetworkUtils {
 	 * @see #getNeighbors(CyNetwork, CyNode , int[])
 	 */
 	public static Set<CyNode> getNeighbors(CyNetwork aNetwork, CyNode aNode) {
-		return getNeighbors(aNetwork, aNode, aNetwork.getAdjacentEdgeList(aNode)); 
+		return getNeighbors(aNetwork, aNode, aNetwork.getAdjacentEdgeList(aNode, CyEdge.Type.ANY)); 
 	}
 
 	/**
@@ -245,8 +252,7 @@ public abstract class CyNetworkUtils {
 	 * @see #getNeighborMap(CyNetwork, CyNode , int[])
 	 */
 	public static Map<CyNode, MutInteger> getNeighborMap(CyNetwork aNetwork, CyNode aNode) {
-		return getNeighborMap(aNetwork, aNode, aNetwork.getAdjacentEdgeIndicesArray(
-				aNode.getRootGraphIndex(), true, true, true));
+		return getNeighborMap(aNetwork, aNode, aNetwork.getAdjacentEdgeList(aNode,CyEdge.Type.ANY));
 	}
 
 	/**
@@ -268,11 +274,11 @@ public abstract class CyNetworkUtils {
 	 *         <code>aNode</code> and the number of their occurrences as values, encapsulated in
 	 *         <code>MutInteger</code> instances.
 	 */
-	public static Map<CyNode, MutInteger> getNeighborMap(CyNetwork aNetwork, CyNode aNode, int[] aIncEdges) {
+	public static Map<CyNode, MutInteger> getNeighborMap(CyNetwork aNetwork, CyNode aNode, List<CyEdge> aIncEdges) {
 		Map<CyNode, MutInteger> m = new HashMap<CyNode, MutInteger>();
-		for (int i = 0; i < aIncEdges.length; i++) {
-			Edge e = aNetwork.getEdge(aIncEdges[i]);
-			Node n = (e.getSource() == aNode) ? e.getTarget() : e.getSource();
+		for (int i = 0; i < aIncEdges.size(); i++) {
+			CyEdge e = aIncEdges.get(i);
+			CyNode n = (e.getSource() == aNode) ? e.getTarget() : e.getSource();
 			if (n != aNode) {
 				MutInteger count = m.get(n);
 				if (count == null)
@@ -284,26 +290,6 @@ public abstract class CyNetworkUtils {
 		return m;
 	}
 
-	/**
-	 * Gets the indices of a given set of nodes.
-	 * <p>
-	 * Note that the method stores the indices found in an array. The order in which the indices are stored is
-	 * unspecified.
-	 * </p>
-	 * 
-	 * @param aNodeSet
-	 *            Set of nodes, whose indices are to be found.
-	 * @return Array of indices of the nodes contained in <code>aNodeSet</code>.
-	 */
-	public static int[] getIndices(Set<CyNode> aNodeSet) {
-		int nodeCount = aNodeSet.size();
-		int[] indices = new int[nodeCount];
-		int i = 0;
-		for (final CyNode node : aNodeSet) {
-			indices[i++] = node.getRootGraphIndex();
-		}
-		return indices;
-	}
 
 	/**
 	 * Performs an inspection on what kind of edges the given network contains.
@@ -323,24 +309,17 @@ public abstract class CyNetworkUtils {
 		}
 		final NetworkInspection insp = new NetworkInspection();
 
-		// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
-		Iterator<?> edgesIter = aNetwork.edgesIterator();
-		while (edgesIter.hasNext()) {
-			final CyEdge edge = (CyEdge) edgesIter.next();
-			final int ei = edge.getRootGraphIndex();
-
+		for( CyEdge edge : aNetwork.getEdgeList()) {
 			// Get all the edges that connect the two ends of the given edge
-			final int[] nodeIndices = new int[2];
-			final int source = nodeIndices[0] = aNetwork.getEdgeSourceIndex(ei);
-			nodeIndices[1] = aNetwork.getEdgeTargetIndex(ei);
-			final int[] connecting = aNetwork.getConnectingEdgeIndicesArray(nodeIndices);
-
-			if (nodeIndices[1] == source) {
+			final CyNode source = edge.getSource();
+			final CyNode target = edge.getTarget();
+			final List<CyEdge> connecting = aNetwork.getConnectingEdgeList(edge.getSource(), edge.getTarget(), CyEdge.Type.ANY);
+			if (edge.getSource() == edge.getTarget()) {
 				// Self-loop inspection
 				int d = 0;
 				int u = 0;
-				for (final int cei : connecting) {
-					if (aNetwork.isEdgeDirected(cei)) {
+				for (final CyEdge cei : connecting) {
+					if (cei.isDirected()) {
 						d++;
 					} else {
 						u++;
@@ -364,10 +343,10 @@ public abstract class CyNetworkUtils {
 				int ttu = 0;
 				int u = 0;
 
-				for (final int cei : connecting) {
-					final int ceiSource = aNetwork.getEdgeSourceIndex(cei);
-					final int ceiTarget = aNetwork.getEdgeTargetIndex(cei);
-					final boolean directed = aNetwork.isEdgeDirected(cei);
+				for (final CyEdge cei : connecting) {
+					final CyNode ceiSource = cei.getSource();
+					final CyNode ceiTarget = cei.getTarget();
+					final boolean directed = cei.isDirected();
 					if (ceiSource == source) {
 						if (ceiTarget == source) {
 							if (directed) {
@@ -438,44 +417,36 @@ public abstract class CyNetworkUtils {
 		final Set<CyNode> visited = new HashSet<CyNode>(aNetwork.getNodeCount());
 		int removedCount = 0;
 
-		// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
-		final Iterator<?> itn = aNetwork.nodesIterator();
-		while (itn.hasNext()) {
-			final CyNode n1 = (CyNode) itn.next();
-			final int ni = n1.getRootGraphIndex();
-			final int[] incEdges = aNetwork.getAdjacentEdgeIndicesArray(ni, true, true, true);
+		for ( CyNode n1 : aNetwork.getNodeList()) {
+			final List<CyEdge> incEdges = aNetwork.getAdjacentEdgeList(n1,CyEdge.Type.ANY);
 			final Map<CyNode, MutInteger> neighborMap = CyNetworkUtils.getNeighborMap(aNetwork, n1, incEdges);
 			// Check all neighbors of the node for multiple edges
 			for (final Map.Entry<CyNode, MutInteger> nf : neighborMap.entrySet()) {
 				final CyNode n2 = nf.getKey();
 				if (!visited.contains(n2)) {
-					final List<CyNode> nodes = new ArrayList<CyNode>(2);
-					nodes.add(n1);
-					nodes.add(n2);
-					Edge undirEdge = null;
-					Edge dir12Edge = null;
-					Edge dir21Edge = null;
+					CyEdge undirEdge = null;
+					CyEdge dir12Edge = null;
+					CyEdge dir21Edge = null;
 					int numUndir = 0;
 					int numDir12 = 0;
 					int numDir21 = 0;
 
 					// Traverse all edges connecting n1 and n2
-					for (final Object obj : aNetwork.getConnectingEdges(nodes)) {
-						final CyEdge e = (CyEdge) obj;
+					for (final CyEdge e : aNetwork.getConnectingEdgeList(n1,n2,CyEdge.Type.ANY)) {
 						final CyNode source = e.getSource();
 						final CyNode target = e.getTarget();
 						if (source != target) {
 							if (aIgnoreDir == false && e.isDirected()) {
 								if (source == n1) {
 									if (dir12Edge != null) {
-										aNetwork.removeEdge(e.getRootGraphIndex(), false);
+										aNetwork.removeEdge(e);
 										removedCount++;
 									} else {
 										dir12Edge = e;
 									}
 									numDir12++;
 								} else if (dir21Edge != null) {
-									aNetwork.removeEdge(e.getRootGraphIndex(), false);
+									aNetwork.removeEdge(e);
 									removedCount++;
 									numDir21++;
 								} else {
@@ -483,7 +454,7 @@ public abstract class CyNetworkUtils {
 									numDir21++;
 								}
 							} else if (undirEdge != null) {
-								aNetwork.removeEdge(e.getRootGraphIndex(), false);
+								aNetwork.removeEdge(e);
 								removedCount++;
 								numUndir++;
 							} else {
@@ -515,8 +486,7 @@ public abstract class CyNetworkUtils {
 	 */
 	private static void saveNumDuplEdges(CyEdge aEdge, int aNumEdges) {
 		if (aEdge != null) {
-			Cytoscape.getEdgeAttributes().setAttribute(aEdge.getIdentifier(), Messages.getAttr("dpe"),
-					new Integer(aNumEdges));
+			aEdge.getCyRow().set( Messages.getAttr("dpe"), aNumEdges);
 		}
 	}
 
@@ -529,13 +499,10 @@ public abstract class CyNetworkUtils {
 	 * @return Number of removed self-loops.
 	 */
 	public static int removeSelfLoops(CyNetwork aNetwork) {
-		// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
-		Iterator<?> iter = aNetwork.edgesIterator();
 		int removedCount = 0;
-		while (iter.hasNext()) {
-			Edge e = (CyEdge) iter.next();
+		for ( CyEdge e : aNetwork.getEdgeList()) {
 			if (e.getSource() == e.getTarget()) {
-				aNetwork.removeEdge(e.getRootGraphIndex(), false);
+				aNetwork.removeEdge(e);
 				removedCount++;
 			}
 		}

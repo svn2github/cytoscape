@@ -19,10 +19,11 @@ package de.mpg.mpi_inf.bioinf.netanalyzer;
 
 import java.awt.event.ActionEvent;
 
-import cytoscape.Cytoscape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
+
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.CompareDialog;
 
@@ -31,7 +32,7 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.CompareDialog;
  * 
  * @author Yassen Assenov
  */
-public class CompareAction extends AbstractCyAction {
+public class CompareAction extends NetAnalyzerAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(CompareAction.class);
 

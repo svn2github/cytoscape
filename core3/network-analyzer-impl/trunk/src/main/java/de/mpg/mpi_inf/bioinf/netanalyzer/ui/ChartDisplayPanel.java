@@ -39,8 +39,8 @@ import org.jfree.chart.JFreeChart;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cytoscape.util.OpenBrowser;
 import de.mpg.mpi_inf.bioinf.netanalyzer.InnerException;
+import de.mpg.mpi_inf.bioinf.netanalyzer.OpenBrowser;
 import de.mpg.mpi_inf.bioinf.netanalyzer.Plugin;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.ComplexParam;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;

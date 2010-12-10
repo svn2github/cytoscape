@@ -17,12 +17,12 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer;
 
-import java.util.List;
-import java.util.Set;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CySwingApplication;
+
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
 
@@ -34,6 +34,11 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
 public abstract class NetAnalyzerAction extends AbstractCyAction {
 
 	protected final CySwingApplication swingApp;
+	
+	/**
+	 * Target network for the action.
+	 */
+	protected CyNetwork network;
 
 	/**
 	 * Constructs an action with the given name.
@@ -65,16 +70,13 @@ public abstract class NetAnalyzerAction extends AbstractCyAction {
 	protected boolean selectNetwork() {
 		network = applicationManager.getCurrentNetwork();
 		if ( network == null ) {
-			Utils.showErrorBox(Messages.DT_WRONGDATA, Messages.SM_LOADNET);
+			Utils.showErrorBox(swingApp.getJFrame(),Messages.DT_WRONGDATA, Messages.SM_LOADNET);
 			return false;
 		}
 		return true;
 	}
 
-	/**
-	 * Target network for the action.
-	 */
-	protected CyNetwork network;
+
 
 	/**
 	 * Unique ID for this version of this class. It is used in serialization.

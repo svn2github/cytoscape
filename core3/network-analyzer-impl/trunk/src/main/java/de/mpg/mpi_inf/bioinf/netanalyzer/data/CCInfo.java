@@ -17,7 +17,7 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer.data;
 
-import giny.model.Node;
+import org.cytoscape.model.CyNode;
 
 /**
  * Immutable storage of information on a connected component.
@@ -32,7 +32,7 @@ public class CCInfo {
 	 * @param aSize Size of the connected component (number of nodes).
 	 * @param aNode One of the nodes in the component.
 	 */
-	public CCInfo(int aSize, Node aNode) {
+	public CCInfo(int aSize, CyNode aNode) {
 		size = aSize;
 		node = aNode;
 	}
@@ -51,7 +51,7 @@ public class CCInfo {
 	 * 
 	 * @return Node belonging to this connected component.
 	 */
-	public Node getNode() {
+	public CyNode getNode() {
 		return node;
 	}
 
@@ -63,5 +63,5 @@ public class CCInfo {
 	/**
 	 * One of the nodes in the connected component.
 	 */
-	private Node node;
+	private CyNode node;
 }

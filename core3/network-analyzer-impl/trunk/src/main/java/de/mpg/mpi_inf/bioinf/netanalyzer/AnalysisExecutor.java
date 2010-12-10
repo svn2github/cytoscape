@@ -28,7 +28,6 @@ import javax.swing.Timer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cytoscape.util.SwingWorker;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.AnalysisDialog;
 
@@ -184,4 +183,5 @@ public class AnalysisExecutor extends SwingWorker implements ActionListener {
 	 * complete.
 	 */
 	private boolean showDialog;
+
 }

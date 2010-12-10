@@ -19,6 +19,7 @@ package de.mpg.mpi_inf.bioinf.netanalyzer.ui.dec;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -26,6 +27,10 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -36,9 +41,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import cytoscape.util.OpenBrowser;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Dialog window which reports the results after fitting a function.
@@ -47,6 +54,7 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.ui.Utils;
  */
 public class FittingReportDialog extends JDialog implements ActionListener {
 
+	private static final Logger logger = LoggerFactory.getLogger(FittingReportDialog.class);
 	/**
 	 * Initializes the common controls of <code>FittingReportDialog</code>.
 	 * 
@@ -84,7 +92,11 @@ public class FittingReportDialog extends JDialog implements ActionListener {
 			setVisible(false);
 			dispose();
 		} else if (src == btnHelp) {
-			OpenBrowser.openURL(helpURL);
+			try {
+				Desktop.getDesktop().browse(helpURL.toURI());
+			} catch (Exception e1) {
+				logger.warn("failed to open url: " + helpURL.toString(),e1);
+			}
 		}
 	}
 
@@ -159,7 +171,12 @@ public class FittingReportDialog extends JDialog implements ActionListener {
 		JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, bs, 0));
 		btnOK = Utils.createButton(Messages.DI_OK, null, this);
 		btnHelp = Utils.createButton(Messages.DI_HELP, null, this);
-		helpURL = aData.getHelpURL();
+		try {
+			helpURL = new URL(aData.getHelpURL());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			logger.warn("bad url: " + aData.getHelpURL(), e);
+		}
 		Utils.equalizeSize(btnOK, btnHelp);
 		bottomPanel.add(btnOK);
 		bottomPanel.add(btnHelp);
@@ -190,5 +207,5 @@ public class FittingReportDialog extends JDialog implements ActionListener {
 	/**
 	 * URL to be visited when the user clicks on the &quot;Help&quot; button.
 	 */
-	private String helpURL;
+	private URL helpURL;
 }

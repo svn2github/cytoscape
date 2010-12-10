@@ -21,8 +21,10 @@ package de.mpg.mpi_inf.bioinf.netanalyzer;
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.session.CyApplicationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
@@ -58,7 +60,7 @@ public class AnalyzeNetworkAction extends NetAnalyzerAction {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			if (selectNetwork()) {
-				final AnalysisExecutor exec = initAnalysisExecuter(network, null);
+				final AnalysisExecutor exec = initAnalysisExecuter(network, null, swingApp);
 				if (exec != null) {
 					exec.start();
 				}
@@ -82,7 +84,7 @@ public class AnalyzeNetworkAction extends NetAnalyzerAction {
 	 * @return Newly initialized analysis executor; <code>null</code> if the user has decided to cancel the
 	 *         operation.
 	 */
-	public static AnalysisExecutor initAnalysisExecuter(CyNetwork aNetwork, Set<CyNode> aNodeSet) {
+	public static AnalysisExecutor initAnalysisExecuter(CyNetwork aNetwork, Set<CyNode> aNodeSet, CySwingApplication swingApp) {
 		// Ask the user for an interpretation of the network edges
 		try {
 			final NetworkInspection status = CyNetworkUtils.inspectNetwork(aNetwork);
@@ -99,7 +101,7 @@ public class AnalyzeNetworkAction extends NetAnalyzerAction {
 			}
 			return new AnalysisExecutor(swingApp.getJFrame(), analyzer);
 		} catch (IllegalArgumentException ex) {
-			Utils.showInfoBox(Messages.DT_INFO, Messages.SM_NETWORKEMPTY);
+			Utils.showInfoBox(swingApp.getJFrame(),Messages.DT_INFO, Messages.SM_NETWORKEMPTY);
 			return null;
 		}
 	}

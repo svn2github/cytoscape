@@ -17,8 +17,8 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer.data;
 
-import giny.model.Edge;
-import giny.model.Node;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -52,8 +52,8 @@ public class NodeBetweenInfo {
 		spLength = initLength;
 		dependency = 0.0;
 		betweenness = initBetweenness;
-		predecessors = new LinkedList<Node>();
-		outedges = new LinkedList<Edge>();
+		predecessors = new LinkedList<CyNode>();
+		outedges = new LinkedList<CyEdge>();
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class NodeBetweenInfo {
 	 * @throws NoSuchElementException
 	 *             If this node does not have predecessors.
 	 */
-	public Node pullPredecessor() {
+	public CyNode pullPredecessor() {
 		return predecessors.removeFirst();
 	}
 
@@ -112,7 +112,7 @@ public class NodeBetweenInfo {
 	 *         the network
 	 */
 
-	public LinkedList<Edge> getOutEdges() {
+	public LinkedList<CyEdge> getOutEdges() {
 		return outedges;
 	}
 
@@ -164,7 +164,7 @@ public class NodeBetweenInfo {
 	 * @param pred
 	 *            Node to be added since it is a predecessor of this node
 	 */
-	public void addPredecessor(Node pred) {
+	public void addPredecessor(CyNode pred) {
 		predecessors.add(pred);
 	}
 
@@ -174,7 +174,7 @@ public class NodeBetweenInfo {
 	 * @param outedge
 	 *            Visited outgoing edge of this node
 	 */
-	public void addOutedge(Edge outedge) {
+	public void addOutedge(CyEdge outedge) {
 		outedges.add(outedge);
 	}
 
@@ -197,8 +197,8 @@ public class NodeBetweenInfo {
 		spCount = 0;
 		spLength = -1;
 		dependency = 0.0;
-		predecessors = new LinkedList<Node>();
-		outedges = new LinkedList<Edge>();
+		predecessors = new LinkedList<CyNode>();
+		outedges = new LinkedList<CyEdge>();
 	}
 
 	/**
@@ -209,20 +209,20 @@ public class NodeBetweenInfo {
 		spCount = 1;
 		spLength = 0;
 		dependency = 0.0;
-		predecessors = new LinkedList<Node>();
-		outedges = new LinkedList<Edge>();
+		predecessors = new LinkedList<CyNode>();
+		outedges = new LinkedList<CyEdge>();
 	}
 
 	/**
 	 * List of the predecessors of this node, i.e. the nodes lying on the
 	 * shortest path to this node
 	 */
-	private LinkedList<Node> predecessors;
+	private LinkedList<CyNode> predecessors;
 
 	/**
 	 * List of outgoing edges of this node visited by exploring the network
 	 */
-	private LinkedList<Edge> outedges;
+	private LinkedList<CyEdge> outedges;
 
 	/**
 	 * Number of shortest paths leading to this node starting from a certain

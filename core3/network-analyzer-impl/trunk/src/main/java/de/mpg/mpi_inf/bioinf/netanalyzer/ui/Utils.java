@@ -35,8 +35,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import cytoscape.Cytoscape;
-import cytoscape.util.OpenBrowser;
+import de.mpg.mpi_inf.bioinf.netanalyzer.OpenBrowser;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 
 /**
@@ -370,22 +369,6 @@ public abstract class Utils {
 		aComponent.setBorder(BorderFactory.createEmptyBorder(bs, bs, bs, bs));
 	}
 
-	/**
-	 * Displays an error message dialog.
-	 * <p>
-	 * The owner of the dialog is set to be the Cytoscape desktop.
-	 * </p>
-	 * 
-	 * @param aTitle
-	 *            Title of the dialog.
-	 * @param aMessage
-	 *            Message to be displayed in the dialog.
-	 * 
-	 * @see #showErrorBox(Component, String, String)
-	 */
-	public static void showErrorBox(String aTitle, String aMessage) {
-		showErrorBox(Cytoscape.getDesktop(), aTitle, aMessage);
-	}
 
 	/**
 	 * Displays an error message dialog.
@@ -399,23 +382,6 @@ public abstract class Utils {
 	 */
 	public static void showErrorBox(Component aParent, String aTitle, String aMessage) {
 		JOptionPane.showMessageDialog(aParent, aMessage, aTitle, JOptionPane.ERROR_MESSAGE);
-	}
-
-	/**
-	 * Displays an information dialog.
-	 * <p>
-	 * The owner of the dialog is set to be the Cytoscape desktop.
-	 * </p>
-	 * 
-	 * @param aTitle
-	 *            Title of the dialog.
-	 * @param aMessage
-	 *            Message to be displayed in the dialog.
-	 * 
-	 * @see #showInfoBox(Component, String, String)
-	 */
-	public static void showInfoBox(String aTitle, String aMessage) {
-		showInfoBox(Cytoscape.getDesktop(), aTitle, aMessage);
 	}
 
 	/**

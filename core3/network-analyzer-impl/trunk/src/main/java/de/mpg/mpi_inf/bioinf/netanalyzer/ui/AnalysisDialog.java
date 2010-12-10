@@ -39,8 +39,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
+import org.cytoscape.model.CyNetwork;
 import de.mpg.mpi_inf.bioinf.netanalyzer.CyNetworkUtils;
 import de.mpg.mpi_inf.bioinf.netanalyzer.InnerException;
 import de.mpg.mpi_inf.bioinf.netanalyzer.NetworkAnalyzer;
@@ -70,6 +69,8 @@ public class AnalysisDialog extends JDialog implements ActionListener, WindowLis
 		netstatsDialog.addChoosableFileFilter(SupportedExtensions.netStatsFilter);
 	}
 
+	private final Frame aOwner;
+	
 	/**
 	 * Initializes a new instance of <code>AnalysisDialog</code>.
 	 * <p>
@@ -89,6 +90,7 @@ public class AnalysisDialog extends JDialog implements ActionListener, WindowLis
 	 */
 	public AnalysisDialog(Frame aOwner, NetworkStats aStats, NetworkAnalyzer aAnalyzer) {
 		super(aOwner, Messages.DT_ANALYSIS + aStats.getTitle(), false);
+		this.aOwner = aOwner;
 
 		stats = aStats;
 		boolean paramMapping = false;
@@ -284,20 +286,20 @@ public class AnalysisDialog extends JDialog implements ActionListener, WindowLis
 	 * Styles&quot; button is activated.
 	 */
 	private void visualizeParameter() {
-		CyNetwork network = Cytoscape.getNetwork(stats.getID());
-		if (network != null && network != Cytoscape.getNullNetwork()) {
+		CyNetwork network = stats.getNetwork();
+		if (network != null ) {
 			final String[][] nodeAttr = CyNetworkUtils.getComputedNodeAttributes(network);
 			final String[][] edgeAttr = CyNetworkUtils.getComputedEdgeAttributes(network);
 			if ((nodeAttr[0].length > 0) || (nodeAttr[1].length > 0) || (edgeAttr[0].length > 0)
 					|| (edgeAttr[1].length > 0)) {
-				final MapParameterDialog d = new MapParameterDialog(Cytoscape.getDesktop(), network,
+				final MapParameterDialog d = new MapParameterDialog(aOwner, network,
 						nodeAttr, edgeAttr);
 				d.setVisible(true);
 				return;
 			}
 		}
 		// Could not locate network - display an error message to the user
-		Utils.showErrorBox(Messages.DT_WRONGDATA, Messages.SM_VISUALIZEERROR);
+		Utils.showErrorBox(this,Messages.DT_WRONGDATA, Messages.SM_VISUALIZEERROR);
 		visualizeButton.setEnabled(false);
 	}
 

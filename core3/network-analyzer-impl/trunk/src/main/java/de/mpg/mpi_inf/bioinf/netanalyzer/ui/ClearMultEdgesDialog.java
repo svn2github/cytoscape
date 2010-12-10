@@ -25,6 +25,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import org.cytoscape.model.CyNetworkManager;
+
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.sconnect.HelpConnector;
 
@@ -41,8 +43,8 @@ public class ClearMultEdgesDialog extends NetModificationDialog {
 	 * @param aOwner
 	 *            The <code>Frame</code> from which this dialog is displayed.
 	 */
-	public ClearMultEdgesDialog(Frame aOwner) {
-		super(aOwner, Messages.DT_REMDUPEDGES, Messages.DI_REMDUPEDGES, HelpConnector.getRemDuplicatesURL());
+	public ClearMultEdgesDialog(Frame aOwner, CyNetworkManager netMgr) {
+		super(aOwner, Messages.DT_REMDUPEDGES, Messages.DI_REMDUPEDGES, HelpConnector.getRemDuplicatesURL(), netMgr);
 
 		ignoreDirection = false;
 		createEdgeAttr = false;

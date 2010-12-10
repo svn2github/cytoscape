@@ -17,7 +17,6 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer;
 
-import giny.model.Node;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,10 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.util.SwingWorker;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.AnalysisError;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Interpretations;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
@@ -170,7 +168,7 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 						analyzer = null;
 					}
 
-					final String networkName = network.getTitle();
+					final String networkName = network.getCyRow().get("name",String.class);
 					stats.setTitle(networkName + interpretation.getInterpretSuffix());
 					final String extendedName = networkName + createID(interpretation);
 					try {
@@ -276,7 +274,6 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 		}
 		// save chosen node attributes in a file, 1st column corresponds to the node ids, each subsequent column
 		// contains the values of a node attribute
-		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 		try {
 			final FileWriter writer = new FileWriter(new File(outputDir, aExtendedName + ".nattributes"));
 			writer.write("Node ID");
@@ -284,12 +281,11 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 				writer.write("\t" + attr);
 			}
 			writer.write("\n");
-			final Iterator<?> it = aNetwork.nodesIterator();
-			while (it.hasNext()) {
-				final String id = ((Node) it.next()).getIdentifier();
+			for ( CyNode n : aNetwork.getNodeList()) {
+				final String id = n.getCyRow().get("name", String.class);
 				writer.write(id);
 				for (final String attr : netAnayzerAttr) {
-					final Object attrValue = nodeAttr.getAttribute(id, attr);
+					final Object attrValue = n.getCyRow().getRaw(attr);
 					if (attrValue != null) {
 						writer.write("\t" + attrValue.toString());
 					}
@@ -317,6 +313,7 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 		}
 		interrupt();
 	}
+
 
 	/**
 	 * Gets the current progress of the tester as a number of steps.
@@ -518,4 +515,5 @@ public class BatchNetworkAnalyzer extends SwingWorker {
 	 * Progress of <code>NetworkAnalyzer</code> analysis for a single network interpretation.
 	 */
 	private double subProgress;
+
 }

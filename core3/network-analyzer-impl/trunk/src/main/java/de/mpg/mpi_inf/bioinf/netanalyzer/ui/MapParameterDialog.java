@@ -40,9 +40,12 @@ import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
+
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearance;
@@ -98,7 +101,7 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 		getMinMaxMeanValues();
 		init();
 		setResizable(false);
-		setLocationRelativeTo(Cytoscape.getDesktop());
+		setLocationRelativeTo(aOwner);
 
 		attrNodeColor = "";
 		attrNodeSize = "";
@@ -202,7 +205,7 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 		Utils.setStandardBorder(contentPane);
 
 		// Add a title label
-		String tt = "<html>" + Messages.DI_APPLYVS + "<b>" + network.getTitle() + "</b>";
+		String tt = "<html>" + Messages.DI_APPLYVS + "<b>" + network.getCyRow().get("name", String.class) + "</b>";
 		contentPane.add(new JLabel(tt, SwingConstants.CENTER), BorderLayout.PAGE_START);
 
 		boolean attrCalculated = false;
@@ -481,15 +484,15 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 	 * @param id
 	 *            A node id, whose computed attribute values are retrieved.
 	 */
-	private void getBoundaryValues(CyAttributes attrMap, String[][] attr, String id) {
+	private void getBoundaryValues(String[][] attr, CyTableEntry entry) {
 		for (int i = 0; i < attr.length; i++) {
 			for (int j = 0; j < attr[i].length; j++) {
-				final byte attrType = attrMap.getType(attr[i][j]);
+				final Class<?> attrType = entry.getCyRow().getDataTable().getColumnTypeMap().get(attr[i][j]);
 				Double attrValue = new Double(0.0);
-				if (attrType == CyAttributes.TYPE_INTEGER) {
-					attrValue = new Double(attrMap.getIntegerAttribute(id, attr[i][j]).doubleValue());
-				} else if (attrType == CyAttributes.TYPE_FLOATING) {
-					attrValue = attrMap.getDoubleAttribute(id, attr[i][j]);
+				if (attrType == Integer.class) {
+					attrValue = entry.getCyRow().get(attr[i][j], Integer.class).doubleValue());
+				} else if (attrType == Double.class) {
+					attrValue = entry.getCyRow().get(attr[i][j], Double.class);
 				}
 				if (attrValue != null && !attrValue.isNaN()) {
 					final Double oldMinValue = minAttrValue.get(attr[i][j]);
@@ -523,17 +526,13 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 
 		// Find min, max and mean for each node attribute
 		// TODO: [Cytoscape 2.8] Check if the returned iterator is parameterized
-		Iterator<?> itn = network.nodesIterator();
-		while (itn.hasNext()) {
-			final String id = ((Node) itn.next()).getIdentifier();
-			getBoundaryValues(Cytoscape.getNodeAttributes(), nodeAttr, id);
+		for ( CyNode n : network.getNodeList()) {
+			getBoundaryValues( nodeAttr, n);
 		}
 		calculateMean(network.getNodeCount(), nodeAttr);
 		// Find min, max and mean for each node attribute
-		Iterator<?> ite = network.edgesIterator();
-		while (ite.hasNext()) {
-			final String id = ((Edge) ite.next()).getIdentifier();
-			getBoundaryValues(Cytoscape.getEdgeAttributes(), edgeAttr, id);
+		for ( CyEdge e : network.getEdgeList()) {
+			getBoundaryValues( edgeAttr, e);
 		}
 		calculateMean(network.getEdgeCount(), edgeAttr);
 	}

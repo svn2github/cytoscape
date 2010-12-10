@@ -38,8 +38,7 @@ import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import cytoscape.Cytoscape;
-import cytoscape.util.OpenBrowser;
+import de.mpg.mpi_inf.bioinf.netanalyzer.OpenBrowser;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkInterpretation;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkStatus;
@@ -55,27 +54,6 @@ import de.mpg.mpi_inf.bioinf.netanalyzer.sconnect.HelpConnector;
  * @author Yassen Assenov
  */
 public final class InterpretationDialog extends JDialog implements ActionListener {
-
-	/**
-	 * Initializes a new instance of <code>InterpretationDialog</code>.
-	 * <p>
-	 * The dialog created is modal and has a title &quot;NetworkAnalyzer - Network
-	 * Interpretation&quot;. The constructor creates and lays out all the controls of the dialog. It
-	 * also positions the window according to its parent, so no subsequent calls to
-	 * <code>pack()</code> or <code>setLocation(...)</code> are necessary.
-	 * </p>
-	 * <p>
-	 * The owner frame of this dialog is set to be Cytoscape's window.
-	 * </p>
-	 * 
-	 * @param aStatus
-	 *            Status of the network to be analyzed.
-	 * @exception HeadlessException
-	 *                if <code>GraphicsEnvironment.isHeadless()</code> returns <code>true</code>.
-	 */
-	public InterpretationDialog(NetworkStatus aStatus) throws HeadlessException {
-		this(Cytoscape.getDesktop(), aStatus);
-	}
 
 	/**
 	 * Initializes a new instance of <code>InterpretationDialog</code>.

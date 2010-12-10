@@ -32,8 +32,10 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 
-import cytoscape.CyNetwork;
-import cytoscape.util.OpenBrowser;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyNetwork;
+
+import de.mpg.mpi_inf.bioinf.netanalyzer.OpenBrowser;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 
 /**
@@ -58,9 +60,9 @@ public class NetModificationDialog extends NetworkListDialog implements ActionLi
 	 * @throws HeadlessException
 	 *             If <code>GraphicsEnvironment.isHeadless()</code> returns <code>true</code>.
 	 */
-	public NetModificationDialog(Frame aOwner, String aTitle, String aLabel, String aHelpURL)
+	public NetModificationDialog(Frame aOwner, String aTitle, String aLabel, String aHelpURL, CyNetworkManager netMgr)
 			throws HeadlessException {
-		this(aOwner, aTitle, aLabel, aHelpURL, true);
+		this(aOwner, aTitle, aLabel, aHelpURL, true, netMgr);
 	}
 
 	/**
@@ -81,9 +83,9 @@ public class NetModificationDialog extends NetworkListDialog implements ActionLi
 	 * @throws HeadlessException
 	 *             If <code>GraphicsEnvironment.isHeadless()</code> returns <code>true</code>.
 	 */
-	public NetModificationDialog(Frame aOwner, String aTitle, String aLabel, String aHelpURL, boolean aWarning)
+	public NetModificationDialog(Frame aOwner, String aTitle, String aLabel, String aHelpURL, boolean aWarning, CyNetworkManager netMgr)
 			throws HeadlessException {
-		super(aOwner, aTitle);
+		super(aOwner, aTitle, netMgr);
 
 		helpURL = aHelpURL;
 		selectedNetworks = null;

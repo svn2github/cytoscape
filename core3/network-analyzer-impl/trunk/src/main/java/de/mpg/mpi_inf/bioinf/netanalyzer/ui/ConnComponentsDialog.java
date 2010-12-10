@@ -17,7 +17,6 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer.ui;
 
-import giny.model.Node;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -28,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -45,9 +45,12 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+
 import de.mpg.mpi_inf.bioinf.netanalyzer.ConnComponentAnalyzer;
+import de.mpg.mpi_inf.bioinf.netanalyzer.CyNetworkUtils;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.CCInfo;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 
@@ -92,9 +95,8 @@ public class ConnComponentsDialog extends JDialog
 			dispose();
 		} else if (btnExtract == src) {
 			CCInfo comp = components[listComp.getSelectedIndex()];
-			ArrayList<Node> nodes = new ArrayList<Node>(ConnComponentAnalyzer.getNodesOf(network, comp));
-			// TODO: [Cytoscape 2.8] Check if the returned list is parameterized
-			List<?> edges = network.getConnectingEdges(nodes);
+			ArrayList<CyNode> nodes = new ArrayList<CyNode>(ConnComponentAnalyzer.getNodesOf(network, comp));
+			Set<CyEdge> edges = CyNetworkUtils.getAllConnectingEdges(network,nodes);
 			Cytoscape.createNetwork(nodes, edges, fieldNetName.getText());
 		}
 	}
@@ -109,7 +111,7 @@ public class ConnComponentsDialog extends JDialog
 		boolean enabled = (i != 0);
 		btnExtract.setEnabled(enabled);
 		if (enabled) {
-			String title = network.getTitle();
+			String title = network.getCyRow().get("name", String.class);
 			if (title == null) {
 				title = "_" + i;
 			} else if (title.endsWith(".gml") || title.endsWith(".sif")) {
@@ -164,7 +166,7 @@ public class ConnComponentsDialog extends JDialog
 		Box contentPane = new Box(BoxLayout.PAGE_AXIS);
 		Utils.setStandardBorder(contentPane);
 
-		String tt = "<html>" + Messages.DI_CCOF + "<b>" + network.getTitle() + "</b>";
+		String tt = "<html>" + Messages.DI_CCOF + "<b>" + network.getCyRow().get("name", String.class) + "</b>";
 		JPanel panTitle = new JPanel();
 		panTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panTitle.add(new JLabel(tt));

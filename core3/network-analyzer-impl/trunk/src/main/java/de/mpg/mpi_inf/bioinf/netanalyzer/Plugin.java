@@ -24,6 +24,7 @@ import java.io.PrintStream;
 
 import javax.swing.JMenu;
 
+import org.cytoscape.application.swing.CySwingApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
@@ -179,14 +180,14 @@ public class Plugin {
 	/**
 	 * Initializes a new instance of <code>Plugin</code>.
 	 */
-	public Plugin() {
+	public Plugin(CySwingApplication swingApp) {
 		try {
 			// Initiate default visual settings
 			SettingsSerializer.initVisualSettings();
 			// If initialization fails, the following lines are not executed:
 
 		} catch (SecurityException ex) {
-			Utils.showErrorBox(Messages.DT_SECERROR, Messages.SM_SECERROR1);
+			Utils.showErrorBox(swingApp.getJFrame(),Messages.DT_SECERROR, Messages.SM_SECERROR1);
 			System.err.println(Messages.SM_SECERROR1);
 		} catch (InnerException ex) {
 			final ByteArrayOutputStream os = new ByteArrayOutputStream();

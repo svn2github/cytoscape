@@ -56,17 +56,17 @@ public class GOPTAlgorithm {
 	public void computeNetworks(boolean aIntersection, boolean aUnion, boolean aDifference) {
 		if (aIntersection || aUnion || aDifference) {
 			// Create the required (empty) networks
-			final String title1 = network1.getTitle();
-			final String title2 = network2.getTitle();
+			final String title1 = network1.getCyRow().get("name", String.class);
+			final String title2 = network2.getCyRow().get("name", String.class);
 			if (aIntersection) {
-				intersectionNw = Cytoscape.createNetwork(title1 + " AND " + title2);
+				intersectionNw = createNetwork(title1 + " AND " + title2);
 			}
 			if (aUnion) {
-				unionNw = Cytoscape.createNetwork(title1 + " OR " + title2);
+				unionNw = createNetwork(title1 + " OR " + title2);
 			}
 			if (aDifference) {
-				diffNw1 = Cytoscape.createNetwork(title1 + " - " + title2);
-				diffNw2 = Cytoscape.createNetwork(title2 + " - " + title1);
+				diffNw1 = createNetwork(title1 + " - " + title2);
+				diffNw2 = createNetwork(title2 + " - " + title1);
 			}
 
 			// Iterate over the nodes of the two networks

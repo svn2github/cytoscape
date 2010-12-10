@@ -17,6 +17,7 @@
 
 package de.mpg.mpi_inf.bioinf.netanalyzer;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileFilter;
@@ -27,6 +28,9 @@ import java.util.List;
 import cytoscape.Cytoscape;
 import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.GraphReader;
+
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.session.CyApplicationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cytoscape.view.CytoscapeDesktop;
@@ -83,7 +87,7 @@ public class BatchAnalysisAction extends NetAnalyzerAction {
 						d3.setVisible(true);
 					}
 				} else {
-					Utils.showInfoBox(Messages.DT_INFO, Messages.SM_NOINPUTFILES);
+					Utils.showInfoBox(swingApp.getJFrame(),Messages.DT_INFO, Messages.SM_NOINPUTFILES);
 				}
 			}
 		} catch (InnerException ex) {
