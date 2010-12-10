@@ -351,6 +351,19 @@ public abstract class AbstractCyTableTest {
 		assertTrue(values.contains(-27L));
 	}
 
+	@Test
+	public void testGetColumnValues2() {
+		table.createColumn("someLongs", Long.class);
+		final CyRow row1 = table.getRow(1L);
+		row1.set("someLongs", 15L);
+		final CyRow row2 = table.getRow(2L);
+		row2.set("someLongs", -27L);
+		final List<Long> values = table.getColumnValues(table.getPrimaryKey(), Long.class);
+		assertTrue(values.size() == 2);
+		assertTrue(values.contains(1L));
+		assertTrue(values.contains(2L));
+	}
+
 	@Test(expected=NullPointerException.class)
 	public void testGetRowWithNullKey() {
 		table.createColumn("someLongs", Long.class);
