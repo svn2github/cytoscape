@@ -244,7 +244,7 @@ public class ViewUtils {
 				network.restoreEdge(edge);
 				EdgeView eView = view.getEdgeView(edge);
 				if (eView != null)
-					Cytoscape.getVisualMappingManager().vizmapEdge(eView, view);
+				 	Cytoscape.getVisualMappingManager().vizmapEdge(eView, view);
 			}
 		}
 	}

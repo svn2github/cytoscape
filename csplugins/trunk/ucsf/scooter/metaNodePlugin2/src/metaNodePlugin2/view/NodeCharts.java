@@ -55,6 +55,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.groups.CyGroup;
 
 // Metanode imports
+import metaNodePlugin2.MetaNodeGroupViewer;
 import metaNodePlugin2.model.MetaNode;
 
 
@@ -95,7 +96,7 @@ public class NodeCharts {
 		// Get the chart type
 		String chartType = mn.getChartType();
 
-		if (nodeChartAttribute == null || chartType == null) return;
+		if (nodeChartAttribute == null || chartType == null || chartType.equals(MetaNodeGroupViewer.NONODECHART)) return;
 
 		// Get the values from all of our children
 		CyGroup group = mn.getCyGroup();

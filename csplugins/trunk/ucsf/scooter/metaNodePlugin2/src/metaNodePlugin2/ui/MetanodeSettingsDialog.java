@@ -106,7 +106,6 @@ public class MetanodeSettingsDialog extends JDialog
 	private String chartType = null;
 	private String nodeChartAttribute = null;
 	private MetaNodeGroupViewer groupViewer = null;
-	private static String NONETYPE = "-- None --";
 
 	// Dialog components
 	JPanel tunablePanel = null;
@@ -245,6 +244,8 @@ public class MetanodeSettingsDialog extends JDialog
 			                        Tunable.GROUP, new Integer(2),
 		                          new Boolean(true), null, Tunable.COLLAPSABLE);
 			metanodeProperties.add(t);
+		 	t.setImmutable(true);
+			nodeChartEnablers.add(t);
 
 			{
 				// Get the attribute to map
@@ -254,6 +255,7 @@ public class MetanodeSettingsDialog extends JDialog
 				nodeChartEnablers.add(nodeChartAttrList);
 				metanodeProperties.add(nodeChartAttrList);
 				nodeChartAttrList.addTunableValueListener(this);
+		 		nodeChartAttrList.setImmutable(true);
 
 				// Get the chart type (might change depending on the chart type)
 				nodeChartTypeList = new Tunable("chartType", "Chart type",
@@ -262,6 +264,7 @@ public class MetanodeSettingsDialog extends JDialog
 				nodeChartEnablers.add(nodeChartTypeList);
 				metanodeProperties.add(nodeChartTypeList);
 				nodeChartTypeList.addTunableValueListener(this);
+				nodeChartTypeList.setImmutable(true);
 			}
 		}
 
@@ -368,17 +371,18 @@ public class MetanodeSettingsDialog extends JDialog
 		t = metanodeProperties.get("nodeChartAttribute");
 		if ((t != null) && (t.valueChanged() || force)) {
 			nodeChartAttribute = (String)getListValue(t);
-			MetaNodeManager.setNodeChartAttributeDefault(nodeChartAttribute);
-			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
+			if (nodeChartAttribute != null)
+				MetaNodeManager.setNodeChartAttributeDefault(nodeChartAttribute);
+			metanodeProperties.setProperty(t.getName(), nodeChartAttribute);
 		}
 
 		t = metanodeProperties.get("chartType");
 		if ((t != null) && (t.valueChanged() || force)) {
 			chartType = (String)getListValue(t);
-			MetaNodeManager.setChartTypeDefault(chartType);
-			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
+			if (chartType != null)
+				MetaNodeManager.setChartTypeDefault(chartType);
+			metanodeProperties.setProperty(t.getName(), chartType);
 		}
-
 
 		// For each default value, get the default and set it
 		t = metanodeProperties.get("stringDefaults");
@@ -504,7 +508,7 @@ public class MetanodeSettingsDialog extends JDialog
 	private String[] getChartTypes() {
 		String [] a = new String[1];
 		List<String> viewerList = groupViewer.getChartTypes();
-		viewerList.add(NONETYPE);
+		viewerList.add(MetaNodeGroupViewer.NONODECHART);
 		String [] viewerArray = viewerList.toArray(a);
 		Arrays.sort(viewerArray);
 		return viewerArray;
@@ -678,6 +682,9 @@ public class MetanodeSettingsDialog extends JDialog
 	}
 
 	private Object getListValue(Tunable t) {
+		if (t.getValue() == null)
+			return null;
+
 		// Get the index
 		int attributeIndex = ((Integer)t.getValue()).intValue();
 		if (attributeIndex < 0)
@@ -685,6 +692,7 @@ public class MetanodeSettingsDialog extends JDialog
 
 		// Get the original array
 		Object[] array = (Object [])t.getLowerBound();
+		if (array == null || array.length <= attributeIndex) return null;
 
 		return array[attributeIndex];
 	}

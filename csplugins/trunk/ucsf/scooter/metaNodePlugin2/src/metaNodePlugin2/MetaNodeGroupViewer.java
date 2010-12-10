@@ -78,6 +78,7 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 
 	private static String NAMEDSELECTION = "namedselection";
 	private static String NODECHARTS = "nodecharts";
+	public static String NONODECHART = "-- None --";
 
 	/**
 	 * Create a new group viewer for metanodes
