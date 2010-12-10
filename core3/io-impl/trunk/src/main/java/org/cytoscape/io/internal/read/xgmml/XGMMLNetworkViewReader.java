@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -58,6 +59,8 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.TaskMonitor;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -218,31 +221,30 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 	 */
 	private void layoutNodes(final VisualStyleBuilder graphStyle,
 			boolean buildStyle) {
-			/*
-		String label = null;
-		int tempid = 0;
+//		String label = null;
+//		int tempid = 0;
 		View<CyNode> nv = null;
+//
+		final Map<CyNode, Attributes> nodeGraphicsMap = readDataManager.getNodeGraphics();
 
-		final Map<CyNode, Attributes> nodeGraphicsMap = readDataManager
-				.getNodeGraphics();
-
-		for (CyNode node : nodeGraphicsMap.keySet()) {
+		for (Entry<CyNode, Attributes> entry : nodeGraphicsMap.entrySet()) {
+			CyNode node = entry.getKey();
+			Attributes attr = entry.getValue();
 			nv = view.getNodeView(node);
-			label = node.attrs().get("name", String.class);
-
-			if ((label != null) && (nv != null)) {
-				nv.getLabel().setText(label);
-			} else if (view != null) {
-				nv.getLabel().setText("node(" + tempid + ")");
-				tempid++;
-			}
-
-			if ((nodeGraphicsMap != null) && (nv != null)) {
-				layoutNodeGraphics(nodeGraphicsMap.get(node), nv, graphStyle,
-						buildStyle);
+			// TODO
+//			label = node.attrs().get("name", String.class);
+//
+//			if ((label != null) && (nv != null)) {
+//				nv.getLabel().setText(label);
+//			} else if (view != null) {
+//				nv.getLabel().setText("node(" + tempid + ")");
+//				tempid++;
+//			}
+//
+			if (nv != null) {
+				layoutNodeGraphics(attr, nv, graphStyle, buildStyle);
 			}
 		}
-		*/
 	}
 
 	/**
@@ -261,125 +263,113 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 	private void layoutNodeGraphics(final Attributes graphics,
 			final View<CyNode> nodeView, final VisualStyleBuilder graphStyle,
 			final boolean buildStyle) {
+		// Location and size of the node
+		double x = attributeValueUtil.getDoubleAttribute(graphics, "x");
+		double y = attributeValueUtil.getDoubleAttribute(graphics, "y");
+		
+		nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x);
+		nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, y);
+		
+		double h = attributeValueUtil.getDoubleAttribute(graphics, "h");
+		double w = attributeValueUtil.getDoubleAttribute(graphics, "w");
 
+		// TODO: set visual properties
 		// The identifier of this node
-		CyRow nodeAttrs = nodeView.getModel().getCyRow();
-		/*
-
-		// Location and size of the node
-		double x;
-
-		// Location and size of the node
-		double y;
-
-		// Location and size of the node
-		double h;
-
-		// Location and size of the node
-		double w;
-
-		x = attributeValueUtil.getDoubleAttribute(graphics, "x");
-		y = attributeValueUtil.getDoubleAttribute(graphics, "y");
-		h = attributeValueUtil.getDoubleAttribute(graphics, "h");
-		w = attributeValueUtil.getDoubleAttribute(graphics, "w");
-
-		nodeView.setXPosition(x);
-		nodeView.setYPosition(y);
-
-		if (buildStyle && h != 0.0) {
-			// nodeView.setHeight(h);
-			graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_HEIGHT,
-					"" + h);
-		}
-		if (buildStyle && w != 0.0) {
-			// nodeView.setWidth(w);
-			graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_WIDTH, ""
-					+ w);
-		}
-
-		// Set color
-		if (buildStyle
-				&& attributeValueUtil.getAttribute(graphics, "fill") != null) {
-			String fillColor = attributeValueUtil
-					.getAttribute(graphics, "fill");
-			graphStyle.addProperty(nodeAttrs,
-					VisualPropertyType.NODE_FILL_COLOR, fillColor);
-			// nodeView.setUnselectedPaint(fillColor);
-		}
-
-		// Set border line color
-		if (buildStyle
-				&& attributeValueUtil.getAttribute(graphics, "outline") != null) {
-			String outlineColor = attributeValueUtil.getAttribute(graphics,
-					"outline");
-			// nodeView.setBorderPaint(outlineColor);
-			graphStyle.addProperty(nodeAttrs,
-					VisualPropertyType.NODE_BORDER_COLOR, outlineColor);
-		}
-
-		// Set border line width
-		if (buildStyle
-				&& attributeValueUtil.getAttribute(graphics, "width") != null) {
-			String lineWidth = attributeValueUtil.getAttribute(graphics,
-					"width");
-			// nodeView.setBorderWidth(lineWidth);
-			graphStyle.addProperty(nodeAttrs,
-					VisualPropertyType.NODE_LINE_WIDTH, lineWidth);
-		}
-
-		if (buildStyle
-				&& attributeValueUtil.getAttributeNS(graphics,
-						"nodeTransparency", CY_NAMESPACE) != null) {
-			String opString = attributeValueUtil.getAttributeNS(graphics,
-					"nodeTransparency", CY_NAMESPACE);
-			float opacity = (float) Double.parseDouble(opString) * 255;
-			// Opacity is saved as a float from 0-1, but internally we use 0-255
-			// nodeView.setTransparency(opacity);
-			graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_OPACITY,
-					"" + opacity);
-		}
-
-		if (buildStyle
-				&& attributeValueUtil.getAttributeNS(graphics, "opacity",
-						CY_NAMESPACE) != null) {
-			String opString = attributeValueUtil.getAttributeNS(graphics,
-					"opacity", CY_NAMESPACE);
-			float opacity = (float) Double.parseDouble(opString);
-			// nodeView.setTransparency(opacity);
-			graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_OPACITY,
-					opString);
-		}
-
-		// These are saved in the exported XGMML, but it's not clear how they
-		// get set
-		if (buildStyle
-				&& attributeValueUtil.getAttributeNS(graphics, "nodeLabelFont",
-						CY_NAMESPACE) != null) {
-			String nodeLabelFont = attributeValueUtil.getAttributeNS(graphics,
-					"nodeLabelFont", CY_NAMESPACE);
-			graphStyle.addProperty(nodeAttrs,
-					VisualPropertyType.NODE_FONT_FACE, nodeLabelFont);
-		}
-
-		if (buildStyle
-				&& attributeValueUtil.getAttributeNS(graphics,
-						"borderLineType", CY_NAMESPACE) != null) {
-			String borderLineType = attributeValueUtil.getAttributeNS(graphics,
-					"borderLineType", CY_NAMESPACE);
-			graphStyle.addProperty(nodeAttrs,
-					VisualPropertyType.NODE_LINE_STYLE, borderLineType);
-		}
-
-		String type = attributeValueUtil.getAttribute(graphics, "type");
-		if (buildStyle && type != null) {
-			if (type.equals("rhombus"))
-				graphStyle.addProperty(nodeAttrs,
-						VisualPropertyType.NODE_SHAPE, "parallelogram");
-			else
-				graphStyle.addProperty(nodeAttrs,
-						VisualPropertyType.NODE_SHAPE, type);
-		}
-		*/
+//		CyRow nodeAttrs = nodeView.getModel().getCyRow();
+//		
+//		if (buildStyle && h != 0.0) {
+//			// nodeView.setHeight(h);
+//			graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_HEIGHT,
+//					"" + h);
+//		}
+//		if (buildStyle && w != 0.0) {
+//			// nodeView.setWidth(w);
+//			graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_WIDTH, ""
+//					+ w);
+//		}
+//
+//		// Set color
+//		if (buildStyle
+//				&& attributeValueUtil.getAttribute(graphics, "fill") != null) {
+//			String fillColor = attributeValueUtil
+//					.getAttribute(graphics, "fill");
+//			graphStyle.addProperty(nodeAttrs,
+//					VisualPropertyType.NODE_FILL_COLOR, fillColor);
+//			// nodeView.setUnselectedPaint(fillColor);
+//		}
+//
+//		// Set border line color
+//		if (buildStyle
+//				&& attributeValueUtil.getAttribute(graphics, "outline") != null) {
+//			String outlineColor = attributeValueUtil.getAttribute(graphics,
+//					"outline");
+//			// nodeView.setBorderPaint(outlineColor);
+//			graphStyle.addProperty(nodeAttrs,
+//					VisualPropertyType.NODE_BORDER_COLOR, outlineColor);
+//		}
+//
+//		// Set border line width
+//		if (buildStyle
+//				&& attributeValueUtil.getAttribute(graphics, "width") != null) {
+//			String lineWidth = attributeValueUtil.getAttribute(graphics,
+//					"width");
+//			// nodeView.setBorderWidth(lineWidth);
+//			graphStyle.addProperty(nodeAttrs,
+//					VisualPropertyType.NODE_LINE_WIDTH, lineWidth);
+//		}
+//
+//		if (buildStyle
+//				&& attributeValueUtil.getAttributeNS(graphics,
+//						"nodeTransparency", CY_NAMESPACE) != null) {
+//			String opString = attributeValueUtil.getAttributeNS(graphics,
+//					"nodeTransparency", CY_NAMESPACE);
+//			float opacity = (float) Double.parseDouble(opString) * 255;
+//			// Opacity is saved as a float from 0-1, but internally we use 0-255
+//			// nodeView.setTransparency(opacity);
+//			graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_OPACITY,
+//					"" + opacity);
+//		}
+//
+//		if (buildStyle
+//				&& attributeValueUtil.getAttributeNS(graphics, "opacity",
+//						CY_NAMESPACE) != null) {
+//			String opString = attributeValueUtil.getAttributeNS(graphics,
+//					"opacity", CY_NAMESPACE);
+//			float opacity = (float) Double.parseDouble(opString);
+//			// nodeView.setTransparency(opacity);
+//			graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_OPACITY,
+//					opString);
+//		}
+//
+//		// These are saved in the exported XGMML, but it's not clear how they
+//		// get set
+//		if (buildStyle
+//				&& attributeValueUtil.getAttributeNS(graphics, "nodeLabelFont",
+//						CY_NAMESPACE) != null) {
+//			String nodeLabelFont = attributeValueUtil.getAttributeNS(graphics,
+//					"nodeLabelFont", CY_NAMESPACE);
+//			graphStyle.addProperty(nodeAttrs,
+//					VisualPropertyType.NODE_FONT_FACE, nodeLabelFont);
+//		}
+//
+//		if (buildStyle
+//				&& attributeValueUtil.getAttributeNS(graphics,
+//						"borderLineType", CY_NAMESPACE) != null) {
+//			String borderLineType = attributeValueUtil.getAttributeNS(graphics,
+//					"borderLineType", CY_NAMESPACE);
+//			graphStyle.addProperty(nodeAttrs,
+//					VisualPropertyType.NODE_LINE_STYLE, borderLineType);
+//		}
+//
+//		String type = attributeValueUtil.getAttribute(graphics, "type");
+//		if (buildStyle && type != null) {
+//			if (type.equals("rhombus"))
+//				graphStyle.addProperty(nodeAttrs,
+//						VisualPropertyType.NODE_SHAPE, "parallelogram");
+//			else
+//				graphStyle.addProperty(nodeAttrs,
+//						VisualPropertyType.NODE_SHAPE, type);
+//		}
 	}
 
 	/**
