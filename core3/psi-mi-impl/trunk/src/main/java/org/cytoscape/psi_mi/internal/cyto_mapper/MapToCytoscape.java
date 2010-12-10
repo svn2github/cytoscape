@@ -609,7 +609,7 @@ public class MapToCytoscape implements Mapper {
 	}
 
 	private boolean attribExists(final CyRow attributes, final String attrName) {
-		return attributes.getDataTable().getColumnTypeMap().get(attrName) != null;
+		return attributes.getDataTable().getType(attrName) != null;
 	}
 
 	/**

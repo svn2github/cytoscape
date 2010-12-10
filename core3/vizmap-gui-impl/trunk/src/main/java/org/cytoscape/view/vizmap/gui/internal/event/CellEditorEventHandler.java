@@ -462,8 +462,8 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 	private <K, V> void switchControllingAttr(
 			final VisualMappingFunctionFactory factory,
 			final AttributeComboBoxPropertyEditor editor,
-			VizMapperProperty<K, V, ?> prop, final String ctrAttrName) {
-
+			VizMapperProperty<K, V, ?> prop, final String ctrAttrName)
+	{
 		final VisualStyle currentStyle = manager.getCurrentVisualStyle();
 
 		final VisualProperty<V> vp = (VisualProperty<V>) prop.getKey();
@@ -480,8 +480,7 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 				applicationManager.getCurrentNetwork()).get(
 				CyNetwork.DEFAULT_ATTRS);
 
-		final Class<K> dataType = (Class<K>) attrForTest.getColumnTypeMap()
-				.get(ctrAttrName);
+		final Class<K> dataType = (Class<K>) attrForTest.getType(ctrAttrName);
 
 		if (mapping == null) {
 			// Need to create new one

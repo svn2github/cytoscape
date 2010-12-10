@@ -430,8 +430,9 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			if (attribName.equals(SUID_COLUMN_NAME))
 				continue;
 
-			final Class type = table.getColumnTypeMap().get(attribName);
-			final ValidatedObjectAndEditString objectAndEditString = getValidatedObjectAndEditString(type, id, attribName);
+			final Class type = table.getType(attribName);
+			final ValidatedObjectAndEditString objectAndEditString
+				= getValidatedObjectAndEditString(type, id, attribName);
 			if (objectAndEditString != null) {
 				final int actualColIdx = findColumn(attribName);
 				rowVector.setElementAt(objectAndEditString, actualColIdx);

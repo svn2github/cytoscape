@@ -119,7 +119,7 @@ public class AttributeSetManager implements ColumnDeletedListener,
 						.get(objectType)
 						.getAttrMap()
 						.put(e.getColumnName(),
-								table.getColumnTypeMap().get(e.getColumnName()));
+								table.getType(e.getColumnName()));
 				return;
 			}
 		}

@@ -307,9 +307,8 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			return;
 		}
 
-		final Map<String, Class<?>> columnNamesToTypesMap = attrData.getColumnTypeMap();
-		final Class<?> fromType = columnNamesToTypesMap.get(attributeFrom);
-		final Class<?> toType = columnNamesToTypesMap.get(attributeTo);
+		final Class<?> fromType = attrData.getType(attributeFrom);
+		final Class<?> toType = attributeFrom.getType(attributeTo);
 		if (!copyAttrsAreCompatible(fromType, toType)) {
 			showErrorWindow("Copy Failed: Incompatible data types.");
 			return;

@@ -177,7 +177,7 @@ public class SBMLNetworkViewReader extends AbstractTask implements CyNetworkView
 	}
 
 	private <T> void checkSchema(CyRow attributes, String attributeName, Class<T> type) {
-		if (attributes.getDataTable().getColumnTypeMap().get(attributeName) == null)
+		if (attributes.getDataTable().getType(attributeName) == null)
 			attributes.getDataTable().createColumn(attributeName, type);
 	}
 

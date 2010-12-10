@@ -192,8 +192,7 @@ public class VizMapPropertyBuilder {
 			// Discrete Mapping
 			final SortedSet<K> attrSet = new TreeSet<K>();
 			for (CyTableEntry go : graphObjectSet) {
-				final Class<?> attrClass = go.getCyRow().getDataTable()
-						.getColumnTypeMap().get(attrName);
+				final Class<?> attrClass = go.getCyRow().getDataTable().getType(attrName);
 
 				Object id = go.getCyRow().get(attrName, attrClass);
 				if (id != null)
@@ -231,16 +230,13 @@ public class VizMapPropertyBuilder {
 			if (continuousCellEditor != null)
 				cellEditorFactory.registerEditor(graphicalView, continuousCellEditor);
 			
-		} else if (visualMapping instanceof PassthroughMapping
-				&& (attrName != null)) {
-
+		} else if (visualMapping instanceof PassthroughMapping && (attrName != null)) {
 			String id;
 			Object value;
 			String stringVal;
 
 			for (CyTableEntry go : graphObjectSet) {
-				Class<?> attrClass = go.getCyRow().getDataTable()
-						.getColumnTypeMap().get(attrName);
+				Class<?> attrClass = go.getCyRow().getDataTable().getType(attrName);
 
 				id = go.getCyRow().get("name", String.class);
 

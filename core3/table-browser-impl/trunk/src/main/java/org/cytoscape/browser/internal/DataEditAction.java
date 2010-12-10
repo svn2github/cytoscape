@@ -116,7 +116,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 		// Change object to String
 		final String newValueStr = newValue.toString().trim();
 
-		final Class targetType = table.getColumnTypeMap().get(attrName);
+		final Class targetType = table.getType(attrName);
 		if (targetType == Integer.class)
 			handleInteger(newValueStr, id);
 		else if (targetType == Double.class)

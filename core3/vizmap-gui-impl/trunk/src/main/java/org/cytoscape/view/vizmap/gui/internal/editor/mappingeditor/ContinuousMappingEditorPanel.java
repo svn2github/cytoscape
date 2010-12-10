@@ -127,7 +127,7 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 		this.mainPanel = new JPanel();
 		
 		final String controllingAttrName = mapping.getMappingAttributeName();
-		final Class<?> attrType = attr.getColumnTypeMap().get(controllingAttrName);
+		final Class<?> attrType = attr.getType(controllingAttrName);
 		if (attrType != Double.class)
 			throw new IllegalArgumentException("Cannot support attribute data type: " + attrType);
 		
