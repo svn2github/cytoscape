@@ -71,8 +71,14 @@ public class BioCycRESTClient {
 	}
 
 	public List<Database> listDatabases() {
-		if (databaseCache == null)
-			databaseCache = Database.getDatabases(handler.query("dbs"));
+		if (databaseCache == null) {
+			try {
+				databaseCache = Database.getDatabases(handler.query("dbs"));
+			} catch (Exception e) {
+				// We get an unknown host exception if we're not connected to the network
+				return new ArrayList<Database>();
+			}
+		}
 		return databaseCache;
 	}
 

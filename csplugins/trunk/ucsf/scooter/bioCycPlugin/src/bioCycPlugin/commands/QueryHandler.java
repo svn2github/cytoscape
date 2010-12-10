@@ -91,16 +91,23 @@ public class QueryHandler {
 	public Document query(String queryString) {
 		InputStream input;
 		Document result;
+		String queryUrl = queryString;
 		String baseUrl = BioCycPlugin.getBaseUrl();
 		logger.info("Executing query: "+baseUrl+"xmlquery?query="+queryString);
 		try {
-			queryString = baseUrl+"xmlquery?query="+URLEncoder.encode(queryString, "UTF-8");
+			queryUrl = baseUrl+"xmlquery?query="+URLEncoder.encode(queryString, "UTF-8");
 			// System.out.println("Executing query: "+queryString);
-			input = URLUtil.getBasicInputStream(new URL(queryString));
+			input = URLUtil.getBasicInputStream(new URL(queryUrl));
 			// result = builder.parse(teeInput(input));
 			result = builder.parse(teeInput(input));
 		} catch (Exception e) {
-			logger.error("Unable to process query "+queryString+": "+e.getMessage(),e);
+			// Special handling for the circumstance where we can't connect
+			// to the server
+			if (queryString.equals("dbs")) {
+				logger.warning("Unable to connect to server: "+e.getMessage(),e);
+			} else {
+				logger.error("Unable to process query "+queryUrl+": "+e.getMessage(),e);
+			}
 			return null;
 		}
 		return result;
