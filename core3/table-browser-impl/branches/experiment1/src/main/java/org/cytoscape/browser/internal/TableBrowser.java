@@ -1,6 +1,8 @@
 package org.cytoscape.browser.internal;
 
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -30,12 +32,15 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 		this.tableManager = tableManager;
 		this.serviceRegistrar = serviceRegistrar;
 		this.browserTable = new BrowserTable();
+		this.setLayout(new BorderLayout());
+
 		browserTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 		final TableChooser tableChooser = new TableChooser(tableManager);
 		tableChooser.addActionListener(this);
-		add(tableChooser);
-		add(new JScrollPane(browserTable));
+		add(tableChooser, BorderLayout.NORTH);
+		browserTable.getTableHeader().setBackground(Color.yellow);
+		add(new JScrollPane(browserTable), BorderLayout.CENTER);
 	}
 
 	/**

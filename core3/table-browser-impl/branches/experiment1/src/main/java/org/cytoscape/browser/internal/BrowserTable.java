@@ -8,6 +8,6 @@ import org.cytoscape.service.util.CyServiceRegistrar;
 
 public class BrowserTable extends JTable {
 	public BrowserTable() {
-		super(10, 10);
+		super();
 	}
 }

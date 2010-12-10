@@ -20,7 +20,7 @@ public class BrowserTableModel extends AbstractTableModel
 	}
 
 	public int getRowCount() {
-		return 10;
+		return 100;
 	}
 
 	public int getColumnCount() {
