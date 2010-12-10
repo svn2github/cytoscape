@@ -28,7 +28,8 @@ import javax.swing.JScrollPane;
 
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
- 
+
+import clusterMaker.algorithms.ThresholdHeuristic;
 
 public class HistogramDialog extends JDialog implements ActionListener, ComponentListener, HistoChangeListener{
 	double[] inputArray;
@@ -42,12 +43,16 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 	boolean isZoomed = false;
 	List<HistoChangeListener> changeListenerList = null;
 
-	public HistogramDialog(String title, double[] inputArray, int nBins) {
+	ThresholdHeuristic thueristic = null;
+
+	public HistogramDialog(String title, double[] inputArray, int nBins, ThresholdHeuristic thueristic) {
 		super();
 		this.inputArray = inputArray;
 		this.nBins = nBins;
 		this.currentBins = nBins;
 		this.changeListenerList = new ArrayList();
+		this.thueristic = thueristic;
+
 		setTitle(title);
 
 		initializeOnce();
@@ -60,19 +65,23 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 		}
 	}
 
-	//public double getCutoff() {}
+       
 
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("set"))
 			histo.setBoolShowLine(true);
 		if(e.getActionCommand().equals("close"))
 			this.dispose();
+
+		if(e.getActionCommand().equals("C")){}
 		if(e.getActionCommand().equals("zoom")){
 			currentBins = currentBins * 2;
 			isZoomed = true;
 			zoom(inputArray, false);
 			zoomOutButton.setEnabled(true);
 		}
+
+	 
 		if(e.getActionCommand().equals("zoomOut")){
 			currentBins = currentBins / 2;
 			if (currentBins == nBins) {
@@ -80,6 +89,18 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 				zoomOutButton.setEnabled(false);
 			}
 			zoom(inputArray, true);
+		}
+
+		if(e.getActionCommand().equals("cuttoffHeuristic")){
+
+			double hCuttoff = thueristic.run();
+		
+			//Found cuttoff. Update histogram
+			if(hCuttoff > -1000) {
+				histoValueChanged((double)hCuttoff);
+				histo.setBoolShowLine(true);
+				histo.setLineValue((double)hCuttoff);
+			}
 		}
 		
 	}
@@ -127,6 +148,11 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 		JButton okButton = new JButton("Set Cutoff");
 		okButton.addActionListener(this);
 		okButton.setActionCommand("set");
+
+		//Cuttoff Selection Heuristic
+		JButton convertButton = new JButton("Select Cutoff Heuristically");
+		convertButton.addActionListener(this);
+		convertButton.setActionCommand("cuttoffHeuristic");
 		
 		JButton zoomButton = new JButton("Zoom In");
 		zoomButton.addActionListener(this);
@@ -141,6 +167,7 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 		buttonBox.add(closeButton);
 		buttonBox.add(zoomButton);
 		buttonBox.add(zoomOutButton);
+		buttonBox.add(convertButton);
 		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		Dimension buttonDim = buttonBox.getPreferredSize();
 		buttonBox.setMinimumSize(buttonDim);
@@ -203,20 +230,6 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 		pack();
 	}
     
-	/**
-	 * Main method for testing purposes.
-	 */
-	public static void main(String [] args) {
-	
-		double[] randArray = new double[100000]; //used for test
-		for(int nI=0; nI < randArray.length; nI++){
-			randArray[nI] = Math.random()*0.0000007;//assigning random doubles to randArray (used for test)
-		}
 
-		JDialog dialog = new HistogramDialog("Test Dialog", randArray, 100);
-		dialog.pack();
-		dialog.setVisible(true);
-		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-	}
 
 }

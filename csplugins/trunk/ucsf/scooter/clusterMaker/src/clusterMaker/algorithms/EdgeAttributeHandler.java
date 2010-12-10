@@ -51,6 +51,8 @@ import clusterMaker.algorithms.edgeConverters.NegLogConverter;
 import clusterMaker.algorithms.edgeConverters.NoneConverter;
 import clusterMaker.algorithms.edgeConverters.SCPSConverter;
 
+import clusterMaker.algorithms.ThresholdHeuristic;
+
 import clusterMaker.ui.HistogramDialog;
 import clusterMaker.ui.HistoChangeListener;
 
@@ -123,7 +125,7 @@ public class EdgeAttributeHandler
 		// 		LOG(value)
 		// 		SCPS
 		EdgeWeightConverter[] edgeWeightConverters = converters.toArray(new EdgeWeightConverter[1]);
-		Tunable edgeWeighter = new Tunable("edgeWeight","Edge weight conversion",
+		Tunable edgeWeighter = new Tunable("edgeWeighter","Edge weight conversion",
 		                                   Tunable.LIST, 0, 
 		                                   (Object)edgeWeightConverters, new Integer(0), 0);
 		clusterProperties.add(edgeWeighter);
@@ -215,7 +217,7 @@ public class EdgeAttributeHandler
 	}
 
 	public void histoValueChanged(double cutoffValue) {
-		// System.out.println("New cutoff value: "+cutoffValue);
+		System.out.println("New cutoff value: "+cutoffValue);
 		Tunable edgeCutoff = clusterProperties.get("edgeCutOff");
 		edgeCutoff.setValue(cutoffValue);
 	}
@@ -246,6 +248,9 @@ public class EdgeAttributeHandler
 	public void actionPerformed(ActionEvent e) {
 		if (this.matrix == null)
 			this.matrix = new DistanceMatrix(dataAttribute, selectedOnly, converter);
+
+		ThresholdHeuristic thueristic = new ThresholdHeuristic(matrix);
+
 		double dataArray[] = matrix.getEdgeValues();
 
 		int nbins = 100;
@@ -254,7 +259,7 @@ public class EdgeAttributeHandler
 		else if (dataArray.length > 10000)
 			nbins = 1000;
 		String title = "Histogram for "+dataAttribute+" edge attribute";
-		histo = new HistogramDialog(title, dataArray, nbins);
+		histo = new HistogramDialog(title, dataArray, nbins,thueristic);
 		histo.pack();
 		histo.setVisible(true);
 		histo.addHistoChangeListener(this);

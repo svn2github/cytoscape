@@ -79,7 +79,7 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 		setPreferredSize(new Dimension(width,height));
 		histoArray = new int[NBINS];
 		this.graphData = inputData;
-		listeners = new ArrayList();
+		listeners = new ArrayList<HistoChangeListener>();
 
 		adjFont = new Font(FONT_FAMILY, Font.PLAIN, 14);
 
@@ -125,37 +125,18 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 	}
 
 	public void mouseMoved(MouseEvent e) {}
-	public void mouseDragged(MouseEvent e) {
-		int histoMousePos = (int)(((double)(e.getX()-XSTART))/xIncrement);
-
-		repaint(mouseX-1, YEND, 2, height-YEND);
-		repaint(mouseX-50, YEND-30, 150, 30);
-		if(e.getX()>XSTART && boolShowLine){
-			mouseX = e.getX();
-			repaint(mouseX-1, YEND, 2, height-YEND);
-			repaint(mouseX-50, YEND-30, 150, 30);
-		}
-	}
+	public void mouseDragged(MouseEvent e) { rePaintMouseLine(e.getX()); }
 	public void mouseClicked(MouseEvent e){}
 	public void mouseEntered(MouseEvent e){}
 	public void mouseExited(MouseEvent e){}
-	public void mousePressed(MouseEvent e){
-		int histoMousePos = (int)(((double)(e.getX()-XSTART))/xIncrement);
+	public void mousePressed(MouseEvent e){ rePaintMouseLine(e.getX()); }
 
-		repaint(mouseX-1, YEND, 2, height-YEND);
-		repaint(mouseX-50, YEND-30, 150, 30);
-		if(e.getX()>XSTART && boolShowLine){
-			mouseX = e.getX();
-			repaint(mouseX-1, YEND, 2, height-YEND);
-			repaint(mouseX-50, YEND-30, 150, 30);
-		}
-	}
 	
 	public void mouseReleased(MouseEvent e){
 		int histoMousePos = (int)(((double)(e.getX()-XSTART))/xIncrement);
 		if(e.getX()>XSTART && e.getX()<(XSTART+xIncrement*histoArray.length) && boolShowLine){
 			double binValue = xInterval*histoMousePos;
-			// System.out.println("histoArray["+histoMousePos+"] = "+ histoArray[histoMousePos]+", "+Double.parseDouble(form.format((binValue))));
+			System.out.println("histoArray["+histoMousePos+"] = "+ histoArray[histoMousePos]+", "+Double.parseDouble(form.format((binValue))));
 			if (listeners.size() == 0) return;
 			for (HistoChangeListener listener: listeners)
 				listener.histoValueChanged(Double.parseDouble(form.format(binValue)));
@@ -163,7 +144,28 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 
 	}
 
+	/**
+	 * Shows the selection line if true
+	 *
+	 * @param inShowLine if true, show the manual selection line
+	 */
 	public void setBoolShowLine(boolean inShowLine){boolShowLine = inShowLine;}
+
+	/**
+	 * Sets the value of the selection line
+	 *
+	 * @param cutOffValue the value of the selection (for use by the heuristic selection)
+	 */
+	public void setLineValue(double cutOffValue) {
+		System.out.println("Setting line value to: "+cutOffValue);
+		// mouseX = ((int)((cutOffValue-low)/xIncrement))+XSTART;
+		mouseX = (int)((cutOffValue/xInterval) * xIncrement) + XSTART;
+		int histoMousePos = (int)(((double)(mouseX-XSTART))/xIncrement);
+		double binValue = xInterval*histoMousePos;
+		System.out.println("histoArray["+histoMousePos+"] = "+ histoArray[histoMousePos]+", "+Double.parseDouble(form.format((binValue))));
+		if (boolShowLine)
+			rePaintMouseLine(mouseX);
+	}
 
 	/**
 	 * Add a new change listener to this histogram
@@ -195,6 +197,16 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 		g.setColor(Color.black);
 		g.setFont(adjFont);
 		g.drawString(toSciNotation(form.format(xInterval*histoMousePos).toString()," ("+histoArray[histoMousePos]+" values)"),mX-50,YEND-5);
+	}
+
+	private void rePaintMouseLine(int xPos) {
+		repaint(mouseX-1, YEND, 2, height-YEND);
+		repaint(mouseX-50, YEND-30, 150, 30);
+		if(xPos>XSTART && boolShowLine){
+			mouseX = xPos;
+			repaint(mouseX-1, YEND, 2, height-YEND);
+			repaint(mouseX-50, YEND-30, 150, 30);
+		}
 	}
 
 	private void createHistogram(double[] inputData){
