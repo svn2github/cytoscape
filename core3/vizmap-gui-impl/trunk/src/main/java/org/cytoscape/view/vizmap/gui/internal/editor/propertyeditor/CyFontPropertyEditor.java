@@ -35,12 +35,8 @@
 package org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor;
 
 import java.awt.Component;
-import java.awt.Font;
-
-import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.FontEditor;
 
 import com.l2fprod.common.beans.editor.FontPropertyEditor;
-import com.l2fprod.common.util.ResourceManager;
 
 
 /**

@@ -43,6 +43,7 @@ import java.util.Properties;
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
@@ -50,12 +51,9 @@ import org.cytoscape.view.vizmap.gui.action.VizMapUIAction;
 import org.cytoscape.view.vizmap.gui.internal.EditorWindowManager;
 import org.cytoscape.view.vizmap.gui.internal.VizMapPropertySheetBuilder;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperMainPanel;
-import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
 import org.cytoscape.view.vizmap.gui.internal.theme.IconManager;
 
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
-
-import org.cytoscape.session.CyApplicationManager;
 
 
 /**

@@ -58,7 +58,9 @@ import com.l2fprod.common.util.ResourceManager;
  *
  */
 public class CyColorPropertyEditor extends AbstractPropertyEditor {
+	
 	private CyColorCellRenderer label;
+	
 	private JButton button;
 	private Color color;
 	

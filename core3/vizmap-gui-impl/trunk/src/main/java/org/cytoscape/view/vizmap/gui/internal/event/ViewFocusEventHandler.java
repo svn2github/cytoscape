@@ -2,8 +2,6 @@ package org.cytoscape.view.vizmap.gui.internal.event;
 
 import java.beans.PropertyChangeEvent;
 
-import org.cytoscape.view.vizmap.VisualStyle;
-
 //import cytoscape.internal.view.NetworkPanel;
 
 public class ViewFocusEventHandler extends AbstractVizMapEventHandler {

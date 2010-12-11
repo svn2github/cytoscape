@@ -55,6 +55,7 @@ import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.Label;
 import org.cytoscape.ding.NodeShape;
 import org.cytoscape.ding.NodeView;
+import org.cytoscape.ding.ObjectPosition;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.graph.render.stateful.CustomGraphic;
 import org.cytoscape.model.CyEdge;
@@ -1547,16 +1548,20 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 			setFont((Font) value);
 		} else if (vp == DVisualLexicon.NODE_LABEL_FONT_SIZE) {
 			setFont(getFont().deriveFont(((Integer) value).floatValue()));
-		} else if (vp == DVisualLexicon.NODE_LABEL_TEXT_ANCHOR) {
-			setTextAnchor(((Anchor) value).getGinyAnchor());
-		} else if (vp == DVisualLexicon.NODE_LABEL_NODE_ANCHOR) {
-			setNodeLabelAnchor(((Anchor) value).getGinyAnchor());
-		} else if (vp == DVisualLexicon.NODE_LABEL_ANCHOR_X_OFFSET) {
-			setLabelOffsetX(((Double) value).doubleValue());
-		} else if (vp == DVisualLexicon.NODE_LABEL_ANCHOR_Y_OFFSET) {
-			setLabelOffsetY(((Double) value).doubleValue());
-		} else if (vp == DVisualLexicon.NODE_LABEL_JUSTIFY) {
-			setJustify(((Justify) value).getGinyJustify());
+//		} else if (vp == DVisualLexicon.NODE_LABEL_ANCHOR_X_OFFSET) {
+//			setLabelOffsetX(((Double) value).doubleValue());
+//		} else if (vp == DVisualLexicon.NODE_LABEL_ANCHOR_Y_OFFSET) {
+//			setLabelOffsetY(((Double) value).doubleValue());
+//		} else if (vp == DVisualLexicon.NODE_LABEL_JUSTIFY) {
+//			setJustify(((Justify) value).getNativeValue());
+		} else if (vp == DVisualLexicon.NODE_LABEL_POSITION) {
+			//FIXME
+			final ObjectPosition op = (ObjectPosition) value;
+			setTextAnchor(op.getAnchor().getConversionConstant());
+			setNodeLabelAnchor(op.getTargetAnchor().getConversionConstant());
+			setJustify(op.getJustify().getConversionConstant());
+			setLabelOffsetX(op.getOffsetX());
+			setLabelOffsetY(op.getOffsetY());
 		}
 	}
 

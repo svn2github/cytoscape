@@ -36,8 +36,6 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.bypass;
 
-import javax.swing.JPopupMenu;
-
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
 

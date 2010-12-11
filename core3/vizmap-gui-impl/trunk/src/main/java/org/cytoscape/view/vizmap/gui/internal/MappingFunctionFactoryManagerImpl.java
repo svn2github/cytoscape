@@ -2,9 +2,7 @@ package org.cytoscape.view.vizmap.gui.internal;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.gui.MappingFunctionFactoryManager;

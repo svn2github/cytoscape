@@ -38,18 +38,9 @@ package org.cytoscape.view.vizmap.gui.internal;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
-
-import org.cytoscape.view.vizmap.VisualMappingManager;
 
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 
 
 public class VizMapListener implements PropertyChangeListener {

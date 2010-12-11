@@ -4,17 +4,20 @@ import java.awt.Color;
 
 import javax.swing.Icon;
 
-import org.cytoscape.ding.IconFactory;
 import org.cytoscape.ding.LineStyle;
 import org.cytoscape.ding.NodeShape;
 import org.cytoscape.view.model.VisualProperty;
 
-public class VisualPropertyIconFactory implements IconFactory {
 
+/**
+ * Static factory for icons.
+ * 
+ * @author kono
+ *
+ */
+public class VisualPropertyIconFactory {	
 	
-	
-	@Override
-	public <V> Icon createIcon(VisualProperty<V> vp, V value, int w, int h) {
+	public static <V> Icon createIcon(VisualProperty<V> vp, V value, int w, int h) {
 		if(value == null)
 			return null;
 		

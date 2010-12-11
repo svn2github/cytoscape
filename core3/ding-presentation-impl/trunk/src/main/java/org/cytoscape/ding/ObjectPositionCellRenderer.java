@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,6 +33,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
 package org.cytoscape.ding;
 
 import java.awt.Component;
@@ -40,15 +42,21 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 
+import org.cytoscape.ding.icon.VisualPropertyIconFactory;
+import org.cytoscape.ding.impl.DVisualLexicon;
 
 import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 
 
 /**
- * DING-dependent cell renderer for Label Position.
+ *
  */
-public class LabelPositionCellRenderer extends DefaultCellRenderer {
-	private final static long serialVersionUID = 120233986947092L;
+public class ObjectPositionCellRenderer extends DefaultCellRenderer {
+	
+	private static final long serialVersionUID = -7898871787941450155L;
+	
+	private static final int ICON_WIDTH = 32;
+	private static final int ICON_HEIGHT = 32;
 
 	/**
 	 *  DOCUMENT ME!
@@ -64,8 +72,9 @@ public class LabelPositionCellRenderer extends DefaultCellRenderer {
 	 */
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 	                                               boolean hasFocus, int row, int column) {
+		
 		final JLabel label = new JLabel();
-
+		
 		if (isSelected) {
 			label.setBackground(table.getSelectionBackground());
 			label.setForeground(table.getSelectionForeground());
@@ -74,12 +83,15 @@ public class LabelPositionCellRenderer extends DefaultCellRenderer {
 			label.setForeground(table.getForeground());
 		}
 
-		if ((value != null) && value instanceof LabelPosition) {
-			final LabelPosition lp = (LabelPosition) value;
-			label.setIcon(lp.toIcon());
+		if ((value != null) && value instanceof ObjectPosition) {
+			
+			
+			final ObjectPosition lp = (ObjectPosition) value;
+			
+			label.setIcon(VisualPropertyIconFactory.createIcon(DVisualLexicon.NODE_LABEL_POSITION, lp, ICON_WIDTH, ICON_HEIGHT));
 			label.setVerticalAlignment(SwingConstants.CENTER);
 			label.setHorizontalAlignment(SwingConstants.CENTER);
-		}
+		} 
 
 		return label;
 	}

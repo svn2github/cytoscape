@@ -35,7 +35,7 @@ public class DVisualLexiconTest extends AbstractVisualLexiconTest {
 
 		assertEquals(1, dLexicon.getVisualLexiconNode(root).getChildren().size());
 		
-		assertEquals(68, dLexicon.getAllVisualProperties().size());
+		assertEquals(60, dLexicon.getAllVisualProperties().size());
 	}
 
 	@Test

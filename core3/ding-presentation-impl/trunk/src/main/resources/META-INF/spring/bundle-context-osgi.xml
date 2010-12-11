@@ -114,5 +114,8 @@
 		<osgi:listener bind-method="addDropNetworkViewTaskFactory"
 			unbind-method="removeDropNetworkViewTaskFactory" ref="dingRenderingEngineFactory" />
 	</osgi:set>
+	
+	<osgi:service id="objectPositionValueEditorService" ref="objectPositionValueEditor" auto-export="interfaces" />
+	<osgi:service id="objectPositionPropertyEditorService" ref="objectPositionEditor" auto-export="interfaces" />
 
 </beans>

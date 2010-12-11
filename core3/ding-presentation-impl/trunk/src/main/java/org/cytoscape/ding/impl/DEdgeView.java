@@ -1461,16 +1461,12 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 			setText(value.toString());
 		} else if (vp == DVisualLexicon.EDGE_TOOLTIP) {
 			setToolTip(value.toString());
-		} else if (vp == DVisualLexicon.EDGE_LABEL_EDGE_ANCHOR) {
-			setEdgeLabelAnchor(((Anchor) value).getGinyAnchor());
-		} else if (vp == DVisualLexicon.EDGE_LABEL_TEXT_ANCHOR) {
-			setTextAnchor(((Anchor) value).getGinyAnchor());
-		} else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_X_OFFSET) {
-			setLabelOffsetX(((Double) value).doubleValue());
-		} else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_Y_OFFSET) {
-			setLabelOffsetY(((Double) value).doubleValue());
-		} else if (vp == DVisualLexicon.EDGE_LABEL_JUSTIFY) {
-			setJustify(((Justify) value).getGinyJustify());
+//		} else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_X_OFFSET) {
+//			setLabelOffsetX(((Double) value).doubleValue());
+//		} else if (vp == DVisualLexicon.EDGE_LABEL_ANCHOR_Y_OFFSET) {
+//			setLabelOffsetY(((Double) value).doubleValue());
+//		} else if (vp == DVisualLexicon.EDGE_LABEL_JUSTIFY) {
+//			setJustify(((Justify) value).getNativeValue());
 		} else if (vp == DVisualLexicon.EDGE_LABEL_FONT_FACE) {
 			setFont((Font) value);
 		} else if (vp == DVisualLexicon.EDGE_LABEL_FONT_SIZE) {
@@ -1482,6 +1478,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 				m_view.showGraphObject(this);
 			else
 				m_view.hideGraphObject(this);
+		} else if (vp == DVisualLexicon.EDGE_LABEL_POSITION) {
+			// FIXME: Not implemented yet.
 		}
 	}
 }

@@ -36,25 +36,10 @@
 package org.cytoscape.view.vizmap.gui.internal.action;
 
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
 
-import javax.swing.JOptionPane;
-
-import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.vizmap.VisualMappingFunction;
-import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
 import org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator;
 import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
-
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 
 /**
  * 

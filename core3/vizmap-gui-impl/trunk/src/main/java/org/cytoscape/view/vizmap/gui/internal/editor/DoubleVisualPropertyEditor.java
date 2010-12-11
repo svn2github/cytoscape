@@ -34,8 +34,6 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.editor;
 
-import javax.swing.Icon;
-
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -49,7 +47,7 @@ import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyDoubleProp
  *
  */
 public class DoubleVisualPropertyEditor extends
-		AbstractVisualPropertyEditor<Double> {
+		BasicVisualPropertyEditor<Double> {
 
 	/**
 	 * Creates a new DiscreteNumber object.
@@ -67,21 +65,4 @@ public class DoubleVisualPropertyEditor extends
 				editorManager, vmm);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param vp
-	 *            DOCUMENT ME!
-	 * @param width
-	 *            DOCUMENT ME!
-	 * @param height
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	@Override
-	public Icon getDefaultIcon(int width, int height) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

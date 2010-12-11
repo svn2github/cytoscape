@@ -1,7 +1,6 @@
 package org.cytoscape.view.vizmap.gui.internal.cellrenderer;
 
 import java.awt.Component;
-import java.awt.Paint;
 
 import javax.swing.JTable;
 

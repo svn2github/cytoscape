@@ -37,8 +37,6 @@ package org.cytoscape.view.vizmap.gui.internal.editor;
 import java.awt.Color;
 import java.awt.Paint;
 
-import javax.swing.Icon;
-
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
@@ -54,7 +52,7 @@ import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyColorPrope
  * 
  */
 public class ColorVisualPropertyEditor extends
-		AbstractVisualPropertyEditor<Paint> {
+		BasicVisualPropertyEditor<Paint> {
 
 	/**
 	 * Constructor. Should instantiate one editor per VisualProperty.
@@ -70,23 +68,5 @@ public class ColorVisualPropertyEditor extends
 
 		continuousEditor = new GradientEditor(manager, appManager,
 				selectedManager, editorManager, vmm);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param vp
-	 *            DOCUMENT ME!
-	 * @param width
-	 *            DOCUMENT ME!
-	 * @param height
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	@Override
-	public Icon getDefaultIcon(int width, int height) {
-		// TODO: need to implement new icon generator for Color
-		return null;
 	}
 }

@@ -36,13 +36,6 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.bypass;
 
-import java.awt.Color;
-import java.awt.Font;
-
-import javax.swing.JLabel;
-import javax.swing.JPopupMenu;
-import javax.swing.border.EmptyBorder;
-
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
 /**

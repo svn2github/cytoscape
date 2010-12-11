@@ -12,7 +12,7 @@ import org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor.CyComboBoxPr
  * @param <T>
  */
 public class DiscreteValuePropertyEditor<T> extends
-		AbstractVisualPropertyEditor<T> {
+		BasicVisualPropertyEditor<T> {
 	
 	public DiscreteValuePropertyEditor(Class<T> type, Set<T> values) {
 		super(type, new CyComboBoxPropertyEditor());

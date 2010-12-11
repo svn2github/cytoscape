@@ -34,18 +34,13 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.view.vizmap.gui.internal.editor;
+package org.cytoscape.view.vizmap.gui.editor;
 
-import java.awt.Component;
 import java.awt.Window;
 import java.beans.PropertyEditor;
 
 import javax.swing.Icon;
 import javax.swing.table.TableCellRenderer;
-
-import org.cytoscape.view.vizmap.gui.editor.VisualPropertyEditor;
-
-import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 
 
 /**
@@ -54,12 +49,6 @@ import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
  * @param <T>  DOCUMENT ME!
  */
 public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyEditor<T> {
-	
-	protected static final PropertyRendererRegistry REG = new PropertyRendererRegistry();
-	
-	static {
-		REG.registerDefaults();
-	}
 	
 	protected final Class<T> type;
 	protected final PropertyEditor propertyEditor;
@@ -92,11 +81,7 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 		return propertyEditor;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
+	
 	@Override public T showVisualPropertyValueEditor() {
 		if(vpValueEditor == null) {
 			// Search value editor repository 
@@ -107,14 +92,7 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 		return null;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param width DOCUMENT ME!
-	 * @param height DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
+	
 	@Override public TableCellRenderer getDiscreteTableCellRenderer() {
 		return discreteTableCellRenderer;
 	}
@@ -123,27 +101,14 @@ public abstract class AbstractVisualPropertyEditor<T> implements VisualPropertyE
 		return continuousTableCellRenderer;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 *
-	 * @throws IllegalArgumentException DOCUMENT ME!
-	 */
+
 	@Override public PropertyEditor getContinuousMappingEditor() throws IllegalArgumentException {
 		return continuousEditor;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param width DOCUMENT ME!
-	 * @param height DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
+
 	@Override public Icon getDefaultIcon(int width, int height) {
-		// TODO: need to return default Image Icon object.
+		// By default, it does not return actual icon.  This should be implemented shild classes.
 		return null;
 	}
 }

@@ -31,88 +31,92 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.ding;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 
 import com.l2fprod.common.swing.ComponentFactory;
 import com.l2fprod.common.swing.PercentLayout;
 
-
 /**
  *
  */
-public class CyLabelPositionPropertyEditor extends com.l2fprod.common.beans.editor.AbstractPropertyEditor {
-	private LabelPositionCellRenderer label;
-	private JButton button;
-	private LabelPosition position;
+public class CyObjectPositionPropertyEditor extends
+		com.l2fprod.common.beans.editor.AbstractPropertyEditor {
 	
-	private Component parentComponent;
-
+	private ObjectPositionCellRenderer label;
+	private JButton button;
+	private ObjectPosition position;
+	
+	private ObjectPosition oldPosition;
+	
+	private final ValueEditor<ObjectPosition> valueEditor;
+		
 	/**
 	 * Creates a new CyLabelPositionLabelEditor object.
 	 */
-	public CyLabelPositionPropertyEditor() {
+	public CyObjectPositionPropertyEditor(final ValueEditor<ObjectPosition> valueEditor) {
+		this.valueEditor = valueEditor;
+					
 		editor = new JPanel(new PercentLayout(PercentLayout.HORIZONTAL, 0));
-		((JPanel) editor).add("*", label = new LabelPositionCellRenderer());
+		((JPanel) editor).add("*", label = new ObjectPositionCellRenderer());
 		label.setOpaque(false);
-		((JPanel) editor).add(button = ComponentFactory.Helper.getFactory().createMiniButton());
+		((JPanel) editor).add(button = ComponentFactory.Helper.getFactory()
+				.createMiniButton());
 		button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					editLabelPosition(parentComponent);
-				}
-			});
-		((JPanel) editor).add(button = ComponentFactory.Helper.getFactory().createMiniButton());
+			public void actionPerformed(ActionEvent e) {
+				editObjectPosition();
+			}
+		});
+		((JPanel) editor).add(button = ComponentFactory.Helper.getFactory()
+				.createMiniButton());
 		button.setText("X");
 		button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					LabelPosition old = position;
-					label.setValue(null);
-					position = null;
-					firePropertyChange(old, null);
-				}
-			});
+			public void actionPerformed(ActionEvent e) {
+				ObjectPosition old = position;
+				label.setValue(null);
+				position = null;
+				firePropertyChange(old, null);
+			}
+		});
 		((JPanel) editor).setOpaque(false);
-	}
-	
-	public void setParentComponent(Component parent) {
-		this.parentComponent = parent;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Object getValue() {
 		return position;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param value
+	 *            DOCUMENT ME!
 	 */
 	public void setValue(Object value) {
-		position = (LabelPosition) value;
+		position = (ObjectPosition) value;
 		label.setValue(value);
 	}
 
-	protected void editLabelPosition(Component parentComponent) {
-		final LabelPosition newVal = LabelPositionChooser.showDialog(parentComponent, position);
+	private void editObjectPosition() {
+		//TODO: set correct parent
+		final ObjectPosition newVal = valueEditor.showEditor(null, position);
 
 		if (newVal != null) {
-			final LabelPosition old = position;
-
 			setValue(newVal);
-			firePropertyChange(old, newVal);
+			firePropertyChange(null, newVal);
+			oldPosition = newVal;
 		}
 	}
 }

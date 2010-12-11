@@ -58,17 +58,17 @@ import java.util.Properties;
 
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
-import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 
 import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeListener;
 import org.cytoscape.ding.GraphViewObject;
-import org.cytoscape.ding.IconFactory;
 import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.PrintLOD;
 import org.cytoscape.ding.icon.VisualPropertyIconFactory;
+import org.cytoscape.dnd.DropNetworkViewTaskFactory;
+import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.graph.render.stateful.GraphLOD;
@@ -87,8 +87,6 @@ import org.cytoscape.spacial.SpacialIndex2DFactory;
 import org.cytoscape.task.EdgeViewTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
-import org.cytoscape.dnd.DropNetworkViewTaskFactory;
-import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.util.intr.IntBTree;
 import org.cytoscape.util.intr.IntEnumerator;
 import org.cytoscape.util.intr.IntHash;
@@ -376,8 +374,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	// This is the view model. This should be immutable.
 	final CyNetworkView cyNetworkView;
-	
-	private final IconFactory iconFactory;
 
 
 	/**
@@ -480,8 +476,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		// cyNetworkView.getVisualProperty(vp));
 
 		new FlagAndSelectionHandler(this);
-		
-		iconFactory = new VisualPropertyIconFactory();
 
 		logger.debug("Phase 4: Everything created: time = " + (System.currentTimeMillis() - start));
 	}
@@ -1147,7 +1141,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 */
 	public void updateView() {
 		final long start = System.currentTimeMillis();
-		logger.debug("Update view called.  repainting canvas...");
+		logger.debug("########## This is relatively heavy operation:  Update view called.  repainting canvas...");
 		m_networkCanvas.repaint();
 		logger.debug("Repaint finised.  Time = "
 				+ (System.currentTimeMillis() - start));
@@ -2858,7 +2852,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	@Override
 	public <V> Icon createIcon(VisualProperty<V> vp, V value, int w, int h) {
-		return iconFactory.createIcon(vp, value, w, h);
+		return VisualPropertyIconFactory.createIcon(vp, value, w, h);
 	}
 
 	@Override

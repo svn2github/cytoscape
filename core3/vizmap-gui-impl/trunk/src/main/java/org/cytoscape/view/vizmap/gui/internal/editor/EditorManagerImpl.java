@@ -34,8 +34,6 @@
  */
 package org.cytoscape.view.vizmap.gui.internal.editor;
 
-import static org.cytoscape.view.vizmap.mappings.AbstractVisualMappingFunction.*;
-
 import java.awt.Component;
 import java.beans.PropertyEditor;
 import java.util.ArrayList;
@@ -59,7 +57,6 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.events.RenderingEngineFactoryAddedEvent;
 import org.cytoscape.view.presentation.events.RenderingEngineFactoryAddedListener;
 import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.gui.MappingFunctionFactoryManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.editor.ListEditor;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;

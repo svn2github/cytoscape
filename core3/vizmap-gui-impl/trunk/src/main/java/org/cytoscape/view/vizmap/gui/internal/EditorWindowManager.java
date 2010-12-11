@@ -11,7 +11,6 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 
 import com.l2fprod.common.propertysheet.Property;
-import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 
 public class EditorWindowManager {

@@ -41,8 +41,6 @@ import java.beans.PropertyChangeEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.internal.VizMapperProperty;
 
 import com.l2fprod.common.propertysheet.Property;

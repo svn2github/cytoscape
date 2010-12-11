@@ -52,6 +52,8 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.UIManager;
 
+import org.cytoscape.view.vizmap.gui.internal.editor.valueeditor.FontChooser;
+
 
 //--------------------------------------------------------------------------
 /**

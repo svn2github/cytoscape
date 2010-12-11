@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.cytoscape.view.vizmap.gui.util.DiscreteMappingGenerator;
-
 public class RainbowColorMappingGenerator extends
 		AbstractDiscreteMappingGenerator<Color> {
 

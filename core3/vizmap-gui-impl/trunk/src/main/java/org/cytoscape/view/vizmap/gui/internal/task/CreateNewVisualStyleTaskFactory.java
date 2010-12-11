@@ -1,6 +1,5 @@
 package org.cytoscape.view.vizmap.gui.internal.task;
 
-import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;

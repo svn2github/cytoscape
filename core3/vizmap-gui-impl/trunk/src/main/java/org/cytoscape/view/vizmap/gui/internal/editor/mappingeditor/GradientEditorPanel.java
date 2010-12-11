@@ -35,7 +35,6 @@
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
