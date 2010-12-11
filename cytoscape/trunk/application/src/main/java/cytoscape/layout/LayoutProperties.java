@@ -6,7 +6,9 @@ import cytoscape.util.ModulePropertiesImpl;
 
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
@@ -109,7 +111,27 @@ public class LayoutProperties extends ModulePropertiesImpl implements TunableLis
 	}
 
 	public void tunableChanged(Tunable tunable) {
+/*
+		Map<Tunable,Object> values = new HashMap<Tunable, Object>();
+		for (Tunable t: tunablesList) {
+			if (t.getType() == Tunable.GROUP) 
+				continue;
+			if (t.getValue() != null) {
+				System.out.println("Saving value for tunable "+t.getName()+" = "+t.getValue().toString());
+				values.put(t, t.getValue());
+			}
+		}
+*/
+
 		// In our case, we just update our display
 		updateTunablePanel();
+
+/*
+		// Now, update all of the values
+		for (Tunable t: values.keySet()) {
+			System.out.println("Setting value for tunable "+t.getName()+" = "+values.get(t).toString());
+			t.setValue(values.get(t));
+		}
+*/
 	}
 }

@@ -509,9 +509,10 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 				else
 					this.value = value;
 
-				if ((slider != null) && checkFlag(USESLIDER))
+				if ((slider != null) && checkFlag(USESLIDER)) {
 					slider.setValue(sliderScale(this.value));
-				else if (inputField != null) {
+					((JTextField)inputField).setText(this.value.toString());
+				} else if (inputField != null) {
 					((JTextField)inputField).setText(this.value.toString());
 				}
 				break;
@@ -522,9 +523,10 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 					this.value = new Double((String) value);
 				else
 					this.value = value;
-				if ((slider != null) && checkFlag(USESLIDER))
+				if ((slider != null) && checkFlag(USESLIDER)) {
 					slider.setValue(sliderScale(this.value));
-				else if (inputField != null) {
+					((JTextField)inputField).setText(this.value.toString());
+				} else if (inputField != null) {
 					((JTextField)inputField).setText(this.value.toString());
 				}
 				break;
@@ -782,10 +784,10 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
  	 * Method to call all of the value listeners.
  	 */
 	public void updateValueListeners() {
+		updateValue();
+
 		if (listenerList == null)
 			return;
-
-		updateValue();
 
 		for (TunableListener listener: listenerList)
 			listener.tunableChanged(this);
@@ -1154,7 +1156,9 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 
 		if (checkFlag(USESLIDER)) {
 			// Update the slider with this new value
+			slider.removeChangeListener(this);
 			slider.setValue(sliderScale(value));
+			slider.addChangeListener(this);
 		} else {
 			updateValueListeners();
 		}
