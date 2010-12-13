@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,20 +25,27 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.event;
+
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-/**
- * DOCUMENT ME!
-  */
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class DummyCyEventHelper implements CyEventHelper {
 	private Object lastSynchronousEvent;
 	private Object lastAsynchronousEvent;
 	private Object lastMicroListener;
+	private List<String> calledMicroListenerMethods;
+
+	public DummyCyEventHelper() {
+		calledMicroListenerMethods = new ArrayList<String>();
+	}
 	
 	public <E extends CyEvent<?>> void fireSynchronousEvent(final E event) {
 		lastSynchronousEvent = event;
@@ -68,21 +67,16 @@ public class DummyCyEventHelper implements CyEventHelper {
 	public <M extends CyMicroListener> void removeMicroListener(M m, Class<M> c, Object o) {
 	}
 
-	private boolean invoked = false;
-
 	private class DummyListenerHandler implements InvocationHandler {
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			invoked = true;
+System.err.println("DummyListenerHandler.invoke() called with method="+method.getName());
+			calledMicroListenerMethods.add(method.getName());
 			return null;
 		}
 	}
 
-	public boolean microListenerWasCalled() {
-		return invoked;
-	}
-
-	public Object getLastMicroListener() {
-		return lastMicroListener;
+	public List<String> getCalledMicroListeners() {
+		return calledMicroListenerMethods;
 	}
 
 	public Object getLastSynchronousEvent() {
