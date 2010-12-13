@@ -26,6 +26,11 @@
 	<osgi:reference id="cyApplicationManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
 
+	<osgi:reference id="cyNetworkManagerServiceRef"
+		interface="org.cytoscape.model.CyNetworkManager" />
+
+	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
+
 	<!-- Export services -->
 	<osgi:service id="cyNetworkViewReaderManagerService" ref="cyNetworkViewReaderManager"
 		interface="org.cytoscape.io.read.CyNetworkViewReaderManager">
@@ -92,6 +97,15 @@
 			<entry key="serviceType" value="textDataTableReaderFactory" />
 			<entry key="readerId" value="textDataTableReader" />
 			<entry key="readerDescription" value="text data table producer" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="attrsDataReaderFactoryService" ref="attrsDataReaderFactory"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="attrsDataReaderFactory" />
+			<entry key="readerId" value="attrsDataReader" />
+			<entry key="readerDescription" value="Attribute data producer" />
 		</osgi:service-properties>
 	</osgi:service>
 

@@ -88,6 +88,24 @@
 		</constructor-arg>
 	</bean>
 
+	<bean id="attrsFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+		<constructor-arg index="0">
+			<set>
+				<value>attrs</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>text/plain</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Any text file" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="TABLE" />
+		<constructor-arg type="org.cytoscape.io.util.StreamUtil">
+			<ref bean="streamUtil"/>
+		</constructor-arg>
+	</bean>
+
 	<bean id="sifFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
 		<constructor-arg index="0">
 			<set>
@@ -226,6 +244,14 @@
 	<bean id="textDataTableReaderFactory" class="org.cytoscape.io.internal.read.datatable.TextDataTableReaderFactory">
 		<constructor-arg ref="textTableFilter" />
 		<constructor-arg ref="cyDataTableFactoryServiceRef" />
+	</bean>
+
+	<bean id="attrsDataReaderFactory" class="org.cytoscape.io.internal.read.datatable.CyAttributesReaderFactory">
+		<constructor-arg ref="attrsFilter" />
+		<constructor-arg ref="cyDataTableFactoryServiceRef" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
 	<bean id="sifNetworkViewReaderFactory" class="org.cytoscape.io.internal.read.sif.SIFNetworkViewReaderFactory">
