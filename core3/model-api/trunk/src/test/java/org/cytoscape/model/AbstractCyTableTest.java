@@ -49,6 +49,9 @@ public abstract class AbstractCyTableTest {
 	protected CyTable table;
 	protected CyRow attrs;
 	protected DummyCyEventHelper eventHelper; 
+	protected boolean rowSetMicroListenerWasCalled;
+	protected boolean rowCreatedMicroListenerWasCalled;
+	protected boolean rowAboutToBeDeletedMicroListenerWasCalled;
 
 	@Test
 	public void testAddStringAttr() {
@@ -224,9 +227,7 @@ public abstract class AbstractCyTableTest {
 		table.createColumn("someString", String.class);
 		attrs.set("someString", "apple");
 
-		Object last = eventHelper.getLastMicroListener();
-		assertNotNull( last );
-		assertTrue( last instanceof RowSetMicroListener );
+		assertTrue(eventHelper.getCalledMicroListeners().contains("handleRowSet"));
 	}
 
 	@Test
@@ -540,5 +541,11 @@ public abstract class AbstractCyTableTest {
 	public void testGetRowCount() {
 		final CyRow row = table.getRow(2L);
 		assertEquals(table.getRowCount(), table.getAllRows().size());
+	}
+
+	@Test
+	public void testHandleRowCreatedMicroListener() {
+		final CyRow row = table.getRow(2L);
+		assertTrue(eventHelper.getCalledMicroListeners().contains("handleRowCreated"));
 	}
 }

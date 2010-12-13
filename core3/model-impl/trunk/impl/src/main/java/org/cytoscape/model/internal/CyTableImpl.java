@@ -55,6 +55,7 @@ import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.RowSetMicroListener;
+import org.cytoscape.model.events.RowCreatedMicroListener;
 
 import org.cytoscape.model.internal.tsort.TopoGraphNode;
 import org.cytoscape.model.internal.tsort.TopologicalSort;
@@ -334,7 +335,17 @@ public class CyTableImpl implements CyTable {
 
 		row = new InternalRow(key, this);
 		rows.put(key, row);
+		eventHelper.getMicroListener(RowCreatedMicroListener.class, this).handleRowCreated(key);
 		return row;
+	}
+
+	private boolean rowIsEmpty(final Object key) {
+		for (final String columnName : attributes.keySet()) {
+			if (!attributes.get(columnName).isEmpty())
+				return false;
+		}
+
+		return true;
 	}
 
 	@Override
@@ -348,8 +359,8 @@ public class CyTableImpl implements CyTable {
 
 		if (!primaryKeyType.isAssignableFrom(suid.getClass()))
 			throw new IllegalArgumentException("key of type " + suid.getClass()
-							   + " and not the expected: " + primaryKeyType);
-
+							   + " and not the expected: "
+							   + primaryKeyType);
 	}
 
 	public List<CyRow> getAllRows() {
@@ -402,9 +413,10 @@ public class CyTableImpl implements CyTable {
 				keyToValueMap.put(key, equation);
 				final Object eqnValue = evalEquation(equation, key, columnName);
 				if (eqnValue == null)
-					logger.warn("attempted premature evaluation evaluation for " + equation);
+					logger.warn("attempted premature evaluation evaluation for "
+						    + equation);
 				else
-				eventHelper.getMicroListener(
+					eventHelper.getMicroListener(
 						RowSetMicroListener.class,
 						getRow(key)).handleRowSet(columnName, eqnValue);
 			} else {
@@ -412,8 +424,9 @@ public class CyTableImpl implements CyTable {
 				final Object newValue = columnType.cast(value);
 				keyToValueMap.put(key, newValue);
 				addToReverseMap(columnName, key, newValue);
-				eventHelper.getMicroListener(RowSetMicroListener.class,
-							     getRow(key)).handleRowSet(columnName, newValue);
+				eventHelper.getMicroListener(
+					RowSetMicroListener.class,
+					getRow(key)).handleRowSet(columnName, newValue);
 			}
 		} else
 			throw new IllegalArgumentException("value is not of type: "
@@ -504,7 +517,8 @@ public class CyTableImpl implements CyTable {
 		if (!(value instanceof Equation))
 			removeFromReverseMap(columnName, key, value);
 		keyToValueMap.remove(key);
-		eventHelper.getMicroListener(RowSetMicroListener.class, getRow(key)).handleRowSet(columnName, null);
+		eventHelper.getMicroListener(RowSetMicroListener.class,
+					     getRow(key)).handleRowSet(columnName, null);
 	}
 
 	private void removeFromReverseMap(final String columnName, final Object key, final Object value) {

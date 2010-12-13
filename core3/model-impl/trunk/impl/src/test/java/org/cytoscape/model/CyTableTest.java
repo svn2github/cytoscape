@@ -124,7 +124,7 @@ public class CyTableTest extends AbstractCyTableTest {
 		compiler.compile("=\"one\"", new HashMap<String, Class>());
 		final Equation eqn = compiler.getEquation();
 		attrs.set("strings", eqn);
-                assertTrue(eventHelper.microListenerWasCalled());
+                assertTrue(eventHelper.getCalledMicroListeners().contains("handleRowSet"));
 	}
 
 	@Test
@@ -135,7 +135,7 @@ public class CyTableTest extends AbstractCyTableTest {
 		compiler.compile("=$a&\"one\"", varnameToTypeMap);
 		final Equation eqn = compiler.getEquation();
 		attrs.set("strings", eqn);
-                assertFalse(eventHelper.microListenerWasCalled());
+                assertFalse(eventHelper.getCalledMicroListeners().contains("handleRowSet"));
 	}
 
 	@Test
@@ -174,7 +174,7 @@ public class CyTableTest extends AbstractCyTableTest {
 		varnameToTypeMap.put("a", Double.class);
 		compiler.compile("=$a+20", varnameToTypeMap);
 		attrs.set("b", compiler.getEquation());
-                assertTrue(eventHelper.microListenerWasCalled());
+                assertTrue(eventHelper.getCalledMicroListeners().contains("handleRowSet"));
 
 		assertEquals(attrs.get("b", Double.class), 30.0, 0.00001);
 	}
