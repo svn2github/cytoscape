@@ -33,6 +33,10 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+
 
 public class ValuedTaskExecutorTest {
 
@@ -43,16 +47,96 @@ public class ValuedTaskExecutorTest {
 		ValuedTask<String> t = new StringValuedTask("homer");
 		ValuedTaskExecutor<String> vte = new ValuedTaskExecutor<String>(t);
 		vte.run(tm);
-
 		assertEquals("homer",vte.get());
+	}
+
+	@Test(expected=Exception.class)
+	public void testExceptionRun() throws Exception {
+		ValuedTask<String> t = new ExceptionValuedTask("homer");
+		ValuedTaskExecutor<String> vte = new ValuedTaskExecutor<String>(t);
+		vte.run(tm);
+	}
+
+	@Test(expected=ExecutionException.class)
+	public void testExceptionRunInThread() throws Exception {
+		ValuedTask<String> t = new ExceptionValuedTask("homer");
+		ValuedTaskExecutor<String> vte = new ValuedTaskExecutor<String>(t);
+		new Thread( new TaskRunner(vte) ).start();
+		String s = vte.get();
+	}
+
+	@Test(expected=ExecutionException.class)
+	public void testExceptionRunInThreadAltGet() throws Exception {
+		ValuedTask<String> t = new ExceptionValuedTask("homer");
+		ValuedTaskExecutor<String> vte = new ValuedTaskExecutor<String>(t);
+		new Thread( new TaskRunner(vte) ).start();
+		String s = vte.get(100,TimeUnit.MILLISECONDS);
+	}
+
+
+	@Test(expected=NullPointerException.class)
+	public void testNullValuedTask() throws Exception {
+		ValuedTaskExecutor<String> vte = new ValuedTaskExecutor<String>(null);
+	}
+
+	@Test
+	public void testTimeoutSuccessRun() throws Exception {
+		ValuedTask<String> t = new SlowValuedTask("homer");
+		ValuedTaskExecutor<String> vte = new ValuedTaskExecutor<String>(t);
+		new Thread( new TaskRunner(vte) ).start();
+		assertEquals("homer",vte.get(600,TimeUnit.MILLISECONDS));
+	}
+
+	@Test
+	public void testTimeoutFailureRun() throws Exception {
+		ValuedTask<String> t = new SlowValuedTask("homer");
+		ValuedTaskExecutor<String> vte = new ValuedTaskExecutor<String>(t);
+		new Thread( new TaskRunner(vte) ).start();
+		assertNull(vte.get(300,TimeUnit.MILLISECONDS));
+	}
+
+	@Test(expected=CancellationException.class)
+	public void testCancelRun() throws Exception {
+		ValuedTask<String> t = new SlowValuedTask("homer");
+		ValuedTaskExecutor<String> vte = new ValuedTaskExecutor<String>(t);
+		new Thread( new TaskRunner(vte) ).start();
+		vte.cancel();
+		String s = vte.get();
+	}
+
+	@Test(expected=CancellationException.class)
+	public void testCancelRunAltGet() throws Exception {
+		ValuedTask<String> t = new SlowValuedTask("homer");
+		ValuedTaskExecutor<String> vte = new ValuedTaskExecutor<String>(t);
+		new Thread( new TaskRunner(vte) ).start();
+		vte.cancel();
+		String s = vte.get(100,TimeUnit.MILLISECONDS);
+	}
+
+	private class TaskRunner implements Runnable {
+		private Task task;
+		TaskRunner(Task task) { this.task = task; }
+		public void run() { try { task.run(tm); } catch (Exception e) { e.printStackTrace(); } }
 	}
 
 	private class StringValuedTask implements ValuedTask<String> {
 		private String s;
-		public StringValuedTask(String s) {
-			this.s = s;
-		}
-		public String run(TaskMonitor tm) {
+		public StringValuedTask(String s) { this.s = s; }
+		public String run(TaskMonitor tm) { return s; }
+		public void cancel() {}
+	}
+
+	private class ExceptionValuedTask implements ValuedTask<String> {
+		public ExceptionValuedTask(String s) { }
+		public String run(TaskMonitor tm) throws Exception { throw new Exception("test"); }
+		public void cancel() {}
+	}
+
+	private class SlowValuedTask implements ValuedTask<String> {
+		private String s;
+		public SlowValuedTask(String s) { this.s = s; }
+		public String run(TaskMonitor tm) throws Exception {
+			Thread.sleep(500);
 			return s;
 		}
 		public void cancel() {}

@@ -63,6 +63,8 @@ public final class ValuedTaskExecutor<V> implements Task {
 	private Exception exception = null;
 
 	public ValuedTaskExecutor(ValuedTask<V> valuedTask) {
+		if ( valuedTask == null )
+			throw new NullPointerException("The task specified is null");
 		this.valuedTask = valuedTask;
 	}
 
