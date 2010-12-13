@@ -13,8 +13,10 @@ import javax.swing.Icon;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.events.RowCreatedMicroListener;
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.service.util.CyServiceRegistrar;
@@ -24,13 +26,17 @@ import org.cytoscape.service.util.CyServiceRegistrar;
 public class TableBrowser extends JPanel implements CytoPanelComponent, ActionListener {
 	private final CyTableManager tableManager;
 	private final CyServiceRegistrar serviceRegistrar;
+	private final CyEventHelper eventHelper;
 	private final BrowserTable browserTable;
 	private BrowserTableModel browserTableModel;
 	private CyTable currentTable;
 
-	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar) {
+	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
+		     final CyEventHelper eventHelper)
+	{
 		this.tableManager = tableManager;
 		this.serviceRegistrar = serviceRegistrar;
+		this.eventHelper = eventHelper;
 		this.browserTable = new BrowserTable();
 		this.setLayout(new BorderLayout());
 
@@ -72,10 +78,14 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 		final TableChooser tableChooser = (TableChooser)e.getSource();
 		final CyTable table = (CyTable)tableChooser.getSelectedItem();
 		if (table != null && table != currentTable) {
-			currentTable = table;
-			if (browserTableModel != null)
+			if (browserTableModel != null) {
 				serviceRegistrar.unregisterAllServices(browserTableModel);
-			browserTableModel = new BrowserTableModel(table);
+				eventHelper.removeMicroListener(browserTableModel, RowCreatedMicroListener.class, table);
+			}
+
+			currentTable = table;
+			browserTableModel = new BrowserTableModel(eventHelper, table);
+			eventHelper.addMicroListener(browserTableModel, RowCreatedMicroListener.class, table);
 			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 			browserTable.setModel(browserTableModel);
 		}

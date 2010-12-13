@@ -9,6 +9,8 @@
         </osgi:reference>
         <osgi:reference id="cyServiceRegistrarServiceRef" interface="org.cytoscape.service.util.CyServiceRegistrar">
         </osgi:reference>
+        <osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper">
+        </osgi:reference>
 
 	<osgi:service id="tableBrowserCytoPanelComponentService" ref="tableBrowser"
 		interface="org.cytoscape.application.swing.CytoPanelComponent"/>
