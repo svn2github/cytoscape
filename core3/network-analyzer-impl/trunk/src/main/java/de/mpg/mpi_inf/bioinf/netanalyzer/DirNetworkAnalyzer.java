@@ -85,6 +85,8 @@ public class DirNetworkAnalyzer extends NetworkAnalyzer {
 		this.edgeBetweenness = new HashMap<CyEdge, Double>();
 		this.stress = new HashMap<CyNode, Long>();
 		computeNB = true;
+		AttributeSetup.createDirectedNodeAttributes(aNetwork.getDefaultNodeTable());
+		AttributeSetup.createEdgeAttributes(aNetwork.getDefaultEdgeTable());
 	}
 
 	/*

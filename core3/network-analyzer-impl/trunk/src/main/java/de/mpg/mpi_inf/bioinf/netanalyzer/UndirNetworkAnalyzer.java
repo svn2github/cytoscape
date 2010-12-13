@@ -84,6 +84,8 @@ public class UndirNetworkAnalyzer extends NetworkAnalyzer {
 		stress = new HashMap<CyNode, Long>();
 		roundingDigits = 8;
 		computeNB = true;
+		AttributeSetup.createUndirectedNodeAttributes(aNetwork.getDefaultNodeTable());
+		AttributeSetup.createEdgeAttributes(aNetwork.getDefaultEdgeTable());
 	}
 
 	/*
