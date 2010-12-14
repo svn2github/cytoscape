@@ -69,7 +69,6 @@ public class DummyCyEventHelper implements CyEventHelper {
 
 	private class DummyListenerHandler implements InvocationHandler {
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-System.err.println("DummyListenerHandler.invoke() called with method="+method.getName());
 			calledMicroListenerMethods.add(method.getName());
 			return null;
 		}
