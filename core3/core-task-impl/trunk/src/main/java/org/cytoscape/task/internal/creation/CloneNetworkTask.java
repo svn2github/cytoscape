@@ -77,19 +77,15 @@ public class CloneNetworkTask extends AbstractCreationTask {
     }
 
     public void run(TaskMonitor tm) {
-    	System.out.println("start cloning network");
         CyNetwork newNet = cloneNetwork(net);
-        System.out.println("----- cloning topology");
         CyNetworkView origView = networkViewManager.getNetworkView(net.getSUID());
         networkManager.addNetwork(newNet);
         if ( origView != null ) {
-        	System.out.println("----- cloning visualization");
             CyNetworkView newView = cloneNetworkView(origView,newNet);
             vmm.setVisualStyle(vmm.getVisualStyle(origView), newView );
             networkViewManager.addNetworkView(newView);
             newView.updateView();
         }
-        System.out.println("finished cloning network");
     }
 
     private CyNetworkView cloneNetworkView(CyNetworkView origView, CyNetwork newNet) {
@@ -119,24 +115,17 @@ public class CloneNetworkTask extends AbstractCreationTask {
     }
 
     private CyNetwork cloneNetwork(CyNetwork origNet) {
-    	throw new RuntimeException("uuuuhhh");
-    	System.out.println("enter clone network");
-
         final CyNetwork newNet = netFactory.getInstance();
 
-        System.out.println("cloning columns");
         // copy default columns
         cloneColumns( origNet.getDefaultNodeTable(), newNet.getDefaultNodeTable() );
         cloneColumns( origNet.getDefaultEdgeTable(), newNet.getDefaultEdgeTable() );
         cloneColumns( origNet.getDefaultNetworkTable(), newNet.getDefaultNetworkTable() );
 
-        System.out.println("cloning nodes");
         cloneNodes( origNet, newNet );
-        System.out.println("cloning edges");
         cloneEdges( origNet, newNet );
         
-        System.out.println("setting names");
-        newNet.set(CyTableEntry.NAME,naming.getSuggestedNetworkTitle(origNet.getCyRow().get(CyTableEntry.NAME, String.class)));
+        newNet.getCyRow().set(CyTableEntry.NAME,naming.getSuggestedNetworkTitle(origNet.getCyRow().get(CyTableEntry.NAME, String.class)));
 
         return newNet;
     }
