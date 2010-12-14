@@ -63,6 +63,8 @@
 	<osgi:reference id="cyPropertyServiceRef" interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=coreSettings)" />
 
+	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
+	
 	<!--  now register our services -->
 	<osgi:service id="loadNetworkFileTaskFactoryService" ref="loadNetworkFileTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
@@ -84,6 +86,14 @@
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="Load Data Table from File..." />
+			<entry key="preferredMenu" value="File.Import" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="loadAttrsTaskFactoryService" ref="loadAttrsTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Load Attributes from File..." />
 			<entry key="preferredMenu" value="File.Import" />
 		</osgi:service-properties>
 	</osgi:service>

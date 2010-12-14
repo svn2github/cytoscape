@@ -32,6 +32,12 @@
 		<constructor-arg ref="cyDataTableReaderManagerServiceRef" />
 	</bean>
 
+	<bean id="loadAttrsTaskFactory"
+	      class="org.cytoscape.task.internal.loaddatatable.LoadAttributesTaskFactoryImpl">
+		<constructor-arg ref="cyDataTableReaderManagerServiceRef" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
+	</bean>
+
 	<bean id="loadNetworkFileTaskFactory"
 	      class="org.cytoscape.task.internal.loadnetwork.LoadNetworkFileTaskFactoryImpl">
 		<constructor-arg ref="cyNetworkViewReaderManagerServiceRef" />
