@@ -91,6 +91,7 @@
 		interface="org.cytoscape.io.write.CyNetworkViewWriterFactory">
 	</osgi:service>
 
+<!-- 
 	<osgi:service id="textDataTableReaderFactoryService" ref="textDataTableReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
@@ -99,7 +100,8 @@
 			<entry key="readerDescription" value="text data table producer" />
 		</osgi:service-properties>
 	</osgi:service>
-
+ -->
+ 
 	<osgi:service id="attrsDataReaderFactoryService" ref="attrsDataReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
