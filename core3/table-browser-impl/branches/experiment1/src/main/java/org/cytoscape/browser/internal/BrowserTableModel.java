@@ -3,11 +3,13 @@ package org.cytoscape.browser.internal;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.ColumnCreatedEvent;
@@ -23,10 +25,12 @@ public class BrowserTableModel extends AbstractTableModel
 {
 	private final CyEventHelper eventHelper;
 	private final CyTable table;
+	private boolean tableHasBooleanSelected;
 
 	public BrowserTableModel(final CyEventHelper eventHelper, final CyTable table) {
 		this.eventHelper = eventHelper;
 		this.table = table;
+		this.tableHasBooleanSelected = table.getColumnTypeMap().get(CyNetwork.SELECTED) == Boolean.class;
 
 		eventHelper.addMicroListener(this, RowCreatedMicroListener.class, table);
 
@@ -37,7 +41,22 @@ public class BrowserTableModel extends AbstractTableModel
 
 	@Override
 	public int getRowCount() {
-		return table.getRowCount();
+		final Map<String, Class<?>> columnNameToTypeMap = table.getColumnTypeMap();
+		if (columnNameToTypeMap.isEmpty())
+			return 0;
+
+		if (!tableHasBooleanSelected)
+			return table.getRowCount();
+
+		final List<CyRow> rows = table.getAllRows();
+
+		int selectedCount = 0;
+		for (final CyRow row : rows) {
+			if (row.get(CyNetwork.SELECTED, Boolean.class))
+				++selectedCount;
+		}
+
+		return selectedCount;
 	}
 
 	@Override
@@ -47,17 +66,37 @@ public class BrowserTableModel extends AbstractTableModel
 
 	@Override
 	public Object getValueAt(final int row, final int column) {
-		final List primaryKeyValues = table.getColumnValues(table.getPrimaryKey(),
-								    table.getPrimaryKeyType());
-
-		// Column 0 is always the primary key:
-		if (column == 0)
-			return primaryKeyValues.get(row);
-
-		final String columnName = mapColumnIndexToColumnName(column);
 		final Map<String, Class<?>> columnNameToTypeMap = table.getColumnTypeMap();
-		return table.getRow(primaryKeyValues.get(row))
-			.get(columnName, columnNameToTypeMap.get(columnName));
+		final String columnName = getColumnName(column);
+
+		if (tableHasBooleanSelected) {
+			final Set<CyRow> selectedRows = table.getMatchingRows(CyNetwork.SELECTED, true);
+			int count = 0;
+			CyRow cyRow = null;
+			for (final CyRow selectedRow : selectedRows) {
+				if (count == row) {
+					cyRow = selectedRow;
+					break;
+				}
+
+				++count;
+			}
+
+			if (!cyRow.isSet(columnName, columnNameToTypeMap.get(columnName)))
+				return null;
+			return cyRow.get(columnName, columnNameToTypeMap.get(columnName));
+		} else {
+			final List primaryKeyValues =
+				table.getColumnValues(table.getPrimaryKey(),
+						      table.getPrimaryKeyType());
+
+			// Column 0 is always the primary key:
+			if (column == 0)
+				return primaryKeyValues.get(row);
+
+			return table.getRow(primaryKeyValues.get(row))
+				.get(columnName, columnNameToTypeMap.get(columnName));
+		}
 	}
 
 	@Override
@@ -77,8 +116,12 @@ public class BrowserTableModel extends AbstractTableModel
 
 	@Override
 	public void handleRowSet(final String columnName, final Object value) {
-		final int changedColumn = mapColumnNameToColumnIndex(columnName);
-		fireTableChanged(new TableModelEvent(this, 0, table.getRowCount(), changedColumn));
+		if (tableHasBooleanSelected && columnName.equals(CyNetwork.SELECTED))
+			fireTableStructureChanged();
+		else {
+			final int changedColumn = mapColumnNameToColumnIndex(columnName);
+			fireTableChanged(new TableModelEvent(this, 0, table.getRowCount(), changedColumn));
+		}
 	}
 
 	@Override
