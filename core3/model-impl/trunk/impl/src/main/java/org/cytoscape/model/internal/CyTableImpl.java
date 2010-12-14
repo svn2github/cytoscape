@@ -554,6 +554,7 @@ public class CyTableImpl implements CyTable {
 	private <T> T getX(final Object key, final String columnName, final Class<? extends T> type) {
 		if (type.isAssignableFrom(List.class))
 			throw new IllegalArgumentException("use getList() to retrieve lists!");
+		lastInternalError = null;
 
 		final Object vl = getValueOrEquation(key, columnName);
 		if (vl == null)
@@ -590,6 +591,7 @@ public class CyTableImpl implements CyTable {
 							   + ", expected: " + expectedListElementType.getName()
 							   + "!");
 
+		lastInternalError = null;
 		final Object vl = getValueOrEquation(key, columnName);
 		if (vl == null)
 			return null;
