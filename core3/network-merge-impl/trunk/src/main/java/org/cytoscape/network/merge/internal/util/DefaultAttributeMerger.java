@@ -36,15 +36,15 @@
 
 package org.cytoscape.network.merge.internal.util;
 
+import org.cytoscape.model.CyTable;
 import org.cytoscape.network.merge.internal.conflict.AttributeConflictCollector;
 
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.Arrays;
+import java.util.Set;
 
 /**
  *
@@ -71,12 +71,12 @@ public class DefaultAttributeMerger implements AttributeMerger {
         public void mergeAttribute(final Map<String,String> mapGOAttr,
                                      final String toID,
                                      final String toAttrName,
-                                     final CyAttributes attrs) {
+                                     final CyTable attrs) {
                 if ((mapGOAttr == null) || (toID == null) || (toAttrName == null) || (attrs==null)) {
                     throw new java.lang.IllegalArgumentException("Null argument.");
                 }
 
-                final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
+                final Set<String> attrNames = attrs.getColumnTypeMap().keySet();
 
                 Iterator<Map.Entry<String,String>> itEntryGOAttr = mapGOAttr.entrySet().iterator();
                 while (itEntryGOAttr.hasNext()) {
@@ -102,9 +102,9 @@ public class DefaultAttributeMerger implements AttributeMerger {
                         }
 
                         //byte type1 = attrs.getType(fromAttrName);
-                        byte type2 = attrs.getType(toAttrName);
+                        Class<?> type2 = attrs.getType(toAttrName);
 
-                        if (type2 == CyAttributes.TYPE_STRING) { // the case of inconvertable attributes and simple attributes to String
+                        if (type2 == String.class) { // the case of inconvertable attributes and simple attributes to String
                             Object o1 = attrs.getAttribute(fromID, fromAttrName); //Correct??
                             String o2 = attrs.getStringAttribute(toID, toAttrName);
                             if (o2==null||o2.length()==0) { //null or empty attribute
@@ -118,7 +118,7 @@ public class DefaultAttributeMerger implements AttributeMerger {
                                 conflictCollector.addConflict(fromID, fromAttrName, toID, toAttrName,attrs);
                                 //continue;
                             }
-                        } else if (type2<0&&type2!=CyAttributes.TYPE_SIMPLE_LIST) { // only support matching between simple types
+                        } else if ( type2 < 0  && type2!=List.class) { // only support matching between simple types
                                                                                      // and simple lists for now
                                                                                      //TODO: support simple and complex map?
                             Object o1 = attrs.getAttribute(fromID, fromAttrName); //Correct??
@@ -135,9 +135,9 @@ public class DefaultAttributeMerger implements AttributeMerger {
                                 conflictCollector.addConflict(fromID, fromAttrName, toID, toAttrName,attrs);
                                 //continue;
                             }
-                        } else if (type2>0) { // simple type (type1>0) (Integer, Double, Boolean)
+                        } else if (type2 == Integer.class || type2 == Double.class || type2 == Boolean.class || type2 == Long.class) { // simple type (type1>0) (Integer, Double, Boolean)
                             Object o1 = attrs.getAttribute(fromID, fromAttrName);
-                            byte type1 = attrs.getType(fromAttrName);
+                            Class<?> type1 = attrs.getType(fromAttrName);
                             if (type1!=type2) {
                                 o1 = AttributeValueCastUtils.attributeValueCast(type2,o1);
                             }
@@ -158,7 +158,7 @@ public class DefaultAttributeMerger implements AttributeMerger {
                             //TODO: use a conflict handler to handle this part?
 
                             type2 = attrs.getMultiHashMapDefinition().getAttributeValueType(toAttrName);
-                            byte type1 = attrs.getType(fromAttrName);
+                            Class<?> type1 = attrs.getType(fromAttrName);
                             if (type1>0) {
                                 Object o1 = attrs.getAttribute(fromID, fromAttrName);
                                 if (type1!=type2) {
@@ -178,7 +178,7 @@ public class DefaultAttributeMerger implements AttributeMerger {
                                 attrs.setListAttribute(toID, toAttrName, l2);
 
                                 //continue;
-                            } else if (type1==CyAttributes.TYPE_SIMPLE_LIST) {
+                            } else if (type1==List.class) {
                                 type1 = attrs.getMultiHashMapDefinition().getAttributeValueType(fromAttrName);
 
                                 List<Object> l1 = attrs.getListAttribute(fromID, fromAttrName);

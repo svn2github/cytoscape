@@ -36,14 +36,14 @@
 
 package org.cytoscape.network.merge.internal.util;
 
-import cytoscape.data.CyAttributes;
-import cytoscape.data.attr.MultiHashMapDefinition;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.List;
 import java.util.HashSet;
+
+import org.cytoscape.model.CyTable;
 
 /**
  *
@@ -59,125 +59,113 @@ public class AttributeValueCastUtils {
      */
     public static boolean isAttributeTypeConvertable(final String fromAttrName, 
                                               final String toAttrName, 
-                                              final CyAttributes attrs) {
+                                              final CyTable attrs) {
         if (fromAttrName==null || toAttrName==null || attrs==null) {
             throw new java.lang.NullPointerException("Null fromAttrName or toAttrName or attrs");
         }
         
-        final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
+        final Set<String> attrNames = attrs.getColumnTypeMap().keySet();
         if (!attrNames.contains(fromAttrName)) {
             throw new java.lang.IllegalArgumentException("'"+fromAttrName+"' not exists");
         }
         
         if (!attrNames.contains(toAttrName)) {
-            return true; // always convertable to a non-existing attribute
+            return true; // always convertible to a non-existing attribute
         }
 
         // first check the basic type is convertible
-        final MultiHashMapDefinition mmapDef = attrs.getMultiHashMapDefinition();
-        final byte valType1 = mmapDef.getAttributeValueType(fromAttrName);
-        final byte valType2 = mmapDef.getAttributeValueType(toAttrName);
+        final Class<?> valType1 = attrs.getType(fromAttrName);
+        final Class<?> valType2 = attrs.getType(toAttrName);
         
         if (valType1 != valType2) { // if value type is not the same
-            switch (valType1) {
-                case MultiHashMapDefinition.TYPE_BOOLEAN:
-                    if (valType2!=MultiHashMapDefinition.TYPE_BOOLEAN
-                            && valType2!=MultiHashMapDefinition.TYPE_STRING) {
+            if ( valType1 == Boolean.class ) {
+                    if (valType2!=Boolean.class && valType2!=String.class) {
                         return false;
                     }
-                    break;
-                case MultiHashMapDefinition.TYPE_FLOATING_POINT:
-                    if (valType2!=MultiHashMapDefinition.TYPE_FLOATING_POINT
-                            && valType2!=MultiHashMapDefinition.TYPE_STRING) {
+            } else if ( valType1 == Double.class ) {
+                    if (valType2!=Double.class && valType2!=String.class) {
+                        return false;
+                    }           
+            } else if ( valType1 == Integer.class) {
+                    if (valType2!=Integer.class && valType2!=Double.class && valType2!=String.class) {
                         return false;
                     }
-                    break;
-                case MultiHashMapDefinition.TYPE_INTEGER:
-                    if (valType2!=MultiHashMapDefinition.TYPE_INTEGER
-                            && valType2!=MultiHashMapDefinition.TYPE_FLOATING_POINT
-                            && valType2!=MultiHashMapDefinition.TYPE_STRING) {
+            } else if ( valType1 ==  String.class ) {
+                    if (valType2!=String.class) {
                         return false;
                     }
-                    break;
-                case MultiHashMapDefinition.TYPE_STRING:
-                    if (valType2!=MultiHashMapDefinition.TYPE_STRING) {
-                        return false;
-                    }
-                    break;
-                default:
+            } else {
                     return false;
             }
         }
 
+        // TODO figure out what to do with lists and maps!
         // check list, map ...
-        final byte[] dimTypes1 = mmapDef.getAttributeKeyspaceDimensionTypes(fromAttrName);
-        final byte[] dimTypes2 = mmapDef.getAttributeKeyspaceDimensionTypes(toAttrName);
-
-        final int n1 = dimTypes1.length;
-        final int n2 = dimTypes2.length;
-        
-        if (n2==0 && valType2==MultiHashMapDefinition.TYPE_STRING) {
-            return true; // any type can convert to String
-        }
-        
-        if (n1==0 && n2==0) { // simple types
-            return true;
-        }
-        
-        if (n1==0 && n2==1) {
-            return dimTypes2[0] == MultiHashMapDefinition.TYPE_INTEGER; // converting from simple type to simple list
-        }
-        
-        if (n1!=n2) {
-            return false;
-        }
-        
-        for (int i=0; i<n1; i++) {
-            if (dimTypes1[i]!=dimTypes2[i]) {
-                return false;
-            }
-        }
+//        final byte[] dimTypes1 = mmapDef.getAttributeKeyspaceDimensionTypes(fromAttrName);
+//        final byte[] dimTypes2 = mmapDef.getAttributeKeyspaceDimensionTypes(toAttrName);
+//
+//        final int n1 = dimTypes1.length;
+//        final int n2 = dimTypes2.length;
+//        
+//        if (n2==0 && valType2==MultiHashMapDefinition.TYPE_STRING) {
+//            return true; // any type can convert to String
+//        }
+//        
+//        if (n1==0 && n2==0) { // simple types
+//            return true;
+//        }
+//        
+//        if (n1==0 && n2==1) {
+//            return dimTypes2[0] == MultiHashMapDefinition.TYPE_INTEGER; // converting from simple type to simple list
+//        }
+//        
+//        if (n1!=n2) {
+//            return false;
+//        }
+//        
+//        for (int i=0; i<n1; i++) {
+//            if (dimTypes1[i]!=dimTypes2[i]) {
+//                return false;
+//            }
+//        }
         
         return valType1==valType2; // for complex case, type must be the same
     }
 
-    public static boolean isAttributeTypeConvertable(final byte fromType, final byte toType) {
-            switch (fromType) {
-                case CyAttributes.TYPE_BOOLEAN:
-                    return toType==CyAttributes.TYPE_BOOLEAN
-                            || toType==CyAttributes.TYPE_STRING
-                            || toType==CyAttributes.TYPE_SIMPLE_LIST;
-                case CyAttributes.TYPE_FLOATING:
-                    return toType==CyAttributes.TYPE_FLOATING
-                            || toType==CyAttributes.TYPE_STRING
-                            || toType==CyAttributes.TYPE_SIMPLE_LIST;
-                case CyAttributes.TYPE_INTEGER:
-                    return toType==CyAttributes.TYPE_INTEGER
-                            || toType==CyAttributes.TYPE_FLOATING
-                            || toType==CyAttributes.TYPE_STRING
-                            || toType==CyAttributes.TYPE_SIMPLE_LIST;
-                case CyAttributes.TYPE_STRING:
-                    return toType==CyAttributes.TYPE_STRING
-                            || toType==CyAttributes.TYPE_SIMPLE_LIST;
-                case CyAttributes.TYPE_SIMPLE_LIST:
-                    return toType==CyAttributes.TYPE_STRING
-                            || toType==CyAttributes.TYPE_SIMPLE_LIST;
-                case CyAttributes.TYPE_SIMPLE_MAP:
-                    return toType==CyAttributes.TYPE_STRING
-                            || toType==CyAttributes.TYPE_SIMPLE_MAP;
-                case CyAttributes.TYPE_COMPLEX:
-                    return toType==CyAttributes.TYPE_STRING
-                            || toType==CyAttributes.TYPE_SIMPLE_MAP;
-                default:
-                    return false;
-            }
-    }
+	public static boolean isAttributeTypeConvertable(final Class<?> fromType,
+			final Class<?> toType) {
+		if (fromType == Boolean.class) {
+			return toType == Boolean.class || toType == String.class;
+			// || toType==CyAttributes.TYPE_SIMPLE_LIST;
+		} else if (fromType == Double.class) {
+			return toType == Double.class || toType == String.class;
+			// || toType==CyAttributes.TYPE_SIMPLE_LIST;
+		} else if (fromType == Integer.class) {
+			return toType == Integer.class || toType == Double.class
+					|| toType == String.class;
+			// || toType==CyAttributes.TYPE_SIMPLE_LIST;
+		} else if (fromType == String.class) {
+			return toType == String.class;
+			// || toType==CyAttributes.TYPE_SIMPLE_LIST;
+			// } else if ( fromType == CyAttributes.TYPE_SIMPLE_LIST ) {
+			// return toType==String.class
+			// || toType==CyAttributes.TYPE_SIMPLE_LIST;
+			// } else if ( fromType == CyAttributes.TYPE_SIMPLE_MAP) {
+			// return toType==CyAttributes.TYPE_STRING
+			// || toType==CyAttributes.TYPE_SIMPLE_MAP;
+			// } else if ( fromType == CyAttributes.TYPE_COMPLEX ) {
+			// return toType==CyAttributes.TYPE_STRING
+			// || toType==CyAttributes.TYPE_SIMPLE_MAP;
+		} else {
+			return false;
+		}
+	}
     
     /*
      * Return the attribute with the highest compatible attribute
      * 
      */
-    public static String getMostCompatibleAttribute(final Set<String> attrNames, final CyAttributes attrs) {
+    public static String getMostCompatibleAttribute(final Set<String> attrNames, final CyTable attrs) {
         if (attrNames==null || attrs==null) {
             throw new java.lang.NullPointerException("Null attrNames or attrs");
         }
@@ -187,7 +175,7 @@ public class AttributeValueCastUtils {
             throw new java.lang.IllegalArgumentException("Empty attrNames");
         }
         
-        if (!Arrays.asList(attrs.getAttributeNames()).containsAll(attrNames)) {
+        if (!attrs.getColumnTypeMap().keySet().containsAll(attrNames)) {
             throw new java.lang.IllegalStateException("Attribute not exists");
         }
         
@@ -221,8 +209,8 @@ public class AttributeValueCastUtils {
         while (it.hasNext()) { 
             // if exists list, return it
             String attr = it.next();
-            byte type = attrs.getType(attr);
-            if (type==CyAttributes.TYPE_SIMPLE_LIST) {
+            Class<?> type = attrs.getType(attr);
+            if (type==List.class) {
                 return attr;
             }
         }
@@ -230,20 +218,18 @@ public class AttributeValueCastUtils {
         
     }
 
-    
-    public static Object attributeValueCast(byte typeTo, Object value) {
-        switch (typeTo) {
-            case CyAttributes.TYPE_BOOLEAN:
-                    return Boolean.valueOf(value.toString());
-            case CyAttributes.TYPE_INTEGER:
-                    return Integer.valueOf(value.toString());
-            case CyAttributes.TYPE_FLOATING:
-                    return Double.valueOf(value.toString());
-            case CyAttributes.TYPE_STRING:
-                    return value.toString();
-            default:
-                    throw new java.lang.IllegalStateException("wrong type");
-        }
-    }
+	public static Object attributeValueCast(Class<?> typeTo, Object value) {
+		if (typeTo == Boolean.class) {
+			return Boolean.valueOf(value.toString());
+		} else if (typeTo == Integer.class) {
+			return Integer.valueOf(value.toString());
+		} else if (typeTo == Double.class) {
+			return Double.valueOf(value.toString());
+		} else if (typeTo == String.class) {
+			return value.toString();
+		} else {
+			throw new IllegalStateException("wrong type");
+		}
+	}
     
 }

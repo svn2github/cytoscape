@@ -36,11 +36,12 @@
 
 package org.cytoscape.network.merge.internal.model;
 
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.network.merge.internal.util.AttributeValueCastUtils;
 
-import cytoscape.data.CyAttributes;
-import cytoscape.data.Semantics;
-
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.Set;
@@ -48,7 +49,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Arrays;
 
 /**
  * Class to instore the information how to mapping the attributes 
@@ -59,21 +59,21 @@ import java.util.Arrays;
 public class AttributeMappingImpl implements AttributeMapping {
     private Map<String,List<String>> attributeMapping; //attribute mapping, network to list of attributes
     private List<String> mergedAttributes;
-    private List<Byte> mergedAttributeTypes;
-    private CyAttributes cyAttributes;
+    private List<Class<?>> mergedAttributeTypes;
+    private CyTable cyAttributes;
     private final String nullAttr = ""; // to hold a position in vector standing that it's not a attribute
 
-    public AttributeMappingImpl(final CyAttributes cyAttributes) {
+    public AttributeMappingImpl(final CyTable cyAttributes) {
         this.cyAttributes = cyAttributes;
         attributeMapping = new HashMap<String,List<String>>();
         mergedAttributes = new Vector<String>();
-        mergedAttributeTypes = new Vector<Byte>();
+        mergedAttributeTypes = new Vector<Class<?>>();
     }
 
     /**
      * {@inheritDoc}
      */
-    public CyAttributes getCyAttributes() {
+    public CyTable getCyAttributes() {
         return cyAttributes;
     }
     
@@ -117,9 +117,9 @@ public class AttributeMappingImpl implements AttributeMapping {
             final Set<String> attrNames = new HashSet<String>(getOriginalAttributeMap(index).values());
             final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
             if (attr_mc==null) { // incompatible
-                if (cyAttributes.getType(attributeName)!=CyAttributes.TYPE_STRING) {
+                if (cyAttributes.getType(attributeName)!=String.class) {
                     attr = this.getDefaultMergedAttrName(attr, true);
-                    this.setMergedAttributeType(index, CyAttributes.TYPE_STRING);
+                    this.setMergedAttributeType(index, String.class);
                 }
             } else { // compatible
                 if (!AttributeValueCastUtils.isAttributeTypeConvertable(attr_mc, attributeName, cyAttributes)) {
@@ -138,7 +138,7 @@ public class AttributeMappingImpl implements AttributeMapping {
     /**
      * {@inheritDoc}
      */
-    public byte getMergedAttributeType(final int index) {
+    public Class<?> getMergedAttributeType(final int index) {
         if (index>=this.getSizeMergedAttributes()||index<0)  {
             throw new java.lang.IndexOutOfBoundsException();
         }
@@ -149,7 +149,7 @@ public class AttributeMappingImpl implements AttributeMapping {
     /**
      * {@inheritDoc}
      */
-    public byte getMergedAttributeType(final String mergedAttributeName) {
+    public Class<?> getMergedAttributeType(final String mergedAttributeName) {
         if (mergedAttributeName==null) {
             throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
         }
@@ -165,14 +165,14 @@ public class AttributeMappingImpl implements AttributeMapping {
     /**
      * {@inheritDoc}
      */
-    public boolean setMergedAttributeType(int index, byte type) {
+    public boolean setMergedAttributeType(int index, Class<?> type) {
         if (index>=this.getSizeMergedAttributes()||index<0) {
                 throw new java.lang.IndexOutOfBoundsException();
         }
 
         final Set<String> attrNames = new HashSet<String>(getOriginalAttributeMap(index).values());
         final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
-        final byte fromType = attr_mc==null?CyAttributes.TYPE_STRING:cyAttributes.getType(attr_mc);
+        final Class<?> fromType = attr_mc==null?String.class:cyAttributes.getType(attr_mc);
 
         if (!AttributeValueCastUtils.isAttributeTypeConvertable(fromType, type)) {
                 return false;
@@ -185,7 +185,7 @@ public class AttributeMappingImpl implements AttributeMapping {
     /**
      * {@inheritDoc}
      */
-    public boolean setMergedAttributeType(String mergedAttributeName, byte type) {
+    public boolean setMergedAttributeType(String mergedAttributeName, Class<?> type) {
         if (mergedAttributeName==null) {
             throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
         }
@@ -298,7 +298,7 @@ public class AttributeMappingImpl implements AttributeMapping {
             throw new java.lang.NullPointerException("Null netID or attributeName or mergedAttributeName");
         }
         
-        if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(attributeName)) {
+        if (!cyAttributes.getColumnTypeMap().keySet().contains(attributeName)) {
             throw new java.lang.IllegalArgumentException("No "+attributeName+" is contained in attributes");
         }
         
@@ -429,7 +429,7 @@ public class AttributeMappingImpl implements AttributeMapping {
             throw new java.lang.IllegalArgumentException("Non-exist network(s)");
         }
         
-        if (!Arrays.asList(cyAttributes.getAttributeNames()).containsAll(mapNetIDAttributeName.values())) {
+        if (!cyAttributes.getColumnTypeMap().keySet().containsAll(mapNetIDAttributeName.values())) {
             throw new java.lang.IllegalArgumentException("Non-exist attribute(s)");
         }
         
@@ -462,10 +462,10 @@ public class AttributeMappingImpl implements AttributeMapping {
             throw new java.lang.NullPointerException();
         }
         
-        final String[] attributeNames = cyAttributes.getAttributeNames();
-        Arrays.sort(attributeNames);
+        final List<String> attributeNames = new ArrayList<String>(cyAttributes.getColumnTypeMap().keySet());
+        Collections.sort(attributeNames);
 
-        final int nAttr = attributeNames.length;
+        final int nAttr = attributeNames.size();
         if (attributeMapping.isEmpty()) { // for the first network added
             
             final List<String> attrs = new Vector<String>();
@@ -474,15 +474,15 @@ public class AttributeMappingImpl implements AttributeMapping {
 
             for (int i=0; i<nAttr; i++) {
                 //TODO REMOVE IN Cytoscape3.0
-                if (attributeNames[i].compareTo(Semantics.CANONICAL_NAME)==0) {
+                if (attributeNames.get(i).compareTo(CyTableEntry.NAME)==0) {
                     continue;
                 }//TODO REMOVE IN Cytoscape3.0
                 
-                addNewAttribute(netID, attributeNames[i]);
+                addNewAttribute(netID, attributeNames.get(i));
             }
             
             //TODO REMOVE IN 3.0, canonicalName in each network form a separate attribute in resulting network
-            addNewAttribute(netID, Semantics.CANONICAL_NAME);//TODO REMOVE IN Cytoscape3.0
+            addNewAttribute(netID, CyTableEntry.NAME);//TODO REMOVE IN Cytoscape3.0
             
 
         } else { // for each attributes to be added, search if the same attribute exists
@@ -502,11 +502,11 @@ public class AttributeMappingImpl implements AttributeMapping {
             attributeMapping.put(netID, attrs);
 
             for (int i=0; i<nAttr; i++) {
-                final String at = attributeNames[i];
+                final String at = attributeNames.get(i);
                  
                 //TODO REMOVE IN Cytoscape3.0, canonicalName in each network form a separate attribute in resulting network
-                if (at.compareTo(Semantics.CANONICAL_NAME)==0) {
-                    addNewAttribute(netID, Semantics.CANONICAL_NAME);
+                if (at.compareTo(CyTableEntry.NAME)==0) {
+                    addNewAttribute(netID, CyTableEntry.NAME);
                     continue;
                 }//TODO REMOVE IN Cytoscape3.0
                  
@@ -611,7 +611,7 @@ public class AttributeMappingImpl implements AttributeMapping {
         if (attr==null) {
             throw new java.lang.NullPointerException();
         }
-        return Arrays.asList(cyAttributes.getAttributeNames()).contains(attr);
+        return (cyAttributes.getType(attr) != null);
     }
     
     private String getDefaultMergedAttrName(final String attr, boolean excludeOriginalAttribute) {
@@ -646,8 +646,8 @@ public class AttributeMappingImpl implements AttributeMapping {
         
         String attrMerged = attributeName;
         //TODO remove in Cytosape3
-        if (attributeName.compareTo(Semantics.CANONICAL_NAME)==0) {
-            attrMerged = netID+"."+Semantics.CANONICAL_NAME;
+        if (attributeName.compareTo(CyTableEntry.NAME)==0) {
+            attrMerged = netID+"."+CyTableEntry.NAME;
         }//TODO remove in Cytosape3
         
         mergedAttributes.add(getDefaultMergedAttrName(attrMerged,false)); // add in merged attr
@@ -665,13 +665,13 @@ public class AttributeMappingImpl implements AttributeMapping {
 
         final Set<String> attrNames = new HashSet<String>(getOriginalAttributeMap(index).values());
         final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
-        final byte type = attr_mc==null?CyAttributes.TYPE_STRING:cyAttributes.getType(attr_mc);
+        final Class<?> type = attr_mc==null?String.class:cyAttributes.getType(attr_mc);
 
         if (add) { //new
                 mergedAttributeTypes.add(index,type);
         } else {
-            final byte old = mergedAttributeTypes.get(index);
-            if (old==CyAttributes.TYPE_STRING || old==CyAttributes.TYPE_SIMPLE_LIST)
+            final Class<?> old = mergedAttributeTypes.get(index);
+            if (old==String.class || old==List.class)
                 return;
             this.mergedAttributeTypes.set(index, type);
         }

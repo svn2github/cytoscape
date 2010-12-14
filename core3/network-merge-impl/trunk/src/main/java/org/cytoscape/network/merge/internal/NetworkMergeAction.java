@@ -1,4 +1,6 @@
-/* File: AttributeMerger.java
+package org.cytoscape.network.merge.internal;
+
+/* File: NetworkMergePlugin.java
 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,28 +36,38 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package org.cytoscape.network.merge.internal.util;
+import org.cytoscape.application.swing.AbstractCyAction;
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.network.merge.internal.ui.NetworkMergeFrame;
+import org.cytoscape.session.CyApplicationManager;
+
+import java.awt.event.ActionEvent;
 
 
-import java.util.Map;
+public class NetworkMergeAction extends AbstractCyAction {
 
-import org.cytoscape.model.CyTable;
+	private static final long serialVersionUID = -597481727043928800L;
+	
+	private final CySwingApplication swingApp;
 
-/**
- *
- * 
- */
-public interface AttributeMerger {
+	public NetworkMergeAction(CyApplicationManager appMgr,
+			CySwingApplication swingApp) {
+		super("Network Merge", appMgr);
+		setPreferredMenu("Plugins");
+		this.swingApp = swingApp;
+	}
 
-        /**
-         *
-         * @param mapGOAttr
-         * @param toID
-         * @param toAttrName
-         * @param attrs
-         */
-        public void mergeAttribute(Map<String,String> mapGOAttr,
-                                     String toID,
-                                     String toAttrName,
-                                     CyTable attrs);
+	/**
+	 * This method is called when the user selects the menu item.
+	 */
+	@Override
+	public void actionPerformed(final ActionEvent ae) {
+
+		final NetworkMergeFrame frame = new NetworkMergeFrame();
+		frame.setLocationRelativeTo(swingApp.getJFrame());
+		frame.setVisible(true);
+		// TODO: make this value user-editable (always on top or not).
+		frame.setAlwaysOnTop(true);
+	}
+
 }

@@ -36,9 +36,10 @@
 
 package org.cytoscape.network.merge.internal.conflict;
 
-import cytoscape.data.CyAttributes;
 
 import java.util.Map;
+
+import org.cytoscape.model.CyTable;
 
 /**
  *
@@ -54,5 +55,5 @@ public interface AttributeConflictHandler {
          * @return
          *      true if successful, false if failed
          */
-        public boolean handleIt(String toID, String toAttr, Map<String,String> mapFromIDFromAttr, CyAttributes attrs);
+        public boolean handleIt(String toID, String toAttr, Map<String,String> mapFromIDFromAttr, CyTable attrs);
 }

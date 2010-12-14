@@ -36,8 +36,6 @@
 
 package org.cytoscape.network.merge.internal.ui;
 
-import cytoscape.Cytoscape;
-
 import java.util.List;
 import java.util.Vector;
 import java.util.Iterator;

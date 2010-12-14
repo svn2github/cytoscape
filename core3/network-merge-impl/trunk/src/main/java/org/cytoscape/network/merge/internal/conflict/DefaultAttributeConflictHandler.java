@@ -36,11 +36,11 @@
 
 package org.cytoscape.network.merge.internal.conflict;
 
-import cytoscape.data.CyAttributes;
-
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map;
+
+import org.cytoscape.model.CyTable;
 
 /**
  *
@@ -59,15 +59,15 @@ public class DefaultAttributeConflictHandler implements AttributeConflictHandler
         public boolean handleIt(final String toID,
                                 final String toAttr,
                                 final Map<String,String> mapFromIDFromAttr,
-                                final CyAttributes attrs) {
+                                final CyTable attrs) {
                 //TODO: write a reasonable default one
                 if (toID==null || toAttr==null || mapFromIDFromAttr==null || attrs==null) {
                         throw new java.lang.NullPointerException();
                 }
 
-                byte type = attrs.getType(toAttr);
+                Class<?> type = attrs.getType(toAttr);
                 
-                if (type == CyAttributes.TYPE_STRING) {
+                if (type == String.class) {
                         final String toValue = attrs.getStringAttribute(toID, toAttr);
                         Set<String> values = new TreeSet<String>();
                         values.add(toValue);

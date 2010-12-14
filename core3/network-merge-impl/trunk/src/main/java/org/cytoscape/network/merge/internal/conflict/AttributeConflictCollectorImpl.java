@@ -37,7 +37,7 @@
 
 package org.cytoscape.network.merge.internal.conflict;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.model.CyTable;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -51,10 +51,10 @@ import java.util.HashMap;
 public class AttributeConflictCollectorImpl implements AttributeConflictCollector {
 
         protected class Conflicts {
-                public final CyAttributes cyAttributes;
+                public final CyTable cyAttributes;
                 public Map<String,String> mapFromIDFromAttr;
 
-                public Conflicts(final CyAttributes cyAttributes) {
+                public Conflicts(final CyTable cyAttributes) {
                         this.cyAttributes = cyAttributes;
                         mapFromIDFromAttr = new HashMap<String,String>();
                 }
@@ -121,7 +121,7 @@ public class AttributeConflictCollectorImpl implements AttributeConflictCollecto
         /**
          * {@inheritDoc}
          */
-        public CyAttributes getCyAttributes(final String toID, final String toAttr) {
+        public CyTable getCyAttributes(final String toID, final String toAttr) {
                 if (toID==null || toAttr==null) {
                         throw new java.lang.NullPointerException();
                 }
@@ -141,7 +141,7 @@ public class AttributeConflictCollectorImpl implements AttributeConflictCollecto
                                         final String fromAttr,
                                         final String toID,
                                         final String toAttr,
-                                        final CyAttributes cyAttributes) {
+                                        final CyTable cyAttributes) {
                 if (fromID==null || fromAttr==null || toID==null || toAttr==null || cyAttributes==null) {
                         throw new java.lang.NullPointerException();
                 }

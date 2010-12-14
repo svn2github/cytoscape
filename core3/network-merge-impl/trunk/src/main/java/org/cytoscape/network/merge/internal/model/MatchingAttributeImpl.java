@@ -36,24 +36,25 @@
 
 package org.cytoscape.network.merge.internal.model;
 
-import cytoscape.data.CyAttributes;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.cytoscape.model.CyTable;
+
 /**
- * Class to instore the information which attribute to be used 
+ * Class to store the information which attribute to be used 
  * for matching nodes
  * 
  * 
  */
 public class MatchingAttributeImpl implements MatchingAttribute {
     private Map<String,String> attributeForMatching; // network name to attribute name
-    private CyAttributes cyAttributes; // use map if local attribute realized
+    private CyTable cyAttributes; // use map if local attribute realized
     
-    public MatchingAttributeImpl(final CyAttributes cyAttributes) {
+    public MatchingAttributeImpl(final CyTable cyAttributes) {
         this.cyAttributes = cyAttributes;
         attributeForMatching = new HashMap<String,String>();
     }
@@ -95,12 +96,11 @@ public class MatchingAttributeImpl implements MatchingAttribute {
             throw new java.lang.NullPointerException();
         }
         
-        final String[] attributeNames = cyAttributes.getAttributeNames();
+        final Set<String> attributeNames = cyAttributes.getColumnTypeMap().keySet();
         final Collection<String> values = attributeForMatching.values();
-        final int n = attributeNames.length;
-        for (int i=0; i<n; i++) {
-            if (values.contains(attributeNames[i])) {
-                putAttributeForMatching(netID,attributeNames[i]);
+        for ( String attr : attributeNames) {
+            if (values.contains(attr)) {
+                putAttributeForMatching(netID,attr);
                 return;
             }
         }

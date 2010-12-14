@@ -37,7 +37,7 @@
 
 package org.cytoscape.network.merge.internal.conflict;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.model.CyTable;
 
 import java.util.Map;
 
@@ -73,7 +73,7 @@ public interface AttributeConflictCollector {
          * @param toAttr
          * @return
          */
-        public CyAttributes getCyAttributes(String toID, String toAttr);
+        public CyTable getCyAttributes(String toID, String toAttr);
 
         /**
          *
@@ -82,7 +82,7 @@ public interface AttributeConflictCollector {
          * @param toID
          * @param toAttr
          */
-        public void addConflict(String fromID, String fromAttr, String toID, String toAttr, CyAttributes cyAttributes);
+        public void addConflict(String fromID, String fromAttr, String toID, String toAttr, CyTable cyAttributes);
 
         /**
          *

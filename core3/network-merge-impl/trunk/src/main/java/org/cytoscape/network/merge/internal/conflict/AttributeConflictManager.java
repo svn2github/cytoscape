@@ -36,10 +36,11 @@
 
 package org.cytoscape.network.merge.internal.conflict;
 
-import cytoscape.data.CyAttributes;
 
 import java.util.List;
 import java.util.Map;
+
+import org.cytoscape.model.CyTable;
 
 /**
  *
@@ -69,7 +70,7 @@ public class AttributeConflictManager {
                         String toID = entryToIDToAttr.getKey();
                         String toAttr = entryToIDToAttr.getValue();
                         Map<String,String> mapFromIDFromAttr = conflictCollector.getConflicts(toID, toAttr);
-                        CyAttributes attrs = conflictCollector.getCyAttributes(toID, toAttr);
+                        CyTable attrs = conflictCollector.getCyAttributes(toID, toAttr);
                         for (AttributeConflictHandler handler : conflictHandlers) {
                                 if (handler.handleIt(toID,toAttr,mapFromIDFromAttr,attrs)) {
                                         conflictCollector.removeConflicts(toID, toAttr);

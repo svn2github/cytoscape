@@ -36,7 +36,7 @@
 
 package org.cytoscape.network.merge.internal.util;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.model.CyTable;
 
 /**
  * Match attribute values
@@ -55,5 +55,5 @@ public interface AttributeValueMatcher {
          * @return true if matched; false otherwise
          */
         public boolean matched(String id1, String attr1,
-                String id2, String attr2, CyAttributes cyAttributes);
+                String id2, String attr2, CyTable cyAttributes);
 }

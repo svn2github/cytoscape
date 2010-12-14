@@ -36,10 +36,12 @@
 
 package org.cytoscape.network.merge.internal.util;
 
-import cytoscape.data.CyAttributes;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.Set;
+
+import org.cytoscape.model.CyTable;
 
 /**
  * Match attribute values
@@ -59,12 +61,12 @@ public class DefaultAttributeValueMatcher implements AttributeValueMatcher {
          */
         //@Override
         public boolean matched(String id1, String attr1,
-                String id2, String attr2, CyAttributes cyAttributes) {
+                String id2, String attr2, CyTable cyAttributes) {
                 if ((id1 == null) || (attr1 == null) || (id2 == null) || (attr2==null) || (cyAttributes == null)) {
                     throw new java.lang.IllegalArgumentException("Null argument.");
                 }
 
-                final List<String> attrNames = Arrays.asList(cyAttributes.getAttributeNames());
+                final Set<String> attrNames = cyAttributes.getColumnTypeMap().keySet();
                 if (!attrNames.contains(attr1) || !attrNames.contains(attr2)) {
                     throw new java.lang.IllegalArgumentException("'"+attr1+"' or/and '"+attr2+"' not exists");
                 }
@@ -87,8 +89,8 @@ public class DefaultAttributeValueMatcher implements AttributeValueMatcher {
                 byte type1 = cyAttributes.getType(attr1);
                 byte type2 = cyAttributes.getType(attr2);
 
-                if ((type1<0&&type1!=CyAttributes.TYPE_SIMPLE_LIST)
-                        ||(type2<0&&type2!=CyAttributes.TYPE_SIMPLE_LIST)) { // only support matching between simple types
+                if ((type1<0&&type1!=List.class)
+                        ||(type2<0&&type2!=List.class)) { // only support matching between simple types
                                                                              // and simple lists for now
                                                                              //TODO: support simple and complex map?
                     Object o1 = cyAttributes.getAttribute(id1, attr1);

@@ -44,19 +44,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.Semantics;
-import cytoscape.task.TaskMonitor;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
 
-import giny.model.GraphObject;
-import giny.model.Node;
-import giny.model.Edge;
+
+import org.cytoscape.work.TaskMonitor;
+
 /**
  * NetworkMerge implement
- * 
- * 
  */
 public abstract class AbstractNetworkMerge implements NetworkMerge {
      protected final NetworkMergeParameter parameter;
@@ -89,7 +87,7 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
      * 
      * @return true if n1 and n2 matches
      */
-    public abstract boolean matchNode(CyNetwork net1, Node n1, CyNetwork net2, Node n2);
+    public abstract boolean matchNode(CyNetwork net1, CyNode n1, CyNetwork net2, CyNode n2);
     
     /**
      * Merge (matched) nodes into one
@@ -99,7 +97,7 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
      * 
      * @return merged Node
      */
-    public abstract Node mergeNode(Map<CyNetwork,Set<GraphObject>> mapNetNode);
+    public abstract CyNode mergeNode(Map<CyNetwork,Set<CyNode>> mapNetNode);
     
     /**
      * Merge (matched) nodes into one. This method will be refactored in Cytoscape3
@@ -111,8 +109,8 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
      * 
      * @return merged Node
      */
-    public abstract Edge mergeEdge(Map<CyNetwork,Set<GraphObject>> mapNetEdge, Node source, 
-                                Node target, String interaction, boolean directed);
+    public abstract CyEdge mergeEdge(Map<CyNetwork,Set<CyNode>> mapNetEdge, CyNode source, 
+                                CyNode target, String interaction, boolean directed);
     
     /**
      * Check whether two edges match
@@ -122,16 +120,18 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
      * 
      * @return true if n1 and n2 matches
      */
-    public boolean matchEdge(final CyNetwork net1, Edge e1, final CyNetwork net2, Edge e2) {
+    public boolean matchEdge(final CyNetwork net1, CyEdge e1, final CyNetwork net2, CyEdge e2) {
         if (net1==null || e1==null || e2==null) {
-            throw new java.lang.NullPointerException();
+            throw new NullPointerException();
         }
         
         //TODO should interaction be considered or not?
-        final CyAttributes attributes = Cytoscape.getEdgeAttributes();
+        final CyTable net1EdgeAttrs = net1.getDefaultEdgeTable();
+        final CyTable net2EdgeAttrs = net2.getDefaultEdgeTable();
 
-        Object i1 = attributes.getAttribute(e1.getIdentifier(),Semantics.INTERACTION);
-        Object i2 = attributes.getAttribute(e2.getIdentifier(),Semantics.INTERACTION);
+        String i1 = net1EdgeAttrs.get("interaction",String.class);
+        String i2 = net2EdgeAttrs.get("interaction",String.class);
+
 
         if ((i1==null&&i2!=null) || (i1!=null&&i2==null)) {
                 return false;
@@ -159,75 +159,76 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CyNetwork mergeNetwork(final List<CyNetwork> networks, final Operation op, final String title) {
         if (networks==null || op==null || title==null) {
             throw new java.lang.NullPointerException();
         }
         
         if (networks.isEmpty()) {
-            throw new java.lang.IllegalArgumentException("No merging network");
+            throw new IllegalArgumentException("No merging network");
         }
         
         if (title.length()==0) {
-            throw new java.lang.IllegalArgumentException("Empty title");
+            throw new IllegalArgumentException("Empty title");
         }
         
         // get node matching list
-        List<Map<CyNetwork,Set<GraphObject>>> matchedNodeList = getMatchedList(networks,true);
+        List<Map<CyNetwork,Set<CyTableEntry>>> matchedNodeList = getMatchedList(networks,true);
         
         matchedNodeList = selectMatchedGOList(matchedNodeList, op, networks);
 
-        final Map<Node,Node> mapNN = new HashMap<Node,Node>(); // save information on mapping from original nodes to merged nodes
+        final Map<CyNode,CyNode> mapNN = new HashMap<CyNode,CyNode>(); // save information on mapping from original nodes to merged nodes
                                                          // to use when merge edges
         
         // merge nodes in the list
         final int nNode = matchedNodeList.size();
-        List<Node> nodes = new Vector<Node>(nNode);
+        List<CyNode> nodes = new Vector<CyNode>(nNode);
         for (int i=0; i<nNode; i++) {
             if (interrupted) return null;
-            updateTaskMonitor("Merging nodes...\n"+i+"/"+nNode,(i+1)*100/nNode);
+            updateTaskMonitor("Merging nodes...\n"+i+"/"+nNode,(i+1)*1.0/nNode);
             
-            final Map<CyNetwork,Set<GraphObject>> mapNetNode = matchedNodeList.get(i);
-            final Node node = mergeNode(mapNetNode);
+            final Map<CyNetwork,Set<CyTableEntry>> mapNetNode = matchedNodeList.get(i);
+            final CyNode node = mergeNode(mapNetNode);
             nodes.add(node);
             
-            final Iterator<Set<GraphObject>> itNodes = mapNetNode.values().iterator();
+            final Iterator<Set<CyTableEntry>> itNodes = mapNetNode.values().iterator();
             while (itNodes.hasNext()) {
-                final Set<GraphObject> nodes_ori = itNodes.next();
-                final Iterator<GraphObject> itNode = nodes_ori.iterator();
+                final Set<CyTableEntry> nodes_ori = itNodes.next();
+                final Iterator<CyTableEntry> itNode = nodes_ori.iterator();
                 while (itNode.hasNext()) {
-                    final Node node_ori = (Node) itNode.next();
+                    final CyNode node_ori = (CyNode) itNode.next();
                     mapNN.put(node_ori, node);                    
                 }
             }            
         }
-        updateTaskMonitor("Merging nodes completed",100);
+        updateTaskMonitor("Merging nodes completed",1.0);
         
         // match edges
-        List<Map<CyNetwork,Set<GraphObject>>> matchedEdgeList = getMatchedList(networks,false);
+        List<Map<CyNetwork,Set<CyTableEntry>>> matchedEdgeList = getMatchedList(networks,false);
 
         matchedEdgeList = selectMatchedGOList(matchedEdgeList, op, networks);
         
         // merge edges
         final int nEdge = matchedEdgeList.size();
-        final List<Edge> edges = new Vector<Edge>(nEdge);
+        final List<CyEdge> edges = new Vector<CyEdge>(nEdge);
         for (int i=0; i<nEdge; i++) {
             if (interrupted) return null;
-            updateTaskMonitor("Merging edges...\n"+i+"/"+nEdge,(i+1)*100/nEdge);
+            updateTaskMonitor("Merging edges...\n"+i+"/"+nEdge,(i+1)/nEdge);
             
-            final Map<CyNetwork,Set<GraphObject>> mapNetEdge = matchedEdgeList.get(i);
+            final Map<CyNetwork,Set<CyTableEntry>> mapNetEdge = matchedEdgeList.get(i);
             
             // get the source and target nodes in merged network
-            final Iterator<Set<GraphObject>> itEdges = mapNetEdge.values().iterator();
+            final Iterator<Set<CyTableEntry>> itEdges = mapNetEdge.values().iterator();
                        
-            final Set<GraphObject> edgeSet = itEdges.next();
+            final Set<CyTableEntry> edgeSet = itEdges.next();
             if (edgeSet==null||edgeSet.isEmpty()) {
                 throw new java.lang.IllegalStateException("Null or empty edge set");
             }
             
-            final Edge edge_ori = (Edge) edgeSet.iterator().next();
-            final Node source = mapNN.get(edge_ori.getSource());
-            final Node target = mapNN.get(edge_ori.getTarget());
+            final CyEdge edge_ori = (CyEdge) edgeSet.iterator().next();
+            final CyNode source = mapNN.get(edge_ori.getSource());
+            final CyNode target = mapNN.get(edge_ori.getTarget());
             if (source==null||target==null) { // some of the node may be exluded when intersection or difference
                 continue;
             }
@@ -236,15 +237,15 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
             final CyAttributes attributes = Cytoscape.getEdgeAttributes();
             final String interaction = (String)attributes.getAttribute(edge_ori.getIdentifier(),Semantics.INTERACTION);
             
-            final Edge edge = mergeEdge(mapNetEdge,source,target,interaction,directed);
+            final CyEdge edge = mergeEdge(mapNetEdge,source,target,interaction,directed);
             edges.add(edge);
         }
-        updateTaskMonitor("Merging edges completed",100);
+        updateTaskMonitor("Merging edges completed",1.0);
         
         // create new network
         final CyNetwork network = Cytoscape.createNetwork(nodes, edges, title);
                 
-        updateTaskMonitor("Successfully merged the selected "+networks.size()+" networks into network "+title+" with "+nNode+" nodes and "+nEdge+" edges",100);
+        updateTaskMonitor("Successfully merged the selected "+networks.size()+" networks into network "+title+" with "+nNode+" nodes and "+nEdge+" edges",1.0);
         
         return network;
     }
@@ -257,7 +258,7 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
      * 
      * @return list of map from network to node/edge
      */    
-    protected List<Map<CyNetwork,Set<GraphObject>>> getMatchedList(final List<CyNetwork> networks, final boolean isNode) {
+    protected List<Map<CyNetwork,Set<CyTableEntry>>> getMatchedList(final List<CyNetwork> networks, final boolean isNode) {
         if (networks==null) {
             throw new java.lang.NullPointerException();
         }
@@ -266,7 +267,7 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
             throw new java.lang.IllegalArgumentException("No merging network");
         }
                 
-        final List<Map<CyNetwork,Set<GraphObject>>> matchedList = new Vector<Map<CyNetwork,Set<GraphObject>>>();
+        final List<Map<CyNetwork,Set<CyTableEntry>>> matchedList = new Vector<Map<CyNetwork,Set<CyTableEntry>>>();
         
         final int nNet = networks.size();
         
@@ -281,19 +282,19 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
             
             
             final CyNetwork net1 = networks.get(i);
-            final Iterator<GraphObject> it;
+            final Iterator<CyTableEntry> it;
             if (isNode) {
-		    it = (Iterator<GraphObject>)net1.nodesIterator();
+            	it = (Iterator<CyTableEntry>)net1.getNodeList().iterator(); 
             } else { //edge
-		    it = net1.edgesIterator();
+            	it = net1.getEdgeList().iterator();
             }
             
             while (it.hasNext()) {
                 if (interrupted) return null;
-                updateTaskMonitor("Matching "+(isNode?"nodes":"edges")+"...\n"+processedGO+"/"+totalGO,processedGO*100/totalGO);
+                updateTaskMonitor("Matching "+(isNode?"nodes":"edges")+"...\n"+processedGO+"/"+totalGO,processedGO/totalGO);
                 processedGO++;
                 
-                final GraphObject go1 = it.next();
+                final CyTableEntry go1 = it.next();
                 
                 // chech whether any nodes in the matchedNodeList match with this node
                 // if yes, add to the list, else add a new map to the list
@@ -301,25 +302,25 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
                 final int n = matchedList.size();
                 int j=0;
                 for (; j<n; j++) {
-                    final Map<CyNetwork,Set<GraphObject>> matchedGO = matchedList.get(j);
+                    final Map<CyNetwork,Set<CyTableEntry>> matchedGO = matchedList.get(j);
                     final Iterator<CyNetwork> itNet = matchedGO.keySet().iterator();
                     while (itNet.hasNext()) {
                         final CyNetwork net2 = itNet.next();
                         //if (net1==net2) continue; // assume the same network don't have nodes match to each other
                         if (!parameter.inNetworkMergeEnabled() && net1==net2) continue;
 
-                        final Set<GraphObject> gos2 = matchedGO.get(net2);
+                        final Set<CyTableEntry> gos2 = matchedGO.get(net2);
                         if (gos2!=null) {
-                            GraphObject go2 = gos2.iterator().next();
+                        	CyTableEntry go2 = gos2.iterator().next();
                             if (isNode) { //NODE
-                                matched = matchNode(net1,(Node)go1,net2,(Node)go2);
+                                matched = matchNode(net1,(CyNode)go1,net2,(CyNode)go2);
                             } else {// EDGE
-                                matched = matchEdge(net1,(Edge)go1,net2,(Edge)go2);
+                                matched = matchEdge(net1,(CyEdge)go1,net2,(CyEdge)go2);
                             }
                             if (matched) {
-                                Set<GraphObject> gos1 = matchedGO.get(net1);
+                                Set<CyTableEntry> gos1 = matchedGO.get(net1);
                                 if (gos1==null) {
-                                    gos1 = new HashSet<GraphObject>();
+                                    gos1 = new HashSet<CyTableEntry>();
                                     matchedGO.put(net1, gos1);
                                 }
                                 gos1.add(go1);
@@ -332,8 +333,8 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
                     }
                 }                
                 if (!matched) { //no matched node found, add new map to the list
-                    final Map<CyNetwork,Set<GraphObject>> matchedGO = new HashMap<CyNetwork,Set<GraphObject>>();
-                    Set<GraphObject> gos1 = new HashSet<GraphObject>();
+                    final Map<CyNetwork,Set<CyTableEntry>> matchedGO = new HashMap<CyNetwork,Set<CyTableEntry>>();
+                    Set<CyTableEntry> gos1 = new HashSet<CyTableEntry>();
                     gos1.add(go1);
                     matchedGO.put(net1, gos1);
                     matchedList.add(matchedGO);
@@ -343,10 +344,15 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
             
         }
         
-        updateTaskMonitor("Matching "+(isNode?"nodes":"edges")+" completed",100);
+        updateTaskMonitor("Matching "+(isNode?"nodes":"edges")+" completed",1.0);
         
         return matchedList;
     }
+    
+   
+    
+    
+    
     /**
      * Select nodes for merge according to different op
      *
@@ -359,7 +365,7 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
      * 
      * @return list of matched nodes
      */    
-    protected List<Map<CyNetwork,Set<GraphObject>>> selectMatchedGOList(final List<Map<CyNetwork,Set<GraphObject>>> matchedGOList,
+    protected List<Map<CyNetwork,Set<CyTableEntry>>> selectMatchedGOList(final List<Map<CyNetwork,Set<CyTableEntry>>> matchedGOList,
                                                                           final Operation op, 
                                                                           final List<CyNetwork> networks) {
         if (matchedGOList==null || op==null) {
@@ -371,8 +377,8 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
         if (op==Operation.UNION) {
             return matchedGOList;
         } else if (op==Operation.INTERSECTION) {
-            List<Map<CyNetwork,Set<GraphObject>>> list = new Vector<Map<CyNetwork,Set<GraphObject>>>();
-            for (Map<CyNetwork,Set<GraphObject>> map:matchedGOList) {
+            List<Map<CyNetwork,Set<CyTableEntry>>> list = new Vector<Map<CyNetwork,Set<CyTableEntry>>>();
+            for (Map<CyNetwork,Set<CyTableEntry>> map:matchedGOList) {
                 if (map.size()==nnet) {// if contained in all the networks
                     list.add(map);
                 }
@@ -380,13 +386,13 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
 
             return list;
         } else { //if (op==Operation.DIFFERENCE)
-            List<Map<CyNetwork,Set<GraphObject>>> list = new Vector<Map<CyNetwork,Set<GraphObject>>>();
+            List<Map<CyNetwork,Set<CyTableEntry>>> list = new Vector<Map<CyNetwork,Set<CyTableEntry>>>();
             if (nnet<2) return list;
             
             CyNetwork net1 = networks.get(0);
             CyNetwork net2 = networks.get(1);
             
-            for (Map<CyNetwork,Set<GraphObject>> map:matchedGOList) {
+            for (Map<CyNetwork,Set<CyTableEntry>> map:matchedGOList) {
                 if (map.containsKey(net1)&&!map.containsKey(net2)) {
                     list.add(map);
                 }
@@ -396,10 +402,10 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
         }        
     }
     
-    private void updateTaskMonitor(String status, int percentage) {
+    private void updateTaskMonitor(String status, double percentage) {
         if (this.taskMonitor!=null) {
-            taskMonitor.setStatus(status);
-            taskMonitor.setPercentCompleted(percentage);
+            taskMonitor.setStatusMessage(status);
+            taskMonitor.setProgress(percentage);
         }
     }
 }

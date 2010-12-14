@@ -39,7 +39,7 @@ package org.cytoscape.network.merge.internal;
 
 import java.util.List;
 
-import cytoscape.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 /**
  * Interface of merging networks

@@ -36,10 +36,11 @@
 
 package org.cytoscape.network.merge.internal.model;
 
-import cytoscape.data.CyAttributes;
 
 import java.util.Set;
 import java.util.Map;
+
+import org.cytoscape.model.CyTable;
 
 /**
  * Instore the information how to mapping the attributes 
@@ -53,7 +54,7 @@ public interface AttributeMapping {
      *
      * @return CyAttributes
      */
-    public CyAttributes getCyAttributes();
+    public CyTable getCyAttributes();
 
     /**
      *
@@ -87,14 +88,14 @@ public interface AttributeMapping {
      * @param index
      * @return the ith merged attribute type
      */
-    public byte getMergedAttributeType(int index);
+    public Class<?> getMergedAttributeType(int index);
 
     /**
      *
      * @param mergedAttributeName
      * @return type for attribute mergedAttributeName
      */
-    public byte getMergedAttributeType(String mergedAttributeName);
+    public Class<?> getMergedAttributeType(String mergedAttributeName);
 
     /**
      * Set the ith merged attribute type
@@ -102,7 +103,7 @@ public interface AttributeMapping {
      * @param type
      * @return true if successful; false otherwise
      */
-    public boolean setMergedAttributeType(int index, byte type);
+    public boolean setMergedAttributeType(int index, Class<?> type);
 
     /**
      * Set type for mergedAttributeName
@@ -110,7 +111,7 @@ public interface AttributeMapping {
      * @param type
      * @return true if successful; false otherwise
      */
-    public boolean setMergedAttributeType(String mergedAttributeName, byte type);
+    public boolean setMergedAttributeType(String mergedAttributeName, Class<?> type);
 
     /**
      *
