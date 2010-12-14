@@ -56,13 +56,13 @@ public class CyOperatingContextImpl {
 	public static final String CONFIG_DIR = ".cytoscape";
 	public static final String PROPS = "cytoscape.props";
 
-	private Properties props;
+	private CyProperty<Properties> props;
 
 	public CyOperatingContextImpl(CyProperty<Properties> props) {
 		if ( props == null )
 			throw new NullPointerException("Cytoscape Properties is null");
 
-		this.props = props.getProperties();
+		this.props = props;
 
 		loadLocalProps();
 	}
@@ -72,7 +72,7 @@ public class CyOperatingContextImpl {
             File vmp = getConfigFile(PROPS);
 
             if (vmp != null)
-                props.load(new FileInputStream(vmp));
+                props.getProperties().load(new FileInputStream(vmp));
             else
                 System.out.println("couldn't read " + PROPS + " from " + CONFIG_DIR);
 		} catch (IOException ioe) {
@@ -86,7 +86,7 @@ public class CyOperatingContextImpl {
 	// TODO Should we be returning a copy here to keep thing synchronized or
 	// do we want just one properties object?
 	public Properties getProperties() {
-		return props;
+		return props.getProperties();
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class CyOperatingContextImpl {
 	 */
 	public File getConfigDirectory() {
         try {
-            String dirName = props.getProperty("alternative.config.dir", System.getProperty("user.home"));
+            String dirName = props.getProperties().getProperty("alternative.config.dir", System.getProperty("user.home"));
             File parent_dir = new File(dirName, CONFIG_DIR);
 
             if (parent_dir.mkdir())
