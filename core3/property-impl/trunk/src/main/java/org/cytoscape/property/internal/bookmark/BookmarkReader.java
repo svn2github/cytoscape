@@ -1,19 +1,20 @@
 package org.cytoscape.property.internal.bookmark;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
-
+import org.cytoscape.session.CySession;
+import org.cytoscape.session.events.SessionLoadedEvent;
+import org.cytoscape.session.events.SessionLoadedListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BookmarkReader implements CyProperty<Bookmarks> {
+public class BookmarkReader implements CyProperty<Bookmarks>, SessionLoadedListener {
 
 	private static final String BOOKMARK_PACKAGE = Bookmarks.class.getPackage().getName();
 	private static final Logger logger = LoggerFactory.getLogger(BookmarkReader.class);
@@ -54,5 +55,25 @@ public class BookmarkReader implements CyProperty<Bookmarks> {
 
 	public Bookmarks getProperties() {
 		return bookmarks;
+	}
+
+	@Override
+	public void handleEvent(SessionLoadedEvent e) {
+		logger.debug("Updating bookmarks from loaded session...");
+		
+		Bookmarks newBookmarks = null;
+		CySession sess = e.getLoadedSession();
+		
+		if (sess != null)
+			newBookmarks = sess.getBookmarks();
+		else
+			logger.warn("Loaded session is null.");
+		
+		if (newBookmarks == null) {
+			logger.warn("Could not get new bookmarks from loaded session - using empty bookmarks.");
+			newBookmarks = new Bookmarks();
+		}
+		
+		this.bookmarks = newBookmarks;
 	}
 }

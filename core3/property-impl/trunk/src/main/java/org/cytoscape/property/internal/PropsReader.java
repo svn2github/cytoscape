@@ -1,15 +1,17 @@
 package org.cytoscape.property.internal;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.cytoscape.property.CyProperty;
-
+import org.cytoscape.session.CySession;
+import org.cytoscape.session.events.SessionLoadedEvent;
+import org.cytoscape.session.events.SessionLoadedListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PropsReader implements CyProperty<Properties> {
+public class PropsReader implements CyProperty<Properties>, SessionLoadedListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(PropsReader.class);
 
@@ -44,5 +46,25 @@ public class PropsReader implements CyProperty<Properties> {
 
 	public Properties getProperties() {
 		return props;
+	}
+	
+	@Override
+	public void handleEvent(SessionLoadedEvent e) {
+		logger.debug("Updating Properties from loaded session...");
+		
+		Properties newProps = null;
+		CySession sess = e.getLoadedSession();
+		
+		if (sess != null)
+			newProps = sess.getCytoscapeProperties();
+		else
+			logger.warn("Loaded session is null.");
+		
+		if (newProps == null) {
+			logger.warn("Could not get new properties from loaded session - using empty properties.");
+			newProps = new Properties();
+		}
+		
+		this.props = newProps;
 	}
 }
