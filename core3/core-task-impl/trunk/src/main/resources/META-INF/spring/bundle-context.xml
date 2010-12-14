@@ -181,6 +181,7 @@
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cyNetworkNamingServiceRef" />
 	</bean>
 
 	<bean id="newNetworkSelectedNodesEdgesTaskFactory"

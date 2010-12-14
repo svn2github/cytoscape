@@ -39,6 +39,7 @@ import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
 
 
@@ -49,11 +50,12 @@ public class CloneNetworkTaskFactory extends AbstractNetworkTaskFactory {
     private final CyNetworkFactory netFactory;
     private final CyNetworkViewFactory netViewFactory;
     private final CyApplicationManager appMgr;
+    private final CyNetworkNaming naming;
 
-	public CloneNetworkTaskFactory(final CyNetwork net, final CyNetworkManager networkManager, 
+	public CloneNetworkTaskFactory(final CyNetworkManager networkManager, 
             final CyNetworkViewManager networkViewManager, final VisualMappingManager vmm, 
             final CyNetworkFactory netFactory, final CyNetworkViewFactory netViewFactory, 
-            final CyApplicationManager appMgr)
+            final CyApplicationManager appMgr, final CyNetworkNaming naming)
 	{
 		this.networkManager = networkManager;
 		this.networkViewManager = networkViewManager;
@@ -61,9 +63,10 @@ public class CloneNetworkTaskFactory extends AbstractNetworkTaskFactory {
 		this.netFactory = netFactory;
 		this.netViewFactory = netViewFactory;
 		this.appMgr = appMgr;
+		this.naming = naming;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new CloneNetworkTask(net, networkManager, networkViewManager, vmm, netFactory, netViewFactory, appMgr));
+		return new TaskIterator(new CloneNetworkTask(net, networkManager, networkViewManager, vmm, netFactory, netViewFactory, appMgr, naming));
 	} 
 }

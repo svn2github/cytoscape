@@ -340,7 +340,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Clone Current Network" />
 			<entry key="preferredMenu" value="File.New.Network" />
-			<entry key="enableFor" value="selectedNodesOrEdges" />
+			<entry key="enableFor" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 

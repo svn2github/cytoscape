@@ -40,7 +40,9 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
@@ -60,28 +62,34 @@ public class CloneNetworkTask extends AbstractCreationTask {
     private final CyNetworkFactory netFactory;
     private final CyNetworkViewFactory netViewFactory;
     private final RenderingEngine<CyNetwork> re;
+    private final CyNetworkNaming naming;
 
     public CloneNetworkTask(final CyNetwork net, final CyNetworkManager netmgr, 
     		                final CyNetworkViewManager networkViewManager, final VisualMappingManager vmm, 
     		                final CyNetworkFactory netFactory, final CyNetworkViewFactory netViewFactory, 
-    		                final CyApplicationManager appMgr) {
+    		                final CyApplicationManager appMgr, final CyNetworkNaming naming) {
         super(net, netmgr, networkViewManager);
         this.vmm = vmm;
         this.netFactory = netFactory;
         this.netViewFactory = netViewFactory;
         this.re = appMgr.getCurrentRenderingEngine();
+        this.naming = naming;
     }
 
-    public void run(TaskMonitor e) {
+    public void run(TaskMonitor tm) {
+    	System.out.println("start cloning network");
         CyNetwork newNet = cloneNetwork(net);
+        System.out.println("----- cloning topology");
         CyNetworkView origView = networkViewManager.getNetworkView(net.getSUID());
         networkManager.addNetwork(newNet);
         if ( origView != null ) {
+        	System.out.println("----- cloning visualization");
             CyNetworkView newView = cloneNetworkView(origView,newNet);
             vmm.setVisualStyle(vmm.getVisualStyle(origView), newView );
             networkViewManager.addNetworkView(newView);
             newView.updateView();
         }
+        System.out.println("finished cloning network");
     }
 
     private CyNetworkView cloneNetworkView(CyNetworkView origView, CyNetwork newNet) {
@@ -106,19 +114,29 @@ public class CloneNetworkTask extends AbstractCreationTask {
                     newEdgeView.setLockedValue(vp, origEdgeView.getVisualProperty(vp));
             }
         }
+        
+        return newView;
     }
 
     private CyNetwork cloneNetwork(CyNetwork origNet) {
+    	throw new RuntimeException("uuuuhhh");
+    	System.out.println("enter clone network");
 
         final CyNetwork newNet = netFactory.getInstance();
 
+        System.out.println("cloning columns");
         // copy default columns
         cloneColumns( origNet.getDefaultNodeTable(), newNet.getDefaultNodeTable() );
         cloneColumns( origNet.getDefaultEdgeTable(), newNet.getDefaultEdgeTable() );
         cloneColumns( origNet.getDefaultNetworkTable(), newNet.getDefaultNetworkTable() );
 
+        System.out.println("cloning nodes");
         cloneNodes( origNet, newNet );
+        System.out.println("cloning edges");
         cloneEdges( origNet, newNet );
+        
+        System.out.println("setting names");
+        newNet.set(CyTableEntry.NAME,naming.getSuggestedNetworkTitle(origNet.getCyRow().get(CyTableEntry.NAME, String.class)));
 
         return newNet;
     }
