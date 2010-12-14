@@ -177,6 +177,10 @@
 	      class="org.cytoscape.task.internal.creation.CloneNetworkTaskFactory">
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
+		<constructor-arg ref="visualMappingManagerServiceRef" />
+		<constructor-arg ref="cyNetworkFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<bean id="newNetworkSelectedNodesEdgesTaskFactory"
