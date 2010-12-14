@@ -107,7 +107,6 @@ public class ArrayGraph implements CyRootNetwork {
 		netAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " network", "SUID", Long.class, false));
 
 		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class);
-		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED,Boolean.class);
 		getCyRow().set(CyTableEntry.NAME,"");
 		// potential leak since "this" isn't yet fully constructed
 
@@ -115,8 +114,8 @@ public class ArrayGraph implements CyRootNetwork {
 		nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " node", "SUID", Long.class, true));
 		nodeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " node", "SUID", Long.class, false));
 
-		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class);
-		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED,Boolean.class);
+		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME, String.class);
+		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyNetwork.SELECTED, Boolean.class);
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyNode.NESTED_NETWORK_ATTR, String.class);
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyNode.HAS_NESTED_NETWORK_ATTR, Boolean.class);
 
@@ -125,7 +124,7 @@ public class ArrayGraph implements CyRootNetwork {
 		edgeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " edge", "SUID", Long.class, false));
 
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME, String.class);
-		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.SELECTED, Boolean.class);
+		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyNetwork.SELECTED, Boolean.class);
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyEdge.INTERACTION, String.class);
 		eventHelper = eh;
 

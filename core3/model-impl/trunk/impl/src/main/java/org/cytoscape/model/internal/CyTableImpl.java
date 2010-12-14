@@ -422,8 +422,9 @@ public class CyTableImpl implements CyTable {
 			} else {
 				// TODO this is an implicit addRow - not sure if we want to refactor this or not
 				final Object newValue = columnType.cast(value);
+				final Object oldValue = keyToValueMap.get(key);
 				keyToValueMap.put(key, newValue);
-				addToReverseMap(columnName, key, newValue);
+				addToReverseMap(columnName, key, oldValue, newValue);
 				eventHelper.getMicroListener(
 					RowSetMicroListener.class,
 					getRow(key)).handleRowSet(columnName, newValue);
@@ -433,12 +434,24 @@ public class CyTableImpl implements CyTable {
 					+ types.get(columnName));
 	}
 
-	private void addToReverseMap(final String columnName, final Object key, final Object value) {
+	private void addToReverseMap(final String columnName, final Object key,
+				     final Object oldValue, final Object newValue)
+	{
 		final Map<Object, Set<Object>> valueTokeysMap = reverse.get(columnName);
-		Set<Object> keys = valueTokeysMap.get(value);
+		Set<Object> keys;
+		if (oldValue != null) {
+			keys = valueTokeysMap.get(oldValue);
+			keys.remove(key);
+			if (keys.isEmpty())
+				valueTokeysMap.remove(oldValue);
+			else
+				valueTokeysMap.put(oldValue, keys);
+		}
+
+		keys = valueTokeysMap.get(newValue);
 		if (keys == null) {
 			keys = new HashSet<Object>();
-			valueTokeysMap.put(value, keys);
+			valueTokeysMap.put(newValue, keys);
 		}
 
 		keys.add(key);
@@ -480,9 +493,10 @@ public class CyTableImpl implements CyTable {
 		Map<Object, Object> keyToValueMap = attributes.get(columnName);
 
 		// TODO this is an implicit addRow - not sure if we want to refactor this or not
+		final Object oldValue = keyToValueMap.get(key);
 		keyToValueMap.put(key, value);
 		if (value instanceof List)
-			addToReverseMap(columnName, key, value);
+			addToReverseMap(columnName, key, oldValue, value);
 		eventHelper.getMicroListener(RowSetMicroListener.class,
 					     getRow(key)).handleRowSet(columnName, value);
 	}
