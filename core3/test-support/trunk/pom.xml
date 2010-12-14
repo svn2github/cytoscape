@@ -31,14 +31,14 @@
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>event-api</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>3.0.0-alpha2-SNAPSHOT</version>
       <type>test-jar</type>
     </dependency>
     <!-- the APIs we're supporting - these should remain relatively static -->
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>event-api</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>3.0.0-alpha2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.cytoscape</groupId>
