@@ -77,8 +77,12 @@ public class CySessionManagerImpl implements CySessionManager {
 	private final VisualMappingManager vmMgr;
 	private final VisualStyleSerializer vsSer;
 	private final CyNetworkViewManager nvMgr;
-	private final CyProperty<Properties> props;
+	
+	private final CyProperty<Properties> properties;
 	private final CyProperty<Bookmarks> bookmarks;
+	
+	private Bookmarks defBookmarks;
+	private Properties defProperties;
 	
 	private static final Logger logger = LoggerFactory.getLogger(CySessionManagerImpl.class);
 
@@ -89,18 +93,21 @@ public class CySessionManagerImpl implements CySessionManager {
 			                    VisualStyleSerializer vsSer,
 			                    CyNetworkViewManager nvMgr,
 			                    CyProperty<Properties> props,
-			                    CyProperty<Bookmarks> bookmarks) {logger.debug(">> CySessionManagerImpl <<");
+			                    CyProperty<Bookmarks> bkmarks) {logger.debug(">> CySessionManagerImpl <<");
 		this.cyEventHelper = cyEventHelper;
 		this.netMgr = netMgr;
 		this.tblMgr = tblMgr;
 		this.vmMgr = vmMgr;
 		this.vsSer = vsSer;
 		this.nvMgr = nvMgr;
-		this.props = props;
-		this.bookmarks = bookmarks;
+		this.properties = props;
+		this.bookmarks = bkmarks;
 		
-		logger.debug("PROPS:\n\t"+props.getProperties());
-		logger.debug("BKMARKS:\n\t"+bookmarks.getProperties());
+		setDefaultBookmarks(bkmarks);
+		setDefaultProperties(props);
+		
+		logger.debug("PROPS:\n\t" + props);
+		logger.debug("BKMARKS:\n\t" + bookmarks);
 	}
 	
     public CySession getCurrentSession() {logger.debug(">> CySessionManagerImpl.getCurrentSession...");
@@ -114,8 +121,6 @@ public class CySessionManagerImpl implements CySessionManager {
     	
     	Map<String,List<File>> pluginMap = savingEvent.getPluginFileListMap();
     	
-    	Properties cyProps = props.getProperties();
-    	Bookmarks bkmarks = bookmarks.getProperties();
     	Set<CyTable> tables = tblMgr.getAllTables(true);
     	Set<CyNetworkView> netViews = nvMgr.getNetworkViewSet();
     	
@@ -135,11 +140,11 @@ public class CySessionManagerImpl implements CySessionManager {
     		}
     	}
     	
-    	logger.debug("*** PROPS:\n\t"+cyProps);
-		logger.debug("*** CATEG:\n\t"+bkmarks.getCategory());
+    	Properties props = properties != null ? properties.getProperties() : null;
+    	Bookmarks bkmarks = bookmarks != null ? bookmarks.getProperties() : null;
     	
     	CySession sess = new CySession.Builder()
-    		.cytoscapeProperties(cyProps)
+    		.cytoscapeProperties(props)
     		.bookmarks(bkmarks)
     		.cysession(cysess)
     		.pluginFileListMap(pluginMap)
@@ -163,9 +168,11 @@ public class CySessionManagerImpl implements CySessionManager {
 	    	Properties vmProps = vsSer.createProperties(allStyles);
 			Cysession cysess = new CysessionFactory().createDefaultCysession();
 	    	
+			Properties props = properties != null ? properties.getProperties() : null;
+			
 			sess = new CySession.Builder()
-				.cytoscapeProperties(props.getProperties())
-				.bookmarks(bookmarks.getProperties())
+				.cytoscapeProperties(defProperties)
+				.bookmarks(defBookmarks)
 				.cysession(cysess)
 				.vizmapProperties(vmProps)
 				.build();
@@ -219,12 +226,6 @@ public class CySessionManagerImpl implements CySessionManager {
 				
 				if (vs != null) vmMgr.setVisualStyle(vs, netView);
 			}
-			
-			// TODO: Restore other session properties?
-			// ------------------------------------------------------------------------------
-//			Properties cyProps = sess.getCytoscapeProperties();
-//			Bookmarks bkmarks = sess.getBookmarks();
-//			Cysession cysess = sess.getCysession();
 		}
 		
 		currentSession = sess;
@@ -250,7 +251,16 @@ public class CySessionManagerImpl implements CySessionManager {
 		
 		// TODO: destroy styles?
 		// TODO: destroy unattached tables--how?
-		// TODO: reset session properties?
+	}
+	
+	private void setDefaultBookmarks(CyProperty<Bookmarks> bookmarks) {
+		// TODO: should be a clone of the initial Bookmarks
+		this.defBookmarks = bookmarks != null ? bookmarks.getProperties() : new Bookmarks();
+	}
+	
+	private void setDefaultProperties(CyProperty<Properties> props) {
+		// TODO: should be a clone of the initial Properties
+		this.defProperties = props != null ? props.getProperties() : new Properties();
 	}
 }
 
