@@ -66,7 +66,6 @@ public class BrowserTableModel extends AbstractTableModel
 
 	@Override
 	public Object getValueAt(final int row, final int column) {
-		final Map<String, Class<?>> columnNameToTypeMap = table.getColumnTypeMap();
 		final String columnName = getColumnName(column);
 
 		if (tableHasBooleanSelected) {
@@ -82,9 +81,11 @@ public class BrowserTableModel extends AbstractTableModel
 				++count;
 			}
 
-			if (!cyRow.isSet(columnName, columnNameToTypeMap.get(columnName)))
-				return null;
-			return cyRow.get(columnName, columnNameToTypeMap.get(columnName));
+			// Column 0 is always the primary key:
+			if (column == 0)
+				return cyRow.get(table.getPrimaryKey(), table.getPrimaryKeyType());
+
+			return getValidatedObjectAndEditString(cyRow, columnName);
 		} else {
 			final List primaryKeyValues =
 				table.getColumnValues(table.getPrimaryKey(),
@@ -94,9 +95,25 @@ public class BrowserTableModel extends AbstractTableModel
 			if (column == 0)
 				return primaryKeyValues.get(row);
 
-			return table.getRow(primaryKeyValues.get(row))
-				.get(columnName, columnNameToTypeMap.get(columnName));
+			return getValidatedObjectAndEditString(table.getRow(primaryKeyValues.get(row)),
+							       columnName);
 		}
+	}
+
+	private ValidatedObjectAndEditString getValidatedObjectAndEditString(final CyRow row,
+									     final String columnName)
+	{
+		final Object raw = row.getRaw(columnName);
+		if (raw == null)
+			return null;
+
+		final Map<String, Class<?>> columnNameToTypeMap = table.getColumnTypeMap();
+		final Object cooked = row.get(columnName, columnNameToTypeMap.get(columnName));
+		if (cooked != null)
+			return new ValidatedObjectAndEditString(cooked, raw.toString());
+
+		final String lastInternalError = table.getLastInternalError();
+		return new ValidatedObjectAndEditString(cooked, raw.toString(), lastInternalError);
 	}
 
 	@Override
