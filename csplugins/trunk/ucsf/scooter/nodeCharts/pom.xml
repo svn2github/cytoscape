@@ -60,6 +60,17 @@
 	  <plugin>
         <artifactId>maven-assembly-plugin</artifactId> 
 	  </plugin>
+	  <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-jar-plugin</artifactId> 
+			<configuration>
+				<archive>
+					<manifestEntries>
+						<Cytoscape-Plugin>nodeCharts.NodeCharts</Cytoscape-Plugin>
+					</manifestEntries>
+				</archive>
+			</configuration>
+	  </plugin>
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-compiler-plugin</artifactId>
