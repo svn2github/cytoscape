@@ -10,6 +10,8 @@ package org.cytoscape.property;
  */
 public interface CyProperty<P> {
 
+	public static final String DEFAULT_CONFIG_DIR = ".cytoscape";
+	
 	/**
 	 * Return a property object
 	 * @return A property object of type P.
