@@ -38,6 +38,7 @@ package org.cytoscape.model;
 
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
+import java.util.Map;
 
 
 public abstract class AbstractCyTableManagerTest extends TestCase {
@@ -75,6 +76,20 @@ public abstract class AbstractCyTableManagerTest extends TestCase {
 		assertNull( mgr.getTableMap(CyNode.class,null) );
 		assertNull( mgr.getTableMap(CyEdge.class,null) );
 	}
+
+    public void testTableNetworkMapHasExpectedTables() throws Exception {
+		checkTableMap( mgr.getTableMap(CyNetwork.class, goodNetwork) );
+		checkTableMap( mgr.getTableMap(CyNode.class, goodNetwork) );
+		checkTableMap( mgr.getTableMap(CyEdge.class, goodNetwork) );
+	}
+
+	private void checkTableMap(Map<String,CyTable> tableMap) {
+		// we should have at least the two default, but others may exist
+        assertTrue(tableMap.size() >= 2);
+        assertTrue(tableMap.keySet().contains(CyNetwork.DEFAULT_ATTRS));
+        assertTrue(tableMap.keySet().contains(CyNetwork.HIDDEN_ATTRS));
+	}
+
 /*
 	public void testGetAllTables() {
 	}

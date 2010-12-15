@@ -37,7 +37,7 @@ import java.util.List;
  * multi-graph as multiple edges may exist between nodes. Edges may
  * be directed, undirected, or both.
  */
-public interface CyNetwork extends Identifiable, CyTableEntry {
+public interface CyNetwork extends CyTableEntry {
 	/**
 	 * A boolean column created by default for every CyNode or CyEdge that
 	 * holds the selection state of the entry. 
