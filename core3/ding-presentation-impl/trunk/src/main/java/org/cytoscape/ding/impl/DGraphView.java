@@ -403,22 +403,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		networkModel = view.getModel();
 		cyNetworkView = view;
 
-		// Register this presentation as a service. And this should maintain all children.
-		eventHelper.addMicroListener(this, NetworkViewChangeMicroListener.class, cyNetworkView);
-		eventHelper.addMicroListener(this, NodeViewChangeMicroListener.class, cyNetworkView);
-		eventHelper.addMicroListener(this, EdgeViewChangeMicroListener.class, cyNetworkView);
-
-		logger.debug("Phase 2: service registered: time = "
-				+ (System.currentTimeMillis() - start));
-
 		this.dingLexicon = dingLexicon;
-
 		this.nodeViewTFs = nodeViewTFs;
 		this.edgeViewTFs = edgeViewTFs;
 		this.emptySpaceTFs = emptySpaceTFs;
 		this.dropNodeViewTFs = dropNodeViewTFs;
 		this.dropEmptySpaceTFs = dropEmptySpaceTFs;
-
 		this.manager = manager;
 
 		final CyTable nodeCAM = dataFactory.createTable("node view", "SUID", Long.class, false);
@@ -431,7 +421,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 		// creating empty subnetworks
 		m_drawPersp = cyRoot.convert(networkModel).addSubNetwork();
-
 		m_spacial = spacialFactory.createSpacialIndex2D();
 		m_spacialA = spacialFactory.createSpacialIndex2D();
 		m_nodeDetails = new DNodeDetails(this);
@@ -454,7 +443,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		m_selectedEdges = new IntBTree();
 		m_selectedAnchors = new IntBTree();
 
-		logger.debug("Phase 3: Canvas created: time = "
+		logger.debug("Phase 2: Canvas created: time = "
 				+ (System.currentTimeMillis() - start));
 
 		// from DingNetworkView
@@ -467,6 +456,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		for (CyEdge ee : networkModel.getEdgeList())
 			addEdgeView(ee);
 
+		logger.debug("Phase 3: All views created: time = " + (System.currentTimeMillis() - start));
 		// read in visual properties from view obj
 		// FIXME TODO: this process is not necessary
 		// final Collection<VisualProperty<?>> netVPs =
@@ -476,6 +466,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		// cyNetworkView.getVisualProperty(vp));
 
 		new FlagAndSelectionHandler(this);
+
+		// Register this presentation as listeners 
+		eventHelper.addMicroListener(this, NetworkViewChangeMicroListener.class, cyNetworkView);
+		eventHelper.addMicroListener(this, NodeViewChangeMicroListener.class, cyNetworkView);
+		eventHelper.addMicroListener(this, EdgeViewChangeMicroListener.class, cyNetworkView);
 
 		logger.debug("Phase 4: Everything created: time = " + (System.currentTimeMillis() - start));
 	}
