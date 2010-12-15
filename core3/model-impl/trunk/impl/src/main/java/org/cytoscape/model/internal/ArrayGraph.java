@@ -85,7 +85,7 @@ public class ArrayGraph implements CyRootNetwork {
 	private final List<CySubNetwork> subNetworks;
 	private final CySubNetwork base;
 
-	private CyTableManagerImpl tableMgr;
+	private final CyTableManagerImpl tableMgr;
 	
 
 	/**
@@ -818,6 +818,9 @@ public class ArrayGraph implements CyRootNetwork {
 		final int newId = ++numSubNetworks;
 		final ArraySubGraph sub = new ArraySubGraph(this,newId,eventHelper);
 		subNetworks.add(sub);
+		tableMgr.setTableMap(CyNetwork.class, sub, netAttrMgr);
+		tableMgr.setTableMap(CyNode.class, sub, nodeAttrMgr);
+		tableMgr.setTableMap(CyEdge.class, sub, edgeAttrMgr);
 		return sub;
 	}
 

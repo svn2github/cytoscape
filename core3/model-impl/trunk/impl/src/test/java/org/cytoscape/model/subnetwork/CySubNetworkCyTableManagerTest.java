@@ -25,7 +25,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.model;
+package org.cytoscape.model.subnetwork;
 
 
 import java.util.Map;
@@ -38,20 +38,26 @@ import org.cytoscape.equations.Interpreter;
 import org.cytoscape.equations.internal.interpreter.InterpreterImpl;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.event.DummyCyEventHelper;
+import org.cytoscape.model.AbstractCyTableManagerTest;
 
 import org.junit.Test;
 
-
-public class CyTableManagerTest extends AbstractCyTableManagerTest {
+/**
+ * The purpose of this test is to validate that everything that holds true
+ * for CyNetworks in CyTableManager also holds true for CySubNetworks!
+ */
+public class CySubNetworkCyTableManagerTest extends AbstractCyTableManagerTest {
 	public void setUp() {
 		super.setUp();
 		CyTableManagerImpl mgrImpl = new CyTableManagerImpl();
 		mgr = mgrImpl; 
 		CyEventHelper eh = new DummyCyEventHelper();
 		final Interpreter interpreter = new InterpreterImpl();
-		goodNetwork =
+		ArrayGraph baseNet =
 			new ArrayGraph(eh, mgrImpl,
-				       new CyTableFactoryImpl(eh, mgrImpl, interpreter)).getBaseNetwork();
+				       new CyTableFactoryImpl(eh, mgrImpl, interpreter));
+		// This is a different subnetwork and not "baseNetwork" in ArrayGraph.
+		goodNetwork = baseNet.addSubNetwork(); 
 	}
 
 	public void tearDown() {
