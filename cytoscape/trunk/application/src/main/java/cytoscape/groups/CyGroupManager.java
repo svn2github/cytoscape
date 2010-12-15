@@ -515,7 +515,7 @@ public class CyGroupManager {
 		if (group == null) return;
 
 		// See if we need to remove the current viewer first
-		if (group.getViewer() != null) {
+		if (group.getViewer() != null && !group.getViewer().equals(viewer)) {
 			// get the viewer
 			CyGroupViewer v = (CyGroupViewer) viewerMap.get(group.getViewer());
 			if (groupViewerMap.containsKey(v)) {
@@ -530,12 +530,15 @@ public class CyGroupManager {
 			// get the viewer
 			CyGroupViewer v = viewerMap.get(viewer);
 
-			// create the list if necessary
-			if (!groupViewerMap.containsKey(v))
-				groupViewerMap.put(v, new ArrayList<CyGroup>());
+			// The viewer might already be set (this could just be a notify)
+			if (!viewer.equals(group.getViewer())) {
+				// create the list if necessary
+				if (!groupViewerMap.containsKey(v))
+					groupViewerMap.put(v, new ArrayList<CyGroup>());
 
-			// Add this group to the list
-			groupViewerMap.get(v).add(group);
+				// Add this group to the list
+				groupViewerMap.get(v).add(group);
+			}
 
 			if (notify) {
 				// Make sure we have a view before we notify
