@@ -55,91 +55,31 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.session.CyApplicationManager;
+
+import java.util.Collection;
 
 
-public class NewNetworkSelectedNodesOnlyTask extends AbstractCreationTask {
-	private final CyRootNetworkFactory cyroot;
-	private final CyNetworkViewFactory cnvf;
-	private final VisualMappingManager vmm;
-	private final CyNetworkNaming cyNetworkNaming;
+public class NewNetworkSelectedNodesOnlyTask extends AbstractNetworkFromSelectionTask {
 
 	public NewNetworkSelectedNodesOnlyTask(final CyNetwork net, final CyRootNetworkFactory cyroot,
 					       final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
 					       final CyNetworkViewManager networkViewManager,
 					       final CyNetworkNaming cyNetworkNaming,
-					       final VisualMappingManager vmm)
+					       final VisualMappingManager vmm, final CyApplicationManager appMgr)
 	{
-		super(net, netmgr, networkViewManager);
-		this.cyroot = cyroot;
-		this.cnvf = cnvf;
-		this.cyNetworkNaming = cyNetworkNaming;
-		this.vmm = vmm;
+		super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, appMgr);
 	}
 
-	public void run(TaskMonitor tm) {
-
-		CyNetwork current_network = net; 
-
-		if (current_network == null)
-			return;
-
-		CyNetworkView current_network_view = null;
-
-		if (networkViewManager.viewExists(current_network.getSUID())) {
-			current_network_view = networkViewManager.getNetworkView(current_network
-					.getSUID());
-		}
-
-		List<CyNode> nodes = CyTableUtil.getNodesInState(current_network,
-				"selected", true);
-
+	Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes) {
 		Set<CyEdge> edges = new HashSet<CyEdge>();
-
-		for (CyNode n1 : nodes) {
-			for (CyNode n2 : nodes) {
-				edges.addAll(current_network.getConnectingEdgeList(n1, n2,
-						CyEdge.Type.ANY));
+		for ( int i = 0; i < nodes.size(); i++ ) {
+			CyNode n1 = nodes.get(i);
+			for ( int j = i+1; j < nodes.size(); j++ ) {
+				CyNode n2 = nodes.get(j);
+				edges.addAll(netx.getConnectingEdgeList(n1, n2, CyEdge.Type.ANY));
 			}
 		}
-
-		final CySubNetwork new_network = cyroot.convert(current_network).addSubNetwork();
-		for ( CyNode n1 : nodes )
-			new_network.addNode(n1);
-		for ( CyEdge e1 : edges )
-			new_network.addEdge(e1);
-
-		new_network.getCyRow().set("name",
-				cyNetworkNaming.getSuggestedSubnetworkTitle(current_network));
-
-		networkManager.addNetwork(new_network);
-		
-		
-		CyNetworkView new_view = cnvf.getNetworkView(new_network);
-
-		if (new_view == null)
-			return;
-
-		networkViewManager.addNetworkView(new_view);
-		
-		String vsName = "default";
-
-		// keep the node positions
-		if (current_network_view != null) {
-			for (CyNode node : new_network.getNodeList()) {
-				View<CyNode> nv = new_view.getNodeView(node);
-				nv.setVisualProperty(NODE_X_LOCATION, current_network_view
-						.getNodeView(node).getVisualProperty(NODE_X_LOCATION));
-				nv.setVisualProperty(NODE_Y_LOCATION, current_network_view
-						.getNodeView(node).getVisualProperty(NODE_Y_LOCATION));
-			}
-
-			// Always move the view port to the selected nodes.
-			new_view.fitContent();
-
-			// Set visual style
-			VisualStyle newVS = vmm.getVisualStyle(current_network_view);
-			if (newVS != null)
-				vmm.setVisualStyle(newVS, new_view);
-		}
+		return edges;
 	}
 }

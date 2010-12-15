@@ -33,69 +33,36 @@ package org.cytoscape.task.internal.creation;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.session.CyApplicationManager;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.view.model.CyNetworkView;
-//import org.cytoscape.vizmap.VisualMappingManager;
-//import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
 import java.util.Set;
 import java.util.List;
+import java.util.Collection;
 
 
-public class NewNetworkSelectedNodesEdgesTask extends AbstractCreationTask {
-	public NewNetworkSelectedNodesEdgesTask(CyNetwork net, CyNetworkManager netmgr,
-						final CyNetworkViewManager networkViewManager)
-	{
-		super(net, netmgr, networkViewManager);
-	}
+public class NewNetworkSelectedNodesEdgesTask extends AbstractNetworkFromSelectionTask {
 
-	public void run(TaskMonitor tm) {
-		//TODO
-		System.out.println("NOT implemented");
-		/*
-        CyNetwork current_network = net; 
-        CyNetworkView current_network_view = netmgr.getNetworkView(net.getSUID());
+    public NewNetworkSelectedNodesEdgesTask(final CyNetwork net, final CyRootNetworkFactory cyroot,
+                           final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
+                           final CyNetworkViewManager networkViewManager,
+                           final CyNetworkNaming cyNetworkNaming,
+                           final VisualMappingManager vmm, final CyApplicationManager appMgr)
+    {
+        super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, appMgr); 
+    }
 
-		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
-			return;
-
-		List<CyNode> nodes = CyTableUtil.getNodesInState(current_network,"selected",true); 
-		List<CyEdge> edges = CyTableUtil.getEdgesInState(current_network,"selected",true); 
-
-		CyNetwork new_network = Cytoscape.createNetwork(nodes, edges,
-		                                                CyNetworkNaming.getSuggestedSubnetworkTitle(current_network, netmgr),
-		                                                current_network);
-
-		String title = " selection";
-		CyNetworkView new_network_view = Cytoscape.createNetworkView(new_network, title);
-        
-        String vsName = "default";
-        
-        // keep the node positions
-        VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-        if (current_network_view != Cytoscape.getNullNetworkView()) {
-			for ( CyNode node : new_network.getNodeList() ) {
-                new_network_view.getNodeView(node)
-                        .setOffset(current_network_view.getNodeView(node).getXPosition(),
-                                   current_network_view.getNodeView(node).getYPosition());
-            }
-
-            new_network_view.fitContent();
-
-            // Set visual style
-            VisualStyle newVS = vmm.getVisualStyleForView( current_network_view );
-
-            if (newVS != null) {
-                vsName = newVS.getName();
-            }
-        }
-        vmm.setVisualStyle(vsName);
-		*/
+	Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes) {
+		return CyTableUtil.getEdgesInState(netx,"selected",true);
 	}
 }

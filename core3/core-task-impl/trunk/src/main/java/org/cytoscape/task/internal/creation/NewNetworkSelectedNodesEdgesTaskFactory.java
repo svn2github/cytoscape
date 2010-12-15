@@ -30,24 +30,45 @@
 package org.cytoscape.task.internal.creation;  
 
 
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.task.AbstractNetworkTaskFactory;
 
 
 public class NewNetworkSelectedNodesEdgesTaskFactory extends AbstractNetworkTaskFactory {
-	private final CyNetworkManager netmgr;
-	private final CyNetworkViewManager networkViewManager;
 
-	public NewNetworkSelectedNodesEdgesTaskFactory(final CyNetworkManager netmgr,
-						       final CyNetworkViewManager networkViewManager) {
-		this.netmgr = netmgr;
-		this.networkViewManager = networkViewManager;
-	}
+    private CyNetworkManager netmgr;
+    private final CyNetworkViewManager networkViewManager;
+    private CyRootNetworkFactory crnf;
+    private CyNetworkViewFactory cnvf;
+    private CyNetworkNaming naming;
+    private VisualMappingManager vmm;
+    private CyApplicationManager appMgr;
 
-	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new NewNetworkSelectedNodesEdgesTask(net, netmgr, networkViewManager));
-	} 
+    public NewNetworkSelectedNodesEdgesTaskFactory(CyRootNetworkFactory crnf,
+                              CyNetworkViewFactory cnvf, CyNetworkManager netmgr,
+                              final CyNetworkViewManager networkViewManager,
+                              CyNetworkNaming naming, VisualMappingManager vmm,
+							  CyApplicationManager appMgr)
+    {
+        this.netmgr = netmgr;
+        this.networkViewManager = networkViewManager;
+        this.crnf = crnf;
+        this.cnvf = cnvf;
+        this.naming = naming;
+        this.vmm = vmm;
+		this.appMgr = appMgr;
+    }
+
+    public TaskIterator getTaskIterator() {
+        return new TaskIterator(new NewNetworkSelectedNodesEdgesTask(net,crnf, cnvf, netmgr, networkViewManager, naming, vmm, appMgr));
+    }
+
 }

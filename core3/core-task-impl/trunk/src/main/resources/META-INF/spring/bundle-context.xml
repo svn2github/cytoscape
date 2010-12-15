@@ -186,8 +186,13 @@
 
 	<bean id="newNetworkSelectedNodesEdgesTaskFactory"
 	      class="org.cytoscape.task.internal.creation.NewNetworkSelectedNodesEdgesTaskFactory">
+		<constructor-arg ref="cyRootNetworkFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
+		<constructor-arg ref="cyNetworkNamingServiceRef" />
+		<constructor-arg ref="visualMappingManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<bean id="newNetworkSelectedNodesOnlyTaskFactory"
@@ -198,6 +203,7 @@
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 		<constructor-arg ref="visualMappingManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<!-- destruction -->
