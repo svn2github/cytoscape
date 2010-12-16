@@ -562,9 +562,9 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 					- graphView.m_extentsBuff[0];
 			final double h = ((double) yMax) - yMin;
 
-			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
-					&& (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
-				setShape(NodeShape.RECT);
+//			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
+//					&& (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
+//				setShape(NodeShape.RECT);
 
 			graphView.m_contentChanged = true;
 
@@ -1060,32 +1060,32 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 		}
 	}
 
-	/**
-	 * Adds a custom graphic, <EM>in draw order</EM>, to this DNodeView in a
-	 * thread-safe way. This is a convenience method that is equivalent to
-	 * calling: <CODE>
-	 *   addCustomGraphic (new CustomGraphic (shape,paint,anchor))
-	 * </CODE> except the the new CustomGraphic created is returned.
-	 *
-	 * @param shape
-	 * @param paint
-	 * @param anchor
-	 *            The int value from NodeDetails, that defines where the graphic
-	 *            anchor point lies on this DNodeView's extents rectangle. A
-	 *            common anchor is NodeDetails.ANCHOR_CENTER.
-	 * @since Cytoscape 2.6
-	 * @throws IllegalArgumentException
-	 *             if shape or paint are null or anchor is not in the range 0 <=
-	 *             anchor <= NodeDetails.MAX_ANCHOR_VAL.
-	 * @return The CustomGraphic added to this DNodeView.
-	 * @see #addCustomGraphic(CustomGraphic)
-	 * @see org.cytoscape.graph.render.stateful.CustomGraphic
-	 */
-	public CustomGraphic addCustomGraphic(Shape shape, Paint paint, int anchor) {
-		CustomGraphic cg = new CustomGraphic(shape, paint, anchor);
-		addCustomGraphic(cg);
-		return cg;
-	}
+//	/**
+//	 * Adds a custom graphic, <EM>in draw order</EM>, to this DNodeView in a
+//	 * thread-safe way. This is a convenience method that is equivalent to
+//	 * calling: <CODE>
+//	 *   addCustomGraphic (new CustomGraphic (shape,paint,anchor))
+//	 * </CODE> except the the new CustomGraphic created is returned.
+//	 *
+//	 * @param shape
+//	 * @param paint
+//	 * @param anchor
+//	 *            The int value from NodeDetails, that defines where the graphic
+//	 *            anchor point lies on this DNodeView's extents rectangle. A
+//	 *            common anchor is NodeDetails.ANCHOR_CENTER.
+//	 * @since Cytoscape 2.6
+//	 * @throws IllegalArgumentException
+//	 *             if shape or paint are null or anchor is not in the range 0 <=
+//	 *             anchor <= NodeDetails.MAX_ANCHOR_VAL.
+//	 * @return The CustomGraphic added to this DNodeView.
+//	 * @see #addCustomGraphic(CustomGraphic)
+//	 * @see org.cytoscape.graph.render.stateful.CustomGraphic
+//	 */
+//	public CustomGraphic addCustomGraphic(Shape shape, Paint paint, int anchor) {
+//		CustomGraphic cg = new CustomGraphic(shape, paint, anchor);
+//		addCustomGraphic(cg);
+//		return cg;
+//	}
 
 	/**
 	 * Adds a given CustomGraphic, <EM>in draw order</EM>, to this DNodeView in
