@@ -297,4 +297,8 @@
 	<bean id="tunablesTestTaskFactory3"
 	      class="org.cytoscape.task.internal.tests.tunables.TunablesTestTaskFactory3">
 	</bean>
+
+	<bean id="infiniteTaskFactory"
+	      class="org.cytoscape.task.internal.tests.InfiniteTaskFactory">
+	</bean>
 </beans>

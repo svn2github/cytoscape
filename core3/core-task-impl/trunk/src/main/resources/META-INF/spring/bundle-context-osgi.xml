@@ -527,4 +527,12 @@
 			<entry key="cytoPanelComponentTitle" value="Complex Tunable Test" />
 		</osgi:service-properties>
 	</osgi:service>
+
+	<osgi:service id="infiniteTaskFactoryService" ref="infiniteTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Infinite Test..." />
+			<entry key="preferredMenu" value="Help" />
+		</osgi:service-properties>
+	</osgi:service>
 </beans>
