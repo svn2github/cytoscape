@@ -81,9 +81,6 @@ public class CySessionManagerImpl implements CySessionManager {
 	private final CyProperty<Properties> properties;
 	private final CyProperty<Bookmarks> bookmarks;
 	
-	private Bookmarks defBookmarks;
-	private Properties defProperties;
-	
 	private static final Logger logger = LoggerFactory.getLogger(CySessionManagerImpl.class);
 
 	public CySessionManagerImpl(CyEventHelper cyEventHelper,
@@ -93,7 +90,7 @@ public class CySessionManagerImpl implements CySessionManager {
 			                    VisualStyleSerializer vsSer,
 			                    CyNetworkViewManager nvMgr,
 			                    CyProperty<Properties> props,
-			                    CyProperty<Bookmarks> bkmarks) {logger.debug(">> CySessionManagerImpl <<");
+			                    CyProperty<Bookmarks> bkmarks) {
 		this.cyEventHelper = cyEventHelper;
 		this.netMgr = netMgr;
 		this.tblMgr = tblMgr;
@@ -102,15 +99,9 @@ public class CySessionManagerImpl implements CySessionManager {
 		this.nvMgr = nvMgr;
 		this.properties = props;
 		this.bookmarks = bkmarks;
-		
-		setDefaultBookmarks(bkmarks);
-		setDefaultProperties(props);
-		
-		logger.debug("PROPS:\n\t" + props);
-		logger.debug("BKMARKS:\n\t" + bookmarks);
 	}
 	
-    public CySession getCurrentSession() {logger.debug(">> CySessionManagerImpl.getCurrentSession...");
+    public CySession getCurrentSession() {
     	// Plugins who want to save anything to a session will have to listen for this event
     	// and will then be responsible for adding files through SessionAboutToBeSavedEvent.addPluginFiles(..)
     	SessionAboutToBeSavedEvent savingEvent = new SessionAboutToBeSavedEvent(this);
@@ -157,7 +148,7 @@ public class CySessionManagerImpl implements CySessionManager {
 		return sess;
     }
     
-    public void setCurrentSession(CySession sess, String fileName) {logger.debug(">> CySessionManagerImpl.setCurrentSession...");
+    public void setCurrentSession(CySession sess, String fileName) {
     	// Always remove the current session first
 		disposeCurrentSession();
 		logger.debug("Current session :: " + currentSession);
@@ -168,11 +159,14 @@ public class CySessionManagerImpl implements CySessionManager {
 	    	Properties vmProps = vsSer.createProperties(allStyles);
 			Cysession cysess = new CysessionFactory().createDefaultCysession();
 	    	
-			Properties props = properties != null ? properties.getProperties() : null;
+			// TODO: set default properties again
+			Properties props = properties != null ? properties.getProperties() : new Properties();
+			// TODO: set default bookmarks again
+			Bookmarks bkmarks = bookmarks != null ? bookmarks.getProperties() : new Bookmarks();
 			
 			sess = new CySession.Builder()
-				.cytoscapeProperties(defProperties)
-				.bookmarks(defBookmarks)
+				.cytoscapeProperties(props)
+				.bookmarks(bkmarks)
 				.cysession(cysess)
 				.vizmapProperties(vmProps)
 				.build();
@@ -251,16 +245,6 @@ public class CySessionManagerImpl implements CySessionManager {
 		
 		// TODO: destroy styles?
 		// TODO: destroy unattached tables--how?
-	}
-	
-	private void setDefaultBookmarks(CyProperty<Bookmarks> bookmarks) {
-		// TODO: should be a clone of the initial Bookmarks
-		this.defBookmarks = bookmarks != null ? bookmarks.getProperties() : new Bookmarks();
-	}
-	
-	private void setDefaultProperties(CyProperty<Properties> props) {
-		// TODO: should be a clone of the initial Properties
-		this.defProperties = props != null ? props.getProperties() : new Properties();
 	}
 }
 
