@@ -462,7 +462,7 @@ public class CytoscapeSessionReader {
 		}
 		
 		// Restore NON-image graphics
-		System.out.println("Need to restore non-image graphics: " + imageProps.size());
+		logger.debug("Need to restore non-image graphics: " + imageProps.size());
 		
 		//TODO: Fix vector images
 		restoreNonImageGraphics(imageProps, manager);
@@ -478,9 +478,9 @@ public class CytoscapeSessionReader {
 		for(Object key:imageProps.keySet()) {
 			final String value = imageProps.getProperty(key.toString());
 			
-			System.out.println("Key = " + key +", val = " + value);
+			logger.debug("Key = " + key +", val = " + value);
 			final CyCustomGraphics cg = parser.parseStringValue(imageProps.getProperty(key.toString()));
-			System.out.println("CG result = " + cg);
+			logger.debug("CG result = " + cg);
 			if(cg != null)
 				manager.addGraphics(cg, null);
 		}
@@ -887,6 +887,18 @@ public class CytoscapeSessionReader {
 		URL targetNetworkURL;
 		CyNetworkView curNetView;
 
+		// Get the current state of the vsbSwitch
+		Properties prop = CytoscapeInit.getProperties();
+		String vsbSwitch = prop.getProperty("visualStyleBuilder");
+		// Since we're reading a session (which already has visual
+		// styles defined) force the vsbSwitch off
+		prop.setProperty("visualStyleBuilder", "off");
+
+		// Since we know what views the user want's created, let's disable
+		// the viewThreshold for now
+		String viewThreshold = prop.getProperty("viewThreshold");
+		prop.setProperty("viewThreshold", Integer.toString(Integer.MAX_VALUE));
+
 		for (int i = 0; i < numChildren; i++) {
 			child = children.get(i);
 			childNet = netMap.get(child.getId());
@@ -907,15 +919,6 @@ public class CytoscapeSessionReader {
 			CyNetwork new_network = null;
 			JarURLConnection jarConnection = null;
 			XGMMLReader reader = null;
-			Properties prop;
-			String vsbSwitch = null;
-
-			// Get the current state of the vsbSwitch
-			prop = CytoscapeInit.getProperties();
-			vsbSwitch = prop.getProperty("visualStyleBuilder");
-			// Since we're reading a session (which already has visual
-			// styles defined) force the vsbSwitch off
-			prop.setProperty("visualStyleBuilder", "off");
 
 			jarConnection = (JarURLConnection) targetNetworkURL
 					.openConnection();
@@ -925,8 +928,31 @@ public class CytoscapeSessionReader {
 					networkStream = (InputStream) jarConnection.getContent();
 
 					reader = new XGMMLReader(networkStream);
-					new_network = Cytoscape
-							.createNetwork(reader, false, parent);
+					if (childNet.isViewAvailable()) {
+						new_network = Cytoscape.createNetwork(reader, true, parent);
+						curNetView = Cytoscape.getNetworkView(new_network.getIdentifier());
+						if (curNetView != null) {
+							// Set visual style
+							String vsName = childNet.getVisualStyle();
+							if (vsName == null) {
+								vsName = "default";
+							}
+							lastVSName = vsName;
+
+							// logger.debug("createNetworkView "+new_network.getIdentifier()+": "
+							// + (System.currentTimeMillis() - start) + " msec.");
+							curNetView.setVisualStyle(vsName);
+
+							Cytoscape.getVisualMappingManager().setNetworkView(curNetView);
+							Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+
+							// Set hidden nodes + edges
+							setHiddenNodes(curNetView, (HiddenNodes) childNet.getHiddenNodes());
+							setHiddenEdges(curNetView, (HiddenEdges) childNet.getHiddenEdges());
+						}
+					} else {
+						new_network = Cytoscape.createNetwork(reader, false, parent);
+					}
 				} finally {
 					if (networkStream != null)
 						networkStream.close();
@@ -943,11 +969,6 @@ public class CytoscapeSessionReader {
 					walkTree(childNet, new_network, sessionSource);
 				continue;
 			}
-			// Restore the original state of the vsbSwitch
-			if (vsbSwitch != null)
-				prop.setProperty("visualStyleBuilder", vsbSwitch);
-			else
-				prop.remove("visualStyleBuilder");
 
 			if ((taskMonitor != null) && (networkCounter >= 20)) {
 				netIndex++;
@@ -962,52 +983,29 @@ public class CytoscapeSessionReader {
 
 				networkList.add(new_network.getIdentifier());
 
-				// Execute if view is available.
-				if (childNet.isViewAvailable()) {
-					// Set visual style
-					String vsName = childNet.getVisualStyle();
-
-					if (vsName == null) {
-						vsName = "default";
-					}
-
-					lastVSName = vsName;
-
-					curNetView = Cytoscape
-							.createNetworkView(new_network, new_network
-									.getTitle(), reader.getLayoutAlgorithm());
-
-					// logger.debug("createNetworkView "+new_network.getIdentifier()+": "
-					// + (System.currentTimeMillis() - start) + " msec.");
-					curNetView.setVisualStyle(vsName);
-
-					Cytoscape.getVisualMappingManager().setNetworkView(
-							curNetView);
-					Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
-
-					// logger.debug("setVisualStyle stuff "+new_network.getIdentifier()+": "
-					// + (System.currentTimeMillis() - start) + " msec.");
-					reader.doPostProcessing(new_network);
-					// logger.debug("doPostProcessing "+new_network.getIdentifier()+": "
-					// + (System.currentTimeMillis() - start) + " msec.");
-
-					// Set hidden nodes + edges
-					setHiddenNodes(curNetView, (HiddenNodes) childNet
-							.getHiddenNodes());
-					setHiddenEdges(curNetView, (HiddenEdges) childNet
-							.getHiddenEdges());
-				}
-
-				setSelectedNodes(new_network, (SelectedNodes) childNet
-						.getSelectedNodes());
-				setSelectedEdges(new_network, (SelectedEdges) childNet
-						.getSelectedEdges());
-
-				// Load child networks
-				if (childNet.getChild().size() != 0)
-					walkTree(childNet, new_network, sessionSource);
 			}
+
+			setSelectedNodes(new_network, (SelectedNodes) childNet
+					.getSelectedNodes());
+			setSelectedEdges(new_network, (SelectedEdges) childNet
+					.getSelectedEdges());
+
+			// Load child networks
+			if (childNet.getChild().size() != 0)
+				walkTree(childNet, new_network, sessionSource);
 		}
+
+		// Restore the original state of the vsbSwitch
+		if (vsbSwitch != null)
+			prop.setProperty("visualStyleBuilder", vsbSwitch);
+		else
+			prop.remove("visualStyleBuilder");
+
+		// Restore the original state of the viewThreshold
+		if (viewThreshold != null)
+			prop.setProperty("viewThreshold", viewThreshold);
+		else
+			prop.remove("viewThreshold");
 	}
 
 	private void setSelectedNodes(final CyNetwork network,

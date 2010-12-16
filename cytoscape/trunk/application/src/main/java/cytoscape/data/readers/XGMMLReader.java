@@ -80,6 +80,7 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.writers.XGMMLWriter;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
+import cytoscape.groups.CyGroupViewer;
 import cytoscape.layout.LayoutAdapter;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.task.TaskMonitor;
@@ -379,7 +380,6 @@ public class XGMMLReader extends AbstractGraphReader {
 	public CyLayoutAlgorithm getLayoutAlgorithm() {
 		return new LayoutAdapter() {
 			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
-				
 				// Set 'networkView' as currentView, so that 
 				//the VisualStyle created for this view will be applied to this 'networkView' only
 				if (networkView != null && networkView.getIdentifier() != null){
@@ -440,15 +440,17 @@ public class XGMMLReader extends AbstractGraphReader {
 		for (CyNode node : nodeGraphicsMap.keySet()) {
 			view = myView.getNodeView(node.getRootGraphIndex());
 
-			if ((label != null) && (view != null)) {
-				view.getLabel().setText(label);
-			} else if (view != null) {
-				view.getLabel().setText("node(" + tempid + ")");
-				tempid++;
-			}
+			if (view != null) {
+				if (label != null) {
+					view.getLabel().setText(label);
+				} else {
+					view.getLabel().setText("node(" + tempid + ")");
+					tempid++;
+				}
 
-			if ((nodeGraphicsMap != null) && (view != null)) {
-				layoutNodeGraphics(nodeGraphicsMap.get(node), view, graphStyle, buildStyle);
+				if (nodeGraphicsMap != null) {
+					layoutNodeGraphics(nodeGraphicsMap.get(node), view, graphStyle, buildStyle);
+				}
 			}
 		}
 	}
@@ -696,6 +698,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			for (CyNode groupNode : groupMap.keySet()) {
 				List<CyNode> childList = groupMap.get(groupNode);
 				viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(), CyGroup.GROUP_VIEWER_ATTR);
+				CyGroupViewer groupViewer = CyGroupManager.getGroupViewer(viewer);
 				boolean isLocal = false;
 				if (nodeAttributes.hasAttribute(groupNode.getIdentifier(), CyGroup.GROUP_LOCAL_ATTR))
 					isLocal = nodeAttributes.getBooleanAttribute(groupNode.getIdentifier(), CyGroup.GROUP_LOCAL_ATTR);
@@ -714,6 +717,7 @@ public class XGMMLReader extends AbstractGraphReader {
 				if (view == null || view == Cytoscape.getNullNetworkView()) {
 					// No, just create the group, but don't assign a viewer
 					newGroup = CyGroupManager.createGroup(groupNode, childList, null, groupNetwork);
+					network.hideNode(groupNode);
 				} else {
 					// Yes, see if the group already exists
 					newGroup = CyGroupManager.getCyGroup(groupNode);
@@ -724,10 +728,12 @@ public class XGMMLReader extends AbstractGraphReader {
 						// Either the group doesn't have a viewer or it has a different viewer -- change it
 						CyGroupManager.setGroupViewer(newGroup, viewer, view, false);
 					}
+					// If the group viewer isn't loaded, we need to hide the group node -- otherwise,
+					// we let the group viewer handle it
+					if (groupViewer == null)
+						network.hideNode(groupNode);
 				}
 			}
-			// Hide all of the group nodes.
-			network.hideNodes(new ArrayList<CyNode>(groupMap.keySet()));
 
 			// If we have a view, notify the group viewer
 			if (view != null && view != Cytoscape.getNullNetworkView()) {

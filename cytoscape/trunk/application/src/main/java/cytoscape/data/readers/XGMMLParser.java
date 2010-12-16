@@ -152,6 +152,10 @@ class XGMMLParser extends DefaultHandler {
 	private HashMap<String,CyNode> idMap = null;
 	/* Map of group nodes to children */
 	private HashMap<CyNode,List<CyNode>> groupMap = null;
+	/* List of nodes we weren't able to resolve */
+	private HashMap<CyNode, CyEdge> unresolvedNodeMap = null;
+	/* List of edges we weren't able to resolve */
+	private HashMap<CyEdge, CyNode[]> unresolvedEdgeMap = null;
 
 	// Groups might actually recurse on us, so we need to
 	// maintain a stack
@@ -506,11 +510,13 @@ class XGMMLParser extends DefaultHandler {
 		groupStack = new Stack<CyNode>();
 		nodeList = new ArrayList<CyNode>();
 		edgeList = new ArrayList<CyEdge>();
-		nodeLinks = new HashMap();
-		nodeGraphicsMap = new HashMap();
-		edgeGraphicsMap = new HashMap();
-		idMap = new HashMap();
+		nodeLinks = new HashMap<CyNode,List<String>>();
+		nodeGraphicsMap = new HashMap<CyNode, Attributes>();
+		edgeGraphicsMap = new HashMap<CyEdge, Attributes>();
+		idMap = new HashMap<String,CyNode>();
 		eqnAttrTracker = Cytoscape.getEqnAttrTracker();
+		unresolvedNodeMap = new HashMap<CyNode,CyEdge>();
+		unresolvedEdgeMap = new HashMap<CyEdge,CyNode[]>();
 	}
 
 
@@ -768,6 +774,20 @@ class XGMMLParser extends DefaultHandler {
 					}
 				}
 			}
+
+			// Finally, if we have any unresolved edges or nodes, remove them from the root graph
+			for (CyEdge edge: unresolvedEdgeMap.keySet()) {
+				logger.warning("Warning: one of the nodes for edge '"+edge.getIdentifier()+"' is missing: "+
+				               "skipping this edge");
+				Cytoscape.getRootGraph().removeEdge(edge.getRootGraphIndex());
+			}
+			unresolvedEdgeMap.clear();
+
+			for (CyNode node: unresolvedNodeMap.keySet()) {
+				Cytoscape.getRootGraph().removeNode(node.getRootGraphIndex());
+			}
+			unresolvedNodeMap.clear();
+
 			return current;
 		}
 	}
@@ -906,7 +926,7 @@ class XGMMLParser extends DefaultHandler {
 			int interactionStart = label.indexOf(" (");
 			int interactionEnd = label.lastIndexOf(") ");
 			if (interactionStart != -1 && interactionEnd != -1) {
-				sourceAlias = label.substring(0, interactionStart-1);
+				sourceAlias = label.substring(0, interactionStart);
 				if (sourceAlias.length() > 0) sourceAlias = sourceAlias.trim();
 
 				interaction = label.substring(interactionStart+2, interactionEnd);
@@ -1011,8 +1031,8 @@ class XGMMLParser extends DefaultHandler {
 
 			if (idMap.containsKey(id)) {
 				CyNode node = idMap.get(id);
-				List<CyNode>nodeList = groupMap.get(currentGroupNode);
-				nodeList.add(node);
+				List<CyNode>groupNodeList = groupMap.get(currentGroupNode);
+				groupNodeList.add(node);
 			} else {
 				// Remember it for later -- we'll fix this up in HandleGraphDone
 				if (!nodeLinks.containsKey(currentGroupNode)) {
@@ -1130,6 +1150,7 @@ class XGMMLParser extends DefaultHandler {
 				currentGroupNode = groupStack.pop();
 			else
 				currentGroupNode = null;
+
 			return current;
 		}
 	}
@@ -1587,6 +1608,20 @@ class XGMMLParser extends DefaultHandler {
 		CyNode node = Cytoscape.getCyNode(label, true);
 		// logger.debug("Created new node("+label+") id="+node.getRootGraphIndex());
 
+		// This may have already been created (for example for a group outer edge.  If
+		// so, we want to remove it from the list.  If both nodes for an edge have been
+		// removed from the list, add the edge to our edges list
+		if (unresolvedNodeMap.containsKey(node)) {
+			CyEdge edge = unresolvedNodeMap.get(node);
+			unresolvedNodeMap.remove(node);
+			CyNode nodes[] = unresolvedEdgeMap.get(edge);
+			if (!unresolvedNodeMap.containsKey(nodes[0]) &&
+			    !unresolvedNodeMap.containsKey(nodes[1])) {
+				edgeList.add(edge);
+				unresolvedEdgeMap.remove(edge);
+			}
+		}
+
 		// Add it our indices
 		nodeList.add(node);
 		// logger.debug("Adding node "+node.getIdentifier()+"("+id+") to map");
@@ -1605,21 +1640,35 @@ class XGMMLParser extends DefaultHandler {
 
 
 	private CyEdge createEdge (String source, String target, String interaction, String label) {
+		CyNode targetNode = Cytoscape.getCyNode(target, false);
+		CyNode sourceNode = Cytoscape.getCyNode(source, false);
+		boolean haveTarget = (targetNode != null);
+		boolean haveSource = (sourceNode != null);
+	
 		// Make sure the target and destination nodes exist
-		if (Cytoscape.getCyNode(source, false) == null) {
-			String warn = "Warning: skipping edge "+label+"\n";
-			warn += "         node "+source+" doesn't exist";
-			logger.warn(warn);
-			return null;
+		if (!haveSource) {
+			// We don't have this node, yet, so go ahead and created it
+			sourceNode = Cytoscape.getCyNode(source, true);
 		}
-		if (Cytoscape.getCyNode(target, false) == null) {
-			String warn = "Warning: skipping edge "+label+"\n";
-			warn += "         node "+target+" doesn't exist";
-			logger.warn(warn);
-			return null;
+
+		if (!haveTarget) {
+			targetNode = Cytoscape.getCyNode(target, true);
 		}
-		CyEdge edge =  Cytoscape.getCyEdge(source, label, target, interaction);
-		edgeList.add(edge);
+
+		// Create the edge
+		CyEdge edge =  Cytoscape.getCyEdge(sourceNode, targetNode, Semantics.INTERACTION, interaction, true, true);
+		if (haveTarget && haveSource)
+			edgeList.add(edge);
+		else {
+			CyNode[] nodes = new CyNode[2];
+			if (!haveTarget)
+				unresolvedNodeMap.put(targetNode, edge);
+			if (!haveSource)
+				unresolvedNodeMap.put(sourceNode, edge);
+			nodes[0] = sourceNode;
+			nodes[1] = targetNode;
+			unresolvedEdgeMap.put(edge, nodes);
+		}
 		return edge;
 	}
 

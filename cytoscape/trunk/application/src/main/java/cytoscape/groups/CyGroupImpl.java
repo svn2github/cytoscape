@@ -622,11 +622,15 @@ public class CyGroupImpl implements CyGroup {
 	private void removeNodeFromGroup ( CyNode node ) {
 		// Get the list of edges
 		List <CyEdge>edgeArray = nodeToEdgeMap.get(node);
-		for (CyEdge edge: edgeArray) {
-			if (myGraph.containsEdge(edge)) {
-				outerEdgeMap.put(edge,edge);
-			} else if (outerEdgeMap.containsKey(edge)) {
-				outerEdgeMap.remove(edge);
+
+		// Do we have any edges at all?
+		if (edgeArray != null) {
+			for (CyEdge edge: edgeArray) {
+				if (myGraph.containsEdge(edge)) {
+					outerEdgeMap.put(edge,edge);
+				} else if (outerEdgeMap.containsKey(edge)) {
+					outerEdgeMap.remove(edge);
+				}
 			}
 		}
 		nodeToEdgeMap.remove(node);

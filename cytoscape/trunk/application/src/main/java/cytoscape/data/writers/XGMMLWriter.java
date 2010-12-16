@@ -59,6 +59,7 @@ import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.LineStyle;
 
@@ -219,6 +220,7 @@ public class XGMMLWriter {
 	private int depth = 0; // XML depth
 	private String indentString = "";
 	private Writer writer = null;
+	private CyLogger logger = CyLogger.getLogger(XGMMLWriter.class);
 
 	private boolean doFullEncoding;
 
@@ -614,6 +616,9 @@ public class XGMMLWriter {
 	 */
 	private void writeGroup(CyGroup group) throws IOException {
 
+		logger.debug("Writing group "+group+" "+group.getNodes().size()+" nodes, "+
+		             group.getInnerEdges().size()+" inner edges, and "+group.getOuterEdges().size()+
+		             " outer edges");
 		List<CyNode> groupList = group.getNodes();
 		if (groupList != null && groupList.size() > 0) {
 			// If we're a group, output the graph attribute now
@@ -636,15 +641,17 @@ public class XGMMLWriter {
 
 			// Now, output the edges for this group
 			for (CyEdge edge: group.getInnerEdges()) {
+				logger.debug("Writing inner edge "+edge.getIdentifier()+" for group "+group);
 				if (!edgeMap.containsKey(edge)) {
 					edgeMap.put(edge,edge);
-					writeEdge(edge);
+					writeEdge(edge, false);
 				}
 			}
 			for (CyEdge edge: group.getOuterEdges()) {
+				logger.debug("Writing outer edge "+edge.getIdentifier()+" for group "+group);
 				if (!edgeMap.containsKey(edge)) {
 					edgeMap.put(edge,edge);
-					writeEdge(edge);
+					writeEdge(edge, false);
 				}
 			}
 
@@ -661,7 +668,7 @@ public class XGMMLWriter {
 	private void writeEdges() throws IOException {
 		for (CyEdge curEdge: (List<CyEdge>)network.edgesList()) {
 			edgeMap.put(curEdge,curEdge);
-			writeEdge(curEdge);
+			writeEdge(curEdge, true);
 		}
 	}
 
@@ -672,14 +679,16 @@ public class XGMMLWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeEdge(CyEdge curEdge) throws IOException {
+	private void writeEdge(CyEdge curEdge, boolean checkNodes) throws IOException {
 		// Write the edge 
 		String target = quote(Integer.toString(curEdge.getTarget().getRootGraphIndex()));
 		String source = quote(Integer.toString(curEdge.getSource().getRootGraphIndex()));
 
-		// Make sure these nodes exist
-		if (!nodeMap.containsKey(curEdge.getTarget()) || !nodeMap.containsKey(curEdge.getSource()))
-			return;
+		if (checkNodes) {
+			// Make sure these nodes exist
+			if (!nodeMap.containsKey(curEdge.getTarget()) || !nodeMap.containsKey(curEdge.getSource()))
+				return;
+		}
 
 		writeElement("<edge label="+quote(curEdge.getIdentifier())+" source="+source+" target="+target+">\n");
 		depth++;

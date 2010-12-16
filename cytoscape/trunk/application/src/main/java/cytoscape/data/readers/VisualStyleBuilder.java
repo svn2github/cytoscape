@@ -172,14 +172,14 @@ public class VisualStyleBuilder {
 				if ( type.isNodeProp() ) {
 					for ( Object key : valMap.keySet() ) {
 					
-						System.out.println("Node key = "+key);
+						// System.out.println("Node key = "+key);
 						
 						nac.getDefaultAppearance().set( type, valMap.get(key) );
 					}
 					Cytoscape.getNodeAttributes().deleteAttribute(getAttrName(type));
 				} else {
 					for ( Object key : valMap.keySet() ) {
-						System.out.println("Edge key = "+key);
+						// System.out.println("Edge key = "+key);
 						eac.getDefaultAppearance().set( type, valMap.get(key) );
 					}
 					Cytoscape.getEdgeAttributes().deleteAttribute(getAttrName(type));
