@@ -46,7 +46,10 @@ import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.view.presentation.RenderingEngineManager;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.session.CyApplicationManager;
@@ -62,20 +65,20 @@ abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
     protected final CyNetworkViewFactory cnvf;
     protected final VisualMappingManager vmm;
     protected final CyNetworkNaming cyNetworkNaming;
-	protected final RenderingEngine<CyNetwork> re;
+	protected final RenderingEngineManager reManager;
 
     public AbstractNetworkFromSelectionTask(final CyNetwork net, final CyRootNetworkFactory cyroot,
                            final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
                            final CyNetworkViewManager networkViewManager,
                            final CyNetworkNaming cyNetworkNaming,
-                           final VisualMappingManager vmm, final CyApplicationManager appMgr)
+                           final VisualMappingManager vmm, final RenderingEngineManager reManager)
     {
         super(net, netmgr, networkViewManager);
         this.cyroot = cyroot;
         this.cnvf = cnvf;
         this.cyNetworkNaming = cyNetworkNaming;
         this.vmm = vmm;
-		this.re = appMgr.getCurrentRenderingEngine();
+		this.reManager = reManager;
     }
 
 	abstract Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes);
@@ -87,6 +90,7 @@ abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
 		// rename network to keep code comprehensible
         CyNetwork currNet = net; 
         CyNetworkView currView = networkViewManager.getNetworkView(currNet.getSUID());
+        final RenderingEngine<?> re = reManager.getRendringEngine(currView);
 
 		// create subnetwork and add selected nodes and appropriate edges
         final CySubNetwork newNet = cyroot.convert(currNet).addSubNetwork();
@@ -108,31 +112,27 @@ abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
 
 		// create new view
         CyNetworkView newView = cnvf.getNetworkView(newNet);
+        
 
         networkViewManager.addNetworkView(newView);
 
-		// copy node view visual properties
+		// copy node location only.
 		for ( View<CyNode> newNodeView : newView.getNodeViews() ) {
 			View<CyNode> origNodeView = currView.getNodeView( newNodeView.getModel() );
-			for ( VisualProperty<?> vp : re.getVisualLexicon().getAllVisualProperties() ) {
-				newNodeView.setVisualProperty(vp, origNodeView.getVisualProperty(vp));
-				if (origNodeView.isValueLocked(vp) )
-					newNodeView.setLockedValue(vp, origNodeView.getVisualProperty(vp));
-			}
-		}
+			newNodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, origNodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION));
+			newNodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, origNodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION));
 
-		// copy edge view visual properties
-		for ( View<CyEdge> newEdgeView : newView.getEdgeViews() ) {
-			View<CyEdge> origEdgeView = currView.getEdgeView( newEdgeView.getModel() );
-			for ( VisualProperty<?> vp : re.getVisualLexicon().getAllVisualProperties() ) {
-				newEdgeView.setVisualProperty(vp, origEdgeView.getVisualProperty(vp));
-				if (origEdgeView.isValueLocked(vp) )
-					newEdgeView.setLockedValue(vp, origEdgeView.getVisualProperty(vp));
-			}
+			// FIXME
+//			// Set lock (if necessary)
+//			for ( VisualProperty<?> vp : vpSet ) {
+//				if (origNodeView.isValueLocked(vp) )
+//					newNodeView.setLockedValue(vp, origNodeView.getVisualProperty(vp));
+//			}
 		}
         
+		final VisualStyle style = vmm.getVisualStyle(currView);
         vmm.setVisualStyle(vmm.getVisualStyle(currView),newView);
-
+        style.apply(newView);
 		newView.fitContent();
 	}
 }

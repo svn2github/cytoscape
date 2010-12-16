@@ -65,6 +65,8 @@
 
 	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
 	
+	<osgi:reference id="renderingEngineManagerServiceRef" interface="org.cytoscape.view.presentation.RenderingEngineManager" />
+	
 	<!--  now register our services -->
 	<osgi:service id="loadNetworkFileTaskFactoryService" ref="loadNetworkFileTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">

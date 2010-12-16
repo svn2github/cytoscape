@@ -33,25 +33,23 @@ package org.cytoscape.task.internal.creation;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
-import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CyNetworkNaming;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.view.presentation.RenderingEngineManager;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
 
@@ -61,57 +59,42 @@ public class CloneNetworkTask extends AbstractCreationTask {
     private final VisualMappingManager vmm;
     private final CyNetworkFactory netFactory;
     private final CyNetworkViewFactory netViewFactory;
-    private final RenderingEngine<CyNetwork> re;
+    private final RenderingEngineManager reManager;
     private final CyNetworkNaming naming;
 
     public CloneNetworkTask(final CyNetwork net, final CyNetworkManager netmgr, 
     		                final CyNetworkViewManager networkViewManager, final VisualMappingManager vmm, 
     		                final CyNetworkFactory netFactory, final CyNetworkViewFactory netViewFactory, 
-    		                final CyApplicationManager appMgr, final CyNetworkNaming naming) {
+    		                final RenderingEngineManager reManager, final CyNetworkNaming naming) {
         super(net, netmgr, networkViewManager);
         this.vmm = vmm;
         this.netFactory = netFactory;
         this.netViewFactory = netViewFactory;
-        this.re = appMgr.getCurrentRenderingEngine();
+        this.reManager = reManager;
         this.naming = naming;
     }
 
     public void run(TaskMonitor tm) {
         CyNetwork newNet = cloneNetwork(net);
         CyNetworkView origView = networkViewManager.getNetworkView(net.getSUID());
+        final RenderingEngine<?> re = reManager.getRendringEngine(origView);
+        
         networkManager.addNetwork(newNet);
         if ( origView != null ) {
-            CyNetworkView newView = cloneNetworkView(origView,newNet);
+            CyNetworkView newView = netViewFactory.getNetworkView(newNet);
+            
+            // Copy locaitons since this is controlled outside of visual style.
+            for ( View<CyNode> newNodeView : newView.getNodeViews() ) {
+    			final View<CyNode> origNodeView = origView.getNodeView( newNodeView.getModel() );
+    			newNodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, origNodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION));
+    			newNodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, origNodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION));
+    		}
+            
             vmm.setVisualStyle(vmm.getVisualStyle(origView), newView );
+            vmm.getVisualStyle(origView).apply(newView);
             networkViewManager.addNetworkView(newView);
-            newView.updateView();
+            newView.fitContent();
         }
-    }
-
-    private CyNetworkView cloneNetworkView(CyNetworkView origView, CyNetwork newNet) {
-        CyNetworkView newView = netViewFactory.getNetworkView(newNet);
-
-        // copy node view visual properties
-        for ( View<CyNode> origNodeView : origView.getNodeViews() ) {
-            View<CyNode> newNodeView = newView.getNodeView( origNewNodeMap.get( origNodeView.getModel() ) );
-            for ( VisualProperty<?> vp : re.getVisualLexicon().getAllVisualProperties() ) {
-                newNodeView.setVisualProperty(vp, origNodeView.getVisualProperty(vp));
-                if (origNodeView.isValueLocked(vp) )
-                    newNodeView.setLockedValue(vp, origNodeView.getVisualProperty(vp));
-            }
-        }
-
-        // copy edge view visual properties
-        for ( View<CyEdge> origEdgeView : origView.getEdgeViews() ) {
-            View<CyEdge> newEdgeView = newView.getEdgeView( origNewEdgeMap.get( origEdgeView.getModel() ) );
-            for ( VisualProperty<?> vp : re.getVisualLexicon().getAllVisualProperties() ) {
-                newEdgeView.setVisualProperty(vp, origEdgeView.getVisualProperty(vp));
-                if (origEdgeView.isValueLocked(vp) )
-                    newEdgeView.setLockedValue(vp, origEdgeView.getVisualProperty(vp));
-            }
-        }
-        
-        return newView;
     }
 
     private CyNetwork cloneNetwork(CyNetwork origNet) {

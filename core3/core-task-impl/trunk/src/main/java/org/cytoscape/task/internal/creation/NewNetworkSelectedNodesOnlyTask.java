@@ -31,33 +31,21 @@
 package org.cytoscape.task.internal.creation;
 
 
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_X_LOCATION;
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NODE_Y_LOCATION;
-
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
-import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.view.vizmap.VisualStyle;
-import org.cytoscape.work.TaskMonitor;
-
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.session.CyNetworkNaming;
-import org.cytoscape.session.CyApplicationManager;
-
-import java.util.Collection;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.presentation.RenderingEngineManager;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 
 
 public class NewNetworkSelectedNodesOnlyTask extends AbstractNetworkFromSelectionTask {
@@ -66,9 +54,9 @@ public class NewNetworkSelectedNodesOnlyTask extends AbstractNetworkFromSelectio
 					       final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
 					       final CyNetworkViewManager networkViewManager,
 					       final CyNetworkNaming cyNetworkNaming,
-					       final VisualMappingManager vmm, final CyApplicationManager appMgr)
+					       final VisualMappingManager vmm, final RenderingEngineManager reMgr)
 	{
-		super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, appMgr);
+		super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, reMgr);
 	}
 
 	Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes) {

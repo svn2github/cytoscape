@@ -30,25 +30,20 @@
 package org.cytoscape.task.internal.creation;
 
 
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.session.CyNetworkNaming;
-import org.cytoscape.session.CyApplicationManager;
+import java.util.Collection;
+import java.util.List;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
-import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskMonitor;
-
-import java.util.Set;
-import java.util.List;
-import java.util.Collection;
 
 
 public class NewNetworkSelectedNodesEdgesTask extends AbstractNetworkFromSelectionTask {
@@ -57,9 +52,9 @@ public class NewNetworkSelectedNodesEdgesTask extends AbstractNetworkFromSelecti
                            final CyNetworkViewFactory cnvf, final CyNetworkManager netmgr,
                            final CyNetworkViewManager networkViewManager,
                            final CyNetworkNaming cyNetworkNaming,
-                           final VisualMappingManager vmm, final CyApplicationManager appMgr)
+                           final VisualMappingManager vmm, final RenderingEngineManager reMgr)
     {
-        super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, appMgr); 
+        super(net, cyroot, cnvf, netmgr, networkViewManager, cyNetworkNaming, vmm, reMgr); 
     }
 
 	Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes) {

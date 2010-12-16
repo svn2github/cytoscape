@@ -16,15 +16,15 @@ import org.cytoscape.view.model.View;
 public interface RenderingEngineManager {
 
 	/**
-	 * Get all rendering engines for the given view model.
+	 * Get a rendering engine for the given view model.
 	 *
 	 * @param viewModel
 	 *            View model for the presentation.
 	 * 
-	 * @return collection of rendering engines (presentations) for the given
+	 * @return Rendering engine (presentation) for the given
 	 *         view model.
 	 */
-	Collection<RenderingEngine<?>> getRendringEngines(final View<?> viewModel);
+	RenderingEngine<?> getRendringEngine(final View<?> viewModel);
 	
 	/**
 	 * Get all {@link RenderingEngine}s registered in this manager.

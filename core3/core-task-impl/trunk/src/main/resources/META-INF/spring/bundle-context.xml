@@ -180,7 +180,7 @@
 		<constructor-arg ref="visualMappingManagerServiceRef" />
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
-		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="renderingEngineManagerServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 	</bean>
 
@@ -192,7 +192,7 @@
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 		<constructor-arg ref="visualMappingManagerServiceRef" />
-		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="renderingEngineManagerServiceRef" />
 	</bean>
 
 	<bean id="newNetworkSelectedNodesOnlyTaskFactory"
@@ -203,7 +203,7 @@
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 		<constructor-arg ref="visualMappingManagerServiceRef" />
-		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="renderingEngineManagerServiceRef" />
 	</bean>
 
 	<!-- destruction -->

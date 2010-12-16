@@ -1,5 +1,6 @@
 package org.cytoscape.view.presentation;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -49,33 +50,18 @@ public class RenderingEngineManagerTest {
 		final RenderingEngine<CyNetwork> engine3 = mock(RenderingEngine.class);
 		when(engine3.getViewModel()).thenReturn(networkView2);
 		
-		final Collection<RenderingEngine<?>> engineSet = manager.getRendringEngines(networkView1);
-		assertNotNull(engineSet);
-		assertEquals(0, engineSet.size());
+		final RenderingEngine<?> engine = manager.getRendringEngine(networkView1);
+		assertNull(engine);
 		
 		when(engine1.getViewModel()).thenReturn(networkView1);
 		manager.addRenderingEngine(engine1);
 
-		assertEquals(1, manager.getRendringEngines(networkView1).size());
-		assertEquals(engine1, manager.getRendringEngines(networkView1).iterator().next());
+		assertEquals(engine1, manager.getRendringEngine(networkView1));
 		
 		// Remove from manager
 		manager.removeRenderingEngine(engine1);
 		
-		assertEquals(0, manager.getRendringEngines(networkView1).size());
-		assertTrue(manager.getRendringEngines(networkView1) instanceof Set);
-		
-		// Add multiple engines
-		manager.addRenderingEngine(engine2);
-		manager.addRenderingEngine(engine1);
-		manager.addRenderingEngine(engine3);
-		
-		assertEquals(2, manager.getRendringEngines(networkView1).size());
-		assertEquals(1, manager.getRendringEngines(networkView2).size());
-		
-		assertTrue(manager.getRendringEngines(networkView1).contains(engine1));
-		assertTrue(manager.getRendringEngines(networkView1).contains(engine2));
-		assertTrue(manager.getRendringEngines(networkView2).contains(engine3));
+		assertNull(manager.getRendringEngine(networkView1));
 		
 	}
 }
