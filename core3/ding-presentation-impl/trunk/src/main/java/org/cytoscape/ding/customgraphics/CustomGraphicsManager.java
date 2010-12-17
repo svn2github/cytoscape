@@ -23,7 +23,5 @@ public interface CustomGraphicsManager {
 	
 	void removeAllCustomGraphics();
 	void removeCustomGraphics(Long id);
-	
-	void restoreImages();
-	
+		
 }
