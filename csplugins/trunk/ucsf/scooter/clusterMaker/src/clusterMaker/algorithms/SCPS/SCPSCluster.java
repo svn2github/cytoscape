@@ -67,7 +67,7 @@ import clusterMaker.ui.NewNetworkView;
 
 public class SCPSCluster extends AbstractNetworkClusterer  {
 	
-	double epsilon = 1.0;
+	double epsilon = 1.1;
 	int rNumber = 8;
         int knumber = -1;
        
@@ -111,7 +111,7 @@ public class SCPSCluster extends AbstractNetworkClusterer  {
 		// Lambda Parameter
 		clusterProperties.add(new Tunable("epsilon",
 		                                  "epsilon Parameter",
-		                                  Tunable.DOUBLE, new Double(1.0),
+		                                  Tunable.DOUBLE, new Double(1.1),
 		                                  (Object)null, (Object)null, 0));
 	      
 

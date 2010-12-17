@@ -77,8 +77,10 @@ public class DistanceMatrix {
 				edgeWeight = edgeAttributes.getDoubleAttribute(id,edgeAttributeName).doubleValue();
 			else if(edgeAttributes.getType(edgeAttributeName) == edgeAttributes.TYPE_INTEGER)
 				edgeWeight = edgeAttributes.getIntegerAttribute(id,edgeAttributeName).doubleValue();
-			else
+			else {
+				// System.out.println("Attribute "+edgeAttributeName+" is not a number");
 				continue;
+			}
 
 			minAttribute = Math.min(minAttribute, edgeWeight);
 			maxAttribute = Math.max(maxAttribute, edgeWeight);
@@ -185,8 +187,10 @@ public class DistanceMatrix {
 			CyEdge edge = edges.get(edgeIndex);
 
 			// Is this weight above the cutoff?
-			if (edgeWeights[edgeIndex] < edgeCutOff)
+			if (edgeWeights[edgeIndex] < edgeCutOff) {
+				// System.out.println("Skipping edge "+edge.getIdentifier()+" weight "+edgeWeights[edgeIndex]+" < "+edgeCutOff);
 				continue; // Nope, don't add it
+			}
 
 			/*Add edge to matrix*/
 			sourceIndex = nodes.indexOf(edge.getSource());
@@ -332,13 +336,15 @@ public class DistanceMatrix {
       if (nodeToCluster.containsKey(node1)) {
         if(!nodeToCluster.containsKey(node2)) {
           addNodeToCluster(nodeToCluster.get(node1), node2);
-        } else
+        } else {
           combineClusters(nodeToCluster.get(node1), nodeToCluster.get(node2));
+				}
       } else {
         if (nodeToCluster.containsKey(node2)) {
           addNodeToCluster(nodeToCluster.get(node2), node1);
-        } else
+        } else {
           createCluster(node1, node2);
+				}
       }
       return value;
     }

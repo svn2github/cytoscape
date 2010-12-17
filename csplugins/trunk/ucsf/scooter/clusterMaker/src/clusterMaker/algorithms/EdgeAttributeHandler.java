@@ -236,7 +236,7 @@ public class EdgeAttributeHandler
 		double range = matrix.getMaxWeight() - matrix.getMinWeight();
 		edgeCutOffTunable.setUpperBound(matrix.getMaxWeight());
 		edgeCutOffTunable.setLowerBound(matrix.getMinWeight());
-		edgeCutOffTunable.setValue(matrix.getMinWeight()+(range/1000));
+		edgeCutOffTunable.setValue(matrix.getMinWeight());
 		edgeCutOff = (Double) edgeCutOffTunable.getValue();
 
 		if (histo != null) {

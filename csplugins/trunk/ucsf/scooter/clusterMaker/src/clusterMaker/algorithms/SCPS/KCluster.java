@@ -73,7 +73,10 @@ public class KCluster {
 	public static int kmeans(int nClusters, int nIterations, DoubleMatrix2D matrix, 
 	                          int[] clusterID) {
 
-		int nelements = matrix.columns();
+		int nelements = matrix.rows();
+
+		System.out.println("NClusters " + nClusters + " NElements " + nelements);
+
 		int ifound = 1;
 
 		int[] tclusterid = new int[nelements];
@@ -105,6 +108,8 @@ public class KCluster {
 			int counter = 0;
 			int period = 10;
 
+			System.out.println(iteration + " Iterations");
+
 			// Randomly assign elements to clusters
 			if (nIterations != 0) randomAssign(nClusters, nelements, tclusterid);
 		      
@@ -114,6 +119,9 @@ public class KCluster {
 			for (int i = 0; i < nelements; i++) counts[tclusterid[i]]++;
 
 			while (true) {
+
+			    System.out.println("Total " + total);
+
 				double previous = total;
 				total = 0.0;
 				if (counter % period == 0) // Save the current cluster assignments
@@ -133,6 +141,7 @@ public class KCluster {
 				else
 				    getClusterMeans(nClusters, matrix, cData, tclusterid);
 
+				System.out.println("Reached this part of Loop");
 
 				for (int i = 0; i < nelements; i++) {
 					// Calculate the distances
@@ -143,32 +152,36 @@ public class KCluster {
 					// Get the distance
 					
 					distance = getDistance(i,k,matrix,cData);
+
+				    
  
 					for (int j = 0; j < nClusters; j++) { 
 						double tdistance;
 						if (j==k) continue;
 						
-						tdistance = getDistance(i,k,matrix,cData);
+						tdistance = getDistance(i,j,matrix,cData);
 						if (tdistance < distance) 
 						{ 
 							distance = tdistance;
-            	counts[tclusterid[i]]--;
-            	tclusterid[i] = j;
-            	counts[j]++;
+							
+	  
+							counts[tclusterid[i]]--;
+							tclusterid[i] = j;
+							counts[j]++;
 						}
-          }
-        	total += distance;
-        }
+					}
+					total += distance;
+				}
 			     
-      	if (total>=previous) break;
-      	/* total>=previous is FALSE on some machines even if total and previous
+				if (total>=previous) break;
+				/* total>=previous is FALSE on some machines even if total and previous
 				 * are bitwise identical. */
 				int i;
-	      for (i = 0; i < nelements; i++)
-	        if (saved[i]!=tclusterid[i]) break;
-	      if (i==nelements)
-	        break; /* Identical solution found; break out of this loop */
-    	}
+				for (i = 0; i < nelements; i++)
+				    if (saved[i]!=tclusterid[i]) break;
+				if (i==nelements)
+				    break; /* Identical solution found; break out of this loop */
+			}
 
 			if (nIterations<=1)
 			{ error = total;
@@ -187,20 +200,21 @@ public class KCluster {
 				else if (mapping[k] != j)
       	{ 
 					if (total < error)
-        	{ 
+					    { 
 						ifound = 1;
-          	error = total;
+						error = total;
 						// System.out.println("Mapping tclusterid to clusterid");
-          	for (int i = 0; i < nelements; i++) clusterID[i] = tclusterid[i];
-        	}
-        	break;
+						for (int i = 0; i < nelements; i++) clusterID[i] = tclusterid[i];
+					    }
+					break;
       	}
-    	}
-    	if (element==nelements) ifound++; /* break statement not encountered */
-  	} while (++iteration < nIterations);
+			}
+
+			if (element==nelements) ifound++; /* break statement not encountered */
+		} while (++iteration < nIterations);
 
 	       
-  	return ifound;
+		return ifound;
 	}
 
 
@@ -208,17 +222,23 @@ public class KCluster {
         //Assign centroids to rows with maximal orthogonality
         private static void selectCentroidsOrthogonally(int nClusters, DoubleMatrix2D data, DoubleMatrix2D cdata){
 
+	    System.out.println("Assigning centroids orthogonolly");
+
             //number of centroids allready set	    
 	    int centroid_count = 0;
 
 	    //centroid assigned element == 1 if centroid assigned, zero otherwise
-	    int[] centroid_assigned = new int[nClusters];
-	    for (int i = 0; i < nClusters; i++){centroid_assigned[i] = 0;}
+	    int[] centroid_assigned = new int[data.rows()];
+	    for(int i = 0; i < nClusters; i++){System.out.println(i); centroid_assigned[i] = 0;}
 
 	    //randomly select first centroid
-	    int centroid_id =  binomial(nClusters-1,1.0/(double)(nClusters-1));
+	    //int centroid_id =  binomial(nClusters-1,1.0/(double)(nClusters-1));
+	    Random generator = new Random();
+	    int centroid_id = generator.nextInt(nClusters);
 
 	    for(int i = 0; i < nClusters; i++){
+
+		System.out.println("Centroid selection iteration " + i);
 
 		//update centroid assinged array 
 		centroid_assigned[centroid_id] = 1;
@@ -238,7 +258,7 @@ public class KCluster {
 		int new_centroid_id = -1;
 
 		//loop through rows of data matrix, seach for next centroid, which will minimize the cosine angle (dot product) with current centroid
-		for(int j = 0; j < data.rows(); i++){
+		for(int j = 0; j < data.rows(); j++){
 
 		    //ignore centroids that allready have been set
 		    if(centroid_assigned[j] == 1)

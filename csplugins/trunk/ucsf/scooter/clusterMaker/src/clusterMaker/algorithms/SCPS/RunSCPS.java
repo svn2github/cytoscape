@@ -95,7 +95,8 @@ public class RunSCPS {
 
         private  HashMap<Integer, NodeCluster> clusterMap;
 
-        private HashMap<Integer,Integer> index2indexMap;
+        private HashMap<Integer,Integer> new2oldMap;
+        private HashMap<Integer,Integer> old2newMap;
 
         
 
@@ -114,8 +115,9 @@ public class RunSCPS {
                 this.matrix = distanceMatrix.getDistanceMatrix();
 		
 		
-		//index2index maps indices of filtered nodes in new uMatrix to the the original in the complete, unfiltered matrix
-		this.index2indexMap = new HashMap();
+		//maps indices of filtered nodes in new uMatrix to the the original in the complete, unfiltered matrix, and vice-versa
+		this.old2newMap = new HashMap();
+		this.new2oldMap = new HashMap();
 	}
 
 
@@ -124,11 +126,23 @@ public class RunSCPS {
         public List<NodeCluster> run(TaskMonitor monitor)
         {
 	   
+	    int k;
+
 	    monitor.setStatus("Formatting Matrix Data");
 	    DoubleMatrix2D sMat = getSMat(this.distanceMatrix);
 	    DoubleMatrix2D LMat = getLMat(sMat);
+
+	    monitor.setStatus("Calculating K value");
+
+	    if(this.kvalue > -1)
+		k = this.kvalue;
+	    else
+		k = getK(sMat);
+		       
+	    System.out.println("K is " + k);
+
             monitor.setStatus("Calculating Eigenvalues");
-	    DoubleMatrix2D uMat = getUMat(LMat);
+	    DoubleMatrix2D uMat = getUMat(LMat,k);
             monitor.setStatus("Running kmeans clustering");
 	    doKMeansClustering(uMat);
 
@@ -138,16 +152,29 @@ public class RunSCPS {
 
 	}
 
-        //map index2index key-value pair
+        //map old2new and new2old key-value pair
         public void setMap(int old_index, int new_index){
 
-	    this.index2indexMap.put(new Integer(new_index), new Integer(old_index));
+	    
+	    new2oldMap.put(new Integer(new_index), new Integer(old_index));
+	    old2newMap.put(new Integer(old_index), new Integer(new_index));
 	}
 
-       //return value of old_index in index2index map
-        public int getMap(int new_index){
+       //return value of old_index in new2oldMap. Mapping should invariably exist. 
+        public int getMap_old(int new_index){
 
-	    return ((Integer)this.index2indexMap.get(new Integer(new_index))).intValue();
+		return ((Integer)new2oldMap.get(new Integer(new_index))).intValue();
+	}
+
+        //return value of new_index in old2newMap. If no such mapping exists, return -1.
+        public int getMap_new(int old_index){
+
+	    try{ 
+		return ((Integer)old2newMap.get(new Integer(old_index))).intValue(); 
+	    }
+
+	    catch(Exception e){ return -1;}
+
 	}
 
        //Get Connected Components, cluster all components <= |5|, and connect the remaining components with random lowscoring edges
@@ -164,9 +191,9 @@ public class RunSCPS {
 	   //Connected Componets
 	   Map<Integer, List<CyNode>> cMap = distanceMatrix.findConnectedComponents();
 
-	   IntArrayList rowList = null;
-	   IntArrayList columnList = null;
-	   DoubleArrayList valueList = null;
+	   IntArrayList rowList = new IntArrayList();
+	   IntArrayList columnList = new IntArrayList();
+	   DoubleArrayList valueList = new DoubleArrayList();
 	   
 	   //Iterate through connected components
 	   Iterator it = cMap.entrySet().iterator();
@@ -176,12 +203,14 @@ public class RunSCPS {
 	       Map.Entry entry = (Map.Entry)it.next();
 	       List<CyNode> component = (List<CyNode>)entry.getValue();
 
-	       //Size <= 5. Automatically create cluster and increment clusterCount. Delete component from Map.
+	       //Size <= 5. Automatically create cluster and increment clusterCount. 
 	       if(component.size() <= 5){
 		   
-		   NodeCluster iCluster = new NodeCluster();
-		   iCluster.add(component,this.clusterCount);
+		   NodeCluster iCluster = new NodeCluster(component);
+		   //iCluster.add(component,this.clusterCount);
 		   this.clusterMap.put(new Integer(clusterCount),iCluster);
+
+		   System.out.println("Component Size " + component.size() + " ClusterCount " + clusterCount);
 		   this.clusterCount++;
 
 		 
@@ -219,8 +248,8 @@ public class RunSCPS {
 	       int row_id = rowList.get(i);
 	       int column_id = columnList.get(i);
 
-	       int new_row_id = getMap(row_id);
-	       int new_column_id = getMap(column_id);
+	       int new_row_id = getMap_new(row_id);
+	       int new_column_id = getMap_new(column_id);
 	       double value = valueList.get(i);
 
 	       //Set symmetrically the values in new matrix
@@ -232,15 +261,13 @@ public class RunSCPS {
 
 	   }
 
-	   //Normalize sMat
-	   sMat.forEachNonZero(new Normalize(Double.MIN_VALUE,Double.MAX_VALUE, 1));
+	   
 	   
 	   return sMat;
 
        }
        
          //Calculate negative square root of matrix using singular value decomposition
-         //http://en.wikipedia.org/wiki/Square_root_of_a_matrix
          public DoubleMatrix2D getNegSqrRoot(DoubleMatrix2D A){
 
 	     //A = USV, where S is Diagnol Matrix
@@ -252,29 +279,42 @@ public class RunSCPS {
 	     //S^1/2 = Square root of every value in diangol matrix
 	     for(int i = 0; i < S.rows(); i++)
 		 S.set(i,i,Math.pow(S.get(i,i),.5));
+		
 
 	     //A^1/2 = VS^1/2U
 	     Algebra alg = new Algebra();
 	     DoubleMatrix2D sqrtA = alg.mult(alg.mult(V,S),U);
 
+	    
+
 	     //return A^-1/2
 	     return alg.inverse(sqrtA);
 	     
 	     
-    }
+	 }
+
+         //Return Negative Sqrt of a Diagnol Matrix
+         public DoubleMatrix2D getNegSqrRootDMat(DoubleMatrix2D dMat){
+
+	     for(int i = 0; i < dMat.rows(); i++)
+		 dMat.set(i,i,Math.pow(dMat.get(i,i),-.5));
+
+	     return dMat;
+	 }
 
 
 	// L = D^-1/2 * S * D^-1/2
 	public DoubleMatrix2D getLMat(DoubleMatrix2D sMat){
 
 	        Algebra alg = new Algebra();
-		DoubleMatrix2D transDMat = getNegSqrRoot(sMat);
-
+		DoubleMatrix2D dMat = getDMat(sMat);
+		DoubleMatrix2D transDMat = getNegSqrRootDMat(dMat);
+	
 		return alg.mult(transDMat,alg.mult(sMat,transDMat));
 	}
 
-	//D is Diagnol Matrix formed of vertex degree Dii = Sum Columns j over row Si
 
+	//D is Diagnol Matrix formed of vertex degree Dii = Sum Columns j over row Si
 	public DoubleMatrix2D getDMat(DoubleMatrix2D sMat){
 	
 	
@@ -284,6 +324,7 @@ public class RunSCPS {
 
 			//set the Diagnal (i,i) to sum of columns over row i
 			dMat.set(i,i, sMat.viewRow(i).zSum());
+			System.out.println("DMat row "+ i + " value " + dMat.get(i,i));
 		}
 
 		
@@ -291,19 +332,16 @@ public class RunSCPS {
 
 	}
 
-	//U constructed from top K Eigenvectors of L. After construction, each row of U is normalized to unit length.
 
-	public DoubleMatrix2D getUMat(DoubleMatrix2D LMat){
+        
+	//Get K using eigenvetors of S Matrix
+	public int getK(DoubleMatrix2D sMat){
 
-		int k;
-		DoubleMatrix2D uMat;
-		double prevLamb;
+	    	double prevLamb;
 		double nextLamb;
-
-		IntArrayList indexList = null;
-		DoubleArrayList valueList = null;
-		
-		EigenvalueDecomposition decomp = new EigenvalueDecomposition(LMat);
+		int k;
+			
+		EigenvalueDecomposition decomp = new EigenvalueDecomposition(sMat);
 
 		//eigenvectors
 		DoubleMatrix2D eigenVect = decomp.getV();
@@ -311,29 +349,40 @@ public class RunSCPS {
 		//eigenvalues
 		DoubleMatrix1D eigenVal = decomp.getRealEigenvalues();
 
-		//set K. Use Epsilon to calculate K is this.kvalue not set
-		if(this.kvalue > -1)
-			k = this.kvalue;
+		//set K to smallest integer such that LambdaK/LambdaK+1 > epsilon
+		prevLamb = eigenVal.get(0);
 
-		//set K to smallest integer such that LambdaK+1/LambdaK > epsilon
-		else{
+		for(k = 1; k < eigenVal.size(); k++){
 
-			prevLamb = eigenVal.get(0);
+		    nextLamb = eigenVal.get(k);
 
-			for(k = 1; k < eigenVal.size(); k++){
+		    System.out.println("k " + k + " PrevLamb " + prevLamb + " nextLamb " + nextLamb +   "prevLamb/nextLamb " + prevLamb/nextLamb);
 
-			    nextLamb = eigenVal.get(k);
+		    if(prevLamb/nextLamb > this.epsilon)
+			break;
 
-			    if(nextLamb/prevLamb > this.epsilon)
-				break;
+		    prevLamb = nextLamb;
+		}
 
-			    prevLamb = nextLamb;
-			}
-		}	
+		return k;
+	}
+
+	//U constructed from top K Eigenvectors of L. After construction, each row of U is normalized to unit length.
+	public DoubleMatrix2D getUMat(DoubleMatrix2D LMat, int k){
+
+		DoubleMatrix2D uMat;
+	
+		IntArrayList indexList = new IntArrayList();
+		DoubleArrayList valueList = new DoubleArrayList();
 		
+		EigenvalueDecomposition decomp = new EigenvalueDecomposition(LMat);
+
+		//eigenvectors
+		DoubleMatrix2D eigenVect = decomp.getV();
 
 		//construct matrix U from first K eigenvectors
-	 	uMat = eigenVect.viewPart(0,0,eigenVect.rows()-1,k);
+	 	uMat = eigenVect.viewPart(0,0,eigenVect.rows(),k);
+		
 	       
 		//Normalize each row of matrix U
 		for(int i = 0; i < uMat.columns(); i++){
@@ -360,9 +409,9 @@ public class RunSCPS {
 
          public void doKMeansClustering(DoubleMatrix2D uMat){
 
-	     int k = uMat.rows();
+	     int k = uMat.columns();
 
-	     int[] clusters = new int[uMat.columns()];
+	     int[] clusters = new int[uMat.rows()];
 	  
 	     //do kmeans clustering
 	     KCluster.kmeans(k,rnumber,uMat,clusters);
@@ -376,13 +425,16 @@ public class RunSCPS {
 
 		 for(int j = 0; j < clusters.length; j++){
 
-		     //node j in uMatrix belongs to cluster k
-		     if(clusters[j] == k)
-			 node_list.add(this.nodes.get(getMap(j)));
+		     //node j in uMatrix belongs to cluster #cluster_id
+		     if(clusters[j] == cluster_id)
+			 node_list.add(this.nodes.get(getMap_old(j)));
 		 }
 
-		 iCluster.add(node_list,this.clusterCount);
+		 iCluster = new NodeCluster(node_list);
 		 this.clusterMap.put(new Integer(clusterCount),iCluster);
+
+		 System.out.println("clusterCount " + clusterCount);
+
 		 this.clusterCount++;
 	     }
 

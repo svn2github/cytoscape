@@ -76,7 +76,7 @@ public class ConnectedComponentsCluster extends AbstractNetworkClusterer  {
 
 	public ConnectedComponentsCluster() {
 		super();
-		clusterAttributeName = Cytoscape.getCurrentNetwork().getIdentifier()+"_MCL_cluster";
+		clusterAttributeName = Cytoscape.getCurrentNetwork().getIdentifier()+"_CC_cluster";
 		logger = CyLogger.getLogger(ConnectedComponentsCluster.class);
 		initializeProperties();
 	}
