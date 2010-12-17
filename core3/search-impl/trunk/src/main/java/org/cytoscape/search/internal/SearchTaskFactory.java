@@ -14,6 +14,7 @@ public class SearchTaskFactory extends AbstractNetworkViewTaskFactory implements
 	public SearchTaskFactory(CyNetworkView view, EnhancedSearch searchMgr, CyTableManager tableMgr, String query) {
 		this.view = view;
 		this.searchMgr = searchMgr;
+		this.tableMgr = tableMgr;
 		this.query = query;
 	}
 

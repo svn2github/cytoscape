@@ -1,7 +1,6 @@
 package org.cytoscape.search.internal.ui;
 
 import java.awt.Dimension;
-
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.search.internal.*;
@@ -37,13 +36,10 @@ public class EnhancedSearchPanel extends javax.swing.JPanel{
 	   doSearching();
    }
 
-   // Do searching based on the query string inputed from user on text-field
+   // Do searching based on the query string from user on text-field
    private void doSearching(){
-	   System.out.println("\tEnhancedSearchPanel.doSearch()....");
 	   if (this.netmgr.getCurrentNetworkView() != null){
 		   String queryStr = this.tfSearchText.getText().trim();
-		   
-		   System.out.println("\t\tQueryStr = "+ queryStr+ "\n");
 		   
 		   SearchTaskFactory factory = new SearchTaskFactory(this.netmgr.getCurrentNetworkView(), 
 				   searchMgr,tableMgr, queryStr);

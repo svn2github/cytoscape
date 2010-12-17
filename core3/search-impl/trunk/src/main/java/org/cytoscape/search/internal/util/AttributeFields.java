@@ -58,7 +58,7 @@ public class AttributeFields {
 	private Map<String,Class<?>> nodeColumnTypeMap;
 	private Map<String,Class<?>> edgeColumnTypeMap;
 
-	private byte[] types = null;
+	//private byte[] types = null;
 	private CyTableManager tableMgr;
 
 	public AttributeFields(CyNetwork network, CyTableManager tableMgr) {
@@ -90,10 +90,20 @@ public class AttributeFields {
 		// Now add node and edge attribute names to fields[]
 		fields = new String[nodeColumnTypeMap.size() + edgeColumnTypeMap.size()];
 		int i = 0;
-		for ( String key : nodeColumnTypeMap.keySet())
+		for ( String key : nodeColumnTypeMap.keySet()){
+			// Exclude attributes(selected and NestedNetwork) in the list
+			if (key.equalsIgnoreCase("selected")||key.equalsIgnoreCase("NestedNetwork")){  
+				continue;				
+			}
 			fields[i++] = key;
-		for ( String key : edgeColumnTypeMap.keySet())
-			fields[i++] = key;
+		}
+		for ( String key : edgeColumnTypeMap.keySet()){
+			// Exclude attributes(selected and NestedNetwork) in the list
+			if (key.equalsIgnoreCase("selected")||key.equalsIgnoreCase("NestedNetwork")){  
+				continue;				
+			}
+			fields[i++] = key;			
+		}
 
 		// Handle whitespace characters and case in attribute names
 		for (int j = 0; j < fields.length; j++) {

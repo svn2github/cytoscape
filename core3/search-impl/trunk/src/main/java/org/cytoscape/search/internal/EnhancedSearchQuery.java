@@ -40,10 +40,13 @@ import java.util.ArrayList;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.HitCollector;
+import org.apache.lucene.queryParser.QueryParser;
+//import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.document.Document;
 
@@ -53,6 +56,12 @@ import org.cytoscape.search.internal.util.AttributeFields;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
+import org.apache.lucene.util.Version;
+import org.apache.lucene.search.Collector;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.search.Scorer;
+
+
 
 public class EnhancedSearchQuery {
 
@@ -60,7 +69,6 @@ public class EnhancedSearchQuery {
 
 	private RAMDirectory idx;
 	private CyNetwork network;
-
 	private Searcher searcher;
 	private  CyTableManager tableMgr;
 
@@ -68,7 +76,6 @@ public class EnhancedSearchQuery {
 		this.network = network;
 		this.idx = index;
 		this.tableMgr = tableMgr;
-		
 	}
 
 	public void executeQuery(String queryString) {
@@ -80,8 +87,9 @@ public class EnhancedSearchQuery {
 			// Build an IndexSearcher using the in-memory index
 			searcher = new IndexSearcher(idx);
 			queryString = EnhancedSearchUtils.queryToLowerCase(queryString);
-			System.out.println("Query - " + queryString);
-			search(searcher, queryString, attFields);
+			
+			search(queryString, attFields);
+			
 			searcher.close();
 
 		} catch (IOException ioe) {
@@ -94,18 +102,18 @@ public class EnhancedSearchQuery {
 	 * attributeName), search is carried out on all attribute fields. This
 	 * functionality is enabled with the use of MultiFieldQueryParser.
 	 */
-	private void search(Searcher searcher, String queryString, AttributeFields attFields)
+	private void search(String queryString, AttributeFields attFields)
 			throws IOException {
-
+		
 		// Build a Query object.
 		// CustomMultiFieldQueryParser is used to support range queries on numerical attribute fields.
-		CustomMultiFieldQueryParser queryParser = new CustomMultiFieldQueryParser(attFields, new StandardAnalyzer());
+		CustomMultiFieldQueryParser queryParser = new CustomMultiFieldQueryParser(attFields, new StandardAnalyzer(Version.LUCENE_30));
 
 		try {
 			// Execute query
 			Query query = queryParser.parse(queryString);
 			hitCollector = new IdentifiersCollector(searcher);
-			searcher.search(query, hitCollector);
+			searcher.search(query, hitCollector);		    
 		} catch (ParseException pe) {
 			// Parse exceptions occur when colon appear in the query in an
 			// unexpected location, e.g. when attribute or value are
@@ -159,7 +167,7 @@ public class EnhancedSearchQuery {
 }
 
 
-class IdentifiersCollector extends HitCollector {
+class IdentifiersCollector extends Collector {
 
 	private Searcher searcher;
 
@@ -169,22 +177,7 @@ class IdentifiersCollector extends HitCollector {
 	public IdentifiersCollector(Searcher searcher) {
 		this.searcher = searcher;
 	}
-
-	public void collect(int id, float score) {
-		try {
-			Document doc = searcher.doc(id);
-			String currID = doc.get(EnhancedSearch.INDEX_FIELD);
-			String currType = doc.get(EnhancedSearch.TYPE_FIELD);
-			if (currType == EnhancedSearch.NODE_TYPE) {
-				nodeHitsIdentifiers.add(currID);
-			} else if (currType == EnhancedSearch.EDGE_TYPE) {
-				edgeHitsIdentifiers.add(currID);
-			}
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
-	}
-
+	
 	public int getNodeHitCount() {
 		return nodeHitsIdentifiers.size();
 	}
@@ -197,6 +190,32 @@ class IdentifiersCollector extends HitCollector {
 	}
 	public ArrayList<String> getEdgeHits() {
 		return edgeHitsIdentifiers;
+	}
+
+	public boolean acceptsDocsOutOfOrder() {
+		return true;
+	}
+
+	public void collect(int id) {		
+		try {
+			Document doc = searcher.doc(id);
+			String currID = doc.get(EnhancedSearch.INDEX_FIELD);
+			String currType = doc.get(EnhancedSearch.TYPE_FIELD);
+			
+			if (currType.equalsIgnoreCase(EnhancedSearch.NODE_TYPE)) {
+				nodeHitsIdentifiers.add(currID);
+			} else if (currType.equalsIgnoreCase(EnhancedSearch.EDGE_TYPE)) {
+				edgeHitsIdentifiers.add(currID);
+			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+
+	public void setNextReader(IndexReader reader, int docBase) {
+	}
+
+	public void setScorer(Scorer scorer) {
 	}
 
 }

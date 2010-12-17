@@ -60,7 +60,12 @@ public class EnhancedSearchUtils {
 	public static String replaceWhitespace(String searchTerm) {
 		String replaceTerm = "";
 
+		if (searchTerm == null){
+			return replaceTerm;
+		}
+		
 		Pattern searchPattern = Pattern.compile(SEARCH_STRING);
+		
 		String[] result = searchPattern.split(searchTerm);
 		replaceTerm = result[0];
 		for (int i = 1; i < result.length; i++) {

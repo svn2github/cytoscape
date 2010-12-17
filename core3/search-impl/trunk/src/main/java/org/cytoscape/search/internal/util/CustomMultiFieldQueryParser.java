@@ -41,12 +41,15 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.document.NumberTools;
-import org.apache.lucene.search.RangeQuery;
+//import org.apache.lucene.document.NumberTools;
+//import org.apache.lucene.util.NumericUtils;
+import org.apache.lucene.util.Version;
+//import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.index.Term;
 
 import org.cytoscape.search.internal.util.AttributeFields;
 import org.cytoscape.search.internal.util.NumberUtils;
+import org.apache.lucene.search.NumericRangeQuery;
 
 
 /**
@@ -61,7 +64,7 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 
 	public CustomMultiFieldQueryParser(AttributeFields attrFields,
 			Analyzer analyzer) {
-		super(attrFields.getFields(), analyzer);
+		super(Version.LUCENE_30,attrFields.getFields(), analyzer);
 		this.attrFields = attrFields;
 	}
 
@@ -71,8 +74,7 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 		if (attrFields.getType(field) == Integer.class) {
 			try {
 				int num1 = Integer.parseInt(queryText);
-				return super.getFieldQuery(field, NumberTools
-						.longToString(num1));
+				return super.getFieldQuery(field, NumberUtils.long2sortableStr(num1));
 			} catch (NumberFormatException e) {
 				// Do nothing. When using a MultiFieldQueryParser, queryText is
 				// searched in each one of the fields. This exception occurs
@@ -87,9 +89,14 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 				// search result, but inclusive range query does.
 				// return super.getFieldQuery(field, NumberUtils
 				// .double2sortableStr(num1));
-				return new RangeQuery(new Term(field, NumberUtils
-						.double2sortableStr(num1)), new Term(field, NumberUtils
-						.double2sortableStr(num1)), true);
+				
+				Query q = NumericRangeQuery.newDoubleRange(field, num1, num1, true, true);
+
+				return q;
+				
+				//return new NumericRangeQuery(new Term(field, NumberUtils.double2sortableStr(num1)),
+				//		new Term(field, NumberUtils.double2sortableStr(num1)), 
+				//		true);
 			} catch (NumberFormatException e) {
 				// Do nothing. When using a MultiFieldQueryParser, queryText is
 				// searched in each one of the fields. This exception occurs
@@ -112,9 +119,13 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 			try {
 				int num1 = Integer.parseInt(part1);
 				int num2 = Integer.parseInt(part2);
-				return new RangeQuery(new Term(field, NumberTools
-						.longToString(num1)), new Term(field, NumberTools
-						.longToString(num2)), inclusive);
+
+				Query q = NumericRangeQuery.newIntRange(field, num1, num2, inclusive, inclusive);
+
+				return q;
+				//return new NumericRangeQuery(new Term(field, NumberTools
+				//		.longToString(num1)), new Term(field, NumberTools
+				//		.longToString(num2)), inclusive);
 			} catch (NumberFormatException e) {
 				throw new ParseException(e.getMessage());
 			}
@@ -123,9 +134,13 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 			try {
 				double num1 = Double.parseDouble(part1);
 				double num2 = Double.parseDouble(part2);
-				return new RangeQuery(new Term(field, NumberUtils
-						.double2sortableStr(num1)), new Term(field, NumberUtils
-						.double2sortableStr(num2)), inclusive);
+				
+				Query q = NumericRangeQuery.newDoubleRange(field, num1, num2, inclusive, inclusive);
+				return q;
+				
+				//return new NumericRangeQuery(new Term(field, NumberUtils
+				//		.double2sortableStr(num1)), new Term(field, NumberUtils
+				//		.double2sortableStr(num2)), inclusive);
 			} catch (NumberFormatException e) {
 				throw new ParseException(e.getMessage());
 			}

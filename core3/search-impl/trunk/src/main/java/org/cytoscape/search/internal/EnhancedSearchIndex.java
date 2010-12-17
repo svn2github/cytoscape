@@ -50,42 +50,51 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.NumberTools;
+//import org.apache.lucene.document.NumberTools;
 import java.util.Set;
 
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyRow;
 import java.util.List;
 import java.util.Map;
+import org.apache.lucene.util.Version;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.Field.Index;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+
+
 
 public class EnhancedSearchIndex {
 
-	public static final int MAX_FIELD_LENGTH = 50000;
+	//public static final int MAX_FIELD_LENGTH = 50000;
 
 	RAMDirectory idx;
 
 	// Index the given network
 	public EnhancedSearchIndex(CyNetwork network) {
 		// Construct a RAMDirectory to hold the in-memory representation of the
-		// index.
+		// index.		
 		idx = new RAMDirectory();
 		BuildIndex(idx, network);
 	}
 
 	private void BuildIndex(RAMDirectory idx, CyNetwork network) {
+
 		try {
 			// Make a writer to create the index
-			IndexWriter writer = new IndexWriter(idx, new StandardAnalyzer(), true);
-
-			// Set the number of terms to be indexed for a field.
-			// writer.setMaxFieldLength(MAX_FIELD_LENGTH);
+			IndexWriter writer = new IndexWriter(idx, new StandardAnalyzer(Version.LUCENE_30), 
+					IndexWriter.MaxFieldLength.UNLIMITED);
 
 			// Add a document for each graph object - node and edge
 			List<CyNode> nodeList = network.getNodeList();
+			
 			for (CyNode cyNode : nodeList) {
 				writer.addDocument(createDocument(cyNode, EnhancedSearch.NODE_TYPE, cyNode.getIndex()));
 			}
-			
+		
 			List<CyEdge> edgeList = network.getEdgeList();
 			for (CyEdge cyEdge : edgeList) {
 				writer.addDocument(createDocument(cyEdge, EnhancedSearch.EDGE_TYPE, cyEdge.getIndex()));
@@ -110,10 +119,8 @@ public class EnhancedSearchIndex {
 		Document doc = new Document();
 		String identifier = Integer.toString(index);
 		
-		doc.add(new Field(EnhancedSearch.INDEX_FIELD, identifier, Field.Store.YES,
-				Field.Index.TOKENIZED));
-		doc.add(new Field(EnhancedSearch.TYPE_FIELD, graphObjectType, Field.Store.YES,
-				Field.Index.TOKENIZED));
+		doc.add(new Field(EnhancedSearch.INDEX_FIELD, identifier, Field.Store.YES, Field.Index.ANALYZED));
+		doc.add(new Field(EnhancedSearch.TYPE_FIELD, graphObjectType, Field.Store.YES, Field.Index.ANALYZED));
 		
 		CyRow cyRow = graphObject.getCyRow();
 		CyTable cyDataTable = cyRow.getDataTable();
@@ -122,6 +129,11 @@ public class EnhancedSearchIndex {
 
 		for (String attrName : attributeNames) {
 
+			// Do not index attributes -- selected,SUID,NestedNetwork
+			if (attrName.equalsIgnoreCase("selected")|| attrName.equalsIgnoreCase("NestedNetwork")){
+				continue;
+			}
+			
 			// Handle whitespace characters and case in attribute names
 			String attrIndexingName = EnhancedSearchUtils.replaceWhitespace(attrName);
 			attrIndexingName = attrIndexingName.toLowerCase();
@@ -131,24 +143,26 @@ public class EnhancedSearchIndex {
 			
 			if (valueType == String.class) {
 				String attrValue = graphObject.getCyRow().get(attrName, String.class);
-				doc.add(new Field(attrIndexingName, attrValue, Field.Store.NO, Field.Index.TOKENIZED));
-			} else if (valueType == Integer.class) {
-				String attrValue = NumberTools.longToString(graphObject.getCyRow().get(attrName, Integer.class));
-				doc.add(new Field(attrIndexingName, attrValue, Field.Store.NO, Field.Index.TOKENIZED));
-			} else if (valueType == Double.class) {
-				String attrValue = NumberUtils.double2sortableStr(graphObject.getCyRow().get(attrName, Double.class));
-				doc.add(new Field(attrIndexingName, attrValue, Field.Store.NO, Field.Index.TOKENIZED));
+				if (attrValue == null){
+					continue;
+				}				
+				doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));
+			} else if (valueType == Integer.class) {				
+				String attrValue = NumberUtils.long2sortableStr(graphObject.getCyRow().get(attrName, Integer.class));
+				doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));
+			} else if (valueType == Double.class) {				
+				String attrValue = NumberUtils.double2sortableStr(graphObject.getCyRow().get(attrName, Double.class));				
+				doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));
 			} else if (valueType == Boolean.class) {
 				String attrValue = graphObject.getCyRow().get(attrName, Boolean.class).toString();
-				doc.add(new Field(attrIndexingName, attrValue, Field.Store.NO, Field.Index.TOKENIZED));
+				doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));
 			} else if (valueType == List.class) {
 				List attrValueList = graphObject.getCyRow().get(attrName, List.class);
 				for (int j = 0; j < attrValueList.size(); j++) {
 					String attrValue = attrValueList.get(j).toString();
-					doc.add(new Field(attrIndexingName, attrValue, Field.Store.NO, Field.Index.TOKENIZED));
+					doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));
 				}
 			}
-
 		}
 
 		return doc;
