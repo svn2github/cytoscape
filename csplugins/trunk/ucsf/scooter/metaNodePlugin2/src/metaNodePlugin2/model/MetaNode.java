@@ -163,6 +163,8 @@ public class MetaNode {
 		logger.debug("recollapse "+metaGroup);
 		if (view == null)
 			view = Cytoscape.getNetworkView(metaGroup.getNetwork().getIdentifier());
+		else
+			collapsed = true;
 		expand(view);
 		collapse(view);
 	}
@@ -175,7 +177,7 @@ public class MetaNode {
 	 * @param updateNetwork if 'true', actually update the network
 	 */
 	public void collapse(CyNetworkView view) {
-		logger.debug("collapse "+metaGroup);
+		logger.debug("collapse "+metaGroup+": isCollapsed = "+isCollapsed()+" isHidden = "+isHidden()+" state = "+metaGroup.getState());
 		if (isCollapsed())
 			return;
 
@@ -203,7 +205,7 @@ public class MetaNode {
 	 * @param update update the display?
 	 */
 	public void expand(CyNetworkView view) {
-		logger.debug("expand");
+		logger.debug("expand "+metaGroup+": isCollapsed = "+isCollapsed()+" isHidden = "+isHidden()+" state = "+metaGroup.getState());
 		if (!isCollapsed())
 			return;
 
