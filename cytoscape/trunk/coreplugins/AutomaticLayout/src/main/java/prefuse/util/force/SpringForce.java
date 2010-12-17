@@ -1,4 +1,5 @@
 package prefuse.util.force;
+import java.util.Random;
 
 /**
  * Force function that computes the force acting on ForceItems due to a
@@ -10,6 +11,8 @@ public class SpringForce extends AbstractForce {
 
     private static String[] pnames 
         = new String[] { "SpringCoefficient", "DefaultSpringLength" };
+
+    private Random rand = null; // deterministic randomness
     
     public static final float DEFAULT_SPRING_COEFF = 1E-4f;
     public static final float DEFAULT_MAX_SPRING_COEFF = 1E-3f;
@@ -33,6 +36,7 @@ public class SpringForce extends AbstractForce {
             { DEFAULT_MIN_SPRING_COEFF, DEFAULT_MIN_SPRING_LENGTH };
         maxValues = new float[] 
             { DEFAULT_MAX_SPRING_COEFF, DEFAULT_MAX_SPRING_LENGTH };
+    		rand = new Random(12345678L); // deterministic randomness
     }
     
     /**
@@ -71,8 +75,8 @@ public class SpringForce extends AbstractForce {
         float dx = x2-x1, dy = y2-y1;
         float r  = (float)Math.sqrt(dx*dx+dy*dy);
         if ( r == 0.0 ) {
-            dx = ((float)Math.random()-0.5f) / 50.0f;
-            dy = ((float)Math.random()-0.5f) / 50.0f;
+            dx = (rand.nextFloat()-0.5f) / 50.0f;
+            dy = (rand.nextFloat()-0.5f) / 50.0f;
             r  = (float)Math.sqrt(dx*dx+dy*dy);
         }
         float d  = r-length;

@@ -56,7 +56,7 @@ public class NBodyForce extends AbstractForce {
     private QuadTreeNodeFactory factory = new QuadTreeNodeFactory();
     private QuadTreeNode root;
     
-    private Random rand = new Random(12345678L); // deterministic randomness
+    private Random rand = null; // deterministic randomness
 
     /**
      * Create a new NBodyForce with default parameters.
@@ -83,6 +83,7 @@ public class NBodyForce extends AbstractForce {
         maxValues = new float[] { DEFAULT_MAX_GRAV_CONSTANT,
             DEFAULT_MAX_DISTANCE, DEFAULT_MAX_THETA };
         root = factory.getQuadTreeNode();
+    		rand = new Random(12345678L); // deterministic randomness
     }
 
     /**

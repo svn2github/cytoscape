@@ -128,7 +128,12 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		part.calculateEdgeWeights();
 		// logger.debug("layoutPartition: "+part.getEdgeList().size()+" edges after calculateEdgeWeights");
 
-		m_fsim.clear();
+		m_fsim = new ForceSimulator();
+		m_fsim.addForce(new NBodyForce());
+		m_fsim.addForce(new SpringForce());
+		m_fsim.addForce(new DragForce());
+
+		forceItems.clear();
 
 		// initialize nodes
 		for (LayoutNode ln: part.getNodeList()) {

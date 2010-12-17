@@ -658,6 +658,8 @@ public class LayoutPartition {
 	    edgesSeenMap.put(-edgeIndex, m_NODE_HAS_NOT_BEEN_SEEN);
 	}
 
+	int partitionCount = 1;
+
 	// OK, now traverse the graph
 	for (CyNode node: nodeSet) {
 	    int nodeIndex = node.getRootGraphIndex();
@@ -701,6 +703,9 @@ public class LayoutPartition {
 			    return false;
 			}
 		    });
+	for (int part = 0; part < parts.length; part++) {
+		parts[part].setPartitionNumber(part+1);
+	}
 
 	return Arrays.asList(parts);
     }
