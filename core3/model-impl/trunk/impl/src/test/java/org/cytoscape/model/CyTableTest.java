@@ -135,7 +135,7 @@ public class CyTableTest extends AbstractCyTableTest {
 		compiler.compile("=$a&\"one\"", varnameToTypeMap);
 		final Equation eqn = compiler.getEquation();
 		attrs.set("strings", eqn);
-                assertFalse(eventHelper.getCalledMicroListeners().contains("handleRowSet"));
+                assertTrue(eventHelper.getCalledMicroListeners().contains("handleRowSet"));
 	}
 
 	@Test

@@ -59,8 +59,9 @@ public class AttributeEventsListener  implements RowSetMicroListener {
 		return attr; 
 	}
 
-	public void handleRowSet(CyRow row, String attributeName, Object value) {
-
+	public void handleRowSet(final CyRow row, final String attributeName, final Object newValue,
+				 final Object newRawValue)
+	{
 //		// conditional repaint container
 //		boolean repaint = false;
 //
@@ -181,7 +182,9 @@ public class AttributeEventsListener  implements RowSetMicroListener {
 	}
 
 	@Override
-	public void handleRowSet(String columnName, Object value) {
+	public void handleRowSet(final String columnName, final Object newValue,
+				 final Object newRawValue)
+	{
 		// TODO Auto-generated method stub
 		
 	}

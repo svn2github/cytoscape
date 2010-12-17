@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.Icon;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.TableRowSorter;
 
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyTable;
@@ -79,6 +80,7 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 		final CyTable table = (CyTable)tableChooser.getSelectedItem();
 		if (table != null && table != currentTable) {
 			if (browserTableModel != null) {
+				browserTableModel.cleanup();
 				serviceRegistrar.unregisterAllServices(browserTableModel);
 				eventHelper.removeMicroListener(browserTableModel, RowCreatedMicroListener.class, table);
 			}
@@ -88,6 +90,7 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 			eventHelper.addMicroListener(browserTableModel, RowCreatedMicroListener.class, table);
 			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 			browserTable.setModel(browserTableModel);
+			browserTable.setRowSorter(new TableRowSorter(browserTableModel));
 		}
 	}
 }

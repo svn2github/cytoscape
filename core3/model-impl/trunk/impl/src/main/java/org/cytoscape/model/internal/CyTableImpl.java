@@ -415,10 +415,9 @@ public class CyTableImpl implements CyTable {
 				if (eqnValue == null)
 					logger.warn("attempted premature evaluation evaluation for "
 						    + equation);
-				else
-					eventHelper.getMicroListener(
-						RowSetMicroListener.class,
-						getRow(key)).handleRowSet(columnName, eqnValue);
+				eventHelper.getMicroListener(
+					RowSetMicroListener.class,
+					getRow(key)).handleRowSet(columnName, eqnValue, value);
 			} else {
 				// TODO this is an implicit addRow - not sure if we want to refactor this or not
 				final Object newValue = columnType.cast(value);
@@ -427,7 +426,7 @@ public class CyTableImpl implements CyTable {
 				addToReverseMap(columnName, key, oldValue, newValue);
 				eventHelper.getMicroListener(
 					RowSetMicroListener.class,
-					getRow(key)).handleRowSet(columnName, newValue);
+					getRow(key)).handleRowSet(columnName, newValue, newValue);
 			}
 		} else
 			throw new IllegalArgumentException("value is not of type: "
@@ -495,10 +494,15 @@ public class CyTableImpl implements CyTable {
 		// TODO this is an implicit addRow - not sure if we want to refactor this or not
 		final Object oldValue = keyToValueMap.get(key);
 		keyToValueMap.put(key, value);
-		if (value instanceof List)
+		final Object newValue;
+		if (value instanceof Equation)
+			newValue = evalEquation((Equation)value, suid, columnName);
+		else {
+			newValue = value;
 			addToReverseMap(columnName, key, oldValue, value);
+		}
 		eventHelper.getMicroListener(RowSetMicroListener.class,
-					     getRow(key)).handleRowSet(columnName, value);
+					     getRow(key)).handleRowSet(columnName, newValue, value);
 	}
 
 	private static boolean listEquationIsCompatible(final Equation equation,
@@ -532,7 +536,7 @@ public class CyTableImpl implements CyTable {
 			removeFromReverseMap(columnName, key, value);
 		keyToValueMap.remove(key);
 		eventHelper.getMicroListener(RowSetMicroListener.class,
-					     getRow(key)).handleRowSet(columnName, null);
+					     getRow(key)).handleRowSet(columnName, null, null);
 	}
 
 	private void removeFromReverseMap(final String columnName, final Object key, final Object value) {

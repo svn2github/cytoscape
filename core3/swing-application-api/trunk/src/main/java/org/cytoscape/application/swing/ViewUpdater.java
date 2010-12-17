@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,13 +24,15 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.application.swing;
+
 
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.events.RowSetMicroListener;
+
 
 /**
  * A utility class that provides an implementation of
@@ -79,14 +73,14 @@ public class ViewUpdater<T,S> implements RowSetMicroListener {
 	 * the visual property on the view with the new value that has been
 	 * set in the row.
 	 * @param columnName The name of the column with the row that was changed.
-	 * @param value The new value that the row has been set to. 
+	 * @param newValue The new value that the row has been set to. 
 	 */
 	@SuppressWarnings("unchecked")
-	public void handleRowSet(final String columnName, final Object value) {
-		if ( columnName == null || !columnName.equals(this.columnName) )
+		public void handleRowSet(final String columnName, final Object newValue, final Object newRawValue) {
+		if (!columnName.equals(this.columnName))
 			return;
 
 		// Assume caller checks validity of value parameter.
-		view.setVisualProperty(vp, (S)value);
+		view.setVisualProperty(vp, (S)newValue);
 	}
 }

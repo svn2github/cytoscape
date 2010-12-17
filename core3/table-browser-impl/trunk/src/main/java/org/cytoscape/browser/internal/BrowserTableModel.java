@@ -1,6 +1,7 @@
 package org.cytoscape.browser.internal;
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,22 +22,24 @@ import org.cytoscape.model.events.RowSetMicroListener;
 
 
 public class BrowserTableModel extends AbstractTableModel
-	implements ColumnCreatedListener, ColumnDeletedListener, RowSetMicroListener, RowCreatedMicroListener
+	implements ColumnCreatedListener, ColumnDeletedListener, RowCreatedMicroListener
 {
 	private final CyEventHelper eventHelper;
 	private final CyTable table;
 	private boolean tableHasBooleanSelected;
+	private Map<CyRow, RowSetMicroListenerProxy> rowToListenerProxyMap;
 
 	public BrowserTableModel(final CyEventHelper eventHelper, final CyTable table) {
 		this.eventHelper = eventHelper;
 		this.table = table;
 		this.tableHasBooleanSelected = table.getColumnTypeMap().get(CyNetwork.SELECTED) == Boolean.class;
+		this.rowToListenerProxyMap = new HashMap<CyRow, RowSetMicroListenerProxy>();
 
 		eventHelper.addMicroListener(this, RowCreatedMicroListener.class, table);
 
 		final List<CyRow> rows = table.getAllRows();
 		for (final CyRow row : rows)
-			eventHelper.addMicroListener(this, RowSetMicroListener.class, row);
+			rowToListenerProxyMap.put(row, new RowSetMicroListenerProxy(this, eventHelper, row));
 	}
 
 	@Override
@@ -100,6 +103,34 @@ public class BrowserTableModel extends AbstractTableModel
 		}
 	}
 
+	/**
+	 *  @return the row index for "cyRow" or -1 if there is no matching row.
+	 */
+	int mapRowToRowIndex(final CyRow cyRow) {
+		int index = 0;
+		if (tableHasBooleanSelected) {
+			final Set<CyRow> selectedRows = table.getMatchingRows(CyNetwork.SELECTED, true);
+			for (final CyRow selectedRow : selectedRows) {
+				if (cyRow == selectedRow)
+					return index;
+				++index;
+			}
+
+			return -1; // Most likely the passed in row was not a selected row!
+		} else {
+			final List primaryKeyValues =
+				table.getColumnValues(table.getPrimaryKey(),
+						      table.getPrimaryKeyType());
+			for (final Object primaryKey : primaryKeyValues) {
+				if (cyRow == table.getRow(primaryKey))
+					return index;
+				++index;
+			}
+
+			throw new IllegalStateException("we should *never* get here!");
+		}
+	}
+
 	private ValidatedObjectAndEditString getValidatedObjectAndEditString(final CyRow row,
 									     final String columnName)
 	{
@@ -132,18 +163,9 @@ public class BrowserTableModel extends AbstractTableModel
 	}
 
 	@Override
-	public void handleRowSet(final String columnName, final Object value) {
-		if (tableHasBooleanSelected && columnName.equals(CyNetwork.SELECTED))
-			fireTableStructureChanged();
-		else {
-			final int changedColumn = mapColumnNameToColumnIndex(columnName);
-			fireTableChanged(new TableModelEvent(this, 0, table.getRowCount(), changedColumn));
-		}
-	}
-
-	@Override
 	public void handleRowCreated(final Object key) {
-		eventHelper.addMicroListener(this, RowSetMicroListener.class, table.getRow(key));
+		final CyRow newRow = table.getRow(key);
+		rowToListenerProxyMap.put(newRow, new RowSetMicroListenerProxy(this, eventHelper, newRow));
 		fireTableStructureChanged();
 	}
 
@@ -184,5 +206,48 @@ public class BrowserTableModel extends AbstractTableModel
 		}
 
 		throw new IllegalStateException("We should *never* get here!");
+	}
+
+	void handleRowValueUpdate(final CyRow row, final String columnName, final Object newValue,
+				  final Object newRawValue)
+	{
+		if (tableHasBooleanSelected && columnName.equals(CyNetwork.SELECTED))
+			fireTableStructureChanged();
+		else {
+			final int changedColumn = mapColumnNameToColumnIndex(columnName);
+			fireTableChanged(new TableModelEvent(this, 0, table.getRowCount(), changedColumn));
+		}
+	}
+
+	public void cleanup() {
+		eventHelper.removeMicroListener(this, RowCreatedMicroListener.class, table);
+		for (final RowSetMicroListenerProxy proxy : rowToListenerProxyMap.values())
+			proxy.cleanup();
+	}
+}
+
+
+class RowSetMicroListenerProxy implements RowSetMicroListener {
+	private final BrowserTableModel tableModel;
+	private final CyEventHelper eventHelper;
+	private final CyRow row;
+
+	RowSetMicroListenerProxy(final BrowserTableModel tableModel, final CyEventHelper eventHelper,
+				 final CyRow row)
+	{
+		this.tableModel = tableModel;
+		this.eventHelper = eventHelper;
+		this.row = row;
+
+		eventHelper.addMicroListener(this, RowSetMicroListener.class, row);
+	}
+
+	@Override
+	public void handleRowSet(final String columnName, final Object newValue, final Object newRawValue) {
+		tableModel.handleRowValueUpdate(row, columnName, newValue, newRawValue);
+	}
+
+	void cleanup() {
+		eventHelper.removeMicroListener(this, RowSetMicroListener.class, row);
 	}
 }

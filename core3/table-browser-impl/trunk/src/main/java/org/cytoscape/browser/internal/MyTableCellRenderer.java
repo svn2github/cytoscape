@@ -18,12 +18,12 @@ public class MyTableCellRenderer extends JLabel implements TableCellRenderer {
 	{
 		if (isSelected) {
 			// cell (and perhaps other cells) are selected
+			setOpaque(true);
+			setBackground(Color.GRAY);
 		}
 
 		if (hasFocus) {
 			// this cell is the anchor and the table has the focus
-			setOpaque(true);
-			setBackground(Color.GRAY);
 		}
 
 		// Configure the component with the specified value
