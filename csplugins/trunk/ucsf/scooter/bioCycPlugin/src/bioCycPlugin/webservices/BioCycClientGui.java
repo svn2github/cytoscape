@@ -33,6 +33,7 @@ import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 import cytoscape.data.webservice.CyWebServiceException;
 import cytoscape.data.webservice.WebServiceClientManager;
 
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -59,6 +60,7 @@ import javax.swing.ListSelectionModel;
 public class BioCycClientGui extends JPanel implements ActionListener {
 	final BioCycClient client;
 	private CyLogger logger;
+	private boolean initialized = false;
 
 	Database defaultDatabase = null;
 	JComboBox databaseCombo;
@@ -74,7 +76,9 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 		databaseCombo = new JComboBox();
 		databaseCombo.addActionListener(this);
 		databaseCombo.setActionCommand(ACTION_SET_DATABASE);
-		resetDatabases();
+		Object dbArray[] = new Object[1];
+		dbArray[0] = "Initializing...";
+		databaseCombo.setModel(new DefaultComboBoxModel(dbArray));
 
 		searchText = new JTextField();
 		searchText.setActionCommand(ACTION_SEARCH);
@@ -239,6 +243,17 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 			}
 			return null;
 		}
+	}
+
+	// We override the paint method for the sole purpose of figuring out when we're
+	// actually being painted.  We don't want to start going over the net unless
+	// we're really going to need to
+	public void paint(Graphics g) {
+		if (!initialized) {
+			resetDatabases();
+			initialized = true;
+		}
+		super.paint(g);
 	}
 
 	private static final String ACTION_SEARCH = "Search";
