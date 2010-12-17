@@ -108,7 +108,7 @@ public class RunSCPS {
 		this.rnumber = rnumber; 
                 
                 this.logger = logger;
-		this.clusterMap = new HashMap();
+		this.clusterMap = new HashMap<Integer,NodeCluster>();
 		this.clusterCount = 0;
                 nodes = distanceMatrix.getNodes();
                 edges = distanceMatrix.getEdges();
@@ -116,8 +116,8 @@ public class RunSCPS {
 		
 		
 		//maps indices of filtered nodes in new uMatrix to the the original in the complete, unfiltered matrix, and vice-versa
-		this.old2newMap = new HashMap();
-		this.new2oldMap = new HashMap();
+		this.old2newMap = new HashMap<Integer,Integer>();
+		this.new2oldMap = new HashMap<Integer,Integer>();
 	}
 
 
@@ -186,7 +186,7 @@ public class RunSCPS {
 	   //Size of newly created Umat after filtering of small components
 	   int sMat_rows = 0;
 
-	   HashMap<Integer, List<CyNode>> filtered_cmap = new HashMap();
+	   HashMap<Integer, List<CyNode>> filtered_cmap = new HashMap<Integer, List<CyNode>>();
 
 	   //Connected Componets
 	   Map<Integer, List<CyNode>> cMap = distanceMatrix.findConnectedComponents();
@@ -224,8 +224,11 @@ public class RunSCPS {
 		       
 		       CyNode n = component.get(i);
 		       
+		    
+		       
 		       //set mapping of new matrix index to old index
 		       setMap(this.nodes.indexOf(n), sMat_rows);
+
 		       sMat_rows++;
 		   }
 
@@ -251,6 +254,9 @@ public class RunSCPS {
 	       int new_row_id = getMap_new(row_id);
 	       int new_column_id = getMap_new(column_id);
 	       double value = valueList.get(i);
+
+	       if(new_row_id == 37)
+		    System.out.println("!!! 37 ROW::" + row_id + " Column:" + column_id + " Value:"+value);
 
 	       //Set symmetrically the values in new matrix
 	       if(new_row_id > -1 && new_column_id > -1)
@@ -324,7 +330,9 @@ public class RunSCPS {
 
 			//set the Diagnal (i,i) to sum of columns over row i
 			dMat.set(i,i, sMat.viewRow(i).zSum());
-			System.out.println("DMat row "+ i + " value " + dMat.get(i,i));
+			
+			if(dMat.get(i,i) <= 5)
+			    System.out.println("DMat row "+ i + " value " + dMat.get(i,i));
 		}
 
 		
@@ -384,11 +392,11 @@ public class RunSCPS {
 	 	uMat = eigenVect.viewPart(0,0,eigenVect.rows(),k);
 		
 	       
-		//Normalize each row of matrix U
+		//Normalize each row of matrix U to have unit length
 		for(int i = 0; i < uMat.columns(); i++){
 
 			DoubleMatrix1D row = uMat.viewRow(i);
-			double sum = row.zSum();
+			double rowLength = Math.pow(row.zDotProduct(row),.5);
 			row.getNonZeros(indexList,valueList);
 
 			//normalize each Nozero value in row
@@ -396,7 +404,7 @@ public class RunSCPS {
 			for(int j = 0; j < indexList.size(); j ++){
 
 				int index = indexList.get(j);
-				double value = valueList.get(j)/sum;
+				double value = valueList.get(j)/rowLength;
 				
 				uMat.set(i,index,value);
 			}
