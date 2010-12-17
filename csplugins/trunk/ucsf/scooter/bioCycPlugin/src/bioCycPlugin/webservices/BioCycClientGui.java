@@ -250,8 +250,10 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 	// we're really going to need to
 	public void paint(Graphics g) {
 		if (!initialized) {
-			resetDatabases();
 			initialized = true;
+
+			ResetDatabaseTask getDbTask = new ResetDatabaseTask();
+			getDbTask.start();
 		}
 		super.paint(g);
 	}
@@ -259,4 +261,10 @@ public class BioCycClientGui extends JPanel implements ActionListener {
 	private static final String ACTION_SEARCH = "Search";
 	private static final String ACTION_SET_DATABASE = "Set Database";
 	private static final String ACTION_SET_WEBSERVICE = "Set Web Service URL";
+
+	class ResetDatabaseTask extends Thread {
+		public void run() {
+			resetDatabases();
+		}
+	}
 }
