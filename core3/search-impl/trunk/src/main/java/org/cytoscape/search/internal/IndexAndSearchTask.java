@@ -70,7 +70,6 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 		this.enhancedSearch = enhancedSearch;
 		this.tableMgr = tableMgr;
 		this.query = query;
-		
 	}
 
     @Override
@@ -106,7 +105,16 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 			return;
 		}
 
+		showResults(queryHandler, taskMonitor);
+	}
+
+    
+    private void showResults(EnhancedSearchQuery queryHandler, final TaskMonitor taskMonitor){
 		// Display results
+    	if (network == null || network.getNodeList().size() == 0){
+    		return;
+    	}
+    	
 		List<CyNode> nodeList = network.getNodeList();
 		for (CyNode n : nodeList) {
 			n.getCyRow().set("selected",false);
@@ -120,7 +128,7 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 		int edgeHitCount = queryHandler.getEdgeHitCount();
 		if (nodeHitCount == 0 && edgeHitCount == 0) {
 			return;
-		}
+		}	
 
 		taskMonitor.setStatusMessage("Selecting " + nodeHitCount + " and " + edgeHitCount + " edges");
 
@@ -154,12 +162,12 @@ public class IndexAndSearchTask extends AbstractNetworkViewTask {
 
 			taskMonitor.setProgress(numCompleted++ / edgeHitCount);
 		}
-
+		
 		// Refresh view to show selected nodes and edges
 		view.updateView();
-	}
+    }
 
-
+    
     @Override
     public void cancel() {
 		this.interrupted = true;
