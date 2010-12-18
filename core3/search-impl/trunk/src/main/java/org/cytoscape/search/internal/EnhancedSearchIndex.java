@@ -147,11 +147,23 @@ public class EnhancedSearchIndex {
 					continue;
 				}				
 				doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));
-			} else if (valueType == Integer.class) {				
+			} else if (valueType == Integer.class) {
+				if (graphObject.getCyRow().get(attrName, Integer.class) == null){
+					continue;
+				}
 				String attrValue = NumberUtils.long2sortableStr(graphObject.getCyRow().get(attrName, Integer.class));
+				if (attrValue == null){
+					continue;
+				}
 				doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));
-			} else if (valueType == Double.class) {				
+			} else if (valueType == Double.class) {	
+				if (graphObject.getCyRow().get(attrName, Double.class) == null){
+					continue;
+				}
 				String attrValue = NumberUtils.double2sortableStr(graphObject.getCyRow().get(attrName, Double.class));				
+				if (attrValue == null){
+					continue;
+				}
 				doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));
 			} else if (valueType == Boolean.class) {
 				String attrValue = graphObject.getCyRow().get(attrName, Boolean.class).toString();
