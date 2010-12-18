@@ -17,11 +17,18 @@ pluginVersion=0.9
 cytoscapeVersion=2.8
 
 # Category, use one of the categories listed on the website or create your own
-pluginCategory=Visualization
+pluginCategory=Other
 
+# -- The following properties are OPTIONAL -- #
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
 pluginAuthorsIntstiutions=John "Scooter" Morris:UCSF;Allan Kuchinsky:Agilent;Alex Pico:Gladtone Institutes
+
+# URL to a website that gives more information about your plugin, Ex. http://my-lab-site.org
+projectURL=http://www.rbvi.ucsf.edu/Research/cytoscape/
+
+# Date this plugin/plugin version was released
+releaseDate=December 17, 2010
 
 # -- The following properties should be set ONLY BY CORE PLUGINS -- #
