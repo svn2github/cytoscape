@@ -13,22 +13,22 @@ pluginName=commandTool
 pluginDescription=This plugin provides an interface to the new Cytoscape 2.7 command feature
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.9
+pluginVersion=1.0
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.7
+cytoscapeVersion=2.8
 
 # Category, use one of the categories listed on the website or create your own
-pluginCategory=Other
+pluginCategory=Communication/Scripting
 
 # -- The following properties are OPTIONAL -- #
 
 # URL to a website that gives more information about your plugin, Ex. http://my-lab-site.org
-projectURL=http://www.rbvi.ucsf.edu/Research/cytoscape/
+projectURL=http://www.rbvi.ucsf.edu/cytoscape/
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
 pluginAuthorsIntsitutions=John "Scooter" Morris:UCSF
 
 # Date this plugin/plugin version was released
-releaseDate=June 1, 2010
+releaseDate=December 18, 2010
