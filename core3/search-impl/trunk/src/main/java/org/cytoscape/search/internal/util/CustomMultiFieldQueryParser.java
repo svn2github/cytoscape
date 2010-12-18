@@ -40,16 +40,14 @@ import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.util.NumericUtils;
 import org.apache.lucene.queryParser.ParseException;
-//import org.apache.lucene.document.NumberTools;
-//import org.apache.lucene.util.NumericUtils;
 import org.apache.lucene.util.Version;
-//import org.apache.lucene.search.RangeQuery;
+import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.index.Term;
-
 import org.cytoscape.search.internal.util.AttributeFields;
 import org.cytoscape.search.internal.util.NumberUtils;
-import org.apache.lucene.search.NumericRangeQuery;
+
 
 
 /**
@@ -74,7 +72,8 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 		if (attrFields.getType(field) == Integer.class) {
 			try {
 				int num1 = Integer.parseInt(queryText);
-				return super.getFieldQuery(field, NumberUtils.long2sortableStr(num1));
+				//return super.getFieldQuery(field, NumberTools.longToString(num1));
+				return super.getFieldQuery(field, NumericUtils.longToPrefixCoded(num1));
 			} catch (NumberFormatException e) {
 				// Do nothing. When using a MultiFieldQueryParser, queryText is
 				// searched in each one of the fields. This exception occurs
@@ -91,12 +90,12 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 				// .double2sortableStr(num1));
 				
 				Query q = NumericRangeQuery.newDoubleRange(field, num1, num1, true, true);
-
 				return q;
 				
-				//return new NumericRangeQuery(new Term(field, NumberUtils.double2sortableStr(num1)),
-				//		new Term(field, NumberUtils.double2sortableStr(num1)), 
-				//		true);
+				//return new RangeQuery(new Term(field, NumberUtils
+				//		.double2sortableStr(num1)), new Term(field, NumberUtils
+				//		.double2sortableStr(num1)), true);
+				
 			} catch (NumberFormatException e) {
 				// Do nothing. When using a MultiFieldQueryParser, queryText is
 				// searched in each one of the fields. This exception occurs
