@@ -17,7 +17,6 @@ import org.cytoscape.ding.customgraphics.CyCustomGraphics;
 import org.cytoscape.ding.customgraphics.NullCustomGraphics;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,15 +25,8 @@ public final class CustomGraphicsManagerImpl implements CustomGraphicsManager, C
 
 	private static final Logger logger = LoggerFactory.getLogger(CustomGraphicsManagerImpl.class);
 
-//	private static final int TIMEOUT = 1000;
-//	private static final int NUM_THREADS = 8;
 
-	private static final String IMAGE_DIR_NAME = "images";
-//
-//	// For image I/O, PNG is used as bitmap image format.
-//	private static final String IMAGE_EXT = "png";
-
-//	private final ExecutorService imageLoaderService;
+	private static final String IMAGE_DIR_NAME = "images3";
 
 	protected final Map<Long, CyCustomGraphics> graphicsMap = new ConcurrentHashMap<Long, CyCustomGraphics>();
 
@@ -44,8 +36,6 @@ public final class CustomGraphicsManagerImpl implements CustomGraphicsManager, C
 	// Null Object
 	private static final CyCustomGraphics NULL = NullCustomGraphics
 			.getNullObject();
-
-	
 
 	private final File imageHomeDirectory;
 	
@@ -71,14 +61,19 @@ public final class CustomGraphicsManagerImpl implements CustomGraphicsManager, C
 		if(props == null)
 			throw new NullPointerException("Property is missing.");
 		
-		final String configDirectory = props.getProperty(CyProperty.DEFAULT_CONFIG_DIR);
+		String configDirectory = props.getProperty(CyProperty.DEFAULT_CONFIG_DIR);
+		if(configDirectory == null || configDirectory.trim().length() == 0)
+			configDirectory = System.getProperty("user.home");
 		
-		this.imageHomeDirectory = new File(configDirectory, IMAGE_DIR_NAME);
+		final File configFileLocation = new File(configDirectory, CyProperty.DEFAULT_CONFIG_DIR);
+		this.imageHomeDirectory = new File(configFileLocation, IMAGE_DIR_NAME);
+		
+		logger.debug("\n!!!!!!!!!!!!!!!!! Cytoscape image directory: " + imageHomeDirectory.toString());
 
 		graphicsMap.put(NULL.getIdentifier(), NULL);
 		this.isUsedCustomGraphics.put(NULL, false);
 		
-		final RestoreImageTaskFactory taskFactory = new RestoreImageTaskFactory(props, this);
+		final RestoreImageTaskFactory taskFactory = new RestoreImageTaskFactory(imageHomeDirectory, this);
 		
 		taskManager.execute(taskFactory);
 		

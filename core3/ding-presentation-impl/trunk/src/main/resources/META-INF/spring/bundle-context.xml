@@ -22,6 +22,7 @@
 	<context:annotation-config />
 
 	<bean id="dVisualLexicon" class="org.cytoscape.ding.impl.DVisualLexicon">
+		<constructor-arg ref="customGraphicsManagerServiceRef" />
 	</bean>
 
 	<bean id="dingRenderingEngineFactory" class="org.cytoscape.ding.impl.DingRenderingEngineFactory">

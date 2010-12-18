@@ -24,16 +24,16 @@ import org.slf4j.LoggerFactory;
 
 public class PersistImageTask implements Task {
 
-	private static final Logger logger = LoggerFactory.getLogger(PersistImageTask.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(PersistImageTask.class);
 
 	private final File location;
 	private final CustomGraphicsManager manager;
 
 	private static final int TIMEOUT = 1000;
 	private static final int NUM_THREADS = 4;
-	
-	private static final String METADATA_FILE = "image_metadata.props";
 
+	private static final String METADATA_FILE = "image_metadata.props";
 
 	/**
 	 * Constructor.<br>
@@ -54,8 +54,10 @@ public class PersistImageTask implements Task {
 
 		// Remove all existing files
 		final File[] files = location.listFiles();
-		for (File old : files)
-			old.delete();
+		if (files != null) {
+			for (File old : files)
+				old.delete();
+		}
 
 		final long startTime = System.currentTimeMillis();
 
@@ -82,8 +84,14 @@ public class PersistImageTask implements Task {
 
 		}
 
-		exService.shutdown();
-		exService.awaitTermination(TIMEOUT, TimeUnit.SECONDS);
+		try {
+			exService.shutdown();
+			exService.awaitTermination(TIMEOUT, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+			throw e;
+		}
 
 		try {
 			manager.getMetadata().store(
@@ -119,6 +127,8 @@ public class PersistImageTask implements Task {
 
 		public String call() throws Exception {
 
+			logger.debug("  Saving Image: " + fileName);
+			
 			if (!fileName.endsWith(".png"))
 				fileName += ".png";
 			File file = new File(imageHome, fileName);

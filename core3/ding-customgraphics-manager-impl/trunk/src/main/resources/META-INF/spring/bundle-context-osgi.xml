@@ -12,6 +12,11 @@
 		
 	<osgi:reference id="cyApplicationManagerServiceRef" interface="org.cytoscape.session.CyApplicationManager" />
 	
+	
+	<!-- Export Custom Graphics Manager as a service.  Other bundles should access CG through this sevice. -->
+	<osgi:service id="customGraphicsManagerService" ref="customGraphicsManager"
+		auto-export="interfaces" />
+	
 	<osgi:service id="customGraphicsManagerActionService" ref="customGraphicsManagerAction"
 		interface="org.cytoscape.application.swing.CyAction" />
 </beans>

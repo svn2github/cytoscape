@@ -39,8 +39,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.DefaultListModel;
@@ -54,6 +54,11 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.view.model.DiscreteRange;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
@@ -66,31 +71,61 @@ import org.jdesktop.swingx.border.DropShadowBorder;
  * <li>etc.</li>
  * </ul>
  * 
- * @author kono
  */
 public class DiscreteValueEditor<T> extends JDialog implements ValueEditor<T> {
 	
 	private final static long serialVersionUID = 1202339876950593L;
-
-	private final Class<T> type;
-	private final Set<T> values;
 	
-//	private Map<T, Icon> valueMap;
+	private static final int ICON_SIZE = 32;
+
+	private final Class<T> type;	
+	private final DiscreteRange<T> range;
+	private final VisualProperty<T> vp;
+	
+	private final CyApplicationManager appManager;
+	
+	
+	private Map<T, Icon> iconMap;
 //	
 //	private List<T> orderedKeyList;
 //	private T defaultValue;
 	private boolean canceled = false;
 
-	public DiscreteValueEditor(Class<T> type, Set<T> values) {
+	public DiscreteValueEditor(final CyApplicationManager appManager, final Class<T> type, final DiscreteRange<T> dRange, final VisualProperty<T> vp) {
 		super();
-		this.values = values;
+		
+		if(dRange == null)
+			throw new NullPointerException("Range object is null.");
+		
+		this.range = dRange;		
 		this.type = type;
+		this.appManager = appManager;
+		this.vp = vp;
+		
+		this.iconMap = new HashMap<T, Icon>();
 		
 		this.setModal(true);
 		this.setTitle("Select a value");
 
 		initComponents();
 		setListItems();
+		
+	}
+	
+	/**
+	 * Use current renderer to create icons.
+	 * @param values
+	 */
+	private void renderIcons(final Set<T> values) {
+		final RenderingEngine<CyNetwork> engine = appManager.getCurrentRenderingEngine();
+		
+		// CCurrent engine is not ready yet.
+		if(engine == null)
+			return;
+		
+		iconMap.clear();
+		for(T value: values)
+			iconMap.put(value, engine.createIcon(vp, value, ICON_SIZE, ICON_SIZE));
 	}
 
 
@@ -211,17 +246,16 @@ public class DiscreteValueEditor<T> extends JDialog implements ValueEditor<T> {
 
 	
 	private void setListItems() {
-		final List<Icon> icons = new ArrayList<Icon>();
-		//orderedKeyList = new ArrayList<T>();
 
+		final Set<T> values = range.values();
+		renderIcons(values);
 		
 		model = new DefaultListModel();
 		iconList.setModel(model);
 
-		Icon icon;
 
 		for (final T key : values) {
-			//icon = valueMap.get(key);
+			//Icon icon = iconMap.get(key);
 
 			//icons.add(icon);
 			//orderedKeyList.add(key);
@@ -249,26 +283,29 @@ public class DiscreteValueEditor<T> extends JDialog implements ValueEditor<T> {
 				int index, boolean isSelected, boolean cellHasFocus) {
 			// Get icon for the target value
 			
-			//TODO: fix icon
-			//final Icon icon = valueMap.get(value);
+			final Icon icon = iconMap.get(value);
 
 			setText(value.toString());
-			// icon.setLeftPadding(15);
-			//setIcon(icon);
+			//icon.setLeftPadding(15);
+			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
 
 			this.setVerticalTextPosition(SwingConstants.CENTER);
 			this.setVerticalAlignment(SwingConstants.CENTER);
-			this.setIconTextGap(35);
+			this.setIconTextGap(45);
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
 			setForeground(isSelected ? SELECTED_FONT_COLOR : list
 					.getForeground());
 			
-			this.setHorizontalTextPosition(CENTER);
-			setPreferredSize(new Dimension(100, 40));
-//			setPreferredSize(new Dimension(icon.getIconWidth(), icon
-//					.getIconHeight() + 20));
+			this.setHorizontalTextPosition(LEFT);
+			this.setHorizontalAlignment(LEFT);
+				
+			if(icon != null)
+				setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight() + 20));
+			else
+				setPreferredSize(new Dimension(100, 60));
+			
 			this.setBorder(new DropShadowBorder());
 
 			return this;
@@ -277,6 +314,7 @@ public class DiscreteValueEditor<T> extends JDialog implements ValueEditor<T> {
 
 	@Override
 	public <S extends T> T showEditor(Component parent, S initialValue) {
+		setListItems();
 		setLocationRelativeTo(parent);
 		setVisible(true);
 		return getValue();

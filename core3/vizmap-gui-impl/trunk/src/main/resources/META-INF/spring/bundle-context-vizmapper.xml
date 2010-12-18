@@ -66,6 +66,7 @@
 		class="org.cytoscape.view.vizmap.gui.internal.editor.EditorManagerImpl">
 		<constructor-arg ref="attributeSetManager" />
 		<constructor-arg ref="vmmServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 

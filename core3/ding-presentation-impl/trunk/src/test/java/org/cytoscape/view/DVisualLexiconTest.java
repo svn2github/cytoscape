@@ -2,8 +2,11 @@ package org.cytoscape.view;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
+import org.cytoscape.ding.customgraphics.CustomGraphicsManager;
 import org.cytoscape.ding.impl.DVisualLexicon;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
@@ -18,7 +21,8 @@ public class DVisualLexiconTest extends AbstractVisualLexiconTest {
 
 	@Before
 	public void setUp() throws Exception {
-		dLexicon = new DVisualLexicon();
+		final CustomGraphicsManager manager = mock(CustomGraphicsManager.class);
+		dLexicon = new DVisualLexicon(manager);
 	}
 
 	@After
@@ -35,7 +39,7 @@ public class DVisualLexiconTest extends AbstractVisualLexiconTest {
 
 		assertEquals(1, dLexicon.getVisualLexiconNode(root).getChildren().size());
 		
-		assertEquals(60, dLexicon.getAllVisualProperties().size());
+		assertEquals(61, dLexicon.getAllVisualProperties().size());
 	}
 
 	@Test

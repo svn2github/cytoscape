@@ -42,7 +42,12 @@ import java.awt.Stroke;
 import org.cytoscape.ding.ArrowShape;
 import org.cytoscape.ding.NodeShape;
 import org.cytoscape.ding.ObjectPosition;
+import org.cytoscape.ding.customgraphics.CustomGraphicsManager;
+import org.cytoscape.ding.customgraphics.CustomGraphicsRange;
+import org.cytoscape.ding.customgraphics.CyCustomGraphics;
+import org.cytoscape.ding.customgraphics.NullCustomGraphics;
 import org.cytoscape.ding.impl.visualproperty.ArrowShapeTwoDVisualProperty;
+import org.cytoscape.ding.impl.visualproperty.CustomGraphicsVisualProperty;
 import org.cytoscape.ding.impl.visualproperty.FontTwoDVisualProperty;
 import org.cytoscape.ding.impl.visualproperty.IntegerTwoDVisualProperty;
 import org.cytoscape.ding.impl.visualproperty.NodeShapeTwoDVisualProperty;
@@ -106,6 +111,10 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 			200, "NODE_TRANSPARENCY", "Node Transparency", CyNode.class);
 	
 	
+	private static final CustomGraphicsRange CG_RANGE = new CustomGraphicsRange();
+	public static final VisualProperty<CyCustomGraphics> NODE_CUSTOMGRAPHICS_1 = new CustomGraphicsVisualProperty(
+			NullCustomGraphics.getNullObject(), CG_RANGE, "NODE_CUSTOMGRAPHICS_1", "Node Custom Graphics 1", CyNode.class);
+	
 
 	
 	// Edge VPs
@@ -149,8 +158,10 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 			"Edge Label Position", CyEdge.class);
 	
 
-	public DVisualLexicon() {
+	public DVisualLexicon(final CustomGraphicsManager manager) {
 		super(DING_ROOT);
+		
+		CG_RANGE.setManager(manager);
 			
 		addVisualProperty(NETWORK_NODE_SELECTION, NETWORK);
 		addVisualProperty(NETWORK_EDGE_SELECTION, NETWORK);
@@ -169,6 +180,8 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		addVisualProperty(NODE_BORDER_WIDTH, NODE);
 		addVisualProperty(NODE_BORDER_STROKE, NODE);
 		addVisualProperty(NODE_TRANSPARENCY, NODE);
+		
+		addVisualProperty(NODE_CUSTOMGRAPHICS_1, NODE_PAINT);
 		
 		addVisualProperty(EDGE_SELECTED_PAINT, EDGE_PAINT);
 		addVisualProperty(EDGE_STROKE, EDGE);

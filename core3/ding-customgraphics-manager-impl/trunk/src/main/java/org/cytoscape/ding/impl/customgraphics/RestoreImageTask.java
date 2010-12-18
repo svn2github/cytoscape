@@ -48,7 +48,6 @@ public class RestoreImageTask implements Task {
 
 	private File imageHomeDirectory;
 	
-	private static final String IMAGE_DIR_NAME = "images";
 
 	// For image I/O, PNG is used as bitmap image format.
 	private static final String IMAGE_EXT = "png";
@@ -58,14 +57,13 @@ public class RestoreImageTask implements Task {
 			GradientRoundRectangleLayer.class, GradientOvalLayer.class };
 	
 	
-	RestoreImageTask(final Properties props, final CustomGraphicsManagerImpl manager) {
+	RestoreImageTask(final File imageLocaiton, final CustomGraphicsManagerImpl manager) {
 		this.manager = manager;
 		
 		// For loading images in parallel.
 		this.imageLoaderService = Executors.newFixedThreadPool(NUM_THREADS);
 		
-		final String configDirectory = props.getProperty(CyProperty.DEFAULT_CONFIG_DIR);
-		this.imageHomeDirectory = new File(configDirectory, IMAGE_DIR_NAME);
+		this.imageHomeDirectory = imageLocaiton;
 	}
 	
 	private void restoreDefaultVectorImageObjects() {

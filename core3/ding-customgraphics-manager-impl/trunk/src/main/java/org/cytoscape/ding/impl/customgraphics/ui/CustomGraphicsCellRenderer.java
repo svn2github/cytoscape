@@ -20,8 +20,6 @@ import org.jdesktop.swingx.JXImagePanel;
 
 /**
  * Cell renderer for Custom Graphics Browser.
- * 
- * @author kono
  *
  */
 public class CustomGraphicsCellRenderer extends JPanel implements

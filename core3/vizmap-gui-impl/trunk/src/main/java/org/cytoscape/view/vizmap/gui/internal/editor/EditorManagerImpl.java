@@ -50,6 +50,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.Range;
 import org.cytoscape.view.model.VisualLexicon;
@@ -86,11 +87,16 @@ public class EditorManagerImpl implements EditorManager, RenderingEngineFactoryA
 
 	private final PropertyEditor mappingTypeEditor;
 	
+	private final CyApplicationManager appManager;
+	
 
 	/**
 	 * Creates a new EditorFactory object.
 	 */
-	public EditorManagerImpl(final AttributeSetManager attrManager, final VisualMappingManager vmm) {
+	public EditorManagerImpl(final CyApplicationManager appManager, final AttributeSetManager attrManager, final VisualMappingManager vmm) {
+		
+		this.appManager = appManager;
+		
 		editors = new HashMap<Class<?>, VisualPropertyEditor<?>>();
 
 		comboBoxEditors = new HashMap<String, PropertyEditor>();
@@ -350,10 +356,9 @@ public class EditorManagerImpl implements EditorManager, RenderingEngineFactoryA
 				this.addVisualPropertyEditor(vpEditor, null);
 				
 				if(this.getValueEditor(range.getType()) == null) {
-					ValueEditor<?> valEditor = new DiscreteValueEditor(range.getType(), values);
+					ValueEditor<?> valEditor = new DiscreteValueEditor(appManager, range.getType(), (DiscreteRange) range, vp);
 					this.addValueEditor(valEditor, null);
 				}
-				
 			}
 		}
 	}

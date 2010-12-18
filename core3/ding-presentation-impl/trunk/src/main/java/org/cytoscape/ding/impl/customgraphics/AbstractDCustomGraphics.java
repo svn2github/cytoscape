@@ -99,9 +99,7 @@ public abstract class AbstractDCustomGraphics implements
 		this.displayName = displayName;
 	}
 
-	public Image getRenderedImage() {
-		return null;
-	}
+	@Override abstract public Image getRenderedImage();
 
 
 	public Collection<String> getTags() {

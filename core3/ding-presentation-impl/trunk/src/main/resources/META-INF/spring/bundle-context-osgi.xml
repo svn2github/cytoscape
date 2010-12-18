@@ -6,6 +6,10 @@
 	default-lazy-init="false">
 
 
+	<osgi:reference id="customGraphicsManagerServiceRef"
+		interface="org.cytoscape.ding.customgraphics.CustomGraphicsManager">
+	</osgi:reference>
+
 	<osgi:reference id="renderingEngineManagerServiceRef"
 		interface="org.cytoscape.view.presentation.RenderingEngineManager">
 	</osgi:reference>

@@ -46,6 +46,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -56,6 +57,10 @@ import org.cytoscape.ding.Label;
 import org.cytoscape.ding.NodeShape;
 import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.ObjectPosition;
+import org.cytoscape.ding.customgraphics.CyCustomGraphics;
+import org.cytoscape.ding.customgraphics.Layer;
+import org.cytoscape.ding.customgraphics.NullCustomGraphics;
+import org.cytoscape.ding.impl.visualproperty.CustomGraphicsVisualProperty;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.graph.render.stateful.CustomGraphic;
 import org.cytoscape.model.CyEdge;
@@ -154,6 +159,9 @@ public class DNodeView implements NodeView, Label {
 
 	// View Model for this presentation.
 	private final View<CyNode> nodeViewModel;
+	
+	// Custom Graphics layers.
+	private final Set<CustomGraphic> targets;
 
 	/*
 	 * @param inx the RootGraph index of node (a negative number).
@@ -162,6 +170,7 @@ public class DNodeView implements NodeView, Label {
 		if (view == null)
 			throw new NullPointerException("view must never be null!");
 
+		targets = new HashSet<CustomGraphic>();
 		graphView = view;
 		m_inx = inx;
 		nodeViewModel = nv;
@@ -1562,7 +1571,59 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 			setJustify(op.getJustify().getConversionConstant());
 			setLabelOffsetX(op.getOffsetX());
 			setLabelOffsetY(op.getOffsetY());
+		} else if(vp instanceof CustomGraphicsVisualProperty) {
+			final CyCustomGraphics cg = (CyCustomGraphics) value;
+			applyCustomGraphics(cg);
 		}
+	}
+	
+	
+	private void applyCustomGraphics(final CyCustomGraphics customGraphics) {
+
+		// Remove current layers associated with this Custom Graphics
+		if (targets.size() != 0) {
+			for (CustomGraphic cg : targets)
+				removeCustomGraphic(cg);
+
+			targets.clear();
+		}
+
+		// For these cases, remove current layers.
+		if (customGraphics == null
+				|| customGraphics instanceof CyCustomGraphics == false
+				|| customGraphics instanceof NullCustomGraphics) {
+			return;
+		}
+		
+		final List<Layer> layers = (List<Layer>) customGraphics.getLayers();
+
+		// No need to update
+		if (layers == null || layers.size() == 0)
+			return;
+
+		//FIXME: size dependency
+		// Check dependency. Sync size or not.
+//		boolean sync = false;
+//		if (dep != null) {
+//			sync = dep.check(NODE_CUSTOM_GRAPHICS_SIZE_SYNC);
+//		}
+
+		for (Layer layer : layers) {
+			// Assume it's a Ding layer
+			final CustomGraphic cg = (CustomGraphic) layer.getLayerObject();
+//			if (sync) {
+//				final CustomGraphic resized = syncSize(graphics, cg, dv, dep);
+//				dv.addCustomGraphic(resized);
+//				targets.add(resized);
+//			} else {
+				addCustomGraphic(cg);
+				targets.add(cg);
+//			}
+		}
+		//this.currentMap.put(dv, targets);
+		
+		// Flag this as used Custom Graphics
+		//Cytoscape.getVisualMappingManager().getCustomGraphicsManager().setUsedInCurrentSession(graphics, true);
 	}
 
 }

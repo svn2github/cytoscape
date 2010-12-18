@@ -1,24 +1,24 @@
 package org.cytoscape.ding.impl.customgraphics;
 
-import java.util.Properties;
+import java.io.File;
 
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 public class RestoreImageTaskFactory implements TaskFactory {
 	
-	private final Properties props;
+	private final File imageLocation;
 	private final CustomGraphicsManagerImpl manager;
 	
-	RestoreImageTaskFactory(final Properties props, final CustomGraphicsManagerImpl manager) {
+	RestoreImageTaskFactory(final File imageLocation, final CustomGraphicsManagerImpl manager) {
 		this.manager = manager;
-		this.props = props;
+		this.imageLocation = imageLocation;
 	}
 
 	@Override
 	public TaskIterator getTaskIterator() {
 		
-		return new TaskIterator(new RestoreImageTask(props, manager));
+		return new TaskIterator(new RestoreImageTask(imageLocation, manager));
 	}
 
 }

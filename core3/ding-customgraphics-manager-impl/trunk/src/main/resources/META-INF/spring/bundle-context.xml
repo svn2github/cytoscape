@@ -4,14 +4,14 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 
-	<bean id="customGraphicsManager2"
+	<bean id="customGraphicsManager"
 		class="org.cytoscape.ding.impl.customgraphics.CustomGraphicsManagerImpl">
 		<constructor-arg ref="coreCyPropertyServiceRef" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 	</bean>
 	
 	<bean id="customGraphicsManagerAction" class="org.cytoscape.ding.impl.customgraphics.action.CustomGraphicsManagerAction">
-		<constructor-arg ref="customGraphicsManager2" />
+		<constructor-arg ref="customGraphicsManager" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 </beans>
