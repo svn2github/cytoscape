@@ -548,4 +548,10 @@ public abstract class AbstractCyTableTest {
 		final CyRow row = table.getRow(2L);
 		assertTrue(eventHelper.getCalledMicroListeners().contains("handleRowCreated"));
 	}
+
+	@Test
+	public void testGetWithPrimaryKey() {
+		final CyRow row = table.getRow(107L);
+		assertEquals(row.get(table.getPrimaryKey(), table.getPrimaryKeyType()), 107L);
+	}
 }

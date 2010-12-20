@@ -202,12 +202,6 @@ public class CyTableImpl implements CyTable {
 		return rows.size();
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param columnName
-	 *            DOCUMENT ME!
-	 */
 	synchronized public void deleteColumn(String columnName) {
 		if (attributes.containsKey(columnName)) {
 			attributes.remove(columnName);
@@ -220,16 +214,6 @@ public class CyTableImpl implements CyTable {
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * @param type
-	 *            DOCUMENT ME!
-	 * @param columnName
-	 *            DOCUMENT ME!
-	 *
-	 * @param <T>
-	 *            DOCUMENT ME!
-	 */
 	public <T> void createColumn(String columnName, Class<? extends T> type) {
 		if (columnName == null)
 			throw new NullPointerException("attribute name is null");
@@ -254,8 +238,7 @@ public class CyTableImpl implements CyTable {
 		eventHelper.fireAsynchronousEvent(new ColumnCreatedEvent(this, columnName));
 	}
 
-	public <T> void createListColumn(final String columnName, final Class<T> listElementType)
-	{
+	public <T> void createListColumn(final String columnName, final Class<T> listElementType) {
 		if (columnName == null)
 			throw new NullPointerException("attribute name is null");
 
@@ -274,18 +257,6 @@ public class CyTableImpl implements CyTable {
 		eventHelper.fireAsynchronousEvent(new ColumnCreatedEvent(this, columnName));
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param <T>
-	 *            DOCUMENT ME!
-	 * @param columnName
-	 *            DOCUMENT ME!
-	 * @param type
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
 	public <T> List<T> getColumnValues(String columnName, Class<? extends T> type) {
 		if (columnName == null)
 			throw new NullPointerException("column name is null!");
@@ -319,14 +290,6 @@ public class CyTableImpl implements CyTable {
 		return l;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param suid
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
 	public CyRow getRow(final Object key) {
 		checkKey(key);
 		CyRow row = rows.get(key);
@@ -548,6 +511,9 @@ public class CyTableImpl implements CyTable {
 	}
 
 	private Object getValueOrEquation(final Object key, final String columnName) {
+		if (columnName.equals(primaryKey))
+			return key;
+
 		Map<Object, Object> keyToValueMap = attributes.get(columnName);
 		if (keyToValueMap == null)
 			return null;
