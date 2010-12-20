@@ -325,10 +325,10 @@
 			<version>1.0</version>
 		</dependency>
 
-		<dependency>  
-			<groupId>org.apache.commons</groupId>  
-			<artifactId>com.springsource.org.apache.commons.collections</artifactId>  
-			<version>3.2.1</version> 
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.collections</artifactId>
+			<version>3.2.1</version>
 		</dependency>
 
 		<!-- Simplified Plugin Support -->
@@ -351,45 +351,20 @@
 		</dependency>
 
 		<!-- Attribute Browser -->
-<!--		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>table-browser-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
--->
+		<!-- <dependency> <groupId>org.cytoscape</groupId> <artifactId>table-browser-impl</artifactId> 
+			<version>1.0-SNAPSHOT</version> </dependency> -->
 
 		<!-- cytoscape layouts -->
-<!--
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>layout-cytoscape-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
--->
+		<!-- <dependency> <groupId>org.cytoscape</groupId> <artifactId>layout-cytoscape-impl</artifactId> 
+			<version>1.0-SNAPSHOT</version> </dependency> -->
 
 		<!-- jgraph layouts -->
-<!--
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>layout-jgraph-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>org.jgraph.jgraph</artifactId>
-			<version>5.10.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>org.jgraph.jgraphpad</artifactId>
-			<version>5.10.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>org.jgraph.layouts</artifactId>
-			<version>5.10.0.2</version>
-		</dependency>
--->
+		<!-- <dependency> <groupId>org.cytoscape</groupId> <artifactId>layout-jgraph-impl</artifactId> 
+			<version>1.0-SNAPSHOT</version> </dependency> <dependency> <groupId>cytoscape-temp</groupId> 
+			<artifactId>org.jgraph.jgraph</artifactId> <version>5.10.0.2</version> </dependency> 
+			<dependency> <groupId>cytoscape-temp</groupId> <artifactId>org.jgraph.jgraphpad</artifactId> 
+			<version>5.10.0.2</version> </dependency> <dependency> <groupId>cytoscape-temp</groupId> 
+			<artifactId>org.jgraph.layouts</artifactId> <version>5.10.0.2</version> </dependency> -->
 
 		<!-- prefuse layouts -->
 
@@ -411,13 +386,13 @@
 			<artifactId>linkout-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.fileinstall</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		
+
 		<!-- PSI-MI -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -438,8 +413,16 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape.wrappers</groupId>
-		<artifactId>org.swinglabs.swing-layout</artifactId>
-		<version>1.0.3</version>
+			<artifactId>org.swinglabs.swing-layout</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+
+
+		<!-- Ding's custom graphics manager -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>ding-customgraphics-manager-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
 		<!-- If you want to run your plugin, add dependencies below -->
