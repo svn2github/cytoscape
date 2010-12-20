@@ -36,15 +36,13 @@
  */
 package org.cytoscape.plugin.internal;
 
-import org.cytoscape.model.CyNetwork;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+
+import org.cytoscape.model.CyNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

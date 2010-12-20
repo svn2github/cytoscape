@@ -24,9 +24,6 @@
  */
 package org.cytoscape.plugin.internal.util;
 
-import java.util.Properties;
-
-import org.cytoscape.model.CyNetworkFactory;
 
 /** CytoscapeVersion: identify (and describe) successive versions of cytoscape. */
 public class CytoscapeVersion {
