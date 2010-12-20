@@ -46,6 +46,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
@@ -85,6 +86,8 @@ import org.cytoscape.filter.internal.widgets.slider.JRangeSliderExtended;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.slf4j.Logger;
@@ -190,17 +193,23 @@ public class FilterSettingPanel extends JPanel {
 	}
 	
 
-	private int getAttributeDataType(CyNetwork network, String pAttribute, int pType) {
-//		// TODO: Port this
-//		int attributeType = CyAttributes.TYPE_UNDEFINED;
-//		if (pType == QuickFind.INDEX_NODES) {
-//			attributeType = Cytoscape.getNodeAttributes().getType(pAttribute);
-//		}
-//		else if (pType == QuickFind.INDEX_EDGES) {
-//			attributeType = Cytoscape.getEdgeAttributes().getType(pAttribute);					
-//		}
-//		return attributeType;
-		return -1;
+	private Class<?> getAttributeDataType(CyNetwork network, String pAttribute, int pType) {
+		Collection<? extends CyTableEntry> entries;
+		if (pType == QuickFind.INDEX_NODES) {
+			entries = network.getNodeList();
+		} else if (pType == QuickFind.INDEX_EDGES) {
+			entries = network.getEdgeList();
+		} else {
+			return null;
+		}
+		
+		if (entries.size() == 0) {
+			return null;
+		}
+		
+		CyTableEntry entry = entries.iterator().next();
+		CyRow row = entry.getCyRow();
+		return row.getType(pAttribute);
 	}
 
 	
@@ -210,21 +219,19 @@ public class FilterSettingPanel extends JPanel {
 		try {		
 			// If index doesnot exist, check if there is such attribute or
 			
-			// TODO: What is our context CyNetwork?  Or is this setting applicable across all
-			// networks?
-//			if (!FilterUtil.hasSuchAttribute(pFilter.getControllingAttribute(), pFilter.getIndexType())) {
-//				// no such attribute
-//				JComboBox tmpCombo;
-//				if (pFilter.getSearchStr() != null) {
-//					Object[] objList = {pFilter.getSearchStr()};
-//					tmpCombo = new JComboBox(objList);
-//				}
-//				else {
-//					tmpCombo = new JComboBox();
-//				}
-//				tmpCombo.setEnabled(false);
-//				return tmpCombo;				
-//			}
+			if (!FilterUtil.hasSuchAttribute(pFilter.getNetwork(), pFilter.getControllingAttribute(), pFilter.getIndexType())) {
+				// no such attribute
+				JComboBox tmpCombo;
+				if (pFilter.getSearchStr() != null) {
+					Object[] objList = {pFilter.getSearchStr()};
+					tmpCombo = new JComboBox(objList);
+				}
+				else {
+					tmpCombo = new JComboBox();
+				}
+				tmpCombo.setEnabled(false);
+				return tmpCombo;				
+			}
 			
 			//	The attribute exists, create an index
 			//final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
@@ -280,29 +287,28 @@ public class FilterSettingPanel extends JPanel {
 			rangeModel = new NumberRangeModel(0,0,0,0);			
 		}
 		else {
-			// TODO: Port this
-//			int dataType = getAttributeDataType(pFilter.getControllingAttribute(), pFilter.getIndexType());
-//			//Initialize the search values, lowBound and highBound	
-//
-//			if (pFilter.getLowBound() == null) {
-//				pFilter.setLowBound(theIndex.getMinimumValue());
-//			}
-//			if (pFilter.getHighBound() == null) {
-//				pFilter.setHighBound(theIndex.getMaximumValue());
-//			}
-//			
-//			if (dataType == CyAttributes.TYPE_FLOATING) {
-//				Double lowB = (Double)pFilter.getLowBound();
-//				Double highB = (Double)pFilter.getHighBound();
-//				Double min = (Double)theIndex.getMinimumValue();
-//				Double max = (Double)theIndex.getMaximumValue();
-//
-//				rangeModel = new NumberRangeModel(lowB.doubleValue(),highB.doubleValue(),min.doubleValue(),max.doubleValue());				
-//			}
-//			else if (dataType == CyAttributes.TYPE_INTEGER) {
-//				rangeModel = new NumberRangeModel(pFilter.getLowBound(),pFilter.getHighBound(),
-//						theIndex.getMinimumValue(),theIndex.getMaximumValue());		
-//			}
+			Class<?> dataType = getAttributeDataType(pFilter.getNetwork(), pFilter.getControllingAttribute(), pFilter.getIndexType());
+			//Initialize the search values, lowBound and highBound	
+
+			if (pFilter.getLowBound() == null) {
+				pFilter.setLowBound(theIndex.getMinimumValue());
+			}
+			if (pFilter.getHighBound() == null) {
+				pFilter.setHighBound(theIndex.getMaximumValue());
+			}
+			
+			if (dataType == Double.class) {
+				Double lowB = (Double)pFilter.getLowBound();
+				Double highB = (Double)pFilter.getHighBound();
+				Double min = (Double)theIndex.getMinimumValue();
+				Double max = (Double)theIndex.getMaximumValue();
+
+				rangeModel = new NumberRangeModel(lowB.doubleValue(),highB.doubleValue(),min.doubleValue(),max.doubleValue());				
+			}
+			else if (dataType == Integer.class) {
+				rangeModel = new NumberRangeModel(pFilter.getLowBound(),pFilter.getHighBound(),
+						theIndex.getMinimumValue(),theIndex.getMaximumValue());		
+			}
 		}
 		
 		JRangeSliderExtended rangeSlider = new JRangeSliderExtended(rangeModel, JRangeSlider.HORIZONTAL,
