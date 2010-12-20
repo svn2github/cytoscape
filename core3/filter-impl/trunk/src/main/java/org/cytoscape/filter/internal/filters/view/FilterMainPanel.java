@@ -45,8 +45,12 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -81,6 +85,7 @@ import org.cytoscape.filter.internal.filters.util.WidestStringComboBoxPopupMenuL
 import org.cytoscape.filter.internal.filters.util.WidestStringProvider;
 import org.cytoscape.filter.internal.quickfind.util.CyAttributesUtil;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.util.swing.DropDownMenuButton;
 import org.cytoscape.view.model.CyNetworkView;
@@ -330,45 +335,44 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	 * prefixed either with "node." or "edge.". Those attributes whose data type is neither
 	 * "String" nor "numeric" will be excluded
 	 */
-	private Vector<Object> getCyAttributesList(String pType) {
-		// TODO: Port this
-//		Vector<String> attributeList = new Vector<String>();
-//		CyAttributes attributes = null;
-//		
-//		if (pType.equalsIgnoreCase("node")) {
-//			attributes = Cytoscape.getNodeAttributes();
-//			
-//		}
-//		else if (pType.equalsIgnoreCase("edge")){
-//			attributes = Cytoscape.getEdgeAttributes();			
-//		}
-//				
-//		String[] attributeNames = attributes.getAttributeNames();
-//
-//		if (attributeNames != null) {
-//			//  Show all attributes, with type of String or Number
-//			for (int i = 0; i < attributeNames.length; i++) {
-//				int type = attributes.getType(attributeNames[i]);
-//				
-//				//  only show user visible attributes,with type = Number/String/List
-//				if (!attributes.getUserVisible(attributeNames[i])) {
-//					continue;
-//				}
-//				if ((type == CyAttributes.TYPE_INTEGER)||(type == CyAttributes.TYPE_FLOATING)||(type == CyAttributes.TYPE_BOOLEAN)||(type == CyAttributes.TYPE_STRING)||(type == CyAttributes.TYPE_SIMPLE_LIST)) {
-//					attributeList.add(pType+"."+attributeNames[i]);
-//				}
-//			} //for loop
-//		
-//			//  Alphabetical sort
-//			Collections.sort(attributeList);
-//		}
-//
-//		// type conversion
+	private List<Object> getCyAttributesList(CyNetwork network, String pType) {
+		Vector<String> attributeList = new Vector<String>();
+		
+		Collection<? extends CyTableEntry> entries;
+		if (pType.equalsIgnoreCase("node")) {
+			entries = network.getNodeList();
+		}
+		else if (pType.equalsIgnoreCase("edge")){
+			entries = network.getEdgeList();
+		} else {
+			return Collections.emptyList();
+		}
+		
+		if (entries.size() == 0) {
+			return Collections.emptyList();
+		}
+		
+		CyTableEntry tableEntry = entries.iterator().next();
+		Map<String, Class<?>> types = tableEntry.getCyRow().getDataTable().getColumnTypeMap();
+		for (Entry<String, Class<?>> entry : types.entrySet()) {
+			//  Show all attributes, with type of String or Number
+			Class<?> type = entry.getValue();
+			
+			//  only show user visible attributes,with type = Number/String/List
+			if ((type == Integer.class)||(type == Double.class)||(type == Boolean.class)||(type == String.class)||(type == List.class)) {
+				attributeList.add(pType+"."+entry.getKey());
+			}
+		
+			//  Alphabetical sort
+			Collections.sort(attributeList);
+		}
+
+		// type conversion
 		Vector<Object> retList = new Vector<Object>();
-//
-//		for (int i=0; i<attributeList.size(); i++) {
-//			retList.add(attributeList.elementAt(i));
-//		}
+
+		for (int i=0; i<attributeList.size(); i++) {
+			retList.add(attributeList.elementAt(i));
+		}
 		return retList;
 	}
 	
@@ -571,16 +575,17 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			return;
 		}
 
-        Vector<Object> av;
+		CyNetwork network = selectedFilter.getNetwork();
+        List<Object> av;
 
-		av = getCyAttributesList("node");
+		av = getCyAttributesList(network, "node");
         for (int i = 0; i < av.size(); i++) {
-            cbm.addElement(av.elementAt(i));
+            cbm.addElement(av.get(i));
         }
 
-        av = getCyAttributesList("edge");
+        av = getCyAttributesList(network, "edge");
         for (int i = 0; i < av.size(); i++) {
-            cbm.addElement(av.elementAt(i));
+            cbm.addElement(av.get(i));
         }
 
 		cbm.addElement(filtersSeperator);
