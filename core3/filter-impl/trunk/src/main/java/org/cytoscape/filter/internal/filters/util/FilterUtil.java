@@ -1,6 +1,5 @@
 package org.cytoscape.filter.internal.filters.util;
 
-import java.awt.Cursor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +62,7 @@ public class FilterUtil {
 				passedNodes.add(node);
 				i = next_set_bit;
 			}
-			SelectUtil.setSelectedNodeState(network, passedNodes, true);
+			SelectUtil.setSelectedNodeState(passedNodes, true);
 		}
 		if (pFilter.getAdvancedSetting().isEdgeChecked()&& (pFilter.getEdgeBits() != null)) {
 			// Select edges
@@ -79,7 +78,7 @@ public class FilterUtil {
 				passedEdges.add(edge);
 				i = next_set_bit;
 			}
-			SelectUtil.setSelectedEdgeState(network, passedEdges, true);
+			SelectUtil.setSelectedEdgeState(passedEdges, true);
 		}
 		applicationManager.getCurrentNetworkView().updateView();
 		

@@ -210,7 +210,7 @@ class ApplyFilterThread extends Thread {
 			}
 
 			//System.out.println("\tpassedNodes.size() ="+passedNodes.size());
-			SelectUtil.setSelectedNodeState(network, passedNodes, true);
+			SelectUtil.setSelectedNodeState(passedNodes, true);
 		}
 
 		if (pCompositeFilter.getAdvancedSetting().isEdgeChecked()) {
@@ -229,7 +229,7 @@ class ApplyFilterThread extends Thread {
 			}
 
 			//System.out.println("\tpassedEdges.size() ="+passedEdges.size());
-			SelectUtil.setSelectedEdgeState(network, passedEdges, true);
+			SelectUtil.setSelectedEdgeState(passedEdges, true);
 		}
 	} //testObjects
 }

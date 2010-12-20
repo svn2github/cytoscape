@@ -1,44 +1,73 @@
 package org.cytoscape.filter.internal.filters.util;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTableEntry;
 
 public class SelectUtil {
 	public static void unselectAllNodes(CyNetwork network) {
-		
+		setSelectedState(network.getNodeList(), Boolean.FALSE);
 	}
 	
 	public static void unselectAllEdges(CyNetwork network) {
+		setSelectedState(network.getEdgeList(), Boolean.FALSE);
+	}
+
+	public static void setSelectedNodeState(Collection<CyNode> list, boolean selected) {
+		setSelectedState(list, selected);
+	}
+
+	public static void setSelectedEdgeState(Collection<CyEdge> list, boolean selected) {
+		setSelectedState(list, selected);
+	}
+
+	static void setSelectedState(Collection<? extends CyTableEntry> list, Boolean selected) {
+		for (CyTableEntry edge : list) {
+			CyRow row = edge.getCyRow();
+			row.set(CyTableEntry.SELECTED, selected);
+		}
 		
 	}
-
-	public static void setSelectedNodeState(CyNetwork network, Collection list, boolean b) {
-		// TODO Auto-generated method stub
-		
+	
+	public static Set<CyNode> getSelectedNodes(CyNetwork cyNetwork) {
+		return getSelected(cyNetwork.getNodeList());
 	}
 
-	public static void setSelectedEdgeState(CyNetwork network, Collection list, boolean b) {
-		// TODO Auto-generated method stub
-		
+	public static Set<CyEdge> getSelectedEdges(CyNetwork cyNetwork) {
+		return getSelected(cyNetwork.getEdgeList());
 	}
-
-	public static Set getSelectedNodes(CyNetwork cyNetwork) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static Set getSelectedEdges(CyNetwork cyNetwork) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	static <T extends CyTableEntry> Set<T> getSelected(Collection<T> items) {
+		Set<T> entries = new HashSet<T>();
+		for (T item : items) {
+			CyRow row = item.getCyRow();
+			if (row.get(CyTableEntry.SELECTED, Boolean.class)) {
+				entries.add(item);
+			}
+		}
+		return entries;
 	}
 	
 	public static void selectAllNodes(CyNetwork cyNetwork) {
-		// TODO Auto-generated method stub
+		selectAll(cyNetwork.getNodeList());
 	}
 	
 	public static void selectAllEdges(CyNetwork cyNetwork) {
-		// TODO Auto-generated method stub
+		selectAll(cyNetwork.getEdgeList());
+	}
+	
+	static <T extends CyTableEntry> void selectAll(Collection<T> items) {
+		for (T item : items) {
+			CyRow row = item.getCyRow();
+			if (!row.get(CyTableEntry.SELECTED, Boolean.class)) {
+				row.set(CyTableEntry.SELECTED, Boolean.TRUE);
+			}
+		}
 	}
 }

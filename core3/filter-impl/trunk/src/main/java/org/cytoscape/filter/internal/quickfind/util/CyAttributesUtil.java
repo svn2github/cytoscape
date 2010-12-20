@@ -36,6 +36,7 @@
 
 package org.cytoscape.filter.internal.quickfind.util;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -178,7 +179,24 @@ public class CyAttributesUtil {
 	}
 
 	public static boolean isNullAttribute(CyNetwork cyNetwork, String indexType, String attributeName) {
-		// TODO Auto-generated method stub
-		return false;
+		Collection<? extends CyTableEntry> entries; 
+		if (indexType.equals("node")) {
+			entries = cyNetwork.getNodeList();
+		} else if (indexType.equals("edge")) {
+			entries = cyNetwork.getEdgeList();
+		} else {
+			return true;
+		}
+		if (entries.size() == 0) {
+			return true;
+		}
+		for (CyTableEntry entry : entries) {
+			CyRow row = entry.getCyRow();
+			Class<?> type = row.getType(attributeName);
+			if (row.get(attributeName, type) != null) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

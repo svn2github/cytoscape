@@ -41,6 +41,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -274,7 +275,7 @@ public class QuickFindPlugIn implements PropertyChangeListener, QuickFindListene
 
 		//  Assemble Hit Objects
 		final Object[] graphObjects = hit.getAssociatedObjects();
-		final List<Object> list = new ArrayList<Object>();
+		final List list = new ArrayList();
 
 		for (int i = 0; i < graphObjects.length; i++) {
 			list.add(graphObjects[i]);
@@ -289,10 +290,10 @@ public class QuickFindPlugIn implements PropertyChangeListener, QuickFindListene
 					GenericIndex index = quickFind.getIndex(cyNetwork);
 
 					if (index.getIndexType() == QuickFind.INDEX_NODES) {
-						SelectUtil.setSelectedNodeState(network, list, true);
+						SelectUtil.setSelectedNodeState(list, true);
 						applicationManager.getCurrentNetworkView().fitSelected();
 					} else {
-						SelectUtil.setSelectedEdgeState(network, list, true);
+						SelectUtil.setSelectedEdgeState(list, true);
 
 						List<CyNode> nodeList = new ArrayList<CyNode>();
 
@@ -304,7 +305,7 @@ public class QuickFindPlugIn implements PropertyChangeListener, QuickFindListene
 							nodeList.add(targetNode);
 						}
 
-						SelectUtil.setSelectedNodeState(network, nodeList, true);
+						SelectUtil.setSelectedNodeState(nodeList, true);
 						networkView.fitSelected();
 					}
 
@@ -370,7 +371,7 @@ public class QuickFindPlugIn implements PropertyChangeListener, QuickFindListene
 		Set selectedEdgeSet = SelectUtil.getSelectedEdges(cyNetwork);
 
 		if (selectedEdgeSet.size() > 0) {
-			SelectUtil.setSelectedEdgeState(cyNetwork, selectedEdgeSet, false);
+			SelectUtil.setSelectedEdgeState(selectedEdgeSet, false);
 		}
 
 		//  Then, determine the current set of selected nodes
@@ -390,8 +391,8 @@ public class QuickFindPlugIn implements PropertyChangeListener, QuickFindListene
 
 		SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					SelectUtil.setSelectedNodeState(cyNetwork, toBeSelected, true);
-					SelectUtil.setSelectedNodeState(cyNetwork, toBeUnselected, false);
+					SelectUtil.setSelectedNodeState(toBeSelected, true);
+					SelectUtil.setSelectedNodeState(toBeUnselected, false);
 					applicationManager.getCurrentNetworkView().updateView();
 				}
 			});
@@ -402,7 +403,7 @@ public class QuickFindPlugIn implements PropertyChangeListener, QuickFindListene
 		Set selectedNodeSet = SelectUtil.getSelectedNodes(cyNetwork);
 
 		if (selectedNodeSet.size() > 0) {
-			SelectUtil.setSelectedNodeState(cyNetwork, selectedNodeSet, false);
+			SelectUtil.setSelectedNodeState(selectedNodeSet, false);
 		}
 
 		//  Then, determine the current set of selected edge
@@ -422,8 +423,8 @@ public class QuickFindPlugIn implements PropertyChangeListener, QuickFindListene
 
 		SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					SelectUtil.setSelectedEdgeState(cyNetwork, toBeSelected, true);
-					SelectUtil.setSelectedEdgeState(cyNetwork, toBeUnselected, false);
+					SelectUtil.setSelectedEdgeState(toBeSelected, true);
+					SelectUtil.setSelectedEdgeState(toBeUnselected, false);
 					applicationManager.getCurrentNetworkView().updateView();
 				}
 			});
