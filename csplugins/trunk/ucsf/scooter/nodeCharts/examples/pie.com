@@ -9,6 +9,8 @@ nodecharts pie node="YCR084C" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1
 nodecharts pie node="YNL145W" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1,1.5" position="northeast"
 nodecharts pie node="YIL015W" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1,1.5" position="southeast"
 nodecharts pie node="YBL069W" labellist="A,B,C,D,E,F" valuelist="3.0,2.0,0.5,5,1,1.5" position="10,10"
+nodecharts pie node="YNL189W" labellist="A,B" valuelist="2.0,2.0" arcstart="-90.0"
+nodecharts pie node="YNL189W" labellist="A,B" valuelist="2.0,2.0" arcstart="beginning"
 
 nodecharts clear node="YCR084C"
 

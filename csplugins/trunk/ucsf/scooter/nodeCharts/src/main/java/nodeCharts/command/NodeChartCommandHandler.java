@@ -216,10 +216,13 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 	private void register(NodeChartViewer viewer) {
 		addDescription(viewer.getName(), viewer.getDescription());
 		// Add our global commands
+		addArgument(viewer.getName(), ATTRIBUTELIST);
+		addArgument(viewer.getName(), LABELS);
 		addArgument(viewer.getName(), NETWORK, CURRENT);
 		addArgument(viewer.getName(), NODE);
 		addArgument(viewer.getName(), NODELIST);
 		addArgument(viewer.getName(), POSITION);
+		addArgument(viewer.getName(), VALUES);
 
 		// Get the specific commands handled by the viewer
 		Map<String,String> args = viewer.getOptions();

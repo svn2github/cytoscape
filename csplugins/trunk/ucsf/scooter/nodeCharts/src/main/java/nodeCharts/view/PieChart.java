@@ -71,6 +71,7 @@ public class PieChart implements NodeChartViewer {
 	private static final String LABELSTYLE = "labelstyle";
 	private static final String LABELSIZE = "labelsize";
 	private static final String LABELOFFSET = "labeloffset";
+	private static final String ARCSTART = "arcstart";
 
 	public String getName() {
 		return "pie";
@@ -83,6 +84,7 @@ public class PieChart implements NodeChartViewer {
 	public Map<String,String> getOptions() {
 		Map<String,String> options = new HashMap<String,String>();
 		options.put(COLORS,"");
+		options.put(ARCSTART,"0.0");
 		return options;
 	}
 
@@ -91,6 +93,23 @@ public class PieChart implements NodeChartViewer {
 	                                                                               throws CyCommandException {
 		// Get our colors
 		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), values);
+
+		// Get our angular offset
+		double arcStart = 0.0;
+		Object startObj = args.get(ARCSTART);
+		if (startObj != null) {
+			if (startObj instanceof Double)
+				arcStart = ((Double)startObj).doubleValue();
+			else if (startObj instanceof Integer)
+				arcStart = ((Integer)startObj).doubleValue();
+			else if (startObj instanceof String) {
+				try {
+					arcStart = Double.parseDouble((String)startObj);
+				} catch (NumberFormatException e) {
+					throw new CyCommandException("arcstart must be a number: "+e.getMessage());
+				}
+			}
+		}
 
 		// Convert our data from values to increments
 		values= convertData(values);
@@ -102,7 +121,6 @@ public class PieChart implements NodeChartViewer {
 			                             values.size()+"), and colors ("+colors.size()+") don't match");
 
 		int nSlices = labels.size();
-		double arcStart = 0.0;
 		List<CustomGraphic> cgList = new ArrayList<CustomGraphic>();
 		List<CustomGraphic> labelList = new ArrayList<CustomGraphic>();
 
