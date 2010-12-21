@@ -19,7 +19,7 @@ pluginVersion=0.91
 cytoscapeVersion=2.8
 
 # Category, use one of the categories listed on the website or create your own
-pluginCategory=Other
+pluginCategory=Communication/Scripting
 
 # -- The following properties are OPTIONAL -- #
 
