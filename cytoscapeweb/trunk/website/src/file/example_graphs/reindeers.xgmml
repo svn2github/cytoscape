@@ -1,7 +1,7 @@
 <graph xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cy="http://www.cytoscape.org" xmlns="http://www.cs.rpi.edu/XGMML" 
        directed="0">
        
-  <att type="string" name="backgroundColor" value="#070a5a"/>
+  <att type="string" name="backgroundColor" value="#ffffff"/>
 
    <node label="Santa" id="-2">
     <att type="string" name="Synonym" value="Kris Kringle"/>
@@ -12,7 +12,7 @@
     <att type="real" name="score" value="0.7426645540050226"/>
     <att type="string" name="user" value="Santa"/>
     <att type="string" name="image" value="img/content/demo/examples/Santa-Claus-icon.png"/>
-    <graphics type="ELLIPSE" h="80" w="80" x="-144.08599090576172" y="380.77467346191406" fill="#070a5a" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-12" cy:borderLineType="solid"/>
+    <graphics type="ELLIPSE" h="80" w="80" x="-144.08599090576172" y="380.77467346191406" fill="#ffffff" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-14" cy:borderLineType="solid"/>
   </node>
   <node label="Vixen" id="-13">
     <att type="string" name="canonicalName" value="Vixen"/>
@@ -22,7 +22,7 @@
     <att type="real" name="score" value="0.0017721976900291758"/>
     <att type="string" name="user" value="Vixen"/>
     <att type="string" name="image" value="img/content/demo/examples/Reindeer-icon.png"/>
-    <graphics type="ELLIPSE" h="80" w="80" x="221.7289810180664" y="306.4962463378906" fill="#070a5a" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-12" cy:borderLineType="solid"/>
+    <graphics type="ELLIPSE" h="80" w="80" x="221.7289810180664" y="306.4962463378906" fill="#ffffff" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-14" cy:borderLineType="solid"/>
   </node>
   <node label="Prancer" id="-32">
     <att type="string" name="canonicalName" value="Prancer"/>
@@ -32,7 +32,7 @@
     <att type="real" name="score" value="0.0017721976900291758"/>
     <att type="string" name="user" value="Prancer"/>
     <att type="string" name="image" value="img/content/demo/examples/Reindeer-icon.png"/>
-    <graphics type="ELLIPSE" h="80" w="80" x="175.98239135742188" y="183.8248748779297" fill="#070a5a" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-12" cy:borderLineType="solid"/>
+    <graphics type="ELLIPSE" h="80" w="80" x="175.98239135742188" y="183.8248748779297" fill="#ffffff" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-14" cy:borderLineType="solid"/>
   </node>
   <node label="Cupid" id="-31">
     <att type="string" name="canonicalName" value="Cupid"/>
@@ -42,7 +42,7 @@
     <att type="real" name="score" value="0.014262024794489125"/>
     <att type="string" name="user" value="Cupid"/>
     <att type="string" name="image" value="img/content/demo/examples/Reindeer-icon.png"/>
-    <graphics type="ELLIPSE" h="80" w="80" x="90.95795440673828" y="354.96177673339844" fill="#070a5a" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-12" cy:borderLineType="solid"/>
+    <graphics type="ELLIPSE" h="80" w="80" x="90.95795440673828" y="354.96177673339844" fill="#ffffff" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-14" cy:borderLineType="solid"/>
   </node>
   <node label="Comet" id="-30">
     <att type="string" name="canonicalName" value="Comet"/>
@@ -52,7 +52,7 @@
     <att type="real" name="score" value="0.014262024794489125"/>
     <att type="string" name="user" value="Comet"/>
     <att type="string" name="image" value="img/content/demo/examples/Reindeer-icon.png"/>
-    <graphics type="ELLIPSE" h="80" w="80" x="41.28349494934082" y="230.15220642089844" fill="#070a5a" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-12" cy:borderLineType="solid"/>
+    <graphics type="ELLIPSE" h="80" w="80" x="41.28349494934082" y="230.15220642089844" fill="#ffffff" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-14" cy:borderLineType="solid"/>
   </node>
   <node label="Blixem" id="-3">
     <att type="string" name="Synonym" value="Blitzen"/>
@@ -63,7 +63,7 @@
     <att type="real" name="score" value="0.1123240415118908"/>
     <att type="string" name="user" value="Blixem"/>
     <att type="string" name="image" value="img/content/demo/examples/Reindeer-icon.png"/>
-    <graphics type="ELLIPSE" h="80" w="80" x="-37.744534492492676" y="401.4985656738281" fill="#070a5a" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-12" cy:borderLineType="solid"/>
+    <graphics type="ELLIPSE" h="80" w="80" x="-37.744534492492676" y="401.4985656738281" fill="#ffffff" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-14" cy:borderLineType="solid"/>
   </node>
   <node label="Dunder" id="-1">
     <att type="string" name="Synonym" value="Donner"/>
@@ -74,7 +74,7 @@
     <att type="real" name="score" value="0.1123240415118908"/>
     <att type="string" name="user" value="Dunder"/>
     <att type="string" name="image" value="img/content/demo/examples/Reindeer-icon.png"/>
-    <graphics type="ELLIPSE" h="80" w="80" x="-84.76983261108398" y="286.78758239746094" fill="#070a5a" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-12" cy:borderLineType="solid"/>
+    <graphics type="ELLIPSE" h="80" w="80" x="-84.76983261108398" y="286.78758239746094" fill="#ffffff" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-14" cy:borderLineType="solid"/>
   </node>
   <node label="Dancer" id="-26">
     <att type="string" name="canonicalName" value="Dancer"/>
@@ -84,7 +84,7 @@
     <att type="real" name="score" value="2.563291574530502E-4"/>
     <att type="string" name="user" value="Dancer"/>
     <att type="string" name="image" value="img/content/demo/examples/Reindeer-icon.png"/>
-    <graphics type="ELLIPSE" h="80" w="80" x="354.14991760253906" y="268.0941467285156" fill="#070a5a" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-12" cy:borderLineType="solid"/>
+    <graphics type="ELLIPSE" h="80" w="80" x="354.14991760253906" y="268.0941467285156" fill="#ffffff" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-14" cy:borderLineType="solid"/>
   </node>
   <node label="Dasher" id="-27">
     <att type="string" name="canonicalName" value="Dasher"/>
@@ -94,7 +94,7 @@
     <att type="real" name="score" value="2.563291574530502E-4"/>
     <att type="string" name="user" value="Dasher"/>
     <att type="string" name="image" value="img/content/demo/examples/Reindeer-icon.png"/>
-    <graphics type="ELLIPSE" h="80" w="80" x="313.19081115722656" y="151.59380340576172" fill="#070a5a" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-12" cy:borderLineType="solid"/>
+    <graphics type="ELLIPSE" h="80" w="80" x="313.19081115722656" y="151.59380340576172" fill="#ffffff" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-14" cy:borderLineType="solid"/>
   </node>
   <node label="Rudolph" id="-29">
     <att type="string" name="canonicalName" value="Rudolph"/>
@@ -104,7 +104,7 @@
     <att type="real" name="score" value="1.061924696070804E-4"/>
     <att type="string" name="user" value="Rudolph"/>
     <att type="string" name="image" value="img/content/demo/examples/Rudolph-icon.png"/>
-    <graphics type="ELLIPSE" h="80" w="80" x="421.251953125" y="180.38258361816406" fill="#070a5a" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-12" cy:borderLineType="solid"/>
+    <graphics type="ELLIPSE" h="80" w="80" x="421.251953125" y="180.38258361816406" fill="#ffffff" width="0" outline="#000000" cy:nodeTransparency="1.0" cy:nodeLabelFont="Default-0-14" cy:borderLineType="solid"/>
   </node>
   
   <edge label="Vixen (A Visit From St  Nicholas R  tarandus  4 ) Prancer" source="-13" target="-32">
@@ -120,7 +120,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.3333333432674408"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Vixen (A Visit From St  Nicholas R  tarandus  4 ) Cupid" source="-13" target="-31">
     <att type="string" name="canonicalName" value="Vixen (A Visit From St  Nicholas R  tarandus  4 ) Cupid"/>
@@ -135,7 +135,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.3333333432674408"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Prancer (A Visit From St  Nicholas R  tarandus  4 ) Comet" source="-32" target="-30">
     <att type="string" name="canonicalName" value="Prancer (A Visit From St  Nicholas R  tarandus  4 ) Comet"/>
@@ -150,7 +150,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.3333333432674408"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Cupid (A Visit From St  Nicholas R  tarandus  4 ) Comet" source="-31" target="-30">
     <att type="string" name="canonicalName" value="Cupid (A Visit From St  Nicholas R  tarandus  4 ) Comet"/>
@@ -165,7 +165,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.3333333432674408"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Cupid (A Visit From St  Nicholas R  tarandus  4 ) Blixem" source="-31" target="-3">
     <att type="string" name="canonicalName" value="Cupid (A Visit From St  Nicholas R  tarandus  4 ) Blixem"/>
@@ -180,7 +180,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.3333333432674408"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Comet (A Visit From St  Nicholas R  tarandus  4 ) Dunder" source="-30" target="-1">
     <att type="string" name="canonicalName" value="Comet (A Visit From St  Nicholas R  tarandus  4 ) Dunder"/>
@@ -195,7 +195,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.3333333432674408"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Blixem (A Visit From St  Nicholas R  tarandus  4 ) Dunder" source="-3" target="-1">
     <att type="string" name="canonicalName" value="Blixem (A Visit From St  Nicholas R  tarandus  4 ) Dunder"/>
@@ -210,7 +210,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.3333333432674408"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Blixem (A Visit From St  Nicholas R  tarandus  4 ) Santa" source="-3" target="-2">
     <att type="string" name="canonicalName" value="Blixem (A Visit From St  Nicholas R  tarandus  4 ) Santa"/>
@@ -225,7 +225,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.40824830532073975"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Dunder (A Visit From St  Nicholas R  tarandus  4 ) Santa" source="-1" target="-2">
     <att type="string" name="canonicalName" value="Dunder (A Visit From St  Nicholas R  tarandus  4 ) Santa"/>
@@ -240,7 +240,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.40824830532073975"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Dancer (A Visit From St  Nicholas R  tarandus  4 ) Dasher" source="-26" target="-27">
     <att type="string" name="canonicalName" value="Dancer (A Visit From St  Nicholas R  tarandus  4 ) Dasher"/>
@@ -255,7 +255,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.5"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Dancer (A Visit From St  Nicholas R  tarandus  4 ) Vixen" source="-26" target="-13">
     <att type="string" name="canonicalName" value="Dancer (A Visit From St  Nicholas R  tarandus  4 ) Vixen"/>
@@ -270,7 +270,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.40824830532073975"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Dasher (A Visit From St  Nicholas R  tarandus  4 ) Prancer" source="-27" target="-32">
     <att type="string" name="canonicalName" value="Dasher (A Visit From St  Nicholas R  tarandus  4 ) Prancer"/>
@@ -285,7 +285,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.40824830532073975"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Rudolph (Rudolph the Red Nosed Reindeer R  tarandus  4 ) Dancer" source="-29" target="-26">
     <att type="string" name="canonicalName" value="Rudolph (Rudolph the Red Nosed Reindeer R  tarandus  4 ) Dancer"/>
@@ -300,7 +300,7 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.7071067690849304"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
   <edge label="Rudolph (Rudolph the Red Nosed Reindeer R  tarandus  4 ) Dasher" source="-29" target="-27">
     <att type="string" name="canonicalName" value="Rudolph (Rudolph the Red Nosed Reindeer R  tarandus  4 ) Dasher"/>
@@ -315,6 +315,6 @@
     <att type="list" name="raw weights">
       <att type="real" name="raw weights" value="0.7071067690849304"/>
     </att>
-    <graphics width="3" fill="#ff0000" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+    <graphics width="3" fill="#2b6c34" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="SanSerif-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
   </edge>
 </graph>

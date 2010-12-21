@@ -289,6 +289,7 @@ $(function(){
 			edges: {
 				width: { defaultValue: 1, continuousMapper: { attrName: "weight", minValue: 1, maxValue: 8 } },
 				color: "#aaaaff",
+				style: { defaultValue: "SOLID", passthroughMapper: { attrName: "lineStyle" } },
 				mergeWidth: { defaultValue: 2, continuousMapper: { attrName: "weight", minValue: 2, maxValue: 8 } },
 				mergeColor: { defaultValue: "#0000ff", continuousMapper: { attrName: "weight", minValue: "#0000ff", maxValue: "#00ff00" } },
 				mergeOpacity: 0.6,
@@ -416,25 +417,30 @@ $(function(){
 	/*---- IMAGES ------------------------------------------------------------------------------------*/
 	
 	GRAPH_STYLES["Images"] = {
-			global: {
-			backgroundColor: "#000000",
-			selectionLineColor: "#ffffff",
+		global: {
+			backgroundColor: "#ffffff",
+			selectionLineColor: "#ae0300",
 			selectionLineOpacity: 0.5,
 			selectionLineWidth: 1,
-			selectionFillColor: "#fefefe",
+			selectionFillColor: "#ae0300",
 			selectionFillOpacity: 0.1
 		},
 		nodes: {
 			opacity: 1,
 			size: 40,
 			labelFontColor: "#ffffff",
+			labelFontSize: 14,
+			labelFontWeight: "bold",
 			labelVerticalAnchor: "top",
 			tooltipText: "${label}",
 			tooltipFontColor: "#ffffff",
-			tooltipBackgroundColor: "#000000",
+			tooltipBackgroundColor: "#ae0300",
 			tooltipBorderColor: "#999999",
-			labelGlowOpacity: 0,
-			selectionGlowColor: "#ffffaa",
+			labelGlowColor: "#ae0300",
+			labelGlowOpacity: 0.8,
+			selectionGlowColor: "#ffff00",
+			selectionGlowOpacity: 0.5,
+			selectionGlowBlur: 32,
 			image: { passthroughMapper: { attrName: "image" } }
 		},
 		edges: {

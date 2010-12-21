@@ -1,0 +1,16 @@
+<p>
+    This version expands the visual style options even more by letting you set images to nodes and
+    draw edges with dotted or dashed lines. From now on you can also use just plain JavaScript objects to define a network,
+    and completely avoid the XML formats, if you want. Exporting the network as SVG is now possible, too.
+</p>
+<div class="relase_details">
+    <ul class="new_features">
+        <li><span class="bug_id">2170</span>: Accept graphs in JSON.</li>
+        <li><span class="bug_id">2395</span>: Custom images on nodes.</li>
+        <li><span class="bug_id">2397</span>: Dashed edge lines.</li>
+        <li><span class="bug_id">2439</span>: Export the network as SVG.</li>
+    </ul>
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2438</span>: Edges can flicker after applying and removing filters.</li>
+    </ul>
+</div>

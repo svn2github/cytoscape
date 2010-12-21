@@ -354,7 +354,7 @@ $(function(){
 		edgeTooltipsEnabled: true,
 		swfPath: path("swf/CytoscapeWeb"),
 		flashInstallerPath: path("swf/playerProductInstall"),
-		preloadImages: false,
+		preloadImages: true,
 		useProxy: false
     };
     
@@ -363,7 +363,7 @@ $(function(){
         reindeers: {
 	        name: "Reindeers",
 	        description: "Merry Christmas!",
-	        url: path("file/example_graphs/santa.xgmml"),
+	        url: path("file/example_graphs/reindeers.xgmml"),
 	        visualStyleName: "Dark",
 	        visualStyle: GRAPH_STYLES["Images"],
 	        nodeLabelsVisible: true
@@ -514,7 +514,6 @@ $(function(){
         update_info();
 //        update_vizmapper(); // lazy initialization, instead...
         update_filter();
-        
         dirty_vizmapper();
 
         hide_msg({
@@ -2617,7 +2616,13 @@ $(function(){
             for(var j in attribute_names){
                 var name = attribute_names[j];
                 var attribute = group[name];
-                append_attribute(attribute);
+                
+                var min = attribute.values[ 0 ];
+                var max = attribute.values[ attribute.values.length - 1 ];
+                
+                if( min != max ){
+                	append_attribute(attribute);
+                }
             }
             
             parent.bind("filter" + group_name, function(){         
@@ -2663,6 +2668,14 @@ $(function(){
             });
             
             function append_attribute(attribute){
+            	
+            	switch(attribute.name){
+            	case "style":
+            	case "mergeStyle":
+            	case "image":
+            		return;
+            	}
+            	
                 var attribute_label = $('<label>' + attribute.name + '</label>');
                 root_div.append(attribute_label);
                 var div = $('<div class="attribute" attribute_name="' + attribute.name + '"></div>');
@@ -2809,7 +2822,7 @@ $(function(){
                     }
                     
                     function valid_val(str, type){
-                        if(str.match(/^(-){0,1}([0-9])+((\.)([0-9])+){0,1}$/)){
+                        if(str.match(/^(-|-){0,1}([0-9])+((\.)([0-9])+){0,1}$/)){
                             var val = parseFloat(str);
                             
                             var smin =  parseFloat( range_min.val() );

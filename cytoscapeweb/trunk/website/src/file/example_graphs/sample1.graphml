@@ -14,6 +14,7 @@
   <key id="label" for="edge" attr.name="label" attr.type="string"/>
   <key id="sourceArrowShape" for="edge" attr.name="sourceArrowShape" attr.type="string"/>
   <key id="targetArrowShape" for="edge" attr.name="targetArrowShape" attr.type="string"/>
+  <key id="lineStyle" for="edge" attr.name="lineStyle" attr.type="string"/>
   
   <graph edgedefault="undirected">  
     <node id="a01">
@@ -68,6 +69,7 @@
       <data key="label">a01 (25) a02</data>
       <data key="sourceArrowShape">diamond</data>
       <data key="targetArrowShape">diamond</data>
+      <data key="lineStyle">SOLID</data>
     </edge>
     <edge target="a02" source="a01" directed="true">
       <data key="network">14</data>
@@ -75,6 +77,7 @@
       <data key="label">a02 (14) a01</data>
       <data key="sourceArrowShape">delta</data>
       <data key="targetArrowShape">T</data>
+      <data key="lineStyle">DOT</data>
     </edge>
     <edge target="a04" source="a01" directed="true">
       <data key="network">25</data>
@@ -82,6 +85,7 @@
       <data key="label">a01 (25) a04</data>
       <data key="sourceArrowShape">circle</data>
       <data key="targetArrowShape">circle</data>
+      <data key="lineStyle">EQUAL_DASH</data>
     </edge>
     <edge target="a02" source="a03" directed="true">
       <data key="network">15</data>
@@ -89,6 +93,7 @@
       <data key="label">a02 (15) a03</data>
       <data key="sourceArrowShape">diamond</data>
       <data key="targetArrowShape">circle</data>
+      <data key="lineStyle">DOT</data>
     </edge>
     <edge target="a02" source="a06">
       <data key="network">2</data>
@@ -96,6 +101,7 @@
       <data key="label">a02 (2) a06</data>
       <data key="sourceArrowShape">none</data>
       <data key="targetArrowShape">none</data>
+      <data key="lineStyle">DOT</data>
     </edge>
     <edge target="a06" source="a02">
       <data key="network">2</data>
@@ -103,6 +109,7 @@
       <data key="label">a06 (2) a02</data>
       <data key="sourceArrowShape">none</data>
       <data key="targetArrowShape">none</data>
+      <data key="lineStyle">EQUAL_DASH</data>
     </edge>
     <edge target="a03" source="a04" directed="true">
       <data key="network">15</data>
@@ -110,6 +117,7 @@
       <data key="label">a03 (24) a04</data>
       <data key="sourceArrowShape">diamond</data>
       <data key="targetArrowShape">T</data>
+      <data key="lineStyle">DOT</data>
     </edge>
     <edge target="a05" source="a01">
       <data key="network">2</data>
@@ -117,6 +125,7 @@
       <data key="label">a05 (2) a01</data>
       <data key="sourceArrowShape">circle</data>
       <data key="targetArrowShape">delta</data>
+      <data key="lineStyle">EQUAL_DASH</data>
     </edge>
     <edge target="a05" source="a01">
       <data key="network">24</data>
@@ -124,6 +133,7 @@
       <data key="label">a05 (24) a01</data>
       <data key="sourceArrowShape">delta</data>
       <data key="targetArrowShape">delta</data>
+      <data key="lineStyle">SOLID</data>
     </edge>
     <edge target="a05" source="a01">
       <data key="network">14</data>
@@ -131,6 +141,7 @@
       <data key="label">a05 (14) a01</data>
       <data key="sourceArrowShape">none</data>
       <data key="targetArrowShape">none</data>
+      <data key="lineStyle">LONG_DASH</data>
     </edge>
     <edge target="a03" source="a07">
       <data key="network">2</data>
@@ -138,6 +149,7 @@
       <data key="label">a03 (2) a07</data>
       <data key="sourceArrowShape">T</data>
       <data key="targetArrowShape">delta</data>
+      <data key="lineStyle">EQUAL_DASH</data>
     </edge>
     <edge target="a04" source="a08">
       <data key="network">14</data>
@@ -145,6 +157,7 @@
       <data key="label">a04 (14) a08</data>
       <data key="sourceArrowShape">T</data>
       <data key="targetArrowShape">T</data>
+      <data key="lineStyle">EQUAL_DASH</data>
     </edge>
     <edge target="a09" source="a04">
       <data key="network">2</data>
@@ -152,6 +165,7 @@
       <data key="label">a09 (2) a04</data>
       <data key="sourceArrowShape">T</data>
       <data key="targetArrowShape">arrow</data>
+      <data key="lineStyle">LONG_DASH</data>
     </edge>
   </graph>
 </graphml>

@@ -40,7 +40,7 @@ $(function(){
 	    var options = {
 	        panZoomControlVisible: false,
 			edgesMerged: false,
-			nodeLabelsVisible: false,
+			nodeLabelsVisible: true,
 			edgeLabelsVisible: false,
 			nodeTooltipsEnabled: false,
 			edgeTooltipsEnabled: false,
@@ -57,8 +57,9 @@ $(function(){
 	        }, DELAY_BEFORE_HIDING_LOADER);
 	    });
 	    
-	    $.get("/file/example_graphs/petersen.xgmml", function(data){
+	    $.get("/file/example_graphs/reindeers.xgmml", function(data){
 		    options.network = data;
+		    options.visualStyle = GRAPH_STYLES["Images"],
 		    vis.draw(options);
 		});
     }
