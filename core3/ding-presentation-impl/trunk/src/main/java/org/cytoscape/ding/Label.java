@@ -83,24 +83,24 @@ public interface Label {
 	public void setFont(Font aFont) ;
 
 
-	/**
-	 *
-	 */
-	public void setTextAnchor ( int position );
-
-	/**
-	 *
-	 */
-	public int getTextAnchor ( );
-
-	/**
-	 *
-	 */
-	public void setJustify ( int justify );
-
-	/**
-	 *
-	 */
-	public int getJustify ( );
+//	/**
+//	 *
+//	 */
+//	public void setTextAnchor ( int position );
+//
+//	/**
+//	 *
+//	 */
+//	public int getTextAnchor ( );
+//
+//	/**
+//	 *
+//	 */
+//	public void setJustify ( int justify );
+//
+//	/**
+//	 *
+//	 */
+//	public int getJustify ( );
 
 }

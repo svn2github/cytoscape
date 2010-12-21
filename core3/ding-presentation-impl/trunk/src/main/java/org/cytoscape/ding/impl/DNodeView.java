@@ -42,10 +42,13 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -60,14 +63,18 @@ import org.cytoscape.ding.ObjectPosition;
 import org.cytoscape.ding.customgraphics.CyCustomGraphics;
 import org.cytoscape.ding.customgraphics.Layer;
 import org.cytoscape.ding.customgraphics.NullCustomGraphics;
+import org.cytoscape.ding.impl.customgraphics.CustomGraphicsPositionCalculator;
 import org.cytoscape.ding.impl.visualproperty.CustomGraphicsVisualProperty;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.graph.render.stateful.CustomGraphic;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+
 
 
 /**
@@ -111,7 +118,7 @@ public class DNodeView implements NodeView, Label {
 	static final Paint DEFAULT_LABEL_PAINT = Color.black;
 	static final double DEFAULT_LABEL_WIDTH = 100.0;
 
-	final DGraphView graphView;
+	private final DGraphView graphView;
 
 	static final int DEFAULT_TRANSPARENCY = 255;
 
@@ -154,26 +161,43 @@ public class DNodeView implements NodeView, Label {
 	// use an array
 	// object assuming it takes up the least amount of memory:
 	private final Object[] CG_LOCK = new Object[0];
-	private final static HashSet<CustomGraphic> EMPTY_CUSTOM_GRAPHICS = new LinkedHashSet<CustomGraphic>(
-			0);
+	
+	private final static Set<CustomGraphic> EMPTY_CUSTOM_GRAPHICS = new LinkedHashSet<CustomGraphic>(0);
 
 	// View Model for this presentation.
 	private final View<CyNode> nodeViewModel;
 	
 	// Custom Graphics layers.
-	private final Set<CustomGraphic> targets;
+	//private final Set<CustomGraphic> customGraphicsSet;
+	
+	private final Map<CyCustomGraphics, Set<CustomGraphic>> cgMap;
+	
+	private ObjectPosition labelPosition;
+	private Map<CustomGraphic, ObjectPosition> graphicsPositions;
+	
+	private final VisualLexicon lexicon;
 
 	/*
 	 * @param inx the RootGraph index of node (a negative number).
 	 */
-	DNodeView(DGraphView view, int inx, View<CyNode> nv) {
-		if (view == null)
-			throw new NullPointerException("view must never be null!");
+	DNodeView(final VisualLexicon lexicon, final DGraphView graphView, int inx, final View<CyNode> viewModel) {
+		if (graphView == null)
+			throw new NullPointerException("View must never be null!");
+		if (viewModel == null)
+			throw new NullPointerException("View model must never be null!");
+		if (lexicon == null)
+			throw new NullPointerException("Lexicon must never be null!");
+		
+		this.lexicon = lexicon;
+		this.labelPosition = new ObjectPositionImpl();
 
-		targets = new HashSet<CustomGraphic>();
-		graphView = view;
+		// Initialize custom graphics pool.
+		cgMap = new HashMap<CyCustomGraphics, Set<CustomGraphic>>();
+		
+		this.graphView = graphView;
+		
 		m_inx = inx;
-		nodeViewModel = nv;
+		nodeViewModel = viewModel;
 		m_selected = false;
 		m_unselectedPaint = graphView.m_nodeDetails.fillPaint(m_inx);
 		m_selectedPaint = Color.yellow;
@@ -183,12 +207,8 @@ public class DNodeView implements NodeView, Label {
 		transparency = DEFAULT_TRANSPARENCY;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public GraphView getGraphView() {
+	
+	@Override public GraphView getGraphView() {
 		return graphView;
 	}
 
@@ -197,17 +217,18 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public CyNode getNode() {
-if (graphView == null) System.err.println("++++++++++++++++++++++++++++++++++++++ in DNodeView.getNode(): graphView is NULL!!");
+	@Override public CyNode getNode() {
 		synchronized (graphView.m_lock) {
 			return graphView.networkModel.getNode(m_inx);
 		}
 	}
 
-	public View<CyNode> getNodeViewModel() {
+	
+	@Override public View<CyNode> getNodeViewModel() {
 		return nodeViewModel;
 	}
 
+	
 	/**
 	 * DOCUMENT ME!
 	 *
@@ -247,9 +268,7 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 	 */
 	public int getShape() {
 		synchronized (graphView.m_lock) {
-			final int nativeShape = graphView.m_nodeDetails.shape(m_inx);
-
-			return nativeShape;
+			return graphView.m_nodeDetails.shape(m_inx);
 		}
 	}
 
@@ -1069,32 +1088,6 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 		}
 	}
 
-//	/**
-//	 * Adds a custom graphic, <EM>in draw order</EM>, to this DNodeView in a
-//	 * thread-safe way. This is a convenience method that is equivalent to
-//	 * calling: <CODE>
-//	 *   addCustomGraphic (new CustomGraphic (shape,paint,anchor))
-//	 * </CODE> except the the new CustomGraphic created is returned.
-//	 *
-//	 * @param shape
-//	 * @param paint
-//	 * @param anchor
-//	 *            The int value from NodeDetails, that defines where the graphic
-//	 *            anchor point lies on this DNodeView's extents rectangle. A
-//	 *            common anchor is NodeDetails.ANCHOR_CENTER.
-//	 * @since Cytoscape 2.6
-//	 * @throws IllegalArgumentException
-//	 *             if shape or paint are null or anchor is not in the range 0 <=
-//	 *             anchor <= NodeDetails.MAX_ANCHOR_VAL.
-//	 * @return The CustomGraphic added to this DNodeView.
-//	 * @see #addCustomGraphic(CustomGraphic)
-//	 * @see org.cytoscape.graph.render.stateful.CustomGraphic
-//	 */
-//	public CustomGraphic addCustomGraphic(Shape shape, Paint paint, int anchor) {
-//		CustomGraphic cg = new CustomGraphic(shape, paint, anchor);
-//		addCustomGraphic(cg);
-//		return cg;
-//	}
 
 	/**
 	 * Adds a given CustomGraphic, <EM>in draw order</EM>, to this DNodeView in
@@ -1119,17 +1112,16 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 	 */
 	public boolean addCustomGraphic(CustomGraphic cg) {
 		boolean retVal = false;
-		// CG_RW_LOCK.writeLock().lock();
-		// if (_customGraphics == null) {
-		// _customGraphics = new LinkedHashSet<CustomGraphic>();
-		// }
-		// retVal = _customGraphics.add (cg);
-		// CG_RW_LOCK.writeLock().unlock();
 		synchronized (CG_LOCK) {
 			if (_customGraphics == null) {
 				_customGraphics = new LinkedHashSet<CustomGraphic>();
+				graphicsPositions = new HashMap<CustomGraphic, ObjectPosition>();
 			}
-			retVal = _customGraphics.add(cg);
+			if (_customGraphics.contains(cg))
+				retVal = false;
+			else {
+				retVal = _customGraphics.add(cg);
+			}
 		}
 		ensureContentChanged();
 		return retVal;
@@ -1144,13 +1136,6 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 	 * @since Cytoscape 2.6
 	 */
 	public boolean containsCustomGraphic(CustomGraphic cg) {
-		// CG_RW_LOCK.readLock().lock();
-		// boolean retVal = false;
-		// if (_customGraphics != null) {
-		// retVal = _customGraphics.contains (cg);
-		// }
-		// CG_RW_LOCK.readLock().unlock();
-		// return retVal;
 		synchronized (CG_LOCK) {
 			if (_customGraphics == null) {
 				return false;
@@ -1172,25 +1157,7 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 	 * @since Cytoscape 2.6
 	 */
 	public Iterator<CustomGraphic> customGraphicIterator() {
-		Iterator<CustomGraphic> retVal = null;
 		final Iterable<CustomGraphic> toIterate;
-		// CG_RW_LOCK.readLock().lock();
-		// if (_customGraphics == null) {
-		// toIterate = EMPTY_CUSTOM_GRAPHICS;
-		// } else {
-		// toIterate = _customGraphics;
-		// }
-		// retVal = new LockingIterator<CustomGraphic>(toIterate);
-		// retVal = new Iterator<CustomGraphic>() {
-		// Iterator<? extends CustomGraphic> i = toIterate.iterator();
-		// public boolean hasNext() {return i.hasNext();}
-		// public CustomGraphic next() {return i.next();}
-		// public void remove() {
-		// throw new UnsupportedOperationException();
-		// }
-		// };
-		// CG_RW_LOCK.readLock().unlock();
-		// return retVal;
 		synchronized (CG_LOCK) {
 			if (_customGraphics == null) {
 				toIterate = EMPTY_CUSTOM_GRAPHICS;
@@ -1212,19 +1179,26 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 	 */
 	public boolean removeCustomGraphic(CustomGraphic cg) {
 		boolean retVal = false;
-		// CG_RW_LOCK.writeLock().lock();
-		// if (_customGraphics != null) {
-		// retVal = _customGraphics.remove (cg);
-		// }
-		// CG_RW_LOCK.writeLock().unlock();
 		synchronized (CG_LOCK) {
 			if (_customGraphics != null) {
 				retVal = _customGraphics.remove(cg);
+				graphicsPositions.remove(cg);
 			}
 		}
 		ensureContentChanged();
 		return retVal;
 	}
+	
+	public void removeAllCustomGraphics() {
+		synchronized (CG_LOCK) {
+			if (_customGraphics != null) {
+				_customGraphics.clear();
+				graphicsPositions.clear();
+			}
+		}
+		ensureContentChanged();
+	}
+
 
 	/**
 	 * A thread-safe method returning the number of custom graphics associated
@@ -1233,17 +1207,9 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 	 * @since Cytoscape 2.6
 	 */
 	public int getNumCustomGraphics() {
-		// CG_RW_LOCK.readLock().lock();
-		// int retVal = 0;
-		// if (_customGraphics != null) {
-		// retVal = _customGraphics.size();
-		// }
-		// CG_RW_LOCK.readLock().unlock();
-		// return retVal;
 		synchronized (CG_LOCK) {
-			if (_customGraphics == null) {
+			if (_customGraphics == null)
 				return 0;
-			}
 			return _customGraphics.size();
 		}
 	}
@@ -1308,141 +1274,141 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 		}
 	};
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param position
-	 *            DOCUMENT ME!
-	 */
-	public void setTextAnchor(int position) {
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @param position
+//	 *            DOCUMENT ME!
+//	 */
+//	public void setTextAnchor(int position) {
+//		synchronized (graphView.m_lock) {
+//			graphView.m_nodeDetails.overrideLabelTextAnchor(m_inx, 0, position);
+//			graphView.m_contentChanged = true;
+//		}
+//	}
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @return DOCUMENT ME!
+//	 */
+//	public int getTextAnchor() {
+//		synchronized (graphView.m_lock) {
+//			return DNodeDetails.convertND2G(graphView.m_nodeDetails
+//					.labelTextAnchor(m_inx, 0));
+//		}
+//	}
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @param justify
+//	 *            DOCUMENT ME!
+//	 */
+//	public void setJustify(int justify) {
+//		synchronized (graphView.m_lock) {
+//			graphView.m_nodeDetails.overrideLabelJustify(m_inx, 0, justify);
+//			graphView.m_contentChanged = true;
+//		}
+//	}
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @return DOCUMENT ME!
+//	 */
+//	public int getJustify() {
+//		synchronized (graphView.m_lock) {
+//			return DNodeDetails.convertND2G(graphView.m_nodeDetails.labelJustify(
+//					m_inx, 0));
+//		}
+//	}
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @param x
+//	 *            DOCUMENT ME!
+//	 */
+//	public void setLabelOffsetX(double x) {
+//		synchronized (graphView.m_lock) {
+//			graphView.m_nodeDetails.overrideLabelOffsetVectorX(m_inx, 0, x);
+//			graphView.m_contentChanged = true;
+//		}
+//	}
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @return DOCUMENT ME!
+//	 */
+//	public double getLabelOffsetX() {
+//		synchronized (graphView.m_lock) {
+//			return graphView.m_nodeDetails.labelOffsetVectorX(m_inx, 0);
+//		}
+//	}
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @param y
+//	 *            DOCUMENT ME!
+//	 */
+//	public void setLabelOffsetY(double y) {
+//		synchronized (graphView.m_lock) {
+//			graphView.m_nodeDetails.overrideLabelOffsetVectorY(m_inx, 0, y);
+//			graphView.m_contentChanged = true;
+//		}
+//	}
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @return DOCUMENT ME!
+//	 */
+//	public double getLabelOffsetY() {
+//		synchronized (graphView.m_lock) {
+//			return graphView.m_nodeDetails.labelOffsetVectorY(m_inx, 0);
+//		}
+//	}
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @param position
+//	 *            DOCUMENT ME!
+//	 */
+//	public void setNodeLabelAnchor(int position) {
+//		synchronized (graphView.m_lock) {
+//			graphView.m_nodeDetails.overrideLabelNodeAnchor(m_inx, 0, position);
+//			graphView.m_contentChanged = true;
+//		}
+//	}
+//
+//	/**
+//	 * DOCUMENT ME!
+//	 *
+//	 * @return DOCUMENT ME!
+//	 */
+//	public int getNodeLabelAnchor() {
+//		synchronized (graphView.m_lock) {
+//			return DNodeDetails.convertND2G(graphView.m_nodeDetails
+//					.labelNodeAnchor(m_inx, 0));
+//		}
+//	}
+
+	public double getLabelWidth() {
 		synchronized (graphView.m_lock) {
-			graphView.m_nodeDetails.overrideLabelTextAnchor(m_inx, 0, position);
+			return graphView.m_nodeDetails.labelWidth(m_inx);
+		}
+	}
+
+	public void setLabelWidth(double width) {
+		synchronized (graphView.m_lock) {
+			graphView.m_nodeDetails.overrideLabelWidth(m_inx, width);
 			graphView.m_contentChanged = true;
 		}
 	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public int getTextAnchor() {
-		synchronized (graphView.m_lock) {
-			return DNodeDetails.convertND2G(graphView.m_nodeDetails
-					.labelTextAnchor(m_inx, 0));
-		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param justify
-	 *            DOCUMENT ME!
-	 */
-	public void setJustify(int justify) {
-		synchronized (graphView.m_lock) {
-			graphView.m_nodeDetails.overrideLabelJustify(m_inx, 0, justify);
-			graphView.m_contentChanged = true;
-		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public int getJustify() {
-		synchronized (graphView.m_lock) {
-			return DNodeDetails.convertND2G(graphView.m_nodeDetails.labelJustify(
-					m_inx, 0));
-		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param x
-	 *            DOCUMENT ME!
-	 */
-	public void setLabelOffsetX(double x) {
-		synchronized (graphView.m_lock) {
-			graphView.m_nodeDetails.overrideLabelOffsetVectorX(m_inx, 0, x);
-			graphView.m_contentChanged = true;
-		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public double getLabelOffsetX() {
-		synchronized (graphView.m_lock) {
-			return graphView.m_nodeDetails.labelOffsetVectorX(m_inx, 0);
-		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param y
-	 *            DOCUMENT ME!
-	 */
-	public void setLabelOffsetY(double y) {
-		synchronized (graphView.m_lock) {
-			graphView.m_nodeDetails.overrideLabelOffsetVectorY(m_inx, 0, y);
-			graphView.m_contentChanged = true;
-		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public double getLabelOffsetY() {
-		synchronized (graphView.m_lock) {
-			return graphView.m_nodeDetails.labelOffsetVectorY(m_inx, 0);
-		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param position
-	 *            DOCUMENT ME!
-	 */
-	public void setNodeLabelAnchor(int position) {
-		synchronized (graphView.m_lock) {
-			graphView.m_nodeDetails.overrideLabelNodeAnchor(m_inx, 0, position);
-			graphView.m_contentChanged = true;
-		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public int getNodeLabelAnchor() {
-		synchronized (graphView.m_lock) {
-			return DNodeDetails.convertND2G(graphView.m_nodeDetails
-					.labelNodeAnchor(m_inx, 0));
-		}
-	}
-
-        public double getLabelWidth() {
-                synchronized (graphView.m_lock) {
-                        return graphView.m_nodeDetails.labelWidth(m_inx);
-                }
-        }
-
-        public void setLabelWidth(double width) {
-                synchronized (graphView.m_lock) {
-                        graphView.m_nodeDetails.overrideLabelWidth(m_inx, width);
-                        graphView.m_contentChanged = true;
-                }
-        }
 
 	TexturePaint getNestedNetworkTexturePaint() {
 		synchronized (graphView.m_lock) {
@@ -1514,6 +1480,59 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 	public void showNestedNetwork(final boolean makeVisible) {
 		nestedNetworkVisible = makeVisible;
 	}
+	
+	// from Label interface
+	@Override public ObjectPosition getLabelPosition() {
+		return labelPosition;
+	}
+
+	// from Label interface
+	@Override public void setLabelPosition(final ObjectPosition p) {
+		this.labelPosition = p;
+		updateLabelPosition();
+	}
+
+	private void updateLabelPosition() {
+		synchronized (graphView.m_lock) {
+			graphView.m_nodeDetails.overrideLabelTextAnchor(m_inx, 0,
+					labelPosition.getAnchor().getConversionConstant());
+			graphView.m_nodeDetails.overrideLabelNodeAnchor(m_inx, 0,
+					labelPosition.getTargetAnchor().getConversionConstant());
+			graphView.m_nodeDetails.overrideLabelJustify(m_inx, 0,
+					labelPosition.getJustify().getConversionConstant());
+			graphView.m_nodeDetails.overrideLabelOffsetVectorX(m_inx, 0,
+					labelPosition.getOffsetX());
+			graphView.m_nodeDetails.overrideLabelOffsetVectorY(m_inx, 0,
+					labelPosition.getOffsetY());
+
+			graphView.m_contentChanged = true;
+		}
+	}
+	
+	
+	public CustomGraphic setCustomGraphicsPosition(CustomGraphic cg,
+			final ObjectPosition p) {
+		if (cg == null || p == null)
+			throw new IllegalArgumentException(
+					"CustomGraphic and Position cannot be null.");
+
+		_customGraphics.remove(cg);
+		graphicsPositions.remove(cg);
+
+		CustomGraphic newCg = CustomGraphicsPositionCalculator.transform(p, this, cg);
+		
+		_customGraphics.add(newCg);
+		graphicsPositions.put(newCg, p);
+
+		return newCg;
+	}
+
+	public ObjectPosition getCustomGraphicsPosition(final CustomGraphic cg) {
+		if (cg == null)
+			return ObjectPositionImpl.DEFAULT_POSITION;
+
+		return graphicsPositions.get(cg);
+	}
 
 	@Override
 	public void setVisualPropertyValue(VisualProperty<?> vp, Object value) {
@@ -1557,35 +1576,38 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 			setFont((Font) value);
 		} else if (vp == DVisualLexicon.NODE_LABEL_FONT_SIZE) {
 			setFont(getFont().deriveFont(((Integer) value).floatValue()));
-//		} else if (vp == DVisualLexicon.NODE_LABEL_ANCHOR_X_OFFSET) {
-//			setLabelOffsetX(((Double) value).doubleValue());
-//		} else if (vp == DVisualLexicon.NODE_LABEL_ANCHOR_Y_OFFSET) {
-//			setLabelOffsetY(((Double) value).doubleValue());
-//		} else if (vp == DVisualLexicon.NODE_LABEL_JUSTIFY) {
-//			setJustify(((Justify) value).getNativeValue());
 		} else if (vp == DVisualLexicon.NODE_LABEL_POSITION) {
 			//FIXME
 			final ObjectPosition op = (ObjectPosition) value;
-			setTextAnchor(op.getAnchor().getConversionConstant());
-			setNodeLabelAnchor(op.getTargetAnchor().getConversionConstant());
-			setJustify(op.getJustify().getConversionConstant());
-			setLabelOffsetX(op.getOffsetX());
-			setLabelOffsetY(op.getOffsetY());
+			this.setLabelPosition(op);
+//			setTextAnchor(op.getAnchor().getConversionConstant());
+//			setNodeLabelAnchor(op.getTargetAnchor().getConversionConstant());
+//			setJustify(op.getJustify().getConversionConstant());
+//			setLabelOffsetX(op.getOffsetX());
+//			setLabelOffsetY(op.getOffsetY());
 		} else if(vp instanceof CustomGraphicsVisualProperty) {
-			final CyCustomGraphics cg = (CyCustomGraphics) value;
-			applyCustomGraphics(cg);
+			applyCustomGraphics((CyCustomGraphics) value);
+		} else if(DVisualLexicon.getGraphicsPositionVP().contains(vp)) {
+			System.out.print("Applying CG Position: " + vp.getDisplayName());
+			System.out.println(" Value = " + value);
+			applyCustomGraphicsPosition(vp, (ObjectPosition) value);
 		}
 	}
 	
 	
 	private void applyCustomGraphics(final CyCustomGraphics customGraphics) {
 
+		Set<CustomGraphic> dCustomGraphicsSet = cgMap.get(customGraphics);
+		
 		// Remove current layers associated with this Custom Graphics
-		if (targets.size() != 0) {
-			for (CustomGraphic cg : targets)
+		if(dCustomGraphicsSet == null) {
+			dCustomGraphicsSet = new HashSet<CustomGraphic>();
+			cgMap.put(customGraphics, dCustomGraphicsSet);
+		} else if (dCustomGraphicsSet.size() != 0) {
+			for (CustomGraphic cg : dCustomGraphicsSet)
 				removeCustomGraphic(cg);
 
-			targets.clear();
+			dCustomGraphicsSet.clear();
 		}
 
 		// For these cases, remove current layers.
@@ -1617,13 +1639,51 @@ if (graphView == null) System.err.println("+++++++++++++++++++++++++++++++++++++
 //				targets.add(resized);
 //			} else {
 				addCustomGraphic(cg);
-				targets.add(cg);
+				dCustomGraphicsSet.add(cg);
 //			}
 		}
 		//this.currentMap.put(dv, targets);
 		
 		// Flag this as used Custom Graphics
 		//Cytoscape.getVisualMappingManager().getCustomGraphicsManager().setUsedInCurrentSession(graphics, true);
+	}
+	
+	private void applyCustomGraphicsPosition(final VisualProperty<?> vp, final ObjectPosition position) {
+
+		// No need to modify
+		if (position == null)
+			return;
+		
+		// Use dependency to retrieve its parent.
+		VisualLexiconNode lexNode = lexicon.getVisualLexiconNode(vp);
+		final Collection<VisualLexiconNode> leavs = lexNode.getParent().getChildren();
+		
+		VisualProperty<?> parent = null;
+		for(VisualLexiconNode vlNode:leavs) {
+			if(vlNode.getVisualProperty().getRange().getType().equals(CyCustomGraphics.class)) {
+				parent = vlNode.getVisualProperty();
+				break;
+			}
+		}
+		
+		if(parent == null)
+			throw new NullPointerException("Associated Custom Graphics VP is missing for " + vp.getDisplayName());
+		
+		final Set<CustomGraphic> currentCG = cgMap.get(parent);
+		
+		if (currentCG == null || currentCG.size() == 0) {
+			// Ignore if no CG is available.
+			return;
+		}
+
+		final List<CustomGraphic> newList = new ArrayList<CustomGraphic>();
+		for (CustomGraphic g : currentCG) {
+			newList.add(this.setCustomGraphicsPosition(g, position));
+			this.removeCustomGraphic(g);
+		}
+
+		currentCG.clear();
+		currentCG.addAll(newList);
 	}
 
 }

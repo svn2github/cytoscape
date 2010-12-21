@@ -13,15 +13,17 @@ import java.awt.geom.Point2D;
  * @author Rowan Christmas
  */
 public interface NodeView  extends GraphViewObject {
-	public static final int TRIANGLE = 0;
-	public static final int DIAMOND = 1;
-	public static final int ELLIPSE = 2;
-	public static final int HEXAGON = 3;
-	public static final int OCTAGON = 4;
-	public static final int PARALELLOGRAM = 5;
-	public static final int RECTANGLE = 6;
-	public static final int ROUNDED_RECTANGLE = 7;
-	public static final int VEE = 8;
+	
+	
+//	public static final int TRIANGLE = 0;
+//	public static final int DIAMOND = 1;
+//	public static final int ELLIPSE = 2;
+//	public static final int HEXAGON = 3;
+//	public static final int OCTAGON = 4;
+//	public static final int PARALELLOGRAM = 5;
+//	public static final int RECTANGLE = 6;
+//	public static final int ROUNDED_RECTANGLE = 7;
+//	public static final int VEE = 8;
 
 	/**
 	 * @return The Node we are a view on
@@ -241,12 +243,17 @@ public interface NodeView  extends GraphViewObject {
 	 * Sets what the tooltip will be for this NodeView
 	 */
 	public void setToolTip ( String tip );
+	
+	ObjectPosition getLabelPosition();
+	void setLabelPosition(final ObjectPosition p);
 
-	public void setLabelOffsetX(double x);
-	public void setLabelOffsetY(double y);
-	public void setNodeLabelAnchor(int position);
-
-	public double getLabelOffsetX();
-	public double getLabelOffsetY();
-	public int getNodeLabelAnchor();
+	
+	 
+//	public void setLabelOffsetX(double x);
+//	public void setLabelOffsetY(double y);
+//	public void setNodeLabelAnchor(int position);
+//
+//	public double getLabelOffsetX();
+//	public double getLabelOffsetY();
+//	public int getNodeLabelAnchor();
 }

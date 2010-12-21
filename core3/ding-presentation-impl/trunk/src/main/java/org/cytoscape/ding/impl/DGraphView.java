@@ -133,6 +133,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	
 	private static enum ZOrder {
 		BACKGROUND_PANE, NETWORK_PANE, FOREGROUND_PANE;
+		
 		int layer() {
 			if (this == BACKGROUND_PANE)
 				return -30000;
@@ -385,7 +386,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	public DGraphView(final CyNetworkView view, CyTableFactory dataFactory,
 			CyRootNetworkFactory cyRoot, UndoSupport undo,
 			SpacialIndex2DFactory spacialFactory,
-			VisualLexicon dingLexicon,
+			final VisualLexicon dingLexicon,
 			Map<NodeViewTaskFactory, Map> nodeViewTFs,
 			Map<EdgeViewTaskFactory, Map> edgeViewTFs,
 			Map<NetworkViewTaskFactory, Map> emptySpaceTFs,
@@ -780,7 +781,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		m_drawPersp.addNode(node);
 
 		final View<CyNode> nodeViewModel = cyNetworkView.getNodeView(node);
-		final NodeView dNodeView = new DNodeView(this, nodeInx, nodeViewModel);
+		final NodeView dNodeView = new DNodeView(dingLexicon, this, nodeInx, nodeViewModel);
 
 		m_nodeViewMap.put(nodeInx, dNodeView);
 		m_spacial.insert(nodeInx, m_defaultNodeXMin, m_defaultNodeYMin,

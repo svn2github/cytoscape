@@ -6,7 +6,6 @@ import static org.mockito.Mockito.mock;
 
 import org.cytoscape.ding.customgraphics.CustomGraphicsManager;
 import org.cytoscape.ding.impl.DVisualLexicon;
-import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.NullDataType;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
@@ -39,7 +38,7 @@ public class DVisualLexiconTest extends AbstractVisualLexiconTest {
 
 		assertEquals(1, dLexicon.getVisualLexiconNode(root).getChildren().size());
 		
-		assertEquals(61, dLexicon.getAllVisualProperties().size());
+		assertEquals(87, dLexicon.getAllVisualProperties().size());
 	}
 
 	@Test
