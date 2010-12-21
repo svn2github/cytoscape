@@ -190,6 +190,16 @@ public class ValueUtils {
 		return new ArrayList<String>();
 	}
 
+	public static double getDoubleValue(Object input) throws NumberFormatException {
+		if (input instanceof Double)
+			return ((Double)input).doubleValue();
+		else if (input instanceof Integer)
+			return ((Integer)input).doubleValue();
+		else if (input instanceof String)
+			return Double.parseDouble((String)input);
+		throw new NumberFormatException("input can not be converted to double");
+	}
+
 	/**
  	 * Takes a map of objects indexed by a string keyword and returns
  	 * a map of strings indexed by that keyword.  This involves figuring

@@ -53,7 +53,7 @@ public class BarChart implements NodeChartViewer {
 
 	public List<CustomGraphic> getCustomGraphics(Map<String, Object> args,
 			List<Double> values, List<String> labels, CyNode node,
-			CyNetworkView view, Object position) throws CyCommandException {
+			CyNetworkView view, Object position, double scale) throws CyCommandException {
 	
 		// Get our colors
 		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), values);
@@ -68,7 +68,9 @@ public class BarChart implements NodeChartViewer {
 		}
 
 		// Sanity check
-		if (labels.size() != values.size() || labels.size() != colors.size())
+		if (labels != null && labels.size() > 0 && 
+		    (labels.size() != values.size() ||
+		     labels.size() != colors.size()))
 			throw new CyCommandException("number of labels (" + labels.size()
 					+ "), values (" + values.size() + "), and colors ("
 					+ colors.size() + ") don't match");
@@ -78,7 +80,7 @@ public class BarChart implements NodeChartViewer {
 
 		// We need to get our bounding box in order to scale our graphic
 		// properly
-		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view, position);
+		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view, position, scale);
 		double height = bbox.getHeight();
 		double width = bbox.getWidth();
 		
@@ -138,25 +140,26 @@ public class BarChart implements NodeChartViewer {
 			cgList.add(c);
 		}
 
-		// Now, create the labels.  We want to do this here so we can adjust the label for the slice
-		for (int i = 0; i < values.size(); i++) {
-			
-			// add labels
-			TextAlignment tAlign = TextAlignment.ALIGN_LEFT;
-			
-			// Now, create the label.  Put the label on the outer edge of the circle.
-			Point2D labelPosition = new Point2D.Double(barArray[i].getCenterX(), maxY);
-			// vals[1] = ViewUtils.getLabelCustomGraphic(label, null, 0, 0, labelPosition, tAlign, view);
-			Shape textShape = ViewUtils.getLabelShape(labels.get(i), null, 0, 0, view);
-
-			double maxHeight = barArray[i].getWidth();
-			textShape = ViewUtils.positionLabel(textShape, labelPosition, tAlign, maxHeight, 0.0, 70.0);
-			if (textShape == null) continue;
-
-//			vals[1] = new CustomGraphic(textArea, new DefaultPaintFactory(Color.BLACK));
-			CustomGraphic c1  = new CustomGraphic(textShape, new DefaultPaintFactory(Color.BLACK));
-			cgList.add(c1);
-
+		if (labels != null && labels.size() > 0) {
+			// Now, create the labels.  We want to do this here so we can adjust the label for the slice
+			for (int i = 0; i < values.size(); i++) {
+				
+				// add labels
+				TextAlignment tAlign = TextAlignment.ALIGN_LEFT;
+				
+				// Now, create the label.  Put the label on the outer edge of the circle.
+				Point2D labelPosition = new Point2D.Double(barArray[i].getCenterX(), maxY);
+				// vals[1] = ViewUtils.getLabelCustomGraphic(label, null, 0, 0, labelPosition, tAlign, view);
+				Shape textShape = ViewUtils.getLabelShape(labels.get(i), null, 0, 0, view);
+	
+				double maxHeight = barArray[i].getWidth();
+				textShape = ViewUtils.positionLabel(textShape, labelPosition, tAlign, maxHeight, 0.0, 70.0);
+				if (textShape == null) continue;
+	
+	//			vals[1] = new CustomGraphic(textArea, new DefaultPaintFactory(Color.BLACK));
+				CustomGraphic c1  = new CustomGraphic(textShape, new DefaultPaintFactory(Color.BLACK));
+				cgList.add(c1);
+			}
 		}
 		return cgList;
 	}

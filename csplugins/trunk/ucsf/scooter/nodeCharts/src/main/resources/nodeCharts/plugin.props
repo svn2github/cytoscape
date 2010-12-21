@@ -11,7 +11,7 @@ pluginName=nodeCharts
 pluginDescription=Paint a chart on a node
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.91
+pluginVersion=0.93
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.8
@@ -29,6 +29,6 @@ pluginAuthorsIntstiutions=John "Scooter" Morris:UCSF;Allan Kuchinsky:Agilent;Ale
 projectURL=http://www.rbvi.ucsf.edu/Research/cytoscape/
 
 # Date this plugin/plugin version was released
-releaseDate=December 17, 2010
+releaseDate=December 21, 2010
 
 # -- The following properties should be set ONLY BY CORE PLUGINS -- #

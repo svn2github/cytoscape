@@ -89,7 +89,7 @@ public class PieChart implements NodeChartViewer {
 	}
 
 	public List<CustomGraphic> getCustomGraphics(Map<String, Object>args, List<Double> values, List<String> labels,
-	                                             CyNode node, CyNetworkView view, Object position) 
+	                                             CyNode node, CyNetworkView view, Object position, double scale) 
 	                                                                               throws CyCommandException {
 		// Get our colors
 		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), values);
@@ -98,16 +98,10 @@ public class PieChart implements NodeChartViewer {
 		double arcStart = 0.0;
 		Object startObj = args.get(ARCSTART);
 		if (startObj != null) {
-			if (startObj instanceof Double)
-				arcStart = ((Double)startObj).doubleValue();
-			else if (startObj instanceof Integer)
-				arcStart = ((Integer)startObj).doubleValue();
-			else if (startObj instanceof String) {
-				try {
-					arcStart = Double.parseDouble((String)startObj);
-				} catch (NumberFormatException e) {
-					throw new CyCommandException("arcstart must be a number: "+e.getMessage());
-				}
+			try {
+				arcStart = ValueUtils.getDoubleValue(startObj);
+			} catch (NumberFormatException e) {
+				throw new CyCommandException("arcstart must be a number: "+e.getMessage());
 			}
 		}
 
@@ -115,29 +109,34 @@ public class PieChart implements NodeChartViewer {
 		values= convertData(values);
 
 		// Sanity check
-		if (labels.size() != values.size() ||
-		    labels.size() != colors.size())
+		if (labels != null && labels.size() > 0 && 
+		    (labels.size() != values.size() ||
+		     labels.size() != colors.size()))
 			throw new CyCommandException("number of labels ("+labels.size()+"), values ("+
 			                             values.size()+"), and colors ("+colors.size()+") don't match");
 
-		int nSlices = labels.size();
+		int nSlices = values.size();
 		List<CustomGraphic> cgList = new ArrayList<CustomGraphic>();
 		List<CustomGraphic> labelList = new ArrayList<CustomGraphic>();
 
 		// We need to get our bounding box in order to scale our graphic properly
-		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view, position);
+		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view, position, scale);
 
 		// System.out.println("Node: "+node);
 
 		for (int slice = 0; slice < nSlices; slice++) {
-			CustomGraphic[] cg = createSlice(bbox, arcStart, values.get(slice), labels.get(slice), colors.get(slice), view);
+			String label = null;
+			if (labels != null && labels.size() > 0)
+				label = labels.get(slice);
+			CustomGraphic[] cg = createSlice(bbox, arcStart, values.get(slice), label, colors.get(slice), view);
 			cgList.add(cg[0]);
 			if (cg[1] != null)
 				labelList.add(cg[1]);
 			arcStart += values.get(slice).doubleValue();
 		}
 
-		cgList.addAll(labelList);
+		if (labelList != null && labelList.size() > 0)
+			cgList.addAll(labelList);
 		return cgList;
 	}
 
@@ -177,28 +176,27 @@ public class PieChart implements NodeChartViewer {
 
 		TextAlignment tAlign = getLabelAlignment(midpointAngle);
 		
-		// create the label
-		Shape textShape = ViewUtils.getLabelShape(label, null, 0, 0, view);
+		vals[1] = null;
+		if (label != null) {
+			// create the label
+			Shape textShape = ViewUtils.getLabelShape(label, null, 0, 0, view);
 
-		// Now, position the label.  Put the label on the outer edge of the circle.
-		Point2D labelPosition = getLabelPosition(bbox, midpointAngle, 1.4);
-		// vals[1] = ViewUtils.getLabelCustomGraphic(label, null, 0, 0, labelPosition, tAlign, view);
-		textShape = ViewUtils.positionLabel(textShape, labelPosition, tAlign, 0.0, 0.0, 0.0);
-		if (textShape == null) {
-			vals[1] = null;
-			return vals;
+			// Now, position the label.  Put the label on the outer edge of the circle.
+			Point2D labelPosition = getLabelPosition(bbox, midpointAngle, 1.4);
+			// vals[1] = ViewUtils.getLabelCustomGraphic(label, null, 0, 0, labelPosition, tAlign, view);
+			textShape = ViewUtils.positionLabel(textShape, labelPosition, tAlign, 0.0, 0.0, 0.0);
+			if (textShape != null) {
+				// Draw a line between our label and the slice
+				labelPosition = getLabelPosition(bbox, midpointAngle, 1.0);
+				Shape labelLine = ViewUtils.getLabelLine(textShape.getBounds2D(), labelPosition, tAlign);
+
+				// Combine the shapes
+				Area textArea = new Area(textShape);
+				textArea.add(new Area(labelLine));
+
+				vals[1] = new CustomGraphic(textArea, new DefaultPaintFactory(Color.BLACK));
+			}
 		}
-
-		// Draw a line between our label and the slice
-		labelPosition = getLabelPosition(bbox, midpointAngle, 1.0);
-		Shape labelLine = ViewUtils.getLabelLine(textShape.getBounds2D(), labelPosition, tAlign);
-
-		// Combine the shapes
-		Area textArea = new Area(textShape);
-		textArea.add(new Area(labelLine));
-
-
-		vals[1] = new CustomGraphic(textArea, new DefaultPaintFactory(Color.BLACK));
 
 		return vals;
 	}

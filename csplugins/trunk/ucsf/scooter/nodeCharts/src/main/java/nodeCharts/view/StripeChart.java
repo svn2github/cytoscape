@@ -81,7 +81,7 @@ public class StripeChart implements NodeChartViewer {
 	}
 
 	public List<CustomGraphic> getCustomGraphics(Map<String, Object> args, List<Double> values, List<String> labels, CyNode node,
-			CyNetworkView view, Object position) throws CyCommandException {
+			CyNetworkView view, Object position, double scale) throws CyCommandException {
 		// Get our colors
 		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), values);
 
@@ -91,7 +91,7 @@ public class StripeChart implements NodeChartViewer {
 
 		// We need to get our bounding box in order to scale our graphic
 		// properly
-		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view, position);
+		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view, position, scale);
 
 		// System.out.println("Node: "+node);
 

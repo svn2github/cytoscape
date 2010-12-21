@@ -42,13 +42,15 @@ public class LineChart implements NodeChartViewer {
 
 	public List<CustomGraphic> getCustomGraphics(Map<String, Object> args,
 			List<Double> values, List<String> labels, CyNode node,
-			CyNetworkView view, Object position) throws CyCommandException {
+			CyNetworkView view, Object position, double scale) throws CyCommandException {
 		// Get our color
 		// Get our colors
 		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), values);
 
 		// Sanity check
-		if (labels.size() != values.size() || labels.size() != colors.size())
+		if (labels != null && labels.size() > 0 && 
+		    (labels.size() != values.size() ||
+		     labels.size() != colors.size()))
 			throw new CyCommandException("number of labels (" + labels.size()
 					+ "), values (" + values.size() + "), and colors ("
 					+ colors.size() + ") don't match");
@@ -58,7 +60,7 @@ public class LineChart implements NodeChartViewer {
 
 		// We need to get our bounding box in order to scale our graphic
 		// properly
-		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view, position);
+		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view, position, scale);
 		double height = bbox.getHeight();
 		double width = bbox.getWidth();
 		double x = bbox.getX();

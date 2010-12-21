@@ -135,12 +135,12 @@ public class ViewUtils {
 		}
 	}
 
-	public static Rectangle2D getNodeBoundingBox(CyNode node, CyNetworkView view, Object position) {
+	public static Rectangle2D getNodeBoundingBox(CyNode node, CyNetworkView view, Object position, double nodePortion) {
 		DNodeView nView = (DNodeView)view.getNodeView(node);
 
 		// Get the affine transform 
-		double height = (nView.getHeight()-nView.getBorderWidth())*0.90;
-		double width = (nView.getWidth()-nView.getBorderWidth())*0.90;
+		double height = (nView.getHeight()-nView.getBorderWidth())*nodePortion;
+		double width = (nView.getWidth()-nView.getBorderWidth())*nodePortion;
 
 		// Create the bounding box.
 		Rectangle2D.Double bbox = new Rectangle2D.Double(-width/2, -height/2, width, height);

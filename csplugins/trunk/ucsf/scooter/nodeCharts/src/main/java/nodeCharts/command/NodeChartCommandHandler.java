@@ -81,6 +81,7 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 	public static final String NODE = "node";
 	public static final String NODELIST = "nodelist";
 	public static final String POSITION = "position";
+	public static final String SCALE = "scale";
 	public static final String SELECTED = "selected";
 	public static final String VALUES = "valuelist";
 
@@ -168,9 +169,6 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 		if (args.containsKey(VALUES) && args.containsKey(ATTRIBUTELIST))
 			throw new CyCommandException("nodecharts can't handle both attributeslist and valuelist");
 
-		if (!args.containsKey(LABELS) && !args.containsKey(ATTRIBUTELIST))
-			throw new CyCommandException("nodecharts requires either a labels list or an attribute list");
-
 		// Now get our actual viewer
 		NodeChartViewer viewer = viewerMap.get(command);
 
@@ -185,6 +183,15 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 		if (args.containsKey(LABELS)) {
 			// Get our labels.  These may or may not be printed depending on options
 			labels = ValueUtils.getStringList(args.get(LABELS));
+		}
+
+		double scale = 0.90;
+		if (args.containsKey(SCALE)) {
+			try {
+				scale = ValueUtils.getDoubleValue(args.get(SCALE));
+			} catch (NumberFormatException e) {
+				throw new CyCommandException("Can't convert "+args.get(SCALE).toString()+" to double");
+			}
 		}
 
 		// Get our position
@@ -203,7 +210,7 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 			if (args.containsKey(ATTRIBUTELIST))
 				values = ValueUtils.getDataFromAttributes (node, args.get(ATTRIBUTELIST), labels);
 
-			List<CustomGraphic> cgList = viewer.getCustomGraphics(args, values, labels, node, view, pos);
+			List<CustomGraphic> cgList = viewer.getCustomGraphics(args, values, labels, node, view, pos, scale);
 			ViewUtils.addCustomGraphics(cgList, node, view);
 			result.addMessage("Created "+viewer.getName()+" chart for node "+node.getIdentifier());
 			// If we succeeded, serialize the command and save it in the appropriate nodeAttribute
@@ -223,6 +230,7 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 		addArgument(viewer.getName(), NODELIST);
 		addArgument(viewer.getName(), POSITION);
 		addArgument(viewer.getName(), VALUES);
+		addArgument(viewer.getName(), SCALE, "0.90");
 
 		// Get the specific commands handled by the viewer
 		Map<String,String> args = viewer.getOptions();
