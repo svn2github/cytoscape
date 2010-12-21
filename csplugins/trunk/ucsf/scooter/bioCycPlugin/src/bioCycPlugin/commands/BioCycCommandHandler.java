@@ -47,6 +47,7 @@ import cytoscape.command.CyCommandResult;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 
+import bioCycPlugin.BioCycPlugin;
 import bioCycPlugin.model.Database;
 import bioCycPlugin.model.Gene;
 import bioCycPlugin.model.Pathway;
@@ -55,7 +56,7 @@ import bioCycPlugin.model.Reaction;
 
 enum Command {
   LISTDATABASES("list databases", 
-	                "List all of the available databases", ""),
+	                "List all of the available databases", null),
   LISTGENES("list genes", 
 	            "List all of the genes that meet the criteria",
 	            "database=ecoli|name"),
@@ -70,7 +71,10 @@ enum Command {
 	            "database=ecoli|protein|gene"),
 	LOADPATHWAY("load pathway",
 	            "Load a pathway in biopax format",
-	            "database=ecoli|pathway");
+	            "database=ecoli|pathway"),
+	OPENRESOURCE("open resource",
+	            "Open a Pathway Tools Resource",
+	            "url");
 
   private String command = null;
   private String argList = null;
@@ -104,6 +108,7 @@ public class BioCycCommandHandler extends AbstractCommandHandler {
 	public static final String PROTEIN = "protein";
 	public static final String REACTION = "reaction";
 	public static final String SUBSTRATE = "substrate";
+	public static final String URL = "url";
 
 	public BioCycCommandHandler(String namespace, CyLogger logger) {
 		super(CyCommandManager.reserveNamespace(namespace));
@@ -139,10 +144,27 @@ public class BioCycCommandHandler extends AbstractCommandHandler {
 			return result;
 		}
 
+		// OPENRESOURCE("open resource",
+	 	//              "Open a Pathway Tools Resource",
+	 	//              "url");
+		if (Command.OPENRESOURCE.equals(command)) {
+			String url = getArg(command, URL, args);
+			if (url == null || url.length() == 0)
+				throw new CyCommandException("Must specify a url for the resource");
+			
+			String oldUrl = BioCycPlugin.getBaseUrl();
+			BioCycPlugin.setProp(BioCycPlugin.WEBSERVICE_URL, url);
+			result.addMessage("Switched resource from "+oldUrl+" to "+url);
+			return result;
+		}
+
 		// All of the rest of these require a database
 		String database = getArg(command, DATABASE, args);
 		if (database == null)
 			throw new CyCommandException("Must specify a database");
+
+		// Databases are upper-case
+		database = database.toUpperCase();
 
 		// LOADPATHWAY("load pathway",
 	 	//            "Load a pathway in biopax format",
