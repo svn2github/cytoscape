@@ -8,14 +8,21 @@ import org.cytoscape.service.util.CyServiceRegistrar;
 
 
 public class BrowserTable extends JTable {
-	private static final TableCellRenderer cellRenderer = new MyTableCellRenderer();
+	private static final TableCellRenderer cellRenderer = new BrowserTableCellRenderer();
 
 	public BrowserTable() {
-		super();
+		setCellSelectionEnabled(true);
+		setDefaultEditor(Object.class, new MultiLineTableCellEditor());
 	}
 
+	@Override
 	public TableCellRenderer getCellRenderer(int row, int column) {
 		return cellRenderer;
+	}
+
+	@Override
+	public boolean isCellEditable(final int row, final int column) {
+		return column != 0;
 	}
 }
 

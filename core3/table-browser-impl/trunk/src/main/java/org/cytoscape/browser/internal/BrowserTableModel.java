@@ -84,19 +84,11 @@ public class BrowserTableModel extends AbstractTableModel
 				++count;
 			}
 
-			// Column 0 is always the primary key:
-			if (column == 0)
-				return cyRow.get(table.getPrimaryKey(), table.getPrimaryKeyType());
-
 			return getValidatedObjectAndEditString(cyRow, columnName);
 		} else {
 			final List primaryKeyValues =
 				table.getColumnValues(table.getPrimaryKey(),
 						      table.getPrimaryKeyType());
-
-			// Column 0 is always the primary key:
-			if (column == 0)
-				return primaryKeyValues.get(row);
 
 			return getValidatedObjectAndEditString(table.getRow(primaryKeyValues.get(row)),
 							       columnName);
@@ -214,8 +206,9 @@ public class BrowserTableModel extends AbstractTableModel
 		if (tableHasBooleanSelected && columnName.equals(CyNetwork.SELECTED))
 			fireTableStructureChanged();
 		else {
-			final int changedColumn = mapColumnNameToColumnIndex(columnName);
-			fireTableChanged(new TableModelEvent(this, 0, table.getRowCount(), changedColumn));
+			final int rowIndex = mapRowToRowIndex(row);
+			if (rowIndex != -1)
+				fireTableChanged(new TableModelEvent(this, rowIndex));
 		}
 	}
 
