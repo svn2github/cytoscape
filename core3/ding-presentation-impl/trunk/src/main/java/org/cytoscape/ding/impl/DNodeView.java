@@ -154,7 +154,8 @@ public class DNodeView implements NodeView, Label {
 	// custom graphics is important. For space considerations, we
 	// keep _customGraphics null when there are no custom
 	// graphics--event though this is a bit more complicated:
-	private LinkedHashSet<CustomGraphic> _customGraphics;
+	private LinkedHashSet<CustomGraphic> orderedCustomGraphicLayers;
+	
 	// CG_LOCK is used for synchronizing custom graphics operations on this
 	// DNodeView.
 	// Arrays are objects like any other and can be used for synchronization. We
@@ -167,13 +168,12 @@ public class DNodeView implements NodeView, Label {
 	// View Model for this presentation.
 	private final View<CyNode> nodeViewModel;
 	
-	// Custom Graphics layers.
-	//private final Set<CustomGraphic> customGraphicsSet;
-	
-	private final Map<CyCustomGraphics, Set<CustomGraphic>> cgMap;
+	// Map of VP to native CustomGraphics objects.
+	private final Map<VisualProperty<?>, Set<CustomGraphic>> cgMap;
+	private final Map<CustomGraphic, ObjectPosition> graphicsPositions;
 	
 	private ObjectPosition labelPosition;
-	private Map<CustomGraphic, ObjectPosition> graphicsPositions;
+	
 	
 	private final VisualLexicon lexicon;
 
@@ -192,7 +192,8 @@ public class DNodeView implements NodeView, Label {
 		this.labelPosition = new ObjectPositionImpl();
 
 		// Initialize custom graphics pool.
-		cgMap = new HashMap<CyCustomGraphics, Set<CustomGraphic>>();
+		cgMap = new HashMap<VisualProperty<?>, Set<CustomGraphic>>();
+		this.graphicsPositions = new HashMap<CustomGraphic, ObjectPosition>();
 		
 		this.graphView = graphView;
 		
@@ -1113,14 +1114,14 @@ public class DNodeView implements NodeView, Label {
 	public boolean addCustomGraphic(CustomGraphic cg) {
 		boolean retVal = false;
 		synchronized (CG_LOCK) {
-			if (_customGraphics == null) {
-				_customGraphics = new LinkedHashSet<CustomGraphic>();
-				graphicsPositions = new HashMap<CustomGraphic, ObjectPosition>();
+			if (orderedCustomGraphicLayers == null) {
+				orderedCustomGraphicLayers = new LinkedHashSet<CustomGraphic>();
+				//graphicsPositions = new HashMap<CustomGraphic, ObjectPosition>();
 			}
-			if (_customGraphics.contains(cg))
+			if (orderedCustomGraphicLayers.contains(cg))
 				retVal = false;
 			else {
-				retVal = _customGraphics.add(cg);
+				retVal = orderedCustomGraphicLayers.add(cg);
 			}
 		}
 		ensureContentChanged();
@@ -1137,10 +1138,10 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public boolean containsCustomGraphic(CustomGraphic cg) {
 		synchronized (CG_LOCK) {
-			if (_customGraphics == null) {
+			if (orderedCustomGraphicLayers == null) {
 				return false;
 			}
-			return _customGraphics.contains(cg);
+			return orderedCustomGraphicLayers.contains(cg);
 		}
 	}
 
@@ -1159,10 +1160,10 @@ public class DNodeView implements NodeView, Label {
 	public Iterator<CustomGraphic> customGraphicIterator() {
 		final Iterable<CustomGraphic> toIterate;
 		synchronized (CG_LOCK) {
-			if (_customGraphics == null) {
+			if (orderedCustomGraphicLayers == null) {
 				toIterate = EMPTY_CUSTOM_GRAPHICS;
 			} else {
-				toIterate = _customGraphics;
+				toIterate = orderedCustomGraphicLayers;
 			}
 			return new ReadOnlyIterator<CustomGraphic>(toIterate);
 		}
@@ -1180,8 +1181,8 @@ public class DNodeView implements NodeView, Label {
 	public boolean removeCustomGraphic(CustomGraphic cg) {
 		boolean retVal = false;
 		synchronized (CG_LOCK) {
-			if (_customGraphics != null) {
-				retVal = _customGraphics.remove(cg);
+			if (orderedCustomGraphicLayers != null) {
+				retVal = orderedCustomGraphicLayers.remove(cg);
 				graphicsPositions.remove(cg);
 			}
 		}
@@ -1191,8 +1192,8 @@ public class DNodeView implements NodeView, Label {
 	
 	public void removeAllCustomGraphics() {
 		synchronized (CG_LOCK) {
-			if (_customGraphics != null) {
-				_customGraphics.clear();
+			if (orderedCustomGraphicLayers != null) {
+				orderedCustomGraphicLayers.clear();
 				graphicsPositions.clear();
 			}
 		}
@@ -1208,9 +1209,9 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public int getNumCustomGraphics() {
 		synchronized (CG_LOCK) {
-			if (_customGraphics == null)
+			if (orderedCustomGraphicLayers == null)
 				return 0;
-			return _customGraphics.size();
+			return orderedCustomGraphicLayers.size();
 		}
 	}
 
@@ -1510,29 +1511,29 @@ public class DNodeView implements NodeView, Label {
 	}
 	
 	
-	public CustomGraphic setCustomGraphicsPosition(CustomGraphic cg,
-			final ObjectPosition p) {
+	private CustomGraphic setCustomGraphicsPosition(final CustomGraphic cg, final ObjectPosition p) {
 		if (cg == null || p == null)
-			throw new IllegalArgumentException(
+			throw new NullPointerException(
 					"CustomGraphic and Position cannot be null.");
 
-		_customGraphics.remove(cg);
+		orderedCustomGraphicLayers.remove(cg);
 		graphicsPositions.remove(cg);
 
-		CustomGraphic newCg = CustomGraphicsPositionCalculator.transform(p, this, cg);
+		// Create new graphics
+		final CustomGraphic newCg = CustomGraphicsPositionCalculator.transform(p, this, cg);
 		
-		_customGraphics.add(newCg);
+		orderedCustomGraphicLayers.add(newCg);
 		graphicsPositions.put(newCg, p);
 
 		return newCg;
 	}
 
-	public ObjectPosition getCustomGraphicsPosition(final CustomGraphic cg) {
-		if (cg == null)
-			return ObjectPositionImpl.DEFAULT_POSITION;
-
-		return graphicsPositions.get(cg);
-	}
+//	private ObjectPosition getCustomGraphicsPosition(final CustomGraphic cg) {
+//		if (cg == null)
+//			return ObjectPositionImpl.DEFAULT_POSITION;
+//
+//		return graphicsPositions.get(cg);
+//	}
 
 	@Override
 	public void setVisualPropertyValue(VisualProperty<?> vp, Object value) {
@@ -1577,47 +1578,35 @@ public class DNodeView implements NodeView, Label {
 		} else if (vp == DVisualLexicon.NODE_LABEL_FONT_SIZE) {
 			setFont(getFont().deriveFont(((Integer) value).floatValue()));
 		} else if (vp == DVisualLexicon.NODE_LABEL_POSITION) {
-			//FIXME
-			final ObjectPosition op = (ObjectPosition) value;
-			this.setLabelPosition(op);
-//			setTextAnchor(op.getAnchor().getConversionConstant());
-//			setNodeLabelAnchor(op.getTargetAnchor().getConversionConstant());
-//			setJustify(op.getJustify().getConversionConstant());
-//			setLabelOffsetX(op.getOffsetX());
-//			setLabelOffsetY(op.getOffsetY());
+			this.setLabelPosition((ObjectPosition) value);
 		} else if(vp instanceof CustomGraphicsVisualProperty) {
-			applyCustomGraphics((CyCustomGraphics) value);
+			applyCustomGraphics(vp, (CyCustomGraphics) value);
 		} else if(DVisualLexicon.getGraphicsPositionVP().contains(vp)) {
-			System.out.print("Applying CG Position: " + vp.getDisplayName());
-			System.out.println(" Value = " + value);
 			applyCustomGraphicsPosition(vp, (ObjectPosition) value);
 		}
 	}
 	
 	
-	private void applyCustomGraphics(final CyCustomGraphics customGraphics) {
+	private void applyCustomGraphics(final VisualProperty<?> vp, final CyCustomGraphics customGraphics) {
 
-		Set<CustomGraphic> dCustomGraphicsSet = cgMap.get(customGraphics);
+		Set<CustomGraphic> dCustomGraphicsSet = cgMap.get(vp);
 		
 		// Remove current layers associated with this Custom Graphics
 		if(dCustomGraphicsSet == null) {
 			dCustomGraphicsSet = new HashSet<CustomGraphic>();
-			cgMap.put(customGraphics, dCustomGraphicsSet);
-		} else if (dCustomGraphicsSet.size() != 0) {
-			for (CustomGraphic cg : dCustomGraphicsSet)
-				removeCustomGraphic(cg);
-
-			dCustomGraphicsSet.clear();
 		}
+		
+		for (final CustomGraphic cg : dCustomGraphicsSet)
+			removeCustomGraphic(cg);
+		
+		dCustomGraphicsSet.clear();
 
-		// For these cases, remove current layers.
-		if (customGraphics == null
-				|| customGraphics instanceof CyCustomGraphics == false
-				|| customGraphics instanceof NullCustomGraphics) {
+		if (customGraphics == null || customGraphics instanceof NullCustomGraphics) {
+			//System.out.println(" This is NULL = " + vp.getDisplayName());
 			return;
 		}
 		
-		final List<Layer> layers = (List<Layer>) customGraphics.getLayers();
+		final List<Layer> layers = customGraphics.getLayers();
 
 		// No need to update
 		if (layers == null || layers.size() == 0)
@@ -1640,22 +1629,31 @@ public class DNodeView implements NodeView, Label {
 //			} else {
 				addCustomGraphic(cg);
 				dCustomGraphicsSet.add(cg);
+				
 //			}
 		}
 		//this.currentMap.put(dv, targets);
+//		final ObjectPosition position = this.graphicsPositions.get(vp);
+//		if(position != null && position.equals(ObjectPositionImpl.DEFAULT_POSITION) == false) {
+//			// Transform
+//			this.transformCustomGraphics(dCustomGraphicsSet, vp, position);
+//		}
+		
+		cgMap.put(vp, dCustomGraphicsSet);
 		
 		// Flag this as used Custom Graphics
 		//Cytoscape.getVisualMappingManager().getCustomGraphicsManager().setUsedInCurrentSession(graphics, true);
+		
+		System.out.println("CG Applyed: " + vp.getDisplayName());
 	}
 	
 	private void applyCustomGraphicsPosition(final VisualProperty<?> vp, final ObjectPosition position) {
-
 		// No need to modify
 		if (position == null)
 			return;
 		
 		// Use dependency to retrieve its parent.
-		VisualLexiconNode lexNode = lexicon.getVisualLexiconNode(vp);
+		final VisualLexiconNode lexNode = lexicon.getVisualLexiconNode(vp);
 		final Collection<VisualLexiconNode> leavs = lexNode.getParent().getChildren();
 		
 		VisualProperty<?> parent = null;
@@ -1669,13 +1667,15 @@ public class DNodeView implements NodeView, Label {
 		if(parent == null)
 			throw new NullPointerException("Associated Custom Graphics VP is missing for " + vp.getDisplayName());
 		
+		//System.out.println("Got associated CG = " + parent.getDisplayName());
+		
 		final Set<CustomGraphic> currentCG = cgMap.get(parent);
 		
 		if (currentCG == null || currentCG.size() == 0) {
 			// Ignore if no CG is available.
+			//System.out.println("    CG not found.  No need to update: " + parent.getDisplayName() + "\n\n");
 			return;
 		}
-
 		final List<CustomGraphic> newList = new ArrayList<CustomGraphic>();
 		for (CustomGraphic g : currentCG) {
 			newList.add(this.setCustomGraphicsPosition(g, position));
@@ -1684,6 +1684,15 @@ public class DNodeView implements NodeView, Label {
 
 		currentCG.clear();
 		currentCG.addAll(newList);
+		
+		this.cgMap.put(parent, currentCG);
+		//this.graphicsPositions.put(parent, position);
+		
+		System.out.println("Position applied of CG = " + vp.getDisplayName() + " <--- " + parent.getDisplayName());
+	}
+	
+	private void transformCustomGraphics(final Set<CustomGraphic> currentCG, VisualProperty<?> vp, final ObjectPosition position) {
+		
 	}
 
 }

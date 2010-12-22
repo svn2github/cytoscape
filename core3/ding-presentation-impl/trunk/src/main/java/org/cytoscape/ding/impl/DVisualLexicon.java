@@ -75,6 +75,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	private static final int DEF_FONT_SIZE = 12;
 	private static final double DEF_BORDER_WIDTH = 2.0d;
 	
+	// Set of custom graphics positions.
 	private static final Set<VisualProperty<?>> CG_POSITIONS = new HashSet<VisualProperty<?>>();
 	
 	// Root of Ding's VP tree.
@@ -266,7 +267,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		addVisualProperty(NODE_TRANSPARENCY, NODE);
 		
 		
-		//
+		// Parent of Custom Graphics related 
 		addVisualProperty(NODE_CUSTOMPAINT_1, NODE_PAINT);
 		addVisualProperty(NODE_CUSTOMPAINT_2, NODE_PAINT);
 		addVisualProperty(NODE_CUSTOMPAINT_3, NODE_PAINT);
