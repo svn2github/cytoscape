@@ -29,5 +29,6 @@
 		<constructor-arg ref="cyTableManagerServiceRef" />
 		<constructor-arg ref="cyServiceRegistrarServiceRef" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
+		<constructor-arg ref="compilerServiceRef" />
 	</bean>
 </beans>

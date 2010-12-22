@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableRowSorter;
 
+import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
@@ -28,16 +29,18 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 	private final CyTableManager tableManager;
 	private final CyServiceRegistrar serviceRegistrar;
 	private final CyEventHelper eventHelper;
+	private final EqnCompiler compiler;
 	private final BrowserTable browserTable;
 	private BrowserTableModel browserTableModel;
 	private CyTable currentTable;
 
 	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
-		     final CyEventHelper eventHelper)
+		     final CyEventHelper eventHelper, final EqnCompiler compiler)
 	{
 		this.tableManager = tableManager;
 		this.serviceRegistrar = serviceRegistrar;
 		this.eventHelper = eventHelper;
+		this.compiler = compiler;
 		this.browserTable = new BrowserTable();
 		this.setLayout(new BorderLayout());
 
@@ -86,7 +89,7 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 			}
 
 			currentTable = table;
-			browserTableModel = new BrowserTableModel(eventHelper, table);
+			browserTableModel = new BrowserTableModel(eventHelper, table, compiler);
 			eventHelper.addMicroListener(browserTableModel, RowCreatedMicroListener.class, table);
 			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 			browserTable.setModel(browserTableModel);
