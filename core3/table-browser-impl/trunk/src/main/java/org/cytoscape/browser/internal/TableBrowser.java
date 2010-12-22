@@ -54,8 +54,8 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 	}
 
 	/**
-	 * Returns the Component to be added to the CytoPanel. 
-	 * @return The Component to be added to the CytoPanel. 
+	 * Returns the Component to be added to the CytoPanel.
+	 * @return The Component to be added to the CytoPanel.
 	 */
 	public Component getComponent() { return this; }
 
@@ -77,7 +77,7 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 	 * @return null
 	 */
 	public Icon getIcon() { return null; }
-		
+
 	public void actionPerformed(ActionEvent e) {
 		final TableChooser tableChooser = (TableChooser)e.getSource();
 		final CyTable table = (CyTable)tableChooser.getSelectedItem();
@@ -89,7 +89,7 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 			}
 
 			currentTable = table;
-			browserTableModel = new BrowserTableModel(eventHelper, table, compiler);
+			browserTableModel = new BrowserTableModel(browserTable, eventHelper, table, compiler);
 			eventHelper.addMicroListener(browserTableModel, RowCreatedMicroListener.class, table);
 			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 			browserTable.setModel(browserTableModel);
