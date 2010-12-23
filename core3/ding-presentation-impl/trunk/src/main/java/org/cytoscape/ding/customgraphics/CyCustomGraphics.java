@@ -3,14 +3,12 @@ package org.cytoscape.ding.customgraphics;
 import java.awt.Image;
 import java.util.List;
 
-import org.cytoscape.ding.ObjectPosition;
-
 
 /**
  * Base interface for all Custom Graphics.
  *
  */
-public interface CyCustomGraphics {
+public interface CyCustomGraphics<T> {
 		
 	/**
 	 * Immutable session-unique identifier of image generated in constructor.
@@ -46,7 +44,7 @@ public interface CyCustomGraphics {
 	 * @return Collection of layer objects (in this version, it's CustomGraphics in Ding)
 	 * 
 	 */
-	public List<Layer> getLayers();
+	public List<Layer<T>> getLayers();
 	
 	
 	/**
@@ -93,18 +91,18 @@ public interface CyCustomGraphics {
 	public Image getRenderedImage();
 
 	
-	/**
-	 * Set position of this graphics.
-	 * 
-	 * @param position
-	 */
-	public void setPosition(final ObjectPosition position);
-	
-	
-	/**
-	 * Current position
-	 * 
-	 * @return position of graphics as ObjectPosition.
-	 */
-	public ObjectPosition getPosition();
+//	/**
+//	 * Set position of this graphics.
+//	 * 
+//	 * @param position
+//	 */
+//	public void setPosition(final ObjectPosition position);
+//	
+//	
+//	/**
+//	 * Current position
+//	 * 
+//	 * @return position of graphics as ObjectPosition.
+//	 */
+//	public ObjectPosition getPosition();
 }

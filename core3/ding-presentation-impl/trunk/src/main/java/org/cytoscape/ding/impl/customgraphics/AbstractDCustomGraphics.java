@@ -14,9 +14,10 @@ import org.cytoscape.ding.customgraphics.IDGenerator;
 import org.cytoscape.ding.customgraphics.Layer;
 import org.cytoscape.ding.customgraphics.Taggable;
 import org.cytoscape.ding.impl.ObjectPositionImpl;
+import org.cytoscape.graph.render.stateful.CustomGraphic;
 
 public abstract class AbstractDCustomGraphics implements
-		CyCustomGraphics, Taggable {
+		CyCustomGraphics<CustomGraphic>, Taggable {
 
 	protected static final String DELIMITER = ",";
 	public static final String LIST_DELIMITER = "|";
@@ -27,7 +28,7 @@ public abstract class AbstractDCustomGraphics implements
 	protected final Long id;
 	
 	// Layers of Ding Custom Graphic objects.
-	protected List<Layer> layers;
+	protected List<Layer<CustomGraphic>> layers;
 	
 	// Human readable name
 	protected String displayName;
@@ -37,7 +38,7 @@ public abstract class AbstractDCustomGraphics implements
 	
 	protected CyCustomGraphicsParser parser;
 
-	protected ObjectPosition position;
+	//protected ObjectPosition position;
 
 	// For tags
 	protected final SortedSet<String> tags;
@@ -58,11 +59,11 @@ public abstract class AbstractDCustomGraphics implements
 	public AbstractDCustomGraphics(final Long id, final String displayName) {
 		this.id = id;
 		
-		this.layers = new ArrayList<Layer>();
+		this.layers = new ArrayList<Layer<CustomGraphic>>();
 		this.displayName = displayName;
 
 		this.tags = new TreeSet<String>();
-		this.position = new ObjectPositionImpl();
+		//this.position = new ObjectPositionImpl();
 	}
 	
 	
@@ -87,7 +88,7 @@ public abstract class AbstractDCustomGraphics implements
 	}
 
 	
-	public List<Layer> getLayers() {
+	public List<Layer<CustomGraphic>> getLayers() {
 		return layers;
 	}
 
@@ -107,13 +108,13 @@ public abstract class AbstractDCustomGraphics implements
 	}
 
 
-	public ObjectPosition getPosition() {
-		return position;
-	}
-
-	public void setPosition(final ObjectPosition position) {
-		this.position = position;
-	}
+//	public ObjectPosition getPosition() {
+//		return position;
+//	}
+//
+//	public void setPosition(final ObjectPosition position) {
+//		this.position = position;
+//	}
 	
 
 	// This will be used prop file.

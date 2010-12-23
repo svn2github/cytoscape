@@ -6,15 +6,15 @@ package org.cytoscape.ding.customgraphics;
  * In current version, it's always CustomGraphic 
  *
  */
-public interface Layer {
+public interface Layer<T> {
 	
 	/**
 	 * Each layer has immutable Z-Order value for rendering.
-	 * This method returens the value as int.
+	 * This method returns the value as int.
 	 * 
 	 * @return
 	 */
-	public int getZorder();
+	int getZorder();
 	
-	public Object getLayerObject();
+	T getLayerObject();
 }

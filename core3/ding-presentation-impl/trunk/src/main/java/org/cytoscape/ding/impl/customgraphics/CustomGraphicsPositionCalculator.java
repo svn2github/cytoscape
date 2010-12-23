@@ -37,8 +37,15 @@ public class CustomGraphicsPositionCalculator {
 	}
 	
 	
-	
-	public static CustomGraphic transform(final ObjectPosition p, final DNodeView nv, CustomGraphic cg) {		
+	/**
+	 * Creates new custom graphics in new location
+	 * 
+	 * @param p
+	 * @param nv
+	 * @param cg
+	 * @return
+	 */
+	public static CustomGraphic transform(final ObjectPosition p, final DNodeView nv, final CustomGraphic cg) {		
 		final Position anc = p.getAnchor();
 		final Position ancN = p.getTargetAnchor();
 		

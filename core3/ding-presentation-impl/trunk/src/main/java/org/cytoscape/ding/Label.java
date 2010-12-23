@@ -35,44 +35,28 @@ public interface Label {
 	 * Get the paint used to paint this nodes text.
 	 * @return Paint
 	 */
-	public Paint getTextPaint();
+	Paint getTextPaint();
 
 	/**
 	 * Set the paint used to paint this nodes text.
 	 * @param textPaint
 	 */		
-	public void setTextPaint(Paint textPaint) ;
+	void setTextPaint(Paint textPaint) ;
 	
-
-	/**
-	 * Returns the current greek threshold. When the screen font size will be below
-	 * this threshold the text is rendered as 'greek' instead of drawing the text
-	 * glyphs.
-	 */
-	public double getGreekThreshold() ;
-
-	/**
-	 * Sets the current greek threshold. When the screen font size will be below
-	 * this threshold the text is rendered as 'greek' instead of drawing the text
-	 * glyphs.
-	 * 
-	 * @param threshold minimum screen font size.
-	 */
-	public void setGreekThreshold(double threshold) ;
 		
-	public String getText() ;
+	String getText() ;
 
 	/**
 	 * Set the text for this node. The text will be broken up into multiple
 	 * lines based on the size of the text and the bounds width of this node.
 	 */
-	public void setText(String aText) ;
+	void setText(String aText) ;
 	
 	/**
 	 * Returns the font of this PText.
 	 * @return the font of this PText.
 	 */ 
-	public Font getFont() ;
+	Font getFont() ;
 	
 	/**
 	 * Set the font of this PText. Note that in Piccolo if you want to change
@@ -80,7 +64,7 @@ public interface Label {
 	 * node instead of changing the font size to get that same effect. Using
 	 * very large font sizes can slow performance.
 	 */
-	public void setFont(Font aFont) ;
+	void setFont(Font aFont) ;
 
 
 //	/**

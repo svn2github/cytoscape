@@ -1136,10 +1136,10 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 				if (chosenNode != 0) {
 					if (chosenNodeSelected > 0)
 						listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
-							DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
+							DGraphView.makeList(m_view.getNodeView(chosenNode).getNodeViewModel().getModel())));
 					else if (chosenNodeSelected < 0)
 						listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
-							DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
+							DGraphView.makeList(m_view.getNodeView(chosenNode).getNodeViewModel().getModel())));
 				}
 	
 				if (chosenEdge != 0) {

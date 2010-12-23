@@ -634,7 +634,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				// GINY requires all node indices to be negative (why?),
 				// hence the bitwise complement here.
 				returnThis.add(m_nodeViewMap.get(
-						Integer.valueOf(elms.nextInt())).getNode());
+						Integer.valueOf(elms.nextInt())).getNodeViewModel().getModel());
 
 			return returnThis;
 		}
@@ -762,7 +762,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 		if (listener != null) {
 			listener.graphViewChanged(new GraphViewNodesRestoredEvent(this,
-					makeList(newView.getNode())));
+					makeList(newView.getNodeViewModel().getModel())));
 		}
 
 		return newView;
@@ -856,12 +856,12 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				int[] nodeInx;
 
 				if (sourceNode == null) {
-					nodeInx = new int[] { targetNode.getRootGraphIndex() };
+					nodeInx = new int[] { targetNode.getGraphPerspectiveIndex() };
 				} else if (targetNode == null) {
-					nodeInx = new int[] { sourceNode.getRootGraphIndex() };
+					nodeInx = new int[] { sourceNode.getGraphPerspectiveIndex() };
 				} else {
-					nodeInx = new int[] { sourceNode.getRootGraphIndex(),
-							targetNode.getRootGraphIndex() };
+					nodeInx = new int[] { sourceNode.getGraphPerspectiveIndex(),
+							targetNode.getGraphPerspectiveIndex() };
 				}
 
 				listener.graphViewChanged(new GraphViewNodesRestoredEvent(this,
@@ -884,7 +884,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 * @return The NodeView object that was removed.
 	 */
 	public NodeView removeNodeView(NodeView nodeView) {
-		return removeNodeView(nodeView.getRootGraphIndex());
+		return removeNodeView(nodeView.getGraphPerspectiveIndex());
 	}
 
 	/**
@@ -954,7 +954,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			}
 
 			listener.graphViewChanged(new GraphViewNodesHiddenEvent(this,
-					makeList(returnThis.getNode())));
+					makeList(returnThis.getNodeViewModel().getModel())));
 		}
 
 		return returnThis;
@@ -1384,7 +1384,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 			synchronized (m_lock) {
 				final DNodeView nView = (DNodeView) obj;
-				nodeInx = nView.getRootGraphIndex();
+				nodeInx = nView.getGraphPerspectiveIndex();
 				nnode = networkModel.getNode(nodeInx);
 				edges = m_drawPersp.getAdjacentEdgeList(nnode, CyEdge.Type.ANY);
 
@@ -1437,7 +1437,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 	final boolean isHidden(final DNodeView nodeView) {
 		synchronized (m_lock) {
-			final int nodeIndex = nodeView.getRootGraphIndex();
+			final int nodeIndex = nodeView.getGraphPerspectiveIndex();
 			return m_drawPersp.containsNode(m_drawPersp.getNode(nodeIndex));
 		}
 	}
@@ -1459,7 +1459,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			final DNodeView nView = (DNodeView) obj;
 
 			synchronized (m_lock) {
-				nodeInx = nView.getRootGraphIndex();
+				nodeInx = nView.getGraphPerspectiveIndex();
 				CyNode nnode = networkModel.getNode(nodeInx);
 
 				if (nnode == null) {
@@ -1481,7 +1481,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 				if (listener != null) {
 					listener.graphViewChanged(new GraphViewNodesRestoredEvent(
-							this, makeList(nView.getNode())));
+							this, makeList(nView.getNodeViewModel().getModel())));
 				}
 			}
 
@@ -2732,7 +2732,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	static List<CyNode> makeNodeList(int[] nodeids, GraphView view) {
 		List<CyNode> l = new ArrayList<CyNode>(nodeids.length);
 		for (int nid : nodeids)
-			l.add(view.getNodeView(nid).getNode());
+			l.add(view.getNodeView(nid).getNodeViewModel().getModel());
 
 		return l;
 	}

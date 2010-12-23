@@ -34,14 +34,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Paint;
-import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,7 +65,6 @@ import org.cytoscape.ding.impl.customgraphics.CustomGraphicsPositionCalculator;
 import org.cytoscape.ding.impl.visualproperty.CustomGraphicsVisualProperty;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.graph.render.stateful.CustomGraphic;
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
@@ -76,12 +73,12 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 
-
 /**
  * Ding implementation of node presentation.
  *
  */
 public class DNodeView implements NodeView, Label {
+	
 	// Affects size of the nested network image relative to the node size:
 	private static final float NESTED_IMAGE_SCALE_FACTOR = 0.6f;
 
@@ -107,28 +104,41 @@ public class DNodeView implements NodeView, Label {
 		}
 	}
 
-	static final float DEFAULT_WIDTH = 20.0f;
-	static final float DEFAULT_HEIGHT = 20.0f;
-	static final int DEFAULT_SHAPE = GraphGraphics.SHAPE_ELLIPSE;
-	static final Paint DEFAULT_BORDER_PAINT = Color.black;
+	// Default size of node.
+	static final float DEFAULT_WIDTH = 30.0f;
+	static final float DEFAULT_HEIGHT = 30.0f;
+	
+	// Default node shape
+	static final int DEFAULT_SHAPE = GraphGraphics.SHAPE_RECTANGLE;
+	
+	// Default border color
+	static final Paint DEFAULT_BORDER_PAINT = Color.DARK_GRAY;
+	static final Paint DEFAULT_NODE_PAINT = Color.BLUE;
+	static final Paint DEFAULT_NODE_SELECTED_PAINT = Color.YELLOW;
+	
 	static final String DEFAULT_LABEL_TEXT = "";
-	
 	static final Font DEFAULT_LABEL_FONT = new Font("SansSerif", Font.PLAIN, 12);
-	
-	static final Paint DEFAULT_LABEL_PAINT = Color.black;
+	static final Paint DEFAULT_LABEL_PAINT = Color.DARK_GRAY;
 	static final double DEFAULT_LABEL_WIDTH = 100.0;
-
-	private final DGraphView graphView;
-
+	
+	// Default opacity
 	static final int DEFAULT_TRANSPARENCY = 255;
 
-	private final int m_inx; // The FixedGraph index (non-negative).
+	// Parent network view
+	private final DGraphView graphView;
+
+	// The FixedGraph index (non-negative)
+	private final int m_inx; 
 	
+	// Selection flag.
 	private boolean m_selected;
+	
+	// Node color
 	private Paint m_unselectedPaint;
 	private Paint m_selectedPaint;
 	private Paint m_borderPaint;
 
+	// Opacity
 	private int transparency;
 
 	/**
@@ -140,13 +150,19 @@ public class DNodeView implements NodeView, Label {
 	float m_hiddenXMax = Float.MAX_VALUE;
 	float m_hiddenYMax = Float.MAX_VALUE;
 
-	ArrayList<Shape> m_graphicShapes;
-	ArrayList<Paint> m_graphicPaints;
+//	// Node shapes
+//	List<Shape> m_graphicShapes;
+//	
+//	// Node Colors
+//	List<Paint> m_graphicPaints;
 
-	// AJK: 04/26/06 for tooltip
-	private String m_toolTipText = null;
+	// Tool Tip text
+	private String m_toolTipText;
 
+	// Nested Network View
 	private DGraphView nestedNetworkView;
+	
+	// Show/hide flag for nested network graphics
 	private boolean nestedNetworkVisible = true;
 
 	// A LinkedHashSet of the custom graphics associated with this
@@ -163,22 +179,32 @@ public class DNodeView implements NodeView, Label {
 	// object assuming it takes up the least amount of memory:
 	private final Object[] CG_LOCK = new Object[0];
 	
+	// Will be used when Custom graphics is empty.
 	private final static Set<CustomGraphic> EMPTY_CUSTOM_GRAPHICS = new LinkedHashSet<CustomGraphic>(0);
 
-	// View Model for this presentation.
+	// View Model for this node presentation.
 	private final View<CyNode> nodeViewModel;
 	
-	// Map of VP to native CustomGraphics objects.
+	// Map from NodeCustomGraphics Visual Property to native CustomGraphics objects.
 	private final Map<VisualProperty<?>, Set<CustomGraphic>> cgMap;
-	private final Map<CustomGraphic, ObjectPosition> graphicsPositions;
 	
+	// Locations of Custom Graphics  
+	private Map<CustomGraphic, ObjectPosition> graphicsPositions;
+	
+	// Label position
 	private ObjectPosition labelPosition;
 	
-	
+	// Visual Properties used in this node view.
 	private final VisualLexicon lexicon;
 
-	/*
-	 * @param inx the RootGraph index of node (a negative number).
+	
+	/**
+	 * Constructor takes 
+	 * 
+	 * @param lexicon
+	 * @param graphView
+	 * @param inx
+	 * @param viewModel
 	 */
 	DNodeView(final VisualLexicon lexicon, final DGraphView graphView, int inx, final View<CyNode> viewModel) {
 		if (graphView == null)
@@ -193,18 +219,18 @@ public class DNodeView implements NodeView, Label {
 
 		// Initialize custom graphics pool.
 		cgMap = new HashMap<VisualProperty<?>, Set<CustomGraphic>>();
-		this.graphicsPositions = new HashMap<CustomGraphic, ObjectPosition>();
 		
 		this.graphView = graphView;
 		
 		m_inx = inx;
 		nodeViewModel = viewModel;
+		
 		m_selected = false;
+		
 		m_unselectedPaint = graphView.m_nodeDetails.fillPaint(m_inx);
-		m_selectedPaint = Color.yellow;
+		m_selectedPaint = DEFAULT_NODE_SELECTED_PAINT;
 		m_borderPaint = graphView.m_nodeDetails.borderPaint(m_inx);
-		m_graphicShapes = null;
-		m_graphicPaints = null;
+		
 		transparency = DEFAULT_TRANSPARENCY;
 	}
 
@@ -212,41 +238,25 @@ public class DNodeView implements NodeView, Label {
 	@Override public GraphView getGraphView() {
 		return graphView;
 	}
+	
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * Returns View Model object of this node presentation.
 	 */
-	@Override public CyNode getNode() {
-		synchronized (graphView.m_lock) {
-			return graphView.networkModel.getNode(m_inx);
-		}
-	}
-
-	
 	@Override public View<CyNode> getNodeViewModel() {
-		return nodeViewModel;
+		return this.nodeViewModel;
 	}
 
 	
 	/**
-	 * DOCUMENT ME!
+	 * Returns node index of this node presentation in the parent network.
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int getGraphPerspectiveIndex() {
+	@Override public int getGraphPerspectiveIndex() {
 		return m_inx;
 	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public int getRootGraphIndex() {
-		return m_inx;
-	}
+	
 
 	/**
 	 * DOCUMENT ME!
@@ -256,9 +266,10 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<EdgeView> getEdgeViewsList(NodeView otherNodeView) {
+	@Override public List<EdgeView> getEdgeViewsList(NodeView otherNodeView) {
 		synchronized (graphView.m_lock) {
-			return graphView.getEdgeViewsList(getNode(), otherNodeView.getNode());
+			return graphView.
+				getEdgeViewsList(this.getNodeViewModel().getModel(), otherNodeView.getNodeViewModel().getModel());
 		}
 	}
 
@@ -267,7 +278,7 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int getShape() {
+	@Override public int getShape() {
 		synchronized (graphView.m_lock) {
 			return graphView.m_nodeDetails.shape(m_inx);
 		}
@@ -279,7 +290,7 @@ public class DNodeView implements NodeView, Label {
 	 * @param paint
 	 *            DOCUMENT ME!
 	 */
-	public void setSelectedPaint(Paint paint) {
+	@Override public void setSelectedPaint(Paint paint) {
 		synchronized (graphView.m_lock) {
 			if (paint == null)
 				throw new NullPointerException("paint is null");
@@ -303,7 +314,7 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Paint getSelectedPaint() {
+	@Override public Paint getSelectedPaint() {
 		return m_selectedPaint;
 	}
 
@@ -313,7 +324,7 @@ public class DNodeView implements NodeView, Label {
 	 * @param paint
 	 *            DOCUMENT ME!
 	 */
-	public void setUnselectedPaint(Paint paint) {
+	@Override public void setUnselectedPaint(Paint paint) {
 		synchronized (graphView.m_lock) {
 			if (paint == null)
 				throw new NullPointerException("paint is null");
@@ -340,7 +351,7 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Paint getUnselectedPaint() {
+	@Override public Paint getUnselectedPaint() {
 		return m_unselectedPaint;
 	}
 
@@ -350,7 +361,7 @@ public class DNodeView implements NodeView, Label {
 	 * @param paint
 	 *            DOCUMENT ME!
 	 */
-	public void setBorderPaint(Paint paint) {
+	@Override public void setBorderPaint(Paint paint) {
 		synchronized (graphView.m_lock) {
 			m_borderPaint = paint;
 			fixBorder();
@@ -363,7 +374,7 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Paint getBorderPaint() {
+	@Override public Paint getBorderPaint() {
 		return m_borderPaint;
 	}
 
@@ -373,7 +384,7 @@ public class DNodeView implements NodeView, Label {
 	 * @param width
 	 *            DOCUMENT ME!
 	 */
-	public void setBorderWidth(float width) {
+	@Override public void setBorderWidth(float width) {
 		synchronized (graphView.m_lock) {
 			graphView.m_nodeDetails.overrideBorderWidth(m_inx, width);
 			graphView.m_contentChanged = true;
@@ -385,7 +396,7 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public float getBorderWidth() {
+	@Override public float getBorderWidth() {
 		synchronized (graphView.m_lock) {
 			return graphView.m_nodeDetails.borderWidth(m_inx);
 		}
@@ -397,7 +408,7 @@ public class DNodeView implements NodeView, Label {
 	 * @param stroke
 	 *            DOCUMENT ME!
 	 */
-	public void setBorder(Stroke stroke) {
+	@Override public void setBorder(Stroke stroke) {
 		if (stroke instanceof BasicStroke) {
 			synchronized (graphView.m_lock) {
 				setBorderWidth(((BasicStroke) stroke).getLineWidth());
@@ -457,7 +468,7 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Stroke getBorder() {
+	@Override public Stroke getBorder() {
 		synchronized (graphView.m_lock) {
 			if ((m_borderDash == 0.0f) && (m_borderDash2 == 0.0f))
 				return new BasicStroke(getBorderWidth());
@@ -475,7 +486,7 @@ public class DNodeView implements NodeView, Label {
 	 * @param trans
 	 *            DOCUMENT ME!
 	 */
-	public void setTransparency(int trans) {
+	@Override public void setTransparency(int trans) {
 		synchronized (graphView.m_lock) {
 			if (trans < 0 || trans > 255)
 				throw new IllegalArgumentException("Transparency is out of range.");
@@ -503,7 +514,7 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int getTransparency() {
+	@Override public int getTransparency() {
 		return transparency;
 	}
 
@@ -515,7 +526,7 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public boolean setWidth(double width) {
+	@Override public boolean setWidth(double width) {
 		synchronized (graphView.m_lock) {
 			if (!graphView.m_spacial.exists(m_inx, graphView.m_extentsBuff, 0))
 				return false;
@@ -587,14 +598,6 @@ public class DNodeView implements NodeView, Label {
 			graphView.m_spacial.insert(m_inx, graphView.m_extentsBuff[0], yMin,
 					graphView.m_extentsBuff[2], yMax);
 
-			final double w = ((double) graphView.m_extentsBuff[2])
-					- graphView.m_extentsBuff[0];
-			final double h = ((double) yMax) - yMin;
-
-//			if (!(Math.max(w, h) < (1.99d * Math.min(w, h)))
-//					&& (getShape() == GraphGraphics.SHAPE_ROUNDED_RECTANGLE))
-//				setShape(NodeShape.RECT);
-
 			graphView.m_contentChanged = true;
 
 			return true;
@@ -606,7 +609,7 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public double getHeight() {
+	@Override public double getHeight() {
 		synchronized (graphView.m_lock) {
 			if (!graphView.m_spacial.exists(m_inx, graphView.m_extentsBuff, 0))
 				return -1.0d;
@@ -620,30 +623,20 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Label getLabel() {
+	@Override public Label getLabel() {
 		return this;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public int getDegree() {
-		// This method is totally ridiculous.
-		return graphView.getNetwork()
-				.getAdjacentEdgeList(getNode(), CyEdge.Type.ANY).size();
-	}
 
 	/**
-	 * DOCUMENT ME!
+	 * FIXME: need to separate Label from this.
 	 *
 	 * @param x
 	 *            DOCUMENT ME!
 	 * @param y
 	 *            DOCUMENT ME!
 	 */
-	public void setOffset(double x, double y) {
+	@Override public void setOffset(double x, double y) {
 		synchronized (graphView.m_lock) {
 			if (!graphView.m_spacial.exists(m_inx, graphView.m_extentsBuff, 0))
 				return;
@@ -672,11 +665,11 @@ public class DNodeView implements NodeView, Label {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * FIXME: remove label-related methods.
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Point2D getOffset() {
+	@Override public Point2D getOffset() {
 		synchronized (graphView.m_lock) {
 			if (!graphView.m_spacial.exists(m_inx, graphView.m_extentsBuff, 0))
 				return null;
@@ -694,7 +687,7 @@ public class DNodeView implements NodeView, Label {
 	 * @param xPos
 	 *            DOCUMENT ME!
 	 */
-	public void setXPosition(double xPos) {
+	@Override public void setXPosition(double xPos) {
 		synchronized (graphView.m_lock) {
 			final double wDiv2;
 			final boolean nodeVisible = graphView.m_spacial.exists(m_inx,
@@ -732,18 +725,7 @@ public class DNodeView implements NodeView, Label {
 			}
 		}
 	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param xPos
-	 *            DOCUMENT ME!
-	 * @param update
-	 *            DOCUMENT ME!
-	 */
-	public void setXPosition(double xPos, boolean update) {
-		setXPosition(xPos);
-	}
+	
 
 	/**
 	 * DOCUMENT ME!
@@ -802,18 +784,7 @@ public class DNodeView implements NodeView, Label {
 			}
 		}
 	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param yPos
-	 *            DOCUMENT ME!
-	 * @param update
-	 *            DOCUMENT ME!
-	 */
-	public void setYPosition(double yPos, boolean update) {
-		setYPosition(yPos);
-	}
+	
 
 	/**
 	 * DOCUMENT ME!
@@ -827,15 +798,6 @@ public class DNodeView implements NodeView, Label {
 			else
 				return ((double) (m_hiddenYMin + m_hiddenYMax)) / 2.0d;
 		}
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param animate
-	 *            DOCUMENT ME!
-	 */
-	public void setNodePosition(boolean animate) {
 	}
 
 	/**
@@ -856,7 +818,7 @@ public class DNodeView implements NodeView, Label {
 
 			if (listener != null)
 				listener.graphViewChanged(new GraphViewNodesSelectedEvent(
-						graphView, DGraphView.makeList(getNode())));
+						graphView, DGraphView.makeList(this.getNodeViewModel().getModel())));
 		}
 	}
 
@@ -895,7 +857,7 @@ public class DNodeView implements NodeView, Label {
 
 			if (listener != null)
 				listener.graphViewChanged(new GraphViewNodesUnselectedEvent(
-						graphView, DGraphView.makeList(getNode())));
+						graphView, DGraphView.makeList(this.getNodeViewModel().getModel())));
 		}
 	}
 
@@ -921,7 +883,7 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public boolean isSelected() {
+	@Override public boolean isSelected() {
 		return m_selected;
 	}
 
@@ -933,16 +895,18 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public boolean setSelected(boolean selected) {
+	@Override public boolean setSelected(boolean selected) {
 		if (selected)
 			select();
 		else
 			unselect();
 
+		// TODO: Is this necessary???
 		return true;
 	}
 
-	final public boolean isHidden() {
+	
+	@Override public boolean isHidden() {
 		return graphView.isHidden(this);
 	}
 
@@ -952,24 +916,20 @@ public class DNodeView implements NodeView, Label {
 	 * @param shape
 	 *            DOCUMENT ME!
 	 */
-	public void setShape(final NodeShape shape) {
+	@Override public void setShape(final NodeShape shape) {
 		synchronized (graphView.m_lock) {
-			//byte nativeShape = GinyUtil.getNativeNodeType(shape);
-			
-
 			graphView.m_nodeDetails.overrideShape(m_inx, shape);
 			graphView.m_contentChanged = true;
 		}
 	}
 
-	// AJK: 04/26/06 BEGIN
 	/**
 	 * DOCUMENT ME!
 	 *
 	 * @param tip
 	 *            DOCUMENT ME!
 	 */
-	public void setToolTip(String tip) {
+	@Override public void setToolTip(final String tip) {
 		m_toolTipText = tip;
 	}
 
@@ -978,52 +938,36 @@ public class DNodeView implements NodeView, Label {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public String getToolTip() {
+	@Override public String getToolTip() {
 		return m_toolTipText;
 	}
 
-	// AJK: 04/26/06 END
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param position
-	 *            DOCUMENT ME!
-	 */
-	public void setPositionHint(int position) {
-	}
 
 	/**
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Paint getTextPaint() {
+	@Override public Paint getTextPaint() {
 		synchronized (graphView.m_lock) {
 			return graphView.m_nodeDetails.labelPaint(m_inx, 0);
 		}
 	}
 
+	
 	/**
 	 * DOCUMENT ME!
 	 *
 	 * @param textPaint
 	 *            DOCUMENT ME!
 	 */
-	public void setTextPaint(Paint textPaint) {
+	@Override public void setTextPaint(Paint textPaint) {
 		synchronized (graphView.m_lock) {
 			graphView.m_nodeDetails.overrideLabelPaint(m_inx, 0, textPaint);
 			graphView.m_contentChanged = true;
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public double getGreekThreshold() {
-		return 0.0d;
-	}
 
 	/**
 	 * DOCUMENT ME!
@@ -1066,23 +1010,18 @@ public class DNodeView implements NodeView, Label {
 	}
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
+	 * Get label font type.
 	 */
-	public Font getFont() {
+	@Override public Font getFont() {
 		synchronized (graphView.m_lock) {
 			return graphView.m_nodeDetails.labelFont(m_inx, 0);
 		}
 	}
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param font
-	 *            DOCUMENT ME!
+	 * Set label font type.
 	 */
-	public void setFont(Font font) {
+	@Override public void setFont(Font font) {
 		synchronized (graphView.m_lock) {
 			graphView.m_nodeDetails.overrideLabelFont(m_inx, 0, font);
 			graphView.m_contentChanged = true;
@@ -1111,17 +1050,20 @@ public class DNodeView implements NodeView, Label {
 	 *         this DNodeView already contained this CustomGraphic.
 	 * @see org.cytoscape.graph.render.stateful.CustomGraphic
 	 */
-	public boolean addCustomGraphic(CustomGraphic cg) {
+	public boolean addCustomGraphic(final CustomGraphic cg) {
 		boolean retVal = false;
 		synchronized (CG_LOCK) {
+			// Lazy instantiation
 			if (orderedCustomGraphicLayers == null) {
 				orderedCustomGraphicLayers = new LinkedHashSet<CustomGraphic>();
-				//graphicsPositions = new HashMap<CustomGraphic, ObjectPosition>();
+				graphicsPositions = new HashMap<CustomGraphic, ObjectPosition>();
 			}
+			
 			if (orderedCustomGraphicLayers.contains(cg))
 				retVal = false;
 			else {
 				retVal = orderedCustomGraphicLayers.add(cg);
+				graphicsPositions.put(cg, ObjectPositionImpl.DEFAULT_POSITION);
 			}
 		}
 		ensureContentChanged();
@@ -1136,11 +1078,10 @@ public class DNodeView implements NodeView, Label {
 	 *            the CustomGraphic for which we are checking containment.
 	 * @since Cytoscape 2.6
 	 */
-	public boolean containsCustomGraphic(CustomGraphic cg) {
+	public boolean containsCustomGraphic(final CustomGraphic cg) {
 		synchronized (CG_LOCK) {
-			if (orderedCustomGraphicLayers == null) {
+			if (orderedCustomGraphicLayers == null)
 				return false;
-			}
 			return orderedCustomGraphicLayers.contains(cg);
 		}
 	}
@@ -1211,7 +1152,8 @@ public class DNodeView implements NodeView, Label {
 		synchronized (CG_LOCK) {
 			if (orderedCustomGraphicLayers == null)
 				return 0;
-			return orderedCustomGraphicLayers.size();
+			else
+				return orderedCustomGraphicLayers.size();
 		}
 	}
 
@@ -1416,7 +1358,7 @@ public class DNodeView implements NodeView, Label {
 			++nestedNetworkPaintingDepth;
 			try {
 				if (nestedNetworkPaintingDepth > 1
-						|| getNode().getNestedNetwork() == null
+						|| this.getNodeViewModel().getModel().getNestedNetwork() == null
 						|| !nestedNetworkVisible)
 					return null;
 
@@ -1511,19 +1453,18 @@ public class DNodeView implements NodeView, Label {
 	}
 	
 	
-	private CustomGraphic setCustomGraphicsPosition(final CustomGraphic cg, final ObjectPosition p) {
-		if (cg == null || p == null)
+	private CustomGraphic moveCustomGraphicsToNewPosition(final CustomGraphic cg, final ObjectPosition newPosition) {
+		if (cg == null || newPosition == null)
 			throw new NullPointerException(
 					"CustomGraphic and Position cannot be null.");
 
-		orderedCustomGraphicLayers.remove(cg);
-		graphicsPositions.remove(cg);
+		removeCustomGraphic(cg);
 
 		// Create new graphics
-		final CustomGraphic newCg = CustomGraphicsPositionCalculator.transform(p, this, cg);
+		final CustomGraphic newCg = CustomGraphicsPositionCalculator.transform(newPosition, this, cg);
 		
-		orderedCustomGraphicLayers.add(newCg);
-		graphicsPositions.put(newCg, p);
+		this.addCustomGraphic(newCg);
+		graphicsPositions.put(newCg, newPosition);
 
 		return newCg;
 	}
@@ -1536,7 +1477,7 @@ public class DNodeView implements NodeView, Label {
 //	}
 
 	@Override
-	public void setVisualPropertyValue(VisualProperty<?> vp, Object value) {
+	public void setVisualPropertyValue(final VisualProperty<?> vp, final Object value) {
 
 		if (vp == DVisualLexicon.NODE_SHAPE) {
 			setShape(((NodeShape) value));
@@ -1580,33 +1521,32 @@ public class DNodeView implements NodeView, Label {
 		} else if (vp == DVisualLexicon.NODE_LABEL_POSITION) {
 			this.setLabelPosition((ObjectPosition) value);
 		} else if(vp instanceof CustomGraphicsVisualProperty) {
-			applyCustomGraphics(vp, (CyCustomGraphics) value);
+			applyCustomGraphics(vp, (CyCustomGraphics<CustomGraphic>) value);
 		} else if(DVisualLexicon.getGraphicsPositionVP().contains(vp)) {
 			applyCustomGraphicsPosition(vp, (ObjectPosition) value);
 		}
 	}
 	
 	
-	private void applyCustomGraphics(final VisualProperty<?> vp, final CyCustomGraphics customGraphics) {
+	private void applyCustomGraphics(final VisualProperty<?> vp, final CyCustomGraphics<CustomGraphic> customGraphics) {
 
 		Set<CustomGraphic> dCustomGraphicsSet = cgMap.get(vp);
-		
-		// Remove current layers associated with this Custom Graphics
-		if(dCustomGraphicsSet == null) {
+		if(dCustomGraphicsSet == null)
 			dCustomGraphicsSet = new HashSet<CustomGraphic>();
-		}
 		
-		for (final CustomGraphic cg : dCustomGraphicsSet)
+		ObjectPosition newPosition = null;
+		for (final CustomGraphic cg : dCustomGraphicsSet) {			
+			newPosition = this.graphicsPositions.get(cg);
 			removeCustomGraphic(cg);
+		}
 		
 		dCustomGraphicsSet.clear();
 
-		if (customGraphics == null || customGraphics instanceof NullCustomGraphics) {
-			//System.out.println(" This is NULL = " + vp.getDisplayName());
+		if (customGraphics == null || customGraphics instanceof NullCustomGraphics)
 			return;
-		}
 		
-		final List<Layer> layers = customGraphics.getLayers();
+		
+		final List<Layer<CustomGraphic>> layers = customGraphics.getLayers();
 
 		// No need to update
 		if (layers == null || layers.size() == 0)
@@ -1619,16 +1559,21 @@ public class DNodeView implements NodeView, Label {
 //			sync = dep.check(NODE_CUSTOM_GRAPHICS_SIZE_SYNC);
 //		}
 
-		for (Layer layer : layers) {
+		for (Layer<CustomGraphic> layer : layers) {
 			// Assume it's a Ding layer
-			final CustomGraphic cg = (CustomGraphic) layer.getLayerObject();
+			CustomGraphic newCG = layer.getLayerObject();
+			if(newPosition != null) {
+				newCG = this.moveCustomGraphicsToNewPosition(newCG, newPosition);
+				System.out.println("MOVED: " + vp.getDisplayName());
+			}
+			
 //			if (sync) {
 //				final CustomGraphic resized = syncSize(graphics, cg, dv, dep);
 //				dv.addCustomGraphic(resized);
 //				targets.add(resized);
 //			} else {
-				addCustomGraphic(cg);
-				dCustomGraphicsSet.add(cg);
+				addCustomGraphic(newCG);
+				dCustomGraphicsSet.add(newCG);
 				
 //			}
 		}
@@ -1673,13 +1618,14 @@ public class DNodeView implements NodeView, Label {
 		
 		if (currentCG == null || currentCG.size() == 0) {
 			// Ignore if no CG is available.
-			//System.out.println("    CG not found.  No need to update: " + parent.getDisplayName() + "\n\n");
+			//System.out.println("    CG not found.  No need to update: " + parent.getDisplayName());
 			return;
 		}
-		final List<CustomGraphic> newList = new ArrayList<CustomGraphic>();
+		
+		final Set<CustomGraphic> newList = new HashSet<CustomGraphic>();
 		for (CustomGraphic g : currentCG) {
-			newList.add(this.setCustomGraphicsPosition(g, position));
-			this.removeCustomGraphic(g);
+			newList.add(moveCustomGraphicsToNewPosition(g, position));
+			//this.removeCustomGraphic(g);
 		}
 
 		currentCG.clear();
@@ -1689,10 +1635,6 @@ public class DNodeView implements NodeView, Label {
 		//this.graphicsPositions.put(parent, position);
 		
 		System.out.println("Position applied of CG = " + vp.getDisplayName() + " <--- " + parent.getDisplayName());
-	}
-	
-	private void transformCustomGraphics(final Set<CustomGraphic> currentCG, VisualProperty<?> vp, final ObjectPosition position) {
-		
 	}
 
 }

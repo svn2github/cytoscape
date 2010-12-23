@@ -1,11 +1,13 @@
 package org.cytoscape.ding;
 
 
+import java.awt.Paint;
+import java.awt.Stroke;
+import java.awt.geom.Point2D;
+import java.util.List;
+
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.View;
-
-import java.awt.*;
-import java.awt.geom.Point2D;
 
 
 /**
@@ -13,113 +15,99 @@ import java.awt.geom.Point2D;
  * @author Rowan Christmas
  */
 public interface NodeView  extends GraphViewObject {
-	
-	
-//	public static final int TRIANGLE = 0;
-//	public static final int DIAMOND = 1;
-//	public static final int ELLIPSE = 2;
-//	public static final int HEXAGON = 3;
-//	public static final int OCTAGON = 4;
-//	public static final int PARALELLOGRAM = 5;
-//	public static final int RECTANGLE = 6;
-//	public static final int ROUNDED_RECTANGLE = 7;
-//	public static final int VEE = 8;
 
-	/**
-	 * @return The Node we are a view on
-	 */
-	public CyNode getNode() ;
-	public View<CyNode> getNodeViewModel() ;
+	View<CyNode> getNodeViewModel();
 
 	/**
 	 * @return the index of this node in the perspective to which we are in a view on.
 	 */
-	public int getGraphPerspectiveIndex () ;
+	int getGraphPerspectiveIndex();
 
-	/**
-	 * @return the index of this node in the root graph to which we are in a view on.
-	 */
-	public int getRootGraphIndex () ;
 
 	/**
 	 * @return The list of EdgeViews connecting these two nodes. Possibly null.
 	 */
-	public java.util.List<EdgeView> getEdgeViewsList(NodeView otherNode) ;
+	List<EdgeView> getEdgeViewsList(final NodeView otherNode);
+	
 
 	/**
 	 * Shape is currently defined via predefined variables in
 	 * the NodeView interface. To get the actual java.awt.Shape
 	 * use getPathReference()
+	 * 
 	 * @return the current int-tpye shape
 	 */
-	public int getShape () ;
+	int getShape() ;
 
+	
 	/**
 	 * This sets the Paint that will be used by this node
 	 * when it is painted as selected.
 	 * @param paint The Paint to be used
 	 */
-	public void setSelectedPaint (Paint paint) ;
+	void setSelectedPaint(Paint paint) ;
 
+	
 	/**
 	 * @return the currently set selection Paint
 	 */
-	public Paint getSelectedPaint () ;
+	Paint getSelectedPaint() ;
 
+	
 	/**
-	 * Set the deafult paint of this node
+	 * Set the default paint of this node
 	 * @param paint the default Paint of this node
 	 */
-	public void setUnselectedPaint ( Paint paint ) ;
+	void setUnselectedPaint(final Paint paint ) ;
 
+	
 	/**
 	 * @return the currently set paint
 	 */
-	public Paint getUnselectedPaint () ;
-
-
+	Paint getUnselectedPaint();
+	
 
 	/**
 	 * @param b_paint the paint the border will use
 	 */
-	public void setBorderPaint ( Paint b_paint ) ;
+	void setBorderPaint( Paint b_paint ) ;
 
 	/**
 	 * @return the currently set BOrder Paint
 	 */
-	public Paint getBorderPaint () ;
+	Paint getBorderPaint() ;
 
 	/**
 	 * @param border_width The width of the border.
 	 */
-	public void setBorderWidth ( float border_width ) ;
+	void setBorderWidth( float border_width ) ;
 
 	/**
 	 * @return the currently set Border width
 	 */
-	public float getBorderWidth () ;
+	float getBorderWidth () ;
 
 
 	/**
 	 * @param stroke the new stroke for the border
 	 */
-	public void setBorder ( Stroke stroke );
+	void setBorder(final Stroke stroke);
 
 
 	/**
 	 * @return the current border
 	 */
-	public Stroke getBorder ();
+	Stroke getBorder();
 
 	/**
 	 * @param trans new value for the transparency
 	 */
-	public void setTransparency ( int trans );
+	void setTransparency ( int trans );
 
 	/**
 	 * @return the value for the transparency for this node
 	 */
-	public int getTransparency ();
+	int getTransparency ();
 
 
 	/**
@@ -149,15 +137,9 @@ public interface NodeView  extends GraphViewObject {
 	/**
 	 * @return The Value of the label
 	 */
-	public org.cytoscape.ding.Label getLabel () ;
-
-	/**
-	 * @return the degree of the Node in the GraphPerspective.
-	 */
-	public int getDegree() ;
+	public Label getLabel ();
 
 	public void setOffset ( double x, double y );
-
 	public Point2D getOffset ();
 
 	/**
@@ -165,13 +147,6 @@ public interface NodeView  extends GraphViewObject {
 	 */
 	public void setXPosition(double new_x_position) ;
 
-	/**
-	 * Set udpdate to false in order to do a layout, and then call updateNode on all the nodes..
-	 // TODO -- HACKY
-	 * @param  new_x_position for this node
-	 * @param  update if this is true, the node will move immediatly.
-	 */
-	public void setXPosition ( double new_x_position, boolean update ) ;
 
 	/**
 	 * note that unless updateNode() has been called, this may not be
@@ -186,13 +161,6 @@ public interface NodeView  extends GraphViewObject {
 	 */
 	public void setYPosition(double new_y_position) ;
 
-	/**
-	 * Set udpdate to false in order to do a layout, and then call updateNode on all the nodes..
-	 // TODO -- HACKY
-	 * @param  new_y_position for this node
-	 * @param  update if this is true, the node will move immediatly.
-	 */
-	public void setYPosition ( double new_y_position, boolean update ) ;
 
 	/**
 	 * note that unless updateNode() has been called, this may not be
@@ -202,25 +170,25 @@ public interface NodeView  extends GraphViewObject {
 	 */
 	public double getYPosition() ;
 
-	/**
-	 * moves this node to its stored x and y locations.
-	 */
-	public void setNodePosition(boolean animate) ;
+//	/**
+//	 * moves this node to its stored x and y locations.
+//	 */
+//	public void setNodePosition(boolean animate) ;
 
 	/**
 	 * This draws us as selected
 	 */
-	public void select() ;
+	void select() ;
 
 	/**
 	 * This draws us as unselected
 	 */
-	public void unselect() ;
+	void unselect() ;
 
 	/**
 	 *
 	 */
-	public boolean isSelected() ;
+	boolean isSelected() ;
 
 	/**
 	 *
@@ -242,12 +210,12 @@ public interface NodeView  extends GraphViewObject {
 	/**
 	 * Sets what the tooltip will be for this NodeView
 	 */
-	public void setToolTip ( String tip );
+	void setToolTip ( String tip );
+	String getToolTip();
 	
 	ObjectPosition getLabelPosition();
 	void setLabelPosition(final ObjectPosition p);
 
-	
 	 
 //	public void setLabelOffsetX(double x);
 //	public void setLabelOffsetY(double y);

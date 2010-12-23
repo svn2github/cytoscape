@@ -8,7 +8,7 @@ import org.cytoscape.graph.render.stateful.CustomGraphic;
  * Ding implementation of Custom graphics layers.
  *
  */
-public class DLayer implements Layer {
+public class DLayer implements Layer<CustomGraphic> {
 	
 	private final CustomGraphic layer;
 	private final int zOrder;
@@ -22,7 +22,7 @@ public class DLayer implements Layer {
 		return zOrder;
 	}
 	
-	public Object getLayerObject() {
+	public CustomGraphic getLayerObject() {
 		return layer;
 	}
 

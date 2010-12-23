@@ -165,12 +165,12 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public Paint fillPaint(int node) {
-		final Object o = m_fillPaints.get(Integer.valueOf(node));
+		final Paint o = m_fillPaints.get(node);
 
 		if (o == null)
 			return super.fillPaint(node);
 
-		return (Paint) o;
+		return o;
 	}
 
 	/*
