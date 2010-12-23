@@ -31,7 +31,6 @@ import javax.swing.text.JTextComponent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableColumn;
 
 import java.util.EventObject;
 
@@ -139,7 +138,7 @@ System.err.println("********************* text="+text);
 			}
 
 System.err.println("******************** in updateBounds(), table.isEditing()="+table.isEditing());
-			if (table.isEditing()) {
+//			if (table.isEditing()) {
 System.err.println("******************** in updateBounds(), table.getEditingRow()="+table.getEditingRow()+", table.getEditingColumn()="+table.getEditingColumn());
 				Rectangle cellRect = table.getCellRect(table.getEditingRow(),
 				                                       table.getEditingColumn(), false);
@@ -151,7 +150,7 @@ System.err.println("******************** in updateBounds(), getX()="+getX()+", g
 				          Math.max(cellRect.height + prefSize.height, prefSize.height));
 				putClientProperty(UPDATE_BOUNDS, Boolean.FALSE);
 				validate();
-			}
+//			}
 		}
 
 		//

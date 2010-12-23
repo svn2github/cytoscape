@@ -227,14 +227,38 @@ public class BrowserTableModel extends AbstractTableModel
 	@Override
 	public void setValueAt(final Object value, final int rowIndex, final int columnIndex) {
 		final String text = (String)value;
-System.err.println("************************ Attempted to set a cell value("+rowIndex+", "+columnIndex+")="+text);
 		final CyRow row = mapRowIndexToRow(rowIndex);
 		final String columnName = mapColumnIndexToColumnName(columnIndex);
+		final Class<?> columnType = attrs.getType(columnName);
+
 		if (text.startsWith("=")) {
-		} else {
-			final Class<?> columnType = attrs.getType(columnName);
+			final Map<String, Class> variableNameToTypeMap = new HashMap<String, Class>();
+			initVariableNameToTypeMap(variableNameToTypeMap);
+			if (compiler.compile(text, variableNameToTypeMap)) {
+				final Equation eqn = compiler.getEquation();
+				final Class<?> eqnType = eqn.getType();
+
+				// Is the equation type compatible with the column type?
+				if (eqnType == columnType
+				    || eqnType == Long.class && columnType == Integer.class) // Yes!
+					row.set(columnName, eqn);
+				else { // The equation type is incompatible w/ the column type!
+					final Class<?> expectedType = columnType == Integer.class ? Long.class : columnType;
+					final String errorMsg = "Equation result type is "
+						+ getUnqualifiedName(eqnType) + ", column type is "
+						+ getUnqualifiedName(columnType) + "!";
+					final Equation errorEqn = compiler.getErrorEquation(text, expectedType, errorMsg);
+					row.set(columnName, errorEqn);
+				}
+			} else {
+				final Class<?> eqnType = columnType == Integer.class ? Long.class : columnType;
+				final String errorMsg = compiler.getLastErrorMsg();
+				final Equation errorEqn = compiler.getErrorEquation(text, eqnType, errorMsg);
+				row.set(columnName, errorEqn);
+			}
+		} else { // Not an equation!
 			Object parsedValue;
-			StringBuilder errorMessage = new StringBuilder();
+			final StringBuilder errorMessage = new StringBuilder();
 			if (columnType == String.class)
 				parsedValue = text;
 			else if (columnType == Long.class)
@@ -254,14 +278,36 @@ System.err.println("************************ Attempted to set a cell value("+row
 			if (parsedValue != null)
 				row.set(columnName, parsedValue);
 			else {
-				final int viewColumnIndex = table.convertColumnIndexToView(columnIndex);
-				if (viewColumnIndex == -1) // Column is currently not visible!
-					return;
-
-				final ValidatedObjectAndEditString newCellValue =
-					new ValidatedObjectAndEditString(null, text, errorMessage.toString());
-				table.setValueAt(newCellValue, rowIndex, viewColumnIndex);
+				final Class<?> eqnType = columnType == Integer.class ? Long.class : columnType;
+				final Equation errorEqn = compiler.getErrorEquation(text, eqnType, errorMessage.toString());
+				row.set(columnName, errorEqn);
 			}
+		}
+	}
+
+	private String getUnqualifiedName(final Class<?> type) {
+		final String typeName = type.getName();
+		final int lastDotPos = typeName.lastIndexOf('.');
+		return lastDotPos == -1 ? typeName : typeName.substring(lastDotPos + 1);
+	}
+
+	private void initVariableNameToTypeMap(final Map<String, Class> variableNameToTypeMap) {
+		final Map<String, Class<?>> columnNameToTypeMap = attrs.getColumnTypeMap();
+		for (final String columnName : columnNameToTypeMap.keySet()) {
+			final Class<?> columnType = columnNameToTypeMap.get(columnName);
+			if (columnType == String.class)
+				variableNameToTypeMap.put(columnName, String.class);
+			else if (columnType == Integer.class)
+				variableNameToTypeMap.put(columnName, Long.class);
+			else if (columnType == Long.class)
+				variableNameToTypeMap.put(columnName, Long.class);
+			else if (columnType == Boolean.class)
+				variableNameToTypeMap.put(columnName, Boolean.class);
+			else if (columnType == List.class)
+				variableNameToTypeMap.put(columnName, List.class);
+			else
+				throw new IllegalStateException("unknown type \""
+								+ columnType.getName() + "\"!");
 		}
 	}
 

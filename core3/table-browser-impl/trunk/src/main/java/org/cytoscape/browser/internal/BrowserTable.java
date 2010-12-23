@@ -12,7 +12,7 @@ public class BrowserTable extends JTable {
 
 	public BrowserTable() {
 		setCellSelectionEnabled(true);
-		setDefaultEditor(Object.class, new MultiLineTableCellEditor());
+		setDefaultEditor(Object.class, new MyTableCellEditor());
 	}
 
 	@Override

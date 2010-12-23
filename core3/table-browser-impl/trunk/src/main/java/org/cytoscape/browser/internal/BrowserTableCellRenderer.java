@@ -70,9 +70,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 			setFont(labelFont);
 			setBackground(NON_EDITABLE_COLOR);
 		}
-		
+
 		return this;
 	}
 }
-
-
