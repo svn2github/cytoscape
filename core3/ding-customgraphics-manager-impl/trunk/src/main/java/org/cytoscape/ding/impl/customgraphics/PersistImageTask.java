@@ -64,7 +64,7 @@ public class PersistImageTask implements Task {
 		final ExecutorService exService = Executors
 				.newFixedThreadPool(NUM_THREADS);
 
-		for (final CyCustomGraphics cg : manager.getAllCustomGraphics()) {
+		for (final CyCustomGraphics<?> cg : manager.getAllCustomGraphics()) {
 
 			// Save ONLY bitmap image Custom Graphics.
 			if (cg instanceof NullCustomGraphics
@@ -85,8 +85,10 @@ public class PersistImageTask implements Task {
 		}
 
 		try {
-			exService.shutdown();
-			exService.awaitTermination(TIMEOUT, TimeUnit.SECONDS);
+			synchronized(this) {
+				exService.shutdown();
+				exService.awaitTermination(TIMEOUT, TimeUnit.SECONDS);
+			}
 		} catch (InterruptedException e) {
 			
 			e.printStackTrace();
