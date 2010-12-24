@@ -46,12 +46,14 @@ import giny.view.NodeView;
 // Cytoscape imports
 import cytoscape.*;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.CytoscapeAction;
 
 // structureViz imports
+import structureViz.StructureViz;
 import structureViz.actions.Chimera;
 import structureViz.model.Structure;
 import structureViz.model.Sequence;
@@ -70,10 +72,11 @@ public class CyChimera {
 	public static final String[] residueKeys = {"FunctionalResidues","ResidueList",null};
 	public static final String[] sequenceKeys = {"sequence",null};
 	private static CyAttributes cyAttributes;
+	private static CyLogger logger = null;
 
 	static List selectedList = null;
 
-  public CyChimera() { 
+  static { 
 		String structureAttribute = getProperty("structureAttribute");
 		if (structureAttribute != null) {
 			structureKeys[structureKeys.length-1] = structureAttribute;
@@ -86,6 +89,7 @@ public class CyChimera {
 		if (residueAttribute != null) {
 			residueKeys[residueKeys.length-1] = residueAttribute;
 		}
+		logger = CyLogger.getLogger(StructureViz.class);
 	}
 
 	/**
@@ -151,7 +155,6 @@ public class CyChimera {
 				}
 			} else if (structure != null) {
 				Structure s = new Structure(structure,node, Structure.StructureType.PDB_MODEL);
-				// System.out.println("Setting residue list for "+s);
 				s.setResidueList(residues);
         structureList.add(s);
 			}

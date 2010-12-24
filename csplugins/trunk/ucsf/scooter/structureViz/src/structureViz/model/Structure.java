@@ -166,7 +166,9 @@ public class Structure {
 			String residue = "";
 			// Parse out the structure, if there is one
 			String[] components = list[i].split("#");
-			if (components.length > 1 && structureName.equals(components[0])) {
+			if (components.length > 1 && !structureName.equals(components[0])) {
+				continue;
+			} else if (components.length > 1) {
 				residue = components[1];
 			} else if (components.length == 1) {
 				residue = components[0];

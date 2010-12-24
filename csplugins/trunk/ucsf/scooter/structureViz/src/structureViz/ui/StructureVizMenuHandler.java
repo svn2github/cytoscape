@@ -73,7 +73,6 @@ public class StructureVizMenuHandler
 
  	private static final long serialVersionUID = 1;
 	private static Chimera chimera = null;
-	private static ModelNavigatorDialog mnDialog = null;
 	private static AlignStructuresDialog alDialog = null;
 	private int command;
 	private static boolean showModelWarning = true;
@@ -93,7 +92,7 @@ public class StructureVizMenuHandler
    public void actionPerformed(ActionEvent ae) {
 		String label = ae.getActionCommand();
 		if (command == StructureViz.OPEN) {
-			openAction(label);
+			openAction(label, null, false);
 		} else if (command == StructureViz.EXIT) {
 			exitAction();
 		} else if (command == StructureViz.ALIGN) {
@@ -133,7 +132,7 @@ public class StructureVizMenuHandler
 
 		// Bring up the dialog
 		alDialog = 
-							new AlignStructuresDialog(mnDialog, chimera, structures);
+							new AlignStructuresDialog(chimera.getDialog(), chimera, structures);
 		alDialog.pack();
 		alDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 		alDialog.setVisible(true);
@@ -169,7 +168,7 @@ public class StructureVizMenuHandler
 					                                     JOptionPane.DEFAULT_OPTION,
 					                                     null, 
 					                                     options);
-					JDialog jd = dialog.createDialog(mnDialog, "Modelled Structure Warning");
+					JDialog jd = dialog.createDialog(chimera.getDialog(), "Modelled Structure Warning");
 					jd.pack();
 					jd.setVisible(true);
 				}
@@ -180,7 +179,7 @@ public class StructureVizMenuHandler
 			ident = ident.substring(2);
 		Structure struct = new Structure(ident, node, Structure.StructureType.MODBASE_MODEL);
 		userData = struct;
-		openAction(ident);
+		openAction(ident, null, false);
 	}
 
 	public void itemStateChanged(ItemEvent e) {
@@ -198,15 +197,20 @@ public class StructureVizMenuHandler
  	 * structures.
  	 */
 	private void selectResiduesAction() {
-		// Open all of the structures
-		openAction("all");
-		List<Structure>structuresList = (List<Structure>)userData;
+		List<Structure> structuresList = (List<Structure>)userData;
 
 		String command = "select ";
 		for (Structure structure: structuresList) {
 			// Select the residues
 			List<String> residueL = structure.getResidueList();
-			if (residueL == null) return;
+			if (residueL == null || residueL.size() == 0) continue;
+
+			// OK, we have a residue list, make sure the structure is open
+			int model = structure.modelNumber();
+			if (chimera == null || chimera.getChimeraModel(model) == null) {
+				openAction(structure.name(), structure, true);
+			}
+
 			// The residue list is of the form RRRnnn,RRRnnn.  We want
 			// to reformat this to nnn,nnn
 			String residues = new String();
@@ -214,7 +218,7 @@ public class StructureVizMenuHandler
 				residues = residues.concat(residue+",");
 			}
 			residues = residues.substring(0,residues.length()-1);
-			// System.out.println("structure: "+structure+" residues: "+residues);
+			logger.debug("selectResiduesAction: structure: "+structure+" residues: "+residues);
 
 			command = command.concat(" #"+structure.modelNumber()+":"+residues);
 		}
@@ -264,13 +268,13 @@ public class StructureVizMenuHandler
 				iter.remove();
 			}
 		}
-		if (mnDialog != null) mnDialog.modelChanged();
+		if (chimera.getDialog() != null) chimera.getDialog().modelChanged();
 	}
 
 	/**
 	 * Open a pdb model in Chimera
 	 */
-	private void openAction(String commandLabel) {
+	private void openAction(String commandLabel, Object dataOverride, boolean wait) {
 		// Make sure chimera is launched
 		if (chimera == null || !chimera.isLaunched())
 			chimera = launchChimera();
@@ -278,16 +282,26 @@ public class StructureVizMenuHandler
 		if (chimera == null) 
 			return;
 
-		if (openTask == null) {
-			openTask = new OpenTask(commandLabel, chimera, userData);
+		if (dataOverride == null) {
+			if (openTask == null) {
+				logger.debug("Opening structure: "+commandLabel);
+				openTask = new OpenTask(commandLabel, chimera, userData);
+			}
+		} else {
+			logger.debug("Opening structure: "+commandLabel);
+			openTask = new OpenTask(commandLabel, chimera, dataOverride);
 		}
 
-		if (chimera.getDialog() == null)
+		if (chimera.getDialog() == null) {
 			ModelNavigatorDialog.LaunchModelNavigator(Cytoscape.getDesktop(), chimera);
+		}
 
 		chimera.getDialog().setVisible(true);
 
-		new Thread(openTask).start();
+		if (!wait)
+			new Thread(openTask).start();
+		else
+			openTask.run();
 
 	}
 

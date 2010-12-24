@@ -13,10 +13,10 @@ pluginName=structureViz
 pluginDescription=This plugin provides an interface to UCSF Chimera from within Cytoscape, providing a linkage between the network view and the structural view.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=1.4
+pluginVersion=1.9
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.6.1,2.6.2
+cytoscapeVersion=2.8
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Analysis
@@ -24,11 +24,11 @@ pluginCategory=Analysis
 # -- The following properties are OPTIONAL -- #
 
 # URL to a website that gives more information about your plugin, Ex. http://my-lab-site.org
-projectURL=http://www.rbvi.ucsf.edu/Research/cytoscape/structureViz.html
+projectURL=http://www.rbvi.ucsf.edu/cytoscape/structureViz/index.html
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
 pluginAuthorsIntsitutions=John "Scooter" Morris:UCSF
 
 # Date this plugin/plugin version was released
-releaseDate=November 7, 2008
+releaseDate=December 28, 2010

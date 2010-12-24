@@ -62,8 +62,6 @@ public class OpenTask implements Runnable {
 		// Get the list of structures we already have open
 		List<Structure>openStructs = chimera.getOpenStructs();
 
-		List<Structure>newList = new ArrayList();
-
     // Send initial commands
     for (Structure structure: structList) {
 			boolean open = false;
@@ -72,17 +70,13 @@ public class OpenTask implements Runnable {
 				if (structureName.equals(openStructure.name())) {
 					// Map the model numbers
 					structure.setModelNumber(openStructure.modelNumber());
-					newList.add(structure);
 					open = true;
 					break;
 				}
 			}
 			if (open == false) {
 				chimera.open(structure);
-				newList.add(structure);
 			}
 		}
-
-		userData = newList;
 	}
 }
