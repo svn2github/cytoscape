@@ -63,7 +63,7 @@ import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 /**
- * Chooser for any discrete values. This includes:
+ * Value chooser for any discrete values. This includes
  * <ul>
  * <li>node shape</li>
  * <li>arrow shape</li>
@@ -76,14 +76,18 @@ public class DiscreteValueEditor<T> extends JDialog implements ValueEditor<T> {
 	
 	private final static long serialVersionUID = 1202339876950593L;
 	
+	// Default icon size.
 	private static final int ICON_SIZE = 32;
+	private static final int ICON_SIZE_LARGE = 64;
 
-	private final Class<T> type;	
+	// Value data type for this chooser.
+	private final Class<T> type;
+	
+	// Range object.  Actual values will be provided from 
 	private final DiscreteRange<T> range;
 	private final VisualProperty<T> vp;
 	
 	private final CyApplicationManager appManager;
-	
 	
 	private Map<T, Icon> iconMap;
 //	
@@ -116,7 +120,7 @@ public class DiscreteValueEditor<T> extends JDialog implements ValueEditor<T> {
 	 * Use current renderer to create icons.
 	 * @param values
 	 */
-	private void renderIcons(final Set<T> values) {
+	private void renderIcons(final Set<T> values, final int iconSize) {
 		final RenderingEngine<CyNetwork> engine = appManager.getCurrentRenderingEngine();
 		
 		// CCurrent engine is not ready yet.
@@ -125,7 +129,7 @@ public class DiscreteValueEditor<T> extends JDialog implements ValueEditor<T> {
 		
 		iconMap.clear();
 		for(T value: values)
-			iconMap.put(value, engine.createIcon(vp, value, ICON_SIZE, ICON_SIZE));
+			iconMap.put(value, engine.createIcon(vp, value, iconSize, iconSize));
 	}
 
 
@@ -248,7 +252,7 @@ public class DiscreteValueEditor<T> extends JDialog implements ValueEditor<T> {
 	private void setListItems() {
 
 		final Set<T> values = range.values();
-		renderIcons(values);
+		renderIcons(values, ICON_SIZE_LARGE);
 		
 		model = new DefaultListModel();
 		iconList.setModel(model);
@@ -266,7 +270,7 @@ public class DiscreteValueEditor<T> extends JDialog implements ValueEditor<T> {
 		iconList.repaint();
 	}
 
-	// TODO: tuning icon layout
+	// TODO: optimize icon layout
 	public class IconCellRenderer extends JLabel implements ListCellRenderer {
 		private final static long serialVersionUID = 1202339876940871L;
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC,

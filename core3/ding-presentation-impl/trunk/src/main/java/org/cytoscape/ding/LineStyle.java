@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.Icon;
 
-import org.cytoscape.ding.icon.LineTypeIcon;
+import org.cytoscape.ding.icon.StrokeIcon;
 import org.cytoscape.ding.icon.VisualPropertyIcon;
 import org.cytoscape.ding.impl.strokes.BackwardSlashStroke;
 import org.cytoscape.ding.impl.strokes.ContiguousArrowStroke;
@@ -167,7 +167,7 @@ public enum LineStyle {
         Map<Object,Icon> icons = new HashMap<Object,Icon>();
 
         for (LineStyle def : values()) {
-            LineTypeIcon icon = new LineTypeIcon(def.getStroke(5.0f), 
+            StrokeIcon icon = new StrokeIcon(def.getStroke(5.0f), 
                                                  VisualPropertyIcon.DEFAULT_ICON_SIZE * 4, 
                                                  VisualPropertyIcon.DEFAULT_ICON_SIZE, 
 												 def.name());

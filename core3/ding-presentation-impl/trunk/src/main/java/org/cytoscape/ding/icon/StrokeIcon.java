@@ -34,7 +34,6 @@
 */
 package org.cytoscape.ding.icon;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -47,27 +46,18 @@ import java.awt.geom.Line2D;
 import javax.swing.SwingUtilities;
 
 /**
- * DOCUMENT ME!
+ * Icon generator for Stroke objects.
  *
- * @author $author$
-  */
-public class LineTypeIcon extends VisualPropertyIcon<Stroke> {
+ */
+public class StrokeIcon extends VisualPropertyIcon<Stroke> {
 	private final static long serialVersionUID = 1202339875918391L;
-	private BasicStroke stroke;
-	protected Graphics2D g2d;
+
+	private Graphics2D g2d;
 
 	// If not null, this message will be shown over the icon.
 	private String superimposedText = null;
 	private Font textFont = null;
 	private Color textColor = null;
-
-	
-//	public LineTypeIcon(org.cytoscape.ding.LineStyle style) {
-//		this(style.getStroke(2f), DEFAULT_ICON_SIZE * 3,
-//			     DEFAULT_ICON_SIZE, style.name());
-//	}
-
-
 
 	/**
 	 * Creates a new LineTypeIcon object.
@@ -78,23 +68,8 @@ public class LineTypeIcon extends VisualPropertyIcon<Stroke> {
 	 * @param name DOCUMENT ME!
 	 * @param color DOCUMENT ME!
 	 */
-	public LineTypeIcon(Stroke stroke, int width, int height, String name) {
-		super(null, width, height, name);
-
-		// TODO this value used to be set by the visual style default
-		final float lineWidth = 5.0f; 
-
-		final BasicStroke st = (BasicStroke) stroke;
-		/*
-		 * Define a stroke for the line segment icon
-		 */
-		if ((st != null) && (st.getDashArray() != null)) {
-			this.stroke = new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
-			                              st.getMiterLimit(), st.getDashArray(),
-			                              st.getDashPhase());
-		} else {
-			this.stroke = new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
-		}
+	public StrokeIcon(final Stroke stroke, int width, int height, String name) {
+		super(stroke, width, height, name);
 	}
 
 	/**
@@ -105,28 +80,15 @@ public class LineTypeIcon extends VisualPropertyIcon<Stroke> {
 	 * @param x DOCUMENT ME!
 	 * @param y DOCUMENT ME!
 	 */
-	public void paintIcon(Component c, Graphics g, int x, int y) {
+	@Override public void paintIcon(Component c, Graphics g, int x, int y) {
 		g2d = (Graphics2D) g;
 		g2d.setColor(color);
 		// AA on
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		g2d.translate(leftPad, bottomPad);
-
-		float[] dashDef = null;
-
-		//        if (stroke.getDashArray() != null)
-		//            dashDef = stroke.getDashArray();
-		//
-		//        final BasicStroke lineStroke = new BasicStroke(
-		//                stroke.getLineWidth(),
-		//                BasicStroke.CAP_BUTT,
-		//                BasicStroke.JOIN_MITER,
-		//                10.0f,
-		//                dashDef,
-		//                0.0f);
-		g2d.setStroke(stroke);
-		g2d.draw(new Line2D.Double(20, (height + 20) / 2, width, (height + 20) / 2));
+		g2d.setStroke(value);
+		g2d.draw(new Line2D.Double(20, (height + 20) / 2, width*2, (height + 20) / 2));
 
 		/*
 		 * Superimpose text if text object is not empty.

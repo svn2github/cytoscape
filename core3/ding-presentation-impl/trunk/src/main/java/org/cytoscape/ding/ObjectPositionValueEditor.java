@@ -84,7 +84,7 @@ public class ObjectPositionValueEditor extends JDialog implements ValueEditor<Ob
 		placer.setOpaque(true); // content panes must be opaque
 
 		// Set up and connect the gui components.
-		graphic = new ObjectPlacerGraphic(null, true, label, null, null);
+		graphic = new ObjectPlacerGraphic(null, true, label);
 		control = new ObjectPlacerControl();
 
 		control.addPropertyChangeListener(graphic);

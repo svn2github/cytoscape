@@ -15,8 +15,8 @@ public interface ValueEditor<V> {
 	 * 
 	 * @return
 	 */
-	public <S extends V> V showEditor(Component parent, S initialValue);
+	<S extends V> V showEditor(Component parent, S initialValue);
 	
-	public Class<V> getType();
+	Class<V> getType();
 
 }

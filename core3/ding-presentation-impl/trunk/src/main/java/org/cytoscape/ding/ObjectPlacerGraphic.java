@@ -108,10 +108,6 @@ public class ObjectPlacerGraphic extends JPanel implements
 	private Stroke detailStroke = new BasicStroke(detailStrokeWidth);
 	private Stroke lowStroke = new BasicStroke(lowStrokeWidth);
 	
-	private final Dimension objectSize;
-	private final Dimension targetSize;
-	
-
 
 	/**
 	 * A gui for placing a label relative to a node.
@@ -124,14 +120,13 @@ public class ObjectPlacerGraphic extends JPanel implements
 	 *            whether or not to render at full detail or not
 	 */
 	public ObjectPlacerGraphic(final Integer windowSize,
-			boolean fullDetail, final String objectName, final Dimension objectSize, final Dimension targetSize) {
+			boolean fullDetail, final String objectName) {
 		super();
 		
 		this.p = new ObjectPositionImpl();
 		
 		this.objectLabel = objectName;
-		this.objectSize = objectSize;
-		this.targetSize = targetSize;
+
 
 		renderDetail = fullDetail;
 
@@ -149,6 +144,10 @@ public class ObjectPlacerGraphic extends JPanel implements
 		applyPosition();
 
 		repaint();
+	}
+	
+	public void setObjectPosition(final ObjectPosition op) {
+		this.p = op;
 	}
 
 	private void initSize(int size) {
@@ -425,7 +424,7 @@ public class ObjectPlacerGraphic extends JPanel implements
 	/**
 	 * Applies the new ObjectPosition to the graphic.
 	 */
-	void applyPosition() {
+	public void applyPosition() {
 		xOffset = (int) (p.getOffsetX() * offsetRatio);
 		yOffset = (int) (p.getOffsetY() * offsetRatio);
 		justify = p.getJustify();

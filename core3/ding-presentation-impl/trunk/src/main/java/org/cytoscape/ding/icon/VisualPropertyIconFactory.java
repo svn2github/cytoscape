@@ -1,11 +1,13 @@
 package org.cytoscape.ding.icon;
 
 import java.awt.Color;
+import java.awt.Stroke;
 
 import javax.swing.Icon;
 
 import org.cytoscape.ding.LineStyle;
 import org.cytoscape.ding.NodeShape;
+import org.cytoscape.ding.ObjectPosition;
 import org.cytoscape.ding.customgraphics.CyCustomGraphics;
 import org.cytoscape.view.model.VisualProperty;
 
@@ -28,10 +30,12 @@ public class VisualPropertyIconFactory {
 			icon = new ColorIcon((Color) value, w, h, value.toString());
 		} else if(value instanceof NodeShape) {
 			icon = new NodeIcon(((NodeShape) value).getShape(), w, h, ((NodeShape) value).getShapeName());
-		} else if(value instanceof LineStyle) {
-			icon = new LineTypeIcon(((LineStyle) value).getStroke(5), w, h, ((LineStyle) value).name());
+		} else if(value instanceof Stroke) {
+			icon = new StrokeIcon((Stroke) value, w, h, value.toString());
 		} else if(value instanceof CyCustomGraphics) {
 			icon = new CustomGraphicsIcon(((CyCustomGraphics) value), w, h, ((CyCustomGraphics) value).getDisplayName());
+		} else if(value instanceof ObjectPosition) {
+			icon = new ObjectPositionIcon((ObjectPosition) value, w, h, "Label");
 		} else {
 			icon = new TextIcon(value, w, h, value.toString());
 		}

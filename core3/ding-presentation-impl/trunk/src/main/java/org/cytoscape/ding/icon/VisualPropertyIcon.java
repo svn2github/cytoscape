@@ -35,7 +35,6 @@
 package org.cytoscape.ding.icon;
 
 import java.awt.Color;
-import java.awt.Shape;
 
 import javax.swing.ImageIcon;
 
