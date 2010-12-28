@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableRowSorter;
 
+import org.cytoscape.browser.ui.AttributeBrowserToolBar;
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyTable;
@@ -31,17 +32,20 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 	private final CyEventHelper eventHelper;
 	private final EqnCompiler compiler;
 	private final BrowserTable browserTable;
+	private final AttributeBrowserToolBar attributeBrowserToolBar = null;
 	private BrowserTableModel browserTableModel;
 	private CyTable currentTable;
 
 	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
 		     final CyEventHelper eventHelper, final EqnCompiler compiler)
 	{
+System.err.println("******************************************************************************************* Entering TableBrowser constructor!");
 		this.tableManager = tableManager;
 		this.serviceRegistrar = serviceRegistrar;
 		this.eventHelper = eventHelper;
 		this.compiler = compiler;
 		this.browserTable = new BrowserTable();
+//		this.attributeBrowserToolBar = new AttributeBrowserToolBar(browserTable);
 		this.setLayout(new BorderLayout());
 
 		browserTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -51,6 +55,7 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 		add(tableChooser, BorderLayout.NORTH);
 		browserTable.getTableHeader().setBackground(Color.yellow);
 		add(new JScrollPane(browserTable), BorderLayout.CENTER);
+//		add(attributeBrowserToolBar, BorderLayout.NORTH);
 	}
 
 	/**
@@ -94,6 +99,7 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 			browserTable.setModel(browserTableModel);
 			browserTable.setRowSorter(new TableRowSorter(browserTableModel));
+//			attributeBrowserToolBar.setAttrs(table);
 		}
 	}
 }

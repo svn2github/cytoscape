@@ -4,5 +4,4 @@
 
 
 Spring-Context: META-INF/spring/*.xml
-Private-Package: org.cytoscape.browser.internal.*
-
+Private-Package: org.cytoscape.browser.*
