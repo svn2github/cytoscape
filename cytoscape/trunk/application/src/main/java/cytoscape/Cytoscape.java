@@ -1955,6 +1955,9 @@ public abstract class Cytoscape {
 		firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 		cytoscapeRootGraph = null;
 		cytoscapeRootGraph = new CytoscapeFingRootGraph();
+		// We need to fire SESSION_LOADED, but to avoid NPE, we'll provide
+		// a null network list
+		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, new ArrayList<CyNetwork>());
 		logger.info("Cytoscape Session Initialized.");
 		System.gc();
 	}
