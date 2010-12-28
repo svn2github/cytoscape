@@ -1,6 +1,7 @@
 package org.cytoscape.ding.icon;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Stroke;
 
 import javax.swing.Icon;
@@ -36,6 +37,8 @@ public class VisualPropertyIconFactory {
 			icon = new CustomGraphicsIcon(((CyCustomGraphics) value), w, h, ((CyCustomGraphics) value).getDisplayName());
 		} else if(value instanceof ObjectPosition) {
 			icon = new ObjectPositionIcon((ObjectPosition) value, w, h, "Label");
+		}  else if(value instanceof Font) {
+			icon = new FontFaceIcon((Font) value, w, h, "");
 		} else {
 			icon = new TextIcon(value, w, h, value.toString());
 		}
