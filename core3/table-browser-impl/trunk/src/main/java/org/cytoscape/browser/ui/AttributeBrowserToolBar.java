@@ -77,7 +77,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	 */
 	private JPopupMenu attributeSelectionPopupMenu = null;
 	private JScrollPane jScrollPane = null;
-	private JPopupMenu jPopupMenu1 = null;
+	private JPopupMenu jPopupMenu = null;
 
 	private JMenuItem jMenuItemStringAttribute = null;
 	private JMenuItem jMenuItemIntegerAttribute = null;
@@ -114,6 +114,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 	public void setAttrs(final CyTable attrs) {
 		this.attrs = attrs;
+		createNewAttributeButton.setEnabled(attrs != null);
 	}
 
 	private void initializeGUI() {
@@ -123,7 +124,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		this.add(getJToolBar(), java.awt.BorderLayout.CENTER);
 
 //		getAttributeSelectionPopupMenu();
-		getJPopupMenu1();
+		getJPopupMenu();
 
 //		modDialog = new ModDialog(tableModel, objectType, Cytoscape.getDesktop());
 //		attrModButton.setVisible(objectType != NETWORK);
@@ -170,26 +171,26 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 */
 
 	/**
-	 * This method initializes jPopupMenu1
+	 * This method initializes jPopupMenu
 	 *
 	 * @return javax.swing.JPopupMenu
 	 */
-	private JPopupMenu getJPopupMenu1() {
-		if (jPopupMenu1 == null) {
-			jPopupMenu1 = new JPopupMenu();
-			jPopupMenu1.add(getJMenuItemIntegerAttribute());
-			jPopupMenu1.add(getJMenuItemLongIntegerAttribute());
-			jPopupMenu1.add(getJMenuItemStringAttribute());
-			jPopupMenu1.add(getJMenuItemFloatingPointAttribute());
-			jPopupMenu1.add(getJMenuItemBooleanAttribute());
-			jPopupMenu1.add(getJMenuItemIntegerListAttribute());
-			jPopupMenu1.add(getJMenuItemLongIntegerListAttribute());
-			jPopupMenu1.add(getJMenuItemStringListAttribute());
-			jPopupMenu1.add(getJMenuItemFloatingPointListAttribute());
-			jPopupMenu1.add(getJMenuItemBooleanListAttribute());
+	private JPopupMenu getJPopupMenu() {
+		if (jPopupMenu == null) {
+			jPopupMenu = new JPopupMenu();
+			jPopupMenu.add(getJMenuItemIntegerAttribute());
+			jPopupMenu.add(getJMenuItemLongIntegerAttribute());
+			jPopupMenu.add(getJMenuItemStringAttribute());
+			jPopupMenu.add(getJMenuItemFloatingPointAttribute());
+			jPopupMenu.add(getJMenuItemBooleanAttribute());
+			jPopupMenu.add(getJMenuItemIntegerListAttribute());
+			jPopupMenu.add(getJMenuItemLongIntegerListAttribute());
+			jPopupMenu.add(getJMenuItemStringListAttribute());
+			jPopupMenu.add(getJMenuItemFloatingPointListAttribute());
+			jPopupMenu.add(getJMenuItemBooleanListAttribute());
 		}
 
-		return jPopupMenu1;
+		return jPopupMenu;
 	}
 
 	/**
@@ -241,7 +242,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			jMenuItemLongIntegerAttribute.setText("Long Integer Attribute");
 			jMenuItemLongIntegerAttribute.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
-						createNewAttribute("LongInteger");
+						createNewAttribute("Long Integer");
 					}
 				});
 		}
@@ -407,6 +408,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			buttonBarLayout.setHorizontalGroup(buttonBarLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 							   .addGroup(buttonBarLayout.createSequentialGroup()
 								.addPreferredGap(ComponentPlacement.RELATED)
+
 /*								.addComponent(getSelectButton())
 								.addPreferredGap(ComponentPlacement.RELATED)
 */
@@ -786,9 +788,11 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			createNewAttributeButton.setIcon(new javax.swing.ImageIcon(getClass().getClassLoader().getResource("images/stock_new.png")));
 			createNewAttributeButton.addMouseListener(new java.awt.event.MouseAdapter() {
 					public void mouseClicked(java.awt.event.MouseEvent e) {
-						jPopupMenu1.show(e.getComponent(), e.getX(), e.getY());
+						if (attrs != null)
+							jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 					}
 				});
+			createNewAttributeButton.setEnabled(false);
 		}
 
 		return createNewAttributeButton;
@@ -820,7 +824,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			attrs.createColumn(newAttribName, Double.class);
 		else if (type.equals("Integer"))
 			attrs.createColumn(newAttribName, Integer.class);
-		else if (type.equals("Long"))
+		else if (type.equals("Long Integer"))
 			attrs.createColumn(newAttribName, Long.class);
 		else if (type.equals("Boolean"))
 			attrs.createColumn(newAttribName, Boolean.class);

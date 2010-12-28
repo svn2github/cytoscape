@@ -32,7 +32,7 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 	private final CyEventHelper eventHelper;
 	private final EqnCompiler compiler;
 	private final BrowserTable browserTable;
-	private final AttributeBrowserToolBar attributeBrowserToolBar = null;
+	private final AttributeBrowserToolBar attributeBrowserToolBar;
 	private BrowserTableModel browserTableModel;
 	private CyTable currentTable;
 
@@ -45,17 +45,17 @@ System.err.println("************************************************************
 		this.eventHelper = eventHelper;
 		this.compiler = compiler;
 		this.browserTable = new BrowserTable();
-//		this.attributeBrowserToolBar = new AttributeBrowserToolBar(browserTable);
+		this.attributeBrowserToolBar = new AttributeBrowserToolBar(browserTable);
 		this.setLayout(new BorderLayout());
 
 		browserTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 		final TableChooser tableChooser = new TableChooser(tableManager);
 		tableChooser.addActionListener(this);
-		add(tableChooser, BorderLayout.NORTH);
+		add(tableChooser, BorderLayout.SOUTH);
 		browserTable.getTableHeader().setBackground(Color.yellow);
 		add(new JScrollPane(browserTable), BorderLayout.CENTER);
-//		add(attributeBrowserToolBar, BorderLayout.NORTH);
+		add(attributeBrowserToolBar, BorderLayout.NORTH);
 	}
 
 	/**
@@ -99,7 +99,7 @@ System.err.println("************************************************************
 			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 			browserTable.setModel(browserTableModel);
 			browserTable.setRowSorter(new TableRowSorter(browserTableModel));
-//			attributeBrowserToolBar.setAttrs(table);
+			attributeBrowserToolBar.setAttrs(table);
 		}
 	}
 }
