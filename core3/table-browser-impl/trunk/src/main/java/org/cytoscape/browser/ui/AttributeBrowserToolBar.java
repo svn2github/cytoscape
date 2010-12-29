@@ -39,6 +39,7 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -115,6 +116,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	public void setAttrs(final CyTable attrs) {
 		this.attrs = attrs;
 		createNewAttributeButton.setEnabled(attrs != null);
+		deleteAttributeButton.setEnabled(attrs != null);
 	}
 
 	private void initializeGUI() {
@@ -416,10 +418,11 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 								.addPreferredGap(ComponentPlacement.RELATED)
 /*								.add(getSelectAllButton())
 								.addPreferredGap(ComponentPlacement.RELATED)
-
 								.addComponent(getUnselectAllButton())
+*/
 								.addPreferredGap(ComponentPlacement.RELATED)
 								.addComponent(getDeleteButton())
+/*
 								.addPreferredGap(ComponentPlacement.RELATED,
 										 28,
 										 Short.MAX_VALUE)
@@ -460,10 +463,12 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 								       javax.swing.GroupLayout.Alignment.CENTER,
 								       javax.swing.GroupLayout.DEFAULT_SIZE,
 								       27, Short.MAX_VALUE)
+*/
 							 .addComponent(deleteAttributeButton,
 								       javax.swing.GroupLayout.Alignment.CENTER,
 								       javax.swing.GroupLayout.DEFAULT_SIZE,
 								       27, Short.MAX_VALUE)
+/*
 							 .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
 							      .addComponent(matrixButton,
 								   javax.swing.GroupLayout.PREFERRED_SIZE,
@@ -636,14 +641,14 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		ImportExpressionMatrixAction matrixAction = new ImportExpressionMatrixAction();
 		matrixAction.actionPerformed(null);
 	}
+*/
 
 	private JButton getDeleteButton() {
 		if (deleteAttributeButton == null) {
 			deleteAttributeButton = new JButton();
 			deleteAttributeButton.setBorder(null);
 			deleteAttributeButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-			deleteAttributeButton.setIcon(new javax.swing.ImageIcon(AttributeBrowser.class
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     .getClass().getClassLoader().getResource("images/stock_delete.png")));
+			deleteAttributeButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/stock_delete.png")));
 			deleteAttributeButton.setToolTipText("Delete Attributes...");
 
 			// Create pop-up window for deletion
@@ -652,11 +657,11 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 						removeAttribute(e);
 					}
 				});
+			deleteAttributeButton.setEnabled(false);
 		}
 
 		return deleteAttributeButton;
 	}
-*/
 
 /*
 	private JButton getSelectAllButton() {
@@ -710,33 +715,16 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		return unselectAllAttributesButton;
 	}
 
-/*
 	private void removeAttribute(final MouseEvent e) {
 		final String[] attrArray = getAttributeArray();
 
-		final DeletionDialog dDialog = new DeletionDialog(Cytoscape.getDesktop(), true, attrArray,
-		                                                  attributeType, tableModel);
+		final JFrame frame = (JFrame)SwingUtilities.getRoot(this);
+		final DeletionDialog dDialog = new DeletionDialog(frame, attrs);
 
 		dDialog.pack();
 		dDialog.setLocationRelativeTo(browserToolBar);
 		dDialog.setVisible(true);
-
-		final List<String> atNames = new ArrayList<String>();
-		for (String attName: CyAttributesUtils.getVisibleAttributeNames(attrs))
-			atNames.add(attName);
-		final List<String> toBeRemoved = new ArrayList<String>();
-		for (String colName: orderedCol) {
-			if (atNames.contains(colName) == false)
-				toBeRemoved.add(colName);
-		}
-
-		for (String rem: toBeRemoved)
-			orderedCol.remove(rem);
-
-		tableModel.setTableData(null, orderedCol);
-		AttributeBrowser.firePropertyChange(AttributeBrowser.RESTORE_COLUMN, null, objectType);
 	}
-*/
 
 /*
 	private JList getSelectedAttributeList() {

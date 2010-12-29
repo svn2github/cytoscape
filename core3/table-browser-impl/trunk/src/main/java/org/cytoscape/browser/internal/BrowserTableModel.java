@@ -146,13 +146,21 @@ public class BrowserTableModel extends AbstractTableModel
 		if (raw == null)
 			return null;
 
-		final Map<String, Class<?>> columnNameToTypeMap = attrs.getColumnTypeMap();
-		final Object cooked = row.get(columnName, columnNameToTypeMap.get(columnName));
+		final Object cooked = getColumnValue(row, columnName);
 		if (cooked != null)
 			return new ValidatedObjectAndEditString(cooked, raw.toString());
 
 		final String lastInternalError = attrs.getLastInternalError();
 		return new ValidatedObjectAndEditString(cooked, raw.toString(), lastInternalError);
+	}
+
+	private static Object getColumnValue(final CyRow row, final String columnName) {
+		final Class<?> columnType = row.getDataTable().getType(columnName);
+		if (columnType == List.class) {
+			final Class<?> listElementType = row.getDataTable().getListElementType(columnName);
+			return row.getList(columnName, listElementType);
+		} else
+			return row.get(columnName, columnType);
 	}
 
 	@Override
@@ -369,7 +377,6 @@ public class BrowserTableModel extends AbstractTableModel
 			try {
 				reader.mark(0);
 				ch = reader.read();
-System.err.println("************** at the top of the for-loop, ch="+(char)ch);
 			} catch (final IOException e) {
 				throw new IllegalStateException("We should *never* get here!");
 			}

@@ -39,7 +39,6 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
 		     final CyEventHelper eventHelper, final EqnCompiler compiler)
 	{
-System.err.println("******************************************************************************************* Entering TableBrowser constructor!");
 		this.tableManager = tableManager;
 		this.serviceRegistrar = serviceRegistrar;
 		this.eventHelper = eventHelper;

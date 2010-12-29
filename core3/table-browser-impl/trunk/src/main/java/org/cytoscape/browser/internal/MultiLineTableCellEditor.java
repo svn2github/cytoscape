@@ -73,10 +73,8 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 	public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
 	                                             final int row, final int column)
 	{
-//System.err.println("********************* getTableCellEditorComponent(), column="+column+", value="+value);
 		final String text = (value != null) ? ((ValidatedObjectAndEditString)value).getEditString() : "";
 		textArea.setTable(table);
-System.err.println("********************* text="+text);
 		textArea.setText(text);
 
 		return textArea;
