@@ -198,11 +198,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param g DOCUMENT ME!
-	 */
+	
+	
 	public void update(Graphics g) {
 		if (m_grafx == null)
 			return;

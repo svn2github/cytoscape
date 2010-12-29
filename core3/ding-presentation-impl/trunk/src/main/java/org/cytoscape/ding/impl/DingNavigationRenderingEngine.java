@@ -1,5 +1,6 @@
 package org.cytoscape.ding.impl;
 
+import java.awt.Component;
 import java.awt.Image;
 import java.awt.print.Printable;
 import java.util.Properties;
@@ -14,19 +15,20 @@ import org.cytoscape.view.presentation.RenderingEngine;
 
 /**
  * Wrapper for Navigation View
- * 
- * @author kono
  *
  */
 public class DingNavigationRenderingEngine implements RenderingEngine<CyNetwork> {
 	
-	private final DGraphView dgv;
-	
+	private final DGraphView dgv;	
 	private final Properties props;
 	
-	public DingNavigationRenderingEngine(final DGraphView dgv) {
+	private final BirdsEyeView bev;
+	
+	public DingNavigationRenderingEngine(final Component container, final DGraphView dgv) {
 		this.dgv = dgv;
 		this.props = new Properties();
+		
+		bev = new BirdsEyeView(container, dgv);
 	}
 	
 
@@ -49,8 +51,7 @@ public class DingNavigationRenderingEngine implements RenderingEngine<CyNetwork>
 
 	@Override
 	public Printable createPrintable() {
-		// TODO Auto-generated method stub
-		return null;
+		return dgv.createPrintable();
 	}
 
 	@Override

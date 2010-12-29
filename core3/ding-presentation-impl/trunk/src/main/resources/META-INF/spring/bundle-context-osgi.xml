@@ -6,6 +6,10 @@
 	default-lazy-init="false">
 
 
+	<osgi:reference id="applicationManagerManagerServiceRef"
+		interface="org.cytoscape.session.CyApplicationManager">
+	</osgi:reference>
+	
 	<osgi:reference id="customGraphicsManagerServiceRef"
 		interface="org.cytoscape.ding.customgraphics.CustomGraphicsManager">
 	</osgi:reference>
@@ -13,7 +17,7 @@
 	<osgi:reference id="renderingEngineManagerServiceRef"
 		interface="org.cytoscape.view.presentation.RenderingEngineManager">
 	</osgi:reference>
-	
+
 	<osgi:reference id="cyRootNetworkFactoryServiceRef"
 		interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory">
 	</osgi:reference>
@@ -36,8 +40,7 @@
 		interface="org.cytoscape.service.util.CyServiceRegistrar">
 	</osgi:reference>
 
-	<osgi:reference id="cyTableManagerServiceRef"
-		interface="org.cytoscape.model.CyTableManager">
+	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager">
 	</osgi:reference>
 
 	<osgi:reference id="cyNetworkManagerServiceRef"
@@ -45,15 +48,15 @@
 	</osgi:reference>
 
 
-	<osgi:reference id="cyEventHelperServiceRef"
-		interface="org.cytoscape.event.CyEventHelper">
+	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper">
 	</osgi:reference>
-	
+
 	<!-- Individual Service -->
 	<osgi:service id="dingRenderingEngineFactoryService" ref="dingRenderingEngineFactory">
 		<osgi:interfaces>
 			<value>org.cytoscape.view.presentation.RenderingEngineFactory</value>
-			<value>org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener</value>
+			<value>org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener
+			</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="serviceType" value="presentationFactory" />
@@ -61,10 +64,12 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="dingNavigationRenderingEngineFactoryService" ref="dingNavigationRenderingEngineFactory">
+	<osgi:service id="dingNavigationRenderingEngineFactoryService"
+		ref="dingNavigationRenderingEngineFactory">
 		<osgi:interfaces>
 			<value>org.cytoscape.view.presentation.RenderingEngineFactory</value>
-			<value>org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener</value>
+			<value>org.cytoscape.view.model.events.UpdateNetworkPresentationEventListener
+			</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="serviceType" value="presentationFactory" />
@@ -118,8 +123,10 @@
 		<osgi:listener bind-method="addDropNetworkViewTaskFactory"
 			unbind-method="removeDropNetworkViewTaskFactory" ref="dingRenderingEngineFactory" />
 	</osgi:set>
-	
-	<osgi:service id="objectPositionValueEditorService" ref="objectPositionValueEditor" auto-export="interfaces" />
-	<osgi:service id="objectPositionPropertyEditorService" ref="objectPositionEditor" auto-export="interfaces" />
+
+	<osgi:service id="objectPositionValueEditorService" ref="objectPositionValueEditor"
+		auto-export="interfaces" />
+	<osgi:service id="objectPositionPropertyEditorService"
+		ref="objectPositionEditor" auto-export="interfaces" />
 
 </beans>

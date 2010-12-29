@@ -49,6 +49,7 @@ import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SetCurrentNetworkEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
+import org.cytoscape.session.events.SetCurrentRenderingEngineEvent;
 import org.cytoscape.session.events.SetSelectedNetworkViewsEvent;
 import org.cytoscape.session.events.SetSelectedNetworksEvent;
 
@@ -270,6 +271,10 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
 
 	
 	public void setCurrentRenderingEngine(RenderingEngine<CyNetwork> engine) {
-		this.currentRenderer = engine;		
+		this.currentRenderer = engine;
+		
+		cyEventHelper.fireSynchronousEvent(
+				new SetCurrentRenderingEngineEvent(this, this.currentRenderer));
+		
 	}
 }

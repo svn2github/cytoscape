@@ -1,16 +1,15 @@
 package org.cytoscape.ding.impl;
 
-
 import java.awt.BorderLayout;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JComponent;
-import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
-import javax.swing.JLayeredPane;
 
+import org.cytoscape.dnd.DropNetworkViewTaskFactory;
+import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableFactory;
@@ -21,8 +20,6 @@ import org.cytoscape.spacial.SpacialIndex2DFactory;
 import org.cytoscape.task.EdgeViewTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
-import org.cytoscape.dnd.DropNetworkViewTaskFactory;
-import org.cytoscape.dnd.DropNodeViewTaskFactory;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
@@ -38,23 +35,21 @@ import org.cytoscape.work.undo.UndoSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class DingRenderingEngineFactory implements
-		RenderingEngineFactory<CyNetwork>, UpdateNetworkPresentationEventListener {
+		RenderingEngineFactory<CyNetwork>,
+		UpdateNetworkPresentationEventListener {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(DingRenderingEngineFactory.class);
+	private static final Logger logger = LoggerFactory.getLogger(DingRenderingEngineFactory.class);
+
+	private final RenderingEngineManager renderingEngineManager;
+	private final CyTableFactory dataTableFactory;
+	private final CyRootNetworkFactory rootNetworkFactory;
+	private final SpacialIndex2DFactory spacialFactory;
+	private final UndoSupport undo;
+	private final VisualLexicon dingLexicon;
+	private final CyServiceRegistrar registrar;
 	
-	final RenderingEngineManager renderingEngineManager;
-
-	private CyTableFactory dataTableFactory;
-	private CyRootNetworkFactory rootNetworkFactory;
-	private SpacialIndex2DFactory spacialFactory;
-	private UndoSupport undo;
-	private VisualLexicon dingLexicon;
-	private CyServiceRegistrar registrar;
-
-	private Map<CyNetworkView, DGraphView> viewMap;
+	private final Map<CyNetworkView, DGraphView> viewMap;
 
 	private Map<NodeViewTaskFactory, Map> nodeViewTFs;
 	private Map<EdgeViewTaskFactory, Map> edgeViewTFs;
@@ -65,13 +60,15 @@ public class DingRenderingEngineFactory implements
 	private TaskManager tm;
 	private final CyTableManager tableMgr;
 	private final CyEventHelper eventHelper;
-
-	public DingRenderingEngineFactory(
-			CyTableFactory dataTableFactory,
+	
+	
+	public DingRenderingEngineFactory(CyTableFactory dataTableFactory,
 			CyRootNetworkFactory rootNetworkFactory, UndoSupport undo,
 			SpacialIndex2DFactory spacialFactory, VisualLexicon dingLexicon,
 			TaskManager tm, CyServiceRegistrar registrar,
-			CyTableManager tableMgr, CyEventHelper eventHelper, RenderingEngineManager renderingEngineManager) {
+			CyTableManager tableMgr, CyEventHelper eventHelper,
+			RenderingEngineManager renderingEngineManager) {
+		
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
 		this.spacialFactory = spacialFactory;
@@ -95,14 +92,14 @@ public class DingRenderingEngineFactory implements
 	 * Render given view model by Ding rendering engine.
 	 * 
 	 */
-	@Override public RenderingEngine<CyNetwork> getInstance(final Object presentationContainer,
-			View<CyNetwork> view) {
+	@Override
+	public RenderingEngine<CyNetwork> getInstance(
+			final Object presentationContainer, final View<CyNetwork> view) {
 
 		// Validate arguments
 		if (presentationContainer == null)
-			throw new IllegalArgumentException(
-					"Container is null.");
-		
+			throw new IllegalArgumentException("Container is null.");
+
 		if (view == null)
 			throw new IllegalArgumentException(
 					"Cannot create presentation for null view model.");
@@ -112,30 +109,30 @@ public class DingRenderingEngineFactory implements
 					"Ding accepts CyNetworkView only.");
 
 		final CyNetworkView targetView = (CyNetworkView) view;
-		
+
 		DGraphView dgv = null;
 		if (presentationContainer instanceof JComponent) {
 
 			logger.debug("Start rendering presentation by Ding: "
 					+ targetView.getSUID());
-			
+
 			dgv = new DGraphView(targetView, dataTableFactory,
 					rootNetworkFactory, undo, spacialFactory, dingLexicon,
 					nodeViewTFs, edgeViewTFs, emptySpaceTFs, dropNodeViewTFs,
-					dropEmptySpaceTFs, tm, eventHelper,
-					tableMgr);
-			
+					dropEmptySpaceTFs, tm, eventHelper, tableMgr);
+
 			logger.info("DGraphView created as a presentation for view model: "
 					+ targetView.getSUID());
 			viewMap.put(targetView, dgv);
 
 			if (presentationContainer instanceof JInternalFrame) {
 				final JInternalFrame inFrame = (JInternalFrame) presentationContainer;
-				JDesktopPane desktopPane = inFrame.getDesktopPane();
+				//JDesktopPane desktopPane = inFrame.getDesktopPane();
 
 				// TODO - not sure this layered pane bit is optimal
-				inFrame.setContentPane(dgv.getContainer(inFrame.getLayeredPane()));
-			//	dgv.addTransferComponent(desktopPane);
+				inFrame.setContentPane(dgv.getContainer(inFrame
+						.getLayeredPane()));
+				// dgv.addTransferComponent(desktopPane);
 			} else {
 				final JComponent component = (JComponent) presentationContainer;
 				component.setLayout(new BorderLayout());
@@ -150,12 +147,14 @@ public class DingRenderingEngineFactory implements
 		registrar.registerAllServices(dgv, new Properties());
 		final AddDeleteHandler addDeleteHandler = new AddDeleteHandler(dgv);
 		registrar.registerAllServices(addDeleteHandler, new Properties());
-		eventHelper.addMicroListener(addDeleteHandler, AboutToRemoveEdgeViewMicroListener.class, view);
-		eventHelper.addMicroListener(addDeleteHandler, AboutToRemoveNodeViewMicroListener.class, view);
-		
+		eventHelper.addMicroListener(addDeleteHandler,
+				AboutToRemoveEdgeViewMicroListener.class, view);
+		eventHelper.addMicroListener(addDeleteHandler,
+				AboutToRemoveNodeViewMicroListener.class, view);
+
 		// Register engine to manager
 		this.renderingEngineManager.addRenderingEngine(dgv);
-		
+
 		return dgv;
 	}
 
@@ -212,35 +211,40 @@ public class DingRenderingEngineFactory implements
 		emptySpaceTFs.put(evtf, props);
 	}
 
-	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory evtf, Map props) {
+	public void removeNetworkViewTaskFactory(NetworkViewTaskFactory evtf,
+			Map props) {
 		if (evtf == null)
 			return;
 
 		emptySpaceTFs.remove(evtf);
 	}
 
-	public void addDropNetworkViewTaskFactory(DropNetworkViewTaskFactory evtf, Map props) {
+	public void addDropNetworkViewTaskFactory(DropNetworkViewTaskFactory evtf,
+			Map props) {
 		if (evtf == null)
 			return;
 
 		dropEmptySpaceTFs.put(evtf, props);
 	}
 
-	public void removeDropNetworkViewTaskFactory(DropNetworkViewTaskFactory evtf, Map props) {
+	public void removeDropNetworkViewTaskFactory(
+			DropNetworkViewTaskFactory evtf, Map props) {
 		if (evtf == null)
 			return;
 
 		dropEmptySpaceTFs.remove(evtf);
 	}
 
-	public void addDropNodeViewTaskFactory(DropNodeViewTaskFactory nvtf, Map props) {
+	public void addDropNodeViewTaskFactory(DropNodeViewTaskFactory nvtf,
+			Map props) {
 		if (nvtf == null)
 			return;
 
 		dropNodeViewTFs.put(nvtf, props);
 	}
 
-	public void removeDropNodeViewTaskFactory(DropNodeViewTaskFactory nvtf, Map props) {
+	public void removeDropNodeViewTaskFactory(DropNodeViewTaskFactory nvtf,
+			Map props) {
 		if (nvtf == null)
 			return;
 

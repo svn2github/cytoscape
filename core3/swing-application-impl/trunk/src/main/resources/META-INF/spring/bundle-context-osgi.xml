@@ -294,16 +294,7 @@
 		</osgi:interfaces>
 	</osgi:service>
 
-	<osgi:service id="birdsEyeViewHandlerService" ref="birdsEyeViewHandler">
-		<osgi:interfaces>
-			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener
-			</value>
-			<value>org.cytoscape.session.events.SetCurrentNetworkListener
-			</value>
-			<value>org.cytoscape.view.model.events.NetworkViewDestroyedListener
-			</value>
-		</osgi:interfaces>
-	</osgi:service>
+	<osgi:service id="birdsEyeViewHandlerService" ref="birdsEyeViewHandler" auto-export="interfaces" />
 
 	<osgi:service id="undoMonitorSetCurrentNetworkViewListenerService"
 		ref="undoMonitor" interface="org.cytoscape.session.events.SetCurrentNetworkViewListener" />

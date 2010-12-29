@@ -18,7 +18,7 @@ public class BitmapWriterFactory implements PresentationWriterFactory {
 	private final CyFileFilter bitmapFilter; 
 
 	private View<?> view;
-	private RenderingEngine re;
+	private RenderingEngine<?> re;
 	private OutputStream outputStream;
 
 	public BitmapWriterFactory(CyFileFilter bitmapFilter) {

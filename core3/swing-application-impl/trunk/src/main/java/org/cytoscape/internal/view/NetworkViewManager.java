@@ -216,16 +216,22 @@ public class NetworkViewManager implements InternalFrameListener,
 		}
 	}
 
+	
 	/**
-	 * Fire Events when a Managed Network View gets the Focus.
+	 * View switched
 	 */
 	public void internalFrameActivated(InternalFrameEvent e) {
-		Long network_id = componentMap.get(e.getInternalFrame());
+		final Long network_id = componentMap.get(e.getInternalFrame());
 
+		
 		if (network_id == null)
 			return;
 
+		final RenderingEngine<CyNetwork> currentEngine = applicationManager.getCurrentRenderingEngine();
 		applicationManager.setCurrentNetworkView(network_id);
+		
+		if(currentEngine.getViewModel().getModel().getSUID() != network_id)
+			applicationManager.setCurrentRenderingEngine(presentationMap.get(network_id));
 	}
 
 	/**

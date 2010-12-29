@@ -1,14 +1,20 @@
 package org.cytoscape.ding.impl;
 
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.spacial.SpacialIndex2DFactory;
 import org.cytoscape.task.EdgeViewTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
@@ -56,13 +62,17 @@ public class DingNavigationRenderingEngineFactory implements
 
 	private TaskManager tm;
 	private CyTableManager tableMgr;
+	
+	private final CyApplicationManager appManager;
 
 	public DingNavigationRenderingEngineFactory(
 			CyTableFactory dataTableFactory,
 			CyRootNetworkFactory rootNetworkFactory, UndoSupport undo,
 			SpacialIndex2DFactory spacialFactory,
 			VisualLexicon dingLexicon, TaskManager tm,
-			CyServiceRegistrar registrar, CyTableManager tableMgr, RenderingEngineManager renderingEngineManager) {
+			CyServiceRegistrar registrar, CyTableManager tableMgr, RenderingEngineManager renderingEngineManager,
+			CyApplicationManager appManager
+	) {
 
 		this.dataTableFactory = dataTableFactory;
 		this.rootNetworkFactory = rootNetworkFactory;
@@ -73,6 +83,7 @@ public class DingNavigationRenderingEngineFactory implements
 		this.registrar = registrar;
 		this.tableMgr = tableMgr;
 		this.renderingEngineManager = renderingEngineManager;
+		this.appManager = appManager;
 
 		viewMap = new HashMap<CyNetworkView, DGraphView>();
 		nodeViewTFs = new HashMap<NodeViewTaskFactory, Map>();
@@ -83,33 +94,31 @@ public class DingNavigationRenderingEngineFactory implements
 	
 	@Override public RenderingEngine<CyNetwork> getInstance(final Object visualizationContainer, final View<CyNetwork> view) {
 
-//		if (visualizationContainer == null)
-//			throw new IllegalArgumentException(
-//					"Visualization container is null.  This should be an JComponent for this rendering engine.");
-//		if (view == null)
-//			throw new IllegalArgumentException(
-//					"View Model is null.");
-//
-//		if (!(visualizationContainer instanceof JComponent)
-//				|| !(view instanceof CyNetworkView))
-//			throw new IllegalArgumentException(
-//					"Visualization Container object is not of type Component, "
-//							+ "which is invalid for this implementation of PresentationFactory");
-//
-//		final DGraphView dgv = new DGraphView((CyNetworkView) view,
-//				dataTableFactory, rootNetworkFactory, undo, spacialFactory,
-//				rootLexicon, dingLexicon, nodeViewTFs, edgeViewTFs,
-//				emptySpaceTFs, ti, tm, registrar, tableMgr);
-//		
-//		logger.info("DGV created for navigation: View ID = " + view.getSUID());
-//
-//		JPanel target = new JPanel();
-//		BirdsEyeView bev = new BirdsEyeView((Component) visualizationContainer,
-//				dgv);
-//		target.add(bev);
+		if (visualizationContainer == null)
+			throw new IllegalArgumentException(
+					"Visualization container is null.  This should be an JComponent for this rendering engine.");
+		if (view == null)
+			throw new IllegalArgumentException(
+					"View Model is null.");
 
-		DingNavigationRenderingEngine bev = new DingNavigationRenderingEngine(null);
-		// Register engine to manager
+		if (!(visualizationContainer instanceof JComponent)
+				|| !(view instanceof CyNetworkView))
+			throw new IllegalArgumentException(
+					"Visualization Container object is not of type Component, "
+							+ "which is invalid for this implementation of PresentationFactory");
+		
+		final JComponent container = (JComponent) visualizationContainer;
+
+		final RenderingEngine<CyNetwork> engine = appManager.getCurrentRenderingEngine();
+		
+		logger.info("!!!! DGV created for navigation: View ID = " + view.getSUID());
+
+
+		final BirdsEyeView bev = new BirdsEyeView(container, (DGraphView) engine);
+		
+		container.setLayout(new BorderLayout());
+		container.add(bev, BorderLayout.CENTER);
+		
 		this.renderingEngineManager.addRenderingEngine(bev);
 		return bev;
 

@@ -16,7 +16,7 @@ import java.io.File;
 public final class ViewWriter extends AbstractCyWriter<PresentationWriterManager> {
 
 	private final View<?> view;
-	private final RenderingEngine re;
+	private final RenderingEngine<?> re;
 
 	/**
 	 * @param writerManager The {@link org.cytoscape.io.write.PresentationWriterManager} used to determine which type of
@@ -24,7 +24,7 @@ public final class ViewWriter extends AbstractCyWriter<PresentationWriterManager
 	 * @param view The View object to be written to the specified file.
 	 * @param re The RenderingEngine used to generate the image to be written to the file.  
 	 */
-    public ViewWriter(PresentationWriterManager writerManager, View<?> view, RenderingEngine re ) {
+    public ViewWriter(final PresentationWriterManager writerManager, final View<?> view, final RenderingEngine<?> re ) {
 		super(writerManager);
 
 		if ( view == null )

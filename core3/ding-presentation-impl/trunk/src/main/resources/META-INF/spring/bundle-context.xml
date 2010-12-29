@@ -17,7 +17,6 @@
             http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-	<import resource="bundle-context-osgi.xml" />
 
 	<context:annotation-config />
 
@@ -49,6 +48,7 @@
 		<constructor-arg ref="cyServiceRegistrarRef" />
 		<constructor-arg ref="cyTableManagerServiceRef" />
 		<constructor-arg ref="renderingEngineManagerServiceRef" />
+		<constructor-arg ref="applicationManagerManagerServiceRef" />
 	</bean>
 
 	<bean id="addEdgeNodeViewTaskFactory" class="org.cytoscape.ding.impl.AddEdgeNodeViewTaskFactoryImpl">

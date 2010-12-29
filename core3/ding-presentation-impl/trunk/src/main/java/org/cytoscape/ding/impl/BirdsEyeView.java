@@ -49,20 +49,33 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.print.Printable;
+import java.util.Properties;
+
+import javax.swing.Icon;
 
 import org.cytoscape.ding.GraphView;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.presentation.RenderingEngine;
 
 /**
  * Swing component to display overview of the network.
  * 
- * @author $author$
  */
-public class BirdsEyeView extends Component {
+public class BirdsEyeView extends Component implements RenderingEngine<CyNetwork> {
 
+	
 	private final static long serialVersionUID = 1202416511863994L;
+	
+	private static final Dimension MIN_SIZE = new Dimension(180, 180);
 
 	private final double[] m_extents = new double[4];
-	private DGraphView m_view;
+
+	private final DGraphView dgv;
+	
 	private final ContentChangeListener m_cLis;
 	private final ViewportChangeListener m_vLis;
 	private Image m_img = null;
@@ -75,52 +88,54 @@ public class BirdsEyeView extends Component {
 	private double m_viewXCenter;
 	private double m_viewYCenter;
 	private double m_viewScaleFactor;
-	
-	private Component m_desktopView;
+
+	private final Component m_desktopView;
 
 	/**
 	 * Creates a new BirdsEyeView object.
 	 * 
-	 * @param view
+	 * @param dgv
 	 *            The view to monitor
-	 * @param desktopView
+	 * @param container
 	 *            The desktop area holding the view. This should be
 	 *            NetworkViewManager.getDesktopPane().
 	 */
-	public BirdsEyeView(Component desktopView, GraphView view) {
+	public BirdsEyeView(final Component vContainer, final DGraphView dgv) {
 		super();
+
+		if (dgv == null)
+			throw new NullPointerException("DGraphView is null.");
+		if (vContainer == null)
+			throw new NullPointerException("Container is null.");
+
+		this.dgv = dgv;
 
 		m_cLis = new InnerContentChangeListener();
 		m_vLis = new InnerViewportChangeListener();
-		m_desktopView = desktopView;
+		m_desktopView = vContainer;
+
 		addMouseListener(new InnerMouseListener());
 		addMouseMotionListener(new InnerMouseMotionListener());
 		setPreferredSize(new Dimension(180, 180));
 		setMinimumSize(new Dimension(180, 180));
 
-		setView(view);
+		setView(dgv);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param view
-	 *            DOCUMENT ME!
-	 */
+	
 	private void setView(GraphView view) {
-		// GraphView view = presFactory.getGraphView(cnv);
-		if (view == null)
-			return;
-		destroy();
-		m_view = (DGraphView) view;
+//		if (view == null)
+//			return;
+//		destroy();
 
-		m_view.addContentChangeListener(m_cLis);
-		m_view.addViewportChangeListener(m_vLis);
+		dgv.addContentChangeListener(m_cLis);
+		dgv.addViewportChangeListener(m_vLis);
+		
 		updateBounds();
-		final Point2D pt = m_view.getCenter();
+		final Point2D pt = dgv.getCenter();
 		m_viewXCenter = pt.getX();
 		m_viewYCenter = pt.getY();
-		m_viewScaleFactor = m_view.getZoom();
+		m_viewScaleFactor = dgv.getZoom();
 		m_contentChanged = true;
 
 		repaint();
@@ -137,19 +152,19 @@ public class BirdsEyeView extends Component {
 	}
 
 	private Rectangle2D getViewableRectInView(final Rectangle2D viewable) {
-		if (m_view == null || m_view.getCanvas() == null
-				|| m_view.getCanvas().m_grafx == null)
+		if (dgv == null || dgv.getCanvas() == null
+				|| dgv.getCanvas().m_grafx == null)
 			return new Rectangle2D.Double(0.0, 0.0, 0.0, 0.0);
 
 		final double[] origin = new double[2];
 		origin[0] = viewable.getX();
 		origin[1] = viewable.getY();
-		m_view.xformComponentToNodeCoords(origin);
+		dgv.xformComponentToNodeCoords(origin);
 
 		final double[] destination = new double[2];
 		destination[0] = viewable.getX() + viewable.getWidth();
 		destination[1] = viewable.getY() + viewable.getHeight();
-		m_view.xformComponentToNodeCoords(destination);
+		dgv.xformComponentToNodeCoords(destination);
 
 		Rectangle2D result = new Rectangle2D.Double(origin[0], origin[1],
 				destination[0] - origin[0], destination[1] - origin[1]);
@@ -157,11 +172,11 @@ public class BirdsEyeView extends Component {
 	}
 
 	private Rectangle2D getViewableRect() {
-		if (m_view == null)
+		if (dgv == null)
 			return new Rectangle2D.Double(0.0, 0.0, 0.0, 0.0);
 
 		if (m_desktopView == null) {
-			final Rectangle r = m_view.getComponent().getBounds();
+			final Rectangle r = dgv.getComponent().getBounds();
 			return new Rectangle2D.Double(r.x, r.y, r.width, r.height);
 		}
 
@@ -172,9 +187,9 @@ public class BirdsEyeView extends Component {
 			desktopRect.y = s.y;
 		}
 
-		final Rectangle viewRect = m_view.getComponent().getBounds();
-		if (m_view.getComponent().isShowing()) {
-			Point s = m_view.getComponent().getLocationOnScreen();
+		final Rectangle viewRect = dgv.getComponent().getBounds();
+		if (dgv.getComponent().isShowing()) {
+			Point s = dgv.getComponent().getLocationOnScreen();
 			viewRect.x = s.x;
 			viewRect.y = s.y;
 		}
@@ -188,16 +203,16 @@ public class BirdsEyeView extends Component {
 		return viewable;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void destroy() {
-		if (m_view == null)
-			return;
-
-		m_view.removeContentChangeListener(m_cLis);
-		m_view.removeViewportChangeListener(m_vLis);
-	}
+//	/**
+//	 * DOCUMENT ME!
+//	 */
+//	public void destroy() {
+//		if (dgv == null)
+//			return;
+//
+//		dgv.removeContentChangeListener(m_cLis);
+//		dgv.removeViewportChangeListener(m_vLis);
+//	}
 
 	/**
 	 * This used to be called reshape, which is deprecated, so I've changed it
@@ -228,7 +243,7 @@ public class BirdsEyeView extends Component {
 		if (m_img == null)
 			return;
 
-		if (m_view == null) {
+		if (dgv == null) {
 			g.setColor(Color.white);
 			g.fillRect(0, 0, getWidth(), getHeight());
 
@@ -238,7 +253,7 @@ public class BirdsEyeView extends Component {
 		updateBounds();
 
 		if (m_contentChanged) {
-			if (m_view.getExtents(m_extents)) {
+			if (dgv.getExtents(m_extents)) {
 				m_myXCenter = (m_extents[0] + m_extents[2]) / 2.0d;
 				m_myYCenter = (m_extents[1] + m_extents[3]) / 2.0d;
 				m_myScaleFactor = 0.8d * Math.min(((double) getWidth())
@@ -250,8 +265,8 @@ public class BirdsEyeView extends Component {
 				m_myScaleFactor = 1.0d;
 			}
 
-			m_view.drawSnapshot(m_img, m_view.getGraphLOD(),
-					m_view.getBackgroundPaint(), m_myXCenter, m_myYCenter,
+			dgv.drawSnapshot(m_img, dgv.getGraphLOD(),
+					dgv.getBackgroundPaint(), m_myXCenter, m_myYCenter,
 					m_myScaleFactor);
 			m_contentChanged = false;
 		}
@@ -339,6 +354,9 @@ public class BirdsEyeView extends Component {
 
 	private final class InnerMouseMotionListener implements MouseMotionListener {
 		public void mouseDragged(MouseEvent e) {
+			
+			System.out.println("--------- DRAG");
+			
 			if (m_currMouseButton == 1) {
 				final int currX = e.getX();
 				final int currY = e.getY();
@@ -349,9 +367,9 @@ public class BirdsEyeView extends Component {
 				m_lastXMousePos = currX;
 				m_lastYMousePos = currY;
 
-				if (m_view != null) {
-					final Point2D pt = m_view.getCenter();
-					m_view.setCenter(pt.getX() + deltaX, pt.getY() + deltaY);
+				if (dgv != null) {
+					final Point2D pt = dgv.getCenter();
+					dgv.setCenter(pt.getX() + deltaX, pt.getY() + deltaY);
 				}
 			}
 		}
@@ -360,7 +378,32 @@ public class BirdsEyeView extends Component {
 		}
 	}
 
-	public Dimension getMinimumSize() {
-		return new Dimension(180, 180);
+	@Override public Dimension getMinimumSize() {
+		return MIN_SIZE;
+	}
+
+	@Override
+	public View<CyNetwork> getViewModel() {
+		return dgv.getViewModel();
+	}
+
+	@Override
+	public VisualLexicon getVisualLexicon() {
+		return dgv.getVisualLexicon();
+	}
+
+	@Override
+	public Properties getProperties() {
+		return dgv.getProperties();
+	}
+
+	@Override
+	public Printable createPrintable() {
+		return dgv.createPrintable();
+	}
+
+	@Override
+	public <V> Icon createIcon(VisualProperty<V> vp, V value, int width, int height) {
+		return dgv.createIcon(vp, value, width, height);
 	}
 }
