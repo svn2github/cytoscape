@@ -2,7 +2,6 @@ package org.cytoscape.io.write;
 
 
 import org.cytoscape.view.presentation.RenderingEngine;
-import org.cytoscape.view.model.View;
 
 /**
  * A specialization of {@link CyWriterFactory} that allows a View to
@@ -18,5 +17,5 @@ public interface PresentationWriterFactory extends CyWriterFactory {
 	 * @param re The {@link org.cytoscape.view.presentation.RenderingEngine} used to generate the image of the
 	 * specified View.
 	 */
-	void setRenderingEngine(RenderingEngine re);
+	void setRenderingEngine(final RenderingEngine<?> re);
 }

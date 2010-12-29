@@ -17,11 +17,10 @@ public class BitmapWriterFactory implements PresentationWriterFactory {
 
 	private final CyFileFilter bitmapFilter; 
 
-	private View<?> view;
 	private RenderingEngine<?> re;
 	private OutputStream outputStream;
 
-	public BitmapWriterFactory(CyFileFilter bitmapFilter) {
+	public BitmapWriterFactory(final CyFileFilter bitmapFilter) {
 		this.bitmapFilter = bitmapFilter;	
 	}
 
@@ -29,13 +28,10 @@ public class BitmapWriterFactory implements PresentationWriterFactory {
 		return bitmapFilter; 
 	}
 
-	public void setRenderingEngine(RenderingEngine re) {
-		if ( view == null )
-			throw new NullPointerException("View is null");
+	public void setRenderingEngine(final RenderingEngine<?> re) {
 		if ( re == null )
 			throw new NullPointerException("RenderingEngine is null");
 
-		this.view = view;
 		this.re = re;
 	}
 
@@ -46,6 +42,9 @@ public class BitmapWriterFactory implements PresentationWriterFactory {
 	}
 
 	public CyWriter getWriterTask() {
-		return new BitmapWriter(view, re, outputStream, bitmapFilter.getExtensions() );
+		if ( re == null )
+			throw new NullPointerException("RenderingEngine is null");
+		
+		return new BitmapWriter(re, outputStream, bitmapFilter.getExtensions() );
 	}
 }
