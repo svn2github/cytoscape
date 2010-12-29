@@ -62,6 +62,9 @@ import cytoscape.groups.CyGroupManager;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.LineStyle;
+import cytoscape.visual.VisualPropertyDependency;
+import cytoscape.visual.VisualPropertyDependency.Definition;
+import cytoscape.visual.VisualStyle;
 
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
@@ -199,6 +202,11 @@ public class XGMMLWriter {
 	 *
 	 */
 	public static final String GRAPH_VIEW_CENTER_Y = "GRAPH_VIEW_CENTER_Y";
+
+	/**
+	 *
+	 */
+	public static final String NODE_SIZE_LOCKED = "NODE_SIZE_LOCKED";
 
 	/**
 	 *
@@ -411,6 +419,13 @@ public class XGMMLWriter {
 			final Point2D center = ((DGraphView) networkView).getCenter();
 			writeAttributeXML(GRAPH_VIEW_CENTER_X, ObjectType.REAL, new Double(center.getX()) ,true);
 			writeAttributeXML(GRAPH_VIEW_CENTER_Y, ObjectType.REAL, new Double(center.getY()) ,true);
+
+			// Figure out if our node height and width is locked
+			VisualStyle networkStyle = Cytoscape.getCurrentNetworkView().getVisualStyle();
+			VisualPropertyDependency vpd = networkStyle.getDependency();
+			if (vpd.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED))
+				writeAttributeXML(NODE_SIZE_LOCKED, ObjectType.BOOLEAN, Boolean.TRUE ,true);
+
 		}
 
 		// Now handle all of the other network attributes

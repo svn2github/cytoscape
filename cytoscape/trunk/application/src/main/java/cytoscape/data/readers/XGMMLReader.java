@@ -152,6 +152,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	private Double graphViewCenterY;
 	private InputStream networkStream;
 	private XGMMLParser parser;
+	private boolean nodeSizeLocked = false;
 
 	private Properties prop = CytoscapeInit.getProperties();
 	private String vsbSwitch = prop.getProperty("visualStyleBuilder");
@@ -408,6 +409,8 @@ public class XGMMLReader extends AbstractGraphReader {
 		final boolean buildStyle = vsbSwitch == null || vsbSwitch.equals("on");
 
 		VisualStyleBuilder graphStyle = new VisualStyleBuilder(parser.getNetworkName(), false);
+		nodeSizeLocked = parser.getNodeSizeLocked();
+		graphStyle.setNodeSizeLocked(nodeSizeLocked); // False by default
 
 		// Set background color
 		if (parser.getBackgroundColor() != null) {
@@ -492,14 +495,15 @@ public class XGMMLReader extends AbstractGraphReader {
 		nodeView.setXPosition(x);
 		nodeView.setYPosition(y);
 
-		if (buildStyle && h != 0.0) {
-			// nodeView.setHeight(h);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_HEIGHT, ""+h);
-		}
-
-		if (buildStyle && w != 0.0) {
-			// nodeView.setWidth(w);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_WIDTH, ""+w);
+		if (buildStyle) {
+			if (nodeSizeLocked && h != 0.0) {
+				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SIZE, ""+h);
+			} else { 
+				if (h != 0.0)
+					graphStyle.addProperty(nodeID, VisualPropertyType.NODE_HEIGHT, ""+h);
+				if (w != 0.0)
+					graphStyle.addProperty(nodeID, VisualPropertyType.NODE_WIDTH, ""+w);
+			}
 		}
 
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();

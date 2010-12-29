@@ -130,6 +130,7 @@ class XGMMLParser extends DefaultHandler {
 	private	double graphZoom = 1.0;
 	private	double graphCenterX = 0.0;
 	private	double graphCenterY = 0.0;
+	private	boolean nodeSizeLocked = false;
 
 	//
 	private double documentVersion = 1.0;
@@ -310,6 +311,27 @@ class XGMMLParser extends DefaultHandler {
 			return Double.parseDouble(attribute);
 		} catch (final Exception e) {
 			throw new SAXParseException("Unable to convert '" + attribute + "' to a DOUBLE", locator);
+		}
+	}
+
+	/**
+	 * Return the boolean attribute value for the attribute indicated by "key".  If no such attribute exists, we throw a SAXParseException.
+	 * In particular, this routine looks for an attribute with a <b>name</b> or <b>label</b> of <i>key</i> and  returns the <b>value</b>
+	 * of that attribute.
+	 *
+	 * @param atts the attributes
+	 * @param key the specific attribute to get
+	 * @return the value for "key."
+	 * @throws SAXParseException if we either can't find the requested attribute or if its value cannot be converted to a double.
+	 */
+	boolean getBooleanAttributeValue(final Attributes atts, final String key) throws SAXParseException {
+		final String attribute = getAttributeValue(atts, key);
+		if (attribute == null)
+			return false;
+		try {
+			return Boolean.parseBoolean(attribute);
+		} catch (final Exception e) {
+			throw new SAXParseException("Unable to convert '" + attribute + "' to a BOOLEAN", locator);
 		}
 	}
 
@@ -586,6 +608,10 @@ class XGMMLParser extends DefaultHandler {
 	}
 
 
+	boolean getNodeSizeLocked() {
+		return nodeSizeLocked;
+	}
+
 	Point2D getGraphViewCenter() {
 		if (graphCenterX == 0.0 && graphCenterY == 0.0) 
 			return null;
@@ -809,6 +835,8 @@ class XGMMLParser extends DefaultHandler {
 				graphCenterX = getDoubleAttributeValue(atts, "GRAPH_VIEW_CENTER_X");
 			} else if (getAttributeValue(atts, "GRAPH_VIEW_CENTER_Y") != null) {
 				graphCenterY = getDoubleAttributeValue(atts, "GRAPH_VIEW_CENTER_Y");
+			} else if (getAttributeValue(atts, "NODE_SIZE_LOCKED") != null) {
+				nodeSizeLocked = getBooleanAttributeValue(atts, "NODE_SIZE_LOCKED");
 			} else {
 				objectTarget = networkName;
 				nextState = handleAttribute(atts, currentAttributes, networkName);
