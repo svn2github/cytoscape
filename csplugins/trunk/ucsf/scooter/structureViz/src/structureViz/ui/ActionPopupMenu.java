@@ -175,16 +175,16 @@ public class ActionPopupMenu extends JPopupMenu {
 				addItem(sub2, "Dot", "surface %sel;surfrepr dot",0);
 				JMenu sub3 = new JMenu("Transparency");
 				{
-					addItem(sub3, "0%", "surftransparency 0% %sel",0);
-					addItem(sub3, "10%", "surftransparency 10% %sel",0);
-					addItem(sub3, "20%", "surftransparency 20% %sel",0);
-					addItem(sub3, "30%", "surftransparency 30% %sel",0);
-					addItem(sub3, "40%", "surftransparency 40% %sel",0);
-					addItem(sub3, "50%", "surftransparency 50% %sel",0);
-					addItem(sub3, "60%", "surftransparency 60% %sel",0);
-					addItem(sub3, "70%", "surftransparency 70% %sel",0);
-					addItem(sub3, "80%", "surftransparency 80% %sel",0);
-					addItem(sub3, "90%", "surftransparency 90% %sel",0);
+					addItem(sub3, "0%", "surftransparency 0 %sel",0);
+					addItem(sub3, "10%", "surftransparency 10 %sel",0);
+					addItem(sub3, "20%", "surftransparency 20 %sel",0);
+					addItem(sub3, "30%", "surftransparency 30 %sel",0);
+					addItem(sub3, "40%", "surftransparency 40 %sel",0);
+					addItem(sub3, "50%", "surftransparency 50 %sel",0);
+					addItem(sub3, "60%", "surftransparency 60 %sel",0);
+					addItem(sub3, "70%", "surftransparency 70 %sel",0);
+					addItem(sub3, "80%", "surftransparency 80 %sel",0);
+					addItem(sub3, "90%", "surftransparency 90 %sel",0);
 				}
 				sub2.add(sub3);
 			}
