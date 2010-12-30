@@ -5,9 +5,9 @@
         tag cloud from a user-defined node selection, summarizing an attribute
         of choice.
 
-        by Layla Oesper, Ruth Isserlin, Daniele Merico
+        by Layla Oesper, Ruth Isserlin, Daniele Merico, & Gary Bader
 
-        Plugin Homepage: http://baderlab.org/GSoC2010_SoftwareDownload
+        Plugin Homepage: http://baderlab.org/Software/WordCloudPlugin
 
 License:
 ========
@@ -34,7 +34,7 @@ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 System requirements:
 ====================
-The WordCloud Plugin requires a Computer with installed Cytoscape 2.6.x.
+The WordCloud Plugin requires a Computer with installed Cytoscape 2.6.x, 2.7, or 2.8.
 Please refer to the Cytoscape Manual (available on http://cytoscape.org/)
 for Cytoscape's system requirements.
 
@@ -44,13 +44,13 @@ How to install the WordCloud Plugin:
 Manual install:
 ---------------
 1) Download the latest Version of WordCloud from 
-   http://baderlab.org/GSoC2010_SoftwareDownload
+   http://baderlab.org/Software/WordCloudPlugin
 
-2) Locate the folder in which you have installed Cytoscape 2.6
-   (e.g. C:\Program Files\Cytoscape-v2.6 or /Applications/Cytoscape_v2.6)
+2) Locate the folder in which you have installed Cytoscape 2.X
+   (e.g. C:\Program Files\Cytoscape-v2.X or /Applications/Cytoscape_v2.X)
    and in that the folder called "plugins"
    
-3) Place the file WordCloud.jar in the Cytoscape-v2.6/plugins folder
+3) Place the file WordCloud.jar in the Cytoscape-v2.X/plugins folder
 
 4) Start Cytoscape and find the "WordCloud" entry in the Plugins menu.
 
