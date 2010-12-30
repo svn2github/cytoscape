@@ -106,8 +106,10 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	 */
 	public ChimeraModel (Structure structure, String inputLine) {
 		this.name = structure.name();
-		this.structure = structure;
 		this.modelNumber = parseModelNumber(inputLine);
+		// Do we need to create a submodel of the structure?
+		this.structure = structure.makeSubModel(this.subModelNumber);
+		this.structure.setModelNumber(this.modelNumber, this.subModelNumber);
 		this.chains = new TreeMap();
 		this.residues = new TreeMap();
 		this.residueMap = new HashMap();
@@ -369,8 +371,8 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		try {
 			subModelNumber = 0;
 			if (decimal > 0) {
-				subModelNumber = Integer.parseInt(inputLine.substring(decimal+1, space));
-				space = decimal;
+				subModelNumber = Integer.parseInt(inputLine.substring(decimal+hash+2, space));
+				space = decimal+hash+1;
 			}
 			modelNumber = Integer.parseInt(inputLine.substring(hash+1, space));
 			return modelNumber;

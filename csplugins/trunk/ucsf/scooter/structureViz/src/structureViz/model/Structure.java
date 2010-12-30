@@ -75,6 +75,12 @@ public class Structure {
 		this.type = type;
 	}
 
+	public Structure makeSubModel(int subModelNumber) {
+		Structure st = new Structure(this.structureName, this.cytoscapeNode, this.type);
+		st.setModelNumber(this.modelNumber, subModelNumber);
+		return st;
+	}
+
 	/**
 	 * Get the name of the structure
 	 *

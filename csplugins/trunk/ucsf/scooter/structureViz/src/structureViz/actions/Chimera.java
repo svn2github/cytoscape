@@ -360,6 +360,7 @@ public class Chimera {
    * @param structure the Structure to open
    */
   public void open(Structure structure) {
+		// System.out.println("Opening "+structure);
 		structure.setModelNumber(Structure.getNextModel(), 0);
 		if (structure.getType() == Structure.StructureType.MODBASE_MODEL)
 			chimeraSend("listen stop models; listen stop selection; open "+structure.modelNumber()+" modbase:"+structure.name());
@@ -378,7 +379,7 @@ public class Chimera {
 
 			// Get our properties (default color scheme, etc.)
 			// Make the molecule look decent
-			chimeraSend("repr stick "+newModel.toSpec());
+			// chimeraSend("repr stick "+newModel.toSpec());
 
 			if (structure.getType() != Structure.StructureType.SMILES) {
 				// Create the information we need for the navigator
@@ -660,16 +661,23 @@ public class Chimera {
 		String name = structure.name();
 		int modelNumber = structure.modelNumber();
 		int subModelNumber = structure.subModelNumber();
-		List<ChimeraModel>infoList = new ArrayList();
+		List<ChimeraModel>infoList = new ArrayList<ChimeraModel>();
 
-		for (String modelLine: commandReply("listm type molecule spec #"+modelNumber+"."+subModelNumber)) {
-			// System.out.println("ModelList: "+modelLine);
-			if (modelLine.contains("id #"+modelNumber+"."+subModelNumber)) {
-				// System.out.println("Found: "+name);
+		List<String>replyList = null;
+
+		if (subModelNumber == 0)
+			replyList = commandReply("listm type molecule spec #"+modelNumber);
+		else
+			replyList = commandReply("listm type molecule spec #"+modelNumber+"."+subModelNumber);
+
+		for (String modelLine: replyList) {
+			if (subModelNumber == 0 && modelLine.contains("id #"+modelNumber)) {
 				// got the right model, now get the model number
 				ChimeraModel chimeraModel = new ChimeraModel(structure, modelLine);
-				structure.setModelNumber(chimeraModel.getModelNumber(), chimeraModel.getSubModelNumber());
 				// System.out.println("Identified model as "+chimeraModel);
+				infoList.add(chimeraModel);
+			} else if (modelLine.contains("id #"+modelNumber+"."+subModelNumber)) {
+				ChimeraModel chimeraModel = new ChimeraModel(structure, modelLine);
 				infoList.add(chimeraModel);
 			}
 		}
