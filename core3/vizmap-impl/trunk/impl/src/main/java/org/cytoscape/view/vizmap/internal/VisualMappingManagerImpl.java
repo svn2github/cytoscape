@@ -57,11 +57,11 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 	private static final String DEFAULT_STYLE_NAME = "Default";
 	
 	// Default Style
-	private static final Color NODE_COLOR = new Color(0, 50, 200);
-	private static final Color EDGE_COLOR = new Color(20, 20, 20);
+	private static final Color NODE_COLOR = new Color(0x4F, 0x94, 0xCD);
+	private static final Color EDGE_COLOR = new Color(50, 50, 50);
 	private static final Double EDGE_WIDTH = 3d;
-	private static final Double NODE_WIDTH = 65d;
-	private static final Double NODE_HEIGHT = 30d;
+	private static final Double NODE_WIDTH = 35d;
+	private static final Double NODE_HEIGHT = 35d;
 
 	private final VisualStyle defaultStyle;
 

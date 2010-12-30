@@ -2,12 +2,10 @@ package org.cytoscape.ding.impl;
 
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableFactory;
@@ -111,10 +109,8 @@ public class DingNavigationRenderingEngineFactory implements
 
 		final RenderingEngine<CyNetwork> engine = appManager.getCurrentRenderingEngine();
 		
-		logger.info("!!!! DGV created for navigation: View ID = " + view.getSUID());
 
-
-		final BirdsEyeView bev = new BirdsEyeView(container, (DGraphView) engine);
+		final BirdsEyeView bev = new BirdsEyeView((DGraphView) engine);
 		
 		container.setLayout(new BorderLayout());
 		container.add(bev, BorderLayout.CENTER);
