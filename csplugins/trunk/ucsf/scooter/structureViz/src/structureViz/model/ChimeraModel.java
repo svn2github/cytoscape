@@ -91,7 +91,7 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	 */
 	public ChimeraModel (String inputLine) {
 		this.name = parseModelName(inputLine);
-		this.identifier = parseModelNumber(inputLine);
+		this.modelNumber = parseModelNumber(inputLine);
 		this.chains = new TreeMap();
 		this.residues = new TreeMap();
 		this.residueMap = new HashMap();
@@ -107,7 +107,7 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	public ChimeraModel (Structure structure, String inputLine) {
 		this.name = structure.name();
 		this.structure = structure;
-		this.identifier = parseModelNumber(inputLine);
+		this.modelNumber = parseModelNumber(inputLine);
 		this.chains = new TreeMap();
 		this.residues = new TreeMap();
 		this.residueMap = new HashMap();
@@ -214,14 +214,28 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	 *
 	 * @return integer model number 
 	 */
-	public float getModelNumber () { return this.identifier; }
+	public int getModelNumber () { return this.modelNumber; }
+
+	/**
+	 * Get the sub-model number of this model
+	 *
+	 * @return integer sub-model number 
+	 */
+	public int getSubModelNumber () { return this.subModelNumber; }
 
 	/**
 	 * Set the model number of this model
 	 *
 	 * @param modelNumber integer model number 
 	 */
-	public void setModelNumber (float modelNumber) { this.identifier = modelNumber; }
+	public void setModelNumber (int modelNumber) { this.modelNumber = modelNumber; }
+
+	/**
+	 * Set the sub-model number of this model
+	 *
+	 * @param subModelNumber integer model number 
+	 */
+	public void setSubModelNumber (int subModelNumber) { this.subModelNumber = subModelNumber; }
 
 	/**
 	 * Get the ChimeraModel (required for ChimeraStructuralObject interface)
@@ -302,7 +316,7 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	public void addResidue(String chainId, ChimeraResidue residue) {
 		ChimeraChain chain = null;
 		if (!chains.containsKey(chainId)) {
-			chain = new ChimeraChain(this.identifier, chainId);
+			chain = new ChimeraChain(this.modelNumber, this.subModelNumber, chainId);
 			chain.setChimeraModel(this);
 			chains.put(chainId, chain);
 		} else {
@@ -326,32 +340,42 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		if (name.length() > 14)
 			displayName = name.substring(0,13)+"...";
 		if (getChainCount() > 0) {
-			return ("Node "+nodeName+" [Model #"+identifier+" "+displayName+" ("+getChainCount()+" chains, "+getResidueCount()+" residues)]"); 
+			return ("Node "+nodeName+" [Model "+toSpec()+" "+displayName+" ("+getChainCount()+" chains, "+getResidueCount()+" residues)]"); 
 		} else if (getResidueCount() > 0) {
-			return ("Node "+nodeName+" [Model #"+identifier+" "+displayName+" ("+getResidueCount()+" residues)]"); 
+			return ("Node "+nodeName+" [Model "+toSpec()+" "+displayName+" ("+getResidueCount()+" residues)]"); 
 		} else {
-			return ("Node "+nodeName+" [Model #"+identifier+" "+displayName+"]"); 
+			return ("Node "+nodeName+" [Model "+toSpec()+" "+displayName+"]"); 
 		}
 	}
 
 	/**
 	 * Return the Chimera specification for this model
 	 */
-	public String toSpec() { return ("#"+identifier); }
+	public String toSpec() { 
+		if (subModelNumber == 0)
+			return ("#"+modelNumber);
+		return ("#"+modelNumber+"."+subModelNumber);
+	}
 
 	/**
 	 * Parse the model number returned by Chimera and return
-	 * the float value
+	 * the int value
 	 */
-	private float parseModelNumber(String inputLine) {
+	private int parseModelNumber(String inputLine) {
 		int hash = inputLine.indexOf('#');
 		int space = inputLine.indexOf(' ',hash);
+		int decimal = inputLine.substring(hash+1,space).indexOf('.');
 		// model number is between hash+1 and space
 		try {
-			Float modelNumber = new Float(inputLine.substring(hash+1,space));
-			return modelNumber.floatValue();
+			subModelNumber = 0;
+			if (decimal > 0) {
+				subModelNumber = Integer.parseInt(inputLine.substring(decimal+1, space));
+				space = decimal;
+			}
+			modelNumber = Integer.parseInt(inputLine.substring(hash+1, space));
+			return modelNumber;
 		} catch (Exception e) {
-			cytoscape.logger.CyLogger.getLogger(ChimeraResidue.class).error("Unexpected return from Chimera: "+inputLine);
+			cytoscape.logger.CyLogger.getLogger(ChimeraModel.class).error("Unexpected return from Chimera: "+inputLine);
 			return -1;
 		}
 	}

@@ -69,7 +69,7 @@ public class OpenTask implements Runnable {
 			for (Structure openStructure: openStructs) {
 				if (structureName.equals(openStructure.name())) {
 					// Map the model numbers
-					structure.setModelNumber(openStructure.modelNumber());
+					structure.setModelNumber(openStructure.modelNumber(), openStructure.subModelNumber());
 					open = true;
 					break;
 				}

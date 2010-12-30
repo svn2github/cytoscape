@@ -72,7 +72,7 @@ public class Chimera {
   // Chimera process
   static Process chimera;
 	static private List<ChimeraModel> models;
-	static private Map<Float,ChimeraModel> modelHash;
+	static private Map<Integer,ChimeraModel> modelHash;
 	static private ListenerThreads listener;
 	static private CyNetworkView networkView;
 	static private ModelNavigatorDialog mnDialog = null;
@@ -80,6 +80,8 @@ public class Chimera {
 	static private List<ChimeraStructuralObject>selectionList = null;
 	static Chimera staticPointer = null;
 	static CyLogger logger;
+
+	static int MAX_SUB_MODELS = 1000;
 
 	static public Chimera GetChimeraInstance(CyNetworkView networkView, CyLogger logger) {
 		if (staticPointer != null) {
@@ -97,7 +99,7 @@ public class Chimera {
 	 */
   protected Chimera(CyNetworkView networkView, CyLogger logger) {
 		models = new ArrayList<ChimeraModel>();
-		modelHash = new HashMap<Float,ChimeraModel>();
+		modelHash = new HashMap<Integer,ChimeraModel>();
 		this.networkView = networkView;
 		this.logger = logger;
 		selectionList = new ArrayList<ChimeraStructuralObject>();
@@ -116,9 +118,10 @@ public class Chimera {
  	 * @param model model number
  	 * @return the corresponding model
  	 */
-	public ChimeraModel getChimeraModel (Float model) {
-		if (modelHash.containsKey(model))
-			return modelHash.get(model);
+	public ChimeraModel getChimeraModel (int model, int subModel) {
+		Integer key = makeModelKey(model,subModel);
+		if (modelHash.containsKey(key))
+			return modelHash.get(key);
 		return null;
 	}
 
@@ -129,7 +132,7 @@ public class Chimera {
  	 * @return the corresponding model
  	 */
 	public ChimeraModel getChimeraModel (int model) {
-		return getChimeraModel(Float.valueOf((float)model));
+		return getChimeraModel(model, 0);
 	}
 
 	/**
@@ -205,34 +208,48 @@ public class Chimera {
 	public AlignStructuresDialog getAlignDialog() { return this.alDialog; }
 
 	/**
-	 * Test to see if we currently have a particular model open
+	 * Test to see if we currently have a particular model open.
 	 *
-	 * @param modelNumber the model number expressed as an Float object
+	 * @param modelNumber the model number expressed as an integer
+	 * @param subModelNumber the subModel number expressed as an integer
 	 */
-	public boolean containsModel(Float modelNumber) {
-		return modelHash.containsKey(modelNumber);
+	public boolean containsModel(int modelNumber, int subModelNumber) {
+		return modelHash.containsKey(makeModelKey(modelNumber, subModelNumber));
 	}
 
 	/**
-	 * Test to see if we currently have a particular model open
+	 * Test to see if we currently have a particular model open.
 	 *
-	 * @param modelNumber the model number expressed as a float
+	 * @param modelNumber the model number expressed as an int
 	 */
-	public boolean containsModel(float modelNumber) {
-		Float mn = new Float(modelNumber);
-		return modelHash.containsKey(mn);
+	public boolean containsModel(int modelNumber) {
+		return containsModel(modelNumber, 0);
 	}
 
 	/**
 	 * Return the ChimeraModel associated with the requested 
 	 * model number
 	 *
-	 * @param modelNumber the model number expressed as a float
+	 * @param modelNumber the model number expressed as an int
+	 * @param subModelNumber the subModel number expressed as an int
 	 * @return the ChimeraModel with a model number of modelNumber
 	 */
-	public ChimeraModel getModel(float modelNumber) {
-		Float mn = new Float(modelNumber);
-		return (ChimeraModel)modelHash.get(mn);
+	public ChimeraModel getModel(int modelNumber, int subModelNumber) {
+		Integer key = makeModelKey(modelNumber, subModelNumber);
+		if (modelHash.containsKey(key))
+			return modelHash.get(key);
+		return null;
+	}
+
+	/**
+	 * Return the ChimeraModel associated with the requested 
+	 * model number
+	 *
+	 * @param modelNumber the model number expressed as an int
+	 * @return the ChimeraModel with a model number of modelNumber
+	 */
+	public ChimeraModel getModel(int modelNumber) {
+		return getModel(modelNumber, 0);
 	}
 
 	/**
@@ -343,7 +360,7 @@ public class Chimera {
    * @param structure the Structure to open
    */
   public void open(Structure structure) {
-		structure.setModelNumber(Structure.getNextModel());
+		structure.setModelNumber(Structure.getNextModel(), 0);
 		if (structure.getType() == Structure.StructureType.MODBASE_MODEL)
 			chimeraSend("listen stop models; listen stop selection; open "+structure.modelNumber()+" modbase:"+structure.name());
 		else if (structure.getType() == Structure.StructureType.SMILES)
@@ -361,7 +378,7 @@ public class Chimera {
 
 			// Get our properties (default color scheme, etc.)
 			// Make the molecule look decent
-			chimeraSend("repr stick #"+newModel.getModelNumber());
+			chimeraSend("repr stick "+newModel.toSpec());
 
 			if (structure.getType() != Structure.StructureType.SMILES) {
 				// Create the information we need for the navigator
@@ -372,7 +389,7 @@ public class Chimera {
 			models.add(newModel);
 
 			// Add it to the hash table
-			modelHash.put(new Float(newModel.getModelNumber()),newModel);
+			modelHash.put(makeModelKey(newModel.getModelNumber(),newModel.getSubModelNumber()),newModel);
 		}
 
 		chimeraSend("focus");
@@ -390,15 +407,17 @@ public class Chimera {
    * @param structure the Structure to close
 	 */
 	public void close(Structure structure) {
-		float model = structure.modelNumber();
-		chimeraSend("listen stop models; listen stop select; close #"+model);
-		System.out.println("listen stop models; listen stop select; close #"+model);
-		
-		ChimeraModel chimeraModel = (ChimeraModel)modelHash.get(new Float(model));
-		if (chimeraModel != null) {
+		int model = structure.modelNumber();
+		int subModel = structure.subModelNumber();
+		Integer modelKey = makeModelKey(model, subModel);
+		if (modelHash.containsKey(modelKey)) {
+			ChimeraModel chimeraModel = modelHash.get(modelKey);
+			chimeraSend("listen stop models; listen stop select; close "+chimeraModel.toSpec());
 			models.remove(chimeraModel);
-			modelHash.remove(new Float(model));
+			modelHash.remove(modelKey);
 			selectionList.remove(chimeraModel);
+		} else {
+			chimeraSend("listen stop models; listen stop select; close #"+model+"."+subModel);
 		}
 		chimeraSend("listen start models; listen start select");
 		return;
@@ -464,7 +483,7 @@ public class Chimera {
 	 */
 	public void refresh() {
 		// Get a new model list
-		HashMap newHash = new HashMap();
+		HashMap<Integer,ChimeraModel> newHash = new HashMap<Integer,ChimeraModel>();
 
 		// Stop all of our listeners while we try to handle this
 		chimeraSend("listen stop select; listen stop models");
@@ -474,14 +493,17 @@ public class Chimera {
 
 		// Match them up -- assume that the model #'s haven't changed
 		for (ChimeraModel model: newModelList) {
-			Float modelNumber = new Float(model.getModelNumber());
 			// Get the color (for our navigator)
 			model.setModelColor(getModelColor(model));
 
+			// Get our model info
+			int modelNumber = model.getModelNumber();
+			int subModelNumber = model.getSubModelNumber();
+
 			// If we already know about this model number, get the Structure,
 			// which tells us about the associated CyNode
-			if (modelHash.containsKey(modelNumber)) {
-				ChimeraModel oldModel = (ChimeraModel)modelHash.get(modelNumber);
+			if (containsModel(modelNumber, subModelNumber)) {
+				ChimeraModel oldModel = getModel(modelNumber, subModelNumber);
 				Structure s = oldModel.getStructure();
 				if (s.getType() == Structure.StructureType.SMILES)
 					model.setModelName(s.name());
@@ -489,11 +511,11 @@ public class Chimera {
 			} else {
 				// This will return a new Structure if we don't know about it
 				Structure s = CyChimera.findStructureForModel(networkView, model.getModelName());
-				s.setModelNumber(modelNumber);
+				s.setModelNumber(model.getModelNumber(), model.getSubModelNumber());
 				model.setStructure(s);
 			}
 
-			newHash.put(modelNumber,model);
+			newHash.put(makeModelKey(model.getModelNumber(), model.getSubModelNumber()),model);
 
 			if (model.getStructure() != null && model.getStructure().getType() != Structure.StructureType.SMILES) {
 				// Get the residue information
@@ -502,7 +524,7 @@ public class Chimera {
 		}
 
 		// Replace the old model list
-		models = (ArrayList)newModelList;
+		models = newModelList;
 		modelHash = newHash;
 
 		// Restart all of our listeners
@@ -534,31 +556,33 @@ public class Chimera {
 	 * and update our list.
 	 */
 	public void updateSelection() {
-		HashMap<Float,ChimeraModel>modelSelHash = new HashMap();
+		HashMap<Integer,ChimeraModel>modelSelHash = new HashMap<Integer, ChimeraModel>();
 		clearSelectionList();
 
 		// Execute the command to get the list of models with selections
 		for (String modelLine: commandReply("lists level molecule")) {
 			ChimeraModel chimeraModel = new ChimeraModel(modelLine);
-			modelSelHash.put(new Float(chimeraModel.getModelNumber()), chimeraModel);
+			Integer modelKey = makeModelKey(chimeraModel.getModelNumber(), chimeraModel.getSubModelNumber());
+			modelSelHash.put(modelKey, chimeraModel);
 		}
 
 		// Now get the residue-level data
 		for (String inputLine: commandReply("lists level residue")) {
 			ChimeraResidue r = new ChimeraResidue(inputLine);
-			Float modelNumber = new Float(r.getModelNumber());
-			if (modelSelHash.containsKey(modelNumber)) {
-				ChimeraModel model = (ChimeraModel)modelSelHash.get(modelNumber);
+			Integer modelKey = makeModelKey(r.getModelNumber(), r.getSubModelNumber());
+			if (modelSelHash.containsKey(modelKey)) {
+				ChimeraModel model = modelSelHash.get(modelKey);
 				model.addResidue(r);
 			}
 		}
 
 		// Get the selected objects
 		for (ChimeraModel selectedModel: modelSelHash.values()) {
-			float modelNumber = selectedModel.getModelNumber();
+			int modelNumber = selectedModel.getModelNumber();
+			int subModelNumber = selectedModel.getSubModelNumber();
 			// Get the corresponding "real" model
-			if (containsModel(modelNumber)) {
-				ChimeraModel dataModel = getModel(modelNumber);
+			if (containsModel(modelNumber, subModelNumber)) {
+				ChimeraModel dataModel = getModel(modelNumber, subModelNumber);
 				if (dataModel.getResidueCount() == selectedModel.getResidueCount() ||
 				    dataModel.getStructure().getType() == Structure.StructureType.SMILES) {
 					// Select the entire model
@@ -635,15 +659,16 @@ public class Chimera {
 	private List<ChimeraModel> getModelInfoList(Structure structure) {
 		String name = structure.name();
 		int modelNumber = structure.modelNumber();
+		int subModelNumber = structure.subModelNumber();
 		List<ChimeraModel>infoList = new ArrayList();
 
-		for (String modelLine: commandReply("listm type molecule spec #"+modelNumber)) {
+		for (String modelLine: commandReply("listm type molecule spec #"+modelNumber+"."+subModelNumber)) {
 			// System.out.println("ModelList: "+modelLine);
-			if (modelLine.contains("id #"+modelNumber)) {
+			if (modelLine.contains("id #"+modelNumber+"."+subModelNumber)) {
 				// System.out.println("Found: "+name);
 				// got the right model, now get the model number
 				ChimeraModel chimeraModel = new ChimeraModel(structure, modelLine);
-				structure.setModelNumber(chimeraModel.getModelNumber());
+				structure.setModelNumber(chimeraModel.getModelNumber(), chimeraModel.getSubModelNumber());
 				// System.out.println("Identified model as "+chimeraModel);
 				infoList.add(chimeraModel);
 			}
@@ -687,14 +712,26 @@ public class Chimera {
 	 * 
 	 */
 	private void getResidueInfo(ChimeraModel model) {
-		float modelNumber = model.getModelNumber();
+		int modelNumber = model.getModelNumber();
+		int subModelNumber = model.getSubModelNumber();
 
 		// Get the list -- it will be in the reply log
-		for (String inputLine: commandReply ("listr spec #"+modelNumber)) {
+		for (String inputLine: commandReply ("listr spec #"+modelNumber+"."+subModelNumber)) {
 			ChimeraResidue r = new ChimeraResidue(inputLine);
-			if (r.getModelNumber() == modelNumber) {
+			if (r.getModelNumber() == modelNumber || r.getSubModelNumber() == subModelNumber) {
 				model.addResidue(r);
 			}
 		}
+	}
+
+	/**
+ 	 * Create the key to use for forming the model/submodel key into the modelHash
+ 	 *
+ 	 * @param model the model number
+ 	 * @param subModel the submodel number
+ 	 * @return the model key as an Integer
+ 	 */
+	private Integer makeModelKey(int model, int subModel) {
+		return new Integer(model*MAX_SUB_MODELS+subModel);
 	}
 }

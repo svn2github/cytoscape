@@ -98,10 +98,20 @@ public class CommandUtils {
 		try {
 			if (spec.startsWith("#")) {
 				try {
-					float f = Float.parseFloat(spec.substring(1));
-					m = chimera.getModel(f);
-					if (m == null) {
-						throw new CyCommandException("No open model: "+f);
+					int decimalOffset = spec.substring(1).indexOf('.');	// Do we have a sub-model?
+					if (decimalOffset > 0) {
+						int subModelNumber = Integer.parseInt(spec.substring(decimalOffset+1));
+						int modelNumber = Integer.parseInt(spec.substring(1, decimalOffset));
+						m = chimera.getModel(modelNumber, subModelNumber);
+						if (m == null) {
+							throw new CyCommandException("No open model: "+modelNumber+"."+subModelNumber);
+						}
+					} else {
+						int modelNumber = Integer.parseInt(spec.substring(1));
+						m = chimera.getModel(modelNumber, 0);
+						if (m == null) {
+							throw new CyCommandException("No open model: "+modelNumber);
+						}
 					}
 				} catch (NumberFormatException e) {
 					throw new CyCommandException("Model numbers must be numeric");

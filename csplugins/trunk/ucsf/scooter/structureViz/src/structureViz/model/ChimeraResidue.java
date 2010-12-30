@@ -57,7 +57,8 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	private String type;	// Residue type
 	private String index;	// Residue index
 	private String chainId; // ChainID for this residue
-	private float modelNumber; // model number for this residue
+	private int modelNumber; // model number for this residue
+	private int subModelNumber; // sub-model number for this residue
 	private ChimeraModel chimeraModel; // ChimeraModel thie residue is part of
 	private Object userData; // user data to associate with this residue
 	private static HashMap aaNames = null; // a map of amino acid names
@@ -71,10 +72,23 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	 * @param index the index of the residue
 	 * @param modelNumber the model number this residue is part of
 	 */
-	public ChimeraResidue (String type, String index, float modelNumber) {
+	public ChimeraResidue (String type, String index, int modelNumber) {
+		this(type, index, modelNumber, 0);
+	}
+
+	/**
+	 * Constructor to create a new ChimeraResidue
+	 *
+	 * @param type the residue type
+	 * @param index the index of the residue
+	 * @param modelNumber the model number this residue is part of
+	 * @param subModelNumber the sub-model number this residue is part of
+	 */
+	public ChimeraResidue (String type, String index, int modelNumber, int subModelNumber) {
 		this.type = type;
 		this.index = index;
 		this.modelNumber = modelNumber;
+		this.subModelNumber = subModelNumber;
 		if (aaNames == null)
 			initNames();
 	}
@@ -89,11 +103,21 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 
 		String[] split1 = line.split(":"); 
 
+		// TODO: this should be merged with the parse line code in
+		// ChimeraModel
+
 		// First half has model number -- get the number
 		int numberOffset = split1[0].indexOf('#');
 		String model = split1[0].substring(numberOffset+1);
+		int decimalOffset = model.indexOf('.');	// Do we have a sub-model?
 		try {
-			this.modelNumber = (new Float(model)).floatValue();
+			this.subModelNumber = 0;
+			if (decimalOffset > 0) {
+				this.subModelNumber = Integer.parseInt(model.substring(decimalOffset+1));
+				this.modelNumber = Integer.parseInt(model.substring(0, decimalOffset));
+			} else {
+				this.modelNumber = Integer.parseInt(model);
+			}
 		} catch (Exception e) {
 			cytoscape.logger.CyLogger.getLogger(ChimeraResidue.class).error("Unexpected return from Chimera in ChimeraResidue: "+model);
 			this.modelNumber = -1;
@@ -214,7 +238,14 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	 *
 	 * @return the model number
 	 */
-	public float getModelNumber () { return this.modelNumber; }
+	public int getModelNumber () { return this.modelNumber; }
+
+	/**
+	 * Get the sub-model number for this residue
+	 *
+	 * @return the sub-model number
+	 */
+	public int getSubModelNumber () { return this.subModelNumber; }
 
 	/**
 	 * Get the model this residue is part of

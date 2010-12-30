@@ -52,9 +52,10 @@ import structureViz.model.ChimeraModel;
 public class ChimeraChain implements ChimeraStructuralObject {
 
 	/**
-	 * The model number this chain is a part of
+	 * The model/subModel number this chain is a part of
 	 */
-	private float model;
+	private int modelNumber;
+	private int subModelNumber;
 
 	/**
 	 * A pointer to the model this chain is a part of
@@ -86,10 +87,12 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	 * Constructor to create a new ChimeraChain
 	 *
 	 * @param model	the model number this chain is part of
+	 * @param subModel	the subModel number this chain is part of
 	 * @param chainId the chain ID for this chain
 	 */
-	public ChimeraChain(float model, String chainId) {
-		this.model = model;
+	public ChimeraChain(int model, int subModel, String chainId) {
+		this.modelNumber = model;
+		this.subModelNumber = subModel;
 		this.chainId = chainId;
 		residueList = new TreeMap();
 	}
@@ -185,7 +188,14 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	 *
 	 * @return the model number
 	 */
-	public float getModelNumber() { return model; }
+	public int getModelNumber() { return modelNumber; }
+
+	/**
+	 * Get the sub-model number for this chain
+	 *
+	 * @return the sub-model number
+	 */
+	public int getSubModelNumber() { return subModelNumber; }
 
 	/**
 	 * Return a string representation of this chain as follows:
@@ -229,9 +239,9 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	 */
 	public String toSpec() { 
 		if (chainId.equals("_")) {
-			return("#"+model+":."); 
+			return("#"+modelNumber+"."+subModelNumber+":."); 
 		} else {
-			return("#"+model+":."+chainId); 
+			return("#"+modelNumber+"."+subModelNumber+":."+chainId); 
 		}		
 	}
 

@@ -48,6 +48,7 @@ public class Structure {
 	List<String> residueList;
 	CyNode cytoscapeNode;
 	int modelNumber;
+	int subModelNumber;
 	StructureType type;
 
 	public enum StructureType {PDB_MODEL, MODBASE_MODEL, SMILES};
@@ -69,6 +70,7 @@ public class Structure {
 		this.structureName = name;
 		this.cytoscapeNode = node;
 		this.modelNumber = nextModel;
+		this.subModelNumber = 0;
 		this.residueList = null;
 		this.type = type;
 	}
@@ -97,18 +99,25 @@ public class Structure {
 	/**
 	 * Get the modelNumber for this structure
 	 *
-	 * @return the model number as a float
+	 * @return the model number as an int
 	 */
 	public int modelNumber() {return this.modelNumber;}
+
+	/**
+	 * Get the subModelNumber for this structure
+	 *
+	 * @return the subModel number as an int
+	 */
+	public int subModelNumber() {return this.subModelNumber;}
 
 	/**
 	 * Set the modelNumber for this structure
 	 *
 	 * @param number the model number
 	 */
-	public void setModelNumber (float number) {
-		Float floatNumber = new Float(number);
-		this.modelNumber = floatNumber.intValue();
+	public void setModelNumber (int number, int subNumber) {
+		this.modelNumber = number;
+		this.subModelNumber = subNumber;
 		if (this.modelNumber >= nextModel) nextModel = this.modelNumber+1;
 	}
 
