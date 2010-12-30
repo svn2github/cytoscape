@@ -54,7 +54,8 @@ import structureViz.model.Structure;
 
 public class ChimeraModel implements ChimeraStructuralObject {
 	private String name; 				// The name of this model
-	private float identifier; 		// The model number
+	private int modelNumber; 		// The model number
+	private int subModelNumber; 		// The sub-model number
 	private TreeMap<String,ChimeraChain> chains; 		// The list of chains
 	private TreeMap<String,ChimeraResidue> residues; 	// The list of residues
 	private HashMap<String,ChimeraResidue> residueMap;	// A map of residue names and residues
@@ -72,8 +73,10 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	 */
 	public ChimeraModel (String name, Structure structure, Color color) {
 		this.name = name;
-		if (structure != null)
-			this.identifier = structure.modelNumber();
+		if (structure != null) {
+			this.modelNumber = structure.modelNumber();
+			this.subModelNumber = structure.subModelNumber();
+		}
 		this.chains = new TreeMap();
 		this.residues = new TreeMap();
 		this.residueMap = new HashMap();

@@ -124,7 +124,6 @@ public class StructureVizMenuListener implements MenuListener {
 		{
 			if (overNode != null) {
 				String residueList = CyChimera.getResidueList((CyNode)overNode.getNode());
-				logger.debug("Found residueList: "+residueList);
 				if (residueList != null) {
 					// Get the structures for this node
 					List<Structure>structures =  CyChimera.getSelectedStructures(overNode, true);

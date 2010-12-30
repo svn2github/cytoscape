@@ -264,8 +264,10 @@ public class Chimera {
  	 */
 	public void clearSelectionList() {
 		for (ChimeraStructuralObject cso: selectionList) {
-			cso.setSelected(false);
+			if (cso != null)
+				cso.setSelected(false);
 		}
+		selectionList.clear();
 	}
 
 	/**
@@ -390,6 +392,7 @@ public class Chimera {
 	public void close(Structure structure) {
 		float model = structure.modelNumber();
 		chimeraSend("listen stop models; listen stop select; close #"+model);
+		System.out.println("listen stop models; listen stop select; close #"+model);
 		
 		ChimeraModel chimeraModel = (ChimeraModel)modelHash.get(new Float(model));
 		if (chimeraModel != null) {
@@ -572,6 +575,7 @@ public class Chimera {
 							for (ChimeraResidue res: selectedChain.getResidues()) {
 								String residueIndex = res.getIndex();
 								ChimeraResidue residue = dataChain.getResidue(residueIndex);
+								if (residue == null) continue;
 								selectionList.add(residue);
 								residue.setSelected(true);
 							} // resIter.hasNext

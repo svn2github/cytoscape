@@ -88,6 +88,7 @@ public class ModelNavigatorDialog
 	private static final int ALIGNBYMODEL = 14;
 	private static final int ALIGNBYCHAIN = 15;
 	private static final int FINDCLASH = 16;
+	private static final int FINDHBOND = 17;
 	private boolean ignoreSelection = false;
 	private int residueDisplay = ChimeraResidue.THREE_LETTER;
 	private boolean isCollapsing = false;
@@ -156,6 +157,8 @@ public class ModelNavigatorDialog
 		// Get the path we are expanding
 		DefaultMutableTreeNode node = 
 			(DefaultMutableTreeNode)ePath.getLastPathComponent();
+		if (!(node.getUserObject() instanceof ChimeraStructuralObject))
+			return;
 		ChimeraStructuralObject nodeInfo = 
 			(ChimeraStructuralObject)node.getUserObject();
 		// Check and see if our object is selected
@@ -382,7 +385,7 @@ public class ModelNavigatorDialog
 
 		// Chimera menu
 		JMenu chimeraMenu = new JMenu("Chimera");
-		alignMenu = new JMenu("Align Structures");
+		alignMenu = new JMenu("Align structures");
 		{
 			// Should this be "model vs. model", "chain vs. chain", and "chain vs. model"?
 			addMenuItem(alignMenu, "by model", ALIGNBYMODEL, null);
@@ -401,11 +404,15 @@ public class ModelNavigatorDialog
 			alignMenu.setEnabled(false);
 		chimeraMenu.add(alignMenu);
 
-		JMenu clashMenu = new JMenu("Clash Detection");
-		addMenuItem(clashMenu, "Find Clashes", FINDCLASH, "findclash sel continuous true");
-		// addMenuItem(clashMenu, "Find Clashes", FINDCLASH, "findclash sel");
-		addMenuItem(clashMenu, "Clear Clash", COMMAND, "~findclash");
+		JMenu clashMenu = new JMenu("Clash detection");
+		addMenuItem(clashMenu, "Find clashes", FINDCLASH, "findclash sel continuous true");
+		addMenuItem(clashMenu, "Clear clashes", COMMAND, "~findclash");
 		chimeraMenu.add(clashMenu);
+
+		JMenu hBondMenu = new JMenu("Hydrogen bond detection");
+		addMenuItem(hBondMenu, "Find hydrogen bonds", FINDHBOND, "findhbond sel any");
+		addMenuItem(hBondMenu, "Clear hydrogen bonds", COMMAND, "~findhbond");
+		chimeraMenu.add(hBondMenu);
 
 		JMenu presetMenu = new JMenu("Presets");
 		if (buildPresetMenu(presetMenu))
@@ -432,11 +439,11 @@ public class ModelNavigatorDialog
 		// Select menu
 		JMenu selectMenu = new JMenu("Select");
 		addMenuItem(selectMenu, "Protein", COMMAND, "select protein");
-		addMenuItem(selectMenu, "Nucleic Acid", COMMAND, "select nucleic acid");
+		addMenuItem(selectMenu, "Nucleic acid", COMMAND, "select nucleic acid");
 		addMenuItem(selectMenu, "Ligand", COMMAND, "select ligand");
 		addMenuItem(selectMenu, "Ions", COMMAND, "select ions");
 		addMenuItem(selectMenu, "Solvent", COMMAND, "select solvent");
-		JMenu secondaryMenu = new JMenu("Secondary Structure");
+		JMenu secondaryMenu = new JMenu("Secondary structure");
 		addMenuItem(secondaryMenu, "Helix", COMMAND, "select helix");
 		addMenuItem(secondaryMenu, "Strand", COMMAND, "select strand");
 		addMenuItem(secondaryMenu, "Turn", COMMAND, "select turn");
@@ -567,7 +574,14 @@ public class ModelNavigatorDialog
 				if (selectedObjects.size() > 0) {
 					chimeraObject.select(command);
 				} else {
- 					JOptionPane.showMessageDialog(dialog, "You must select something to find classes", 
+ 					JOptionPane.showMessageDialog(dialog, "You must select something to find clashes", 
+					                              "Nothing Selected", JOptionPane.ERROR_MESSAGE); 
+				}
+			} else if (type == FINDHBOND) {
+				if (selectedObjects.size() > 0) {
+					chimeraObject.select(command);
+				} else {
+ 					JOptionPane.showMessageDialog(dialog, "You must select something to find hydrogen bonds", 
 					                              "Nothing Selected", JOptionPane.ERROR_MESSAGE); 
 				}
 			} else {
