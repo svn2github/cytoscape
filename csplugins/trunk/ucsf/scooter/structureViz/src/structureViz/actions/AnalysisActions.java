@@ -53,11 +53,18 @@ public class AnalysisActions {
 		return chimera.commandReply("~findclash");
 	}
 
-	public static List<String> findHBondAction(Chimera chimera, String atomSpec) {
+	public static List<String> findHBondAction(Chimera chimera, String atomSpec, String limit, 
+	                                           boolean intramodel, boolean intermodel) {
 		String command = "findhbond";
 		if (atomSpec != null) {
 			command += " spec "+atomSpec;
 		}
+		if (!intermodel)
+			command += " intermodel false";
+		if (!intramodel)
+			command += " intramodel false";
+		if (limit != null)
+			command += " "+limit;
 		return chimera.commandReply(command);
 	}
 

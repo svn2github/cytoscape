@@ -113,11 +113,17 @@ public class AnalysisCommands extends AbstractCommands {
 	 * @param chimera the Chimera object
 	 * @param result the CyCommandResult
 	 * @param structureList the structureList we're looking to find clashes between
+	 * @param limit the limits on the detection
+	 * @param intermodel whether to find H-bonds between models
+	 * @param intramodel whether to find H-bonds within models
 	 * @return the updated CyCommandResult
 	 */
 	static public CyCommandResult findHBondsStructure(Chimera chimera, CyCommandResult result, 
-	                                                 List<Structure>structureList) {
-		return findHBondsSpecList(chimera, result, specListFromStructureList(chimera, structureList));
+	                                                  List<Structure>structureList, String limit,
+	                                                  boolean intermodel, boolean intramodel)
+	                                                  throws CyCommandException {
+		return findHBondsSpecList(chimera, result, specListFromStructureList(chimera, structureList),
+		                          limit, intermodel, intramodel);
 	}
 
 	/**
@@ -126,11 +132,15 @@ public class AnalysisCommands extends AbstractCommands {
 	 * @param chimera the Chimera object
 	 * @param result the CyCommandResult
 	 * @param specList the specList we're looking to find clashes between
-	 * @param continuous the continuous flag
+	 * @param limit the limits on the detection
+	 * @param intermodel whether to find H-bonds between models
+	 * @param intramodel whether to find H-bonds within models
 	 * @return the updated CyCommandResult
 	 */
 	static public CyCommandResult findHBondsSpecList(Chimera chimera, CyCommandResult result, 
-	                                            List<ChimeraStructuralObject>specList) { 
+	                                                 List<ChimeraStructuralObject>specList, String limit,
+	                                                 boolean intermodel, boolean intramodel)
+	                                                 throws CyCommandException {
 		String atomSpec = "";
 		for (ChimeraStructuralObject cso: specList) {
 			if (atomSpec.length() == 0)
@@ -138,7 +148,12 @@ public class AnalysisCommands extends AbstractCommands {
 			else
 				atomSpec += ","+cso.toSpec();
 		}
-		List<String> c = AnalysisActions.findHBondAction(chimera, atomSpec);
+		// Make sure we have a "legal" limit
+		if (limit != null) {
+			if (!limit.equals("cross") && !limit.equals("both") && !limit.equals("any"))
+				throw new CyCommandException("limit argument must be one of 'cross' or 'both' or 'any'");
+		}
+		List<String> c = AnalysisActions.findHBondAction(chimera, atomSpec, limit, intermodel, intramodel);
 		return addReplies(result, c, "Finding HBonds for "+atomSpec);
 	}
 

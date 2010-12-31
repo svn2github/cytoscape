@@ -62,22 +62,23 @@ enum Command {
   ALIGNCHAINS("align chains", 
 	            "Perform sequence-driven structural superposition on a group of structures by chain", 
 	            "referencechain|chainlist|showsequences=false|createedges=false|assignattributes=true"),
-	CLEARCLASHES("clear clashes", "Clear clashes", ""),
-	CLEARHBONDS("clear hbonds", "Clear hydrogen bonds", ""),
-	CLEARSELECT("clear selection", "Clear all selection", ""),
+	CLEARCLASHES("clear clashes", "Clear clashes", null),
+	CLEARHBONDS("clear hbonds", "Clear hydrogen bonds", null),
+	CLEARSELECT("clear selection", "Clear all selection", null),
 	CLOSE("close", "Close some or all of the currently opened structures","structurelist=selected"),
 	COLOR("color", "Color part of all of a structure",
 	               "preset|residues|labels|ribbons|surfaces|structurelist|atomspec"),
 	DEPICT("depict", "Change the depiction of a structure",
 	                 "preset|style|ribbonstyle|surfacestyle|transparency|structurelist|atomspec=selected"),
-	EXIT("exit", "Exit Chimera",""),
+	EXIT("exit", "Exit Chimera",null),
 	FINDCLASHES("find clashes", "Find clashes between two models or parts of models","structurelist|atomspec=selected|continuous"),
-	FINDHBONDS("find hbonds", "Find hydrogen bonds between two models or parts of models","structurelist|atomspec=selected"),
+	FINDHBONDS("find hbonds", "Find hydrogen bonds between two models or parts of models",
+	           "structurelist|atomspec=selected|limit=any|intramodel=true|intermodel=true"),
 	FOCUS("focus", "Focus on a structure or part of a structure","structurelist|atomspec"),
 	HIDE("hide", "Hide parts of a structure", "structurelist|atomspec=selected|structuretype"),
 	LISTCHAINS("list chains", "List the chains in a structure", "structurelist=all"), 
 	LISTRES("list residues", "List the residues in a structure", "structurelist=all|chain"),
-	LISTSTRUCTURES("list structures", "List all of the open structures",""),
+	LISTSTRUCTURES("list structures", "List all of the open structures",null),
 	MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),
 	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodelist|showdialog=false"),
 	RAINBOW("rainbow", "Color part of all of a structure in a rainbow scheme",
@@ -117,7 +118,10 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 	public static final String CHAINLIST = "chainlist";
 	public static final String CONTINUOUS = "continuous";
 	public static final String CREATEEDGES = "createedges";
+	public static final String INTERMODEL = "intermodel";
+	public static final String INTRAMODEL = "intramodel";
 	public static final String LABELS = "labels";
+	public static final String LIMIT = "limit";
 	public static final String MODELLIST = "modellist";
 	public static final String NODELIST = "nodelist";
 	public static final String PRESET = "preset";
@@ -311,16 +315,20 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 				result = AnalysisCommands.findClashesSpecList(chimera, result, specList, continuous);
 			}
 		//
-		// FINDHBONDS("find hbonds", "Find hydrogen bonds between two models or parts of models","structurelist|atomspec=selected"),
+		// FINDHBONDS("find hbonds", "Find hydrogen bonds between two models or parts of models",
+	  //            "structurelist|atomspec=selected|limit=any|intramodel=true|intermodel=true"),
+		// 
 		//
 		} else if (Command.FINDHBONDS.equals(command)) {
-			String continuous = getArg(command, CONTINUOUS, args);
+			String limit = getArg(command,LIMIT, args);
+			boolean intermodel = getBooleanArg(command,INTERMODEL, args);
+			boolean intramodel = getBooleanArg(command,INTRAMODEL, args);
 			if (structureList != null) {
-				result = AnalysisCommands.findHBondsStructure(chimera, result, structureList);
+				result = AnalysisCommands.findHBondsStructure(chimera, result, structureList, limit, intermodel, intramodel);
 			} else  {
 				String atomSpec = getArg(command,ATOMSPEC, args);
 				List<ChimeraStructuralObject> specList = CommandUtils.getSpecList(atomSpec,chimera);
-				result = AnalysisCommands.findHBondsSpecList(chimera, result, specList);
+				result = AnalysisCommands.findHBondsSpecList(chimera, result, specList, limit, intermodel, intramodel);
 			}
 
 		//

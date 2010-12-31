@@ -410,7 +410,11 @@ public class ModelNavigatorDialog
 		chimeraMenu.add(clashMenu);
 
 		JMenu hBondMenu = new JMenu("Hydrogen bond detection");
-		addMenuItem(hBondMenu, "Find hydrogen bonds", FINDHBOND, "findhbond sel any");
+		JMenu fHBondMenu = new JMenu("Find hydrogen bonds");
+		addMenuItem(fHBondMenu, "Between models", FINDHBOND, "findhbond sel any intermodel true intramodel false");
+		addMenuItem(fHBondMenu, "Within models", FINDHBOND, "findhbond sel any intermodel false intramodel true");
+		addMenuItem(fHBondMenu, "Both", FINDHBOND, "findhbond sel any intermodel true intramodel true");
+		hBondMenu.add(fHBondMenu);
 		addMenuItem(hBondMenu, "Clear hydrogen bonds", COMMAND, "~findhbond");
 		chimeraMenu.add(hBondMenu);
 

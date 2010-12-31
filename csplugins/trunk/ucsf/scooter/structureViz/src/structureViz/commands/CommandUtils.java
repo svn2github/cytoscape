@@ -169,7 +169,7 @@ public class CommandUtils {
 				model = chimera.getChimeraModel(st.modelNumber());
 				spec = modelSpec[1];
 			}
-			if (spec.indexOf('.') > 0) {
+			if (spec.indexOf('.') >= 0) {
 				String[] chainSpec = spec.split("\\.",2);
 				// If we don't have a model at this point, then
 				// chainSpec[0] must be the model
@@ -181,8 +181,11 @@ public class CommandUtils {
 				} else {
 					// We already have a model, so chainSpec[0] is a residue-range
 					chain = model.getChain(chainSpec[1]);
-					// Get the residues
-					specList.addAll(chain.getResidueRange(chainSpec[0]));
+					if (chainSpec[0].length() > 0) {
+						// Get the residues
+						specList.addAll(chain.getResidueRange(chainSpec[0]));
+					} else
+						specList.add(chain);
 				}
 			} else {
 				// No chain spec
