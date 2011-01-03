@@ -44,11 +44,17 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
+import java.util.HashMap;
 
 public class VennDialog extends JDialog implements ActionListener, ItemListener {
 
 
 	private static final long serialVersionUID = 1554446356623443266L;
+
+	// So that we can display the title, but use the ID to lookup the network.
+	private static Map<String,String> titleIdMap = new HashMap<String,String>();
+
 	private String attrName;
 	private List<CyNetwork> networks;
 	private boolean printIntersection;
@@ -73,8 +79,10 @@ public class VennDialog extends JDialog implements ActionListener, ItemListener 
 		Set<CyNetwork> allNetworks = Cytoscape.getNetworkSet();
 		String[] allNames = new String[allNetworks.size()];
 		int i = 0;
-		for ( CyNetwork n : allNetworks )
+		for ( CyNetwork n : allNetworks ) {
+			titleIdMap.put( n.getTitle(), n.getIdentifier() );
 			allNames[i++] = n.getTitle();
+		}
 
 		Arrays.sort(allNames);
 
@@ -192,7 +200,7 @@ public class VennDialog extends JDialog implements ActionListener, ItemListener 
         if ("Select".equals(e.getActionCommand())) {
 			networks.clear();
 			for ( Object netName : netList.getSelectedValues() ) 
-				networks.add( Cytoscape.getNetwork( netName.toString() ) );
+				networks.add( Cytoscape.getNetwork( titleIdMap.get( netName.toString() ) ) );
 
 			if ( networks.size() < 2 ) {
 				boolean isMac = System.getProperty("os.name").startsWith("Mac");

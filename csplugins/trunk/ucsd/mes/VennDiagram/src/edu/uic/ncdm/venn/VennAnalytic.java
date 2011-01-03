@@ -40,12 +40,11 @@ public class VennAnalytic {
     private double maxArea;
     private int totalCount;
 
-	private CyLogger logger;
+    private static final CyLogger logger = CyLogger.getLogger(VennAnalytic.class);
 
     public VennAnalytic() {
         stepsize = .01;
         minStress = .000001;
-		logger = CyLogger.getLogger(VennAnalytic.class);
     }
 
     public VennDiagram compute(VennData vd) {
@@ -89,51 +88,51 @@ public class VennAnalytic {
         }
         double[] residuals = new double[nPolygons - 1];
         String[] residualLabels = new String[nPolygons - 1];
-		boolean[] warnings = new boolean[nPolygons -1];
-		double[][] luneCenters = new double[nPolygons -1][2];
+        boolean[] warnings = new boolean[nPolygons -1];
+        double[][] luneCenters = new double[nPolygons -1][2];
         double area = 0;
         int nonZero = 0;
         for (int i = 1; i < nPolygons; i++) {
             residuals[i - 1] = polyAreas[i] - polyHats[i];
             char[] c = encode(i);
             String s = "";
-			double numIntersecting = 0.0;
+            double numIntersecting = 0.0;
             for (int j = 0; j < c.length; j++) {
                 if (c[j] == '1') {
                     s += (circleLabels[j] + "&");
-					// record the centers of the circles
-					luneCenters[i-1][0] += centers[j][0];
-					luneCenters[i-1][1] += centers[j][1];
-					numIntersecting += 1.0;
-				}
+                    // record the centers of the circles
+                    luneCenters[i-1][0] += centers[j][0];
+                    luneCenters[i-1][1] += centers[j][1];
+                    numIntersecting += 1.0;
+                }
             }
 
-			// find the lune centers
-			if ( numIntersecting > 0 ) {
-				luneCenters[i-1][0] /= numIntersecting;
-				luneCenters[i-1][1] /= numIntersecting;
-			} 
+            // find the lune centers
+            if ( numIntersecting > 0 ) {
+                luneCenters[i-1][0] /= numIntersecting;
+                luneCenters[i-1][1] /= numIntersecting;
+            } 
 
             area += polyAreas[i];
-            if (residuals[i - 1] != 0) 
-                nonZero++;
-            s = s.substring(0, s.length() - 1);
-            residualLabels[i - 1] = s;
-			logger.info("Set name: " + residualLabels[i - 1] + "  residual: " + residuals[i-1] + " set area: " + polyAreas[i] + "  num members: " + polyData[i]); 
+//            if (residuals[i - 1] != 0) 
+//                nonZero++;
+//            s = s.substring(0, s.length() - 1);
+//            residualLabels[i - 1] = s;
+//            logger.info("Set name: " + residualLabels[i - 1] + "  residual: " + residuals[i-1] + " set area: " + polyAreas[i] + "  num members: " + polyData[i]); 
         }
-        double cut = area / nonZero;
-        for (int i = 0; i < residuals.length; i++) {
-            if (Math.abs(residuals[i]) > cut) {
-				logger.warn("OUTLIER!!   Set name: " + residualLabels[i] + "  residual: " + residuals[i]);
-				warnings[i] = true;
-			} else {
-				warnings[i] = false;
-			}
-        }
+//        double cut = area / nonZero;
+//        for (int i = 0; i < residuals.length; i++) {
+//            if (Math.abs(residuals[i]) > cut) {
+//                logger.warn("OUTLIER!!   Set name: " + residualLabels[i] + "  residual: " + residuals[i]);
+//                warnings[i] = true;
+//            } else {
+//                warnings[i] = false;
+//            }
+//        }
         logger.info("stress = " + stress + ", stress01 = " + stress01 + ", stress05 = " + stress05);
 
         return new VennDiagram(centers, diameters, polyAreas, residuals, circleLabels, residualLabels, colors, polyData, warnings, luneCenters, stress, stress01, stress05);
-	}
+    }
 
     private void processAreaData(String[][] data, double[] areas) {
         HashMap<String,Double> sets = new HashMap<String,Double>();
@@ -181,7 +180,7 @@ public class VennAnalytic {
     }
 
     private void processElementData(String[][] data) {
-		@SuppressWarnings("unchecked") 
+        @SuppressWarnings("unchecked") 
         HashMap<String,Double>[] categories = new HashMap[2];
         categories[0] = new HashMap<String,Double>();
         categories[1] = new HashMap<String,Double>();
@@ -338,8 +337,10 @@ public class VennAnalytic {
         }
 
         for (int i = 0; i < nCircles; i++) {
-            centers[i][0] = .5 + .25 * x[i][0] / (max[0] - min[0]);
-            centers[i][1] = .5 + .25 * x[i][1] / (max[1] - min[1]);
+//            centers[i][0] = .5 + .25 * x[i][0] / (max[0] - min[0]);
+//            centers[i][1] = .5 + .25 * x[i][1] / (max[1] - min[1]);
+            centers[i][0] = .5 + .25 * x[i][0];
+            centers[i][1] = .5 + .25 * x[i][1];
         }
     }
 
@@ -366,18 +367,18 @@ public class VennAnalytic {
                         continue;
                     s[j][k] += polyData[i];
                     s[k][j] = s[j][k];
+                    nIntersections++;
                 }
             }
         }
-        for (int j = 1; j < s.length; j++) {
+        for (int j = 0; j < nCircles; j++) {
+            s[j][j] = 0;
             for (int k = 0; k < j; k++) {
-                if (s[j][k] != 0)
-                    nIntersections++;
-                s[j][k] = -s[j][k];
+                s[j][k] = 1 - s[j][k] / (circleData[j] + circleData[k]);
                 s[k][j] = s[j][k];
             }
         }
-        if (nIntersections < nCircles)
+        if (nIntersections < 1)
             s = null;
         return s;
     }
