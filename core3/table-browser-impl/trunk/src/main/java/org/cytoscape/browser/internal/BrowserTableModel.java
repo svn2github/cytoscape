@@ -31,12 +31,14 @@ public class BrowserTableModel extends AbstractTableModel
 	implements ColumnCreatedListener, ColumnDeletedListener, RowCreatedMicroListener
 {
 	private static final int EOF = -1;
+	private static final int MAX_INITIALLY_VSIBLE_ATTRS = 10;
 	private final JTable table;
 	private final CyEventHelper eventHelper;
 	private final CyTable attrs;
 	private final EqnCompiler compiler;
 	private boolean tableHasBooleanSelected;
 	private Map<CyRow, RowSetMicroListenerProxy> rowToListenerProxyMap;
+	private List<AttrNameAndVisibility> attrNamesAndVisibilities;
 
 	public BrowserTableModel(final JTable table, final CyEventHelper eventHelper,
 				 final CyTable attrs, final EqnCompiler compiler)
@@ -53,6 +55,24 @@ public class BrowserTableModel extends AbstractTableModel
 		final List<CyRow> rows = attrs.getAllRows();
 		for (final CyRow row : rows)
 			rowToListenerProxyMap.put(row, new RowSetMicroListenerProxy(this, eventHelper, row));
+
+		initAttrNamesAndVisibilities();
+	}
+
+	private void initAttrNamesAndVisibilities() {
+		attrNamesAndVisibilities = new ArrayList<AttrNameAndVisibility>(attrs.getColumnTypeMap().size());
+		final String primaryKey = attrs.getPrimaryKey();
+		attrNamesAndVisibilities.add(new AttrNameAndVisibility(primaryKey, true));
+		int visibleColumnCount = 1;
+		boolean isVisible = true;
+		for (final String columnName : attrs.getColumnTypeMap().keySet()) {
+			if (columnName.equals(primaryKey))
+				continue;
+
+			attrNamesAndVisibilities.add(new AttrNameAndVisibility(columnName, isVisible));
+			if (++visibleColumnCount == MAX_INITIALLY_VSIBLE_ATTRS)
+				isVisible = false;
+		}
 	}
 
 	@Override
@@ -165,11 +185,13 @@ public class BrowserTableModel extends AbstractTableModel
 
 	@Override
 	public void handleEvent(final ColumnCreatedEvent e) {
+		attrNamesAndVisibilities.add(new AttrNameAndVisibility(e.getColumnName(), true));
 		fireTableStructureChanged();
 	}
 
 	@Override
 	public void handleEvent(final ColumnDeletedEvent e) {
+//		XXX
 		fireTableStructureChanged();
 	}
 
@@ -191,13 +213,15 @@ public class BrowserTableModel extends AbstractTableModel
 			return 0;
 
 		final Map<String, Class<?>> columnNameToTypeMap = attrs.getColumnTypeMap();
-		int index = 1;
-		for (final String name : columnNameToTypeMap.keySet()) {
-			if (name.equals(columnName))
+		int index = attrNamesAndVisibilities.get(0).isVisible() ? 1 : 0;
+		for (final AttrNameAndVisibility nameAndVisibility : attrNamesAndVisibilities) {
+			if (!nameAndVisibility.isVisible() || nameAndVisibility.getName().equals(primaryKey))
+				continue;
+
+			if (nameAndVisibility.getName().equals(columnName))
 				return index;
 
-			if (!name.equals(primaryKey))
-				++index;
+			++index;
 		}
 
 		throw new IllegalStateException("We should *never* get here!");
@@ -205,18 +229,18 @@ public class BrowserTableModel extends AbstractTableModel
 
 	private String mapColumnIndexToColumnName(final int index) {
 		final String primaryKey = attrs.getPrimaryKey();
-		if (index == 0)
+		final boolean primaryKeyIsVisible = attrNamesAndVisibilities.get(0).isVisible();
+		if (index == 0 && primaryKeyIsVisible)
 			return primaryKey;
 
-
 		final Map<String, Class<?>> columnNameToTypeMap = attrs.getColumnTypeMap();
-		int i = 1;
-		for (final String name : columnNameToTypeMap.keySet()) {
-			if (name.equals(primaryKey))
+		int i = primaryKeyIsVisible ? 1 : 0;
+		for (final AttrNameAndVisibility nameAndVisibility : attrNamesAndVisibilities) {
+			if (!nameAndVisibility.isVisible() || nameAndVisibility.getName().equals(primaryKey))
 				continue;
 
 			if (index == i)
-				return name;
+				return nameAndVisibility.getName();
 
 			++i;
 		}
@@ -690,5 +714,28 @@ class RowSetMicroListenerProxy implements RowSetMicroListener {
 
 	void cleanup() {
 		eventHelper.removeMicroListener(this, RowSetMicroListener.class, row);
+	}
+}
+
+
+class AttrNameAndVisibility {
+	private final String attrName;
+	private boolean isVisible;
+
+	AttrNameAndVisibility(final String attrName, final boolean isVisible) {
+		this.attrName = attrName;
+		this.isVisible = isVisible;
+	}
+
+	String getName() {
+		return attrName;
+	}
+
+	void setVisibility(final boolean isVisible) {
+		this.isVisible = isVisible;
+	}
+
+	boolean isVisible() {
+		return isVisible;
 	}
 }
