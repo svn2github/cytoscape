@@ -400,6 +400,13 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
+		<!-- network analyzer -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>network-analyzer-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
 		<!-- Required by plugin manager -->
 		<dependency>
 			<groupId>org.cytoscape.wrappers</groupId>
