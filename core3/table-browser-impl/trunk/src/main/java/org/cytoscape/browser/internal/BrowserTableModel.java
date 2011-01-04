@@ -3,7 +3,9 @@ package org.cytoscape.browser.internal;
 
 import java.io.IOException;
 import java.io.StringReader;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +75,45 @@ public class BrowserTableModel extends AbstractTableModel
 			if (++visibleColumnCount == MAX_INITIALLY_VSIBLE_ATTRS)
 				isVisible = false;
 		}
+	}
+
+	public CyTable getAttributes() { return attrs; }
+
+	// Note: return value excludes the primary key of the associated CyTable!
+	public List<String> getVisibleAttributeNames() {
+		final List<String> visibleAttrNames = new ArrayList<String>();
+
+		final String primaryKey = attrs.getPrimaryKey();
+		for (final AttrNameAndVisibility nameAndVisibility : attrNamesAndVisibilities) {
+			if (nameAndVisibility.isVisible())// && !nameAndVisibility.getName().equals(primaryKey))
+				visibleAttrNames.add(nameAndVisibility.getName());
+		}
+
+		return visibleAttrNames;
+	}
+
+	// Note: primary key visibility will not be affected by this, whether "visibleAttributes"
+	//       contains the primary key or not!
+	public void setVisibleAttributeNames(final Collection<String> visibleAttributes) {
+		boolean changed = false;
+		final String primaryKey = attrs.getPrimaryKey();
+		for (final AttrNameAndVisibility nameAndVisibility : attrNamesAndVisibilities) {
+			if (nameAndVisibility.getName().equals(primaryKey))
+				continue;
+
+			if (visibleAttributes.contains(nameAndVisibility.getName())) {
+				if (!nameAndVisibility.isVisible()) {
+					nameAndVisibility.setVisibility(true);
+					changed = true;
+				}
+			} else if (nameAndVisibility.isVisible()) {
+				nameAndVisibility.setVisibility(false);
+				changed = true;
+			}
+		}
+
+		if (changed)
+			fireTableStructureChanged();
 	}
 
 	@Override
@@ -191,7 +232,14 @@ public class BrowserTableModel extends AbstractTableModel
 
 	@Override
 	public void handleEvent(final ColumnDeletedEvent e) {
-//		XXX
+		final String columnName = e.getColumnName();
+		for (int i = 0; i < attrNamesAndVisibilities.size(); ++i) {
+			if (attrNamesAndVisibilities.get(i).getName().equals(columnName)) {
+				attrNamesAndVisibilities.remove(i);
+				break;
+			}
+		}
+
 		fireTableStructureChanged();
 	}
 

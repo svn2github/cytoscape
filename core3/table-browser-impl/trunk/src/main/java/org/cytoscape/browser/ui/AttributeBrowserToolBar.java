@@ -32,10 +32,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -60,16 +64,17 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import java.util.HashMap;
 
-import org.cytoscape.browser.internal.BrowserTable;
+import org.cytoscape.browser.internal.AttributeListModel;
+import org.cytoscape.browser.internal.BrowserTableModel;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.util.swing.CheckBoxJList;
 
 
 public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener {
 	private static final long serialVersionUID = -508393701912596399L;
 
-	private CyTable attrs;
-	private final JTable table;
+	private BrowserTableModel browserTableModel = null;
 	private String attributeType = null;
 	private List<String> orderedCol;
 
@@ -103,20 +108,25 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JButton matrixButton = null;
 	private JButton importButton = null;
 
+	private AttributeListModel attrListModel;
+
 //	private ModDialog modDialog;
 //	private FormulaBuilderDialog formulaBuilderDialog;
 
-	public AttributeBrowserToolBar(final BrowserTable table) {
-		this.table = table;
+	public AttributeBrowserToolBar(final CyServiceRegistrar serviceRegistrar) {
 		this.orderedCol = orderedCol;
+		this.attrListModel = new AttributeListModel(null);
+		serviceRegistrar.registerAllServices(attrListModel, new Properties());
 
 		initializeGUI();
 	}
 
-	public void setAttrs(final CyTable attrs) {
-		this.attrs = attrs;
-		createNewAttributeButton.setEnabled(attrs != null);
-		deleteAttributeButton.setEnabled(attrs != null);
+	public void setBrowserTableModel(final BrowserTableModel browserTableModel) {
+		this.browserTableModel = browserTableModel;
+		attrListModel.setBrowserTableModel(browserTableModel);
+		selectButton.setEnabled(browserTableModel != null);
+		createNewAttributeButton.setEnabled(browserTableModel != null);
+		deleteAttributeButton.setEnabled(browserTableModel != null);
 	}
 
 	private void initializeGUI() {
@@ -125,7 +135,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		this.setPreferredSize(new Dimension(210, 32));
 		this.add(getJToolBar(), java.awt.BorderLayout.CENTER);
 
-//		getAttributeSelectionPopupMenu();
+		getAttributeSelectionPopupMenu();
 		getJPopupMenu();
 
 //		modDialog = new ModDialog(tableModel, objectType, Cytoscape.getDesktop());
@@ -149,7 +159,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JPopupMenu getAttributeSelectionPopupMenu() {
 		if (attributeSelectionPopupMenu == null) {
 			attributeSelectionPopupMenu = new JPopupMenu();
-//			attributeSelectionPopupMenu.add(getJScrollPane());
+			attributeSelectionPopupMenu.add(getJScrollPane());
 			attributeSelectionPopupMenu.addPopupMenuListener(this);
 		}
 
@@ -161,7 +171,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	 *
 	 * @return javax.swing.JScrollPane
 	 */
-/*	private JScrollPane getJScrollPane() {
+	private JScrollPane getJScrollPane() {
 		if (jScrollPane == null) {
 			jScrollPane = new JScrollPane();
 			jScrollPane.setPreferredSize(new Dimension(600, 300));
@@ -170,7 +180,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 		return jScrollPane;
 	}
-*/
 
 	/**
 	 * This method initializes jPopupMenu
@@ -411,9 +420,9 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 							   .addGroup(buttonBarLayout.createSequentialGroup()
 								.addPreferredGap(ComponentPlacement.RELATED)
 
-/*								.addComponent(getSelectButton())
+								.addComponent(getSelectButton())
 								.addPreferredGap(ComponentPlacement.RELATED)
-*/
+
 								.addComponent(getNewButton())
 								.addPreferredGap(ComponentPlacement.RELATED)
 /*								.add(getSelectAllButton())
@@ -445,12 +454,11 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 								.addComponent(getMatrixButton())
 								.addPreferredGap(ComponentPlacement.RELATED)*/));
 			buttonBarLayout.setVerticalGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-/*							 .addComponent(selectButton,
+							 .addComponent(selectButton,
 								       javax.swing.GroupLayout.Alignment.CENTER,
 								       javax.swing.GroupLayout.PREFERRED_SIZE,
 								       27,
 								       javax.swing.GroupLayout.PREFERRED_SIZE)
-*/
 							 .addComponent(createNewAttributeButton,
 								       javax.swing.GroupLayout.Alignment.CENTER,
 								       javax.swing.GroupLayout.DEFAULT_SIZE,
@@ -506,11 +514,14 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 			selectButton.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(java.awt.event.MouseEvent e) {
-						attributeList.setSelectedItems(orderedCol);
+						if (browserTableModel == null)
+							return;
+						attributeList.setSelectedItems(browserTableModel.getVisibleAttributeNames());
 						attributeSelectionPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 					}
 				});
 		}
+		selectButton.setEnabled(false);
 
 		return selectButton;
 	}
@@ -703,7 +714,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 						final List<String> emptyList = new ArrayList<String>();
 						updateList(emptyList);
 						try {
-							getUpdatedSelectedList();
+//							getUpdatedSelectedList();
 //							tableModel.setTableData(null, orderedCol);
 						} catch (Exception ex) {
 							attributeList.clearSelection();
@@ -719,18 +730,17 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		final String[] attrArray = getAttributeArray();
 
 		final JFrame frame = (JFrame)SwingUtilities.getRoot(this);
-		final DeletionDialog dDialog = new DeletionDialog(frame, attrs);
+		final DeletionDialog dDialog = new DeletionDialog(frame, browserTableModel.getAttributes());
 
 		dDialog.pack();
 		dDialog.setLocationRelativeTo(browserToolBar);
 		dDialog.setVisible(true);
 	}
 
-/*
 	private JList getSelectedAttributeList() {
 		if (attributeList == null) {
 			attributeList = new CheckBoxJList();
-			attributeList.setModel(attrModel);
+			attributeList.setModel(attrListModel);
 			attributeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			attributeList.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
@@ -743,9 +753,9 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 		return attributeList;
 	}
-*/
 
 	private String[] getAttributeArray() {
+		final CyTable attrs = browserTableModel.getAttributes();
 		final String primaryKey = attrs.getPrimaryKey();
 		final Map<String, Class<?>> nameToTypeMap = attrs.getColumnTypeMap();
 		final String[] attributeArray = new String[nameToTypeMap.size() - 1];
@@ -776,7 +786,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			createNewAttributeButton.setIcon(new javax.swing.ImageIcon(getClass().getClassLoader().getResource("images/stock_new.png")));
 			createNewAttributeButton.addMouseListener(new java.awt.event.MouseAdapter() {
 					public void mouseClicked(java.awt.event.MouseEvent e) {
-						if (attrs != null)
+						if (browserTableModel != null)
 							jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 					}
 				});
@@ -806,6 +816,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			}
 		} while (newAttribName == null);
 
+		final CyTable attrs = browserTableModel.getAttributes();
 		if (type.equals("String"))
 			attrs.createColumn(newAttribName, String.class);
 		else if (type.equals("Floating Point"))
@@ -847,81 +858,18 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
 		// Update actual table
 		try {
-			getUpdatedSelectedList();
+			if (attributeList != null) {
+				final Object[] selectedValues = attributeList.getSelectedValues();
+				final Set<String> visibleAttributes = new HashSet<String>();
+				for (final Object selectedValue : selectedValues)
+					visibleAttributes.add((String)selectedValue);
 
-//			tableModel.setTableData(null, orderedCol);
+				browserTableModel.setVisibleAttributeNames(visibleAttributes);
+			}
 		} catch (Exception ex) {
 			attributeList.clearSelection();
 		}
 	}
-
-	public List<String> getUpdatedSelectedList() {
-/*
-		final Object[] selected = attributeList.getSelectedValues();
-
-		orderedCol.remove("ID");
-
-		// determine if orderedCol is ordered (drag and drop column may change the order)
-		boolean isColOrdered = true;
-		for (int i=0; i< orderedCol.size()-1; i++){
-			if (orderedCol.get(i).compareToIgnoreCase(orderedCol.get(i+1)) > 0){
-				isColOrdered = false;
-			}
-		}
-
-		if (isColOrdered){
-			// The original columns are in order, leave as is
-			orderedCol.clear();
-			for (Object colName : selected)
-				orderedCol.add(colName.toString());
-			return orderedCol;
-		}
-
-		// The original columns are out of order
-
-		// Determine the cols to be added
-		ArrayList<String> colsToBeAdded = new ArrayList<String>();
-		HashMap<String, String> hashMap_orig = new HashMap<String, String>();
-
-		for (int i=0; i< orderedCol.size(); i++){
-			hashMap_orig.put(orderedCol.get(i), null);
-		}
-
-		for (Object colName : selected) {
-			if (!hashMap_orig.containsKey(colName.toString())){
-				colsToBeAdded.add(colName.toString());
-			}
-		}
-
-		// Determine the cols to be deleted
-		HashMap<String, String> hashMap_new = new HashMap<String, String>();
-		ArrayList<String> colsToBeDeleted = new ArrayList<String>();
-
-		for (Object colName : selected) {
-			hashMap_new.put(colName.toString(), null);
-		}
-
-		for (int i=0; i< orderedCol.size(); i++){
-			if (!hashMap_new.containsKey(orderedCol.get(i))){
-				colsToBeDeleted.add(orderedCol.get(i));
-			}
-		}
-
-		// delete the cols to be deleted from orderedCol
-		for (int i=0; i< colsToBeDeleted.size(); i++){
-			orderedCol.remove(colsToBeDeleted.get(i));
-		}
-
-		// Append the new columns to the end
-		for (int i=0; i< colsToBeAdded.size(); i++){
-			orderedCol.add(colsToBeAdded.get(i));
-		}
-
-		return orderedCol;
-*/
-		return null;
-	}
-
 
 	public void updateList(List<String> newSelection) {
 		orderedCol = newSelection;

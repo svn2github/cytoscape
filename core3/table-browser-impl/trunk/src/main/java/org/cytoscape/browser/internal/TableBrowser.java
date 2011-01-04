@@ -44,7 +44,7 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 		this.eventHelper = eventHelper;
 		this.compiler = compiler;
 		this.browserTable = new BrowserTable();
-		this.attributeBrowserToolBar = new AttributeBrowserToolBar(browserTable);
+		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar);
 		this.setLayout(new BorderLayout());
 
 		browserTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -98,7 +98,7 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 			browserTable.setModel(browserTableModel);
 			browserTable.setRowSorter(new TableRowSorter(browserTableModel));
-			attributeBrowserToolBar.setAttrs(table);
+			attributeBrowserToolBar.setBrowserTableModel(browserTableModel);
 		}
 	}
 }
