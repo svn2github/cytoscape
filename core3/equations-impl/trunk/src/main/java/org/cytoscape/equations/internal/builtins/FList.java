@@ -56,7 +56,7 @@ public class FList extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns a list of floating point numbers."; }
 
-	public Class getReturnType() { return DoubleList.class; }
+	public Class<?> getReturnType() { return DoubleList.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

@@ -57,7 +57,7 @@ public class Median extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the median of a list of numbers."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

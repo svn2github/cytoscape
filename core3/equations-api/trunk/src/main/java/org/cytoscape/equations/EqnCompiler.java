@@ -39,7 +39,7 @@ public interface EqnCompiler {
 	 *  @param equation               a textual representation of an equation
 	 *  @param variableNameToTypeMap  a mapping from variable names occuring in "equation" to their respective types
 	 */
-	boolean compile(final String equation, final Map<String, Class> variableNameToTypeMap);
+	boolean compile(final String equation, final Map<String, Class<?>> variableNameToTypeMap);
 
 	/** Returns an error message for an error encountered during a call to compile, if any.
 	 *  @return a human readable error message
@@ -63,7 +63,7 @@ public interface EqnCompiler {
 	 *
 	 *  @return the error equation
 	 */
-	public Equation getErrorEquation(final String equation, final Class type, final String errorMessage);
+	public Equation getErrorEquation(final String equation, final Class<?> type, final String errorMessage);
 
 	/** Returns the parser which can be used for checking the sytax of equations.
 	 *  @return the parser used by the compiler

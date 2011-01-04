@@ -55,7 +55,7 @@ public class Sqrt extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Calculates the principal square root of a non-negative number."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

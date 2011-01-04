@@ -59,7 +59,7 @@ public class Largest extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the kth largest element of a list of numbers."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be a list followed by a numeric argument

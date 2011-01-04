@@ -55,7 +55,7 @@ public class Len extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the length of a string."; }
 
-	public Class getReturnType() { return Long.class; }
+	public Class<?> getReturnType() { return Long.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

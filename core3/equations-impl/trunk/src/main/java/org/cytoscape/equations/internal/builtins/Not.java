@@ -55,7 +55,7 @@ public class Not extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the logical negation of a boolean value."; }
 
-	public Class getReturnType() { return Boolean.class; }
+	public Class<?> getReturnType() { return Boolean.class; }
 
 	/**
 	 *  @param args the function arguments which must all be of type Boolean

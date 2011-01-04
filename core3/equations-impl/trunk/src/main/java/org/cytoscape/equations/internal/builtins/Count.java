@@ -56,7 +56,7 @@ public class Count extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the number of numeric values in a list."; }
 
-	public Class getReturnType() { return Long.class; }
+	public Class<?> getReturnType() { return Long.class; }
 
 	/**
 	 *  @param args the function arguments which can be anything

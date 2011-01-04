@@ -57,12 +57,12 @@ public interface EqnParser {
 	 *  @param attribNameToTypeMap  a list of existing attribute names and their types
 	 *  @return true if the parse succeeded otherwise false
 	 */
-	public boolean parse(final String eqn, final Map<String, Class> attribNameToTypeMap);
+	public boolean parse(final String eqn, final Map<String, Class<?>> attribNameToTypeMap);
 
 	/**
 	 *  @return the result type of the parsed equation if the parse succeeded, otherwise null
 	 */
-	public Class getType();
+	public Class<?> getType();
 
 	/**
 	 *  If parse() failed, this will return the last error messages.

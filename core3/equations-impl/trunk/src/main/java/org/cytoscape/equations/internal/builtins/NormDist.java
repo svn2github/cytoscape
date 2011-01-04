@@ -58,7 +58,7 @@ public class NormDist extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the Normal Probability Density Function or the Cumulative Normal Distribution Function."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

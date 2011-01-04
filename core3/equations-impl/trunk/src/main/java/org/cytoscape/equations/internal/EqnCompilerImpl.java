@@ -50,7 +50,7 @@ public class EqnCompilerImpl implements EqnCompiler {
 		this.parser = parser;
 	}
 
-	public boolean compile(final String equation, final Map<String, Class> variableNameToTypeMap) {
+	public boolean compile(final String equation, final Map<String, Class<?>> variableNameToTypeMap) {
 		this.equation = null;
 		this.errorMsg = null;
 
@@ -95,8 +95,8 @@ public class EqnCompilerImpl implements EqnCompiler {
 	 *  @param type          the return type of the error equation
 	 *  @param errorMessage  the runtime error message that the returned equation will produce
 	 */
-	public Equation getErrorEquation(final String equation, final Class type, final String errorMessage) {
-		final Map<String, Class> variableNameToTypeMap = new HashMap<String, Class>();
+	public Equation getErrorEquation(final String equation, final Class<?> type, final String errorMessage) {
+		final Map<String, Class<?>> variableNameToTypeMap = new HashMap<String, Class<?>>();
 		if (!compile("=ERROR(\"" + escapeQuotes(errorMessage) + "\")", variableNameToTypeMap))
 			throw new IllegalStateException("internal error in Equation.getErrorEquation().  This should *never* happen!");
 

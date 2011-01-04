@@ -58,7 +58,7 @@ public class ListToString extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Converts a list to a string, given a separator."; }
 
-	public Class getReturnType() { return String.class; }
+	public Class<?> getReturnType() { return String.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one object of type Double or Long

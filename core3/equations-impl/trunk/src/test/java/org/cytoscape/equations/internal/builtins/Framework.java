@@ -68,7 +68,7 @@ class Framework {
 	 *  @return true if the test compiled and ran and produced the expected result
 	 */
 	static boolean executeTest(final String equation, final Map<String, Object> variablesAndValues, final Object expectedResult) {
-		final Map<String, Class> varNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, Class<?>> varNameToTypeMap = new HashMap<String, Class<?>>();
 		for (final String variableName : variablesAndValues.keySet())
 			varNameToTypeMap.put(variableName, variablesAndValues.get(variableName).getClass());
 		
@@ -119,7 +119,7 @@ class Framework {
 	 *
 	 */
 	static boolean executeTestExpectFailure(final String equation, final Map<String, Object> variablesAndValues) {
-		final Map<String, Class> varNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, Class<?>> varNameToTypeMap = new HashMap<String, Class<?>>();
 		for (final String variableName : variablesAndValues.keySet())
 			varNameToTypeMap.put(variableName, variablesAndValues.get(variableName).getClass());
 		

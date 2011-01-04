@@ -56,7 +56,7 @@ public class Combin extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns of combinations of n objects, with k chosen at any one time."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

@@ -55,7 +55,7 @@ public class Min extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the minimum of a group of numbers."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

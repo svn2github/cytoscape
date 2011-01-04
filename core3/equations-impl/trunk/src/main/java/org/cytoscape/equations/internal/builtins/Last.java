@@ -57,7 +57,7 @@ public class Last extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the last entry in a list."; }
 
-	public Class getReturnType() { return Object.class; }
+	public Class<?> getReturnType() { return Object.class; }
 
 	/**
 	 *  @param args the function arguments which must be a single list

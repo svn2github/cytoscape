@@ -56,7 +56,7 @@ public class Abs extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the absolute value of a number."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one object of type Double or Long

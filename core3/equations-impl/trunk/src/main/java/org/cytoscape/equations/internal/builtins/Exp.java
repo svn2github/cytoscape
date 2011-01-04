@@ -54,7 +54,7 @@ public class Exp extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns e raised to a specified number."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be either object of type Double

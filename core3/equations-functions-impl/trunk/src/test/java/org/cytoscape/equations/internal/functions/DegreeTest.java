@@ -81,7 +81,7 @@ public class DegreeTest {
 	public void test() {
 		final EqnCompiler compiler = new EqnCompilerImpl(new EqnParserImpl());
 		compiler.getParser().registerFunction(new Degree(applicationManager, suidToNodeMapper));
-		final Map<String, Class> variableNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, Class<?>> variableNameToTypeMap = new HashMap<String, Class<?>>();
 		if (!compiler.compile("=DEGREE(101)", variableNameToTypeMap))
 			fail(compiler.getLastErrorMsg());
 		final Equation equation = compiler.getEquation();

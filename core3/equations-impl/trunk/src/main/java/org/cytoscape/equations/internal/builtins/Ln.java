@@ -55,7 +55,7 @@ public class Ln extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the natural logarithm of a number."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be one object of type Double

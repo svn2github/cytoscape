@@ -56,7 +56,7 @@ public class BList extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns a list of boolean values."; }
 
-	public Class getReturnType() { return BooleanList.class; }
+	public Class<?> getReturnType() { return BooleanList.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

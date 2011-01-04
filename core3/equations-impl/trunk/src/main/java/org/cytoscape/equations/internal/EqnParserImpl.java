@@ -50,7 +50,7 @@ public class EqnParserImpl implements EqnParser {
 	private Map<String, Function> nameToFunctionMap;
 	private String lastErrorMessage;
 	private Node parseTree;
-	private Map<String, Class> variableNameToTypeMap;
+	private Map<String, Class<?>> variableNameToTypeMap;
 	private Set<String> variableReferences;
 	private Set<Function> registeredFunctions;
 
@@ -90,7 +90,7 @@ public class EqnParserImpl implements EqnParser {
 	 *  @param variableNameToTypeMap  a list of existing variable names and their types
 	 *  @return true if the parse succeeded otherwise false
 	 */
-	public boolean parse(final String formula, final Map<String, Class> variableNameToTypeMap) {
+	public boolean parse(final String formula, final Map<String, Class<?>> variableNameToTypeMap) {
 		if (formula == null)
 			throw new NullPointerException("formula string must not be null!");
 		if (formula.length() < 1 || formula.charAt(0) != '=')
@@ -128,7 +128,7 @@ public class EqnParserImpl implements EqnParser {
 	/**
 	 *  @return the result type of the parsed formula if the parse succeeded, otherwise null
 	 */
-	public Class getType() { return parseTree == null ? null : parseTree.getType(); }
+	public Class<?> getType() { return parseTree == null ? null : parseTree.getType(); }
 
 	/**
 	 *  If parse() failed, this will return the last error messages.
@@ -239,7 +239,7 @@ public class EqnParserImpl implements EqnParser {
 			if (token != Token.IDENTIFIER)
 				throw new IllegalStateException(sourceLocation + ": identifier expected!");
 
-			final Class varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
+			final Class<?> varRefType = variableNameToTypeMap.get(tokeniser.getIdent());
 			if (varRefType == null)
 				throw new IllegalStateException(sourceLocation + ": unknown variable reference name: \""
 				                                + tokeniser.getIdent() + "\"!");
@@ -343,7 +343,7 @@ public class EqnParserImpl implements EqnParser {
 			                                + functionNameCandidate + "\"!");
 
 		// Parse the comma-separated argument list.
-		final ArrayList<Class> argTypes = new ArrayList<Class>();
+		final ArrayList<Class<?>> argTypes = new ArrayList<Class<?>>();
 		ArrayList<Node> args = new ArrayList<Node>();
 		int sourceLocation;
 		for (;;) {
@@ -363,7 +363,7 @@ public class EqnParserImpl implements EqnParser {
 				break;
 		}
 
-		final Class returnType = func.validateArgTypes(argTypes.toArray(new Class[argTypes.size()]));
+		final Class<?> returnType = func.validateArgTypes(argTypes.toArray(new Class<?>[argTypes.size()]));
 		if (returnType == null)
 			throw new IllegalStateException((openParenPos + 1) + ": invalid number or type of arguments in call to "
 			                                + functionNameCandidate + "()!");
@@ -388,7 +388,7 @@ public class EqnParserImpl implements EqnParser {
 
 		token = tokeniser.getToken();
 		int sourceLocation = tokeniser.getStartPos();
-		Class varRefType;
+		Class<?> varRefType;
 		if (token != Token.DOLLAR) {
 			if (token != Token.IDENTIFIER)
 				throw new IllegalStateException(sourceLocation + ": variable reference expected after \"DEFINED(\"!");

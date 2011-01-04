@@ -58,7 +58,7 @@ public class Nth extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the n-th entry in a list."; }
 
-	public Class getReturnType() { return Object.class; }
+	public Class<?> getReturnType() { return Object.class; }
 
 	/**
 	 *  @param args the function arguments which must be a list followed by a number

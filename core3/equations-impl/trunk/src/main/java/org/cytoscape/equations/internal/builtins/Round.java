@@ -56,7 +56,7 @@ public class Round extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Rounds a number to a specified number of decimal places."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

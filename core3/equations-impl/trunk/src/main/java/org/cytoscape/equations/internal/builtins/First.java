@@ -57,7 +57,7 @@ public class First extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the first entry in a list."; }
 
-	public Class getReturnType() { return Object.class; }
+	public Class<?> getReturnType() { return Object.class; }
 
 	/**
 	 *  @param args the function arguments which must be a single list

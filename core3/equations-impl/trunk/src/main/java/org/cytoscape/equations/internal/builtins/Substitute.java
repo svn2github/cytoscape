@@ -58,7 +58,7 @@ public class Substitute extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Replaces some text with other text."; }
 
-	public Class getReturnType() { return String.class; }
+	public Class<?> getReturnType() { return String.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type String

@@ -56,7 +56,7 @@ public class If extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns one of two alternatives based on a boolean value."; }
 
-	public Class getReturnType() { return Object.class; }
+	public Class<?> getReturnType() { return Object.class; }
 
 	/**
 	 *  @param args the function arguments

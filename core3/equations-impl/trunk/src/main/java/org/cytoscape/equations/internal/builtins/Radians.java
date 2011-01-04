@@ -55,7 +55,7 @@ public class Radians extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the value in radians converted from degrees."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one object of type Double or Long

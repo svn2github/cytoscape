@@ -57,7 +57,7 @@ public class Mid extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Selects a substring of some text."; }
 
-	public Class getReturnType() { return String.class; }
+	public Class<?> getReturnType() { return String.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

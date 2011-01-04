@@ -57,7 +57,7 @@ public class Mode extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the mode of a list of numbers."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be a list followed by a numeric argument

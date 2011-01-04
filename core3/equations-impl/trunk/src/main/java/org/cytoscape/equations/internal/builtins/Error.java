@@ -52,7 +52,7 @@ public class Error extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Throws an exception at runtime."; }
 
-	public Class getReturnType() { return Object.class; }
+	public Class<?> getReturnType() { return Object.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one object of type Double or Long

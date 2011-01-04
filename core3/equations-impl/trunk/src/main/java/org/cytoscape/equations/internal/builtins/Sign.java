@@ -55,7 +55,7 @@ public class Sign extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Implements the signum function.  Returns -1,0,+1 based on the number being negative, zero, or positive."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be one object of type Double, Long, Boolean or

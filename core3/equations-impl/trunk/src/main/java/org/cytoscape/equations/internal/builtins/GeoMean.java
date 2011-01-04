@@ -58,7 +58,7 @@ public class GeoMean extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the geometric mean of a set of numbers."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be a list followed by a numeric argument

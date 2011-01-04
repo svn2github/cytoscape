@@ -56,7 +56,7 @@ public class IList extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns a list of whole numbers (a.k.a. integers)."; }
 
-	public Class getReturnType() { return LongList.class; }
+	public Class<?> getReturnType() { return LongList.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

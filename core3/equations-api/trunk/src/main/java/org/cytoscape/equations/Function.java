@@ -64,7 +64,7 @@ public interface Function {
 	 *  Note, this is used by external tools used to filter a list of functions based on what a valid return type might be.
 	 *  In Cytoscape it is used in the attribute browser's formula builder.
 	 */
-	Class getReturnType();
+	Class<?> getReturnType();
 
 	/**
 	 *  @return the return type for this function (Double.cLass, String.class, or Boolean.class)
@@ -73,7 +73,7 @@ public interface Function {
 	 *  Note that this is different from getReturnType() in that it will never return the wildcard Object.class.
 	 *  It is used by the parser which knows the actual type of the arguments in any given call to this function.
 	 */
-	Class validateArgTypes(final Class[] argTypes);
+	Class<?> validateArgTypes(final Class<?>[] argTypes);
 
 	/**
 	 *  Used to invoke this function.
@@ -91,5 +91,5 @@ public interface Function {
 	 *  @return the set of arguments (must be a collection of String.class, Long.class, Double.class, Boolean.class and List.class) that are candidates for the next argument.  A null return indicates that no further arguments are valid.
 	 *  Please note that if the returned set contains a null, this indicates an optional additional argument.
 	 */
-	List<Class> getPossibleArgTypes(final Class[] leadingArgs);
+	List<Class<?>> getPossibleArgTypes(final Class<?>[] leadingArgs);
 }

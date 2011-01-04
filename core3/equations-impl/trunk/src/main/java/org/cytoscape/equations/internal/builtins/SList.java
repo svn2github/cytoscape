@@ -56,7 +56,7 @@ public class SList extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns a list of strings (a.k.a. text objects)."; }
 
-	public Class getReturnType() { return StringList.class; }
+	public Class<?> getReturnType() { return StringList.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

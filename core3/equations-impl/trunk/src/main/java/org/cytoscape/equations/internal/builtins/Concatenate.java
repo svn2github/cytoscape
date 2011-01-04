@@ -56,7 +56,7 @@ public class Concatenate extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns a string (a.k.a. text object)."; }
 
-	public Class getReturnType() { return String.class; }
+	public Class<?> getReturnType() { return String.class; }
 
 	/**
 	 *  @param args the function arguments which must be either one or two objects of type Double

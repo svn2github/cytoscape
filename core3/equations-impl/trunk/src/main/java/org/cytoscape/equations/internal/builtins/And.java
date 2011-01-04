@@ -55,7 +55,7 @@ public class And extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Returns the logical conjunction of any number of boolean values."; }
 
-	public Class getReturnType() { return Boolean.class; }
+	public Class<?> getReturnType() { return Boolean.class; }
 
 	/**
 	 *  @param args the function arguments which must all be of type Boolean

@@ -56,7 +56,7 @@ public class Mod extends AbstractFunction {
 	 */
 	public String getFunctionSummary() { return "Calculates the remainder of division."; }
 
-	public Class getReturnType() { return Double.class; }
+	public Class<?> getReturnType() { return Double.class; }
 
 	/**
 	 *  @param args the function arguments which must be two objects of type Double or Long

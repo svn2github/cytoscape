@@ -81,7 +81,7 @@ public class InDegreeTest {
 	public void test() {
 		final EqnCompiler compiler = new EqnCompilerImpl(new EqnParserImpl());
 		compiler.getParser().registerFunction(new InDegree(applicationManager, suidToNodeMapper));
-		final Map<String, Class> variableNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, Class<?>> variableNameToTypeMap = new HashMap<String, Class<?>>();
 		if (!compiler.compile("=INDEGREE(101)", variableNameToTypeMap))
 			fail(compiler.getLastErrorMsg());
 		final Equation equation = compiler.getEquation();

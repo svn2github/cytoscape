@@ -79,7 +79,7 @@ public class TargetIDTest {
 	public void test() {
 		final EqnCompiler compiler = new EqnCompilerImpl(new EqnParserImpl());
 		compiler.getParser().registerFunction(new TargetID(suidToEdgeMapper));
-		final Map<String, Class> variableNameToTypeMap = new HashMap<String, Class>();
+		final Map<String, Class<?>> variableNameToTypeMap = new HashMap<String, Class<?>>();
 		if (!compiler.compile("=TARGETID(11)", variableNameToTypeMap))
 			fail(compiler.getLastErrorMsg());
 		final Equation equation = compiler.getEquation();
