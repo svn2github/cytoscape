@@ -87,7 +87,7 @@ public class RestoreImageTask implements Task {
 
 	@Override
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		taskMonitor.setStatusMessage("Loding image library from local disk.\n\nPlease wait...");
+		taskMonitor.setStatusMessage("Loading image library from local disk.");
 		taskMonitor.setProgress(0.0);
 
 		final long startTime = System.currentTimeMillis();
