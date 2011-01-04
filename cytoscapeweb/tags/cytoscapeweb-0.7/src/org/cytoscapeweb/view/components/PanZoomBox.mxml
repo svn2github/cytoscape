@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  This file is part of Cytoscape Web.
+  Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+    - Agilent Technologies
+    - Institut Pasteur
+    - Institute for Systems Biology
+    - Memorial Sloan-Kettering Cancer Center
+    - National Center for Integrative Biomedical Informatics
+    - Unilever
+    - University of California San Diego
+    - University of California San Francisco
+    - University of Toronto
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-->
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"
+         xmlns:app="org.cytoscapeweb.view.components.*"
+         styleName="panZoomBox">
+
+<mx:Script>
+<![CDATA[
+    import org.cytoscapeweb.util.Utils;
+	import org.cytoscapeweb.model.methods.$;
+	import org.cytoscapeweb.view.components.slider.TrackSkin;
+	import org.cytoscapeweb.view.components.slider.ThumbSkin;
+	
+	public const ZOOM_FACTOR:Number = 10000;
+	
+	private function toolTipFormat(value:Number):String {
+	    var v:* = value < ZOOM_FACTOR ? Math.round(value*100)/ZOOM_FACTOR : Math.round(100*value/ZOOM_FACTOR);
+	    return $('zoom.slider.tooltip', v);
+	}
+	
+	public function get scale():Number {
+        return zoomSlider.value/ZOOM_FACTOR;
+    }
+    
+	public function set scale(value:Number):void {
+        zoomSlider.value = value*ZOOM_FACTOR;
+    }
+    
+	public function setZoomRange(min:Number, max:Number):void {
+	    if (max < min) max = min;
+	    min *= ZOOM_FACTOR;
+        max *= ZOOM_FACTOR;
+        
+        // Initial zoom value:
+        var value:Number = max > ZOOM_FACTOR ? ZOOM_FACTOR : max; // 100% unless max < 100%
+        
+        var tickValues:Array = [];
+        var t:Number = min;
+        
+        do {
+            tickValues.push(t);
+            t *= 2;
+        } while (t < value);
+        
+        t = value; // usually == 100%
+        
+        do {
+            tickValues.push(t);
+            t += (0.25 * ZOOM_FACTOR);
+        } while (t <= max);
+
+        trace("Zoom Slider | tickValues: " + tickValues);
+        
+        zoomSlider.minimum = min;
+        zoomSlider.maximum = max;
+        zoomSlider.tickValues = tickValues;
+        zoomSlider.value = value;
+    }
+]]>
+</mx:Script>
+
+    <mx:Grid styleName="panBox">
+        <mx:GridRow>
+            <mx:GridItem></mx:GridItem>
+            <mx:GridItem>
+                <mx:Button id="panUpButton" styleName="panUpButton" toolTip="{$('pan.up.tooltip')}"/>
+            </mx:GridItem>
+            <mx:GridItem></mx:GridItem>    
+        </mx:GridRow>
+        <mx:GridRow>
+            <mx:GridItem>
+                <mx:Button id="panLeftButton" styleName="panLeftButton" toolTip="{$('pan.left.tooltip')}"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Button id="panButton" styleName="panButton" toggle="true"
+                           toolTip="{$('pan.tooltip', Utils.isMacOS() ? 'Command' : 'Ctrl')}"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Button id="panRightButton" styleName="panRightButton" toolTip="{$('pan.right.tooltip')}"/>
+            </mx:GridItem>
+        </mx:GridRow>
+        <mx:GridRow>
+            <mx:GridItem></mx:GridItem>
+            <mx:GridItem>
+                <mx:Button id="panDownButton" styleName="panDownButton" toolTip="{$('pan.down.tooltip')}"/>
+            </mx:GridItem>
+            <mx:GridItem></mx:GridItem>    
+        </mx:GridRow>
+    </mx:Grid>
+    
+    <mx:Spacer width="4"/>
+    
+    <mx:Grid styleName="zoomBox">
+        <mx:GridRow>
+            <mx:GridItem verticalAlign="bottom">
+                <mx:Button id="zoomOutButton" styleName="zoomOutButton" toolTip="{$('zoom.out.tooltip')}"/>
+            </mx:GridItem>
+            <mx:GridItem verticalAlign="middle">
+                <mx:Button id="zoomFitButton" styleName="zoomFitButton" toolTip="{$('zoom.fit.tooltip')}"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Button id="zoomInButton" styleName="zoomInButton" toolTip="{$('zoom.in.tooltip')}"/>
+            </mx:GridItem>
+        </mx:GridRow>
+        <mx:GridRow>
+            <mx:GridItem colSpan="3">
+                <mx:HSlider id="zoomSlider" width="76"
+                            dataTipPrecision="0"
+                            snapInterval="1"
+                            liveDragging="true"
+                            tickLength="0"
+                            tickOffset="4"
+                            dataTipFormatFunction="toolTipFormat"
+                            trackSkin="{TrackSkin}"
+                            thumbSkin="{ThumbSkin}"/>
+            </mx:GridItem>
+        </mx:GridRow>
+    </mx:Grid>
+
+</mx:HBox>
