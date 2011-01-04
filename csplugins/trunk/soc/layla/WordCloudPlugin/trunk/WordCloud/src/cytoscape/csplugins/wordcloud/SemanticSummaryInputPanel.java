@@ -126,6 +126,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	//Checkbox
 	private JCheckBox numExclusion;
 	private JCheckBox useNetworkCounts;
+	private JCheckBox stemmer;
 	
 	//SliderBar
 	private SliderBarPanel sliderPanel;
@@ -282,6 +283,12 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		tokenizationPanel.setCollapsed(true);
 		
 		networkPanel.add(tokenizationPanel);
+		
+		//Stemmer Panel
+		CollapsiblePanel stemmingPanel = createStemmingPanel();
+		stemmingPanel.setCollapsed(true);
+		
+		networkPanel.add(stemmingPanel);
 		
 		//Add to collapsible panel
 		collapsiblePanel2.getContentPane().add(networkPanel, BorderLayout.NORTH);
@@ -735,6 +742,54 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		return collapsiblePanel;
 	}
 	
+	/**
+	 * Creates a CollapsiblePanel that holds the word stemming information.
+	 * @return CollapsiblePanel - word stemming panel interface.
+	 */
+	private CollapsiblePanel createStemmingPanel()
+	{
+		CollapsiblePanel collapsiblePanel = new CollapsiblePanel("Word Stemming");
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(0,1));
+		
+		StringBuffer buf = new StringBuffer();
+		
+		
+		//Word panel
+		JPanel wordPanel = new JPanel();
+		//wordPanel.setLayout(new GridBagLayout());
+		wordPanel.setLayout(new BorderLayout());
+		
+		//Create Checkbox
+		stemmer = new JCheckBox("Enable Stemming");
+		
+		buf = new StringBuffer();
+		buf.append("<html>" + "Causes all words to be stemmed using the Porter Stemmer algorithm." + "<br>");
+		buf.append("<b>Notice:</b> This will allow words with a similar stem to map to the same word." + "<br>");
+		buf.append("However, words stems may not be what you expect." + "</html>");
+		stemmer.setToolTipText(buf.toString());
+		stemmer.addActionListener(this);
+		stemmer.setSelected(false);
+		stemmer.setEnabled(false);
+		
+		//GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		//gridBagConstraints.gridx = 0;
+		//gridBagConstraints.gridy = 0;
+		//gridBagConstraints.gridwidth = 1;
+		//gridBagConstraints.anchor = GridBagConstraints.WEST;
+		//gridBagConstraints.insets = new Insets(5,0,0,0);
+		wordPanel.add(stemmer, BorderLayout.WEST);
+		
+		//Add components to main panel
+		panel.add(wordPanel);
+		
+		//Add to collapsible panel
+		collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
+		
+		return collapsiblePanel;
+	}
+	
 	
 	/**
 	 * Creates a CollapsiblePanel that holds the Cloud Layout information.
@@ -936,6 +991,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 			addWordButton.setEnabled(false);
 			numExclusion.setEnabled(false);
 			useNetworkCounts.setEnabled(false);
+			stemmer.setEnabled(false);
 			}
 		else
 		{
@@ -943,6 +999,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 			addWordButton.setEnabled(true);
 			numExclusion.setEnabled(true);
 			useNetworkCounts.setEnabled(true);
+			stemmer.setEnabled(true);
 		}
 		
 		CloudDisplayPanel displayPanel = SemanticSummaryManager.getInstance().getCloudWindow();
@@ -1182,6 +1239,16 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	}
 	
 	/**
+	 * Sets the stemming checkbox based on the current network.
+	 */
+	private void updateStemmingBox()
+	{
+		SemanticSummaryParameters networkParams = SemanticSummaryManager.getInstance().getCurNetwork();
+		boolean val = networkParams.getIsStemming();
+		stemmer.setSelected(val);
+	}
+	
+	/**
 	 * Refreshes everything in the input panel that is on the network level.
 	 */
 	public void refreshNetworkSettings()
@@ -1189,6 +1256,7 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 		this.refreshRemovalCMB();
 		this.updateNumExclusionBox();
 		this.updateDelimiterCMBs();
+		this.updateStemmingBox();
 	}
 	
 	
@@ -1586,6 +1654,18 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 					}
 				}//end collapse Network Normalization panel
 			}//end of useNetworkCounts
+			
+			if (_box == stemmer)
+			{
+				Boolean selected = stemmer.isSelected();
+				
+				//add value to networkParams and update
+				SemanticSummaryParameters networkParams = SemanticSummaryManager.getInstance().getCurNetwork();
+				networkParams.setIsStemming(selected);
+				
+				//Reset flags
+				networkParams.networkChanged();
+			}
 		}//end checkboxes
 	}
 	
@@ -1756,6 +1836,11 @@ public class SemanticSummaryInputPanel extends JPanel implements ItemListener,
 	public JButton getSaveCloudButton()
 	{
 		return saveCloudButton;
+	}
+	
+	public JCheckBox getStemmerCheckBox()
+	{
+		return stemmer;
 	}
 	
 	

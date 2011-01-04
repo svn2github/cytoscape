@@ -65,6 +65,9 @@ public class SemanticSummaryParameters
 	private WordFilter filter;
 	private WordDelimiters delimiters;
 	
+	//Stemming stuff
+	private boolean isStemming = false;
+	
 	//CONSTRUCTORS
 	
 	/**
@@ -114,6 +117,13 @@ public class SemanticSummaryParameters
 			nodeNameList.add(nodeName);
 		}
 		this.nodeList = nodeNameList;
+		
+		//Backwards compatible isStemming
+		String val = props.get("isStemming");
+		if (val == null)
+		{this.isStemming = false;}
+		else
+		{this.isStemming = Boolean.parseBoolean(props.get("isStemming"));}
 	}
 	
 	
@@ -220,6 +230,7 @@ public class SemanticSummaryParameters
 		}
 		
 		paramVariables.append("NodeList\t" + output.toString() + "\n");
+		paramVariables.append("isStemming\t" + isStemming + "\n");
 		
 		return paramVariables.toString();
 	}
@@ -388,6 +399,16 @@ public class SemanticSummaryParameters
 	public void setDelimiter(WordDelimiters aDelimiter)
 	{
 		delimiters = aDelimiter;
+	}
+	
+	public boolean getIsStemming()
+	{
+		return isStemming;
+	}
+	
+	public void setIsStemming(boolean val)
+	{
+		isStemming = val;
 	}
 	
 }

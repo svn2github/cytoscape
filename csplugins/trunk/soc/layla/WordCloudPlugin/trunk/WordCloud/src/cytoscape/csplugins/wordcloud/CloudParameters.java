@@ -1055,6 +1055,22 @@ public class CloudParameters implements Comparable<CloudParameters>
         while (token.hasMoreTokens())
         {
         	String a = token.nextToken();
+        	
+        	
+        	//Stem the word if parameter is set
+        	if (this.getNetworkParams().getIsStemming()) //Check for stemming
+        	{
+        		Stemmer stem = new Stemmer();
+        		for (int i = 0; i < a.length(); i++)
+        		{
+        			char ch = a.charAt(i);
+        			stem.add(ch);
+        		}
+        		stem.stem();
+        		a = stem.toString();
+        	}
+        	
+        	
         	if (!wordSet.contains(a))
         		wordSet.add(a);
         }
