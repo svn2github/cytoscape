@@ -63,6 +63,18 @@
       <data key="shape">VEE</data>
     </node>
  
+    <edge target="a05" source="a05" directed="false">
+      <data key="network">15</data>
+      <data key="weight">0.2</data>
+      <data key="label">a05 (15) a05</data>
+      <data key="lineStyle">SOLID</data>
+    </edge>
+    <edge target="a05" source="a05" directed="false">
+      <data key="network">25</data>
+      <data key="weight">0.4</data>
+      <data key="label">a05 (25) a05</data>
+      <data key="lineStyle">DOT</data>
+    </edge>
     <edge target="a01" source="a02" directed="true">
       <data key="network">25</data>
       <data key="weight">0.4</data>

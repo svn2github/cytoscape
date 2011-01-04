@@ -360,17 +360,9 @@ $(function(){
     
     // example graphs    
     var examples = {
-        reindeers: {
-	        name: "Reindeers",
-	        description: "Merry Christmas!",
-	        url: path("file/example_graphs/reindeers.xgmml"),
-	        visualStyleName: "Dark",
-	        visualStyle: GRAPH_STYLES["Images"],
-	        nodeLabelsVisible: true
-	    },
         shapes: {
             name: "Shapes example",
-            description: "A graph that contains all possible shapes for nodes and arrows",
+            description: "A graph that contains all available node and arrow shapes and all edge styles",
             url: path("file/example_graphs/sample1.graphml"),
             visualStyleName: "Shapes",
             visualStyle: GRAPH_STYLES["Shapes"],

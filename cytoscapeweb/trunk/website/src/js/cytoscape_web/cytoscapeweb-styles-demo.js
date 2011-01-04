@@ -277,13 +277,23 @@ $(function(){
 			            { attrValue: "delta", value: "#ff0000" },
 			            { attrValue: "diamond", value: "#aaaa00" },
 			            { attrValue: "circle", value: "#00ff00" } ];
+	var nodeImages = [ { attrValue: "ELLIPSE",  value: "/file/php/proxy.php?mimeType=image/gif&url=http://chart.apis.google.com/chart?chs=300x300%26cht=p%26chd=e0:U-gh..bR" },
+	               { attrValue: "OCTAGON", value: "/file/php/proxy.php?mimeType=image/gif&url=http://chart.apis.google.com/chart?chxt=x,y%26chs=300x300%26cht=r%26chco=FF0000%26chd=t:63,64,67,73,77,81,85,86,85,81,74,67,63%26chls=2,4,0%26chm=B,FF000080,0,0,0" },
+	               { attrValue: "RECTANGLE", value: "/file/php/proxy.php?mimeType=image/gif&url=http://chart.apis.google.com/chart?chxt=y%26chbh=a%26chs=250x250%26cht=bvs%26chco=A2C180,3D7930%26chds=5,100,-3.333,100%26chd=t:10,50,60,80,40,60,30|50,60,100,40,20,40,30" },
+	               { attrValue: "ROUNDRECT", value: "/file/php/proxy.php?mimeType=image/gif&url=http://chart.apis.google.com/chart?chxr=0,0,160%26chxt=x%26chbh=a%26chs=250x250%26cht=bhs%26chco=4D89F9,C6D9FD%26chds=0,160,0,160%26chd=t:10,50,60,80,40,60,30|50,60,100,40,30,40,30" } ];
 	
 	GRAPH_STYLES["Shapes"] = {
 			nodes: {
+				size: 32,
 				selectionColor: "#aaaaff",
 				selectionOpacity: 1,
 				hoverOpacity: 1,
-        		image: "/file/php/proxy.php?mimeType=image/gif&url=http://chart.apis.google.com/chart?chs=300x300%26cht=p%26chd=e0:U-gh..bR",
+        		image: {
+					discreteMapper:  {
+						attrName: "shape",
+						entries: nodeImages
+					}
+				},
 				shape: { passthroughMapper: { attrName: "shape" } }
 			},
 			edges: {
@@ -297,6 +307,7 @@ $(function(){
 				sourceArrowColor: "#6666ff",
 				targetArrowShape: { passthroughMapper: { attrName: "targetArrowShape" } },
 				targetArrowColor: {
+					defaultValue: null,
 					discreteMapper:  {
 						attrName: "targetArrowShape",
 						entries: arrowColors
@@ -412,50 +423,6 @@ $(function(){
 				hoverOpacity: 1,
 				selectionOpacity: 1
 			}
-	};
-	
-	/*---- IMAGES ------------------------------------------------------------------------------------*/
-	
-	GRAPH_STYLES["Images"] = {
-		global: {
-			backgroundColor: "#ffffff",
-			selectionLineColor: "#ae0300",
-			selectionLineOpacity: 0.5,
-			selectionLineWidth: 1,
-			selectionFillColor: "#ae0300",
-			selectionFillOpacity: 0.1
-		},
-		nodes: {
-			opacity: 1,
-			size: 40,
-			labelFontColor: "#ffffff",
-			labelFontSize: 14,
-			labelFontWeight: "bold",
-			labelVerticalAnchor: "top",
-			tooltipText: "${label}",
-			tooltipFontColor: "#ffffff",
-			tooltipBackgroundColor: "#ae0300",
-			tooltipBorderColor: "#999999",
-			labelGlowColor: "#ae0300",
-			labelGlowOpacity: 0.8,
-			selectionGlowColor: "#ffff00",
-			selectionGlowOpacity: 0.5,
-			selectionGlowBlur: 32,
-			image: { passthroughMapper: { attrName: "image" } }
-		},
-		edges: {
-			opacity: 1,
-			color: "#ff0000",
-			width: 3,
-			mergeWidth: 3,
-			labelFontColor: "#ffffff",
-			tooltipFontColor: "#ffffff",
-			tooltipBackgroundColor: "#000000",
-			tooltipBorderColor: "#999999",
-			selectionGlowColor: "#ffffaa",
-			hoverOpacity: 1,
-			selectionOpacity: 1
-		}
 	};
 
 });
