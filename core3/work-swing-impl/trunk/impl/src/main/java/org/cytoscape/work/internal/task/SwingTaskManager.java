@@ -16,6 +16,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 
 import javax.swing.JPanel;
@@ -124,63 +125,99 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	}
 
 	@Override
-	public void execute(final TaskFactory factory) {
-		TaskIterator tryTaskIterator;
+	protected void execute(final TaskFactory factory, boolean wait) {
+		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(cancelExecutorService, owner);
+		TaskIterator taskIterator;
+		Task first; 
 
 		try {
-			if (tunableInterceptor.hasTunables(factory) && 
+			if ( tunableInterceptor.hasTunables(factory) && 
 			    !tunableInterceptor.validateAndWriteBackTunables(factory))
 				throw new IllegalArgumentException("Tunables are not valid");
 
-			tryTaskIterator = factory.getTaskIterator();
+			taskIterator = factory.getTaskIterator();
+		
+			// Get the first task and display its tunables.  This is a bit of a hack.  
+			// We do this outside of the thread so that the task monitor only gets
+			// displayed AFTER the first tunables dialog gets displayed.
+			first = taskIterator.next();
+			if (!displayTunables(first))
+				return;
+
 		} catch (Exception exception) {
-			tryTaskIterator = null;
+			taskIterator = null;
 			logger.warn("Caught exception getting and validating task. ", exception);	
-			new SwingTaskMonitor(cancelExecutorService, owner).showException(exception);
+			taskMonitor.showException(exception);
 			return;
 		}
 
-		final TaskIterator taskIterator = tryTaskIterator;
+		// create the task thread
+		final Runnable executor = new TaskThread(first,taskMonitor,taskIterator); 
 
-		taskMonitor = null;
-		final Runnable executor = new Runnable() {
+		// submit the task thread for execution
+		final Future<?> executorFuture = taskExecutorService.submit(executor);
+
+		// open the task monitor 
+		openTaskMonitorOnDelay(taskMonitor,executorFuture);
+
+		// wait (possibly forever) to return if instructed
+		if ( wait )
+			// TODO - do we want a failsafe timeout here?
+			try { executorFuture.get(); } catch (Exception e) {}
+    }
+
+	// This creates a thread on delay that conditionally displays the task monitor gui
+	// if the task thread has not yet finished.
+	private void openTaskMonitorOnDelay(final SwingTaskMonitor taskMonitor, final Future<?> executorFuture) {
+		final Runnable timedOpen = new Runnable() {
 			public void run() {
-				try {
-					while (taskIterator.hasNext()) {
-						final Task task = taskIterator.next();
-
-						if (!displayTunables(task))
-							return;
-
-						if (taskMonitor == null) {
-							taskMonitor = new SwingTaskMonitor(cancelExecutorService, owner);
-
-							final Future<?> executorFuture = taskExecutorService.submit(this);
-							final Runnable timedOpen = new Runnable() {
-									public void run() {
-										if (!(executorFuture.isDone() || executorFuture.isCancelled()))
-											taskMonitor.open();
-									}
-								};
-							timedDialogExecutorService.schedule(timedOpen, DELAY_BEFORE_SHOWING_DIALOG, DELAY_TIMEUNIT);
-						}
-
-						task.run(taskMonitor);
-						if (taskMonitor.cancelled())
-							break;
-					}
-				} catch (Exception exception) {
-					logger.warn("Caught exception executing task. ", exception);	
-					if (taskMonitor == null) 
-						taskMonitor = new SwingTaskMonitor(cancelExecutorService, owner);
-					taskMonitor.showException(exception);
-				}
-				if (taskMonitor != null && taskMonitor.isOpened() && !taskMonitor.isShowingException())
-					taskMonitor.close();
+				if (!(executorFuture.isDone() || executorFuture.isCancelled()))
+					taskMonitor.open();
 			}
 		};
+		timedDialogExecutorService.schedule(timedOpen, DELAY_BEFORE_SHOWING_DIALOG, DELAY_TIMEUNIT);
+	}
 
-		final Future<?> executorFuture = taskExecutorService.submit(executor);
+	// 
+	private class TaskThread implements Runnable {
+		private final SwingTaskMonitor taskMonitor;
+		private final TaskIterator taskIterator;
+		private final Task first;
+		TaskThread(final Task first, final SwingTaskMonitor tm, final TaskIterator ti) {
+			this.first = first;
+			this.taskMonitor = tm;
+			this.taskIterator = ti;
+		}
+		public void run() {
+			try {
+				// actually run the first task 
+				// don't dispaly the tunables here - they were handled above. 
+				first.run(taskMonitor);
+
+				if (taskMonitor.cancelled())
+					return;
+
+				// now execute all subsequent tasks
+				while (taskIterator.hasNext()) {
+					final Task task = taskIterator.next();
+
+					if (!displayTunables(task))
+						return;
+
+					task.run(taskMonitor);
+
+					if (taskMonitor.cancelled())
+						break;
+				}
+			} catch (Exception exception) {
+				logger.warn("Caught exception executing task. ", exception);	
+				taskMonitor.showException(exception);
+			}
+
+			// clean up the task monitor
+			if (taskMonitor.isOpened() && !taskMonitor.isShowingException())
+				taskMonitor.close();
+		}
 	}
 
 	private boolean displayTunables(final Task task) {
@@ -201,95 +238,3 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	}
 }
 
-
-class SwingTaskMonitor implements TaskMonitor {
-	private Task task;
-	final private ExecutorService cancelExecutorService;
-	final private Frame owner;
-
-	private boolean cancelled = false;
-	private TaskDialog dialog = null;
-	private String title = null;
-	private String statusMessage = null;
-	private int progress = 0;
-
-	public SwingTaskMonitor(final ExecutorService cancelExecutorService, final Frame owner) {
-		this.cancelExecutorService = cancelExecutorService;
-		this.owner = owner;
-	}
-
-	public void setTask(final Task newTask) {
-		this.task = newTask;
-	}
-
-	public synchronized void open() {
-		if (dialog != null)
-			return;
-
-		dialog = new TaskDialog(owner, this);
-		if (title != null)
-			dialog.setTaskTitle(title);
-		if (statusMessage != null)
-			dialog.setStatus(statusMessage);
-		if (progress > 0)
-			dialog.setPercentCompleted(progress);
-	}
-
-	public void close() {
-		if (dialog != null) {
-			dialog.dispose();
-			dialog = null;
-		}
-	}
-
-	public void cancel() {
-		// we issue the Task's cancel method in its own thread
-		// to prevent Swing from freezing if the Tasks's cancel
-		// method takes too long to finish
-		Runnable cancel = new Runnable() {
-			public void run() {
-				task.cancel();
-			}
-		};
-		cancelExecutorService.submit(cancel);
-		cancelled = true;
-	}
-
-	public boolean cancelled() {
-		return cancelled;
-	}
-
-	public void setTitle(final String title) {
-		this.title = title;
-		if (dialog != null)
-			dialog.setTaskTitle(title);
-	}
-
-	public void setStatusMessage(String statusMessage) {
-		this.statusMessage = statusMessage;
-		if (dialog != null)
-			dialog.setStatus(statusMessage);
-	}
-
-	public void setProgress(double progress) {
-		this.progress = (int) Math.floor(progress * 100);
-		if (dialog != null)
-			dialog.setPercentCompleted(this.progress);
-	}
-
-	public synchronized void showException(Exception exception) {
-		// force the dialog box to be created if
-		// the Task throws an exception
-		if (dialog == null)
-			open();
-		dialog.setException(exception, "The task could not be completed because an error has occurred.");
-	}
-
-	public boolean isShowingException() {
-		return dialog.errorOccurred();
-	}
-
-	public boolean isOpened() {
-		return dialog != null;
-	}
-}
