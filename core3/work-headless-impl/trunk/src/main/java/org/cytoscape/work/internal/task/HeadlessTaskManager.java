@@ -4,6 +4,10 @@ package org.cytoscape.work.internal.task;
 import java.io.PrintStream;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 
 import org.cytoscape.work.AbstractTaskManager;
 import org.cytoscape.work.Task;
@@ -28,11 +32,12 @@ import org.cytoscape.work.TunableInterceptor;
  */
 public class HeadlessTaskManager extends AbstractTaskManager {
 	private final PrintStream output;
+	private final ExecutorService taskExecutorService;
 
 	public HeadlessTaskManager(final PrintStream output, final TunableInterceptor tunableInterceptor) {
 		super(tunableInterceptor);
-
 		this.output = output;
+		this.taskExecutorService = Executors.newCachedThreadPool();
 	}
 
 	/**
@@ -43,7 +48,7 @@ public class HeadlessTaskManager extends AbstractTaskManager {
 	}
 
 	@Override
-	public void execute(final TaskFactory factory) {
+	protected void execute(final TaskFactory factory, boolean wait) {
 		final TaskIterator taskIterator = factory.getTaskIterator();
 		final Timer timer = new Timer();
 		final ConsoleTaskMonitor taskMonitor = new ConsoleTaskMonitor(timer);
@@ -72,8 +77,10 @@ public class HeadlessTaskManager extends AbstractTaskManager {
 			}
 		};
 
-		Thread thread = new Thread(runnable);
-		thread.start();
+		Future<?> future = taskExecutorService.submit(runnable);	
+
+		if ( wait )
+			try { future.get(); } catch (Exception e) {}
 	}
 
 	class ConsoleTaskMonitor implements TaskMonitor
