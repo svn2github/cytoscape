@@ -110,7 +110,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 	private AttributeListModel attrListModel;
 
-//	private ModDialog modDialog;
 	private FormulaBuilderDialog formulaBuilderDialog;
 	private final EqnCompiler compiler;
 
@@ -143,9 +142,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 		getAttributeSelectionPopupMenu();
 		getJPopupMenu();
-
-//		modDialog = new ModDialog(tableModel, objectType, Cytoscape.getDesktop());
-//		attrModButton.setVisible(objectType != NETWORK);
 	}
 
 	/**
@@ -437,29 +433,11 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 								.addPreferredGap(ComponentPlacement.RELATED)
 								.addComponent(getDeleteButton())
-/*
-								.addPreferredGap(ComponentPlacement.RELATED,
-										 28,
-										 Short.MAX_VALUE)
-								.addComponent(getAttrModButton(),
-								     GroupLayout.PREFERRED_SIZE,
-								     28,
-								     GroupLayout.PREFERRED_SIZE)
-*/
 								.addPreferredGap(ComponentPlacement.RELATED)
 								.addComponent(getFunctionBuilderButton(),
 								     GroupLayout.PREFERRED_SIZE,
 								     28,
-								     GroupLayout.PREFERRED_SIZE)
-/*
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(getImportButton(),
-								     GroupLayout.PREFERRED_SIZE,
-								     28,
-								     GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(getMatrixButton())
-								.addPreferredGap(ComponentPlacement.RELATED)*/));
+								     GroupLayout.PREFERRED_SIZE)));
 			buttonBarLayout.setVerticalGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 							 .addComponent(selectButton,
 								       javax.swing.GroupLayout.Alignment.CENTER,
@@ -484,20 +462,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 								       javax.swing.GroupLayout.DEFAULT_SIZE,
 								       27, Short.MAX_VALUE)
 							 .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-/*
-							      .addComponent(matrixButton,
-								   javax.swing.GroupLayout.PREFERRED_SIZE,
-								   27,
-								   javax.swing.GroupLayout.PREFERRED_SIZE)
-							      .addComponent(importButton,
-								   javax.swing.GroupLayout.PREFERRED_SIZE,
-								   27,
-								   javax.swing.GroupLayout.PREFERRED_SIZE)
-							      .addComponent(attrModButton,
-								   javax.swing.GroupLayout.PREFERRED_SIZE,
-								   27,
-								   javax.swing.GroupLayout.PREFERRED_SIZE)
-*/
 							      .addComponent(formulaBuilderButton,
 								   javax.swing.GroupLayout.PREFERRED_SIZE,
 								   27,
@@ -532,62 +496,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		selectButton.setEnabled(false);
 
 		return selectButton;
-	}
-
-	private JButton getImportButton() {
-		if (importButton == null) {
-			importButton = new JButton();
-			importButton.setBorder(null);
-			importButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/stock_open.png")));
-			importButton.setToolTipText("Import attributes from file...");
-			importButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-			importButton.addMouseListener(new java.awt.event.MouseAdapter() {
-					public void mouseClicked(java.awt.event.MouseEvent e) {
-//						importAttributes();
-					}
-				});
-		}
-
-		return importButton;
-	}
-
-	private JButton getMatrixButton() {
-		if (matrixButton == null) {
-			matrixButton = new JButton();
-			matrixButton.setBorder(null);
-			matrixButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-			matrixButton.setIcon(new javax.swing.ImageIcon(getClass().getClassLoader().getResource("images/microarray_24.png")));
-			matrixButton.setToolTipText("Import Expression Matrix Data...");
-
-			matrixButton.addMouseListener(new java.awt.event.MouseAdapter() {
-					public void mouseClicked(java.awt.event.MouseEvent e) {
-//						importMatrix();
-					}
-				});
-		}
-
-		return matrixButton;
-	}
-
-	private JButton attrModButton = null;
-
-	private JButton getAttrModButton() {
-		if (attrModButton == null) {
-			attrModButton = new JButton();
-			attrModButton.setBorder(null);
-			attrModButton.setIcon(new javax.swing.ImageIcon(getClass().getClassLoader().getResource("images/stock_insert-columns.png")));
-			attrModButton.setToolTipText("Attribute Batch Editor");
-			attrModButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-
-			attrModButton.addMouseListener(new java.awt.event.MouseAdapter() {
-					public void mouseClicked(java.awt.event.MouseEvent e) {
-//						modDialog.setLocationRelativeTo(Cytoscape.getDesktop());
-//						modDialog.setVisible(true);
-					}
-				});
-		}
-
-		return attrModButton;
 	}
 
 	private JButton formulaBuilderButton = null;
@@ -651,30 +559,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private String getAttribName(final int cellRow, final int cellColumn) {
 		return browserTableModel.getColumnName(cellColumn);
 	}
-
-/*
-	protected void editMetadata() {
-		NetworkMetaDataDialog mdd = new NetworkMetaDataDialog(Cytoscape.getDesktop(), false,
-		                                                      Cytoscape.getCurrentNetwork());
-		mdd.setVisible(true);
-	}
-
-	protected void importAttributes() {
-		if (objectType == NODES) {
-			ImportNodeAttributesAction nodeAction = new ImportNodeAttributesAction();
-			nodeAction.actionPerformed(null);
-		} else if (objectType == EDGES) {
-			ImportEdgeAttributesAction edgeAction = new ImportEdgeAttributesAction();
-			edgeAction.actionPerformed(null);
-		} else { // case for Network
-		}
-	}
-
-	protected void importMatrix() {
-		ImportExpressionMatrixAction matrixAction = new ImportExpressionMatrixAction();
-		matrixAction.actionPerformed(null);
-	}
-*/
 
 	private JButton getDeleteButton() {
 		if (deleteAttributeButton == null) {
