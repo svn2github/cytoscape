@@ -50,7 +50,7 @@ public class CyRootNetworkCyNetworkTest extends AbstractCyNetworkTest {
 	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
-		net = TestCyNetworkFactory.getRootInstance(); 
+		net = TestCyNetworkFactory.getPublicRootInstance(); 
 	}
 
 	/**

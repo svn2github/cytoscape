@@ -55,7 +55,7 @@ public class CySubNetworkCyTableManagerTest extends AbstractCyTableManagerTest {
 		final Interpreter interpreter = new InterpreterImpl();
 		ArrayGraph baseNet =
 			new ArrayGraph(eh, mgrImpl,
-				       new CyTableFactoryImpl(eh, mgrImpl, interpreter));
+				       new CyTableFactoryImpl(eh, mgrImpl, interpreter), true);
 		// This is a different subnetwork and not "baseNetwork" in ArrayGraph.
 		goodNetwork = baseNet.addSubNetwork(); 
 	}

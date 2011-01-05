@@ -48,8 +48,8 @@ public class CySubNetworkTest extends AbstractCySubNetworkTest {
 	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
-		root = TestCyNetworkFactory.getRootInstance(); 
-		root2 = TestCyNetworkFactory.getRootInstance(); 
+		root = TestCyNetworkFactory.getPublicRootInstance(); 
+		root2 = TestCyNetworkFactory.getPublicRootInstance(); 
 	}
 
 	/**

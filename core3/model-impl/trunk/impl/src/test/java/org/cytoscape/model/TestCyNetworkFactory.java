@@ -42,25 +42,48 @@ import static org.junit.Assert.*;
 
 
 public class TestCyNetworkFactory {
-
-	public TestCyNetworkFactory() {};
+	public TestCyNetworkFactory() { }
 
 	public static CyNetwork getInstance() {
-		return getRootInstance().getBaseNetwork();
+		return getPublicRootInstance().getBaseNetwork();
 	}
 
-	public static CyRootNetwork getRootInstance() {	
+	public static CyNetwork getInstanceWithPrivateTables() {
+		return getPrivateRootInstance().getBaseNetwork();
+	}
+
+	public static CyRootNetwork getPublicRootInstance() {	
 		DummyCyEventHelper deh = new DummyCyEventHelper();
 		CyTableManagerImpl tm = new CyTableManagerImpl();
 		Interpreter interp = new InterpreterImpl();
-		ArrayGraph ar = new ArrayGraph(deh, tm, new CyTableFactoryImpl(deh, tm, interp));
+		ArrayGraph ar = new ArrayGraph(deh, tm, new CyTableFactoryImpl(deh, tm, interp), true);
+		return ar; 
+	}
+
+	public static CyRootNetwork getPrivateRootInstance() {	
+		DummyCyEventHelper deh = new DummyCyEventHelper();
+		CyTableManagerImpl tm = new CyTableManagerImpl();
+		Interpreter interp = new InterpreterImpl();
+		ArrayGraph ar = new ArrayGraph(deh, tm, new CyTableFactoryImpl(deh, tm, interp), false);
 		return ar; 
 	}
 	
 	@Test
-	public void testFactory() throws Exception {
+	public void testFactoryWithPublicNetwork() throws Exception {
 		CyNetwork n = getInstance();
 		assertNotNull(n);
+		assertTrue(n.getDefaultNetworkTable().isPublic());
+		assertTrue(n.getDefaultNodeTable().isPublic());
+		assertTrue(n.getDefaultEdgeTable().isPublic());
+	}
+	
+	@Test
+	public void testFactoryWithPrivateNetwork() throws Exception {
+		CyNetwork n = getInstanceWithPrivateTables();
+		assertNotNull(n);
+		assertFalse(n.getDefaultNetworkTable().isPublic());
+		assertFalse(n.getDefaultNodeTable().isPublic());
+		assertFalse(n.getDefaultEdgeTable().isPublic());
 	}
 }
 

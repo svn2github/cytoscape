@@ -86,13 +86,14 @@ public class ArrayGraph implements CyRootNetwork {
 	private final CySubNetwork base;
 
 	private final CyTableManagerImpl tableMgr;
-	
 
 	/**
 	 * Creates a new ArrayGraph object.
 	 * @param eh The CyEventHelper used for firing events.
 	 */
-	public ArrayGraph(final CyEventHelper eh, final CyTableManagerImpl tableMgr, final CyTableFactory tableFactory) {
+	public ArrayGraph(final CyEventHelper eh, final CyTableManagerImpl tableMgr,
+			  final CyTableFactory tableFactory, final boolean publicTables)
+	{
 		this.tableMgr = tableMgr;
 		suid = SUIDFactory.getNextSUID();
 		numSubNetworks = 0;
@@ -103,16 +104,20 @@ public class ArrayGraph implements CyRootNetwork {
 		edgePointers = new ArrayList<EdgePointer>();
 
 		netAttrMgr = new HashMap<String, CyTable>();
-		netAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " network", "SUID", Long.class, true));
-		netAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " network", "SUID", Long.class, false));
+		netAttrMgr.put(CyNetwork.DEFAULT_ATTRS,
+			       tableFactory.createTable(suid + " network", "SUID", Long.class, publicTables));
+		netAttrMgr.put(CyNetwork.HIDDEN_ATTRS,
+			       tableFactory.createTable(suid + " network", "SUID", Long.class, false));
 
 		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,String.class);
 		getCyRow().set(CyTableEntry.NAME,"");
 		// potential leak since "this" isn't yet fully constructed
 
 		nodeAttrMgr = new HashMap<String, CyTable>();
-		nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " node", "SUID", Long.class, true));
-		nodeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " node", "SUID", Long.class, false));
+		nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS,
+				tableFactory.createTable(suid + " node", "SUID", Long.class, publicTables));
+		nodeAttrMgr.put(CyNetwork.HIDDEN_ATTRS,
+				tableFactory.createTable(suid + " node", "SUID", Long.class, false));
 
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME, String.class);
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyNetwork.SELECTED, Boolean.class);
@@ -120,8 +125,10 @@ public class ArrayGraph implements CyRootNetwork {
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyNode.HAS_NESTED_NETWORK_ATTR, Boolean.class);
 
 		edgeAttrMgr = new HashMap<String, CyTable>();
-		edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, tableFactory.createTable( suid + " edge", "SUID", Long.class, true));
-		edgeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, tableFactory.createTable( suid + " edge", "SUID", Long.class, false));
+		edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS,
+				tableFactory.createTable(suid + " edge", "SUID", Long.class, publicTables));
+		edgeAttrMgr.put(CyNetwork.HIDDEN_ATTRS,
+				tableFactory.createTable(suid + " edge", "SUID", Long.class, false));
 
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME, String.class);
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyNetwork.SELECTED, Boolean.class);

@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -41,10 +34,15 @@ package org.cytoscape.model;
  * OSGi service.
  */
 public interface CyNetworkFactory {
-
 	/**
 	 * Returns a new, empty {@link CyNetwork} object. 
 	 * @return A new, empty {@link CyNetwork} object. 
 	 */
 	CyNetwork getInstance();
+
+	/**
+	 * Returns a new, empty {@link CyNetwork} object where the associated default tables are private. 
+	 * @return A new, empty {@link CyNetwork} object. 
+	 */
+	CyNetwork getInstanceWithPrivateTables();
 }

@@ -48,8 +48,8 @@ public class CyRootNetworkTest extends AbstractCyRootNetworkTest {
 	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
-		root = TestCyNetworkFactory.getRootInstance(); 
-		root2 = TestCyNetworkFactory.getRootInstance(); 
+		root = TestCyNetworkFactory.getPublicRootInstance(); 
+		root2 = TestCyNetworkFactory.getPublicRootInstance(); 
 	}
 
 	/**

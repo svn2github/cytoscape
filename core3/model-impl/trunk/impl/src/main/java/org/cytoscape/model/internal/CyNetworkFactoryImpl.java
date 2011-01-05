@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -34,6 +27,7 @@
 */
 package org.cytoscape.model.internal;
 
+
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -43,11 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-/**
- *
- */
 public class CyNetworkFactoryImpl implements CyNetworkFactory {
-	
 	private static final Logger logger = LoggerFactory.getLogger(CyNetworkFactoryImpl.class);
 	
 	private final CyEventHelper help;
@@ -59,7 +49,9 @@ public class CyNetworkFactoryImpl implements CyNetworkFactory {
 	 *
 	 * @param help An instance of CyEventHelper. 
 	 */
-	public CyNetworkFactoryImpl(final CyEventHelper help, final CyTableManagerImpl mgr, final CyTableFactory tableFactory) {
+	public CyNetworkFactoryImpl(final CyEventHelper help, final CyTableManagerImpl mgr,
+				    final CyTableFactory tableFactory)
+	{
 		if (help == null)
 			throw new NullPointerException("CyEventHelper is null");
 
@@ -77,10 +69,22 @@ public class CyNetworkFactoryImpl implements CyNetworkFactory {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public CyNetwork getInstance() {
-		ArrayGraph net = new ArrayGraph(help,mgr,tableFactory);
-		logger.info("CyNetwork created: ID = " +  net.getSUID());
-		logger.info("CyNetwork created: Base Graph ID = " +  net.getBaseNetwork().getSUID());
+		ArrayGraph net = new ArrayGraph(help, mgr, tableFactory, true);
+		logger.info("CyNetwork w/ public tables created: ID = " +  net.getSUID());
+		logger.info("CyNetwork w/ public tables created: Base Graph ID = " +  net.getBaseNetwork().getSUID());
+		return net.getBaseNetwork(); 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public CyNetwork getInstanceWithPrivateTables() {
+		ArrayGraph net = new ArrayGraph(help, mgr, tableFactory, false);
+		logger.info("CyNetwork w/ private tables created: ID = " +  net.getSUID());
+		logger.info("CyNetwork w/ private tables created: Base Graph ID = " +  net.getBaseNetwork().getSUID());
 		return net.getBaseNetwork(); 
 	}
 }
