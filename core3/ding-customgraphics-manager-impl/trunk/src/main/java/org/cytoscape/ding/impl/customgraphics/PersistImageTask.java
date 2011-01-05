@@ -85,12 +85,10 @@ public class PersistImageTask implements Task {
 		}
 
 		try {
-			synchronized(this) {
-				exService.shutdown();
-				exService.awaitTermination(TIMEOUT, TimeUnit.SECONDS);
-			}
+			exService.shutdown();
+			exService.awaitTermination(TIMEOUT, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			
+
 			e.printStackTrace();
 			throw e;
 		}
@@ -130,7 +128,7 @@ public class PersistImageTask implements Task {
 		public String call() throws Exception {
 
 			logger.debug("  Saving Image: " + fileName);
-			
+
 			if (!fileName.endsWith(".png"))
 				fileName += ".png";
 			File file = new File(imageHome, fileName);

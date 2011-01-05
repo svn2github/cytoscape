@@ -223,7 +223,7 @@ public final class CustomGraphicsManagerImpl implements CustomGraphicsManager, C
 		final PersistImageTaskFactory factory = new PersistImageTaskFactory(imageHomeDirectory, this);
 
 		try {
-			taskManager.execute(factory);
+			taskManager.executeAndWait(factory);
 		} catch (Exception e1) {
 			logger.error("Could not save images to disk.", e1);
 		}
