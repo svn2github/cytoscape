@@ -532,9 +532,30 @@ public class CyTableImpl implements CyTable {
 
 		if (vl instanceof Equation) {
 			final Object result = evalEquation((Equation)vl, key, columnName);
-			return type.cast(result);
+			return (T)convertEqnResultToColumnType(type, result);
 		} else
 			return type.cast(vl);
+	}
+
+	private Object convertEqnResultToColumnType(final Class<?> columnType, final Object result) {
+		final Class<?> resultType = result.getClass();
+		if (resultType == columnType)
+			return result;
+
+		if (columnType == String.class)
+			return result.toString();
+
+		if (columnType == Double.class && resultType == Long.class)
+			return (double)(Long)result;
+
+		if (columnType == Boolean.class && resultType == Long.class)
+			return (Long)result == 0 ? Boolean.FALSE : Boolean.TRUE;
+
+		if (columnType == Boolean.class && resultType == Double.class)
+			return (Double)result == 0.0 ? Boolean.FALSE : Boolean.TRUE;
+
+		throw new IllegalArgumentException("unexpected equation result type " + resultType
+						   + " for a column of type " + columnType + "!");
 	}
 
 	private Object getValue(Object key, String columnName) {
