@@ -12,6 +12,10 @@
 	<osgi:reference id="compilerServiceRef" interface="org.cytoscape.equations.EqnCompiler" />
 
 	<!-- listeners -->
-	<osgi:service id="tableBrowserCytoPanelComponentService" ref="tableBrowser"
-		interface="org.cytoscape.application.swing.CytoPanelComponent"/>
+	<osgi:service id="tableBrowserCytoPanelComponentService" ref="tableBrowser">
+                <osgi:interfaces>
+			<value>org.cytoscape.application.swing.CytoPanelComponent</value>
+                        <value>org.cytoscape.view.model.events.NetworkViewAddedListener</value>
+                </osgi:interfaces>
+	</osgi:service>
 </beans>

@@ -4,6 +4,8 @@ package org.cytoscape.browser.internal;
 import java.awt.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +28,7 @@ public class TableChooser extends JComboBox {
 
 
 class MyComboBoxModel extends DefaultComboBoxModel {
+	final static Comparator<CyTable> tableComparator = new TableComparator();
 	private final CyTableManager tableManager;
 	private List<CyTable> tables;
 	private Set<CyTable> oldSet;
@@ -36,6 +39,7 @@ class MyComboBoxModel extends DefaultComboBoxModel {
 		tables = new ArrayList<CyTable>(oldSet.size());
 		for (final CyTable table : oldSet)
 			tables.add(table);
+		Collections.sort(tables, tableComparator);
 	}
 
 	public int getSize() {
@@ -46,6 +50,7 @@ class MyComboBoxModel extends DefaultComboBoxModel {
 			tables = new ArrayList<CyTable>(tableSet.size());
 			for (final CyTable table : tableSet)
 				tables.add(table);
+			Collections.sort(tables, tableComparator);
 		}
 
 		return tables.size();
@@ -53,6 +58,21 @@ class MyComboBoxModel extends DefaultComboBoxModel {
 
 	public Object getElementAt(int index) {
 		return tables.get(index);
+	}
+
+	public void addAndSetSelectedItem(final CyTable table) {
+		if (!tables.contains(table)) {
+			tables.add(table);
+			Collections.sort(tables, tableComparator);
+		}
+		setSelectedItem(table);
+	}
+}
+
+
+class TableComparator implements Comparator<CyTable> {
+	public int compare(final CyTable table1, final CyTable table2) {
+		return table1.getTitle().compareTo(table2.getTitle());
 	}
 }
 

@@ -77,6 +77,8 @@ public class BrowserTableModel extends AbstractTableModel
 		}
 	}
 
+	public JTable getTable() { return table; }
+
 	public CyTable getAttributes() { return attrs; }
 
 	// Note: return value excludes the primary key of the associated CyTable!
@@ -316,15 +318,14 @@ public class BrowserTableModel extends AbstractTableModel
 		final Class<?> columnType = attrs.getType(columnName);
 
 		if (text.startsWith("=")) {
-			final Map<String, Class> variableNameToTypeMap = new HashMap<String, Class>();
+			final Map<String, Class<?>> variableNameToTypeMap = new HashMap<String, Class<?>>();
 			initVariableNameToTypeMap(variableNameToTypeMap);
 			if (compiler.compile(text, variableNameToTypeMap)) {
 				final Equation eqn = compiler.getEquation();
 				final Class<?> eqnType = eqn.getType();
 
 				// Is the equation type compatible with the column type?
-				if (eqnType == columnType
-				    || eqnType == Long.class && columnType == Integer.class) // Yes!
+				if (eqnTypeIsCompatible(columnType, eqnType))
 					row.set(columnName, eqn);
 				else { // The equation type is incompatible w/ the column type!
 					final Class<?> expectedType = columnType == Integer.class ? Long.class : columnType;
@@ -369,13 +370,28 @@ public class BrowserTableModel extends AbstractTableModel
 		}
 	}
 
+	private boolean eqnTypeIsCompatible(final Class<?> columnType, final Class<?> eqnType) {
+		if (columnType == eqnType)
+			return true;
+		if (columnType == String.class) // Anything can be trivially converted to a string.
+			return true;
+		if (columnType == Integer.class && eqnType == Long.class)
+			return true;
+		if (columnType == Double.class && eqnType == Long.class)
+			return true;
+		if (columnType == Boolean.class && (eqnType == Long.class || eqnType == Double.class))
+			return true;
+
+		return false;
+	}
+
 	private String getUnqualifiedName(final Class<?> type) {
 		final String typeName = type.getName();
 		final int lastDotPos = typeName.lastIndexOf('.');
 		return lastDotPos == -1 ? typeName : typeName.substring(lastDotPos + 1);
 	}
 
-	private void initVariableNameToTypeMap(final Map<String, Class> variableNameToTypeMap) {
+	private void initVariableNameToTypeMap(final Map<String, Class<?>> variableNameToTypeMap) {
 		final Map<String, Class<?>> columnNameToTypeMap = attrs.getColumnTypeMap();
 		for (final String columnName : columnNameToTypeMap.keySet()) {
 			final Class<?> columnType = columnNameToTypeMap.get(columnName);
@@ -730,6 +746,11 @@ public class BrowserTableModel extends AbstractTableModel
 		} catch (final IOException e) {
 			throw new IllegalStateException("This should *never* happen!");
 		}
+	}
+
+	@Override
+	public boolean isCellEditable(final int rowIndex, final int columnIndex) {
+		return table.convertColumnIndexToModel(columnIndex) != 0;
 	}
 
 	public void cleanup() {

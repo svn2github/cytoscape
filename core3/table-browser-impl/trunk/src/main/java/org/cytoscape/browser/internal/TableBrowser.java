@@ -23,16 +23,21 @@ import org.cytoscape.model.events.RowCreatedMicroListener;
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.view.model.events.NetworkViewAddedEvent;
+import org.cytoscape.view.model.events.NetworkViewAddedListener;
 
 
 @SuppressWarnings("serial")
-public class TableBrowser extends JPanel implements CytoPanelComponent, ActionListener {
+public class TableBrowser
+	extends JPanel implements CytoPanelComponent, ActionListener, NetworkViewAddedListener
+{
 	private final CyTableManager tableManager;
 	private final CyServiceRegistrar serviceRegistrar;
 	private final CyEventHelper eventHelper;
 	private final EqnCompiler compiler;
 	private final BrowserTable browserTable;
 	private final AttributeBrowserToolBar attributeBrowserToolBar;
+	private final TableChooser tableChooser;
 	private BrowserTableModel browserTableModel;
 	private CyTable currentTable;
 
@@ -44,12 +49,12 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 		this.eventHelper = eventHelper;
 		this.compiler = compiler;
 		this.browserTable = new BrowserTable();
-		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar);
+		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar, compiler);
 		this.setLayout(new BorderLayout());
 
 		browserTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-		final TableChooser tableChooser = new TableChooser(tableManager);
+		tableChooser = new TableChooser(tableManager);
 		tableChooser.addActionListener(this);
 		add(tableChooser, BorderLayout.SOUTH);
 		browserTable.getTableHeader().setBackground(Color.yellow);
@@ -75,7 +80,7 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 	 * Returns the title of the tab within the CytoPanel for this component.
 	 * @return the title of the tab within the CytoPanel for this component.
 	 */
-	public String getTitle() { return null; }
+	public String getTitle() { return "Attribute Browser"; }
 
 	/**
 	 * @return null
@@ -83,7 +88,6 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 	public Icon getIcon() { return null; }
 
 	public void actionPerformed(ActionEvent e) {
-		final TableChooser tableChooser = (TableChooser)e.getSource();
 		final CyTable table = (CyTable)tableChooser.getSelectedItem();
 		if (table != null && table != currentTable) {
 			if (browserTableModel != null) {
@@ -100,5 +104,11 @@ public class TableBrowser extends JPanel implements CytoPanelComponent, ActionLi
 			browserTable.setRowSorter(new TableRowSorter(browserTableModel));
 			attributeBrowserToolBar.setBrowserTableModel(browserTableModel);
 		}
+	}
+
+	public void handleEvent(NetworkViewAddedEvent e) {
+		final CyTable nodeTable = e.getNetworkView().getModel().getDefaultNodeTable();
+		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
+		comboBoxModel.addAndSetSelectedItem(nodeTable);
 	}
 }
