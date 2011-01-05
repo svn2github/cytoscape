@@ -60,12 +60,16 @@ class MyComboBoxModel extends DefaultComboBoxModel {
 		return tables.get(index);
 	}
 
-	public void addAndSetSelectedItem(final CyTable table) {
-		if (!tables.contains(table)) {
-			tables.add(table);
+	public void addAndSetSelectedItem(final CyTable newTable) {
+		if (!tables.contains(newTable)) {
+			tables.add(newTable);
 			Collections.sort(tables, tableComparator);
+			oldSet.clear();
+			for (final CyTable table : tables)
+				oldSet.add(table);
+			fireContentsChanged(this, 0, oldSet.size() - 1);
 		}
-		setSelectedItem(table);
+		setSelectedItem(newTable);
 	}
 }
 

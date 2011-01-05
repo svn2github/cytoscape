@@ -84,19 +84,16 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JPopupMenu attributeSelectionPopupMenu = null;
 	private JScrollPane jScrollPane = null;
 	private JPopupMenu jPopupMenu = null;
-
 	private JMenuItem jMenuItemStringAttribute = null;
 	private JMenuItem jMenuItemIntegerAttribute = null;
 	private JMenuItem jMenuItemLongIntegerAttribute = null;
 	private JMenuItem jMenuItemFloatingPointAttribute = null;
 	private JMenuItem jMenuItemBooleanAttribute = null;
-
 	private JMenuItem jMenuItemStringListAttribute = null;
 	private JMenuItem jMenuItemIntegerListAttribute = null;
 	private JMenuItem jMenuItemLongIntegerListAttribute = null;
 	private JMenuItem jMenuItemFloatingPointListAttribute = null;
 	private JMenuItem jMenuItemBooleanListAttribute = null;
-
 	private JToolBar browserToolBar = null;
 	private JButton selectButton = null;
 	private CheckBoxJList attributeList = null;
@@ -109,8 +106,6 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JButton importButton = null;
 
 	private AttributeListModel attrListModel;
-
-	private FormulaBuilderDialog formulaBuilderDialog;
 	private final EqnCompiler compiler;
 
 	public AttributeBrowserToolBar(final CyServiceRegistrar serviceRegistrar,
@@ -534,7 +529,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 							final CyTable attrs =
 								browserTableModel.getAttributes();
 							initAttribNameToTypeMap(attrs, attrName, attribNameToTypeMap);
-							formulaBuilderDialog =
+							final FormulaBuilderDialog formulaBuilderDialog =
 								new FormulaBuilderDialog(compiler, browserTableModel,
 											 rootFrame, attrName);
 							formulaBuilderDialog.setLocationRelativeTo(rootFrame);
