@@ -19,7 +19,6 @@ public class PersistImageTaskFactory implements TaskFactory {
 
 	@Override
 	public TaskIterator getTaskIterator() {
-
 		return new TaskIterator(new PersistImageTask(location, manager));
 	}
 

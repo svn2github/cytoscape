@@ -116,6 +116,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 	private final VizMapperUtil util;
 	
 	private final DefaultViewPanelImpl mainView;
+	
+	//private final DependencyTable depTable;
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -135,6 +137,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 		
 		if(mainView == null)
 			throw new NullPointerException("DefaultViewPanel is missing.");
+		
+		//this.depTable = depTable;
 		
 		this.vmm = vmm;
 		this.util = util;
@@ -250,6 +254,8 @@ public class DefaultViewEditorImpl extends JDialog implements
 		jXTitledPanel1 = new org.jdesktop.swingx.JXTitledPanel();
 		defaultObjectTabbedPane = new javax.swing.JTabbedPane();
 		nodeScrollPane = new javax.swing.JScrollPane();
+		dependencyScrollPane = new javax.swing.JScrollPane();
+		
 		nodeList = new JXList();
 		edgeList = new JXList();
 		edgeScrollPane = new javax.swing.JScrollPane();
@@ -303,10 +309,13 @@ public class DefaultViewEditorImpl extends JDialog implements
 		nodeScrollPane.setViewportView(nodeList);
 		edgeScrollPane.setViewportView(edgeList);
 		globalScrollPane.setViewportView(networkList);
+		//dependencyScrollPane.setViewportView(depTable);
 
 		defaultObjectTabbedPane.addTab("Node", nodeScrollPane);
 		defaultObjectTabbedPane.addTab("Edge", edgeScrollPane);
 		defaultObjectTabbedPane.addTab("Network", globalScrollPane);
+		
+		defaultObjectTabbedPane.addTab("Dependency", dependencyScrollPane);
 
 		GroupLayout jXTitledPanel1Layout = new GroupLayout(
 				jXTitledPanel1.getContentContainer());
@@ -502,6 +511,10 @@ public class DefaultViewEditorImpl extends JDialog implements
 	private javax.swing.JScrollPane nodeScrollPane;
 	private javax.swing.JScrollPane edgeScrollPane;
 	private javax.swing.JScrollPane globalScrollPane;
+	
+	// New from 3.0
+	private javax.swing.JScrollPane dependencyScrollPane;
+	
 	private javax.swing.JTabbedPane defaultObjectTabbedPane;
 	private JXList nodeList;
 	private JXList edgeList;

@@ -3,5 +3,4 @@
 #-----------------------------------------------------------------
 
 Import-Package: *
-Export-Package: org.cytoscape.view.vizmap.gui.*
 Private-Package: org.cytoscape.view.vizmap.gui.internal.* 

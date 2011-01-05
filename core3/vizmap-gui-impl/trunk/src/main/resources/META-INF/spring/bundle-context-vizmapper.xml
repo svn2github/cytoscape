@@ -180,6 +180,11 @@
 		<constructor-arg ref="selectedVisualStyleManager" />
 	</bean>
 
+	<!--<bean id="dependencyTable" class="org.cytoscape.view.vizmap.gui.internal.DependencyTable" />-->
+		
+	<!--<bean id="nodeSizeDep" class="org.cytoscape.view.vizmap.gui.internal.editor.dependency.NodeSizeDependency" />-->
+	
+	
 	<bean name="defViewEditor"
 		class="org.cytoscape.view.vizmap.gui.internal.DefaultViewEditorImpl"
 		scope="singleton" depends-on="defaultViewPanel">
@@ -189,6 +194,7 @@
 		<constructor-arg ref="vmmServiceRef" />
 		<constructor-arg ref="selectedVisualStyleManager" />
 		<constructor-arg ref="vizMapperUtil" />
+		<!--<constructor-arg ref="dependencyTable" />-->
 	</bean>
 
 

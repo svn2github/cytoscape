@@ -10,7 +10,6 @@ import java.util.HashSet;
  * <p>
  * All data fields are immutable. 
  * 
- * @author kono
  *
  */
 public final class VisualLexiconNode {
@@ -20,6 +19,8 @@ public final class VisualLexiconNode {
 	private final VisualLexiconNode parent;
 	private final Collection<VisualLexiconNode> children;
 	
+	private boolean isDepend;
+	
 	public VisualLexiconNode(final VisualProperty<?> vp, final VisualLexiconNode parent) {
 		if(vp == null)
 			throw new NullPointerException("Visual Property cannot be null.");
@@ -27,10 +28,20 @@ public final class VisualLexiconNode {
 		this.vp = vp;
 		this.parent = parent;
 		this.children = new HashSet<VisualLexiconNode>();
+		this.isDepend = false;
 		
 		if(parent != null)
 			parent.getChildren().add(this);
 		
+	}
+	
+	
+	public void setDependency(boolean depend) {
+		this.isDepend = depend;
+	}
+	
+	public boolean isDepend() {
+		return isDepend;
 	}
 	
 	/**

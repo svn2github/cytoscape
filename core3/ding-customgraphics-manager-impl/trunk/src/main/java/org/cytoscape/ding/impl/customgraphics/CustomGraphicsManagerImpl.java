@@ -217,7 +217,7 @@ public final class CustomGraphicsManagerImpl implements CustomGraphicsManager, C
 	@Override
 	public void handleEvent(CytoscapeShutdownEvent e) {
 		// Persist images
-		logger.info("Saving images to: " + imageHomeDirectory);
+		logger.info("Start Saving images to: " + imageHomeDirectory);
 
 		// Create Task
 		final PersistImageTaskFactory factory = new PersistImageTaskFactory(imageHomeDirectory, this);
@@ -228,7 +228,7 @@ public final class CustomGraphicsManagerImpl implements CustomGraphicsManager, C
 			logger.error("Could not save images to disk.", e1);
 		}
 
-		logger.info("Image saving process finished.");
+		logger.info("========== Image saving process finished =============");
 		
 	}
 }

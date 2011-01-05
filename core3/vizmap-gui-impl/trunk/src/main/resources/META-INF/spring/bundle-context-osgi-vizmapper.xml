@@ -237,5 +237,19 @@
 		<osgi:listener bind-method="addMappingGenerator"
 			unbind-method="removeMappingGenerator" ref="menuManager" />
 	</osgi:set>
+	
+	
 
+	<!-- Default dependencies 
+	<osgi:service id="nodeSizeDepService" ref="nodeSizeDep" auto-export="interfaces" />
+	
+	<osgi:set id="dependencySet"
+		interface="org.cytoscape.view.vizmap.gui.VisualPropertyDependency"
+		cardinality="0..N"  >
+		<osgi:listener bind-method="addDependency"
+			unbind-method="removeDependency" ref="dependencyTable" />
+			
+	</osgi:set>
+
+-->
 </beans>
