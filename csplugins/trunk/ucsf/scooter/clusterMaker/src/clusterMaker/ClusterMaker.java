@@ -52,6 +52,7 @@ import cytoscape.plugin.PluginInfo;
 import cytoscape.view.CytoscapeDesktop;
 
 // clusterMaker imports
+import clusterMaker.ui.ClusterMakerLinkNetworks;
 import clusterMaker.ui.ClusterSettingsDialog;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.HeatMapView;
@@ -151,6 +152,10 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		// up in our vizMap automatically -- add it here so it will show up in our
 		// command list.
 		vizMap.put(viz3.getShortName(), viz3);
+
+		// Finally, add the "Link networks" menu item.  Note that this is a little
+		// different in that it's a boolean
+		menu.add(new ClusterMakerLinkNetworks());
 		
 		
 		// Catch new network loaded and change events so we can update our visualization menus

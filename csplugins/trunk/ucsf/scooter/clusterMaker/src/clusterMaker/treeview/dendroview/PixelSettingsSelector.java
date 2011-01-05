@@ -440,9 +440,13 @@ class ColorExtractorEditor extends JPanel {
 	}
 
 	public void copyStateFrom(ColorSet source) {
+		// System.out.println("Setting UP to "+source.getUp());
 		colorPanel[UP].setColor(source.getUp());
+		// System.out.println("Setting ZERO to "+source.getZero());
 		colorPanel[ZERO].setColor(source.getZero());
+		// System.out.println("Setting DOWN to "+source.getDown());
 		colorPanel[DOWN].setColor(source.getDown());
+		// System.out.println("Setting MISSING to "+source.getMissing());
 		colorPanel[MISSING].setColor(source.getMissing());
 
 	}

@@ -106,7 +106,7 @@ public class ColorPresets implements ConfigNodePersistent {
 	static {
 		defaultColorSets = new ColorSet[2];
 		defaultColorSets[0] = new ColorSet("RedGreen", "#FF0000", "#000000", "#00FF00", "#909090", "#FFFFFF");
-		defaultColorSets[1] = new ColorSet("YellowBlue",
+		defaultColorSets[1] = new ColorSet("YellowCyan",
 				"#FEFF00", "#000000", "#1BB7E5", "#909090", "#FFFFFF");
 	}
 
