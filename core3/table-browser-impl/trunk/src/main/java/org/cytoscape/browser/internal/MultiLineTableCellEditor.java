@@ -38,6 +38,7 @@ import java.util.EventObject;
 public class MultiLineTableCellEditor extends AbstractCellEditor implements TableCellEditor,
                                                                             ActionListener
 {
+	private final static int CLICK_COUNT_TO_START = 2;
 	private ResizableTextArea textArea;
 
 	public MultiLineTableCellEditor() {
@@ -47,31 +48,25 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 		textArea.setWrapStyleWord(true);
 	}
 
+	@Override
 	public Object getCellEditorValue() {
 		return textArea.getText();
 	}
 
-	protected int clickCountToStart = 2;
-
-	public int getClickCountToStart() {
-		return clickCountToStart;
-	}
-
-	public void setClickCountToStart(int clickCountToStart) {
-		this.clickCountToStart = clickCountToStart;
-	}
-
+	@Override
 	public boolean isCellEditable(EventObject e) {
 		return !(e instanceof MouseEvent)
-		       || (((MouseEvent) e).getClickCount() >= clickCountToStart);
+		       || (((MouseEvent) e).getClickCount() >= CLICK_COUNT_TO_START);
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		stopCellEditing();
 	}
 
-	public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
-	                                             final int row, final int column)
+	public Component getTableCellEditorComponent(final JTable table, final Object value,
+						     final boolean isSelected, final int row,
+						     final int column)
 	{
 		final String text = (value != null) ? ((ValidatedObjectAndEditString)value).getEditString() : "";
 		textArea.setTable(table);
@@ -135,20 +130,16 @@ public class MultiLineTableCellEditor extends AbstractCellEditor implements Tabl
 				return;
 			}
 
-System.err.println("******************** in updateBounds(), table.isEditing()="+table.isEditing());
-//			if (table.isEditing()) {
-System.err.println("******************** in updateBounds(), table.getEditingRow()="+table.getEditingRow()+", table.getEditingColumn()="+table.getEditingColumn());
+			if (table.isEditing()) {
 				Rectangle cellRect = table.getCellRect(table.getEditingRow(),
 				                                       table.getEditingColumn(), false);
-System.err.println("******************** in updateBounds(), table.getCellRect(table.getEditingRow(),table.getEditingColumn(), false)="+cellRect);
 				Dimension prefSize = getPreferredSize();
 				putClientProperty(UPDATE_BOUNDS, Boolean.TRUE);
-System.err.println("******************** in updateBounds(), getX()="+getX()+", getY()="+getY());
 				setBounds(getX(), getY(), Math.min(cellRect.width, prefSize.width),
 				          Math.max(cellRect.height + prefSize.height, prefSize.height));
 				putClientProperty(UPDATE_BOUNDS, Boolean.FALSE);
 				validate();
-//			}
+			}
 		}
 
 		//
