@@ -1477,7 +1477,36 @@ public class DNodeView implements NodeView, Label {
 //	}
 
 	@Override
-	public void setVisualPropertyValue(final VisualProperty<?> vp, final Object value) {
+	public void setVisualPropertyValue(final VisualProperty<?> vpOriginal, final Object value) {
+		
+		final VisualProperty<?> vp;
+		VisualLexiconNode treeNode = lexicon.getVisualLexiconNode(vpOriginal);
+		if(treeNode == null)
+			return;
+		
+		if(treeNode.getChildren().size() != 0) {
+			// This is not leaf.
+			final Collection<VisualLexiconNode> children = treeNode.getChildren();
+			boolean shouldApply = false;
+			for(VisualLexiconNode node: children) {
+				if(node.isDepend()) {
+					shouldApply = true;
+					break;
+				}
+			}
+			
+			if(shouldApply == false)
+				return;
+		}
+		
+		if(treeNode.isDepend()) {
+			// Do not use this.  Parent will be applied.
+			return;
+		} else {
+			vp = vpOriginal;
+		}
+		
+		
 
 		if (vp == DVisualLexicon.NODE_SHAPE) {
 			setShape(((NodeShape) value));
@@ -1503,6 +1532,9 @@ public class DNodeView implements NodeView, Label {
 		} else if (vp == TwoDVisualLexicon.NODE_X_SIZE) {
 			setWidth(((Number) value).doubleValue());
 		} else if (vp == TwoDVisualLexicon.NODE_Y_SIZE) {
+			setHeight(((Number) value).doubleValue());
+		} else if (vp == TwoDVisualLexicon.NODE_SIZE) {
+			setWidth(((Number) value).doubleValue());
 			setHeight(((Number) value).doubleValue());
 		} else if (vp == TwoDVisualLexicon.NODE_LABEL) {
 			setText(value.toString());

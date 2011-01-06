@@ -63,6 +63,7 @@ import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
@@ -71,6 +72,8 @@ import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.gui.DefaultViewEditor;
 import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
+import org.cytoscape.view.vizmap.gui.event.LexiconStateChangedEvent;
+import org.cytoscape.view.vizmap.gui.event.LexiconStateChangedListener;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedEvent;
 import org.cytoscape.view.vizmap.gui.event.SelectedVisualStyleSwitchedListener;
 import org.cytoscape.view.vizmap.gui.internal.util.VizMapperUtil;
@@ -95,7 +98,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class DefaultViewEditorImpl extends JDialog implements
-		DefaultViewEditor, SelectedVisualStyleSwitchedListener {
+		DefaultViewEditor, SelectedVisualStyleSwitchedListener, LexiconStateChangedListener {
 
 	private final static long serialVersionUID = 1202339876675416L;
 
@@ -117,7 +120,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	
 	private final DefaultViewPanelImpl mainView;
 	
-	//private final DependencyTable depTable;
+	private final DependencyTable depTable;
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -132,13 +135,16 @@ public class DefaultViewEditorImpl extends JDialog implements
 			final CyApplicationManager cyApplicationManager,
 			final VisualMappingManager vmm,
 			final SelectedVisualStyleManager selectedManager,
-			final VizMapperUtil util) {
+			final VizMapperUtil util, final DependencyTable depTable) {
 		super();
 		
 		if(mainView == null)
-			throw new NullPointerException("DefaultViewPanel is missing.");
+			throw new NullPointerException("DefaultViewPanel is null.");
 		
-		//this.depTable = depTable;
+		if(vmm == null)
+			throw new NullPointerException("Visual Mapping Manager is null.");
+		
+		this.depTable = depTable;
 		
 		this.vmm = vmm;
 		this.util = util;
@@ -309,7 +315,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 		nodeScrollPane.setViewportView(nodeList);
 		edgeScrollPane.setViewportView(edgeList);
 		globalScrollPane.setViewportView(networkList);
-		//dependencyScrollPane.setViewportView(depTable);
+		dependencyScrollPane.setViewportView(depTable);
 
 		defaultObjectTabbedPane.addTab("Node", nodeScrollPane);
 		defaultObjectTabbedPane.addTab("Edge", edgeScrollPane);
@@ -532,6 +538,12 @@ public class DefaultViewEditorImpl extends JDialog implements
 	private void buildList() {
 
 		final VisualPropCellRenderer renderer = new VisualPropCellRenderer();
+		final RenderingEngine<CyNetwork> currentEngine = this.cyApplicationManager.getCurrentRenderingEngine();
+		if(currentEngine == null)
+			return;
+		
+		final VisualLexicon lex = currentEngine.getVisualLexicon();
+		
 
 		for (Class<? extends CyTableEntry> key : vpSets.keySet()) {
 			DefaultListModel model = new DefaultListModel();
@@ -539,9 +551,15 @@ public class DefaultViewEditorImpl extends JDialog implements
 			list.setModel(model);
 			Set<VisualProperty<?>> vps = vpSets.get(key);
 			for (VisualProperty<?> vp : vps) {
-				model.addElement(vp);
-				// logger.debug("New Visual Property set to GUI: "
-				// + vp.getDisplayName() + " = " + vp.getDefault());
+				final VisualLexiconNode treeNode = lex.getVisualLexiconNode(vp);
+				if(treeNode != null && treeNode.isDepend() == false)
+					model.addElement(vp);
+				else if(treeNode.isDepend()) {
+					final VisualProperty<?> parentVP = treeNode.getParent().getVisualProperty();
+					if(model.contains(parentVP) == false)
+						model.addElement(parentVP);
+				}
+				
 			}
 			list.setCellRenderer(renderer);
 		}
@@ -685,5 +703,15 @@ public class DefaultViewEditorImpl extends JDialog implements
 			return name1.compareTo(name2);
 		}
 
+	}
+
+	@Override
+	public void handleEvent(LexiconStateChangedEvent e) {
+		logger.debug("Def editor got Lex event.");
+		buildList();
+		
+		mainView.updateView();
+		mainView.repaint();
+		
 	}
 }

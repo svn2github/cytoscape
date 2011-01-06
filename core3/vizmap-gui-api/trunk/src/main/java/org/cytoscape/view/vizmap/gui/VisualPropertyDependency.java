@@ -10,6 +10,11 @@ import org.cytoscape.view.model.VisualProperty;
  */
 public interface VisualPropertyDependency {
 	
+	/**
+	 * Provide text for the GUI check box.
+	 * 
+	 * @return Check box name as string.
+	 */
 	String getDisplayName();
 	
 	VisualProperty<?> getParent();

@@ -240,7 +240,7 @@
 	
 	
 
-	<!-- Default dependencies 
+	<!-- Default dependencies -->
 	<osgi:service id="nodeSizeDepService" ref="nodeSizeDep" auto-export="interfaces" />
 	
 	<osgi:set id="dependencySet"
@@ -251,5 +251,4 @@
 			
 	</osgi:set>
 
--->
 </beans>

@@ -8,7 +8,6 @@ import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 
 public class VisualStyleFactoryImpl implements VisualStyleFactory {
-
 	
 	private final VisualLexiconManager lexManager;
 	
