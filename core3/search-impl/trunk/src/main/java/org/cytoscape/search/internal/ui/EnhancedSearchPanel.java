@@ -1,6 +1,5 @@
 package org.cytoscape.search.internal.ui;
 
-import java.awt.Dimension;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.search.internal.*;
@@ -26,6 +25,8 @@ public class EnhancedSearchPanel extends javax.swing.JPanel{
        this.tableMgr = tableMgr;
        this.searchMgr = searchMgr;
        this.taskMgr= taskMgr;
+       // The following is for debug only
+       //this.tfSearchText.setText("TestNodeAttribute1:[0 to 5]");
    }
 
    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {
@@ -67,7 +68,7 @@ public class EnhancedSearchPanel extends javax.swing.JPanel{
 
        tfSearchText.setToolTipText("Enter search text");
        tfSearchText.setName("tfSearchText"); // NOI18N
-       tfSearchText.setPreferredSize(new java.awt.Dimension(80, 25));
+       tfSearchText.setPreferredSize(new java.awt.Dimension(150, 25));
        tfSearchText.addActionListener(new java.awt.event.ActionListener() {
            public void actionPerformed(java.awt.event.ActionEvent evt) {
                tfSearchTextActionPerformed(evt);

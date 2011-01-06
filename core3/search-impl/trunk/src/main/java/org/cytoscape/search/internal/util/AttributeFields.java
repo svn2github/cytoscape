@@ -37,7 +37,7 @@ package org.cytoscape.search.internal.util;
 
 import java.util.Map;
 import java.util.Set;
-
+import java.util.HashMap;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
@@ -45,18 +45,20 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
-
+import java.util.Iterator;
 
 /**
  * This object will serve as input to the CustomMultiFieldQueryParser.
  * It contains attribute fields names and their types.
- * This way CustomMultiFieldQueryParser can recognise numeric attribute fields.
+ * This way CustomMultiFieldQueryParser can recognize numeric attribute fields.
  */
 public class AttributeFields {
 	
-	private String[] fields = null;
+	//private String[] fields = null;
 	private Map<String,Class<?>> nodeColumnTypeMap;
 	private Map<String,Class<?>> edgeColumnTypeMap;
+
+	private Map<String,Class<?>> columnTypeMap;
 
 	//private byte[] types = null;
 	private CyTableManager tableMgr;
@@ -75,40 +77,22 @@ public class AttributeFields {
 	 */
 	private void initFields(CyNetwork network) {
 		
-
-		//CyTable nodeCyDataTable = network.getCyRow().getDataTable()..getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
+		columnTypeMap = new HashMap();
 		
 		CyTable nodeCyDataTable = (CyTable) tableMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
 		
 		nodeColumnTypeMap = nodeCyDataTable.getColumnTypeMap();
 
-		//CyTable edgeCyDataTable = network.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 		CyTable edgeCyDataTable = (CyTable) tableMgr.getTableMap(CyEdge.class, network).get(CyNetwork.DEFAULT_ATTRS);
 		
 		edgeColumnTypeMap = edgeCyDataTable.getColumnTypeMap();
 
-		// Now add node and edge attribute names to fields[]
-		fields = new String[nodeColumnTypeMap.size() + edgeColumnTypeMap.size()];
 		int i = 0;
 		for ( String key : nodeColumnTypeMap.keySet()){
-			// Exclude attributes(selected and NestedNetwork) in the list
-			if (key.equalsIgnoreCase("selected")||key.equalsIgnoreCase("NestedNetwork")){  
-				continue;				
-			}
-			fields[i++] = key;
+			columnTypeMap.put(EnhancedSearchUtils.replaceWhitespace(key).toLowerCase(), nodeColumnTypeMap.get(key));
 		}
 		for ( String key : edgeColumnTypeMap.keySet()){
-			// Exclude attributes(selected and NestedNetwork) in the list
-			if (key.equalsIgnoreCase("selected")||key.equalsIgnoreCase("NestedNetwork")){  
-				continue;				
-			}
-			fields[i++] = key;			
-		}
-
-		// Handle whitespace characters and case in attribute names
-		for (int j = 0; j < fields.length; j++) {
-			fields[j] = EnhancedSearchUtils.replaceWhitespace(fields[j]);
-			fields[j] = fields[j].toLowerCase();
+			columnTypeMap.put(EnhancedSearchUtils.replaceWhitespace(key).toLowerCase(), nodeColumnTypeMap.get(key));
 		}
 	}
 
@@ -117,14 +101,19 @@ public class AttributeFields {
 	 * Get list of fields
 	 */
 	public String[] getFields() {
-		return fields;
+		
+		String[] keys = new String[columnTypeMap.size()];
+		Object[] keyObjs = columnTypeMap.keySet().toArray();
+		
+		for (int i=0; i<keyObjs.length; i++){
+			keys[i] = (String) keyObjs[i];
+		}
+		return keys;
 	}
 
 
 	public Class<?> getType(String attrName) {
-
-		Class<?> valueType = nodeColumnTypeMap.get(attrName);
-		
+		Class<?> valueType = columnTypeMap.get(attrName);
 		return valueType;
 	}
 }

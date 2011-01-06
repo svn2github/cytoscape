@@ -43,14 +43,11 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyTable; 
 
 import org.cytoscape.search.internal.util.EnhancedSearchUtils;
-import org.cytoscape.search.internal.util.NumberUtils;
-
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-//import org.apache.lucene.document.NumberTools;
 import java.util.Set;
 
 import org.cytoscape.model.CyTableEntry;
@@ -58,12 +55,7 @@ import org.cytoscape.model.CyRow;
 import java.util.List;
 import java.util.Map;
 import org.apache.lucene.util.Version;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Store;
-import org.apache.lucene.document.Field.Index;
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import org.apache.lucene.document.NumericField;
 
 
 
@@ -75,8 +67,7 @@ public class EnhancedSearchIndex {
 
 	// Index the given network
 	public EnhancedSearchIndex(CyNetwork network) {
-		// Construct a RAMDirectory to hold the in-memory representation of the
-		// index.		
+		// Construct a RAMDirectory to hold the in-memory representation of the index.		
 		idx = new RAMDirectory();
 		BuildIndex(idx, network);
 	}
@@ -128,11 +119,6 @@ public class EnhancedSearchIndex {
 		Set<String> attributeNames = columnTypeMap.keySet();
 
 		for (String attrName : attributeNames) {
-
-			// Do not index attributes -- selected,SUID,NestedNetwork
-			if (attrName.equalsIgnoreCase("selected")|| attrName.equalsIgnoreCase("NestedNetwork")){
-				continue;
-			}
 			
 			// Handle whitespace characters and case in attribute names
 			String attrIndexingName = EnhancedSearchUtils.replaceWhitespace(attrName);
@@ -151,20 +137,22 @@ public class EnhancedSearchIndex {
 				if (graphObject.getCyRow().get(attrName, Integer.class) == null){
 					continue;
 				}
-				String attrValue = NumberUtils.long2sortableStr(graphObject.getCyRow().get(attrName, Integer.class));
-				if (attrValue == null){
-					continue;
-				}
-				doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));
+
+				int attrValue = graphObject.getCyRow().get(attrName, Integer.class);
+
+				NumericField field = new NumericField(attrIndexingName);
+				field.setIntValue(attrValue);
+				doc.add(field);
 			} else if (valueType == Double.class) {	
 				if (graphObject.getCyRow().get(attrName, Double.class) == null){
 					continue;
 				}
-				String attrValue = NumberUtils.double2sortableStr(graphObject.getCyRow().get(attrName, Double.class));				
-				if (attrValue == null){
-					continue;
-				}
-				doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));
+				
+				double attrValue = graphObject.getCyRow().get(attrName, Double.class);
+				
+				NumericField field = new NumericField(attrIndexingName);
+				field.setDoubleValue(attrValue);
+				doc.add(field);
 			} else if (valueType == Boolean.class) {
 				String attrValue = graphObject.getCyRow().get(attrName, Boolean.class).toString();
 				doc.add(new Field(attrIndexingName, attrValue, Field.Store.YES, Field.Index.ANALYZED));

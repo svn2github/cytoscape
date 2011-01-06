@@ -44,9 +44,7 @@ import org.apache.lucene.util.NumericUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.util.Version;
 import org.apache.lucene.search.NumericRangeQuery;
-import org.apache.lucene.index.Term;
 import org.cytoscape.search.internal.util.AttributeFields;
-import org.cytoscape.search.internal.util.NumberUtils;
 
 
 
@@ -72,7 +70,6 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 		if (attrFields.getType(field) == Integer.class) {
 			try {
 				int num1 = Integer.parseInt(queryText);
-				//return super.getFieldQuery(field, NumberTools.longToString(num1));
 				return super.getFieldQuery(field, NumericUtils.longToPrefixCoded(num1));
 			} catch (NumberFormatException e) {
 				// Do nothing. When using a MultiFieldQueryParser, queryText is
@@ -84,17 +81,9 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 		} else if (attrFields.getType(field) == Double.class) {
 			try {
 				double num1 = Double.parseDouble(queryText);
-				// Workaround: The commented statement below won't return the desired
-				// search result, but inclusive range query does.
-				// return super.getFieldQuery(field, NumberUtils
-				// .double2sortableStr(num1));
 				
 				Query q = NumericRangeQuery.newDoubleRange(field, num1, num1, true, true);
 				return q;
-				
-				//return new RangeQuery(new Term(field, NumberUtils
-				//		.double2sortableStr(num1)), new Term(field, NumberUtils
-				//		.double2sortableStr(num1)), true);
 				
 			} catch (NumberFormatException e) {
 				// Do nothing. When using a MultiFieldQueryParser, queryText is
@@ -109,22 +98,20 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 
 	protected Query getRangeQuery(String field, String part1, String part2,
 			boolean inclusive) throws ParseException {
-
+		
 		// a workaround to avoid a TooManyClauses exception.
 		// Temporary until RangeFilter is implemented.
-		BooleanQuery.setMaxClauseCount(5120); // 5 * 1024
-
+		BooleanQuery.setMaxClauseCount(5120); // 5 * 1024		
+		
 		if (attrFields.getType(field) == Integer.class) {
 			try {
+				
 				int num1 = Integer.parseInt(part1);
 				int num2 = Integer.parseInt(part2);
 
 				Query q = NumericRangeQuery.newIntRange(field, num1, num2, inclusive, inclusive);
 
 				return q;
-				//return new NumericRangeQuery(new Term(field, NumberTools
-				//		.longToString(num1)), new Term(field, NumberTools
-				//		.longToString(num2)), inclusive);
 			} catch (NumberFormatException e) {
 				throw new ParseException(e.getMessage());
 			}
@@ -137,13 +124,11 @@ public class CustomMultiFieldQueryParser extends MultiFieldQueryParser {
 				Query q = NumericRangeQuery.newDoubleRange(field, num1, num2, inclusive, inclusive);
 				return q;
 				
-				//return new NumericRangeQuery(new Term(field, NumberUtils
-				//		.double2sortableStr(num1)), new Term(field, NumberUtils
-				//		.double2sortableStr(num2)), inclusive);
 			} catch (NumberFormatException e) {
 				throw new ParseException(e.getMessage());
 			}
 		}
+
 		return super.getRangeQuery(field, part1, part2, inclusive);
 	}
 }

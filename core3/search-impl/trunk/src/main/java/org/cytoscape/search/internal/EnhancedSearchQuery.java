@@ -37,30 +37,22 @@ package org.cytoscape.search.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-//import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.document.Document;
-
 import org.cytoscape.search.internal.util.EnhancedSearchUtils;
 import org.cytoscape.search.internal.util.CustomMultiFieldQueryParser;
 import org.cytoscape.search.internal.util.AttributeFields;
-
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableManager;
 import org.apache.lucene.util.Version;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Scorer;
-
 
 
 public class EnhancedSearchQuery {
@@ -112,6 +104,7 @@ public class EnhancedSearchQuery {
 		try {
 			// Execute query
 			Query query = queryParser.parse(queryString);
+			
 			hitCollector = new IdentifiersCollector(searcher);
 			searcher.search(query, hitCollector);		    
 		} catch (ParseException pe) {
