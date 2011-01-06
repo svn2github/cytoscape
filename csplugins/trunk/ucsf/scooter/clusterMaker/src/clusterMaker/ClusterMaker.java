@@ -41,6 +41,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -82,6 +83,8 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 	HashMap<JMenuItem,ClusterViz> vizMenus;
 	HashMap<String, ClusterViz> vizMap;
 	HashMap<String, ClusterAlgorithm> algMap;
+	List<JMenuItem> menuList;
+	boolean menusEnabled = false;
 
 	public final static String GROUP_ATTRIBUTE = "__clusterGroups";
 	public final static String MATRIX_ATTRIBUTE = "__distanceMatrix";
@@ -107,6 +110,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		vizMenus = new HashMap<JMenuItem, ClusterViz>();
 		vizMap = new HashMap<String, ClusterViz>();
 		algMap = new HashMap<String, ClusterAlgorithm>();
+		menuList = new ArrayList<JMenuItem>();
 		JMenu menu = new JMenu("Cluster");
 		addClusterAlgorithm(menu, new HierarchicalCluster());
 		addClusterAlgorithm(menu, new KMeansCluster());
@@ -130,23 +134,12 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 			menu.add(item);
 		}
 
-		// Add the heat map visualization
-		HeatMapView viz = new HeatMapView();
-		JMenuItem item = new JMenuItem(viz.getName());
-		item.addActionListener(new ClusterMakerCommandListener((ClusterAlgorithm)viz));
-		menu.add(item);
-
-		// Add the new network visualization
-		NewNetworkView viz2 = new NewNetworkView();
-		item = new JMenuItem(viz2.getName());
-		item.addActionListener(new ClusterMakerCommandListener((ClusterAlgorithm)viz2));
-		menu.add(item);
+		addVizBuiltIn(menu, new HeatMapView());
+		addVizBuiltIn(menu, new NewNetworkView());
 
 		// Add the nested network visualization
 		NestedNetworkView viz3 = new NestedNetworkView();
-		item = new JMenuItem(viz3.getName());
-		item.addActionListener(new ClusterMakerCommandListener((ClusterAlgorithm)viz3));
-		menu.add(item);
+		addVizBuiltIn(menu, viz3);
 
 		// Because this overlaps with the new network visualization, it doesn't show
 		// up in our vizMap automatically -- add it here so it will show up in our
@@ -180,6 +173,10 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		     evt.getPropertyName() == ClusterAlgorithm.CLUSTER_COMPUTED ||
 		     evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS ||
 		     evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED ){
+			if (!menusEnabled) {
+				menusEnabled = true;
+				for (JMenuItem item: menuList) item.setEnabled(true);
+			}
 			updateVizMenus();
     }
 	}
@@ -224,6 +221,8 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 
 		JMenuItem item = new JMenuItem(algorithm.getName());
 		item.addActionListener(new ClusterMakerCommandListener(algorithm));
+		item.setEnabled(false);
+		menuList.add(item);
 		menu.add(item);
 	}
 
@@ -235,6 +234,14 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 			else
 				item.setEnabled(true);
 		}
+	}
+
+	private void addVizBuiltIn(JMenu menu, ClusterViz viz) {
+		JMenuItem item = new JMenuItem(viz.getName());
+		item.addActionListener(new ClusterMakerCommandListener((ClusterAlgorithm)viz));
+		item.setEnabled(false);
+		menuList.add(item);
+		menu.add(item);
 	}
 
 	/**
