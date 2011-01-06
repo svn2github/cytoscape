@@ -1,5 +1,5 @@
-SemanticSummary Cytoscape Plugin LICENSE AGREEMENT : GNU LGPL
-SemanticSummary v. 0.5 - July 2010
+WordCloud Cytoscape Plugin LICENSE AGREEMENT : GNU LGPL
+WordCloud v. 1.0 RC2 - January 2011
 
 
 		  GNU LESSER GENERAL PUBLIC LICENSE
