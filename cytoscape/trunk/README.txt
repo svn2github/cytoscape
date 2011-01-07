@@ -93,3 +93,13 @@ versioned artifacts is accomplished as follows:
 The next step is to copy the downloadable artifacts to the Cytoscape website.
 Everything to be copied over can be found in the packaging/target/install4j 
 directory.
+
+V. To Build Installer
+=====================
+To build the installer bundles, cd to the packaging directory and edit
+pom.xml to change the <executable> for install4jc to where your install4j
+installation is.  Then run:
+
+	mvn install4j:compile
+
+The installers will be created in the target/install4j subdirectory
