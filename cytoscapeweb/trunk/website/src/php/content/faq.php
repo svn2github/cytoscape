@@ -108,7 +108,7 @@
 		only be approximate based on the weight attribute.</p>
 		
 		<p class="question">Can I load images into Cytoscape Web?</p>
-		<p class="answer">Yes, but only for nodes.  See the <a href="ddocumentation/visual_style#section/VisualStyle">VisualStyle</a> object for more.</p>
+		<p class="answer">Yes, but only for nodes.  See the <a href="documentation/visual_style#section/VisualStyle">VisualStyle</a> object for more.</p>
 	
 	<h1>Modifying network data</h1>
 		
