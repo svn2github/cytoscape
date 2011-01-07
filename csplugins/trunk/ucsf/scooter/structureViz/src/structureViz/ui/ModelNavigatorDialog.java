@@ -450,7 +450,7 @@ public class ModelNavigatorDialog
 		JMenu secondaryMenu = new JMenu("Secondary structure");
 		addMenuItem(secondaryMenu, "Helix", COMMAND, "select helix");
 		addMenuItem(secondaryMenu, "Strand", COMMAND, "select strand");
-		addMenuItem(secondaryMenu, "Turn", COMMAND, "select turn");
+		addMenuItem(secondaryMenu, "Coil", COMMAND, "select coil");
 		selectMenu.add(secondaryMenu);
 		addMenuItem(selectMenu, "Invert selection", COMMAND, "select invert");
 		addMenuItem(selectMenu, "Clear selection", CLEAR, null);

@@ -221,7 +221,7 @@ public class ActionPopupMenu extends JPopupMenu {
 		JMenu secondaryMenu = new JMenu("Secondary Structure");
 		addItem(secondaryMenu, "Helix", "select %sel & helix", PopupActionListener.MODEL_SELECTION);
 		addItem(secondaryMenu, "Strand", "select %sel & strand", PopupActionListener.MODEL_SELECTION);
-		addItem(secondaryMenu, "Turn", "select %sel & turn", PopupActionListener.MODEL_SELECTION);
+		addItem(secondaryMenu, "Coil", "select %sel & coil", PopupActionListener.MODEL_SELECTION);
 		selectMenu.add(secondaryMenu);
 		add(selectMenu);
 		return; 

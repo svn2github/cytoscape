@@ -293,7 +293,7 @@ public class DisplayCommands extends AbstractCommands {
 
 	static private void checkStructSpec(String structSpec) throws CyCommandException {
 		// Legal structure designations
-		String[] legalStructSpec = {"full","minimal", "ions","ligand","main","nucleic acid","protein","helix","strand","turn",
+		String[] legalStructSpec = {"full","minimal", "ions","ligand","main","nucleic acid","protein","helix","strand","coil",
 		                            "with CA/C1'", "without CA/C1'","solvent"};
 
 		if (structSpec == null) return;
