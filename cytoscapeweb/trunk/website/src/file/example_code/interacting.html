@@ -14,27 +14,26 @@
                 var div_id = "cytoscapeweb";
                 
                 // NOTE the attributes on nodes and edges
-                var xml = '\
-                <graphml>\
-                  <key id="label" for="all" attr.name="label" attr.type="string"/>\
-                  <key id="foo" for="node" attr.name="foo" attr.type="string"/>\
-                  <key id="bar" for="edge" attr.name="bar" attr.type="string"/>\
-                  <graph edgedefault="undirected">\
-                    <node id="1">\
-                        <data key="label">1</data>\
-                        <data key="foo">Is this the real life?</data>\
-                    </node>\
-                    <node id="2">\
-                        <data key="label">2</data>\
-                        <data key="foo">Is this just fantasy?</data>\
-                    </node>\
-                    <edge target="1" source="2">\
-                        <data key="label">2 to 1</data>\
-                        <data key="bar">Caught in a landslide...</data>\
-                    </edge>\
-                  </graph>\
-                </graphml>\
-                ';
+                var network_json = {
+                        dataSchema: {
+                    		nodes: [ { name: "label", type: "string" },
+                    		         { name: "foo", type: "string" }
+           		         	],
+
+							edges: [ { name: "label", type: "string" },
+							         { name: "bar", type: "string" }
+							]
+                    	},
+                    	
+                        data: {
+                            nodes: [ { id: "1", label: "1", foo: "Is this the real life?" },
+                                     { id: "2", label: "2", foo: "Is this just fantasy?" }
+                            ],
+
+                            edges: [ { id: "2to1", target="1", source: "2", label: "2 to 1", bar: "Caught in a landslide..." }
+                            ]
+                        }
+                };
                 
                 // initialization options
                 var options = {
@@ -79,7 +78,7 @@
                 // draw options
                 var draw_options = {
                     // your data goes here
-                    network: xml,
+                    network: network_json,
                     // hide pan zoom
                     panZoomControlVisible: false 
                 };
