@@ -66,7 +66,7 @@ enum Command {
 	CLEARHBONDS("clear hbonds", "Clear hydrogen bonds", null),
 	CLEARSELECT("clear selection", "Clear all selection", null),
 	CLOSE("close", "Close some or all of the currently opened structures","structurelist=selected"),
-	COLOR("color", "Color part of all of a structure",
+	COLOR("color", "Color part or all of a structure",
 	               "preset|residues|labels|ribbons|surfaces|structurelist|atomspec"),
 	DEPICT("depict", "Change the depiction of a structure",
 	                 "preset|style|ribbonstyle|surfacestyle|transparency|structurelist|atomspec=selected"),
@@ -81,7 +81,7 @@ enum Command {
 	LISTSTRUCTURES("list structures", "List all of the open structures",null),
 	MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),
 	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodelist|showdialog=false"),
-	RAINBOW("rainbow", "Color part of all of a structure in a rainbow scheme",
+	RAINBOW("rainbow", "Color part or all of a structure in a rainbow scheme",
 	                   "structurelist|atomspec"),
 	ROTATE("rotate", "Rotate a model","x|y|z|center|structurelist=selected"),
 	SELECT("select", "Select a structure or parts of a structure", "structurelist|atomspec|structuretype"),
@@ -251,7 +251,7 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 			return StructureCommands.closeCommand(chimera, result, structureList);
 
 		//
-		// COLOR("color", "Color part of all of a structure",
+		// COLOR("color", "Color part or all of a structure",
 	  //                "residues|labels|ribbons|surfaces|structurelist|atomspec"),
 		//
 		} else if (Command.COLOR.equals(command)) {
@@ -409,7 +409,7 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 
 			result = DisplayCommands.moveStructure(chimera, result, x, y, z, structureList);
 		//
-		// RAINBOW("rainbow", "Color part of all of a structure in a rainbow scheme",
+		// RAINBOW("rainbow", "Color part or all of a structure in a rainbow scheme",
     //                    "structurelist|atomspec"),
 		//
 		} else if (Command.RAINBOW.equals(command)) {
