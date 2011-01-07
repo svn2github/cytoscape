@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <artifactId>parent</artifactId>
+    <groupId>org.cytoscape</groupId>
+    <version>3.0.0-alpha4-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.cytoscape</groupId>
+  <artifactId>launch-framework</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>Cytoscape Launch Framework</name>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>cmdline</module>
+    <module>launcher</module>
+    <module>startlevel-assembly</module>
+  </modules>
+
+</project>
