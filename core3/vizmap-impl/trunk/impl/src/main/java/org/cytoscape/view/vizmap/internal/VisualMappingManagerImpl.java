@@ -93,7 +93,7 @@ public class VisualMappingManagerImpl implements VisualMappingManager {
 		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_X_SIZE, NODE_WIDTH);
 		defStyle.setDefaultValue(TwoDVisualLexicon.NODE_Y_SIZE, NODE_HEIGHT);
 		defStyle.setDefaultValue(TwoDVisualLexicon.EDGE_WIDTH, EDGE_WIDTH);
-		defStyle.setDefaultValue(TwoDVisualLexicon.EDGE_COLOR, EDGE_COLOR);
+		defStyle.setDefaultValue(TwoDVisualLexicon.EDGE_PAINT, EDGE_COLOR);
 		
 		return defStyle;
 	}

@@ -37,7 +37,7 @@ public class TwoDVisualLexiconTest extends AbstractVisualLexiconTest {
 
 	@Test
 	public void test2DLexicon() throws Exception {
-		assertEquals(36, twoDLex.getAllVisualProperties().size());
+		assertEquals(35, twoDLex.getAllVisualProperties().size());
 	}
 
 	@Test
@@ -63,9 +63,9 @@ public class TwoDVisualLexiconTest extends AbstractVisualLexiconTest {
 		assertEquals(13, nodeChildren.size());
 		
 		Collection<VisualProperty<?>> edgeChildren = twoDLex.getAllDescendants(TwoDVisualLexicon.EDGE);
-		assertEquals(8, edgeChildren.size());
+		assertEquals(7, edgeChildren.size());
 		
-		Collection<VisualProperty<?>> leaf = twoDLex.getAllDescendants(TwoDVisualLexicon.EDGE_COLOR);
+		Collection<VisualProperty<?>> leaf = twoDLex.getAllDescendants(TwoDVisualLexicon.EDGE_LABEL_COLOR);
 		assertEquals(0, leaf.size());
 				
 	}

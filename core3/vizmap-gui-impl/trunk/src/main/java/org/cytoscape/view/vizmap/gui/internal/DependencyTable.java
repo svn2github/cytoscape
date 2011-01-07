@@ -72,19 +72,19 @@ public class DependencyTable extends JTable {
 				.getVisualLexicon();
 
 		// Validate
-		final Set<VisualProperty<?>> group = dep.getChildren();
-		VisualProperty<?> oldParent = null;
-		for (final VisualProperty<?> vp : group) {
-			VisualProperty<?> parent = lexicon.getVisualLexiconNode(vp)
-					.getParent().getVisualProperty();
-			logger.debug("VP: " + vp.getDisplayName() + " => "
-					+ parent.getDisplayName());
-			if (oldParent != null && parent != oldParent)
-				throw new IllegalStateException(
-						"Dependency is pointing to different parents.");
-			else
-				oldParent = parent;
-		}
+		final Set<VisualProperty<?>> group = dep.getVisualProperties();
+//		VisualProperty<?> oldParent = null;
+//		for (final VisualProperty<?> vp : group) {
+//			VisualProperty<?> parent = lexicon.getVisualLexiconNode(vp)
+//					.getParent().getVisualProperty();
+//			logger.debug("VP: " + vp.getDisplayName() + " => "
+//					+ parent.getDisplayName());
+//			if (oldParent != null && parent != oldParent)
+//				throw new IllegalStateException(
+//						"Dependency is pointing to different parents.");
+//			else
+//				oldParent = parent;
+//		}
 
 		for (final VisualProperty<?> vp : group) {
 			lexicon.getVisualLexiconNode(vp).setDependency(isDepend);

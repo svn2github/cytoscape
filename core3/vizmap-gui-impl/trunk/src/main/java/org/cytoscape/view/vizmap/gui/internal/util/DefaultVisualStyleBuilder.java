@@ -1,6 +1,6 @@
 package org.cytoscape.view.vizmap.gui.internal.util;
 
-import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_COLOR;
+import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_PAINT;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_LABEL;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.EDGE_LABEL_COLOR;
 import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT;
@@ -97,7 +97,7 @@ public class DefaultVisualStyleBuilder {
 		newStyle.setDefaultValue(NODE_Y_SIZE, DEFAULT_NODE_HEIGHT );
 		
 		// Set edge appearance
-		newStyle.setDefaultValue(EDGE_COLOR, DEFAULT_EDGE_COLOR );
+		newStyle.setDefaultValue(EDGE_PAINT, DEFAULT_EDGE_COLOR );
 		newStyle.setDefaultValue(EDGE_LABEL_COLOR, DEFAULT_EDGE_LABEL_COLOR );
 		
 		// Set network appearance

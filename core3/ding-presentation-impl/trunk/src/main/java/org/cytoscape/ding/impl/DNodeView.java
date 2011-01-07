@@ -34,8 +34,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -62,6 +64,7 @@ import org.cytoscape.ding.customgraphics.CyCustomGraphics;
 import org.cytoscape.ding.customgraphics.Layer;
 import org.cytoscape.ding.customgraphics.NullCustomGraphics;
 import org.cytoscape.ding.impl.customgraphics.CustomGraphicsPositionCalculator;
+import org.cytoscape.ding.impl.customgraphics.vector.VectorCustomGraphics;
 import org.cytoscape.ding.impl.visualproperty.CustomGraphicsVisualProperty;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.graph.render.stateful.CustomGraphic;
@@ -1063,7 +1066,7 @@ public class DNodeView implements NodeView, Label {
 				retVal = false;
 			else {
 				retVal = orderedCustomGraphicLayers.add(cg);
-				graphicsPositions.put(cg, ObjectPositionImpl.DEFAULT_POSITION);
+				//????graphicsPositions.put(cg, ObjectPositionImpl.DEFAULT_POSITION);
 			}
 		}
 		ensureContentChanged();
@@ -1554,9 +1557,10 @@ public class DNodeView implements NodeView, Label {
 			this.setLabelPosition((ObjectPosition) value);
 		} else if(vp instanceof CustomGraphicsVisualProperty) {
 			applyCustomGraphics(vp, (CyCustomGraphics<CustomGraphic>) value);
-		} else if(DVisualLexicon.getGraphicsPositionVP().contains(vp)) {
-			applyCustomGraphicsPosition(vp, (ObjectPosition) value);
 		}
+//		} else if(DVisualLexicon.getGraphicsPositionVP().contains(vp)) {
+//			applyCustomGraphicsPosition(vp, (ObjectPosition) value);
+//		} 
 	}
 	
 	
@@ -1566,9 +1570,9 @@ public class DNodeView implements NodeView, Label {
 		if(dCustomGraphicsSet == null)
 			dCustomGraphicsSet = new HashSet<CustomGraphic>();
 		
-		ObjectPosition newPosition = null;
+//		ObjectPosition newPosition = null;
 		for (final CustomGraphic cg : dCustomGraphicsSet) {			
-			newPosition = this.graphicsPositions.get(cg);
+//			newPosition = this.graphicsPositions.get(cg);
 			removeCustomGraphic(cg);
 		}
 		
@@ -1576,7 +1580,6 @@ public class DNodeView implements NodeView, Label {
 
 		if (customGraphics == null || customGraphics instanceof NullCustomGraphics)
 			return;
-		
 		
 		final List<Layer<CustomGraphic>> layers = customGraphics.getLayers();
 
@@ -1586,31 +1589,45 @@ public class DNodeView implements NodeView, Label {
 
 		//FIXME: size dependency
 		// Check dependency. Sync size or not.
-//		boolean sync = false;
-//		if (dep != null) {
-//			sync = dep.check(NODE_CUSTOM_GRAPHICS_SIZE_SYNC);
-//		}
-
+		final VisualProperty<?> cgSizeVP = DVisualLexicon.getAssociatedCustomGraphicsSizeVP(vp);
+		final VisualLexiconNode sizeTreeNode = lexicon.getVisualLexiconNode(cgSizeVP);
+		boolean sync = sizeTreeNode.isDepend();
+		
+		final VisualProperty<ObjectPosition> cgPositionVP = DVisualLexicon.getAssociatedCustomGraphicsPositionVP(vp);
+		final ObjectPosition positionValue = nodeViewModel.getVisualProperty(cgPositionVP);
+		//final ObjectPosition position = this.graphicsPositions.get(vp);
+		
+//		System.out.print("CG Position for: " + cgPositionVP.getDisplayName());
+//		System.out.println(" = " + positionValue);
+		
 		for (Layer<CustomGraphic> layer : layers) {
 			// Assume it's a Ding layer
 			CustomGraphic newCG = layer.getLayerObject();
-			if(newPosition != null) {
-				newCG = this.moveCustomGraphicsToNewPosition(newCG, newPosition);
-				System.out.println("MOVED: " + vp.getDisplayName());
-			}
-			
-//			if (sync) {
-//				final CustomGraphic resized = syncSize(graphics, cg, dv, dep);
-//				dv.addCustomGraphic(resized);
-//				targets.add(resized);
-//			} else {
-				addCustomGraphic(newCG);
-				dCustomGraphicsSet.add(newCG);
-				
+//			if(newPosition != null) {
+//				newCG = this.moveCustomGraphicsToNewPosition(newCG, newPosition);
+//				System.out.println("MOVED: " + vp.getDisplayName());
 //			}
+			
+			CustomGraphic finalCG = newCG;
+			if (sync) {
+				//Size is locked to node size.
+				finalCG = syncSize(customGraphics, newCG, lexicon.getVisualLexiconNode(TwoDVisualLexicon.NODE_X_SIZE).isDepend());
+			}
+//				addCustomGraphic(resized);
+//				dCustomGraphicsSet.add(resized);
+//			} else {
+//				addCustomGraphic(newCG);
+//				dCustomGraphicsSet.add(newCG);
+//			}
+			
+			finalCG = moveCustomGraphicsToNewPosition(finalCG, positionValue);
+			
+			addCustomGraphic(finalCG);
+			dCustomGraphicsSet.add(finalCG);
 		}
 		//this.currentMap.put(dv, targets);
-//		final ObjectPosition position = this.graphicsPositions.get(vp);
+		
+		
 //		if(position != null && position.equals(ObjectPositionImpl.DEFAULT_POSITION) == false) {
 //			// Transform
 //			this.transformCustomGraphics(dCustomGraphicsSet, vp, position);
@@ -1621,7 +1638,7 @@ public class DNodeView implements NodeView, Label {
 		// Flag this as used Custom Graphics
 		//Cytoscape.getVisualMappingManager().getCustomGraphicsManager().setUsedInCurrentSession(graphics, true);
 		
-		System.out.println("CG Applyed: " + vp.getDisplayName());
+		//System.out.println("CG Applyed: " + vp.getDisplayName());
 	}
 	
 	private void applyCustomGraphicsPosition(final VisualProperty<?> vp, final ObjectPosition position) {
@@ -1667,6 +1684,49 @@ public class DNodeView implements NodeView, Label {
 		//this.graphicsPositions.put(parent, position);
 		
 		System.out.println("Position applied of CG = " + vp.getDisplayName() + " <--- " + parent.getDisplayName());
+	}
+	
+	
+	private CustomGraphic syncSize(CyCustomGraphics<?> graphics,
+			final CustomGraphic cg,
+			final boolean whLock) {
+
+		final double nodeW = this.getWidth();
+		final double nodeH = this.getHeight();
+
+		final Shape originalShape = cg.getShape();
+		final Rectangle2D originalBounds = originalShape.getBounds2D();
+		final double cgW = originalBounds.getWidth();
+		final double cgH = originalBounds.getHeight();
+
+		// In case size is same, return the original.
+		if (nodeW == cgW && nodeH == cgH)
+			return cg;
+
+		// Check width/height lock status
+//		final boolean whLock = dep.check(NODE_SIZE_LOCKED);
+
+		final AffineTransform scale;
+		final float fit = graphics.getFitRatio();
+
+		if (whLock || graphics instanceof VectorCustomGraphics) {
+			scale = AffineTransform.getScaleInstance(fit * nodeW / cgW, fit
+					* nodeH / cgH);
+		} else {
+			// Case 1: node height value is larger than width
+			if (nodeW >= nodeH) {
+				scale = AffineTransform.getScaleInstance(fit * (nodeW / cgW)
+						* (nodeH / nodeW), fit * nodeH / cgH);
+				// scale = AffineTransform.getScaleInstance(nodeH/nodeW, 1);
+			} else {
+				scale = AffineTransform.getScaleInstance(fit * nodeW / cgW, fit
+						* (nodeH / cgH) * (nodeW / nodeH));
+				// scale = AffineTransform.getScaleInstance(1, nodeW/nodeH);
+			}
+
+		}
+		return new CustomGraphic(scale.createTransformedShape(originalShape),
+				cg.getPaintFactory());
 	}
 
 }

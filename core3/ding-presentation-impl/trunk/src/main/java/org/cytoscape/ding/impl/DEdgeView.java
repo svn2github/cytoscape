@@ -35,6 +35,7 @@ import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.cytoscape.ding.ArrowShape;
@@ -47,6 +48,8 @@ import org.cytoscape.graph.render.immed.EdgeAnchors;
 import org.cytoscape.graph.render.immed.GraphGraphics;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
@@ -79,11 +82,15 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	String m_toolTipText = null;
 
 	private final View<CyEdge> m_edgeView;
+	
+	// Visual Properties used in this node view.
+	private final VisualLexicon lexicon;
 
 	/*
 	 * @param inx the RootGraph index of edge (a negative number).
 	 */
-	DEdgeView(DGraphView view, int inx, View<CyEdge> ev) {
+	DEdgeView(final VisualLexicon lexicon, DGraphView view, int inx, View<CyEdge> ev) {
+		this.lexicon = lexicon;
 		m_view = view;
 		m_inx = inx;
 		m_edgeView = ev;
@@ -1428,10 +1435,46 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	}
 
 	@Override
-	public void setVisualPropertyValue(final VisualProperty<?> vp, final Object value) {	
-		if (vp == DVisualLexicon.EDGE_SELECTED_PAINT) {
+	public void setVisualPropertyValue(final VisualProperty<?> vpOriginal, final Object value) {
+		
+		final VisualProperty<?> vp;
+		VisualLexiconNode treeNode = lexicon.getVisualLexiconNode(vpOriginal);
+		if(treeNode == null)
+			return;
+		
+		if(treeNode.getChildren().size() != 0) {
+			// This is not leaf.
+			final Collection<VisualLexiconNode> children = treeNode.getChildren();
+			boolean shouldApply = false;
+			for(VisualLexiconNode node: children) {
+				if(node.isDepend()) {
+					shouldApply = true;
+					break;
+				}
+			}
+			
+			if(shouldApply == false)
+				return;
+		}
+		
+		if(treeNode.isDepend()) {
+			// Do not use this.  Parent will be applied.
+			return;
+		} else {
+			vp = vpOriginal;
+		}
+		
+		if (vp == DVisualLexicon.EDGE_STROKE_SELECTED_PAINT) {
 			setSelectedPaint((Paint) value);
-		} else if (vp == TwoDVisualLexicon.EDGE_COLOR) {
+		} else if (vp == DVisualLexicon.EDGE_STROKE_UNSELECTED_PAINT) {
+			setUnselectedPaint((Paint) value);
+		} else if (vp == DVisualLexicon.EDGE_SELECTED_PAINT) {
+			setSourceEdgeEndSelectedPaint((Paint) value);
+			setTargetEdgeEndSelectedPaint((Paint) value);
+			setSelectedPaint((Paint) value);
+		} else if (vp == DVisualLexicon.EDGE_UNSELECTED_PAINT) {
+			setSourceEdgeEndPaint((Paint) value);
+			setTargetEdgeEndPaint((Paint) value);
 			setUnselectedPaint((Paint) value);
 		} else if (vp == DVisualLexicon.EDGE_WIDTH) {
 			final float currentWidth = this.getStrokeWidth();

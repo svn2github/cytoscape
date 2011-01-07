@@ -38,7 +38,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.ding.ArrowShape;
@@ -77,7 +79,10 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	
 	// Set of custom graphics positions.
 	private static final Set<VisualProperty<?>> CG_POSITIONS = new HashSet<VisualProperty<?>>();
-	
+	private static final Set<VisualProperty<?>> CG_SIZE = new HashSet<VisualProperty<?>>();
+	private static final Map<VisualProperty<?>, VisualProperty<?>> CG_TO_SIZE = new HashMap<VisualProperty<?>, VisualProperty<?>>();
+	private static final Map<VisualProperty<?>, VisualProperty<ObjectPosition>> CG_TO_POSITION = new HashMap<VisualProperty<?>, VisualProperty<ObjectPosition>>();
+
 	// Root of Ding's VP tree.
 	public static final VisualProperty<NullDataType> DING_ROOT = new NullVisualProperty(
 			"DING_RENDERING_ENGINE_ROOT", "Ding Rndering Engine Root Visual Property");
@@ -140,6 +145,24 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	public static final VisualProperty<Visualizable> NODE_CUSTOMPAINT_9 = new DefaultVisualizableVisualProperty(
 			"NODE_CUSTOMPAINT_9", "Node Custom Paint 9", CyNode.class);
 	
+	public static final VisualProperty<Double> NODE_CUSTOMGRAPHICS_SIZE_1 = new DoubleVisualProperty(
+			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_CUSTOMGRAPHICS_SIZE_1", "Node Custom Graphics Size 1", CyNode.class);
+	public static final VisualProperty<Double> NODE_CUSTOMGRAPHICS_SIZE_2 = new DoubleVisualProperty(
+			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_CUSTOMGRAPHICS_SIZE_2", "Node Custom Graphics Size 2", CyNode.class);
+	public static final VisualProperty<Double> NODE_CUSTOMGRAPHICS_SIZE_3 = new DoubleVisualProperty(
+			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_CUSTOMGRAPHICS_SIZE_3", "Node Custom Graphics Size 3", CyNode.class);
+	public static final VisualProperty<Double> NODE_CUSTOMGRAPHICS_SIZE_4 = new DoubleVisualProperty(
+			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_CUSTOMGRAPHICS_SIZE_4", "Node Custom Graphics Size 4", CyNode.class);
+	public static final VisualProperty<Double> NODE_CUSTOMGRAPHICS_SIZE_5 = new DoubleVisualProperty(
+			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_CUSTOMGRAPHICS_SIZE_5", "Node Custom Graphics Size 5", CyNode.class);
+	public static final VisualProperty<Double> NODE_CUSTOMGRAPHICS_SIZE_6 = new DoubleVisualProperty(
+			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_CUSTOMGRAPHICS_SIZE_6", "Node Custom Graphics Size 6", CyNode.class);
+	public static final VisualProperty<Double> NODE_CUSTOMGRAPHICS_SIZE_7 = new DoubleVisualProperty(
+			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_CUSTOMGRAPHICS_SIZE_7", "Node Custom Graphics Size 7", CyNode.class);
+	public static final VisualProperty<Double> NODE_CUSTOMGRAPHICS_SIZE_8 = new DoubleVisualProperty(
+			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_CUSTOMGRAPHICS_SIZE_8", "Node Custom Graphics Size 8", CyNode.class);
+	public static final VisualProperty<Double> NODE_CUSTOMGRAPHICS_SIZE_9 = new DoubleVisualProperty(
+			50.0, NONE_ZERO_POSITIVE_DOUBLE_RANGE, "NODE_CUSTOMGRAPHICS_SIZE_9", "Node Custom Graphics Size 9", CyNode.class);
 	
 	public static final VisualProperty<CyCustomGraphics> NODE_CUSTOMGRAPHICS_1 = new CustomGraphicsVisualProperty(
 			NullCustomGraphics.getNullObject(), CG_RANGE, "NODE_CUSTOMGRAPHICS_1", "Node Custom Graphics 1", CyNode.class);
@@ -193,6 +216,13 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	// Edge VPs
 	public static final VisualProperty<Paint> EDGE_SELECTED_PAINT = new PaintVisualProperty(
 			Color.RED, TwoDVisualLexicon.PAINT_RANGE, "EDGE_SELECTED_PAINT", "Edge Selected Paint", CyEdge.class);
+	public static final VisualProperty<Paint> EDGE_UNSELECTED_PAINT = new PaintVisualProperty(
+			Color.DARK_GRAY, TwoDVisualLexicon.PAINT_RANGE, "EDGE_UNSELECTED_PAINT", "Edge Unselected Paint", CyEdge.class);
+	public static final VisualProperty<Paint> EDGE_STROKE_SELECTED_PAINT = new PaintVisualProperty(
+			Color.RED, TwoDVisualLexicon.PAINT_RANGE, "EDGE_STROKE_SELECTED_PAINT", "Edge Stroke Selected Paint", CyEdge.class);
+	public static final VisualProperty<Paint> EDGE_STROKE_UNSELECTED_PAINT = new PaintVisualProperty(
+			Color.DARK_GRAY, TwoDVisualLexicon.PAINT_RANGE, "EDGE_STROKE_UNSELECTED_PAINT", "Edge Stroke Unselected Paint", CyEdge.class);
+	
 	
 	public static final VisualProperty<? extends Stroke> EDGE_STROKE = new StrokeTwoDVisualProperty(
 			StrokeTwoDVisualProperty.DEFAULT_STROKE, "EDGE_STROKE", "Edge Stroke", CyEdge.class);
@@ -240,6 +270,36 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		CG_POSITIONS.add(NODE_CUSTOMGRAPHICS_POSITION_7);
 		CG_POSITIONS.add(NODE_CUSTOMGRAPHICS_POSITION_8);
 		CG_POSITIONS.add(NODE_CUSTOMGRAPHICS_POSITION_9);
+		
+		CG_SIZE.add(NODE_CUSTOMGRAPHICS_SIZE_1);
+		CG_SIZE.add(NODE_CUSTOMGRAPHICS_SIZE_2);
+		CG_SIZE.add(NODE_CUSTOMGRAPHICS_SIZE_3);
+		CG_SIZE.add(NODE_CUSTOMGRAPHICS_SIZE_4);
+		CG_SIZE.add(NODE_CUSTOMGRAPHICS_SIZE_5);
+		CG_SIZE.add(NODE_CUSTOMGRAPHICS_SIZE_6);
+		CG_SIZE.add(NODE_CUSTOMGRAPHICS_SIZE_7);
+		CG_SIZE.add(NODE_CUSTOMGRAPHICS_SIZE_8);
+		CG_SIZE.add(NODE_CUSTOMGRAPHICS_SIZE_9);
+		
+		CG_TO_SIZE.put(NODE_CUSTOMGRAPHICS_1, NODE_CUSTOMGRAPHICS_SIZE_1);
+		CG_TO_SIZE.put(NODE_CUSTOMGRAPHICS_2, NODE_CUSTOMGRAPHICS_SIZE_2);
+		CG_TO_SIZE.put(NODE_CUSTOMGRAPHICS_3, NODE_CUSTOMGRAPHICS_SIZE_3);
+		CG_TO_SIZE.put(NODE_CUSTOMGRAPHICS_4, NODE_CUSTOMGRAPHICS_SIZE_4);
+		CG_TO_SIZE.put(NODE_CUSTOMGRAPHICS_5, NODE_CUSTOMGRAPHICS_SIZE_5);
+		CG_TO_SIZE.put(NODE_CUSTOMGRAPHICS_6, NODE_CUSTOMGRAPHICS_SIZE_6);
+		CG_TO_SIZE.put(NODE_CUSTOMGRAPHICS_7, NODE_CUSTOMGRAPHICS_SIZE_7);
+		CG_TO_SIZE.put(NODE_CUSTOMGRAPHICS_8, NODE_CUSTOMGRAPHICS_SIZE_8);
+		CG_TO_SIZE.put(NODE_CUSTOMGRAPHICS_9, NODE_CUSTOMGRAPHICS_SIZE_9);
+		
+		CG_TO_POSITION.put(NODE_CUSTOMGRAPHICS_1, NODE_CUSTOMGRAPHICS_POSITION_1);
+		CG_TO_POSITION.put(NODE_CUSTOMGRAPHICS_2, NODE_CUSTOMGRAPHICS_POSITION_2);
+		CG_TO_POSITION.put(NODE_CUSTOMGRAPHICS_3, NODE_CUSTOMGRAPHICS_POSITION_3);
+		CG_TO_POSITION.put(NODE_CUSTOMGRAPHICS_4, NODE_CUSTOMGRAPHICS_POSITION_4);
+		CG_TO_POSITION.put(NODE_CUSTOMGRAPHICS_5, NODE_CUSTOMGRAPHICS_POSITION_5);
+		CG_TO_POSITION.put(NODE_CUSTOMGRAPHICS_6, NODE_CUSTOMGRAPHICS_POSITION_6);
+		CG_TO_POSITION.put(NODE_CUSTOMGRAPHICS_7, NODE_CUSTOMGRAPHICS_POSITION_7);
+		CG_TO_POSITION.put(NODE_CUSTOMGRAPHICS_8, NODE_CUSTOMGRAPHICS_POSITION_8);
+		CG_TO_POSITION.put(NODE_CUSTOMGRAPHICS_9, NODE_CUSTOMGRAPHICS_POSITION_9);
 	}
 	
 
@@ -289,6 +349,16 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		addVisualProperty(NODE_CUSTOMGRAPHICS_8, NODE_CUSTOMPAINT_8);
 		addVisualProperty(NODE_CUSTOMGRAPHICS_9, NODE_CUSTOMPAINT_9);
 		
+		addVisualProperty(NODE_CUSTOMGRAPHICS_SIZE_1, NODE_SIZE);
+		addVisualProperty(NODE_CUSTOMGRAPHICS_SIZE_2, NODE_SIZE);
+		addVisualProperty(NODE_CUSTOMGRAPHICS_SIZE_3, NODE_SIZE);
+		addVisualProperty(NODE_CUSTOMGRAPHICS_SIZE_4, NODE_SIZE);
+		addVisualProperty(NODE_CUSTOMGRAPHICS_SIZE_5, NODE_SIZE);
+		addVisualProperty(NODE_CUSTOMGRAPHICS_SIZE_6, NODE_SIZE);
+		addVisualProperty(NODE_CUSTOMGRAPHICS_SIZE_7, NODE_SIZE);
+		addVisualProperty(NODE_CUSTOMGRAPHICS_SIZE_8, NODE_SIZE);
+		addVisualProperty(NODE_CUSTOMGRAPHICS_SIZE_9, NODE_SIZE);
+		
 		// These are children of NODE_CUSTOMGRAPHICS.
 		addVisualProperty(NODE_CUSTOMGRAPHICS_POSITION_1, NODE_CUSTOMPAINT_1);
 		addVisualProperty(NODE_CUSTOMGRAPHICS_POSITION_2, NODE_CUSTOMPAINT_2);
@@ -301,11 +371,15 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		addVisualProperty(NODE_CUSTOMGRAPHICS_POSITION_9, NODE_CUSTOMPAINT_9);
 		
 		addVisualProperty(EDGE_SELECTED_PAINT, EDGE_PAINT);
+		addVisualProperty(EDGE_UNSELECTED_PAINT, EDGE_PAINT);
+		addVisualProperty(EDGE_STROKE_SELECTED_PAINT, EDGE_SELECTED_PAINT);
+		addVisualProperty(EDGE_STROKE_UNSELECTED_PAINT, EDGE_UNSELECTED_PAINT);
+		
 		addVisualProperty(EDGE_STROKE, EDGE);
-		addVisualProperty(EDGE_SOURCE_ARROW_SELECTED_PAINT, EDGE_PAINT);
-		addVisualProperty(EDGE_TARGET_ARROW_SELECTED_PAINT, EDGE_PAINT);
-		addVisualProperty(EDGE_SOURCE_ARROW_UNSELECTED_PAINT, EDGE_PAINT);
-		addVisualProperty(EDGE_TARGET_ARROW_UNSELECTED_PAINT, EDGE_PAINT);
+		addVisualProperty(EDGE_SOURCE_ARROW_SELECTED_PAINT, EDGE_SELECTED_PAINT);
+		addVisualProperty(EDGE_TARGET_ARROW_SELECTED_PAINT, EDGE_SELECTED_PAINT);
+		addVisualProperty(EDGE_SOURCE_ARROW_UNSELECTED_PAINT, EDGE_UNSELECTED_PAINT);
+		addVisualProperty(EDGE_TARGET_ARROW_UNSELECTED_PAINT, EDGE_UNSELECTED_PAINT);
 		addVisualProperty(EDGE_SOURCE_ARROW_SHAPE, EDGE);
 		addVisualProperty(EDGE_TARGET_ARROW_SHAPE, EDGE);
 		addVisualProperty(EDGE_TOOLTIP, EDGE_TEXT);
@@ -316,5 +390,17 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	
 	static Set<VisualProperty<?>> getGraphicsPositionVP() {
 		return CG_POSITIONS;
+	}
+	
+	static Set<VisualProperty<?>> getGraphicsSizeVP() {
+		return CG_SIZE;
+	}
+	
+	static VisualProperty<?> getAssociatedCustomGraphicsSizeVP(VisualProperty<?> cgVP) {
+		return CG_TO_SIZE.get(cgVP);
+	}
+	
+	static VisualProperty<ObjectPosition> getAssociatedCustomGraphicsPositionVP(VisualProperty<?> cgVP) {
+		return CG_TO_POSITION.get(cgVP);
 	}
 }

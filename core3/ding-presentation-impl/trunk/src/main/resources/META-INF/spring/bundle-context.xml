@@ -59,5 +59,11 @@
 	<bean id="objectPositionEditor" class="org.cytoscape.ding.impl.editor.ObjectPositionEditor">
 		<constructor-arg ref="objectPositionValueEditor" />
 	</bean>
+	
+	<!-- Visual Property Dependencies -->
+	
+	<bean id="edgeColor2arrowColorDependency" class="org.cytoscape.ding.dependency.EdgePaintToArrowHeadPaintDependency" />
+	<bean id="nodeCustomGraphicsSizeDependency" class="org.cytoscape.ding.dependency.CustomGraphicsSizeDependency" />
+	
 
 </beans>

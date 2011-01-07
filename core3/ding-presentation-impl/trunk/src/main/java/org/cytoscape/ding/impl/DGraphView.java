@@ -828,7 +828,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			m_drawPersp.addEdge(edge);
 
 			final View<CyEdge> edgeViewModel = cyNetworkView.getEdgeView(edge);
-			dEdgeView = new DEdgeView(this, edgeInx, edgeViewModel);
+			dEdgeView = new DEdgeView(dingLexicon, this, edgeInx, edgeViewModel);
 
 			m_edgeViewMap.put(Integer.valueOf(edgeInx), dEdgeView);
 			m_contentChanged = true;

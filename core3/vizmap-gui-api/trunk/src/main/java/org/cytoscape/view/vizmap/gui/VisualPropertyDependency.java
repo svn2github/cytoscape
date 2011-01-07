@@ -17,8 +17,6 @@ public interface VisualPropertyDependency {
 	 */
 	String getDisplayName();
 	
-	VisualProperty<?> getParent();
-	
-	Set<VisualProperty<?>> getChildren();
+	Set<VisualProperty<?>> getVisualProperties();
 
 }

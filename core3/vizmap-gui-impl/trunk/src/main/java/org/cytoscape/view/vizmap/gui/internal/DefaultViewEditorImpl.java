@@ -533,7 +533,7 @@ public class DefaultViewEditorImpl extends JDialog implements
 	
 
 	/**
-	 * DOCUMENT ME!
+	 * Populate the list model based on current lexicon tree structure.
 	 */
 	private void buildList() {
 
@@ -546,8 +546,9 @@ public class DefaultViewEditorImpl extends JDialog implements
 		
 
 		for (Class<? extends CyTableEntry> key : vpSets.keySet()) {
-			DefaultListModel model = new DefaultListModel();
+			final DefaultListModel model = new DefaultListModel();
 			JList list = listMap.get(key);
+			
 			list.setModel(model);
 			Set<VisualProperty<?>> vps = vpSets.get(key);
 			for (VisualProperty<?> vp : vps) {

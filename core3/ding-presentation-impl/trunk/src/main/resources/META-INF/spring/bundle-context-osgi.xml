@@ -128,5 +128,8 @@
 		auto-export="interfaces" />
 	<osgi:service id="objectPositionPropertyEditorService"
 		ref="objectPositionEditor" auto-export="interfaces" />
+		
+	<osgi:service id="edgeColor2arrowColorDependencyService" ref="edgeColor2arrowColorDependency" auto-export="interfaces" />
+	<osgi:service id="nodeCustomGraphicsSizeDependencyService" ref="nodeCustomGraphicsSizeDependency" auto-export="interfaces" />
 
 </beans>

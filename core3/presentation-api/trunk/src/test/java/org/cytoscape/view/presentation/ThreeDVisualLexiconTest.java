@@ -34,7 +34,7 @@ public class ThreeDVisualLexiconTest extends AbstractVisualLexiconTest {
 
 	@Test
 	public void test2DLexicon() throws Exception {
-		assertEquals(40, threeDLex.getAllVisualProperties().size());
+		assertEquals(39, threeDLex.getAllVisualProperties().size());
 	}
 
 	@Test

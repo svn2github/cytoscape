@@ -119,8 +119,8 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	/////// Edge VP ///////
 	public static final VisualProperty<Paint> EDGE_PAINT = new PaintVisualProperty(
 			Color.gray, PAINT_RANGE, "EDGE_PAINT", "Edge Paint", CyEdge.class);
-	public static final VisualProperty<Paint> EDGE_COLOR = new PaintVisualProperty(
-			Color.gray, PAINT_RANGE, "EDGE_COLOR", "Edge Color", CyEdge.class);
+//	public static final VisualProperty<Paint> EDGE_COLOR = new PaintVisualProperty(
+//			Color.gray, PAINT_RANGE, "EDGE_COLOR", "Edge Color", CyEdge.class);
 	public static final VisualProperty<Paint> EDGE_LABEL_COLOR = new PaintVisualProperty(
 			Color.BLACK, PAINT_RANGE, "EDGE_LABEL_COLOR", "Edge Label Color", CyEdge.class);
 
@@ -218,7 +218,6 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 		addVisualProperty(NODE_Y_SIZE, NODE_SIZE);
 		addVisualProperty(NODE_LABEL, NODE_TEXT);
 
-		addVisualProperty(EDGE_COLOR, EDGE_PAINT);
 		addVisualProperty(EDGE_LABEL_COLOR, EDGE_PAINT);
 		addVisualProperty(EDGE_WIDTH, EDGE);
 		addVisualProperty(EDGE_LABEL, EDGE_TEXT);
