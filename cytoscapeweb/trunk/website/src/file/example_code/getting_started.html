@@ -18,16 +18,13 @@
                 // id of Cytoscape Web container div
                 var div_id = "cytoscapeweb";
                 
-                // network data could alternatively be grabbed via ajax
-                var xml = '\
-                <graphml>\
-                  <graph>\
-                    <node id="1"/>\
-                    <node id="2"/>\
-                    <edge target="1" source="2"/>\
-                  </graph>\
-                </graphml>\
-                ';
+                // you could also use other formats (e.g. GraphML) or grab the network data via AJAX
+                var networ_json = {
+                    data: {
+                        nodes: [ { id: "1" }, { id: "2" } ],
+                        edges: [ { id: "2to1", target: "1", source: "2" } ]
+                    }
+                };
                 
                 // initialization options
                 var options = {
@@ -39,7 +36,7 @@
                 
                 // init and draw
                 var vis = new org.cytoscapeweb.Visualization(div_id, options);
-                vis.draw({ network: xml });
+                vis.draw({ network: networ_json });
             };
         </script>
         

@@ -13,24 +13,23 @@
                 // id of Cytoscape Web container div
                 var div_id = "cytoscapeweb";
                 
-                // NOTE the attributes on nodes and edges
+                // create a network model object
                 var network_json = {
+                        // you need to specify a data schema for custom attributes!
                         dataSchema: {
                     		nodes: [ { name: "label", type: "string" },
                     		         { name: "foo", type: "string" }
            		         	],
-
 							edges: [ { name: "label", type: "string" },
 							         { name: "bar", type: "string" }
 							]
                     	},
-                    	
+                    	// NOTE the custom attributes on nodes and edges
                         data: {
                             nodes: [ { id: "1", label: "1", foo: "Is this the real life?" },
                                      { id: "2", label: "2", foo: "Is this just fantasy?" }
                             ],
-
-                            edges: [ { id: "2to1", target="1", source: "2", label: "2 to 1", bar: "Caught in a landslide..." }
+                            edges: [ { id: "2to1", target: "1", source: "2", label: "2 to 1", bar: "Caught in a landslide..." }
                             ]
                         }
                 };
