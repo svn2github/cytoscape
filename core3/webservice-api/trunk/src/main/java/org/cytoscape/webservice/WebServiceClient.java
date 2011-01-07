@@ -39,11 +39,7 @@ import java.util.Set;
 
 /**
  * Thin wrapper for SOAP/REST web service clients.
- * <p>
- * Usually, developers first use code generator to create Java code from WSDL.
- * The generated code should be wrapped by this interface to be used in
- * Cytoscape framework.
- * </p>
+ * 
  * All web service clients <strong>must</strong> implement this method.
  * 
  * @param <S>
