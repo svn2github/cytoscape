@@ -532,7 +532,7 @@ public class CyTableImpl implements CyTable {
 
 		if (vl instanceof Equation) {
 			final Object result = evalEquation((Equation)vl, key, columnName);
-			return (T)convertEqnResultToColumnType(type, result);
+			return result == null ? null : (T)convertEqnResultToColumnType(type, result);
 		} else
 			return type.cast(vl);
 	}
