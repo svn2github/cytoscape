@@ -61,7 +61,7 @@
 		is an open source project, so feel free to check out the <a href="download#section/Source_Code">source</a> and try things out!</p>
 		
 		<p class="question">Can I load a network from Javascript objects instead of a file?</p>
-		<p class="answer">No, but the next question may interest you.</p>
+		<p class="answer">Yes, see the <a href="documentation/elements#section/NetworkModel">API reference</a> for more information.</p>
 		
 		<p class="question">Can I modify the network programmatically?</p>
 		<p class="answer">Yes, you can add and remove nodes and edges programmatically using 
@@ -106,6 +106,9 @@
 		<p class="question">Can I set the edge length to be dependent on an attribute?</p>
 		<p class="answer">Not precisely.  You can use an edge weighted layout, but the lengths will
 		only be approximate based on the weight attribute.</p>
+		
+		<p class="question">Can I load images into Cytoscape Web?</p>
+		<p class="answer">Yes, but only for nodes.  See the <a href="ddocumentation/visual_style#section/VisualStyle">VisualStyle</a> object for more.</p>
 	
 	<h1>Modifying network data</h1>
 		
