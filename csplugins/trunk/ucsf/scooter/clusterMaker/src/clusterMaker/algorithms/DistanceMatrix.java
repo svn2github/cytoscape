@@ -331,6 +331,10 @@ public class DistanceMatrix {
     }
 
     public double apply(int row, int column, double value) {
+			// For the purposes of determining connected components, we can
+			// safely ignore self-edges
+			if (row == column) 
+				return value;
       CyNode node1 = nodes.get(row);
       CyNode node2 = nodes.get(column);
       if (nodeToCluster.containsKey(node1)) {
@@ -350,12 +354,14 @@ public class DistanceMatrix {
     }
 
     private void addNodeToCluster(Integer cluster, CyNode node) {
+			// System.out.println("Adding "+node+" to cluster "+cluster);
       List<CyNode> nodeList = clusterMap.get(cluster);
       nodeList.add(node);
       nodeToCluster.put(node, cluster);
     }
 
     private void createCluster(CyNode node1, CyNode node2) {
+			// System.out.println("Creating cluster "+clusterNumber+" with "+node1+" and "+node2);
       List<CyNode> nodeList = new ArrayList<CyNode>();
       clusterMap.put(clusterNumber, nodeList);
       addNodeToCluster(clusterNumber, node1);
@@ -366,6 +372,7 @@ public class DistanceMatrix {
     private void combineClusters(Integer cluster1, Integer cluster2) {
       if (cluster1.intValue() == cluster2.intValue())
           return;
+			// System.out.println("Combining cluster "+cluster1+" and "+cluster2);
       List<CyNode> list1 = clusterMap.get(cluster1);
       List<CyNode> list2 = clusterMap.get(cluster2);
       clusterMap.remove(cluster2);
