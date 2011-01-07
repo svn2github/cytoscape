@@ -403,11 +403,13 @@ public class CyTableImpl implements CyTable {
 		Set<Object> keys;
 		if (oldValue != null) {
 			keys = valueTokeysMap.get(oldValue);
-			keys.remove(key);
-			if (keys.isEmpty())
-				valueTokeysMap.remove(oldValue);
-			else
-				valueTokeysMap.put(oldValue, keys);
+			if (keys != null) {
+				keys.remove(key);
+				if (keys.isEmpty())
+					valueTokeysMap.remove(oldValue);
+				else
+					valueTokeysMap.put(oldValue, keys);
+			}
 		}
 
 		keys = valueTokeysMap.get(newValue);
