@@ -16,8 +16,8 @@ public class FilterCytoPanelComponent implements CytoPanelComponent {
 
 	FilterMainPanel panel;
 	
-	public FilterCytoPanelComponent(CySwingApplication application, CyApplicationManager applicationManager) {
-		panel = new FilterMainPanel(new Vector<CompositeFilter>(), application, applicationManager);
+	public FilterCytoPanelComponent(FilterMainPanel panel) {
+		this.panel = panel; 
 	}
 	
 	@Override

@@ -76,9 +76,6 @@ import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.application.swing.CytoPanel;
-import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.filter.internal.filters.CompositeFilter;
 import org.cytoscape.filter.internal.filters.EdgeInteractionFilter;
 import org.cytoscape.filter.internal.filters.FilterPlugin;
@@ -139,16 +136,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private final ImageIcon renameIcon = new ImageIcon(getClass().getResource("/images/rename.png"));
 	private final ImageIcon duplicateIcon = new ImageIcon(getClass().getResource("/images/duplicate.png"));
 
-	private CytoPanel cytoPanelWest;
-	private CySwingApplication application;
 	private CyApplicationManager applicationManager;
 	
-	public FilterMainPanel(Vector<CompositeFilter> pAllFilterVect, CySwingApplication application, CyApplicationManager applicationManager) {
-		this.application = application;
+	public FilterMainPanel(CyApplicationManager applicationManager) {
 		this.applicationManager = applicationManager;
 		
-		cytoPanelWest = application.getCytoPanel(CytoPanelName.WEST);
-		allFilterVect = pAllFilterVect;
+		allFilterVect = new Vector<CompositeFilter>();
 		//Initialize the option menu with menuItems
 		setupOptionMenu();
 
@@ -255,6 +248,25 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 //		}
 	}
 
+	public void handleNetworkFocused(CyNetworkView view) {
+		if (view == null) {
+			return;
+		}
+		
+		// If FilterPanel is not selected, do nothing
+		if (cmbSelectFilter.getSelectedItem() == null) {
+			return;
+		}
+					
+		//Refresh indices for UI widgets after network switch			
+		CompositeFilter selectedFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
+		selectedFilter.setNetwork(view.getModel());
+		FilterSettingPanel theSettingPanel= filter2SettingPanelMap.get(selectedFilter);
+		theSettingPanel.refreshIndicesForWidgets();
+		
+		updateFeedbackTableModel();
+	}
+	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -467,9 +479,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		cmbAttributes.addItemListener(this);
 		
 //		// TODO: Port this
-//		CytoPanelListener l = new MyCytoPanelListener();
-//		cytoPanelWest.addCytoPanelListener(l);
-//		
 //		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
 //
 //		// SelectEvent -- used to update feedback Panel
@@ -492,28 +501,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		
 	}
 
-//  TODO: Port this over once the appropriate APIs are made available.
-//	//CytoPanelListener
-//	public void onComponentAdded(int count){}
-//	public void onComponentRemoved(int count) {}
-//	public void onComponentSelected(int componentIndex){
-//		// Add selection listener for the feedback table
-//	
-//		CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop()
-//		.getCytoPanel(SwingConstants.WEST);
-//		int _index = cytoPanelWest.indexOfComponent("Filters");		
-//		if (_index != componentIndex)
-//			return;
-//				
-//		//FiltersPanel is selected
-//		if (Cytoscape.getCurrentNetwork() == null)
-//			return;
-//
-//		Cytoscape.getCurrentNetwork().addSelectEventListener(this);			
-//	}
-//	public void onStateChange(CytoPanelState newState){} 
-//	//////End of CytoPanelListener///////
-
 	public void initCMBSelectFilter(){
 		ComboBoxModel theModel = new FilterSelectWidestStringComboBoxModel(allFilterVect);
 		cmbSelectFilter.setModel(theModel);
@@ -535,25 +522,16 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());
 	}
 
-//	// TODO: Port this somehow
-//	class MyCytoPanelListener implements CytoPanelListener{
-//		public void onStateChange(CytoPanelState newState) {}
-//		public void onComponentSelected(int componentIndex){
-//
-//			if (componentIndex == cytoPanelWest.indexOfComponent("Filters")) {
-//				//if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
-//				if (cmbSelectFilter.getModel().getSize() == 0) {
-//					// CMBSelectFilter will not be initialize until the Filer Panel is selected
-//					initCMBSelectFilter();		
-//				}
-//
-//				updateCMBAttributes();
-//			}
-//		}		
-//		public void onComponentAdded(int count){}
-//		public void onComponentRemoved(int count){}
-//	}
-    
+	public void handlePanelSelected() {
+		//if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
+		if (cmbSelectFilter.getModel().getSize() == 0) {
+			// CMBSelectFilter will not be initialize until the Filer Panel is selected
+			initCMBSelectFilter();		
+		}
+
+		updateCMBAttributes();
+	}
+	
 	/*
 	 * Update the attribute list in the attribute combobox based on the settings in the 
 	 * current selected filter

@@ -13,4 +13,10 @@
 
 	<osgi:service id="filterCytoPanelComponentService" ref="filterCytoPanelComponent"
                   interface="org.cytoscape.application.swing.CytoPanelComponent"/>
+
+	<osgi:service id="currentNetworkViewListenerService" ref="currentNetworkViewListener"
+		interface="org.cytoscape.session.events.SetCurrentNetworkViewListener"/>
+
+	<osgi:service id="filterPanelSelectedListenerService" ref="filterPanelSelectedListener"
+		interface="org.cytoscape.application.swing.events.CytoPanelComponentSelectedListener"/>
 </beans>

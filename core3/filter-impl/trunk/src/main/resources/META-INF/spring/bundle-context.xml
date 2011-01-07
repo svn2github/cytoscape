@@ -9,10 +9,23 @@
 
 	<context:annotation-config />
 
-	<bean id="filterCytoPanelComponent"
-          class="org.cytoscape.filter.internal.gui.FilterCytoPanelComponent">
-		<constructor-arg ref="cySwingApplicationServiceRef" />
+	<bean id="filterMainPanel"
+          class="org.cytoscape.filter.internal.filters.view.FilterMainPanel">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
+	<bean id="filterCytoPanelComponent"
+          class="org.cytoscape.filter.internal.gui.FilterCytoPanelComponent">
+		<constructor-arg ref="filterMainPanel" />
+	</bean>
+
+	<bean id="currentNetworkViewListener"
+		  class="org.cytoscape.filter.internal.CurrentNetworkViewListener">
+		<constructor-arg ref="filterMainPanel" />
+	</bean>
+
+	<bean id="filterPanelSelectedListener"
+		  class="org.cytoscape.filter.internal.FilterPanelSelectedListener">
+		<constructor-arg ref="filterMainPanel" />
+	</bean>
 </beans>
