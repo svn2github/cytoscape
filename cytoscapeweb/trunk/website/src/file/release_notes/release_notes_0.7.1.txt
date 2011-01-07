@@ -1,0 +1,18 @@
+<p>
+    This minor version contains a few bug fixes, mostly related to incorrect data conversion when 
+    creating a network from pure JavaScript objects (NetworkModel object) or updating the network attributes.
+</p>
+<div class="relase_details">
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2444</span>: Null "number" values converted to 0 when updating data.</li>
+        <li><span class="bug_id">2445</span>: Wrong data field types when using JavaScript objects as the network data.</li>
+        <li><span class="bug_id">2447</span>: Date attributes exported as null to XGMML.</li>
+    </ul>
+    <ul class="other_changes">
+        <li>Cytoscape Web now accepts <a href="http://www.w3.org/TR/CSS21/syndata.html#color-units" rel="external">colors</a> 
+        as keywords (e.g. <code>"white"</code>),
+        three-digit hexadecimal notation (e.g. <code>"#fb0"</code>) or 
+        as functional notation with integer values (e.g. <code>"rgb(255,0,255)"</code>).
+        Functional notation with percent values (e.g. <code>"rgb(100%,0%,100%)"</code>) is NOT possible yet.</li>
+    </ul>
+</div>
