@@ -36,7 +36,12 @@
 package org.cytoscape.filter.internal.filters.view;
 
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -54,6 +59,7 @@ import java.util.Map.Entry;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -65,6 +71,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -125,23 +133,11 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	/*
 	 * Icons used in this panel.
 	 */
-	private final ImageIcon optionIcon = new ImageIcon(getClass()
-			.getResource("/cytoscape/images/ximian/stock_form-properties.png"));
-//	// TODO: This should go into the OSGi config
-//
-//	private static final ImageIcon delIcon = new ImageIcon(Cytoscape.class
-//			.getResource("/cytoscape/images/ximian/stock_delete-16.png"));
-//
-//	private static final ImageIcon addIcon = new ImageIcon(
-//			Cytoscape.class
-//					.getResource("/cytoscape/images/ximian/stock_data-new-table-16.png"));
-//
-//	private static final ImageIcon renameIcon = new ImageIcon(Cytoscape.class
-//			.getResource("/cytoscape/images/ximian/stock_redo-16.png"));
-//
-//	private static final ImageIcon duplicateIcon = new ImageIcon(
-//			Cytoscape.class
-//					.getResource("/cytoscape/images/ximian/stock_slide-duplicate.png"));
+	private final ImageIcon optionIcon = new ImageIcon(getClass().getResource("/images/properties.png"));
+	private final ImageIcon delIcon = new ImageIcon(getClass().getResource("/images/delete.png"));
+	private final ImageIcon addIcon = new ImageIcon(getClass().getResource("/images/add.png"));
+	private final ImageIcon renameIcon = new ImageIcon(getClass().getResource("/images/rename.png"));
+	private final ImageIcon duplicateIcon = new ImageIcon(getClass().getResource("/images/duplicate.png"));
 
 	private CytoPanel cytoPanelWest;
 	private CySwingApplication application;
@@ -165,7 +161,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		optionButton.setToolTipText("Options...");
 		optionButton.setIcon(optionIcon);
-		optionButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
+		optionButton.setMargin(new Insets(2, 2, 2, 2));
 		optionButton.setComponentPopupMenu(optionMenu);
 
 		//Initialize the UI components 
@@ -175,9 +171,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		this.btnDeSelect.setEnabled(false);
 
 		// reduce the text font to fit three buttons within visible window
-		this.btnSelectAll.setFont(new java.awt.Font("Tahoma", 0, 9));
-		this.btnDeSelect.setFont(new java.awt.Font("Tahoma", 0, 9));
-		this.btnApplyFilter.setFont(new java.awt.Font("Tahoma", 0, 9));
+		this.btnSelectAll.setFont(new Font("Tahoma", 0, 9));
+		this.btnDeSelect.setFont(new Font("Tahoma", 0, 9));
+		this.btnApplyFilter.setFont(new Font("Tahoma", 0, 9));
 		//
 		String[][] data = {{"","",""}};
 		String[] col = {"Network","Nodes","Edges"};
@@ -415,30 +411,30 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			gridBagConstraints.gridx = 0;
 			gridBagConstraints.gridy = 1;
 			gridBagConstraints.gridwidth = 3;
-			gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+			gridBagConstraints.fill = GridBagConstraints.BOTH;
 			gridBagConstraints.weightx = 1.0;
 			gridBagConstraints.weighty = 1.0;
-			gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
+			gridBagConstraints.insets = new Insets(7, 0, 0, 0);
 			
 			if (pNewFilter instanceof TopologyFilter) {
 				lbAttribute.setVisible(false);
 				btnAddFilterWidget.setVisible(false);
 				cmbAttributes.setVisible(false);	
-				pnlFilterDefinition.setBorder(javax.swing.BorderFactory
+				pnlFilterDefinition.setBorder(BorderFactory
 						.createTitledBorder("Topology Filter Definition"));
 			}
 			else if (pNewFilter instanceof InteractionFilter) {
 				lbAttribute.setVisible(false);
 				btnAddFilterWidget.setVisible(false);
 				cmbAttributes.setVisible(false);	
-				pnlFilterDefinition.setBorder(javax.swing.BorderFactory
+				pnlFilterDefinition.setBorder(BorderFactory
 						.createTitledBorder("Interaction Filter Definition"));				
 			}
 			else {
 				lbAttribute.setVisible(true);
 				btnAddFilterWidget.setVisible(true);
 				cmbAttributes.setVisible(true);								
-				pnlFilterDefinition.setBorder(javax.swing.BorderFactory
+				pnlFilterDefinition.setBorder(BorderFactory
 						.createTitledBorder("Filter Definition"));
 
 			}
@@ -610,40 +606,39 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		/*
 		 * Option Menu
 		 */
-//		// TODO: This should be wired through OSGi
-//		newFilterMenuItem = new JMenuItem("Create new filter...");
-//		newFilterMenuItem.setIcon(addIcon);
-//		
-//		newTopologyFilterMenuItem = new JMenuItem("Create new topology filter...");
-//		newTopologyFilterMenuItem.setIcon(addIcon);
-//
-//		newNodeInteractionFilterMenuItem = new JMenuItem("Create new NodeInteraction filter...");
-//		newNodeInteractionFilterMenuItem.setIcon(addIcon);
-//		newNodeInteractionFilterMenuItem.setEnabled(false);
-//
-//		newEdgeInteractionFilterMenuItem = new JMenuItem("Create new EdgeInteraction filter...");
-//		newEdgeInteractionFilterMenuItem.setIcon(addIcon);
-//		newEdgeInteractionFilterMenuItem.setEnabled(false);
-//		
-//		deleteFilterMenuItem = new JMenuItem("Delete filter...");
-//		deleteFilterMenuItem.setIcon(delIcon);
-//
-//		renameFilterMenuItem = new JMenuItem("Rename filter...");
-//		renameFilterMenuItem.setIcon(renameIcon);
-//
-//		duplicateFilterMenuItem = new JMenuItem("Copy existing filter...");
-//		duplicateFilterMenuItem.setIcon(duplicateIcon);
-//		// Hide copy icon for now, we may need it in the future
-//		duplicateFilterMenuItem.setVisible(false);
-//
-//		optionMenu = new JPopupMenu();
-//		optionMenu.add(newFilterMenuItem);
-//		optionMenu.add(newTopologyFilterMenuItem);
-//		optionMenu.add(newNodeInteractionFilterMenuItem);
-//		optionMenu.add(newEdgeInteractionFilterMenuItem);
-//		optionMenu.add(deleteFilterMenuItem);
-//		optionMenu.add(renameFilterMenuItem);
-//		optionMenu.add(duplicateFilterMenuItem);
+		newFilterMenuItem = new JMenuItem("Create new filter...");
+		newFilterMenuItem.setIcon(addIcon);
+		
+		newTopologyFilterMenuItem = new JMenuItem("Create new topology filter...");
+		newTopologyFilterMenuItem.setIcon(addIcon);
+
+		newNodeInteractionFilterMenuItem = new JMenuItem("Create new NodeInteraction filter...");
+		newNodeInteractionFilterMenuItem.setIcon(addIcon);
+		newNodeInteractionFilterMenuItem.setEnabled(false);
+
+		newEdgeInteractionFilterMenuItem = new JMenuItem("Create new EdgeInteraction filter...");
+		newEdgeInteractionFilterMenuItem.setIcon(addIcon);
+		newEdgeInteractionFilterMenuItem.setEnabled(false);
+		
+		deleteFilterMenuItem = new JMenuItem("Delete filter...");
+		deleteFilterMenuItem.setIcon(delIcon);
+
+		renameFilterMenuItem = new JMenuItem("Rename filter...");
+		renameFilterMenuItem.setIcon(renameIcon);
+
+		duplicateFilterMenuItem = new JMenuItem("Copy existing filter...");
+		duplicateFilterMenuItem.setIcon(duplicateIcon);
+		// Hide copy icon for now, we may need it in the future
+		duplicateFilterMenuItem.setVisible(false);
+
+		optionMenu = new JPopupMenu();
+		optionMenu.add(newFilterMenuItem);
+		optionMenu.add(newTopologyFilterMenuItem);
+		optionMenu.add(newNodeInteractionFilterMenuItem);
+		optionMenu.add(newEdgeInteractionFilterMenuItem);
+		optionMenu.add(deleteFilterMenuItem);
+		optionMenu.add(renameFilterMenuItem);
+		optionMenu.add(duplicateFilterMenuItem);
 	}
 
 	/**
@@ -655,105 +650,105 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private void initComponents() {
 		java.awt.GridBagConstraints gridBagConstraints;
 
-		pnlCurrentFilter = new javax.swing.JPanel();
+		pnlCurrentFilter = new JPanel();
 		cmbSelectFilter = new JComboBox();
         cmbSelectFilter.addPopupMenuListener(new WidestStringComboBoxPopupMenuListener());
 		// optionButton = new javax.swing.JButton();
-		pnlFilterDefinition = new javax.swing.JPanel();
+		pnlFilterDefinition = new JPanel();
         
         WidestStringComboBoxModel wscbm = new AttributeSelectWidestStringComboBoxModel();
         cmbAttributes = new JComboBox(wscbm);
         cmbAttributes.addPopupMenuListener(new WidestStringComboBoxPopupMenuListener());
 
-		btnAddFilterWidget = new javax.swing.JButton();
-		lbAttribute = new javax.swing.JLabel();
-		lbPlaceHolder = new javax.swing.JLabel();
-		pnlButton = new javax.swing.JPanel();
-		btnApplyFilter = new javax.swing.JButton();
-		lbPlaceHolder_pnlFilterDefinition = new javax.swing.JLabel();
+		btnAddFilterWidget = new JButton();
+		lbAttribute = new JLabel();
+		lbPlaceHolder = new JLabel();
+		pnlButton = new JPanel();
+		btnApplyFilter = new JButton();
+		lbPlaceHolder_pnlFilterDefinition = new JLabel();
 
-        pnlFeedBack = new javax.swing.JPanel();
-        tblFeedBack = new javax.swing.JTable();
+        pnlFeedBack = new JPanel();
+        tblFeedBack = new JTable();
 		
-        pnlSelectButtons = new javax.swing.JPanel();
-        btnSelectAll = new javax.swing.JButton();
-        btnDeSelect = new javax.swing.JButton();
-        pnlScroll = new javax.swing.JScrollPane();
+        pnlSelectButtons = new JPanel();
+        btnSelectAll = new JButton();
+        btnDeSelect = new JButton();
+        pnlScroll = new JScrollPane();
         
-		setLayout(new java.awt.GridBagLayout());
+		setLayout(new GridBagLayout());
 
-		pnlCurrentFilter.setLayout(new java.awt.GridBagLayout());
+		pnlCurrentFilter.setLayout(new GridBagLayout());
 
-		pnlCurrentFilter.setBorder(javax.swing.BorderFactory
+		pnlCurrentFilter.setBorder(BorderFactory
 				.createTitledBorder("Current Filter"));
 		// cmbSelectFilter.setModel(new javax.swing.DefaultComboBoxModel(new
 		// String[] { "My First filter", "My second Filter" }));
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.weightx = 0.5;
-		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 10);
+		gridBagConstraints.insets = new Insets(5, 10, 5, 10);
 		pnlCurrentFilter.add(cmbSelectFilter, gridBagConstraints);
 
 		optionButton.setText("Option");
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.insets = new Insets(0, 0, 0, 5);
 		pnlCurrentFilter.add(optionButton, gridBagConstraints);
 
-		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.ipady = 4;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+		gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
 		gridBagConstraints.weightx = 1.0;
 		add(pnlCurrentFilter, gridBagConstraints);
 
-		pnlFilterDefinition.setLayout(new java.awt.GridBagLayout());
+		pnlFilterDefinition.setLayout(new GridBagLayout());
 
-		pnlFilterDefinition.setBorder(javax.swing.BorderFactory
+		pnlFilterDefinition.setBorder(BorderFactory
 				.createTitledBorder("Filter Definition"));
-		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 0;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 10);
+		gridBagConstraints.insets = new Insets(10, 10, 0, 10);
 		pnlFilterDefinition.add(cmbAttributes, gridBagConstraints);
 
 		btnAddFilterWidget.setText("Add");
 		btnAddFilterWidget.setEnabled(false);
-		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridy = 0;
-		gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 5);
+		gridBagConstraints.insets = new Insets(10, 0, 0, 5);
 		pnlFilterDefinition.add(btnAddFilterWidget, gridBagConstraints);
 
 		lbAttribute.setText("Attribute/Filter");
-		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-		gridBagConstraints.insets = new java.awt.Insets(10, 5, 0, 0);
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.insets = new Insets(10, 5, 0, 0);
 		pnlFilterDefinition.add(lbAttribute, gridBagConstraints);
 
-		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.gridwidth = 3;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.fill = GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.weighty = 1.0;
 		pnlFilterDefinition.add(lbPlaceHolder, gridBagConstraints);
 
-		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.fill = GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.weighty = 1.0;
 		add(pnlFilterDefinition, gridBagConstraints);
 
 		///
-		pnlButton.setLayout(new java.awt.FlowLayout());
+		pnlButton.setLayout(new FlowLayout());
 		
 		btnApplyFilter.setText("Apply Filter");
 		pnlButton.add(btnApplyFilter);
@@ -764,27 +759,27 @@ public class FilterMainPanel extends JPanel implements ActionListener,
         btnDeSelect.setText("Deselect All");
         pnlButton.add(btnDeSelect);
 		
-		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
+		gridBagConstraints.insets = new Insets(10, 0, 10, 0);
 		add(pnlButton, gridBagConstraints);
 
 		// lbPlaceHolder_pnlFilterDefinition.setText("jLabel1");
-		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.fill = GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.weighty = 1.0;
 		add(lbPlaceHolder_pnlFilterDefinition, gridBagConstraints);
 
 		// feedback panel
-        pnlFeedBack.setLayout(new java.awt.GridBagLayout());
-        pnlFeedBack.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        pnlFeedBack.setMinimumSize(new java.awt.Dimension(pnlFeedBack.getWidth(),52));
+        pnlFeedBack.setLayout(new GridBagLayout());
+        pnlFeedBack.setBorder(BorderFactory.createTitledBorder(""));
+        pnlFeedBack.setMinimumSize(new Dimension(pnlFeedBack.getWidth(),52));
         //pnlFeedBack.setMinimumSize(new java.awt.Dimension(300,52));
         
         pnlScroll.setViewportView(tblFeedBack);
@@ -796,18 +791,18 @@ public class FilterMainPanel extends JPanel implements ActionListener,
         //tblFeedBack.setRequestFocusEnabled(false);
         //tblFeedBack.setRowSelectionAllowed(false);
         //tblFeedBack.setTableHeader(null);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH; //.HORIZONTAL;
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.fill = GridBagConstraints.BOTH; //.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         //gridBagConstraints.insets = new java.awt.Insets(0, 0, 1, 1);
         pnlFeedBack.add(pnlScroll, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(1, 1, 2, 1);
+        gridBagConstraints.insets = new Insets(1, 1, 2, 1);
 
         add(pnlFeedBack, gridBagConstraints);
 		// Set customized renderer for attributes/filter combobox
@@ -816,34 +811,34 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}// </editor-fold>
 
 	// Variables declaration - do not modify
-	private javax.swing.JButton btnAddFilterWidget;
+	private JButton btnAddFilterWidget;
 
-	private javax.swing.JButton btnApplyFilter;
+	private JButton btnApplyFilter;
 
-	private javax.swing.JComboBox cmbAttributes;
+	private JComboBox cmbAttributes;
 
-	private javax.swing.JComboBox cmbSelectFilter;
+	private JComboBox cmbSelectFilter;
 
-	private javax.swing.JLabel lbAttribute;
+	private JLabel lbAttribute;
 
-	private javax.swing.JLabel lbPlaceHolder;
+	private JLabel lbPlaceHolder;
 
-	private javax.swing.JLabel lbPlaceHolder_pnlFilterDefinition;
+	private JLabel lbPlaceHolder_pnlFilterDefinition;
 
 	// private javax.swing.JButton optionButton;
-	private javax.swing.JPanel pnlButton;
+	private JPanel pnlButton;
 
-	private javax.swing.JPanel pnlCurrentFilter;
+	private JPanel pnlCurrentFilter;
 
-	private javax.swing.JPanel pnlFilterDefinition;
+	private JPanel pnlFilterDefinition;
 
-    private javax.swing.JPanel pnlFeedBack;
-    private javax.swing.JTable tblFeedBack;
+    private JPanel pnlFeedBack;
+    private JTable tblFeedBack;
     
-    private javax.swing.JPanel pnlSelectButtons;
-    private javax.swing.JButton btnDeSelect;
-    private javax.swing.JButton btnSelectAll;
-    private javax.swing.JScrollPane pnlScroll;
+    private JPanel pnlSelectButtons;
+    private JButton btnDeSelect;
+    private JButton btnSelectAll;
+    private JScrollPane pnlScroll;
 	// End of variables declaration
 	
 	
@@ -1009,7 +1004,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				
 				String newFilterName = "";
 				while (true) {
-					newFilterName = javax.swing.JOptionPane.showInputDialog(
+					newFilterName = JOptionPane.showInputDialog(
 							this, "New filter name", "New Filter Name",
 							JOptionPane.INFORMATION_MESSAGE);
 

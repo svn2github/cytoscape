@@ -97,11 +97,11 @@ import org.slf4j.LoggerFactory;
 public class FilterSettingPanel extends JPanel {
 	
 	private static final ImageIcon plusIcon = new ImageIcon(
-			FilterSettingPanel.class.getResource("/cytoscape/images/ximian/plus.gif"));
+			FilterSettingPanel.class.getResource("/images/plus.gif"));
 	private static final ImageIcon minusIcon = new ImageIcon(
-			FilterSettingPanel.class.getResource("/cytoscape/images/ximian/minus.gif"));
+			FilterSettingPanel.class.getResource("/images/minus.gif"));
 	private static final ImageIcon delIcon = new ImageIcon(FilterSettingPanel.class
-			.getResource("/cytoscape/images/ximian/stock_delete-16.png"));
+			.getResource("/images/delete.png"));
 
 	private CompositeFilter theFilter;
 	private FilterMainPanel parentPanel;

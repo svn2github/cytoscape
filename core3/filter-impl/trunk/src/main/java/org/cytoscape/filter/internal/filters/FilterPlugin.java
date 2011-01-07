@@ -68,8 +68,8 @@ public class FilterPlugin {
 	// Other plugin can turn on/off the FilterEvent
 	public static boolean shouldFireFilterEvent = false;
 
-	protected ImageIcon icon = new ImageIcon(getClass().getResource("/stock_filter-data-by-criteria.png"));
-	protected ImageIcon icon2 = new ImageIcon(getClass().getResource("/stock_filter-data-by-criteria-16.png"));
+	protected ImageIcon icon = new ImageIcon(getClass().getResource("/images/filter.png"));
+	protected ImageIcon icon2 = new ImageIcon(getClass().getResource("/images/filter-small.png"));
 
 	// Other plugin can get a handler to all the filters defined
 	public static Vector<CompositeFilter> getAllFilterVect() {
