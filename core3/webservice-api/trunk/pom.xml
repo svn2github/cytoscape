@@ -96,6 +96,11 @@
 	<dependencies>
 
 		<!-- Cytoscape modules -->
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>model-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+		</dependency>
 
 
 		<!-- Testing -->
