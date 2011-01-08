@@ -9,18 +9,24 @@
 		http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
-
+ 
 	<osgi:reference id="cytoscapeDesktopService"
 		interface="org.cytoscape.application.swing.CySwingApplication" />
-
 	<osgi:reference id="cyApplicationManagerRef"
 		interface="org.cytoscape.session.CyApplicationManager">
 	</osgi:reference>
-
 	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
+	<osgi:reference id="guiTaskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager" />
+	<osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty"
+		filter="(cyPropertyName=bookmarks)" />
 
-	<osgi:reference id="guiTaskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager">
-	</osgi:reference>
+	<osgi:reference id="bookmarksUtilServiceRef"
+		interface="org.cytoscape.property.bookmark.BookmarksUtil" />
+ 
+	<osgi:reference id="cytoscapePropertiesServiceRef" 
+		interface="org.cytoscape.property.CyProperty"
+		filter="(cyPropertyName=coreSettings)" />
+
 
 	<!--
 	This code registers the bean we just created "sampleTaskFactory" as an 
@@ -31,7 +37,9 @@
 	system to identify and otherwise control how the service gets use 
 	(like determining which menu to put the service in).
 	-->
-	<osgi:service id="tableImportFactoryService" ref="tableImportFactory"
-		interface="org.cytoscape.task.NetworkViewTaskFactory">
-	</osgi:service>
+
+	<osgi:service id="importAttributeTableActionService" ref="importAttributeTableAction"
+		interface="org.cytoscape.application.swing.CyAction" />
+
+	
 </beans>

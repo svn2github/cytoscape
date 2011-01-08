@@ -14,11 +14,15 @@
 	is used to identify this particular object in this and the 
 	bundle-context-osgi.xml file.
 	-->
-	<bean id="tableImportFactory"
-		class="org.cytoscape.search.internal.TableImportFactory">
-		<constructor-arg ref="cytoscapeDesktopService" />
+			
+	<bean id="importAttributeTableAction" class="org.cytoscape.tableimport.internal.actions.ImportAttributeTableAction">
+		<constructor-arg ref="cytoscapeDesktopService" /> 
 		<constructor-arg ref="cyApplicationManagerRef" />
-		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="bookmarkServiceRef" />		
+		<constructor-arg ref="bookmarksUtilServiceRef" />	
 		<constructor-arg ref="guiTaskManagerServiceRef" />
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
+	
 </beans>
