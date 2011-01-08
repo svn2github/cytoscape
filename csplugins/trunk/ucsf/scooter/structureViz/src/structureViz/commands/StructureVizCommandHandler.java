@@ -71,13 +71,13 @@ enum Command {
 	DEPICT("depict", "Change the depiction of a structure",
 	                 "preset|style|ribbonstyle|surfacestyle|transparency|structurelist|atomspec=selected"),
 	EXIT("exit", "Exit Chimera",null),
-	FINDCLASHES("find clashes", "Find clashes between two models or parts of models","structurelist|atomspec=selected|continuous"),
+	FINDCLASHES("find clashes", "Find clashes between two models or parts of models","structurelist|atomspec=selected|continuous=true"),
 	FINDHBONDS("find hbonds", "Find hydrogen bonds between two models or parts of models",
 	           "structurelist|atomspec=selected|limit=any|intramodel=true|intermodel=true"),
 	FOCUS("focus", "Focus on a structure or part of a structure","structurelist|atomspec"),
 	HIDE("hide", "Hide parts of a structure", "structurelist|atomspec=selected|structuretype"),
 	LISTCHAINS("list chains", "List the chains in a structure", "structurelist=all"), 
-	LISTRES("list residues", "List the residues in a structure", "structurelist=all|chain"),
+	LISTRES("list residues", "List the residues in a structure", "structurelist=all|chainlist"),
 	LISTSTRUCTURES("list structures", "List all of the open structures",null),
 	MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),
 	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodelist|showdialog=false"),
@@ -303,7 +303,7 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 			chimera.exit();
 
 		//
-		// FINDCLASHES("find clashes", "Find clashes between two models or parts of models","structurelist|atomspec=selected|continuous"),
+		// FINDCLASHES("find clashes", "Find clashes between two models or parts of models","structurelist|atomspec=selected|continuous=true"),
 		//
 		} else if (Command.FINDCLASHES.equals(command)) {
 			String continuous = getArg(command, CONTINUOUS, args);
@@ -363,10 +363,10 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 			return StructureCommands.listChains(chimera, result, structureList);
 
 		//
-		// LISTRES("list residues", "List the residues in a structure", "structurelist=all|chain=all"),
+		// LISTRES("list residues", "List the residues in a structure", "structurelist=all|chainlist"),
 		//
 		} else if (Command.LISTRES.equals(command)) {
-			String chains = getArg(command, "chain", args);
+			String chains = getArg(command, CHAINLIST, args);
 			return StructureCommands.listResidues(chimera, result, structureList, chains);
 
 		//
