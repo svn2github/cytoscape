@@ -10,7 +10,6 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
 
 
 /**
@@ -23,8 +22,7 @@ public abstract class AbstractGraphPartition extends LayoutTask {
 	double incr = 100;
 	protected List <LayoutPartition> partitionList = null;
 	protected EdgeWeighter edgeWeighter = null;
-	@Tunable(description="Don't partition graph before layout", groups="Standard settings")
-	public boolean singlePartition = false;
+	private boolean singlePartition;
 
 	// Information for taskMonitor
 	double current_start = 0;	// Starting node number
@@ -35,9 +33,11 @@ public abstract class AbstractGraphPartition extends LayoutTask {
 	 * Creates a new AbstractGraphPartition object.
 	 */
 	public AbstractGraphPartition(final CyNetworkView networkView, final String name,
+				      final boolean singlePartition,
 	                              final boolean selectedOnly, final Set<View<CyNode>> staticNodes)
 	{
 		super(networkView, name, selectedOnly, staticNodes);
+		this.singlePartition = singlePartition;
 	}
 
 	/**
@@ -62,13 +62,10 @@ public abstract class AbstractGraphPartition extends LayoutTask {
 	 * can be used by users who do not want to partition their graph for
 	 * some reason.
 	 *
-	 * @param flag if false, no paritioning will be done
+	 * @param partitioning if false, no paritioning will be done
 	 */
-	public void setPartition(boolean flag) {
-		if (flag)
-			this.singlePartition = false;
-		else
-			this.singlePartition = true;
+	public void setPartition(final boolean partitioning) {
+		singlePartition = !partitioning;
 	}
 
 	/**

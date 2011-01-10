@@ -33,7 +33,8 @@ public class ISOMLayout extends AbstractLayout implements TunableValidator {
 	public double sizeFactor = 100;
 	@Tunable(description="Cooling factor")
 	public double coolingFactor = 2;
-
+        @Tunable(description="Don't partition graph before layout", groups="Standard settings")
+	public boolean singlePartition;
 
 	/**
 	 * Creates a new ISOMLayout object.
@@ -48,9 +49,11 @@ public class ISOMLayout extends AbstractLayout implements TunableValidator {
 	}
 	
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new ISOMLayoutTask(networkView, getName(), selectedOnly, staticNodes,
-				maxEpoch,radiusConstantTime,radius,minRadius,initialAdaptation,
-				minAdaptation,sizeFactor,coolingFactor));
+		return new TaskIterator(
+			new ISOMLayoutTask(networkView, getName(), selectedOnly, staticNodes,
+					   maxEpoch, radiusConstantTime, radius, minRadius,
+					   initialAdaptation, minAdaptation, sizeFactor,
+					   coolingFactor, singlePartition));
 	}
 	
 	/**

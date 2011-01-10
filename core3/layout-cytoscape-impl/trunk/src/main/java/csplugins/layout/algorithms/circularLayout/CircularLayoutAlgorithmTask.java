@@ -1,5 +1,6 @@
 package csplugins.layout.algorithms.circularLayout;
 
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,14 +20,14 @@ import org.cytoscape.work.Tunable;
 import csplugins.layout.algorithms.hierarchicalLayout.Edge;
 import csplugins.layout.algorithms.hierarchicalLayout.Graph;
 
-public class CircularLayoutAlgorithmTask extends AbstractGraphPartition {
 
+public class CircularLayoutAlgorithmTask extends AbstractGraphPartition {
 	public int nodeHorizontalSpacing; // = 64;
 	public int nodeVerticalSpacing;// = 32;
 	public int leftEdge;// = 32;
 	public int topEdge;// = 32;
 	public int rightMargin;// = 1000;
-	
+
 	private int[][] bc;
 	private boolean[] posSet;
 	private boolean[] depthPosSet;
@@ -36,16 +37,15 @@ public class CircularLayoutAlgorithmTask extends AbstractGraphPartition {
 	private HashMap<Integer, View<CyNode>> nodeViews;
 	private HashMap<Integer, Integer> node2BiComp;
 	private boolean[] drawnBiComps;
-	
-	
-	public CircularLayoutAlgorithmTask(final CyNetworkView networkView, final String name,
-			  final boolean selectedOnly, final Set<View<CyNode>> staticNodes,
-			  final int nodeHorizontalSpacing, final int nodeVerticalSpacing,final int leftEdge,
-			  final int topEdge, final int rightMargin)
-			  
-	{
-		super(networkView, name, selectedOnly, staticNodes);
 
+
+	public CircularLayoutAlgorithmTask(
+		final CyNetworkView networkView, final String name, final boolean selectedOnly,
+		final Set<View<CyNode>> staticNodes, final int nodeHorizontalSpacing,
+		final int nodeVerticalSpacing, final int leftEdge, final int topEdge,
+		final int rightMargin, final boolean singlePartition)
+	{
+		super(networkView, name, singlePartition, selectedOnly, staticNodes);
 
 		this.nodeHorizontalSpacing = nodeHorizontalSpacing;
 		this.nodeVerticalSpacing = nodeVerticalSpacing;
@@ -53,8 +53,8 @@ public class CircularLayoutAlgorithmTask extends AbstractGraphPartition {
 		this.topEdge = topEdge;
 		this.rightMargin = rightMargin;
 	}
-	
-	
+
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -80,10 +80,10 @@ public class CircularLayoutAlgorithmTask extends AbstractGraphPartition {
 
 		while (iter.hasNext() && !cancelled) {
 			View<CyNode> nv = ((LayoutNode) (iter.next())).getNodeView();
-			
+
 			nodeViews.put(nextNode, nv);
 			nextNode++;
-			
+
 		}
 
 		if (cancelled)
@@ -175,7 +175,7 @@ public class CircularLayoutAlgorithmTask extends AbstractGraphPartition {
 		// sorting nodes on inner circle
 		bc[maxIndex] = SortInnerCircle(bc[maxIndex]);
 
-		// setting nodes on inner circle 
+		// setting nodes on inner circle
 		for (int i = 0; i < bc[maxIndex].length; i++) {
 			//System.out.println(bc[maxIndex][i] + " " + part2NonPart[bc[maxIndex][i]] + "   ");
 			setOffset(nodeViews.get(bc[maxIndex][i]), startX + (Math.cos(angle) * radius),
@@ -207,7 +207,7 @@ public class CircularLayoutAlgorithmTask extends AbstractGraphPartition {
 		}
 	}
 
-	
+
 	/**
 	 * Function which sets the first neighbours of nodes from circle (biconnected component)
 	 * on the concentric circle (larger then the first circle).
@@ -775,7 +775,7 @@ public class CircularLayoutAlgorithmTask extends AbstractGraphPartition {
 				if (nodeHeights.get(Integer.valueOf(maxId)).intValue() > 8)
 					r = 256;
 
-				setOffset(nodeViews.get(maxId), 
+				setOffset(nodeViews.get(maxId),
 						  startX + (Math.cos(remStartAngle - ((neighboursCount / 2) * deltaAngle)) * r),
 				          startY - (Math.sin(remStartAngle - ((neighboursCount / 2) * deltaAngle)) * r));
 				//System.out.println("Ugao za maxID "
@@ -1068,11 +1068,11 @@ public class CircularLayoutAlgorithmTask extends AbstractGraphPartition {
 	public String getTitle() {
 		return new String("Circular Layout");
 	}
-	
+
 	private void setOffset(View<CyNode> nv, double x, double y){
 		nv.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x);
 		nv.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, y);
 	}
 
-	
+
 }

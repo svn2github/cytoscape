@@ -1,4 +1,3 @@
-/* vim: set ts=2: */
 /**
  * Copyright (c) 2006 The Regents of the University of California.
  * All rights reserved.
@@ -32,6 +31,7 @@
  */
 package csplugins.layout.algorithms.bioLayout;
 
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 
@@ -43,6 +43,7 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.undo.UndoSupport;
+
 
 /**
  * Lays out the nodes in a graph using a modification of the Fruchterman-Rheingold
@@ -111,6 +112,8 @@ public class BioLayoutFRAlgorithm extends AbstractLayout implements TunableValid
 	@Tunable(description="Number of iterations", groups="Algorithm settings")
 	public int nIterations = 500;
 
+	@Tunable(description="Don't partition graph before layout", groups="Standard settings")
+	public boolean singlePartition;
 	
 	boolean supportWeights = true;
 	
@@ -126,10 +129,12 @@ public class BioLayoutFRAlgorithm extends AbstractLayout implements TunableValid
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new BioLayoutFRAlgorithmTask(networkView, getName(), selectedOnly, staticNodes,
-				update_iterations,attraction_multiplier,repulsion_multiplier,
-				gravity_multiplier,conflict_avoidance,max_distance_factor,spread_factor,temperature,nIterations,
-				supportWeights));
+		return new TaskIterator(
+			new BioLayoutFRAlgorithmTask(
+				networkView, getName(), selectedOnly, staticNodes, update_iterations,
+				attraction_multiplier, repulsion_multiplier, gravity_multiplier,
+				conflict_avoidance, max_distance_factor, spread_factor,
+				temperature, nIterations, supportWeights, singlePartition));
 	}
 	
 	// TODO

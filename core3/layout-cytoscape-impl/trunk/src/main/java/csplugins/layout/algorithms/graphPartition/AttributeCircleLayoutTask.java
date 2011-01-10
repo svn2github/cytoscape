@@ -1,5 +1,6 @@
 package csplugins.layout.algorithms.graphPartition;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,6 +15,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.Tunable;
 
+
 public class AttributeCircleLayoutTask extends AbstractGraphPartition {
 
 	public String attribute = null;
@@ -21,24 +23,25 @@ public class AttributeCircleLayoutTask extends AbstractGraphPartition {
 	public double spacing = 100.0;
 	boolean supportNodeAttributes = true;
 
-	
+
 	/**
 	 * Creates a new ForceDirectedLayout object.
 	 */
-	public AttributeCircleLayoutTask(final CyNetworkView networkView, final String name,
-				  final boolean selectedOnly, final Set<View<CyNode>> staticNodes,
-				  final String attribute,final String namespace,final double spacing,final boolean supportNodeAttributes)
+	public AttributeCircleLayoutTask(
+		final CyNetworkView networkView, final String name, final boolean selectedOnly,
+		final Set<View<CyNode>> staticNodes, final String attribute, final String namespace,
+		final double spacing,final boolean supportNodeAttributes,
+		final boolean singlePartition)
 	{
-	
-		super(networkView, name, selectedOnly, staticNodes);
-		
+		super(networkView, name, singlePartition, selectedOnly, staticNodes);
+
 		this.attribute = attribute;
 		this.namespace = namespace;
 		this.spacing = spacing;
 		this.supportNodeAttributes = supportNodeAttributes;
 	}
-	
-	
+
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -53,12 +56,12 @@ public class AttributeCircleLayoutTask extends AbstractGraphPartition {
 			}
 		}
 
-		int count = nodes.size(); 
+		int count = nodes.size();
 		int r = (int) Math.sqrt(count);
 		r *= spacing;
 
 		if (this.attribute != null && count > 0) {
-			Class<?> klass = nodes.get(0).getNode().getCyRow(namespace).getType(attribute); 
+			Class<?> klass = nodes.get(0).getNode().getCyRow(namespace).getType(attribute);
 			if (klass != null && Comparable.class.isAssignableFrom(klass)){
 				// FIXME: I assume this would be better, but get type errors if I try:
 				//Class<Comparable<?>> kasted = (Class<Comparable<?>>) klass;
@@ -70,7 +73,7 @@ public class AttributeCircleLayoutTask extends AbstractGraphPartition {
 		}
 
 		// Compute angle step
-		double phi = (2 * Math.PI) / count; 
+		double phi = (2 * Math.PI) / count;
 
 		partition.resetNodes(); // We want to figure out our mins & maxes anew
 		                        // Arrange vertices in a circle
@@ -84,13 +87,13 @@ public class AttributeCircleLayoutTask extends AbstractGraphPartition {
 			partition.moveNodeToLocation(node);
 		}
 	}
-	
+
 	private class AttributeComparator<T extends Comparable<T>> implements Comparator<LayoutNode> {
 		Class<T> klass;
 		private AttributeComparator(Class<T> klass) {
 			this.klass = klass;
 		}
-		
+
 		public int compare(LayoutNode o1, LayoutNode o2) {
 			T v1 = o1.getNode().getCyRow(namespace).get(attribute, klass);
 			T v2 = o2.getNode().getCyRow(namespace).get(attribute, klass);
@@ -105,7 +108,7 @@ public class AttributeCircleLayoutTask extends AbstractGraphPartition {
 					return 0;
 				else if ((s1 != null) && (s2 == null))
 					return 1;
-				
+
 			} else {
 				return compareEvenIfNull(v1, v2);
 			}

@@ -1,4 +1,3 @@
-/* vim: set ts=2: */
 /**
  * Copyright (c) 2006 The Regents of the University of California.
  * All rights reserved.
@@ -32,6 +31,7 @@
  */
 package csplugins.layout.algorithms.bioLayout;
 
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +45,7 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.undo.UndoSupport;
+
 
 /**
  * Superclass for the two bioLayout algorithms (KK and FR).
@@ -65,8 +66,8 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 
 	/**
 	 * A small value used to avoid division by zero
-   */
-	protected double EPSILON = 0.0000001D;
+	 */
+	protected double EPSILON = 0.0000001;
 
 	/**
 	 * Value to set for doing unweighted layouts
@@ -94,9 +95,11 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	 * This is the constructor for the bioLayout algorithm.
 	 */
 	public BioLayoutAlgorithm(final CyNetworkView networkView, final String name,
-            final boolean selectedOnly, final Set<View<CyNode>> staticNodes) {
+				  final boolean selectedOnly, final Set<View<CyNode>> staticNodes,
+				  final boolean singlePartition)
+	{
 		//super(undoSupport);
-		super(networkView, name, selectedOnly, staticNodes);
+		super(networkView, name, singlePartition, selectedOnly, staticNodes);
 		
 		if (edgeWeighter == null)
 			edgeWeighter = new EdgeWeighter();

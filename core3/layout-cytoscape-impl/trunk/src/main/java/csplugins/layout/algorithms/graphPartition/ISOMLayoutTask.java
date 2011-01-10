@@ -45,14 +45,14 @@ public class ISOMLayoutTask  extends AbstractGraphPartition {
 
 	CyNetwork network;
 	
-	public ISOMLayoutTask(final CyNetworkView networkView, final String name,
-			  final boolean selectedOnly, final Set<View<CyNode>> staticNodes,
-			  final int maxEpoch,final int radiusConstantTime,final int radius,final int minRadius,
-			  final double initialAdaptation,final double minAdaptation,final double sizeFactor,final double coolingFactor)
+	public ISOMLayoutTask(
+		final CyNetworkView networkView, final String name, final boolean selectedOnly,
+		final Set<View<CyNode>> staticNodes, final int maxEpoch,
+		final int radiusConstantTime, final int radius, final int minRadius,
+		final double initialAdaptation, final double minAdaptation,
+		final double sizeFactor, final double coolingFactor, final boolean singlePartition)
 	{
-	
-		super(networkView, name, selectedOnly, staticNodes);
-
+		super(networkView, name, singlePartition, selectedOnly, staticNodes);
 	
 		this.maxEpoch = maxEpoch;
 		this.radiusConstantTime = radiusConstantTime;
@@ -67,12 +67,6 @@ public class ISOMLayoutTask  extends AbstractGraphPartition {
 		q = new IntArrayList();
 	}
 	
-	
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param partition DOCUMENT ME!
-	 */
 	public void layoutPartion(LayoutPartition partition) {
 		this.partition = partition;
 

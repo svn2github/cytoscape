@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.prefuse.layouts.internal; 
+
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -64,12 +56,12 @@ import prefuse.util.force.NBodyForce;
 import prefuse.util.force.RungeKuttaIntegrator;
 import prefuse.util.force.SpringForce;
 
+
 /**
  * This class wraps the Prefuse force-directed layout algorithm.
  * See {@link http://prefuse.org} for more detail.
  */
-public class ForceDirectedLayoutTask extends AbstractGraphPartition
-{
+public class ForceDirectedLayoutTask extends AbstractGraphPartition {
 	private ForceSimulator m_fsim;
 
 	public int numIterations;
@@ -77,8 +69,6 @@ public class ForceDirectedLayoutTask extends AbstractGraphPartition
 	public double defaultSpringLength;
 	public double defaultNodeMass;
 	public ForceDirectedLayout.Integrators integrator;
-	//public ListSingleSelection<String> integratorChoice = "RUNGEKUTTA";
-	
 	
 	/**
 	 * Value to set for doing unweighted layouts
@@ -86,19 +76,22 @@ public class ForceDirectedLayoutTask extends AbstractGraphPartition
 	public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
 
 	private boolean supportWeights = true;
-	Map<LayoutNode,ForceItem> forceItems;
+	private Map<LayoutNode,ForceItem> forceItems;
 
-	
 	/**
 	 * Creates a new ForceDirectedLayout object.
 	 */
 	public ForceDirectedLayoutTask(final CyNetworkView networkView, final String name,
-				  final boolean selectedOnly, final Set<View<CyNode>> staticNodes,
-				  final int numIterations, final double defaultSpringCoefficient, final double defaultSpringLength, 
-				  final double defaultNodeMass, final ForceDirectedLayout.Integrators integrator)
+				       final boolean selectedOnly,
+				       final Set<View<CyNode>> staticNodes,
+				       final int numIterations,
+				       final double defaultSpringCoefficient,
+				       final double defaultSpringLength,
+				       final double defaultNodeMass,
+				       final ForceDirectedLayout.Integrators integrator,
+				       final boolean singlePartition)
 	{
-	
-		super(networkView, name, selectedOnly, staticNodes);
+		super(networkView, name, singlePartition, selectedOnly, staticNodes);
 		
 		this.numIterations = numIterations;
 		this.defaultSpringCoefficient = defaultSpringCoefficient;

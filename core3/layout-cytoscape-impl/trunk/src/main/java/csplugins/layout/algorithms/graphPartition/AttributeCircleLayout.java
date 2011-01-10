@@ -1,4 +1,3 @@
-/* vim: set ts=2: */
 /**
  * Copyright (c) 2006 The Regents of the University of California.
  * All rights reserved.
@@ -32,6 +31,7 @@
  */
 package csplugins.layout.algorithms.graphPartition;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,9 +50,6 @@ import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.undo.UndoSupport;
 
 
-/**
- *
- */
 public class AttributeCircleLayout extends AbstractLayout implements TunableValidator {
 	@Tunable(description="The attribute to use for the layout")
 	public String attribute = null;
@@ -60,7 +57,10 @@ public class AttributeCircleLayout extends AbstractLayout implements TunableVali
 	public String namespace = null;
 	@Tunable(description="Circle size")
 	public double spacing = 100.0;
-	boolean supportNodeAttributes = true;
+        @Tunable(description="Don't partition graph before layout", groups="Standard settings")
+	public boolean singlePartition;
+
+	private boolean supportNodeAttributes = true;
 
 	/**
 	 * Creates a new AttributeCircleLayout object.
@@ -80,21 +80,19 @@ public class AttributeCircleLayout extends AbstractLayout implements TunableVali
 		initialize(true);
 	}
 
-	
-
-	//TODO 
+	//TODO
 	public boolean tunablesAreValid(final Appendable errMsg) {
 		return true;
 	}
 
 	public TaskIterator getTaskIterator() {
-		
-		return new TaskIterator(new AttributeCircleLayoutTask(networkView, getName(), selectedOnly, staticNodes,
-				attribute,namespace,spacing,supportNodeAttributes));
+		return new TaskIterator(
+			new AttributeCircleLayoutTask(
+				networkView, getName(), selectedOnly, staticNodes,
+				attribute, namespace, spacing, supportNodeAttributes,
+				singlePartition));
 	}
 
-	
-	
 	/**
 	 *  DOCUMENT ME!
 	 *

@@ -16,7 +16,6 @@ import prefuse.util.force.Integrator;
 import org.cytoscape.work.util.ListSingleSelection;
 
 public class ForceDirectedLayout extends AbstractLayout implements TunableValidator {
-	
 	@Tunable(description="Number of Iterations", groups="Algorithm settings")
 	public int numIterations = 100;
 	@Tunable(description="Default Spring Coefficient", groups="Algorithm settings")
@@ -25,14 +24,16 @@ public class ForceDirectedLayout extends AbstractLayout implements TunableValida
 	public double defaultSpringLength = 50.0;
 	@Tunable(description="Default Node Mass", groups="Algorithm settings")
 	public double defaultNodeMass = 3.0;
-	
+	@Tunable(description="Don't partition graph before layout", groups="Standard settings")
+	public boolean singlePartition;
+
 	//@Tunable(description="Integration algorithm to use", groups="Algorithm settings")
 	public Integrators integrator = Integrators.RUNGEKUTTA;
-	//public ListSingleSelection<String> integratorChoice = "RUNGEKUTTA";
-
+	//public ListSingleSelection<String> integratorChoice = "Runge-Kutta";
+	
 	public enum Integrators {
-		RUNGEKUTTA ("RUNGEKUTTA"),
-		EULER ("EULER");
+		RUNGEKUTTA ("Runge-Kutta"),
+		EULER ("Euler");
 
 		private String name;
 		private Integrators(String str) { name=str; }
@@ -67,9 +68,11 @@ public class ForceDirectedLayout extends AbstractLayout implements TunableValida
 	}
 
 	public TaskIterator getTaskIterator() {
-		
-		return new TaskIterator(new ForceDirectedLayoutTask(networkView, getName(), selectedOnly, staticNodes,
-				numIterations, defaultSpringCoefficient,defaultSpringLength,defaultNodeMass,integrator));
+		return new TaskIterator(
+			new ForceDirectedLayoutTask(networkView, getName(), selectedOnly, staticNodes,
+						    numIterations, defaultSpringCoefficient,
+						    defaultSpringLength, defaultNodeMass, integrator,
+						    singlePartition));
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package csplugins.layout.algorithms.graphPartition;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,26 +19,26 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.model.CyTableEntry;
 
-public class DegreeSortedCircleLayoutTask extends AbstractGraphPartition {
 
+public class DegreeSortedCircleLayoutTask extends AbstractGraphPartition {
 	private String DEGREE_ATTR_NAME = "degree";
 	private CyTableManager tableMgr;
-	CyNetwork network;
+	private CyNetwork network;
 
 	/**
 	 * Creates a new GridNodeLayout object.
 	 */
-	public DegreeSortedCircleLayoutTask(final CyNetworkView networkView, final String name,
-				  final boolean selectedOnly, final Set<View<CyNode>> staticNodes,
-				  final String DEGREE_ATTR_NAME, CyTableManager tableMgr)
+	public DegreeSortedCircleLayoutTask(
+		final CyNetworkView networkView, final String name, final boolean selectedOnly,
+		final Set<View<CyNode>> staticNodes, final String DEGREE_ATTR_NAME,
+		final CyTableManager tableMgr, final boolean singlePartition)
 	{
-		super(networkView, name, selectedOnly, staticNodes);
+		super(networkView, name, singlePartition, selectedOnly, staticNodes);
 
 		this.DEGREE_ATTR_NAME= DEGREE_ATTR_NAME;
 		this.tableMgr = tableMgr;
 		this.network = networkView.getModel();
 	}
-
 
 	/**
 	 *  DOCUMENT ME!
@@ -47,17 +48,16 @@ public class DegreeSortedCircleLayoutTask extends AbstractGraphPartition {
 	public void layoutPartion(LayoutPartition partition) {
 		// Create attribute
 		CyTable table = tableMgr.getTableMap(CyTableEntry.NODE, network).get(CyNetwork.DEFAULT_ATTRS);
-		if(table.getColumnTypeMap().keySet().contains(DEGREE_ATTR_NAME) == false) {
+		if (table.getColumnTypeMap().keySet().contains(DEGREE_ATTR_NAME) == false) {
 			table.createColumn(DEGREE_ATTR_NAME, Double.class);
 		}
 
-    // just add the unlocked nodes
-    List<LayoutNode> nodes = new ArrayList<LayoutNode>();
-    for ( LayoutNode ln : partition.getNodeList() ) {
-      if ( !ln.isLocked() ) {
-        nodes.add(ln);
-      }
-    }
+		// just add the unlocked nodes
+		List<LayoutNode> nodes = new ArrayList<LayoutNode>();
+		for (final LayoutNode ln : partition.getNodeList()) {
+			if (!ln.isLocked())
+				nodes.add(ln);
+		}
 	
 		if (cancelled)
 			return;

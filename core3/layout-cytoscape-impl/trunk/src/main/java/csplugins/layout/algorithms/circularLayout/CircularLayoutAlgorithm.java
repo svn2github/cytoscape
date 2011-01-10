@@ -1,5 +1,6 @@
 package csplugins.layout.algorithms.circularLayout;
 
+
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -11,8 +12,8 @@ import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
 import org.cytoscape.work.undo.UndoSupport;
 
-public class CircularLayoutAlgorithm extends AbstractLayout implements TunableValidator{
 
+public class CircularLayoutAlgorithm extends AbstractLayout implements TunableValidator{
 	@Tunable(description="Horizontal spacing between nodes")
 	public int nodeHorizontalSpacing = 64;
 	@Tunable(description="Vertical spacing between nodes")
@@ -23,7 +24,9 @@ public class CircularLayoutAlgorithm extends AbstractLayout implements TunableVa
 	public int topEdge = 32;
 	@Tunable(description="Right edge margin")
 	public int rightMargin = 1000;
-	
+        @Tunable(description="Don't partition graph before layout", groups="Standard settings")
+	public boolean singlePartition;
+
 	/**
 	 * Creates a new Layout object.
 	 */
@@ -38,9 +41,11 @@ public class CircularLayoutAlgorithm extends AbstractLayout implements TunableVa
 	}
 
 	public TaskIterator getTaskIterator() {
-		
-		return new TaskIterator(new CircularLayoutAlgorithmTask(networkView, getName(), selectedOnly, staticNodes,
-				nodeHorizontalSpacing,nodeVerticalSpacing,leftEdge,topEdge,rightMargin));		
+		return new TaskIterator(
+			new CircularLayoutAlgorithmTask(networkView, getName(), selectedOnly,
+							staticNodes, nodeHorizontalSpacing,
+							nodeVerticalSpacing, leftEdge, topEdge,
+							rightMargin, singlePartition));
 	}
 
 	/**
@@ -70,6 +75,6 @@ public class CircularLayoutAlgorithm extends AbstractLayout implements TunableVa
 		return "Circular Layout";
 	}
 
-	
-	
+
+
 }

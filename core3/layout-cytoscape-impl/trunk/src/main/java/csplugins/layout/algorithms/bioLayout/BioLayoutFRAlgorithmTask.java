@@ -1,5 +1,6 @@
 package csplugins.layout.algorithms.bioLayout;
 
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Set;
@@ -12,8 +13,8 @@ import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
 import org.cytoscape.work.Tunable;
 
-public class BioLayoutFRAlgorithmTask extends BioLayoutAlgorithm {
 
+public class BioLayoutFRAlgorithmTask extends BioLayoutAlgorithm {
 	/**
 	 * Sets the number of iterations for each update
 	 */
@@ -111,14 +112,15 @@ public class BioLayoutFRAlgorithmTask extends BioLayoutAlgorithm {
 	Profile updateProfile;
 	 */
 
-	public BioLayoutFRAlgorithmTask(final CyNetworkView networkView, final String name, final boolean selectedOnly, 
-			final Set<View<CyNode>> staticNodes,
-			int update_iterations, final double attraction_multiplier,final double repulsion_multiplier,  
-			final double gravity_multiplier,final double conflict_avoidance, final double max_distance_factor,
-			final double spread_factor,final double temperature,final int nIterations,
-			final boolean supportWeights)
+	public BioLayoutFRAlgorithmTask(
+		final CyNetworkView networkView, final String name, final boolean selectedOnly, 
+		final Set<View<CyNode>> staticNodes,
+		int update_iterations, final double attraction_multiplier,final double repulsion_multiplier,  
+		final double gravity_multiplier,final double conflict_avoidance, final double max_distance_factor,
+		final double spread_factor,final double temperature,final int nIterations,
+		final boolean supportWeights, final boolean singlePartition)
 	{		
-		super(networkView, name, selectedOnly, staticNodes);
+		super(networkView, name, selectedOnly, staticNodes, singlePartition);
 
 		this.update_iterations =update_iterations;
 		this.attraction_multiplier =attraction_multiplier;
@@ -132,10 +134,7 @@ public class BioLayoutFRAlgorithmTask extends BioLayoutAlgorithm {
 		this.supportWeights =supportWeights;
 		
 		displacementArray = new ArrayList<Double>(100);
-
 	}
-	
-	
 
 	/**
 	 * Required methods (and overrides) for AbstractLayout

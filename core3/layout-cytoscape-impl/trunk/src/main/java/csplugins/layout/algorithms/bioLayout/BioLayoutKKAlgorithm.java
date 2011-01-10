@@ -1,4 +1,3 @@
-/* vim: set ts=2: */
 /**
  * Copyright (c) 2006 The Regents of the University of California.
  * All rights reserved.
@@ -60,7 +59,6 @@ import org.cytoscape.work.undo.UndoSupport;
  * @version 0.9
  */
 public class BioLayoutKKAlgorithm  extends AbstractLayout implements TunableValidator {
-
 	/**
 	 * The average number of iterations per Node
 	 */
@@ -77,26 +75,32 @@ public class BioLayoutKKAlgorithm  extends AbstractLayout implements TunableVali
 	public double m_disconnectedNodeDistanceSpringRestLength=2000.0;
 	@Tunable(description="Strength to apply to avoid collisions", groups="Algorithm settings")
 	public double m_anticollisionSpringStrength;
-	
-	boolean supportWeights = true;
-	
+        @Tunable(description="Don't partition graph before layout", groups="Standard settings")
+	public boolean singlePartition;
+
+	private boolean supportWeights = true;
+
 	public BioLayoutKKAlgorithm(UndoSupport un, boolean supportEdgeWeights) {
 		super(un);
 		supportWeights = supportEdgeWeights;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new BioLayoutKKAlgorithmTask(networkView, getName(), selectedOnly, staticNodes,
-				m_averageIterationsPerNode,m_nodeDistanceStrengthConstant,m_nodeDistanceRestLengthConstant,
-				m_disconnectedNodeDistanceSpringStrength,m_disconnectedNodeDistanceSpringRestLength,
-				m_anticollisionSpringStrength, supportWeights));
+		return new TaskIterator(
+			new BioLayoutKKAlgorithmTask(
+				networkView, getName(), selectedOnly, staticNodes,
+				m_averageIterationsPerNode, m_nodeDistanceStrengthConstant,
+				m_nodeDistanceRestLengthConstant,
+				m_disconnectedNodeDistanceSpringStrength,
+				m_disconnectedNodeDistanceSpringRestLength,
+				m_anticollisionSpringStrength, supportWeights, singlePartition));
 	}
-	
+
 	// TODO
 	public boolean tunablesAreValid(final Appendable errMsg) {
 		return true;
 	}
-	
+
 	/**
 	 * Overrides for LayoutAlgorithm support
 	 */

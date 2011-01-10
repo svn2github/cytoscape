@@ -1,5 +1,6 @@
 package csplugins.layout.algorithms.bioLayout;
 
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +19,6 @@ import org.cytoscape.work.Tunable;
 import org.cytoscape.work.undo.UndoSupport;
 
 import csplugins.layout.Profile;
-//import org.cytoscape.work.TaskMonitor;
 
 
 public class BioLayoutKKAlgorithmTask extends BioLayoutAlgorithm {
@@ -85,14 +85,17 @@ public class BioLayoutKKAlgorithmTask extends BioLayoutAlgorithm {
 	 * @param supportEdgeWeights a boolean to indicate whether we should
 	 *                                                  behave as if we support weights
 	 */
-	public BioLayoutKKAlgorithmTask(final CyNetworkView networkView, final String name,
-			  final boolean selectedOnly, final Set<View<CyNode>> staticNodes,
-			  final double m_averageIterationsPerNode,final double m_nodeDistanceStrengthConstant,
-			  final double m_nodeDistanceRestLengthConstant,final double m_disconnectedNodeDistanceSpringStrength,
-			  final double m_disconnectedNodeDistanceSpringRestLength,final double m_anticollisionSpringStrength,
-			  final boolean supportWeights)
+	public BioLayoutKKAlgorithmTask(
+		final CyNetworkView networkView, final String name, final boolean selectedOnly,
+		final Set<View<CyNode>> staticNodes, final double m_averageIterationsPerNode,
+		final double m_nodeDistanceStrengthConstant,
+		final double m_nodeDistanceRestLengthConstant,
+		final double m_disconnectedNodeDistanceSpringStrength,
+		final double m_disconnectedNodeDistanceSpringRestLength,
+		final double m_anticollisionSpringStrength,
+		final boolean supportWeights, final boolean singlePartition)
 	{
-		super(networkView, name, selectedOnly, staticNodes);
+		super(networkView, name, selectedOnly, staticNodes, singlePartition);
 		this.m_averageIterationsPerNode = m_averageIterationsPerNode;
 		this.m_nodeDistanceStrengthConstant = m_nodeDistanceStrengthConstant;
 		this.m_nodeDistanceRestLengthConstant = m_nodeDistanceRestLengthConstant;
@@ -100,7 +103,7 @@ public class BioLayoutKKAlgorithmTask extends BioLayoutAlgorithm {
 		this.m_disconnectedNodeDistanceSpringRestLength = m_disconnectedNodeDistanceSpringRestLength;
 		this.m_anticollisionSpringStrength = m_anticollisionSpringStrength;
 		this.supportWeights = supportWeights;
-		
+
 	}
 
 	/**
@@ -329,7 +332,7 @@ public class BioLayoutKKAlgorithmTask extends BioLayoutAlgorithm {
 		// Compute our distances
 		if (cancelled)
 			return;
-		
+
 		taskMonitor.setProgress(0.02);
 		taskMonitor.setStatusMessage("Calculating node distances");
 
@@ -893,5 +896,5 @@ public class BioLayoutKKAlgorithmTask extends BioLayoutAlgorithm {
 	}
 
 	// Debugging version of inner loop for calculatePartials
-	
+
 }
