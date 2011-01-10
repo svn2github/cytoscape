@@ -233,8 +233,19 @@ public class BrowserTableModel extends AbstractTableModel
 
 	@Override
 	public void handleEvent(final ColumnCreatedEvent e) {
-		attrNamesAndVisibilities.add(new AttrNameAndVisibility(e.getColumnName(), true));
-		fireTableStructureChanged();
+		final String newColumnName = e.getColumnName();
+		boolean found = false;
+		for (int i = 0; i < attrNamesAndVisibilities.size(); ++i) {
+			if (attrNamesAndVisibilities.get(i).getName().equals(newColumnName)) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			attrNamesAndVisibilities.add(new AttrNameAndVisibility(newColumnName, true));
+			fireTableStructureChanged();
+		}
 	}
 
 	@Override
@@ -307,9 +318,12 @@ public class BrowserTableModel extends AbstractTableModel
 	void handleRowValueUpdate(final CyRow row, final String columnName, final Object newValue,
 				  final Object newRawValue)
 	{
-		if (tableHasBooleanSelected && columnName.equals(CyNetwork.SELECTED))
-			fireTableStructureChanged();
-		else {
+		if (tableHasBooleanSelected && columnName.equals(CyNetwork.SELECTED)) {
+			final boolean selected = (Boolean)newValue;
+			final int rowIndex = mapRowToRowIndex(row);
+			if (selected || rowIndex != -1)
+				fireTableStructureChanged();
+		} else {
 			final int rowIndex = mapRowToRowIndex(row);
 			if (rowIndex != -1)
 				fireTableChanged(new TableModelEvent(this, rowIndex));

@@ -704,6 +704,7 @@ public class BrowserTable extends JTable
 			if (!isEditing() || (getClientProperty("terminateEditOnFocusLost") != Boolean.TRUE)) {
 				return;
 			}
+System.err.println("++++++++++++++ Entering CellEditorRemover.propertyChange() in BrowserTable.java");
 
 			Component c = focusManager.getPermanentFocusOwner();
 
