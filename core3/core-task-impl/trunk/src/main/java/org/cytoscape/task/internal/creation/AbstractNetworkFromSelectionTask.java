@@ -92,10 +92,15 @@ abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
         CyNetworkView currView = networkViewManager.getNetworkView(currNet.getSUID());
         final RenderingEngine<?> re = reManager.getRendringEngine(currView);
 
+		// Get the selected nodes, but only create network if nodes are actually selected.
+		List<CyNode> nodes = CyTableUtil.getNodesInState(currNet,"selected",true);
+
+		if ( nodes.size() <= 0 )
+			throw new IllegalArgumentException("No nodes selected!");
+
 		// create subnetwork and add selected nodes and appropriate edges
         final CySubNetwork newNet = cyroot.convert(currNet).addSubNetwork();
 
-		List<CyNode> nodes = CyTableUtil.getNodesInState(currNet,"selected",true);
 		for ( CyNode node : nodes )
 			newNet.addNode(node);
 

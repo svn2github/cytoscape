@@ -12,6 +12,7 @@ public class InfiniteTask extends AbstractTask {
 
 	public void run(final TaskMonitor taskMonitor) throws Exception {
 		taskMonitor.setProgress(0.0);
-		while(true){ System.out.println("still working...");}
+		taskMonitor.setStatusMessage("Excuting forever...");
+		while(true){ /*System.out.println("still working...");*/}
 	}
 }

@@ -331,7 +331,13 @@
 		<osgi:service-properties>
 			<entry key="title" value="From selected nodes, all edges" />
 			<entry key="preferredMenu" value="File.New.Network" />
+			<!-- TODO we should enable for just selected nodes/edges
+			     but we don't currently have an event for that, so
+				 we just rely on the error message generated with
+				 networkAndView.
 			<entry key="enableFor" value="selectedNodesOrEdges" />
+				 -->
+			<entry key="enableFor" value="networkAndView" />
 			<entry key="accelerator" value="cmd n"/>
 			<entry key="inToolBar" value="true" />
 			<entry key="iconName" value="/images/new-network-from-selected-nodes-32.png"/>
