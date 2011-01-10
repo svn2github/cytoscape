@@ -19,8 +19,8 @@
 		<constructor-arg ref="filterMainPanel" />
 	</bean>
 
-	<bean id="currentNetworkViewListener"
-		  class="org.cytoscape.filter.internal.CurrentNetworkViewListener">
+	<bean id="filterPanelStateSynchronizer"
+		  class="org.cytoscape.filter.internal.FilterPanelStateSynchronizer">
 		<constructor-arg ref="filterMainPanel" />
 	</bean>
 
@@ -28,4 +28,11 @@
 		  class="org.cytoscape.filter.internal.FilterPanelSelectedListener">
 		<constructor-arg ref="filterMainPanel" />
 	</bean>
+	
+	<bean id="filterAction" class="org.cytoscape.filter.internal.filters.FilterMenuItemAction">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+		<constructor-arg ref="filterMainPanel" />
+	</bean>
+	
 </beans>

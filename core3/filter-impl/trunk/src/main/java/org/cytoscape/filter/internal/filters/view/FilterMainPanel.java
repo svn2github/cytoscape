@@ -481,26 +481,11 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		cmbAttributes.addItemListener(this);
 		
 //		// TODO: Port this
-//		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.ATTRIBUTES_CHANGED, this);
-//
-//		// SelectEvent -- used to update feedback Panel
-//		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEWS_SELECTED,this);
-//
-//		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
-//
-//		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_CREATED, this);
-//		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_DESTROYED, this);
 //		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_LOADED, this);
 //		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_TITLE_MODIFIED, this);
 //
-//		btnSelectAll.addActionListener(this);
-//		btnDeSelect.addActionListener(this);
-//		
-//		// This is used for syn of feednack panel
-//		CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop()
-//		.getCytoPanel(SwingConstants.WEST);
-//		cytoPanelWest.addCytoPanelListener(this);
-		
+		btnSelectAll.addActionListener(this);
+		btnDeSelect.addActionListener(this);
 	}
 
 	public void initCMBSelectFilter(){
@@ -1043,7 +1028,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					return;
 				}
 				deleteFilter(theSelectedFilter);
-//				// TODO: Port this
+//				// TODO: Port this?  No one listens for these events
 //				if (FilterPlugin.shouldFireFilterEvent) {
 //					PropertyChangeEvent evt = new PropertyChangeEvent(this, "FILTER_DELETED", null, null);
 //					Cytoscape.getPropertyChangeSupport().firePropertyChange(evt);
@@ -1054,7 +1039,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					return;
 				}
 				renameFilter();
-//				// TODO: Port this
+//				// TODO: Port this?  No one listens for these events
 //				if (FilterPlugin.shouldFireFilterEvent) {
 //					PropertyChangeEvent evt = new PropertyChangeEvent(this, "FILTER_RENAMED", null, null);
 //					Cytoscape.getPropertyChangeSupport().firePropertyChange(evt);
@@ -1065,7 +1050,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					return;
 				}
 				duplicateFilter();
-//				// TODO: Port this
+//				// TODO: Port this?  No one listens for these events
 //				if (FilterPlugin.shouldFireFilterEvent) {
 //					PropertyChangeEvent evt = new PropertyChangeEvent(this, "FILTER_DUPLICATED", null, null);
 //					Cytoscape.getPropertyChangeSupport().firePropertyChange(evt);

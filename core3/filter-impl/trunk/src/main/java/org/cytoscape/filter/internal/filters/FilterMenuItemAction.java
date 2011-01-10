@@ -40,6 +40,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Map;
 
+import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 
 import org.cytoscape.application.swing.AbstractCyAction;
@@ -47,6 +48,7 @@ import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.CytoPanel;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.application.swing.CytoPanelState;
+import org.cytoscape.filter.internal.filters.view.FilterMainPanel;
 import org.cytoscape.session.CyApplicationManager;
 
 
@@ -56,6 +58,8 @@ import org.cytoscape.session.CyApplicationManager;
 public class FilterMenuItemAction extends AbstractCyAction {
 	//protected JFrame frame;
 	private CytoPanel cytoPanelWest;
+	ImageIcon icon = new ImageIcon(getClass().getResource("/images/filter-small.png"));
+	private FilterMainPanel filterPanel;
 
 	/**
 	 * Creates a new FilterMenuItem object.
@@ -63,12 +67,13 @@ public class FilterMenuItemAction extends AbstractCyAction {
 	 * @param icon  DOCUMENT ME!
 	 * @param csfilter  DOCUMENT ME!
 	 */
-	public FilterMenuItemAction(Map<String, String> properties, CyApplicationManager applicationManager, CySwingApplication application) {
-//		super("Use Filters", applicationManager);
-		super(properties, applicationManager);
+	public FilterMenuItemAction(CyApplicationManager applicationManager, CySwingApplication application, FilterMainPanel filterPanel) {
+		super("Use Filters", applicationManager);
 		setPreferredMenu("Select");
+		putValue(SMALL_ICON, icon);
 		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0));
 		cytoPanelWest = application.getCytoPanel(CytoPanelName.WEST);
+		this.filterPanel = filterPanel;
 	}
 
 
@@ -85,9 +90,12 @@ public class FilterMenuItemAction extends AbstractCyAction {
 		}	
 
 		// Select the filter panel
-//		// TODO: Port this
-//		int index = cytoPanelWest.indexOfComponent("Filters");
-//		cytoPanelWest.setSelectedIndex(index);
+		int index = cytoPanelWest.indexOfComponent(filterPanel);
+		if (index == -1) {
+			return;
+		}
+		
+		cytoPanelWest.setSelectedIndex(index);
 	}
 
 	/**

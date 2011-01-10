@@ -14,9 +14,18 @@
 	<osgi:service id="filterCytoPanelComponentService" ref="filterCytoPanelComponent"
                   interface="org.cytoscape.application.swing.CytoPanelComponent"/>
 
-	<osgi:service id="currentNetworkViewListenerService" ref="currentNetworkViewListener"
-		interface="org.cytoscape.session.events.SetCurrentNetworkViewListener"/>
+	<osgi:service id="filterPanelStateSynchronizerService" ref="filterPanelStateSynchronizer">
+		<osgi:interfaces>
+			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener</value>
+			<value>org.cytoscape.model.events.NetworkAddedListener</value>
+			<value>org.cytoscape.model.events.NetworkDestroyedListener</value>
+		</osgi:interfaces>
+	</osgi:service>
 
 	<osgi:service id="filterPanelSelectedListenerService" ref="filterPanelSelectedListener"
 		interface="org.cytoscape.application.swing.events.CytoPanelComponentSelectedListener"/>
+		
+	<osgi:service id="filterActionService" ref="filterAction"
+		interface="org.cytoscape.application.swing.CyAction" />
+	
 </beans>

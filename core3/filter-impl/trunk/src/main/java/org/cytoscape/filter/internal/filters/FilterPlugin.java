@@ -69,7 +69,6 @@ public class FilterPlugin {
 	public static boolean shouldFireFilterEvent = false;
 
 	protected ImageIcon icon = new ImageIcon(getClass().getResource("/images/filter.png"));
-	protected ImageIcon icon2 = new ImageIcon(getClass().getResource("/images/filter-small.png"));
 
 	// Other plugin can get a handler to all the filters defined
 	public static Vector<CompositeFilter> getAllFilterVect() {
@@ -105,11 +104,6 @@ public class FilterPlugin {
 		logger = LoggerFactory.getLogger(FilterPlugin.class);
 		
 		restoreInitState();
-
-		// initialize the filterMainPanel and add it to the control panel
-//		// TODO: Wire this through OSGi
-//		CytoPanel cytoPanelWest = application.getCytoPanel(CytoPanelName.WEST);
-//		cytoPanelWest.add("Filters", new FilterMainPanel(allFilterVect));
 	}
 
 
