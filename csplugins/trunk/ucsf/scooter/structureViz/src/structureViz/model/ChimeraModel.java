@@ -177,7 +177,9 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	 * @return ChimeraChain associated with the chain
 	 */
 	public ChimeraChain getChain(String chain) {
-		return chains.get(chain);
+		if (chains.containsKey(chain))
+			return chains.get(chain);
+		return null;
 	}
 
 	/**

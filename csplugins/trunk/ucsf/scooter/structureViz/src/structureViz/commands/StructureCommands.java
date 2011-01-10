@@ -47,6 +47,7 @@ import structureViz.actions.CyChimera;
 import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraResidue;
+import structureViz.model.ChimeraStructuralObject;
 import structureViz.model.Structure;
 import structureViz.ui.ModelNavigatorDialog;
 
@@ -128,7 +129,7 @@ public class StructureCommands {
 	static public CyCommandResult listChains(Chimera chimera, CyCommandResult result, 
 	                                         List<Structure> structureList) throws CyCommandException {
 
-		List<ChimeraChain> chainList = getChainList(chimera, structureList);
+		List<ChimeraChain> chainList = getChainList(chimera, structureList, null);
 		List<String> chainStrings = new ArrayList<String>();
 
 		for (ChimeraChain chain: chainList) {
@@ -140,14 +141,11 @@ public class StructureCommands {
 	}
 
 	static public CyCommandResult listResidues(Chimera chimera, CyCommandResult result, 
-	                                           List<Structure> structureList, String chains) throws CyCommandException {
-		List<String> chainSpecs = new ArrayList<String>();
+	                                           List<Structure> structureList, 
+	                                           List<ChimeraStructuralObject>chains) throws CyCommandException {
 		List<String> residueList = new ArrayList<String>();
 
-		if (chains != null)
-			chainSpecs = Arrays.asList(chains.split(","));
-
-		List<ChimeraChain> chainList = getChainList(chimera, structureList);
+		List<ChimeraChain> chainList = getChainList(chimera, structureList, chains);
 		for (ChimeraChain chain: chainList) {
 			String chainName = "Model: "+chain.getChimeraModel().getModelName();
 			if (chain.getChainId().equals("_"))
@@ -155,16 +153,6 @@ public class StructureCommands {
 			else
 				chainName += " Chain: "+chain.getChainId();
 
-			if (chainSpecs.size() > 0) {
-				boolean found = false;
-				for (String cs: chainSpecs) {
-					if (chain.getChainId().equals(cs)) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) continue;
-			}
 			// OK, we've got a chain, now get the residues
 			for (ChimeraResidue residue: chain.getResidues()) {
 				String residueName = chainName+" Residue: "+residue.toString();
@@ -177,7 +165,89 @@ public class StructureCommands {
 		return result;
 	}
 
-	static private List<ChimeraChain> getChainList(Chimera chimera, List<Structure>structureList) {
+
+	static public CyCommandResult listSelectedModels(Chimera chimera, CyCommandResult result) {
+		List<ChimeraStructuralObject> selList = chimera.getSelectionList();
+		if (selList == null || selList.size() == 0) {
+			result.addMessage("Nothing is selected");
+			return result;
+		}
+		List<String> selectedModels = new ArrayList<String>();
+		result.addMessage("Currently selected models: ");
+		for (ChimeraStructuralObject obj: selList) {
+			if (obj instanceof ChimeraModel) {
+				selectedModels.add(((ChimeraModel)obj).toSpec());
+				result.addMessage("    "+obj.toString());
+			}
+		}
+		result.addResult("Models",selectedModels);
+		return result;
+	}
+
+	static public CyCommandResult listSelectedChains(Chimera chimera, CyCommandResult result, 
+	                                                 List<Structure>structureList) {
+		List<ChimeraStructuralObject> selList = chimera.getSelectionList();
+		if (selList == null || selList.size() == 0) {
+			result.addMessage("Nothing is selected");
+			return result;
+		}
+		List<ChimeraChain> chainList = getChainList(chimera, structureList, null);
+		List<String> selectedChains = new ArrayList<String>();
+		result.addMessage("Currently selected chains: ");
+		for (ChimeraStructuralObject obj: selList) {
+			if (obj instanceof ChimeraChain && chainList.contains((ChimeraChain)obj)) {
+				selectedChains.add(((ChimeraChain)obj).toSpec());
+				result.addMessage("    "+obj.toString());
+			}
+		}
+		result.addResult("Chains",selectedChains);
+		return result;
+	}
+
+	static public CyCommandResult listSelectedResidues(Chimera chimera, CyCommandResult result,
+	                                                   List<Structure> structureList, 
+	                                                   List<ChimeraStructuralObject> chains) throws CyCommandException {
+		List<ChimeraStructuralObject> selList = chimera.getSelectionList();
+		if (selList == null || selList.size() == 0) {
+			result.addMessage("Nothing is selected");
+			return result;
+		}
+
+		List<ChimeraChain> chainList = getChainList(chimera, structureList, chains);
+
+		List<String> selectedResidues = new ArrayList<String>();
+		result.addMessage("Currently selected residues: ");
+		for (ChimeraStructuralObject obj: selList) {
+			if (obj instanceof ChimeraResidue) {
+				ChimeraResidue res = (ChimeraResidue)obj;
+				String chainId = res.getChainId();
+				ChimeraModel model = res.getChimeraModel();
+				ChimeraChain chain = model.getChain(chainId);
+				if (chain != null && chainList.contains(chain)) {
+					selectedResidues.add(res.toSpec());
+					// Get a nicer residue display
+			    String nodeName = "{none}";
+			    Structure structure = model.getStructure();
+			    if (structure != null && structure.getIdentifier() != null)
+			      nodeName = structure.getIdentifier();
+			    String displayName = model.getModelName();
+			    if (displayName.length() > 14)
+			      displayName = displayName.substring(0,13)+"...";
+			    if (chainId.equals("_")) {
+						result.addMessage("    "+nodeName+"; "+displayName+" Chain (no ID): "+res.toString()+" ["+res.toSpec()+"]");
+					} else {
+						result.addMessage("    "+nodeName+"; "+displayName+" Chain "+chainId+": "+res.toString()+" ["+res.toSpec()+"]");
+					}
+				}
+			}
+		}
+		result.addResult("Residues",selectedResidues);
+		return result;
+	}
+
+
+	static private List<ChimeraChain> getChainList(Chimera chimera, List<Structure>structureList, 
+	                                               List<ChimeraStructuralObject>chainSpecs) {
 		List<ChimeraModel> modelList = new ArrayList<ChimeraModel>();
 
 		if (structureList == null)
@@ -192,7 +262,9 @@ public class StructureCommands {
 		List<ChimeraChain> chainList = new ArrayList<ChimeraChain>();
 		for (ChimeraModel model: modelList) {
 			for (ChimeraChain chain: model.getChains()) {
-				chainList.add(chain);
+				// We only want to add it to our list if this chain is in chainSpecs
+				if (chainSpecs == null || chainSpecs.size() == 0 || chainSpecs.contains(chain))
+					chainList.add(chain);
 			}
 		}
 		return chainList;

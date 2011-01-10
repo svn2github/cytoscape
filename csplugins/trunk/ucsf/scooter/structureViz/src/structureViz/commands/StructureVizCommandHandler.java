@@ -78,6 +78,9 @@ enum Command {
 	HIDE("hide", "Hide parts of a structure", "structurelist|atomspec=selected|structuretype"),
 	LISTCHAINS("list chains", "List the chains in a structure", "structurelist=all"), 
 	LISTRES("list residues", "List the residues in a structure", "structurelist=all|chainlist"),
+	LISTSELMODELS("list selected models", "List all of the currently selected models",null),
+	LISTSELCHAINS("list selected chains", "List all of the currently selected chains","structurelist=all"),
+	LISTSELRESIDUES("list selected residues", "List all of the currently selected residues","structurelist=all|chainlist"),
 	LISTSTRUCTURES("list structures", "List all of the open structures",null),
 	MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),
 	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodelist|showdialog=false"),
@@ -366,8 +369,29 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 		// LISTRES("list residues", "List the residues in a structure", "structurelist=all|chainlist"),
 		//
 		} else if (Command.LISTRES.equals(command)) {
-			String chains = getArg(command, CHAINLIST, args);
-			return StructureCommands.listResidues(chimera, result, structureList, chains);
+			String chainlist = getArg(command, CHAINLIST, args);
+			List<ChimeraStructuralObject> chainList = CommandUtils.getSpecList(chainlist,chimera);
+			return StructureCommands.listResidues(chimera, result, structureList, chainList);
+	
+		// 
+		// LISTSELMODELS("list selected models", "List all of the currently selected models",null),
+		// 
+		} else if (Command.LISTSELMODELS.equals(command)) {
+			return StructureCommands.listSelectedModels(chimera, result);
+
+		// 
+		// LISTSELCHAINS("list selected chains", "List all of the currently selected chains","structurelist=all"),
+		// 
+		} else if (Command.LISTSELCHAINS.equals(command)) {
+			return StructureCommands.listSelectedChains(chimera, result, structureList);
+
+		// 
+		// LISTSELRESIDUES("list selected residues", "List all of the currently selected residues","structurelist=all|chainlist"),
+		// 
+		} else if (Command.LISTSELRESIDUES.equals(command)) {
+			String chainlist = getArg(command, CHAINLIST, args);
+			List<ChimeraStructuralObject> chainList = CommandUtils.getSpecList(chainlist,chimera);
+			return StructureCommands.listSelectedResidues(chimera, result, structureList, chainList);
 
 		//
 		// LISTSTRUCTURES("list structures", "List all of the open structures",""),
