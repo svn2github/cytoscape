@@ -358,7 +358,7 @@ public class CyChimera {
 	 * with ChimeraModels as the keys
 	 * @param chimeraModels the list of ChimeraModels we currently have open
 	 */
-	public static void selectCytoscapeNodes(CyNetworkView networkView, HashMap modelsToSelect,
+	public static void selectCytoscapeNodes(CyNetworkView networkView, Map<ChimeraModel,ChimeraModel> modelsToSelect,
 																					List<ChimeraModel> chimeraModels) {
 		CyNetwork network = networkView.getNetwork();
 

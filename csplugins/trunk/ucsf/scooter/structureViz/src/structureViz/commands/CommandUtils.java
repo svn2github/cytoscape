@@ -70,10 +70,14 @@ public class CommandUtils {
 
 		// Special case: structurelist="selected"
 		if (StructureVizCommandHandler.SELECTED.equals(structureSpec)) {
+
 			List<ChimeraStructuralObject> selectionList = chimera.getSelectionList();
-			for (ChimeraStructuralObject model: selectionList) {
-				if (model instanceof ChimeraModel)
-					structureList.add(((ChimeraModel)model).getStructure());
+			for (ChimeraStructuralObject cso: selectionList) {
+				ChimeraModel model = cso.getChimeraModel();
+				Structure st = model.getStructure();
+				if (!structureList.contains(st)) {
+					structureList.add(st);
+				}
 			}
 			return structureList;
 		} else if ("all".equals(structureSpec)) {

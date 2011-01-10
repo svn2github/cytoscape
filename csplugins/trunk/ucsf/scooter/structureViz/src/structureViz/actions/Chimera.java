@@ -277,6 +277,28 @@ public class Chimera {
 	}
 
 	/**
+ 	 * Add a selection to the selection list.  This is called primarily by
+ 	 * the Model Navigator Dialog to keep the selections in sync
+ 	 *
+ 	 * @param selectionToAdd the selection to add to our list
+ 	 */
+	public void addSelection(ChimeraStructuralObject selectionToAdd) {
+		if (selectionToAdd != null && !selectionList.contains(selectionToAdd))
+			selectionList.add(selectionToAdd);
+	}
+
+	/**
+ 	 * Remove a selection from the selection list.  This is called primarily by
+ 	 * the Model Navigator Dialog to keep the selections in sync
+ 	 *
+ 	 * @param selectionToRemove the selection to remove from our list
+ 	 */
+	public void removeSelection(ChimeraStructuralObject selectionToRemove) {
+		if (selectionToRemove != null && selectionList.contains(selectionToRemove))
+			selectionList.remove(selectionToRemove);
+	}
+
+	/**
  	 * Clear the list of selected objects
  	 */
 	public void clearSelectionList() {

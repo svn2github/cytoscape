@@ -67,7 +67,7 @@ enum Command {
 	CLEARSELECT("clear selection", "Clear all selection", null),
 	CLOSE("close", "Close some or all of the currently opened structures","structurelist=selected"),
 	COLOR("color", "Color part or all of a structure",
-	               "preset|residues|labels|ribbons|surfaces|structurelist|atomspec"),
+	               "preset|residues|labels|ribbons|surfaces|structurelist|atomspec=selected"),
 	DEPICT("depict", "Change the depiction of a structure",
 	                 "preset|style|ribbonstyle|surfacestyle|transparency|structurelist|atomspec=selected"),
 	EXIT("exit", "Exit Chimera",null),

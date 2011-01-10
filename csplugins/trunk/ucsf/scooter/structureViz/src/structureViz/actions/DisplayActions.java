@@ -32,6 +32,7 @@
  */
 package structureViz.actions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import structureViz.actions.Chimera;
@@ -49,7 +50,8 @@ public class DisplayActions {
 	}
 
 	public static List<String> presetAction(Chimera chimera, String preset) {
-		return chimera.commandReply("preset apply "+preset);
+		chimera.select("preset apply "+preset);
+		return new ArrayList<String>();
 	}
 
 	public static List<String> displayAction(Chimera chimera, String atomSpec, String structSpec, boolean hide) {

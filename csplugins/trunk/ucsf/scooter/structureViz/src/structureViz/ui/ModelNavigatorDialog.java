@@ -33,10 +33,11 @@
 package structureViz.ui;
 
 // System imports
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -94,7 +95,6 @@ public class ModelNavigatorDialog
 	private boolean isCollapsing = false;
 	private TreePath collapsingPath = null;
 	private boolean isExpanding = false;
-	private ArrayList selectedObjects = null;
 
 	// Dialog components
 	private JLabel titleLabel;
@@ -125,7 +125,6 @@ public class ModelNavigatorDialog
 		chimeraObject = object;
 		initComponents();
 		status = false;
-		selectedObjects = new ArrayList();
 	}
 
 	/**
@@ -141,8 +140,6 @@ public class ModelNavigatorDialog
 			alignMenu.setEnabled(true);
 		else
 			alignMenu.setEnabled(false);
-		// Re-select the paths
-		selectedObjects.clear();
 		chimeraObject.updateSelection();
 		ignoreSelection = false;
 	}
@@ -263,17 +260,19 @@ public class ModelNavigatorDialog
 					(ChimeraStructuralObject)node.getUserObject();
 			if (!e.isAddedPath(cPaths[i])) {
 				nodeInfo.setSelected(false);
-				selectedObjects.remove(nodeInfo);
+				chimeraObject.removeSelection(nodeInfo);
 			} else {
-				if (!selectedObjects.contains(nodeInfo))
-					selectedObjects.add(nodeInfo);
+				nodeInfo.setSelected(true);
+				chimeraObject.addSelection(nodeInfo);
 			}
 			// System.out.println("  Path: "+((DefaultMutableTreeNode) cPaths[i].getLastPathComponent()));
 		}
 
 		String selSpec = "sel ";
 		boolean selected = false;
-		HashMap modelsToSelect = new HashMap();
+		Map<ChimeraModel,ChimeraModel> modelsToSelect = new HashMap<ChimeraModel,ChimeraModel>();
+
+		List<ChimeraStructuralObject>selectedObjects = chimeraObject.getSelectionList();
 
 		for (int i = 0; i < selectedObjects.size(); i++) {
 			ChimeraStructuralObject nodeInfo = 
@@ -295,6 +294,7 @@ public class ModelNavigatorDialog
 		CyChimera.selectCytoscapeNodes(chimeraObject.getNetworkView(), 
 																		modelsToSelect, 
 												 						chimeraObject.getChimeraModels());
+
 	}
 
 	/**
@@ -327,7 +327,6 @@ public class ModelNavigatorDialog
 	 * through the chains to the residues.
 	 */
 	private void clearSelectionState() {
-		selectedObjects.clear();
 		List<ChimeraModel>models = chimeraObject.getChimeraModels();
 		if (models == null) return;
 		for (ChimeraModel m: models) {
@@ -555,6 +554,7 @@ public class ModelNavigatorDialog
 		 * @param ev the ActionEvent for this
 		 */
 		public void actionPerformed(ActionEvent ev) {
+			List<ChimeraStructuralObject> selectedObjects = chimeraObject.getSelectionList();
 			if (type == COMMAND) {
 				// System.out.println("Command: "+command);
 				chimeraObject.select(command);
