@@ -451,6 +451,8 @@
 			<entry key="title" value="Network View as Graphics" />
 			<entry key="preferredMenu" value="File.Export" />
 			<entry key="enableFor" value="networkAndView" />
+			<entry key="inToolBar" value="true" />
+			<entry key="iconName" value="/images/ximian/tango-32-camera-photo.png"/>
 		</osgi:service-properties>
 	</osgi:service>
 
