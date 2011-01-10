@@ -89,14 +89,6 @@ public class FilterPlugin {
 	public FilterPlugin(CyApplicationManager applicationManager, CySwingApplication application) {
 		filterIO = new FilterIO(applicationManager);
 		
-//		// TODO: Wire this through OSGi
-//		FilterMenuItemAction menuAction = new FilterMenuItemAction(icon2);
-//		menu.add(menuAction);
-
-//		// TODO: Wire this through OSGi
-//		FilterPluginToolBarAction toolbarAction = new FilterPluginToolBarAction(
-//				icon, this);
-
 		if (allFilterVect == null) {
 			allFilterVect = new Vector<CompositeFilter>();
 		}
