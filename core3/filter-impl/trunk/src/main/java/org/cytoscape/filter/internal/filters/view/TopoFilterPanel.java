@@ -68,13 +68,14 @@ import org.cytoscape.session.CyApplicationManager;
  */
 public class TopoFilterPanel extends JPanel implements ActionListener, ItemListener {
 
-	//private Vector<CompositeFilter> allFilterVect = null;
-	private TopologyFilter theFilter;
-	private CyApplicationManager applicationManager;
+	private final TopologyFilter theFilter;
+	private final CyApplicationManager applicationManager;
+	private final FilterPlugin filterPlugin;
  
     /** Creates new form TopoFilterPanel */
-    public TopoFilterPanel(TopologyFilter pFilter, CyApplicationManager applicationManager) {
+    public TopoFilterPanel(TopologyFilter pFilter, CyApplicationManager applicationManager, FilterPlugin filterPlugin) {
     	this.applicationManager = applicationManager;
+    	this.filterPlugin = filterPlugin;
     	theFilter = pFilter;
         setName(theFilter.getName());
         initComponents();
@@ -147,7 +148,8 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 
 		Vector<CompositeFilter> tmpVect = new Vector<CompositeFilter>();
 		tmpVect.add(emptyFilter);
-		tmpVect.addAll(FilterPlugin.getAllFilterVect());
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
+		tmpVect.addAll(allFilterVect);
 		
         PassFilterWidestStringComboBoxModel pfwscbm = new PassFilterWidestStringComboBoxModel(tmpVect);
         cmbPassFilter.setModel(pfwscbm);

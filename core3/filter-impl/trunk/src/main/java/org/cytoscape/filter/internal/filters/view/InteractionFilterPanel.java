@@ -61,12 +61,14 @@ import org.cytoscape.session.CyApplicationManager;
 
 public class InteractionFilterPanel extends JPanel implements ItemListener{
 
-	private InteractionFilter theFilter;
-	private CyApplicationManager applicationManager;
+	private final InteractionFilter theFilter;
+	private final CyApplicationManager applicationManager;
+	private final FilterPlugin filterPlugin;
 
     /** Creates new form InteractionFilterPanel */
-    public InteractionFilterPanel(InteractionFilter pFilter, CyApplicationManager applicationManager) {
+    public InteractionFilterPanel(InteractionFilter pFilter, CyApplicationManager applicationManager, FilterPlugin filterPlugin) {
     	this.applicationManager = applicationManager;
+    	this.filterPlugin = filterPlugin;
     	theFilter = pFilter;
         setName(theFilter.getName());
     	
@@ -163,7 +165,8 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 
 		Vector<CompositeFilter> tmpVect = new Vector<CompositeFilter>();
 		//tmpVect.add(emptyFilter);
-		tmpVect.addAll(FilterPlugin.getAllFilterVect());
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
+		tmpVect.addAll(allFilterVect);
 		
         PassFilterWidestStringComboBoxModel pfwscbm = new PassFilterWidestStringComboBoxModel(tmpVect);
         cmbPassFilter.setModel(pfwscbm);

@@ -2,6 +2,7 @@ package org.cytoscape.filter.internal.filters.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import org.cytoscape.filter.internal.filters.CompositeFilter;
 import org.cytoscape.filter.internal.filters.FilterPlugin;
@@ -94,12 +95,13 @@ public class FilterUtil {
 	}
 	
 	
-	public static boolean isFilterNameDuplicated(String pFilterName) {
-		if (FilterPlugin.getAllFilterVect() == null || FilterPlugin.getAllFilterVect().size() == 0)
+	public static boolean isFilterNameDuplicated(FilterPlugin filterPlugin, String pFilterName) {
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
+		if (allFilterVect == null || allFilterVect.size() == 0)
 			return false;
 		
-		for (int i=0; i<FilterPlugin.getAllFilterVect().size(); i++) {
-			CompositeFilter theFilter = FilterPlugin.getAllFilterVect().elementAt(i);
+		for (int i=0; i<allFilterVect.size(); i++) {
+			CompositeFilter theFilter = allFilterVect.elementAt(i);
 			if (pFilterName.equalsIgnoreCase(theFilter.getName().trim())) {
 				return true;
 			}

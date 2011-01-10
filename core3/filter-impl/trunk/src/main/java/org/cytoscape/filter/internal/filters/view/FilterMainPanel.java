@@ -126,7 +126,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private FilterSettingPanel currentFilterSettingPanel = null;
 	private HashMap<CompositeFilter,FilterSettingPanel> filter2SettingPanelMap = new HashMap<CompositeFilter,FilterSettingPanel>();
 
-	private Vector<CompositeFilter> allFilterVect = null;
 	/*
 	 * Icons used in this panel.
 	 */
@@ -136,12 +135,13 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private final ImageIcon renameIcon = new ImageIcon(getClass().getResource("/images/rename.png"));
 	private final ImageIcon duplicateIcon = new ImageIcon(getClass().getResource("/images/duplicate.png"));
 
-	private CyApplicationManager applicationManager;
+	private final CyApplicationManager applicationManager;
+	private final FilterPlugin filterPlugin;
 	
-	public FilterMainPanel(CyApplicationManager applicationManager) {
+	public FilterMainPanel(CyApplicationManager applicationManager, FilterPlugin filterPlugin) {
 		this.applicationManager = applicationManager;
+		this.filterPlugin = filterPlugin;
 		
-		allFilterVect = new Vector<CompositeFilter>();
 		//Initialize the option menu with menuItems
 		setupOptionMenu();
 
@@ -416,7 +416,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		currentFilterSettingPanel = next;
 		
 		if (currentFilterSettingPanel == null || currentFilterSettingPanel.hasNullIndexChildFilter()) {
-			currentFilterSettingPanel = new FilterSettingPanel(this, pNewFilter, applicationManager);
+			currentFilterSettingPanel = new FilterSettingPanel(this, pNewFilter, applicationManager, filterPlugin);
 			//Update the HashMap
 			filter2SettingPanelMap.put(pNewFilter, currentFilterSettingPanel);			
 		}
@@ -489,6 +489,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 
 	public void initCMBSelectFilter(){
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 		ComboBoxModel theModel = new FilterSelectWidestStringComboBoxModel(allFilterVect);
 		cmbSelectFilter.setModel(theModel);
 		cmbSelectFilter.setRenderer(new FilterRenderer());
@@ -550,6 +551,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
         }
 
 		cbm.addElement(filtersSeperator);
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 		if (allFilterVect != null) {
 			for (int i = 0; i < allFilterVect.size(); i++) {
                 Object fi;
@@ -987,7 +989,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 					}
 					
 					if (org.cytoscape.filter.internal.filters.util.FilterUtil
-							.isFilterNameDuplicated(newFilterName)) {
+							.isFilterNameDuplicated(filterPlugin, newFilterName)) {
 						Object[] options = { "OK" };
 						JOptionPane.showOptionDialog(this,
 								"Filter name already existed!", "Warning",
@@ -1062,8 +1064,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 	
 	private void updateInteractionMenuItemStatus() {
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 		//Disable interactionMenuItem if there is no other filters to depend on
-		if (FilterPlugin.getAllFilterVect() == null || FilterPlugin.getAllFilterVect().size() == 0) {
+		if (allFilterVect == null || allFilterVect.size() == 0) {
 			newNodeInteractionFilterMenuItem.setEnabled(false);
 			newEdgeInteractionFilterMenuItem.setEnabled(false);
 			return;
@@ -1071,7 +1074,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		
 		// Set newEdgeInteractionFilterMenuItem on only if there are at least one 
 		// Node Filter
-		if (hasNodeFilter(FilterPlugin.getAllFilterVect())) {
+		if (hasNodeFilter(allFilterVect)) {
 				newEdgeInteractionFilterMenuItem.setEnabled(true);	
 		}
 		else {
@@ -1080,7 +1083,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 		// Set newNodeInteractionFilterMenuItem on only if there are at least one 
 		// Edge Filter
-		if (hasEdgeFilter(FilterPlugin.getAllFilterVect())) {
+		if (hasEdgeFilter(allFilterVect)) {
 			newNodeInteractionFilterMenuItem.setEnabled(true);
 		}	
 		else {
@@ -1144,7 +1147,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			}
 			
 			if (org.cytoscape.filter.internal.filters.util.FilterUtil
-					.isFilterNameDuplicated(newFilterName)) {
+					.isFilterNameDuplicated(filterPlugin, newFilterName)) {
 				Object[] options = { "OK" };
 				JOptionPane.showOptionDialog(this,
 						"Filter name already existed!", "Warning",
@@ -1160,8 +1163,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		CompositeFilter newFilter = (CompositeFilter) theFilter.clone(); 
 		newFilter.setName(newFilterName);
 		
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 		allFilterVect.add(newFilter);
-		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter, applicationManager);
+		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter, applicationManager, filterPlugin);
 		filter2SettingPanelMap.put(newFilter, newFilterSettingPanel);
 		
 		// set the new filter in the combobox selected
@@ -1190,7 +1194,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			}
 			
 			if (org.cytoscape.filter.internal.filters.util.FilterUtil
-					.isFilterNameDuplicated(newFilterName)) {
+					.isFilterNameDuplicated(filterPlugin, newFilterName)) {
 				Object[] options = { "OK" };
 				JOptionPane.showOptionDialog(this,
 						"Filter name already existed!", "Warning",
@@ -1214,6 +1218,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		filter2SettingPanelMap.remove(pFilter);
 		cmbSelectFilter.removeItem(pFilter);
 		
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 		if (allFilterVect == null || allFilterVect.size() == 0) {
 			replaceFilterSettingPanel(null);
 		}
@@ -1247,8 +1252,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		
 		newFilter.setNetwork(applicationManager.getCurrentNetwork());
 		
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 		allFilterVect.add(newFilter);
-		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter, applicationManager);
+		FilterSettingPanel newFilterSettingPanel = new FilterSettingPanel(this, newFilter, applicationManager, filterPlugin);
 		filter2SettingPanelMap.put(newFilter, newFilterSettingPanel);
 
 		// set the new filter in the combobox selected

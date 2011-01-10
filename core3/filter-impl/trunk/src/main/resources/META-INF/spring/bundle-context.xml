@@ -9,9 +9,15 @@
 
 	<context:annotation-config />
 
+	<bean id="filterPlugin" class="org.cytoscape.filter.internal.filters.FilterPlugin">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
 	<bean id="filterMainPanel"
           class="org.cytoscape.filter.internal.filters.view.FilterMainPanel">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="filterPlugin" />
 	</bean>
 
 	<bean id="filterCytoPanelComponent"

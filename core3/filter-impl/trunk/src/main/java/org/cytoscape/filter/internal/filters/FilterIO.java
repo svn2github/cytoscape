@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Vector;
 
 import org.cytoscape.filter.internal.filters.util.FilterUtil;
 import org.cytoscape.session.CyApplicationManager;
@@ -56,10 +57,12 @@ import org.slf4j.LoggerFactory;
 
 public class FilterIO {
 	private Logger logger = null;
-	private CyApplicationManager applicationManager;
+	private final CyApplicationManager applicationManager;
+	private final FilterPlugin filterPlugin;
 
-	public FilterIO (CyApplicationManager applicationManager) {
+	public FilterIO (CyApplicationManager applicationManager, FilterPlugin filterPlugin) {
 		this.applicationManager = applicationManager;
+		this.filterPlugin = filterPlugin;
 		logger = LoggerFactory.getLogger(FilterIO.class);
 	}
 
@@ -93,6 +96,7 @@ public class FilterIO {
 					return retValue;
 				}
 
+				Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 				while (oneLine != null) {
 					// ignore comment, empty line or the version line
 					if (oneLine.startsWith("#") || oneLine.trim().equals("")||oneLine.startsWith("FilterVersion")) {
@@ -116,8 +120,8 @@ public class FilterIO {
 						totalCount++;
 
 						CompositeFilter aFilter = getFilterFromStrVect(filterStrVect);
-						if (aFilter != null && !FilterUtil.isFilterNameDuplicated(aFilter.getName())) {
-							FilterPlugin.getAllFilterVect().add(aFilter);
+						if (aFilter != null && !FilterUtil.isFilterNameDuplicated(filterPlugin, aFilter.getName())) {
+							allFilterVect.add(aFilter);
 							addCount++;
 						}
 					}
@@ -265,6 +269,7 @@ public class FilterIO {
 		}
 		
 		
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 		for (int i=0; i<filterStrVect.size(); i++ ) {
 			line = filterStrVect.get(i) ;
 
@@ -336,9 +341,9 @@ public class FilterIO {
 				// get the reference CompositeFilter
 				CompositeFilter cmpFilter = null;
 				
-				for (int j=0; j< FilterPlugin.getAllFilterVect().size(); j++) {
-					if (FilterPlugin.getAllFilterVect().elementAt(j).getName().equalsIgnoreCase(name)) {
-						cmpFilter = FilterPlugin.getAllFilterVect().elementAt(j);
+				for (int j=0; j< allFilterVect.size(); j++) {
+					if (allFilterVect.elementAt(j).getName().equalsIgnoreCase(name)) {
+						cmpFilter = allFilterVect.elementAt(j);
 						break;
 					}
 				}
@@ -355,9 +360,9 @@ public class FilterIO {
 				
 				// get the reference TopologyFilter
 				TopologyFilter topoFilter = null;
-				for (int j=0; j< FilterPlugin.getAllFilterVect().size(); j++) {
-					if (FilterPlugin.getAllFilterVect().elementAt(j).getName().equalsIgnoreCase(name)) {
-						topoFilter = (TopologyFilter) FilterPlugin.getAllFilterVect().elementAt(j);
+				for (int j=0; j< allFilterVect.size(); j++) {
+					if (allFilterVect.elementAt(j).getName().equalsIgnoreCase(name)) {
+						topoFilter = (TopologyFilter) allFilterVect.elementAt(j);
 						break;
 					}
 				}
@@ -374,9 +379,9 @@ public class FilterIO {
 				
 				// get the reference InteractionFilter
 				InteractionFilter interactionFilter = null;
-				for (int j=0; j< FilterPlugin.getAllFilterVect().size(); j++) {
-					if (FilterPlugin.getAllFilterVect().elementAt(j).getName().equalsIgnoreCase(name)) {
-						interactionFilter = (InteractionFilter) FilterPlugin.getAllFilterVect().elementAt(j);
+				for (int j=0; j< allFilterVect.size(); j++) {
+					if (allFilterVect.elementAt(j).getName().equalsIgnoreCase(name)) {
+						interactionFilter = (InteractionFilter) allFilterVect.elementAt(j);
 						break;
 					}
 				}
@@ -393,6 +398,7 @@ public class FilterIO {
 	private void getTopologyFilterFromStrVect(TopologyFilter pFilter, List<String> pFilterStrVect){
 		//logger.debug("\nFilterIO.getTopologyFilterFromStrVect() ...\n");
 
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 		String line = null;
 		for (int i=0; i<pFilterStrVect.size(); i++ ) {
 			line = pFilterStrVect.get(i) ;
@@ -423,9 +429,9 @@ public class FilterIO {
 				// get the reference CompositeFilter
 				CompositeFilter cmpFilter = null;
 				
-				for (int j=0; j< FilterPlugin.getAllFilterVect().size(); j++) {
-					if (FilterPlugin.getAllFilterVect().elementAt(j).getName().equalsIgnoreCase(name)) {
-						cmpFilter = FilterPlugin.getAllFilterVect().elementAt(j);
+				for (int j=0; j< allFilterVect.size(); j++) {
+					if (allFilterVect.elementAt(j).getName().equalsIgnoreCase(name)) {
+						cmpFilter = allFilterVect.elementAt(j);
 						break;
 					}
 				}
@@ -441,6 +447,7 @@ public class FilterIO {
 	
 	private void getInteractionFilterFromStrVect(InteractionFilter pFilter, List<String> pFilterStrVect){
 
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
 		String line = null;
 		for (int i=0; i<pFilterStrVect.size(); i++ ) {
 			line = pFilterStrVect.get(i) ;
@@ -466,9 +473,9 @@ public class FilterIO {
 				// get the reference CompositeFilter
 				CompositeFilter cmpFilter = null;
 				
-				for (int j=0; j< FilterPlugin.getAllFilterVect().size(); j++) {
-					if (FilterPlugin.getAllFilterVect().elementAt(j).getName().equalsIgnoreCase(name)) {
-						cmpFilter = FilterPlugin.getAllFilterVect().elementAt(j);
+				for (int j=0; j< allFilterVect.size(); j++) {
+					if (allFilterVect.elementAt(j).getName().equalsIgnoreCase(name)) {
+						cmpFilter = allFilterVect.elementAt(j);
 						break;
 					}
 				}
@@ -484,7 +491,8 @@ public class FilterIO {
 		
 		// Because one filter may depend on the other, CompositeFilters must 
 		// be sorted in the order of depthLevel before save
-		Object [] sortedFilters = getSortedCompositeFilter(FilterPlugin.getAllFilterVect());		
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
+		Object [] sortedFilters = getSortedCompositeFilter(allFilterVect);
 		Object[] globalFilters = getFiltersByScope(sortedFilters, "global");
 		
 		try {
@@ -541,7 +549,8 @@ public class FilterIO {
 				
 		// Because one filter may depend on the other, CompositeFilters must 
 		// be sorted in the order of depthLevel before save
-		Object [] sortedFilters = getSortedCompositeFilter(FilterPlugin.getAllFilterVect());
+		Vector<CompositeFilter> allFilterVect = filterPlugin.getAllFilterVect();
+		Object [] sortedFilters = getSortedCompositeFilter(allFilterVect);
 		Object[] sessionFilters = getFiltersByScope(sortedFilters, "session");
 		
 		if (sessionFilters == null || sessionFilters.length == 0) {

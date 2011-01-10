@@ -35,19 +35,12 @@
 package org.cytoscape.filter.internal.filters;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JToolBar;
 
 import org.cytoscape.application.swing.CySwingApplication;
-import org.cytoscape.application.swing.CytoPanel;
-import org.cytoscape.application.swing.CytoPanelName;
-import org.cytoscape.filter.internal.filters.view.FilterMainPanel;
 import org.cytoscape.session.CyApplicationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FilterPlugin {
 
-	private static Vector<CompositeFilter> allFilterVect = null;
+	private Vector<CompositeFilter> allFilterVect = null;
 	private final FilterIO filterIO;
 	private final Logger logger;
 	
@@ -71,7 +64,7 @@ public class FilterPlugin {
 	protected ImageIcon icon = new ImageIcon(getClass().getResource("/images/filter.png"));
 
 	// Other plugin can get a handler to all the filters defined
-	public static Vector<CompositeFilter> getAllFilterVect() {
+	public Vector<CompositeFilter> getAllFilterVect() {
 		if (allFilterVect == null) {
 			allFilterVect = new Vector<CompositeFilter>();
 		}
@@ -87,7 +80,7 @@ public class FilterPlugin {
 	 *            DOCUMENT ME!
 	 */
 	public FilterPlugin(CyApplicationManager applicationManager, CySwingApplication application) {
-		filterIO = new FilterIO(applicationManager);
+		filterIO = new FilterIO(applicationManager, this);
 		
 		if (allFilterVect == null) {
 			allFilterVect = new Vector<CompositeFilter>();

@@ -65,6 +65,7 @@ import javax.swing.text.JTextComponent;
 import org.cytoscape.filter.internal.filters.AtomicFilter;
 import org.cytoscape.filter.internal.filters.CompositeFilter;
 import org.cytoscape.filter.internal.filters.CyFilter;
+import org.cytoscape.filter.internal.filters.FilterPlugin;
 import org.cytoscape.filter.internal.filters.InteractionFilter;
 import org.cytoscape.filter.internal.filters.NumericFilter;
 import org.cytoscape.filter.internal.filters.Relation;
@@ -108,10 +109,10 @@ public class FilterSettingPanel extends JPanel {
 	private CyNetwork currentNetwork = null;
 	private TopoFilterPanel topoPanel = null;
 	private InteractionFilterPanel interactionPanel = null;
-	private Logger logger = null;
-	private CyApplicationManager applicationManager;
+	private final Logger logger;
+	private final CyApplicationManager applicationManager;
 	
-	public FilterSettingPanel(FilterMainPanel pParent, Object pFilterObj, CyApplicationManager applicationManager) {
+	public FilterSettingPanel(FilterMainPanel pParent, Object pFilterObj, CyApplicationManager applicationManager, FilterPlugin filterPlugin) {
 		this.applicationManager = applicationManager;
 		logger = LoggerFactory.getLogger(getClass());
 		theFilter = (CompositeFilter) pFilterObj;
@@ -136,7 +137,7 @@ public class FilterSettingPanel extends JPanel {
 	        gridBagConstraints.weightx = 1.0;
 
 			pnlCustomSettings.removeAll();
-			topoPanel = new TopoFilterPanel((TopologyFilter)theFilter, applicationManager);
+			topoPanel = new TopoFilterPanel((TopologyFilter)theFilter, applicationManager, filterPlugin);
 			pnlCustomSettings.add(topoPanel, gridBagConstraints);
 			//topoPanel.addParentPanelListener(); // Update passFilterCOM when shown
 			topoPanel.addParentPanelListener(this); // Update passFilterCOM when shown
@@ -161,7 +162,7 @@ public class FilterSettingPanel extends JPanel {
 	        gridBagConstraints.weightx = 1.0;
 
 			pnlCustomSettings.removeAll();
-			interactionPanel = new InteractionFilterPanel((InteractionFilter)theFilter, applicationManager);
+			interactionPanel = new InteractionFilterPanel((InteractionFilter)theFilter, applicationManager, filterPlugin);
 			pnlCustomSettings.add(interactionPanel, gridBagConstraints);
 			//interactionPanel.addParentPanelListener(); // Update passFilterCOM when shown
 			interactionPanel.addParentPanelListener(this); // Update passFilterCOM when shown
