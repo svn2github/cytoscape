@@ -30,7 +30,6 @@ public class ForceDirectedLayout extends AbstractLayout implements TunableValida
 	public Integrators integrator = Integrators.RUNGEKUTTA;
 	//public ListSingleSelection<String> integratorChoice = "RUNGEKUTTA";
 
-	//TODO refactor
 	public enum Integrators {
 		RUNGEKUTTA ("RUNGEKUTTA"),
 		EULER ("EULER");
@@ -39,19 +38,10 @@ public class ForceDirectedLayout extends AbstractLayout implements TunableValida
 		private Integrators(String str) { name=str; }
 		public String toString() { return name; }
 		public Integrator getNewIntegrator() {
-			// FIXME: could we use a switch on 'this' instead? (can't use one on
-			// name, because that is string, but) 'this' would be an enum, right?
-			// but eclipse complains if I have Integrators.EULER as a switch
-			// label...
-		
-			if (name.equals("EULER")){
+			if (this == EULER)
 				return new EulerIntegrator();
-			}
-			else if (name.equals("RUNGEKUTTA")){
+			else
 				return new RungeKuttaIntegrator();
-			} else {// use Euler as default
-				return new EulerIntegrator();
-			}
 		}
 	}
 
@@ -63,12 +53,17 @@ public class ForceDirectedLayout extends AbstractLayout implements TunableValida
 		super(un);
 	}
 
-	//TODO how to validate these values?
 	public boolean tunablesAreValid(final Appendable errMsg) {
-		// Do something here to validate the parameter values
-		// ??????????????
-		
-		return true;
+		return isPositive(numIterations) && isPositive(defaultSpringCoefficient)
+		       && isPositive(defaultSpringLength) && isPositive(defaultNodeMass);
+	}
+
+	private static boolean isPositive(final int n) {
+		return n > 0;
+	}
+
+	private static boolean isPositive(final double n) {
+		return n > 0.0;
 	}
 
 	public TaskIterator getTaskIterator() {
