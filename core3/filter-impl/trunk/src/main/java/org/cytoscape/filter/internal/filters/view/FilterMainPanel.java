@@ -284,16 +284,18 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 //		} 		
 //	}
 
-	private void updateFeedbackTableModel(){		
+	public void updateFeedbackTableModel(){		
 		CyNetwork cyNetwork = applicationManager.getCurrentNetwork();
 		CyNetworkView view = applicationManager.getCurrentNetworkView();
 		VisualLexicon lexicon = applicationManager.getCurrentRenderingEngine().getVisualLexicon();
 		String title = VisualPropertyUtil.get(lexicon, view, "NETWORK_TITLE", TwoDVisualLexicon.NETWORK, String.class);
 		tblFeedBack.getModel().setValueAt(title, 0, 0);
 
+		// TODO: Review performance.  This is a bad way to handle counting.
 		String nodeStr = "" + cyNetwork.getNodeCount() + "(" + SelectUtil.getSelectedNodes(cyNetwork).size() + ")";
 		tblFeedBack.getModel().setValueAt(nodeStr, 0, 1);
 
+		// TODO: Review performance.  This is a bad way to handle counting.
 		String edgeStr = "" + cyNetwork.getEdgeCount() + "(" + SelectUtil.getSelectedEdges(cyNetwork).size() + ")";
 		tblFeedBack.getModel().setValueAt(edgeStr, 0, 2);				
 	}
@@ -301,7 +303,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	/**
 	 * Enable select/deselect buttons if the current network exists and is not null.
 	 */
-	protected void enableForNetwork() {
+	public void enableForNetwork() {
 		
 		CyNetwork n = applicationManager.getCurrentNetwork();
 

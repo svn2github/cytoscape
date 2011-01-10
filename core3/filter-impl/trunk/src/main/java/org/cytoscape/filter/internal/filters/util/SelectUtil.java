@@ -30,7 +30,7 @@ public class SelectUtil {
 	static void setSelectedState(Collection<? extends CyTableEntry> list, Boolean selected) {
 		for (CyTableEntry edge : list) {
 			CyRow row = edge.getCyRow();
-			row.set(CyTableEntry.SELECTED, selected);
+			row.set(CyNetwork.SELECTED, selected);
 		}
 		
 	}
@@ -47,7 +47,7 @@ public class SelectUtil {
 		Set<T> entries = new HashSet<T>();
 		for (T item : items) {
 			CyRow row = item.getCyRow();
-			if (row.get(CyTableEntry.SELECTED, Boolean.class)) {
+			if (row.get(CyNetwork.SELECTED, Boolean.class)) {
 				entries.add(item);
 			}
 		}
@@ -65,8 +65,8 @@ public class SelectUtil {
 	static <T extends CyTableEntry> void selectAll(Collection<T> items) {
 		for (T item : items) {
 			CyRow row = item.getCyRow();
-			if (!row.get(CyTableEntry.SELECTED, Boolean.class)) {
-				row.set(CyTableEntry.SELECTED, Boolean.TRUE);
+			if (!row.get(CyNetwork.SELECTED, Boolean.class)) {
+				row.set(CyNetwork.SELECTED, Boolean.TRUE);
 			}
 		}
 	}

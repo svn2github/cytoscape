@@ -209,7 +209,7 @@ public class FilterSettingPanel extends JPanel {
 		
 		CyTableEntry entry = entries.iterator().next();
 		CyRow row = entry.getCyRow();
-		return row.getType(pAttribute);
+		return row.getDataTable().getType(pAttribute);
 	}
 
 	
@@ -508,13 +508,13 @@ public class FilterSettingPanel extends JPanel {
 		if (pIndexType == QuickFind.INDEX_NODES) {
 			if (cyNetwork.getNodeCount() > 0) {
 				CyNode node = cyNetwork.getNode(0);
-				attributeType = node.getCyRow().getType(pCtrlAttribute);
+				attributeType = node.getCyRow().getDataTable().getType(pCtrlAttribute);
 			}
 		}
 		else if (pIndexType == QuickFind.INDEX_EDGES) {
 			if (cyNetwork.getEdgeCount() > 0) {
 				CyEdge edge = cyNetwork.getEdge(0);
-				attributeType = edge.getCyRow().getType(pCtrlAttribute);
+				attributeType = edge.getCyRow().getDataTable().getType(pCtrlAttribute);
 			}
 		}
 		//
