@@ -1,6 +1,0 @@
-#-----------------------------------------------------------------
-# Use this file to add customized Bnd instructions for the bundle
-#-----------------------------------------------------------------
-
-Bundle-Activator: cytoscape.filter.cytoscape.CsFilter
-Export-Package: cytoscape.filter.*

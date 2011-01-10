@@ -1,3 +1,0 @@
-Private-Package: org.cytoscape.webservice.client.gui.*
-Export-Package: org.cytoscape.webservice.client.gui
-Import-Package: !org.cytoscape.webservice.client.internal,*
