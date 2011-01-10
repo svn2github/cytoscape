@@ -23,6 +23,7 @@ import org.cytoscape.model.events.RowCreatedMicroListener;
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
 
@@ -42,13 +43,14 @@ public class TableBrowser
 	private CyTable currentTable;
 
 	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
-		     final CyEventHelper eventHelper, final EqnCompiler compiler)
+		     final CyEventHelper eventHelper, final EqnCompiler compiler,
+		     final OpenBrowser openBrowser)
 	{
 		this.tableManager = tableManager;
 		this.serviceRegistrar = serviceRegistrar;
 		this.eventHelper = eventHelper;
 		this.compiler = compiler;
-		this.browserTable = new BrowserTable();
+		this.browserTable = new BrowserTable(openBrowser, compiler);
 		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar, compiler);
 		this.setLayout(new BorderLayout());
 

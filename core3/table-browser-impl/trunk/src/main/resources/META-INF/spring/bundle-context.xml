@@ -30,5 +30,6 @@
 		<constructor-arg ref="cyServiceRegistrarServiceRef" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="compilerServiceRef" />
+		<constructor-arg ref="openBrowserServiceRef" />
 	</bean>
 </beans>

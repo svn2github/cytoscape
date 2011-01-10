@@ -151,6 +151,11 @@ public class BrowserTableModel extends AbstractTableModel
 		return getValidatedObjectAndEditString(row, columnName);
 	}
 
+	Class<?> getColumnType(final int columnIndex) {
+		final String columnName = getColumnName(columnIndex);
+		return attrs.getType(columnName);
+	}
+
 	private CyRow mapRowIndexToRow(final int rowIndex) {
 		if (tableHasBooleanSelected) {
 			final Set<CyRow> selectedRows = attrs.getMatchingRows(CyNetwork.SELECTED, true);
@@ -277,6 +282,7 @@ public class BrowserTableModel extends AbstractTableModel
 		throw new IllegalStateException("We should *never* get here!");
 	}
 
+	
 	private String mapColumnIndexToColumnName(final int index) {
 		final String primaryKey = attrs.getPrimaryKey();
 		final boolean primaryKeyIsVisible = attrNamesAndVisibilities.get(0).isVisible();
@@ -368,6 +374,8 @@ public class BrowserTableModel extends AbstractTableModel
 				row.set(columnName, errorEqn);
 			}
 		}
+
+		fireTableCellUpdated(rowIndex, columnIndex);
 	}
 
 	private boolean eqnTypeIsCompatible(final Class<?> columnType, final Class<?> eqnType) {
