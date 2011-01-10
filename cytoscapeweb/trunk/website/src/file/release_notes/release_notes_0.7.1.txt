@@ -7,6 +7,8 @@
         <li><span class="bug_id">2444</span>: Null "number" values converted to 0 when updating data.</li>
         <li><span class="bug_id">2445</span>: Wrong data field types when using JavaScript objects as the network data.</li>
         <li><span class="bug_id">2447</span>: Date attributes exported as null to XGMML.</li>
+        <li><span class="bug_id">2458</span>: API function 'exportNetwork' not working with 'SVG' option.</li>
+        <li><span class="bug_id">2459</span>: Edge line styles not converted from and to XGMML.</li>
     </ul>
     <ul class="other_changes">
         <li>Cytoscape Web now accepts <a href="http://www.w3.org/TR/CSS21/syndata.html#color-units" rel="external">colors</a> 
