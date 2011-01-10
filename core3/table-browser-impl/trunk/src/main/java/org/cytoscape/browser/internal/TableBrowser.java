@@ -59,7 +59,7 @@ public class TableBrowser
 		tableChooser = new TableChooser(tableManager);
 		tableChooser.addActionListener(this);
 		add(tableChooser, BorderLayout.SOUTH);
-		browserTable.getTableHeader().setBackground(Color.yellow);
+		browserTable.getTableHeader().setBackground(Color.LIGHT_GRAY);
 		add(new JScrollPane(browserTable), BorderLayout.CENTER);
 		add(attributeBrowserToolBar, BorderLayout.NORTH);
 	}
