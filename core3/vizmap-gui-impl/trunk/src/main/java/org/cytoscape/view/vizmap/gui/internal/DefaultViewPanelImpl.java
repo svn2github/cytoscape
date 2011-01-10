@@ -119,7 +119,7 @@ public class DefaultViewPanelImpl extends JPanel implements DefaultViewPanel {
 		this.selectedManager = selectedManager;
 
 		// Create dummy view.
-		final CyNetwork dummyNet = cyNetworkFactory.getInstance();
+		final CyNetwork dummyNet = cyNetworkFactory.getInstanceWithPrivateTables();
 
 		final CyNode source = dummyNet.addNode();
 		final CyNode target = dummyNet.addNode();
