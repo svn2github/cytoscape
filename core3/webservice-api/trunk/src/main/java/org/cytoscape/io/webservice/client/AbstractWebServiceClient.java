@@ -31,65 +31,69 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-package org.cytoscape.webservice;
+*/
+package org.cytoscape.io.webservice.client;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.cytoscape.io.webservice.WebServiceClient;
+
+
 
 /**
- * Thin wrapper for SOAP/REST web service clients.
- * 
- * All web service clients <strong>must</strong> implement this method.
- * 
- * @param <S>
- *            Client stub object. This is a service dependent parameter. For example, NCBI's
- *            eUtils stub has the class EUtilsServiceSoap.
- * 
+ * Abstract class for all web service clients.
+ * All clients MUST extend this class.
+
+ * @param <S>  Stub object type.  This is service dependent.
  */
-public interface WebServiceClient<S> {
+public abstract class AbstractWebServiceClient<S> implements WebServiceClient<S> {
 
-	/**
-	 * Returns resource location of this service, i.e., service URL.
-	 * This is guaranteed to be globally unique and can be used as identifier.
-	 * 
-	 * This is an immutable field.
-	 * 
-	 * @return URI of the service.
-	 */
-	URI getServiceLocation();
-
+	// Service locaiton
+	protected final URI serviceURI;
 	
-	/**
-	 * Returns display name of this client. This is more human readable name for
-	 * this client.  This may not be unique.
-	 * 
-	 * This is an immutable field.
-	 * 
-	 * @return display name for this client.
-	 */
-	String getDisplayName();
-	
-	/**
-	 * Get description of this client.
-	 * 
-	 * This is an immutable field.
-	 * 
-	 * @return Description as a string. Users should write parser for this
-	 *         return value.
-	 */
-	String getDescription();
+	// Endpoint
+	protected final S clientStub;
+
+	// Display Name for this client.
+	private final String displayName;
+	private final String description;
 
 
-	/**
-	 * Get client endpoint object. All services available from this client will be
-	 * accessed through this stub. This will be used when developer wants to
-	 * access "raw" API of this service.
-	 * 
-	 * 
-	 * This is an immutable object.
-	 * 
-	 * @return Endpoint of the service. This object type depends on service.
-	 */
-	S getEndpoint();
-	
+	public AbstractWebServiceClient(final String uri, final String displayName, final String description,
+	                            final S endpoint) {
+		
+		// Create URI
+		try {
+			this.serviceURI = new URI(uri);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException("URI string is invalid.");
+		}
+		
+		this.displayName = displayName;
+		this.description = description;
+		this.clientStub = endpoint;
+	}
+
+
+	@Override public String getDisplayName() {
+		return displayName;
+	}
+
+
+	@Override public String getDescription() {
+		return description;
+	}
+
+
+	@Override
+	public URI getServiceLocation() {
+		return this.serviceURI;
+	}
+
+	@Override
+	public S getClient() {
+		return this.clientStub;
+	}
 }

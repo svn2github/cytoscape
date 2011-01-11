@@ -1,4 +1,4 @@
-package org.cytoscape.webservice;
+package org.cytoscape.io.webservice;
 
 import java.net.URI;
 import java.util.Set;

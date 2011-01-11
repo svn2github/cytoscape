@@ -1,4 +1,4 @@
-package org.cytoscape.webservice.events;
+package org.cytoscape.io.webservice.events;
 
 public interface DataImportFinishedListener {
 	void handleEvent(DataImportFinishedEvent<?> evt);
