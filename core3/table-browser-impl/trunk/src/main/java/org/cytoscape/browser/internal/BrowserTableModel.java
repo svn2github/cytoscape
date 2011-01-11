@@ -140,7 +140,13 @@ public class BrowserTableModel extends AbstractTableModel
 
 	@Override
 	public int getColumnCount() {
-		return attrs.getColumnTypeMap().size();
+		int count = 0;
+		for (final AttrNameAndVisibility nameAndVisibility : attrNamesAndVisibilities) {
+			if (nameAndVisibility.isVisible())
+				++count;
+		}
+
+		return count;
 	}
 
 	@Override
@@ -183,11 +189,15 @@ public class BrowserTableModel extends AbstractTableModel
 	 *  @return the row index for "cyRow" or -1 if there is no matching row.
 	 */
 	private int mapRowToRowIndex(final CyRow cyRow) {
+		final String primaryKey = attrs.getPrimaryKey();
+		final Class<?> primaryKeyType = attrs.getPrimaryKeyType();
+
 		int index = 0;
 		if (tableHasBooleanSelected) {
 			final Set<CyRow> selectedRows = attrs.getMatchingRows(CyNetwork.SELECTED, true);
 			for (final CyRow selectedRow : selectedRows) {
-				if (cyRow == selectedRow)
+				if (cyRow.get(primaryKey, primaryKeyType)
+				    .equals(selectedRow.get(primaryKey, primaryKeyType)))
 					return index;
 				++index;
 			}
@@ -195,10 +205,10 @@ public class BrowserTableModel extends AbstractTableModel
 			return -1; // Most likely the passed in row was not a selected row!
 		} else {
 			final List primaryKeyValues =
-				attrs.getColumnValues(attrs.getPrimaryKey(),
-						      attrs.getPrimaryKeyType());
-			for (final Object primaryKey : primaryKeyValues) {
-				if (cyRow == attrs.getRow(primaryKey))
+				attrs.getColumnValues(primaryKey, primaryKeyType);
+			for (final Object primaryKeyValue : primaryKeyValues) {
+				if (cyRow.get(primaryKey, primaryKeyType)
+				    .equals(attrs.getRow(primaryKeyValue).get(primaryKey, primaryKeyType)))
 					return index;
 				++index;
 			}
@@ -233,23 +243,18 @@ public class BrowserTableModel extends AbstractTableModel
 
 	@Override
 	public void handleEvent(final ColumnCreatedEvent e) {
-		final String newColumnName = e.getColumnName();
-		boolean found = false;
-		for (int i = 0; i < attrNamesAndVisibilities.size(); ++i) {
-			if (attrNamesAndVisibilities.get(i).getName().equals(newColumnName)) {
-				found = true;
-				break;
-			}
-		}
+		if (e.getSource() != attrs)
+			return;
 
-		if (!found) {
-			attrNamesAndVisibilities.add(new AttrNameAndVisibility(newColumnName, true));
-			fireTableStructureChanged();
-		}
+		attrNamesAndVisibilities.add(new AttrNameAndVisibility(e.getColumnName(), true));
+		fireTableStructureChanged();
 	}
 
 	@Override
 	public void handleEvent(final ColumnDeletedEvent e) {
+		if (e.getSource() != attrs)
+			return;
+
 		final String columnName = e.getColumnName();
 		for (int i = 0; i < attrNamesAndVisibilities.size(); ++i) {
 			if (attrNamesAndVisibilities.get(i).getName().equals(columnName)) {
@@ -320,8 +325,17 @@ public class BrowserTableModel extends AbstractTableModel
 	{
 		if (tableHasBooleanSelected && columnName.equals(CyNetwork.SELECTED)) {
 			final boolean selected = (Boolean)newValue;
+			if (!selected && getRowCount() == 0)
+				return;
+
 			final int rowIndex = mapRowToRowIndex(row);
+/*
 			if (selected || rowIndex != -1)
+*/
+			
+final String primaryKey = attrs.getPrimaryKey();
+final Class<?> primaryKeyType = attrs.getColumnTypeMap().get(primaryKey);
+System.err.println("************************** selected="+selected+", rowIndex="+rowIndex+", primaryKey="+row.get(primaryKey,primaryKeyType));
 				fireTableStructureChanged();
 		} else {
 			final int rowIndex = mapRowToRowIndex(row);
