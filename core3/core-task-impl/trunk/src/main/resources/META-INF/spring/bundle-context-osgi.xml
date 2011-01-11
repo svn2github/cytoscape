@@ -60,12 +60,18 @@
 	<osgi:reference id="cySessionManagerServiceRef"
 		interface="org.cytoscape.session.CySessionManager" />
 
-	<osgi:reference id="cyPropertyServiceRef" interface="org.cytoscape.property.CyProperty"
+	<osgi:reference id="cyPropertyServiceRef" 
+		interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=coreSettings)" />
 
-	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
+	<osgi:reference id="cyTableManagerServiceRef" 
+		interface="org.cytoscape.model.CyTableManager" />
 	
-	<osgi:reference id="renderingEngineManagerServiceRef" interface="org.cytoscape.view.presentation.RenderingEngineManager" />
+	<osgi:reference id="renderingEngineManagerServiceRef" 
+		interface="org.cytoscape.view.presentation.RenderingEngineManager" />
+	
+	<osgi:reference id="cyLayoutsServiceRef" 
+		interface="org.cytoscape.view.layout.CyLayouts" />
 	
 	<!--  now register our services -->
 	<osgi:service id="loadNetworkFileTaskFactoryService" ref="loadNetworkFileTaskFactory"
@@ -510,6 +516,17 @@
 		<osgi:service-properties>
 			<entry key="title" value="Save As" />
 			<entry key="preferredMenu" value="File" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service id="applyPreferredLayoutTaskFactoryService" ref="applyPreferredLayoutTaskFactory"
+		interface="org.cytoscape.task.NetworkViewTaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Apply Preferred Layout" />
+			<entry key="preferredMenu" value="Layout" />
+			<entry key="enableFor" value="networkAndView" />
+			<entry key="inToolBar" value="true" />
+			<entry key="iconName" value="/images/apply-force-directed-layout-32.png"/>
 		</osgi:service-properties>
 	</osgi:service>
 

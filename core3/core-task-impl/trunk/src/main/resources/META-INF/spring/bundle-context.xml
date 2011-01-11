@@ -286,6 +286,12 @@
 		<constructor-arg ref="networkViewWriterManagerServiceRef" />
 	</bean>
 
+	<bean id="applyPreferredLayoutTaskFactory"
+	      class="org.cytoscape.task.internal.layout.ApplyPreferredLayoutTaskFactory">
+		<constructor-arg ref="cyLayoutsServiceRef" />
+		<constructor-arg ref="cyPropertyServiceRef" />
+	</bean>
+
 	<bean id="tunablesTestTaskFactory"
 	      class="org.cytoscape.task.internal.tests.tunables.TunablesTestTaskFactory">
 	</bean>
