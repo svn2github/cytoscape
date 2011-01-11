@@ -46,30 +46,33 @@ public class AttributeComboBoxPropertyEditor extends CyComboBoxPropertyEditor
 		final JComboBox box = (JComboBox) editor;
 		final Object selected = box.getSelectedItem();
 		box.removeAllItems();
+	
+		if ( currentNetwork != null ) {
+			final AttributeSet targetSet = this.attrManager.getAttributeSet(currentNetwork, type);
+
+			if(targetSet == null)
+				throw new NullPointerException("AttributeSet is null.");
 		
-		final AttributeSet targetSet = this.attrManager.getAttributeSet(currentNetwork, type);
+			for (String attrName : targetSet.getAttrMap().keySet())
+				box.addItem(attrName);
 
-		if(targetSet == null)
-			throw new NullPointerException("AttributeSet is null.");
-		
-		for (String attrName : targetSet.getAttrMap().keySet())
-			box.addItem(attrName);
+			// Add new name if not in the list.
+			box.setSelectedItem(selected);
 
-		// Add new name if not in the list.
-		box.setSelectedItem(selected);
-
-		logger.debug(type + " attribute Combobox Updated: New Names = "
-				+ targetSet.getAttrMap().keySet());
-
+			logger.debug(type + " attribute Combobox Updated: New Names = "
+					+ targetSet.getAttrMap().keySet());
+		}
 	}
 
 	@Override
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
 		final CyNetworkView networkView = e.getNetworkView();
-		logger.debug("Current network view switched to: "
-				+ networkView.getModel());
-
-		updateComboBox(networkView.getModel());
-
+		if ( networkView == null ) {
+			logger.debug("Current network view switched to null");
+			updateComboBox(null);
+		} else {
+			logger.debug("Current network view switched to " + networkView.getModel());
+			updateComboBox(networkView.getModel());
+		}
 	}
 }
