@@ -270,7 +270,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	 * and "selectedNetworkObjs".
 	 * @param e The triggering event.
 	 */
-	public void menuSelected(MenuEvent e) { enableMenus(); }
+	public void menuSelected(MenuEvent e) { updateEnableState(); }
 
 	/**
 	 * This method can be overridden by individual actions to set the state of menu items
@@ -280,7 +280,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	 * and "selectedNetworkObjs".
 	 * @param e The triggering event.
 	 */
-	public void popupMenuWillBecomeVisible(PopupMenuEvent e) { enableMenus(); }
+	public void popupMenuWillBecomeVisible(PopupMenuEvent e) { updateEnableState(); }
 
 	/**
 	 * This method can be used at your discretion, but otherwise does nothing.  
@@ -294,17 +294,11 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	 */
 	public void popupMenuCanceled(PopupMenuEvent e) {}
 
-	//
-	// The following methods are utility methods that that enable or disable 
-	// the action based on the state of Cytoscape.  These methods are meant to
-	// reduce duplicate code since many actions demand the same state to be
-	// functional (e.g. a network and network view must exist). These methods
-	// are generally called from within implementations of {@link #menuSelected}, 
-	// but can be called from anywhere.
-	//
-
-	private void enableMenus() {
-		if (enableFor == null || enableFor.equals(""))
+	/**
+	 * {@inheritDoc} 
+	 */
+	public void updateEnableState() {
+		if (enableFor == null) 
 			setEnabled(true);
 		else if (enableFor.equals("network")) 
 			enableForNetwork();
@@ -316,7 +310,18 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 			enableForSelectedNodes();
 		else if (enableFor.equals("selectedEdges")) 
 			enableForSelectedEdges();
+		else 
+			setEnabled(true);
 	}
+
+	//
+	// The following methods are utility methods that that enable or disable 
+	// the action based on the state of Cytoscape.  These methods are meant to
+	// reduce duplicate code since many actions demand the same state to be
+	// functional (e.g. a network and network view must exist). These methods
+	// are generally called from within implementations of {@link #menuSelected}, 
+	// but can be called from anywhere.
+	//
 
 	/**
 	 * Enable the action if the current network exists and is not null.
@@ -325,7 +330,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 		CyNetwork n = applicationManager.getCurrentNetwork();
 		if ( n == null ) 
 			setEnabled(false);
-		else
+		else 
 			setEnabled(true);
 	}
 
@@ -336,7 +341,7 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 		CyNetworkView v = applicationManager.getCurrentNetworkView();
 		if ( v == null )
 			setEnabled(false);
-		else
+		else 
 			setEnabled(true);
 	}
 

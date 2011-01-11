@@ -110,4 +110,10 @@ public interface CyAction extends Action, MenuListener, PopupMenuListener {
 	 * @return whether or not a checkbox menu item should be used.
 	 */
 	boolean useCheckBoxMenuItem();
+
+	/**
+	 * Forces the action to update its enable state based on the criteria defined for
+	 * the action.
+	 */
+	void updateEnableState();	
 }
