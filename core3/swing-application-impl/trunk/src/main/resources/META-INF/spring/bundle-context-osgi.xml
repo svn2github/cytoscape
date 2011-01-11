@@ -310,4 +310,15 @@
 
 	<osgi:service id="cytoscapeVersionService" ref="cytoscapeVersion"
 		interface="org.cytoscape.application.swing.CytoscapeVersion" />
+
+	<osgi:service id="toolBarEnableUpdaterService" ref="toolBarEnableUpdater">
+		<osgi:interfaces>
+			<value>org.cytoscape.model.events.NetworkAddedListener</value>
+			<value>org.cytoscape.model.events.NetworkDestroyedListener</value>
+			<value>org.cytoscape.view.model.events.NetworkViewAddedListener</value>
+			<value>org.cytoscape.view.model.events.NetworkViewDestroyedListener</value>
+			<value>org.cytoscape.session.events.SetCurrentNetworkListener</value>
+			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener</value>
+		</osgi:interfaces>
+	</osgi:service>
 </beans>

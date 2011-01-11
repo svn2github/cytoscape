@@ -43,6 +43,7 @@ import java.util.TreeMap;
 import java.util.SortedMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.cytoscape.application.swing.CyAction;
 
@@ -79,6 +80,8 @@ public class CytoscapeToolBar extends JToolBar {
 		// At present we allow an Action to be in this tool bar only once.
 		if ( actionButtonMap.containsKey( action ) )
 			return false;
+
+		action.updateEnableState();
 
 		JButton button = new JButton(action); 
 		button.setBorderPainted(false);
@@ -153,5 +156,9 @@ public class CytoscapeToolBar extends JToolBar {
 
 	public JToolBar getJToolBar() {
 		return this;
+	}
+
+	Collection<CyAction> getAllToolBarActions() {
+		return actionButtonMap.keySet();
 	}
 } 

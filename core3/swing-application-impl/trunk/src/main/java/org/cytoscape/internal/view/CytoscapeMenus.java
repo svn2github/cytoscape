@@ -47,10 +47,9 @@ public class CytoscapeMenus {
 
 	private final Map<String,JMenu> menus;
 
-	public CytoscapeMenus() {
-		toolBar = new CytoscapeToolBar();
-
-		menuBar = new CytoscapeMenuBar();
+	public CytoscapeMenus(CytoscapeMenuBar menuBar, CytoscapeToolBar toolBar) {
+		this.menuBar = menuBar; 
+		this.toolBar = toolBar; 
 
 		menus = new HashMap<String,JMenu>();
 

@@ -72,6 +72,7 @@ import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedEvent;
 import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
@@ -366,8 +367,14 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
-		logger.debug("Got SetCurrentNetworkViewEvent.  View ID = "
-				+ e.getNetworkView().getSUID());
+		CyNetworkView view = e.getNetworkView();
+
+		if ( view == null ) {
+			logger.debug("Got SetCurrentNetworkViewEvent.  null view");
+			return;
+		}
+
+		logger.debug("Got SetCurrentNetworkViewEvent.  View ID = " + e.getNetworkView().getSUID());
 		
 		final long curr = e.getNetworkView().getModel().getSUID();
 		
@@ -376,9 +383,14 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	}
 
 	public void handleEvent(SetCurrentNetworkEvent e) {
-		logger.debug("Set current network "
-				+ e.getNetwork().getSUID());
-		long curr = e.getNetwork().getSUID();
+		CyNetwork cnet = e.getNetwork();
+		if ( cnet == null ) {
+			logger.debug("Set current network:  null network");
+			return;
+		}
+
+		logger.debug("Set current network " + cnet.getSUID());
+		long curr = cnet.getSUID();
 		
 		if (currentNetId == null || curr != currentNetId.longValue())
 			focusNetworkNode(curr);
@@ -710,6 +722,11 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 					CyNetwork cyNetwork = netmgr.getNetwork(networkID);
 
 					if (cyNetwork != null) {
+						// enable/disable any actions based on state of system
+						for ( CyAction action : popupActions.values() )
+							action.updateEnableState();
+
+						// then popup menu
 						popup.show(e.getComponent(), e.getX(), e.getY());
 					}
 				}

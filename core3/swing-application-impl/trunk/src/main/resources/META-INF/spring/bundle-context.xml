@@ -57,9 +57,22 @@
 		<constructor-arg ref="bookmarksUtilServiceRef" />
 	</bean>
 
-	<!-- Menu bar -->
-	<bean name="cytoscapeMenus" class="org.cytoscape.internal.view.CytoscapeMenus">
+	<!-- Menu and toolbar config -->
+	<bean name="cytoscapeMenuBar" class="org.cytoscape.internal.view.CytoscapeMenuBar">
 	</bean>
+
+	<bean name="cytoscapeToolBar" class="org.cytoscape.internal.view.CytoscapeToolBar">
+	</bean>
+
+	<bean name="cytoscapeMenus" class="org.cytoscape.internal.view.CytoscapeMenus">
+		<constructor-arg ref="cytoscapeMenuBar" />
+		<constructor-arg ref="cytoscapeToolBar" />
+	</bean>
+
+	<bean name="toolBarEnableUpdater" class="org.cytoscape.internal.view.ToolBarEnableUpdater">
+		<constructor-arg ref="cytoscapeToolBar" />
+	</bean>
+
 
 	<bean name="networkViewManager" class="org.cytoscape.internal.view.NetworkViewManager">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />

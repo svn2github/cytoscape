@@ -291,12 +291,22 @@ public class NetworkViewManager implements InternalFrameListener,
 	//// Event Handlers ////
 	
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
+		if ( e.getNetworkView() == null ) {
+			logger.info("Attempting to set current network view model: null view " );
+			return;
+		}
+
 		logger.info("Attempting to set current network view model: View Model ID = " + e.getNetworkView().getSUID());
 		setFocus(e.getNetworkView().getModel().getSUID());
 	}
 	
 
 	public void handleEvent(SetCurrentNetworkEvent e) {
+		if ( e.getNetwork() == null ) {
+			logger.info("Attempting to set current network : null network " );
+			return;
+		}
+
 		logger.info("Attempting to set current network model: Model ID = " + e.getNetwork().getSUID());
 		setFocus(e.getNetwork().getSUID());		
 	}
