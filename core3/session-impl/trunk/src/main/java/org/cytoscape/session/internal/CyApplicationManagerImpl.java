@@ -67,8 +67,7 @@ import org.slf4j.LoggerFactory;
 /**
  * An implementation of CyApplicationManager.
  */
-public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAboutToBeDestroyedListener,
-                                                 NetworkViewAboutToBeDestroyedListener
+public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAboutToBeDestroyedListener, NetworkViewAboutToBeDestroyedListener
 {
 	private static final Logger logger = LoggerFactory.getLogger(CyApplicationManagerImpl.class);
 
@@ -88,9 +87,7 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
 	 * 
 	 * @param cyEventHelper
 	 */
-	public CyApplicationManagerImpl(final CyEventHelper cyEventHelper, final CyNetworkManager networkManager,
-					final CyNetworkViewManager networkViewManager)
-	{
+	public CyApplicationManagerImpl(final CyEventHelper cyEventHelper, final CyNetworkManager networkManager, final CyNetworkViewManager networkViewManager) {
 		this.cyEventHelper = cyEventHelper;
 		this.networkManager = networkManager;
 		this.networkViewManager = networkViewManager;
@@ -103,53 +100,72 @@ public class CyApplicationManagerImpl implements CyApplicationManager, NetworkAb
 		this.currentRenderer = null;
 	}
 
-	public synchronized void handleEvent(final NetworkAboutToBeDestroyedEvent event) {
+	public void handleEvent(final NetworkAboutToBeDestroyedEvent event) {
 		final CyNetwork toBeDestroyed = event.getNetwork();
-		if (toBeDestroyed == currentNetwork) {
-			currentNetwork = null;
-			currentNetworkView = null;
+		boolean changed = false;
+		synchronized (this) {
+			if (toBeDestroyed == currentNetwork) {
+				changed = true;
+				currentNetwork = null;
+				currentNetworkView = null;
 
-			final Set<CyNetworkView> networkViews = networkViewManager.getNetworkViewSet();
-			for (final CyNetworkView view : networkViews) {
-				if (view.getModel() != toBeDestroyed) {
-					currentNetworkView = view;
-					currentNetwork = view.getModel();
-					return;
+				final Set<CyNetworkView> networkViews = networkViewManager.getNetworkViewSet();
+				for (final CyNetworkView view : networkViews) {
+					if (view.getModel() != toBeDestroyed) {
+						currentNetworkView = view;
+						currentNetwork = view.getModel();
+						break;
+					}
 				}
-			}
 
-			final Set<CyNetwork> networks = networkManager.getNetworkSet();
-			for (final CyNetwork network : networks) {
-				if (network != toBeDestroyed) {
-					currentNetwork = network;
-					return;
+				if ( currentNetwork == null ) {
+					final Set<CyNetwork> networks = networkManager.getNetworkSet();
+					for (final CyNetwork network : networks) {
+						if (network != toBeDestroyed) {
+							currentNetwork = network;
+							break;
+						}
+					}
 				}
 			}
 		}
+		if ( changed ) {
+			cyEventHelper.fireSynchronousEvent(new SetCurrentNetworkViewEvent(this, currentNetworkView)); 
+		}
+		
 	}
 
-	public synchronized void handleEvent(final NetworkViewAboutToBeDestroyedEvent event) {
+	public void handleEvent(final NetworkViewAboutToBeDestroyedEvent event) {
 		final CyNetworkView toBeDestroyed = event.getNetworkView();
-		if (toBeDestroyed == currentNetworkView) {
-			currentNetworkView = null;
-			currentNetwork = null;
+		boolean changed = false;
+		synchronized (this) {
+			if (toBeDestroyed == currentNetworkView) {
+				changed = true;
+				currentNetworkView = null;
+				currentNetwork = null;
 
-			final Set<CyNetworkView> networkViews = networkViewManager.getNetworkViewSet();
-			for (final CyNetworkView view : networkViews) {
-				if (view != toBeDestroyed) {
-					currentNetworkView = view;
-					currentNetwork = view.getModel();
-					return;
+				final Set<CyNetworkView> networkViews = networkViewManager.getNetworkViewSet();
+				for (final CyNetworkView view : networkViews) {
+					if (view != toBeDestroyed) {
+						currentNetworkView = view;
+						currentNetwork = view.getModel();
+						break;
+					}
+				}
+	
+				if ( currentNetwork == null ) {
+					final Set<CyNetwork> networks = networkManager.getNetworkSet();
+					for (final CyNetwork network : networks) {
+						if (network != toBeDestroyed.getModel()) {
+							currentNetwork = network;
+							break;
+						}
+					}
 				}
 			}
-
-			final Set<CyNetwork> networks = networkManager.getNetworkSet();
-			for (final CyNetwork network : networks) {
-				if (network != toBeDestroyed.getModel()) {
-					currentNetwork = network;
-					return;
-				}
-			}
+		}
+		if ( changed ) {
+			cyEventHelper.fireSynchronousEvent(new SetCurrentNetworkViewEvent(this, currentNetworkView)); 
 		}
 	}
 

@@ -6,16 +6,22 @@
     default-lazy-init="false">
 
     <!-- Export Services -->
-    <osgi:service id="cyApplicationManagerService" ref="cyApplicationManager"
-        interface="org.cytoscape.session.CyApplicationManager">
+    <osgi:service id="cyApplicationManagerService" ref="cyApplicationManager">
+		<osgi:interfaces>
+			<value>org.cytoscape.session.CyApplicationManager</value>
+			<value>org.cytoscape.model.events.NetworkAboutToBeDestroyedListener</value>
+			<value>org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener</value>
+		</osgi:interfaces>
     </osgi:service>
 
     <osgi:service id="cyNetworkNamingService" ref="cyNetworkNaming"
         interface="org.cytoscape.session.CyNetworkNaming">
     </osgi:service>
 
-    <osgi:service id="cySessionManagerService" ref="cySessionManager"
-        interface="org.cytoscape.session.CySessionManager">
+    <osgi:service id="cySessionManagerService" ref="cySessionManager">
+		<osgi:interfaces>
+			<value>org.cytoscape.session.CySessionManager</value>
+		</osgi:interfaces>
     </osgi:service>
 
     <!-- Import Services -->
