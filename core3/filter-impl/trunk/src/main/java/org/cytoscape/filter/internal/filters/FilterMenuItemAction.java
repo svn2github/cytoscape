@@ -56,9 +56,6 @@ import org.cytoscape.session.CyApplicationManager;
  *
  */
 public class FilterMenuItemAction extends AbstractCyAction {
-	ImageIcon icon = new ImageIcon(getClass().getResource("/images/filter.png"));
-	ImageIcon smallIcon = new ImageIcon(getClass().getResource("/images/filter-small.png"));
-	
 	private final CytoPanel cytoPanelWest;
 	private final FilterMainPanel filterPanel;
 
@@ -71,6 +68,10 @@ public class FilterMenuItemAction extends AbstractCyAction {
 	public FilterMenuItemAction(CyApplicationManager applicationManager, CySwingApplication application, FilterMainPanel filterPanel) {
 		super("Use Filters", applicationManager);
 		setPreferredMenu("Select");
+
+		ImageIcon icon = new ImageIcon(getClass().getResource("/images/filter.png"));
+		ImageIcon smallIcon = new ImageIcon(getClass().getResource("/images/filter-small.png"));
+		
 		putValue(LARGE_ICON_KEY, icon);
 		putValue(SMALL_ICON, smallIcon);
 		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0));

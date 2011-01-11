@@ -14,6 +14,12 @@
 		<constructor-arg ref="cySwingApplicationServiceRef" />
 	</bean>
 
+	<bean id="quickFindPlugin" class="org.cytoscape.filter.internal.quickfind.plugin.QuickFindPlugIn">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
+	</bean>
+
 	<bean id="filterMainPanel"
           class="org.cytoscape.filter.internal.filters.view.FilterMainPanel">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
@@ -22,11 +28,6 @@
 
 	<bean id="filterCytoPanelComponent"
           class="org.cytoscape.filter.internal.gui.FilterCytoPanelComponent">
-		<constructor-arg ref="filterMainPanel" />
-	</bean>
-
-	<bean id="filterPanelStateSynchronizer"
-		  class="org.cytoscape.filter.internal.FilterPanelStateSynchronizer">
 		<constructor-arg ref="filterMainPanel" />
 	</bean>
 

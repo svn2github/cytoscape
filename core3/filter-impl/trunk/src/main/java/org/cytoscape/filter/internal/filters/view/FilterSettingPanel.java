@@ -543,6 +543,9 @@ public class FilterSettingPanel extends JPanel {
 				logger.error("AttributeType is not numeric/string/list/boolean!");
 		}
 
+		if (retFilter != null) {
+			retFilter.setNetwork(cyNetwork);
+		}
 		return retFilter;
 	}
 	

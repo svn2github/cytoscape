@@ -11,10 +11,13 @@
 	<osgi:reference id="cyApplicationManagerServiceRef"
                    	interface="org.cytoscape.session.CyApplicationManager" />
 
+	<osgi:reference id="cyNetworkViewManagerServiceRef"
+                   	interface="org.cytoscape.view.model.CyNetworkViewManager" />
+
 	<osgi:service id="filterCytoPanelComponentService" ref="filterCytoPanelComponent"
                   interface="org.cytoscape.application.swing.CytoPanelComponent"/>
 
-	<osgi:service id="filterPanelStateSynchronizerService" ref="filterPanelStateSynchronizer">
+	<osgi:service id="filterPanelService" ref="filterMainPanel">
 		<osgi:interfaces>
 			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener</value>
 			<value>org.cytoscape.model.events.NetworkAddedListener</value>
@@ -28,4 +31,17 @@
 	<osgi:service id="filterActionService" ref="filterAction"
 		interface="org.cytoscape.application.swing.CyAction" />
 	
+	<osgi:service id="quickFindPluginService" ref="quickFindPlugin">
+		<osgi:interfaces>
+			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener</value>
+			<value>org.cytoscape.model.events.AddedEdgeListener</value>
+			<value>org.cytoscape.model.events.AddedNodeListener</value>
+			<value>org.cytoscape.model.events.RemovedEdgeListener</value>
+			<value>org.cytoscape.model.events.RemovedNodeListener</value>
+			<value>org.cytoscape.model.events.NetworkAddedListener</value>
+			<value>org.cytoscape.model.events.NetworkAboutToBeDestroyedListener</value>
+			<value>org.cytoscape.view.model.events.NetworkViewAddedListener</value>
+			<value>org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener</value>
+		</osgi:interfaces>
+	</osgi:service>
 </beans>

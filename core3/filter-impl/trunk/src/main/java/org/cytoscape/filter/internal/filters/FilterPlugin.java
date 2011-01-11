@@ -38,8 +38,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
-
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.session.CyApplicationManager;
 import org.slf4j.Logger;
@@ -60,8 +58,6 @@ public class FilterPlugin {
 
 	// Other plugin can turn on/off the FilterEvent
 	public static boolean shouldFireFilterEvent = false;
-
-	protected ImageIcon icon = new ImageIcon(getClass().getResource("/images/filter.png"));
 
 	// Other plugin can get a handler to all the filters defined
 	public Vector<CompositeFilter> getAllFilterVect() {

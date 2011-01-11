@@ -91,10 +91,17 @@ import org.cytoscape.filter.internal.filters.util.WidestStringProvider;
 import org.cytoscape.filter.internal.quickfind.util.CyAttributesUtil;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.events.NetworkAddedEvent;
+import org.cytoscape.model.events.NetworkAddedListener;
+import org.cytoscape.model.events.NetworkDestroyedEvent;
+import org.cytoscape.model.events.NetworkDestroyedListener;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
+import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.util.swing.DropDownMenuButton;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.VisualLexicon;
+import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 
@@ -102,7 +109,7 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
  * 
  */
 public class FilterMainPanel extends JPanel implements ActionListener,
-		ItemListener, PropertyChangeListener/*, CytoPanelListener*/ {
+		ItemListener, PropertyChangeListener, SetCurrentNetworkViewListener, NetworkAddedListener, NetworkDestroyedListener {
 
     // String constants used for seperator entries in the attribute combobox
     private static final String filtersSeperator = "-- Filters --";
@@ -284,10 +291,31 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 //		} 		
 //	}
 
+	@Override
+	public void handleEvent(SetCurrentNetworkViewEvent e) {
+		handleNetworkFocused(e.getNetworkView());
+	}
+
+	@Override
+	public void handleEvent(NetworkDestroyedEvent e) {
+		enableForNetwork();
+		updateFeedbackTableModel();
+	}
+
+	@Override
+	public void handleEvent(NetworkAddedEvent e) {
+		enableForNetwork();
+		updateFeedbackTableModel();
+	}
+
 	public void updateFeedbackTableModel(){		
 		CyNetwork cyNetwork = applicationManager.getCurrentNetwork();
 		CyNetworkView view = applicationManager.getCurrentNetworkView();
-		VisualLexicon lexicon = applicationManager.getCurrentRenderingEngine().getVisualLexicon();
+		RenderingEngine<CyNetwork> engine = applicationManager.getCurrentRenderingEngine();
+		if (engine == null) {
+			return;
+		}
+		VisualLexicon lexicon = engine.getVisualLexicon();
 		String title = VisualPropertyUtil.get(lexicon, view, "NETWORK_TITLE", TwoDVisualLexicon.NETWORK, String.class);
 		tblFeedBack.getModel().setValueAt(title, 0, 0);
 
@@ -538,6 +566,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		}
 
 		CyNetwork network = selectedFilter.getNetwork();
+		if (network == null) {
+			return;
+		}
+		
         List<Object> av;
 
 		av = getCyAttributesList(network, "node");
