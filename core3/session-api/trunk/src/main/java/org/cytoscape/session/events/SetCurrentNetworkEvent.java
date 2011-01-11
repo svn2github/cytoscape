@@ -2,13 +2,25 @@ package org.cytoscape.session.events;
 
 
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.event.AbstractCyEvent;
 import org.cytoscape.model.CyNetwork;
 
 
 /**
  * An event signaling that the a network has been set to current.
  */
-public final class SetCurrentNetworkEvent extends AbstractNetworkEvent {
+public final class SetCurrentNetworkEvent extends AbstractCyEvent<CyApplicationManager> {
+
+
+	private final CyNetwork net;
+
+	/**
+	 * Returns the network associated with this event. The network returned may be null!
+	 * @return the network associated with this event.
+	 */
+	public final CyNetwork getNetwork() {
+		return net;
+	}
 
 	/**
 	 * Constructor.
@@ -16,6 +28,7 @@ public final class SetCurrentNetworkEvent extends AbstractNetworkEvent {
 	 * @param net The network that has been set to the current network.
 	 */
 	public SetCurrentNetworkEvent(final CyApplicationManager source, final CyNetwork net) {
-		super(source, SetCurrentNetworkListener.class, net);
+		super(source, SetCurrentNetworkListener.class);
+		this.net = net;
 	}
 }
