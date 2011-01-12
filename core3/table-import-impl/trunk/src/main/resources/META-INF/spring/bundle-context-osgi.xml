@@ -27,6 +27,9 @@
 		interface="org.cytoscape.property.CyProperty"
 		filter="(cyPropertyName=coreSettings)" />
 
+	<osgi:reference id="fileUtilService" interface="org.cytoscape.util.swing.FileUtil" />
+	<osgi:reference id="openBrowserService" interface="org.cytoscape.util.swing.OpenBrowser" />		
+	
 
 	<!--
 	This code registers the bean we just created "sampleTaskFactory" as an 

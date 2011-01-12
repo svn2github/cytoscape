@@ -23,6 +23,9 @@
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 		<constructor-arg ref="cytoscapePropertiesServiceRef" />
 		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="fileUtilService" />
+		<constructor-arg ref="openBrowserService" />
+		
 	</bean>
 	
 </beans>
