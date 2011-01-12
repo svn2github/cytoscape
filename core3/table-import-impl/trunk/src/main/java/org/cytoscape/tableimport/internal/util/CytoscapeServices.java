@@ -6,6 +6,7 @@ import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.work.swing.GUITaskManager;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.util.swing.FileUtil;
 
@@ -19,4 +20,5 @@ public class  CytoscapeServices {
 	public static CyTableManager tblMgr;
 	public static OpenBrowser openBrowser;
 	public static FileUtil fileUtil;
+	public static CyApplicationManager appMgr;
 }
