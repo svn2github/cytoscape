@@ -100,7 +100,7 @@ import org.slf4j.LoggerFactory;
 
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.tableimport.internal.util.URLUtil;
-import org.cytoscape.tableimport.internal.util.ColumnResizer;
+import org.cytoscape.util.swing.ColumnResizer;
 
 import org.cytoscape.tableimport.internal.reader.ExcelAttributeSheetReader;
 import org.cytoscape.tableimport.internal.reader.GeneAssociationTags;
@@ -310,10 +310,10 @@ public class PreviewTablePanel extends JPanel {
 		previewScrollPane.setBackground(Color.WHITE);
 
 		final BufferedImage datasourceImage = getBufferedImage(getClass()
-				.getResource("images/ximian/data_sources_trans.png"));
+				.getResource("/images/ximian/data_sources_trans.png"));
 		
 		final BufferedImage bi = getBufferedImage(getClass()
-				.getResource("images/icon100_trans.png"));		
+				.getResource("/images/icon100_trans.png"));		
 		
 		tableTabbedPane.setBackground(Color.white);
 		tableTabbedPane
@@ -756,7 +756,7 @@ public class PreviewTablePanel extends JPanel {
 			if (isCytoscapeAttributeFile(sourceURL)) {
 				fileTypeLabel.setText("Cytoscape Attribute File");
 				fileTypeLabel.setIcon(new ImageIcon(getClass()
-						.getResource("images/icon48.png")));
+						.getResource("/images/icon48.png")));
 				newModel = parseText(sourceURL, size, curRenderer, null, 1);
 			} else {
 				fileTypeLabel.setText("Text File");
