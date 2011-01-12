@@ -81,7 +81,7 @@ public class ForceDirectedLayout extends AbstractLayout implements TunableValida
 	 * @return  DOCUMENT ME!
 	 */
 	public String getName() {
-		return "Force-Directed";
+		return "force-directed";
 	}
 
 	/**
