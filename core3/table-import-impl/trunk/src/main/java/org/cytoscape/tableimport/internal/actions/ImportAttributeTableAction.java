@@ -13,16 +13,11 @@ import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
+import org.cytoscape.util.swing.OpenBrowser;
+import org.cytoscape.util.swing.FileUtil;
 
 public class ImportAttributeTableAction extends AbstractCyAction {
 	private final static long serialVersionUID = 1205339869460898L;
-	private final CySwingApplication desktop;
-	private Bookmarks theBookmarks;
-	private BookmarksUtil bookmarksUtil;
-	private GUITaskManager guiTaskManagerServiceRef;
-	private CyProperty cytoscapePropertiesServiceRef;
-	private CyTableManager tblMgr;
-	
 	
 	/**
 	 * Creates a new ImportAttributeTableAction object.
@@ -30,26 +25,22 @@ public class ImportAttributeTableAction extends AbstractCyAction {
 	public ImportAttributeTableAction(CySwingApplication desktop,CyApplicationManager appMgr,
 			CyProperty<Bookmarks> bookmarksProp, BookmarksUtil bookmarksUtil,
 			GUITaskManager guiTaskManagerServiceRef, CyProperty cytoscapePropertiesServiceRef,
-			CyTableManager tblMgr) 
+			CyTableManager tblMgr, FileUtil fileUtilService, OpenBrowser openBrowserService) 
 
 	{
 		super("Attribute from Table (Text/MS Excel)...", appMgr);
 		setPreferredMenu("File.Import");
 		
-		this.desktop = desktop;
-		this.theBookmarks = bookmarksProp.getProperties();	
-		this.bookmarksUtil = bookmarksUtil;
-		this.guiTaskManagerServiceRef = guiTaskManagerServiceRef;
-		this.cytoscapePropertiesServiceRef = cytoscapePropertiesServiceRef;
-		this.tblMgr = tblMgr;
-		
 		//
-		CytoscapeServices.desktop = this.desktop;
-		CytoscapeServices.bookmarksUtil = this.bookmarksUtil;
-		CytoscapeServices.cytoscapePropertiesServiceRef= this.cytoscapePropertiesServiceRef;
-		CytoscapeServices.guiTaskManagerServiceRef = this.guiTaskManagerServiceRef;
-		CytoscapeServices.tblMgr =this.tblMgr;
-		CytoscapeServices.theBookmarks = this.theBookmarks;		
+		CytoscapeServices.desktop = desktop;
+		CytoscapeServices.bookmarksUtil = bookmarksUtil;
+		CytoscapeServices.cytoscapePropertiesServiceRef= cytoscapePropertiesServiceRef;
+		CytoscapeServices.guiTaskManagerServiceRef = guiTaskManagerServiceRef;
+		CytoscapeServices.tblMgr =tblMgr;
+		CytoscapeServices.theBookmarks = bookmarksProp.getProperties();
+		CytoscapeServices.openBrowser = openBrowserService;
+		CytoscapeServices.fileUtil = fileUtilService;
+		
 	}
 
 	/**
@@ -58,17 +49,13 @@ public class ImportAttributeTableAction extends AbstractCyAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		
-		System.out.println("\n\nImportAttributeTableAction.actionPerformed()...\n\n");
-		
-
+				
 		ImportTextTableDialog iad;
 
 		try {
-			iad = new ImportTextTableDialog(desktop.getJFrame(), true,
-			                                ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
+			iad = new ImportTextTableDialog(CytoscapeServices.desktop.getJFrame(), true, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
 			iad.pack();
-			iad.setLocationRelativeTo(desktop.getJFrame());
+			iad.setLocationRelativeTo(CytoscapeServices.desktop.getJFrame());
 			iad.setVisible(true);
 		} catch (JAXBException e1) {
 			// TODO Auto-generated catch block
@@ -77,7 +64,6 @@ public class ImportAttributeTableAction extends AbstractCyAction {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
 	}
 }
 
