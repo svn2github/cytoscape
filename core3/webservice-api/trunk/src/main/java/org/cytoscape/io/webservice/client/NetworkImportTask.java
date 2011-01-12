@@ -10,7 +10,7 @@ import org.cytoscape.work.Task;
  * If a client can import networks from service, it should implement this.
  *
  */
-public interface NetworkImportClient extends Task {
+public interface NetworkImportTask extends Task {
 	
 	/**
 	 * Send a query to the service and import network(s).
