@@ -125,8 +125,8 @@ import org.cytoscape.property.bookmark.BookmarksUtil;
 //import cytoscape.util.CyFileFilter;
 //import cytoscape.util.FileUtil;
 import org.cytoscape.tableimport.internal.util.URLUtil;
-import org.cytoscape.tableimport.internal.util.ColumnResizer;
-import org.cytoscape.tableimport.internal.util.JStatusBar;
+import org.cytoscape.util.swing.ColumnResizer;
+import org.cytoscape.util.swing.JStatusBar;
 import org.cytoscape.tableimport.internal.reader.AttributeAndOntologyMappingParameters;
 import org.cytoscape.tableimport.internal.reader.AttributeMappingParameters;
 import org.cytoscape.tableimport.internal.reader.DefaultAttributeTableReader;
@@ -254,7 +254,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private File[] inputFiles;
 
-	//private CyLogger logger;
+	private static final Logger logger = LoggerFactory.getLogger(ImportTextTableDialog.class);
 
 	/**
 	 * Creates new form ImportAttributesDialog
@@ -262,8 +262,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	public ImportTextTableDialog(Frame parent, boolean modal) throws JAXBException, IOException {
-		this(parent, modal, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
+	public ImportTextTableDialog(boolean modal) throws JAXBException, IOException {
+		this(CytoscapeServices.desktop.getJFrame(), modal, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
 	}
 
 	public ImportTextTableDialog(Frame parent, boolean modal, int dialogType)
@@ -290,15 +290,15 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		ontologyTypeMap = new HashMap<String, String>();
 
 		attributeDataTypes = new ArrayList<Class<?>>();
+				
 		initComponents();
+		
 		updateComponents();
 
 		previewPanel.addPropertyChangeListener(this);
-
-		//logger = CyLogger.getLogger( ImportTextTableDialog.class );
+		
 	}
 	
-	private static final Logger logger = LoggerFactory.getLogger(ImportTextTableDialog.class);
 	
 	public void addPropertyChangeListener(PropertyChangeListener l) {
 		if(changes == null) return;
@@ -533,7 +533,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		titleIconLabel2.setIcon(RIGHT_ARROW_ICON.getIcon());
 
-		titleIconLabel3.setIcon(new ImageIcon(getClass().getResource("images/icon48.png")));
+		titleIconLabel3.setIcon(new ImageIcon(getClass().getResource("/images/icon48.png")));
 
 		titleSeparator.setForeground(java.awt.Color.blue);
 
@@ -2135,8 +2135,10 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 	private void selectAttributeFileButtonActionPerformed(ActionEvent evt)
 	    throws IOException {
-		final File[] multiSource = null; //FileUtil.getFiles("Select local file", FileUtil.LOAD,
-		                                 //            new CyFileFilter[] {  });
+
+		final File[] multiSource = CytoscapeServices.fileUtil.getFiles(this,
+				"Select local file", 
+				CytoscapeServices.fileUtil.LOAD);
 
 		if ((multiSource == null) || (multiSource[0] == null))
 			return;
