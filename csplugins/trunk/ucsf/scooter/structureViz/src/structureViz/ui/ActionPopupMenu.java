@@ -214,6 +214,7 @@ public class ActionPopupMenu extends JPopupMenu {
 		addHeader("Model Actions");
 		addItem(null, "Close model(s)", null,PopupActionListener.CLOSE);
 		JMenu selectMenu = new JMenu("Select");
+		addItem(selectMenu, "Protein", "select %sel & protein", PopupActionListener.MODEL_SELECTION);
 		addItem(selectMenu, "Ligand", "select %sel & ligand", PopupActionListener.MODEL_SELECTION);
 		addItem(selectMenu, "Ions", "select %sel & ions", PopupActionListener.MODEL_SELECTION);
 		addItem(selectMenu, "Solvent", "select %sel & solvent", PopupActionListener.MODEL_SELECTION);
@@ -423,7 +424,6 @@ public class ActionPopupMenu extends JPopupMenu {
 				return;
 			} else if (postCommand == FUNCTIONAL_RESIDUES) {
 				// Get the object
-				int index = 0;
 				for (ChimeraStructuralObject obj: objectList) {
 					ChimeraModel model = obj.getChimeraModel();
 					List<String> residueL = model.getStructure().getResidueList();

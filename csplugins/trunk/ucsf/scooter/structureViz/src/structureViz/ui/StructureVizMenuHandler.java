@@ -130,6 +130,14 @@ public class StructureVizMenuHandler
 
 		List<Structure> structures = (List<Structure>)userData;
 
+		// If the structures aren't opened -- open them
+		for (Structure structure: structures) {
+			int modelNumber = structure.modelNumber();
+			if (!chimera.containsModel(structure.modelNumber()) || 
+			    !chimera.getModel(modelNumber).getModelName().equals(structure.name()));
+				openAction(structure.name(), structure, true);
+		}
+
 		// Bring up the dialog
 		alDialog = 
 							new AlignStructuresDialog(chimera.getDialog(), chimera, structures);

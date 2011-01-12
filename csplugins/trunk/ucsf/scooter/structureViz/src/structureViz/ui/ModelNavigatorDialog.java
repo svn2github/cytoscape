@@ -90,6 +90,7 @@ public class ModelNavigatorDialog
 	private static final int ALIGNBYCHAIN = 15;
 	private static final int FINDCLASH = 16;
 	private static final int FINDHBOND = 17;
+	private static final int FUNCTIONALRESIDUES = 18;
 	private boolean ignoreSelection = false;
 	private int residueDisplay = ChimeraResidue.THREE_LETTER;
 	private boolean isCollapsing = false;
@@ -416,6 +417,7 @@ public class ModelNavigatorDialog
 		hBondMenu.add(fHBondMenu);
 		addMenuItem(hBondMenu, "Clear hydrogen bonds", COMMAND, "~findhbond");
 		chimeraMenu.add(hBondMenu);
+		addMenuItem(chimeraMenu, "Zoom out", COMMAND, "focus");
 
 		JMenu presetMenu = new JMenu("Presets");
 		if (buildPresetMenu(presetMenu))
@@ -427,7 +429,6 @@ public class ModelNavigatorDialog
 		// View menu
 		JMenu viewMenu = new JMenu("View");
 		addMenuItem(viewMenu, "Refresh", REFRESH, null);
-		addMenuItem(viewMenu, "Refocus", COMMAND, "focus");
 
 		JMenu viewResidues = new JMenu("Residues as..");
 		addMenuItem(viewResidues, "single letter", 
@@ -451,6 +452,7 @@ public class ModelNavigatorDialog
 		addMenuItem(secondaryMenu, "Strand", COMMAND, "select strand");
 		addMenuItem(secondaryMenu, "Coil", COMMAND, "select coil");
 		selectMenu.add(secondaryMenu);
+		addMenuItem(selectMenu, "Functional residues", FUNCTIONALRESIDUES, null);
 		addMenuItem(selectMenu, "Invert selection", COMMAND, "select invert");
 		addMenuItem(selectMenu, "Clear selection", CLEAR, null);
 		menuBar.add(selectMenu);
@@ -568,6 +570,22 @@ public class ModelNavigatorDialog
 				if (chimeraObject.getAlignDialog() != null)
 					chimeraObject.getAlignDialog().setVisible(false);
 				return;
+			} else if (type == FUNCTIONALRESIDUES) {
+				// For all open structures, select the functional residues
+				for (Structure structure: chimeraObject.getOpenStructs()) {
+					List<String> residueL = structure.getResidueList();
+					if (residueL == null) continue;
+					// The residue list is of the form RRRnnn,RRRnnn.  We want
+					// to reformat this to nnn,nnn
+					String residues = new String();
+					for (String residue: residueL) {
+						residues = residues.concat(residue+",");
+					}
+					residues = residues.substring(0,residues.length()-1);
+					String command = "select #"+structure.modelNumber()+":"+residues;
+					chimeraObject.select(command);
+				}
+				chimeraObject.modelChanged();
 			} else if (type == REFRESH) {
 				chimeraObject.refresh();
 			} else if (type == ALIGNBYMODEL) {

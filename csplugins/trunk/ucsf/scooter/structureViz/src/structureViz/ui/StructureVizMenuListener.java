@@ -113,7 +113,7 @@ public class StructureVizMenuListener implements MenuListener {
 		}
 		{
 			JMenuItem item = new JMenuItem("Align structures");
-			List structures = CyChimera.getSelectedStructures(overNode, false);
+			List<Structure> structures = CyChimera.getSelectedStructures(overNode, false);
 			StructureVizMenuHandler l = new StructureVizMenuHandler(StructureViz.ALIGN, structures, logger);
 			item.addActionListener(l);
 			if (structures.size() < 2) {
