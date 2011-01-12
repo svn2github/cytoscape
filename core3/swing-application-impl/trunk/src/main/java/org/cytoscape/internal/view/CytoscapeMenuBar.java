@@ -47,17 +47,10 @@ import java.util.StringTokenizer;
 import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.util.swing.JMenuTracker;
 
-/**
- *
- */
 public class CytoscapeMenuBar extends JMenuBar {
 	private final static long serialVersionUID = 1202339868642259L;
-	/**
-	 *
-	 */
 	public static final String DEFAULT_MENU_SPECIFIER = "Tools";
-	protected static final int NO_INDEX = -2;
-	protected String defaultMenuSpecifier = DEFAULT_MENU_SPECIFIER;
+
 	protected Set actionMembersSet = null;
 	protected Map<Action,JMenuItem> actionMenuItemMap = null;
 	protected JMenuTracker menuTracker;
@@ -68,11 +61,6 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 * Map for Menus with menu items that want to be at the end.
 	 */
 	protected Map<JMenu,Integer> menuEffectiveLastIndexMap = null;
-
-	/**
-	 * @beaninfo (rwb)
-	 */
-	private String identifier;
 
 	/**
 	 * Default constructor. 
@@ -88,24 +76,6 @@ public class CytoscapeMenuBar extends JMenuBar {
 		setMinimumSize(getMenu("File").getPreferredSize());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param menu_name DOCUMENT ME!
-	 */
-	public void setDefaultMenuSpecifier(String menu_name) {
-		// TODO: If the existing menu exists, should we rename it?
-		defaultMenuSpecifier = menu_name;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getDefaultMenuSpecifier() {
-		return defaultMenuSpecifier;
-	}
 
 	/**
 	 * If the given Action has a present and false inMenuBar property, return;
@@ -113,38 +83,14 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 * preferredMenu property, or null if it does not have that property.
 	 */
 	public boolean addAction(CyAction action) {
-		return addAction(action, NO_INDEX);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param action DOCUMENT ME!
-	 * @param index DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public boolean addAction(CyAction action, int index) {
 		String menu_name = null;
 
-			if (action.isInMenuBar()) {
-				menu_name = action.getPreferredMenu();
-			} else {
-				return false;
-			}
+		if (action.isInMenuBar()) {
+			menu_name = action.getPreferredMenu();
+		} else {
+			return false;
+		}
 
-		return addAction(menu_name, action);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param menu_name DOCUMENT ME!
-	 * @param action DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	private boolean addAction(String menu_name, CyAction action) {
 		// At present we allow an Action to be in this menu bar only once.
 		JMenuItem menu_item = null;
 
@@ -159,78 +105,13 @@ public class CytoscapeMenuBar extends JMenuBar {
 		JMenu menu = getMenu(menu_name);
 		menu_item = createJMenuItem(action);
 
-
-		// If it wants to be anywhere in particular, try to put it there..
-		Object index_object = Integer.valueOf(-1);
-
-		//index_object = action.getPrefferedIndex();
-
 		// Add an Accelerator Key, if wanted
 		KeyStroke accelerator = action.getAcceleratorKeyStroke();
 		if ( accelerator != null )
 			menu_item.setAccelerator(accelerator);
 			
 		menu.addMenuListener(action);
-
-		if (index_object != null) {
-			int index = -1;
-
-			if (index_object instanceof Integer) {
-				index = ((Integer) index_object).intValue();
-			} else if (index_object instanceof String) {
-				try {
-					index = Integer.parseInt((String) index_object);
-				} catch (NumberFormatException e) {
-					System.err.println("WARNING: The action " + action
-					                   + " has an \"index\" property but its String value" 
-									   + " cannot be converted to an int.  Ignoring.");
-					index_object = null;
-				}
-			} else {
-				System.err.println("WARNING: The action " + action
-				                   + " has an \"index\" property but its value is neither" 
-								   + " an Integer nor a String.  Ignoring.");
-				index_object = null;
-			}
-
-			if (index_object != null) {
-				if (index < 0) {
-					index = (menu.getItemCount() + (index + 1));
-
-					if (index < 0) {
-						index = 0;
-					} else {
-						Integer effective_last_index = (Integer) menuEffectiveLastIndexMap.get(menu);
-
-						if (effective_last_index == null) {
-							menuEffectiveLastIndexMap.put(menu, Integer.valueOf(index));
-							index += 1;
-						} else if (effective_last_index.intValue() >= index) {
-							menuEffectiveLastIndexMap.put(menu, Integer.valueOf(index));
-						}
-					}
-				}
-
-				menu.insert(menu_item, index);
-			}
-		}
-
-		if (index_object == null) {
-			boolean added_it = false;
-
-			Integer effective_last_index = (Integer) menuEffectiveLastIndexMap.get(menu);
-
-			if (effective_last_index != null) {
-				menu.insert(menu_item, effective_last_index.intValue());
-				menuEffectiveLastIndexMap.put(menu, Integer.valueOf(effective_last_index.intValue() + 1));
-				added_it = true;
-			}
-
-			if (!added_it) {
-				menu.add(menu_item);
-			}
-		}
-
+		menu.add(menu_item);
 		actionMenuItemMap.put(action, menu_item);
 
 		return true;
@@ -240,7 +121,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 * If the given Action has a present and false inMenuBar property, return;
 	 * otherwise if there's a menu item for the action, remove it. Its menu is
 	 * determined my its preferredMenu property if it is present; otherwise by
-	 * defaultMenuSpecifier.
+	 *  DEFAULT_MENU_SPECIFIER.
 	 */
 	public boolean removeAction(CyAction action) {
 		if (actionMenuItemMap == null) {
@@ -262,23 +143,12 @@ public class CytoscapeMenuBar extends JMenuBar {
 		}
 
 		if (menu_name == null) {
-			menu_name = defaultMenuSpecifier;
+			menu_name =  DEFAULT_MENU_SPECIFIER;
 		}
 
 		getMenu(menu_name).remove(menu_item);
 
 		return true;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param menu_string DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public JMenu getMenu(String menu_string) {
-		return getMenu(menu_string, -1);
 	}
 
 	/**
@@ -288,72 +158,17 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 *         will be created as a child of the menu preceeding the most recent
 	 *         dot or, if there is none, then as a child of this MenuBar.
 	 */
-	public JMenu getMenu(String menu_string, int parentPosition) {
+	public JMenu getMenu(String menu_string) {
 		if ( menu_string == null )
-			menu_string = getDefaultMenuSpecifier();
+			menu_string = DEFAULT_MENU_SPECIFIER;
 
-		final JMenu menu = menuTracker.getMenu(menu_string, parentPosition);
+		final JMenu menu = menuTracker.getMenu(menu_string, -1);
 		revalidate();
 		repaint();
 		return menu; 
 	}
 
-	/**
-	 * CytoscapeMenuBars are unique -- this equals() method returns true iff the
-	 * other object == this.
-	 */
-	public boolean equals(Object other_object) {
-		return (this == other_object);
-	}
-
-	/**
-	 * implements CommunityMember
-	 *
-	 * @return  identifier 
-	 */
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	/**
-	 * imlements Reidentifiable
-	 * @beaninfo (rwb)
-	 */
-	public void setIdentifier(String new_identifier) {
-		if (identifier == null) {
-			if (new_identifier == null) {
-				return;
-			}
-		} else if (new_identifier != null) {
-			if (identifier.equals(new_identifier)) {
-				return;
-			}
-		}
-
-		String old_identifier = identifier;
-		identifier = new_identifier;
-		firePropertyChange("identifier", old_identifier, new_identifier);
-	}
-
-	/**
-	 * imlements Reidentifiable
-	 * @return true (always)
-	 */
-	public boolean isReidentificationEnabled() {
-		return true;
-	}
-
-	/**
-	 * Delegates to {@link #getIdentifier()}.
-	 */
-	public String toString() {
-		return getIdentifier();
-	}
-
-	/**
-	 * Factory method for instantiating the menuItems in the menu. 
-	 */
-	protected JMenuItem createJMenuItem(CyAction action) {
+	private JMenuItem createJMenuItem(CyAction action) {
 		if ( action.useCheckBoxMenuItem() )
 			return new JCheckBoxMenuItem(action);
 
