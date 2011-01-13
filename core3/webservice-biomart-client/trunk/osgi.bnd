@@ -4,3 +4,4 @@
 
 Import-Package: *
 Private-Package: org.cytoscape.io.webservice.biomart.*
+Export-Package: !org.cytoscape.io.webservice.biomart.*

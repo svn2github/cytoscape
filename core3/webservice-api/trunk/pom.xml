@@ -10,8 +10,8 @@
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.cytoscape.webservice-api</bundle.symbolicName>
-		<bundle.namespace>org.cytoscape.webservice</bundle.namespace>
+		<bundle.symbolicName>org.cytoscape.io.webservice-api</bundle.symbolicName>
+		<bundle.namespace>org.cytoscape.io.webservice</bundle.namespace>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

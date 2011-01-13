@@ -92,7 +92,6 @@ public abstract class AttributeImportPanel extends JPanel {
 		this.attributePanelTitle = attrPanelTitle;
 
 		initComponents();
-//		setAttributes(null);
 	}
 
 	private void initComponents() {

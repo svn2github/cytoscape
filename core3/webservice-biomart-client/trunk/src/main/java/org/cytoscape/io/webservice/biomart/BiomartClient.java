@@ -57,12 +57,9 @@ import org.cytoscape.model.CyTableFactory;
  */
 public class BiomartClient extends AbstractWebServiceClient<BiomartRestClient> {
 
-	// Biomart base URL
-	private static final String BASE_URL = "http://www.biomart.org/biomart/martservice";
-
+	
 	private final CyTableFactory tableFactory;
 	private final CyNetworkManager manager;
-
 
 	/**
 	 * Creates a new Biomart Client object.

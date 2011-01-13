@@ -25,7 +25,7 @@ public class ImportAttributeListTask extends AbstractTask {
 	@Override
 	public void run(TaskMonitor taskMonitor) throws Exception {		
 		this.attributeVals = client.getAttributes(datasourceName);
-		
+		System.out.println("######## Attr Count: " + this.attributeVals.size());
+		taskMonitor.setProgress(1.0);
 	}
-
 }

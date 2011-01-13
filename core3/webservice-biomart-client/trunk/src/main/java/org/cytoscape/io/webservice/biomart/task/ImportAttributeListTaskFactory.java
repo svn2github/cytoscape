@@ -6,18 +6,15 @@ import org.cytoscape.work.TaskIterator;
 
 public class ImportAttributeListTaskFactory implements TaskFactory {
 	
-	private final BiomartRestClient client;
-	private final String datasourceName;
+	final ImportAttributeListTask task;
 
 	public ImportAttributeListTaskFactory(final String datasourceName, final BiomartRestClient client) {
-		this.client = client;
-		this.datasourceName = datasourceName;
+		task = new ImportAttributeListTask(datasourceName, client);
 	}
 
 	@Override
 	public TaskIterator getTaskIterator() {
-		
-		return new TaskIterator(new ImportAttributeListTask(datasourceName, client));
+		return new TaskIterator(task);
 	}
 
 }

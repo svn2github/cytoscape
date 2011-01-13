@@ -31,7 +31,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.io.webservice.biomart.rest;
 
 import java.io.BufferedReader;
@@ -51,24 +51,28 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 
 /**
  * 
  * TODO: use JAX-RS reference impl.
  */
 public class BiomartRestClient {
-	
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(BiomartRestClient.class);
+
 	private static final int CONNECTION_TIMEOUT = 3000;
 	private static final int READ_TIMEOUT = 5000;
-	
+
 	private String baseURL;
-	private static final String RESOURCE = "/resource/filterconversion.txt";
-	private static final String TAXONOMY_TABLE = "/resource/tax_report.txt";
+	private static final String RESOURCE = "/settings/filterconversion.txt";
+	private static final String TAXONOMY_TABLE = "/settings/tax_report.txt";
 
 	private Map<String, Map<String, String>> databases = null;
 
@@ -77,26 +81,27 @@ public class BiomartRestClient {
 	private Map<String, Map<String, String>> filterConversionMap;
 	private Map<String, String> taxonomyTable;
 
-	
 	private static final int BUFFER_SIZE = 81920;
-	
 
 	/**
 	 * Creates a new BiomartStub object from given URL.
-	 *
-	 * @param baseURL  DOCUMENT ME!
+	 * 
+	 * @param baseURL
+	 *            DOCUMENT ME!
 	 * @throws IOException
 	 */
 	public BiomartRestClient(final String baseURL) throws IOException {
-		
-		System.out.println("$$$$$$$$$$$$ REST Client start: " + baseURL);
-		
-		if(baseURL == null)
+
+		System.out.println("v4  $$$$$$$$$$$$ REST Client start: " + baseURL);
+
+		if (baseURL == null)
 			throw new NullPointerException("Biomart base URL is missing.");
-		
+
 		this.baseURL = baseURL + "?";
 
 		loadConversionFile();
+
+		logger.debug("REST client initialized.");
 	}
 
 	private void loadConversionFile() throws IOException {
@@ -104,7 +109,8 @@ public class BiomartRestClient {
 
 		InputStreamReader inFile;
 
-		inFile = new InputStreamReader(this.getClass().getResource(RESOURCE).openStream());
+		inFile = new InputStreamReader(this.getClass().getResource(RESOURCE)
+				.openStream());
 
 		BufferedReader inBuffer = new BufferedReader(inFile);
 
@@ -133,12 +139,14 @@ public class BiomartRestClient {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param dbName DOCUMENT ME!
-	 * @param filterID DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param dbName
+	 *            DOCUMENT ME!
+	 * @param filterID
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public String toAttributeName(String dbName, String filterID) {
 		if (filterConversionMap.get(dbName) == null) {
@@ -149,32 +157,34 @@ public class BiomartRestClient {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param baseURL DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param baseURL
+	 *            DOCUMENT ME!
 	 */
 	public void setBaseURL(String baseURL) {
-		if(baseURL == null)
+		if (baseURL == null)
 			throw new NullPointerException("URL string is null.");
-		
+
 		this.baseURL = baseURL + "?";
 	}
-	
+
 	public String getBaseURL() {
 		return this.baseURL;
 	}
 
 	/**
-	 *  Get the registry information from the base URL.
-	 *
-	 * @return  Map of registry information.  Key value is "name" field.
+	 * Get the registry information from the base URL.
+	 * 
+	 * @return Map of registry information. Key value is "name" field.
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
-	 *
-	 * @throws Exception DOCUMENT ME!
+	 * 
+	 * @throws Exception
+	 *             DOCUMENT ME!
 	 */
-	public Map<String, Map<String, String>> getRegistry()
-	    throws IOException, ParserConfigurationException, SAXException {
+	public Map<String, Map<String, String>> getRegistry() throws IOException,
+			ParserConfigurationException, SAXException {
 		// If already loaded, just return it.
 		if (databases != null)
 			return databases;
@@ -187,13 +197,14 @@ public class BiomartRestClient {
 		final URL targetURL = new URL(baseURL + reg);
 
 		// Get the result as XML document.
-		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		final DocumentBuilderFactory factory = DocumentBuilderFactory
+				.newInstance();
 		final DocumentBuilder builder = factory.newDocumentBuilder();
-		
-		//TODO: use Proxy is available
-//		InputStream is = URLUtil.getBasicInputStream(targetURL);
+
+		// TODO: use Proxy is available
+		// InputStream is = URLUtil.getBasicInputStream(targetURL);
 		InputStream is = targetURL.openStream();
-		
+
 		final Document registry = builder.parse(is);
 
 		// Extract each datasource
@@ -204,7 +215,7 @@ public class BiomartRestClient {
 		String dbID;
 
 		for (int i = 0; i < locSize; i++) {
-			
+
 			attrList = locations.item(i).getAttributes();
 			attrLen = attrList.getLength();
 
@@ -213,7 +224,8 @@ public class BiomartRestClient {
 			Map<String, String> entry = new HashMap<String, String>();
 
 			for (int j = 0; j < attrLen; j++) {
-				entry.put(attrList.item(j).getNodeName(), attrList.item(j).getNodeValue());
+				entry.put(attrList.item(j).getNodeName(), attrList.item(j)
+						.getNodeValue());
 			}
 
 			databases.put(dbID, entry);
@@ -226,16 +238,18 @@ public class BiomartRestClient {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param martName DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param martName
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @throws Exception
+	 *             DOCUMENT ME!
 	 */
 	public Map<String, String> getAvailableDatasets(final String martName)
-	    throws IOException {
+			throws IOException {
 		try {
 			getRegistry();
 		} catch (ParserConfigurationException e) {
@@ -248,19 +262,21 @@ public class BiomartRestClient {
 
 		Map<String, String> detail = databases.get(martName);
 
-		String urlStr = "http://" + detail.get("host") + ":" + detail.get("port")
-		                + detail.get("path") + "?type=datasets&mart=" + detail.get("name");
-		
-		//System.out.println("Connection start:  DB name = " + martName + ", Target URL = " + urlStr + "\n");
+		String urlStr = "http://" + detail.get("host") + ":"
+				+ detail.get("port") + detail.get("path")
+				+ "?type=datasets&mart=" + detail.get("name");
+
+		// System.out.println("Connection start:  DB name = " + martName +
+		// ", Target URL = " + urlStr + "\n");
 
 		URL url = new URL(urlStr);
-		//TODO: use Proxy is available
-//		final URLConnection connection = URLUtil.getURLConnection(url);
+		// TODO: use Proxy is available
+		// final URLConnection connection = URLUtil.getURLConnection(url);
 		final URLConnection connection = url.openConnection();
-		
+
 		connection.setReadTimeout(READ_TIMEOUT);
 		connection.setConnectTimeout(CONNECTION_TIMEOUT);
-		
+
 		InputStream is = null;
 		try {
 			is = connection.getInputStream();
@@ -268,7 +284,7 @@ public class BiomartRestClient {
 			// Could not create connection.
 			throw new IOException("Could not create connection.");
 		}
-		
+
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String s;
 
@@ -292,32 +308,36 @@ public class BiomartRestClient {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param datasetName DOCUMENT ME!
-	 * @param getAll DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 *
-	 * @throws IOException DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param datasetName
+	 *            DOCUMENT ME!
+	 * @param getAll
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @throws IOException
+	 *             DOCUMENT ME!
 	 */
 	public Map<String, String> getFilters(String datasetName, boolean getAll)
-	    throws IOException {
+			throws IOException {
 		Map<String, String> filters = new HashMap<String, String>();
 
 		String martName = datasourceMap.get(datasetName);
 		Map<String, String> detail = databases.get(martName);
 
-		String urlStr = "http://" + detail.get("host") + ":" + detail.get("port")
-		                + detail.get("path") + "?virtualschema="
-		                + detail.get("serverVirtualSchema") + "&type=filters&dataset="
-		                + datasetName;
+		String urlStr = "http://" + detail.get("host") + ":"
+				+ detail.get("port") + detail.get("path") + "?virtualschema="
+				+ detail.get("serverVirtualSchema") + "&type=filters&dataset="
+				+ datasetName;
 
-		//System.out.println("Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
+		// System.out.println("Dataset name = " + datasetName +
+		// ", Target URL = " + urlStr + "\n");
 		URL url = new URL(urlStr);
-		
-		//TODO: Use Proxy if available. 
-//		InputStream is = URLUtil.getBasicInputStream(url);
+
+		// TODO: Use Proxy if available.
+		// InputStream is = URLUtil.getBasicInputStream(url);
 		InputStream is = url.openStream();
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -326,16 +346,22 @@ public class BiomartRestClient {
 		String[] parts;
 
 		while ((s = reader.readLine()) != null) {
+			System.out.println("Filter response: " + s);
 			parts = s.split("\\t");
 
-			if ((parts.length > 1)) {
-				if ((parts[1].contains("ID(s)") || parts[1].contains("Accession(s)")
-				           || parts[1].contains("IDs")) && (parts[0].startsWith("with_") == false)
-				           && (parts[0].endsWith("-2") == false) || parts.length>6 && parts[5].equals("id_list")) {
-					filters.put(parts[1], parts[0]);
-//					System.out.println("### Filter Entry = " + parts[1] + " = " + parts[0]);
-				}
+			if (parts.length <= 1)
+				continue;
+
+			if ((parts[1].contains("ID(s)") || parts[1].contains("Accession(s)") || parts[1].contains("IDs"))
+					&& (parts[0].startsWith("with_") == false)
+					&& (parts[0].endsWith("-2") == false)
+					|| parts.length > 6
+					&& parts[5].equals("id_list")) {
+				filters.put(parts[1], parts[0]);
+				System.out.println("### Filter Entry = " + parts[1] + " = "
+						+ parts[0]);
 			}
+
 		}
 
 		is.close();
@@ -347,31 +373,35 @@ public class BiomartRestClient {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param datasetName DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param datasetName
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 * @throws IOException
-	 *
-	 * @throws IOException DOCUMENT ME!
+	 * 
+	 * @throws IOException
+	 *             DOCUMENT ME!
 	 */
-	public Map<String, String[]> getAttributes(String datasetName) throws IOException {
+	public Map<String, String[]> getAttributes(String datasetName)
+			throws IOException {
 		Map<String, String[]> attributes = new HashMap<String, String[]>();
 
 		String martName = datasourceMap.get(datasetName);
 		Map<String, String> detail = databases.get(martName);
 
-		String urlStr = "http://" + detail.get("host") + ":" + detail.get("port")
-		                + detail.get("path") + "?virtualschema="
-		                + detail.get("serverVirtualSchema") + "&type=attributes&dataset="
-		                + datasetName;
+		String urlStr = "http://" + detail.get("host") + ":"
+				+ detail.get("port") + detail.get("path") + "?virtualschema="
+				+ detail.get("serverVirtualSchema")
+				+ "&type=attributes&dataset=" + datasetName;
 
-		//System.out.println("Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
+		System.out.println("Attr Import: Dataset name = " + datasetName +
+		 ", Target URL = " + urlStr + "\n");
 		URL url = new URL(urlStr);
-		
-		//TODO: use proxy
-//		InputStream is = URLUtil.getBasicInputStream(url);
+
+		// TODO: use proxy
+		// InputStream is = URLUtil.getBasicInputStream(url);
 		InputStream is = url.openStream();
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -384,6 +414,8 @@ public class BiomartRestClient {
 		while ((s = reader.readLine()) != null) {
 			parts = s.split("\\t");
 			attrInfo = new String[3];
+			
+			System.out.println("Attr Line: " + s);
 
 			if (parts.length == 0)
 				continue;
@@ -409,24 +441,26 @@ public class BiomartRestClient {
 	}
 
 	/**
-	 *  Send the XML query to Biomart, and get the result as table.
-	 *
-	 * @param xmlQuery DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
+	 * Send the XML query to Biomart, and get the result as table.
+	 * 
+	 * @param xmlQuery
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 * 
+	 * @throws Exception
+	 *             DOCUMENT ME!
 	 */
 	public BufferedReader sendQuery(String xmlQuery) throws IOException {
-		
+
 		System.out.println("Generated Query:\n\n" + xmlQuery);
-		
+
 		URL url = new URL(baseURL);
-		
-		//TODO: use proxy
-//		URLConnection uc = URLUtil.getURLConnection(url);
+
+		// TODO: use proxy
+		// URLConnection uc = URLUtil.getURLConnection(url);
 		URLConnection uc = url.openConnection();
-		
+
 		uc.setDoOutput(true);
 		uc.setRequestProperty("User-Agent", "Java URLConnection");
 
@@ -442,33 +476,35 @@ public class BiomartRestClient {
 		ps = null;
 		os = null;
 
-		return new BufferedReader(new InputStreamReader(uc.getInputStream()), BUFFER_SIZE);
-//		String line;
-//		line = reader.readLine();
-//		
-//		String[] parts = line.split("\\t");
-//		final List<String[]> result = new ArrayList<String[]>();
-//		result.add(parts);
+		return new BufferedReader(new InputStreamReader(uc.getInputStream()),
+				BUFFER_SIZE);
+		// String line;
+		// line = reader.readLine();
+		//
+		// String[] parts = line.split("\\t");
+		// final List<String[]> result = new ArrayList<String[]>();
+		// result.add(parts);
 
-//		while ((line = reader.readLine()) != null) {
-//			
-//			System.out.println("Result ==> " + line);
-//			
-//			parts = line.split("\\t");
-//			result.add(parts);
-//		}
-//
-//		is.close();
-//		reader.close();
-//		reader = null;
+		// while ((line = reader.readLine()) != null) {
+		//
+		// System.out.println("Result ==> " + line);
+		//
+		// parts = line.split("\\t");
+		// result.add(parts);
+		// }
+		//
+		// is.close();
+		// reader.close();
+		// reader = null;
 
-//		return result;
+		// return result;
 	}
 
 	private String taxID2datasource(String ncbiTaxID) throws IOException {
 		if (taxonomyTable == null) {
 			final InputStreamReader inFile;
-			inFile = new InputStreamReader(this.getClass().getResource(TAXONOMY_TABLE).openStream());
+			inFile = new InputStreamReader(this.getClass()
+					.getResource(TAXONOMY_TABLE).openStream());
 
 			BufferedReader inBuffer = new BufferedReader(inFile);
 
@@ -493,8 +529,8 @@ public class BiomartRestClient {
 			inFile.close();
 			inBuffer.close();
 		}
-		
-		if(taxonomyTable.get(ncbiTaxID) == null)
+
+		if (taxonomyTable.get(ncbiTaxID) == null)
 			return null;
 		else
 			return taxonomyTable.get(ncbiTaxID) + "_gene_ensembl";
@@ -502,41 +538,42 @@ public class BiomartRestClient {
 
 	/**
 	 * Method to return all GO annotations for the given NCBI taxonomy ID.
-	 *
+	 * 
 	 * @param ncbiTaxID
 	 * @return Annotation as a text table.
 	 * @throws IOException
 	 */
-	public List<String[]> getAllGOAnnotations(final String ncbiTaxID) throws IOException {
+	public List<String[]> getAllGOAnnotations(final String ncbiTaxID)
+			throws IOException {
 		List<String[]> res = new ArrayList<String[]>();
-		
+
 		final String dbName = taxID2datasource(ncbiTaxID);
-		
-		if(dbName == null) 
+
+		if (dbName == null)
 			return res;
-		
+
 		Dataset dataset;
 		Attribute[] attrs;
 		Filter[] filters;
-		
+
 		dataset = new Dataset(dbName);
 		attrs = new Attribute[3];
 		attrs[0] = new Attribute("ensembl_gene_id");
 		attrs[1] = new Attribute("go");
 		attrs[2] = new Attribute("evidence_code");
-	
+
 		filters = new Filter[1];
 		filters[0] = new Filter("with_go", null);
-		
+
 		String query2 = XMLQueryBuilder.getQueryString(dataset, attrs, filters);
-		
+
 		BufferedReader reader = sendQuery(query2);
 
 		String line;
 		line = reader.readLine();
-		
+
 		String[] parts = line.split("\\t");
-		
+
 		res.add(parts);
 
 		while ((line = reader.readLine()) != null) {
@@ -546,15 +583,16 @@ public class BiomartRestClient {
 
 		reader.close();
 		reader = null;
-		
+
 		return res;
 	}
-	
-	public List<String[]> getAllAliases(final String ncbiTaxID) throws IOException {
+
+	public List<String[]> getAllAliases(final String ncbiTaxID)
+			throws IOException {
 		List<String[]> res = new ArrayList<String[]>();
-		
+
 		final String dbName = taxID2datasource(ncbiTaxID);
-		
+
 		return res;
 	}
 }
