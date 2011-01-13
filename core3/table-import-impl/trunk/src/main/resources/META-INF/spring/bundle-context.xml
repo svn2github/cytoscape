@@ -27,7 +27,7 @@
 		<constructor-arg ref="openBrowserService" />
 	</bean>
 
-	<bean id="importNetworkTableAction" class="org.cytoscape.tableimport.internal.actions.ImportAttributeTableAction">
+	<bean id="importNetworkTableAction" class="org.cytoscape.tableimport.internal.actions.ImportNetworkTableAction">
 		<constructor-arg ref="cytoscapeDesktopService" /> 
 		<constructor-arg ref="cyApplicationManagerRef" />
 		<constructor-arg ref="bookmarkServiceRef" />		
