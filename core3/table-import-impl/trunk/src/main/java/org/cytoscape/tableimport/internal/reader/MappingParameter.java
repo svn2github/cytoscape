@@ -97,7 +97,7 @@ public interface MappingParameter {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Class<?>[] getAttributeTypes();
+	public Byte[] getAttributeTypes();
 
 	/**
 	 *  DOCUMENT ME!

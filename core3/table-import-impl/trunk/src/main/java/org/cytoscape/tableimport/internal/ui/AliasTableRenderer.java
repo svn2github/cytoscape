@@ -54,6 +54,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
+import org.cytoscape.tableimport.internal.util.AttributeTypes;
 
 
 /**
@@ -63,7 +64,7 @@ import javax.swing.table.DefaultTableCellRenderer;
  *
  */
 class AliasTableRenderer extends DefaultTableCellRenderer {
-	private List<Class<?>> dataTypes;
+	private List<Byte> dataTypes;
 	private int primaryKey;
 	private final JLabel iconLabel = new JLabel();
 	private final JLabel label = new JLabel();
@@ -74,7 +75,7 @@ class AliasTableRenderer extends DefaultTableCellRenderer {
 	 * @param dataTypes  DOCUMENT ME!
 	 * @param primaryKey  DOCUMENT ME!
 	 */
-	public AliasTableRenderer(List<Class<?>> dataTypes, int primaryKey) {
+	public AliasTableRenderer(List<Byte> dataTypes, int primaryKey) {
 		this.dataTypes = dataTypes;
 		this.primaryKey = primaryKey;
 
@@ -86,7 +87,7 @@ class AliasTableRenderer extends DefaultTableCellRenderer {
 	 *
 	 * @param dataTypes DOCUMENT ME!
 	 */
-	public void setDataTypes(List<Class<?>> dataTypes) {
+	public void setDataTypes(List<Byte> dataTypes) {
 		this.dataTypes = dataTypes;
 	}
 
@@ -131,19 +132,19 @@ class AliasTableRenderer extends DefaultTableCellRenderer {
 
 			return label;
 		} else {
-			if (dataTypes.get(row) == String.class) { //CyAttributes.TYPE_STRING) {
+			if (dataTypes.get(row) == AttributeTypes.TYPE_STRING) {
 				iconLabel.setIcon(STRING_ICON.getIcon());
 				iconLabel.setText("String");
-			} else if (dataTypes.get(row) == Integer.class) { //CyAttributes.TYPE_INTEGER) {
+			} else if (dataTypes.get(row) == AttributeTypes.TYPE_INTEGER) {
 				iconLabel.setIcon(INT_ICON.getIcon());
 				iconLabel.setText("Integer");
-			} else if (dataTypes.get(row) == Double.class) { //CyAttributes.TYPE_FLOATING) {
+			} else if (dataTypes.get(row) == AttributeTypes.TYPE_FLOATING) {
 				iconLabel.setIcon(FLOAT_ICON.getIcon());
 				iconLabel.setText("Float");
-			} else if (dataTypes.get(row) == Boolean.class) { //CyAttributes.TYPE_BOOLEAN) {
+			} else if (dataTypes.get(row) == AttributeTypes.TYPE_BOOLEAN) {
 				iconLabel.setIcon(BOOLEAN_ICON.getIcon());
 				iconLabel.setText("Boolean");
-			} else if (dataTypes.get(row) == List.class) { //CyAttributes.TYPE_SIMPLE_LIST) {
+			} else if (dataTypes.get(row) == AttributeTypes.TYPE_SIMPLE_LIST) {
 				iconLabel.setIcon(LIST_ICON.getIcon());
 				iconLabel.setText("List");
 			}

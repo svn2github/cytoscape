@@ -73,8 +73,8 @@ public class AttributeAndOntologyMappingParameters extends AttributeMappingParam
 	public AttributeAndOntologyMappingParameters(ObjectType objectType, List<String> delimiters,
 	                                             String listDelimiter, int keyIndex,
 	                                             String mappingAttribute, List<Integer> aliasIndex,
-	                                             String[] attributeNames, Class<?>[] attributeTypes,
-	                                             Class<?>[] listAttributeTypes, boolean[] importFlag,
+	                                             String[] attributeNames, Byte[] attributeTypes,
+	                                             Byte[] listAttributeTypes, boolean[] importFlag,
 	                                             int ontologyIndex, final String ontologyName)
 	    throws Exception {
 		this(objectType, delimiters, listDelimiter, keyIndex, mappingAttribute,
@@ -106,8 +106,8 @@ public class AttributeAndOntologyMappingParameters extends AttributeMappingParam
 	public AttributeAndOntologyMappingParameters(ObjectType objectType, List<String> delimiters,
 	                                             String listDelimiter, int keyIndex,
 	                                             String mappingAttribute, List<Integer> aliasIndex,
-	                                             String[] attributeNames, Class<?>[] attributeTypes,
-	                                             Class<?>[] listAttributeTypes, boolean[] importFlag,
+	                                             String[] attributeNames, Byte[] attributeTypes,
+	                                             Byte[] listAttributeTypes, boolean[] importFlag,
 	                                             int ontologyIndex, final String ontologyName,
 												 boolean caseSensitive)
 	    throws Exception {

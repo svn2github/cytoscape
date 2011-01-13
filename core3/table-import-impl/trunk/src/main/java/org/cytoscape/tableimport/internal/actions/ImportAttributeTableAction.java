@@ -40,6 +40,7 @@ public class ImportAttributeTableAction extends AbstractCyAction {
 		CytoscapeServices.theBookmarks = bookmarksProp.getProperties();
 		CytoscapeServices.openBrowser = openBrowserService;
 		CytoscapeServices.fileUtil = fileUtilService;
+		CytoscapeServices.appMgr = appMgr;
 		
 	}
 

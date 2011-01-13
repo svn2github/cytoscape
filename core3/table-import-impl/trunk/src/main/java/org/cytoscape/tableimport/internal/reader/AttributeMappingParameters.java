@@ -56,6 +56,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.cytoscape.tableimport.internal.util.AttributeTypes;
 
 
 /**
@@ -80,10 +81,10 @@ public class AttributeMappingParameters implements MappingParameter {
 	private final int keyIndex;
 	private final List<Integer> aliasIndex;
 	private String[] attributeNames;
-	//private Byte[] attributeTypes;
-	private Class<?>[] attributeTypes;
-	//private Byte[] listAttributeTypes;
-	private Class<?>[] listAttributeTypes;
+	private Byte[] attributeTypes;
+	//private Class<?>[] attributeTypes;
+	private Byte[] listAttributeTypes;
+	//private Class<?>[] listAttributeTypes;
 	private final String mappingAttribute;
 	private List<String> delimiters;
 	private String listDelimiter;
@@ -116,8 +117,7 @@ public class AttributeMappingParameters implements MappingParameter {
 	                                  final String listDelimiter, final int keyIndex,
 	                                  final String mappingAttribute,
 	                                  final List<Integer> aliasIndex, final String[] attrNames,
-	                                  //Byte[] attributeTypes, Byte[] listAttributeTypes,
-	                                  Class<?>[] attributeTypes, Class<?>[] listAttributeTypes,
+	                                  Byte[] attributeTypes, Byte[] listAttributeTypes,
 	                                  boolean[] importFlag) throws Exception {
 		this(objectType, delimiters, listDelimiter, keyIndex, mappingAttribute, aliasIndex,
 		     attrNames, attributeTypes, listAttributeTypes, importFlag, true);
@@ -140,12 +140,16 @@ public class AttributeMappingParameters implements MappingParameter {
 	 * @throws Exception  DOCUMENT ME!
 	 * @throws IOException  DOCUMENT ME!
 	 */
+	
+	
+	//The constructor AttributeMappingParameters(TextTableReader.ObjectType, List<String>, String, int, String, List<Integer>, String[], byte[], Byte[], 
+	//		 boolean[], Boolean) is undefined
+	
 	public AttributeMappingParameters(final ObjectType objectType, final List<String> delimiters,
 	                                  final String listDelimiter, final int keyIndex,
 	                                  final String mappingAttribute,
 	                                  final List<Integer> aliasIndex, final String[] attrNames,
-	                                  //Byte[] attributeTypes, Byte[] listAttributeTypes,
-	                                  Class<?>[] attributeTypes, Class<?>[] listAttributeTypes,
+	                                  Byte[] attributeTypes, Byte[] listAttributeTypes,
 	                                  boolean[] importFlag, Boolean caseSensitive)
 	    throws Exception {
 		this.listAttributeTypes = listAttributeTypes;
@@ -220,10 +224,10 @@ public class AttributeMappingParameters implements MappingParameter {
 		 * If not specified, import everything as String attributes.
 		 */
 		if (attributeTypes == null) {
-			this.attributeTypes = new Class<?>[attrNames.length]; //new Byte[attrNames.length];
+			this.attributeTypes = new Byte[attrNames.length];
 
 			for (int i = 0; i < attrNames.length; i++) {
-				this.attributeTypes[i] = String.class; // CyAttributes.TYPE_STRING;
+				this.attributeTypes[i] = AttributeTypes.TYPE_STRING;
 			}
 		} else {
 			this.attributeTypes = attributeTypes;
@@ -320,7 +324,7 @@ public class AttributeMappingParameters implements MappingParameter {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Class<?>[] getAttributeTypes() {
+	public Byte[] getAttributeTypes() {
 		return attributeTypes;
 	}
 
@@ -329,7 +333,7 @@ public class AttributeMappingParameters implements MappingParameter {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Class<?>[] getListAttributeTypes() {
+	public Byte[] getListAttributeTypes() {
 		return listAttributeTypes;
 	}
 

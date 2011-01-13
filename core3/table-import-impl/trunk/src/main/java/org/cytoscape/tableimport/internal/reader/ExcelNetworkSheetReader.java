@@ -43,9 +43,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-//import cytoscape.data.CyAttributes;
-//import cytoscape.logger.CyLogger;
+import org.cytoscape.tableimport.internal.util.AttributeTypes;
 
 
 /**
@@ -61,7 +59,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ExcelNetworkSheetReader extends NetworkTableReader {
 	private final Sheet sheet;
-	//private CyLogger logger = CyLogger.getLogger(ExcelNetworkSheetReader.class);
 	private static final Logger logger = LoggerFactory.getLogger(ExcelNetworkSheetReader.class);
 	/*
 	 * Reader will read entries from this line.
@@ -132,7 +129,7 @@ public class ExcelNetworkSheetReader extends NetworkTableReader {
 			} else if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
 				cells[i] = cell.getRichStringCellValue().getString();
 			} else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-				if (nmp.getAttributeTypes()[i] == Integer.class) { //CyAttributes.TYPE_INTEGER) {
+				if (nmp.getAttributeTypes()[i] == AttributeTypes.TYPE_INTEGER) {
 					Double dblValue = cell.getNumericCellValue();
 					Integer intValue = dblValue.intValue();
 					cells[i] = intValue.toString();

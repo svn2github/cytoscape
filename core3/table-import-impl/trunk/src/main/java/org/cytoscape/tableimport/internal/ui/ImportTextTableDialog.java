@@ -110,20 +110,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.cytoscape.model.CyNetwork;
-//import cytoscape.Cytoscape;
-//import cytoscape.bookmarks.Attribute;
-//import cytoscape.bookmarks.Bookmarks;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.DataSource;
-//import cytoscape.bookmarks.DataSource;
-//import cytoscape.data.CyAttributes;
+import org.cytoscape.model.CyTable;
 //import cytoscape.data.readers.GraphReader;
-//import cytoscape.logger.CyLogger;
 //import cytoscape.task.ui.JTaskConfig;
 //import cytoscape.task.util.TaskManager;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 //import cytoscape.util.CyFileFilter;
-//import cytoscape.util.FileUtil;
 import org.cytoscape.tableimport.internal.util.URLUtil;
 import org.cytoscape.util.swing.ColumnResizer;
 import org.cytoscape.util.swing.JStatusBar;
@@ -143,6 +137,7 @@ import org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
+import org.cytoscape.tableimport.internal.util.AttributeTypes;
 
 /**
  * Main UI for Table Import.
@@ -234,12 +229,12 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private Map<String, String> ontologyUrlMap;
 	private Map<String, String> ontologyTypeMap;
 	private Map<String, String> ontologyDescriptionMap;
-	private List<Class<?>> attributeDataTypes;
+	private List<Byte> attributeDataTypes;
 
 	/*
 	 * This is for storing data type in the list object.
 	 */
-	private Class<?>[] listDataTypes;
+	private Byte[] listDataTypes;
 
 	/*
 	 * Tracking multiple sheets.
@@ -250,7 +245,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private String[] columnHeaders;
 	private String listDelimiter;
 	private boolean[] importFlag;
-	//private CyAttributes selectedAttributes;
+	private CyTable selectedAttributes;
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private File[] inputFiles;
 
@@ -272,6 +267,11 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		// Default Attribute is node attr.
 		//selectedAttributes = Cytoscape.getNodeAttributes();
+		selectedAttributes = null;
+		CyNetwork network = CytoscapeServices.appMgr.getCurrentNetwork();
+		if (network != null){
+			selectedAttributes = CytoscapeServices.tblMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);			
+		}
 
 		this.objType = NODE;
 		this.dialogType = dialogType;
@@ -289,13 +289,16 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		ontologyDescriptionMap = new HashMap<String, String>();
 		ontologyTypeMap = new HashMap<String, String>();
 
-		attributeDataTypes = new ArrayList<Class<?>>();
+		attributeDataTypes = new ArrayList<Byte>();
 				
 		initComponents();
 		
 		updateComponents();
 
 		previewPanel.addPropertyChangeListener(this);
+		
+		//Don't know why this panel is disabled at start up
+		this.attributeNamePanel.setEnabled(true);
 		
 	}
 	
@@ -319,21 +322,21 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			 */
 			listDelimiter = evt.getNewValue().toString();
 		} else if (evt.getPropertyName().equals(LIST_DATA_TYPE_CHANGED)) {
-			listDataTypes = (Class<?>[]) evt.getNewValue();
+			listDataTypes = (Byte[]) evt.getNewValue();
 		} else if (evt.getPropertyName().equals(ATTR_DATA_TYPE_CHANGED)) {
 			/*
 			 * Data type of an attribute has been chabged.
 			 */
 			final Vector vec = (Vector) evt.getNewValue();
 			final Integer key = (Integer) vec.get(0);
-			final Class newType = (Class) vec.get(1);
+			final Byte newType = (Byte) vec.get(1);
 
 			if (key > attributeDataTypes.size()) {
-				attributeDataTypes = new ArrayList<Class<?>>();
+				attributeDataTypes = new ArrayList<Byte>();
 
-				//for (Class<?> type : previewPanel.getCurrentDataTypes()) {
-				//	attributeDataTypes.add(type);
-				//}
+				for (Byte type : previewPanel.getCurrentDataTypes()) {
+					attributeDataTypes.add(type);
+				}
 			}
 
 			attributeDataTypes.set(key, newType);
@@ -386,7 +389,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			previewPanel.getPreviewTable().getTableHeader().resizeAndRepaint();
 			previewPanel.getPreviewTable().repaint();
 
-			//previewPanel.repaint();
+			previewPanel.repaint();
 		}
 	}
 
@@ -644,7 +647,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			ontologyLabel.setForeground(ONTOLOGY_COLOR.getColor());
 			ontologyLabel.setText("Ontology");
 
-			// ontologyComboBox.setFont(new java.awt.Font("SansSerif", 1, 14));
+		    ontologyComboBox.setFont(new java.awt.Font("SansSerif", 1, 14));
 			ontologyComboBox.setPreferredSize(new java.awt.Dimension(68, 25));
 
 			final ListCellRenderer ontologyLcr = ontologyComboBox.getRenderer();
@@ -1565,14 +1568,25 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	}
 
 	private void attributeRadioButtonActionPerformed(ActionEvent evt) {
+		CyNetwork network = CytoscapeServices.appMgr.getCurrentNetwork();
+		
 		if (nodeRadioButton.isSelected()) {
 			//selectedAttributes = Cytoscape.getNodeAttributes();
+			if (network != null){
+				selectedAttributes = CytoscapeServices.tblMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);			
+			}
+			
 			objType = NODE;
 		} else if (edgeRadioButton.isSelected()) {
 			//selectedAttributes = Cytoscape.getEdgeAttributes();
+			if (network != null){
+				selectedAttributes = CytoscapeServices.tblMgr.getTableMap(CyEdge.class, network).get(CyNetwork.DEFAULT_ATTRS);			
+			}
+			
 			objType = EDGE;
 		} else {
 			//selectedAttributes = Cytoscape.getNetworkAttributes();
+			System.out.println("\nNote: ImportTextTableFDialog.attributeRadioButtonActionPerformed():Import network attribute not implemented yet!\n");
 			objType = NETWORK;
 		}
 
@@ -1770,18 +1784,18 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		 * Get attribute data types
 		 */
 
-		// final byte[] attributeTypes = new byte[previewPanel.getPreviewTable()
+		//final byte[] attributeTypes = new byte[previewPanel.getPreviewTable()
 		// .getColumnCount()];
 		final Byte[] test = previewPanel.getDataTypes(previewPanel.getSelectedSheetName());
-		final Class<?>[] attributeTypes = new Class<?>[test.length];
+		final Byte[] attributeTypes = new Byte[test.length];
 
 		for (int i = 0; i < test.length; i++) {
-			//attributeTypes[i] = test[i];
+			attributeTypes[i] = test[i];
 		}
 
-		// for (int i = 0; i < attributeTypes.length; i++) {
-		// attributeTypes[i] = attributeDataTypes.get(i);
-		// }
+		 for (int i = 0; i < attributeTypes.length; i++) {
+			 attributeTypes[i] = attributeDataTypes.get(i);
+		 }
 		final List<Integer> aliasList = new ArrayList<Integer>();
 		String mappingAttribute = ID;
 
@@ -1977,7 +1991,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					sources[i] = inputFiles[i].toURI().toURL();
 				}
 
-				//final URL networkSource = new URL(targetDataSourceTextField.getText());
+				final URL networkSource = new URL(targetDataSourceTextField.getText());
 				final int sourceColumnIndex = networkImportPanel.getSourceIndex();
 				final int targetColumnIndex = networkImportPanel.getTargetIndex();
 
@@ -2356,18 +2370,18 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		}
 	}
 
-	protected static ImageIcon getDataTypeIcon(Class<?> dataType) {
+	protected static ImageIcon getDataTypeIcon(Byte dataType) {
 		ImageIcon dataTypeIcon = null;
 
-		if (dataType == String.class) { //CyAttributes.TYPE_STRING) {
+		if (dataType == AttributeTypes.TYPE_STRING) {
 			dataTypeIcon = STRING_ICON.getIcon();
-		} else if (dataType == Integer.class) { //CyAttributes.TYPE_INTEGER) {
+		} else if (dataType == AttributeTypes.TYPE_INTEGER) {
 			dataTypeIcon = INT_ICON.getIcon();
-		} else if (dataType == Double.class) { //CyAttributes.TYPE_FLOATING) {
+		} else if (dataType == AttributeTypes.TYPE_FLOATING) {
 			dataTypeIcon = FLOAT_ICON.getIcon();
-		} else if (dataType == Boolean.class) { //CyAttributes.TYPE_BOOLEAN) {
+		} else if (dataType == AttributeTypes.TYPE_BOOLEAN) {
 			dataTypeIcon = BOOLEAN_ICON.getIcon();
-		} else if (dataType == List.class) { //CyAttributes.TYPE_SIMPLE_LIST) {
+		} else if (dataType == AttributeTypes.TYPE_SIMPLE_LIST) {
 			dataTypeIcon = LIST_ICON.getIcon();
 		}
 
@@ -2574,7 +2588,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			importFlag[i] = true;
 		}
 
-		//listDataTypes = previewPanel.getCurrentListDataTypes();
+		listDataTypes = previewPanel.getCurrentListDataTypes();
 
 		/*
 		 * Initialize all Alias Tables
@@ -2753,6 +2767,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	 *
 	 */
 	private void setKeyList() {
+		/*
 		if (mappingAttributeComboBox.getSelectedItem() == null) {
 			return;
 		}
@@ -2764,7 +2779,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		Set<Object> valueSet = new TreeSet<Object>();
 
 		if (selectedKeyAttribute.equals(ID)) {
-			/*
+			
 			if (objType == NODE) {
 				it = Cytoscape.getRootGraph().nodesIterator();
 
@@ -2786,16 +2801,15 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				}
 			}
 			
-			*/
+			
 			
 		} else {
-			//final byte attrType = selectedAttributes.getType(selectedKeyAttribute);
-			//final Class<?> attrType = selectedAttributes.getType(selectedKeyAttribute);
+			final byte attrType = selectedAttributes.getType(selectedKeyAttribute);
 			
 			Object value = null;
 
-			//Iterator attrIt = selectedAttributes.getMultiHashMap()
-			//                                    .getObjectKeys(selectedKeyAttribute);
+			Iterator attrIt = selectedAttributes.getMultiHashMap()
+			                                    .getObjectKeys(selectedKeyAttribute);
 
 			String stringValue = null;
 			Double dblValue = 0.;
@@ -2803,41 +2817,43 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			Boolean boolValue = false;
 			List listValue = null;
 
-			/*
+			
 			while (attrIt.hasNext()) {
 				value = attrIt.next();
 
 			
 				switch (attrType) {
-					case CyAttributes.TYPE_STRING:
-						stringValue = selectedAttributes.getStringAttribute((String) value,
-						                                                    selectedKeyAttribute);
+					case AttributeTypes.TYPE_STRING:
+						//stringValue = selectedAttributes.getStringAttribute((String) value,
+						//                                                    selectedKeyAttribute);
+						stringValue = selectedAttributes.getColumnValues(selectedKeyAttribute, String.class);
+						
 						valueSet.add(stringValue);
 
 						break;
 
-					case CyAttributes.TYPE_FLOATING:
+					case AttributeTypes.TYPE_FLOATING:
 						dblValue = selectedAttributes.getDoubleAttribute((String) value,
 						                                                 selectedKeyAttribute);
 						valueSet.add(dblValue);
 
 						break;
 
-					case CyAttributes.TYPE_INTEGER:
+					case AttributeTypes.TYPE_INTEGER:
 						intValue = selectedAttributes.getIntegerAttribute((String) value,
 						                                                  selectedKeyAttribute);
 						valueSet.add(intValue);
 
 						break;
 
-					case CyAttributes.TYPE_BOOLEAN:
+					case AttributeTypes.TYPE_BOOLEAN:
 						boolValue = selectedAttributes.getBooleanAttribute((String) value,
 						                                                   selectedKeyAttribute);
 						valueSet.add(boolValue);
 
 						break;
 
-					case CyAttributes.TYPE_SIMPLE_LIST:
+					case AttributeTypes.TYPE_SIMPLE_LIST:
 						listValue = selectedAttributes.getListAttribute((String) value,
 						                                                selectedKeyAttribute);
 						valueSet.addAll(listValue);
@@ -2849,12 +2865,13 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				}
 				
 			}
-			*/
+			
 		}
 
 		previewPanel.setKeyAttributeList(valueSet);
 
-		// nodeKeyList.setListData(valueSet.toArray());
+		nodeKeyList.setListData(valueSet.toArray());
+		*/
 	}
 
 	private void updateAliasTableCell(String name, int columnIndex) {
@@ -2934,9 +2951,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			}
 
 			if (dataTypeArray.length <= i) {
-				attributeDataTypes.add(String.class) ; //CyAttributes.TYPE_STRING);
+				attributeDataTypes.add(AttributeTypes.TYPE_STRING);
 			} else {
-				//attributeDataTypes.add(dataTypeArray[i]);
+				attributeDataTypes.add(dataTypeArray[i]);
 			}
 
 			keyTableData[i][2] = "String";
@@ -2972,6 +2989,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	}
 
 	private void updateMappingAttributeComboBox() {
+		/*
 		mappingAttributeComboBox.removeAllItems();
 
 		final ListCellRenderer lcr = mappingAttributeComboBox.getRenderer();
@@ -2994,13 +3012,14 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		mappingAttributeComboBox.addItem(ID);
 
-		//for (String name : selectedAttributes.getAttributeNames()) {
-		//	if ((selectedAttributes.getType(name) != CyAttributes.TYPE_COMPLEX)
-		//	    && (selectedAttributes.getType(name) != CyAttributes.TYPE_SIMPLE_MAP)
-		//	    && (selectedAttributes.getType(name) != CyAttributes.TYPE_UNDEFINED)) {
-		//		mappingAttributeComboBox.addItem(name);
-		//	}
-		//}
+		for (String name : selectedAttributes.getAttributeNames()) {
+			if ((selectedAttributes.getType(name) != AttributeTypes.TYPE_COMPLEX)
+			    && (selectedAttributes.getType(name) != AttributeTypes.TYPE_SIMPLE_MAP)
+			    && (selectedAttributes.getType(name) != AttributeTypes.TYPE_UNDEFINED)) {
+				mappingAttributeComboBox.addItem(name);
+			}
+		}
+		*/
 	}
 
 	private TableCellRenderer getRenderer(FileTypes type) {
@@ -3135,9 +3154,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	}
 
 	private void setStatusBar(String message1, String message2, String message3) {
-		//statusBar.setLeftLabel(message1);
-		//statusBar.setCenterLabel(message2);
-		//statusBar.setRightLabel(message3);
+		statusBar.setLeftLabel(message1);
+		statusBar.setCenterLabel(message2);
+		statusBar.setRightLabel(message3);
 	}
 
 	/**
@@ -3620,14 +3639,14 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 
 class ComboBoxRenderer extends JLabel implements ListCellRenderer {
-	private List<Class<?>> attributeDataTypes;
+	private List<Byte> attributeDataTypes;
 
 	/**
 	 * Creates a new ComboBoxRenderer object.
 	 *
 	 * @param attributeDataTypes  DOCUMENT ME!
 	 */
-	public ComboBoxRenderer(List<Class<?>> attributeDataTypes) {
+	public ComboBoxRenderer(List<Byte> attributeDataTypes) {
 		this.attributeDataTypes = attributeDataTypes;
 		setOpaque(true);
 	}
@@ -3656,7 +3675,7 @@ class ComboBoxRenderer extends JLabel implements ListCellRenderer {
 
 		if ((attributeDataTypes != null) && (attributeDataTypes.size() != 0)
 		    && (index < attributeDataTypes.size()) && (index >= 0)) {
-			final Class<?> dataType = attributeDataTypes.get(index);
+			final Byte dataType = attributeDataTypes.get(index);
 
 			if (dataType == null) {
 				setIcon(null);

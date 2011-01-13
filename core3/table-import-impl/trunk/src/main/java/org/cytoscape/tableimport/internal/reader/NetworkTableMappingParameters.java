@@ -74,8 +74,8 @@ public class NetworkTableMappingParameters extends AttributeMappingParameters {
 	 * @throws Exception  DOCUMENT ME!
 	 */
 	public NetworkTableMappingParameters(List<String> delimiters, String listDelimiter,
-	                                     String[] attributeNames, Class<?>[] attributeTypes,
-	                                     Class<?>[] listAttributeTypes, boolean[] importFlag,
+	                                     String[] attributeNames, Byte[] attributeTypes,
+	                                     Byte[] listAttributeTypes, boolean[] importFlag,
 	                                     Integer source, Integer target, Integer interaction,
 	                                     final String defInteraction) throws Exception {
 		super(EDGE, delimiters, listDelimiter, -1, null, null, attributeNames, attributeTypes,
