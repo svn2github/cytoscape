@@ -1,7 +1,6 @@
 package org.cytoscape.work.internal.task;
 
 
-import java.awt.Frame;
 import java.awt.Window;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -67,6 +66,7 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	 */
 	private ExecutorService cancelExecutorService;
 
+	// Parent component of Task Monitor GUI.
 	private Window parent;
 
 	/**
