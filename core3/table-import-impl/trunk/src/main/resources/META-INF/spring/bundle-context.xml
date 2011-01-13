@@ -25,7 +25,18 @@
 		<constructor-arg ref="cyTableManagerServiceRef" />
 		<constructor-arg ref="fileUtilService" />
 		<constructor-arg ref="openBrowserService" />
-		
 	</bean>
-	
+
+	<bean id="importNetworkTableAction" class="org.cytoscape.tableimport.internal.actions.ImportAttributeTableAction">
+		<constructor-arg ref="cytoscapeDesktopService" /> 
+		<constructor-arg ref="cyApplicationManagerRef" />
+		<constructor-arg ref="bookmarkServiceRef" />		
+		<constructor-arg ref="bookmarksUtilServiceRef" />	
+		<constructor-arg ref="guiTaskManagerServiceRef" />
+		<constructor-arg ref="cytoscapePropertiesServiceRef" />
+		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="fileUtilService" />
+		<constructor-arg ref="openBrowserService" />
+	</bean>
+
 </beans>

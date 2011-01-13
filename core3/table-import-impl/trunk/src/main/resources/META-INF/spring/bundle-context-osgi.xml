@@ -44,5 +44,7 @@
 	<osgi:service id="importAttributeTableActionService" ref="importAttributeTableAction"
 		interface="org.cytoscape.application.swing.CyAction" />
 
+	<osgi:service id="importNetworkTableActionService" ref="importNetworkTableAction"
+		interface="org.cytoscape.application.swing.CyAction" />
 	
 </beans>
