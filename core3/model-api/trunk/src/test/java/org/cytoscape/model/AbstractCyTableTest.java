@@ -234,7 +234,7 @@ public abstract class AbstractCyTableTest {
 	public void testColumnCreatedEvent() {
 		table.createColumn("someInt", Integer.class);
 
-		Object last = eventHelper.getLastAsynchronousEvent();
+		Object last = eventHelper.getLastSynchronousEvent();
 		assertNotNull( last );
 		assertTrue( last instanceof ColumnCreatedEvent );
 	}
