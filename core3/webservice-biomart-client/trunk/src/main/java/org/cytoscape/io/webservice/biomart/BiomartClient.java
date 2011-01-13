@@ -32,53 +32,37 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.webservice.biomart;
+package org.cytoscape.io.webservice.biomart;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.naming.ConfigurationException;
 
+import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
 import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
-import org.cytoscape.io.webservice.client.CyTableImportTask;
-import org.cytoscape.io.webservice.client.Query;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.webservice.biomart.rest.BiomartRestClient;
-import org.cytoscape.work.TaskMonitor;
 
 /**
  * Biomart Web Service Client.
  * 
  */
-public class BiomartClient extends AbstractWebServiceClient<BiomartRestClient>
-		implements CyTableImportTask {
+public class BiomartClient extends AbstractWebServiceClient<BiomartRestClient> {
 
 	// Biomart base URL
 	private static final String BASE_URL = "http://www.biomart.org/biomart/martservice";
 
-	private boolean cancelImport = false;
-
-//	private String lastStatus;
-
-	// Import Parameters (tunables)
-	private Boolean selectedOnly = false;
-	private Boolean importAll = false;
-	private Boolean showAllFilter = false;
-
 	private final CyTableFactory tableFactory;
-	final CyNetworkManager manager;
+	private final CyNetworkManager manager;
 
-	private Query query;
 
 	/**
 	 * Creates a new Biomart Client object.
@@ -86,25 +70,16 @@ public class BiomartClient extends AbstractWebServiceClient<BiomartRestClient>
 	 * @throws ServiceException
 	 * @throws ConfigurationException
 	 */
-	public BiomartClient(final String uri, final String displayName,
-			final String description, final BiomartRestClient endpoint,
-			final CyTableFactory tableFactory, final CyNetworkManager manager) {
-		super(uri, displayName, description, endpoint);
+	public BiomartClient(final String displayName, final String description, 
+			final BiomartRestClient restClient,
+			final CyTableFactory tableFactory, 
+			final CyNetworkManager manager) {
+		super(restClient.getBaseURL(), displayName, description, restClient);
 
 		this.tableFactory = tableFactory;
 		this.manager = manager;
 
-		// props.add(new Tunable("selected_only", "Map selected nodes only",
-		// Tunable.BOOLEAN, new Boolean(false)));
-		// props.add(new Tunable("import_all", "Import all available entries",
-		// Tunable.BOOLEAN,
-		// new Boolean(false)));
-		//
-		// props.add(new Tunable("show_all_filter",
-		// "Show all available filters", Tunable.BOOLEAN,
-		// new Boolean(false)));
-		// props.add(new Tunable("base_url", "Biomart Base URL", Tunable.STRING,
-		// BASE_URL));
+		// TODO: set optional parameters (Tunables?)
 	}
 
 	/**
@@ -115,14 +90,14 @@ public class BiomartClient extends AbstractWebServiceClient<BiomartRestClient>
 	 * @throws IOException
 	 * @throws Exception
 	 */
-	private Set<CyTable> importAttributes(final String keyColumnName) throws IOException {
+	public Set<CyTable> importAttributes(final BiomartQuery query) throws IOException {
 
 		final BufferedReader result = clientStub.sendQuery(query.getQueryAsString());
 		
 		if (result.ready() == false)
 			throw new IOException("Could not get result.");
 
-		return mapping(result, keyColumnName);
+		return mapping(result, query.getKeyColumnName());
 
 	}
 	
@@ -315,33 +290,5 @@ public class BiomartClient extends AbstractWebServiceClient<BiomartRestClient>
 //
 //		return idList;
 //	}
-
-	@Override
-	public void run(TaskMonitor taskMonitor) throws Exception {
-		tables = importAttributes(keyColumnName);
-
-	}
-
-	@Override
-	public void cancel() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Set<CyTable> getCyTables() {
-		return tables;
-	}
-
-	public void setQuery(Query query) {
-		this.query = query;
-	}
 	
-	public void setKeyColumnName(final String keyColumnName) {
-		this.keyColumnName = keyColumnName;
-	}
-	
-	Set<CyTable> tables;
-	
-	private String keyColumnName;
 }

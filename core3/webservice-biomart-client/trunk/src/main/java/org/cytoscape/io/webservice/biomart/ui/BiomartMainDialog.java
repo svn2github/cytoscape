@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,30 +31,59 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
+package org.cytoscape.io.webservice.biomart.ui;
 
-package org.cytoscape.webservice.biomart.rest;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+
+import org.cytoscape.io.webservice.biomart.BiomartClient;
+import org.cytoscape.model.CyTableManager;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.work.TaskManager;
 
 /**
- *
+ * BioMart client main GUI.
  */
-public class QueryBuilderUtil {
-	private enum IDType {
-		ENSEMBL,
-		ENTREZ_GENE;
-	}
+public final class BiomartMainDialog extends JDialog {
+
+	private static final long serialVersionUID = 2382157952635589843L;
+
+	private static boolean initialized = true;
 	
-	private final List<String> dataset = new ArrayList<String>(); 
-	
-	private void getDataset() {
-		
-	}
-	public static String getAllAliases(String ncbiTaxonID) {
-		
-		final String query = XMLQueryBuilder.getQueryString(new Dataset("hsapiens_gene_ensembl"), new Attribute[] {new Attribute("ensembl_gene_id")}, null);
-		return query;
+	public BiomartMainDialog(final BiomartClient client, final TaskManager taskManager,
+			final CyApplicationManager appManager,
+			final CyTableManager tblManager) {
+		super();
+		setTitle("BioMart Web Service Client");
+
+		// Create a tabbed pane
+		final JTabbedPane tabs = new JTabbedPane();
+
+		final JPanel tunablePanel = new JPanel();
+		tunablePanel.setBackground(Color.white);
+		final JPanel tPanel = new JPanel();
+		final Dimension panelSize = new Dimension(220, 250);
+		tPanel.setMinimumSize(panelSize);
+		tPanel.setMaximumSize(panelSize);
+		tPanel.setSize(panelSize);
+
+		tPanel.setBackground(Color.white);
+		tPanel.setLayout(new GridLayout(0, 1));
+
+		tunablePanel.add(tPanel);
+
+		BiomartAttrMappingPanel panel = new BiomartAttrMappingPanel(client,taskManager, appManager, tblManager);
+		tabs.addTab("Query", panel);
+		// tabs.addTab("Options", tunablePanel);
+
+		add(tabs);
+
+		pack();
 	}
 }

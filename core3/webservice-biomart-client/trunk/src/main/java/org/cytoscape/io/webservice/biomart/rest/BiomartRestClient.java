@@ -32,7 +32,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.webservice.biomart.rest;
+package org.cytoscape.io.webservice.biomart.rest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class BiomartRestClient {
 	private static final int CONNECTION_TIMEOUT = 3000;
 	private static final int READ_TIMEOUT = 5000;
 	
-	private String baseURL = "http://www.biomart.org/biomart/martservice?";
+	private String baseURL;
 	private static final String RESOURCE = "/resource/filterconversion.txt";
 	private static final String TAXONOMY_TABLE = "/resource/tax_report.txt";
 
@@ -80,13 +80,6 @@ public class BiomartRestClient {
 	
 	private static final int BUFFER_SIZE = 81920;
 	
-	/**
-	 * Creates a new BiomartStub object.
-	 * @throws IOException
-	 */
-	public BiomartRestClient() throws IOException {
-		this(null);
-	}
 
 	/**
 	 * Creates a new BiomartStub object from given URL.
@@ -94,10 +87,14 @@ public class BiomartRestClient {
 	 * @param baseURL  DOCUMENT ME!
 	 * @throws IOException
 	 */
-	public BiomartRestClient(String baseURL) throws IOException {
-		if (baseURL != null) {
-			this.baseURL = baseURL + "?";
-		}
+	public BiomartRestClient(final String baseURL) throws IOException {
+		
+		System.out.println("$$$$$$$$$$$$ REST Client start: " + baseURL);
+		
+		if(baseURL == null)
+			throw new NullPointerException("Biomart base URL is missing.");
+		
+		this.baseURL = baseURL + "?";
 
 		loadConversionFile();
 	}
@@ -157,7 +154,14 @@ public class BiomartRestClient {
 	 * @param baseURL DOCUMENT ME!
 	 */
 	public void setBaseURL(String baseURL) {
+		if(baseURL == null)
+			throw new NullPointerException("URL string is null.");
+		
 		this.baseURL = baseURL + "?";
+	}
+	
+	public String getBaseURL() {
+		return this.baseURL;
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package org.cytoscape.webservice.biomart.task;
+package org.cytoscape.io.webservice.biomart.task;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.cytoscape.webservice.biomart.rest.BiomartRestClient;
+import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 

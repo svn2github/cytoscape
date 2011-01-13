@@ -18,16 +18,25 @@
 
 	<context:annotation-config />
 	
-	<bean id="biomartClientTaskFactory" class="org.cytoscape.webservice.biomart.BioMartClientTaskFactory">
-		<constructor-arg ref="cyTableFactoryServiceRef" />
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	<!-- REST version of BioMart web service client -->
+	<bean id="biomartRestClient" class="org.cytoscape.io.webservice.biomart.rest.BiomartRestClient">
 		<constructor-arg value="http://www.biomart.org/biomart/martservice" />
-		<constructor-arg value="BioMart Client" />
-		<constructor-arg value="BioMart Web Service Client." />
 	</bean>
 	
-	<bean id="showDialogTask" class="org.cytoscape.webservice.biomart.task.ShowBiomartGUITask">
-		<constructor-arg ref="biomartClientTaskFactory"></constructor-arg>
+	<!-- Wrapper for the REST client -->
+	<bean id="biomartClient" class="org.cytoscape.io.webservice.biomart.BiomartClient">
+		<constructor-arg index="0" value="BioMart Client" />
+		<constructor-arg index="1" value="REST version of BioMart Web Service Client." />
+		<constructor-arg ref="biomartRestClient" />
+		<constructor-arg ref="cyTableFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+	
+	<!-- Task to create menu item -->
+	<bean id="showDialogTaskFactory" class="org.cytoscape.io.webservice.biomart.task.ShowBiomartGUITaskFactory">
+		<constructor-arg ref="biomartClient" />
+		<constructor-arg ref="taskManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
 </beans>

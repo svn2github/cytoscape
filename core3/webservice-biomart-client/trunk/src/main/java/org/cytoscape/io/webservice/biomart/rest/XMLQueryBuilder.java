@@ -34,7 +34,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.webservice.biomart.rest;
+package org.cytoscape.io.webservice.biomart.rest;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

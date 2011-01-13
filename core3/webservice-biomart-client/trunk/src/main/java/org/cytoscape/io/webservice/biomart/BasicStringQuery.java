@@ -1,4 +1,4 @@
-package org.cytoscape.webservice.biomart;
+package org.cytoscape.io.webservice.biomart;
 
 import org.cytoscape.io.webservice.client.Query;
 

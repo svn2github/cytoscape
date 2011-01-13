@@ -32,10 +32,9 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.webservice.biomart.ui;
+package org.cytoscape.io.webservice.biomart.ui;
 
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,24 +45,25 @@ import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import org.cytoscape.io.webservice.biomart.BiomartClient;
+import org.cytoscape.io.webservice.biomart.BiomartQuery;
+import org.cytoscape.io.webservice.biomart.rest.Attribute;
+import org.cytoscape.io.webservice.biomart.rest.Dataset;
+import org.cytoscape.io.webservice.biomart.rest.Filter;
+import org.cytoscape.io.webservice.biomart.rest.XMLQueryBuilder;
+import org.cytoscape.io.webservice.biomart.task.ImportAttributeListTask;
+import org.cytoscape.io.webservice.biomart.task.ImportAttributeListTaskFactory;
+import org.cytoscape.io.webservice.biomart.task.ImportFilterTask;
+import org.cytoscape.io.webservice.biomart.task.ImportFilterTaskFactory;
+import org.cytoscape.io.webservice.biomart.task.ImportTableTaskFactory;
+import org.cytoscape.io.webservice.biomart.task.LoadRepositoryTask;
+import org.cytoscape.io.webservice.biomart.task.LoadRepositoryTaskFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.webservice.biomart.BasicStringQuery;
-import org.cytoscape.webservice.biomart.BiomartClient;
-import org.cytoscape.webservice.biomart.rest.Attribute;
-import org.cytoscape.webservice.biomart.rest.Dataset;
-import org.cytoscape.webservice.biomart.rest.Filter;
-import org.cytoscape.webservice.biomart.rest.XMLQueryBuilder;
-import org.cytoscape.webservice.biomart.task.ImportAttributeListTask;
-import org.cytoscape.webservice.biomart.task.ImportAttributeListTaskFactory;
-import org.cytoscape.webservice.biomart.task.ImportFilterTask;
-import org.cytoscape.webservice.biomart.task.ImportFilterTaskFactory;
-import org.cytoscape.webservice.biomart.task.LoadRepositoryTask;
-import org.cytoscape.webservice.biomart.task.LoadRepositoryTaskFactory;
 import org.cytoscape.work.TaskManager;
 
 /**
@@ -92,6 +92,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	private boolean initialized = false;
 
 	private final BiomartClient client;
+	
+	private final ImportTableTaskFactory importTaskFactory;
 
 	// These databases are not compatible with this UI.
 	private static final List<String> databaseFilter = new ArrayList<String>();
@@ -118,6 +120,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		this.taskManager = taskManager;
 		this.appManager = appManager;
 		this.tblManager = tblManager;
+		
+		importTaskFactory = new ImportTableTaskFactory(this.client);
 
 		initDataSources();
 	}
@@ -385,7 +389,9 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	private void importAttributesFromService(Dataset dataset, Attribute[] attrs, Filter[] filters, String keyInHeader, String keyAttrName) {
 
 		final String query = XMLQueryBuilder.getQueryString(dataset, attrs, filters);
-		client.setQuery(new BasicStringQuery(query));
+		importTaskFactory.setQuery(new BiomartQuery(query, keyAttrName));
+		
+		this.taskManager.executeAndWait(importTaskFactory);
 		
 
 //		AttributeImportQuery qObj = new AttributeImportQuery(query2, key,

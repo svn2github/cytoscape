@@ -1,6 +1,6 @@
-package org.cytoscape.webservice.biomart.task;
+package org.cytoscape.io.webservice.biomart.task;
 
-import org.cytoscape.webservice.biomart.rest.BiomartRestClient;
+import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 

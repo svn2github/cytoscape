@@ -1,4 +1,4 @@
-package org.cytoscape.webservice.biomart.rest;
+package org.cytoscape.io.webservice.biomart.rest;
 
 public class Attribute {
 	private String name;

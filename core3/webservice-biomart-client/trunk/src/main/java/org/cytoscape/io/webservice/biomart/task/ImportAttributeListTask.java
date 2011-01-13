@@ -1,8 +1,8 @@
-package org.cytoscape.webservice.biomart.task;
+package org.cytoscape.io.webservice.biomart.task;
 
 import java.util.Map;
 
-import org.cytoscape.webservice.biomart.rest.BiomartRestClient;
+import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 

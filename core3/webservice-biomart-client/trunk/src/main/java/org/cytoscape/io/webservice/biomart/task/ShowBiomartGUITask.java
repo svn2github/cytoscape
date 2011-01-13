@@ -1,9 +1,9 @@
-package org.cytoscape.webservice.biomart.task;
+package org.cytoscape.io.webservice.biomart.task;
 
+import org.cytoscape.io.webservice.biomart.BiomartClient;
+import org.cytoscape.io.webservice.biomart.ui.BiomartMainDialog;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.webservice.biomart.BiomartClient;
-import org.cytoscape.webservice.biomart.ui.BiomartMainDialog;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
@@ -21,7 +21,8 @@ public class ShowBiomartGUITask extends AbstractTask {
 	final CyApplicationManager appManager;
 	final CyTableManager tblManager;
 
-	public ShowBiomartGUITask(final BiomartClient client,
+	public ShowBiomartGUITask(
+			final BiomartClient client,
 			final TaskManager taskManager,
 			final CyApplicationManager appManager,
 			final CyTableManager tblManager) {
