@@ -35,6 +35,7 @@ package structureViz.ui;
 // System imports
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,7 @@ public class ModelNavigatorDialog
 	private static final int FINDCLASH = 16;
 	private static final int FINDHBOND = 17;
 	private static final int FUNCTIONALRESIDUES = 18;
+	private static final int COLLAPSEALL = 19;
 	private boolean ignoreSelection = false;
 	private int residueDisplay = ChimeraResidue.THREE_LETTER;
 	private boolean isCollapsing = false;
@@ -404,8 +406,17 @@ public class ModelNavigatorDialog
 			alignMenu.setEnabled(false);
 		chimeraMenu.add(alignMenu);
 
+		addMenuItem(chimeraMenu, "Focus all", COMMAND, "focus");
+
+		JMenu presetMenu = new JMenu("Presets");
+		if (buildPresetMenu(presetMenu))
+			chimeraMenu.add(presetMenu);
+
+		chimeraMenu.add(new JSeparator());
+
 		JMenu clashMenu = new JMenu("Clash detection");
-		addMenuItem(clashMenu, "Find clashes", FINDCLASH, "findclash sel continuous true");
+		addMenuItem(clashMenu, "Find all clashes", FINDCLASH, "findclash sel continuous true");
+		addMenuItem(clashMenu, "Find clashes within models", FINDCLASH, "findclash sel test model continuous true");
 		addMenuItem(clashMenu, "Clear clashes", COMMAND, "~findclash");
 		chimeraMenu.add(clashMenu);
 
@@ -417,18 +428,19 @@ public class ModelNavigatorDialog
 		hBondMenu.add(fHBondMenu);
 		addMenuItem(hBondMenu, "Clear hydrogen bonds", COMMAND, "~findhbond");
 		chimeraMenu.add(hBondMenu);
-		addMenuItem(chimeraMenu, "Zoom out", COMMAND, "focus");
 
-		JMenu presetMenu = new JMenu("Presets");
-		if (buildPresetMenu(presetMenu))
-			chimeraMenu.add(presetMenu);
+		chimeraMenu.add(new JSeparator());
 
 		addMenuItem(chimeraMenu, "Exit", EXIT, null);
 		menuBar.add(chimeraMenu);
 
 		// View menu
 		JMenu viewMenu = new JMenu("View");
-		addMenuItem(viewMenu, "Refresh", REFRESH, null);
+		// addMenuItem(viewMenu, "Collapse Model Tree", COLLAPSEALL, null);
+		// addMenuItem(viewMenu, "Expand Models", COLLAPSEALL, null);
+		// addMenuItem(viewMenu, "Expand Chains", COLLAPSEALL, null);
+
+		addMenuItem(viewMenu, "Refresh model tree", REFRESH, null);
 
 		JMenu viewResidues = new JMenu("Residues as..");
 		addMenuItem(viewResidues, "single letter", 
@@ -512,6 +524,8 @@ public class ModelNavigatorDialog
 		if (presetList == null || presetList.size() == 0)
 			return false;
 
+		Collections.sort(presetList);
+
 		// OK, now we have the list, create the menu list
 		for (String label: presetList) {
 			String [] com = label.split("[(]");
@@ -571,23 +585,35 @@ public class ModelNavigatorDialog
 					chimeraObject.getAlignDialog().setVisible(false);
 				return;
 			} else if (type == FUNCTIONALRESIDUES) {
+				String command = null;
 				// For all open structures, select the functional residues
 				for (Structure structure: chimeraObject.getOpenStructs()) {
 					List<String> residueL = structure.getResidueList();
 					if (residueL == null) continue;
 					// The residue list is of the form RRRnnn,RRRnnn.  We want
 					// to reformat this to nnn,nnn
-					String residues = new String();
+					String residues = "";
 					for (String residue: residueL) {
 						residues = residues.concat(residue+",");
 					}
 					residues = residues.substring(0,residues.length()-1);
-					String command = "select #"+structure.modelNumber()+":"+residues;
-					chimeraObject.select(command);
+					if (command == null)
+						command = "select #"+structure.modelNumber()+":"+residues;
+					else
+						command += "| #"+structure.modelNumber()+":"+residues;
 				}
+				chimeraObject.select(command);
 				chimeraObject.modelChanged();
 			} else if (type == REFRESH) {
 				chimeraObject.refresh();
+			} else if (type == COLLAPSEALL) {
+				// TODO: for some reason, this doesn't work!
+				int row = navigationTree.getRowCount() - 1;
+				while (row >= 1) {
+					navigationTree.collapseRow(row);
+					row--;
+				}
+				navigationTree.treeDidChange();
 			} else if (type == ALIGNBYMODEL) {
 				launchAlignDialog(false);
 			} else if (type == ALIGNBYCHAIN) {

@@ -138,17 +138,18 @@ public class ActionPopupMenu extends JPopupMenu {
 		// Color
 		submenu = new JMenu("Color");
 		{
-			if (modelList.size() > 0) {
-				addItem(submenu, "Rainbow by chain", "rainbow chain %sel",0);
+			JMenuItem rainbow = addItem(submenu, "Rainbow by chain", "rainbow chain %sel",0);
+			if (modelList.size() == 0) {
+				rainbow.setEnabled(false);
 			}
-			if (modelList.size() > 0 || chainList.size() > 0) {
-				addItem(submenu, "Rainbow by residue", "rainbow residue %sel",0);
+			rainbow = addItem(submenu, "Rainbow by residue", "rainbow residue %sel",0);
+			if (modelList.size() == 0 && chainList.size() == 0) {
+				rainbow.setEnabled(false);
 			}
-			addItem(submenu, "By element", "color byelement %sel",0);
-			addColorMenu(submenu, "Residues", "color ", ",a %sel");
-			addColorMenu(submenu, "Ribbons", "color ", ",r %sel");
-			addColorMenu(submenu, "Surfaces", "color ", ",s %sel");
-			addColorMenu(submenu, "Labels", "color ", ",l %sel");
+			addColorMenu(submenu, "Atoms/Bonds", "color ", ",a %sel", true);
+			addColorMenu(submenu, "Ribbons", "color ", ",r %sel", false);
+			addColorMenu(submenu, "Surfaces", "color ", ",s %sel", false);
+			addColorMenu(submenu, "Labels", "color ", ",l %sel", false);
 		}
 		add(submenu);
 		// Depict
@@ -279,8 +280,9 @@ public class ActionPopupMenu extends JPopupMenu {
 	 * @param text the name of the item in the menu
 	 * @param prefix the prefix to use to pass this command to Chimera
 	 * @param suffix the suffix to use to pass this command to Chimera
+	 * @param addByElement add the two atom-specific coloring options
 	 */
-	private void addColorMenu(JMenu menu, String text, String prefix, String suffix) {
+	private JMenuItem addColorMenu(JMenu menu, String text, String prefix, String suffix, boolean addByElement) {
 		String[] colorList = {"red", "orange red", "orange", "yellow", "green", "forest green",
 													"cyan", "light sea green", "blue", "cornflower blue", "medium blue",
 													"purple", "hot pink", "magenta", "white", "light gray", "gray",
@@ -304,6 +306,10 @@ public class ActionPopupMenu extends JPopupMenu {
 													"tan", "turquoise", "violet red", "white", "yellow"};
 		JMenu colorMenu = new JMenu(text);
 		JMenuItem colorItem;
+		if (addByElement) {
+			addItem(colorMenu, "By element", "color byelement %sel",0);
+			addItem(colorMenu, "By heteroatom", "color byhetero %sel",0);
+		}
 		for (int color=0; color < colorList.length; color++) {
 			colorItem = addItem(colorMenu, colorList[color], prefix+colorList[color]+suffix,0);
 			if (rgb[color] > 0) {
@@ -315,6 +321,7 @@ public class ActionPopupMenu extends JPopupMenu {
 			}
 		}
 		menu.add(colorMenu);
+		return colorMenu;
 	}
 
 	/**

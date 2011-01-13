@@ -71,10 +71,12 @@ public class CyChimera {
 	public static final String[] chemStructKeys = {"Smiles","smiles","SMILES",null};
 	public static final String[] residueKeys = {"FunctionalResidues","ResidueList",null};
 	public static final String[] sequenceKeys = {"sequence",null};
+	private static Map<String, Structure> pdbStructureMap = null;
+	private static Map<String, Structure> smilesStructureMap = null;
 	private static CyAttributes cyAttributes;
 	private static CyLogger logger = null;
 
-	static List selectedList = null;
+	static List<NodeView> selectedList = null;
 
   static { 
 		String structureAttribute = getProperty("structureAttribute");
@@ -90,6 +92,8 @@ public class CyChimera {
 			residueKeys[residueKeys.length-1] = residueAttribute;
 		}
 		logger = CyLogger.getLogger(StructureViz.class);
+		pdbStructureMap =  new HashMap<String, Structure>();
+		smilesStructureMap =  new HashMap<String, Structure>();
 	}
 
 	/**
@@ -125,39 +129,9 @@ public class CyChimera {
 		for (NodeView nView: selectedNodes) {
       //first get the corresponding node in the network
       CyNode node = (CyNode)nView.getNode();
-			// Start by handling any chemical (2D) structures
-			String chemStruct = getChemStruct(node);
-			if (chemStruct != null && chemStruct.length() > 0) {
-					String[] structList = chemStruct.split(",");
-					for (int i = 0; i < structList.length; i++) {
-						Structure s = new Structure(structList[i].trim() ,node , Structure.StructureType.SMILES);
-						structureList.add(s);
-					}
-			}
 
-			// Now handle the PDB structures
-			String structure = getStructureName(node);
-			String residues = getResidueList(node);
-			if (structure == null || structure.length() == 0) {
-				structure = findStructures(residues);
-				if (structure == null || structure.length() == 0)
-					continue;
-			}
-			// Check to see if this node has a list of structures, first
-			String[] sList = structure.split(",");
-			if (sList != null && sList.length > 0) {
-				// It does, so add them all
-				for (int i = 0; i < sList.length; i++) {
-					Structure s = new Structure(sList[i].trim(),node, Structure.StructureType.PDB_MODEL);
-					// System.out.println("Setting residue list for "+s);
-					s.setResidueList(residues);
-					structureList.add(s);
-				}
-			} else if (structure != null) {
-				Structure s = new Structure(structure,node, Structure.StructureType.PDB_MODEL);
-				s.setResidueList(residues);
-        structureList.add(s);
-			}
+			getStructures(node, structureList, null);
+
 		}
 		return structureList;
 	}
@@ -273,16 +247,23 @@ public class CyChimera {
 	 * @return the Structure object containing the name and referending the node
 	 */
 	public static Structure findStructureForModel(CyNetworkView networkView, String name) {
+		// Do we already know about this model?
+		if (pdbStructureMap.containsKey(name))
+			return pdbStructureMap.get(name);
+
+		if (smilesStructureMap.containsKey(name))
+			return smilesStructureMap.get(name);
+
+		// Apparently not.  Iterate over all of our nodes and get the structures
 		cyAttributes = Cytoscape.getNodeAttributes();
-		Iterator nodeIter = networkView.getNetwork().nodesIterator();
-		while(nodeIter.hasNext()) {
-			CyNode node = (CyNode)nodeIter.next();
-			Structure s = matchStructure(structureKeys, node, name, Structure.StructureType.PDB_MODEL);
-			if (s != null) return s;
-			s = matchStructure(chemStructKeys, node, name, Structure.StructureType.SMILES);
-			if (s != null) return s;
+		for (CyNode node: ((List<CyNode>)networkView.getNetwork().nodesList())) {
+			List<Structure> sList = getStructures(node, null, name);
+			if (sList != null && sList.size() > 0)
+				return sList.get(0);
 		}
-		return new Structure(name, null, Structure.StructureType.PDB_MODEL);
+		Structure s =  new Structure(name, null, Structure.StructureType.PDB_MODEL);
+		pdbStructureMap.put(name, s);
+		return s;
 	}
 
 	/**
@@ -362,7 +343,7 @@ public class CyChimera {
 																					List<ChimeraModel> chimeraModels) {
 		CyNetwork network = networkView.getNetwork();
 
-		if (selectedList == null) selectedList = new ArrayList();
+		if (selectedList == null) selectedList = new ArrayList<NodeView>();
 
 		for (ChimeraModel model: chimeraModels) {
 			if (model == null) continue;
@@ -414,18 +395,18 @@ public class CyChimera {
 		if (residueList == null) return null;
 		String[] residues = residueList.split(",");
 		String structures = new String();
-		Map<String,String> structureMap = new HashMap();
+		Map<String,String> structureNameMap = new HashMap<String,String>();
 		for (int i = 0; i < residues.length; i++) {
 			String[] components = residues[i].split("#");
 			if (components.length > 1) {
-				structureMap.put(components[0],components[1]);
+				structureNameMap.put(components[0],components[1]);
 			}
 		}
-		if (structureMap.isEmpty())
+		if (structureNameMap.isEmpty())
 			return null;
 
 		String structure = null;
-		for (String struct: structureMap.keySet()) {
+		for (String struct: structureNameMap.keySet()) {
 			if (structure == null)
 				structure = new String();
 			else
@@ -435,27 +416,51 @@ public class CyChimera {
 		return structure;
 	}
 
-	private static Structure matchStructure(String[] keyArray, CyNode node, String name, Structure.StructureType type) {
-		for (int key = 0; key < keyArray.length; key++) {
-			if (keyArray[key] == null) continue;
-			if (cyAttributes.hasAttribute(node.getIdentifier(),keyArray[key])) {
-				// Get the list of entries
-				byte attType = cyAttributes.getType(keyArray[key]);
-				if (attType == CyAttributes.TYPE_STRING) {
-       		String[] structlist = cyAttributes.getStringAttribute(node.getIdentifier(), keyArray[key]).split(",");
-					for (int i = 0; i < structlist.length; i++) {
-						if (structlist[i].equals(name))
-							return new Structure(name, node, type);
-					}
-				} else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
-					List structList = cyAttributes.getListAttribute(node.getIdentifier(), keyArray[key]);
-					for (Object struct: structList) {
-						if (name.equals(struct))
-							return new Structure(name, node, type);
-					}
-				}
-			}
+	private static List<Structure> getStructures(CyNode node, List<Structure> structureList, String matchName) {
+		if (structureList == null) {
+			structureList = new ArrayList<Structure>();
 		}
-		return null;
+		// Start by handling any chemical (2D) structures
+		String chemStruct = getChemStruct(node);
+		if (chemStruct != null && chemStruct.length() > 0) {
+				String[] structList = chemStruct.split(",");
+				for (int i = 0; i < structList.length; i++) {
+					Structure s = new Structure(structList[i].trim() ,node , Structure.StructureType.SMILES);
+					smilesStructureMap.put(structList[i].trim(), s);
+					structureList.add(s);
+				}
+		}
+
+		// Now handle the PDB structures
+		String structure = getStructureName(node);
+		String residues = getResidueList(node);
+		if (structure == null || structure.length() == 0) {
+			structure = findStructures(residues);
+			if (structure == null || structure.length() == 0)
+				return structureList;
+		}
+		// Check to see if this node has a list of structures, first
+		String[] sList = structure.split(",");
+		if (sList != null && sList.length > 0) {
+			// It does, so add them all
+			for (int i = 0; i < sList.length; i++) {
+				Structure s = new Structure(sList[i].trim(),node, Structure.StructureType.PDB_MODEL);
+				pdbStructureMap.put(sList[i].trim(), s);
+				// System.out.println("Setting residue list for "+s);
+				s.setResidueList(residues);
+				if (matchName != null && matchName.equals(sList[i].trim())) {
+					structureList.add(s);
+					return structureList;
+				} else if (matchName == null)
+					structureList.add(s);
+			}
+		} else if (structure != null) {
+			Structure s = new Structure(structure,node, Structure.StructureType.PDB_MODEL);
+			pdbStructureMap.put(structure, s);
+			s.setResidueList(residues);
+			if (matchName != null && matchName.equals(structure))
+      	structureList.add(s);
+		}
+		return structureList;
 	}
 }

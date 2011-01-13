@@ -76,6 +76,7 @@ public class Structure {
 	}
 
 	public Structure makeSubModel(int subModelNumber) {
+		System.out.println("Makeing sub-model");
 		Structure st = new Structure(this.structureName, this.cytoscapeNode, this.type);
 		st.setModelNumber(this.modelNumber, subModelNumber);
 		return st;
@@ -172,7 +173,7 @@ public class Structure {
 	 * @param residues String representation of the residues (comma separated)
 	 */
 	public void setResidueList(String residues) {
-		this.residueList = new ArrayList();
+		this.residueList = new ArrayList<String>();
 		if (residues == null) {
 			return;
 		}

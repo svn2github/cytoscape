@@ -107,8 +107,12 @@ public class ChimeraModel implements ChimeraStructuralObject {
 	public ChimeraModel (Structure structure, String inputLine) {
 		this.name = structure.name();
 		this.modelNumber = parseModelNumber(inputLine);
+		this.structure = structure;
+
 		// Do we need to create a submodel of the structure?
-		this.structure = structure.makeSubModel(this.subModelNumber);
+		if (this.subModelNumber != 0)
+			this.structure = structure.makeSubModel(this.subModelNumber);
+
 		this.structure.setModelNumber(this.modelNumber, this.subModelNumber);
 		this.chains = new TreeMap();
 		this.residues = new TreeMap();

@@ -382,7 +382,6 @@ public class Chimera {
    * @param structure the Structure to open
    */
   public void open(Structure structure) {
-		// System.out.println("Opening "+structure);
 		structure.setModelNumber(Structure.getNextModel(), 0);
 		if (structure.getType() == Structure.StructureType.MODBASE_MODEL)
 			chimeraSend("listen stop models; listen stop selection; open "+structure.modelNumber()+" modbase:"+structure.name());
