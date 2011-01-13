@@ -30,26 +30,32 @@
 package org.cytoscape.internal.layout.ui;
 
 
-import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.work.TaskManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
-
-import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon.*;
+import org.cytoscape.view.presentation.property.ThreeDVisualLexicon;
+import org.cytoscape.view.presentation.property.ThreeDVisualLexicon.*;
+import org.cytoscape.work.TaskManager;
 
 
 /**
@@ -111,7 +117,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		CyNetwork network = appMgr.getCurrentNetwork();
 
 		// First, do we support selectedOnly?
-		selectedNodes = new HashSet<CyNode>(CyTableUtil.getNodesInState(network,"selected",true));
+		selectedNodes = new HashSet<CyNode>(CyTableUtil.getNodesInState(network, CyNetwork.SELECTED, true));
 
 		if (layout.supportsSelectedOnly() && (selectedNodes.size() > 0)) {
 			// Add selected node/all nodes menu
@@ -202,32 +208,35 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-/*
 			List<CyNetworkView> views = appMgr.getSelectedNetworkViews();
-
-			for ( CyNetworkView netView : views ) {
-
+			for (final CyNetworkView netView : views) {
 				if (layout.supportsSelectedOnly()) {
-					layout.setSelectedOnly(selectedOnly);
-
-					if (selectedOnly && (selectedNodes.size() > 0)) {
-						// Lock all unselected nodes
-						for ( View<CyNode> nv : netView.getNodeViews() ) {
-							CyNode node = nv.getModel();
-	
-							if (!selectedNodes.contains(node))
-								layout.lockNode(nv);
-						}
-					}
+					if (selectedOnly && (selectedNodes.size() > 0))
+						lockUnselectedNodeCoords(netView);
 				}
 
 				if (layout.supportsNodeAttributes().size() > 0 || layout.supportsEdgeAttributes().size() > 0)
 					layout.setLayoutAttribute(e.getActionCommand());
 
-				final Task layoutTask = new LayoutTask(layout, netView);
-				tm.execute(new TaskIterator(layoutTask)); 
+				layout.setSelectedOnly(selectedOnly);
+				layout.setNetworkView(netView);
+				tm.execute(layout);
 			}
-*/
+		}
+	}
+
+	private void lockUnselectedNodeCoords(final CyNetworkView netView) {
+		for (final View<CyNode> nv : netView.getNodeViews()) {
+			CyNode node = nv.getModel();
+	
+			if (!selectedNodes.contains(node)) {
+				nv.setLockedValue(TwoDVisualLexicon.NODE_X_LOCATION,
+						  nv.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION));
+				nv.setLockedValue(TwoDVisualLexicon.NODE_Y_LOCATION,
+						  nv.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION));
+				nv.setLockedValue(ThreeDVisualLexicon.NODE_Z_LOCATION,
+						  nv.getVisualProperty(ThreeDVisualLexicon.NODE_Z_LOCATION));
+			}
 		}
 	}
 }
