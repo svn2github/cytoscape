@@ -1,20 +1,17 @@
 package org.cytoscape.work.internal.task;
 
 
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Task;
-
 import java.awt.Frame;
-
+import java.awt.Window;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
-import javax.swing.JPanel;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskMonitor;
 
 class SwingTaskMonitor implements TaskMonitor {
 	private Task task;
 	final private ExecutorService cancelExecutorService;
-	final private Frame owner;
+	final private Window parent;
 
 	private boolean cancelled = false;
 	private TaskDialog dialog = null;
@@ -22,9 +19,9 @@ class SwingTaskMonitor implements TaskMonitor {
 	private String statusMessage = null;
 	private int progress = 0;
 
-	public SwingTaskMonitor(final ExecutorService cancelExecutorService, final Frame owner) {
+	public SwingTaskMonitor(final ExecutorService cancelExecutorService, final Window parent) {
 		this.cancelExecutorService = cancelExecutorService;
-		this.owner = owner;
+		this.parent = parent;
 	}
 
 	public void setTask(final Task newTask) {
@@ -35,7 +32,9 @@ class SwingTaskMonitor implements TaskMonitor {
 		if (dialog != null)
 			return;
 
-		dialog = new TaskDialog(owner, this);
+		dialog = new TaskDialog(parent, this);
+		dialog.setLocationRelativeTo(parent);
+		
 		if (title != null)
 			dialog.setTaskTitle(title);
 		if (statusMessage != null)

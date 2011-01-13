@@ -1,26 +1,23 @@
 package org.cytoscape.work.internal.task;
 
 
-import org.cytoscape.work.AbstractTaskManager;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.swing.GUITunableInterceptor;
-import org.cytoscape.work.swing.GUITaskManager;
-
 import java.awt.Frame;
-
+import java.awt.Window;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JPanel;
 
+import org.cytoscape.work.AbstractTaskManager;
+import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.swing.GUITaskManager;
+import org.cytoscape.work.swing.GUITunableInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +27,6 @@ import org.slf4j.LoggerFactory;
  * This will not work if the application is running in headless mode.
  */
 public class SwingTaskManager extends AbstractTaskManager implements GUITaskManager {
-	private SwingTaskMonitor taskMonitor;
 
 	private static final Logger logger = LoggerFactory.getLogger(SwingTaskManager.class);
 
@@ -53,12 +49,12 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	/**
 	 * Used for calling <code>Task.run()</code>.
 	 */
-	ExecutorService taskExecutorService;
+	private ExecutorService taskExecutorService;
 
 	/**
 	 * Used for opening dialogs after a specific amount of delay.
 	 */
-	ScheduledExecutorService timedDialogExecutorService;
+	private ScheduledExecutorService timedDialogExecutorService;
 
 	/**
 	 * Used for calling <code>Task.cancel()</code>.
@@ -69,9 +65,9 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	 *
 	 * This can be the same as <code>taskExecutorService</code>.
 	 */
-	ExecutorService cancelExecutorService;
+	private ExecutorService cancelExecutorService;
 
-	Frame owner;
+	private Window parent;
 
 	/**
 	 * Construct with default behavior.
@@ -85,7 +81,7 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	public SwingTaskManager(final GUITunableInterceptor tunableInterceptor) {
 		super(tunableInterceptor);
 
-		owner = null;
+		parent = null;
 		taskExecutorService = Executors.newCachedThreadPool();
 		addShutdownHook(taskExecutorService);
 		timedDialogExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -115,18 +111,19 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	 * @param owner JDialogs created by this <code>TaskManager</code>
 	 * will have its owner set to this parameter.
 	 */
-	public void setOwner(Frame owner) {
-		this.owner = owner;
+	@Override public void setParent(final Window parent) {
+		this.parent = parent;
 	}
 
 	@Override
-	public void setParent(final JPanel parent) {
-		((GUITunableInterceptor)tunableInterceptor).setParent(parent);
+	public void setTunablePanel(final JPanel tunablePanel) {
+		((GUITunableInterceptor)tunableInterceptor).setParent(tunablePanel);
 	}
 
 	@Override
 	protected void execute(final TaskFactory factory, boolean wait) {
-		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(cancelExecutorService, owner);
+		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(cancelExecutorService, parent);
+		
 		TaskIterator taskIterator;
 		Task first; 
 
@@ -183,6 +180,7 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 		private final SwingTaskMonitor taskMonitor;
 		private final TaskIterator taskIterator;
 		private final Task first;
+		
 		TaskThread(final Task first, final SwingTaskMonitor tm, final TaskIterator ti) {
 			this.first = first;
 			this.taskMonitor = tm;
