@@ -107,7 +107,7 @@ public class HierarchicalLayoutAlgorithmTask extends LayoutTask {
 			return;
 
 		/* construct node list with selected nodes first */
-		List selectedNodes = CyTableUtil.getNodesInState(network,"selected",true);
+		List selectedNodes = CyTableUtil.getNodesInState(network, CyNetwork.SELECTED, true);
 		int numSelectedNodes = selectedNodes.size();
 
 		if (!selectedOnly)
