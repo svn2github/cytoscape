@@ -17,30 +17,24 @@ import org.cytoscape.work.Tunable;
 
 
 public class AttributeCircleLayoutTask extends AbstractGraphPartition {
-
-	public String attribute = null;
-	public String namespace = null;
-	public double spacing = 100.0;
-	boolean supportNodeAttributes = true;
-
+	private final String attribute;
+	private final double spacing;
+	private final boolean supportNodeAttributes;
 
 	/**
 	 * Creates a new ForceDirectedLayout object.
 	 */
 	public AttributeCircleLayoutTask(
 		final CyNetworkView networkView, final String name, final boolean selectedOnly,
-		final Set<View<CyNode>> staticNodes, final String attribute, final String namespace,
-		final double spacing,final boolean supportNodeAttributes,
-		final boolean singlePartition)
+		final Set<View<CyNode>> staticNodes, final String attribute, final double spacing,
+		final boolean supportNodeAttributes, final boolean singlePartition)
 	{
 		super(networkView, name, singlePartition, selectedOnly, staticNodes);
 
 		this.attribute = attribute;
-		this.namespace = namespace;
 		this.spacing = spacing;
 		this.supportNodeAttributes = supportNodeAttributes;
 	}
-
 
 	/**
 	 *  DOCUMENT ME!
@@ -61,7 +55,7 @@ public class AttributeCircleLayoutTask extends AbstractGraphPartition {
 		r *= spacing;
 
 		if (this.attribute != null && count > 0) {
-			Class<?> klass = nodes.get(0).getNode().getCyRow(namespace).getDataTable().getType(attribute);
+			Class<?> klass = nodes.get(0).getNode().getCyRow().getDataTable().getType(attribute);
 			if (klass != null && Comparable.class.isAssignableFrom(klass)){
 				// FIXME: I assume this would be better, but get type errors if I try:
 				//Class<Comparable<?>> kasted = (Class<Comparable<?>>) klass;
@@ -95,8 +89,8 @@ public class AttributeCircleLayoutTask extends AbstractGraphPartition {
 		}
 
 		public int compare(LayoutNode o1, LayoutNode o2) {
-			T v1 = o1.getNode().getCyRow(namespace).get(attribute, klass);
-			T v2 = o2.getNode().getCyRow(namespace).get(attribute, klass);
+			T v1 = o1.getNode().getCyRow().get(attribute, klass);
+			T v2 = o2.getNode().getCyRow().get(attribute, klass);
 			if (String.class.isAssignableFrom(klass)){ // i.e. if klass _is_ String.class
 				String s1 = String.class.cast(v1);
 				String s2 = String.class.cast(v2);

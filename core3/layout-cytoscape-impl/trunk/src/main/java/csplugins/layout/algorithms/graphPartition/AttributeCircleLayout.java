@@ -40,10 +40,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-//import org.cytoscape.view.layout.AbstractGraphPartition;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableEntry.*;
 import org.cytoscape.view.layout.AbstractLayout;
 import org.cytoscape.view.layout.LayoutNode;
-//import org.cytoscape.view.layout.LayoutPartition;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
@@ -52,54 +52,44 @@ import org.cytoscape.work.undo.UndoSupport;
 
 public class AttributeCircleLayout extends AbstractLayout implements TunableValidator {
 	@Tunable(description="The attribute to use for the layout")
-	public String attribute = null;
-	@Tunable(description="The attribute namespace to use for the layout")
-	public String namespace = null;
+	public String attribute = CyTableEntry.NAME;
 	@Tunable(description="Circle size")
 	public double spacing = 100.0;
         @Tunable(description="Don't partition graph before layout", groups="Standard settings")
 	public boolean singlePartition;
 
-	private boolean supportNodeAttributes = true;
+	private final boolean supportNodeAttributes;
 
 	/**
 	 * Creates a new AttributeCircleLayout object.
 	 *
 	 * @param supportAttributes  DOCUMENT ME!
 	 */
-	public AttributeCircleLayout(UndoSupport undoSupport, boolean supportAttributes) {
+	public AttributeCircleLayout(final UndoSupport undoSupport, final boolean supportNodeAttributes)
+	{
 		super(undoSupport);
-		initialize(supportAttributes);
+		this.supportNodeAttributes = supportNodeAttributes;
 	}
 
 	/**
 	 * Creates a new AttributeCircleLayout object.
 	 */
-	public AttributeCircleLayout(UndoSupport undoSupport) {
+	public AttributeCircleLayout(final UndoSupport undoSupport) {
 		super(undoSupport);
-		initialize(true);
+		this.supportNodeAttributes = true;
 	}
 
-	//TODO
+	@Override
 	public boolean tunablesAreValid(final Appendable errMsg) {
-		return true;
+		return attribute.length() > 0 && spacing > 0.0;
 	}
 
+	@Override
 	public TaskIterator getTaskIterator() {
 		return new TaskIterator(
-			new AttributeCircleLayoutTask(
-				networkView, getName(), selectedOnly, staticNodes,
-				attribute, namespace, spacing, supportNodeAttributes,
-				singlePartition));
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param supportAttributes DOCUMENT ME!
-	 */
-	public void initialize(boolean supportAttributes) {
-		supportNodeAttributes = supportAttributes;
+			new AttributeCircleLayoutTask(networkView, getName(), selectedOnly,
+						      staticNodes, attribute, spacing,
+						      supportNodeAttributes, singlePartition));
 	}
 
 	// Required methods for AbstactLayout
