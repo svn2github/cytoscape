@@ -40,8 +40,13 @@ import java.util.Set;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon.*;
+import org.cytoscape.view.presentation.property.ThreeDVisualLexicon;
+import org.cytoscape.view.presentation.property.ThreeDVisualLexicon.*;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.undo.UndoSupport;
 
@@ -190,5 +195,29 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * graph-wide data.
 	 */
 	protected void initialize_local() {
+	}
+
+	/** Descendents need to call this if they intend to use the "staticNodes" field.
+	 */
+	public final void initStaticNodes() {
+		staticNodes.clear();
+		final Set<CyNode> selectedNodes =
+			new HashSet<CyNode>(CyTableUtil.getNodesInState(networkView.getModel(),
+									CyNetwork.SELECTED, true));
+		for (final View<CyNode> nodeView : networkView.getNodeViews()) {
+			if (!selectedNodes.contains(nodeView.getModel())) {
+				nodeView.setLockedValue(
+					TwoDVisualLexicon.NODE_X_LOCATION,
+					nodeView.getVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION));
+				nodeView.setLockedValue(
+					TwoDVisualLexicon.NODE_Y_LOCATION,
+					nodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION));
+				nodeView.setLockedValue(
+					ThreeDVisualLexicon.NODE_Z_LOCATION,
+					nodeView.getVisualProperty(ThreeDVisualLexicon.NODE_Z_LOCATION));
+				staticNodes.add(nodeView);
+			}
+		}
+			
 	}
 }

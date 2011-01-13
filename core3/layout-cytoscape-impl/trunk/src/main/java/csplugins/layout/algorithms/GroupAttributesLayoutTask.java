@@ -107,7 +107,7 @@ public class GroupAttributesLayoutTask extends LayoutTask {
 	}
 
 	/*
-	  Psuedo-procedure:
+	  Pseudo-procedure:
 	  1. Call makeDiscrete(). This will create a map for each value of the
 	     node attribute to the list of nodes with that attribute value.
 	     Each of these lists will become a partition in the graph.
@@ -139,7 +139,7 @@ public class GroupAttributesLayoutTask extends LayoutTask {
 		taskMonitor.setStatusMessage("Initializing");
 		//initialize(); // Calls initialize_local
 
-		CyTable dataTable = tableMgr.getTableMap(CyTableEntry.NODE, network).get(CyNetwork.DEFAULT_ATTRS);
+		CyTable dataTable = tableMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
 		
 		//Class<?> klass = dataTable.getColumnTypeMap().get(attributeName);
 		Class klass = dataTable.getColumnTypeMap().get(attributeName);

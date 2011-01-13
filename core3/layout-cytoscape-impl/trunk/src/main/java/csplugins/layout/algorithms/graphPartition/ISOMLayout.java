@@ -1,4 +1,3 @@
-/* vim: set ts=2: */
 /*
  * This is based on the ISOMLayout from the JUNG project.
  */
@@ -49,6 +48,9 @@ public class ISOMLayout extends AbstractLayout implements TunableValidator {
 	}
 	
 	public TaskIterator getTaskIterator() {
+		if (selectedOnly)
+			initStaticNodes();
+
 		return new TaskIterator(
 			new ISOMLayoutTask(networkView, getName(), selectedOnly, staticNodes,
 					   maxEpoch, radiusConstantTime, radius, minRadius,

@@ -39,6 +39,7 @@
  **/
 package csplugins.layout.algorithms.hierarchicalLayout;
 
+
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -113,18 +114,15 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout implements Tunab
 	}
 	
 	public TaskIterator getTaskIterator() {
+		if (selectedOnly)
+			initStaticNodes();
 		return new TaskIterator(new HierarchicalLayoutAlgorithmTask(networkView, getName(), selectedOnly, staticNodes,
 				nodeHorizontalSpacing, nodeVerticalSpacing, componentSpacing, bandGap,leftEdge, topEdge,
 				rightMargin, selected_only));
 	}
-
 	
 	// We do support selected only
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
+	@Override
 	public boolean supportsSelectedOnly() {
 		return true;
 	}

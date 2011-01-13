@@ -60,14 +60,14 @@
 		 	<entry key="preferredMenu" value="Cytoscape Layouts" />
 		</osgi:service-properties>
 	</osgi:service>
-
+<!--
 	<osgi:service id="stackedNodeLayoutService"
 		ref="stackedNodeLayout" interface="org.cytoscape.view.layout.CyLayoutAlgorithm">
 	        <osgi:service-properties>
 		 	<entry key="preferredMenu" value="Cytoscape Layouts" />
 		</osgi:service-properties>
 	</osgi:service>
-
+-->
 	<osgi:service id="groupAttributesLayoutService"
 		ref="groupAttributesLayout" interface="org.cytoscape.view.layout.CyLayoutAlgorithm">
 	        <osgi:service-properties>

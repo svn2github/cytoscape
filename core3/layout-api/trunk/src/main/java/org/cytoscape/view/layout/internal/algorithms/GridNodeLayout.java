@@ -31,14 +31,16 @@ package org.cytoscape.view.layout.internal.algorithms;
 
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyNetwork;
 
 import org.cytoscape.view.layout.AbstractLayout;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Tunable;
@@ -79,6 +81,8 @@ public class GridNodeLayout extends AbstractLayout implements TunableValidator {
 	}
 
 	public TaskIterator getTaskIterator() {
+		if (selectedOnly)
+			initStaticNodes();
 		return new TaskIterator(new GridNodeLayoutTask(networkView, getName(), selectedOnly, staticNodes,
 							       nodeVerticalSpacing, nodeHorizontalSpacing));
 	}
