@@ -140,35 +140,33 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		}
 	}
 
-	private void addNodeAttributeMenus(JMenu parent, CyNetwork net, boolean selectedOnly) {
-		// Get the node attributes
-		//FIXME
-		//tableMgr.getTableMap("NODE", m_perspective)
-		//CyTable nodeAttributes = net.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS); 
-		//addAttributeMenus(parent, nodeAttributes, layout.supportsNodeAttributes(), selectedOnly);
+	private void addNodeAttributeMenus(final JMenu parent, final CyNetwork net,
+					   final boolean selectedOnly)
+	{
+		final CyTable nodeAttributes = net.getDefaultNodeTable(); 
+		addAttributeMenus(parent, nodeAttributes, layout.supportsNodeAttributes(), selectedOnly);
 	}
 
-	private void addEdgeAttributeMenus(JMenu parent, CyNetwork net, boolean selectedOnly) {
-		// Get the edge attributes
-		//FIXME
-//		CyTable edgeAttributes = net.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS); 
-//		addAttributeMenus(parent, edgeAttributes, layout.supportsEdgeAttributes(), selectedOnly);
+	private void addEdgeAttributeMenus(final JMenu parent, final CyNetwork net,
+					   final boolean selectedOnly)
+	{
+		final CyTable edgeAttributes = net.getDefaultEdgeTable();
+		addAttributeMenus(parent, edgeAttributes, layout.supportsEdgeAttributes(), selectedOnly);
 	}
 
 	private void addAttributeMenus(JMenu parent, CyTable attributes, Set<Class<?>> typeSet,
-	                               boolean selectedOnly) {
+	                               boolean selectedOnly)
+	{
 		// Add any special attributes
-		List specialList = layout.getInitialAttributeList();
-
-		if (specialList != null) {
-			for (Iterator iter = specialList.iterator(); iter.hasNext();) {
-				parent.add(new LayoutAttributeMenuItem((String) iter.next(), selectedOnly));
-			}
+		final List<String> specialList = layout.getInitialAttributeList();
+		if (specialList != null)
+			for (final String attrName : specialList) {
+				parent.add(new LayoutAttributeMenuItem(attrName, selectedOnly));
 		}
 
-		for ( String col : attributes.getColumnTypeMap().keySet() ) {
+		for (final String col : attributes.getColumnTypeMap().keySet()) {
 			Class<?> type = attributes.getColumnTypeMap().get(col);
-			if ( typeSet.contains( type ) )
+			if (typeSet.contains(type))
 				parent.add(new LayoutAttributeMenuItem(col, selectedOnly));
 		}
 	}
