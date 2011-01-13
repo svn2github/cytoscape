@@ -36,7 +36,7 @@
 package org.cytoscape.tableimport.internal.ui;
 
 //import cytoscape.Cytoscape;
-//import cytoscape.data.CyAttributes;
+import org.cytoscape.tableimport.internal.util.AttributeTypes;
 
 import java.util.Map; 
 import java.util.regex.Pattern; 
@@ -53,7 +53,7 @@ class DataTypeUtil {
 	private DataTypeUtil() {}
 
 	static void guessTypes(final TableModel model, final String tableName, 
-	                       Map<String,Class<?>[]> dataTypeMap) {
+	                       Map<String,Byte[]> dataTypeMap) {
 
 		//System.out.println("model row count: " + model.getRowCount() );
 		//System.out.println("model column count: " + model.getColumnCount() );
@@ -114,10 +114,10 @@ class DataTypeUtil {
 			}
 		}
 
-		Class<?>[] dataType = dataTypeMap.get(tableName);
+		Byte[] dataType = dataTypeMap.get(tableName);
 
 		if ((dataType == null) || (dataType.length != model.getColumnCount())) {
-			dataType = new Class<?>[model.getColumnCount()];
+			dataType = new Byte[model.getColumnCount()];
 		}
 
 		for (int i = 0; i < dataType.length; i++) {
@@ -135,13 +135,13 @@ class DataTypeUtil {
 			//System.out.println("  max index: " + maxIndex);
 
 			if (maxIndex == 0)
-				dataType[i] = Boolean.class; //CyAttributes.TYPE_BOOLEAN;
+				dataType[i] = AttributeTypes.TYPE_BOOLEAN;
 			else if (maxIndex == 1)
-				dataType[i] = Integer.class; //CyAttributes.TYPE_INTEGER;
+				dataType[i] = AttributeTypes.TYPE_INTEGER;
 			else if (maxIndex == 2)
-				dataType[i] = Double.class; //CyAttributes.TYPE_FLOATING;
+				dataType[i] = AttributeTypes.TYPE_FLOATING;
 			else
-				dataType[i] = String.class; //CyAttributes.TYPE_STRING;
+				dataType[i] = AttributeTypes.TYPE_STRING;
 
 			//System.out.println("  resulting data type: " + dataType[i]);
 		}

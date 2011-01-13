@@ -107,6 +107,7 @@ import org.cytoscape.tableimport.internal.reader.GeneAssociationTags;
 import org.cytoscape.tableimport.internal.reader.SupportedFileType;
 import org.cytoscape.tableimport.internal.reader.TextFileDelimiters;
 import org.cytoscape.tableimport.internal.ui.ImportTextTableDialog.FileTypes;
+import org.cytoscape.tableimport.internal.util.AttributeTypes;
 
 /**
  * General purpose preview table panel.
@@ -748,7 +749,7 @@ public class PreviewTablePanel extends JPanel {
 			if (newModel.getRowCount() == 0)
 				throw new IllegalStateException("No data found in the Excel sheet.");
 
-			//DataTypeUtil.guessTypes(newModel, wb.getSheetName(0), dataTypeMap);
+			DataTypeUtil.guessTypes(newModel, wb.getSheetName(0), dataTypeMap);
 			listDataTypeMap
 					.put(wb.getSheetName(0), initListDataTypes(newModel));
 			addTableTab(newModel, wb.getSheetName(0), curRenderer);
@@ -767,7 +768,7 @@ public class PreviewTablePanel extends JPanel {
 
 			String[] urlParts = sourceURL.toString().split("/");
 			final String tabName = urlParts[urlParts.length - 1];
-			//DataTypeUtil.guessTypes(newModel, tabName, dataTypeMap);
+			DataTypeUtil.guessTypes(newModel, tabName, dataTypeMap);
 			listDataTypeMap.put(tabName, initListDataTypes(newModel));
 			addTableTab(newModel, tabName, curRenderer);
 		}
@@ -1166,8 +1167,8 @@ public class PreviewTablePanel extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 			final JTable targetTable = getPreviewTable();
 			final String selectedTabName = getSelectedSheetName();
-			final Class<?>[] dataTypes = null;//dataTypeMap.get(selectedTabName);
-			final Class<?>[] listDataTypes = null;//listDataTypeMap.get(selectedTabName);
+			final Byte[] dataTypes = dataTypeMap.get(selectedTabName);
+			final Byte[] listDataTypes = listDataTypeMap.get(selectedTabName);
 
 			final int column = targetTable.getColumnModel().getColumnIndexAtX(
 					e.getX());
@@ -1186,15 +1187,15 @@ public class PreviewTablePanel extends JPanel {
 				atd.setVisible(true);
 
 				final String name = atd.getName();
-				final Class<?> newType = atd.getType();
-				final Class<?> newListType = atd.getListDataType();
+				final byte newType = atd.getType();
+				final byte newListType = atd.getListDataType();
 
 				if (name != null) {
 					targetTable.getColumnModel().getColumn(column)
 							.setHeaderValue(name);
 					targetTable.getTableHeader().resizeAndRepaint();
 
-					if (newType == List.class) { //CyAttributes.TYPE_SIMPLE_LIST) {
+					if (newType == AttributeTypes.TYPE_SIMPLE_LIST) {
 						// listDelimiter = atd.getListDelimiterType();
 						listDelimiter = atd.getListDelimiterType();
 
@@ -1206,11 +1207,11 @@ public class PreviewTablePanel extends JPanel {
 						changes.firePropertyChange(
 								ImportTextTableDialog.LIST_DATA_TYPE_CHANGED,
 								null, listDataTypes);
-						//listDataTypeMap.put(selectedTabName, listDataTypes);
+						listDataTypeMap.put(selectedTabName, listDataTypes);
 					}
 
 					final Vector keyValPair = new Vector();
-					//keyValPair.add(column);
+					keyValPair.add(column);
 					keyValPair.add(newType);
 					changes.firePropertyChange(
 							ImportTextTableDialog.ATTR_DATA_TYPE_CHANGED, null,
@@ -1225,10 +1226,10 @@ public class PreviewTablePanel extends JPanel {
 
 					dataTypes[column] = newType;
 
-					//targetTable.getTableHeader().setDefaultRenderer(
-					//		new HeaderRenderer(targetTable.getTableHeader()
-					//				.getDefaultRenderer(), dataTypes));
-					//dataTypeMap.put(selectedTabName, dataTypes);
+					targetTable.getTableHeader().setDefaultRenderer(
+							new HeaderRenderer(targetTable.getTableHeader()
+									.getDefaultRenderer(), dataTypes));
+					dataTypeMap.put(selectedTabName, dataTypes);
 				}
 			} else if (SwingUtilities.isLeftMouseButton(e)
 					&& (e.getClickCount() == 1)) {

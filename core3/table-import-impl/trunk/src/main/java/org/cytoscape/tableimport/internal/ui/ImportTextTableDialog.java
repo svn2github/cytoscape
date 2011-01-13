@@ -1787,15 +1787,16 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		//final byte[] attributeTypes = new byte[previewPanel.getPreviewTable()
 		// .getColumnCount()];
 		final Byte[] test = previewPanel.getDataTypes(previewPanel.getSelectedSheetName());
+				
 		final Byte[] attributeTypes = new Byte[test.length];
 
 		for (int i = 0; i < test.length; i++) {
 			attributeTypes[i] = test[i];
 		}
 
-		 for (int i = 0; i < attributeTypes.length; i++) {
-			 attributeTypes[i] = attributeDataTypes.get(i);
-		 }
+		// for (int i = 0; i < attributeTypes.length; i++) {
+		//	 attributeTypes[i] = attributeDataTypes.get(i);
+		// }
 		final List<Integer> aliasList = new ArrayList<Integer>();
 		String mappingAttribute = ID;
 
@@ -3062,6 +3063,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	 * @param source
 	 */
 	private void loadAnnotation(TextTableReader reader, String source) {
+		
+		System.out.println("\nImporttextTableDialog.loadAnnotation()....\n\n");
 		
 		/*
 		// Create LoadNetwork Task

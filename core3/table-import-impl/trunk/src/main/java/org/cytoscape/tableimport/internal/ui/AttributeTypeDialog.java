@@ -36,7 +36,7 @@
 
 package org.cytoscape.tableimport.internal.ui;
 
-//import cytoscape.data.CyAttributes;
+import org.cytoscape.tableimport.internal.util.AttributeTypes;
 import static org.cytoscape.tableimport.internal.reader.TextFileDelimiters.*;
 
 import java.awt.Frame;
@@ -56,14 +56,14 @@ public class AttributeTypeDialog extends javax.swing.JDialog {
 	private static final String INTEGER = "List of Integers";
 	private static final String FLOAT = "List of Floating Point Numbers";
 	private static final String BOOLEAN = "List of Booleans";
-	//private byte dataType;
-	private Class<?> dataType;
+	private byte dataType;
+	//private Byte dataType;
 	private String name;
 	private static final String[] LIST_DATA_TYPES = { STRING, INTEGER, FLOAT, BOOLEAN };
 
 	/** Creates new form AttributeTypeDialog
 	 * @param delimiter TODO*/
-	public AttributeTypeDialog(Frame parent, boolean modal, final String name, final Class<?> dataType,
+	public AttributeTypeDialog(Frame parent, boolean modal, final String name, final byte dataType,
 	                           int index, String delimiter) {
 		super(parent, true);
 
@@ -427,15 +427,15 @@ public class AttributeTypeDialog extends javax.swing.JDialog {
 		delimiterButtonGroup.add(booleanRadioButton);
 		delimiterButtonGroup.add(listRadioButton);
 
-		if (dataType == String.class) { //CyAttributes.TYPE_STRING) {
+		if (dataType == AttributeTypes.TYPE_STRING) {
 			delimiterButtonGroup.setSelected(stringRadioButton.getModel(), true);
-		} else if (dataType == Integer.class) { //CyAttributes.TYPE_INTEGER) {
+		} else if (dataType == AttributeTypes.TYPE_INTEGER) {
 			delimiterButtonGroup.setSelected(integerRadioButton.getModel(), true);
-		} else if (dataType == Double.class) { //CyAttributes.TYPE_FLOATING) {
+		} else if (dataType == AttributeTypes.TYPE_FLOATING) {
 			delimiterButtonGroup.setSelected(floatingPointRadioButton.getModel(), true);
-		} else if (dataType == Boolean.class) { //CyAttributes.TYPE_BOOLEAN) {
+		} else if (dataType == AttributeTypes.TYPE_BOOLEAN) {
 			delimiterButtonGroup.setSelected(booleanRadioButton.getModel(), true);
-		} else if (dataType == List.class) { //CyAttributes.TYPE_SIMPLE_LIST) {
+		} else if (dataType == AttributeTypes.TYPE_SIMPLE_LIST) {
 			delimiterButtonGroup.setSelected(booleanRadioButton.getModel(), true);
 			listDelimiterComboBox.setEnabled(true);
 			listTypeComboBox.setEnabled(true);
@@ -457,20 +457,20 @@ public class AttributeTypeDialog extends javax.swing.JDialog {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Class<?> getType() {
+	public byte getType() {
 		if (delimiterButtonGroup.getSelection().equals(stringRadioButton.getModel())) {
-			return String.class; //CyAttributes.TYPE_STRING;
+			return AttributeTypes.TYPE_STRING;
 		} else if (delimiterButtonGroup.getSelection().equals(integerRadioButton.getModel())) {
-			return Integer.class; //CyAttributes.TYPE_INTEGER;
+			return AttributeTypes.TYPE_INTEGER;
 		} else if (delimiterButtonGroup.getSelection().equals(floatingPointRadioButton.getModel())) {
-			return Double.class; //CyAttributes.TYPE_FLOATING;
+			return AttributeTypes.TYPE_FLOATING;
 		} else if (delimiterButtonGroup.getSelection().equals(booleanRadioButton.getModel())) {
-			return Boolean.class; //CyAttributes.TYPE_BOOLEAN;
+			return AttributeTypes.TYPE_BOOLEAN;
 		} else if (delimiterButtonGroup.getSelection().equals(listRadioButton.getModel())) {
-			return List.class; //CyAttributes.TYPE_SIMPLE_LIST;
+			return AttributeTypes.TYPE_SIMPLE_LIST;
 		}
 
-		return String.class; //CyAttributes.TYPE_STRING;
+		return AttributeTypes.TYPE_STRING;
 	}
 
 	/**
@@ -495,18 +495,18 @@ public class AttributeTypeDialog extends javax.swing.JDialog {
 	 *
 	 * @return
 	 */
-	public Class<?> getListDataType() {
+	public byte getListDataType() {
 		if (listTypeComboBox.getSelectedItem().equals(STRING)) {
-			return String.class; //CyAttributes.TYPE_STRING;
+			return AttributeTypes.TYPE_STRING;
 		} else if (listTypeComboBox.getSelectedItem().equals(INTEGER)) {
-			return Integer.class; //CyAttributes.TYPE_INTEGER;
+			return AttributeTypes.TYPE_INTEGER;
 		} else if (listTypeComboBox.getSelectedItem().equals(FLOAT)) {
-			return Double.class; //CyAttributes.TYPE_FLOATING;
+			return AttributeTypes.TYPE_FLOATING;
 		} else if (listTypeComboBox.getSelectedItem().equals(BOOLEAN)) {
-			return Boolean.class; //CyAttributes.TYPE_BOOLEAN;
+			return AttributeTypes.TYPE_BOOLEAN;
 		}
 
-		return String.class; //CyAttributes.TYPE_STRING;
+		return AttributeTypes.TYPE_STRING;
 	}
 
 	// Variables declaration - do not modify
