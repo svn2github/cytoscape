@@ -1,7 +1,6 @@
 package org.cytoscape.work.internal.task;
 
 
-import java.awt.Frame;
 import java.awt.Window;
 import java.util.concurrent.ExecutorService;
 
