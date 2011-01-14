@@ -39,6 +39,7 @@ package org.cytoscape.tableimport.internal.actions;
 
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
@@ -65,6 +66,7 @@ public class ImportNetworkTableAction extends AbstractCyAction {
 	 * Creates a new ImportNetworkTableAction object.
 	 */
 	public ImportNetworkTableAction(CySwingApplication desktop,CyApplicationManager appMgr,
+			CyNetworkManager netMgr,
 			CyProperty<Bookmarks> bookmarksProp, BookmarksUtil bookmarksUtil,
 			GUITaskManager guiTaskManagerServiceRef, CyProperty cytoscapePropertiesServiceRef,
 			CyTableManager tblMgr, FileUtil fileUtilService, OpenBrowser openBrowserService) {
@@ -81,7 +83,7 @@ public class ImportNetworkTableAction extends AbstractCyAction {
 		CytoscapeServices.openBrowser = openBrowserService;
 		CytoscapeServices.fileUtil = fileUtilService;
 		CytoscapeServices.appMgr = appMgr;
-
+		CytoscapeServices.netMgr = netMgr;
 	}
 
 	/**

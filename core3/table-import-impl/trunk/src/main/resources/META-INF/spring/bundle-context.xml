@@ -18,6 +18,7 @@
 	<bean id="importAttributeTableAction" class="org.cytoscape.tableimport.internal.actions.ImportAttributeTableAction">
 		<constructor-arg ref="cytoscapeDesktopService" /> 
 		<constructor-arg ref="cyApplicationManagerRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="bookmarkServiceRef" />		
 		<constructor-arg ref="bookmarksUtilServiceRef" />	
 		<constructor-arg ref="guiTaskManagerServiceRef" />
@@ -30,6 +31,7 @@
 	<bean id="importNetworkTableAction" class="org.cytoscape.tableimport.internal.actions.ImportNetworkTableAction">
 		<constructor-arg ref="cytoscapeDesktopService" /> 
 		<constructor-arg ref="cyApplicationManagerRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="bookmarkServiceRef" />		
 		<constructor-arg ref="bookmarksUtilServiceRef" />	
 		<constructor-arg ref="guiTaskManagerServiceRef" />

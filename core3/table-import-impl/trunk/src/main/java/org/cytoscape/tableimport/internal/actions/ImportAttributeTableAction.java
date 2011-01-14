@@ -11,6 +11,8 @@ import org.cytoscape.tableimport.internal.ui.ImportTextTableDialog;
 import org.cytoscape.work.swing.GUITaskManager;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
+
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.util.swing.OpenBrowser;
@@ -23,6 +25,7 @@ public class ImportAttributeTableAction extends AbstractCyAction {
 	 * Creates a new ImportAttributeTableAction object.
 	 */ 
 	public ImportAttributeTableAction(CySwingApplication desktop,CyApplicationManager appMgr,
+			CyNetworkManager netMgr,
 			CyProperty<Bookmarks> bookmarksProp, BookmarksUtil bookmarksUtil,
 			GUITaskManager guiTaskManagerServiceRef, CyProperty cytoscapePropertiesServiceRef,
 			CyTableManager tblMgr, FileUtil fileUtilService, OpenBrowser openBrowserService) 
@@ -41,6 +44,7 @@ public class ImportAttributeTableAction extends AbstractCyAction {
 		CytoscapeServices.openBrowser = openBrowserService;
 		CytoscapeServices.fileUtil = fileUtilService;
 		CytoscapeServices.appMgr = appMgr;
+		CytoscapeServices.netMgr = netMgr;
 		
 	}
 
