@@ -102,7 +102,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		if (command.equals("done"))
 			setVisible(false);
 		else if (command.equals("execute")) {
-			taskManager.setParent(algorithmPanel);
+			taskManager.setTunablePanel(algorithmPanel);
 			currentLayout.setNetworkView(appMgr.getCurrentNetworkView());
 			taskManager.execute(currentLayout);
 		} else {
@@ -184,7 +184,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			// if it's a string, that means it's the instructions
 			if (!(o instanceof String)) {
 				final CyLayoutAlgorithm newLayout = (CyLayoutAlgorithm)o;
-				taskManager.setParent(algorithmPanel);
+				taskManager.setTunablePanel(algorithmPanel);
 				if (taskManager.getConfigurationPanel(newLayout) != null) {
 					pack();
 					currentLayout = newLayout; 
