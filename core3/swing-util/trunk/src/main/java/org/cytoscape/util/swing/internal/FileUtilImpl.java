@@ -38,6 +38,7 @@ package org.cytoscape.util.swing.internal;
 
 import java.awt.Component;
 import java.awt.FileDialog;
+import java.awt.Dialog;
 import java.awt.Frame;
 import java.io.BufferedReader;
 import java.io.File;
@@ -123,10 +124,14 @@ class FileUtilImpl implements FileUtil {
 		String osName = System.getProperty("os.name");
 
 		// System.out.println( "Os name: "+osName );
+		/* TODO -- FIX THIS!
 		if (osName.startsWith("Mac")) {
 			// this is a Macintosh, use the AWT style file dialog
-			FileDialog chooser = new FileDialog((Frame) parent, title,
-					load_save_custom);
+			FileDialog chooser; 
+			if ( parent instanceof Frame ) 
+				chooser = new FileDialog((Frame) parent, title, load_save_custom);
+			else 
+				chooser = new FileDialog((Dialog) parent, title, load_save_custom);
 
 			// we can only set the one filter; therefore, create a special
 			// version of CyFileFilter that contains all extensions
@@ -152,6 +157,7 @@ class FileUtilImpl implements FileUtil {
 
 			return null;
 		} else {
+		*/
 			// this is not a mac, use the Swing based file dialog
 			final JFileChooser chooser = new JFileChooser(start);
 
@@ -222,7 +228,7 @@ class FileUtilImpl implements FileUtil {
 				setMRUD(chooser.getCurrentDirectory());
 
 			return result;
-		}
+		//}
 	}
 
 	/**
