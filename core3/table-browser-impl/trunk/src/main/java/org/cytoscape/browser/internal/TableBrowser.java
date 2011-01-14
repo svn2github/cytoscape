@@ -95,12 +95,10 @@ public class TableBrowser
 			if (browserTableModel != null) {
 				browserTableModel.cleanup();
 				serviceRegistrar.unregisterAllServices(browserTableModel);
-				eventHelper.removeMicroListener(browserTableModel, RowCreatedMicroListener.class, table);
 			}
 
 			currentTable = table;
 			browserTableModel = new BrowserTableModel(browserTable, eventHelper, table, compiler);
-			eventHelper.addMicroListener(browserTableModel, RowCreatedMicroListener.class, table);
 			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 			browserTable.setModel(browserTableModel);
 			browserTable.setRowSorter(new TableRowSorter(browserTableModel));

@@ -48,7 +48,6 @@ public class MyTableColumnModel implements TableColumnModel {
 
 	@Override
 	public TableColumn getColumn(final int columnIndex) {
-System.err.println("++X+++++++++++++++++++++++++ tableColumns.size()="+tableColumns.size());
 		if (columnIndex >= tableColumns.size()) {
 System.err.println("++Y+++++++++++++++++++++++++ call to getColumn("+columnIndex+") but we only have "+tableColumns.size()+" columns");
 			return null;
