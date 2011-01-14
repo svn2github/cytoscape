@@ -17,8 +17,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelEvent.*;
 import javax.swing.event.TableModelListener;
 
-import org.cytoscape.browser.internal.TableRowChangeListener.ChangeType;
-import org.cytoscape.browser.internal.TableRowChangeListener.ChangeType.*;
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.equations.Equation;
 import org.cytoscape.event.CyEventHelper;
@@ -32,7 +30,7 @@ import org.cytoscape.model.events.ColumnDeletedListener;
 
 
 public class BrowserTableModel
-	implements TableModel, ColumnCreatedListener, ColumnDeletedListener, TableRowChangeListener
+	implements TableModel, ColumnCreatedListener, ColumnDeletedListener
 {
 	private static final int EOF = -1;
 	private static final int MAX_INITIALLY_VSIBLE_ATTRS = 10;
@@ -42,7 +40,7 @@ public class BrowserTableModel
 	private boolean tableHasBooleanSelected;
 	private List<AttrNameAndVisibility> attrNamesAndVisibilities;
 	private final List<TableModelListener> tableModelListeners;
-	private final TableRowChangeTracker tableRowChangeTracker;
+	private final MyTableRowChangeTracker tableRowChangeTracker;
 
 	public BrowserTableModel(final JTable table, final CyEventHelper eventHelper,
 				 final CyTable attrs, final EqnCompiler compiler)
@@ -52,7 +50,7 @@ public class BrowserTableModel
 		this.compiler = compiler;
 		this.tableHasBooleanSelected = attrs.getColumnTypeMap().get(CyNetwork.SELECTED) == Boolean.class;
 		this.tableModelListeners = new ArrayList<TableModelListener>();
-		this.tableRowChangeTracker = new TableRowChangeTracker(attrs, this, eventHelper);
+		this.tableRowChangeTracker = new MyTableRowChangeTracker(attrs, eventHelper, this);
 
 		initAttrNamesAndVisibilities();
 	}
@@ -275,20 +273,19 @@ public class BrowserTableModel
 			listener.tableChanged(event);
 	}
 
-	@Override
-	public void handleTableEntryUpdate(final CyRow row, final String columnName,
-					   final Object newValue, final Object newRawValue,
-					   final ChangeType changeType)
+	void rowCreated(final CyRow row) {
+		final int newRowIndex = mapRowToRowIndex(row);
+		final TableModelEvent event
+			= new TableModelEvent(this, newRowIndex, newRowIndex,
+					      TableModelEvent.ALL_COLUMNS, TableModelEvent.INSERT);
+		for (final TableModelListener listener : tableModelListeners)
+			listener.tableChanged(event);
+	}
+
+	void handleRowUpdate(final CyRow row, final String columnName, final Object newValue,
+			     final Object newRawValue)
 	{
-		if (changeType == ChangeType.ROW_CREATED) {
-			final int newRowIndex = mapRowToRowIndex(row);
-			final TableModelEvent event
-				= new TableModelEvent(this, newRowIndex, newRowIndex,
-						      TableModelEvent.ALL_COLUMNS, TableModelEvent.INSERT);
-			for (final TableModelListener listener : tableModelListeners)
-				listener.tableChanged(event);
-		} else
-			handleRowValueUpdate(row, columnName, newValue, newRawValue);
+		handleRowValueUpdate(row, columnName, newValue, newRawValue);
 	}
 
 	@Override
