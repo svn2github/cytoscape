@@ -124,7 +124,6 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	@Override
 	protected void execute(final TaskFactory factory, boolean wait) {
 		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(cancelExecutorService, parent);
-		System.out.println("###### Task Monitor created.");
 		
 		TaskIterator taskIterator;
 		final Task first; 
@@ -156,24 +155,19 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 		// submit the task thread for execution
 		final Future<?> executorFuture = taskExecutorService.submit(executor);
 		
-		System.out.println("###### Task submitted. IS EDT? = " + SwingUtilities.isEventDispatchThread());
-
 		openTaskMonitorOnDelay(taskMonitor, executorFuture);
 		
 		// wait (possibly forever) to return if instructed
 		if (wait) {
-			System.out.println("###### Wait flag is ON");
 			// TODO - do we want a failsafe timeout here?
 			try {
 				executorFuture.get();
-				System.out.println("###### Tasks finished.");
 			} catch (Exception e) {
 				taskMonitor.showException(e);	
 			} finally {
 				taskMonitor.close();
 			}
 		}
-		System.out.println("###### ALL DONE ####################\n\n");
     }
 
 	// This creates a thread on delay that conditionally displays the task monitor gui
@@ -184,20 +178,11 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 			public void run() {
 				if (!(executorFuture.isDone() || executorFuture.isCancelled())) {
 					taskMonitor.open();
-					System.out.println("###### Monitor opened: Is EDT? = " + SwingUtilities.isEventDispatchThread());
 				}
 			}
 		};
 		
-//		if(SwingUtilities.isEventDispatchThread())
-//			timedDialogExecutorService.schedule(timedOpen, DELAY_BEFORE_SHOWING_DIALOG, DELAY_TIMEUNIT);
-//		else
-		try {
-			Thread.sleep(1000);
-			SwingUtilities.invokeLater(timedOpen);
-		} catch (InterruptedException e) {
-			taskMonitor.showException(e);
-		}	
+		timedDialogExecutorService.schedule(timedOpen, DELAY_BEFORE_SHOWING_DIALOG, DELAY_TIMEUNIT);
 	}
 
 	private class TaskThread implements Runnable {
