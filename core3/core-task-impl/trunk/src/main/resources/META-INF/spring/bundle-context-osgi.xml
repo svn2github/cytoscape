@@ -6,6 +6,9 @@
 	default-lazy-init="false">
 
 	<!--  collect necessary services -->
+	<osgi:reference id="cyEventHelperRef"
+		interface="org.cytoscape.event.CyEventHelper" />
+
 	<osgi:reference id="cyNetworkNamingServiceRef"
 		interface="org.cytoscape.session.CyNetworkNaming" />
 

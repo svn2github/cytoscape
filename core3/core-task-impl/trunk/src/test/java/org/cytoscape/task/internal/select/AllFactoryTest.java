@@ -36,10 +36,11 @@ import org.junit.Before;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Task;
 
@@ -78,7 +79,8 @@ public class AllFactoryTest {
 
 	@Test
 	public void testInvertSelectedNodesTaskFactory() {
-		executeTest( new InvertSelectedNodesTaskFactory(networkViewManager) );
+		final CyEventHelper eventHelper = mock(CyEventHelper.class);
+		executeTest(new InvertSelectedNodesTaskFactory(networkViewManager, eventHelper));
 	}
 
 	@Test

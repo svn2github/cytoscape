@@ -25,9 +25,8 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-
 package org.cytoscape.task.internal.select;
+
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
@@ -37,13 +36,14 @@ import org.junit.Before;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyNode;
 
 
 public class InvertSelectedNodesTaskTest extends AbstractSelectTaskTester {
@@ -55,15 +55,17 @@ public class InvertSelectedNodesTaskTest extends AbstractSelectTaskTester {
 	@Test
 	public void testRun() throws Exception {
 		// more setup
-		when(r3.get("selected",Boolean.class)).thenReturn(false);	
-		when(r4.get("selected",Boolean.class)).thenReturn(true);	
+		when(r3.get("selected", Boolean.class)).thenReturn(false);	
+		when(r4.get("selected", Boolean.class)).thenReturn(true);	
+
+		final CyEventHelper eventHelper = mock(CyEventHelper.class);
 
 		// run the task
-		Task t = new InvertSelectedNodesTask(net, networkViewManager);
+		Task t = new InvertSelectedNodesTask(net, networkViewManager, eventHelper);
 		t.run(tm);
 
 		// check that the expected rows were set
-		verify(r3, times(1)).set("selected",true);
-		verify(r4, times(1)).set("selected",false);
+		verify(r3, times(1)).set("selected", true);
+		verify(r4, times(1)).set("selected", false);
 	}
 }

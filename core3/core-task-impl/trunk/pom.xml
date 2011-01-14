@@ -148,6 +148,10 @@
 			<version>1.8.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>event-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
-
 </project>

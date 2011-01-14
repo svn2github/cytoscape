@@ -26,29 +26,45 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.task.internal.select;
 
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.events.RowSetAboutToBeChangedEvent;
+import org.cytoscape.model.events.RowSetChangedEvent;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.model.CyNetworkViewManager;
 
 
 public class InvertSelectedNodesTask extends AbstractSelectTask {
-	public InvertSelectedNodesTask(final CyNetwork net, final CyNetworkViewManager networkViewManager) {
+	private final CyEventHelper eventHelper;
+
+	public InvertSelectedNodesTask(final CyNetwork net,
+				       final CyNetworkViewManager networkViewManager,
+				       final CyEventHelper eventHelper)
+	{
 		super(net, networkViewManager);
+		this.eventHelper = eventHelper;
 	}
 
-	public void run(TaskMonitor tm) {
-		for ( CyNode n : net.getNodeList() )  {
-			if ( n.getCyRow().get("selected",Boolean.class) ) {
-				 n.getCyRow().set("selected",false);
-			} else {
-				 n.getCyRow().set("selected",true);
+	@Override
+	public void run(final TaskMonitor tm) {
+		try {
+			eventHelper.fireSynchronousEvent(new RowSetAboutToBeChangedEvent(this, net.getDefaultNodeTable()));
+
+			for (final CyNode n : net.getNodeList())  {
+				if (n.getCyRow().get("selected", Boolean.class))
+					n.getCyRow().set(CyNetwork.SELECTED, false);
+				else
+					n.getCyRow().set(CyNetwork.SELECTED, true);
 			}
+		} finally {
+			eventHelper.fireSynchronousEvent(new RowSetChangedEvent(this, net.getDefaultNodeTable()));
 		}
+
 		updateView();
 	}
 }

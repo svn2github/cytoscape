@@ -1,13 +1,6 @@
 /*
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
-
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 2.1 of the License, or
@@ -32,19 +25,19 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-
 package org.cytoscape.task.internal.select;
+
 
 import static org.mockito.Mockito.*;
 
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.work.TaskMonitor;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -53,6 +46,7 @@ import java.util.ArrayList;
 public class AbstractSelectTaskTester {
 	CyNetworkViewManager networkViewManager;
 	TaskMonitor tm;
+	CyTable table;
 	CyNetwork net; 
 	CyRow r1;
 	CyEdge e1;
@@ -64,7 +58,9 @@ public class AbstractSelectTaskTester {
 	CyNode e4;
 
 	public void setUp() throws Exception {
+		table = mock(CyTable.class);
 		net = mock(CyNetwork.class);
+		when(net.getDefaultNodeTable()).thenReturn(table);
 
 		CyNetworkView view = mock(CyNetworkView.class);
 		when(view.getModel()).thenReturn(net);

@@ -26,24 +26,30 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.task.internal.select;  
 
 
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.task.AbstractNetworkTaskFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.task.AbstractNetworkTaskFactory;
 
 
 public class InvertSelectedNodesTaskFactory extends AbstractNetworkTaskFactory {
 	private CyNetworkViewManager networkViewManager;
+	private final CyEventHelper eventHelper;
 
-	public InvertSelectedNodesTaskFactory(final CyNetworkViewManager networkViewManager) {
+	public InvertSelectedNodesTaskFactory(final CyNetworkViewManager networkViewManager,
+					      final CyEventHelper eventHelper)
+	{
 		this.networkViewManager = networkViewManager;
+		this.eventHelper = eventHelper;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new InvertSelectedNodesTask(net,networkViewManager));
+		return new TaskIterator(
+				new InvertSelectedNodesTask(net, networkViewManager, eventHelper));
 	} 
 }

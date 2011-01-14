@@ -124,6 +124,7 @@
 	<bean id="invertSelectedNodesTaskFactory"
 	      class="org.cytoscape.task.internal.select.InvertSelectedNodesTaskFactory">
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
+		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
 
 	<bean id="selectFromFileListTaskFactory"
