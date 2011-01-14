@@ -161,27 +161,38 @@
 			<artifactId>com.springsource.javax.xml.stream</artifactId> 
 			<version>1.0.1</version> 
 		</dependency>
-		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>org.apache.poi</artifactId>
-			<version>3.6</version>
-		</dependency>
-		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>org.apache.poi-contrib</artifactId>
-			<version>3.6</version>
-		</dependency>
-		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>org.apache.poi-ooxml</artifactId>
-			<version>3.6</version>
-		</dependency>
-		<dependency>
-			<groupId>cytoscape-temp</groupId>
-			<artifactId>org.apache.poi-ooxml-schemas</artifactId>
-			<version>3.6</version>
-		</dependency>
 
+		<!-- 
+		     org.apache.poi-all (below) consists of the 4 jars listed
+			 in this comment. We need to combine them because of a package 
+			 split between org.apache.poi and org.apache.poi-ooxml.
+
+				<dependency>
+					<groupId>cytoscape-temp</groupId>
+					<artifactId>org.apache.poi</artifactId>
+					<version>3.6</version>
+				</dependency>
+				<dependency>
+					<groupId>cytoscape-temp</groupId>
+					<artifactId>org.apache.poi-contrib</artifactId>
+					<version>3.6</version>
+				</dependency>
+				<dependency>
+					<groupId>cytoscape-temp</groupId>
+					<artifactId>org.apache.poi-ooxml</artifactId>
+					<version>3.6</version>
+				</dependency>
+				<dependency>
+					<groupId>cytoscape-temp</groupId>
+					<artifactId>org.apache.poi-ooxml-schemas</artifactId>
+					<version>3.6</version>
+				</dependency>
+		-->
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>org.apache.poi-all</artifactId>
+			<version>3.6</version>
+		</dependency>
 
 		<!-- dependencies specifically for unit testing -->
 		<dependency>
