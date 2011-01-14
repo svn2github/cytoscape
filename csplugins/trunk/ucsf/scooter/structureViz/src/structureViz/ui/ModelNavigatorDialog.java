@@ -93,6 +93,8 @@ public class ModelNavigatorDialog
 	private static final int FINDHBOND = 17;
 	private static final int FUNCTIONALRESIDUES = 18;
 	private static final int COLLAPSEALL = 19;
+	private static final int EXPANDMODELS = 20;
+	private static final int EXPANDCHAINS = 21;
 	private boolean ignoreSelection = false;
 	private int residueDisplay = ChimeraResidue.THREE_LETTER;
 	private boolean isCollapsing = false;
@@ -308,16 +310,13 @@ public class ModelNavigatorDialog
 	 */
 	public void updateSelection(List<ChimeraStructuralObject> selectionList) {
 		// System.out.println("Model Navigator Panel: updateSelection ("+selectionList+")");
-		TreePath path = null;
+		List<TreePath> pathList = new ArrayList<TreePath>();
 		this.ignoreSelection = true;
-		// Need to clear currently selected objects
-		clearSelectionState();
-		navigationTree.clearSelection();
 		for (ChimeraStructuralObject selectedObject: selectionList) {
-			path = (TreePath)selectedObject.getUserData();
-			navigationTree.addSelectionPath(path);
-			navigationTree.makeVisible(path);
+			pathList.add((TreePath)selectedObject.getUserData());
 		}
+		// Need to clear currently selected objects
+		resetSelectionState(pathList);
 		int row = navigationTree.getMaxSelectionRow();
 		navigationTree.scrollRowToVisible(row);
 		this.ignoreSelection = false;
@@ -329,7 +328,8 @@ public class ModelNavigatorDialog
 	 * iterating over all models and recursively decending
 	 * through the chains to the residues.
 	 */
-	private void clearSelectionState() {
+	private void resetSelectionState(List<TreePath> setPaths) {
+		navigationTree.removeSelectionPaths(navigationTree.getSelectionPaths());
 		List<ChimeraModel>models = chimeraObject.getChimeraModels();
 		if (models == null) return;
 		for (ChimeraModel m: models) {
@@ -341,10 +341,15 @@ public class ModelNavigatorDialog
 				Collection<ChimeraResidue>residues = c.getResidues();
 				if (residues == null ) continue;
 				for (ChimeraResidue r: residues) {
-					if (r != null) r.setSelected(false);
+					if (r != null) {
+						r.setSelected(false);
+					}
 				}
 			}
 		}
+		// navigationTree.removeSelectionPaths(clearPaths.toArray(new TreePath[1]));
+		if (setPaths != null && setPaths.size() > 0)
+			navigationTree.addSelectionPaths(setPaths.toArray(new TreePath[1]));
 	}
 
 	/**
@@ -436,13 +441,13 @@ public class ModelNavigatorDialog
 
 		// View menu
 		JMenu viewMenu = new JMenu("View");
-		// addMenuItem(viewMenu, "Collapse Model Tree", COLLAPSEALL, null);
-		// addMenuItem(viewMenu, "Expand Models", COLLAPSEALL, null);
-		// addMenuItem(viewMenu, "Expand Chains", COLLAPSEALL, null);
+		addMenuItem(viewMenu, "Collapse model tree", COLLAPSEALL, null);
+		addMenuItem(viewMenu, "Expand all models", EXPANDMODELS, null);
+		addMenuItem(viewMenu, "Expand all chains", EXPANDCHAINS, null);
 
 		addMenuItem(viewMenu, "Refresh model tree", REFRESH, null);
 
-		JMenu viewResidues = new JMenu("Residues as..");
+		JMenu viewResidues = new JMenu("Show residues as..");
 		addMenuItem(viewResidues, "single letter", 
 								ChimeraResidue.SINGLE_LETTER, null);
 		addMenuItem(viewResidues, "three letters", 
@@ -540,6 +545,37 @@ public class ModelNavigatorDialog
 		return true;
 	}
 
+	private void collapseAll() {
+		int row = navigationTree.getRowCount() - 1;
+		while (row >= 1) {
+			navigationTree.collapseRow(row);
+			row--;
+		}
+		return;
+	}
+
+	private void expandModels() {
+		expandTree(2);
+		return;
+	}
+
+	private void expandChains() {
+		expandTree(3);
+		return;
+	}
+
+	private void expandTree(int depth) {
+		int row = navigationTree.getRowCount() - 1;
+		while (row >= 1) {
+			TreePath path = navigationTree.getPathForRow(row);
+			Object[] objArray = path.getPath();
+			if (objArray.length == depth)
+				navigationTree.expandRow(row);
+			row--;
+		}
+		return;
+	}
+
 	// Embedded classes
 
 	/**
@@ -576,14 +612,12 @@ public class ModelNavigatorDialog
 				chimeraObject.select(command);
 			} else if (type == CLEAR) {
 				chimeraObject.select("~select");
-				navigationTree.clearSelection();
-				clearSelectionState();
+				navigationTree.removeSelectionPaths(navigationTree.getSelectionPaths());
 			} else if (type == EXIT) {
 				chimeraObject.exit();
 				setVisible(false);
 				if (chimeraObject.getAlignDialog() != null)
 					chimeraObject.getAlignDialog().setVisible(false);
-				return;
 			} else if (type == FUNCTIONALRESIDUES) {
 				String command = null;
 				// For all open structures, select the functional residues
@@ -596,6 +630,8 @@ public class ModelNavigatorDialog
 					for (String residue: residueL) {
 						residues = residues.concat(residue+",");
 					}
+					if (residues.length() == 0)
+						return;
 					residues = residues.substring(0,residues.length()-1);
 					if (command == null)
 						command = "select #"+structure.modelNumber()+":"+residues;
@@ -607,17 +643,18 @@ public class ModelNavigatorDialog
 			} else if (type == REFRESH) {
 				chimeraObject.refresh();
 			} else if (type == COLLAPSEALL) {
-				// TODO: for some reason, this doesn't work!
-				int row = navigationTree.getRowCount() - 1;
-				while (row >= 1) {
-					navigationTree.collapseRow(row);
-					row--;
-				}
-				navigationTree.treeDidChange();
+				collapseAll();
+			} else if (type == EXPANDMODELS) {
+				expandModels();
+			} else if (type == EXPANDCHAINS) {
+				expandModels();
+				expandChains();
 			} else if (type == ALIGNBYMODEL) {
 				launchAlignDialog(false);
+				chimeraObject.modelChanged();
 			} else if (type == ALIGNBYCHAIN) {
 				launchAlignDialog(true);
+				chimeraObject.modelChanged();
 			} else if (type == FINDCLASH) {
 				if (selectedObjects.size() > 0) {
 					chimeraObject.select(command);
@@ -635,8 +672,8 @@ public class ModelNavigatorDialog
 			} else {
 				residueDisplay = type;
 				treeModel.setResidueDisplay(type);
+				chimeraObject.modelChanged();
 			}
-			modelChanged();
 		}
 
 		/**

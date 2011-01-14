@@ -126,9 +126,7 @@ public class ActionPopupMenu extends JPopupMenu {
 		{
 			addItem(submenu, "All", "disp %sel",0);
 			addItem(submenu, "Backbone only", "~disp %sel; disp %sel & @n,ca,c",0);
-			if (modelList.size() > 0 || chainList.size() > 0) {
-				addItem(submenu, "Sequence", "sequence %sel",0);
-			}
+			addItem(submenu, "Sequence", "sequence %sel",0);
 		}
 		add(submenu);
 		// Hide
@@ -219,12 +217,12 @@ public class ActionPopupMenu extends JPopupMenu {
 		addItem(selectMenu, "Ligand", "select %sel & ligand", PopupActionListener.MODEL_SELECTION);
 		addItem(selectMenu, "Ions", "select %sel & ions", PopupActionListener.MODEL_SELECTION);
 		addItem(selectMenu, "Solvent", "select %sel & solvent", PopupActionListener.MODEL_SELECTION);
-		addItem(selectMenu, "Functional Residues", null, PopupActionListener.FUNCTIONAL_RESIDUES);
 		JMenu secondaryMenu = new JMenu("Secondary Structure");
 		addItem(secondaryMenu, "Helix", "select %sel & helix", PopupActionListener.MODEL_SELECTION);
 		addItem(secondaryMenu, "Strand", "select %sel & strand", PopupActionListener.MODEL_SELECTION);
 		addItem(secondaryMenu, "Coil", "select %sel & coil", PopupActionListener.MODEL_SELECTION);
 		selectMenu.add(secondaryMenu);
+		addItem(selectMenu, "Functional Residues", null, PopupActionListener.FUNCTIONAL_RESIDUES);
 		add(selectMenu);
 		return; 
 	}
@@ -307,8 +305,9 @@ public class ActionPopupMenu extends JPopupMenu {
 		JMenu colorMenu = new JMenu(text);
 		JMenuItem colorItem;
 		if (addByElement) {
-			addItem(colorMenu, "By element", "color byelement %sel",0);
-			addItem(colorMenu, "By heteroatom", "color byhetero %sel",0);
+			addItem(colorMenu, "By element", "color byelement %sel,a",0);
+			// addItem(colorMenu, "By heteroatom", "color byhetero %sel",0);
+			addItem(colorMenu, "By heteroatom", "~color %sel,a; color byhetero %sel,a",0);
 		}
 		for (int color=0; color < colorList.length; color++) {
 			colorItem = addItem(colorMenu, colorList[color], prefix+colorList[color]+suffix,0);
@@ -465,7 +464,7 @@ public class ActionPopupMenu extends JPopupMenu {
 					chimeraObject.chimeraSend(commandList[i]);
 			}
 			if (postCommand == CLEAR_SELECTION) {
-				navTree.clearSelection();
+				navTree.removeSelectionPaths(navTree.getSelectionPaths());
 			} else if (postCommand == CLOSE) {
 				// Get the object
 				for (ChimeraStructuralObject obj: objectList) {

@@ -154,7 +154,7 @@ class ListenerThreads extends Thread
 
 		synchronized (replyLog) {
 			while ((line = lineReader.readLine()) != null) {
-				// System.out.println("From Chimera (CMD) -->"+line);
+				// System.out.println("From Chimera ("+command+") -->"+line);
 				if (line.startsWith("CMD")) {
 					logger.error("Got unexpected command from Chimera: "+line);
 
@@ -189,6 +189,7 @@ class ListenerThreads extends Thread
 			public ModelUpdater() {}
 
 			public void run() {
+				// System.out.println("Model updated");
 				chimeraObject.refresh();
 				chimeraObject.modelChanged();
 				// Now update our selection from Chimera

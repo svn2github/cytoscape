@@ -148,8 +148,8 @@ public class StructureVizMenuHandler
 	}
 
 	/**
- 	 * Search modbase for modelled structures that correspond to this identifier.
- 	 * Since modelled structures can be somewhat misleading, popup a warning dialog
+ 	 * Search modbase for modeled structures that correspond to this identifier.
+ 	 * Since modeled structures can be somewhat misleading, popup a warning dialog
  	 * while we do the fetch.
  	 */
 	private void findModelsAction() {
@@ -160,7 +160,7 @@ public class StructureVizMenuHandler
 		if (showModelWarning) {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					String message = "<html><b>Warning</b>: Modelled structures are predictions, not experimental data.<br>";
+					String message = "<html><b>Warning</b>: Modeled structures are predictions, not experimental data.<br>";
 					message += "These structures are from the ModBase web service at <a href=\"http://modbase.salilab.org\">http://modbase.salilab.org/</a><br>";
 					message += "Measures of model reliability, or likelihood of correctness, are provided in the<br>";
 					message += "Chimera ModBase Model List.</html>";
@@ -176,7 +176,7 @@ public class StructureVizMenuHandler
 					                                     JOptionPane.DEFAULT_OPTION,
 					                                     null, 
 					                                     options);
-					JDialog jd = dialog.createDialog(chimera.getDialog(), "Modelled Structure Warning");
+					JDialog jd = dialog.createDialog(chimera.getDialog(), "Modeled Structure Warning");
 					jd.pack();
 					jd.setVisible(true);
 				}
