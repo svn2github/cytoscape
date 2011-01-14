@@ -21,8 +21,6 @@ import java.io.InputStream;
 
 import org.cytoscape.cmdline.CommandLineArgs; 
 
-//import static org.ops4j.pax.swissbox.tinybundles.core.TinyBundles.*;
-
 /** 
  * An OSGi launcher.
  */
@@ -48,6 +46,7 @@ public class Launcher {
 		try {
 			Map config = new HashMap();
 			config.put("org.osgi.framework.startlevel.beginning", "6");
+			config.put("org.osgi.framework.storage", "bundles/cache");
 
 			FrameworkFactory factory = (FrameworkFactory) Class.forName( factoryName ).newInstance(); 
 			Framework framework = factory.newFramework(config);
