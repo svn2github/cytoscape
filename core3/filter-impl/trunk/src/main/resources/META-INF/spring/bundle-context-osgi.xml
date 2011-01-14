@@ -20,6 +20,7 @@
 	<osgi:service id="filterPanelService" ref="filterMainPanel">
 		<osgi:interfaces>
 			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener</value>
+			<value>org.cytoscape.session.events.SessionLoadedListener</value>
 			<value>org.cytoscape.model.events.NetworkAddedListener</value>
 			<value>org.cytoscape.model.events.NetworkDestroyedListener</value>
 		</osgi:interfaces>

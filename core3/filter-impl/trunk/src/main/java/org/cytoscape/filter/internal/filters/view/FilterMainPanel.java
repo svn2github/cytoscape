@@ -96,6 +96,8 @@ import org.cytoscape.model.events.NetworkAddedListener;
 import org.cytoscape.model.events.NetworkDestroyedEvent;
 import org.cytoscape.model.events.NetworkDestroyedListener;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.events.SessionLoadedEvent;
+import org.cytoscape.session.events.SessionLoadedListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.util.swing.DropDownMenuButton;
@@ -109,7 +111,8 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
  * 
  */
 public class FilterMainPanel extends JPanel implements ActionListener,
-		ItemListener, PropertyChangeListener, SetCurrentNetworkViewListener, NetworkAddedListener, NetworkDestroyedListener {
+		ItemListener, PropertyChangeListener, SetCurrentNetworkViewListener,
+		NetworkAddedListener, NetworkDestroyedListener, SessionLoadedListener {
 
     // String constants used for seperator entries in the attribute combobox
     private static final String filtersSeperator = "-- Filters --";
@@ -204,57 +207,13 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 //				theSettingPanel.refreshIndicesForWidgets();
 //			}
 //		}
-//		if (e.getPropertyName().equalsIgnoreCase(CytoscapeDesktop.NETWORK_VIEW_FOCUSED))
-//		{	
-//			// If FilterPanel is not selected, do nothing
-//			if (cmbSelectFilter.getSelectedItem() == null) {
-//				return;
-//			}
-//						
-//			//Refresh indices for UI widgets after network switch			
-//			CompositeFilter selectedFilter = (CompositeFilter) cmbSelectFilter.getSelectedItem();
-//			selectedFilter.setNetwork(applicationManager.getCurrentNetwork());
-//			FilterSettingPanel theSettingPanel= filter2SettingPanelMap.get(selectedFilter);
-//			theSettingPanel.refreshIndicesForWidgets();
-//		}
-//		
-//		//Enable/disable select/deselect buttons
-//		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.NETWORK_CREATED)
-//				|| e.getPropertyName().equalsIgnoreCase(Cytoscape.NETWORK_DESTROYED)
-//				||e.getPropertyName().equalsIgnoreCase(Cytoscape.NETWORK_LOADED)){
-//			enableForNetwork();	
-//		}
-//		
-//		// For turning off listener during session loading
-//		if(e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
-//			return; //ignore = true;
-//		} 
-//		
-//		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
-//		    || e.getPropertyName().equals(Cytoscape.NETWORK_DESTROYED)
-//		    || e.getPropertyName().equals(Cytoscape.NETWORK_TITLE_MODIFIED)) {
-//			updateFeedbackTableModel();
-//		}
-//
-//		if (   e.getPropertyName().equalsIgnoreCase(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)
-//		    || e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
-//		    || e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)
-//		    || e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEWS_SELECTED)) {
-//
-//			if (currentNetwork != null) {
-//				currentNetwork.removeSelectEventListener(this);
-//			}
-//			
-//			// Change the target network
-//			currentNetwork = Cytoscape.getCurrentNetwork();
-//
-//			if (currentNetwork != null) {
-//				currentNetwork.addSelectEventListener(this);
-//				updateFeedbackTableModel();
-//			}
-//		}
 	}
 
+	@Override
+	public void handleEvent(SessionLoadedEvent e) {
+		updateFeedbackTableModel();
+	}
+	
 	public void handleNetworkFocused(CyNetworkView view) {
 		if (view == null) {
 			return;
