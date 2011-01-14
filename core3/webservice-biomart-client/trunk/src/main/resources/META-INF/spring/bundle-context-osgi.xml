@@ -5,6 +5,9 @@
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
+	<osgi:reference id="cySwingApplicationServiceRef"
+		interface="org.cytoscape.application.swing.CySwingApplication" />
+
 	<osgi:reference id="taskManagerServiceRef"
 		interface="org.cytoscape.work.swing.GUITaskManager" />
 
@@ -20,12 +23,7 @@
 
 	<osgi:reference id="cyTableFactoryServiceRef" interface="org.cytoscape.model.CyTableFactory" />
 
-	<osgi:service id="showBiomartGUITaskFactoryService" ref="showDialogTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
-		<osgi:service-properties>
-			<entry key="title" value="Import Attributes from BioMart..." />
-			<entry key="preferredMenu" value="File.Import" />
-		</osgi:service-properties>
-	</osgi:service>
+	<osgi:service id="showBiomartGUIActionService" ref="showDialogAction"
+		interface="org.cytoscape.application.swing.CyAction" />
 
 </beans>

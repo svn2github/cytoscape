@@ -33,10 +33,11 @@
 	</bean>
 	
 	<!-- Task to create menu item -->
-	<bean id="showDialogTaskFactory" class="org.cytoscape.io.webservice.biomart.task.ShowBiomartGUITaskFactory">
+	<bean id="showDialogAction" class="org.cytoscape.io.webservice.biomart.task.ShowBiomartGUIAction">
 		<constructor-arg ref="biomartClient" />
 		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="cySwingApplicationServiceRef" />
 	</bean>
 </beans>

@@ -53,7 +53,7 @@ public class LoadRepositoryTask extends AbstractTask {
 	@Override
 	public void run(TaskMonitor taskMonitor) throws Exception {
 
-		taskMonitor.setProgress(0.0);
+		taskMonitor.setProgress(0.1);
 		taskMonitor.setStatusMessage("Loading list of available marts...");
 		
 		dsList = new ArrayList<String>();

@@ -101,8 +101,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>work-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<artifactId>work-swing-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>swing-application-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
 

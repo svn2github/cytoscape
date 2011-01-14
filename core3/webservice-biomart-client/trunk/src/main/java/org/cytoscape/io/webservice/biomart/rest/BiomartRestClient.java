@@ -346,7 +346,6 @@ public class BiomartRestClient {
 		String[] parts;
 
 		while ((s = reader.readLine()) != null) {
-			System.out.println("Filter response: " + s);
 			parts = s.split("\\t");
 
 			if (parts.length <= 1)
@@ -358,8 +357,8 @@ public class BiomartRestClient {
 					|| parts.length > 6
 					&& parts[5].equals("id_list")) {
 				filters.put(parts[1], parts[0]);
-				System.out.println("### Filter Entry = " + parts[1] + " = "
-						+ parts[0]);
+//				System.out.println("### Filter Entry = " + parts[1] + " = "
+//						+ parts[0]);
 			}
 
 		}
@@ -415,8 +414,6 @@ public class BiomartRestClient {
 			parts = s.split("\\t");
 			attrInfo = new String[3];
 			
-			System.out.println("Attr Line: " + s);
-
 			if (parts.length == 0)
 				continue;
 

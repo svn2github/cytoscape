@@ -367,7 +367,7 @@ public abstract class AttributeImportPanel extends JPanel {
 	}
 
 	protected void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		firePropertyChange(CLOSE_EVENT, null, null);
+		// Close parent
 	}
 
 	private void attributeTypeComboBoxActionPerformed(

@@ -42,6 +42,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.webservice.biomart.BiomartClient;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
@@ -53,20 +54,26 @@ import org.cytoscape.work.TaskManager;
 public final class BiomartMainDialog extends JDialog {
 
 	private static final long serialVersionUID = 2382157952635589843L;
-
-	private static boolean initialized = true;
 	
+	/**
+	 * Basic GUI to access BioMart services.
+	 * 
+	 * @param client
+	 * @param taskManager
+	 * @param appManager
+	 * @param tblManager
+	 */
 	public BiomartMainDialog(final BiomartClient client, final TaskManager taskManager,
 			final CyApplicationManager appManager,
-			final CyTableManager tblManager) {
+			final CyTableManager tblManager, final CySwingApplication app) {
 		super();
 		setTitle("BioMart Web Service Client");
 
 		// Create a tabbed pane
 		final JTabbedPane tabs = new JTabbedPane();
-
 		final JPanel tunablePanel = new JPanel();
 		tunablePanel.setBackground(Color.white);
+		
 		final JPanel tPanel = new JPanel();
 		final Dimension panelSize = new Dimension(220, 250);
 		tPanel.setMinimumSize(panelSize);
@@ -78,9 +85,8 @@ public final class BiomartMainDialog extends JDialog {
 
 		tunablePanel.add(tPanel);
 
-		BiomartAttrMappingPanel panel = new BiomartAttrMappingPanel(client,taskManager, appManager, tblManager);
+		final BiomartAttrMappingPanel panel = new BiomartAttrMappingPanel(client,taskManager, appManager, tblManager, app.getJFrame());
 		tabs.addTab("Query", panel);
-		// tabs.addTab("Options", tunablePanel);
 
 		add(tabs);
 
