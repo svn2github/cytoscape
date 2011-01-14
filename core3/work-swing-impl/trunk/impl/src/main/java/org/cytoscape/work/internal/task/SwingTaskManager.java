@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.cytoscape.work.AbstractTaskManager;
 import org.cytoscape.work.Task;
@@ -123,9 +124,10 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	@Override
 	protected void execute(final TaskFactory factory, boolean wait) {
 		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(cancelExecutorService, parent);
+		System.out.println("###### Task Monitor created.");
 		
 		TaskIterator taskIterator;
-		Task first; 
+		final Task first; 
 
 		try {
 			if ( tunableInterceptor.hasTunables(factory) && 
@@ -149,34 +151,57 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 		}
 
 		// create the task thread
-		final Runnable executor = new TaskThread(first,taskMonitor,taskIterator); 
+		final Runnable executor = new TaskThread(first, taskMonitor, taskIterator); 
 
 		// submit the task thread for execution
 		final Future<?> executorFuture = taskExecutorService.submit(executor);
+		
+		System.out.println("###### Task submitted. IS EDT? = " + SwingUtilities.isEventDispatchThread());
 
-		// open the task monitor 
-		openTaskMonitorOnDelay(taskMonitor,executorFuture);
-
+		openTaskMonitorOnDelay(taskMonitor, executorFuture);
+		
 		// wait (possibly forever) to return if instructed
-		if ( wait )
+		if (wait) {
+			System.out.println("###### Wait flag is ON");
 			// TODO - do we want a failsafe timeout here?
-			try { executorFuture.get(); } catch (Exception e) {}
+			try {
+				executorFuture.get();
+				System.out.println("###### Tasks finished.");
+			} catch (Exception e) {
+				taskMonitor.showException(e);	
+			} finally {
+				taskMonitor.close();
+			}
+		}
+		System.out.println("###### ALL DONE ####################\n\n");
     }
 
 	// This creates a thread on delay that conditionally displays the task monitor gui
 	// if the task thread has not yet finished.
 	private void openTaskMonitorOnDelay(final SwingTaskMonitor taskMonitor, final Future<?> executorFuture) {
 		final Runnable timedOpen = new Runnable() {
+			
 			public void run() {
-				if (!(executorFuture.isDone() || executorFuture.isCancelled()))
+				if (!(executorFuture.isDone() || executorFuture.isCancelled())) {
 					taskMonitor.open();
+					System.out.println("###### Monitor opened: Is EDT? = " + SwingUtilities.isEventDispatchThread());
+				}
 			}
 		};
-		timedDialogExecutorService.schedule(timedOpen, DELAY_BEFORE_SHOWING_DIALOG, DELAY_TIMEUNIT);
+		
+//		if(SwingUtilities.isEventDispatchThread())
+//			timedDialogExecutorService.schedule(timedOpen, DELAY_BEFORE_SHOWING_DIALOG, DELAY_TIMEUNIT);
+//		else
+		try {
+			Thread.sleep(1000);
+			SwingUtilities.invokeLater(timedOpen);
+		} catch (InterruptedException e) {
+			taskMonitor.showException(e);
+		}	
 	}
 
-	// 
 	private class TaskThread implements Runnable {
+		
 		private final SwingTaskMonitor taskMonitor;
 		private final TaskIterator taskIterator;
 		private final Task first;
@@ -186,11 +211,14 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 			this.taskMonitor = tm;
 			this.taskIterator = ti;
 		}
+		
 		public void run() {
+			System.out.println("###### Run CALLED");
 			try {
 				// actually run the first task 
 				// don't dispaly the tunables here - they were handled above. 
 				first.run(taskMonitor);
+				System.out.println("###### 1st task is DONE");
 
 				if (taskMonitor.cancelled())
 					return;
@@ -207,14 +235,21 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 					if (taskMonitor.cancelled())
 						break;
 				}
+				
+				System.out.println("###### Run tasks are DONE");
+				
 			} catch (Exception exception) {
 				logger.warn("Caught exception executing task. ", exception);	
 				taskMonitor.showException(exception);
 			}
 
+			System.out.println("###### Cleanup monitor");
+			
 			// clean up the task monitor
 			if (taskMonitor.isOpened() && !taskMonitor.isShowingException())
 				taskMonitor.close();
+			
+			System.out.println("###### Cleanup is DONE");
 		}
 	}
 

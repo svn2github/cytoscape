@@ -8,12 +8,14 @@ import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 
 class SwingTaskMonitor implements TaskMonitor {
+	
 	private Task task;
 	final private ExecutorService cancelExecutorService;
 	final private Window parent;
 
 	private boolean cancelled = false;
 	private TaskDialog dialog = null;
+	
 	private String title = null;
 	private String statusMessage = null;
 	private int progress = 0;
@@ -34,12 +36,15 @@ class SwingTaskMonitor implements TaskMonitor {
 		dialog = new TaskDialog(parent, this);
 		dialog.setLocationRelativeTo(parent);
 		
+		
 		if (title != null)
 			dialog.setTaskTitle(title);
 		if (statusMessage != null)
 			dialog.setStatus(statusMessage);
 		if (progress > 0)
 			dialog.setPercentCompleted(progress);
+		
+		dialog.setVisible(true);
 	}
 
 	public void close() {
@@ -60,6 +65,9 @@ class SwingTaskMonitor implements TaskMonitor {
 		};
 		cancelExecutorService.submit(cancel);
 		cancelled = true;
+		
+		// Close dialog (if necessary)
+		close();
 	}
 
 	public boolean cancelled() {

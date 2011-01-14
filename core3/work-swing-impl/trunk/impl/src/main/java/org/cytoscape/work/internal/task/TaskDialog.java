@@ -361,7 +361,6 @@ class TaskDialog extends JDialog {
 
 		setResizable(false);
 		pack();
-		setVisible(true);
 	}
 
 	/**
