@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.cytoscape.tableimport.internal.util.AttributeTypes;
+import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 
 
 /**
@@ -82,9 +83,7 @@ public class AttributeMappingParameters implements MappingParameter {
 	private final List<Integer> aliasIndex;
 	private String[] attributeNames;
 	private Byte[] attributeTypes;
-	//private Class<?>[] attributeTypes;
 	private Byte[] listAttributeTypes;
-	//private Class<?>[] listAttributeTypes;
 	private final String mappingAttribute;
 	private List<String> delimiters;
 	private String listDelimiter;
@@ -92,7 +91,7 @@ public class AttributeMappingParameters implements MappingParameter {
 	private Map<String, List<String>> attr2id;
 	//private CyAttributes attributes;
 	//private Aliases existingAliases;
-	private final Map<String, String> networkTitle2ID = null;
+	private Map<String, String> networkTitle2ID = null;
 
 	// Case sensitivity
 	private Boolean caseSensitive;
@@ -140,11 +139,6 @@ public class AttributeMappingParameters implements MappingParameter {
 	 * @throws Exception  DOCUMENT ME!
 	 * @throws IOException  DOCUMENT ME!
 	 */
-	
-	
-	//The constructor AttributeMappingParameters(TextTableReader.ObjectType, List<String>, String, int, String, List<Integer>, String[], byte[], Byte[], 
-	//		 boolean[], Boolean) is undefined
-	
 	public AttributeMappingParameters(final ObjectType objectType, final List<String> delimiters,
 	                                  final String listDelimiter, final int keyIndex,
 	                                  final String mappingAttribute,
@@ -175,15 +169,17 @@ public class AttributeMappingParameters implements MappingParameter {
 		this.attributeNames = attrNames;
 
 		if (this.objectType == NETWORK) {
-			//networkTitle2ID = new HashMap<String, String>();
+			networkTitle2ID = new HashMap<String, String>();
 
 			//Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
-
-			//for (CyNetwork net : networkSet) {
-			//	networkTitle2ID.put(net.getTitle(), net.getIdentifier());
-			//}
+			Set<CyNetwork> networkSet = CytoscapeServices.netMgr.getNetworkSet();
+			
+			for (CyNetwork net : networkSet) {
+				//networkTitle2ID.put(net.getTitle(), net.getIdentifier());
+				networkTitle2ID.put(net.getDefaultNetworkTable().getTitle(), Long.toString(net.getSUID()));
+			}
 		} else {
-			//networkTitle2ID = null;
+			networkTitle2ID = null;
 		}
 
 		/*
@@ -246,40 +242,40 @@ public class AttributeMappingParameters implements MappingParameter {
 			this.importFlag = importFlag;
 		}
 
-		final Iterator it;
+		Iterator it = null;
 
-		/*
+
 		switch (objectType) {
 			case NODE:
-				attributes = Cytoscape.getNodeAttributes();
+				//attributes = Cytoscape.getNodeAttributes();
 				//existingAliases = Cytoscape.getOntologyServer().getNodeAliases();
-				it = Cytoscape.getRootGraph().nodesIterator();
+				//it = Cytoscape.getRootGraph().nodesIterator();
 
 				break;
 
 			case EDGE:
-				attributes = Cytoscape.getEdgeAttributes();
-				existingAliases = Cytoscape.getOntologyServer().getEdgeAliases();
-				it = Cytoscape.getRootGraph().edgesIterator();
+				//attributes = Cytoscape.getEdgeAttributes();
+				//existingAliases = Cytoscape.getOntologyServer().getEdgeAliases();
+				//it = Cytoscape.getRootGraph().edgesIterator();
 
 				break;
 
 			case NETWORK:
-				attributes = Cytoscape.getNetworkAttributes();
-				existingAliases = Cytoscape.getOntologyServer().getNetworkAliases();
-				it = Cytoscape.getNetworkSet().iterator();
+				//attributes = Cytoscape.getNetworkAttributes();
+				//existingAliases = Cytoscape.getOntologyServer().getNetworkAliases();
+				//it = Cytoscape.getNetworkSet().iterator();
 
 				break;
 
 			default:
-				attributes = null;
+				//attributes = null;
 				it = null;
 		}
-		*/
 
-		//if ((this.mappingAttribute != null) && !this.mappingAttribute.equals(ID)) {
-		//	buildAttribute2IDMap(it);
-		//}
+
+		if ((this.mappingAttribute != null) && !this.mappingAttribute.equals(ID)) {
+			buildAttribute2IDMap(it);
+		}
 	}
 
 	/**
@@ -446,7 +442,7 @@ public class AttributeMappingParameters implements MappingParameter {
 		attr2id = new HashMap<String, List<String>>();
 
 		//String objectID = null;
-		Long objectID = null;
+		String objectID = null;
 		Object valObj = null;
 
 		while (it.hasNext()) {
@@ -454,7 +450,7 @@ public class AttributeMappingParameters implements MappingParameter {
 				case NODE:
 
 					CyNode node = (CyNode) it.next();
-					objectID = node.getSUID(); //.getIdentifier();
+					objectID = Long.toString(node.getSUID()); //.getIdentifier();
 
 					//if (CyAttributesUtils.getClass(mappingAttribute, attributes) == List.class) {
 					//	valObj = attributes.getListAttribute(objectID, mappingAttribute);
@@ -467,7 +463,7 @@ public class AttributeMappingParameters implements MappingParameter {
 				case EDGE:
 
 					CyEdge edge = (CyEdge) it.next();
-					objectID = edge.getSUID(); //.getIdentifier();
+					objectID = Long.toString(edge.getSUID()); //.getIdentifier();
 
 					//if (CyAttributesUtils.getClass(mappingAttribute, attributes) == List.class) {
 					//	valObj = attributes.getListAttribute(objectID, mappingAttribute);
@@ -493,7 +489,7 @@ public class AttributeMappingParameters implements MappingParameter {
 
 					for (Object key : keys) {
 						if (key != null) {
-							//putAttrValue(key.toString(), objectID);
+							putAttrValue(key.toString(), objectID);
 						}
 					}
 				} else {

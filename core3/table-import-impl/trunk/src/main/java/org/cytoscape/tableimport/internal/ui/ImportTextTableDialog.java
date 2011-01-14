@@ -113,7 +113,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.DataSource;
 import org.cytoscape.model.CyTable;
-//import cytoscape.data.readers.GraphReader;
+import org.cytoscape.tableimport.internal.reader.GraphReader;
 //import cytoscape.task.ui.JTaskConfig;
 //import cytoscape.task.util.TaskManager;
 import org.cytoscape.property.bookmark.BookmarksUtil;
@@ -2052,7 +2052,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 						                                startLineNumber, commentChar);
 					}
 
-					//loadNetwork(networkName, reader, sources[i], multi);
+					loadNetwork(networkName, reader, sources[i], multi);
 				}
 
 				if (multi) {
@@ -3133,7 +3133,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		*/
 	}
 
-	private void loadNetwork(final String networkName, final URL source,
+	private void loadNetwork(final String networkName, final GraphReader reader, final URL source,
 	                         boolean multi) {
 		
 		/*
