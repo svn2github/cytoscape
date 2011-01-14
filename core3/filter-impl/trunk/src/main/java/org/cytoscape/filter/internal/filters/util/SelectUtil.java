@@ -70,4 +70,25 @@ public class SelectUtil {
 			}
 		}
 	}
+
+	public static int getSelectedNodeCount(CyNetwork cyNetwork) {
+		return countSelected(cyNetwork.getNodeList());
+	}
+
+	public static int getSelectedEdgeCount(CyNetwork cyNetwork) {
+		return countSelected(cyNetwork.getNodeList());
+	}
+	
+	static <T extends CyTableEntry> int countSelected(Collection<T> items) {
+		int count = 0;
+		for (T item : items) {
+			CyRow row = item.getCyRow();
+			if (row.get(CyNetwork.SELECTED, Boolean.class)) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+
 }

@@ -278,12 +278,10 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		String title = VisualPropertyUtil.get(lexicon, view, "NETWORK_TITLE", TwoDVisualLexicon.NETWORK, String.class);
 		tblFeedBack.getModel().setValueAt(title, 0, 0);
 
-		// TODO: Review performance.  This is a bad way to handle counting.
-		String nodeStr = "" + cyNetwork.getNodeCount() + "(" + SelectUtil.getSelectedNodes(cyNetwork).size() + ")";
+		String nodeStr = "" + cyNetwork.getNodeCount() + "(" + SelectUtil.getSelectedNodeCount(cyNetwork) + ")";
 		tblFeedBack.getModel().setValueAt(nodeStr, 0, 1);
 
-		// TODO: Review performance.  This is a bad way to handle counting.
-		String edgeStr = "" + cyNetwork.getEdgeCount() + "(" + SelectUtil.getSelectedEdges(cyNetwork).size() + ")";
+		String edgeStr = "" + cyNetwork.getEdgeCount() + "(" + SelectUtil.getSelectedEdgeCount(cyNetwork) + ")";
 		tblFeedBack.getModel().setValueAt(edgeStr, 0, 2);				
 	}
 	
@@ -468,7 +466,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		cmbAttributes.addItemListener(this);
 		
 //		// TODO: Port this
-//		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_LOADED, this);
 //		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_TITLE_MODIFIED, this);
 //
 		btnSelectAll.addActionListener(this);
