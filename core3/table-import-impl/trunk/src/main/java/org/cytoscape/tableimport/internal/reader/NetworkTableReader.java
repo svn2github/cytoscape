@@ -65,8 +65,7 @@ import java.util.TreeSet;
  * @author Keiichiro Ono
  *
  */
-//public class NetworkTableReader extends AbstractGraphReader implements TextTableReader {
-public class NetworkTableReader  implements TextTableReader {
+public class NetworkTableReader extends AbstractGraphReader implements TextTableReader {
 	protected static final String COMMENT_CHAR = "!";
 	protected final NetworkTableMappingParameters nmp;
 	protected final URL sourceURL;
@@ -75,7 +74,6 @@ public class NetworkTableReader  implements TextTableReader {
 	protected final List<Integer> edgeList;
 	protected final int startLineNumber;
 	protected final String commentChar;
-	//private CyLogger logger = CyLogger.getLogger(NetworkTableReader.class);
 	
 	private static final Logger logger = LoggerFactory.getLogger(NetworkTableReader.class);
 
@@ -91,7 +89,7 @@ public class NetworkTableReader  implements TextTableReader {
 	public NetworkTableReader(final String networkName, final URL sourceURL,
 	                          final NetworkTableMappingParameters nmp, final int startLineNumber,
 	                          final String commentChar) {
-		//super(networkName);
+		super(networkName);
 		this.sourceURL = sourceURL;
 		this.nmp = nmp;
 		this.startLineNumber = startLineNumber;
