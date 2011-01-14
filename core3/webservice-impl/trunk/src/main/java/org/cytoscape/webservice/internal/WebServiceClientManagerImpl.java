@@ -40,8 +40,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.cytoscape.webservice.WebServiceClient;
-import org.cytoscape.webservice.WebServiceClientManager;
+import org.cytoscape.io.webservice.WebServiceClient;
+import org.cytoscape.io.webservice.WebServiceClientManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
