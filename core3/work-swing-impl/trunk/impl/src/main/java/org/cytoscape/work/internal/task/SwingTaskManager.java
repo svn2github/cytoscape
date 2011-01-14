@@ -198,12 +198,10 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 		}
 		
 		public void run() {
-			System.out.println("###### Run CALLED");
 			try {
 				// actually run the first task 
 				// don't dispaly the tunables here - they were handled above. 
 				first.run(taskMonitor);
-				System.out.println("###### 1st task is DONE");
 
 				if (taskMonitor.cancelled())
 					return;
@@ -219,22 +217,16 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 
 					if (taskMonitor.cancelled())
 						break;
-				}
-				
-				System.out.println("###### Run tasks are DONE");
-				
+				}				
 			} catch (Exception exception) {
 				logger.warn("Caught exception executing task. ", exception);	
 				taskMonitor.showException(exception);
 			}
-
-			System.out.println("###### Cleanup monitor");
 			
 			// clean up the task monitor
 			if (taskMonitor.isOpened() && !taskMonitor.isShowingException())
 				taskMonitor.close();
 			
-			System.out.println("###### Cleanup is DONE");
 		}
 	}
 
