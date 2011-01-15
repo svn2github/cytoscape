@@ -16,11 +16,13 @@
       <groupId>cytoscape-temp</groupId>
       <artifactId>biopax</artifactId>
       <version>1.0</version>
+	  <scope>provided</scope> <!-- don't include biopax in jar-with-dependencies -->
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.1.1</version>
+	  <scope>provided</scope> <!-- also used by biopax, so rely on that one --> 
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
