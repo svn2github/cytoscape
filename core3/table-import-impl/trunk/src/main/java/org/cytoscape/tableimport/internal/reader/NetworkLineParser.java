@@ -36,9 +36,8 @@
 
 package org.cytoscape.tableimport.internal.reader;
 
-//import cytoscape.Cytoscape;
 
-//import cytoscape.data.CyAttributes;
+import org.cytoscape.tableimport.internal.util.AttributeTypes;
 //import cytoscape.data.Semantics;
 
 import org.cytoscape.model.CyEdge;
@@ -142,62 +141,60 @@ public class NetworkLineParser {
 	 */
 	private void mapAttribute(final String key, final String entry, final int index) {
 		
-		/*
 		
-		//Byte type = nmp.getAttributeTypes()[index];
-		Class<?> type = nmp.getAttributeTypes()[index];
+		Byte type = nmp.getAttributeTypes()[index];
 		
 		if (entry == null || entry.length() == 0) {
 			return;
 		}
 
 		switch (type) {
-			case Boolean.class: //CyAttributes.TYPE_BOOLEAN:
-				nmp.getAttributes()
-				   .setAttribute(key, nmp.getAttributeNames()[index], new Boolean(entry));
+			case AttributeTypes.TYPE_BOOLEAN:
+				//nmp.getAttributes()
+				//   .setAttribute(key, nmp.getAttributeNames()[index], new Boolean(entry));
 
 				break;
 
-			case Integer.class: //CyAttributes.TYPE_INTEGER:
-				nmp.getAttributes()
-				   .setAttribute(key, nmp.getAttributeNames()[index], new Integer(entry));
+			case AttributeTypes.TYPE_INTEGER:
+				//nmp.getAttributes()
+				//   .setAttribute(key, nmp.getAttributeNames()[index], new Integer(entry));
 
 				break;
 
-			case Double.class: //CyAttributes.TYPE_FLOATING:
-				nmp.getAttributes()
-				   .setAttribute(key, nmp.getAttributeNames()[index], new Double(entry));
+			case AttributeTypes.TYPE_FLOATING:
+				//nmp.getAttributes()
+				//   .setAttribute(key, nmp.getAttributeNames()[index], new Double(entry));
 
 				break;
 
-			case String.class: //CyAttributes.TYPE_STRING:
-				nmp.getAttributes().setAttribute(key, nmp.getAttributeNames()[index], entry);
+			case AttributeTypes.TYPE_STRING:
+				//nmp.getAttributes().setAttribute(key, nmp.getAttributeNames()[index], entry);
 
 				break;
 
-			case List.class: //CyAttributes.TYPE_SIMPLE_LIST:
+			case AttributeTypes.TYPE_SIMPLE_LIST:
 
-				/
+				/*
 				 * In case of list, not overwrite the attribute. Get the existing
 				 * list, and add it to the list.
-				 /
-				List curList = nmp.getAttributes()
-				                  .getListAttribute(key, nmp.getAttributeNames()[index]);
+				 */
+				//List curList = nmp.getAttributes()
+				//                  .getListAttribute(key, nmp.getAttributeNames()[index]);
 
-				if (curList == null) {
-					curList = new ArrayList();
-				}
+				//if (curList == null) {
+				//	curList = new ArrayList();
+				//}
 
-				curList.addAll(buildList(entry));
+				//curList.addAll(buildList(entry));
 
-				nmp.getAttributes().setListAttribute(key, nmp.getAttributeNames()[index], curList);
+				//nmp.getAttributes().setListAttribute(key, nmp.getAttributeNames()[index], curList);
 
 				break;
 
 			default:
-				nmp.getAttributes().setAttribute(key, nmp.getAttributeNames()[index], entry);
+				//nmp.getAttributes().setAttribute(key, nmp.getAttributeNames()[index], entry);
 		}
-		*/
+
 	}
 
 	/**
