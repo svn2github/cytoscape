@@ -69,6 +69,14 @@
 			<artifactId>service-util</artifactId>
 			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
+		
+		<!-- This is for Spring prop file -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 </project>
