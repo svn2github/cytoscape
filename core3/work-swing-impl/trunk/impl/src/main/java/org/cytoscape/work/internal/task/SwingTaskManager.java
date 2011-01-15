@@ -10,7 +10,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import org.cytoscape.work.AbstractTaskManager;
 import org.cytoscape.work.Task;
@@ -85,8 +84,10 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 		parent = null;
 		taskExecutorService = Executors.newCachedThreadPool();
 		addShutdownHook(taskExecutorService);
+		
 		timedDialogExecutorService = Executors.newSingleThreadScheduledExecutor();
 		addShutdownHook(timedDialogExecutorService);
+		
 		cancelExecutorService = taskExecutorService;
 	}
 
@@ -150,21 +151,26 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 		}
 
 		// create the task thread
-		final Runnable executor = new TaskThread(first, taskMonitor, taskIterator); 
+		final Runnable tasks = new TaskThread(first, taskMonitor, taskIterator); 
 
+		long startTime = System.currentTimeMillis();
 		// submit the task thread for execution
-		final Future<?> executorFuture = taskExecutorService.submit(executor);
-		
+		final Future<?> executorFuture = taskExecutorService.submit(tasks);
+
 		openTaskMonitorOnDelay(taskMonitor, executorFuture);
 		
-		// wait (possibly forever) to return if instructed
-		if (wait) {
-			// TODO - do we want a failsafe timeout here?
+		if(wait) {
 			try {
 				executorFuture.get();
+				long endTime = System.currentTimeMillis();
+				double sec = (endTime - startTime) / (1000.0);
+				System.out.println("Wait Task Finished in " + sec + " sec.");
 			} catch (Exception e) {
-				taskMonitor.showException(e);	
+				e.printStackTrace();
 			} finally {
+				executorFuture.cancel(true);
+				taskExecutorService.shutdown();
+				timedDialogExecutorService.shutdown();
 				taskMonitor.close();
 			}
 		}
