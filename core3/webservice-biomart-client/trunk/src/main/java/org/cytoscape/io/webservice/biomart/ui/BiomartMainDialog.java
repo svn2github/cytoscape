@@ -39,6 +39,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -54,6 +55,8 @@ import org.cytoscape.work.TaskManager;
 public final class BiomartMainDialog extends JDialog {
 
 	private static final long serialVersionUID = 2382157952635589843L;
+	
+	final BiomartAttrMappingPanel panel;
 	
 	/**
 	 * Basic GUI to access BioMart services.
@@ -85,11 +88,15 @@ public final class BiomartMainDialog extends JDialog {
 
 		tunablePanel.add(tPanel);
 
-		final BiomartAttrMappingPanel panel = new BiomartAttrMappingPanel(client,taskManager, appManager, tblManager, app.getJFrame());
+		panel = new BiomartAttrMappingPanel(client,taskManager, appManager, tblManager, app.getJFrame());
 		tabs.addTab("Query", panel);
 
 		add(tabs);
 
 		pack();
+	}
+	
+	public BiomartAttrMappingPanel getPanel() {
+		return this.panel;
 	}
 }

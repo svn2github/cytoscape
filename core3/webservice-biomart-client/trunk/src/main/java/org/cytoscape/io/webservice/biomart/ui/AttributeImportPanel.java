@@ -35,6 +35,8 @@
 package org.cytoscape.io.webservice.biomart.ui;
 
 import java.awt.Color;
+import java.awt.Container;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.SortedSet;
@@ -43,6 +45,7 @@ import java.util.TreeSet;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.Icon;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
@@ -368,6 +371,9 @@ public abstract class AttributeImportPanel extends JPanel {
 
 	protected void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// Close parent
+		final JDialog container = (JDialog) this.getRootPane().getParent();
+//		System.out.println("parent = " + container);
+		container.setVisible(false);
 	}
 
 	private void attributeTypeComboBoxActionPerformed(
