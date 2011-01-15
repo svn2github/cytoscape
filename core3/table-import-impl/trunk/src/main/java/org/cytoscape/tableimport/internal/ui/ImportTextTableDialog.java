@@ -3136,24 +3136,13 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private void loadNetwork(final String networkName, final GraphReader reader, final URL source,
 	                         boolean multi) {
 		
-		/*
+		System.out.println("\n\nEntering ImportTextTablereader.loadNetwork()...\n\n");
+
 		// Create LoadNetwork Task
-		ImportNetworkTask task = new ImportNetworkTask(reader, source);
+		ImportNetworkTask task = new ImportNetworkTask();
+		ImportNetworkTaskFactory taskFactory = new ImportNetworkTaskFactory(task);
 
-		// Configure JTask Dialog Pop-Up Box
-		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(CytoscapeServices.desktop.getJFrame());
-		jTaskConfig.displayCloseButton(true);
-		jTaskConfig.displayStatus(true);
-
-		if (multi)
-			jTaskConfig.setAutoDispose(true);
-		else
-			jTaskConfig.setAutoDispose(false);
-
-		// Execute Task in New Thread; pops open JTask Dialog Box.
-		TaskManager.executeTask(task, jTaskConfig);
-		*/
+		CytoscapeServices.guiTaskManagerServiceRef.execute(taskFactory);
 	}
 
 	private void setStatusBar(String message1, String message2, String message3) {
