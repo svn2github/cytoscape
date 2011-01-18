@@ -55,6 +55,7 @@ import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.property.CyProperty;
 
 
 /**
@@ -72,11 +73,12 @@ public class PrintAction extends AbstractCyAction {
 	/**
 	 * Creates a new PrintAction object.
 	 */
-	public PrintAction(CyApplicationManager appMgr, Properties props ) {
+	public PrintAction(CyApplicationManager appMgr, CyProperty<Properties> p ) {
 		super(MENU_LABEL, appMgr );
 		setPreferredMenu("File");
+		setMenuGravity(7.0f);
 		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
-		this.props = props;
+		this.props = p.getProperties();
 	}
 
 	/**

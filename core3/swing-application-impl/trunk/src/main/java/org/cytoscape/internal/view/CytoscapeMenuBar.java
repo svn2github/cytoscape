@@ -38,6 +38,7 @@ package org.cytoscape.internal.view;
 
 
 import javax.swing.*;
+import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -47,13 +48,20 @@ import java.util.StringTokenizer;
 import org.cytoscape.application.swing.CyAction;
 import org.cytoscape.util.swing.JMenuTracker;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CytoscapeMenuBar extends JMenuBar {
 	private final static long serialVersionUID = 1202339868642259L;
+	private final static Logger logger = LoggerFactory.getLogger(CytoscapeMenuBar.class); 
+
 	public static final String DEFAULT_MENU_SPECIFIER = "Tools";
 
 	protected Set actionMembersSet = null;
 	protected Map<Action,JMenuItem> actionMenuItemMap = null;
 	protected JMenuTracker menuTracker;
+	private Map<Component,Float> componentGravity;
+
 
 
 	/**
@@ -69,6 +77,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 		menuEffectiveLastIndexMap = new HashMap<JMenu,Integer>();
 		actionMenuItemMap = new HashMap<Action,JMenuItem>();
 		menuTracker = new JMenuTracker(this);
+		componentGravity = new HashMap<Component,Float>();
 
 		// Load the first menu, just to please the layouter. Also make sure the
 		// menu bar doesn't get too small.
@@ -95,7 +104,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 		JMenuItem menu_item = null;
 
 		if (actionMenuItemMap != null) {
-			menu_item = (JMenuItem) actionMenuItemMap.get(action);
+			menu_item = actionMenuItemMap.get(action);
 		}
 
 		if (menu_item != null) {
@@ -103,7 +112,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 		}
 
 		JMenu menu = getMenu(menu_name);
-		menu_item = createJMenuItem(action);
+		menu_item = createMenuItem(action);
 
 		// Add an Accelerator Key, if wanted
 		KeyStroke accelerator = action.getAcceleratorKeyStroke();
@@ -111,11 +120,37 @@ public class CytoscapeMenuBar extends JMenuBar {
 			menu_item.setAccelerator(accelerator);
 			
 		menu.addMenuListener(action);
-		menu.add(menu_item);
+		int index = getInsertLocation(menu,action.getMenuGravity());
+		logger.info("Inserted action for menu: " + menu_name + 
+		            " with gravity: " + action.getMenuGravity());
+		menu.insert(menu_item,index);
 		actionMenuItemMap.put(action, menu_item);
 
 		return true;
-	} 
+	}
+
+	public void addSeparator(String menu_name, float gravity) {
+		if ( menu_name == null || menu_name == "") 
+			menu_name = DEFAULT_MENU_SPECIFIER;
+			
+		JMenu menu = getMenu(menu_name);
+		int index = getInsertLocation(menu,gravity);
+		menu.insertSeparator(index);
+		Component sepx = menu.getMenuComponent(index);
+		componentGravity.put(sepx,gravity);
+	}
+
+	private int getInsertLocation(JMenu menu, float newGravity) {
+		for ( int i = 0; i < menu.getMenuComponentCount(); i++ ) {
+			Component item = menu.getMenuComponent(i);
+			if ( componentGravity.containsKey(item) ) {
+				if ( newGravity < componentGravity.get(item) ) {
+					return i; 
+				}
+			}
+		}
+		return menu.getMenuComponentCount();
+	}
 
 	/**
 	 * If the given Action has a present and false inMenuBar property, return;
@@ -128,7 +163,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 			return false;
 		}
 
-		JMenuItem menu_item = (JMenuItem) actionMenuItemMap.remove(action);
+		JMenuItem menu_item = actionMenuItemMap.remove(action);
 
 		if (menu_item == null) {
 			return false;
@@ -151,6 +186,12 @@ public class CytoscapeMenuBar extends JMenuBar {
 		return true;
 	}
 
+	public JMenu addMenu(String menu_string, float gravity) {
+		JMenu menu = getMenu(menu_string);
+		componentGravity.put(menu,gravity);
+		return menu;
+	}
+
 	/**
 	 * @return the menu named in the given String. The String may contain
 	 *         multiple menu names, separated by dots ('.'). If any contained
@@ -162,17 +203,24 @@ public class CytoscapeMenuBar extends JMenuBar {
 		if ( menu_string == null )
 			menu_string = DEFAULT_MENU_SPECIFIER;
 
-		final JMenu menu = menuTracker.getMenu(menu_string, -1);
+		final JMenu menu = menuTracker.getMenu(menu_string);
+		if ( !componentGravity.containsKey(menu) )
+			componentGravity.put(menu,100.0f);
 		revalidate();
 		repaint();
 		return menu; 
 	}
 
-	private JMenuItem createJMenuItem(CyAction action) {
+	private JMenuItem createMenuItem(CyAction action) {
+		JMenuItem ret;
 		if ( action.useCheckBoxMenuItem() )
-			return new JCheckBoxMenuItem(action);
+			ret = new JCheckBoxMenuItem(action);
+		else
+			ret = new JMenuItem(action);
 
-		return new JMenuItem(action);
+		componentGravity.put(ret,action.getMenuGravity());
+
+		return ret;
 	}
 
 	public JMenuBar getJMenuBar() {

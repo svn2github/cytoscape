@@ -66,6 +66,7 @@ public class RedoAction extends AbstractCyAction {
 		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
 		setPreferredMenu("Edit");
 		setEnabled(true);
+		setMenuGravity(1.1f);
 		this.undo = undo;
 	}
 

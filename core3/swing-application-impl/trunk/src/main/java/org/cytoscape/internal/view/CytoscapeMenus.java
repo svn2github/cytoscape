@@ -45,34 +45,54 @@ public class CytoscapeMenus {
 	final private CytoscapeMenuBar menuBar;
 	final private CytoscapeToolBar toolBar;
 
-	private final Map<String,JMenu> menus;
-
 	public CytoscapeMenus(CytoscapeMenuBar menuBar, CytoscapeToolBar toolBar) {
 		this.menuBar = menuBar; 
 		this.toolBar = toolBar; 
 
-		menus = new HashMap<String,JMenu>();
+		menuBar.addMenu("File",0.0f);
+		menuBar.addMenu("File.New",0.0f);
+		menuBar.addMenu("File.New.Network",0.0f);
+		menuBar.addMenu("File.Import",5.0f);
+		menuBar.addMenu("File.Export",5.1f);
+		menuBar.addMenu("Edit",0.0f);
+		menuBar.addMenu("View",0.0f);
+		menuBar.addMenu("Select",0.0f);
+		menuBar.addMenu("Layout",0.0f);
+		menuBar.addMenu("Plugins",0.0f);
+		menuBar.addMenu("Tools",0.0f);
+		menuBar.addMenu("Help",0.0f);
 
-		addMenu("File");
-		addMenu("File.New");
-		addMenu("File.New.Network");
-		addMenu("File.Import");
-		addMenu("File.Export");
-		addMenu("Edit");
-		addMenu("View");
-		addMenu("Select");
-		addMenu("Layout");
-		addMenu("Plugins");
-		addMenu("Help");
-	}
+		menuBar.addSeparator("File",2.0f);
+		menuBar.addSeparator("File",4.0f);
+		menuBar.addSeparator("File",6.0f);
+		menuBar.addSeparator("File",8.0f);
 
-	private void addMenu(String s) {
-		JMenu m = menuBar.getMenu(s);
-		menus.put(s,m);
+		menuBar.addSeparator("Edit",2.0f);
+		menuBar.addSeparator("Edit",4.0f);
+		menuBar.addSeparator("Edit",6.0f);
+
+		menuBar.addSeparator("View",2.0f);
+		menuBar.addSeparator("View",4.0f);
+		menuBar.addSeparator("View",6.0f);
+
+		menuBar.addSeparator("Select",2.0f);
+		menuBar.addSeparator("Select",4.0f);
+
+		menuBar.addSeparator("Layout",2.0f);
+		menuBar.addSeparator("Layout",4.0f);
+
+		menuBar.addSeparator("Plugins",2.0f);
+
+		menuBar.addSeparator("Help",2.0f);
+
+		toolBar.addSeparator(2.0f);
+		toolBar.addSeparator(4.0f);
+		toolBar.addSeparator(6.0f);
+		toolBar.addSeparator(8.0f);
 	}
 
 	public JMenu getJMenu(String s) {
-		return menus.get(s);
+		return menuBar.getMenu(s);
 	}
 
 	public JMenuBar getJMenuBar() {

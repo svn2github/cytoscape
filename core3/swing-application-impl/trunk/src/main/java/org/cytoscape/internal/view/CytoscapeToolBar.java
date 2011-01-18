@@ -36,6 +36,7 @@
 */
 package org.cytoscape.internal.view;
 
+import java.awt.Component;
 import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,8 +54,8 @@ import org.cytoscape.application.swing.CyAction;
 public class CytoscapeToolBar extends JToolBar {
 	private final static long serialVersionUID = 1202339868655256L;
 	private Map<CyAction,JButton> actionButtonMap; 
-	private SortedMap<String,Integer> groupNameCount; 
-	private List<JButton> buttonList; 
+	private List orderedList;
+	private Map<Object,Float> componentGravity;
 
 	/**
 	 * Default constructor delegates to the superclass void constructor and then
@@ -63,14 +64,14 @@ public class CytoscapeToolBar extends JToolBar {
 	public CytoscapeToolBar() {
 		super("Cytoscape Tools");
 		actionButtonMap = new HashMap<CyAction,JButton>();
-		groupNameCount = new TreeMap<String,Integer>();
-		buttonList = new ArrayList<JButton>();
+		componentGravity = new HashMap<Object,Float>();
+		orderedList = new ArrayList();
 	}
 
 	/**
 	 * If the given Action has an absent or false inToolBar property, return;
 	 * otherwise delegate to addAction( String, Action ) with the value of its
-	 * preferredButtonGroup property, or null if it does not have that property.
+	 * gravity property.
 	 */
 	public boolean addAction(CyAction action) {
 
@@ -87,19 +88,16 @@ public class CytoscapeToolBar extends JToolBar {
 		button.setBorderPainted(false);
 		button.setRolloverEnabled(true);
 		button.setText("");
+		componentGravity.put(button,action.getToolbarGravity());
 
 		//  If SHORT_DESCRIPTION exists, use this as tool-tip
 		String shortDescription = (String) action.getValue(Action.SHORT_DESCRIPTION);
 		if (shortDescription != null) 
 			button.setToolTipText(shortDescription);
 
-		String button_group_name = action.getPreferredButtonGroup();
-		if ( button_group_name == null )
-			button_group_name = "";
-
 		actionButtonMap.put(action, button);
-		int addInd = getActionIndex(button_group_name);
-		buttonList.add(addInd, button );
+		int addInd = getInsertLocation(action.getToolbarGravity());
+		orderedList.add(addInd, button);
 
 		addButtons();
 
@@ -107,35 +105,37 @@ public class CytoscapeToolBar extends JToolBar {
 	}
 
 	private void addButtons() {
-		for ( JButton b : buttonList) 
-			remove(b);
-		for ( JButton b : buttonList) 
-			add(b);
+		removeAll();
+		for ( Object o : orderedList) {
+			if ( o instanceof JButton ) {
+				add((JButton)o);
+			} else if ( o instanceof Float ) {
+				addSeparator();
+			}
+		}
 		validate();
 	}
 
-
-	/**
-	 * Returns the appropriate index for placing the action as the last item in 
-	 * a group where the groups themselves are ordered lexicographically by name.
-	 */
-	private int getActionIndex(String name) {
-		if ( !groupNameCount.containsKey(name) )
-			groupNameCount.put(name,0);
-		
-		int index = 0;
-
-		for ( String groupName : groupNameCount.keySet() ) {
-			final int groupCount = groupNameCount.get(groupName).intValue();
-			index += groupCount; 
-			if ( name.equals( groupName ) ) {
-				groupNameCount.put( groupName, groupCount + 1 );
-				break;
-			}
-		}
-		//System.out.println("calculated action index: " + index + " for group name: " + name);
-		return index;
+	public void addSeparator(float gravity) {
+		Float key = new Float(gravity);
+		componentGravity.put(key, gravity);
+		int addInd = getInsertLocation(gravity);
+		orderedList.add(addInd, key);
 	}
+
+
+    private int getInsertLocation(float newGravity) {
+        for ( int i = 0; i < orderedList.size(); i++ ) {
+            Object item = orderedList.get(i); 
+            if ( componentGravity.containsKey(item) ) {
+                if ( newGravity < componentGravity.get(item) ) {
+                    return i;
+                }
+            }
+        }
+        return orderedList.size();
+    }
+
 
 	/**
 	 * If the given Action has an absent or false inToolBar property, return;
@@ -149,16 +149,18 @@ public class CytoscapeToolBar extends JToolBar {
 			return false;
 		}
 
+		orderedList.remove(button);
 		remove(button);
 
 		return true;
-	} 
+	}
 
 	public JToolBar getJToolBar() {
 		return this;
 	}
 
+	// use by toolbar updater to keep things properly enabled/disabled
 	Collection<CyAction> getAllToolBarActions() {
 		return actionButtonMap.keySet();
 	}
-} 
+}

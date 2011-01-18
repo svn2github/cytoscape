@@ -66,6 +66,7 @@ public class ExitAction extends AbstractCyAction {
 		this.shutdown = shutdown;
 		setPreferredMenu("File");
 		setAcceleratorKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+		setMenuGravity(1000.0f);
 	}
 
 	/**

@@ -113,13 +113,11 @@
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
-	<!--
 	<bean id="printAction" class="org.cytoscape.internal.actions.PrintAction">
-		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cytoscapePropertiesServiceRef" />
-		<constructor-arg ref="presentationManagerServiceRef" />
 	</bean>
-	-->
+
 	<bean id="exitAction" class="org.cytoscape.internal.actions.ExitAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cytoscapeShutdown" />
