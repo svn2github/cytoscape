@@ -1,11 +1,14 @@
 package org.cytoscape.tableimport.internal.util;
 
 import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
+import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.work.swing.GUITaskManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.util.swing.OpenBrowser;
@@ -23,4 +26,7 @@ public class  CytoscapeServices {
 	public static FileUtil fileUtil;
 	public static CyApplicationManager appMgr;
 	public static CyNetworkManager netMgr;
+	public static CyLayouts cyLayoutsServiceRef;
+	public static CyNetworkFactory cyNetworkViewFactoryServiceRef;
+	public static CyNetworkViewFactory cyNetworkFactoryServiceRef;
 }
