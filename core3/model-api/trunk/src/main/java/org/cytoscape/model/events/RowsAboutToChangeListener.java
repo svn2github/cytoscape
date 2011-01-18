@@ -31,11 +31,11 @@ package org.cytoscape.model.events;
 import org.cytoscape.event.CyListener;
 
 
-/** Listener for RowSetAboutToBeChangedEvents. */
-public interface RowSetAboutToBeChangedListener extends CyListener {
+/** Listener for RowsAboutToChangeEvents. */
+public interface RowsAboutToChangeListener extends CyListener {
 	/**
 	 * The method that should handle the specified event.
 	 * @param e The event to be handled.
 	 */
-	void handleEvent(RowSetAboutToBeChangedEvent e);
+	void handleEvent(RowsAboutToChangeEvent e);
 }

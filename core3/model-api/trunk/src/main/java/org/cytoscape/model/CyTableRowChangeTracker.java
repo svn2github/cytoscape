@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.model.events.RowSetAboutToBeChangedEvent;
-import org.cytoscape.model.events.RowSetAboutToBeChangedListener;
-import org.cytoscape.model.events.RowSetChangedEvent;
-import org.cytoscape.model.events.RowSetChangedListener;
+import org.cytoscape.model.events.RowsAboutToChangeEvent;
+import org.cytoscape.model.events.RowsAboutToChangeListener;
+import org.cytoscape.model.events.RowsFinishedChangingEvent;
+import org.cytoscape.model.events.RowsFinishedChangingListener;
 import org.cytoscape.model.events.RowCreatedMicroListener;
 import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
@@ -22,7 +22,7 @@ import org.cytoscape.service.util.CyServiceRegistrar;
  *  order to utilise it, you must override the rowCreated() and rowsUpdated() methods.
  */
 public abstract class CyTableRowChangeTracker
-	implements RowCreatedMicroListener, RowSetAboutToBeChangedListener, RowSetChangedListener
+	implements RowCreatedMicroListener, RowsAboutToChangeListener, RowsFinishedChangingListener
 {
 	public static class RowUpdate {
 		private final CyRow row;
@@ -66,8 +66,8 @@ public abstract class CyTableRowChangeTracker
 		this.numConcurrentUpdaters = 0;
 
 		final Dictionary emptyProps = new Hashtable();
-		serviceRegistrar.registerService(this, RowSetAboutToBeChangedListener.class, emptyProps);
-		serviceRegistrar.registerService(this, RowSetChangedListener.class, emptyProps);
+		serviceRegistrar.registerService(this, RowsAboutToChangeListener.class, emptyProps);
+		serviceRegistrar.registerService(this, RowsFinishedChangingListener.class, emptyProps);
 
 		eventHelper.addMicroListener(this, RowCreatedMicroListener.class, table);
 
@@ -95,15 +95,13 @@ public abstract class CyTableRowChangeTracker
 	}
 
 	@Override
-	public final synchronized void handleEvent(final RowSetAboutToBeChangedEvent e) {
-System.err.println("?????????????????????????? got a RowSetAboutToBeChangedEvent event, table is matching="+(e.getTable() == table));
+	public final synchronized void handleEvent(final RowsAboutToChangeEvent e) {
 		if (e.getTable() == table)
 			++numConcurrentUpdaters;
 	}
 
 	@Override
-	public final synchronized void handleEvent(final RowSetChangedEvent e) {
-System.err.println("?????????????????????????? got a RowSetChangedEvent event, table is matching="+(e.getTable() == table));
+	public final synchronized void handleEvent(final RowsFinishedChangingEvent e) {
 		if (e.getTable() == table) {
 			--numConcurrentUpdaters;
 			if (numConcurrentUpdaters == 0) {
@@ -131,8 +129,8 @@ System.err.println("?????????????????????????? got a RowSetChangedEvent event, t
 		for (final RowSetMicroListenerProxy proxy : rowToListenerProxyMap.values())
 			proxy.cleanup();
 
-		serviceRegistrar.unregisterService(this, RowSetChangedListener.class);
-		serviceRegistrar.unregisterService(this, RowSetAboutToBeChangedListener.class);
+		serviceRegistrar.unregisterService(this, RowsFinishedChangingListener.class);
+		serviceRegistrar.unregisterService(this, RowsAboutToChangeListener.class);
 	}
 
 

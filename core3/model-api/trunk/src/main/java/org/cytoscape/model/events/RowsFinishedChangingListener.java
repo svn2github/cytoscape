@@ -28,42 +28,14 @@
 package org.cytoscape.model.events;
 
 
-import org.cytoscape.model.CyTable;
-
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.mockito.Mockito.*;
+import org.cytoscape.event.CyListener;
 
 
-public class RowSetAboutToBeChangedEventTest extends AbstractTableEventTest {
-	private RowSetAboutToBeChangedEvent event;
-
-	@Before
-	public void setUp() {
-		final CyTable table = mock(CyTable.class); 
-		event = new RowSetAboutToBeChangedEvent(this, table);
-	}
-
-	@Test
-	public void testGetSource() {
-		assertEquals("getSource() did *not* return the expected source!",
-			     event.getSource(), this);
-	}
-
-	@Test
-	public void testGetListenerClass() {
-		assertEquals("getListenerClass() did *not* return the expected class!",
-			     event.getListenerClass(), RowSetAboutToBeChangedListener.class);
-	}
-
-	public void testNullTable() {
-		try {
-			RemovedEdgeEvent ev = new RemovedEdgeEvent(null);
-		} catch (NullPointerException npe) {
-			return;
-		}
-		fail("didn't catch expected npe for tablework");
-	}
+/** Listener for RowsFinishedChangingEvents. */
+public interface RowsFinishedChangingListener extends CyListener {
+	/**
+	 * The method that should handle the specified event.
+	 * @param e The event to be handled.
+	 */
+	void handleEvent(RowsFinishedChangingEvent e);
 }

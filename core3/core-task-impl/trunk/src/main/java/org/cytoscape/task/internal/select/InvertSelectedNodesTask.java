@@ -33,8 +33,8 @@ package org.cytoscape.task.internal.select;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.events.RowSetAboutToBeChangedEvent;
-import org.cytoscape.model.events.RowSetChangedEvent;
+import org.cytoscape.model.events.RowsAboutToChangeEvent;
+import org.cytoscape.model.events.RowsFinishedChangingEvent;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.view.model.CyNetworkViewManager;
 
@@ -53,7 +53,7 @@ public class InvertSelectedNodesTask extends AbstractSelectTask {
 	@Override
 	public void run(final TaskMonitor tm) {
 		try {
-			eventHelper.fireSynchronousEvent(new RowSetAboutToBeChangedEvent(this, net.getDefaultNodeTable()));
+			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, net.getDefaultNodeTable()));
 
 			for (final CyNode n : net.getNodeList())  {
 				if (n.getCyRow().get("selected", Boolean.class))
@@ -62,7 +62,7 @@ public class InvertSelectedNodesTask extends AbstractSelectTask {
 					n.getCyRow().set(CyNetwork.SELECTED, true);
 			}
 		} finally {
-			eventHelper.fireSynchronousEvent(new RowSetChangedEvent(this, net.getDefaultNodeTable()));
+			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, net.getDefaultNodeTable()));
 		}
 
 		updateView();

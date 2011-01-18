@@ -37,13 +37,13 @@ import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 
-public class RowSetChangedEventTest extends AbstractTableEventTest {
-	private RowSetChangedEvent event;
+public class RowsAboutToChangeEventTest extends AbstractTableEventTest {
+	private RowsAboutToChangeEvent event;
 
 	@Before
 	public void setUp() {
 		final CyTable table = mock(CyTable.class); 
-		event = new RowSetChangedEvent(this, table);
+		event = new RowsAboutToChangeEvent(this, table);
 	}
 
 	@Test
@@ -55,7 +55,7 @@ public class RowSetChangedEventTest extends AbstractTableEventTest {
 	@Test
 	public void testGetListenerClass() {
 		assertEquals("getListenerClass() did *not* return the expected class!",
-			     event.getListenerClass(), RowSetChangedListener.class);
+			     event.getListenerClass(), RowsAboutToChangeListener.class);
 	}
 
 	public void testNullTable() {

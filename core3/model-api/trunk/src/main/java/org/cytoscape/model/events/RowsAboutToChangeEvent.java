@@ -31,15 +31,15 @@ package org.cytoscape.model.events;
 import org.cytoscape.model.CyTable;
 
 
-/** This event should be fired after a series of row sets that have been announced by firing a
- *  RowSetAboutToBeChangedEvent.
+/** This event should be fired before a series of row sets.  After the row updates have been
+ *  completed you must then fire a RowsFinishedChangingEvent!
  */
-final public class RowSetChangedEvent extends AbstractTableEvent {
+final public class RowsAboutToChangeEvent extends AbstractTableEvent {
 	/**
 	 *  @param source  who fired the event
-	 *  @param table   the table on which the row sets have been completed
+	 *  @param table   the table on which the row sets are about to take place
 	 */
-	public RowSetChangedEvent(final Object source, final CyTable table) {
-		super(source, RowSetChangedListener.class, table);
+	public RowsAboutToChangeEvent(final Object source, final CyTable table) {
+		super(source, RowsAboutToChangeListener.class, table);
 	}
 }
