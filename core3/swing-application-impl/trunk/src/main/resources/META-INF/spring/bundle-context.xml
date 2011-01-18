@@ -214,24 +214,28 @@
 		<constructor-arg value="true" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg type="float" value="1.0" />
 	</bean>
 	<bean id="cytoPanelSouthAction" class="org.cytoscape.internal.actions.CytoPanelAction">
 		<constructor-arg type="org.cytoscape.application.swing.CytoPanelName" value="SOUTH" />
 		<constructor-arg value="true" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg type="float" value="1.1" />
 	</bean>
 	<bean id="cytoPanelEastAction" class="org.cytoscape.internal.actions.CytoPanelAction">
 		<constructor-arg type="org.cytoscape.application.swing.CytoPanelName" value="EAST" />
 		<constructor-arg value="false" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg type="float" value="1.2" />
 	</bean>
 	<bean id="cytoPanelSouthWestAction" class="org.cytoscape.internal.actions.CytoPanelAction">
 		<constructor-arg type="org.cytoscape.application.swing.CytoPanelName" value="SOUTH_WEST" />
 		<constructor-arg value="false" />
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg type="float" value="1.3" />
 	</bean>
 
 	<!-- Other stuff to be started -->

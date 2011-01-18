@@ -52,6 +52,7 @@ public class SettingsAction extends AbstractCyAction {
 	{
 		super("Settings...",appMgr);
 		setPreferredMenu("Layout");
+		setMenuGravity(3.0f);
 		this.cyl = cyl;
 		this.desk = desk;
 		this.menuMgr = menuMgr;

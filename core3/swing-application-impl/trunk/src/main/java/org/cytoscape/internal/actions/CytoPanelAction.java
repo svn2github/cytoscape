@@ -50,8 +50,7 @@ public class CytoPanelAction extends AbstractCyAction {
 	protected CytoPanelName position;
 	private CySwingApplication desktop;
 
-	public CytoPanelAction(final CytoPanelName position, final boolean show, final CySwingApplication desktop,
-			       final CyApplicationManager applicationManager)
+	public CytoPanelAction(final CytoPanelName position, final boolean show, final CySwingApplication desktop, final CyApplicationManager applicationManager, float menuGravity)
 	{
 		super(show ? HIDE + " " + position.getTitle() : SHOW + " " + position.getTitle(),
 		      applicationManager);
@@ -59,6 +58,7 @@ public class CytoPanelAction extends AbstractCyAction {
 		this.title = position.getTitle();
 		this.position = position;
 		setPreferredMenu("View");
+		setMenuGravity(menuGravity);
 		this.desktop = desktop;
 	}
 
