@@ -514,6 +514,7 @@
 			<entry key="title" value="File" />
 			<entry key="preferredMenu" value="File.Export.Network View" />
 			<entry key="enableFor" value="networkAndView" />
+			<entry key="menuGravity" value="5.1" />
 		</osgi:service-properties>
 	</osgi:service>
 	
@@ -574,6 +575,7 @@
 			<entry key="enableFor" value="networkAndView" />
 			<entry key="inToolBar" value="true" />
 			<entry key="toolBarGravity" value="9.0" />
+			<entry key="menuGravity" value="5.0" />
 			<entry key="iconName" value="/images/apply-force-directed-layout-32.png"/>
 		</osgi:service-properties>
 	</osgi:service>
