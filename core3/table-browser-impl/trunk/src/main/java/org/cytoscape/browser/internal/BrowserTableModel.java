@@ -27,6 +27,7 @@ import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnCreatedListener;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.ColumnDeletedListener;
+import org.cytoscape.service.util.CyServiceRegistrar;
 
 
 public class BrowserTableModel
@@ -43,14 +44,16 @@ public class BrowserTableModel
 	private final MyTableRowChangeTracker tableRowChangeTracker;
 
 	public BrowserTableModel(final JTable table, final CyEventHelper eventHelper,
-				 final CyTable attrs, final EqnCompiler compiler)
+				 final CyTable attrs, final EqnCompiler compiler,
+				 final CyServiceRegistrar serviceRegistrar)
 	{
 		this.table = table;
 		this.attrs = attrs;
 		this.compiler = compiler;
 		this.tableHasBooleanSelected = attrs.getColumnTypeMap().get(CyNetwork.SELECTED) == Boolean.class;
 		this.tableModelListeners = new ArrayList<TableModelListener>();
-		this.tableRowChangeTracker = new MyTableRowChangeTracker(attrs, eventHelper, this);
+		this.tableRowChangeTracker =
+			new MyTableRowChangeTracker(attrs, eventHelper, serviceRegistrar, this);
 
 		initAttrNamesAndVisibilities();
 	}

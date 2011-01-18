@@ -98,7 +98,8 @@ public class TableBrowser
 			}
 
 			currentTable = table;
-			browserTableModel = new BrowserTableModel(browserTable, eventHelper, table, compiler);
+			browserTableModel = new BrowserTableModel(browserTable, eventHelper, table,
+								  compiler, serviceRegistrar);
 			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 			browserTable.setModel(browserTableModel);
 			browserTable.setRowSorter(new TableRowSorter(browserTableModel));
