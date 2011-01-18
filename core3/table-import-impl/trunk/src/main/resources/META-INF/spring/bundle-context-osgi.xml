@@ -9,7 +9,11 @@
 		http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
 
- 
+	<!-- Import services -->
+ 	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayouts" />
+	<osgi:reference id="cyNetworkFactoryServiceRef" interface="org.cytoscape.model.CyNetworkFactory" />
+	<osgi:reference id="cyNetworkViewFactoryServiceRef" interface="org.cytoscape.view.model.CyNetworkViewFactory" />
+	
 	<osgi:reference id="cytoscapeDesktopService"
 		interface="org.cytoscape.application.swing.CySwingApplication" />
 	<osgi:reference id="cyApplicationManagerRef" interface="org.cytoscape.session.CyApplicationManager" />

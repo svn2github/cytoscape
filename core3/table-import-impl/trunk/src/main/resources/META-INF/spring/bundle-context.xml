@@ -39,6 +39,10 @@
 		<constructor-arg ref="cyTableManagerServiceRef" />
 		<constructor-arg ref="fileUtilService" />
 		<constructor-arg ref="openBrowserService" />
+		
+		<constructor-arg ref="cyLayoutsServiceRef" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 	</bean>
 
 </beans>
