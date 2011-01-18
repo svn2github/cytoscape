@@ -80,32 +80,36 @@
 	<osgi:service id="loadNetworkFileTaskFactoryService" ref="loadNetworkFileTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Load Network File..." />
-			<entry key="preferredMenu" value="File.Import" />
+			<entry key="title" value="File..." />
+			<entry key="preferredMenu" value="File.Import.Network" />
+			<entry key="menuGravity" value="1.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="loadNetworkURLTaskFactoryService" ref="loadNetworkURLTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Load Network URL..." />
-			<entry key="preferredMenu" value="File.Import" />
+			<entry key="title" value="URL..." />
+			<entry key="preferredMenu" value="File.Import.Network" />
+			<entry key="menuGravity" value="2.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="loadDataTableTaskFactoryService" ref="loadDataTableTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Load Data Table from File..." />
-			<entry key="preferredMenu" value="File.Import" />
+			<entry key="title" value="File..." />
+			<entry key="preferredMenu" value="File.Import.Table" />
+			<entry key="menuGravity" value="1.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="loadAttrsTaskFactoryService" ref="loadAttrsTaskFactory"
 		interface="org.cytoscape.work.TaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Load Attributes from File..." />
-			<entry key="preferredMenu" value="File.Import" />
+			<entry key="title" value="File (2)..." />
+			<entry key="preferredMenu" value="File.Import.Table" />
+			<entry key="menuGravity" value="1.1" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -114,6 +118,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Proxy Settings..." />
 			<entry key="preferredMenu" value="Edit.Preferences" />
+			<entry key="menuGravity" value="1.0" />
 		</osgi:service-properties>
 	</osgi:service>
 	
@@ -124,6 +129,7 @@
 			<entry key="title" value="Delete Selected Nodes and Edges..." />
 			<entry key="preferredMenu" value="Edit" />
 			<entry key="enableFor" value="selectedNodesOrEdges" />
+			<entry key="menuGravity" value="5.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -134,6 +140,7 @@
 			<entry key="preferredMenu" value="Select" />
 			<entry key="accelerator" value="cmd alt a"/>
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="5.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -144,6 +151,7 @@
 			<entry key="preferredMenu" value="Select.Edges" />
 			<entry key="accelerator" value="cmd alt a" />
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="4.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -154,6 +162,7 @@
 			<entry key="preferredMenu" value="Select.Nodes" />
 			<entry key="accelerator" value="cmd a" />
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="4.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -165,6 +174,7 @@
 			<entry key="preferredMenu" value="Select.Edges" />
 			<entry key="accelerator" value="alt e"/>
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="6.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -175,6 +185,7 @@
 			<entry key="preferredMenu" value="Select.Nodes" />
 			<entry key="accelerator" value="cmd 7"/>
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="7.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -185,6 +196,7 @@
 			<entry key="preferredMenu" value="Select.Nodes" />
 			<entry key="accelerator" value="cmd 6"/>
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="6.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -196,6 +208,7 @@
 			<entry key="preferredMenu" value="Select" />
 			<entry key="accelerator" value="cmd shift alt a"/>
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="5.1" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -206,6 +219,7 @@
 			<entry key="preferredMenu" value="Select.Edges" />
 			<entry key="accelerator" value="alt shift a"/>
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="5.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -216,6 +230,7 @@
 			<entry key="preferredMenu" value="Select.Nodes" />
 			<entry key="accelerator" value="cmd shift a"/>
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="5.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -226,6 +241,7 @@
 			<entry key="preferredMenu" value="Select.Edges" />
 			<entry key="accelerator" value="alt i"/>
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="1.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -236,16 +252,18 @@
 			<entry key="preferredMenu" value="Select.Nodes" />
 			<entry key="accelerator" value="cmd i"/>
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="1.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="selectFromFileListTaskFactoryService" ref="selectFromFileListTaskFactory"
 		interface="org.cytoscape.task.NetworkTaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="From file..." />
+			<entry key="title" value="From ID List file..." />
 			<entry key="preferredMenu" value="Select.Nodes" />
 			<entry key="accelerator" value="cmd i"/>
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="8.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -264,6 +282,7 @@
 			<entry key="title" value="Hide selected nodes and edges" />
 			<entry key="preferredMenu" value="Select" />
 			<entry key="enableFor" value="networkAndView" />
+			<entry key="menuGravity" value="3.1" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -273,6 +292,7 @@
 			<entry key="title" value="Hide selected nodes" />
 			<entry key="preferredMenu" value="Select.Nodes" />
 			<entry key="enableFor" value="networkAndView" />
+			<entry key="menuGravity" value="2.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -282,6 +302,7 @@
 			<entry key="title" value="Hide selected edges" />
 			<entry key="preferredMenu" value="Select.Edges" />
 			<entry key="enableFor" value="networkAndView" />
+			<entry key="menuGravity" value="2.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -291,6 +312,7 @@
 			<entry key="title" value="Show all nodes and edges" />
 			<entry key="preferredMenu" value="Select" />
 			<entry key="enableFor" value="networkAndView" />
+			<entry key="menuGravity" value="3.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -300,6 +322,7 @@
 			<entry key="title" value="Show all nodes" />
 			<entry key="preferredMenu" value="Select.Nodes" />
 			<entry key="enableFor" value="networkAndView" />
+			<entry key="menuGravity" value="3.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -309,6 +332,7 @@
 			<entry key="title" value="Show all edges" />
 			<entry key="preferredMenu" value="Select.Edges" />
 			<entry key="enableFor" value="networkAndView" />
+			<entry key="menuGravity" value="3.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -320,6 +344,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Empty Network" />
 			<entry key="preferredMenu" value="File.New.Network" />
+			<entry key="menuGravity" value="4.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -331,6 +356,7 @@
 			<entry key="preferredMenu" value="File.New.Network" />
 			<entry key="enableFor" value="selectedNodesOrEdges" />
 			<entry key="accelerator" value="cmd shift n"/>
+			<entry key="menuGravity" value="2.0" />
 		</osgi:service-properties>
 	</osgi:service>
 	
@@ -349,7 +375,9 @@
 			<entry key="enableFor" value="networkAndView" />
 			<entry key="accelerator" value="cmd n"/>
 			<entry key="inToolBar" value="true" />
+			<entry key="toolBarGravity" value="9.1" />
 			<entry key="iconName" value="/images/new-network-from-selected-nodes-32.png"/>
+			<entry key="menuGravity" value="1.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -360,6 +388,7 @@
 			<entry key="title" value="Clone Current Network" />
 			<entry key="preferredMenu" value="File.New.Network" />
 			<entry key="enableFor" value="network" />
+			<entry key="menuGravity" value="3.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -373,6 +402,7 @@
 			<entry key="enableFor" value="network" />
 			<entry key="accelerator" value="cmd shift w"/>
 			<entry key="scope" value="limited"/>
+			<entry key="menuGravity" value="3.2" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -385,6 +415,7 @@
 			<entry key="enableFor" value="networkAndView" />
 			<entry key="accelerator" value="cmd w"/>
 			<entry key="scope" value="limited"/>
+			<entry key="menuGravity" value="3.1" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -393,11 +424,11 @@
 	    ref="zoomInTaskFactory"
 		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
-			<entry key="preferredButtonGroup" value="c-zoom" />
 			<entry key="tooltip" value="Zoom In" />
 			<entry key="title" value="Zoom In" />
 			<entry key="enableFor" value="networkAndView" />
 			<entry key="inToolBar" value="true" />
+			<entry key="toolBarGravity" value="3.1" />
 			<entry key="iconName" value="/images/ximian/stock_zoom-in.png"/>
 		</osgi:service-properties>
 	</osgi:service>
@@ -406,11 +437,11 @@
 	    ref="zoomOutTaskFactory"
 		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
-			<entry key="preferredButtonGroup" value="c-zoom" />
 			<entry key="tooltip" value="Zoom Out" />
 			<entry key="title" value="Zoom Out" />
 			<entry key="enableFor" value="networkAndView" />
 			<entry key="inToolBar" value="true" />
+			<entry key="toolBarGravity" value="3.2" />
 			<entry key="iconName" value="/images/ximian/stock_zoom-out.png"/>
 		</osgi:service-properties>
 	</osgi:service>
@@ -419,11 +450,11 @@
 	    ref="fitSelectedTaskFactory"
 		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
-			<entry key="preferredButtonGroup" value="c-zoom" />
 			<entry key="tooltip" value="Zoom selected region" />
 			<entry key="title" value="Fit Selected" />
 			<entry key="enableFor" value="networkAndView" />
 			<entry key="inToolBar" value="true" />
+			<entry key="toolBarGravity" value="3.4" />
 			<entry key="iconName" value="/images/ximian/stock_zoom-object.png"/>
 		</osgi:service-properties>
 	</osgi:service>
@@ -432,11 +463,11 @@
 	    ref="fitContentTaskFactory"
 		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
-			<entry key="preferredButtonGroup" value="c-zoom" />
 			<entry key="tooltip" value="Zoom out to display all of current Network" />
 			<entry key="title" value="Fit Content" />
 			<entry key="enableFor" value="networkAndView" />
 			<entry key="inToolBar" value="true" />
+			<entry key="toolBarGravity" value="3.3" />
 			<entry key="iconName" value="/images/ximian/stock_zoom-1.png" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -448,6 +479,7 @@
 			<entry key="preferredMenu" value="Edit" />
 			<entry key="enableFor" value="network" />
 			<entry key="scope" value="limited"/>
+			<entry key="menuGravity" value="5.5" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -456,6 +488,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Create View" />
 			<entry key="preferredMenu" value="Edit" />
+			<entry key="menuGravity" value="3.0" />
 			<entry key="enableFor" value="network" />
 			<entry key="scope" value="limited" />
 		</osgi:service-properties>
@@ -465,10 +498,11 @@
 	    ref="exportNetworkImageTaskFactory"
 		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Network View as Graphics" />
-			<entry key="preferredMenu" value="File.Export" />
+			<entry key="title" value="Graphics" />
+			<entry key="preferredMenu" value="File.Export.Network View" />
 			<entry key="enableFor" value="networkAndView" />
 			<entry key="inToolBar" value="true" />
+			<entry key="toolBarGravity" value="5.0" />
 			<entry key="iconName" value="/images/ximian/tango-32-camera-photo.png"/>
 		</osgi:service-properties>
 	</osgi:service>
@@ -477,8 +511,8 @@
 	    ref="exportNetworkViewTaskFactory"
 		interface="org.cytoscape.task.NetworkViewTaskFactory">
 		<osgi:service-properties>
-			<entry key="title" value="Network View" />
-			<entry key="preferredMenu" value="File.Export" />
+			<entry key="title" value="File" />
+			<entry key="preferredMenu" value="File.Export.Network View" />
 			<entry key="enableFor" value="networkAndView" />
 		</osgi:service-properties>
 	</osgi:service>
@@ -495,6 +529,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Session" />
 			<entry key="preferredMenu" value="File.New" />
+			<entry key="menuGravity" value="1.1" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -503,6 +538,10 @@
 		<osgi:service-properties>
 			<entry key="title" value="Open" />
 			<entry key="preferredMenu" value="File" />
+			<entry key="menuGravity" value="1.0" />
+			<entry key="inToolBar" value="true" />
+			<entry key="iconName" value="/images/ximian/stock_open.png"/>
+			<entry key="toolBarGravity" value="1.0" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -511,6 +550,10 @@
 		<osgi:service-properties>
 			<entry key="title" value="Save" />
 			<entry key="preferredMenu" value="File" />
+			<entry key="menuGravity" value="3.0" />
+			<entry key="inToolBar" value="true" />
+			<entry key="iconName" value="/images/ximian/stock_save.png"/>
+			<entry key="toolBarGravity" value="1.1" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -519,6 +562,7 @@
 		<osgi:service-properties>
 			<entry key="title" value="Save As" />
 			<entry key="preferredMenu" value="File" />
+			<entry key="menuGravity" value="3.1" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -529,6 +573,7 @@
 			<entry key="preferredMenu" value="Layout" />
 			<entry key="enableFor" value="networkAndView" />
 			<entry key="inToolBar" value="true" />
+			<entry key="toolBarGravity" value="9.0" />
 			<entry key="iconName" value="/images/apply-force-directed-layout-32.png"/>
 		</osgi:service-properties>
 	</osgi:service>
