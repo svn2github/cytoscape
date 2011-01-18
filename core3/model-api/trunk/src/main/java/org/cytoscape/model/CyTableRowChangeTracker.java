@@ -2,7 +2,9 @@ package org.cytoscape.model;
 
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +15,7 @@ import org.cytoscape.model.events.RowSetChangedEvent;
 import org.cytoscape.model.events.RowSetChangedListener;
 import org.cytoscape.model.events.RowCreatedMicroListener;
 import org.cytoscape.model.events.RowSetMicroListener;
+import org.cytoscape.service.util.CyServiceRegistrar;
 
 
 /** This class simplifies tracking of CyRow creation and update events for a single CyTable.  In
@@ -45,18 +48,26 @@ public abstract class CyTableRowChangeTracker
 	private final CyTable table;
 	private final Map<CyRow, RowSetMicroListenerProxy> rowToListenerProxyMap;
 	private final CyEventHelper eventHelper;
+	private final CyServiceRegistrar serviceRegistrar;
 	private List<RowUpdate> rowUpdates;
 	private int numConcurrentUpdaters;
 
 	/** @param table        the table whose row updates we're forwarding
 	 *  @param eventHelper  used to set up event tracking
 	 */
-	public CyTableRowChangeTracker(final CyTable table, final CyEventHelper eventHelper) {
+	public CyTableRowChangeTracker(final CyTable table, final CyEventHelper eventHelper,
+				       final CyServiceRegistrar serviceRegistrar)
+	{
 		this.table = table;
 		this.eventHelper = eventHelper;
+		this.serviceRegistrar = serviceRegistrar;
 		this.rowToListenerProxyMap = new HashMap<CyRow, RowSetMicroListenerProxy>();
 		this.rowUpdates = new ArrayList<RowUpdate>();
 		this.numConcurrentUpdaters = 0;
+
+		final Dictionary emptyProps = new Hashtable();
+		serviceRegistrar.registerService(this, RowSetAboutToBeChangedListener.class, emptyProps);
+		serviceRegistrar.registerService(this, RowSetChangedListener.class, emptyProps);
 
 		eventHelper.addMicroListener(this, RowCreatedMicroListener.class, table);
 
@@ -85,12 +96,14 @@ public abstract class CyTableRowChangeTracker
 
 	@Override
 	public final synchronized void handleEvent(final RowSetAboutToBeChangedEvent e) {
+System.err.println("?????????????????????????? got a RowSetAboutToBeChangedEvent event, table is matching="+(e.getTable() == table));
 		if (e.getTable() == table)
 			++numConcurrentUpdaters;
 	}
 
 	@Override
 	public final synchronized void handleEvent(final RowSetChangedEvent e) {
+System.err.println("?????????????????????????? got a RowSetChangedEvent event, table is matching="+(e.getTable() == table));
 		if (e.getTable() == table) {
 			--numConcurrentUpdaters;
 			if (numConcurrentUpdaters == 0) {
@@ -117,6 +130,9 @@ public abstract class CyTableRowChangeTracker
 		eventHelper.removeMicroListener(this, RowCreatedMicroListener.class, table);
 		for (final RowSetMicroListenerProxy proxy : rowToListenerProxyMap.values())
 			proxy.cleanup();
+
+		serviceRegistrar.unregisterService(this, RowSetChangedListener.class);
+		serviceRegistrar.unregisterService(this, RowSetAboutToBeChangedListener.class);
 	}
 
 
