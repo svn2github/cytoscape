@@ -34,6 +34,7 @@ package clusterMaker.algorithms.hierarchical;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
@@ -98,7 +99,7 @@ public class EisenCluster {
 		// Update the network attribute "HierarchicalCluster" and make it hidden
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
-		List<String>params = new ArrayList();
+		List<String>params = new ArrayList<String>();
 
 		if (zeroMissing)
 			params.add("zeroMissing");
@@ -120,10 +121,10 @@ public class EisenCluster {
 		netAttr.setListAttribute(netID, ClusterMaker.CLUSTER_PARAMS_ATTRIBUTE, params);
 
 		String[] rowArray = matrix.getRowLabels();
-		ArrayList<String> orderList = new ArrayList();
+		ArrayList<String> orderList = new ArrayList<String>();
 
 		String[] columnArray = matrix.getColLabels();
-		ArrayList<String>columnList = new ArrayList(columnArray.length);
+		ArrayList<String>columnList = new ArrayList<String>(columnArray.length);
 
 		for (int i = 0; i < order.length; i++) {
 			orderList.add(rowArray[order[i]]);
@@ -225,7 +226,7 @@ public class EisenCluster {
 		double[] nodeOrder = new double[nodeList.length];
 		int[] nodeCounts = new int[nodeList.length];
 		String[] nodeID = new String[nodeList.length];
-		ArrayList<String>attrList = new ArrayList(nodeList.length);
+		ArrayList<String>attrList = new ArrayList<String>(nodeList.length);
 
 		for (int node = 0; node < nodeList.length; node++) {
 			int min1 = nodeList[node].getLeft();
@@ -286,7 +287,7 @@ public class EisenCluster {
 				monitor.setStatus("Creating groups");
 			CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 			String netID = Cytoscape.getCurrentNetwork().getIdentifier();
-			ArrayList<String> groupNames = new ArrayList(nodeList.length);
+			ArrayList<String> groupNames = new ArrayList<String>(nodeList.length);
 			if (createGroups) {
 				CyGroup top = createGroups(matrix, nodeList, nodeList[nodeList.length-1], groupNames);
 				CyGroupManager.setGroupViewer(top, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
@@ -660,7 +661,7 @@ public class EisenCluster {
 		return nodeList;
 	}
 
-	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 
+	public static void getAttributesList(List<String>attributeList, CyAttributes attributes, 
 	                              String prefix) {
 		String[] names = attributes.getAttributeNames();
 		for (int i = 0; i < names.length; i++) {
@@ -671,13 +672,13 @@ public class EisenCluster {
 		}
 	}
 
-	private String[] getAllAttributes() {
+	public static String[] getAllAttributes() {
 		// Create the list by combining node and edge attributes into a single list
 		List<String> attributeList = new ArrayList<String>();
-		attributeList.add("-- select attribute --");
 		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");
 		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(),"edge.");
-		return (String[])attributeList.toArray();
+		Collections.sort(attributeList);
+		return attributeList.toArray(new String[1]);
 	}
 		
 	/**
@@ -784,7 +785,7 @@ public class EisenCluster {
 	}
 
 	private CyGroup createGroups(Matrix matrix, TreeNode nodeList[], TreeNode node, List<String>groupNames) {
-		ArrayList<CyNode>memberList = new ArrayList(2);
+		ArrayList<CyNode>memberList = new ArrayList<CyNode>(2);
 		logger.debug("Creating groups");
 
 		// Do a right-first descend of the tree

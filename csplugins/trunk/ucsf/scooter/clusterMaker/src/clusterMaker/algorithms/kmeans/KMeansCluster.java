@@ -93,7 +93,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
 		Tunable attributeTunable = clusterProperties.get("attributeList");
-		attributeArray = getAllAttributes();
+		attributeArray = EisenCluster.getAllAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
 
 		// We also want to update the number our "guestimate" for k
@@ -136,7 +136,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		// Number of iterations
 		clusterProperties.add(new Tunable("rnumber",
 		                                  "Number of iterations",
-		                                  Tunable.INTEGER, new Integer(1),
+		                                  Tunable.INTEGER, new Integer(10),
 		                                  (Object)rNumber, (Object)null, 0));
 
 		// The distance metric to use
@@ -150,7 +150,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.GROUP, new Integer(1)));
 
 		// The attribute to use to get the weights
-		attributeArray = getAllAttributes();
+		attributeArray = EisenCluster.getAllAttributes();
 		clusterProperties.add(new Tunable("attributeList",
 		                                  "Array sources",
 		                                  Tunable.LIST, "",
@@ -242,22 +242,25 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		// To make debugging easier, sort the attribute array
 		Arrays.sort(attributeArray);
 
-		// Start by cleaning up and resetting
-		KCluster.resetAttributes();
+		KCluster algorithm = new KCluster(attributeArray, distanceMetric, logger, monitor);
+		algorithm.setCreateGroups(createGroups);
+		algorithm.setIgnoreMissing(ignoreMissing);
+		algorithm.setSelectedOnly(selectedOnly);
+		algorithm.setDebug(debug);
 
 		// Cluster the attributes, if requested
 		if (clusterAttributes && attributeArray.length > 1) {
 			if (monitor != null)
 				monitor.setStatus("Clustering attributes");
-			KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, 
-			                 true, createGroups, ignoreMissing, selectedOnly, logger, debug);
+			algorithm.cluster(kNumber, rNumber, true);
 		}
 
 		// Cluster the nodes
 		if (monitor != null)
 			monitor.setStatus("Clustering nodes");
-		KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, 
-			               false, createGroups, ignoreMissing, selectedOnly, logger, debug);
+		algorithm.cluster(kNumber, rNumber, false);
+		if (monitor != null)
+			monitor.setStatus("Clustering complete");
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
@@ -265,27 +268,6 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 
 	public boolean isAvailable() {
 		return EisenCluster.isAvailable(getShortName());
-	}
-
-	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 
-	                              String prefix) {
-		String[] names = attributes.getAttributeNames();
-		for (int i = 0; i < names.length; i++) {
-			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING ||
-			    attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER) {
-				attributeList.add(prefix+names[i]);
-			}
-		}
-	}
-
-	private String[] getAllAttributes() {
-		// Create the list by combining node and edge attributes into a single list
-		List<String> attributeList = new ArrayList<String>();
-		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");
-		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(),"edge.");
-		String[] attrArray = attributeList.toArray(attributeArray);
-		Arrays.sort(attrArray);
-		return attrArray;
 	}
 
 	private String[] getAttributeArray(String dataAttributes) {

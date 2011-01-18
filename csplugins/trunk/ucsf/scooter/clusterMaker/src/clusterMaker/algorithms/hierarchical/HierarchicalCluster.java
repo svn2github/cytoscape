@@ -97,7 +97,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
 		Tunable attributeTunable = clusterProperties.get("attributeList");
-		attributeArray = getAllAttributes();
+		attributeArray = EisenCluster.getAllAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
 
 		return clusterProperties.getTunablePanel();
@@ -134,7 +134,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.GROUP, new Integer(1)));
 
 		// The attribute to use to get the weights
-		attributeArray = getAllAttributes();
+		attributeArray = EisenCluster.getAllAttributes();
 		clusterProperties.add(new Tunable("attributeList",
 		                                  "Array sources",
 		                                  Tunable.LIST, "",
@@ -296,29 +296,6 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		algorithm.setSelectedOnly(selectedOnly);
 		algorithm.setAdjustDiagonals(adjustDiagonals);
 		algorithm.setZeroMissing(zeroMissing);
-	}
-
-	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 
-	                              String prefix) {
-		String[] names = attributes.getAttributeNames();
-		for (int i = 0; i < names.length; i++) {
-			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING ||
-			    attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER) {
-				attributeList.add(prefix+names[i]);
-			}
-		}
-	}
-
-	private String[] getAllAttributes() {
-		attributeArray = new String[1];
-		// Create the list by combining node and edge attributes into a single list
-		List<String> attributeList = new ArrayList<String>();
-		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");
-		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(),"edge.");
-		String[] attrArray = attributeList.toArray(attributeArray);
-		if (attrArray.length > 1) 
-			Arrays.sort(attrArray);
-		return attrArray;
 	}
 
 	private String[] getAttributeArray(String dataAttributes) {

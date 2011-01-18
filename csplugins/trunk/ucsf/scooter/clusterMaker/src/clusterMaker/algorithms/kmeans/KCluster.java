@@ -59,23 +59,39 @@ import clusterMaker.algorithms.hierarchical.EisenCluster;
 import clusterMaker.algorithms.hierarchical.Matrix;
 
 public class KCluster {
-	static CyLogger logger;
-	// Random seeds for uniform()
-	static int seed1 = 0;
-	static int seed2 = 0;
-	static boolean debug = false;
+	CyLogger logger;
+	TaskMonitor monitor;
+	String weightAttributes[] = null;
+	DistanceMetric metric;
+	boolean createGroups = false;
+	boolean ignoreMissing = false;
+	boolean selectedOnly = false;
+	boolean debug = false;
+	Random random = null;
 
-	public static String cluster(String weightAttributes[], DistanceMetric metric, 
-	                      int nClusters, int nIterations, boolean transpose,
-	                      boolean createGroups, 
-	                      boolean ignoreMissing, boolean selectedOnly, 
-	                      CyLogger log, boolean dbg) {
+	public KCluster(String weightAttributes[], DistanceMetric metric, CyLogger log, TaskMonitor monitor) {
+		this.logger = log;
+		this.weightAttributes = weightAttributes;
+		this.metric = metric;
+		this.monitor = monitor;
+		resetAttributes();
+	}
 
-		logger = log;
-		debug = dbg;
+	public void setCreateGroups(boolean val) { createGroups = val; }
+	public void setIgnoreMissing(boolean val) { ignoreMissing = val; }
+	public void setSelectedOnly(boolean val) { selectedOnly = val; }
+	public void setDebug(boolean val) { debug = val; }
 
+	public String cluster(int nClusters, int nIterations, boolean transpose) {
 		String keyword = "GENE";
 		if (transpose) keyword = "ARRY";
+
+		for (int att = 0; att < weightAttributes.length; att++)
+			if (debug)
+				logger.debug("Attribute: '"+weightAttributes[att]+"'");
+
+		if (monitor != null) 
+			monitor.setStatus("Creating distance matrix");
 
 		// Create the matrix
 		Matrix matrix = new Matrix(weightAttributes, transpose, ignoreMissing, selectedOnly);
@@ -86,11 +102,14 @@ public class KCluster {
 
 		int[] clusters = new int[matrix.nRows()];
 
+		if (monitor != null) 
+			monitor.setStatus("Clustering...");
+
 		// Cluster
 		int ifound = kmeans(nClusters, nIterations, matrix, metric, clusters);
 
-		HashMap<String,List<CyNode>> groupMap = new HashMap();
-		ArrayList<String> attrList = new ArrayList(matrix.nRows());
+		HashMap<String,List<CyNode>> groupMap = new HashMap<String,List<CyNode>>();
+		ArrayList<String> attrList = new ArrayList<String>(matrix.nRows());
 		// Create the attribute list
 		for (int cluster = 0; cluster < nClusters; cluster++) {
 			List<CyNode> memberList = new ArrayList<CyNode>();
@@ -106,7 +125,10 @@ public class KCluster {
 		}
 
 		if (!matrix.isTransposed()) {
-			List<String> groupNames = new ArrayList();
+			if (monitor != null) 
+				monitor.setStatus("Creating groups");
+
+			List<String> groupNames = new ArrayList<String>();
 
 			if (createGroups) {
 				// Create our groups
@@ -143,7 +165,7 @@ public class KCluster {
 		return "Complete";
 	}
 
-	public static void resetAttributes() {
+	public void resetAttributes() {
 		// Update the network attribute "HierarchicalCluster" and make it hidden
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
@@ -174,8 +196,10 @@ public class KCluster {
 			netAttr.deleteAttribute(netID, ClusterMaker.CLUSTER_TYPE_ATTRIBUTE);
 	}
 
-	private static int kmeans(int nClusters, int nIterations, Matrix matrix, DistanceMetric metric, 
-	                          int[] clusterID) {
+	public int kmeans(int nClusters, int nIterations, Matrix matrix, DistanceMetric metric, int[] clusterID) {
+
+		if (monitor != null)
+			monitor.setPercentCompleted(0);
 
 		int nelements = matrix.nRows();
 		int ifound = 1;
@@ -205,6 +229,10 @@ public class KCluster {
 
 		int iteration = 0;
 		do {
+
+			if (monitor != null)
+				monitor.setPercentCompleted((int)(((double)iteration/(double)nIterations)*100));
+
 			double total = Double.MAX_VALUE;
 			int counter = 0;
 			int period = 10;
@@ -310,7 +338,7 @@ public class KCluster {
   	return ifound;
 	}
 
-	private static void getClusterMeans(int nClusters, Matrix data, Matrix cdata, int[] clusterid) {
+	private void getClusterMeans(int nClusters, Matrix data, Matrix cdata, int[] clusterid) {
 
 		double[][]cmask = new double[nClusters][cdata.nColumns()];
 
@@ -345,7 +373,7 @@ public class KCluster {
 		}
 	}
 
-	private static void randomAssign (int nClusters, int nElements, int[] clusterID) {
+	private void randomAssign (int nClusters, int nElements, int[] clusterID) {
 		int n = nElements - nClusters;
 		int k = 0;
 		int i = 0;
@@ -369,7 +397,7 @@ public class KCluster {
 	}
 
 	// Debug version of "randomAssign" that isn't random
-	private static void debugAssign (int nClusters, int nElements, int[] clusterID) {
+	private void debugAssign (int nClusters, int nElements, int[] clusterID) {
 		for (int element = 0; element < nElements; element++) {
 			clusterID[element] = element%nClusters;
 		}
@@ -389,7 +417,7 @@ public class KCluster {
 	 * @return An integer drawn from a binomial distribution with parameters (p, n).
 	 */
 
-	private static int binomial (int n, double p) {
+	private int binomial (int n, double p) {
 		double q = 1 - p;
 		if (n*p < 30.0) /* Algorithm BINV */
 		{ 
@@ -519,13 +547,14 @@ public class KCluster {
 	 *
 	 * @return A double-precison number between 0.0 and 1.0.
 	 */
-	private static double uniform() {
+/*
+	private double uniform() {
 		int z;
 		int m1 = 2147483563;
 		int m2 = 2147483399;
 		double scale = 1.0/m1;
 
-		if (seed1==0 || seed2==0) /* initialize */
+		if (seed1==0 || seed2==0) // initialize 
 		{ 
 			Date date = new Date();
 			int initseed = (int) date.getTime();
@@ -545,8 +574,16 @@ public class KCluster {
 			if(seed2 < 0) seed2+=m2;
 			z = seed1-seed2;
 			if(z < 1) z+=(m1-1);
-		} while (z==m1); /* To avoid returning 1.0 */
+		} while (z==m1); // To avoid returning 1.0
 
 		return z*scale;
+	}
+*/
+	private double uniform() {
+		if (random == null) {
+			Date date = new Date();
+			random = new Random(date.getTime());
+		}
+		return random.nextDouble();
 	}
 }

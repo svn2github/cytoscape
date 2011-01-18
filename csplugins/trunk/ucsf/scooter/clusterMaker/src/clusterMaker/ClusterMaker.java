@@ -73,6 +73,7 @@ import clusterMaker.algorithms.SCPS.SCPSCluster;
 // import clusterMaker.algorithms.Spectral.SpectralCluster;
 // import clusterMaker.algorithms.CP.CPCluster;
 import clusterMaker.algorithms.AP.APCluster;
+import clusterMaker.algorithms.autosome.AutoSOMECluster;
 
 /**
  * The ClusterMaker class provides the primary interface to the
@@ -117,6 +118,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		// addClusterAlgorithm(menu, new QTCluster());
 		menu.addSeparator();
 		addClusterAlgorithm(menu, new APCluster());
+		addClusterAlgorithm(menu, new AutoSOMECluster());
 		addClusterAlgorithm(menu, new ConnectedComponentsCluster());
 		addClusterAlgorithm(menu, new GLayCluster());
 		addClusterAlgorithm(menu, new MCODECluster());

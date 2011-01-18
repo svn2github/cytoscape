@@ -45,10 +45,10 @@ public class DistanceMatrix {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		String networkID = network.getIdentifier();
 		if (!selectedOnly) {
-			nodes = network.nodesList();
-			edges = network.edgesList();
+			nodes = (List<CyNode>)network.nodesList();
+			edges = (List<CyEdge>)network.edgesList();
 		} else {
-			nodes = new ArrayList();
+			nodes = new ArrayList<CyNode>();
 			nodes.addAll(network.getSelectedNodes());
 			edges = network.getConnectingEdges(nodes);
 		}
