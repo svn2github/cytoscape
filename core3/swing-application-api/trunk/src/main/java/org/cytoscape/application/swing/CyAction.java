@@ -98,13 +98,6 @@ public interface CyAction extends Action, MenuListener, PopupMenuListener {
 	 */
 	String getPreferredMenu();
 
-	/**
-	 * Buttons will be grouped according to name and according to gravity
-	 * within the group.  
-	 * @return The name identifying the button group.
-	 */
-	String getPreferredButtonGroup();
-
 	/** 
 	 * Returns whether or not a checkbox menu item should be used.
 	 * @return whether or not a checkbox menu item should be used.

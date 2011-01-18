@@ -46,6 +46,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An abstract implementation of the CyAction interface.  Instead of using this
@@ -56,9 +58,8 @@ import java.util.Map;
  */
 public abstract class AbstractCyAction extends AbstractAction implements CyAction {
 	protected String preferredMenu = null;
-	protected String preferredButtonGroup = null;
-	protected float menuGravity = 1.0f; 
-	protected float toolbarGravity = 1.0f; 
+	protected float menuGravity = 100.0f;  // end of menu
+	protected float toolbarGravity = 100.0f; // end of toolbar
 	protected boolean acceleratorSet = false;
 	protected KeyStroke acceleratorKeyStroke = null;
 	protected String name;
@@ -67,6 +68,8 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	protected boolean inMenuBar = true;
 	protected String enableFor = null;
 	protected CyApplicationManager applicationManager;
+
+	private static final Logger logger = LoggerFactory.getLogger(AbstractCyAction.class);
 
 	/**
 	 * Creates a new AbstractCyAction object.
@@ -89,13 +92,14 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	 * <ul>
 	 * <li>title</li>
 	 * <li>preferredMenu</li>
-	 * <li>preferredButtonGroup</li>
 	 * <li>iconName</li>
 	 * <li>tooltip</li>
 	 * <li>inToolBar</li>
 	 * <li>inMenuBar</li>
 	 * <li>enableFor</li>
 	 * <li>accelerator</li>
+	 * <li>menuGravity</li>
+	 * <li>toolBarGravity</li>
 	 * </ul>
 	 * @param applicationManager The application manager providing context for this action.
 	 */
@@ -105,10 +109,6 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 		String prefMenu = (String)(configProps.get("preferredMenu"));
 		if ( prefMenu != null )
 			setPreferredMenu(prefMenu);
-
-		String prefButtonGroup = (String)(configProps.get("preferredButtonGroup"));
-		if ( prefButtonGroup != null ) 
-			setPreferredButtonGroup(prefButtonGroup);
 
 		String iconName = (String)(configProps.get("iconName"));
 		if ( iconName != null ) 
@@ -131,6 +131,24 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 		String keyComboString = (String) configProps.get("accelerator");
 		if (keyComboString != null) 
 			setAcceleratorKeyStroke( AcceleratorParser.parse(keyComboString) );
+
+		String menuGravityString = (String) configProps.get("menuGravity");
+		if ( menuGravityString != null ) {
+			try {
+				menuGravity = Float.valueOf(menuGravityString);
+			} catch (NumberFormatException nfe) {
+				logger.warn("failed to set menuGravity with: " + menuGravityString, nfe);
+			}
+		}
+
+		String toolbarGravityString = (String) configProps.get("toolBarGravity");
+		if ( toolbarGravityString != null ) {
+			try {
+				toolbarGravity = Float.valueOf(toolbarGravityString);
+			} catch (NumberFormatException nfe) {
+				logger.warn("failed to set toolBarGravity with: " + toolbarGravityString, nfe);
+			}
+		}
 	}
 
 	/**
@@ -226,21 +244,6 @@ public abstract class AbstractCyAction extends AbstractAction implements CyActio
 	 */
 	public void setPreferredMenu(String new_preferred) {
 		preferredMenu = new_preferred;
-	} 
-
-	/** 
-	 * {@inheritDoc}
-	 */
-	public String getPreferredButtonGroup() {
-		return preferredButtonGroup;
-	}
-
-	/**
-	 * Sets the preferred button group.
-	 * @param new_preferred The preferred button group for this action. 
-	 */
-	public void setPreferredButtonGroup(String new_preferred) {
-		preferredButtonGroup = new_preferred;
 	} 
 
 	/**
