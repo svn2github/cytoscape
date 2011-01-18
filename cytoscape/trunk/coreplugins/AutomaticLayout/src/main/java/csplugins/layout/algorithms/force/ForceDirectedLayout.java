@@ -73,6 +73,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	double defaultSpringCoefficient = 1e-4f;
 	double defaultSpringLength = 50;
 	double defaultNodeMass = 3.0;
+	boolean discrete = false;
 
 	/**
 	 * Value to set for doing unweighted layouts
@@ -135,8 +136,16 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 
 		forceItems.clear();
 
+		List<LayoutNode> nodeList = part.getNodeList();
+		List<LayoutEdge> edgeList = part.getEdgeList();
+
+		if (discrete) {
+			Collections.sort(nodeList);
+			Collections.sort(edgeList);
+		}
+
 		// initialize nodes
-		for (LayoutNode ln: part.getNodeList()) {
+		for (LayoutNode ln: nodeList) {
 			if ( !forceItems.containsKey(ln) )
 				forceItems.put(ln, new ForceItem());
 			ForceItem fitem = forceItems.get(ln); 
@@ -147,7 +156,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		}
 		
 		// initialize edges
-		for (LayoutEdge e: part.getEdgeList()) {
+		for (LayoutEdge e: edgeList) {
 			LayoutNode n1 = e.getSource();
 			ForceItem f1 = forceItems.get(n1); 
 			LayoutNode n2 = e.getTarget();
@@ -276,7 +285,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
 
 		layoutProperties.add(new Tunable("force_alg_settings", "Algorithm settings",
-		                                 Tunable.GROUP, new Integer(5)));
+		                                 Tunable.GROUP, new Integer(6)));
 
 		layoutProperties.add(new Tunable("defaultSpringCoefficient", "Default Spring Coefficient",
 		                                 Tunable.DOUBLE, new Double(defaultSpringCoefficient)));
@@ -289,6 +298,9 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 
 		layoutProperties.add(new Tunable("numIterations", "Number of Iterations",
 		                                 Tunable.INTEGER, new Integer(numIterations)));
+
+		layoutProperties.add(new Tunable("discrete", "Force discrete layouts (slower)",
+		                                 Tunable.BOOLEAN, new Boolean(false)));
 
 //		layoutProperties.add(new Tunable("integrator", "Integration algorithm to use",
 //		                                 Tunable.LIST, new Integer(0), 
@@ -352,6 +364,13 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 				layoutProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
+
+		t = layoutProperties.get("discrete");
+		if ((t != null) && (t.valueChanged() || force)) {
+			discrete = ((Boolean) t.getValue()).booleanValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 
 		integrator = new RungeKuttaIntegrator();

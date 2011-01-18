@@ -54,7 +54,7 @@ import cytoscape.view.*;
  * to information about the weights associated with edges, and pointers to the
  * LayoutNodes that are joined by this edge.
  */
-public class LayoutEdge {
+public class LayoutEdge implements Comparable <LayoutEdge> {
 	// instance variables
 	private LayoutNode v1;
 	private LayoutNode v2;
@@ -181,6 +181,15 @@ public class LayoutEdge {
 		return this.edge;
 	}
 
+  /**
+   * Return the edge's identifier.
+   *
+   * @return        String containing the edge's identifier
+   */
+  public String getIdentifier() {
+		return this.edge.getIdentifier();
+	}
+
 	/**
 	 * Return a string representation for this LayoutEdge.
 	 *
@@ -219,4 +228,16 @@ public class LayoutEdge {
 		return "normal";
 	    }
 	}
+
+	/**
+	 * Returns the natural order of two LayoutEdges determined by comparing the edge
+	 * identifiers.
+	 *
+	 * @param o2 the LayoutEdge we're comparing ourselves to
+	 * @return -1 if this is less than o2, 0 if they are equal, and 1 if this is greater than o2
+	 */
+	public int compareTo(LayoutEdge o2) {
+		return getIdentifier().compareTo(o2.getIdentifier());
+	}
+
 }

@@ -77,7 +77,7 @@ import java.util.*;
 /**
 
  */
-public abstract class LayoutNode {
+public abstract class LayoutNode implements Comparable<LayoutNode> {
 
     // static (class) variables
     static final double EPSILON = 0.0000001D;
@@ -399,6 +399,17 @@ public abstract class LayoutNode {
     public int getIndex() {
 	return this.index;
     }
+
+		/**
+		 * Returns the natural order of two LayoutNodes determined by comparing the node
+		 * identifiers.
+		 *
+		 * @param o2 the LayoutNode we're comparing ourselves to
+		 * @return -1 if this is less than o2, 0 if they are equal, and 1 if this is greater than o2
+		 */
+		public int compareTo(LayoutNode o2) {
+			return getIdentifier().compareTo(o2.getIdentifier());
+		} 
 
 
 }
