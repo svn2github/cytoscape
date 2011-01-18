@@ -54,6 +54,9 @@ import org.cytoscape.work.swing.GUITaskManager;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
+import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.view.model.CyNetworkViewFactory;
 
 
 /**
@@ -69,7 +72,10 @@ public class ImportNetworkTableAction extends AbstractCyAction {
 			CyNetworkManager netMgr,
 			CyProperty<Bookmarks> bookmarksProp, BookmarksUtil bookmarksUtil,
 			GUITaskManager guiTaskManagerServiceRef, CyProperty cytoscapePropertiesServiceRef,
-			CyTableManager tblMgr, FileUtil fileUtilService, OpenBrowser openBrowserService) {
+			CyTableManager tblMgr, FileUtil fileUtilService, OpenBrowser openBrowserService,
+			CyLayouts cyLayoutsServiceRef, CyNetworkFactory cyNetworkViewFactoryServiceRef,
+			CyNetworkViewFactory cyNetworkFactoryServiceRef) 
+	{
 		super("Network from Table (Text/MS Excel)...", appMgr);
 		setPreferredMenu("File.Import");
 		
@@ -84,6 +90,10 @@ public class ImportNetworkTableAction extends AbstractCyAction {
 		CytoscapeServices.fileUtil = fileUtilService;
 		CytoscapeServices.appMgr = appMgr;
 		CytoscapeServices.netMgr = netMgr;
+		
+		CytoscapeServices.cyLayoutsServiceRef= cyLayoutsServiceRef;
+		CytoscapeServices.cyNetworkViewFactoryServiceRef = cyNetworkViewFactoryServiceRef;
+		CytoscapeServices.cyNetworkFactoryServiceRef = cyNetworkFactoryServiceRef;
 	}
 
 	/**
