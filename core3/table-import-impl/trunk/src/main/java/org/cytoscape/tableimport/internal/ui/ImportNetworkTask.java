@@ -53,6 +53,8 @@ import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,7 +62,7 @@ import java.util.Map;
 /**
  *
  */
-public class ImportNetworkTask extends AbstractTask implements CyNetworkViewReader {
+public class ImportNetworkTask extends AbstractTask { //implements CyNetworkViewReader {
 
 	protected CyNetworkView[] cyNetworkViews;
 	protected VisualStyle[] visualstyles;
@@ -77,150 +79,76 @@ public class ImportNetworkTask extends AbstractTask implements CyNetworkViewRead
 	 * @param source  DOCUMENT ME!
 	 */
 	public ImportNetworkTask(String networkName, final GraphReader reader, final URL source) {
-		
 		this.reader = reader;
 		this.source = source;
-	
 	}
 
 
 	@Override
 	public void run(TaskMonitor tm) throws IOException {
+
 		try {
 			tm.setProgress(0.10);
 			this.reader.setNetwork(network);
+			
+			if (this.cancelled){
+				return;
+			}
+			
 			this.reader.read();
+			
 			tm.setProgress(0.80);
 			
-			//readInput(tm);
-			//createNetwork(tm);
-		} finally { 
-			//if (inputStream != null) {
-			//	inputStream.close();
-			//	inputStream = null;
-			//}
-		}
-	}
-
-	private void readInput(TaskMonitor tm) throws IOException {
-		//tm.setProgress(0.00);
-		
-		/*
-		String delimiter = DEF_DELIMITER;
-
-		final String rawText = readUtil.getInputString(inputStream);
-
-		tm.setProgress(0.10);
-		if (rawText.indexOf("\t") >= 0)
-			delimiter = "\t";
-
-		final String[] lines = rawText.split(LINE_SEP);
-
-		tm.setProgress(0.15);
-		final int size = lines.length;
-		for (int i = 0; i < size; i++) {
-			if (lines[i].length() <= 0)
-				continue;
-			interactions.add(new Interaction(lines[i], delimiter));
-		}
-		*/
-		//tm.setProgress(0.20);
-	}
-
-	
-	private void createNetwork(TaskMonitor tm) {
-		
-		// Create network model.  At this point, there are no nodes/edges.
-		final CyNetwork network = CytoscapeServices.cyNetworkFactoryServiceRef.getInstance();
-		
-		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
-
-		// put all node names in the Set
-		//for (Interaction interaction : interactions) {
-		//	nodeMap.put(interaction.getSource(), null);
-		//	for (String target : interaction.getTargets())
-		//		nodeMap.put(target, null);
-		//}
-
-		tm.setProgress(0.25);
-				
-		for (String nodeName : nodeMap.keySet()) {
-			if (cancelled)
+			if (this.cancelled){
 				return;
-
-			//tm.setProgress(progress);
-			
-			final CyNode node = network.addNode();
-			//node.getCyRow().set(NODE_NAME_ATTR_LABEL, nodeName);
-			nodeMap.put(nodeName, node);
-		}
-
-		tm.setProgress(0.65);
-		
-		// Now loop over the interactions again, this time creating edges
-		// between
-		// all sources and each of their respective targets.
-		String srcName;
-		String interactionType;
-		CyEdge edge;
-		
-		/*
-		for (Interaction interaction : interactions) {
-			if (cancelled)
-				return;
-
-			srcName = interaction.getSource();
-			interactionType = interaction.getType();
-
-			for (String tgtName : interaction.getTargets()) {
-				edge = network.addEdge(nodeMap.get(srcName), nodeMap
-						.get(tgtName), true);
-				edge.getCyRow().set(NODE_NAME_ATTR_LABEL,
-						srcName + " (" + interactionType + ") " + tgtName);
-				edge.getCyRow().set(INTERACTION, interactionType);
 			}
+			
+			final CyNetworkView view = CytoscapeServices.cyNetworkViewFactoryServiceRef.getNetworkView(network);
+			
+			CytoscapeServices.netMgr.addNetwork(network);
+			CytoscapeServices.networkViewManager.addNetworkView(view);
+
+			tm.setProgress(0.95);
+			
+			view.fitContent();
+			
+		} finally { 
+			//
 		}
-		*/
-
-		tm.setProgress(0.90);
 		
-		final CyNetworkView view = CytoscapeServices.cyNetworkViewFactoryServiceRef.getNetworkView(network);
-		
-
-		TaskFactory tf = CytoscapeServices.cyLayoutsServiceRef.getDefaultLayout(view);
-		TaskIterator ti = tf.getTaskIterator();
-		Task task = ti.next();
-		insertTasksAfterCurrentTask(task);
-
-		// SIF always creates only one network.
-		this.cyNetworkViews = new CyNetworkView[] { view };
-
-		nodeMap.clear();
-		nodeMap = null;
-
 		tm.setProgress(1.0);
+		
+		informUserOfGraphStats(network, tm);
 	}
-	
-
-    @Override
-    public void cancel(){
-    }
-
 
 	/**
-	 * Gets the Task Title.
-	 *
-	 * @return Task Title.
+	 * Inform User of Network Stats.
 	 */
-	public String getTitle() {
-		return new String("Loading Network and Edge Attributes");
-	}
-	
-	public CyNetworkView[] getNetworkViews() {
-		return cyNetworkViews;
-	}
+	private void informUserOfGraphStats(final CyNetwork newNetwork, final TaskMonitor taskMonitor) {
+		NumberFormat formatter = new DecimalFormat("#,###,###");
+		StringBuffer sb = new StringBuffer();
 
-	public VisualStyle[] getVisualStyles() {
-		return visualstyles;
-	}
+		// Give the user some confirmation
+		sb.append("Successfully loaded network from:  ");
+		sb.append(newNetwork.getCyRow().get("title", String.class));
+		sb.append("\n\nNetwork contains "
+				+ formatter.format(newNetwork.getNodeCount()));
+		sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
+		sb.append(" edges.\n\n");
+
+		String thresh = "100"; //CytoscapeServices.cytoscapePropertiesServiceRef.getProperties().getProperty("viewThreshold");
+
+		if (newNetwork.getNodeCount() < Integer.parseInt(thresh)) {
+			sb.append("Network is under " + thresh
+					+ " nodes.  A view will be automatically created.");
+		} else {
+			sb.append("Network is over " + thresh
+					+ " nodes.  A view has not been created."
+					+ "  If you wish to view this network, use "
+					+ "\"Create View\" from the \"Edit\" menu.");
+		}
+
+		taskMonitor.setStatusMessage(sb.toString());
+	}	
+	
 }
