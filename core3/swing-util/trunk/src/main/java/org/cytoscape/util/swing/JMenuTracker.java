@@ -119,12 +119,14 @@ public class JMenuTracker {
 		StringTokenizer st = new StringTokenizer(menu_string, ".");
 		JMenu parent_menu = null;
 		JMenu menu = null;
+		String menu_key = null;
 
 		while (st.hasMoreTokens()) {
 			String menu_token = st.nextToken();
+			menu_key = menu_key == null ? menu_token : menu_key + "." + menu_token;
 
-			if (menuMap.containsKey(menu_token)) {
-				menu = menuMap.get(menu_token);
+			if (menuMap.containsKey(menu_key)) {
+				menu = menuMap.get(menu_key);
 			} else {
 				menu = new JMenu(menu_token);
 			
@@ -139,7 +141,7 @@ public class JMenuTracker {
 				else
 					throw new IllegalStateException("we have no root popup menu or menu bar!");
 
-				menuMap.put(menu_token, menu);
+				menuMap.put(menu_key, menu);
 			}
 
 			parent_menu = menu;
