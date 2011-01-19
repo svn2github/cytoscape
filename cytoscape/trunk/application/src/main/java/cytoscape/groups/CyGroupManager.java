@@ -77,7 +77,7 @@ public class CyGroupManager {
 	/**
 	 * The list of groups, indexed by the managing viewer
 	 */
-	private static Map<CyGroupViewer, List<CyGroup>> groupViewerMap = new HashMap<CyGroupViewer, List<CyGroup>>();
+	private static Map<String, List<CyGroup>> groupViewerMap = new HashMap<String, List<CyGroup>>();
 
 	/**
 	 * The list of groups, indexed by the network
@@ -171,9 +171,10 @@ public class CyGroupManager {
 	 * @return the list of groups
 	 */
 	public static List<CyGroup> getGroupList(CyGroupViewer viewer) {
-		if (!groupViewerMap.containsKey(viewer))
+		String viewerName = viewer.getViewerName();
+		if (!groupViewerMap.containsKey(viewerName))
 			return null;
-		List<CyGroup> groupList = groupViewerMap.get(viewer);
+		List<CyGroup> groupList = groupViewerMap.get(viewerName);
 
 		return groupList;
 	}
@@ -435,12 +436,11 @@ public class CyGroupManager {
 
 			// Remove this from the viewer's list
 			CyGroup group = groupMap.get(groupNode);
-			String viewer = group.getViewer();
+			String viewerName = group.getViewer();
 			CyNetwork network = group.getNetwork();
 
-			if ((viewer != null) && viewerMap.containsKey(viewer)) {
-				CyGroupViewer groupViewer = viewerMap.get(viewer);
-				List<CyGroup> gList = groupViewerMap.get(groupViewer);
+			if ((viewerName != null) && groupViewerMap.containsKey(viewerName)) {
+				List<CyGroup> gList = groupViewerMap.get(viewerName);
 				gList.remove(group);
 			}
 
@@ -514,33 +514,40 @@ public class CyGroupManager {
 	public static void setGroupViewer(CyGroup group, String viewer, CyNetworkView myView, boolean notify) {
 		if (group == null) return;
 
+		// System.out.println("Setting group viewer for "+group+" to "+viewer);
+
 		// See if we need to remove the current viewer first
 		if (group.getViewer() != null && !group.getViewer().equals(viewer)) {
 			// get the viewer
-			CyGroupViewer v = (CyGroupViewer) viewerMap.get(group.getViewer());
-			if (groupViewerMap.containsKey(v)) {
-				groupViewerMap.get(v).remove(group);
-				if (notify)
+			String oldViewer = group.getViewer();
+
+			CyGroupViewer v = null;
+			if (viewerMap.containsKey(oldViewer))
+				v = viewerMap.get(oldViewer);
+
+			if (groupViewerMap.containsKey(oldViewer)) {
+				groupViewerMap.get(oldViewer).remove(group);
+				if (notify && v != null)
 					v.groupWillBeRemoved(group);
 			}
 			((CyGroupImpl)group).setViewer(null);
 		}
 
 		if ((viewer != null) && viewerMap.containsKey(viewer)) {
-			// get the viewer
-			CyGroupViewer v = viewerMap.get(viewer);
-
 			// The viewer might already be set (this could just be a notify)
 			if (!viewer.equals(group.getViewer())) {
 				// create the list if necessary
-				if (!groupViewerMap.containsKey(v))
-					groupViewerMap.put(v, new ArrayList<CyGroup>());
+				if (!groupViewerMap.containsKey(viewer))
+					groupViewerMap.put(viewer, new ArrayList<CyGroup>());
 
 				// Add this group to the list
-				groupViewerMap.get(v).add(group);
+				groupViewerMap.get(viewer).add(group);
 			}
 
 			if (notify) {
+				// get the viewer
+				CyGroupViewer v = viewerMap.get(viewer);
+
 				// Make sure we have a view before we notify
 				CyNetworkView currentView = Cytoscape.getCurrentNetworkView();
 				if (myView != null) {
