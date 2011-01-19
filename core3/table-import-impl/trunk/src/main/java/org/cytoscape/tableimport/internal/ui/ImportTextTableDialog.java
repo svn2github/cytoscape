@@ -3138,9 +3138,6 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 	private void loadNetwork(final String networkName, final GraphReader reader, final URL source,
 	                         boolean multi) {
-		
-		System.out.println("\n\nEntering ImportTextTablereader.loadNetwork()...\n\n");
-
 		// Create LoadNetwork Task
 		ImportNetworkTask task = new ImportNetworkTask(networkName, reader, source);
 		ImportNetworkTaskFactory taskFactory = new ImportNetworkTaskFactory(task);
