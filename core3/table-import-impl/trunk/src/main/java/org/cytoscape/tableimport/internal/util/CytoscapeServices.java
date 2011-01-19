@@ -27,6 +27,6 @@ public class  CytoscapeServices {
 	public static CyApplicationManager appMgr;
 	public static CyNetworkManager netMgr;
 	public static CyLayouts cyLayoutsServiceRef;
-	public static CyNetworkFactory cyNetworkViewFactoryServiceRef;
-	public static CyNetworkViewFactory cyNetworkFactoryServiceRef;
+	public static CyNetworkViewFactory cyNetworkViewFactoryServiceRef;
+	public static CyNetworkFactory cyNetworkFactoryServiceRef;
 }
