@@ -84,7 +84,7 @@ public class PluginManagerAction extends AbstractCyAction {
 			CyProperty<Bookmarks> bookmarksProp, BookmarksUtil bookmarksUtil, GUITaskManager guiTaskManagerServiceRef
 			, CyProperty cytoscapePropertiesServiceRef, CyPluginAdapter adapter) {
 				
-		super("Plugin manager", appMgr);
+		super("Plugin Manager", appMgr);
 
 		this.desktop = desktop;
 
@@ -100,6 +100,7 @@ public class PluginManagerAction extends AbstractCyAction {
 		cyConfigVerDir = version.getVersion();
 
 		setPreferredMenu("Plugins");
+		setMenuGravity(1.0f);
 	
 		//Initialize the PluginManager
 		PluginManager Mgr = PluginManager.getPluginManager();

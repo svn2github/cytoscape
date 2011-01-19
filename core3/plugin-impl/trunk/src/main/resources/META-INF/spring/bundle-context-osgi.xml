@@ -68,7 +68,7 @@
     <osgi:service id="pluginLoaderTaskFactoryService" ref="pluginLoaderTaskFactory"
 	        interface="org.cytoscape.work.TaskFactory">
         <osgi:service-properties>
-	            <entry key="title" value="Load Plugin..." />
+	            <entry key="title" value="Plugin..." />
 	            <entry key="preferredMenu" value="File.Import" />
         </osgi:service-properties>
     </osgi:service>
