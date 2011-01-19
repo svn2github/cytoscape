@@ -19,6 +19,7 @@ import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyTableRowUpdateService;
 import org.cytoscape.model.events.RowCreatedMicroListener;
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
@@ -37,6 +38,7 @@ public class TableBrowser
 	private final CyEventHelper eventHelper;
 	private final EqnCompiler compiler;
 	private final BrowserTable browserTable;
+	private final CyTableRowUpdateService tableRowUpdateService;
 	private final AttributeBrowserToolBar attributeBrowserToolBar;
 	private final TableChooser tableChooser;
 	private BrowserTableModel browserTableModel;
@@ -44,13 +46,15 @@ public class TableBrowser
 
 	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
 		     final CyEventHelper eventHelper, final EqnCompiler compiler,
-		     final OpenBrowser openBrowser)
+		     final OpenBrowser openBrowser,
+		     final CyTableRowUpdateService tableRowUpdateService)
 	{
 		this.tableManager = tableManager;
 		this.serviceRegistrar = serviceRegistrar;
 		this.eventHelper = eventHelper;
 		this.compiler = compiler;
 		this.browserTable = new BrowserTable(openBrowser, compiler);
+		this.tableRowUpdateService = tableRowUpdateService;
 		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar, compiler);
 		this.setLayout(new BorderLayout());
 
@@ -99,7 +103,8 @@ public class TableBrowser
 
 			currentTable = table;
 			browserTableModel = new BrowserTableModel(browserTable, eventHelper, table,
-								  compiler, serviceRegistrar);
+								  compiler, serviceRegistrar,
+								  tableRowUpdateService);
 			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 			browserTable.setModel(browserTableModel);
 			browserTable.setRowSorter(new TableRowSorter(browserTableModel));

@@ -35,5 +35,9 @@
 	</bean>
 
 	<bean id="cyRootNetworkFactory" class="org.cytoscape.model.internal.CyRootNetworkFactoryImpl"/>
-	
+
+	<bean id="tableRowUpdateService" class="org.cytoscape.model.internal.CyTableRowUpdateServiceImpl">
+		<constructor-arg ref="cyEventHelperServiceRef" />
+		<constructor-arg ref="cyServiceRegistrarServiceRef" />
+	</bean>
 </beans>

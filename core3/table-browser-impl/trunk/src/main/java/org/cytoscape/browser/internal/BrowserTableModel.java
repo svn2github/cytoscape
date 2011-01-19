@@ -23,37 +23,40 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableRowUpdateService;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnCreatedListener;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.ColumnDeletedListener;
+import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
 
 
 public class BrowserTableModel
-	implements TableModel, ColumnCreatedListener, ColumnDeletedListener
+	implements TableModel, ColumnCreatedListener, ColumnDeletedListener, CyTableRowUpdateMicroListener
 {
 	private static final int EOF = -1;
 	private static final int MAX_INITIALLY_VSIBLE_ATTRS = 10;
 	private final JTable table;
 	private final CyTable attrs;
 	private final EqnCompiler compiler;
+	private final CyTableRowUpdateService tableRowUpdateService;
 	private boolean tableHasBooleanSelected;
 	private List<AttrNameAndVisibility> attrNamesAndVisibilities;
 	private final List<TableModelListener> tableModelListeners;
-	private final MyTableRowChangeTracker tableRowChangeTracker;
 
 	public BrowserTableModel(final JTable table, final CyEventHelper eventHelper,
 				 final CyTable attrs, final EqnCompiler compiler,
-				 final CyServiceRegistrar serviceRegistrar)
+				 final CyServiceRegistrar serviceRegistrar,
+				 final CyTableRowUpdateService tableRowUpdateService)
 	{
 		this.table = table;
 		this.attrs = attrs;
 		this.compiler = compiler;
+		this.tableRowUpdateService = tableRowUpdateService;
 		this.tableHasBooleanSelected = attrs.getColumnTypeMap().get(CyNetwork.SELECTED) == Boolean.class;
 		this.tableModelListeners = new ArrayList<TableModelListener>();
-		this.tableRowChangeTracker =
-			new MyTableRowChangeTracker(attrs, eventHelper, serviceRegistrar, this);
+		tableRowUpdateService.startTracking(this, attrs);
 
 		initAttrNamesAndVisibilities();
 	}
@@ -276,19 +279,23 @@ public class BrowserTableModel
 			listener.tableChanged(event);
 	}
 
-	void rowCreated(final CyRow row) {
-		final int newRowIndex = mapRowToRowIndex(row);
-		final TableModelEvent event
-			= new TableModelEvent(this, newRowIndex, newRowIndex,
-					      TableModelEvent.ALL_COLUMNS, TableModelEvent.INSERT);
-		for (final TableModelListener listener : tableModelListeners)
-			listener.tableChanged(event);
+	@Override
+	public void handleRowCreations(final CyTable table, final List<CyRow> newRows) {
+		for (final CyRow row : newRows) {
+			final int newRowIndex = mapRowToRowIndex(row);
+			final TableModelEvent event
+				= new TableModelEvent(this, newRowIndex, newRowIndex,
+						      TableModelEvent.ALL_COLUMNS, TableModelEvent.INSERT);
+			for (final TableModelListener listener : tableModelListeners)
+				listener.tableChanged(event);
+		}
 	}
 
-	void handleRowUpdate(final CyRow row, final String columnName, final Object newValue,
-			     final Object newRawValue)
-	{
-		handleRowValueUpdate(row, columnName, newValue, newRawValue);
+	@Override
+	public void handleRowSets(final CyTable table, final List<RowSet> rowSets) {
+		for (final RowSet rowSet : rowSets)
+			handleRowValueUpdate(rowSet.getRow(), rowSet.getColumn(), rowSet.getValue(),
+					     rowSet.getRawValue());
 	}
 
 	@Override
@@ -827,7 +834,7 @@ public class BrowserTableModel
 	}
 
 	public void cleanup() {
-		tableRowChangeTracker.cleanup();
+		tableRowUpdateService.stopTracking(this, attrs);
 	}
 }
 

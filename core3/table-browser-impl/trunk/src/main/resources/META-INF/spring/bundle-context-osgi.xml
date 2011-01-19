@@ -11,6 +11,7 @@
         <osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
 	<osgi:reference id="compilerServiceRef" interface="org.cytoscape.equations.EqnCompiler" />
 	<osgi:reference id="openBrowserServiceRef" interface="org.cytoscape.util.swing.OpenBrowser" />
+	<osgi:reference id="cyTableRowUpdateServiceRef" interface="org.cytoscape.model.CyTableRowUpdateService" />
 
 	<!-- listeners -->
 	<osgi:service id="tableBrowserCytoPanelComponentService" ref="tableBrowser">

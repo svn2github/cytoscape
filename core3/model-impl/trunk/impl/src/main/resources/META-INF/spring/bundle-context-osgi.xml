@@ -5,12 +5,13 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
 	default-lazy-init="false">
-
 	
 	<osgi:reference id="cyEventHelperServiceRef"
 		interface="org.cytoscape.event.CyEventHelper" />
 	<osgi:reference id="InterpreterRef"
 		interface="org.cytoscape.equations.Interpreter" />
+        <osgi:reference id="cyServiceRegistrarServiceRef"
+		interface="org.cytoscape.service.util.CyServiceRegistrar" />
 
 	<!-- Individual Service -->
 	<osgi:service id="cyNetworkFactoryService"
@@ -31,5 +32,9 @@
 	
 	<osgi:service id="cyNetworkManagerService"
 		ref="cyNetworkManager" interface="org.cytoscape.model.CyNetworkManager">
+	</osgi:service>
+
+	<osgi:service id="cyTableRowUpdateService"
+		ref="tableRowUpdateService" interface="org.cytoscape.model.CyTableRowUpdateService">
 	</osgi:service>
 </beans>
