@@ -691,6 +691,57 @@ public class PluginManager {
 	}
 
 	/**
+	 * Load a single plugin based on the File object given
+	 * 
+	 * @param plugin
+	 *            The plugin to load
+	 * @throws MalformedURLException
+	 */
+	public void loadPlugin(File plugin) throws MalformedURLException, PluginException {
+		String fileName = plugin.getAbsolutePath();
+		if (fileName.endsWith(".jar")) {
+			try {
+				String className = JarUtil.getPluginClass(fileName,
+							PluginInfo.FileType.JAR);
+
+				// See if we already have this className registered
+				try {
+					Class pluginClass = getPluginClass(className); // Get the plugin class
+					// If this succeeded, we're in trouble -- this class is already
+					// registered
+					throw new PluginException("Duplicate class name: "+className+".  \n"+
+					                          "You may need to delete a previously installed plugin.");
+				} catch (ClassNotFoundException cnfe1) {
+					// This is what we want....
+				}
+
+				// We don't want to register because we're going to play a little
+				// fast and loose with the uniqueID, so we need to contruct things
+				// ourselves
+
+				try {
+					addClassPath(jarURL(fileName));
+
+					// OK, now hand-craft the registration
+					Class pluginClass = getPluginClass(className); // Get the plugin class
+					Object obj = CytoscapePlugin.loadPlugin(pluginClass);
+					PluginInfo base = new PluginInfo(plugin.getName(), className);
+					registerPlugin((CytoscapePlugin)obj, new JarFile(plugin), base, true);
+				} catch (Throwable t) {
+					throw new PluginException("Classloader Error: " + jarURL(fileName), t);
+				}
+			} catch (IOException ioe) {
+				throw new PluginException("Unable to read plugin jar: "+ioe.getMessage(), ioe);
+			}
+
+		}
+
+		if (duplicateLoadError) {
+			addDuplicateError();
+		}
+	}
+
+	/**
 	 * Parses the plugin input strings and transforms them into the appropriate
 	 * URLs or resource names. The method first checks to see if the
 	 */

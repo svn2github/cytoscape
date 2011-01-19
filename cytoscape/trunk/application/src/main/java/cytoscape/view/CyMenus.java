@@ -488,6 +488,7 @@ public class CyMenus implements GraphViewChangeListener, PropertyChangeListener 
 		//
 		addAction(new PluginManagerAction());
 		addAction(new PluginUpdateAction());
+		addAction(new PluginInstallAction());
 
 		opsMenu.addSeparator();
 
