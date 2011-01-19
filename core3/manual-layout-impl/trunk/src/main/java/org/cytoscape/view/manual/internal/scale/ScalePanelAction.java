@@ -55,6 +55,6 @@ public class ScalePanelAction extends AbstractManualLayoutAction {
 	 * Scale network action. Should be in menu slot 1.
 	 */
 	public ScalePanelAction(CytoPanelComponent comp, CySwingApplication swingApp, CyApplicationManager appMgr) {
-		super(comp, swingApp, appMgr);
+		super(comp, swingApp, appMgr, 1.1f);
 	}
 }

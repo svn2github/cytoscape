@@ -50,6 +50,6 @@ public class RotatePanelAction extends AbstractManualLayoutAction {
  	 * Rotate network action. Should be in menu slot 0.
 	 */
 	public RotatePanelAction(CytoPanelComponent comp, CySwingApplication swingApp, CyApplicationManager appMgr) {
-		super(comp,swingApp, appMgr);
+		super(comp,swingApp, appMgr,1.0f);
 	}
 }

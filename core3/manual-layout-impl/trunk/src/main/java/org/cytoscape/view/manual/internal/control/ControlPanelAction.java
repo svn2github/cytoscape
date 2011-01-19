@@ -55,6 +55,6 @@ public class ControlPanelAction extends AbstractManualLayoutAction {
  	 * Action for the Align and Distribute functionality. Should be in menu slot 2.
 	 */
 	public ControlPanelAction(CytoPanelComponent comp, CySwingApplication swingApp, CyApplicationManager appMgr) {
-		super(comp, swingApp, appMgr);
+		super(comp, swingApp, appMgr,1.2f);
 	}
 }

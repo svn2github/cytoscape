@@ -78,13 +78,14 @@ public abstract class AbstractManualLayoutAction
 	 *
 	 * @param title The title of the menu item. 
 	 */
-	public AbstractManualLayoutAction(CytoPanelComponent comp, CySwingApplication swingApp, CyApplicationManager appMgr) {
+	public AbstractManualLayoutAction(CytoPanelComponent comp, CySwingApplication swingApp, CyApplicationManager appMgr, float menuGravity) {
 		super(comp.getTitle(), appMgr);
 		this.title = comp.getTitle();
 		this.swingApp = swingApp;
 		this.comp = comp;
     	manualLayoutPanel = swingApp.getCytoPanel(CytoPanelName.SOUTH_WEST);
 		setPreferredMenu(preferredMenu);
+		setMenuGravity(menuGravity);
 		useCheckBoxMenuItem = true;
 	}
 
