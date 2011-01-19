@@ -23,6 +23,8 @@
            <entry key="title" value="SIF Interpreter" />
            <entry key="preferredMenu" value="Plugins" />
            <entry key="preferredAction" value="OPEN" />
+           <entry key="menuGravity" value="5.0f" />
+           <entry key="enableFor" value="networkAndView" />
         </osgi:service-properties>
 	</osgi:service>
 
