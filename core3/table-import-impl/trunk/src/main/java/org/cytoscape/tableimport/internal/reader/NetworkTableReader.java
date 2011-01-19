@@ -37,9 +37,9 @@
 package org.cytoscape.tableimport.internal.reader;
 
 //import cytoscape.data.readers.AbstractGraphReader;
-//import cytoscape.logger.CyLogger;
 
 import org.cytoscape.tableimport.internal.util.URLUtil;
+import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import org.cytoscape.model.CyNetwork;
 
 
 /**
@@ -70,10 +71,11 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	protected final NetworkTableMappingParameters nmp;
 	protected final URL sourceURL;
 	protected final NetworkLineParser parser;
-	protected final List<Integer> nodeList;
-	protected final List<Integer> edgeList;
+	protected final List<Long> nodeList;
+	protected final List<Long> edgeList;
 	protected final int startLineNumber;
 	protected final String commentChar;
+	private CyNetwork network;
 	
 	private static final Logger logger = LoggerFactory.getLogger(NetworkTableReader.class);
 
@@ -93,11 +95,11 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 		this.sourceURL = sourceURL;
 		this.nmp = nmp;
 		this.startLineNumber = startLineNumber;
-		this.nodeList = new ArrayList<Integer>();
-		this.edgeList = new ArrayList<Integer>();
+		this.nodeList = new ArrayList<Long>();
+		this.edgeList = new ArrayList<Long>();
 		this.commentChar = commentChar;
 
-		parser = new NetworkLineParser(nodeList, edgeList, nmp);
+		parser = new NetworkLineParser(network, nodeList, edgeList, nmp);
 	}
 
 	/**
@@ -174,8 +176,8 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	 * @return  DOCUMENT ME!
 	 */
 	//@Override
-	public int[] getNodeIndicesArray() {
-		final int[] nodeArray = new int[nodeList.size()];
+	public Long[] getNodeIndicesArray() {
+		final Long[] nodeArray = new Long[nodeList.size()];
 
 		for (int i = 0; i < nodeArray.length; i++) {
 			nodeArray[i] = nodeList.get(i);
@@ -190,8 +192,8 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	 * @return  DOCUMENT ME!
 	 */
 	//@Override
-	public int[] getEdgeIndicesArray() {
-		final int[] edgeArray = new int[edgeList.size()];
+	public Long[] getEdgeIndicesArray() {
+		final Long[] edgeArray = new Long[edgeList.size()];
 
 		for (int i = 0; i < edgeArray.length; i++) {
 			edgeArray[i] = edgeList.get(i);
@@ -210,12 +212,16 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 		readTable();
 	}
 
+
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
 	public String getReport() {
+
+		return null;
+		/*
 		final StringBuffer sb = new StringBuffer();
 		final Set<Integer> uniqueNodes = new TreeSet<Integer>(nodeList);
 		final Set<Integer> uniqueEdges = new TreeSet<Integer>(edgeList);
@@ -224,5 +230,10 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 		//sb.append("New network name is " + super.getNetworkName() + "\n\n");
 
 		return sb.toString();
+		*/
+	}
+	
+	public void setNetwork(CyNetwork network){
+		this.network = network;
 	}
 }

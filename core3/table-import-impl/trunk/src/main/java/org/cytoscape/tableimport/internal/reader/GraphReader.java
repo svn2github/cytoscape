@@ -67,14 +67,14 @@ public interface GraphReader {
 	 *
 	 * @return array of node indices from the root graph.
 	 */
-	public int[] getNodeIndicesArray();
+	public Long[] getNodeIndicesArray();
 
 	/**
 	 * Gets an array of edges indices that participate in the newly created graph.
 	 *
 	 * @return array of edges indices from the root graph.
 	 */
-	public int[] getEdgeIndicesArray();
+	public Long[] getEdgeIndicesArray();
 
 	/**
 	 * Execute whatever post-processing is required.
@@ -86,4 +86,7 @@ public interface GraphReader {
 	 * @return network name.
 	 */
 	public String getNetworkName();
+	
+	
+	public void setNetwork(CyNetwork network);
 }

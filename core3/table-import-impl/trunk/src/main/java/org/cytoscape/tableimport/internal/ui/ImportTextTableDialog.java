@@ -2048,6 +2048,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 						final String[] parts = sources[i].toString().split("/");
 						networkName = parts[parts.length - 1];
+						
+						
+						
 						reader = new NetworkTableReader(networkName, sources[i], nmp,
 						                                startLineNumber, commentChar);
 					}
@@ -3139,7 +3142,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		System.out.println("\n\nEntering ImportTextTablereader.loadNetwork()...\n\n");
 
 		// Create LoadNetwork Task
-		ImportNetworkTask task = new ImportNetworkTask();
+		ImportNetworkTask task = new ImportNetworkTask(networkName, reader, source);
 		ImportNetworkTaskFactory taskFactory = new ImportNetworkTaskFactory(task);
 
 		CytoscapeServices.guiTaskManagerServiceRef.execute(taskFactory);

@@ -36,27 +36,39 @@
 
 package org.cytoscape.tableimport.internal.ui;
 
-//import cytoscape.CyNetwork;
-
+import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.tableimport.internal.reader.GraphReader;
+import org.cytoscape.tableimport.internal.util.CytoscapeServices;
+import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
-//import cytoscape.task.TaskMonitor;
-
-//import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader;
-
 import java.io.IOException;
-
 import java.net.URL;
-
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
  *
  */
-public class ImportNetworkTask implements Task {
-	//private final GraphReader reader;
-	//private final URL source;
-	//private TaskMonitor taskMonitor;
+public class ImportNetworkTask extends AbstractTask implements CyNetworkViewReader {
+
+	protected CyNetworkView[] cyNetworkViews;
+	protected VisualStyle[] visualstyles;
+	
+	private final GraphReader reader;
+	private final URL source;
+
+	final CyNetwork network = CytoscapeServices.cyNetworkFactoryServiceRef.getInstance();
 
 	/**
 	 * Creates a new ImportNetworkTask object.
@@ -64,52 +76,135 @@ public class ImportNetworkTask implements Task {
 	 * @param reader  DOCUMENT ME!
 	 * @param source  DOCUMENT ME!
 	 */
-//	public ImportNetworkTask(final GraphReader reader, final URL source) {
-	public ImportNetworkTask() {
-		//this.reader = reader;
-		//this.source = source;
+	public ImportNetworkTask(String networkName, final GraphReader reader, final URL source) {
+		
+		this.reader = reader;
+		this.source = source;
+	
 	}
 
-    @Override
-	public void run(final TaskMonitor taskMonitor) {
-    	
-		// Give the task a title.
-		taskMonitor.setTitle("Loading network and edge attributes...");
 
+	@Override
+	public void run(TaskMonitor tm) throws IOException {
+		try {
+			tm.setProgress(0.10);
+			this.reader.setNetwork(network);
+			this.reader.read();
+			tm.setProgress(0.80);
+			
+			//readInput(tm);
+			//createNetwork(tm);
+		} finally { 
+			//if (inputStream != null) {
+			//	inputStream.close();
+			//	inputStream = null;
+			//}
+		}
+	}
+
+	private void readInput(TaskMonitor tm) throws IOException {
+		//tm.setProgress(0.00);
 		
 		/*
-		taskMonitor.setStatus();
-		taskMonitor.setPercentCompleted(-1);
+		String delimiter = DEF_DELIMITER;
 
-		CyNetwork network = Cytoscape.createNetwork(reader, true, null);
-		Object[] ret_val = new Object[2];
-		ret_val[0] = network;
-		ret_val[1] = source.toString();
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
+		final String rawText = readUtil.getInputString(inputStream);
 
-		taskMonitor.setPercentCompleted(100);
+		tm.setProgress(0.10);
+		if (rawText.indexOf("\t") >= 0)
+			delimiter = "\t";
 
-		informUserOfAnnotationStats();
+		final String[] lines = rawText.split(LINE_SEP);
+
+		tm.setProgress(0.15);
+		final int size = lines.length;
+		for (int i = 0; i < size; i++) {
+			if (lines[i].length() <= 0)
+				continue;
+			interactions.add(new Interaction(lines[i], delimiter));
+		}
 		*/
-		
-    }
+		//tm.setProgress(0.20);
+	}
+
 	
+	private void createNetwork(TaskMonitor tm) {
+		
+		// Create network model.  At this point, there are no nodes/edges.
+		final CyNetwork network = CytoscapeServices.cyNetworkFactoryServiceRef.getInstance();
+		
+		Map<String, CyNode> nodeMap = new HashMap<String, CyNode>();
+
+		// put all node names in the Set
+		//for (Interaction interaction : interactions) {
+		//	nodeMap.put(interaction.getSource(), null);
+		//	for (String target : interaction.getTargets())
+		//		nodeMap.put(target, null);
+		//}
+
+		tm.setProgress(0.25);
+				
+		for (String nodeName : nodeMap.keySet()) {
+			if (cancelled)
+				return;
+
+			//tm.setProgress(progress);
+			
+			final CyNode node = network.addNode();
+			//node.getCyRow().set(NODE_NAME_ATTR_LABEL, nodeName);
+			nodeMap.put(nodeName, node);
+		}
+
+		tm.setProgress(0.65);
+		
+		// Now loop over the interactions again, this time creating edges
+		// between
+		// all sources and each of their respective targets.
+		String srcName;
+		String interactionType;
+		CyEdge edge;
+		
+		/*
+		for (Interaction interaction : interactions) {
+			if (cancelled)
+				return;
+
+			srcName = interaction.getSource();
+			interactionType = interaction.getType();
+
+			for (String tgtName : interaction.getTargets()) {
+				edge = network.addEdge(nodeMap.get(srcName), nodeMap
+						.get(tgtName), true);
+				edge.getCyRow().set(NODE_NAME_ATTR_LABEL,
+						srcName + " (" + interactionType + ") " + tgtName);
+				edge.getCyRow().set(INTERACTION, interactionType);
+			}
+		}
+		*/
+
+		tm.setProgress(0.90);
+		
+		final CyNetworkView view = CytoscapeServices.cyNetworkViewFactoryServiceRef.getNetworkView(network);
+		
+
+		TaskFactory tf = CytoscapeServices.cyLayoutsServiceRef.getDefaultLayout(view);
+		TaskIterator ti = tf.getTaskIterator();
+		Task task = ti.next();
+		insertTasksAfterCurrentTask(task);
+
+		// SIF always creates only one network.
+		this.cyNetworkViews = new CyNetworkView[] { view };
+
+		nodeMap.clear();
+		nodeMap = null;
+
+		tm.setProgress(1.0);
+	}
+	
+
     @Override
     public void cancel(){
     }
-
-	/**
-	 * Inform User of Network Stats.
-	 */
-	private void informUserOfAnnotationStats() {
-		StringBuffer sb = new StringBuffer();
-
-		// Give the user some confirmation
-		//sb.append("Succesfully loaded network and edge attributes from:\n");
-		//sb.append(source.toString() + "\n");
-		//sb.append(((TextTableReader) reader).getReport());
-		//taskMonitor.setStatus(sb.toString());
-	}
 
 
 	/**
@@ -119,5 +214,13 @@ public class ImportNetworkTask implements Task {
 	 */
 	public String getTitle() {
 		return new String("Loading Network and Edge Attributes");
+	}
+	
+	public CyNetworkView[] getNetworkViews() {
+		return cyNetworkViews;
+	}
+
+	public VisualStyle[] getVisualStyles() {
+		return visualstyles;
 	}
 }

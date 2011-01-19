@@ -41,6 +41,7 @@ import org.cytoscape.tableimport.internal.util.AttributeTypes;
 //import cytoscape.data.Semantics;
 
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 
 import java.util.ArrayList;
@@ -55,9 +56,9 @@ import java.util.List;
  */
 public class NetworkLineParser {
 	private final NetworkTableMappingParameters nmp;
-	private final List<Integer> nodeList;
-	private final List<Integer> edgeList;
-
+	private final List<Long> nodeList;
+	private final List<Long> edgeList;
+	private CyNetwork network;
 	/**
 	 * Creates a new NetworkLineParser object.
 	 *
@@ -65,11 +66,12 @@ public class NetworkLineParser {
 	 * @param edgeList  DOCUMENT ME!
 	 * @param nmp  DOCUMENT ME!
 	 */
-	public NetworkLineParser(List<Integer> nodeList, List<Integer> edgeList,
+	public NetworkLineParser(CyNetwork network, List<Long> nodeList, List<Long> edgeList,
 	                         final NetworkTableMappingParameters nmp) {
 		this.nmp = nmp;
 		this.nodeList = nodeList;
 		this.edgeList = edgeList;
+		this.network = network;
 	}
 
 	/**
@@ -88,7 +90,7 @@ public class NetworkLineParser {
 	private CyEdge addNodeAndEdge(final String[] parts) {
 		
 		final CyNode source = createNode(parts, nmp.getSourceIndex());
-		final CyNode target = createNode(parts, nmp.getTargetIndex());		
+		final CyNode target = createNode(parts, nmp.getTargetIndex());	
 		
 		// Single column nodes list.  Just add nodes.
 		if(source == null || target == null)
@@ -102,21 +104,26 @@ public class NetworkLineParser {
 		} else
 			interaction = parts[nmp.getInteractionIndex()];
 
-		final CyEdge edge = null;
 		//edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, true);
-		//edgeList.add(edge.getRootGraphIndex());
+		CyEdge edge = network.addEdge(source, target, true);
+		
+		edgeList.add(edge.getSUID());
 		
 		return edge;
 	}
 	
 	
 	private CyNode createNode(final String[] parts, final Integer nodeIndex) {
-		final CyNode node = null;
+		
+		CyNode node = null;
+				
 		if (nodeIndex.equals(-1) == false && (nodeIndex <= (parts.length - 1)) && (parts[nodeIndex] != null)) {
 			//node = Cytoscape.getCyNode(parts[nodeIndex], true);
-			//nodeList.add(node.getRootGraphIndex());
-		}// else
-		//	node = null;
+			node = network.addNode();	
+			node.getCyRow().set("name", parts[nodeIndex]);
+			
+			nodeList.add(node.getSUID());
+		}
 		
 		return node;
 	}

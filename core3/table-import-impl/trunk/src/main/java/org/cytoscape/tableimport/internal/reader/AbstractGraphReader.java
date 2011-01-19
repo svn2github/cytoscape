@@ -38,7 +38,7 @@ public abstract class AbstractGraphReader implements GraphReader {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int[] getNodeIndicesArray() {
+	public Long[] getNodeIndicesArray() {
 		return null;
 	}
 
@@ -47,7 +47,7 @@ public abstract class AbstractGraphReader implements GraphReader {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int[] getEdgeIndicesArray() {
+	public Long[] getEdgeIndicesArray() {
 		return null;
 	}
 
