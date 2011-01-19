@@ -73,8 +73,8 @@ public class ImportNetworkTableAction extends AbstractCyAction {
 			CyProperty<Bookmarks> bookmarksProp, BookmarksUtil bookmarksUtil,
 			GUITaskManager guiTaskManagerServiceRef, CyProperty cytoscapePropertiesServiceRef,
 			CyTableManager tblMgr, FileUtil fileUtilService, OpenBrowser openBrowserService,
-			CyLayouts cyLayoutsServiceRef, CyNetworkFactory cyNetworkViewFactoryServiceRef,
-			CyNetworkViewFactory cyNetworkFactoryServiceRef) 
+			CyLayouts cyLayoutsServiceRef, CyNetworkViewFactory cyNetworkViewFactoryServiceRef,
+			CyNetworkFactory cyNetworkFactoryServiceRef) 
 	{
 		super("Network from Table (Text/MS Excel)...", appMgr);
 		setPreferredMenu("File.Import");
