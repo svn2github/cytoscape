@@ -46,6 +46,7 @@ import org.cytoscape.model.CyNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 
 /**
@@ -59,6 +60,8 @@ public class NetworkLineParser {
 	private final List<Long> nodeList;
 	private final List<Long> edgeList;
 	private CyNetwork network;
+	private HashMap<String, CyNode> nodeMap = new HashMap<String, CyNode>();
+	
 	/**
 	 * Creates a new NetworkLineParser object.
 	 *
@@ -66,12 +69,11 @@ public class NetworkLineParser {
 	 * @param edgeList  DOCUMENT ME!
 	 * @param nmp  DOCUMENT ME!
 	 */
-	public NetworkLineParser(CyNetwork network, List<Long> nodeList, List<Long> edgeList,
+	public NetworkLineParser(List<Long> nodeList, List<Long> edgeList,
 	                         final NetworkTableMappingParameters nmp) {
 		this.nmp = nmp;
 		this.nodeList = nodeList;
 		this.edgeList = edgeList;
-		this.network = network;
 	}
 
 	/**
@@ -119,8 +121,14 @@ public class NetworkLineParser {
 				
 		if (nodeIndex.equals(-1) == false && (nodeIndex <= (parts.length - 1)) && (parts[nodeIndex] != null)) {
 			//node = Cytoscape.getCyNode(parts[nodeIndex], true);
+			
+			if (this.nodeMap.containsKey(parts[nodeIndex])){
+				return nodeMap.get(parts[nodeIndex]);
+			}
 			node = network.addNode();	
 			node.getCyRow().set("name", parts[nodeIndex]);
+
+			nodeMap.put(parts[nodeIndex], node);
 			
 			nodeList.add(node.getSUID());
 		}
@@ -223,5 +231,9 @@ public class NetworkLineParser {
 		}
 
 		return listAttr;
+	}
+	
+	public void setNetwork(CyNetwork network){
+		this.network = network;
 	}
 }

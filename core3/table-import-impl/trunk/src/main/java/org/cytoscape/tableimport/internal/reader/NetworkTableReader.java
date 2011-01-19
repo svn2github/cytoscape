@@ -75,6 +75,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	protected final List<Long> edgeList;
 	protected final int startLineNumber;
 	protected final String commentChar;
+
 	private CyNetwork network;
 	
 	private static final Logger logger = LoggerFactory.getLogger(NetworkTableReader.class);
@@ -99,7 +100,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 		this.edgeList = new ArrayList<Long>();
 		this.commentChar = commentChar;
 
-		parser = new NetworkLineParser(network, nodeList, edgeList, nmp);
+		parser = new NetworkLineParser(nodeList, edgeList, nmp);
 	}
 
 	/**
@@ -126,6 +127,8 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 		InputStream is = null;
 		String line;
 
+		parser.setNetwork(network);
+		
 		try {
 			BufferedReader bufRd = null;
 
