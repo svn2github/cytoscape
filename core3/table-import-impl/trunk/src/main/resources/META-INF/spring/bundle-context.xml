@@ -43,6 +43,10 @@
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
+
+		<constructor-arg ref="cyNetworkNamingServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
+				
 	</bean>
 
 </beans>

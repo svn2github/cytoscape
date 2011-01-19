@@ -33,6 +33,8 @@
 	<osgi:reference id="fileUtilService" interface="org.cytoscape.util.swing.FileUtil" />
 	<osgi:reference id="openBrowserService" interface="org.cytoscape.util.swing.OpenBrowser" />		
 	
+	<osgi:reference id="cyNetworkNamingServiceRef" interface="org.cytoscape.session.CyNetworkNaming" />
+	<osgi:reference id="cyNetworkViewManagerServiceRef" interface="org.cytoscape.view.model.CyNetworkViewManager" />
 
 	<!--
 	This code registers the bean we just created "sampleTaskFactory" as an 

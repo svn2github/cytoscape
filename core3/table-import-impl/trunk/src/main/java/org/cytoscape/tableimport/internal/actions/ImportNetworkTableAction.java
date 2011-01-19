@@ -45,6 +45,7 @@ import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.tableimport.internal.ui.ImportTextTableDialog;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.util.swing.FileUtil;
@@ -57,6 +58,7 @@ import javax.xml.bind.JAXBException;
 import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.model.CyNetworkViewManager;
 
 
 /**
@@ -74,7 +76,8 @@ public class ImportNetworkTableAction extends AbstractCyAction {
 			GUITaskManager guiTaskManagerServiceRef, CyProperty cytoscapePropertiesServiceRef,
 			CyTableManager tblMgr, FileUtil fileUtilService, OpenBrowser openBrowserService,
 			CyLayouts cyLayoutsServiceRef, CyNetworkViewFactory cyNetworkViewFactoryServiceRef,
-			CyNetworkFactory cyNetworkFactoryServiceRef) 
+			CyNetworkFactory cyNetworkFactoryServiceRef,
+		    CyNetworkViewManager networkViewManager,CyNetworkNaming cyNetworkNaming) 
 	{
 		super("Network from Table (Text/MS Excel)...", appMgr);
 		setPreferredMenu("File.Import");
@@ -94,6 +97,8 @@ public class ImportNetworkTableAction extends AbstractCyAction {
 		CytoscapeServices.cyLayoutsServiceRef= cyLayoutsServiceRef;
 		CytoscapeServices.cyNetworkViewFactoryServiceRef = cyNetworkViewFactoryServiceRef;
 		CytoscapeServices.cyNetworkFactoryServiceRef = cyNetworkFactoryServiceRef;
+		CytoscapeServices.networkViewManager = networkViewManager;
+		CytoscapeServices.cyNetworkNaming = cyNetworkNaming;
 	}
 
 	/**
