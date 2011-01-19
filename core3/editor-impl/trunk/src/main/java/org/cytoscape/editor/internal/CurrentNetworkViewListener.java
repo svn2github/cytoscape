@@ -20,7 +20,7 @@ public class CurrentNetworkViewListener implements  SetCurrentNetworkViewListene
 
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
 		CyNetworkView view = e.getNetworkView();
-		if ( view.getModel().getNodeCount() == 0 ) {
+		if ( view != null && view.getModel().getNodeCount() == 0 ) {
 			CytoPanel west = app.getCytoPanel(CytoPanelName.WEST);
 			int compIndex = west.indexOfComponent(comp.getComponent());
 			west.setSelectedIndex( compIndex );
