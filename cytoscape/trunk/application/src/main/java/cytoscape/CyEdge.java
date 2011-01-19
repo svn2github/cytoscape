@@ -53,8 +53,8 @@ public class CyEdge implements giny.model.Edge {
 	/**
 	 * Creates a new CyEdge object.
 	 *
-	 * @param root  DOCUMENT ME!
-	 * @param rootGraphIndex  DOCUMENT ME!
+	 * @param root  the RootGraph to put the edge into
+	 * @param rootGraphIndex  the index to assign to this edge
 	 */
 	public CyEdge(RootGraph root, int rootGraphIndex) {
 		this.m_rootGraph = (CytoscapeFingRootGraph) root;
@@ -63,18 +63,30 @@ public class CyEdge implements giny.model.Edge {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Return the source node for this edge.  All edges have a source
+	 *  Node and a target Node.  For directed edges, the edge points from
+	 *  the source node to the target node, but for undirected edges, the
+	 *  definition of source and target is defined by the edge but
+	 *  which node is the source and which node is the target does not
+	 *  impact the behavior.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  The source Node for this edge.  Note that this is returned as a Node
+	 * rather than a CyNode.  Generally, the Node may be safely cast to a CyNode.
 	 */
 	public giny.model.Node getSource() {
 		return m_rootGraph.getNode(m_rootGraph.getEdgeSourceIndex(m_rootGraphIndex));
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Return the target node for this edge.  All edges have a source
+	 *  Node and a target Node.  For directed edges, the edge points from
+	 *  the source node to the target node, but for undirected edges, the
+	 *  definition of source and target is defined by the edge but
+	 *  which node is the source and which node is the target does not
+	 *  impact the behavior.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  The target Node for this edge.  Note that this is returned as a Node
+	 * rather than a CyNode.  Generally, the Node may be safely cast to a CyNode.
 	 */
 	public giny.model.Node getTarget() {
 		return m_rootGraph.getNode(m_rootGraph.getEdgeTargetIndex(m_rootGraphIndex));
@@ -90,38 +102,48 @@ public class CyEdge implements giny.model.Edge {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Get the root graph for this edge.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  the root graph
 	 */
 	public RootGraph getRootGraph() {
 		return m_rootGraph;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Get the root graph index for this edge
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  the root graph index
 	 */
 	public int getRootGraphIndex() {
 		return m_rootGraphIndex;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Return the "name" of an edge
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return string representation of the edge
+	 */
+	public String toString() {
+		return getIdentifier();
+	}
+
+	/**
+	 *  Return the edge identifier.  Usually this is something of the
+	 *  form: "SourceNode (interaction) TargetNode".
+	 *
+	 * @return  edge identifier
 	 */
 	public String getIdentifier() {
 		return m_identifier;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Set the identifier for this edge
 	 *
-	 * @param new_id DOCUMENT ME!
+	 * @param new_id The new identifier
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  always returns true
 	 */
 	public boolean setIdentifier(String new_id) {
 		if (new_id == null) {
