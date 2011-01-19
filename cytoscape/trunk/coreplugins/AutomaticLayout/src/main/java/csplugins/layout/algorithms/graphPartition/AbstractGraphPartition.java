@@ -233,7 +233,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout implements A
 	}
 
 	total_nodes = network.getNodeCount();
-	logger.info("TOTAL NODES: " + total_nodes);	
+	// logger.info("TOTAL NODES: " + total_nodes);	
 
 	current_start = 0;
 
@@ -259,7 +259,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout implements A
 	    if (canceled) break;
 	    // get the partition
 	    current_size = (double)partition.size();
-	    logger.info("Partition #"+partition.getPartitionNumber()+" has "+current_size+" nodes");
+	    // logger.info("Partition #"+partition.getPartitionNumber()+" has "+current_size+" nodes");
 	    setTaskStatus(1);
 
 	    // Partitions Requiring Layout
@@ -291,7 +291,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout implements A
 		node.setLocation(next_x_start, next_y_start);
 		partition.moveNodeToLocation(node);
 	    } else {
-		logger.info("Done nothing with this partition");
+		logger.info("No nodes in partition "+partition.getPartitionNumber()+" -- skipping");
 		continue;
 	    }
 
