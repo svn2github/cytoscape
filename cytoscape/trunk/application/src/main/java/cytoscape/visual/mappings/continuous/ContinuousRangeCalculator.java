@@ -64,6 +64,17 @@ public class ContinuousRangeCalculator {
      * @param interpolator Interpolator Object.
      * @param attrBundle Attribute Bundle.
      */
+    public ContinuousRangeCalculator(ArrayList points,
+        Interpolator interpolator, Map attrBundle) {
+		this((List<ContinuousMappingPoint>)points,interpolator,attrBundle);
+	}
+
+    /**
+     * Constructor.
+     * @param points ArrayList of ContinuousMappingPoints.
+     * @param interpolator Interpolator Object.
+     * @param attrBundle Attribute Bundle.
+     */
     public ContinuousRangeCalculator(List<ContinuousMappingPoint> points,
         Interpolator interpolator, Map attrBundle) {
         this.points = points;
