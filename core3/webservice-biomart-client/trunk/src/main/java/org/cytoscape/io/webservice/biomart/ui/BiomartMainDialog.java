@@ -67,7 +67,7 @@ public final class BiomartMainDialog extends JDialog {
 	 * @param appManager
 	 * @param tblManager
 	 */
-	public BiomartMainDialog(final BiomartRestClient client, final TaskManager taskManager,
+	public BiomartMainDialog(final BiomartClient client, final TaskManager taskManager,
 			final CyApplicationManager appManager,
 			final CyTableManager tblManager, final CySwingApplication app) {
 		super();
@@ -89,7 +89,9 @@ public final class BiomartMainDialog extends JDialog {
 
 		tunablePanel.add(tPanel);
 
-		panel = new BiomartAttrMappingPanel(client,taskManager, appManager, tblManager, app.getJFrame());
+		panel = new BiomartAttrMappingPanel(client.getRestClient(), taskManager, appManager, tblManager, app.getJFrame());
+		client.setGUI(panel);
+		
 		tabs.addTab("Query", panel);
 
 		add(tabs);

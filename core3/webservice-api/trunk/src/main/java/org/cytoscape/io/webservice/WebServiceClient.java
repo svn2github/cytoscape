@@ -37,6 +37,7 @@ package org.cytoscape.io.webservice;
 import java.awt.Container;
 import java.net.URI;
 
+import org.cytoscape.work.ProvidesGUI;
 import org.cytoscape.work.TaskFactory;
 
 /**
@@ -84,6 +85,6 @@ public interface WebServiceClient extends TaskFactory {
 	 * 
 	 * @return
 	 */
-	Container getQueryBuilderGUI();
+	@ProvidesGUI Container getQueryBuilderGUI();
 	
 }

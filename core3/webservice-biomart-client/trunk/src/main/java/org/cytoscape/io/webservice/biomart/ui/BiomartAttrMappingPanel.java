@@ -70,6 +70,7 @@ import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.ValuedTask;
 import org.cytoscape.work.ValuedTaskExecutor;
+import org.cytoscape.work.swing.GUITaskManager;
 
 /**
  *
@@ -144,7 +145,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		attrNameMap = new HashMap<String, Map<String, String>>();
 
 		// Import list of repositories.
-		//loadMartServiceList();
+		loadMartServiceList();
 
 		// Load available filters for current source.
 		//loadFilter();
@@ -158,7 +159,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 				firstTask);
 		final BioMartTaskFactory tf = new BioMartTaskFactory(ex);
 		System.out.println("Current thread: " + Thread.currentThread());
-		//((GUITaskManager) taskManager).setParent(parent);
+		((GUITaskManager) taskManager).setParent(parent);
 		taskManager.execute(tf);
 
 		LoadRepositoryResult result;

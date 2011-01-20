@@ -39,7 +39,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.cytoscape.io.webservice.WebServiceClient;
-import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.ProvidesGUI;
 
 
 
@@ -93,10 +93,8 @@ public abstract class AbstractWebServiceClient implements WebServiceClient {
 	}
 
 
-	@Override
+	@Override @ProvidesGUI
 	public Container getQueryBuilderGUI() {
 		return panel;
 	}
-
-	
 }

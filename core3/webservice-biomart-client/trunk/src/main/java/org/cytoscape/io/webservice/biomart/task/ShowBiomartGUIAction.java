@@ -60,33 +60,18 @@ public class ShowBiomartGUIAction extends AbstractCyAction {
 			// Prepare repository data.
 			
 			logger.debug("BioMart Dialog initialization process start.");
-			initDataSource();
-			dialog = new BiomartMainDialog(client.getRestClient(), taskManager, appManager, tblManager, app);
+			//initDataSource();
+			dialog = new BiomartMainDialog(client, taskManager, appManager, tblManager, app);
 			logger.info("BioMart Client dialog initialized.");
 		}
 		
 		dialog.setLocationRelativeTo(app.getJFrame());
 		dialog.setVisible(true);
 		
-		
-		
-//		final Task dummy = new DummyTask();
-//		final BioMartTaskFactory tf = new BioMartTaskFactory(dummy);
-//		taskManager.setParent(dialog);
-//		taskManager.execute(tf);
-		
 		logger.info("BioMart Client initialized.");
 	}
 	
-	// Test
-	private class DummyTask extends AbstractTask {
 
-		@Override
-		public void run(TaskMonitor taskMonitor) throws Exception {
-			Thread.sleep(5000);
-		}
-	}
-	
 	private List<String> initDataSource() {
 		final ValuedTask<LoadRepositoryResult> firstTask = new LoadRepositoryTask(client.getRestClient());
 		final ValuedTaskExecutor<LoadRepositoryResult> ex = 
@@ -99,22 +84,22 @@ public class ShowBiomartGUIAction extends AbstractCyAction {
 		List<String> dsList = null;
 		
 		//FIXME
-//		try {
-//			result = ex.get();
-//
-////			this.datasourceMap = result.getDatasourceMap();
-//			dsList = result.getSortedDataSourceList();
-//			System.out.println("GOT datasource list from task: " + dsList);
-////			for (String ds : dsList)
-////				this.databaseComboBox.addItem(ds);
-//
-//		} catch (CancellationException e) {
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			result = ex.get();
+
+//			this.datasourceMap = result.getDatasourceMap();
+			dsList = result.getSortedDataSourceList();
+			System.out.println("GOT datasource list from task: " + dsList);
+//			for (String ds : dsList)
+//				this.databaseComboBox.addItem(ds);
+
+		} catch (CancellationException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
 		
 		return dsList;
 	}
