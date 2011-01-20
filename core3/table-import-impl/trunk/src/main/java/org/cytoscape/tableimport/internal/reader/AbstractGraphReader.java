@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayouts;
 //import cytoscape.task.TaskMonitor;
@@ -57,8 +58,7 @@ public abstract class AbstractGraphReader implements GraphReader {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getNetworkName() {
-		return "tmpNetworkTitle";
-		/*
+
 		String t = "";
 
 		if (title != null){
@@ -77,29 +77,29 @@ public abstract class AbstractGraphReader implements GraphReader {
 			}
 			
 			// 2. check if the file ext is one of the pre-defined exts
-			Set extSets = (Set) Cytoscape.getImportHandler().getAllExtensions();			
-			if (extSets.contains(ext)){
-				// if the file ext is pre-defined, remove it from network title
-				t = t.substring(0, dotIndex);
-			}
+			//Set extSets = (Set) Cytoscape.getImportHandler().getAllExtensions();			
+			//if (extSets.contains(ext)){
+			//	// if the file ext is pre-defined, remove it from network title
+			//	t = t.substring(0, dotIndex);
+			//}
 		}
 
-		return CyNetworkNaming.getSuggestedNetworkTitle(t);
-		*/
+		//return //CyNetworkNaming.getSuggestedNetworkTitle(t);
+		return CytoscapeServices.cyNetworkNaming.getSuggestedNetworkTitle(t);
 	}
 
 	/**
 	 * Executes post-processing:  no-op.
 	*/
-	public void doPostProcessing(CyNetwork network) {
-	}
+	//public void doPostProcessing(CyNetwork network) {
+	//}
 
 	/**
 	 * Return the CyLayoutAlgorithm used to layout the graph
 	 */
-	public CyLayoutAlgorithm getLayoutAlgorithm() {
-		return null;//CyLayouts.getDefaultLayout();
-	}
+	//public CyLayoutAlgorithm getLayoutAlgorithm() {
+	//	return null;//CyLayouts.getDefaultLayout();
+	//}
 
 	/**
 	 * Set the task monitor to use for this reader
