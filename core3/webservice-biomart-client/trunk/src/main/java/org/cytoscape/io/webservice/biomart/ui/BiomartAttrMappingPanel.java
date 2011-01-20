@@ -48,9 +48,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import org.cytoscape.io.webservice.biomart.BiomartClient;
 import org.cytoscape.io.webservice.biomart.BiomartQuery;
 import org.cytoscape.io.webservice.biomart.rest.Attribute;
+import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
 import org.cytoscape.io.webservice.biomart.rest.Dataset;
 import org.cytoscape.io.webservice.biomart.rest.Filter;
 import org.cytoscape.io.webservice.biomart.rest.XMLQueryBuilder;
@@ -59,7 +59,6 @@ import org.cytoscape.io.webservice.biomart.task.ImportAttributeListTask;
 import org.cytoscape.io.webservice.biomart.task.ImportAttributeListTaskFactory;
 import org.cytoscape.io.webservice.biomart.task.ImportFilterTask;
 import org.cytoscape.io.webservice.biomart.task.ImportFilterTaskFactory;
-import org.cytoscape.io.webservice.biomart.task.ImportTableTaskFactory;
 import org.cytoscape.io.webservice.biomart.task.LoadRepositoryResult;
 import org.cytoscape.io.webservice.biomart.task.LoadRepositoryTask;
 import org.cytoscape.model.CyNetwork;
@@ -71,7 +70,6 @@ import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.ValuedTask;
 import org.cytoscape.work.ValuedTaskExecutor;
-import org.cytoscape.work.swing.GUITaskManager;
 
 /**
  *
@@ -98,10 +96,6 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	private boolean cancelFlag = false;
 	private boolean initialized = false;
 
-	private final BiomartClient client;
-
-	private final ImportTableTaskFactory importTaskFactory;
-
 	// These databases are not compatible with this UI.
 	private static final List<String> databaseFilter = new ArrayList<String>();
 
@@ -110,6 +104,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	private final CyTableManager tblManager;
 
 	private final Window parent;
+	
+	private final BiomartRestClient restClient;
 
 	/**
 	 * Creates a new BiomartNameMappingPanel object.
@@ -120,19 +116,17 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	 *            DOCUMENT ME!
 	 * @throws Exception
 	 */
-	public BiomartAttrMappingPanel(final BiomartClient client,
+	public BiomartAttrMappingPanel(final BiomartRestClient client,
 			final TaskManager taskManager,
 			final CyApplicationManager appManager,
 			final CyTableManager tblManager, final Window parent) {
 		super(LOGO, "Biomart", "Import Settings");
 
-		this.client = client;
+		this.restClient = client;
 		this.taskManager = taskManager;
 		this.appManager = appManager;
 		this.tblManager = tblManager;
 		this.parent = parent;
-
-		importTaskFactory = new ImportTableTaskFactory(this.client);
 
 		// Access the MartService and get the available services.
 		initDataSources();
@@ -159,7 +153,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	public void loadMartServiceList() {
 
 		final ValuedTask<LoadRepositoryResult> firstTask = new LoadRepositoryTask(
-				client.getClient());
+				restClient);
 		ValuedTaskExecutor<LoadRepositoryResult> ex = new ValuedTaskExecutor<LoadRepositoryResult>(
 				firstTask);
 		final BioMartTaskFactory tf = new BioMartTaskFactory(ex);
@@ -237,7 +231,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 			System.out.println("Calling attribute update task.");
 
 			final ImportAttributeListTaskFactory tf = new ImportAttributeListTaskFactory(
-					datasourceName, client.getClient());
+					datasourceName, restClient);
 			final ImportAttributeListTask firstTask = (ImportAttributeListTask) tf
 					.getTaskIterator().next();
 			taskManager.executeAndWait(tf);
@@ -286,7 +280,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		} else if (type.equals(SourceType.FILTER)) {
 
 			final ImportFilterTaskFactory tf = new ImportFilterTaskFactory(
-					datasourceName, client.getClient());
+					datasourceName, restClient);
 			final ImportFilterTask firstTask = (ImportFilterTask) tf
 					.getTaskIterator().next();
 			tf.setTask(firstTask);
@@ -409,15 +403,15 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	// return mappedKeys;
 	// }
 
-	private void importAttributesFromService(Dataset dataset,
+	private BiomartQuery importAttributesFromService(Dataset dataset,
 			Attribute[] attrs, Filter[] filters, String keyInHeader,
 			String keyAttrName) {
 
 		final String query = XMLQueryBuilder.getQueryString(dataset, attrs,
 				filters);
-		importTaskFactory.setQuery(new BiomartQuery(query, keyAttrName));
-
-		this.taskManager.executeAndWait(importTaskFactory);
+		
+		return new BiomartQuery(query, keyAttrName);
+		
 
 		// AttributeImportQuery qObj = new AttributeImportQuery(query2, key,
 		// keyAttrName);
@@ -426,6 +420,11 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 
 	@Override
 	protected void importAttributes() {
+		
+
+	}
+	
+	public BiomartQuery getTableImportQuery() {
 		final String datasource = datasourceMap.get(databaseComboBox
 				.getSelectedItem());
 		final Map<String, String> attrMap = this.attrNameMap.get(datasource);
@@ -486,10 +485,9 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 			}
 		}
 
-		// Create Task
-		importAttributesFromService(dataset, attrs, filters, keyInHeader,
+		// Create query
+		return importAttributesFromService(dataset, attrs, filters, keyInHeader,
 				keyAttrName);
-
 	}
 
 }

@@ -61,7 +61,7 @@ public class ShowBiomartGUIAction extends AbstractCyAction {
 			
 			logger.debug("BioMart Dialog initialization process start.");
 			initDataSource();
-			dialog = new BiomartMainDialog(client, taskManager, appManager, tblManager, app);
+			dialog = new BiomartMainDialog(client.getRestClient(), taskManager, appManager, tblManager, app);
 			logger.info("BioMart Client dialog initialized.");
 		}
 		
@@ -88,7 +88,7 @@ public class ShowBiomartGUIAction extends AbstractCyAction {
 	}
 	
 	private List<String> initDataSource() {
-		final ValuedTask<LoadRepositoryResult> firstTask = new LoadRepositoryTask(client.getClient());
+		final ValuedTask<LoadRepositoryResult> firstTask = new LoadRepositoryTask(client.getRestClient());
 		final ValuedTaskExecutor<LoadRepositoryResult> ex = 
 			new ValuedTaskExecutor<LoadRepositoryResult>(firstTask);
 		final BioMartTaskFactory tf = new BioMartTaskFactory(ex);

@@ -45,6 +45,7 @@ import javax.swing.JTabbedPane;
 
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.webservice.biomart.BiomartClient;
+import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskManager;
@@ -56,7 +57,7 @@ public final class BiomartMainDialog extends JDialog {
 
 	private static final long serialVersionUID = 2382157952635589843L;
 	
-	final BiomartAttrMappingPanel panel;
+	private final BiomartAttrMappingPanel panel;
 	
 	/**
 	 * Basic GUI to access BioMart services.
@@ -66,7 +67,7 @@ public final class BiomartMainDialog extends JDialog {
 	 * @param appManager
 	 * @param tblManager
 	 */
-	public BiomartMainDialog(final BiomartClient client, final TaskManager taskManager,
+	public BiomartMainDialog(final BiomartRestClient client, final TaskManager taskManager,
 			final CyApplicationManager appManager,
 			final CyTableManager tblManager, final CySwingApplication app) {
 		super();
@@ -94,9 +95,5 @@ public final class BiomartMainDialog extends JDialog {
 		add(tabs);
 
 		pack();
-	}
-	
-	public BiomartAttrMappingPanel getPanel() {
-		return this.panel;
 	}
 }

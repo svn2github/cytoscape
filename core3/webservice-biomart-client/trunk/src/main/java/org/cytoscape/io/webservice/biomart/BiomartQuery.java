@@ -1,8 +1,7 @@
 package org.cytoscape.io.webservice.biomart;
 
-import org.cytoscape.io.webservice.client.Query;
 
-public final class BiomartQuery implements Query {
+public final class BiomartQuery {
 	
 	private final String xmlQuery;
 	private final String keyColumnName;
@@ -16,8 +15,8 @@ public final class BiomartQuery implements Query {
 		return this.keyColumnName;
 	}
 
-	@Override
-	public String getQueryAsString() {
+
+	public String getQueryString() {
 		return xmlQuery;
 	}
 
