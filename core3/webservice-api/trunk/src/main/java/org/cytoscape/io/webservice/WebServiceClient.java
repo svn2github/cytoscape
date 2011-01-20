@@ -34,7 +34,10 @@
  */
 package org.cytoscape.io.webservice;
 
+import java.awt.Container;
 import java.net.URI;
+
+import org.cytoscape.work.TaskFactory;
 
 /**
  * Thin wrapper for SOAP/REST web service clients.
@@ -46,8 +49,8 @@ import java.net.URI;
  *            eUtils stub has the class EUtilsServiceSoap.
  * 
  */
-public interface WebServiceClient<S> {
-
+public interface WebServiceClient extends TaskFactory {
+	
 	/**
 	 * Returns resource location of this service, i.e., service URL.
 	 * This is guaranteed to be globally unique and can be used as identifier.
@@ -74,17 +77,13 @@ public interface WebServiceClient<S> {
 	 */
 	String getDescription();
 
-
+	
 	/**
-	 * Get client endpoint object. All services available from this client will be
-	 * accessed through this stub. This will be used when developer wants to
-	 * access "raw" API of this service.
+	 * Returns query builder UI.  Since this is a TaskFactory, 
+	 * getTaskIterator() method should use parameters from this GUI.
 	 * 
-	 * 
-	 * This is an immutable object.
-	 * 
-	 * @return Endpoint of the service. This object type depends on service.
+	 * @return
 	 */
-	S getClient();
+	Container getQueryBuilderGUI();
 	
 }

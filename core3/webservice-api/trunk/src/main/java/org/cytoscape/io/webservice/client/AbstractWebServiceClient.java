@@ -34,10 +34,12 @@
 */
 package org.cytoscape.io.webservice.client;
 
+import java.awt.Container;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.cytoscape.io.webservice.WebServiceClient;
+import org.cytoscape.work.TaskIterator;
 
 
 
@@ -47,21 +49,20 @@ import org.cytoscape.io.webservice.WebServiceClient;
 
  * @param <S>  Stub object type.  This is service dependent.
  */
-public abstract class AbstractWebServiceClient<S> implements WebServiceClient<S> {
+public abstract class AbstractWebServiceClient implements WebServiceClient {
 
 	// Service locaiton
 	protected final URI serviceURI;
 	
-	// Endpoint
-	protected final S clientStub;
-
 	// Display Name for this client.
 	private final String displayName;
 	private final String description;
+	
+	// By default, this is null.
+	protected final Container panel = null;
 
 
-	public AbstractWebServiceClient(final String uri, final String displayName, final String description,
-	                            final S endpoint) {
+	public AbstractWebServiceClient(final String uri, final String displayName, final String description) {
 		
 		// Create URI
 		try {
@@ -73,7 +74,6 @@ public abstract class AbstractWebServiceClient<S> implements WebServiceClient<S>
 		
 		this.displayName = displayName;
 		this.description = description;
-		this.clientStub = endpoint;
 	}
 
 
@@ -92,8 +92,11 @@ public abstract class AbstractWebServiceClient<S> implements WebServiceClient<S>
 		return this.serviceURI;
 	}
 
+
 	@Override
-	public S getClient() {
-		return this.clientStub;
+	public Container getQueryBuilderGUI() {
+		return panel;
 	}
+
+	
 }
