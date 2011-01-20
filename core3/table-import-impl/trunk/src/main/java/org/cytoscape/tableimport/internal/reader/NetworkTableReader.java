@@ -38,6 +38,7 @@ package org.cytoscape.tableimport.internal.reader;
 
 //import cytoscape.data.readers.AbstractGraphReader;
 
+import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.tableimport.internal.util.URLUtil;
 import org.cytoscape.work.TaskMonitor;
 import org.slf4j.Logger;
@@ -127,6 +128,8 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 		InputStream is = null;
 		String line;
 
+		network.getCyRow().set("name", CytoscapeServices.cyNetworkNaming.getSuggestedNetworkTitle(sourceURL.toString()));
+		
 		parser.setNetwork(network);
 		
 		try {
