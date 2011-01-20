@@ -241,17 +241,27 @@ public class MetaNodeGroupViewer implements CyGroupViewer {
 		} else if (change == CyGroupViewer.ChangeType.STATE_CHANGED) {
 			// Handle different representations here....
 			if (group.getState() == MetaNodePlugin2.COLLAPSED && !mn.isCollapsed()) {
-				// Actually collapse the group
-				mn.collapse(Cytoscape.getCurrentNetworkView());
-				// Handle our attributes
-				AttributeManager.updateAttributes(mn);
-				if (haveNodeCharts) {
-					// Handle our node charts
-					NodeCharts.updateNodeCharts(mn, logger);
-				}
+				collapse(mn, Cytoscape.getCurrentNetworkView());
 			} else if (group.getState() == MetaNodePlugin2.EXPANDED && mn.isCollapsed()) {
 				mn.expand(Cytoscape.getCurrentNetworkView());
 			}
+		}
+	}
+
+	/**
+ 	 * Collapse a metanode
+ 	 *
+ 	 * @param metaNode the metanode to collapse
+ 	 * @param view the network view to collapse it in
+ 	 */
+	public void collapse(MetaNode metaNode, CyNetworkView view) {
+		// Actually collapse the group
+		metaNode.collapse(view);
+		// Handle our attributes
+		AttributeManager.updateAttributes(metaNode);
+		if (haveNodeCharts) {
+			// Handle our node charts
+			NodeCharts.updateNodeCharts(metaNode, logger);
 		}
 	}
 

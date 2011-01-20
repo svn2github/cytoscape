@@ -75,9 +75,9 @@ import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
 
 // our imports
+import metaNodePlugin2.commands.MetaNodeCommandHandler;
 import metaNodePlugin2.model.MetaNode;
 import metaNodePlugin2.model.MetaNodeManager;
-import metaNodePlugin2.ui.MetanodeSettingsDialog;
 import metaNodePlugin2.ui.MetanodeMenuListener;
 
 /**
@@ -161,6 +161,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
 		pluginMenu.add(menu);
+
+		new MetaNodeCommandHandler("metanode", groupViewer, logger);
 
 		logger.info("metaNodePlugin2 "+VERSION+" initialized");
 	}
