@@ -60,26 +60,26 @@ public interface GraphReader {
 	 *
 	 * @param myView
 	 */
-	public CyLayoutAlgorithm getLayoutAlgorithm();
+	//public CyLayoutAlgorithm getLayoutAlgorithm();
 
 	/**
 	 * Gets an array of node indices that participate in the newly created graph.
 	 *
 	 * @return array of node indices from the root graph.
 	 */
-	public Long[] getNodeIndicesArray();
+	//public Long[] getNodeIndicesArray();
 
 	/**
 	 * Gets an array of edges indices that participate in the newly created graph.
 	 *
 	 * @return array of edges indices from the root graph.
 	 */
-	public Long[] getEdgeIndicesArray();
+	//public Long[] getEdgeIndicesArray();
 
 	/**
 	 * Execute whatever post-processing is required.
 	 */
-	public void doPostProcessing(CyNetwork network);
+	//public void doPostProcessing(CyNetwork network);
 
 	/**
 	 * Gets the name of the network.
