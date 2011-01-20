@@ -108,6 +108,9 @@ public class NetworkLineParser {
 
 		//edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, true);
 		CyEdge edge = network.addEdge(source, target, true);
+		edge.getCyRow().set("interaction", interaction);
+		String edgeName = source.getCyRow().get("name", String.class)+ " ("+interaction+") "+ target.getCyRow().get("name", String.class);
+		edge.getCyRow().set("name", edgeName);
 		
 		edgeList.add(edge.getSUID());
 		
@@ -141,12 +144,20 @@ public class NetworkLineParser {
 			if ((i != nmp.getSourceIndex()) && (i != nmp.getTargetIndex())
 			    && (i != nmp.getInteractionIndex()) && parts[i] != null ) {
 				if ((nmp.getImportFlag().length > i) && (nmp.getImportFlag()[i] == true)) {
-					//mapAttribute(edge.getIdentifier(), parts[i].trim(), i);
+					mapAttribute(edge, parts[i].trim(), i);
 				}
 			}
 		}
 	}
 
+	private void createColumn(final CyEdge edge, final String attributeName, Class<?> theType){
+		// If attribute does not exist, create it
+		if (edge.getCyRow().getDataTable().getColumnTypeMap().get(attributeName)==null){
+			edge.getCyRow().getDataTable().createColumn(attributeName, theType);
+		}
+	}
+	
+	
 	/**
 	 * Based on the attribute types, map the entry to CyAttributes.<br>
 	 *
@@ -154,7 +165,8 @@ public class NetworkLineParser {
 	 * @param entry
 	 * @param index
 	 */
-	private void mapAttribute(final String key, final String entry, final int index) {
+	//private void mapAttribute(final String key, final String entry, final int index) {
+	private void mapAttribute(final CyEdge edge, final String entry, final int index) {
 		
 		
 		Byte type = nmp.getAttributeTypes()[index];
@@ -164,26 +176,34 @@ public class NetworkLineParser {
 		}
 
 		switch (type) {
-			case AttributeTypes.TYPE_BOOLEAN:
+			case AttributeTypes.TYPE_BOOLEAN:				
 				//nmp.getAttributes()
 				//   .setAttribute(key, nmp.getAttributeNames()[index], new Boolean(entry));
+				createColumn(edge, nmp.getAttributeNames()[index],Boolean.class);
+				edge.getCyRow().set(nmp.getAttributeNames()[index], new Boolean(entry));
 
 				break;
 
 			case AttributeTypes.TYPE_INTEGER:
 				//nmp.getAttributes()
 				//   .setAttribute(key, nmp.getAttributeNames()[index], new Integer(entry));
+				createColumn(edge, nmp.getAttributeNames()[index],Integer.class);
+				edge.getCyRow().set(nmp.getAttributeNames()[index], new Integer(entry));
 
 				break;
 
 			case AttributeTypes.TYPE_FLOATING:
 				//nmp.getAttributes()
 				//   .setAttribute(key, nmp.getAttributeNames()[index], new Double(entry));
+				createColumn(edge, nmp.getAttributeNames()[index],Double.class);
+				edge.getCyRow().set(nmp.getAttributeNames()[index], new Double(entry));
 
 				break;
 
 			case AttributeTypes.TYPE_STRING:
 				//nmp.getAttributes().setAttribute(key, nmp.getAttributeNames()[index], entry);
+				createColumn(edge, nmp.getAttributeNames()[index],String.class);
+				edge.getCyRow().set(nmp.getAttributeNames()[index], entry.trim());
 
 				break;
 
