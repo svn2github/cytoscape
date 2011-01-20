@@ -14,6 +14,9 @@
 	<osgi:reference id="cyNetworkViewManagerServiceRef"
                    	interface="org.cytoscape.view.model.CyNetworkViewManager" />
 
+	<osgi:reference id="cyTableRowUpdateServiceRef"
+                   	interface="org.cytoscape.model.CyTableRowUpdateService" />
+
 	<osgi:service id="filterCytoPanelComponentService" ref="filterCytoPanelComponent"
                   interface="org.cytoscape.application.swing.CytoPanelComponent"/>
 
@@ -22,7 +25,7 @@
 			<value>org.cytoscape.session.events.SetCurrentNetworkViewListener</value>
 			<value>org.cytoscape.session.events.SessionLoadedListener</value>
 			<value>org.cytoscape.model.events.NetworkAddedListener</value>
-			<value>org.cytoscape.model.events.NetworkDestroyedListener</value>
+			<value>org.cytoscape.model.events.NetworkAboutToBeDestroyedListener</value>
 		</osgi:interfaces>
 	</osgi:service>
 

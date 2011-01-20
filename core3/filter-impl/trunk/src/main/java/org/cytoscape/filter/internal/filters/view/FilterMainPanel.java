@@ -48,8 +48,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -90,11 +88,15 @@ import org.cytoscape.filter.internal.filters.util.WidestStringComboBoxPopupMenuL
 import org.cytoscape.filter.internal.filters.util.WidestStringProvider;
 import org.cytoscape.filter.internal.quickfind.util.CyAttributesUtil;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableRowUpdateService;
+import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
+import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
+import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.events.NetworkAddedEvent;
 import org.cytoscape.model.events.NetworkAddedListener;
-import org.cytoscape.model.events.NetworkDestroyedEvent;
-import org.cytoscape.model.events.NetworkDestroyedListener;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SessionLoadedEvent;
 import org.cytoscape.session.events.SessionLoadedListener;
@@ -111,8 +113,9 @@ import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
  * 
  */
 public class FilterMainPanel extends JPanel implements ActionListener,
-		ItemListener, PropertyChangeListener, SetCurrentNetworkViewListener,
-		NetworkAddedListener, NetworkDestroyedListener, SessionLoadedListener {
+		ItemListener, SetCurrentNetworkViewListener, NetworkAddedListener,
+		NetworkAboutToBeDestroyedListener, SessionLoadedListener,
+		CyTableRowUpdateMicroListener {
 
     // String constants used for seperator entries in the attribute combobox
     private static final String filtersSeperator = "-- Filters --";
@@ -147,10 +150,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	private final CyApplicationManager applicationManager;
 	private final FilterPlugin filterPlugin;
+	private final CyTableRowUpdateService rowUpdateService;
 	
-	public FilterMainPanel(CyApplicationManager applicationManager, FilterPlugin filterPlugin) {
+	public FilterMainPanel(CyApplicationManager applicationManager, FilterPlugin filterPlugin, CyTableRowUpdateService rowUpdateService) {
 		this.applicationManager = applicationManager;
 		this.filterPlugin = filterPlugin;
+		this.rowUpdateService = rowUpdateService;
 		
 		//Initialize the option menu with menuItems
 		setupOptionMenu();
@@ -193,22 +198,27 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		addComponentListener(cmpAdpt);
 	}
 
-
-	// Listen to ATTRIBUTES_CHNAGED and NETWORK_VIEW_FOCUSED event
-	public void propertyChange(PropertyChangeEvent e) {
-//		// TODO: Port this
-//		if (e.getPropertyName().equalsIgnoreCase(Cytoscape.ATTRIBUTES_CHANGED))
-//		{	
-//			refreshAttributeCMB();
-//			replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());
-//			
-//			FilterSettingPanel theSettingPanel= filter2SettingPanelMap.get((CompositeFilter)cmbSelectFilter.getSelectedItem());
-//			if (theSettingPanel != null) {
-//				theSettingPanel.refreshIndicesForWidgets();
-//			}
-//		}
+	@Override
+	public void handleRowCreations(CyTable table, List<CyRow> newRows) {
+		handleAttributesChanged();
 	}
-
+	
+	@Override
+	public void handleRowSets(CyTable table, List<RowSet> rowSets) {
+		handleAttributesChanged();
+	}
+	
+	void handleAttributesChanged() {
+		refreshAttributeCMB();
+		replaceFilterSettingPanel((CompositeFilter)cmbSelectFilter.getSelectedItem());
+		
+		FilterSettingPanel theSettingPanel= filter2SettingPanelMap.get(cmbSelectFilter.getSelectedItem());
+		if (theSettingPanel != null) {
+			theSettingPanel.refreshIndicesForWidgets();
+		}
+		updateFeedbackTableModel();
+	}
+	
 	@Override
 	public void handleEvent(SessionLoadedEvent e) {
 		updateFeedbackTableModel();
@@ -233,38 +243,31 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		updateFeedbackTableModel();
 	}
 	
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param arg0 DOCUMENT ME!
-	 */
-//	// TODO: Port this
-//	public void onSelectEvent(SelectEvent event) {
-//		if (((event.getTargetType() == SelectEvent.SINGLE_NODE)
-//		       || (event.getTargetType() == SelectEvent.NODE_SET))) {
-//			updateFeedbackTableModel();
-//		} 
-//		if (((event.getTargetType() == SelectEvent.SINGLE_EDGE)
-//			       || (event.getTargetType() == SelectEvent.EDGE_SET))) {
-//				updateFeedbackTableModel();
-//		} 		
-//	}
-
 	@Override
 	public void handleEvent(SetCurrentNetworkViewEvent e) {
 		handleNetworkFocused(e.getNetworkView());
 	}
 
 	@Override
-	public void handleEvent(NetworkDestroyedEvent e) {
+	public void handleEvent(NetworkAboutToBeDestroyedEvent e) {
 		enableForNetwork();
 		updateFeedbackTableModel();
+		
+		CyNetwork network = e.getNetwork();
+		rowUpdateService.stopTracking(this, network.getDefaultNetworkTable());
+		rowUpdateService.stopTracking(this, network.getDefaultNodeTable());
+		rowUpdateService.stopTracking(this, network.getDefaultEdgeTable());
 	}
 
 	@Override
 	public void handleEvent(NetworkAddedEvent e) {
 		enableForNetwork();
 		updateFeedbackTableModel();
+
+		CyNetwork network = e.getNetwork();
+		rowUpdateService.startTracking(this, network.getDefaultNetworkTable());
+		rowUpdateService.startTracking(this, network.getDefaultNodeTable());
+		rowUpdateService.startTracking(this, network.getDefaultEdgeTable());
 	}
 
 	public void updateFeedbackTableModel(){		
@@ -465,9 +468,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		cmbSelectFilter.addItemListener(this);
 		cmbAttributes.addItemListener(this);
 		
-//		// TODO: Port this
-//		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_TITLE_MODIFIED, this);
-//
 		btnSelectAll.addActionListener(this);
 		btnDeSelect.addActionListener(this);
 	}

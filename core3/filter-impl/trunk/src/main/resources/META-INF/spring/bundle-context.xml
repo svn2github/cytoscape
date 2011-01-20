@@ -24,6 +24,7 @@
           class="org.cytoscape.filter.internal.filters.view.FilterMainPanel">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="filterPlugin" />
+		<constructor-arg ref="cyTableRowUpdateServiceRef" />
 	</bean>
 
 	<bean id="filterCytoPanelComponent"
