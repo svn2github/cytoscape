@@ -20,6 +20,5 @@
 
 	<context:annotation-config />
 	
-	<bean id="webServiceClientManager" class="org.cytoscape.webservice.internal.WebServiceClientManagerImpl" />
 
 </beans>
