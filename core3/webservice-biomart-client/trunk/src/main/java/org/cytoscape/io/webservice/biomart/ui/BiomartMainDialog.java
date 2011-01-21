@@ -39,13 +39,11 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.webservice.biomart.BiomartClient;
-import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskManager;
@@ -89,7 +87,7 @@ public final class BiomartMainDialog extends JDialog {
 
 		tunablePanel.add(tPanel);
 
-		panel = new BiomartAttrMappingPanel(client.getRestClient(), taskManager, appManager, tblManager, app.getJFrame());
+		panel = new BiomartAttrMappingPanel(client, taskManager, appManager, tblManager, app.getJFrame());
 		client.setGUI(panel);
 		
 		tabs.addTab("Query", panel);

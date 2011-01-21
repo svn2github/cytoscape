@@ -56,11 +56,8 @@ public class ShowBiomartGUIAction extends AbstractCyAction {
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		// Lazy instantiation. This process depends on network connection.
-		if (dialog == null) {
-			// Prepare repository data.
-			
+		if (dialog == null) {			
 			logger.debug("BioMart Dialog initialization process start.");
-			//initDataSource();
 			dialog = new BiomartMainDialog(client, taskManager, appManager, tblManager, app);
 			logger.info("BioMart Client dialog initialized.");
 		}
@@ -69,38 +66,5 @@ public class ShowBiomartGUIAction extends AbstractCyAction {
 		dialog.setVisible(true);
 		
 		logger.info("BioMart Client initialized.");
-	}
-	
-
-	private List<String> initDataSource() {
-		final ValuedTask<LoadRepositoryResult> firstTask = new LoadRepositoryTask(client.getRestClient());
-		final ValuedTaskExecutor<LoadRepositoryResult> ex = 
-			new ValuedTaskExecutor<LoadRepositoryResult>(firstTask);
-		final BioMartTaskFactory tf = new BioMartTaskFactory(ex);
-		taskManager.setParent(dialog);
-		taskManager.execute(tf);
-
-		LoadRepositoryResult result;
-		List<String> dsList = null;
-		
-		//FIXME
-		try {
-			result = ex.get();
-
-//			this.datasourceMap = result.getDatasourceMap();
-			dsList = result.getSortedDataSourceList();
-			System.out.println("GOT datasource list from task: " + dsList);
-//			for (String ds : dsList)
-//				this.databaseComboBox.addItem(ds);
-
-		} catch (CancellationException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
-		
-		return dsList;
 	}
 }

@@ -48,6 +48,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import org.cytoscape.io.webservice.biomart.BiomartClient;
 import org.cytoscape.io.webservice.biomart.BiomartQuery;
 import org.cytoscape.io.webservice.biomart.rest.Attribute;
 import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
@@ -72,9 +73,7 @@ import org.cytoscape.work.ValuedTask;
 import org.cytoscape.work.ValuedTaskExecutor;
 import org.cytoscape.work.swing.GUITaskManager;
 
-/**
- *
- */
+
 public class BiomartAttrMappingPanel extends AttributeImportPanel {
 
 	private static final long serialVersionUID = 3574198525811249639L;
@@ -105,8 +104,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	private final CyTableManager tblManager;
 
 	private final Window parent;
-	
-	private final BiomartRestClient restClient;
+		
+	private final BiomartClient client;
 
 	/**
 	 * Creates a new BiomartNameMappingPanel object.
@@ -117,13 +116,13 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	 *            DOCUMENT ME!
 	 * @throws Exception
 	 */
-	public BiomartAttrMappingPanel(final BiomartRestClient client,
+	public BiomartAttrMappingPanel(final BiomartClient client,
 			final TaskManager taskManager,
 			final CyApplicationManager appManager,
 			final CyTableManager tblManager, final Window parent) {
 		super(LOGO, "Biomart", "Import Settings");
 
-		this.restClient = client;
+		this.client = client;
 		this.taskManager = taskManager;
 		this.appManager = appManager;
 		this.tblManager = tblManager;
@@ -148,13 +147,13 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		loadMartServiceList();
 
 		// Load available filters for current source.
-		//loadFilter();
+		loadFilter();
 	}
 
 	public void loadMartServiceList() {
 
 		final ValuedTask<LoadRepositoryResult> firstTask = new LoadRepositoryTask(
-				restClient);
+				client.getRestClient());
 		ValuedTaskExecutor<LoadRepositoryResult> ex = new ValuedTaskExecutor<LoadRepositoryResult>(
 				firstTask);
 		final BioMartTaskFactory tf = new BioMartTaskFactory(ex);
@@ -232,7 +231,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 			System.out.println("Calling attribute update task.");
 
 			final ImportAttributeListTaskFactory tf = new ImportAttributeListTaskFactory(
-					datasourceName, restClient);
+					datasourceName, client.getRestClient());
 			final ImportAttributeListTask firstTask = (ImportAttributeListTask) tf
 					.getTaskIterator().next();
 			taskManager.executeAndWait(tf);
@@ -263,7 +262,6 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 				}
 			}
 
-			System.out.println("!!!!!!!!! attribute update task 1.");
 
 			this.attrNameMap.put(selectedDBName, names);
 			Collections.sort(order);
@@ -281,7 +279,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		} else if (type.equals(SourceType.FILTER)) {
 
 			final ImportFilterTaskFactory tf = new ImportFilterTaskFactory(
-					datasourceName, restClient);
+					datasourceName, client.getRestClient());
 			final ImportFilterTask firstTask = (ImportFilterTask) tf
 					.getTaskIterator().next();
 			tf.setTask(firstTask);
@@ -404,25 +402,11 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	// return mappedKeys;
 	// }
 
-	private BiomartQuery importAttributesFromService(Dataset dataset,
-			Attribute[] attrs, Filter[] filters, String keyInHeader,
-			String keyAttrName) {
-
-		final String query = XMLQueryBuilder.getQueryString(dataset, attrs,
-				filters);
-		
-		return new BiomartQuery(query, keyAttrName);
-		
-
-		// AttributeImportQuery qObj = new AttributeImportQuery(query2, key,
-		// keyAttrName);
-
-	}
+	
 
 	@Override
 	protected void importAttributes() {
-		
-
+		taskManager.execute(client);
 	}
 	
 	public BiomartQuery getTableImportQuery() {
@@ -489,6 +473,16 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		// Create query
 		return importAttributesFromService(dataset, attrs, filters, keyInHeader,
 				keyAttrName);
+	}
+	
+	private BiomartQuery importAttributesFromService(Dataset dataset,
+			Attribute[] attrs, Filter[] filters, String keyInHeader,
+			String keyAttrName) {
+
+		final String query = XMLQueryBuilder.getQueryString(dataset, attrs,
+				filters);
+		
+		return new BiomartQuery(query, keyAttrName);
 	}
 
 }
