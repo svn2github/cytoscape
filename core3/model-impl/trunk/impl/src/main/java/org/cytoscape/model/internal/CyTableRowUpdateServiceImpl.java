@@ -113,7 +113,7 @@ class CyTableRowUpdateServiceImpl
 	}
 
 	@Override
-	public void handleEvent(final RowsAboutToChangeEvent e) {
+	public synchronized void handleEvent(final RowsAboutToChangeEvent e) {
 		final CyTable table = e.getTable();
 		if (!tableToListenersMap.containsKey(table))
 			return;
@@ -123,7 +123,7 @@ class CyTableRowUpdateServiceImpl
 	}
 
 	@Override
-	public void handleEvent(final RowsFinishedChangingEvent e) {
+	public synchronized void handleEvent(final RowsFinishedChangingEvent e) {
 		final CyTable table = e.getTable();
 		if (!tableToListenersMap.containsKey(table))
 			return;
@@ -155,15 +155,15 @@ class CyTableRowUpdateServiceImpl
 		}
 	}
 
-	private void rowUpdated(final CyTable table, final CyRow row, String columnName,
-				final Object newValue, final Object newRawValue)
+	private synchronized void rowUpdated(final CyTable table, final CyRow row, String columnName,
+					     final Object newValue, final Object newRawValue)
 	{
  		final List<RowSet> rowSets = tableToRowSetsMap.get(table);
 		rowSets.add(new RowSet(row, columnName, newValue, newRawValue));
 		fireUpdateEvents(table);
 	}
 
-	private void rowCreated(final CyTable table, final CyRow row) {
+	private synchronized void rowCreated(final CyTable table, final CyRow row) {
 		final Set<RowSetMicroListenerProxy> proxies = tableToProxyListenersMap.get(table);
 		proxies.add(new RowSetMicroListenerProxy(this, eventHelper, table, row));
 
