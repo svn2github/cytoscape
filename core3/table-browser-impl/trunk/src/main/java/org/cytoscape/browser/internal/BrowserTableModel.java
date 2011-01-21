@@ -139,7 +139,8 @@ public class BrowserTableModel
 
 		int selectedCount = 0;
 		for (final CyRow row : rows) {
-			if (row.get(CyNetwork.SELECTED, Boolean.class))
+			final Boolean selected = row.get(CyNetwork.SELECTED, Boolean.class);
+			if (selected != null && selected)
 				++selectedCount;
 		}
 
