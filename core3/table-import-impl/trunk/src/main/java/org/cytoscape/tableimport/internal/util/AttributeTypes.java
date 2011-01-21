@@ -25,7 +25,7 @@ public class AttributeTypes {
     /**
      * This type corresponds to an attribute which has not been defined.
      */
-    public final byte TYPE_UNDEFINED = -1;
+    public static final byte TYPE_UNDEFINED = -1;
 
 
     /**
