@@ -77,7 +77,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	protected final int startLineNumber;
 	protected final String commentChar;
 
-	private CyNetwork network;
+	protected CyNetwork network;
 	
 	private static final Logger logger = LoggerFactory.getLogger(NetworkTableReader.class);
 
@@ -128,8 +128,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 		InputStream is = null;
 		String line;
 
-		network.getCyRow().set("name", CytoscapeServices.cyNetworkNaming.getSuggestedNetworkTitle(sourceURL.toString()));
-		
+		network.getCyRow().set("name", this.getNetworkName());
 		parser.setNetwork(network);
 		
 		try {
@@ -146,7 +145,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 
 				while ((line = bufRd.readLine()) != null) {
 					/*
-					 * Ignore Empty & Commnet lines.
+					 * Ignore Empty & Comment lines.
 					 */
 					if ((commentChar != null) && (commentChar.trim().length() != 0)
 						&& line.startsWith(commentChar)) {
@@ -176,37 +175,6 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 		}
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	//@Override
-	public Long[] getNodeIndicesArray() {
-		final Long[] nodeArray = new Long[nodeList.size()];
-
-		for (int i = 0; i < nodeArray.length; i++) {
-			nodeArray[i] = nodeList.get(i);
-		}
-
-		return nodeArray;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	//@Override
-	public Long[] getEdgeIndicesArray() {
-		final Long[] edgeArray = new Long[edgeList.size()];
-
-		for (int i = 0; i < edgeArray.length; i++) {
-			edgeArray[i] = edgeList.get(i);
-		}
-
-		return edgeArray;
-	}
 
 	/**
 	 *  DOCUMENT ME!
@@ -226,17 +194,11 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	 */
 	public String getReport() {
 
-		return null;
-		/*
 		final StringBuffer sb = new StringBuffer();
-		final Set<Integer> uniqueNodes = new TreeSet<Integer>(nodeList);
-		final Set<Integer> uniqueEdges = new TreeSet<Integer>(edgeList);
+		sb.append(network.getNodeCount() + " nodes and " + network.getEdgeCount() + " edges are loaded.\n");
+		sb.append("New network name is " + super.getNetworkName() + "\n\n");
 
-		sb.append(uniqueNodes.size() + " nodes and " + uniqueEdges.size() + " edges are loaded.\n");
-		//sb.append("New network name is " + super.getNetworkName() + "\n\n");
-
-		return sb.toString();
-		*/
+		return sb.toString();		
 	}
 	
 	public void setNetwork(CyNetwork network){
