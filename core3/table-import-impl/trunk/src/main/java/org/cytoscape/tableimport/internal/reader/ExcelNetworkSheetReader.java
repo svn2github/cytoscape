@@ -37,7 +37,6 @@
 package org.cytoscape.tableimport.internal.reader;
 
 import java.io.IOException;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -96,6 +95,9 @@ public class ExcelNetworkSheetReader extends NetworkTableReader {
 	 */
 	@Override
 	public void readTable() throws IOException {
+		network.getCyRow().set("name", this.getNetworkName());		
+		parser.setNetwork(network);
+
 		Row row;
 		int rowCount = startLineNumber;
 		String[] cellsInOneRow;
