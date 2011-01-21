@@ -205,6 +205,16 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	
 	@Override
 	public void handleRowSets(CyTable table, List<RowSet> rowSets) {
+		boolean isSelection = true;
+		for (RowSet change : rowSets) {
+			if (!change.getColumn().equals(CyNetwork.SELECTED)) {
+				isSelection = false;
+				break;
+			}
+		}
+		if (isSelection) {
+			return;
+		}
 		handleAttributesChanged();
 	}
 	
