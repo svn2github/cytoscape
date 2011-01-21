@@ -45,7 +45,7 @@ public class AbstractTaskManagerTest {
 			return this.tunableInterceptor;
 		}
 
-		protected void execute(TaskFactory factory, boolean wait) {
+		public void execute(TaskFactory factory) {
 		}
 	}
 

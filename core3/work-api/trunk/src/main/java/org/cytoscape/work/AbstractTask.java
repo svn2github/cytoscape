@@ -38,6 +38,8 @@ public abstract class AbstractTask implements Task {
 	 *  a <code>Task</code>'s checking whether "cancelled" is true or not and then taking appropriate action.
 	 */
 	public void cancel() {
+		System.out.println("entering AbstractTask cancel");
 		cancelled = true;
+		System.out.println("exiting AbstractTask cancel");
 	}
 }

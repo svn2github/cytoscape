@@ -20,13 +20,5 @@ public abstract class AbstractTaskManager implements TaskManager {
 		return tunableInterceptor.hasTunables(o);
 	}
 
-	final public void execute(TaskFactory factory) {
-		execute(factory,false);
-	}
-
-	final public void executeAndWait(TaskFactory factory) {
-		execute(factory,true);
-	}
-
-	abstract protected void execute(TaskFactory factory, boolean wait);
+	abstract public void execute(TaskFactory factory);
 }
