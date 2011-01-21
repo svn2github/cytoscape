@@ -1,14 +1,7 @@
 /*
  File: FlagAndSelectionHandler.java
 
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2011, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,15 +26,12 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
-//---------------------------------------------------------------------------
-//  $Revision: 13022 $ 
-//  $Date: 2008-02-11 13:59:26 -0800 (Mon, 11 Feb 2008) $
-//  $Author: mes $
-//---------------------------------------------------------------------------
+*/
 package org.cytoscape.ding.impl;
 
+
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,11 +40,19 @@ import org.cytoscape.ding.EdgeView;
 import org.cytoscape.ding.GraphView;
 import org.cytoscape.ding.GraphViewChangeEvent;
 import org.cytoscape.ding.GraphViewChangeListener;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.ding.NodeView;
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.events.RowsAboutToChangeEvent;
+import org.cytoscape.model.events.RowsFinishedChangingEvent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * This class synchronizes the flagged status of nodes and edges as held by a
@@ -65,12 +63,9 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class FlagAndSelectionHandler implements GraphViewChangeListener {
-
 	private static final Logger logger = LoggerFactory.getLogger(FlagAndSelectionHandler.class);
-
-	private static final String SELECT_ATTR = "selected";
-
 	private final GraphView view;
+	private final CyEventHelper eventHelper;
 
 	/**
 	 * Standard constructor takes the flag filter and the view that should be
@@ -78,8 +73,10 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 	 * and view by turning on flags or selections that are currently on in one
 	 * of the two objects.
 	 */
-	public FlagAndSelectionHandler(final GraphView view) {
+	public FlagAndSelectionHandler(final GraphView view, final CyEventHelper eventHelper) {
 		this.view = view;
+		this.eventHelper = eventHelper;
+
 		syncFilterAndView();
 		view.addGraphViewChangeListener(this);
 	}
@@ -88,7 +85,7 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 		final Set<CyNode> selectedNodes = new HashSet<CyNode>();
 
 		for (final CyNode n : view.getNetwork().getNodeList())
-			if (n.getCyRow().get(SELECT_ATTR, Boolean.class))
+			if (n.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
 				selectedNodes.add(n);
 
 		return selectedNodes;
@@ -98,7 +95,7 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 		final Set<CyEdge> selectedEdges = new HashSet<CyEdge>();
 
 		for (final CyEdge n : view.getNetwork().getEdgeList())
-			if (n.getCyRow().get(SELECT_ATTR, Boolean.class))
+			if (n.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
 				selectedEdges.add(n);
 
 		return selectedEdges;
@@ -136,12 +133,25 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 		}
 
 		// flag all nodes that are selected but not currently flagged
-		for (final CyNode node : selectedNodes)
-			node.getCyRow().set(SELECT_ATTR, true);
+		select(selectedNodes, true);
 
 		// flag all edges that are selected but not currently flagged
-		for (final CyEdge edge : selectedEdges)
-			edge.getCyRow().set(SELECT_ATTR, true);
+		select(selectedEdges, true);
+	}
+
+	private void select(final Collection<? extends CyTableEntry> nodesOrEdges, final boolean selected) {
+		if (nodesOrEdges.isEmpty())
+			return;
+
+		final CyTable table = nodesOrEdges.iterator().next().getCyRow().getDataTable();
+		try {
+			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, table));
+
+			for (final CyTableEntry nodeOrEdge : nodesOrEdges)
+				nodeOrEdge.getCyRow().set(CyNetwork.SELECTED, selected);
+		} finally {
+			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, table));
+		}
 	}
 
 	/**
@@ -163,9 +173,7 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 			// Nodes are selected.
 			final CyNode[] selectedNodes = event.getSelectedNodes();
 
-			for (final CyNode node : selectedNodes)
-				node.getCyRow().set(SELECT_ATTR, true);
-			
+			select(Arrays.asList(selectedNodes), true);
 		} else if (event.isNodesUnselectedType() || event.isNodesHiddenType()) {
 			final CyNode[] objIndecies;
 			if (event.isNodesUnselectedType())
@@ -173,13 +181,10 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 			else
 				objIndecies = event.getHiddenNodes();
 
-			for (final CyNode n : objIndecies)
-				n.getCyRow().set(SELECT_ATTR, false);
+			select(Arrays.asList(objIndecies), false);
 		} else if (event.isEdgesSelectedType()) {
 			final CyEdge[] objIndecies = event.getSelectedEdges();
-
-			for (final CyEdge n : objIndecies)
-				n.getCyRow().set(SELECT_ATTR, true);
+			select(Arrays.asList(objIndecies), true);
 		} else if (event.isEdgesUnselectedType() || event.isEdgesHiddenType()) {
 			final CyEdge[] objIndecies;
 			if (event.isEdgesUnselectedType())
@@ -187,9 +192,7 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 			else
 				objIndecies = event.getHiddenEdges();
 
-			for (final CyEdge n : objIndecies) {
-				n.getCyRow().set(SELECT_ATTR, false);
-			}
+			select(Arrays.asList(objIndecies), false);
 		}
 
 		logger.debug("Finished select operation: Time = "

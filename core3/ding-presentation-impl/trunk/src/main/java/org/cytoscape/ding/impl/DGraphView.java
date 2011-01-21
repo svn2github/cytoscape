@@ -466,7 +466,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		// networkVisualPropertySet(cyNetworkView, vp,
 		// cyNetworkView.getVisualProperty(vp));
 
-		new FlagAndSelectionHandler(this);
+		new FlagAndSelectionHandler(this, eventHelper);
 
 		// Register this presentation as listeners 
 		eventHelper.addMicroListener(this, NetworkViewChangeMicroListener.class, cyNetworkView);
