@@ -40,7 +40,6 @@ class CyTableRowUpdateServiceImpl
 	CyTableRowUpdateServiceImpl(final CyEventHelper eventHelper,
 				    final CyServiceRegistrar serviceRegistrar)
 	{
-System.err.println("Entering constructor for CyTableRowUpdateServiceImpl");
 		this.eventHelper = eventHelper;
 		this.serviceRegistrar = serviceRegistrar;
 		tableToListenersMap = new HashMap<CyTable, Set<CyTableRowUpdateMicroListener>>();
@@ -53,7 +52,6 @@ System.err.println("Entering constructor for CyTableRowUpdateServiceImpl");
 		final Dictionary emptyProps = new Hashtable();
 		serviceRegistrar.registerService(this, RowsAboutToChangeListener.class, emptyProps);
 		serviceRegistrar.registerService(this, RowsFinishedChangingListener.class, emptyProps);
-System.err.println("Exiting constructor for CyTableRowUpdateServiceImpl");
 	}
 	
 	@Override
