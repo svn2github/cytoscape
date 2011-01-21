@@ -44,6 +44,7 @@ import javax.swing.JTabbedPane;
 
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.webservice.biomart.BiomartClient;
+import org.cytoscape.io.webservice.biomart.task.LoadRepositoryResult;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskManager;
@@ -67,7 +68,7 @@ public final class BiomartMainDialog extends JDialog {
 	 */
 	public BiomartMainDialog(final BiomartClient client, final TaskManager taskManager,
 			final CyApplicationManager appManager,
-			final CyTableManager tblManager, final CySwingApplication app) {
+			final CyTableManager tblManager, final CySwingApplication app, final LoadRepositoryResult result) {
 		super();
 		setTitle("BioMart Web Service Client");
 
@@ -87,7 +88,7 @@ public final class BiomartMainDialog extends JDialog {
 
 		tunablePanel.add(tPanel);
 
-		panel = new BiomartAttrMappingPanel(client, taskManager, appManager, tblManager, app.getJFrame());
+		panel = new BiomartAttrMappingPanel(result, client, taskManager, appManager, tblManager, this);
 		client.setGUI(panel);
 		
 		tabs.addTab("Query", panel);

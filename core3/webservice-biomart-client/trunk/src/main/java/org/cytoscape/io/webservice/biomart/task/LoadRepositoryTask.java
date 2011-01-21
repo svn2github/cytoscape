@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.ValuedTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LoadRepositoryTask implements ValuedTask<LoadRepositoryResult> {
+public class LoadRepositoryTask extends AbstractTask {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(LoadRepositoryTask.class);
@@ -22,8 +23,8 @@ public class LoadRepositoryTask implements ValuedTask<LoadRepositoryResult> {
 
 	private Map<String, Map<String, String>> reg;
 	
-	private boolean cancel = false;
-	
+
+	private LoadRepositoryResult result;
 
 	// These databases are not compatible with this UI.
 	private static final List<String> databaseFilter = new ArrayList<String>();
@@ -45,7 +46,7 @@ public class LoadRepositoryTask implements ValuedTask<LoadRepositoryResult> {
 
 
 	@Override
-	public LoadRepositoryResult run(TaskMonitor taskMonitor) {
+	public void run(TaskMonitor taskMonitor) {
 
 		taskMonitor.setProgress(0.1);
 		taskMonitor.setStatusMessage("Loading list of available marts...");
@@ -100,13 +101,10 @@ public class LoadRepositoryTask implements ValuedTask<LoadRepositoryResult> {
 		taskMonitor.setStatusMessage("Finished: " + dsList.size());
 		taskMonitor.setProgress(1.0);
 		
-		return new LoadRepositoryResult(this.datasourceMap, this.dsList);
+		result = new LoadRepositoryResult(this.datasourceMap, this.dsList);
 	}
-
-	@Override
-	public void cancel() {
-		//TODO: implement this
-		boolean cancel = true;		
+	
+	public LoadRepositoryResult getResult() {
+		return result;
 	}
-
 }
