@@ -60,7 +60,8 @@ public class PsiMiCyFileFilter implements CyFileFilter {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		int linesToCheck = DEFAULT_LINES_TO_CHECK;
 		while (linesToCheck > 0) {
-			if (reader.readLine().contains(PSI_MI_XML_NAMESPACE)) {
+			String line = reader.readLine();
+			if (line != null && line.contains(PSI_MI_XML_NAMESPACE)) {
 				return true;
 			}
 			linesToCheck--;
