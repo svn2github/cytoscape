@@ -647,4 +647,25 @@ public abstract class AbstractCyTableTest {
 		assertEquals(matchingRow.get("s1", String.class), "abc");
 		assertEquals(matchingRow.get("x", Integer.class), Integer.valueOf(33));
 	}
+
+	@Test
+	public void testVirtualColumnDelete() {
+		table.createColumn("x", Long.class);
+		table2.createColumn("x2", Long.class);
+		table2.createColumn("s", String.class);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x");
+		assertNotNull(table.getType("s1"));
+		table.deleteColumn("s1");
+		assertNull(table.getType("s1"));
+	}
+
+	@Test
+	public void testVirtualColumnListElementType() {
+		table.createColumn("x", Long.class);
+		table2.createColumn("x2", Long.class);
+		table2.createListColumn("b", Boolean.class);
+		table.addVirtualColumn("b1", "b", table2, "x2", "x");
+		assertEquals("Virtual column list element type should have been Boolean!",
+			     Boolean.class, table.getListElementType("b1"));
+	}
 }

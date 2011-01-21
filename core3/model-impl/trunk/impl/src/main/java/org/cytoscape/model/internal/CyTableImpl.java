@@ -290,13 +290,20 @@ public final class CyTableImpl implements CyTable {
 	}
 
 	@Override
-	public void deleteColumn(String columnName) {
-		if (attributes.containsKey(columnName)) {
+	public void deleteColumn(final String columnName) {
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (attributes.containsKey(columnName) || virtColumn != null) {
 			synchronized(this) {
-				attributes.remove(columnName);
-				reverse.remove(columnName);
-				types.remove(columnName);
-				listElementTypes.remove(columnName);
+				if (virtColumn != null) {
+					virtualColumnMap.remove(columnName);
+					types.remove(columnName);
+					listElementTypes.remove(columnName);
+				} else {
+					attributes.remove(columnName);
+					reverse.remove(columnName);
+					types.remove(columnName);
+					listElementTypes.remove(columnName);
+				}
 			}
 
 			// This event must be synchronous!
@@ -320,8 +327,8 @@ public final class CyTableImpl implements CyTable {
 
 			if (type == List.class)
 				throw new IllegalArgumentException(
-								   "use createListColumn() to create List columns instead of createColumn for attribute '"
-								   + columnName + "'!");
+						"use createListColumn() to create List columns instead of createColumn for attribute '"
+						+ columnName + "'!");
 
 			types.put(columnName, type);
 			attributes.put(columnName, new HashMap<Object, Object>());
@@ -818,6 +825,10 @@ public final class CyTableImpl implements CyTable {
 			throw new IllegalArgumentException("\"sourceJoinKey\" has a different type from \"targetJoinKey\"!");
 
 		types.put(virtualColumn, sourceColumnType);
+		if (sourceColumnType == List.class) {
+			final Class<?> listElementType = sourceTable.getListElementType(sourceColumn);
+			listElementTypes.put(virtualColumn, listElementType);
+		}
 		virtualColumnMap.put(
 			virtualColumn,
 			new VirtualColumn(sourceTable, sourceColumn, this, sourceJoinKey, targetJoinKey));
