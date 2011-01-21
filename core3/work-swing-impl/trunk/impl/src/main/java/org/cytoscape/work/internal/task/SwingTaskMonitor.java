@@ -3,6 +3,7 @@ package org.cytoscape.work.internal.task;
 
 import java.awt.Window;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
@@ -19,6 +20,7 @@ class SwingTaskMonitor implements TaskMonitor {
 	private String title = null;
 	private String statusMessage = null;
 	private int progress = 0;
+	private Future<?> future = null;
 
 	public SwingTaskMonitor(final ExecutorService cancelExecutorService, final Window parent) {
 		this.cancelExecutorService = cancelExecutorService;
@@ -27,6 +29,10 @@ class SwingTaskMonitor implements TaskMonitor {
 
 	public void setTask(final Task newTask) {
 		this.task = newTask;
+	}
+
+	public void setFuture(final Future<?> future) {
+		this.future = future;
 	}
 
 	public synchronized void open() {
@@ -61,6 +67,9 @@ class SwingTaskMonitor implements TaskMonitor {
 		Runnable cancel = new Runnable() {
 			public void run() {
 				task.cancel();
+				try { Thread.sleep(1000); } catch (Exception e) {}
+				if ( future != null && !future.isDone() && !future.isCancelled() )
+					future.cancel(true);
 			}
 		};
 		cancelExecutorService.submit(cancel);

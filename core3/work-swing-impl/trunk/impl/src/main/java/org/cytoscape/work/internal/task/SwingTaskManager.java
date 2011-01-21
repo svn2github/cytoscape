@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.cytoscape.work.AbstractTaskManager;
 import org.cytoscape.work.Task;
@@ -123,7 +124,7 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	}
 
 	@Override
-	protected void execute(final TaskFactory factory, boolean wait) {
+	public void execute(final TaskFactory factory) {
 		final SwingTaskMonitor taskMonitor = new SwingTaskMonitor(cancelExecutorService, parent);
 		
 		TaskIterator taskIterator;
@@ -135,7 +136,7 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 				throw new IllegalArgumentException("Tunables are not valid");
 
 			taskIterator = factory.getTaskIterator();
-		
+
 			// Get the first task and display its tunables.  This is a bit of a hack.  
 			// We do this outside of the thread so that the task monitor only gets
 			// displayed AFTER the first tunables dialog gets displayed.
@@ -153,41 +154,25 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 		// create the task thread
 		final Runnable tasks = new TaskThread(first, taskMonitor, taskIterator); 
 
-		long startTime = System.currentTimeMillis();
 		// submit the task thread for execution
 		final Future<?> executorFuture = taskExecutorService.submit(tasks);
 
 		openTaskMonitorOnDelay(taskMonitor, executorFuture);
-		
-		if(wait) {
-			try {
-				executorFuture.get();
-				long endTime = System.currentTimeMillis();
-				double sec = (endTime - startTime) / (1000.0);
-				System.out.println("Wait Task Finished in " + sec + " sec.");
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				executorFuture.cancel(true);
-				taskExecutorService.shutdown();
-				timedDialogExecutorService.shutdown();
-				taskMonitor.close();
-			}
-		}
-    }
+	}
 
 	// This creates a thread on delay that conditionally displays the task monitor gui
 	// if the task thread has not yet finished.
-	private void openTaskMonitorOnDelay(final SwingTaskMonitor taskMonitor, final Future<?> executorFuture) {
+	private void openTaskMonitorOnDelay(final SwingTaskMonitor taskMonitor, 
+	                                    final Future<?> executorFuture) {
 		final Runnable timedOpen = new Runnable() {
-			
 			public void run() {
 				if (!(executorFuture.isDone() || executorFuture.isCancelled())) {
+					taskMonitor.setFuture(executorFuture);
 					taskMonitor.open();
 				}
 			}
 		};
-		
+
 		timedDialogExecutorService.schedule(timedOpen, DELAY_BEFORE_SHOWING_DIALOG, DELAY_TIMEUNIT);
 	}
 
@@ -196,7 +181,7 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 		private final SwingTaskMonitor taskMonitor;
 		private final TaskIterator taskIterator;
 		private final Task first;
-		
+
 		TaskThread(final Task first, final SwingTaskMonitor tm, final TaskIterator ti) {
 			this.first = first;
 			this.taskMonitor = tm;
@@ -207,6 +192,7 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 			try {
 				// actually run the first task 
 				// don't dispaly the tunables here - they were handled above. 
+				taskMonitor.setTask(first);
 				first.run(taskMonitor);
 
 				if (taskMonitor.cancelled())
@@ -215,6 +201,7 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 				// now execute all subsequent tasks
 				while (taskIterator.hasNext()) {
 					final Task task = taskIterator.next();
+					taskMonitor.setTask(task);
 
 					if (!displayTunables(task))
 						return;
@@ -223,20 +210,20 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 
 					if (taskMonitor.cancelled())
 						break;
-				}				
+				}
 			} catch (Exception exception) {
-				logger.warn("Caught exception executing task. ", exception);	
+				logger.warn("Caught exception executing task. ", exception);
 				taskMonitor.showException(exception);
 			}
-			
+
 			// clean up the task monitor
 			if (taskMonitor.isOpened() && !taskMonitor.isShowingException())
 				taskMonitor.close();
-			
+
 		}
 	}
 
-	private boolean displayTunables(final Task task) {
+	private boolean displayTunables(final Task task) throws Exception {
 		if (tunableInterceptor == null)
 			return true;
 
@@ -250,7 +237,7 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	@Override
 	public JPanel getConfigurationPanel(final TaskFactory taskFactory) {
 		tunableInterceptor.loadTunables(taskFactory);
-                return ((GUITunableInterceptor)tunableInterceptor).getUI(taskFactory);
+		return ((GUITunableInterceptor)tunableInterceptor).getUI(taskFactory);
 	}
 }
 
