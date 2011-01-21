@@ -60,6 +60,7 @@ public class CyTableTest extends AbstractCyTableTest {
 		final Interpreter interpreter = new InterpreterImpl();
 		table = new CyTableImpl("homer", "SUID", Long.class, true, eventHelper, interpreter);
 		attrs = table.getRow(1L);
+		table2 = new CyTableImpl("marge", "SUID", Long.class, true, eventHelper, interpreter);
 	}
 
 	@After
@@ -188,5 +189,26 @@ public class CyTableTest extends AbstractCyTableTest {
 		assertNull(table.getLastInternalError());
 		attrs.set("a", compiler.getEquation());
 		assertNotNull(table.getLastInternalError());
+	}
+
+	@Test
+	public void testVirtualColumnWithAnEquationReference() {
+		table.createColumn("x", Integer.class);
+		table.createColumn("ss", String.class);
+		CyRow row1 = table.getRow(1L);
+		row1.set("x", 33);
+		table2.createColumn("x2", Integer.class);
+		CyRow row2 =  table2.getRow(1L);
+		row2.set("x2", 33);
+		table2.createColumn("s", String.class);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x");
+		row2.set("s", "abc");
+
+		final Map<String, Class<?>> varnameToTypeMap = new HashMap<String, Class<?>>();
+		varnameToTypeMap.put("s1", String.class);
+		compiler.compile("=\"XXX\"&$s1", varnameToTypeMap);
+		row1.set("ss", compiler.getEquation());
+
+		assertEquals(row1.get("ss", String.class), "XXXabc");
 	}
 }

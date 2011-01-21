@@ -54,7 +54,91 @@ import org.slf4j.LoggerFactory;
 
 
 public final class CyTableImpl implements CyTable {
-	private static int counter = 0;
+	private final class VirtualColumn {
+		private final CyTable sourceTable;
+		private final String sourceColumn;
+		private final Class<?> sourceColumnType;
+		private final Class<?> sourceColumnListElementType;
+		private final CyTableImpl targetTable;
+		private final String sourceJoinColumn;
+		private final Class<?> sourceJoinColumnType;
+		private final String targetJoinColumn;
+
+		VirtualColumn(final CyTable sourceTable, final String sourceColumn,
+			      final CyTableImpl targetTable, final String sourceJoinColumn,
+			      final String targetJoinColumn)
+		{
+			this.sourceTable                 = sourceTable;
+			this.sourceColumn                = sourceColumn;
+			this.sourceColumnType            = sourceTable.getType(sourceColumn);
+			this.sourceColumnListElementType = (sourceColumnType == List.class)
+				? sourceTable.getListElementType(sourceColumn) : null;
+			this.targetTable                 = targetTable;
+			this.sourceJoinColumn            = sourceJoinColumn;
+			this.sourceJoinColumnType        = sourceTable.getType(sourceJoinColumn);
+			this.targetJoinColumn            = targetJoinColumn;
+		}
+
+		Object getRawValue(final Object targetKey) {
+			final CyRow sourceRow = getSourceRow(targetKey);
+			return (sourceRow == null) ? null : sourceRow.getRaw(sourceColumn);
+		}
+
+		void setValue(final Object targetKey, final Object value) {
+			final CyRow sourceRow = getSourceRow(targetKey);
+			if (sourceRow == null)
+				throw new IllegalArgumentException("can't set a value for a virtual column!");
+			sourceRow.set(sourceColumn, value);
+		}
+
+		Object getValue(final Object targetKey) {
+			final CyRow sourceRow = getSourceRow(targetKey);
+			if (sourceRow == null)
+				return null;
+			final Object retValue = sourceRow.get(sourceColumn, sourceColumnType);
+			if (retValue == null)
+				targetTable.lastInternalError = sourceTable.getLastInternalError();
+			return retValue;
+		}
+
+		Object getListValue(final Object targetKey) {
+			final CyRow sourceRow = getSourceRow(targetKey);
+			if (sourceRow == null)
+				return null;
+			final Object retValue = sourceRow.getList(sourceColumn, sourceColumnListElementType);
+			if (retValue == null)
+				targetTable.lastInternalError = sourceTable.getLastInternalError();
+			return retValue;
+		}
+
+		private CyRow getSourceRow(final Object targetKey) {
+			final Object joinKey = targetTable.getValue(targetKey, targetJoinColumn);
+			if (joinKey == null)
+				return null;
+			final Set<CyRow> sourceRows = sourceTable.getMatchingRows(sourceJoinColumn,
+										  joinKey);
+			if (sourceRows.size() != 1)
+				return null;
+
+			return sourceRows.iterator().next();
+		}
+
+		Set<CyRow> getMatchingRows(final Object value) {
+			final Set<CyRow> sourceRows = sourceTable.getMatchingRows(sourceColumn, value);
+			final Set<CyRow> targetRows = new HashSet<CyRow>();
+			for (final CyRow sourceRow : sourceRows) {
+				final Object targetValue = sourceRow.get(sourceJoinColumn,
+									 sourceJoinColumnType);
+				if (targetValue != null) {
+					final Set<CyRow> rows =
+						targetTable.getMatchingRows(targetJoinColumn, targetValue);
+					targetRows.addAll(rows);
+				}
+			}
+			return targetRows;
+		}
+	}
+
 	private static final Logger logger = LoggerFactory.getLogger(CyTableImpl.class);
 
 	private final Set<String> currentlyActiveAttributes;
@@ -84,6 +168,8 @@ public final class CyTableImpl implements CyTable {
 	private final Interpreter interpreter;
 
 	private String lastInternalError = null;
+
+	private final Map<String, VirtualColumn> virtualColumnMap;
 
 	/**
 	 * Creates a new CyTableImpl object.
@@ -119,6 +205,8 @@ public final class CyTableImpl implements CyTable {
 		types.put(primaryKey, primaryKeyType);
 		attributes.put(primaryKey, new HashMap<Object, Object>());
 		reverse.put(primaryKey, new HashMap<Object, Set<Object>>());
+
+		virtualColumnMap = new HashMap<String, VirtualColumn>();
 	}
 
 	/**
@@ -349,6 +437,10 @@ public final class CyTableImpl implements CyTable {
 
 	@Override
 	synchronized public Set<CyRow> getMatchingRows(final String columnName, final Object value) {
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return virtColumn.getMatchingRows(value);
+
 		final Map<Object, Set<Object>> valueToKeysMap = reverse.get(columnName);
 
 		final Set<Object> keys = valueToKeysMap.get(value);
@@ -363,20 +455,23 @@ public final class CyTableImpl implements CyTable {
 	}
 
 	private void setX(final Object key, final String columnName, final Object value) {
+		if (columnName == null)
+			throw new NullPointerException("columnName must not be null!");
+		if (value == null)
+			throw new NullPointerException("value must not be null!");
+
 		Object newValue;
 		Object newRawValue;
 
 		synchronized(this) {
-			++counter;
-			if (columnName == null)
-				throw new NullPointerException("columnName must not be null!");
-			if (value == null)
-				throw new NullPointerException("value must not be null!");
-
 			final Class<?> columnType = types.get(columnName);
-			if (columnType == null || !attributes.containsKey(columnName))
-				throw new IllegalArgumentException("attribute: '" + columnName
-								   + "' does not yet exist!");
+
+			final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+			if (virtColumn == null) {
+				if (columnType == null || !attributes.containsKey(columnName))
+					throw new IllegalArgumentException("attribute: '" + columnName
+									   + "' does not yet exist!");
+			}
 
 			if (types.get(columnName) == List.class) {
 				setListX(key, columnName, value);
@@ -386,34 +481,39 @@ public final class CyTableImpl implements CyTable {
 			if (!(value instanceof Equation))
 				checkType(value);
 
-			Map<Object, Object> keyToValueMap = attributes.get(columnName);
-
-			final Class targetType = types.get(columnName);
-			if (!targetType.isAssignableFrom(value.getClass())
-			    && !EqnSupport.scalarEquationIsCompatible(value, targetType))
-				throw new IllegalArgumentException("value is not of type: "
-								   + types.get(columnName));
-
-			if (value instanceof Equation) {
-				newRawValue = value;
-				final Equation equation = (Equation)value;
-				// TODO this is an implicit addRow - not sure if we want to refactor this or not
-				keyToValueMap.put(key, equation);
-
-				final StringBuilder errorMsg = new StringBuilder();
-				newValue = EqnSupport.evalEquation(equation, key, interpreter,
-								   currentlyActiveAttributes, columnName,
-								   errorMsg, this);
-				lastInternalError = errorMsg.toString();
-				if (newValue == null)
-					logger.warn("attempted premature evaluation evaluation for "
-						    + equation);
+			if (virtColumn != null) {
+				virtColumn.setValue(key, value);
+				newValue = virtColumn.getValue(key);
+				newRawValue = virtColumn.getRawValue(key);
 			} else {
-				// TODO this is an implicit addRow - not sure if we want to refactor this or not
-				newRawValue = newValue = columnType.cast(value);
-				final Object oldValue = keyToValueMap.get(key);
-				keyToValueMap.put(key, newValue);
-				addToReverseMap(columnName, key, oldValue, newValue);
+				Map<Object, Object> keyToValueMap = attributes.get(columnName);
+
+				if (!columnType.isAssignableFrom(value.getClass())
+				    && !EqnSupport.scalarEquationIsCompatible(value, columnType))
+					throw new IllegalArgumentException("value is not of type: "
+									   + columnType);
+
+				if (value instanceof Equation) {
+					newRawValue = value;
+					final Equation equation = (Equation)value;
+					// TODO this is an implicit addRow - not sure if we want to refactor this or not
+					keyToValueMap.put(key, equation);
+
+					final StringBuilder errorMsg = new StringBuilder();
+					newValue = EqnSupport.evalEquation(equation, key, interpreter,
+									   currentlyActiveAttributes, columnName,
+									   errorMsg, this);
+					lastInternalError = errorMsg.toString();
+					if (newValue == null)
+						logger.warn("attempted premature evaluation evaluation for "
+							    + equation);
+				} else {
+					// TODO this is an implicit addRow - not sure if we want to refactor this or not
+					newRawValue = newValue = columnType.cast(value);
+					final Object oldValue = keyToValueMap.get(key);
+					keyToValueMap.put(key, newValue);
+					addToReverseMap(columnName, key, oldValue, newValue);
+				}
 			}
 		}
 
@@ -464,20 +564,26 @@ public final class CyTableImpl implements CyTable {
 								   "value is not a List equation of a compatible type for column '"
 								   + columnName + "'!");
 
-			Map<Object, Object> keyToValueMap = attributes.get(columnName);
-
-			// TODO this is an implicit addRow - not sure if we want to refactor this or not
-			final Object oldValue = keyToValueMap.get(key);
-			keyToValueMap.put(key, value);
-			if (value instanceof Equation) {
-				final StringBuilder errorMsg = new StringBuilder();
-				newValue = EqnSupport.evalEquation((Equation)value, suid, interpreter,
-								   currentlyActiveAttributes, columnName,
-								   errorMsg, this);
-				lastInternalError = errorMsg.toString();
+			final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+			if (virtColumn != null) {
+				virtColumn.setValue(key, value);
+				newValue = virtColumn.getListValue(key);
 			} else {
-				newValue = value;
-				addToReverseMap(columnName, key, oldValue, value);
+				Map<Object, Object> keyToValueMap = attributes.get(columnName);
+
+				// TODO this is an implicit addRow - not sure if we want to refactor this or not
+				final Object oldValue = keyToValueMap.get(key);
+				keyToValueMap.put(key, value);
+				if (value instanceof Equation) {
+					final StringBuilder errorMsg = new StringBuilder();
+					newValue = EqnSupport.evalEquation((Equation)value, suid, interpreter,
+									   currentlyActiveAttributes, columnName,
+									   errorMsg, this);
+					lastInternalError = errorMsg.toString();
+				} else {
+					newValue = value;
+					addToReverseMap(columnName, key, oldValue, value);
+				}
 			}
 		}
 
@@ -487,18 +593,23 @@ public final class CyTableImpl implements CyTable {
 
 	synchronized private void unSetX(final Object key, final String columnName) {
 		synchronized(this) {
-			if (!types.containsKey(columnName) || !attributes.containsKey(columnName))
-				throw new IllegalArgumentException("attribute: '" + columnName
-								   + "' does not yet exist!");
+			final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+			if (virtColumn != null)
+				virtColumn.setValue(key, null);
+			else {
+				if (!types.containsKey(columnName) || !attributes.containsKey(columnName))
+					throw new IllegalArgumentException("attribute: '" + columnName
+									   + "' does not yet exist!");
 
-			final Map<Object, Object> keyToValueMap = attributes.get(columnName);
-			if (!keyToValueMap.containsKey(key))
-				return;
+				final Map<Object, Object> keyToValueMap = attributes.get(columnName);
+				if (!keyToValueMap.containsKey(key))
+					return;
 
-			final Object value = keyToValueMap.get(key);
-			if (!(value instanceof Equation))
-				removeFromReverseMap(columnName, key, value);
-			keyToValueMap.remove(key);
+				final Object value = keyToValueMap.get(key);
+				if (!(value instanceof Equation))
+					removeFromReverseMap(columnName, key, value);
+				keyToValueMap.remove(key);
+			}
 		}
 
 		eventHelper.getMicroListener(RowSetMicroListener.class,
@@ -529,6 +640,10 @@ public final class CyTableImpl implements CyTable {
 			throw new IllegalArgumentException("use getList() to retrieve lists!");
 		lastInternalError = null;
 
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return (T)virtColumn.getValue(key);
+
 		final Object vl = getValueOrEquation(key, columnName);
 		if (vl == null)
 			return null;
@@ -546,6 +661,10 @@ public final class CyTableImpl implements CyTable {
 	}
 
 	Object getValue(Object key, String columnName) {
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return virtColumn.getValue(key);
+
 		final Object vl = getValueOrEquation(key, columnName);
 		if (vl == null)
 			return null;
@@ -576,6 +695,11 @@ public final class CyTableImpl implements CyTable {
 							   + "!");
 
 		lastInternalError = null;
+
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return (List<?extends T>)virtColumn.getListValue(key);
+
 		final Object vl = getValueOrEquation(key, columnName);
 		if (vl == null)
 			return null;
@@ -595,16 +719,21 @@ public final class CyTableImpl implements CyTable {
 	synchronized private <T> boolean isSetX(final Object key, final String columnName,
 						final Class<? extends T> type)
 	{
-		if (!attributes.containsKey(columnName))
-			return false;
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return virtColumn.getRawValue(key) != null;
+		else {
+			if (!attributes.containsKey(columnName))
+				return false;
 
-		if (!types.get(columnName).isAssignableFrom(type))
-			throw new IllegalArgumentException("type mismatch: expected \""
-							   + types.get(columnName).getName()
-							   + "\" got \"" + type.getName() + "\"!");
+			if (!types.get(columnName).isAssignableFrom(type))
+				throw new IllegalArgumentException("type mismatch: expected \""
+								   + types.get(columnName).getName()
+								   + "\" got \"" + type.getName() + "\"!");
 
-		final Map<Object, Object> keyToValueMap = attributes.get(columnName);
-		return keyToValueMap.get(key) != null;
+			final Map<Object, Object> keyToValueMap = attributes.get(columnName);
+			return keyToValueMap.get(key) != null;
+		}
 	}
 
 	private Class<?> getClass(Class<?> c) {
@@ -650,6 +779,81 @@ public final class CyTableImpl implements CyTable {
 			}
 		} else
 			throw new RuntimeException("invalid type: " + o.getClass().toString());
+	}
+
+	@Override
+	synchronized public final void addVirtualColumn(final String virtualColumn,
+							final String sourceColumn,
+							final CyTable sourceTable,
+							final String sourceJoinKey,
+							final String targetJoinKey)
+	{
+		if (virtualColumn == null)
+			throw new NullPointerException("\"virtualColumn\" argument must never be null!");
+		if (sourceColumn == null)
+			throw new NullPointerException("\"sourceColumn\" argument must never be null!");
+		if (sourceTable == null)
+			throw new NullPointerException("\"sourceTable\" argument must never be null!");
+		if (sourceJoinKey == null)
+			throw new NullPointerException("\"sourceJoinKey\" argument must never be null!");
+		if (targetJoinKey == null)
+			throw new NullPointerException("\"targetJoinKey\" argument must never be null!");
+
+		if (types.containsKey(virtualColumn))
+			throw new IllegalArgumentException("\"virtualColumn\" name already in use!");
+
+		final Class<?> sourceColumnType = sourceTable.getType(sourceColumn);
+		if (sourceColumnType == null)
+			throw new IllegalArgumentException("\"sourceColumn\" is not a column in \"sourceColumn\"!");
+
+		final Class<?> sourceJoinKeyType = sourceTable.getType(sourceJoinKey);
+		if (sourceJoinKeyType == null)
+			throw new IllegalArgumentException("\"sourceJoinKey\" is not a known column in \"sourceTable\"!");
+
+		final Class<?> targetJoinKeyType = this.getType(targetJoinKey);
+		if (targetJoinKeyType == null)
+			throw new IllegalArgumentException("\"targetJoinKey\" is not a known column in this table!");
+
+		if (sourceJoinKeyType != targetJoinKeyType)
+			throw new IllegalArgumentException("\"sourceJoinKey\" has a different type from \"targetJoinKey\"!");
+
+		types.put(virtualColumn, sourceColumnType);
+		virtualColumnMap.put(
+			virtualColumn,
+			new VirtualColumn(sourceTable, sourceColumn, this, sourceJoinKey, targetJoinKey));
+	}
+
+	@Override
+	synchronized public final void addVirtualColumns(final CyTable sourceTable,
+							 final String sourceJoinKey,
+							 final String targetJoinKey)
+	{
+		if (sourceTable == null)
+			throw new NullPointerException("\"sourceTable\" argument must never be null!");
+		if (sourceJoinKey == null)
+			throw new NullPointerException("\"sourceJoinKey\" argument must never be null!");
+		if (targetJoinKey == null)
+			throw new NullPointerException("\"targetJoinKey\" argument must never be null!");
+
+		final Class<?> sourceJoinKeyType = sourceTable.getType(sourceJoinKey);
+		if (sourceJoinKeyType == null)
+			throw new IllegalArgumentException("\"sourceJoinKey\" is not a known column in \"sourceTable\"!");
+
+		final Class<?> targetJoinKeyType = this.getType(targetJoinKey);
+		if (targetJoinKeyType == null)
+			throw new IllegalArgumentException("\"targetJoinKey\" is not a known column in this table!");
+
+		if (sourceJoinKeyType != targetJoinKeyType)
+			throw new IllegalArgumentException("\"sourceJoinKey\" has a different type from \"targetJoinKey\"!");
+
+		// Makes sure that none of the column names in "sourceTable" clash w/ names in this table:
+		final Map<String, Class<?>> nameToTypeMap = sourceTable.getColumnTypeMap();
+		for (final String column : nameToTypeMap.keySet()) {
+			if (column.equals(sourceJoinKey))
+				continue;
+
+			addVirtualColumn(column, column, sourceTable, sourceJoinKey, targetJoinKey);
+		}
 	}
 
 	private final class InternalRow implements CyRow {

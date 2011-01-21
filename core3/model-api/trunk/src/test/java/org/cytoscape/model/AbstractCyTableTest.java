@@ -47,6 +47,7 @@ import java.util.*;
 
 public abstract class AbstractCyTableTest {
 	protected CyTable table;
+	protected CyTable table2;
 	protected CyRow attrs;
 	protected DummyCyEventHelper eventHelper; 
 	protected boolean rowSetMicroListenerWasCalled;
@@ -553,5 +554,97 @@ public abstract class AbstractCyTableTest {
 	public void testGetWithPrimaryKey() {
 		final CyRow row = table.getRow(107L);
 		assertEquals(row.get(table.getPrimaryKey(), table.getPrimaryKeyType()), 107L);
+	}
+
+	@Test
+	public void testVirtualColumnType() {
+		table.createColumn("x", Long.class);
+		table2.createColumn("x2", Long.class);
+		table2.createColumn("s", String.class);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x");
+		assertEquals("Virtual column type should have been String!",
+			     String.class, table.getType("s1"));
+	}
+
+	@Test
+	public void testVirtualColumnIsSet() {
+		table.createColumn("x", Integer.class);
+		CyRow row1 = table.getRow(1L);
+		row1.set("x", 33);
+		table2.createColumn("x2", Integer.class);
+		CyRow row2 =  table2.getRow(1L);
+		row2.set("x2", 33);
+		table2.createColumn("s", String.class);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x");
+		assertFalse(row1.isSet("s1", String.class));
+		row2.set("s", "abc");
+		assertTrue(row1.isSet("s1", String.class));
+	}
+
+	@Test
+	public void testVirtualColumnGet() {
+		table.createColumn("x", Integer.class);
+		CyRow row1 = table.getRow(1L);
+		row1.set("x", 33);
+		table2.createColumn("x2", Integer.class);
+		CyRow row2 =  table2.getRow(1L);
+		row2.set("x2", 33);
+		table2.createColumn("s", String.class);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x");
+		assertFalse(row1.isSet("s1", String.class));
+		row2.set("s", "abc");
+		assertEquals(row1.get("s1", String.class), "abc");
+	}
+
+	@Test
+	public void testVirtualColumnSetWithAReplacementValue() {
+		table.createColumn("x", Integer.class);
+		CyRow row1 = table.getRow(1L);
+		row1.set("x", 33);
+		table2.createColumn("x2", Integer.class);
+		CyRow row2 =  table2.getRow(1L);
+		row2.set("x2", 33);
+		table2.createColumn("s", String.class);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x");
+		assertFalse(row1.isSet("s1", String.class));
+		row2.set("s", "abc");
+		assertEquals(row1.get("s1", String.class), "abc");
+		row1.set("s1", "xyz");
+		assertEquals(row1.get("s1", String.class), "xyz");
+	}
+
+	@Test
+	public void testVirtualColumnUnset() {
+		table.createColumn("x", Integer.class);
+		CyRow row1 = table.getRow(1L);
+		row1.set("x", 33);
+		table2.createColumn("x2", Integer.class);
+		CyRow row2 =  table2.getRow(1L);
+		row2.set("x2", 33);
+		table2.createColumn("s", String.class);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x");
+		row2.set("s", "abc");
+		assertTrue(row1.isSet("s1", String.class));
+		row1.set("s1", null);
+		assertFalse(row1.isSet("s1", String.class));
+	}
+
+	@Test
+	public void testVirtualColumnGetMatchingRows() {
+		table.createColumn("x", Integer.class);
+		CyRow row1 = table.getRow(1L);
+		row1.set("x", 33);
+		table2.createColumn("x2", Integer.class);
+		CyRow row2 =  table2.getRow(1L);
+		row2.set("x2", 33);
+		table2.createColumn("s", String.class);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x");
+		assertFalse(row1.isSet("s1", String.class));
+		row2.set("s", "abc");
+		Set<CyRow> matchingRows = table.getMatchingRows("s1", "abc");
+		assertEquals(matchingRows.size(), 1);
+		CyRow matchingRow = matchingRows.iterator().next();
+		assertEquals(matchingRow.get("s1", String.class), "abc");
+		assertEquals(matchingRow.get("x", Integer.class), Integer.valueOf(33));
 	}
 }

@@ -162,4 +162,27 @@ public interface CyTable extends Identifiable {
 	 *  @return The number if rows in the table.
 	 */
 	int getRowCount();
+
+	/** Adds a "virtual" column to the the current table.
+	 *  @param virtualColumn  the name of the new virtual column
+	 *  @param sourceColumn   the name of the column in "sourceTable" that will be mapped to
+	 *                        "virtualColumn"
+	 *  @param sourceTable    the table that really contains the column that we're adding (all
+	 *                        updates and lookups of this new column will be redirected to here)
+	 *  @param sourceJoinKey  the column in "sourceTable" that will be used for the join
+	 *  @param targetJoinKey  the column in current table that will be used for the join
+	 *  Note: The types of "sourceJoinKey" and "targetJoinKey" have to be identical.
+	 */
+	void addVirtualColumn(String virtualColumn, String sourceColumn, CyTable sourceTable,
+			      String sourceJoinKey, String targetJoinKey);
+
+	/** Adds all columns in another table as "virtual" columns to the the current table.
+	 *  @param sourceTable    the table that really contains the column that we're adding (all
+	 *                        updates and lookups of this new column will be redirected to here)
+	 *  @param sourceJoinKey  the column in "sourceTable" that will be used for the join
+	 *  @param targetJoinKey  the column in current table that will be used for the join
+	 *  Note: The types of "sourceJoinKey" and "targetJoinKey" have to be identical.  Also none
+	 *        of the column names in "sourceTable" must exist in the current table!
+	 */
+	void addVirtualColumns(CyTable sourceTable, String sourceJoinKey, String targetJoinKey);
 }
