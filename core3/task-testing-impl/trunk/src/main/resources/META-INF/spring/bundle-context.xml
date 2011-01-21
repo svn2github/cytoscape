@@ -25,17 +25,33 @@
 
 	<bean id="waitAction" class="org.cytoscape.internal.test.WaitAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="guiTaskManagerServiceRef" />
+		<constructor-arg ref="taskManagerServiceRef" />
 	</bean>
 
 	<bean id="waitValueAction" class="org.cytoscape.internal.test.WaitValueAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="guiTaskManagerServiceRef" />
+		<constructor-arg ref="taskManagerServiceRef" />
 	</bean>
 
 	<bean id="multiTunableAction" class="org.cytoscape.internal.test.MultiTunableAction">
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
-		<constructor-arg ref="guiTaskManagerServiceRef" />
+		<constructor-arg ref="taskManagerServiceRef" />
 	</bean>
+
+    <bean id="tunablesTestTaskFactory"
+          class="org.cytoscape.internal.test.tunables.TunablesTestTaskFactory">
+    </bean>
+
+    <bean id="tunablesTestTaskFactory2"
+          class="org.cytoscape.internal.test.tunables.TunablesTestTaskFactory2">
+    </bean>
+
+    <bean id="tunablesTestTaskFactory3"
+          class="org.cytoscape.internal.test.tunables.TunablesTestTaskFactory3">
+    </bean>
+
+    <bean id="infiniteTaskFactory"
+          class="org.cytoscape.internal.test.InfiniteTaskFactory">
+    </bean>
 
 </beans>

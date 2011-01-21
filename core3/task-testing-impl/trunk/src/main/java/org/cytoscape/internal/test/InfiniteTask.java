@@ -1,5 +1,5 @@
 
-package org.cytoscape.task.internal.tests;
+package org.cytoscape.internal.test;
 
 
 import org.cytoscape.work.AbstractTask;
