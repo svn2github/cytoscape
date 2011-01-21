@@ -32,7 +32,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package org.cytoscape.tableimport.internal.ui;
 
@@ -66,7 +66,7 @@ public class ImportNetworkTask extends AbstractTask { //implements CyNetworkView
 
 	protected CyNetworkView[] cyNetworkViews;
 	protected VisualStyle[] visualstyles;
-	
+
 	private final GraphReader reader;
 	private final URL source;
 
@@ -87,38 +87,31 @@ public class ImportNetworkTask extends AbstractTask { //implements CyNetworkView
 	@Override
 	public void run(TaskMonitor tm) throws IOException {
 
-		try {
-			tm.setProgress(0.10);
-			this.reader.setNetwork(network);
-			
-			if (this.cancelled){
-				return;
-			}
-			
-			this.reader.read();
-			
-			tm.setProgress(0.80);
-			
-			if (this.cancelled){
-				return;
-			}
-			
-			final CyNetworkView view = CytoscapeServices.cyNetworkViewFactoryServiceRef.getNetworkView(network);
-			
-			CytoscapeServices.netMgr.addNetwork(network);
-			CytoscapeServices.networkViewManager.addNetworkView(view);
+		tm.setProgress(0.10);
+		this.reader.setNetwork(network);
 
-			tm.setProgress(0.95);
-			
-			view.fitContent();
-			
-		} finally { 
-			//
+		if (this.cancelled){
+			return;
 		}
-		
+
+		this.reader.read();
+
+		tm.setProgress(0.80);
+
+		if (this.cancelled){
+			return;
+		}
+
+		final CyNetworkView view = CytoscapeServices.cyNetworkViewFactoryServiceRef.getNetworkView(network);
+
+		CytoscapeServices.netMgr.addNetwork(network);
+		CytoscapeServices.networkViewManager.addNetworkView(view);
+
+		//view.fitContent();
+
 		tm.setProgress(1.0);
-		
-		informUserOfGraphStats(network, tm);
+
+		//informUserOfGraphStats(network, tm);
 	}
 
 	/**
@@ -136,7 +129,7 @@ public class ImportNetworkTask extends AbstractTask { //implements CyNetworkView
 		sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
 		sb.append(" edges.\n\n");
 
-		String thresh = "100"; //CytoscapeServices.cytoscapePropertiesServiceRef.getProperties().getProperty("viewThreshold");
+		String thresh = "0"; //CytoscapeServices.cytoscapePropertiesServiceRef.getProperties().getProperty("viewThreshold");
 
 		if (newNetwork.getNodeCount() < Integer.parseInt(thresh)) {
 			sb.append("Network is under " + thresh
@@ -150,5 +143,5 @@ public class ImportNetworkTask extends AbstractTask { //implements CyNetworkView
 
 		taskMonitor.setStatusMessage(sb.toString());
 	}	
-	
+
 }
