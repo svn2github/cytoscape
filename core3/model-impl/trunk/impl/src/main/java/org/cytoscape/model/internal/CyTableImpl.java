@@ -428,14 +428,19 @@ public final class CyTableImpl implements CyTable {
 	}
 
 	@Override
-	synchronized public CyRow getRow(final Object key) {
+	public CyRow getRow(final Object key) {
 		checkKey(key);
-		CyRow row = rows.get(key);
-		if (row != null)
-			return row;
 
-		row = new InternalRow(key, this);
-		rows.put(key, row);
+		CyRow row;
+		synchronized(this) {
+			row = rows.get(key);
+			if (row != null)
+				return row;
+
+			row = new InternalRow(key, this);
+			rows.put(key, row);
+		}
+
 		eventHelper.getMicroListener(RowCreatedMicroListener.class, this).handleRowCreated(key);
 		return row;
 	}
