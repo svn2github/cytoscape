@@ -661,6 +661,23 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testVirtualColumnListElementType() {
+		table.createColumn("x", Integer.class);
+		CyRow row1 = table.getRow(1L);
+		row1.set("x", 33);
+		table2.createColumn("x2", Integer.class);
+		CyRow row2 =  table2.getRow(1L);
+		row2.set("x2", 33);
+		table2.createColumn("s", String.class);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x");
+		assertFalse(row1.isSet("s1", String.class));
+		row2.set("s", "abc");
+		List<String> columnValues = table.getColumnValues("s1", String.class);
+		assertEquals(1, columnValues.size());
+		assertEquals("abc", columnValues.get(0));
+	}
+
+	@Test
+	public void testVirtualColumnGetColumnValues() {
 		table.createColumn("x", Long.class);
 		table2.createColumn("x2", Long.class);
 		table2.createListColumn("b", Boolean.class);

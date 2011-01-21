@@ -63,6 +63,7 @@ public final class CyTableImpl implements CyTable {
 		private final String sourceJoinColumn;
 		private final Class<?> sourceJoinColumnType;
 		private final String targetJoinColumn;
+		private final Class<?> targetJoinColumnType;
 
 		VirtualColumn(final CyTable sourceTable, final String sourceColumn,
 			      final CyTableImpl targetTable, final String sourceJoinColumn,
@@ -77,6 +78,7 @@ public final class CyTableImpl implements CyTable {
 			this.sourceJoinColumn            = sourceJoinColumn;
 			this.sourceJoinColumnType        = sourceTable.getType(sourceJoinColumn);
 			this.targetJoinColumn            = targetJoinColumn;
+			this.targetJoinColumnType        = targetTable.getType(targetJoinColumn);
 		}
 
 		Object getRawValue(final Object targetKey) {
@@ -136,6 +138,26 @@ public final class CyTableImpl implements CyTable {
 				}
 			}
 			return targetRows;
+		}
+
+		List getColumnValues() {
+			final List targetJoinColumnValues =
+				targetTable.getColumnValues(targetJoinColumn, targetJoinColumnType);
+			List results = new ArrayList();
+			for (final Object targetJoinColumnValue : targetJoinColumnValues) {
+				final Set<CyRow> sourceRows =
+					sourceTable.getMatchingRows(sourceJoinColumn,
+								    targetJoinColumnValue);
+				if (sourceRows.size() == 1) {
+					final CyRow sourceRow = sourceRows.iterator().next();
+					final Object value =
+						sourceRow.get(sourceColumn, sourceColumnType);
+					if (value != null)
+						results.add(value);
+				}
+			}
+
+			return results;
 		}
 	}
 
@@ -376,9 +398,14 @@ public final class CyTableImpl implements CyTable {
 			return primaryKeys;
 		}
 
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return (List<T>)virtColumn.getColumnValues();
+
 		Map<Object, Object> vals = attributes.get(columnName);
 		if (vals == null)
-			throw new IllegalArgumentException("attribute does not exist");
+			throw new IllegalArgumentException("attribute \"" + columnName
+							   + "\" does not exist!");
 
 		List<T> l = new ArrayList<T>(vals.size());
 		for (final Object suid : vals.keySet()) {
