@@ -7,12 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.ValuedTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 public class LoadRepositoryTask extends AbstractTask {
 
@@ -46,21 +48,18 @@ public class LoadRepositoryTask extends AbstractTask {
 
 
 	@Override
-	public void run(TaskMonitor taskMonitor) {
+	public void run(TaskMonitor taskMonitor) throws IOException, ParserConfigurationException, SAXException {
 
-		taskMonitor.setProgress(0.1);
-		taskMonitor.setStatusMessage("Loading list of available marts...");
+		
+		taskMonitor.setStatusMessage("Loading list of available Marts...");
 		
 		dsList = new ArrayList<String>();
 		datasourceMap = new HashMap<String, String>();
 
 		logger.debug("Loading Repository...");
-		try {
-			reg = client.getRegistry();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-
+		
+		reg = client.getRegistry();
+		taskMonitor.setProgress(0.1);
 		final int registryCount = reg.size();
 		float increment = 0.9f / registryCount;
 		float percentCompleted = 0.1f;

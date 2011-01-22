@@ -35,10 +35,7 @@
 package org.cytoscape.io.webservice.biomart.ui;
 
 import java.awt.Color;
-import java.awt.Container;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -49,6 +46,11 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
+import org.cytoscape.model.events.ColumnCreatedEvent;
+import org.cytoscape.model.events.ColumnCreatedListener;
+import org.cytoscape.model.events.ColumnDeletedEvent;
+import org.cytoscape.model.events.ColumnDeletedListener;
+
 /**
  * General GUI component for importing attributes.<br>
  * Maybe used by Web Service Clients to import attributes.
@@ -58,7 +60,8 @@ import javax.swing.LayoutStyle;
  * TODO: is this the right place for this class?
  * 
  */
-public abstract class AttributeImportPanel extends JPanel {
+public abstract class AttributeImportPanel extends JPanel implements
+		ColumnCreatedListener, ColumnDeletedListener {
 
 	private static final long serialVersionUID = 8665197023334496167L;
 
@@ -74,6 +77,25 @@ public abstract class AttributeImportPanel extends JPanel {
 	private static final String DATASOURCE = "Data Source";
 	private static final String KEY_ATTR = "Key Attribute in Cytoscape";
 	private static final String ATTR_PANEL_TITLE = "Available Annotations";
+
+	// Swing components. Maybe accessed from child classes.
+	protected javax.swing.JComboBox attributeComboBox;
+	protected javax.swing.JLabel attributeLabel;
+	protected javax.swing.JPanel attributePanel;
+	protected javax.swing.JComboBox attributeTypeComboBox;
+	protected javax.swing.JLabel attributeTypeLabel;
+	protected javax.swing.JButton cancelButton;
+	protected javax.swing.JComboBox databaseComboBox;
+	protected javax.swing.JPanel databasePanel;
+	protected javax.swing.JPanel attrListPanel;
+	protected javax.swing.JPanel availableAttrPanel;
+	protected javax.swing.JScrollPane availableAttrScrollPane;
+	protected javax.swing.JButton importButton;
+	protected javax.swing.JLabel titleLabel;
+	protected javax.swing.JButton resetButton;
+	protected CheckBoxJList attrList;
+
+	protected DefaultListModel model;
 
 	// Title of the panel.
 	protected String panelTitle;
@@ -372,7 +394,7 @@ public abstract class AttributeImportPanel extends JPanel {
 	protected void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// Close parent
 		final JDialog container = (JDialog) this.getRootPane().getParent();
-//		System.out.println("parent = " + container);
+		// System.out.println("parent = " + container);
 		container.setVisible(false);
 	}
 
@@ -386,7 +408,6 @@ public abstract class AttributeImportPanel extends JPanel {
 
 	protected abstract void importAttributes();
 
-	
 	protected void addAttribute(final String attributeName) {
 		if (attributeName == null)
 			return;
@@ -409,22 +430,18 @@ public abstract class AttributeImportPanel extends JPanel {
 		}
 	}
 
-	// Swing components. Maybe accessed from child classes.
-	protected javax.swing.JComboBox attributeComboBox;
-	protected javax.swing.JLabel attributeLabel;
-	protected javax.swing.JPanel attributePanel;
-	protected javax.swing.JComboBox attributeTypeComboBox;
-	protected javax.swing.JLabel attributeTypeLabel;
-	protected javax.swing.JButton cancelButton;
-	protected javax.swing.JComboBox databaseComboBox;
-	protected javax.swing.JPanel databasePanel;
-	protected javax.swing.JPanel attrListPanel;
-	protected javax.swing.JPanel availableAttrPanel;
-	protected javax.swing.JScrollPane availableAttrScrollPane;
-	protected javax.swing.JButton importButton;
-	protected javax.swing.JLabel titleLabel;
-	protected javax.swing.JButton resetButton;
-	protected CheckBoxJList attrList;
+	@Override
+	public void handleEvent(ColumnCreatedEvent e) {
+		final String attrName = e.getColumnName();
 
-	protected DefaultListModel model;
+		addAttribute(attrName);
+	}
+
+	@Override
+	public void handleEvent(ColumnDeletedEvent e) {
+		final String attrName = e.getColumnName();
+
+		removeAttribute(attrName);
+	}
+
 }

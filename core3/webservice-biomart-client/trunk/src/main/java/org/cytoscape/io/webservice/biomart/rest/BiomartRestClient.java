@@ -92,8 +92,6 @@ public class BiomartRestClient {
 	 */
 	public BiomartRestClient(final String baseURL) throws IOException {
 
-		System.out.println("v4  $$$$$$$$$$$$ REST Client start: " + baseURL);
-
 		if (baseURL == null)
 			throw new NullPointerException("Biomart base URL is missing.");
 
@@ -101,7 +99,7 @@ public class BiomartRestClient {
 
 		loadConversionFile();
 
-		logger.debug("REST client initialized.");
+		logger.debug("Biomart REST client initialized.");
 	}
 
 	private void loadConversionFile() throws IOException {

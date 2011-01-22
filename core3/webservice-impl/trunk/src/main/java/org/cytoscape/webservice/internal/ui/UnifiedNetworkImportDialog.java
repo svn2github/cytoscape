@@ -39,19 +39,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GridLayout;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.GroupLayout;
 import javax.swing.Icon;
@@ -59,7 +53,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -67,16 +60,11 @@ import javax.swing.LayoutStyle;
 import javax.swing.border.EmptyBorder;
 
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
+import org.cytoscape.io.webservice.SearchWebServiceClient;
 import org.cytoscape.io.webservice.WebServiceClient;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.Tunable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.java.swing.plaf.gtk.GTKConstants.IconSize;
 
 /**
  * Default GUI component for network import web service clients.
@@ -85,95 +73,108 @@ import com.sun.java.swing.plaf.gtk.GTKConstants.IconSize;
 public class UnifiedNetworkImportDialog extends JDialog {
 
 	private static final long serialVersionUID = 3333726113970459078L;
-	private static final Logger logger = LoggerFactory
-			.getLogger(UnifiedNetworkImportDialog.class);
+	private static final Logger logger = LoggerFactory.getLogger(UnifiedNetworkImportDialog.class);
+	
+	private static final String NO_CLIENT = "No Service Client";
+	
+	// Default icon for about dialog
+	private static final Icon DEF_ICON = new ImageIcon(UnifiedNetworkImportDialog.class
+					.getResource("/images/stock_internet-32.png"));
 
-	// Selected web service client ID
-	private String selectedClientID = null;
+	private static final Icon NETWORK_IMPORT_ICON = new ImageIcon(
+			UnifiedNetworkImportDialog.class
+					.getResource("/images/networkImportIcon.png"));
 
+	// Registered web service clients
 	private Set<NetworkImportWebServiceClient> clients;
 
 	// Key is display name, value is URI of service.
 	private Map<String, String> clientNames;
 
 	// Client-Dependent GUI panels
-	private Map<String, Container> serviceUIPanels = new HashMap<String, Container>();
-
-	// Default icon for about dialog
-	private static final Icon DEF_ICON = new ImageIcon(
-			UnifiedNetworkImportDialog.class
-					.getResource("images/ximian/stock_internet-32.png"));
-
-	private static final Icon NETWORK_IMPORT_ICON = new ImageIcon(
-			UnifiedNetworkImportDialog.class
-					.getResource("images/networkImportIcon.png"));
-
-	private int numDataSources = 0;
-	private int numClients = 0;
-
-	private boolean cancelFlag = false;
-
-	/**
-	 * Display this standard GUI.
-	 */
-	public void showDialog(final Window parent) {
-		setLocationRelativeTo(parent);
-		setVisible(true);
-	}
+	private Map<NetworkImportWebServiceClient, Container> serviceUIPanels = new HashMap<NetworkImportWebServiceClient, Container>();
+	private int numClients;
+	
+	private final TaskManager taskManager;
 
 	/**
 	 * Creates new form NetworkImportDialog
 	 */
-	public UnifiedNetworkImportDialog(Window parent) {
-		super(parent);
+	public UnifiedNetworkImportDialog(final TaskManager taskManager) {
+		super();
+		if(taskManager == null)
+			throw new NullPointerException("TaskManager is null.");
+		
+		this.taskManager = taskManager;
+		numClients = 0;
 		setModal(false);
 		this.clients = new HashSet<NetworkImportWebServiceClient>();
 
 		initGUI();
+		
+		datasourceComboBox.addItem(NO_CLIENT);
+		setComponentsEnabled(false);
 	}
 
+	
+	/**
+	 * Will be used by Spring DM.
+	 * 
+	 * @param client
+	 * @param props
+	 */
 	public void addNetworkImportClient(
 			final NetworkImportWebServiceClient client, Map props) {
+		if(this.numClients == 0)
+			this.datasourceComboBox.removeAllItems();
+		
 		datasourceComboBox.addItem(client);
 		this.clients.add(client);
 		numClients++;
+		setComponentsEnabled(true);
 	}
 
+	
+	/**
+	 * Will be used by Spring DM
+	 * 
+	 * @param client
+	 * @param props
+	 */
 	public void removeNetworkImportClient(
 			final NetworkImportWebServiceClient client, Map props) {
 		
 		datasourceComboBox.removeItem(client);
 		this.clients.remove(client);
 		numClients--;
+		
+		if(numClients == 0) {
+			this.datasourceComboBox.removeAllItems();
+			this.datasourceComboBox.addItem(NO_CLIENT);
+			setComponentsEnabled(false);
+		}
+	}
+	
+	
+	private void setComponentsEnabled(boolean enable) {
+		datasourceComboBox.setEnabled(enable);
+		this.searchButton.setEnabled(enable);
+		this.aboutButton.setEnabled(enable);
+		this.cancelButton.setEnabled(enable);
 	}
 
 	private void initGUI() {
 		clientNames = new HashMap<String, String>();
-
-		// List<WebServiceClient<?>> clients = WebServiceClientManager
-		// .getAllClients();
-		// for (WebServiceClient<?> client : clients) {
-		// if (client instanceof NetworkImportWebServiceClient) {
-		// numClients++;
-		// }
-		// }
 
 		initComponents();
 		setDatasource();
 
 		// If we have no data sources, show the install panel
 		getContentPane().setLayout(new BorderLayout());
-		if (numClients <= 1) {
-			this.getContentPane().add(installPanel, BorderLayout.SOUTH);
-		}
-		if (numClients > 0) {
-			this.getContentPane().add(queryPanel, BorderLayout.CENTER);
-		}
-
+		this.getContentPane().add(queryPanel, BorderLayout.CENTER);
 		this.pack();
+		
 		setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
-		selectedClientID = clientNames
-				.get(datasourceComboBox.getSelectedItem());
 
 		// Initialize GUI panel.
 		datasourceComboBoxActionPerformed(null);
@@ -301,7 +302,7 @@ public class UnifiedNetworkImportDialog extends JDialog {
 		searchButton.setText("Search");
 		searchButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				searchButtonActionPerformed(evt);
+				searchButtonActionPerformed();
 			}
 		});
 
@@ -407,75 +408,42 @@ public class UnifiedNetworkImportDialog extends JDialog {
 										GroupLayout.PREFERRED_SIZE)));
 
 		dataQueryPanel.setLayout(new BorderLayout());
-		createInstallPanel();
 	} // </editor-fold>
 
-	private void createInstallPanel() {
-		installPanel = new JPanel();
-		installPanel.setLayout(new BorderLayout());
-		JLabel titleIconLabel2 = new JLabel();
-		titleIconLabel2.setIcon(NETWORK_IMPORT_ICON);
-		JPanel titlePanel2 = new JPanel();
-		titlePanel2.add(titleIconLabel2);
-		titlePanel2.setBackground(new Color(0, 0, 0));
-		titlePanel2.setLayout(new FlowLayout(FlowLayout.LEFT));
-		if (numClients == 0) {
-			installPanel.add(titlePanel2, BorderLayout.NORTH);
-		}
-
-		JPanel internalPanel = new JPanel();
-		internalPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		internalPanel.setLayout(new BoxLayout(internalPanel,
-				BoxLayout.PAGE_AXIS));
-		JTextArea area = new JTextArea(1, 40);
-		area.setBorder(new EmptyBorder(0, 0, 0, 0));
-		if (numClients == 0) {
-			area.setText("There are no network import web service clients installed.");
-		} else {
-			area.setText("To install additional web service clients, click the install button below.");
-		}
-		area.setEditable(false);
-		area.setOpaque(false);
-		area.setAlignmentX(Component.LEFT_ALIGNMENT);
-		internalPanel.add(area);
-	}
 
 	/**
 	 * Execute the search task.
 	 * 
 	 * @param evt
 	 */
-	private void searchButtonActionPerformed(final ActionEvent evt) {
-//		selectedClientID = clientNames
-//				.get(datasourceComboBox.getSelectedItem());
-//
-//		final CyWebServiceEvent<String> event = buildEvent();
-//		logger.info("Start importing network: " + evt.getActionCommand());
-//
-//		task = new WSNetworkImportTask(datasourceComboBox.getSelectedItem()
-//				.toString(), event);
-//
-//		// Execute Task in New Thread; pops open JTask Dialog Box.
-//		TaskManager.executeTask(task, tConfig);
-//
-//		logger.info("Network Import from WS Success!");
+	private void searchButtonActionPerformed() {
+		final Object selected = datasourceComboBox.getSelectedItem();
+		
+		WebServiceClient client = null;
+		if(selected instanceof SearchWebServiceClient && selected instanceof WebServiceClient) {
+			client = (WebServiceClient) selected;
+		} else {
+			throw new IllegalStateException("Selected cleint does not have search function.");
+		}
+		
+		//taskManager.execute(client);
+
+		logger.info("Network Import from WS Success!");
 	}
 
 	private void aboutButtonActionPerformed(ActionEvent evt) {
-
-//		final WebServiceClient<?> wsc = WebServiceClientManager
-//				.getClient(selectedClientID);
-//		final String clientName = wsc.getDisplayName();
-//		final String description = wsc.getDescription();
-//		Icon icon = null;
-//		if (wsc instanceof WebServiceClientGUI) {
-//			icon = ((WebServiceClientGUI) wsc).getIcon(IconSize.FULL);
-//		}
-//
-//		if (icon == null) {
-//			icon = DEF_ICON;
-//		}
-//		AboutDialog.showDialog(clientName, icon, description);
+		
+		final WebServiceClient wsc = (WebServiceClient)datasourceComboBox.getSelectedItem();
+		
+		final String clientName = wsc.getDisplayName();
+		final String description = wsc.getDescription();
+		
+		// FIXME
+		Icon icon = null;
+		if (icon == null) {
+			icon = DEF_ICON;
+		}
+		//AboutDialog.showDialog(clientName, icon, description);
 	}
 
 	/**
@@ -492,18 +460,22 @@ public class UnifiedNetworkImportDialog extends JDialog {
 		dispose();
 	}
 
-	private void datasourceComboBoxActionPerformed(
-			java.awt.event.ActionEvent evt) {
+	private void datasourceComboBoxActionPerformed(ActionEvent evt) {
 
 		queryTextPane.setText("");
 		setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
-		selectedClientID = clientNames
-				.get(datasourceComboBox.getSelectedItem());
-
+		
+		final Object selected = datasourceComboBox.getSelectedItem();
+		
+		if(selected instanceof WebServiceClient == false)
+			return;
+		
+		final WebServiceClient client = (WebServiceClient) selected;
+		
 		// Update Panel
 		dataQueryPanel.removeAll();
 
-		final Container gui = serviceUIPanels.get(selectedClientID);
+		final Container gui = serviceUIPanels.get(client);
 		if (gui != null) {
 			// This service has custom panel.
 			dataQueryPanel.add(gui, BorderLayout.CENTER);
