@@ -34,11 +34,6 @@
 */
 package org.cytoscape.tableimport.internal.reader;
 
-//import cytoscape.Cytoscape;
-
-//import cytoscape.data.CyAttributes;
-
-//import cytoscape.giny.CytoscapeRootGraph;
 
 import org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType;
 
@@ -80,6 +75,9 @@ public class AttributeLineParser {
 	 * @param parts entries in a line.
 	 */
 	public void parseAll(String[] parts) {
+		
+		System.out.println("AttributeLineParser.parseAll()...");
+		
 		// Get key
 		final String primaryKey = parts[mapping.getKeyIndex()].trim();
 		final int partsLen = parts.length;

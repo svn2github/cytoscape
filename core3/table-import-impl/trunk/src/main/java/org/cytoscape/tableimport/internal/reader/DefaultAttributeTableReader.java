@@ -49,7 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.cytoscape.tableimport.internal.util.URLUtil;
-//import cytoscape.logger.CyLogger;
 
 
 /**
@@ -70,7 +69,6 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	private final URL source;
 	private AttributeMappingParameters mapping;
 	private final AttributeLineParser parser;
-	//private static CyLogger logger = CyLogger.getLogger(DefaultAttributeTableReader.class);
 	private static final Logger logger = LoggerFactory.getLogger(DefaultAttributeTableReader.class);
 	
 	// Number of mapped attributes.
@@ -139,10 +137,10 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	    throws Exception {
 		this.source = source;
 		this.startLineNumber = startLineNumber;
-		//this.mapping = new AttributeMappingParameters(objectType, delimiters, listDelimiter,
-		 //                                             keyIndex, mappingAttribute, aliasIndexList,
-		  //                                            attributeNames, attributeTypes, null,
-		   //                                           importFlag);
+		this.mapping = new AttributeMappingParameters(objectType, delimiters, listDelimiter,
+		                                             keyIndex, mappingAttribute, aliasIndexList,
+		                                            attributeNames, attributeTypes, null,
+		                                           importFlag);
 		this.parser = new AttributeLineParser(mapping);
 	}
 

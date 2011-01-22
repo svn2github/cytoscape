@@ -211,7 +211,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	                                + "%AttributeTable%</table></p></body></html>";
 	private static final String DEF_ANNOTATION_ITEM = "Please select an annotation data source...";
 	private static final String[] keyTable = { "Alias?", "Column (Attribute Name)", "Data Type" };
-	private static final String ID = "ID";
+	private static final String ID = "name";
 	private static final String GENE_ASSOCIATION = "gene_association";
 
 	// Key column index
@@ -250,6 +250,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private File[] inputFiles;
 
 	private static final Logger logger = LoggerFactory.getLogger(ImportTextTableDialog.class);
+	
+	private CyNetwork network;
 
 	/**
 	 * Creates new form ImportAttributesDialog
@@ -268,7 +270,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		// Default Attribute is node attr.
 		//selectedAttributes = Cytoscape.getNodeAttributes();
 		selectedAttributes = null;
-		CyNetwork network = CytoscapeServices.appMgr.getCurrentNetwork();
+		
+		network = CytoscapeServices.appMgr.getCurrentNetwork();
 		if (network != null){
 			selectedAttributes = CytoscapeServices.tblMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);			
 		}
@@ -1710,7 +1713,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private void importButtonActionPerformed(ActionEvent evt) throws Exception {
 		if (checkDataSourceError() == false)
 			return;
-
+		
 		boolean importAll = importAllCheckBox.isSelected();
 
 		/*
@@ -1832,6 +1835,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			}
 		}
 
+				
 		/*
 		 * Switch readers based on the dialog type.
 		 */
@@ -1857,13 +1861,15 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				} else {
 					del = checkDelimiter();
 				}
+
+				//TODO -- Need to fix problem in AttributeMappingParameters				
 				mapping = new AttributeMappingParameters(objType, del,
 														 listDelimiter, keyInFile,
 														 mappingAttribute, aliasList,
 														 attributeNames, attributeTypes,
 														 listDataTypes, importFlag,
 														 caseSensitive);
-
+				
 				if (source.toString().endsWith(SupportedFileType.EXCEL.getExtension()) || 
 						source.toString().endsWith(SupportedFileType.OOXML.getExtension())) {
 					/*
@@ -2771,7 +2777,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	 *
 	 */
 	private void setKeyList() {
-		/*
+
 		if (mappingAttributeComboBox.getSelectedItem() == null) {
 			return;
 		}
@@ -2782,32 +2788,33 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		Set<Object> valueSet = new TreeSet<Object>();
 
+		//TODO -- setKeyList
 		if (selectedKeyAttribute.equals(ID)) {
 			
 			if (objType == NODE) {
-				it = Cytoscape.getRootGraph().nodesIterator();
-
+				//it = Cytoscape.getRootGraph().nodesIterator();
+				it = network.getNodeList().iterator();
 				while (it.hasNext()) {
 					CyNode node = (CyNode) it.next();
-					valueSet.add(node.getIdentifier());
+					valueSet.add(node.getCyRow().get(ID, String.class)); // ID = "name"
 				}
 			} else if (objType == EDGE) {
-				it = Cytoscape.getRootGraph().edgesIterator();
+				//it = Cytoscape.getRootGraph().edgesIterator();
 
-				while (it.hasNext()) {
-					valueSet.add(((CyEdge) it.next()).getIdentifier());
-				}
+				//while (it.hasNext()) {
+				//	valueSet.add(((CyEdge) it.next()).getIdentifier());
+				//}
 			} else {
-				it = Cytoscape.getNetworkSet().iterator();
+				//it = Cytoscape.getNetworkSet().iterator();
 
-				while (it.hasNext()) {
-					valueSet.add(((CyNetwork) it.next()).getTitle());
-				}
+				//while (it.hasNext()) {
+				//	valueSet.add(((CyNetwork) it.next()).getTitle());
+				//}
 			}
-			
-			
-			
 		} else {
+			
+			//TODO
+			/*
 			final byte attrType = selectedAttributes.getType(selectedKeyAttribute);
 			
 			Object value = null;
@@ -2869,13 +2876,14 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				}
 				
 			}
-			
+			*/
 		}
+
 
 		previewPanel.setKeyAttributeList(valueSet);
 
-		nodeKeyList.setListData(valueSet.toArray());
-		*/
+		//nodeKeyList.setListData(valueSet.toArray());
+
 	}
 
 	private void updateAliasTableCell(String name, int columnIndex) {
@@ -2993,7 +3001,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	}
 
 	private void updateMappingAttributeComboBox() {
-		/*
+		
 		mappingAttributeComboBox.removeAllItems();
 
 		final ListCellRenderer lcr = mappingAttributeComboBox.getRenderer();
@@ -3007,7 +3015,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					if (value.equals(ID)) {
 						cmp.setIcon(ID_ICON.getIcon());
 					} else {
-						//cmp.setIcon(getDataTypeIcon(selectedAttributes.getType(value.toString())));
+						//cmp.setIcon(getDataTypeIcon(selectedAttributes.getColumnTypeMap().get(value.toString())));
 					}
 
 					return cmp;
@@ -3016,14 +3024,32 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		mappingAttributeComboBox.addItem(ID);
 
-		for (String name : selectedAttributes.getAttributeNames()) {
-			if ((selectedAttributes.getType(name) != AttributeTypes.TYPE_COMPLEX)
-			    && (selectedAttributes.getType(name) != AttributeTypes.TYPE_SIMPLE_MAP)
-			    && (selectedAttributes.getType(name) != AttributeTypes.TYPE_UNDEFINED)) {
-				mappingAttributeComboBox.addItem(name);
+		Set<String> keySet = this.selectedAttributes.getColumnTypeMap().keySet();
+		
+		Iterator<String> it = keySet.iterator();
+		Map<String, Class<?>> columnTypeMap = this.selectedAttributes.getColumnTypeMap();
+		
+		while (it.hasNext()){
+			String columnName = it.next();
+
+			if (columnName.equalsIgnoreCase(ID)){
+				continue;
+			}
+			
+			Class<?> type =columnTypeMap.get(columnName); 
+			if ( type == String.class || type == Integer.class || type == Double.class || type == List.class){
+				mappingAttributeComboBox.addItem(columnName);
 			}
 		}
-		*/
+		
+		//for (String name : selectedAttributes.getAttributeNames()) {
+		//	if ((selectedAttributes.getColumnTypeMap().get(name) != AttributeTypes.TYPE_COMPLEX)
+		//	    && (selectedAttributes.getColumnTypeMap().get(name) != AttributeTypes.TYPE_SIMPLE_MAP)
+		//	    && (selectedAttributes.getColumnTypeMap().get(name) != AttributeTypes.TYPE_UNDEFINED)) {
+		//		mappingAttributeComboBox.addItem(name);
+		//	}
+		//}
+		
 	}
 
 	private TableCellRenderer getRenderer(FileTypes type) {
@@ -3067,22 +3093,11 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	 */
 	private void loadAnnotation(TextTableReader reader, String source) {
 		
-		System.out.println("\nImporttextTableDialog.loadAnnotation()....\n\n");
-		
-		/*
-		// Create LoadNetwork Task
+		// Create loadAnnotation Task
 		ImportAttributeTableTask task = new ImportAttributeTableTask(reader, source);
+		ImportAttributeTableTaskFactory taskFactory = new ImportAttributeTableTaskFactory(task);
 
-		// Configure JTask Dialog Pop-Up Box
-		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(CytoscapeServices.desktop.getJFrame());
-		jTaskConfig.displayCloseButton(true);
-		jTaskConfig.displayStatus(true);
-		jTaskConfig.setAutoDispose(false);
-
-		// Execute Task in New Thread; pops open JTask Dialog Box.
-		TaskManager.executeTask(task, jTaskConfig);
-		*/
+		CytoscapeServices.guiTaskManagerServiceRef.execute(taskFactory);
 	}
 
 	/**
