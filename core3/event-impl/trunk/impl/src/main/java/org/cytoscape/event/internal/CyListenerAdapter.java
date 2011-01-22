@@ -38,6 +38,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -55,6 +56,7 @@ public class CyListenerAdapter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CyListenerAdapter.class);
 	private static final Executor EXEC = Executors.newCachedThreadPool();
+	private static final ServiceComparator serviceComparator = new ServiceComparator(); 
 
 	private final Map<Class<?>,ServiceTracker> serviceTrackers; 
 	private final BundleContext bc;
@@ -88,6 +90,7 @@ public class CyListenerAdapter {
 			final Method method = listenerClass.getMethod("handleEvent", event.getClass());
 
 			for (final Object listener : listeners) {
+				System.out.println("event: " + event.getClass().getName() + "  listener: " + listener.getClass().getName());
 				method.invoke(listenerClass.cast(listener), event);
 			}
 		} catch (NoSuchMethodException e) {
@@ -140,7 +143,13 @@ public class CyListenerAdapter {
 			serviceTrackers.put( listenerClass, st );
 		}
 
-		return serviceTrackers.get(listenerClass).getServices();
+		Object[] services = serviceTrackers.get(listenerClass).getServices();
+
+		if ( services == null )
+			return null;
+
+		Arrays.sort(services, serviceComparator);
+		return services; 
 	}
 
 	private static class Runner implements Runnable {

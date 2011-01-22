@@ -38,9 +38,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.TreeSet;
+import java.util.SortedSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.cytoscape.event.CyMicroListener;
 
@@ -51,14 +51,15 @@ import org.slf4j.LoggerFactory;
 public class CyMicroListenerAdapter {
 
 	private final Map<Object,Map<Class<?>,Object>> proxys;
-	private final Map<Object,Map<Class<?>,Set<Object>>> listeners;
+	private final Map<Object,Map<Class<?>,SortedSet<Object>>> listeners;
 	private final Map<Class<?>,Object> noOpProxies;
-	
+
+	private static final ServiceComparator serviceComparator = new ServiceComparator();
 	private final static Logger logger = LoggerFactory.getLogger(CyMicroListenerAdapter.class);
 
 	public CyMicroListenerAdapter() {
 		proxys = new HashMap<Object,Map<Class<?>,Object>>();
-		listeners = new HashMap<Object,Map<Class<?>,Set<Object>>>();
+		listeners = new HashMap<Object,Map<Class<?>,SortedSet<Object>>>();
 		noOpProxies = new HashMap<Class<?>,Object>();
 	}
 
@@ -99,13 +100,13 @@ public class CyMicroListenerAdapter {
 		// First add the listener service to the set of services
 		// for this object and class.
 		if ( !listeners.containsKey(source) )
-			listeners.put(source, new HashMap<Class<?>,Set<Object>>());
+			listeners.put(source, new HashMap<Class<?>,SortedSet<Object>>());
 
-		Map<Class<?>,Set<Object>> listenerMap = listeners.get(source);
+		Map<Class<?>,SortedSet<Object>> listenerMap = listeners.get(source);
 		if ( !listenerMap.containsKey(clazz) )
-			listenerMap.put(clazz,new HashSet<Object>());
+			listenerMap.put(clazz,new TreeSet<Object>(serviceComparator));
 
-		Set<Object> listenerServices = listenerMap.get(clazz);
+		SortedSet<Object> listenerServices = listenerMap.get(clazz);
 		listenerServices.add(service);
 			
 		// Now create a Proxy object for this object and class.
@@ -122,9 +123,9 @@ public class CyMicroListenerAdapter {
 
 	public <L extends CyMicroListener> void removeMicroListener(L service, Class<L> clazz, Object source) {
 		// clean up the listeners
-		Map<Class<?>,Set<Object>> sourceListeners = listeners.get(source);
+		Map<Class<?>,SortedSet<Object>> sourceListeners = listeners.get(source);
 		if ( sourceListeners != null ) {
-			Set<Object> classListeners = sourceListeners.get(clazz);
+			SortedSet<Object> classListeners = sourceListeners.get(clazz);
 			if ( classListeners != null ) {
 				classListeners.remove(service);
 				if ( classListeners.size() == 0 )
@@ -153,13 +154,13 @@ public class CyMicroListenerAdapter {
 	// Simply iterates over the provided list of Listeners and
 	// executes the specified method on each Listener.
 	private static class ListenerHandler implements InvocationHandler {
-		private	final Set<Object> ol; 
+		private	final SortedSet<Object> ol; 
 
 		public ListenerHandler() {
 			this.ol = null;
 		}
 
-		public ListenerHandler(Set<Object> ol) {
+		public ListenerHandler(SortedSet<Object> ol) {
 			this.ol = ol;
 		}
 
