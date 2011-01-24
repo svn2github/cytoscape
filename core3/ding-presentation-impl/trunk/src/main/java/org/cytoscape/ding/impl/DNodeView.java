@@ -1683,7 +1683,7 @@ public class DNodeView implements NodeView, Label {
 		this.cgMap.put(parent, currentCG);
 		//this.graphicsPositions.put(parent, position);
 		
-		System.out.println("Position applied of CG = " + vp.getDisplayName() + " <--- " + parent.getDisplayName());
+		//System.out.println("Position applied of CG = " + vp.getDisplayName() + " <--- " + parent.getDisplayName());
 	}
 	
 	

@@ -711,8 +711,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 				m_backgroundCanvas.setBackground((Color) paint);
 				m_contentChanged = true;
 			} else {
-				System.out
-						.println("DGraphView.setBackgroundPaint(), Color not found!");
+				logger.debug("DGraphView.setBackgroundPaint(), Color not found!");
 			}
 		}
 	}
@@ -1116,7 +1115,6 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			if (calledFromGetSnapshot) {
 				calledFromGetSnapshot = false;
 				m_networkCanvas.m_scaleFactor = 1.0;
-				//System.out.println("in fitContent(), m_networkCanvas.m_scaleFactor = " + m_networkCanvas.m_scaleFactor);
 			}
 			m_viewportChanged = true;
 		}
@@ -2396,7 +2394,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		}
 
 		if (shrink < 0 || shrink > 1.0) {
-			System.out.println("DGraphView.createImage(width,height,shrink) shrink is invalid: "
+			logger.debug("DGraphView.createImage(width,height,shrink) shrink is invalid: "
 			                   + shrink + "  using default of 1.0");
 			shrink = 1.0;
 		}
@@ -2538,7 +2536,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		if (zoom > 0)
 			return zoom;
 
-		System.out.println("invalid zoom: " + zoom + "   using orig: " + orig);
+		logger.debug("invalid zoom: " + zoom + "   using orig: " + orig);
 		return orig;
 	}
 
@@ -2902,7 +2900,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			final byte[] retval = baos.toByteArray();
 			return retval;
 		} catch (final IOException e) {
-			System.err.println("Failed to convert a BufferedImage to a PNG! (" + e + ")");
+			logger.warn("Failed to convert a BufferedImage to a PNG! (" + e + ")");
 			return null;
 		}
 	}
@@ -2916,7 +2914,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			final BufferedImage retval = (BufferedImage)ImageIO.read(is);
 			return retval;
 		} catch (final IOException e) {
-			System.err.println("Failed to convert a PNG to a BufferedImage! (" + e + ")");
+			logger.warn("Failed to convert a PNG to a BufferedImage! (" + e + ")");
 			return null;
 		}
 	}
