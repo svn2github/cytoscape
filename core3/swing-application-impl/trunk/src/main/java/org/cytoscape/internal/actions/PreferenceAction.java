@@ -66,7 +66,6 @@ public class PreferenceAction extends AbstractCyAction {
 		super("Properties...",appMgr);
 		this.desktop = desktop;
 		this.pdf = pdf;
-		System.out.println("PreferenceAction()...");
 		setPreferredMenu("Edit.Preferences");
 		setMenuGravity(10.0f);
 	}

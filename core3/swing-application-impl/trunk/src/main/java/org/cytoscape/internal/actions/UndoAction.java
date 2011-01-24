@@ -48,6 +48,8 @@ import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.undo.UndoSupport;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An action that calls undo for the most recent edit in the
@@ -55,6 +57,8 @@ import org.cytoscape.work.undo.UndoSupport;
  */
 public class UndoAction extends AbstractCyAction {
 	private final static long serialVersionUID = 1202339875212525L;
+
+	private final static Logger logger = LoggerFactory.getLogger(UndoAction.class);
 
 	private UndoSupport undo;
 
@@ -79,7 +83,7 @@ public class UndoAction extends AbstractCyAction {
 			if ( undo.getUndoManager().canUndo() )
 				undo.getUndoManager().undo();
 		} catch (CannotUndoException ex) {
-			System.out.println("Unable to undo: " + ex);
+			logger.warn("Unable to undo: " + ex);
 			ex.printStackTrace();
 		}
 	}

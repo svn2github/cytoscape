@@ -69,6 +69,8 @@ import org.cytoscape.application.swing.events.CytoPanelComponentSelectedEvent;
 import org.cytoscape.application.swing.events.CytoPanelStateChangedEvent;
 import org.cytoscape.event.CyEventHelper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The CytoPanel class extends JPanel to provide the following functionality:
@@ -82,6 +84,8 @@ import org.cytoscape.event.CyEventHelper;
  */
 public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	private final static long serialVersionUID = 1202339868245830L;
+	private final static Logger logger = LoggerFactory.getLogger(CytoPanelImp.class);
+
 	/**
 	 * The JTabbedPane we hide.
 	 */
@@ -655,10 +659,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 			// add this cytopanel back to cytopanel container
 			if (cytoPanelContainer == null) {
-				System.out.println("CytoPanel::DockCytoPanel() -"
-				                   + "cytoPanelContainer reference has not been set!");
-				// TODO Is this possibly right?
-				//Cytoscape.exit(1);
+				logger.warn("cytoPanelContainer reference has not been set!");
 			}
 
 			cytoPanelContainer.insertCytoPanel(this, compassDirection);

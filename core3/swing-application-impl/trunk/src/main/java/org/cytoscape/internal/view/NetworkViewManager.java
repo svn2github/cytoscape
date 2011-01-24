@@ -381,7 +381,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		try {
 			presentationContainerMap.get(view.getModel().getSUID()).dispose();
 		} catch (Exception e) {
-			System.err.println("Network View unable to be killed");
+			logger.error("Network View unable to be killed",e);
 		}
 
 		presentationContainerMap.remove(view.getModel().getSUID());

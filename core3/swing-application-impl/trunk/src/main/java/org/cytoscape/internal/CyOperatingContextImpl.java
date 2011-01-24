@@ -45,6 +45,9 @@ import java.io.IOException;
 
 import org.cytoscape.property.CyProperty;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Basic access to Cytoscape's operating context. 
  */
@@ -55,6 +58,8 @@ public class CyOperatingContextImpl {
 
 	public static final String CONFIG_DIR = ".cytoscape";
 	public static final String PROPS = "cytoscape.props";
+
+	private static final Logger logger = LoggerFactory.getLogger(CyOperatingContextImpl.class);
 
 	private CyProperty<Properties> props;
 
@@ -74,7 +79,7 @@ public class CyOperatingContextImpl {
             if (vmp != null)
                 props.getProperties().load(new FileInputStream(vmp));
             else
-                System.out.println("couldn't read " + PROPS + " from " + CONFIG_DIR);
+                logger.warn("couldn't read " + PROPS + " from " + CONFIG_DIR);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -98,11 +103,11 @@ public class CyOperatingContextImpl {
             File parent_dir = new File(dirName, CONFIG_DIR);
 
             if (parent_dir.mkdir())
-                System.err.println("Parent_Dir: " + parent_dir + " created.");
+                logger.warn("Parent_Dir: " + parent_dir + " created.");
 
             return parent_dir;
         } catch (Exception e) {
-            System.err.println("error getting config directory");
+            logger.warn("error getting config directory");
         }
 
         return null;
@@ -117,11 +122,11 @@ public class CyOperatingContextImpl {
 			File file = new File(parent_dir, file_name);
 
 			if (file.createNewFile())
-				System.err.println("Config file: " + file + " created.");
+				logger.warn("Config file: " + file + " created.");
 
 			return file;
 		} catch (Exception e) {
-			System.err.println("error getting config file:" + file_name);
+			logger.warn("error getting config file:" + file_name);
 		}
 
 		return null;

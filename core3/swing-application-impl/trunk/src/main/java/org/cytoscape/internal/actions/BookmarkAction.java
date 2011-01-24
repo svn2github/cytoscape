@@ -50,7 +50,6 @@ public class BookmarkAction extends AbstractCyAction {
 	public BookmarkAction(CySwingApplication desktop, CyApplicationManager appMgr, BookmarkDialogFactoryImpl bookmarkDialogFactory) {
 		super("Bookmarks...", appMgr);
 		this.bookmarkDialogFactory = bookmarkDialogFactory;
-		System.out.println("BookmarkAction()...");
 		setPreferredMenu("Edit.Preferences");
 		this.desktop = desktop;
 	}

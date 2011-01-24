@@ -42,6 +42,9 @@ import java.net.URL;
 
 import org.cytoscape.application.swing.CyHelpBroker;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * This class creates the Cytoscape Help Broker for managing the JavaHelp system
@@ -51,6 +54,7 @@ public class CyHelpBrokerImpl implements CyHelpBroker {
 	private HelpBroker hb;
 	private HelpSet hs;
 	private static final String HELP_RESOURCE = "/cytoscape/help/jhelpset.hs";
+	private static final Logger logger = LoggerFactory.getLogger(CyHelpBrokerImpl.class);
 
 	/**
 	 * Creates a new CyHelpBroker object.
@@ -65,8 +69,7 @@ public class CyHelpBrokerImpl implements CyHelpBroker {
 			hs = new HelpSet(null, hsURL);
 			hb = hs.createHelpBroker();
 		} catch (Exception e) {
-			System.out.println("HelpSet " + e.getMessage());
-			System.out.println("HelpSet " + hs + " not found.");
+			logger.warn("HelpSet not found!",e);
 		}
 	}
 

@@ -70,12 +70,16 @@ import org.cytoscape.event.CyEventHelper;
 
 import org.cytoscape.internal.CyOperatingContextImpl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  *
  */
 public class PreferencesDialogImpl extends JDialog {
 	private final static long serialVersionUID = 1202339873396288L;
+	private static final Logger logger = LoggerFactory.getLogger(PreferencesDialogImpl.class);
 
 	int[] selection = null;
 	private Properties props;
@@ -407,11 +411,11 @@ public class PreferencesDialogImpl extends JDialog {
 					File file = context.getConfigFile("cytoscape.props");
 					FileOutputStream output = new FileOutputStream(file);
 					props.store(output, "Cytoscape Property File");
-					System.out.println("wrote Cytoscape properties file to: "
+					logger.debug("wrote Cytoscape properties file to: "
 					                   + file.getAbsolutePath());
 				} catch (Exception ex) {
 					ex.printStackTrace();
-					System.out.println("Could not write cytoscape.props file!");
+					logger.warn("Could not write cytoscape.props file!");
 				}
 
 				saveCyPropsAsDefault = false;

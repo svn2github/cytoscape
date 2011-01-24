@@ -43,11 +43,15 @@ import org.cytoscape.application.swing.events.CytoscapeShutdownEvent;
 import org.cytoscape.application.swing.events.CytoscapeShutdownListener;
 import org.cytoscape.event.CyEventHelper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  */
 public class ShutdownHandler implements CytoscapeShutdown {
 
+	private static final Logger logger = LoggerFactory.getLogger(ShutdownHandler.class);
 	private final CyEventHelper eh;
 	private	boolean actuallyShutdown;
 
@@ -64,6 +68,6 @@ public class ShutdownHandler implements CytoscapeShutdown {
 		if ( ev.actuallyShutdown() )
 			System.exit(retVal);
 		else
-			System.out.println("NOT shutting down, per listener instruction: " + ev.whyNot() );
+			logger.info("NOT shutting down, per listener instruction: " + ev.whyNot() );
 	}
 }
