@@ -561,9 +561,12 @@ public abstract class AbstractCyTableTest {
 		table.createColumn("x", Long.class);
 		table2.createColumn("x2", Long.class);
 		table2.createColumn("s", String.class);
-		table.addVirtualColumn("s1", "s", table2, "x2", "x");
+		assertEquals(table.addVirtualColumn("s1", "s", table2, "x2", "x"), "s1");
 		assertEquals("Virtual column type should have been String!",
 			     String.class, table.getType("s1"));
+		assertEquals(table.addVirtualColumn("s1", "s", table2, "x2", "x"), "s1-1");
+		assertEquals("Virtual column type should have been String!",
+			     String.class, table.getType("s1-1"));
 	}
 
 	@Test

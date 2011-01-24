@@ -821,11 +821,11 @@ public final class CyTableImpl implements CyTable {
 	}
 
 	@Override
-	synchronized public final void addVirtualColumn(final String virtualColumn,
-							final String sourceColumn,
-							final CyTable sourceTable,
-							final String sourceJoinKey,
-							final String targetJoinKey)
+	synchronized public final String addVirtualColumn(final String virtualColumn,
+							  final String sourceColumn,
+							  final CyTable sourceTable,
+							  final String sourceJoinKey,
+							  final String targetJoinKey)
 	{
 		if (virtualColumn == null)
 			throw new NullPointerException("\"virtualColumn\" argument must never be null!");
@@ -837,9 +837,6 @@ public final class CyTableImpl implements CyTable {
 			throw new NullPointerException("\"sourceJoinKey\" argument must never be null!");
 		if (targetJoinKey == null)
 			throw new NullPointerException("\"targetJoinKey\" argument must never be null!");
-
-		if (types.containsKey(virtualColumn))
-			throw new IllegalArgumentException("\"virtualColumn\" name already in use!");
 
 		final Class<?> sourceColumnType = sourceTable.getType(sourceColumn);
 		if (sourceColumnType == null)
@@ -856,14 +853,31 @@ public final class CyTableImpl implements CyTable {
 		if (sourceJoinKeyType != targetJoinKeyType)
 			throw new IllegalArgumentException("\"sourceJoinKey\" has a different type from \"targetJoinKey\"!");
 
-		types.put(virtualColumn, sourceColumnType);
+		final String targetColumnName = getUniqueColumnName(virtualColumn);
+		types.put(targetColumnName, sourceColumnType);
 		if (sourceColumnType == List.class) {
 			final Class<?> listElementType = sourceTable.getListElementType(sourceColumn);
-			listElementTypes.put(virtualColumn, listElementType);
+			listElementTypes.put(targetColumnName, listElementType);
 		}
 		virtualColumnMap.put(
-			virtualColumn,
+			targetColumnName,
 			new VirtualColumn(sourceTable, sourceColumn, this, sourceJoinKey, targetJoinKey));
+
+		return targetColumnName;
+	}
+
+	private String getUniqueColumnName(final String preferredName) {
+		if (!types.containsKey(preferredName))
+			return preferredName;
+
+		String newUniqueName;
+		int i = 0;
+		do {
+			++i;
+			newUniqueName = preferredName + "-" + i;
+		} while (types.containsKey(newUniqueName));
+
+		return newUniqueName;
 	}
 
 	@Override
@@ -889,7 +903,6 @@ public final class CyTableImpl implements CyTable {
 		if (sourceJoinKeyType != targetJoinKeyType)
 			throw new IllegalArgumentException("\"sourceJoinKey\" has a different type from \"targetJoinKey\"!");
 
-		// Makes sure that none of the column names in "sourceTable" clash w/ names in this table:
 		final Map<String, Class<?>> nameToTypeMap = sourceTable.getColumnTypeMap();
 		for (final String column : nameToTypeMap.keySet()) {
 			if (column.equals(sourceJoinKey))
