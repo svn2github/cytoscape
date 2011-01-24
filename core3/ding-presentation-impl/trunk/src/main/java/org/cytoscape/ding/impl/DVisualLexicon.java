@@ -386,6 +386,16 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		addVisualProperty(EDGE_LABEL_POSITION, EDGE);
 		addVisualProperty(EDGE_LABEL_FONT_FACE, EDGE);
 		addVisualProperty(EDGE_LABEL_FONT_SIZE, EDGE);	
+
+		createLookupMap();
+	}
+
+	private void createLookupMap() {
+		addIdentifierMapping(CyNode.class,"borderLineType",NODE_BORDER_STROKE);
+		addIdentifierMapping(CyNode.class,"nodeLabelFont",NODE_LABEL_FONT_FACE);
+		addIdentifierMapping(CyNode.class,"nodeTransparency",NODE_TRANSPARENCY);
+		addIdentifierMapping(CyNode.class,"outline",NODE_BORDER_PAINT);
+		// TODO add more!
 	}
 	
 	static Set<VisualProperty<?>> getGraphicsPositionVP() {
