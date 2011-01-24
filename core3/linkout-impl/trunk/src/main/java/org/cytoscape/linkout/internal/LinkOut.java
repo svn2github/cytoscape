@@ -75,7 +75,6 @@ public class LinkOut {
 		this.props = props.getProperties();
 		this.registrar = registrar;
 		this.browser = browser;
-		System.out.println("Got linkout");
 		readProperties();
 		// now link through properties
 		addLinksFromProperties();
