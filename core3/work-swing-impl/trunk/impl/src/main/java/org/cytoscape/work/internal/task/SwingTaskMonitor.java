@@ -53,7 +53,7 @@ class SwingTaskMonitor implements TaskMonitor {
 		dialog.setVisible(true);
 	}
 
-	public void close() {
+	public synchronized void close() {
 		if (dialog != null) {
 			dialog.dispose();
 			dialog = null;
@@ -109,11 +109,11 @@ class SwingTaskMonitor implements TaskMonitor {
 		dialog.setException(exception, "The task could not be completed because an error has occurred.");
 	}
 
-	public boolean isShowingException() {
+	public synchronized boolean isShowingException() {
 		return dialog.errorOccurred();
 	}
 
-	public boolean isOpened() {
+	public synchronized boolean isOpened() {
 		return dialog != null;
 	}
 }
