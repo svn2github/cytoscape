@@ -61,9 +61,7 @@ public final class SplashActivator implements BundleActivator, FrameworkListener
 
 
 	public void frameworkEvent(FrameworkEvent event) {
-		System.out.println("SPLASH got event: " + event.toString());
 		if ( event.getType() == FrameworkEvent.STARTED ) {
-			System.out.println("SPLASH got framework started event");
 			if ( splash != null )
 				splash.hideSplash();
 		}
