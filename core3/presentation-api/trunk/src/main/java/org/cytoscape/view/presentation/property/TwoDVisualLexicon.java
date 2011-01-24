@@ -221,6 +221,20 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 		addVisualProperty(EDGE_LABEL_COLOR, EDGE_PAINT);
 		addVisualProperty(EDGE_WIDTH, EDGE);
 		addVisualProperty(EDGE_LABEL, EDGE_TEXT);
+
+		createLookupMap();
 	}
 
+	private void createLookupMap() {
+		addIdentifierMapping(CyNode.class,"color",NODE_COLOR);
+		addIdentifierMapping(CyNode.class,"fill",NODE_COLOR);
+		addIdentifierMapping(CyNode.class,"x",NODE_X_LOCATION);
+		addIdentifierMapping(CyNode.class,"y",NODE_Y_LOCATION);
+		addIdentifierMapping(CyNode.class,"w",NODE_X_SIZE);
+		addIdentifierMapping(CyNode.class,"h",NODE_Y_SIZE);
+		addIdentifierMapping(CyNode.class,"label",NODE_LABEL);
+
+		addIdentifierMapping(CyEdge.class,"fill",EDGE_PAINT);
+		// TODO add more mappings!
+	}
 }

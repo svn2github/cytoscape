@@ -11,11 +11,22 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualLexiconNode;
 import org.cytoscape.view.model.VisualProperty;
 
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Implementations for common features for all VisualLexicons.
  *
  */
 public abstract class AbstractVisualLexicon implements VisualLexicon {
+
+	private static final Logger logger = LoggerFactory.getLogger(AbstractVisualLexicon.class);
+
+	private final Map<Class<?>,Map<String,VisualProperty<?>>> identifierLookup;
 	
 	//
 	private final Map<VisualProperty<?>, VisualLexiconNode> visualPropertyMap;
@@ -37,6 +48,11 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 		final VisualLexiconNode rootNode = new VisualLexiconNode(rootVisualProperty, null);
 		
 		visualPropertyMap.put(rootVisualProperty, rootNode);
+
+		this.identifierLookup = new HashMap<Class<?>,Map<String,VisualProperty<?>>>();
+		this.identifierLookup.put(CyNode.class,new HashMap<String,VisualProperty<?>>());
+		this.identifierLookup.put(CyEdge.class,new HashMap<String,VisualProperty<?>>());
+		this.identifierLookup.put(CyNetwork.class,new HashMap<String,VisualProperty<?>>());
 	}
 
 	
@@ -104,5 +120,37 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 	
 	@Override public VisualLexiconNode getVisualLexiconNode(final VisualProperty<?> vp) {
 		return this.visualPropertyMap.get(vp);
+	}
+
+	@Override public VisualProperty<?> lookup(final Class<?> type, final String id) {
+		if ( id == null || type == null )
+			return null;
+
+		Map<String,VisualProperty<?>> map = identifierLookup.get(type);
+		if ( map == null )
+			return null;
+
+		return map.get(id.toLowerCase());
+	}
+
+	protected final void addIdentifierMapping(final Class<?> type, final String id, final VisualProperty<?> vp) {
+		if ( type == null ) {
+			logger.warn("attempting to add VisualLexicon identifier lookup mapping with null type");
+			return;
+		}
+		if ( id == null ) {
+			logger.warn("attempting to add VisualLexicon identifier lookup mapping with null id");
+			return;
+		}
+		if ( vp == null ) {
+			logger.warn("attempting to add VisualLexicon identifier lookup mapping with null visual property");
+			return;
+		}
+		Map<String,VisualProperty<?>> map = identifierLookup.get(type);
+		if ( map == null ) {
+			logger.warn("attempting to add VisualLexicon identifier lookup mapping with unrecognized type: " + type.getClass().getName() + "(expect: " + identifierLookup.keySet().toString() + ")" );
+			return;
+		}
+		map.put(id,vp);
 	}
 }
