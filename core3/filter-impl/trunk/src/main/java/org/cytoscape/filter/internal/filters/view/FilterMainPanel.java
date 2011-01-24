@@ -284,7 +284,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		CyNetwork cyNetwork = applicationManager.getCurrentNetwork();
 		CyNetworkView view = applicationManager.getCurrentNetworkView();
 		RenderingEngine<CyNetwork> engine = applicationManager.getCurrentRenderingEngine();
-		if (engine == null) {
+		if (cyNetwork == null || view == null || engine == null) {
 			return;
 		}
 		VisualLexicon lexicon = engine.getVisualLexicon();
