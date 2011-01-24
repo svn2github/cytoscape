@@ -821,48 +821,50 @@ public final class CyTableImpl implements CyTable {
 	}
 
 	@Override
-	synchronized public final String addVirtualColumn(final String virtualColumn,
-							  final String sourceColumn,
-							  final CyTable sourceTable,
-							  final String sourceJoinKey,
-							  final String targetJoinKey)
+	public final String addVirtualColumn(final String virtualColumn, final String sourceColumn,
+					     final CyTable sourceTable, final String sourceJoinKey,
+					     final String targetJoinKey)
 	{
-		if (virtualColumn == null)
-			throw new NullPointerException("\"virtualColumn\" argument must never be null!");
-		if (sourceColumn == null)
-			throw new NullPointerException("\"sourceColumn\" argument must never be null!");
-		if (sourceTable == null)
-			throw new NullPointerException("\"sourceTable\" argument must never be null!");
-		if (sourceJoinKey == null)
-			throw new NullPointerException("\"sourceJoinKey\" argument must never be null!");
-		if (targetJoinKey == null)
-			throw new NullPointerException("\"targetJoinKey\" argument must never be null!");
-
-		final Class<?> sourceColumnType = sourceTable.getType(sourceColumn);
-		if (sourceColumnType == null)
-			throw new IllegalArgumentException("\"sourceColumn\" is not a column in \"sourceColumn\"!");
-
-		final Class<?> sourceJoinKeyType = sourceTable.getType(sourceJoinKey);
-		if (sourceJoinKeyType == null)
-			throw new IllegalArgumentException("\"sourceJoinKey\" is not a known column in \"sourceTable\"!");
-
-		final Class<?> targetJoinKeyType = this.getType(targetJoinKey);
-		if (targetJoinKeyType == null)
-			throw new IllegalArgumentException("\"targetJoinKey\" is not a known column in this table!");
-
-		if (sourceJoinKeyType != targetJoinKeyType)
-			throw new IllegalArgumentException("\"sourceJoinKey\" has a different type from \"targetJoinKey\"!");
-
 		final String targetColumnName = getUniqueColumnName(virtualColumn);
-		types.put(targetColumnName, sourceColumnType);
-		if (sourceColumnType == List.class) {
-			final Class<?> listElementType = sourceTable.getListElementType(sourceColumn);
-			listElementTypes.put(targetColumnName, listElementType);
-		}
-		virtualColumnMap.put(
-			targetColumnName,
-			new VirtualColumn(sourceTable, sourceColumn, this, sourceJoinKey, targetJoinKey));
 
+		synchronized(this) {
+			if (virtualColumn == null)
+				throw new NullPointerException("\"virtualColumn\" argument must never be null!");
+			if (sourceColumn == null)
+				throw new NullPointerException("\"sourceColumn\" argument must never be null!");
+			if (sourceTable == null)
+				throw new NullPointerException("\"sourceTable\" argument must never be null!");
+			if (sourceJoinKey == null)
+				throw new NullPointerException("\"sourceJoinKey\" argument must never be null!");
+			if (targetJoinKey == null)
+				throw new NullPointerException("\"targetJoinKey\" argument must never be null!");
+
+			final Class<?> sourceColumnType = sourceTable.getType(sourceColumn);
+			if (sourceColumnType == null)
+				throw new IllegalArgumentException("\"sourceColumn\" is not a column in \"sourceColumn\"!");
+
+			final Class<?> sourceJoinKeyType = sourceTable.getType(sourceJoinKey);
+			if (sourceJoinKeyType == null)
+				throw new IllegalArgumentException("\"sourceJoinKey\" is not a known column in \"sourceTable\"!");
+
+			final Class<?> targetJoinKeyType = this.getType(targetJoinKey);
+			if (targetJoinKeyType == null)
+				throw new IllegalArgumentException("\"targetJoinKey\" is not a known column in this table!");
+
+			if (sourceJoinKeyType != targetJoinKeyType)
+				throw new IllegalArgumentException("\"sourceJoinKey\" has a different type from \"targetJoinKey\"!");
+
+			types.put(targetColumnName, sourceColumnType);
+			if (sourceColumnType == List.class) {
+				final Class<?> listElementType = sourceTable.getListElementType(sourceColumn);
+				listElementTypes.put(targetColumnName, listElementType);
+			}
+			virtualColumnMap.put(
+					     targetColumnName,
+					     new VirtualColumn(sourceTable, sourceColumn, this, sourceJoinKey, targetJoinKey));
+		}
+
+		eventHelper.fireSynchronousEvent(new ColumnCreatedEvent(this, targetColumnName));
 		return targetColumnName;
 	}
 
