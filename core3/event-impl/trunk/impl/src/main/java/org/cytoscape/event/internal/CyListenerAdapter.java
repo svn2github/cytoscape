@@ -90,7 +90,7 @@ public class CyListenerAdapter {
 			final Method method = listenerClass.getMethod("handleEvent", event.getClass());
 
 			for (final Object listener : listeners) {
-				System.out.println("event: " + event.getClass().getName() + "  listener: " + listener.getClass().getName());
+				//System.out.println("event: " + event.getClass().getName() + "  listener: " + listener.getClass().getName());
 				method.invoke(listenerClass.cast(listener), event);
 			}
 		} catch (NoSuchMethodException e) {
