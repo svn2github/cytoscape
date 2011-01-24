@@ -18,8 +18,6 @@ public class CustomGraphicsManagerAction extends AbstractCyAction {
 		setPreferredMenu("View");
 		
 		this.dialog = new CustomGraphicsManagerDialog(manager, applicationManager);
-		
-		System.out.println("\n\n\n!!!!!!!!!!!!! CG Manager Created !!!!!!!!!!!!!! \n\n\n");
 	}
 
 	@Override
