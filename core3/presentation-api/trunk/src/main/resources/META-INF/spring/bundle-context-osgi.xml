@@ -16,18 +16,12 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="renderingEngineFactoryManagerService"
-		ref="renderingEngineFactoryManager" interface="org.cytoscape.view.presentation.RenderingEngineFactoryManager">
-		<osgi:service-properties>
-			<entry key="service.type" value="manager" />
-		</osgi:service-properties>
-	</osgi:service>
-
+	
 	<osgi:set id="renderingEngineFactorySet"
 		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addRenderingEngineFactory"
-			unbind-method="removeRenderingEngineFactory" ref="renderingEngineFactoryManager" />
+			unbind-method="removeRenderingEngineFactory" ref="renderingEngineManager" />
 	</osgi:set>
 
 </beans>

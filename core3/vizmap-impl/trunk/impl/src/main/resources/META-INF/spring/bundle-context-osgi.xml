@@ -16,7 +16,6 @@
 		interface="org.cytoscape.view.vizmap.VisualStyleFactory">
 	</osgi:service>
 	
-	<osgi:service id="visualLexiconManagerService" ref="visualLexiconManager" auto-export="interfaces" />
 
 	<!-- Export Visual Style Serializer as an OSGi Service -->
 	<osgi:service id="visualStyleSerializerService" ref="visualStyleSerializer"
@@ -25,6 +24,13 @@
 
 	<!-- Import Services -->
 	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
+	
+	<osgi:set id="renderingEngineFactorySet"
+		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addRenderingEngineFactory"
+			unbind-method="removeRenderingEngineFactory" ref="visualLexiconManager" />
+	</osgi:set>
 	
 
 </beans>

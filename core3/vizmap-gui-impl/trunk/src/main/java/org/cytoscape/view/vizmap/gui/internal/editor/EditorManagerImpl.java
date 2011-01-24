@@ -55,8 +55,7 @@ import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.Range;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.events.RenderingEngineFactoryAddedEvent;
-import org.cytoscape.view.presentation.events.RenderingEngineFactoryAddedListener;
+import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.editor.ListEditor;
@@ -72,7 +71,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  */
-public class EditorManagerImpl implements EditorManager, RenderingEngineFactoryAddedListener {
+public class EditorManagerImpl implements EditorManager {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(EditorManagerImpl.class);
@@ -362,12 +361,15 @@ public class EditorManagerImpl implements EditorManager, RenderingEngineFactoryA
 			}
 		}
 	}
-	@Override
-	public void handleEvent(RenderingEngineFactoryAddedEvent e) {
+	
+
+	public void addRenderingEngineFactory(RenderingEngineFactory<?> factory, Map props) {
 		
-		
-		final VisualLexicon lexicon = e.getRenderingEngineFactory().getVisualLexicon();
+		final VisualLexicon lexicon = factory.getVisualLexicon();
 		buildDiscreteEditors(lexicon);
-		
+	}
+	
+	public void removeRenderingEngineFactory(RenderingEngineFactory<?> factory, Map props) {
+		// TODO: clean up state when rendering engines are removed.
 	}
 }

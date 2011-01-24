@@ -250,5 +250,12 @@
 			unbind-method="removeDependency" ref="dependencyTable" />
 			
 	</osgi:set>
+	
+	<osgi:set id="renderingEngineFactorySet"
+		interface="org.cytoscape.view.presentation.RenderingEngineFactory"
+		cardinality="0..N">
+		<osgi:listener bind-method="addRenderingEngineFactory"
+			unbind-method="removeRenderingEngineFactory" ref="editorManager" />
+	</osgi:set>
 
 </beans>

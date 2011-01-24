@@ -3,6 +3,7 @@ package org.cytoscape.view.presentation;
 import java.util.Collection;
 
 import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualLexicon;
 
 /**
  * Manager for {@linkplain RenderingEngine} objects. All RenderingEngine objects
@@ -14,6 +15,14 @@ import org.cytoscape.view.model.View;
  * 
  */
 public interface RenderingEngineManager {
+	
+	/**
+	 * Provide default Visual Lexicon from a default engine factory.
+	 * In current implementation, this is always DING's lexicon.
+	 * 
+	 * @return default visual lexicon.
+	 */
+	VisualLexicon getDefaultVisualLexicon();
 
 	/**
 	 * Get a rendering engine for the given view model.

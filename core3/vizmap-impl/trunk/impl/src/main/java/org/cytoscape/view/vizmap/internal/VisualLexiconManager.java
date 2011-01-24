@@ -2,16 +2,15 @@ package org.cytoscape.view.vizmap.internal;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.events.RenderingEngineFactoryAddedEvent;
-import org.cytoscape.view.presentation.events.RenderingEngineFactoryAddedListener;
+import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
-public class VisualLexiconManager implements
-		RenderingEngineFactoryAddedListener {
+public class VisualLexiconManager {
 
 	private final Set<VisualLexicon> lexiconSet;
 	
@@ -25,7 +24,6 @@ public class VisualLexiconManager implements
 		nodeVPs = new HashSet<VisualProperty<?>>();
 		edgeVPs = new HashSet<VisualProperty<?>>();
 		networkVPs = new HashSet<VisualProperty<?>>();
-		
 	}
 	
 	public Collection<VisualProperty<?>> getNodeVisualProperties() {
@@ -44,12 +42,12 @@ public class VisualLexiconManager implements
 		return this.lexiconSet;
 	}
 
-	@Override
-	public void handleEvent(RenderingEngineFactoryAddedEvent e) {
+	
+	public void addRenderingEngineFactory(RenderingEngineFactory<?> factory, Map props) {
 		
-		lexiconSet.add(e.getRenderingEngineFactory().getVisualLexicon());
+		lexiconSet.add(factory.getVisualLexicon());
 		
-		final VisualLexicon lexicon = e.getRenderingEngineFactory().getVisualLexicon();
+		final VisualLexicon lexicon = factory.getVisualLexicon();
 		
 		System.out.println("\n\n\n\n### Got New lexicon: " + lexicon);
 
@@ -65,6 +63,10 @@ public class VisualLexiconManager implements
 			if (!nodeVPs.contains(vp) && !edgeVPs.contains(vp))
 				networkVPs.add(vp);
 		}
+	}
+	
+	public void removeRenderingEngineFactory(RenderingEngineFactory<?> factory, Map props) {
+		// TODO: cleanup
 	}
 
 }

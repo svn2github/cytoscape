@@ -13,10 +13,5 @@
 	<bean id="renderingEngineManager"
 		class="org.cytoscape.view.presentation.internal.RenderingEngineManagerImpl">
 	</bean>
-	
-	<bean id="renderingEngineFactoryManager"
-		class="org.cytoscape.view.presentation.internal.RenderingEngineFactoryManagerImpl">
-		<constructor-arg ref="cyEventHelperServiceRef" />
-	</bean>
 
 </beans>
