@@ -64,7 +64,20 @@ public interface VisualLexicon {
 	 * 
 	 */
 	Set<VisualProperty<?>> getAllVisualProperties();
-	
+
+	/**
+	 * Returns the appropriate visual property for the descriptive
+	 * string.  The string is generally expected to be descriptive identifier
+	 * from a file format (e.g. XGMML, GML) that can be mapped to a VisualProperty
+	 * by the implementer of the VisualLexicon.  This method will return null if
+	 * no match is found.
+	 * @param type The type of the visual property sought, which should 
+	 * (in general) be CyNode.class, CyEdge.class, or CyNetwork.class.
+	 * @param identifier A string identifying a particular visual property.
+	 * @return A VisualProperty identified by the input string or null if no
+	 * match is found.
+	 */
+	VisualProperty<?> lookup(Class<?> type, String identifier);
 	
 	/**
 	 * Get a tree node in for the given VisualProperty.
