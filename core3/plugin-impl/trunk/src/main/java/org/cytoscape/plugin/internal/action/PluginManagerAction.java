@@ -146,7 +146,7 @@ public class PluginManagerAction extends AbstractCyAction {
 		}
 
 		// Get defaultURL from Cytoscape properties, hard-code for now
-		String DefaultUrl = "http://chianti.ucsd.edu/cyto_web/plugins/plugins_test.xml";//getDefaultUrl();
+		String DefaultUrl = "http://chianti.ucsd.edu/cyto_web/plugins3/plugins3.xml";//getDefaultUrl();
 		String DefaultTitle = "Cytoscape";
 		
 		Task task = new PluginManagerInquireTask(DefaultUrl, new ManagerAction(dlg, DefaultTitle, DefaultUrl));
