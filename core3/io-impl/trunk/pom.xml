@@ -89,6 +89,16 @@
 			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>session-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>work-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>com.lowagie.text</groupId>
 			<artifactId>com.springsource.com.lowagie.text</artifactId>
 			<version>2.0.8</version>
