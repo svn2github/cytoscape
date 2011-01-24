@@ -9,11 +9,11 @@
 	<!-- Import Application Manager -->
 	<osgi:reference id="cyApplicationManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
-		
+
 	<!-- Import ref to desktop application -->
 	<osgi:reference id="cySwingApplicationServiceRef"
 		interface="org.cytoscape.application.swing.CySwingApplication" />
-		
+
 	<osgi:reference id="taskManagerServiceRef"
 		interface="org.cytoscape.work.swing.GUITaskManager" />
 
@@ -21,5 +21,18 @@
 	<!-- Export actions -->
 	<osgi:service id="showNetworkImportDialogActionService"
 		ref="showNetworkImportDialogAction" interface="org.cytoscape.application.swing.CyAction" />
+
+
+	<!-- Import client list -->
+	<osgi:set id="networkImportClientSet"
+		cardinality="0..N">
+		<osgi:interfaces>
+			<value>org.cytoscape.io.webservice.NetworkImportWebServiceClient</value>
+			<value>org.cytoscape.io.webservice.SearchWebServiceClient</value>
+			<value>org.cytoscape.io.webservice.WebServiceClient</value>
+		</osgi:interfaces>
+		<osgi:listener bind-method="addNetworkImportClient"
+			unbind-method="removeNetworkImportClient" ref="unifiedNetworkImportDialog" />
+	</osgi:set>
 
 </beans>

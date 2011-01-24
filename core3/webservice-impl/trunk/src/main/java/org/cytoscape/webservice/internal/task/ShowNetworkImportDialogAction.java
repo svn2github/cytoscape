@@ -7,42 +7,37 @@ import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.webservice.internal.ui.UnifiedNetworkImportDialog;
-import org.cytoscape.work.TaskManager;
-import org.cytoscape.work.TaskMonitor;
 
 /**
- * Add menu item to open Unified Network Import GUI.
- *
+ * Network Import GUI.
+ * 
  */
 public class ShowNetworkImportDialogAction extends AbstractCyAction {
 
 	private static final long serialVersionUID = -36712860667900147L;
-	
+
 	private UnifiedNetworkImportDialog dialog;
-	private final TaskManager taskManager;
-	
+
 	private final Window parent;
 
-	public ShowNetworkImportDialogAction(final CyApplicationManager applicationManager, final CySwingApplication app, final TaskManager taskManager) {
+	public ShowNetworkImportDialogAction(
+			final CyApplicationManager applicationManager,
+			final CySwingApplication app,
+			final UnifiedNetworkImportDialog dialog) {
 		super("Public Databases...", applicationManager);
 		setPreferredMenu("File.Import.Network");
-		
-		if(taskManager == null)
-			throw new NullPointerException("TaskMonitor is null.");
-		
-		this.taskManager = taskManager;
+
+		if (dialog == null)
+			throw new NullPointerException("Dialog is null.");
+
 		this.parent = app.getJFrame();
-		dialog = null;
+		this.dialog = dialog;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(dialog == null)
-			dialog = new UnifiedNetworkImportDialog(taskManager);
-		
 		dialog.setLocationRelativeTo(parent);
 		dialog.setVisible(true);
-		
 	}
 
 }

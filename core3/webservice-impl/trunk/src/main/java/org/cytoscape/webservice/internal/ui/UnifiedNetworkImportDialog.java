@@ -35,33 +35,28 @@
 package org.cytoscape.webservice.internal.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.LayoutStyle;
-import javax.swing.border.EmptyBorder;
 
 import org.cytoscape.io.webservice.NetworkImportWebServiceClient;
 import org.cytoscape.io.webservice.SearchWebServiceClient;
 import org.cytoscape.io.webservice.WebServiceClient;
+import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
 import org.cytoscape.work.TaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +101,7 @@ public class UnifiedNetworkImportDialog extends JDialog {
 			throw new NullPointerException("TaskManager is null.");
 		
 		this.taskManager = taskManager;
+		
 		numClients = 0;
 		setModal(false);
 		this.clients = new HashSet<NetworkImportWebServiceClient>();
@@ -124,7 +120,7 @@ public class UnifiedNetworkImportDialog extends JDialog {
 	 * @param props
 	 */
 	public void addNetworkImportClient(
-			final NetworkImportWebServiceClient client, Map props) {
+			final NetworkImportWebServiceClient client, @SuppressWarnings("rawtypes") Map props) {
 		if(this.numClients == 0)
 			this.datasourceComboBox.removeAllItems();
 		
@@ -132,6 +128,8 @@ public class UnifiedNetworkImportDialog extends JDialog {
 		this.clients.add(client);
 		numClients++;
 		setComponentsEnabled(true);
+		
+		logger.info("New network import client registered: " + client);
 	}
 
 	
@@ -142,7 +140,7 @@ public class UnifiedNetworkImportDialog extends JDialog {
 	 * @param props
 	 */
 	public void removeNetworkImportClient(
-			final NetworkImportWebServiceClient client, Map props) {
+			final NetworkImportWebServiceClient client, @SuppressWarnings("rawtypes") Map props) {
 		
 		datasourceComboBox.removeItem(client);
 		this.clients.remove(client);
@@ -418,6 +416,8 @@ public class UnifiedNetworkImportDialog extends JDialog {
 	 */
 	private void searchButtonActionPerformed() {
 		final Object selected = datasourceComboBox.getSelectedItem();
+		if(selected == null)
+			return;
 		
 		WebServiceClient client = null;
 		if(selected instanceof SearchWebServiceClient && selected instanceof WebServiceClient) {
@@ -426,7 +426,7 @@ public class UnifiedNetworkImportDialog extends JDialog {
 			throw new IllegalStateException("Selected cleint does not have search function.");
 		}
 		
-		//taskManager.execute(client);
+		taskManager.execute(client);
 
 		logger.info("Network Import from WS Success!");
 	}
@@ -461,12 +461,14 @@ public class UnifiedNetworkImportDialog extends JDialog {
 	}
 
 	private void datasourceComboBoxActionPerformed(ActionEvent evt) {
-
-		queryTextPane.setText("");
-		setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
 		
 		final Object selected = datasourceComboBox.getSelectedItem();
+		if(selected == null)
+			return;
 		
+		queryTextPane.setText("");
+		setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
+			
 		if(selected instanceof WebServiceClient == false)
 			return;
 		
@@ -483,7 +485,6 @@ public class UnifiedNetworkImportDialog extends JDialog {
 			buttonPanel.setVisible(false);
 		} else {
 			// Otherwise, use the default panel.
-			logger.info("No custom GUI.  Use default panel.");
 			dataQueryPanel.add(mainTabbedPane, BorderLayout.CENTER);
 			buttonPanel.setVisible(true);
 		}
@@ -560,7 +561,6 @@ public class UnifiedNetworkImportDialog extends JDialog {
 	private javax.swing.JButton aboutButton;
 	private javax.swing.JPanel buttonPanel;
 	private JPanel queryPanel;
-	private JPanel installPanel;
 	private javax.swing.JButton clearButton;
 	private javax.swing.JPanel dataQueryPanel;
 	private javax.swing.JPanel datasourcePanel;

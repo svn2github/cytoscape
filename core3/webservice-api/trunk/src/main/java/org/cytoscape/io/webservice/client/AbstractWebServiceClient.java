@@ -85,6 +85,10 @@ public abstract class AbstractWebServiceClient implements WebServiceClient {
 	@Override public String getDescription() {
 		return description;
 	}
+	
+	@Override public String toString() {
+		return this.displayName;
+	}
 
 
 	@Override
