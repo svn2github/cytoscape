@@ -48,7 +48,7 @@ public class HeadlessTaskManager extends AbstractTaskManager {
 	}
 
 	@Override
-	protected void execute(final TaskFactory factory, boolean wait) {
+	public void execute(final TaskFactory factory) {
 		final TaskIterator taskIterator = factory.getTaskIterator();
 		final Timer timer = new Timer();
 		final ConsoleTaskMonitor taskMonitor = new ConsoleTaskMonitor(timer);
@@ -78,13 +78,9 @@ public class HeadlessTaskManager extends AbstractTaskManager {
 		};
 
 		Future<?> future = taskExecutorService.submit(runnable);	
-
-		if ( wait )
-			try { future.get(); } catch (Exception e) {}
 	}
 
-	class ConsoleTaskMonitor implements TaskMonitor
-	{
+	class ConsoleTaskMonitor implements TaskMonitor {
 		static final int UPDATE_DELAY_IN_MILLISECONDS = 2000;
 
 		final Timer timer;
