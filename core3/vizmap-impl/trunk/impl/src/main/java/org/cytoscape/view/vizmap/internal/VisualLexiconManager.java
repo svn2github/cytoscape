@@ -49,8 +49,6 @@ public class VisualLexiconManager {
 		
 		final VisualLexicon lexicon = factory.getVisualLexicon();
 		
-		System.out.println("\n\n\n\n### Got New lexicon: " + lexicon);
-
 		// Node-related Visual Properties are linked as a children of NODE
 		// VP.
 		nodeVPs.addAll(lexicon.getAllDescendants(TwoDVisualLexicon.NODE));
