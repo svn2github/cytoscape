@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -28,35 +29,24 @@ import java.io.FileInputStream;
 import java.util.Iterator;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.io.read.CyTableReader;
+import org.cytoscape.task.table.MapNetworkAttrTask;
+import org.cytoscape.work.AbstractTask;
 
-public class CyAttributesReader implements CyTableReader {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class CyAttributesReader extends AbstractTask implements CyTableReader {
 
 
-	/**
-	 * This type corresponds to java.lang.Boolean.
-	 */
+	private static final Logger logger = LoggerFactory.getLogger(CyAttributesReader.class);
+
 	public final byte TYPE_BOOLEAN = 1;
-
-	/**
-	 * This type corresponds to java.lang.Double.
-	 */
 	public final byte TYPE_FLOATING_POINT = 2;
-
-	/**
-	 * This type corresponds to java.lang.Integer.
-	 */
 	public final byte TYPE_INTEGER = 3;
-
-	/**
-	 * This type corresponds to java.lang.String.
-	 */
 	public final byte TYPE_STRING = 4;
-
 	public static final String ENCODING_SCHEME = "UTF-8";
-
-
-	////////////////////
 
 	public static final String DECODE_PROPERTY = "cytoscape.decode.attributes";
 	private static final String badDecodeMessage =
@@ -67,84 +57,55 @@ public class CyAttributesReader implements CyTableReader {
 	private boolean badDecode;
 	private int lineNum;
 	private boolean doDecoding;
-	final Map<String, Map<String, Class>> idsToAttribNameToTypeMapMap;
-	//private final CyLogger logger;
 
 	private CyTableManager tableMgr;
 	private CyTableFactory tableFactory;;
 	private InputStream inputStream;
 
-	private CyTable[] cyTables = null;
-	private CyNetwork[] networks= null;
-	private String nodeOrEdge; //node or edge
-	private String globalTableTitle = "ThisIsAGlobalTable";// This will be replaced by the "file name" later
+	private CyTable[] cyTables; 
 	private CyApplicationManager appMgr;
 	private CyNetworkManager netMgr;
-	private CyTable globalTable = null;
-	
+
 	@Tunable(description = "Select Data Type")
 	public final ListSingleSelection<String> dataTypeOptions;
-	
-	@Tunable(description = "Select Network")
-	public final ListSingleSelection<String> networkOptions;
-	
+
+	private static int numImports = 0;
 	
 	public CyAttributesReader(InputStream inputStream, CyTableFactory tableFactory, CyTableManager tableMgr,
 			CyApplicationManager appMgr, CyNetworkManager netMgr) {
 		
-		//logger = CyLogger.getLogger(CyAttributesReader.class);
 		lineNum = 0;
 		doDecoding = Boolean.valueOf(System.getProperty(DECODE_PROPERTY, "true"));
-		idsToAttribNameToTypeMapMap = new HashMap<String, Map<String, Class>>();
 		
 		this.tableMgr = tableMgr;
 		this.tableFactory = tableFactory;
 		this.appMgr = appMgr;
 		this.netMgr = netMgr;
-		
 		this.inputStream = inputStream;
 
-		ArrayList<String> options1 = new  ArrayList<String>();
-		options1.add("Node");
-		options1.add("Edge");
-		
+		List<String> options1 = new  ArrayList<String>();
+		if ( netMgr.getNetworkSet().size() > 0 ) {
+			options1.add("Node");
+			options1.add("Edge");
+			options1.add("Network");
+			options1.add("Unbound");
+		} else {
+			options1.add("Unbound");
+		}
+	
 		dataTypeOptions = new ListSingleSelection<String>(options1);
-		
-		ArrayList<String> options2 = new  ArrayList<String>();
-		options2.add("Current network");
-		options2.add("All networks");
-		options2.add("No network");
-		
-		networkOptions = new ListSingleSelection<String>(options2);	
 	}
 
 	
 	@Override
 	public void run(TaskMonitor tm) throws IOException {
-		if (dataTypeOptions.getSelectedValue().equalsIgnoreCase("Node")){
-			nodeOrEdge = "node";
-		}
-		else { // Edge
-			nodeOrEdge = "edge";
-		}
-		
-		////
-		String networkType = networkOptions.getSelectedValue();
-		
-		if (networkType.equalsIgnoreCase("Current network")){
-			networks = new CyNetwork[1];//
-			networks[0] = this.appMgr.getCurrentNetwork();			
-		}
-		else if (networkType.equalsIgnoreCase("All networks")){
-			networks = (CyNetwork[])netMgr.getNetworkSet().toArray();
-		}
-		else { // no network yet, its global attribute
-			networks = null;
-		}
-		
-		///
+	
+		CyTable table = tableFactory.createTable("AttrTable " + Integer.toString(numImports++), 
+		                                           "name", String.class, true);
+		cyTables = new CyTable[] { table };
+
 		try {
-			loadAttributesInternal();
+			loadAttributesInternal(table);
 		} finally {
 			if (inputStream != null) {
 				inputStream.close();
@@ -152,39 +113,26 @@ public class CyAttributesReader implements CyTableReader {
 			}
 		}
 
-		tm.setProgress(1.0);
+		Class<? extends CyTableEntry> type = getMappingClass();
+
+		if ( netMgr.getNetworkSet().size() > 0 && type != null ) 
+			super.insertTasksAfterCurrentTask( new MapNetworkAttrTask(type,table,netMgr,appMgr) );
+	}
+
+	private Class<? extends CyTableEntry> getMappingClass() {
+		String sel = dataTypeOptions.getSelectedValue();
+		if ( sel.equals("Node") )
+			return CyNode.class;
+		else if ( sel.equals("Edge") )
+			return CyEdge.class;
+		else if ( sel.equals("Network") )
+			return CyNetwork.class;
+		else	
+			return null; 
 	}
 	
 
-	/*
-	private Class mapCytoscapeAttribTypeToEqnType(final byte attribType) {
-		switch (attribType) {
-		case CyAttributes.TYPE_BOOLEAN:
-			return Boolean.class;
-		case CyAttributes.TYPE_INTEGER:
-			return Long.class;
-		case CyAttributes.TYPE_FLOATING:
-			return Double.class;
-		case CyAttributes.TYPE_STRING:
-			return String.class;
-		case CyAttributes.TYPE_SIMPLE_LIST:
-			return List.class;
-		default:
-			return null;
-		}
-	}
-	 */
-
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param cyAttrs DOCUMENT ME!
-	 * @param fileIn DOCUMENT ME!
-	 *
-	 * @throws IOException DOCUMENT ME!
-	 */
-	private void loadAttributesInternal() throws IOException
+	private void loadAttributesInternal(CyTable table) throws IOException
 	{		
 		InputStreamReader reader1 = new InputStreamReader(this.inputStream);
 		
@@ -324,8 +272,7 @@ public class CyAttributesReader implements CyTableReader {
 						}
 					}
 
-					//cyAttrs.setListAttribute(key, attributeName, elmsBuff);					
-					setListArrtibute(type, key, attributeName, elmsBuff);
+					setListArrtibute(table, type, key, attributeName, elmsBuff);
 					
 					
 				} else { // Not a list.
@@ -359,57 +306,9 @@ public class CyAttributesReader implements CyTableReader {
 						firstLine = false;
 					}
 
-
-					if (networks != null){
-						// Load attributes for current network or all networks there						
-						setAttributeForType(type, key, attributeName, val);	
-					}
-					else { // networks = null, load the attribute into global table
-
-						// If globalTable does not exist, create it
-						if (globalTable == null){
-							String primaryKey = "ID";
-							globalTable = tableFactory.createTable(this.globalTableTitle, primaryKey, String.class, true);
-						}
-						
-						// key, attributeName, val
-						// If the column does not exist, create it
-						if (globalTable.getColumnTypeMap().get(attributeName)== null)
-						{
-							if (type == TYPE_INTEGER){
-								globalTable.createColumn(attributeName, Integer.class);	
-							}
-							else if (type == TYPE_BOOLEAN){
-								globalTable.createColumn(attributeName, Boolean.class);	
-							}
-							else if (type == TYPE_FLOATING_POINT){
-								globalTable.createColumn(attributeName, Double.class);	
-							}
-							else { // String
-								globalTable.createColumn(attributeName, String.class);
-							}
-						}
-						
-						// Now add the attributes for the row based on the key
-						CyRow row = globalTable.getRow(key);
-
-						if (type == TYPE_INTEGER){
-							row.set(attributeName, new Integer(val));	
-						}
-						else if (type == TYPE_BOOLEAN){
-							row.set(attributeName, new Boolean(val));
-						}
-						else if (type == TYPE_FLOATING_POINT){
-							row.set(attributeName, new Double(val));
-						}
-						else { // String
-							row.set(attributeName, new String(val));
-						}
-					}
-						
+					setAttributeForType(table, type, key, attributeName, val);	
 				}
-
-			}// End of while loop
+			}
 		} catch (Exception e) {
 			String message;
 			if (guessedAttrType) {
@@ -424,144 +323,64 @@ public class CyAttributesReader implements CyTableReader {
 			else
 				message = "failed parsing attributes file at line: " + lineNum
 				+ " with exception: " + e.getMessage();
-			//logger.warn(message, e);
+			logger.warn(message, e);
 			throw new IOException(message);
 		}
 	}
 
-	private void setAttributeForType(byte type, String key, String attributeName, String val){
+	private void setAttributeForType(CyTable tbl, byte type, String key, String attributeName, String val){
 
-		for (int i= 0; i< networks.length; i++){
-			Map<String, CyTable> map;
-			if (nodeOrEdge.equalsIgnoreCase("Node")){
-				map = tableMgr.getTableMap(CyNode.class, networks[i]);
+		if (!tbl.getColumnTypeMap().keySet().contains(attributeName))
+		{
+			if (type == TYPE_INTEGER){
+				tbl.createColumn(attributeName, Integer.class);
 			}
-			else {
-				map = tableMgr.getTableMap(CyEdge.class, networks[i]);
+			else if (type == TYPE_BOOLEAN){
+				tbl.createColumn(attributeName, Boolean.class);
 			}
-			
-			CyTable tbl = map.get(CyNetwork.DEFAULT_ATTRS);
-				
-			if (!tbl.getColumnTypeMap().keySet().contains(attributeName))
-			{
-				if (type == TYPE_INTEGER){
-					tbl.createColumn(attributeName, Integer.class);
-				}
-				else if (type == TYPE_BOOLEAN){
-					tbl.createColumn(attributeName, Boolean.class);
-				}
-				else if (type == TYPE_FLOATING_POINT) {
-					tbl.createColumn(attributeName, Double.class);
-				}
-				else { // type is String
-					tbl.createColumn(attributeName, String.class);
-				}
+			else if (type == TYPE_FLOATING_POINT) {
+				tbl.createColumn(attributeName, Double.class);
 			}
-				
-			Set<CyRow> rows = tbl.getMatchingRows("name", key);
+			else { // type is String
+				tbl.createColumn(attributeName, String.class);
+			}
+		}
 
-			Iterator<CyRow> it = rows.iterator();
-			while (it.hasNext()){
-				CyRow row = it.next();
-				if (type == TYPE_INTEGER){
-					row.set(attributeName, new Integer(val));							
-				}
-				else if (type == TYPE_BOOLEAN){
-					row.set(attributeName, new Boolean(val));
-				}
-				else if (type == TYPE_FLOATING_POINT) {
-					row.set(attributeName, (new Double(val)));
-				}
-				else {// type is String
-					row.set(attributeName, new String(val));
-				}	
-			}
+		CyRow row = tbl.getRow(key);
+		
+		if (type == TYPE_INTEGER){
+			row.set(attributeName, new Integer(val));							
+		}
+		else if (type == TYPE_BOOLEAN){
+			row.set(attributeName, new Boolean(val));
+		}
+		else if (type == TYPE_FLOATING_POINT) {
+			row.set(attributeName, (new Double(val)));
+		}
+		else {// type is String
+			row.set(attributeName, new String(val));
 		}
 	}
 
 
-	private void setListArrtibute(Byte type, String key, String attributeName, final ArrayList elmsBuff){
+	private void setListArrtibute(CyTable tbl, Byte type, String key, String attributeName, final ArrayList elmsBuff){
 
-		// Load global attribute
-		if (networks == null){
-			// If globalTable does not exist, create it
-			if (globalTable == null){
-				String primaryKey = "ID";
-				globalTable = tableFactory.createTable(this.globalTableTitle, primaryKey, String.class, true);
-			}
-			
-			// key, attributeName, val
-			// If the column does not exist, create it
-			if (globalTable.getColumnTypeMap().get(attributeName)== null)
-			{
-				if (type == TYPE_INTEGER){
-					globalTable.createListColumn(attributeName, Integer.class);	
-				}
-				else if (type == TYPE_BOOLEAN){
-					globalTable.createListColumn(attributeName, Boolean.class);	
-				}
-				else if (type == TYPE_FLOATING_POINT){
-					globalTable.createListColumn(attributeName, Double.class);	
-				}
-				else { // String
-					globalTable.createListColumn(attributeName, String.class);
-				}
-			}
-			
-			// Now add the attributes for the row based on the key
-			CyRow row = globalTable.getRow(key);
-
+		if (!tbl.getColumnTypeMap().keySet().contains(attributeName))
+		{
 			if (type == TYPE_INTEGER){
-				row.set(attributeName, elmsBuff);	
+				tbl.createListColumn(attributeName, Integer.class);
 			}
 			else if (type == TYPE_BOOLEAN){
-				row.set(attributeName, elmsBuff);
+				tbl.createListColumn(attributeName, Boolean.class);
 			}
-			else if (type == TYPE_FLOATING_POINT){
-				row.set(attributeName, elmsBuff);
+			else if (type == TYPE_FLOATING_POINT) {
+				tbl.createListColumn(attributeName, Double.class);
 			}
-			else { // String
-				row.set(attributeName, elmsBuff);
+			else { // type is String, do nothing
 			}
-
-			return;
 		}
-		
-		// networks != null
-		////////Load network-specific attributes ////////
-		for (int i= 0; i< networks.length; i++){
-			Map<String, CyTable> map;
-			if (nodeOrEdge.equalsIgnoreCase("Node")){
-				map = tableMgr.getTableMap(CyNode.class, networks[i]);
-			}
-			else {// Edge
-				map = tableMgr.getTableMap(CyEdge.class, networks[i]);				
-			}
-			CyTable	tbl = map.get(CyNetwork.DEFAULT_ATTRS);
-				
-			if (!tbl.getColumnTypeMap().keySet().contains(attributeName))
-			{
-				if (type == TYPE_INTEGER){
-					tbl.createListColumn(attributeName, Integer.class);
-				}
-				else if (type == TYPE_BOOLEAN){
-					tbl.createListColumn(attributeName, Boolean.class);
-				}
-				else if (type == TYPE_FLOATING_POINT) {
-					tbl.createListColumn(attributeName, Double.class);
-				}
-				else { // type is String, do nothing
-				}
-			}
-					
-			Set<CyRow> rows = tbl.getMatchingRows("name", key);
-
-			Iterator<CyRow> it = rows.iterator();
-			while (it.hasNext()){
-				CyRow row = it.next();
-				row.set(attributeName, elmsBuff);							
-			}				
-		}
+		CyRow row = tbl.getRow(key);	
+		row.set(attributeName, elmsBuff);							
 	}
 	
 	
@@ -625,34 +444,9 @@ public class CyAttributesReader implements CyTableReader {
 	public void setDoDecoding(boolean doDec) {
 		doDecoding = doDec;
 	}
-	
-	public CyTable[] getCyTables(){
-		//Gloal table
-		if (networks == null){
-			cyTables = new CyTable[] { this.globalTable };
-			return cyTables;
-		}
 
-		//network-specific tables
-		cyTables = new CyTable[networks.length];
-		if (this.nodeOrEdge.equalsIgnoreCase("Node")){
-			for (int i=0; i< networks.length; i++){
-				Map<String, CyTable> map = tableMgr.getTableMap(CyNode.class, networks[i]);
-				CyTable tbl = map.get(CyNetwork.DEFAULT_ATTRS);
-				cyTables[i] = tbl;
-			}
-		}
-		else {// Edge
-			for (int i=0; i< networks.length; i++){
-				Map<String, CyTable> map = tableMgr.getTableMap(CyEdge.class, networks[i]);
-				CyTable tbl = map.get(CyNetwork.DEFAULT_ATTRS);
-				cyTables[i] = tbl;
-			}			
-		}
-		
+	@Override
+	public CyTable[] getCyTables(){
 		return cyTables;
-	}
-	
-	public void cancel(){
 	}
 }
