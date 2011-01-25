@@ -235,6 +235,7 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 		addIdentifierMapping(CyNode.class,"label",NODE_LABEL);
 
 		addIdentifierMapping(CyEdge.class,"fill",EDGE_PAINT);
+		addIdentifierMapping(CyEdge.class,"width",EDGE_WIDTH);
 		// TODO add more mappings!
 	}
 }
