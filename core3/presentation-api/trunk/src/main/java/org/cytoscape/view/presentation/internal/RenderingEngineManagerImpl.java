@@ -83,10 +83,8 @@ public class RenderingEngineManagerImpl implements RenderingEngineManager {
 		// Register default lexicon
 		if(id.equals(DEFAULT_FACTORY_ID)) {
 			defaultLexicon = factory.getVisualLexicon();
-			System.out.println("Default Lexicon found: " + id);
 		}
 				
-		System.out.println("\n\nRendering Engine Factory added: " + id);
 	}
 
 	public void removeRenderingEngineFactory(
