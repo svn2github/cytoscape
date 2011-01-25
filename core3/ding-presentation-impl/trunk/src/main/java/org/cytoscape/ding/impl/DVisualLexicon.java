@@ -391,10 +391,19 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	}
 
 	private void createLookupMap() {
+		addIdentifierMapping(CyNode.class,"type",NODE_SHAPE);
+		addIdentifierMapping(CyNode.class,"outline",NODE_BORDER_PAINT);
+		addIdentifierMapping(CyNode.class,"width",NODE_BORDER_WIDTH);
 		addIdentifierMapping(CyNode.class,"borderLineType",NODE_BORDER_STROKE);
 		addIdentifierMapping(CyNode.class,"nodeLabelFont",NODE_LABEL_FONT_FACE);
 		addIdentifierMapping(CyNode.class,"nodeTransparency",NODE_TRANSPARENCY);
-		addIdentifierMapping(CyNode.class,"outline",NODE_BORDER_PAINT);
+		
+		addIdentifierMapping(CyEdge.class,"edgeLineType",EDGE_STROKE);
+		addIdentifierMapping(CyEdge.class,"edgeLabelFont",EDGE_LABEL_FONT_FACE);
+		addIdentifierMapping(CyEdge.class,"sourceArrow",EDGE_SOURCE_ARROW_SHAPE);
+		addIdentifierMapping(CyEdge.class,"targetArrow",EDGE_TARGET_ARROW_SHAPE);
+		addIdentifierMapping(CyEdge.class,"sourceArrowColor",EDGE_SOURCE_ARROW_UNSELECTED_PAINT);
+		addIdentifierMapping(CyEdge.class,"targetArrowColor",EDGE_TARGET_ARROW_UNSELECTED_PAINT);
 		// TODO add more!
 	}
 	
