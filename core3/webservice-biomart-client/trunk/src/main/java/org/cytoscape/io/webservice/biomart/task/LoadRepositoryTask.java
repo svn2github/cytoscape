@@ -50,7 +50,7 @@ public class LoadRepositoryTask extends AbstractTask {
 	@Override
 	public void run(TaskMonitor taskMonitor) throws IOException, ParserConfigurationException, SAXException {
 
-		
+		taskMonitor.setTitle("Loading list of available BioMart Services.  Please wait...");
 		taskMonitor.setStatusMessage("Loading list of available Marts...");
 		
 		dsList = new ArrayList<String>();

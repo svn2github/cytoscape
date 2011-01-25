@@ -47,23 +47,26 @@ import org.cytoscape.io.webservice.client.AbstractWebServiceClient;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskIterator;
 
 /**
  * Biomart Web Service Client.
  * 
  */
-public class BiomartClient extends AbstractWebServiceClient implements TableImportWebServiceClient {
-	
+public class BiomartClient extends AbstractWebServiceClient implements
+		TableImportWebServiceClient {
+
 	private final CyTableFactory tableFactory;
-	private final CyNetworkManager manager;
-	
+
 	private final BiomartRestClient restClient;
-	
+
 	private BiomartAttrMappingPanel gui;
-	
+
 	private ImportTableTask importTask;
-	
+
+	private final CyNetworkManager networkManager;
+	private final CyApplicationManager applicationManager;
 
 	/**
 	 * Creates a new Biomart Client object.
@@ -71,23 +74,26 @@ public class BiomartClient extends AbstractWebServiceClient implements TableImpo
 	 * @throws ServiceException
 	 * @throws ConfigurationException
 	 */
-	public BiomartClient(final String displayName, final String description, 
+	public BiomartClient(final String displayName, final String description,
 			final BiomartRestClient restClient,
-			final CyTableFactory tableFactory, 
-			final CyNetworkManager manager) {
+			final CyTableFactory tableFactory,
+			final CyNetworkManager networkManager,
+			final CyApplicationManager applicationManager) {
 		super(restClient.getBaseURL(), displayName, description);
 
 		this.tableFactory = tableFactory;
-		this.manager = manager;
 		this.restClient = restClient;
+
+		this.networkManager = networkManager;
+		this.applicationManager = applicationManager;
 
 		// TODO: set optional parameters (Tunables?)
 	}
-	
+
 	public void setGUI(final BiomartAttrMappingPanel gui) {
 		this.gui = gui;
 	}
-	
+
 	public BiomartRestClient getRestClient() {
 		return this.restClient;
 	}
@@ -95,7 +101,7 @@ public class BiomartClient extends AbstractWebServiceClient implements TableImpo
 	@Override
 	public Set<CyTable> getTables() {
 		// Return empty task if not executed yet.
-		if(importTask == null)
+		if (importTask == null)
 			return new HashSet<CyTable>();
 		else
 			return importTask.getCyTables();
@@ -103,12 +109,15 @@ public class BiomartClient extends AbstractWebServiceClient implements TableImpo
 
 	@Override
 	public TaskIterator getTaskIterator() {
-		if(gui == null)
-			throw new IllegalStateException("Could not build query because Query Builder GUI is null.");
-		
+		if (gui == null)
+			throw new IllegalStateException(
+					"Could not build query because Query Builder GUI is null.");
+
 		final BiomartQuery query = this.gui.getTableImportQuery();
+
+		importTask = new ImportTableTask(restClient, query, tableFactory, networkManager, applicationManager);
+
 		
-		importTask = new ImportTableTask(restClient, query, tableFactory, manager);
 		return new TaskIterator(importTask);
 	}
 }

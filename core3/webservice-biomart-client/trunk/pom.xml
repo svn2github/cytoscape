@@ -82,7 +82,7 @@
 						<Bundle-Version>${pom.version}</Bundle-Version>
 						<!-- | assume public classes are in the top package, and private classes 
 							are under ".internal" -->
-						
+
 						<!-- | each module can override these defaults in their osgi.bnd file -->
 						<_include>-osgi.bnd</_include>
 					</instructions>
@@ -108,6 +108,11 @@
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-application-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>core-task-api</artifactId>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
 
 

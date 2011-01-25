@@ -32,6 +32,7 @@
 		<constructor-arg ref="biomartRestClient" />
 		<constructor-arg ref="cyTableFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<bean id="biomartAttrMappingPanel"
