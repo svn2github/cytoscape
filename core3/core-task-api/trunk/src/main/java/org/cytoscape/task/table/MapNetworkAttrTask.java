@@ -1,4 +1,4 @@
-package org.cytoscape.io.internal.read.attrs;
+package org.cytoscape.task.table;
 
 
 import java.util.ArrayList;
