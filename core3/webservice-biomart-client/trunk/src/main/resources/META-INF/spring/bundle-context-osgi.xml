@@ -23,7 +23,11 @@
 
 	<osgi:reference id="cyTableFactoryServiceRef" interface="org.cytoscape.model.CyTableFactory" />
 
-	<osgi:service id="showBiomartGUIActionService" ref="showDialogAction"
+	<osgi:service id="showBiomartGUIActionService" ref="showBiomartGUIAction"
 		interface="org.cytoscape.application.swing.CyAction" />
+		
+		
+	<!-- This is necessary to listening to Column events. -->
+	<osgi:service id="biomartAttrMappingPanelService" ref="biomartAttrMappingPanel" auto-export="interfaces" />
 
 </beans>

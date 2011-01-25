@@ -17,27 +17,39 @@
 	<import resource="bundle-context-osgi.xml" />
 
 	<context:annotation-config />
-	
+
 	<!-- REST version of BioMart web service client -->
-	<bean id="biomartRestClient" class="org.cytoscape.io.webservice.biomart.rest.BiomartRestClient">
+	<bean id="biomartRestClient"
+		class="org.cytoscape.io.webservice.biomart.rest.BiomartRestClient">
 		<constructor-arg value="http://www.biomart.org/biomart/martservice" />
 	</bean>
-	
+
 	<!-- Wrapper for the REST client -->
 	<bean id="biomartClient" class="org.cytoscape.io.webservice.biomart.BiomartClient">
 		<constructor-arg index="0" value="BioMart Client" />
-		<constructor-arg index="1" value="REST version of BioMart Web Service Client." />
+		<constructor-arg index="1"
+			value="REST version of BioMart Web Service Client." />
 		<constructor-arg ref="biomartRestClient" />
 		<constructor-arg ref="cyTableFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
-	
-	<!-- Task to create menu item -->
-	<bean id="showDialogAction" class="org.cytoscape.io.webservice.biomart.task.ShowBiomartGUIAction">
+
+	<bean id="biomartAttrMappingPanel"
+		class="org.cytoscape.io.webservice.biomart.ui.BiomartAttrMappingPanel">
 		<constructor-arg ref="biomartClient" />
 		<constructor-arg ref="taskManagerServiceRef" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cyTableManagerServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+	</bean>
+
+	<!-- Task to create menu item -->
+	<bean id="showBiomartGUIAction"
+		class="org.cytoscape.io.webservice.biomart.task.ShowBiomartGUIAction">
+		<constructor-arg ref="biomartAttrMappingPanel" />
+		<constructor-arg ref="biomartClient" />
+		<constructor-arg ref="taskManagerServiceRef" />
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
 	</bean>
 </beans>

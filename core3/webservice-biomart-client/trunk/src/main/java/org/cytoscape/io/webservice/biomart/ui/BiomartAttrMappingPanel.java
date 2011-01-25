@@ -57,6 +57,7 @@ import org.cytoscape.io.webservice.biomart.task.ImportAttributeListTask;
 import org.cytoscape.io.webservice.biomart.task.ImportFilterTask;
 import org.cytoscape.io.webservice.biomart.task.LoadRepositoryResult;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
@@ -93,11 +94,12 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 
 	private final GUITaskManager taskManager;
 	private final CyApplicationManager appManager;
-	private final CyTableManager tblManager;
 
-	private final Window parent;
+	private Window parent;
 
 	private final BiomartClient client;
+	
+	private int globalTableCounter;
 
 	/**
 	 * Creates a new BiomartNameMappingPanel object.
@@ -108,20 +110,22 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	 *            DOCUMENT ME!
 	 * @throws Exception
 	 */
-	public BiomartAttrMappingPanel(final LoadRepositoryResult res, final BiomartClient client,
+	public BiomartAttrMappingPanel(
+			final BiomartClient client,
 			final TaskManager taskManager,
 			final CyApplicationManager appManager,
-			final CyTableManager tblManager, final Window parent) {
-		super(LOGO, "Biomart", "Import Settings");
+			final CyTableManager tblManager, final CyNetworkManager netManager) {
+		super(tblManager, netManager, LOGO, "Biomart", "Import Settings");
 
 		this.client = client;
 		this.taskManager = (GUITaskManager) taskManager;
 		this.appManager = appManager;
-		this.tblManager = tblManager;
+		
+		this.globalTableCounter = 0;
+	}
+	
+	public void setParent(final Window parent) {
 		this.parent = parent;
-
-		// Access the MartService and get the available services.
-		initDataSources(res);
 	}
 
 	/**
@@ -129,7 +133,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	 * 
 	 * @throws Exception
 	 */
-	private void initDataSources(LoadRepositoryResult res) {
+	public void initDataSources(LoadRepositoryResult res) {
 		attributeMap = new HashMap<String, Map<String, String[]>>();
 		attributeListOrder = new HashMap<String, List<String>>();
 		filterMap = new HashMap<String, Map<String, String>>();
@@ -141,6 +145,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		// Load available filters for current source.
 		// loadFilter();
 	}
+	
 
 	public void setMartServiceList(LoadRepositoryResult res) {
 		this.datasourceMap = res.getDatasourceMap();
@@ -241,8 +246,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		// Use Attributes for mapping
 		final CyTable defTable = tblManager.getTableMap(CyNode.class,
 				curNetwork).get(CyNetwork.DEFAULT_ATTRS);
-		final Class<?> attrDataType = defTable.getColumnTypeMap().get(
-				keyAttrName);
+		final Class<?> attrDataType = defTable.getColumnTypeMap().get(keyAttrName);
 		for (CyNode node : nodes) {
 			final CyRow row = defTable.getRow(node.getSUID());
 
@@ -320,10 +324,9 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		final Map<String, String> attrMap = this.attrNameMap.get(datasource);
 		final Map<String, String> fMap = filterMap.get(datasource);
 
-		final String keyAttrName = attributeComboBox.getSelectedItem()
-				.toString();
+		final String keyAttrName = attributeComboBox.getSelectedItem().toString();
 
-		System.out.println("Target attr name found: " + keyAttrName);
+		System.out.println("Selected attr name: " + keyAttrName);
 
 		Dataset dataset;
 		Attribute[] attrs;
@@ -387,7 +390,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		final String query = XMLQueryBuilder.getQueryString(dataset, attrs,
 				filters);
 
-		return new BiomartQuery(query, keyAttrName);
+		final String tableName = TABLE_PREFIX + (++globalTableCounter);
+		return new BiomartQuery(query, keyAttrName, tableName);
 	}
 	
 	

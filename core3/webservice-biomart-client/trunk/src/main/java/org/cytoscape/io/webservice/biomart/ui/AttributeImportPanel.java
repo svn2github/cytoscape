@@ -36,6 +36,8 @@ package org.cytoscape.io.webservice.biomart.ui;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -46,6 +48,12 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnCreatedListener;
 import org.cytoscape.model.events.ColumnDeletedEvent;
@@ -64,6 +72,8 @@ public abstract class AttributeImportPanel extends JPanel implements
 		ColumnCreatedListener, ColumnDeletedListener {
 
 	private static final long serialVersionUID = 8665197023334496167L;
+	
+	protected static final String TABLE_PREFIX = "BioMart Table ";
 
 	/**
 	 * Will be caught by parent object (usually a dialog.)
@@ -105,18 +115,23 @@ public abstract class AttributeImportPanel extends JPanel implements
 
 	// Attribute panel border title
 	protected String attributePanelTitle;
+	
+	protected final CyTableManager tblManager;
+	private final CyNetworkManager netManager;
 
-	protected AttributeImportPanel() {
-		this(null, DEF_TITLE, ATTR_PANEL_TITLE);
-	}
 
-	protected AttributeImportPanel(Icon logo, String title,
+	protected AttributeImportPanel(final CyTableManager tblManager, final CyNetworkManager netManager,
+			Icon logo, String title,
 			String attrPanelTitle) {
 		this.logo = logo;
 		this.panelTitle = title;
 		this.attributePanelTitle = attrPanelTitle;
+		this.tblManager = tblManager;
+		this.netManager = netManager;
 
 		initComponents();
+		
+		setAttributeComboBox();
 	}
 
 	private void initComponents() {
@@ -406,21 +421,40 @@ public abstract class AttributeImportPanel extends JPanel implements
 	abstract protected void databaseComboBoxActionPerformed(
 			java.awt.event.ActionEvent evt);
 
+	
 	protected abstract void importAttributes();
+	
+	
+	private void setAttributeComboBox() {
+		final Set<CyNetwork> networks = this.netManager.getNetworkSet();
+		
+		for(CyNetwork network: networks) {
+			final Map<String, CyTable> tables = this.tblManager.getTableMap(CyNode.class, network);
+			final CyTable nodeTable = tables.get(CyNetwork.DEFAULT_ATTRS);
+			final Map<String, Class<?>> columns = nodeTable.getColumnTypeMap();
+			for (String name : columns.keySet())
+				attributeComboBox.addItem(name);
+		}
+	}
 
 	protected void addAttribute(final String attributeName) {
 		if (attributeName == null)
 			return;
 
+		final Object currentSelection = attributeComboBox.getSelectedItem();
+		
 		final SortedSet<String> attrNameSet = new TreeSet<String>();
 		attrNameSet.add(attributeName);
-		for (int i = 0; i < model.getSize(); i++)
-			attrNameSet.add(model.get(i).toString());
+		for (int i = 0; i < attributeComboBox.getItemCount(); i++)
+			attrNameSet.add(attributeComboBox.getItemAt(i).toString());
 
 		attributeComboBox.removeAllItems();
 
 		for (String name : attrNameSet)
 			attributeComboBox.addItem(name);
+		
+		if(currentSelection != null)
+			attributeComboBox.setSelectedItem(currentSelection.toString());
 	}
 
 	protected void removeAttribute(final String attributeName) {
@@ -432,15 +466,13 @@ public abstract class AttributeImportPanel extends JPanel implements
 
 	@Override
 	public void handleEvent(ColumnCreatedEvent e) {
-		final String attrName = e.getColumnName();
-
+		final String attrName = e.getColumnName();		
 		addAttribute(attrName);
 	}
 
 	@Override
 	public void handleEvent(ColumnDeletedEvent e) {
 		final String attrName = e.getColumnName();
-
 		removeAttribute(attrName);
 	}
 
