@@ -11,6 +11,7 @@
 		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory">
 		<osgi:service-properties>
 			<entry key="service.type" value="factory" />
+			<entry key="mapping.type" value="discrete" />
 		</osgi:service-properties>
 	</osgi:service>
 	
@@ -18,6 +19,7 @@
 		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory">
 		<osgi:service-properties>
 			<entry key="service.type" value="factory" />
+			<entry key="mapping.type" value="continuous" />
 		</osgi:service-properties>
 	</osgi:service>
 	
@@ -25,6 +27,7 @@
 		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory">
 		<osgi:service-properties>
 			<entry key="service.type" value="factory" />
+			<entry key="mapping.type" value="passthrough" />
 		</osgi:service-properties>
 	</osgi:service>
 	
