@@ -1,0 +1,4 @@
+The additional directory named "resources" is used to simplify the inclusion
+of resources in the bundle by the maven-bundle-plugin.  Put any resources
+you want included in the jar in the second resources directory and NOT this
+one!
