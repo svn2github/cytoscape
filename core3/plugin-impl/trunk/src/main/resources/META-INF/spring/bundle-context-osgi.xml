@@ -52,6 +52,10 @@
 		interface="org.cytoscape.session.CySessionManager">
 	</osgi:reference>
 
+	<osgi:reference id="cySwingApplicationRef" 
+		interface="org.cytoscape.application.swing.CySwingApplication">
+	</osgi:reference>
+
 	<osgi:reference id="presentationFactoryRef" 
 		interface="org.cytoscape.view.presentation.RenderingEngineFactory">
 	</osgi:reference>

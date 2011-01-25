@@ -14,6 +14,7 @@ import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CySessionManager;
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
@@ -40,6 +41,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	private final CyNetworkViewFactory cyNetworkViewFactory;
 	private final CyRootNetworkFactory cyRootNetworkFactory;
 	private final CySessionManager cySessionManager;
+	private final CySwingApplication cySwingApplication;
 	private final RenderingEngineFactory presentationFactory;
 	private final TaskManager taskManager;
 	private final VisualMappingManager visualMappingManager;
@@ -60,6 +62,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 			    CyNetworkViewFactory cyNetworkViewFactory,
 			    CyRootNetworkFactory cyRootNetworkFactory,
 			    CySessionManager cySessionManager,
+			    CySwingApplication cySwingApplication,
 			    RenderingEngineFactory presentationFactory,
 			    TaskManager taskManager,
 			    VisualMappingManager visualMappingManager,
@@ -75,6 +78,7 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 		this.cyNetworkViewFactory = cyNetworkViewFactory;
 		this.cyRootNetworkFactory = cyRootNetworkFactory;
 		this.cySessionManager = cySessionManager;
+		this.cySwingApplication = cySwingApplication;
 		this.presentationFactory = presentationFactory;
 		this.taskManager = taskManager;
 		this.visualMappingManager = visualMappingManager;
@@ -112,4 +116,6 @@ public class CyPluginAdapterImpl implements CyPluginAdapter {
 	public CyNetworkViewManager getCyNetworkViewManager() { return networkViewManager; }
 
 	public CyApplicationManager getCyApplicationManager() { return applicationManager; }
+
+	public CySwingApplication getCySwingApplication() { return cySwingApplication; }
 }

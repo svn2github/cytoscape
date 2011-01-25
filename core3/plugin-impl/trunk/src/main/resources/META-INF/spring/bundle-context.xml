@@ -29,6 +29,7 @@
 		<constructor-arg ref="cyNetworkViewFactoryRef" />
 		<constructor-arg ref="cyRootNetworkFactoryRef" />
 		<constructor-arg ref="cySessionManagerRef" />
+		<constructor-arg ref="cySwingApplicationRef" />
 		<constructor-arg ref="presentationFactoryRef" />
 		<constructor-arg ref="taskManagerRef" />
 		<constructor-arg ref="visualMappingManagerRef" />
