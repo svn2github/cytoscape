@@ -31,7 +31,6 @@ package org.cytoscape.io.internal.read.gml;
 
 
 import java.awt.Color;
-import java.awt.Paint;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -59,6 +58,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngine;
+import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
@@ -187,7 +187,7 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	private final InputStream inputStream;
 	private final CyNetworkFactory networkFactory;
 	private final CyNetworkViewFactory viewFactory;
-	private final CyApplicationManager applicationManager;
+	private final RenderingEngineManager renderingEngineManager;
 	
 	private CyNetwork network;
 	private CyNetworkView view;
@@ -202,12 +202,12 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	 *
 	 */
 	public GMLNetworkViewReader(InputStream inputStream, CyNetworkFactory networkFactory,
-				                CyNetworkViewFactory viewFactory, CyApplicationManager applicationManager)
+				                CyNetworkViewFactory viewFactory, RenderingEngineManager renderingEngineManager)
 	{
 		this.inputStream = inputStream;
 		this.networkFactory = networkFactory;
 		this.viewFactory = viewFactory;
-		this.applicationManager = applicationManager;
+		this.renderingEngineManager = renderingEngineManager;
 		
 		// Set new style name
 		edge_names = new Vector<CyEdge>();
@@ -698,70 +698,52 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	 * matches to the "graphics" key word
 	 */
 	private void layoutNodeGraphics(CyNetworkView myView, List<KeyValue> list, View<CyNode> nodeView) {
-		RenderingEngine<CyNetwork> engine = applicationManager.getCurrentRenderingEngine();
-		if (engine == null) {
-			// TODO: Remove this once CyNetworkManager can provide an engine
-			//       instance with zero networks loaded.
-			return;
-		}
-		VisualLexicon lexicon = engine.getVisualLexicon();
-		
+		VisualLexicon lexicon = renderingEngineManager.getDefaultVisualLexicon();
 		Collection<VisualProperty<?>> properties = lexicon.getAllDescendants(TwoDVisualLexicon.NODE);
 		for (VisualProperty<?> property : properties) {
 			String id = property.getIdString();
 			
 			for (KeyValue keyVal : list) {
 				if (keyVal.key.equals(X) && id.equals("NODE_X_LOCATION")) {
-					nodeView.setVisualProperty(property, (Object) asDouble(keyVal.value));
+					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
 				} else if (keyVal.key.equals(Y) && id.equals("NODE_Y_LOCATION")) {
-					nodeView.setVisualProperty(property, (Object) asDouble(keyVal.value));
+					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
 				} else if (keyVal.key.equals(W) && id.equals("NODE_X_SIZE")) {
-					nodeView.setVisualProperty(property, (Object) asDouble(keyVal.value));
+					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
 				} else if (keyVal.key.equals(H) && id.equals("NODE_Y_SIZE")) {
-					nodeView.setVisualProperty(property, (Object) asDouble(keyVal.value));
+					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
 				} else if (keyVal.key.equals(FILL) && id.equals("NODE_COLOR")) {
-					nodeView.setVisualProperty(property, (Object) asPaint(keyVal.value));
+					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
 				} else if (keyVal.key.equals(OUTLINE) && id.equals("NODE_BORDER_PAINT")) {
-					nodeView.setVisualProperty(property, (Object) asPaint(keyVal.value));
+					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
 				} else if (keyVal.key.equals(OUTLINE_WIDTH) && id.equals("NODE_BORDER_WIDTH")) {
-					nodeView.setVisualProperty(property, (Object) asDouble(keyVal.value));
+					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+				} else if (keyVal.key.equals(TYPE) && id.equals("NODE_SHAPE")) {
+					String type = (String) keyVal.value;
+					String value = null;
+					if (type.equals(ELLIPSE)) {
+						value = "ELLIPSE";
+					} else if (type.equals(RECTANGLE)) {
+						value = "RECT";
+					} else if (type.equals(DIAMOND)) {
+						value = "DIAMOND";
+					} else if (type.equals(HEXAGON)) {
+						value = "HEXAGON";
+					} else if (type.equals(OCTAGON)) {
+						value = "OCTAGON";
+					} else if (type.equals(PARALELLOGRAM)) {
+						value = "PARALLELOGRAM";
+					} else if (type.equals(TRIANGLE)) {
+						value = "TRIANGLE";
+					}
+					if (value != null) {
+						nodeView.setVisualProperty(property, (Object) property.parseSerializableString(value));
+					}
 				}
 			}
 		}
-//			} else if (keyVal.key.equals(TYPE)) {
-//				String type = (String) keyVal.value;
-//
-//				if (type.equals(ELLIPSE)) {
-//					nodeView.setShape(NodeView.ELLIPSE);
-//				} else if (type.equals(RECTANGLE)) {
-//					nodeView.setShape(NodeView.RECTANGLE);
-//				} else if (type.equals(DIAMOND)) {
-//					nodeView.setShape(NodeView.DIAMOND);
-//				} else if (type.equals(HEXAGON)) {
-//					nodeView.setShape(NodeView.HEXAGON);
-//				} else if (type.equals(OCTAGON)) {
-//					nodeView.setShape(NodeView.OCTAGON);
-//				} else if (type.equals(PARALELLOGRAM)) {
-//					nodeView.setShape(NodeView.PARALELLOGRAM);
-//				} else if (type.equals(TRIANGLE)) {
-//					nodeView.setShape(NodeView.TRIANGLE);
-//				}
 	}
 
-	private Paint asPaint(Object object) {
-		if (object instanceof String) {
-			return getColor((String) object);
-		}
-		return null;
-	}
-
-	private Double asDouble(Object object) {
-		if (object instanceof Number) {
-			return ((Number) object).doubleValue();
-		}
-		return null;
-	}
-	
 	//
 	// Extract node attributes from GML file
 	private void extractNodeAttributes(List<KeyValue> list, CyNode node) {
@@ -913,13 +895,7 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	//
 	@SuppressWarnings("unchecked")
 	private void layoutEdgeGraphics(CyNetworkView myView, List<KeyValue> list, View<CyEdge> edgeView) {
-		RenderingEngine<CyNetwork> engine = applicationManager.getCurrentRenderingEngine();
-		if (engine == null) {
-			// TODO: Remove this once CyNetworkManager can provide an engine
-			//       instance with zero networks loaded.
-			return;
-		}
-		VisualLexicon lexicon = engine.getVisualLexicon();
+		VisualLexicon lexicon = renderingEngineManager.getDefaultVisualLexicon();
 		Collection<VisualProperty<?>> properties = lexicon.getAllDescendants(TwoDVisualLexicon.NODE);
 		for (VisualProperty<?> property : properties) {
 			String id = property.getIdString();
@@ -930,9 +906,23 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 				if (keyVal.key.equals(LINE)) {
 					layoutEdgeGraphicsLine(myView, (List<KeyValue>) keyVal.value, edgeView);
 				} else if (keyVal.key.equals(WIDTH) && id.equals("EDGE_WIDTH")) {
-					edgeView.setVisualProperty(property, (Object) asDouble(keyVal.value));
+					edgeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
 				} else if (keyVal.key.equals(FILL) && id.equals("EDGE_COLOR")) {
-					edgeView.setVisualProperty(property, (Object) asPaint(keyVal.value));
+					edgeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+				} else if (keyVal.key.equals(ARROW) && id.equals("EDGE_SOURCE_ARROW_SHAPE")) {
+					String value = (String) keyVal.value;
+					if (value.equals(ARROW_BOTH) || value.equals(ARROW_FIRST)) {
+						edgeView.setVisualProperty(property, (Object) property.parseSerializableString("ARROW"));
+					}
+				} else if (keyVal.key.equals(ARROW) && id.equals("EDGE_TARGET_ARROW_SHAPE")) {
+					String value = (String) keyVal.value;
+					if (value.equals(ARROW_BOTH) || value.equals(ARROW_LAST)) {
+						edgeView.setVisualProperty(property, (Object) property.parseSerializableString("ARROW"));
+					}
+				} else if (keyVal.key.equals(SOURCE_ARROW) && id.equals("EDGE_SOURCE_ARROW_SHAPE")) {
+					edgeView.setVisualProperty(property, (Object) property.parseSerializableString("ARROW"));
+				} else if (keyVal.key.equals(TARGET_ARROW) && id.equals("EDGE_TARGET_ARROW_SHAPE")) {
+					edgeView.setVisualProperty(property, (Object) property.parseSerializableString("ARROW"));
 				}
 			}
 		}
@@ -945,24 +935,6 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 //				} else if (value.equals(CURVED_LINES)) {
 //					edgeView.setLineType(EdgeView.CURVED_LINES);
 //				}
-//			} else if (keyVal.key.equals(ARROW)) {
-//				// The position of the arrow.
-//				// There are 4 states: no arrows, both ends have arrows, source,
-//				// or target.
-//				//
-//				// The arrow type below is hard-coded since GML does not
-//				// support shape of the arrow.
-//				if (keyVal.value.equals(ARROW_FIRST)) {
-//					edgeView.setSourceEdgeEnd(2);
-//				} else if (keyVal.value.equals(ARROW_LAST)) {
-//					edgeView.setTargetEdgeEnd(2);
-//				} else if (keyVal.value.equals(ARROW_BOTH)) {
-//					edgeView.setSourceEdgeEnd(2);
-//					edgeView.setTargetEdgeEnd(2);
-//				} else if (keyVal.value.equals(ARROW_NONE)) {
-//					// Do nothing. No arrows.
-//				}
-//
 //				if (keyVal.key.equals(SOURCE_ARROW)) {
 //					edgeView.setSourceEdgeEnd(((Number) keyVal.value).intValue());
 //				} else if (keyVal.value.equals(TARGET_ARROW)) {
@@ -1001,12 +973,5 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 			}
 		}
 		*/
-	}
-
-	/**
-	 * Create a color object from the string like it is stored in a gml file
-	 */
-	private Color getColor(String colorString) {
-		return new Color(Integer.parseInt(colorString.substring(1), 16));
 	}
 }

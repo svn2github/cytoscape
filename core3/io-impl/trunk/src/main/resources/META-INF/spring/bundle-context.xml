@@ -266,7 +266,7 @@
 		<constructor-arg ref="gmlFilter" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
-		<constructor-arg ref="cyApplicationManagerServiceRef" />
+		<constructor-arg ref="renderingEngineManagerServiceRef" />
 	</bean>
 
 	<!-- Writer Factories -->

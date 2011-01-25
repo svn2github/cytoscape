@@ -39,6 +39,9 @@
 		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory"
 		filter="(mapping.type=discrete)" />
 
+	<osgi:reference id="renderingEngineManagerServiceRef"
+		interface="org.cytoscape.view.presentation.RenderingEngineManager" />
+
 	<!-- Export services -->
 	<osgi:service id="cyNetworkViewReaderManagerService" ref="cyNetworkViewReaderManager"
 		interface="org.cytoscape.io.read.CyNetworkViewReaderManager">
