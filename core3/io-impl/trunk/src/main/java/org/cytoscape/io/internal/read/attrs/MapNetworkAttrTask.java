@@ -21,12 +21,12 @@ public final class MapNetworkAttrTask extends AbstractTask {
 	@Tunable(description="Map to current network only")
 	public boolean currentNetworkOnly = true;
 
-	private final CyTableEntry type; // Must be node or edge!
+	private final Class<? extends CyTableEntry> type; // Must be node or edge!
 	private final CyTable newGlobalTable;
 	private final CyNetworkManager networkManager;
 	final private CyApplicationManager applicationManager;
 
-	public MapNetworkAttrTask(final CyTableEntry type, final CyTable newGlobalTable,
+	public MapNetworkAttrTask(final Class<? extends CyTableEntry> type, final CyTable newGlobalTable,
 				  final CyNetworkManager networkManager,
 				  final CyApplicationManager applicationManager)
 	{
@@ -35,7 +35,7 @@ public final class MapNetworkAttrTask extends AbstractTask {
 		this.networkManager     = networkManager;
 		this.applicationManager = applicationManager;
 
-		if (!(type instanceof CyNode) && !(type instanceof CyEdge))
+		if ( type != CyNode.class && type != CyEdge.class)
 			throw new IllegalArgumentException("\"type\" must be CyNode.class or CyEdge.class!");
 	}
 
@@ -45,12 +45,12 @@ public final class MapNetworkAttrTask extends AbstractTask {
 		final List<CyTable> targetTables = new ArrayList<CyTable>();
 		if (currentNetworkOnly) {
 			final CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
-			targetTables.add(type instanceof CyNode ? currentNetwork.getDefaultNodeTable()
+			targetTables.add(type == CyNode.class ? currentNetwork.getDefaultNodeTable()
 					                        : currentNetwork.getDefaultEdgeTable());
 		} else {
 			final Set<CyNetwork> networks = networkManager.getNetworkSet();
 			for (final CyNetwork network : networks)
-				targetTables.add(type instanceof CyNode ? network.getDefaultNodeTable()
+				targetTables.add(type == CyNode.class ? network.getDefaultNodeTable()
 						                        : network.getDefaultEdgeTable());
 		}
 
