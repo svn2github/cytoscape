@@ -105,8 +105,10 @@ public class AttributeSetManager implements ColumnDeletedListener,
 
 	@Override
 	public void handleEvent(ColumnCreatedEvent e) {
+		
+		final String newAttrName = e.getColumnName();
 		final CyTable table = e.getSource();
-
+		
 		for (CyNetwork network : tableSets.keySet()) {
 			Map<Class<? extends CyTableEntry>, Set<CyTable>> tMap = tableSets.get(network);
 			for (final Class<? extends CyTableEntry> objectType : GRAPH_OBJECTS) {
@@ -118,8 +120,8 @@ public class AttributeSetManager implements ColumnDeletedListener,
 						.get(network)
 						.get(objectType)
 						.getAttrMap()
-						.put(e.getColumnName(),
-								table.getType(e.getColumnName()));
+						.put(newAttrName,
+								table.getType(newAttrName));
 				return;
 			}
 		}

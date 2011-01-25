@@ -68,6 +68,7 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 		final JComboBox combo = (JComboBox) editor;
 
 		combo.setRenderer(new Renderer());
+		
 		combo.addPopupMenuListener(new PopupMenuListener() {
 			public void popupMenuCanceled(PopupMenuEvent e) {
 			}
@@ -103,7 +104,6 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 			}
 		});
 		combo.setSelectedIndex(-1);
-
 	}
 
 	/**

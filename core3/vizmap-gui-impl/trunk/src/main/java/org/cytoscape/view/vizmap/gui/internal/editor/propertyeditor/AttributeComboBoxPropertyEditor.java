@@ -1,9 +1,20 @@
 package org.cytoscape.view.vizmap.gui.internal.editor.propertyeditor;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+
 import javax.swing.JComboBox;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
 import org.cytoscape.session.events.SetCurrentNetworkViewListener;
 import org.cytoscape.view.model.CyNetworkView;
@@ -30,10 +41,18 @@ public class AttributeComboBoxPropertyEditor extends CyComboBoxPropertyEditor
 	private final AttributeSetManager attrManager;
 
 	public AttributeComboBoxPropertyEditor(final Class<? extends CyTableEntry> type,
-			final AttributeSetManager attrManager) {
-
+			final AttributeSetManager attrManager, final CyApplicationManager appManager) {
+		super();
 		this.attrManager = attrManager;
 		this.type = type;
+		
+		final JComboBox comboBox = (JComboBox) editor;
+		comboBox.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				updateComboBox(appManager.getCurrentNetwork());
+			}});
 	}
 	
 
