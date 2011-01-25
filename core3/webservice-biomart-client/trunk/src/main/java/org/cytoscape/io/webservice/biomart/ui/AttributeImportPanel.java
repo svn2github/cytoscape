@@ -103,9 +103,9 @@ public abstract class AttributeImportPanel extends JPanel implements
 	protected javax.swing.JButton importButton;
 	protected javax.swing.JLabel titleLabel;
 	protected javax.swing.JButton resetButton;
-	protected CheckBoxJList attrList;
+	protected CheckBoxJList attrCheckboxList;
 
-	protected DefaultListModel model;
+	protected DefaultListModel attrCheckboxListModel;
 
 	// Title of the panel.
 	protected String panelTitle;
@@ -135,9 +135,9 @@ public abstract class AttributeImportPanel extends JPanel implements
 	}
 
 	private void initComponents() {
-		attrList = new CheckBoxJList();
-		model = new DefaultListModel();
-		attrList.setModel(model);
+		attrCheckboxList = new CheckBoxJList();
+		attrCheckboxListModel = new DefaultListModel();
+		attrCheckboxList.setModel(attrCheckboxListModel);
 
 		titleLabel = new javax.swing.JLabel();
 		databasePanel = new javax.swing.JPanel();
@@ -275,7 +275,7 @@ public abstract class AttributeImportPanel extends JPanel implements
 				.createTitledBorder(attributePanelTitle));
 		availableAttrScrollPane
 				.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		availableAttrScrollPane.setViewportView(attrList);
+		availableAttrScrollPane.setViewportView(attrCheckboxList);
 
 		GroupLayout availableAttrPanelLayout = new GroupLayout(
 				availableAttrPanel);
@@ -398,9 +398,7 @@ public abstract class AttributeImportPanel extends JPanel implements
 								.addContainerGap()));
 	} // </editor-fold>
 
-	protected void resetButtonActionPerformed(ActionEvent evt) {
-		// TODO Auto-generated method stub
-	}
+	protected abstract void resetButtonActionPerformed(ActionEvent evt);
 
 	protected void importButtonActionPerformed(ActionEvent evt) {
 		importAttributes();

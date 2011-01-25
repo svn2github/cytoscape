@@ -6,7 +6,6 @@ import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.webservice.biomart.BiomartClient;
 import org.cytoscape.io.webservice.biomart.ui.BiomartAttrMappingPanel;
-import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.swing.GUITaskManager;
@@ -34,8 +33,8 @@ public class ShowBiomartGUIAction extends AbstractCyAction {
 			final TaskManager taskManager,
 			final CyApplicationManager appManager,
 			final CySwingApplication app) {
-		super("Import Tables from Biomart...", appManager);
-		setPreferredMenu("File.Import");
+		super("from Biomart...", appManager);
+		setPreferredMenu("File.Import.Table.WebService");
 
 		this.app = app;
 		this.taskManager = (GUITaskManager) taskManager;

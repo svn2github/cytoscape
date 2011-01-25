@@ -73,7 +73,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	private static final long serialVersionUID = 3574198525811249639L;
 
 	private static final Icon LOGO = new ImageIcon(
-			BiomartAttrMappingPanel.class.getResource("/images/logo_biomart2.png"));
+			BiomartAttrMappingPanel.class
+					.getResource("/images/logo_biomart2.png"));
 
 	private Map<String, String> datasourceMap;
 
@@ -98,7 +99,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	private Window parent;
 
 	private final BiomartClient client;
-	
+
 	private int globalTableCounter;
 
 	/**
@@ -110,8 +111,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 	 *            DOCUMENT ME!
 	 * @throws Exception
 	 */
-	public BiomartAttrMappingPanel(
-			final BiomartClient client,
+	public BiomartAttrMappingPanel(final BiomartClient client,
 			final TaskManager taskManager,
 			final CyApplicationManager appManager,
 			final CyTableManager tblManager, final CyNetworkManager netManager) {
@@ -120,10 +120,10 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		this.client = client;
 		this.taskManager = (GUITaskManager) taskManager;
 		this.appManager = appManager;
-		
+
 		this.globalTableCounter = 0;
 	}
-	
+
 	public void setParent(final Window parent) {
 		this.parent = parent;
 	}
@@ -145,7 +145,6 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		// Load available filters for current source.
 		// loadFilter();
 	}
-	
 
 	public void setMartServiceList(LoadRepositoryResult res) {
 		this.datasourceMap = res.getDatasourceMap();
@@ -177,32 +176,38 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		final String selectedDBName = datasourceMap.get(selectedDB);
 
 		List<String> order = attributeListOrder.get(selectedDBName);
-		model = new DefaultListModel();
-		attrList.setModel(model);
+		attrCheckboxListModel = new DefaultListModel();
+		attrCheckboxList = new CheckBoxJList();
 
 		if (order != null) {
 			// List<String> sortedList = new
 			// ArrayList<String>(singleAttrMap.keySet());
 			// Collections.sort(sortedList);
 			for (String dispAttrName : order)
-				model.addElement(dispAttrName);
+				attrCheckboxListModel.addElement(dispAttrName);
+			attrCheckboxList.setModel(attrCheckboxListModel);
+			availableAttrScrollPane.setViewportView(attrCheckboxList);
+			availableAttrScrollPane.repaint();
 		} else {
 			fetchData(selectedDBName, SourceType.ATTRIBUTE);
 		}
+
 	}
 
 	private void fetchData(final String datasourceName, final SourceType type) {
-		
+
 		taskManager.setParent(parent);
-		
+
 		if (type.equals(SourceType.ATTRIBUTE)) {
-			final ImportAttributeListTask firstTask = new ImportAttributeListTask(datasourceName, client.getRestClient());
+			final ImportAttributeListTask firstTask = new ImportAttributeListTask(
+					datasourceName, client.getRestClient());
 			final SetAttributeTask setAttrTask = new SetAttributeTask(firstTask);
 			final BioMartTaskFactory tf = new BioMartTaskFactory(firstTask);
 			tf.getTaskIterator().insertTasksAfter(firstTask, setAttrTask);
 			taskManager.execute(tf);
 		} else if (type.equals(SourceType.FILTER)) {
-			final ImportFilterTask firstTask = new ImportFilterTask(datasourceName, client.getRestClient());
+			final ImportFilterTask firstTask = new ImportFilterTask(
+					datasourceName, client.getRestClient());
 			final SetFilterTask setFilterTask = new SetFilterTask(firstTask);
 			final BioMartTaskFactory tf = new BioMartTaskFactory(firstTask);
 			tf.getTaskIterator().insertTasksAfter(firstTask, setFilterTask);
@@ -246,7 +251,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		// Use Attributes for mapping
 		final CyTable defTable = tblManager.getTableMap(CyNode.class,
 				curNetwork).get(CyNetwork.DEFAULT_ATTRS);
-		final Class<?> attrDataType = defTable.getColumnTypeMap().get(keyAttrName);
+		final Class<?> attrDataType = defTable.getColumnTypeMap().get(
+				keyAttrName);
 		for (CyNode node : nodes) {
 			final CyRow row = defTable.getRow(node.getSUID());
 
@@ -324,7 +330,8 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		final Map<String, String> attrMap = this.attrNameMap.get(datasource);
 		final Map<String, String> fMap = filterMap.get(datasource);
 
-		final String keyAttrName = attributeComboBox.getSelectedItem().toString();
+		final String keyAttrName = attributeComboBox.getSelectedItem()
+				.toString();
 
 		System.out.println("Selected attr name: " + keyAttrName);
 
@@ -336,7 +343,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		dataset = new Dataset(datasource);
 		// System.out.println("Target Dataset = " + dataset.getName());
 
-		final Object[] selectedAttr = attrList.getSelectedValues();
+		final Object[] selectedAttr = attrCheckboxList.getSelectedValues();
 		attrs = new Attribute[selectedAttr.length + 1];
 
 		// This is the mapping key
@@ -393,15 +400,12 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		final String tableName = TABLE_PREFIX + (++globalTableCounter);
 		return new BiomartQuery(query, keyAttrName, tableName);
 	}
-	
-	
-	
-	
-	////////// Local tasks
+
+	// //////// Local tasks
 	private final class SetAttributeTask extends AbstractTask {
-		
+
 		private final ImportAttributeListTask firstTask;
-		
+
 		public SetAttributeTask(ImportAttributeListTask firstTask) {
 			this.firstTask = firstTask;
 		}
@@ -409,16 +413,15 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 		@Override
 		public void run(TaskMonitor taskMonitor) throws Exception {
 			final List<String> order = new ArrayList<String>();
-			final String selectedDB = databaseComboBox.getSelectedItem().toString();
+			final String selectedDB = databaseComboBox.getSelectedItem()
+					.toString();
 			final String selectedDBName = datasourceMap.get(selectedDB);
-			
-			System.out.println("Calling attribute update task done.");
 
-			Map<String, String[]> attributeVals = firstTask
+			final Map<String, String[]> attributeVals = firstTask
 					.getAttributeValues();
-			Map<String, String> names = new HashMap<String, String>();
+
+			final Map<String, String> names = new HashMap<String, String>();
 			attributeMap.put(selectedDBName, attributeVals);
-			model.removeAllElements();
 
 			String[] entry;
 			String dispNameWithCategory;
@@ -442,34 +445,35 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 			attrNameMap.put(selectedDBName, names);
 			Collections.sort(order);
 
-			for (String attrName : order) {
-				model.addElement(attrName);
-			}
+			attrCheckboxListModel.removeAllElements();
+			for (String attrName : order)
+				attrCheckboxListModel.addElement(attrName);
 
-			System.out.println("!!!!!!!!! attribute update task 2.");
 			attributeListOrder.put(selectedDBName, order);
-			// attrList.repaint();
 
-			System.out.println("!!!!!!!!! attribute update task done.");
+			attrCheckboxList.setModel(attrCheckboxListModel);
+			availableAttrScrollPane.setViewportView(attrCheckboxList);
+			availableAttrScrollPane.repaint();
 		}
-		
+
 	}
-	
+
 	private final class SetFilterTask extends AbstractTask {
-		
+
 		private final ImportFilterTask firstTask;
-		
+
 		public SetFilterTask(final ImportFilterTask firstTask) {
 			this.firstTask = firstTask;
 		}
 
 		@Override
 		public void run(TaskMonitor taskMonitor) throws Exception {
-			
+
 			Map<String, String> returnValMap;
-			final String selectedDB = databaseComboBox.getSelectedItem().toString();
+			final String selectedDB = databaseComboBox.getSelectedItem()
+					.toString();
 			final String selectedDBName = datasourceMap.get(selectedDB);
-			
+
 			returnValMap = firstTask.getFilters();
 			filterMap.put(selectedDBName, returnValMap);
 
@@ -480,10 +484,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 			for (String filter : filterNames)
 				attributeTypeComboBox.addItem(filter);
 		}
-		
+
 	}
-	
-	
-	
 
 }
