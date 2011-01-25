@@ -31,6 +31,7 @@
 		<constructor-arg ref="cyEventHelperServiceRef" />
 		<constructor-arg ref="compilerServiceRef" />
 		<constructor-arg ref="openBrowserServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
 		<constructor-arg ref="cyTableRowUpdateServiceRef" />
 	</bean>
 </beans>

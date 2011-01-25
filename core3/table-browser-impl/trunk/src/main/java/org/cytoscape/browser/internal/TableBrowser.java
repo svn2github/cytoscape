@@ -17,6 +17,7 @@ import javax.swing.table.TableRowSorter;
 import org.cytoscape.browser.ui.AttributeBrowserToolBar;
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyTableRowUpdateService;
@@ -46,7 +47,7 @@ public class TableBrowser
 
 	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
 		     final CyEventHelper eventHelper, final EqnCompiler compiler,
-		     final OpenBrowser openBrowser,
+		     final OpenBrowser openBrowser, final CyNetworkManager networkManager,
 		     final CyTableRowUpdateService tableRowUpdateService)
 	{
 		this.tableManager = tableManager;
@@ -60,7 +61,7 @@ public class TableBrowser
 
 		browserTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-		tableChooser = new TableChooser(tableManager);
+		tableChooser = new TableChooser(tableManager, networkManager);
 		tableChooser.addActionListener(this);
 		add(tableChooser, BorderLayout.SOUTH);
 		browserTable.getTableHeader().setBackground(Color.LIGHT_GRAY);
