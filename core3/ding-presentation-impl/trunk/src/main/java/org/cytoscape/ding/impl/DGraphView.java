@@ -1035,7 +1035,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		m_edgeDetails.unregisterEdge(edgeInx);
 
 		// m_selectedEdges.delete(edgeInx);
-		returnThis.m_view = null;
+		//returnThis.m_view = null;
 
 		return returnThis;
 	}
