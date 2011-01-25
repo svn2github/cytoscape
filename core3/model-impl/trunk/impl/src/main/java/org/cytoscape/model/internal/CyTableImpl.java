@@ -947,13 +947,12 @@ public final class CyTableImpl implements CyTable {
 		}
 
 		public Map<String, Object> getAllValues() {
-			Map<String, Object> m = new HashMap<String, Object>(attributes
-					.size());
+			final Map<String, Object> nameToValueMap =
+				new HashMap<String, Object>(types.size());
+			for (final String columnName : types.keySet())
+				nameToValueMap.put(columnName, getX(key, columnName, types.get(columnName)));
 
-			for (String attr : attributes.keySet())
-				m.put(attr, attributes.get(attr).get(key));
-
-			return m;
+			return nameToValueMap;
 		}
 
 		public CyTable getDataTable() {
