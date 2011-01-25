@@ -202,7 +202,7 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	 *
 	 */
 	public GMLNetworkViewReader(InputStream inputStream, CyNetworkFactory networkFactory,
-				    CyNetworkViewFactory viewFactory, CyApplicationManager applicationManager)
+				                CyNetworkViewFactory viewFactory, CyApplicationManager applicationManager)
 	{
 		this.inputStream = inputStream;
 		this.networkFactory = networkFactory;
@@ -213,8 +213,8 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 		edge_names = new Vector<CyEdge>();
 		node_names = new Vector<String>();
 		// TODO fix name
-		graphStyle = new VisualStyleBuilder("fixme", false);
-		graphStyle.setNodeSizeLocked(false);
+//		graphStyle = new VisualStyleBuilder("fixme", false);
+//		graphStyle.setNodeSizeLocked(false);
 
 	}
 

@@ -35,48 +35,45 @@
 package org.cytoscape.io.internal.read.session;
 
 
-import org.cytoscape.property.session.*;
-import org.cytoscape.property.bookmark.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-import org.cytoscape.io.read.CySessionReader;
-
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.io.internal.read.MarkSupportedInputStream;
 import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.io.read.CyPropertyReader;
 import org.cytoscape.io.read.CyPropertyReaderManager;
+import org.cytoscape.io.read.CySessionReader;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.property.bookmark.Bookmarks;
+import org.cytoscape.property.session.Child;
+import org.cytoscape.property.session.Cysession;
+import org.cytoscape.property.session.Edge;
+import org.cytoscape.property.session.Network;
+import org.cytoscape.property.session.Node;
+import org.cytoscape.session.CySession;
+import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.session.CySession;
-import org.cytoscape.io.internal.read.MarkSupportedInputStream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 
 /**
@@ -107,10 +104,14 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	private TaskMonitor taskMonitor;
 	private Properties cytoscapeProps;
 	private Properties vizmapProps;
+	private final CyProperty<Properties> properties;
 
 	/**
 	 */
-	public SessionReaderImpl(final InputStream sourceInputStream, final CyNetworkViewReaderManager netviewReaderMgr, CyPropertyReaderManager propertyReaderMgr) {
+	public SessionReaderImpl(final InputStream sourceInputStream, 
+	                         final CyNetworkViewReaderManager netviewReaderMgr, 
+	                         CyPropertyReaderManager propertyReaderMgr,
+	                         CyProperty<Properties> properties) {
 
 		if ( sourceInputStream == null )
 			throw new NullPointerException("input stream is null!");
@@ -122,7 +123,11 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 
 		if ( propertyReaderMgr == null )
 			throw new NullPointerException("property reader manager is null!");
-		this.propertyReaderMgr = propertyReaderMgr;	
+		this.propertyReaderMgr = propertyReaderMgr;
+		
+		if ( properties == null )
+            throw new NullPointerException("properties is null!");
+		this.properties = properties;
 	}
 
 
@@ -220,9 +225,20 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	}
 
 	private void extractNetwork(InputStream is, String entryName) throws Exception {
+	    // Get the current state of the style builder switch
+	    Properties prop = properties.getProperties();
+	    String vsbSwitch = prop.getProperty("visualStyleBuilder");
+	    // Since we're reading a session (which already has visual styles defined)
+	    // force the vsbSwitch off
+	    prop.setProperty("visualStyleBuilder", "off");
+	    
 		CyNetworkViewReader reader = netviewReaderMgr.getReader(is);
 		reader.run(taskMonitor);
 		networkViews.put(entryName, reader.getNetworkViews());
+		
+		// Restore the original state of the style builder switch
+        if (vsbSwitch != null) prop.setProperty("visualStyleBuilder", vsbSwitch);
+        else prop.remove("visualStyleBuilder");
 	}
 
 	private void extractPluginEntry(InputStream is, String entryName) {
@@ -294,7 +310,6 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	}
 
 	private void processNetworks() throws Exception {
-
 		for (Network curNet : cysession.getNetworkTree().getNetwork()) 
 			netMap.put(curNet.getId(), curNet);
 

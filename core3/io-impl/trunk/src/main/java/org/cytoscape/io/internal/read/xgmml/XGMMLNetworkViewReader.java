@@ -36,7 +36,7 @@
  */
 package org.cytoscape.io.internal.read.xgmml;
 
-import java.awt.geom.Point2D;
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -56,12 +56,18 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.view.model.View;
+import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.work.TaskMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -80,449 +86,458 @@ import org.xml.sax.helpers.ParserAdapter;
  */
 public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
-	protected static final String CY_NAMESPACE = "http://www.cytoscape.org";
+    protected static final String              CY_NAMESPACE = "http://www.cytoscape.org";
 
-	private final XGMMLParser parser;
-	private final ReadDataManager readDataManager;
-	private final AttributeValueUtil attributeValueUtil;
-	private final Properties prop;
+    private final XGMMLParser                  parser;
+    private final ReadDataManager              readDataManager;
+    private final AttributeValueUtil           attributeValueUtil;
+    private final VisualStyleFactory           styleFactory;
+    private final VisualMappingManager         visMappingManager;
+    private final VisualMappingFunctionFactory discreteMappingFactory;
+    private final CyProperty<Properties>       properties;
 
-	private CyNetworkView view;
+    private CyNetworkView                      view;
 
-	/**
-	 * Constructor.
-	 */
- 	public XGMMLNetworkViewReader(InputStream inputStream, 
-	                                CyNetworkViewFactory cyNetworkViewFactory, 
-	                                CyNetworkFactory cyNetworkFactory, 
-	                                ReadDataManager readDataManager, 
-	                                AttributeValueUtil attributeValueUtil, 
-	                                XGMMLParser parser, 
-	                                Properties prop) {
-		super(inputStream,cyNetworkViewFactory,cyNetworkFactory); 
-		this.readDataManager = readDataManager;
-		this.attributeValueUtil = attributeValueUtil;
-		this.parser = parser;
-		this.prop = prop;
-	}
+    private static final Logger                logger       = LoggerFactory.getLogger(XGMMLNetworkViewReader.class);
 
-	@Override
-	public void run(TaskMonitor tm) throws IOException {
-		tm.setProgress(-1.0);
+    /**
+     * Constructor.
+     */
+    public XGMMLNetworkViewReader(InputStream inputStream,
+                                  CyNetworkViewFactory cyNetworkViewFactory,
+                                  CyNetworkFactory cyNetworkFactory,
+                                  ReadDataManager readDataManager,
+                                  AttributeValueUtil attributeValueUtil,
+                                  VisualStyleFactory styleFactory,
+                                  VisualMappingManager visMappingManager,
+                                  VisualMappingFunctionFactory discreteMappingFactory,
+                                  XGMMLParser parser,
+                                  CyProperty<Properties> properties) {
+        super(inputStream, cyNetworkViewFactory, cyNetworkFactory);
+        this.readDataManager = readDataManager;
+        this.attributeValueUtil = attributeValueUtil;
+        this.styleFactory = styleFactory;
+        this.visMappingManager = visMappingManager;
+        this.discreteMappingFactory = discreteMappingFactory;
+        this.parser = parser;
+        this.properties = properties;
+    }
 
-		readDataManager.initAllData();
-		this.readDataManager.setNetwork(cyNetworkFactory.getInstance());
-		try {
+    @Override
+    public void run(TaskMonitor tm) throws IOException {
+        tm.setProgress(-1.0);
 
-			this.readXGMML();
-			//this.readObjects.put(CyNetwork.class, readDataManager.getNetwork());
-			createView(readDataManager.getNetwork());
-			//readObjects.put(CyNetworkView.class, view);
-		} catch (SAXException e) {
-			throw new IOException("Could not parse XGMML file: ");
-		}
+        readDataManager.initAllData();
+        this.readDataManager.setNetwork(cyNetworkFactory.getInstance());
 
-		cyNetworkViews = new CyNetworkView[] { view };
-		tm.setProgress(1.0);
-	}
+        try {
+            this.readXGMML();
+            // this.readObjects.put(CyNetwork.class,
+            // readDataManager.getNetwork());
+            createView(readDataManager.getNetwork());
+            // readObjects.put(CyNetworkView.class, view);
+        } catch (SAXException e) {
+            throw new IOException("Could not parse XGMML file: ");
+        }
 
-	@Override
-	public void cancel() {
-	}
+        tm.setProgress(1.0);
+    }
 
-	/**
-	 * Actual method to read XGMML documents.
-	 * 
-	 * @throws IOException
-	 * @throws IOException
-	 * @throws SAXException
-	 * @throws ParserConfigurationException
-	 */
-	private void readXGMML() throws SAXException, IOException {
+    @Override
+    public void cancel() {
+    }
 
-		final SAXParserFactory spf = SAXParserFactory.newInstance();
+    /**
+     * Actual method to read XGMML documents.
+     * 
+     * @throws IOException
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
+    private void readXGMML() throws SAXException, IOException {
 
-		try {
-			// Get our parser
-			SAXParser sp = spf.newSAXParser();
-			ParserAdapter pa = new ParserAdapter(sp.getParser());
-			pa.setContentHandler(parser);
-			pa.setErrorHandler(parser);
-			pa.parse(new InputSource(inputStream));
+        final SAXParserFactory spf = SAXParserFactory.newInstance();
 
-		} catch (OutOfMemoryError oe) {
-			// It's not generally a good idea to catch OutOfMemoryErrors, but in
-			// this case, where we know the culprit (a file that is too large),
-			// we can at least try to degrade gracefully.
-			System.gc();
-			throw new RuntimeException(
-					"Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
-		} catch (ParserConfigurationException e) {
-		} catch (SAXParseException e) {
-			System.err.println("XGMMLParser: fatal parsing error on line "
-					+ e.getLineNumber() + " -- '" + e.getMessage() + "'");
-			throw e;
-		} finally {
-			if (inputStream != null) {
-				inputStream.close();
-				inputStream = null;
-			}
-		}
-	}
+        try {
+            // Get our parser
+            SAXParser sp = spf.newSAXParser();
+            ParserAdapter pa = new ParserAdapter(sp.getParser());
+            pa.setContentHandler(parser);
+            pa.setErrorHandler(parser);
+            pa.parse(new InputSource(inputStream));
 
-	/**
-	 * layout the graph based on the graphic attributes
-	 * 
-	 * @param myView
-	 *            the view of the network we want to layout
-	 */
-	private void layout() {
-		if ((view == null) || (view.getModel().getNodeCount() == 0))
-			return;
+        } catch (OutOfMemoryError oe) {
+            // It's not generally a good idea to catch OutOfMemoryErrors, but in
+            // this case, where we know the culprit (a file that is too large),
+            // we can at least try to degrade gracefully.
+            System.gc();
+            throw new RuntimeException(
+                                       "Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
+        } catch (ParserConfigurationException e) {
+        } catch (SAXParseException e) {
+            System.err.println("XGMMLParser: fatal parsing error on line " + e.getLineNumber() + " -- '"
+                    + e.getMessage() + "'");
+            throw e;
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+                inputStream = null;
+            }
+        }
+    }
 
-		// TODO: Inject correct property
-		// String vsbSwitch = prop.getProperty("visualStyleBuilder");
+    /**
+     * layout the graph based on the graphic attributes
+     * 
+     * @param myView
+     *            the view of the network we want to layout
+     */
+    private void layout() {
+        if (view == null) return;
 
-		boolean buildStyle = false;
+        // Get the current state of the style builder switch
+        Properties prop = properties.getProperties();
+        String vsbSwitch = prop.getProperty("visualStyleBuilder");
 
-		// TODO: make VS builder working with new code.
-		// if (vsbSwitch != null && vsbSwitch.equals("off"))
-		// buildStyle = false;
-		//
-		// VisualStyleBuilder graphStyle = new
-		// VisualStyleBuilder(readDataManager
-		// .getNetworkName(), false);
+        // Create our visual style creator. We use the vsbSwitch to tell the
+        // style builder
+        // whether to create the override attributes or not
+        boolean buildStyle = vsbSwitch == null || vsbSwitch.equals("on");
+        VisualStyleBuilder styleBuilder = null;
 
-		// Set background clolor
-		// TODO update with new view
-//		if (readDataManager.getBackgroundColor() != null)
-//			view.setBackgroundPaint(readDataManager.getBackgroundColor());
+        if (buildStyle)
+            styleBuilder = new VisualStyleBuilder(readDataManager.getNetworkName(), styleFactory, visMappingManager,
+                                                  discreteMappingFactory, cyNetworkFactory.getInstance()
+                                                          .getDefaultNodeTable(), cyNetworkFactory.getInstance()
+                                                          .getDefaultEdgeTable());
 
-		// Layout nodes
-		layoutNodes(null, buildStyle);
+        if (view.getModel().getNodeCount() > 0) {
+            // Layout nodes and edges
+            layoutNodes(styleBuilder);
+            layoutEdges(styleBuilder);
+        }
 
-		// Layout edges
-		layoutEdges(null, buildStyle);
-		
+        // TODO: find a better place to do this:
+        CyRow netRow = view.getModel().getCyRow();
 
-		// if (buildStyle)
-		// graphStyle.buildStyle();
-	}
+        String netName = readDataManager.getNetworkName();
+        netRow.set(NODE_NAME_ATTR_LABEL, netName);
 
-	/**
-	 * Layout nodes if view is available.
-	 * 
-	 * @param myView
-	 *            GINY's graph view object for the current network.
-	 * @param graphStyle
-	 *            the visual style creator object
-	 * @param buildStyle
-	 *            if true, build the graphical style
-	 */
-	private void layoutNodes(final VisualStyleBuilder graphStyle,
-			boolean buildStyle) {
-//		String label = null;
-//		int tempid = 0;
-		View<CyNode> nv = null;
-//
-		final Map<CyNode, Attributes> nodeGraphicsMap = readDataManager.getNodeGraphics();
+        if (styleBuilder != null) {
+            // Network name
+            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_TITLE, netName);
 
-		for (Entry<CyNode, Attributes> entry : nodeGraphicsMap.entrySet()) {
-			CyNode node = entry.getKey();
-			Attributes attr = entry.getValue();
-			nv = view.getNodeView(node);
-			// TODO
-//			label = node.attrs().get("name", String.class);
-//
-//			if ((label != null) && (nv != null)) {
-//				nv.getLabel().setText(label);
-//			} else if (view != null) {
-//				nv.getLabel().setText("node(" + tempid + ")");
-//				tempid++;
-//			}
-//
-			if (nv != null) {
-				layoutNodeGraphics(attr, nv, graphStyle, buildStyle);
-			}
-		}
-	}
+            // Background color
+            Color bgColor = readDataManager.getBackgroundColor();
+            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT, bgColor);
 
-	/**
-	 * Extract node graphics information from JAXB object.<br>
-	 * 
-	 * @param graphics
-	 *            Graphics information for a node as JAXB object.
-	 * @param nodeView
-	 *            Actual node view for the target node.
-	 * @param graphStyle
-	 *            the visual style creator object
-	 * @param buildStyle
-	 *            if true, build the graphical style
-	 * 
-	 */
-	private void layoutNodeGraphics(final Attributes graphics,
-			final View<CyNode> nodeView, final VisualStyleBuilder graphStyle,
-			final boolean buildStyle) {
-		// Location and size of the node
-		double x = attributeValueUtil.getDoubleAttribute(graphics, "x");
-		double y = attributeValueUtil.getDoubleAttribute(graphics, "y");
-		
-		nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x);
-		nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, y);
-		
-		double h = attributeValueUtil.getDoubleAttribute(graphics, "h");
-		double w = attributeValueUtil.getDoubleAttribute(graphics, "w");
+            // TODO: Graph center and zoom
+            //            Double cx = readDataManager.???;
+            //            final Double cy = readDataManager.???;
+            //            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION, cx);
+            //            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION, cy);
+            //            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_SCALE_FACTOR, ???);
 
-		// TODO: set visual properties
-		// The identifier of this node
-//		CyRow nodeAttrs = nodeView.getModel().getCyRow();
-//		
-//		if (buildStyle && h != 0.0) {
-//			// nodeView.setHeight(h);
-//			graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_HEIGHT,
-//					"" + h);
-//		}
-//		if (buildStyle && w != 0.0) {
-//			// nodeView.setWidth(w);
-//			graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_WIDTH, ""
-//					+ w);
-//		}
-//
-//		// Set color
-//		if (buildStyle
-//				&& attributeValueUtil.getAttribute(graphics, "fill") != null) {
-//			String fillColor = attributeValueUtil
-//					.getAttribute(graphics, "fill");
-//			graphStyle.addProperty(nodeAttrs,
-//					VisualPropertyType.NODE_FILL_COLOR, fillColor);
-//			// nodeView.setUnselectedPaint(fillColor);
-//		}
-//
-//		// Set border line color
-//		if (buildStyle
-//				&& attributeValueUtil.getAttribute(graphics, "outline") != null) {
-//			String outlineColor = attributeValueUtil.getAttribute(graphics,
-//					"outline");
-//			// nodeView.setBorderPaint(outlineColor);
-//			graphStyle.addProperty(nodeAttrs,
-//					VisualPropertyType.NODE_BORDER_COLOR, outlineColor);
-//		}
-//
-//		// Set border line width
-//		if (buildStyle
-//				&& attributeValueUtil.getAttribute(graphics, "width") != null) {
-//			String lineWidth = attributeValueUtil.getAttribute(graphics,
-//					"width");
-//			// nodeView.setBorderWidth(lineWidth);
-//			graphStyle.addProperty(nodeAttrs,
-//					VisualPropertyType.NODE_LINE_WIDTH, lineWidth);
-//		}
-//
-//		if (buildStyle
-//				&& attributeValueUtil.getAttributeNS(graphics,
-//						"nodeTransparency", CY_NAMESPACE) != null) {
-//			String opString = attributeValueUtil.getAttributeNS(graphics,
-//					"nodeTransparency", CY_NAMESPACE);
-//			float opacity = (float) Double.parseDouble(opString) * 255;
-//			// Opacity is saved as a float from 0-1, but internally we use 0-255
-//			// nodeView.setTransparency(opacity);
-//			graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_OPACITY,
-//					"" + opacity);
-//		}
-//
-//		if (buildStyle
-//				&& attributeValueUtil.getAttributeNS(graphics, "opacity",
-//						CY_NAMESPACE) != null) {
-//			String opString = attributeValueUtil.getAttributeNS(graphics,
-//					"opacity", CY_NAMESPACE);
-//			float opacity = (float) Double.parseDouble(opString);
-//			// nodeView.setTransparency(opacity);
-//			graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_OPACITY,
-//					opString);
-//		}
-//
-//		// These are saved in the exported XGMML, but it's not clear how they
-//		// get set
-//		if (buildStyle
-//				&& attributeValueUtil.getAttributeNS(graphics, "nodeLabelFont",
-//						CY_NAMESPACE) != null) {
-//			String nodeLabelFont = attributeValueUtil.getAttributeNS(graphics,
-//					"nodeLabelFont", CY_NAMESPACE);
-//			graphStyle.addProperty(nodeAttrs,
-//					VisualPropertyType.NODE_FONT_FACE, nodeLabelFont);
-//		}
-//
-//		if (buildStyle
-//				&& attributeValueUtil.getAttributeNS(graphics,
-//						"borderLineType", CY_NAMESPACE) != null) {
-//			String borderLineType = attributeValueUtil.getAttributeNS(graphics,
-//					"borderLineType", CY_NAMESPACE);
-//			graphStyle.addProperty(nodeAttrs,
-//					VisualPropertyType.NODE_LINE_STYLE, borderLineType);
-//		}
-//
-//		String type = attributeValueUtil.getAttribute(graphics, "type");
-//		if (buildStyle && type != null) {
-//			if (type.equals("rhombus"))
-//				graphStyle.addProperty(nodeAttrs,
-//						VisualPropertyType.NODE_SHAPE, "parallelogram");
-//			else
-//				graphStyle.addProperty(nodeAttrs,
-//						VisualPropertyType.NODE_SHAPE, type);
-//		}
-	}
+            // Create and set the visual style
+            VisualStyle style = styleBuilder.buildStyle();
+            visualstyles = new VisualStyle[] { style };
 
-	/**
-	 * Layout edges if view is available.
-	 * 
-	 * @param myView
-	 *            GINY's graph view object for the current network.
-	 * @param graphStyle
-	 *            the visual style creator object
-	 * @param buildStyle
-	 *            if true, build the graphical style
-	 */
-	private void layoutEdges(final VisualStyleBuilder graphStyle,
-			final boolean buildStyle) {
-		String label = null;
-		int tempid = 0;
-		View<CyEdge> ev = null;
-		Map<CyEdge, Attributes> edgeGraphicsMap = readDataManager
-				.getEdgeGraphics();
+            // Add and apply the new style
+            visMappingManager.addVisualStyle(style);
+            visMappingManager.setVisualStyle(style, view);
+            style.apply(view);
+            view.updateView();
+        }
+    }
 
-		for (CyEdge edge : edgeGraphicsMap.keySet()) {
-			ev = view.getEdgeView(edge);
+    /**
+     * Layout nodes if view is available.
+     * 
+     * @param myView
+     *            GINY's graph view object for the current network.
+     * @param graphStyle
+     *            the visual style creator object
+     * @param buildStyle
+     *            if true, build the graphical style
+     */
+    private void layoutNodes(final VisualStyleBuilder styleBuilder) {
+        // String label = null;
+        // int tempid = 0;
+        View<CyNode> nv = null;
+        final Map<CyNode, Attributes> nodeGraphicsMap = readDataManager.getNodeGraphics();
 
-			if ((edgeGraphicsMap != null) && (ev != null)) {
-				layoutEdgeGraphics(edgeGraphicsMap.get(edge), ev, graphStyle,
-						buildStyle);
-			}
-		}
-	}
+        for (Entry<CyNode, Attributes> entry : nodeGraphicsMap.entrySet()) {
+            CyNode node = entry.getKey();
+            Attributes attr = entry.getValue();
+            nv = view.getNodeView(node);
+            // TODO
+            // label = node.attrs().get("name", String.class);
+            //
+            // if ((label != null) && (nv != null)) {
+            // nv.getLabel().setText(label);
+            // } else if (view != null) {
+            // nv.getLabel().setText("node(" + tempid + ")");
+            // tempid++;
+            // }
+            //
+            if (nv != null) {
+                layoutNodeGraphics(attr, nv, styleBuilder);
+            }
+        }
+    }
 
-	/**
-	 * Layout an edge using the stored graphics attributes
-	 * 
-	 * @param graphics
-	 *            Graphics information for an edge as SAX attributes.
-	 * @param edgeView
-	 *            Actual edge view for the target edge.
-	 * 
-	 */
-	private void layoutEdgeGraphics(final Attributes graphics,
-			final View<CyEdge> edgeView, final VisualStyleBuilder graphStyle,
-			final boolean buildStyle) {
-		CyRow edgeAttrs = edgeView.getModel().getCyRow();
-		// TODO fix for new style view
-/*
-		if (buildStyle
-				&& attributeValueUtil.getAttribute(graphics, "width") != null) {
-			String lineWidth = attributeValueUtil.getAttribute(graphics,
-					"width");
-			// edgeView.setStrokeWidth(lineWidth);
-			graphStyle.addProperty(edgeAttrs,
-					VisualPropertyType.EDGE_LINE_WIDTH, lineWidth);
-		}
+    /**
+     * Extract node graphics information from JAXB object.<br>
+     * 
+     * @param graphics
+     *            Graphics information for a node as JAXB object.
+     * @param nodeView
+     *            Actual node view for the target node.
+     * @param graphStyle
+     *            the visual style creator object
+     * @param buildStyle
+     *            if true, build the graphical style
+     * 
+     */
+    private void layoutNodeGraphics(final Attributes graphics,
+                                    final View<CyNode> nodeView,
+                                    final VisualStyleBuilder styleBuilder) {
+        // Location and size of the node
+        double x = attributeValueUtil.getDoubleAttribute(graphics, "x");
+        double y = attributeValueUtil.getDoubleAttribute(graphics, "y");
 
-		if (buildStyle
-				&& attributeValueUtil.getAttribute(graphics, "fill") != null) {
-			String edgeColor = attributeValueUtil
-					.getAttribute(graphics, "fill");
-			// edgeView.setUnselectedPaint(edgeColor);
-			graphStyle.addProperty(edgeAttrs, VisualPropertyType.EDGE_COLOR,
-					edgeColor);
-		}
+        nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x);
+        nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, y);
 
-		if (buildStyle
-				&& attributeValueUtil.getAttributeNS(graphics, "sourceArrow",
-						CY_NAMESPACE) != null) {
-			Integer arrowType = attributeValueUtil.getIntegerAttributeNS(
-					graphics, "sourceArrow", CY_NAMESPACE);
-			ArrowShape shape = ArrowShape.getArrowShape(arrowType);
-			String arrowName = shape.getName();
-			// edgeView.setSourceEdgeEnd(arrowType);
-			graphStyle.addProperty(edgeAttrs,
-					VisualPropertyType.EDGE_SRCARROW_SHAPE, arrowName);
-		}
+        // The attributes of this node
+        CyRow row = nodeView.getModel().getCyRow();
 
-		if (buildStyle
-				&& attributeValueUtil.getAttributeNS(graphics, "targetArrow",
-						CY_NAMESPACE) != null) {
-			Integer arrowType = attributeValueUtil.getIntegerAttributeNS(
-					graphics, "targetArrow", CY_NAMESPACE);
-			ArrowShape shape = ArrowShape.getArrowShape(arrowType);
-			String arrowName = shape.getName();
-			// edgeView.setTargetEdgeEnd(arrowType);
-			graphStyle.addProperty(edgeAttrs,
-					VisualPropertyType.EDGE_TGTARROW_SHAPE, arrowName);
-		}
+        if (styleBuilder != null) {
+            // Size
+            double h = attributeValueUtil.getDoubleAttribute(graphics, "h");
+            double w = attributeValueUtil.getDoubleAttribute(graphics, "w");
 
-		if (buildStyle
-				&& attributeValueUtil.getAttributeNS(graphics,
-						"sourceArrowColor", CY_NAMESPACE) != null) {
-			String arrowColor = attributeValueUtil.getAttributeNS(graphics,
-					"sourceArrowColor", CY_NAMESPACE);
-			// edgeView.setSourceEdgeEndPaint(arrowColor);
-			graphStyle.addProperty(edgeAttrs,
-					VisualPropertyType.EDGE_SRCARROW_COLOR, arrowColor);
-		}
+            // TODO: NODE_SIZE: locking h/w
+            if (h != 0.0) {
+                styleBuilder.addProperty(row, TwoDVisualLexicon.NODE_Y_SIZE, h);
+            }
+            if (w != 0.0) {
+                styleBuilder.addProperty(row, TwoDVisualLexicon.NODE_X_SIZE, w);
+            }
 
-		if (buildStyle
-				&& attributeValueUtil.getAttributeNS(graphics,
-						"targetArrowColor", CY_NAMESPACE) != null) {
-			String arrowColor = attributeValueUtil.getAttributeNS(graphics,
-					"targetArrowColor", CY_NAMESPACE);
-			// edgeView.setTargetEdgeEndPaint(arrowColor);
-			graphStyle.addProperty(edgeAttrs,
-					VisualPropertyType.EDGE_TGTARROW_COLOR, arrowColor);
-		}
+            if (w != 0.0) {
+                styleBuilder.addProperty(row, TwoDVisualLexicon.NODE_SIZE, w);
+            }
 
-		if (buildStyle
-				&& attributeValueUtil.getAttributeNS(graphics, "edgeLineType",
-						CY_NAMESPACE) != null) {
-			String value = attributeValueUtil.getAttributeNS(graphics,
-					"edgeLineType", CY_NAMESPACE);
-			graphStyle.addProperty(edgeAttrs,
-					VisualPropertyType.EDGE_LINE_STYLE, value);
-		}
+            // Color
+            Color fillColor = attributeValueUtil.getColorAttribute(graphics, "fill");
 
-		if (attributeValueUtil.getAttributeNS(graphics, "curved", CY_NAMESPACE) != null) {
-			String value = attributeValueUtil.getAttributeNS(graphics,
-					"curved", CY_NAMESPACE);
-			if (value.equals("STRAIGHT_LINES")) {
-				edgeView.setLineType(EdgeView.STRAIGHT_LINES);
-			} else if (value.equals("CURVED_LINES")) {
-				edgeView.setLineType(EdgeView.CURVED_LINES);
-			}
-		}
+            if (fillColor != null) {
+                styleBuilder.addProperty(row, TwoDVisualLexicon.NODE_PAINT, fillColor);
+            }
 
-		if (attributeValueUtil.getAttribute(graphics, "edgeHandleList") != null) {
-			// System.out.println("See edgeHandleList");
-			String handles[] = attributeValueUtil.getAttribute(graphics,
-					"edgeHandleList").split(";");
-			for (int i = 0; i < handles.length; i++) {
-				String points[] = handles[i].split(",");
-				double x = (new Double(points[0])).doubleValue();
-				double y = (new Double(points[1])).doubleValue();
-				Point2D.Double point = new Point2D.Double();
-				point.setLocation(x, y);
-				edgeView.getBend().addHandle(point);
-			}
-		}
-		*/
-	}
+            // Border color
+            Color borderColor = attributeValueUtil.getColorAttribute(graphics, "outline");
+            // TODO:
+            // if (borderColor != null) {
+            // styleBuilder.addProperty(row,
+            // TwoDVisualLexicon.NODE_BORDER_COLOR, borderColor);
+            // }
 
-	/**
-	 * Create and layout the view. 
-	 * 
-	 * @param network The network we just parsed.
-	 */
-	private void createView(CyNetwork network) {
+            // Border width
+            double borderWidth = attributeValueUtil.getDoubleAttribute(graphics, "width");
+            // TODO:
+            // if (borderWidth >= 0) {
+            // styleBuilder.addProperty(row,
+            // TwoDVisualLexicon.NODE_BORDER_WIDTH, borderWidth);
+            // }
 
-		view = cyNetworkViewFactory.getNetworkView(network);
+            // if (attributeValueUtil.getAttributeNS(graphics,
+            // "nodeTransparency", CY_NAMESPACE) != null) {
+            // String opString = attributeValueUtil.getAttributeNS(graphics,
+            // "nodeTransparency", CY_NAMESPACE);
+            // float opacity = (float) Double.parseDouble(opString) * 255;
+            // // Opacity is saved as a float from 0-1, but internally we use
+            // 0-255
+            // // nodeView.setTransparency(opacity);
+            // graphStyle.addProperty(nodeAttrs,
+            // VisualPropertyType.NODE_OPACITY,
+            // "" + opacity);
+            // }
+            //
+            // if (buildStyle
+            // && attributeValueUtil.getAttributeNS(graphics, "opacity",
+            // CY_NAMESPACE) != null) {
+            // String opString = attributeValueUtil.getAttributeNS(graphics,
+            // "opacity", CY_NAMESPACE);
+            // float opacity = (float) Double.parseDouble(opString);
+            // // nodeView.setTransparency(opacity);
+            // graphStyle.addProperty(nodeAttrs,
+            // VisualPropertyType.NODE_OPACITY,
+            // opString);
+            // }
+            //
+            // // These are saved in the exported XGMML, but it's not clear how
+            // they
+            // // get set
+            // if (buildStyle
+            // && attributeValueUtil.getAttributeNS(graphics, "nodeLabelFont",
+            // CY_NAMESPACE) != null) {
+            // String nodeLabelFont =
+            // attributeValueUtil.getAttributeNS(graphics,
+            // "nodeLabelFont", CY_NAMESPACE);
+            // graphStyle.addProperty(nodeAttrs,
+            // VisualPropertyType.NODE_FONT_FACE, nodeLabelFont);
+            // }
+            //
+            // if (buildStyle
+            // && attributeValueUtil.getAttributeNS(graphics,
+            // "borderLineType", CY_NAMESPACE) != null) {
+            // String borderLineType =
+            // attributeValueUtil.getAttributeNS(graphics,
+            // "borderLineType", CY_NAMESPACE);
+            // graphStyle.addProperty(nodeAttrs,
+            // VisualPropertyType.NODE_LINE_STYLE, borderLineType);
+            // }
+            //
+            // String type = attributeValueUtil.getAttribute(graphics, "type");
+            // if (buildStyle && type != null) {
+            // if (type.equals("rhombus"))
+            // graphStyle.addProperty(nodeAttrs,
+            // VisualPropertyType.NODE_SHAPE, "parallelogram");
+            // else
+            // graphStyle.addProperty(nodeAttrs,
+            // VisualPropertyType.NODE_SHAPE, type);
+            // }
+        }
+    }
 
-		layout();
+    /**
+     * Layout edges if view is available.
+     * 
+     * @param myView
+     *            GINY's graph view object for the current network.
+     * @param graphStyle
+     *            the visual style creator object
+     * @param buildStyle
+     *            if true, build the graphical style
+     */
+    private void layoutEdges(final VisualStyleBuilder styleBuilder) {
+        View<CyEdge> ev = null;
+        Map<CyEdge, Attributes> edgeGraphicsMap = readDataManager.getEdgeGraphics();
 
-	}
+        for (CyEdge edge : edgeGraphicsMap.keySet()) {
+            ev = view.getEdgeView(edge);
+
+            if ((edgeGraphicsMap != null) && (ev != null)) {
+                layoutEdgeGraphics(edgeGraphicsMap.get(edge), ev, styleBuilder);
+            }
+        }
+    }
+
+    /**
+     * Layout an edge using the stored graphics attributes
+     * 
+     * @param graphics
+     *            Graphics information for an edge as SAX attributes.
+     * @param edgeView
+     *            Actual edge view for the target edge.
+     * 
+     */
+    private void layoutEdgeGraphics(final Attributes graphics,
+                                    final View<CyEdge> edgeView,
+                                    final VisualStyleBuilder styleBuilder) {
+        // The attributes of this node
+        CyRow row = edgeView.getModel().getCyRow();
+
+        if (styleBuilder != null) {
+            // Color
+            Color edgeColor = attributeValueUtil.getColorAttribute(graphics, "fill");
+
+            if (edgeColor != null) {
+                styleBuilder.addProperty(row, TwoDVisualLexicon.EDGE_PAINT, edgeColor);
+            }
+
+            // Width
+            double lineWidth = attributeValueUtil.getDoubleAttribute(graphics, "width");
+
+            if (lineWidth >= 0) {
+                styleBuilder.addProperty(row, TwoDVisualLexicon.EDGE_WIDTH, lineWidth);
+            }
+
+            // TODO fix for new style view
+            // if (attributeValueUtil.getAttributeNS(graphics, "sourceArrow",
+            // CY_NAMESPACE) != null) { Integer arrowType =
+            // attributeValueUtil.getIntegerAttributeNS( graphics,
+            // "sourceArrow", CY_NAMESPACE); ArrowShape shape =
+            // ArrowShape.getArrowShape(arrowType); String arrowName =
+            // shape.getName(); // edgeView.setSourceEdgeEnd(arrowType);
+            // graphStyle.addProperty(edgeAttrs,
+            // VisualPropertyType.EDGE_SRCARROW_SHAPE, arrowName); }
+            // 
+            // if (attributeValueUtil.getAttributeNS(graphics, "targetArrow",
+            // CY_NAMESPACE) != null) { Integer arrowType =
+            // attributeValueUtil.getIntegerAttributeNS( graphics,
+            // "targetArrow", CY_NAMESPACE); ArrowShape shape =
+            // ArrowShape.getArrowShape(arrowType); String arrowName =
+            // shape.getName(); // edgeView.setTargetEdgeEnd(arrowType);
+            // graphStyle.addProperty(edgeAttrs,
+            // VisualPropertyType.EDGE_TGTARROW_SHAPE, arrowName); }
+            // 
+            // if (attributeValueUtil.getAttributeNS(graphics,
+            // "sourceArrowColor", CY_NAMESPACE) != null) { String arrowColor
+            // 
+            // attributeValueUtil.getAttributeNS(graphics, "sourceArrowColor",
+            // CY_NAMESPACE); // edgeView.setSourceEdgeEndPaint(arrowColor);
+            // graphStyle.addProperty(edgeAttrs,
+            // VisualPropertyType.EDGE_SRCARROW_COLOR, arrowColor); }
+            // 
+            // if (buildStyle && attributeValueUtil.getAttributeNS(graphics,
+            // "targetArrowColor", CY_NAMESPACE) != null) { String arrowColor
+            // 
+            // attributeValueUtil.getAttributeNS(graphics, "targetArrowColor",
+            // CY_NAMESPACE); // edgeView.setTargetEdgeEndPaint(arrowColor);
+            // graphStyle.addProperty(edgeAttrs,
+            // VisualPropertyType.EDGE_TGTARROW_COLOR, arrowColor); }
+            // 
+            // if (attributeValueUtil.getAttributeNS(graphics, "edgeLineType",
+            // CY_NAMESPACE) != null) { String value =
+            // attributeValueUtil.getAttributeNS(graphics, "edgeLineType",
+            // CY_NAMESPACE); graphStyle.addProperty(edgeAttrs,
+            // VisualPropertyType.EDGE_LINE_STYLE, value); }
+            // 
+            // if (attributeValueUtil.getAttributeNS(graphics, "curved",
+            // CY_NAMESPACE) != null) { String value =
+            // attributeValueUtil.getAttributeNS(graphics, "curved",
+            // CY_NAMESPACE); if (value.equals("STRAIGHT_LINES")) {
+            // edgeView.setLineType(EdgeView.STRAIGHT_LINES); } else if
+            // (value.equals("CURVED_LINES")) {
+            // edgeView.setLineType(EdgeView.CURVED_LINES); } }
+            // 
+            // if (attributeValueUtil.getAttribute(graphics, "edgeHandleList")
+            // != null) { // System.out.println("See edgeHandleList"); String
+            // handles[] = attributeValueUtil.getAttribute(graphics,
+            // "edgeHandleList").split(";"); for (int i = 0; i <
+            // andles.length;
+            // i++) { String points[] = handles[i].split(","); double x = (new
+            // Double(points[0])).doubleValue(); double y = (new
+            // Double(points[1])).doubleValue(); Point2D.Double point = new
+            // Point2D.Double(); point.setLocation(x, y);
+            // edgeView.getBend().addHandle(point); } }
+        }
+    }
+
+    /**
+     * Create and layout the view.
+     * 
+     * @param network
+     *            The network we just parsed.
+     */
+    private void createView(CyNetwork network) {
+        view = cyNetworkViewFactory.getNetworkView(network);
+        cyNetworkViews = new CyNetworkView[] { view };
+        layout();
+    }
 
 }

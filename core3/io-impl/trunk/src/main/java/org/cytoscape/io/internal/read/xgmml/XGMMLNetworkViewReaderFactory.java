@@ -27,43 +27,19 @@
  */
 package org.cytoscape.io.internal.read.xgmml;
 
-
-import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
 import java.util.Properties;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.cytoscape.io.internal.read.AbstractNetworkViewReader;
-import org.cytoscape.io.internal.read.VisualStyleBuilder;
-import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
-import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewFactory;
-import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.property.CyProperty;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.ParserAdapter;
-
 
 import org.cytoscape.io.CyFileFilter;
 import org.cytoscape.io.internal.read.AbstractNetworkViewReaderFactory;
-import org.cytoscape.io.read.CyNetworkViewReader;
+import org.cytoscape.io.internal.read.xgmml.handler.AttributeValueUtil;
+import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.work.TaskIterator;
-
 
 /**
  * XGMML file reader.<br>
@@ -75,30 +51,39 @@ import org.cytoscape.work.TaskIterator;
  * 
  */
 public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFactory {
-	private XGMMLParser parser;
-	private ReadDataManager readDataManager;
-	private AttributeValueUtil attributeValueUtil;
-	private CyProperty<Properties> prop;
 
-	public XGMMLNetworkViewReaderFactory(CyFileFilter filter, 
-					     CyNetworkViewFactory cyNetworkViewFactory, 
-					     CyNetworkFactory cyNetworkFactory, 
-					     ReadDataManager readDataManager, 
-					     AttributeValueUtil attributeValueUtil, 
-					     XGMMLParser parser, 
-					     CyProperty<Properties> prop)
-	{
-		super(filter,cyNetworkViewFactory,cyNetworkFactory);
-		this.readDataManager = readDataManager;
-		this.attributeValueUtil = attributeValueUtil;
-		this.parser = parser;
-		this.prop = prop;
-	}
+    private VisualStyleFactory                 styleFactory;
+    private VisualMappingManager               visMappingManager;
+    private final VisualMappingFunctionFactory discreteMappingFactory;
+    private XGMMLParser                        parser;
+    private ReadDataManager                    readDataManager;
+    private AttributeValueUtil                 attributeValueUtil;
+    private CyProperty<Properties>             properties;
 
-	public TaskIterator getTaskIterator() {
-		return new TaskIterator(
-			new XGMMLNetworkViewReader(inputStream, cyNetworkViewFactory,
-						   cyNetworkFactory, readDataManager, 
-						   attributeValueUtil, parser, prop.getProperties()));
-	}
+    public XGMMLNetworkViewReaderFactory(CyFileFilter filter,
+                                         CyNetworkViewFactory cyNetworkViewFactory,
+                                         CyNetworkFactory cyNetworkFactory,
+                                         ReadDataManager readDataManager,
+                                         AttributeValueUtil attributeValueUtil,
+                                         VisualStyleFactory styleFactory,
+                                         VisualMappingManager visMappingManager,
+                                         VisualMappingFunctionFactory discreteMappingFactory,
+                                         XGMMLParser parser,
+                                         CyProperty<Properties> properties) {
+        super(filter, cyNetworkViewFactory, cyNetworkFactory);
+        this.readDataManager = readDataManager;
+        this.attributeValueUtil = attributeValueUtil;
+        this.styleFactory = styleFactory;
+        this.visMappingManager = visMappingManager;
+        this.discreteMappingFactory = discreteMappingFactory;
+        this.parser = parser;
+        this.properties = properties;
+    }
+
+    public TaskIterator getTaskIterator() {
+        return new TaskIterator(new XGMMLNetworkViewReader(inputStream, cyNetworkViewFactory, cyNetworkFactory,
+                                                           readDataManager, attributeValueUtil, styleFactory,
+                                                           visMappingManager, discreteMappingFactory, parser,
+                                                           properties));
+    }
 }

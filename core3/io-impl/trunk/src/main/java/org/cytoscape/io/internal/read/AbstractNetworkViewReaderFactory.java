@@ -27,41 +27,36 @@
  */
 package org.cytoscape.io.internal.read;
 
-
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.cytoscape.io.CyFileFilter;
-import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 
-
 public abstract class AbstractNetworkViewReaderFactory implements InputStreamTaskFactory {
-	private final CyFileFilter filter;
 
-	protected final CyNetworkViewFactory cyNetworkViewFactory;
-	protected final CyNetworkFactory cyNetworkFactory;
+    private final CyFileFilter           filter;
 
-	protected InputStream inputStream;
+    protected final CyNetworkViewFactory cyNetworkViewFactory;
+    protected final CyNetworkFactory     cyNetworkFactory;
 
-	public AbstractNetworkViewReaderFactory(CyFileFilter filter, 
-						CyNetworkViewFactory cyNetworkViewFactory, 
-						CyNetworkFactory cyNetworkFactory)
-	{
-		this.filter = filter;
-		this.cyNetworkViewFactory = cyNetworkViewFactory;
-		this.cyNetworkFactory = cyNetworkFactory;
-	}
+    protected InputStream                inputStream;
 
-	public void setInputStream(InputStream is) {
-		if (is == null)
-			throw new NullPointerException("Input stream is null");
-		inputStream = is;
-	}
+    public AbstractNetworkViewReaderFactory(CyFileFilter filter,
+                                            CyNetworkViewFactory cyNetworkViewFactory,
+                                            CyNetworkFactory cyNetworkFactory) {
+        this.filter = filter;
+        this.cyNetworkViewFactory = cyNetworkViewFactory;
+        this.cyNetworkFactory = cyNetworkFactory;
+    }
 
-	public CyFileFilter getCyFileFilter() {
-		return filter;
-	}
+    public void setInputStream(InputStream is) {
+        if (is == null) throw new NullPointerException("Input stream is null");
+        inputStream = is;
+    }
+
+    public CyFileFilter getCyFileFilter() {
+        return filter;
+    }
 }

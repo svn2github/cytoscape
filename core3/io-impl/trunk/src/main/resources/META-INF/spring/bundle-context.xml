@@ -328,6 +328,9 @@
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="readDataManager" />
 		<constructor-arg ref="attributeValueUtil" />
+		<constructor-arg ref="visualStyleFactoryServiceRef" />
+		<constructor-arg ref="visualMappingManagerServiceRef" />
+		<constructor-arg ref="discreteMappingFactoryServiceRef" />
 		<constructor-arg ref="xgmmlParser" />
 		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
@@ -337,6 +340,7 @@
 		<constructor-arg ref="cysFilter" />
 		<constructor-arg ref="cyNetworkViewReaderManager" />
 		<constructor-arg ref="cyPropertyReaderManager" />
+		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
 
 	<bean id="cysessionReaderFactory" 

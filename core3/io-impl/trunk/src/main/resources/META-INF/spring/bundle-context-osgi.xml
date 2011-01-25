@@ -7,21 +7,19 @@
 
 
 	<!-- Import services -->
-	<osgi:reference id="cyLayoutsServiceRef" 
-	                interface="org.cytoscape.view.layout.CyLayouts" />
+	<osgi:reference id="cyLayoutsServiceRef" interface="org.cytoscape.view.layout.CyLayouts" />
 
 	<osgi:reference id="cyNetworkFactoryServiceRef"
-	                interface="org.cytoscape.model.CyNetworkFactory" />
+		interface="org.cytoscape.model.CyNetworkFactory" />
 
 	<osgi:reference id="cyNetworkViewFactoryServiceRef"
-	                interface="org.cytoscape.view.model.CyNetworkViewFactory" />
-	
-	<osgi:reference id="cyDataTableFactoryServiceRef" 
-	                interface="org.cytoscape.model.CyTableFactory" />
+		interface="org.cytoscape.view.model.CyNetworkViewFactory" />
 
-	<osgi:reference id="cyPropertyServiceRef" 
-	                interface="org.cytoscape.property.CyProperty"
-	                filter="(cyPropertyName=coreSettings)" />
+	<osgi:reference id="cyDataTableFactoryServiceRef"
+		interface="org.cytoscape.model.CyTableFactory" />
+
+	<osgi:reference id="cyPropertyServiceRef" interface="org.cytoscape.property.CyProperty"
+		filter="(cyPropertyName=coreSettings)" />
 
 	<osgi:reference id="cyApplicationManagerServiceRef"
 		interface="org.cytoscape.session.CyApplicationManager" />
@@ -30,6 +28,16 @@
 		interface="org.cytoscape.model.CyNetworkManager" />
 
 	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
+
+	<osgi:reference id="visualStyleFactoryServiceRef"
+		interface="org.cytoscape.view.vizmap.VisualStyleFactory" />
+
+	<osgi:reference id="visualMappingManagerServiceRef"
+		interface="org.cytoscape.view.vizmap.VisualMappingManager" />
+
+	<osgi:reference id="discreteMappingFactoryServiceRef"
+		interface="org.cytoscape.view.vizmap.VisualMappingFunctionFactory"
+		filter="(mapping.type=discrete)" />
 
 	<!-- Export services -->
 	<osgi:service id="cyNetworkViewReaderManagerService" ref="cyNetworkViewReaderManager"
@@ -46,11 +54,11 @@
 
 	<osgi:service id="cySessionReaderManagerService" ref="cySessionReaderManager"
 		interface="org.cytoscape.io.read.CySessionReaderManager">
-	</osgi:service>	
+	</osgi:service>
 
 	<osgi:service id="cyPropertyReaderManagerService" ref="cyPropertyReaderManager"
 		interface="org.cytoscape.io.read.CyPropertyReaderManager">
-	</osgi:service>	
+	</osgi:service>
 
 	<osgi:service id="networkViewWriterManagerService" ref="networkViewWriterManager"
 		interface="org.cytoscape.io.write.CyNetworkViewWriterManager">
@@ -77,8 +85,8 @@
 		interface="org.cytoscape.io.write.CyNetworkViewWriterFactory">
 	</osgi:service>
 
-	<osgi:service id="xgmmlNetworkViewReaderFactoryService" ref="xgmmlNetworkViewReaderFactory"
-		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+	<osgi:service id="xgmmlNetworkViewReaderFactoryService"
+		ref="xgmmlNetworkViewReaderFactory" interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
 			<entry key="serviceType" value="xgmmlNetworkViewReaderFactory" />
 			<entry key="readerId" value="xgmmlNetworkViewReader" />
@@ -87,21 +95,21 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service id="xgmmlNetworkViewWriterFactoryService" ref="xgmmlNetworkViewWriterFactory"
-		interface="org.cytoscape.io.write.CyNetworkViewWriterFactory">
+	<osgi:service id="xgmmlNetworkViewWriterFactoryService"
+		ref="xgmmlNetworkViewWriterFactory" interface="org.cytoscape.io.write.CyNetworkViewWriterFactory">
 	</osgi:service>
 
-<!-- 
-	<osgi:service id="textDataTableReaderFactoryService" ref="textDataTableReaderFactory"
+	<!--
+		<osgi:service id="textDataTableReaderFactoryService"
+		ref="textDataTableReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
-		<osgi:service-properties>
-			<entry key="serviceType" value="textDataTableReaderFactory" />
-			<entry key="readerId" value="textDataTableReader" />
-			<entry key="readerDescription" value="text data table producer" />
-		</osgi:service-properties>
-	</osgi:service>
- -->
- 
+		<osgi:service-properties> <entry key="serviceType"
+		value="textDataTableReaderFactory" /> <entry key="readerId"
+		value="textDataTableReader" /> <entry key="readerDescription"
+		value="text data table producer" /> </osgi:service-properties>
+		</osgi:service>
+	-->
+
 	<osgi:service id="attrsDataReaderFactoryService" ref="attrsDataReaderFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
@@ -183,69 +191,55 @@
 	<osgi:service id="streamUtilService" ref="streamUtil"
 		interface="org.cytoscape.io.util.StreamUtil">
 	</osgi:service>
-	
+
 	<!-- Define service listeners -->
-	<osgi:set id="cyNetworkViewReaderFactories" 
-	          interface="org.cytoscape.io.read.InputStreamTaskFactory"
-	          cardinality="0..N">
+	<osgi:set id="cyNetworkViewReaderFactories" interface="org.cytoscape.io.read.InputStreamTaskFactory"
+		cardinality="0..N">
 		<osgi:listener bind-method="addInputStreamTaskFactory"
-		               unbind-method="removeInputStreamTaskFactory" 
-		               ref="cyNetworkViewReaderManager" />
+			unbind-method="removeInputStreamTaskFactory" ref="cyNetworkViewReaderManager" />
 	</osgi:set>
 
-	<osgi:set id="cyDataTableReaderFactories" 
-	          interface="org.cytoscape.io.read.InputStreamTaskFactory"
-	          cardinality="0..N">
+	<osgi:set id="cyDataTableReaderFactories" interface="org.cytoscape.io.read.InputStreamTaskFactory"
+		cardinality="0..N">
 		<osgi:listener bind-method="addInputStreamTaskFactory"
-		               unbind-method="removeInputStreamTaskFactory" 
-		               ref="cyDataTableReaderManager" />
+			unbind-method="removeInputStreamTaskFactory" ref="cyDataTableReaderManager" />
 	</osgi:set>
 
-	<osgi:set id="sessionReaderFactories" 
-	          interface="org.cytoscape.io.read.InputStreamTaskFactory"
-	          cardinality="0..N">
+	<osgi:set id="sessionReaderFactories" interface="org.cytoscape.io.read.InputStreamTaskFactory"
+		cardinality="0..N">
 		<osgi:listener bind-method="addInputStreamTaskFactory"
-		               unbind-method="removeInputStreamTaskFactory" 
-		               ref="cySessionReaderManager" />
+			unbind-method="removeInputStreamTaskFactory" ref="cySessionReaderManager" />
 	</osgi:set>
 
-	<osgi:set id="propertyReaderFactories" 
-	          interface="org.cytoscape.io.read.InputStreamTaskFactory"
-	          cardinality="0..N">
+	<osgi:set id="propertyReaderFactories" interface="org.cytoscape.io.read.InputStreamTaskFactory"
+		cardinality="0..N">
 		<osgi:listener bind-method="addInputStreamTaskFactory"
-		               unbind-method="removeInputStreamTaskFactory" 
-		               ref="cyPropertyReaderManager" />
+			unbind-method="removeInputStreamTaskFactory" ref="cyPropertyReaderManager" />
 	</osgi:set>
 
-	<osgi:set id="viewWriterFactories" 
-	          interface="org.cytoscape.io.write.PresentationWriterFactory"
-	          cardinality="0..N">
+	<osgi:set id="viewWriterFactories"
+		interface="org.cytoscape.io.write.PresentationWriterFactory"
+		cardinality="0..N">
 		<osgi:listener bind-method="addCyWriterFactory"
-		               unbind-method="removeCyWriterFactory" 
-		               ref="viewWriterManager" />
+			unbind-method="removeCyWriterFactory" ref="viewWriterManager" />
 	</osgi:set>
 
-	<osgi:set id="networkViewWriterFactories" 
-	          interface="org.cytoscape.io.write.CyNetworkViewWriterFactory"
-	          cardinality="0..N">
+	<osgi:set id="networkViewWriterFactories"
+		interface="org.cytoscape.io.write.CyNetworkViewWriterFactory"
+		cardinality="0..N">
 		<osgi:listener bind-method="addCyWriterFactory"
-		               unbind-method="removeCyWriterFactory" 
-		               ref="networkViewWriterManager" />
+			unbind-method="removeCyWriterFactory" ref="networkViewWriterManager" />
 	</osgi:set>
 
-	<osgi:set id="sessionWriterFactories" 
-	          interface="org.cytoscape.io.write.CySessionWriterFactory"
-	          cardinality="0..N">
+	<osgi:set id="sessionWriterFactories" interface="org.cytoscape.io.write.CySessionWriterFactory"
+		cardinality="0..N">
 		<osgi:listener bind-method="addCyWriterFactory"
-		               unbind-method="removeCyWriterFactory" 
-		               ref="sessionWriterManager" />
+			unbind-method="removeCyWriterFactory" ref="sessionWriterManager" />
 	</osgi:set>
 
-	<osgi:set id="propertyWriterFactories" 
-	          interface="org.cytoscape.io.write.CyPropertyWriterFactory"
-	          cardinality="0..N">
+	<osgi:set id="propertyWriterFactories" interface="org.cytoscape.io.write.CyPropertyWriterFactory"
+		cardinality="0..N">
 		<osgi:listener bind-method="addCyWriterFactory"
-		               unbind-method="removeCyWriterFactory" 
-		               ref="propertyWriterManager" />
+			unbind-method="removeCyWriterFactory" ref="propertyWriterManager" />
 	</osgi:set>
 </beans>
