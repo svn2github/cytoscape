@@ -34,7 +34,6 @@ import java.awt.Color;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -48,18 +47,12 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyTableEntry;
-
-import org.cytoscape.session.CyApplicationManager;
-
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
-import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineManager;
-import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
@@ -699,48 +692,49 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	 */
 	private void layoutNodeGraphics(CyNetworkView myView, List<KeyValue> list, View<CyNode> nodeView) {
 		VisualLexicon lexicon = renderingEngineManager.getDefaultVisualLexicon();
-		Collection<VisualProperty<?>> properties = lexicon.getAllDescendants(TwoDVisualLexicon.NODE);
-		for (VisualProperty<?> property : properties) {
-			String id = property.getIdString();
-			
-			for (KeyValue keyVal : list) {
-				if (keyVal.key.equals(X) && id.equals("NODE_X_LOCATION")) {
-					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
-				} else if (keyVal.key.equals(Y) && id.equals("NODE_Y_LOCATION")) {
-					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
-				} else if (keyVal.key.equals(W) && id.equals("NODE_X_SIZE")) {
-					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
-				} else if (keyVal.key.equals(H) && id.equals("NODE_Y_SIZE")) {
-					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
-				} else if (keyVal.key.equals(FILL) && id.equals("NODE_COLOR")) {
-					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
-				} else if (keyVal.key.equals(OUTLINE) && id.equals("NODE_BORDER_PAINT")) {
-					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
-				} else if (keyVal.key.equals(OUTLINE_WIDTH) && id.equals("NODE_BORDER_WIDTH")) {
-					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
-				} else if (keyVal.key.equals(TYPE) && id.equals("NODE_SHAPE")) {
-					String type = (String) keyVal.value;
-					String value = null;
-					if (type.equals(ELLIPSE)) {
-						value = "ELLIPSE";
-					} else if (type.equals(RECTANGLE)) {
-						value = "RECT";
-					} else if (type.equals(DIAMOND)) {
-						value = "DIAMOND";
-					} else if (type.equals(HEXAGON)) {
-						value = "HEXAGON";
-					} else if (type.equals(OCTAGON)) {
-						value = "OCTAGON";
-					} else if (type.equals(PARALELLOGRAM)) {
-						value = "PARALLELOGRAM";
-					} else if (type.equals(TRIANGLE)) {
-						value = "TRIANGLE";
-					}
-					if (value != null) {
-						nodeView.setVisualProperty(property, (Object) property.parseSerializableString(value));
-					}
-				}
+		for (KeyValue keyVal : list) {
+			VisualProperty<?> property = lexicon.lookup(CyNode.class, keyVal.key);
+			if (property == null) {
+				continue;
 			}
+			nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+			
+//			if (keyVal.key.equals(X) && id.equals("NODE_X_LOCATION")) {
+//				nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+//			} else if (keyVal.key.equals(Y) && id.equals("NODE_Y_LOCATION")) {
+//				nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+//			} else if (keyVal.key.equals(W) && id.equals("NODE_X_SIZE")) {
+//				nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+//			} else if (keyVal.key.equals(H) && id.equals("NODE_Y_SIZE")) {
+//				nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+//			} else if (keyVal.key.equals(FILL) && id.equals("NODE_COLOR")) {
+//				nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+//			} else if (keyVal.key.equals(OUTLINE) && id.equals("NODE_BORDER_PAINT")) {
+//				nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+//			} else if (keyVal.key.equals(OUTLINE_WIDTH) && id.equals("NODE_BORDER_WIDTH")) {
+//				nodeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+//			if (keyVal.key.equals(TYPE) && id.equals("NODE_SHAPE")) {
+//				String type = (String) keyVal.value;
+//				String value = null;
+//				if (type.equals(ELLIPSE)) {
+//					value = "ELLIPSE";
+//				} else if (type.equals(RECTANGLE)) {
+//					value = "RECT";
+//				} else if (type.equals(DIAMOND)) {
+//					value = "DIAMOND";
+//				} else if (type.equals(HEXAGON)) {
+//					value = "HEXAGON";
+//				} else if (type.equals(OCTAGON)) {
+//					value = "OCTAGON";
+//				} else if (type.equals(PARALELLOGRAM)) {
+//					value = "PARALLELOGRAM";
+//				} else if (type.equals(TRIANGLE)) {
+//					value = "TRIANGLE";
+//				}
+//				if (value != null) {
+//					nodeView.setVisualProperty(property, (Object) property.parseSerializableString(value));
+//				}
+//			}
 		}
 	}
 
@@ -896,35 +890,37 @@ public class GMLNetworkViewReader extends AbstractTask implements CyNetworkViewR
 	@SuppressWarnings("unchecked")
 	private void layoutEdgeGraphics(CyNetworkView myView, List<KeyValue> list, View<CyEdge> edgeView) {
 		VisualLexicon lexicon = renderingEngineManager.getDefaultVisualLexicon();
-		Collection<VisualProperty<?>> properties = lexicon.getAllDescendants(TwoDVisualLexicon.NODE);
-		for (VisualProperty<?> property : properties) {
-			String id = property.getIdString();
-			
-			for (KeyValue keyVal : list) {
-				// This is a polyline obj. However, it will be translated into
-				// straight line.
-				if (keyVal.key.equals(LINE)) {
-					layoutEdgeGraphicsLine(myView, (List<KeyValue>) keyVal.value, edgeView);
-				} else if (keyVal.key.equals(WIDTH) && id.equals("EDGE_WIDTH")) {
-					edgeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
-				} else if (keyVal.key.equals(FILL) && id.equals("EDGE_COLOR")) {
-					edgeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
-				} else if (keyVal.key.equals(ARROW) && id.equals("EDGE_SOURCE_ARROW_SHAPE")) {
-					String value = (String) keyVal.value;
-					if (value.equals(ARROW_BOTH) || value.equals(ARROW_FIRST)) {
-						edgeView.setVisualProperty(property, (Object) property.parseSerializableString("ARROW"));
-					}
-				} else if (keyVal.key.equals(ARROW) && id.equals("EDGE_TARGET_ARROW_SHAPE")) {
-					String value = (String) keyVal.value;
-					if (value.equals(ARROW_BOTH) || value.equals(ARROW_LAST)) {
-						edgeView.setVisualProperty(property, (Object) property.parseSerializableString("ARROW"));
-					}
-				} else if (keyVal.key.equals(SOURCE_ARROW) && id.equals("EDGE_SOURCE_ARROW_SHAPE")) {
-					edgeView.setVisualProperty(property, (Object) property.parseSerializableString("ARROW"));
-				} else if (keyVal.key.equals(TARGET_ARROW) && id.equals("EDGE_TARGET_ARROW_SHAPE")) {
-					edgeView.setVisualProperty(property, (Object) property.parseSerializableString("ARROW"));
-				}
+		for (KeyValue keyVal : list) {
+			// This is a polyline obj. However, it will be translated into
+			// straight line.
+			if (keyVal.key.equals(LINE)) {
+				layoutEdgeGraphicsLine(myView, (List<KeyValue>) keyVal.value, edgeView);
 			}
+			VisualProperty<?> property = lexicon.lookup(CyEdge.class, keyVal.key);
+			if (property == null) {
+				continue;
+			}
+			edgeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+			
+//			else if (keyVal.key.equals(WIDTH) && id.equals("EDGE_WIDTH")) {
+//				edgeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+//			} else if (keyVal.key.equals(FILL) && id.equals("EDGE_COLOR")) {
+//				edgeView.setVisualProperty(property, (Object) property.parseSerializableString(keyVal.value.toString()));
+//			} else if (keyVal.key.equals(ARROW) && id.equals("EDGE_SOURCE_ARROW_SHAPE")) {
+//				String value = (String) keyVal.value;
+//				if (value.equals(ARROW_BOTH) || value.equals(ARROW_FIRST)) {
+//					edgeView.setVisualProperty(property, (Object) property.parseSerializableString("ARROW"));
+//				}
+//			} else if (keyVal.key.equals(ARROW) && id.equals("EDGE_TARGET_ARROW_SHAPE")) {
+//				String value = (String) keyVal.value;
+//				if (value.equals(ARROW_BOTH) || value.equals(ARROW_LAST)) {
+//					edgeView.setVisualProperty(property, (Object) property.parseSerializableString("ARROW"));
+//				}
+//			} else if (keyVal.key.equals(SOURCE_ARROW) && id.equals("EDGE_SOURCE_ARROW_SHAPE")) {
+//				edgeView.setVisualProperty(property, (Object) property.parseSerializableString("ARROW"));
+//			} else if (keyVal.key.equals(TARGET_ARROW) && id.equals("EDGE_TARGET_ARROW_SHAPE")) {
+//				edgeView.setVisualProperty(property, (Object) property.parseSerializableString("ARROW"));
+//			}
 		}
 		
 //			} else if (keyVal.key.equals(TYPE)) {
