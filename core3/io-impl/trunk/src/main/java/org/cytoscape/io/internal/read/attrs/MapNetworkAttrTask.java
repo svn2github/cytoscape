@@ -35,7 +35,7 @@ public final class MapNetworkAttrTask extends AbstractTask {
 		this.networkManager     = networkManager;
 		this.applicationManager = applicationManager;
 
-		if ( type != CyNode.class && type != CyEdge.class)
+		if (type != CyNode.class && type != CyEdge.class)
 			throw new IllegalArgumentException("\"type\" must be CyNode.class or CyEdge.class!");
 	}
 
@@ -46,12 +46,12 @@ public final class MapNetworkAttrTask extends AbstractTask {
 		if (currentNetworkOnly) {
 			final CyNetwork currentNetwork = applicationManager.getCurrentNetwork();
 			targetTables.add(type == CyNode.class ? currentNetwork.getDefaultNodeTable()
-					                        : currentNetwork.getDefaultEdgeTable());
+					                      : currentNetwork.getDefaultEdgeTable());
 		} else {
 			final Set<CyNetwork> networks = networkManager.getNetworkSet();
 			for (final CyNetwork network : networks)
 				targetTables.add(type == CyNode.class ? network.getDefaultNodeTable()
-						                        : network.getDefaultEdgeTable());
+						                      : network.getDefaultEdgeTable());
 		}
 
 		mapAll(targetTables);
