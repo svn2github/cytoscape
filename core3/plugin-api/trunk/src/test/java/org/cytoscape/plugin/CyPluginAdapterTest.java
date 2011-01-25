@@ -73,4 +73,9 @@ public abstract class CyPluginAdapterTest {
 	public void testGetCyApplicationManager() { 
 		assertNotNull("CyApplicationManager exists", adapter.getCyApplicationManager());
 	} 
+
+	@Test
+	public void testGetCySwingApplication() { 
+		assertNotNull("CySwingApplication exists", adapter.getCySwingApplication());
+	} 
 }

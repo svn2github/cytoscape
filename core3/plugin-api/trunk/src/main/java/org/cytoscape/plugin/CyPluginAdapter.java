@@ -1,18 +1,19 @@
 package org.cytoscape.plugin;
 
+import org.cytoscape.application.swing.CySwingApplication;
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.CyTableFactory;
-import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.CySessionManager;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 // TODO once the layout api has stabilized
 //import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
-import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.session.CySessionManager;
 import org.cytoscape.work.TaskManager;
 
 
@@ -136,4 +137,12 @@ public interface CyPluginAdapter {
 	CyLayouts getCyLayouts();
 	 */
 
+	//
+	// swing application api
+	//
+	/**
+	 * Returns an instance of {@link CySwingApplication}.
+	 * @return an instance of {@link CySwingApplication}.
+	 */
+	CySwingApplication getCySwingApplication();
 }
