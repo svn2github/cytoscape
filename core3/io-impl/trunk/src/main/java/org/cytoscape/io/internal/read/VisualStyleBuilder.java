@@ -58,8 +58,8 @@ import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
  */
 public class VisualStyleBuilder {
 
-    Map<VisualProperty<?>, Map<Object, Object>>  valueMaps;
-    Map<VisualProperty<?>, Map<Object, Integer>> counts;
+    Map<VisualProperty<?>, Map<String, Object>>  valueMaps;
+    Map<VisualProperty<?>, Map<String, Integer>> counts;
     String                                       name;
     private boolean                              nodeSizeLocked = true;
 
@@ -94,8 +94,8 @@ public class VisualStyleBuilder {
         this.nodesTable = nodesTable;
         this.edgesTable = edgesTable;
 
-        this.valueMaps = new Hashtable<VisualProperty<? extends Object>, Map<Object, Object>>();
-        this.counts = new Hashtable<VisualProperty<? extends Object>, Map<Object, Integer>>();
+        this.valueMaps = new Hashtable<VisualProperty<? extends Object>, Map<String, Object>>();
+        this.counts = new Hashtable<VisualProperty<? extends Object>, Map<String, Integer>>();
     }
 
     /**
@@ -106,7 +106,7 @@ public class VisualStyleBuilder {
      * @param defStyle
      *            the default syle
      */
-    public <V, K> VisualStyle buildStyle() {
+    public <V> VisualStyle buildStyle() {
         // Create the new style
         VisualStyle style = styleFactory.getInstance(visMappingManager.getDefaultVisualStyle());
         String styleName = name + " style";
@@ -120,7 +120,7 @@ public class VisualStyleBuilder {
         for (VisualProperty<?> _vp : valueMaps.keySet()) {
             final VisualProperty<V> vp = (VisualProperty<V>) _vp;
             final Class<?> type = vp.getTargetDataType();
-            Map<K, V> valMap = (Map<K, V>) valueMaps.get(vp);
+            Map<String, V> valMap = (Map<String, V>) valueMaps.get(vp);
 
             if (createMapping(vp)) {
                 // If there is more than one value specified for a given visual
@@ -128,7 +128,7 @@ public class VisualStyleBuilder {
                 // then create a mapping and calculator.
                 final String attrName = getAttrName(vp);
 
-                DiscreteMapping<K, V> dm = (DiscreteMapping<K, V>) discreteMappingFactory
+                DiscreteMapping<String, V> dm = (DiscreteMapping<String, V>) discreteMappingFactory
                         .createVisualMappingFunction(attrName, String.class, vp);
 
                 dm.putAll(valMap);
@@ -136,7 +136,7 @@ public class VisualStyleBuilder {
             } else {
                 // Otherwise, set the default appearance value for the visual
                 // style and then remove the attribute that was created.
-                for (Object key : valMap.keySet()) {
+                for (String key : valMap.keySet()) {
                     V val = (V) valMap.get(key);
                     style.setDefaultValue(vp, val);
                 }
@@ -193,12 +193,12 @@ public class VisualStyleBuilder {
         }
 
         // store the value
-        if (!valueMaps.containsKey(vp)) valueMaps.put(vp, new Hashtable<Object, Object>());
+        if (!valueMaps.containsKey(vp)) valueMaps.put(vp, new Hashtable<String, Object>());
 
         valueMaps.get(vp).put(vString, value);
 
         // store the count
-        if (!counts.containsKey(vp)) counts.put(vp, new Hashtable<Object, Integer>());
+        if (!counts.containsKey(vp)) counts.put(vp, new Hashtable<String, Integer>());
         if (!counts.get(vp).containsKey(vString)) counts.get(vp).put(vString, 0);
 
         counts.get(vp).put(vString, counts.get(vp).get(vString) + 1);

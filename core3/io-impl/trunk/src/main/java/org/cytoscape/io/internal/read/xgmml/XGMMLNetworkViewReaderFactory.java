@@ -36,6 +36,7 @@ import org.cytoscape.io.internal.read.xgmml.handler.ReadDataManager;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
@@ -52,6 +53,7 @@ import org.cytoscape.work.TaskIterator;
  */
 public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFactory {
 
+    private final RenderingEngineManager       renderingEngineManager;
     private VisualStyleFactory                 styleFactory;
     private VisualMappingManager               visMappingManager;
     private final VisualMappingFunctionFactory discreteMappingFactory;
@@ -61,6 +63,7 @@ public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFact
     private CyProperty<Properties>             properties;
 
     public XGMMLNetworkViewReaderFactory(CyFileFilter filter,
+                                         RenderingEngineManager renderingEngineManager,
                                          CyNetworkViewFactory cyNetworkViewFactory,
                                          CyNetworkFactory cyNetworkFactory,
                                          ReadDataManager readDataManager,
@@ -71,6 +74,7 @@ public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFact
                                          XGMMLParser parser,
                                          CyProperty<Properties> properties) {
         super(filter, cyNetworkViewFactory, cyNetworkFactory);
+        this.renderingEngineManager = renderingEngineManager;
         this.readDataManager = readDataManager;
         this.attributeValueUtil = attributeValueUtil;
         this.styleFactory = styleFactory;
@@ -81,9 +85,9 @@ public class XGMMLNetworkViewReaderFactory extends AbstractNetworkViewReaderFact
     }
 
     public TaskIterator getTaskIterator() {
-        return new TaskIterator(new XGMMLNetworkViewReader(inputStream, cyNetworkViewFactory, cyNetworkFactory,
-                                                           readDataManager, attributeValueUtil, styleFactory,
-                                                           visMappingManager, discreteMappingFactory, parser,
-                                                           properties));
+        return new TaskIterator(new XGMMLNetworkViewReader(inputStream, renderingEngineManager, cyNetworkViewFactory,
+                                                           cyNetworkFactory, readDataManager, attributeValueUtil,
+                                                           styleFactory, visMappingManager, discreteMappingFactory,
+                                                           parser, properties));
     }
 }

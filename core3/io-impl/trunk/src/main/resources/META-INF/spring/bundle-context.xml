@@ -324,6 +324,7 @@
 	<bean id="xgmmlNetworkViewReaderFactory" 
 	      class="org.cytoscape.io.internal.read.xgmml.XGMMLNetworkViewReaderFactory">
 		<constructor-arg ref="xgmmlFilter" />
+		<constructor-arg ref="renderingEngineManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="cyNetworkFactoryServiceRef" />
 		<constructor-arg ref="readDataManager" />

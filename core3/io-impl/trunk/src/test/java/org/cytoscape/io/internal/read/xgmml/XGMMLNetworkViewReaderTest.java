@@ -22,6 +22,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.mappings.DiscreteMappingFactory;
@@ -35,6 +36,7 @@ import org.cytoscape.io.internal.read.AbstractNetworkViewReaderTester;
 
 public class XGMMLNetworkViewReaderTest extends AbstractNetworkViewReaderTester {
 
+    RenderingEngineManager renderingEngineManager;
     ReadDataManager        readDataManager;
     AttributeValueUtil     attributeValueUtil;
     VisualStyleFactory     styleFactory;
@@ -79,10 +81,10 @@ public class XGMMLNetworkViewReaderTest extends AbstractNetworkViewReaderTester 
 
     private CyNetworkView[] getViews(String file) throws Exception {
         File f = new File("./src/test/resources/testData/xgmml/" + file);
-        XGMMLNetworkViewReader snvp = new XGMMLNetworkViewReader(new FileInputStream(f), viewFactory, netFactory,
-                                                                 readDataManager, attributeValueUtil, styleFactory,
-                                                                 visMappingManager, discreteMappingFactory, parser,
-                                                                 properties);
+        XGMMLNetworkViewReader snvp = new XGMMLNetworkViewReader(new FileInputStream(f), renderingEngineManager,
+                                                                 viewFactory, netFactory, readDataManager,
+                                                                 attributeValueUtil, styleFactory, visMappingManager,
+                                                                 discreteMappingFactory, parser, properties);
         snvp.run(taskMonitor);
 
         return snvp.getNetworkViews();
