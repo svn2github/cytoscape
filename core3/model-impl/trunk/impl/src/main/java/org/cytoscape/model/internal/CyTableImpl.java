@@ -54,114 +54,6 @@ import org.slf4j.LoggerFactory;
 
 
 public final class CyTableImpl implements CyTable {
-	private final class VirtualColumn {
-		private final CyTable sourceTable;
-		private final String sourceColumn;
-		private final Class<?> sourceColumnType;
-		private final Class<?> sourceColumnListElementType;
-		private final CyTableImpl targetTable;
-		private final String sourceJoinColumn;
-		private final Class<?> sourceJoinColumnType;
-		private final String targetJoinColumn;
-		private final Class<?> targetJoinColumnType;
-
-		VirtualColumn(final CyTable sourceTable, final String sourceColumn,
-			      final CyTableImpl targetTable, final String sourceJoinColumn,
-			      final String targetJoinColumn)
-		{
-			this.sourceTable                 = sourceTable;
-			this.sourceColumn                = sourceColumn;
-			this.sourceColumnType            = sourceTable.getType(sourceColumn);
-			this.sourceColumnListElementType = (sourceColumnType == List.class)
-				? sourceTable.getListElementType(sourceColumn) : null;
-			this.targetTable                 = targetTable;
-			this.sourceJoinColumn            = sourceJoinColumn;
-			this.sourceJoinColumnType        = sourceTable.getType(sourceJoinColumn);
-			this.targetJoinColumn            = targetJoinColumn;
-			this.targetJoinColumnType        = targetTable.getType(targetJoinColumn);
-		}
-
-		Object getRawValue(final Object targetKey) {
-			final CyRow sourceRow = getSourceRow(targetKey);
-			return (sourceRow == null) ? null : sourceRow.getRaw(sourceColumn);
-		}
-
-		void setValue(final Object targetKey, final Object value) {
-			final CyRow sourceRow = getSourceRow(targetKey);
-			if (sourceRow == null)
-				throw new IllegalArgumentException("can't set a value for a virtual column!");
-			sourceRow.set(sourceColumn, value);
-		}
-
-		Object getValue(final Object targetKey) {
-			final CyRow sourceRow = getSourceRow(targetKey);
-			if (sourceRow == null)
-				return null;
-
-			final Object retValue = sourceRow.get(sourceColumn, sourceColumnType);
-			if (retValue == null)
-				targetTable.lastInternalError = sourceTable.getLastInternalError();
-			return retValue;
-		}
-
-		Object getListValue(final Object targetKey) {
-			final CyRow sourceRow = getSourceRow(targetKey);
-			if (sourceRow == null)
-				return null;
-			final Object retValue = sourceRow.getList(sourceColumn, sourceColumnListElementType);
-			if (retValue == null)
-				targetTable.lastInternalError = sourceTable.getLastInternalError();
-			return retValue;
-		}
-
-		private CyRow getSourceRow(final Object targetKey) {
-			final Object joinKey = targetTable.getValue(targetKey, targetJoinColumn);
-			if (joinKey == null)
-				return null;
-			final Set<CyRow> sourceRows = sourceTable.getMatchingRows(sourceJoinColumn,
-										  joinKey);
-			if (sourceRows.size() != 1)
-				return null;
-
-			return sourceRows.iterator().next();
-		}
-
-		Set<CyRow> getMatchingRows(final Object value) {
-			final Set<CyRow> sourceRows = sourceTable.getMatchingRows(sourceColumn, value);
-			final Set<CyRow> targetRows = new HashSet<CyRow>();
-			for (final CyRow sourceRow : sourceRows) {
-				final Object targetValue = sourceRow.get(sourceJoinColumn,
-									 sourceJoinColumnType);
-				if (targetValue != null) {
-					final Set<CyRow> rows =
-						targetTable.getMatchingRows(targetJoinColumn, targetValue);
-					targetRows.addAll(rows);
-				}
-			}
-			return targetRows;
-		}
-
-		List getColumnValues() {
-			final List targetJoinColumnValues =
-				targetTable.getColumnValues(targetJoinColumn, targetJoinColumnType);
-			List results = new ArrayList();
-			for (final Object targetJoinColumnValue : targetJoinColumnValues) {
-				final Set<CyRow> sourceRows =
-					sourceTable.getMatchingRows(sourceJoinColumn,
-								    targetJoinColumnValue);
-				if (sourceRows.size() == 1) {
-					final CyRow sourceRow = sourceRows.iterator().next();
-					final Object value =
-						sourceRow.get(sourceColumn, sourceColumnType);
-					if (value != null)
-						results.add(value);
-				}
-			}
-
-			return results;
-		}
-	}
-
 	private static final Logger logger = LoggerFactory.getLogger(CyTableImpl.class);
 
 	private final Set<String> currentlyActiveAttributes;
@@ -190,7 +82,7 @@ public final class CyTableImpl implements CyTable {
 	private final CyEventHelper eventHelper;
 	private final Interpreter interpreter;
 
-	private String lastInternalError = null;
+	String lastInternalError = null;
 
 	private final Map<String, VirtualColumn> virtualColumnMap;
 
