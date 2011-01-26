@@ -151,6 +151,6 @@ public abstract class AbstractVisualLexicon implements VisualLexicon {
 			logger.warn("attempting to add VisualLexicon identifier lookup mapping with unrecognized type: " + type.getClass().getName() + "(expect: " + identifierLookup.keySet().toString() + ")" );
 			return;
 		}
-		map.put(id,vp);
+		map.put(id.toLowerCase(), vp);
 	}
 }
