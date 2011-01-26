@@ -332,16 +332,17 @@ class ArraySubGraph implements CySubNetwork {
 		// Possible error if this node isn't contained in subnetwork, but
 		// since this is only a notification, maybe that's OK.
 		eventHelper.fireSynchronousEvent(new AboutToRemoveNodeEvent(this, n));
+		final List<CyEdge> edges; 
 
 		synchronized (this) {
 			if (!containsNode(n))
 				return false;
 
 			// remove adjacent edges
-			final List<CyEdge> edges = getAdjacentEdgeList(n, CyEdge.Type.ANY);
+			edges = getAdjacentEdgeList(n, CyEdge.Type.ANY);
 	
 			for (final CyEdge e : edges)
-				removeEdge(e);
+				removeEdgeInternal(e);
 	
 			final NodePointer node = parent.getNodePointer(n);
 			inFirstNode = node.remove(inFirstNode,internalId);
@@ -349,7 +350,7 @@ class ArraySubGraph implements CySubNetwork {
 			internalNodeCount--;
 			nodeSet.remove(n);
 		}
-
+		
 		eventHelper.fireAsynchronousEvent(new RemovedNodeEvent(this));
 
 		return true;
@@ -367,19 +368,26 @@ class ArraySubGraph implements CySubNetwork {
 		eventHelper.fireSynchronousEvent(new AboutToRemoveEdgeEvent(this, edge));
 
 		synchronized (this) {
-			if (!containsEdge(edge))
+			if (!removeEdgeInternal(edge))
 				return false;
-
-			final EdgePointer e = parent.getEdgePointer(edge);
-
-			e.remove(internalId);
-
-			internalEdgeCount--;
-			edgeSet.remove(edge);
 		}
 
 		eventHelper.fireAsynchronousEvent(new RemovedEdgeEvent(this));
 
+		return true;
+	}
+
+	// should be called from within a synchronized block
+	private boolean removeEdgeInternal(CyEdge edge) {
+		if (!containsEdge(edge))
+			return false;
+
+		final EdgePointer e = parent.getEdgePointer(edge);
+
+		e.remove(internalId);
+
+		internalEdgeCount--;
+		edgeSet.remove(edge);
 		return true;
 	}
 
