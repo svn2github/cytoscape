@@ -393,8 +393,7 @@ public class BiomartRestClient {
 				+ detail.get("serverVirtualSchema")
 				+ "&type=attributes&dataset=" + datasetName;
 
-		System.out.println("Attr Import: Dataset name = " + datasetName +
-		 ", Target URL = " + urlStr + "\n");
+		//System.out.println("Attr Import: Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
 		URL url = new URL(urlStr);
 
 		// TODO: use proxy
@@ -448,7 +447,7 @@ public class BiomartRestClient {
 	 */
 	public BufferedReader sendQuery(String xmlQuery) throws IOException {
 
-		System.out.println("Generated Query:\n\n" + xmlQuery);
+		//System.out.println("Generated Query:\n\n" + xmlQuery);
 
 		URL url = new URL(baseURL);
 

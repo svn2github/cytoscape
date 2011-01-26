@@ -24,9 +24,7 @@ public class ImportFilterTask extends AbstractTask {
 
 	@Override
 	public void run(TaskMonitor taskMonitor) throws Exception {
-		System.out.println("Import Filter for: " + datasourceName);
 		returnValMap = client.getFilters(datasourceName, false);
-		System.out.println("Got filters: " + returnValMap.size());
 	}
 
 

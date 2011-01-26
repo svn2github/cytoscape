@@ -88,7 +88,7 @@ public class ImportTableTask extends AbstractTask {
 
 		// Read result from reader
 		String line = reader.readLine();
-		System.out.println("Table Header: " + line);
+		//System.out.println("Table Header: " + line);
 		final String[] columnNames = line.split("\\t");
 
 		if (columnNames[0].contains("Query ERROR"))
