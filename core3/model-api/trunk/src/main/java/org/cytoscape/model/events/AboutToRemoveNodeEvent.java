@@ -43,6 +43,12 @@ import org.cytoscape.model.CyNode;
 /**
  * Fired before a node is actually removed so that listeners
  * have a chance to clean up before the node object disappaears.
+ * Note that this event also <i>implies</i> an AboutToRemoveEdgeEvent
+ * for every edge adjacent to the node in question (because all
+ * adjacent edges are removed as a consequence of removing
+ * a node), even though the
+ * AboutToRemoveEdgeEvent is not actually fired.  If you only care
+ * about removing edges, be sure to listen for this event as well!
  */
 public final class AboutToRemoveNodeEvent extends AbstractNodeEvent {
 	/**
