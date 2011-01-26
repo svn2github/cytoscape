@@ -187,13 +187,13 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	/**
 	 * The graph model that will be viewed.
 	 */
-	CyNetwork networkModel;
+	final CyNetwork networkModel;
 
 	/**
 	 * Holds the NodeView data for the nodes that are visible. This will change
 	 * as nodes are hidden from the view.
 	 */
-	CySubNetwork m_drawPersp;
+	final CySubNetwork m_drawPersp;
 
 	/**
 	 * Holds all of the NodeViews, regardless of whether they're visualized.
@@ -929,8 +929,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			for (CyEdge ee : hiddenEdgeInx)
 				removeEdgeViewInternal(ee.getIndex());
 
-			returnThis = (DNodeView) m_nodeViewMap.remove(Integer
-					.valueOf(nodeInx));
+			returnThis = (DNodeView) m_nodeViewMap.remove(Integer.valueOf(nodeInx));
 			returnThis.unselectInternal();
 
 			// If this node was hidden, it won't be in m_drawPersp.
@@ -948,8 +947,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 
 		if (listener != null) {
 			if (hiddenEdgeInx.size() > 0) {
-				listener.graphViewChanged(new GraphViewEdgesHiddenEvent(this,
-						hiddenEdgeInx));
+				listener.graphViewChanged(new GraphViewEdgesHiddenEvent(this, hiddenEdgeInx));
 			}
 
 			listener.graphViewChanged(new GraphViewNodesHiddenEvent(this,
@@ -993,8 +991,10 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 */
 	public EdgeView removeEdgeView(int edgeInx) {
 		final DEdgeView returnThis;
+		final CyEdge edge; 
 
 		synchronized (m_lock) {
+			edge = networkModel.getEdge(edgeInx);
 			returnThis = removeEdgeViewInternal(edgeInx);
 
 			if (returnThis != null) {
@@ -1006,8 +1006,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 			final GraphViewChangeListener listener = m_lis[0];
 
 			if (listener != null) {
-				listener.graphViewChanged(new GraphViewEdgesHiddenEvent(this,
-						makeList(returnThis.getEdge())));
+				listener.graphViewChanged(new GraphViewEdgesHiddenEvent(this, makeList(edge)));
 			}
 		}
 
@@ -1018,8 +1017,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 	 * Should synchronize around m_lock.
 	 */
 	private DEdgeView removeEdgeViewInternal(int edgeInx) {
-		final DEdgeView returnThis = (DEdgeView) m_edgeViewMap.remove(Integer
-				.valueOf(edgeInx));
+		final DEdgeView returnThis = (DEdgeView) m_edgeViewMap.remove(Integer.valueOf(edgeInx));
 
 		CyEdge eedge = networkModel.getEdge(edgeInx);
 
@@ -1035,7 +1033,7 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		m_edgeDetails.unregisterEdge(edgeInx);
 
 		// m_selectedEdges.delete(edgeInx);
-		//returnThis.m_view = null;
+		returnThis.m_view = null;
 
 		return returnThis;
 	}
