@@ -56,9 +56,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAboutToBeDestroyedListener {
 	private static final Logger logger = LoggerFactory.getLogger(CyNetworkViewManagerImpl.class);
-
 	private final Map<Long, CyNetworkView> networkViewMap;
-
 	private final CyEventHelper cyEventHelper;
 	
 	/**
@@ -71,25 +69,34 @@ public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAb
 	}
 
 	@Override
-	public void handleEvent(final NetworkAboutToBeDestroyedEvent event) {
+	public synchronized void clear() {
+		networkViewMap.clear();
+	}
+
+	@Override
+	public synchronized void handleEvent(final NetworkAboutToBeDestroyedEvent event) {
 		final long networkId = event.getNetwork().getSUID();
 		if (viewExists(networkId))
 			destroyNetworkView(networkViewMap.get(networkId));
 	}
 
+	@Override
 	public synchronized Set<CyNetworkView> getNetworkViewSet() {
 		return new HashSet<CyNetworkView>(networkViewMap.values());
 	}
 
+	@Override
 	public synchronized CyNetworkView getNetworkView(long networkId) {
 		return networkViewMap.get(networkId);
 	}
 
+	@Override
 	public synchronized boolean viewExists(long networkId) {
 		return networkViewMap.containsKey(networkId);
 	}
 
-	public void destroyNetworkView(final CyNetworkView view) {
+	@Override
+	public synchronized void destroyNetworkView(final CyNetworkView view) {
 		if (view == null)
 			throw new NullPointerException("view is null");
 
@@ -110,7 +117,8 @@ public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAb
 		cyEventHelper.fireSynchronousEvent(new NetworkViewDestroyedEvent(this));
 	}
 	
-	public void addNetworkView(final CyNetworkView view) {
+	@Override
+	public synchronized void addNetworkView(final CyNetworkView view) {
 		if (view == null)
 			throw new NullPointerException("CyNetworkView is null");
 

@@ -36,7 +36,7 @@ import java.util.Set;
  * A singleton object that provides access to the available
  * tables in the system. Should be provided as an OSGi service.
  */
-public interface CyTableManager {
+public interface CyTableManager extends Manager {
 	/**
 	 * Returns a map of table names to tables, which contain the attributes 
 	 * for the specified network.

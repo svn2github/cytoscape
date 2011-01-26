@@ -1,13 +1,5 @@
-
 /*
  Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
+
 
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
@@ -42,7 +34,6 @@ import java.util.Map;
 
 
 public abstract class AbstractCyTableManagerTest extends TestCase {
-
 	/**
 	 * Must be supplied by implementer.
 	 */
@@ -77,7 +68,7 @@ public abstract class AbstractCyTableManagerTest extends TestCase {
 		assertNull( mgr.getTableMap(CyEdge.class,null) );
 	}
 
-    public void testTableNetworkMapHasExpectedTables() throws Exception {
+	public void testTableNetworkMapHasExpectedTables() throws Exception {
 		checkTableMap( mgr.getTableMap(CyNetwork.class, goodNetwork) );
 		checkTableMap( mgr.getTableMap(CyNode.class, goodNetwork) );
 		checkTableMap( mgr.getTableMap(CyEdge.class, goodNetwork) );
@@ -85,9 +76,9 @@ public abstract class AbstractCyTableManagerTest extends TestCase {
 
 	private void checkTableMap(Map<String,CyTable> tableMap) {
 		// we should have at least the two default, but others may exist
-        assertTrue(tableMap.size() >= 2);
-        assertTrue(tableMap.keySet().contains(CyNetwork.DEFAULT_ATTRS));
-        assertTrue(tableMap.keySet().contains(CyNetwork.HIDDEN_ATTRS));
+		assertTrue(tableMap.size() >= 2);
+		assertTrue(tableMap.keySet().contains(CyNetwork.DEFAULT_ATTRS));
+		assertTrue(tableMap.keySet().contains(CyNetwork.HIDDEN_ATTRS));
 	}
 
 /*
@@ -100,4 +91,10 @@ public abstract class AbstractCyTableManagerTest extends TestCase {
 	public void testGetInvalidTable() {
 	}
 	*/
+
+	public void testClear() {
+		assertFalse(mgr.getAllTables(true).isEmpty());
+		mgr.clear();
+		assertTrue(mgr.getAllTables(true).isEmpty());
+	}
 }

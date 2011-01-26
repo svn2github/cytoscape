@@ -47,13 +47,13 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 
+
 /**
  * An interface describing a factory used for managing 
  * {@link CyTable} objects.  This class will be
  * provided as a service through Spring/OSGi.
  */
 public class CyTableManagerImpl implements CyTableManager {
-
 	private final Map<Class<?>, Map<CyNetwork, Map<String,CyTable>>> networkTableMap;
 	private final Map<Long,CyTable> tables;
 
@@ -66,8 +66,14 @@ public class CyTableManagerImpl implements CyTableManager {
 		tables = new HashMap<Long,CyTable>();
 	}
 	
+	@Override
+	public void clear() {
+		networkTableMap.clear();
+		tables.clear();
+	}
 
-	@Override public Map<String, CyTable> getTableMap(final Class<?> graphObjectType, final CyNetwork network) {
+	@Override
+	public Map<String, CyTable> getTableMap(final Class<?> graphObjectType, final CyNetwork network) {
 		if ( network == null || graphObjectType == null )
 			return null;
 

@@ -67,20 +67,24 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 		this.cyEventHelper = cyEventHelper;
 	}
 
+	@Override
 	public synchronized Set<CyNetwork> getNetworkSet() {
 		return new HashSet<CyNetwork>(networkMap.values());
 	}
 
+	@Override
 	public synchronized CyNetwork getNetwork(long id) {
 		return networkMap.get(id);
 	}
 
+	@Override
 	public synchronized boolean networkExists(long network_id) {
 		return networkMap.containsKey(network_id);
 	}
 
 	// TODO
 	// Does this need to distinguish between root networks and subnetworks?
+	@Override
 	public void destroyNetwork(CyNetwork network) {
 		if (network == null)
 			throw new NullPointerException("network is null");
@@ -110,7 +114,8 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 		cyEventHelper.fireSynchronousEvent(new NetworkDestroyedEvent( CyNetworkManagerImpl.this ));
 	}
 	
-	public void addNetwork(final CyNetwork network) {
+	@Override
+	public synchronized void addNetwork(final CyNetwork network) {
 		if (network == null)
 			throw new NullPointerException("Network is null");
 
@@ -120,5 +125,10 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 		}
 
 		cyEventHelper.fireSynchronousEvent(new NetworkAddedEvent(CyNetworkManagerImpl.this, network));
+	}
+
+	@Override
+	public synchronized void clear() {
+		networkMap.clear();
 	}
 }

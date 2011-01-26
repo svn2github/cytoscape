@@ -1,7 +1,7 @@
 /*
  File: CyNetworkViewManager.java
 
- Copyright (c) 2006,2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,13 +32,14 @@ package org.cytoscape.view.model;
 
 import java.util.Set;
 
+import org.cytoscape.model.Manager;
 import org.cytoscape.view.model.CyNetworkView;
 
 
 /**
  * Basic access to network views in an instance of Cytoscape.
  */
-public interface CyNetworkViewManager {
+public interface CyNetworkViewManager extends Manager {
 	/**
 	 * Provides the set of network views that are currently known to the network mananger.
 	 * 

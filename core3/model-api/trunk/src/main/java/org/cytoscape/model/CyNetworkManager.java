@@ -38,7 +38,7 @@ import org.cytoscape.model.CyNetwork;
 /**
  * Basic access to networks and view in an instance of Cytoscape.
  */
-public interface CyNetworkManager {
+public interface CyNetworkManager extends Manager {
 	/**
 	 * Provides the set of all the networks known to the network manager.
 	 * 
