@@ -171,6 +171,7 @@ public class CyGroupManager {
 	 * @return the list of groups
 	 */
 	public static List<CyGroup> getGroupList(CyGroupViewer viewer) {
+		if (viewer == null) return getGroupList();
 		String viewerName = viewer.getViewerName();
 		if (!groupViewerMap.containsKey(viewerName))
 			return null;
