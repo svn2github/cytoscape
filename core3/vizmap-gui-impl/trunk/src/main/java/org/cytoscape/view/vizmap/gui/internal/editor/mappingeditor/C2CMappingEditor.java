@@ -74,7 +74,8 @@ public class C2CMappingEditor<V extends Number> extends
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public C2CMappingEditor(final VisualStyle style,
+	public C2CMappingEditor(
+			final VisualStyle style,
 			final ContinuousMapping<Double, V> mapping, final CyTable attr,
 			final CyApplicationManager appManager, final VisualMappingManager vmm) {
 		super(style, mapping, attr, appManager, vmm);

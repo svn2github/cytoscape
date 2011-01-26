@@ -53,35 +53,40 @@ import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.view.vizmap.mappings.ContinuousMappingPoint;
 import org.jdesktop.swingx.multislider.Thumb;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Continuous Mapping editor for discrete values, such as Font, Shape, Label
  * Position, etc.
  * 
- * @version 0.5
- * @since Cytoscape 2.5
- * @author Keiichiro Ono
  */
-public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<Number, V> {
+public class C2DMappingEditor<V> extends
+		ContinuousMappingEditorPanel<Number, V> {
 	private final static long serialVersionUID = 1213748837197780L;
-	/**
-	 * Creates a C2DMappingEditor object.
-	 * 
-	 * @param type
-	 *            DOCUMENT ME!
-	 */
 
-	private EditorManager editorFactory;
+	private static final Logger logger = LoggerFactory
+			.getLogger(C2DMappingEditor.class);
 
-	public C2DMappingEditor(final VisualStyle style, final ContinuousMapping<Number, V> mapping, CyTable attr, final CyApplicationManager appManager, final VisualMappingManager vmm) {
+	private final EditorManager editorManager;
+
+	public C2DMappingEditor(final VisualStyle style,
+			final ContinuousMapping<Number, V> mapping, CyTable attr,
+			final CyApplicationManager appManager,
+			final VisualMappingManager vmm, final EditorManager editorManager) {
 		super(style, mapping, attr, appManager, vmm);
+		
+		if(editorManager == null)
+			throw new NullPointerException("Editor manager is null.");
+		
+		this.editorManager = editorManager;
+		
 		this.iconPanel.setVisible(false);
 		this.belowPanel.setVisible(false);
 		this.abovePanel.setVisible(false);
 
 		setSlider();
 	}
-	
 
 	/**
 	 * DOCUMENT ME!
@@ -100,8 +105,8 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<Number, V>
 		rend.getRendererComponent(slider);
 
 		return new ImageIcon();
-		//FIXME
-//		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
+		// FIXME
+		// return rend.getTrackGraphicIcon(iconWidth, iconHeight);
 	}
 
 	/**
@@ -129,7 +134,7 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<Number, V>
 
 		return null;
 		// FIXME
-//		return rend.getLegend(width, height);
+		// return rend.getLegend(width, height);
 	}
 
 	@Override
@@ -160,8 +165,8 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<Number, V>
 		final BoundaryRangeValues<V> previousRange = previousPoint.getRange();
 		newRange = new BoundaryRangeValues<V>(previousRange);
 
-		newRange.lesserValue = slider.getModel().getSortedThumbs().get(
-				slider.getModel().getThumbCount() - 1).getObject();
+		newRange.lesserValue = slider.getModel().getSortedThumbs()
+				.get(slider.getModel().getThumbCount() - 1).getObject();
 		newRange.equalValue = defValue;
 		newRange.greaterValue = previousRange.greaterValue;
 		mapping.addPoint(maxValue, newRange);
@@ -175,7 +180,7 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<Number, V>
 	}
 
 	protected void updateMap() {
-		//FIXME
+		// FIXME
 		List<Thumb<V>> thumbs = slider.getModel().getSortedThumbs();
 
 		final double minValue = tracer.getMin(type);
@@ -252,6 +257,8 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<Number, V>
 
 		final C2DMappingEditor<V> parentComponent = this;
 		slider.addMouseListener(new MouseAdapter() {
+
+			// Handle value icon click.
 			public void mouseClicked(MouseEvent e) {
 				int range = ((DiscreteTrackRenderer<Number, V>) slider
 						.getTrackRenderer()).getRangeID(e.getX(), e.getY());
@@ -261,7 +268,7 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<Number, V>
 				if (e.getClickCount() == 2) {
 					try {
 						// setAlwaysOnTop(false);
-						newValue = editorFactory.showVisualPropertyValueEditor(
+						newValue = editorManager.showVisualPropertyValueEditor(
 								parentComponent, type, null);
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -283,7 +290,8 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<Number, V>
 
 					updateMap();
 
-					slider.setTrackRenderer(new DiscreteTrackRenderer<Number, V>(mapping, below, above, tracer));
+					slider.setTrackRenderer(new DiscreteTrackRenderer<Number, V>(
+							mapping, below, above, tracer));
 					slider.repaint();
 
 					// Update network
@@ -326,7 +334,8 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<Number, V>
 		 * get min and max for the value object
 		 */
 		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
-		DiscreteTrackRenderer<Number, V> dRend = new DiscreteTrackRenderer<Number, V>(mapping, below, above, tracer);
+		DiscreteTrackRenderer<Number, V> dRend = new DiscreteTrackRenderer<Number, V>(
+				mapping, below, above, tracer);
 
 		slider.setThumbRenderer(thumbRend);
 		slider.setTrackRenderer(dRend);
@@ -336,6 +345,6 @@ public class C2DMappingEditor<V> extends ContinuousMappingEditorPanel<Number, V>
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

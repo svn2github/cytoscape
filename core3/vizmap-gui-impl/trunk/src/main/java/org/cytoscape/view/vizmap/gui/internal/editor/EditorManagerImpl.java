@@ -50,6 +50,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.view.model.DiscreteRange;
 import org.cytoscape.view.model.Range;
@@ -57,6 +58,7 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.gui.SelectedVisualStyleManager;
 import org.cytoscape.view.vizmap.gui.editor.EditorManager;
 import org.cytoscape.view.vizmap.gui.editor.ListEditor;
 import org.cytoscape.view.vizmap.gui.editor.ValueEditor;
@@ -88,13 +90,22 @@ public class EditorManagerImpl implements EditorManager {
 	
 	private final CyApplicationManager appManager;
 	
+	private final CyTableManager tableManager;
+	private final SelectedVisualStyleManager selectedManager;
+	private final VisualMappingManager vmm;
+	
 
 	/**
 	 * Creates a new EditorFactory object.
 	 */
-	public EditorManagerImpl(final CyApplicationManager appManager, final AttributeSetManager attrManager, final VisualMappingManager vmm) {
+	public EditorManagerImpl(final CyApplicationManager appManager, final AttributeSetManager attrManager, final VisualMappingManager vmm,
+			final CyTableManager tableManager,
+			final SelectedVisualStyleManager selectedManager) {
 		
 		this.appManager = appManager;
+		this.tableManager = tableManager;
+		this.vmm = vmm;
+		this.selectedManager = selectedManager;
 		
 		editors = new HashMap<Class<?>, VisualPropertyEditor<?>>();
 
@@ -351,7 +362,7 @@ public class EditorManagerImpl implements EditorManager {
 				// Visual Property Editor.
 				logger.debug("Got new Discrete.  Creating new VP editor: " + vp.getDisplayName());
 				final Set<?> values = ((DiscreteRange<?>) range).values();
-				VisualPropertyEditor<?> vpEditor = new DiscreteValuePropertyEditor(range.getType(), values);
+				VisualPropertyEditor<?> vpEditor = new DiscreteValuePropertyEditor(range.getType(), values, tableManager, appManager, selectedManager, this, vmm);
 				this.addVisualPropertyEditor(vpEditor, null);
 				
 				if(this.getValueEditor(range.getType()) == null) {
