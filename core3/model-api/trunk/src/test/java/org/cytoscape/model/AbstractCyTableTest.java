@@ -688,4 +688,15 @@ public abstract class AbstractCyTableTest {
 		assertEquals("Virtual column list element type should have been Boolean!",
 			     Boolean.class, table.getListElementType("b1"));
 	}
+
+	@Test
+	public void testIsVirtual() {
+		table.createColumn("x", Long.class);
+		table2.createColumn("x2", Long.class);
+		table2.createListColumn("b", Boolean.class);
+		table.addVirtualColumn("b1", "b", table2, "x2", "x");
+		assertTrue(table.isVirtual("b1"));
+		assertFalse(table.isVirtual("x"));
+		assertFalse(table2.isVirtual("b"));
+	}
 }

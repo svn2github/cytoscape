@@ -188,4 +188,10 @@ public interface CyTable extends Identifiable {
 	 *        of the column names in "sourceTable" must exist in the current table!
 	 */
 	void addVirtualColumns(CyTable sourceTable, String sourceJoinKey, String targetJoinKey);
+
+	/** Tests whether a column is virtual or not.
+	 *  @return true if "columnName" is the name of a virtual column, else false
+	 *  @throws IllegalArgumentException if "columnName" does not correspond to the name of a column
+	 */
+	boolean isVirtual(String columnName);
 }

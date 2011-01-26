@@ -818,6 +818,14 @@ public final class CyTableImpl implements CyTable {
 		}
 	}
 
+	@Override
+	public boolean isVirtual(final String columnName) {
+		if (!types.containsKey(columnName))
+			throw new IllegalArgumentException("\"" + columnName + "\" is not a known column in this table!");
+
+		return virtualColumnMap.containsKey(columnName);
+	}
+
 	private final class InternalRow implements CyRow {
 		private final Object key;
 		private final CyTable table;
