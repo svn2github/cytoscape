@@ -88,6 +88,7 @@ import org.cytoscape.filter.internal.filters.util.WidestStringComboBoxPopupMenuL
 import org.cytoscape.filter.internal.filters.util.WidestStringProvider;
 import org.cytoscape.filter.internal.quickfind.util.CyAttributesUtil;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
@@ -151,11 +152,13 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private final CyApplicationManager applicationManager;
 	private final FilterPlugin filterPlugin;
 	private final CyTableRowUpdateService rowUpdateService;
+	private final CyNetworkManager networkManager;
 	
-	public FilterMainPanel(CyApplicationManager applicationManager, FilterPlugin filterPlugin, CyTableRowUpdateService rowUpdateService) {
+	public FilterMainPanel(CyApplicationManager applicationManager, FilterPlugin filterPlugin, CyTableRowUpdateService rowUpdateService, CyNetworkManager networkManager) {
 		this.applicationManager = applicationManager;
 		this.filterPlugin = filterPlugin;
 		this.rowUpdateService = rowUpdateService;
+		this.networkManager = networkManager;
 		
 		//Initialize the option menu with menuItems
 		setupOptionMenu();
@@ -260,10 +263,14 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	@Override
 	public void handleEvent(NetworkAboutToBeDestroyedEvent e) {
+		CyNetwork network = e.getNetwork();
+		if (!networkManager.networkExists(network.getSUID())) {
+			return;
+		}
+		
 		enableForNetwork();
 		updateFeedbackTableModel();
 		
-		CyNetwork network = e.getNetwork();
 		rowUpdateService.stopTracking(this, network.getDefaultNetworkTable());
 		rowUpdateService.stopTracking(this, network.getDefaultNodeTable());
 		rowUpdateService.stopTracking(this, network.getDefaultEdgeTable());
@@ -271,10 +278,14 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	@Override
 	public void handleEvent(NetworkAddedEvent e) {
+		CyNetwork network = e.getNetwork();
+		if (!networkManager.networkExists(network.getSUID())) {
+			return;
+		}
+
 		enableForNetwork();
 		updateFeedbackTableModel();
 
-		CyNetwork network = e.getNetwork();
 		rowUpdateService.startTracking(this, network.getDefaultNetworkTable());
 		rowUpdateService.startTracking(this, network.getDefaultNodeTable());
 		rowUpdateService.startTracking(this, network.getDefaultEdgeTable());

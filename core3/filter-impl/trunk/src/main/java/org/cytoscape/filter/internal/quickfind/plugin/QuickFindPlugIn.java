@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -63,6 +62,7 @@ import org.cytoscape.filter.internal.widgets.autocomplete.view.TextIndexComboBox
 import org.cytoscape.filter.internal.widgets.slider.JRangeSliderExtended;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.events.AddedEdgeEvent;
 import org.cytoscape.model.events.AddedEdgeListener;
@@ -109,15 +109,17 @@ public class QuickFindPlugIn implements QuickFindListener, AddedEdgeListener,
 	private final CyApplicationManager applicationManager;
 	private final CyNetworkViewManager viewManager;
 	private final CySwingApplication application;
+	private final CyNetworkManager networkManager;
 	private static final int NODE_SIZE_MULTIPLER = 10;
 
 	/**
 	 * Constructor.
 	 */
-	public QuickFindPlugIn(CyApplicationManager applicationManager, CyNetworkViewManager viewManager, CySwingApplication application) {
+	public QuickFindPlugIn(CyApplicationManager applicationManager, CyNetworkViewManager viewManager, CySwingApplication application, CyNetworkManager networkManager) {
 		this.applicationManager = applicationManager;
 		this.viewManager = viewManager;
 		this.application = application;
+		this.networkManager = networkManager;
 		initListeners();
 		initToolBar();
 		initIndex();
@@ -473,6 +475,10 @@ public class QuickFindPlugIn implements QuickFindListener, AddedEdgeListener,
 	}
 
 	private void handleNetworkModified(final CyNetwork cyNetwork) {
+		if (!networkManager.networkExists(cyNetwork.getSUID())) {
+			return;
+		}
+		
 		final QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
         if (cyNetwork.getNodeList() != null) {
 			// this network may not have been added to quick find - 

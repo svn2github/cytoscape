@@ -18,6 +18,7 @@
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
 		<constructor-arg ref="cySwingApplicationServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
 	<bean id="filterMainPanel"
@@ -25,6 +26,7 @@
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="filterPlugin" />
 		<constructor-arg ref="cyTableRowUpdateServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
 	</bean>
 
 	<bean id="filterCytoPanelComponent"
