@@ -321,6 +321,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel {
 
 	@Override
 	protected void importAttributes() {
+		taskManager.setParent(parent);
 		taskManager.execute(client);
 	}
 

@@ -4,12 +4,8 @@ import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.webservice.biomart.BiomartClient;
 import org.cytoscape.io.webservice.biomart.ui.BiomartAttrMappingPanel;
 import org.cytoscape.io.webservice.biomart.ui.BiomartMainDialog;
-import org.cytoscape.model.CyTableManager;
-import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
-import org.cytoscape.work.swing.GUITaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

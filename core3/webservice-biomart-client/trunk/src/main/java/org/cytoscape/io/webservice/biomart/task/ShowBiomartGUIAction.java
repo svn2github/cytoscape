@@ -2,10 +2,13 @@ package org.cytoscape.io.webservice.biomart.task;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JOptionPane;
+
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.webservice.biomart.BiomartClient;
 import org.cytoscape.io.webservice.biomart.ui.BiomartAttrMappingPanel;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.swing.GUITaskManager;
@@ -26,6 +29,7 @@ public class ShowBiomartGUIAction extends AbstractCyAction {
 	private final CySwingApplication app;
 	
 	private ShowBiomartDialogTask showDialogTask;
+	private final CyApplicationManager appManager;
 	
 	private final LoadRepositoryTask firstTask;
 
@@ -36,6 +40,7 @@ public class ShowBiomartGUIAction extends AbstractCyAction {
 		super("from Biomart...", appManager);
 		setPreferredMenu("File.Import.Table.WebService");
 
+		this.appManager = appManager;
 		this.app = app;
 		this.taskManager = (GUITaskManager) taskManager;
 		
@@ -45,6 +50,14 @@ public class ShowBiomartGUIAction extends AbstractCyAction {
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
+		// State check: BioMart client needs at least a network to create query string.
+		final CyNetwork net = appManager.getCurrentNetwork();
+		if(net == null) {
+			JOptionPane.showMessageDialog(app.getJFrame(), "BioMart Client needs at least one network to create query.  Please import a network first.",
+					"No Network Found", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		
 		// Lazy instantiation. This process depends on network connection.
 		if (showDialogTask.getDialog() == null) {			
 			initDialog();

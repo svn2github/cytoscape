@@ -1,12 +1,14 @@
 package org.cytoscape.io.webservice.biomart.task;
 
+import java.awt.Window;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+
+import javax.swing.JOptionPane;
 
 import org.cytoscape.io.webservice.biomart.BiomartQuery;
 import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
@@ -22,34 +24,35 @@ import org.cytoscape.work.TaskMonitor;
 
 /**
  * Task to import actual data tables from BioMart service.
- *
+ * 
  */
 public class ImportTableTask extends AbstractTask {
 
 	private final BiomartRestClient client;
 	private final BiomartQuery query;
-	
+
 	private final CyTableFactory tableFactory;
 
 	private Set<CyTable> tables;
-	
+
 	private final CyNetworkManager networkManager;
 	private final CyApplicationManager applicationManager;
 
-	
-	
+	private final Window parent;
+
 	public ImportTableTask(final BiomartRestClient client,
-			final BiomartQuery query, final CyTableFactory tableFactory, 
+			final BiomartQuery query, final CyTableFactory tableFactory,
 			final CyNetworkManager networkManager,
-			final CyApplicationManager applicationManager) {
-		
+			final CyApplicationManager applicationManager, final Window parent) {
+
 		this.client = client;
 		this.query = query;
 		this.tableFactory = tableFactory;
-		
+		this.parent = parent;
+
 		this.networkManager = networkManager;
 		this.applicationManager = applicationManager;
-		
+
 		this.tables = new HashSet<CyTable>();
 	}
 
@@ -58,30 +61,30 @@ public class ImportTableTask extends AbstractTask {
 		if (query == null)
 			throw new NullPointerException("Query is null");
 
+		taskMonitor.setProgress(0.0);
+		taskMonitor.setTitle("Loading data table from BioMart...");
+		taskMonitor.setStatusMessage("Loading data...");
+
 		final BufferedReader result = client.sendQuery(query.getQueryString());
 
 		if (result.ready() == false)
 			throw new IOException("Could not get result.");
 
-		final CyTable newTable = mapping(result, query.getKeyColumnName());
 		
+		taskMonitor.setStatusMessage("Creating global table...");
+		final CyTable newTable = createGlobalTable(result,
+				query.getKeyColumnName());
+
 		tables.add(newTable);
-		
+
 		final MapNetworkAttrTask localMappingTask = new MapNetworkAttrTask(
-				CyNode.class, newTable,
-				networkManager, applicationManager);
-		
-		this.insertTasksAfterCurrentTask(localMappingTask);
+				CyNode.class, newTable, networkManager, applicationManager);
+		final ShowResultTask messageTask = new ShowResultTask();
+		this.insertTasksAfterCurrentTask(localMappingTask, messageTask);
 	}
 
-	private CyTable mapping(BufferedReader reader, String key)
+	private CyTable createGlobalTable(BufferedReader reader, String key)
 			throws IOException {
-
-		
-		System.out.println("Key name = " + key);
-		final CyTable globalTable = tableFactory.createTable(query.getTableName(), key,
-				String.class, true);
-		
 
 		// Read result from reader
 		String line = reader.readLine();
@@ -89,7 +92,10 @@ public class ImportTableTask extends AbstractTask {
 		final String[] columnNames = line.split("\\t");
 
 		if (columnNames[0].contains("Query ERROR"))
-			throw new IOException("Biomart service returns Querry ERROR.  ");
+			throw new IOException("BioMart service returns error: \n" + line);
+
+		final CyTable globalTable = tableFactory.createTable(
+				query.getTableName(), key, String.class, true);
 
 		// For status report
 		int recordCount = 0;
@@ -106,7 +112,6 @@ public class ImportTableTask extends AbstractTask {
 			if (columnNames[i].equals(key))
 				keyIdx = i;
 		}
-	
 
 		String[] row;
 		String val;
@@ -140,77 +145,96 @@ public class ImportTableTask extends AbstractTask {
 
 				if ((val != null) && (val.length() != 0)) {
 
-					if(j == keyIdx) {
+					if (j == keyIdx) {
 						cyRow.set(key, val);
 					}
 					cyRow.set(columnNames[j], val);
-//					if (keyAttrName.equals("ID")) {
-//						testList = attr
-//								.getListAttribute(keyVal, columnNames[j]);
-//
-//						if (testList != null)
-//							listOfValList.add(testList);
-//					} else {
-//						ids = getIdFromAttrValue(attrDataType, keyAttrName,
-//								keyVal, nodeIdList, attr);
-//
-//						if (ids.size() == 0)
-//							continue;
-//
-//						for (String id : ids)
-//							listOfValList.add(attr.getListAttribute(id,
-//									columnNames[j]));
-//					}
-//
-//					if (listOfValList.size() == 0) {
-//						List<Object> valList = new ArrayList<Object>();
-//						listOfValList.add(valList);
-//					}
-//
-//					int index = 0;
-//					for (List<Object> valList : listOfValList) {
-//						if (valList == null)
-//							valList = new ArrayList<Object>();
-//
-//						if (valList.contains(row[j]) == false)
-//							valList.add(row[j]);
-//
-//						if (keyAttrName.equals("ID")) {
-//							attr.setListAttribute(keyVal, columnNames[j],
-//									valList);
-//							attr.setAttribute(keyVal, columnNames[j] + "-TOP",
-//									valList.get(0).toString());
-//						} else {
-//							attr.setListAttribute(ids.get(index),
-//									columnNames[j], valList);
-//							attr.setAttribute(ids.get(index), columnNames[j]
-//									+ "-TOP", valList.get(0).toString());
-//
-//						}
-//						hitCount++;
-//						index++;
-//					}
+					// if (keyAttrName.equals("ID")) {
+					// testList = attr
+					// .getListAttribute(keyVal, columnNames[j]);
+					//
+					// if (testList != null)
+					// listOfValList.add(testList);
+					// } else {
+					// ids = getIdFromAttrValue(attrDataType, keyAttrName,
+					// keyVal, nodeIdList, attr);
+					//
+					// if (ids.size() == 0)
+					// continue;
+					//
+					// for (String id : ids)
+					// listOfValList.add(attr.getListAttribute(id,
+					// columnNames[j]));
+					// }
+					//
+					// if (listOfValList.size() == 0) {
+					// List<Object> valList = new ArrayList<Object>();
+					// listOfValList.add(valList);
+					// }
+					//
+					// int index = 0;
+					// for (List<Object> valList : listOfValList) {
+					// if (valList == null)
+					// valList = new ArrayList<Object>();
+					//
+					// if (valList.contains(row[j]) == false)
+					// valList.add(row[j]);
+					//
+					// if (keyAttrName.equals("ID")) {
+					// attr.setListAttribute(keyVal, columnNames[j],
+					// valList);
+					// attr.setAttribute(keyVal, columnNames[j] + "-TOP",
+					// valList.get(0).toString());
+					// } else {
+					// attr.setListAttribute(ids.get(index),
+					// columnNames[j], valList);
+					// attr.setAttribute(ids.get(index), columnNames[j]
+					// + "-TOP", valList.get(0).toString());
+					//
+					// }
+					// hitCount++;
+					// index++;
+					// }
 				}
 			}
 		}
 
 		reader.close();
 		reader = null;
-		
+
 		// Dump table
-//		final List<CyRow> rows = globalTable.getAllRows();
-//		for(CyRow r: rows) {
-//			Map<String, Object> rowVals = r.getAllValues();
-//			for(String k :rowVals.keySet()) {
-//				System.out.print(k + ":" + rowVals.get(k) + " ");
-//			}
-//			System.out.println();
-//		}
-		
+		// final List<CyRow> rows = globalTable.getAllRows();
+		// for(CyRow r: rows) {
+		// Map<String, Object> rowVals = r.getAllValues();
+		// for(String k :rowVals.keySet()) {
+		// System.out.print(k + ":" + rowVals.get(k) + " ");
+		// }
+		// System.out.println();
+		// }
+
 		return globalTable;
 	}
 
 	public Set<CyTable> getCyTables() {
 		return tables;
 	}
+
+	
+	// Show result.
+	private final class ShowResultTask extends AbstractTask {
+
+		@Override
+		public void run(TaskMonitor taskMonitor) throws Exception {
+			final CyTable table = tables.iterator().next();
+			if (table != null) {
+				JOptionPane.showMessageDialog(parent,
+						"New table loaded.\n" + table.getTitle() + " contains "
+								+ table.getRowCount() + " rows.",
+						"Table Loaded from BioMart",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+
+	}
+
 }

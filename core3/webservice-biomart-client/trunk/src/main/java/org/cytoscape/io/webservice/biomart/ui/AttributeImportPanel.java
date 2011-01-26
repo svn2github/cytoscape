@@ -73,7 +73,7 @@ public abstract class AttributeImportPanel extends JPanel implements
 
 	private static final long serialVersionUID = 8665197023334496167L;
 	
-	protected static final String TABLE_PREFIX = "BioMart Table ";
+	protected static final String TABLE_PREFIX = "BioMart Global Table ";
 
 	/**
 	 * Will be caught by parent object (usually a dialog.)

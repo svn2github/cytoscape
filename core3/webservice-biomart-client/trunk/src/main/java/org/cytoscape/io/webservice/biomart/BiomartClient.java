@@ -39,6 +39,7 @@ import java.util.Set;
 
 import javax.naming.ConfigurationException;
 
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.io.webservice.TableImportWebServiceClient;
 import org.cytoscape.io.webservice.biomart.rest.BiomartRestClient;
 import org.cytoscape.io.webservice.biomart.task.ImportTableTask;
@@ -67,6 +68,8 @@ public class BiomartClient extends AbstractWebServiceClient implements
 
 	private final CyNetworkManager networkManager;
 	private final CyApplicationManager applicationManager;
+	
+	private final CySwingApplication app;
 
 	/**
 	 * Creates a new Biomart Client object.
@@ -78,7 +81,7 @@ public class BiomartClient extends AbstractWebServiceClient implements
 			final BiomartRestClient restClient,
 			final CyTableFactory tableFactory,
 			final CyNetworkManager networkManager,
-			final CyApplicationManager applicationManager) {
+			final CyApplicationManager applicationManager, final CySwingApplication app) {
 		super(restClient.getBaseURL(), displayName, description);
 
 		this.tableFactory = tableFactory;
@@ -86,6 +89,7 @@ public class BiomartClient extends AbstractWebServiceClient implements
 
 		this.networkManager = networkManager;
 		this.applicationManager = applicationManager;
+		this.app = app;
 
 		// TODO: set optional parameters (Tunables?)
 	}
@@ -115,9 +119,8 @@ public class BiomartClient extends AbstractWebServiceClient implements
 
 		final BiomartQuery query = this.gui.getTableImportQuery();
 
-		importTask = new ImportTableTask(restClient, query, tableFactory, networkManager, applicationManager);
+		importTask = new ImportTableTask(restClient, query, tableFactory, networkManager, applicationManager, app.getJFrame());
 
-		
 		return new TaskIterator(importTask);
 	}
 }
