@@ -108,8 +108,8 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
     private CyNetworkView                      view;
 
-    private final List<GraphicsConverter<?>>   nodeGraphics;
-    private final List<GraphicsConverter<?>>   edgeGraphics;
+    private final List<GraphicsConverter<?>>   nodeConverters;
+    private final List<GraphicsConverter<?>>   edgeConverters;
 
     private static final Logger                logger       = LoggerFactory.getLogger(XGMMLNetworkViewReader.class);
 
@@ -138,28 +138,28 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         this.properties = properties;
         this.lexicon = renderingEngineManager.getDefaultVisualLexicon();
 
-        nodeGraphics = new ArrayList<GraphicsConverter<?>>();
-        edgeGraphics = new ArrayList<GraphicsConverter<?>>();
+        nodeConverters = new ArrayList<GraphicsConverter<?>>();
+        edgeConverters = new ArrayList<GraphicsConverter<?>>();
 
         // TODO: should add x/y to style?
         //        nodeProps.put("x", Double.class);
         //        nodeProps.put("y", Double.class);
         // TODO: NODE_SIZE: locking h/w
-        nodeGraphics.add(new GraphicsConverter<Double>("h", Double.class));
-        nodeGraphics.add(new GraphicsConverter<Double>("w", Double.class));
-        nodeGraphics.add(new GraphicsConverter<Color>("fill", Color.class));
-        nodeGraphics.add(new GraphicsConverter<Color>("outline", Color.class));
-        nodeGraphics.add(new GraphicsConverter<Double>("width", Double.class));
-        //        nodeProps.add(new ValueMapping<Object>("borderLineType", Object.class));
-        nodeGraphics.add(new GraphicsConverter<Font>("nodeLabelFont", Font.class, CY_NAMESPACE));
-        nodeGraphics.add(new GraphicsConverter<Integer>("nodeTransparency", Integer.class, CY_NAMESPACE));
-        //        nodeProps.add(new ValueMapping<Object>("type", Object.class));
-        
+        nodeConverters.add(new GraphicsConverter<Double>("h", Double.class));
+        nodeConverters.add(new GraphicsConverter<Double>("w", Double.class));
+        nodeConverters.add(new GraphicsConverter<Color>("fill", Color.class));
+        nodeConverters.add(new GraphicsConverter<Color>("outline", Color.class));
+        nodeConverters.add(new GraphicsConverter<Double>("width", Double.class));
+        //        nodeConverters.add(new ValueMapping<Object>("borderLineType", Object.class));
+        nodeConverters.add(new GraphicsConverter<Font>("nodeLabelFont", Font.class, CY_NAMESPACE));
+        nodeConverters.add(new GraphicsConverter<Integer>("nodeTransparency", Integer.class, CY_NAMESPACE));
+        //        nodeConverters.add(new ValueMapping<Object>("type", Object.class));
+
         // TODO: add more
-        edgeGraphics.add(new GraphicsConverter<Double>("width", Double.class));
-        edgeGraphics.add(new GraphicsConverter<Color>("fill", Color.class));
-        edgeGraphics.add(new GraphicsConverter<Font>("edgeLabelFont", Font.class, CY_NAMESPACE));
-        edgeGraphics.add(new GraphicsConverter<Integer>("edgeTransparency", Integer.class, CY_NAMESPACE));
+        edgeConverters.add(new GraphicsConverter<Double>("width", Double.class));
+        edgeConverters.add(new GraphicsConverter<Color>("fill", Color.class));
+        edgeConverters.add(new GraphicsConverter<Font>("edgeLabelFont", Font.class, CY_NAMESPACE));
+        edgeConverters.add(new GraphicsConverter<Integer>("edgeTransparency", Integer.class, CY_NAMESPACE));
     }
 
     @Override
@@ -262,7 +262,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
         String netName = readDataManager.getNetworkName();
         netRow.set(NODE_NAME_ATTR_LABEL, netName);
-        
+
         if (styleBuilder != null) {
             // Network name
             styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_TITLE, netName);
@@ -310,7 +310,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
             CyNode node = entry.getKey();
             Attributes attr = entry.getValue();
             nv = view.getNodeView(node);
-            // TODO
+            // TODO: labels
             // label = node.attrs().get("name", String.class);
             //
             // if ((label != null) && (nv != null)) {
@@ -349,13 +349,8 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         nodeView.setVisualProperty(TwoDVisualLexicon.NODE_X_LOCATION, x);
         nodeView.setVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION, y);
 
-        layoutGraphics(graphics, nodeView, styleBuilder, nodeGraphics);
+        layoutGraphics(graphics, nodeView, styleBuilder);
 
-        // // These are saved in the exported XGMML, but it's not clear how they get set
-        // if (zattributeValueUtil.getAttributeNS(graphics, "nodeLabelFont", CY_NAMESPACE) != null) {
-        // String nodeLabelFont = attributeValueUtil.getAttributeNS(graphics, "nodeLabelFont", CY_NAMESPACE);
-        // graphStyle.addProperty(nodeAttrs, VisualPropertyType.NODE_FONT_FACE, nodeLabelFont);
-        // }
         //
         // if (attributeValueUtil.getAttributeNS(graphics,
         // "borderLineType", CY_NAMESPACE) != null) {
@@ -413,7 +408,7 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
                                     final View<CyEdge> edgeView,
                                     final VisualStyleBuilder styleBuilder) {
 
-        layoutGraphics(graphics, edgeView, styleBuilder, edgeGraphics);
+        layoutGraphics(graphics, edgeView, styleBuilder);
 
         // TODO fix for new style view
         // if (attributeValueUtil.getAttributeNS(graphics, "sourceArrow",
@@ -476,21 +471,23 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
         // edgeView.getBend().addHandle(point); } }
     }
 
-    private void layoutGraphics(final Attributes graphics,
+    private void layoutGraphics(final Attributes attributes,
                                 final View<? extends CyTableEntry> view,
-                                final VisualStyleBuilder styleBuilder,
-                                final List<GraphicsConverter<?>> converters) {
+                                final VisualStyleBuilder styleBuilder) {
 
         // The attributes of this view
-        CyRow row = view.getModel().getCyRow();
+        CyTableEntry model = view.getModel();
+        CyRow row = model.getCyRow();
+        Class<?> type = (model instanceof CyNode) ? CyNode.class : CyEdge.class;
+        List<GraphicsConverter<?>> converters = (type == CyNode.class) ? nodeConverters : edgeConverters;
 
         if (styleBuilder != null) {
             for (GraphicsConverter<?> conv : converters) {
                 String key = conv.getKey();
-                VisualProperty vp = lexicon.lookup(CyNode.class, key);
+                VisualProperty vp = lexicon.lookup(type, key);
 
                 if (vp != null) {
-                    Object value = conv.getValue(graphics, attributeValueUtil);
+                    Object value = conv.getValue(attributes, attributeValueUtil);
                     if (value != null) styleBuilder.addProperty(row, vp, value);
                 }
             }
@@ -534,19 +531,45 @@ class GraphicsConverter<T> {
             if (type == Integer.class) {
                 if (isTransparency()) {
                     // Opacity is saved as a float from 0.0-1.0, but internally we use 0-255
-                    Double d = attributeValueUtil.getDoubleAttribute(graphics, key);
-                    value = new Integer((int) d.doubleValue() * 255);
+                    Double d = attributeValueUtil.getDoubleAttributeNS(graphics, key, namespace);
+                    value = new Integer((int) (d.doubleValue() * 255));
                 } else {
-                    value = attributeValueUtil.getIntegerAttribute(graphics, key);
+                    if (namespace == null)
+                        value = attributeValueUtil.getIntegerAttribute(graphics, key);
+                    else
+                        value = attributeValueUtil.getIntegerAttributeNS(graphics, key, namespace);
                 }
             } else if (type == Double.class) {
-                value = attributeValueUtil.getDoubleAttribute(graphics, key);
+                if (namespace == null)
+                    value = attributeValueUtil.getDoubleAttribute(graphics, key);
+                else
+                    value = attributeValueUtil.getDoubleAttributeNS(graphics, key, namespace);
             } else if (type == Color.class) {
                 value = attributeValueUtil.getColorAttribute(graphics, key);
             } else if (type == Font.class) {
-                value = attributeValueUtil.getAttribute(graphics, key);
+                // e.g. nodeLabelFont="SansSerif.bold-0-14"
+                String s = attributeValueUtil.getAttributeNS(graphics, key, namespace);
+
+                if (s != null) {
+                    String name = s.replaceAll("(\\.[bB]old)?-\\d+(\\.\\d+)?-\\d+(\\.\\d+)?", "");
+                    
+                    boolean bold = s.matches("(?i).*\\.bold-.*");
+                    int style = bold ? Font.BOLD : Font.PLAIN;
+                    int size = 12;
+                    
+                    String sSize = s.replaceAll(".+-[^\\-]+-", "");
+                    try {
+                        size = Integer.parseInt(sSize);
+                    } catch (NumberFormatException nfe) {
+                    }
+
+                    value = new Font(name, style, size);
+                }
             } else {
-                value = attributeValueUtil.getAttribute(graphics, key);
+                if (namespace == null)
+                    value = attributeValueUtil.getAttribute(graphics, key);
+                else
+                    value = attributeValueUtil.getAttributeNS(graphics, key, namespace);
             }
         }
 
