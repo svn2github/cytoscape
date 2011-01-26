@@ -97,6 +97,7 @@ public final class CyTableImpl implements CyTable {
 			final CyRow sourceRow = getSourceRow(targetKey);
 			if (sourceRow == null)
 				return null;
+
 			final Object retValue = sourceRow.get(sourceColumn, sourceColumnType);
 			if (retValue == null)
 				targetTable.lastInternalError = sourceTable.getLastInternalError();
@@ -480,13 +481,20 @@ public final class CyTableImpl implements CyTable {
 		if (virtColumn != null)
 			return virtColumn.getMatchingRows(value);
 
+		final Set<CyRow> matchingRows = new HashSet<CyRow>();
+		if (columnName.equals(primaryKey)) {
+			final CyRow matchingRow = rows.get(value);
+			if (matchingRow != null)
+				matchingRows.add(matchingRow);
+			return matchingRows;
+		}
+
 		final Map<Object, Set<Object>> valueToKeysMap = reverse.get(columnName);
 
 		final Set<Object> keys = valueToKeysMap.get(value);
 		if (keys == null)
 			return new HashSet<CyRow>();
 
-		final Set<CyRow> matchingRows = new HashSet<CyRow>(keys.size());
 		for (final Object key : keys)
 			matchingRows.add(rows.get(key));
 
@@ -667,6 +675,10 @@ public final class CyTableImpl implements CyTable {
 		if (columnName.equals(primaryKey))
 			return key;
 
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return virtColumn.getRawValue(key);
+		
 		Map<Object, Object> keyToValueMap = attributes.get(columnName);
 		if (keyToValueMap == null)
 			return null;
