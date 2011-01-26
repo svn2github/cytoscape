@@ -350,7 +350,7 @@ class ArraySubGraph implements CySubNetwork {
 			nodeSet.remove(n);
 		}
 
-		eventHelper.fireSynchronousEvent(new RemovedNodeEvent(this));
+		eventHelper.fireAsynchronousEvent(new RemovedNodeEvent(this));
 
 		return true;
 	}
@@ -378,7 +378,7 @@ class ArraySubGraph implements CySubNetwork {
 			edgeSet.remove(edge);
 		}
 
-		eventHelper.fireSynchronousEvent(new RemovedEdgeEvent(this));
+		eventHelper.fireAsynchronousEvent(new RemovedEdgeEvent(this));
 
 		return true;
 	}
