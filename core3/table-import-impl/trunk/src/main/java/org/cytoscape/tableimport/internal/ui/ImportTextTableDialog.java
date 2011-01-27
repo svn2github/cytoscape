@@ -2342,7 +2342,12 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		setRadioButtonGroup();
 		pack();
 
-		updateMappingAttributeComboBox();
+		if (dialogType == NETWORK_IMPORT){
+			// do nothing
+		}
+		else { // attribute import
+			updateMappingAttributeComboBox();			
+		}
 
 		setStatusBar("-", "-", "File Size: Unknown");
 	}
