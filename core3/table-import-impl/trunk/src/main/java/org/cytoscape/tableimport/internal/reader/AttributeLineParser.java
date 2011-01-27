@@ -79,7 +79,7 @@ public class AttributeLineParser {
 	 */
 	public void parseAll(CyTable table, String[] parts) {
 		
-		System.out.println("Entering AttributeLineParser.parseAll()....");
+		//System.out.println("Entering AttributeLineParser.parseAll()....");
 
 		// Get key
 		final String primaryKey = parts[mapping.getKeyIndex()].trim();
@@ -107,7 +107,7 @@ public class AttributeLineParser {
 	 */
 	public void parseEntry(CyTable table, String[] parts) {
 		
-		System.out.println("Entering AttributeLineParser.parseEntry()....");
+		//System.out.println("Entering AttributeLineParser.parseEntry()....");
 
 		
 		/*
@@ -146,7 +146,7 @@ public class AttributeLineParser {
 		 */
 		if (mapping.getMappingAttribute().equals(mapping.ID)) {
 			
-			System.out.println("AttributeLineParser.parseEntry(): case 1: use node ID as the key");
+			//System.out.println("AttributeLineParser.parseEntry(): case 1: use node ID as the key");
 			
 			transfer2cyattributes(table, primaryKey, aliasSet, parts);
 		} else {
@@ -154,7 +154,7 @@ public class AttributeLineParser {
 			 * Case 2: use an attribute as the key.
 			 */
 			
-			System.out.println("AttributeLineParser.parseEntry(): case 2: use an attribute as the key");
+			//System.out.println("AttributeLineParser.parseEntry(): case 2: use an attribute as the key");
 
 			List<String> objectIDs = null;
 
@@ -205,7 +205,7 @@ public class AttributeLineParser {
 
 	private void transfer2cyattributes(CyTable table, String primaryKey, Set<String> aliasSet, String[] parts) {
 
-		System.out.println("Entering AttributeLineParser.transfer2cyattributes()....");
+		//System.out.println("Entering AttributeLineParser.transfer2cyattributes()....");
 
 		
 		String altKey = null;
@@ -416,7 +416,7 @@ public class AttributeLineParser {
 	 */
 	private void mapAttribute(CyTable table, final String key, final String entry, final int index) {
 
-		System.out.println("MapAttribute(): key ="+ key+"\tattributeName ="+ mapping.getAttributeNames()[index] + ", value = "+ entry);
+		//System.out.println("MapAttribute(): key ="+ key+"\tattributeName ="+ mapping.getAttributeNames()[index] + ", value = "+ entry);
 		
 		final Byte type = mapping.getAttributeTypes()[index];
 		
@@ -528,7 +528,7 @@ public class AttributeLineParser {
 	
 	public static void setAttributeForType(CyTable tbl, byte type, String key, String attributeName, String val){
 
-		System.out.println("AttributeLineparser.setAttributeForType(): table="+ tbl.getTitle()+ "\tbyte="+ type+ "\tkey="+ key+"\tattributeName="+ attributeName+ "\tval="+ val);
+		//System.out.println("AttributeLineparser.setAttributeForType(): table="+ tbl.getTitle()+ "\tbyte="+ type+ "\tkey="+ key+"\tattributeName="+ attributeName+ "\tval="+ val);
 		
 		if (!tbl.getColumnTypeMap().keySet().contains(attributeName))
 		{
