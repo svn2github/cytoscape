@@ -10,13 +10,13 @@
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.cytoscape.io.webservice-biomart-client</bundle.symbolicName>
+		<bundle.symbolicName>org.cytoscape.io.webservice-biomart-client-impl</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape.io.webservice.biomart</bundle.namespace>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
-	<artifactId>webservice-biomart-client</artifactId>
+	<artifactId>webservice-biomart-client-impl</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>

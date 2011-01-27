@@ -10,13 +10,13 @@
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.cytoscape.webservice-ncbi-client</bundle.symbolicName>
+		<bundle.symbolicName>org.cytoscape.webservice-ncbi-client-impl</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape.webservice.ncbi</bundle.namespace>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
-	<artifactId>webservice-ncbi-client</artifactId>
+	<artifactId>webservice-ncbi-client-impl</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
