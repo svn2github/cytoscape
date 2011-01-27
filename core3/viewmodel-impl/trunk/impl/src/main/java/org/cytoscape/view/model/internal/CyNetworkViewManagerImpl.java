@@ -69,7 +69,7 @@ public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAb
 	}
 
 	@Override
-	public synchronized void clear() {
+	public synchronized void reset() {
 		networkViewMap.clear();
 	}
 
