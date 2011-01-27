@@ -28,6 +28,7 @@
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -173,8 +174,8 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
 
-		mainPanel.setSize(600, 400);
-		mainPanel.setPreferredSize(new Dimension(600, 400));
+		mainPanel.setSize(650, 300);
+		mainPanel.setPreferredSize(new Dimension(650, 300));
 		
 		abovePanel = new BelowAndAbovePanel(Color.yellow, false, mapping);
 		abovePanel.setName("abovePanel");
@@ -364,7 +365,8 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 						GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));
 
 		// add the main panel to the dialog.
-		this.add(mainPanel);
+		this.setLayout(new BorderLayout());
+		this.add(mainPanel, BorderLayout.CENTER);
 	} // </editor-fold>
 
 	// ///////////////// Action Listeners //////////////////////

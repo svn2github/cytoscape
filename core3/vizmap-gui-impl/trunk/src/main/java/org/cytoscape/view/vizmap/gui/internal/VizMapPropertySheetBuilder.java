@@ -44,8 +44,6 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 /**
  * Maintain property sheet table states.
  * 
- * @author kono
- * 
  */
 public class VizMapPropertySheetBuilder {
 
@@ -114,7 +112,7 @@ public class VizMapPropertySheetBuilder {
 		/*
 		 * Add properties to the property sheet.
 		 */
-		List<Property> propRecord = getPropertyListFromVisualStyle(style);
+		final List<Property> propRecord = getPropertyListFromVisualStyle(style);
 
 		// Save it for later use.
 		propertyMap.put(style, propRecord);
@@ -125,7 +123,7 @@ public class VizMapPropertySheetBuilder {
 		setUnused(propRecord, style);
 	}
 
-	private void setPropertySheetAppearence(VisualStyle style) {
+	private void setPropertySheetAppearence(final VisualStyle style) {
 		/*
 		 * Set Tooltiptext for the table.
 		 */
@@ -272,8 +270,6 @@ public class VizMapPropertySheetBuilder {
 			
 			logger.debug("This is a leaf VP: " + targetVP.getDisplayName());
 
-			
-
 			final VizMapperProperty<?, String, ?> calculatorTypeProp = vizMapPropertyBuilder
 					.buildProperty(mapping, categoryName, propertySheetPanel, null);
 
@@ -339,7 +335,7 @@ public class VizMapPropertySheetBuilder {
 	}
 
 	public void updateTableView() {
-
+		logger.debug("Table update called:");
 		final PropertySheetTable table = propertySheetPanel.getTable();
 		VizMapperProperty<?, ?, ?> shownProp = null;
 		final DefaultTableCellRenderer empRenderer = new DefaultTableCellRenderer();
@@ -349,39 +345,37 @@ public class VizMapPropertySheetBuilder {
 
 		for (int i = 0; i < rowCount; i++) {
 			shownProp = (VizMapperProperty<?, ?, ?>) ((Item) table.getValueAt(i, 0)).getProperty();
+			if(shownProp == null)
+				continue;
+			
+//			if ((shownProp != null)) {
+////				
+////				 if(shownProp.getParentProperty() != null &&
+////						 shownProp.getParentProperty().getDisplayName().equals()) {
+////				 // This is label position cell. Need laeger cell.
+////				 table.setRowHeight(i, 50);
+//			} else if ((shownProp != null)
+			if(shownProp.getCellType().equals(CellType.CONTINUOUS)) {
+				
+				logger.debug("Continuous found: " + shownProp.getDisplayName());
+				table.setRowHeight(i, 80);
 
-			if ((shownProp != null)) {
-				// FIXME
-				// && (shownProp.getParentProperty() != null)
-				// && shownProp.getParentProperty().getDisplayName().equals(
-				// NODE_LABEL_POSITION.getName())) {
-				// // This is label position cell. Need laeger cell.
-				// table.setRowHeight(i, 50);
-			} else if ((shownProp != null)
-					&& shownProp.getCellType().equals(CellType.CONTINUOUS)) {
-				// This is a Continuous Icon cell.
-				final Property parent = shownProp.getParentProperty();
-				final Object type = ((VizMapperProperty) parent).getInternalValue();
-
-				if (type instanceof ContinuousMapping) {
 
 					// FIXME!!
 
-					// ContinuousMapping<?> mapping = (ContinuousMapping<?>)
-					// type;
-					//
-					// table.setRowHeight(i, 80);
-					//
-					// int wi = table.getCellRect(0, 1, true).width;
-					// final TableCellRenderer cRenderer =
-					// editorManager.getVisualPropertyEditor(vp)
-					// .getContinuousCellRenderer((VisualProperty) type,
-					// wi, 70);
-					// rendReg.registerRenderer(shownProp, cRenderer);
+//					 ContinuousMapping<?> mapping = (ContinuousMapping<?>)
+//					 type;
+//					
+//					
+//					 int wi = table.getCellRect(0, 1, true).width;
+//					 final TableCellRenderer cRenderer =
+//					 editorManager.getVisualPropertyEditor(vp)
+//					 .getContinuousCellRenderer((VisualProperty) type,
+//					 wi, 70);
+//					 rendReg.registerRenderer(shownProp, cRenderer);
 
-				}
-			} else if ((shownProp != null)
-					&& (shownProp.getCategory() != null)
+				
+			} else if ((shownProp.getCategory() != null)
 					&& shownProp.getCategory().equals(
 							AbstractVizMapperPanel.CATEGORY_UNUSED)) {
 

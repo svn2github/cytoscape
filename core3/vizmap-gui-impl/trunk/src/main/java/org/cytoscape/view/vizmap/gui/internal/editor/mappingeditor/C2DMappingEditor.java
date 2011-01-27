@@ -110,19 +110,13 @@ public class C2DMappingEditor<V> extends
 	}
 
 	/**
-	 * DOCUMENT ME!
 	 * 
 	 * @param width
-	 *            DOCUMENT ME!
 	 * @param height
-	 *            DOCUMENT ME!
 	 * @param type
-	 *            DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
+	 * @return
 	 */
-	public ImageIcon getLegend(final int width, final int height,
-			final VisualProperty<?> type) {
+	public ImageIcon getLegend(final int width, final int height, final VisualProperty<?> type) {
 
 		if (slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
 			return null;

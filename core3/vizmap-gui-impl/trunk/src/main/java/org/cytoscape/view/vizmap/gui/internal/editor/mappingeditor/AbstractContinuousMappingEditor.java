@@ -1,9 +1,11 @@
 package org.cytoscape.view.vizmap.gui.internal.editor.mappingeditor;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.GroupLayout;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
@@ -43,15 +45,22 @@ public abstract class AbstractContinuousMappingEditor<K, V> extends AbstractProp
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				final JDialog editorDialog = new JDialog();
-				editorDialog.setLayout(new BorderLayout());
-				editorDialog.add(editorPanel, BorderLayout.CENTER);
-				editorDialog.pack();
-				editorDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				initComponents(editorDialog);
 				
 				editorDialog.setTitle("Discrete Mapping Editor: Mapping for " + mapping.getVisualProperty().getDisplayName());
 				editorDialog.setLocationRelativeTo(editor);
 				editorDialog.setVisible(true);
 			}
+			
+			private void initComponents(final JDialog dialog) {
+
+				editorPanel.setBackground(Color.red);
+				dialog.setLayout(new BorderLayout());
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.getContentPane().add(editorPanel, BorderLayout.CENTER);
+
+		        dialog.pack();
+		    }
 		});
 		
 		
