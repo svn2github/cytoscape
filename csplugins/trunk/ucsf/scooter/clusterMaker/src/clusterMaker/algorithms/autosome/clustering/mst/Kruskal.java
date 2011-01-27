@@ -5,8 +5,7 @@ package clusterMaker.algorithms.autosome.clustering.mst;
  * 
  * Created on Mar 4, 2008, 5:06:00 PM
  * 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+
  */
 
 

@@ -1,37 +1,58 @@
 package clusterMaker.algorithms.autosome.cluststruct;
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+***********************************************************************************************
+SOFTWARE USE AGREEMENT
+
+Conditions of Use:
+AutoSOME is freely available to the academic/non-profit community for non-commercial research
+purposes.
+
+All downloads are subject to the following terms: Software and source code Copyright (C) 2009
+Aaron M. Newman. Permission to use this software and its documentation is hereby granted to
+all academic and not-for-profit institutions for non-profit/non-commercial applications
+without fee. The right to use this software for profit, by private companies or other organizations, or in
+conjunction with for profit activities, are NOT granted except by prior arrangement and written
+ consent of the copyright holder.
+
+For these purposes, downloads of the software constitutes "use" and downloads of this software
+ by for profit organizations and/or distribution to for profit institutions is explicitly
+prohibited without the prior consent of the copyright holder.
+
+The software is provided "AS-IS" and without warranty of any kind, express, implied or
+otherwise. In no event shall the copyright holder be liable for any damages of any kind
+arising out of or in connection with the use or performance of this software. This code was
+written using Java and may be subject to certain additional restrictions as a result.
+***********************************************************************************************
  */
 
 
 
-import java.util.*;
-import java.io.*;
-import java.awt.*;
-import clusterMaker.algorithms.autosome.launch.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+import clusterMaker.algorithms.autosome.cluststruct.Point;
+import clusterMaker.algorithms.autosome.launch.Settings;
 /**
  *
  * @author Aaron
  */
 public class getClusters {
 
-     private ArrayList currClust = new ArrayList();
+     private List<Integer> currClust = new ArrayList<Integer>();
      private double[][] edges;
      private Point[] nodes;
-     ArrayList[] ids;
+     List<Integer>[] ids;
      private double edgesThresh;
      private double maxDist = 0;
      private cluster[] clusters;
-     private ArrayList[] origClusters;
+     private List<Integer>[] origClusters;
      private boolean noThresh = false;
      private boolean[] validEdge;
      private boolean[] usedEdges;
      private clusterRun cr;
      private Settings s;
-     private clusterMaker.algorithms.autosome.view.view2d.pic_Drawer pd;
-     
+      
      public getClusters(clusterRun cr, Settings s){
         this.cr = cr;
         
@@ -60,10 +81,10 @@ public class getClusters {
 
         boolean[] used = new boolean[nodes.length]; //used edges for DFS
         for(int i = 0;i < used.length; i++) used[i] = false; 
-        ArrayList clust = new ArrayList(); 
-        ArrayList clustLabels = new ArrayList();
-        ArrayList clustIDs = new ArrayList();
-        ArrayList allNodes = new ArrayList();
+        List<List<double[]>> clust = new ArrayList<List<double[]>>(); 
+        List<List<String>> clustLabels = new ArrayList<List<String>>();
+        List<List<Integer>> clustIDs = new ArrayList<List<Integer>>();
+        List<List<Integer>> allNodes = new ArrayList<List<Integer>>();
         
         for(int j = 0; j < edges.length; j++){
             if(edges[j][2] > maxDist) maxDist = edges[j][2];
@@ -82,13 +103,12 @@ public class getClusters {
             
                 
                 //populate cluster arrays
-                ArrayList allIndices = new ArrayList();
-                ArrayList allLabels = new ArrayList();
-                ArrayList allIDs = new ArrayList();
-                ArrayList indices = new ArrayList();
+                List<double[]> allIndices = new ArrayList<double[]>();
+                List<String> allLabels = new ArrayList<String>();
+                List<Integer> allIDs = new ArrayList<Integer>();
+                List<Integer> indices = new ArrayList<Integer>();
                 
-                for(int j = 0; j < currClust.size(); j++){
-                    int index = Integer.valueOf(currClust.get(j).toString()); //node index
+                for (int index: currClust) {
                     if(!general){ //if TR clusters
                           double[] info = new double[nodes[index].getPoint().length];
                           for(int k = 0; k < info.length; k++)
@@ -107,7 +127,7 @@ public class getClusters {
                                 for(int k = 1; k < info.length; k++)
                                     info[k] = nodes[index].getPoint()[k-1];
 
-                                int id = Integer.valueOf(ids[index].get(h).toString());
+                                int id = ids[index].get(h).intValue();
                                 
                                 String[] tokens = s.input[id].getDesc().split(",");
                                 
@@ -121,7 +141,7 @@ public class getClusters {
                                 
                                 allIndices.add(info);
                                 //allLabels.add(labels[index].get(h).toString());
-                                allIDs.add(ids[index].get(h).toString());
+                                allIDs.add(ids[index].get(h));
                         }
                     }
                     used[index] = true; //node 'index' is now used                    
@@ -137,11 +157,11 @@ public class getClusters {
             clusters = new cluster[clust.size()];
             
              for(int i = 0; i < clusters.length; i++){
-                clusters[i] = new cluster((ArrayList)clust.get(i), (ArrayList)clustLabels.get(i),(ArrayList)clustIDs.get(i), (ArrayList)allNodes.get(i));
+                clusters[i] = new cluster(clust.get(i), clustLabels.get(i),clustIDs.get(i), allNodes.get(i));
             
                 if(s.benchmark){
             
-                origClusters = new ArrayList[max]; //if benchmarking, store original clusters
+                origClusters = (List<Integer>[])Array.newInstance(List.class,max); //if benchmarking, store original clusters
 
           
                 if(general){
@@ -149,8 +169,8 @@ public class getClusters {
                     for(int j = 0; j < clusters[i].labels.size(); j++){
                         String[] tokens = clusters[i].labels.get(j).toString().split(",");
                         int label = Integer.valueOf(tokens[0]);
-                        if(origClusters[(int)label-1] == null) origClusters[(int)label-1] = new ArrayList();
-                        origClusters[(int)label-1].add((int)label);
+                        if(origClusters[label-1] == null) origClusters[label-1] = new ArrayList<Integer>();
+                        origClusters[label-1].add(label);
                     }
                 }
             }
@@ -195,35 +215,7 @@ public class getClusters {
        return valid;
    }
    
-     
-     public void getClusterValidity(boolean prob){
-         int max = 0;
-         for(int i = 0; i < clusters.length; i++){
-            for(int j = 0; j < clusters[i].ids.size(); j++){
 
-                String[] tokens = s.input[Integer.valueOf(clusters[i].ids.get(j).toString())].getIdentity().split(",");
-                //System.out.println(i+" "+tokens[0]);
-                int benchmark = (!prob) ? Integer.valueOf(tokens[0]) : Integer.valueOf(tokens[1]);
-                //System.out.println(benchmark+" "+s.input[Integer.valueOf(clusters[i].ids.get(j).toString())].getIdentity()+" "+i);
-                if(benchmark > max) max = benchmark;
-            }
-        }
-         origClusters = new ArrayList[max];
-         //System.out.println(max);
-         for(int i = 0; i < clusters.length; i++){
-            for(int j = 0; j < clusters[i].ids.size(); j++){
-                String[] tokens = s.input[Integer.valueOf(clusters[i].ids.get(j).toString())].getIdentity().split(",");
-                int benchmark = (!prob) ? Integer.valueOf(tokens[0]) : Integer.valueOf(tokens[1]);
-                if(origClusters[benchmark-1] == null) origClusters[benchmark-1] = new ArrayList();
-                origClusters[benchmark-1].add(benchmark);
-            }
-        }
-        clusterValidity cv = new clusterValidity(origClusters, clusters, s);
-        double[] allF = cv.Fmeasure();
-        cr.setMetrics(allF[0], allF[1], allF[2], cv.NMI(), cv.adjRand());
-        //System.out.println(cv.Fmeasure()+"\t"+cv.NMI());
-
-     }
      
      
       

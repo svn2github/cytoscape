@@ -1,8 +1,29 @@
 package clusterMaker.algorithms.autosome.cluststruct;
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+***********************************************************************************************
+SOFTWARE USE AGREEMENT
+
+Conditions of Use:
+AutoSOME is freely available to the academic/non-profit community for non-commercial research
+purposes.
+
+All downloads are subject to the following terms: Software and source code Copyright (C) 2009
+Aaron M. Newman. Permission to use this software and its documentation is hereby granted to
+all academic and not-for-profit institutions for non-profit/non-commercial applications
+without fee. The right to use this software for profit, by private companies or other organizations, or in
+conjunction with for profit activities, are NOT granted except by prior arrangement and written
+ consent of the copyright holder.
+
+For these purposes, downloads of the software constitutes "use" and downloads of this software
+ by for profit organizations and/or distribution to for profit institutions is explicitly
+prohibited without the prior consent of the copyright holder.
+
+The software is provided "AS-IS" and without warranty of any kind, express, implied or
+otherwise. In no event shall the copyright holder be liable for any damages of any kind
+arising out of or in connection with the use or performance of this software. This code was
+written using Java and may be subject to certain additional restrictions as a result.
+***********************************************************************************************
  */
 
 
@@ -20,7 +41,7 @@ public class clusterRun implements Serializable{
     
     public Point[] nodes; //nodes from mapping
     public double[][] edges; //edges of clusters
-    public ArrayList[] ids; //data ids
+    public List<Integer>[] ids; //data ids
     public String[] labelsSorted;
     public double[][] membership;
     public double[] memTotal; //sum of fractional membership for each cluster
@@ -42,7 +63,7 @@ public class clusterRun implements Serializable{
     public double NMI = 0;
     public double adjRand = 0;
     
-    public clusterRun(Point[] nodes, double[][] edges,ArrayList[] ids, float[][] DEC, double thresh,  int size){
+    public clusterRun(Point[] nodes, double[][] edges,List<Integer>[] ids, float[][] DEC, double thresh,  int size){
 
         this.nodes = nodes;
         this.edges = edges;
@@ -57,7 +78,7 @@ public class clusterRun implements Serializable{
     
     public clusterRun(cluster[] c) {this.c = c;  usedEdges = new boolean[edges.length];}
     
-    public clusterRun(Point[] nodes, ArrayList[] ids, int size){
+    public clusterRun(Point[] nodes, List<Integer>[] ids, int size){
         this.nodes = nodes;
         this.ids = ids;
         this.size = size;
@@ -75,7 +96,7 @@ public class clusterRun implements Serializable{
         labelsSorted = new String[dataCount];
         for(int i = 0; i < c.length; i++){
             for(int j = 0; j < c[i].ids.size(); j++){
-                int id = Integer.valueOf(c[i].ids.get(j).toString());
+                int id = c[i].ids.get(j).intValue();
                 labelsSorted[id] = s.input[id].toString();
                // System.out.println(s.input[id].getIdentity()+" "+labelsSorted[id]+" "+i);
                 membership[id][i] = 1;

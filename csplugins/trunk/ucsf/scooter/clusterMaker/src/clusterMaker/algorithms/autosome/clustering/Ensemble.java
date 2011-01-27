@@ -1,18 +1,37 @@
-package clusterMaker.algorithms.autosome.clustering;
+package clusterMaker.algorithms.autosome.MSTEnsemble;
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+***********************************************************************************************
+SOFTWARE USE AGREEMENT
+
+Conditions of Use:
+AutoSOME is freely available to the academic/non-profit community for non-commercial research
+purposes.
+
+All downloads are subject to the following terms: Software and source code Copyright (C) 2009
+Aaron M. Newman. Permission to use this software and its documentation is hereby granted to
+all academic and not-for-profit institutions for non-profit/non-commercial applications
+without fee. The right to use this software for profit, by private companies or other organizations, or in
+conjunction with for profit activities, are NOT granted except by prior arrangement and written
+ consent of the copyright holder.
+
+For these purposes, downloads of the software constitutes "use" and downloads of this software
+ by for profit organizations and/or distribution to for profit institutions is explicitly
+prohibited without the prior consent of the copyright holder.
+
+The software is provided "AS-IS" and without warranty of any kind, express, implied or
+otherwise. In no event shall the copyright holder be liable for any damages of any kind
+arising out of or in connection with the use or performance of this software. This code was
+written using Java and may be subject to certain additional restrictions as a result.
+***********************************************************************************************
  */
 
 
 
 import clusterMaker.algorithms.autosome.cluststruct.*;
 import java.util.*;
-import clusterMaker.algorithms.autosome.clustering.agglomerative.*;
 import clusterMaker.algorithms.autosome.launch.Settings;
 import java.io.*;
-import clusterMaker.algorithms.autosome.view.view2d.viewer2D;
 import cytoscape.task.TaskMonitor;
 /**
  *
@@ -37,7 +56,7 @@ public class Ensemble {
    
 
     
-    public Ensemble(ArrayList clusterRuns, boolean general, int clustNum, boolean equalizeNum, Settings s, TaskMonitor monitor){
+    public Ensemble(List<clusterRun> clusterRuns, boolean general, int clustNum, boolean equalizeNum, Settings s, TaskMonitor monitor){
         this.general = general;
         this.monitor=monitor;
 
@@ -170,7 +189,8 @@ public class Ensemble {
     //create fuzzy clustering of all cluster runs
     private clusterRun combineRuns(){
        
-        if(printConsMatrix) {
+        if(s.distMatrix) {
+            System.out.println("initialize");
             if(s.writeTemp) cr[0] = DoEqualize(cr[0]);
             consensusMatrix = new double[s.input.length][s.input.length];
             added = new boolean[consensusMatrix.length][consensusMatrix.length];
@@ -254,7 +274,7 @@ public class Ensemble {
                     progressCount++;
                 }
                 
-                if(printConsMatrix){
+                if(s.distMatrix){
                     for(int w = 0; w < added.length; w++)
                         for(int y = 0; y < added.length; y++)
                             added[w][y] = false;
@@ -278,9 +298,9 @@ public class Ensemble {
             mega.c = gc.getClust();
             
            // System.out.println(mega.c.length+"\t"+(System.currentTimeMillis()-t));
-           if(printConsMatrix){
-              printConsensusMatrix(mega); 
-           }
+          // if(printConsMatrix){
+            if(s.distMatrix)  printConsensusMatrix(mega);
+          // }
             
             return mega;
 
@@ -300,11 +320,11 @@ public class Ensemble {
 
         }
         
-        if(printConsMatrix){           
+        if(s.distMatrix){
             for(int i = 0; i < p.ids.size(); i++){   
                 for(int j = 0; j < p.ids.size(); j++){
-                    int a = Integer.valueOf(p.ids.get(i).toString());
-                    int b = Integer.valueOf(p.ids.get(j).toString());
+                    int a = p.ids.get(i).intValue();
+                    int b = p.ids.get(j).intValue();
                     if(added[a][b]) continue;
                     consensusMatrix[a][b]++;
                     added[a][b] = true;
@@ -323,7 +343,7 @@ public class Ensemble {
         for(int i = 0; i < cRun.c.length; i++){
             int index = reLabel[i];
             for(int k = 0; k < cRun.c[i].ids.size(); k++){
-                int id = Integer.valueOf(cRun.c[i].ids.get(k).toString());
+                int id = cRun.c[i].ids.get(k).intValue();
                 mega.membership[id][index] += (double)1/(j+1);
             }
         }
@@ -339,8 +359,8 @@ public class Ensemble {
         mega.cleanFuzzy();
        // mega.printFuzzy();
         for(int i = 0; i < mega.c.length; i++){
-            ArrayList ids = new ArrayList();
-            ArrayList probs = new ArrayList();
+            List<Integer> ids = new ArrayList<Integer>();
+            List<Double> probs = new ArrayList<Double>();
             for(int j = 0; j < mega.membership.length; j++){
                 if(mega.membership[j][i] > 0) {
                     //System.out.println(100*mega.membership[j][i]);
@@ -353,13 +373,13 @@ public class Ensemble {
                 }
             }
 
-            ArrayList labels = new ArrayList();
-            ArrayList confidence = new ArrayList();
+            List<String> labels = new ArrayList<String>();
+            List<Integer> confidence = new ArrayList<Integer>();
             for(int q = 0; q < ids.size(); q++){
                 //labels.add(mega.labelsSorted[Integer.valueOf(ids.get(q).toString())]);
-                confidence.add(((int)(100*Double.valueOf(probs.get(q).toString()))));
+                confidence.add(((int)(100*probs.get(q).doubleValue())));
             }
-            mega.c[i] = new cluster(labels, labels, ids);
+            mega.c[i] = new cluster(new ArrayList<double[]>(), labels, ids);
             mega.c[i].setConf(confidence); 
         }
             
@@ -388,41 +408,43 @@ public class Ensemble {
 
             Arrays.sort(sbs);
 
-            HashMap sorted = new HashMap();
+            Map<Integer,Integer> sorted = new HashMap<Integer,Integer>();
             for(int k = 0; k < sbs.length; k++) {
                 sorted.put(sbs[k].id,k+1);
             }
 
-            ArrayList fcn_v = new ArrayList();
-            ArrayList fcn_e = new ArrayList();
+            List<String[]> fcn_v = new ArrayList<String[]>();
+            List<String[]> fcn_e = new ArrayList<String[]>();
         
-         try{
-            DataOutputStream outEdges = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(s.outputDirectory+s.getFolderDivider()+"AutoSOME_"+s.getName()+"_E"+s.ensemble_runs+"_Pval"+s.mst_pval+"_Edges.txt")));
+         //try{
+           /* DataOutputStream outEdges = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("C:\\Edges.txt")));
             DataOutputStream outNodes = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(s.outputDirectory+s.getFolderDivider()+"AutoSOME_"+s.getName()+"_E"+s.ensemble_runs+"_Pval"+s.mst_pval+"_Nodes.txt")));
             DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(s.outputDirectory+s.getFolderDivider()+"AutoSOME_"+s.getName()+"_E"+s.ensemble_runs+"_Pval"+s.mst_pval+"_Matrix.txt")));
-            out.writeBytes("Name\t");
-            for(int i = 0; i < consensusMatrix.length; i++){
+           out.writeBytes("Name\t");
+           for(int i = 0; i < consensusMatrix.length; i++){
                 if(i < consensusMatrix.length-1) out.writeBytes(new StringTokenizer(mega.labelsSorted[i],",").nextToken()+"\t");
                 else out.writeBytes(new StringTokenizer(mega.labelsSorted[i],",").nextToken());
-            }
+            }*/
             for(int i = 0; i < consensusMatrix.length; i++){
                 String labelI = new StringTokenizer(mega.labelsSorted[i],",").nextToken();
-                out.writeBytes("\n"+labelI+"\t");
-                for(int j = 0; j < consensusMatrix.length; j++){
+                //out.writeBytes("\n"+labelI+"\t");
+                for(int j = i+1; j < consensusMatrix.length; j++){
                     String labelJ = new StringTokenizer(mega.labelsSorted[j],",").nextToken();
+                    //outEdges.writeBytes(i+"\t"+j+"\t"+consensusMatrix[i][j]+"\t"+cr.length+"\n");
                     consensusMatrix[i][j] /= cr.length;
                     consensusMatrix[i][j] -= .5;
-                    if(j < consensusMatrix.length-1) out.writeBytes(consensusMatrix[i][j]+"\t");
-                    else out.writeBytes(String.valueOf(consensusMatrix[i][j]));
+                    /*if(j < consensusMatrix.length-1) out.writeBytes(consensusMatrix[i][j]+"\t");
+                    else out.writeBytes(String.valueOf(consensusMatrix[i][j]));*/
                     if(i!=j){
-                        outEdges.writeBytes(labelI+"_"+i+"\t"+labelJ+"_"+j+"\t"+consensusMatrix[i][j]+"\n");
+                       // outEdges.writeBytes(labelI+"_"+i+"\t"+labelJ+"_"+j+"\t"+consensusMatrix[i][j]+"\n");
                         String[] edge = new String[]{labelI+"_"+i,labelJ+"_"+j,String.valueOf(consensusMatrix[i][j])};
+                        //if(Double.valueOf(edge[2])>0) System.out.println(edge[2]);
                         fcn_e.add(edge);
                     }
                 }
               }
-            out.close();
-            outEdges.close();
+            //out.close();
+            //outEdges.close();
             mega.fcn_edges = new String[fcn_e.size()][3];
             for(int p = 0; p < mega.fcn_edges.length; p++) mega.fcn_edges[p] = (String[]) fcn_e.get(p);
             
@@ -430,16 +452,16 @@ public class Ensemble {
                 for(int j = 0; j < resolve.membership.length; j++){
                     if(resolve.membership[j][i] > 0){
                            String label = new StringTokenizer(mega.labelsSorted[j],",").nextToken();
-                           outNodes.writeBytes(label+"_"+j+"\t"+sorted.get(i).toString()+"\t"+label+"\n");
+                        //   outNodes.writeBytes(label+"_"+j+"\t"+sorted.get(i).toString()+"\t"+label+"\n");
                            String[] vertex = new String[]{label+"_"+j,String.valueOf(i),label};
                            fcn_v.add(vertex);
                     }
                 }
-            outNodes.close();
+          //  outNodes.close();
             mega.fcn_nodes= new String[fcn_v.size()][3];
             for(int p = 0; p < mega.fcn_nodes.length; p++) mega.fcn_nodes[p] = (String[]) fcn_v.get(p);
             
-         }catch(IOException err){};
+        // }catch(IOException err){};
     }
     
     

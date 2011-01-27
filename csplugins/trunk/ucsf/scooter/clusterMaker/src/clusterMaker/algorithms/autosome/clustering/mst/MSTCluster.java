@@ -4,9 +4,29 @@ package clusterMaker.algorithms.autosome.clustering.mst;
  * DEC.java
  * 
  * Created on Feb 26, 2008, 6:02:10 PM
- * 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * ***********************************************************************************************
+SOFTWARE USE AGREEMENT
+
+Conditions of Use:
+AutoSOME is freely available to the academic/non-profit community for non-commercial research
+purposes.
+
+All downloads are subject to the following terms: Software and source code Copyright (C) 2009
+Aaron M. Newman. Permission to use this software and its documentation is hereby granted to
+all academic and not-for-profit institutions for non-profit/non-commercial applications
+without fee. The right to use this software for profit, by private companies or other organizations, or in
+conjunction with for profit activities, are NOT granted except by prior arrangement and written
+ consent of the copyright holder.
+
+For these purposes, downloads of the software constitutes "use" and downloads of this software
+ by for profit organizations and/or distribution to for profit institutions is explicitly
+prohibited without the prior consent of the copyright holder.
+
+The software is provided "AS-IS" and without warranty of any kind, express, implied or
+otherwise. In no event shall the copyright holder be liable for any damages of any kind
+arising out of or in connection with the use or performance of this software. This code was
+written using Java and may be subject to certain additional restrictions as a result.
+***********************************************************************************************
  */
 
 
@@ -129,39 +149,7 @@ public class MSTCluster {
             data[i] = (int[]) ids.get(i);
         }
         return data;
-      /* // System.out.println(nodeNum);
-        int itor = 0;
-        
-        try{
-            int lineItor = 0;
-            BufferedReader bf = new BufferedReader(new StringReader(file));
-            String line = new String();
-            while((line = bf.readLine()) != null){
-                if(line.length() != 0){
-                   // System.out.println(line);
-                    if(lineItor == 0) {
-                        trs = new String[Integer.valueOf(line)][2];
-                    //    rgb = new int[trs.length][3];
-                        ids = new int[trs.length];
-                    //    BMU = new double[trs.length];
-                        //System.out.println(trs.length);
-                        lineItor++;
-                    }else{
-                    StringTokenizer st = new StringTokenizer(line);
-                    trs[itor][0] = st.nextToken();
-                    trs[itor][1] = st.nextToken();
-                   // rgb[itor][0] = Integer.valueOf(st.nextToken());
-                   // rgb[itor][1] = Integer.valueOf(st.nextToken());
-                   // rgb[itor][2] = Integer.valueOf(st.nextToken());
-                    ids[itor] = Integer.valueOf(st.nextToken());                   
-                  //  BMU[itor++] = Double.valueOf(st.nextToken());
-                    }
-                }
-            }
-            
-        }catch(IOException err){};
-        
-        return trs;*/
+      
     }
     
     
@@ -238,19 +226,6 @@ public class MSTCluster {
         
     }
 
-    
-    public static void main(String[] args){
-        Point[] coors = new Point[5000];
-        Random r = new Random();
-        for(int i = 0; i < coors.length; i++){
-            double[] f = new double[3];
-            f[0] = r.nextDouble();
-            f[1] = r.nextDouble();
-            f[2] = r.nextDouble();   
-            coors[i] = new Point(f);
-        }
-        new MSTCluster(false).MCST(coors);
-    }
     
     public double[][] MCST(Point[] coors){
         double[][] edges = new double[coors.length-1][3];
@@ -378,27 +353,18 @@ public class MSTCluster {
                 
                 rand[j] = new Point(coors);
                 
-               /* if(Math.sqrt(Math.pow(rand[j].coors[0] - Math.max(maxX-minX, maxY-minY)/2,2) + 
-                        Math.pow(rand[j].coors[0] - Math.max(maxX-minX, maxY-minY),2)/2) > Math.max(maxX-minX, maxY-minY)/2)
-                {j--; continue;}*/
+         
                         
             }
             double[][] Edges = MCST(rand);
            
-            //for(int p = 0; p < Edges.length; p++) System.out.println(Edges[p][2]);
-           /* if(i<0){
-            
-            Immersive_SOM_Core ism = new Immersive_SOM_Core(rand, TRsreduced, TRidsreduced, Edges, 1, xSize, ySize, zSize, DEC, rgb);
-        
-            Immersive_SOM_Viewer view = new Immersive_SOM_Viewer(ism);
-            view.setVisible(true);}*/
-            //System.out.println(i);
+   
             double[] sortedEdges = sortEdges(Edges);
             
             for(int k = 0; k < Edges.length; k++) {
                 randEdges[i][k] = sortedEdges[k];
              }
-           } //System.out.println(System.currentTimeMillis()-t);
+           } 
         }
     }
     
@@ -437,48 +403,11 @@ public class MSTCluster {
     }
     
 
-    /*
-    private static double getPvalue(double[][] edges, double[][] randEdges){
-        double longestDist = 0;
-        
-        double[] sortedEdges = sortEdges(edges);
-        double realEdgeSum = 0;
-        double min = Double.MAX_VALUE;
-        for(int k = 0; k < sortedEdges.length; k++) realEdgeSum += sortedEdges[k];
-        
-        for(int j = sortedEdges.length-1; j >= 0; j--){
-            int count = 0;
-          
-            //System.out.println(sortedEdges[j]);
-            for(int a = 0; a < randEdges.length; a++){
-                double localSum = 0;
-                for(int b = 0; b <= j; b++){                    
-                    localSum += randEdges[a][b];
-                    //if(a==0 && j == 0) System.out.println(randEdges[a][b]);                           
-                }
-                if(localSum < min) min = localSum;
-                if(localSum <= realEdgeSum) count++;
-            }
-            double frac = count / (double)(randEdges.length);
-            System.out.println(frac+" "+randEdges.length+" "+count+ " "+longestDist+" "+realEdgeSum+" "+min);
-            longestDist = sortedEdges[j];
-            if(frac > alpha) return longestDist/sortedEdges[sortedEdges.length-1];
-            
-            realEdgeSum -= sortedEdges[j];
-                      
-        }
-        
-        return longestDist/sortedEdges[sortedEdges.length-1];
-    }
-    */
+   
     
     public clusterRun getClusterRun() {return cr;}
     
     
-    private void printCoors(float[][] coors){
-        for(int i = 0; i < coors.length; i++){
-            System.out.println(coors[i][0]+" "+coors[i][1]);
-        }
-    }
+ 
 
 }

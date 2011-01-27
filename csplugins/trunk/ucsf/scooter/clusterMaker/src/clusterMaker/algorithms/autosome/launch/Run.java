@@ -1,6 +1,27 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+***********************************************************************************************
+SOFTWARE USE AGREEMENT
+
+Conditions of Use:
+AutoSOME is freely available to the academic/non-profit community for non-commercial research
+purposes.
+
+All downloads are subject to the following terms: Software and source code Copyright (C) 2009
+Aaron M. Newman. Permission to use this software and its documentation is hereby granted to
+all academic and not-for-profit institutions for non-profit/non-commercial applications
+without fee. The right to use this software for profit, by private companies or other organizations, or in
+conjunction with for profit activities, are NOT granted except by prior arrangement and written
+ consent of the copyright holder.
+
+For these purposes, downloads of the software constitutes "use" and downloads of this software
+ by for profit organizations and/or distribution to for profit institutions is explicitly
+prohibited without the prior consent of the copyright holder.
+
+The software is provided "AS-IS" and without warranty of any kind, express, implied or
+otherwise. In no event shall the copyright holder be liable for any damages of any kind
+arising out of or in connection with the use or performance of this software. This code was
+written using Java and may be subject to certain additional restrictions as a result.
+***********************************************************************************************
  */
 
 package clusterMaker.algorithms.autosome.launch;
@@ -10,17 +31,11 @@ import java.io.*;
 import java.util.*;
 import clusterMaker.algorithms.autosome.mapping.som.*;
 import clusterMaker.algorithms.autosome.mapping.cartogram.*;
-import clusterMaker.algorithms.autosome.mapping.sammonmapping.*;
-import clusterMaker.algorithms.autosome.clustering.*;
-import clusterMaker.algorithms.autosome.clustering.agglomerative.*;
-import clusterMaker.algorithms.autosome.clustering.kmeans.*;
+import clusterMaker.algorithms.autosome.MSTEnsemble.Ensemble;
 import clusterMaker.algorithms.autosome.clustering.mst.*;
-//import view.view3d.*;
 import java.text.*;
-import clusterMaker.algorithms.autosome.view.view2d.viewer2D;
 import javax.swing.*;
 import cytoscape.task.TaskMonitor;
-//import org.jvnet.substance.*;
 
 /**
  *  launch AutoSOME clustering suite
@@ -50,157 +65,7 @@ public class Run {
 
     public Run(){};
     
-    public static void main(String[] args){
-         //s.printDefaultSettings();
-            //System.exit(0);
-            try {
-            // Set System L&F
-                UIManager.setLookAndFeel(
-                    UIManager.getSystemLookAndFeelClassName());
-            }
-            catch (UnsupportedLookAndFeelException e) {
-            // handle exception
-            }
-            catch (ClassNotFoundException e) {
-            // handle exception
-            }
-            catch (InstantiationException e) {
-            // handle exception
-            }
-            catch (IllegalAccessException e) {
-            // handle exception
-            }
-javax.swing.JFrame.setDefaultLookAndFeelDecorated(true);
-
-Run r = new Run(true);
-
-        printBanner();    
-        Settings s = new Settings();
- 
-        if(args.length == 0) {
-           java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try{
-                runGUI = true;
-                viewer2D v2d = new viewer2D();
-                javax.swing.ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/imgs/icon.jpg"));
-                v2d.setIconImage(icon.getImage());
-                v2d.setVisible(true);
-                }catch(Exception err){};
-            }
-           });
-
-        }else{
-            s.setParams(args); //set user parameters in 's'
-
-                if(s.invokeViewerOnly) {
-                    viewer2D v2d = new viewer2D();
-                    v2d.setVisible(true);
-                    v2d.invokeClusterViewer_From_trIDFile(new File(s.inputFile),s);
-                }
-
-                new Run().run(s, true, new viewer2D());
-
-        
-        }
-    }
-
-
-
-
-    public clusterRun run(Settings s, boolean readInput, viewer2D jpb){
-        
-        long t = System.currentTimeMillis();
-        //this.jpb = jpb; //set progress bar
-
-        if(readInput){
-            jpb.jLabel7.setText("Preprocessing");
-            jpb.jProgressBar1.setIndeterminate(true);
-            s.input = getInput(s); //read input file and load into dataItem struct
-            if(s.input==null) return null;
-        }else{
-            for(int i = 0; i < s.input.length; i++){
-                s.input[i].setValue(i, s.input[i].getOriginalValues()[i]);
-            }
-        }
-            //for(int k = 0; k < s.input.length; k++) System.out.println(s.input[k]);
-             if(s.distMatrix) {
-
-                if(runGUI) {
-                    jpb.jLabel7.setText("Distance Matrix");
-                    jpb.jProgressBar1.setIndeterminate(true);
-                }
-
-                if((s.unitVar || s.scale>0 || s.logNorm)) {
-                    if(s.unitVar && s.logNorm){
-                        s.unitVar=false;
-                        s.input = norm(s); //normalize input
-                        s.unitVar=true; s.logNorm=false;
-                        s.input = norm(s);
-                        s.logNorm=true;
-                    }else   s.input = norm(s);
-                }
-                if(s.medCenter||s.medCenterCol) s.input = medCenter(s);
-                if(s.sumSqrRows||s.sumSqrCol) s.input = getSumSqr(s);
-                if(negativeLog && s.logNorm) return null;
-                //if(s.medCenter) s.input = medCenter(s);
-                s.input = new makeDistMatrix().getDistMatrix(s);
-                if(s.benchmark) s.convertDMLabels();
-
-                if(runGUI) {
-                    jpb.jLabel7.setText("Clustering");
-                    jpb.jProgressBar1.setIndeterminate(false);
-                }
-             }
-       
-            s.inputSize = s.input.length;
-       // }
-        if(!s.distMatrix){
-            jpb.jLabel7.setText("Preprocessing");
-            jpb.jProgressBar1.setIndeterminate(true);
-            if((s.unitVar || s.scale>0 || s.logNorm)) {
-                if(s.unitVar && s.logNorm){
-                    s.unitVar=false;
-                    s.input = norm(s); //normalize input
-                    s.unitVar=true; s.logNorm=false;
-                    s.input = norm(s);
-                    s.logNorm=true;
-            }else   s.input = norm(s);
-        }
-                if(s.medCenter||s.medCenterCol) s.input = medCenter(s);
-                if(s.sumSqrRows||s.sumSqrCol) s.input = getSumSqr(s);
-        
-        }else if(s.unitVarAfterDM) s.input = norm(s);
-
-        
-
-        if(runGUI) {
-             jpb.jProgressBar1.setIndeterminate(false);
-             jpb.jLabel7.setText("Clustering");
-             jpb.jProgressBar1.setIndeterminate(false);
-        }
-        
-        if(negativeLog && s.logNorm) return null;
-       
-        s.setInputMinMax(); //store minimum and maximum values in input
-
-        if(s.Pearson) s.setCenter(); //compute average of each attribute
-        if(s.writeTemp) {
-            new File(s.outputDirectory+s.getFolderDivider()+s.getName()+"_temp").mkdir();
-        }
-
-        
-        invokeAutoSOME(s);    
-        s.runTime = getrunTime(t);
-       // System.out.println(">Running time: "+s.runTime);
-        try{
-             return doOutput(s, clusterRuns);
-        }catch(Exception err){};
-
-        return new clusterRun();
-        
-    }
-
+   
 
     public clusterRun runAutoSOMEBasic(Settings s, TaskMonitor monitor){
             long t = System.currentTimeMillis();
@@ -210,7 +75,7 @@ Run r = new Run(true);
                 s.input=addMissing(s.input, s);
             }
 
-             if(s.distMatrix) {
+            if(s.distMatrix) {
 
 
                 if((s.unitVar || s.scale>0 || s.logNorm)) {
@@ -255,7 +120,9 @@ Run r = new Run(true);
 
         s.setInputMinMax(); //store minimum and maximum values in input
 
+
         if(s.Pearson) s.setCenter(); //compute average of each attribute
+ 
 
         invokeAutoSOME(s);
         s.runTime = getrunTime(t);
@@ -269,258 +136,7 @@ Run r = new Run(true);
     
     
     
-    public dataItem[] getInput(Settings s){
-        
-        dataItem[] data = new dataItem[1]; //store spreadsheet data in dataItem
-        int maxNum = 0; // maximum cluster number counter
-          int rowLength = 0; //count number of columns for each row to validate consistent input
-
-        if(s.outputDirectory.equals("C:")) s.outputDirectory=new File(s.inputFile).getParent();
-        //long t = System.currentTimeMillis();
-        try{
-            BufferedReader bf = new BufferedReader(new FileReader(s.inputFile));
-            
-            String line = new String();
-            ArrayList a = new ArrayList();
-            int lineCount = 0;
-            int rowCount = 0;
-
-            ///////additional input format////////
-            String GEOsamples = new String();
-            if(s.GEOformat){
-                 while((line = bf.readLine())!= null){
-                     if(line.length()==0) continue;
-                     line = line.replaceAll("\"", "");
-                     String[] tokens = line.split("\t");
-                     if(tokens.length==0) continue;
-                     if(tokens[0].equals("!Sample_title")) GEOsamples=line;
-                     if(tokens[0].equals("ID_REF")){
-                         if(GEOsamples.length()==0) GEOsamples=line;
-                         break;
-                     }
-                 }
-            }
-            
-      
-            //////////////////////////////////////////////////
-
-
-            while((line = bf.readLine())!= null){
-                if(line.length()!=0){
-                    lineCount++;
-                    if(lineCount%1000==0) {
-                        clusterMaker.algorithms.autosome.fileio.File_Open.jLabel15.setText(String.valueOf(lineCount));
-                    }
-                    if(s.GEOformat) {
-                        if(lineCount==1) line=GEOsamples;
-                        //fix this
-                       // line = line.replaceAll("\"", "");
-                        if(line.contains("\"")){
-                        int pos = 0;
-                        StringBuilder sb = new StringBuilder(line);
-                        while((pos = sb.indexOf("\"", pos)) != -1) {
-                            sb.insert(pos + 1, "");
-                            pos += 2;
-                        }
-                        line = sb.toString();
-                        }
-
-                    }
-                    //fix this
-                   // line = line.replaceAll("\\t\\t", "\t?\t");
-                    if(line.contains("\\t\\t")){
-                        int pos = 0;
-                        StringBuilder sb = new StringBuilder(line);
-                        while((pos = sb.indexOf("\\t\\t", pos)) != -1) {
-                            sb.insert(pos + 1, "\t?\t");
-                            pos += 2;
-                        }
-                    line = sb.toString();
-                    }              
-                    String[] tokens = line.split("\t"); //try parsing by tab
-                    
-
-                    if(tokens.length == 1) {
-                        line = line.replaceAll(",,", ",?,");
-                        if(line.contains(",,")){
-                        int pos = 0;
-                        StringBuilder sb = new StringBuilder(line);
-                        while((pos = sb.indexOf(",,", pos)) != -1) {
-                            sb.insert(pos + 1, ",?,");
-                            pos += 2;
-                        }
-                        line = sb.toString();
-                        }
-                        tokens = line.split(",");
-                    } //else try by comma
-                    if(tokens.length == 1) {
-                        line = line.replaceAll("  ", " ? ");
-                        if(line.contains("  ")){
-                        int pos = 0;
-                        StringBuilder sb = new StringBuilder(line);
-                        while((pos = sb.indexOf("  ", pos)) != -1) {
-                            sb.insert(pos + 1, " ? ");
-                            pos += 2;
-                        }
-                        line = sb.toString();
-                        }
-                        tokens = line.split(" ");
-                    } //else try by space
-
-
-                    if(s.GEOformat) if(tokens[0].equals("!series_matrix_table_end")) continue;
-                    if(s.PCLformat && tokens.length>0) if(tokens[0].equals("EWEIGHT")) {
-                        s.EWEIGHT = new double[tokens.length-s.startData];
-                        for(int i = s.startData; i < tokens.length; i++) {
-                            s.EWEIGHT[i-s.startData] = Double.valueOf(tokens[i]);
-                        }
-                        continue;
-                    }
-                    if(tokens.length == 1 && !s.GEOformat) {
-                     //   System.err.println("Error: Input file cannot be parsed correctly. Only tab-,comma-,space-delimited files can be read.");
-                        if(!runGUI) System.exit(1);
-                        else{
-                            clusterMaker.algorithms.autosome.fileio.File_Open.ofile.kill();
-                           
-                            
-                            return null;
-                        }
-
-                        }
-                    //autocheck for column header
-                    if(lineCount==1){
-                        try{
-                            Double.parseDouble(tokens[s.startData]);
-                        }catch(NumberFormatException e){
-                            s.readColumns=true;
-                        }
-                    }
-                    ///////////////////////////
-                    if(s.readColumns && lineCount == 1){
-                       
-                        if(s.PCLformat){
-                            if(tokens[2].equals("GWEIGHT")) s.startData=3;
-                            else s.startData=2;
-                        }
-                        s.columnHeaders = new String[tokens.length];
-                        for(int i = 0; i < tokens.length; i++) {
-                            tokens[i] = tokens[i].replace(",",";");
-                            s.columnHeaders[i] = tokens[i];
-                        }
-                        continue;
-                    }
-                    
-                    String identifier = tokens[s.PCLformat ? 0 : (s.startData-1)];
-                    //if identifier is number, find maximum number (might be number of clusters in dataset)
-                    try{
-                        int num = Integer.parseInt(identifier);
-                        if(maxNum < num)
-                            maxNum = num;
-                    
-                    }catch(NumberFormatException err){
-                        
-                    };
-                    
-                    //load dataItem struct with input file information   
-                    float[] values = new float[tokens.length-(s.startData )];
-                    if(s.readColumns){
-                        if(values.length<s.columnHeaders.length-s.startData){
-                            float[] temp = new float[s.columnHeaders.length-s.startData];
-                            for(int i = 0; i < temp.length; i++){
-                                if(i<values.length) temp[i] = values[i];
-                                else temp[i] = -99999999;
-                            }
-                            values=temp;
-                        }
-                    }
-                    if(rowLength==0) rowLength=values.length;
-                    if(s.GEOformat && values.length==0) continue;
-                    else if (values.length!= rowLength && ((s.GEOformat&&values.length!=1) || !s.GEOformat)){
-                    
-                        if(runGUI){
-                            clusterMaker.algorithms.autosome.fileio.File_Open.ofile.kill();
-                                       
-                                        }
-                            
-
-                       //   System.out.println(">Improper format: One or more rows of different lengths detected.");
-                          return null;
-                    }
-                    for(int i = s.startData; i < tokens.length; i++) {
-                            if(tokens[i].equals("?") || tokens[i].equals("NA") || tokens[i].equals("") || tokens[i].equals("null")){
-                                {
-                                  if(!fillMissing){
-                                    if(runGUI && openingFile){
-                                       clusterMaker.algorithms.autosome.fileio.File_Open.ofile.kill();
-                                        
-                                        }
-                                        
-                                        fillMissing=true;
-                                       // if(openingFile) System.out.println(">One or more missing values detected. Will replace with "+((s.mvMedian) ? "median" : "mean")+" value of each "+((s.mvCol) ? "column" : "row")+".");
-
-                                  }
-                                }
-                            }
-                        try{
-                            values[i-s.startData] = Float.valueOf(((tokens[i].equals("?")) || tokens[i].equals("")) ? "-99999999" : tokens[i]);
-                        }catch(NumberFormatException err){
-    
-                        if(!fillMissing){
-                            if(runGUI && openingFile){
-                                clusterMaker.algorithms.autosome.fileio.File_Open.ofile.kill();
-                                
-                            }// if(openingFile)System.out.println("Improper format: Non-numerical data detected: \""+tokens[i]+"\". Will treat non-numbers as missing values.");
-                             
-                            fillMissing=true;
-
-                        }
-                             values[i-s.startData] = Float.valueOf("-99999999");
-                        };
-                    }
-               
-                    identifier = identifier.replace(" ","_");
-                    identifier = identifier.replace(",",";");
-                    dataItem d = new dataItem(values, identifier);
   
-                    if(s.startData > 1){
-                        StringBuilder sb = new StringBuilder();
-                        for(int i = 0; i < s.startData; i++)
-                            sb.append(tokens[i]+"\t");
-                        d.setDesc(sb.toString());
-                    }
-                    if(s.kept.size()>0){
-                       // System.out.println(a.size()+" "+s.kept.size()+" "+s.kept.containsKey(a.size()));
-                        if(!s.kept.containsKey(rowCount++)) continue;
-                    }
-                    //a.add(getBytes(d));
-                   // Object[] o = new Object[]{values, identifier.getBytes()};
-                    //System.out.println(identifier);
-                    a.add(d);
-                }
-            }
-            
-            data = new dataItem[a.size()];
-            for(int i = 0; i < data.length; i++) data[i] = (dataItem)a.get(i);//toObject((byte[])a.remove(0));
-
-            if(fillMissing){
-                data=addMissing(data, s);
-            }
-
-        }catch(IOException err){//System.err.println("Error Reading File: "+s.inputFile);
-            if(!runGUI) System.exit(1);
-            else{
-                           if(clusterMaker.algorithms.autosome.fileio.File_Open.ofile!=null) clusterMaker.algorithms.autosome.fileio.File_Open.ofile.kill();
-                           
-                          
-                           return null;
-
-            }
-        }
-        
-        if(maxNum > 0 && (s.batch || s.known_clusters == 0)) s.known_clusters = maxNum;
-        
-        return data;
-    }
 
      
 
@@ -539,7 +155,7 @@ Run r = new Run(true);
         }
                 
         if(s.ensemble_runs>1) {
-            clusterRuns = new ArrayList(); //store output of each cluster run
+            clusterRuns = new ArrayList<clusterRun>(); //store output of each cluster run
             // if(!s.batch) System.out.println(">Running Ensemble Clustering\n\n...computing clusters\n\n          |100%");
              monitor.setStatus("Clustering "+s.input.length+" rows by "+s.input[0].getValues().length+" columns");
         }
@@ -613,11 +229,12 @@ Run r = new Run(true);
                     clusterRun cr = doClustering(s, coors, dataLabels);
                     if(start>=10) cr.DEC = null;
                     if(!s.writeTemp) clusterRuns.add(cr);
-                    else {
-                        if(clusterRuns.size()==0) clusterRuns.add(cr);
-                        else clusterRuns.add("1");
-                        writeTemp(cr, clusterRuns.size(), s);
-                    }
+                    // Not used
+                    // else {
+                    //     if(clusterRuns.size()==0) clusterRuns.add(cr);
+                    //     else clusterRuns.add("1");
+                    //     writeTemp(cr, clusterRuns.size(), s);
+                    // }
 
                     totalProgress++;
                    // System.out.println(((int)(100*(double)start/s.ensemble_runs))+" "+jpb.jProgressBar1.getValue());
@@ -666,19 +283,7 @@ Run r = new Run(true);
                             }
                         }
                     }  
-                    else {
-                        //invoke Sammon Mapping
-                        sammonMapping sm = new sammonMapping(new javax.swing.JProgressBar(), s.sm_iters, 2);
-                        coors = sm.run(s.input);
-                        ArrayList ids = new ArrayList();
-   
-                        for(int j = 0; j < s.input.length; j++) {
-                            ids.add(new int[]{j,j});
-                            //System.out.println(s.input[j].getIdentity()+"\t"+coors[j][0]+"\t"+coors[j][1]);
-                        }
-                        dataLabels = ids;
-                    }
-                
+                    
         Object[] results = {coors,dataLabels};
         
         return results;
@@ -694,45 +299,18 @@ Run r = new Run(true);
                     clusterRun cr = mst.getClusterRun();
                     cr.setInputFile(new String(s.inputFile));
                     
-                    //System.out.println(cr.nodes.length);
-                    if(s.doKmeans || s.doHierarchical){
-                        
-                        getClusters gc = new getClusters(cr,s);
-                        gc.findClusters(true);
-                        cr.c = gc.getClust();
-
-                        if(s.doKmeans){
-                            cr.c = new runKMeans().kdesom(cr, s.known_clusters, true, s);
-                        }else{
-                            if(s.hierarchical_choice == 1){
-                                 cr.c = new agglomerative().runAgg_Mapping(cr, s.known_clusters, 1, true, s);
-                            }
-                            if(s.hierarchical_choice == 2){
-                                 cr.c = new agglomerative().runAgg_Mapping(cr, s.known_clusters, 2, true, s);
-                            }
-                            if(s.hierarchical_choice == 3){
-                                 cr.c = new agglomerative().runAgg_Mapping(cr, s.known_clusters, 3, true, s);
-                            }
-                            if(s.hierarchical_choice == 4){
-                                 cr.c = new agglomerative().runAgg_Mapping(cr, s.known_clusters, 4, true, s);
-                            }
-
-                        }
-                        
-          
-                    }
+                    
             return cr;
     }
      
      
     //output of clustering
-    public clusterRun doOutput(Settings s, ArrayList clusterRuns){
+    public clusterRun doOutput(Settings s, List<clusterRun> clusterRuns){
         
         if(clusterRuns.isEmpty()) return null;
-        clusterRun cr = (clusterRun) clusterRuns.get(0);
+        clusterRun cr = clusterRuns.get(0);
         if(clusterRuns.size() > 1) cr.c=ensemble.c;
         getClusters clust = new getClusters(cr,s);
-        clusterMaker.algorithms.autosome.fileio.printClusters pc = new clusterMaker.algorithms.autosome.fileio.printClusters();
         
         if(clusterRuns.size() == 1 && !s.doKmeans && !s.doHierarchical){       
             clust.findClusters(true);
@@ -755,22 +333,7 @@ Run r = new Run(true);
 
         Arrays.sort(cr.c);
  
-        
-        if(s.display2D){
-           // System.out.println("...Launching Cluster Viewer");
-            new clusterMaker.algorithms.autosome.view.view2d.viewer2D(cr.c,s).setVisible(true);
-        }
 
-        
-        if(s.htmlOut || s.textOut) {
-            s.add=s.getName()+"_E"+s.ensemble_runs+"_Pval"+s.mst_pval+((s.printRowsCols==1) ? "_rows" : ((s.printRowsCols==2) ? "_columns" : ""));
-            pc.printClusters(s.add, cr.c, s);
-        }
-        
-        if(s.benchmark || s.trBM) {
-       
-            clust.getClusterValidity(false);
-        }
        // if(s.benchmark && !s.batch) System.out.println("\n>Benchmarking Results:\nF: "+cr.Fmeasure+"\tP: "+cr.Precision+"\tR: "+cr.Recall+"\tNMI: "+cr.NMI+"\tcR: "+cr.adjRand+"\n");
         
         
@@ -955,6 +518,7 @@ Run r = new Run(true);
             for(int j = 0; j < d.length; j++){
                 if(d[j].getValues()[i]==-99999999) {
                     d[j].getValues()[i] = (s.mvMedian) ? median : (sort.length>0) ? (sum/sort.length) : 0;
+                    if(Float.isNaN(d[j].getValues()[i])) d[j].getValues()[i]=0;
                    // if(d[j].getValues()[i]<-100) System.out.println(median+" "+sum+" "+sort.length);
                     d[j].setOriginalValue(i,d[j].getValues()[i]);
                 }
@@ -982,6 +546,7 @@ Run r = new Run(true);
             for(int j = 0; j < d[i].getValues().length; j++){
                 if(d[i].getValues()[j]==-99999999) {
                     d[i].getValues()[j] = (s.mvMedian) ? median : (sort.length>0) ? (sum/sort.length) : 0;
+                    if(Float.isNaN(d[j].getValues()[i])) d[j].getValues()[i]=0;
                     // if(d[j].getValues()[i]<-100) System.out.println(median+" "+sum+" "+sort.length);
                     d[i].setOriginalValue(j,d[i].getValues()[j]);
                 }
@@ -1011,10 +576,6 @@ Run r = new Run(true);
          }
      }
 
-     public clusterRun runNewPValue(ArrayList clusterRuns, Settings s, viewer2D v2d){
-         ensemble = (new Ensemble(clusterRuns, true, 0, (!s.doKmeans && !s.doHierarchical) ? true : false, s, monitor)).run();
-         return doOutput(s, clusterRuns);
-     }
 
      public ArrayList getMappingArrayList() {return storeMapping;}
 
@@ -1052,7 +613,7 @@ Run r = new Run(true);
     private int runCount = 0; //how many clusters runs so far?
     private int progressCount = 0;
     private int totalProgress = 0;
-    private ArrayList clusterRuns = new ArrayList(); //store all cluster runs
+    private List<clusterRun> clusterRuns = new ArrayList<clusterRun>(); //store all cluster runs
     private clusterRun ensemble; //combined clustering from ensemble
     private Thread[] threads; //all AutoSOME threads
     private ArrayList storeMapping = new ArrayList(); //store mapping results before MST clustering

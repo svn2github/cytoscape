@@ -5,14 +5,34 @@ import clusterMaker.algorithms.autosome.cluststruct.dataItem;
 import clusterMaker.algorithms.autosome.cluststruct.Point;
 import clusterMaker.algorithms.autosome.launch.Settings;
 import java.util.*;
-//import org.apache.commons.math.distribution.*;
+
 /*
  * SOM.java
  *
  * Created on February 19, 2007, 5:49 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+***********************************************************************************************
+SOFTWARE USE AGREEMENT
+
+Conditions of Use:
+AutoSOME is freely available to the academic/non-profit community for non-commercial research
+purposes.
+
+All downloads are subject to the following terms: Software and source code Copyright (C) 2009
+Aaron M. Newman. Permission to use this software and its documentation is hereby granted to
+all academic and not-for-profit institutions for non-profit/non-commercial applications
+without fee. The right to use this software for profit, by private companies or other organizations, or in
+conjunction with for profit activities, are NOT granted except by prior arrangement and written
+ consent of the copyright holder.
+
+For these purposes, downloads of the software constitutes "use" and downloads of this software
+ by for profit organizations and/or distribution to for profit institutions is explicitly
+prohibited without the prior consent of the copyright holder.
+
+The software is provided "AS-IS" and without warranty of any kind, express, implied or
+otherwise. In no event shall the copyright holder be liable for any damages of any kind
+arising out of or in connection with the use or performance of this software. This code was
+written using Java and may be subject to certain additional restrictions as a result.
+***********************************************************************************************
  */
 
 /**
@@ -96,7 +116,7 @@ public class SOM implements Runnable{
 
         //randomly initialize SOM
         if(gridSize == 0) gridSize = (int)Math.min(maxGridSize, Math.max(minGridSize, Math.sqrt(trainingData.length*2)));        
-        
+
         map = new Node[gridSize][gridSize];
         for(int i = 0; i < map.length; i++){
             for(int j = 0; j < map[i].length; j++){
@@ -329,8 +349,8 @@ public class SOM implements Runnable{
    
      public Object[] getDEInfo(double XYerrExp){
          int res = 3;
-         ArrayList ids = new ArrayList();
-         ArrayList[] polygons = new ArrayList[(map.length * map[0].length * res * res)];
+         List<int[]> ids = new ArrayList<int[]>();
+         List<float[][]>[] polygons = new ArrayList[(map.length * map[0].length * res * res)];
          float[] census = new float[polygons.length];
          int count = 0;
         
@@ -353,7 +373,7 @@ public class SOM implements Runnable{
                     poly[3][1] = (i-1);
                     poly[3][2] = 0;
                     
-                    polygons[count] = new ArrayList();
+                    polygons[count] = new ArrayList<float[][]>();
                     polygons[count++].add(poly);
 
                 }
