@@ -39,8 +39,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.TreeSet;
+import java.util.HashSet;
 import java.util.SortedSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.cytoscape.event.CyMicroListener;
 
@@ -53,19 +55,22 @@ public class CyMicroListenerAdapter {
 	private final Map<Object,Map<Class<?>,Object>> proxys;
 	private final Map<Object,Map<Class<?>,SortedSet<Object>>> listeners;
 	private final Map<Class<?>,Object> noOpProxies;
+	private final Set<Object> silencedSources;
 
-	private static final ServiceComparator serviceComparator = new ServiceComparator();
+	private final static ServiceComparator serviceComparator = new ServiceComparator();
 	private final static Logger logger = LoggerFactory.getLogger(CyMicroListenerAdapter.class);
 
 	public CyMicroListenerAdapter() {
 		proxys = new HashMap<Object,Map<Class<?>,Object>>();
 		listeners = new HashMap<Object,Map<Class<?>,SortedSet<Object>>>();
 		noOpProxies = new HashMap<Class<?>,Object>();
+		silencedSources = new HashSet<Object>();
 	}
 
 	public <L extends CyMicroListener> L getMicroListener(Class<L> listenerClass, Object eventSource) {
+
 		Map<Class<?>,Object> classMap = proxys.get(eventSource);
-		if ( classMap == null )
+		if ( classMap == null || silencedSources.contains(eventSource) )
 			return listenerClass.cast( noOpProxy(listenerClass) );
 
 		Object proxy = classMap.get(listenerClass);
@@ -150,6 +155,13 @@ public class CyMicroListenerAdapter {
 		}
 	}
 
+	void silenceEventSource(Object eventSource) {
+		silencedSources.add(eventSource);
+	}
+                                
+	void unsilenceEventSource(Object eventSource) {
+		silencedSources.remove(eventSource);
+	}
 
 	// Simply iterates over the provided list of Listeners and
 	// executes the specified method on each Listener.

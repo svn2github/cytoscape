@@ -37,7 +37,9 @@ package org.cytoscape.event.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Arrays;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -60,6 +62,7 @@ public class CyListenerAdapter {
 
 	private final Map<Class<?>,ServiceTracker> serviceTrackers; 
 	private final BundleContext bc;
+	private final Set<Object> silencedSources;
 
 	/**
 	 * Creates a new CyListenerAdapter object.
@@ -69,6 +72,7 @@ public class CyListenerAdapter {
 	public CyListenerAdapter(BundleContext bc) {
 		this.bc = bc;
 		serviceTrackers = new HashMap<Class<?>,ServiceTracker>();
+		silencedSources = new HashSet<Object>();
 	}
 
 	/**
@@ -79,6 +83,10 @@ public class CyListenerAdapter {
 	 * @param event  The event object. 
 	 */
 	public <E extends CyEvent<?>> void fireSynchronousEvent(final E event) {
+
+		if ( silencedSources.contains( event.getSource() ) )
+			return;
+
 		final Class<?> listenerClass = event.getListenerClass();
 		
 		final Object[] listeners = getListeners(listenerClass);
@@ -115,6 +123,10 @@ public class CyListenerAdapter {
 	 * @param event  The event object. 
 	 */
 	public <E extends CyEvent> void fireAsynchronousEvent(final E event) {
+
+		if ( silencedSources.contains( event.getSource() ) )
+			return;
+
 		final Class listenerClass = event.getListenerClass(); 
 
 		final Object[] listeners = getListeners(listenerClass);
@@ -151,6 +163,15 @@ public class CyListenerAdapter {
 		Arrays.sort(services, serviceComparator);
 		return services; 
 	}
+
+	void silenceEventSource(Object eventSource) {
+		silencedSources.add(eventSource);
+    }
+							    
+	void unsilenceEventSource(Object eventSource) {
+		silencedSources.remove(eventSource);
+	}
+
 
 	private static class Runner implements Runnable {
 		private final Method method;
