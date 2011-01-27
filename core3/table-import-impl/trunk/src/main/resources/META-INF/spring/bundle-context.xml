@@ -26,6 +26,7 @@
 		<constructor-arg ref="cyTableManagerServiceRef" />
 		<constructor-arg ref="fileUtilService" />
 		<constructor-arg ref="openBrowserService" />
+		<constructor-arg ref="cyDataTableFactoryServiceRef" />
 	</bean>
 
 	<bean id="importNetworkTableAction" class="org.cytoscape.tableimport.internal.actions.ImportNetworkTableAction">

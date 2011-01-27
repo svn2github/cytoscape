@@ -36,6 +36,8 @@
 	<osgi:reference id="cyNetworkNamingServiceRef" interface="org.cytoscape.session.CyNetworkNaming" />
 	<osgi:reference id="cyNetworkViewManagerServiceRef" interface="org.cytoscape.view.model.CyNetworkViewManager" />
 
+	<osgi:reference id="cyDataTableFactoryServiceRef" interface="org.cytoscape.model.CyTableFactory" />
+
 	<!--
 	This code registers the bean we just created "sampleTaskFactory" as an 
 	OSGi service of a particular type (org.cytoscape.task.NetworkTaskFactory).
