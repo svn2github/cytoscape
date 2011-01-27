@@ -4,7 +4,7 @@
   <parent>
     <artifactId>parent</artifactId>
     <groupId>org.cytoscape</groupId>
-    <version>3.0.0-alpha4-SNAPSHOT</version>
+    <version>3.0.0-alpha4</version>
   </parent>
 
   <properties>
@@ -97,7 +97,7 @@
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>event-api</artifactId>
-      <version>3.0.0-alpha2-SNAPSHOT</version>
+      <version>[3.0.0-alpha2,4.0.0)</version>
     </dependency>
 
     <dependency>
@@ -115,7 +115,7 @@
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>event-api</artifactId>
-      <version>3.0.0-alpha2-SNAPSHOT</version>
+      <version>[3.0.0-alpha2,4.0.0)</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
