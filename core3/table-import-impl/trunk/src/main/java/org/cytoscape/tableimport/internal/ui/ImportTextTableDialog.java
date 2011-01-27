@@ -2787,6 +2787,10 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			return;
 		}
 
+		if (CytoscapeServices.appMgr.getCurrentNetwork() == null){
+			return;	
+		}
+		
 		String selectedKeyAttribute = mappingAttributeComboBox.getSelectedItem().toString();
 
 		Iterator it;
@@ -3028,6 +3032,10 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			});
 
 		mappingAttributeComboBox.addItem(ID);
+
+		if (CytoscapeServices.appMgr.getCurrentNetwork() == null){
+			return;	
+		}
 
 		Set<String> keySet = this.selectedAttributes.getColumnTypeMap().keySet();
 		
