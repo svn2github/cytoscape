@@ -1,0 +1,4 @@
+The intent of this directory is to contain a comprehensive set of
+AUTOMATED acceptance tests for Cytoscape.  The tests should run
+the full Cytoscape application and exercise as much core functionality
+as possible.
