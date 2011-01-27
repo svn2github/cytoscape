@@ -32,14 +32,13 @@ package org.cytoscape.view.model;
 
 import java.util.Set;
 
-import org.cytoscape.model.Manager;
 import org.cytoscape.view.model.CyNetworkView;
 
 
 /**
  * Basic access to network views in an instance of Cytoscape.
  */
-public interface CyNetworkViewManager extends Manager {
+public interface CyNetworkViewManager {
 	/**
 	 * Provides the set of network views that are currently known to the network mananger.
 	 * 
@@ -78,4 +77,7 @@ public interface CyNetworkViewManager extends Manager {
 	 * @param view  a non-null network view
 	 */
 	public void addNetworkView(CyNetworkView view);
+
+	/** Releases all currently held references and resources. */
+	public void reset();
 }
