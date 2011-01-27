@@ -98,4 +98,26 @@ public interface CyEventHelper {
 	 * @param source The event source that the listener object should be removed from. 
 	 */
 	public <M extends CyMicroListener> void removeMicroListener(M listener, Class<M> clazz, Object source);
+
+	/**
+	 * This method will prevent any events fired from the specified source 
+	 * object from being propagated to listeners.  This applies to both
+	 * normal Listeners and MicroListeners.
+	 * @param eventSource The object that should have its events blocked 
+	 * from being sent.
+	 */
+	public void silenceEventSource(Object eventSource);
+
+	/**
+	 * This method will allow events fired from the specified source 
+	 * object to be propagated to listeners.  This applies to both
+	 * normal Listeners and MicroListeners.  This method only needs
+	 * to be called if the silenceEventSource(eventSource) method has
+	 * been called.  Otherwise, all events are by default propagated
+	 * normally.
+	 * @param eventSource The object that should have its events sent
+	 * to listeners.
+	 */
+	public void unsilenceEventSource(Object eventSource);
+
 }

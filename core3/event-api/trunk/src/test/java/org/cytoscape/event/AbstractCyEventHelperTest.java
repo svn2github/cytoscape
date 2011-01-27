@@ -48,17 +48,11 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 
 	final protected MicroEventSource microEventSource = new MicroEventSource(); 
 
-	/**
-	 *  DOCUMENT ME!
-	 */
 	public void testSynchronous() {
 		helper.fireSynchronousEvent(new StubCyEvent("homer"));
 		assertEquals(1, service.getNumCalls());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
 	public void testAsynchronous() {
 		try {
 			helper.fireAsynchronousEvent(new StubCyEvent("marge"));
@@ -71,7 +65,7 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 	}
 
 	// This is a performance test that counts the number of events fired in 1 second. 
-	// We verify that the microlistener approach is at faster than the
+	// We verify that the microlistener approach is at least 3 times faster than the
 	// event/listener combo. 
 	public void testLD1second() {
 		final long duration = 1000000000;
@@ -183,5 +177,78 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 			ie.printStackTrace();
 			fail();
 		}
+	}
+
+	public void testSynchronousSilenced() {
+		String source = "homer";
+		helper.silenceEventSource(source);
+		helper.fireSynchronousEvent(new StubCyEvent(source));
+		assertEquals(0, service.getNumCalls());
+	}
+
+	public void testAsynchronousSilenced() {
+		try {
+			String source = "homer";
+			helper.silenceEventSource(source);
+			helper.fireAsynchronousEvent(new StubCyEvent(source));
+			Thread.sleep(500); // TODO is there a better way to wait?
+			assertEquals(0, service.getNumCalls());
+		} catch (InterruptedException ie) {
+			ie.printStackTrace();
+			fail();
+		}
+	}
+
+	public void testAddMicroListenerSilenced() {
+		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
+		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
+		helper.silenceEventSource(microEventSource);
+
+		microEventSource.testFire( helper, 5 );
+		assertEquals("number of calls", 0,stub1.getNumCalls());
+
+		microEventSource.testFire( helper, 10 );
+		assertEquals("number of calls", 0,stub1.getNumCalls());
+	}
+
+	public void testSynchronousSilencedThenUnsilenced() {
+		String source = "homer";
+		helper.silenceEventSource(source);
+		helper.fireSynchronousEvent(new StubCyEvent(source));
+		assertEquals(0, service.getNumCalls());
+		helper.unsilenceEventSource(source);
+		helper.fireSynchronousEvent(new StubCyEvent(source));
+		assertEquals(1, service.getNumCalls());
+	}
+
+	public void testAsynchronousSilencedThenUnsilenced() {
+		try {
+			String source = "homer";
+			helper.silenceEventSource(source);
+			helper.fireAsynchronousEvent(new StubCyEvent(source));
+			Thread.sleep(500); // TODO is there a better way to wait?
+			assertEquals(0, service.getNumCalls());
+			helper.unsilenceEventSource(source);
+			helper.fireAsynchronousEvent(new StubCyEvent(source));
+			Thread.sleep(500); // TODO is there a better way to wait?
+			assertEquals(1, service.getNumCalls());
+		} catch (InterruptedException ie) {
+			ie.printStackTrace();
+			fail();
+		}
+	}
+
+	public void testAddMicroListenerSilencedThenUnsilenced() {
+		StubCyMicroListener stub1 = new StubCyMicroListenerImpl();	
+		helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
+		helper.silenceEventSource(microEventSource);
+
+		microEventSource.testFire( helper, 5 );
+		assertEquals("number of calls", 0,stub1.getNumCalls());
+
+		helper.unsilenceEventSource(microEventSource);
+
+		microEventSource.testFire( helper, 10 );
+		assertEquals("number of calls", 1,stub1.getNumCalls());
 	}
 }

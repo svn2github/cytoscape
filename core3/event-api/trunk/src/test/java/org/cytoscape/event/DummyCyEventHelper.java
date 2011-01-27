@@ -85,4 +85,10 @@ public class DummyCyEventHelper implements CyEventHelper {
 	public Object getLastAsynchronousEvent() {
 		return lastAsynchronousEvent;
 	}
+
+	public void silenceEventSource(Object o) {
+	}
+
+	public void unsilenceEventSource(Object o) {
+	}
 }
