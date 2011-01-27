@@ -13,6 +13,7 @@ import java.io.IOException;
 import javax.xml.bind.JAXBException;
 
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.util.swing.OpenBrowser;
@@ -28,7 +29,8 @@ public class ImportAttributeTableAction extends AbstractCyAction {
 			CyNetworkManager netMgr,
 			CyProperty<Bookmarks> bookmarksProp, BookmarksUtil bookmarksUtil,
 			GUITaskManager guiTaskManagerServiceRef, CyProperty cytoscapePropertiesServiceRef,
-			CyTableManager tblMgr, FileUtil fileUtilService, OpenBrowser openBrowserService) 
+			CyTableManager tblMgr, FileUtil fileUtilService, OpenBrowser openBrowserService,
+			CyTableFactory tableFactory) 
 
 	{
 		super("Attribute from Table (Text/MS Excel)...", appMgr);
@@ -45,6 +47,7 @@ public class ImportAttributeTableAction extends AbstractCyAction {
 		CytoscapeServices.fileUtil = fileUtilService;
 		CytoscapeServices.appMgr = appMgr;
 		CytoscapeServices.netMgr = netMgr;
+		CytoscapeServices.tableFactory = tableFactory;
 		
 	}
 

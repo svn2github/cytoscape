@@ -3,6 +3,7 @@ package org.cytoscape.tableimport.internal.util;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
@@ -33,4 +34,5 @@ public class  CytoscapeServices {
 	public static CyNetworkFactory cyNetworkFactoryServiceRef;
 	public static CyNetworkViewManager networkViewManager;
 	public static CyNetworkNaming cyNetworkNaming;
+	public static CyTableFactory tableFactory;
 }
