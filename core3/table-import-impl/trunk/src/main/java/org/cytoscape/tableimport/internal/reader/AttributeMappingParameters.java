@@ -537,4 +537,5 @@ public class AttributeMappingParameters implements MappingParameter {
 	public Boolean getCaseSensitive() {
 		return caseSensitive;
 	}
+	
 }

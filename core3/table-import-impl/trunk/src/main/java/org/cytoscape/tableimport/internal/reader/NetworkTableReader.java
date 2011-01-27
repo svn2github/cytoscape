@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
 
 
 /**
@@ -124,7 +125,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	 *
 	 * @throws IOException DOCUMENT ME!
 	 */
-	public void readTable() throws IOException {
+	public void readTable(CyTable table) throws IOException {
 		InputStream is = null;
 		String line;
 
@@ -183,7 +184,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	 */
 	//@Override
 	public void read() throws IOException {
-		readTable();
+		readTable(null);
 	}
 
 
@@ -203,5 +204,9 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	
 	public void setNetwork(CyNetwork network){
 		this.network = network;
+	}
+	
+	public MappingParameter getMappingParameter(){
+		return nmp;
 	}
 }

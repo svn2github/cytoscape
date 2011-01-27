@@ -48,6 +48,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.cytoscape.model.CyTable;
 import org.cytoscape.tableimport.internal.util.URLUtil;
 
 
@@ -185,7 +186,7 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	/**
 	 * Read table from the data source.
 	 */
-	public void readTable() throws IOException {
+	public void readTable(CyTable table) throws IOException {
 		InputStream is = null;
 
 		try {
@@ -215,9 +216,9 @@ public class DefaultAttributeTableReader implements TextTableReader {
 						if(parts.length>=mapping.getKeyIndex()+1) {
 							try {
 							if(importAll) {
-								parser.parseAll(parts);
+								parser.parseAll(table, parts);
 							} else
-								parser.parseEntry(parts);
+								parser.parseEntry(table, parts);
 							} catch (Exception ex) {
 								logger.warn("Couldn't parse row: "+ lineCount);
 							}
@@ -265,5 +266,9 @@ public class DefaultAttributeTableReader implements TextTableReader {
 			}
 		}
 		return sb.toString();
+	}
+	
+	public MappingParameter getMappingParameter() {
+		return mapping;
 	}
 }

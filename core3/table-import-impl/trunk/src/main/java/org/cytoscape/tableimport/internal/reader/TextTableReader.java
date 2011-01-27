@@ -39,6 +39,8 @@ import java.io.IOException;
 
 import java.util.List;
 
+import org.cytoscape.model.CyTable;
+
 /**
  * Interface of all text table readers.<br>
  * 
@@ -53,7 +55,7 @@ public interface TextTableReader {
 		NODE, EDGE, NETWORK;
 	}
 
-	public void readTable() throws IOException;
+	public void readTable(CyTable table) throws IOException;
 
 	public List<String> getColumnNames();
 
@@ -63,4 +65,6 @@ public interface TextTableReader {
 	 * @return Description of
 	 */
 	public String getReport();
+	
+	public MappingParameter getMappingParameter();
 }

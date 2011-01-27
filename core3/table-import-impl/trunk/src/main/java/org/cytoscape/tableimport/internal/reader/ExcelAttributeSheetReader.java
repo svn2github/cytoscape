@@ -44,7 +44,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.cytoscape.tableimport.internal.util.AttributeTypes;
-
+import org.cytoscape.model.CyTable;
 
 /**
  * Reader for Excel attribute workbook.<br>
@@ -115,7 +115,7 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	 *
 	 * @throws IOException DOCUMENT ME!
 	 */
-	public void readTable() throws IOException {
+	public void readTable(CyTable table) throws IOException {
 		Row row;
 		int rowCount = startLineNumber;
 		String[] cellsInOneRow;
@@ -124,9 +124,9 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 			cellsInOneRow = createElementStringArray(row);
 			try {
 				if(importAll)
-					parser.parseAll(cellsInOneRow);
+					parser.parseAll(table, cellsInOneRow);
 				else 
-					parser.parseEntry(cellsInOneRow);
+					parser.parseEntry(table, cellsInOneRow);
 			} catch (Exception ex) {
 				logger.warn("Couldn't parse row: " + rowCount, ex);
 			}
@@ -201,5 +201,9 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 		}
 
 		return sb.toString();
+	}
+	
+	public MappingParameter getMappingParameter(){
+		return mapping;
 	}
 }

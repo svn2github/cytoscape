@@ -42,6 +42,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.tableimport.internal.util.AttributeTypes;
 
 
@@ -94,7 +95,7 @@ public class ExcelNetworkSheetReader extends NetworkTableReader {
 	 * @throws IOException DOCUMENT ME!
 	 */
 	@Override
-	public void readTable() throws IOException {
+	public void readTable(CyTable table) throws IOException {
 		network.getCyRow().set("name", this.getNetworkName());		
 		parser.setNetwork(network);
 

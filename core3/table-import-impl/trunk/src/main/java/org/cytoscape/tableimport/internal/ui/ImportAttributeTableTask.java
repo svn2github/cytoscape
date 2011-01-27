@@ -41,6 +41,9 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableEntry;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.tableimport.internal.reader.GraphReader;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.view.model.CyNetworkView;
@@ -58,11 +61,14 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import org.cytoscape.tableimport.internal.reader.TextTableReader;
+import org.cytoscape.io.read.CyTableReader;
+import org.cytoscape.task.table.MapNetworkAttrTask;
+import org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType;
 
 /**
  *
  */
-public class ImportAttributeTableTask extends AbstractTask {
+public class ImportAttributeTableTask extends AbstractTask implements CyTableReader {
 
 	protected CyNetworkView[] cyNetworkViews;
 	protected VisualStyle[] visualstyles;
@@ -70,6 +76,9 @@ public class ImportAttributeTableTask extends AbstractTask {
 	private final TextTableReader reader;
 	private final String source;
 
+	private CyTable[] cyTables; 
+	private static int numImports = 0;
+	
 	/**
 	 * Creates a new ImportNetworkTask object.
 	 *
@@ -82,58 +91,59 @@ public class ImportAttributeTableTask extends AbstractTask {
 	}
 
 
+	//@Override
+	//public void runx(TaskMonitor tm) throws IOException {
+	//	tm.setProgress(0.10);
+		//this.reader.setNetwork(network);
+	//	if (this.cancelled){
+	//		return;
+	//	}
+	//	this.reader.readTable();
+	//	tm.setProgress(1.0);
+	//}
+
+	
 	@Override
 	public void run(TaskMonitor tm) throws IOException {
+	
+		CyTable table = CytoscapeServices.tableFactory.createTable("AttrTable " + Integer.toString(numImports++), 
+		                                           "name", String.class, true);
+		cyTables = new CyTable[] { table };
 
-		tm.setProgress(0.10);
-		//this.reader.setNetwork(network);
-
-		if (this.cancelled){
-			return;
+		try {
+			this.reader.readTable(table);
+			//loadAttributesInternal(table);
+		} finally 
+		{
+			//
 		}
 
-		this.reader.readTable();
+		Class<? extends CyTableEntry> type = getMappingClass();
 
-		//tm.setProgress(0.80);
-
-		//if (this.cancelled){
-		//	return;
-		//}
-
-
-		tm.setProgress(1.0);
-
-		//informUserOfGraphStats(network, tm);
+		if ( CytoscapeServices.netMgr.getNetworkSet().size() > 0 && type != null ) 
+			super.insertTasksAfterCurrentTask( new MapNetworkAttrTask(type,table,CytoscapeServices.netMgr,CytoscapeServices.appMgr) );
 	}
 
-	/**
-	 * Inform User of Network Stats.
-	 */
-	private void informUserOfGraphStats(final CyNetwork newNetwork, final TaskMonitor taskMonitor) {
-		NumberFormat formatter = new DecimalFormat("#,###,###");
-		StringBuffer sb = new StringBuffer();
-
-		// Give the user some confirmation
-		sb.append("Successfully loaded network from:  ");
-		sb.append(newNetwork.getCyRow().get("title", String.class));
-		sb.append("\n\nNetwork contains "
-				+ formatter.format(newNetwork.getNodeCount()));
-		sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
-		sb.append(" edges.\n\n");
-
-		String thresh = "0"; //CytoscapeServices.cytoscapePropertiesServiceRef.getProperties().getProperty("viewThreshold");
-
-		if (newNetwork.getNodeCount() < Integer.parseInt(thresh)) {
-			sb.append("Network is under " + thresh
-					+ " nodes.  A view will be automatically created.");
-		} else {
-			sb.append("Network is over " + thresh
-					+ " nodes.  A view has not been created."
-					+ "  If you wish to view this network, use "
-					+ "\"Create View\" from the \"Edit\" menu.");
+	//
+	private Class<? extends CyTableEntry> getMappingClass() {
+		
+		ObjectType type = reader.getMappingParameter().getObjectType();
+		
+		if (type == ObjectType.NODE){
+			return CyNode.class;
 		}
-
-		taskMonitor.setStatusMessage(sb.toString());
-	}	
-
+		else if (type == ObjectType.EDGE){
+			return CyEdge.class;
+		}
+		else if (type == ObjectType.NETWORK){
+			return CyNetwork.class;
+		}
+		return null; 
+	}
+	
+	
+	@Override
+	public CyTable[] getCyTables(){
+		return cyTables;
+	}
 }
