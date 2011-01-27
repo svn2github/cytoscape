@@ -242,19 +242,29 @@ public class AttributeMappingParameters implements MappingParameter {
 
 		Iterator it = null;
 
-
+		CyNetwork network = CytoscapeServices.appMgr.getCurrentNetwork();
 		switch (objectType) {
 			case NODE:
 				//attributes = Cytoscape.getNodeAttributes();
-				CyNetwork network = CytoscapeServices.appMgr.getCurrentNetwork();
-				attributes = CytoscapeServices.tblMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
+				
+				
+				if (network != null){
+					attributes = CytoscapeServices.tblMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
 
-				//existingAliases = Cytoscape.getOntologyServer().getNodeAliases();
-				it = network.getNodeList().iterator(); //Cytoscape.getRootGraph().nodesIterator();
+					//existingAliases = Cytoscape.getOntologyServer().getNodeAliases();
+					it = network.getNodeList().iterator(); //Cytoscape.getRootGraph().nodesIterator();					
+				}
 
 				break;
 
 			case EDGE:
+				if (network != null){
+					attributes = CytoscapeServices.tblMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
+
+					//existingAliases = Cytoscape.getOntologyServer().getNodeAliases();
+					it = network.getEdgeList().iterator(); //Cytoscape.getRootGraph().nodesIterator();					
+				}
+
 				//attributes = Cytoscape.getEdgeAttributes();
 				//existingAliases = Cytoscape.getOntologyServer().getEdgeAliases();
 				//it = Cytoscape.getRootGraph().edgesIterator();
