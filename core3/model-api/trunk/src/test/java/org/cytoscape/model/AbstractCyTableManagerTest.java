@@ -92,9 +92,9 @@ public abstract class AbstractCyTableManagerTest extends TestCase {
 	}
 	*/
 
-	public void testClear() {
+	public void testReset() {
 		assertFalse(mgr.getAllTables(true).isEmpty());
-		mgr.clear();
+		mgr.reset();
 		assertTrue(mgr.getAllTables(true).isEmpty());
 	}
 }
