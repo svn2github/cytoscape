@@ -128,7 +128,7 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 	}
 
 	@Override
-	public synchronized void clear() {
+	public synchronized void reset() {
 		networkMap.clear();
 	}
 }
