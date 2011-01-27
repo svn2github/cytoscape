@@ -103,17 +103,17 @@ import cytoscape.layout.CyLayoutAlgorithm;
 
 public class AutoSOMECluster extends AbstractNetworkClusterer implements TunableListener, ActionListener {
 
-        private String AutoSOME_Mode = "Normal";
-        private String[] mode = new String[]{"Normal","Precision","Speed"};
-        private Settings settings = new Settings();
-        private String[] attributeArray = new String[1];
-        private String dataAttribute;
-        private boolean heatmap=false;
-        private boolean finishedClustering = false;
-        private boolean ignoreMissing = false;
-        private boolean selectedNodes = false;
-        private List<CyEdge> edges;
-        private int MAXEDGES = 2000;
+	private String AutoSOME_Mode = "Normal";
+	private String[] mode = new String[]{"Normal","Precision","Speed"};
+	private Settings settings = new Settings();
+	private String[] attributeArray = new String[1];
+	private String dataAttribute;
+	private boolean heatmap=false;
+	private boolean finishedClustering = false;
+	private boolean ignoreMissing = false;
+	private boolean selectedNodes = false;
+	private List<CyEdge> edges;
+	private int MAXEDGES = 2000;
 
 	private EdgeAttributeHandler edgeAttributeHandler = null;
 
@@ -121,14 +121,14 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 	private CyLogger logger = null;
 	private RunAutoSOME runAutoSOME = null;
 
-        private Tunable logscaling, unitVar, medCent, sumSqr, ensembleRuns, fcnInput, fcnDM, mxedges;
+	private Tunable logscaling, unitVar, medCent, sumSqr, ensembleRuns, fcnInput, fcnDM, mxedges;
 
-        private List<NodeCluster> nodeCluster;
+	private List<NodeCluster> nodeCluster;
 
-        private List<String>attrList;
-        private List<String>attrOrderList;
-        private List<String>nodeOrderList;
-
+	private List<String>attrList;
+	private List<String>attrOrderList;
+	private List<String>nodeOrderList;
+	
 	public AutoSOMECluster(boolean heatmap) {
 		super();
 		clusterAttributeName = Cytoscape.getCurrentNetwork().getIdentifier()+"_AutoSOME_cluster";
@@ -137,13 +137,19 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		this.heatmap = heatmap;
 	}
 
-	public String getShortName() {return "AutoSOME";};
+	public String getShortName() {
+		if (heatmap)
+			return "AutoSOME (HeatMap)";
+		else
+			return "AutoSOME (Network)";
+	};
+
 	public String getName() {return "AutoSOME "+((settings.distMatrix) ? "Fuzzy " : "")+"Clustering";};
 
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
 		//edgeAttributeHandler.updateAttributeList();
-                // Everytime we ask for the panel, we want to update our attributes
+		// Everytime we ask for the panel, we want to update our attributes
 		Tunable attributeTunable = clusterProperties.get("attributeList");
 		attributeArray = getAllAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
@@ -152,7 +158,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 	}
 
 	public ClusterViz getVisualizer() {
-            return (heatmap) ? new KnnView() : new NewNetworkView(true);
+		return (heatmap) ? new KnnView() : new NewNetworkView(true);
 	}
 
 	public void initializeProperties() {

@@ -115,10 +115,11 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		JMenu menu = new JMenu("Cluster");
 		addClusterAlgorithm(menu, new HierarchicalCluster());
 		addClusterAlgorithm(menu, new KMeansCluster());
+		addClusterAlgorithm(menu, new AutoSOMECluster(true));
 		// addClusterAlgorithm(menu, new QTCluster());
 		menu.addSeparator();
 		addClusterAlgorithm(menu, new APCluster());
-		addClusterAlgorithm(menu, new AutoSOMECluster());
+		addClusterAlgorithm(menu, new AutoSOMECluster(false));
 		addClusterAlgorithm(menu, new ConnectedComponentsCluster());
 		addClusterAlgorithm(menu, new GLayCluster());
 		addClusterAlgorithm(menu, new MCODECluster());
@@ -150,6 +151,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 
 		// Finally, add the "Link networks" menu item.  Note that this is a little
 		// different in that it's a boolean
+		menu.addSeparator();
 		menu.add(new ClusterMakerLinkNetworks());
 		
 		

@@ -30,6 +30,7 @@ public class GSimpleGraphData {
 		private List<Node> nodeList;
 		private List<Edge> connectingEdges;
 
+		@SuppressWarnings("unchecked")
     public GSimpleGraphData(CyNetwork network, boolean selectedOnly, boolean undirectedEdges){
         this.network = network;
 				this.selectedOnly = selectedOnly;

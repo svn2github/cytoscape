@@ -61,6 +61,7 @@ public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm 
 
 
 	// For simple divisive clustering, these routines will do the group handling
+	@SuppressWarnings("unchecked")
 	protected void removeGroups(CyAttributes netAttributes, String networkID) {
 		// See if we already have groups defined (from a previous run?)
 		if (netAttributes.hasAttribute(networkID, GROUP_ATTRIBUTE)) {
@@ -78,13 +79,13 @@ public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm 
 	                                          CyAttributes nodeAttributes, 
 	                                          List<NodeCluster> cMap) { 
 
-		List<List<CyNode>> clusterList = new ArrayList(); // List of node lists
-		List<String>groupList = new ArrayList(); // keep track of the groups we create
+		List<List<CyNode>> clusterList = new ArrayList<List<CyNode>>(); // List of node lists
+		List<String>groupList = new ArrayList<String>(); // keep track of the groups we create
 		CyGroup first = null;
 		for (NodeCluster cluster: cMap) {
 			int clusterNumber = cluster.getClusterNumber();
 			String groupName = clusterAttributeName+"_"+clusterNumber;
-			List<CyNode>nodeList = new ArrayList();
+			List<CyNode>nodeList = new ArrayList<CyNode>();
 
 			for (CyNode node: cluster) {
 				nodeList.add(node);
@@ -150,23 +151,24 @@ public abstract class AbstractNetworkClusterer extends AbstractClusterAlgorithm 
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<List<CyNode>> getNodeClusters() {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		String netId = network.getIdentifier();
 
-		List<List<CyNode>> clusterList = new ArrayList(); // List of node lists
+		List<List<CyNode>> clusterList = new ArrayList<List<CyNode>>(); // List of node lists
 		String clusterAttribute = networkAttributes.getStringAttribute(netId, ClusterMaker.CLUSTER_ATTRIBUTE);
 
 		// Create the cluster Map
-		HashMap<Integer, List<CyNode>> clusterMap = new HashMap();
+		HashMap<Integer, List<CyNode>> clusterMap = new HashMap<Integer, List<CyNode>>();
 		for (CyNode node: (List<CyNode>)network.nodesList()) {
 			// For each node -- see if it's in a cluster.  If so, add it to our map
 			if (nodeAttributes.hasAttribute(node.getIdentifier(), clusterAttribute)) {
 				Integer cluster = nodeAttributes.getIntegerAttribute(node.getIdentifier(), clusterAttribute);
 				if (!clusterMap.containsKey(cluster)) {
-					List<CyNode> nodeList = new ArrayList();
+					List<CyNode> nodeList = new ArrayList<CyNode>();
 					clusterMap.put(cluster, nodeList);
 					clusterList.add(nodeList);
 				}
