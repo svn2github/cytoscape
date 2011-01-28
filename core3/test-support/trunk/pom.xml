@@ -14,6 +14,39 @@
   <version>1.0-SNAPSHOT</version>
   <name>test-support</name>
 
+    <scm>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/test-support/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/test-support/trunk</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/test-support/trunk</url>
+    </scm>
+
+    <repositories>
+        <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
+        <repository>
+            <id>cytoscape_snapshots</id>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <name>Cytoscape Snapshots</name>
+            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
+        <repository>
+            <id>cytoscape_releases</id>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <name>Cytoscape Releases</name>
+            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+
   <dependencies>
     <!-- testing the testers!!! -->
     <dependency>
