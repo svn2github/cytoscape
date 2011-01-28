@@ -15,16 +15,16 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
   <artifactId>model-api</artifactId>
-  <version>3.0.0-alpha2-SNAPSHOT</version>
+  <version>3.0.0-alpha2</version>
 
   <name>${bundle.symbolicName} [${bundle.namespace}]</name>
 
   <packaging>bundle</packaging>
 
   <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/model-api/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/model-api/trunk</developerConnection>
-    <url>http://chianti.ucsd.edu/svn/core3/model-api/trunk</url>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/model-api/tags/model-api-3.0.0-alpha2</connection>
+    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/model-api/tags/model-api-3.0.0-alpha2</developerConnection>
+    <url>http://chianti.ucsd.edu/svn/core3/model-api/tags/model-api-3.0.0-alpha2</url>
   </scm>
 
   <build>
@@ -97,7 +97,7 @@
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>event-api</artifactId>
-      <version>[3.0.0-alpha2,4.0.0)</version>
+      <version>3.0.0-alpha3</version>
     </dependency>
 
     <dependency>
@@ -115,7 +115,7 @@
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>event-api</artifactId>
-      <version>[3.0.0-alpha2,4.0.0)</version>
+      <version>3.0.0-alpha3</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
