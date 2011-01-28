@@ -862,12 +862,14 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     }                        
   
 	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		physicalNetworkPanel.establishSelected();
+		geneticNetworkPanel.establishSelected();
+		
 		// Build parameter object
 		if (buildSearchParameters() == false)
 			return;
 
 		// Run search algorithm
-
 		JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.displayCancelButton(true);
 		jTaskConfig.displayCloseButton(true);
