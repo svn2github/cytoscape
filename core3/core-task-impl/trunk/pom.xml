@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
 		<artifactId>parent</artifactId>
@@ -17,16 +15,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cytoscape</groupId>
 	<artifactId>core-task-impl</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>3.0.0-alpha1</version>
 
 	<name>${bundle.symbolicName}</name>
 
 	<packaging>bundle</packaging>
 
     <scm>
-        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/core-task-impl/trunk</connection>
-        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/core-task-impl/trunk</developerConnection>
-        <url>http://chianti.ucsd.edu/svn/core3/core-task-impl/trunk</url>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/core-task-impl/tags/core-task-impl-3.0.0-alpha1</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/core-task-impl/tags/core-task-impl-3.0.0-alpha1</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/core-task-impl/tags/core-task-impl-3.0.0-alpha1</url>
     </scm>
 
 	<repositories>
