@@ -2,25 +2,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<parent>
+		<artifactId>parent</artifactId>
+		<groupId>org.cytoscape</groupId>
+		<version>3.0.0-alpha3</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+    <groupId>org.cytoscape</groupId>
+    <artifactId>table-import-impl</artifactId>
+	<version>1.0-SNAPSHOT</version>
 
 	<properties>
 		<bundle.symbolicName>org.cytoscape.table-import-impl</bundle.symbolicName>
 		<bundle.namespace>org.cytoscape.tableimport</bundle.namespace>
 	</properties>
 
-	<parent>
-		<artifactId>parent</artifactId>
-		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-alpha3</version>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-    <groupId>org.cytoscape</groupId>
-    <artifactId>table-import-impl</artifactId>
-	<version>1.0-SNAPSHOT</version>
-
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
 
 	<packaging>bundle</packaging>
+
+    <scm>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/table-import-impl/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/table-import-impl/trunk</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/table-import-impl/trunk</url>
+    </scm>
 
 	<build>
 		<!-- Cytoscape requires Java 1.6 -->
@@ -102,17 +108,17 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -122,29 +128,29 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>io-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
     		<groupId>org.cytoscape</groupId>
     		<artifactId>swing-application-api</artifactId>
-    		<version>1.0-SNAPSHOT</version>
+    		<version>3.0.0-alpha1</version>
 		</dependency>
 
 		<dependency>
     		<groupId>org.cytoscape</groupId>
     		<artifactId>swing-util</artifactId>
-    		<version>1.0-SNAPSHOT</version>
+    		<version>3.0.0-alpha1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-swing-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
     
     	<dependency>
@@ -208,12 +214,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.4</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>test-support</artifactId>
-			<version>1.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
