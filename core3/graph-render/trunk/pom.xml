@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>1.0-SNAPSHOT</version>
+		<version>3.0.0-alpha4</version>
 	</parent>
 
 	<properties>
@@ -22,6 +22,12 @@
 	<name>${bundle.symbolicName}</name>
 
 	<packaging>bundle</packaging>
+
+    <scm>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/graph-render/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/graph-render/trunk</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/graph-render/trunk</url>
+    </scm>
 
 	<repositories>
 		<!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
@@ -95,12 +101,12 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>spacial</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
