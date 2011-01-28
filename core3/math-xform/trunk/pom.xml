@@ -2,7 +2,7 @@
   <parent>
     <groupId>org.cytoscape</groupId>
     <artifactId>parent</artifactId>
-    <version>3.0.0-alpha3</version>
+    <version>3.0.0-alpha4</version>
   </parent>
 
   <properties>
@@ -18,6 +18,12 @@
   <name>${bundle.symbolicName}</name>
 
   <packaging>bundle</packaging>
+
+    <scm>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/math-xform/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/math-xform/trunk</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/math-xform/trunk</url>
+    </scm>
 
   <repositories>
       <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
