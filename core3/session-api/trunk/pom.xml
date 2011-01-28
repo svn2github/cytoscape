@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-alpha4-SNAPSHOT</version>
+		<version>3.0.0-alpha4</version>
 	</parent>
 
 	<properties>
@@ -114,17 +114,17 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>presentation-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>property-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		
 		<!-- for testing -->
