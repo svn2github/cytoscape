@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.cytoscape</groupId>
 		<artifactId>parent</artifactId>
-		<version>3.0.0-alpha4-SNAPSHOT</version>
+		<version>3.0.0-alpha4</version>
 	</parent>
 
 	<properties>
@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>session-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		
 	</dependencies>
