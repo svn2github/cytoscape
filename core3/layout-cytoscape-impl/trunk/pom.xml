@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.cytoscape</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>3.0.0-alpha4</version>
   </parent>
 
   <properties>
@@ -21,6 +21,38 @@
 
   <packaging>bundle</packaging>
 
+    <scm>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/layout-cytoscape-impl/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/layout-cytoscape-impl/trunk</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/layout-cytoscape-impl/trunk</url>
+    </scm>
+
+    <repositories>
+        <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
+        <repository>
+            <id>cytoscape_snapshots</id>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <name>Cytoscape Snapshots</name>
+            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
+        <repository>
+            <id>cytoscape_releases</id>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <name>Cytoscape Releases</name>
+            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 
 	<build>
 		<plugins>
@@ -28,21 +60,12 @@
 				<groupId>org.ops4j</groupId>
 				<artifactId>maven-pax-plugin</artifactId>
 				<version>1.4</version>
-				<!--
-					| enable improved OSGi compilation support for the bundle
-					life-cycle. | to switch back to the standard bundle life-cycle,
-					move this setting | down to the maven-bundle-plugin section
-				-->
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>1.4.3</version>
-				<!--
-					| the following instructions build a simple set of public/private
-					classes into an OSGi bundle
-				-->
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
@@ -58,22 +81,22 @@
 		 <dependency>
 		 	<groupId>org.cytoscape</groupId>
 			<artifactId>model-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		 </dependency>
 		 <dependency>
 		 	<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		 </dependency>
 		 <dependency>
 		 	<groupId>org.cytoscape</groupId>
 			<artifactId>layout-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		 </dependency>
 		 <dependency>
 		 	<groupId>org.cytoscape</groupId>
 			<artifactId>presentation-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		 </dependency>
 		 <dependency>
 		 	<groupId>cytoscape-temp</groupId>
