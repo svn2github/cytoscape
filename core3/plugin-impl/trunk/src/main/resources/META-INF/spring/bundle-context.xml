@@ -19,22 +19,37 @@
 	<!-- constructor args are in alphabetical order! -->
 
 	<bean id="cyPluginAdapter" class="org.cytoscape.plugin.internal.CyPluginAdapterImpl">
-		<constructor-arg ref="cyDataTableFactoryRef" />
+		<constructor-arg ref="cyApplicationManagerRef" />
 		<constructor-arg ref="cyEventHelperRef" />
-		<!--
 		<constructor-arg ref="cyLayoutsRef" />
-		-->
 		<constructor-arg ref="cyNetworkFactoryRef" />
 		<constructor-arg ref="cyNetworkManagerRef" />
 		<constructor-arg ref="cyNetworkViewFactoryRef" />
-		<constructor-arg ref="cyRootNetworkFactoryRef" />
-		<constructor-arg ref="cySessionManagerRef" />
-		<constructor-arg ref="cySwingApplicationRef" />
-		<constructor-arg ref="presentationFactoryRef" />
-		<constructor-arg ref="taskManagerRef" />
-		<constructor-arg ref="visualMappingManagerRef" />
 		<constructor-arg ref="cyNetworkViewManagerRef" />
-		<constructor-arg ref="cyApplicationManagerRef" />
+		<constructor-arg ref="cyNetworkViewReaderManagerRef" />
+		<constructor-arg ref="cyNetworkViewWriterManagerRef" />
+		<constructor-arg ref="cyPropertyRef" />
+		<constructor-arg ref="cyPropertyReaderManagerRef" />
+		<constructor-arg ref="cyPropertyWriterManagerRef" />
+		<constructor-arg ref="cyRootNetworkFactoryRef" />
+		<constructor-arg ref="cyServiceRegistrarRef" />
+		<constructor-arg ref="cySessionManagerRef" />
+		<constructor-arg ref="cySessionReaderManagerRef" />
+		<constructor-arg ref="cySessionWriterManagerRef" />
+		<constructor-arg ref="cySwingApplicationRef" />
+		<constructor-arg ref="cyTableFactoryRef" />
+		<constructor-arg ref="cyTableManagerRef" />
+		<constructor-arg ref="cyTableReaderManagerRef" />
+		<!--
+		<constructor-arg ref="cyTableWriterManagerRef" />
+		-->
+		<constructor-arg ref="guiTaskManagerRef" />
+		<constructor-arg ref="presentationWriterManagerRef" />
+		<constructor-arg ref="renderingEngineManagerRef" />
+		<constructor-arg ref="taskManagerRef" />
+		<constructor-arg ref="undoSupportRef" />
+		<constructor-arg ref="visualMappingManagerRef" />
+		<constructor-arg ref="visualStyleFactoryRef" />
 	</bean>
 
 	<bean id="pluginLoaderTaskFactory" class="org.cytoscape.plugin.internal.PluginLoaderTaskFactory">
@@ -43,13 +58,13 @@
 			
 		
 	<bean id="pluginManagerAction" class="org.cytoscape.plugin.internal.action.PluginManagerAction">
-		<constructor-arg ref="cytoscapeDesktopService" />
+		<constructor-arg ref="cySwingApplicationRef" />
 		<constructor-arg ref="cyApplicationManagerRef" />
 		<constructor-arg ref="cytoscapeVersionService" />
 		<constructor-arg ref="bookmarkServiceRef" />		
 		<constructor-arg ref="bookmarksUtilServiceRef" />
-		<constructor-arg ref="guiTaskManagerServiceRef" />
-		<constructor-arg ref="cytoscapePropertiesServiceRef" />
+		<constructor-arg ref="guiTaskManagerRef" />
+		<constructor-arg ref="cyPropertyRef" />
 		<constructor-arg ref="cyPluginAdapter" />
 	</bean>
 	

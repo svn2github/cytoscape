@@ -1,20 +1,41 @@
 package org.cytoscape.plugin.internal;
 
+
+import org.cytoscape.plugin.CyPluginAdapter;
+import org.cytoscape.plugin.CyPluginAdapterTest;
+
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.CySessionManager;
-import org.cytoscape.application.swing.CySwingApplication;
-//import org.cytoscape.view.layout.CyLayouts;
 import org.cytoscape.view.model.CyNetworkViewFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.view.presentation.RenderingEngineFactory;
+import org.cytoscape.view.layout.CyLayouts;
+import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.work.TaskManager;
-import org.cytoscape.plugin.CyPluginAdapterTest;
+import org.cytoscape.work.undo.UndoSupport;
+import org.cytoscape.work.swing.GUITaskManager;
+import org.cytoscape.io.write.CyNetworkViewWriterManager;
+import org.cytoscape.io.write.CySessionWriterManager;
+//import org.cytoscape.io.write.CyTableWriterManager;
+import org.cytoscape.io.write.CyPropertyWriterManager;
+import org.cytoscape.io.write.PresentationWriterManager;
+import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.CySessionReaderManager;
+import org.cytoscape.io.read.CyTableReaderManager;
+import org.cytoscape.io.read.CyPropertyReaderManager;
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.service.util.CyServiceRegistrar;
+
+import java.util.Properties;
+
 
 import static org.mockito.Mockito.*;
 import org.junit.Before;
@@ -23,38 +44,37 @@ public class CyPluginAdapterImplTest extends CyPluginAdapterTest {
 
 	@Before
 	public void setUp() {
-
-		CyTableFactory cyTableFactory = mock(CyTableFactory.class);
-		CyEventHelper cyEventHelper = mock(CyEventHelper.class);
-//		CyLayouts cyLayouts = mock(CyLayouts.class);
-		CyNetworkFactory cyNetworkFactory = mock(CyNetworkFactory.class);
-		CyNetworkManager cyNetworkManager = mock(CyNetworkManager.class);
-		CyNetworkViewFactory cyNetworkViewFactory = mock(CyNetworkViewFactory.class);
-		CyRootNetworkFactory cyRootNetworkFactory = mock(CyRootNetworkFactory.class);
-		CySessionManager cySessionManager = mock(CySessionManager.class);
-		CySwingApplication cySwingApplication = mock(CySwingApplication.class);
-		RenderingEngineFactory presentationFactory = mock(RenderingEngineFactory.class);
-		TaskManager taskManager = mock(TaskManager.class);
-		VisualMappingManager visualMappingManager = mock(VisualMappingManager.class);
-		CyNetworkViewManager networkViewManager = mock(CyNetworkViewManager.class);
-		CyApplicationManager applicationManager = mock(CyApplicationManager.class);
-
 		adapter = new CyPluginAdapterImpl( 
-                cyTableFactory,
-                cyEventHelper,
-//                cyLayouts,
-             	cyNetworkFactory,
-             	cyNetworkManager,
-             	cyNetworkViewFactory,
-             	cyRootNetworkFactory,
-             	cySessionManager,
-             	cySwingApplication,
-             	presentationFactory,
-             	taskManager,
-             	visualMappingManager,
-		networkViewManager,
-		applicationManager
-			    );
+			mock(CyApplicationManager.class),
+			mock(CyEventHelper.class),
+			mock(CyLayouts.class),
+			mock(CyNetworkFactory.class),
+			mock(CyNetworkManager.class),
+			mock(CyNetworkViewFactory.class),
+			mock(CyNetworkViewManager.class),
+			mock(CyNetworkViewReaderManager.class),
+			mock(CyNetworkViewWriterManager.class),
+			(CyProperty<Properties>)mock(CyProperty.class),
+			mock(CyPropertyReaderManager.class),
+			mock(CyPropertyWriterManager.class),
+			mock(CyRootNetworkFactory.class),
+			mock(CyServiceRegistrar.class),
+			mock(CySessionManager.class),
+			mock(CySessionReaderManager.class),
+			mock(CySessionWriterManager.class),
+			mock(CySwingApplication.class),
+			mock(CyTableFactory.class),
+			mock(CyTableManager.class),
+			mock(CyTableReaderManager.class),
+//			mock(CyTableWriterManager.class),
+			mock(GUITaskManager.class),
+			mock(PresentationWriterManager.class),
+			mock(RenderingEngineManager.class),
+			mock(TaskManager.class),
+			mock(UndoSupport.class),
+			mock(VisualMappingManager.class),
+			mock(VisualStyleFactory.class)
+		    );
 	}
 	
 }
