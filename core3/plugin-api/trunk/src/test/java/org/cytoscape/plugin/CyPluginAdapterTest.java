@@ -18,11 +18,10 @@ public abstract class CyPluginAdapterTest {
 		assertNotNull("dataTable exists", adapter.getCyEventHelper());
 	} 
 
-// TODO once layout api has stabilized
-//	@Test
-//	public void testGetCyLayouts() { 
-//		assertNotNull("CyLayouts exists", adapter.getCyLayouts());
-//	} 
+	@Test
+	public void testGetCyLayouts() { 
+		assertNotNull("CyLayouts exists", adapter.getCyLayouts());
+	} 
 
 	@Test
 	public void testGetCyNetworkFactory() { 
@@ -50,11 +49,6 @@ public abstract class CyPluginAdapterTest {
 	} 
 
 	@Test
-	public void testGetPresentationFactory() { 
-		assertNotNull("PresentationFactory exists", adapter.getPresentationFactory());
-	}
-
-	@Test
 	public void testGetTaskManager() { 
 		assertNotNull("TaskManager exists", adapter.getTaskManager());
 	}
@@ -78,4 +72,87 @@ public abstract class CyPluginAdapterTest {
 	public void testGetCySwingApplication() { 
 		assertNotNull("CySwingApplication exists", adapter.getCySwingApplication());
 	} 
+
+	@Test
+	public void testCyTableManager() { 
+		assertNotNull("CyTableManager exists", adapter.getCyTableManager());
+	} 
+
+	@Test
+	public void testUndoSupport() { 
+		assertNotNull("UndoSupport exists", adapter.getUndoSupport());
+	} 
+
+	@Test
+	public void testGUITaskManager() { 
+		assertNotNull("GUITaskManager exists", adapter.getGUITaskManager());
+	} 
+
+	@Test
+	public void testGetRenderingEngineManager() { 
+		assertNotNull("RenderingEngineManager exists", adapter.getRenderingEngineManager());
+	} 
+
+	@Test
+	public void testVisualStyleFactory() { 
+		assertNotNull("VisualStyleFactory exists", adapter.getVisualStyleFactory());
+	} 
+
+	@Test
+	public void testCyPropertyProperties() { 
+		assertNotNull("CyProperty<Properties> exists", adapter.getCoreProperties());
+	} 
+
+	@Test
+	public void testCyNetworkViewReaderManager() { 
+		assertNotNull("CyNetworkViewReaderManager exists", adapter.getCyNetworkViewReaderManager());
+	} 
+
+	@Test
+	public void testCyPropertyReaderManager() { 
+		assertNotNull("CyPropertyReaderManager exists", adapter.getCyPropertyReaderManager());
+	} 
+
+	@Test
+	public void testCySessionReaderManager() { 
+		assertNotNull("CySessionReaderManager exists", adapter.getCySessionReaderManager());
+	} 
+
+	@Test
+	public void testCyTableReaderManager() { 
+		assertNotNull("CyTableReaderManager exists", adapter.getCyTableReaderManager());
+	} 
+
+	@Test
+	public void testCyNetworkViewWriterManager() { 
+		assertNotNull("CyNetworkViewWriterManager exists", adapter.getCyNetworkViewWriterManager());
+	} 
+
+	@Test
+	public void testCyPropertyWriterManager() { 
+		assertNotNull("CyPropertyWriterManager exists", adapter.getCyPropertyWriterManager());
+	} 
+
+	@Test
+	public void testCySessionWriterManager() { 
+		assertNotNull("CySessionWriterManager exists", adapter.getCySessionWriterManager());
+	} 
+
+/*
+	@Test
+	public void testCyTableWriterManager() { 
+		assertNotNull("CyTableWriterManager exists", adapter.getCyTableWriterManager());
+	} 
+	*/
+
+	@Test
+	public void testPresentationWriterManager() { 
+		assertNotNull("PresentationWriterManager exists", adapter.getPresentationWriterManager());
+	} 
+
+	@Test
+	public void testCyServiceRegistrar() { 
+		assertNotNull("CyServiceRegistrar exists", adapter.getCyServiceRegistrar());
+	} 
+
 }
