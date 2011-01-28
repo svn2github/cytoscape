@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<artifactId>parent</artifactId>
+		<groupId>org.cytoscape</groupId>
+		<version>3.0.0-alpha4</version>
+	</parent>
+
+	<properties>
+		<bundle.symbolicName>org.cytoscape.splash</bundle.symbolicName>
+		<bundle.namespace>org.cytoscape.splash</bundle.namespace>
+	</properties>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.cytoscape</groupId>
+	<artifactId>splash</artifactId>
+	<version>3.0.0-alpha1</version>
+
+	<name>${bundle.symbolicName}</name>
+
+	<packaging>bundle</packaging>
+
+    <scm>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/splash/tags/splash-3.0.0-alpha1</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/splash/tags/splash-3.0.0-alpha1</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/splash/tags/splash-3.0.0-alpha1</url>
+    </scm>
+
+    <repositories>
+        <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
+        <repository>
+            <id>cytoscape_snapshots</id>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <name>Cytoscape Snapshots</name>
+            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
+        <repository>
+            <id>cytoscape_releases</id>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <name>Cytoscape Releases</name>
+            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+
+	<build>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.ops4j</groupId>
+				<artifactId>maven-pax-plugin</artifactId>
+				<version>1.4</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.1.0</version>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+						<Bundle-Version>${pom.version}</Bundle-Version>
+						<_include>-osgi.bnd</_include>
+						<Include-Resource>${project.build.directory}/classes/resources</Include-Resource>
+					</instructions>
+				</configuration>
+			</plugin>
+        <!-- Used to create the splash and credit screens. 
+             The rasterizing needs to happen after the svg files
+             have been copied and filtered so that the version
+             number is correct.  -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>batik-maven-plugin</artifactId>
+          <version>1.0-beta-1</version>
+          <configuration>
+            <srcDir>${project.build.directory}/classes/resources/images/versioned-svg</srcDir>
+            <destDir>${project.build.directory}/classes/resources/images</destDir>
+          </configuration>
+          <executions>
+            <execution>
+              <!-- just needs to happen after resources are copied -->
+              <phase>compile</phase>
+              <goals>
+                <goal>rasterize</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_core</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_compendium</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+</project>
