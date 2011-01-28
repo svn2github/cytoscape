@@ -189,7 +189,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * @return the algorithm name
 	 */
 	public String getName() {
-		return "Fruchterman-Rheingold";
+		return "fruchterman-rheingold";
 	}
 
 	/**

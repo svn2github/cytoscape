@@ -166,10 +166,10 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 */
 	public String getName() {
 		if (supportWeights)
-			return "Kamada-Kawai-Noweight";
+			return "kamada-kawai-noweight";
 		else
 
-			return "Kamada-Kawai";
+			return "kamada-kawai";
 	}
 
 	/**
