@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-alpha4-SNAPSHOT</version>
+		<version>3.0.0-alpha4</version>
 	</parent>
 
 	<properties>
@@ -128,7 +128,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>viewmodel-api</artifactId>
-			<version>3.0.0-alpha3-SNAPSHOT</version>
+			<version>3.0.0-alpha3</version>
 		</dependency>
 
 		<!-- Testing -->
@@ -147,7 +147,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>presentation-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
