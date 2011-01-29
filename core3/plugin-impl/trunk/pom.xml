@@ -15,16 +15,16 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
   <artifactId>plugin-impl</artifactId>
-  <version>3.0.0-alpha2-SNAPSHOT</version>
+  <version>3.0.0-alpha2</version>
 
   <name>${bundle.symbolicName}</name>
 
   <packaging>bundle</packaging>
 
   <scm>
-    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/plugin-impl/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/plugin-impl/trunk</developerConnection>
-    <url>http://chianti.ucsd.edu/svn/core3/plugin-impl/trunk</url>
+    <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/plugin-impl/tags/plugin-impl-3.0.0-alpha2</connection>
+    <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/plugin-impl/tags/plugin-impl-3.0.0-alpha2</developerConnection>
+    <url>http://chianti.ucsd.edu/svn/core3/plugin-impl/tags/plugin-impl-3.0.0-alpha2</url>
   </scm>
 
   <build>
