@@ -532,6 +532,25 @@ public abstract class AbstractCyTableTest {
 	}
 
 	@Test
+	public void testGetAllValuesWithList() {
+		table.createColumn("x", Long.class);
+		table.createColumn("y", Double.class);
+		table.createListColumn("z", String.class);
+		attrs.set("x", 15L);
+		attrs.set("y", 3.14);
+		List<String> ls = new ArrayList<String>();
+		ls.add("homer");
+		attrs.set("z",ls);
+		final Map<String, Object> values = attrs.getAllValues();
+		assertTrue(values.keySet().contains("x"));
+		assertTrue(values.keySet().contains("y"));
+		assertTrue(values.keySet().contains("z"));
+		assertEquals((long)(Long)values.get("x"), 15L);
+		assertEquals((double)(Double)values.get("y"), 3.14, 0.00001);
+		assertEquals(values.get("z"), ls);
+	}
+
+	@Test
 	public void testGetType() {
 		table.createColumn("someInt", Integer.class);
 		assertEquals(table.getType("someInt"), Integer.class);
