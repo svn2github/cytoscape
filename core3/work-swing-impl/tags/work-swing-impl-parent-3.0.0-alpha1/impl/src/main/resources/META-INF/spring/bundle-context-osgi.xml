@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd                                                                                                                         
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
+        default-lazy-init="false">
+
+	<!-- Services provided by this bundle -->
+
+	<osgi:service id="undoSupportService" ref="undoSupport"
+		interface="org.cytoscape.work.undo.UndoSupport">
+	</osgi:service>
+
+	<osgi:service id="guiTunableInterceptorService" ref="guiTunableInterceptor">
+		<osgi:interfaces>
+			<value>org.cytoscape.work.swing.GUITunableInterceptor</value>
+			<value>org.cytoscape.work.TunableInterceptor</value>
+		</osgi:interfaces>
+	</osgi:service>
+
+	<osgi:service id="taskManagerService" ref="swingTaskManager">
+		<osgi:interfaces>
+			<value>org.cytoscape.work.swing.GUITaskManager</value>
+			<value>org.cytoscape.work.TaskManager</value>
+		</osgi:interfaces>
+	</osgi:service>
+
+	<osgi:service id="guiHandlerFactoryService" ref="guiHandlerFactory"
+		interface="org.cytoscape.work.TunableHandlerFactory">
+	</osgi:service>
+
+
+	<osgi:reference id="bookmarkServiceRef" interface="org.cytoscape.property.CyProperty"
+		filter="(cyPropertyName=bookmarks)" />
+	<osgi:reference id="bookmarksUtilServiceRef"
+		interface="org.cytoscape.property.bookmark.BookmarksUtil" />
+	
+	<osgi:set id="supportedFileTypes" 
+	    interface="org.cytoscape.io.read.InputStreamTaskFactory"
+	    cardinality="0..N">
+		<osgi:listener bind-method="addInputStreamTaskFactory"
+		               unbind-method="removeInputStreamTaskFactory" 
+		               ref="supportedFileTypesManager" />
+	</osgi:set>
+	
+</beans>
