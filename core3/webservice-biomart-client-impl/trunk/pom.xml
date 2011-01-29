@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.cytoscape</groupId>
-		<version>3.0.0-alpha4-SNAPSHOT</version>
+		<version>3.0.0-alpha5</version>
 	</parent>
 
 	<properties>
@@ -23,13 +23,17 @@
 
 	<packaging>bundle</packaging>
 
+    <scm>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/webservice-biomart-client-impl/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/webservice-biomart-client-impl/trunk</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/webservice-biomart-client-impl/trunk</url>
+    </scm>
+
 	<build>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 			</resource>
-			<!-- | example additional resource entries, useful when building Eclipse 
-				RCP applications -->
 		</resources>
 		<plugins>
 			<plugin>
@@ -65,25 +69,16 @@
 				<groupId>org.ops4j</groupId>
 				<artifactId>maven-pax-plugin</artifactId>
 				<version>1.4</version>
-				<!-- | enable improved OSGi compilation support for the bundle life-cycle. 
-					| to switch back to the standard bundle life-cycle, move this setting | down 
-					to the maven-bundle-plugin section -->
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>${maven-bundle-plugin.version}</version>
-				<!-- | the following instructions build a simple set of public/private 
-					classes into an OSGi bundle -->
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
 						<Bundle-Version>${pom.version}</Bundle-Version>
-						<!-- | assume public classes are in the top package, and private classes 
-							are under ".internal" -->
-
-						<!-- | each module can override these defaults in their osgi.bnd file -->
 						<_include>-osgi.bnd</_include>
 					</instructions>
 				</configuration>
@@ -96,23 +91,23 @@
 		<!-- Cytoscape modules -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>webservice-impl</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>webservice-api</artifactId>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-swing-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-application-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 
 
