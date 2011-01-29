@@ -1,0 +1,883 @@
+/*
+ Copyright (c) 2008, 2010, The Cytoscape Consortium (www.cytoscape.org)
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+package org.cytoscape.model.internal;
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.cytoscape.equations.Equation;
+import org.cytoscape.equations.Interpreter;
+
+import org.cytoscape.event.CyEventHelper;
+
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.SUIDFactory;
+import org.cytoscape.model.events.ColumnCreatedEvent;
+import org.cytoscape.model.events.ColumnDeletedEvent;
+import org.cytoscape.model.events.RowSetMicroListener;
+import org.cytoscape.model.events.RowCreatedMicroListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+public final class CyTableImpl implements CyTable {
+	private static final Logger logger = LoggerFactory.getLogger(CyTableImpl.class);
+
+	private final Set<String> currentlyActiveAttributes;
+	private final Map<String, Map<Object, Object>> attributes;
+	private final Map<String, Map<Object, Set<Object>>> reverse;
+	private final Map<Object, CyRow> rows;
+
+	private final Map<String, Class<?>> types;
+	private final Map<String, Class<?>> listElementTypes;
+
+	// This is not unique and might be changed by user.
+	private String title;
+
+	// Visibility value is immutable.
+	private final boolean pub;
+
+	// Unique ID.
+	private final long suid;
+
+	// name of the primary key column
+	private final String primaryKey;
+
+	// type of the primary key column
+	private final Class<?> primaryKeyType;
+
+	private final CyEventHelper eventHelper;
+	private final Interpreter interpreter;
+
+	String lastInternalError = null;
+
+	private final Map<String, VirtualColumn> virtualColumnMap;
+
+	/**
+	 * Creates a new CyTableImpl object.
+	 *
+	 * @param typeMap
+	 *            DOCUMENT ME!
+	 * @param name
+	 *            DOCUMENT ME!
+	 * @param pub
+	 *            DOCUMENT ME!
+	 */
+	public CyTableImpl(final String title, final String primaryKey, Class<?> pkType,
+			   final boolean pub, final CyEventHelper eventHelper,
+			   final Interpreter interpreter)
+	{
+		this.title = title;
+		this.primaryKey = primaryKey;
+		this.primaryKeyType = getClass(pkType);
+		this.pub = pub;
+		this.suid = SUIDFactory.getNextSUID();
+		this.eventHelper = eventHelper;
+		this.interpreter = interpreter;
+
+		currentlyActiveAttributes = new HashSet<String>();
+		attributes = new HashMap<String, Map<Object, Object>>();
+		reverse =  new HashMap<String, Map<Object, Set<Object>>>();
+		rows = new HashMap<Object, CyRow>();
+		types = new HashMap<String, Class<?>>();
+		listElementTypes = new HashMap<String, Class<?>>();
+
+		// Create the primary key column.  Do this explicitly
+		// so that we don't fire an event.
+		types.put(primaryKey, primaryKeyType);
+		attributes.put(primaryKey, new HashMap<Object, Object>());
+		reverse.put(primaryKey, new HashMap<Object, Set<Object>>());
+
+		virtualColumnMap = new HashMap<String, VirtualColumn>();
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	@Override
+	public long getSUID() {
+		return suid;
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	@Override
+	public boolean isPublic() {
+		return pub;
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	@Override
+	synchronized public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param title
+	 *            DOCUMENT ME!
+	 */
+	@Override
+	synchronized public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	@Override
+	synchronized public Map<String, Class<?>> getColumnTypeMap() {
+		return Collections.unmodifiableMap(types);
+	}
+
+	@Override
+	synchronized public Class<?> getType(final String columnName) {
+		return types.get(columnName);
+	}
+
+	@Override
+	synchronized public Class<?> getListElementType(final String columnName) {
+		final Class<?> listElementType = listElementTypes.get(columnName);
+		if (listElementType == null)
+			throw new IllegalArgumentException("can't get list element type for nonexistent or non-List column '"
+							   + columnName + "'!");
+		return listElementType;
+	}
+
+	@Override
+	public String getPrimaryKey() {
+		return primaryKey;
+	}
+
+	@Override
+	public Class<?> getPrimaryKeyType() {
+		return primaryKeyType;
+	}
+
+	@Override
+	synchronized public int getRowCount() {
+		return rows.size();
+	}
+
+	@Override
+	public void deleteColumn(final String columnName) {
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (attributes.containsKey(columnName) || virtColumn != null) {
+			synchronized(this) {
+				if (virtColumn != null) {
+					virtualColumnMap.remove(columnName);
+					types.remove(columnName);
+					listElementTypes.remove(columnName);
+				} else {
+					attributes.remove(columnName);
+					reverse.remove(columnName);
+					types.remove(columnName);
+					listElementTypes.remove(columnName);
+				}
+			}
+
+			// This event must be synchronous!
+			eventHelper.fireSynchronousEvent(new ColumnDeletedEvent(this, columnName));
+		}
+	}
+
+	@Override
+	public <T> void createColumn(String columnName, Class<? extends T> type) {
+		synchronized(this) {
+			if (columnName == null)
+				throw new NullPointerException("attribute name is null");
+
+			if (type == null)
+				throw new NullPointerException("type is null");
+
+			if (types.get(columnName) != null)
+				throw new IllegalArgumentException("attribute already exists for name: '"
+								   + columnName + "' with type: "
+								   + types.get(columnName).getName());
+
+			if (type == List.class)
+				throw new IllegalArgumentException(
+						"use createListColumn() to create List columns instead of createColumn for attribute '"
+						+ columnName + "'!");
+
+			types.put(columnName, type);
+			attributes.put(columnName, new HashMap<Object, Object>());
+			reverse.put(columnName, new HashMap<Object, Set<Object>>());
+		}
+
+		eventHelper.fireSynchronousEvent(new ColumnCreatedEvent(this, columnName));
+	}
+
+	@Override
+	public <T> void createListColumn(final String columnName, final Class<T> listElementType)
+	{
+		synchronized(this) {
+			if (columnName == null)
+				throw new NullPointerException("attribute name is null");
+
+			if (listElementType == null)
+				throw new NullPointerException("listElementType is null");
+
+			if (types.get(columnName) != null)
+				throw new IllegalArgumentException("attribute already exists for name: '"
+								   + columnName + "' with type: "
+								   + types.get(columnName).getName());
+			types.put(columnName, List.class);
+			listElementTypes.put(columnName, listElementType);
+			attributes.put(columnName, new HashMap<Object, Object>());
+			reverse.put(columnName, new HashMap<Object, Set<Object>>());
+		}
+
+		eventHelper.fireSynchronousEvent(new ColumnCreatedEvent(this, columnName));
+	}
+
+	@Override
+	synchronized public <T> List<T> getColumnValues(String columnName, Class<? extends T> type) {
+		if (columnName == null)
+			throw new NullPointerException("column name is null!");
+
+		if (type == null)
+			throw new NullPointerException("column type is null!");
+
+		if (columnName.equals(primaryKey)) {
+			final List<T> primaryKeys = new ArrayList<T>(rows.size());
+			for (final Object primaryKey : rows.keySet())
+				primaryKeys.add(type.cast(primaryKey));
+			return primaryKeys;
+		}
+
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return (List<T>)virtColumn.getColumnValues();
+
+		Map<Object, Object> vals = attributes.get(columnName);
+		if (vals == null)
+			throw new IllegalArgumentException("attribute \"" + columnName
+							   + "\" does not exist!");
+
+		List<T> l = new ArrayList<T>(vals.size());
+		for (final Object suid : vals.keySet()) {
+			final Object value = vals.get(suid);
+			if (value instanceof Equation) {
+				final StringBuilder errorMsg = new StringBuilder();
+				final Object eqnValue =
+					EqnSupport.evalEquation((Equation)value, suid, interpreter,
+								currentlyActiveAttributes,
+								columnName, errorMsg, this);
+				lastInternalError = errorMsg.toString();
+				if (eqnValue == null)
+					throw new IllegalStateException("can't convert an equation to a value!");
+				l.add(type.cast(eqnValue));
+			} else
+				l.add(type.cast(value));
+		}
+
+		return l;
+	}
+
+	@Override
+	public CyRow getRow(final Object key) {
+		checkKey(key);
+
+		CyRow row;
+		synchronized(this) {
+			row = rows.get(key);
+			if (row != null)
+				return row;
+
+			row = new InternalRow(key, this);
+			rows.put(key, row);
+		}
+
+		eventHelper.getMicroListener(RowCreatedMicroListener.class, this).handleRowCreated(key);
+		return row;
+	}
+
+	private boolean rowIsEmpty(final Object key) {
+		for (final String columnName : attributes.keySet()) {
+			if (!attributes.get(columnName).isEmpty())
+				return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	synchronized public String getLastInternalError() {
+		return lastInternalError;
+	}
+
+	private void checkKey(final Object suid) {
+		if (suid == null)
+			throw new NullPointerException("key is null");
+
+		if (!primaryKeyType.isAssignableFrom(suid.getClass()))
+			throw new IllegalArgumentException("key of type " + suid.getClass()
+							   + " and not the expected: "
+							   + primaryKeyType);
+	}
+
+	@Override
+	synchronized public List<CyRow> getAllRows() {
+		return new ArrayList<CyRow>(rows.values());
+	}
+
+	@Override
+	synchronized public Set<CyRow> getMatchingRows(final String columnName, final Object value) {
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return virtColumn.getMatchingRows(value);
+
+		final Set<CyRow> matchingRows = new HashSet<CyRow>();
+		if (columnName.equals(primaryKey)) {
+			final CyRow matchingRow = rows.get(value);
+			if (matchingRow != null)
+				matchingRows.add(matchingRow);
+			return matchingRows;
+		}
+
+		final Map<Object, Set<Object>> valueToKeysMap = reverse.get(columnName);
+
+		final Set<Object> keys = valueToKeysMap.get(value);
+		if (keys == null)
+			return new HashSet<CyRow>();
+
+		for (final Object key : keys)
+			matchingRows.add(rows.get(key));
+
+		return matchingRows;
+	}
+
+	private void setX(final Object key, final String columnName, final Object value) {
+		if (columnName == null)
+			throw new NullPointerException("columnName must not be null!");
+		if (value == null)
+			throw new NullPointerException("value must not be null!");
+
+		Object newValue;
+		Object newRawValue;
+
+		synchronized(this) {
+			final Class<?> columnType = types.get(columnName);
+
+			final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+			if (virtColumn == null) {
+				if (columnType == null || !attributes.containsKey(columnName))
+					throw new IllegalArgumentException("attribute: '" + columnName
+									   + "' does not yet exist!");
+			}
+
+			if (types.get(columnName) == List.class) {
+				setListX(key, columnName, value);
+				return;
+			}
+
+			if (!(value instanceof Equation))
+				checkType(value);
+
+			if (virtColumn != null) {
+				virtColumn.setValue(key, value);
+				newValue = virtColumn.getValue(key);
+				newRawValue = virtColumn.getRawValue(key);
+			} else {
+				Map<Object, Object> keyToValueMap = attributes.get(columnName);
+
+				if (!columnType.isAssignableFrom(value.getClass())
+				    && !EqnSupport.scalarEquationIsCompatible(value, columnType))
+					throw new IllegalArgumentException("value is not of type: "
+									   + columnType);
+
+				if (value instanceof Equation) {
+					newRawValue = value;
+					final Equation equation = (Equation)value;
+					// TODO this is an implicit addRow - not sure if we want to refactor this or not
+					keyToValueMap.put(key, equation);
+
+					final StringBuilder errorMsg = new StringBuilder();
+					newValue = EqnSupport.evalEquation(equation, key, interpreter,
+									   currentlyActiveAttributes, columnName,
+									   errorMsg, this);
+					lastInternalError = errorMsg.toString();
+					if (newValue == null)
+						logger.warn("attempted premature evaluation evaluation for "
+							    + equation);
+				} else {
+					// TODO this is an implicit addRow - not sure if we want to refactor this or not
+					newRawValue = newValue = columnType.cast(value);
+					final Object oldValue = keyToValueMap.get(key);
+					keyToValueMap.put(key, newValue);
+					addToReverseMap(columnName, key, oldValue, newValue);
+				}
+			}
+		}
+
+		eventHelper.getMicroListener(RowSetMicroListener.class,
+					     getRow(key)).handleRowSet(columnName, newValue, newRawValue);
+	}
+
+	private void addToReverseMap(final String columnName, final Object key,
+				     final Object oldValue, final Object newValue)
+	{
+		final Map<Object, Set<Object>> valueTokeysMap = reverse.get(columnName);
+		Set<Object> keys;
+		if (oldValue != null) {
+			keys = valueTokeysMap.get(oldValue);
+			if (keys != null) {
+				keys.remove(key);
+				if (keys.isEmpty())
+					valueTokeysMap.remove(oldValue);
+				else
+					valueTokeysMap.put(oldValue, keys);
+			}
+		}
+
+		keys = valueTokeysMap.get(newValue);
+		if (keys == null) {
+			keys = new HashSet<Object>();
+			valueTokeysMap.put(newValue, keys);
+		}
+
+		keys.add(key);
+	}
+
+	private void setListX(final Object key, final String columnName, final Object value) {
+		Object newValue;
+
+		synchronized(this) {
+			if (value instanceof List) {
+				final List list = (List)value;
+				if (!list.isEmpty())
+					checkType(list.get(0));
+			} else if (!(value instanceof Equation))
+				throw new IllegalArgumentException("value is a " + value.getClass().getName()
+								   + " and not a List for column '"
+								   + columnName + "'!");
+			else if (!EqnSupport.listEquationIsCompatible((Equation)value,
+								      listElementTypes.get(columnName)))
+				throw new IllegalArgumentException(
+								   "value is not a List equation of a compatible type for column '"
+								   + columnName + "'!");
+
+			final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+			if (virtColumn != null) {
+				virtColumn.setValue(key, value);
+				newValue = virtColumn.getListValue(key);
+			} else {
+				Map<Object, Object> keyToValueMap = attributes.get(columnName);
+
+				// TODO this is an implicit addRow - not sure if we want to refactor this or not
+				final Object oldValue = keyToValueMap.get(key);
+				keyToValueMap.put(key, value);
+				if (value instanceof Equation) {
+					final StringBuilder errorMsg = new StringBuilder();
+					newValue = EqnSupport.evalEquation((Equation)value, suid, interpreter,
+									   currentlyActiveAttributes, columnName,
+									   errorMsg, this);
+					lastInternalError = errorMsg.toString();
+				} else {
+					newValue = value;
+					addToReverseMap(columnName, key, oldValue, value);
+				}
+			}
+		}
+
+		eventHelper.getMicroListener(RowSetMicroListener.class,
+					     getRow(key)).handleRowSet(columnName, newValue, value);
+	}
+
+	synchronized private void unSetX(final Object key, final String columnName) {
+		synchronized(this) {
+			final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+			if (virtColumn != null)
+				virtColumn.setValue(key, null);
+			else {
+				if (!types.containsKey(columnName) || !attributes.containsKey(columnName))
+					throw new IllegalArgumentException("attribute: '" + columnName
+									   + "' does not yet exist!");
+
+				final Map<Object, Object> keyToValueMap = attributes.get(columnName);
+				if (!keyToValueMap.containsKey(key))
+					return;
+
+				final Object value = keyToValueMap.get(key);
+				if (!(value instanceof Equation))
+					removeFromReverseMap(columnName, key, value);
+				keyToValueMap.remove(key);
+			}
+		}
+
+		eventHelper.getMicroListener(RowSetMicroListener.class,
+					     getRow(key)).handleRowSet(columnName, null, null);
+	}
+
+	private void removeFromReverseMap(final String columnName, final Object key, final Object value) {
+		final Map<Object, Set<Object>> valueTokeysMap = reverse.get(columnName);
+		Set<Object> keys = valueTokeysMap.get(value);
+		keys.remove(key);
+		if (keys.isEmpty())
+			valueTokeysMap.remove(value);
+	}
+
+	synchronized Object getValueOrEquation(final Object key, final String columnName) {
+		if (columnName.equals(primaryKey))
+			return key;
+
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return virtColumn.getRawValue(key);
+		
+		Map<Object, Object> keyToValueMap = attributes.get(columnName);
+		if (keyToValueMap == null)
+			return null;
+
+		return keyToValueMap.get(key);
+	}
+
+	synchronized private <T> T getX(final Object key, final String columnName, final Class<? extends T> type) {
+		if (type.isAssignableFrom(List.class))
+			throw new IllegalArgumentException("use getList() to retrieve lists!");
+		lastInternalError = null;
+
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return (T)virtColumn.getValue(key);
+
+		final Object vl = getValueOrEquation(key, columnName);
+		if (vl == null)
+			return null;
+
+		if (vl instanceof Equation) {
+			final StringBuilder errorMsg = new StringBuilder();
+			final Object result =
+				EqnSupport.evalEquation((Equation)vl, key, interpreter,
+							currentlyActiveAttributes, columnName,
+							errorMsg, this);
+			lastInternalError = errorMsg.toString();
+			return result == null ? null : (T)EqnSupport.convertEqnResultToColumnType(type, result);
+		} else
+			return type.cast(vl);
+	}
+
+	Object getValue(Object key, String columnName) {
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return virtColumn.getValue(key);
+
+		final Object vl = getValueOrEquation(key, columnName);
+		if (vl == null)
+			return null;
+
+		if (vl instanceof Equation) {
+			final StringBuilder errorMsg = new StringBuilder();
+			final Object value =
+				EqnSupport.evalEquation((Equation)vl, key, interpreter,
+							currentlyActiveAttributes, columnName,
+							errorMsg, this);
+			lastInternalError = errorMsg.toString();
+			return value;
+		} else
+			return vl;
+	}
+
+	synchronized private <T> List<?extends T> getListX(final Object key, final String columnName,
+							   final Class<? extends T> listElementType)
+	{
+		final Class<?> expectedListElementType = listElementTypes.get(columnName);
+		if (expectedListElementType == null)
+			throw new IllegalArgumentException("'" + columnName
+							   + "' is either not a List or does not exist!");
+		if (expectedListElementType != listElementType)
+			throw new IllegalArgumentException("invalid list element type for column '"
+							   + columnName + ", found: " + listElementType.getName()
+							   + ", expected: " + expectedListElementType.getName()
+							   + "!");
+
+		lastInternalError = null;
+
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return (List<?extends T>)virtColumn.getListValue(key);
+
+		final Object vl = getValueOrEquation(key, columnName);
+		if (vl == null)
+			return null;
+
+		if (vl instanceof Equation) {
+			final StringBuilder errorMsg = new StringBuilder();
+			final Object result =
+				EqnSupport.evalEquation((Equation)vl, key, interpreter,
+							currentlyActiveAttributes, columnName,
+							errorMsg, this);
+			lastInternalError = errorMsg.toString();
+			return (List)result;
+		} else
+			return (List)vl;
+	}
+
+	synchronized private <T> boolean isSetX(final Object key, final String columnName,
+						final Class<? extends T> type)
+	{
+		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
+		if (virtColumn != null)
+			return virtColumn.getRawValue(key) != null;
+		else {
+			if (!attributes.containsKey(columnName))
+				return false;
+
+			if (!types.get(columnName).isAssignableFrom(type))
+				throw new IllegalArgumentException("type mismatch: expected \""
+								   + types.get(columnName).getName()
+								   + "\" got \"" + type.getName() + "\"!");
+
+			final Map<Object, Object> keyToValueMap = attributes.get(columnName);
+			return keyToValueMap.get(key) != null;
+		}
+	}
+
+	private Class<?> getClass(Class<?> c) {
+		if (c == Integer.class || c == Long.class || c == Double.class || c == String.class
+		    || c == Boolean.class)
+			return c;
+
+		if (Integer.class.isAssignableFrom(c))
+			return Integer.class;
+		else if (Long.class.isAssignableFrom(c))
+			return Long.class;
+		else if (Double.class.isAssignableFrom(c))
+			return Double.class;
+		else if (Boolean.class.isAssignableFrom(c))
+			return Boolean.class;
+		else if (String.class.isAssignableFrom(c))
+			return String.class;
+		else if (List.class.isAssignableFrom(c))
+			return List.class;
+		else if (Map.class.isAssignableFrom(c))
+			return Map.class;
+		else
+			throw new IllegalArgumentException("invalid class: " + c.getName());
+	}
+
+	private void checkType(Object o) {
+		if (o instanceof String)
+			return;
+		else if (o instanceof Integer)
+			return;
+		else if (o instanceof Boolean)
+			return;
+		else if (o instanceof Double)
+			return;
+		else if (o instanceof Long)
+			return;
+		else if (o instanceof Map) {
+			Map m = (Map) o;
+			Object[] keys = m.keySet().toArray();
+			if (keys.length > 0) {
+				checkType(m.get(keys[0]));
+				checkType(keys[0]);
+			}
+		} else
+			throw new RuntimeException("invalid type: " + o.getClass().toString());
+	}
+
+	@Override
+	public final String addVirtualColumn(final String virtualColumn, final String sourceColumn,
+					     final CyTable sourceTable, final String sourceJoinKey,
+					     final String targetJoinKey)
+	{
+		final String targetColumnName = getUniqueColumnName(virtualColumn);
+
+		synchronized(this) {
+			if (virtualColumn == null)
+				throw new NullPointerException("\"virtualColumn\" argument must never be null!");
+			if (sourceColumn == null)
+				throw new NullPointerException("\"sourceColumn\" argument must never be null!");
+			if (sourceTable == null)
+				throw new NullPointerException("\"sourceTable\" argument must never be null!");
+			if (sourceJoinKey == null)
+				throw new NullPointerException("\"sourceJoinKey\" argument must never be null!");
+			if (targetJoinKey == null)
+				throw new NullPointerException("\"targetJoinKey\" argument must never be null!");
+
+			final Class<?> sourceColumnType = sourceTable.getType(sourceColumn);
+			if (sourceColumnType == null)
+				throw new IllegalArgumentException("\"sourceColumn\" is not a column in \"sourceColumn\"!");
+
+			final Class<?> sourceJoinKeyType = sourceTable.getType(sourceJoinKey);
+			if (sourceJoinKeyType == null)
+				throw new IllegalArgumentException("\"sourceJoinKey\" is not a known column in \"sourceTable\"!");
+
+			final Class<?> targetJoinKeyType = this.getType(targetJoinKey);
+			if (targetJoinKeyType == null)
+				throw new IllegalArgumentException("\"targetJoinKey\" is not a known column in this table!");
+
+			if (sourceJoinKeyType != targetJoinKeyType)
+				throw new IllegalArgumentException("\"sourceJoinKey\" has a different type from \"targetJoinKey\"!");
+
+			types.put(targetColumnName, sourceColumnType);
+			if (sourceColumnType == List.class) {
+				final Class<?> listElementType = sourceTable.getListElementType(sourceColumn);
+				listElementTypes.put(targetColumnName, listElementType);
+			}
+			virtualColumnMap.put(
+					     targetColumnName,
+					     new VirtualColumn(sourceTable, sourceColumn, this, sourceJoinKey, targetJoinKey));
+		}
+
+		eventHelper.fireSynchronousEvent(new ColumnCreatedEvent(this, targetColumnName));
+		return targetColumnName;
+	}
+
+	private String getUniqueColumnName(final String preferredName) {
+		if (!types.containsKey(preferredName))
+			return preferredName;
+
+		String newUniqueName;
+		int i = 0;
+		do {
+			++i;
+			newUniqueName = preferredName + "-" + i;
+		} while (types.containsKey(newUniqueName));
+
+		return newUniqueName;
+	}
+
+	@Override
+	synchronized public final void addVirtualColumns(final CyTable sourceTable,
+							 final String sourceJoinKey,
+							 final String targetJoinKey)
+	{
+		if (sourceTable == null)
+			throw new NullPointerException("\"sourceTable\" argument must never be null!");
+		if (sourceJoinKey == null)
+			throw new NullPointerException("\"sourceJoinKey\" argument must never be null!");
+		if (targetJoinKey == null)
+			throw new NullPointerException("\"targetJoinKey\" argument must never be null!");
+
+		final Class<?> sourceJoinKeyType = sourceTable.getType(sourceJoinKey);
+		if (sourceJoinKeyType == null)
+			throw new IllegalArgumentException("\"sourceJoinKey\" is not a known column in \"sourceTable\"!");
+
+		final Class<?> targetJoinKeyType = this.getType(targetJoinKey);
+		if (targetJoinKeyType == null)
+			throw new IllegalArgumentException("\"targetJoinKey\" is not a known column in this table!");
+
+		if (sourceJoinKeyType != targetJoinKeyType)
+			throw new IllegalArgumentException("\"sourceJoinKey\" has a different type from \"targetJoinKey\"!");
+
+		final Map<String, Class<?>> nameToTypeMap = sourceTable.getColumnTypeMap();
+		for (final String column : nameToTypeMap.keySet()) {
+			if (column.equals(sourceJoinKey))
+				continue;
+
+			addVirtualColumn(column, column, sourceTable, sourceJoinKey, targetJoinKey);
+		}
+	}
+
+	@Override
+	public boolean isVirtual(final String columnName) {
+		if (!types.containsKey(columnName))
+			throw new IllegalArgumentException("\"" + columnName + "\" is not a known column in this table!");
+
+		return virtualColumnMap.containsKey(columnName);
+	}
+
+	private final class InternalRow implements CyRow {
+		private final Object key;
+		private final CyTable table;
+
+		InternalRow(Object key, CyTable table) {
+			this.key = key;
+			this.table = table;
+		}
+
+		public void set(String attributeName, Object value) {
+			if (value == null)
+				unSetX(key, attributeName);
+			else
+				setX(key, attributeName, value);
+		}
+
+		public <T> T get(String attributeName, Class<? extends T> c) {
+			return getX(key, attributeName, c);
+		}
+
+		public <T> List<?extends T> getList(String attributeName, Class<T> c) {
+			return getListX(key, attributeName, c);
+		}
+
+		public Object getRaw(String attributeName) {
+			return getValueOrEquation(key, attributeName);
+		}
+
+		public <T> boolean isSet(String attributeName, Class<? extends T> c) {
+			return isSetX(key, attributeName, c);
+		}
+
+		public Map<String, Object> getAllValues() {
+			final Map<String, Object> nameToValueMap =
+				new HashMap<String, Object>(types.size());
+			for (final String columnName : types.keySet())
+				nameToValueMap.put(columnName, getX(key, columnName, types.get(columnName)));
+
+			return nameToValueMap;
+		}
+
+		public CyTable getDataTable() {
+			return table;
+		}
+
+		@Override
+		public String toString() {
+			final StringBuilder builder = new StringBuilder();
+			final Map<String, Object> allVal = getAllValues();
+			for(String key: getAllValues().keySet())
+				builder.append(key + " = " + allVal.get(key) + ", ");
+			return builder.toString();
+		}
+	}
+}
