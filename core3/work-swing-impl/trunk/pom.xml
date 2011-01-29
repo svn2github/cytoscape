@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.cytoscape</groupId>
 		<artifactId>parent</artifactId>
-		<version>3.0.0-alpha4-SNAPSHOT</version>
+		<version>3.0.0-alpha5</version>
 	</parent>
 
 	<groupId>org.cytoscape</groupId>
@@ -22,6 +22,23 @@
 		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/work-swing-impl/trunk</developerConnection>
 		<url>http://chianti.ucsd.edu/svn/core3/work-swing-impl/trunk</url>
 	</scm>
+
+    <build>
+        <plugins>
+            <plugin>
+                <inherited>false</inherited>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <goals>deploy</goals>
+                    <!-- so that impl bundles with modules will build correctly -->
+                    <preparationGoals>clean install</preparationGoals>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 	<repositories>
 		<repository>
@@ -58,13 +75,13 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>work-swing-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -82,7 +99,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>io-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
