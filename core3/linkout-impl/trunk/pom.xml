@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.cytoscape</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>3.0.0-alpha4</version>
 	</parent>
 
 	<properties>
@@ -23,6 +23,39 @@
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
 
 	<packaging>bundle</packaging>
+
+    <scm>
+        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/linkout-impl/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/linkout-impl/trunk</developerConnection>
+        <url>http://chianti.ucsd.edu/svn/core3/linkout-impl/trunk</url>
+    </scm>
+
+    <repositories>
+        <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
+        <repository>
+            <id>cytoscape_snapshots</id>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <name>Cytoscape Snapshots</name>
+            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
+        <repository>
+            <id>cytoscape_releases</id>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <name>Cytoscape Releases</name>
+            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 
 	<build>
 		<plugins>
@@ -57,25 +90,17 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>core-task-api</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
+			<version>3.0.0-alpha2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-util</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>service-util</artifactId>
-			<version>3.0.0-alpha2-SNAPSHOT</version>
-		</dependency>
-		
-		<!-- This is for Spring prop file -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>${spring.version}</version>
-			<scope>provided</scope>
+			<version>3.0.0-alpha1</version>
 		</dependency>
 	</dependencies>
 
