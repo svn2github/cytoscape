@@ -84,7 +84,7 @@ public abstract class AbstractControlAction extends AbstractAction {
 
 	private void findSelectedNodes() {
 		List<View<CyNode>> snv = new ArrayList<View<CyNode>>();
-		for (CyNode n : CyTableUtil.getNodesInState(view.getModel(),CyTableEntry.SELECTED,true))
+		for (CyNode n : CyTableUtil.getNodesInState(view.getModel(),CyNetwork.SELECTED,true))
 			snv.add( view.getNodeView(n) );
 		selectedNodeViews = snv; 
 	}

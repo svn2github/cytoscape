@@ -90,7 +90,7 @@ public final class GraphConverter2 {
 			maxY = Math.max(maxY, currentNodeView.getVisualProperty(TwoDVisualLexicon.NODE_Y_LOCATION));
 		}
 
-		final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(graphView.getModel(),CyTableEntry.SELECTED,true);
+		final List<CyNode> selectedNodes = CyTableUtil.getNodesInState(graphView.getModel(),CyNetwork.SELECTED,true);
 		final boolean noNodesSelected = (!onlySelectedNodesMovable) || (selectedNodes.size() == 0);
 
 /* TODO HANDLE anchors
@@ -157,7 +157,7 @@ public final class GraphConverter2 {
 					if (noNodesSelected)
 						return true;
 
-					return node.getCyRow().get(CyTableEntry.SELECTED,Boolean.class); 
+					return node.getCyRow().get(CyNetwork.SELECTED,Boolean.class); 
 				}
 
 				public void setNodePosition(CyNode node, double xPos, double yPos) {
