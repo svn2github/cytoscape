@@ -114,15 +114,11 @@ public class NetworkSelectorPanelX extends JPanel implements PropertyChangeListe
 	@Override
 	public void actionPerformed(ActionEvent arg0)
 	{
-		System.out.println(building);
-		
 		if (building)
 		{
 			//updateSelection();
 			return;
 		}
-		
-		System.out.println("Setting preferred selection: "+networkComboBox.getSelectedItem());
 		
 		establishSelected();
 		

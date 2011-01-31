@@ -28,6 +28,9 @@ public class PanGIAEdgeContextMenuListener implements EdgeContextMenuListener
 
      public void addEdgeContextMenuItems(EdgeView ev, JPopupMenu menu)
      {
+    	 PanGIANodeContextMenuListener.addContextMenuItems(view, ev.getGraphView(), menu);
+    	 
+    	 /*
          if (menu == null)
                  return;
 
@@ -65,9 +68,7 @@ public class PanGIAEdgeContextMenuListener implements EdgeContextMenuListener
 	         
 	         menu.add(pangiaMenu);
          }
-         
-         
-         
+         */
          
 	}
 }

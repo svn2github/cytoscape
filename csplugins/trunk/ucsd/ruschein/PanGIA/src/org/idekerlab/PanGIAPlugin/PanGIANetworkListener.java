@@ -16,13 +16,11 @@ public class PanGIANetworkListener implements PropertyChangeListener
 
                 // Node right-click menu
                 final PanGIANodeContextMenuListener nodeMenuListener = new PanGIANodeContextMenuListener(view);
-                Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(
-                                nodeMenuListener);
+                Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(nodeMenuListener);
                 
                 // Edge right-click menu
                 final PanGIAEdgeContextMenuListener edgeMenuListener = new PanGIAEdgeContextMenuListener(view);
-                Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(
-                                edgeMenuListener);
+                Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(edgeMenuListener);
         }
 }
 

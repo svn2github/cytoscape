@@ -15,6 +15,7 @@ import org.idekerlab.PanGIAPlugin.utilities.files.FileUtil;
 import giny.model.Edge;
 import giny.model.Node;
 import giny.view.EdgeView;
+import giny.view.GraphView;
 import giny.view.NodeView;
 import cytoscape.Cytoscape;
 import cytoscape.CyNode;
@@ -31,78 +32,81 @@ import java.io.*;
 public class PanGIANodeContextMenuListener implements NodeContextMenuListener
 {
 	 private final CyNetworkView view;
-	 private CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
-
-
-     public PanGIANodeContextMenuListener(CyNetworkView view)
+	 
+	 public PanGIANodeContextMenuListener(CyNetworkView view)
      {
              this.view = view;
      }
 
      public void addNodeContextMenuItems(NodeView nv, JPopupMenu menu)
      {
+    	 addContextMenuItems(view, nv.getGraphView(), menu);
+     }
+     
+     public static void addContextMenuItems(final CyNetworkView aview, GraphView gv, JPopupMenu menu)
+     {
          if (menu == null)
-                 return;
+             return;
 
-         final JMenu pangiaMenu = new JMenu("PanGIA");
-
-         boolean selectedHasNested = false;
-         
-         for (Object n : nv.getGraphView().getSelectedNodes())
-        	 if (((ding.view.DNodeView)n).getNode().getNestedNetwork()!=null)
-        	 {
-        		 selectedHasNested = true;
-        		 break;
-        	 }
-         
-         boolean isOverviewNetwork = PanGIAPlugin.output.isAvailable() && view.getNetwork().getIdentifier().equals(PanGIAPlugin.output.getOverviewNetwork().getIdentifier());
-         
-         //ITEM1
-         if (selectedHasNested && isOverviewNetwork)
-         {
+	     final JMenu pangiaMenu = new JMenu("PanGIA");
+	
+	     boolean selectedHasNested = false;
+	     
+	     for (Object n : gv.getSelectedNodes())
+	    	 if (((ding.view.DNodeView)n).getNode().getNestedNetwork()!=null)
+	    	 {
+	    		 selectedHasNested = true;
+	    		 break;
+	    	 }
+	     
+	     boolean isOverviewNetwork = PanGIAPlugin.output.isAvailable() && aview.getNetwork().getIdentifier().equals(PanGIAPlugin.output.getOverviewNetwork().getIdentifier());
+	     
+	     //ITEM1
+	     if (selectedHasNested && isOverviewNetwork)
+	     {
 	         JMenuItem item = new JMenuItem();
 	         item.addActionListener(new ActionListener()
 	         {
 	             public void actionPerformed(ActionEvent e) {
-	            	 DetailedNetworkCreator.createDetailedView(view);
+	            	 DetailedNetworkCreator.createDetailedView(aview);
 	             }
 	         });
 		     item.setText("Create Detailed View");
 		
 		     pangiaMenu.add(item);
-         }
-         
-         //ITEM2
-         if (isOverviewNetwork)
-         {
+	     }
+	     
+	     //ITEM2
+	     if (isOverviewNetwork)
+	     {
 	         JMenuItem item2 = new JMenuItem();
 	         item2.setText("Export Modules to Tab-Delimited File");
 	         item2.addActionListener(new ActionListener()
 	         {
 	        	 public void actionPerformed(ActionEvent e) {
-	            	 saveModules(view);
+	            	 saveModules(aview);
 	             }
 	         });
 	         pangiaMenu.add(item2);
-         }
-         
-         //ITEM3
-         if (isOverviewNetwork)
-         {
+	     }
+	     
+	     //ITEM3
+	     if (isOverviewNetwork)
+	     {
 	         JMenuItem item3 = new JMenuItem();
 	         item3.setText("Export Module Map to Tab-Delimited File");
 	         item3.addActionListener(new ActionListener()
 	         {
 	        	 public void actionPerformed(ActionEvent e) {
-	            	 saveOverviewNetwork(view);
+	            	 saveOverviewNetwork(aview);
 	             }
 	         });
 	         pangiaMenu.add(item3);
-         }
-         
-         //ITEM4
-         if (PanGIAPlugin.output.isAvailable())
-         {
+	     }
+	     
+	     //ITEM4
+	     if (PanGIAPlugin.output.isAvailable())
+	     {
 	         JMenu item1 = new JMenu();
 	         item1.setText("Save Selected Nodes to Matrix File");
 	         
@@ -125,32 +129,34 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
 		             public void actionPerformed(ActionEvent e) {
 		            	 JFileChooser jfc = new JFileChooser();
 		            	 jfc.setCurrentDirectory(new File("."));
-		            	 int returnVal = jfc.showSaveDialog(view.getComponent());
+		            	 int returnVal = jfc.showSaveDialog(aview.getComponent());
 		            	 
 		            	 if (returnVal==JFileChooser.APPROVE_OPTION)
-		            		 saveNodesToMatrix(jfc.getSelectedFile(),ea);
+		            		 saveNodesToMatrix(aview, jfc.getSelectedFile(),ea);
 		             }
 		         });
 	        	 item1.add(eaItem);
 	         }
 	         pangiaMenu.add(item1);
-         }
+	     }
 	     
-         //MENU
-         menu.add(pangiaMenu);
+	     //MENU
+	     menu.add(pangiaMenu);
      }
      
-     private void saveNodesToMatrix(File file, String attr)
+     private static void saveNodesToMatrix(final CyNetworkView aview, File file, String attr)
      {
-    	 int[] selectedNodes = view.getSelectedNodeIndices();
+    	 CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
+    	 
+    	 int[] selectedNodes = aview.getSelectedNodeIndices();
     	 
     	 Set<Integer> choiceNodes = new HashSet<Integer>(1000);
     	 for (int i : selectedNodes)
     	 {
-    		 if (view.getRootGraph().getNode(i).getNestedNetwork()==null) choiceNodes.add(i);
+    		 if (aview.getRootGraph().getNode(i).getNestedNetwork()==null) choiceNodes.add(i);
     		 else
     		 {
-    			 for (int j : view.getRootGraph().getNode(i).getNestedNetwork().getNodeIndicesArray())
+    			 for (int j : aview.getRootGraph().getNode(i).getNestedNetwork().getNodeIndicesArray())
     				 choiceNodes.add(j);
     		 }
     	 }
@@ -166,7 +172,7 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
     	 String[] ids = new String[selectedNodes.length];
     	 
     	 for (int i=0;i<selectedNodes.length;i++)
-    		 ids[i] = view.getRootGraph().getNode(selectedNodes[i]).getIdentifier();
+    		 ids[i] = aview.getRootGraph().getNode(selectedNodes[i]).getIdentifier();
     	 
     	 double[][] m = new double[selectedNodes.length][];
     	 
@@ -179,9 +185,9 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
     		 {
     			 m[i][j] = Double.NaN;
     			 
-    			 for (int ei : view.getRootGraph().getConnectingEdgeIndicesArray(new int[]{selectedNodes[i],selectedNodes[j]}))
+    			 for (int ei : aview.getRootGraph().getConnectingEdgeIndicesArray(new int[]{selectedNodes[i],selectedNodes[j]}))
     			 {
-    				 Double d = edgeAttr.getDoubleAttribute(view.getRootGraph().getEdge(ei).getIdentifier(), attr);
+    				 Double d = edgeAttr.getDoubleAttribute(aview.getRootGraph().getEdge(ei).getIdentifier(), attr);
     				 
     				 if (d!=null)
     				 {
