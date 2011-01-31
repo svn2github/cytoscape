@@ -35,12 +35,14 @@ public class BypassManager {
 	private static final String PARENT_MENU_ITEM = "Visual Bypass";
 
 	private final CyServiceRegistrar registrar;
-	
+
 	private final EditorManager editorManager;
-	
+
 	private final SelectedVisualStyleManager selectedManager;
 
-	public BypassManager(final CyServiceRegistrar registrar, final EditorManager editorManager, final SelectedVisualStyleManager selectedManager) {
+	public BypassManager(final CyServiceRegistrar registrar,
+			final EditorManager editorManager,
+			final SelectedVisualStyleManager selectedManager) {
 		this.registrar = registrar;
 		this.editorManager = editorManager;
 		this.selectedManager = selectedManager;
@@ -73,15 +75,21 @@ public class BypassManager {
 				// Leaf
 				final Dictionary<String, String> vpProp = new Hashtable<String, String>();
 				vpProp.put(MENU_KEY, newMenu);
+				vpProp.put("useCheckBoxMenuItem", "true");
 
 				if (vp.getTargetDataType().equals(CyNode.class)) {
-					final NodeViewTaskFactory ntf = new NodeBypassMenuTaskFactory(null, vp, editorManager.getValueEditor(vp.getRange().getType()), selectedManager);
-					registrar.registerService(ntf, NodeViewTaskFactory.class, vpProp);
+					final NodeViewTaskFactory ntf = new NodeBypassMenuTaskFactory(
+							null, vp, editorManager.getValueEditor(vp
+									.getRange().getType()), selectedManager);
+					registrar.registerService(ntf, NodeViewTaskFactory.class,
+							vpProp);
 				} else if (vp.getTargetDataType().equals(CyEdge.class)) {
 					final EdgeViewTaskFactory etf = new EdgeBypassMenuTaskFactory();
-					registrar.registerService(etf, EdgeViewTaskFactory.class, vpProp);
+					registrar.registerService(etf, EdgeViewTaskFactory.class,
+							vpProp);
 				}
-				logger.debug("Bypass context menu registered: " + vp.getDisplayName());
+				logger.debug("Bypass context menu registered: "
+						+ vp.getDisplayName());
 			} else {
 				depthFirst(newMenu, child);
 			}
