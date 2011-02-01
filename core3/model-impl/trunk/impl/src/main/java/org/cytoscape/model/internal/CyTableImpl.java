@@ -48,6 +48,7 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.SUIDFactory;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
+import org.cytoscape.model.events.ColumnNameChangedEvent;
 import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.model.events.RowCreatedMicroListener;
 
@@ -117,26 +118,31 @@ public final class CyTableImpl implements CyTable {
 		virtualColumnMap = new HashMap<String, VirtualColumn>();
 	}
 
-	synchronized void updateColumnName(final String oldColumnName, final String newColumnName) {
-		if (currentlyActiveAttributes.contains(oldColumnName)) {
-			currentlyActiveAttributes.remove(oldColumnName);
-			currentlyActiveAttributes.add(newColumnName);
+	void updateColumnName(final String oldColumnName, final String newColumnName) {
+		synchronized(this) {
+			if (currentlyActiveAttributes.contains(oldColumnName)) {
+				currentlyActiveAttributes.remove(oldColumnName);
+				currentlyActiveAttributes.add(newColumnName);
+			}
+
+			final Map<Object, Object> keyValuePairs = attributes.get(oldColumnName);
+			if (keyValuePairs != null) {
+				attributes.remove(oldColumnName);
+				attributes.put(newColumnName, keyValuePairs);
+			}
+
+			final Map<Object, Set<Object>> valueKeysPairs = reverse.get(oldColumnName);
+			if (valueKeysPairs != null) {
+				reverse.remove(oldColumnName);
+				reverse.put(newColumnName, valueKeysPairs);
+			}
+
+			final CyColumn column = types.get(oldColumnName);
+			types.put(newColumnName, column);
 		}
 
-		final Map<Object, Object> keyValuePairs = attributes.get(oldColumnName);
-		if (keyValuePairs != null) {
-			attributes.remove(oldColumnName);
-			attributes.put(newColumnName, keyValuePairs);
-		}
-
-		final Map<Object, Set<Object>> valueKeysPairs = reverse.get(oldColumnName);
-		if (valueKeysPairs != null) {
-			reverse.remove(oldColumnName);
-			reverse.put(newColumnName, valueKeysPairs);
-		}
-
-		final CyColumn column = types.get(oldColumnName);
-		types.put(newColumnName, column);
+		eventHelper.fireSynchronousEvent(new ColumnNameChangedEvent(this, oldColumnName,
+									    newColumnName));
 	}
 
 	/**
