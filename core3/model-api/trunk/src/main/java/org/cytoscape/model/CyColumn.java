@@ -53,7 +53,9 @@ public interface CyColumn {
 	/** @return true if the column is the primary key, otherwise false. */
 	boolean isPrimaryKey();
 
-	/** @return true if the column is immutable i.e. cannot be deleted, otherwise false. */
+	/** @return true if the column is immutable i.e. cannot be deleted, otherwise false.
+	 *  Please not that this does not affect the ability to add or modify values in this column!
+	 */
 	boolean isImmutable();
 
 	/** Returns the table for this column.
