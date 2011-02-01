@@ -42,30 +42,25 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.view.CyNetworkView;
-import cytoscape.visual.VisualStyle;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.CyNetworkNaming;
-
-import giny.model.Node;
-import giny.view.NodeView;
 import giny.model.Edge;
+import giny.model.Node;
 import giny.view.EdgeView;
-import giny.view.Bend;
-
-import ding.view.DGraphView;
+import giny.view.NodeView;
 
 import java.awt.event.ActionEvent;
+import java.awt.geom.Point2D;
+import java.util.Iterator;
 
 import javax.swing.event.MenuEvent;
 
-import java.util.Iterator;
-
-import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.util.CyNetworkNaming;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
+import ding.view.DGraphView;
 
 /**
  *
@@ -132,6 +127,9 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 			}
 
 			Cytoscape.getVisualMappingManager().setVisualStyle(vs);
+			CyAttributesUtils.copyAttributes(origNet.getIdentifier(), new_network.getIdentifier(),
+					Cytoscape.getNetworkAttributes(), false);
+			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		}
 	}
 
