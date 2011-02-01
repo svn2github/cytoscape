@@ -1,7 +1,5 @@
 /*
- File: SelectFromFileListTaskFactory.java
-
- Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -26,30 +24,46 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-package org.cytoscape.task.internal.select;  
+*/
+package org.cytoscape.model;
 
 
-import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskIterator;
-import org.cytoscape.task.AbstractNetworkTaskFactory;
+import java.util.List;
 
 
-public class SelectFromFileListTaskFactory extends AbstractNetworkTaskFactory {
-	private final CyNetworkViewManager networkViewManager;
-	private final CyEventHelper eventHelper;
+/** This class describes a column in a CyTable. */
+public interface CyColumn {
+	/** @return the name of the column. */
+	String getName();
 
-	public SelectFromFileListTaskFactory(final CyNetworkViewManager networkViewManager,
-					     final CyEventHelper eventHelper)
-	{
-		this.networkViewManager = networkViewManager;
-		this.eventHelper        = eventHelper;
-	}
+	/** Change the name of this column.
+	 *  @param newName  the new column name
+	 */
+	void setName(String newName);
 
-	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new SelectFromFileListTask(net, networkViewManager,
-								   eventHelper));
-	} 
+	/** @return the data type of the column. */
+	Class<?> getType();
+
+	/** @return the data type of the list elements if the column type is List.class otherwise null */
+	Class<?> getListElementType(); 
+
+	/** @return true if the column is virtual, otherwise false. */
+	boolean isVirtual();
+
+	/** @return true if the column is the primary key, otherwise false. */
+	boolean isPrimaryKey();
+
+	/** @return true if the column is immutable i.e. cannot be deleted, otherwise false. */
+	boolean isImmutable();
+
+	/** Returns the table for this column.
+	 *  @return the table that this column is a part of
+	 */
+	CyTable getTable();
+
+	/** Returns all the values, some of which may be null, for this given column.
+	 *  @param type  the datatype of this column.  (You can use getType() to obtain it.)
+	 *  @return the values in this column in some arbitrary but consistent order
+	 */
+	<T> List<T> getValues(Class<? extends T> type);
 }

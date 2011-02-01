@@ -126,7 +126,7 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 		this.mainPanel = new JPanel();
 		
 		final String controllingAttrName = mapping.getMappingAttributeName();
-		final Class<?> attrType = attr.getType(controllingAttrName);
+		final Class<?> attrType = attr.getColumn(controllingAttrName).getType();
 		if (attrType != Double.class)
 			throw new IllegalArgumentException("Cannot support attribute data type: " + attrType);
 		
@@ -396,7 +396,7 @@ public abstract class ContinuousMappingEditorPanel<K, V> extends JPanel implemen
 		if (tracer.getRange(type) == 0) {
 			Double maxValue = Double.NEGATIVE_INFINITY;
 			Double minValue = Double.POSITIVE_INFINITY;
-			final List<Double> valueList = attr.getColumnValues(mapping.getMappingAttributeName(), Double.class);
+			final List<Double> valueList = attr.getColumn(mapping.getMappingAttributeName()).getValues(Double.class);
 			for (Double val : valueList) {
 				if (val > maxValue)
 					maxValue = val;

@@ -557,7 +557,8 @@ public class MapToCytoscape implements Mapper {
 			if (attrObject instanceof String) {
 				String object;
 				if (!attribExists(attributes, key)) {
-					attributes.getDataTable().createColumn(key, String.class);
+					attributes.getDataTable().createColumn(key, String.class,
+									       false);
 					object = null;
 				} else
 					object = attributes.get(key, String.class);
@@ -596,7 +597,7 @@ public class MapToCytoscape implements Mapper {
 
 	private <T> void addAttribute(final CyRow attributes, final String name, final T value) {
 		if (!attribExists(attributes, name))
-			attributes.getDataTable().createColumn(name, value.getClass());
+			attributes.getDataTable().createColumn(name, value.getClass(), false);
 		attributes.set(name, value);
 	}
 
@@ -604,12 +605,12 @@ public class MapToCytoscape implements Mapper {
 					  final List<T> value, final Class<T> listElementType)
 	{
 		if (!attribExists(attributes, name))
-			attributes.getDataTable().createListColumn(name, listElementType);
+			attributes.getDataTable().createListColumn(name, listElementType, false);
 		attributes.set(name, value);
 	}
 
 	private boolean attribExists(final CyRow attributes, final String attrName) {
-		return attributes.getDataTable().getType(attrName) != null;
+		return attributes.getDataTable().getColumn(attrName) != null;
 	}
 
 	/**

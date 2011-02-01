@@ -100,7 +100,7 @@ public class AttributeListModel
 		attributeNames = new ArrayList<String>();
 		final CyTable attributes = browserTableModel.getAttributes();
 		for (final String attrName : browserTableModel.getVisibleAttributeNames()) {
-			if (validAttrTypes.contains(attributes.getType(attrName)))
+			if (validAttrTypes.contains(attributes.getColumn(attrName).getName()))
 				attributeNames.add(attrName);
 		}
 		Collections.sort(attributeNames);

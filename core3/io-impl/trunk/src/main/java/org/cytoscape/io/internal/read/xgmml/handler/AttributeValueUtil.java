@@ -302,27 +302,10 @@ public class AttributeValueUtil {
 		// must make sure to clear out any existing values before we parse.
 		case LIST:
 			manager.currentAttributeID = name;
-			if (List.class == cyAtts.getDataTable().getColumnTypeMap().get(name))
+			if (cyAtts.getDataTable().getColumn(name) != null
+			    && cyAtts.getDataTable().getColumn(name).getType() == List.class)
 				cyAtts.set(name, null);
 			return ParseState.LISTATT;
-		case MAP:
-			manager.currentAttributeID = name;
-			if (Map.class == cyAtts.getDataTable().getColumnTypeMap().get(name))
-				cyAtts.set(name, null);
-			return ParseState.MAPATT;
-		case COMPLEX:
-			manager.currentAttributeID = name;
-			if (Map.class == cyAtts.getDataTable().getColumnTypeMap().get(name)) // assuming complex will
-				// become Map
-				cyAtts.set(name, null);
-			// If this is a complex attribute, we know that the value attribute
-			// is an integer
-			manager.numKeys = Integer.parseInt(atts.getValue("value"));
-			manager.complexMap = new HashMap[manager.numKeys];
-			manager.complexKey = new Object[manager.numKeys];
-			manager.attributeDefinition = new byte[manager.numKeys];
-			manager.level = 0;
-			return ParseState.COMPLEXATT;
 		}
 		return ParseState.NONE;
 	}

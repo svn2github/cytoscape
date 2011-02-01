@@ -48,9 +48,8 @@ public class DegreeSortedCircleLayoutTask extends AbstractGraphPartition {
 	public void layoutPartion(LayoutPartition partition) {
 		// Create attribute
 		CyTable table = tableMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
-		if (table.getColumnTypeMap().keySet().contains(DEGREE_ATTR_NAME) == false) {
-			table.createColumn(DEGREE_ATTR_NAME, Double.class);
-		}
+		if (table.getColumn(DEGREE_ATTR_NAME) == null)
+			table.createColumn(DEGREE_ATTR_NAME, Double.class, false);
 
 		// just add the unlocked nodes
 		List<LayoutNode> nodes = new ArrayList<LayoutNode>();

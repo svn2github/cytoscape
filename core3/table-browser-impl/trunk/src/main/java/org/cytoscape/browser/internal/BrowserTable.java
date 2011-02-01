@@ -287,7 +287,8 @@ public class BrowserTable extends JTable
 				final Object[] listItems = list.toArray();
 
 				if (listItems.length != 0) {
-					final String idField = model.getAttributes().getPrimaryKey();
+					final String idField =
+						model.getAttributes().getPrimaryKey().getName();
 					getCellContentView(List.class, listItems, idField, e);
 				}
 			}

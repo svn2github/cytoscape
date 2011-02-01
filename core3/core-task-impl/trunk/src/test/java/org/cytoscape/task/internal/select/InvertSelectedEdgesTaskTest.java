@@ -25,9 +25,8 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
-
 package org.cytoscape.task.internal.select;
+
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
@@ -37,6 +36,7 @@ import org.junit.Before;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
@@ -47,9 +47,12 @@ import org.cytoscape.model.CyEdge;
 
 
 public class InvertSelectedEdgesTaskTest extends AbstractSelectTaskTester {
+	CyEventHelper eventHelper;
+
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
+		this.eventHelper = mock(CyEventHelper.class);
 	}
 
 	@Test
@@ -59,7 +62,7 @@ public class InvertSelectedEdgesTaskTest extends AbstractSelectTaskTester {
 		when(r2.get("selected",Boolean.class)).thenReturn(true);	
 
 		// run the task
-		Task t = new InvertSelectedEdgesTask(net, networkViewManager);
+		Task t = new InvertSelectedEdgesTask(net, networkViewManager, eventHelper);
 		t.run(tm);
 
 		// check that the expected rows were set

@@ -35,6 +35,7 @@ import java.awt.event.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,7 @@ import java.util.HashMap;
 import org.cytoscape.browser.internal.AttributeListModel;
 import org.cytoscape.browser.internal.BrowserTableModel;
 import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.util.swing.CheckBoxJList;
@@ -541,7 +543,9 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 						final CyTable attrs, final String attrName,
 						final Map<String, Class<?>> attribNameToTypeMap)
 					{
-						attribNameToTypeMap.putAll(attrs.getColumnTypeMap());
+						for (final CyColumn column : attrs.getColumns())
+							attribNameToTypeMap.put(column.getName(),
+										column.getType());
 						attribNameToTypeMap.remove(attrName);
 					}
 				});
@@ -589,8 +593,8 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 						try {
 							final CyTable table = browserTableModel.getAttributes();
 							final Set<String> allAttrNames = new HashSet<String>();
-							for (final String attrName : table.getColumnTypeMap().keySet())
-								allAttrNames.add(attrName);
+							for (final CyColumn column : table.getColumns())
+								allAttrNames.add(column.getName());
 							browserTableModel.setVisibleAttributeNames(allAttrNames);
 						} catch (Exception ex) {
 							attributeList.clearSelection();
@@ -656,13 +660,13 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 	private String[] getAttributeArray() {
 		final CyTable attrs = browserTableModel.getAttributes();
-		final String primaryKey = attrs.getPrimaryKey();
-		final Map<String, Class<?>> nameToTypeMap = attrs.getColumnTypeMap();
-		final String[] attributeArray = new String[nameToTypeMap.size() - 1];
+		final CyColumn primaryKey = attrs.getPrimaryKey();
+		final Collection<CyColumn> columns = attrs.getColumns();
+		final String[] attributeArray = new String[columns.size() - 1];
 		int index = 0;
-		for (final String attrName : nameToTypeMap.keySet()) {
-			if (!attrName.equals(primaryKey))
-				attributeArray[index++] = attrName;
+		for (final CyColumn column : columns) {
+			if (!column.getName().equals(primaryKey))
+				attributeArray[index++] = column.getName();
 		}
 		Arrays.sort(attributeArray);
 
@@ -718,26 +722,26 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 		final CyTable attrs = browserTableModel.getAttributes();
 		if (type.equals("String"))
-			attrs.createColumn(newAttribName, String.class);
+			attrs.createColumn(newAttribName, String.class, false);
 		else if (type.equals("Floating Point"))
-			attrs.createColumn(newAttribName, Double.class);
+			attrs.createColumn(newAttribName, Double.class, false);
 		else if (type.equals("Integer"))
-			attrs.createColumn(newAttribName, Integer.class);
+			attrs.createColumn(newAttribName, Integer.class, false);
 		else if (type.equals("Long Integer"))
-			attrs.createColumn(newAttribName, Long.class);
+			attrs.createColumn(newAttribName, Long.class, false);
 		else if (type.equals("Boolean"))
-			attrs.createColumn(newAttribName, Boolean.class);
-		else if (type.equals("String List")) {
-			attrs.createListColumn(newAttribName, String.class);
-		} else if (type.equals("Floating Point List")) {
-			attrs.createListColumn(newAttribName, Double.class);
-		} else if (type.equals("Integer List")) {
-			attrs.createListColumn(newAttribName, Integer.class);
-		} else if (type.equals("Long Integer List")) {
-			attrs.createListColumn(newAttribName, Long.class);
-		} else if (type.equals("Boolean List")) {
-			attrs.createListColumn(newAttribName, Boolean.class);
-		} else
+			attrs.createColumn(newAttribName, Boolean.class, false);
+		else if (type.equals("String List"))
+			attrs.createListColumn(newAttribName, String.class, false);
+		else if (type.equals("Floating Point List"))
+			attrs.createListColumn(newAttribName, Double.class, false);
+		else if (type.equals("Integer List"))
+			attrs.createListColumn(newAttribName, Integer.class, false);
+		else if (type.equals("Long Integer List"))
+			attrs.createListColumn(newAttribName, Long.class, false);
+		else if (type.equals("Boolean List"))
+			attrs.createListColumn(newAttribName, Boolean.class, false);
+		else
 			throw new IllegalArgumentException("unknown attribute type \"" + type + "\"!");
 	}
 

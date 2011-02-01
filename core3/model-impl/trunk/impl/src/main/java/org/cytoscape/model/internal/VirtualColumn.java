@@ -36,47 +36,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyRow;
 
 
 final class VirtualColumn {
 	private final CyTable sourceTable;
-	private final String sourceColumn;
-	private final Class<?> sourceColumnType;
-	private final Class<?> sourceColumnListElementType;
+	private final CyColumn sourceColumn;
 	private final CyTableImpl targetTable;
-	private final String sourceJoinColumn;
-	private final Class<?> sourceJoinColumnType;
-	private final String targetJoinColumn;
-	private final Class<?> targetJoinColumnType;
+	private final CyColumn sourceJoinColumn;
+	private final CyColumn targetJoinColumn;
 
-	VirtualColumn(final CyTable sourceTable, final String sourceColumn,
-		      final CyTableImpl targetTable, final String sourceJoinColumn,
-		      final String targetJoinColumn)
+	VirtualColumn(final CyTable sourceTable, final String sourceColumnName,
+		      final CyTableImpl targetTable, final String sourceJoinColumnName,
+		      final String targetJoinColumnName)
 	{
-		this.sourceTable                 = sourceTable;
-		this.sourceColumn                = sourceColumn;
-		this.sourceColumnType            = sourceTable.getType(sourceColumn);
-		this.sourceColumnListElementType = (sourceColumnType == List.class)
-			? sourceTable.getListElementType(sourceColumn) : null;
-		this.targetTable                 = targetTable;
-		this.sourceJoinColumn            = sourceJoinColumn;
-		this.sourceJoinColumnType        = sourceTable.getType(sourceJoinColumn);
-		this.targetJoinColumn            = targetJoinColumn;
-		this.targetJoinColumnType        = targetTable.getType(targetJoinColumn);
+		this.sourceTable      = sourceTable;
+		this.sourceColumn     = sourceTable.getColumn(sourceColumnName);
+		this.targetTable      = targetTable;
+		this.sourceJoinColumn = sourceTable.getColumn(sourceJoinColumnName);
+		this.targetJoinColumn = targetTable.getColumn(targetJoinColumnName);
 	}
 
 	Object getRawValue(final Object targetKey) {
 		final CyRow sourceRow = getSourceRow(targetKey);
-		return (sourceRow == null) ? null : sourceRow.getRaw(sourceColumn);
+		return (sourceRow == null) ? null : sourceRow.getRaw(sourceColumn.getName());
 	}
 
 	void setValue(final Object targetKey, final Object value) {
 		final CyRow sourceRow = getSourceRow(targetKey);
 		if (sourceRow == null)
 			throw new IllegalArgumentException("can't set a value for a virtual column!");
-		sourceRow.set(sourceColumn, value);
+		sourceRow.set(sourceColumn.getName(), value);
 	}
 
 	Object getValue(final Object targetKey) {
@@ -84,7 +76,8 @@ final class VirtualColumn {
 		if (sourceRow == null)
 			return null;
 
-		final Object retValue = sourceRow.get(sourceColumn, sourceColumnType);
+		final Object retValue = sourceRow.get(sourceColumn.getName(),
+						      sourceColumn.getType());
 		if (retValue == null)
 			targetTable.lastInternalError = sourceTable.getLastInternalError();
 		return retValue;
@@ -94,18 +87,22 @@ final class VirtualColumn {
 		final CyRow sourceRow = getSourceRow(targetKey);
 		if (sourceRow == null)
 			return null;
-		final Object retValue = sourceRow.getList(sourceColumn, sourceColumnListElementType);
+		final Object retValue =
+			sourceRow.getList(sourceColumn.getName(),
+					  sourceColumn.getListElementType());
 		if (retValue == null)
 			targetTable.lastInternalError = sourceTable.getLastInternalError();
 		return retValue;
 	}
 
 	private CyRow getSourceRow(final Object targetKey) {
-		final Object joinKey = targetTable.getValue(targetKey, targetJoinColumn);
+		final Object joinKey =
+			targetTable.getValue(targetKey, targetJoinColumn.getName());
 		if (joinKey == null)
 			return null;
-		final Set<CyRow> sourceRows = sourceTable.getMatchingRows(sourceJoinColumn,
-									  joinKey);
+		final Set<CyRow> sourceRows =
+			sourceTable.getMatchingRows(sourceJoinColumn.getName(),
+						    joinKey);
 		if (sourceRows.size() != 1)
 			return null;
 
@@ -113,14 +110,16 @@ final class VirtualColumn {
 	}
 
 	Set<CyRow> getMatchingRows(final Object value) {
-		final Set<CyRow> sourceRows = sourceTable.getMatchingRows(sourceColumn, value);
+		final Set<CyRow> sourceRows =
+			sourceTable.getMatchingRows(sourceColumn.getName(), value);
 		final Set<CyRow> targetRows = new HashSet<CyRow>();
 		for (final CyRow sourceRow : sourceRows) {
-			final Object targetValue = sourceRow.get(sourceJoinColumn,
-								 sourceJoinColumnType);
+			final Object targetValue = sourceRow.get(sourceJoinColumn.getName(),
+								 sourceJoinColumn.getType());
 			if (targetValue != null) {
 				final Set<CyRow> rows =
-					targetTable.getMatchingRows(targetJoinColumn, targetValue);
+					targetTable.getMatchingRows(targetJoinColumn.getName(),
+								    targetValue);
 				targetRows.addAll(rows);
 			}
 		}
@@ -129,16 +128,18 @@ final class VirtualColumn {
 
 	List getColumnValues() {
 		final List targetJoinColumnValues =
-			targetTable.getColumnValues(targetJoinColumn, targetJoinColumnType);
+			targetTable.getColumnValues(targetJoinColumn.getName(),
+						    targetJoinColumn.getType());
 		List results = new ArrayList();
 		for (final Object targetJoinColumnValue : targetJoinColumnValues) {
 			final Set<CyRow> sourceRows =
-				sourceTable.getMatchingRows(sourceJoinColumn,
+				sourceTable.getMatchingRows(sourceJoinColumn.getName(),
 							    targetJoinColumnValue);
 			if (sourceRows.size() == 1) {
 				final CyRow sourceRow = sourceRows.iterator().next();
 				final Object value =
-					sourceRow.get(sourceColumn, sourceColumnType);
+					sourceRow.get(sourceColumn.getName(),
+						      sourceColumn.getType());
 				if (value != null)
 					results.add(value);
 			}

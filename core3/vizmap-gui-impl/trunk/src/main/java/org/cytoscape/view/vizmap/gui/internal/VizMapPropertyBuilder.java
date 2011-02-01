@@ -192,7 +192,8 @@ public class VizMapPropertyBuilder {
 			// Discrete Mapping
 			final SortedSet<K> attrSet = new TreeSet<K>();
 			for (CyTableEntry go : graphObjectSet) {
-				final Class<?> attrClass = go.getCyRow().getDataTable().getType(attrName);
+				final Class<?> attrClass =
+					go.getCyRow().getDataTable().getColumn(attrName).getType();
 
 				Object id = go.getCyRow().get(attrName, attrClass);
 				if (id != null)
@@ -236,7 +237,8 @@ public class VizMapPropertyBuilder {
 			String stringVal;
 
 			for (CyTableEntry go : graphObjectSet) {
-				Class<?> attrClass = go.getCyRow().getDataTable().getType(attrName);
+				Class<?> attrClass =
+					go.getCyRow().getDataTable().getColumn(attrName).getType();
 
 				id = go.getCyRow().get("name", String.class);
 

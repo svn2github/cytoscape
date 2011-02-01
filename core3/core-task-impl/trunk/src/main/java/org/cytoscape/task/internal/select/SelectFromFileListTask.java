@@ -30,32 +30,41 @@
 package org.cytoscape.task.internal.select;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.events.RowsAboutToChangeEvent;
+import org.cytoscape.model.events.RowsFinishedChangingEvent;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
-import org.cytoscape.view.model.CyNetworkViewManager;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.List;
 
 
 public class SelectFromFileListTask extends AbstractSelectTask {
 	@Tunable(description="Node selection file")
 	public File file;
 
-	public SelectFromFileListTask(final CyNetwork net, final CyNetworkViewManager networkViewManager) {
+	private final CyEventHelper eventHelper;
+
+	public SelectFromFileListTask(final CyNetwork net,
+				      final CyNetworkViewManager networkViewManager,
+				      final CyEventHelper eventHelper)
+	{
 		super(net, networkViewManager);
+		this.eventHelper = eventHelper;
 	}
 
-	public void run(TaskMonitor tm) throws Exception {
-		if ( file == null )
-			throw new NullPointerException("You must specify a file to load!");
+	public void run(final TaskMonitor tm) throws Exception {
+		if (file == null)
+			throw new NullPointerException("You must specify a non-null file to load!");
 
 		try {
 			FileReader fin = new FileReader(file);
@@ -72,21 +81,19 @@ public class SelectFromFileListTask extends AbstractSelectTask {
 
 			fin.close();
 
-			// loop through all the node of the graph
-			// selecting those in the file
-			List<CyNode> nodeList = net.getNodeList();
+			try {
+				eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, net.getDefaultNodeTable()));
 
-			for ( CyNode node : nodeList ) {
-				//List<String> synonyms = Semantics.getAllSynonyms(node, net);
-
-				//for ( String syn : synonyms ) {
-					//if ( fileNodes.contains(syn) ) {
-					if ( fileNodes.contains(node.getCyRow().get("name",String.class) ) ) {
+				// loop through all the node of the graph selecting those in the file
+				List<CyNode> nodeList = net.getNodeList();
+				for (final CyNode node : nodeList) {
+					if (fileNodes.contains(node.getCyRow().get("name", String.class)))
 						node.getCyRow().set("selected",true);
-				//		break;
-					}
-				//}
+				}
+			} finally {
+				eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, net.getDefaultNodeTable()));
 			}
+
 			updateView();
 
 		} catch (Exception e) {

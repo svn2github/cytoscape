@@ -142,7 +142,7 @@ public class GroupAttributesLayoutTask extends LayoutTask {
 		CyTable dataTable = tableMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
 		
 		//Class<?> klass = dataTable.getColumnTypeMap().get(attributeName);
-		Class klass = dataTable.getColumnTypeMap().get(attributeName);
+		Class klass = dataTable.getColumn(attributeName).getType();
 		
 		if (Comparable.class.isAssignableFrom(klass)){
 			//Class<Comparable<?>>kasted = (Class<Comparable<?>>) klass;

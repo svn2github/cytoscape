@@ -68,13 +68,13 @@
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>model-api</artifactId>
-      <version>3.0.0-alpha2</version>
+      <version>3.0.0-alpha3-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>test-support</artifactId>
-      <version>3.0.0-alpha1</version>
+      <version>3.0.0-alpha2-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>

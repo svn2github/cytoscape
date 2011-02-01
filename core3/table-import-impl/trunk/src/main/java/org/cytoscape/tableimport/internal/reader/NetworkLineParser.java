@@ -61,7 +61,7 @@ public class NetworkLineParser {
 	private final List<Long> edgeList;
 	private CyNetwork network;
 	private HashMap<String, CyNode> nodeMap = new HashMap<String, CyNode>();
-	
+
 	/**
 	 * Creates a new NetworkLineParser object.
 	 *
@@ -88,12 +88,12 @@ public class NetworkLineParser {
 			addEdgeAttributes(edge, parts);
 	}
 
-	
+
 	private CyEdge addNodeAndEdge(final String[] parts) {
-		
+
 		final CyNode source = createNode(parts, nmp.getSourceIndex());
-		final CyNode target = createNode(parts, nmp.getTargetIndex());	
-		
+		final CyNode target = createNode(parts, nmp.getTargetIndex());
+
 		// Single column nodes list.  Just add nodes.
 		if(source == null || target == null)
 			return null;
@@ -111,31 +111,31 @@ public class NetworkLineParser {
 		edge.getCyRow().set("interaction", interaction);
 		String edgeName = source.getCyRow().get("name", String.class)+ " ("+interaction+") "+ target.getCyRow().get("name", String.class);
 		edge.getCyRow().set("name", edgeName);
-		
+
 		edgeList.add(edge.getSUID());
-		
+
 		return edge;
 	}
-	
-	
+
+
 	private CyNode createNode(final String[] parts, final Integer nodeIndex) {
-		
+
 		CyNode node = null;
-				
+
 		if (nodeIndex.equals(-1) == false && (nodeIndex <= (parts.length - 1)) && (parts[nodeIndex] != null)) {
 			//node = Cytoscape.getCyNode(parts[nodeIndex], true);
-			
+
 			if (this.nodeMap.containsKey(parts[nodeIndex])){
 				return nodeMap.get(parts[nodeIndex]);
 			}
-			node = network.addNode();	
+			node = network.addNode();
 			node.getCyRow().set("name", parts[nodeIndex]);
 
 			nodeMap.put(parts[nodeIndex], node);
-			
+
 			nodeList.add(node.getSUID());
 		}
-		
+
 		return node;
 	}
 
@@ -152,12 +152,10 @@ public class NetworkLineParser {
 
 	private void createColumn(final CyEdge edge, final String attributeName, Class<?> theType){
 		// If attribute does not exist, create it
-		if (edge.getCyRow().getDataTable().getColumnTypeMap().get(attributeName)==null){
-			edge.getCyRow().getDataTable().createColumn(attributeName, theType);
-		}
+		if (edge.getCyRow().getDataTable().getColumn(attributeName) == null)
+			edge.getCyRow().getDataTable().createColumn(attributeName, theType, false);
 	}
-	
-	
+
 	/**
 	 * Based on the attribute types, map the entry to CyAttributes.<br>
 	 *
@@ -167,16 +165,16 @@ public class NetworkLineParser {
 	 */
 	//private void mapAttribute(final String key, final String entry, final int index) {
 	private void mapAttribute(final CyEdge edge, final String entry, final int index) {
-		
-		
+
+
 		Byte type = nmp.getAttributeTypes()[index];
-		
+
 		if (entry == null || entry.length() == 0) {
 			return;
 		}
 
 		switch (type) {
-			case AttributeTypes.TYPE_BOOLEAN:				
+			case AttributeTypes.TYPE_BOOLEAN:
 				//nmp.getAttributes()
 				//   .setAttribute(key, nmp.getAttributeNames()[index], new Boolean(entry));
 				createColumn(edge, nmp.getAttributeNames()[index],Boolean.class);
@@ -252,7 +250,7 @@ public class NetworkLineParser {
 
 		return listAttr;
 	}
-	
+
 	public void setNetwork(CyNetwork network){
 		this.network = network;
 	}

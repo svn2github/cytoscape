@@ -26,7 +26,7 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.task.internal.creation;
 
 
@@ -37,6 +37,7 @@ import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -72,14 +73,14 @@ abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
                            final CyNetworkViewManager networkViewManager,
                            final CyNetworkNaming cyNetworkNaming,
                            final VisualMappingManager vmm, final RenderingEngineManager reManager)
-    {
-        super(net, netmgr, networkViewManager);
-        this.cyroot = cyroot;
-        this.cnvf = cnvf;
-        this.cyNetworkNaming = cyNetworkNaming;
-        this.vmm = vmm;
+	{
+		super(net, netmgr, networkViewManager);
+		this.cyroot = cyroot;
+		this.cnvf = cnvf;
+		this.cyNetworkNaming = cyNetworkNaming;
+		this.vmm = vmm;
 		this.reManager = reManager;
-    }
+	}
 
 	abstract Collection<CyEdge> getEdges(CyNetwork netx, List<CyNode> nodes);
 
@@ -99,7 +100,7 @@ abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
 			throw new IllegalArgumentException("No nodes selected!");
 
 		// create subnetwork and add selected nodes and appropriate edges
-        final CySubNetwork newNet = cyroot.convert(currNet).addSubNetwork();
+		final CySubNetwork newNet = cyroot.convert(currNet).addSubNetwork();
 
 		for ( CyNode node : nodes )
 			newNet.addNode(node);
@@ -107,20 +108,20 @@ abstract class AbstractNetworkFromSelectionTask extends AbstractCreationTask {
 		for ( CyEdge edge : getEdges(currNet,nodes) )
 			newNet.addEdge(edge);
 
-        newNet.getCyRow().set("name",
-                cyNetworkNaming.getSuggestedSubnetworkTitle(currNet));
+		newNet.getCyRow().set(CyTableEntry.NAME,
+				      cyNetworkNaming.getSuggestedSubnetworkTitle(currNet));
 
-        networkManager.addNetwork(newNet);
+		networkManager.addNetwork(newNet);
 
-        if (currView == null)
-            return;
+		if (currView == null)
+			return;
 
 		// create new view
-        CyNetworkView newView = cnvf.getNetworkView(newNet);
+		CyNetworkView newView = cnvf.getNetworkView(newNet);
         
 
-        networkViewManager.addNetworkView(newView);
-
+		networkViewManager.addNetworkView(newView);
+	
 		// copy node location only.
 		for ( View<CyNode> newNodeView : newView.getNodeViews() ) {
 			View<CyNode> origNodeView = currView.getNodeView( newNodeView.getModel() );

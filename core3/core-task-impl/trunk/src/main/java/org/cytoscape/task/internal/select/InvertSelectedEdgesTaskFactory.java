@@ -30,20 +30,26 @@
 package org.cytoscape.task.internal.select;  
 
 
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.task.AbstractNetworkTaskFactory;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
-import org.cytoscape.task.AbstractNetworkTaskFactory;
 
 
 public class InvertSelectedEdgesTaskFactory extends AbstractNetworkTaskFactory {
 	private CyNetworkViewManager networkViewManager;
+	private final CyEventHelper eventHelper;
 
-	public InvertSelectedEdgesTaskFactory(final CyNetworkViewManager networkViewManager) {
+	public InvertSelectedEdgesTaskFactory(final CyNetworkViewManager networkViewManager,
+					      final CyEventHelper eventHelper)
+	{
 		this.networkViewManager = networkViewManager;
+		this.eventHelper        = eventHelper;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new InvertSelectedEdgesTask(net, networkViewManager));
+		return new TaskIterator(new InvertSelectedEdgesTask(net, networkViewManager,
+								    eventHelper));
 	} 
 }

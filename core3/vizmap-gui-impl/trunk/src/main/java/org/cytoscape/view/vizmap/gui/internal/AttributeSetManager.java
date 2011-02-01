@@ -1,17 +1,20 @@
 package org.cytoscape.view.vizmap.gui.internal;
 
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnCreatedListener;
 import org.cytoscape.model.events.ColumnDeletedEvent;
@@ -21,9 +24,10 @@ import org.cytoscape.model.events.NetworkAddedListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class AttributeSetManager implements ColumnDeletedListener,
-		ColumnCreatedListener, NetworkAddedListener {
-	
+		ColumnCreatedListener, NetworkAddedListener
+{
 	private static final Logger logger = LoggerFactory.getLogger(AttributeSetManager.class);
 
 	private static final Set<Class<? extends CyTableEntry>> GRAPH_OBJECTS;
@@ -52,7 +56,7 @@ public class AttributeSetManager implements ColumnDeletedListener,
 //			targetTables.addAll(tableMap.values());
 //
 //			for (final CyTable table : tableMap.values())
-//				attrNames.addAll(table.getColumnTypeMap().keySet());
+//				attrNames.addAll(table.getColumnMap().keySet());
 //		}
 	}
 
@@ -87,13 +91,10 @@ public class AttributeSetManager implements ColumnDeletedListener,
 
 			final AttributeSet attrSet = new AttributeSet(objectType);
 			for (CyTable table : tables) {
-				final Map<String, Class<?>> colTypeMap = table
-						.getColumnTypeMap();
-				final Set<String> names = colTypeMap.keySet();
-
-				for (String name : names) {
-					final Class<?> type = colTypeMap.get(name);
-					attrSet.getAttrMap().put(name, type);
+				final Collection<CyColumn> columns = table.getColumns();
+				for (final CyColumn column : columns) {
+					final Class<?> type = column.getType();
+					attrSet.getAttrMap().put(column.getName(), type);
 				}
 			}
 			attrSetMap.put(objectType, attrSet);
@@ -116,12 +117,11 @@ public class AttributeSetManager implements ColumnDeletedListener,
 				if (!targetTables.contains(table))
 					continue;
 
-				this.attrSets
-						.get(network)
-						.get(objectType)
-						.getAttrMap()
-						.put(newAttrName,
-								table.getType(newAttrName));
+				this.attrSets.get(network)
+					.get(objectType)
+					.getAttrMap()
+					.put(newAttrName,
+					     table.getColumn(newAttrName).getType());
 				return;
 			}
 		}

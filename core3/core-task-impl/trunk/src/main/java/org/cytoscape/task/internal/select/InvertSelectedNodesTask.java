@@ -56,7 +56,7 @@ public class InvertSelectedNodesTask extends AbstractSelectTask {
 			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, net.getDefaultNodeTable()));
 
 			for (final CyNode n : net.getNodeList())  {
-				if (n.getCyRow().get("selected", Boolean.class))
+				if (n.getCyRow().get(CyNetwork.SELECTED, Boolean.class))
 					n.getCyRow().set(CyNetwork.SELECTED, false);
 				else
 					n.getCyRow().set(CyNetwork.SELECTED, true);

@@ -62,8 +62,10 @@ public abstract class AbstractCyNodeTest extends TestCase {
 
 	public void testDefaultAttributes() {
 		CyNode n1 = net.addNode();
-		assertEquals(String.class, n1.getCyRow().getDataTable().getColumnTypeMap().get("name"));
-		assertEquals(Boolean.class, n1.getCyRow().getDataTable().getColumnTypeMap().get("selected"));
+		assertEquals(String.class,
+			     n1.getCyRow().getDataTable().getColumn("name").getType());
+		assertEquals(Boolean.class,
+			     n1.getCyRow().getDataTable().getColumn("selected").getType());
 	}
 
 	// by default a node should have a null nested network
@@ -135,14 +137,14 @@ public abstract class AbstractCyNodeTest extends TestCase {
 		CyNetwork net2 = mock(CyNetwork.class);
 		when(net2.getSUID()).thenReturn(223L);
 		final CyRow row = n1.getCyRow();
-		assertFalse(row.isSet(CyNode.NESTED_NETWORK_ATTR, String.class));
+		assertFalse(row.isSet(CyNode.NESTED_NETWORK_ATTR));
 		assertFalse(row.get(CyNode.HAS_NESTED_NETWORK_ATTR, Boolean.class));
 		n1.setNestedNetwork(net2);
-		assertTrue(row.isSet(CyNode.NESTED_NETWORK_ATTR, String.class));
+		assertTrue(row.isSet(CyNode.NESTED_NETWORK_ATTR));
 		assertTrue(row.get(CyNode.HAS_NESTED_NETWORK_ATTR, Boolean.class));
 		assertEquals("223", row.get(CyNode.NESTED_NETWORK_ATTR, String.class));
 		n1.setNestedNetwork(null);
-		assertFalse(row.isSet(CyNode.NESTED_NETWORK_ATTR, String.class));
+		assertFalse(row.isSet(CyNode.NESTED_NETWORK_ATTR));
 		assertFalse(row.get(CyNode.HAS_NESTED_NETWORK_ATTR, Boolean.class));
 	}
 }

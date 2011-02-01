@@ -28,6 +28,10 @@
 package org.cytoscape.model;
 
 
+import java.awt.Color;
+import java.lang.RuntimeException;
+import java.util.*;
+
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.model.events.ColumnCreatedEvent;
@@ -38,11 +42,6 @@ import org.cytoscape.event.DummyCyEventHelper;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-
-
-import java.awt.Color;
-import java.lang.RuntimeException;
-import java.util.*;
 
 
 public abstract class AbstractCyTableTest {
@@ -56,15 +55,15 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testAddStringAttr() {
-		table.createColumn("someString", String.class);
-		table.createColumn("someStringElse", String.class);
+		table.createColumn("someString", String.class, false);
+		table.createColumn("someStringElse", String.class, false);
 
 		attrs.set("someString", "apple");
 		attrs.set("someStringElse", "orange");
 
-		assertTrue(attrs.isSet("someString", String.class));
-		assertTrue(attrs.isSet("someStringElse", String.class));
-		assertFalse(attrs.isSet("yetAnotherString", String.class));
+		assertTrue(attrs.isSet("someString"));
+		assertTrue(attrs.isSet("someStringElse"));
+		assertFalse(attrs.isSet("yetAnotherString"));
 
 		assertEquals("apple", attrs.get("someString", String.class));
 		assertEquals("orange", attrs.get("someStringElse", String.class));
@@ -72,15 +71,15 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testAddIntAttr() {
-		table.createColumn("someInt", Integer.class);
-		table.createColumn("someOtherInt", Integer.class);
+		table.createColumn("someInt", Integer.class, false);
+		table.createColumn("someOtherInt", Integer.class, false);
 
 		attrs.set("someInt", 50);
 		attrs.set("someOtherInt", 100);
 
-		assertTrue(attrs.isSet("someInt", Integer.class));
-		assertTrue(attrs.isSet("someOtherInt", Integer.class));
-		assertFalse(attrs.isSet("yetAnotherInteger", Integer.class));
+		assertTrue(attrs.isSet("someInt"));
+		assertTrue(attrs.isSet("someOtherInt"));
+		assertFalse(attrs.isSet("yetAnotherInteger"));
 
 		assertEquals(50, attrs.get("someInt", Integer.class).intValue());
 		assertEquals(100, attrs.get("someOtherInt", Integer.class).intValue());
@@ -88,15 +87,15 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testAddLongAttr() {
-		table.createColumn("someLong", Long.class);
-		table.createColumn("someOtherLong", Long.class);
+		table.createColumn("someLong", Long.class, false);
+		table.createColumn("someOtherLong", Long.class, false);
 
 		attrs.set("someLong", 50L);
 		attrs.set("someOtherLong", 100L);
 
-		assertTrue(attrs.isSet("someLong", Long.class));
-		assertTrue(attrs.isSet("someOtherLong", Long.class));
-		assertFalse(attrs.isSet("yetAnotherLong", Long.class));
+		assertTrue(attrs.isSet("someLong"));
+		assertTrue(attrs.isSet("someOtherLong"));
+		assertFalse(attrs.isSet("yetAnotherLong"));
 
 		assertEquals(50, attrs.get("someLong", Long.class).intValue());
 		assertEquals(100, attrs.get("someOtherLong", Long.class).intValue());
@@ -104,15 +103,15 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testAddDoubleAttr() {
-		table.createColumn("someDouble", Double.class);
-		table.createColumn("someOtherDouble", Double.class);
+		table.createColumn("someDouble", Double.class, false);
+		table.createColumn("someOtherDouble", Double.class, false);
 
 		attrs.set("someDouble", 3.14);
 		attrs.set("someOtherDouble", 2.76);
 
-		assertTrue(attrs.isSet("someDouble", Double.class));
-		assertTrue(attrs.isSet("someOtherDouble", Double.class));
-		assertFalse(attrs.isSet("yetAnotherDouble", Double.class));
+		assertTrue(attrs.isSet("someDouble"));
+		assertTrue(attrs.isSet("someOtherDouble"));
+		assertFalse(attrs.isSet("yetAnotherDouble"));
 
 		assertEquals(3.14, attrs.get("someDouble", Double.class).doubleValue(), 0.000001);
 		assertEquals(2.76, attrs.get("someOtherDouble", Double.class).doubleValue(), 0.000001);
@@ -120,15 +119,15 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testAddBooleanAttr() {
-		table.createColumn("someBoolean", Boolean.class);
-		table.createColumn("someOtherBoolean", Boolean.class);
+		table.createColumn("someBoolean", Boolean.class, false);
+		table.createColumn("someOtherBoolean", Boolean.class, false);
 
 		attrs.set("someBoolean", true);
 		attrs.set("someOtherBoolean", false);
 
-		assertTrue(attrs.isSet("someBoolean", Boolean.class));
-		assertTrue(attrs.isSet("someOtherBoolean", Boolean.class));
-		assertFalse(attrs.isSet("yetAnotherBoolean", Boolean.class));
+		assertTrue(attrs.isSet("someBoolean"));
+		assertTrue(attrs.isSet("someOtherBoolean"));
+		assertFalse(attrs.isSet("yetAnotherBoolean"));
 
 		assertTrue(attrs.get("someBoolean", Boolean.class));
 		assertFalse(attrs.get("someOtherBoolean", Boolean.class));
@@ -136,7 +135,7 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testAddListAttr() {
-		table.createListColumn("someList", String.class);
+		table.createListColumn("someList", String.class, false);
 
 		List<String> l = new LinkedList<String>();
 		l.add("orange");
@@ -144,40 +143,25 @@ public abstract class AbstractCyTableTest {
 
 		attrs.set("someList", l);
 
-		assertTrue(attrs.isSet("someList", List.class));
+		assertTrue(attrs.isSet("someList"));
 
 		assertEquals(2, attrs.getList("someList", String.class).size());
 	}
 
 	@Test(expected=NullPointerException.class)
 	public void testCreateListColumnWithFirstArgNull() {
-		table.createListColumn(null, String.class);
+		table.createListColumn(null, String.class, false);
 	}
 
 	@Test(expected=NullPointerException.class)
 	public void testCreateListColumnWithSecondArgNull() {
-		table.createListColumn("someList", null);
+		table.createListColumn("someList", null, false);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testCreateListColumnWithAlreadyExistingCoulmnName() {
-		table.createListColumn("someList", String.class);
-		table.createListColumn("someList", String.class);
-	}
-
-	@Test
-	public void testAddMapAttr() {
-		table.createColumn("someMap", Map.class);
-
-		Map<String, Integer> m = new HashMap<String, Integer>();
-		m.put("orange", 1);
-		m.put("banana", 2);
-
-		attrs.set("someMap", m);
-
-		assertTrue(attrs.isSet("someMap", Map.class));
-
-		assertEquals(2, attrs.get("someMap", Map.class).size());
+		table.createListColumn("someList", String.class, false);
+		table.createListColumn("someList", String.class, false);
 	}
 
 	@Test
@@ -214,9 +198,9 @@ public abstract class AbstractCyTableTest {
 	// a different type.
 	@Test
 	public void testAddDuplicateNameAttr() {
-		table.createColumn("something", String.class);
+		table.createColumn("something", String.class, false);
 		try {
-			table.createColumn("something", Integer.class);
+			table.createColumn("something", Integer.class, false);
 		} catch (Exception e) {
 			return;
 		}
@@ -225,7 +209,7 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testRowSetMicroListener() {
-		table.createColumn("someString", String.class);
+		table.createColumn("someString", String.class, false);
 		attrs.set("someString", "apple");
 
 		assertTrue(eventHelper.getCalledMicroListeners().contains("handleRowSet"));
@@ -233,7 +217,7 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testColumnCreatedEvent() {
-		table.createColumn("someInt", Integer.class);
+		table.createColumn("someInt", Integer.class, false);
 
 		Object last = eventHelper.getLastSynchronousEvent();
 		assertNotNull( last );
@@ -242,7 +226,7 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testColumnDeletedEvent() {
-		table.createColumn("someInt", Integer.class);
+		table.createColumn("someInt", Integer.class, false);
 		table.deleteColumn("someInt");
 
 		Object last = eventHelper.getLastSynchronousEvent();
@@ -252,102 +236,111 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testColumnCreate() {
-		table.createColumn("someInt", Integer.class);
-		assertTrue( table.getColumnTypeMap().containsKey("someInt") );
-		assertEquals( table.getColumnTypeMap().get("someInt"), Integer.class );
+		table.createColumn("someInt", Integer.class, false);
+		assertTrue(collectionContains(table.getColumns(), "someInt") );
+		assertEquals(table.getColumn("someInt").getType(), Integer.class );
 	}
 
 	@Test
 	public void testColumnDelete() {
-		table.createColumn("someInt", Integer.class);
-		assertTrue( table.getColumnTypeMap().containsKey("someInt") );
+		table.createColumn("someInt", Integer.class, false);
+		assertTrue(collectionContains(table.getColumns(), "someInt"));
 		
 		table.deleteColumn("someInt");
-		assertFalse( table.getColumnTypeMap().containsKey("someInt") );
+		assertFalse(collectionContains(table.getColumns(), "someInt"));
+
+		table.createColumn("someInt2", Integer.class, true);
+		assertTrue(collectionContains(table.getColumns(), "someInt2"));
+		boolean failed = false;
+		try {
+			table.deleteColumn("someInt2");
+		} catch (Exception e) {
+			failed = true;
+		}
+		assertTrue(failed);
+	}
+
+	private static boolean collectionContains(final Collection<CyColumn> columns,
+						  final String columnName)
+	{
+		for (final CyColumn column : columns) {
+			if (column.getName().equals(columnName))
+				return true;
+		}
+
+		return false;
 	}
 
 	@Test
 	public void testPrimaryKey() {
-		String pk = table.getPrimaryKey();
-		assertEquals( table.getPrimaryKeyType(), table.getColumnTypeMap().get(pk) );
+		assertEquals(table.getPrimaryKey().getType(), Long.class);
 	}
 
 	@Test
 	public void testUnsetRowBoolean() {
-		table.createColumn("someBoolean", Boolean.class);
+		table.createColumn("someBoolean", Boolean.class, false);
 		attrs.set("someBoolean", true);
-		assertTrue(attrs.isSet("someBoolean", Boolean.class));
+		assertTrue(attrs.isSet("someBoolean"));
 		attrs.set("someBoolean", null);
-		assertFalse(attrs.isSet("someBoolean", Boolean.class));
+		assertFalse(attrs.isSet("someBoolean"));
 		attrs.set("someBoolean", false);
-		assertTrue(attrs.isSet("someBoolean", Boolean.class));
+		assertTrue(attrs.isSet("someBoolean"));
 		attrs.set("someBoolean", null);
-		assertFalse(attrs.isSet("someBoolean", Boolean.class));
+		assertFalse(attrs.isSet("someBoolean"));
 	}
 
 	@Test
 	public void testUnsetRowString() {
-		table.createColumn("someString", String.class);
+		table.createColumn("someString", String.class, false);
 		attrs.set("someString", "homer");
-		assertTrue(attrs.isSet("someString", String.class));
+		assertTrue(attrs.isSet("someString"));
 		attrs.set("someString", null);
-		assertFalse(attrs.isSet("someString", String.class));
+		assertFalse(attrs.isSet("someString"));
 	}
 
 	@Test
 	public void testUnsetRowInt() {
-		table.createColumn("someInt", Integer.class);
+		table.createColumn("someInt", Integer.class, false);
 		attrs.set("someInt", 5);
-		assertTrue(attrs.isSet("someInt", Integer.class));
+		assertTrue(attrs.isSet("someInt"));
 		attrs.set("someInt", null);
-		assertFalse(attrs.isSet("someInt", Integer.class));
+		assertFalse(attrs.isSet("someInt"));
 	}
 
 	@Test
 	public void testUnsetRowDouble() {
-		table.createColumn("someDouble", Double.class);
+		table.createColumn("someDouble", Double.class, false);
 		attrs.set("someDouble", 5.0);
-		assertTrue(attrs.isSet("someDouble", Double.class));
+		assertTrue(attrs.isSet("someDouble"));
 		attrs.set("someDouble", null);
-		assertFalse(attrs.isSet("someDouble", Double.class));
+		assertFalse(attrs.isSet("someDouble"));
 	}
 
 	@Test
 	public void testUnsetRowList() {
 		List<String> ls = new ArrayList<String>();
 		ls.add("asdf");
-		table.createListColumn("someList", String.class);
+		table.createListColumn("someList", String.class, false);
 		attrs.set("someList", ls);
-		assertTrue(attrs.isSet("someList", List.class));
+		assertTrue(attrs.isSet("someList"));
 		attrs.set("someList", null);
-		assertFalse(attrs.isSet("someList", List.class));
-	}
-
-	@Test
-	public void testUnsetRowMap() {
-		Map<Integer,String> mis = new HashMap<Integer,String>();
-		mis.put(1,"two");
-		table.createColumn("someMap", Map.class);
-		attrs.set("someMap", mis);
-		assertTrue(attrs.isSet("someMap", Map.class));
-		attrs.set("someMap", null);
-		assertFalse(attrs.isSet("someMap", Map.class));
+		assertFalse(attrs.isSet("someList"));
 	}
 
 	@Test
 	public void testGetListElementType() {
-		table.createListColumn("someList2", Boolean.class);
-		assertEquals(table.getListElementType("someList2"), Boolean.class);
+		table.createListColumn("someList2", Boolean.class, false);
+		assertEquals(table.getColumn("someList2").getListElementType(), Boolean.class);
 	}
 
 	@Test
 	public void testGetColumnValues() {
-		table.createColumn("someLongs", Long.class);
+		table.createColumn("someLongs", Long.class, false);
 		final CyRow row1 = table.getRow(1L);
 		row1.set("someLongs", 15L);
 		final CyRow row2 = table.getRow(2L);
 		row2.set("someLongs", -27L);
-		final List<Long> values = table.getColumnValues("someLongs", Long.class);
+		final List<Long> values = table.getColumn("someLongs").getValues(Long.class);
 		assertTrue(values.size() == 2);
 		assertTrue(values.contains(15L));
 		assertTrue(values.contains(-27L));
@@ -355,12 +348,12 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testGetColumnValues2() {
-		table.createColumn("someLongs", Long.class);
+		table.createColumn("someLongs", Long.class, false);
 		final CyRow row1 = table.getRow(1L);
 		row1.set("someLongs", 15L);
 		final CyRow row2 = table.getRow(2L);
 		row2.set("someLongs", -27L);
-		final List<Long> values = table.getColumnValues(table.getPrimaryKey(), Long.class);
+		final List<Long> values = table.getPrimaryKey().getValues(Long.class);
 		assertTrue(values.size() == 2);
 		assertTrue(values.contains(1L));
 		assertTrue(values.contains(2L));
@@ -368,40 +361,40 @@ public abstract class AbstractCyTableTest {
 
 	@Test(expected=NullPointerException.class)
 	public void testGetRowWithNullKey() {
-		table.createColumn("someLongs", Long.class);
+		table.createColumn("someLongs", Long.class, false);
 		final CyRow row1 = table.getRow(null);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetRowWithWrongKeyType() {
-		table.createColumn("someLongs", Long.class);
+		table.createColumn("someLongs", Long.class, false);
 		final CyRow row1 = table.getRow("key");
 	}
 
 	@Test(expected=NullPointerException.class)
 	public void testCreateColumnWithFirstArgNull() {
-		table.createColumn(null, Map.class);
+		table.createColumn(null, Map.class, false);
 	}
 
 	@Test(expected=NullPointerException.class)
 	public void testCreateColumnWithSecondArgNull() {
-		table.createColumn("someMap", null);
+		table.createColumn("someMap", null, false);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testCreateColumnWithListColmnType() {
-		table.createColumn("someList", List.class);
+		table.createColumn("someList", List.class, false);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetForListCoulmnWithInvalidValueType() {
-		table.createListColumn("someList", String.class);
+		table.createListColumn("someList", String.class, false);
 		attrs.set("someList", 3.5);
 	}
 
 	@Test
 	public void testGetMatchingColumns() {
-		table.createColumn("someLongs", Long.class);
+		table.createColumn("someLongs", Long.class, false);
 		final CyRow row1 = table.getRow(1L);
 		row1.set("someLongs", 15L);
 		final CyRow row2 = table.getRow(2L);
@@ -418,10 +411,10 @@ public abstract class AbstractCyTableTest {
 		assertEquals(table.getTitle(), "my title");
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void testGetListElementTypeForANonListColumn() {
-		table.createColumn("someList2", Boolean.class);
-		table.getListElementType("someList2");
+		table.createColumn("someList2", Boolean.class, false);
+		assertNull(table.getColumn("someList2").getListElementType());
 	}
 
 	@Test
@@ -430,14 +423,9 @@ public abstract class AbstractCyTableTest {
 	}
 
 	@Test(expected=NullPointerException.class)
-	public void testGetColumnValuesWithNullFirstArgument() {
-		table.getColumnValues(null, String.class);
-	}
-
-	@Test(expected=NullPointerException.class)
 	public void testGetColumnValuesWithNullSecondArgument() {
-		table.createColumn("x", String.class);
-		table.getColumnValues("x", null);
+		table.createColumn("x", String.class, false);
+		table.getColumn("x").getValues(null);
 	}
 
 	@Test
@@ -456,45 +444,40 @@ public abstract class AbstractCyTableTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetListWithAnInvalidListElementType() {
-		table.createListColumn("x", Long.class);
+		table.createListColumn("x", Long.class, false);
 		attrs.getList("x", String.class);
 	}
 
 	@Test
 	public void testGetListWithAnMissingRowEntry() {
-		table.createListColumn("x", Long.class);
+		table.createListColumn("x", Long.class, false);
 		assertNull(attrs.getList("x", Long.class));
 	}
 
 	@Test
 	public void testSetList() {
-		table.createListColumn("l", String.class);
+		table.createListColumn("l", String.class, false);
 		final List<String> strings = new ArrayList<String>();
 		strings.add("joe");
 		attrs.set("l", strings);
 		assertEquals(attrs.getList("l", String.class), strings);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
-	public void testGetColumnValuesWithNonExistentColumnName() {
-		table.getColumnValues("l", String.class);
-	}
-
 	@Test(expected=NullPointerException.class)
 	public void testSetWithNullColumnName() {
-		table.createColumn("l", String.class);
+		table.createColumn("l", String.class, false);
 		attrs.set(null, "xyz");
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetWithInvalidValueType() {
-		table.createColumn("l", Long.class);
+		table.createColumn("l", Long.class, false);
 		attrs.set("l", "xyz");
 	}
 
 	@Test
 	public void testToStringMethodOfCyTable() {
-		table.createColumn("l", Long.class);
+		table.createColumn("l", Long.class, false);
 		attrs.set("l", 13L);
 		assertTrue(table.toString().length() > 0);
 	}
@@ -506,22 +489,22 @@ public abstract class AbstractCyTableTest {
 
 	@Test(expected=Exception.class)
 	public void testGetWhereGetListShouldHaveBeenUsed() {
-		table.createListColumn("l", Long.class);
+		table.createListColumn("l", Long.class, false);
 		attrs.set("l", new ArrayList<Long>());
 		attrs.get("l", Long.class);
 	}
 
 	@Test(expected=Exception.class)
 	public void testGetWithAnInvalidType() {
-		table.createColumn("l", Long.class);
+		table.createColumn("l", Long.class, false);
 		attrs.set("l", 15L);
 		attrs.get("l", CyTable.class);
 	}
 
 	@Test
 	public void testGetAllValues() {
-		table.createColumn("x", Long.class);
-		table.createColumn("y", Double.class);
+		table.createColumn("x", Long.class, false);
+		table.createColumn("y", Double.class, false);
 		attrs.set("x", 15L);
 		attrs.set("y", 3.14);
 		final Map<String, Object> values = attrs.getAllValues();
@@ -532,29 +515,10 @@ public abstract class AbstractCyTableTest {
 	}
 
 	@Test
-	public void testGetAllValuesWithList() {
-		table.createColumn("x", Long.class);
-		table.createColumn("y", Double.class);
-		table.createListColumn("z", String.class);
-		attrs.set("x", 15L);
-		attrs.set("y", 3.14);
-		List<String> ls = new ArrayList<String>();
-		ls.add("homer");
-		attrs.set("z",ls);
-		final Map<String, Object> values = attrs.getAllValues();
-		assertTrue(values.keySet().contains("x"));
-		assertTrue(values.keySet().contains("y"));
-		assertTrue(values.keySet().contains("z"));
-		assertEquals((long)(Long)values.get("x"), 15L);
-		assertEquals((double)(Double)values.get("y"), 3.14, 0.00001);
-		assertEquals(values.get("z"), ls);
-	}
-
-	@Test
-	public void testGetType() {
-		table.createColumn("someInt", Integer.class);
-		assertEquals(table.getType("someInt"), Integer.class);
-		assertNull(table.getType("nonExistentColumnName"));
+	public void testGetColumn() {
+		table.createColumn("someInt", Integer.class, false);
+		assertEquals(table.getColumn("someInt").getType(), Integer.class);
+		assertNull(table.getColumn("nonExistentColumnName"));
 	}
 
 	@Test
@@ -572,63 +536,64 @@ public abstract class AbstractCyTableTest {
 	@Test
 	public void testGetWithPrimaryKey() {
 		final CyRow row = table.getRow(107L);
-		assertEquals(row.get(table.getPrimaryKey(), table.getPrimaryKeyType()), 107L);
+		final CyColumn primaryKey = table.getPrimaryKey();
+		assertEquals(row.get(primaryKey.getName(), primaryKey.getType()), 107L);
 	}
 
 	@Test
-	public void testVirtualColumnType() {
-		table.createColumn("x", Long.class);
-		table2.createColumn("x2", Long.class);
-		table2.createColumn("s", String.class);
-		assertEquals(table.addVirtualColumn("s1", "s", table2, "x2", "x"), "s1");
+	public void testVirtualColumn() {
+		table.createColumn("x", Long.class, false);
+		table2.createColumn("x2", Long.class, false);
+		table2.createColumn("s", String.class, false);
+		assertEquals(table.addVirtualColumn("s1", "s", table2, "x2", "x", false), "s1");
 		assertEquals("Virtual column type should have been String!",
-			     String.class, table.getType("s1"));
-		assertEquals(table.addVirtualColumn("s1", "s", table2, "x2", "x"), "s1-1");
+			     String.class, table.getColumn("s1").getType());
+		assertEquals(table.addVirtualColumn("s1", "s", table2, "x2", "x", false), "s1-1");
 		assertEquals("Virtual column type should have been String!",
-			     String.class, table.getType("s1-1"));
+			     String.class, table.getColumn("s1-1").getType());
 	}
 
 	@Test
 	public void testVirtualColumnIsSet() {
-		table.createColumn("x", Integer.class);
+		table.createColumn("x", Integer.class, false);
 		CyRow row1 = table.getRow(1L);
 		row1.set("x", 33);
-		table2.createColumn("x2", Integer.class);
+		table2.createColumn("x2", Integer.class, false);
 		CyRow row2 =  table2.getRow(1L);
 		row2.set("x2", 33);
-		table2.createColumn("s", String.class);
-		table.addVirtualColumn("s1", "s", table2, "x2", "x");
-		assertFalse(row1.isSet("s1", String.class));
+		table2.createColumn("s", String.class, false);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x", true);
+		assertFalse(row1.isSet("s1"));
 		row2.set("s", "abc");
-		assertTrue(row1.isSet("s1", String.class));
+		assertTrue(row1.isSet("s1"));
 	}
 
 	@Test
 	public void testVirtualColumnGet() {
-		table.createColumn("x", Integer.class);
+		table.createColumn("x", Integer.class, false);
 		CyRow row1 = table.getRow(1L);
 		row1.set("x", 33);
-		table2.createColumn("x2", Integer.class);
+		table2.createColumn("x2", Integer.class, false);
 		CyRow row2 =  table2.getRow(1L);
 		row2.set("x2", 33);
-		table2.createColumn("s", String.class);
-		table.addVirtualColumn("s1", "s", table2, "x2", "x");
-		assertFalse(row1.isSet("s1", String.class));
+		table2.createColumn("s", String.class, false);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x", false);
+		assertFalse(row1.isSet("s1"));
 		row2.set("s", "abc");
 		assertEquals(row1.get("s1", String.class), "abc");
 	}
 
 	@Test
 	public void testVirtualColumnSetWithAReplacementValue() {
-		table.createColumn("x", Integer.class);
+		table.createColumn("x", Integer.class, false);
 		CyRow row1 = table.getRow(1L);
 		row1.set("x", 33);
-		table2.createColumn("x2", Integer.class);
+		table2.createColumn("x2", Integer.class, false);
 		CyRow row2 =  table2.getRow(1L);
 		row2.set("x2", 33);
-		table2.createColumn("s", String.class);
-		table.addVirtualColumn("s1", "s", table2, "x2", "x");
-		assertFalse(row1.isSet("s1", String.class));
+		table2.createColumn("s", String.class, false);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x", true);
+		assertFalse(row1.isSet("s1"));
 		row2.set("s", "abc");
 		assertEquals(row1.get("s1", String.class), "abc");
 		row1.set("s1", "xyz");
@@ -637,31 +602,31 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testVirtualColumnUnset() {
-		table.createColumn("x", Integer.class);
+		table.createColumn("x", Integer.class, false);
 		CyRow row1 = table.getRow(1L);
 		row1.set("x", 33);
-		table2.createColumn("x2", Integer.class);
+		table2.createColumn("x2", Integer.class, false);
 		CyRow row2 =  table2.getRow(1L);
 		row2.set("x2", 33);
-		table2.createColumn("s", String.class);
-		table.addVirtualColumn("s1", "s", table2, "x2", "x");
+		table2.createColumn("s", String.class, false);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x", false);
 		row2.set("s", "abc");
-		assertTrue(row1.isSet("s1", String.class));
+		assertTrue(row1.isSet("s1"));
 		row1.set("s1", null);
-		assertFalse(row1.isSet("s1", String.class));
+		assertFalse(row1.isSet("s1"));
 	}
 
 	@Test
 	public void testVirtualColumnGetMatchingRows() {
-		table.createColumn("x", Integer.class);
+		table.createColumn("x", Integer.class, false);
 		CyRow row1 = table.getRow(1L);
 		row1.set("x", 33);
-		table2.createColumn("x2", Integer.class);
+		table2.createColumn("x2", Integer.class, false);
 		CyRow row2 =  table2.getRow(1L);
 		row2.set("x2", 33);
-		table2.createColumn("s", String.class);
-		table.addVirtualColumn("s1", "s", table2, "x2", "x");
-		assertFalse(row1.isSet("s1", String.class));
+		table2.createColumn("s", String.class, false);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x", true);
+		assertFalse(row1.isSet("s1"));
 		row2.set("s", "abc");
 		Set<CyRow> matchingRows = table.getMatchingRows("s1", "abc");
 		assertEquals(matchingRows.size(), 1);
@@ -672,50 +637,65 @@ public abstract class AbstractCyTableTest {
 
 	@Test
 	public void testVirtualColumnDelete() {
-		table.createColumn("x", Long.class);
-		table2.createColumn("x2", Long.class);
-		table2.createColumn("s", String.class);
-		table.addVirtualColumn("s1", "s", table2, "x2", "x");
-		assertNotNull(table.getType("s1"));
+		table.createColumn("x", Long.class, false);
+		table2.createColumn("x2", Long.class, false);
+		table2.createColumn("s", String.class, false);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x", false);
+		assertNotNull(table.getColumn("s1"));
 		table.deleteColumn("s1");
-		assertNull(table.getType("s1"));
+		assertNull(table.getColumn("s1"));
 	}
 
 	@Test
-	public void testVirtualColumnListElementType() {
-		table.createColumn("x", Integer.class);
+	public void testVirtualColumnColumnSize() {
+		table.createColumn("x", Integer.class, false);
 		CyRow row1 = table.getRow(1L);
 		row1.set("x", 33);
-		table2.createColumn("x2", Integer.class);
+		table2.createColumn("x2", Integer.class, false);
 		CyRow row2 =  table2.getRow(1L);
 		row2.set("x2", 33);
-		table2.createColumn("s", String.class);
-		table.addVirtualColumn("s1", "s", table2, "x2", "x");
-		assertFalse(row1.isSet("s1", String.class));
+		table2.createColumn("s", String.class, false);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x", true);
+		assertFalse(row1.isSet("s1"));
 		row2.set("s", "abc");
-		List<String> columnValues = table.getColumnValues("s1", String.class);
+		List<String> columnValues = table.getColumn("s1").getValues(String.class);
 		assertEquals(1, columnValues.size());
 		assertEquals("abc", columnValues.get(0));
 	}
 
 	@Test
 	public void testVirtualColumnGetColumnValues() {
-		table.createColumn("x", Long.class);
-		table2.createColumn("x2", Long.class);
-		table2.createListColumn("b", Boolean.class);
-		table.addVirtualColumn("b1", "b", table2, "x2", "x");
+		table.createColumn("x", Long.class, false);
+		table2.createColumn("x2", Long.class, false);
+		table2.createListColumn("b", Boolean.class, false);
+		table.addVirtualColumn("b1", "b", table2, "x2", "x", false);
 		assertEquals("Virtual column list element type should have been Boolean!",
-			     Boolean.class, table.getListElementType("b1"));
+			     Boolean.class, table.getColumn("b1").getListElementType());
 	}
 
 	@Test
 	public void testIsVirtual() {
-		table.createColumn("x", Long.class);
-		table2.createColumn("x2", Long.class);
-		table2.createListColumn("b", Boolean.class);
-		table.addVirtualColumn("b1", "b", table2, "x2", "x");
-		assertTrue(table.isVirtual("b1"));
-		assertFalse(table.isVirtual("x"));
-		assertFalse(table2.isVirtual("b"));
+		table.createColumn("x", Long.class, false);
+		table2.createColumn("x2", Long.class, false);
+		table2.createListColumn("b", Boolean.class, false);
+		table.addVirtualColumn("b1", "b", table2, "x2", "x", true);
+		assertTrue(table.getColumn("b1").isVirtual());
+		assertFalse(table.getColumn("x").isVirtual());
+		assertFalse(table2.getColumn("b").isVirtual());
+	}
+
+	@Test
+	public void testGetTable() {
+		table.createColumn("x", Long.class, false);
+		assertEquals(table, table.getColumn("x").getTable());
+	}
+
+	@Test
+	public void testSetColumnName() {
+		table.createColumn("x", Long.class, false);
+		CyColumn column = table.getColumn("x");
+		column.setName("xx");
+		assertNotNull(table.getColumn("xx"));
+		assertEquals(Long.class, table.getColumn("xx").getType());
 	}
 }

@@ -485,13 +485,15 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 	private void getBoundaryValues(String[][] attr, CyTableEntry entry) {
 		for (int i = 0; i < attr.length; i++) {
 			for (int j = 0; j < attr[i].length; j++) {
-				final Class<?> attrType = entry.getCyRow().getDataTable().getType(attr[i][j]);
+				final Class<?> attrType =
+					entry.getCyRow().getDataTable().getColumn(attr[i][j]).getType();
+
 				Double attrValue = new Double(0.0);
-				if (attrType == Integer.class) {
+				if (attrType == Integer.class)
 					attrValue = entry.getCyRow().get(attr[i][j], Integer.class).doubleValue();
-				} else if (attrType == Double.class) {
+				else if (attrType == Double.class)
 					attrValue = entry.getCyRow().get(attr[i][j], Double.class);
-				}
+
 				if (attrValue != null && !attrValue.isNaN()) {
 					final Double oldMinValue = minAttrValue.get(attr[i][j]);
 					final double value = attrValue.doubleValue();

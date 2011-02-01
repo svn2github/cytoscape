@@ -1055,14 +1055,14 @@ public class ExpressionData implements Serializable {
 		String[] condNames = getConditionNames();
 
 		// first set up the columns
-		table.createColumn("geneName",String.class);
+		table.createColumn("geneName", String.class, false);
 
 		for (int condNum = 0; condNum < condNames.length; condNum++) {
 			String condName = condNames[condNum];
 			String eStr = condName + "exp";
 			String sStr = condName + "sig";
-			table.createColumn(eStr,Double.class);
-			table.createColumn(sStr,Double.class);
+			table.createColumn(eStr, Double.class, false);
+			table.createColumn(sStr, Double.class, false);
 		}
 
 		// now create the rows and populate

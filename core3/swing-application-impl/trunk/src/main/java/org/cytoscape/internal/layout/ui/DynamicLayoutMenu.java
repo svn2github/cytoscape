@@ -42,6 +42,7 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
@@ -164,10 +165,10 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 				parent.add(new LayoutAttributeMenuItem(attrName, selectedOnly));
 		}
 
-		for (final String col : attributes.getColumnTypeMap().keySet()) {
-			Class<?> type = attributes.getColumnTypeMap().get(col);
-			if (typeSet.contains(type))
-				parent.add(new LayoutAttributeMenuItem(col, selectedOnly));
+		for (final CyColumn column : attributes.getColumns()) {
+			if (typeSet.contains(column.getType()))
+				parent.add(new LayoutAttributeMenuItem(column.getName(),
+								       selectedOnly));
 		}
 	}
 

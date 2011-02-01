@@ -25,9 +25,10 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
 
+
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,42 +64,24 @@ public interface CyTable extends Identifiable {
 	void setTitle(String title);
 
 	/**
-	 * Returns the name of the primary key column for this table.
-	 * @return The name of the primary key column for this table.
+	 * Returns the column type of the primary key for this table.
+	 * @return The column type of the primary key for this table.
 	 */
-	String getPrimaryKey();
+	CyColumn getPrimaryKey();
 
 	/**
-	 * Returns the class type of the primary key column for this table.
-	 * @return The class type of the primary key column for this table.
-	 */
-	Class<?> getPrimaryKeyType();
-
-	/**
-	 * Returns the class type of a column for this table.
+	 * Returns the type of a column for this table.
 	 * @param columnName  The name of the column whose type we desire.
-	 * @return The class type of the column whose column name was provided, or null if there is
+	 * @return The column type of the column whose column name was provided, or null if there is
 	 *         no column named "columnName".
 	 */
-	Class<?> getType(String columnName);
+	CyColumn getColumn(String columnName);
 
 	/**
-	 * The keySet of this map defines all columns in the CyTable and the
-	 * the values of this map define the types of the columns.
-	 * @return A map of column names to the {@link Class} objects that defines
-	 * the column type.
+	 * Returns the column types for all columns in this table.
+	 * @return A set of {@link CyColumn} objects that describe all columns in this table.
 	 */
-	Map<String, Class<?>> getColumnTypeMap();
-
-	/**
-	 * Returns the Class object that represents the element type for the List type of
-	 * column identified by "columnName".
-	 * @param columnName The name of the column to check.
-	 * @return The Class object that is defined for this column. Will
-	 * Since a call to this method only makes sense if the column type is some kind of List,
-	 * we throw and exception if this is called on a column that is not of type List!
-	 */
-	Class<?> getListElementType(String columnName);
+	Collection<CyColumn> getColumns();
 
 	/**
 	 * Will delete the column of the specified name.
@@ -110,23 +93,19 @@ public interface CyTable extends Identifiable {
 	 * Create a column of the specified name and the specified type.
 	 * @param columnName The name identifying the attribute.
 	 * @param type The type of the column.
+	 * @param isImmutable  if true, this column can never be deleted
 	 */
-	<T> void createColumn(String columnName, Class<?extends T> type);
+	<T> void createColumn(String columnName, Class<?extends T> type,
+			      boolean isImmutable);
 
 	/**
 	 * Create a column of Lists with the specified name and the specified element type.
 	 * @param columnName The name identifying the attribute.
 	 * @param listElementType The type of the elements of the list.
+	 * @param isImmutable  if true, this column can never be deleted
 	 */
-	<T> void createListColumn(String columnName, Class<T> listElementType);
-
-	/**
-	 * Returns the list of all values contained in the specified column.
-	 * @param columnName The name identifying the attribute.
-	 * @param type The type of the column.
-	 * @return the list of all values contained in the specified column.
-	 */
-	<T> List<T> getColumnValues(String columnName, Class<?extends T> type);
+	<T> void createListColumn(String columnName, Class<T> listElementType,
+				  boolean isImmutable);
 
 	/**
 	 * Returns the row specified by the primary key object and if a row
@@ -173,25 +152,23 @@ public interface CyTable extends Identifiable {
 	 *                        updates and lookups of this new column will be redirected to here)
 	 *  @param sourceJoinKey  the column in "sourceTable" that will be used for the join
 	 *  @param targetJoinKey  the column in current table that will be used for the join
+	 *  @param isImmutable    if true, this column cannot be deleted
 	 *  @return the actual name of the new virtual column
 	 *  Note: The types of "sourceJoinKey" and "targetJoinKey" have to be identical.
 	 */
 	String addVirtualColumn(String virtualColumn, String sourceColumn, CyTable sourceTable,
-				String sourceJoinKey, String targetJoinKey);
+				String sourceJoinKey, String targetJoinKey,
+				boolean isImmutable);
 
 	/** Adds all columns in another table as "virtual" columns to the the current table.
 	 *  @param sourceTable    the table that really contains the column that we're adding (all
 	 *                        updates and lookups of this new column will be redirected to here)
 	 *  @param sourceJoinKey  the column in "sourceTable" that will be used for the join
 	 *  @param targetJoinKey  the column in current table that will be used for the join
+	 *  @param isImmutable    if true, these columns cannot be deleted
 	 *  Note: The types of "sourceJoinKey" and "targetJoinKey" have to be identical.  Also none
 	 *        of the column names in "sourceTable" must exist in the current table!
 	 */
-	void addVirtualColumns(CyTable sourceTable, String sourceJoinKey, String targetJoinKey);
-
-	/** Tests whether a column is virtual or not.
-	 *  @return true if "columnName" is the name of a virtual column, else false
-	 *  @throws IllegalArgumentException if "columnName" does not correspond to the name of a column
-	 */
-	boolean isVirtual(String columnName);
+	void addVirtualColumns(CyTable sourceTable, String sourceJoinKey, String targetJoinKey,
+			       boolean isImmutable);
 }

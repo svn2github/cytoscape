@@ -20,6 +20,7 @@ import javax.swing.event.TableModelListener;
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.equations.Equation;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
@@ -54,7 +55,9 @@ public class BrowserTableModel
 		this.attrs = attrs;
 		this.compiler = compiler;
 		this.tableRowUpdateService = tableRowUpdateService;
-		this.tableHasBooleanSelected = attrs.getColumnTypeMap().get(CyNetwork.SELECTED) == Boolean.class;
+		final CyColumn selectedColumn = attrs.getColumn(CyNetwork.SELECTED);
+		this.tableHasBooleanSelected =
+			selectedColumn != null && selectedColumn.getType() == Boolean.class;
 		this.tableModelListeners = new ArrayList<TableModelListener>();
 		tableRowUpdateService.startTracking(this, attrs);
 
@@ -62,16 +65,17 @@ public class BrowserTableModel
 	}
 
 	private void initAttrNamesAndVisibilities() {
-		attrNamesAndVisibilities = new ArrayList<AttrNameAndVisibility>(attrs.getColumnTypeMap().size());
-		final String primaryKey = attrs.getPrimaryKey();
-		attrNamesAndVisibilities.add(new AttrNameAndVisibility(primaryKey, true));
+		attrNamesAndVisibilities = new ArrayList<AttrNameAndVisibility>(attrs.getColumns().size());
+		final CyColumn primaryKey = attrs.getPrimaryKey();
+		attrNamesAndVisibilities.add(new AttrNameAndVisibility(primaryKey.getName(), true));
 		int visibleColumnCount = 1;
 		boolean isVisible = true;
-		for (final String columnName : attrs.getColumnTypeMap().keySet()) {
-			if (columnName.equals(primaryKey))
+		for (final CyColumn column : attrs.getColumns()) {
+			if (column == primaryKey)
 				continue;
 
-			attrNamesAndVisibilities.add(new AttrNameAndVisibility(columnName, isVisible));
+			attrNamesAndVisibilities.add(
+				new AttrNameAndVisibility(column.getName(), isVisible));
 			if (++visibleColumnCount == MAX_INITIALLY_VSIBLE_ATTRS)
 				isVisible = false;
 		}
@@ -90,7 +94,7 @@ public class BrowserTableModel
 	public List<String> getVisibleAttributeNames() {
 		final List<String> visibleAttrNames = new ArrayList<String>();
 
-		final String primaryKey = attrs.getPrimaryKey();
+		final String primaryKey = attrs.getPrimaryKey().getName();
 		for (final AttrNameAndVisibility nameAndVisibility : attrNamesAndVisibilities) {
 			if (nameAndVisibility.isVisible())// && !nameAndVisibility.getName().equals(primaryKey))
 				visibleAttrNames.add(nameAndVisibility.getName());
@@ -103,7 +107,7 @@ public class BrowserTableModel
 	//       contains the primary key or not!
 	public void setVisibleAttributeNames(final Collection<String> visibleAttributes) {
 		boolean changed = false;
-		final String primaryKey = attrs.getPrimaryKey();
+		final String primaryKey = attrs.getPrimaryKey().getName();
 		for (final AttrNameAndVisibility nameAndVisibility : attrNamesAndVisibilities) {
 			if (nameAndVisibility.getName().equals(primaryKey))
 				continue;
@@ -128,8 +132,8 @@ public class BrowserTableModel
 
 	@Override
 	public int getRowCount() {
-		final Map<String, Class<?>> columnNameToTypeMap = attrs.getColumnTypeMap();
-		if (columnNameToTypeMap.isEmpty())
+		final Collection<CyColumn> columns = attrs.getColumns();
+		if (columns.isEmpty())
 			return 0;
 
 		if (!tableHasBooleanSelected)
@@ -168,7 +172,7 @@ public class BrowserTableModel
 
 	Class<?> getColumnType(final int columnIndex) {
 		final String columnName = getColumnName(columnIndex);
-		return attrs.getType(columnName);
+		return attrs.getColumn(columnName).getType();
 	}
 
 	private CyRow mapRowIndexToRow(final int rowIndex) {
@@ -187,9 +191,8 @@ public class BrowserTableModel
 
 			return cyRow;
 		} else {
-			final List primaryKeyValues =
-				attrs.getColumnValues(attrs.getPrimaryKey(),
-						      attrs.getPrimaryKeyType());
+			final CyColumn primaryKey = attrs.getPrimaryKey();
+			final List primaryKeyValues = primaryKey.getValues(primaryKey.getType());
 			return attrs.getRow(primaryKeyValues.get(rowIndex));
 		}
 	}
@@ -198,8 +201,8 @@ public class BrowserTableModel
 	 *  @return the row index for "cyRow" or -1 if there is no matching row.
 	 */
 	private int mapRowToRowIndex(final CyRow cyRow) {
-		final String primaryKey = attrs.getPrimaryKey();
-		final Class<?> primaryKeyType = attrs.getPrimaryKeyType();
+		final String primaryKey = attrs.getPrimaryKey().getName();
+		final Class<?> primaryKeyType = attrs.getPrimaryKey().getType();
 
 		int index = 0;
 		if (tableHasBooleanSelected) {
@@ -213,8 +216,7 @@ public class BrowserTableModel
 
 			return -1; // Most likely the passed in row was not a selected row!
 		} else {
-			final List primaryKeyValues =
-				attrs.getColumnValues(primaryKey, primaryKeyType);
+			final List primaryKeyValues = attrs.getPrimaryKey().getValues(primaryKeyType);
 			for (final Object primaryKeyValue : primaryKeyValues) {
 				if (cyRow.get(primaryKey, primaryKeyType)
 				    .equals(attrs.getRow(primaryKeyValue).get(primaryKey, primaryKeyType)))
@@ -242,12 +244,12 @@ public class BrowserTableModel
 	}
 
 	private static Object getColumnValue(final CyRow row, final String columnName) {
-		final Class<?> columnType = row.getDataTable().getType(columnName);
-		if (columnType == List.class) {
-			final Class<?> listElementType = row.getDataTable().getListElementType(columnName);
+		final CyColumn column = row.getDataTable().getColumn(columnName);
+		if (column.getType() == List.class) {
+			final Class<?> listElementType = column.getListElementType();
 			return row.getList(columnName, listElementType);
 		} else
-			return row.get(columnName, columnType);
+			return row.get(columnName, column.getType());
 	}
 
 	@Override
@@ -305,11 +307,10 @@ public class BrowserTableModel
 	}
 
 	private int mapColumnNameToColumnIndex(final String columnName) {
-		final String primaryKey = attrs.getPrimaryKey();
+		final String primaryKey = attrs.getPrimaryKey().getName();
 		if (columnName.equals(primaryKey))
 			return 0;
 
-		final Map<String, Class<?>> columnNameToTypeMap = attrs.getColumnTypeMap();
 		int index = attrNamesAndVisibilities.get(0).isVisible() ? 1 : 0;
 		for (final AttrNameAndVisibility nameAndVisibility : attrNamesAndVisibilities) {
 			if (!nameAndVisibility.isVisible() || nameAndVisibility.getName().equals(primaryKey))
@@ -326,12 +327,11 @@ public class BrowserTableModel
 
 	
 	private String mapColumnIndexToColumnName(final int index) {
-		final String primaryKey = attrs.getPrimaryKey();
+		final String primaryKey = attrs.getPrimaryKey().getName();
 		final boolean primaryKeyIsVisible = attrNamesAndVisibilities.get(0).isVisible();
 		if (index == 0 && primaryKeyIsVisible)
 			return primaryKey;
 
-		final Map<String, Class<?>> columnNameToTypeMap = attrs.getColumnTypeMap();
 		int i = primaryKeyIsVisible ? 1 : 0;
 		for (final AttrNameAndVisibility nameAndVisibility : attrNamesAndVisibilities) {
 			if (!nameAndVisibility.isVisible() || nameAndVisibility.getName().equals(primaryKey))
@@ -381,7 +381,7 @@ public class BrowserTableModel
 		final String text = (String)value;
 		final CyRow row = mapRowIndexToRow(rowIndex);
 		final String columnName = mapColumnIndexToColumnName(columnIndex);
-		final Class<?> columnType = attrs.getType(columnName);
+		final Class<?> columnType = attrs.getColumn(columnName).getType();
 
 		if (text.startsWith("=")) {
 			final Map<String, Class<?>> variableNameToTypeMap = new HashMap<String, Class<?>>();
@@ -421,8 +421,9 @@ public class BrowserTableModel
 			else if (columnType == Boolean.class)
 				parsedValue = parseBoolean(text, errorMessage);
 			else if (columnType == List.class)
-				parsedValue = parseList(text, attrs.getListElementType(columnName),
-							errorMessage);
+				parsedValue =
+					parseList(text, attrs.getColumn(columnName).getListElementType(),
+						  errorMessage);
 			else
 				throw new IllegalStateException("unknown column type: "
 								+ columnType.getName() + "!");
@@ -463,22 +464,22 @@ public class BrowserTableModel
 	}
 
 	private void initVariableNameToTypeMap(final Map<String, Class<?>> variableNameToTypeMap) {
-		final Map<String, Class<?>> columnNameToTypeMap = attrs.getColumnTypeMap();
-		for (final String columnName : columnNameToTypeMap.keySet()) {
-			final Class<?> columnType = columnNameToTypeMap.get(columnName);
-			if (columnType == String.class)
+		for (final CyColumn column : attrs.getColumns()) {
+			final Class<?> type = column.getType();
+			final String columnName = column.getName();
+			if (type == String.class)
 				variableNameToTypeMap.put(columnName, String.class);
-			else if (columnType == Integer.class)
+			else if (type == Integer.class)
 				variableNameToTypeMap.put(columnName, Long.class);
-			else if (columnType == Long.class)
+			else if (type == Long.class)
 				variableNameToTypeMap.put(columnName, Long.class);
-			else if (columnType == Boolean.class)
+			else if (type == Boolean.class)
 				variableNameToTypeMap.put(columnName, Boolean.class);
-			else if (columnType == List.class)
+			else if (type == List.class)
 				variableNameToTypeMap.put(columnName, List.class);
 			else
-				throw new IllegalStateException("unknown type \""
-								+ columnType.getName() + "\"!");
+				throw new IllegalStateException("unknown type \"" + type.getName()
+								+ "\"!");
 		}
 	}
 

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.RowSetMicroListener;
@@ -158,7 +159,7 @@ public class AttributeEventsListener  implements RowSetMicroListener {
 			
 		}
 		
-		final List<String> names = new ArrayList<String>(attr.getColumnTypeMap().keySet());
+		final List<String> names = new ArrayList<String>(CyTableUtil.getColumnNames(attr));
 		Collections.sort(names);
 		
 //		attrEditorNames.add(NAME);

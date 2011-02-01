@@ -198,8 +198,8 @@ public class PlotParameterDialog extends VisualizeParameterDialog implements Act
 	private void update() {
 		final String attrX = cbxAttr1.getSelectedItem().toString();
 		final String attrY = cbxAttr2.getSelectedItem().toString();
-		final Class<?> attrType1 = cyAttr.getType(attrX);
-		final Class<?> attrType2 = cyAttr.getType(attrY);
+		final Class<?> attrType1 = cyAttr.getColumn(attrX).getType();
+		final Class<?> attrType2 = cyAttr.getColumn(attrY).getType();
 		final List<Point2D.Double> plotValues = new ArrayList<Point2D.Double>(network
 				.getNodeCount());
 		for ( CyNode node : network.getNodeList()) {

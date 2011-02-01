@@ -1,6 +1,7 @@
 package de.mpg.mpi_inf.bioinf.netanalyzer;
 
 
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyTable;
 
 
@@ -43,15 +44,15 @@ final class AttributeSetup {
 		createAttr(edgeTable,"ebt",Double.class);
 	}
 
-	private static void createAttr(CyTable table, String col, Class<?> newType) {
-		final Class<?> existingType = table.getType(col);
-		if ( existingType == newType )
+	private static void createAttr(final CyTable table, final String col, final Class<?> newType) {
+		final CyColumn column = table.getColumn(col);
+		if (column == null)
+			table.createColumn(col, newType, false);
+		else if (column.getType() == newType)
 			return;
-		else if ( existingType == null )
-			table.createColumn(col,newType);
 		else
 			throw new IllegalArgumentException("trying to set table column: " + col + 
-			                                   " to type: " + newType + " when it already " +
-											   " has a type of: " + existingType);
+			                                   " to type: " + newType.getName() + " when it already " +
+							   " has a type of: " + column.getType().getName());
 	}
 }

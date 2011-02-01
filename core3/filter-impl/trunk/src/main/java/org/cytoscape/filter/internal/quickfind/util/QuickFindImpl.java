@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -33,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.filter.internal.quickfind.util;
+
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +37,7 @@ import java.util.Map.Entry;
 import org.cytoscape.filter.internal.widgets.autocomplete.index.GenericIndex;
 import org.cytoscape.filter.internal.widgets.autocomplete.index.Hit;
 import org.cytoscape.filter.internal.widgets.autocomplete.index.IndexFactory;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -52,7 +45,6 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.work.TaskMonitor;
-
 
 
 /**
@@ -102,11 +94,10 @@ class QuickFindImpl implements QuickFind {
 		if (controllingAttribute == null) {
 			//  Small hack to index BioPAX Networks by default with node_label.
 
-			if (nodeTable.getColumnTypeMap().containsKey("bioPax.node_label")) {
+			if (nodeTable.getColumn("bioPax.node_label") != null)
 				controllingAttribute = "biopax.node_label";
-			} else {
-					controllingAttribute = QuickFind.UNIQUE_IDENTIFIER;
-			}           	
+			else
+				controllingAttribute = QuickFind.UNIQUE_IDENTIFIER;
 		}
 
 		if (controllingAttribute.equalsIgnoreCase(QuickFind.UNIQUE_IDENTIFIER)||
@@ -135,7 +126,7 @@ class QuickFindImpl implements QuickFind {
 		}
 
 		//  Create Appropriate Index Type, based on attribute type.
-		Class<?> attributeType = nodeTable.getColumnTypeMap().get(controllingAttribute);
+		Class<?> attributeType = nodeTable.getColumn(controllingAttribute).getType();
 		GenericIndex index = createIndex(QuickFind.INDEX_NODES, attributeType, controllingAttribute);
 		indexNetwork(network, QuickFind.INDEX_NODES, attributeType, controllingAttribute, index, taskMonitor);
 		networkMap.put(network, index);
@@ -147,11 +138,12 @@ class QuickFindImpl implements QuickFind {
 		}
 	}
 
-	private boolean isNullAttribute(CyTable table, String controllingAttribute) {
-		Class<?> type = table.getColumnTypeMap().get(controllingAttribute);
-		if (type == null) {
+	private boolean isNullAttribute(final CyTable table, final String controllingAttribute) {
+		final CyColumn column = table.getColumn(controllingAttribute);
+		if (column == null)
 			return true;
-		}
+
+		final Class<?> type = column.getType();
 		for (CyRow row : table.getAllRows()) {
 			Object value = row.get(controllingAttribute, type);
 			if (value != null) {
@@ -251,27 +243,24 @@ class QuickFindImpl implements QuickFind {
 		maxProgress = 0;
 
 		if (controllingAttribute.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
-			for (Entry<String, Class<?>> entry : table.getColumnTypeMap().entrySet()) {
+			for (final CyColumn column : table.getColumns())
 				maxProgress += getGraphObjectCount(cyNetwork, indexType);
-			}
-		} else {
+		} else
 			maxProgress = getGraphObjectCount(cyNetwork, indexType);
-		}
 
 		GenericIndex index = null;
-
 		if (controllingAttribute.equals(QuickFind.INDEX_ALL_ATTRIBUTES)) {
 			//  Option 1:  Index all attributes
 			index = createIndex(indexType, String.class, controllingAttribute);
 
-			for (Entry<String, Class<?>> entry : table.getColumnTypeMap().entrySet()) {
-				String attributeName = entry.getKey();
+			for (final CyColumn column : table.getColumns()) {
+				final String attributeName = column.getName();
 				indexNetwork(cyNetwork, indexType, String.class, attributeName, index, taskMonitor);
 			}
 		} else {
 			//  Option 2:  Index single attribute.
 			//  Create appropriate index type, based on attribute type.
-			Class<?> attributeType = table.getColumnTypeMap().get(controllingAttribute);
+			Class<?> attributeType = table.getColumn(controllingAttribute).getType();
 			index = createIndex(indexType, attributeType, controllingAttribute);
 			indexNetwork(cyNetwork, indexType, attributeType, controllingAttribute, index, taskMonitor);
 		}

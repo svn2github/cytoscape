@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -31,13 +24,17 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.search.internal.util;
 
-import java.util.Map;
-import java.util.Set;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
@@ -45,7 +42,7 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
-import java.util.Iterator;
+
 
 /**
  * This object will serve as input to the CustomMultiFieldQueryParser.
@@ -53,18 +50,12 @@ import java.util.Iterator;
  * This way CustomMultiFieldQueryParser can recognize numeric attribute fields.
  */
 public class AttributeFields {
-	
-	//private String[] fields = null;
-	private Map<String,Class<?>> nodeColumnTypeMap;
-	private Map<String,Class<?>> edgeColumnTypeMap;
+	private final CyTableManager tableMgr;
+	private final Map<String, Class<?>> columnTypeMap;
 
-	private Map<String,Class<?>> columnTypeMap;
-
-	//private byte[] types = null;
-	private CyTableManager tableMgr;
-
-	public AttributeFields(CyNetwork network, CyTableManager tableMgr) {
+	public AttributeFields(final CyNetwork network, final CyTableManager tableMgr) {
 		this.tableMgr = tableMgr;
+		this.columnTypeMap = new HashMap<String, Class<?>>();
 		initFields(network);
 	}
 
@@ -75,44 +66,32 @@ public class AttributeFields {
 	 * ID (INDEX_FIELD) is treated as another attribute of type string.
 	 * There are probably better ways to do this, but there you go :)
 	 */
-	private void initFields(CyNetwork network) {
-		
-		columnTypeMap = new HashMap();
-		
-		CyTable nodeCyDataTable = (CyTable) tableMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
-		
-		nodeColumnTypeMap = nodeCyDataTable.getColumnTypeMap();
+	private void initFields(final CyNetwork network) {
+		CyTable nodeCyDataTable = tableMgr.getTableMap(CyNode.class, network).get(CyNetwork.DEFAULT_ATTRS);
+		for (final CyColumn column : nodeCyDataTable.getColumns())
+			columnTypeMap.put(EnhancedSearchUtils.replaceWhitespace(column.getName()),
+					  column.getType());
 
 		CyTable edgeCyDataTable = (CyTable) tableMgr.getTableMap(CyEdge.class, network).get(CyNetwork.DEFAULT_ATTRS);
-		
-		edgeColumnTypeMap = edgeCyDataTable.getColumnTypeMap();
-
-		int i = 0;
-		for ( String key : nodeColumnTypeMap.keySet()){
-			columnTypeMap.put(EnhancedSearchUtils.replaceWhitespace(key).toLowerCase(), nodeColumnTypeMap.get(key));
-		}
-		for ( String key : edgeColumnTypeMap.keySet()){
-			columnTypeMap.put(EnhancedSearchUtils.replaceWhitespace(key).toLowerCase(), nodeColumnTypeMap.get(key));
-		}
+		for (final CyColumn column : edgeCyDataTable.getColumns())
+			columnTypeMap.put(EnhancedSearchUtils.replaceWhitespace(column.getName()),
+					  column.getType());
 	}
-
 
 	/**
 	 * Get list of fields
 	 */
 	public String[] getFields() {
+		final String[] keys = new String[columnTypeMap.size()];
 		
-		String[] keys = new String[columnTypeMap.size()];
-		Object[] keyObjs = columnTypeMap.keySet().toArray();
-		
-		for (int i=0; i<keyObjs.length; i++){
-			keys[i] = (String) keyObjs[i];
-		}
+		int i = 0;
+		for (final String key : columnTypeMap.keySet())
+			keys[i++] = key;
+
 		return keys;
 	}
 
-
-	public Class<?> getType(String attrName) {
+	public Class<?> getType(final String attrName) {
 		Class<?> valueType = columnTypeMap.get(attrName);
 		return valueType;
 	}

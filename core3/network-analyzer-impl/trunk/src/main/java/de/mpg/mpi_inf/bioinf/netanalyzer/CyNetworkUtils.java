@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2006, 2007, 2008, 2010, Max Planck Institute for Informatics, Saarbruecken, Germany.
- * 
+ *
  * This file is part of NetworkAnalyzer.
- * 
+ *
  * NetworkAnalyzer is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation, either version 3 of the License, or (at your option)
  * any later version.
- * 
+ *
  * NetworkAnalyzer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
  * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with NetworkAnalyzer. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package de.mpg.mpi_inf.bioinf.netanalyzer;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,26 +28,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableUtil;
 
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.Messages;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.MutInteger;
 import de.mpg.mpi_inf.bioinf.netanalyzer.data.NetworkInspection;
 
+
 /**
  * Utility class providing network functionality absent or deprecated in {@link org.cytoscape.model.CyNetwork} .
- * 
+ *
  * @author Yassen Assenov
  * @author Sven-Eric Schelhorn
  */
 public abstract class CyNetworkUtils {
-
 	/**
 	 * Keeps attributes that are computed by NetworkAnalyzer in this network and can be visualized.
-	 * 
+	 *
 	 * @param aNetwork
 	 *            The selected network.
 	 * @param computedAttr
@@ -56,19 +58,17 @@ public abstract class CyNetworkUtils {
 	 *            Set of node/edge attributes in Cytoscape.
 	 * @param netAnalyzerAttr
 	 *            Set of all node/edge attributes computed by NetworkAnalyzer
-	 * 
+	 *
 	 * @return The computed attribute names in the form of two arrays. The names are placed in the returned
 	 *         array in alphabetical order.
 	 */
 	private static String[][] keepAvailableAttributes(CyNetwork aNetwork, Set<String> computedAttr,
-			CyTable table, Set<String> netAnalyzerAttr) {
+							  CyTable table, Set<String> netAnalyzerAttr)
+	{
 		final List<String> visualizeAttr = new ArrayList<String>(computedAttr.size() + 1);
-		final Map<String,Class<?>> columnTypeMap = table.getColumnTypeMap();
-		for (final String attr : computedAttr) {
-			if (columnTypeMap.get(attr) == Double.class || 
-			    columnTypeMap.get(attr) == Integer.class) {
-				visualizeAttr.add(attr);
-			}
+		for (final CyColumn column : table.getColumns()) {
+			if (column.getType() == Double.class || column.getType() == Integer.class)
+				visualizeAttr.add(column.getName());
 		}
 		final List<String> resultNetAnalyzer = new ArrayList<String>(visualizeAttr);
 		final List<String> resultOther = new ArrayList<String>(visualizeAttr);
@@ -84,7 +84,7 @@ public abstract class CyNetworkUtils {
 
 	/**
 	 * Checks the specified network has values for the given edge attributes.
-	 * 
+	 *
 	 * @param aNetwork
 	 *            Network of interest.
 	 * @return Array of all attributes for which all edges in <code>aNetwork</code> have values; an empty
@@ -92,19 +92,20 @@ public abstract class CyNetworkUtils {
 	 */
 	public static String[][] getComputedEdgeAttributes(CyNetwork aNetwork) {
 		final CyTable table = aNetwork.getDefaultEdgeTable();
-		final Map<String,Class<?>> columnTypeMap = table.getColumnTypeMap();
-		final Set<String> computedAttr = new HashSet<String>(columnTypeMap.keySet());
+		final Collection<CyColumn> columns = table.getColumns();
+		final Set<String> computedAttr = CyTableUtil.getColumnNames(table);
 		for (final CyEdge n : aNetwork.getEdgeList()) {
-			for ( final Map.Entry<String,Class<?>> e : columnTypeMap.entrySet() )
-			if (!n.getCyRow().isSet(e.getKey(),e.getValue()))
-				computedAttr.remove(e.getKey());
+			for (final CyColumn column : columns) {
+				if (!n.getCyRow().isSet(column.getName()))
+					computedAttr.remove(column.getName());
+			}
 		}
 		return keepAvailableAttributes(aNetwork, computedAttr, table, Messages.getEdgeAttributes());
 	}
 
 	/**
 	 * Checks the specified network has values for the given node attributes.
-	 * 
+	 *
 	 * @param aNetwork
 	 *            Network of interest.
 	 * @return Array of all attributes for which all nodes in <code>aNetwork</code> have values; an empty
@@ -112,12 +113,13 @@ public abstract class CyNetworkUtils {
 	 */
 	public static String[][] getComputedNodeAttributes(CyNetwork aNetwork) {
 		final CyTable table = aNetwork.getDefaultNodeTable();
-		final Map<String,Class<?>> columnTypeMap = table.getColumnTypeMap();
-		final Set<String> computedAttr = new HashSet<String>(columnTypeMap.keySet());
+		final Collection<CyColumn> columns = table.getColumns();
+		final Set<String> computedAttr = CyTableUtil.getColumnNames(table);
 		for (final CyNode n : aNetwork.getNodeList()) {
-			for ( final Map.Entry<String,Class<?>> e : columnTypeMap.entrySet() )
-			if (!n.getCyRow().isSet(e.getKey(),e.getValue()))
-				computedAttr.remove(e.getKey());
+			for (final CyColumn column : columns) {
+				if (!n.getCyRow().isSet(column.getName()))
+					computedAttr.remove(column.getName());
+			}
 		}
 		return keepAvailableAttributes(aNetwork, computedAttr, table, Messages.getNodeAttributes());
 	}
@@ -125,8 +127,8 @@ public abstract class CyNetworkUtils {
 	public static Set<CyEdge> getAllConnectingEdges(CyNetwork aNetwork, Collection<CyNode> nodes) {
 		Set<CyEdge> connEdgeSet = new HashSet<CyEdge>();
 		ArrayList<CyNode> nl = new ArrayList<CyNode>(nodes);
-		for ( int i = 0; i < nl.size(); i++ ) 
-			for ( int j = i+1; j < nl.size(); j++) 
+		for ( int i = 0; i < nl.size(); i++ )
+			for ( int j = i+1; j < nl.size(); j++)
 				connEdgeSet.addAll( aNetwork.getConnectingEdgeList(nl.get(i), nl.get(j),CyEdge.Type.ANY) );
 		return connEdgeSet;
 	}
@@ -136,7 +138,7 @@ public abstract class CyNetworkUtils {
 	 * This method effectively counts the number of edges between nodes in the given set, ignoring self-loops
 	 * and multiple edges.
 	 * </p>
-	 * 
+	 *
 	 * @param aNetwork
 	 *            Network containing the nodes of interest.
 	 * @param aNodeIndices
@@ -151,22 +153,22 @@ public abstract class CyNetworkUtils {
 	public static int getPairConnCount(CyNetwork aNetwork, Collection<CyNode> aNodeIndices, boolean aIgnoreDir) {
 
 		Set<CyEdge> connEdgeSet = getAllConnectingEdges(aNetwork, aNodeIndices);
-			
+
 		int edgeCount = connEdgeSet.size();
 
 		List<CyEdge> connEdges = new ArrayList<CyEdge>(connEdgeSet);
 
 		for (int i = 0; i < connEdges.size(); ++i) {
-			CyEdge e = connEdges.get(i); 
-			
+			CyEdge e = connEdges.get(i);
+
 			// Ignore self-loops
 			if ( e.getSource() == e.getTarget() ) {
 				edgeCount--;
 			} else {
 				// Ignore multiple edges
 				for (int j = i + 1; j < connEdges.size(); ++j) {
-					CyEdge ee = connEdges.get(j); 
-					if ( // directed edges have same source + target 
+					CyEdge ee = connEdges.get(j);
+					if ( // directed edges have same source + target
 					     ( e.getSource() == ee.getSource() &&
 					       e.getTarget() == ee.getTarget() ) ||
 						 // or undirected edges have same source + target (if we care)
@@ -175,7 +177,7 @@ public abstract class CyNetworkUtils {
 						      e.getTarget() == ee.getSource() ) ) ) {
 
 						edgeCount--;
-						// TODO I think this break is wrong! 
+						// TODO I think this break is wrong!
 						// What if there are more than two edges?
 						break;
 					}
@@ -192,7 +194,7 @@ public abstract class CyNetworkUtils {
 	 * <p>
 	 * Note that the node itself is never returned as its neighbor.
 	 * </p>
-	 * 
+	 *
 	 * @param aNetwork
 	 *            Network that contains the node of interest - <code>aNode</code>.
 	 * @param aNode
@@ -202,7 +204,7 @@ public abstract class CyNetworkUtils {
 	 * @see #getNeighbors(CyNetwork, CyNode , int[])
 	 */
 	public static Set<CyNode> getNeighbors(CyNetwork aNetwork, CyNode aNode) {
-		return getNeighbors(aNetwork, aNode, aNetwork.getAdjacentEdgeList(aNode, CyEdge.Type.ANY)); 
+		return getNeighbors(aNetwork, aNode, aNetwork.getAdjacentEdgeList(aNode, CyEdge.Type.ANY));
 	}
 
 	/**
@@ -210,7 +212,7 @@ public abstract class CyNetworkUtils {
 	 * <p>
 	 * Note that the node itself is never returned as its neighbor.
 	 * </p>
-	 * 
+	 *
 	 * @param aNetwork
 	 *            Network that contains the node of interest - <code>aNode</code>.
 	 * @param aNode
@@ -242,7 +244,7 @@ public abstract class CyNetworkUtils {
 	 * <p>
 	 * Note that the node itself is never counted as its neighbor.
 	 * </p>
-	 * 
+	 *
 	 * @param aNetwork
 	 *            Network that contains the node of interest - <code>aNode</code>.
 	 * @param aNode
@@ -264,7 +266,7 @@ public abstract class CyNetworkUtils {
 	 * <p>
 	 * Note that the node itself is never counted as its neighbor.
 	 * </p>
-	 * 
+	 *
 	 * @param aNetwork
 	 *            Network that contains the node of interest - <code>aNode</code>.
 	 * @param aNode
@@ -294,11 +296,11 @@ public abstract class CyNetworkUtils {
 
 	/**
 	 * Performs an inspection on what kind of edges the given network contains.
-	 * 
+	 *
 	 * @param aNetwork
 	 *            Network to be inspected.
 	 * @return Results of the inspection, encapsulated in a <code>NetworkInspection</code> instance.
-	 * 
+	 *
 	 * @throws IllegalArgumentException
 	 *             If <code>aNetwork</code> is empty, that is, contains zero nodes.
 	 * @throws NullPointerException
@@ -401,7 +403,7 @@ public abstract class CyNetworkUtils {
 
 	/**
 	 * Removes all duplicated edges in the network, not including self-loops.
-	 * 
+	 *
 	 * @param aNetwork
 	 *            Network from which duplicated edges are to be removed.
 	 * @param aIgnoreDir
@@ -410,7 +412,7 @@ public abstract class CyNetworkUtils {
 	 * @param aCreateEdgeAttr
 	 *            Flag indicating if an edge attribute representing the number of duplicated edges should be
 	 *            created.
-	 * 
+	 *
 	 * @return Number of edges removed from the network.
 	 */
 	public static int removeDuplEdges(CyNetwork aNetwork, boolean aIgnoreDir, boolean aCreateEdgeAttr) {
@@ -478,7 +480,7 @@ public abstract class CyNetworkUtils {
 
 	/**
 	 * Saves the number of edges duplicated to aEdge as an edge attribute.
-	 * 
+	 *
 	 * @param aEdge
 	 *            CyEdge for which duplicated edges are saved.
 	 * @param aNumEdges
@@ -493,9 +495,9 @@ public abstract class CyNetworkUtils {
 	/**
 	 * Removes all self-loops in a network and returns the number of removed self-loops. All types of edges
 	 * are considered - incoming, outgoing and undirected.
-	 * 
+	 *
 	 * @param aNetwork
-	 *            Network from which self-loops are to be removed. 
+	 *            Network from which self-loops are to be removed.
 	 * @return Number of removed self-loops.
 	 */
 	public static int removeSelfLoops(CyNetwork aNetwork) {

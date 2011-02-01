@@ -36,22 +36,26 @@ import org.junit.Before;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.Task;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNode;
 
 import java.io.File;
 
 
 public class SelectFromFileListTaskTest extends AbstractSelectTaskTester {
+	CyEventHelper eventHelper;
+
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
+		this.eventHelper = mock(CyEventHelper.class);
 	}
 
 	@Test
@@ -60,7 +64,8 @@ public class SelectFromFileListTaskTest extends AbstractSelectTaskTester {
 		when(r4.get("name",String.class)).thenReturn("marge");
 
 		// run the task
-		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager);
+		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager,
+								      eventHelper);
 		t.file = new File("./src/test/resources/node_names.txt");
 		t.run(tm);
 
@@ -72,14 +77,14 @@ public class SelectFromFileListTaskTest extends AbstractSelectTaskTester {
 	@Test(expected=NullPointerException.class)
 	public void testRunWithoutFileSpecified() throws Exception {
 		// run the task
-		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager);
+		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager, eventHelper);
 		t.run(tm);
 	}
 
 	@Test(expected=Exception.class)
 	public void testNonExistantFile() throws Exception {
 		// run the task
-		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager);
+		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager, eventHelper);
 		t.file = new File("./src/test/resources/does-not-exist.txt");
 		t.run(tm);
 	}
@@ -87,7 +92,7 @@ public class SelectFromFileListTaskTest extends AbstractSelectTaskTester {
 	@Test
 	public void testRunEmptyFile() throws Exception {
 		// run the task
-		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager);
+		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager, eventHelper);
 		t.file = new File("./src/test/resources/empty.txt");
 		t.run(tm);
 
@@ -99,7 +104,7 @@ public class SelectFromFileListTaskTest extends AbstractSelectTaskTester {
 	@Test
 	public void testRunNamesDontMatch() throws Exception {
 		// run the task
-		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager);
+		SelectFromFileListTask t = new SelectFromFileListTask(net, networkViewManager, eventHelper);
 		t.file = new File("./src/test/resources/bad_names.txt");
 		t.run(tm);
 

@@ -180,26 +180,28 @@ public class VisualStyleBuilder {
         Class<?> type = vp.getTargetDataType();
 
         if (type != CyNetwork.class) { // only edges and nodes...
-            String colName = getAttrName(vp);
+		String colName = getAttrName(vp);
 
-            // add a column to the table if it does not exist yet
-            CyTable table = row.getDataTable();
-            Map<String, Class<?>> columns = table.getColumnTypeMap();
+		// add a column to the table if it does not exist yet
+		final CyTable table = row.getDataTable();
+		if (table.getColumn(colName) == null)
+			table.createColumn(colName, String.class, false);
 
-            if (!columns.containsKey(colName)) table.createColumn(colName, String.class);
-
-            // set the visual property value as a row attribute
-            row.set(colName, vString);
+		// set the visual property value as a row attribute
+		row.set(colName, vString);
         }
 
         // store the value
-        if (!valueMaps.containsKey(vp)) valueMaps.put(vp, new Hashtable<String, Object>());
+        if (!valueMaps.containsKey(vp))
+		valueMaps.put(vp, new Hashtable<String, Object>());
 
         valueMaps.get(vp).put(vString, value);
 
         // store the count
-        if (!counts.containsKey(vp)) counts.put(vp, new Hashtable<String, Integer>());
-        if (!counts.get(vp).containsKey(vString)) counts.get(vp).put(vString, 0);
+        if (!counts.containsKey(vp))
+		counts.put(vp, new Hashtable<String, Integer>());
+        if (!counts.get(vp).containsKey(vString))
+		counts.get(vp).put(vString, 0);
 
         counts.get(vp).put(vString, counts.get(vp).get(vString) + 1);
     }

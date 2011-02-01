@@ -78,7 +78,7 @@ public class AttributeLineParser {
 	 * @param parts entries in a line.
 	 */
 	public void parseAll(CyTable table, String[] parts) {
-		
+
 		//System.out.println("Entering AttributeLineParser.parseAll()....");
 
 		// Get key
@@ -106,10 +106,10 @@ public class AttributeLineParser {
 	 * @param parts
 	 */
 	public void parseEntry(CyTable table, String[] parts) {
-		
+
 		//System.out.println("Entering AttributeLineParser.parseEntry()....");
 
-		
+
 		/*
 		 * Split the line and extract values
 		 */
@@ -145,22 +145,22 @@ public class AttributeLineParser {
 		 * Case 1: use node ID as the key
 		 */
 		if (mapping.getMappingAttribute().equals(mapping.ID)) {
-			
+
 			//System.out.println("AttributeLineParser.parseEntry(): case 1: use node ID as the key");
-			
+
 			transfer2cyattributes(table, primaryKey, aliasSet, parts);
 		} else {
 			/*
 			 * Case 2: use an attribute as the key.
 			 */
-			
+
 			//System.out.println("AttributeLineParser.parseEntry(): case 2: use an attribute as the key");
 
 			List<String> objectIDs = null;
 
 			for (String id : aliasSet) {
 				// Normal Mapping.  Case sensitive.
-				
+
 				if (mapping.getAttributeToIDMap().containsKey(id)) {
 					objectIDs = mapping.toID(id);
 
@@ -170,7 +170,7 @@ public class AttributeLineParser {
 
 					break;
 				} else if (mapping.getCaseSensitive() == false) {
-					
+
 					Set<String> keySet = mapping.getAttributeToIDMap().keySet();
 
 					String newKey = null;
@@ -178,7 +178,7 @@ public class AttributeLineParser {
 					for (String key : keySet) {
 						if (key.equalsIgnoreCase(id)) {
 							newKey = key;
-							
+
 							break;
 						}
 					}
@@ -207,10 +207,10 @@ public class AttributeLineParser {
 
 		//System.out.println("Entering AttributeLineParser.transfer2cyattributes()....");
 
-		
+
 		String altKey = null;
 		String targetNetworkID = null;
-		
+
 		/*
 		 * Search the key
 		 */
@@ -218,7 +218,7 @@ public class AttributeLineParser {
 			case NODE:
 
 				//System.out.print("\tCase for NODE");
-				
+
 				/*
 				CyNode node = null; // = Cytoscape.getCyNode(primaryKey);
 
@@ -271,7 +271,7 @@ public class AttributeLineParser {
 
 					*/
 				break;
-	
+
 			case EDGE:
 
 				//System.out.print("\tCase for EDGE");
@@ -369,15 +369,15 @@ public class AttributeLineParser {
 				//System.out.print("\tCase for default");
 
 		}
-		
+
 		/*
 		 * Now, transfer entries into CyAttributes.
 		 */
 		for (int i = 0; i < parts.length; i++) {
-						
+
 			if ((i != mapping.getKeyIndex()) && !mapping.getAliasIndexList().contains(i)
 			    && mapping.getImportFlag()[i]) {
-				
+
 				if (parts[i] == null) {
 					// Do nothing
 				} else if (mapping.getObjectType() == ObjectType.NETWORK) {
@@ -417,9 +417,9 @@ public class AttributeLineParser {
 	private void mapAttribute(CyTable table, final String key, final String entry, final int index) {
 
 		//System.out.println("MapAttribute(): key ="+ key+"\tattributeName ="+ mapping.getAttributeNames()[index] + ", value = "+ entry);
-		
+
 		final Byte type = mapping.getAttributeTypes()[index];
-		
+
 		switch (type) {
 		case AttributeTypes.TYPE_BOOLEAN:
 
@@ -427,7 +427,7 @@ public class AttributeLineParser {
 
 				try {
 					//newBool = new Boolean(entry);
-					
+
 					setAttributeForType(table,AttributeTypes.TYPE_BOOLEAN,key, mapping.getAttributeNames()[index], entry);
 					//mapping.setAttribute(key, mapping.getAttributeNames()[index], newBool);
 					//mapping.getAttributes()
@@ -492,7 +492,7 @@ public class AttributeLineParser {
 				 */
 				final Byte[] listTypes = mapping.getListAttributeTypes();
 				final Byte listType;
-				
+
 				if (listTypes != null) {
 					listType = listTypes[index];
 				} else {
@@ -504,10 +504,10 @@ public class AttributeLineParser {
 
 				curList.addAll(buildList(entry, listType));
 				try {
-					setListArrtibute(table,AttributeTypes.TYPE_SIMPLE_LIST,key, mapping.getAttributeNames()[index], curList);
+					setListAttribute(table,AttributeTypes.TYPE_SIMPLE_LIST,key, mapping.getAttributeNames()[index], curList);
 
 					//mapping.setAttribute(key, mapping.getAttributeNames()[index], curList);
-					
+
 					//mapping.getAttributes()
 					//       .setListAttribute(key, mapping.getAttributeNames()[index], curList);
 				} catch (Exception e) {
@@ -525,66 +525,45 @@ public class AttributeLineParser {
 		}
 	}
 
-	
 	public static void setAttributeForType(CyTable tbl, byte type, String key, String attributeName, String val){
-
-		//System.out.println("AttributeLineparser.setAttributeForType(): table="+ tbl.getTitle()+ "\tbyte="+ type+ "\tkey="+ key+"\tattributeName="+ attributeName+ "\tval="+ val);
-		
-		if (!tbl.getColumnTypeMap().keySet().contains(attributeName))
-		{
-			if (type == AttributeTypes.TYPE_INTEGER){
-				tbl.createColumn(attributeName, Integer.class);
-			}
-			else if (type == AttributeTypes.TYPE_BOOLEAN){
-				tbl.createColumn(attributeName, Boolean.class);
-			}
-			else if (type == AttributeTypes.TYPE_FLOATING) {
-				tbl.createColumn(attributeName, Double.class);
-			}
-			else { // type is String
-				tbl.createColumn(attributeName, String.class);
-			}
+		if (tbl.getColumn(attributeName) == null) {
+			if (type == AttributeTypes.TYPE_INTEGER)
+				tbl.createColumn(attributeName, Integer.class, false);
+			else if (type == AttributeTypes.TYPE_BOOLEAN)
+				tbl.createColumn(attributeName, Boolean.class, false);
+			else if (type == AttributeTypes.TYPE_FLOATING)
+				tbl.createColumn(attributeName, Double.class, false);
+			else // type is String
+				tbl.createColumn(attributeName, String.class, false);
 		}
 
 		CyRow row = tbl.getRow(key);
-		
-		if (type == AttributeTypes.TYPE_INTEGER){
-			row.set(attributeName, new Integer(val));							
-		}
-		else if (type == AttributeTypes.TYPE_BOOLEAN){
+
+		if (type == AttributeTypes.TYPE_INTEGER)
+			row.set(attributeName, new Integer(val));
+		else if (type == AttributeTypes.TYPE_BOOLEAN)
 			row.set(attributeName, new Boolean(val));
-		}
-		else if (type == AttributeTypes.TYPE_FLOATING) {
+		else if (type == AttributeTypes.TYPE_FLOATING)
 			row.set(attributeName, (new Double(val)));
-		}
-		else {// type is String
+		else // type is String
 			row.set(attributeName, new String(val));
-		}
 	}
 
-	
-	public static void setListArrtibute(CyTable tbl, byte type, String key, String attributeName, final ArrayList elmsBuff){
-
-		if (!tbl.getColumnTypeMap().keySet().contains(attributeName))
-		{
-			if (type == AttributeTypes.TYPE_INTEGER){
-				tbl.createListColumn(attributeName, Integer.class);
-			}
-			else if (type == AttributeTypes.TYPE_BOOLEAN){
-				tbl.createListColumn(attributeName, Boolean.class);
-			}
-			else if (type == AttributeTypes.TYPE_FLOATING) {
-				tbl.createListColumn(attributeName, Double.class);
-			}
-			else { // type is String, do nothing
-			}
+	public static void setListAttribute(CyTable tbl, byte type, String key, String attributeName, final ArrayList elmsBuff) {
+		if (tbl.getColumn(attributeName) == null) {
+			if (type == AttributeTypes.TYPE_INTEGER)
+				tbl.createListColumn(attributeName, Integer.class, false);
+			else if (type == AttributeTypes.TYPE_BOOLEAN)
+				tbl.createListColumn(attributeName, Boolean.class, false);
+			else if (type == AttributeTypes.TYPE_FLOATING)
+				tbl.createListColumn(attributeName, Double.class, false);
+			else
+				;// type is String, do nothing
 		}
-		CyRow row = tbl.getRow(key);	
-		row.set(attributeName, elmsBuff);							
+		CyRow row = tbl.getRow(key);
+		row.set(attributeName, elmsBuff);
 	}
-	
-	
-	
+
 	protected Map getInvalidMap() {
 		return invalid;
 	}
@@ -604,8 +583,8 @@ public class AttributeLineParser {
 		final List listAttr = new ArrayList();
 
 		for (String listItem : parts) {
-			
-			
+
+
 			switch (dataType) {
 				case AttributeTypes.TYPE_BOOLEAN:
 					listAttr.add(Boolean.parseBoolean(listItem.trim()));
@@ -630,7 +609,7 @@ public class AttributeLineParser {
 				default:
 					break;
 			}
-			
+
 		}
 
 		return listAttr;

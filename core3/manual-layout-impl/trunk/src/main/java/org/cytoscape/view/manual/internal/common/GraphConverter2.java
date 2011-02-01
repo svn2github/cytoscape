@@ -1,14 +1,7 @@
 /*
   File: GraphConverter2.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Pasteur Institute
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -42,7 +35,6 @@ import java.util.List;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.view.manual.internal.layout.algorithm.MutablePolyEdgeGraphLayout;
 import org.cytoscape.view.model.CyNetworkView;
@@ -98,8 +90,8 @@ public final class GraphConverter2 {
 
 			if ((!preserveEdgeAnchors)
 			    && (noNodesSelected
-			       || currentEdgeView.getModel().getSource().getCyRow().get(CyTableEntry.SELECTED,Boolean.class)
-			       || currentEdgeView.getModel().getTarget().getCyRow().get(CyTableEntry.SELECTED,Boolean.class))) {
+			       || currentEdgeView.getModel().getSource().getCyRow().get(CyNetwork.SELECTED, Boolean.class)
+			       || currentEdgeView.getModel().getTarget().getCyRow().get(CyNetwork.SELECTED, Boolean.class))) {
 				currentEdgeView.getBend().removeAllHandles();
 			} else {
 				List handles = currentEdgeView.getBend().getHandles();

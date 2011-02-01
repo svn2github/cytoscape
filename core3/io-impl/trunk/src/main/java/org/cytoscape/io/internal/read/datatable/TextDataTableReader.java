@@ -76,10 +76,10 @@ public class TextDataTableReader extends AbstractTableReader {
 
 		checkForDuplicates( columnNames );
 		final CyTable table = tableFactory.createTable(tableName, columnNames[0], 
-		                                                   String.class, true);
+							       String.class, true);
 		
 		for (String col : Arrays.copyOfRange(columnNames, 1, columnNames.length))
-			table.createColumn(col, String.class);
+			table.createColumn(col, String.class, false);
 
 		return table;
 	}

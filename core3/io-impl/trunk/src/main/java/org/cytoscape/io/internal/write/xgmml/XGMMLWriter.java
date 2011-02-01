@@ -1,13 +1,6 @@
 /*
  Copyright (c) 2006, 2010 The Cytoscape Consortium (www.cytoscape.org)
 
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
-
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
  by the Free Software Foundation; either version 2.1 of the License, or
@@ -31,9 +24,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.io.internal.write.xgmml;
+
 
 import java.awt.Color;
 import java.awt.Font;
@@ -49,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.cytoscape.io.write.CyWriter;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
@@ -59,6 +53,7 @@ import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
+
 
 enum GraphicsType {
     ARC("arc"), BITMAP("bitmap"), IMAGE("image"), LINE("line"), OVAL("oval"), POLYGON("polygon"), RECTANGLE("rectangle"), TEXT(
@@ -216,11 +211,11 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
     /**
      * Check directionality of edges, return directionality string to use in xml
      * file as attribute of graph element.
-     * 
+     *
      * Set isMixed field true if network is a mixed network (contains directed
      * and undirected edges), and false otherwise (if only one type of edges are
      * present.)
-     * 
+     *
      * @returns flag to use in XGMML file for graph element's 'directed'
      *          attribute
      */
@@ -250,7 +245,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
     /**
      * Output the network metadata.  This includes our format version and our RDF
      * data.
-     * 
+     *
      * @throws IOException
      */
     private void writeMetadata() throws IOException {
@@ -307,105 +302,105 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
      * @throws IOException
      */
     private void writeNetworkAttributes() throws IOException {
-        if (networkView != null) {
-            // Get our background color
-            Paint paint = networkView.getVisualProperty(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT);
-            String bgColor = paint2string(paint, Color.WHITE);
+	    if (networkView != null) {
+		    // Get our background color
+		    Paint paint = networkView.getVisualProperty(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT);
+		    String bgColor = paint2string(paint, Color.WHITE);
 
-            writeElement("<att type=\"string\" name=\"" + BACKGROUND + "\" value=\"" + bgColor + "\"/>\n");
+		    writeElement("<att type=\"string\" name=\"" + BACKGROUND + "\" value=\"" + bgColor + "\"/>\n");
 
-            // Write the graph zoom
-            final Double zoom = networkView.getVisualProperty(TwoDVisualLexicon.NETWORK_SCALE_FACTOR);
-            writeAttributeXML(GRAPH_VIEW_ZOOM, ObjectType.REAL, zoom, true);
+		    // Write the graph zoom
+		    final Double zoom = networkView.getVisualProperty(TwoDVisualLexicon.NETWORK_SCALE_FACTOR);
+		    writeAttributeXML(GRAPH_VIEW_ZOOM, ObjectType.REAL, zoom, true);
 
-            // Write the graph center
-            final Double cx = networkView.getVisualProperty(TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION);
-            writeAttributeXML(GRAPH_VIEW_CENTER_X, ObjectType.REAL, cx, true);
+		    // Write the graph center
+		    final Double cx = networkView.getVisualProperty(TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION);
+		    writeAttributeXML(GRAPH_VIEW_CENTER_X, ObjectType.REAL, cx, true);
 
-            final Double cy = networkView.getVisualProperty(TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION);
-            writeAttributeXML(GRAPH_VIEW_CENTER_Y, ObjectType.REAL, cy, true);
+		    final Double cy = networkView.getVisualProperty(TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION);
+		    writeAttributeXML(GRAPH_VIEW_CENTER_Y, ObjectType.REAL, cy, true);
 
-            // TODO: Figure out if our node height and width is locked
-            //            VisualStyle networkStyle = Cytoscape.getCurrentNetworkView().getVisualStyle();
-            //            VisualPropertyDependency vpd = networkStyle.getDependency();
-            //            if (vpd.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED))
-            //                writeAttributeXML(NODE_SIZE_LOCKED, ObjectType.BOOLEAN, Boolean.TRUE ,true);
-        }
+		    // TODO: Figure out if our node height and width is locked
+		    //            VisualStyle networkStyle = Cytoscape.getCurrentNetworkView().getVisualStyle();
+		    //            VisualPropertyDependency vpd = networkStyle.getDependency();
+		    //            if (vpd.check(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED))
+		    //                writeAttributeXML(NODE_SIZE_LOCKED, ObjectType.BOOLEAN, Boolean.TRUE ,true);
+	    }
 
-        // Now handle all of the other network attributes
-        CyRow row = network.getCyRow();
-        CyTable table = row.getDataTable();
+	    // Now handle all of the other network attributes
+	    CyRow row = network.getCyRow();
+	    CyTable table = row.getDataTable();
 
-        for (String attName : table.getColumnTypeMap().keySet())
-            writeAttribute(row, attName);
+	    for (final CyColumn column : table.getColumns())
+		    writeAttribute(row, column.getName());
     }
 
-    /**
-     * Output Cytoscape nodes as XGMML
-     *
-     * @throws IOException
-     */
-    private void writeNodes() throws IOException {
-        for (CyNode node : network.getNodeList()) {
-            // TODO
-            // if (!CyGroupManager.isaGroup(curNode))
-            writeNode(node, null);
-        }
-    }
+	/**
+	 * Output Cytoscape nodes as XGMML
+	 *
+	 * @throws IOException
+	 */
+	private void writeNodes() throws IOException {
+		for (CyNode node : network.getNodeList()) {
+			// TODO
+			// if (!CyGroupManager.isaGroup(curNode))
+			writeNode(node, null);
+		}
+	}
 
-    /**
-     * Output a single CyNode as XGMML
-     *
-     * @param node the node to output
-     * @throws IOException
-     */
-    private void writeNode(CyNode node, List<CyNode> groupList) throws IOException {
-        // Remember that we've seen this node
-        nodeMap.put(node, node);
+	/**
+	 * Output a single CyNode as XGMML
+	 *
+	 * @param node the node to output
+	 * @throws IOException
+	 */
+	private void writeNode(CyNode node, List<CyNode> groupList) throws IOException {
+		// Remember that we've seen this node
+		nodeMap.put(node, node);
 
-        // Output the node
-        writeElement("<node label=" + quote(node.getCyRow().get("name", String.class)));
-        writer.write(" id=" + quote(Integer.toString(node.getIndex())) + ">\n");
-        depth++;
+		// Output the node
+		writeElement("<node label=" + quote(node.getCyRow().get("name", String.class)));
+		writer.write(" id=" + quote(Integer.toString(node.getIndex())) + ">\n");
+		depth++;
 
-        // Output the node attributes
-        // TODO This isn't handling namespaces
-        for (String attName : node.getCyRow().getDataTable().getColumnTypeMap().keySet())
-            writeAttribute(node.getCyRow(), attName);
+		// Output the node attributes
+		// TODO This isn't handling namespaces
+		for (final CyColumn column : node.getCyRow().getDataTable().getColumns())
+			writeAttribute(node.getCyRow(), column.getName());
 
-        // TODO deal with groups
-        //        if (groupList != null && groupList.size() > 0) {
-        //            // If we're a group, output the graph attribute now 
-        //            writeElement("<att>\n");
-        //            depth++;
-        //            writeElement("<graph>\n");
-        //            depth++;
-        //            for (CyNode childNode : groupList) {
-        //                if (CyGroupManager.isaGroup(childNode)) {
-        //                    // We have an embeddedgroup -- recurse
-        //                    CyGroup childGroup = CyGroupManager.getCyGroup(childNode);
-        //                    writeNode(childGroup.getGroupNode(), childGroup.getNodes());
-        //                } else {
-        //                    if (nodeMap.containsKey(childNode))
-        //                        writeElement("<node xlink:href=\"#" + childNode.getIndex() + "\"/>\n");
-        //                    else
-        //                        writeNode(childNode, null);
-        //                }
-        //            }
-        //            depth--;
-        //            writeElement("</graph>\n");
-        //            depth--;
-        //            writeElement("</att>\n");
-        //        }
+		// TODO deal with groups
+		//        if (groupList != null && groupList.size() > 0) {
+		//            // If we're a group, output the graph attribute now
+		//            writeElement("<att>\n");
+		//            depth++;
+		//            writeElement("<graph>\n");
+		//            depth++;
+		//            for (CyNode childNode : groupList) {
+		//                if (CyGroupManager.isaGroup(childNode)) {
+		//                    // We have an embeddedgroup -- recurse
+		//                    CyGroup childGroup = CyGroupManager.getCyGroup(childNode);
+		//                    writeNode(childGroup.getGroupNode(), childGroup.getNodes());
+		//                } else {
+		//                    if (nodeMap.containsKey(childNode))
+		//                        writeElement("<node xlink:href=\"#" + childNode.getIndex() + "\"/>\n");
+		//                    else
+		//                        writeNode(childNode, null);
+		//                }
+		//            }
+		//            depth--;
+		//            writeElement("</graph>\n");
+		//            depth--;
+		//            writeElement("</att>\n");
+		//        }
 
-        // Output the node graphics if we have a view
-        if (networkView != null) {
-            writeNodeGraphics(node, networkView.getNodeView(node));
-        }
+		// Output the node graphics if we have a view
+		if (networkView != null) {
+			writeNodeGraphics(node, networkView.getNodeView(node));
+		}
 
-        depth--;
-        writeElement("</node>\n");
-    }
+		depth--;
+		writeElement("</node>\n");
+	}
 
     /**
      * Output the node graphics
@@ -512,27 +507,27 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
      * of a group are // themselves a group. If so, remove them from // the list
      * & will pick them up on recursion groupList =
      * CyGroupManager.getGroupList();
-     * 
+     *
      * if ((groupList == null) || groupList.isEmpty()) return;
-     * 
+     *
      * HashMap<CyGroup,CyGroup> embeddedGroupList = new
      * HashMap<CyGroup,CyGroup>();
-     * 
+     *
      * for (CyGroup group: groupList) { List<CyNode> childList =
      * group.getNodes();
-     * 
+     *
      * if ((childList == null) || (childList.size() == 0)) continue;
-     * 
+     *
      * for (CyNode childNode: childList) { if
      * (CyGroupManager.isaGroup(childNode)) { // Get the actual group CyGroup
      * embGroup = CyGroupManager.getCyGroup(childNode);
      * embeddedGroupList.put(embGroup, embGroup); } } }
-     * 
+     *
      * for (CyGroup group: groupList) { // Is this an embedded group? if
      * (embeddedGroupList.containsKey(group)) continue; // Yes, skip it
-     * 
+     *
      * writeGroup(group); } }
-     * 
+     *
      * private void writeGroup(CyGroup group) throws IOException { CyNode
      * groupNode = group.getGroupNode(); writeNode(groupNode, group.getNodes());
      * }
@@ -542,111 +537,110 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
      *
      * @throws IOException
      */
-    private void writeEdges() throws IOException {
-        for (CyEdge edge : network.getEdgeList()) {
-            edgeMap.put(edge, edge);
-            writeEdge(edge);
-        }
-    }
+	private void writeEdges() throws IOException {
+		for (CyEdge edge : network.getEdgeList()) {
+			edgeMap.put(edge, edge);
+			writeEdge(edge);
+		}
+	}
 
-    /**
-     * Output a Cytoscape edge as XGMML
-     *
-     * @param curEdge the edge to output
-     *
-     * @throws IOException
-     */
-    private void writeEdge(CyEdge curEdge) throws IOException {
-        // Write the edge
-        String target = quote(Integer.toString(curEdge.getTarget().getIndex()));
-        String source = quote(Integer.toString(curEdge.getSource().getIndex()));
+	/**
+	 * Output a Cytoscape edge as XGMML
+	 *
+	 * @param curEdge the edge to output
+	 *
+	 * @throws IOException
+	 */
+	private void writeEdge(CyEdge curEdge) throws IOException {
+		// Write the edge
+		String target = quote(Integer.toString(curEdge.getTarget().getIndex()));
+		String source = quote(Integer.toString(curEdge.getSource().getIndex()));
 
-        // Make sure these nodes exist
-        if (!nodeMap.containsKey(curEdge.getTarget()) || !nodeMap.containsKey(curEdge.getSource())) return;
+		// Make sure these nodes exist
+		if (!nodeMap.containsKey(curEdge.getTarget()) || !nodeMap.containsKey(curEdge.getSource())) return;
 
-        String directed = quote(curEdge.isDirected() ? "1" : "0");
+		String directed = quote(curEdge.isDirected() ? "1" : "0");
 
-        writeElement("<edge label=" + quote(curEdge.getCyRow().get("name", String.class)) + " source=" + source
-                + " target=" + target + " cy:directed=" + directed + ">\n");
+		writeElement("<edge label=" + quote(curEdge.getCyRow().get("name", String.class)) + " source=" + source
+			     + " target=" + target + " cy:directed=" + directed + ">\n");
 
-        depth++;
+		depth++;
 
-        // Write the edge attributes
-        // TODO This isn't handling namespaces
-        for (String attName : curEdge.getCyRow().getDataTable().getColumnTypeMap().keySet())
-            writeAttribute(curEdge.getCyRow(), attName);
+		// Write the edge attributes
+		// TODO This isn't handling namespaces
+		for (final CyColumn column : curEdge.getCyRow().getDataTable().getColumns())
+			writeAttribute(curEdge.getCyRow(), column.getName());
 
-        // Write the edge graphics
-        if (networkView != null) {
-            writeEdgeGraphics(curEdge, networkView.getEdgeView(curEdge));
-        }
+		// Write the edge graphics
+		if (networkView != null)
+			writeEdgeGraphics(curEdge, networkView.getEdgeView(curEdge));
 
-        depth--;
-        writeElement("</edge>\n");
-    }
+		depth--;
+		writeElement("</edge>\n");
+	}
 
-    /**
-     * Output the edge graphics
-     *
-     * @param edge the edge whose graphics we're outputting
-     * @param edgeView the view for this edge
-     *
-     * @throws IOException
-     */
-    private void writeEdgeGraphics(CyEdge edge, View<CyEdge> edgeView) throws IOException {
-        if (edgeView == null) return;
+	/**
+	 * Output the edge graphics
+	 *
+	 * @param edge the edge whose graphics we're outputting
+	 * @param edgeView the view for this edge
+	 *
+	 * @throws IOException
+	 */
+	private void writeEdgeGraphics(CyEdge edge, View<CyEdge> edgeView) throws IOException {
+		if (edgeView == null) return;
 
-        writeElement("<graphics");
+		writeElement("<graphics");
 
-        // Width
-        Double width = edgeView.getVisualProperty(TwoDVisualLexicon.EDGE_WIDTH);
-        if (width == null) width = new Double(0);
+		// Width
+		Double width = edgeView.getVisualProperty(TwoDVisualLexicon.EDGE_WIDTH);
+		if (width == null) width = new Double(0);
 
-        writeAttributePair("width", Integer.toString(width.intValue()));
+		writeAttributePair("width", Integer.toString(width.intValue()));
 
-        // Color
-        Paint paint = edgeView.getVisualProperty(TwoDVisualLexicon.EDGE_PAINT);
-        writeAttributePair("fill", paint2string(paint, Color.DARK_GRAY));
+		// Color
+		Paint paint = edgeView.getVisualProperty(TwoDVisualLexicon.EDGE_PAINT);
+		writeAttributePair("fill", paint2string(paint, Color.DARK_GRAY));
 
-        // TODO: Store Cytoscape-local graphical attributes
-        if (!noCytoscapeGraphics) {
-            //            writeAttributePair("cy:sourceArrow", Integer.toString(edgeView.getSourceEdgeEnd()));
-            //            writeAttributePair("cy:targetArrow", Integer.toString(edgeView.getTargetEdgeEnd()));
-            //            writeAttributePair("cy:sourceArrowColor", toHexColorString(edgeView.getSourceEdgeEndPaint()));
-            //            writeAttributePair("cy:targetArrowColor", toHexColorString(edgeView.getTargetEdgeEndPaint()));
-            //
-            //            writeAttributePair("cy:edgeLabelFont", encodeFont(edgeView.getLabel().getFont()));
-            //            writeAttributePair("cy:edgeLineType", LineStyle.extractLineStyle(edgeView.getStroke()).toString());
-            //            // Set curved or not
-            //            if (edgeView.getLineType() == EdgeView.CURVED_LINES) {
-            //                writeAttributePair("cy:curved", "CURVED_LINES");
-            //            } else if (edgeView.getLineType() == EdgeView.STRAIGHT_LINES) {
-            //                writeAttributePair("cy:curved", "STRAIGHT_LINES");
-            //            }
-        }
+		// TODO: Store Cytoscape-local graphical attributes
+		if (!noCytoscapeGraphics) {
+			//            writeAttributePair("cy:sourceArrow", Integer.toString(edgeView.getSourceEdgeEnd()));
+			//            writeAttributePair("cy:targetArrow", Integer.toString(edgeView.getTargetEdgeEnd()));
+			//            writeAttributePair("cy:sourceArrowColor", toHexColorString(edgeView.getSourceEdgeEndPaint()));
+			//            writeAttributePair("cy:targetArrowColor", toHexColorString(edgeView.getTargetEdgeEndPaint()));
+			//
+			//            writeAttributePair("cy:edgeLabelFont", encodeFont(edgeView.getLabel().getFont()));
+			//            writeAttributePair("cy:edgeLineType", LineStyle.extractLineStyle(edgeView.getStroke()).toString());
+			//            // Set curved or not
+			//            if (edgeView.getLineType() == EdgeView.CURVED_LINES) {
+			//                writeAttributePair("cy:curved", "CURVED_LINES");
+			//            } else if (edgeView.getLineType() == EdgeView.STRAIGHT_LINES) {
+			//                writeAttributePair("cy:curved", "STRAIGHT_LINES");
+			//            }
+		}
 
-        // TODO: Handle bends
-        //                final Bend bendData = edgeView.getBend();
-        final List<Point2D> handles = new ArrayList<Point2D>(); //final List<Point2D> handles = bendData.getHandles();
+		// TODO: Handle bends
+		//                final Bend bendData = edgeView.getBend();
+		final List<Point2D> handles = new ArrayList<Point2D>(); //final List<Point2D> handles = bendData.getHandles();
 
-        if (handles.size() == 0) {
-            writer.write("/>\n");
-        } else {
-            writer.write(">\n");
-            //            depth++;
-            //        writeElement("<att name=\"edgeBend\">\n");
-            //        depth++;
-            //        for (Point2D handle: handles) {
-            //            String x = Double.toString(handle.getX());
-            //            String y = Double.toString(handle.getY());
-            //            writeElement("<att name=\"handle\" x=\""+x+"\" y=\""+y+"\" />\n");
-            //        }
-            //        depth--;
-            //        writeElement("</att>\n");
-            //        depth--;
-            //        writeElement("</graphics>\n");
-        }
-    }
+		if (handles.size() == 0) {
+			writer.write("/>\n");
+		} else {
+			writer.write(">\n");
+			//            depth++;
+			//        writeElement("<att name=\"edgeBend\">\n");
+			//        depth++;
+			//        for (Point2D handle: handles) {
+			//            String x = Double.toString(handle.getX());
+			//            String y = Double.toString(handle.getY());
+			//            writeElement("<att name=\"handle\" x=\""+x+"\" y=\""+y+"\" />\n");
+			//        }
+			//        depth--;
+			//        writeElement("</att>\n");
+			//        depth--;
+			//        writeElement("</graphics>\n");
+		}
+	}
 
     /**
      * Creates an attribute to write into XGMML file.
@@ -662,99 +656,103 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
      * @throws IOException
      */
     private void writeAttribute(final CyRow row, final String attName) throws IOException {
-        // create an attribute and its type:
-        final Class<?> attType = row.getDataTable().getColumnTypeMap().get(attName);
-        if (attType == null) return;
+	    // create an attribute and its type:
+	    final CyColumn column = row.getDataTable().getColumn(attName);
+	    if (column == null)
+		    return;
+	    final Class<?> attType = column.getType();
 
-        String value = null;
-        String type = null;
+	    String value = null;
+	    String type = null;
 
-        // TODO: Equations
-        //        final Equation equation = row.getEquation(id, attributeName);
+	    // TODO: Equations
+	    //        final Equation equation = row.getEquation(id, attributeName);
 
-        if (attType == Double.class) {
-            //            if (equation != null) {
-            //                writeEquationAttributeXML(attName, ObjectType.REAL, equation.toString(),
-            //                                          true, hidden, editable);
-            //            } else {
-            Double dAttr = row.get(attName, Double.class);
-            writeAttributeXML(attName, ObjectType.REAL, dAttr, true);
-            //            }
-        } else {
-            if (attType == Integer.class) {
-                //                if (equation != null) {
-                //                    writeEquationAttributeXML(attName, ObjectType.INTEGER, equation.toString(), true, hidden, editable);
-                //                } else {
-                Integer iAttr = row.get(attName, Integer.class);
-                writeAttributeXML(attName, ObjectType.INTEGER, iAttr, true);
-                //                }
-            } else if (attType == String.class) {
-                //                if (equation != null) {
-                //                    writeEquationAttributeXML(attName, ObjectType.STRING, equation.toString(),
-                //                                              true, hidden, editable);
-                //                } else {
-                String sAttr = row.get(attName, String.class);
-                // Protect tabs and returns
-                if (sAttr != null) {
-                    sAttr = sAttr.replace("\n", "\\n");
-                    sAttr = sAttr.replace("\t", "\\t");
-                }
-                // TODO: nested networks
-                //                if (attName.equals(CyNode.NESTED_NETWORK_ID_ATTR)) {
-                //                    // This is a special attribute for nested network.
-                //                    sAttr = Cytoscape.getNetwork(sAttr).getTitle();
-                //                }
-                writeAttributeXML(attName, ObjectType.STRING, sAttr, true);
-                //                }
-            } else if (attType == Boolean.class) {
-                //                if (equation != null) {
-                //                    writeEquationAttributeXML(attName, ObjectType.BOOLEAN, equation.toString(), true, hidden, editable);
-                //                } else {
-                Boolean bAttr = row.get(attName, Boolean.class);
-                writeAttributeXML(attName, ObjectType.BOOLEAN, bAttr, true);
-                //                }
-            } else if (attType == List.class) {
-                final List<?> listAttr = row.get(attName, List.class);
-                writeAttributeXML(attName, ObjectType.LIST, null, false);
+	    if (attType == Double.class) {
+		    //            if (equation != null) {
+		    //                writeEquationAttributeXML(attName, ObjectType.REAL, equation.toString(),
+		    //                                          true, hidden, editable);
+		    //            } else {
+		    Double dAttr = row.get(attName, Double.class);
+		    writeAttributeXML(attName, ObjectType.REAL, dAttr, true);
+		    //            }
+	    } else {
+		    if (attType == Integer.class) {
+			    //                if (equation != null) {
+			    //                    writeEquationAttributeXML(attName, ObjectType.INTEGER, equation.toString(), true, hidden, editable);
+			    //                } else {
+			    Integer iAttr = row.get(attName, Integer.class);
+			    writeAttributeXML(attName, ObjectType.INTEGER, iAttr, true);
+			    //                }
+		    } else if (attType == String.class) {
+			    //                if (equation != null) {
+			    //                    writeEquationAttributeXML(attName, ObjectType.STRING, equation.toString(),
+			    //                                              true, hidden, editable);
+			    //                } else {
+			    String sAttr = row.get(attName, String.class);
+			    // Protect tabs and returns
+			    if (sAttr != null) {
+				    sAttr = sAttr.replace("\n", "\\n");
+				    sAttr = sAttr.replace("\t", "\\t");
+			    }
+			    // TODO: nested networks
+			    //                if (attName.equals(CyNode.NESTED_NETWORK_ID_ATTR)) {
+			    //                    // This is a special attribute for nested network.
+			    //                    sAttr = Cytoscape.getNetwork(sAttr).getTitle();
+			    //                }
+			    writeAttributeXML(attName, ObjectType.STRING, sAttr, true);
+			    //                }
+		    } else if (attType == Boolean.class) {
+			    //                if (equation != null) {
+			    //                    writeEquationAttributeXML(attName, ObjectType.BOOLEAN, equation.toString(), true, hidden, editable);
+			    //                } else {
+			    Boolean bAttr = row.get(attName, Boolean.class);
+			    writeAttributeXML(attName, ObjectType.BOOLEAN, bAttr, true);
+			    //                }
+		    } else if (attType == List.class) {
+			    final List<?> listAttr = row.get(attName, List.class);
+			    writeAttributeXML(attName, ObjectType.LIST, null, false);
 
-                depth++;
-                // interate through the list
-                for (Object obj : listAttr) {
-                    // Protect tabs and returns (if necessary)
-                    String sAttr = obj.toString();
-                    if (sAttr != null) {
-                        sAttr = sAttr.replace("\n", "\\n");
-                        sAttr = sAttr.replace("\t", "\\t");
-                    }
-                    // set child attribute value & label
-                    writeAttributeXML(attName, checkType(obj), sAttr, true);
-                }
-                depth--;
-                writeAttributeXML(null, null, null, true);
-            } else if (attType == Map.class) {
-                // process SIMPLE MAP
-                // get the attribute map
-                final Map mapAttr = row.get(attName, Map.class);
-                writeAttributeXML(attName, ObjectType.MAP, null, false);
+			    depth++;
+			    // interate through the list
+			    for (Object obj : listAttr) {
+				    // Protect tabs and returns (if necessary)
+				    String sAttr = obj.toString();
+				    if (sAttr != null) {
+					    sAttr = sAttr.replace("\n", "\\n");
+					    sAttr = sAttr.replace("\t", "\\t");
+				    }
+				    // set child attribute value & label
+				    writeAttributeXML(attName, checkType(obj), sAttr, true);
+			    }
+			    depth--;
+			    writeAttributeXML(null, null, null, true);
+		    } else if (attType == Map.class) {
+			    // process SIMPLE MAP
+			    // get the attribute map
+			    final Map mapAttr = row.get(attName, Map.class);
+			    writeAttributeXML(attName, ObjectType.MAP, null, false);
 
-                depth++;
-                // interate through the map
-                for (Object obj : mapAttr.keySet()) {
-                    // get the attribute from the map
-                    String key = (String) obj;
-                    Object val = mapAttr.get(key);
-                    String sAttr = val.toString();
-                    if (sAttr != null) {
-                        sAttr = sAttr.replace("\n", "\\n");
-                        sAttr = sAttr.replace("\t", "\\t");
-                    }
+			    depth++;
+			    // interate through the map
+			    for (Object obj : mapAttr.keySet()) {
+				    // get the attribute from the map
+				    String key = (String) obj;
+				    Object val = mapAttr.get(key);
+				    String sAttr = val.toString();
+				    if (sAttr != null) {
+					    sAttr = sAttr.replace("\n", "\\n");
+					    sAttr = sAttr.replace("\t", "\\t");
+				    }
 
-                    writeAttributeXML(key, checkType(val), sAttr, true);
-                }
-                depth--;
-                writeAttributeXML(null, null, null, true);
-            }
-        }
+				    writeAttributeXML(key, checkType(val), sAttr, true);
+			    }
+			    depth--;
+			    writeAttributeXML(null, null, null, true);
+		    }
+	    }
+
+
         // TODO: process COMPLEX MAP
         //        else if (attType == CyAttributes.TYPE_COMPLEX) {
         //            MultiHashMap mmap = attributes.getMultiHashMap();

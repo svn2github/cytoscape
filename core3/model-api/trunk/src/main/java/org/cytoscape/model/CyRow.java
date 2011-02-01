@@ -71,11 +71,10 @@ public interface CyRow {
 	 * Indicates whether the column of the specified type contains
 	 * a non-null value.
 	 * @param columnName The name identifying the attribute.
-	 * @param type The type of the column.
 	 * @return true if the value specified in this row at this column
 	 * of the specified type is not null.
 	 */
-	<T> boolean isSet(String columnName, Class<?extends T> type);
+	boolean isSet(String columnName);
 
 	/**
 	 * Returns a map of column names to Objects that contain the values

@@ -40,9 +40,10 @@ import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.view.model.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
@@ -62,8 +63,10 @@ abstract class AbstractLoadNetworkTask extends AbstractTask {
 	protected Properties props;
 	protected CyNetworkNaming namingUtil;
 
-	public AbstractLoadNetworkTask(final CyNetworkViewReaderManager mgr, final CyNetworkManager networkManager,
-	                               final CyNetworkViewManager networkViewManager, final Properties props,
+	public AbstractLoadNetworkTask(final CyNetworkViewReaderManager mgr,
+				       final CyNetworkManager networkManager,
+	                               final CyNetworkViewManager networkViewManager,
+				       final Properties props,
 				       final CyNetworkNaming namingUtil)
 	{
 		this.mgr = mgr;
@@ -116,13 +119,14 @@ class GenerateNetworkViewsTask extends AbstractTask {
 		if (cyNetworkViews == null || cyNetworkViews.length < 0)
 			throw new IOException("Could not create network for the producer.");
 
-		for (CyNetworkView view : cyNetworkViews) {
+		for (final CyNetworkView view : cyNetworkViews) {
 			if (cancelled)
 				return;
 
 			// Model should not be null.  It will be tested in ViewImpl.
 			final CyNetwork cyNetwork = view.getModel();
-			cyNetwork.getCyRow().set("name", namingUtil.getSuggestedNetworkTitle(name));
+			cyNetwork.getCyRow().set(CyTableEntry.NAME,
+						 namingUtil.getSuggestedNetworkTitle(name));
 
 			networkManager.addNetwork(cyNetwork);
 			networkViewManager.addNetworkView(view);

@@ -51,21 +51,7 @@ public class HandleComplexAttribute extends AbstractHandler {
 		String value = atts.getValue("value");
 
 		if (manager.level == manager.numKeys) {
-			manager.complexMap[manager.level - 1].put(
-					manager.complexKey[manager.level - 1], typeMap
-							.getTypedValue(type, value));
-			manager.valueType = attributeValueUtil.getMultHashMapType(type);
-
-			// See if we've defined the attribute already
-			if (Map.class == manager.currentAttributes.getDataTable().getColumnTypeMap()
-			    .get(manager.currentAttributeID))
-				manager.currentAttributes.getDataTable().createColumn(
-						manager.currentAttributeID, Map.class);
-
-			// Now define set the attribute
-			if (manager.objectTarget != null)
-				manager.currentAttributes.set(manager.currentAttributeID,
-						typeMap.getTypedValue(type, value)); // ??
+			throw new IllegalStateException("Cytoscape 3.0 does not support Map attrributes!");
 		} else if (manager.level == 0) {
 			if (manager.complexMap[manager.level] == null) {
 				manager.complexMap[manager.level] = new HashMap();

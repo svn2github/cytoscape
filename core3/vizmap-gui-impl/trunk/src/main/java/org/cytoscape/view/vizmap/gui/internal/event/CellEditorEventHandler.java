@@ -480,7 +480,7 @@ public class CellEditorEventHandler implements VizMapEventHandler {
 				applicationManager.getCurrentNetwork()).get(
 				CyNetwork.DEFAULT_ATTRS);
 
-		final Class<K> dataType = (Class<K>) attrForTest.getType(ctrAttrName);
+		final Class<K> dataType = (Class<K>)attrForTest.getColumn(ctrAttrName).getType();
 
 		if (mapping == null) {
 			// Need to create new one

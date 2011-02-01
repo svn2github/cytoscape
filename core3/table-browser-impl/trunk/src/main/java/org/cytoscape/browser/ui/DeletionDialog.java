@@ -18,6 +18,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import org.cytoscape.browser.internal.BrowserTableModel;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableUtil;
 
 
 public class DeletionDialog extends JDialog {
@@ -48,11 +49,11 @@ public class DeletionDialog extends JDialog {
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		attributeList.setModel(new AbstractListModel() {
 				public int getSize() {
-					return attributes.getColumnTypeMap().size();
+					return attributes.getColumns().size();
 				}
 
 				public Object getElementAt(int i) {
-					final Set<String> columnNames = attributes.getColumnTypeMap().keySet();
+					final Set<String> columnNames = CyTableUtil.getColumnNames(attributes);
 					final String[] sortedColumnNames = new String[columnNames.size()];
 					columnNames.toArray(sortedColumnNames);
 					Arrays.sort(sortedColumnNames);

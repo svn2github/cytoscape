@@ -49,12 +49,14 @@ public class AllFactoryTest {
 	CyNetworkManager netmgr;
 	CyNetworkViewManager networkViewManager;
 	CyNetwork net;
+	CyEventHelper eventHelper;
 
 	@Before
 	public void setUp() throws Exception {
 		net = mock(CyNetwork.class);
 		netmgr = mock(CyNetworkManager.class);
 		networkViewManager = mock(CyNetworkViewManager.class);
+		eventHelper = mock(CyEventHelper.class);
 	}
 
 	@Test
@@ -74,7 +76,7 @@ public class AllFactoryTest {
 
 	@Test
 	public void testInvertSelectedEdgesTaskFactory() {
-		executeTest( new InvertSelectedEdgesTaskFactory(networkViewManager) );
+		executeTest(new InvertSelectedEdgesTaskFactory(networkViewManager, eventHelper));
 	}
 
 	@Test
@@ -115,7 +117,7 @@ public class AllFactoryTest {
 
 	@Test
 	public void testSelectFromFileListTaskFactory() {
-		executeTest(new SelectFromFileListTaskFactory(networkViewManager) );
+		executeTest(new SelectFromFileListTaskFactory(networkViewManager, eventHelper));
 	}
 
 

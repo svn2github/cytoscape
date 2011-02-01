@@ -93,7 +93,7 @@ public class TextDataTableReaderTest {
 		CyTable table = tables[0];
 		assertNotNull( table );
 		assertEquals( numRows, table.getAllRows().size() );
-		assertEquals( numCols, table.getColumnTypeMap().keySet().size() );
+		assertEquals(numCols, table.getColumns().size());
 		return table;
 	}
 

@@ -54,6 +54,7 @@ import java.text.BreakIterator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -73,6 +74,7 @@ import org.cytoscape.equations.Function;
 import org.cytoscape.equations.LongList;
 import org.cytoscape.equations.StringList;
 
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
@@ -184,7 +186,7 @@ public class FormulaBuilderDialog extends JDialog {
 	 *  @returns the type of the attribute "attribName" translated into the language of attribute equations or null
 	 */
 	private Class<?> getAttributeType(final String attribName) {
-		return tableModel.getAttributes().getType(attribName);
+		return tableModel.getAttributes().getColumn(attribName).getType();
 	}
 
 	private boolean returnTypeIsCompatible(final Class<?> requiredType, final Class<?> returnType) {
@@ -286,9 +288,10 @@ public class FormulaBuilderDialog extends JDialog {
 	}
 
 	private boolean attributesContainBooleanSelected() {
-		final Map<String, Class<?>> nameToTypeMape = tableModel.getAttributes().getColumnTypeMap();
-		return nameToTypeMape.containsKey(CyNetwork.SELECTED)
-		       && nameToTypeMape.get(CyNetwork.SELECTED) == Boolean.class;
+		final CyColumn selectedColumn =
+			tableModel.getAttributes().getColumn(CyNetwork.SELECTED);
+		return selectedColumn != null
+		       && selectedColumn.getType() == Boolean.class;
 	}
 
 	private void initApplyToComboBox(final Container contentPane) {
@@ -323,8 +326,11 @@ public class FormulaBuilderDialog extends JDialog {
 	 *  @returns null, if "expression" is invalid, or, the type of "expression" if it was valid
 	 */
 	private Class<?> expressionIsValid(final List<Class<?>> validArgTypes, final String expression) {
+		final Map<String, Class<?>> attribNamesAndTypes = new HashMap<String, Class<?>>();
+		for (final CyColumn column : tableModel.getAttributes().getColumns())
+			attribNamesAndTypes.put(column.getName(), column.getType());
+
 		final EqnParser parser = compiler.getParser();
-		final Map<String, Class<?>> attribNamesAndTypes = tableModel.getAttributes().getColumnTypeMap();
 		if (!parser.parse("=" + expression, attribNamesAndTypes)) {
 			displayErrorMessage(parser.getErrorMsg());
 			return null;
@@ -373,11 +379,11 @@ public class FormulaBuilderDialog extends JDialog {
 		attribNamesComboBox.removeAllItems();
 		final List<Class<?>> possibleArgTypes = getPossibleNextArgumentTypes();
 		final ArrayList<String> possibleAttribNames = new ArrayList<String>(20);
-		final Map<String, Class<?>> attribNamesAndTypes = tableModel.getAttributes().getColumnTypeMap();
-		for (final String attribName : attribNamesAndTypes.keySet()) {
-			final Class<?> attribType = attribNamesAndTypes.get(attribName);
-			if (isTypeCompatible(possibleArgTypes, attribType))
-				possibleAttribNames.add(attribName);
+		final Collection<CyColumn> columns =
+			tableModel.getAttributes().getColumns();
+		for (final CyColumn column : columns) {
+			if (isTypeCompatible(possibleArgTypes, column.getType()))
+				possibleAttribNames.add(column.getName());
 		}
 
 		Collections.sort(possibleAttribNames);
@@ -441,9 +447,8 @@ public class FormulaBuilderDialog extends JDialog {
 			final String attribName = (String)attribNamesComboBox.getSelectedItem();
 			if (attribName != null) {
 				formula.append(EquationUtil.attribNameAsReference(attribName));
-				final Map<String, Class<?>> attribNamesAndTypes
-					= tableModel.getAttributes().getColumnTypeMap();
-				leadingArgs.add(attribNamesAndTypes.get(attribName));
+				final CyColumn column = tableModel.getAttributes().getColumn(attribName);
+				leadingArgs.add(column.getType());
 			}
 		}
 		formulaTextField.setText(formula.toString());
@@ -617,7 +622,8 @@ public class FormulaBuilderDialog extends JDialog {
 	private static void initAttribNameToTypeMap(final CyTable attribs, final String ignore,
 	                                            final Map<String, Class<?>> attribNameToTypeMap)
 	{
-		attribNameToTypeMap.putAll(attribs.getColumnTypeMap());
+		for (final CyColumn column : attribs.getColumns())
+			attribNameToTypeMap.put(column.getName(), column.getType());
 		if (ignore != null)
 			attribNameToTypeMap.remove(ignore);
 	}

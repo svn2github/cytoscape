@@ -30,6 +30,7 @@
 package org.cytoscape.task.internal.creation;  
 
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.session.CyNetworkNaming;
@@ -45,26 +46,33 @@ public class CloneNetworkTaskFactory extends AbstractNetworkTaskFactory {
 	private final CyNetworkManager networkManager;
 	private final CyNetworkViewManager networkViewManager;
 	private final VisualMappingManager vmm;
-    private final CyNetworkFactory netFactory;
-    private final CyNetworkViewFactory netViewFactory;
-    private final RenderingEngineManager reMgr;
-    private final CyNetworkNaming naming;
+	private final CyNetworkFactory netFactory;
+	private final CyNetworkViewFactory netViewFactory;
+	private final RenderingEngineManager reMgr;
+	private final CyNetworkNaming naming;
+	private final CyEventHelper eventHelper;
 
 	public CloneNetworkTaskFactory(final CyNetworkManager networkManager, 
-            final CyNetworkViewManager networkViewManager, final VisualMappingManager vmm, 
-            final CyNetworkFactory netFactory, final CyNetworkViewFactory netViewFactory, 
-            final RenderingEngineManager reMgr, final CyNetworkNaming naming)
+				       final CyNetworkViewManager networkViewManager,
+				       final VisualMappingManager vmm, 
+				       final CyNetworkFactory netFactory,
+				       final CyNetworkViewFactory netViewFactory, 
+				       final RenderingEngineManager reMgr,
+				       final CyNetworkNaming naming, final CyEventHelper eventHelper)
 	{
-		this.networkManager = networkManager;
+		this.networkManager     = networkManager;
 		this.networkViewManager = networkViewManager;
-		this.vmm = vmm;
-		this.netFactory = netFactory;
-		this.netViewFactory = netViewFactory;
-		this.reMgr = reMgr;
-		this.naming = naming;
+		this.vmm                = vmm;
+		this.netFactory         = netFactory;
+		this.netViewFactory     = netViewFactory;
+		this.reMgr              = reMgr;
+		this.naming             = naming;
+		this.eventHelper        = eventHelper;
 	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new CloneNetworkTask(net, networkManager, networkViewManager, vmm, netFactory, netViewFactory, reMgr, naming));
+		return new TaskIterator(new CloneNetworkTask(net, networkManager, networkViewManager,
+							     vmm, netFactory, netViewFactory, reMgr,
+							     naming, eventHelper));
 	} 
 }

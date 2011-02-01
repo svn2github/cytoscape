@@ -119,6 +119,7 @@
 	<bean id="invertSelectedEdgesTaskFactory"
 	      class="org.cytoscape.task.internal.select.InvertSelectedEdgesTaskFactory">
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
+		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
 
 	<bean id="invertSelectedNodesTaskFactory"
@@ -130,6 +131,7 @@
 	<bean id="selectFromFileListTaskFactory"
 	      class="org.cytoscape.task.internal.select.SelectFromFileListTaskFactory">
 		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
+		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
 
 	<bean id="selectFirstNeighborsNodeViewTaskFactory"
@@ -183,6 +185,7 @@
 		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
 		<constructor-arg ref="renderingEngineManagerServiceRef" />
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
+		<constructor-arg ref="cyEventHelperRef" />
 	</bean>
 
 	<bean id="newNetworkSelectedNodesEdgesTaskFactory"

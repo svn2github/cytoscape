@@ -1,12 +1,5 @@
 /*
- Copyright (c) 2006, 2007, 2009, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2009, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.filter.internal.filters.view;
+
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -87,6 +80,7 @@ import org.cytoscape.filter.internal.filters.util.WidestStringComboBoxModel;
 import org.cytoscape.filter.internal.filters.util.WidestStringComboBoxPopupMenuListener;
 import org.cytoscape.filter.internal.filters.util.WidestStringProvider;
 import org.cytoscape.filter.internal.quickfind.util.CyAttributesUtil;
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyRow;
@@ -110,9 +104,6 @@ import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 
 
-/**
- * 
- */
 public class FilterMainPanel extends JPanel implements ActionListener,
 		ItemListener, SetCurrentNetworkViewListener, NetworkAddedListener,
 		NetworkAboutToBeDestroyedListener, SessionLoadedListener,
@@ -372,14 +363,14 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		}
 		
 		CyTableEntry tableEntry = entries.iterator().next();
-		Map<String, Class<?>> types = tableEntry.getCyRow().getDataTable().getColumnTypeMap();
-		for (Entry<String, Class<?>> entry : types.entrySet()) {
+		final Collection<CyColumn> columns = tableEntry.getCyRow().getDataTable().getColumns();
+		for (final CyColumn column : columns) {
 			//  Show all attributes, with type of String or Number
-			Class<?> type = entry.getValue();
+			Class<?> type = column.getType();
 			
 			//  only show user visible attributes,with type = Number/String/List
 			if ((type == Integer.class)||(type == Double.class)||(type == Boolean.class)||(type == String.class)||(type == List.class)) {
-				attributeList.add(pType+"."+entry.getKey());
+				attributeList.add(pType + "." + column.getName());
 			}
 		
 			//  Alphabetical sort

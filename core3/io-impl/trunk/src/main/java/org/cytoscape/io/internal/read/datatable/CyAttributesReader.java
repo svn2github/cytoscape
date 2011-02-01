@@ -62,7 +62,7 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 	private CyTableFactory tableFactory;;
 	private InputStream inputStream;
 
-	private CyTable[] cyTables; 
+	private CyTable[] cyTables;
 	private CyApplicationManager appMgr;
 	private CyNetworkManager netMgr;
 
@@ -70,13 +70,13 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 	public final ListSingleSelection<String> dataTypeOptions;
 
 	private static int numImports = 0;
-	
+
 	public CyAttributesReader(InputStream inputStream, CyTableFactory tableFactory, CyTableManager tableMgr,
 			CyApplicationManager appMgr, CyNetworkManager netMgr) {
-		
+
 		lineNum = 0;
 		doDecoding = Boolean.valueOf(System.getProperty(DECODE_PROPERTY, "true"));
-		
+
 		this.tableMgr = tableMgr;
 		this.tableFactory = tableFactory;
 		this.appMgr = appMgr;
@@ -92,15 +92,15 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 		} else {
 			options1.add("Unbound");
 		}
-	
+
 		dataTypeOptions = new ListSingleSelection<String>(options1);
 	}
 
-	
+
 	@Override
 	public void run(TaskMonitor tm) throws IOException {
-	
-		CyTable table = tableFactory.createTable("AttrTable " + Integer.toString(numImports++), 
+
+		CyTable table = tableFactory.createTable("AttrTable " + Integer.toString(numImports++),
 		                                           "name", String.class, true);
 		cyTables = new CyTable[] { table };
 
@@ -115,7 +115,7 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 
 		Class<? extends CyTableEntry> type = getMappingClass();
 
-		if ( netMgr.getNetworkSet().size() > 0 && type != null ) 
+		if ( netMgr.getNetworkSet().size() > 0 && type != null )
 			super.insertTasksAfterCurrentTask( new MapNetworkAttrTask(type,table,netMgr,appMgr) );
 	}
 
@@ -127,15 +127,15 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 			return CyEdge.class;
 		else if ( sel.equals("Network") )
 			return CyNetwork.class;
-		else	
-			return null; 
+		else
+			return null;
 	}
-	
+
 
 	private void loadAttributesInternal(CyTable table) throws IOException
-	{		
+	{
 		InputStreamReader reader1 = new InputStreamReader(this.inputStream);
-		
+
 		badDecode = false;
 		boolean guessedAttrType = false; // We later set this to true if we have to guess the attribute type.
 
@@ -272,9 +272,7 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 						}
 					}
 
-					setListArrtibute(table, type, key, attributeName, elmsBuff);
-					
-					
+					setListAttribute(table, type, key, attributeName, elmsBuff);
 				} else { // Not a list.
 
 					val = decodeString(val);
@@ -306,7 +304,7 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 						firstLine = false;
 					}
 
-					setAttributeForType(table, type, key, attributeName, val);	
+					setAttributeForType(table, type, key, attributeName, val);
 				}
 			}
 		} catch (Exception e) {
@@ -328,62 +326,49 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 		}
 	}
 
-	private void setAttributeForType(CyTable tbl, byte type, String key, String attributeName, String val){
-
-		if (!tbl.getColumnTypeMap().keySet().contains(attributeName))
-		{
-			if (type == TYPE_INTEGER){
-				tbl.createColumn(attributeName, Integer.class);
-			}
-			else if (type == TYPE_BOOLEAN){
-				tbl.createColumn(attributeName, Boolean.class);
-			}
-			else if (type == TYPE_FLOATING_POINT) {
-				tbl.createColumn(attributeName, Double.class);
-			}
-			else { // type is String
-				tbl.createColumn(attributeName, String.class);
-			}
+	private void setAttributeForType(CyTable tbl, byte type, String key, String attributeName,
+					 String val)
+	{
+		if (tbl.getColumn(attributeName) == null) {
+			if (type == TYPE_INTEGER)
+				tbl.createColumn(attributeName, Integer.class, false);
+			else if (type == TYPE_BOOLEAN)
+				tbl.createColumn(attributeName, Boolean.class, false);
+			else if (type == TYPE_FLOATING_POINT)
+				tbl.createColumn(attributeName, Double.class, false);
+			else // type is String
+				tbl.createColumn(attributeName, String.class, false);
 		}
 
 		CyRow row = tbl.getRow(key);
-		
-		if (type == TYPE_INTEGER){
-			row.set(attributeName, new Integer(val));							
-		}
-		else if (type == TYPE_BOOLEAN){
+
+		if (type == TYPE_INTEGER)
+			row.set(attributeName, new Integer(val));
+		else if (type == TYPE_BOOLEAN)
 			row.set(attributeName, new Boolean(val));
-		}
-		else if (type == TYPE_FLOATING_POINT) {
+		else if (type == TYPE_FLOATING_POINT)
 			row.set(attributeName, (new Double(val)));
-		}
-		else {// type is String
+		else // type is String
 			row.set(attributeName, new String(val));
-		}
 	}
 
-
-	private void setListArrtibute(CyTable tbl, Byte type, String key, String attributeName, final ArrayList elmsBuff){
-
-		if (!tbl.getColumnTypeMap().keySet().contains(attributeName))
-		{
-			if (type == TYPE_INTEGER){
-				tbl.createListColumn(attributeName, Integer.class);
-			}
-			else if (type == TYPE_BOOLEAN){
-				tbl.createListColumn(attributeName, Boolean.class);
-			}
-			else if (type == TYPE_FLOATING_POINT) {
-				tbl.createListColumn(attributeName, Double.class);
-			}
-			else { // type is String, do nothing
-			}
+	private void setListAttribute(CyTable tbl, Byte type, String key, String attributeName,
+				      final ArrayList elmsBuff)
+	{
+		if (tbl.getColumn(attributeName) == null) {
+			if (type == TYPE_INTEGER)
+				tbl.createListColumn(attributeName, Integer.class, false);
+			else if (type == TYPE_BOOLEAN)
+				tbl.createListColumn(attributeName, Boolean.class, false);
+			else if (type == TYPE_FLOATING_POINT)
+				tbl.createListColumn(attributeName, Double.class, false);
+			else // type is String, do nothing
+				/* Intentionally empty! */;
 		}
-		CyRow row = tbl.getRow(key);	
-		row.set(attributeName, elmsBuff);							
+		CyRow row = tbl.getRow(key);
+		row.set(attributeName, elmsBuff);
 	}
-	
-	
+
 	private String decodeString(String in) throws IOException {
 		if (doDecoding) {
 			try {
@@ -399,7 +384,6 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 
 		return in;
 	}
-
 
 	private static String decodeSlashEscapes(String in) {
 		final StringBuilder elmBuff = new StringBuilder();

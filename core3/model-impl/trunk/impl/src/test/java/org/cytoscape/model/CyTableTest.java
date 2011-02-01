@@ -72,21 +72,21 @@ public class CyTableTest extends AbstractCyTableTest {
 
 	@Test
 	public void testSetEquation() {
-		table.createColumn("someDouble", Double.class);
-		table.createColumn("someOtherDouble", Double.class);
+		table.createColumn("someDouble", Double.class, false);
+		table.createColumn("someOtherDouble", Double.class, false);
 
 		compiler.compile("=6/3", new HashMap<String, Class<?>>());
 		final Equation eqn = compiler.getEquation();
 		attrs.set("someDouble", eqn);
 
-		assertTrue(attrs.isSet("someDouble", Double.class));
+		assertTrue(attrs.isSet("someDouble"));
 		assertEquals(2.0, attrs.get("someDouble", Double.class).doubleValue(), 0.00001);
 	}
 
 	@Test
 	public void testSetEquationWithIncompatibleEquationReturnType() {
-		table.createColumn("someDouble", Double.class);
-		table.createColumn("someOtherDouble", Double.class);
+		table.createColumn("someDouble", Double.class, false);
+		table.createColumn("someOtherDouble", Double.class, false);
 
 		compiler.compile("=\"String\"", new HashMap<String, Class<?>>());
 		final Equation eqn = compiler.getEquation();
@@ -100,7 +100,7 @@ public class CyTableTest extends AbstractCyTableTest {
 
 	@Test
 	public void testCreateList() {
-		table.createListColumn("booleanList", Boolean.class);
+		table.createListColumn("booleanList", Boolean.class, false);
 		attrs.set("booleanList", new BooleanList());
 		final BooleanList nonEmptyList = new BooleanList(true, false);
 		attrs.set("booleanList", nonEmptyList);
@@ -109,7 +109,7 @@ public class CyTableTest extends AbstractCyTableTest {
 
 	@Test
 	public void testSetListWithACompatibleEquation() {
-		table.createListColumn("stringList", String.class);
+		table.createListColumn("stringList", String.class, false);
 		attrs.set("stringList", new StringList());
 		compiler.compile("=SLIST(\"one\",\"two\")", new HashMap<String, Class<?>>());
 		final Equation eqn = compiler.getEquation();
@@ -120,7 +120,7 @@ public class CyTableTest extends AbstractCyTableTest {
 
 	@Test
 	public void testSetWithAnEvaluableCompatibleEquation() {
-		table.createColumn("strings", String.class);
+		table.createColumn("strings", String.class, false);
 		final Map<String, Class<?>> varnameToTypeMap = new HashMap<String, Class<?>>();
 		compiler.compile("=\"one\"", new HashMap<String, Class<?>>());
 		final Equation eqn = compiler.getEquation();
@@ -130,7 +130,7 @@ public class CyTableTest extends AbstractCyTableTest {
 
 	@Test
 	public void testSetWithANonEvaluableCompatibleEquation() {
-		table.createColumn("strings", String.class);
+		table.createColumn("strings", String.class, false);
 		final Map<String, Class<?>> varnameToTypeMap = new HashMap<String, Class<?>>();
 		varnameToTypeMap.put("a", String.class);
 		compiler.compile("=$a&\"one\"", varnameToTypeMap);
@@ -141,14 +141,14 @@ public class CyTableTest extends AbstractCyTableTest {
 
 	@Test
 	public void testGetColumnValuesWithEquations() {
-		table.createColumn("someLongs", Long.class);
+		table.createColumn("someLongs", Long.class, false);
 		final CyRow row1 = table.getRow(1L);
 		compiler.compile("=LEN(\"one\")", new HashMap<String, Class<?>>());
 		final Equation eqn = compiler.getEquation();
 		row1.set("someLongs", eqn);
 		final CyRow row2 = table.getRow(2L);
 		row2.set("someLongs", -27L);
-		final List<Long> values = table.getColumnValues("someLongs", Long.class);
+		final List<Long> values = table.getColumn("someLongs").getValues(Long.class);
 		assertTrue(values.size() == 2);
 		assertTrue(values.contains(3L));
 		assertTrue(values.contains(-27L));
@@ -157,7 +157,7 @@ public class CyTableTest extends AbstractCyTableTest {
 	@Test
 	public void testGetLastInternalError() {
 		assertNull(table.getLastInternalError());
-		table.createColumn("someLongs", Long.class);
+		table.createColumn("someLongs", Long.class, false);
 		final Map<String, Class<?>> varnameToTypeMap = new HashMap<String, Class<?>>();
 		varnameToTypeMap.put("someLongs", Long.class);
 		compiler.compile("=$someLongs", varnameToTypeMap);
@@ -167,8 +167,8 @@ public class CyTableTest extends AbstractCyTableTest {
 
 	@Test
 	public void testGetColumnValuesWithEquationsWithDependentColumns() {
-		table.createColumn("a", Double.class);
-		table.createColumn("b", Double.class);
+		table.createColumn("a", Double.class, false);
+		table.createColumn("b", Double.class, false);
 		attrs.set("a", 10.0);
 
 		final Map<String, Class<?>> varnameToTypeMap = new HashMap<String, Class<?>>();
@@ -182,7 +182,7 @@ public class CyTableTest extends AbstractCyTableTest {
 
 	@Test
 	public void testSetWithAnEquationWhichReferencesANonExistentAttribute() {
-		table.createColumn("a", Double.class);
+		table.createColumn("a", Double.class, false);
 		final Map<String, Class<?>> varnameToTypeMap = new HashMap<String, Class<?>>();
 		varnameToTypeMap.put("b", Double.class);
 		compiler.compile("=$b+10", varnameToTypeMap);
@@ -193,15 +193,15 @@ public class CyTableTest extends AbstractCyTableTest {
 
 	@Test
 	public void testVirtualColumnWithAnEquationReference() {
-		table.createColumn("x", Integer.class);
-		table.createColumn("ss", String.class);
+		table.createColumn("x", Integer.class, false);
+		table.createColumn("ss", String.class, false);
 		CyRow row1 = table.getRow(1L);
 		row1.set("x", 33);
-		table2.createColumn("x2", Integer.class);
+		table2.createColumn("x2", Integer.class, false);
 		CyRow row2 =  table2.getRow(1L);
 		row2.set("x2", 33);
-		table2.createColumn("s", String.class);
-		table.addVirtualColumn("s1", "s", table2, "x2", "x");
+		table2.createColumn("s", String.class, true);
+		table.addVirtualColumn("s1", "s", table2, "x2", "x", true);
 		row2.set("s", "abc");
 
 		final Map<String, Class<?>> varnameToTypeMap = new HashMap<String, Class<?>>();

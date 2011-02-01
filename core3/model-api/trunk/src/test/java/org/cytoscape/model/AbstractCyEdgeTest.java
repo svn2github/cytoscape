@@ -40,9 +40,6 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 	private CyNode n2;
 	private CyNode n3;
 
-	/**
-	 *  DOCUMENT ME!
-	 */
 	private void defaultSetUp() {
 		n1 = net.addNode();
 		n2 = net.addNode();
@@ -53,27 +50,18 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 		eUndir = net.addEdge(n2, n3, false);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
 	public void testIsDirected() {
 		defaultSetUp();
 		assertTrue("eDir is directed", eDir.isDirected());
 		assertFalse("eUndir is undirected", eUndir.isDirected());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
 	public void testGetIndex() {
 		defaultSetUp();
 		assertTrue("edge index >= 0", eDir.getIndex() >= 0);
 		assertTrue("edge index >= 0", eUndir.getIndex() >= 0);
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
 	public void testGetSource() {
 		defaultSetUp();
 		assertNotNull("source exists", eDir.getSource());
@@ -89,9 +77,6 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 		assertTrue("source for eUndir", ((eUndir.getSource() == n3) || (eUndir.getSource() == n2)));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
 	public void testGetTarget() {
 		defaultSetUp();
 		assertNotNull("target exists", eDir.getTarget());
@@ -107,9 +92,6 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 		assertTrue("target for eUndir", ((eUndir.getTarget() == n3) || (eUndir.getTarget() == n2)));
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
 	public void testToString() {
 		defaultSetUp();
 		assertNotNull("string is not null", eDir.toString());
@@ -125,8 +107,10 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 		CyNode n2 = net.addNode();
 		CyEdge e1 = net.addEdge(n1,n2,true);
 
-		assertEquals(String.class, e1.getCyRow().getDataTable().getColumnTypeMap().get("name"));
-		assertEquals(Boolean.class, e1.getCyRow().getDataTable().getColumnTypeMap().get("selected"));
-		assertEquals(String.class, e1.getCyRow().getDataTable().getColumnTypeMap().get("interaction"));
+		assertEquals(String.class, e1.getCyRow().getDataTable().getColumn("name").getType());
+		assertEquals(Boolean.class,
+			     e1.getCyRow().getDataTable().getColumn("selected").getType());
+		assertEquals(String.class,
+			     e1.getCyRow().getDataTable().getColumn("interaction").getType());
 	}
 }

@@ -27,6 +27,7 @@
 */
 package org.cytoscape.tableimport.internal.ui;
 
+
 import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.DB_OBJECT_SYMBOL;
 import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.DB_OBJECT_SYNONYM;
 import static org.cytoscape.tableimport.internal.reader.GeneAssociationTags.GO_ID;
@@ -71,7 +72,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -109,6 +112,7 @@ import org.jdesktop.layout.GroupLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.bookmark.DataSource;
@@ -3033,36 +3037,18 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		mappingAttributeComboBox.addItem(ID);
 
-		if (CytoscapeServices.appMgr.getCurrentNetwork() == null){
-			return;	
-		}
-
-		Set<String> keySet = this.selectedAttributes.getColumnTypeMap().keySet();
+		if (CytoscapeServices.appMgr.getCurrentNetwork() == null)
+			return;
 		
-		Iterator<String> it = keySet.iterator();
-		Map<String, Class<?>> columnTypeMap = this.selectedAttributes.getColumnTypeMap();
-		
-		while (it.hasNext()){
-			String columnName = it.next();
-
-			if (columnName.equalsIgnoreCase(ID)){
+		for (final CyColumn column : selectedAttributes.getColumns()) {
+			final String columnName = column.getName();
+			if (columnName.equalsIgnoreCase(ID))
 				continue;
-			}
 			
-			Class<?> type =columnTypeMap.get(columnName); 
-			if ( type == String.class || type == Integer.class || type == Double.class || type == List.class){
+			final Class<?> type = column.getType(); 
+			if (type == String.class || type == Integer.class || type == Double.class || type == List.class)
 				mappingAttributeComboBox.addItem(columnName);
-			}
 		}
-		
-		//for (String name : selectedAttributes.getAttributeNames()) {
-		//	if ((selectedAttributes.getColumnTypeMap().get(name) != AttributeTypes.TYPE_COMPLEX)
-		//	    && (selectedAttributes.getColumnTypeMap().get(name) != AttributeTypes.TYPE_SIMPLE_MAP)
-		//	    && (selectedAttributes.getColumnTypeMap().get(name) != AttributeTypes.TYPE_UNDEFINED)) {
-		//		mappingAttributeComboBox.addItem(name);
-		//	}
-		//}
-		
 	}
 
 	private TableCellRenderer getRenderer(FileTypes type) {

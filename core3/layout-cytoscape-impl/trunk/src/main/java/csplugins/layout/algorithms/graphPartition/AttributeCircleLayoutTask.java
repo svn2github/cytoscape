@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.view.layout.AbstractGraphPartition;
 import org.cytoscape.view.layout.LayoutNode;
@@ -55,7 +56,9 @@ public class AttributeCircleLayoutTask extends AbstractGraphPartition {
 		r *= spacing;
 
 		if (this.attribute != null && count > 0) {
-			Class<?> klass = nodes.get(0).getNode().getCyRow().getDataTable().getType(attribute);
+			final CyColumn column =
+				nodes.get(0).getNode().getCyRow().getDataTable().getColumn(attribute);
+			Class<?> klass = (column == null) ? null : column.getType();
 			if (klass != null && Comparable.class.isAssignableFrom(klass)){
 				// FIXME: I assume this would be better, but get type errors if I try:
 				//Class<Comparable<?>> kasted = (Class<Comparable<?>>) klass;
