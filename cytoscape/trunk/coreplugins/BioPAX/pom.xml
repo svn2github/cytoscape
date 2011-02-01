@@ -50,6 +50,7 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.4</version>
+			<scope>provided</scope> <!-- also in corelibs/commons-cli -->
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.collections</groupId>
