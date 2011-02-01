@@ -91,7 +91,7 @@ public class RunSCPS {
 	private int kvalue;
         private int rnumber;
 	private DoubleMatrix2D LMat;
-       
+        private int numComponents;
 
         private  HashMap<Integer, NodeCluster> clusterMap;
 
@@ -131,20 +131,32 @@ public class RunSCPS {
 	    monitor.setStatus("Formatting Matrix Data");
 	    DoubleMatrix2D sMat = getSMat(this.distanceMatrix);
 	    DoubleMatrix2D LMat = getLMat(sMat);
+	    
+	    monitor.setStatus("Calculating Eigenvalues");
+	    EigenvalueDecomposition decomp = new EigenvalueDecomposition(LMat);
+	    DoubleMatrix2D eigenVect = decomp.getV();
+	    DoubleMatrix1D eigenVal = decomp.getRealEigenvalues();
 
+	    
 	    monitor.setStatus("Calculating K value");
 
 	    if(this.kvalue > -1)
 		k = this.kvalue;
 	    else
-		k = getK(sMat);
+	       k = getK(eigenVal,.3);
 		       
 	    System.out.println("K is " + k);
 
-            monitor.setStatus("Calculating Eigenvalues");
-	    DoubleMatrix2D uMat = getUMat(LMat,k);
+	    if(numComponents > k){
+		
+		doComponentClustering();
+		return new ArrayList(this.clusterMap.values());
+	    }
+
+	    monitor.setStatus("Creating uMatrix for kMeans");
+	    DoubleMatrix2D uMat = getUMat(eigenVect,k);
             monitor.setStatus("Running kmeans clustering");
-	    doKMeansClustering(uMat);
+	    doKMeansClustering(uMat,sMat);
 
 	    //clusterMap calculated in getSMat and doKMeansClustering steps. Simply return the results
 	    return new ArrayList(this.clusterMap.values());
@@ -196,23 +208,26 @@ public class RunSCPS {
 	   DoubleArrayList valueList = new DoubleArrayList();
 	   
 	   //Iterate through connected components
-	   Iterator it = cMap.entrySet().iterator();
-	   
+	   Iterator it = cMap.values().iterator();
+
+	   int component_size_sum = 0;
+
 	   while(it.hasNext()){
 
-	       Map.Entry entry = (Map.Entry)it.next();
-	       List<CyNode> component = (List<CyNode>)entry.getValue();
+	       
+	       List<CyNode> component = (List<CyNode>)it.next();
+	       numComponents += 1;
 
 	       //Size <= 5. Automatically create cluster and increment clusterCount. 
 	       if(component.size() <= 5){
 		   
 		   NodeCluster iCluster = new NodeCluster(component);
+		   iCluster.setClusterNumber(this.clusterCount);
 		   //iCluster.add(component,this.clusterCount);
 		   this.clusterMap.put(new Integer(clusterCount),iCluster);
 
-		   System.out.println("Component Size " + component.size() + " ClusterCount " + clusterCount);
 		   this.clusterCount++;
-
+		  
 		 
 
 	       }
@@ -220,16 +235,19 @@ public class RunSCPS {
 	       //iterate through components and assign them index mappings in new uMatrix
 	       else{
 
+		   component_size_sum += component.size();
+
+		   System.out.println("Normal Component size " + component.size() + " Total Sum " + component_size_sum);
+		   
 		   for(int i = 0; i < component.size(); i++){
 		       
 		       CyNode n = component.get(i);
-		       
-		    
-		       
+		       int node_id = this.nodes.indexOf(n);
+                                                                                                                                                            		       
 		       //set mapping of new matrix index to old index
-		       setMap(this.nodes.indexOf(n), sMat_rows);
-
+		       setMap(node_id, sMat_rows);
 		       sMat_rows++;
+		      
 		   }
 
 	       }
@@ -255,8 +273,7 @@ public class RunSCPS {
 	       int new_column_id = getMap_new(column_id);
 	       double value = valueList.get(i);
 
-	       if(new_row_id == 37)
-		    System.out.println("!!! 37 ROW::" + row_id + " Column:" + column_id + " Value:"+value);
+	      
 
 	       //Set symmetrically the values in new matrix
 	       if(new_row_id > -1 && new_column_id > -1)
@@ -320,7 +337,7 @@ public class RunSCPS {
 	}
 
 
-	//D is Diagnol Matrix formed of vertex degree Dii = Sum Columns j over row Si
+	//D is Diagonal Matrix formed of vertex degree Dii = Sum Columns j over row Si
 	public DoubleMatrix2D getDMat(DoubleMatrix2D sMat){
 	
 	
@@ -330,9 +347,6 @@ public class RunSCPS {
 
 			//set the Diagnal (i,i) to sum of columns over row i
 			dMat.set(i,i, sMat.viewRow(i).zSum());
-			
-			if(dMat.get(i,i) <= 5)
-			    System.out.println("DMat row "+ i + " value " + dMat.get(i,i));
 		}
 
 		
@@ -343,28 +357,25 @@ public class RunSCPS {
 
         
 	//Get K using eigenvetors of S Matrix
-	public int getK(DoubleMatrix2D sMat){
+	public int getK(DoubleMatrix1D eigenVal, double minLambda){
 
 	    	double prevLamb;
 		double nextLamb;
 		int k;
-			
-		EigenvalueDecomposition decomp = new EigenvalueDecomposition(sMat);
-
-		//eigenvectors
-		DoubleMatrix2D eigenVect = decomp.getV();
-
-		//eigenvalues
-		DoubleMatrix1D eigenVal = decomp.getRealEigenvalues();
-
+		
+		
 		//set K to smallest integer such that LambdaK/LambdaK+1 > epsilon
-		prevLamb = eigenVal.get(0);
-
+		prevLamb = round(eigenVal.get(eigenVal.size()-1));
+		
 		for(k = 1; k < eigenVal.size(); k++){
 
-		    nextLamb = eigenVal.get(k);
+		    
+		    nextLamb = round(eigenVal.get(eigenVal.size()-k-1));
+		    
+		    System.out.println("k " + k + " PrevLamb " + prevLamb + " nextLamb " + nextLamb +   " prevLamb/nextLamb " + prevLamb/nextLamb);
 
-		    System.out.println("k " + k + " PrevLamb " + prevLamb + " nextLamb " + nextLamb +   "prevLamb/nextLamb " + prevLamb/nextLamb);
+		    if(nextLamb < minLambda)
+			break;
 
 		    if(prevLamb/nextLamb > this.epsilon)
 			break;
@@ -376,22 +387,19 @@ public class RunSCPS {
 	}
 
 	//U constructed from top K Eigenvectors of L. After construction, each row of U is normalized to unit length.
-	public DoubleMatrix2D getUMat(DoubleMatrix2D LMat, int k){
+	public DoubleMatrix2D getUMat(DoubleMatrix2D eigenVect, int k){
 
 		DoubleMatrix2D uMat;
 	
 		IntArrayList indexList = new IntArrayList();
 		DoubleArrayList valueList = new DoubleArrayList();
 		
-		EigenvalueDecomposition decomp = new EigenvalueDecomposition(LMat);
-
-		//eigenvectors
-		DoubleMatrix2D eigenVect = decomp.getV();
-
-		//construct matrix U from first K eigenvectors
-	 	uMat = eigenVect.viewPart(0,0,eigenVect.rows(),k);
-		
 	       
+	       
+		//construct matrix U from first K eigenvectors (ordered in ascending value by eigenvalue in eigenVect so start with the k-to-last column)
+	 	uMat = eigenVect.viewPart(0,eigenVect.columns()-k,eigenVect.rows(),k);
+		
+	
 		//Normalize each row of matrix U to have unit length
 		for(int i = 0; i < uMat.columns(); i++){
 
@@ -415,7 +423,7 @@ public class RunSCPS {
 		return uMat;
 	}
 
-         public void doKMeansClustering(DoubleMatrix2D uMat){
+         public void doKMeansClustering(DoubleMatrix2D uMat,DoubleMatrix2D sMat){
 
 	     int k = uMat.columns();
 
@@ -423,6 +431,9 @@ public class RunSCPS {
 	  
 	     //do kmeans clustering
 	     KCluster.kmeans(k,rnumber,uMat,clusters);
+
+	     //redistribute cluster results
+	     clusters = redistributeMaxCluster(clusters,sMat,k);
 
 	     //Loop through clustering results, getting the clusters by order
 
@@ -439,9 +450,11 @@ public class RunSCPS {
 		 }
 
 		 iCluster = new NodeCluster(node_list);
+		 iCluster.setClusterNumber(this.clusterCount);
+		 
 		 this.clusterMap.put(new Integer(clusterCount),iCluster);
 
-		 System.out.println("clusterCount " + clusterCount);
+		 System.out.println("Clustercount " + this.clusterCount + " cluster_id " + cluster_id + " node_list_length " + node_list.size());
 
 		 this.clusterCount++;
 	     }
@@ -449,6 +462,173 @@ public class RunSCPS {
 		 
 			 
 	 }
+
+         //Takes largest cluster obtained by Kmeans and redisributes some of its elements across the other clusters via Kurucz Algorithm
+         public int[]redistributeMaxCluster(int[] clusters, DoubleMatrix2D sMat, int k){
+
+	     int maxClusterID = -1;
+	     int maxClusterSize = -1;
+	     int maxClusterConnection = -1;
+	     double maxClusterConnectionSize = -1;
+
+	     IntArrayList indexList = new IntArrayList();
+	     DoubleArrayList valueList = new DoubleArrayList();
+
+	     //Array of cluster sizes
+	     int[] clusterSizeArray = new int[k];
+
+	     //array of redistributed clusters
+	     int[] redistribClusters = new int[clusters.length];
+
+	     //array summing edge connections from node in largest cluster to all other clusters
+	     double[] clusterConnectionCount = new double[k];
+
+	     for(int i = 0; i < clusterSizeArray.length; i++)
+		 clusterSizeArray[i] = 0;
+
+
+	     //compute size of each cluster
+	     for(int i = 0; i < clusters.length; i++){
+
+		 int clusterID = clusters[i];
+		 clusterSizeArray[clusterID] += 1;
+	     }
+
+	     //find max cluster size and max cluster id
+	     for(int i = 0; i < clusterSizeArray.length; i++){
+
+		 int clusterSize = clusterSizeArray[i];
+
+		 if(clusterSize > maxClusterSize){
+
+		     maxClusterSize = clusterSize;
+		     maxClusterID = i;
+		 }
+	     }
+
+	     //run loop until no changes observed in cluster transfers
+	     while(true) {
+
+		 int transfer_count = 0;
+		 
+		 //loop through SMat redistribute elements in largest cluster based on edge weight connectivity
+		 for(int i = 0; i < clusters.length; i++){
+
+		     //node belongs to one of smaller clusters. Merely add existing cluster value to redistributed cluster array
+		     if(clusters[i] != maxClusterID){
+
+			 redistribClusters[i] = clusters[i];
+			 continue;
+		     }
+
+		     //index corresponds to element in main cluster. Count the cluster connections from node
+		     for(int j = 0; j < k; j++)
+			 clusterConnectionCount[j] = 0;
+
+		     maxClusterConnection = -1;
+		     maxClusterConnectionSize = -1;
+
+		
+		     DoubleMatrix1D row = sMat.viewRow(i);
+		     row.getNonZeros(indexList, valueList);
+
+		     //loop through existing edges for node and record how many times the connection bridges each cluster
+		     for(int j = 0; j < indexList.size(); j++){
+
+			 int connectingNode = indexList.get(j);
+			 int connectingNodeCluster = clusters[connectingNode];
+			 clusterConnectionCount[connectingNodeCluster] += valueList.get(j);
+		     }
+
+		     //loop through cluster connection counts and find cluster with greatest number of avg edge connections
+		     for(int j = 0; j<k; j++){
+
+			 double avgConnectionSize = clusterConnectionCount[j] / (double)(clusterSizeArray[j] + 1);
+
+			 if(maxClusterConnectionSize < avgConnectionSize){
+
+			     maxClusterConnectionSize = avgConnectionSize;
+			     maxClusterConnection = j;
+			 }
+		     }
+
+		     //update redistributed cluster array to reflect maxClusterConnection
+		     redistribClusters[i] = maxClusterConnection;
+
+		     if(clusters[i] != redistribClusters[i]){
+
+			 transfer_count++;
+			 System.out.println("Node " + i + " moved from " + clusters[i] + " to " + redistribClusters[i]);
+		     }
+
+		 }
+
+		
+		 //transfer has occured, update clusters to equal redistrib clusters
+		 if(transfer_count > 0){
+
+		     for(int i = 0; i < clusters.length; i++)
+			 if(clusters[i] != redistribClusters[i]){
+	
+			     int clusterID = redistribClusters[i];
+			     clusterSizeArray[maxClusterID]--;
+			     clusterSizeArray[clusterID]++;
+			     clusters[i] = redistribClusters[i];
+			    
+			 }
+
+		     System.out.println("Transfer Count " + transfer_count + " MaxClusterSize " + clusterSizeArray[maxClusterID]);
+ 		    
+		 }
+
+		 //No transfer occured. Break out of loop
+		 else
+		     break;
+
+	     }
+
+	     return redistribClusters;
+		
+	 }
+
+        //Store all components length greater then 5 in clusters, if number components is greater then K
+         public void doComponentClustering(){
+
+	
+	   //Connected Componets
+	   Map<Integer, List<CyNode>> cMap = distanceMatrix.findConnectedComponents();
+
+	   
+	   
+	   //Iterate through connected components
+	   Iterator it = cMap.values().iterator();
+
+	   int component_size_sum = 0;
+
+	   while(it.hasNext()){
+
+	      
+	       List<CyNode> component = (List<CyNode>)it.next();
+
+	       if(component.size() > 5){
+		   
+		   NodeCluster iCluster = new NodeCluster(component);
+		   iCluster.setClusterNumber(this.clusterCount);
+		   this.clusterMap.put(new Integer(clusterCount),iCluster);
+		   this.clusterCount++;
+
+		 
+	       }
+	   }
+	 }
+
+         //round double to two decimal points
+         public double round(double d){
+
+	            int precision = 100;
+		    return Math.floor(d*precision + .5)/precision;
+	 }
+		    
 
 
         /**

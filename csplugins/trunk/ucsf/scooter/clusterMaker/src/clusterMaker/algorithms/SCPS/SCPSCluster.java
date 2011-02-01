@@ -67,8 +67,8 @@ import clusterMaker.ui.NewNetworkView;
 
 public class SCPSCluster extends AbstractNetworkClusterer  {
 	
-	double epsilon = 1.1;
-	int rNumber = 8;
+	double epsilon = 1.02;
+	int rNumber = 50;
         int knumber = -1;
        
 	EdgeAttributeHandler edgeAttributeHandler = null;
@@ -111,14 +111,14 @@ public class SCPSCluster extends AbstractNetworkClusterer  {
 		// Lambda Parameter
 		clusterProperties.add(new Tunable("epsilon",
 		                                  "epsilon Parameter",
-		                                  Tunable.DOUBLE, new Double(1.1),
+		                                  Tunable.DOUBLE, new Double(1.02),
 		                                  (Object)null, (Object)null, 0));
 	      
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("rNumber",
 		                                  "Number of iterations",
-		                                  Tunable.INTEGER, new Integer(10),
+		                                  Tunable.INTEGER, new Integer(50),
 		                                  (Object)null, (Object)null, 0));
 
 		
@@ -171,6 +171,7 @@ public class SCPSCluster extends AbstractNetworkClusterer  {
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		DistanceMatrix matrix = edgeAttributeHandler.getMatrix();
+		
 
 		//Cluster the nodes
 		runSCPS = new RunSCPS(matrix, epsilon, knumber, rNumber, logger);

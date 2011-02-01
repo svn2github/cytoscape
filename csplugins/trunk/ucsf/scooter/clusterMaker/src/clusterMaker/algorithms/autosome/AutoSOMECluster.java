@@ -494,21 +494,21 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		//Cluster the nodes
 		runAutoSOME = new RunAutoSOME(dataAttribute, attributeArray,settings,logger);
 
-                runAutoSOME.setIgnoreMissing(ignoreMissing);
-                runAutoSOME.setSelectedOnly(selectedNodes);
+		runAutoSOME.setIgnoreMissing(ignoreMissing);
+		runAutoSOME.setSelectedOnly(selectedNodes);
 
 		runAutoSOME.setDebug(debug);
 
-                logger.info("Running AutoSOME"+((settings.distMatrix) ? " Fuzzy Clustering" : ""));
+		logger.info("Running AutoSOME"+((settings.distMatrix) ? " Fuzzy Clustering" : ""));
 
-                nodeCluster = runAutoSOME.run(monitor);
+		nodeCluster = runAutoSOME.run(monitor);
 
-                if(nodeCluster==null) {
-                    monitor.setStatus("Clustering failed!");
-                    return;
-                }
+		if(nodeCluster==null) {
+			monitor.setStatus("Clustering failed!");
+			return;
+		}
 
-                if(nodeCluster.size()>0) finishedClustering=true;
+		if(nodeCluster.size()>0) finishedClustering=true;
 
 		logger.info("Removing groups");
 
@@ -517,42 +517,39 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		// Remove any leftover groups from previous runs
 		removeGroups(netAttributes, networkID);
 
-                nodeAttributes.deleteAttribute(clusterAttributeName);
+		nodeAttributes.deleteAttribute(clusterAttributeName);
 
 		logger.info("Creating groups");
 		monitor.setStatus("Creating groups");
                 
-                if(settings.distMatrix) edges=runAutoSOME.getEdges(MAXEDGES);
+		if(settings.distMatrix) edges=runAutoSOME.getEdges(MAXEDGES);
 
-                attrList = runAutoSOME.attrList;
-                attrOrderList = runAutoSOME.attrOrderList;
-                nodeOrderList = runAutoSOME.nodeOrderList;
+		attrList = runAutoSOME.attrList;
+		attrOrderList = runAutoSOME.attrOrderList;
+		nodeOrderList = runAutoSOME.nodeOrderList;
 
-                List<List<CyNode>> nodeClusters;
+		List<List<CyNode>> nodeClusters;
 
-                if(!settings.distMatrix){
+		if(!settings.distMatrix) {
 
-                    nodeClusters =
-                        createGroups(netAttributes, networkID, nodeAttributes, clusters);                   
-                    ClusterResults results = new ClusterResults(network, nodeClusters);
-                    monitor.setStatus("Done.  AutoSOME results:\n"+results);
-                } else {
-                    nodeClusters = new ArrayList<List<CyNode>>();
-		    /*
+			nodeClusters =
+				createGroups(netAttributes, networkID, nodeAttributes, nodeCluster);                   
+			ClusterResults results = new ClusterResults(network, nodeClusters);
+			monitor.setStatus("Done.  AutoSOME results:\n"+results);
+		} else {
+			nodeClusters = new ArrayList<List<CyNode>>();
+			/*
+			for (NodeCluster cluster: clusters) {
+				List<CyNode>nodeList = new ArrayList();
 
-                    for (NodeCluster cluster: clusters) {
-                        List<CyNode>nodeList = new ArrayList();
-
-			for (CyNode node: cluster) {
-				nodeList.add(node);
-                        }
-                        nodeClusters.add(nodeList);
-                    }
-		   */
-                }
-                monitor.setStatus("Done.  AutoSOME results:\n"+clusters.size()+" clusters found.");
-                
-               
+				for (CyNode node: cluster) {
+					nodeList.add(node);
+				}
+				nodeClusters.add(nodeList);
+			}
+	   */
+		}
+		monitor.setStatus("Done.  AutoSOME results:\n"+nodeCluster.size()+" clusters found.");
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
@@ -562,7 +559,7 @@ public class AutoSOMECluster extends AbstractNetworkClusterer implements Tunable
 		runAutoSOME.halt();
 	}
 
-        private void getAttributesList(List<String>attributeList, CyAttributes attributes,
+	private void getAttributesList(List<String>attributeList, CyAttributes attributes,
 	                              String prefix) {
 		String[] names = attributes.getAttributeNames();
 		for (int i = 0; i < names.length; i++) {

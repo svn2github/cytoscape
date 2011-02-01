@@ -88,7 +88,7 @@ public class KCluster {
 
 		double error = Double.MAX_VALUE;
 
-		// This matrix will store the centroid data. KxK matrix
+		// This matrix will store the KxK centroid data.matrix
 		SparseDoubleMatrix2D cData = new SparseDoubleMatrix2D(nClusters, nClusters);
 
 		// Outer initialization
@@ -103,16 +103,21 @@ public class KCluster {
 		}
 
 		int iteration = 0;
+		boolean firstIteration = true;
+
+		
+
 		do {
 			double total = Double.MAX_VALUE;
 			int counter = 0;
 			int period = 10;
-
-			System.out.println(iteration + " Iterations");
+		       
+		       
 
 			// Randomly assign elements to clusters
 			if (nIterations != 0) randomAssign(nClusters, nelements, tclusterid);
 		      
+			//boolean firstIteration = true;
 
 			// Initialize
 			for (int i = 0; i < nClusters; i++) counts[i] = 0;
@@ -120,7 +125,7 @@ public class KCluster {
 
 			while (true) {
 
-			    System.out.println("Total " + total);
+			    
 
 				double previous = total;
 				total = 0.0;
@@ -134,14 +139,17 @@ public class KCluster {
 				counter++;
 
 				//assign centroids as to maximize orthogonality on first iteration of kmeans
-				if(iteration == 0)
+				if(firstIteration){
+
 				    selectCentroidsOrthogonally(nClusters, matrix, cData);
-				
+				    firstIteration = false;
+				}
+
 				// Find the centeroids based on cluster means on all other iterations
 				else
 				    getClusterMeans(nClusters, matrix, cData, tclusterid);
 
-				System.out.println("Reached this part of Loop");
+			       
 
 				for (int i = 0; i < nelements; i++) {
 					// Calculate the distances
@@ -203,7 +211,7 @@ public class KCluster {
 					    { 
 						ifound = 1;
 						error = total;
-						// System.out.println("Mapping tclusterid to clusterid");
+					       
 						for (int i = 0; i < nelements; i++) clusterID[i] = tclusterid[i];
 					    }
 					break;
@@ -218,27 +226,26 @@ public class KCluster {
 	}
 
 
-        
-        //Assign centroids to rows with maximal orthogonality
-        private static void selectCentroidsOrthogonally(int nClusters, DoubleMatrix2D data, DoubleMatrix2D cdata){
+            
+        //Assign centroids to rows at random
+        private static void selectCentroidsRandom(int nClusters, DoubleMatrix2D data, DoubleMatrix2D cdata){
 
-	    System.out.println("Assigning centroids orthogonolly");
+	    System.out.println("Assigning centroids randomly");
 
             //number of centroids allready set	    
 	    int centroid_count = 0;
 
 	    //centroid assigned element == 1 if centroid assigned, zero otherwise
 	    int[] centroid_assigned = new int[data.rows()];
-	    for(int i = 0; i < nClusters; i++){System.out.println(i); centroid_assigned[i] = 0;}
+	    for(int i = 0; i < nClusters; i++){centroid_assigned[i] = 0;}
 
 	    //randomly select first centroid
-	    //int centroid_id =  binomial(nClusters-1,1.0/(double)(nClusters-1));
 	    Random generator = new Random();
-	    int centroid_id = generator.nextInt(nClusters);
+	    int centroid_id = generator.nextInt(data.rows());
 
 	    for(int i = 0; i < nClusters; i++){
 
-		System.out.println("Centroid selection iteration " + i);
+		System.out.println("Centroid selection iteration " + i + " Centroid id " + centroid_id);
 
 		//update centroid assinged array 
 		centroid_assigned[centroid_id] = 1;
@@ -254,22 +261,67 @@ public class KCluster {
 		if(centroid_count == nClusters)
 		    break;
 
-		int min_cosine = 10000;
+		while(centroid_assigned[centroid_id] == 1){
+		    centroid_id = generator.nextInt(data.rows());
+		}
+
+	    }
+	}
+        
+        //Assign centroids to rows with maximal orthogonality
+        private static void selectCentroidsOrthogonally(int nClusters, DoubleMatrix2D data, DoubleMatrix2D cdata){
+
+	    System.out.println("Assigning centroids orthogonolly");
+
+            //number of centroids allready set	    
+	    int centroid_count = 0;
+
+	    //centroid assigned element == 1 if centroid assigned, zero otherwise
+	    int[] centroid_assigned = new int[data.rows()];
+	    for(int i = 0; i < nClusters; i++){centroid_assigned[i] = 0;}
+
+	    //array of cosine sums to centroids allreay chosen
+	    double[] cosines = new double[data.rows()];
+	    for(int i = 0; i < data.rows(); i++){cosines[i] = 0;}
+
+	    //randomly select first centroid
+	    Random generator = new Random();
+	    int centroid_id = generator.nextInt(data.rows());
+
+	    for(int i = 0; i < nClusters; i++){
+
+		System.out.println("Centroid selection iteration " + i + " Centroid id " + centroid_id);
+
+		//update centroid assinged array 
+		centroid_assigned[centroid_id] = 1;
+
+		DoubleMatrix1D centroid = data.viewRow(centroid_id);
+
+		//copy newly selected centroid from data matrix
+		for(int j = 0; j < centroid.size(); j++)
+		    cdata.set(centroid_count,j,centroid.get(j));
+
+		centroid_count++;
+
+		if(centroid_count == nClusters)
+		    break;
+
+		double min_cosine = 10000;
 		int new_centroid_id = -1;
 
-		//loop through rows of data matrix, seach for next centroid, which will minimize the cosine angle (dot product) with current centroid
+		//loop through rows of data matrix, seach for next centroid, which will minimize the cosine angle (dot product) with all current centroids
 		for(int j = 0; j < data.rows(); j++){
 
 		    //ignore centroids that allready have been set
 		    if(centroid_assigned[j] == 1)
 			continue;
 
-		    double cosine = centroid.zDotProduct(data.viewRow(j));
+		    cosines[j] += centroid.zDotProduct(data.viewRow(j));
 
-		    //if new cosine value < min cosine value, update min_cosine and new_centroid_id to reflect taht
-		    if(min_cosine > cosine){
+		    //if new cosine sum value < min cosine value, update min_cosine and new_centroid_id to reflect that
+		    if(min_cosine > cosines[j]){
 			
-			cosine = min_cosine;
+			min_cosine = cosines[j];
 			new_centroid_id = j;
 		    }
 		}
@@ -285,22 +337,21 @@ public class KCluster {
 
 	private static void getClusterMeans(int nClusters, DoubleMatrix2D data, DoubleMatrix2D cdata, int[] clusterid) {
 
-		double[][]cmask = new double[nClusters][nClusters];
+		double[][]cmask = new double[nClusters][cdata.rows()];
 
 		for (int i = 0; i < nClusters; i++) {
-			for (int j = 0; j < data.columns(); j++) {
-			        //cdata.setValue(i, j, null);
+			for (int j = 0; j < cdata.rows(); j++) {
+			        cdata.set(j, i, 0);
 				cmask[i][j] = 0.0;
 			}
 		}
 
 		for (int k = 0; k < data.rows(); k++) {
 
-		        //cetroid id
+		        //centroid id
 			int i = clusterid[k];
 
 		       
-			
 			
 
 			for (int j = 0; j < data.columns(); j++) {
@@ -318,7 +369,7 @@ public class KCluster {
 			}
 		}
 		for (int i = 0; i < nClusters; i++) {
-			for (int j = 0; j < data.columns(); j++) {
+			for (int j = 0; j < cdata.rows(); j++) {
 				if (cmask[i][j] > 0.0) {
 				    double cData = cdata.get(i,j) / cmask[i][j];
 					cdata.set(i,j,cData);

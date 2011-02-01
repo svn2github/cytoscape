@@ -22,10 +22,10 @@ public class clusterValidity {
     
     ArrayList[] orig;
     ArrayList[] clusters;
-    ArrayList[] clustData;
+    List<Integer>[] clustData;
     Settings s;
     
-    public clusterValidity(ArrayList[] orig, ArrayList[] clusters,ArrayList[] clustData, Settings s){
+    public clusterValidity(ArrayList[] orig, ArrayList[] clusters,List<Integer>[] clustData, Settings s){
         this.orig = orig;
         this.clusters  = clusters;
         this.clustData = clustData;
@@ -39,7 +39,7 @@ public class clusterValidity {
         this.s = s;
         for(int i = 0; i < c.length; i++){
             clusters[i] = new ArrayList();
-            clustData[i] = new ArrayList();
+            clustData[i] = new ArrayList<Integer>();
             clustData[i] = c[i].ids;
             for(int j = 0; j < c[i].ids.size(); j++){
                 double[] d = new double[1];
