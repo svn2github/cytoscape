@@ -74,7 +74,7 @@ public class CyAttributesUtil {
 			terms = new String[] {String.valueOf(graphObject.getSUID())};
 		} else {
 			CyRow row = graphObject.getCyRow();
-			Class<?> type = row.getDataTable().getColumn(attributeKey).getType();
+			Class<?> type = row.getTable().getColumn(attributeKey).getType();
 			boolean hasAttribute = type != null;
 
 			if (hasAttribute) {
@@ -192,7 +192,7 @@ public class CyAttributesUtil {
 		}
 		for (CyTableEntry entry : entries) {
 			CyRow row = entry.getCyRow();
-			Class<?> type = row.getDataTable().getColumn(attributeName).getType();
+			Class<?> type = row.getTable().getColumn(attributeName).getType();
 			if (row.get(attributeName, type) != null) {
 				return false;
 			}

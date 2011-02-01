@@ -125,7 +125,7 @@ public class FilterUtil {
 				return false;
 			}
 			CyNode node = nodes.get(0);
-			return node.getCyRow().getDataTable().getColumn(pAttribute) != null;
+			return node.getCyRow().getTable().getColumn(pAttribute) != null;
 		}
 		else if (pType == QuickFind.INDEX_EDGES) {
 			List<CyEdge> edges = network.getEdgeList();
@@ -133,7 +133,7 @@ public class FilterUtil {
 				return false;
 			}
 			CyEdge edge = edges.get(0);
-			return edge.getCyRow().getDataTable().getColumn(pAttribute) != null;
+			return edge.getCyRow().getTable().getColumn(pAttribute) != null;
 		}
 		return false;
 	}

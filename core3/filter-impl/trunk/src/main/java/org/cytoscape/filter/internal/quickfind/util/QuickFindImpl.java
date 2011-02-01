@@ -88,7 +88,7 @@ class QuickFindImpl implements QuickFind {
 		CyTable nodeTable = null;
 		CyNode node = network.getNodeList().iterator().next();
 		if (node != null) {
-			nodeTable = node.getCyRow().getDataTable();
+			nodeTable = node.getCyRow().getTable();
 		}
 		
 		if (controllingAttribute == null) {
@@ -205,13 +205,13 @@ class QuickFindImpl implements QuickFind {
 			if (node == null) {
 				return null;
 			}
-			table = node.getCyRow().getDataTable();
+			table = node.getCyRow().getTable();
 		} else if (indexType == QuickFind.INDEX_EDGES){
 			CyEdge edge = cyNetwork.getEdgeList().iterator().next();
 			if (edge == null) {
 				return null;
 			}
-			table = edge.getCyRow().getDataTable();
+			table = edge.getCyRow().getTable();
 		} else {
 			return null;
 		}

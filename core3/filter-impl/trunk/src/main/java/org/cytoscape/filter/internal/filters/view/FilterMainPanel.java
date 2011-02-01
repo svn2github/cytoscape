@@ -363,7 +363,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		}
 		
 		CyTableEntry tableEntry = entries.iterator().next();
-		final Collection<CyColumn> columns = tableEntry.getCyRow().getDataTable().getColumns();
+		final Collection<CyColumn> columns = tableEntry.getCyRow().getTable().getColumns();
 		for (final CyColumn column : columns) {
 			//  Show all attributes, with type of String or Number
 			Class<?> type = column.getType();

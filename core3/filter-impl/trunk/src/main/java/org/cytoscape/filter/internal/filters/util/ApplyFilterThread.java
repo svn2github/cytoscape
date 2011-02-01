@@ -121,7 +121,7 @@ class ApplyFilterThread extends Thread {
 
 			Number value;
 
-			if (data.getDataTable().getColumn(theNumericFilter.getControllingAttribute().substring(5)).getType()
+			if (data.getTable().getColumn(theNumericFilter.getControllingAttribute().substring(5)).getType()
 			    == Double.class)
 				value = data.get(theNumericFilter.getControllingAttribute().substring(5), Double.class);
 			else
