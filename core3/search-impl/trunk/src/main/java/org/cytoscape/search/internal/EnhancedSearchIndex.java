@@ -104,7 +104,7 @@ public class EnhancedSearchIndex {
 		doc.add(new Field(EnhancedSearch.TYPE_FIELD, graphObjectType, Field.Store.YES, Field.Index.ANALYZED));
 		
 		CyRow cyRow = graphObject.getCyRow();
-		CyTable cyDataTable = cyRow.getDataTable();
+		CyTable cyDataTable = cyRow.getTable();
 		Set<String> attributeNames = CyTableUtil.getColumnNames(cyDataTable);
 
 		for (final String attrName : attributeNames) {

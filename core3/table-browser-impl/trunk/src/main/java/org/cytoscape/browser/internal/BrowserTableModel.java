@@ -244,7 +244,7 @@ public class BrowserTableModel
 	}
 
 	private static Object getColumnValue(final CyRow row, final String columnName) {
-		final CyColumn column = row.getDataTable().getColumn(columnName);
+		final CyColumn column = row.getTable().getColumn(columnName);
 		if (column.getType() == List.class) {
 			final Class<?> listElementType = column.getListElementType();
 			return row.getList(columnName, listElementType);

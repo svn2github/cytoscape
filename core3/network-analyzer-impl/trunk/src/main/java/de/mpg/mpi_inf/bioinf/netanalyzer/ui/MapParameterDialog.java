@@ -486,7 +486,7 @@ public class MapParameterDialog extends VisualizeParameterDialog implements Acti
 		for (int i = 0; i < attr.length; i++) {
 			for (int j = 0; j < attr[i].length; j++) {
 				final Class<?> attrType =
-					entry.getCyRow().getDataTable().getColumn(attr[i][j]).getType();
+					entry.getCyRow().getTable().getColumn(attr[i][j]).getType();
 
 				Double attrValue = new Double(0.0);
 				if (attrType == Integer.class)

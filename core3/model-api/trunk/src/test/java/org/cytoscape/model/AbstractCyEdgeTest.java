@@ -107,10 +107,10 @@ public abstract class AbstractCyEdgeTest extends TestCase {
 		CyNode n2 = net.addNode();
 		CyEdge e1 = net.addEdge(n1,n2,true);
 
-		assertEquals(String.class, e1.getCyRow().getDataTable().getColumn("name").getType());
+		assertEquals(String.class, e1.getCyRow().getTable().getColumn("name").getType());
 		assertEquals(Boolean.class,
-			     e1.getCyRow().getDataTable().getColumn("selected").getType());
+			     e1.getCyRow().getTable().getColumn("selected").getType());
 		assertEquals(String.class,
-			     e1.getCyRow().getDataTable().getColumn("interaction").getType());
+			     e1.getCyRow().getTable().getColumn("interaction").getType());
 	}
 }

@@ -349,7 +349,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		removeNetwork(net.getSUID());
 		RowSetMicroListener rsml = nameListeners.remove(net);
 		if ( rsml != null )
-			eventHelper.removeMicroListener( rsml, RowSetMicroListener.class, net.getCyRow().getDataTable() ); 
+			eventHelper.removeMicroListener( rsml, RowSetMicroListener.class, net.getCyRow().getTable() ); 
 	}
 
 	public void handleEvent(NetworkAddedEvent e) {

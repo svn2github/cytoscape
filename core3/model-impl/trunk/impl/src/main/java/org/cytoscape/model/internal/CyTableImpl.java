@@ -892,7 +892,7 @@ public final class CyTableImpl implements CyTable {
 		}
 
 		@Override
-		public CyTable getDataTable() {
+		public CyTable getTable() {
 			return table;
 		}
 

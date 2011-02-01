@@ -63,7 +63,7 @@ public abstract class LayoutTask extends AbstractTask {
 
 		// update the __layoutAlgorithm attribute
 		final CyRow networkAttributes = network.getCyRow(CyNetwork.HIDDEN_ATTRS);
-		final CyTable netAttrsTable = networkAttributes.getDataTable();
+		final CyTable netAttrsTable = networkAttributes.getTable();
 		if (netAttrsTable.getColumn(LAYOUT_ALGORITHM) == null)
 			netAttrsTable.createColumn(LAYOUT_ALGORITHM, String.class, true);
 		networkAttributes.set(LAYOUT_ALGORITHM, name);

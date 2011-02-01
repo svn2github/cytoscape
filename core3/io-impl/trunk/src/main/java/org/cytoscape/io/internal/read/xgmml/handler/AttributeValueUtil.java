@@ -302,8 +302,8 @@ public class AttributeValueUtil {
 		// must make sure to clear out any existing values before we parse.
 		case LIST:
 			manager.currentAttributeID = name;
-			if (cyAtts.getDataTable().getColumn(name) != null
-			    && cyAtts.getDataTable().getColumn(name).getType() == List.class)
+			if (cyAtts.getTable().getColumn(name) != null
+			    && cyAtts.getTable().getColumn(name).getType() == List.class)
 				cyAtts.set(name, null);
 			return ParseState.LISTATT;
 		}

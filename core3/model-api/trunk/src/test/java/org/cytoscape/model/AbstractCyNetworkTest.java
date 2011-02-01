@@ -934,7 +934,7 @@ public abstract class AbstractCyNetworkTest extends TestCase {
 	 * Make sure the proper default attributes are created 
 	 */
 	public void testDefaultAttributes() {
-		assertEquals(String.class, net.getCyRow().getDataTable().getColumn("name").getType());
+		assertEquals(String.class, net.getCyRow().getTable().getColumn("name").getType());
 	}
 
 	public void testGetDefaultNetworkTable() {

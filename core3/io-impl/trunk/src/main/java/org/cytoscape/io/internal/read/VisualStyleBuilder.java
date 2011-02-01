@@ -183,7 +183,7 @@ public class VisualStyleBuilder {
 		String colName = getAttrName(vp);
 
 		// add a column to the table if it does not exist yet
-		final CyTable table = row.getDataTable();
+		final CyTable table = row.getTable();
 		if (table.getColumn(colName) == null)
 			table.createColumn(colName, String.class, false);
 

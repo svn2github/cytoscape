@@ -329,7 +329,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
 	    // Now handle all of the other network attributes
 	    CyRow row = network.getCyRow();
-	    CyTable table = row.getDataTable();
+	    CyTable table = row.getTable();
 
 	    for (final CyColumn column : table.getColumns())
 		    writeAttribute(row, column.getName());
@@ -365,7 +365,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
 		// Output the node attributes
 		// TODO This isn't handling namespaces
-		for (final CyColumn column : node.getCyRow().getDataTable().getColumns())
+		for (final CyColumn column : node.getCyRow().getTable().getColumns())
 			writeAttribute(node.getCyRow(), column.getName());
 
 		// TODO deal with groups
@@ -568,7 +568,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
 
 		// Write the edge attributes
 		// TODO This isn't handling namespaces
-		for (final CyColumn column : curEdge.getCyRow().getDataTable().getColumns())
+		for (final CyColumn column : curEdge.getCyRow().getTable().getColumns())
 			writeAttribute(curEdge.getCyRow(), column.getName());
 
 		// Write the edge graphics
@@ -657,7 +657,7 @@ public class XGMMLWriter extends AbstractTask implements CyWriter {
      */
     private void writeAttribute(final CyRow row, final String attName) throws IOException {
 	    // create an attribute and its type:
-	    final CyColumn column = row.getDataTable().getColumn(attName);
+	    final CyColumn column = row.getTable().getColumn(attName);
 	    if (column == null)
 		    return;
 	    final Class<?> attType = column.getType();

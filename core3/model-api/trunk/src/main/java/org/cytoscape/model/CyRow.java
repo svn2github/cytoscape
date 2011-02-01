@@ -95,5 +95,5 @@ public interface CyRow {
 	 * Returns the {@link CyTable} that this row belongs to.
 	 * @return the {@link CyTable} that this row belongs to.
 	 */
-	CyTable getDataTable();
+	CyTable getTable();
 }

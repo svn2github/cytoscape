@@ -57,7 +57,7 @@ public class AttributeCircleLayoutTask extends AbstractGraphPartition {
 
 		if (this.attribute != null && count > 0) {
 			final CyColumn column =
-				nodes.get(0).getNode().getCyRow().getDataTable().getColumn(attribute);
+				nodes.get(0).getNode().getCyRow().getTable().getColumn(attribute);
 			Class<?> klass = (column == null) ? null : column.getType();
 			if (klass != null && Comparable.class.isAssignableFrom(klass)){
 				// FIXME: I assume this would be better, but get type errors if I try:

@@ -387,7 +387,7 @@ public class NetworkViewManager implements InternalFrameListener,
 		presentationContainerMap.remove(view.getModel().getSUID());
 		RowSetMicroListener rsml = nameListeners.remove(view.getModel());
 		if ( rsml != null )
-			eventHelper.removeMicroListener(rsml, RowSetMicroListener.class, view.getModel().getCyRow().getDataTable());
+			eventHelper.removeMicroListener(rsml, RowSetMicroListener.class, view.getModel().getCyRow().getTable());
 	}
 
 	/**

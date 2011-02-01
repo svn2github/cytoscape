@@ -152,8 +152,8 @@ public class NetworkLineParser {
 
 	private void createColumn(final CyEdge edge, final String attributeName, Class<?> theType){
 		// If attribute does not exist, create it
-		if (edge.getCyRow().getDataTable().getColumn(attributeName) == null)
-			edge.getCyRow().getDataTable().createColumn(attributeName, theType, false);
+		if (edge.getCyRow().getTable().getColumn(attributeName) == null)
+			edge.getCyRow().getTable().createColumn(attributeName, theType, false);
 	}
 
 	/**

@@ -166,12 +166,12 @@ public class CloneNetworkTask extends AbstractCreationTask {
 
 	private void cloneRow(final CyRow from, final CyRow to) {
 		try {
-			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, to.getDataTable()));
+			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, to.getTable()));
 
-			for (final CyColumn column : from.getDataTable().getColumns())
+			for (final CyColumn column : from.getTable().getColumns())
 				to.set(column.getName(), from.getRaw(column.getName()));
 		} finally {
-			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, to.getDataTable()));
+			eventHelper.fireSynchronousEvent(new RowsFinishedChangingEvent(this, to.getTable()));
 		}
 	}
 }
