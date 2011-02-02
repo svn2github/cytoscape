@@ -118,6 +118,10 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 		notifyListeners(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0,
 		                                  attributeNames.size()));
 	}
+	
+	public List<String> getAttributeNames() {
+		return attributeNames;
+	}
 
 	public Set<String> getNewAttributeNames() {
 		return newAttributeNames;

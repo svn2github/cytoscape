@@ -32,32 +32,15 @@ import static browser.DataObjectType.EDGES;
 import static browser.DataObjectType.NETWORK;
 import static browser.DataObjectType.NODES;
 
-import browser.AttributeBrowser;
-import browser.AttributeModel;
-import browser.DataObjectType;
-import browser.DataTableModel;
-import browser.ValidatedObjectAndEditString;
-
-import cytoscape.Cytoscape;
-import cytoscape.actions.ImportEdgeAttributesAction;
-import cytoscape.actions.ImportExpressionMatrixAction;
-import cytoscape.actions.ImportNodeAttributesAction;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-import cytoscape.dialogs.NetworkMetaDataDialog;
-import cytoscape.logger.CyLogger;
-import cytoscape.util.swing.CheckBoxJList;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +63,21 @@ import javax.swing.event.PopupMenuListener;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
+
+import browser.AttributeBrowser;
+import browser.AttributeModel;
+import browser.DataObjectType;
+import browser.DataTableModel;
+import browser.ValidatedObjectAndEditString;
+import cytoscape.Cytoscape;
+import cytoscape.actions.ImportEdgeAttributesAction;
+import cytoscape.actions.ImportExpressionMatrixAction;
+import cytoscape.actions.ImportNodeAttributesAction;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.dialogs.NetworkMetaDataDialog;
+import cytoscape.logger.CyLogger;
+import cytoscape.util.swing.CheckBoxJList;
 
 
 /**
@@ -810,8 +808,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 			selectAllAttributesButton.addMouseListener(new java.awt.event.MouseAdapter() {
 					public void mouseClicked(java.awt.event.MouseEvent e) {
-						List<String> existingAttrs = CyAttributesUtils.getVisibleAttributeNames(attributes);
-						updateList(existingAttrs);
+						updateList(attrModel.getAttributeNames());
 						try {
 							getUpdatedSelectedList();
 							tableModel.setTableData(null, orderedCol);
