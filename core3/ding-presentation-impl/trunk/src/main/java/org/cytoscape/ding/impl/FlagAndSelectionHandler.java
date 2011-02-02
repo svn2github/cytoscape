@@ -143,7 +143,7 @@ public class FlagAndSelectionHandler implements GraphViewChangeListener {
 		if (nodesOrEdges.isEmpty())
 			return;
 
-		final CyTable table = nodesOrEdges.iterator().next().getCyRow().getDataTable();
+		final CyTable table = nodesOrEdges.iterator().next().getCyRow().getTable();
 		try {
 			eventHelper.fireSynchronousEvent(new RowsAboutToChangeEvent(this, table));
 

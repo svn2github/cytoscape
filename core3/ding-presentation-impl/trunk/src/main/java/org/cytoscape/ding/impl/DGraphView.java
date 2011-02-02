@@ -413,11 +413,11 @@ public class DGraphView implements RenderingEngine<CyNetwork>, GraphView,
 		this.manager = manager;
 
 		final CyTable nodeCAM = dataFactory.createTable("node view", "SUID", Long.class, false);
-		nodeCAM.createColumn("hidden", Boolean.class);
+		nodeCAM.createColumn("hidden", Boolean.class, false);
 		tableMgr.getTableMap(CyNode.class, networkModel).put("VIEW", nodeCAM);
 
 		final CyTable edgeCAM = dataFactory.createTable("edge view", "SUID", Long.class, false);
-		edgeCAM.createColumn("hidden", Boolean.class);
+		edgeCAM.createColumn("hidden", Boolean.class, false);
 		tableMgr.getTableMap(CyEdge.class, networkModel).put("VIEW", edgeCAM);
 
 		// creating empty subnetworks
