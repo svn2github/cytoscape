@@ -337,4 +337,11 @@
 		<constructor-arg ref="selectedVisualStyleManager" />
 
 	</bean>
+	
+	<!-- For bypass -->
+	<bean id="bypassManager" class="org.cytoscape.view.vizmap.gui.internal.bypass.BypassManager">
+		<constructor-arg ref="cyServiceRegistrarServiceRef" />
+		<constructor-arg ref="editorManager" />
+		<constructor-arg ref="selectedVisualStyleManager" />
+	</bean>
 </beans>
