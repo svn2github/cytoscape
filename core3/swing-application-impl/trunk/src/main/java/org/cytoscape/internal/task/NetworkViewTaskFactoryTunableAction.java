@@ -29,31 +29,27 @@
  */
 package org.cytoscape.internal.task;
 
-
 import java.awt.event.ActionEvent;
-
 import java.util.Map;
 
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskManager;
-
-import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.task.NetworkViewTaskFactory;
+import org.cytoscape.work.TaskManager;
 
+public class NetworkViewTaskFactoryTunableAction extends
+		TaskFactoryTunableAction<NetworkViewTaskFactory> {
 
-public class NetworkViewTaskFactoryTunableAction 
-	extends TaskFactoryTunableAction<NetworkViewTaskFactory> {
+	private static final long serialVersionUID = -394071170939169420L;
 
-	public NetworkViewTaskFactoryTunableAction(TaskManager manager,
-						   NetworkViewTaskFactory factory, Map serviceProps,
-						   final CyApplicationManager applicationManager)
-	{
+	public NetworkViewTaskFactoryTunableAction(
+			TaskManager manager,
+			NetworkViewTaskFactory factory, @SuppressWarnings("rawtypes") Map serviceProps,
+			final CyApplicationManager applicationManager) {
 		super(manager, factory, serviceProps, applicationManager);
 	}
 
 	public void actionPerformed(ActionEvent a) {
-		factory.setNetworkView( applicationManager.getCurrentNetworkView() );
+		factory.setNetworkView(applicationManager.getCurrentNetworkView());
 		super.actionPerformed(a);
 	}
 }

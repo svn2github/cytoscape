@@ -29,30 +29,28 @@
  */
 package org.cytoscape.internal.task;
 
-
 import java.awt.event.ActionEvent;
-
 import java.util.Map;
-
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskManager;
 
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.session.CyApplicationManager;
-
-import org.slf4j.LoggerFactory;
+import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TaskManager;
 import org.slf4j.Logger;
-
+import org.slf4j.LoggerFactory;
 
 public class TaskFactoryTunableAction<T extends TaskFactory> extends AbstractCyAction {
-	protected T factory;
-	protected TaskManager manager;
-	private final static Logger logger = LoggerFactory.getLogger( TaskFactoryTunableAction.class );
+
+	private static final long serialVersionUID = 8009915597814265396L;
 	
+	final protected T factory;
+	final protected TaskManager manager;
+	
+	private final static Logger logger = LoggerFactory.getLogger(TaskFactoryTunableAction.class);
+
 	public TaskFactoryTunableAction(final TaskManager manager, final T factory,
-	                                final Map serviceProps,
-	                                final CyApplicationManager applicationManager)
-	{
+			final Map serviceProps,
+			final CyApplicationManager applicationManager) {
 		super(serviceProps, applicationManager);
 		this.manager = manager;
 		this.factory = factory;
