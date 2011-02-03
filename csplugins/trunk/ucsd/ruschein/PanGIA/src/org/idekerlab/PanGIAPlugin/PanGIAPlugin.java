@@ -13,7 +13,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.net.URL;
-import java.util.List;
+import java.util.*;
+import java.util.Map.Entry;
 
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
@@ -38,7 +39,7 @@ import cytoscape.view.cytopanels.BiModalJSplitPane;
  * <p>
  * 
  * 
- * @author kono, ruschein
+ * @author kono, ruschein, ghannum
  *
  */
 public class PanGIAPlugin extends CytoscapePlugin {
@@ -50,7 +51,7 @@ public class PanGIAPlugin extends CytoscapePlugin {
 	
 	private static final String PLUGIN_NAME = "PanGIA";
 	public static final String VERSION = "1.01";
-	public static final PanGIAOutput output = new PanGIAOutput();
+	public static final Map<String,PanGIAOutput> output = new HashMap<String,PanGIAOutput>();
 
 	public PanGIAPlugin() {
 		this.vsObserver = new VisualStyleObserver();
@@ -60,6 +61,8 @@ public class PanGIAPlugin extends CytoscapePlugin {
 		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins.Module Finders...").add(menuItem);
 		
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(CytoscapeDesktop.NETWORK_VIEW_CREATED,new PanGIANetworkListener());
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_DESTROYED,new PanGIANetworkListener());
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_TITLE_MODIFIED,new PanGIANetworkListener());
 	}
 
 	/**
@@ -106,15 +109,15 @@ public class PanGIAPlugin extends CytoscapePlugin {
 		{
 			BufferedWriter bw = new BufferedWriter(new FileWriter("./PanGIA.session.tmp"));
 			
-			bw.write(output.isAvailable()+"\n");
+			bw.write(output.size()+"\n");
 			
-			if (output.isAvailable())
+			for (Entry<String,PanGIAOutput> e : output.entrySet())
 			{
-				bw.write(output.getOverviewNetwork().getTitle()+"\n");
-				bw.write(output.getOrigPhysNetwork().getTitle()+"\n");
-				bw.write(output.getOrigGenNetwork().getTitle()+"\n");
-				bw.write(output.getPhysAttrName()+"\n");
-				bw.write(output.getGenAttrName()+"\n");
+				bw.write(e.getValue().getOverviewNetwork().getTitle()+"\n");
+				bw.write(e.getValue().getOrigPhysNetwork().getTitle()+"\n");
+				bw.write(e.getValue().getOrigGenNetwork().getTitle()+"\n");
+				bw.write(e.getValue().getPhysAttrName()+"\n");
+				bw.write(e.getValue().getGenAttrName()+"\n");
 			}
 			
 			bw.close();
@@ -140,21 +143,26 @@ public class PanGIAPlugin extends CytoscapePlugin {
 			File prop_file = pStateFileList.get(0);
 
 			BufferedReader in = new BufferedReader(new FileReader(prop_file));
-			boolean isAvailable = Boolean.valueOf(in.readLine());
 			
-			if (isAvailable)
+			String rCount = in.readLine();
+			
+			int numResults;
+			if (rCount.equals("true")) numResults = 1;         //For compatibility with sessions from version 1.0
+			else if (rCount.equals("false")) numResults = 0;
+			else numResults = Integer.valueOf(rCount);
+			
+			for (int i=0;i<numResults;i++)
 			{
-				String overviewNetID = in.readLine();
-				System.out.println("Overview net title: "+overviewNetID);
+				String overviewNetTitle = in.readLine();
+				System.out.println("Overview net title "+i+": "+overviewNetTitle);
 				
-				CyNetwork overviewNet = getNetworkFromTitle(overviewNetID);
+				CyNetwork overviewNet = getNetworkFromTitle(overviewNetTitle);
 				CyNetwork physNet = getNetworkFromTitle(in.readLine());
 				CyNetwork genNet = getNetworkFromTitle(in.readLine());
 				String physAttr = in.readLine();
 				String genAttr = in.readLine();
-				output.initialize(overviewNet, physNet, genNet, physAttr, genAttr);
-			}else output.reset();
-			
+				output.put(overviewNet.getIdentifier(),new PanGIAOutput(overviewNet, physNet, genNet, physAttr, genAttr));
+			}		
 			
 			in.close();
 			

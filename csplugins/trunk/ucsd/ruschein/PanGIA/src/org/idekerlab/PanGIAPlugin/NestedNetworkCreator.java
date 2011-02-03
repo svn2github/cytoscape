@@ -268,14 +268,14 @@ public class NestedNetworkCreator {
 			Iterator<String> genes = module.getMemberValues().iterator();
 			String newName = "["+genes.next();
 			while (genes.hasNext()) newName+=", "+genes.next();
-			return newName+"]";
+			return findNextAvailableNodeName(newName+"]");
 		}
 		
 		//Annotate large complexes
 		if (module_name!=null)
 		{
 			String name = module_name.get(module);
-			if (name!=null) return name;
+			if (name!=null) return findNextAvailableNodeName(name);
 		}
 		
 		return findNextAvailableNodeName("Module" + nodeIndex);

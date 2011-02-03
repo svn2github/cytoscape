@@ -59,8 +59,8 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
 	    		 break;
 	    	 }
 	     
-	     boolean isOverviewNetwork = PanGIAPlugin.output.isAvailable() && aview.getNetwork().getIdentifier().equals(PanGIAPlugin.output.getOverviewNetwork().getIdentifier());
-	     
+	     boolean isOverviewNetwork = PanGIAPlugin.output.containsKey(aview.getNetwork().getIdentifier());
+	    	 
 	     //ITEM1
 	     if (selectedHasNested && isOverviewNetwork)
 	     {
@@ -105,14 +105,16 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
 	     }
 	     
 	     //ITEM4
-	     if (PanGIAPlugin.output.isAvailable())
+	     if (isOverviewNetwork)
 	     {
 	         JMenu item1 = new JMenu();
 	         item1.setText("Save Selected Nodes to Matrix File");
 	         
+	         PanGIAOutput output = PanGIAPlugin.output.get(aview.getNetwork().getIdentifier());
+	         
 	         //String[] ean = edgeAttr.getAttributeNames();
 	         
-	         String[] ean = new String[]{PanGIAPlugin.output.getPhysAttrName(),PanGIAPlugin.output.getGenAttrName()};
+	         String[] ean = new String[]{output.getPhysAttrName(),output.getGenAttrName()};
 	         
 	         List<String> eaNames = new ArrayList<String>(ean.length);
 	         for (String s : ean) eaNames.add(s);

@@ -142,7 +142,7 @@ public class SearchTask implements Task {
 		//Check for problems
 		if (physicalNetwork.numEdges()==0)
 		{
-			JOptionPane.showMessageDialog(null, "No edges were found in the physical network. Please verify that the network has edges and that the edge attribute is appropriate.");
+			JOptionPane.showMessageDialog(null, "No edges were found in the physical network. Please verify that the network has edges, that the edge attribute is appropriate, and that the Network filter degree is not too low.");
 			this.halt();
 			return;
 		}else if (geneticNetwork.numEdges()==0)
@@ -278,7 +278,7 @@ public class SearchTask implements Task {
 
 		setPercentCompleted(100);
 		
-		PanGIAPlugin.output.initialize(nnCreator.getOverviewNetwork(), physicalInputNetwork, geneticInputNetwork,parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName());
+		PanGIAPlugin.output.put(nnCreator.getOverviewNetwork().getIdentifier(),new PanGIAOutput(nnCreator.getOverviewNetwork(), physicalInputNetwork, geneticInputNetwork,parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName()));
 		
 		/*
 		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)

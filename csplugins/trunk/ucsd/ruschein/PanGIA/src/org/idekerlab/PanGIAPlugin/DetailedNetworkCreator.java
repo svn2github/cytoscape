@@ -26,12 +26,16 @@ public class DetailedNetworkCreator
 		
 		VisualStyleObserver.setOverviewView(view);
 		
-		CyNetwork origPhysNetwork = PanGIAPlugin.output.getOrigPhysNetwork();
-		CyNetwork origGenNetwork = PanGIAPlugin.output.getOrigGenNetwork();
-		String physAttrName = PanGIAPlugin.output.getPhysAttrName();
-		String genAttrName = PanGIAPlugin.output.getGenAttrName();
+		String netID = view.getNetwork().getIdentifier();
+		
+		PanGIAOutput output = PanGIAPlugin.output.get(netID);
+		
+		CyNetwork origPhysNetwork = output.getOrigPhysNetwork();
+		CyNetwork origGenNetwork = output.getOrigGenNetwork();
+		String physAttrName = output.getPhysAttrName();
+		String genAttrName = output.getGenAttrName();
 				
-		final CyAttributes cyAttributes = Cytoscape.getEdgeAttributes();
+		//final CyAttributes cyAttributes = Cytoscape.getEdgeAttributes();
 				
 		String name = findNextAvailableNetworkName("Detailed View");
 		
