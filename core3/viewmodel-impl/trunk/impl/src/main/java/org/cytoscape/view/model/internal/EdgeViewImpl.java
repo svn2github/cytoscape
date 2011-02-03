@@ -23,7 +23,8 @@ public class EdgeViewImpl extends ViewImpl<CyEdge> {
 		else
 			this.visualProperties.put(vp, value);
 		
-		cyEventHelper.getMicroListener(EdgeViewChangeMicroListener.class, parent).edgeVisualPropertySet(this, vp, value);
+		// getVisualProperty method call is REQUIRED to check bypass.
+		cyEventHelper.getMicroListener(EdgeViewChangeMicroListener.class, parent).edgeVisualPropertySet(this, vp, this.getVisualProperty(vp));
 	}
 
 }

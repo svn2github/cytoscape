@@ -24,7 +24,8 @@ public class NodeViewImpl extends ViewImpl<CyNode> {
 		else
 			this.visualProperties.put(vp, value);
 		
-		cyEventHelper.getMicroListener(NodeViewChangeMicroListener.class, parent).nodeVisualPropertySet(this, vp, value);
+		// getVisualProperty method call is REQUIRED to check bypass.
+		cyEventHelper.getMicroListener(NodeViewChangeMicroListener.class, parent).nodeVisualPropertySet(this, vp, this.getVisualProperty(vp));
 	}
 
 }
