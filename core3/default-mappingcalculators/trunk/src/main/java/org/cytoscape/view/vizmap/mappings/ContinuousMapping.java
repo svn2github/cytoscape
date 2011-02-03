@@ -1,14 +1,7 @@
 /*
   File: ContinuousMapping.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2006, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -33,14 +26,9 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
-//----------------------------------------------------------------------------
-// $Revision: 13022 $
-// $Date: 2008-02-11 13:59:26 -0800 (Mon, 11 Feb 2008) $
-// $Author: mes $
-//----------------------------------------------------------------------------
+*/
 package org.cytoscape.view.vizmap.mappings;
+
 
 import java.awt.Color;
 import java.awt.Paint;
@@ -55,6 +43,7 @@ import org.cytoscape.view.vizmap.mappings.interpolators.FlatInterpolator;
 import org.cytoscape.view.vizmap.mappings.interpolators.Interpolator;
 import org.cytoscape.view.vizmap.mappings.interpolators.LinearNumberToColorInterpolator;
 import org.cytoscape.view.vizmap.mappings.interpolators.LinearNumberToNumberInterpolator;
+
 
 /**
  * Implements an interpolation table mapping data to values of a particular
@@ -186,7 +175,7 @@ public class ContinuousMapping<K, V> extends AbstractVisualMappingFunction<K, V>
 
 		final CyRow row = view.getModel().getCyRow();
 
-		if (row.isSet(attrName, attrType)) {
+		if (row.isSet(attrName)) {
 			// skip Views where source attribute is not defined;
 			// ViewColumn will automatically substitute the per-VS or global
 			// default, as appropriate
