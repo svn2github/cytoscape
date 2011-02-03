@@ -102,7 +102,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>vizmap-gui-api</artifactId>
-			<version>3.0.0-alpha1</version>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
@@ -112,12 +112,12 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>default-mappings</artifactId>
-			<version>3.0.0-alpha1</version>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-application-api</artifactId>
-			<version>3.0.0-alpha1</version>
+			<version>3.0.0-alpha2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
