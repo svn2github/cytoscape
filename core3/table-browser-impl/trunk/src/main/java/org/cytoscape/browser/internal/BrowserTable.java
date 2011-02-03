@@ -79,7 +79,7 @@ public class BrowserTable extends JTable
 		this.openBrowser = openBrowser;
 		this.compiler = compiler;
 
-		setColumnModel(new MyTableColumnModel());
+//		setColumnModel(new MyTableColumnModel());
 		initHeader();
 		setCellSelectionEnabled(true);
 		setDefaultEditor(Object.class, new MultiLineTableCellEditor());
