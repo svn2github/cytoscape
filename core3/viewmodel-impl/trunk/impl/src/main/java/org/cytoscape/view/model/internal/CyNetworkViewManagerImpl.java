@@ -102,14 +102,19 @@ public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAb
 
 		final Long viewID = view.getModel().getSUID();
 
+		// do this outside of the lock to fail early
+		if (!networkViewMap.containsKey(viewID))
+			throw new IllegalArgumentException(
+					"network view is not recognized by this NetworkManager");
+
+		// let everyone know!
+		cyEventHelper.fireSynchronousEvent(new NetworkViewAboutToBeDestroyedEvent(this, view));
+
 		synchronized (this) {
+			// do this again within the lock to be safe
 			if (!networkViewMap.containsKey(viewID))
 				throw new IllegalArgumentException(
 						"network view is not recognized by this NetworkManager");
-
-			// TODO firing an event from within a lock!!!!
-			final CyNetworkView toDestroy = view;
-			cyEventHelper.fireSynchronousEvent(new NetworkViewAboutToBeDestroyedEvent(this, toDestroy));
 
 			networkViewMap.remove(viewID);
 		}
