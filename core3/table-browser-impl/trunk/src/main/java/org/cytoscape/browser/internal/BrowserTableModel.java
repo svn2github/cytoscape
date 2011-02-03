@@ -12,10 +12,9 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JTable;
-import javax.swing.table.TableModel;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelEvent.*;
-import javax.swing.event.TableModelListener;
 
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.equations.Equation;
@@ -33,8 +32,8 @@ import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
 
 
-public class BrowserTableModel
-	implements TableModel, ColumnCreatedListener, ColumnDeletedListener, CyTableRowUpdateMicroListener
+public final class BrowserTableModel extends AbstractTableModel
+	implements ColumnCreatedListener, ColumnDeletedListener, CyTableRowUpdateMicroListener
 {
 	private static final int EOF = -1;
 	private static final int MAX_INITIALLY_VSIBLE_ATTRS = 10;
@@ -44,7 +43,6 @@ public class BrowserTableModel
 	private final CyTableRowUpdateService tableRowUpdateService;
 	private boolean tableHasBooleanSelected;
 	private List<AttrNameAndVisibility> attrNamesAndVisibilities;
-	private final List<TableModelListener> tableModelListeners;
 
 	public BrowserTableModel(final JTable table, final CyEventHelper eventHelper,
 				 final CyTable attrs, final EqnCompiler compiler,
@@ -58,7 +56,6 @@ public class BrowserTableModel
 		final CyColumn selectedColumn = attrs.getColumn(CyNetwork.SELECTED);
 		this.tableHasBooleanSelected =
 			selectedColumn != null && selectedColumn.getType() == Boolean.class;
-		this.tableModelListeners = new ArrayList<TableModelListener>();
 		tableRowUpdateService.startTracking(this, attrs);
 
 		initAttrNamesAndVisibilities();
@@ -123,11 +120,8 @@ public class BrowserTableModel
 			}
 		}
 
-		if (changed) {
-			final TableModelEvent event = new TableModelEvent(this, TableModelEvent.HEADER_ROW);
-			for (final TableModelListener listener : tableModelListeners)
-				listener.tableChanged(event);
-		}
+		if (changed)
+			fireTableStructureChanged();
 	}
 
 	@Override
@@ -169,8 +163,8 @@ public class BrowserTableModel
 
 		return getValidatedObjectAndEditString(row, columnName);
 	}
-
-	Class<?> getColumnType(final int columnIndex) {
+ 
+	Class<?> getColumnType(final int columnIndex)  {
 		final String columnName = getColumnName(columnIndex);
 		return attrs.getColumn(columnName).getType();
 	}
@@ -258,10 +252,7 @@ public class BrowserTableModel
 			return;
 
 		attrNamesAndVisibilities.add(new AttrNameAndVisibility(e.getColumnName(), true));
-
-		final TableModelEvent event = new TableModelEvent(this, TableModelEvent.HEADER_ROW);
-		for (final TableModelListener listener : tableModelListeners)
-			listener.tableChanged(event);
+		fireTableStructureChanged();
 	}
 
 	@Override
@@ -277,21 +268,12 @@ public class BrowserTableModel
 			}
 		}
 
-		final TableModelEvent event = new TableModelEvent(this, TableModelEvent.HEADER_ROW);
-		for (final TableModelListener listener : tableModelListeners)
-			listener.tableChanged(event);
+		fireTableStructureChanged();
 	}
 
 	@Override
 	public void handleRowCreations(final CyTable table, final List<CyRow> newRows) {
-		for (final CyRow row : newRows) {
-			final int newRowIndex = mapRowToRowIndex(row);
-			final TableModelEvent event
-				= new TableModelEvent(this, newRowIndex, newRowIndex,
-						      TableModelEvent.ALL_COLUMNS, TableModelEvent.INSERT);
-			for (final TableModelListener listener : tableModelListeners)
-				listener.tableChanged(event);
-		}
+		fireTableDataChanged();
 	}
 
 	@Override
@@ -343,7 +325,7 @@ public class BrowserTableModel
 			++i;
 		}
 
-		throw new IllegalStateException("We should *never* get here!");
+		throw new IllegalStateException("We should *never* get here! (index="+index+", i="+i);
 	}
 
 	void handleRowValueUpdate(final CyRow row, final String columnName, final Object newValue,
@@ -356,11 +338,7 @@ public class BrowserTableModel
 			if (!selected && rowIndex == -1)
 				return;
 */
-
-			//TODO: Need to optimise the following event!
-			final TableModelEvent event = new TableModelEvent(this);
-			for (final TableModelListener listener : tableModelListeners)
-				listener.tableChanged(event);
+			fireTableDataChanged();
 		} else {
 			final int rowIndex = mapRowToRowIndex(row);
 			if (rowIndex == -1)
@@ -371,8 +349,7 @@ public class BrowserTableModel
 				return;
 
 			final TableModelEvent event = new TableModelEvent(this, rowIndex, rowIndex, columnIndex);
-			for (final TableModelListener listener : tableModelListeners)
-				listener.tableChanged(event);
+			fireTableChanged(event);
 		}
 	}
 
@@ -436,10 +413,8 @@ public class BrowserTableModel
 			}
 		}
 
-
 		final TableModelEvent event = new TableModelEvent(this, rowIndex, rowIndex, columnIndex);
-		for (final TableModelListener listener : tableModelListeners)
-			listener.tableChanged(event);
+		fireTableChanged(event);
 	}
 
 	private boolean eqnTypeIsCompatible(final Class<?> columnType, final Class<?> eqnType) {
@@ -823,16 +798,6 @@ public class BrowserTableModel
 	@Override
 	public boolean isCellEditable(final int rowIndex, final int columnIndex) {
 		return table.convertColumnIndexToModel(columnIndex) != 0;
-	}
-
-	@Override
-	public void addTableModelListener(final TableModelListener listener) {
-		tableModelListeners.add(listener);
-	}
-
-	@Override
-	public void removeTableModelListener(final TableModelListener listener) {
-		tableModelListeners.remove(listener);
 	}
 
 	public void cleanup() {

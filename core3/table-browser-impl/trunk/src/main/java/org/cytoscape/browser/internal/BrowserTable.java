@@ -86,7 +86,6 @@ public class BrowserTable extends JTable
 		getPopupMenu();
 		getHeaderPopupMenu();
 		setKeyStroke();
-		getTableHeader().addMouseMotionListener(this);
 	}
 
 	/**
@@ -100,7 +99,9 @@ public class BrowserTable extends JTable
 
 	protected void initHeader() {
 		final JTableHeader header = getTableHeader();
+		header.addMouseMotionListener(this);
 //		header.setDefaultRenderer(new SortHeaderRenderer());
+		header.setDefaultRenderer(new MyTableHeaderRenderer());
 		header.addMouseListener(this);
 
 		setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -206,13 +207,11 @@ public class BrowserTable extends JTable
 
 	@Override
 	public boolean editCellAt(int row, int column, EventObject e) {
-		if ((cellEditor != null) && !cellEditor.stopCellEditing()) {
+		if (cellEditor != null && !cellEditor.stopCellEditing())
 			return false;
-		}
 
-		if ((row < 0) || (row >= getRowCount()) || (column < 0) || (column >= getColumnCount())) {
+		if (row < 0 || row >= getRowCount() || column < 0 || column >= getColumnCount())
 			return false;
-		}
 
 		if (!isCellEditable(row, column))
 			return false;
@@ -226,7 +225,6 @@ public class BrowserTable extends JTable
 		TableCellEditor editor = getCellEditor(row, column);
 
 		if ((editor != null) && editor.isCellEditable(e)) {
-
 			// Do this first so that the bounds of the JTextArea editor
 			// will be correct.
 			setEditingRow(row);
@@ -264,11 +262,8 @@ public class BrowserTable extends JTable
 		return false;
 	}
 
-	// Display elements in te list & map objects
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
+	 *  Display elements in the list objects.
 	 */
 	public void showListContents(MouseEvent e) {
 		final int column = this.getSelectedColumn();
@@ -706,7 +701,6 @@ public class BrowserTable extends JTable
 			if (!isEditing() || (getClientProperty("terminateEditOnFocusLost") != Boolean.TRUE)) {
 				return;
 			}
-System.err.println("++++++++++++++ Entering CellEditorRemover.propertyChange() in BrowserTable.java");
 
 			Component c = focusManager.getPermanentFocusOwner();
 
