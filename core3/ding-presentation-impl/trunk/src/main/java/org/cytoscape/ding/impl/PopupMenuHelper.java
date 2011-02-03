@@ -27,37 +27,34 @@
 */
 package org.cytoscape.ding.impl;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+
 import javax.swing.AbstractAction;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.Point;
-import java.awt.datatransfer.Transferable;
-import java.util.Map; 
-import java.util.Collection; 
-import java.util.List; 
-import java.util.ArrayList; 
 
-import org.cytoscape.ding.NodeView;
 import org.cytoscape.ding.EdgeView;
-
-import org.cytoscape.util.swing.JMenuTracker;
-import org.cytoscape.work.Task;
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.work.TaskIterator;
-import org.cytoscape.work.TaskManager;
-import org.cytoscape.task.NetworkViewTaskFactory;
-import org.cytoscape.task.NodeViewTaskFactory;
-import org.cytoscape.task.EdgeViewTaskFactory;
+import org.cytoscape.ding.NodeView;
 import org.cytoscape.dnd.DropNetworkViewTaskFactory;
 import org.cytoscape.dnd.DropNodeViewTaskFactory;
-
-import org.cytoscape.view.model.View;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.task.EdgeViewTaskFactory;
+import org.cytoscape.task.NetworkViewTaskFactory;
+import org.cytoscape.task.NodeViewTaskFactory;
+import org.cytoscape.util.swing.JMenuTracker;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.work.TaskFactory;
 
 // TODO Consider generalizing this class so that it can be used by anyone
 // who needs a popup menu based on TaskFactories.
@@ -96,7 +93,7 @@ class PopupMenuHelper {
 
 				for ( EdgeViewTaskFactory evtf : usableTFs ) {
 					evtf.setEdgeView(ev,m_view.cyNetworkView);
-					createMenuItem( menu, evtf, tracker, m_view.edgeViewTFs.get(evtf) );
+					createMenuItem(ev, menu, evtf, tracker, m_view.edgeViewTFs.get(evtf) );
 				}
 
 				menu.show(invoker, x, y);
@@ -127,7 +124,7 @@ class PopupMenuHelper {
 				for ( DropNodeViewTaskFactory nvtf : usableTFs ) {
 					nvtf.setNodeView(nv,m_view.cyNetworkView);
 					nvtf.setDropInformation(t,rawPt,xformPt);
-					createMenuItem(menu, nvtf, tracker, m_view.dropNodeViewTFs.get( nvtf ));
+					createMenuItem(nv, menu, nvtf, tracker, m_view.dropNodeViewTFs.get( nvtf ));
 				}
 
 				menu.show(invoker, (int)(rawPt.getX()), (int)(rawPt.getY()));
@@ -158,7 +155,7 @@ class PopupMenuHelper {
 
 				for ( NodeViewTaskFactory nvtf : usableTFs ) {
 					nvtf.setNodeView(nv,m_view.cyNetworkView);
-					createMenuItem(menu, nvtf, tracker, m_view.nodeViewTFs.get( nvtf ));
+					createMenuItem(nv, menu, nvtf, tracker, m_view.nodeViewTFs.get( nvtf ));
 				}
 
 				menu.show(invoker, x, y);
@@ -184,7 +181,7 @@ class PopupMenuHelper {
 			for ( DropNetworkViewTaskFactory nvtf : usableTFs ) {
 				nvtf.setNetworkView(m_view.cyNetworkView);
 				nvtf.setDropInformation(t,rawPt,xformPt);
-				createMenuItem(menu, nvtf, tracker, m_view.dropEmptySpaceTFs.get( nvtf ) );
+				createMenuItem(null, menu, nvtf, tracker, m_view.dropEmptySpaceTFs.get( nvtf ) );
 			}
 			menu.show(invoker, (int)(rawPt.getX()), (int)(rawPt.getY()));
 		// execute the task directly if only one factory exists 
@@ -202,11 +199,11 @@ class PopupMenuHelper {
 		// build a menu of actions if more than factory exists
 		Collection<NetworkViewTaskFactory> usableTFs = getPreferredActions(m_view.emptySpaceTFs,action);
 		if ( usableTFs.size() > 1 ) {
-			JPopupMenu menu = new JPopupMenu("Double Click Menu: empty");
-			JMenuTracker tracker = new JMenuTracker(menu);
+			final JPopupMenu menu = new JPopupMenu("Double Click Menu: empty");
+			final JMenuTracker tracker = new JMenuTracker(menu);
 			for ( NetworkViewTaskFactory nvtf : usableTFs ) {
 				nvtf.setNetworkView(m_view.cyNetworkView);
-				createMenuItem(menu, nvtf, tracker, m_view.emptySpaceTFs.get( nvtf ) );
+				createMenuItem(null, menu, nvtf, tracker, m_view.emptySpaceTFs.get( nvtf ) );
 			}
 			menu.show(invoker, x, y);
 		// execute the task directly if only one factory exists 
@@ -222,20 +219,43 @@ class PopupMenuHelper {
 	 * "title" and "preferredMenu" keywords, depending on which are present
 	 * in the service properties.
 	 */
-	private void createMenuItem(JPopupMenu popup, TaskFactory tf, 
+	private void createMenuItem(View<?> view, JPopupMenu popup, TaskFactory tf, 
 	                            JMenuTracker tracker, Map props) { 
 
 		String title = (String)(props.get("title"));
 		String pref = (String)(props.get("preferredMenu"));
+		boolean useCheckBoxMenuItem = false;
+		
+		final Object useCheckBox = props.get("useCheckBoxMenuItem");
+		final Object targetVP = props.get("targetVP");
+		boolean isSelected = false;
+		if(view != null)
+			isSelected = view.isValueLocked((VisualProperty<?>) targetVP);
+		
+		if ( useCheckBox != null ) {
+			try {
+				useCheckBoxMenuItem = Boolean.parseBoolean(useCheckBox.toString());
+			} catch (Exception e) {
+				useCheckBoxMenuItem = false;
+			}
+		} else {
+			useCheckBoxMenuItem = false;
+		}
 
 		// no title and no preferred menu
 		if ( title == null && pref == null ) {
 			title = "Unidentified Task: " + Integer.toString(tf.hashCode());
-			popup.add( new JMenuItem( new PopupAction(tf, title) ) );
+			if(useCheckBoxMenuItem)
+				popup.add( new JCheckBoxMenuItem( new PopupAction(tf, title) ) );
+			else
+				popup.add( new JMenuItem( new PopupAction(tf, title) ) );
 
 		// title, but no preferred menu
 		} else if ( title != null && pref == null ) {
-			popup.add( new JMenuItem( new PopupAction(tf, title) ) );
+			if(useCheckBoxMenuItem)
+				popup.add( new JCheckBoxMenuItem( new PopupAction(tf, title) ) );
+			else
+				popup.add( new JMenuItem( new PopupAction(tf, title) ) );
 			
 		// no title, but preferred menu
 		} else if ( title == null && pref != null ) {
@@ -245,19 +265,30 @@ class PopupMenuHelper {
 			if ( last > 0 ) {
 				title = pref.substring(last+1);
 				pref = pref.substring(0,last);
-				JMenu menu = tracker.getMenu(pref);
-				menu.add( new JMenuItem( new PopupAction(tf, title) ) );
+				final JMenu menu = tracker.getMenu(pref);
+				if(useCheckBoxMenuItem) {
+					final JCheckBoxMenuItem checkBox = new JCheckBoxMenuItem( new PopupAction(tf, title));
+					checkBox.setSelected(isSelected);
+					menu.add(checkBox);					
+				} else
+					menu.add( new JMenuItem( new PopupAction(tf, title) ) );
 			// otherwise just use the preferred menu as the menuitem name
 			} else {
 				title = pref;
-				popup.add( new JMenuItem( new PopupAction(tf, title) ) );
+				if(useCheckBoxMenuItem)
+					popup.add( new JCheckBoxMenuItem( new PopupAction(tf, title) ) );
+				else
+					popup.add( new JMenuItem( new PopupAction(tf, title) ) );
 			}
 
 		// title and preferred menu
 		} else {
 			JMenu menu = tracker.getMenu(pref);
-			menu.add( new JMenuItem( new PopupAction(tf, title) ) );
-		}  
+			if(useCheckBoxMenuItem)
+				menu.add( new JCheckBoxMenuItem( new PopupAction(tf, title) ) );
+			else
+				menu.add( new JMenuItem( new PopupAction(tf, title) ) );
+		} 
 	}
 
 	/**

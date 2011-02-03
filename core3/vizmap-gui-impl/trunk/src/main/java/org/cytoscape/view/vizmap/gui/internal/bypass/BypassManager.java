@@ -73,9 +73,10 @@ public class BypassManager {
 			final String newMenu = menuText + "." + vp.getDisplayName();
 			if (child.getChildren().size() == 0) {
 				// Leaf
-				final Dictionary<String, String> vpProp = new Hashtable<String, String>();
+				final Dictionary<String, Object> vpProp = new Hashtable<String, Object>();
 				vpProp.put(MENU_KEY, newMenu);
 				vpProp.put("useCheckBoxMenuItem", "true");
+				vpProp.put("targetVP", vp);
 
 				if (vp.getTargetDataType().equals(CyNode.class)) {
 					final NodeViewTaskFactory ntf = new NodeBypassMenuTaskFactory(
@@ -83,7 +84,8 @@ public class BypassManager {
 									.getRange().getType()), selectedManager);
 					registrar.registerService(ntf, NodeViewTaskFactory.class, vpProp);
 				} else if (vp.getTargetDataType().equals(CyEdge.class)) {
-					final EdgeViewTaskFactory etf = new EdgeBypassMenuTaskFactory();
+					final EdgeViewTaskFactory etf = new EdgeBypassMenuTaskFactory(null, vp, editorManager.getValueEditor(vp
+							.getRange().getType()), selectedManager);
 					registrar.registerService(etf, EdgeViewTaskFactory.class, vpProp);
 				}
 				logger.debug("Bypass context menu registered: "

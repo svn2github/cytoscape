@@ -47,14 +47,6 @@
 	<bean id="propertySheetPanel" class="com.l2fprod.common.propertysheet.PropertySheetPanel" />
 
 
-
-	<bean id="vizMapBypassNetworkListener"
-		class="org.cytoscape.view.vizmap.gui.internal.bypass.VizMapBypassNetworkListener">
-		<constructor-arg ref="editorManager" />
-		<constructor-arg ref="cyApplicationManagerServiceRef"></constructor-arg>
-	</bean>
-
-
 	<!-- Editor Manager -->
 
 	<bean id="nodeAttributeComboBoxEditor" factory-bean="editorManager" factory-method="getNodeEditor" />
