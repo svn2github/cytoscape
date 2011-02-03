@@ -63,12 +63,13 @@ public final class MapNetworkAttrTask extends AbstractTask {
 
 		if (newGlobalTable.getPrimaryKey().getType() != String.class)
 			throw new IllegalStateException("The new table's primary key is not of type String!");
-		final String sourceTableJoinColumn = newGlobalTable.getPrimaryKey().getColumnName();
+		final String sourceTableJoinColumn = newGlobalTable.getPrimaryKey().getName();
 
 		for (final CyTable targetTable : targetTables) {
 			if (cancelled)
 				return;
-			targetTable.addVirtualColumns(newGlobalTable, sourceTableJoinColumn, CyTableEntry.NAME);
+			targetTable.addVirtualColumns(newGlobalTable, sourceTableJoinColumn,
+						      CyTableEntry.NAME, false);
 		}
 	}
 }
