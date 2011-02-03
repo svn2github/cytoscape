@@ -90,15 +90,20 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 			throw new NullPointerException("network is null");
 
 		final Long networkId = network.getSUID();
+		
+		// check outside the lock so that we fail early
+		if (!networkMap.containsKey(networkId))
+			throw new IllegalArgumentException(
+					"network is not recognized by this NetworkManager");
+
+		// let everyone know! 
+		cyEventHelper.fireSynchronousEvent(new NetworkAboutToBeDestroyedEvent(CyNetworkManagerImpl.this, network));
 
 		synchronized (this) {
+			// check again within the lock in case something has changed
 			if (!networkMap.containsKey(networkId))
 				throw new IllegalArgumentException(
 						"network is not recognized by this NetworkManager");
-
-			// TODO firing an event from within a lock!!!!
-			final CyNetwork toDestroy = network;
-			cyEventHelper.fireSynchronousEvent(new NetworkAboutToBeDestroyedEvent(CyNetworkManagerImpl.this, toDestroy));
 
 			for (CyNode n : network.getNodeList())
 				n.getCyRow().set("selected", false);
