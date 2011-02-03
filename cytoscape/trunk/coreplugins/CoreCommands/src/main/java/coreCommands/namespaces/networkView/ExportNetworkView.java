@@ -58,6 +58,8 @@ import cytoscape.util.export.Exporter;
 
 import ding.view.DGraphView;
 
+import coreCommands.namespaces.AbstractGraphObjectHandler;
+
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -71,7 +73,7 @@ import java.util.Set;
 /**
  * XXX FIXME XXX Description 
  */
-public class ExportNetworkView extends AbstractCommandHandler {
+public class ExportNetworkView extends AbstractGraphObjectHandler {
 	private static String NETWORKVIEW = "networkview";
 
 	private static String EXPORT = "export";
@@ -110,17 +112,9 @@ public class ExportNetworkView extends AbstractCommandHandler {
 		Map<String, CyNetworkView> viewMap = Cytoscape.getNetworkViewMap();
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 
-		String netName = getArg(command, NETWORK, args);
-		if (netName == null) {
-			throw new CyCommandException("networkview: "+command+" requires network argument");
-		}
-		if (!netName.equalsIgnoreCase(CURRENT)) {
-			net = Cytoscape.getNetwork(netName);
-			if (net == null)
-				throw new CyCommandException("networkview: can't find network: "+netName);
-			if (!viewMap.containsKey(netName) && !command.equals("create"))
-				throw new CyCommandException("networkview: can't find view for network: "+netName);
-		}
+		net = getNetwork(command, args);
+		if (!viewMap.containsKey(net.getIdentifier()) && !command.equals("create"))
+			throw new CyCommandException("networkview: can't find view for network: "+net.getTitle());
 
 		CyNetworkView view = viewMap.get(net.getIdentifier());
 		float zoom = Float.parseFloat(getArg(command, ZOOM, args));

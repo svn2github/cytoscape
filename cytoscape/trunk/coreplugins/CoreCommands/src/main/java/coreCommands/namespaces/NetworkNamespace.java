@@ -62,7 +62,7 @@ import java.util.Set;
 /**
  * XXX FIXME XXX Description 
  */
-public class NetworkNamespace extends AbstractCommandHandler {
+public class NetworkNamespace extends AbstractGraphObjectHandler {
 	static String NETWORK = "network";
 
 	// Commands
@@ -111,13 +111,7 @@ public class NetworkNamespace extends AbstractCommandHandler {
 			if (netName == null)
 				throw new CyCommandException("network: need the name of the network to destroy");
 
-			CyNetwork net = Cytoscape.getCurrentNetwork();
-			if (!netName.equalsIgnoreCase(CURRENT))
-				net = Cytoscape.getNetwork(netName);
-
-			if (net == null)
-				throw new CyCommandException("network: the network '"+netName+"' doesn't exist");
-
+			CyNetwork net = getNetwork(DESTROY, args);
 			Cytoscape.destroyNetwork(net);
 
 		// Return the current network
@@ -133,9 +127,7 @@ public class NetworkNamespace extends AbstractCommandHandler {
 				throw new CyCommandException("network: need a network name to make current");
 
 			// Get the network
-			CyNetwork net = Cytoscape.getNetwork(netName);
-			if (net == null)
-				throw new CyCommandException("network: network '"+netName+"' doesn't exist");
+			CyNetwork net = getNetwork(MAKECURRENT, netName);
 
 			Cytoscape.setCurrentNetwork(netName);
 			result.addMessage("network: set current network to "+netName);

@@ -52,6 +52,8 @@ import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
+import coreCommands.namespaces.AbstractGraphObjectHandler;
+
 import java.io.File;
 import java.io.FileWriter;
 
@@ -64,7 +66,7 @@ import java.util.Map;
 /**
  * XXX FIXME XXX Description 
  */
-public class ExportNetwork extends AbstractCommandHandler {
+public class ExportNetwork extends AbstractGraphObjectHandler {
 	static String NETWORK = "network";
 
 	// Commands
@@ -110,11 +112,9 @@ public class ExportNetwork extends AbstractCommandHandler {
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		if (!netName.equalsIgnoreCase(CURRENT)) {
-			net = Cytoscape.getNetwork(netName);
-			view = Cytoscape.getNetworkView(netName);
+			net = getNetwork(command, netName);
+			view = Cytoscape.getNetworkView(net.getIdentifier());
 		}
-		if (net == null)
-			throw new CyCommandException("network: the network '"+netName+"' doesn't exist");
 
 		ret_val[0] = net;
 

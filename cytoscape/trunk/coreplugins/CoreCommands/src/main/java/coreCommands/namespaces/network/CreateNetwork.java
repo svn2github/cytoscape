@@ -110,9 +110,7 @@ public class CreateNetwork extends AbstractGraphObjectHandler {
 		{
 			String pName = getArg(command, PARENT, args);
 			if (pName != null) {
-				parent = Cytoscape.getNetwork(pName);
-				if (parent == null)
-					throw new CyCommandException("network: parent network "+pName+" doesn't exist");
+				parent = getNetwork(command, pName);
 			}
 		}
 

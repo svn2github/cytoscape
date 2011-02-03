@@ -47,6 +47,7 @@ import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.layout.Tunable;
 import cytoscape.logger.CyLogger;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
 import java.util.ArrayList;
@@ -173,12 +174,7 @@ public class GroupNamespace extends AbstractGraphObjectHandler {
 				return result;
 
 			CyNetwork network = Cytoscape.getCurrentNetwork();
-			String networkName = getArg(command, NETWORK, args);
-			if (networkName != null) {
-				network = Cytoscape.getNetwork(networkName);
-				if (network == null)
-					throw new CyCommandException("group: can't find network '"+networkName+"'");
-			}
+			network = getNetwork(CREATE, args);
 			
 			if (args.containsKey(VIEWER)) {
 				String viewer = (String)args.get(VIEWER);

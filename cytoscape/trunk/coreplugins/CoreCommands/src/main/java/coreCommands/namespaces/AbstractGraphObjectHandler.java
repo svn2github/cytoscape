@@ -67,17 +67,22 @@ public abstract class AbstractGraphObjectHandler extends AbstractCommandHandler 
 		super(ns);
 	}
 
-	protected CyNetwork getNetwork(String command, Map<String, Object> args) throws CyCommandException {
-		String netName = getArg(command, "network", args);
-		if (netName == null || netName.equals("current"))
-			return Cytoscape.getCurrentNetwork();
-
-		CyNetwork net = Cytoscape.getNetwork(netName);
-		if (net == Cytoscape.getNullNetwork())
-			throw new CyCommandException(namespace.getNamespaceName()+": no such network "+netName);
-
-		return net;
+  protected CyNetwork getNetwork(String command, Map<String, Object> args) throws CyCommandException {
+    String netName = getArg(command, "network", args);
+    if (netName == null || netName.equalsIgnoreCase("current"))
+      return Cytoscape.getCurrentNetwork();
+		return getNetwork(command, netName);
 	}
+
+	protected CyNetwork getNetwork(String command, String title) throws CyCommandException {
+		Set<CyNetwork>networks = Cytoscape.getNetworkSet();
+		for (CyNetwork net: networks) {
+			if (net.getTitle().equalsIgnoreCase(title))
+				return net;
+		}
+    throw new CyCommandException(namespace.getNamespaceName()+" "+command+": no such network "+title);
+  }
+
 
 	protected String makeNodeList(Collection<CyNode>nodes) {
 		String nodeList = "";

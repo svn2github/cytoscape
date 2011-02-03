@@ -80,16 +80,14 @@ public class AddNodeNetwork extends AbstractGraphObjectHandler {
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
 
-		String netName = getArg(command, NETWORK, args);
-		if (netName == null)
-			throw new CyCommandException("network: need a network name to add the nodes to");
-
-		CyNetwork network = Cytoscape.getNetwork(netName);
-		if (network == null)
-			throw new CyCommandException("network: no such network "+netName);
+		CyNetwork network = getNetwork(command, args);
 
 		List<CyNode> nodeList = getNodeList(network, result, args, true);
-		result.addMessage("Added "+nodeList.size()+" node(s) to network "+netName);
+		for (CyNode node: nodeList) {
+			network.addNode(node);
+		}
+
+		result.addMessage("Added "+nodeList.size()+" node(s) to network "+network.getTitle());
 
 		return result;
 	}

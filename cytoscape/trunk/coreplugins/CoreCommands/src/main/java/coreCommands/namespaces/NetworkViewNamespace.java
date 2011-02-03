@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import coreCommands.namespaces.AbstractGraphObjectHandler;
 import coreCommands.namespaces.networkView.ExportNetworkView;
 
 /**
@@ -147,17 +148,9 @@ public class NetworkViewNamespace extends AbstractGraphObjectHandler {
 			return result;
 		}
 
-		String netName = getArg(command, NETWORK, args);
-		if (netName == null) {
-			throw new CyCommandException("networkview: "+command+" requires network argument");
-		}
-		if (!netName.equalsIgnoreCase(CURRENT)) {
-			net = Cytoscape.getNetwork(netName);
-			if (net == null)
-				throw new CyCommandException("networkview: can't find network: "+netName);
-			if (!viewMap.containsKey(netName) && !command.equals("create"))
-				throw new CyCommandException("networkview: can't find view for network: "+netName);
-		}
+		net = getNetwork(command, args);
+		if (!viewMap.containsKey(net.getIdentifier()) && !command.equals("create"))
+			throw new CyCommandException("networkview: can't find view for network: "+net.getTitle());
 
 		if (command.equals(CREATE)) {
 			CyNetworkView view = Cytoscape.createNetworkView(net);
@@ -166,16 +159,16 @@ public class NetworkViewNamespace extends AbstractGraphObjectHandler {
 
 		} else if (command.equals(MAKECURRENT)) {
 			Cytoscape.setCurrentNetworkView(net.getIdentifier());
-			result.addMessage("networkview: set network view for "+net.getIdentifier()+" as current");
+			result.addMessage("networkview: set network view for "+net.getTitle()+" as current");
 		} else if (command.equals(FIT)) {
 			CyNetworkView view = viewMap.get(net.getIdentifier());
 			view.fitContent();
-			result.addMessage("networkview: fit view to content for "+net.getIdentifier());
+			result.addMessage("networkview: fit view to content for "+net.getTitle());
 
 		} else if (command.equals(UPDATE)) {
 			CyNetworkView view = viewMap.get(net.getIdentifier());
 			view.updateView();
-			result.addMessage("networkview: view '"+net.getIdentifier()+"' updated");
+			result.addMessage("networkview: view '"+net.getTitle()+"' updated");
 
 		} else if (command.equals(FOCUS)) {
 			CyNetworkView view = viewMap.get(net.getIdentifier());
@@ -183,7 +176,7 @@ public class NetworkViewNamespace extends AbstractGraphObjectHandler {
 			if (nodes == null || nodes.length() == 0) {
 				((DingNetworkView) view).fitSelected();
 				view.updateView();
-				result.addMessage("networkview: focused '"+net.getIdentifier()+"' on selected nodes/edges");
+				result.addMessage("networkview: focused '"+net.getTitle()+"' on selected nodes/edges");
 			} else {
 				// get the list of nodes
 				List<CyNode> nodeList = getNodeList(net, result, args);

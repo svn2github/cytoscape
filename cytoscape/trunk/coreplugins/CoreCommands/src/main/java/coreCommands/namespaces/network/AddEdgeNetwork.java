@@ -81,16 +81,13 @@ public class AddEdgeNetwork extends AbstractGraphObjectHandler {
 	public CyCommandResult execute(String command, Map<String, Object>args) throws CyCommandException { 
 		CyCommandResult result = new CyCommandResult();
 
-		String netName = getArg(command, NETWORK, args);
-		if (netName == null)
-			throw new CyCommandException("network: need a network name to add the edges to");
-
-		CyNetwork network = Cytoscape.getNetwork(netName);
-		if (network == null)
-			throw new CyCommandException("network: no such network "+netName);
+		CyNetwork network = getNetwork(command, args);
 
 		List<CyEdge> edgeList = getEdgeList(network, result, args, true);
-		result.addMessage("Added "+edgeList.size()+" edge(s) to network "+netName);
+		for (CyEdge edge: edgeList) {
+			network.addEdge(edge);
+		}
+		result.addMessage("Added "+edgeList.size()+" edge(s) to network "+network.getTitle());
 
 		return result;
 	}
