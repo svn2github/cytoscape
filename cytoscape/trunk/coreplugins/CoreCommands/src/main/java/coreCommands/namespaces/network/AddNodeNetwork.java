@@ -83,6 +83,8 @@ public class AddNodeNetwork extends AbstractGraphObjectHandler {
 		CyNetwork network = getNetwork(command, args);
 
 		List<CyNode> nodeList = getNodeList(network, result, args, true);
+		if (nodeList == null)
+			throw new CyCommandException("add nodes requires a 'node' or a 'nodelist' argument");
 		for (CyNode node: nodeList) {
 			network.addNode(node);
 		}

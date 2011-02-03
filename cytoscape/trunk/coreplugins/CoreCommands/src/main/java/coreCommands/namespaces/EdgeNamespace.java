@@ -247,6 +247,8 @@ public class EdgeNamespace extends AbstractGraphObjectHandler {
 			List<String>attrList = Arrays.asList(attrNames);
 			result.addResult(attrList);
 			result.addMessage("Edge attributes: "+AttributeUtils.attributeNamesToList(edgeAttributes, attrList));
+		} else {
+			throw new CyCommandException("edge: unknown command: "+command);
 		}
 		return result;
 	}

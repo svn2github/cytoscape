@@ -84,6 +84,8 @@ public class AddEdgeNetwork extends AbstractGraphObjectHandler {
 		CyNetwork network = getNetwork(command, args);
 
 		List<CyEdge> edgeList = getEdgeList(network, result, args, true);
+		if (edgeList == null)
+			throw new CyCommandException("add edges requires an 'edge' or an 'edgelist' argument");
 		for (CyEdge edge: edgeList) {
 			network.addEdge(edge);
 		}
