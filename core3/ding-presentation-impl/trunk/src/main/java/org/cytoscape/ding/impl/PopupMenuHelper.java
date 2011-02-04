@@ -27,7 +27,6 @@
 */
 package org.cytoscape.ding.impl;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
