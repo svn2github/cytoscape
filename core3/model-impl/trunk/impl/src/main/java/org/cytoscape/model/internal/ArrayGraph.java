@@ -105,9 +105,11 @@ public class ArrayGraph implements CyRootNetwork {
 
 		netAttrMgr = new HashMap<String, CyTable>();
 		netAttrMgr.put(CyNetwork.DEFAULT_ATTRS,
-			       tableFactory.createTable(suid + " network", "SUID", Long.class, publicTables));
+			       tableFactory.createTable(suid + " network", "SUID", Long.class,
+							publicTables, false));
 		netAttrMgr.put(CyNetwork.HIDDEN_ATTRS,
-			       tableFactory.createTable(suid + " network", "SUID", Long.class, false));
+			       tableFactory.createTable(suid + " network", "SUID", Long.class, false,
+							false));
 
 		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME, String.class,
 								     true);
@@ -116,9 +118,11 @@ public class ArrayGraph implements CyRootNetwork {
 
 		nodeAttrMgr = new HashMap<String, CyTable>();
 		nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS,
-				tableFactory.createTable(suid + " node", "SUID", Long.class, publicTables));
+				tableFactory.createTable(suid + " node", "SUID", Long.class,
+							 publicTables, false));
 		nodeAttrMgr.put(CyNetwork.HIDDEN_ATTRS,
-				tableFactory.createTable(suid + " node", "SUID", Long.class, false));
+				tableFactory.createTable(suid + " node", "SUID", Long.class,
+							 false, false));
 
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,
 								      String.class, true);
@@ -131,9 +135,11 @@ public class ArrayGraph implements CyRootNetwork {
 
 		edgeAttrMgr = new HashMap<String, CyTable>();
 		edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS,
-				tableFactory.createTable(suid + " edge", "SUID", Long.class, publicTables));
+				tableFactory.createTable(suid + " edge", "SUID", Long.class,
+							 publicTables, false));
 		edgeAttrMgr.put(CyNetwork.HIDDEN_ATTRS,
-				tableFactory.createTable(suid + " edge", "SUID", Long.class, false));
+				tableFactory.createTable(suid + " edge", "SUID", Long.class,
+							 false, false));
 
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyTableEntry.NAME,
 								      String.class, true);

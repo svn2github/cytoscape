@@ -49,6 +49,11 @@ public interface CyTable extends Identifiable {
 	 */
 	boolean isPublic();
 
+	/** True if the table cannot be deleted, otherwise false.
+	 *  @return True if the table cannot be deleted, otherwise false.
+	 */
+	boolean isImmutable();
+
 	/**
 	 * Returns a human readable name for the CyTable.
 	 * @return A human readable name for the CyTable.

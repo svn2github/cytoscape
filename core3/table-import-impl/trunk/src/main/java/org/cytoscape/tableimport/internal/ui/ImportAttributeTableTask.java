@@ -107,7 +107,7 @@ public class ImportAttributeTableTask extends AbstractTask implements CyTableRea
 	public void run(TaskMonitor tm) throws IOException {
 	
 		CyTable table = CytoscapeServices.tableFactory.createTable("AttrTable " + Integer.toString(numImports++), 
-		                                           "name", String.class, true);
+									   "name", String.class, true, true);
 		cyTables = new CyTable[] { table };
 
 		try {

@@ -67,6 +67,12 @@ public interface CyTableManager {
 	 */
 	CyTable getTable(long suid);
 
+	/** Deletes a mutable table.
+	 *  @param suid  the SUID identifying the CyTable to be deleted
+	 *  @throws IllegalArgumentException  if the table that we requested to be deleted is immutable
+	 */
+	void deleteTable(long suid);
+
 	/** Releases all currently held references and resources. */
 	public void reset();
 }

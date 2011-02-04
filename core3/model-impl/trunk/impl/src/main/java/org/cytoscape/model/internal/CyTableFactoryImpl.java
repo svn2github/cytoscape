@@ -57,8 +57,11 @@ public class CyTableFactoryImpl implements CyTableFactory {
 		this.interpreter = interpreter;
 	}
 
-	public CyTable createTable(String name, String primaryKey, Class<?> primaryKeyType, boolean pub) {
-		CyTable table = new CyTableImpl(name, primaryKey, primaryKeyType, pub, help, interpreter);
+	public CyTable createTable(final String name, final String primaryKey, final Class<?> primaryKeyType,
+				   final boolean pub, final boolean isMutable)
+	{
+		CyTable table = new CyTableImpl(name, primaryKey, primaryKeyType, pub, isMutable,
+						help, interpreter);
 		tm.addTable(table);
 		return table;
 	}

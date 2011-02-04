@@ -72,6 +72,8 @@ public final class CyTableImpl implements CyTable {
 	// Visibility value is immutable.
 	private final boolean pub;
 
+	private final boolean isImmutable;
+
 	// Unique ID.
 	private final long suid;
 
@@ -89,12 +91,13 @@ public final class CyTableImpl implements CyTable {
 	 * Creates a new CyTableImpl object.
 	 */
 	public CyTableImpl(final String title, final String primaryKey, Class<?> primaryKeyType,
-			   final boolean pub, final CyEventHelper eventHelper,
+			   final boolean pub, final boolean isMutable, final CyEventHelper eventHelper,
 			   final Interpreter interpreter)
 	{
 		this.title = title;
 		this.primaryKey = primaryKey;
 		this.pub = pub;
+		this.isImmutable = !isMutable;
 		this.suid = SUIDFactory.getNextSUID();
 		this.eventHelper = eventHelper;
 		this.interpreter = interpreter;
@@ -164,6 +167,11 @@ public final class CyTableImpl implements CyTable {
 	@Override
 	public boolean isPublic() {
 		return pub;
+	}
+
+	@Override
+	public boolean isImmutable() {
+		return isImmutable;
 	}
 
 	/**

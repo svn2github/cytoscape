@@ -99,9 +99,8 @@ public class CyAttributesReader extends AbstractTask implements CyTableReader {
 
 	@Override
 	public void run(TaskMonitor tm) throws IOException {
-
 		CyTable table = tableFactory.createTable("AttrTable " + Integer.toString(numImports++),
-		                                           "name", String.class, true);
+							 "name", String.class, true, true);
 		cyTables = new CyTable[] { table };
 
 		try {

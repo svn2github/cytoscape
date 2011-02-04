@@ -30,8 +30,8 @@ public class DataTableTestSupportTest extends AbstractCyTableTest {
 	@Before
 	public void setUp() {
 		eventHelper = support.getDummyCyEventHelper(); 
-		table = factory.createTable(Integer.toString( rand.nextInt(10000) ), "SUID", Long.class, false);
-		table2 = factory.createTable(Integer.toString( rand.nextInt(10000) ), "SUID", Long.class, false);
+		table = factory.createTable(Integer.toString( rand.nextInt(10000) ), "SUID", Long.class, false, true);
+		table2 = factory.createTable(Integer.toString( rand.nextInt(10000) ), "SUID", Long.class, false, true);
 		attrs = table.getRow(1l);
 	}
 

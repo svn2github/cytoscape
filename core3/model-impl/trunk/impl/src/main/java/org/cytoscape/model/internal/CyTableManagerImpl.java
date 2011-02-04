@@ -25,8 +25,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model.internal; 
+
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,13 +59,15 @@ public class CyTableManagerImpl implements CyTableManager {
 	}
 	
 	@Override
-	public void reset() {
+	public synchronized void reset() {
 		networkTableMap.clear();
 		tables.clear();
 	}
 
 	@Override
-	public Map<String, CyTable> getTableMap(final Class<?> graphObjectType, final CyNetwork network) {
+	public synchronized Map<String, CyTable> getTableMap(final Class<?> graphObjectType,
+							     final CyNetwork network)
+	{
 		if ( network == null || graphObjectType == null )
 			return null;
 
@@ -77,8 +79,9 @@ public class CyTableManagerImpl implements CyTableManager {
 		return networkTableMap.get(graphObjectType).get(network);
 	}
 
-	
-	public void setTableMap(final Class<?> graphObjectType, final CyNetwork network, final Map<String,CyTable> tm) {
+	public synchronized void setTableMap(final Class<?> graphObjectType, final CyNetwork network,
+					     final Map<String,CyTable> tm)
+	{
 		if ( network == null )
 			throw new NullPointerException("CyNetwork is null");
 		if ( graphObjectType == null )
@@ -95,14 +98,14 @@ public class CyTableManagerImpl implements CyTableManager {
 			tmap.put(network,tm);
 	}
 
-	public void addTable(CyTable t) {
-		if ( t == null )
+	public synchronized void addTable(final CyTable t) {
+		if (t == null)
 			throw new NullPointerException("added table is null");
 		tables.put( t.getSUID(), t );
 	}
 
-	
-	@Override public Set<CyTable> getAllTables(boolean includePrivate) {
+	@Override
+	public synchronized Set<CyTable> getAllTables(final boolean includePrivate) {
 		Set<CyTable> res = new HashSet<CyTable>();
 		
 		for ( Long key : tables.keySet() ) {	
@@ -114,7 +117,20 @@ public class CyTableManagerImpl implements CyTableManager {
 		return res;
 	}
 
-	@Override public CyTable getTable(long suid) {
+	@Override
+	public synchronized CyTable getTable(final long suid) {
 		return tables.get(suid);
+	}
+
+	@Override
+	public synchronized void deleteTable(final long suid) {
+		final CyTable table = tables.get(suid);
+		if (table == null)
+			return;
+
+		if (table.isImmutable())
+			throw new IllegalArgumentException("can't delete an immutable table!");
+
+		tables.remove(suid);
 	}
 }
