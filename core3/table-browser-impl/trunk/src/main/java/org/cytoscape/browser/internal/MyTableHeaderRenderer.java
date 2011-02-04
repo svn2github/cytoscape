@@ -31,10 +31,15 @@ package org.cytoscape.browser.internal;
 import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.border.BevelBorder;
 import javax.swing.table.TableCellRenderer;
 
 
-public final class MyTableHeaderRenderer extends JLabel implements TableCellRenderer {
+final class MyTableHeaderRenderer extends JLabel implements TableCellRenderer {
+	MyTableHeaderRenderer() {
+		setBorder(new BevelBorder(BevelBorder.RAISED));
+	}
+
 	// This method is called each time a column header
 	// using this renderer needs to be rendered.
 	public Component getTableCellRendererComponent(final JTable table, final Object value,
@@ -48,7 +53,6 @@ public final class MyTableHeaderRenderer extends JLabel implements TableCellRend
 
 		// Configure the component with the specified value
 		setText(value.toString());
-
 
 		// Set tool tip if desired
 		setToolTipText((String)value);
