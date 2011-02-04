@@ -698,4 +698,16 @@ public abstract class AbstractCyTableTest {
 		assertNotNull(table.getColumn("xx"));
 		assertEquals(Long.class, table.getColumn("xx").getType());
 	}
+
+	@Test
+	public void testCyColumnGetVirtualTable() {
+		table.createColumn("x", Long.class, false);
+		CyColumn column = table.getColumn("x");
+		assertNull(column.getVirtualTable());
+		table2.createColumn("x2", Long.class, false);
+		table2.createListColumn("b", Boolean.class, false);
+		table.addVirtualColumn("b1", "b", table2, "x2", "x", true);
+		CyColumn column2 = table.getColumn("b1");
+		assertEquals(table2, column2.getVirtualTable());
+	}
 }

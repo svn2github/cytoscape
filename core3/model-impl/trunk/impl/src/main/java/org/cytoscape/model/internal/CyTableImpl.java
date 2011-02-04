@@ -110,6 +110,7 @@ public final class CyTableImpl implements CyTable {
 		types.put(primaryKey, new CyColumnImpl(this, primaryKey, primaryKeyType,
 						       /* listElementType = */ null,
 						       /* isVirtual = */ false,
+						       /* virtTable = */ null,
 						       /* isPrimaryKey = */ true,
 						       /* isImmutable = */ true));
 		attributes.put(primaryKey, new HashMap<Object, Object>());
@@ -266,6 +267,7 @@ public final class CyTableImpl implements CyTable {
 			types.put(columnName, new CyColumnImpl(this, columnName, type,
 							       /* listElementType = */ null,
 							       /* isVirtual = */ false,
+							       /* virtTable = */ null,
 							       /* isPrimaryKey = */ false,
 							       isImmutable));
 			attributes.put(columnName, new HashMap<Object, Object>());
@@ -291,10 +293,11 @@ public final class CyTableImpl implements CyTable {
 								   + columnName + "' with type: "
 								   + types.get(columnName).getType());
 			types.put(columnName, new CyColumnImpl(this, columnName, List.class,
-								   listElementType,
-								   /* isVirtual = */ false,
-								   /* isPrimaryKey = */ false,
-								   isImmutable));
+							       listElementType,
+							       /* isVirtual = */ false,
+							       /* virtTable = */ null,
+							       /* isPrimaryKey = */ false,
+							       isImmutable));
 			attributes.put(columnName, new HashMap<Object, Object>());
 			reverse.put(columnName, new HashMap<Object, Set<Object>>());
 		}
@@ -777,7 +780,9 @@ public final class CyTableImpl implements CyTable {
 			final CyColumn targetColumn =
 				new CyColumnImpl(this, virtualColumnName, sourceColumn.getType(),
 						 sourceColumn.getListElementType(),
-						 /* isVirtual = */ true, /* isPrimaryKey = */ false,
+						 /* isVirtual = */ true,
+						 /* virtTable = */ sourceTable,
+						 /* isPrimaryKey = */ false,
 						 isImmutable);
 			types.put(targetName, targetColumn);
 			virtualColumnMap.put(targetName,

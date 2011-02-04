@@ -41,11 +41,12 @@ final class CyColumnImpl implements CyColumn {
 	private final Class<?> columnType;
 	private final Class<?> listElementType;
 	private final boolean isVirtual;
+	private final CyTable virtTable;
 	private final boolean isPrimaryKey;
 	private final boolean isImmutable;
 
 	CyColumnImpl(final CyTableImpl table, final String columnName, final Class<?> columnType,
-		     final Class<?> listElementType, final boolean isVirtual,
+		     final Class<?> listElementType, final boolean isVirtual, final CyTable virtTable,
 		     final boolean isPrimaryKey, final boolean isImmutable)
 	{
 		this.table           = table;
@@ -53,12 +54,16 @@ final class CyColumnImpl implements CyColumn {
 		this.columnType      = columnType;
 		this.listElementType = listElementType;
 		this.isVirtual       = isVirtual;
+		this.virtTable       = virtTable;
 		this.isPrimaryKey    = isPrimaryKey;
 		this.isImmutable     = isImmutable;
 	}
 
 	@Override
 	public CyTable getTable() { return table; }
+
+	@Override
+	public CyTable getVirtualTable() { return virtTable; }
 
 	/** @return the name of the column. */
 	@Override
