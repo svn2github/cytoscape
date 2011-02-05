@@ -134,6 +134,7 @@
 		<constructor-arg ref="cytoscapeDesktop" />
 		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="preferencesDialogFactory" />
+		<constructor-arg ref="bookmarksUtilServiceRef" />
 	</bean>
 	<bean id="bookmarkAction" class="org.cytoscape.internal.actions.BookmarkAction">
 		<constructor-arg ref="cytoscapeDesktop" />

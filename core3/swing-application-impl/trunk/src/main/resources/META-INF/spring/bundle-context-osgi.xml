@@ -121,6 +121,13 @@
 			ref="cytoscapeDesktop" />
 	</osgi:set>
 
+	<osgi:set id="cyPropertySet"
+		interface="org.cytoscape.property.CyProperty"
+		cardinality="0..N">
+		<osgi:listener bind-method="addCyProperty"
+			unbind-method="removeCyProperty" ref="preferenceAction" />
+	</osgi:set>
+	
 	<osgi:set id="cytoPanelComponentSet" interface="org.cytoscape.application.swing.CytoPanelComponent"
 		cardinality="0..N">
 		<osgi:listener bind-method="addCytoPanelComponent" unbind-method="removeCytoPanelComponent"
