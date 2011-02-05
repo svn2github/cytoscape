@@ -46,17 +46,16 @@ import java.awt.event.ActionListener;
 /**
  *
  */
-public class PreferenceValueDialog extends JDialog {
+public class PreferenceValueDialog extends JDialog implements ActionListener {
 	private final static long serialVersionUID = 1202339873382923L;
 	String preferenceName = null;
 	String preferenceValue = null;
-	String title = null;
+	//String title = null;
 	JLabel preferenceNameL = null;
 	JTextField value = null;
 	JButton okButton = null;
 	JButton cancelButton = null;
-	TableModel tableModel = null;
-	PreferencesDialogImpl callerRef = null;
+	PreferenceTableModel tableModel = null;
 
 	/**
 	 * Creates a new PreferenceValueDialog object.
@@ -68,27 +67,31 @@ public class PreferenceValueDialog extends JDialog {
 	 * @param tm  DOCUMENT ME!
 	 * @param title  DOCUMENT ME!
 	 */
-	public PreferenceValueDialog(Dialog owner, String name, String value, PreferencesDialogImpl caller,
-	                             TableModel tm, String title) {
+	public PreferenceValueDialog(JDialog owner, String name, String value,
+			PreferenceTableModel tm, String title) {
 		super(owner, true);
-		callerRef = caller;
+		//callerRef = caller;
 		tableModel = tm;
-		this.title = title;
-
+		
 		preferenceName = new String(name);
 		preferenceValue = new String(value);
 
-		showDialog(owner);
+		initDialog(owner);
+
+		this.okButton.addActionListener(this);
+		this.cancelButton.addActionListener(this);
+		
+		this.setTitle(title);
+		// popup relative to owner/parent
+		this.setLocationRelativeTo(owner);
+		this.setVisible(true);
 	}
 
-	protected void showDialog(Dialog owner) {
+	protected void initDialog(Dialog owner) {
 		preferenceNameL = new JLabel(preferenceName);
 		value = new JTextField(preferenceValue, 32);
 		okButton = new JButton("OK");
 		cancelButton = new JButton("Cancel");
-
-		okButton.addActionListener(new OkButtonListener(this, callerRef));
-		cancelButton.addActionListener(new CancelButtonListener(this, callerRef));
 
 		JPanel outerPanel = new JPanel(new BorderLayout());
 		JPanel valuePanel = new JPanel(new FlowLayout());
@@ -103,45 +106,22 @@ public class PreferenceValueDialog extends JDialog {
 
 		this.getContentPane().add(outerPanel, BorderLayout.CENTER);
 		pack();
-
-		this.setTitle(title);
-		// popup relative to owner/parent
-		this.setLocationRelativeTo(owner);
-		this.setVisible(true);
 	}
 
 
-	class OkButtonListener implements ActionListener {
-		PreferenceValueDialog motherRef = null;
-		PreferencesDialogImpl grandmotherRef = null;
+	public void actionPerformed(ActionEvent e) {
+		Object src = e.getSource();
+		
+		if (src instanceof JButton){
 
-		public OkButtonListener(PreferenceValueDialog mother, PreferencesDialogImpl grandmother) {
-			super();
-			motherRef = mother;
-			grandmotherRef = grandmother;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			// properties
-			motherRef.preferenceValue = motherRef.value.getText();
-			grandmotherRef.setParameter(tableModel, motherRef.preferenceName,
-			                            motherRef.preferenceValue);
-			motherRef.dispose();
-		}
-	}
-
-	class CancelButtonListener implements ActionListener {
-		PreferenceValueDialog motherRef = null;
-		PreferencesDialogImpl grandmotherRef = null;
-
-		public CancelButtonListener(PreferenceValueDialog mother, PreferencesDialogImpl grandmother) {
-			super();
-			motherRef = mother;
-			grandmotherRef = grandmother;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			motherRef.dispose();
+			JButton btn = (JButton) src;
+			if (btn == this.okButton){
+				this.tableModel.setProperty(preferenceName, value.getText());
+				this.dispose();	
+			}
+			else if (btn == this.cancelButton){
+				this.dispose();	
+			}
 		}
 	}
 }

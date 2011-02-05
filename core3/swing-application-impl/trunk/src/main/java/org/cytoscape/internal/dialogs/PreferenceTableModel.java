@@ -58,7 +58,7 @@ public class PreferenceTableModel extends AbstractTableModel {
 	 */
 	public PreferenceTableModel(Properties props) {
 		super();
-		properties = (Properties) (props.clone());
+		properties = props;
 		loadProperties();
 	}
 
@@ -72,6 +72,8 @@ public class PreferenceTableModel extends AbstractTableModel {
 			String name = (String) names.nextElement();
 			addProperty(new String[] { name, properties.getProperty(name) });
 		}
+
+		//this.fireTableDataChanged();
 	}
 
 	/**
@@ -108,6 +110,7 @@ public class PreferenceTableModel extends AbstractTableModel {
 		properties.setProperty(key, value);
 
 		// update table model (propertiesList)
+		
 		for (Iterator it = propertiesList.iterator(); it.hasNext();) {
 			String[] prop = (String[]) it.next();
 
@@ -115,6 +118,7 @@ public class PreferenceTableModel extends AbstractTableModel {
 				prop[1] = value;
 			}
 		}
+		this.fireTableDataChanged();
 	}
 
 	/**
@@ -127,15 +131,14 @@ public class PreferenceTableModel extends AbstractTableModel {
 		properties.remove(key);
 
 		// remove property from table model (propertiesList)
-		for (Iterator it = propertiesList.iterator(); it.hasNext();) {
-			String[] prop = (String[]) it.next();
-
+		for (int i=this.propertiesList.size()-1; i>=0;i--){
+			String[] prop = (String[])this.propertiesList.get(i);
 			if (prop[0].equals(key)) {
 				propertiesList.remove(prop);
-
-				return;
-			}
+			}			
 		}
+		
+		this.fireTableDataChanged();
 	}
 
 	/**
@@ -144,6 +147,7 @@ public class PreferenceTableModel extends AbstractTableModel {
 	 * @param val DOCUMENT ME!
 	 */
 	public void addProperty(String[] val) {
+		
 		if ((val.length < 0) || (val.length > columnHeader.length))
 			return;
 
@@ -166,6 +170,8 @@ public class PreferenceTableModel extends AbstractTableModel {
 		sort();
 		// also add to local properties object for saving 
 		properties.setProperty(val[0], val[1]);
+		
+		this.fireTableDataChanged();
 	}
 
 	/**
@@ -224,9 +230,8 @@ public class PreferenceTableModel extends AbstractTableModel {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Object getValueAt(int row, int col) {
+	public Object getValueAt(int row, int col) {		
 		String[] rowData = (String[]) propertiesList.get(row);
-
 		return rowData[col];
 	}
 
@@ -245,6 +250,7 @@ public class PreferenceTableModel extends AbstractTableModel {
 	public void sort() {
 		Collections.sort(propertiesList, new StringComparator());
 	}
+	
 }
 
 

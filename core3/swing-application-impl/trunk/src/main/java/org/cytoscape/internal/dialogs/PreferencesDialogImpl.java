@@ -46,6 +46,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
@@ -69,148 +72,58 @@ import org.cytoscape.application.swing.events.PreferencesUpdatedEvent;
 import org.cytoscape.event.CyEventHelper;
 
 import org.cytoscape.internal.CyOperatingContextImpl;
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.property.bookmark.Bookmarks;
+import org.cytoscape.property.bookmark.BookmarksUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.swing.JComboBox;
+import javax.swing.AbstractListModel;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableColumnModel;
 
 
 /**
  *
  */
-public class PreferencesDialogImpl extends JDialog {
+public class PreferencesDialogImpl extends JDialog implements ItemListener, ActionListener, ListSelectionListener {
 	private final static long serialVersionUID = 1202339873396288L;
 	private static final Logger logger = LoggerFactory.getLogger(PreferencesDialogImpl.class);
 
-	int[] selection = null;
-	private Properties props;
-	private CyOperatingContextImpl context;
-	private CyEventHelper eh;
-
-	JScrollPane propsTablePane = new JScrollPane();
-	JTable prefsTable = new JTable();
-	JPanel propBtnPane = new JPanel(new FlowLayout());
-	JPanel okButtonPane = new JPanel(new FlowLayout());
-	JPanel vizmapPane = new JPanel(new FlowLayout());
-	JPanel cyPropsPane = new JPanel(new FlowLayout());
-	JCheckBox saveVizmapBtn = new JCheckBox("Make Current Visual Styles Default", false);
-	JCheckBox saveCyPropsBtn = new JCheckBox("Make Current Cytoscape Properties Default", false);
-	JTextArea vizmapText = new JTextArea("Only check this option if you want the current visual styles to be defaults in ALL future cytoscape sessions.  Your current visual styles are automatically saved in your Cytoscape session file and won't be lost.");
-	JTextArea cyPropsText = new JTextArea("Only check this option if you want the current Cytoscape properties to be defaults in ALL future cytoscape sessions.  Your current Cytoscape properties are automatically saved in your Cytoscape session file and won't be lost.");
-	JButton addPropBtn = new JButton("Add");
-	JButton deletePropBtn = new JButton("Delete");
-	JButton modifyPropBtn = new JButton("Modify");
-	JButton okButton = new JButton("OK");
-	JButton cancelButton = new JButton("Cancel");
-
-	/**
-	 *
-	 */
-	public PreferenceTableModel prefsTM = null;
-	private ListSelectionModel lsm = null;
-	private ListSelectionModel lsmA = null;
-	private boolean saveCyPropsAsDefault = false;
-	private boolean saveVizmapAsDefault = false;
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param tm DOCUMENT ME!
-	 * @param preferenceName DOCUMENT ME!
-	 * @param preferenceValue DOCUMENT ME!
-	 */
-	public void setParameter(TableModel tm, final String preferenceName, final String preferenceValue) {
-		// preferences/properties
-		if (tm == prefsTM) {
-			prefsTM.setProperty(preferenceName, preferenceValue);
-			props.setProperty(preferenceName, preferenceValue);
-		}
-
-		refresh();
-
-		// reset state of Modify and Delete buttons to inactive
-		// since update of parameter will clear any selections
-		modifyPropBtn.setEnabled(false);
-		deletePropBtn.setEnabled(false);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void refresh() {
-		// refresh the view
-		prefsTable.setModel(prefsTM);
-
-		prefsTable.clearSelection();
-		prefsTable.revalidate();
-		prefsTable.repaint();
-	}
-
-	private void initButtonPane() {
-		propBtnPane.add(addPropBtn);
-		propBtnPane.add(modifyPropBtn);
-		propBtnPane.add(deletePropBtn);
-
-		okButtonPane.add(okButton);
-		okButtonPane.add(cancelButton);
-
-		modifyPropBtn.setEnabled(false);
-		deletePropBtn.setEnabled(false);
-		addPropBtn.addActionListener(new AddPropertyListener(this));
-		modifyPropBtn.addActionListener(new ModifyPropertyListener(this));
-		deletePropBtn.addActionListener(new DeletePropertyListener(this));
-		okButton.addActionListener(new OkButtonListener(this));
-		cancelButton.addActionListener(new CancelButtonListener(this));
-		saveVizmapBtn.addItemListener(new CheckBoxListener());
-		saveCyPropsBtn.addItemListener(new CheckBoxListener());
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public PreferenceTableModel getPTM() {
-		return prefsTM;
-	}
-
-	private void initTable() {
-		prefsTM = new PreferenceTableModel(props);
-
-		prefsTable.setAutoCreateColumnsFromModel(false);
-		prefsTable.setRowSelectionAllowed(true);
-		lsm = prefsTable.getSelectionModel();
-		lsm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		lsm.addListSelectionListener(new TableListener(this, lsm));
-
-		prefsTable.setModel(prefsTM);
-
-		for (int i = 0; i < PreferenceTableModel.columnHeader.length; i++) {
-			DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-			renderer.setHorizontalAlignment(PreferenceTableModel.alignment[i]);
-
-			TableColumn Column = new TableColumn(i, PreferenceTableModel.columnWidth[i], renderer,
-			                                     null);
-			Column.setIdentifier(PreferenceTableModel.columnHeader[i]);
-			prefsTable.addColumn(Column);
-		}
-	}
-
+	//private Properties props;
+	//private CyProperty<Bookmarks>  bookmarks;
+	//private BookmarksUtil bkUtil;
+	
+	private HashMap<String, Properties> propMap = new HashMap<String,Properties>();
 	/**
 	 * Creates a new PreferencesDialog object.
 	 *
 	 * @param owner  DOCUMENT ME!
 	 */
-	public PreferencesDialogImpl(Frame owner,CyOperatingContextImpl context, CyEventHelper eh) {
+	public PreferencesDialogImpl(Frame owner, CyEventHelper eh, 
+			HashMap<String, Properties> propMap, HashMap<String, Bookmarks> bookmarkMap, BookmarksUtil bkUtil) {
 		super(owner);
-		this.context = context;
-		this.props = context.getProperties();
-		this.eh = eh;
-
-		initButtonPane();
-		initTable();
-
+		
+		this.propMap = propMap;
+		//this.bookmarks = bookmarks;
+		//this.bkUtil = bkUtil;
+		
 		try {
-			prefPopupInit();
+			initGUI();
+			addListeners();
+
+			//
+			modifyPropBtn.setEnabled(false);
+			deletePropBtn.setEnabled(false);
+			
+
+			initTable();
+			initCMB();
+
+			updateTable();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -220,9 +133,144 @@ public class PreferencesDialogImpl extends JDialog {
 		// set location relative to owner/parent
 		this.setLocationRelativeTo(owner);
 		this.setVisible(true);
+		
 	}
 
-	private void prefPopupInit() throws Exception {
+	
+	public void itemStateChanged(ItemEvent e) {	
+		updateTable();
+	}
+
+
+	private void initCMB() {
+		Object[] keys = this.propMap.keySet().toArray();
+		DefaultComboBoxModel cmbModel = new DefaultComboBoxModel(keys);
+
+		this.cmbPropCategories.setModel(cmbModel);
+		
+		String key = "coreSettings";
+		
+		int index =0;
+		for (int i=0; i<keys.length; i++){
+			if (keys[i].toString().equalsIgnoreCase(key)){
+				index =i;
+				break;
+			}
+		}
+		
+		this.cmbPropCategories.setSelectedIndex(index);
+	}
+
+	private void initTable() {
+	
+		DefaultTableColumnModel cm = new DefaultTableColumnModel();
+		
+		for (int i = 0; i < PreferenceTableModel.columnHeader.length; i++) {
+			DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+			renderer.setHorizontalAlignment(PreferenceTableModel.alignment[i]);
+
+			TableColumn Column = new TableColumn(i, PreferenceTableModel.columnWidth[i], renderer,
+			                                     null);
+			Column.setIdentifier(PreferenceTableModel.columnHeader[i]);
+			
+			cm.addColumn(Column);
+		}
+
+		prefsTable.setColumnModel(cm);
+		prefsTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	}
+
+	
+	private void updateTable(){
+		
+		if (this.cmbPropCategories.getSelectedItem() == null){
+			return;
+		}
+				
+		String selectedPropertyName = this.cmbPropCategories.getSelectedItem().toString();
+
+		Properties prop = this.propMap.get(selectedPropertyName);
+		
+		PreferenceTableModel m = new PreferenceTableModel(prop);
+		prefsTable.setModel(m);
+	}
+	
+
+	// Handle action event from the buttons
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+		if (obj instanceof JButton){
+			JButton btn = (JButton) obj;
+			if (btn == this.closeButton){
+				this.dispose();
+			}
+			else if (btn == this.deletePropBtn){			
+				int[] selectedIndices = this.prefsTable.getSelectedRows();
+				for (int i = selectedIndices.length-1; i >= 0; i--) {					
+					String name = new String((String) (this.prefsTable.getModel().getValueAt(selectedIndices[i], 0)));
+					PreferenceTableModel m = (PreferenceTableModel)this.prefsTable.getModel();
+					m.deleteProperty(name);
+				}
+			}
+			else if (btn == this.modifyPropBtn){				
+				int[] selectedIndices = this.prefsTable.getSelectedRows();
+				for (int i = selectedIndices.length-1; i >= 0; i--) {					
+					String name = new String((String) (this.prefsTable.getModel().getValueAt(selectedIndices[i], 0)));
+					String value = new String((String) (this.prefsTable.getModel().getValueAt(selectedIndices[i], 1)));
+					
+					PreferenceTableModel m = (PreferenceTableModel)this.prefsTable.getModel();
+					PreferenceValueDialog pd = new PreferenceValueDialog(this, name,  value, m,
+						                                                     "Modify value...");
+				}
+			}
+			else if (btn == this.addPropBtn){
+				String key = JOptionPane.showInputDialog(addPropBtn, "Enter property name:",
+                       "Add Property", JOptionPane.QUESTION_MESSAGE);
+
+				if (key != null) {
+					String value = JOptionPane.showInputDialog(addPropBtn,
+	                              "Enter value for property " + key + ":",
+	                              "Add Property Value",
+	                              JOptionPane.QUESTION_MESSAGE);
+	
+					if (value != null) {
+						String[] vals = { key, value };
+						PreferenceTableModel m = (PreferenceTableModel)this.prefsTable.getModel();
+						
+						m.addProperty(vals);
+					}
+				}
+			}
+		}
+	}
+	
+	
+	public void valueChanged(ListSelectionEvent e){
+	
+		if (this.prefsTable.getSelectedRowCount() == 0){
+			this.modifyPropBtn.setEnabled(false);
+			this.deletePropBtn.setEnabled(false);
+		}
+		else {
+			this.modifyPropBtn.setEnabled(true);
+			this.deletePropBtn.setEnabled(true);
+		}
+	}
+
+
+	private void addListeners() {
+		addPropBtn.addActionListener(this);
+		modifyPropBtn.addActionListener(this);
+		deletePropBtn.addActionListener(this);
+		closeButton.addActionListener(this);
+
+		cmbPropCategories.addItemListener(this);
+		prefsTable.getSelectionModel().addListSelectionListener(this);
+	}
+
+    
+
+	private void initGUI() throws Exception {
 
 		java.awt.GridBagConstraints gridBagConstraints;
 
@@ -235,14 +283,23 @@ public class PreferencesDialogImpl extends JDialog {
 		propsTablePane.getViewport().add(prefsTable, null);
 		prefsTable.setPreferredScrollableViewportSize(new Dimension(400, 200));
 		
+	    gridBagConstraints = new java.awt.GridBagConstraints();
+	    gridBagConstraints.gridx = 0;
+	    gridBagConstraints.gridy = 0;
+	    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	    gridBagConstraints.insets = new java.awt.Insets(5, 7, 5, 7);
+	    propsTablePanel.add(cmbPropCategories, gridBagConstraints);
+	    //
+		
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         propsTablePanel.add(propsTablePane, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
         propsTablePanel.add(propBtnPane, gridBagConstraints);
@@ -254,57 +311,7 @@ public class PreferencesDialogImpl extends JDialog {
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         outerPanel.add(propsTablePanel, gridBagConstraints);
 		
-
-		JTextArea textArea = new JTextArea("NOTE: Changes to these properties are used in the current session ONLY unless otherwise specified below.");
-
-		textArea.setBackground(outerPanel.getBackground());
-		textArea.setEditable(false);
-		textArea.setDragEnabled(false);
-		textArea.setLineWrap(true);
-		textArea.setWrapStyleWord(true);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
-        outerPanel.add(textArea, gridBagConstraints);
-		
-		Box vizmapBox = Box.createVerticalBox();
-		vizmapBox.setBorder(BorderFactory.createTitledBorder("Default Visual Styles"));
-		vizmapText.setBackground(outerPanel.getBackground());
-		vizmapText.setEditable(false);
-		vizmapText.setDragEnabled(false);
-		vizmapText.setLineWrap(true);
-		vizmapText.setWrapStyleWord(true);
-		vizmapBox.add(vizmapText);
-		vizmapBox.add(Box.createVerticalStrut(5));
-		vizmapPane.add(saveVizmapBtn);
-		vizmapBox.add(vizmapPane);
-
-		gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
-        outerPanel.add(vizmapBox, gridBagConstraints);
-		
-		Box cyPropsBox = Box.createVerticalBox();
-		cyPropsBox.setBorder(BorderFactory.createTitledBorder("Default Cytoscape Properties"));
-		cyPropsText.setBackground(outerPanel.getBackground());
-		cyPropsText.setEditable(false);
-		cyPropsText.setDragEnabled(false);
-		cyPropsText.setLineWrap(true);
-		cyPropsText.setWrapStyleWord(true);
-		cyPropsBox.add(cyPropsText);
-		cyPropsBox.add(Box.createVerticalStrut(5));
-		cyPropsPane.add(saveCyPropsBtn);
-		cyPropsBox.add(cyPropsPane);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
-        outerPanel.add(cyPropsBox, gridBagConstraints);
-		
+        //
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -312,205 +319,25 @@ public class PreferencesDialogImpl extends JDialog {
         outerPanel.add(okButtonPane, gridBagConstraints);
         
 		this.getContentPane().add(outerPanel, BorderLayout.CENTER);
+		
+		//
+		propBtnPane.add(addPropBtn);
+		propBtnPane.add(modifyPropBtn);
+		propBtnPane.add(deletePropBtn);
+
+		okButtonPane.add(closeButton);
 	}
 
-	class AddPropertyListener implements ActionListener {
-		PreferencesDialogImpl callerRef = null;
 
-		public AddPropertyListener(PreferencesDialogImpl caller) {
-			super();
-			callerRef = caller;
-		}
+	private JComboBox cmbPropCategories = new JComboBox();	
+	private JScrollPane propsTablePane = new JScrollPane();
+	private JTable prefsTable = new JTable();
+	private JPanel propBtnPane = new JPanel(new FlowLayout());
+	private JPanel okButtonPane = new JPanel(new FlowLayout());
+	//private JPanel cyPropsPane = new JPanel(new FlowLayout());
+	private JButton addPropBtn = new JButton("Add");
+	private JButton deletePropBtn = new JButton("Delete");
+	private JButton modifyPropBtn = new JButton("Modify");
+	private JButton closeButton = new JButton("Close");
 
-		public void actionPerformed(ActionEvent e) {
-			String key = JOptionPane.showInputDialog(addPropBtn, "Enter property name:",
-			                                         "Add Property", JOptionPane.QUESTION_MESSAGE);
-
-			if (key != null) {
-				String value = JOptionPane.showInputDialog(addPropBtn,
-				                                           "Enter value for property " + key + ":",
-				                                           "Add Property Value",
-				                                           JOptionPane.QUESTION_MESSAGE);
-
-				if (value != null) {
-					String[] vals = { key, value };
-					prefsTM.addProperty(vals);
-					refresh(); // refresh view in table
-				}
-			}
-		}
-	}
-
-	class ModifyPropertyListener implements ActionListener {
-		PreferencesDialogImpl callerRef = null;
-
-		public ModifyPropertyListener(PreferencesDialogImpl caller) {
-			super();
-			callerRef = caller;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			for (int i = 0; i < selection.length; i++) {
-				String name = new String((String) (prefsTM.getValueAt(selection[i], 0)));
-				String value = new String((String) (prefsTM.getValueAt(selection[i], 1)));
-
-				PreferenceValueDialog pd = new PreferenceValueDialog(PreferencesDialogImpl.this, name,
-				                                                     value, callerRef, prefsTM,
-				                                                     "Modify value...");
-			}
-		}
-	}
-
-	class DeletePropertyListener implements ActionListener {
-		PreferencesDialogImpl callerRef = null;
-
-		public DeletePropertyListener(PreferencesDialogImpl caller) {
-			super();
-			callerRef = caller;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			for (int i = 0; i < selection.length; i++) {
-				String name = new String((String) (prefsTM.getValueAt(selection[i], 0)));
-				prefsTM.deleteProperty(name);
-			}
-
-			refresh();
-		}
-	}
-
-	class OkButtonListener implements ActionListener {
-		PreferencesDialogImpl callerRef = null;
-
-		public OkButtonListener(PreferencesDialogImpl caller) {
-			super();
-			callerRef = caller;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			// just saving via putAll() doesn't handle deletes...
-			// therefore use TableModel's putAll() into new Properties obj
-			// then clear Cytoscape's properties and
-			Properties newProps = new Properties();
-			callerRef.prefsTM.save(newProps);
-			props.clear();
-			props.putAll(newProps);
-			callerRef.setVisible(false);
-
-			if (saveVizmapAsDefault) {
-				// TODO: Use new VizMap
-//				eh.fireSynchronousEvent( new SaveVizmapPropsEvent() {
-//					public Object getSource() { return PreferencesDialogImpl.this; }
-//					}, SaveVizmapPropsListener.class );
-//				saveVizmapAsDefault = false;
-//				saveVizmapBtn.setSelected(false);
-			}
-
-			if (saveCyPropsAsDefault) {
-				try {
-					File file = context.getConfigFile("cytoscape.props");
-					FileOutputStream output = new FileOutputStream(file);
-					props.store(output, "Cytoscape Property File");
-					logger.debug("wrote Cytoscape properties file to: "
-					                   + file.getAbsolutePath());
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					logger.warn("Could not write cytoscape.props file!");
-				}
-
-				saveCyPropsAsDefault = false;
-				saveCyPropsBtn.setSelected(false);
-			}
-
-			final Properties op = props;
-			final Properties np = newProps;
-
-			eh.fireSynchronousEvent( new PreferencesUpdatedEvent(PreferencesDialogImpl.this, op, np));
-		}
-	}
-
-	class CheckBoxListener implements ItemListener {
-		public CheckBoxListener() {
-			super();
-		}
-
-		public void itemStateChanged(ItemEvent e) {
-			Object source = e.getItemSelectable();
-
-			if (e.getStateChange() == ItemEvent.SELECTED) {
-				if (source == saveVizmapBtn)
-					saveVizmapAsDefault = true;
-
-				if (source == saveCyPropsBtn)
-					saveCyPropsAsDefault = true;
-			}
-		}
-	}
-
-	class CancelButtonListener implements ActionListener {
-		PreferencesDialogImpl callerRef = null;
-
-		public CancelButtonListener(PreferencesDialogImpl caller) {
-			super();
-			callerRef = caller;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			Properties oldProps = props;
-			callerRef.prefsTM.restore(oldProps);
-			callerRef.setVisible(false);
-		}
-	}
-
-	class TableListener implements ListSelectionListener {
-		private ListSelectionModel model = null;
-		private PreferencesDialogImpl motherRef = null;
-
-		public TableListener(PreferencesDialogImpl mother, ListSelectionModel lsm) {
-			motherRef = mother;
-			model = lsm;
-		}
-
-		public void valueChanged(ListSelectionEvent lse) {
-			if (!lse.getValueIsAdjusting()) {
-				StringBuffer buf = new StringBuffer();
-				selection = getSelectedIndices(model.getMinSelectionIndex(),
-				                               model.getMaxSelectionIndex());
-
-				if (selection.length == 0) {
-				} else {
-					modifyPropBtn.setEnabled(true);
-					deletePropBtn.setEnabled(true);
-				}
-			}
-		}
-
-		protected int[] getSelectedIndices(int start, int stop) {
-			if ((start == -1) || (stop == -1)) {
-				return new int[0];
-			}
-
-			int[] guesses = new int[stop - start + 1];
-			int index = 0;
-
-			for (int i = start; i <= stop; i++) {
-				if (model.isSelectedIndex(i)) {
-					guesses[index++] = i;
-				}
-			}
-
-			int[] realthing = new int[index];
-			System.arraycopy(guesses, 0, realthing, 0, index);
-
-			return realthing;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-		}
-	}
-
-	public void showDialog() {
-		refresh();
-		setVisible(true);
-	}
 }

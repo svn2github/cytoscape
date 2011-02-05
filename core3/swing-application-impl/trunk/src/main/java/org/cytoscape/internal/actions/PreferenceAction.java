@@ -42,15 +42,18 @@
 //-------------------------------------------------------------------------
 package org.cytoscape.internal.actions;
 
+import org.cytoscape.property.CyProperty;
+import org.cytoscape.property.bookmark.Bookmarks;
+import org.cytoscape.property.bookmark.BookmarksUtil;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.AbstractCyAction;
 import org.cytoscape.internal.dialogs.PreferencesDialogImpl;
 import org.cytoscape.internal.dialogs.PreferencesDialogFactoryImpl;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
-
+import java.util.Properties;
+import java.util.Dictionary;
+import java.util.HashMap;
 
 /**
  *
@@ -62,10 +65,19 @@ public class PreferenceAction extends AbstractCyAction {
 	 */
 	private CySwingApplication desktop;
 	private PreferencesDialogFactoryImpl pdf;
-	public PreferenceAction(CySwingApplication desktop, CyApplicationManager appMgr, PreferencesDialogFactoryImpl pdf ) {
+	private BookmarksUtil bkUtil;
+	private PreferencesDialogImpl preferencesDialog = null;
+	private HashMap<String, Properties> propMap = new HashMap<String,Properties>();
+	private HashMap<String, Bookmarks> bookmarkMap = new HashMap<String,Bookmarks>();
+	
+	public PreferenceAction(CySwingApplication desktop, CyApplicationManager appMgr, PreferencesDialogFactoryImpl pdf,
+			BookmarksUtil bkUtil) {
 		super("Properties...",appMgr);
 		this.desktop = desktop;
 		this.pdf = pdf;
+
+		this.bkUtil = bkUtil;
+		
 		setPreferredMenu("Edit.Preferences");
 		setMenuGravity(10.0f);
 	}
@@ -76,7 +88,38 @@ public class PreferenceAction extends AbstractCyAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		PreferencesDialogImpl preferencesDialog = pdf.getPreferencesDialog(desktop.getJFrame()); 
-		preferencesDialog.showDialog();
+		preferencesDialog = pdf.getPreferencesDialog(desktop.getJFrame(), propMap, bookmarkMap, bkUtil); 
+		preferencesDialog.setVisible(true);
 	} 
+	
+	//
+	public void addCyProperty(CyProperty<?> p, Dictionary d){
+		
+		String propertyName = (String) d.get("cyPropertyName");
+
+		Object obj = p.getProperties();
+		
+		if (obj instanceof Properties){		
+			propMap.put(propertyName, (Properties)obj);
+		}
+		else if (obj instanceof Bookmarks){
+			bookmarkMap.put(propertyName, (Bookmarks)obj);
+		}
+		else {
+			System.out.println("PreferenceAction: Do not know what kind of properties it is!");
+		}
+	}
+	
+	public void removeCyProperty(CyProperty<?> p, Dictionary d){
+
+		String propertyName = (String) d.get("cyPropertyName");
+		
+		Object obj = p.getProperties();
+		if (obj instanceof Properties){
+			propMap.remove(propertyName);
+		}
+		else if (obj instanceof Bookmarks){
+			bookmarkMap.remove(propertyName);
+		}
+	}
 }
