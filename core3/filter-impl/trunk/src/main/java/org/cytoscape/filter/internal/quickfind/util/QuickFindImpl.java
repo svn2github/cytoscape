@@ -126,7 +126,13 @@ class QuickFindImpl implements QuickFind {
 		}
 
 		//  Create Appropriate Index Type, based on attribute type.
-		Class<?> attributeType = nodeTable.getColumn(controllingAttribute).getType();
+		CyColumn column = nodeTable.getColumn(controllingAttribute);
+		Class<?> attributeType;
+		if (column == null) {
+			attributeType = String.class;
+		} else {
+			attributeType = column.getType();
+		}
 		GenericIndex index = createIndex(QuickFind.INDEX_NODES, attributeType, controllingAttribute);
 		indexNetwork(network, QuickFind.INDEX_NODES, attributeType, controllingAttribute, index, taskMonitor);
 		networkMap.put(network, index);
@@ -260,7 +266,13 @@ class QuickFindImpl implements QuickFind {
 		} else {
 			//  Option 2:  Index single attribute.
 			//  Create appropriate index type, based on attribute type.
-			Class<?> attributeType = table.getColumn(controllingAttribute).getType();
+			CyColumn column = table.getColumn(controllingAttribute);
+			Class<?> attributeType;
+			if (column == null) {
+				attributeType = String.class;
+			} else {
+				attributeType = column.getType();
+			}
 			index = createIndex(indexType, attributeType, controllingAttribute);
 			indexNetwork(cyNetwork, indexType, attributeType, controllingAttribute, index, taskMonitor);
 		}
