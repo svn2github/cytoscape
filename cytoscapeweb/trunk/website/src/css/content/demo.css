@@ -7,7 +7,7 @@ body.demo #header .message p { background-color: #fffff0; border: 1px solid #fff
 body.demo #header .message * { text-align: left; }
 body.demo #header .title { text-transform: uppercase; font-weight: bold; }
 body.demo #page, body.demo #copyright, body.demo #navigation_links, body.demo #search, body.demo #content, body.demo #footer { display: none; }
-#cytoweb, #side { border: 1px #cfcfcf solid; -moz-box-shadow: 0 0 50px #bbb; -webkit-box-shadow: 0 0 50px #bbb; box-shadow: 0 0 50px #bbb; }
+#cytoweb, #side { border: 1px #cfcfcf solid; }
 .ui-dialog { -moz-box-shadow: 0 0 50px #bbb; -webkit-box-shadow: 0 0 50px #bbb; box-shadow: 0 0 50px #bbb; }
 #cytoweb { background: #fff; }
 #side, #cytoweb { border-radius: 0 !important; -moz-border-radius: 0 !important; -webkit-border-radius: 0 !important; }

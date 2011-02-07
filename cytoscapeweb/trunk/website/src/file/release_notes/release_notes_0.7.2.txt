@@ -1,0 +1,8 @@
+<p>
+    Just fixes a defect where node positions were incorrect in exported XGMML.
+</p>
+<div class="relase_details">
+    <ul class="bug_fixes">
+        <li><span class="bug_id">2469</span>: XGMML export: incorrect x,y values.</li>
+    </ul>
+</div>
