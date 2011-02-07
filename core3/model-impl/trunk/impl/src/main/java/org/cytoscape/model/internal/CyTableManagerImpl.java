@@ -124,13 +124,17 @@ public class CyTableManagerImpl implements CyTableManager {
 
 	@Override
 	public synchronized void deleteTable(final long suid) {
-		final CyTable table = tables.get(suid);
+		final CyTableImpl table = (CyTableImpl)tables.get(suid);
 		if (table == null)
 			return;
 
 		if (table.isImmutable())
 			throw new IllegalArgumentException("can't delete an immutable table!");
 
+		if (!table.holdsNoVirtColumnReferences())
+			throw new IllegalArgumentException("can't delete a table that still has virtual column references!");
+
+		table.removeAllVirtColumns();
 		tables.remove(suid);
 	}
 }

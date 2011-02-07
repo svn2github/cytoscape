@@ -33,6 +33,7 @@ import java.util.Map;
 
 import org.cytoscape.model.internal.CyTableManagerImpl;
 import org.cytoscape.model.internal.CyTableFactoryImpl;
+import org.cytoscape.model.internal.CyTableImpl;
 import org.cytoscape.model.internal.ArrayGraph;
 import org.cytoscape.equations.Interpreter;
 import org.cytoscape.equations.internal.interpreter.InterpreterImpl;
@@ -43,9 +44,11 @@ import org.junit.Test;
 
 
 public class CyTableManagerTest extends AbstractCyTableManagerTest {
+	CyTableManagerImpl mgrImpl;
+
 	public void setUp() {
 		super.setUp();
-		CyTableManagerImpl mgrImpl = new CyTableManagerImpl();
+		mgrImpl = new CyTableManagerImpl();
 		mgr = mgrImpl; 
 		CyEventHelper eh = new DummyCyEventHelper();
 		final Interpreter interpreter = new InterpreterImpl();
@@ -67,5 +70,32 @@ public class CyTableManagerTest extends AbstractCyTableManagerTest {
 			exceptionWasThrown = true;
 		}
 		assertTrue(exceptionWasThrown);
+	}
+
+	public void tableWithVirtColumnDeletionTest() {
+		CyEventHelper eventHelper = new DummyCyEventHelper();
+		final Interpreter interpreter = new InterpreterImpl();
+		CyTable table = new CyTableImpl("homer", "SUID", Long.class, true, true, eventHelper,
+						interpreter);
+		CyTable table2 = new CyTableImpl("marge", "SUID", Long.class, true, true, eventHelper,
+						 interpreter);
+
+		table.createColumn("x", Long.class, false);
+		CyColumn column = table.getColumn("x");
+		assertNull(column.getVirtualTable());
+		table2.createColumn("x2", Long.class, false);
+		table2.createListColumn("b", Boolean.class, false);
+		table.addVirtualColumn("b1", "b", table2, "x2", "x", true);
+
+		mgrImpl.addTable(table);
+		boolean caughtException = false;
+		try {
+			mgr.deleteTable(table.getSUID());
+		} catch (IllegalArgumentException e) {
+			caughtException = true;
+		}
+		assertTrue(caughtException);
+		table2.deleteColumn("b1");
+		mgr.deleteTable(table.getSUID());
 	}
 }

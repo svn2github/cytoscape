@@ -86,6 +86,7 @@ public final class CyTableImpl implements CyTable {
 	String lastInternalError = null;
 
 	private final Map<String, VirtualColumn> virtualColumnMap;
+	private int virtualColumnReferenceCount;
 
 	/**
 	 * Creates a new CyTableImpl object.
@@ -120,6 +121,7 @@ public final class CyTableImpl implements CyTable {
 		reverse.put(primaryKey, new HashMap<Object, Set<Object>>());
 
 		virtualColumnMap = new HashMap<String, VirtualColumn>();
+		virtualColumnReferenceCount = 0;
 	}
 
 	void updateColumnName(final String oldColumnName, final String newColumnName) {
@@ -237,8 +239,10 @@ public final class CyTableImpl implements CyTable {
 			final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
 			if (attributes.containsKey(columnName) || virtColumn != null) {
 				if (virtColumn != null) {
+					final CyColumn cyColumn = types.get(columnName);
 					virtualColumnMap.remove(columnName);
 					types.remove(columnName);
+					--((CyTableImpl)cyColumn.getVirtualTable()).virtualColumnReferenceCount;
 				} else {
 					attributes.remove(columnName);
 					reverse.remove(columnName);
@@ -785,6 +789,7 @@ public final class CyTableImpl implements CyTable {
 			if (sourceJoinKeyType.getType() != targetJoinKeyType.getType())
 				throw new IllegalArgumentException("\"sourceJoinKey\" has a different type from \"targetJoinKey\"!");
 
+			++((CyTableImpl)sourceTable).virtualColumnReferenceCount;
 			final CyColumn targetColumn =
 				new CyColumnImpl(this, virtualColumnName, sourceColumn.getType(),
 						 sourceColumn.getListElementType(),
@@ -814,6 +819,26 @@ public final class CyTableImpl implements CyTable {
 		} while (types.containsKey(newUniqueName));
 
 		return newUniqueName;
+	}
+
+	// Warning: This method is only to be used by CyTableManagerImpl!!!
+	synchronized boolean holdsNoVirtColumnReferences() {
+		return virtualColumnReferenceCount == 0;
+	}
+
+	// Warning: This method is only to be used by CyTableManagerImpl!!!  That's also the reason
+	//          why no ColumnDeletedEvent events are being fired by it!  Also this deletes
+	//          (intentionally!) immutable columns!
+	synchronized void removeAllVirtColumns() {
+		if (virtualColumnReferenceCount > 0)
+			return;
+
+		for (final String columnName : virtualColumnMap.keySet()) {
+			final CyColumn column = types.get(columnName);
+			types.remove(columnName);
+			--((CyTableImpl)column.getVirtualTable()).virtualColumnReferenceCount;
+		}
+		virtualColumnMap.clear();
 	}
 
 	@Override

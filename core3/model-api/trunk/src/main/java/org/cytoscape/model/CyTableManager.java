@@ -70,6 +70,7 @@ public interface CyTableManager {
 	/** Deletes a mutable table.
 	 *  @param suid  the SUID identifying the CyTable to be deleted
 	 *  @throws IllegalArgumentException  if the table that we requested to be deleted is immutable
+	 *          or if any of its columns are virtual columns in other tables
 	 */
 	void deleteTable(long suid);
 
