@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>cytoscape</groupId>
+    <artifactId>parent</artifactId>
+    <version>2.8.1-beta2</version>
+  </parent>
+
+  <groupId>cytoscape.corelibs</groupId>
+  <artifactId>parent</artifactId>
+  <packaging>pom</packaging>
+  <name>Cytoscape Core Libraries Parent POM</name>
+
+  <modules>
+    <module>commons-cli-1.x-cytocape-custom</module>
+    <module>equations</module>
+    <module>util.intr</module>
+    <module>geom.spacial</module>
+    <module>geom.rtree</module>
+    <module>giny</module>
+    <module>graph.fixed</module>
+    <module>graph.dynamic</module>
+    <module>nerius.math.xform</module>
+    <module>obo</module>
+    <module>phoebe.dnd</module>
+    <module>render.immed</module>
+    <module>render.export</module>
+    <module>render.stateful</module>
+    <module>task</module>
+    <module>undo.support</module>
+    <module>fing</module>
+    <module>ding</module>
+    <module>docs</module>
+  </modules>
+
+    <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
+    <repositories>
+        <repository>
+            <id>cytoscape_snapshots</id>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <name>Cytoscape Snapshots</name>
+            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>cytoscape_releases</id>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <name>Cytoscape Releases</name>
+            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+
+</project>
+
