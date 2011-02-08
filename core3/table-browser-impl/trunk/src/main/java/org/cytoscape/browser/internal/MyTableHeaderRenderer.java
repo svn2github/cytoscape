@@ -55,7 +55,7 @@ final class MyTableHeaderRenderer extends JLabel implements TableCellRenderer {
 		setText(value.toString());
 
 		// Set tool tip if desired
-		setToolTipText((String)value);
+		//setToolTipText((String)value);
 
 
 		// Since the renderer is a component, return itself
