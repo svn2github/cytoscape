@@ -69,7 +69,12 @@ public class ComplexRegression
 				}
 			}
 		}
-			
+		
+		if (absentHits==0 || absentMisses==0)
+		{
+			throw new java.lang.AssertionError("Absent hits = "+absentHits+",  Absent misses = "+absentMisses);
+		}
+		
 		double[] weights = new double[y.length];
 		weights[0] = absentHits;
 		weights[1] = absentMisses;

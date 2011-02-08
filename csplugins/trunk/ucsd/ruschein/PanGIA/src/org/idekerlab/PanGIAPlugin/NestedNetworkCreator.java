@@ -165,7 +165,9 @@ public class NestedNetworkCreator {
 			final double cutoff, final TaskMonitor taskMonitor,
 			final float remainingPercentage,
 			Map<TypedLinkNodeModule<String, BFEdge>,String> module_name,
-			String networkName
+			String networkName,
+			boolean isGNetSigned,
+			String geneticEdgeAttrName
 			)
 	{
 		// Network attributes created here is required for managing Visual Styles.
@@ -244,7 +246,7 @@ public class NestedNetworkCreator {
 		float percentCompleted = 100.0f - remainingPercentage;
 		while ((network = networksOrderedByScores.poll()) != null) {
 			final boolean createView = networkViewCount++ < MAX_NETWORK_VIEWS;
-			final CyNetwork nestedNetwork = generateNestedNetwork(network.getNodeName(), network.getGenes(), origPhysNetwork, origGenNetwork, physicalNetwork,geneticNetwork, createView, networkAttr);
+			final CyNetwork nestedNetwork = generateNestedNetwork(network.getNodeName(), network.getGenes(), origPhysNetwork, origGenNetwork, physicalNetwork,geneticNetwork, createView, networkAttr, isGNetSigned, geneticEdgeAttrName);
 			final CyNode node = Cytoscape.getCyNode(network.getNodeName(), false);
 			node.setNestedNetwork(nestedNetwork);
 
@@ -331,7 +333,7 @@ public class NestedNetworkCreator {
 	private CyNetwork generateNestedNetwork(final String networkName,
 			final Set<String> nodeNames, final CyNetwork origPhysNetwork,
 			final CyNetwork origGenNetwork, TypedLinkNetwork<String, Float> physicalNetwork, TypedLinkNetwork<String, Float> geneticNetwork, final boolean createNetworkView,
-			final CyAttributes networkAttr)
+			final CyAttributes networkAttr, boolean isGNetSigned, String geneticEdgeAttrName)
 	{
 		if (nodeNames.isEmpty())
 			return null;
@@ -378,8 +380,22 @@ public class NestedNetworkCreator {
 			{
 				nestedNetwork.addEdge(edge);
 				Object existingAttribute = cyEdgeAttrs.getAttribute(edge.getIdentifier(), "PanGIA.Interaction Type");
-				if (existingAttribute==null || !existingAttribute.equals("Physical"))  cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic");
-				else cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
+				if (existingAttribute==null || !existingAttribute.equals("Physical"))  
+				{
+					if (isGNetSigned)
+					{
+						double genscore = (Double)cyEdgeAttrs.getAttribute(edge.getIdentifier(), geneticEdgeAttrName);
+						if (genscore<0) cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic(negative)");
+						else cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic(positive)");
+					}else cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic");
+				}
+				else 
+					if (isGNetSigned)
+					{
+						double genscore = (Double)cyEdgeAttrs.getAttribute(edge.getIdentifier(), geneticEdgeAttrName);
+						if (genscore<0) cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic(negative)");
+						else cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic(positive)");
+					}else cyEdgeAttrs.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
 			}
 		}
 

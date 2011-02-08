@@ -78,6 +78,17 @@ public class SearchTask implements Task {
 									     parameters.getGeneticEdgeAttrName(),
 									     parameters.getGeneticScalingMethod());
 		
+		
+		boolean isGNetSigned = false;
+		for (SFEdge e : geneticNetwork.edgeIterator())
+			if (e.value()<0 )
+			{
+				isGNetSigned = true;
+				break;
+			}
+		
+		System.out.println("Signed: "+isGNetSigned);
+		
 		if (needsToHalt) return;
 		
 		
@@ -106,13 +117,29 @@ public class SearchTask implements Task {
 		
 		if (parameters.getComplexTrainingPhysical())
 		{
-			physicalRegress = ComplexRegression.complexRegress(physicalNetwork, trainingComplexes, true, 0);
+			try
+			{
+				physicalRegress = ComplexRegression.complexRegress(physicalNetwork, trainingComplexes, true, 0);
+			}catch (AssertionError e)
+			{
+				JOptionPane.showMessageDialog(null, "A problem occured during the training step. Make sure the physical network partially overlaps with the training set and has the same node naming convention.");
+				this.halt();
+				return;
+			}
 			physicalNetwork = physicalRegress.net;
 		}
 		
 		if (parameters.getComplexTrainingGenetic())
 		{
-			geneticRegress = ComplexRegression.complexRegress(geneticNetwork, trainingComplexes, true, 0);
+			try
+			{
+				geneticRegress = ComplexRegression.complexRegress(geneticNetwork, trainingComplexes, true, 0);
+			}catch (AssertionError e)
+			{
+				JOptionPane.showMessageDialog(null, "A problem occured during the training step. Make sure the genetic network partially overlaps with the training set and has the same node naming convention.");
+				this.halt();
+				return;
+			}
 			geneticNetwork = geneticRegress.net;
 		}
 		
@@ -272,13 +299,13 @@ public class SearchTask implements Task {
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
 
 		String networkName = "Module Overview Network";
-		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork, pNet, gNet, pValueThreshold, taskMonitor, 100.0f - COMPUTE_SIG_PERCENTAGE, module_name, networkName);
+		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork, pNet, gNet, pValueThreshold, taskMonitor, 100.0f - COMPUTE_SIG_PERCENTAGE, module_name, networkName,isGNetSigned, parameters.getGeneticEdgeAttrName());
 
 		setStatus("Search finished!\n\n" + "Number of modules = " + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n" + HCSearch2.report(results));
 
 		setPercentCompleted(100);
 		
-		PanGIAPlugin.output.put(nnCreator.getOverviewNetwork().getIdentifier(),new PanGIAOutput(nnCreator.getOverviewNetwork(), physicalInputNetwork, geneticInputNetwork,parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName()));
+		PanGIAPlugin.output.put(nnCreator.getOverviewNetwork().getIdentifier(),new PanGIAOutput(nnCreator.getOverviewNetwork(), physicalInputNetwork, geneticInputNetwork,parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName(),isGNetSigned));
 		
 		/*
 		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)

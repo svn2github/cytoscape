@@ -83,8 +83,25 @@ public class DetailedNetworkCreator
 			{
 				detailedNetwork.addEdge(edge);
 				Object existingAttribute = edgeAttributes.getAttribute(edge.getIdentifier(), "PanGIA.Interaction Type");
-				if (existingAttribute==null || !existingAttribute.equals("Physical"))  edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic");
-				else edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
+				
+				if (existingAttribute==null || !existingAttribute.equals("Physical"))  
+				{
+					if (output.isSigned())
+					{
+						if (attrValue<0) edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic(negative)");
+						else edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic(positive)");
+					}else edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic");
+				}
+				else 
+					if (output.isSigned())
+					{
+						if (attrValue<0) edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic(negative)");
+						else edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic(positive)");
+					}else edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
+				
+				
+				//if (existingAttribute==null || !existingAttribute.equals("Physical"))  edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Genetic");
+				//else edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
 			}
 		}
 

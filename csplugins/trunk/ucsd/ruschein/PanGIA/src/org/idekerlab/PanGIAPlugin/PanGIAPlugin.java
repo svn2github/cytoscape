@@ -50,7 +50,7 @@ public class PanGIAPlugin extends CytoscapePlugin {
 	private final VisualStyleObserver vsObserver;
 	
 	private static final String PLUGIN_NAME = "PanGIA";
-	public static final String VERSION = "1.01";
+	public static final String VERSION = "1.1";
 	public static final Map<String,PanGIAOutput> output = new HashMap<String,PanGIAOutput>();
 
 	public PanGIAPlugin() {
@@ -118,6 +118,7 @@ public class PanGIAPlugin extends CytoscapePlugin {
 				bw.write(e.getValue().getOrigGenNetwork().getTitle()+"\n");
 				bw.write(e.getValue().getPhysAttrName()+"\n");
 				bw.write(e.getValue().getGenAttrName()+"\n");
+				bw.write(e.getValue().isSigned()+"\n");
 			}
 			
 			bw.close();
@@ -161,7 +162,8 @@ public class PanGIAPlugin extends CytoscapePlugin {
 				CyNetwork genNet = getNetworkFromTitle(in.readLine());
 				String physAttr = in.readLine();
 				String genAttr = in.readLine();
-				output.put(overviewNet.getIdentifier(),new PanGIAOutput(overviewNet, physNet, genNet, physAttr, genAttr));
+				boolean isSigned = Boolean.valueOf(in.readLine());
+				output.put(overviewNet.getIdentifier(),new PanGIAOutput(overviewNet, physNet, genNet, physAttr, genAttr, isSigned));
 			}		
 			
 			in.close();

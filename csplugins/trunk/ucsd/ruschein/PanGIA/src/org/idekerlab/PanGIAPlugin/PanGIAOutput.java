@@ -9,14 +9,16 @@ public class PanGIAOutput
 	private final String physAttrName ;
 	private final String genAttrName;
 	private final CyNetwork overviewNetwork;
+	private final boolean signed;
 	
-	public PanGIAOutput(CyNetwork overviewNetwork, CyNetwork origPhysNetwork, CyNetwork origGenNetwork, String physAttrName, String genAttrName)
+	public PanGIAOutput(CyNetwork overviewNetwork, CyNetwork origPhysNetwork, CyNetwork origGenNetwork, String physAttrName, String genAttrName, boolean signed)
 	{
 		this.overviewNetwork = overviewNetwork;
 		this.origPhysNetwork = origPhysNetwork;
 		this.origGenNetwork = origGenNetwork;
 		this.physAttrName = physAttrName;
 		this.genAttrName = genAttrName;
+		this.signed = signed;
 	}
 	
 	public CyNetwork getOrigPhysNetwork()
@@ -42,5 +44,10 @@ public class PanGIAOutput
 	public CyNetwork getOverviewNetwork()
 	{
 		return overviewNetwork;
+	}
+	
+	public boolean isSigned()
+	{
+		return signed;
 	}
 }
