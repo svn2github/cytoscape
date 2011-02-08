@@ -220,17 +220,27 @@ public class QuickFindPlugIn implements QuickFindListener, AddedEdgeListener,
 			CyNetworkView networkView = viewManager.getNetworkView(network.getSUID());
 
 			if (networkView != null) {
-				GenericIndex textIndex = quickFind.getIndex(network);
+				final GenericIndex textIndex = quickFind.getIndex(network);
 
 				if (textIndex != null) {
-					quickFindToolBar.setIndex(textIndex);
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							quickFindToolBar.setIndex(textIndex);
+						}
+					});
 					networkHasFocus = true;
 				}
 			}
 		}
 
 		if (!networkHasFocus) {
-			quickFindToolBar.noNetworkLoaded();
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					quickFindToolBar.noNetworkLoaded();
+				}
+			});
 		}
 	}
 
@@ -260,7 +270,12 @@ public class QuickFindPlugIn implements QuickFindListener, AddedEdgeListener,
 	 * @param controllingAttribute Controlling Attribute.
 	 */
 	public void indexingStarted(CyNetwork cyNetwork, int indexType, String controllingAttribute) {
-		quickFindToolBar.indexingInProgress();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				quickFindToolBar.indexingInProgress();
+			}
+		});
 	}
 
 	/**
@@ -269,10 +284,15 @@ public class QuickFindPlugIn implements QuickFindListener, AddedEdgeListener,
 	public void indexingEnded() {
 		QuickFind quickFind = QuickFindFactory.getGlobalQuickFindInstance();
 		CyNetwork cyNetwork = applicationManager.getCurrentNetwork();
-		GenericIndex index = quickFind.getIndex(cyNetwork);
+		final GenericIndex index = quickFind.getIndex(cyNetwork);
 		if (index != null){
-			quickFindToolBar.setIndex(index);
-			quickFindToolBar.enableAllQuickFindButtons();			
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					quickFindToolBar.setIndex(index);
+					quickFindToolBar.enableAllQuickFindButtons();			
+				}
+			});
 		}
 	}
 
