@@ -442,7 +442,7 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		//	          "Modify the aggregation behavior of a metanode",
 		//	          "metanode|enabled=true|strings=csv|integer=sum|double=sum|list=none|boolean=or"),
 		// 
-		} else if (Command.MODIFYAGG.equals(command)) {
+		// } else if (Command.MODIFYAGG.equals(command)) {
 
 		// 
 		//	MODIFYAPP("modify appearance",
@@ -479,7 +479,7 @@ public class MetaNodeCommandHandler extends AbstractCommandHandler {
 		//	                  "Modify aggregation overrides for specific attributes in a metanode",
 		//	                  "metanode|attribute|aggregation"),
 		// 
-		} else if (Command.MODIFYAGGOVERRIDE.equals(command)) {
+		// } else if (Command.MODIFYAGGOVERRIDE.equals(command)) {
 
 		// 
 		//  SETDEFAULTAGG("set default aggregation", 

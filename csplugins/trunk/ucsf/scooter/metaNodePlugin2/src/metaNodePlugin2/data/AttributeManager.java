@@ -63,12 +63,6 @@ public class AttributeManager {
 	static public final String CHILDREN_ATTRIBUTE = "NumChildren";
 	static public final String DESCENDENTS_ATTRIBUTE = "NumDescendents";
 
-	private String attribute;
-	private AttributeHandlingType type;
-	private byte attributeType;
-	private Object aggregateValue;
-	private int count;
-
 	static AttributeHandlingType[] stringArray = {AttributeHandlingType.MCV, AttributeHandlingType.CSV, 
 	                                              AttributeHandlingType.TSV, AttributeHandlingType.NONE};
 
