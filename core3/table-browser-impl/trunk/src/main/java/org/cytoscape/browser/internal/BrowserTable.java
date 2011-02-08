@@ -53,7 +53,8 @@ import org.cytoscape.browser.util.HyperLinkOut;
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.util.swing.OpenBrowser;
-
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyColumn;
 
 public class BrowserTable extends JTable
 	implements MouseListener, ActionListener, MouseMotionListener
@@ -687,7 +688,23 @@ public class BrowserTable extends JTable
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		//Add tool tip for column type to each column header
+		java.awt.Point p = e.getPoint();
+        int index = getColumnModel().getColumnIndexAtX(p.x);
+
+        if (index <0 || index >= getColumnModel().getColumnCount()){
+        	return;
+        }
+
+        javax.swing.table.TableColumn c = getColumnModel().getColumn(index);
+
+        BrowserTableModel tableModel = (BrowserTableModel) getModel();        
+        CyColumn cyColumn = tableModel.getAttributes().getColumn(c.getIdentifier().toString());
+                
+        String toolTip = cyColumn.getType().getName();
+		JTableHeader header = getTableHeader();
 		
+		header.setToolTipText(toolTip);
 	}
 
 	private class CellEditorRemover implements PropertyChangeListener {
