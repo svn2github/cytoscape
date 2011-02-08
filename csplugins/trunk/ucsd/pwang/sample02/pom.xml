@@ -3,7 +3,7 @@
   <groupId>org.mycompany</groupId>
   <artifactId>sample02</artifactId>
   <version>0.1</version>
-  <packaging>maven-plugin</packaging>
+  <packaging>bundle</packaging>
   <name>sample02</name>
   <description>Test plugin</description>
   
@@ -12,27 +12,9 @@
     <bundle.namespace>com.mycompany.sample</bundle.namespace>
   </properties>
   
-    <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <!--
-       | example additional resource entries, useful when building Eclipse RCP applications
-      -->
-      <resource>
-        <directory>.</directory>
-        <includes>
-          <include>plugin.xml</include>
-          <include>plugin.properties</include>
-          <include>icons/**</include>
-        </includes>
-      </resource>
-    </resources>
+  <build>
     <plugins>
-    
-    
-    <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
@@ -51,24 +33,18 @@
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.ops4j</groupId>
         <artifactId>maven-pax-plugin</artifactId>
         <version>1.4</version>
-        <!--
-           | enable improved OSGi compilation support for the bundle life-cycle.
-           | to switch back to the standard bundle life-cycle, move this setting
-           | down to the maven-bundle-plugin section
-          -->
         <extensions>true</extensions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <version>1.4.3</version>
-        <!--
-         | the following instructions build a simple set of public/private classes into an OSGi bundle
-        -->
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
@@ -80,39 +56,12 @@
     </plugins>
   </build>
   
-  
-
-  
-  
-  
-  
-    <dependencies>
-      <dependency>
+  <dependencies>
+    <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>plugin-api</artifactId>
       <version>3.0.0-alpha2-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>org.cytoscape</groupId>
-      <artifactId>core-task-api</artifactId>
-      <version>3.0.0-alpha2-SNAPSHOT</version>
-    </dependency>
-  
-  
-  	<dependency>
-    	<groupId>org.cytoscape</groupId>
-    	<artifactId>swing-application-api</artifactId>
-    	<version>1.0-SNAPSHOT</version>
-	</dependency>
-
-	<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>work-swing-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
-	</dependency>
-  
-  
-    </dependencies>
-  
+  </dependencies>
   
 </project>
