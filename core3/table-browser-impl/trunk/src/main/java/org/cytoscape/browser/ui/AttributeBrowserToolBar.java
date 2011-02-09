@@ -102,6 +102,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JList attrDeletionList = null;
 	private JButton createNewAttributeButton = null;
 	private JButton deleteAttributeButton = null;
+	private JButton deleteTableButton = null;
 	private JButton selectAllAttributesButton = null;
 	private JButton unselectAllAttributesButton = null;
 	private JButton matrixButton = null;
@@ -128,6 +129,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		unselectAllAttributesButton.setEnabled(browserTableModel != null);
 		createNewAttributeButton.setEnabled(browserTableModel != null);
 		deleteAttributeButton.setEnabled(browserTableModel != null);
+		deleteTableButton.setEnabled(browserTableModel != null);
 		formulaBuilderButton.setEnabled(browserTableModel != null);
 	}
 
@@ -431,6 +433,8 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 								.addPreferredGap(ComponentPlacement.RELATED)
 								.addComponent(getDeleteButton())
 								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(getDeleteTableButton())
+								.addPreferredGap(ComponentPlacement.RELATED)
 								.addComponent(getFunctionBuilderButton(),
 								     GroupLayout.PREFERRED_SIZE,
 								     28,
@@ -455,6 +459,10 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 								       27, Short.MAX_VALUE)
 
 							 .addComponent(deleteAttributeButton,
+								       javax.swing.GroupLayout.Alignment.CENTER,
+								       javax.swing.GroupLayout.DEFAULT_SIZE,
+								       27, Short.MAX_VALUE)
+							 .addComponent(deleteTableButton,
 								       javax.swing.GroupLayout.Alignment.CENTER,
 								       javax.swing.GroupLayout.DEFAULT_SIZE,
 								       27, Short.MAX_VALUE)
@@ -580,6 +588,27 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	}
 
 
+	private JButton getDeleteTableButton() {
+		if (deleteTableButton == null) {
+			deleteTableButton = new JButton();
+			deleteTableButton.setBorder(null);
+			deleteTableButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+			deleteTableButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/table_delete.gif")));
+			deleteTableButton.setToolTipText("Delete Table...");
+
+			// Create pop-up window for deletion
+			deleteTableButton.addMouseListener(new java.awt.event.MouseAdapter() {
+					public void mouseClicked(java.awt.event.MouseEvent e) {
+						removeTable(e);
+					}
+				});
+			deleteTableButton.setEnabled(false);
+		}
+
+		return deleteTableButton;
+	}
+
+	
 	private JButton getSelectAllButton() {
 		if (selectAllAttributesButton == null) {
 			selectAllAttributesButton = new JButton();
@@ -641,6 +670,22 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		dDialog.setVisible(true);
 	}
 
+	private void removeTable(final MouseEvent e) {
+		
+		System.out.println("AttributeBrowserToolBar.removeTable()....");
+		/*
+		final String[] attrArray = getAttributeArray();
+
+		final JFrame frame = (JFrame)SwingUtilities.getRoot(this);
+		final DeletionTableDialog dDialog = new DeletionTableDialog(frame, browserTableModel.getTables());
+
+		dDialog.pack();
+		dDialog.setLocationRelativeTo(browserToolBar);
+		dDialog.setVisible(true);
+		*/
+	}
+
+	
 	private JList getSelectedAttributeList() {
 		if (attributeList == null) {
 			attributeList = new CheckBoxJList();
