@@ -33,6 +33,7 @@ import java.lang.RuntimeException;
 import java.util.*;
 
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTable.Mutability;
 import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnDeletedEvent;
@@ -709,5 +710,15 @@ public abstract class AbstractCyTableTest {
 		table.addVirtualColumn("b1", "b", table2, "x2", "x", true);
 		CyColumn column2 = table.getColumn("b1");
 		assertEquals(table2, column2.getVirtualTable());
+	}
+
+	@Test
+	public void testTableMutability() {
+		table.createColumn("x", Long.class, false);
+		table2.createColumn("x2", Long.class, false);
+		table2.createListColumn("b", Boolean.class, false);
+		assertEquals(Mutability.MUTABLE, table2.getMutability());
+		table.addVirtualColumn("b1", "b", table2, "x2", "x", true);
+		assertEquals(Mutability.IMMUTABLE_DUE_TO_VIRT_COLUMN_REFERENCES, table2.getMutability());
 	}
 }

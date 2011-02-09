@@ -37,6 +37,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTable.Mutability;
 import org.cytoscape.model.CyTableManager;
 
 
@@ -128,11 +129,8 @@ public class CyTableManagerImpl implements CyTableManager {
 		if (table == null)
 			return;
 
-		if (table.isImmutable())
+		if (table.getMutability() != Mutability.MUTABLE)
 			throw new IllegalArgumentException("can't delete an immutable table!");
-
-		if (!table.holdsNoVirtColumnReferences())
-			throw new IllegalArgumentException("can't delete a table that still has virtual column references!");
 
 		table.removeAllVirtColumns();
 		tables.remove(suid);

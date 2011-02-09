@@ -172,8 +172,13 @@ public final class CyTableImpl implements CyTable {
 	}
 
 	@Override
-	public boolean isImmutable() {
-		return isImmutable;
+	public synchronized CyTable.Mutability getMutability() {
+		if (isImmutable)
+			return Mutability.PERMANENTLY_IMMUTABLE;
+		else if (virtualColumnReferenceCount == 0)
+			return Mutability.MUTABLE;
+		else
+			return Mutability.IMMUTABLE_DUE_TO_VIRT_COLUMN_REFERENCES;
 	}
 
 	/**
@@ -819,11 +824,6 @@ public final class CyTableImpl implements CyTable {
 		} while (types.containsKey(newUniqueName));
 
 		return newUniqueName;
-	}
-
-	// Warning: This method is only to be used by CyTableManagerImpl!!!
-	synchronized boolean holdsNoVirtColumnReferences() {
-		return virtualColumnReferenceCount == 0;
 	}
 
 	// Warning: This method is only to be used by CyTableManagerImpl!!!  That's also the reason

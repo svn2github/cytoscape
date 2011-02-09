@@ -40,6 +40,10 @@ import java.util.Set;
  * contain the data for a specific index.
  */
 public interface CyTable extends Identifiable {
+	public static enum Mutability {
+		MUTABLE, PERMANENTLY_IMMUTABLE, IMMUTABLE_DUE_TO_VIRT_COLUMN_REFERENCES
+	}
+
 	/**
 	 * A public CyTable is a table that is accessible to the user through the user
 	 * interface.  Private or non-public CyTables will not be visible to the user from the
@@ -49,10 +53,11 @@ public interface CyTable extends Identifiable {
 	 */
 	boolean isPublic();
 
-	/** True if the table cannot be deleted, otherwise false.
-	 *  @return True if the table cannot be deleted, otherwise false.
+	/** The table can be deleted if this returns Mutability.MUTABLE, otherwise it cannot be
+	 *  deleted!
+	 *  @return the current mutablity state
 	 */
-	boolean isImmutable();
+	Mutability getMutability();
 
 	/**
 	 * Returns a human readable name for the CyTable.
