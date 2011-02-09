@@ -56,7 +56,7 @@ public class TableBrowser
 		this.compiler = compiler;
 		this.browserTable = new BrowserTable(openBrowser, compiler);
 		this.tableRowUpdateService = tableRowUpdateService;
-		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar, compiler);
+		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar, compiler, tableManager);
 		this.setLayout(new BorderLayout());
 
 		browserTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

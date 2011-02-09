@@ -70,6 +70,7 @@ import org.cytoscape.browser.internal.BrowserTableModel;
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableManager;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.util.swing.CheckBoxJList;
 
@@ -110,11 +111,13 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 	private AttributeListModel attrListModel;
 	private final EqnCompiler compiler;
+	private final CyTableManager tableManager;
 
 	public AttributeBrowserToolBar(final CyServiceRegistrar serviceRegistrar,
-				       final EqnCompiler compiler)
+				       final EqnCompiler compiler, final CyTableManager tableManager)
 	{
 		this.compiler = compiler;
+		this.tableManager = tableManager;
 		this.attrListModel = new AttributeListModel(null);
 		serviceRegistrar.registerAllServices(attrListModel, new Properties());
 
@@ -671,18 +674,31 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	}
 
 	private void removeTable(final MouseEvent e) {
-		
-		System.out.println("AttributeBrowserToolBar.removeTable()....");
-		/*
-		final String[] attrArray = getAttributeArray();
-
-		final JFrame frame = (JFrame)SwingUtilities.getRoot(this);
-		final DeletionTableDialog dDialog = new DeletionTableDialog(frame, browserTableModel.getTables());
-
-		dDialog.pack();
-		dDialog.setLocationRelativeTo(browserToolBar);
-		dDialog.setVisible(true);
-		*/
+				
+		final CyTable table = browserTableModel.getAttributes();
+				
+		if (table.getMutability() == CyTable.Mutability.MUTABLE){
+			String title = "Please confirm this action";
+			String msg = "Are yoy sure you want to delete this table?";
+		    int _confirmValue = JOptionPane.showConfirmDialog(this, msg, title, JOptionPane.YES_NO_OPTION, 
+		    		JOptionPane.QUESTION_MESSAGE);
+		    
+			// if user selects yes delete the table
+			if (_confirmValue == JOptionPane.OK_OPTION)
+			{
+				this.tableManager.deleteTable(table.getSUID());
+			}						
+		}
+		else if (table.getMutability() == CyTable.Mutability.PERMANENTLY_IMMUTABLE){
+			String title = "Error";
+			String msg = "Can not delete this table, it is PERMANENTLY_IMMUTABLE";
+			JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
+		}
+		else if(table.getMutability() == CyTable.Mutability.IMMUTABLE_DUE_TO_VIRT_COLUMN_REFERENCES){
+			String title = "Error";
+			String msg = "Can not delete this table, it is IMMUTABLE_DUE_TO_VIRT_COLUMN_REFERENCES";
+			JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	
