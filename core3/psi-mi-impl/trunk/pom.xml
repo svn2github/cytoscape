@@ -22,32 +22,6 @@
         <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/psi-mi-impl/trunk</developerConnection>
         <url>http://chianti.ucsd.edu/svn/core3/psi-mi-impl/trunk</url>
     </scm>
-    <repositories>
-        <!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
-        <repository>
-            <id>cytoscape_snapshots</id>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <name>Cytoscape Snapshots</name>
-            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
-        <repository>
-            <id>cytoscape_releases</id>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <name>Cytoscape Releases</name>
-            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
-        </repository>
-    </repositories>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -58,18 +32,17 @@
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>io-api</artifactId>
-      <version>3.0.0-alpha1</version>
+      <version>3.0.0-alpha2</version>
     </dependency>
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>layout-api</artifactId>
-      <version>3.0.0-alpha1</version>
+      <version>3.0.0-alpha2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>model-api</artifactId>
       <version>3.0.0-alpha3-SNAPSHOT</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.cytoscape</groupId>
@@ -87,43 +60,42 @@
   <build>
     <plugins>
       <plugin>
-	<groupId>org.codehaus.mojo</groupId>
-	<artifactId>jaxb2-maven-plugin</artifactId>
+	<groupId>org.jvnet.jaxb2.maven2</groupId>
+	<artifactId>maven-jaxb2-plugin</artifactId>
 	<executions>
 	  <execution>
 	    <id>mi1</id>
-	    <configuration>
-	      <arguments>-nv</arguments>
-	      <packageName>org.cytoscape.psi_mi.internal.schema.mi1</packageName>
-	      <schemaFiles>MIF1.xsd</schemaFiles>
-	      <staleFile>${project.build.directory}/generated-sources/jaxb/org/cytoscape/psi_mi/internal/schema/mi1/.staleFlag</staleFile>
-	      <clearOutputDir>false</clearOutputDir>
-	    </configuration>
 	    <goals>
-	      <goal>xjc</goal>
+	    	<goal>generate</goal>
 	    </goals>
+	    <configuration>
+	      <schemaDirectory>src/main/xsd</schemaDirectory>
+	      <schemaIncludes>
+	        <include>MIF1.xsd</include>
+	      </schemaIncludes>
+          <generatePackage>${bundle.namespace}.internal.schema.mi1</generatePackage>
+          <verbose>true</verbose>
+          <removeOldOutput>false</removeOldOutput>
+          <forceRegenerate>true</forceRegenerate>
+	    </configuration>
 	  </execution>
 	  <execution>
 	    <id>mi25</id>
-	    <configuration>
-	      <arguments>-nv</arguments>
-	      <packageName>org.cytoscape.psi_mi.internal.schema.mi25</packageName>
-	      <schemaFiles>MIF25.xsd</schemaFiles>
-	      <staleFile>${project.build.directory}/generated-sources/jaxb/org/cytoscape/psi_mi/internal/schema/mi25/.staleFlag</staleFile>
-	      <clearOutputDir>false</clearOutputDir>
-	    </configuration>
 	    <goals>
-	      <goal>xjc</goal>
+	    	<goal>generate</goal>
 	    </goals>
+	    <configuration>
+	      <schemaDirectory>src/main/xsd</schemaDirectory>
+	      <schemaIncludes>
+	        <include>MIF25.xsd</include>
+	      </schemaIncludes>
+          <generatePackage>${bundle.namespace}.internal.schema.mi25</generatePackage>
+          <verbose>true</verbose>
+          <removeOldOutput>false</removeOldOutput>
+          <forceRegenerate>true</forceRegenerate>
+	    </configuration>
 	  </execution>
 	</executions>
-	<dependencies>
-	  <dependency>
-	    <groupId>xerces</groupId>
-	    <artifactId>xercesImpl</artifactId>
-	    <version>2.8.1</version>
-	  </dependency>
-	</dependencies>
       </plugin>
       <plugin>
 	<groupId>org.ops4j</groupId>
