@@ -49,6 +49,9 @@ public class Launcher {
 			config.put("org.osgi.framework.startlevel.beginning", "6");
 			config.put("org.osgi.framework.storage", "bundles/cache");
 			config.put("org.osgi.framework.storage.clean", "onFirstInit");
+			
+			// TODO: Hack to get around JAXB classloading errors
+			config.put("org.osgi.framework.system.packages.extra", "com.sun.xml.internal.bind");
 
 			FrameworkFactory factory = (FrameworkFactory) Class.forName( factoryName ).newInstance(); 
 			Framework framework = factory.newFramework(config);
