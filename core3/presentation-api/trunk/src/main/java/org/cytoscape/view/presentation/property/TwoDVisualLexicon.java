@@ -226,16 +226,41 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	}
 
 	private void createLookupMap() {
-		addIdentifierMapping(CyNode.class,"color",NODE_COLOR);
+		// XGMML:
+		addIdentifierMapping(CyNetwork.class,"color",NETWORK_BACKGROUND_PAINT);
+		addIdentifierMapping(CyNetwork.class,"GRAPH_VIEW_CENTER_X",NETWORK_CENTER_X_LOCATION);
+		addIdentifierMapping(CyNetwork.class,"GRAPH_VIEW_CENTER_Y",NETWORK_CENTER_Y_LOCATION);
+		addIdentifierMapping(CyNetwork.class,"GRAPH_VIEW_ZOOM",NETWORK_SCALE_FACTOR);
+		addIdentifierMapping(CyNetwork.class,"label",NETWORK_TITLE);
+		
 		addIdentifierMapping(CyNode.class,"fill",NODE_COLOR);
 		addIdentifierMapping(CyNode.class,"x",NODE_X_LOCATION);
 		addIdentifierMapping(CyNode.class,"y",NODE_Y_LOCATION);
 		addIdentifierMapping(CyNode.class,"w",NODE_X_SIZE);
 		addIdentifierMapping(CyNode.class,"h",NODE_Y_SIZE);
-		addIdentifierMapping(CyNode.class,"label",NODE_LABEL);
+		addIdentifierMapping(CyNode.class,"size",NODE_SIZE);
 
 		addIdentifierMapping(CyEdge.class,"fill",EDGE_PAINT);
 		addIdentifierMapping(CyEdge.class,"width",EDGE_WIDTH);
+		
+		// 2.x VizMap Properties:
+		addIdentifierMapping(CyNetwork.class,"backgroundColor",NETWORK_BACKGROUND_PAINT);
+		addIdentifierMapping(CyNetwork.class,"nodeSelectionColor",NETWORK_NODE_SELECTED_COLOR);
+		addIdentifierMapping(CyNetwork.class,"edgeSelectionColor",NETWORK_EDGE_SELECTED_COLOR);
+		
+		addIdentifierMapping(CyNode.class,"nodeFillColor",NODE_COLOR);
+		addIdentifierMapping(CyNode.class,"nodeSize",NODE_SIZE);
+		addIdentifierMapping(CyNode.class,"nodeWidth",NODE_X_SIZE);
+		addIdentifierMapping(CyNode.class,"nodeHight",NODE_Y_SIZE);
+		addIdentifierMapping(CyNode.class,"nodeHeight",NODE_Y_SIZE);
+		addIdentifierMapping(CyNode.class,"nodeLabel",NODE_LABEL);
+		addIdentifierMapping(CyNode.class,"nodeLabelColor",NODE_LABEL_COLOR);
+		
+		addIdentifierMapping(CyEdge.class,"edgeColor",EDGE_PAINT);
+		addIdentifierMapping(CyEdge.class,"edgeLineWidth",EDGE_WIDTH);
+		addIdentifierMapping(CyEdge.class,"edgeLabel",EDGE_LABEL);
+		addIdentifierMapping(CyEdge.class,"edgeLabelColor",EDGE_LABEL_COLOR);
+		
 		// TODO add more mappings!
 	}
 }
