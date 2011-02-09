@@ -96,7 +96,7 @@ public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAb
 	}
 
 	@Override
-	public synchronized void destroyNetworkView(final CyNetworkView view) {
+	public void destroyNetworkView(final CyNetworkView view) {
 		if (view == null)
 			throw new NullPointerException("view is null");
 
@@ -123,7 +123,7 @@ public class CyNetworkViewManagerImpl implements CyNetworkViewManager, NetworkAb
 	}
 	
 	@Override
-	public synchronized void addNetworkView(final CyNetworkView view) {
+	public void addNetworkView(final CyNetworkView view) {
 		if (view == null)
 			throw new NullPointerException("CyNetworkView is null");
 
