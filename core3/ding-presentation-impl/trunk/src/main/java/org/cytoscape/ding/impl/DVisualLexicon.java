@@ -391,6 +391,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 	}
 
 	private void createLookupMap() {
+		// XGMML:
 		addIdentifierMapping(CyNode.class,"type",NODE_SHAPE);
 		addIdentifierMapping(CyNode.class,"outline",NODE_BORDER_PAINT);
 		addIdentifierMapping(CyNode.class,"width",NODE_BORDER_WIDTH);
@@ -404,6 +405,19 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		addIdentifierMapping(CyEdge.class,"targetArrow",EDGE_TARGET_ARROW_SHAPE);
 		addIdentifierMapping(CyEdge.class,"sourceArrowColor",EDGE_SOURCE_ARROW_UNSELECTED_PAINT);
 		addIdentifierMapping(CyEdge.class,"targetArrowColor",EDGE_TARGET_ARROW_UNSELECTED_PAINT);
+		
+		// 2.x VizMap Properties:
+		addIdentifierMapping(CyNode.class,"nodeOpacity",NODE_TRANSPARENCY);
+		addIdentifierMapping(CyNode.class,"nodeBorderColor",NODE_BORDER_PAINT);
+		addIdentifierMapping(CyNode.class,"nodeLineWidth",NODE_BORDER_WIDTH);
+		addIdentifierMapping(CyNode.class,"nodeFont",NODE_LABEL_FONT_FACE);
+		addIdentifierMapping(CyNode.class,"nodeFontSize",NODE_LABEL_FONT_SIZE);
+		addIdentifierMapping(CyNode.class,"nodeToolTip",NODE_TOOLTIP);
+
+		addIdentifierMapping(CyEdge.class,"edgeToolTip",EDGE_TOOLTIP);
+		addIdentifierMapping(CyEdge.class,"edgeFont",EDGE_LABEL_FONT_FACE);
+		addIdentifierMapping(CyEdge.class,"edgeFontSize",EDGE_LABEL_FONT_SIZE);
+		
 		// TODO add more!
 	}
 	
