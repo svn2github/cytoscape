@@ -303,6 +303,42 @@ public class ViewUtils {
 	}
 
 	/**
+ 	 * Create a new network from this metanode
+ 	 *
+ 	 * @param group the metanode to create a new network from
+ 	 * @return the new network
+ 	 */
+	public static CyNetwork createNetworkFromGroup(CyGroup group) {
+		// Get the network this metanode is part of
+		CyNetwork parent = group.getNetwork();
+		if (parent == null || parent == Cytoscape.getNullNetwork())
+			parent = Cytoscape.getCurrentNetwork();
+
+		// Get the name for the new network (the metaNode name)
+		String netName = group.getGroupName();
+
+		// Create the network
+    List<CyNode> nodes = group.getNodes();
+    List<CyEdge> edges = group.getInnerEdges();
+    CyNetwork new_net = Cytoscape.createNetwork(nodes, edges,
+                                                netName,
+                                                parent);
+    CyNetworkView new_view = Cytoscape.createNetworkView(new_net, "group");
+
+    // Now that we have a style, apply our position hints
+    CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+    for (CyNode node: nodes) {
+			Dimension dim = getAttributes(node, nodeAttributes);
+			setPosition(node, new_view, dim);
+    }
+
+    // Set the visual style
+    new_view.setVisualStyle(Cytoscape.getCurrentNetworkView().getVisualStyle().getName());
+    new_view.fitContent();
+		return new_net;
+	}
+
+	/**
  	 * Return the X,Y location of a node
  	 *
  	 * @param node the node we're interested in

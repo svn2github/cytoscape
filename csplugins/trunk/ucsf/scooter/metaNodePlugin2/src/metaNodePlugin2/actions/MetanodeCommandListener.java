@@ -49,6 +49,7 @@ import cytoscape.groups.CyGroupManager;
 
 import metaNodePlugin2.model.MetaNode;
 import metaNodePlugin2.model.MetaNodeManager;
+import metaNodePlugin2.view.ViewUtils;
 import metaNodePlugin2.MetaNodeGroupViewer;
 import metaNodePlugin2.MetaNodePlugin2;
 import metaNodePlugin2.MetaNodePlugin2.Command;
@@ -213,7 +214,7 @@ public class MetanodeCommandListener implements ActionListener {
  	 * Create a new network from the currently collapsed group
  	 */
 	private void createNetworkFromGroup() {
-		// mNode.createNetworkFromGroup();
+		ViewUtils.createNetworkFromGroup(group);
 	}
 
 	/**
