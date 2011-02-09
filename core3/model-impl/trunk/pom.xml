@@ -87,7 +87,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-api</artifactId>
-			<version>3.0.0-alpha2</version>
+			<version>3.0.0-alpha3</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -99,7 +99,7 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>event-api</artifactId>
-			<version>3.0.0-alpha2</version>
+			<version>3.0.0-alpha3</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
