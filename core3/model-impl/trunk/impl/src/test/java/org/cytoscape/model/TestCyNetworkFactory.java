@@ -54,7 +54,7 @@ public class TestCyNetworkFactory {
 
 	public static CyRootNetwork getPublicRootInstance() {	
 		DummyCyEventHelper deh = new DummyCyEventHelper();
-		CyTableManagerImpl tm = new CyTableManagerImpl();
+		CyTableManagerImpl tm = new CyTableManagerImpl(deh);
 		Interpreter interp = new InterpreterImpl();
 		ArrayGraph ar = new ArrayGraph(deh, tm, new CyTableFactoryImpl(deh, tm, interp), true);
 		return ar; 
@@ -62,7 +62,7 @@ public class TestCyNetworkFactory {
 
 	public static CyRootNetwork getPrivateRootInstance() {	
 		DummyCyEventHelper deh = new DummyCyEventHelper();
-		CyTableManagerImpl tm = new CyTableManagerImpl();
+		CyTableManagerImpl tm = new CyTableManagerImpl(deh);
 		Interpreter interp = new InterpreterImpl();
 		ArrayGraph ar = new ArrayGraph(deh, tm, new CyTableFactoryImpl(deh, tm, interp), false);
 		return ar; 

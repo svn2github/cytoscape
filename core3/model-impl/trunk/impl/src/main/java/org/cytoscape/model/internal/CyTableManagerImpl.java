@@ -33,12 +33,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTable.Mutability;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.events.TableDeletedEvent;
 
 
 /**
@@ -47,10 +49,13 @@ import org.cytoscape.model.CyTableManager;
  * provided as a service through Spring/OSGi.
  */
 public class CyTableManagerImpl implements CyTableManager {
+	private final CyEventHelper eventHelper;
 	private final Map<Class<?>, Map<CyNetwork, Map<String,CyTable>>> networkTableMap;
 	private final Map<Long,CyTable> tables;
 
-	public CyTableManagerImpl() {
+	public CyTableManagerImpl(final CyEventHelper eventHelper) {
+		this.eventHelper = eventHelper;
+
 		networkTableMap = new HashMap<Class<?>, Map<CyNetwork, Map<String,CyTable>>>();	
 		networkTableMap.put( CyNetwork.class, new HashMap<CyNetwork, Map<String,CyTable>>() );
 		networkTableMap.put( CyNode.class, new HashMap<CyNetwork, Map<String,CyTable>>() );
@@ -124,15 +129,19 @@ public class CyTableManagerImpl implements CyTableManager {
 	}
 
 	@Override
-	public synchronized void deleteTable(final long suid) {
-		final CyTableImpl table = (CyTableImpl)tables.get(suid);
-		if (table == null)
-			return;
+	public void deleteTable(final long suid) {
+		final CyTableImpl table;
+		synchronized(this) {
+			table = (CyTableImpl)tables.get(suid);
+			if (table == null)
+				return;
 
-		if (table.getMutability() != Mutability.MUTABLE)
-			throw new IllegalArgumentException("can't delete an immutable table!");
+			if (table.getMutability() != Mutability.MUTABLE)
+				throw new IllegalArgumentException("can't delete an immutable table!");
 
-		table.removeAllVirtColumns();
-		tables.remove(suid);
+			table.removeAllVirtColumns();
+			tables.remove(suid);
+		}
+		eventHelper.fireSynchronousEvent(new TableDeletedEvent(this, table));
 	}
 }

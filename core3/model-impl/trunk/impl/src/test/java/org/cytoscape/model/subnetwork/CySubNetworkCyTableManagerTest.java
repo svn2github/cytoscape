@@ -49,9 +49,9 @@ import org.junit.Test;
 public class CySubNetworkCyTableManagerTest extends AbstractCyTableManagerTest {
 	public void setUp() {
 		super.setUp();
-		CyTableManagerImpl mgrImpl = new CyTableManagerImpl();
-		mgr = mgrImpl; 
 		CyEventHelper eh = new DummyCyEventHelper();
+		CyTableManagerImpl mgrImpl = new CyTableManagerImpl(eh);
+		mgr = mgrImpl; 
 		final Interpreter interpreter = new InterpreterImpl();
 		ArrayGraph baseNet =
 			new ArrayGraph(eh, mgrImpl,

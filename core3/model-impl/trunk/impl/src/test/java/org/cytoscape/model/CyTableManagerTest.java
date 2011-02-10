@@ -48,9 +48,9 @@ public class CyTableManagerTest extends AbstractCyTableManagerTest {
 
 	public void setUp() {
 		super.setUp();
-		mgrImpl = new CyTableManagerImpl();
-		mgr = mgrImpl; 
 		CyEventHelper eh = new DummyCyEventHelper();
+		mgrImpl = new CyTableManagerImpl(eh);
+		mgr = mgrImpl; 
 		final Interpreter interpreter = new InterpreterImpl();
 		goodNetwork =
 			new ArrayGraph(eh, mgrImpl,
