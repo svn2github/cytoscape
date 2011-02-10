@@ -1,54 +1,81 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <artifactId>parent</artifactId>
-    <groupId>org.cytoscape</groupId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+	  <artifactId>parent</artifactId>
+	  <groupId>org.cytoscape</groupId>
+	  <version>3.0.0-alpha4</version>
+	</parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.cytoscape</groupId>
-  <artifactId>cmdline-application</artifactId>
-  <version>1.0-SNAPSHOT</version>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.cytoscape</groupId>
+	<artifactId>cmdline-application</artifactId>
+	<version>1.0-SNAPSHOT</version>
 
-  <properties>
-     <bundle.symbolicName>org.cytoscape.cmdline-application</bundle.symbolicName>
-     <bundle.namespace>org.cytoscape.cmdline</bundle.namespace>
-  </properties>
+	<properties>
+	  <bundle.symbolicName>org.cytoscape.cmdline-application</bundle.symbolicName>
+	  <bundle.namespace>org.cytoscape.cmdline</bundle.namespace>
+	</properties>
 
-  <name>${bundle.symbolicName} [${bundle.namespace}]</name>
+	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
 
-  <packaging>pom</packaging>
+	<packaging>pom</packaging>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-            <descriptor>assembly.xml</descriptor>
-          </descriptors>
-        </configuration>
-        <!--
-        <executions>
-          <execution>
-            <id>make-assembly</id> 
-            <phase>package</phase> 
-            <goals>
-              <goal>attached</goal>
-            </goals>
-          </execution>
-        </executions>
-        -->
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+	  <plugins>
+	    <plugin>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <configuration>
+		<descriptors>
+		  <descriptor>assembly.xml</descriptor>
+		</descriptors>
+              </configuration>
+              <!--
+		 <executions>
+		   <execution>
+		     <id>make-assembly</id> 
+		     <phase>package</phase> 
+		     <goals>
+		       <goal>attached</goal>
+		     </goals>
+		   </execution>
+		 </executions>
+		 -->
+	    </plugin>
+	  </plugins>
+	</build>
 
-  <modules>
-    <module>cmdline-launcher</module>
-    <module>cmdline-provision</module>
-    <module>cmdline-logging</module>
-  </modules>
+	<repositories>
+		<!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
+		<repository>
+			<id>cytoscape_snapshots</id>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<name>Cytoscape Snapshots</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<!-- bootstrap for cytoscape dependencies, namely the parent POM releases -->
+		<repository>
+			<id>cytoscape_releases</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<name>Cytoscape Releases</name>
+			<url>http://cytoscape.wodaklab.org/nexus/content/repositories/releases/</url>
+		</repository>
+	</repositories>
+
+	<modules>
+	  <module>cmdline-launcher</module>
+	  <module>cmdline-provision</module>
+	  <module>cmdline-logging</module>
+	</modules>
 
 </project>
