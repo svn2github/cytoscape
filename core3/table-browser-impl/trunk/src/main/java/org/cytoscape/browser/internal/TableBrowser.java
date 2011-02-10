@@ -22,17 +22,20 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.model.CyTableRowUpdateService;
 import org.cytoscape.model.events.RowCreatedMicroListener;
+import org.cytoscape.model.events.TableDeletedEvent;
 import org.cytoscape.application.swing.CytoPanelComponent;
 import org.cytoscape.application.swing.CytoPanelName;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
+import org.cytoscape.model.events.TableDeletedListener;
+import javax.swing.table.DefaultTableModel;
 
 
 @SuppressWarnings("serial")
 public class TableBrowser
-	extends JPanel implements CytoPanelComponent, ActionListener, NetworkViewAddedListener
+	extends JPanel implements CytoPanelComponent, ActionListener, NetworkViewAddedListener, TableDeletedListener
 {
 	private final CyTableManager tableManager;
 	private final CyServiceRegistrar serviceRegistrar;
@@ -96,6 +99,17 @@ public class TableBrowser
 
 	public void actionPerformed(ActionEvent e) {
 		final CyTable table = (CyTable)tableChooser.getSelectedItem();
+		if (table == null && table != currentTable){
+			if (browserTableModel != null) {
+				browserTableModel.cleanup();
+				serviceRegistrar.unregisterAllServices(browserTableModel);
+			}
+			currentTable = null;
+			browserTableModel = null;
+			browserTable.setModel(new DefaultTableModel());
+			attributeBrowserToolBar.setBrowserTableModel(null);
+		}
+		
 		if (table != null && table != currentTable) {
 			if (browserTableModel != null) {
 				browserTableModel.cleanup();
@@ -117,5 +131,11 @@ public class TableBrowser
 		final CyTable nodeTable = e.getNetworkView().getModel().getDefaultNodeTable();
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
 		comboBoxModel.addAndSetSelectedItem(nodeTable);
+	}
+	
+	public void handleEvent(TableDeletedEvent e){
+		final CyTable cyTable = e.getTable();
+		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
+		comboBoxModel.removeItem(cyTable);
 	}
 }

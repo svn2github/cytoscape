@@ -103,6 +103,27 @@ class MyComboBoxModel extends DefaultComboBoxModel {
 		}
 		setSelectedItem(newTable);
 	}
+	
+	
+	public void removeItem(CyTable deletedTable){
+		
+		if (tables.contains(deletedTable)) {
+			tables.remove(deletedTable);
+			Collections.sort(tables, tableComparator);
+			oldSet.clear();
+			for (final CyTable table : tables)
+				oldSet.add(table);
+			updateTableToStringMap();
+			this.fireIntervalRemoved(this, 0, oldSet.size()+1);
+		}
+		
+		if (oldSet.size() ==0){
+			setSelectedItem(null);			
+		}
+		else {
+			setSelectedItem(tables.get(0));
+		}
+	}
 }
 
 
