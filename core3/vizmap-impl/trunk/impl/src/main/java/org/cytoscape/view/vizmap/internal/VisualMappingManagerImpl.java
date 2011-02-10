@@ -54,7 +54,7 @@ import org.cytoscape.view.vizmap.events.VisualStyleAddedEvent;
  *
  */
 public class VisualMappingManagerImpl implements VisualMappingManager {
-	private static final String DEFAULT_STYLE_NAME = "Default";
+	public static final String DEFAULT_STYLE_NAME = "Default";
 	
 	// Default Style
 	private static final Color NODE_COLOR = new Color(0x4F, 0x94, 0xCD);

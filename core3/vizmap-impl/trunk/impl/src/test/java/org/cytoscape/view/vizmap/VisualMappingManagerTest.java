@@ -20,7 +20,7 @@ public class VisualMappingManagerTest extends AbstractVisualMappingManagerTest {
 		final VisualStyleFactory factory = mock(VisualStyleFactory.class);
 		final VisualStyle dummyDefaultStyle = mock(VisualStyle.class);
 		final VisualLexiconManager lexManager = mock(VisualLexiconManager.class);
-		when(factory.getInstance("Default")).thenReturn(dummyDefaultStyle);
+		when(factory.getInstance(VisualMappingManagerImpl.DEFAULT_STYLE_NAME)).thenReturn(dummyDefaultStyle);
 		
 		vmm = new VisualMappingManagerImpl(eventHelper, factory, lexManager);
 	}
