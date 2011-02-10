@@ -17,8 +17,9 @@
 	<!-- listeners -->
 	<osgi:service id="tableBrowserCytoPanelComponentService" ref="tableBrowser">
                 <osgi:interfaces>
-			<value>org.cytoscape.application.swing.CytoPanelComponent</value>
+						<value>org.cytoscape.application.swing.CytoPanelComponent</value>
                         <value>org.cytoscape.view.model.events.NetworkViewAddedListener</value>
+                        <value>org.cytoscape.model.events.TableDeletedListener</value>
                 </osgi:interfaces>
 	</osgi:service>
 </beans>
