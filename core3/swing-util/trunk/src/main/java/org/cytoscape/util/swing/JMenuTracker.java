@@ -1,14 +1,7 @@
 /*
   File: JMenuTracker.java
 
-  Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
-
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+  Copyright (c) 2009, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published
@@ -33,24 +26,31 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package org.cytoscape.util.swing;
+
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+
 
 /**
  * A class that creates and manages hierarchies of JMenu objects.
  */
-public class JMenuTracker {
+public final class JMenuTracker {
+	final static double USE_ALPHABETIC_ORDER = -1.0;
 
-	final private Map<String,JMenu> menuMap;
+	final private Map<String, MenuGravityTracker> menuMap;
 	final private JMenuBar rootMenuBar;
-	final private JPopupMenu rootPopupMenu;
+	final private PopupMenuGravityTracker rootPopupGravityTracker;
+	private double largeGravity = Double.MAX_VALUE / 2.0;
 
 	/**
 	 * This constructor allows you to specify a root JPopupMenu that all parent-less
@@ -58,95 +58,168 @@ public class JMenuTracker {
 	 * menus will be created, "File" and it's submenu "New".  In this situation the
 	 * "File" menu will be added to the JPopupMenu, while "New" will not.
 	 *
-	 * @param rootPopupMenu The root JPopupMenu that all parent-less JMenus will
-	 * be added to.
+	 * @param rootPopupMenu  the popup menu that all parent-less items will be added to based on
+	 *        their gravity
 	 */
-	public JMenuTracker(JPopupMenu rootPopupMenu) {
-		if ( rootPopupMenu == null )
-			throw new NullPointerException("root popupmenu for menus is null");
-		this.rootPopupMenu = rootPopupMenu;
+	public JMenuTracker(final JPopupMenu rootPopupMenu) {
+		if (rootPopupMenu == null)
+			throw new NullPointerException("root popupmenu for menus is null!");
+
+		this.rootPopupGravityTracker = new PopupMenuGravityTracker(rootPopupMenu);
 		this.rootMenuBar = null;
-		menuMap = new HashMap<String,JMenu>();
+		menuMap = new HashMap<String, MenuGravityTracker>();
 	}
 
 	/**
-	 * This constructor allows you to specify a root JMenuBar that all parent-less
+	 * This constructor allows you to specify a root menubar that all parent-less
 	 * menus will be added to.  For example, if you call getMenu("File.New") then two
 	 * menus will be created, "File" and it's submenu "New".  In this situation the
-	 * "File" menu will be added to the JMenuBar, while "New" will not.
+	 * "File" menu will be added to the JPopupMenu, while "New" will not.
 	 *
-	 * @param rootMenuBar The root JMenuBar that all parent-less JMenus will
-	 * be added to.
+	 * @param rootMenuBar  the popup menu that all parent-less items will be added to based on
+	 *        their gravity
 	 */
-	public JMenuTracker(JMenuBar rootMenuBar) {
-		if ( rootMenuBar == null )
-			throw new NullPointerException("root menubar for menus is null");
+	public JMenuTracker(final JMenuBar rootMenuBar) {
+		if (rootMenuBar == null)
+			throw new NullPointerException("root menubar for menus is null!");
+
+		this.rootPopupGravityTracker = null;
 		this.rootMenuBar = rootMenuBar;
-		this.rootPopupMenu = null;
-		menuMap = new HashMap<String,JMenu>();
-	}
-
-
-	/**
-	 * Same as below, except the child menu is always put in the last
-	 * location of the parent menu (parent_position = -1).
-	 * 
-	 * @param menu_string A '.' delimited string identifying menu names.
-	 * @return The last JMenu object specified by the menu_string parameter. 
-	 */
-	public JMenu getMenu(String menu_string) {
-		return getMenu(menu_string, -1);
+		menuMap = new HashMap<String, MenuGravityTracker>();
 	}
 
 	/**
 	 * This method will fetch an exising menu or create a new one if a menu
 	 * with the specified name does not exist. The menu name is specified
 	 * with a '.' delimited string, such that each token creates a new child
-	 * menu.
+	 * menu.  Insertion locations are determined in two possible ways: 1) a "gravity" or "weight"
+	 * may be specified in square brackets after each item name.  If the gravity has been
+	 * omitted, the insertion location will be based on a case-insensitive alphanumeric
+	 * ordering.   An example of a string using weights is "File[10].New[40]".
 	 *
 	 * @param menu_string A '.' delimited string identifying menu names.
-	 * @param parent_position The position within the parent menu at which the
-	 * child menu should be placed.
-	 * @return The last child JMenu object specified by the menu_string parameter. 
+	 * @return The last child JMenu object specified by the menu_string parameter.
 	 */
-	public JMenu getMenu(String menu_string, int parent_position) {
-		if (menu_string == null) 
+	public GravityTracker getGravityTracker(final String menu_string) {
+		if (menu_string == null)
 			throw new NullPointerException("menu string is null");
 
-		if ( menu_string.length() <= 0 )
+		if (menu_string.isEmpty())
 			throw new IllegalArgumentException("menu string has zero length");
 
-		StringTokenizer st = new StringTokenizer(menu_string, ".");
-		JMenu parent_menu = null;
-		JMenu menu = null;
+		final List<MenuNameAndGravity> namesAndGravities = parseMenuString(menu_string);
+		MenuGravityTracker parentGravityTracker = null;
+		MenuGravityTracker gravityTracker = null;
 		String menu_key = null;
 
-		while (st.hasMoreTokens()) {
-			String menu_token = st.nextToken();
+		for (final MenuNameAndGravity nameAndGravity : namesAndGravities) {
+			final String menu_token = nameAndGravity.getMenuName();
 			menu_key = menu_key == null ? menu_token : menu_key + "." + menu_token;
 
-			if (menuMap.containsKey(menu_key)) {
-				menu = menuMap.get(menu_key);
-			} else {
-				menu = new JMenu(menu_token);
-			
+			if (menuMap.containsKey(menu_key))
+				gravityTracker = menuMap.get(menu_key);
+			else {
+				final JMenu menu = new JMenu(menu_token);
+
 				// if there is a JMenu parent, use that
-				if (parent_menu != null) 
-					parent_menu.add(menu, parent_position);
-				// otherwise use add the menu to the root component 
-				else if ( rootMenuBar != null && rootPopupMenu == null ) 
+				if (parentGravityTracker != null)
+					parentGravityTracker.addMenu(menu, nameAndGravity.getGravity());
+				// otherwise use add the menu to the root component
+				else if (rootMenuBar != null && rootPopupGravityTracker == null)
 					rootMenuBar.add(menu);
-				else if ( rootMenuBar == null && rootPopupMenu != null ) 
-					rootPopupMenu.add(menu, parent_position);
+				else if (rootMenuBar == null && rootPopupGravityTracker != null)
+					rootPopupGravityTracker.addMenu(menu, nameAndGravity.getGravity());
 				else
 					throw new IllegalStateException("we have no root popup menu or menu bar!");
 
-				menuMap.put(menu_key, menu);
+				gravityTracker = new MenuGravityTracker(menu);
+				menuMap.put(menu_key, gravityTracker);
 			}
 
-			parent_menu = menu;
+			parentGravityTracker = gravityTracker;
 		}
 
-		return menu;
+		return gravityTracker;
+	}
+
+	enum ParseState {
+		LOOKING_FOR_OPENING_BRACKET, LOOKING_FOR_CLOSING_BRACKET, LOOKING_FOR_PERIOD;
+	}
+
+	final static class MenuNameAndGravity {
+		private final String menuName;
+		private final double gravity;
+
+		MenuNameAndGravity(final String menuName, final double gravity) {
+			this.menuName = menuName;
+			this.gravity  = gravity;
+		}
+
+		String getMenuName() {
+			return menuName;
+		}
+
+		double getGravity() {
+			return gravity;
+		}
+	}
+
+	static List<MenuNameAndGravity> parseMenuString(final String menuString) {
+		final List<MenuNameAndGravity> namesAndGravities = new ArrayList<MenuNameAndGravity>();
+		ParseState state = ParseState.LOOKING_FOR_OPENING_BRACKET;
+
+		StringBuilder menuName = new StringBuilder();
+		StringBuilder gravityAsString = null;
+		for (int i = 0; i < menuString.length(); ++i) {
+			final char ch = menuString.charAt(i);
+			switch (state) {
+			case LOOKING_FOR_OPENING_BRACKET:
+				if (ch == '.') {
+					if (menuName.length() == 0)
+						throw new IllegalArgumentException("zero-length menu name found!");
+					namesAndGravities.add(new MenuNameAndGravity(menuName.toString(),
+										     USE_ALPHABETIC_ORDER));
+					menuName = new StringBuilder();
+				} else if (ch == '[') {
+					gravityAsString =  new StringBuilder();
+					state = ParseState.LOOKING_FOR_CLOSING_BRACKET;
+				} else
+					menuName.append(ch);
+				break;
+			case LOOKING_FOR_CLOSING_BRACKET:
+				if (ch != ']')
+					gravityAsString.append(ch);
+				else {
+					double gravity;
+					try {
+						gravity = Double.parseDouble(gravityAsString.toString());
+					} catch (NumberFormatException e) {
+						throw new IllegalArgumentException("bad \"gravity\" in menu string! ("
+										   + menuString + ")");
+					}
+					namesAndGravities.add(new MenuNameAndGravity(menuName.toString(),
+										     gravity));
+					menuName = new StringBuilder();
+					state = ParseState.LOOKING_FOR_PERIOD;
+				}
+				break;
+			case LOOKING_FOR_PERIOD:
+				if (ch != '.')
+					throw new IllegalArgumentException("period expected in menu string! ("
+									   + menuString + ")");
+				state = ParseState.LOOKING_FOR_OPENING_BRACKET;
+				break;
+			}
+		}
+
+		if (state == ParseState.LOOKING_FOR_OPENING_BRACKET)
+			namesAndGravities.add(new MenuNameAndGravity(menuName.toString(),
+								     USE_ALPHABETIC_ORDER));
+		else if (state != ParseState.LOOKING_FOR_PERIOD)
+			throw new IllegalArgumentException("incomplete \"gravity\" specification in menu string ("
+							   + menuName + ")! ("
+							   + menuString + ")");
+
+		return namesAndGravities;
 	}
 }

@@ -27,6 +27,7 @@
 */
 package org.cytoscape.ding.impl;
 
+
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
@@ -51,9 +52,11 @@ import org.cytoscape.task.EdgeViewTaskFactory;
 import org.cytoscape.task.NetworkViewTaskFactory;
 import org.cytoscape.task.NodeViewTaskFactory;
 import org.cytoscape.util.swing.JMenuTracker;
+import org.cytoscape.util.swing.GravityTracker;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.work.TaskFactory;
+
 
 // TODO Consider generalizing this class so that it can be used by anyone
 // who needs a popup menu based on TaskFactories.
@@ -63,12 +66,13 @@ import org.cytoscape.work.TaskFactory;
  * on TaskFactory services.
  */
 class PopupMenuHelper {
+	private double largeValue = Double.MAX_VALUE / 2.0;
 
 	// provides access to the necessary task factories and managers
-	DGraphView m_view; 
+	private DGraphView m_view;
 
 	// the component we should create the popup menu on
-	Component invoker;
+	private Component invoker;
 
 	PopupMenuHelper(DGraphView v, Component inv) {
 		m_view = v;
@@ -97,7 +101,7 @@ class PopupMenuHelper {
 
 				menu.show(invoker, x, y);
 
-			// execute the task directly if only one factory exists 
+			// execute the task directly if only one factory exists
 			} else if ( usableTFs.size() == 1) {
 				EdgeViewTaskFactory tf  = usableTFs.iterator().next();
 				tf.setEdgeView(ev,m_view.cyNetworkView);
@@ -128,7 +132,7 @@ class PopupMenuHelper {
 
 				menu.show(invoker, (int)(rawPt.getX()), (int)(rawPt.getY()));
 
-			// execute the task directly if only one factory exists 
+			// execute the task directly if only one factory exists
 			} else if ( usableTFs.size() == 1) {
 				DropNodeViewTaskFactory tf  = usableTFs.iterator().next();
 				tf.setNodeView(nv,m_view.cyNetworkView);
@@ -159,7 +163,7 @@ class PopupMenuHelper {
 
 				menu.show(invoker, x, y);
 
-			// execute the task directly if only one factory exists 
+			// execute the task directly if only one factory exists
 			} else if ( usableTFs.size() == 1) {
 				NodeViewTaskFactory tf  = usableTFs.iterator().next();
 				tf.setNodeView(nv,m_view.cyNetworkView);
@@ -183,7 +187,7 @@ class PopupMenuHelper {
 				createMenuItem(null, menu, nvtf, tracker, m_view.dropEmptySpaceTFs.get( nvtf ) );
 			}
 			menu.show(invoker, (int)(rawPt.getX()), (int)(rawPt.getY()));
-		// execute the task directly if only one factory exists 
+		// execute the task directly if only one factory exists
 		} else if ( usableTFs.size() == 1) {
 			DropNetworkViewTaskFactory tf = usableTFs.iterator().next();
 			tf.setNetworkView(m_view.cyNetworkView);
@@ -205,7 +209,7 @@ class PopupMenuHelper {
 				createMenuItem(null, menu, nvtf, tracker, m_view.emptySpaceTFs.get( nvtf ) );
 			}
 			menu.show(invoker, x, y);
-		// execute the task directly if only one factory exists 
+		// execute the task directly if only one factory exists
 		} else if ( usableTFs.size() == 1) {
 			NetworkViewTaskFactory tf = usableTFs.iterator().next();
 			tf.setNetworkView(m_view.cyNetworkView);
@@ -214,23 +218,23 @@ class PopupMenuHelper {
 	}
 
 	/**
-	 * This method creates popup menu submenus and menu items based on the 
+	 * This method creates popup menu submenus and menu items based on the
 	 * "title" and "preferredMenu" keywords, depending on which are present
 	 * in the service properties.
 	 */
-	private void createMenuItem(View<?> view, JPopupMenu popup, TaskFactory tf, 
-	                            JMenuTracker tracker, Map props) { 
+	private void createMenuItem(View<?> view, JPopupMenu popup, TaskFactory tf,
+	                            JMenuTracker tracker, Map props) {
 
 		String title = (String)(props.get("title"));
 		String pref = (String)(props.get("preferredMenu"));
 		boolean useCheckBoxMenuItem = false;
-		
+
 		final Object useCheckBox = props.get("useCheckBoxMenuItem");
 		final Object targetVP = props.get("targetVP");
 		boolean isSelected = false;
 		if(view != null)
 			isSelected = view.isValueLocked((VisualProperty<?>) targetVP);
-		
+
 		if ( useCheckBox != null ) {
 			try {
 				useCheckBoxMenuItem = Boolean.parseBoolean(useCheckBox.toString());
@@ -255,26 +259,27 @@ class PopupMenuHelper {
 				popup.add( new JCheckBoxMenuItem( new PopupAction(tf, title) ) );
 			else
 				popup.add( new JMenuItem( new PopupAction(tf, title) ) );
-			
+
 		// no title, but preferred menu
 		} else if ( title == null && pref != null ) {
-			int last = pref.lastIndexOf("."); 
+			int last = pref.lastIndexOf(".");
 
 			// if the preferred menu is delimited
-			if ( last > 0 ) {
-				title = pref.substring(last+1);
-				pref = pref.substring(0,last);
-				final JMenu menu = tracker.getMenu(pref);
-				if(useCheckBoxMenuItem) {
-					final JCheckBoxMenuItem checkBox = new JCheckBoxMenuItem( new PopupAction(tf, title));
+			if (last > 0) {
+				title = pref.substring(last + 1);
+				pref = pref.substring(0, last);
+				final GravityTracker gravityTracker = tracker.getGravityTracker(pref);
+				if (useCheckBoxMenuItem) {
+					final JCheckBoxMenuItem checkBox = new JCheckBoxMenuItem(new PopupAction(tf, title));
 					checkBox.setSelected(isSelected);
-					menu.add(checkBox);					
+					gravityTracker.addMenuItem(checkBox, ++largeValue);
 				} else
-					menu.add( new JMenuItem( new PopupAction(tf, title) ) );
+					gravityTracker.addMenuItem(new JMenuItem(new PopupAction(tf, title)),
+								   ++largeValue);
 			// otherwise just use the preferred menu as the menuitem name
 			} else {
 				title = pref;
-				if(useCheckBoxMenuItem)
+				if (useCheckBoxMenuItem)
 					popup.add( new JCheckBoxMenuItem( new PopupAction(tf, title) ) );
 				else
 					popup.add( new JMenuItem( new PopupAction(tf, title) ) );
@@ -282,12 +287,14 @@ class PopupMenuHelper {
 
 		// title and preferred menu
 		} else {
-			JMenu menu = tracker.getMenu(pref);
-			if(useCheckBoxMenuItem)
-				menu.add( new JCheckBoxMenuItem( new PopupAction(tf, title) ) );
+			final GravityTracker gravityTracker = tracker.getGravityTracker(pref);
+			if (useCheckBoxMenuItem)
+				gravityTracker.addMenuItem(new JCheckBoxMenuItem(new PopupAction(tf, title)),
+							   ++largeValue);
 			else
-				menu.add( new JMenuItem( new PopupAction(tf, title) ) );
-		} 
+				gravityTracker.addMenuItem(new JMenuItem(new PopupAction(tf, title)),
+							   ++largeValue);
+		}
 	}
 
 	/**

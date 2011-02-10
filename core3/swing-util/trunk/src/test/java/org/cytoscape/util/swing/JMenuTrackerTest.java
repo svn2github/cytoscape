@@ -1,15 +1,15 @@
-
 package org.cytoscape.util.swing;
 
 import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.*;
+import java.util.List;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
 
-public class JMenuTrackerTest {
 
+public class JMenuTrackerTest {
 	JMenuTracker tracker;
 	JMenuTracker menuBarTracker;
 	JPopupMenu popup;
@@ -26,84 +26,103 @@ public class JMenuTrackerTest {
 
 	@Test(expected=NullPointerException.class)
 	public void testGetNullString() {
-		tracker.getMenu(null);
+		tracker.getGravityTracker(null);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetZeroLengthString() {
-		tracker.getMenu("");
+		tracker.getGravityTracker("");
 	}
 
 	@Test
 	public void testOneMenu() {
-		JMenu m = tracker.getMenu("File");
+		JMenu m = (JMenu)tracker.getGravityTracker("File").getMenu();
 		assertNotNull(m);
 		assertEquals("title","File",m.getText());
 	}
 
 	@Test
 	public void testSubMenu() {
-		JMenu m = tracker.getMenu("File.Import");
+		JMenu m = (JMenu)tracker.getGravityTracker("File.Import").getMenu();
 		assertNotNull(m);
 		assertEquals("title","Import",m.getText());
 	}
 
 	@Test
 	public void testSpacesInName() {
-		JMenu m = tracker.getMenu("File.Network Import");
+		JMenu m = (JMenu)tracker.getGravityTracker("File.Network Import").getMenu();
 		assertNotNull(m);
-		assertEquals("title","Network Import",m.getText());
+		assertEquals("title", "Network Import", m.getText());
 	}
 
 	@Test
 	public void testBasicMenuOrder() {
-		JMenu file = tracker.getMenu("File");
-		JMenu first = tracker.getMenu("File.First");
-		JMenu second = tracker.getMenu("File.Second");
+		JMenu file = (JMenu)tracker.getGravityTracker("File").getMenu();
+		JMenu first = (JMenu)tracker.getGravityTracker("File.First").getMenu();
+		JMenu second = (JMenu)tracker.getGravityTracker("File.Second").getMenu();
 
-		assertEquals("num sub menus",2,file.getItemCount());
-		assertEquals("first sub menu",first,file.getItem(0));
-		assertEquals("second sub menu",second,file.getItem(1));
+		assertEquals("num sub menus",2, file.getItemCount());
+		assertEquals("first sub menu", first, file.getItem(0));
+		assertEquals("second sub menu", second, file.getItem(1));
 	}
 
 	@Test
-	public void testMenuOrderSpecification() {
-		JMenu file = tracker.getMenu("File");
-		JMenu first = tracker.getMenu("File.First",0);
-		// using the same parent position should put 
-		// the second menu item before the first
-		JMenu second = tracker.getMenu("File.Second",0);
+	public void testMenuOrderSpecificationUsingWeights() {
+		JMenu file = (JMenu)tracker.getGravityTracker("File").getMenu();
+		JMenu first = (JMenu)tracker.getGravityTracker("File.First[10]").getMenu();
+		JMenu second = (JMenu)tracker.getGravityTracker("File.Second[5]").getMenu();
 
-		assertEquals("num sub menus",2,file.getItemCount());
-		assertEquals("first sub menu",first,file.getItem(1));
-		assertEquals("second sub menu",second,file.getItem(0));
+		assertEquals("num sub menus", 2, file.getItemCount());
+		assertEquals("first sub menu", first, file.getItem(1));
+		assertEquals("second sub menu", second, file.getItem(0));
+	}
+
+	@Test
+	public void testMenuOrderSpecificationUsingAlphabeticalOrder() {
+		JMenu file = (JMenu)tracker.getGravityTracker("File").getMenu();
+		JMenu second = (JMenu)tracker.getGravityTracker("File.Second").getMenu();
+		JMenu first = (JMenu)tracker.getGravityTracker("File.First").getMenu();
+		JMenu third = (JMenu)tracker.getGravityTracker("File.Third").getMenu();
+
+		assertEquals("num sub menus", 3, file.getItemCount());
+		assertEquals("first sub menu", first, file.getItem(0));
+		assertEquals("second sub menu", second, file.getItem(1));
+		assertEquals("third sub menu", third, file.getItem(2));
 	}
 
 	@Test
 	public void testPopupContainsFirst() {
-		JMenu file = tracker.getMenu("File");
-
+		JMenu file = (JMenu)tracker.getGravityTracker("File").getMenu();
 		assertTrue("popup contains menu", popup.getComponentIndex(file) >= 0 );
 	}
 
 	@Test
 	public void testPopupDoesntContainChildren() {
-		JMenu imp = tracker.getMenu("File.Import");
-
+		JMenu imp = (JMenu)tracker.getGravityTracker("File.Import").getMenu();
 		assertTrue("popup contains menu", popup.getComponentIndex(imp) < 0 );
 	}
 
 	@Test
 	public void testMenuBarContainsFirst() {
-		JMenu file = menuBarTracker.getMenu("File");
-
+		JMenu file = (JMenu)menuBarTracker.getGravityTracker("File").getMenu();
 		assertTrue("menubar contains menu", menuBar.getComponentIndex(file) >= 0 );
 	}
 
 	@Test
 	public void testMenuBarDoesntContainChildren() {
-		JMenu imp = menuBarTracker.getMenu("File.Import");
-
+		JMenu imp = (JMenu)menuBarTracker.getGravityTracker("File.Import").getMenu();
 		assertTrue("menubar contains menu", menuBar.getComponentIndex(imp) < 0 );
+	}
+
+	@Test
+	public void testMenuStringParsing() {
+		List<JMenuTracker.MenuNameAndGravity> namesAndGravities = JMenuTracker.parseMenuString("AAA.B[10].CC[22]");
+		assertEquals(3, namesAndGravities.size());
+		assertEquals("AAA", namesAndGravities.get(0).getMenuName());
+		assertEquals(JMenuTracker.USE_ALPHABETIC_ORDER, namesAndGravities.get(0).getGravity(), 0.0);
+		assertEquals("B", namesAndGravities.get(1).getMenuName());
+		assertEquals(10.0, namesAndGravities.get(1).getGravity(), 0.0);
+		assertEquals("CC", namesAndGravities.get(2).getMenuName());
+		assertEquals(22.0, namesAndGravities.get(2).getGravity(), 0.0);
 	}
 }

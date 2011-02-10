@@ -49,45 +49,45 @@ public class CytoscapeMenus {
 		this.menuBar = menuBar; 
 		this.toolBar = toolBar; 
 
-		menuBar.addMenu("File",0.0f);
-		menuBar.addMenu("File.New",0.0f);
-		menuBar.addMenu("File.New.Network",0.0f);
-		menuBar.addMenu("File.Import",5.0f);
-		menuBar.addMenu("File.Export",5.1f);
-		menuBar.addMenu("Edit",0.0f);
-		menuBar.addMenu("View",0.0f);
-		menuBar.addMenu("Select",0.0f);
-		menuBar.addMenu("Select.Nodes",1.0f);
-		menuBar.addMenu("Select.Edges",1.1f);
-		menuBar.addMenu("Layout",0.0f);
-		menuBar.addMenu("Plugins",0.0f);
-		menuBar.addMenu("Tools",0.0f);
-		menuBar.addMenu("Help",0.0f);
+		menuBar.addMenu("File",0.0);
+		menuBar.addMenu("File.New",0.0);
+		menuBar.addMenu("File.New.Network",0.0);
+		menuBar.addMenu("File.Import",5.0);
+		menuBar.addMenu("File.Export",5.1);
+		menuBar.addMenu("Edit",0.0);
+		menuBar.addMenu("View",0.0);
+		menuBar.addMenu("Select",0.0);
+		menuBar.addMenu("Select.Nodes",1.0);
+		menuBar.addMenu("Select.Edges",1.1);
+		menuBar.addMenu("Layout",0.0);
+		menuBar.addMenu("Plugins",0.0);
+		menuBar.addMenu("Tools",0.0);
+		menuBar.addMenu("Help",0.0);
 
-		menuBar.addSeparator("File",2.0f);
-		menuBar.addSeparator("File",4.0f);
-		menuBar.addSeparator("File",6.0f);
-		menuBar.addSeparator("File",8.0f);
+		menuBar.addSeparator("File",2.0);
+		menuBar.addSeparator("File",4.0);
+		menuBar.addSeparator("File",6.0);
+		menuBar.addSeparator("File",8.0);
 
-		menuBar.addSeparator("Edit",2.0f);
-		menuBar.addSeparator("Edit",4.0f);
-		menuBar.addSeparator("Edit",6.0f);
+		menuBar.addSeparator("Edit",2.0);
+		menuBar.addSeparator("Edit",4.0);
+		menuBar.addSeparator("Edit",6.0);
 
-		menuBar.addSeparator("View",2.0f);
-		menuBar.addSeparator("View",4.0f);
-		menuBar.addSeparator("View",6.0f);
+		menuBar.addSeparator("View",2.0);
+		menuBar.addSeparator("View",4.0);
+		menuBar.addSeparator("View",6.0);
 
-		menuBar.addSeparator("Select",2.0f);
-		menuBar.addSeparator("Select",4.0f);
-		menuBar.addSeparator("Select",6.0f);
+		menuBar.addSeparator("Select",2.0);
+		menuBar.addSeparator("Select",4.0);
+		menuBar.addSeparator("Select",6.0);
 
-		menuBar.addSeparator("Layout",2.0f);
-		menuBar.addSeparator("Layout",4.0f);
-		menuBar.addSeparator("Layout",6.0f);
+		menuBar.addSeparator("Layout",2.0);
+		menuBar.addSeparator("Layout",4.0);
+		menuBar.addSeparator("Layout",6.0);
 
-		menuBar.addSeparator("Plugins",2.0f);
+		menuBar.addSeparator("Plugins",2.0);
 
-		menuBar.addSeparator("Help",2.0f);
+		menuBar.addSeparator("Help",2.0);
 
 		toolBar.addSeparator(2.0f);
 		toolBar.addSeparator(4.0f);
