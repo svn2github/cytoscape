@@ -120,7 +120,7 @@ public class CyNetworkManagerImpl implements CyNetworkManager {
 	}
 	
 	@Override
-	public synchronized void addNetwork(final CyNetwork network) {
+	public void addNetwork(final CyNetwork network) {
 		if (network == null)
 			throw new NullPointerException("Network is null");
 
