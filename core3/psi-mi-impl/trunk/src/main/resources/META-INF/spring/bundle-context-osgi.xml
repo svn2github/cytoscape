@@ -7,6 +7,9 @@
 
 	<!-- Import OSGi services -->
 
+	<osgi:reference id="cyLayoutsServiceRef" 
+	                interface="org.cytoscape.view.layout.CyLayouts" />
+
 	<osgi:reference id="cyNetworkFactoryServiceRef"
 	                interface="org.cytoscape.model.CyNetworkFactory" />
 
@@ -16,12 +19,20 @@
 	<osgi:reference id="streamUtilRef"
 	                interface="org.cytoscape.io.util.StreamUtil" />
 
-	<osgi:service id="sbmlNetworkViewReaderFactoryService" ref="sbmlNetworkViewTaskFactory"
+	<osgi:service id="psiNetworkViewReaderFactoryService" ref="psiMiNetworkViewTaskFactory"
 		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
-			<entry key="serviceType" value="sbmlNetworkViewTaskFactory" />
-			<entry key="readerId" value="sbmlNetworkViewReader" />
-			<entry key="readerDescription" value="SBML file reader" />
+			<entry key="serviceType" value="psiMiNetworkViewTaskFactory" />
+			<entry key="readerId" value="psiMiNetworkViewReader" />
+			<entry key="readerDescription" value="PSI-MI Level 1/2.5 file reader" />
 		</osgi:service-properties>
+	</osgi:service>
+	
+	<osgi:service id="psiMi1NetworkViewWriterFactoryService" ref="psiMi1NetworkViewWriterFactory"
+		interface="org.cytoscape.io.write.CyNetworkViewWriterFactory">
+	</osgi:service>
+	
+	<osgi:service id="psiMi25NetworkViewWriterFactoryService" ref="psiMi25NetworkViewWriterFactory"
+		interface="org.cytoscape.io.write.CyNetworkViewWriterFactory">
 	</osgi:service>
 </beans>
