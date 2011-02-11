@@ -34,7 +34,7 @@ import org.cytoscape.work.AbstractTask;
 
 /** A base class for Tasks that need to operate on an entire CyTable column. */
 public abstract class AbstractTableColumnTask extends AbstractTask {
-	private final CyColumn column;
+	protected final CyColumn column;
 
 	/** Initialises a Task that needs to operate on a CyTable column.
 	 *  @param column  a non-null CyColumn
