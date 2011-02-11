@@ -109,15 +109,16 @@ class MyComboBoxModel extends DefaultComboBoxModel {
 		
 		if (tables.contains(deletedTable)) {
 			tables.remove(deletedTable);
-			Collections.sort(tables, tableComparator);
+			
 			oldSet.clear();
-			for (final CyTable table : tables)
-				oldSet.add(table);
-			updateTableToStringMap();
-			this.fireIntervalRemoved(this, 0, oldSet.size()+1);
+			if (tables.size() != 0){
+				Collections.sort(tables, tableComparator);				
+				for (final CyTable table : tables)
+					oldSet.add(table);
+			}
 		}
-		
-		if (oldSet.size() ==0){
+
+		if (tables.size() == 0){
 			setSelectedItem(null);			
 		}
 		else {

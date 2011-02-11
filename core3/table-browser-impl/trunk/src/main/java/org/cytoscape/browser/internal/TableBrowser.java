@@ -29,13 +29,14 @@ import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.util.swing.OpenBrowser;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
-import org.cytoscape.model.events.TableDeletedListener;
+import org.cytoscape.model.events.TableAboutToBeDeletedListener;
+import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
 import javax.swing.table.DefaultTableModel;
 
 
 @SuppressWarnings("serial")
 public class TableBrowser
-	extends JPanel implements CytoPanelComponent, ActionListener, NetworkViewAddedListener, TableDeletedListener
+	extends JPanel implements CytoPanelComponent, ActionListener, NetworkViewAddedListener, TableAboutToBeDeletedListener
 {
 	private final CyTableManager tableManager;
 	private final CyServiceRegistrar serviceRegistrar;
@@ -133,7 +134,7 @@ public class TableBrowser
 		comboBoxModel.addAndSetSelectedItem(nodeTable);
 	}
 	
-	public void handleEvent(TableDeletedEvent e){
+	public void handleEvent(TableAboutToBeDeletedEvent e){
 		final CyTable cyTable = e.getTable();
 		final MyComboBoxModel comboBoxModel = (MyComboBoxModel)tableChooser.getModel();
 		comboBoxModel.removeItem(cyTable);
