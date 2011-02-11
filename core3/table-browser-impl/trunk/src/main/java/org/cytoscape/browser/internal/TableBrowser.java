@@ -32,7 +32,8 @@ import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.model.events.TableAboutToBeDeletedListener;
 import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
 import javax.swing.table.DefaultTableModel;
-
+import org.cytoscape.task.table.TableTaskFactory;
+import org.cytoscape.work.swing.GUITaskManager;
 
 @SuppressWarnings("serial")
 public class TableBrowser
@@ -48,19 +49,28 @@ public class TableBrowser
 	private final TableChooser tableChooser;
 	private BrowserTableModel browserTableModel;
 	private CyTable currentTable;
-
+	private final TableTaskFactory deleteTableTaskFactoryService;
+	private final GUITaskManager guiTaskManagerServiceRef;
+	
 	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
 		     final CyEventHelper eventHelper, final EqnCompiler compiler,
 		     final OpenBrowser openBrowser, final CyNetworkManager networkManager,
-		     final CyTableRowUpdateService tableRowUpdateService)
+		     final CyTableRowUpdateService tableRowUpdateService, 
+		     final TableTaskFactory deleteTableTaskFactoryService,
+		     final GUITaskManager guiTaskManagerServiceRef)
 	{
 		this.tableManager = tableManager;
 		this.serviceRegistrar = serviceRegistrar;
 		this.eventHelper = eventHelper;
 		this.compiler = compiler;
+
+		this.deleteTableTaskFactoryService = deleteTableTaskFactoryService;
+		this.guiTaskManagerServiceRef = guiTaskManagerServiceRef;
+		
 		this.browserTable = new BrowserTable(openBrowser, compiler);
 		this.tableRowUpdateService = tableRowUpdateService;
-		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar, compiler, tableManager);
+		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar, compiler, 
+				this.deleteTableTaskFactoryService, this.guiTaskManagerServiceRef);
 		this.setLayout(new BorderLayout());
 
 		browserTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

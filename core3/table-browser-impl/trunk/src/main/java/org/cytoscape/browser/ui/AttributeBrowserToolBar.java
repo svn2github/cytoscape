@@ -72,7 +72,9 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.service.util.CyServiceRegistrar;
+import org.cytoscape.task.table.TableTaskFactory;
 import org.cytoscape.util.swing.CheckBoxJList;
+import org.cytoscape.work.swing.GUITaskManager;
 
 
 public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener {
@@ -111,13 +113,19 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 	private AttributeListModel attrListModel;
 	private final EqnCompiler compiler;
-	private final CyTableManager tableManager;
-
+	//private final CyTableManager tableManager;
+	private final TableTaskFactory deleteTableTaskFactoryService;
+	private final GUITaskManager guiTaskManagerServiceRef;
+	
 	public AttributeBrowserToolBar(final CyServiceRegistrar serviceRegistrar,
-				       final EqnCompiler compiler, final CyTableManager tableManager)
+				       final EqnCompiler compiler, final 
+				       TableTaskFactory deleteTableTaskFactoryService,
+				       GUITaskManager guiTaskManagerServiceRef)
 	{
 		this.compiler = compiler;
-		this.tableManager = tableManager;
+		//this.tableManager = tableManager;
+		this.deleteTableTaskFactoryService = deleteTableTaskFactoryService;
+		this.guiTaskManagerServiceRef = guiTaskManagerServiceRef;
 		this.attrListModel = new AttributeListModel(null);
 		serviceRegistrar.registerAllServices(attrListModel, new Properties());
 
@@ -686,7 +694,10 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			// if user selects yes delete the table
 			if (_confirmValue == JOptionPane.OK_OPTION)
 			{
-				this.tableManager.deleteTable(table.getSUID());
+				deleteTableTaskFactoryService.setTable(table);
+				guiTaskManagerServiceRef.execute(deleteTableTaskFactoryService);
+				
+				//this.tableManager.deleteTable(table.getSUID());
 			}						
 		}
 		else if (table.getMutability() == CyTable.Mutability.PERMANENTLY_IMMUTABLE){

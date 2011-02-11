@@ -13,7 +13,10 @@
 	<osgi:reference id="openBrowserServiceRef" interface="org.cytoscape.util.swing.OpenBrowser" />
 	<osgi:reference id="cyTableRowUpdateServiceRef" interface="org.cytoscape.model.CyTableRowUpdateService" />
         <osgi:reference id="cyNetworkManagerServiceRef" interface="org.cytoscape.model.CyNetworkManager" />
-
+        
+        <osgi:reference id="deleteTableTaskFactoryService" interface="org.cytoscape.task.table.TableTaskFactory" />
+        <osgi:reference id="guiTaskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager" />
+        
 	<!-- listeners -->
 	<osgi:service id="tableBrowserCytoPanelComponentService" ref="tableBrowser">
                 <osgi:interfaces>
