@@ -580,4 +580,8 @@
 			<entry key="iconName" value="/images/apply-force-directed-layout-32.png"/>
 		</osgi:service-properties>
 	</osgi:service>
+
+	<osgi:service id="renameColumnTaskFactoryService" ref="renameColumnTaskFactory"
+		interface="org.cytoscape.task.table.TableColumnTaskFactory">
+	</osgi:service>
 </beans>

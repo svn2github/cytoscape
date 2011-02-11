@@ -28,24 +28,46 @@
 package org.cytoscape.task.internal.table;
 
 
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.model.CyColumn;
-import org.cytoscape.task.table.TableColumnTaskFactory;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.task.table.AbstractTableColumnTask;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.Tunable;
+import org.cytoscape.work.TunableValidator;
 
 
-/**
- * The assumption is that setColumn() will be called before getTask() and that the Task in question
- * operates on the specified CyColumn. 
- */
-abstract public class AbstractTableColumnTaskFactory implements TableColumnTaskFactory {
-	protected CyColumn column;
+final class RenameColumnTask extends AbstractTableColumnTask implements TunableValidator {
+	@Tunable(description="New column name:")
+	public String newColumnName;
 
-	/** Used to provision this factory with a {@param CyColumn} that will be used to create tasks.
-	 *  @param column a non-null CyColumn
-	 */
-	public void setColumn(final CyColumn column) {
-		if (column == null)
-			throw new NullPointerException("\"column\" parameter must *never* be null!");
-		this.column = column;
+	RenameColumnTask(final CyColumn column) {
+		super(column);
+	}
+
+	@Override
+	public void run(final TaskMonitor taskMonitor) throws Exception {
+		column.setName(newColumnName);
+	}
+
+	@Override
+	public boolean tunablesAreValid(final Appendable errMsg) {
+		if (newColumnName == null || newColumnName.isEmpty()) {
+			try {
+				errMsg.append("You must provide a new column name!");
+			} catch (Exception e) {
+			}
+			return false;
+		}
+
+		final CyTable table = column.getTable();
+		if (table.getColumn(column.getName()) != null) {
+			try {
+				errMsg.append("Column name is a duplicate!");
+			} catch (Exception e) {
+			}
+			return false;
+		}
+
+		return true;
 	}
 }

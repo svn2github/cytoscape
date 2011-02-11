@@ -28,24 +28,12 @@
 package org.cytoscape.task.internal.table;
 
 
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.model.CyColumn;
-import org.cytoscape.task.table.TableColumnTaskFactory;
+import org.cytoscape.work.TaskIterator;
 
 
-/**
- * The assumption is that setColumn() will be called before getTask() and that the Task in question
- * operates on the specified CyColumn. 
- */
-abstract public class AbstractTableColumnTaskFactory implements TableColumnTaskFactory {
-	protected CyColumn column;
-
-	/** Used to provision this factory with a {@param CyColumn} that will be used to create tasks.
-	 *  @param column a non-null CyColumn
-	 */
-	public void setColumn(final CyColumn column) {
-		if (column == null)
-			throw new NullPointerException("\"column\" parameter must *never* be null!");
-		this.column = column;
+public final class RenameColumnTaskFactory extends AbstractTableColumnTaskFactory {
+	@Override
+	public TaskIterator getTaskIterator() {
+		return new TaskIterator(new RenameColumnTask(column));
 	}
 }
