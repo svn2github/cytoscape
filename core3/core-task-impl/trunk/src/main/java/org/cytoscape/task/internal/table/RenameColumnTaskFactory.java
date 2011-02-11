@@ -34,6 +34,8 @@ import org.cytoscape.work.TaskIterator;
 public final class RenameColumnTaskFactory extends AbstractTableColumnTaskFactory {
 	@Override
 	public TaskIterator getTaskIterator() {
+		if (column == null)
+			throw new IllegalStateException("you forgot to set the CyColumn on this task factory!");
 		return new TaskIterator(new RenameColumnTask(column));
 	}
 }
