@@ -40,6 +40,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTable.Mutability;
 import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
 import org.cytoscape.model.events.TableDeletedEvent;
 
 
@@ -130,7 +131,15 @@ public class CyTableManagerImpl implements CyTableManager {
 
 	@Override
 	public void deleteTable(final long suid) {
-		final CyTableImpl table;
+		CyTableImpl table;
+		synchronized(this) {
+			table = (CyTableImpl)tables.get(suid);
+			if (table == null)
+				return;
+		}
+
+		eventHelper.fireSynchronousEvent(new TableAboutToBeDeletedEvent(this, table));
+
 		synchronized(this) {
 			table = (CyTableImpl)tables.get(suid);
 			if (table == null)
@@ -142,6 +151,6 @@ public class CyTableManagerImpl implements CyTableManager {
 			table.removeAllVirtColumns();
 			tables.remove(suid);
 		}
-		eventHelper.fireSynchronousEvent(new TableDeletedEvent(this, table));
+		eventHelper.fireSynchronousEvent(new TableDeletedEvent(this));
 	}
 }

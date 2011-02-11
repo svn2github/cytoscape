@@ -28,16 +28,17 @@
 package org.cytoscape.model.events;
 
 
-import org.cytoscape.event.AbstractCyEvent;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 
 
-/** This event signals that a table has been deleted. */
-public final class TableDeletedEvent extends AbstractCyEvent<CyTableManager> {
+/** This event signals that a table is about to be deleted. */
+public final class TableAboutToBeDeletedEvent extends AbstractTableEvent {
 	/**
 	 * @param source  the table manager
+	 * @param table   the table in which is about to be deleted from the table manager
 	 */
-	public TableDeletedEvent(final CyTableManager source) {
-		super(source, TableDeletedListener.class);
+	public TableAboutToBeDeletedEvent(final CyTableManager source, final CyTable table) {
+		super(source, TableAboutToBeDeletedListener.class, table);
 	}
 }
