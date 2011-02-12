@@ -45,8 +45,6 @@ import java.util.StringTokenizer;
  * A class that creates and manages hierarchies of JMenu objects.
  */
 public final class JMenuTracker {
-	final static double USE_ALPHABETIC_ORDER = -1.0;
-
 	final private Map<String, MenuGravityTracker> menuMap;
 	final private JMenuBar rootMenuBar;
 	final private PopupMenuGravityTracker rootPopupGravityTracker;
@@ -178,7 +176,7 @@ public final class JMenuTracker {
 					if (menuName.length() == 0)
 						throw new IllegalArgumentException("zero-length menu name found!");
 					namesAndGravities.add(new MenuNameAndGravity(menuName.toString(),
-										     USE_ALPHABETIC_ORDER));
+										     GravityTracker.USE_ALPHABETIC_ORDER));
 					menuName = new StringBuilder();
 				} else if (ch == '[') {
 					gravityAsString =  new StringBuilder();
@@ -214,7 +212,7 @@ public final class JMenuTracker {
 
 		if (state == ParseState.LOOKING_FOR_OPENING_BRACKET)
 			namesAndGravities.add(new MenuNameAndGravity(menuName.toString(),
-								     USE_ALPHABETIC_ORDER));
+								     GravityTracker.USE_ALPHABETIC_ORDER));
 		else if (state != ParseState.LOOKING_FOR_PERIOD)
 			throw new IllegalArgumentException("incomplete \"gravity\" specification in menu string ("
 							   + menuName + ")! ("

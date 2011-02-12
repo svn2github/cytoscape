@@ -89,7 +89,7 @@ public final class MenuGravityTracker implements GravityTracker {
 	}
 
         private int getInsertLocation(final String newMenuText, final double newGravity) {
-		if (newGravity == JMenuTracker.USE_ALPHABETIC_ORDER) {
+		if (newGravity == GravityTracker.USE_ALPHABETIC_ORDER) {
 			for (int i = 0; i < menu.getMenuComponentCount(); ++i) {
 				final Component item = menu.getMenuComponent(i);
 				if (item instanceof JMenu) {

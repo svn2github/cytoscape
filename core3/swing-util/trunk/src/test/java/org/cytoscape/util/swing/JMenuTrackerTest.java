@@ -119,7 +119,7 @@ public class JMenuTrackerTest {
 		List<JMenuTracker.MenuNameAndGravity> namesAndGravities = JMenuTracker.parseMenuString("AAA.B[10].CC[22]");
 		assertEquals(3, namesAndGravities.size());
 		assertEquals("AAA", namesAndGravities.get(0).getMenuName());
-		assertEquals(JMenuTracker.USE_ALPHABETIC_ORDER, namesAndGravities.get(0).getGravity(), 0.0);
+		assertEquals(GravityTracker.USE_ALPHABETIC_ORDER, namesAndGravities.get(0).getGravity(), 0.0);
 		assertEquals("B", namesAndGravities.get(1).getMenuName());
 		assertEquals(10.0, namesAndGravities.get(1).getGravity(), 0.0);
 		assertEquals("CC", namesAndGravities.get(2).getMenuName());

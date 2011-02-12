@@ -91,7 +91,7 @@ public final class PopupMenuGravityTracker implements GravityTracker {
 	}
 
         private int getInsertLocation(final String newMenuText, final double newGravity) {
-		if (newGravity == JMenuTracker.USE_ALPHABETIC_ORDER) {
+		if (newGravity == GravityTracker.USE_ALPHABETIC_ORDER) {
 			for (int i = 0; i < menu.getComponentCount(); ++i) {
 				final Component item = menu.getComponent(i);
 				if (item instanceof JMenu) {

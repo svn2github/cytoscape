@@ -40,6 +40,8 @@ import javax.swing.JMenuItem;
  *  will appear further down the menu.
  */
 public interface GravityTracker {
+	final static double USE_ALPHABETIC_ORDER = -1.0;
+
 	/** Returns the JPopupMenu or JMenu that this gravity tracker tracks.
 	 *  @return the JPopupMenu or JMenu that this gravity tracker tracks
 	 */
@@ -48,6 +50,7 @@ public interface GravityTracker {
 	/** Adds a new menu item into a position based on "gravity" of the new item.
 	 *  @param newMenuItem  the new item to insert into the menu
 	 *  @param gravity      the weight determining the insert position
+	 *         (use USE_ALPHABETIC_ORDER if you want alphabetic ordering)
 	 */
 	void addMenuItem(final JMenuItem newMenuItem, final double gravity);
 
