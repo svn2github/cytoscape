@@ -28,11 +28,13 @@
 package org.cytoscape.browser.internal;
 
 
+import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.TableCellRenderer;
+import org.cytoscape.model.CyColumn;
 
 
 final class MyTableHeaderRenderer extends JLabel implements TableCellRenderer {
@@ -54,10 +56,20 @@ final class MyTableHeaderRenderer extends JLabel implements TableCellRenderer {
 		// Configure the component with the specified value
 		setText(value.toString());
 
+		BrowserTableModel model = (BrowserTableModel)table.getModel();
+		CyColumn col = model.getAttributes().getColumn(value.toString());
+		
+        String toolTip = col.getType().getName();
+		if(col.isVirtual()){
+			this.setForeground(Color.cyan);
+			this.setBackground(Color.red);
+			this.setOpaque(true);
+			toolTip = "<html>" + col.getType().getName()+ "<br />Virtual Column</html>";
+		}
+
 		// Set tool tip if desired
-		//setToolTipText((String)value);
-
-
+        this.setToolTipText(toolTip);
+		
 		// Since the renderer is a component, return itself
 		return this;
 
