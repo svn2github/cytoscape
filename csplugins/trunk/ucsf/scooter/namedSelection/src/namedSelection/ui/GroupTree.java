@@ -145,7 +145,12 @@ public class GroupTree extends JTree implements TreeSelectionListener,
 		if (pathArray != null) {
 			for (int path = 0; path < pathArray.length; path++) {
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode)pathArray[path].getLastPathComponent();
-				CyNode nodeObject = (CyNode)node.getUserObject();
+				CyNode nodeObject = null;
+				Object obj = node.getUserObject();
+				if (obj instanceof CyNode) 
+					nodeObject = (CyNode)obj;
+				else if (obj instanceof CyGroup) 
+					nodeObject = ((CyGroup)obj).getGroupNode();
 				if (nodeObject.isaGroup()) {
 					groupList.add(CyGroupManager.getCyGroup(nodeObject));
 				}

@@ -77,6 +77,31 @@ public class StructureCommands {
 		return result;
 	}
 
+	static public CyCommandResult openCommand(Chimera chimera, CyCommandResult result, String nodelist,
+	                                          String pdb, boolean showDialog) throws CyCommandException {
+		String [] nodes = nodelist.split(",");
+		for (String nodeName: nodes) {
+			CyNode node = Cytoscape.getCyNode(nodeName);
+			String structureNames = CyChimera.getStructureName(nodeName.trim());
+			if (structureNames != null) {
+				for (String struct: structureNames.split(",")) {
+					if (struct.trim().equals(pdb)) {
+						result = openCommand(chimera, result, struct, null, null, showDialog);
+						// Get the model we created
+						ChimeraModel model = chimera.getModel(struct);
+						Structure modelStruct = model.getStructure();
+						// Now, associate the node with the structure
+						if (node != null)
+							modelStruct.setNode(node);
+						return result;
+					}
+				}
+			}
+		}
+		result.addMessage("No structures named "+pdb+" in node "+nodelist);
+		return result;
+	}
+
 
 	static public CyCommandResult openCommand(Chimera chimera, CyCommandResult result, 
 	                                          String pdb, String modbase, String smiles, boolean showDialog) 

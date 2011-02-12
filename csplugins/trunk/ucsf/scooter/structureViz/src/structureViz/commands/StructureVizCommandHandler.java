@@ -71,7 +71,8 @@ enum Command {
 	DEPICT("depict", "Change the depiction of a structure",
 	                 "preset|style|ribbonstyle|surfacestyle|transparency|structurelist|atomspec=selected"),
 	EXIT("exit", "Exit Chimera",null),
-	FINDCLASHES("find clashes", "Find clashes between two models or parts of models","structurelist|atomspec=selected|continuous=true"),
+	FINDCLASHES("find clashes", "Find clashes between two models or parts of models",
+	            "structurelist|atomspec=selected|continuous=true"),
 	FINDHBONDS("find hbonds", "Find hydrogen bonds between two models or parts of models",
 	           "structurelist|atomspec=selected|limit=any|intramodel=true|intermodel=true"),
 	FOCUS("focus", "Focus on a structure or part of a structure","structurelist|atomspec"),
@@ -80,7 +81,8 @@ enum Command {
 	LISTRES("list residues", "List the residues in a structure", "structurelist=all|chainlist"),
 	LISTSELMODELS("list selected models", "List all of the currently selected models",null),
 	LISTSELCHAINS("list selected chains", "List all of the currently selected chains","structurelist=all"),
-	LISTSELRESIDUES("list selected residues", "List all of the currently selected residues","structurelist=all|chainlist"),
+	LISTSELRESIDUES("list selected residues", "List all of the currently selected residues",
+	                "structurelist=all|chainlist"),
 	LISTSTRUCTURES("list structures", "List all of the open structures",null),
 	MOVE("move", "Move (translate) a model","x|y|z|structurelist=selected"),
 	OPENSTRUCTURE("open structure", "Open a new structure in Chimera","pdbid|modbaseid|nodelist|showdialog=false"),
@@ -415,7 +417,9 @@ public class StructureVizCommandHandler extends AbstractCommandHandler {
 			if (pdb == null && modbaseid == null && smiles == null && nodelist == null)
 				throw new CyCommandException("One of nodelist, pdbid, modbaseid, or smiles must be specified");
 
-			if (nodelist != null) {
+			if (nodelist != null && pdb != null) {
+				return StructureCommands.openCommand(chimera, result, nodelist, pdb, showDialog);
+			} else if (nodelist != null) {
 				return StructureCommands.openCommand(chimera, result, nodelist, showDialog);
 			} else
 				return StructureCommands.openCommand(chimera, result, pdb, modbaseid, smiles, showDialog);

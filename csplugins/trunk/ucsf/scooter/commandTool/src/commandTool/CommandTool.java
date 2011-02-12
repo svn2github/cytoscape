@@ -79,6 +79,7 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 	private String lastDirectory = ".";
 	public static MessageHandler handlerContext = null;
 	private boolean initialized = true;
+	private JMenuItem runMenu = null;
 
 	public static void setMessageHandlerContext(MessageHandler handler) {
 		handlerContext = handler;
@@ -100,10 +101,10 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 		dialog.setActionCommand(WINDOW);
 		dialog.addActionListener(this);
 		menu.add(dialog);
-		JMenuItem run = new JMenuItem("Run Script...");
-		run.setActionCommand(RUN);
-		run.addActionListener(this);
-		menu.add(run);
+		runMenu = new JMenuItem("Run Script...");
+		runMenu.setActionCommand(RUN);
+		runMenu.addActionListener(this);
+		menu.add(runMenu);
 
 		/*
 		 * Add this in the future when we have settings...
@@ -194,6 +195,8 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 			chooser.setFileFilter(filter);
 			int returnVal = chooser.showOpenDialog(Cytoscape.getDesktop());
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
+				// Disable Run command so we don't get into a recursion loop
+				runMenu.setEnabled(false);
 				// Run it
 				LogMessageHandler mHandler = new LogMessageHandler(logger);
 				CommandTool.setMessageHandlerContext(mHandler);
@@ -203,6 +206,7 @@ public class CommandTool extends CytoscapePlugin implements ActionListener,Prope
 					JOptionPane.showMessageDialog(chooser, "Can't find file: "+chooser.getSelectedFile(),
 					                                "File Not Found",JOptionPane.ERROR_MESSAGE);
 				}
+				runMenu.setEnabled(true);
 				lastDirectory = chooser.getSelectedFile().getParent();
 			}
 		} else if (command.equals(SETTINGS)) {

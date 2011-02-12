@@ -78,25 +78,26 @@ public class VizCommandHandler extends ClusterMakerCommandHandler {
 	public CyCommandResult execute(String command, Collection<Tunable>args)
                                                       throws CyCommandException {
 		CyCommandResult result = new CyCommandResult();
-		if (vizMap.containsKey(command)) {
-			// Get the algorithm
-			ClusterViz viz = vizMap.get(command);
-			ClusterProperties props = viz.getSettings();
+		for (String vizname: vizMap.keySet()) {
+			if (command.equalsIgnoreCase(vizname)) {
+				// Get the algorithm
+				ClusterViz viz = vizMap.get(vizname);
+				ClusterProperties props = viz.getSettings();
+	
+				viz.updateSettings(true);
 
-			viz.updateSettings(true);
-
-			try {
-				setTunables(props, args);
-				viz.startViz();
-			} catch (Exception e) {
-				result.addError(e.getMessage());
+				try {
+					setTunables(props, args);
+					viz.startViz();
+				} catch (Exception e) {
+					result.addError(e.getMessage());
+				}
 				return result;
 			}
 			//??
-		} else {
-			// Throw
 		}
 
+		result.addError("clusterviz: unknown visualizer "+command);
 		return result;
 	}
 }
