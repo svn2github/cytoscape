@@ -28,30 +28,37 @@
 package org.cytoscape.task.internal.table;
 
 
-import org.cytoscape.work.TaskFactory;
+import java.util.List;
+
 import org.cytoscape.model.CyColumn;
-import org.cytoscape.task.table.TableCellTaskFactory;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.task.table.AbstractTableCellTask;
+import org.cytoscape.work.TaskMonitor;
 
 
-/**
- * The assumption is that setColumnAndPrimaryKey() will be called before getTask() and that the Task
- * in question operates on the specified table entry identified by the column and primary key value.'
- */
-abstract public class AbstractTableCellTaskFactory implements TableCellTaskFactory {
-	protected CyColumn column;
-	protected Object primaryKeyValue;
+final class CopyValueToEntireColumnTask extends AbstractTableCellTask {
+	CopyValueToEntireColumnTask(final CyColumn column, final Object primaryKeyValue) {
+		super(column, primaryKeyValue);
+	}
 
-	/** Used to provision this factory with a {@param CyColumn} and a primary key that will be
-	 *  used to create tasks.
-	 *  @param column  a non-null CyColumn
-	 *  @param primaryKeyValue  a non-null primary key value
-	 */
-	public void setColumnAndPrimaryKey(final CyColumn column, final Object primaryKeyValue) {
-		if (column == null)
-			throw new  NullPointerException("\"column\" parameter must *never* be null!");
-		this.column = column;
-		if (primaryKeyValue == null)
-			throw new NullPointerException("\"primaryKeyValue\" parameter must *never* be null!");
-		this.primaryKeyValue = primaryKeyValue;
+	@Override
+	public void run(final TaskMonitor taskMonitor) throws Exception {
+		taskMonitor.setTitle("Copying...");
+
+		final CyRow sourceRow = column.getTable().getRow(primaryKeyValue);
+		final String columnName = column.getName();
+		final Object sourceValue = sourceRow.getRaw(columnName);
+
+		final List<CyRow> rows = column.getTable().getAllRows();
+		final int total = rows.size() - 1;
+		int count = 0;
+		for (final CyRow row : rows) {
+			if (row == sourceRow)
+				continue;
+			row.set(columnName, sourceValue);
+			if ((++count % 1000) == 0)
+				taskMonitor.setProgress((100.0 * count) / total);
+		}
 	}
 }

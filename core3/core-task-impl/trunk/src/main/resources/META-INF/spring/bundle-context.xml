@@ -299,8 +299,12 @@
 	<bean id="renameColumnTaskFactory"
 	      class="org.cytoscape.task.internal.table.RenameColumnTaskFactory">
 	</bean>
+
+	<bean id="copyValueToEntireColumnTaskFactory"
+	      class="org.cytoscape.task.internal.table.CopyValueToEntireColumnTaskFactory">
+	</bean>
 	
-		<bean id="deleteTableTaskFactory"
+	<bean id="deleteTableTaskFactory"
 	      class="org.cytoscape.task.internal.table.DeleteTableTaskFactory">
 		   <constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>

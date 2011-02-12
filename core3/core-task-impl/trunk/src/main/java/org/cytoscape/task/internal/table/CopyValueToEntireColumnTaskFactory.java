@@ -28,30 +28,18 @@
 package org.cytoscape.task.internal.table;
 
 
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.model.CyColumn;
-import org.cytoscape.task.table.TableCellTaskFactory;
+import org.cytoscape.task.table.AbstractTableCellTask;
+import org.cytoscape.work.TaskIterator;
 
 
-/**
- * The assumption is that setColumnAndPrimaryKey() will be called before getTask() and that the Task
- * in question operates on the specified table entry identified by the column and primary key value.'
- */
-abstract public class AbstractTableCellTaskFactory implements TableCellTaskFactory {
-	protected CyColumn column;
-	protected Object primaryKeyValue;
-
-	/** Used to provision this factory with a {@param CyColumn} and a primary key that will be
-	 *  used to create tasks.
-	 *  @param column  a non-null CyColumn
-	 *  @param primaryKeyValue  a non-null primary key value
-	 */
-	public void setColumnAndPrimaryKey(final CyColumn column, final Object primaryKeyValue) {
+final class CopyValueToEntireColumnTaskFactory extends AbstractTableCellTaskFactory {
+	@Override
+	public TaskIterator getTaskIterator() {
 		if (column == null)
-			throw new  NullPointerException("\"column\" parameter must *never* be null!");
-		this.column = column;
+			throw new IllegalStateException("\"column\" was not set!");
 		if (primaryKeyValue == null)
-			throw new NullPointerException("\"primaryKeyValue\" parameter must *never* be null!");
-		this.primaryKeyValue = primaryKeyValue;
+			throw new IllegalStateException("\"primaryKeyValue\" was not set!");
+		return new TaskIterator(new CopyValueToEntireColumnTask(column, primaryKeyValue));
 	}
 }
