@@ -52,6 +52,7 @@ import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
+import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.VisualStyleSerializer;
@@ -61,7 +62,7 @@ import org.slf4j.LoggerFactory;
 public class VisualStyleSerializerImpl implements VisualStyleSerializer {
 
     private final VisualStyleFactory visualStyleFactory;
-    private final VisualStyle defaultStyle;
+    private final VisualMappingManager visualMappingManager;
     private final VisualMappingFunctionFactory discreteMappingFactory;
     private final VisualMappingFunctionFactory continuousMappingFactory;
     private final VisualMappingFunctionFactory passthroughMappingFactory;
@@ -79,16 +80,17 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
     }
 
     public VisualStyleSerializerImpl(VisualStyleFactory visualStyleFactory,
+                                     VisualMappingManager visualMappingManager,
                                      VisualMappingFunctionFactory discreteMappingFactory,
                                      VisualMappingFunctionFactory continuousMappingFactory,
                                      VisualMappingFunctionFactory passthroughMappingFactory,
                                      RenderingEngineManager renderingEngineManager) {
         this.visualStyleFactory = visualStyleFactory;
+        this.visualMappingManager = visualMappingManager;
         this.discreteMappingFactory = discreteMappingFactory;
         this.continuousMappingFactory = continuousMappingFactory;
         this.passthroughMappingFactory = passthroughMappingFactory;
         this.renderingEngineManager = renderingEngineManager;
-        this.defaultStyle = visualStyleFactory.getInstance(VisualMappingManagerImpl.DEFAULT_STYLE_NAME);
     }
 
     public Properties createProperties(Collection<VisualStyle> styles) {
@@ -99,6 +101,7 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
     public Collection<VisualStyle> createVisualStyles(Properties props) {
         Set<VisualStyle> styles = new HashSet<VisualStyle>();
         VisualLexicon lexicon = renderingEngineManager.getDefaultVisualLexicon();
+        VisualStyle defaultStyle = visualMappingManager.getDefaultVisualStyle();
 
         if (lexicon == null) {
             // TODO: warning
@@ -106,7 +109,7 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
         }
 
         if (props != null) {
-            // 1. Group properties keys/values by visual style name:
+            // Group properties keys/values by visual style name:
             Map<String, Map<String, String>> styleNamesMap = new Hashtable<String, Map<String, String>>();
 
             for (String key : props.stringPropertyNames()) {
@@ -140,14 +143,21 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
                 }
             }
 
-            // 2. Modify the default style:
-            // TODO
-
-            // 3. Create a Visual Style for each style name:
+            // Create a Visual Style for each style name:
             for (Entry<String, Map<String, String>> entry : styleNamesMap.entrySet()) {
-                // Each new style should be created from the default one
-                VisualStyle vs = visualStyleFactory.getInstance(defaultStyle);
-                vs.setTitle(entry.getKey());
+                String styleName = entry.getKey();
+                // Each new style should be created from the default one:
+                VisualStyle vs = null;
+
+                if (styleName.equalsIgnoreCase(VisualMappingManagerImpl.DEFAULT_STYLE_NAME)) {
+                    // If loading the default style, do not create another one,
+                    // but just modify the current default object!
+                    vs = defaultStyle;
+                    // TODO: delete mappings?
+                } else {
+                    vs = visualStyleFactory.getInstance(defaultStyle);
+                    vs.setTitle(styleName);
+                }
 
                 // Create and set the visual properties and mappings:
                 Map<String, String> vsProps = entry.getValue();
@@ -165,7 +175,8 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
                     }
                 }
 
-                styles.add(vs);
+                // Do not add the modified default style to the list!
+                if (!vs.equals(defaultStyle)) styles.add(vs);
             }
         }
 

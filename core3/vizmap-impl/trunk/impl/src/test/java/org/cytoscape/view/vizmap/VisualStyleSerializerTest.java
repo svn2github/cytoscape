@@ -9,7 +9,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.awt.Color;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
@@ -19,7 +18,6 @@ import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngineManager;
 import org.cytoscape.view.presentation.property.NullVisualProperty;
 import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
-import org.cytoscape.view.vizmap.internal.VisualMappingManagerImpl;
 import org.cytoscape.view.vizmap.internal.VisualStyleSerializerImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +34,7 @@ public class VisualStyleSerializerTest extends AbstractVisualStyleSerializerTest
         styleNames = new Hashtable<VisualStyle, String>();
         styleProperties = new Hashtable<VisualStyle, Map<VisualProperty<?>, ? extends Object>>();
 
+        final VisualMappingManager visualMappingManager = mock(VisualMappingManager.class);
         final VisualMappingFunctionFactory discreteMappingFactory = mock(VisualMappingFunctionFactory.class);
         final VisualMappingFunctionFactory continuousMappingFactory = mock(VisualMappingFunctionFactory.class);
         final VisualMappingFunctionFactory passthroughMappingFactory = mock(VisualMappingFunctionFactory.class);
@@ -43,7 +42,7 @@ public class VisualStyleSerializerTest extends AbstractVisualStyleSerializerTest
 
         final VisualStyleFactory visualStyleFactory = mock(VisualStyleFactory.class);
 
-        when(visualStyleFactory.getInstance(VisualMappingManagerImpl.DEFAULT_STYLE_NAME)).thenReturn(dummyDefaultStyle);
+        when(visualMappingManager.getDefaultVisualStyle()).thenReturn(dummyDefaultStyle);
         when(visualStyleFactory.getInstance(dummyDefaultStyle)).thenAnswer(new Answer<VisualStyle>() {
 
             public VisualStyle answer(InvocationOnMock invocation) throws Throwable {
@@ -55,7 +54,7 @@ public class VisualStyleSerializerTest extends AbstractVisualStyleSerializerTest
         NullVisualProperty twoDRoot = new NullVisualProperty("TWO_D_ROOT", "2D Root Visual Property");
         when(renderingEngineManager.getDefaultVisualLexicon()).thenReturn(new TwoDVisualLexicon(twoDRoot));
 
-        serializer = new VisualStyleSerializerImpl(visualStyleFactory, discreteMappingFactory,
+        serializer = new VisualStyleSerializerImpl(visualStyleFactory, visualMappingManager, discreteMappingFactory,
                                                    continuousMappingFactory, passthroughMappingFactory,
                                                    renderingEngineManager);
     }
@@ -81,10 +80,10 @@ public class VisualStyleSerializerTest extends AbstractVisualStyleSerializerTest
             assertTrue(title.equals(styleNames.get(vs)));
 
             if (title.equals("Style A")) {
-//                assertEquals(new Color(255, 255, 255), vs.getDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT));
-//                assertEquals(new Double(2), vs.getDefaultValue(TwoDVisualLexicon.EDGE_WIDTH));
+                //                assertEquals(new Color(255, 255, 255), vs.getDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT));
+                //                assertEquals(new Double(2), vs.getDefaultValue(TwoDVisualLexicon.EDGE_WIDTH));
             } else if (title.equals("Style B")) {
-//                assertEquals(new Color(0, 255, 0), vs.getDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT));
+                //                assertEquals(new Color(0, 255, 0), vs.getDefaultValue(TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT));
             }
         }
     }
