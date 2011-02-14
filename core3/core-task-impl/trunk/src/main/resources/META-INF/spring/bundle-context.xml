@@ -295,7 +295,7 @@
 		<constructor-arg ref="cyLayoutsServiceRef" />
 		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
-<!--
+
 	<bean id="renameColumnTaskFactory"
 	      class="org.cytoscape.task.internal.table.RenameColumnTaskFactory">
 	</bean>
@@ -308,5 +308,4 @@
 	      class="org.cytoscape.task.internal.table.DeleteTableTaskFactory">
 		   <constructor-arg ref="cyTableManagerServiceRef" />
 	</bean>
--->
 </beans>

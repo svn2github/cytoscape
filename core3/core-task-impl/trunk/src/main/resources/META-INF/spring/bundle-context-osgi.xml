@@ -581,7 +581,6 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-<!--
 	<osgi:service id="renameColumnTaskFactoryService" ref="renameColumnTaskFactory"
 		interface="org.cytoscape.task.table.TableColumnTaskFactory">
 		<osgi:service-properties>
@@ -598,5 +597,4 @@
 	<osgi:service id="deleteTableTaskFactoryService" ref="deleteTableTaskFactory"
 		interface="org.cytoscape.task.table.TableTaskFactory">
 	</osgi:service>
--->
 </beans>
