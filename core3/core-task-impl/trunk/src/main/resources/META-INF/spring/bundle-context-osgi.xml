@@ -587,7 +587,6 @@
 			<entry key="menuLabel" value="Rename column" />
 		</osgi:service-properties>
 	</osgi:service>
-<<<<<<< .mine
 
 	<osgi:service id="copyValueToEntireColumnTaskFactoryService" ref="copyValueToEntireColumnTaskFactory"
 		interface="org.cytoscape.task.table.TableCellTaskFactory">
@@ -595,11 +594,8 @@
 			<entry key="menuLabel" value="Copy to entire column" />
 		</osgi:service-properties>
 	</osgi:service>
-=======
 
 	<osgi:service id="deleteTableTaskFactoryService" ref="deleteTableTaskFactory"
 		interface="org.cytoscape.task.table.TableTaskFactory">
 	</osgi:service>
-
->>>>>>> .r24108
 </beans>
