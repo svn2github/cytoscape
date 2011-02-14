@@ -164,9 +164,9 @@ public final class BrowserTableModel extends AbstractTableModel
 		return getValidatedObjectAndEditString(row, columnName);
 	}
  
-	Class<?> getColumnType(final int columnIndex)  {
+	CyColumn getColumn(final int columnIndex)  {
 		final String columnName = getColumnName(columnIndex);
-		return attrs.getColumn(columnName).getType();
+		return attrs.getColumn(columnName);
 	}
 
 	private CyRow mapRowIndexToRow(final int rowIndex) {

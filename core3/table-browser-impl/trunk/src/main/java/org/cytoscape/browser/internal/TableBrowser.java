@@ -57,7 +57,8 @@ public class TableBrowser
 		     final OpenBrowser openBrowser, final CyNetworkManager networkManager,
 		     final CyTableRowUpdateService tableRowUpdateService, 
 		     final TableTaskFactory deleteTableTaskFactoryService,
-		     final GUITaskManager guiTaskManagerServiceRef)
+		     final GUITaskManager guiTaskManagerServiceRef,
+		     final PopupMenuHelper popupMenuHelper)
 	{
 		this.tableManager = tableManager;
 		this.serviceRegistrar = serviceRegistrar;
@@ -67,7 +68,7 @@ public class TableBrowser
 		this.deleteTableTaskFactoryService = deleteTableTaskFactoryService;
 		this.guiTaskManagerServiceRef = guiTaskManagerServiceRef;
 		
-		this.browserTable = new BrowserTable(openBrowser, compiler);
+		this.browserTable = new BrowserTable(openBrowser, compiler, popupMenuHelper);
 		this.tableRowUpdateService = tableRowUpdateService;
 		this.attributeBrowserToolBar = new AttributeBrowserToolBar(serviceRegistrar, compiler, 
 				this.deleteTableTaskFactoryService, this.guiTaskManagerServiceRef);

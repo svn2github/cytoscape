@@ -75,10 +75,14 @@ public class BrowserTable extends JTable
 
 	private final OpenBrowser openBrowser;
 	private final EqnCompiler compiler;
+	private final PopupMenuHelper popupMenuHelper;
 
-	public BrowserTable(final OpenBrowser openBrowser, final EqnCompiler compiler) {
-		this.openBrowser = openBrowser;
-		this.compiler = compiler;
+	public BrowserTable(final OpenBrowser openBrowser, final EqnCompiler compiler,
+			    final PopupMenuHelper popupMenuHelper)
+	{
+		this.openBrowser     = openBrowser;
+		this.compiler        = compiler;
+		this.popupMenuHelper = popupMenuHelper;
 
 //		setColumnModel(new MyTableColumnModel());
 		initHeader();
@@ -107,7 +111,8 @@ public class BrowserTable extends JTable
 
 		setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-		final TableModel tableModel = getModel();
+		final BrowserTableModel tableModel = (BrowserTableModel)getModel();
+		final BrowserTable table = this;
 
 		//
 		// Event handler. Define actions when mouse is clicked.
@@ -125,11 +130,23 @@ public class BrowserTable extends JTable
 					if (column >= tableModel.getColumnCount() || row >= tableModel.getRowCount())
 						return;
 
-					final ValidatedObjectAndEditString objectAndEditString = (ValidatedObjectAndEditString)getValueAt(row, column);
+					final ValidatedObjectAndEditString objectAndEditString =
+						(ValidatedObjectAndEditString)getValueAt(row, column);
 //					getSelected();
 
 					// If action is right click, then show edit pop-up menu
-					if ((SwingUtilities.isRightMouseButton(e)) || (isMacPlatform() && e.isControlDown())){
+					if ((SwingUtilities.isRightMouseButton(e))
+					    || (isMacPlatform() && e.isControlDown()))
+					{
+						final CyColumn cyColumn = tableModel.getColumn(column);
+						final Object primaryKeyValue =
+							((ValidatedObjectAndEditString)tableModel.getValueAt(row, 0))
+							.getValidatedObject();
+						popupMenuHelper.createTableCellMenu(cyColumn,
+										    primaryKeyValue,
+										    table, e.getX(),
+										    e.getY());
+						/*
 						if (objectAndEditString != null) {
 							rightClickPopupMenu.remove(rightClickPopupMenu.getComponentCount() - 1);
 							final Object validatedObject = objectAndEditString.getValidatedObject();
@@ -137,6 +154,7 @@ public class BrowserTable extends JTable
 								rightClickPopupMenu.add(new HyperLinkOut(validatedObject.toString(), linkoutProps, openBrowser));
 							rightClickPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 						}
+						*/
 					} else if (SwingUtilities.isLeftMouseButton(e) && (getSelectedRows().length != 0)) {
 						
 						showListContents(e);
@@ -271,7 +289,7 @@ public class BrowserTable extends JTable
 		final int row = this.getSelectedRow();
 
 		final BrowserTableModel model = (BrowserTableModel)getModel();
-		final Class<?> columnType = model.getColumnType(column);
+		final Class<?> columnType = model.getColumn(column).getType();
 
 		if (columnType == List.class) {
 			final ValidatedObjectAndEditString value =

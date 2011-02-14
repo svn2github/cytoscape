@@ -35,5 +35,10 @@
 		<constructor-arg ref="cyTableRowUpdateServiceRef" />
 		<constructor-arg ref="deleteTableTaskFactoryService" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
+		<constructor-arg ref="popupMenuHelper" />
+	</bean>
+
+	<bean id="popupMenuHelper" class="org.cytoscape.browser.internal.PopupMenuHelper">
+		<constructor-arg ref="guiTaskManagerServiceRef" />
 	</bean>
 </beans>
