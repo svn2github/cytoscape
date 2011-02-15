@@ -28,12 +28,14 @@ import org.cytoscape.model.events.ColumnCreatedEvent;
 import org.cytoscape.model.events.ColumnCreatedListener;
 import org.cytoscape.model.events.ColumnDeletedEvent;
 import org.cytoscape.model.events.ColumnDeletedListener;
+import org.cytoscape.model.events.ColumnNameChangedEvent;
+import org.cytoscape.model.events.ColumnNameChangedListener;
 import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
 import org.cytoscape.service.util.CyServiceRegistrar;
 
 
 public final class BrowserTableModel extends AbstractTableModel
-	implements ColumnCreatedListener, ColumnDeletedListener, CyTableRowUpdateMicroListener
+	implements ColumnCreatedListener, ColumnDeletedListener, ColumnNameChangedListener, CyTableRowUpdateMicroListener
 {
 	private static final int EOF = -1;
 	private static final int MAX_INITIALLY_VSIBLE_ATTRS = 10;
@@ -272,6 +274,17 @@ public final class BrowserTableModel extends AbstractTableModel
 	}
 
 	@Override
+	public void handleEvent(final ColumnNameChangedEvent e) {
+		if (e.getSource() != attrs)
+			return;
+
+		final String newColumnName = e.getNewColumnName();
+		renameColumnName(e.getOldColumnName(), newColumnName);
+		final int column = mapColumnNameToColumnIndex(newColumnName);
+		table.getColumnModel().getColumn(column).setHeaderValue(newColumnName);
+	}
+
+	@Override
 	public void handleRowCreations(final CyTable table, final List<CyRow> newRows) {
 		fireTableDataChanged();
 	}
@@ -286,6 +299,17 @@ public final class BrowserTableModel extends AbstractTableModel
 	@Override
 	public String getColumnName(final int column) {
 		return mapColumnIndexToColumnName(column);
+	}
+
+	private void renameColumnName(final String oldName, final String newName) {
+		for (final AttrNameAndVisibility nameAndVisibility : attrNamesAndVisibilities) {
+			if (nameAndVisibility.getName().equals(oldName)) {
+				nameAndVisibility.setName(newName);
+				return;
+			}
+		}
+
+		throw new IllegalStateException("We should *never* get here!");
 	}
 
 	private int mapColumnNameToColumnIndex(final String columnName) {
@@ -806,8 +830,8 @@ public final class BrowserTableModel extends AbstractTableModel
 }
 
 
-class AttrNameAndVisibility {
-	private final String attrName;
+final class AttrNameAndVisibility {
+	private String attrName;
 	private boolean isVisible;
 
 	AttrNameAndVisibility(final String attrName, final boolean isVisible) {
@@ -817,6 +841,10 @@ class AttrNameAndVisibility {
 
 	String getName() {
 		return attrName;
+	}
+
+	void setName(final String newAttrName) {
+		attrName = newAttrName;
 	}
 
 	void setVisibility(final boolean isVisible) {

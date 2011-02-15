@@ -111,7 +111,6 @@ public class BrowserTable extends JTable
 
 		setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-		final TableModel tableModel = getModel();
 		final BrowserTable table = this;
 
 		//
@@ -126,6 +125,7 @@ public class BrowserTable extends JTable
 					if (column == 0)
 						return;
 
+					final BrowserTableModel tableModel = (BrowserTableModel)table.getModel();
 					// Make sure the column and row we're clicking on actually exists!
 					if (column >= tableModel.getColumnCount() || row >= tableModel.getRowCount())
 						return;
@@ -139,23 +139,14 @@ public class BrowserTable extends JTable
 					    || (isMacPlatform() && e.isControlDown()))
 					{
 						final CyColumn cyColumn =
-							((BrowserTableModel)tableModel).getColumn(column);
+							tableModel.getColumn(column);
 						final Object primaryKeyValue =
-							((ValidatedObjectAndEditString)((BrowserTableModel)tableModel).getValueAt(row, 0))
+							((ValidatedObjectAndEditString)tableModel.getValueAt(row, 0))
 							.getValidatedObject();
 						popupMenuHelper.createTableCellMenu(cyColumn,
 										    primaryKeyValue,
 										    table, e.getX(),
 										    e.getY());
-						/*
-						if (objectAndEditString != null) {
-							rightClickPopupMenu.remove(rightClickPopupMenu.getComponentCount() - 1);
-							final Object validatedObject = objectAndEditString.getValidatedObject();
-							if (validatedObject != null)
-								rightClickPopupMenu.add(new HyperLinkOut(validatedObject.toString(), linkoutProps, openBrowser));
-							rightClickPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-						}
-						*/
 					} else if (SwingUtilities.isLeftMouseButton(e) && (getSelectedRows().length != 0)) {
 						
 						showListContents(e);
@@ -447,128 +438,6 @@ public class BrowserTable extends JTable
 				}
 			});
 
-/*
-		copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					copyToClipBoard();
-				}
-			});
-
-		copyToCurrentSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					copyToCurrentSelection();
-				}
-			});
-
-		copyFormulaToCurrentSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(final ActionEvent e) {
-					copyFormulaToCurrentSelection();
-				}
-			});
-
-		copyToEntireAttributeMenuItem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(final ActionEvent e) {
-					copyToEntireAttribute();
-				}
-			});
-
-		copyFormulaToEntireAttributeMenuItem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(final ActionEvent e) {
-					copyFormulaToEntireAttribute();
-				}
-			});
-
-		exportCellsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(final ActionEvent e) {
-					export(false);
-				}
-			});
-
-		exportTableMenuItem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(final ActionEvent e) {
-					export(true);
-				}
-			});
-
-		selectAllMenuItem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(final ActionEvent e) {
-					selectAll();
-				}
-			});
-
-		newSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(final ActionEvent e) {
-					final int idLocation = getIdColumn();
-					final Map<String, GraphObject> selectedMap = paintNodesAndEdges(idLocation);
-					final CyNetwork curNet = Cytoscape.getCurrentNetwork();
-
-					final List<GraphObject> nonSelectedObjects = new ArrayList<GraphObject>();
-
-					GraphObject fromMap;
-
-					if (objectType == NODES) {
-						for (Object curNode : curNet.getSelectedNodes()) {
-							fromMap = selectedMap.get(((Node) curNode).getIdentifier());
-
-							if (fromMap == null) {
-								nonSelectedObjects.add((GraphObject) curNode);
-							}
-						}
-
-						resetObjectColor(idLocation);
-						curNet.setSelectedNodeState(nonSelectedObjects, false);
-					} else {
-						for (Object curEdge : curNet.getSelectedEdges()) {
-							fromMap = selectedMap.get(((Edge) curEdge).getIdentifier());
-
-							if (fromMap == null) {
-								nonSelectedObjects.add((GraphObject) curEdge);
-							}
-						}
-
-						resetObjectColor(idLocation);
-						curNet.setSelectedEdgeState(nonSelectedObjects, false);
-					}
-
-					if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-						Cytoscape.getCurrentNetworkView().updateView();
-					}
-				}
-			});
-
-		coloringMenuItem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
-						if (coloringMenuItem.isSelected() == true) {
-							setNewRenderer(true);
-						} else {
-							setNewRenderer(false);
-						}
-					}
-				}
-			});
-
-		exportMenu.add(exportCellsMenuItem);
-		exportMenu.add(exportTableMenuItem);
-
-		if (objectType != NETWORK)
-			rightClickPopupMenu.add(newSelectionMenuItem);
-
-		rightClickPopupMenu.add(openFormulaBuilderMenuItem);
-		rightClickPopupMenu.add(copyMenuItem);
-		rightClickPopupMenu.add(copyToCurrentSelectionMenuItem);
-		rightClickPopupMenu.add(copyFormulaToCurrentSelectionMenuItem);
-		rightClickPopupMenu.add(copyToEntireAttributeMenuItem);
-		rightClickPopupMenu.add(copyFormulaToEntireAttributeMenuItem);
-		rightClickPopupMenu.add(selectAllMenuItem);
-		rightClickPopupMenu.add(exportMenu);
-
-		if (objectType != NETWORK) {
-			rightClickPopupMenu.addSeparator();
-			rightClickPopupMenu.add(coloringMenuItem);
-		}
-*/
-
 		return rightClickPopupMenu;
 	}
 
@@ -609,7 +478,7 @@ public class BrowserTable extends JTable
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent event) {
+	public void mouseClicked(final MouseEvent event) {
 		final int cursorType = getTableHeader().getCursor().getType();
 		if (event.getButton() == MouseEvent.BUTTON3) {
 			final int column = getColumnModel().getColumnIndexAtX(event.getX());
@@ -623,8 +492,8 @@ public class BrowserTable extends JTable
 			if (column == 0)
 				return;
 
-//			mouseX = event.getX();
-			rightClickHeaderPopupMenu.show(event.getComponent(), event.getX(), event.getY());
+			final CyColumn cyColumn = tableModel.getColumn(column);
+			popupMenuHelper.createColumnHeaderMenu(cyColumn, this, event.getX(), event.getY());
 		}
 	}
 
