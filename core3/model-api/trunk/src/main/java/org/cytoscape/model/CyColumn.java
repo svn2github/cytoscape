@@ -54,7 +54,7 @@ public interface CyColumn {
 	boolean isPrimaryKey();
 
 	/** @return true if the column is immutable i.e. cannot be deleted, otherwise false.
-	 *  Please not that this does not affect the ability to add or modify values in this column!
+	 *  Please note that this does not affect the ability to add or modify values in this column!
 	 */
 	boolean isImmutable();
 
