@@ -5,5 +5,4 @@
 
 Spring-Context: META-INF/spring/*.xml
 Private-Package: org.cytoscape.task.internal.*
-Private-Package: org.cytoscape.task.internal.table.*
 
