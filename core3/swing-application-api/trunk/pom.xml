@@ -54,6 +54,7 @@
 			<groupId>cytoscape-sun</groupId>
 			<artifactId>jhall</artifactId>
 			<version>1.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
