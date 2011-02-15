@@ -113,12 +113,10 @@ public class RestoreImageTask implements Task {
 		// Load metadata first.
 		final Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream(new File(imageHomeDirectory,
-					METADATA_FILE)));
-			logger.info("Custom Graphics Image property file loaded from: "
-					+ imageHomeDirectory);
+			prop.load(new FileInputStream(new File(imageHomeDirectory, METADATA_FILE)));
+			logger.info("Custom Graphics Image property file loaded from: " + imageHomeDirectory);
 		} catch (Exception e) {
-			logger.error("Custom Graphics Metadata was not found.  This is normal for the first time.");
+			logger.info("Custom Graphics Metadata was not found. (This is normal for the first time.)");
 			// Restore process is not necessary.
 			return;
 		}
