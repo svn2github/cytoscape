@@ -49,23 +49,17 @@ import org.slf4j.LoggerFactory;
 public class CytoscapeMenuBar extends JMenuBar {
 	private final static long serialVersionUID = 1202339868642259L;
 	private final static Logger logger = LoggerFactory.getLogger(CytoscapeMenuBar.class);
-	public static final String DEFAULT_MENU_SPECIFIER = "Tools";
-	private double largeValue = Double.MAX_VALUE / 2.0;
-	protected Set actionMembersSet = null;
-	protected Map<Action,JMenuItem> actionMenuItemMap = null;
-	protected JMenuTracker menuTracker;
+	private final Map<Action,JMenuItem> actionMenuItemMap; 
+	private final JMenuTracker menuTracker;
 
-	/**
-	 * The Menu-&gt;Integer "effective last index"
-	 * Map for Menus with menu items that want to be at the end.
-	 */
-	protected Map<JMenu,Integer> menuEffectiveLastIndexMap = null;
+	public static final String DEFAULT_MENU_SPECIFIER = "Tools";
+
+	private double largeValue = Double.MAX_VALUE / 2.0;
 
 	/**
 	 * Default constructor.
 	 */
 	public CytoscapeMenuBar() {
-		menuEffectiveLastIndexMap = new HashMap<JMenu,Integer>();
 		actionMenuItemMap = new HashMap<Action,JMenuItem>();
 		menuTracker = new JMenuTracker(this);
 
@@ -81,25 +75,21 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 * preferredMenu property, or null if it does not have that property.
 	 */
 	public boolean addAction(final CyAction action) {
-		String menu_name = null;
-
-		if (action.isInMenuBar())
-			menu_name = action.getPreferredMenu();
-		else
+		if (!action.isInMenuBar())
 			return false;
 
 		// At present we allow an Action to be in this menu bar only once.
-		JMenuItem menu_item = null;
-		if (actionMenuItemMap != null)
-			menu_item = actionMenuItemMap.get(action);
-		if (menu_item != null)
+		if ( actionMenuItemMap.containsKey(action) )
 			return false;
 
+		String menu_name = action.getPreferredMenu();
+		if (menu_name == null || menu_name.isEmpty())
+			menu_name = DEFAULT_MENU_SPECIFIER;
 		final GravityTracker gravityTracker = menuTracker.getGravityTracker(menu_name);
-		menu_item = createMenuItem(action);
+		final JMenuItem menu_item = createMenuItem(action);
 
 		// Add an Accelerator Key, if wanted
-		KeyStroke accelerator = action.getAcceleratorKeyStroke();
+		final KeyStroke accelerator = action.getAcceleratorKeyStroke();
 		if (accelerator != null)
 			menu_item.setAccelerator(accelerator);
 
@@ -127,9 +117,6 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 *  DEFAULT_MENU_SPECIFIER.
 	 */
 	public boolean removeAction(CyAction action) {
-		if (actionMenuItemMap == null)
-			return false;
-
 		JMenuItem menu_item = actionMenuItemMap.remove(action);
 		if (menu_item == null)
 			return false;

@@ -121,5 +121,10 @@
 			<artifactId>presentation-api</artifactId>
 			<version>3.0.0-alpha2</version>
 		</dependency>
+        <dependency>
+            <groupId>cytoscape-sun</groupId>
+            <artifactId>jhall</artifactId>
+            <version>1.0</version>
+        </dependency>
 	</dependencies>
 </project>
