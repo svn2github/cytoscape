@@ -111,7 +111,7 @@ public class BrowserTable extends JTable
 
 		setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-		final BrowserTableModel tableModel = (BrowserTableModel)getModel();
+		final TableModel tableModel = getModel();
 		final BrowserTable table = this;
 
 		//
@@ -138,9 +138,10 @@ public class BrowserTable extends JTable
 					if ((SwingUtilities.isRightMouseButton(e))
 					    || (isMacPlatform() && e.isControlDown()))
 					{
-						final CyColumn cyColumn = tableModel.getColumn(column);
+						final CyColumn cyColumn =
+							((BrowserTableModel)tableModel).getColumn(column);
 						final Object primaryKeyValue =
-							((ValidatedObjectAndEditString)tableModel.getValueAt(row, 0))
+							((ValidatedObjectAndEditString)((BrowserTableModel)tableModel).getValueAt(row, 0))
 							.getValidatedObject();
 						popupMenuHelper.createTableCellMenu(cyColumn,
 										    primaryKeyValue,
