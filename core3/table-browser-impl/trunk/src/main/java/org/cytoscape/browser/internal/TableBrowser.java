@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.Icon;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 import org.cytoscape.browser.ui.AttributeBrowserToolBar;
@@ -31,9 +32,9 @@ import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.model.events.TableAboutToBeDeletedListener;
 import org.cytoscape.model.events.TableAboutToBeDeletedEvent;
-import javax.swing.table.DefaultTableModel;
-import org.cytoscape.task.table.TableTaskFactory;
+import org.cytoscape.task.TableTaskFactory;
 import org.cytoscape.work.swing.GUITaskManager;
+
 
 @SuppressWarnings("serial")
 public class TableBrowser

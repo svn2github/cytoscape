@@ -72,7 +72,7 @@ import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.service.util.CyServiceRegistrar;
-import org.cytoscape.task.table.TableTaskFactory;
+import org.cytoscape.task.TableTaskFactory;
 import org.cytoscape.util.swing.CheckBoxJList;
 import org.cytoscape.work.swing.GUITaskManager;
 

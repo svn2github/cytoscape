@@ -45,8 +45,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import org.cytoscape.model.CyColumn;
-import org.cytoscape.task.table.TableCellTaskFactory;
-import org.cytoscape.task.table.TableColumnTaskFactory;
+import org.cytoscape.task.TableCellTaskFactory;
+import org.cytoscape.task.TableColumnTaskFactory;
 import org.cytoscape.util.swing.JMenuTracker;
 import org.cytoscape.util.swing.GravityTracker;
 import org.cytoscape.util.swing.PopupMenuGravityTracker;
