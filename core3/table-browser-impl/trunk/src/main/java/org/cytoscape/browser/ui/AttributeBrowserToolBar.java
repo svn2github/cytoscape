@@ -732,12 +732,11 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 
 	private String[] getAttributeArray() {
 		final CyTable attrs = browserTableModel.getAttributes();
-		final CyColumn primaryKey = attrs.getPrimaryKey();
 		final Collection<CyColumn> columns = attrs.getColumns();
 		final String[] attributeArray = new String[columns.size() - 1];
 		int index = 0;
 		for (final CyColumn column : columns) {
-			if (!column.getName().equals(primaryKey))
+			if (!column.isPrimaryKey())
 				attributeArray[index++] = column.getName();
 		}
 		Arrays.sort(attributeArray);
