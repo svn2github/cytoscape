@@ -25,20 +25,28 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.task.table;
+package org.cytoscape.task;
 
 
-import org.cytoscape.work.TaskFactory;
-import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyColumn;
+import org.cytoscape.work.AbstractTask;
 
 
-/**
- * The assumption is that setTable() will be called before getTask() and that the Task in question
- * operates on the specified CyTable. 
- */
-public interface TableTaskFactory extends TaskFactory {
-	/** Used to provision this factory with a {@param Cytable} that will be used to create tasks.
-	 *  @param table a non-null CyTable
+/** A base class for Tasks that need to operate on a single CyTable cell. */
+public abstract class AbstractTableCellTask extends AbstractTask {
+	protected final CyColumn column;
+	protected final Object primaryKeyValue;
+
+	/** Initialises a Task that needs to operate on a CyTable cell entry.
+	 *  @param column  a non-null CyColumn
+	 *  @param primaryKeyValue  a non-null primary key value
 	 */
-	public void setTable(CyTable table);
+	public AbstractTableCellTask(final CyColumn column, final Object primaryKeyValue) {
+		if (column == null)
+			throw new NullPointerException("\"column\" parameter must *never* be null!");
+		this.column = column;
+		if (primaryKeyValue == null)
+			throw new NullPointerException("\"primaryKeyValue\" parameter must *never* be null!");
+		this.primaryKeyValue = primaryKeyValue;
+	}
 }

@@ -3,5 +3,5 @@
 #-----------------------------------------------------------------
 
 
-Export-Package: ${bundle.namespace}, ${bundle.namespace}.*
+Export-Package: ${bundle.namespace}, ${bundle.namespace}.*, ${bundle.namespace}.table.*
 

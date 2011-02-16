@@ -33,7 +33,7 @@ import java.util.List;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyRow;
-import org.cytoscape.task.table.AbstractTableCellTask;
+import org.cytoscape.task.AbstractTableCellTask;
 import org.cytoscape.work.TaskMonitor;
 
 

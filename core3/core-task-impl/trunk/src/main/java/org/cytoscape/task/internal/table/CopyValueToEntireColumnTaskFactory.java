@@ -29,7 +29,7 @@ package org.cytoscape.task.internal.table;
 
 
 import org.cytoscape.model.CyColumn;
-import org.cytoscape.task.table.AbstractTableCellTask;
+import org.cytoscape.task.AbstractTableCellTask;
 import org.cytoscape.work.TaskIterator;
 
 

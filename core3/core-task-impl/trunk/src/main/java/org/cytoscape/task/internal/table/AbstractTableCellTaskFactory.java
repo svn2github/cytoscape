@@ -30,7 +30,7 @@ package org.cytoscape.task.internal.table;
 
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.model.CyColumn;
-import org.cytoscape.task.table.TableCellTaskFactory;
+import org.cytoscape.task.TableCellTaskFactory;
 
 
 /**

@@ -1,4 +1,4 @@
-package org.cytoscape.task.table;
+package org.cytoscape.task;
 
 
 import java.util.ArrayList;

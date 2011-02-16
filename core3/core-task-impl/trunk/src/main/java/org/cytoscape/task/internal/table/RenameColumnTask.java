@@ -30,7 +30,7 @@ package org.cytoscape.task.internal.table;
 
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyTable;
-import org.cytoscape.task.table.AbstractTableColumnTask;
+import org.cytoscape.task.AbstractTableColumnTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;

@@ -27,8 +27,9 @@
 */
 package org.cytoscape.task.internal.table;
 
+
 import org.cytoscape.model.CyTable;
-import org.cytoscape.task.table.AbstractTableTask;
+import org.cytoscape.task.AbstractTableTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.model.CyTableManager;
 
