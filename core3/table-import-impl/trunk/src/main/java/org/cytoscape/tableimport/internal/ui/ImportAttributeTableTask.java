@@ -1,13 +1,5 @@
-
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
+ Copyright (c) 2006, 2007, 2010, The Cytoscape Consortium (www.cytoscape.org)
 
  This library is free software; you can redistribute it and/or modify it
  under the terms of the GNU Lesser General Public License as published
@@ -32,9 +24,9 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
-
+*/
 package org.cytoscape.tableimport.internal.ui;
+
 
 import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.model.CyEdge;
@@ -62,12 +54,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.cytoscape.tableimport.internal.reader.TextTableReader;
 import org.cytoscape.io.read.CyTableReader;
-import org.cytoscape.task.table.MapNetworkAttrTask;
+import org.cytoscape.task.MapNetworkAttrTask;
 import org.cytoscape.tableimport.internal.reader.TextTableReader.ObjectType;
 
-/**
- *
- */
+
 public class ImportAttributeTableTask extends AbstractTask implements CyTableReader {
 
 	protected CyNetworkView[] cyNetworkViews;
