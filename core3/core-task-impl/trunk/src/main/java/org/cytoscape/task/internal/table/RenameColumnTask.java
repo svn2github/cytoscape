@@ -36,7 +36,7 @@ import org.cytoscape.work.Tunable;
 import org.cytoscape.work.TunableValidator;
 
 
-final class RenameColumnTask extends AbstractTableColumnTask implements TunableValidator {
+public final class RenameColumnTask extends AbstractTableColumnTask implements TunableValidator {
 	@Tunable(description="New column name:")
 	public String newColumnName;
 
@@ -60,9 +60,17 @@ final class RenameColumnTask extends AbstractTableColumnTask implements TunableV
 		}
 
 		final CyTable table = column.getTable();
-		if (table.getColumn(column.getName()) != null) {
+		if (table.getColumn(newColumnName) != null) {
 			try {
 				errMsg.append("Column name is a duplicate!");
+			} catch (Exception e) {
+			}
+			return false;
+		}
+
+		if (column.isImmutable()) {
+			try {
+				errMsg.append("Cannot rename an immutable column!");
 			} catch (Exception e) {
 			}
 			return false;
