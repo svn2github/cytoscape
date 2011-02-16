@@ -1,5 +1,6 @@
 package org.cytoscape.io.internal.read.datatable;
 
+
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
@@ -31,15 +32,14 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.io.read.CyTableReader;
-import org.cytoscape.task.table.MapNetworkAttrTask;
+import org.cytoscape.task.MapNetworkAttrTask;
 import org.cytoscape.work.AbstractTask;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class CyAttributesReader extends AbstractTask implements CyTableReader {
-
-
 	private static final Logger logger = LoggerFactory.getLogger(CyAttributesReader.class);
 
 	public final byte TYPE_BOOLEAN = 1;
