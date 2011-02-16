@@ -1,5 +1,6 @@
 package org.cytoscape.io.webservice.biomart.task;
 
+
 import java.awt.Window;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,9 +19,10 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableFactory;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.task.table.MapNetworkAttrTask;
+import org.cytoscape.task.MapNetworkAttrTask;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
+
 
 /**
  * Task to import actual data tables from BioMart service.
