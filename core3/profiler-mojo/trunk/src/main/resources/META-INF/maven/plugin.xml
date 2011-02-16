@@ -1,0 +1,59 @@
+<plugin>
+  <description></description>
+  <groupId>org.cytoscape.mavenplugins</groupId>
+  <artifactId>cytoscape-profiler-maven-plugin</artifactId>
+  <version>1-SNAPSHOT</version>
+  <goalPrefix>cytoscape</goalPrefix>
+  <isolatedRealm>false</isolatedRealm>
+  <inheritedByDefault>false</inheritedByDefault>
+  <mojos>
+    <mojo>
+      <goal>profiler</goal>
+      <description>Runs a profiling test suite of the current version of a bundle vs. a baseline version.</description>
+      <requiresDirectInvocation>false</requiresDirectInvocation>
+      <requiresProject>true</requiresProject>
+      <requiresReports>false</requiresReports>
+      <aggregator>false</aggregator>
+      <requiresOnline>false</requiresOnline>
+      <inheritedByDefault>false</inheritedByDefault>
+      <phase>test</phase>
+      <implementation>org.cytoscape.plugins.ProfilerMojo</implementation>
+      <language>java</language>
+      <instantiationStrategy>per-lookup</instantiationStrategy>
+      <executionStrategy>once-per-session</executionStrategy>
+      <parameters>
+        <parameter>
+          <name>baselineVersion</name>
+          <type>java.lang.String</type>
+          <required>true</required>
+          <editable>true</editable>
+          <description>Baseline version that we'd like to compare against.</description>
+        </parameter>
+      </parameters>
+<!--
+      <configuration>
+        <buildDirectory implementation="java.io.File">
+          ${project.build.directory}</buildDirectory>
+        <baseDirectory implementation="java.io.File">
+          ${basedir}</baseDirectory>
+      </configuration>
+-->
+<!--
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.archiver.Archiver</role>
+          <role-hint>zip</role-hint>
+          <field-name>zipArchiver</field-name>
+        </requirement>
+      </requirements>
+-->
+    </mojo>
+  </mojos>
+  <dependencies>
+<!--
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>1.3.2</version>
+  </dependencies>
+-->
+</plugin>
