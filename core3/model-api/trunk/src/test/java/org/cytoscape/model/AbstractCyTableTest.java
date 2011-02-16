@@ -700,6 +700,13 @@ public abstract class AbstractCyTableTest {
 		assertEquals(Long.class, table.getColumn("xx").getType());
 	}
 
+	@Test(expected=IllegalArgumentException.class)
+	public void testSetColumnNameWithImmutableColumn() {
+		table.createColumn("x", Long.class, true);
+		CyColumn column = table.getColumn("x");
+		column.setName("xx");
+	}
+
 	@Test
 	public void testCyColumnGetVirtualTable() {
 		table.createColumn("x", Long.class, false);

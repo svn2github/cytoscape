@@ -74,6 +74,9 @@ final class CyColumnImpl implements CyColumn {
 		if (newName == null)
 			throw new NullPointerException("\"newName\" must not be null!");
 
+		if (isImmutable)
+			throw new IllegalArgumentException("can't rename an immutable column!");
+
 		final String oldName = columnName;
 		columnName = newName;
 		table.updateColumnName(oldName, newName);

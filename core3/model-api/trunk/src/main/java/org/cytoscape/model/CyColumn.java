@@ -38,6 +38,7 @@ public interface CyColumn {
 
 	/** Change the name of this column.
 	 *  @param newName  the new column name
+	 *  @throws IllegalArgumentException if the column is immutable
 	 */
 	void setName(String newName);
 
@@ -53,7 +54,7 @@ public interface CyColumn {
 	/** @return true if the column is the primary key, otherwise false. */
 	boolean isPrimaryKey();
 
-	/** @return true if the column is immutable i.e. cannot be deleted, otherwise false.
+	/** @return true if the column is immutable i.e. cannot be deleted or renamed, otherwise false.
 	 *  Please note that this does not affect the ability to add or modify values in this column!
 	 */
 	boolean isImmutable();
