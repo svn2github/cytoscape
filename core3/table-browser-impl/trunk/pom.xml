@@ -49,6 +49,14 @@
 					</instructions>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.cytoscape.mavenplugins</groupId>
+				<artifactId>cytoscape-profiler-maven-plugin</artifactId>
+				<version>1.0-SNAPSHOT</version>
+				<configuration>
+					<baselineVersion>2.7.99</baselineVersion>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

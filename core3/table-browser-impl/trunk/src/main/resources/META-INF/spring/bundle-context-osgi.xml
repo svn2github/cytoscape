@@ -14,7 +14,7 @@
 	<osgi:reference id="cyTableRowUpdateServiceRef" interface="org.cytoscape.model.CyTableRowUpdateService" />
         <osgi:reference id="cyNetworkManagerServiceRef" interface="org.cytoscape.model.CyNetworkManager" />
 
-        <osgi:reference id="deleteTableTaskFactoryService" interface="org.cytoscape.task.table.TableTaskFactory" />
+        <osgi:reference id="deleteTableTaskFactoryService" interface="org.cytoscape.task.TableTaskFactory" />
         <osgi:reference id="guiTaskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager" />
         
 	<!-- listeners -->
@@ -26,13 +26,13 @@
                 </osgi:interfaces>
 	</osgi:service>
 
-	<osgi:set id="tableColumnTaskFactorySet" interface="org.cytoscape.task.table.TableColumnTaskFactory"
+	<osgi:set id="tableColumnTaskFactorySet" interface="org.cytoscape.task.TableColumnTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addTableColumnTaskFactory"
 			unbind-method="removeTableColumnTaskFactory" ref="popupMenuHelper" />
 	</osgi:set>
 
-	<osgi:set id="tableCellTaskFactorySet" interface="org.cytoscape.task.table.TableCellTaskFactory"
+	<osgi:set id="tableCellTaskFactorySet" interface="org.cytoscape.task.TableCellTaskFactory"
 		cardinality="0..N">
 		<osgi:listener bind-method="addTableCellTaskFactory"
 			unbind-method="removeTableCellTaskFactory" ref="popupMenuHelper" />
