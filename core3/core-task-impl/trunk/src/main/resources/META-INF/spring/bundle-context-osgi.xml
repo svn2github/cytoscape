@@ -582,19 +582,19 @@
 	</osgi:service>
 
 	<osgi:service id="renameColumnTaskFactoryService" ref="renameColumnTaskFactory"
-		interface="org.cytoscape.task.table.TableColumnTaskFactory">
+		interface="org.cytoscape.task.TableColumnTaskFactory">
 		<osgi:service-properties>
 			<entry key="menuLabel" value="Rename column" />
 		</osgi:service-properties>
 	</osgi:service>
 	<osgi:service id="copyValueToEntireColumnTaskFactoryService" ref="copyValueToEntireColumnTaskFactory"
-		interface="org.cytoscape.task.table.TableCellTaskFactory">
+		interface="org.cytoscape.task.TableCellTaskFactory">
 		<osgi:service-properties>
 			<entry key="menuLabel" value="Copy to entire column" />
 		</osgi:service-properties>
 	</osgi:service>
 
 	<osgi:service id="deleteTableTaskFactoryService" ref="deleteTableTaskFactory"
-		interface="org.cytoscape.task.table.TableTaskFactory">
+		interface="org.cytoscape.task.TableTaskFactory">
 	</osgi:service>
 </beans>
