@@ -285,6 +285,8 @@ public final class CyTableImpl implements CyTable {
 						"use createListColumn() to create List columns instead of createColumn for attribute '"
 						+ columnName + "'!");
 
+			checkClass(type);
+
 			types.put(columnName, new CyColumnImpl(this, columnName, type,
 							       /* listElementType = */ null,
 							       /* isVirtual = */ false,
@@ -313,6 +315,9 @@ public final class CyTableImpl implements CyTable {
 				throw new IllegalArgumentException("attribute already exists for name: '"
 								   + columnName + "' with type: "
 								   + types.get(columnName).getType());
+
+			checkClass(listElementType);
+
 			types.put(columnName, new CyColumnImpl(this, columnName, List.class,
 							       listElementType,
 							       /* isVirtual = */ false,
@@ -719,25 +724,13 @@ public final class CyTableImpl implements CyTable {
 		}
 	}
 
-	private Class<?> getClass(Class<?> c) {
-		if (c == Integer.class || c == Long.class || c == Double.class || c == String.class
-		    || c == Boolean.class)
-			return c;
-
-		if (Integer.class.isAssignableFrom(c))
-			return Integer.class;
-		else if (Long.class.isAssignableFrom(c))
-			return Long.class;
-		else if (Double.class.isAssignableFrom(c))
-			return Double.class;
-		else if (Boolean.class.isAssignableFrom(c))
-			return Boolean.class;
-		else if (String.class.isAssignableFrom(c))
-			return String.class;
-		else if (List.class.isAssignableFrom(c))
-			return List.class;
-		else if (Map.class.isAssignableFrom(c))
-			return Map.class;
+	private void checkClass(Class<?> c) {
+		if ( c == Integer.class || 
+		     c == Long.class || 
+			 c == Double.class || 
+			 c == String.class || 
+			 c == Boolean.class )
+			return;
 		else
 			throw new IllegalArgumentException("invalid class: " + c.getName());
 	}
@@ -753,15 +746,8 @@ public final class CyTableImpl implements CyTable {
 			return;
 		else if (o instanceof Long)
 			return;
-		else if (o instanceof Map) {
-			Map m = (Map) o;
-			Object[] keys = m.keySet().toArray();
-			if (keys.length > 0) {
-				checkType(m.get(keys[0]));
-				checkType(keys[0]);
-			}
-		} else
-			throw new RuntimeException("invalid type: " + o.getClass().toString());
+		else
+			throw new IllegalArgumentException("invalid type: " + o.getClass().toString());
 	}
 
 	@Override
