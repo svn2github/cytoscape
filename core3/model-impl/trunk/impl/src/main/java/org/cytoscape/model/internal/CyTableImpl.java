@@ -125,6 +125,9 @@ public final class CyTableImpl implements CyTable {
 	}
 
 	void updateColumnName(final String oldColumnName, final String newColumnName) {
+		if (oldColumnName.equals(newColumnName))
+			return;
+
 		synchronized(this) {
 			if (currentlyActiveAttributes.contains(oldColumnName)) {
 				currentlyActiveAttributes.remove(oldColumnName);
@@ -145,6 +148,7 @@ public final class CyTableImpl implements CyTable {
 
 			final CyColumn column = types.get(oldColumnName);
 			types.put(newColumnName, column);
+			types.remove(oldColumnName);
 		}
 
 		eventHelper.fireSynchronousEvent(new ColumnNameChangedEvent(this, oldColumnName,
