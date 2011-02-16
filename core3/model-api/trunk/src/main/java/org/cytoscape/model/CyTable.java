@@ -37,7 +37,10 @@ import java.util.Set;
 /** 
  * A simple representation of a table object consisting of rows
  * and columns. Columns have names and specific types and rows
- * contain the data for a specific index.
+ * contain the data for a specific primary key. Tables are limited in the
+ * types of data that may be stored.  The allowable types are:
+ * String, Integer, Long, Double, Boolean, and Lists of those five
+ * types.
  */
 public interface CyTable extends Identifiable {
 	public static enum Mutability {
@@ -100,7 +103,8 @@ public interface CyTable extends Identifiable {
 	void deleteColumn(String columnName);
 
 	/**
-	 * Create a column of the specified name and the specified type.
+	 * Create a column of the specified name and the specified type. The column
+	 * type is limited to Integer, Long, Double, String, and Boolean.
 	 * @param columnName The name identifying the attribute.
 	 * @param type The type of the column.
 	 * @param isImmutable  if true, this column can never be deleted
@@ -110,6 +114,7 @@ public interface CyTable extends Identifiable {
 
 	/**
 	 * Create a column of Lists with the specified name and the specified element type.
+	 * The column type is limited to Integer, Long, Double, String, and Boolean.
 	 * @param columnName The name identifying the attribute.
 	 * @param listElementType The type of the elements of the list.
 	 * @param isImmutable  if true, this column can never be deleted

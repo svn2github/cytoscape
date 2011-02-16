@@ -728,4 +728,44 @@ public abstract class AbstractCyTableTest {
 		table.addVirtualColumn("b1", "b", table2, "x2", "x", true);
 		assertEquals(Mutability.IMMUTABLE_DUE_TO_VIRT_COLUMN_REFERENCES, table2.getMutability());
 	}
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testCreateInvalidColumn() {
+        table.createColumn("x", Float.class, false);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testCreateInvalidColumn2() {
+        table.createColumn("x", Object.class, false);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testCreateInvalidColumn3() {
+        table.createColumn(null, Integer.class, true);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testCreateInvalidColumn4() {
+        table.createColumn("homer", null, true);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testCreateInvalidListColumn() {
+        table.createListColumn("x", Float.class, false);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testCreateInvalidListColumn2() {
+        table.createListColumn("x", Object.class, false);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testCreateInvalidListColumn3() {
+        table.createListColumn(null, Integer.class, true);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testCreateInvalidListColumn4() {
+        table.createListColumn("homer", null, true);
+    }
 }
