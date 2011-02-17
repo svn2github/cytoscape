@@ -30,6 +30,7 @@ package org.cytoscape.mavenplugins;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -50,7 +51,16 @@ public class ProfilerMojo extends AbstractMojo {
 	 */
 	private String baselineVersion;
 
+	/**                                                                                                                                        
+	 * The Maven Project Object.                                                                                                               
+	 *                                                                                                                                         
+	 * @parameter default-value="${project}"                                                                                                   
+	 * @readonly                                                                                                                               
+	 */
+	private MavenProject project;
+
 	public void execute() throws MojoExecutionException {
-		getLog().info("ProfilerMojo: base line version is " + baselineVersion);
+		getLog().info("ProfilerMojo: base line version is " + baselineVersion + ", group ID: "
+			      + project.getGroupId() + ", artifact ID: " + project.getArtifactId());
 	}
 }
