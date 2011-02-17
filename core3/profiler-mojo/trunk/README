@@ -1,0 +1,20 @@
+In order to use this mojo, add the following section to the <plugins> section of your pom.xml:
+
+			<plugin>
+				<groupId>org.cytoscape.mavenplugins</groupId>
+				<artifactId>cytoscape-profiler-maven-plugin</artifactId>
+				<version>1.0-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>profiler</goal>
+						</goals>
+						<configuration>
+							<baselineVersion>2.7.99</baselineVersion>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+Don't forget to update the <baselineVersion> setting!
