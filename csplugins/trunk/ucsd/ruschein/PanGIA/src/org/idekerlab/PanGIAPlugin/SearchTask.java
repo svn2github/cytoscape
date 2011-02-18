@@ -67,16 +67,10 @@ public class SearchTask implements Task {
 		if (needsToHalt) return;
 		
 		final CyNetwork physicalInputNetwork = parameters.getPhysicalNetwork();
-		
-		SFNetwork physicalNetwork = convertCyNetworkToSFNetwork(physicalInputNetwork,
-									      parameters.getPhysicalEdgeAttrName(),
-									      parameters.getPhysicalScalingMethod());
+		SFNetwork physicalNetwork = convertCyNetworkToSFNetwork(physicalInputNetwork, parameters.getNodeAttrName(), parameters.getGeneticEdgeAttrName(), parameters.getPhysicalScalingMethod());
 
 		final CyNetwork geneticInputNetwork = parameters.getGeneticNetwork();
-		
-		SFNetwork geneticNetwork = convertCyNetworkToSFNetwork(geneticInputNetwork,
-									     parameters.getGeneticEdgeAttrName(),
-									     parameters.getGeneticScalingMethod());
+		SFNetwork geneticNetwork = convertCyNetworkToSFNetwork(geneticInputNetwork, parameters.getNodeAttrName(), parameters.getGeneticEdgeAttrName(), parameters.getGeneticScalingMethod());
 		
 		
 		boolean isGNetSigned = false;
@@ -298,14 +292,16 @@ public class SearchTask implements Task {
 		final TypedLinkNetwork<String, Float> pNet = physicalNetwork.asTypedLinkNetwork();
 		final TypedLinkNetwork<String, Float> gNet = geneticNetwork.asTypedLinkNetwork();
 
+		PanGIAPlugin.setModuleLabels(parameters.getNodeAttrName());
+		
 		String networkName = "Module Overview Network";
-		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork, pNet, gNet, pValueThreshold, taskMonitor, 100.0f - COMPUTE_SIG_PERCENTAGE, module_name, networkName,isGNetSigned, parameters.getGeneticEdgeAttrName());
+		final NestedNetworkCreator nnCreator = new NestedNetworkCreator(results, physicalInputNetwork, geneticInputNetwork, pNet, gNet, pValueThreshold, taskMonitor, 100.0f - COMPUTE_SIG_PERCENTAGE, module_name, networkName,isGNetSigned, parameters.getNodeAttrName(), parameters.getGeneticEdgeAttrName());
 
 		setStatus("Search finished!\n\n" + "Number of modules = " + nnCreator.getOverviewNetwork().getNodeCount() + "\n\n" + HCSearch2.report(results));
 
 		setPercentCompleted(100);
-		
-		PanGIAPlugin.output.put(nnCreator.getOverviewNetwork().getIdentifier(),new PanGIAOutput(nnCreator.getOverviewNetwork(), physicalInputNetwork, geneticInputNetwork,parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName(),isGNetSigned));
+				
+		PanGIAPlugin.output.put(nnCreator.getOverviewNetwork().getIdentifier(),new PanGIAOutput(nnCreator.getOverviewNetwork(), physicalInputNetwork, geneticInputNetwork,parameters.getNodeAttrName(),parameters.getPhysicalEdgeAttrName(),parameters.getGeneticEdgeAttrName(),isGNetSigned));
 		
 		/*
 		// Create an edge attribute "overlapScore", which is defined as NumberOfSharedNodes/min(two network sizes)
@@ -467,11 +463,18 @@ public class SearchTask implements Task {
 	 *  @param inputNetwork    name of the network that will be converted
 	 *  @param numericAttrName optional name of a numeric edge attribute.  Should this be missing, 1.0 will be assumed for all edges
 	 */
-	private SFNetwork convertCyNetworkToSFNetwork(final CyNetwork inputNetwork, final String numericAttrName,
-						      final ScalingMethodX scalingMethod)
+	private SFNetwork convertCyNetworkToSFNetwork(final CyNetwork inputNetwork, String nodeAttrName, final String numericAttrName, final ScalingMethodX scalingMethod)
 		throws IllegalArgumentException, ClassCastException
 	{
-		@SuppressWarnings("unchecked") List<CyEdge> edges = (List<CyEdge>)inputNetwork.edgesList();
+		CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+		
+		@SuppressWarnings("unchecked") List<CyEdge> startingEdges = (List<CyEdge>)inputNetwork.edgesList();
+		
+		List<CyEdge> netEdges = new ArrayList<CyEdge>(startingEdges.size());
+		for (final CyEdge edge : startingEdges)
+			if (nodeAttr.hasAttribute(edge.getSource().getIdentifier(), nodeAttrName) && nodeAttr.hasAttribute(edge.getTarget().getIdentifier(), nodeAttrName))
+				netEdges.add(edge);
+				
 		final FloatHashNetwork outputNetwork = new FloatHashNetwork(/* selfOk = */false, /* directed = */false, /* startsize = */1);
 
 		if (inputNetwork == null)
@@ -481,9 +484,9 @@ public class SearchTask implements Task {
 		{
 			int numNodes = inputNetwork.getNodeCount();
 			
-			float defaultScore = -(float)Math.log(edges.size()/((float)numNodes*(numNodes-1)/2.0f));
+			float defaultScore = -(float)Math.log(netEdges.size()/((float)numNodes*(numNodes-1)/2.0f));
 			
-			for (final CyEdge edge : edges)
+			for (final CyEdge edge : netEdges)
 				outputNetwork.add(edge.getSource().getIdentifier(), edge.getTarget().getIdentifier(), defaultScore);
 		} else
 		{
@@ -494,6 +497,11 @@ public class SearchTask implements Task {
 				throw new IllegalArgumentException("\"" + numericAttrName
 				                                   + "\" is not the name of a known numeric edge attribute!");
 
+			List<CyEdge> edges = new ArrayList<CyEdge>(netEdges.size());
+			for (CyEdge e : netEdges)
+				if (edgeAttributes.getAttribute(e.getIdentifier(), numericAttrName)!=null) edges.add(e);
+			
+			
 			// Collect edge attribute values:
 			final float[] edgeAttribValues = new float[edges.size()];
 			int edgeIndex = 0;
@@ -501,8 +509,8 @@ public class SearchTask implements Task {
 				final String edgeID = edge.getIdentifier();
 				if (edgeAttribType == CyAttributes.TYPE_FLOATING) {
 					final Double attrValue = edgeAttributes.getDoubleAttribute(edgeID, numericAttrName);
-					if (attrValue != null)
-						edgeAttribValues[edgeIndex] = (float)(double)attrValue;
+					if (attrValue != null) edgeAttribValues[edgeIndex] = (float)(double)attrValue;
+					
 				} else { // Assume we have an integer attribute.
 					final Integer attrValue = edgeAttributes.getIntegerAttribute(edgeID, numericAttrName);
 					if (attrValue != null)
@@ -520,9 +528,7 @@ public class SearchTask implements Task {
 			for (final CyEdge edge : edges) {
 				final String edgeID = edge.getIdentifier();
 				if (edgeAttributes.getAttribute(edgeID, numericAttrName) != null)
-					outputNetwork.add(edge.getSource().getIdentifier(),
-							  edge.getTarget().getIdentifier(),
-							  scaledEdgeAttribValues[edgeIndex]);
+					outputNetwork.add(edge.getSource().getIdentifier(), edge.getTarget().getIdentifier(), scaledEdgeAttribValues[edgeIndex]);
 				++edgeIndex;
 			}
 		}

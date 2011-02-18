@@ -17,6 +17,8 @@ import giny.model.Node;
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.NodeView;
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
@@ -84,7 +86,7 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
 	         item2.addActionListener(new ActionListener()
 	         {
 	        	 public void actionPerformed(ActionEvent e) {
-	            	 saveModules(aview);
+	            	 saveModules(aview, PanGIAPlugin.output.get(aview.getNetwork().getIdentifier()).getNodeAttrName());
 	             }
 	         });
 	         pangiaMenu.add(item2);
@@ -110,11 +112,11 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
 	         JMenu item1 = new JMenu();
 	         item1.setText("Save Selected Nodes to Matrix File");
 	         
-	         PanGIAOutput output = PanGIAPlugin.output.get(aview.getNetwork().getIdentifier());
+	         final PanGIAOutput output = PanGIAPlugin.output.get(aview.getNetwork().getIdentifier());
 	         
 	         //String[] ean = edgeAttr.getAttributeNames();
 	         
-	         String[] ean = new String[]{output.getPhysAttrName(),output.getGenAttrName()};
+	         String[] ean = new String[]{output.getPhysEdgeAttrName(),output.getGenEdgeAttrName()};
 	         
 	         List<String> eaNames = new ArrayList<String>(ean.length);
 	         for (String s : ean) eaNames.add(s);
@@ -126,6 +128,7 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
 	         {
 	        	 JMenuItem eaItem = new JMenuItem();
 	        	 eaItem.setText(ea);
+	        	 
 	        	 eaItem.addActionListener(new ActionListener()
 		         {
 		             public void actionPerformed(ActionEvent e) {
@@ -134,7 +137,7 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
 		            	 int returnVal = jfc.showSaveDialog(aview.getComponent());
 		            	 
 		            	 if (returnVal==JFileChooser.APPROVE_OPTION)
-		            		 saveNodesToMatrix(aview, jfc.getSelectedFile(),ea);
+		            		 saveNodesToMatrix(aview, jfc.getSelectedFile(),output.getNodeAttrName(),ea);
 		             }
 		         });
 	        	 item1.add(eaItem);
@@ -142,12 +145,90 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
 	         pangiaMenu.add(item1);
 	     }
 	     
+	     /*
+	     //Copy network with new node IDs
+	     JMenuItem item1 = new JMenuItem();
+         item1.setText("Copy Network");
+         
+         
+         for (final String aname : Cytoscape.getNodeAttributes().getAttributeNames())
+         {
+         	if (!edgeAttr.getType(aname).equals("String")) continue;
+         
+        	 JMenuItem eaItem = new JMenuItem();
+        	 eaItem.setText(aname);
+        	 eaItem.addActionListener(new ActionListener()
+	         {
+	             public void actionPerformed(ActionEvent e) {
+	            	 copyNetworkWithNewIDs(aview.getNetwork(), aname);
+	             }
+	         });
+        	 item1.add(eaItem);
+         }
+         
+         pangiaMenu.add(item1);
+	     */
+	     
 	     //MENU
-	     menu.add(pangiaMenu);
+	     if (pangiaMenu.getItemCount()>0) menu.add(pangiaMenu);
      }
      
-     private static void saveNodesToMatrix(final CyNetworkView aview, File file, String attr)
+     private static void copyNetworkWithNewIDs(CyNetwork net, String aname)
      {
+    	 //Get the new name
+    	 String newTitle = net.getTitle()+"_"+aname;
+    	 
+    	 boolean hasDup = true;
+    	 int index = 2;
+    	 while(hasDup)
+    	 {
+    		 hasDup = false;
+    		 for (CyNetwork cnet : Cytoscape.getNetworkSet())
+    			 if (cnet.getTitle().equals(newTitle))
+    			 {
+    				 newTitle =  net.getTitle()+"_"+aname+" ("+index+")";
+    				 index++;
+    				 hasDup = true;
+    				 break;
+    			 }
+    	 }
+    	 
+    	 
+    	 //Create nodes
+    	 List<CyNode> nodes = new ArrayList<CyNode>(net.getNodeCount());
+    	 CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+    	 
+    	 
+    	 for (int ni : net.getNodeIndicesArray())
+    	 {
+    		 String newID = String.valueOf(nodeAttr.getAttribute(net.getNode(ni).getIdentifier(),aname));
+    		 if (newID.equals("")) continue;
+    		 nodes.add(Cytoscape.getCyNode(newID,true));
+    	 }
+    	 
+    	 CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
+    	 
+    	 List<CyEdge> edges = new ArrayList<CyEdge>(net.getEdgeCount());
+    	 for (int ei : net.getEdgeIndicesArray())
+    	 {
+    		 String sourceID = String.valueOf(nodeAttr.getAttribute(net.getNode(net.getEdgeSourceIndex(ei)).getIdentifier(),aname));
+    		 String targetID = String.valueOf(nodeAttr.getAttribute(net.getNode(net.getEdgeTargetIndex(ei)).getIdentifier(),aname));
+    		 
+    		 if (sourceID.equals("") || targetID.equals("")) continue;
+    		 
+    		 edges.add(Cytoscape.getCyEdge(sourceID, sourceID+" - "+targetID, targetID, String.valueOf(edgeAttr.getAttribute(net.getEdge(ei).getIdentifier(),"interaction"))));
+    	 }
+    	 
+    	 
+    	 CyNetwork newNet = Cytoscape.createNetwork(nodes, edges, newTitle);
+    	 Cytoscape.createNetworkView(newNet);
+    	 
+    	 //Need to copy edge attributes as well!
+     }
+     
+     private static void saveNodesToMatrix(final CyNetworkView aview, File file, String nAttr, String eattr)
+     {
+    	 CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
     	 CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
     	 
     	 int[] selectedNodes = aview.getSelectedNodeIndices();
@@ -174,7 +255,7 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
     	 String[] ids = new String[selectedNodes.length];
     	 
     	 for (int i=0;i<selectedNodes.length;i++)
-    		 ids[i] = aview.getRootGraph().getNode(selectedNodes[i]).getIdentifier();
+    		 ids[i] = String.valueOf(nodeAttr.getAttribute(aview.getRootGraph().getNode(selectedNodes[i]).getIdentifier(),nAttr));
     	 
     	 double[][] m = new double[selectedNodes.length][];
     	 
@@ -189,7 +270,7 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
     			 
     			 for (int ei : aview.getRootGraph().getConnectingEdgeIndicesArray(new int[]{selectedNodes[i],selectedNodes[j]}))
     			 {
-    				 Double d = edgeAttr.getDoubleAttribute(aview.getRootGraph().getEdge(ei).getIdentifier(), attr);
+    				 Double d = edgeAttr.getDoubleAttribute(aview.getRootGraph().getEdge(ei).getIdentifier(), eattr);
     				 
     				 if (d!=null)
     				 {
@@ -234,8 +315,10 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
     	 }
      }
      
-     public static void saveModules(CyNetworkView view)
+     public static void saveModules(CyNetworkView view, String nodeAttrName)
      {
+    	 CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+    	 
     	 JFileChooser jfc = new JFileChooser();
     	 jfc.setCurrentDirectory(new File("."));
     	 int returnVal = jfc.showSaveDialog(view.getComponent());
@@ -253,7 +336,7 @@ public class PanGIANodeContextMenuListener implements NodeContextMenuListener
     			 Set<String> nodes = new HashSet<String>(1000);
     			 
     			 for (int ni2 : n.getNestedNetwork().getNodeIndicesArray())
-    				 nodes.add(Cytoscape.getRootGraph().getNode(ni2).getIdentifier());
+    				 nodes.add(String.valueOf(nodeAttr.getAttribute(Cytoscape.getRootGraph().getNode(ni2).getIdentifier(),nodeAttrName)));
     			 
     			 mod_nodes.put(n.getIdentifier(), nodes);
     		 }

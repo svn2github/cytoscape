@@ -47,14 +47,14 @@ public class PanGIAPlugin extends CytoscapePlugin {
 	// Main GUI Panel for this plugin.  Should be a singleton.
 	private JScrollPane scrollPane;
 	
-	private final VisualStyleObserver vsObserver;
+	private static VisualStyleObserver vsObserver;
 	
 	private static final String PLUGIN_NAME = "PanGIA";
 	public static final String VERSION = "1.1";
 	public static final Map<String,PanGIAOutput> output = new HashMap<String,PanGIAOutput>();
 
 	public PanGIAPlugin() {
-		this.vsObserver = new VisualStyleObserver();
+		vsObserver = new VisualStyleObserver();
 		addHelp();
 		final JMenuItem menuItem = new JMenuItem(PLUGIN_NAME);
 		menuItem.addActionListener(new PluginAction());
@@ -103,6 +103,11 @@ public class PanGIAPlugin extends CytoscapePlugin {
 		}
 	}
 	
+	public static void setModuleLabels(String nattr)
+	{
+		vsObserver.setModuleLabels(nattr);
+	}
+	
 	public void saveSessionStateFiles(List<File> pFileList)
 	{
 		try
@@ -116,8 +121,9 @@ public class PanGIAPlugin extends CytoscapePlugin {
 				bw.write(e.getValue().getOverviewNetwork().getTitle()+"\n");
 				bw.write(e.getValue().getOrigPhysNetwork().getTitle()+"\n");
 				bw.write(e.getValue().getOrigGenNetwork().getTitle()+"\n");
-				bw.write(e.getValue().getPhysAttrName()+"\n");
-				bw.write(e.getValue().getGenAttrName()+"\n");
+				bw.write(e.getValue().getNodeAttrName()+"\n");
+				bw.write(e.getValue().getPhysEdgeAttrName()+"\n");
+				bw.write(e.getValue().getGenEdgeAttrName()+"\n");
 				bw.write(e.getValue().isSigned()+"\n");
 			}
 			
@@ -160,10 +166,11 @@ public class PanGIAPlugin extends CytoscapePlugin {
 				CyNetwork overviewNet = getNetworkFromTitle(overviewNetTitle);
 				CyNetwork physNet = getNetworkFromTitle(in.readLine());
 				CyNetwork genNet = getNetworkFromTitle(in.readLine());
-				String physAttr = in.readLine();
-				String genAttr = in.readLine();
+				String nodeAttr = in.readLine();
+				String physEdgeAttr = in.readLine();
+				String genEdgeAttr = in.readLine();
 				boolean isSigned = Boolean.valueOf(in.readLine());
-				output.put(overviewNet.getIdentifier(),new PanGIAOutput(overviewNet, physNet, genNet, physAttr, genAttr, isSigned));
+				output.put(overviewNet.getIdentifier(),new PanGIAOutput(overviewNet, physNet, genNet, nodeAttr, physEdgeAttr, genEdgeAttr, isSigned));
 			}		
 			
 			in.close();

@@ -6,18 +6,20 @@ public class PanGIAOutput
 {
 	private final CyNetwork origPhysNetwork ;
 	private final CyNetwork origGenNetwork;
-	private final String physAttrName ;
-	private final String genAttrName;
+	private final String nodeAttrName ;
+	private final String physEdgeAttrName ;
+	private final String genEdgeAttrName;
 	private final CyNetwork overviewNetwork;
 	private final boolean signed;
 	
-	public PanGIAOutput(CyNetwork overviewNetwork, CyNetwork origPhysNetwork, CyNetwork origGenNetwork, String physAttrName, String genAttrName, boolean signed)
+	public PanGIAOutput(CyNetwork overviewNetwork, CyNetwork origPhysNetwork, CyNetwork origGenNetwork, String nodeAttrName, String physEdgeAttrName, String genEdgeAttrName, boolean signed)
 	{
 		this.overviewNetwork = overviewNetwork;
 		this.origPhysNetwork = origPhysNetwork;
 		this.origGenNetwork = origGenNetwork;
-		this.physAttrName = physAttrName;
-		this.genAttrName = genAttrName;
+		this.nodeAttrName = nodeAttrName;
+		this.physEdgeAttrName = physEdgeAttrName;
+		this.genEdgeAttrName = genEdgeAttrName;
 		this.signed = signed;
 	}
 	
@@ -31,14 +33,19 @@ public class PanGIAOutput
 		return origGenNetwork;
 	}
 	
-	public String getPhysAttrName()
+	public String getNodeAttrName()
 	{
-		return physAttrName;
+		return nodeAttrName;
 	}
 	
-	public String getGenAttrName()
+	public String getPhysEdgeAttrName()
 	{
-		return genAttrName;
+		return physEdgeAttrName;
+	}
+	
+	public String getGenEdgeAttrName()
+	{
+		return genEdgeAttrName;
 	}
 	
 	public CyNetwork getOverviewNetwork()

@@ -129,6 +129,9 @@ public class NestedNetworkCreator {
 	VisualStyle moduleVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().
 								getVisualStyle(VisualStyleObserver.VS_MODULE_NAME);
 
+	private final CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+	private final CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
+	
 	public static List<String> getEdgeAttributeNames()
 	{
 		List<String> names = new ArrayList<String>(2);
@@ -167,6 +170,7 @@ public class NestedNetworkCreator {
 			Map<TypedLinkNodeModule<String, BFEdge>,String> module_name,
 			String networkName,
 			boolean isGNetSigned,
+			String nodeAttrName,
 			String geneticEdgeAttrName
 			)
 	{
@@ -180,9 +184,6 @@ public class NestedNetworkCreator {
 		networkAttr.setUserVisible(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
 		networkAttr.setUserEditable(VisualStyleObserver.NETWORK_TYPE_ATTRIBUTE_NAME, false);
 		
-		final CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
-		final CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
-
 		taskMonitor.setStatus("5. Generating Cytoscape networks");
 		int nodeIndex = 1;
 		double maxScore = Double.NEGATIVE_INFINITY;
@@ -193,7 +194,7 @@ public class NestedNetworkCreator {
 			final TypedLinkNodeModule<String, BFEdge> sourceModule = edge.source().value();
 			CyNode sourceNode = moduleToCyNodeMap.get(sourceModule);
 			if (sourceNode == null) {
-				final String nodeName = getNodeName(sourceModule,nodeIndex,module_name);
+				final String nodeName = getNodeName(sourceModule,nodeIndex,module_name,nodeAttrName);
 				sourceNode = makeOverviewNode(nodeName, sourceModule,nodeAttribs,physicalNetwork,geneticNetwork);
 				//moduleToCyNodeMap.put(sourceModule, sourceNode);
 				++nodeIndex;
@@ -202,7 +203,7 @@ public class NestedNetworkCreator {
 			final TypedLinkNodeModule<String, BFEdge> targetModule = edge.target().value();
 			CyNode targetNode = moduleToCyNodeMap.get(targetModule);
 			if (targetNode == null) {
-				final String nodeName = getNodeName(targetModule,nodeIndex,module_name);
+				final String nodeName = getNodeName(targetModule,nodeIndex,module_name,nodeAttrName);
 				targetNode = makeOverviewNode(nodeName, targetModule,nodeAttribs,physicalNetwork,geneticNetwork);
 				//moduleToCyNodeMap.put(targetModule, targetNode);
 				++nodeIndex;
@@ -260,7 +261,7 @@ public class NestedNetworkCreator {
 		
 	}
 
-	private String getNodeName(TypedLinkNodeModule<String, BFEdge> module, int nodeIndex, Map<TypedLinkNodeModule<String, BFEdge>,String> module_name)
+	private String getNodeName(TypedLinkNodeModule<String, BFEdge> module, int nodeIndex, Map<TypedLinkNodeModule<String, BFEdge>,String> module_name, String nodeAttrName)
 	{
 		
 		
@@ -268,8 +269,8 @@ public class NestedNetworkCreator {
 		if (module.size()<=2) 
 		{
 			Iterator<String> genes = module.getMemberValues().iterator();
-			String newName = "["+genes.next();
-			while (genes.hasNext()) newName+=", "+genes.next();
+			String newName = "["+String.valueOf(nodeAttribs.getAttribute(genes.next(),nodeAttrName));
+			while (genes.hasNext()) newName+=", "+String.valueOf(nodeAttribs.getAttribute(genes.next(),nodeAttrName));
 			return findNextAvailableNodeName(newName+"]");
 		}
 		

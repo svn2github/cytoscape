@@ -8,8 +8,13 @@ import cytoscape.CyNetwork;
 public final class SearchParameters {
 	private CyNetwork physicalNetwork;
 	private CyNetwork geneticNetwork;
+	
+	private String nodeAttrName;
+	
 	private String physicalEdgeAttrName;
 	private String geneticEdgeAttrName;
+	
+	
 	private String physicalScalingMethod;
 	private String geneticScalingMethod;
 		
@@ -55,6 +60,14 @@ public final class SearchParameters {
 		return physicalEdgeAttrName;
 	}
 
+	public void setNodeAttrName(String geneticNodeAttrName) {
+		this.nodeAttrName = geneticNodeAttrName;
+	}
+
+	public String getNodeAttrName() {
+		return nodeAttrName;
+	}
+		
 	public void setGeneticEdgeAttrName(String geneticEdgeAttrName) {
 		this.geneticEdgeAttrName = geneticEdgeAttrName;
 	}

@@ -33,6 +33,7 @@ import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
 import cytoscape.visual.properties.EdgeOpacityProp;
 
 /**
@@ -89,6 +90,20 @@ public class VisualStyleObserver implements PropertyChangeListener {
 		System.out.println("#### Init VS finished.");
 	}
 	
+	public void setModuleLabels(String nattr)
+	{
+		BasicCalculator calcLabel = (BasicCalculator)moduleVS.getNodeAppearanceCalculator().getCalculator(VisualPropertyType.NODE_LABEL);
+	
+		if (calcLabel.getMapping(0) instanceof cytoscape.visual.mappings.PassThroughMapping)
+		{
+			PassThroughMapping pm = (PassThroughMapping)(calcLabel.getMapping(0));
+			
+			pm.setControllingAttributeName(nattr);
+		}
+			
+	}
+	
+	
 	@SuppressWarnings({ "deprecation", "unchecked" })
 	public void propertyChange(PropertyChangeEvent evt) {
 		
@@ -113,7 +128,6 @@ public class VisualStyleObserver implements PropertyChangeListener {
 			final VisualStyle style = styleMap.get(type.toString());
 			if(style == null)
 				return;
-			
 			
 			if (style.getName().equals(VS_OVERVIEW_NAME))
 			{

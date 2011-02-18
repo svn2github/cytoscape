@@ -10,6 +10,7 @@ import giny.model.Node;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.view.*;
+import cytoscape.visual.VisualStyle;
 import cytoscape.*;
 
 public class DetailedNetworkCreator
@@ -32,8 +33,8 @@ public class DetailedNetworkCreator
 		
 		CyNetwork origPhysNetwork = output.getOrigPhysNetwork();
 		CyNetwork origGenNetwork = output.getOrigGenNetwork();
-		String physAttrName = output.getPhysAttrName();
-		String genAttrName = output.getGenAttrName();
+		String physEdgeAttrName = output.getPhysEdgeAttrName();
+		String genEdgeAttrName = output.getGenEdgeAttrName();
 				
 		//final CyAttributes cyAttributes = Cytoscape.getEdgeAttributes();
 				
@@ -66,7 +67,7 @@ public class DetailedNetworkCreator
 		List<CyEdge> edges = (List<CyEdge>) origPhysNetwork.getConnectingEdges(getIntersectingNodes(origPhysNetwork, nodes));
 		for (final CyEdge edge : edges)
 		{
-			final Double attrValue = edgeAttributes.getDoubleAttribute(edge.getIdentifier(), physAttrName);
+			final Double attrValue = edgeAttributes.getDoubleAttribute(edge.getIdentifier(), physEdgeAttrName);
 			if (attrValue != null)
 			{
 				detailedNetwork.addEdge(edge);
@@ -78,7 +79,7 @@ public class DetailedNetworkCreator
 		edges = (List<CyEdge>) origGenNetwork.getConnectingEdges(getIntersectingNodes(origGenNetwork, nodes));
 		for (final CyEdge edge : edges)
 		{
-			final Double attrValue = edgeAttributes.getDoubleAttribute(edge.getIdentifier(), genAttrName);
+			final Double attrValue = edgeAttributes.getDoubleAttribute(edge.getIdentifier(), genEdgeAttrName);
 			if (attrValue != null)
 			{
 				detailedNetwork.addEdge(edge);
@@ -104,6 +105,7 @@ public class DetailedNetworkCreator
 				//else edgeAttributes.setAttribute(edge.getIdentifier(), "PanGIA.Interaction Type", "Physical&Genetic");
 			}
 		}
+		
 
 		CyNetworkView theView = Cytoscape.createNetworkView(detailedNetwork);
 		

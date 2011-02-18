@@ -154,21 +154,35 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         setLayout(new java.awt.GridBagLayout());
 
         topPane.setLayout(new java.awt.GridBagLayout());
-
         topPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Physical Network"));
         topPane.setToolTipText("Specify information relating to the physical interaction network.");
+        
+        lbPhysicalNetwork.setText("Network:");
+        lbPhysicalNetwork.setToolTipText("Choose a network which contains edges representing physical interactions.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(3, 5, 0, 5);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        topPane.add(lbPhysicalNetwork, gridBagConstraints);
+
+        physicalNetworkPanel.setComboBoxToolTip("Choose a network which contains edges representing physical interactions.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 5);
+        topPane.add(physicalNetworkPanel, gridBagConstraints);
+        
         physicalEdgeLabel.setText("Attribute:");
         physicalEdgeLabel.setToolTipText("Choose an edge attribute representing the physical interaction scores.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.insets = new java.awt.Insets(3, 5, 3, 5);
         topPane.add(physicalEdgeLabel, gridBagConstraints);
 
         physicalEdgeAttribComboBox.setToolTipText("Choose an edge attribute representing the physical interaction scores.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 5);
@@ -178,25 +192,16 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
             }
         });
         topPane.add(physicalEdgeAttribComboBox, gridBagConstraints);
+        
+        
 
-        lbPhysicalNetwork.setText("Network:");
-        lbPhysicalNetwork.setToolTipText("Choose a network which contains edges representing physical interactions.");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(3, 5, 0, 5);
-        topPane.add(lbPhysicalNetwork, gridBagConstraints);
-
-        physicalNetworkPanel.setComboBoxToolTip("Choose a network which contains edges representing physical interactions.");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 5);
-        topPane.add(physicalNetworkPanel, gridBagConstraints);
+        
 
         lbPhysicalScale.setText("Scale:");
         lbPhysicalScale.setToolTipText("Choose an algorithm for scaling edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
         lbPhysicalScale.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(3, 5, 3, 5);
         topPane.add(lbPhysicalScale, gridBagConstraints);
@@ -204,7 +209,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         phyScalingMethodComboBox.setToolTipText("Choose an algorithm for scaling edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
         phyScalingMethodComboBox.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 5);
@@ -221,33 +226,11 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         edgeAttributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Genetic Network"));
         edgeAttributePanel.setToolTipText("Specify information relating to the genetic interaction network.");
 
-        geneticEdgeLabel.setText("Attribute:");
-        geneticEdgeLabel.setToolTipText("Choose an edge attribute representing the genetic interaction scores.");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(3, 5, 3, 5);
-        edgeAttributePanel.add(geneticEdgeLabel, gridBagConstraints);
-
-        geneticEdgeAttribComboBox.setToolTipText("Choose an edge attribute representing the genetic interaction scores.");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 5);
-        geneticEdgeAttribComboBox.addActionListener(new java.awt.event.ActionListener(){
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-            	updateFilteringOptions(evt);
-            }
-        });
-        
-        edgeAttributePanel.add(geneticEdgeAttribComboBox, gridBagConstraints);
-
         lbGeneticNetwork.setText("Network:");
         lbGeneticNetwork.setToolTipText("Choose a network which contains edges representing genetic interactions.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(3, 5, 3, 5);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         edgeAttributePanel.add(lbGeneticNetwork, gridBagConstraints);
 
         geneticNetworkPanel.setComboBoxToolTip("Choose a network which contains edges representing genetic interactions.");
@@ -258,11 +241,33 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 5);
         edgeAttributePanel.add(geneticNetworkPanel, gridBagConstraints);
 
+        geneticEdgeLabel.setText("Attribute:");
+        geneticEdgeLabel.setToolTipText("Choose an edge attribute representing the genetic interaction scores.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(3, 5, 3, 5);
+        edgeAttributePanel.add(geneticEdgeLabel, gridBagConstraints);
+
+        geneticEdgeAttribComboBox.setToolTipText("Choose an edge attribute representing the genetic interaction scores.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 5);
+        geneticEdgeAttribComboBox.addActionListener(new java.awt.event.ActionListener(){
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	updateFilteringOptions(evt);
+            }
+        });
+        edgeAttributePanel.add(geneticEdgeAttribComboBox, gridBagConstraints);
+        
         lbGeneticScale.setText("Scale:");
         lbGeneticScale.setToolTipText("Choose whether or not to scale edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
         lbGeneticScale.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
         edgeAttributePanel.add(lbGeneticScale, gridBagConstraints);
@@ -270,7 +275,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         genScalingMethodComboBox.setToolTipText("Choose whether or not to scale edge scores. Upper/lower refers to the numeric direction which will be regarded as more significant.");
         genScalingMethodComboBox.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 5);
         edgeAttributePanel.add(genScalingMethodComboBox, gridBagConstraints);
@@ -365,6 +370,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         java.awt.GridBagConstraints gridBagConstraints;
 
         pnlParameter = new javax.swing.JPanel();
+        nodeAttrPanel = new javax.swing.JPanel();
         scorePanel = new javax.swing.JPanel();
         
         /*
@@ -376,6 +382,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
         
         degreeLabel = new javax.swing.JLabel();
         degreeTextField = new javax.swing.JTextField();
+        
+        nodeAttrLabel = new JLabel();
+        nodeAttrComboBox = new JComboBox();
         
         complexRewardLabel = new JLabel();
         complexRewardSlider = new JSlider();
@@ -418,6 +427,37 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
             public void keyReleased(java.awt.event.KeyEvent evt) {textFieldActionPerformed(evt);}
         };
 
+        //nodeAttrPanel
+        nodeAttrPanel.setLayout(new java.awt.GridBagLayout());
+
+        nodeAttrPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Node Identifiers"));
+        nodeAttrPanel.setToolTipText("Specify the node identifiers.");
+        
+        nodeAttrLabel.setText("Attribute:");
+        nodeAttrLabel.setToolTipText("Choose the node attribute specifying node identifiers.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5,3, 5);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        nodeAttrPanel.add(nodeAttrLabel, gridBagConstraints);
+        
+        
+        nodeAttrComboBox.setToolTipText(nodeAttrLabel.getToolTipText());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 5);
+        nodeAttrPanel.add(nodeAttrComboBox, gridBagConstraints);
+        
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        pnlParameter.add(nodeAttrPanel, gridBagConstraints);
+        
         //ScorePanel
         scorePanel.setLayout(new java.awt.GridBagLayout());
 
@@ -1081,6 +1121,9 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JTextField alphaTextField;
     */
     
+    private JLabel nodeAttrLabel;
+    private JComboBox  nodeAttrComboBox;
+    
     private JLabel complexRewardLabel;
     private boolean complexRewardSliderEventLock = false;
     private JSlider complexRewardSlider;
@@ -1106,6 +1149,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
     private javax.swing.JButton searchButton;
     private javax.swing.JPanel topPane;
     private javax.swing.JPanel pnlParameter;
+    private javax.swing.JPanel nodeAttrPanel;
     private javax.swing.JPanel parameterPanel;
     private javax.swing.JLabel lbGeneticNetwork;
     private javax.swing.JLabel lbPhysicalNetwork;
@@ -1147,60 +1191,82 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	
 	public void updateAttributeLists() {
 		// Save current selection
-		final Object geneticSelected = geneticEdgeAttribComboBox.getSelectedItem();
-		final Object physicalSelected = physicalEdgeAttribComboBox.getSelectedItem();
+		final Object nodeSelected = nodeAttrComboBox.getSelectedItem();
+		final Object geneticEdgeSelected = geneticEdgeAttribComboBox.getSelectedItem();
+		final Object physicalEdgeSelected = physicalEdgeAttribComboBox.getSelectedItem();
 		final Object annotSelected = annotationAttribComboBox.getSelectedItem();
 
 		// Reset the children
+		nodeAttrComboBox.removeAllItems();
 		geneticEdgeAttribComboBox.removeAllItems();
 		physicalEdgeAttribComboBox.removeAllItems();
 		annotationAttribComboBox.removeAllItems();
 
+		nodeAttrComboBox.addItem("canonicalName");
 		physicalEdgeAttribComboBox.addItem(DEFAULT_ATTRIBUTE);
 		geneticEdgeAttribComboBox.addItem(DEFAULT_ATTRIBUTE);
 		
-		
-		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
-		final Set<String> edgeAttrNames = new TreeSet<String>(Arrays
-								      .asList(edgeAttr.getAttributeNames()));
+		//Populate the node boxes
+		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+		final Set<String> nodeAttrNames = new TreeSet<String>(Arrays.asList(nodeAttr.getAttributeNames()));
 
-		boolean isGeneticSelectedExist = false;
-		boolean isPhysicalSelectedExist = false;
-		for (String name : edgeAttrNames) {
+		boolean isNodeSelectedExist = false;
+		for (String name : nodeAttrNames)
+		{
+			// Use only double or int attributes
+			final byte attribType = nodeAttr.getMultiHashMapDefinition().getAttributeValueType(name);
+			
+			if (attribType == MultiHashMapDefinition.TYPE_STRING && nodeAttr.getUserVisible(name) && !nodeAttr.equals("canonicalName"))
+			{
+				nodeAttrComboBox.addItem(name);
+				
+				if (name.equals(nodeSelected)) isNodeSelectedExist = true;
+			}
+		}
+		
+		if (isNodeSelectedExist) nodeAttrComboBox.setSelectedItem(nodeSelected);
+		
+		
+		//Populate the edge boxes
+		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
+		final Set<String> edgeAttrNames = new TreeSet<String>(Arrays.asList(edgeAttr.getAttributeNames()));
+
+		boolean isGeneticEdgeSelectedExist = false;
+		boolean isPhysicalEdgeSelectedExist = false;
+		for (String name : edgeAttrNames)
+		{
 			// Use only double or int attributes
 			final byte attribType = edgeAttr.getMultiHashMapDefinition().getAttributeValueType(name);
-			if ((attribType == MultiHashMapDefinition.TYPE_FLOATING_POINT || attribType == MultiHashMapDefinition.TYPE_INTEGER) && edgeAttr.getUserVisible(name)) {
+			
+			if ((attribType == MultiHashMapDefinition.TYPE_FLOATING_POINT || attribType == MultiHashMapDefinition.TYPE_INTEGER) && edgeAttr.getUserVisible(name))
+			{
 				geneticEdgeAttribComboBox.addItem(name);
 				physicalEdgeAttribComboBox.addItem(name);
-				if (name.equals(geneticSelected))
-					isGeneticSelectedExist = true;
-				if (name.equals(physicalSelected))
-					isPhysicalSelectedExist = true;
+				
+				if (name.equals(geneticEdgeSelected)) isGeneticEdgeSelectedExist = true;
+				if (name.equals(physicalEdgeSelected)) isPhysicalEdgeSelectedExist = true;
 			}
 		}
 		
-		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
-		final Set<String> nodeAttrNames = new TreeSet<String>(Arrays
-								      .asList(nodeAttr.getAttributeNames()));
+		if (isGeneticEdgeSelectedExist) geneticEdgeAttribComboBox.setSelectedItem(geneticEdgeSelected);
+		if (isPhysicalEdgeSelectedExist) physicalEdgeAttribComboBox.setSelectedItem(physicalEdgeSelected);
 		
 		
 		
+		//Populate the annotation box
 		boolean isAnnotSelectedExist = false;
-		for (String name : nodeAttrNames) {
+		for (String name : nodeAttrNames)
+		{
 			// Use only string attributes
 			final byte attribType = nodeAttr.getMultiHashMapDefinition().getAttributeValueType(name);
-			if (attribType == MultiHashMapDefinition.TYPE_STRING && nodeAttr.getUserVisible(name) && !name.equals("canonicalName")) {
+			if (attribType == MultiHashMapDefinition.TYPE_STRING && nodeAttr.getUserVisible(name) && !name.equals("canonicalName"))
+			{
 				annotationAttribComboBox.addItem(name);
-				if (name.equals(geneticSelected))
-					isAnnotSelectedExist = true;
+				
+				if (name.equals(geneticEdgeSelected)) isAnnotSelectedExist = true;
 			}
 		}
 
-		if (isGeneticSelectedExist)
-			geneticEdgeAttribComboBox.setSelectedItem(geneticSelected);
-		if (isPhysicalSelectedExist)
-			physicalEdgeAttribComboBox.setSelectedItem(physicalSelected);
-		
 		if (isAnnotSelectedExist)
 			annotationAttribComboBox.setSelectedItem(annotSelected);
 
@@ -1238,6 +1304,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		if (physicalEdgeAttrName.equalsIgnoreCase(DEFAULT_ATTRIBUTE)){
 			physicalEdgeAttrName = "";
 		}
+		
+		parameters.setNodeAttrName(nodeAttrComboBox.getSelectedItem().toString());
 		
 		parameters.setGeneticEdgeAttrName(geneticEdgeAttrName);
 		parameters.setPhysicalEdgeAttrName(physicalEdgeAttrName);
