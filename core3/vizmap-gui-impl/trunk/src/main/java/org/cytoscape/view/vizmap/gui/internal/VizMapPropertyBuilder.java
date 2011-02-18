@@ -40,10 +40,13 @@ import java.util.TreeSet;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.view.model.VisualProperty;
@@ -188,16 +191,21 @@ public class VizMapPropertyBuilder {
 		logger.debug("vpEditor is " + vpEditor);
 		
 		if (visualMapping instanceof DiscreteMapping && (attrName != null)) {
-			
 			// Discrete Mapping
 			final SortedSet<K> attrSet = new TreeSet<K>();
+			
 			for (CyTableEntry go : graphObjectSet) {
-				final Class<?> attrClass =
-					go.getCyRow().getTable().getColumn(attrName).getType();
-
-				Object id = go.getCyRow().get(attrName, attrClass);
-				if (id != null)
-					attrSet.add((K) id);
+				final CyRow row = go.getCyRow();
+				final CyTable table = row.getTable();
+				final CyColumn column = table.getColumn(attrName);
+				
+				if (column != null) {
+					final Class<?> attrClass = column.getType();
+					Object id = row.get(attrName, attrClass);
+					
+					if (id != null)
+						attrSet.add((K) id);
+				}
 			}
 
 			// FIXME
@@ -237,33 +245,36 @@ public class VizMapPropertyBuilder {
 			String stringVal;
 
 			for (CyTableEntry go : graphObjectSet) {
-				Class<?> attrClass =
-					go.getCyRow().getTable().getColumn(attrName).getType();
-
-				id = go.getCyRow().get("name", String.class);
-
-				if (attrName.equals("SUID"))
-					value = go.getSUID();
-				else
-					value = go.getCyRow().get(attrName, attrClass);
-
-				if (value != null)
-					stringVal = value.toString();
-				else
-					stringVal = null;
-
-				final VizMapperProperty<String, V, VisualMappingFunction<K, V>> oneProperty = new VizMapperProperty<String, V, VisualMappingFunction<K, V>>(
-						CellType.DISCRETE, id, (Class<V>) value.getClass());
-				oneProperty.setInternalValue(visualMapping);
-				oneProperty.setValue(stringVal);
-
-				// This prop. should not be editable!
-				oneProperty.setEditable(false);
-
-				oneProperty.setParentProperty(topProperty);
-				oneProperty.setDisplayName(id);
-
-				topProperty.addSubProperty(oneProperty);
+				CyColumn column = go.getCyRow().getTable().getColumn(attrName);
+				
+				if (column != null) {
+					Class<?> attrClass = column.getType();
+	
+					id = go.getCyRow().get("name", String.class);
+	
+					if (attrName.equals("SUID"))
+						value = go.getSUID();
+					else
+						value = go.getCyRow().get(attrName, attrClass);
+	
+					if (value != null)
+						stringVal = value.toString();
+					else
+						stringVal = null;
+	
+					final VizMapperProperty<String, V, VisualMappingFunction<K, V>> oneProperty = new VizMapperProperty<String, V, VisualMappingFunction<K, V>>(
+							CellType.DISCRETE, id, (Class<V>) value.getClass());
+					oneProperty.setInternalValue(visualMapping);
+					oneProperty.setValue(stringVal);
+	
+					// This prop. should not be editable!
+					oneProperty.setEditable(false);
+	
+					oneProperty.setParentProperty(topProperty);
+					oneProperty.setDisplayName(id);
+	
+					topProperty.addSubProperty(oneProperty);
+				}
 			}
 
 		} else {
