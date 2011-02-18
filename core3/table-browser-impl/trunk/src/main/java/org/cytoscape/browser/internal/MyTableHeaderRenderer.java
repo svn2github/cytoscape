@@ -38,6 +38,10 @@ import org.cytoscape.model.CyColumn;
 
 
 final class MyTableHeaderRenderer extends JLabel implements TableCellRenderer {
+	
+	private static Color defaultBackground = null;
+	private static Color defaultForeground = null;
+	
 	MyTableHeaderRenderer() {
 		setBorder(new BevelBorder(BevelBorder.RAISED));
 	}
@@ -47,7 +51,13 @@ final class MyTableHeaderRenderer extends JLabel implements TableCellRenderer {
 	public Component getTableCellRendererComponent(final JTable table, final Object value,
 						       boolean isSelected, boolean hasFocus, int rowIndex, int vColIndex)
 	{
-
+		if (defaultBackground == null){
+			defaultBackground = this.getBackground();
+		}
+		if (defaultForeground == null){
+			defaultForeground = this.getForeground();
+		}
+		
 		// 'value' is column header value of column 'vColIndex'
 		// rowIndex is always -1
 		// isSelected is always false
@@ -66,13 +76,16 @@ final class MyTableHeaderRenderer extends JLabel implements TableCellRenderer {
 			this.setOpaque(true);
 			toolTip = "<html>" + col.getType().getName()+ "<br />Virtual Column</html>";
 		}
-
+		else {
+			this.setForeground(defaultForeground);
+			this.setBackground(defaultBackground);
+		}
+		
 		// Set tool tip if desired
         this.setToolTipText(toolTip);
 		
 		// Since the renderer is a component, return itself
 		return this;
-
 	}
 
 	//
