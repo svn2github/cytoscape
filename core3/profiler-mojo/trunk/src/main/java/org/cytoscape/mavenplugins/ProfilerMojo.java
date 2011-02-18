@@ -28,6 +28,7 @@
 package org.cytoscape.mavenplugins;
 
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -35,32 +36,64 @@ import org.apache.maven.project.MavenProject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Goal which runs profiling regression tests.
  *
  * @goal profiler
- * 
+ *
  * @phase test
  */
-public class ProfilerMojo extends AbstractMojo {
+public final class ProfilerMojo extends AbstractMojo {
 	/**
 	 * @parameter baselineVersion
 	 * @required
 	 */
 	private String baselineVersion;
 
-	/**                                                                                                                                        
-	 * The Maven Project Object.                                                                                                               
-	 *                                                                                                                                         
-	 * @parameter default-value="${project}"                                                                                                   
-	 * @readonly                                                                                                                               
+	/**
+	 * The Maven Project Object.
+	 *
+	 * @parameter default-value="${project}"
+	 * @readonly
 	 */
 	private MavenProject project;
 
 	public void execute() throws MojoExecutionException {
-		getLog().info("ProfilerMojo: base line version is " + baselineVersion + ", group ID: "
+		getLog().info("+++ ProfilerMojo: base line version is " + baselineVersion + ", group ID: "
 			      + project.getGroupId() + ", artifact ID: " + project.getArtifactId());
+		final List<String> testClasspath = generateTestClasspath();
+		getLog().info("+++ ProfilerMojo: testClasspath = " + testClasspath);
+		final Artifact artifact = project.getArtifact();
+		getLog().info("+++ ProfilerMojo: current artifact = " + artifact);
+		collectStats(artifact);
+		artifact.setVersion(baselineVersion);
+		getLog().info("+++ ProfilerMojo: baseline artifact = " + artifact);
+		collectStats(artifact);
+		compareStats();
+	}
+
+	private List<String> generateTestClasspath() {
+		final List<String> testClasspath = new ArrayList<String>();
+		for (final Object a : project.getArtifacts()) {
+			final Artifact artifact = (Artifact)a;
+			if (artifact.getArtifactHandler().isAddedToClasspath()) {
+				final File file = artifact.getFile();
+				if (file != null)
+					testClasspath.add(file.getPath());
+			}
+		}
+
+		return testClasspath;
+	}
+
+	private void collectStats(final Artifact artifact) {
+		System.gc();
+	}
+
+	private void compareStats() {
 	}
 }
