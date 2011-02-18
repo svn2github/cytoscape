@@ -51,11 +51,17 @@ import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.VisualLexicon;
 import org.cytoscape.view.model.VisualProperty;
 import org.cytoscape.view.presentation.RenderingEngineManager;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
+import org.cytoscape.view.vizmap.VisualMappingFunction;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleFactory;
 import org.cytoscape.view.vizmap.VisualStyleSerializer;
+import org.cytoscape.view.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.view.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.view.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,32 +120,18 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
 
             for (String key : props.stringPropertyNames()) {
                 String value = props.getProperty(key);
-                String[] tokens = key.split("\\.");
-                String styleName = null;
+                String styleName = getStyleName(key);
 
-                if (tokens.length > 2 && tokens[0].matches("(node|edge|global)[a-zA-Z]+Calculator")) {
-                    // It seems to be a valid entry...
-                    if (tokens.length == 3) {
-                        String t3 = tokens[2];
+                if (styleName != null) {
+                    // Add each style name and its properties to a map
+                    Map<String, String> keyValueMap = styleNamesMap.get(styleName);
 
-                        if (t3
-                                .matches("(nodeSizeLocked|(node|edge)[a-zA-Z]+Calculator|default((Node|Edge|Background)[a-zA-Z]+|SloppySelection))")) {
-                            // It looks like the second token is the style name!
-                            styleName = tokens[1];
-                        }
+                    if (keyValueMap == null) {
+                        keyValueMap = new Hashtable<String, String>();
+                        styleNamesMap.put(styleName, keyValueMap);
                     }
 
-                    if (styleName != null) {
-                        // Add each style name and its properties to a map
-                        Map<String, String> keyValueMap = styleNamesMap.get(styleName);
-
-                        if (keyValueMap == null) {
-                            keyValueMap = new Hashtable<String, String>();
-                            styleNamesMap.put(styleName, keyValueMap);
-                        }
-
-                        keyValueMap.put(key, value);
-                    }
+                    keyValueMap.put(key, value);
                 }
             }
 
@@ -149,7 +141,7 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
                 // Each new style should be created from the default one:
                 VisualStyle vs = null;
 
-                if (styleName.equalsIgnoreCase(VisualMappingManagerImpl.DEFAULT_STYLE_NAME)) {
+                if (styleName.equals(VisualMappingManagerImpl.DEFAULT_STYLE_NAME)) {
                     // If loading the default style, do not create another one,
                     // but just modify the current default object!
                     vs = defaultStyle;
@@ -167,11 +159,13 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
                     String value = p.getValue();
 
                     if (isDefaultProperty(key)) {
-                        key = key.split("\\.")[2];
+                        // e.g. "globalAppearanceCalculator.MyStyle.defaultBackgroundColor"
                         setDefaultProperty(lexicon, vs, key, value);
                     } else if (isMappingFunction(key)) {
-                        key = key.split("\\.")[2];
-                        setMappingFunction(lexicon, vs, key, value, vsProps);
+                        // e.g. "edgeAppearanceCalculator.MyStyle.edgeColorCalculator"
+                        setMappingFunction(lexicon, vs, key, value, props);
+                    } else if (isDependency(key)) {
+                        setDependency(lexicon, vs, key, value);
                     }
                 }
 
@@ -214,38 +208,84 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
         return styles;
     }
 
-    private boolean isDefaultProperty(String key) {
+    /**
+     * @param key the Properties key
+     * @return The name of the visual style or null if the property key doesn't or shouldn't have it
+     */
+    protected static String getStyleName(String key) {
+        String styleName = null;
+
+        if (key != null) {
+            String[] tokens = key.split("\\.");
+
+            if (tokens.length > 2 && tokens[0].matches("(node|edge|global)[a-zA-Z]+Calculator")) {
+                // It seems to be a valid entry...
+                if (tokens.length == 3) {
+                    String t3 = tokens[2];
+
+                    if (t3.matches("nodeSizeLocked|arrowColorMatchesEdge|nodeLabelColorFromNodeColor|"
+                                   + "defaultNodeShowNestedNetwork|nodeCustomGraphicsSizeSync|"
+                                   + "((node|edge)[a-zA-Z]+Calculator)|"
+                                   + "(default(Node|Edge|Background|SloppySelection)[a-zA-Z0-9]+)")) {
+                        // It looks like the second token is the style name!
+                        styleName = tokens[1];
+                    }
+                }
+            }
+        }
+
+        return styleName;
+    }
+
+    protected static boolean isDefaultProperty(String key) {
         boolean b = false;
 
         if (key != null) {
-            // globals
+            // Globals
             b |= key.matches("globalAppearanceCalculator\\.[^\\.]+\\.default[a-zA-Z]+Color");
-            // Nodes
-            b |= key.matches("nodeAppearanceCalculator\\.[^\\.]+\\.(defaultNode[a-zA-Z]+)|nodeSizeLocked");
+            // Nodes & Edges
+            b |= key.matches("nodeAppearanceCalculator\\.[^\\.]+\\.defaultNode\\w+");
             // Edges
             b |= key.matches("edgeAppearanceCalculator\\.[^\\.]+\\.defaultEdge[a-zA-Z]+");
+            // exceptions
+            b &= !key.contains("defaultNodeShowNestedNetwork");
         }
 
         return b;
     }
 
-    private boolean isMappingFunction(String key) {
+    protected static boolean isMappingFunction(String key) {
         boolean b = false;
 
         if (key != null) {
-            b |= key.matches("(node|edge)AppearanceCalculator\\.[^\\.]+\\.\\1[a-zA-Z]+Calculator");
+            b |= key.matches("(node|edge)AppearanceCalculator\\.[^\\.]+\\."
+                             + "\\1((CustomGraphics(Position)?\\d+)|([a-zA-Z]+Calculator))");
         }
 
         return b;
     }
 
-    private void setDefaultProperty(VisualLexicon lexicon, VisualStyle vs, String calcKey, String sValue) {
+    protected static boolean isDependency(String key) {
+        boolean b = false;
+
+        if (key != null) {
+            b |= key
+                    .matches("nodeAppearanceCalculator\\.[^\\.]+\\."
+                             + "(nodeSizeLocked|nodeLabelColorFromNodeColor|defaultNodeShowNestedNetwork|nodeCustomGraphicsSizeSync)");
+            b |= key.matches("edgeAppearanceCalculator\\.[^\\.]+\\.arrowColorMatchesEdge");
+        }
+
+        return b;
+    }
+
+    private void setDefaultProperty(VisualLexicon lexicon, VisualStyle vs, String key, String sValue) {
+        String calcKey = key.split("\\.")[2];
         CalcConverter<?> conv = CalcConverter.getConverter(calcKey);
 
         if (conv != null) {
             Class<? extends CyTableEntry> dataType = conv.getTargetType();
-            String key = conv.getKey();
-            VisualProperty vp = lexicon.lookup(dataType, key);
+            String vpKey = conv.getVisualPropertyId();
+            VisualProperty vp = lexicon.lookup(dataType, vpKey);
 
             if (vp != null) {
                 Object value = conv.getValue(sValue);
@@ -254,15 +294,34 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
         }
     }
 
-    private void setMappingFunction(VisualLexicon lexicon,
-                                    VisualStyle vs,
-                                    String calcKey,
-                                    String value,
-                                    Map<String, String> vsProps) {
+    private void setMappingFunction(VisualLexicon lexicon, VisualStyle vs, String key, String value, Properties props) {
+        String calcKey = key.split("\\.")[2];
         CalcConverter<?> conv = CalcConverter.getConverter(calcKey);
 
         if (conv != null) {
-            // TODO: get mapping from converter and add it to the visual style
+            Class<? extends CyTableEntry> dataType = conv.getTargetType();
+            String vpId = conv.getVisualPropertyId();
+            VisualProperty vp = lexicon.lookup(dataType, vpId);
+
+            if (vp != null) {
+                // TODO: get mapping from converter and add it to the visual style
+                VisualMappingFunction mapping = conv.getMappingFunction(props,
+                                                                        value,
+                                                                        vp,
+                                                                        discreteMappingFactory,
+                                                                        continuousMappingFactory,
+                                                                        passthroughMappingFactory);
+
+                if (mapping != null) vs.addVisualMappingFunction(mapping);
+            }
+        }
+    }
+
+    private void setDependency(VisualLexicon lexicon, VisualStyle vs, String calcKey, String value) {
+        if (calcKey.contains(".nodeSizeLocked")) {
+            boolean b = Boolean.parseBoolean(value);
+            lexicon.getVisualLexiconNode(TwoDVisualLexicon.NODE_X_SIZE).setDependency(b);
+            lexicon.getVisualLexiconNode(TwoDVisualLexicon.NODE_Y_SIZE).setDependency(b);
         }
     }
 
@@ -296,12 +355,18 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
 }
 
 // Other classes ---------------------------
-
+// TODO: refactor and make it public
 class CalcConverter<T> {
+
+    public final byte TYPE_BOOLEAN = 1;
+    public final byte TYPE_FLOATING_POINT = 2;
+    public final byte TYPE_INTEGER = 3;
+    public final byte TYPE_STRING = 4;
 
     private static final Map<Class<? extends CyTableEntry>, Map<String, CalcConverter<?>>> converters;
 
     public String key;
+    public String visualPropertyId;
     public Class<T> type;
     public Class<? extends CyTableEntry> targetType;
 
@@ -312,13 +377,19 @@ class CalcConverter<T> {
         converters.put(CyNetwork.class, new Hashtable<String, CalcConverter<?>>());
     }
 
-    private CalcConverter(String key, Class<T> type, Class<? extends CyTableEntry> targetType) {
-        this.key = key;
+    private CalcConverter(String calcKey, Class<T> type, Class<? extends CyTableEntry> targetType) {
+        this.key = calcKey;
+        this.visualPropertyId = getVisualPropertyId(calcKey);
         this.type = type;
         this.targetType = targetType;
     }
 
+    /**
+     * @param calcKey The calculator identifier (e.g. "edgeColorCalculator" or "defaultEdgeColor").
+     * @return
+     */
     public static CalcConverter<?> getConverter(String calcKey) {
+        // TODO: maybe create a CalcConverterFactory
         CalcConverter<?> conv = null;
 
         Class<? extends CyTableEntry> targetType = getTargetDataType(calcKey);
@@ -331,20 +402,19 @@ class CalcConverter<T> {
             if (conv == null) {
                 // Create and cache one...
                 Class<?> type = getPropertyType(calcKey);
-                String key = getVisualPropertyKey(calcKey);
 
                 if (type == Integer.class)
-                    conv = new CalcConverter<Integer>(key, Integer.class, targetType);
+                    conv = new CalcConverter<Integer>(calcKey, Integer.class, targetType);
                 else if (type == Double.class)
-                    conv = new CalcConverter<Double>(key, Double.class, targetType);
+                    conv = new CalcConverter<Double>(calcKey, Double.class, targetType);
                 else if (type == String.class)
-                    conv = new CalcConverter<String>(key, String.class, targetType);
+                    conv = new CalcConverter<String>(calcKey, String.class, targetType);
                 else if (type == Font.class)
-                    conv = new CalcConverter<Font>(key, Font.class, targetType);
+                    conv = new CalcConverter<Font>(calcKey, Font.class, targetType);
                 else if (type == Color.class)
-                    conv = new CalcConverter<Color>(key, Color.class, targetType);
+                    conv = new CalcConverter<Color>(calcKey, Color.class, targetType);
                 else
-                    conv = new CalcConverter<Object>(key, Object.class, targetType);
+                    conv = new CalcConverter<Object>(calcKey, Object.class, targetType);
 
                 map.put(calcKey, conv);
             }
@@ -353,6 +423,10 @@ class CalcConverter<T> {
         return conv;
     }
 
+    /**
+     * @param sValue The string value to be parsed
+     * @return The visual property value
+     */
     public T getValue(String sValue) {
         Object value = null;
 
@@ -404,12 +478,138 @@ class CalcConverter<T> {
         return (T) value;
     }
 
+    /**
+     * @param props All the visual properties
+     * @param mapperName Example: "MyStyle-Edge Color-Discrete Mapper"
+     * @return
+     */
+    public <K> VisualMappingFunction<K, T> getMappingFunction(Properties props,
+                                                              String mapperName,
+                                                              VisualProperty<T> vp,
+                                                              VisualMappingFunctionFactory discreteMappingFactory,
+                                                              VisualMappingFunctionFactory continuousMappingFactory,
+                                                              VisualMappingFunctionFactory passthroughMappingFactory) {
+        // e.g. "edgeColorCalculator.MyStyle-Edge Color-Discrete Mapper"
+        String baseKey = key + "." + mapperName + ".mapping.";
+
+        String functionType = props.getProperty(baseKey + "type");
+        String attributeName = props.getProperty(baseKey + "controller");
+
+        // "ID" is actually the "name" column!!!
+        if ("ID".equalsIgnoreCase(attributeName)) attributeName = "name";
+
+        if ("DiscreteMapping".equalsIgnoreCase(functionType)) {
+            byte controllerType = Byte.parseByte(props.getProperty(baseKey + "controllerType"));
+            Class<?> attrValueType = String.class;
+
+            switch (controllerType) {
+                case TYPE_BOOLEAN:
+                    attrValueType = Boolean.class;
+                    break;
+                case TYPE_FLOATING_POINT:
+                    attrValueType = Double.class;
+                    break;
+                case TYPE_INTEGER:
+                    attrValueType = Integer.class;
+                    break;
+                default:
+                    attrValueType = String.class;
+                    break;
+            }
+
+            DiscreteMapping<K, T> dm = (DiscreteMapping<K, T>) discreteMappingFactory
+                    .createVisualMappingFunction(attributeName, attrValueType, vp);
+
+            String entryKey = baseKey + "map.";
+
+            for (String sk : props.stringPropertyNames()) {
+                if (sk.contains(entryKey)) {
+                    String sv = props.getProperty(sk);
+                    sk = sk.replaceAll(entryKey, "");
+
+                    T vpValue = getValue(sv);
+                    Object dataValue = sk;
+
+                    switch (controllerType) {
+                        case TYPE_BOOLEAN:
+                            dataValue = Boolean.parseBoolean(sk);
+                            break;
+                        case TYPE_FLOATING_POINT:
+                            dataValue = Double.parseDouble(sk);
+                            break;
+                        case TYPE_INTEGER:
+                            dataValue = Integer.parseInt(sk);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    dm.putMapValue((K) dataValue, vpValue);
+                }
+            }
+
+            return dm;
+        } else if ("ContinuousMapping".equalsIgnoreCase(functionType)) {
+            String interpolator = props.getProperty(baseKey + "interpolator");
+            boolean isColor = "LinearNumberToColorInterpolator".equalsIgnoreCase(interpolator);
+
+            ContinuousMapping<K, T> cm = (ContinuousMapping<K, T>) continuousMappingFactory
+                    .createVisualMappingFunction(attributeName, Number.class, vp);
+
+            int boundaryValues = 0;
+
+            try {
+                String s = props.getProperty(baseKey + "boundaryvalues");
+                boundaryValues = Integer.parseInt(s);
+            } catch (NumberFormatException nfe) {
+                // TODO: warning
+            }
+
+            for (int i = 0; i < boundaryValues; i++) {
+                try {
+                    T lesser = getValue(props.getProperty(baseKey + "bv" + i + ".lesser"));
+                    T equal = getValue(props.getProperty(baseKey + "bv" + i + ".equal"));
+                    T greater = getValue(props.getProperty(baseKey + "bv" + i + ".greater"));
+
+                    BoundaryRangeValues<T> brv = new BoundaryRangeValues<T>(lesser, equal, greater);
+                    Object value = Double.parseDouble(props.getProperty(baseKey + "bv" + i + ".domainvalue"));
+
+                    cm.addPoint((K) value, brv);
+                } catch (Exception e) {
+                    // TODO: warning
+                }
+            }
+
+            return cm;
+        } else if ("PassThroughMapping".equalsIgnoreCase(functionType)) {
+            PassthroughMapping<K, T> pm = (PassthroughMapping<K, T>) passthroughMappingFactory
+                    .createVisualMappingFunction(attributeName, String.class, vp);
+
+            return pm;
+        }
+
+        return null;
+    }
+
     // Accessors --------------
 
+    /**
+     * @return The calculator identifier (e.g. "edgeColorCalculator").
+     */
     public String getKey() {
         return key;
     }
 
+    /**
+     * @return The key used in the Visual Lexicon lookup.
+     */
+    public String getVisualPropertyId() {
+        return visualPropertyId;
+    }
+
+    /**
+     * @return The visual property type.
+     */
     public Class<T> getType() {
         return type;
     }
@@ -420,7 +620,7 @@ class CalcConverter<T> {
 
     // Util --------------
 
-    public static Class<? extends CyTableEntry> getTargetDataType(String calcKey) {
+    private static Class<? extends CyTableEntry> getTargetDataType(String calcKey) {
         calcKey = calcKey.toLowerCase();
         if (calcKey.matches("[a-zA-Z]+(node|edge)[reverse]?selectioncolor")) return CyNetwork.class;
         if (calcKey.contains("node")) return CyNode.class;
@@ -428,7 +628,7 @@ class CalcConverter<T> {
         return CyNetwork.class;
     }
 
-    public static Class<?> getPropertyType(String calcKey) {
+    private static Class<?> getPropertyType(String calcKey) {
         calcKey = calcKey.toLowerCase();
         if (calcKey.equals("nodesizelocked")) return Boolean.class;
         if (calcKey.matches("[a-zA-Z]*color[a-zA-Z]*")) return Color.class;
@@ -438,7 +638,16 @@ class CalcConverter<T> {
         return String.class;
     }
 
-    public static String getVisualPropertyKey(String calcKey) {
+    private static String getVisualPropertyId(String calcKey) {
+        if (calcKey != null) {
+            // TODO: updateLegacyKey
+            return calcKey.replaceAll("(?i)default|calculator|uniform", "").toLowerCase().trim();
+        }
+
+        return calcKey;
+    }
+
+    private static String convert(String calcKey) {
         if (calcKey != null) {
             // TODO: updateLegacyKey
             return calcKey.replaceAll("(?i)default|calculator", "").toLowerCase().trim();
