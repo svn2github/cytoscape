@@ -67,7 +67,7 @@ public class SearchTask implements Task {
 		if (needsToHalt) return;
 		
 		final CyNetwork physicalInputNetwork = parameters.getPhysicalNetwork();
-		SFNetwork physicalNetwork = convertCyNetworkToSFNetwork(physicalInputNetwork, parameters.getNodeAttrName(), parameters.getGeneticEdgeAttrName(), parameters.getPhysicalScalingMethod());
+		SFNetwork physicalNetwork = convertCyNetworkToSFNetwork(physicalInputNetwork, parameters.getNodeAttrName(), parameters.getPhysicalEdgeAttrName(), parameters.getPhysicalScalingMethod());
 
 		final CyNetwork geneticInputNetwork = parameters.getGeneticNetwork();
 		SFNetwork geneticNetwork = convertCyNetworkToSFNetwork(geneticInputNetwork, parameters.getNodeAttrName(), parameters.getGeneticEdgeAttrName(), parameters.getGeneticScalingMethod());
@@ -95,8 +95,8 @@ public class SearchTask implements Task {
 			
 			for (String gnode : geneticNetwork.nodeIterator())
 				for (Object annot : nodeAttr.getListAttribute(gnode, parameters.getAnnotationAttrName()))
-					HashMapUtil.updateMapSet(annot_node, annot.toString(), gnode);
-			
+					HashMapUtil.updateMapSet(annot_node, annot.toString(), String.valueOf(nodeAttr.getAttribute(gnode,parameters.getNodeAttrName())));
+							
 			trainingComplexes = new ArrayList<SNodeModule>(annot_node.size());
 			
 			for (String annot : annot_node.keySet())
@@ -500,7 +500,6 @@ public class SearchTask implements Task {
 			List<CyEdge> edges = new ArrayList<CyEdge>(netEdges.size());
 			for (CyEdge e : netEdges)
 				if (edgeAttributes.getAttribute(e.getIdentifier(), numericAttrName)!=null) edges.add(e);
-			
 			
 			// Collect edge attribute values:
 			final float[] edgeAttribValues = new float[edges.size()];

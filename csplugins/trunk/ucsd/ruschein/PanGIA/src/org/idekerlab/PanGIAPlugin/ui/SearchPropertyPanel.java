@@ -1216,7 +1216,7 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 			// Use only double or int attributes
 			final byte attribType = nodeAttr.getMultiHashMapDefinition().getAttributeValueType(name);
 			
-			if (attribType == MultiHashMapDefinition.TYPE_STRING && nodeAttr.getUserVisible(name) && !nodeAttr.equals("canonicalName"))
+			if (attribType == MultiHashMapDefinition.TYPE_STRING && nodeAttr.getUserVisible(name) && !name.equals("canonicalName"))
 			{
 				nodeAttrComboBox.addItem(name);
 				
