@@ -18,6 +18,8 @@ public class DetailedNetworkCreator
 	@SuppressWarnings("unchecked")
 	public static void createDetailedView(CyNetworkView view)
     {
+		if (view.getSelectedNodeIndices().length==0) return;
+		
 		if (view.getSelectedNodeIndices().length==1)
 		{
 			goToNestedNetwork(Cytoscape.getRootGraph().getNode(view.getSelectedNodeIndices()[0]));
@@ -37,8 +39,21 @@ public class DetailedNetworkCreator
 		String genEdgeAttrName = output.getGenEdgeAttrName();
 				
 		//final CyAttributes cyAttributes = Cytoscape.getEdgeAttributes();
-				
-		String name = findNextAvailableNetworkName("Detailed View");
+		
+		String title = "Detailed View";
+		
+		int[] selected = view.getSelectedNodeIndices();
+		
+		if (selected.length<=3)
+		{
+			
+			title = Cytoscape.getRootGraph().getNode(selected[0]).getIdentifier();
+			
+			for (int ni=1;ni<selected.length;ni++)
+				title+=" | "+Cytoscape.getRootGraph().getNode(selected[ni]).getIdentifier();
+		}
+		
+		String name = findNextAvailableNetworkName(title);
 		
    	 	CyNetwork detailedNetwork = Cytoscape.createNetwork(name,	/* create_view = */false);
    	 	CyAttributes networkAttr = Cytoscape.getNetworkAttributes();
@@ -48,7 +63,7 @@ public class DetailedNetworkCreator
 		
 		//Populate network
 		//Nodes
-		for (int ni : view.getSelectedNodeIndices())
+		for (int ni : selected)
 		{	
 			GraphPerspective nn = Cytoscape.getRootGraph().getNode(ni).getNestedNetwork();
 			if (nn!=null)
