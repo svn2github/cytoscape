@@ -85,6 +85,9 @@ public class ReadDataManager {
 	protected Map<CyNode, Attributes> nodeGraphicsMap;
 	protected Map<CyEdge, Attributes> edgeGraphicsMap;
 	protected String backgroundColor;
+	protected String graphZoom;
+	protected String graphCenterX;
+	protected String graphCenterY;
 	protected Map<CyNode, List<CyNode>> groupMap;
 
 	public void initAllData() {
@@ -165,8 +168,46 @@ public class ReadDataManager {
 			return null;
 		return new Color(Integer.parseInt(backgroundColor.substring(1), 16));
 	}
+	
+    public Double getGraphZoom() {
+        Double d = new Double(1);
+        
+        try {
+            if (graphZoom != null) d = new Double(graphZoom);
+        } catch (NumberFormatException nfe) {
+            // TODO: warning
+        }
+        
+        return d;
+    }
 
-	public Map<CyNode, List<CyNode>> getGroupMap() {
+    
+    public Double getGraphCenterX() {
+        Double d = new Double(0);
+        
+        try {
+            if (graphCenterX != null) d = new Double(graphCenterX);
+        } catch (NumberFormatException nfe) {
+            // TODO: warning
+        }
+        
+        return d;
+    }
+
+    
+    public Double getGraphCenterY() {
+        Double d = new Double(0);
+        
+        try {
+            if (graphCenterY != null) d = new Double(graphCenterY);
+        } catch (NumberFormatException nfe) {
+            // TODO: warning
+        }
+        
+        return d;
+    }
+
+    public Map<CyNode, List<CyNode>> getGroupMap() {
 		return groupMap;
 	}
 	

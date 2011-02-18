@@ -14,6 +14,12 @@ public class HandleNetworkAttribute extends AbstractHandler {
 		if (attributeValueUtil.getAttributeValue(atts, "backgroundColor") != null) {
 			manager.backgroundColor = attributeValueUtil.getAttributeValue(
 					atts, "backgroundColor");
+		} else if (attributeValueUtil.getAttributeValue(atts, "GRAPH_VIEW_ZOOM") != null) {
+		    manager.graphZoom = attributeValueUtil.getAttributeValue(atts, "GRAPH_VIEW_ZOOM");
+		} else if (attributeValueUtil.getAttributeValue(atts, "GRAPH_VIEW_CENTER_X") != null) {
+		    manager.graphCenterX = attributeValueUtil.getAttributeValue(atts, "GRAPH_VIEW_CENTER_X");
+		} else if (attributeValueUtil.getAttributeValue(atts, "GRAPH_VIEW_CENTER_Y") != null) {
+		    manager.graphCenterY = attributeValueUtil.getAttributeValue(atts, "GRAPH_VIEW_CENTER_Y");
 		} else {
 			manager.objectTarget = manager.networkName;
 			manager.currentAttributes = manager.network.getCyRow();

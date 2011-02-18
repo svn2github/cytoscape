@@ -95,7 +95,6 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
     protected static final String              CY_NAMESPACE = "http://www.cytoscape.org";
 
-    private final RenderingEngineManager       renderingEngineManager;
     private final XGMMLParser                  parser;
     private final ReadDataManager              readDataManager;
     private final AttributeValueUtil           attributeValueUtil;
@@ -128,7 +127,6 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
                                   XGMMLParser parser,
                                   CyProperty<Properties> properties) {
         super(inputStream, cyNetworkViewFactory, cyNetworkFactory);
-        this.renderingEngineManager = renderingEngineManager;
         this.readDataManager = readDataManager;
         this.attributeValueUtil = attributeValueUtil;
         this.styleFactory = styleFactory;
@@ -271,12 +269,10 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
             Color bgColor = readDataManager.getBackgroundColor();
             styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT, bgColor);
 
-            // TODO: Graph center and zoom
-            //            Double cx = readDataManager.???;
-            //            final Double cy = readDataManager.???;
-            //            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION, cx);
-            //            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION, cy);
-            //            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_SCALE_FACTOR, ???);
+            // Graph center and zoom
+            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_SCALE_FACTOR, readDataManager.getGraphZoom());
+            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION, readDataManager.getGraphCenterX());
+            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION, readDataManager.getGraphCenterY());
 
             // Create and set the visual style
             VisualStyle style = styleBuilder.buildStyle();

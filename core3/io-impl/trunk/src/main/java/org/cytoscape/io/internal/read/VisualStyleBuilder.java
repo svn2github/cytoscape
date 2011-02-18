@@ -176,32 +176,33 @@ public class VisualStyleBuilder {
         if (vp == null || value == null) return;
 
         // TODO: create value parsers (see version 2.8.1)?
-        String vString = vp.toSerializableString(value);
+        String vString = value.toString();
         Class<?> type = vp.getTargetDataType();
 
         if (type != CyNetwork.class) { // only edges and nodes...
-		String colName = getAttrName(vp);
-
-		// add a column to the table if it does not exist yet
-		final CyTable table = row.getTable();
-		if (table.getColumn(colName) == null)
-			table.createColumn(colName, String.class, false);
-
-		// set the visual property value as a row attribute
-		row.set(colName, vString);
+    		String colName = getAttrName(vp);
+    
+    		// add a column to the table if it does not exist yet
+    		final CyTable table = row.getTable();
+    		
+    		if (table.getColumn(colName) == null)
+    			table.createColumn(colName, String.class, false);
+    
+    		// set the visual property value as a row attribute
+    		row.set(colName, vString);
         }
 
         // store the value
         if (!valueMaps.containsKey(vp))
-		valueMaps.put(vp, new Hashtable<String, Object>());
+            valueMaps.put(vp, new Hashtable<String, Object>());
 
         valueMaps.get(vp).put(vString, value);
 
         // store the count
         if (!counts.containsKey(vp))
-		counts.put(vp, new Hashtable<String, Integer>());
+            counts.put(vp, new Hashtable<String, Integer>());
         if (!counts.get(vp).containsKey(vString))
-		counts.get(vp).put(vString, 0);
+            counts.get(vp).put(vString, 0);
 
         counts.get(vp).put(vString, counts.get(vp).get(vString) + 1);
     }
