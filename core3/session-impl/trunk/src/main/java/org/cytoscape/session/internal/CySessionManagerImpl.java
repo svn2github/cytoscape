@@ -35,9 +35,11 @@
 package org.cytoscape.session.internal;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -45,18 +47,21 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
 import org.cytoscape.property.CyProperty;
 import org.cytoscape.property.bookmark.Bookmarks;
 import org.cytoscape.property.session.Cysession;
+import org.cytoscape.property.session.NetworkFrame;
 import org.cytoscape.session.CySession;
 import org.cytoscape.session.CySessionManager;
 import org.cytoscape.session.events.SessionAboutToBeSavedEvent;
 import org.cytoscape.session.events.SessionLoadedEvent;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.presentation.property.TwoDVisualLexicon;
 import org.cytoscape.view.vizmap.VisualMappingManager;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualStyleSerializer;
@@ -177,8 +182,16 @@ public class CySessionManagerImpl implements CySessionManager {
             // CyTableFactory.createTable();
             // }
 
+            // Restore networks
+            logger.debug("Restoring networks...");
+            Set<CyNetworkView> netViews = sess.getNetworkViews();
+
+            for (CyNetworkView nv : netViews) {
+                netMgr.addNetwork(nv.getModel());
+                nvMgr.addNetworkView(nv);
+            }
+            
             // Restore visual styles
-            // ------------------------------------------------------------------------------
             logger.debug("Restoring visual styles...");
             Properties stylesProps = sess.getVizmapProperties();
             Collection<VisualStyle> allStyles = vsSer.createVisualStyles(stylesProps);
@@ -188,22 +201,19 @@ public class CySessionManagerImpl implements CySessionManager {
                 for (VisualStyle vs : allStyles) {
                     vmMgr.addVisualStyle(vs);
                     stylesMap.put(vs.getTitle(), vs);
-                    // TODO: what if the style already exits?
+                    // TODO: what if a style with the same name already exits?
                 }
             }
 
-            // TODO: default visual style--set by the plugin instead?
-
-            // Restore networks
-            // ------------------------------------------------------------------------------
-            logger.debug("Restoring networks...");
-            Set<CyNetworkView> netViews = sess.getNetworkViews();
-
-            for (CyNetworkView nv : netViews) {
-                netMgr.addNetwork(nv.getModel());
-                nvMgr.addNetworkView(nv);
+            // Get network frames info
+            Cysession cysess = sess.getCysession();
+            List<NetworkFrame> frames = cysess.getSessionState().getDesktop().getNetworkFrames().getNetworkFrame();
+            Map<String, NetworkFrame> framesLookup = new Hashtable<String, NetworkFrame>();
+            
+            for (NetworkFrame nf : frames) {
+                framesLookup.put(nf.getFrameID(), nf);
             }
-
+            
             // Set visual styles to network views
             Map<CyNetworkView, String> netStyleMap = sess.getViewVisualStyleMap();
 
@@ -215,6 +225,27 @@ public class CySessionManagerImpl implements CySessionManager {
                 if (vs != null) {
                     vmMgr.setVisualStyle(vs, netView);
                     vs.apply(netView);
+                    
+                    // TODO: Set network width/height
+                    String name = netView.getModel().getCyRow().get(CyNetwork.NAME, String.class);
+                    
+                    if (name != null && name.length() > 0) {
+                        netView.setVisualProperty(TwoDVisualLexicon.NETWORK_TITLE, name);
+                        NetworkFrame nf = framesLookup.get(name);
+                        
+                        if (nf != null) {
+                            BigInteger w = nf.getWidth();
+                            BigInteger h = nf.getHeight();
+                            
+                            if (w != null)
+                                netView.setVisualProperty(TwoDVisualLexicon.NETWORK_WIDTH, w.doubleValue());
+                            if (h != null)
+                                netView.setVisualProperty(TwoDVisualLexicon.NETWORK_HEIGHT, h.doubleValue());
+                            
+                            // TODO: how to set network view's x,y position?
+                        }
+                    }
+                    
                     netView.updateView();
                 }
             }
