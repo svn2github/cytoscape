@@ -1,5 +1,6 @@
 package org.cytoscape.integration; 
 
+import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.*;
@@ -12,6 +13,7 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
+import java.util.Properties;
 
 /**
  * A Pax Exam support class that provides methods useful for verifying 
@@ -24,6 +26,16 @@ public abstract class ServiceTestSupport {
 	 */
 	@Inject
 	protected BundleContext bundleContext;
+
+	/**
+	 * Registers a mock service of type clazz with the OSGi service registry. 
+	 * This is meant to be used to provide prerequisite services for testing
+	 * purposes.
+	 * @param clazz The class type describing the type of mock service to register.
+	 */
+	protected void registerMockService(Class<?> clazz) {
+		bundleContext.registerService(clazz.getName(), createMock(clazz), new Properties());
+	}
 
 	/**
 	 * Asserts that a service of the specified type exists. Uses

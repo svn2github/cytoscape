@@ -71,5 +71,10 @@
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>3.0</version>
+    </dependency>
   </dependencies>
 </project>
