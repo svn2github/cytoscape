@@ -9,9 +9,15 @@ import org.ops4j.pax.exam.junit.MavenConfiguredJUnit4TestRunner;
 
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.integration.ServiceTestSupport;
+import org.cytoscape.event.CyEventHelper;
 
 @RunWith(MavenConfiguredJUnit4TestRunner.class)
 public class ServiceConfigurationTest extends ServiceTestSupport {
+
+	@Before 
+	public void setup() {
+		registerMockService(CyEventHelper.class);
+	}
 
 	@Test
 	public void testExpectedServices() {
