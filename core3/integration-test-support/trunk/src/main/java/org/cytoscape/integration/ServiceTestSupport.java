@@ -14,6 +14,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import java.util.Properties;
+import java.util.Dictionary;
 
 /**
  * A Pax Exam support class that provides methods useful for verifying 
@@ -30,11 +31,22 @@ public abstract class ServiceTestSupport {
 	/**
 	 * Registers a mock service of type clazz with the OSGi service registry. 
 	 * This is meant to be used to provide prerequisite services for testing
-	 * purposes.
+	 * purposes. Will register the service with an empty Properties object. 
 	 * @param clazz The class type describing the type of mock service to register.
 	 */
 	protected void registerMockService(Class<?> clazz) {
-		bundleContext.registerService(clazz.getName(), createMock(clazz), new Properties());
+		registerMockService(clazz, new Properties());
+	}
+
+	/**
+	 * Registers a mock service of type clazz with the OSGi service registry. 
+	 * This is meant to be used to provide prerequisite services for testing
+	 * purposes.
+	 * @param clazz The class type describing the type of mock service to register.
+	 * @param d The service properties. 
+	 */
+	protected void registerMockService(Class<?> clazz, Dictionary d) {
+		bundleContext.registerService(clazz.getName(), createMock(clazz), d);
 	}
 
 	/**
