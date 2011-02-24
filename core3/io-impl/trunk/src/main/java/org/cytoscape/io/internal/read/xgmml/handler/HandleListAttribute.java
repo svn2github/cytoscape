@@ -8,7 +8,8 @@ import org.xml.sax.SAXException;
 public class HandleListAttribute extends AbstractHandler {
 	public ParseState handle(String tag, Attributes atts, ParseState current)
 			throws SAXException {
-		ObjectType objType = typeMap.getType(atts.getValue("type"));
+	    String type = atts.getValue("type");
+		ObjectType objType = typeMap.getType(type);
 		Object obj = attributeValueUtil.getTypedAttributeValue(objType, atts);
 
 		switch (objType) {
@@ -16,7 +17,8 @@ public class HandleListAttribute extends AbstractHandler {
 		case REAL:
 		case INTEGER:
 		case STRING:
-			manager.listAttrHolder.add(obj);
+		    if (manager.listAttrHolder != null)
+		        manager.listAttrHolder.add(obj);
 		}
 		return current;
 	}

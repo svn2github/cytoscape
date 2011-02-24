@@ -15,7 +15,7 @@ public abstract class AbstractHandler implements Handler {
 	ObjectTypeMap typeMap;
 
 	public AbstractHandler() {
-
+	    typeMap = new ObjectTypeMap();
 	}
 
 	abstract public ParseState handle(String tag, Attributes atts,

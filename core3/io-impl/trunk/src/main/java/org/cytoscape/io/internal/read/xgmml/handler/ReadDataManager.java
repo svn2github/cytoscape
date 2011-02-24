@@ -22,58 +22,55 @@ public class ReadDataManager {
 	protected String networkName;
 
 	/* RDF Data */
-	protected String RDFDate = null;
-	protected String RDFTitle = null;
-	protected String RDFIdentifier = null;
-	protected String RDFDescription = null;
-	protected String RDFSource = null;
-	protected String RDFType = null;
-	protected String RDFFormat = null;
+	protected String RDFDate;
+	protected String RDFTitle;
+	protected String RDFIdentifier;
+	protected String RDFDescription;
+	protected String RDFSource;
+	protected String RDFType;
+	protected String RDFFormat;
 
 	/* Internal lists of the created nodes and edges */
-	protected List<CyNode> nodeList = null;
-	protected List<CyEdge> edgeList = null;
+	protected List<CyNode> nodeList;
+	protected List<CyEdge> edgeList;
 	/* Map of Groups to lists of node references that haven't been processed */
-	protected HashMap<CyNode, List<String>> nodeLinks = null;
+	protected HashMap<CyNode, List<String>> nodeLinks;
 	/* Map of XML ID's to nodes */
-	protected HashMap<String, CyNode> idMap = null;
+	protected HashMap<String, CyNode> idMap;
 
 	// Groups might actually recurse on us, so we need to
 	// maintain a stack
-	protected Stack<CyNode> groupStack = null;
+	protected Stack<CyNode> groupStack;
 
-	protected CyNode currentNode = null;
-	protected CyEdge currentEdge = null;
-	protected CyNode currentGroupNode = null;
+	protected CyNode currentNode;
+	protected CyEdge currentEdge;
+	protected CyNode currentGroupNode;
 
 	/* Attribute values */
 	protected ParseState attState = ParseState.NONE;
-	protected String currentAttributeID = null;
-	protected CyRow currentAttributes = null;
-	protected String objectTarget = null;
+	protected String currentAttributeID;
+	protected CyRow currentAttributes;
+	protected String objectTarget;
 
 	/* Complex attribute data */
 	protected int level = 0;
 	protected int numKeys = 0;
-	protected Map complexMap[] = null;
-	protected Object complexKey[] = null;
-	protected byte[] attributeDefinition = null;
+	protected Map complexMap[];
+	protected Object complexKey[];
+	protected byte[] attributeDefinition;
 	protected byte valueType;
-	protected boolean complexAttributeDefined = false;
+	protected boolean complexAttributeDefined;
 	// protected MultiHashMap mhm = null;
 
 	/* Edge handle list */
-	protected List<String> handleList = null;
-
+	protected List<String> handleList;
 	/* X handle */
-	protected String edgeBendX = null;
+	protected String edgeBendX;
 	/* Y handle */
-	protected String edgeBendY = null;
+	protected String edgeBendY;
 
 	protected List<Object> listAttrHolder;
-
 	protected Map<String, Object> mapAttrHolder;
-
 	protected CyNetwork network;
 
 	/*

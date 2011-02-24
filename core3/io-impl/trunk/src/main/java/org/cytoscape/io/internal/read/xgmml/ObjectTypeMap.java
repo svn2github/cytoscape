@@ -10,8 +10,9 @@ public class ObjectTypeMap {
 
 	public ObjectTypeMap() {
 		typeMap = new HashMap<String, ObjectType>();
+		
 		for (ObjectType type : ObjectType.values())
-			typeMap.put(type.name(), type);
+			typeMap.put(type.getName(), type);
 	}
 
 	public ObjectType getType(String name) {

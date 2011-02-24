@@ -14,6 +14,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyTable;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -271,41 +272,42 @@ public class AttributeValueUtil {
 		return new Color(Integer.parseInt(attribute.substring(1), 16));
 	}
 
-	public ParseState handleAttribute(Attributes atts, CyRow cyAtts) throws SAXParseException {
+	public ParseState handleAttribute(Attributes atts, CyRow row) throws SAXParseException {
 		String name = atts.getValue("name");
-		ObjectType objType = typeMap.getType(atts.getValue("type"));
+		String type = atts.getValue("type");
+		ObjectType objType = typeMap.getType(type);
 		Object obj = getTypedAttributeValue(objType, atts);
 
 		switch (objType) {
-		case BOOLEAN:
-			if (obj != null && name != null)
-				cyAtts.set(name, (Boolean) obj);
-			break;
-		case REAL:
-			if (obj != null && name != null)
-				cyAtts.set(name, (Double) obj);
-			break;
-		case INTEGER:
-			if (obj != null && name != null)
-				cyAtts.set(name, (Integer) obj);
-			break;
-		case STRING:
-			if (obj != null && name != null)
-				cyAtts.set(name, (String) obj);
-			break;
-
-		// We need to be *very* careful. Because we duplicate attributes for
-		// each network we write out, we wind up reading and processing each
-		// attribute multiple times, once for each network. This isn't a problem
-		// for "base" attributes, but is a significant problem for attributes
-		// like LIST and MAP where we add to the attribute as we parse. So, we
-		// must make sure to clear out any existing values before we parse.
-		case LIST:
-			manager.currentAttributeID = name;
-			if (cyAtts.getTable().getColumn(name) != null
-			    && cyAtts.getTable().getColumn(name).getType() == List.class)
-				cyAtts.set(name, null);
-			return ParseState.LISTATT;
+    		case BOOLEAN:
+    			if (obj != null)
+    			    setAttribute(row, name, (Boolean) obj);
+    			break;
+    		case REAL:
+    			if (obj != null)
+    			    setAttribute(row, name, (Double) obj);
+    			break;
+    		case INTEGER:
+    			if (obj != null)
+    			    setAttribute(row, name, (Integer) obj);
+    			break;
+    		case STRING:
+    			if (obj != null)
+    			    setAttribute(row, name, (String) obj);
+    			break;
+    
+    		// We need to be *very* careful. Because we duplicate attributes for
+    		// each network we write out, we wind up reading and processing each
+    		// attribute multiple times, once for each network. This isn't a problem
+    		// for "base" attributes, but is a significant problem for attributes
+    		// like LIST and MAP where we add to the attribute as we parse. So, we
+    		// must make sure to clear out any existing values before we parse.
+    		case LIST:
+    			manager.currentAttributeID = name;
+    			if (row.getTable().getColumn(name) != null
+    			    && row.getTable().getColumn(name).getType() == List.class)
+    				row.set(name, null);
+    			return ParseState.LISTATT;
 		}
 		return ParseState.NONE;
 	}
@@ -391,6 +393,18 @@ public class AttributeValueUtil {
 			mdp.setMetadata(MetadataEntries.FORMAT, manager.RDFFormat);
 		if (manager.RDFIdentifier != null)
 			mdp.setMetadata(MetadataEntries.IDENTIFIER, manager.RDFIdentifier);
+	}
+	
+	private <T> void setAttribute(CyRow row, String name, T value) {
+	    if (name != null && value != null) {
+	        CyTable table = row.getTable();
+	        
+	        if (table.getColumn(name) == null)
+	            table.createColumn(name, value.getClass(), false);
+	        
+	        row.set(name, value);
+	    }
+	    
 	}
 
 }

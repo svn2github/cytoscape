@@ -9,6 +9,10 @@ public enum ObjectType {
 	private ObjectType(String s) {
 		name = s;
 	}
+	
+	public String getName() {
+	    return name;
+	}
 
 	public String toString() {
 		return name;
