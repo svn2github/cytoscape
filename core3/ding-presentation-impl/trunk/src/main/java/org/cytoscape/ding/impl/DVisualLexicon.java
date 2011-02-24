@@ -399,6 +399,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		addIdentifierMapping(CyNode.class,"nodeLabelFont",NODE_LABEL_FONT_FACE);
 		addIdentifierMapping(CyNode.class,"nodeTransparency",NODE_TRANSPARENCY);
 		
+		addIdentifierMapping(CyEdge.class,"fill",EDGE_STROKE_UNSELECTED_PAINT);
 		addIdentifierMapping(CyEdge.class,"edgeLineType",EDGE_STROKE);
 		addIdentifierMapping(CyEdge.class,"edgeLabelFont",EDGE_LABEL_FONT_FACE);
 		addIdentifierMapping(CyEdge.class,"sourceArrow",EDGE_SOURCE_ARROW_SHAPE);
@@ -414,6 +415,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		addIdentifierMapping(CyNode.class,"nodeFontSize",NODE_LABEL_FONT_SIZE);
 		addIdentifierMapping(CyNode.class,"nodeToolTip",NODE_TOOLTIP);
 
+		addIdentifierMapping(CyEdge.class,"edgeColor",EDGE_STROKE_UNSELECTED_PAINT);
 		addIdentifierMapping(CyEdge.class,"edgeToolTip",EDGE_TOOLTIP);
 		addIdentifierMapping(CyEdge.class,"edgeFont",EDGE_LABEL_FONT_FACE);
 		addIdentifierMapping(CyEdge.class,"edgeFontSize",EDGE_LABEL_FONT_SIZE);
