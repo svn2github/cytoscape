@@ -42,16 +42,17 @@ public class DeleteFileInGenomeSpace extends CytoscapeAction {
 		try {
 
 		// login to GenomeSpace
-		GsSession client = new GsSession();
+		GsSession session = new GsSession();
 		String username = "test";
 		String password = "password";
-		User user = client.login(username, password);
-		logger.info("Logged in to GenomeSpace: " + client.isLoggedIn() + " as " + user.getUsername());
+		User user = session.login(username, password);
+		logger.info("Logged in to GenomeSpace: " + session.isLoggedIn() + " as " + user.getUsername());
 
 		// list the files present for this user
-		Map<String,GsFile> files = GSUtils.getFileNameMap( client.list() );
+		DataManagerClient dmClient = gsSession.getDataManagerClient();
+		GSDirectoryListing homeDirInfo = dmClient.listDefaultDirectory(); 
 
-		String selectedFile = getSelectedFile( files.keySet() ); 
+		String selectedFile = getSelectedFile( homeDirInfo.get list of files ); 
 
 		// Delete the file from GenomeSpace
 		if (selectedFile != null && files.get(selectedFile) != null) {
