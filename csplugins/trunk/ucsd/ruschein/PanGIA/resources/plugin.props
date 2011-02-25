@@ -1,8 +1,8 @@
 pluginName=PanGIA
 pluginDescription=PanGIA (Physical and Genetic Interaction Alignment) is a plugin designed to integrate physical and genetic interactions into hierarchical module maps. PanGIA identifies "modules" as sets of proteins whose physical and genetic interaction data matches that of known protein complexes. Higher-order functional cooperativity and redundancy is identified by enrichment for genetic interactions across modules. 
-pluginVersion=1.0
+pluginVersion=1.1
 cytoscapeVersion=2.8
 pluginCategory=Analysis
 pluginAuthorsInstitutions=Gregory Hannum, Rohith Srivas, Johannes Ruscheinski, Kei Ono, Peng-Liang Wang, Michael Smoot, Trey Ideker:UCSD
-releaseDate=December 9, 2010
+releaseDate=February 24, 2011
 projectURL=http://prosecco.ucsd.edu/PanGIA
