@@ -49,12 +49,14 @@ package org.cytoscapeweb.view.components {
 	import org.cytoscapeweb.events.GraphViewEvent;
 	import org.cytoscapeweb.model.data.ConfigVO;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
+	import org.cytoscapeweb.util.CompoundNodes;
 	import org.cytoscapeweb.util.Edges;
 	import org.cytoscapeweb.util.GraphUtils;
 	import org.cytoscapeweb.util.Layouts;
 	import org.cytoscapeweb.util.Nodes;
 	import org.cytoscapeweb.util.Utils;
 	import org.cytoscapeweb.util.methods.$each;
+	import org.cytoscapeweb.vis.data.CompoundNodeSprite;
 	
 	public class GraphView extends UIComponent {
         
@@ -248,16 +250,37 @@ package org.cytoscapeweb.view.components {
             }
         }
         
-        public function resetNode(n:NodeSprite):void {
-            if (n != null) {
-                n.size = Nodes.size(n);
-                n.fillColor = Nodes.fillColor(n);
-                n.lineWidth = Nodes.lineWidth(n);
-                n.lineColor = Nodes.lineColor(n);
-                n.alpha = Nodes.alpha(n);  
-                n.shape = Nodes.shape(n);
-                n.filters = Nodes.filters(n);
-                if (n.props.label != null) n.props.label.alpha = n.alpha;
+        public function resetNode(n:NodeSprite):void
+		{
+            if (n != null)
+			{
+				if (n is CompoundNodeSprite)
+				{
+					// TODO may need to change all methods form Nodes to
+					// CompoundNodes,
+					n.size = CompoundNodes.size(n);
+					n.fillColor = CompoundNodes.fillColor(n);
+					n.lineWidth = Nodes.lineWidth(n);
+					n.lineColor = Nodes.lineColor(n);
+					n.alpha = Nodes.alpha(n);
+					n.shape = CompoundNodes.shape(n);
+					n.filters = Nodes.filters(n);
+				}
+				else
+				{
+	                n.size = Nodes.size(n);
+	                n.fillColor = Nodes.fillColor(n);
+	                n.lineWidth = Nodes.lineWidth(n);
+	                n.lineColor = Nodes.lineColor(n);
+	                n.alpha = Nodes.alpha(n);  
+	                n.shape = Nodes.shape(n);
+	                n.filters = Nodes.filters(n);
+				}
+				
+				if (n.props.label != null)
+				{
+					n.props.label.alpha = n.alpha;
+				}
             }
         }
         
@@ -327,14 +350,31 @@ package org.cytoscapeweb.view.components {
 		
         // ========[ PRIVATE METHODS ]==============================================================
 		
-		private function highlightSelectedNode(n:NodeSprite):void {
-            if (n != null) {
-                n.fillColor = Nodes.fillColor(n);
-                n.lineWidth = Nodes.selectionLineWidth(n);
-                n.lineColor = Nodes.lineColor(n);
-                n.alpha = Nodes.selectionAlpha(n);
-                n.filters = Nodes.filters(n, true);
-                if (n.props.label != null) n.props.label.alpha = n.alpha;
+		private function highlightSelectedNode(n:NodeSprite):void
+		{
+            if (n != null)
+			{
+				if (n is CompoundNodeSprite)
+				{
+					n.fillColor = CompoundNodes.fillColor(n);
+	                n.lineWidth = CompoundNodes.selectionLineWidth(n);
+	                n.lineColor = CompoundNodes.lineColor(n);
+	                n.alpha = CompoundNodes.selectionAlpha(n);
+	                n.filters = CompoundNodes.filters(n, true);
+				}
+				else
+				{
+					n.fillColor = Nodes.fillColor(n);
+					n.lineWidth = Nodes.selectionLineWidth(n);
+					n.lineColor = Nodes.lineColor(n);
+					n.alpha = Nodes.selectionAlpha(n);
+					n.filters = Nodes.filters(n, true);
+				}
+				
+				if (n.props.label != null)
+				{
+					n.props.label.alpha = n.alpha;
+				}
             }
         }
         

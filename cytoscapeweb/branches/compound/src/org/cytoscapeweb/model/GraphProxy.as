@@ -56,8 +56,10 @@ package org.cytoscapeweb.model {
 	import org.cytoscapeweb.model.data.GraphicsDataTable;
 	import org.cytoscapeweb.model.data.InteractionVO;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
+	import org.cytoscapeweb.util.CompoundNodes;
 	import org.cytoscapeweb.util.Groups;
 	import org.cytoscapeweb.util.Layouts;
+	import org.cytoscapeweb.vis.data.CompoundNodeSprite;
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
     [Bindable]
@@ -80,6 +82,11 @@ package org.cytoscapeweb.model {
         private var _rolledOverNode:NodeSprite;
         private var _rolledOverEdge:EdgeSprite;
         
+		/**
+		 *  array of non-selected child nodes of selected compound nodes
+		 */
+		private var _missingChildren:Array;
+		
         /** Scale factor, between 0 and 1 */
         private var _zoom:Number = 1;
 
@@ -112,7 +119,8 @@ package org.cytoscapeweb.model {
             data.addGroup(Groups.SELECTED_EDGES);
             data.addGroup(Groups.REGULAR_EDGES);
             data.addGroup(Groups.MERGED_EDGES);
-            
+            data.addGroup(Groups.COMPOUND_NODES);
+			
             if (data != null) {
                 // Add missing Ids:
                 cacheItems(data.nodes);
@@ -204,7 +212,7 @@ package org.cytoscapeweb.model {
             }
             return arr;
         }
-
+		
         /**
          * @param value Array of edge data objects. 
          */
@@ -297,6 +305,102 @@ package org.cytoscapeweb.model {
             _zoom = value;
         }
 
+		// TODO temporary..
+		public function get missingChildren_dup() : Array
+		{
+			// TODO: may need to use a SET instead of an ARRAY
+			var children:Array;
+			var nodes:Array = this.selectedNodes;;
+			
+			// if missing children is set before, just return the
+			// previously collected children
+			if (_missingChildren != null)
+			{
+				children = _missingChildren;
+			}
+			// collect non-selected children of all selected compound nodes
+			else
+			{
+				children = new Array();
+				
+				for each (var ns:NodeSprite in nodes)
+				{
+					if (ns is CompoundNodeSprite)
+					{
+						children = children.concat(
+							CompoundNodes.getChildren(
+								(ns as CompoundNodeSprite),
+								CompoundNodes.NON_SELECTED_CHILDREN));
+					}
+				}
+				
+				_missingChildren = children;
+			}
+			
+			return children;
+		}
+		
+		/**
+		 * Finds non-selected children of the compound nodes in the given
+		 * node array, and returns the collected children in an array of nodes.
+		 * 
+		 * @return		array of nodes
+		 */
+		public function get missingChildren() : Array
+		{
+			// this map is used to avoid duplicates
+			var childMap:Object;
+			var children:Array;
+			var nodes:Array = this.selectedNodes;;
+			var node:NodeSprite;
+			
+			// if missing children is set before, just return the
+			// previously collected children
+			if (_missingChildren != null)
+			{
+				children = _missingChildren;
+			}
+			// collect non-selected children of all selected compound nodes
+			else
+			{
+				childMap = new Object();
+				
+				// for each node sprite in the selected nodes, search for
+				// missing children
+				
+				for each (var ns:NodeSprite in nodes)
+				{
+					if (ns is CompoundNodeSprite)
+					{
+						// get non-selected children of the current compound
+						children = CompoundNodes.getChildren(
+							(ns as CompoundNodeSprite),
+							CompoundNodes.NON_SELECTED_CHILDREN);
+						
+						// concat the new children with the map
+						for each (node in children)
+						{
+							// assuming the node.data.id is not null
+							childMap[node.data.id] = node;
+						}
+					}
+				}
+				
+				// convert child map to an array
+				children = new Array();
+				
+				for each (node in childMap)
+				{
+					children.push(node);
+				}
+				
+				// update missing children array
+				_missingChildren = children;
+			}
+			
+			return children;
+		}
+		
         // ========[ CONSTRUCTOR ]==================================================================
 
         public function GraphProxy(ds:DataSet=null) {
@@ -562,6 +666,75 @@ package org.cytoscapeweb.model {
             return n;
         }
         
+		/**
+		 * Creates and adds a new CompoundNodeSprite to the graph data. Also,
+		 * sets the given data object as the data property of the sprite.
+		 * 
+		 * @param data	data associated with the compound node
+		 * @return		newly created NodeSprite
+		 */
+		public function addCompoundNode(data:Object) : NodeSprite
+		{
+			if (data == null)
+			{
+				data = {};
+			}
+			
+			if (data.id == null)
+			{
+				data.id = nextId(Groups.NODES);
+			}
+			else if (hasId(Groups.NODES, data.id))
+			{
+				throw new Error("Duplicate node id ('"+data.id+"')");
+			}
+			
+			// add missing fields?
+			this.addMissingDataFields(Groups.NODES, data);
+			
+			// Set default values :
+			
+			for each (var f:DataField in _nodesSchema.fields)
+			{
+				if (data[f.name] == null)
+				{
+					data[f.name] = f.defaultValue;
+				}
+			}
+			
+			// create a new CompoundNode sprite
+			var cNodeSprite : CompoundNodeSprite = new CompoundNodeSprite();
+			
+			if (data != null)
+			{
+				cNodeSprite.data = data;
+			}
+			
+			// and newly created CompoundNodeSprite to the graph data, add
+			// the node also to the list of compound nodes. 
+			
+			var nodeSprite:NodeSprite = this.graphData.addNode(cNodeSprite);
+			var list:DataList = this.graphData.group(Groups.COMPOUND_NODES);
+			
+			list.add(nodeSprite);
+			
+			// apply defaults?
+			// this.graphData.nodes.applyDefaults(nodeSprite);
+			
+			this.createCache(nodeSprite);
+			
+			return nodeSprite;
+		}
+		
+		/**
+		 * Resets the missing children array in order to enable re-calculation
+		 * of missing child nodes in the getter method of missingChildren.
+		 */ 
+		public function resetMissingChildren() : void
+		{
+			_missingChildren = null;
+		}
+		
         public function addEdge(data:Object):EdgeSprite {
             if (data == null) throw new Error("The 'data' argument is mandatory");
             trace("add edge: " + data.id);
@@ -622,7 +795,7 @@ package org.cytoscapeweb.model {
             
             var filterList:DataList = graphData.group(Groups.FILTERED_NODES);
             if (filterList != null) filterList.remove(n);
-       
+			
             // Also remove its linked edges:
             var edges:Array = [];
             n.visitEdges(function(e:EdgeSprite):Boolean {
@@ -798,10 +971,10 @@ package org.cytoscapeweb.model {
                 delete _nodesMap[ds.data.id];
                 
                 graphData.group(Groups.SELECTED_NODES).remove(ds);
-                
+				graphData.group(Groups.COMPOUND_NODES).remove(ds);
+				
                 fl = graphData.group(Groups.FILTERED_NODES);
                 if (fl != null) fl.remove(ds);
-                
             } else if (ds is EdgeSprite) {
                 delete _edgesMap[ds.data.id];
 
@@ -866,13 +1039,13 @@ package org.cytoscapeweb.model {
         
         private function addMissingDataFields(group:String, data:Object):void {
             for (var k:String in data) {
-                var schema:DataSchema = group === Groups.NODES ? nodesSchema : edgesSchema;
+				var schema:DataSchema = group === Groups.NODES ? nodesSchema : edgesSchema;
                 var f:DataField = schema.getFieldById(k);
                 
                 if (f == null) {
                     var v:* = data[k];
                     var type:int = DataUtil.OBJECT;
-                    
+					
                     if (v is Boolean)      type = DataUtil.BOOLEAN;
                     else if (v is Number)  type = DataUtil.NUMBER;
                     else if (v is String)  type = DataUtil.STRING;

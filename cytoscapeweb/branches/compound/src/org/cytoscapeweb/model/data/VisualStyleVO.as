@@ -129,7 +129,47 @@ package org.cytoscapeweb.model.data {
                     selectionGlowBlur: 4,
                     selectionGlowStrength: 10,
                     curvature: 18
-                }
+                },
+				compoundNodes: {
+					shape: NodeShapes.RECTANGLE,
+					size: 48,
+					color: "#f5f5f5",
+					opacity: 0.8,
+					borderColor: "#666666",
+					borderWidth: 1,
+					leftMargin: 10,
+					rightMargin: 10,
+					topMargin: 10,
+					bottomMargin: 10,					
+					label: { passthroughMapper: { attrName: "label" } },
+					labelHorizontalAnchor: "center",
+					labelVerticalAnchor: "bottom",
+					labelXOffset: 0,
+					labelYOffset: 0,
+					labelFontName: "Arial",
+					labelFontSize: 11,
+					labelFontColor: "#000000",
+					labelFontWeight: "normal",
+					labelFontStyle: "normal",
+					labelGlowColor: "#ffffff",
+					labelGlowOpacity: 0,
+					labelGlowBlur: 2,
+					labelGlowStrength: 20,
+					tooltipFont: "Arial",
+					tooltipFontSize: 11,
+					tooltipFontColor: "#000000",
+					tooltipBackgroundColor: "#f5f5cc",
+					tooltipBorderColor: "#000000",
+					selectionGlowColor: "#ffff33",
+					selectionGlowOpacity: 0.6,
+					selectionGlowBlur: 8,
+					selectionGlowStrength: 6,
+					hoverGlowColor: "#aae6ff",
+					hoverGlowOpacity: 0,
+					hoverGlowBlur: 8,
+					hoverGlowStrength: 6
+				}
+				
 		};
 		
 		// ========[ PUBLIC PROPERTIES ]============================================================
@@ -237,7 +277,7 @@ package org.cytoscapeweb.model.data {
 		
 		public static function fromObject(obj:Object):VisualStyleVO {
 			var grName:String, pName:String, props:Object, dprops:Object, dp:Object, p:Object;
-
+			
 			if (obj != null && obj !== _DEFAULT_OBJ) {
 			    var defObj:Object = Utils.clone(_DEFAULT_OBJ);
 			    

@@ -39,6 +39,7 @@ package org.cytoscapeweb.util {
     import org.cytoscapeweb.ApplicationFacade;
     import org.cytoscapeweb.model.ConfigProxy;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     
     
     public class Labels {
@@ -105,19 +106,19 @@ package org.cytoscapeweb.util {
         }
         
         public static function labelHAnchor(d:DataSprite):int {
-            return Anchors.toFlareAnchor(style.getValue(VisualProperties.NODE_LABEL_HANCHOR, d.data));
+            return Anchors.toFlareAnchor(style.getValue(_$(VisualProperties.NODE_LABEL_HANCHOR, d), d.data));
         }
         
         public static function labelVAnchor(d:DataSprite):int {
-            return Anchors.toFlareAnchor(style.getValue(VisualProperties.NODE_LABEL_VANCHOR, d.data));
+            return Anchors.toFlareAnchor(style.getValue(_$(VisualProperties.NODE_LABEL_VANCHOR, d), d.data));
         }
         
         public static function labelXOffset(d:DataSprite):Number {
-            return style.getValue(VisualProperties.NODE_LABEL_XOFFSET, d.data);
+            return style.getValue(_$(VisualProperties.NODE_LABEL_XOFFSET, d), d.data);
         }
         
         public static function labelYOffset(d:DataSprite):Number {
-            return style.getValue(VisualProperties.NODE_LABEL_YOFFSET, d.data);
+            return style.getValue(_$(VisualProperties.NODE_LABEL_YOFFSET, d), d.data);
         }
         
         public static function filters(d:DataSprite):Array {
@@ -139,6 +140,8 @@ package org.cytoscapeweb.util {
         private static function _$(propName:String, d:DataSprite):String {
             if (propName != null && d is EdgeSprite)
                 propName = propName.replace("node", "edge");
+			else if (propName != null && d is CompoundNodeSprite)
+				propName = propName.replace("node", "compoundNode");
             return propName;
         }
         

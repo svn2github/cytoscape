@@ -55,6 +55,7 @@ package org.cytoscapeweb.view.components {
     
     import org.cytoscapeweb.model.data.ConfigVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.util.CompoundNodes;
     import org.cytoscapeweb.util.Edges;
     import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
@@ -85,6 +86,7 @@ package org.cytoscapeweb.view.components {
         private var _style:VisualStyleVO;
         private var _config:ConfigVO;
         private var _nodeLabeler:Labeler;
+		private var _compoundNodeLabeler:Labeler;
         private var _edgeLabeler:Labeler;
         private var _tooltipControl:TooltipControl;
         private var _initialWidth:Number;
@@ -114,6 +116,14 @@ package org.cytoscapeweb.view.components {
             }
             return _nodeLabeler;
         }
+		
+		public function get compoundNodeLabeler():Labeler {
+			if (_compoundNodeLabeler == null) {
+				_compoundNodeLabeler = new Labeler(null, Groups.COMPOUND_NODES);
+				//_compoundNodeLabeler = new Labeler(null, Data.NODES);
+			}
+			return _compoundNodeLabeler;
+		}
         
         public function get edgeLabeler():Labeler {
             if (_edgeLabeler == null) {
@@ -191,6 +201,11 @@ package org.cytoscapeweb.view.components {
             // ---------------------------------------------------------
             data.nodes.setProperties(Nodes.properties);
             data.edges.setProperties(Edges.properties);
+			
+			// Compound node properties:
+			// ---------------------------------------------------------
+			data.group(Groups.COMPOUND_NODES).setProperties(
+				CompoundNodes.properties);
             
             // Node labels:
             // ---------------------------------------------------------
@@ -209,6 +224,23 @@ package org.cytoscapeweb.view.components {
             nodeLabeler.filters = Labels.filters;
             nodeLabeler.textFunction = Labels.text;
             
+			// Compound node labels:
+			// ---------------------------------------------------------
+			compoundNodeLabeler.cacheText = false;
+			compoundNodeLabeler.textMode = TextSprite.DEVICE;
+			
+			compoundNodeLabeler.fontName = Labels.labelFontName;
+			compoundNodeLabeler.fontColor = Labels.labelFontColor;
+			compoundNodeLabeler.fontSize = Labels.labelFontSize;
+			compoundNodeLabeler.fontWeight = Labels.labelFontWeight;
+			compoundNodeLabeler.fontStyle = Labels.labelFontStyle;
+			compoundNodeLabeler.hAnchor = Labels.labelHAnchor;
+			compoundNodeLabeler.vAnchor = Labels.labelVAnchor;
+			compoundNodeLabeler.xOffsetFunc = Labels.labelXOffset;
+			compoundNodeLabeler.yOffsetFunc = Labels.labelYOffset;
+			compoundNodeLabeler.filters = Labels.filters;
+			compoundNodeLabeler.textFunction = Labels.text;
+			
             // Edge labels:
             // ---------------------------------------------------------
             edgeLabeler.textMode = TextSprite.DEVICE;
@@ -221,9 +253,18 @@ package org.cytoscapeweb.view.components {
             edgeLabeler.filters = Labels.filters;
             edgeLabeler.textFunction = Labels.text;
 
-            if (!firstTime) {
-                if (_config.nodeLabelsVisible) updateLabels(Data.NODES);
-                if (_config.edgeLabelsVisible) updateLabels(Data.EDGES);
+            if (!firstTime)
+			{
+                if (_config.nodeLabelsVisible)
+				{
+					updateLabels(Data.NODES);
+					updateLabels(Groups.COMPOUND_NODES);
+				}
+                
+				if (_config.edgeLabelsVisible)
+				{
+					updateLabels(Data.EDGES);
+				}
             }
 
             // Tooltips:
@@ -323,15 +364,24 @@ package org.cytoscapeweb.view.components {
         public function updateLabels(group:String=null):void {
             if (group == null) {
                 updateLabels(Groups.NODES);
-                updateLabels(Groups.EDGES);
+				updateLabels(Groups.COMPOUND_NODES);
+				updateLabels(Groups.EDGES);
             } else {
                 var visible:Boolean;
                 var labeler:Labeler;
     
-                if (group === Groups.NODES) {
+                if (group === Groups.NODES)
+				{
                     visible = _config.nodeLabelsVisible;
                     labeler = nodeLabeler;
-                } else {
+                }
+				else if (group === Groups.COMPOUND_NODES)
+				{
+					visible = _config.nodeLabelsVisible;
+					labeler = compoundNodeLabeler;
+				}
+				else
+				{
                     visible = _config.edgeLabelsVisible && !_config.edgesMerged;
                     labeler = edgeLabeler;
                 }
@@ -380,7 +430,11 @@ package org.cytoscapeweb.view.components {
             if (d == null) d = data;
             
             // It's necessary to operate labeler first, so each label's text sprite is well placed!
-            if (_config.nodeLabelsVisible) nodeLabeler.operate();
+            if (_config.nodeLabelsVisible)
+			{
+				nodeLabeler.operate();
+				compoundNodeLabeler.operate();
+			}
 
             // Then render edges and operate their labels:
             $each(d.edges, function(i:uint, e:EdgeSprite):void {

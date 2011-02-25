@@ -95,13 +95,14 @@ package org.cytoscapeweb.util {
                 // First, consider the NODES bounds:
                 $each(data.nodes, function(i:uint, n:NodeSprite):void {
                     if (!isFilteredOut(n)) {
-                        // The node size (its shape must have the same height and width; e.g. a circle)
-                        var ns:Number = n.height;
+                        // The node size
+                        var nsh:Number = n.height;
+						var nsw:Number = n.width;
                         // Verify MIN and MAX x/y again:
-                        minX = Math.min(minX, (n.x - ns/2));
-                        minY = Math.min(minY, (n.y - ns/2));
-                        maxX = Math.max(maxX, (n.x + ns/2));
-                        maxY = Math.max(maxY, (n.y + ns/2));
+                        minX = Math.min(minX, (n.x - nsw/2));
+                        minY = Math.min(minY, (n.y - nsh/2));
+                        maxX = Math.max(maxX, (n.x + nsw/2));
+                        maxY = Math.max(maxY, (n.y + nsh/2));
                         
                         // Consider the LABELS bounds, too:
                         var lbl:TextSprite = n.props.label;

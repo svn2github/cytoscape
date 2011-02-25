@@ -650,17 +650,88 @@
          * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
          *                                        to the network view after adding the node.
          *                                        The default value is <code>false</code>.
+         * @param {Object} [eventTarget] Target object of the click action. 
          * @return {org.cytoscapeweb.Node} The new created node object.
          * @see org.cytoscapeweb.Visualization#addEdge
          * @see org.cytoscapeweb.Visualization#removeElements
          */
-        addNode: function (x, y/*, data, updateVisualMappers*/) {
-            var data, updateVisualMappers = false, i = 2;
-            if (arguments.length > i && typeof arguments[i] === "object") { data = arguments[i++]; }
-            if (arguments.length > i && typeof arguments[i] === "boolean") { updateVisualMappers = arguments[i]; }
-            return this.swf().addNode(x, y, data, updateVisualMappers);
+        addNode: function (x, y/*, data, updateVisualMappers, eventTarget*/)
+        {
+            var data;
+            var updateVisualMappers = false;
+            var eventTarget = null;
+            var i = 2;
+            
+            if (arguments.length > i && typeof arguments[i] === "object")
+            {
+            	data = arguments[i++];
+            }
+            
+            if (arguments.length > i && typeof arguments[i] === "boolean")
+            {
+            	updateVisualMappers = arguments[i++];
+            }
+            
+            if (arguments.length > i)
+            {
+            	eventTarget = arguments[i];
+            	i++;
+            }
+            
+            return this.swf().addNode(x, y,
+            	data,
+            	updateVisualMappers,
+            	eventTarget);
         },
-         
+        
+        /**
+         * <p>Create a new compound node and add it to the network view.<p>
+         * <p>If the node <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
+         * <p>If you try to add data attributes that have not been previously defined,
+         * Cytoscape Web will automatically add the necessary field definitions, although it might be safer to always add the
+         * fields to the schema first, by calling {@link org.cytoscapeweb.Visualization#addDataField}.</p>
+         * 
+         * @param {Object} x The horizontal coordinate of the node.
+         * @param {Object} y The vertical coordinate of the node.
+         * @param {Object} [data] The object that contains the node attributes.
+         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
+         *                                        to the network view after adding the node.
+         *                                        The default value is <code>false</code>.
+         * @param {Object} [eventTarget] Target object of the action.
+         * @return {org.cytoscapeweb.Node} The new created node object.
+         * @see org.cytoscapeweb.Visualization#addNode
+         */
+        addCompoundNode: function (x, y/*, data, updateVisualMappers, eventTarget*/)
+        {
+        	var data;
+        	var updateVisualMappers = false;
+        	var eventTarget = null;
+        	var i = 2;
+        	
+        	if (arguments.length > i && typeof arguments[i] === "object")
+        	{
+        		data = arguments[i];
+        		i++;
+        	}
+        	
+            if (arguments.length > i && typeof arguments[i] === "boolean")
+            {
+            	updateVisualMappers = arguments[i];
+            	i++;
+            }
+            
+            if (arguments.length > i)
+            {
+            	eventTarget = arguments[i];
+            	i++;
+            }
+        	
+        	return this.swf().addCompoundNode(x, y,
+        		data,
+        		updateVisualMappers,
+        		eventTarget);
+        },
+        
         /**
          * <p>Create a new edge linking two nodes and add it to the network view.<p>
          * <p>If the edge <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>

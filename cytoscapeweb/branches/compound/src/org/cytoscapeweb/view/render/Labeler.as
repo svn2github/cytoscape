@@ -37,6 +37,7 @@ package org.cytoscapeweb.view.render {
     import flare.vis.data.DataList;
     import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
     import flare.vis.operator.label.Labeler;
     
     import flash.display.Sprite;
@@ -44,6 +45,7 @@ package org.cytoscapeweb.view.render {
     import flash.geom.Point;
     import flash.text.TextFormat;
     
+    import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.methods.$each;
     
@@ -70,8 +72,21 @@ package org.cytoscapeweb.view.render {
         // ========[ CONSTRUCTOR ]==================================================================
 
         public function Labeler(source:*=null, group:String=Data.NODES, 
-                                format:TextFormat=null, filter:*=null) {
-            super(source, group, format, filter, group === Data.NODES ? LAYER : CHILD);
+                                format:TextFormat=null, filter:*=null)
+		{
+			var policy:String;
+			
+			if ((group === Data.NODES) || (group === Groups.COMPOUND_NODES))
+			{
+				policy = LAYER;
+			}
+			else
+			{
+				policy = CHILD;
+			}
+			
+			super(source, group, format, filter, policy);
+            //super(source, group, format, filter, group === Data.NODES ? LAYER : CHILD);
         }
         
         // ========[ PROTECTED METHODS ]============================================================
@@ -89,8 +104,23 @@ package org.cytoscapeweb.view.render {
             }
             
             // IMPORTANT: When dragging nodes, the labeler might need to be updated:
-            if (_policy === CHILD) {
-                var elements:DataList = group === Data.NODES ? visualization.data.nodes : visualization.data.edges;
+            if (_policy === CHILD)
+			{
+                var elements:DataList;
+				
+				if (group === Data.NODES)
+				{
+					elements = visualization.data.nodes;
+				}
+				else if (group === Groups.COMPOUND_NODES)
+				{
+					elements = visualization.data.group(Groups.COMPOUND_NODES);
+				}
+				else
+				{
+					elements = visualization.data.edges;
+				}
+					
                 $each(elements, function(i:uint, d:DataSprite):void {
                     d.addEventListener(Event.RENDER, onRender);
                 });
@@ -102,8 +132,21 @@ package org.cytoscapeweb.view.render {
                 _t = (t ? t : Transitioner.DEFAULT);
                 
                 var f:Function = Filter.$(filter);
-                var list:DataList = group === Data.NODES ? visualization.data.nodes: visualization.data.edges;
+                var list:DataList;
 
+				if (group === Data.NODES)
+				{
+					list = visualization.data.nodes;
+				}
+				else if (group === Groups.COMPOUND_NODES)
+				{
+					list = visualization.data.group(Groups.COMPOUND_NODES);
+				}
+				else
+				{
+					list = visualization.data.edges;
+				}
+				
                 if (list != null) {
                     $each(list, function(i:uint, d:DataSprite):void {
                         if (f == null || f(d)) process(d);
@@ -169,7 +212,7 @@ package org.cytoscapeweb.view.render {
 
             if (hAnchor != null) label.horizontalAnchor = hAnchor(d);
             if (vAnchor != null) label.verticalAnchor = vAnchor(d);
-            
+			
             return label;
         }
 

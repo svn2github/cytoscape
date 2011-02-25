@@ -37,6 +37,7 @@ package org.cytoscapeweb.view {
     
     import flash.external.ExternalInterface;
     import flash.geom.Point;
+    import flash.net.getClassByAlias;
     import flash.utils.ByteArray;
     
     import mx.utils.Base64Encoder;
@@ -48,8 +49,12 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.model.methods.error;
+    import org.cytoscapeweb.util.Anchors;
+    import org.cytoscapeweb.util.CompoundNodes;
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.Groups;
+    import org.cytoscapeweb.util.NodeShapes;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     import org.puremvc.as3.interfaces.INotification;
         
     /**
@@ -355,30 +360,87 @@ package org.cytoscapeweb.view {
         }
         
         private function addNode(x:Number, y:Number, 
-                                 data:Object, updateVisualMappers:Boolean=false):Object {
+        	data:Object,
+			updateVisualMappers:Boolean=false,
+			eventTarget:Object=null) : Object
+		{
             var o:Object;
-
-            try {                
+			
+            try
+			{
                 // Create node:
                 var n:NodeSprite = graphProxy.addNode(data);
+								
                 // Position it:
                 var p:Point = new Point(x, y);
                 p = graphMediator.vis.globalToLocal(p);
                 n.x = p.x;
                 n.y = p.y;
-                // Set listeners, styles, etc:
+                
+				// Set listeners, styles, etc:
                 graphMediator.initialize(Groups.NODES, [n]);
                 
-                if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
+				// update parent compound node if the event target is a compound
+				// node sprite
+				this.graphMediator.updateCompoundNode(eventTarget, n);
+				
+				if (updateVisualMappers)
+					sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
+				
                 o = ExternalObjectConverter.toExtElement(n);
 
-            } catch (err:Error) {
+            }
+			catch (err:Error)
+			{
                 trace("[ERROR]: addNode: " + err.getStackTrace());
                 error(err);
             }
 
             return o;
         }
+		
+		
+		private function addCompoundNode(x:Number, y:Number, 
+			data:Object,
+			updateVisualMappers:Boolean=false,
+			eventTarget:Object=null) : Object
+		{
+			var extObj:Object = null;
+			
+			try
+			{
+				// create node
+				var ns:NodeSprite = graphProxy.addCompoundNode(data);
+				
+				// position the node
+				var p:Point = new Point(x, y);
+				p = this.graphMediator.vis.globalToLocal(p);
+				ns.x = p.x;
+				ns.y = p.y;
+				
+				// set listeners, styles, etc.
+				this.graphMediator.initialize(Groups.COMPOUND_NODES, [ns]);
+				
+				// update parent compound node if the event target is a compound
+				// node sprite
+				this.graphMediator.updateCompoundNode(eventTarget, ns);
+				
+				if (updateVisualMappers)
+				{
+					this.sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
+				}
+				
+				// convert to external object
+				extObj = ExternalObjectConverter.toExtElement(ns);
+			}
+			catch (err:Error)
+			{
+				trace("[ERROR]: addCompoundNode: " + err.getStackTrace());
+				error(err);
+			}
+			
+			return extObj;
+		}
         
         private function addEdge(data:Object, updateVisualMappers:Boolean=false):Object {
             var o:Object;
@@ -402,8 +464,102 @@ package org.cytoscapeweb.view {
         
         private function removeElements(group:String=Groups.NONE,
                                         items:Array=null, 
-                                        updateVisualMappers:Boolean=false):void {
-            sendNotification(ApplicationFacade.REMOVE_ITEMS,
+                                        updateVisualMappers:Boolean=false):void
+		{
+            var id:*;
+			var ns:NodeSprite;
+			var cNodeSprite:CompoundNodeSprite;
+			
+			// TODO: this list maybe a SET instead of an ARRAY
+			var childMap:Object = new Object();
+			var childList:Array;
+			var node:NodeSprite;
+			
+			if (items != null)
+			{
+				// for each item to be removed check whether it is a compound
+				// node or not
+				
+				for each (var item:* in items)
+				{
+					if (item != null) 
+					{
+						id = item;
+						
+						if (item.hasOwnProperty("data") &&
+							item.data.id != null)
+						{
+							id = item.data.id;
+						}
+					}
+					
+					ns = this.graphProxy.getNode(id);
+					
+					if (ns != null)
+					{
+						if (ns is CompoundNodeSprite)
+						{
+							cNodeSprite = (ns as CompoundNodeSprite);
+							
+							// if ns is also selected then add non-selected
+							// children of the compound to the list of nodes
+							// to be removed
+							if (ns.props.$selected)
+							{
+								childList = CompoundNodes.getChildren(
+									cNodeSprite,
+									CompoundNodes.NON_SELECTED_CHILDREN);
+							}
+							// otherwise add all children of the compound
+							// to the list of nodes to be removed
+							else
+							{
+								childList = CompoundNodes.getChildren(
+									cNodeSprite);
+							}
+							
+							//update map of child nodes to be removed
+							for each (node in childList)
+							{
+								// assuming node.data.id is not null
+								childMap[node.data.id] = node;
+							}
+							
+							for each (node in cNodeSprite.getNodes())
+							{
+								// remove each node from the compound node,
+								// this also resets the parent id of the node
+								cNodeSprite.removeNode(node);
+							}
+						}
+						
+						// remove ns from its parent compound's children list 
+						// if it is in a compound
+						
+						if (ns.data.parentId != null)
+						{
+							// get the parent node
+							cNodeSprite = this.graphProxy.getNode(
+								ns.data.parentId) as CompoundNodeSprite;
+							
+							// remove current node from the compound node
+							if (cNodeSprite != null)
+							{
+								cNodeSprite.removeNode(ns);
+							}
+						}
+						
+					}
+				}
+				
+				// update items with the new list of nodes to be removed
+				for each (node in childMap)
+				{
+					items.push(node);
+				}
+			}
+			
+			sendNotification(ApplicationFacade.REMOVE_ITEMS,
                              { group: group, items: items, updateVisualMappers: updateVisualMappers });
         }
         
@@ -484,7 +640,7 @@ package org.cytoscapeweb.view {
                                         "getLayout", "applyLayout", 
                                         "setVisualStyle", "getVisualStyle", 
                                         "getVisualStyleBypass", "setVisualStyleBypass",
-                                        "addNode", "addEdge", "removeElements",
+                                        "addNode", "addCompoundNode", "addEdge", "removeElements",
                                         "getDataSchema", "addDataField", "removeDataField", "updateData",
                                         "getNetworkModel", "getNetworkAsText", "getNetworkAsImage", 
                                         "exportNetwork" ];
