@@ -100,8 +100,8 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 		// about button is a place holder for now, hide it
 		this.aboutButton.setVisible(true);
 		
-		Cytoscape.getEdgeAttributes().getMultiHashMapDefinition()
-			.addDataDefinitionListener(this);
+		Cytoscape.getNodeAttributes().getMultiHashMapDefinition().addDataDefinitionListener(this);
+		Cytoscape.getEdgeAttributes().getMultiHashMapDefinition().addDataDefinitionListener(this);
 
 		updateAttributeLists();
 		updateScalingMethods();
@@ -1349,18 +1349,27 @@ public class SearchPropertyPanel extends JPanel implements MultiHashMapDefinitio
 	}
 
 	public void attributeDefined(String attrName) {
+		
+		/*
 		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
-		if (edgeAttr.getMultiHashMapDefinition()
-		    .getAttributeValueType(attrName) == MultiHashMapDefinition.TYPE_FLOATING_POINT) {
+		if (edgeAttr.getMultiHashMapDefinition().getAttributeValueType(attrName) == MultiHashMapDefinition.TYPE_FLOATING_POINT)
+		{
 			geneticEdgeAttribComboBox.addItem(attrName);
 			physicalEdgeAttribComboBox.addItem(attrName);
-		}
+		}*/
+		
+		this.updateAttributeLists();
 
 	}
 
-	public void attributeUndefined(String attrName) {
+	public void attributeUndefined(String attrName)
+	{
+		/*
 		geneticEdgeAttribComboBox.removeItem(attrName);
 		physicalEdgeAttribComboBox.removeItem(attrName);
+		*/
+		
+		this.updateAttributeLists();
 	}
 
 	public void setContainer(final Container container) {
