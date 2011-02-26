@@ -13,8 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Collection;
 
-import org.genomespace.client.GsFile;
+import org.genomespace.datamanager.core.GSFileMetadata;
 import org.genomespace.client.GsSession;
+import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.User;
 
 /**
@@ -42,22 +43,22 @@ public class DeleteFileInGenomeSpace extends CytoscapeAction {
 		try {
 
 		// login to GenomeSpace
-		GsSession session = new GsSession();
+		GsSession client = new GsSession();
 		String username = "test";
 		String password = "password";
-		User user = session.login(username, password);
-		logger.info("Logged in to GenomeSpace: " + session.isLoggedIn() + " as " + user.getUsername());
+		User user = client.login(username, password);
+		logger.info("Logged in to GenomeSpace: " + client.isLoggedIn() + " as " + user.getUsername());
+		DataManagerClient dmc = client.getDataManagerClient();
 
 		// list the files present for this user
-		DataManagerClient dmClient = gsSession.getDataManagerClient();
-		GSDirectoryListing homeDirInfo = dmClient.listDefaultDirectory(); 
+		Map<String,GSFileMetadata> files = GSUtils.getFileNameMap( dmc.listDefaultDirectory().getContents() );
 
-		String selectedFile = getSelectedFile( homeDirInfo.get list of files ); 
+		String selectedFile = getSelectedFile( files.keySet() ); 
 
 		// Delete the file from GenomeSpace
 		if (selectedFile != null && files.get(selectedFile) != null) {
 			logger.info("Deleting " + selectedFile);
-			client.delete(files.get(selectedFile));
+			dmc.delete(files.get(selectedFile));
 		}
 	
 		} catch (Exception ex) {

@@ -11,7 +11,9 @@ import java.io.File;
 import java.awt.FileDialog;
 import java.util.List;
 
-import org.genomespace.client.GsFile;
+import org.genomespace.datamanager.core.GSFileMetadata;
+import org.genomespace.datamanager.core.GSFileMetadataImpl;
+import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.GsSession;
 import org.genomespace.client.User;
 
@@ -47,9 +49,10 @@ public class UploadFileToGenomeSpace extends CytoscapeAction {
 		String password = "password";
 		User user = client.login(username, password);
 		logger.info("Logged in to GenomeSpace: " + client.isLoggedIn() + " as " + user.getUsername());
+		DataManagerClient dmc = client.getDataManagerClient();
 
-		GsFile gsf = new GsFile(f); 
-		client.uploadFile(gsf);
+		// TODO add metadata info?
+		dmc.uploadFile(f, new GSFileMetadataImpl());
 	
 		} catch (Exception ex) {
 			logger.error("GenomeSpace failed",ex);

@@ -17,8 +17,9 @@ import java.awt.Dimension;
 import java.util.List;
 import java.util.Vector;
 
-import org.genomespace.client.GsFile;
+import org.genomespace.datamanager.core.GSFileMetadata;
 import org.genomespace.client.GsSession;
+import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.User;
 
 /**
@@ -51,13 +52,14 @@ public class ListFilesInGenomeSpace extends CytoscapeAction {
 		String password = "password";
 		User user = client.login(username, password);
 		logger.info("Logged in to GenomeSpace: " + client.isLoggedIn() + " as " + user.getUsername());
+		DataManagerClient dmc = client.getDataManagerClient();
 
 		// list the files present for this user
-		List<GsFile> myFiles = client.list();
+		List<GSFileMetadata> myFiles = dmc.listDefaultDirectory().getContents();
 		logger.info("Files on GenomeSpace for " + user.getUsername());
 		Vector<String> fileNames = new Vector<String>();
-		for (GsFile aFile: myFiles) {
-			fileNames.add(aFile.getFilename());
+		for (GSFileMetadata aFile: myFiles) {
+			fileNames.add(aFile.getName());
 		}
 
 		displayFiles(fileNames);

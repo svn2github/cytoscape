@@ -13,8 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Collection;
 
-import org.genomespace.client.GsFile;
+import org.genomespace.datamanager.core.GSFileMetadata;
 import org.genomespace.client.GsSession;
+import org.genomespace.client.DataManagerClient;
 import org.genomespace.client.User;
 
 /**
@@ -47,17 +48,19 @@ public class DownloadFileFromGenomeSpace extends CytoscapeAction {
 		String password = "password";
 		User user = client.login(username, password);
 		logger.info("Logged in to GenomeSpace: " + client.isLoggedIn() + " as " + user.getUsername());
+		DataManagerClient dmc = client.getDataManagerClient();
 
 		// list the files present for this user
-		Map<String,GsFile> files = GSUtils.getFileNameMap( client.list() );
+		Map<String,GSFileMetadata> files = GSUtils.getFileNameMap( dmc.listDefaultDirectory().getContents() );
 
 		String selectedFile = getSelectedFile( files.keySet() ); 
 
 		// Download the file back from GenomeSpace
 		if (selectedFile != null && files.get(selectedFile) != null) {
 			logger.info("Downloading " + files.get(selectedFile));
-			GsFile localCopy = client.downloadFile(files.get(selectedFile));
-			logger.info("\t saved to: " + localCopy.getFile().getAbsolutePath());
+			File localCopy = new File(selectedFile);
+			dmc.downloadFile(files.get(selectedFile), localCopy, true);
+			logger.info("\t saved to: " + localCopy.getAbsolutePath());
 		}
 	
 		} catch (Exception ex) {
