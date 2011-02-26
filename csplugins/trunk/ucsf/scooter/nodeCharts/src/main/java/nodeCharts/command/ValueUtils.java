@@ -100,7 +100,7 @@ public class ValueUtils {
 		}
 		if (attributeArray.length == 1) {
 			// Handle the case where we were given a single, list attribute
-			if (labels.size() == 0) {
+			if (labels == null || labels.size() == 0) {
 				throw new CyCommandException("Labels must be specified if attribute is a list");
 			}
 			String attr = attributeArray[0].trim();
@@ -140,7 +140,7 @@ public class ValueUtils {
 					}
 				}
 			}
-			if (labels.size() == 0)
+			if (labels != null && labels.size() == 0)
 				labels.addAll(Arrays.asList(attributeArray));
 			return result;
 		}
@@ -190,6 +190,25 @@ public class ValueUtils {
 		return new ArrayList<String>();
 	}
 
+	/**
+ 	 * Return the boolean equivalent of the input
+ 	 *
+ 	 * @param input an input value that is supposed to be Boolean
+ 	 * @return the boolean value it represents
+ 	 */
+	public static boolean getBooleanValue(Object input) {
+		if (input instanceof Boolean)
+			return ((Boolean)input).booleanValue();
+		return Boolean.parseBoolean(input.toString());
+	}
+
+	/**
+ 	 * Return the double equivalent of the input
+ 	 *
+ 	 * @param input an input value that is supposed to be a double
+ 	 * @return the a double value it represents
+ 	 * @throws NumberFormatException is the value is illegal
+ 	 */
 	public static double getDoubleValue(Object input) throws NumberFormatException {
 		if (input instanceof Double)
 			return ((Double)input).doubleValue();
@@ -198,6 +217,28 @@ public class ValueUtils {
 		else if (input instanceof String)
 			return Double.parseDouble((String)input);
 		throw new NumberFormatException("input can not be converted to double");
+	}
+
+	public static List<Double> arrayMax(List<Double> maxValues, List<Double> values) {
+		// Initialize, if necessary
+		if (maxValues == null) {
+			maxValues = new ArrayList<Double>(values.size());
+			for (Double d: values)
+				maxValues.add(Math.abs(d));
+			return maxValues;
+		}
+
+		// OK, now we need to actually do the work...
+		for (int index = 0; index < values.size(); index++) {
+			maxValues.set(index, Math.max(maxValues.get(index), Math.abs(values.get(index))));
+		}
+		return maxValues;
+	}
+
+	public static void normalize(List<Double> values, List<Double> maxValues) {
+		for (int index = 0; index < values.size(); index++) {
+			values.set(index, values.get(index)/maxValues.get(index));
+		}
 	}
 
 	/**
@@ -240,6 +281,8 @@ public class ValueUtils {
 	private static final String	RAINBOW = "rainbow";
 	private static final String RANDOM = "random";
 	private static final String	UP = "up:";
+	private static final String	ZERO = "zero:";
+	private static final double EPSILON = 1E-8f;
 
 	public static List<Color> convertInputToColor(Object input, List<Double>values) throws CyCommandException {
 		int nColors = values.size();
@@ -263,9 +306,13 @@ public class ValueUtils {
 			// Look for up/down special case
 			if (colorArray.length == 2 &&
 			    (colorArray[0].toLowerCase().startsWith(UP) ||
-			     colorArray[1].toLowerCase().startsWith(DOWN))) {
+			     colorArray[0].toLowerCase().startsWith(DOWN))) {
 				return parseUpDownColor(colorArray, values);
-				
+			} else if (colorArray.length == 3 &&
+			    (colorArray[0].toLowerCase().startsWith(UP) ||
+			     colorArray[0].toLowerCase().startsWith(DOWN) ||
+			     colorArray[0].toLowerCase().startsWith(ZERO))) {
+				return parseUpDownColor(colorArray, values);
 			} else if (colorArray.length > 1)
 				return parseColorList(colorArray);
 			else
@@ -274,24 +321,38 @@ public class ValueUtils {
 			throw new CyCommandException("unknown type for color list");
 	}
 
+	public static List<Color> parseUpDownColor(String[] colorArray) throws CyCommandException {
+		if (colorArray.length < 2)
+			throw new CyCommandException("Up/Down color spec must have at least 2 colors");
+
+		String [] colors = new String[3];
+		colors[2] = "black";
+		for (int index = 0; index < colorArray.length; index++) {
+			if (colorArray[index].toLowerCase().startsWith(UP)) {
+				colors[0] = colorArray[index].substring(UP.length());
+			} else if (colorArray[index].toLowerCase().startsWith(DOWN)) {
+				colors[1] = colorArray[index].substring(DOWN.length());
+			} else if (colorArray[index].toLowerCase().startsWith(ZERO)) {
+				colors[2] = colorArray[index].substring(ZERO.length());
+			}
+		} 
+		return parseColorList(colors);
+	}
+
 	private static List<Color> parseUpDownColor(String[] colorArray, List<Double>values) throws CyCommandException {
-		String [] colors = new String[2];
-		if (colorArray[0].toLowerCase().startsWith(UP)) {
-			colors[0] = colorArray[0].substring(UP.length());
-			colors[1] = colorArray[1].substring(DOWN.length());
-		} else {
-			colors[1] = colorArray[0].substring(DOWN.length());
-			colors[0] = colorArray[1].substring(UP.length());
-		}
-		List<Color> upDownColors = parseColorList(colors);
+		List<Color> upDownColors = parseUpDownColor(colorArray);
 		Color up = upDownColors.get(0);
 		Color down = upDownColors.get(1);
+		Color zero = upDownColors.get(2);
+
 		List<Color> results = new ArrayList<Color>(values.size());
 		for (Double v: values) {
-			if (v < 0.0) 
+			if (v < EPSILON) 
 				results.add(down);
-			else
+			else if (v > EPSILON)
 				results.add(up);
+			else
+				results.add(zero);
 		}
 		return results;
 	}

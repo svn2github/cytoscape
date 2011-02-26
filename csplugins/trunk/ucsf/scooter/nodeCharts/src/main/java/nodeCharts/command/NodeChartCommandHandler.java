@@ -58,6 +58,7 @@ import cytoscape.view.CyNetworkView;
 // nodeChart imports
 import nodeCharts.view.NodeChartViewer;
 import nodeCharts.view.BarChart;
+import nodeCharts.view.HeatStrip;
 import nodeCharts.view.LineChart;
 import nodeCharts.view.PieChart;
 import nodeCharts.view.StripeChart;
@@ -80,9 +81,11 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 	public static final String NETWORK = "network";
 	public static final String NODE = "node";
 	public static final String NODELIST = "nodelist";
+	public static final String NORMALIZE = "normalize";
 	public static final String POSITION = "position";
 	public static final String SCALE = "scale";
 	public static final String SELECTED = "selected";
+	public static final String SHOWLABELS = "showlabels";
 	public static final String VALUES = "valuelist";
 
 	public NodeChartCommandHandler(String namespace, CyLogger logger) {
@@ -93,6 +96,7 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 
 		// Register each command
 		register(new BarChart());
+		register(new HeatStrip());
 		register(new LineChart());
 		register(new PieChart());
 		register(new StripeChart());
@@ -185,6 +189,23 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 			labels = ValueUtils.getStringList(args.get(LABELS));
 		}
 
+		boolean showLabels = true;
+		if (args.containsKey(SHOWLABELS)) {
+			showLabels = ValueUtils.getBooleanValue(args.get(SHOWLABELS));
+		}
+
+		boolean normalize = false;
+		List<Double>maxValues = null;
+		if (args.containsKey(NORMALIZE)) {
+			normalize = ValueUtils.getBooleanValue(args.get(NORMALIZE));
+			if (normalize && args.containsKey(ATTRIBUTELIST)) {
+				for (CyNode node: nodeList) {
+					values = ValueUtils.getDataFromAttributes (node, args.get(ATTRIBUTELIST), labels);
+					maxValues = ValueUtils.arrayMax(maxValues, values);
+				}
+			}
+		}
+
 		double scale = 0.90;
 		if (args.containsKey(SCALE)) {
 			try {
@@ -203,12 +224,18 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 				throw new CyCommandException("unknown position keyword or illegal position expression: "+position);
 		}
 
+		if (!showLabels)
+			labels = null;
+
 		// OK, do it!
 		for (CyNode node: nodeList) {
 			// If we've got an attributelist, we need to get our values now since they will change based on
 			// the node
-			if (args.containsKey(ATTRIBUTELIST))
+			if (args.containsKey(ATTRIBUTELIST)) {
 				values = ValueUtils.getDataFromAttributes (node, args.get(ATTRIBUTELIST), labels);
+				if (normalize)
+					ValueUtils.normalize(values, maxValues);
+			}
 
 			List<CustomGraphic> cgList = viewer.getCustomGraphics(args, values, labels, node, view, pos, scale);
 			ViewUtils.addCustomGraphics(cgList, node, view);
@@ -228,9 +255,11 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 		addArgument(viewer.getName(), NETWORK, CURRENT);
 		addArgument(viewer.getName(), NODE);
 		addArgument(viewer.getName(), NODELIST);
+		addArgument(viewer.getName(), NORMALIZE, "false");
 		addArgument(viewer.getName(), POSITION);
 		addArgument(viewer.getName(), VALUES);
 		addArgument(viewer.getName(), SCALE, "0.90");
+		addArgument(viewer.getName(), SHOWLABELS, "true");
 
 		// Get the specific commands handled by the viewer
 		Map<String,String> args = viewer.getOptions();
