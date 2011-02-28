@@ -1,13 +1,16 @@
 package org.cytoscape.io.internal.read.xgmml.handler;
 
+import java.util.Map;
+
 import org.cytoscape.io.internal.read.xgmml.ParseState;
+import org.cytoscape.model.CyNode;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class HandleNodeAttribute extends AbstractHandler {
 
-	public ParseState handle(String tag, Attributes atts, ParseState current)
+    public ParseState handle(String tag, Attributes atts, ParseState current)
 			throws SAXException {
 		if (atts == null)
 			return current;
@@ -22,22 +25,24 @@ public class HandleNodeAttribute extends AbstractHandler {
 			return current;
 
 		if (name.startsWith("node.")) {
-			// Yes, add it to our nodeGraphicsMap
-			name = atts.getValue("name").substring(5);
+			// It is a bypass attribute...
+			name = name.replace(".", "").toLowerCase();
 			String value = atts.getValue("value");
-			if (!manager.nodeGraphicsMap.containsKey(manager.currentNode)) {
-				manager.nodeGraphicsMap.put(manager.currentNode,
-						new AttributesImpl());
+            Map<CyNode, Attributes> graphics = manager.getNodeGraphics();
+			
+			if (!graphics.containsKey(manager.currentNode)) {
+			    graphics.put(manager.currentNode, new AttributesImpl());
 			}
-			((AttributesImpl) manager.nodeGraphicsMap.get(manager.currentNode))
-					.addAttribute("", "", name, "string", value);
+			
+			((AttributesImpl) graphics.get(manager.currentNode)).addAttribute("", "", name, "string", value);
 		}
 
 		manager.currentAttributes = manager.currentNode.getCyRow();
-		ParseState nextState = attributeValueUtil.handleAttribute(atts,
-				manager.currentAttributes);
+        ParseState nextState = attributeValueUtil.handleAttribute(atts, manager.currentAttributes);
+		
 		if (nextState != ParseState.NONE)
 			return nextState;
+		
 		return current;
 	}
 }

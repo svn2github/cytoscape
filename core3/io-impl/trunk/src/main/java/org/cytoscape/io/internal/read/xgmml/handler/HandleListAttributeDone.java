@@ -10,8 +10,7 @@ public class HandleListAttributeDone extends AbstractHandler {
 
 		try {
 			if (manager.listAttrHolder != null) {
-				manager.currentAttributes.set(manager.currentAttributeID,
-						manager.listAttrHolder);
+				manager.currentAttributes.set(manager.currentAttributeID, manager.listAttrHolder);
 				manager.listAttrHolder = null;
 			}
 		} catch (Exception e) {

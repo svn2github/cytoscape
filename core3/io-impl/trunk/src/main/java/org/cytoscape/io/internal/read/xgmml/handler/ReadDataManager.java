@@ -16,204 +16,198 @@ import org.xml.sax.Attributes;
 
 public class ReadDataManager {
 
-	protected final static String XLINK = "http://www.w3.org/1999/xlink";
-	protected static final double documentVersion = 1.0;
+    protected final static String XLINK = "http://www.w3.org/1999/xlink";
+    protected static final double documentVersion = 1.0;
 
-	protected String networkName;
+    protected String networkName;
 
-	/* RDF Data */
-	protected String RDFDate;
-	protected String RDFTitle;
-	protected String RDFIdentifier;
-	protected String RDFDescription;
-	protected String RDFSource;
-	protected String RDFType;
-	protected String RDFFormat;
+    /* RDF Data */
+    protected String RDFDate;
+    protected String RDFTitle;
+    protected String RDFIdentifier;
+    protected String RDFDescription;
+    protected String RDFSource;
+    protected String RDFType;
+    protected String RDFFormat;
 
-	/* Internal lists of the created nodes and edges */
-	protected List<CyNode> nodeList;
-	protected List<CyEdge> edgeList;
-	/* Map of Groups to lists of node references that haven't been processed */
-	protected HashMap<CyNode, List<String>> nodeLinks;
-	/* Map of XML ID's to nodes */
-	protected HashMap<String, CyNode> idMap;
+    /* Internal lists of the created nodes and edges */
+    protected List<CyNode> nodeList;
+    protected List<CyEdge> edgeList;
+    /* Map of Groups to lists of node references that haven't been processed */
+    protected HashMap<CyNode, List<String>> nodeLinks;
+    /* Map of XML ID's to nodes */
+    protected HashMap<String, CyNode> idMap;
 
-	// Groups might actually recurse on us, so we need to
-	// maintain a stack
-	protected Stack<CyNode> groupStack;
+    // Groups might actually recurse on us, so we need to
+    // maintain a stack
+    protected Stack<CyNode> groupStack;
 
-	protected CyNode currentNode;
-	protected CyEdge currentEdge;
-	protected CyNode currentGroupNode;
+    protected CyNode currentNode;
+    protected CyEdge currentEdge;
+    protected CyNode currentGroupNode;
 
-	/* Attribute values */
-	protected ParseState attState = ParseState.NONE;
-	protected String currentAttributeID;
-	protected CyRow currentAttributes;
-	protected String objectTarget;
+    /* Attribute values */
+    protected ParseState attState = ParseState.NONE;
+    protected String currentAttributeID;
+    protected CyRow currentAttributes;
+    protected String objectTarget;
 
-	/* Complex attribute data */
-	protected int level = 0;
-	protected int numKeys = 0;
-	protected Map complexMap[];
-	protected Object complexKey[];
-	protected byte[] attributeDefinition;
-	protected byte valueType;
-	protected boolean complexAttributeDefined;
-	// protected MultiHashMap mhm = null;
+    /* Complex attribute data */
+    protected int level = 0;
+    protected int numKeys = 0;
+    protected Map complexMap[];
+    protected Object complexKey[];
+    protected byte[] attributeDefinition;
+    protected byte valueType;
+    protected boolean complexAttributeDefined;
+    // protected MultiHashMap mhm = null;
 
-	/* Edge handle list */
-	protected List<String> handleList;
-	/* X handle */
-	protected String edgeBendX;
-	/* Y handle */
-	protected String edgeBendY;
+    /* Edge handle list */
+    protected List<String> handleList;
+    /* X handle */
+    protected String edgeBendX;
+    /* Y handle */
+    protected String edgeBendY;
 
-	protected List<Object> listAttrHolder;
-	protected Map<String, Object> mapAttrHolder;
-	protected CyNetwork network;
+    protected List<Object> listAttrHolder;
+    protected Map<String, Object> mapAttrHolder;
+    protected CyNetwork network;
 
-	/*
-	 * The graph-global directedness, which will be used as default directedness
-	 * of edges.
-	 */
-	protected boolean currentNetworkisDirected = true;
+    /*
+     * The graph-global directedness, which will be used as default directedness
+     * of edges.
+     */
+    protected boolean currentNetworkisDirected = true;
 
-	protected Map<CyNode, Attributes> nodeGraphicsMap;
-	protected Map<CyEdge, Attributes> edgeGraphicsMap;
-	protected String backgroundColor;
-	protected String graphZoom;
-	protected String graphCenterX;
-	protected String graphCenterY;
-	protected Map<CyNode, List<CyNode>> groupMap;
+    private Map<CyNode, Attributes> nodeGraphicsMap;
+    private Map<CyEdge, Attributes> edgeGraphicsMap;
 
-	public void initAllData() {
-		networkName = null;
-		backgroundColor = null;
+    protected String backgroundColor;
+    protected String graphZoom;
+    protected String graphCenterX;
+    protected String graphCenterY;
+    protected Map<CyNode, List<CyNode>> groupMap;
 
-		/* RDF Data */
-		RDFDate = null;
-		RDFTitle = null;
-		RDFIdentifier = null;
-		RDFDescription = null;
-		RDFSource = null;
-		RDFType = null;
-		RDFFormat = null;
+    public void initAllData() {
+        networkName = null;
+        backgroundColor = null;
 
-		nodeList = new ArrayList<CyNode>();
-		edgeList = new ArrayList<CyEdge>();
+        /* RDF Data */
+        RDFDate = null;
+        RDFTitle = null;
+        RDFIdentifier = null;
+        RDFDescription = null;
+        RDFSource = null;
+        RDFType = null;
+        RDFFormat = null;
 
-		nodeLinks = new HashMap<CyNode, List<String>>();
-		idMap = new HashMap<String, CyNode>();
-		groupMap = new HashMap<CyNode, List<CyNode>>();
+        nodeList = new ArrayList<CyNode>();
+        edgeList = new ArrayList<CyEdge>();
 
-		groupStack = new Stack<CyNode>();
+        nodeLinks = new HashMap<CyNode, List<String>>();
+        idMap = new HashMap<String, CyNode>();
+        groupMap = new HashMap<CyNode, List<CyNode>>();
 
-		nodeGraphicsMap = new HashMap<CyNode, Attributes>();
-		edgeGraphicsMap = new HashMap<CyEdge, Attributes>();
+        groupStack = new Stack<CyNode>();
 
-		currentNode = null;
-		currentEdge = null;
-		currentGroupNode = null;
+        nodeGraphicsMap = new HashMap<CyNode, Attributes>();
+        edgeGraphicsMap = new HashMap<CyEdge, Attributes>();
 
-		network = null;
+        currentNode = null;
+        currentEdge = null;
+        currentGroupNode = null;
 
-		currentNetworkisDirected = true;
+        network = null;
 
-		attState = ParseState.NONE;
-		currentAttributeID = null;
-		currentAttributes = null;
-		objectTarget = null;
+        currentNetworkisDirected = true;
 
-		/* Complex attribute data */
-		level = 0;
-		numKeys = 0;
-		complexMap = null;
-		complexKey = null;
-		attributeDefinition = null;
-		valueType = (byte) 4;
-		complexAttributeDefined = false;
+        attState = ParseState.NONE;
+        currentAttributeID = null;
+        currentAttributes = null;
+        objectTarget = null;
 
-		/* Edge handle list */
-		handleList = null;
+        /* Complex attribute data */
+        level = 0;
+        numKeys = 0;
+        complexMap = null;
+        complexKey = null;
+        attributeDefinition = null;
+        valueType = (byte) 4;
+        complexAttributeDefined = false;
 
-		edgeBendX = null;
-		edgeBendY = null;
-	}
+        /* Edge handle list */
+        handleList = null;
 
-	public ReadDataManager() {
-		nodeGraphicsMap = new HashMap<CyNode, Attributes>();
-		edgeGraphicsMap = new HashMap<CyEdge, Attributes>();
-		groupMap = new HashMap<CyNode, List<CyNode>>();
-		initAllData();
-	}
+        edgeBendX = null;
+        edgeBendY = null;
+    }
 
-	public String getNetworkName() {
-		return networkName;
-	}
+    public ReadDataManager() {
+        initAllData();
+    }
 
-	public Map<CyNode, Attributes> getNodeGraphics() {
-		return nodeGraphicsMap;
-	}
+    public String getNetworkName() {
+        return networkName;
+    }
 
-	public Map<CyEdge, Attributes> getEdgeGraphics() {
-		return edgeGraphicsMap;
-	}
+    public Map<CyNode, Attributes> getNodeGraphics() {
+        return nodeGraphicsMap;
+    }
 
-	public Color getBackgroundColor() {
-		if (backgroundColor == null)
-			return null;
-		return new Color(Integer.parseInt(backgroundColor.substring(1), 16));
-	}
-	
+    public Map<CyEdge, Attributes> getEdgeGraphics() {
+        return edgeGraphicsMap;
+    }
+
+    public Color getBackgroundColor() {
+        if (backgroundColor == null) return null;
+        return new Color(Integer.parseInt(backgroundColor.substring(1), 16));
+    }
+
     public Double getGraphZoom() {
         Double d = new Double(1);
-        
+
         try {
             if (graphZoom != null) d = new Double(graphZoom);
         } catch (NumberFormatException nfe) {
             // TODO: warning
         }
-        
+
         return d;
     }
 
-    
     public Double getGraphCenterX() {
         Double d = new Double(0);
-        
+
         try {
             if (graphCenterX != null) d = new Double(graphCenterX);
         } catch (NumberFormatException nfe) {
             // TODO: warning
         }
-        
+
         return d;
     }
 
-    
     public Double getGraphCenterY() {
         Double d = new Double(0);
-        
+
         try {
             if (graphCenterY != null) d = new Double(graphCenterY);
         } catch (NumberFormatException nfe) {
             // TODO: warning
         }
-        
+
         return d;
     }
 
     public Map<CyNode, List<CyNode>> getGroupMap() {
-		return groupMap;
-	}
-	
-	public void setNetwork(CyNetwork network) {
-		this.network = network;
-	}
-	
-	public CyNetwork getNetwork() {
-		return this.network;
-	}
+        return groupMap;
+    }
 
+    public void setNetwork(CyNetwork network) {
+        this.network = network;
+    }
+
+    public CyNetwork getNetwork() {
+        return this.network;
+    }
 }
