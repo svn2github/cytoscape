@@ -184,6 +184,7 @@ public class RunMCL {
 
 		monitor.setStatus("Assigning nodes to clusters");
 
+		clusterCount = 0;
 		HashMap<Integer, NodeCluster> clusterMap = new HashMap();
 		matrix.forEachNonZero(new ClusterMatrix(clusterMap));
 
