@@ -552,6 +552,7 @@ public class RunMCL {
 					// debugln("Adding "+column+" to "+rowCluster.getClusterNumber());
 					rowCluster.add(nodes, column);
 				} else {
+					clusterCount++;
 					rowCluster = new NodeCluster();
 					// debugln("Created new cluster "+rowCluster.getClusterNumber()+" with "+row+" and "+column);
 					rowCluster.add(nodes, column);
