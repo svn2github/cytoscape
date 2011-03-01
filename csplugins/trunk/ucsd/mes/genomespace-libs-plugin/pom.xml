@@ -104,13 +104,11 @@
       <artifactId>jersey-client</artifactId>
       <version>1.5-ea09</version>
     </dependency>
-	<!--
     <dependency>
-      <groupId>com.sun.jersey</groupId>
+      <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-apache-client</artifactId>
-      <version>1.5-ea092</version>
+      <version>1.5-ea09</version>
     </dependency>
-	-->
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>jsr311-api</artifactId>
