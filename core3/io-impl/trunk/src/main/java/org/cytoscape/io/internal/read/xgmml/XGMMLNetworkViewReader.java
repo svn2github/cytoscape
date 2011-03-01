@@ -456,9 +456,6 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
 
         // graphics:
         // ----------------------------------
-        // TODO: should add x/y to style?
-        //        nodeProps.put("x", Double.class);
-        //        nodeProps.put("y", Double.class);
         // TODO: NODE_SIZE: locking h/w
         nodeConverters.add(new GraphicsConverter<Double>("h", Double.class));
         nodeConverters.add(new GraphicsConverter<Double>("w", Double.class));

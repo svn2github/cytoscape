@@ -10,6 +10,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class HandleNodeAttribute extends AbstractHandler {
 
+    @Override
     public ParseState handle(String tag, Attributes atts, ParseState current)
 			throws SAXException {
 		if (atts == null)

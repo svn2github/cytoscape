@@ -299,10 +299,13 @@ public class AttributeValueUtil {
             // must make sure to clear out any existing values before we parse.
             case LIST:
                 manager.currentAttributeID = name;
+                
                 if (row.getTable().getColumn(name) != null && row.getTable().getColumn(name).getType() == List.class)
                     row.set(name, null);
+                
                 return ParseState.LISTATT;
         }
+        
         return ParseState.NONE;
     }
 
