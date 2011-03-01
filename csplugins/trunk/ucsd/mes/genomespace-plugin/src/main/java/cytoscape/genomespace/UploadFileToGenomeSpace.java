@@ -44,11 +44,7 @@ public class UploadFileToGenomeSpace extends CytoscapeAction {
 		if ( f == null )
 			return;
 
-		GsSession client = new GsSession();
-		String username = "test";
-		String password = "password";
-		User user = client.login(username, password);
-		logger.info("Logged in to GenomeSpace: " + client.isLoggedIn() + " as " + user.getUsername());
+		GsSession client = GSUtils.getSession(); 
 		DataManagerClient dmc = client.getDataManagerClient();
 
 		// TODO add metadata info?

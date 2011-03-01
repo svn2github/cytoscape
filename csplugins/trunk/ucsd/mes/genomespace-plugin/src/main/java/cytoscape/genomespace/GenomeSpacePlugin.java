@@ -28,6 +28,5 @@ public class GenomeSpacePlugin extends CytoscapePlugin {
 
 		ListFilesInGenomeSpace listAction = new ListFilesInGenomeSpace();
 		Cytoscape.getDesktop().getCyMenus().addAction(listAction);
-	
 	}
 }	

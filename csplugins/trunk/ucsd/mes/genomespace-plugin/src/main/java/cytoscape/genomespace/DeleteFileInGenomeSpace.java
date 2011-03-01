@@ -42,12 +42,7 @@ public class DeleteFileInGenomeSpace extends CytoscapeAction {
 
 		try {
 
-		// login to GenomeSpace
-		GsSession client = new GsSession();
-		String username = "test";
-		String password = "password";
-		User user = client.login(username, password);
-		logger.info("Logged in to GenomeSpace: " + client.isLoggedIn() + " as " + user.getUsername());
+		GsSession client = GSUtils.getSession(); 
 		DataManagerClient dmc = client.getDataManagerClient();
 
 		// list the files present for this user
