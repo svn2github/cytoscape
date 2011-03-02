@@ -115,7 +115,7 @@ class PopupMenuHelper {
 	private void createMenuItem(final TaskFactory tf, final PopupMenuGravityTracker tracker,
 				    final Map props)
 	{
-		String menuLabel = (String)(props.get("menuLabel"));
+		String menuLabel = (String)(props.get("title"));
 		if (menuLabel == null)
 			menuLabel = "Unidentified Task: " + Integer.toString(tf.hashCode());
 
