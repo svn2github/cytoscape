@@ -29,6 +29,11 @@ package org.cytoscape.mavenplugins;
 
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -36,6 +41,8 @@ import org.apache.maven.project.MavenProject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +55,20 @@ import java.util.List;
  * @phase test
  */
 public final class ProfilerMojo extends AbstractMojo {
+	/**
+	 * @parameter expression="${localRepository}"
+	 * @readonly
+	 * @required
+	 */
+	private ArtifactRepository localRepository;
+
+	/**
+	 * @parameter expression="${project.remoteArtifactRepositories}"
+	 * @readonly
+	 * @required
+	 */
+	private  List<ArtifactRepository> remoteRepositories;
+	
 	/**
 	 * @parameter baselineVersion
 	 * @required
@@ -62,17 +83,27 @@ public final class ProfilerMojo extends AbstractMojo {
 	 */
 	private MavenProject project;
 
+	/** @component */
+	private ArtifactResolver resolver;
+
+	/** @component */
+	private ArtifactFactory artifactFactory;
+	
 	public void execute() throws MojoExecutionException {
 		getLog().info("+++ ProfilerMojo: base line version is " + baselineVersion + ", group ID: "
 			      + project.getGroupId() + ", artifact ID: " + project.getArtifactId());
 		final List<String> testClasspath = generateTestClasspath();
 		getLog().info("+++ ProfilerMojo: testClasspath = " + testClasspath);
 		final Artifact artifact = project.getArtifact();
-		getLog().info("+++ ProfilerMojo: current artifact = " + artifact);
+		resolveDependencies(artifact);
 		collectStats(artifact);
-		artifact.setVersion(baselineVersion);
-		getLog().info("+++ ProfilerMojo: baseline artifact = " + artifact);
-		collectStats(artifact);
+		final Artifact baselineArtifact = artifactFactory.createArtifactWithClassifier(artifact.getGroupId(),
+											       artifact.getArtifactId(),
+											       baselineVersion,
+											       artifact.getType(),
+											       artifact.getClassifier());
+		resolveDependencies(baselineArtifact);
+		collectStats(baselineArtifact);
 		compareStats();
 	}
 
@@ -95,5 +126,16 @@ public final class ProfilerMojo extends AbstractMojo {
 	}
 
 	private void compareStats() {
+	}
+
+	private void resolveDependencies(final Artifact artifact) throws MojoExecutionException {
+		try {
+			resolver.resolve(artifact, remoteRepositories, localRepository);
+		} catch (final ArtifactResolutionException are) {
+			throw new MojoExecutionException("Failed to resolve an artifact!", are);
+		} catch (final ArtifactNotFoundException anfe) {
+			throw new MojoExecutionException("Failed to find an artifact!", anfe);
+		}
+		getLog().info("+++ ProfilerMojo: resolved " + artifact);
 	}
 }
