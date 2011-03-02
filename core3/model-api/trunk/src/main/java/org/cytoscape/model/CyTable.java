@@ -44,7 +44,18 @@ import java.util.Set;
  */
 public interface CyTable extends Identifiable {
 	public static enum Mutability {
-		MUTABLE, PERMANENTLY_IMMUTABLE, IMMUTABLE_DUE_TO_VIRT_COLUMN_REFERENCES
+		MUTABLE("mutable"),
+		PERMANENTLY_IMMUTABLE("permanently immutable"),
+		IMMUTABLE_DUE_TO_VIRT_COLUMN_REFERENCES("immutable due to virtual column references");
+
+		private String humanReadableRepresentation;
+
+		Mutability(final String humanReadableRepresentation) {
+			this.humanReadableRepresentation = humanReadableRepresentation;
+		}
+
+		@Override
+		final public String toString() { return humanReadableRepresentation; }
 	}
 
 	/**
