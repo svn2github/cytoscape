@@ -258,10 +258,10 @@ public final class CyTableImpl implements CyTable {
 					types.remove(columnName);
 				}
 			}
-
-			// This event must be synchronous!
-			eventHelper.fireSynchronousEvent(new ColumnDeletedEvent(this, columnName));
 		}
+
+		// This event must be synchronous!
+		eventHelper.fireSynchronousEvent(new ColumnDeletedEvent(this, columnName));
 	}
 
 	@Override
