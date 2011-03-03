@@ -25,6 +25,8 @@
 
 	<osgi:reference id="taskManagerServiceRef" interface="org.cytoscape.work.swing.GUITaskManager" />
 
+	<osgi:reference id="cyTableRowUpdateServiceRef" interface="org.cytoscape.model.CyTableRowUpdateService" />
+
 	<!-- Rendering Engine factory for main network views -->
 	<osgi:reference id="dingRenderingEngineFactoryServiceRef"
 		interface="org.cytoscape.view.presentation.RenderingEngineFactory"

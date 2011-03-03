@@ -61,12 +61,16 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import org.cytoscape.application.swing.CyAction;
+import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyTable;
+import org.cytoscape.model.CyTableRowUpdateService;
 import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.events.RowSetMicroListener;
-import org.cytoscape.application.swing.CyAction;
-import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedListener;
 import org.cytoscape.model.events.NetworkAddedEvent;
@@ -77,6 +81,7 @@ import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedEvent;
 import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener;
 import org.cytoscape.view.model.events.NetworkViewAddedEvent;
 import org.cytoscape.view.model.events.NetworkViewAddedListener;
+import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.session.CyApplicationManager;
 import org.cytoscape.session.events.SetCurrentNetworkEvent;
 import org.cytoscape.session.events.SetCurrentNetworkListener;
@@ -102,11 +107,11 @@ import org.cytoscape.internal.task.TaskFactoryTunableAction;
 
 
 public class NetworkPanel extends JPanel implements TreeSelectionListener,
-		SetCurrentNetworkViewListener,
-		SetCurrentNetworkListener, NetworkAddedListener,
-		NetworkViewAddedListener, NetworkAboutToBeDestroyedListener,
-		NetworkViewAboutToBeDestroyedListener {
-	
+	SetCurrentNetworkViewListener, CyTableRowUpdateMicroListener,
+	SetCurrentNetworkListener, NetworkAddedListener,
+	NetworkViewAddedListener, NetworkAboutToBeDestroyedListener,
+	NetworkViewAboutToBeDestroyedListener
+{
 	private final static long serialVersionUID = 1213748836763243L;
 
 	private static final Logger logger = LoggerFactory.getLogger(NetworkPanel.class);
@@ -126,7 +131,7 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	private Map<TaskFactory,CyAction> popupActions;
 	private CyEventHelper eventHelper;
 	private Map<CyNetwork, RowSetMicroListener> nameListeners;
-
+	private CyTableRowUpdateService tableRowUpdateService;
 
 	/**
 	 * Constructor for the Network Panel.
@@ -136,15 +141,17 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	public NetworkPanel(final CyApplicationManager applicationManager, final CyNetworkManager netmgr,
 			    final CyNetworkViewManager networkViewManager,
 			    final BirdsEyeViewHandler bird, final TaskManager taskManager,
-			    final CyEventHelper eventHelper)
+			    final CyEventHelper eventHelper,
+			    final CyTableRowUpdateService tableRowUpdateService)
 	{
 		super();
 
-		this.applicationManager = applicationManager;
-		this.netmgr = netmgr;
-		this.networkViewManager = networkViewManager;
-		this.taskManager = taskManager;
-		this.eventHelper = eventHelper;
+		this.applicationManager    = applicationManager;
+		this.netmgr                = netmgr;
+		this.networkViewManager    = networkViewManager;
+		this.taskManager           = taskManager;
+		this.eventHelper           = eventHelper;
+		this.tableRowUpdateService = tableRowUpdateService;
 
 		root = new NetworkTreeNode("Network Root", 0L);
 		treeTableModel = new NetworkTreeTableModel(root);
@@ -300,6 +307,10 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	 * @param network_id
 	 */
 	public void removeNetwork(final Long network_id) {
+		final CyNetwork network = netmgr.getNetwork(network_id);
+		tableRowUpdateService.stopTracking(this, network.getDefaultNodeTable());
+		tableRowUpdateService.stopTracking(this, network.getDefaultEdgeTable());
+
 		final NetworkTreeNode node = getNetworkNode(network_id);
 		final Enumeration children = node.children();
 		final List<NetworkTreeNode> removed_children = new ArrayList<NetworkTreeNode>();
@@ -347,8 +358,8 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		CyNetwork net = nde.getNetwork();
 		logger.debug("Network about to be destroyed " + net.getSUID());
 		removeNetwork(net.getSUID());
-		RowSetMicroListener rsml = nameListeners.remove(net);
-		if ( rsml != null )
+		final RowSetMicroListener rsml = nameListeners.remove(net);
+		if (rsml != null)
 			eventHelper.removeMicroListener( rsml, RowSetMicroListener.class, net.getCyRow().getTable() ); 
 	}
 
@@ -412,6 +423,25 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 		treeTable.getTree().updateUI();
 	}
 
+	@Override
+	public void handleRowSets(final CyTable table, final List<RowSet> rowSets) {
+		boolean selectColumnHasBeenUpdated = false;
+		for (final RowSet rowSet : rowSets) {
+			if (rowSet.getColumn() == CyNetwork.SELECTED) {
+				selectColumnHasBeenUpdated = true;
+				break;
+			}
+		}
+
+		if (selectColumnHasBeenUpdated)
+			treeTable.getTree().updateUI();
+	}
+
+	@Override
+	public void handleRowCreations(final CyTable table, final List<CyRow> newRows) {
+		treeTable.getTree().updateUI();
+	}
+
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -420,9 +450,13 @@ public class NetworkPanel extends JPanel implements TreeSelectionListener,
 	 * @param parent_id
 	 *            DOCUMENT ME!
 	 */
-	private void addNetwork(Long network_id, Long parent_id) {
+	private void addNetwork(final Long network_id, final Long parent_id) {
 		// first see if it exists
 		if (getNetworkNode(network_id) == null) {
+			final CyNetwork network = netmgr.getNetwork(network_id);
+			tableRowUpdateService.startTracking(this, network.getDefaultNodeTable());
+			tableRowUpdateService.startTracking(this, network.getDefaultEdgeTable());
+
 			// logger.debug("NetworkPanel: addNetwork " + network_id);
 			NetworkTreeNode dmtn = new NetworkTreeNode(netmgr.getNetwork(
 					network_id).getCyRow().get("name", String.class), network_id);

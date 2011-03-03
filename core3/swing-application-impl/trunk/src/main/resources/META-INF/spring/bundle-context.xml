@@ -95,6 +95,7 @@
 		<constructor-arg ref="birdsEyeViewHandler" />
 		<constructor-arg ref="guiTaskManagerServiceRef" />
 		<constructor-arg ref="cyEventHelperServiceRef" />
+		<constructor-arg ref="cyTableRowUpdateServiceRef" />
 	</bean>
 
 
