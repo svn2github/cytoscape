@@ -214,6 +214,16 @@ public class MetaNode {
 			expandParent(view);
 		}
 
+		// Get our list of edges
+		CyNode groupNode = metaGroup.getGroupNode();
+		List edgeList = view.getNetwork().getAdjacentEdgesList(metaGroup.getGroupNode(), true, true, true);
+		for (Object e: edgeList) {
+			CyEdge edge = (CyEdge)e;
+			// Add any new edges
+			if (!metaEdges.containsKey(edge))
+				metaEdges.put(edge, edge);
+		}
+
 		// Hide our metaNode
 		Dimension position = ViewUtils.hideMetaNode(metaGroup, view, hideMetanode);
 
@@ -231,7 +241,7 @@ public class MetaNode {
 			if (membershipEdges == null) {
 				createMembershipEdges();
 			}
-			ViewUtils.hideEdges(metaGroup, metaEdges.values(), view);
+			// ViewUtils.hideEdges(metaGroup, metaEdges.values(), view);
 			ViewUtils.restoreEdges(metaGroup, membershipEdges.values(), view);
 		}
 
