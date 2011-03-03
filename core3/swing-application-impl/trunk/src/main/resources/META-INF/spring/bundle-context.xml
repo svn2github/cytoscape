@@ -83,6 +83,7 @@
 	</bean>
 
 	<bean name="birdsEyeViewHandler" class="org.cytoscape.internal.view.BirdsEyeViewHandler">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 		<constructor-arg ref="networkViewManager" />
 		<constructor-arg ref="dingNavigationPresentationFactoryServiceRef" />
 	</bean>

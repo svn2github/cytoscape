@@ -50,11 +50,8 @@ import javax.swing.JPanel;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.session.CyApplicationManager;
-import org.cytoscape.session.events.SetCurrentNetworkEvent;
 import org.cytoscape.session.events.SetCurrentRenderingEngineEvent;
 import org.cytoscape.session.events.SetCurrentRenderingEngineListener;
-import org.cytoscape.view.model.CyNetworkView;
-import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.events.NetworkViewDestroyedEvent;
 import org.cytoscape.view.model.events.NetworkViewDestroyedListener;
 import org.cytoscape.view.presentation.RenderingEngine;
@@ -69,8 +66,9 @@ import org.slf4j.LoggerFactory;
 public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 		NetworkViewDestroyedListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(BirdsEyeViewHandler.class);
-	
+	private static final Logger logger = LoggerFactory
+			.getLogger(BirdsEyeViewHandler.class);
+
 	private static final Dimension DEF_PANEL_SIZE = new Dimension(280, 280);
 	private static final Color DEF_BACKGROUND_COLOR = Color.WHITE;
 
@@ -78,13 +76,13 @@ public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 	private final RenderingEngineFactory<CyNetwork> bevFactory;
 
 	private FrameListener frameListener = new FrameListener();
-	
+
 	private final NetworkViewManager networkViewManager;
 
-
 	private final Container bevPanel;
-	
+
 	private RenderingEngine<CyNetwork> engine;
+	private final CyApplicationManager appManager;
 
 	/**
 	 * Creates a new BirdsEyeViewHandler object.
@@ -92,9 +90,11 @@ public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 	 * @param desktopPane
 	 *            The JDesktopPane of the NetworkViewManager. Can be null.
 	 */
-	public BirdsEyeViewHandler(final NetworkViewManager viewmgr,
+	public BirdsEyeViewHandler(final CyApplicationManager appManager,
+			final NetworkViewManager viewmgr,
 			final RenderingEngineFactory<CyNetwork> defaultFactory) {
-		
+
+		this.appManager = appManager;
 		this.networkViewManager = viewmgr;
 
 		this.bevPanel = new JPanel();
@@ -103,18 +103,9 @@ public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 		this.bevPanel.setBackground(DEF_BACKGROUND_COLOR);
 
 		this.bevFactory = defaultFactory;
-		
+
 		final JDesktopPane desktopPane = viewmgr.getDesktopPane();
 		desktopPane.addComponentListener(new DesktopListener());
-	}
-
-	
-	@Override public void handleEvent(NetworkViewDestroyedEvent e) {
-		// logger.debug("!!!!!!!!!! NetworkViewDestroyedEvent +++++++++++");
-		// // Cleanup the visualization container
-		// bevPanel.removeAll();
-		// RenderingEngine<CyNetwork> engine = bevFactory.render(bevPanel,
-		// appMgr.getCurrentNetworkView());
 	}
 
 	private void setFocus() {
@@ -175,5 +166,15 @@ public class BirdsEyeViewHandler implements SetCurrentRenderingEngineListener,
 		setFocus();
 		bevPanel.repaint();
 
+	}
+
+	@Override
+	public void handleEvent(NetworkViewDestroyedEvent e) {
+		logger.debug("!!!!!!!!!! NetworkViewDestroyedEvent +++++++++++");
+		// Cleanup the visualization container
+		if (appManager.getCurrentNetworkView() == null) {
+			bevPanel.removeAll();
+			bevPanel.repaint();
+		}
 	}
 }
