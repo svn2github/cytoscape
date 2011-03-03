@@ -42,7 +42,6 @@ public class TableBrowser
 {
 	private final CyTableManager tableManager;
 	private final CyServiceRegistrar serviceRegistrar;
-	private final CyEventHelper eventHelper;
 	private final EqnCompiler compiler;
 	private final BrowserTable browserTable;
 	private final CyTableRowUpdateService tableRowUpdateService;
@@ -54,8 +53,8 @@ public class TableBrowser
 	private final GUITaskManager guiTaskManagerServiceRef;
 	
 	TableBrowser(final CyTableManager tableManager, final CyServiceRegistrar serviceRegistrar,
-		     final CyEventHelper eventHelper, final EqnCompiler compiler,
-		     final OpenBrowser openBrowser, final CyNetworkManager networkManager,
+		     final EqnCompiler compiler, final OpenBrowser openBrowser,
+		     final CyNetworkManager networkManager,
 		     final CyTableRowUpdateService tableRowUpdateService, 
 		     final TableTaskFactory deleteTableTaskFactoryService,
 		     final GUITaskManager guiTaskManagerServiceRef,
@@ -63,7 +62,6 @@ public class TableBrowser
 	{
 		this.tableManager = tableManager;
 		this.serviceRegistrar = serviceRegistrar;
-		this.eventHelper = eventHelper;
 		this.compiler = compiler;
 
 		this.deleteTableTaskFactoryService = deleteTableTaskFactoryService;
@@ -130,8 +128,7 @@ public class TableBrowser
 			}
 
 			currentTable = table;
-			browserTableModel = new BrowserTableModel(browserTable, eventHelper, table,
-								  compiler, serviceRegistrar,
+			browserTableModel = new BrowserTableModel(browserTable, table, compiler,
 								  tableRowUpdateService);
 			serviceRegistrar.registerAllServices(browserTableModel, new Properties());
 			browserTable.setModel(browserTableModel);

@@ -18,7 +18,6 @@ import javax.swing.event.TableModelEvent.*;
 
 import org.cytoscape.equations.EqnCompiler;
 import org.cytoscape.equations.Equation;
-import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
@@ -31,7 +30,6 @@ import org.cytoscape.model.events.ColumnDeletedListener;
 import org.cytoscape.model.events.ColumnNameChangedEvent;
 import org.cytoscape.model.events.ColumnNameChangedListener;
 import org.cytoscape.model.events.CyTableRowUpdateMicroListener;
-import org.cytoscape.service.util.CyServiceRegistrar;
 
 
 public final class BrowserTableModel extends AbstractTableModel
@@ -46,9 +44,7 @@ public final class BrowserTableModel extends AbstractTableModel
 	private boolean tableHasBooleanSelected;
 	private List<AttrNameAndVisibility> attrNamesAndVisibilities;
 
-	public BrowserTableModel(final JTable table, final CyEventHelper eventHelper,
-				 final CyTable attrs, final EqnCompiler compiler,
-				 final CyServiceRegistrar serviceRegistrar,
+	public BrowserTableModel(final JTable table, final CyTable attrs, final EqnCompiler compiler,
 				 final CyTableRowUpdateService tableRowUpdateService)
 	{
 		this.table = table;

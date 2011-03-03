@@ -49,6 +49,22 @@
 					</instructions>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.cytoscape.mavenplugins</groupId>
+				<artifactId>cytoscape-profiler-maven-plugin</artifactId>
+				<version>1.0-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>profiler</goal>
+						</goals>
+						<configuration>
+							<baselineVersion>3.0.0-alpha1</baselineVersion>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -95,11 +111,6 @@
 			<groupId>org.cytoscape</groupId>
 			<artifactId>service-util</artifactId>
 			<version>3.0.0-alpha1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>event-api</artifactId>
-			<version>3.0.0-alpha3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>

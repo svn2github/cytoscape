@@ -8,7 +8,6 @@
 	<!-- imports -->
         <osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager" />
         <osgi:reference id="cyServiceRegistrarServiceRef" interface="org.cytoscape.service.util.CyServiceRegistrar" />
-        <osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper" />
 	<osgi:reference id="compilerServiceRef" interface="org.cytoscape.equations.EqnCompiler" />
 	<osgi:reference id="openBrowserServiceRef" interface="org.cytoscape.util.swing.OpenBrowser" />
 	<osgi:reference id="cyTableRowUpdateServiceRef" interface="org.cytoscape.model.CyTableRowUpdateService" />
@@ -20,7 +19,7 @@
 	<!-- listeners -->
 	<osgi:service id="tableBrowserCytoPanelComponentService" ref="tableBrowser">
                 <osgi:interfaces>
-						<value>org.cytoscape.application.swing.CytoPanelComponent</value>
+			<value>org.cytoscape.application.swing.CytoPanelComponent</value>
                         <value>org.cytoscape.view.model.events.NetworkViewAddedListener</value>
                         <value>org.cytoscape.model.events.TableAboutToBeDeletedListener</value>
                 </osgi:interfaces>
