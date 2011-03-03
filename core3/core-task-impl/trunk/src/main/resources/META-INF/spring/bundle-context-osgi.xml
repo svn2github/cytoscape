@@ -581,6 +581,12 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<osgi:service id="deleteColumnTaskFactoryService" ref="deleteColumnTaskFactory"
+		interface="org.cytoscape.task.TableColumnTaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="Delete column" />
+		</osgi:service-properties>
+	</osgi:service>
 	<osgi:service id="renameColumnTaskFactoryService" ref="renameColumnTaskFactory"
 		interface="org.cytoscape.task.TableColumnTaskFactory">
 		<osgi:service-properties>

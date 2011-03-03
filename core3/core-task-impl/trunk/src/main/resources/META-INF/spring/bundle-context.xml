@@ -296,6 +296,10 @@
 		<constructor-arg ref="cyPropertyServiceRef" />
 	</bean>
 
+	<bean id="deleteColumnTaskFactory"
+	      class="org.cytoscape.task.internal.table.DeleteColumnTaskFactory">
+	</bean>
+
 	<bean id="renameColumnTaskFactory"
 	      class="org.cytoscape.task.internal.table.RenameColumnTaskFactory">
 	</bean>
