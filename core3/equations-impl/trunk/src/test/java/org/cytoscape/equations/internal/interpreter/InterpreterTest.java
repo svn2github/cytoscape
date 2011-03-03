@@ -37,14 +37,14 @@ import java.util.Map;
 
 import junit.framework.*;
 
-import org.cytoscape.equations.EqnCompiler;
-import org.cytoscape.equations.EqnParser;
+import org.cytoscape.equations.EquationCompiler;
+import org.cytoscape.equations.EquationParser;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.IdentDescriptor;
 import org.cytoscape.equations.Interpreter;
 
-import org.cytoscape.equations.internal.EqnCompilerImpl;
-import org.cytoscape.equations.internal.EqnParserImpl;
+import org.cytoscape.equations.internal.EquationCompilerImpl;
+import org.cytoscape.equations.internal.EquationParserImpl;
 
 
 public class InterpreterTest extends TestCase {
@@ -58,7 +58,7 @@ public class InterpreterTest extends TestCase {
 		public List<Class<?>> getPossibleArgTypes(final Class<?>[] leadingArgs) { return null; }
 	}
 
-	private final EqnCompiler compiler = new EqnCompilerImpl(new EqnParserImpl());
+	private final EquationCompiler compiler = new EquationCompilerImpl(new EquationParserImpl());
 	private final Interpreter interpreter = new InterpreterImpl();
 
 	public void testSimpleStringConcatExpr() throws Exception {
@@ -184,7 +184,7 @@ public class InterpreterTest extends TestCase {
 	}
 
 	public void testFunctionWithBadRuntimeReturnType() throws Exception {
-		final EqnParser eqnParser = compiler.getParser();
+		final EquationParser eqnParser = compiler.getParser();
 		final Function badReturnFunction = new BadReturnFunction();
 		if (eqnParser.getFunction(badReturnFunction.getName()) == null) // Avoid duplicate registration!
 			eqnParser.registerFunction(badReturnFunction);

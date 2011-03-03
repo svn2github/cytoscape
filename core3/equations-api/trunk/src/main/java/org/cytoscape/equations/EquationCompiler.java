@@ -1,5 +1,5 @@
 /*
-  File: EqnCompiler.java
+  File: EquationCompiler.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,7 +34,7 @@ import java.util.Map;
 
 
 /** Compiler that compiles equations to byte (non-Java) code. */
-public interface EqnCompiler {
+public interface EquationCompiler {
 	/** Compiles a string to byte code plus some metadata as encapsulated by the <code>Equation</code> class
 	 *  @param equation               a textual representation of an equation
 	 *  @param variableNameToTypeMap  a mapping from variable names occuring in "equation" to their respective types
@@ -68,5 +68,5 @@ public interface EqnCompiler {
 	/** Returns the parser which can be used for checking the sytax of equations.
 	 *  @return the parser used by the compiler
 	 */
-	public EqnParser getParser();
+	public EquationParser getParser();
 }

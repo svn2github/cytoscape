@@ -1,5 +1,5 @@
 /*
-  File: EqnParserImpl.java
+  File: EquationParserImpl.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -37,14 +37,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.cytoscape.equations.EqnParser;
+import org.cytoscape.equations.EquationParser;
 import org.cytoscape.equations.Function;
 import org.cytoscape.equations.Node;
 import org.cytoscape.equations.internal.builtins.*;
 import org.cytoscape.equations.internal.parse_tree.*;
 
 
-public class EqnParserImpl implements EqnParser {
+public class EquationParserImpl implements EquationParser {
 	private String formula;
 	private Tokeniser tokeniser;
 	private Map<String, Function> nameToFunctionMap;
@@ -54,7 +54,7 @@ public class EqnParserImpl implements EqnParser {
 	private Set<String> variableReferences;
 	private Set<Function> registeredFunctions;
 
-	public EqnParserImpl() {
+	public EquationParserImpl() {
 		this.nameToFunctionMap = new HashMap<String, Function>();
 		this.registeredFunctions = new HashSet<Function>();
 		this.parseTree = null;

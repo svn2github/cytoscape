@@ -34,14 +34,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.equations.Function;
-import org.cytoscape.equations.EqnParser;
+import org.cytoscape.equations.EquationParser;
 import org.cytoscape.equations.IdentDescriptor;
 import org.cytoscape.equations.Interpreter;
 
-import org.cytoscape.equations.internal.EqnCompilerImpl;
-import org.cytoscape.equations.internal.EqnParserImpl;
+import org.cytoscape.equations.internal.EquationCompilerImpl;
+import org.cytoscape.equations.internal.EquationParserImpl;
 import org.cytoscape.equations.internal.interpreter.InterpreterImpl;
 
 
@@ -56,10 +56,10 @@ class Framework {
 		public List<Class> getPossibleArgTypes(final Class[] leadingArgs) { return null; }
 	}
 
-	private static final EqnCompiler compiler;
+	private static final EquationCompiler compiler;
 
 	static {
-		compiler = new EqnCompilerImpl(new EqnParserImpl());
+		compiler = new EquationCompilerImpl(new EquationParserImpl());
 		compiler.getParser().registerFunction(new BadReturnFunction());
 	}
 

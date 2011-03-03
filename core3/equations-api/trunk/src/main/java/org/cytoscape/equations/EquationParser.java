@@ -1,5 +1,5 @@
 /*
-  File: EqnParser.java
+  File: EquationParser.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public interface EqnParser {
+public interface EquationParser {
 	/**
 	 *  After registering an attribute function "func" it can be used in attribute equations.
 	 *  @param func  the function that will be registered

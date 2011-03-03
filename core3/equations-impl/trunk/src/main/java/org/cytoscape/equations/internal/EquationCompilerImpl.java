@@ -1,5 +1,5 @@
 /*
-  File: EqnCompilerImpl.java
+  File: EquationCompilerImpl.java
 
   Copyright (c) 2010, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -35,18 +35,18 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.cytoscape.equations.CodeAndSourceLocation;
-import org.cytoscape.equations.EqnCompiler;
-import org.cytoscape.equations.EqnParser;
+import org.cytoscape.equations.EquationCompiler;
+import org.cytoscape.equations.EquationParser;
 import org.cytoscape.equations.Equation;
 import org.cytoscape.equations.Node;
 
 
-public class EqnCompilerImpl implements EqnCompiler {
-	private final EqnParser parser;
+public class EquationCompilerImpl implements EquationCompiler {
+	private final EquationParser parser;
 	private Equation equation;
 	private String errorMsg;
 
-	public EqnCompilerImpl(final EqnParser parser) {
+	public EquationCompilerImpl(final EquationParser parser) {
 		this.parser = parser;
 	}
 
@@ -86,7 +86,7 @@ public class EqnCompilerImpl implements EqnCompiler {
 
 	public Equation getEquation() { return equation; }
 
-	public EqnParser getParser() { return parser; }
+	public EquationParser getParser() { return parser; }
 
 	/**
 	 *  A factory method that returns an Equation that always fails at runtime.

@@ -32,12 +32,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.cytoscape.equations.BooleanList;
-import org.cytoscape.equations.EqnCompiler;
+import org.cytoscape.equations.EquationCompiler;
 import org.cytoscape.equations.Equation;
 import org.cytoscape.equations.Interpreter;
 import org.cytoscape.equations.StringList;
-import org.cytoscape.equations.internal.EqnCompilerImpl;
-import org.cytoscape.equations.internal.EqnParserImpl;
+import org.cytoscape.equations.internal.EquationCompilerImpl;
+import org.cytoscape.equations.internal.EquationParserImpl;
 import org.cytoscape.equations.internal.interpreter.InterpreterImpl;
 import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.CyEventHelper;
@@ -52,7 +52,7 @@ import org.junit.Test;
 
 
 public class CyTableTest extends AbstractCyTableTest {
-	private final EqnCompiler compiler = new EqnCompilerImpl(new EqnParserImpl());
+	private final EquationCompiler compiler = new EquationCompilerImpl(new EquationParserImpl());
 
 	@Before
 	public void setUp() {

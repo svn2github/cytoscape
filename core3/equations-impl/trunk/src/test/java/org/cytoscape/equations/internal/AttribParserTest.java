@@ -34,11 +34,11 @@ import java.util.HashMap;
 import java.util.Map;
 import junit.framework.*;
 
-import org.cytoscape.equations.EqnParser;
+import org.cytoscape.equations.EquationParser;
 
 
 public class AttribParserTest extends TestCase {
-	private final EqnParser parser = new EqnParserImpl();
+	private final EquationParser parser = new EquationParserImpl();
 
 	public void testSimpleExpr() throws Exception {
 		final Map<String, Class<?>> attribNameToTypeMap = new HashMap<String, Class<?>>();
