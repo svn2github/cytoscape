@@ -603,4 +603,12 @@
 	<osgi:service id="deleteTableTaskFactoryService" ref="deleteTableTaskFactory"
 		interface="org.cytoscape.task.TableTaskFactory">
 	</osgi:service>
+
+	<osgi:service id="quickStartTaskFactoryService" ref="quickStartTaskFactory"
+		interface="org.cytoscape.work.TaskFactory">
+		<osgi:service-properties>
+			<entry key="title" value="QuickStart" />
+			<entry key="scope" value="startup" />
+		</osgi:service-properties>
+	</osgi:service>
 </beans>
