@@ -286,7 +286,11 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	}
 
 	private void extractVizmapProps(InputStream is) throws Exception {
+		
 		CyPropertyReader reader = propertyReaderMgr.getReader(is);
+		if(reader == null){
+			return;
+		}
 		reader.run(taskMonitor);
 		vizmapProps = (Properties) reader.getProperty(); 
 	}
@@ -310,6 +314,11 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 	}
 
 	private void processNetworks() throws Exception {
+		
+		if (cysession.getNetworkTree() == null){
+			return;
+		}
+		
 		for (Network curNet : cysession.getNetworkTree().getNetwork()) 
 			netMap.put(curNet.getId(), curNet);
 
