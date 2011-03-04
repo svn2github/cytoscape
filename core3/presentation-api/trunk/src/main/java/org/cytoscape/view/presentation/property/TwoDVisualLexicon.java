@@ -64,7 +64,7 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	
 	private static final Set<String> STRING_SET = new HashSet<String>();
 	// This will be used to for String VP which accepts any string values.
-	private static final Range<String> ARBITRARY_STRING_RANGE = new DiscreteRangeImpl<String>(String.class, STRING_SET);
+	protected static final Range<String> ARBITRARY_STRING_RANGE = new DiscreteRangeImpl<String>(String.class, STRING_SET);
 	
 	protected static final Range<Double> ARBITRARY_DOUBLE_RANGE = new ContinuousRangeImpl<Double>(Double.class, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 	protected static final Range<Double> NONE_ZERO_POSITIVE_DOUBLE_RANGE = new ContinuousRangeImpl<Double>(Double.class, 0d, Double.POSITIVE_INFINITY, false, true);
