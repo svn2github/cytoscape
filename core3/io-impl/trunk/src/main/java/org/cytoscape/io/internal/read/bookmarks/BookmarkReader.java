@@ -21,7 +21,7 @@ public class BookmarkReader extends AbstractPropertyReader {
 
 	public void run(TaskMonitor tm) throws Exception {
 
-		final JAXBContext jaxbContext = JAXBContext.newInstance(BOOKMARK_PACKAGE);
+		final JAXBContext jaxbContext = JAXBContext.newInstance(BOOKMARK_PACKAGE, getClass().getClassLoader());
 
 		final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
