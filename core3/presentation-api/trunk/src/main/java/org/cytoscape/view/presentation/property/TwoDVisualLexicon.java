@@ -60,14 +60,14 @@ public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	
 	private static final Color MIN_COLOR = new Color(0, 0, 0);
 	private static final Color MAX_COLOR = new Color(0xFF, 0xFF, 0xFF);
-	public static final Range<Paint> PAINT_RANGE = new ContinuousRangeImpl<Paint>(Paint.class, MIN_COLOR, MAX_COLOR);
+	private static final Range<Paint> PAINT_RANGE = new ContinuousRangeImpl<Paint>(Paint.class, MIN_COLOR, MAX_COLOR);
 	
-	public static final Set<String> STRING_SET = new HashSet<String>();
+	private static final Set<String> STRING_SET = new HashSet<String>();
 	// This will be used to for String VP which accepts any string values.
-	public static final Range<String> ARBITRARY_STRING_RANGE = new DiscreteRangeImpl<String>(String.class, STRING_SET);
+	private static final Range<String> ARBITRARY_STRING_RANGE = new DiscreteRangeImpl<String>(String.class, STRING_SET);
 	
-	public static final Range<Double> ARBITRARY_DOUBLE_RANGE = new ContinuousRangeImpl<Double>(Double.class, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-	public static final Range<Double> NONE_ZERO_POSITIVE_DOUBLE_RANGE = new ContinuousRangeImpl<Double>(Double.class, 0d, Double.POSITIVE_INFINITY, false, true);
+	protected static final Range<Double> ARBITRARY_DOUBLE_RANGE = new ContinuousRangeImpl<Double>(Double.class, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+	protected static final Range<Double> NONE_ZERO_POSITIVE_DOUBLE_RANGE = new ContinuousRangeImpl<Double>(Double.class, 0d, Double.POSITIVE_INFINITY, false, true);
 
 	// Top level nodes has null as parent, and will be pointed by parent node.
 	// This is because all VPs are static objects.
