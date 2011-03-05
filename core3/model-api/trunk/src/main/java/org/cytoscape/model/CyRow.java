@@ -54,7 +54,7 @@ public interface CyRow {
 	 * @return the value found for this row in the specified column
 	 * Please not that this method can only be used to retrieve values that are Lists!
 	 */
-	<T> List<?extends T> getList(String columnName, Class<T> listElementType);
+	<T> List<T> getList(String columnName, Class<T> listElementType);
 
 	/**
 	 * Set the specified column for this row to the specified value.

@@ -768,4 +768,59 @@ public abstract class AbstractCyTableTest {
     public void testCreateInvalidListColumn4() {
         table.createListColumn("homer", null, true);
     }
+
+    @Test
+    public void testReturnTypesCompileString() {
+        List<String> ls = new ArrayList<String>();
+        ls.add("homer");
+        ls.add("marge");
+        table.createListColumn("simpson", String.class, false);
+        attrs.set("simpson",ls);
+        List<String> res = attrs.getList("simpson",String.class);
+        assertEquals(ls,res);
+    }
+
+    @Test
+    public void testReturnTypesCompileInteger() {
+        List<Integer> ls = new ArrayList<Integer>();
+        ls.add(1);
+        ls.add(2);
+        table.createListColumn("simpson", Integer.class, false);
+        attrs.set("simpson",ls);
+        List<Integer> res = attrs.getList("simpson",Integer.class);
+        assertEquals(ls,res);
+    }
+
+    @Test
+    public void testReturnTypesCompileLong() {
+        List<Long> ls = new ArrayList<Long>();
+        ls.add(1L);
+        ls.add(2L);
+        table.createListColumn("simpson", Long.class, false);
+        attrs.set("simpson",ls);
+        List<Long> res = attrs.getList("simpson",Long.class);
+        assertEquals(ls,res);
+    }
+
+    @Test
+    public void testReturnTypesCompileDouble() {
+        List<Double> ls = new ArrayList<Double>();
+        ls.add(1.0);
+        ls.add(2.0);
+        table.createListColumn("simpson", Double.class, false);
+        attrs.set("simpson",ls);
+        List<Double> res = attrs.getList("simpson",Double.class);
+        assertEquals(ls,res);
+    }
+
+    @Test
+    public void testReturnTypesCompileBoolean() {
+        List<Boolean> ls = new ArrayList<Boolean>();
+        ls.add(true);
+        ls.add(false);
+        table.createListColumn("simpson", Boolean.class, false);
+        attrs.set("simpson",ls);
+        List<Boolean> res = attrs.getList("simpson",Boolean.class);
+        assertEquals(ls,res);
+    }
 }
