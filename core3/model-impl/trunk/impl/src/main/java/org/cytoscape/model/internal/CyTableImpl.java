@@ -675,7 +675,7 @@ public final class CyTableImpl implements CyTable {
 			return vl;
 	}
 
-	synchronized private <T> List<?extends T> getListX(final Object key, final String columnName,
+	synchronized private <T> List<T> getListX(final Object key, final String columnName,
 							   final Class<? extends T> listElementType)
 	{
 		if (!types.containsKey(columnName))
@@ -693,7 +693,7 @@ public final class CyTableImpl implements CyTable {
 
 		final VirtualColumn virtColumn = virtualColumnMap.get(columnName);
 		if (virtColumn != null)
-			return (List<?extends T>)virtColumn.getListValue(key);
+			return (List<T>)virtColumn.getListValue(key);
 
 		final Object vl = getValueOrEquation(key, columnName);
 		if (vl == null)
@@ -892,7 +892,7 @@ public final class CyTableImpl implements CyTable {
 		}
 
 		@Override
-		public <T> List<?extends T> getList(String attributeName, Class<T> c) {
+		public <T> List<T> getList(String attributeName, Class<T> c) {
 			return getListX(key, attributeName, c);
 		}
 
