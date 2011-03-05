@@ -58,11 +58,11 @@ import org.cytoscape.view.presentation.RenderingEngine;
  */
 public class TwoDVisualLexicon extends AbstractVisualLexicon {
 	
-	private static final Color MIN_COLOR = new Color(0, 0, 0);
-	private static final Color MAX_COLOR = new Color(0xFF, 0xFF, 0xFF);
-	private static final Range<Paint> PAINT_RANGE = new ContinuousRangeImpl<Paint>(Paint.class, MIN_COLOR, MAX_COLOR);
+	protected static final Color MIN_COLOR = new Color(0, 0, 0);
+	protected static final Color MAX_COLOR = new Color(0xFF, 0xFF, 0xFF);
+	protected static final Range<Paint> PAINT_RANGE = new ContinuousRangeImpl<Paint>(Paint.class, MIN_COLOR, MAX_COLOR);
 	
-	private static final Set<String> STRING_SET = new HashSet<String>();
+	protected static final Set<String> STRING_SET = new HashSet<String>();
 	// This will be used to for String VP which accepts any string values.
 	protected static final Range<String> ARBITRARY_STRING_RANGE = new DiscreteRangeImpl<String>(String.class, STRING_SET);
 	
