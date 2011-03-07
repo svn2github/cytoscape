@@ -250,8 +250,10 @@ public class SessionReaderImpl extends AbstractTask implements CySessionReader {
 		}
 
 		String pluginName = items[2];
-
-		File theFile = new File(entryName);
+		String fileName = items[items.length-1];
+		
+		String tmpDir = System.getProperty("java.io.tmpdir");
+		File theFile = new File(tmpDir, fileName);
 
 		try {
 			// Write input stream into tmp file
