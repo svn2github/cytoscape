@@ -30,20 +30,12 @@
 package org.cytoscape.internal.view.help;
 
 
-import org.cytoscape.splash.CreditScreen;
-
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
-
 public class HelpAboutTask extends AbstractTask {
-	private CreditScreen credits;
-
-	public HelpAboutTask(CreditScreen credits) {
-		this.credits = credits;
-	}
 
 	public void run(TaskMonitor tm) {
-		credits.showCredits();
+		new CreditScreen().showCredits();
 	}
 }

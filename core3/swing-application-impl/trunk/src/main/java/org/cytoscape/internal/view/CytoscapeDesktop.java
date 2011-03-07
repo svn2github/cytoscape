@@ -150,12 +150,17 @@ public class CytoscapeDesktop extends JFrame implements CySwingApplication {
 				}
 			});
 
-		// show the Desktop
+		// Prepare to show the desktop...
 		setContentPane(main_panel);
 		pack();
 		setSize(DEF_DESKTOP_SIZE);
-		setVisible(true);
-		toFront();
+	
+		// ...but don't actually show it!!!!
+		// Once the system has fully started the JFrame will be set to 
+		// visible by the StartupMostlyFinished class, found elsewhere.
+
+		//setVisible(true);
+		//toFront();
 	}
 
 	/**

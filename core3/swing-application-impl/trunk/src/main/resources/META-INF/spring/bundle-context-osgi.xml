@@ -61,9 +61,6 @@
 	<osgi:reference id="cyEventHelperServiceRef" interface="org.cytoscape.event.CyEventHelper">
 	</osgi:reference>
 
-	<osgi:reference id="creditScreenServiceRef" interface="org.cytoscape.splash.CreditScreen">
-	</osgi:reference>
-
 	<osgi:reference id="cyTableManagerServiceRef" interface="org.cytoscape.model.CyTableManager">
 	</osgi:reference>
 

@@ -188,10 +188,9 @@
 	<bean id="helpContactHelpDeskTaskFactory" class="org.cytoscape.internal.view.help.HelpContactHelpDeskTaskFactory">
 		<constructor-arg ref="openBrowserServiceRef" />
 	</bean>
-	<bean id="helpAboutTaskFactory" class="org.cytoscape.internal.view.help.HelpAboutTaskFactory">
-		<constructor-arg ref="creditScreenServiceRef" />
-	</bean>
 
+	<bean id="helpAboutTaskFactory" class="org.cytoscape.internal.view.help.HelpAboutTaskFactory">
+	</bean>
 
 	<bean id="arrangeGridTaskFactory" class="org.cytoscape.internal.view.help.ArrangeTaskFactory">
 		<constructor-arg ref="cytoscapeDesktop" />

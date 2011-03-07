@@ -30,20 +30,13 @@
 package org.cytoscape.internal.view.help;
 
 
-import org.cytoscape.splash.CreditScreen;
 import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 
 
 public class HelpAboutTaskFactory implements TaskFactory {
 
-	private CreditScreen credits;
-
-	public HelpAboutTaskFactory(CreditScreen credits) {
-		this.credits = credits;
-	}
-
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new HelpAboutTask(credits));
-	} 
+		return new TaskIterator(new HelpAboutTask());
+	}
 }
