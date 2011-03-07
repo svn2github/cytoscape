@@ -67,5 +67,8 @@
 		<constructor-arg ref="cyPropertyRef" />
 		<constructor-arg ref="cyPluginAdapter" />
 	</bean>
-	
+
+	<bean id="startupMostlyFinished" class="org.cytoscape.plugin.internal.StartupMostlyFinished">	
+		<constructor-arg ref="cySwingApplicationRef" />
+	</bean>
 </beans>
