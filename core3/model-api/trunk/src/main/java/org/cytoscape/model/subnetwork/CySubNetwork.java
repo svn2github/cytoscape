@@ -54,7 +54,7 @@ public interface CySubNetwork extends CyNetwork {
 
 	/**
 	 * Adds a node to this {@link CySubNetwork}.  Note that the added node
-	 * is not a new node, and must already exist in the {@link CyRootNetwork}.
+	 * is not a new node and must already exist in the {@link CyRootNetwork}.
 	 * @param node  CyNode to add to this subnetwork
 	 * @return true if the node was successfully added to the subnetwork, 
 	 * false otherwise.
@@ -63,7 +63,10 @@ public interface CySubNetwork extends CyNetwork {
 
 	/**
 	 * Adds an edge to this {@link CySubNetwork}.  Note that the added edge
-	 * is not a new edge, and must already exist in the {@link CyRootNetwork}.
+	 * is not a new edge and must already exist in the {@link CyRootNetwork}.
+	 * If the nodes that define the source and target of the edge are not yet
+	 * contained in the subnetwork, they will be added. The nodes must also
+	 * already exist in the {@link CyRootNetwork}.
 	 * @param edge  CyEdge to add to this subnetwork
 	 * @return true if the edge was successfully added to the subnetwork, 
 	 * false otherwise.

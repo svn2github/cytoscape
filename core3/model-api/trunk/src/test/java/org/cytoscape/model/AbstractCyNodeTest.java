@@ -71,23 +71,23 @@ public abstract class AbstractCyNodeTest extends TestCase {
 	// by default a node should have a null nested network
 	public void testInitGetNestedNetwork() {
 		CyNode n1 = net.addNode();
-		assertNull(n1.getNestedNetwork());
+		assertNull(n1.getNetwork());
 	}
 
 	public void testSetNestedNetwork() {
 		CyNode n1 = net.addNode();
 		CyNetwork net2 = mock(CyNetwork.class);
-		n1.setNestedNetwork( net2 );
-		assertNotNull(n1.getNestedNetwork());
-		assertEquals(net2, n1.getNestedNetwork());
+		n1.setNetwork( net2 );
+		assertNotNull(n1.getNetwork());
+		assertEquals(net2, n1.getNetwork());
 	}
 
 	// self nested networks are allowed
 	public void testSetSelfNestedNetwork() {
 		CyNode n1 = net.addNode();
-		n1.setNestedNetwork( net );
-		assertNotNull(n1.getNestedNetwork());
-		assertEquals(net, n1.getNestedNetwork());
+		n1.setNetwork( net );
+		assertNotNull(n1.getNetwork());
+		assertEquals(net, n1.getNetwork());
 	}
 
 	// null nested networks are allowed
@@ -96,13 +96,13 @@ public abstract class AbstractCyNodeTest extends TestCase {
 
 		// put a real network here first 
 		CyNetwork net2 = mock(CyNetwork.class);
-		n1.setNestedNetwork( net2 );
-		assertNotNull(n1.getNestedNetwork());
-		assertEquals(net2, n1.getNestedNetwork());
+		n1.setNetwork( net2 );
+		assertNotNull(n1.getNetwork());
+		assertEquals(net2, n1.getNetwork());
 	
 		// now put a null network to verify that we've "unset" things
-		n1.setNestedNetwork( null );
-		assertNull(n1.getNestedNetwork());
+		n1.setNetwork( null );
+		assertNull(n1.getNetwork());
 	}
 
 	public void testRemoveNodeIndexStaysConstant() {
@@ -130,21 +130,5 @@ public abstract class AbstractCyNodeTest extends TestCase {
 		assertTrue( net.removeNode(n0) );
 		assertNull(net.getNode(0));
 		assertEquals(n1,net.getNode(1));
-	}
-
-	public void testNestedNetworkUserTableUpdates() {
-		CyNode n1 = net.addNode();
-		CyNetwork net2 = mock(CyNetwork.class);
-		when(net2.getSUID()).thenReturn(223L);
-		final CyRow row = n1.getCyRow();
-		assertFalse(row.isSet(CyNode.NESTED_NETWORK_ATTR));
-		assertFalse(row.get(CyNode.HAS_NESTED_NETWORK_ATTR, Boolean.class));
-		n1.setNestedNetwork(net2);
-		assertTrue(row.isSet(CyNode.NESTED_NETWORK_ATTR));
-		assertTrue(row.get(CyNode.HAS_NESTED_NETWORK_ATTR, Boolean.class));
-		assertEquals("223", row.get(CyNode.NESTED_NETWORK_ATTR, String.class));
-		n1.setNestedNetwork(null);
-		assertFalse(row.isSet(CyNode.NESTED_NETWORK_ATTR));
-		assertFalse(row.get(CyNode.HAS_NESTED_NETWORK_ATTR, Boolean.class));
 	}
 }

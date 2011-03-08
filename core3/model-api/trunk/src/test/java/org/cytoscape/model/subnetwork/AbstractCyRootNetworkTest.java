@@ -48,6 +48,8 @@ import org.cytoscape.event.CyListener;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.DummyCyNode;
+import org.cytoscape.model.DummyCyEdge;
 
 import java.lang.RuntimeException;
 
@@ -55,6 +57,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Arrays;
 
 
 /**
@@ -529,5 +532,131 @@ public abstract class AbstractCyRootNetworkTest extends TestCase {
 		} catch (IllegalArgumentException e) {
 			fail("shouldn't throw exception for trying to remove null network");
 		}
+	}
+
+	public void testContainsNetwork() {
+		CySubNetwork s1 = root.addSubNetwork();
+		assertTrue(root.containsNetwork(s1));
+	}
+
+	public void testNotContainsNetwork() {
+		CySubNetwork s2 = root2.addSubNetwork();
+		assertFalse(root.containsNetwork(s2));
+	}
+
+	public void testNullContainsNetwork() {
+		assertFalse(root.containsNetwork(null));
+	}
+
+	public void testAddSubNetworkWithGoodNodesAndGoodEdges() {
+		CyNode n1 = root.addNode();
+		CyNode n2 = root.addNode();
+		CyNode n3 = root.addNode();
+		CyEdge e1 = root.addEdge(n1,n2,false);
+
+		List<CyNode> nodes = Arrays.asList(n1, n2, n3 );
+		List<CyEdge> edges = Arrays.asList( e1 );
+
+		CySubNetwork n = root.addSubNetwork(nodes, edges);
+
+		assertTrue( n.containsNode(n1) );
+		assertTrue( n.containsNode(n2) );
+		assertTrue( n.containsNode(n3) );
+		assertTrue( n.containsEdge(e1) );
+	}
+
+	public void testAddSubNetworkWithNullNodesAndGoodEdges() {
+		CyNode n1 = root.addNode();
+		CyNode n2 = root.addNode();
+		CyEdge e1 = root.addEdge(n1,n2,false);
+
+		List<CyEdge> edges = Arrays.asList( e1 );
+
+		CySubNetwork n = root.addSubNetwork(null, edges);
+
+		assertTrue(n.containsNode(n1) );
+		assertTrue(n.containsNode(n2) );
+		assertTrue(n.containsEdge(e1) );
+	}
+
+	public void testAddSubNetworkWithGoodNodesAndNullEdges() {
+		CyNode n1 = root.addNode();
+		CyNode n2 = root.addNode();
+		CyNode n3 = root.addNode();
+
+		List<CyNode> nodes = Arrays.asList( n1, n2, n3 );
+
+		CySubNetwork n = root.addSubNetwork(nodes, null);
+
+		assertTrue( n.containsNode(n1) );
+		assertTrue( n.containsNode(n2) );
+		assertTrue( n.containsNode(n3) );
+	}
+
+	public void testAddSubNetworkWithEmptyNodesAndGoodEdges() {
+		CyNode n1 = root.addNode();
+		CyNode n2 = root.addNode();
+		CyEdge e1 = root.addEdge(n1,n2,false);
+
+		List<CyNode> nodes = new ArrayList<CyNode>(); 
+		List<CyEdge> edges = Arrays.asList( e1 );
+
+		CySubNetwork n = root.addSubNetwork(nodes, edges);
+
+		assertTrue( n.containsNode(n1) );
+		assertTrue( n.containsNode(n2) );
+		assertTrue( n.containsEdge(e1) );
+	}
+
+	public void testAddSubNetworkWithGoodNodesAndEmptyEdges() {
+		CyNode n1 = root.addNode();
+		CyNode n2 = root.addNode();
+		CyNode n3 = root.addNode();
+
+		List<CyNode> nodes = Arrays.asList( n1, n2, n3 );
+		List<CyEdge> edges = new ArrayList<CyEdge>(); 
+
+		CySubNetwork n = root.addSubNetwork(nodes, edges);
+
+		assertTrue( n.containsNode(n1) );
+		assertTrue( n.containsNode(n2) );
+		assertTrue( n.containsNode(n3) );
+	}
+
+	public void testAddSubNetworkWithInvalidNodesAndGoodEdges() {
+		CyNode n1 = root.addNode();
+		CyNode n2 = root.addNode();
+		CyEdge e1 = root.addEdge(n1,n2,false);
+
+		CyNode b1 = new DummyCyNode(74);
+		CyNode b2 = new DummyCyNode(75);
+		List<CyNode> nodes = Arrays.asList( b1, b2 );
+		List<CyEdge> edges = Arrays.asList( e1 );
+
+		try {
+			CySubNetwork n = root.addSubNetwork(nodes, edges);
+		} catch (IllegalArgumentException iae) {
+			return;
+		}
+
+		fail("shouldn't allow nodes not in root network to be used");
+	}
+
+	public void testAddSubNetworkWithGoodNodesAndInvalidEdges() {
+		CyNode n1 = root.addNode();
+		CyNode n2 = root.addNode();
+		CyNode n3 = root.addNode();
+		
+		CyEdge ex = new DummyCyEdge(null,null,false,50);
+		List<CyNode> nodes = Arrays.asList( n1, n2, n3 );
+		List<CyEdge> edges = Arrays.asList( ex );
+
+		try {
+			CySubNetwork n = root.addSubNetwork(nodes, edges);
+		} catch (IllegalArgumentException iae) {
+			return;
+		}
+
+		fail("shouldn't allow edges not in root network to be used");
 	}
 }

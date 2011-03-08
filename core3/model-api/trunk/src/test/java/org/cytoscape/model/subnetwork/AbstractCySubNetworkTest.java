@@ -50,6 +50,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.DummyCyEdge;
 
 import java.lang.RuntimeException;
 
@@ -301,32 +302,26 @@ public abstract class AbstractCySubNetworkTest extends TestCase {
 		assertEquals("edge list size",r2.getEdgeList().size(),root.getEdgeList().size());
 	}
 
-	public void testAddEdgeBadSource() {
+	public void testAddEdgeNotYetAddedSource() {
 		defaultSetup();
+		assertTrue(sub.addEdge(e3));
+	}
 
+	public void testAddEdgeNotYetAddedTarget() {
+		defaultSetup();
+		CyEdge e4 = root.addEdge(n4,n1,true);
+		assertTrue(sub.addEdge(e4));
+	}
+
+	public void testAddEdgeBadEdge() {
+		defaultSetup();
+		CyEdge ex = new DummyCyEdge(null,null,true,100);
 		try {
-			sub.addEdge(e3);
-		} catch (Exception e) {
+			sub.addEdge(ex);
+		} catch (IllegalArgumentException e) {
 			noChangeChecks();
 			return;
 		}
-
-		// if we don't get an exception
-		fail();
-	}
-
-	public void testAddEdgeBadTarget() {
-		defaultSetup();
-
-		try {
-			CyEdge e4 = root.addEdge(n4,n1,true);
-			sub.addEdge(e4);
-		} catch (Exception e) {
-			return;
-		}
-
-		// if we don't get an exception
-		fail();
 	}
 
 	public void testAddNodeInSubNetwork() {

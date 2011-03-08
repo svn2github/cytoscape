@@ -72,6 +72,17 @@ public interface CyRootNetwork extends CyNetwork {
 	CySubNetwork addSubNetwork();
 
 	/**
+	 * Create a {@link CySubNetwork} containing the specified {@link CyNode}s and
+	 * {@link CyEdge}s. The nodes and edges must already exist in this root network.
+	 * Nodes defining the source and target of edges that have not yet been added
+	 * to the subnetwork will be added.
+	 * @param nodes The nodes to be added to the network. May be null or empty.
+	 * @param edges The edges to be added to the network. May be null or empty.
+	 * @return  The created {@link CySubNetwork}.
+	 */
+	CySubNetwork addSubNetwork(Iterable<CyNode> nodes, Iterable<CyEdge> edges);
+
+	/**
 	 * Removes the subnetwork from the root network, but not the nodes and edges contained 
 	 * in the subnetwork.
 	 * @param sub  the {@link CySubNetwork} to remove.
@@ -89,4 +100,11 @@ public interface CyRootNetwork extends CyNetwork {
 	 * began with something, and this network is that something.
 	 */
 	CySubNetwork getBaseNetwork();
+
+	/**
+	 * Returns true if the network to be checked is a subnetwork of this root network and
+	 * returns false otherwise. Will return false if the network is null.
+	 * @param n The network to be checked.
+	 */
+	boolean containsNetwork(CyNetwork n);
 }

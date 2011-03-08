@@ -38,13 +38,6 @@ import org.cytoscape.model.events.UnsetNestedNetworkEvent;
  */
 public interface CyNode extends CyTableEntry {
 	
-	/** The column name for the nested network associated with a <code>CyNode</code> in the user table. */
-	final static String NESTED_NETWORK_ATTR = "NestedNetwork";
-
-	/** The column name for the attribute that allows testing of whether a <code>CyNode</code>
-	    has an associated nested network or not.  (Found in the user table.) */
-	final static String HAS_NESTED_NETWORK_ATTR = "hasNestedNetwork";
-
 	/**
 	 * An index of this node within this network.  The index is guaranteed to
 	 * be between 0 and (the number of nodes in the network) - 1. This index
@@ -55,28 +48,27 @@ public interface CyNode extends CyTableEntry {
 	int getIndex();
 
 	/**
-	 * Returns the nested network associated with this node.  If no nested
+	 * Returns the network referenced by this node.  If no 
 	 * network has been specified this method will return null.
 	 * 
-	 * @return A reference to the nested CyNetwork if one exists, 
+	 * @return A reference to a CyNetwork if one exists, 
 	 * returns null otherwise.
 	 */
-	CyNetwork getNestedNetwork();
+	CyNetwork getNetwork();
 
 	/**
-	 * Allows the nested network for this network to be set. Only one
-	 * nested network may be set for a given node. Any CyNetwork may
-	 * be used (the network does not need to be a subnetwork of the 
-	 * network that contains this node). To unset a nested network, use
+	 * Allows a network reference for this node to be set. Only one
+	 * network may be set for a given node. Any CyNetwork may
+	 * be used (the network may be a subnetwork of the network that
+	 * contains this node, but it is not mandatory). To unset a network, use
 	 * null as an argument. 
 	 *
-	 * @param nestedNetwork The network that is to be referenced by this node. If
+	 * @param network The network that is to be referenced by this node. If
 	 * this value is null, any existing reference will be removed.
 	 *
-	 * Note that this if a previous nested network is being replaced or nulled out, an
-	 * {@link UnsetNestedNetworkEvent} will be fired and if a new nested network will be set a
-	 * {@link SetNestedNetworkEvent} will be fired.  Furthermore the (@link NESTED_NETWORK_ATTR}
-	 * and {@link HAS_NESTED_NETWORK_ATTR} columns in the user table will be updated.
+	 * Note that this if a previous referenced network is being replaced or nulled out, an
+	 * {@link UnsetNestedNetworkEvent} will be fired and if a new network will be set a
+	 * {@link SetNestedNetworkEvent} will be fired.  
 	 */
-	void setNestedNetwork(CyNetwork nestedNetwork);
+	void setNetwork(CyNetwork network);
 }
