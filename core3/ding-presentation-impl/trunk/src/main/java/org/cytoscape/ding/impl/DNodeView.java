@@ -1361,7 +1361,7 @@ public class DNodeView implements NodeView, Label {
 			++nestedNetworkPaintingDepth;
 			try {
 				if (nestedNetworkPaintingDepth > 1
-						|| this.getNodeViewModel().getModel().getNestedNetwork() == null
+						|| this.getNodeViewModel().getModel().getNetwork() == null
 						|| !nestedNetworkVisible)
 					return null;
 
