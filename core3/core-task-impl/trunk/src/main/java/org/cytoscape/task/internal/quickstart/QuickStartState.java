@@ -35,19 +35,37 @@
 
 package org.cytoscape.task.internal.quickstart;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.EnumSet;
 import java.util.Collections;
+
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyTable;
 
 class QuickStartState {
 
 	enum Job { 
 		LOAD_NETWORK,
 		LOAD_TABLE,
+		SELECT_NETWORK_ID_TYPE,
+		SELECT_TABLE_ID_TYPE;
 	}
 
-	private Set<Job> completedSoFar = Collections.synchronizedSet(EnumSet.noneOf(Job.class));
+	private final Set<Job> completedSoFar = Collections.synchronizedSet(EnumSet.noneOf(Job.class));
+	
+	private final List<CyNetwork> networks = new ArrayList<CyNetwork>();
+	private final List<CyTable> tables = new ArrayList<CyTable>();
 
+	List<CyNetwork> getNetworks() {
+		return networks;
+	}
+	
+	List<CyTable> getTables() {
+		return tables;
+	}
+	
 	synchronized void finished(Job j) {
 		completedSoFar.add(j);	
 	}

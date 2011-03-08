@@ -39,11 +39,17 @@ import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
 public class LoadNetworkTask extends AbstractTask {
-
+	
+	private QuickStartState state;
+	
 	public LoadNetworkTask(QuickStartState state) {
+		this.state = state;
 	}
 
 	public void run(TaskMonitor e) {
 		System.out.println("loading network");
+		// TODO: load actual network here
+		
+		insertTasksAfterCurrentTask(new SelectNetworkIdTypeTask(state));
 	}
 }

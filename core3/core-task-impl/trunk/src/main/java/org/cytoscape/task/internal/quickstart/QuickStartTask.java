@@ -31,36 +31,37 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package org.cytoscape.task.internal.quickstart;
 
-import org.cytoscape.work.Task;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
 
 public class QuickStartTask extends AbstractTask {
-	private static String optionA = "Load a Network";
-	private static String optionB = "Load an Attribute Table";
-	
-//	@Tunable(description="What would you like to do today?\nCytoscape requires at the minimum a network to do anything.  A network and attributes makes life much better.  If you don't have a network, that's OK, we'll help you find one.")
-	@Tunable(description="What would you like to do today?")
-	public ListSingleSelection<String> selection = new ListSingleSelection<String>(optionA,optionB);
+
+	private static final String LOAD_NETWORK = "Load a Network";
+	private static final String LOAD_TABLE = "Load an Attribute Table";
+
+	// @Tunable(description="What would you like to do today?\nCytoscape requires at the minimum a network to do anything.  A network and attributes makes life much better.  If you don't have a network, that's OK, we'll help you find one.")
+	@Tunable(description = "What would you like to do today?")
+	public ListSingleSelection<String> selection = new ListSingleSelection<String>(
+			LOAD_NETWORK, LOAD_TABLE);
 
 	private final QuickStartState state;
 
-	public QuickStartTask(QuickStartState state) {
+	public QuickStartTask(final QuickStartState state) {
 		super();
 		this.state = state;
 	}
 
 	public void run(TaskMonitor e) {
 		String selected = selection.getSelectedValue();
-		if ( selected == optionA )
-			insertTasksAfterCurrentTask( new LoadNetworkTask(state) );
-		else if ( selected == optionB )
-			insertTasksAfterCurrentTask( new LoadTableTask(state) );
+		if (selected == LOAD_NETWORK) {
+			insertTasksAfterCurrentTask(new LoadNetworkTask(state));
+		} else if (selected == LOAD_TABLE)
+			insertTasksAfterCurrentTask(new LoadTableTask(state));
 	}
 }
