@@ -51,8 +51,6 @@ class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 		index = ind;
 		nestedNet = null;
 		this.eventHelper = eventHelper;
-
-		getCyRow().set(HAS_NESTED_NETWORK_ATTR, Boolean.valueOf(false));
 	}
 
 	/**
@@ -74,27 +72,24 @@ class CyNodeImpl extends CyTableEntryImpl implements CyNode {
 		return "Node suid: " + getSUID() + " index: " + index;
 	}
 
-	public synchronized CyNetwork getNestedNetwork() {
+	public synchronized CyNetwork getNetwork() {
 		return nestedNet;
 	}
 
-	public synchronized void setNestedNetwork(final CyNetwork n) {
-		if (n == nestedNet)
-			return;
-
-		if (nestedNet != null)
-			eventHelper.fireSynchronousEvent(new UnsetNestedNetworkEvent(this, nestedNet));
-		if (n != null)
-			eventHelper.fireSynchronousEvent(new SetNestedNetworkEvent(this, n));
-		nestedNet = n;
-
-		final CyRow row = getCyRow();
-		if (n == null) {
-			row.set(NESTED_NETWORK_ATTR, null);
-			row.set(HAS_NESTED_NETWORK_ATTR, Boolean.valueOf(false));
-		} else {
-			row.set(NESTED_NETWORK_ATTR, Long.valueOf(n.getSUID()).toString());
-			row.set(HAS_NESTED_NETWORK_ATTR, Boolean.valueOf(true));
+	public void setNetwork(final CyNetwork n) {
+		final CyNetwork orig; 
+	
+		synchronized (this) {
+			orig = nestedNet;
+			if (n == nestedNet)
+				return;
+			else
+				nestedNet = n;
 		}
+
+		if (orig != null)
+			eventHelper.fireSynchronousEvent(new UnsetNestedNetworkEvent(this, orig));
+		if (nestedNet != null)
+			eventHelper.fireSynchronousEvent(new SetNestedNetworkEvent(this, nestedNet));
 	}
 }

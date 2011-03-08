@@ -307,11 +307,12 @@ class ArraySubGraph implements CySubNetwork {
 			if (!parent.containsEdge(edge))
 				throw new IllegalArgumentException("edge is not contained in parent network!");
 
-			if (!containsNode(edge.getSource()))
-				throw new IllegalArgumentException("source node of edge is not contained in network!");
-
-			if (!containsNode(edge.getTarget()))
-				throw new IllegalArgumentException("target node of edge is not contained in network!");
+			// This will: 
+			// -- add the node if it doesn't already exist
+			// -- do nothing if the node does exist 
+			// -- throw an exception if the node isn't part of the root network
+			addNode(edge.getSource());
+			addNode(edge.getTarget());
 
 			// add edge 
 			internalEdgeCount++;

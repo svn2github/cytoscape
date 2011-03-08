@@ -128,10 +128,6 @@ public class ArrayGraph implements CyRootNetwork {
 								      String.class, true);
 		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyNetwork.SELECTED,
 								      Boolean.class, true);
-		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyNode.NESTED_NETWORK_ATTR,
-								      String.class, true);
-		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn(CyNode.HAS_NESTED_NETWORK_ATTR,
-								      Boolean.class, true);
 
 		edgeAttrMgr = new HashMap<String, CyTable>();
 		edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS,
@@ -835,6 +831,22 @@ public class ArrayGraph implements CyRootNetwork {
  	/**
  	 * {@inheritDoc}
  	 */
+	public CySubNetwork addSubNetwork(final Iterable<CyNode> nodes, final Iterable<CyEdge> edges) {
+		// Only addSubNetwork() modifies the internal state of ArrayGraph (this object), 
+		// so because it's synchronized, we don't need to synchronize this method.
+		final CySubNetwork sub = addSubNetwork();
+		if ( nodes != null ) 
+			for ( CyNode n : nodes )
+				sub.addNode(n);
+		if ( edges != null ) 
+			for ( CyEdge e : edges )
+				sub.addEdge(e);
+		return sub;
+	}
+
+ 	/**
+ 	 * {@inheritDoc}
+ 	 */
 	public synchronized CySubNetwork addSubNetwork() {
 		final int newId = ++numSubNetworks;
 		final ArraySubGraph sub = new ArraySubGraph(this,newId,eventHelper);
@@ -901,5 +913,12 @@ public class ArrayGraph implements CyRootNetwork {
 	 */
 	public CyTable getDefaultEdgeTable() {
 		return edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public synchronized boolean containsNetwork(final CyNetwork net) {
+		return subNetworks.contains(net);
 	}
 }
