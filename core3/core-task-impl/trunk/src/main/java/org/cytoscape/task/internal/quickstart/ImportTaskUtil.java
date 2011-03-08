@@ -46,8 +46,7 @@ public class ImportTaskUtil {
 	}
 	
 	public Task getWebServiceImportTask() {
-		// TODO: what should I return?
-		return null;
+		return new ImportNetworkFromWebServiceTask();
 	}
 
 }

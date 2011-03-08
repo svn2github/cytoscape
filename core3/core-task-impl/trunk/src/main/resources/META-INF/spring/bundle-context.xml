@@ -315,5 +315,15 @@
 
 	<bean id="quickStartTaskFactory"
 	      class="org.cytoscape.task.internal.quickstart.QuickStartTaskFactory">
+		<constructor-arg ref="importTaskUtil" />
+	</bean>
+	
+	<bean id="importTaskUtil" class="org.cytoscape.task.internal.quickstart.ImportTaskUtil">
+	<constructor-arg ref="cyNetworkViewReaderManagerServiceRef" />
+		<constructor-arg ref="cyNetworkManagerServiceRef" />
+		<constructor-arg ref="cyNetworkViewManagerServiceRef" />
+		<constructor-arg ref="cyPropertyServiceRef" />
+		<constructor-arg ref="cyNetworkNamingServiceRef" />
+		<constructor-arg ref="streamUtilRef" />
 	</bean>
 </beans>

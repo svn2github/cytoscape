@@ -47,6 +47,8 @@ class QuickStartState {
 		SELECT_NETWORK_ID_TYPE,
 		SELECT_TABLE_ID_TYPE;
 	}
+	
+	private IDType idType;
 
 	private final Set<Job> completedSoFar = Collections.synchronizedSet(EnumSet.noneOf(Job.class));
 	
@@ -56,5 +58,13 @@ class QuickStartState {
 
 	synchronized boolean isFinished() {
 		return (completedSoFar.size() == Job.values().length);
+	}
+	
+	public IDType getIDType() {
+		return this.idType;
+	}
+	
+	public void setIDType(IDType idType) {
+		this.idType = idType;
 	}
 }

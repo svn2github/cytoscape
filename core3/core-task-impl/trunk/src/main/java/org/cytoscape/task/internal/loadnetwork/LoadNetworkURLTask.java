@@ -30,20 +30,17 @@
 package org.cytoscape.task.internal.loadnetwork;
 
 
-import java.net.URL;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
 
-import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
 import org.cytoscape.io.util.StreamUtil;
-import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.session.CyNetworkNaming;
+import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
-
-import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.view.model.CyNetworkViewManager;
-import org.cytoscape.session.CyNetworkNaming;
 
 
 /**

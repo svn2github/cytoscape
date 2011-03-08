@@ -31,7 +31,7 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 
 package org.cytoscape.task.internal.quickstart;
 
@@ -42,39 +42,42 @@ import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
 
 public class LoadNetworkTask extends AbstractTask {
-	
+
 	private static final String FROM_FILE = "File";
 	private static final String FROM_URL = "URL";
 	private static final String FROM_SERVICE = "Public Database";
-	
-	
+
 	@Tunable(description = "Select Data Source Type")
 	public ListSingleSelection<String> dataSource = new ListSingleSelection<String>(
 			FROM_FILE, FROM_URL, FROM_SERVICE);
-	
+
 	private QuickStartState state;
 	private final ImportTaskUtil util;
-	
+
 	public LoadNetworkTask(QuickStartState state, ImportTaskUtil util) {
 		this.state = state;
 		this.util = util;
 	}
 
-	public void run(TaskMonitor e) {
-		// This is for next step: specify ID type
-		insertTasksAfterCurrentTask(new SelectNetworkIdTypeTask(state));
-		
+	public void run(TaskMonitor monitor) {
+
+		if (state.getIDType() == null) {
+			// This is for next step: specify ID type
+			insertTasksAfterCurrentTask(new SelectNetworkIdTypeTask(state));
+		}
+
 		final String selected = dataSource.getSelectedValue();
-		if(selected == FROM_FILE) {
+		if (selected == FROM_FILE) {
 			// Load file task
 			insertTasksAfterCurrentTask(util.getFileImportTask());
-		} else if(selected == FROM_URL) {
+		} else if (selected == FROM_URL) {
 			// Load URL task
 			insertTasksAfterCurrentTask(util.getURLImportTask());
-		} else if(selected == FROM_SERVICE) {
-			// TODO create new task
+		} else if (selected == FROM_SERVICE) {
+			insertTasksAfterCurrentTask(util.getWebServiceImportTask());
 		}
-		
+
 		state.finished(Job.LOAD_NETWORK);
+
 	}
 }
