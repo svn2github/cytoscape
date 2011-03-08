@@ -201,7 +201,14 @@ public class VizMapPropertyBuilder {
 				
 				if (column != null) {
 					final Class<?> attrClass = column.getType();
-					Object id = row.get(attrName, attrClass);
+					Object id = null;
+					
+					if (attrClass.isAssignableFrom(List.class)) {
+						id = row.getList(attrName, column.getListElementType());
+						if (id != null) id = ((List) id).toString();
+					} else {
+						id = row.get(attrName, attrClass);
+					}
 					
 					if (id != null)
 						attrSet.add((K) id);
@@ -254,6 +261,8 @@ public class VizMapPropertyBuilder {
 	
 					if (attrName.equals("SUID"))
 						value = go.getSUID();
+					else if (attrClass.isAssignableFrom(List.class))
+						value = go.getCyRow().getList(attrName, column.getListElementType());
 					else
 						value = go.getCyRow().get(attrName, attrClass);
 	
@@ -262,18 +271,20 @@ public class VizMapPropertyBuilder {
 					else
 						stringVal = null;
 	
-					final VizMapperProperty<String, V, VisualMappingFunction<K, V>> oneProperty = new VizMapperProperty<String, V, VisualMappingFunction<K, V>>(
-							CellType.DISCRETE, id, (Class<V>) value.getClass());
-					oneProperty.setInternalValue(visualMapping);
-					oneProperty.setValue(stringVal);
-	
-					// This prop. should not be editable!
-					oneProperty.setEditable(false);
-	
-					oneProperty.setParentProperty(topProperty);
-					oneProperty.setDisplayName(id);
-	
-					topProperty.addSubProperty(oneProperty);
+					if (value != null) {
+						final VizMapperProperty<String, V, VisualMappingFunction<K, V>> oneProperty = new VizMapperProperty<String, V, VisualMappingFunction<K, V>>(
+								CellType.DISCRETE, id, (Class<V>) value.getClass());
+						oneProperty.setInternalValue(visualMapping);
+						oneProperty.setValue(stringVal);
+		
+						// This prop. should not be editable!
+						oneProperty.setEditable(false);
+		
+						oneProperty.setParentProperty(topProperty);
+						oneProperty.setDisplayName(id);
+		
+						topProperty.addSubProperty(oneProperty);
+					}
 				}
 			}
 
