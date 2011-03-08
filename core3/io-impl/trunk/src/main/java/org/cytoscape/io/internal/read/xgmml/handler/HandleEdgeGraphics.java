@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.cytoscape.io.internal.read.xgmml.ParseState;
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNode;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
