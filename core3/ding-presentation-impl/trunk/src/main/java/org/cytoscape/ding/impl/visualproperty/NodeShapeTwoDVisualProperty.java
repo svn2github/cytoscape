@@ -35,6 +35,8 @@
 package org.cytoscape.ding.impl.visualproperty;
 
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.ding.NodeShape;
@@ -47,6 +49,9 @@ public class NodeShapeTwoDVisualProperty extends
 		AbstractVisualProperty<NodeShape> {
 
 	private static final Range<NodeShape> NODE_SHAPE_RANGE;
+	
+	/** key -> valid_cytoscape_key */
+	private static final Map<String, String> shapeKeys = new Hashtable<String, String>();
 
 	static {
 		final Set<NodeShape> shapeSet = new HashSet<NodeShape>();
@@ -54,6 +59,18 @@ public class NodeShapeTwoDVisualProperty extends
 			shapeSet.add(shape);
 		NODE_SHAPE_RANGE = new DiscreteRangeImpl<NodeShape>(NodeShape.class,
 				shapeSet);
+		
+		// Let's be nice and also support regular and Cytoscape XGMML shapes?
+		shapeKeys.put("SQUARE", "RECT");
+		shapeKeys.put("RECTANGLE", "RECT");
+		shapeKeys.put("BOX", "RECT");
+		shapeKeys.put("ROUNDRECT", "ROUND_RECT");
+		shapeKeys.put("ROUND_RECTANGLE", "ROUND_RECT");
+		shapeKeys.put("RHOMBUS", "PARALLELOGRAM");
+		shapeKeys.put("V", "VEE");
+		shapeKeys.put("CIRCLE", "ELLIPSE");
+		shapeKeys.put("VER_ELLIPSIS", "ELLIPSE");
+		shapeKeys.put("HOR_ELLIPSIS", "ELLIPSE");
 	}
 
 	public NodeShapeTwoDVisualProperty(final NodeShape def, final String id,
@@ -66,6 +83,18 @@ public class NodeShapeTwoDVisualProperty extends
 	}
 
 	public NodeShape parseSerializableString(final String text) {
-		return NodeShape.valueOf(text);
+		NodeShape shape = null;
+
+		if (text != null) {
+			String key = text.trim().toUpperCase();
+			String validKey = shapeKeys.get(key);
+			
+			if (validKey == null)
+				validKey = key;
+			
+			shape = NodeShape.valueOf(validKey);
+		}
+
+		return shape;
 	}
 }

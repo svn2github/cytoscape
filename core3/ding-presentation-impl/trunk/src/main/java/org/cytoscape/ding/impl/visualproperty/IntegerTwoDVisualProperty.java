@@ -52,6 +52,7 @@ public class IntegerTwoDVisualProperty extends AbstractVisualProperty<Integer> {
 	}
 
 	public Integer parseSerializableString(final String text) {
-		return Integer.valueOf(text);
+		// Cytoscape 2.x serializes integer attributes as decimals (e.g."1.0")!
+		return Double.valueOf(text).intValue();
 	}
 }

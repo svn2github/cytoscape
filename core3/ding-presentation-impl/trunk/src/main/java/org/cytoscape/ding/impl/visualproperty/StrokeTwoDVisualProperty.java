@@ -71,7 +71,14 @@ public class StrokeTwoDVisualProperty extends AbstractVisualProperty<Stroke> {
 	}
 
 	public Stroke parseSerializableString(final String text) {
-		// TODO
-		return null;
+		Stroke stroke = null;
+		
+		if (text != null) {
+			String key = text.trim().toUpperCase();
+			LineStyle style = LineStyle.parse(key);
+			stroke = style.getStroke(DEFAULT_STROKE_WIDTH);
+		}
+		
+		return stroke;
 	}
 }

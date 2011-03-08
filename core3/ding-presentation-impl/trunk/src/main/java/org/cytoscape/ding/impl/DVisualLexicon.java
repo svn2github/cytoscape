@@ -411,6 +411,7 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 		addIdentifierMapping(CyNode.class,"nodeOpacity",NODE_TRANSPARENCY);
 		addIdentifierMapping(CyNode.class,"nodeBorderColor",NODE_BORDER_PAINT);
 		addIdentifierMapping(CyNode.class,"nodeLineWidth",NODE_BORDER_WIDTH);
+		addIdentifierMapping(CyNode.class,"nodeShape",NODE_SHAPE);
 		addIdentifierMapping(CyNode.class,"nodeFont",NODE_LABEL_FONT_FACE);
 		addIdentifierMapping(CyNode.class,"nodeFontSize",NODE_LABEL_FONT_SIZE);
 		addIdentifierMapping(CyNode.class,"nodeToolTip",NODE_TOOLTIP);
@@ -420,7 +421,11 @@ public class DVisualLexicon extends TwoDVisualLexicon {
 //		addIdentifierMapping(CyNode.class,"nodeLabelWidth",NODE_LABEL_WIDTH);
 
 		addIdentifierMapping(CyEdge.class,"edgeColor",EDGE_STROKE_UNSELECTED_PAINT);
-		
+		addIdentifierMapping(CyEdge.class,"edgeLineStyle",EDGE_STROKE);
+		addIdentifierMapping(CyEdge.class,"edgeSourceArrowShape",EDGE_SOURCE_ARROW_SHAPE);		
+		addIdentifierMapping(CyEdge.class,"edgeSourceArrowColor",EDGE_SOURCE_ARROW_UNSELECTED_PAINT);			
+		addIdentifierMapping(CyEdge.class,"edgeTargetArrowShape",EDGE_TARGET_ARROW_SHAPE);		
+		addIdentifierMapping(CyEdge.class,"edgeTargetArrowColor",EDGE_TARGET_ARROW_UNSELECTED_PAINT);		
 		addIdentifierMapping(CyEdge.class,"edgeToolTip",EDGE_TOOLTIP);
 		addIdentifierMapping(CyEdge.class,"edgeFont",EDGE_LABEL_FONT_FACE);
 		addIdentifierMapping(CyEdge.class,"edgeFontSize",EDGE_LABEL_FONT_SIZE);

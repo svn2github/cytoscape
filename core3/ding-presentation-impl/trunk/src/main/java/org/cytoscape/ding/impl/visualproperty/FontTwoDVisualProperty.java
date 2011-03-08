@@ -60,12 +60,32 @@ public class FontTwoDVisualProperty extends AbstractVisualProperty<Font> {
 	}
 
 	public String toSerializableString(final Font value) {
+		// TODO:
 		return value.toString();
 	}
 
 	public Font parseSerializableString(final String text) {
-		// TODO
-		return null;
+		Font font = null;
+		
+		if (text != null) {
+            String name = text.replaceAll("(\\.[bB]old)?,[a-zA-Z]+,\\d+(\\.\\d+)?", "");
+
+            boolean bold = text.matches("(?i).*\\.bold,[a-zA-Z]+,.*");
+            int style = bold ? Font.BOLD : Font.PLAIN;
+            int size = 12;
+
+            String sSize = text.replaceAll(".+,[^,]+,", "");
+            
+            try {
+                size = Integer.parseInt(sSize);
+            } catch (NumberFormatException nfe) {
+                // TODO: log/warning
+            }
+
+            font = new Font(name, style, size);
+        }
+		
+		return font;
 	}
 
 	private static Set<Font> getSystemFonts() {

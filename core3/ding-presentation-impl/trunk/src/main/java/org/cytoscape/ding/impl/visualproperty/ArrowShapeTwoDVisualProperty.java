@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,10 +31,12 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package org.cytoscape.ding.impl.visualproperty; 
+ */
+package org.cytoscape.ding.impl.visualproperty;
 
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 
 import org.cytoscape.ding.ArrowShape;
@@ -44,26 +45,54 @@ import org.cytoscape.view.model.AbstractVisualProperty;
 import org.cytoscape.view.model.DiscreteRangeImpl;
 import org.cytoscape.view.model.Range;
 
-public class ArrowShapeTwoDVisualProperty extends AbstractVisualProperty<ArrowShape> { 
+public class ArrowShapeTwoDVisualProperty extends
+		AbstractVisualProperty<ArrowShape> {
 
 	private static final Range<ArrowShape> ARROW_SHAPE_RANGE;
-	
+
+	/** key -> valid_cytoscape_key */
+	private static final Map<String, String> shapeKeys = new Hashtable<String, String>();
+
 	static {
 		final Set<ArrowShape> arrowSet = new HashSet<ArrowShape>();
-		for(final ArrowShape arrow: ArrowShape.values())
+		for (final ArrowShape arrow : ArrowShape.values())
 			arrowSet.add(arrow);
-		ARROW_SHAPE_RANGE = new DiscreteRangeImpl<ArrowShape>(ArrowShape.class, arrowSet);
+		ARROW_SHAPE_RANGE = new DiscreteRangeImpl<ArrowShape>(ArrowShape.class,
+				arrowSet);
+
+		// We have to support Cytoscape 2.8 XGMML shapes!
+		shapeKeys.put("0", "NONE");
+		shapeKeys.put("3", "DELTA");
+		shapeKeys.put("6", "ARROW");
+		shapeKeys.put("9", "DIAMOND");
+		shapeKeys.put("12", "CIRCLE");
+		shapeKeys.put("15", "T");
+		shapeKeys.put("16", "HALF_ARROW_TOP");
+		shapeKeys.put("17", "HALF_ARROW_BOTTOM");
 	}
-	
-	public ArrowShapeTwoDVisualProperty(final ArrowShape def, final String id, final String name) {
+
+	public ArrowShapeTwoDVisualProperty(final ArrowShape def, final String id,
+			final String name) {
 		super(def, ARROW_SHAPE_RANGE, id, name, CyEdge.class);
 	}
-	
+
 	public String toSerializableString(final ArrowShape value) {
 		return value.toString();
 	}
 
 	public ArrowShape parseSerializableString(final String text) {
-		return ArrowShape.valueOf(text);
+		ArrowShape shape = null;
+
+		if (text != null) {
+			String key = text.trim().toUpperCase();
+			String validKey = shapeKeys.get(key);
+
+			if (validKey == null)
+				validKey = key;
+
+			shape = ArrowShape.valueOf(validKey);
+		}
+
+		return shape;
 	}
 }
