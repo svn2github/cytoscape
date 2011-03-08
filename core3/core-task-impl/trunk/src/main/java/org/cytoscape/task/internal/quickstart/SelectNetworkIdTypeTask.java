@@ -1,5 +1,8 @@
 package org.cytoscape.task.internal.quickstart;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
@@ -8,12 +11,16 @@ import org.cytoscape.work.util.ListSingleSelection;
 public class SelectNetworkIdTypeTask extends AbstractTask {
 	
 	@Tunable(description="Select Network ID Type")
-	public ListSingleSelection<MajorIDSets> selection = new ListSingleSelection<MajorIDSets>(MajorIDSets.ENSEMBL,MajorIDSets.ENTREZ_GENE, MajorIDSets.UNIPROT);
+	public final ListSingleSelection<String> selection;
 	
 	private final QuickStartState state;
 
 	public SelectNetworkIdTypeTask(final QuickStartState state) {
-		this.state = state;		
+		this.state = state;	
+		final List<String> values = new ArrayList<String>();
+		for(MajorIDSets val: MajorIDSets.values())
+			values.add(val.getDisplayName());
+		selection = new ListSingleSelection<String>(values);
 	}
 
 	@Override
