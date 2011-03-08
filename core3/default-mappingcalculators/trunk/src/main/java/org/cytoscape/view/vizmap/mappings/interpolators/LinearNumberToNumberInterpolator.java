@@ -65,6 +65,7 @@ public class LinearNumberToNumberInterpolator extends
 	 * 
 	 * @return Value for the given fraction point.
 	 */
+	@Override
 	public Number getRangeValue(double frac, Number lowerRange,
 			Number upperRange) {
 

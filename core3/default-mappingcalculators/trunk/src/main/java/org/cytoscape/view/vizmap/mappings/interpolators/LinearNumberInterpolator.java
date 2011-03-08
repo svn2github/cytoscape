@@ -50,7 +50,7 @@ package org.cytoscape.view.vizmap.mappings.interpolators;
  * lower boundary value for the convenience of subclasses.
  */
 abstract public class LinearNumberInterpolator<R> extends NumberInterpolator<R> {
-	
+
 	/**
 	 * DOCUMENT ME!
 	 * 

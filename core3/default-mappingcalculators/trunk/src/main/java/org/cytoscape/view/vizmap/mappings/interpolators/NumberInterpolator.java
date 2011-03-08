@@ -52,16 +52,16 @@ package org.cytoscape.view.vizmap.mappings.interpolators;
  */
 abstract public class NumberInterpolator<R> implements Interpolator<Number, R> {
 
-	public R getRangeValue(Number lowerDomain, R lowerRange,
-			Number upperDomain, R upperRange, Number domainValue) {
+	@Override
+	public <T extends Number> R getRangeValue(T lowerDomain, R lowerRange,
+			T upperDomain, R upperRange, T domainValue) {
 
 		if (lowerDomain == null || lowerRange == null || upperDomain == null
 				|| upperRange == null || domainValue == null)
 			return null;
-		
+
 		return getRangeValue(lowerDomain.doubleValue(), lowerRange, upperDomain
 				.doubleValue(), upperRange, domainValue.doubleValue());
-
 	}
 
 	// /**

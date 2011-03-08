@@ -30,10 +30,12 @@
 package org.cytoscape.view.vizmap.mappings;
 
 
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.View;
@@ -113,10 +115,18 @@ public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 			// skip Views where source attribute is not defined;
 			// ViewColumn will automatically substitute the per-VS or global
 			// default, as appropriate
-
-			final K key = view.getModel().getCyRow().get(attrName, attrType);
+			final CyColumn column = row.getTable().getColumn(attrName);
+			final Class<?> attrClass = column.getType();
+			Object key = null;
+			
+			if (attrClass.isAssignableFrom(List.class)) {
+				List<?> list = row.getList(attrName, column.getListElementType());
+				key = list != null ? list.toString() : "";
+			} else {
+				key = row.get(attrName, attrType);
+			}
 						
-			if (attribute2visualMap.containsKey(key)) {
+			if (key != null && attribute2visualMap.containsKey(key)) {
 				final V value = attribute2visualMap.get(key);
 				// Assign value to view
 				view.setVisualProperty(vp, value);

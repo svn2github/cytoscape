@@ -60,7 +60,8 @@ public class LinearNumberToColorInterpolator extends LinearNumberInterpolator<Co
      *
      * @return  DOCUMENT ME!
      */
-    public Color getRangeValue(double frac, Color lowerRange,
+	@Override
+	public Color getRangeValue(double frac, Color lowerRange,
         Color upperRange) {
 
         double red = lowerRange.getRed() +

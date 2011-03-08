@@ -268,9 +268,10 @@ public class ContinuousMapping<K, V> extends AbstractVisualMappingFunction<K, V>
 		K upperDomain = upperBound.getValue();
 		BoundaryRangeValues<V> gv = upperBound.getRange();
 		V upperRange = gv.lesserValue;
-
-		return interpolator.getRangeValue(lowerDomain, lowerRange, upperDomain,
-				upperRange, domainValue);
+		
+		V value = interpolator.getRangeValue(lowerDomain, lowerRange, upperDomain, upperRange, domainValue);
+		
+		return value;
 	}
 
 	/**

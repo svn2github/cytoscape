@@ -28,6 +28,11 @@
 
 package org.cytoscape.view.vizmap.mappings;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyTableEntry;
 import org.cytoscape.view.model.View;
@@ -72,7 +77,26 @@ public class PassthroughMapping<K, V> extends
 			// skip Views where source attribute is not defined;
 			// ViewColumn will automatically substitute the per-VS or
 			// global default, as appropriate
-			final K value = row.get(attrName, attrType);
+			final CyColumn column = row.getTable().getColumn(attrName);
+			final Class<?> attrClass = column.getType();
+			K value = null;
+			
+			if (attrClass.isAssignableFrom(List.class)) {
+				List<?> list = row.getList(attrName, column.getListElementType());
+				StringBuffer sb = new StringBuffer();
+				
+				if (list != null && !list.isEmpty()) {
+					for (Object item : list)
+						sb.append(item.toString() + "\n");
+					
+					sb.deleteCharAt(sb.length() - 1);
+				}
+				
+				value = (K) sb.toString();
+			} else {
+				value = row.get(attrName, attrType);
+			}
+
 			final V converted = convertToValue(value);
 
 			view.setVisualProperty(vp, converted);
