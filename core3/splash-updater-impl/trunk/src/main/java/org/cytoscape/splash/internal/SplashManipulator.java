@@ -52,6 +52,7 @@ public class SplashManipulator implements
         g.setPaintMode();
         g.setColor(Color.BLACK);
         g.drawString(message, 20, 320);
-		splash.update();
+		if ( splash.isVisible() )
+			splash.update();
     }
 }
