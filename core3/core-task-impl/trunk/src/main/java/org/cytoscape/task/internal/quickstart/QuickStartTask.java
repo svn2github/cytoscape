@@ -51,16 +51,18 @@ public class QuickStartTask extends AbstractTask {
 			LOAD_NETWORK, LOAD_TABLE);
 
 	private final QuickStartState state;
+	private final ImportTaskUtil importTaskUtil;
 
-	public QuickStartTask(final QuickStartState state) {
+	public QuickStartTask(final QuickStartState state, final ImportTaskUtil importTaskUtil) {
 		super();
 		this.state = state;
+		this.importTaskUtil = importTaskUtil;
 	}
 
 	public void run(TaskMonitor e) {
 		String selected = selection.getSelectedValue();
 		if (selected == LOAD_NETWORK) {
-			insertTasksAfterCurrentTask(new LoadNetworkTask(state));
+			insertTasksAfterCurrentTask(new LoadNetworkTask(state, importTaskUtil));
 		} else if (selected == LOAD_TABLE)
 			insertTasksAfterCurrentTask(new LoadTableTask(state));
 	}

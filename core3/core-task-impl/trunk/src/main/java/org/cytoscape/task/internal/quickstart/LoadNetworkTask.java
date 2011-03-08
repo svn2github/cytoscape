@@ -35,8 +35,8 @@
 
 package org.cytoscape.task.internal.quickstart;
 
+import org.cytoscape.task.internal.quickstart.QuickStartState.Job;
 import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.util.ListSingleSelection;
@@ -53,22 +53,28 @@ public class LoadNetworkTask extends AbstractTask {
 			FROM_FILE, FROM_URL, FROM_SERVICE);
 	
 	private QuickStartState state;
+	private final ImportTaskUtil util;
 	
-	public LoadNetworkTask(QuickStartState state) {
+	public LoadNetworkTask(QuickStartState state, ImportTaskUtil util) {
 		this.state = state;
+		this.util = util;
 	}
 
 	public void run(TaskMonitor e) {
+		// This is for next step: specify ID type
+		insertTasksAfterCurrentTask(new SelectNetworkIdTypeTask(state));
+		
 		final String selected = dataSource.getSelectedValue();
 		if(selected == FROM_FILE) {
 			// Load file task
+			insertTasksAfterCurrentTask(util.getFileImportTask());
 		} else if(selected == FROM_URL) {
 			// Load URL task
+			insertTasksAfterCurrentTask(util.getURLImportTask());
 		} else if(selected == FROM_SERVICE) {
 			// TODO create new task
 		}
 		
-		// Next, specify ID type
-		insertTasksAfterCurrentTask(new SelectNetworkIdTypeTask(state));
+		state.finished(Job.LOAD_NETWORK);
 	}
 }

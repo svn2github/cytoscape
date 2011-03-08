@@ -33,8 +33,14 @@ import org.cytoscape.work.TaskFactory;
 
 
 public class QuickStartTaskFactory implements TaskFactory {
+	
+	private final ImportTaskUtil util;
+	
+	public QuickStartTaskFactory(ImportTaskUtil util) {
+		this.util = util;
+	}
 
 	public TaskIterator getTaskIterator() {
-		return new TaskIterator(new QuickStartTask(new QuickStartState()));
+		return new TaskIterator(new QuickStartTask(new QuickStartState(), util));
 	} 
 }

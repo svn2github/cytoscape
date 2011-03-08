@@ -12,7 +12,7 @@ public class SelectTableMappingKeyTask extends AbstractTask {
 	
 	
 	@Tunable(description="Select Column ID Type")
-	public ListSingleSelection<MajorIDSets> selection = new ListSingleSelection<MajorIDSets>(MajorIDSets.ENSEMBL,MajorIDSets.ENTREZ_GENE, MajorIDSets.UNIPROT);
+	public ListSingleSelection<IDType> selection = new ListSingleSelection<IDType>(IDType.ENSEMBL,IDType.ENTREZ_GENE, IDType.UNIPROT);
 	
 	private final QuickStartState state;
 	
