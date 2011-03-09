@@ -26,14 +26,12 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ */
 package org.cytoscape.view.vizmap.mappings;
 
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyRow;
@@ -43,21 +41,21 @@ import org.cytoscape.view.model.VisualProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Implements a lookup table mapping data to values of a particular class. The
  * data value is extracted from a bundle of attributes by using a specified data
  * attribute name.
  */
 public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
-	
-	private static final Logger logger = LoggerFactory.getLogger(DiscreteMapping.class);
-	
-	// Name of mapping.  This will be used by toString() method.
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(DiscreteMapping.class);
+
+	// Name of mapping. This will be used by toString() method.
 	protected static final String DISCRETE = "Discrete Mapping";
-	
+
 	// contains the actual map elements (sorted)
-	private final SortedMap<K, V> attribute2visualMap;
+	private final Map<K, V> attribute2visualMap;
 
 	/**
 	 * Constructor.
@@ -68,7 +66,7 @@ public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 	public DiscreteMapping(final String attrName, final Class<K> attrType,
 			final VisualProperty<V> vp) {
 		super(attrName, attrType, vp);
-		attribute2visualMap = new TreeMap<K, V>();
+		attribute2visualMap = new HashMap<K, V>();
 	}
 
 	@Override
@@ -101,42 +99,37 @@ public class DiscreteMapping<K, V> extends AbstractVisualMappingFunction<K, V> {
 	 *            the type-parameter of the View
 	 */
 	private void applyDiscreteMapping(final View<? extends CyTableEntry> view) {
-
 		final CyRow row = view.getModel().getCyRow();
-//		
-//		logger.debug("Target View = " + view.getModel().getSUID());
-//		logger.debug("AttrName = " + attrName);
-//		logger.debug("AttrType = " + attrType);
-//		logger.debug("Row keys = " + row.getAllValues().keySet());
-//		logger.debug("Row vals = " + row.getAllValues().values());
-		
-		
+		V value = null;
+
 		if (row.isSet(attrName)) {
 			// skip Views where source attribute is not defined;
 			// ViewColumn will automatically substitute the per-VS or global
 			// default, as appropriate
 			final CyColumn column = row.getTable().getColumn(attrName);
 			final Class<?> attrClass = column.getType();
-			Object key = null;
-			
+
 			if (attrClass.isAssignableFrom(List.class)) {
 				List<?> list = row.getList(attrName, column.getListElementType());
-				key = list != null ? list.toString() : "";
+
+				if (list != null) {
+					for (Object item : list) {
+						// TODO: should we convert other types to String?
+						String key = item.toString();
+						value = attribute2visualMap.get(key);
+						if (value != null) break;
+					}
+				}
 			} else {
-				key = row.get(attrName, attrType);
+				Object key = row.get(attrName, attrType);
+
+				if (key != null)
+					value = attribute2visualMap.get(key);
 			}
-						
-			if (key != null && attribute2visualMap.containsKey(key)) {
-				final V value = attribute2visualMap.get(key);
-				// Assign value to view
-				view.setVisualProperty(vp, value);
-			} else { // remove value so that default value will be used:
-				// Set default value
-				view.setVisualProperty(vp, null);				
-			}
-		} else { // remove value so that default value will be used:
-			view.setVisualProperty(vp, null);
 		}
+
+		// set a new value or null to use the default one:
+		view.setVisualProperty(vp, value);
 	}
 
 	/**
