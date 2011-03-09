@@ -185,8 +185,6 @@ public class VizMapPropertyBuilder {
 				graphObjectSet.add(it.next());
 		}
 
-		
-		
 		final VisualPropertyEditor<V> vpEditor = editorManager.getVisualPropertyEditor(vp);
 		logger.debug("vpEditor is " + vpEditor);
 		
@@ -201,24 +199,26 @@ public class VizMapPropertyBuilder {
 				
 				if (column != null) {
 					final Class<?> attrClass = column.getType();
-					Object id = null;
 					
 					if (attrClass.isAssignableFrom(List.class)) {
-						id = row.getList(attrName, column.getListElementType());
-						if (id != null) id = ((List) id).toString();
+						List<?> list = row.getList(attrName, column.getListElementType());
+						if (list != null) {
+							for (Object item : list) {
+								if (item != null)
+									attrSet.add((K) item);
+							}
+						}
 					} else {
-						id = row.get(attrName, attrClass);
+						Object id = row.get(attrName, attrClass);
+
+						if (id != null)
+							attrSet.add((K) id);
 					}
-					
-					if (id != null)
-						attrSet.add((K) id);
 				}
 			}
 
 			// FIXME
-			setDiscreteProps(vp, visualMapping, attrSet,
-					vpEditor, topProperty,
-					propertySheetPanel);
+			setDiscreteProps(vp, visualMapping, attrSet, vpEditor, topProperty, propertySheetPanel);
 
 		} else if (visualMapping instanceof ContinuousMapping
 				&& (attrName != null)) {
@@ -236,10 +236,8 @@ public class VizMapPropertyBuilder {
 			final TableCellRenderer continuousRenderer = vpEditor.getContinuousTableCellRenderer();
 
 			final PropertySheetTable table = propertySheetPanel.getTable();
-			((PropertyRendererRegistry) table
-					.getRendererFactory()).registerRenderer(graphicalView,
-							continuousRenderer);
-			
+			((PropertyRendererRegistry) table.getRendererFactory()).registerRenderer(graphicalView, continuousRenderer);
+
 			final PropertyEditorRegistry cellEditorFactory = (PropertyEditorRegistry) table.getEditorFactory();
 			final PropertyEditor continuousCellEditor = editorManager.getVisualPropertyEditor(vp).getContinuousMappingEditor();
 			
@@ -332,7 +330,18 @@ public class VizMapPropertyBuilder {
 			valProp.setParentProperty(parent);
 
 			// Get the mapped value
-			val = discMapping.get(key);
+			
+			// TODO: Is there a way to fix it when opening 2.x sessions?
+			// Even if the CyColumn type is a List of Numbers or Booleans, the 
+			// Visual Style Serializer might have built the discrete mapping with keys as Strings!
+			// In 2.x the session_vizmap.props format does not specify the type of the List-type attributes.
+			// Example: "nodeLabelColor.MyStyle-Node Label Color-Discrete Mapper.mapping.controllerType=-2"
+			// In that case "controllerType=-2" means that the attribute type is List, but we don't know the
+			// type of the list items.
+			if (mapping.getMappingAttributeType() == String.class && !(key instanceof String))
+				val = discMapping.get(key.toString());
+			else
+				val = discMapping.get(key);
 
 			if (val != null)
 				valProp.setType(val.getClass());
