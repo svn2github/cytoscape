@@ -33,6 +33,7 @@
 package nodeCharts.command;
 
 // System imports
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -217,6 +218,38 @@ public class ValueUtils {
 		else if (input instanceof String)
 			return Double.parseDouble((String)input);
 		throw new NumberFormatException("input can not be converted to double");
+	}
+
+	/**
+ 	 * Return the size specified by the user in the width and height fields of the Rectangle
+ 	 * The size can be either "sss" where "sss" will be both the height and the width or
+ 	 * "hhhxwww" where hhh is the height and www is the width.
+ 	 *
+ 	 * @param input the input size
+ 	 * @return a rectangle to get the width and height from
+ 	 */
+	public static Rectangle2D getSize(Object input) throws CyCommandException {
+		if (input instanceof Rectangle2D) 
+			return (Rectangle2D) input;
+		else if (input instanceof Double) {
+			double v = ((Double)input).doubleValue();
+			return new Rectangle2D.Double(0.0,0.0,v,v);
+		} else if (input instanceof Integer) {
+			double v = ((Integer)input).doubleValue();
+			return new Rectangle2D.Double(0.0,0.0,v,v);
+		} else if (input instanceof String) {
+			String inputString = (String)input;
+			String[] sizes = inputString.split("[xX]");
+			if (sizes.length == 1) {
+				double v = Double.parseDouble(sizes[0]);
+				return new Rectangle2D.Double(0.0,0.0,v,v);
+			} else if (sizes.length == 2) {
+				double h = Double.parseDouble(sizes[0]);
+				double w = Double.parseDouble(sizes[1]);
+				return new Rectangle2D.Double(0.0,0.0,w,h);
+			} 
+		}
+		throw new CyCommandException("unable to convert "+input.toString()+" to a size");
 	}
 
 	public static List<Double> arrayMax(List<Double> maxValues, List<Double> values) {

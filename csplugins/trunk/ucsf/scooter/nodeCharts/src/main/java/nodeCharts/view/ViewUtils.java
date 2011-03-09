@@ -135,16 +135,21 @@ public class ViewUtils {
 		}
 	}
 
-	public static Rectangle2D getNodeBoundingBox(CyNode node, CyNetworkView view, Object position, double nodePortion) {
+	public static Rectangle2D getNodeBoundingBox(CyNode node, Rectangle2D size, CyNetworkView view, Object position, double nodePortion) {
 		DNodeView nView = (DNodeView)view.getNodeView(node);
+		double height, width;
 
-		// Get the affine transform 
-		double height = (nView.getHeight()-nView.getBorderWidth())*nodePortion;
-		double width = (nView.getWidth()-nView.getBorderWidth())*nodePortion;
+		if (size == null) {
+			height = (nView.getHeight()-nView.getBorderWidth())*nodePortion;
+			width = (nView.getWidth()-nView.getBorderWidth())*nodePortion;
+		} else {
+			height = size.getHeight()*nodePortion;
+			width = size.getWidth()*nodePortion;
+		}
 
 		// Create the bounding box.
 		Rectangle2D.Double bbox = new Rectangle2D.Double(-width/2, -height/2, width, height);
-		return positionAdjust(bbox, position);
+		return positionAdjust(bbox, nView.getHeight(), nView.getWidth(), position);
 	}
 
 	/**
@@ -308,7 +313,7 @@ public class ViewUtils {
 		return stroke.createStrokedShape(new Line2D.Double(lineStartX, lineStartY, labelPosition.getX(), labelPosition.getY()));
 	}
 
-	private static Rectangle2D positionAdjust(Rectangle2D.Double bbox, Object pos) {
+	private static Rectangle2D positionAdjust(Rectangle2D bbox, double nodeHeight, double nodeWidth, Object pos) {
 		if (pos == null)
 			return bbox;
 
@@ -322,32 +327,32 @@ public class ViewUtils {
 
 			switch (p) {
 			case EAST:
-				x = width/2;
+				x = nodeWidth/2;
 				break;
 			case WEST:
-				x = -width*1.5;
+				x = -nodeWidth*1.5;
 				break;
 			case NORTH:
-				y = -height*1.5;
+				y = -nodeHeight*1.5;
 				break;
 			case SOUTH:
-				y = height/2;
+				y = nodeHeight/2;
 				break;
 			case NORTHEAST:
-				x = width/2;
-				y = -height*1.5;
+				x = nodeWidth/2;
+				y = -nodeHeight*1.5;
 				break;
 			case NORTHWEST:
-				x = -width*1.5;
-				y = -height*1.5;
+				x = -nodeWidth*1.5;
+				y = -nodeHeight*1.5;
 				break;
 			case SOUTHEAST:
-				x = width/2;
-				y = height/2;
+				x = nodeWidth/2;
+				y = nodeHeight/2;
 				break;
 			case SOUTHWEST:
-				x = -width*1.5;
-				y = height/2;
+				x = -nodeWidth*1.5;
+				y = nodeHeight/2;
 				break;
 			case CENTER:
 			default:

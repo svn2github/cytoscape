@@ -33,6 +33,7 @@
 package nodeCharts.command;
 
 // System imports
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -85,6 +86,7 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 	public static final String POSITION = "position";
 	public static final String SCALE = "scale";
 	public static final String SELECTED = "selected";
+	public static final String SIZE = "size";
 	public static final String SHOWLABELS = "showlabels";
 	public static final String VALUES = "valuelist";
 
@@ -224,6 +226,15 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 				throw new CyCommandException("unknown position keyword or illegal position expression: "+position);
 		}
 
+		// Get our size (if we have one)
+		Rectangle2D size = null;
+		if (args.containsKey(SIZE)) {
+			String sizeString = (String) args.get(SIZE);
+			size = ValueUtils.getSize(sizeString);
+			if (size == null)
+				throw new CyCommandException("unknown size expression: "+sizeString);
+		} 
+
 		if (!showLabels)
 			labels = null;
 
@@ -237,7 +248,8 @@ public class NodeChartCommandHandler extends AbstractCommandHandler {
 					ValueUtils.normalize(values, maxValues);
 			}
 
-			List<CustomGraphic> cgList = viewer.getCustomGraphics(args, values, labels, node, view, pos, scale);
+			Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, size, view, pos, scale);
+			List<CustomGraphic> cgList = viewer.getCustomGraphics(args, values, labels, bbox, view);
 			ViewUtils.addCustomGraphics(cgList, node, view);
 			result.addMessage("Created "+viewer.getName()+" chart for node "+node.getIdentifier());
 			// If we succeeded, serialize the command and save it in the appropriate nodeAttribute

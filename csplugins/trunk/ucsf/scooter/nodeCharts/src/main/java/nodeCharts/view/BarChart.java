@@ -41,7 +41,7 @@ public class BarChart implements NodeChartViewer {
 	}
 
 	public String getDescription() {
-		return "Display the values passed as arguments as a line chart on the node";
+		return "Display the values passed as arguments as a bar chart on the node";
 	}
 
 	public Map<String, String> getOptions() {
@@ -52,8 +52,8 @@ public class BarChart implements NodeChartViewer {
 	}
 
 	public List<CustomGraphic> getCustomGraphics(Map<String, Object> args,
-			List<Double> values, List<String> labels, CyNode node,
-			CyNetworkView view, Object position, double scale) throws CyCommandException {
+			List<Double> values, List<String> labels, Rectangle2D bbox,
+			CyNetworkView view) throws CyCommandException {
 	
 		// Get our colors
 		List<Color> colors = ValueUtils.convertInputToColor(args.get(COLORS), values);
@@ -80,7 +80,6 @@ public class BarChart implements NodeChartViewer {
 
 		// We need to get our bounding box in order to scale our graphic
 		// properly
-		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view, position, scale);
 		double height = bbox.getHeight();
 		double width = bbox.getWidth();
 		
@@ -118,18 +117,22 @@ public class BarChart implements NodeChartViewer {
 			double px1 = x + (i * slice);
 			double w = slice;
 			PaintFactory pf = new DefaultPaintFactory(colors.get(i));
-		    double val = values.get(i);
-		    double py1 = y + (0.5 * height);
-		    if (val > 0.0) // positive, work down to midpoint
-		    {
-		    	py1 = py1 - ((0.5 * height) * (val / max));
-		    }
-		    else // negative, work down from midpoint
-		    {
-		    	val = -val;
-		    }
-		    	
-		    double h = (0.5 * height) * (val / max);
+			double val = values.get(i);
+			double py1 = y + (0.5 * height);
+			if (val > 0.0) // positive, work down to midpoint
+			{
+				py1 = py1 - ((0.5 * height) * (val / max));
+			}
+			else // negative, work down from midpoint
+			{
+				val = -val;
+			}
+			
+			double h = (0.5 * height) * (val / max);
+
+			// Outline the bars for clarity
+			Rectangle2D outline = new Rectangle2D.Double(px1, py1, w, h);
+			cgList.add(new CustomGraphic(outline, new DefaultPaintFactory(Color.BLACK)));
 		    
 			barArray[i] = new Rectangle2D.Double(px1, py1, w, h);
 			// System.out.println ("Got rectangle from: " + px1 + "," + py1 + " of width " + w + " and height " + h);
@@ -161,6 +164,8 @@ public class BarChart implements NodeChartViewer {
 				cgList.add(c1);
 			}
 		}
+		CustomGraphic cLine  = new CustomGraphic(new Rectangle2D.Double(x, yMid, width, .5), new DefaultPaintFactory(Color.BLACK));
+		cgList.add(cLine);
 		return cgList;
 	}
 

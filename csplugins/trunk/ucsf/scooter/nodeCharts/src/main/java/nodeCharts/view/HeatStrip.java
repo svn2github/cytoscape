@@ -40,8 +40,8 @@ public class HeatStrip implements NodeChartViewer {
 	private static final String YELLOWCYAN = "yellowcyan";
 
 	float[] dist = {0.0f, 0.5f, 1.0f};
-	Color[] redGreen = {Color.GREEN, Color.BLACK, Color.RED};
-	Color[] yellowCyan = {Color.CYAN, Color.BLACK, Color.YELLOW};
+	Color[] redGreen = {Color.GREEN, Color.WHITE, Color.RED};
+	Color[] yellowCyan = {Color.CYAN, Color.WHITE, Color.YELLOW};
 	
 
 	public String getName() {
@@ -60,8 +60,8 @@ public class HeatStrip implements NodeChartViewer {
 	}
 
 	public List<CustomGraphic> getCustomGraphics(Map<String, Object> args,
-			List<Double> values, List<String> labels, CyNode node,
-			CyNetworkView view, Object position, double scale) throws CyCommandException {
+			List<Double> values, List<String> labels, Rectangle2D bbox,
+			CyNetworkView view) throws CyCommandException {
 
 		Color[] colorScale = null;
 
@@ -94,7 +94,6 @@ public class HeatStrip implements NodeChartViewer {
 
 		// We need to get our bounding box in order to scale our graphic
 		// properly
-		Rectangle2D bbox = ViewUtils.getNodeBoundingBox(node, view, position, scale);
 		double height = bbox.getHeight();
 		double width = bbox.getWidth();
 		
@@ -146,7 +145,11 @@ public class HeatStrip implements NodeChartViewer {
 
 			double h = (0.5 * height) * (val / max);
 
-			barArray[i] = new Rectangle2D.Double(px1, py1, w, h);
+			// Outline the bars for clarity
+			Rectangle2D outline = new Rectangle2D.Double(px1, py1, w, h);
+			cgList.add(new CustomGraphic(outline, new DefaultPaintFactory(Color.BLACK)));
+
+			barArray[i] = new Rectangle2D.Double(px1+0.2, py1+0.2, w-0.2, h-0.2);
 			// System.out.println ("Got rectangle from: " + px1 + "," + py1 + " of width " + w + " and height " + h);
 			maxY = Math.max(maxY, barArray[i].getMaxY());
 			
@@ -176,6 +179,8 @@ public class HeatStrip implements NodeChartViewer {
 				cgList.add(c1);
 			}
 		}
+		CustomGraphic cLine  = new CustomGraphic(new Rectangle2D.Double(x, yMid, width, .5), new DefaultPaintFactory(Color.BLACK));
+		cgList.add(cLine);
 		return cgList;
 	}
 

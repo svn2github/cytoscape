@@ -33,6 +33,7 @@
 package nodeCharts.view;
 
 // System imports
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public interface NodeChartViewer {
 	public Map<String,String> getOptions();
 
 	public List<CustomGraphic> getCustomGraphics(Map<String,Object>args, List<Double> values, List<String> labels,
-	                                             CyNode node, CyNetworkView view, Object position, double scale) 
+	                                             Rectangle2D bbox, CyNetworkView view) 
 	                                                                             throws CyCommandException;
 
 }
