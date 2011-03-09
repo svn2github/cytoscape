@@ -187,6 +187,7 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
 
                     if (t3.matches("nodeSizeLocked|arrowColorMatchesEdge|nodeLabelColorFromNodeColor|"
                                    + "defaultNodeShowNestedNetwork|nodeCustomGraphicsSizeSync|"
+                                   + "((node|edge)LabelColor)|"
                                    + "((node|edge)[a-zA-Z]+Calculator)|"
                                    + "(default(Node|Edge|Background|SloppySelection)[a-zA-Z0-9]+)")) {
                         // It looks like the second token is the style name!
@@ -229,7 +230,7 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
 
         if (key != null) {
             b |= key.matches("(node|edge)AppearanceCalculator\\.[^\\.]+\\."
-                             + "\\1((CustomGraphics(Position)?\\d+)|([a-zA-Z]+Calculator))");
+                             + "\\1((CustomGraphics(Position)?\\d+)|LabelColor|([a-zA-Z]+Calculator))");
         }
 
         return b;
@@ -327,10 +328,39 @@ public class VisualStyleSerializerImpl implements VisualStyleSerializer {
 // TODO: refactor and make it public
 class CalcConverter {
 
+    /** This type corresponds to java.lang.Boolean. */
     public final byte TYPE_BOOLEAN = 1;
+    /** This type corresponds to java.lang.Double. */
     public final byte TYPE_FLOATING_POINT = 2;
+    /** This type corresponds to java.lang.Integer. */
     public final byte TYPE_INTEGER = 3;
+    /** This type corresponds to java.lang.String. */
     public final byte TYPE_STRING = 4;
+    /** This type corresponds to an attribute which has not been defined. */
+    public final byte TYPE_UNDEFINED = -1;
+    /**
+     * This type corresponds to a 'simple' list.
+     * <P>
+     * A 'simple' list is defined as follows:
+     * <UL>
+     * <LI>All items within the list are of the same type, and are chosen
+     * from one of the following: <CODE>Boolean</CODE>, <CODE>Integer</CODE>,
+     * <CODE>Double</CODE> or <CODE>String</CODE>.
+     * </UL>
+     */
+    public final byte TYPE_SIMPLE_LIST = -2;
+    /**
+     * This type corresponds to a 'simple' hash map.
+     * <P>
+     * A 'simple' map is defined as follows:
+     * <UL>
+     * <LI>All keys within the map are of type:  <CODE>String</CODE>.
+     * <LI>All values within the map are of the same type, and are chosen
+     * from one of the following: <CODE>Boolean</CODE>, <CODE>Integer</CODE>,
+     * <CODE>Double</CODE> or <CODE>String</CODE>.
+     * </UL>
+     */
+    public final byte TYPE_SIMPLE_MAP = -3;
 
     private static final Map<Class<? extends CyTableEntry>, Map<String, CalcConverter>> converters;
 
@@ -436,6 +466,7 @@ class CalcConverter {
                             dataValue = Integer.parseInt(sk);
                             break;
                         default:
+                            // TODO: Always handle List type as String?
                             break;
                     }
 

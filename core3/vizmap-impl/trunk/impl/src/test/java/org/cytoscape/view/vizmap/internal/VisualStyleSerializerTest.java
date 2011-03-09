@@ -196,6 +196,7 @@ public class VisualStyleSerializerTest extends AbstractVisualStyleSerializerTest
         assertTrue(VisualStyleSerializerImpl.isMappingFunction("nodeAppearanceCalculator.My style.nodeCustomGraphics1"));
         assertTrue(VisualStyleSerializerImpl.isMappingFunction("nodeAppearanceCalculator.My style.nodeCustomGraphicsPosition4"));
         assertTrue(VisualStyleSerializerImpl.isMappingFunction("edgeAppearanceCalculator.default.edgeColorCalculator"));
+        assertTrue(VisualStyleSerializerImpl.isMappingFunction("nodeAppearanceCalculator.galFiltered Style.nodeLabelColor"));
         
         assertFalse(VisualStyleSerializerImpl.isMappingFunction("nodeAppearanceCalculator.My style.nodeSizeLocked"));
         assertFalse(VisualStyleSerializerImpl.isMappingFunction("nodeAppearanceCalculator.My style.defaultNodeShowNestedNetwork"));
