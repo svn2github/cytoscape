@@ -36,7 +36,7 @@ public class QuickStartTaskFactory implements TaskFactory {
 	
 	private final ImportTaskUtil util;
 	
-	public QuickStartTaskFactory(ImportTaskUtil util) {
+	public QuickStartTaskFactory(final ImportTaskUtil util) {
 		this.util = util;
 	}
 

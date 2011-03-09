@@ -39,6 +39,8 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
+import org.cytoscape.model.CyTable;
+
 class QuickStartState {
 
 	enum Job { 
@@ -49,6 +51,8 @@ class QuickStartState {
 	}
 	
 	private IDType idType;
+	private CyTable table;
+	private String keyColumnName;
 
 	private final Set<Job> completedSoFar = Collections.synchronizedSet(EnumSet.noneOf(Job.class));
 	
@@ -60,11 +64,27 @@ class QuickStartState {
 		return (completedSoFar.size() == Job.values().length);
 	}
 	
-	public IDType getIDType() {
+	IDType getIDType() {
 		return this.idType;
 	}
 	
-	public void setIDType(IDType idType) {
+	void setIDType(IDType idType) {
 		this.idType = idType;
+	}
+	
+	void setImportedTable(final CyTable table) {
+		this.table = table;
+	}
+	
+	CyTable getImportedTable() {
+		return this.table;
+	}
+	
+	void setKeyColumnName(String columnName) {
+		this.keyColumnName = columnName;
+	}
+	
+	String getKeyColumnName() {
+		return keyColumnName;
 	}
 }

@@ -14,6 +14,9 @@ public class SelectNetworkIdTypeTask extends AbstractTask {
 	@Tunable(description="Select Network ID Type")
 	public final ListSingleSelection<String> selection;
 	
+	@Tunable(description="Or, enter ID Type")
+	public String otherIDType;
+	
 	private final QuickStartState state;
 
 	public SelectNetworkIdTypeTask(final QuickStartState state) {
@@ -26,7 +29,9 @@ public class SelectNetworkIdTypeTask extends AbstractTask {
 
 	@Override
 	public void run(TaskMonitor monitor) throws Exception {
-		System.out.println("ID type selected for network.  Selected type = " + selection.getSelectedValue());
+		final String selected = selection.getSelectedValue();
+		
+		System.out.println("ID type selected for network.  Selected type = " + selected);
 		state.finished(Job.SELECT_NETWORK_ID_TYPE);
 		
 		if(state.isFinished()) {
