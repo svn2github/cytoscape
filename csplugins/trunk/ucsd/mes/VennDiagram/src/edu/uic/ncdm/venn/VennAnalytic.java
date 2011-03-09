@@ -251,6 +251,7 @@ public class VennAnalytic {
     }
 
     private void calculateAreas() {
+		polyAreas = new double[nPolygons];
         totalCount = 0;
         int size = 200;
         byte[][][] bis = new byte[nCircles][size][size];
@@ -532,8 +533,8 @@ public class VennAnalytic {
                         continue;
                     int ko = k + offset;
                     double resid = polyAreas[i] - polyHats[i];
-                    double dx = resid * stepsize * (centers[jo][0] - centers[ko][0]);
-                    double dy = resid * stepsize * (centers[jo][1] - centers[ko][1]);
+                    double dx = 0.5 * resid * stepsize * (centers[jo][0] - centers[ko][0]);
+                    double dy = 0.5 * resid * stepsize * (centers[jo][1] - centers[ko][1]);
                     gradients[jo][0] += dx;
                     gradients[jo][1] += dy;
                     gradients[ko][0] -= dx;

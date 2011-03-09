@@ -8,7 +8,7 @@ pluginName=VennDiagramGenerator
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=This plugin generates a Venn/Euler Diagram of shared nodes for a selection of networks.
+pluginDescription=This plugin generates a Venn/Euler diagram of shared nodes for a selection of networks. The diagram generation algorithm is described in <a href=http://www.computer.org/portal/web/csdl/doi/10.1109/TVCG.2011.56>Exact and Approximate Area-proportional Circular Venn and Euler Diagrams</a> by Leland Wilkinson.
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=@version@
