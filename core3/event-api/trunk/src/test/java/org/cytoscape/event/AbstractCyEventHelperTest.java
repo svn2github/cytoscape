@@ -251,4 +251,54 @@ public abstract class AbstractCyEventHelperTest extends TestCase {
 		microEventSource.testFire( helper, 10 );
 		assertEquals("number of calls", 1,stub1.getNumCalls());
 	}
+
+	public void testMultipleSameClassRowListenersAddedAndRemoved() {
+
+        StubCyMicroListener stub1 = new StubCyMicroListenerImpl();
+        helper.addMicroListener(stub1, StubCyMicroListener.class, microEventSource);
+
+        StubCyMicroListener stub2 = new StubCyMicroListenerImpl();
+        helper.addMicroListener(stub2, StubCyMicroListener.class, microEventSource);
+
+        StubCyMicroListener stubOther = new OtherStubCyMicroListenerImpl();
+        helper.addMicroListener(stubOther, StubCyMicroListener.class, microEventSource);
+
+		microEventSource.testFire( helper, 10 );
+
+		assertEquals( 1, stub1.getNumCalls() );
+		assertEquals( 1, stub2.getNumCalls() );
+		assertEquals( 1, stubOther.getNumCalls() );
+
+		microEventSource.testFire( helper, 11 );
+
+		assertEquals( 2, stub1.getNumCalls() );
+		assertEquals( 2, stub2.getNumCalls() );
+		assertEquals( 2, stubOther.getNumCalls() );
+
+        helper.removeMicroListener(stub1, StubCyMicroListener.class, microEventSource);
+
+		microEventSource.testFire( helper, 12 );
+
+		assertEquals( 2, stub1.getNumCalls() );
+		assertEquals( 3, stub2.getNumCalls() );
+		assertEquals( 3, stubOther.getNumCalls() );
+	}
+
+	private class OtherStubCyMicroListenerImpl implements StubCyMicroListener {
+		int called = 0;
+		int eventValue = Integer.MIN_VALUE;
+
+		public void handleMicroEvent(int x) {
+			called++;
+			eventValue = x;
+		}
+	
+		public int getNumCalls() { return called; }
+	
+		public int getEventValue() { return eventValue; }
+	
+		public String toString() {
+			return "OtherStubCyMicroListenerImpl: " + called + " " + eventValue;
+		}
+	}
 }

@@ -36,40 +36,20 @@
 
 package org.cytoscape.event;
 
-/**
- * DOCUMENT ME!
-  */
 public class StubCyMicroListenerImpl implements StubCyMicroListener {
 	int called = 0;
 	int eventValue = Integer.MIN_VALUE;
 
-	public StubCyMicroListenerImpl() {
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param e DOCUMENT ME!
-	 */
 	public void handleMicroEvent(int x) {
 		called++;
 		eventValue = x;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int getNumCalls() {
-		return called;
-	}
+	public int getNumCalls() { return called; }
 
-	public int getEventValue() {
-		return eventValue;
-	}
+	public int getEventValue() { return eventValue; }
 
 	public String toString() {
-		return "StubCyMicroListenerImpl: " + Integer.toString(called) + " " + Integer.toString(eventValue);
+		return "StubCyMicroListenerImpl: " + called + " " + eventValue;
 	}
 }
