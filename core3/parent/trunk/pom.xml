@@ -9,15 +9,20 @@
 
 
 	<properties>
-		<!-- Eventually, we need to move all important system bundle version numbers 
-			here because the version should be consistent for all modules. -->
-		<!-- System Bundle Versions -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 		<spring.version>2.5.6</spring.version>
 		<spring.osgi.version>1.2.1</spring.osgi.version>
 		<junit.version>4.8.1</junit.version>
-		<maven-bundle-plugin.version>2.1.0</maven-bundle-plugin.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<mockito.version>1.8.1</mockito.version>
 		<pax.exam.version>1.2.2</pax.exam.version>
+		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+		<maven-javadoc-plugin.version>2.7</maven-javadoc-plugin.version>
+		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
+		<maven-release-plugin.version>2.3.1</maven-release-plugin.version>
+		<maven-pax-plugin.version>1.5-SNAPSHOT</maven-pax-plugin.version>
+		<maven-bundle-plugin.version>2.1.0</maven-bundle-plugin.version>
+		<maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
 	</properties>
 
 	<distributionManagement>
@@ -39,7 +44,7 @@
 				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -59,7 +64,7 @@
 				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
+				<version>${maven-javadoc-plugin.version}</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
 					<locale>en</locale>
@@ -92,7 +97,7 @@
 				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
+				<version>${maven-source-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -106,7 +111,7 @@
 				<inherited>false</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.1</version>
+				<version>${maven-release-plugin.version}</version>
 				<configuration>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<goals>deploy</goals>
@@ -214,8 +219,15 @@
 		<pluginRepository>
 			<id>maven2-repository.dev.java.net</id>
 			<name>Java.net Maven 2 Repository</name>
-			<url>http://download.java.net/maven/2
-			</url>
+			<url>http://download.java.net/maven/2</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>ops4j-snapshots</id>
+			<name>OPS4J Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/ops4j-snapshots</url>
+            <snapshots>
+              <enabled>true</enabled>
+            </snapshots>
 		</pluginRepository>
 	</pluginRepositories>
 
