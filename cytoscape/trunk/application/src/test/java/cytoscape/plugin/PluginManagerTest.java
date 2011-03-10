@@ -675,8 +675,8 @@ public class PluginManagerTest extends TestCase {
 	/*--------------------------------------------------------------------*/
 	private File copyFileToTempDir(File fileToCopy) {
 
-		File tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "2.6");
-//				new CytoscapeVersion().getMajorVersion());
+		File tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + //"2.6");
+				new CytoscapeVersion().getMajorVersion());
 		File tempFile = new File(tempDir, "track_plugins.xml");
 		
 		assertTrue(fileToCopy.exists());
