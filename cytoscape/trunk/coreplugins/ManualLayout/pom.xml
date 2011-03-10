@@ -49,7 +49,7 @@
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>nerius-math-xform</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 

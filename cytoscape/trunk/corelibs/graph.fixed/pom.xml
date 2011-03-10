@@ -41,7 +41,7 @@
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>util-intr</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 

@@ -41,7 +41,7 @@
                  <artifactItem>
                    <groupId>cytoscape.corelibs</groupId>
                    <artifactId>docs</artifactId>
-                   <version>${version}</version>
+                   <version>${project.version}</version>
                    <type>zip</type>
                    <classifier>javahelp</classifier>
                    <overWrite>true</overWrite>
@@ -75,6 +75,7 @@
         <plugin>
           <groupId>org.jvnet.jaxb2.maven2</groupId>
           <artifactId>maven-jaxb2-plugin</artifactId>
+          <version>0.7.4</version>
             <executions>
               <execution>
                 <id>session</id>
@@ -156,6 +157,22 @@
               </goals>
             </execution>
           </executions>
+		  <!-- We need to specify this so that we can exclude fop, 
+		       otherwise we get duplicate XML libs, which cause problems. -->
+          <dependencies>
+            <dependency>
+              <groupId>batik</groupId>
+              <artifactId>batik-rasterizer-ext</artifactId>
+              <version>1.6-1</version>
+              <scope>compile</scope>
+              <exclusions>
+                <exclusion>
+                  <artifactId>fop</artifactId>
+                  <groupId>fop</groupId>
+                </exclusion>
+              </exclusions>
+            </dependency>
+          </dependencies>
         </plugin>
       </plugins>
   </build>
@@ -190,15 +207,7 @@
         <pluginRepository>
             <id>maven2-repository.dev.java.net</id>
             <name>Java.net Maven 2 Repository</name>
-            <url>http://download.java.net/maven/2
-            </url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>maven-repository.dev.java.net</id>
-            <name>Java.net Maven 1 Repository (legacy)</name>
-            <url>http://download.java.net/maven/1
-            </url>
-            <layout>legacy</layout>
+            <url>http://download.java.net/maven/2</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -206,92 +215,92 @@
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>util-intr</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>graph-dynamic</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>graph-fixed</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>giny</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>render-immed</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>render-stateful</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>render-export</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>fing</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>phoebe-dnd</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>geom-spacial</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>geom-rtree</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>undo-support</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>equations</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>task</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>ding</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>obo</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>commons-cli-1-x-cytocape-custom</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>docs</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
       <classifier>javahelp</classifier>
       <type>zip</type>
     </dependency>

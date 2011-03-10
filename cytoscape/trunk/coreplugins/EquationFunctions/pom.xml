@@ -49,7 +49,7 @@
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>equations</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

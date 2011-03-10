@@ -4,7 +4,7 @@
 
   <groupId>${groupId}</groupId>
   <artifactId>${artifactId}</artifactId>
-  <version>${version}</version>
+  <version>${project.version}</version>
   <packaging>jar</packaging>
   <name>sample-plugin</name>
 

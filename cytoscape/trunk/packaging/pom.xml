@@ -120,19 +120,19 @@
     <dependency>
       <groupId>cytoscape</groupId>
       <artifactId>cytoscape</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
       <type>zip</type>
     </dependency>
     <dependency>
       <groupId>cytoscape</groupId>
       <artifactId>cytoscape</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
       <type>tar.gz</type>
     </dependency>
     <dependency>
       <groupId>cytoscape</groupId>
       <artifactId>javadoc</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
   </dependencies>

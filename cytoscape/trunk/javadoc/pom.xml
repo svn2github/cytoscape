@@ -24,8 +24,8 @@
           <links>
             <link>http://download.oracle.com/javase/1.5.0/docs/api/</link>
           </links>
-          <footer>Cytoscape ${version} API</footer>
-          <header>Cytoscape ${version} API</header>
+          <footer>Cytoscape ${project.version} API</footer>
+          <header>Cytoscape ${project.version} API</header>
           <bottom>Copyright 2010 Cytoscape Consortium.  All rights reserved.</bottom>
           <maxmemory>2g</maxmemory>
           <additionalJOption>-J-Xmx2g</additionalJOption>
@@ -83,94 +83,94 @@
     <dependency>
       <groupId>cytoscape</groupId>
       <artifactId>application</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
 
     <!-- corelibs -->
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>util-intr</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>graph-dynamic</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>graph-fixed</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>giny</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>render-immed</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>render-stateful</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>render-export</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>fing</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>phoebe-dnd</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>geom-spacial</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>geom-rtree</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>undo-support</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>equations</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>task</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>ding</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>obo</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>commons-cli-1-x-cytocape-custom</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 </project>

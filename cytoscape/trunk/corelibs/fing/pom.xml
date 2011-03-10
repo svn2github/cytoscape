@@ -41,22 +41,22 @@
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>util-intr</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>graph-dynamic</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>graph-fixed</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>cytoscape.corelibs</groupId>
       <artifactId>giny</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 
