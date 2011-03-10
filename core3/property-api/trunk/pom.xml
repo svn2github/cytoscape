@@ -32,13 +32,13 @@
 			<plugin>
 				<groupId>org.ops4j</groupId>
 				<artifactId>maven-pax-plugin</artifactId>
-				<version>1.5-SNAPSHOT</version>
+				<version>${maven-pax-plugin.version}</version>
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>1.4.3</version>
+				<version>${maven-bundle-plugin.version}</version>
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
@@ -51,6 +51,7 @@
 			<plugin>
 				<groupId>org.jvnet.jaxb2.maven2</groupId>
 				<artifactId>maven-jaxb2-plugin</artifactId>
+				<version>0.7.4</version>
 				<executions>
 					<execution>
 						<id>session</id>

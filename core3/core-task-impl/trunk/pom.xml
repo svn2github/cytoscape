@@ -21,11 +21,11 @@
 
 	<packaging>bundle</packaging>
 
-    <scm>
-        <connection>scm:svn:http://chianti.ucsd.edu/svn/core3/core-task-impl/trunk</connection>
-        <developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/core-task-impl/trunk</developerConnection>
-        <url>http://chianti.ucsd.edu/svn/core3/core-task-impl/trunk</url>
-    </scm>
+	<scm>
+        	<connection>scm:svn:http://chianti.ucsd.edu/svn/core3/core-task-impl/trunk</connection>
+		<developerConnection>scm:svn:svn+ssh://grenache.ucsd.edu/cellar/common/svn/core3/core-task-impl/trunk</developerConnection>
+		<url>http://chianti.ucsd.edu/svn/core3/core-task-impl/trunk</url>
+	</scm>
 
 	<repositories>
 		<!-- bootstrap for cytoscape dependencies, namely the parent POM snapshots -->
@@ -72,7 +72,7 @@
 			<plugin>
 				<groupId>org.ops4j</groupId>
 				<artifactId>maven-pax-plugin</artifactId>
-				<version>1.4</version>
+				<version>${maven-pax-plugin.version}</version>
 				<!-- | enable improved OSGi compilation support for the bundle life-cycle. 
 					| to switch back to the standard bundle life-cycle, move this setting | down 
 					to the maven-bundle-plugin section -->

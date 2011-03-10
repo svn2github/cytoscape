@@ -41,6 +41,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 				</configuration>
@@ -48,7 +49,7 @@
 			<plugin>
 				<groupId>org.ops4j</groupId>
 				<artifactId>maven-pax-plugin</artifactId>
-				<version>1.4</version>
+				<version>${maven-pax-plugin.version}</version>
 				<!--
 					| enable improved OSGi compilation support for the bundle
 					life-cycle. | to switch back to the standard bundle life-cycle,
@@ -59,7 +60,7 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>1.4.3</version>
+				<version>${maven-bundle-plugin.version}</version>
 				<!--
 					| the following instructions build a simple set of public/private
 					classes into an OSGi bundle

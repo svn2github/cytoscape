@@ -23,6 +23,7 @@
 		<maven-pax-plugin.version>1.5-SNAPSHOT</maven-pax-plugin.version>
 		<maven-bundle-plugin.version>2.1.0</maven-bundle-plugin.version>
 		<maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
+		<maven-surefire-plugin.version>2.7.1</maven-jar-surefire.version>
 	</properties>
 
 	<distributionManagement>
