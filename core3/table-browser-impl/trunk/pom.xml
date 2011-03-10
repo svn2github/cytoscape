@@ -44,12 +44,30 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-						<Bundle-Version>${pom.version}</Bundle-Version>
+						<Bundle-Version>${project.version}</Bundle-Version>
 						<_include>-osgi.bnd</_include>
 					</instructions>
 				</configuration>
 			</plugin>
 <!--
+			<plugin>
+				<groupId>org.cytoscape.mavenplugins</groupId>
+				<artifactId>cytoscape-profiler-maven-plugin</artifactId>
+				<version>1.0-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>profiler</goal>
+						</goals>
+						<configuration>
+							<baselineVersion>3.0.0-alpha1</baselineVersion>
+							<argLine>-Xmx256m</argLine>
+							<redirectTestOutputToFile>true</redirectTestOutputToFile>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.cytoscape.mavenplugins</groupId>
 				<artifactId>cytoscape-profiler-maven-plugin</artifactId>
