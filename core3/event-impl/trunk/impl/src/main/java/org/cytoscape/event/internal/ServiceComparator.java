@@ -42,8 +42,16 @@ import java.util.Comparator;
  */
 class ServiceComparator implements Comparator<Object> {
 	public int compare(Object a, Object b) {
-		final int aId = a.getClass().getName().hashCode();
-		final int bId = b.getClass().getName().hashCode(); 
+		final Class<?> aCl = a.getClass();
+		final Class<?> bCl = b.getClass();
+		final int aId, bId;
+		if (aCl == bCl) {
+			aId = a.hashCode();
+			bId = b.hashCode();
+		} else {
+			aId = aCl.getName().hashCode();
+			bId = bCl.getName().hashCode();
+		}
 		if ( aId < bId ) 
 			return -1;
 		else if ( aId > bId )

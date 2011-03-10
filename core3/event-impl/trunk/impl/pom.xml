@@ -25,6 +25,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 				</configuration>
@@ -32,7 +33,7 @@
 			<plugin>
 				<groupId>org.ops4j</groupId>
 				<artifactId>maven-pax-plugin</artifactId>
-				<version>1.4</version>
+				<version>${maven-pax-plugin.version}</version>
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
@@ -42,7 +43,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-						<Bundle-Version>${pom.version}</Bundle-Version>
+						<Bundle-Version>${project.version}</Bundle-Version>
 						<_include>-osgi.bnd</_include>
 					</instructions>
 				</configuration>

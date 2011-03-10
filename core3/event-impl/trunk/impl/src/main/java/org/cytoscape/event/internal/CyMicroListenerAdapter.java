@@ -133,25 +133,26 @@ public class CyMicroListenerAdapter {
 			SortedSet<Object> classListeners = sourceListeners.get(clazz);
 			if ( classListeners != null ) {
 				classListeners.remove(service);
-				if ( classListeners.size() == 0 )
+				if ( classListeners.size() == 0 ) {
 					sourceListeners.remove( clazz );
+
+					// this gets rid of the reference to the source object, which should
+					// help with garbage collection
+					if ( sourceListeners.size() == 0 )
+						listeners.remove(source);
+
+					// clean up the proxys
+					Map<Class<?>,Object> sourceProxys = proxys.get(source);
+					if ( sourceProxys != null ) {
+						sourceProxys.remove(clazz);
+
+						// this gets rid of the reference to the source object, which should
+						// help with garbage collection
+						if ( sourceProxys.size() == 0 )
+							proxys.remove(source);
+					}
+        		}
 			}
-					
-			// this gets rid of the reference to the source object, which should
-			// help with garbage collection
-			if ( sourceListeners.size() == 0 )
-				listeners.remove(source);
-		}
-
-		// clean up the proxys
-		Map<Class<?>,Object> sourceProxys = proxys.get(source);
-		if ( sourceProxys != null ) {
-			sourceProxys.remove(clazz);
-
-			// this gets rid of the reference to the source object, which should
-			// help with garbage collection
-			if ( sourceProxys.size() == 0 )
-				proxys.remove(source);
 		}
 	}
 
