@@ -52,7 +52,7 @@
     <dependency>
       <groupId>org.cytoscape</groupId>
       <artifactId>cmdline</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <!-- This is to get the the felix framework into the bundle. -->
     <dependency>
