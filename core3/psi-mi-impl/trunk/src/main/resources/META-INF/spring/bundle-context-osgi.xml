@@ -28,6 +28,15 @@
 		</osgi:service-properties>
 	</osgi:service>
 	
+	<osgi:service id="psiMiTabReaderFactoryService" ref="psiMiTabReaderFactory"
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
+		<osgi:service-properties>
+			<entry key="serviceType" value="psiMiTabReaderFactory" />
+			<entry key="readerId" value="psiMiTabReader" />
+			<entry key="readerDescription" value="PSI-MI tab file reader" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 	<osgi:service id="psiMi1NetworkViewWriterFactoryService" ref="psiMi1NetworkViewWriterFactory"
 		interface="org.cytoscape.io.write.CyNetworkViewWriterFactory">
 	</osgi:service>

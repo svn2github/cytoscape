@@ -35,6 +35,8 @@
 		<constructor-arg value="PSI-MI Level 2.5" />
 		<constructor-arg ref="streamUtilRef" />
 	</bean>
+	
+	<bean id="psiMiTabFilter" class="org.cytoscape.psi_mi.internal.plugin.PsiMiTabCyFileFilter" />
 
 	<bean id="psiMiNetworkViewTaskFactory" class="org.cytoscape.psi_mi.internal.plugin.PsiMiNetworkViewTaskFactory">
 		<constructor-arg ref="psiMiFilter" />
@@ -51,5 +53,12 @@
 	<bean id="psiMi25NetworkViewWriterFactory" class="org.cytoscape.psi_mi.internal.plugin.PsiMiNetworkWriterFactory">
 		<constructor-arg type="org.cytoscape.psi_mi.internal.plugin.SchemaVersion" value="LEVEL_2_5" />
 		<constructor-arg ref="psiMi25Filter"/>
+	</bean>
+	
+	<bean id="psiMiTabReaderFactory" class="org.cytoscape.psi_mi.internal.plugin.PsiMiTabReaderFactory">
+		<constructor-arg ref="psiMiTabFilter" />
+		<constructor-arg ref="cyNetworkViewFactoryServiceRef" />
+		<constructor-arg ref="cyNetworkFactoryServiceRef" />
+		<constructor-arg ref="cyLayoutsServiceRef" />
 	</bean>
 </beans>
