@@ -724,11 +724,11 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 				: (currentNameAndTime.getExecutionTime() - baselineNameAndTime.getExecutionTime())
 				  / baselineNameAndTime.getExecutionTime());
 			if (percentageDifference > maxPerformanceDecreasePercentage) {
-				getLog().error("currentNameAndTime.getClassAndMethodName() is " + percentageDifference
+				getLog().error(currentNameAndTime.getClassAndMethodName() + " is " + percentageDifference
 					       + "% slower than the baseline version!");
 				failed = true;
 			} else if (percentageDifference > 0.0)
-				getLog().info("currentNameAndTime.getClassAndMethodName() is " + percentageDifference
+				getLog().info(currentNameAndTime.getClassAndMethodName() + " is " + percentageDifference
 					       + "% slower than the baseline version.");
 		}
 
@@ -872,7 +872,6 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 		} catch (final ArtifactNotFoundException anfe) {
 			throw new MojoExecutionException("Failed to find an artifact!", anfe);
 		}
-		getLog().info("+++ ProfilerMojo: resolved " + artifact);
 	}
 
 	protected boolean verifyParameters() throws MojoFailureException {
