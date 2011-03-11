@@ -1,26 +1,29 @@
 package org.cytoscape.tableimport.internal;
 
 import java.io.IOException;
+import javax.swing.JPanel;
 import javax.xml.bind.JAXBException;
 import org.cytoscape.tableimport.internal.ui.ImportTextTableDialog;
-import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.work.AbstractTask;
+import org.cytoscape.work.ProvidesGUI;
 import org.cytoscape.work.TaskMonitor;
 
 public class ImportAttributeTableTask extends AbstractTask {
 
+	private ImportTextTableDialog importDialog = null;
+	
 	public ImportAttributeTableTask(){
 		
 	}
-	
-	public void run(TaskMonitor e) {
-		ImportTextTableDialog iad;
+
+	@ProvidesGUI
+	public JPanel getGUI() { 
+		
+		JPanel myPanel = new JPanel();
 
 		try {
-			iad = new ImportTextTableDialog(CytoscapeServices.desktop.getJFrame(), true, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
-			iad.pack();
-			iad.setLocationRelativeTo(CytoscapeServices.desktop.getJFrame());
-			iad.setVisible(true);
+			this.importDialog = new ImportTextTableDialog(true, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
+			
 		} catch (JAXBException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -28,5 +31,24 @@ public class ImportAttributeTableTask extends AbstractTask {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		if (importDialog != null){
+			myPanel.add(importDialog);
+		}
+		
+		return myPanel; 
 	}
+	
+	
+	public void run(TaskMonitor e) {
+		
+		try {
+			this.importDialog.importButtonActionPerformed();
+			if (this.importDialog.getLoadTask() != null){
+				insertTasksAfterCurrentTask(this.importDialog.getLoadTask());				
+			}
+		}
+		catch (Exception ex){
+		}
+	}	
 }
