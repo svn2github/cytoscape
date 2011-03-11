@@ -1843,12 +1843,15 @@
          * Do NOT redefine this function!!!
          * @ignore
          */
-        _dispatch: function (functionName, jsonArg) {
-            var arg = null;
-            if (jsonArg != null) { arg = JSON.parse(jsonArg); }
-            var ret = this[functionName](arg);
-            return ret;
-        },
+         _dispatch: function (functionName, jsonArg) {
+             var arg = null;
+             if (jsonArg != null) {
+             	jsonArg = jsonArg.replace(/\n/g, '\\n');
+             	arg = JSON.parse(jsonArg);
+             }
+             var ret = this[functionName](arg);
+             return ret;
+         },
 
         /**
          * Just a proxy to hasListener.
