@@ -142,13 +142,14 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.tableimport.internal.util.CytoscapeServices;
 import org.cytoscape.tableimport.internal.util.AttributeTypes;
+import org.cytoscape.work.Task;
 
 /**
  * Main UI for Table Import.
  *
  * @author kono
  */
-public class ImportTextTableDialog extends JDialog implements PropertyChangeListener,
+public class ImportTextTableDialog extends JPanel implements PropertyChangeListener,
                                                               TableModelListener {
 	
 	private static final long serialVersionUID = 7356378931577386260L;
@@ -264,12 +265,12 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	 * @throws JAXBException
 	 */
 	public ImportTextTableDialog(boolean modal) throws JAXBException, IOException {
-		this(CytoscapeServices.desktop.getJFrame(), modal, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
+		this(modal, ImportTextTableDialog.SIMPLE_ATTRIBUTE_IMPORT);
 	}
 
-	public ImportTextTableDialog(Frame parent, boolean modal, int dialogType)
+	public ImportTextTableDialog(boolean modal, int dialogType)
 	    throws JAXBException, IOException {
-		super(parent, modal);
+		//super(parent, modal);
 
 		// Default Attribute is node attr.
 		//selectedAttributes = Cytoscape.getNodeAttributes();
@@ -299,6 +300,10 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		attributeDataTypes = new ArrayList<Byte>();
 				
 		initComponents();
+		
+		// Hide two unwanted button
+		this.importButton.setVisible(false);
+		this.cancelButton.setVisible(false);		
 		
 		updateComponents();
 
@@ -539,7 +544,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		tp.setInitialDelay(40);
 		tp.setDismissDelay(50000);
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		//setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
 		titleIconLabel2.setIcon(RIGHT_ARROW_ICON.getIcon());
 
@@ -548,25 +553,25 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		titleSeparator.setForeground(java.awt.Color.blue);
 
 		importButton.setText("Import");
-		importButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					try {
-						importButtonActionPerformed(evt);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (Exception e) {
+		//importButton.addActionListener(new java.awt.event.ActionListener() {
+		//		public void actionPerformed(java.awt.event.ActionEvent evt) {
+		//			try {
+		//				importButtonActionPerformed(evt);
+		//			} catch (IOException e) {
+		//				e.printStackTrace();
+		//			} catch (Exception e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			});
+		//				e.printStackTrace();
+		//			}
+		//		}
+		//	});
 
 		cancelButton.setText("Cancel");
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					cancelButtonActionPerformed(evt);
-				}
-			});
+		//cancelButton.addActionListener(new java.awt.event.ActionListener() {
+		//		public void actionPerformed(java.awt.event.ActionEvent evt) {
+		//			cancelButtonActionPerformed(evt);
+		//		}
+		//	});
 
 		helpButton.setBackground(new java.awt.Color(255, 255, 255));
 		helpButton.setText("?");
@@ -1513,7 +1518,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		ontology2annotationPanel.setVisible(false);
 		textImportOptionPanel.setVisible(false);
 
-		pack();
+		//pack();
 	} // </editor-fold>
 
 	/**
@@ -1614,7 +1619,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			ontology2annotationPanel.setVisible(false);
 		}
 
-		pack();
+		//pack();
 	}
 
 	/**
@@ -1704,9 +1709,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		repaint();
 	}
 
-	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		dispose();
-	}
+	//private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//dispose();
+	//}
 
 	/**
 	 * Load from the data source.<br>
@@ -1714,7 +1719,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	 * @param evt
 	 * @throws Exception
 	 */
-	private void importButtonActionPerformed(ActionEvent evt) throws Exception {
+	public void importButtonActionPerformed() throws Exception {
 		if (checkDataSourceError() == false)
 			return;
 		
@@ -2086,10 +2091,6 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			default:
 				return;
 		}
-
-		//Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
-
-		dispose();
 	}
 
 	private void ontologyInAnnotationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
@@ -2221,7 +2222,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			textImportOptionPanel.setVisible(false);
 		}
 
-		pack();
+		//pack();
 	}
 
 	
@@ -2313,12 +2314,12 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		 * Do misc. GUI setups
 		 */
 		if (dialogType == SIMPLE_ATTRIBUTE_IMPORT) {
-			setTitle("Import Annotation File");
+			//setTitle("Import Annotation File");
 			titleLabel.setText("Import Attribute from Table");
 			annotationAndOntologyImportPanel.setVisible(false);
 			importAllCheckBox.setVisible(true);
 		} else if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
-			setTitle("Import Ontology Data and Annotations");
+			//setTitle("Import Ontology Data and Annotations");
 			titleLabel.setText("Import Ontology and Annotation");
 			ontology2annotationPanel.setVisible(false);
 			/*
@@ -2332,7 +2333,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 			ontologyTextField.setText(ontologyComboBox.getSelectedItem().toString());
 		} else if (dialogType == NETWORK_IMPORT) {
-			setTitle("Import Network and Edge Attributes from Table");
+			//setTitle("Import Network and Edge Attributes from Table");
 			titleLabel.setText("Import Network from Table");
 			annotationAndOntologyImportPanel.setVisible(false);
 
@@ -2344,7 +2345,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		startRowLabel.setEnabled(false);
 		previewPanel.getPreviewTable().getTableHeader().setReorderingAllowed(false);
 		setRadioButtonGroup();
-		pack();
+		//pack();
 
 		if (dialogType == NETWORK_IMPORT){
 			// do nothing
@@ -2688,8 +2689,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			setStatusBar(sourceURL);
 		}
 
-		pack();
-		repaint();
+		//pack();
+		//repaint();
 
 		reloadButton.setEnabled(true);
 		startRowSpinner.setEnabled(true);
@@ -3094,11 +3095,18 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		
 		// Create loadAnnotation Task
 		ImportAttributeTableTask task = new ImportAttributeTableTask(reader, source);
-		ImportAttributeTableTaskFactory taskFactory = new ImportAttributeTableTaskFactory(task);
-
-		CytoscapeServices.guiTaskManagerServiceRef.execute(taskFactory);
+		
+		this.loadTask = task;
+		//ImportAttributeTableTaskFactory taskFactory = new ImportAttributeTableTaskFactory(task);
+		//CytoscapeServices.guiTaskManagerServiceRef.execute(taskFactory);
 	}
 
+	private Task loadTask = null;
+	
+	public Task getLoadTask(){
+		return loadTask;
+	}
+	
 	/**
 	 * Create task for ontology reader and run the task.<br>
 	 *
@@ -3154,9 +3162,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	                         boolean multi) {
 		// Create LoadNetwork Task
 		ImportNetworkTask task = new ImportNetworkTask(networkName, reader, source);
-		ImportNetworkTaskFactory taskFactory = new ImportNetworkTaskFactory(task);
-
-		CytoscapeServices.guiTaskManagerServiceRef.execute(taskFactory);
+		this.loadTask = task;
+		//ImportNetworkTaskFactory taskFactory = new ImportNetworkTaskFactory(task);
+		//CytoscapeServices.guiTaskManagerServiceRef.execute(taskFactory);
 	}
 
 	private void setStatusBar(String message1, String message2, String message3) {
@@ -3261,9 +3269,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	 *
 	 */
 	private void globalLayout() {
-		GroupLayout layout = new GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-
+		GroupLayout layout = new GroupLayout(this); //getContentPane());
+		//getContentPane().setLayout(layout);
+		this.setLayout(layout);
 		/*
 		 * Case 1: Simple Attribute Import
 		 */
@@ -3360,7 +3368,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 			                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
 			                                         .addContainerGap()));
-			pack();
+			//pack();
 		} else if (dialogType == ONTOLOGY_AND_ANNOTATION_IMPORT) {
 			layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 			                                .add(layout.createSequentialGroup().addContainerGap()
@@ -3557,7 +3565,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			// advancedOptionPanel.setVisible(false);
 		}
 
-		pack();
+		//pack();
 	}
 
 	// Variables declaration - do not modify
