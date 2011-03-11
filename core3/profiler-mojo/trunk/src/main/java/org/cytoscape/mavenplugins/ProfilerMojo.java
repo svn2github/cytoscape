@@ -618,32 +618,55 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 	 * @component
 	 */
 	private ToolchainManager toolchainManager;
-	
+
+	/**
+	 * @parameter groupId
+	 * @required
+	 */
+	private String groupId;
+
+	/**
+	 * @parameter artifactId
+	 * @required
+	 */
+	private String artifactId;
+
+	/**
+	 * @parameter currentVersion
+	 * @required
+	 */
+	private String currentVersion;
+
 	/**
 	 * @parameter baselineVersion
 	 * @required
 	 */
 	private String baselineVersion;
 
+	/**
+	 * @parameter default-value="10.0"
+	 */
+	private double maxPerformanceDecreasePercentage;
+
 	/** @component */
 	private ArtifactResolver resolver;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-System.err.println("+++++++++++++++++++++++++++ Entering execute()");
 		if (verifyParameters()) {
-System.err.println("+++++++++++++++++++++++++++ parameters are Ok");
 			if (hasExecutedBefore())
 				return;
 
 			logReportsDirectory();
 
-System.err.println("+++++++++++++++++++++++++++ about to call run()");
+			setClassesDirectory(getCurrentArtifact());
 			run();
 			final Set<ClassAndMethodNameAndExecutionTime> currentNamesAndTimes = getTestTimes();
-System.err.println("+++++++++++++++++++++++++++ after first run: " + currentNamesAndTimes);
+
+			setClassesDirectory(getBaselineArtifact());
 			run();
 			final Set<ClassAndMethodNameAndExecutionTime> baselineNamesAndTimes = getTestTimes();
-System.err.println("+++++++++++++++++++++++++++ after baseline run: " + baselineNamesAndTimes);
+
+			compareRuntimes(currentNamesAndTimes, baselineNamesAndTimes);
 		}
 	}
 
@@ -656,7 +679,6 @@ System.err.println("+++++++++++++++++++++++++++ after baseline run: " + baseline
 			ProviderInfo provider = (ProviderInfo) iter.next();
 			forkConfiguration = getForkConfiguration();
 			final Classpath bootClasspath = forkConfiguration.getBootClasspath();
-System.err.println("+++++++++++++++++++++++++++ class path is " + bootClasspath.getClassPath());
 			ClassLoaderConfiguration classLoaderConfiguration =
 				getClassLoaderConfiguration(forkConfiguration);
 			ForkStarter forkStarter =
@@ -682,6 +704,49 @@ System.err.println("+++++++++++++++++++++++++++ class path is " + bootClasspath.
 		SurefireHelper.reportExecution(this, result, getLog());
 	}
 
+	private void compareRuntimes(final Set<ClassAndMethodNameAndExecutionTime> currentNamesAndTimes,
+				     final Set<ClassAndMethodNameAndExecutionTime> baselineNamesAndTimes)
+		throws MojoFailureException
+	{
+		boolean failed = false;
+		for (final ClassAndMethodNameAndExecutionTime currentNameAndTime : currentNamesAndTimes) {
+			final ClassAndMethodNameAndExecutionTime baselineNameAndTime =
+				find(currentNameAndTime.getClassAndMethodName(), baselineNamesAndTimes);
+			if (baselineNameAndTime == null) {
+				getLog().warn("Missing test in baseline version: "
+					      + currentNameAndTime.getClassAndMethodName());
+				continue;
+			}
+
+			final double percentageDifference = 100.0 * (
+				baselineNameAndTime.getExecutionTime() == 0.0
+				? currentNameAndTime.getExecutionTime()
+				: (currentNameAndTime.getExecutionTime() - baselineNameAndTime.getExecutionTime())
+				  / baselineNameAndTime.getExecutionTime());
+			if (percentageDifference > maxPerformanceDecreasePercentage) {
+				getLog().error("currentNameAndTime.getClassAndMethodName() is " + percentageDifference
+					       + "% slower than the baseline version!");
+				failed = true;
+			} else if (percentageDifference > 0.0)
+				getLog().info("currentNameAndTime.getClassAndMethodName() is " + percentageDifference
+					       + "% slower than the baseline version.");
+		}
+
+		if (failed)
+			throw new MojoFailureException("One or more tests took too long relative to the baseline version!");
+	}
+
+	private ClassAndMethodNameAndExecutionTime find(final String classAndMethodName,
+							final Set<ClassAndMethodNameAndExecutionTime> namesAndTimes)
+	{
+		for (final ClassAndMethodNameAndExecutionTime nameAndTime : namesAndTimes) {
+			if (nameAndTime.getClassAndMethodName().equals(classAndMethodName))
+				return nameAndTime;
+		}
+
+		return null;
+	}
+
 	private Set<ClassAndMethodNameAndExecutionTime> getTestTimes() throws MojoExecutionException {
 		final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
@@ -693,7 +758,7 @@ System.err.println("+++++++++++++++++++++++++++ class path is " + bootClasspath.
 		for (final String fileName : fileNames) {
 			if (!fileName.startsWith("TEST-") || ! fileName.endsWith(".xml"))
 				continue;
-			
+
 			final InputStream input;
 			try {
 				input = new FileInputStream(new File(targetDir + "/" + fileName));
@@ -736,7 +801,27 @@ System.err.println("+++++++++++++++++++++++++++ class path is " + bootClasspath.
 		return result;
 	}
 
-	/*	
+	private File getCurrentArtifact() throws MojoExecutionException {
+		final Artifact artifact = project.getArtifact();
+		final Artifact baselineArtifact = artifactFactory.createArtifactWithClassifier(groupId, artifactId,
+											       currentVersion,
+											       artifact.getType(),
+											       artifact.getClassifier());
+		resolveDependencies(baselineArtifact);
+		return baselineArtifact.getFile();
+	}
+
+	private File getBaselineArtifact() throws MojoExecutionException {
+		final Artifact artifact = project.getArtifact();
+		final Artifact baselineArtifact = artifactFactory.createArtifactWithClassifier(groupId, artifactId,
+											       baselineVersion,
+											       artifact.getType(),
+											       artifact.getClassifier());
+		resolveDependencies(baselineArtifact);
+		return baselineArtifact.getFile();
+	}
+
+	/*
 	public void execute() throws MojoExecutionException {
 		getLog().info("+++ ProfilerMojo: base line version is " + baselineVersion + ", group ID: "
 			      + project.getGroupId() + ", artifact ID: " + project.getArtifactId());
