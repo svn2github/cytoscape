@@ -146,6 +146,8 @@ public abstract class AbstractTunableInterceptor<TH extends TunableHandler> impl
 			Map<String, Method> getMethodsMap = new HashMap<String,Method>();
 			Map<String, Tunable> tunableMap = new HashMap<String,Tunable>();
 
+			guiProviderMap.clear();
+			
 			// Find each public method in the class.
 			for (final Method method : obj.getClass().getMethods()) {
 				// See if the method is annotated as a Tunable.
