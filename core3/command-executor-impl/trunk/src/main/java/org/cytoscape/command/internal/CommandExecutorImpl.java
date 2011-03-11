@@ -14,52 +14,93 @@ import org.cytoscape.task.NetworkTaskFactory;
 
 public class CommandExecutorImpl {
 
-	private final Map<String,Executor> commandExecutorMap = new HashMap<String,Executor>();
 	private final static Logger logger = LoggerFactory.getLogger(CommandExecutorImpl.class);
 
+	private final Map<String, Map<String,Executor>> commandExecutorMap = 
+	                                             new HashMap<String,Map<String,Executor>>();
+
 	public void addTaskFactory(TaskFactory tf, Map props) {
-		String commandName = (String)props.get("commandName");
-		if ( commandName != null ) 
-			commandExecutorMap.put(commandName, new TFExecutor(tf));
+		addTF(new TFExecutor(tf), props);
 	}
 
 	public void removeTaskFactory(TaskFactory tf, Map props) {
-		String commandName = (String)props.get("commandName");
-		if ( commandName != null ) 
-			commandExecutorMap.remove(commandName);
+		removeTF(props);
 	}
 
 	public void addNetworkTaskFactory(NetworkTaskFactory tf, Map props) {
-		String commandName = (String)props.get("commandName");
-		if ( commandName != null ) 
-			commandExecutorMap.put(commandName, new NTFExecutor(tf));
+		addTF(new NTFExecutor(tf), props);
 	}
 
 	public void removeNetworkTaskFactory(NetworkTaskFactory tf, Map props) {
-		String commandName = (String)props.get("commandName");
-		if ( commandName != null ) 
-			commandExecutorMap.remove(commandName);
+		removeTF(props);
+	}
+
+	private void addTF(Executor ex, Map props) {
+		String namespace = (String)props.get("commandNamespace");
+		String command = (String)props.get("command");
+		if ( command == null && namespace == null ) 
+			return;
+
+		if ( !commandExecutorMap.containsKey(namespace) )
+			commandExecutorMap.put(namespace, new HashMap<String,Executor>());
+		commandExecutorMap.get(namespace).put(command,ex);
+	}
+
+	private void removeTF(Map props) {
+		String namespace = (String)props.get("commandNamespace");
+		String command = (String)props.get("command");
+		if ( command == null && namespace == null ) 
+			return;
+
+		Map<String,Executor> ce = commandExecutorMap.get(namespace);
+		if ( ce != null ) {
+			ce.remove(command);
+			if ( ce.size() == 0 )
+				commandExecutorMap.remove(namespace);
+		}
+	}
+
+	// If the key matches the first chars of the line, then
+	// return the remainder of the line. Otherwise return null.
+	private String peel(String line, String key) {
+		if ( line.length() < key.length() ) {
+			return null;
+		}
+		final String match = line.substring(0,key.length());
+		final String remainder = line.substring(key.length(),line.length()).trim(); 
+		if ( match.equals(key) ) {
+			return remainder;
+		} else {
+			return null;
+		}
 	}
 
 	public void executeList(List<String> commandLines) {
 		try {
+
+			// begin iterating over the lines
 			for ( String line : commandLines ) { 
-				System.out.println("begin parsing line: '" + line + "'");
-				for ( String command : commandExecutorMap.keySet() ) {
-					System.out.println("testing command: '" + command + "'");
-					if ( line.length() < command.length() ) 
-						continue;
-					final String comm = line.substring(0,command.length()); 
-					final String args = line.substring(command.length(),line.length()); 
-					System.out.println("comm: '" + comm + "'");
-					System.out.println("args: '" + args + "'");
-					if ( comm.equals(command) ) {
-						System.out.println(" -- executing");
-						Executor e = commandExecutorMap.get(command);
-						e.execute(args);
-						break;
-					} else {
-						System.out.println(" -- trying next");
+				boolean finished = false;
+				
+				// match the namespace
+				for ( String namespace : commandExecutorMap.keySet() ) {
+					if ( finished ) return;
+
+					String commLine = peel( line, namespace );
+					if ( commLine != null ) {
+						Map<String,Executor> commandMap = commandExecutorMap.get(namespace);
+						if ( commandMap != null ) {
+
+							// now match and execute the command
+							for ( String command : commandMap.keySet() ) {
+								String args = peel( commLine, command );
+								if ( args != null ) {
+									commandMap.get(command).execute(args);
+									finished = true;
+									break;
+								}
+							}
+						}
 					}
 				}
 			}
