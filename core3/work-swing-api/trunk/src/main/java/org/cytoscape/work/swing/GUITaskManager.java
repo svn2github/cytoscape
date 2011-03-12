@@ -24,7 +24,7 @@ public interface GUITaskManager extends TaskManager {
 	
 	/**
 	 *  Sets the container panel on the TunableInterceptor that it manages.
-	 *  @param parent the new parent panel for the tunables panel
+	 *  @param panel the new parent panel for the tunables panel
 	 */
 	void setTunablePanel(final JPanel panel);
 
