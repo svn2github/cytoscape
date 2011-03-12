@@ -326,4 +326,9 @@
 		<constructor-arg ref="cyNetworkNamingServiceRef" />
 		<constructor-arg ref="streamUtilRef" />
 	</bean>
+
+	
+	<bean id="bioGridPreprocessor" class="org.cytoscape.task.internal.quickstart.remote.BioGridPreprocessor">
+		<constructor-arg ref="cyPropertyServiceRef" />
+	</bean>
 </beans>

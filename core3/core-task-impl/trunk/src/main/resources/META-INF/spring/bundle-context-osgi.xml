@@ -619,4 +619,11 @@
 			<entry key="scope" value="startup" />
 		</osgi:service-properties>
 	</osgi:service>
+	
+	<osgi:service id="bioGridPreprocessorService" ref="bioGridPreprocessor" auto-export="interfaces" />
+	
+	<osgi:set id="processorSetRef" interface="org.cytoscape.task.internal.quickstart.remote.InteractionFilePreprocessor" cardinality="0..N">
+		<osgi:listener bind-method="addProcessor"
+			unbind-method="removeProcessor" ref="importTaskUtil" />
+	</osgi:set>
 </beans>

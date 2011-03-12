@@ -74,6 +74,8 @@ public class LoadNetworkTask extends AbstractTask {
 			// Load URL task
 			insertTasksAfterCurrentTask(util.getURLImportTask());
 		} else if (selected == FROM_SERVICE) {
+			monitor.setStatusMessage("Checking & updating local data set.  Please wait...");
+			monitor.setProgress(0.0);
 			insertTasksAfterCurrentTask(util.getWebServiceImportTask());
 		}
 
