@@ -116,7 +116,7 @@ public class ValuedTaskExecutorTest {
 	private class TaskRunner implements Runnable {
 		private Task task;
 		TaskRunner(Task task) { this.task = task; }
-		public void run() { try { task.run(tm); } catch (Exception e) { e.printStackTrace(); } }
+		public void run() { try { task.run(tm); } catch (Exception e) { } }
 	}
 
 	private class StringValuedTask implements ValuedTask<String> {

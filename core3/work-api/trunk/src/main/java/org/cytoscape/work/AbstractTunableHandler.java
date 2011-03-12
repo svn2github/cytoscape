@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Properties;
 
 
-/** Provides the standard implementation for most of the methods declared by the TunableHandler interface.
+/** 
+ * Provides the standard implementation for most of the methods declared by the 
+ * TunableHandler interface.
  */
-public class AbstractTunableHandler implements TunableHandler {
+public abstract class AbstractTunableHandler implements TunableHandler {
 	private enum ParamsParseState {
 		KEY_START, LOOKING_FOR_EQUAL_SIGN, VALUE_START, LOOKING_FOR_SEMICOLON;
 	}
@@ -23,12 +25,15 @@ public class AbstractTunableHandler implements TunableHandler {
 	final private Object instance;
 	final private Tunable tunable;
 
-	/** Standard base class constructor for <code>TunableHandler</code>s that deal with
-	 *  <code>Tunable</code>s that annotate a field.
+	/** 
+	 * Standard base class constructor for <code>TunableHandler</code>s that deal with
+	 * <code>Tunable</code>s that annotate a field.
 	 *
-	 *  @param field    An instance of <code>Field</code> that represents a field annotated with <code>@Tunable</code>
-	 *  @param instance An object instance that contains a field corresponding to the <i>field</i> parameter
-	 *  @param tunable  The <code>Tunable</code> that annotates <i>field</i>
+	 * @param field    An instance of <code>Field</code> that represents a field 
+	 * annotated with <code>@Tunable</code>
+	 * @param instance An object instance that contains a field corresponding to 
+	 * the <i>field</i> parameter
+	 * @param tunable  The <code>Tunable</code> that annotates <i>field</i>
 	 */
 	public AbstractTunableHandler(final Field field, final Object instance, final Tunable tunable) {
 		this.field = field;
@@ -38,13 +43,16 @@ public class AbstractTunableHandler implements TunableHandler {
 		this.tunable = tunable;
 	}
 
-	/** Standard base class constructor for <code>TunableHandler</code>s that deal with
-	 *  <code>Tunable</code>s that use getter and setter methods.
+	/** 
+	 * Standard base class constructor for <code>TunableHandler</code>s that deal with
+	 * <code>Tunable</code>s that use getter and setter methods.
 	 *
-	 *  @param getter   The getter method of the tunable object represented by the <i>instance</i> parameter.
-	 *  @param setter   The setter method complimentary to the getter.
-	 *  @param instance An instance of an object with a getter method that has been determined to be annotated with <code>@Tunable</code>.
-	 *  @param tunable  The <code>Tunable</code> that annotates the <i>getter</i>.
+	 * @param getter The getter method of the tunable object represented by the 
+	 * <i>instance</i> parameter.
+	 * @param setter The setter method complimentary to the getter.
+	 * @param instance An instance of an object with a getter method that has been 
+	 * determined to be annotated with <code>@Tunable</code>.
+	 * @param tunable  The <code>Tunable</code> that annotates the <i>getter</i>.
 	 */
 	public AbstractTunableHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		this.field = null;
@@ -54,13 +62,15 @@ public class AbstractTunableHandler implements TunableHandler {
 		this.tunable = tunable;
 	}
 
-	/** {@inheritDoc}
+	/** 
+	 * {@inheritDoc}
 	 */
 	final public Object getValue() throws IllegalAccessException, InvocationTargetException {
 		return field != null ? field.get(instance) : getter.invoke(instance);
 	}
 
-	/** {@inheritDoc}
+	/**
+	 * {@inheritDoc}
 	 */
 	final public void setValue(final Object newValue) throws IllegalAccessException, InvocationTargetException {
 		if (field != null)
@@ -69,37 +79,43 @@ public class AbstractTunableHandler implements TunableHandler {
 			setter.invoke(instance, newValue);
 	}
 
-	/** {@inheritDoc}
+	/**
+	 * {@inheritDoc}
 	 */
 	final public String getDescription() {
 		return tunable.description();
 	}
 
-	/** {@inheritDoc}
+	/**
+	 * {@inheritDoc}
 	 */
 	final public String[] getGroups() {
 		return tunable.groups();
 	}
 
-	/** {@inheritDoc}
+	/**
+	 * {@inheritDoc}
 	 */
 	final public boolean controlsMutuallyExclusiveNestedChildren() {
 		return tunable.xorChildren();
 	}
 
-	/** {@inheritDoc}
+	/**
+	 * {@inheritDoc}
 	 */
 	final public String getChildKey() {
 		return tunable.xorKey();
 	}
 
-	/** {@inheritDoc}
+	/**
+	 * {@inheritDoc}
 	 */
 	final public String dependsOn() {
 		return tunable.dependsOn();
 	}
 
-	/** {@inheritDoc}
+	/**
+	 * {@inheritDoc}
 	 */
 	final public String getName() {
 		if (field != null)
@@ -108,7 +124,8 @@ public class AbstractTunableHandler implements TunableHandler {
 			return setter.getName().substring(3);
 	}
 
-	/** {@inheritDoc}
+	/**
+	 * {@inheritDoc}
 	 */
 	final public String getQualifiedName() {
 		final String unqualifiedClassName =
@@ -117,7 +134,8 @@ public class AbstractTunableHandler implements TunableHandler {
                 return unqualifiedClassName.substring(unqualifiedClassName.lastIndexOf(".") + 1) + "." + getName();
 	}
 
-	/** {@inheritDoc}
+	/**
+	 * {@inheritDoc}
 	 */
 	final public Properties getParams() throws IllegalArgumentException {
 		final String rawString = tunable.params();

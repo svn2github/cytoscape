@@ -154,4 +154,6 @@ class SimpleTunableHandler extends AbstractTunableHandler {
 	public SimpleTunableHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		super(getter, setter, instance, tunable);
 	}
+
+	public void handle() {}
 }

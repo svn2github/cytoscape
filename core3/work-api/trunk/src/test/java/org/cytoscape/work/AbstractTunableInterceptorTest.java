@@ -121,14 +121,23 @@ public class AbstractTunableInterceptorTest {
 	}
 }
 
+class FakeTunableHandler extends AbstractTunableHandler {
+	public FakeTunableHandler(Field f, Object o, Tunable t) {
+		super(f,o,t);
+	}
+	public FakeTunableHandler(Method get, Method set, Object o, Tunable t) {
+		super(get,set,o,t);
+	}
+	public void handle() {}
+}
 
 class SimpleHandlerFactory implements TunableHandlerFactory<AbstractTunableHandler> {
 	public AbstractTunableHandler getHandler(final Field field, final Object instance, final Tunable tunable) {
-		return new AbstractTunableHandler(field, instance, tunable);
+		return new FakeTunableHandler(field, instance, tunable);
 	}
 
 	public AbstractTunableHandler getHandler(final Method setter, final Method getter, final Object instance, final Tunable tunable) {
-		return new AbstractTunableHandler(setter, getter, instance, tunable);
+		return new FakeTunableHandler(setter, getter, instance, tunable);
 	}
 }
 
