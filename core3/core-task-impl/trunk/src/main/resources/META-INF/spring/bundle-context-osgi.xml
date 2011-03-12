@@ -83,6 +83,8 @@
 			<entry key="title" value="File..." />
 			<entry key="preferredMenu" value="File.Import.Network" />
 			<entry key="menuGravity" value="1.0" />
+			<entry key="command" value="load" />
+			<entry key="commandNamespace" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -131,6 +133,8 @@
 			<entry key="preferredMenu" value="Edit" />
 			<entry key="enableFor" value="selectedNodesOrEdges" />
 			<entry key="menuGravity" value="5.0" />
+			<entry key="command" value="delete selected nodes and edges" />
+			<entry key="commandNamespace" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -142,6 +146,8 @@
 			<entry key="accelerator" value="cmd alt a"/>
 			<entry key="enableFor" value="network" />
 			<entry key="menuGravity" value="5.0" />
+			<entry key="command" value="select all nodes" />
+			<entry key="commandNamespace" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
@@ -153,6 +159,8 @@
 			<entry key="accelerator" value="cmd alt a" />
 			<entry key="enableFor" value="network" />
 			<entry key="menuGravity" value="4.0" />
+			<entry key="command" value="select all edges" />
+			<entry key="commandNamespace" value="network" />
 		</osgi:service-properties>
 	</osgi:service>
 
