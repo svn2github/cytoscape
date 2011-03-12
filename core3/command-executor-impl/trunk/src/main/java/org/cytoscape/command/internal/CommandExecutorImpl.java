@@ -10,7 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.cytoscape.work.TaskFactory;
+import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.task.NetworkTaskFactory;
+import org.cytoscape.command.internal.tunables.CommandTunableInterceptorImpl;
+import org.cytoscape.command.internal.tunables.CommandTunableHandlerFactory;
+import org.cytoscape.session.CyApplicationManager;
 
 public class CommandExecutorImpl {
 
@@ -19,8 +23,15 @@ public class CommandExecutorImpl {
 	private final Map<String, Map<String,Executor>> commandExecutorMap = 
 	                                             new HashMap<String,Map<String,Executor>>();
 
+	private final TunableInterceptor interceptor = new CommandTunableInterceptorImpl(new CommandTunableHandlerFactory()); 
+	private final CyApplicationManager appMgr;
+
+	public CommandExecutorImpl(CyApplicationManager appMgr) {
+		this.appMgr = appMgr;
+	}
+
 	public void addTaskFactory(TaskFactory tf, Map props) {
-		addTF(new TFExecutor(tf), props);
+		addTF(new TFExecutor(tf,interceptor), props);
 	}
 
 	public void removeTaskFactory(TaskFactory tf, Map props) {
@@ -28,7 +39,7 @@ public class CommandExecutorImpl {
 	}
 
 	public void addNetworkTaskFactory(NetworkTaskFactory tf, Map props) {
-		addTF(new NTFExecutor(tf), props);
+		addTF(new NTFExecutor(tf,interceptor,appMgr), props);
 	}
 
 	public void removeNetworkTaskFactory(NetworkTaskFactory tf, Map props) {

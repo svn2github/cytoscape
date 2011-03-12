@@ -27,6 +27,7 @@
 	<context:annotation-config />
 
 	<bean id="commandExecutorImpl" class="org.cytoscape.command.internal.CommandExecutorImpl">
+		<constructor-arg ref="cyApplicationManagerServiceRef" />
 	</bean>
 
 	<bean id="commandExecutorTaskFactory" 
