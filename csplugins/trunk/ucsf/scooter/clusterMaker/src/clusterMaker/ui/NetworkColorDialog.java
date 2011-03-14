@@ -40,8 +40,12 @@ package clusterMaker.ui;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.command.CyCommandException;
+import cytoscape.command.CyCommandManager;
+import cytoscape.command.CyCommandResult;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -73,8 +77,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -216,6 +223,43 @@ public class NetworkColorDialog extends JDialog
 			// Set up the animation task
 			Animate a = new Animate(styles, attributeArray);
 			a.start();
+		} else if (command.equals("heatstrip")) {
+			// Get the selected attributes
+			Object[] attributeArray = attributeSelector.getSelectedValues();
+
+			Map<String, Object> args = new HashMap<String, Object>();
+			args.put("nodelist","all");
+
+			try {
+				// Clear any nodecharts
+				CyCommandManager.execute(NODECHARTS, "clear", args);
+			} catch (Exception e1) {
+				// Ignore the clear...
+			}
+
+
+			// Construct our command
+			List<String> attributeList = new ArrayList();
+			for (Object attr: attributeArray) {
+				attributeList.add(attr.toString());
+			}
+			// attributeList = attributeList.substring(1);
+			args.put("attributelist",attributeList);
+			// Get our colors
+			String colorSpec = getColorSpec();
+			System.out.println("ColorSpec = "+colorSpec);
+			args.put("colorlist",colorSpec);
+			args.put("position","south");
+			args.put("showlabels","false");
+			args.put("size","30x60");
+
+			try {
+				// Execute
+				CyCommandManager.execute(NODECHARTS, "heatstrip", args);
+			} catch (Exception e2) {
+				CyLogger.getLogger(this.getClass()).error("Error from nodecharts: "+e2.getMessage());
+			}
+			Cytoscape.getCurrentNetworkView().updateView();
 		}
 	}
 
@@ -397,6 +441,13 @@ public class NetworkColorDialog extends JDialog
 		animateButton.addActionListener(this);
 		animateButton.setEnabled(false);
 
+		if (checkNodeCharts()) {
+			JButton nodeChartButton = new JButton("Create HeatStrips");
+			nodeChartButton.setActionCommand("heatstrip");
+			nodeChartButton.addActionListener(this);
+			buttonBox.add(nodeChartButton);
+		}
+
 		buttonBox.add(animateButton);
 		buttonBox.add(vizmapButton);
 		buttonBox.add(doneButton);
@@ -468,6 +519,27 @@ public class NetworkColorDialog extends JDialog
 
 		// And reset our animator
 		currentAttribute = null;
+	}
+
+	private static String NODECHARTS = "nodecharts";
+	private boolean checkNodeCharts() {
+		try {
+			CyCommandManager.getCommand(NODECHARTS, "clear");
+		} catch (RuntimeException e) {
+			return false;
+		}
+		return true;
+	}
+
+	private String getColorSpec() {
+		Color downColor = colorExtractor.getColor(minValue);
+		Color upColor = colorExtractor.getColor(maxValue);
+		Color zeroColor = colorExtractor.getColor(0.0f);
+		return "up:#"+colorToHex(upColor)+",zero:#"+colorToHex(zeroColor)+",down:#"+colorToHex(downColor);
+	}
+
+	private String colorToHex(Color c) {
+		return Integer.toHexString(c.getRGB()).substring(2);
 	}
 
 	private class Animate extends Thread {
