@@ -15,8 +15,7 @@
 	<groupId>org.cytoscape</groupId>
 	<artifactId>sbml-impl</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<name>${bundle.symbolicName}
-		[${bundle.namespace}]</name>
+	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
 	<packaging>bundle</packaging>
 	<dependencies>
 		<dependency>
