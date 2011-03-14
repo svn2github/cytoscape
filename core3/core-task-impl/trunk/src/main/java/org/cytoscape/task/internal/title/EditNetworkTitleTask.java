@@ -37,9 +37,8 @@
 
 package org.cytoscape.task.internal.title;
 
-import org.cytoscape.task.AbstractNetworkTask;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.work.Task;
+import org.cytoscape.task.AbstractNetworkTask;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 

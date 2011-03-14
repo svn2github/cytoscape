@@ -626,4 +626,5 @@
 		<osgi:listener bind-method="addProcessor"
 			unbind-method="removeProcessor" ref="importTaskUtil" />
 	</osgi:set>
+	
 </beans>

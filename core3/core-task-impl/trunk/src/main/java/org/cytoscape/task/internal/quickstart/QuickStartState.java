@@ -51,6 +51,8 @@ class QuickStartState {
 	}
 	
 	private IDType idType;
+	private String otherIdType;
+	
 	private CyTable table;
 	private String keyColumnName;
 

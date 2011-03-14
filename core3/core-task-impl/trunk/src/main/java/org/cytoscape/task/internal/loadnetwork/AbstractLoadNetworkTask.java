@@ -51,7 +51,7 @@ import org.cytoscape.work.TaskMonitor;
 /**
  * Task to load a new network.
  */
-abstract class AbstractLoadNetworkTask extends AbstractTask {
+abstract public class AbstractLoadNetworkTask extends AbstractTask {
 	protected CyNetworkViewReader reader;
 	protected URI uri;
 	protected TaskMonitor taskMonitor;

@@ -1,7 +1,9 @@
 package org.cytoscape.task.internal.quickstart;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.cytoscape.task.internal.quickstart.QuickStartState.Job;
 import org.cytoscape.work.AbstractTask;
@@ -18,18 +20,25 @@ public class SelectNetworkIdTypeTask extends AbstractTask {
 	public String otherIDType;
 	
 	private final QuickStartState state;
+	
+	private final Map<String, IDType> idTypeMap;
 
 	public SelectNetworkIdTypeTask(final QuickStartState state) {
+		this.idTypeMap = new HashMap<String, IDType>();
 		this.state = state;	
 		final List<String> values = new ArrayList<String>();
-		for(IDType val: IDType.values())
+		for(IDType val: IDType.values()) {
 			values.add(val.getDisplayName());
+			this.idTypeMap.put(val.getDisplayName(), val);
+		}
 		selection = new ListSingleSelection<String>(values);
 	}
 
 	@Override
 	public void run(TaskMonitor monitor) throws Exception {
 		final String selected = selection.getSelectedValue();
+		
+		state.setIDType(this.idTypeMap.get(selected));
 		
 		System.out.println("ID type selected for network.  Selected type = " + selected);
 		state.finished(Job.SELECT_NETWORK_ID_TYPE);

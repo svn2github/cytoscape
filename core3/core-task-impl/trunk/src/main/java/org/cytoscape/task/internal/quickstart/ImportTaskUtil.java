@@ -6,6 +6,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.cytoscape.io.read.CyNetworkViewReaderManager;
+import org.cytoscape.io.read.InputStreamTaskFactory;
 import org.cytoscape.io.util.StreamUtil;
 import org.cytoscape.model.CyNetworkManager;
 import org.cytoscape.property.CyProperty;
@@ -15,6 +16,7 @@ import org.cytoscape.task.internal.loadnetwork.LoadNetworkURLTask;
 import org.cytoscape.task.internal.quickstart.remote.InteractionFilePreprocessor;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.work.Task;
+import org.cytoscape.work.TaskFactory;
 
 public class ImportTaskUtil {
 	
@@ -27,6 +29,8 @@ public class ImportTaskUtil {
 	private CyNetworkNaming cyNetworkNaming;
 	
 	private final Set<InteractionFilePreprocessor> processors;
+	
+	private InputStreamTaskFactory sifReaderFactory;
 
 	public ImportTaskUtil(
 			CyNetworkViewReaderManager mgr,
@@ -41,6 +45,8 @@ public class ImportTaskUtil {
 		this.cyNetworkNaming = cyNetworkNaming;
 		this.streamUtil = streamUtil;
 		this.processors = new HashSet<InteractionFilePreprocessor>();
+		this.sifReaderFactory = sifReaderFactory;
+		
 	}
 
 	public Task getURLImportTask() {
@@ -52,12 +58,9 @@ public class ImportTaskUtil {
 	}
 	
 	public Task getWebServiceImportTask() {
-		return new ImportNetworkFromPublicDataSetTask(this);
+		return new ImportNetworkFromPublicDataSetTask(processors, mgr, netmgr, networkViewManager, props, cyNetworkNaming, streamUtil);
 	}
 	
-	public Set<InteractionFilePreprocessor> getProcessors() {
-		return this.processors;
-	}
 	
 	public void addProcessor(InteractionFilePreprocessor processor, Map props) {
 		if(processor != null)
