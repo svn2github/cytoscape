@@ -6,13 +6,14 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.TunableInterceptor;
+import org.cytoscape.command.internal.tunables.CommandTunableInterceptorImpl;
 
 class TFExecutor implements Executor {
 	private final TaskFactory tf;
-	private final TunableInterceptor interceptor; 
+	private final CommandTunableInterceptorImpl interceptor; 
 	private final TaskMonitor tm = new OutTaskMonitor(); 
 
-	public TFExecutor(TaskFactory tf, TunableInterceptor interceptor) {
+	public TFExecutor(TaskFactory tf, CommandTunableInterceptorImpl interceptor) {
 		this.tf = tf;
 		this.interceptor = interceptor;
 	}
@@ -23,6 +24,7 @@ class TFExecutor implements Executor {
 		TaskIterator ti = tf.getTaskIterator();
 		while (ti.hasNext()) {
 			Task t = ti.next();
+			interceptor.setArgString(args);
 			interceptor.loadTunables(t);
 			interceptor.execUI(t);
 			t.run(tm);

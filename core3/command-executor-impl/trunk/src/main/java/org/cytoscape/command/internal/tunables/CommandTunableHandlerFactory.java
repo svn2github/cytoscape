@@ -18,10 +18,10 @@ import org.cytoscape.work.util.ListMultipleSelection;
 import org.cytoscape.work.util.ListSingleSelection;
 
 
-public class CommandTunableHandlerFactory implements TunableHandlerFactory<TunableHandler> {
+public class CommandTunableHandlerFactory implements TunableHandlerFactory<StringTunableHandler> {
 
 
-	public TunableHandler getHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
+	public StringTunableHandler getHandler(final Method getter, final Method setter, final Object instance, final Tunable tunable) {
 		final Class<?> type = getter.getReturnType();
 
 		if (type == Boolean.class || type == boolean.class)
@@ -29,7 +29,7 @@ public class CommandTunableHandlerFactory implements TunableHandlerFactory<Tunab
 		if (type == String.class)
 			return new DummyTunableHandler(getter, setter, instance, tunable);
 		if (type == Integer.class || type == int.class)
-			return new DummyTunableHandler(getter, setter, instance, tunable);
+			return new IntTunableHandler(getter, setter, instance, tunable);
 		if (type == Double.class || type == double.class)
 			return new DummyTunableHandler(getter, setter, instance, tunable);
 		if (type == Float.class || type == float.class)
@@ -49,7 +49,7 @@ public class CommandTunableHandlerFactory implements TunableHandlerFactory<Tunab
 		if (type == ListMultipleSelection.class)
 			return new DummyTunableHandler(getter, setter, instance, tunable);
 		if (type == File.class)
-			return new DummyTunableHandler(getter, setter, instance, tunable);
+			return new FileTunableHandler(getter, setter, instance, tunable);
 		if (type == URL.class)
 			return new DummyTunableHandler(getter, setter, instance, tunable);
 		if (type == InputStream.class)
@@ -58,7 +58,7 @@ public class CommandTunableHandlerFactory implements TunableHandlerFactory<Tunab
 		return null;
 	}
 
-	public TunableHandler getHandler(final Field field, final Object instance, final Tunable tunable) {
+	public StringTunableHandler getHandler(final Field field, final Object instance, final Tunable tunable) {
 		final Class<?> type = field.getType();
 
 		if (type == Boolean.class || type == boolean.class)
@@ -66,7 +66,7 @@ public class CommandTunableHandlerFactory implements TunableHandlerFactory<Tunab
 		if (type == String.class)
 			return new DummyTunableHandler(field, instance, tunable);
 		if (type == Integer.class || type == int.class)
-			return new DummyTunableHandler(field, instance, tunable);
+			return new IntTunableHandler(field, instance, tunable);
 		if (type == Double.class || type == double.class)
 			return new DummyTunableHandler(field, instance, tunable);
 		if (type == Float.class || type == float.class)
@@ -86,7 +86,7 @@ public class CommandTunableHandlerFactory implements TunableHandlerFactory<Tunab
 		if (type == ListMultipleSelection.class)
 			return new DummyTunableHandler(field, instance, tunable);
 		if (type == File.class)
-			return new DummyTunableHandler(field, instance, tunable);
+			return new FileTunableHandler(field, instance, tunable);
 		if (type == URL.class)
 			return new DummyTunableHandler(field, instance, tunable);
 		if (type == InputStream.class)

@@ -17,24 +17,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class CommandTunableInterceptorImpl extends SpringTunableInterceptor<TunableHandler> {
-	private boolean newValuesSet;
+public class CommandTunableInterceptorImpl extends SpringTunableInterceptor<StringTunableHandler> {
+	private String args;
 
-	public CommandTunableInterceptorImpl(final TunableHandlerFactory<TunableHandler> factory) {
+	public CommandTunableInterceptorImpl(final TunableHandlerFactory<StringTunableHandler> factory) {
 		super(factory);
 	}
 
     public boolean execUI(Object... objs) {
 		return validateAndWriteBackTunables(objs);
 	}
+
+	public void setArgString(String args) {
+		this.args = args;
+	}
    
     public boolean validateAndWriteBackTunables(Object... objs) {
 		for ( Object o : objs ) {
-			Map<String,TunableHandler> handlers = getHandlers(o);
-			for ( String s : handlers.keySet() ) {
-				System.out.println("got handler for tunable param: " + s);
+			Map<String,StringTunableHandler> handlers = getHandlers(o);
+			for ( StringTunableHandler h : handlers.values() ) {
+				h.setArgString(args);
+				h.handle();
 			}
-		}	
+		}
 		return true;
 	}
 }

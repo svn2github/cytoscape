@@ -23,7 +23,7 @@ public class CommandExecutorImpl {
 	private final Map<String, Map<String,Executor>> commandExecutorMap = 
 	                                             new HashMap<String,Map<String,Executor>>();
 
-	private final TunableInterceptor interceptor = new CommandTunableInterceptorImpl(new CommandTunableHandlerFactory()); 
+	private final CommandTunableInterceptorImpl interceptor = new CommandTunableInterceptorImpl(new CommandTunableHandlerFactory()); 
 	private final CyApplicationManager appMgr;
 
 	public CommandExecutorImpl(CyApplicationManager appMgr) {
