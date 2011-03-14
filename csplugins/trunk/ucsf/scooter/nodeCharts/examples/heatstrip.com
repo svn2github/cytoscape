@@ -1,3 +1,4 @@
-nodecharts heatstrip nodelist="all" attributelist="gal1RGexp,gal4RGexp,gal80Rexp" colorlist="redgreen" normalize="true" showlabels="false"
+session open file="/home/scooter/Documents/galFiltered.cys"
+nodecharts heatstrip nodelist="all" attributelist="gal1RGexp,gal4RGexp,gal80Rexp" colorlist="redgreen" normalize="true" showlabels="false" size="40x60" position=south
 
 network view update
