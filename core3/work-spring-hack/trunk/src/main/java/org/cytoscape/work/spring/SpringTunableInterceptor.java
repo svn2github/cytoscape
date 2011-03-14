@@ -15,9 +15,16 @@ import org.springframework.core.InfrastructureProxy;
  * are actually defined.  This code can be safely omitted if this class isn't
  * being used with Spring.
  */
-public abstract class SpringTunableInterceptor<T extends TunableHandler> extends AbstractTunableInterceptor<T> {
-	public SpringTunableInterceptor(TunableHandlerFactory<T> hf) {
-		super(hf);
+public abstract class SpringTunableInterceptor<T extends TunableHandler> 
+	extends AbstractTunableInterceptor<T> {
+
+	/**
+	 * Constructor.
+	 * @param thf The TunableHandlerFactory used to create the TunableHandlers
+	 * necessary to process Tunables.
+	 */
+	public SpringTunableInterceptor(TunableHandlerFactory<T> thf) {
+		super(thf);
 	}
 
 	/**
