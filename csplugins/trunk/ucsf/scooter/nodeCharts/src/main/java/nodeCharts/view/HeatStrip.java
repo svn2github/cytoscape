@@ -40,8 +40,8 @@ public class HeatStrip implements NodeChartViewer {
 	private static final String YELLOWCYAN = "yellowcyan";
 
 	float[] dist = {0.0f, 0.5f, 1.0f};
-	Color[] redGreen = {Color.GREEN, Color.WHITE, Color.RED};
-	Color[] yellowCyan = {Color.CYAN, Color.WHITE, Color.YELLOW};
+	Color[] redGreen = {Color.GREEN, Color.BLACK, Color.RED};
+	Color[] yellowCyan = {Color.CYAN, Color.BLACK, Color.YELLOW};
 	
 
 	public String getName() {
@@ -75,9 +75,9 @@ public class HeatStrip implements NodeChartViewer {
 			colorScale = new Color[3];
 			String [] colorArray = colorSpec.split(",");
 			List<Color> colors = ValueUtils.parseUpDownColor(colorArray);
-			colorScale[0] = colors.get(0);
-			colorScale[2] = colors.get(1);
 			colorScale[1] = colors.get(2);
+			colorScale[0] = colors.get(1);
+			colorScale[2] = colors.get(0);
 		}
 		int separation = 0;
 		Object separationObj = args.get(SEPARATION);
@@ -138,10 +138,12 @@ public class HeatStrip implements NodeChartViewer {
 			{
 				py1 = py1 - ((0.5 * height) * (val / max));
 			}
-			else // negative, work down from midpoint
+			else if (val < 0.0) // negative, work down from midpoint
 			{
 				val = -val;
-			}
+			} 
+			else // zero value -- just skip it
+				continue;
 
 			double h = (0.5 * height) * (val / max);
 
