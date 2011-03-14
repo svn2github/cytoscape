@@ -15,8 +15,8 @@ public class DummyTunableHandler extends AbstractTunableHandler implements Strin
 
 	public DummyTunableHandler(Field f, Object o, Tunable t) { super(f,o,t); }
 	public DummyTunableHandler(Method get, Method set, Object o, Tunable t) { super(get,set,o,t); }
-	public void handle() {
-		System.out.println("Dummy handling! " + getName());
+	public void processArgString(String s) {
+		System.out.println("Dummy process! " + getName());
 	}
-	public void setArgString(String s) { }
+	public void handle() {}
 }

@@ -8,10 +8,14 @@ import org.cytoscape.work.Task;
 import org.cytoscape.work.TunableInterceptor;
 import org.cytoscape.command.internal.tunables.CommandTunableInterceptorImpl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 class TFExecutor implements Executor {
 	private final TaskFactory tf;
 	private final CommandTunableInterceptorImpl interceptor; 
 	private final TaskMonitor tm = new OutTaskMonitor(); 
+	private static final Logger logger = LoggerFactory.getLogger(TFExecutor.class);
 
 	public TFExecutor(TaskFactory tf, CommandTunableInterceptorImpl interceptor) {
 		this.tf = tf;
@@ -20,18 +24,19 @@ class TFExecutor implements Executor {
 
 	public void execute(String args) {
 		try {
-		System.out.println("executing: " + tf + "   with args: '" + args + "'");
-		TaskIterator ti = tf.getTaskIterator();
-		while (ti.hasNext()) {
-			Task t = ti.next();
-			interceptor.setArgString(args);
-			interceptor.loadTunables(t);
-			interceptor.execUI(t);
-			t.run(tm);
-		}
+			// TODO
+			// At some point in the future, this code should be reorganized into
+			// a proper TaskManager - that's really what's happening here.
+			TaskIterator ti = tf.getTaskIterator();
+			while (ti.hasNext()) {
+				Task t = ti.next();
+				interceptor.setArgString(args);
+				interceptor.loadTunables(t);
+				interceptor.execUI(t);
+				t.run(tm);
+			}
 		} catch (Exception e) {
-			System.out.println("task failed!");
-			e.printStackTrace();
+			logger.warn("Task failed to execute",e);
 		}
 	}
 
