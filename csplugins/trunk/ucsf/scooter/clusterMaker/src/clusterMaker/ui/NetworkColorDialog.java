@@ -129,6 +129,7 @@ public class NetworkColorDialog extends JDialog
 	protected JList attributeSelector; // Attribute list
 	protected JSlider animationSlider;
 	private JButton animateButton;
+	private JButton nodeChartButton = null;
 
 	private boolean animating = false;
 	private boolean listening = true;
@@ -239,7 +240,7 @@ public class NetworkColorDialog extends JDialog
 
 
 			// Construct our command
-			List<String> attributeList = new ArrayList();
+			List<String> attributeList = new ArrayList<String>();
 			for (Object attr: attributeArray) {
 				attributeList.add(attr.toString());
 			}
@@ -247,7 +248,7 @@ public class NetworkColorDialog extends JDialog
 			args.put("attributelist",attributeList);
 			// Get our colors
 			String colorSpec = getColorSpec();
-			System.out.println("ColorSpec = "+colorSpec);
+			// System.out.println("ColorSpec = "+colorSpec);
 			args.put("colorlist",colorSpec);
 			args.put("position","south");
 			args.put("showlabels","false");
@@ -313,6 +314,7 @@ public class NetworkColorDialog extends JDialog
 		double minStep = minValue/5.0;
 		for (int i = 0; i < 5; i++) {
 			Color color = colorExtractor.getColor(minValue-(minStep*i));
+			// System.out.println("Value: "+(minValue-(minStep*i))+" Color: "+color.toString());
 			colorMapping.addPoint (minValue-(minStep*i),
 				new BoundaryRangeValues(color, color, color));
 		}
@@ -326,6 +328,7 @@ public class NetworkColorDialog extends JDialog
 		double maxStep = maxValue/5.0;
 		for (int i = 1; i <= 5; i++) {
 			Color color = colorExtractor.getColor(maxStep*i);
+			// System.out.println("Value: "+(maxStep*i)+" Color: "+color.toString());
 			colorMapping.addPoint (maxStep*i,
 				new BoundaryRangeValues(color, color, color));
 		}
@@ -417,7 +420,7 @@ public class NetworkColorDialog extends JDialog
 		animationSlider.addChangeListener(this);
 
 		// Create the labels
-		Hashtable<Integer,JLabel> labels = new Hashtable();
+		Hashtable<Integer,JLabel> labels = new Hashtable<Integer,JLabel>();
 		labels.put(new Integer(1), new JLabel("Slower"));
 		labels.put(new Integer(100), new JLabel("Faster"));
 		animationSlider.setLabelTable(labels);
@@ -442,9 +445,10 @@ public class NetworkColorDialog extends JDialog
 		animateButton.setEnabled(false);
 
 		if (checkNodeCharts()) {
-			JButton nodeChartButton = new JButton("Create HeatStrips");
+			nodeChartButton = new JButton("Create HeatStrips");
 			nodeChartButton.setActionCommand("heatstrip");
 			nodeChartButton.addActionListener(this);
+			nodeChartButton.setEnabled(false);
 			buttonBox.add(nodeChartButton);
 		}
 
@@ -484,9 +488,13 @@ public class NetworkColorDialog extends JDialog
 		if (selIndices.length > 1) {
 			animateButton.setEnabled(true);
 			animationSlider.setEnabled(true);
+			if (nodeChartButton != null)
+				nodeChartButton.setEnabled(true);
 		} else {
 			animateButton.setEnabled(false);
 			animationSlider.setEnabled(false);
+			if (nodeChartButton != null)
+				nodeChartButton.setEnabled(false);
 		}
 	}
 
