@@ -667,25 +667,11 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 				return;
 
 			logReportsDirectory();
-/*
-			try {
-				final List testClassPath = generateTestClasspath();
-				getLog().info("testClassPath = " + testClassPath);
-			} catch (final DependencyResolutionRequiredException e) {
-				throw new MojoExecutionException("Failed to resolve one or more dependencies!", e);
-			}
-*/
+
 			setClassesDirectory(getCurrentArtifact());
 			run();
 			final Set<ClassAndMethodNameAndExecutionTime> currentNamesAndTimes = getTestTimes();
-/*
-			try {
-				final List testClassPath = generateTestClasspath();
-				getLog().info("testClassPath = " + testClassPath);
-			} catch (final DependencyResolutionRequiredException e) {
-				throw new MojoExecutionException("Failed to resolve one or more dependencies!", e);
-			}
-*/
+
 			setClassesDirectory(getBaselineArtifact());
 			run();
 			final Set<ClassAndMethodNameAndExecutionTime> baselineNamesAndTimes = getTestTimes();
@@ -703,12 +689,18 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 	private void run() throws MojoExecutionException, MojoFailureException {
 		final List providers = initialize();
 		Exception exception = null;
-		ForkConfiguration forkConfiguration = null;
+		ForkConfiguration forkConfiguration = getForkConfiguration();
+		final List testClassPath;
+		try {
+			testClassPath = generateTestClasspath();
+			getLog().info("testClassPath = " + testClassPath);
+		} catch (final DependencyResolutionRequiredException e) {
+			throw new MojoExecutionException("Failed to resolve one or more dependencies!", e);
+		}
+		updateClassPath(testClassPath, forkConfiguration);
 		int result = 0;
 		for (Iterator iter = providers.iterator(); iter.hasNext(); /* Empty! */) {
 			ProviderInfo provider = (ProviderInfo) iter.next();
-			forkConfiguration = getForkConfiguration();
-			final Classpath bootClasspath = forkConfiguration.getBootClasspath();
 			ClassLoaderConfiguration classLoaderConfiguration =
 				getClassLoaderConfiguration(forkConfiguration);
 			ForkStarter forkStarter =
