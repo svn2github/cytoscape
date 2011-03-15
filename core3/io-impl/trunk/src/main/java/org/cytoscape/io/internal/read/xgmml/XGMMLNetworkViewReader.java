@@ -246,13 +246,6 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
             Color bgColor = readDataManager.getBackgroundColor();
             styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_BACKGROUND_PAINT, bgColor);
 
-            // Graph center and zoom
-            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_SCALE_FACTOR, readDataManager.getGraphZoom());
-            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION, readDataManager
-                    .getGraphCenterX());
-            styleBuilder.addProperty(netRow, TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION, readDataManager
-                    .getGraphCenterY());
-
             // Create and set the visual style
             VisualStyle style = styleBuilder.buildStyle();
             visualstyles = new VisualStyle[] { style };
@@ -263,6 +256,11 @@ public class XGMMLNetworkViewReader extends AbstractNetworkViewReader {
             style.apply(view);
             view.updateView();
         }
+
+        // Graph center and zoom must be set to the view directly
+        view.setVisualProperty(TwoDVisualLexicon.NETWORK_SCALE_FACTOR, readDataManager.getGraphZoom());
+        view.setVisualProperty(TwoDVisualLexicon.NETWORK_CENTER_X_LOCATION, readDataManager.getGraphCenterX());
+        view.setVisualProperty(TwoDVisualLexicon.NETWORK_CENTER_Y_LOCATION, readDataManager.getGraphCenterY());
     }
 
     /**
