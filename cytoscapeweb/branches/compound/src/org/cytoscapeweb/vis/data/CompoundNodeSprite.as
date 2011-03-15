@@ -100,14 +100,39 @@ package org.cytoscapeweb.vis.data
 		
 		public function CompoundNodeSprite()
 		{
-			this._nodesMap = new Object();
+			this._nodesMap = null;
 			this._bounds = null;
 		}
 		
 		// ====================== [ PUBLIC FUNCTIONS ] =========================
 		
 		/**
-		 * Adds the given node sprite to the child list of the compound node.
+		 * Initializes the map of children for this compound node.
+		 */
+		public function initialize() : void
+		{
+			this._nodesMap = new Object();
+		}
+		
+		public function isInitialized() : Boolean
+		{
+			var initialized:Boolean;
+			
+			if (this._nodesMap == null)
+			{
+				initialized = false;
+			}
+			else
+			{
+				initialized = true;
+			}
+			
+			return initialized;
+		}
+		
+		
+		/**
+		 * Adds the given node sprite to the child map of the compound node.
 		 * This function assumes that the given node sprite has an id in its
 		 * data field.
 		 * 
@@ -115,11 +140,14 @@ package org.cytoscapeweb.vis.data
 		 */
 		public function addNode(ns:NodeSprite) : void
 		{
-			// add the node to the child node list of this node
-			this._nodesMap[ns.data.id] = ns;
+			if (this._nodesMap != null)
+			{
+				// add the node to the child node list of this node
+				this._nodesMap[ns.data.id] = ns;
 			
-			// set the parent id of the added node
-			ns.data.parentId = this.data.id;
+				// set the parent id of the added node
+				ns.data.parentId = this.data.id;
+			}
 		}
 		
 		/**
@@ -131,7 +159,8 @@ package org.cytoscapeweb.vis.data
 		public function removeNode(ns:NodeSprite) : void
 		{
 			// check if given node is a child of this compound
-			if (ns.data.parentId == this.data.id)
+			if (this._nodesMap != null &&
+				ns.data.parentId == this.data.id)
 			{
 				// reset the parent id of the removed node
 				ns.data.parentId = null;
@@ -142,15 +171,19 @@ package org.cytoscapeweb.vis.data
 		}
 		
 		/**
-		 * Returns (one-level) child nodes of this compound node. 
+		 * Returns (one-level) child nodes of this compound node. If the map
+		 * of children is not initialized, then returns an empty array.
 		 */
 		public function getNodes() : Array
 		{
 			var nodeList:Array = new Array();
 			
-			for each (var ns:NodeSprite in this._nodesMap)
+			if (this._nodesMap != null)
 			{
-				nodeList.push(ns);
+				for each (var ns:NodeSprite in this._nodesMap)
+				{
+					nodeList.push(ns);
+				}
 			}
 			
 			return nodeList;
@@ -171,6 +204,10 @@ package org.cytoscapeweb.vis.data
 			// the new bounds
 			this.x = bounds.x + (bounds.width / 2);
 			this.y = bounds.y + (bounds.height / 2);
+			
+			trace("[ub] bounds: " + bounds);
+			trace("[ub] this._bounds: " + _bounds);
+			
 		}
 		
 		public function resetBounds() : void

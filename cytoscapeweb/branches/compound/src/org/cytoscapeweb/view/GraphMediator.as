@@ -376,11 +376,29 @@ package org.cytoscapeweb.view {
 				if ((targetNode != null) &&
 					(targetNode is CompoundNodeSprite))
 				{
-					// add node into the target compound node
-					(targetNode as CompoundNodeSprite).addNode(ns);
+					var cns:CompoundNodeSprite =
+						(targetNode as CompoundNodeSprite); 
 					
-					// TODO: debug
-					trace("parent compound id: " + ns.data.parentId);
+					var group:DataList = this.graphProxy.graphData.group(
+						Groups.COMPOUND_NODES);
+					
+					// initialize the compound node if it is not initialized,
+					// yet. Also, add the compound to the compound node 
+					// data group
+					if (!cns.isInitialized())
+					{
+						// initialize visual properties
+						this.initialize(Groups.COMPOUND_NODES, [cns]);
+						
+						// initialize child node list
+						cns.initialize();
+						
+						// add to the data group
+						group.add(cns);
+					}
+					
+					// add node into the target compound node
+					cns.addNode(ns);
 					
 					// update bounds of the target compound node up to 
 					// the root
@@ -946,7 +964,8 @@ package org.cytoscapeweb.view {
                     var fsize:Number;
 					var visProp:String;
 					
-					if (n is CompoundNodeSprite)
+					if (n is CompoundNodeSprite
+						&& (n as CompoundNodeSprite).isInitialized())
 					{
 						visProp = VisualProperties.C_NODE_LABEL_FONT_SIZE;
 					}
@@ -967,7 +986,8 @@ package org.cytoscapeweb.view {
                         label.size = fsize / _graphScale;
 					}
                  
-					if (n is CompoundNodeSprite)
+					if (n is CompoundNodeSprite
+						&& (n as CompoundNodeSprite).isInitialized())
 					{
 						// No need to operate nodeLabeler, just operate only
 						// compoundNodeLabeler

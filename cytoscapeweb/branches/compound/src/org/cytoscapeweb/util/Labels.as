@@ -137,11 +137,20 @@ package org.cytoscapeweb.util {
          * @param d A node or edge sprite.
          * @return The analogue edge property name name if the DataSprite is an edge
          */
-        private static function _$(propName:String, d:DataSprite):String {
+        private static function _$(propName:String, d:DataSprite):String
+		{
             if (propName != null && d is EdgeSprite)
+			{
                 propName = propName.replace("node", "edge");
+			}
 			else if (propName != null && d is CompoundNodeSprite)
-				propName = propName.replace("node", "compoundNode");
+			{
+				if ((d as CompoundNodeSprite).isInitialized())
+				{
+					propName = propName.replace("node", "compoundNode");
+				}
+			}
+			
             return propName;
         }
         

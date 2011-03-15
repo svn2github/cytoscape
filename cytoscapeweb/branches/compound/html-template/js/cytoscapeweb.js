@@ -685,54 +685,6 @@
         },
         
         /**
-         * <p>Create a new compound node and add it to the network view.<p>
-         * <p>If the node <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
-         * <p>If you try to add data attributes that have not been previously defined,
-         * Cytoscape Web will automatically add the necessary field definitions, although it might be safer to always add the
-         * fields to the schema first, by calling {@link org.cytoscapeweb.Visualization#addDataField}.</p>
-         * 
-         * @param {Object} x The horizontal coordinate of the node.
-         * @param {Object} y The vertical coordinate of the node.
-         * @param {Object} [data] The object that contains the node attributes.
-         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
-         *                                        to the network view after adding the node.
-         *                                        The default value is <code>false</code>.
-         * @param {Object} [eventTarget] Target object of the action.
-         * @return {org.cytoscapeweb.Node} The new created node object.
-         * @see org.cytoscapeweb.Visualization#addNode
-         */
-        addCompoundNode: function (x, y/*, data, updateVisualMappers, eventTarget*/)
-        {
-        	var data;
-        	var updateVisualMappers = false;
-        	var eventTarget = null;
-        	var i = 2;
-        	
-        	if (arguments.length > i && typeof arguments[i] === "object")
-        	{
-        		data = arguments[i];
-        		i++;
-        	}
-        	
-            if (arguments.length > i && typeof arguments[i] === "boolean")
-            {
-            	updateVisualMappers = arguments[i];
-            	i++;
-            }
-            
-            if (arguments.length > i)
-            {
-            	eventTarget = arguments[i];
-            	i++;
-            }
-        	
-        	return this.swf().addCompoundNode(x, y,
-        		data,
-        		updateVisualMappers,
-        		eventTarget);
-        },
-        
-        /**
          * <p>Create a new edge linking two nodes and add it to the network view.<p>
          * <p>If the edge <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
          * <p>Throws exception if missing <code>source</code> or <code>target</code>.</p>
@@ -1843,15 +1795,12 @@
          * Do NOT redefine this function!!!
          * @ignore
          */
-         _dispatch: function (functionName, jsonArg) {
-             var arg = null;
-             if (jsonArg != null) {
-             	jsonArg = jsonArg.replace(/\n/g, '\\n');
-             	arg = JSON.parse(jsonArg);
-             }
-             var ret = this[functionName](arg);
-             return ret;
-         },
+        _dispatch: function (functionName, jsonArg) {
+            var arg = null;
+            if (jsonArg != null) { arg = JSON.parse(jsonArg); }
+            var ret = this[functionName](arg);
+            return ret;
+        },
 
         /**
          * Just a proxy to hasListener.

@@ -254,17 +254,16 @@ package org.cytoscapeweb.view.components {
 		{
             if (n != null)
 			{
-				if (n is CompoundNodeSprite)
+				if (n is CompoundNodeSprite &&
+					(n as CompoundNodeSprite).isInitialized())
 				{
-					// TODO may need to change all methods form Nodes to
-					// CompoundNodes,
 					n.size = CompoundNodes.size(n);
 					n.fillColor = CompoundNodes.fillColor(n);
-					n.lineWidth = Nodes.lineWidth(n);
-					n.lineColor = Nodes.lineColor(n);
-					n.alpha = Nodes.alpha(n);
+					n.lineWidth = CompoundNodes.lineWidth(n);
+					n.lineColor = CompoundNodes.lineColor(n);
+					n.alpha = CompoundNodes.alpha(n);
 					n.shape = CompoundNodes.shape(n);
-					n.filters = Nodes.filters(n);
+					n.filters = CompoundNodes.filters(n);
 				}
 				else
 				{
@@ -354,7 +353,8 @@ package org.cytoscapeweb.view.components {
 		{
             if (n != null)
 			{
-				if (n is CompoundNodeSprite)
+				if (n is CompoundNodeSprite &&
+					(n as CompoundNodeSprite).isInitialized())
 				{
 					n.fillColor = CompoundNodes.fillColor(n);
 	                n.lineWidth = CompoundNodes.selectionLineWidth(n);

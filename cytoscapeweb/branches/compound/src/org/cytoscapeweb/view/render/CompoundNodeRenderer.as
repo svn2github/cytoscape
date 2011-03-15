@@ -57,9 +57,11 @@ package org.cytoscapeweb.view.render
 			{
 				ns = (d as CompoundNodeSprite);
 				
-				if (ns.bounds == null)
+				if (!ns.isInitialized() ||
+					ns.bounds == null)
 				{
-					// no bounds set yet, render with default size & shape
+					// no child or bounds set yet,
+					// render with default size & shape
 					super.render(d);
 				}
 				else
@@ -92,7 +94,7 @@ package org.cytoscapeweb.view.render
 						
 						g.endFill();
 						
-						// TODO draw an image on top
+						// TODO draw an image on top?
 						//drawImage(d, size);
 					}
 				}

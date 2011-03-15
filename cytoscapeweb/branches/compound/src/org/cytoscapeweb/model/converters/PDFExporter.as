@@ -71,6 +71,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
     import org.cytoscapeweb.view.components.GraphView;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
         
     /**
      * Class that generates a vectorial image PDF file from the network.
@@ -160,10 +161,10 @@ package org.cytoscapeweb.model.converters {
             _shiftY = sp.y - margin;
             
             // Draw:
+			drawNodes(pdf, graphData.nodes);
+			if (config.nodeLabelsVisible) drawLabels(pdf, graphData.nodes);
             drawEdges(pdf, graphData.edges);
             if (config.edgeLabelsVisible) drawLabels(pdf, graphData.edges);
-            drawNodes(pdf, graphData.nodes);
-            if (config.nodeLabelsVisible) drawLabels(pdf, graphData.nodes);
     
             var bytes:ByteArray = pdf.save(Method.LOCAL);
     
@@ -348,7 +349,14 @@ package org.cytoscapeweb.model.converters {
                     var hAnchor:String = Anchors.CENTER;
                     var vAnchor:String = Anchors.MIDDLE;
                     
-                    if (d is NodeSprite) {
+					if (d is CompoundNodeSprite
+						&& (d as CompoundNodeSprite).isInitialized())
+					{
+						hAnchor = _style.getValue(VisualProperties.C_NODE_LABEL_HANCHOR, d.data);
+						vAnchor = _style.getValue(VisualProperties.C_NODE_LABEL_VANCHOR, d.data);
+					}
+					else if (d is NodeSprite)
+					{
                         hAnchor = _style.getValue(VisualProperties.NODE_LABEL_HANCHOR, d.data);
                         vAnchor = _style.getValue(VisualProperties.NODE_LABEL_VANCHOR, d.data);
                     }

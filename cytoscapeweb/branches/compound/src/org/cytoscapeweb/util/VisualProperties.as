@@ -127,7 +127,6 @@ package org.cytoscapeweb.util {
         
 		// Compound Nodes properties:
 		//--------------------------------
-		// TODO remaining properties?
 		public static const C_NODE_SHAPE:String = "compoundNodes.shape";
 		public static const C_NODE_SIZE:String = "compoundNodes.size";
 		public static const C_NODE_COLOR:String = "compoundNodes.color";
@@ -159,6 +158,8 @@ package org.cytoscapeweb.util {
 		public static const C_NODE_HOVER_GLOW_STRENGTH:String = "compoundNodes.hoverGlowStrength";
 		
 		public static const C_NODE_LABEL_FONT_SIZE:String = "compoundNodes.labelFontSize";
+		public static const C_NODE_LABEL_HANCHOR:String = "compoundNodes.labelHorizontalAnchor";
+		public static const C_NODE_LABEL_VANCHOR:String = "compoundNodes.labelVerticalAnchor";
 		
         // TODO rename and create colors, etc:
         public static const EDGE_TOOLTIP_TEXT_MERGE:String = "edges.mergeTooltipText";

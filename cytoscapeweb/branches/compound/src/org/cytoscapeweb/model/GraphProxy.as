@@ -45,6 +45,7 @@ package org.cytoscapeweb.model {
 	import flash.net.navigateToURL;
 	import flash.utils.IDataOutput;
 	
+	import mx.styles.ISimpleStyleClient;
 	import mx.utils.StringUtil;
 	
 	import org.cytoscapeweb.ApplicationFacade;
@@ -304,41 +305,6 @@ package org.cytoscapeweb.model {
         public function set zoom(value:Number):void {
             _zoom = value;
         }
-
-		// TODO temporary..
-		public function get missingChildren_dup() : Array
-		{
-			// TODO: may need to use a SET instead of an ARRAY
-			var children:Array;
-			var nodes:Array = this.selectedNodes;;
-			
-			// if missing children is set before, just return the
-			// previously collected children
-			if (_missingChildren != null)
-			{
-				children = _missingChildren;
-			}
-			// collect non-selected children of all selected compound nodes
-			else
-			{
-				children = new Array();
-				
-				for each (var ns:NodeSprite in nodes)
-				{
-					if (ns is CompoundNodeSprite)
-					{
-						children = children.concat(
-							CompoundNodes.getChildren(
-								(ns as CompoundNodeSprite),
-								CompoundNodes.NON_SELECTED_CHILDREN));
-					}
-				}
-				
-				_missingChildren = children;
-			}
-			
-			return children;
-		}
 		
 		/**
 		 * Finds non-selected children of the compound nodes in the given
@@ -702,24 +668,29 @@ package org.cytoscapeweb.model {
 				}
 			}
 			
-			// create a new CompoundNode sprite
+			// create a new CompoundNodeSprite
 			var cNodeSprite : CompoundNodeSprite = new CompoundNodeSprite();
 			
 			if (data != null)
 			{
 				cNodeSprite.data = data;
+				
+				// init the CompoundNodeSprite if it has a network field
+				if (data.network != null)
+				{
+					cNodeSprite.initialize();
+				}
 			}
-			
-			// and newly created CompoundNodeSprite to the graph data, add
-			// the node also to the list of compound nodes. 
+						
+			// and newly created CompoundNodeSprite to the graph data, but do
+			// not add it to the list of compound nodes. It will be added to
+			// that list when a child node is added into the compound.
 			
 			var nodeSprite:NodeSprite = this.graphData.addNode(cNodeSprite);
-			var list:DataList = this.graphData.group(Groups.COMPOUND_NODES);
 			
-			list.add(nodeSprite);
-			
-			// apply defaults?
-			// this.graphData.nodes.applyDefaults(nodeSprite);
+			// postponed until the first child node
+			//var list:DataList = this.graphData.group(Groups.COMPOUND_NODES);			
+			//list.add(nodeSprite);
 			
 			this.createCache(nodeSprite);
 			
@@ -884,7 +855,23 @@ package org.cytoscapeweb.model {
                 _nodesSchema = ds.nodes.schema;
                 _edgesSchema = ds.edges.schema;
                 
-                setData(Data.fromDataSet(ds));
+				var data:Data = Data.fromDataSet(ds);  
+                
+				setData(data);
+				
+				// add compound nodes to the corresponding data group
+				
+				for each (var ns:NodeSprite in data.nodes)
+				{
+					if (ns is CompoundNodeSprite)
+					{
+						if ((ns as CompoundNodeSprite).isInitialized())
+						{
+							data.group(Groups.COMPOUND_NODES).add(ns);
+						}
+					}
+				}
+				
             } catch (err:Error) {
                 trace("[ERROR]: onLoadGraph_result: " + err.getStackTrace());
                 throw err;

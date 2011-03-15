@@ -40,6 +40,7 @@ package org.cytoscapeweb.view {
     import flash.net.getClassByAlias;
     import flash.utils.ByteArray;
     
+    import mx.styles.ISimpleStyleClient;
     import mx.utils.Base64Encoder;
     
     import org.cytoscapeweb.ApplicationFacade;
@@ -358,49 +359,8 @@ package org.cytoscapeweb.view {
             var obj:Object = configProxy.visualStyleBypass.toObject();
             return JSON.encode(obj);
         }
-        
-        private function addNode(x:Number, y:Number, 
-        	data:Object,
-			updateVisualMappers:Boolean=false,
-			eventTarget:Object=null) : Object
-		{
-            var o:Object;
-			
-            try
-			{
-                // Create node:
-                var n:NodeSprite = graphProxy.addNode(data);
-								
-                // Position it:
-                var p:Point = new Point(x, y);
-                p = graphMediator.vis.globalToLocal(p);
-                n.x = p.x;
-                n.y = p.y;
-                
-				// Set listeners, styles, etc:
-                graphMediator.initialize(Groups.NODES, [n]);
-                
-				// update parent compound node if the event target is a compound
-				// node sprite
-				this.graphMediator.updateCompoundNode(eventTarget, n);
-				
-				if (updateVisualMappers)
-					sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
-				
-                o = ExternalObjectConverter.toExtElement(n);
-
-            }
-			catch (err:Error)
-			{
-                trace("[ERROR]: addNode: " + err.getStackTrace());
-                error(err);
-            }
-
-            return o;
-        }
 		
-		
-		private function addCompoundNode(x:Number, y:Number, 
+		private function addNode(x:Number, y:Number, 
 			data:Object,
 			updateVisualMappers:Boolean=false,
 			eventTarget:Object=null) : Object
@@ -409,7 +369,7 @@ package org.cytoscapeweb.view {
 			
 			try
 			{
-				// create node
+				// create node (always create a CompoundNode instance)
 				var ns:NodeSprite = graphProxy.addCompoundNode(data);
 				
 				// position the node
@@ -418,8 +378,20 @@ package org.cytoscapeweb.view {
 				ns.x = p.x;
 				ns.y = p.y;
 				
+				
 				// set listeners, styles, etc.
-				this.graphMediator.initialize(Groups.COMPOUND_NODES, [ns]);
+				
+				if ((ns is CompoundNodeSprite) &&
+					(ns as CompoundNodeSprite).isInitialized())
+				{
+					// initialize the node as a compound node
+					this.graphMediator.initialize(Groups.COMPOUND_NODES, [ns]);
+				}
+				else
+				{
+					// initialize the node as a non-compound node
+					this.graphMediator.initialize(Groups.NODES, [ns]);
+				}
 				
 				// update parent compound node if the event target is a compound
 				// node sprite
@@ -435,7 +407,7 @@ package org.cytoscapeweb.view {
 			}
 			catch (err:Error)
 			{
-				trace("[ERROR]: addCompoundNode: " + err.getStackTrace());
+				trace("[ERROR]: addNode: " + err.getStackTrace());
 				error(err);
 			}
 			
@@ -470,7 +442,6 @@ package org.cytoscapeweb.view {
 			var ns:NodeSprite;
 			var cNodeSprite:CompoundNodeSprite;
 			
-			// TODO: this list maybe a SET instead of an ARRAY
 			var childMap:Object = new Object();
 			var childList:Array;
 			var node:NodeSprite;
@@ -640,7 +611,7 @@ package org.cytoscapeweb.view {
                                         "getLayout", "applyLayout", 
                                         "setVisualStyle", "getVisualStyle", 
                                         "getVisualStyleBypass", "setVisualStyleBypass",
-                                        "addNode", "addCompoundNode", "addEdge", "removeElements",
+                                        "addNode", "addEdge", "removeElements",
                                         "getDataSchema", "addDataField", "removeDataField", "updateData",
                                         "getNetworkModel", "getNetworkAsText", "getNetworkAsImage", 
                                         "exportNetwork" ];

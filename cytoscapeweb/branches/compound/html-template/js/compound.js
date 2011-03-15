@@ -12,6 +12,29 @@ var options = {
     nodeTooltipsEnabled: true,
     edgesMerged: false,
     //mouseDownToDragDelay: -1,
+    network: {
+    	dataSchema: {
+    		nodes: [ { name: "label", type: "string" } ],       
+    		edges: [ { name: "label", type: "string" },
+    		         { name: "weight", type: "number" } ]
+    	},
+    	data: {
+    		nodes: [ { id: "n1", label: "n1", network: {
+    						nodes: [ { id: "n11", label: "n11"},
+    						         { id: "n12", label: "n12"},
+    						         { id: "n13", label: "n13", network: {
+    						        	 nodes: [{id: "n131", label: "n131"}]
+    						         	}
+    						         }],
+    					    edges: [ { id: "e12", label: "e12", weight: 1.2, source: "n11", target: "n12" } ]
+    					}
+    				},
+    		         { id: "n2", label: "n2"},
+    		         { id: "n3", label: "n3", network: { } } ],
+    		edges: [ { id: "e1", label: "e1", weight: 1.1, source: "n1", target: "n2" } ]
+    	}
+    },
+    
     visualStyle: {
         global: {
             backgroundColor: "#fefefe",
@@ -65,7 +88,7 @@ var options = {
         	labelFontSize: 15,
         	labelVerticalAnchor: "bottom"
         }
-    }   
+    }
 };
 
 window.onload = function()
@@ -112,15 +135,6 @@ function initContextMenu()
 					evt.target);
 	});
 
-	vis.addContextMenuItem("Add new compound node", function(evt) {
-		var n = vis.addCompoundNode(evt.mouseX,
-				evt.mouseY,
-				{ weight: Math.random(),
-				  label: "cnode"},
-				true,
-				evt.target);
-	});
-
 	vis.addContextMenuItem("Toggle node labels", function(evt) {
 		if (vis.nodeLabelsVisible())
 		{
@@ -160,5 +174,29 @@ function initContextMenu()
 	vis.addContextMenuItem("Delete selected", function(evt) {
 		var items = vis.selected();
 		if (items.length > 0) { vis.removeElements(items, true); }
+	});
+	
+	vis.addContextMenuItem("Export png", function(evt) {
+		vis.exportNetwork('png', 'export.php?type=png');
+	});
+	
+	vis.addContextMenuItem("Export pdf", function(evt) {
+		vis.exportNetwork('pdf', 'export.php?type=pdf');
+	});
+	
+	vis.addContextMenuItem("Export svg", function(evt) {
+		vis.exportNetwork('svg', 'export.php?type=svg');
+	});
+	
+	vis.addContextMenuItem("Export xgmml", function(evt) {
+		vis.exportNetwork('xgmml', 'export.php?type=xml');
+	});
+	
+	vis.addContextMenuItem("Export graphml", function(evt) {
+		vis.exportNetwork('graphml', 'export.php?type=xml');
+	});
+	
+	vis.addContextMenuItem("Export sif", function(evt) {
+		vis.exportNetwork('sif', 'export.php?type=xml');
 	});
 }

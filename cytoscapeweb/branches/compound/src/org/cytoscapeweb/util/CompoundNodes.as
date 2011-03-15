@@ -55,7 +55,6 @@ package org.cytoscapeweb.util
 		{
 			if (CompoundNodes._properties == null)
 			{
-				// TODO: other properties
 				CompoundNodes._properties =
 				{
 					shape: CompoundNodes.shape,

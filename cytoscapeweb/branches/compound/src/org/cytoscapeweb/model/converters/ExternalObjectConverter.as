@@ -48,6 +48,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.util.ErrorCodes;
     import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.Utils;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     
     
     /**
@@ -68,7 +69,9 @@ package org.cytoscapeweb.model.converters {
         public static const SOURCE:String = "source";
         public static const TARGET:String = "target";
         public static const DIRECTED:String = "directed";
-        
+        public static const NETWORK:String = "network";
+		public static const PARENT_ID:String = "parentId";
+		
         private static const NODE_ATTR:Object = {
             id: 1
         }
@@ -110,8 +113,8 @@ package org.cytoscapeweb.model.converters {
          */
         public static function convertToDataSet(network:Object, schema:DataSchema=null):DataSet {
             var lookup:Object = {};
-            var nodes:Array = [], edges:Array = [];
-            var id:String, sid:String, tid:String;
+            var nodes:Array = []; // array of CompoundNodeSprites
+			var edges:Array = []; // array of plain objects
             var obj:Object;
             var f:DataField, type:int, defValue:*, mandatoryDefValue:*;
             var directed:Boolean = false;
@@ -168,35 +171,123 @@ package org.cytoscapeweb.model.converters {
             var extNodesData:Array = network[DATA][Groups.NODES];
             var extEdgesData:Array = network[DATA][Groups.EDGES];
             
-            // Nodes
-            for each (obj in extNodesData) {
-                normalizeData(obj, nodeSchema)
-                id = obj[ID];
-                lookup[id] = obj;
-                nodes.push(obj);
-            }
-            
-            // Edges
-            for each (obj in extEdgesData) {
-                normalizeData(obj, edgeSchema);
-                id  = obj[ID];
-                sid = obj[SOURCE];
-                tid = obj[TARGET];
-                
-                if (!lookup.hasOwnProperty(sid))
-                    throw new Error("Edge "+id+" references unknown node: "+sid);
-                if (!lookup.hasOwnProperty(tid))
-                    throw new Error("Edge "+id+" references unknown node: "+tid);
-
-                edges.push(obj);
-            }
-            
+			// Read external node and edge data, and populate the nodes and 
+			// edges array. We cannot use an array of plain nodes directly,
+			// since Data.fromDataSet function creates NodeSprite instances
+			// for node data. Therefore, nodes array will be populated by
+			// CompoundNodeSprite instances.
+			readData(extNodesData, extEdgesData,
+				nodes, edges,
+				nodeSchema, edgeSchema,
+				lookup);
+						
+			var cns:CompoundNodeSprite;
+			var parent:CompoundNodeSprite;
+			
+			// add child nodes into the appropriate compounds using data parent
+			// id information set by the readData function.
+			for each (cns in nodes)
+			{
+				if (cns.data.parentId != null)
+				{
+					parent = (lookup[cns.data.parentId] as CompoundNodeSprite); 
+					
+					// add the current compound node as a child
+					parent.addNode(cns);
+					
+					// TODO:debug
+					trace("Node " + cns.data.id +
+						" added to " + cns.data.parentId);
+				}
+			}
+			
             return new DataSet(
                 new DataTable(nodes, nodeSchema),
                 new DataTable(edges, edgeSchema)
             );
         }
         
+		/**
+		 * Recursively reads node and edge data from the given external data
+		 * arrays, and populates the given nodes and edges arrays accordingly.
+		 * While edges array is populated with Object instances, nodes array 
+		 * is populated with CompoundNodeSprite instances.
+		 * 
+		 * @param extNodesData	external data array for nodes
+		 * @param extEdgesData	external data array for edges
+		 * @param nodes			node array to be populated
+		 * @param edges			edge array to be populated
+		 * @param nodeSchema	DataSchema for data fields of nodes
+		 * @param edgeSchema	DataSchema for data fields of edges
+		 * @param lookup		lookup map (by id) for nodes
+		 * @param parentId		optional parent id for recursive calls 
+		 */
+		private static function readData(extNodesData:Array, extEdgesData:Array,
+			nodes:Array, edges:Array,
+			nodeSchema:DataSchema, edgeSchema:DataSchema,
+			lookup:Object,
+			parentId: String = null) : void
+		{
+			var obj:Object;
+			var id:String, sid:String, tid:String;
+			var cns:CompoundNodeSprite;
+			
+			// Nodes
+			for each (obj in extNodesData)
+			{
+				cns = new CompoundNodeSprite();
+				
+				// check for a sub-network. If the sub network exists,
+				// recursively read sub-network data.
+				if (obj[NETWORK] != null)
+				{
+					// initialize compound node in order to add child nodes
+					cns.initialize();
+					
+					readData(obj[NETWORK][Groups.NODES],
+						obj[NETWORK][Groups.EDGES],
+						nodes, edges,
+						nodeSchema, edgeSchema,
+						lookup,
+						obj[ID]);
+				
+					// delete the sub-network field after processing
+					delete obj[NETWORK];
+					//obj[NETWORK] = null;
+				}
+				
+				normalizeData(obj, nodeSchema)
+				id = obj[ID];
+				cns.data = obj;
+				lookup[id] = cns;
+				
+				// update parent id of the current node
+				if (parentId != null)
+				{
+					obj[PARENT_ID] = parentId;
+				}
+				
+				// add the node to the array of compound nodes
+				nodes.push(cns);
+			}
+			
+			// Edges
+			for each (obj in extEdgesData)
+			{
+				normalizeData(obj, edgeSchema);
+				id  = obj[ID];
+				sid = obj[SOURCE];
+				tid = obj[TARGET];
+				
+				if (!lookup.hasOwnProperty(sid))
+					throw new Error("Edge "+id+" references unknown node: "+sid);
+				if (!lookup.hasOwnProperty(tid))
+					throw new Error("Edge "+id+" references unknown node: "+tid);
+				
+				edges.push(obj);
+			}
+		}
+		
         public static function toExtNetworkModel(ds:DataSet):Object {
             var obj:Object = {};
             
