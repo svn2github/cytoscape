@@ -75,20 +75,20 @@ import org.slf4j.LoggerFactory;
  */
 public class CySessionManagerImpl implements CySessionManager {
 
-    private String                       currentFileName;
-    private CySession                    currentSession;
+    private String currentFileName;
+    private CySession currentSession;
 
-    private final CyEventHelper          cyEventHelper;
-    private final CyNetworkManager       netMgr;
-    private final CyTableManager         tblMgr;
-    private final VisualMappingManager   vmMgr;
-    private final VisualStyleSerializer  vsSer;
-    private final CyNetworkViewManager   nvMgr;
+    private final CyEventHelper cyEventHelper;
+    private final CyNetworkManager netMgr;
+    private final CyTableManager tblMgr;
+    private final VisualMappingManager vmMgr;
+    private final VisualStyleSerializer vsSer;
+    private final CyNetworkViewManager nvMgr;
 
     private final CyProperty<Properties> properties;
-    private final CyProperty<Bookmarks>  bookmarks;
+    private final CyProperty<Bookmarks> bookmarks;
 
-    private static final Logger          logger = LoggerFactory.getLogger(CySessionManagerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(CySessionManagerImpl.class);
 
     public CySessionManagerImpl(CyEventHelper cyEventHelper,
                                 CyNetworkManager netMgr,
@@ -190,7 +190,7 @@ public class CySessionManagerImpl implements CySessionManager {
                 netMgr.addNetwork(nv.getModel());
                 nvMgr.addNetworkView(nv);
             }
-            
+
             // Restore visual styles
             logger.debug("Restoring visual styles...");
             Properties stylesProps = sess.getVizmapProperties();
@@ -207,15 +207,15 @@ public class CySessionManagerImpl implements CySessionManager {
 
             // Get network frames info
             Cysession cysess = sess.getCysession();
-            
-            if (cysess.getSessionState().getDesktop().getNetworkFrames() != null){
+
+            if (cysess.getSessionState().getDesktop().getNetworkFrames() != null) {
                 List<NetworkFrame> frames = cysess.getSessionState().getDesktop().getNetworkFrames().getNetworkFrame();
                 Map<String, NetworkFrame> framesLookup = new Hashtable<String, NetworkFrame>();
-                
+
                 for (NetworkFrame nf : frames) {
                     framesLookup.put(nf.getFrameID(), nf);
                 }
-                
+
                 // Set visual styles to network views
                 Map<CyNetworkView, String> netStyleMap = sess.getViewVisualStyleMap();
 
@@ -227,32 +227,31 @@ public class CySessionManagerImpl implements CySessionManager {
                     if (vs != null) {
                         vmMgr.setVisualStyle(vs, netView);
                         vs.apply(netView);
-                        
-                        // TODO: Set network width/height
-                        String name = netView.getModel().getCyRow().get(CyNetwork.NAME, String.class);
-                        
-                        if (name != null && name.length() > 0) {
-                            netView.setVisualProperty(TwoDVisualLexicon.NETWORK_TITLE, name);
-                            NetworkFrame nf = framesLookup.get(name);
-                            
-                            if (nf != null) {
-                                BigInteger w = nf.getWidth();
-                                BigInteger h = nf.getHeight();
-                                
-                                if (w != null)
-                                    netView.setVisualProperty(TwoDVisualLexicon.NETWORK_WIDTH, w.doubleValue());
-                                if (h != null)
-                                    netView.setVisualProperty(TwoDVisualLexicon.NETWORK_HEIGHT, h.doubleValue());
-                                
-                                // TODO: how to set network view's x,y position?
-                            }
-                        }
-                        
-                        netView.updateView();
                     }
+
+                    // Set network width/height
+                    String name = netView.getModel().getCyRow().get(CyNetwork.NAME, String.class);
+
+                    if (name != null && name.length() > 0) {
+                        netView.setVisualProperty(TwoDVisualLexicon.NETWORK_TITLE, name);
+                        NetworkFrame nf = framesLookup.get(name);
+
+                        if (nf != null) {
+                            BigInteger w = nf.getWidth();
+                            BigInteger h = nf.getHeight();
+
+                            if (w != null)
+                                netView.setVisualProperty(TwoDVisualLexicon.NETWORK_WIDTH, w.doubleValue());
+                            if (h != null)
+                                netView.setVisualProperty(TwoDVisualLexicon.NETWORK_HEIGHT, h.doubleValue());
+                        }
+                    }
+                    
+                    // TODO: restore selected elements
+
+                    netView.updateView();
                 }
             }
-            
         }
 
         currentSession = sess;
