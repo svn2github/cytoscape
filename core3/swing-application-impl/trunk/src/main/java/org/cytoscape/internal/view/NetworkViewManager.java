@@ -40,6 +40,7 @@ import static org.cytoscape.view.presentation.property.TwoDVisualLexicon.NETWORK
 
 import java.beans.PropertyVetoException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -52,8 +53,11 @@ import javax.swing.event.InternalFrameListener;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.events.RowSetMicroListener;
 import org.cytoscape.session.CyApplicationManager;
+import org.cytoscape.session.CySession;
 import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedEvent;
 import org.cytoscape.view.model.events.NetworkViewAboutToBeDestroyedListener;
+import org.cytoscape.session.events.SessionLoadedEvent;
+import org.cytoscape.session.events.SessionLoadedListener;
 import org.cytoscape.session.events.SetCurrentNetworkEvent;
 import org.cytoscape.session.events.SetCurrentNetworkListener;
 import org.cytoscape.session.events.SetCurrentNetworkViewEvent;
@@ -65,6 +69,8 @@ import org.cytoscape.view.model.events.NetworkViewAddedListener;
 import org.cytoscape.view.presentation.RenderingEngine;
 import org.cytoscape.view.presentation.RenderingEngineFactory;
 import org.cytoscape.property.CyProperty;
+import org.cytoscape.property.session.Cysession;
+import org.cytoscape.property.session.NetworkFrame;
 
 import org.cytoscape.application.swing.CyHelpBroker;
 import org.cytoscape.event.CyEventHelper;
@@ -78,7 +84,7 @@ import org.slf4j.LoggerFactory;
  */
 public class NetworkViewManager implements InternalFrameListener,
 		NetworkViewAddedListener, NetworkViewAboutToBeDestroyedListener,
-		SetCurrentNetworkViewListener, SetCurrentNetworkListener {
+		SetCurrentNetworkViewListener, SetCurrentNetworkListener, SessionLoadedListener {
 	
 	private static final Logger logger = LoggerFactory.getLogger(NetworkViewManager.class);
 	
@@ -479,5 +485,36 @@ public class NetworkViewManager implements InternalFrameListener,
 		
 		eventHelper.addMicroListener( rsml, RowSetMicroListener.class, view.getModel().getCyRow() );
 		nameListeners.put(view.getModel(), rsml );
+	}
+
+	@Override
+	public void handleEvent(SessionLoadedEvent e) {
+		CySession sess = e.getLoadedSession();
+		
+		if (sess != null) {
+			Cysession cs = sess.getCysession();
+			
+			if (cs != null) {
+				// Restore frames positions
+				if (cs.getSessionState().getDesktop().getNetworkFrames() != null) {
+					List<NetworkFrame> frames = cs.getSessionState().getDesktop().getNetworkFrames().getNetworkFrame();
+					
+					for (NetworkFrame nf : frames) {
+						String frameName = nf.getFrameID();
+						JInternalFrame[] internalFrames = desktopPane.getAllFrames();
+						
+						for (JInternalFrame iframe : internalFrames) {
+							if (iframe.getTitle() != null && iframe.getTitle().equals(frameName) &&
+									nf.getX() != null && nf.getY() != null) {
+								
+								int x = nf.getX().intValue();
+								int y = nf.getY().intValue();
+								iframe.setLocation(x, y);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }

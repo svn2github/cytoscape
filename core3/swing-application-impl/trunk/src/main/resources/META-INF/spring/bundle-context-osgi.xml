@@ -297,6 +297,7 @@
 			</value>
 			<value>org.cytoscape.session.events.SetCurrentNetworkListener
 			</value>
+			<value>org.cytoscape.session.events.SessionLoadedListener</value>
 		</osgi:interfaces>
 	</osgi:service>
 
