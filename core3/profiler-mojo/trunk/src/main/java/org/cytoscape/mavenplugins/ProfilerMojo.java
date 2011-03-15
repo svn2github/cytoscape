@@ -69,6 +69,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -661,13 +663,11 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
-			List testClassPath = generateTestClasspath();
-			System.err.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& in ProfilerMojo.execute(), testClassPath="+testClassPath);
-		} catch (final Exception e) {
-			System.err.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& in ProfilerMojo.execute(), Error while trying to generate the test class path!!");
+			final List testClassPath = generateTestClasspath();
+		} catch (final DependencyResolutionRequiredException e) {
+			throw new MojoExecutionException("Failed to resolve one or more dependencies!", e);
 		}
-return;
-/*		
+
 		if (verifyParameters()) {
 			if (hasExecutedBefore())
 				return;
@@ -684,7 +684,6 @@ return;
 
 			compareRuntimes(currentNamesAndTimes, baselineNamesAndTimes);
 		}
-*/
 	}
 
 	private void run() throws MojoExecutionException, MojoFailureException {
@@ -725,6 +724,7 @@ return;
 				     final Set<ClassAndMethodNameAndExecutionTime> baselineNamesAndTimes)
 		throws MojoFailureException
 	{
+		final NumberFormat formatter = new DecimalFormat("0.0000");
 		boolean failed = false;
 		for (final ClassAndMethodNameAndExecutionTime currentNameAndTime : currentNamesAndTimes) {
 			final ClassAndMethodNameAndExecutionTime baselineNameAndTime =
@@ -740,12 +740,14 @@ return;
 				? currentNameAndTime.getExecutionTime()
 				: (currentNameAndTime.getExecutionTime() - baselineNameAndTime.getExecutionTime())
 				  / baselineNameAndTime.getExecutionTime());
+
+			final String differenceAsString = formatter.format(percentageDifference);
 			if (percentageDifference > maxPerformanceDecreasePercentage) {
-				getLog().error(currentNameAndTime.getClassAndMethodName() + " is " + percentageDifference
+				getLog().error(currentNameAndTime.getClassAndMethodName() + " is " + differenceAsString
 					       + "% slower than the baseline version!");
 				failed = true;
 			} else if (percentageDifference > 0.0)
-				getLog().info(currentNameAndTime.getClassAndMethodName() + " is " + percentageDifference
+				getLog().info(currentNameAndTime.getClassAndMethodName() + " is " + differenceAsString
 					       + "% slower than the baseline version.");
 		}
 
@@ -1579,8 +1581,6 @@ return;
 	{
 		final Set<Artifact> resolvedDependencies = resolveAllDependencies();
 		getProject().setArtifacts(resolvedDependencies);
-System.err.println("======================== in AbstractSurefireMojo.generateTestClasspath(), getProject().getArtifacts().size()="+getProject().getArtifacts().size());
-System.err.println("======================== in AbstractSurefireMojo.generateTestClasspath(), getProject().getDependencyArtifacts().size()="+getProject().getDependencyArtifacts().size());
 		List classpath = new ArrayList( 2 + getProject().getArtifacts().size() );
 
 		classpath.add( getTestClassesDirectory().getAbsolutePath() );
