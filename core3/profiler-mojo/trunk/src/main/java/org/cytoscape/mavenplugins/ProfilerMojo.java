@@ -29,12 +29,16 @@ package org.cytoscape.mavenplugins;
 
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -48,8 +52,11 @@ import org.apache.maven.plugin.surefire.booterclient.ChecksumCalculator;
 import org.apache.maven.plugin.surefire.booterclient.ForkConfiguration;
 import org.apache.maven.plugin.surefire.booterclient.ForkStarter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
+import org.apache.maven.surefire.booter.BooterConstants;
 import org.apache.maven.surefire.booter.ClassLoaderConfiguration;
 import org.apache.maven.surefire.booter.Classpath;
+import org.apache.maven.surefire.booter.PropertiesWrapper;
 import org.apache.maven.surefire.booter.SurefireBooterForkException;
 import org.apache.maven.surefire.booter.SurefireExecutionException;
 import org.apache.maven.toolchain.ToolchainManager;
@@ -66,6 +73,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -84,7 +92,7 @@ import javax.xml.stream.XMLInputFactory;
  *
  * @phase test
  */
-public final class ProfilerMojo extends AbstractSurefireMojo implements SurefireExecutionParameters, SurefireReportParameters {
+public final class ProfilerMojo extends AbstractSurefireMojo implements SurefireExecutionParameters, SurefireReportParameters, BooterConstants {
 	/**
 	 * Set this to "true" to skip running tests, but still compile them. Its use is NOT RECOMMENDED, but quite
 	 * convenient on occasion.
@@ -652,6 +660,14 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 	private ArtifactResolver resolver;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		try {
+			List testClassPath = generateTestClasspath();
+			System.err.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& in ProfilerMojo.execute(), testClassPath="+testClassPath);
+		} catch (final Exception e) {
+			System.err.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& in ProfilerMojo.execute(), Error while trying to generate the test class path!!");
+		}
+return;
+/*		
 		if (verifyParameters()) {
 			if (hasExecutedBefore())
 				return;
@@ -668,6 +684,7 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 
 			compareRuntimes(currentNamesAndTimes, baselineNamesAndTimes);
 		}
+*/
 	}
 
 	private void run() throws MojoExecutionException, MojoFailureException {
@@ -1531,6 +1548,108 @@ public final class ProfilerMojo extends AbstractSurefireMojo implements Surefire
 	{
 	}
 
+	private Set<Artifact> resolveAllDependencies() throws MojoExecutionException {
+		final Set<Artifact> transitiveDependencies = new HashSet<Artifact>();
+		final Set emptySet = new HashSet();
+		for (final Artifact dependency : (Set<Artifact>)getProject().getDependencyArtifacts()) {
+			final ArtifactResolutionResult resolutionResult;
+			try {
+				resolutionResult = resolver.resolveTransitively(emptySet, dependency, remoteRepositories,
+										localRepository, metadataSource);
+			} catch (final Exception e) {
+				throw new MojoExecutionException("Failed to resolve " + dependency + "!", e);
+			}
+			transitiveDependencies.addAll((Set<Artifact>)resolutionResult.getArtifacts());
+			transitiveDependencies.add(dependency);
+		}
+
+		return transitiveDependencies;
+	}
+
+	/**
+	 * Generate the test classpath.
+	 *
+	 * @return List containing the classpath elements
+	 * @throws org.apache.maven.artifact.DependencyResolutionRequiredException
+	 *          when dependency resolution fails
+	 * @throws org.apache.maven.plugin.MojoExecutionException
+	 *          upon other problems
+	 */
+	public List generateTestClasspath() throws DependencyResolutionRequiredException, MojoExecutionException
+	{
+		final Set<Artifact> resolvedDependencies = resolveAllDependencies();
+		getProject().setArtifacts(resolvedDependencies);
+System.err.println("======================== in AbstractSurefireMojo.generateTestClasspath(), getProject().getArtifacts().size()="+getProject().getArtifacts().size());
+System.err.println("======================== in AbstractSurefireMojo.generateTestClasspath(), getProject().getDependencyArtifacts().size()="+getProject().getDependencyArtifacts().size());
+		List classpath = new ArrayList( 2 + getProject().getArtifacts().size() );
+
+		classpath.add( getTestClassesDirectory().getAbsolutePath() );
+
+		classpath.add( getClassesDirectory().getAbsolutePath() );
+
+		Set classpathArtifacts = getProject().getArtifacts();
+
+		if ( getClasspathDependencyScopeExclude() != null && !getClasspathDependencyScopeExclude().equals( "" ) )
+			{
+				ArtifactFilter dependencyFilter = new ScopeArtifactFilter( getClasspathDependencyScopeExclude() );
+				classpathArtifacts = this.filterArtifacts( classpathArtifacts, dependencyFilter );
+			}
+
+		if ( getClasspathDependencyExcludes() != null )
+			{
+				ArtifactFilter dependencyFilter = new PatternIncludesArtifactFilter( getClasspathDependencyExcludes() );
+				classpathArtifacts = this.filterArtifacts( classpathArtifacts, dependencyFilter );
+			}
+
+		for ( Iterator iter = classpathArtifacts.iterator(); iter.hasNext(); )
+			{
+				Artifact artifact = (Artifact) iter.next();
+				if ( artifact.getArtifactHandler().isAddedToClasspath() )
+					{
+						File file = artifact.getFile();
+						if ( file != null )
+							{
+								classpath.add( file.getPath() );
+							}
+					}
+			}
+
+		// Add additional configured elements to the classpath
+		if ( getAdditionalClasspathElements() != null )
+			{
+				for ( Iterator iter = getAdditionalClasspathElements().iterator(); iter.hasNext(); )
+					{
+						String classpathElement = (String) iter.next();
+						classpath.add( classpathElement );
+					}
+			}
+System.err.println("======================== in AbstractSurefireMojo.generateTestClasspath(), classpath="+classpath);
+
+		return classpath;
+	}
+
+	/**
+	 * Return a new set containing only the artifacts accepted by the given filter.
+	 *
+	 * @param artifacts The unfiltered artifacts
+	 * @param filter    The filter to apply
+	 * @return The filtered result
+	 */
+	private Set filterArtifacts( Set artifacts, ArtifactFilter filter )
+	{
+		Set filteredArtifacts = new LinkedHashSet();
+
+		for ( Iterator iter = artifacts.iterator(); iter.hasNext(); )
+			{
+				Artifact artifact = (Artifact) iter.next();
+				if ( !filter.include( artifact ) )
+					{
+						filteredArtifacts.add( artifact );
+					}
+			}
+
+		return filteredArtifacts;
+	}
 
 	static final class ClassAndMethodNameAndExecutionTime {
 		private final String classAndMethodName;
