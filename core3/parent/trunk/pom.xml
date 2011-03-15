@@ -22,7 +22,7 @@
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<maven-javadoc-plugin.version>2.7</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
-		<maven-release-plugin.version>2.3.1</maven-release-plugin.version>
+		<maven-release-plugin.version>2.1</maven-release-plugin.version>
 		<maven-pax-plugin.version>1.5-SNAPSHOT</maven-pax-plugin.version>
 		<maven-bundle-plugin.version>2.1.0</maven-bundle-plugin.version>
 		<maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
