@@ -43,4 +43,11 @@
 		               ref="supportedFileTypesManager" />
 	</osgi:set>
 	
+	<osgi:set id="externalTunableInterceptors" 
+	    interface="org.cytoscape.work.TunableInterceptor"
+	    cardinality="0..N">
+		<osgi:listener bind-method="addTunableInterceptor"
+		               unbind-method="removeTunableInterceptor" 
+		               ref="swingTaskManager" />
+	</osgi:set>
 </beans>

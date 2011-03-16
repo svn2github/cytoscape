@@ -8,6 +8,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -18,6 +21,7 @@ import org.cytoscape.work.TaskFactory;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.swing.GUITaskManager;
 import org.cytoscape.work.swing.GUITunableInterceptor;
+import org.cytoscape.work.TunableInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +74,10 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	// Parent component of Task Monitor GUI.
 	private Window parent;
 
+	//
+	//
+	private List<TunableInterceptor> secondaryTunableInterceptors;
+
 	/**
 	 * Construct with default behavior.
 	 * <ul>
@@ -81,6 +89,8 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 	 */
 	public SwingTaskManager(final GUITunableInterceptor tunableInterceptor) {
 		super(tunableInterceptor);
+
+		secondaryTunableInterceptors = new ArrayList<TunableInterceptor>();
 
 		parent = null;
 		taskExecutorService = Executors.newCachedThreadPool();
@@ -231,7 +241,16 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 		tunableInterceptor.loadTunables(task);
 
 		// create the UI based on the object
-		return tunableInterceptor.execUI(task);
+		boolean ret = tunableInterceptor.execUI(task);
+
+		// Run any additional tunable interceptors. In general, these
+		// should NOT display a GUI.
+		for ( TunableInterceptor ti : secondaryTunableInterceptors ) {
+			ti.loadTunables(task);
+			ti.execUI(task);
+		}
+
+		return ret;
 	}
 
 	@Override
@@ -239,5 +258,21 @@ public class SwingTaskManager extends AbstractTaskManager implements GUITaskMana
 		tunableInterceptor.loadTunables(taskFactory);
 		return ((GUITunableInterceptor)tunableInterceptor).getUI(taskFactory);
 	}
+
+	public void addTunableInterceptor(TunableInterceptor ti, Map props) {
+		// The reason we compare strings instead of the objects directly is
+		// that object provided here is actually a proxy object created by
+		// Spring, not the actual object.  We should really find another
+		// way of handling this.
+		String existing = tunableInterceptor.toString();
+		String tis = ti.toString();
+		if ( ti != null && !tis.equals(existing) ) 
+			secondaryTunableInterceptors.add(ti);
+	}
+
+	public void removeTunableInterceptor(TunableInterceptor ti, Map props) {
+		if ( ti != null )
+			secondaryTunableInterceptors.remove(ti);
+	}	
 }
 
