@@ -25,6 +25,6 @@ public class BasicProvenanceHandler extends AbstractTunableHandler implements Pr
 		} catch ( Exception e) {
 			o = "<exception extracting value>";
 		}
-		System.out.println("PROVENANCE: " + getQualifiedName() + " = " + o);
+		System.out.println("PROVENANCE: Tunable --> " + getQualifiedName() + " = " + o);
 	}
 }
