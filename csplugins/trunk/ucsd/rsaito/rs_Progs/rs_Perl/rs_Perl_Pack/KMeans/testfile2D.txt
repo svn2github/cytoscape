@@ -1,0 +1,9 @@
+Gene 1	TEST	1.0	1.0
+Gene 2	TEST	1.0	-2.0
+Gene 3	TEST	2.0	0.0
+Gene 4	TEST	7.0	7.0
+Gene 5	TEST	6.0	6.5
+Gene 6	TEST	8.0	7.5
+Gene 7	TEST	-5.0	1.0
+Gene 8	TEST	-4.3	2.3
+Gene 9	TEST	-3.0	1.3

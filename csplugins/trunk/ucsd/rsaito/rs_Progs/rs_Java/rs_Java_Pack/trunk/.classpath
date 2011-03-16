@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="Test_Packages"/>
+	<classpathentry kind="src" path="Graph_Packages"/>
+	<classpathentry kind="src" path="Seq_Packages"/>
+	<classpathentry kind="src" path="Specific_Packages"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

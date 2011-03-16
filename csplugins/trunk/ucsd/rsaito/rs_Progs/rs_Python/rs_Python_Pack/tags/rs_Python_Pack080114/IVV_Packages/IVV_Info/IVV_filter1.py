@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+
+import curses.ascii
+import string
+
+class IVV_filter:
+    def __init__(self):
+        self.bait_filter = []
+        self.bait_id_filter = []
+        self.prey_filter = []
+        self.prey_filter_h = {}
+        self.exp_filter = []
+
+    def set_Bait_filter(self, baits):
+	self.bait_filter = baits
+
+    def set_Bait_ID_filter(self, baits):
+	self.bait_id_filter = baits
+
+    def set_Prey_filter(self, preys):
+	self.prey_filter += preys
+        for prey in preys:
+            self.prey_filter_h[ prey ] = ""
+    
+    def set_Prey_filter_file(self, filename):
+        """ Overwrites current prey filter """
+        prey_list = []
+        fh = open(filename, "r")
+        for line in fh.readlines():
+            flag = False
+            for c in line:
+                if curses.ascii.isalnum(c):
+                    flag = True
+                    break
+            if flag:
+                line = string.rstrip(line)
+                r = line.split("\t")
+                prey_list.append(r[0])
+        self.set_Prey_filter(prey_list)
+
+    def set_Exp_filter(self, exps):
+	self.exp_filter = exps
+
+    def get_Bait_filter(self):
+	return self.bait_filter
+
+    def get_Bait_ID_filter(self):
+	return self.bait_id_filter
+
+    def get_Prey_filter(self):
+	return self.prey_filter
+
+    def get_Exp_filter(self):
+	return self.exp_filter
+
+    def check_prey(self, preyid):
+        """ Only checks direct prey filter. It does not
+        check preys filtered by other ID (ex. bait ID)
+        """
+        return self.prey_filter_h.has_key(preyid)
+
+if __name__ == "__main__":
+
+    filt = IVV_filter1()
+    filt.set_Bait_ID_filter(("2353_all", "3725_all"))
+    filt.set_Prey_filter_file("../../IVV/basic_filter_list2")
+    filt.set_Prey_filter(("T000XXX.seq",))
+    filt.set_Bait_filter(("FOS", "JUN"))
+    filt.set_Exp_filter(("H000XXX",))
+
+    print filt.get_Prey_filter()
+    print filt.get_Bait_ID_filter()
+    print filt.get_Exp_filter()
+    print filt.get_Bait_filter()
+
+    print filt.check_prey("T000XXX.seq")
+    print filt.check_prey("S20060609_5TH_E5_02_C06.seq")
+    print filt.check_prey("XXX")
+

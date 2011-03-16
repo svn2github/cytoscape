@@ -1,0 +1,284 @@
+LOCUS       AY212879                5897 bp    DNA     linear   PRI 18-JAN-2003
+DEFINITION  Homo sapiens v-fos FBJ murine osteosarcoma viral oncogene homolog
+            (FOS) gene, complete cds.
+ACCESSION   AY212879
+VERSION     AY212879.1  GI:27802688
+KEYWORDS    .
+SOURCE      Homo sapiens (human)
+  ORGANISM  Homo sapiens
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Mammalia; Eutheria; Euarchontoglires; Primates; Haplorrhini;
+            Catarrhini; Hominidae; Homo.
+REFERENCE   1  (bases 1 to 5897)
+  AUTHORS   Rieder,M.J., Livingston,R.J., Daniels,M.R., Montoya,M.A.,
+            Chung,M.-W., Miyamoto,K.E., Nguyen,C.P., Nguyen,D.A., Poel,C.L.,
+            Robertson,P.D., Schackwitz,W.S., Sherwood,J.K., Witrak,L.A. and
+            Nickerson,D.A.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JAN-2003) Genome Sciences, University of Washington,
+            1705 NE Pacific, Seattle, WA 98195, USA
+COMMENT     To cite this work please use:  NIEHS-SNPs, Environmental Genome
+            Project, NIEHS ES15478, Department of Genome Sciences, Seattle, WA
+            (URL: http://egp.gs.washington.edu).
+FEATURES             Location/Qualifiers
+     source          1..5897
+                     /organism="Homo sapiens"
+                     /mol_type="genomic DNA"
+                     /db_xref="taxon:9606"
+     variation       87
+                     /frequency="0.01"
+                     /replace="a"
+     variation       120
+                     /frequency="0.01"
+                     /replace="c"
+     variation       543
+                     /frequency="0.02"
+                     /replace="g"
+     variation       546
+                     /frequency="0.04"
+                     /replace="a"
+     variation       801
+                     /frequency="0.07"
+                     /replace="g"
+     variation       838
+                     /frequency="0.01"
+                     /replace="a"
+     variation       954
+                     /frequency="0.01"
+                     /replace="a"
+     gene            1038..4420
+                     /gene="FOS"
+     mRNA            join(1038..1333,2087..2338,2770..2877,2993..4420)
+                     /gene="FOS"
+                     /product="v-fos FBJ murine osteosarcoma viral oncogene
+                     homolog"
+     variation       1058
+                     /gene="FOS"
+                     /frequency="0.26"
+                     /replace="t"
+     variation       1133
+                     /gene="FOS"
+                     /frequency="0.25"
+                     /replace="c"
+     CDS             join(1193..1333,2087..2338,2770..2877,2993..3634)
+                     /gene="FOS"
+                     /codon_start=1
+                     /product="v-fos FBJ murine osteosarcoma viral oncogene
+                     homolog"
+                     /protein_id="AAO21129.1"
+                     /db_xref="GI:27802689"
+                     /translation="MMFSGFNADYEASSSRCSSASPAGDSLSYYHSPADSFSSMGSPV
+                     NAQDFCTDLAVSSANFIPTVTAISTSPDLQWLVQPALVSSVAPSQTRAPHPFGVPAPS
+                     AGAYSRAGVVKTMTGGRAQSIGRRGKVEQLSPEEEEKRRIRRERNKMAAAKCRNRRRE
+                     LTDTLQAETDQLEDEKSALQTEIANLLKEKEKLEFILAAHRPACKIPDDLGFPEEMSV
+                     ASLDLTGGLPEVATPESEEAFTLPLLNDPEPKPSVEPVKSISSMELKTEPFDDFLFPA
+                     SSRPSGSETARSVPDMDLSGSFYAADWEPLHSGSLGMGPMATELEPLCTPVVTCTPSC
+                     TAYTSSFVFTYPEADSFPSCAAAHRKGSSSNEPSSDSLSSPTLLAL"
+     variation       1401
+                     /gene="FOS"
+                     /frequency="0.06"
+                     /replace="a"
+     variation       1651
+                     /gene="FOS"
+                     /frequency="0.07"
+                     /replace="t"
+     variation       2197
+                     /gene="FOS"
+                     /frequency="0.23"
+                     /replace="c"
+     variation       2376
+                     /gene="FOS"
+                     /frequency="0.05"
+                     /replace="a"
+     variation       2625
+                     /gene="FOS"
+                     /frequency="0.10"
+                     /replace="t"
+     variation       2765
+                     /gene="FOS"
+                     /frequency="0.14"
+                     /replace="c"
+     variation       2918
+                     /gene="FOS"
+                     /frequency="0.78"
+                     /replace=""
+     variation       3337
+                     /gene="FOS"
+                     /frequency="0.02"
+                     /replace="g"
+     variation       3472
+                     /gene="FOS"
+                     /frequency="0.02"
+                     /replace="a"
+     variation       4115
+                     /gene="FOS"
+                     /frequency="0.01"
+                     /replace="t"
+     variation       4551
+                     /frequency="0.01"
+                     /replace="t"
+     variation       4583
+                     /frequency="0.01"
+                     /replace="c"
+     variation       4709
+                     /frequency="0.01"
+                     /replace="g"
+     variation       4991
+                     /frequency="0.01"
+                     /replace="t"
+     repeat_region   4999..5289
+                     /rpt_family="Alu"
+                     /rpt_type=dispersed
+     variation       5060
+                     /frequency="0.13"
+                     /replace="t"
+     variation       5076
+                     /frequency="0.04"
+                     /replace="c"
+     variation       5123
+                     /frequency="0.01"
+                     /replace="g"
+     variation       5164
+                     /frequency="0.01"
+                     /replace="c"
+     variation       5223
+                     /frequency="0.13"
+                     /replace="t"
+     variation       5301
+                     /frequency="0.23"
+                     /replace="c"
+     variation       5320
+                     /frequency="0.04"
+                     /replace="c"
+     variation       5382
+                     /frequency="0.05"
+                     /replace="a"
+     variation       5506
+                     /frequency="0.01"
+                     /replace="t"
+     variation       5574
+                     /frequency="0.93"
+                     /replace=""
+     variation       5577
+                     /frequency="0.03"
+                     /replace="c"
+     variation       5613
+                     /frequency="0.06"
+                     /replace="c"
+     variation       5613
+                     /frequency="0.16"
+                     /replace="g"
+     variation       5708
+                     /frequency="0.14"
+                     /replace="t"
+     variation       5740
+                     /frequency="0.02"
+                     /replace="g"
+     variation       5790
+                     /frequency="0.01"
+                     /replace="c"
+     variation       5827
+                     /frequency="0.04"
+                     /replace="c"
+ORIGIN      
+        1 cttgtcatcc cgaactgacc accctgccca cataaccaca cctcgcactc cctacccctg
+       61 gggcccagct cagaaccggg cagacacccc cttcaaatgt cttcgcacgt aggttttgca
+      121 cagtgtttat ctgctggtgt ctcagggatt tgacagtttc cttaatattc ccacacatgg
+      181 ccgagaaaaa taaataaata aatgcgctgt cttctttaaa aaaataaata aataaagtac
+      241 ccagtatcgt aaagtaggtt atcgtattct cttattttgg atcctccact ttctgcttcc
+      301 aaacgcagga acagtgctag tattgctcga gcccgagggc tggaggttag gggatgaagg
+      361 tctgcttcca cgctttgcac tgaattaggg ctagaattgg ggatgggggt aggggcgcat
+      421 tccttcggga gccgaggctt aagtcctcgg ggtcctgtac tcgatgccgt ttctcctatc
+      481 tctgagcctc agaactgtct tcagtttccg tacaagggta aaaaggcgct ctctgcccca
+      541 tcccccccga cctcgggaac aagggtccgc attgaaccag gtgcgaatgt tctctctcat
+      601 tctgcgccgt tcccgcctcc cctcccccag ccgcggcccc cgcctccccc cgcactgcac
+      661 cctcggtgtt ggctgcagcc cgcgagcagt tcccgtcaat ccctcccccc ttacacagga
+      721 tgtccatatt aggacatctg cgtcagcagg tttccacggc ctttccctgt agccctgggg
+      781 ggagccatcc ccgaaacccc tcatcttggg gggcccacga gacctctgag acaggaactg
+      841 cgaaatgctc acgagattag gacacgcgcc aaggcggggg cagggagctg cgagcgctgg
+      901 ggacgcagcc gggcggccgc agaagcgccc aggcccgcgc gccacccctc tggcgccacc
+      961 gtggttgagc ccgtgacgtt tacactcatt cataaaacgc ttgttataaa agcagtggct
+     1021 gcggcgcctc gtactccaac cgcatctgca gcgagcaact gagaagccaa gactgagccg
+     1081 gcggccgcgg cgcagcgaac gagcagtgac cgtgctccta cccagctctg cttcacagcg
+     1141 cccacctgtc tccgcccctc ggcccctcgc ccggctttgc ctaaccgcca cgatgatgtt
+     1201 ctcgggcttc aacgcagact acgaggcgtc atcctcccgc tgcagcagcg cgtccccggc
+     1261 cggggatagc ctctcttact accactcacc cgcagactcc ttctccagca tgggctcgcc
+     1321 tgtcaacgcg caggtaaggc tggcttcccg tcgccgcggg gccgggggct tggggtcgcg
+     1381 gaggaggaga caccgggcgg gacgctccag tagatgagta gggggctccc ttgtgcctgg
+     1441 agggaggctg ccgtggccgg agcggtgccg gctcgggggc tcgggacttg ctctgagcgc
+     1501 acgcacgctt gccatagtaa gaattggttc ccccttcggg aggcaggttc gttctgagca
+     1561 acctctggtc tgcactccag gacggatctc tgacattagc tggagcagac gtgtcccaag
+     1621 cacaaactcg ctaactagag cctggcttct ccggggaggt ggcagaaagc ggcaatcccc
+     1681 cctcccccgg cagcctggag cacggaggag ggatgaggga ggagggtgca gcgggcgggt
+     1741 gtgtaaggca gtttcattga taaaaagcga gttcattctg gagactccgg agcggcgcct
+     1801 gcgtcagcgc agacgtcagg gatatttata acaaaccccc tttcaagcaa gtgatgctga
+     1861 agggataacg ggaacgcagc ggcaggatgg aagagacagg cactgcgctg cggaatgcct
+     1921 gggaggaaaa gggggagacc tttcatccag gatgagggac atttaagatg aaatgtccgt
+     1981 ggcaggatcg tttctcttca ctgctgcatg cggcactggg aactcgcccc acctgtgtcc
+     2041 ggaacctgct cgctcacgtc ggctttcccc ttctgttttg ttctaggact tctgcacgga
+     2101 cctggccgtc tccagtgcca acttcattcc cacggtcact gccatctcga ccagtccgga
+     2161 cctgcagtgg ctggtgcagc ccgccctcgt ctcctctgtg gccccatcgc agaccagagc
+     2221 ccctcaccct ttcggagtcc ccgccccctc cgctggggct tactccaggg ctggcgttgt
+     2281 gaagaccatg acaggaggcc gagcgcagag cattggcagg aggggcaagg tggaacaggt
+     2341 gaggaactct agcgtactct tcctgggaat gtgggggctg ggtgggaagc agccccggag
+     2401 atgcaggagc ccagtacaga ggatgaagcc actgatgggg ctggctgcac atccgtaact
+     2461 gggagccctg gctccaagcc cattccatcc caactcagac tctgagtctc accctaagaa
+     2521 gtactctcat agtttcttcc ctaagtttct taccgcatgc tttcagactg ggctcttctt
+     2581 tgttctcttg ctgaggatct tattttaaat gcaagtcaca cctagtctgc aactgcaggt
+     2641 cagaaatggt ttcacagtgg ggtgccagga agcagggaag ctgcaggagc cagttctact
+     2701 ggggtgggtg aatggaggtg atggcagaca cttttactga atgtcggtct ttttttgtga
+     2761 ttattctagt tatctccaga agaagaagag aaaaggagaa tccgaaggga aaggaataag
+     2821 atggctgcag ccaaatgccg caaccggagg agggagctga ctgatacact ccaagcggta
+     2881 ggtactctgt gggttgctcc tttttaaaac ttaaggggaa agttggagat tgagcataag
+     2941 ggcccttgag taagactgtg tcttatgctt tcctttatcc ctctgtatac aggagacaga
+     3001 ccaactagaa gatgagaagt ctgctttgca gaccgagatt gccaacctgc tgaaggagaa
+     3061 ggaaaaacta gagttcatcc tggcagctca ccgacctgcc tgcaagatcc ctgatgacct
+     3121 gggcttccca gaagagatgt ctgtggcttc ccttgatctg actgggggcc tgccagaggt
+     3181 tgccaccccg gagtctgagg aggccttcac cctgcctctc ctcaatgacc ctgagcccaa
+     3241 gccctcagtg gaacctgtca agagcatcag cagcatggag ctgaagaccg agccctttga
+     3301 tgacttcctg ttcccagcat catccaggcc cagtggctct gagacagccc gctccgtgcc
+     3361 agacatggac ctatctgggt ccttctatgc agcagactgg gagcctctgc acagtggctc
+     3421 cctggggatg gggcccatgg ccacagagct ggagcccctg tgcactccgg tggtcacctg
+     3481 tactcccagc tgcactgctt acacgtcttc cttcgtcttc acctaccccg aggctgactc
+     3541 cttccccagc tgtgcagctg cccaccgcaa gggcagcagc agcaatgagc cttcctctga
+     3601 ctcgctcagc tcacccacgc tgctggccct gtgagggggc agggaagggg aggcagccgg
+     3661 cacccacaag tgccactgcc cgagctggtg cattacagag aggagaaaca catcttccct
+     3721 agagggttcc tgtagaccta gggaggacct tatctgtgcg tgaaacacac caggctgtgg
+     3781 gcctcaagga cttgaaagca tccatgtgtg gactcaagtc cttacctctt ccggagatgt
+     3841 agcaaaacgc atggagtgtg tattgttccc agtgacactt cagagagctg gtagttagta
+     3901 gcatgttgag ccaggcctgg gtctgtgtct cttttctctt tctccttagt cttctcatag
+     3961 cattaactaa tctattgggt tcattattgg aattaacctg gtgctggata ttttcaaatt
+     4021 gtatctagtg cagctgattt taacaataac tactgtgttc ctggcaatag tgtgttctga
+     4081 ttagaaatga ccaatattat actaagaaaa gatacgactt tattttctgg tagatagaaa
+     4141 taaatagcta tatccatgta ctgtagtttt tcttcaacat caatgttcat tgtaatgtta
+     4201 ctgatcatgc attgttgagg tggtctgaat gttctgacat taacagtttt ccatgaaaac
+     4261 gttttattgt gtttttaatt tatttattaa gatggattct cagatattta tatttttatt
+     4321 ttattttttt ctaccttgag gtcttttgac atgtggaaag tgaatttgaa tgaaaaattt
+     4381 aagcattgtt tgcttattgt tccaagacat tgtcaataaa agcatttaag ttgaatgcga
+     4441 ccaaccttgt gctcttttca ttctggaagt cttgtaagtt tctgaaaggt attattggag
+     4501 accagtttgt caagaagggt agctgctgga gggggacaca ccctctgtct gatcccttat
+     4561 caaagaggac aaggaaacta tagagctgat tttagaatat tttacaaata catgccttcc
+     4621 attggaatgc taagattttc tactgcttct ggggacggga aaccgctgtg taacagcttt
+     4681 tgtgggaata cattttttct gtttcagtac tcgcaggggg aaatatttaa attttgttgt
+     4741 gctaatatta aattcagatg ttttgatctt aaaggaaccc tttaagcaaa cagaacctag
+     4801 ctttgtacag actattttaa ctttttattc tcacaaaatc acgtggaggg ttattctact
+     4861 tcaaagatga gcaaattgaa gaatggttag aataaacaac tttcttgata ttccgttatc
+     4921 ggcattagaa tcttcctgct cgttatcgta tccagcaggc tgaactgcct cttgatactt
+     4981 ggttaaaaaa aattttcagg ccgggcgcgg tggcccatgc ctgtaatcct agcactttgg
+     5041 gaggccgagg caggcggatc acctgaggtc gggagttcga gaccagcctg accaacatgg
+     5101 agaaaccccg tctttactaa aaatacaaaa ttagcctggt gtggtggtgc atgcctgtaa
+     5161 tcctagctac ttgagaggct gagacaggaa aatcacttga actcgggagg cggatgttgc
+     5221 agcgaactga gattgcgcca ttgcactcca gcctgggcaa caagattgaa actctgttta
+     5281 aaaaaaaaag ttttcactaa tgtgtacatt tttttgtact cttttattct cgaaagggaa
+     5341 ggagggctat tgccctatcc cttattaata aatgcattgt ggtttctggt ttctctaata
+     5401 ccatatgccc ttcattcagt ttatagtggg cggaagtggg ggagaaaaag ttgctcagaa
+     5461 atcaaaagat atctcaaaca gcacaaataa tggctgatcg ttctgcaaac aaaaagttac
+     5521 ataatagctc aagaaggaga agtcaacatg actctgaaca agctttaact tagaaaactt
+     5581 tatcatctta aggaagaacg tgacctttgt ccaggacgtc tctggtaatg gggcacttac
+     5641 acacacatgc acacgtacaa accacaggga aaggagaccg cccttctgcc tctgctcgcg
+     5701 agtatcacgc aggcaccatg cactatgttt tcacacacac tgggtggaag aagagcttca
+     5761 gcgccagtct tctaatgctt tggtgataat gaaaatcact gggtgcttat ggggtgtcat
+     5821 attcaatcga gttaaaagtt ttaattcaaa atgacagttt tactgaggtt gatgttctcg
+     5881 tctatgatat ctctgcc
+//
+

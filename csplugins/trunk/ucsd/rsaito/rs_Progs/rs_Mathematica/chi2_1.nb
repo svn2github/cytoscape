@@ -1,0 +1,2 @@
+Needs["HypothesisTesting`"]
+ChiSquarePValue[10, 1]   (* ChiSquarePValue[x,df] ... Prob(X>x) in X2 with df=1 *)

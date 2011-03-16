@@ -1,0 +1,21 @@
+INCLUDE = /usr/X11R6/include
+LIB = /usr/X11R6/lib
+
+sorg: sorg.o sorgar.o rsgraph3.o
+	g++ -L${LIB} sorg.o sorgar.o rsgraph3.o -o sorg -lm -lX11
+
+sorg_new: sorg_new.o sorgar.o rsgraph3.o
+	g++ -L${LIB} sorg_new.o sorgar.o rsgraph3.o -o sorg_new -lm -lX11
+
+sorg.o:sorg.c sorgar.h rsgraph3.h
+	g++ -I${INCLUDE} -c sorg.c
+
+sorg_new.o: sorg_new.c sorgar.h rsgraph3.h
+	g++ -I${INCLUDE} -c sorg_new.c
+
+sorgar.o:sorgar.c sorgar.h
+	g++ -c sorgar.c
+
+rsgraph3.o:rsgraph3.c
+	g++ -I${INCLUDE} -c rsgraph3.c
+	

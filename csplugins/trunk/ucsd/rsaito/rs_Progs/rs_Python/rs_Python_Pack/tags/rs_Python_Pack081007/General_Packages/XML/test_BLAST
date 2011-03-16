@@ -1,0 +1,158 @@
+BLASTX 2.2.16 [Mar-25-2007]
+
+
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+"Gapped BLAST and PSI-BLAST: a new generation of protein database search
+programs",  Nucleic Acids Res. 25:3389-3402.
+
+Query= lcl|ID_0001
+         (60 letters)
+
+Database: human.protein.faa 
+           33,076 sequences; 16,084,221 total letters
+
+Searching..................................................done
+
+
+
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+ref|NP_665807.1| myotrophin [Homo sapiens]                             28   1.6  
+
+>ref|NP_665807.1| myotrophin [Homo sapiens]
+          Length = 118
+
+ Score = 27.7 bits (60), Expect = 1.6
+ Identities = 10/10 (100%), Positives = 10/10 (100%)
+ Frame = +1
+
+Query: 1  CDKEFMWALK 30
+          CDKEFMWALK
+Sbjct: 2  CDKEFMWALK 11
+
+
+
+ Score = 27.7 bits (60), Expect = 1.6
+ Identities = 10/10 (100%), Positives = 10/10 (100%)
+ Frame = +1
+
+Query: 31 CDKEFMWALK 60
+          CDKEFMWALK
+Sbjct: 2  CDKEFMWALK 11
+
+
+BLASTX 2.2.16 [Mar-25-2007]
+
+
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+"Gapped BLAST and PSI-BLAST: a new generation of protein database search
+programs",  Nucleic Acids Res. 25:3389-3402.
+
+Query= lcl|ID_0002
+         (30 letters)
+
+Database: human.protein.faa 
+           33,076 sequences; 16,084,221 total letters
+
+Searching..................................................done
+
+
+
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+ref|NP_665807.1| myotrophin [Homo sapiens]                             26   3.1  
+
+>ref|NP_665807.1| myotrophin [Homo sapiens]
+          Length = 118
+
+ Score = 25.8 bits (55), Expect = 3.1
+ Identities = 10/10 (100%), Positives = 10/10 (100%)
+ Frame = +1
+
+Query: 1  NGDLDEVKDY 30
+          NGDLDEVKDY
+Sbjct: 12 NGDLDEVKDY 21
+
+
+BLASTX 2.2.16 [Mar-25-2007]
+
+
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+"Gapped BLAST and PSI-BLAST: a new generation of protein database search
+programs",  Nucleic Acids Res. 25:3389-3402.
+
+Query= lcl|ID_0003
+         (60 letters)
+
+Database: human.protein.faa 
+           33,076 sequences; 16,084,221 total letters
+
+Searching..................................................done
+
+
+
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+ref|NP_665807.1| myotrophin [Homo sapiens]                             33   0.038
+ref|NP_001001679.1| hypothetical protein LOC399886 [Homo sapiens]      26   5.8  
+
+>ref|NP_665807.1| myotrophin [Homo sapiens]
+          Length = 118
+
+ Score = 33.1 bits (74), Expect = 0.038
+ Identities = 16/17 (94%), Positives = 16/17 (94%)
+ Frame = +1
+
+Query: 1   LTALEATDNQAIKALLQ 51
+           LTA EATDNQAIKALLQ
+Sbjct: 102 LTAFEATDNQAIKALLQ 118
+
+
+>ref|NP_001001679.1| hypothetical protein LOC399886 [Homo sapiens]
+          Length = 167
+
+ Score = 25.8 bits (55), Expect = 5.8
+ Identities = 12/16 (75%), Positives = 12/16 (75%)
+ Frame = +2
+
+Query: 5  PPLKPLTTRQSKLFSS 52
+          PPL PL T QS LFSS
+Sbjct: 30 PPLVPLRTFQSSLFSS 45
+
+
+  Database: human.protein.faa
+    Posted date:  Apr 21, 2007 10:33 PM
+  Number of letters in database: 16,084,221
+  Number of sequences in database:  33,076
+  
+Lambda     K      H
+   0.318    0.134    0.401 
+
+Gapped
+Lambda     K      H
+   0.267   0.0410    0.140 
+
+
+Matrix: BLOSUM62
+Gap Penalties: Existence: 11, Extension: 1
+Number of Sequences: 33076
+Number of Hits to DB: 5,362,918
+Number of extensions: 132747
+Number of successful extensions: 134
+Number of sequences better than 10.0: 2
+Number of HSP's gapped: 134
+Number of HSP's successfully gapped: 5
+Length of database: 16,084,221
+Neighboring words threshold: 12
+Window for multiple hits: 40
+X1: 16 ( 7.3 bits)
+X2: 38 (14.6 bits)
+X3: 64 (24.7 bits)
+S1: 41 (21.7 bits)
+S2: 22 (13.1 bits)

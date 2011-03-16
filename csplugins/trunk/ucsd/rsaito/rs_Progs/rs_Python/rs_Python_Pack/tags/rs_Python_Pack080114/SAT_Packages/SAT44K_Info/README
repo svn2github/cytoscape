@@ -1,0 +1,14 @@
+import sas
+a=sas.load_nst("Allpairs.H.nst")
+dir(a)
+a.get_all_SAT_ID()
+sat = a.get_all_SAT_ID('SAT04694')
+sat = a.get_SAT('SAT04694')
+sat.strand()
+sat.get_strand()
+c = sat.get_cluster(0)
+c = sat.get_cluster(1)
+
+# Note that ucsc.so must be compiled depending on machines
+# C-extension can be integrated using distutils.
+

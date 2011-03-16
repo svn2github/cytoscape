@@ -1,0 +1,6 @@
+plot "gnuplot_tmp" index 0:0 using 1:2 title "Data #1", \
+     "gnuplot_tmp" index 1:1 using 1:2 title "Data #2", \
+     "gnuplot_tmp" index 2:2 using 1:2 title "Data #3"
+
+pause -1
+

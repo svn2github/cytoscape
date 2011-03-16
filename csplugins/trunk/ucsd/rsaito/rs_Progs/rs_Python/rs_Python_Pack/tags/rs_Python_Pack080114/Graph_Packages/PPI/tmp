@@ -1,0 +1,44 @@
+***** Basic Check *****
+All ppis:
+<Pair.Pair instance at 0xb7f7b62c> (<Protein.Protein instance at 0xb7f7b58c>, <Protein.Protein instance at 0xb7f7b56c>)
+<Pair.Pair instance at 0xb7f7b60c> (<Protein.Protein instance at 0xb7f7b58c>, <Protein.Protein instance at 0xb7f7b5ac>)
+<Pair.Pair instance at 0xb7f7b66c> (<Protein.Protein instance at 0xb7f7b5cc>, <Protein.Protein instance at 0xb7f7b5cc>)
+<Pair.Pair instance at 0xb7f7b64c> (<Protein.Protein instance at 0xb7f7b5cc>, <Protein.Protein instance at 0xb7f7b58c>)
+<Pair.Pair instance at 0xb7f7b5ec> (<Protein.Protein instance at 0xb7f7b56c>, <Protein.Protein instance at 0xb7f7b58c>)
+Non-redundant ppis:
+[<Pair.Pair instance at 0xb7f7b62c>, <Pair.Pair instance at 0xb7f7b60c>, <Pair.Pair instance at 0xb7f7b66c>, <Pair.Pair instance at 0xb7f7b64c>]
+Protein Set:
+<Protein.Protein instance at 0xb7f7b58c> B
+<Protein.Protein instance at 0xb7f7b5cc> D
+<Protein.Protein instance at 0xb7f7b5ac> C
+<Protein.Protein instance at 0xb7f7b56c> A
+PPI:
+Pair B A ... <Pair.Pair instance at 0xb7f7b62c>
+Proteins ... (<Protein.Protein instance at 0xb7f7b58c>, <Protein.Protein instance at 0xb7f7b56c>)
+Value PPI2
+Pair B C ... <Pair.Pair instance at 0xb7f7b60c>
+Proteins ... (<Protein.Protein instance at 0xb7f7b58c>, <Protein.Protein instance at 0xb7f7b5ac>)
+Value PPI2
+Pair D D ... <Pair.Pair instance at 0xb7f7b66c>
+Proteins ... (<Protein.Protein instance at 0xb7f7b5cc>, <Protein.Protein instance at 0xb7f7b5cc>)
+Value PPI4
+Pair D B ... <Pair.Pair instance at 0xb7f7b64c>
+Proteins ... (<Protein.Protein instance at 0xb7f7b5cc>, <Protein.Protein instance at 0xb7f7b58c>)
+Value PPI3
+Pair A B ... <Pair.Pair instance at 0xb7f7b5ec>
+Proteins ... (<Protein.Protein instance at 0xb7f7b56c>, <Protein.Protein instance at 0xb7f7b58c>)
+Value PPI1
+Interactors:
+[<Protein.Protein instance at 0xb7f7b56c>, <Protein.Protein instance at 0xb7f7b5ac>]
+[<Protein.Protein instance at 0xb7f7b5cc>, <Protein.Protein instance at 0xb7f7b56c>]
+Protein Set:
+<Protein.Protein instance at 0xb7f7b58c> B
+<Protein.Protein instance at 0xb7f7b5cc> D
+<Protein.Protein instance at 0xb7f7b5ac> C
+PPI:
+Pair B C ... <Pair.Pair instance at 0xb7f7b60c>
+Proteins ... (<Protein.Protein instance at 0xb7f7b58c>, <Protein.Protein instance at 0xb7f7b5ac>)
+Value PPI2
+Pair D B ... <Pair.Pair instance at 0xb7f7b64c>
+Proteins ... (<Protein.Protein instance at 0xb7f7b5cc>, <Protein.Protein instance at 0xb7f7b58c>)
+Value PPI3

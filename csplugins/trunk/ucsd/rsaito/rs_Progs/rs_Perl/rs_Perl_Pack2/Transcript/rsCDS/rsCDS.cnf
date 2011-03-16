@@ -1,0 +1,22 @@
+# This is configuration file for rsCDS.
+# Each line should be separated by <TAB>.
+
+# Specify where the subject Database for BLAST search is located.
+SUBJECT_DB	/home/rsaito/work/RefSeq/human.protein.faa
+
+# Specify locations of the executable files of BLAST and FASTA command.
+FASTA_EXEC	/pub/software/fasta/fasty33
+FASTACMD_EXEC	/pub/software/blast/fastacmd
+BLAST_EXEC	/pub/software/blast/blastall
+
+# First bracket should correspond to database ID.
+# Second bracket should correspond to e-value.
+BLAST_PATMATCH	/^[a-z]+\|([^\|]+)\| .* ([e0-9.\-]+) *$/
+
+BLAST_EVALUE	10.0
+BLAST_HITLIMIT	1000
+BLAST_CCDS_STOP	F
+BLAST_VERBOSE	F
+
+#
+
