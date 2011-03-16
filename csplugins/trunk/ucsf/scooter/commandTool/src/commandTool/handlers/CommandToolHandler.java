@@ -35,6 +35,7 @@ package commandTool.handlers;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 
 import java.util.Collection;
 import java.util.List;
@@ -57,6 +58,7 @@ import commandTool.CommandTool;
 public class CommandToolHandler extends AbstractCommandHandler {
 	private static String DURATION = "duration";
 	private static String FILE = "file";
+	private static String LOOP = "loop";
 	private static String MESSAGE = "message";
 	private static String PAUSE = "pause";
 	private static String RUN = "run";
@@ -64,12 +66,13 @@ public class CommandToolHandler extends AbstractCommandHandler {
 
 	public CommandToolHandler() {
 		super(CyCommandManager.reserveNamespace("commandTool"));
-		addDescription(RUN, "Run a command script from a file");
-		addArgument(RUN,FILE);
-		addDescription(SLEEP, "Sleep for a certain number of seconds");
-		addArgument(SLEEP,DURATION);
 		addDescription(PAUSE, "Pause and wait for user input");
 		addArgument(PAUSE, MESSAGE, "Press OK to proceed");
+		addDescription(RUN, "Run a command script from a file");
+		addArgument(RUN,FILE);
+		addArgument(RUN,LOOP);
+		addDescription(SLEEP, "Sleep for a certain number of seconds");
+		addArgument(SLEEP,DURATION);
 	}
 
 	public CyCommandResult execute(String command, Collection<Tunable>args)
@@ -81,17 +84,32 @@ public class CommandToolHandler extends AbstractCommandHandler {
 	                         throws CyCommandException {
 		CyCommandResult result = new CyCommandResult();
 		if (command.equalsIgnoreCase(RUN)) {
+			int loopCount = 1;
 			if (!args.containsKey(FILE))
 				throw new RuntimeException(RUN+" command requires a 'file' argument");
+
+			if (args.containsKey(LOOP)) {
+				try {
+					loopCount = Integer.parseInt(args.get(LOOP).toString());
+				} catch (NumberFormatException nfe) {
+					throw new RuntimeException(RUN+" loop argument requires an integer value");
+				}
+			}
 
 			File inputFile = null;
 			try {
 				inputFile = new File(args.get(FILE).toString());
-				CommandHandler.handleCommandFile(new FileReader(inputFile), args);
+				do {
+					FileReader reader = new FileReader(inputFile);
+					CommandHandler.handleCommandFile(reader, args);
+					reader.close();
+				} while (--loopCount != 0);
 	
 				result.addMessage("Completed execution of "+inputFile.toString());
 			} catch (FileNotFoundException e) {
 				throw new RuntimeException("Unable to open file "+inputFile.toString());
+			} catch (IOException ioe) {
+				throw new RuntimeException("IO Error: "+ioe.getMessage());
 			}
 		} else if (command.equalsIgnoreCase(SLEEP)) {
 			if (!args.containsKey(DURATION))
