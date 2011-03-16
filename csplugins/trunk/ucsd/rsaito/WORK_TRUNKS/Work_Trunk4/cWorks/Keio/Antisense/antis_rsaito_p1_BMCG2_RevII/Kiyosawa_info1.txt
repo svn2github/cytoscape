@@ -1,0 +1,719 @@
+X-Account-Key: account1
+X-UIDL: bjJ!!A0j!!VF+!!FW"#!
+X-Mozilla-Status: 0011
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <hkiyosaw@lab.nig.ac.jp>
+Received: from mail-gw1.sfc.keio.ac.jp (mail-gw1.sfc.keio.ac.jp [133.27.4.126])
+	by mail.sfc.keio.ac.jp (8.12.11/8.12.11/SFC-b) with ESMTP id p155oSsw019983
+	for <rsaito@sfc.keio.ac.jp>; Sat, 5 Feb 2011 14:50:30 +0900
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: AnEAAE90TE2FJxZ5l2dsb2JhbACEFqEbFQEBAQEBCBUHNakJAZAZgxgBBIFEeQSEeJJV
+X-IronPort-AV: E=Sophos;i="4.60,430,1291561200"; 
+   d="scan'208,217";a="396974389"
+Received: from dm12.nig.ac.jp ([133.39.22.121])
+  by mail-gw1.sfc.keio.ac.jp with ESMTP; 05 Feb 2011 14:50:29 +0900
+Received: from dm12.nig.ac.jp (localhost [127.0.0.1])
+	by dm12.nig.ac.jp (Postfix) with ESMTP id 6789785C05F
+	for <rsaito@sfc.keio.ac.jp>; Sat,  5 Feb 2011 14:50:28 +0900 (JST)
+Received: from 127.0.0.1 (127.0.0.1)
+ by dm12.nig.ac.jp (F-Secure/virusgw_smtp/403/dm12.nig.ac.jp);
+ Sat, 05 Feb 2011 14:50:28 +0900 (JST)
+X-Virus-Status: clean(F-Secure/virusgw_smtp/403/dm12.nig.ac.jp)
+Received: from sv01.nig.ac.jp (sv01.nig.ac.jp [133.39.222.41])
+	by dm12.nig.ac.jp (Postfix) with ESMTP id 5F54485C058
+	for <rsaito@sfc.keio.ac.jp>; Sat,  5 Feb 2011 14:50:28 +0900 (JST)
+Received: from sv01.nig.ac.jp (localhost [127.0.0.1])
+	by sv01.nig.ac.jp (Postfix) with ESMTP id CF81D41006F;
+	Sat,  5 Feb 2011 14:50:27 +0900 (JST)
+Received: from 133.39.32.63 (133.39.32.63)
+ by sv01.nig.ac.jp (F-Secure/virusgw_smtp/403/sv01.nig.ac.jp);
+ Sat, 05 Feb 2011 14:50:26 +0900 (JST)
+X-Virus-Status: clean(F-Secure/virusgw_smtp/403/sv01.nig.ac.jp)
+Mime-Version: 1.0
+X-Mailer: QUALCOMM MacOS X Eudora Version 6.2J rev4.0
+Message-Id: <a06240800c9728f8e1012@lab.nig.ac.jp>
+In-Reply-To: <4D4CB72B.1080601@sfc.keio.ac.jp>
+References: <4D4CB72B.1080601@sfc.keio.ac.jp>
+Date: Sat, 5 Feb 2011 14:51:12 +0900
+To: Rintaro Saito <rsaito@sfc.keio.ac.jp>
+From: Hidenori Kiyosawa <hkiyosaw@lab.nig.ac.jp>
+Subject: Re: Fwd: RE: Review of our manuscript
+Content-Type: multipart/alternative; boundary="============_-915237420==_ma============"
+X-UIDL: bjJ!!A0j!!VF+!!FW"#!
+
+--============_-915237420==_ma============
+Content-Type: text/plain; charset="iso-2022-jp" ; format="flowed"
+Content-Transfer-Encoding: 7bit
+
+輪太郎君、
+
+ほとんど完全なアクセプトですね。よかったです。
+
+>・Referee 1の要求は、センス側遺伝子の転写開始点付近のアンチセンス側にあ
+>るsRNAが実際にセンス側の転写制御に効いている例を挙げれば対応できそうです
+>が、そのような例の中で最も良い例などありましたら、お知らせ下さい。金井さ
+>んにも聞いてみようと思いますが。
+
+Kapranov, P., Cheng, J., Dike, S., Nix, D.A., Duttagupta, R., 
+Willingham, A.T., Stadler, P.F., Hertel, J., Hackerm殕ler, J., 
+Hofacker, I.L., Bell, I., Cheung, E., Drenkow, J., Dumais, E., Patel, 
+S., Helt, G., Ganesh, M., Ghosh, S., Piccolboni, A., Sementchenko, 
+V., Tammana, H., and Gingeras, T.R. (2007). RNA maps reveal new RNA 
+classes and a possible function for pervasive transcription. Science 
+316, 1484ミ1488.
+
+Kapranov, P., Ozsolak, F., Kim, S.W., Foissac, S., Lipson, D., Hart, 
+C., Roels, S., Borel, C., Antonarakis, S.E., Monaghan, A.P., John, 
+B., and Milos, P.M. (2010). New class of gene-termini-associated 
+human RNAs suggests a novel RNA copying mechanism. Nature 466, 
+642ミ646.
+
+Core, L.J., Waterfall, J.J., and Lis J.T. (2008). Nascent RNA 
+sequencing reveals widespread pausing and divergent initiation at 
+human promoters. Science 322, 1845ミ1848.
+
+Seila, A.C., Calabrese, J.M., Levine, S.S., Yeo, G.W., Rahl, P.B., 
+Flynn, R.A., Young, R.A., and Sharp, P.A. (2008). Divergent 
+transcription from active promoters. Science 322, 1849ミ1851.
+
+Preker, P., Nielsen, J., Kammler, S., Lykke-Andersen, S., 
+Christensen, M.S., Mapendano, C.K., Schierup, M.H., and Jensen, T.H. 
+(2008). RNA exosome depletion reveals transcription upstream of 
+active human promoters. Science 322, 1851ミ1854.
+
+Morris, K.V., Santoso, S., Turner, A.M., Pastori, C., and Hawkins, 
+P.G. (2008). Bidirectional transcription directs both transcriptional 
+gene activation and suppression in human cells. PLoS Genet. 4, 
+e1000258.
+
+
+Schwartz, J.C., Younger, S.T., Nguyen, N.B., Hardy, D.B., Monia, 
+B.P., Corey, D.R., and Janowski, B.A. (2008). Antisense transcripts 
+are targets for activating small RNAs. Nat. Struct. Mol. Biol. 15, 
+842ミ848.
+
+参考にしてみて下さい。最後の２つ以外はゲノム解析です。
+
+>んにも聞いてみようと思いますが。
+>・Accept時にはGEOに発現データをuploadする必要があります。条件は岡田君の
+>11Kの論文に揃えようと思います。11Kに関しては論文で使ったプローブ以外は、
+>アノテーションをマスクしようという話がありましたが、だいぶ時間が経過した
+>ので、もう全てのデータをuploadしてもよろしいでしょうか。あるいはまだ隠し
+>た方がよろしいですか。
+
+もしそんなに手間でないなら、（つかわなかったのは）除いてもいいのではと 
+思います。
+
+それにしてもよかったです。おめでとう。
+
+清澤
+
+
+At 6:34 PM -0800 11.2.4, Rintaro Saito wrote:
+>清澤さん、
+>
+>Cancer 11Kの論文のreviewers' commentを受け取ることができました。何故
+>reviewers' commentがKohnoさんのところに行ったのか、分かりませんが。
+>
+>reviseを2週間待ってもらうよう、要請しました。
+>
+>・Referee 1の要求は、センス側遺伝子の転写開始点付近のアンチセンス側にあ
+>るsRNAが実際にセンス側の転写制御に効いている例を挙げれば対応できそうです
+>が、そのような例の中で最も良い例などありましたら、お知らせ下さい。金井さ
+>んにも聞いてみようと思いますが。
+>・Accept時にはGEOに発現データをuploadする必要があります。条件は岡田君の
+>11Kの論文に揃えようと思います。11Kに関しては論文で使ったプローブ以外は、
+>アノテーションをマスクしようという話がありましたが、だいぶ時間が経過した
+>ので、もう全てのデータをuploadしてもよろしいでしょうか。あるいはまだ隠し
+>た方がよろしいですか。
+>
+>斎藤輪太郎
+>
+>-------- Original Message --------
+>Subject: RE: Review of our manuscript
+>Date: Fri, 4 Feb 2011 14:33:32 -0000
+>From: BMC Editorial Office <edadmin@biomedcentral.com>
+>To: Rintaro Saito <rsaito@sfc.keio.ac.jp>
+>
+>Dear Dr Saito
+>
+>Thank you for your email. Please see below for a copy of the mail sent
+>to you from our editorial office on the 17 January 2011 requesting
+>revisions to be made to your manuscript. We would be grateful if you
+>could reply to this message to both confirm receipt of this information
+>and to let the editor know how long you require to address the referee
+>comments. I apologize for you not receiving this email and thank you for
+>your patience.
+>
+>Please do not hesitate to contact me if I can provide any further
+>assistance.
+>
+>Best wishes
+>
+>Rhona Morris
+>Editorial Administrator
+>
+>BioMed Central
+>Liverpool Science Park
+>131 Mount Pleasant, Liverpool, L3 5TF
+>
+>E: rhona.morris@biomedcentral.com
+>W: www.biomedcentral.com
+>Follow BioMed Central:
+>
+>
+>
+>
+>
+>From: editorial@biomedcentral.com
+>Sent: 2011-01-17 10:10:44.0
+>To: c0730177@md.tsukuba.ac.jp
+>Cc:
+>Subject: MS: 1682302810376730 - Comprehensive Expressional Analyses of
+>Antisense Transcripts in Colon Cancer Tissues Using Artificial Antisense
+>Probes
+>
+>MS: 1682302810376730
+>Comprehensive Expressional Analyses of Antisense Transcripts in Colon
+>Cancer Tissues Using Artificial Antisense Probes
+>Rintaro Saito, Keisuke Kohno, Yuki Okada, Yuko Osada, Koji Numata,
+>Chihiro Kohama, Kazufumi Watanabe, Hajime Nakaoka, Naoyuki Yamamoto,
+>Akio Kanai, Hiroshi Yasue, Soichiro Murata, Kuniya Abe, Masaru Tomita,
+>Nobuhiro Ohkohchi and Hidenori Kiyosawa
+>
+>
+>Dear Dr Kohno,
+>
+>Peer review of your manuscript (above) is now complete, and we are
+>delighted, in principle, to accept the manuscript for publication in BMC
+>Medical Genomics. The reviews are accessible in PDF format via the web
+>links provided below. Do let us know if you have any problems opening
+>the files.
+>
+>Referee 1:
+>http://www.biomedcentral.com/imedia/9962158764897105_comment.pdf
+>Referee 2:
+>http://www.biomedcentral.com/imedia/1625992861507470_comment.pdf
+>Referee 3:
+>http://www.biomedcentral.com/imedia/1191400931486875_comment.pdf
+>
+>However, before acceptance, we would urge you to further improve the
+>manuscript in response to the comments made by the reviewers.
+>Specifically, the minor point highlighted by Referee 1.
+>
+>In addition to this, we also have a request for some editorial changes
+>that you will need to make in your revised submission:
+>
+>- Please formet the manuscripts abstarct to include separate Background,
+>Methods, Results and Conclusions sections, as outlined in our
+>instructions for authors
+>(http://www.biomedcentral.com/bmcmedgenomics/ifora/#abstract). In
+>addition to this, we would also request that you go through the
+>manuscript formatting checklist one more time and ensure that your
+>revised manuscript conforms to all of the points. The link to the
+>formatting checklist is provided at
+>http://www.biomedcentral.com/info/ifora/medicine_journals
+>
+>- Please deposit your microarray data in a publicly accessible database.
+>Please note our editorial policy on this matter:
+>Nucleic acid sequences, protein sequences, and atomic coordinates should
+>be deposited in an appropriate database in time for the accession number
+>to be included in the published article. In computational studies where
+>the sequence information is unacceptable for inclusion in databases
+>because of lack of experimental validation, the sequences must be
+>published as an additional file with the article. Where appropriate,
+>authors should adhere to the standards proposed by the Microarray Gene
+>Expression Data Society (http://www.mged.org) and must deposit
+>microarray data in MIAME-compliant format in one of the public
+>repositories, such as ArrayExpress (http://www.ebi.ac.uk/arrayexpress),
+>Gene Expression Omnibus (GEO; http://www.ncbi.nlm.nih.gov/projects/geo/)
+>or the Center for Information Biology Gene Expression Database (CIBEX;
+>http://cibex.nig.ac.jp).
+>
+>
+>We would be grateful if you could address the comments in a revised
+>manuscript and provide a cover letter giving a point-by-point response
+>to the concerns.
+>
+>Please also highlight (with 'tracked
+>changes'/coloured/underlines/highlighted text) all changes made when
+>revising the manuscript to make it easier for the Editors to give you a
+>prompt decision on your manuscript.
+>
+>Please also ensure that your revised manuscript conforms to the journal
+>style (http://www.biomedcentral.com/info/ifora/medicine_journals ). It
+>is important that your files are correctly formatted.
+>
+>We look forward to receiving your revised manuscript by 7 February 2011.
+>If you imagine that it will take longer to prepare please give us some
+>estimate of when we can expect it.
+>
+>You should upload your cover letter and revised manuscript through
+>http://www.biomedcentral.com/manuscript/login/man.asp?txt_nav=man&txt_ma
+>n_id=1682302810376730. You will find more detailed instructions at the
+>base of this email.
+>
+>Please don't hesitate to contact me if you have any problems or
+>questions regarding your manuscript.
+>
+>With best wishes,
+>
+>Simon
+>
+>Simon Harold PhD
+>BMC-series Journals
+>BioMed Central
+>Floor 6, 236 Gray's Inn Road
+>London, WC1X 8HL
+>email: editorial@biomedcentral.com
+>Web: www.biomedcentral.com
+>
+>Tel: +44 (0) 20 3192 2013
+>e-mail: editorial@biomedcentral.com
+>Web: http://www.biomedcentral.com/
+>
+>Additional material submitted by the reviewers
+>----------------------------------------------
+>
+>
+>To submit your revised manuscript
+>---------------------------------
+>
+>When you have revised your manuscript in light of the reviewer's
+>comments and made any required changes to the format of your paper,
+>please upload the revised version by following these instructions:
+>
+>1. Go to
+>http://www.biomedcentral.com/manuscript/login/man.asp?txt_nav=man&txt_ma
+>n_id=1682302810376730 and log on with your email address and password.
+>2. With the 'Manuscript details' tab, please update the title, abstract
+>and author details if they have changed since the previous version. It
+>is very important that all changes are updated on this page, as well as
+>in the manuscript file as the information on this page will be used in
+>PubMed and on BioMed Central if your manuscript is accepted for
+>publication.
+>3. With the 'Cover letter' tab, please provide a covering letter with a
+>point-by-point description of the changes made.
+>4. With the 'Upload files' tab, please upload the revised version of the
+>manuscript and press 'Submit new version'. Please wait for the
+>confirmation page to appear - this may take a few moments.
+>
+>
+>
+>-----Original Message-----
+>From: Rintaro Saito [mailto:rsaito@sfc.keio.ac.jp]
+>Sent: 27 January 2011 14:47
+>To: BMC Editorial
+>Cc: Hidenori Kiyosawa
+>Subject: Review of our manuscript
+>
+>To whom it may concern,
+>
+>regarding the manuscript 1682302810376730 (Saito R et al. Comprehensive
+>Expressional Analyses of Antisense Transcripts in Colon Cancer Tissues
+>Using Artificial Antisense Probes) submitted to BMC Med Genomics, we
+>noticed that the status on the web page is now "Revision requested", but
+>have not received any reviews from reviewers.
+>
+>Could you send us the latest reviews for our manuscript?
+>
+>Best regards.
+>
+>R. Saito
+>
+>
+>
+>
+>
+>
+>
+>
+>Attachment converted: Macintosh HD:Referee1.pdf (PDF /ヌICネ) (01564FB6)
+>Attachment converted: Macintosh HD:Referee2.pdf (PDF /ヌICネ) (01564FB7)
+>Attachment converted: Macintosh HD:Referee3.pdf (PDF /ヌICネ) (01564FB8)
+
+--============_-915237420==_ma============
+Content-Type: text/html; charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+
+<!doctype html public "-//W3C//DTD W3 HTML//EN">
+<html><head><style type="text/css"><!--
+blockquote, dl, ul, ol, li { padding-top: 0 ; padding-bottom: 0 }
+ --></style><title>Re: Fwd: RE: Review of our
+manuscript</title></head><body>
+<div>輪太郎君、</div>
+<div><br></div>
+<div>ほとんど完全なアクセプトですね。よかったです。</div>
+<div><br></div>
+<blockquote type="cite" cite>・Referee
+1の要求は、センス側遺伝子の転写開始点付近のアンチセンス側にあ<br>
+るsRNAが実際にセンス側の転写制御に効いている例を挙げれば対応できそう<span
+></span>です<br>
+が、そのような例の中で最も良い例などありましたら、お知らせ下さい。金<span
+></span>井さ</blockquote>
+<blockquote type="cite"
+cite>んにも聞いてみようと思いますが。</blockquote>
+<div><br></div>
+<div><font face="Helvetica" color="#000000">Kapranov, P., Cheng, J.,
+Dike, S., Nix, D.A., Duttagupta, R., Willingham, A.T., Stadler, P.F.,
+Hertel, J., Hackerm殕ler, J., Hofacker, I.L., Bell, I., Cheung, E.,
+Drenkow, J., Dumais, E., Patel, S., Helt, G., Ganesh, M., Ghosh, S.,
+Piccolboni, A., Sementchenko, V., Tammana, H., and Gingeras, T.R.
+(2007). RNA maps reveal new RNA classes and a possible function for
+pervasive transcription. Science 316, 1484ミ1488.<br>
+<br>
+Kapranov, P., Ozsolak, F., Kim, S.W., Foissac, S., Lipson, D., Hart,
+C., Roels, S., Borel, C., Antonarakis, S.E., Monaghan, A.P., John, B.,
+and Milos, P.M. (2010). New class of gene-termini-associated human
+RNAs suggests a novel RNA copying mechanism. Nature 466, 642ミ646.<br>
+<br>
+Core, L.J., Waterfall, J.J., and Lis J.T. (2008). Nascent RNA
+sequencing reveals widespread pausing and divergent initiation at
+human promoters. Science 322, 1845ミ1848.<br>
+<br>
+Seila, A.C., Calabrese, J.M., Levine, S.S., Yeo, G.W., Rahl, P.B.,
+Flynn, R.A., Young, R.A., and Sharp, P.A. (2008). Divergent
+transcription from active promoters. Science 322, 1849ミ1851.<br>
+<br>
+Preker, P., Nielsen, J., Kammler, S., Lykke-Andersen, S., Christensen,
+M.S., Mapendano, C.K., Schierup, M.H., and Jensen, T.H. (2008). RNA
+exosome depletion reveals transcription upstream of active human
+promoters. Science 322, 1851ミ1854.<br>
+<br>
+Morris, K.V., Santoso, S., Turner, A.M., Pastori, C., and Hawkins,
+P.G. (2008). Bidirectional transcription directs both transcriptional
+gene activation and suppression in human cells. PLoS Genet. 4,
+e1000258.<br>
+<br>
+<br>
+Schwartz, J.C., Younger, S.T., Nguyen, N.B., Hardy, D.B., Monia, B.P.,
+Corey, D.R., and Janowski, B.A. (2008). Antisense transcripts are
+targets for activating small RNAs. Nat. Struct. Mol. Biol. 15,
+842ミ848.</font></div>
+<div><br></div>
+<div>参考にしてみて下さい。最後の２つ以外はゲノム解析です。</div>
+<div><br></div>
+<blockquote type="cite"
+cite>んにも聞いてみようと思いますが。</blockquote>
+<blockquote type="cite"
+cite
+>・Accept時にはGEOに発現データをuploadする必要があります。条件は岡田<span
+></span>君の<br>
+11Kの論文に揃えようと思います。11Kに関しては論文で使ったプローブ以外<span
+></span>は、<br>
+アノテーションをマスクしようという話がありましたが、だいぶ時間が経過<span
+></span>した<br>
+ので、もう全てのデータをuploadしてもよろしいでしょうか。あるいはまだ<span
+></span>隠し</blockquote>
+<blockquote type="cite" cite>た方がよろしいですか。</blockquote>
+<div><br></div>
+<div
+>もしそんなに手間でないなら、（つかわなかったのは）除いてもいいのでは<span
+></span>と思います。</div>
+<div><br></div>
+<div>それにしてもよかったです。おめでとう。</div>
+<div><br></div>
+<div>清澤</div>
+<div><br></div>
+<div><br></div>
+<div>At 6:34 PM -0800 11.2.4, Rintaro Saito wrote:</div>
+<blockquote type="cite" cite>清澤さん、<br>
+<br>
+Cancer 11Kの論文のreviewers'
+commentを受け取ることができました。何故<br>
+reviewers'
+commentがKohnoさんのところに行ったのか、分かりませんが。<br>
+<br>
+reviseを2週間待ってもらうよう、要請しました。</blockquote>
+<blockquote type="cite" cite><br>
+・Referee
+1の要求は、センス側遺伝子の転写開始点付近のアンチセンス側にあ<br>
+るsRNAが実際にセンス側の転写制御に効いている例を挙げれば対応できそう<span
+></span>です<br>
+が、そのような例の中で最も良い例などありましたら、お知らせ下さい。金<span
+></span>井さ</blockquote>
+<blockquote type="cite"
+cite>んにも聞いてみようと思いますが。</blockquote>
+<blockquote type="cite"
+cite
+>・Accept時にはGEOに発現データをuploadする必要があります。条件は岡田<span
+></span>君の<br>
+11Kの論文に揃えようと思います。11Kに関しては論文で使ったプローブ以外<span
+></span>は、<br>
+アノテーションをマスクしようという話がありましたが、だいぶ時間が経過<span
+></span>した<br>
+ので、もう全てのデータをuploadしてもよろしいでしょうか。あるいはまだ<span
+></span>隠し<br>
+た方がよろしいですか。<br>
+</blockquote>
+<blockquote type="cite" cite>斎藤輪太郎<br>
+<br>
+-------- Original Message --------<br>
+Subject: RE: Review of our manuscript<br>
+Date: Fri, 4 Feb 2011 14:33:32 -0000<br>
+From: BMC Editorial Office &lt;edadmin@biomedcentral.com&gt;<br>
+To: Rintaro Saito &lt;rsaito@sfc.keio.ac.jp&gt;<br>
+<br>
+Dear Dr Saito<br>
+<br>
+Thank you for your email. Please see below for a copy of the mail
+sent<br>
+to you from our editorial office on the 17 January 2011 requesting<br>
+revisions to be made to your manuscript. We would be grateful if
+you<br>
+could reply to this message to both confirm receipt of this
+information<br>
+and to let the editor know how long you require to address the
+referee</blockquote>
+<blockquote type="cite" cite>comments. I apologize for you not
+receiving this email and thank you for<br>
+your patience.<br>
+<br>
+Please do not hesitate to contact me if I can provide any further<br>
+assistance.<br>
+<br>
+Best wishes<br>
+<br>
+Rhona Morris<br>
+Editorial Administrator<br>
+<br>
+BioMed Central<br>
+Liverpool Science Park<br>
+131 Mount Pleasant, Liverpool, L3 5TF<br>
+<br>
+E: rhona.morris@biomedcentral.com<br>
+W: www.biomedcentral.com<br>
+Follow BioMed Central:<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+From: editorial@biomedcentral.com<br>
+Sent: 2011-01-17 10:10:44.0<br>
+To: c0730177@md.tsukuba.ac.jp<br>
+Cc:<br>
+Subject: MS: 1682302810376730 - Comprehensive Expressional Analyses
+of<br>
+Antisense Transcripts in Colon Cancer Tissues Using Artificial
+Antisense<br>
+Probes<br>
+<br>
+MS: 1682302810376730<br>
+Comprehensive Expressional Analyses of Antisense Transcripts in
+Colon<br>
+Cancer Tissues Using Artificial Antisense Probes<br>
+Rintaro Saito, Keisuke Kohno, Yuki Okada, Yuko Osada, Koji Numata,<br>
+Chihiro Kohama, Kazufumi Watanabe, Hajime Nakaoka, Naoyuki
+Yamamoto,<br>
+Akio Kanai, Hiroshi Yasue, Soichiro Murata, Kuniya Abe, Masaru
+Tomita,<br>
+Nobuhiro Ohkohchi and Hidenori Kiyosawa<br>
+<br>
+<br>
+Dear Dr Kohno,<br>
+<br>
+Peer review of your manuscript (above) is now complete, and we are<br>
+delighted, in principle, to accept the manuscript for publication in
+BMC<br>
+Medical Genomics. The reviews are accessible in PDF format via the
+web<br>
+links provided below. Do let us know if you have any problems
+opening<br>
+the files.<br>
+<br>
+Referee 1:</blockquote>
+<blockquote type="cite"
+cite>http://www.biomedcentral.com/imedia/9962158764897105_comment.pdf<br
+>
+Referee 2:</blockquote>
+<blockquote type="cite"
+cite>http://www.biomedcentral.com/imedia/1625992861507470_comment.pdf<br
+>
+Referee 3:</blockquote>
+<blockquote type="cite"
+cite>http://www.biomedcentral.com/imedia/1191400931486875_comment.pdf<br
+>
+<br>
+However, before acceptance, we would urge you to further improve
+the<br>
+manuscript in response to the comments made by the reviewers.<br>
+Specifically, the minor point highlighted by Referee 1.<br>
+<br>
+In addition to this, we also have a request for some editorial
+changes<br>
+that you will need to make in your revised submission:<br>
+<br>
+- Please formet the manuscripts abstarct to include separate
+Background,<br>
+Methods, Results and Conclusions sections, as outlined in our<br>
+instructions for authors<br>
+(http://www.biomedcentral.com/bmcmedgenomics/ifora/#abstract). In<br>
+addition to this, we would also request that you go through the<br>
+manuscript formatting checklist one more time and ensure that
+your</blockquote>
+<blockquote type="cite" cite>revised manuscript conforms to all of the
+points. The link to the<br>
+formatting checklist is provided at<br>
+http://www.biomedcentral.com/info/ifora/medicine_journals<br>
+<br>
+- Please deposit your microarray data in a publicly accessible
+database.<br>
+Please note our editorial policy on this matter:<br>
+Nucleic acid sequences, protein sequences, and atomic coordinates
+should<br>
+be deposited in an appropriate database in time for the accession
+number<br>
+to be included in the published article. In computational studies
+where<br>
+the sequence information is unacceptable for inclusion in
+databases<br>
+because of lack of experimental validation, the sequences must be<br>
+published as an additional file with the article. Where
+appropriate,<br>
+authors should adhere to the standards proposed by the Microarray
+Gene<br>
+Expression Data Society (http://www.mged.org) and must deposit<br>
+microarray data in MIAME-compliant format in one of the public<br>
+repositories, such as ArrayExpress
+(http://www.ebi.ac.uk/arrayexpress),<br>
+Gene Expression Omnibus (GEO;
+http://www.ncbi.nlm.nih.gov/projects/geo/)<br>
+or the Center for Information Biology Gene Expression Database
+(CIBEX;<br>
+http://cibex.nig.ac.jp).<br>
+<br>
+<br>
+We would be grateful if you could address the comments in a
+revised<br>
+manuscript and provide a cover letter giving a point-by-point
+response<br>
+to the concerns.<br>
+<br>
+Please also highlight (with 'tracked<br>
+changes'/coloured/underlines/highlighted text) all changes made
+when<br>
+revising the manuscript to make it easier for the Editors to give you
+a<br>
+prompt decision on your manuscript.<br>
+<br>
+Please also ensure that your revised manuscript conforms to the
+journal<br>
+style (http://www.biomedcentral.com/info/ifora/medicine_journals ).
+It<br>
+is important that your files are correctly formatted.<br>
+<br>
+We look forward to receiving your revised manuscript by 7 February
+2011.<br>
+If you imagine that it will take longer to prepare please give us
+some<br>
+estimate of when we can expect it.</blockquote>
+<blockquote type="cite" cite><br>
+You should upload your cover letter and revised manuscript through<br>
+http://www.biomedcentral.com/manuscript/login/man.asp?txt_nav=man<span
+></span>&amp;txt_ma<br>
+n_id=1682302810376730. You will find more detailed instructions at
+the<br>
+base of this email.<br>
+<br>
+Please don't hesitate to contact me if you have any problems or<br>
+questions regarding your manuscript.<br>
+<br>
+With best wishes,<br>
+<br>
+Simon<br>
+<br>
+Simon Harold PhD<br>
+BMC-series Journals<br>
+BioMed Central<br>
+Floor 6, 236 Gray's Inn Road<br>
+London, WC1X 8HL<br>
+email: editorial@biomedcentral.com<br>
+Web: www.biomedcentral.com<br>
+<br>
+Tel: +44 (0) 20 3192 2013<br>
+e-mail: editorial@biomedcentral.com<br>
+Web: http://www.biomedcentral.com/<br>
+<br>
+Additional material submitted by the reviewers<br>
+----------------------------------------------<br>
+<br>
+<br>
+To submit your revised manuscript<br>
+---------------------------------<br>
+<br>
+When you have revised your manuscript in light of the reviewer's<br>
+comments and made any required changes to the format of your
+paper,<br>
+please upload the revised version by following these instructions:<br>
+<br>
+1. Go to<br>
+http://www.biomedcentral.com/manuscript/login/man.asp?txt_nav=man<span
+></span>&amp;txt_ma<br>
+n_id=1682302810376730 and log on with your email address and
+password.<br>
+2. With the 'Manuscript details' tab, please update the title,
+abstract<br>
+and author details if they have changed since the previous version.
+It<br>
+is very important that all changes are updated on this page, as well
+as<br>
+in the manuscript file as the information on this page will be used
+in<br>
+PubMed and on BioMed Central if your manuscript is accepted for<br>
+publication.<br>
+3. With the 'Cover letter' tab, please provide a covering letter with
+a<br>
+point-by-point description of the changes made.<br>
+4. With the 'Upload files' tab, please upload the revised version of
+the<br>
+manuscript and press 'Submit new version'. Please wait for the<br>
+confirmation page to appear - this may take a few moments.<br>
+<br>
+<br>
+<br>
+-----Original Message-----<br>
+From: Rintaro Saito [mailto:rsaito@sfc.keio.ac.jp]<br>
+Sent: 27 January 2011 14:47<br>
+To: BMC Editorial<br>
+Cc: Hidenori Kiyosawa<br>
+Subject: Review of our manuscript<br>
+<br>
+To whom it may concern,<br>
+<br>
+regarding the manuscript 1682302810376730 (Saito R et al.
+Comprehensive<br>
+Expressional Analyses of Antisense Transcripts in Colon Cancer
+Tissues<br>
+Using Artificial Antisense Probes) submitted to BMC Med Genomics,
+we</blockquote>
+<blockquote type="cite" cite>noticed that the status on the web page
+is now &quot;Revision requested&quot;, but<br>
+have not received any reviews from reviewers.<br>
+<br>
+Could you send us the latest reviews for our manuscript?<br>
+<br>
+Best regards.<br>
+<br>
+R. Saito<br>
+<br>
+<br>
+<x-tab>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </x-tab><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+Attachment converted: Macintosh HD:Referee1.pdf (PDF /ヌICネ)
+(01564FB6)<br>
+Attachment converted: Macintosh HD:Referee2.pdf (PDF /ヌICネ)
+(01564FB7)<br>
+Attachment converted: Macintosh HD:Referee3.pdf (PDF /ヌICネ)
+(01564FB8)</blockquote>
+<div><br></div>
+</body>
+</html>
+--============_-915237420==_ma============--
+
+

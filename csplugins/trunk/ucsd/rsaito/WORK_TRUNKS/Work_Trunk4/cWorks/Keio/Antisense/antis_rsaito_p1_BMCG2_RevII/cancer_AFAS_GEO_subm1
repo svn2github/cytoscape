@@ -1,0 +1,149 @@
+X-Account-Key: account2
+X-UIDL: :Fm"!*3&#!ij^"![n4!!
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <root@rt3.be-md.ncbi.nlm.nih.gov>
+Received: from mail-gw1.sfc.keio.ac.jp (mail-gw1.sfc.keio.ac.jp [133.27.4.126])
+	by mail.sfc.keio.ac.jp (8.12.11/8.12.11/SFC-b) with ESMTP id n0REIasN031358
+	for <rsaito@sfc.keio.ac.jp>; Tue, 27 Jan 2009 23:18:54 +0900
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: AjQBAGemfkmA51prkWdsb2JhbACUBQEBAQEJCwoHEQW2MIVMhQM
+X-IronPort-AV: E=Sophos;i="4.37,332,1231081200"; 
+   d="scan'208";a="134382458"
+Received: from nihrelayxway2.hub.nih.gov ([128.231.90.107])
+  by mail-gw1.sfc.keio.ac.jp with ESMTP; 27 Jan 2009 23:18:54 +0900
+X-IronPortListener: NIH_Relay
+X-SBRS: None
+X-IronPort-AV: E=Sophos;i="4.37,332,1231131600"; 
+   d="scan'208";a="55955075"
+Received: from mail2.be-md.ncbi.nlm.nih.gov (HELO mail2.ncbi.nlm.nih.gov) ([130.14.26.42])
+  by nihrelayxway2.hub.nih.gov with ESMTP; 27 Jan 2009 09:18:48 -0500
+Received: from rt3.be-md.ncbi.nlm.nih.gov (rt3.be-md.ncbi.nlm.nih.gov [130.14.25.121])
+	by mail2.ncbi.nlm.nih.gov (Postfix) with ESMTP id 9516E1880B9;
+	Tue, 27 Jan 2009 09:18:45 -0500 (EST)
+Received: by rt3.be-md.ncbi.nlm.nih.gov (Postfix, from userid 0)
+	id 8B92A986DD; Tue, 27 Jan 2009 09:18:45 -0500 (EST)
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: binary
+MIME-Version: 1.0
+X-Mailer: MIME-tools 5.420 (Entity 5.420)
+From: "GEO - Evangelista, Carlos (NIH/NLM/NCBI) [E]" <geo@ncbi.nlm.nih.gov>
+To: rsaito@sfc.keio.ac.jp
+Subject: [geo] Your GEO submission [NCBI tracking system #15572086]
+X-RT-Loop-Prevention: NCBI tracking system
+X-Managed-BY: IEB DBAs
+Message-Id: <20090127141845.8B92A986DD@rt3.be-md.ncbi.nlm.nih.gov>
+Date: Tue, 27 Jan 2009 09:18:45 -0500 (EST)
+X-UIDL: :Fm"!*3&#!ij^"![n4!!
+
+------ MESSAGE BODY. YOU MAY CHANGE IT OR ADD COMMENTS ABOVE ------
+
+Dear Rin,
+
+Thank you for the clarification.  Please do item 2.
+
+Carlos
+
+> -----Original Message-----
+> From: NLM/NCBI List geo
+> Sent: Friday, January 23, 2009 6:09 AM
+> To: NLM/NCBI List rt
+> Subject: [geo] Your GEO submission [NCBI tracking system #15572086]
+> 
+
+> Dear Carlos,
+> 
+> Let me explain our situation carefully.
+> 
+> Our microarray is custom-made (not a catalogue-based),
+> and it consists of several parts of probe sets in which we are
+> interested. Each part is designed for the different purpose and
+> publication.
+> 
+> And, at this time, we would like to publish only one part.
+> 
+> We are planning to use other parts for other publications,
+> and did not use these parts for the current publication at all,
+> except for the normalization process across the slide glass.
+> 
+> Should we submit the whole FeatureExtraction files, even in such case?
+> In other words, should we submit the unpublished data to public?
+> 
+> We would not like to submit the unpublished data to public.
+> And, I think we have two choices to the raw data submission.
+> 
+> 1. We submit the lines of feature extraction file, corresponding to
+> published data (of course including several header lines).
+> 
+> 2. We submit the whole feature extraction file, but somehow mask
+> detailed information
+> (gene annotation, and probe sequence etc.) of unpublished probes
+> (numerical values would not be masked).
+> 
+> Thank you for your kind consideration.
+> 
+> With kind regards,
+> 
+> Rin
+> 
+> GEO - Carlos Evangelista '³'ñ'Í''«'Ü'µ'½:
+> 
+> > Dear Dr. Saito,
+> >
+> >> thank you for your quick response. I'm planning to upload ~50 more
+> >> expression data. After the uploading is complete, I will fill in the
+> >> necessary information.
+> >>
+> >> I still note that we are not willing to upload raw data file because
+> the
+> >> raw data file contains unpublished expression data.
+> >
+> > Thank you for getting back to us.  Please note that raw data files
+> are
+> > required. This allows the unambiguous interpretation of the data and
+> potential
+> > verification of the conclusions, as set forth in the MIAME
+> guidelines.
+> > However, please note that the release of the data you submit to GEO
+> may be
+> > scheduled to coincide with your paper's publication date.
+> >
+> > If you have further questions or comments on this issue, or if you
+> > require assistance with the submission process, please let us know.
+> >
+> > Sincerely,
+> > Carlos
+> >
+> > Carlos Evangelista, Ph.D.
+> > GEO Curator
+> > geo@ncbi.nlm.nih.gov
+> > *********************
+> >
+> 
+
+---- END OF MESSAGE BODY.  PLEASE DO NOT CHANGE THE DATA BELOW ----
+SK#:93:1690:22:7:3997576
+
+Please leave the subject line unchanged, and do not change the message
+at end from the line with "END OF MESSAGE BODY" to the end.
+
+NOTE: the geo email is often abused (spoofed) by spammers.  We never send 
+encrypted messages or attachments unless agreed. We always sign emails by 
+name.
+ 
+The following summarizes the status of your request:
+Current status of the ticket #15572086 is:
+       Queue: geo
+        Area: 
+     Subject: Your GEO submission
+       Owner: evangelc
+  Requestors: rsaito@sfc.keio.ac.jp
+      Status: open
+
+ Transaction: Mail sent by 'evangelc' (16454119)
+
+------- END OF TRNSACTION DATA.  YOU MAY ADD COMMENTS BELOW -------
+
+

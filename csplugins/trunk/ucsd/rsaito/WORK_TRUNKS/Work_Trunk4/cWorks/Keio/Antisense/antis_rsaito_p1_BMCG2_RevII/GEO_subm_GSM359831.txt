@@ -1,0 +1,87 @@
+
+The following Samples have been adjusted to be released on the same date as this Series: GSM359831, GSM675619, GSM675625, GSM675628, GSM675630, GSM675650, GSM675652, GSM675659, GSM675661, GSM675662, GSM675663, GSM675664, GSM675665, GSM675666, GSM675667, GSM675668, GSM675669, GSM675670, GSM675671, GSM675672, GSM675673, GSM675674, GSM675675, GSM675681
+
+Status messages:
+
+Updating attribute "Series_overall_design" from
+
+"Expression data of sense-antisense transcripts in normal and cancer tissues."
+
+to
+
+"We conducted DNA microarray analyses by using the same set of probes designed for 2621 sense-antisense pairs to detect transcripts expressed in colon cancer tissues. These probes comprise 2358 pairs for the detection of protein-coding transcripts only, 250 pairs for the detection of protein-coding transcripts paired with non-protein-coding transcripts, and 13 pairs for the detection of non-protein-coding transcripts only."
+
+Updating attribute "Series_summary" from
+
+"Expression data of sense-antisense transcripts in normal and cancer tissues."
+
+to
+
+"We characterized the expression patterns of sense-antisense transcripts, based on available cDNA sequences, in colon (colorectal) cancer tissues and in normal tissues surrounding the cancer tissues. Although expression balances (ratios) of most of sense and antisense transcript pairs did not change between patients or between normal and cancer tissues, we found 68 sense-antisense transcripts whose expression balances were altered specifically in colon cancer tissues."
+
+Updating attribute "Series_title" from
+
+"Expression data of sense-antisense transcripts in normal and cancer tissues"
+
+to
+
+"Expression patterns of sense-antisense transcripts in normal and cancer tissues"
+
+Updating attribute "Series_sample_id" from
+
+"GSM359831"
+
+to
+
+"GSM359831
+GSM675619
+GSM675625
+GSM675628
+GSM675630
+GSM675650
+GSM675652
+GSM675659
+GSM675661
+GSM675662
+GSM675663
+GSM675664
+GSM675665
+GSM675666
+GSM675667
+GSM675668
+GSM675669
+GSM675670
+GSM675671
+GSM675672
+GSM675673
+GSM675674
+GSM675675
+GSM675681"
+
+Adding new attribute "Series_contributor" with value of
+
+Rintaro,,Saito
+Keisuke,,Kohno
+Yuki,,Okada
+Yuko,,Osada
+Koji,,Numata
+Chihiro,,Kohama
+Kazufumi,,Watanabe
+Hajime,,Nakaoka
+Naoyuki,,Yamamoto
+Akio,,Kanai
+Hiroshi,,Yasue
+Soichiro,,Murata
+Kuniya,,Abe
+Masaru,,Tomita
+Nobuhiro,,Ohkohchi
+Hidenori,,Kiyosawa
+
+
+Publication of GSE14398 is rescheduled to Mar 01 2011 (14 days).
+
+Updated series "Expression patterns of sense-antisense transcripts in normal and cancer tissues" (GSE14398).
+Your record is pending approval.
+
+
+**The accession number issued here is provisional and should not be quoted in any manuscripts until your submission has been reviewed and approved via email by the GEO staff. If you do not receive a confirmation e-mail from a GEO staff member within 5 working days after completing your submission, or if you need assistance, please contact us at 'geo@ncbi.nlm.nih.gov'.**
