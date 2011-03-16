@@ -15,7 +15,8 @@ import org.cytoscape.work.spring.SpringTunableInterceptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.util.Vector;
+import java.awt.Dimension;
 
 /**
  * Interceptor of <code>Tunable</code>s that will be applied on <code>GUITunableHandlers</code>.
@@ -100,24 +101,48 @@ public abstract class AbstractGUITunableInterceptor extends SpringTunableInterce
 		return super.hasTunables(convertSpringProxyObj(o));
 	}
 
+	
+	protected TunnableDialog tunnableDialog = null;
+	
+	
 	/** This implements the final action in execUI() and executes the UI.
 	 *  @param optionPanel  the panel containing the various UI elements corresponding to individual tunables
 	 *  @param proxyObjs    represents the objects annotated with tunables
 	 */
 	protected boolean displayGUI(final JPanel optionPanel, Object... proxyObjs) {
-		Object[] buttons = { "OK", "Cancel" };
-		int result = JOptionPane.showOptionDialog(parentPanel, optionPanel,
-							  "Set Parameters",
-							  JOptionPane.YES_NO_CANCEL_OPTION,
-							  JOptionPane.PLAIN_MESSAGE,
-							  null,
-							  buttons,
-							  buttons[0]);
-		if (result == JOptionPane.OK_OPTION)
-			return validateAndWriteBackTunables(proxyObjs);
-		else
-			return false;
+		
+		//Object[] buttons = { "OK", "Cancel" };
+		//int result = JOptionPane.showOptionDialog(parentPanel, optionPanel,
+		//					  "Set Parameters",
+		//					  JOptionPane.YES_NO_CANCEL_OPTION,
+		//					  JOptionPane.PLAIN_MESSAGE,
+		//					  null,
+		//					  buttons,
+		//					  buttons[0]);
+		//
+		//if (result == JOptionPane.OK_OPTION)
+		//	return validateAndWriteBackTunables(proxyObjs);
+		//else
+		//	return false;
+		//
+		
+		tunnableDialog = new TunnableDialog();
+		tunnableDialog.setLocationRelativeTo(parentPanel);
+		tunnableDialog.setTitle("Set Parameters");
+
+		tunnableDialog.addComponent(optionPanel);
+		tunnableDialog.setVisible(true);
+		
+		String userInput = tunnableDialog.getUserInput();
+		
+		if (userInput.equalsIgnoreCase("OK")){
+			return validateAndWriteBackTunables(proxyObjs);			
+		}
+		else { // CANCEL
+			return false;			
+		}
 	}
 
 	abstract protected boolean validateTunableInput();
+
 }
