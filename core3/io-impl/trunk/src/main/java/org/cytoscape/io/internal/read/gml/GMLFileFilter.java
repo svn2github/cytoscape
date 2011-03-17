@@ -7,12 +7,12 @@ import java.net.URI;
 import java.util.Set;
 
 import org.cytoscape.io.DataCategory;
-import org.cytoscape.io.internal.CyFileFilterImpl;
+import org.cytoscape.io.BasicCyFileFilter;
 import org.cytoscape.io.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GMLFileFilter extends CyFileFilterImpl {
+public class GMLFileFilter extends BasicCyFileFilter {
 
 	private static final int DEFAULT_WORDS_TO_SAMPLE = 10;
 	private StreamUtil streamUtil;

@@ -7,11 +7,11 @@ import java.util.Set;
 
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.util.StreamUtil;
-import org.cytoscape.io.internal.CyFileFilterImpl;
+import org.cytoscape.io.BasicCyFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BookmarkFileFilter extends CyFileFilterImpl {
+public class BookmarkFileFilter extends BasicCyFileFilter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BookmarkFileFilter.class);
 

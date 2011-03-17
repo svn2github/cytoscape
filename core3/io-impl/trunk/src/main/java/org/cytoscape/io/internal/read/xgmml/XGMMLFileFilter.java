@@ -7,11 +7,11 @@ import java.util.Set;
 
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.util.StreamUtil;
-import org.cytoscape.io.internal.CyFileFilterImpl;
+import org.cytoscape.io.BasicCyFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class XGMMLFileFilter extends CyFileFilterImpl {
+public class XGMMLFileFilter extends BasicCyFileFilter {
 	
 	private static final String XGMML_NAMESPACE_STRING = "http://www.cs.rpi.edu/XGMML";
 	private static final Logger logger = LoggerFactory.getLogger(XGMMLFileFilter.class);

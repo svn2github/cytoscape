@@ -9,9 +9,9 @@ import java.util.regex.Pattern;
 
 import org.cytoscape.io.DataCategory;
 import org.cytoscape.io.util.StreamUtil;
-import org.cytoscape.io.internal.CyFileFilterImpl;
+import org.cytoscape.io.BasicCyFileFilter;
 
-public class PropertiesFileFilter extends CyFileFilterImpl {
+public class PropertiesFileFilter extends BasicCyFileFilter {
 
 	Matcher matcher;
 
