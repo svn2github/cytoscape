@@ -16,7 +16,7 @@
 
 	<context:annotation-config />
 
-	<bean id="cysFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+	<bean id="cysFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
 				<value>cys</value>
@@ -34,7 +34,7 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="pngFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+	<bean id="pngFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
 				<value>png</value>
@@ -52,7 +52,7 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="jpegFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+	<bean id="jpegFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
 				<value>jpg</value>
@@ -71,7 +71,7 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="textTableFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+	<bean id="textTableFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
 			</set>
@@ -88,7 +88,7 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="attrsFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+	<bean id="attrsFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
 				<value>attrs</value>
@@ -106,7 +106,7 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="sifFilter" class="org.cytoscape.io.internal.CyFileFilterImpl">
+	<bean id="sifFilter" class="org.cytoscape.io.BasicCyFileFilter">
 		<constructor-arg index="0">
 			<set>
 				<value>sif</value>
