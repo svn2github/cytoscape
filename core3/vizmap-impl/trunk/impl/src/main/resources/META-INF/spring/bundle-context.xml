@@ -32,14 +32,19 @@
 		<constructor-arg ref="visualLexiconManager" />
 	</bean>
 
+	<bean id="calculatorConverterFactory"
+		class="org.cytoscape.view.vizmap.internal.converters.CalculatorConverterFactory">
+		<constructor-arg ref="discreteMappingFactoryServiceRef" />
+		<constructor-arg ref="continuousMappingFactoryServiceRef" />
+		<constructor-arg ref="passthroughMappingFactoryServiceRef" />
+	</bean>
+	
 	<bean id="visualStyleSerializer"
 		class="org.cytoscape.view.vizmap.internal.VisualStyleSerializerImpl">
 		<constructor-arg ref="visualStyleFactory" />
 		<constructor-arg ref="visualMappingManager" />
-		<constructor-arg ref="discreteMappingFactoryServiceRef" />
-		<constructor-arg ref="continuousMappingFactoryServiceRef" />
-		<constructor-arg ref="passthroughMappingFactoryServiceRef" />
 		<constructor-arg ref="renderingEngineManagerServiceRef" />
+		<constructor-arg ref="calculatorConverterFactory" />
 	</bean>
 
 </beans>
