@@ -53,11 +53,14 @@
 	-->
 
 	<osgi:service id="importAttributeTableTaskFactoryService" ref="importAttributeTableTaskFactory"
-		interface="org.cytoscape.work.TaskFactory">
+		interface="org.cytoscape.io.read.InputStreamTaskFactory">
 		<osgi:service-properties>
 			<entry key="title" value="From Table (Text/MS Excel)..." />
 			<entry key="preferredMenu" value="File.Import.Table" />
 			<entry key="menuGravity" value="2.1" />
+			<entry key="serviceType" value="importAttributeTableTaskFactory" />
+			<entry key="readerId" value="attributeTableReader" />
+			<entry key="readerDescription" value="Attribute Table file reader" />
 		</osgi:service-properties>		
 	</osgi:service>	
 

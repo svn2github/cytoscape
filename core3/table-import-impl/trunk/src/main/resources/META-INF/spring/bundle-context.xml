@@ -20,6 +20,7 @@
 			<set>
 				<value>txt</value>
 				<value>xls</value>
+				<value>xlsx</value>
 				<value>csv</value>
 			</set>
 		</constructor-arg>
