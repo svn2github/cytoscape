@@ -15,8 +15,28 @@
 	bundle-context-osgi.xml file.
 	-->
 			
+	<bean id="attrsTableFilter" class="org.cytoscape.io.BasicCyFileFilter">
+		<constructor-arg index="0">
+			<set>
+				<value>txt</value>
+				<value>xls</value>
+				<value>csv</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<set>
+				<value>text/plain</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg value="Any text file" />
+		<constructor-arg type="org.cytoscape.io.DataCategory" value="TABLE" />
+		<constructor-arg ref="streamUtilService" />
+	</bean>			
+			
+			
 	<bean id="importAttributeTableTaskFactory" 
 			class="org.cytoscape.tableimport.internal.ImportAttributeTableTaskFactory">
+		<constructor-arg ref="attrsTableFilter" />
 		<constructor-arg ref="cytoscapeDesktopService" /> 
 		<constructor-arg ref="cyApplicationManagerRef" />
 		<constructor-arg ref="cyNetworkManagerServiceRef" />
