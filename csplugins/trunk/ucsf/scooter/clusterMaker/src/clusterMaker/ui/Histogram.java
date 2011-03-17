@@ -136,7 +136,7 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 		int histoMousePos = (int)(((double)(e.getX()-XSTART))/xIncrement);
 		if(e.getX()>XSTART && e.getX()<(XSTART+xIncrement*histoArray.length) && boolShowLine){
 			double binValue = xInterval*histoMousePos;
-			System.out.println("histoArray["+histoMousePos+"] = "+ histoArray[histoMousePos]+", "+Double.parseDouble(form.format((binValue))));
+			// System.out.println("histoArray["+histoMousePos+"] = "+ histoArray[histoMousePos]+", "+Double.parseDouble(form.format((binValue))));
 			if (listeners.size() == 0) return;
 			for (HistoChangeListener listener: listeners)
 				listener.histoValueChanged(Double.parseDouble(form.format(binValue)));
@@ -157,12 +157,12 @@ class Histogram extends JComponent implements MouseMotionListener, MouseListener
 	 * @param cutOffValue the value of the selection (for use by the heuristic selection)
 	 */
 	public void setLineValue(double cutOffValue) {
-		System.out.println("Setting line value to: "+cutOffValue);
+		// System.out.println("Setting line value to: "+cutOffValue);
 		// mouseX = ((int)((cutOffValue-low)/xIncrement))+XSTART;
 		mouseX = (int)((cutOffValue/xInterval) * xIncrement) + XSTART;
 		int histoMousePos = (int)(((double)(mouseX-XSTART))/xIncrement);
 		double binValue = xInterval*histoMousePos;
-		System.out.println("histoArray["+histoMousePos+"] = "+ histoArray[histoMousePos]+", "+Double.parseDouble(form.format((binValue))));
+		// System.out.println("histoArray["+histoMousePos+"] = "+ histoArray[histoMousePos]+", "+Double.parseDouble(form.format((binValue))));
 		if (boolShowLine)
 			rePaintMouseLine(mouseX);
 	}

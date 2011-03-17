@@ -38,7 +38,7 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 	Histogram histo;
 	JPanel mainPanel;
 	JPanel buttonBox;
-	ScrollPane scrollPanel;
+	JScrollPane scrollPanel;
 	JButton zoomOutButton;
 	boolean isZoomed = false;
 	List<HistoChangeListener> changeListenerList = null;
@@ -64,8 +64,6 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 			histo.updateData(inputArray);
 		}
 	}
-
-       
 
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("set"))
@@ -113,10 +111,11 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 		// Get our new size & update histogram
 		Dimension dim = e.getComponent().getSize();
 		if(!isZoomed){
-			histo.setPreferredSize(new Dimension(dim.width, dim.height));
+			histo.setPreferredSize(new Dimension(dim.width-10, dim.height));
 		}
 		else{
-			histo.setPreferredSize(new Dimension(2000, dim.height));
+			Dimension histoSize = histo.getSize();
+			histo.setPreferredSize(new Dimension(histoSize.width, dim.height));
 			histo.repaint();
 			scrollPanel.setPreferredSize(new Dimension(dim.width, dim.height));
 		}
@@ -132,7 +131,9 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 		// Create and add the histogram component
 		histo = new Histogram(inputArray, nBins);
 		histo.addHistoChangeListener(this);
-		mainPanel.add(histo);
+		scrollPanel = new JScrollPane(histo, JScrollPane.VERTICAL_SCROLLBAR_NEVER, 
+		                              JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		mainPanel.add(scrollPanel);
 			
 		// TODO: Add box to set lower and upper bounds.  Look at JText and JLabel
 
@@ -196,40 +197,26 @@ public class HistogramDialog extends JDialog implements ActionListener, Componen
 	
 	private void zoom(double[] inputArray, boolean zoomOut){
 		
-		mainPanel.removeAll();
 		// Get the width of the current histogram
 		Dimension histoDim = histo.getSize();
-		int histoWidth = histoDim.width*2;
+		int histoWidth;
 
 		if (zoomOut)
 			histoWidth = histoDim.width / 2;
+		else
+			histoWidth = histoDim.width * 2;
 			
-		// Create a new histogram
-		histo = new Histogram(inputArray, currentBins);
-		histo.addHistoChangeListener(this);
-
-		// Get the size of the dialog
-		Dimension dim = this.getSize();
-		int height = dim.height-50; // Account for the button box
+		// Get the size of the scrollPanel
+		Dimension dim = scrollPanel.getSize();
 
 		if (isZoomed) {
-			scrollPanel = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
-			scrollPanel.addComponentListener(this);
-			scrollPanel.add(histo);
-			scrollPanel.setPreferredSize(new Dimension(dim.width, histoDim.height));
 			histo.setPreferredSize(new Dimension(histoWidth, histoDim.height));
-			mainPanel.add(scrollPanel);
 		} else {
 			histo.setPreferredSize(new Dimension(dim.width, dim.height));
-			mainPanel.add(histo);
 		}
-		
-		mainPanel.add(buttonBox);
-		
-		// Trigger a relayout
-		pack();
-	}
-    
 
+		histo.revalidate();
+
+	}
 
 }
