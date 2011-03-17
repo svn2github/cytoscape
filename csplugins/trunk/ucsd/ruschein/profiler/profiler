@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
+import xml.etree.ElementTree
 
 
 verbose = False
@@ -11,8 +12,24 @@ def PrintUsage():
     exit(-1)
 
 
-def ReadBaselineFile():
-    return True
+# Returns a triple [groupId,artifactId,version] upon success or None upon failure.
+def ReadBaselineFile(maven_project_directory):
+    try:
+        file = open(maven_project_directory + "/baseline.xml", "r")
+        tree = xml.etree.ElementTree.parse(file)
+        root = tree.getroot()
+        groupId = root.find("groupId")
+        if groupId == None:
+            return None
+        artifactId = root.find("artifactId")
+        if artifactId == None:
+            return artifactId
+        version = root.find("version")
+        if version == None:
+            return None
+        return [groupId.text,artifactId.text,version.text]
+    except:
+        return None
 
 
 def RunMavenTest():
@@ -45,7 +62,8 @@ else: # We have 3 arguments.
         verbose = True
         maven_project_directory = sys.argv[2]
 
-if not ReadBaselineFile():
+groupId_artifactId_version = ReadBaselineFile(maven_project_directory)
+if groupId_artifactId_version == None:
     print "*** Failed to read baseline version from file!"
     exit(-2)
 
