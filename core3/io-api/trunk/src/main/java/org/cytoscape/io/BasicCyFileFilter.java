@@ -13,6 +13,11 @@ import org.cytoscape.io.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is meant to be an basic implementation of CyFileFilter that can either be
+ * used directly or extended to provide different acceptance criteria. Only the 
+ * accepts() methods may be overridden.  
+ */
 public class BasicCyFileFilter implements CyFileFilter {
 
 	private final Set<String> extensions;
@@ -25,7 +30,12 @@ public class BasicCyFileFilter implements CyFileFilter {
 
 	/**
 	 * Creates a file filter from the specified arguments. 
-	 * Note that the "." before the extension is not needed and will be ignored.
+	 * Note that a "." before the extension is not needed and will be ignored.
+	 * @param extensions The set of valid extensions for this filter.
+	 * @param contentTypes The set of valid MIME content types that this filter should recognize. 
+	 * @param description A human readable description of the filter.
+	 * @param category The type of data this filter is meant to support.
+	 * @param streamUtil An instance of the StreamUtil service.
 	 */
 	public BasicCyFileFilter(final Set<String> extensions,
 			final Set<String> contentTypes, final String description,
@@ -48,15 +58,7 @@ public class BasicCyFileFilter implements CyFileFilter {
 	}
 
 	/**
-	 * Returns true if this class is capable of processing the specified URL
-	 * 
-	 * @param url
-	 *            the URL
-	 * @param contentType
-	 *            the content-type of the URL
-	 * @throws IOException
-	 * @throws MalformedURLException
-	 * 
+	 * {@inheritDoc}
 	 */
 	public boolean accepts(URI uri, DataCategory category) {
 
@@ -91,34 +93,68 @@ public class BasicCyFileFilter implements CyFileFilter {
 	}
 
 	/**
-	 * Must be overridden by subclasses.
+	 * This method always returns false in this particular implementation.  You must extend
+	 * this class and override this method to get alternative behavior. Ideally this method
+	 * would return true if this class is capable of processing the specified InputStream.
+	 * @param stream The stream that references the file we'd like to read.
+	 * @param category The type of input that we're considering. 
+	 * @return Always returns false in this particular implementation. 
 	 */
 	public boolean accepts(InputStream stream, DataCategory category) {
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public final Set<String> getExtensions() {
 		return extensions;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public final Set<String> getContentTypes() {
 		return contentTypes;
 	}
 
 	/**
-	 * Returns the human readable description of this filter. For example:
-	 * "JPEG and GIF Image Files (*.jpg, *.gif)"
-	 * 
-	 * @see setDescription
-	 * @see setExtensionListInDescription
-	 * @see isExtensionListInDescription
-	 * @see FileFilter#getDescription
+	 * {@inheritDoc}
 	 */
 	public final String getDescription() {
 		return description;
 	}
 
-	private final String getExtension(String filename) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public final DataCategory getDataCategory() {
+		return category;
+	}
+
+	/**
+	 * Returns a human readable description of this class.
+	 * @return a human readable description of this class.
+	 */
+	public String toString() {
+		String s = description + " [category: " + category + "]  [extensions: ";
+		for ( String ext : extensions )
+			s += ext + ",";
+		s += "]   [contentTypes: ";
+		for ( String c : contentTypes )
+			s += c + ",";
+		s += "]";
+
+		return s;
+	}
+
+	/**
+	 * Returns a string of the characters following the last '.' in the
+	 * input string, which is to say the file extension assuming that the
+	 * input string represents a file name. Will return null if no '.' is found.
+	 * @return a string representing the file extension of the input string.
+	 */
+	protected final String getExtension(String filename) {
 		if (filename != null) {
 			int i = filename.lastIndexOf('.');
 
@@ -130,10 +166,12 @@ public class BasicCyFileFilter implements CyFileFilter {
 		return null;
 	}
 
-	public final DataCategory getDataCategory() {
-		return category;
-	}
-
+	/**
+	 * Returns a string containing the specified number of lines from the
+	 * beginning of the file.  This is useful for testing input streams. 
+	 * @returns a string containing the specified number of lines from the
+	 * beginning of the file.
+	 */
 	protected final String getHeader(InputStream stream, int numLines) {
 		
 		String header; 
@@ -176,15 +214,4 @@ public class BasicCyFileFilter implements CyFileFilter {
 		return header.toString();
 	}
 
-	public final String toString() {
-		String s = description + " [category: " + category + "]  [extensions: ";
-		for ( String ext : extensions )
-			s += ext + ",";
-		s += "]   [contentTypes: ";
-		for ( String c : contentTypes )
-			s += c + ",";
-		s += "]";
-
-		return s;
-	}
 }

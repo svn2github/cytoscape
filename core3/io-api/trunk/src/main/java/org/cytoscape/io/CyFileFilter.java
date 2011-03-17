@@ -32,6 +32,8 @@ public interface CyFileFilter {
 	/**
 	 * Returns a list of file extensions (xml, xgmml, sif) suitable for for use
 	 * in FileChoosers. 
+	 * @return A list of file extensions (xml, xgmml, sif) suitable for for use
+	 * in FileChoosers. 
 	 */
 	Set<String> getExtensions();
 
