@@ -38,6 +38,10 @@
 
 	<osgi:reference id="cyDataTableFactoryServiceRef" interface="org.cytoscape.model.CyTableFactory" />
 
+	<osgi:reference id="streamUtilService" interface="org.cytoscape.io.util.StreamUtil" />
+
+
+
 	<!--
 	This code registers the bean we just created "sampleTaskFactory" as an 
 	OSGi service of a particular type (org.cytoscape.task.NetworkTaskFactory).
