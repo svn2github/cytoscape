@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import glob
 import os
+import shutil
 import sys
 import xml.etree.ElementTree
 
@@ -28,7 +29,7 @@ def ReadBaselineFile(maven_project_directory):
         version = root.find("version")
         if version == None:
             return None
-        return [groupId.text,artifactId.text,version.text]
+        return groupId.text,artifactId.text,version.text
     except:
         return None
 
@@ -53,8 +54,27 @@ def ExtractTimingInfoFromSurefireReports(maven_project_directory):
         dict[classname + "." + name] = float(time)
     return dict
 
-def SwapBundleVersionNumber():
-    return True
+
+def SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version):
+    pom_file_name = maven_project_directory + "/pom.xml"
+    shutil.copyfile(pom_file_name, maven_project_directory + "/original_pom.xml")
+    tree = xml.etree.ElementTree.parse(pom_file_name)
+    root = tree.getroot()
+    dependencies = root.find("{http://maven.apache.org/POM/4.0.0}dependencies")
+    for dependency in dependencies.getiterator("{http://maven.apache.org/POM/4.0.0}dependency"):
+        groupId = dependency.find("{http://maven.apache.org/POM/4.0.0}groupId")
+        if groupId == None or groupId.text != groupId_artifactId_version[0]:
+            continue
+        artifactId = dependency.find("{http://maven.apache.org/POM/4.0.0}artifactId")
+        if artifactId == None or artifactId.text != groupId_artifactId_version[1]:
+            continue
+        version = dependency.find("{http://maven.apache.org/POM/4.0.0}version")
+        version.text = groupId_artifactId_version[2]
+        file = open(pom_file_name, "w")
+        tree.write(file, encoding="UTF-8")
+        return True
+    print "*** Error: Can't find a dependency on " + groupId_artifactId_version[0] + ":" + groupId_artifactId_version[1] + " in " + pom_file_name
+    return False
 
 
 def GenerateTimingReport(current_version, baseline_version):
@@ -100,7 +120,7 @@ if not RunMavenTest():
 
 timing_current_version = ExtractTimingInfoFromSurefireReports(maven_project_directory)
 
-if not SwapBundleVersionNumber():
+if not SwapBundleVersionNumber(maven_project_directory, groupId_artifactId_version):
     print "*** Failed to replace the current version with the baseline version!"
     exit(-4)
 
